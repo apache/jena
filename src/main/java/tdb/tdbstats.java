@@ -6,8 +6,8 @@
 
 package tdb;
 
+import org.openjena.atlas.logging.Log ;
 import tdb.cmdline.CmdTDB;
-import atlas.logging.Log;
 
 import com.hp.hpl.jena.sparql.sse.Item;
 import com.hp.hpl.jena.tdb.solver.stats.StatsCollector;

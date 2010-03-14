@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.tdb.nodetable;
 
-import atlas.lib.StrUtils ;
+import org.openjena.atlas.lib.StrUtils ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.rdf.model.AnonId ;

@@ -11,15 +11,16 @@ import java.io.InputStream ;
 import java.util.HashSet ;
 import java.util.Set ;
 
-import atlas.io.IO ;
-import atlas.iterator.Filter ;
-import atlas.lib.FileOps ;
-import atlas.lib.Sink ;
-import atlas.lib.SinkCounting ;
-import atlas.lib.SinkPrint ;
-import atlas.lib.SinkWrapper ;
-import atlas.lib.Tuple ;
-import atlas.logging.Log ;
+import org.openjena.atlas.io.IO ;
+import org.openjena.atlas.iterator.Filter ;
+import org.openjena.atlas.lib.FileOps ;
+import org.openjena.atlas.lib.Sink ;
+import org.openjena.atlas.lib.SinkCounting ;
+import org.openjena.atlas.lib.SinkPrint ;
+import org.openjena.atlas.lib.SinkWrapper ;
+import org.openjena.atlas.lib.Tuple ;
+import org.openjena.atlas.logging.Log ;
+
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;

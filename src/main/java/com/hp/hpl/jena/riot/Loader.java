@@ -8,8 +8,9 @@ package com.hp.hpl.jena.riot;
 
 import java.io.InputStream ;
 
-import atlas.io.IO ;
-import atlas.lib.Sink ;
+import org.openjena.atlas.io.IO ;
+import org.openjena.atlas.lib.Sink ;
+
 
 import com.hp.hpl.jena.riot.lang.LangRIOT ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;

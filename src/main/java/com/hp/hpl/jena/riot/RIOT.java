@@ -6,9 +6,9 @@
 
 package com.hp.hpl.jena.riot;
 
+import org.openjena.atlas.event.EventType ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
-import atlas.event.EventType;
 
 public class RIOT
 {

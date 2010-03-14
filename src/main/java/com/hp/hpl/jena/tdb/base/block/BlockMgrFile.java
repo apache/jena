@@ -14,10 +14,10 @@ import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.openjena.atlas.lib.FileOps ;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import atlas.lib.FileOps;
 
 import com.hp.hpl.jena.sparql.util.ALog;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;

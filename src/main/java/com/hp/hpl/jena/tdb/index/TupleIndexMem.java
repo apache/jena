@@ -9,11 +9,12 @@ package com.hp.hpl.jena.tdb.index;
 
 import java.util.Iterator;
 
-import atlas.iterator.NullIterator;
-import atlas.iterator.SingletonIterator;
-import atlas.lib.ColumnMap;
-import atlas.lib.InternalErrorException;
-import atlas.lib.Tuple;
+import org.openjena.atlas.iterator.NullIterator ;
+import org.openjena.atlas.iterator.SingletonIterator ;
+import org.openjena.atlas.lib.ColumnMap ;
+import org.openjena.atlas.lib.InternalErrorException ;
+import org.openjena.atlas.lib.Tuple ;
+
 
 
 import com.hp.hpl.jena.tdb.index.mem.Index;

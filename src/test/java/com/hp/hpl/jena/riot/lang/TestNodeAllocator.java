@@ -7,7 +7,7 @@
 package com.hp.hpl.jena.riot.lang;
 
 import org.junit.Test ;
-import atlas.test.BaseTest ;
+import org.openjena.atlas.test.BaseTest ;
 
 import com.hp.hpl.jena.graph.Node ;
 

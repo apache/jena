@@ -12,8 +12,9 @@ import java.util.Iterator ;
 import java.util.Map ;
 import java.util.Set ;
 
-import atlas.lib.ColumnMap ;
-import atlas.lib.Tuple ;
+import org.openjena.atlas.lib.ColumnMap ;
+import org.openjena.atlas.lib.Tuple ;
+
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.shared.PrefixMapping ;

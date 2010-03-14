@@ -10,8 +10,8 @@ import static com.hp.hpl.jena.sparql.util.graph.GraphUtils.exactlyOneProperty;
 import static com.hp.hpl.jena.sparql.util.graph.GraphUtils.getAsStringValue;
 import static com.hp.hpl.jena.tdb.assembler.VocabTDB.pDescription;
 import static com.hp.hpl.jena.tdb.assembler.VocabTDB.pFile;
+import org.openjena.atlas.lib.ColumnMap ;
 
-import atlas.lib.ColumnMap;
 
 import com.hp.hpl.jena.rdf.model.Resource;
 

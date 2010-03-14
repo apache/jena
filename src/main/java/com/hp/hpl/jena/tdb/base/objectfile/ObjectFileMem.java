@@ -11,12 +11,13 @@ import java.util.ArrayList;
 import java.util.Iterator ;
 import java.util.List;
 
-import atlas.iterator.Iter ;
+import org.openjena.atlas.iterator.Iter ;
+import org.openjena.atlas.iterator.IteratorInteger ;
+import org.openjena.atlas.iterator.Transform ;
+import org.openjena.atlas.lib.ByteBufferLib ;
+import org.openjena.atlas.lib.Pair ;
 
-import atlas.iterator.IteratorInteger ;
-import atlas.iterator.Transform ;
-import atlas.lib.ByteBufferLib;
-import atlas.lib.Pair ;
+
 
 /** In-memory ByteBufferFile (for testing) - copies bytes in and out
  * to ensure no implicit modification.  

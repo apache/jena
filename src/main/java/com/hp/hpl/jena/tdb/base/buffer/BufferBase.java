@@ -12,7 +12,8 @@ import static java.lang.String.format;
 
 import java.nio.ByteBuffer;
 
-import atlas.lib.ByteBufferLib;
+import org.openjena.atlas.lib.ByteBufferLib ;
+
 
 import com.hp.hpl.jena.tdb.base.record.RecordException;
 

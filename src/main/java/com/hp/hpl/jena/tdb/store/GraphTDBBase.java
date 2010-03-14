@@ -13,8 +13,8 @@ import java.util.ConcurrentModificationException ;
 import java.util.Iterator ;
 import java.util.NoSuchElementException ;
 
+import org.openjena.atlas.iterator.Iter ;
 import org.slf4j.Logger ;
-import atlas.iterator.Iter ;
 
 import com.hp.hpl.jena.graph.BulkUpdateHandler ;
 import com.hp.hpl.jena.graph.Capabilities ;

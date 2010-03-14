@@ -23,7 +23,7 @@ import org.apache.lucene.search.RangeQuery;
 import org.apache.lucene.search.Searcher;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.RAMDirectory;
-import atlas.lib.Tuple;
+import org.openjena.atlas.lib.Tuple ;
 
 import com.hp.hpl.jena.query.larq.ARQLuceneException;
 import com.hp.hpl.jena.tdb.index.TupleIndex;

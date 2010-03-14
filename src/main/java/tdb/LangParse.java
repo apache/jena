@@ -9,14 +9,15 @@ package tdb;
 import java.io.InputStream ;
 import java.io.PrintStream ;
 
+import org.openjena.atlas.io.IO ;
+import org.openjena.atlas.lib.Sink ;
+import org.openjena.atlas.lib.SinkCounting ;
+import org.openjena.atlas.lib.SinkNull ;
+import org.openjena.atlas.logging.Log ;
+
 import tdb.cmdline.ModLangParse ;
 import arq.cmdline.CmdGeneral ;
 import arq.cmdline.ModTime ;
-import atlas.io.IO ;
-import atlas.lib.Sink ;
-import atlas.lib.SinkCounting ;
-import atlas.lib.SinkNull ;
-import atlas.logging.Log ;
 
 import com.hp.hpl.jena.Jena ;
 import com.hp.hpl.jena.query.ARQ ;

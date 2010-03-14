@@ -10,7 +10,8 @@ import java.util.HashMap ;
 import java.util.Iterator ;
 import java.util.Map ;
 
-import atlas.logging.Log ;
+import org.openjena.atlas.logging.Log ;
+
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.core.Var ;

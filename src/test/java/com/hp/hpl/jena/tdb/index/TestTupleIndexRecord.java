@@ -10,12 +10,12 @@ package com.hp.hpl.jena.tdb.index;
 import java.util.Iterator;
 import java.util.Set;
 
-import atlas.iterator.Iter;
-import atlas.lib.ColumnMap;
-import atlas.lib.Tuple;
-import atlas.test.BaseTest;
 
 import org.junit.Test;
+import org.openjena.atlas.iterator.Iter ;
+import org.openjena.atlas.lib.ColumnMap ;
+import org.openjena.atlas.lib.Tuple ;
+import org.openjena.atlas.test.BaseTest ;
 import tdb.Cmd;
 
 import com.hp.hpl.jena.tdb.base.file.FileSet;

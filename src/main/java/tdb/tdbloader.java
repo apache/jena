@@ -8,10 +8,11 @@ package tdb;
 
 import java.util.List ;
 
+import org.openjena.atlas.logging.Log ;
+
 import tdb.cmdline.CmdTDB ;
 import tdb.cmdline.ModModel ;
 import arq.cmdline.ArgDecl ;
-import atlas.logging.Log ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.query.ARQ ;

@@ -6,11 +6,11 @@
 
 package com.hp.hpl.jena.tdb.sys;
 
-import atlas.test.BaseTest;
 
 import com.hp.hpl.jena.tdb.TDB;
 
 import org.junit.Test;
+import org.openjena.atlas.test.BaseTest ;
 
 public class TestSys extends BaseTest
 {

@@ -8,7 +8,8 @@ package dump;
 
 import java.io.PrintStream;
 
-import atlas.io.IndentedWriter;
+import org.openjena.atlas.io.IndentedWriter ;
+
 
 import com.hp.hpl.jena.tdb.index.bplustree.BPlusTree;
 

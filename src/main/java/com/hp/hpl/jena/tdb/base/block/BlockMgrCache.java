@@ -9,10 +9,10 @@ package com.hp.hpl.jena.tdb.base.block;
 import java.nio.ByteBuffer;
 import java.util.Iterator;
 
-import atlas.lib.ActionKeyValue;
-import atlas.lib.Cache;
-import atlas.lib.CacheFactory;
 
+import org.openjena.atlas.lib.ActionKeyValue ;
+import org.openjena.atlas.lib.Cache ;
+import org.openjena.atlas.lib.CacheFactory ;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

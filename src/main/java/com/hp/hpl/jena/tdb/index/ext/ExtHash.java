@@ -13,11 +13,11 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import atlas.io.IndentedLineBuffer;
-import atlas.io.IndentedWriter;
-import atlas.lib.BitsLong;
-import atlas.lib.Bytes;
 
+import org.openjena.atlas.io.IndentedLineBuffer ;
+import org.openjena.atlas.io.IndentedWriter ;
+import org.openjena.atlas.lib.BitsLong ;
+import org.openjena.atlas.lib.Bytes ;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

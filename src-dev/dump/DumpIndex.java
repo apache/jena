@@ -13,8 +13,9 @@ import java.io.PrintStream ;
 import java.io.UnsupportedEncodingException ;
 import java.util.Iterator ;
 
-import atlas.lib.Bytes ;
-import atlas.lib.InternalErrorException ;
+import org.openjena.atlas.lib.Bytes ;
+import org.openjena.atlas.lib.InternalErrorException ;
+
 
 import com.hp.hpl.jena.riot.tokens.Token ;
 import com.hp.hpl.jena.riot.tokens.TokenType ;

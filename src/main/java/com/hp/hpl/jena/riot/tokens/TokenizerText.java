@@ -8,11 +8,12 @@ package com.hp.hpl.jena.riot.tokens;
 
 import static com.hp.hpl.jena.riot.RiotChars.*;
 
-import atlas.io.IO ;
-import atlas.io.PeekReader;
 
 import java.io.IOException ;
 import java.util.NoSuchElementException;
+
+import org.openjena.atlas.io.IO ;
+import org.openjena.atlas.io.PeekReader ;
 
 import com.hp.hpl.jena.riot.ParseException;
 

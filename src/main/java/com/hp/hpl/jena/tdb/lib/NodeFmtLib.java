@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.tdb.lib;
 
-import atlas.lib.Chars ;
+import org.openjena.atlas.lib.Chars ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Node_Literal ;

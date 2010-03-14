@@ -10,9 +10,10 @@ import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.charset.CharsetEncoder;
 
-import atlas.io.BufferingWriter;
-import atlas.lib.Chars;
-import atlas.lib.Sink;
+import org.openjena.atlas.io.BufferingWriter ;
+import org.openjena.atlas.lib.Chars ;
+import org.openjena.atlas.lib.Sink ;
+
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;

@@ -8,8 +8,9 @@ package com.hp.hpl.jena.tdb.nodetable;
 
 import java.util.Iterator ;
 
-import atlas.iterator.Iter ;
-import atlas.lib.Pair ;
+import org.openjena.atlas.iterator.Iter ;
+import org.openjena.atlas.lib.Pair ;
+
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.tdb.TDBException ;

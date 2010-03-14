@@ -8,9 +8,10 @@ package tdb;
 
 import java.util.Iterator;
 
+import org.openjena.atlas.lib.Bytes ;
+import org.openjena.atlas.logging.Log ;
+
 import tdb.cmdline.CmdTDB;
-import atlas.lib.Bytes;
-import atlas.logging.Log;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.tdb.lib.NodeLib;

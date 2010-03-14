@@ -11,7 +11,7 @@ import java.util.Iterator ;
 import org.apache.log4j.Level ;
 import org.apache.log4j.Logger ;
 import org.junit.Test ;
-import atlas.test.BaseTest ;
+import org.openjena.atlas.test.BaseTest ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;

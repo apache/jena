@@ -8,7 +8,8 @@ package com.hp.hpl.jena.riot;
 
 import java.util.Map ;
 
-import atlas.lib.Sink ;
+import org.openjena.atlas.lib.Sink ;
+
 
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.iri.IRI ;

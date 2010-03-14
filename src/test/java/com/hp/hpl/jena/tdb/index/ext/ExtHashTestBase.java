@@ -5,23 +5,24 @@
  */
 
 package com.hp.hpl.jena.tdb.index.ext;
-import static atlas.lib.ListUtils.asList;
-import static atlas.lib.ListUtils.unique;
-import static atlas.lib.RandomLib.random;
-import static atlas.test.Gen.permute;
-import static atlas.test.Gen.rand;
-import static atlas.test.Gen.strings;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.openjena.atlas.lib.ListUtils.asList ;
+import static org.openjena.atlas.lib.ListUtils.unique ;
+import static org.openjena.atlas.lib.RandomLib.random ;
+import static org.openjena.atlas.test.Gen.permute ;
+import static org.openjena.atlas.test.Gen.rand ;
+import static org.openjena.atlas.test.Gen.strings ;
 
 import java.util.Iterator;
 import java.util.List;
 
-import atlas.lib.Bytes;
-import atlas.test.ExecGenerator;
-import atlas.test.RepeatExecution;
+import org.openjena.atlas.lib.Bytes ;
+import org.openjena.atlas.test.ExecGenerator ;
+import org.openjena.atlas.test.RepeatExecution ;
+
 
 
 import com.hp.hpl.jena.tdb.base.record.Record;

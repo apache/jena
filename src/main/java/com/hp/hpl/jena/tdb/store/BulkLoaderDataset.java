@@ -12,10 +12,11 @@ import java.io.InputStream ;
 import java.util.Date ;
 import java.util.List ;
 
-import atlas.io.IO ;
-import atlas.lib.Sink ;
-import atlas.lib.SinkSplit ;
-import atlas.logging.Log ;
+import org.openjena.atlas.io.IO ;
+import org.openjena.atlas.lib.Sink ;
+import org.openjena.atlas.lib.SinkSplit ;
+import org.openjena.atlas.logging.Log ;
+
 
 import com.hp.hpl.jena.riot.Lang ;
 import com.hp.hpl.jena.riot.ParserFactory ;

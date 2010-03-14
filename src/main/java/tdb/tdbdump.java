@@ -6,8 +6,8 @@
 
 package tdb;
 
+import org.openjena.atlas.logging.Log ;
 import tdb.cmdline.CmdTDB ;
-import atlas.logging.Log ;
 
 import com.hp.hpl.jena.riot.RiotWriter ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;

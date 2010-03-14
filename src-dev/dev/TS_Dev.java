@@ -6,12 +6,12 @@
 
 package dev;
 
-import atlas.junit.TestBase;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
+import org.openjena.atlas.junit.TestBase ;
 
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderLib;
 import com.hp.hpl.jena.tdb.store.TS_Store;

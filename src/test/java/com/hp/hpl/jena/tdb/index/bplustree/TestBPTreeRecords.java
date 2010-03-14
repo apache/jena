@@ -6,10 +6,10 @@
 
 package com.hp.hpl.jena.tdb.index.bplustree;
 
-import atlas.junit.TestBase;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.openjena.atlas.junit.TestBase ;
 
 import com.hp.hpl.jena.tdb.base.block.BlockMgr;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory;

@@ -10,9 +10,10 @@ import static com.hp.hpl.jena.tdb.lib.NodeLib.setHash ;
 
 import java.util.Iterator ;
 
-import atlas.iterator.Iter ;
-import atlas.iterator.Transform ;
-import atlas.lib.Pair ;
+import org.openjena.atlas.iterator.Iter ;
+import org.openjena.atlas.iterator.Transform ;
+import org.openjena.atlas.lib.Pair ;
+
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.tdb.TDBException ;

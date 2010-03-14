@@ -8,7 +8,8 @@ package com.hp.hpl.jena.tdb.nodetable;
 
 import java.util.Iterator ;
 
-import atlas.lib.Pair ;
+import org.openjena.atlas.lib.Pair ;
+
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.core.Closeable ;

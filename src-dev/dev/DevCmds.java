@@ -12,7 +12,7 @@ import java.util.List ;
 import junit.framework.TestCase ;
 import org.junit.runner.JUnitCore ;
 import org.junit.runner.Result ;
-import atlas.junit.TextListener2 ;
+import org.openjena.atlas.junit.TextListener2 ;
 
 import com.hp.hpl.jena.query.* ;
 import com.hp.hpl.jena.rdf.model.Model ;

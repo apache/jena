@@ -8,7 +8,8 @@ package com.hp.hpl.jena.tdb.solver;
 
 import java.util.Set ;
 
-import atlas.logging.Log ;
+import org.openjena.atlas.logging.Log ;
+
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.Query ;

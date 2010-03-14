@@ -9,9 +9,9 @@ package com.hp.hpl.jena.riot.lang;
 import java.io.StringReader ;
 
 import org.junit.Test ;
-import atlas.lib.Sink ;
-import atlas.lib.SinkCounting ;
-import atlas.test.BaseTest ;
+import org.openjena.atlas.lib.Sink ;
+import org.openjena.atlas.lib.SinkCounting ;
+import org.openjena.atlas.test.BaseTest ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.rdf.model.Model ;

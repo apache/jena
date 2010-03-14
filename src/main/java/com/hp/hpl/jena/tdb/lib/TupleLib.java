@@ -10,11 +10,12 @@ import static com.hp.hpl.jena.tdb.sys.SystemTDB.SizeOfLong;
 
 import java.util.Iterator;
 
-import atlas.iterator.Iter;
-import atlas.iterator.Transform;
-import atlas.lib.Bytes;
-import atlas.lib.ColumnMap;
-import atlas.lib.Tuple;
+import org.openjena.atlas.iterator.Iter ;
+import org.openjena.atlas.iterator.Transform ;
+import org.openjena.atlas.lib.Bytes ;
+import org.openjena.atlas.lib.ColumnMap ;
+import org.openjena.atlas.lib.Tuple ;
+
 
 
 import com.hp.hpl.jena.graph.Node;

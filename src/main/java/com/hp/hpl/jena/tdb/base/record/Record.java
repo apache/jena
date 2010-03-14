@@ -10,7 +10,8 @@ import static java.lang.String.format;
 
 import java.util.Arrays;
 
-import atlas.lib.Bytes;
+import org.openjena.atlas.lib.Bytes ;
+
 
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
 

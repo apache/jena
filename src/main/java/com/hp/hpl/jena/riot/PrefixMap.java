@@ -11,7 +11,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import atlas.lib.Pair ;
+import org.openjena.atlas.lib.Pair ;
+
 
 import com.hp.hpl.jena.iri.IRI;
 import com.hp.hpl.jena.iri.IRIFactory;

@@ -11,9 +11,10 @@ import java.util.HashSet ;
 import java.util.Iterator ;
 import java.util.Set ;
 
+import org.openjena.atlas.lib.Pair ;
+import org.openjena.atlas.lib.Tuple ;
+
 import arq.cmd.CmdException ;
-import atlas.lib.Pair ;
-import atlas.lib.Tuple ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.Dataset ;

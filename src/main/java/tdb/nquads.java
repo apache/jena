@@ -8,8 +8,9 @@ package tdb;
 
 import java.io.PrintStream ;
 
-import atlas.lib.Sink ;
-import atlas.logging.Log ;
+import org.openjena.atlas.lib.Sink ;
+import org.openjena.atlas.logging.Log ;
+
 
 import com.hp.hpl.jena.riot.Checker ;
 import com.hp.hpl.jena.riot.lang.LangNQuads ;

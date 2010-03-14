@@ -11,9 +11,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import atlas.iterator.IteratorConcat;
-import atlas.iterator.NullIterator;
-import atlas.lib.DS;
+import org.openjena.atlas.iterator.IteratorConcat ;
+import org.openjena.atlas.iterator.NullIterator ;
+import org.openjena.atlas.lib.DS ;
+
 
 
 

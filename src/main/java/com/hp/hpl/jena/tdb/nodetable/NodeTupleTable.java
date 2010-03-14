@@ -9,8 +9,9 @@ import static java.lang.String.format ;
 
 import java.util.Iterator ;
 
-import atlas.iterator.NullIterator ;
-import atlas.lib.Tuple ;
+import org.openjena.atlas.iterator.NullIterator ;
+import org.openjena.atlas.lib.Tuple ;
+
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.core.Closeable ;

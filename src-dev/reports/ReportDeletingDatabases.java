@@ -8,7 +8,8 @@ package reports;
 
 import java.io.File ;
 
-import atlas.lib.FileOps ;
+import org.openjena.atlas.lib.FileOps ;
+
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.query.Dataset ;

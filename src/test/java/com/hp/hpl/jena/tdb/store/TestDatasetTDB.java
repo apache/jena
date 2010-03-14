@@ -16,8 +16,8 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import atlas.iterator.Iter;
-import atlas.test.BaseTest;
+import org.openjena.atlas.iterator.Iter ;
+import org.openjena.atlas.test.BaseTest ;
 
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;

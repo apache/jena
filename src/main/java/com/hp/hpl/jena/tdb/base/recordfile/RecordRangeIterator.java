@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.tdb.base.recordfile;
 
-import static atlas.lib.Lib.decodeIndex;
+import static org.openjena.atlas.lib.Lib.decodeIndex ;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;

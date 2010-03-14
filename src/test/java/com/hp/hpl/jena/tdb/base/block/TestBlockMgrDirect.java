@@ -6,9 +6,9 @@
 
 package com.hp.hpl.jena.tdb.base.block;
 
-import atlas.lib.FileOps;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.openjena.atlas.lib.FileOps ;
 
 import com.hp.hpl.jena.tdb.ConfigTest;
 

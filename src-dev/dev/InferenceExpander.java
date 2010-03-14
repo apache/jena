@@ -11,7 +11,8 @@ import java.util.HashMap ;
 import java.util.List ;
 import java.util.Map ;
 
-import atlas.lib.Sink ;
+import org.openjena.atlas.lib.Sink ;
+
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;

@@ -17,10 +17,11 @@ import java.util.List ;
 import java.util.Map ;
 import java.util.concurrent.Semaphore ;
 
-import atlas.lib.ArrayUtils ;
-import atlas.lib.InternalErrorException ;
-import atlas.lib.MapUtils ;
-import atlas.lib.Tuple ;
+import org.openjena.atlas.lib.ArrayUtils ;
+import org.openjena.atlas.lib.InternalErrorException ;
+import org.openjena.atlas.lib.MapUtils ;
+import org.openjena.atlas.lib.Tuple ;
+
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;

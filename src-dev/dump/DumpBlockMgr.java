@@ -9,7 +9,8 @@ package dump;
 import java.io.PrintStream;
 import java.nio.ByteBuffer;
 
-import atlas.lib.ByteBufferLib;
+import org.openjena.atlas.lib.ByteBufferLib ;
+
 
 import com.hp.hpl.jena.tdb.base.block.BlockMgr;
 

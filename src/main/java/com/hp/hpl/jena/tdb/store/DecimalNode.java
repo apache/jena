@@ -9,7 +9,8 @@ package com.hp.hpl.jena.tdb.store;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-import atlas.lib.BitsLong;
+import org.openjena.atlas.lib.BitsLong ;
+
 
 
 public class DecimalNode

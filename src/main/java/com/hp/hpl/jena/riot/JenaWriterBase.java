@@ -11,8 +11,9 @@ import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
 
-import atlas.io.BufferingWriter;
-import atlas.logging.Log;
+import org.openjena.atlas.io.BufferingWriter ;
+import org.openjena.atlas.logging.Log ;
+
 
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.rdf.model.Model;

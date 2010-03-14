@@ -10,7 +10,8 @@ import java.io.IOException ;
 import java.io.Writer ;
 import java.net.MalformedURLException ;
 
-import atlas.io.OutputUtils ;
+import org.openjena.atlas.io.OutputUtils ;
+
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;

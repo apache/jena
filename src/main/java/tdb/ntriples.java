@@ -8,7 +8,8 @@ package tdb;
 
 import java.io.PrintStream ;
 
-import atlas.lib.Sink ;
+import org.openjena.atlas.lib.Sink ;
+
 
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.riot.Checker ;

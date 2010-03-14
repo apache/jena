@@ -6,8 +6,8 @@
 
 package com.hp.hpl.jena.tdb.solver;
 
+import org.openjena.atlas.lib.StrUtils ;
 import org.slf4j.Logger ;
-import atlas.lib.StrUtils ;
 
 import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.sparql.algebra.Op ;

@@ -11,8 +11,9 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import atlas.iterator.IteratorConcat;
-import atlas.lib.DS;
+import org.openjena.atlas.iterator.IteratorConcat ;
+import org.openjena.atlas.lib.DS ;
+
 
 
 /** Index of (Node, Node, Node) -> V */

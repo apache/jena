@@ -12,7 +12,7 @@ import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.junit.runner.RunWith ;
 import org.junit.runners.Suite ;
-import atlas.TC_Atlas ;
+import org.openjena.atlas.TC_Atlas ;
 
 import com.hp.hpl.jena.riot.TS_Riot ;
 import com.hp.hpl.jena.tdb.assembler.TS_TDBAssembler ;

@@ -6,11 +6,11 @@
 
 package com.hp.hpl.jena.riot.lang;
 
-import atlas.event.Event;
-import atlas.event.EventListener;
-import atlas.event.EventManager;
-import atlas.event.EventType;
-import atlas.lib.Sink;
+import org.openjena.atlas.event.Event ;
+import org.openjena.atlas.event.EventListener ;
+import org.openjena.atlas.event.EventManager ;
+import org.openjena.atlas.event.EventType ;
+import org.openjena.atlas.lib.Sink ;
 
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.GraphEvents;

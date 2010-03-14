@@ -15,9 +15,10 @@ import java.security.MessageDigest ;
 import java.security.NoSuchAlgorithmException ;
 import java.util.Iterator ;
 
-import atlas.iterator.Iter ;
-import atlas.iterator.Transform ;
-import atlas.lib.Bytes ;
+import org.openjena.atlas.iterator.Iter ;
+import org.openjena.atlas.iterator.Transform ;
+import org.openjena.atlas.lib.Bytes ;
+
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.tdb.TDBException ;

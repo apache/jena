@@ -8,10 +8,11 @@ package com.hp.hpl.jena.tdb.nodetable;
 
 import java.nio.ByteBuffer ;
 
-import atlas.lib.Bytes ;
-import atlas.lib.Pool ;
-import atlas.lib.PoolSync ;
-import atlas.lib.StrUtils ;
+import org.openjena.atlas.lib.Bytes ;
+import org.openjena.atlas.lib.Pool ;
+import org.openjena.atlas.lib.PoolSync ;
+import org.openjena.atlas.lib.StrUtils ;
+
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.rdf.model.AnonId ;

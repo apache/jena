@@ -8,8 +8,9 @@ package com.hp.hpl.jena.tdb.index;
 
 import java.util.Iterator ;
 
-import atlas.lib.ColumnMap ;
-import atlas.lib.Tuple ;
+import org.openjena.atlas.lib.ColumnMap ;
+import org.openjena.atlas.lib.Tuple ;
+
 
 import com.hp.hpl.jena.tdb.TDBException ;
 import com.hp.hpl.jena.tdb.store.NodeId ;

@@ -9,8 +9,8 @@ package com.hp.hpl.jena.riot.lang;
 import java.io.InputStream ;
 
 import junit.framework.TestCase ;
-import atlas.io.IO ;
-import atlas.lib.SinkNull ;
+import org.openjena.atlas.io.IO ;
+import org.openjena.atlas.lib.SinkNull ;
 
 import com.hp.hpl.jena.riot.ParserFactory ;
 import com.hp.hpl.jena.riot.RiotException ;

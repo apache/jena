@@ -29,8 +29,9 @@ import static com.hp.hpl.jena.sparql.util.Utils.equal ;
 import java.util.ArrayList ;
 import java.util.List ;
 
-import atlas.io.PeekReader ;
-import atlas.lib.Pair ;
+import org.openjena.atlas.io.PeekReader ;
+import org.openjena.atlas.lib.Pair ;
+
 
 import com.hp.hpl.jena.datatypes.RDFDatatype ;
 import com.hp.hpl.jena.datatypes.TypeMapper ;

@@ -9,7 +9,8 @@ package com.hp.hpl.jena.tdb.index;
 
 import java.util.Iterator;
 
-import atlas.lib.Tuple;
+import org.openjena.atlas.lib.Tuple ;
+
 
 import com.hp.hpl.jena.tdb.store.NodeId;
 

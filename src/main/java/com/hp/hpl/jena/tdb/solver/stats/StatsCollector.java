@@ -14,9 +14,10 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import atlas.lib.MapUtils;
-import atlas.lib.Tuple;
-import atlas.logging.Log;
+import org.openjena.atlas.lib.MapUtils ;
+import org.openjena.atlas.lib.Tuple ;
+import org.openjena.atlas.logging.Log ;
+
 
 
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;

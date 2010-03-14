@@ -6,12 +6,12 @@
 
 package com.hp.hpl.jena.riot.lang;
 
-import atlas.io.PeekReader;
 
 import java.io.InputStream;
 import java.io.Reader;
 
 import junit.framework.TestCase;
+import org.openjena.atlas.io.PeekReader ;
 
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;

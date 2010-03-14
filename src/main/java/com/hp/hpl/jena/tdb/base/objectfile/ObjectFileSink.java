@@ -9,7 +9,8 @@ package com.hp.hpl.jena.tdb.base.objectfile;
 import java.nio.ByteBuffer ;
 import java.util.Iterator ;
 
-import atlas.lib.Pair ;
+import org.openjena.atlas.lib.Pair ;
+
 
 /** For testing only */
 public class ObjectFileSink implements ObjectFile

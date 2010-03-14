@@ -8,7 +8,8 @@ package tdb;
 
 import java.io.UnsupportedEncodingException ;
 
-import atlas.lib.StrUtils ;
+import org.openjena.atlas.lib.StrUtils ;
+
 
 public class wwwenc
 {

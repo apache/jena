@@ -10,8 +10,9 @@ import java.io.IOException ;
 import java.nio.ByteBuffer ;
 import java.util.Iterator ;
 
-import atlas.lib.Bytes ;
-import atlas.lib.Pair ;
+import org.openjena.atlas.lib.Bytes ;
+import org.openjena.atlas.lib.Pair ;
+
 
 import com.hp.hpl.jena.tdb.base.block.BlockException ;
 import com.hp.hpl.jena.tdb.base.file.FileBase ;

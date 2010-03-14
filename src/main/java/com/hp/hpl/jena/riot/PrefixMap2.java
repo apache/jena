@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.riot;
 
-import atlas.logging.Log;
+import org.openjena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.iri.IRI;
 

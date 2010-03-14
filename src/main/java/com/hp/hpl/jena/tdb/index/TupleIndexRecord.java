@@ -11,10 +11,11 @@ import static java.lang.String.format;
 
 import java.util.Iterator;
 
-import atlas.iterator.*;
-import atlas.lib.Bytes;
-import atlas.lib.ColumnMap;
-import atlas.lib.Tuple;
+import org.openjena.atlas.iterator.* ;
+import org.openjena.atlas.lib.Bytes ;
+import org.openjena.atlas.lib.ColumnMap ;
+import org.openjena.atlas.lib.Tuple ;
+
 
 
 import com.hp.hpl.jena.tdb.TDBException;

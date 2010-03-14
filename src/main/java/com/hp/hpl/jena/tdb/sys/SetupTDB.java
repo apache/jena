@@ -21,11 +21,11 @@ import static com.hp.hpl.jena.tdb.sys.SystemTDB.SyncTick ;
 import java.io.IOException ;
 import java.util.Properties ;
 
+import org.openjena.atlas.lib.ColumnMap ;
+import org.openjena.atlas.lib.FileOps ;
+import org.openjena.atlas.lib.PropertyUtils ;
+import org.openjena.atlas.lib.StrUtils ;
 import org.slf4j.Logger ;
-import atlas.lib.ColumnMap ;
-import atlas.lib.FileOps ;
-import atlas.lib.PropertyUtils ;
-import atlas.lib.StrUtils ;
 
 import com.hp.hpl.jena.sparql.sse.SSEParseException ;
 import com.hp.hpl.jena.sparql.util.Utils ;

@@ -9,8 +9,9 @@ package com.hp.hpl.jena.riot.tokens;
 import java.io.InputStream ;
 import java.io.Reader ;
 
-import atlas.io.PeekInputStream ;
-import atlas.io.PeekReader ;
+import org.openjena.atlas.io.PeekInputStream ;
+import org.openjena.atlas.io.PeekReader ;
+
 
 public class TokenizerFactory
 {

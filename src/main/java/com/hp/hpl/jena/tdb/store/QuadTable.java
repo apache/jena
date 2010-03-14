@@ -9,9 +9,10 @@ package com.hp.hpl.jena.tdb.store;
 
 import java.util.Iterator ;
 
-import atlas.iterator.NullIterator ;
-import atlas.iterator.Transform ;
-import atlas.lib.Tuple ;
+import org.openjena.atlas.iterator.NullIterator ;
+import org.openjena.atlas.iterator.Transform ;
+import org.openjena.atlas.lib.Tuple ;
+
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;

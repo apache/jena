@@ -8,10 +8,10 @@ package com.hp.hpl.jena.riot.lang;
 
 import static com.hp.hpl.jena.riot.tokens.TokenType.EOF ;
 import static com.hp.hpl.jena.riot.tokens.TokenType.NODE ;
-import atlas.event.Event ;
-import atlas.event.EventManager ;
-import atlas.iterator.PeekIterator ;
-import atlas.lib.Sink ;
+import org.openjena.atlas.event.Event ;
+import org.openjena.atlas.event.EventManager ;
+import org.openjena.atlas.iterator.PeekIterator ;
+import org.openjena.atlas.lib.Sink ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.riot.Checker ;

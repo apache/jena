@@ -9,7 +9,8 @@ package dev.opt;
 import java.util.Map;
 import java.util.Set;
 
-import atlas.logging.Log;
+import org.openjena.atlas.logging.Log ;
+
 
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.core.Var;

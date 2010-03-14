@@ -6,7 +6,6 @@
 
 package com.hp.hpl.jena.tdb.index.bplustree;
 
-import static atlas.lib.Lib.decodeIndex;
 import static com.hp.hpl.jena.tdb.base.record.Record.keyGT;
 import static com.hp.hpl.jena.tdb.base.record.Record.keyLT;
 import static com.hp.hpl.jena.tdb.base.record.Record.keyNE;
@@ -14,14 +13,15 @@ import static com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams.CheckingNode;
 import static com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams.CheckingTree;
 import static com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams.DumpTree;
 import static java.lang.String.format;
+import static org.openjena.atlas.lib.Lib.decodeIndex ;
 
 import java.nio.ByteBuffer;
 import java.util.Iterator;
 
-import atlas.io.IndentedLineBuffer;
-import atlas.io.IndentedWriter;
-import atlas.iterator.Iter;
 
+import org.openjena.atlas.io.IndentedLineBuffer ;
+import org.openjena.atlas.io.IndentedWriter ;
+import org.openjena.atlas.iterator.Iter ;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -8,7 +8,8 @@ package com.hp.hpl.jena.tdb.base.objectfile;
 
 import java.nio.ByteBuffer ;
 
-import atlas.lib.Bytes ;
+import org.openjena.atlas.lib.Bytes ;
+
 
 import com.hp.hpl.jena.tdb.lib.StringAbbrev ;
 

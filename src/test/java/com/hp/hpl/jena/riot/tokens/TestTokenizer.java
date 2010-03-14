@@ -13,9 +13,9 @@ import com.hp.hpl.jena.riot.tokens.TokenType;
 import com.hp.hpl.jena.riot.tokens.Tokenizer;
 import com.hp.hpl.jena.riot.tokens.TokenizerText;
 
-import atlas.io.PeekReader;
 import org.junit.Test ;
-import atlas.test.BaseTest ;
+import org.openjena.atlas.io.PeekReader ;
+import org.openjena.atlas.test.BaseTest ;
 
 
 public class TestTokenizer extends BaseTest

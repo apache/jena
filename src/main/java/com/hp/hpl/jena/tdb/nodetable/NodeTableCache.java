@@ -8,10 +8,11 @@ package com.hp.hpl.jena.tdb.nodetable;
 
 import java.util.Iterator ;
 
-import atlas.lib.Cache ;
-import atlas.lib.CacheFactory ;
-import atlas.lib.CacheSet ;
-import atlas.lib.Pair ;
+import org.openjena.atlas.lib.Cache ;
+import org.openjena.atlas.lib.CacheFactory ;
+import org.openjena.atlas.lib.CacheSet ;
+import org.openjena.atlas.lib.Pair ;
+
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.util.ALog ;

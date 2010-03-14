@@ -8,10 +8,11 @@ package com.hp.hpl.jena.tdb.store;
 
 import java.util.Date ;
 
+import org.openjena.atlas.lib.Sink ;
+
 import com.hp.hpl.jena.sparql.util.StringUtils ;
 import com.hp.hpl.jena.sparql.util.Timer ;
 
-import atlas.lib.Sink ;
 
 public class SinkProgress<X> implements Sink<X>
 {

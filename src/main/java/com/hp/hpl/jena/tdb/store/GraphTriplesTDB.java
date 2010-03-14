@@ -8,9 +8,9 @@ package com.hp.hpl.jena.tdb.store;
 
 import java.util.Iterator;
 
+import org.openjena.atlas.lib.Tuple ;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import atlas.lib.Tuple;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;

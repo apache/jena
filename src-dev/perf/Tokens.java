@@ -8,7 +8,8 @@ package perf;
 
 import java.io.InputStream ;
 
-import atlas.io.IO ;
+import org.openjena.atlas.io.IO ;
+
 
 import com.hp.hpl.jena.riot.tokens.Token ;
 import com.hp.hpl.jena.riot.tokens.Tokenizer ;

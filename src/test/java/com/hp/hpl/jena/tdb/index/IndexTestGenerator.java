@@ -6,8 +6,8 @@
 
 package com.hp.hpl.jena.tdb.index;
 
-import atlas.lib.RandomLib;
-import atlas.test.ExecGenerator;
+import org.openjena.atlas.lib.RandomLib ;
+import org.openjena.atlas.test.ExecGenerator ;
 
 public class IndexTestGenerator implements ExecGenerator
 {

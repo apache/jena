@@ -6,9 +6,9 @@
 package com.hp.hpl.jena.riot.lang;
 
 import org.junit.Test ;
-import atlas.lib.Sink ;
-import atlas.lib.SinkNull ;
-import atlas.test.BaseTest ;
+import org.openjena.atlas.lib.Sink ;
+import org.openjena.atlas.lib.SinkNull ;
+import org.openjena.atlas.test.BaseTest ;
 
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.riot.ParserFactory ;

@@ -14,9 +14,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.openjena.atlas.lib.NotImplemented ;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import atlas.lib.NotImplemented;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;

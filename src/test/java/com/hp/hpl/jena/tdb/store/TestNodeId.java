@@ -6,8 +6,8 @@
 
 package com.hp.hpl.jena.tdb.store;
 
-import atlas.junit.TestBase;
 import org.junit.Test;
+import org.openjena.atlas.junit.TestBase ;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.graph.Node;

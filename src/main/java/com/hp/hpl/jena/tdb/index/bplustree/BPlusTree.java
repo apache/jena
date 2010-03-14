@@ -13,9 +13,9 @@ import static java.lang.String.format;
 
 import java.util.Iterator;
 
-import atlas.io.IndentedWriter;
-import atlas.iterator.Iter;
 
+import org.openjena.atlas.io.IndentedWriter ;
+import org.openjena.atlas.iterator.Iter ;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

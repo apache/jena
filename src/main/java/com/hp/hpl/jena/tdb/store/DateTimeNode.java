@@ -11,9 +11,10 @@ import javax.xml.datatype.DatatypeConstants;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
-import atlas.lib.BitsInt;
-import atlas.lib.BitsLong;
-import atlas.lib.NumberUtils ;
+import org.openjena.atlas.lib.BitsInt ;
+import org.openjena.atlas.lib.BitsLong ;
+import org.openjena.atlas.lib.NumberUtils ;
+
 
 import com.hp.hpl.jena.tdb.TDBException;
 

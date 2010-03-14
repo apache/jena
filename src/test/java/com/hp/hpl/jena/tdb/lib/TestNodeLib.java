@@ -8,7 +8,7 @@ package com.hp.hpl.jena.tdb.lib;
 
 import static com.hp.hpl.jena.tdb.lib.NodeLib.hash ;
 import org.junit.Test ;
-import atlas.junit.TestBase ;
+import org.openjena.atlas.junit.TestBase ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.sse.SSE ;

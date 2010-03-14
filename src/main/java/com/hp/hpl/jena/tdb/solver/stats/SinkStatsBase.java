@@ -9,7 +9,8 @@ package com.hp.hpl.jena.tdb.solver.stats;
 import java.util.HashMap ;
 import java.util.Map ;
 
-import atlas.lib.MapUtils ;
+import org.openjena.atlas.lib.MapUtils ;
+
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.sse.Item ;

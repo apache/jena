@@ -10,7 +10,8 @@ package com.hp.hpl.jena.tdb.index.btree;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import atlas.iterator.Iter;
+import org.openjena.atlas.iterator.Iter ;
+
 
 import com.hp.hpl.jena.tdb.base.record.Record;
 

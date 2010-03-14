@@ -8,9 +8,9 @@ package com.hp.hpl.jena.riot.lang;
 
 import java.util.Iterator ;
 
+import org.openjena.atlas.lib.Sink ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
-import atlas.lib.Sink ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.riot.Checker ;
@@ -22,7 +22,7 @@ import com.hp.hpl.jena.riot.tokens.Tokenizer ;
  * 
  * <ul>
  * <li>The {@link #parse} method processes the whole stream of tokens, 
- *   sending each to a {@link atlas.lib.Sink} object.</li>
+ *   sending each to a {@link org.openjena.atlas.lib.Sink} object.</li>
  * <li>The <tt>Iterator&lt;X&gt;</tt> interface yields triples one-by-one.</li>
  *  </ul> 
  * 

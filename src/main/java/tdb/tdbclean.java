@@ -6,9 +6,9 @@
 
 package tdb;
 
+import org.openjena.atlas.lib.FileOps ;
+import org.openjena.atlas.logging.Log ;
 import tdb.cmdline.CmdTDB;
-import atlas.lib.FileOps;
-import atlas.logging.Log;
 
 public class tdbclean extends CmdTDB
 {

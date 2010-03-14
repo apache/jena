@@ -7,7 +7,7 @@
 package com.hp.hpl.jena.riot.lang;
 
 import static com.hp.hpl.jena.riot.tokens.TokenType.* ;
-import atlas.lib.Sink ;
+import org.openjena.atlas.lib.Sink ;
 
 import com.hp.hpl.jena.datatypes.RDFDatatype ;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;

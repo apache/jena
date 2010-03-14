@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.tdb.store;
 
-import atlas.lib.Tuple;
+import org.openjena.atlas.lib.Tuple ;
 
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;

@@ -10,9 +10,9 @@ import static java.lang.String.format ;
 
 import java.util.Iterator ;
 
+import org.openjena.atlas.lib.Tuple ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
-import atlas.lib.Tuple ;
 
 import com.hp.hpl.jena.sparql.core.Closeable ;
 import com.hp.hpl.jena.tdb.TDBException ;

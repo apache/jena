@@ -6,11 +6,11 @@
 
 package com.hp.hpl.jena.tdb.solver;
 
+import org.openjena.atlas.iterator.Filter ;
+import org.openjena.atlas.lib.Tuple ;
+import org.openjena.atlas.logging.Log ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
-import atlas.iterator.Filter ;
-import atlas.lib.Tuple ;
-import atlas.logging.Log ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;

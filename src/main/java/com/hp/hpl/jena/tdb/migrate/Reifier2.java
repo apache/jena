@@ -12,8 +12,9 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import atlas.iterator.Filter;
-import atlas.iterator.Iter;
+import org.openjena.atlas.iterator.Filter ;
+import org.openjena.atlas.iterator.Iter ;
+
 
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 import com.hp.hpl.jena.util.iterator.NiceIterator;

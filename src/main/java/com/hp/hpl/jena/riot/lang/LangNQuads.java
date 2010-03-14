@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.riot.lang;
 import static com.hp.hpl.jena.sparql.util.Utils.equal ;
-import atlas.lib.Sink ;
+import org.openjena.atlas.lib.Sink ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.riot.Checker ;

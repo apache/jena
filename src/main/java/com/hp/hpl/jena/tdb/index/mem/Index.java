@@ -10,7 +10,8 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
-import atlas.lib.DS;
+import org.openjena.atlas.lib.DS ;
+
 
 
 

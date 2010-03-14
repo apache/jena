@@ -8,7 +8,8 @@ package com.hp.hpl.jena.tdb.lib;
 
 import java.util.Iterator ;
 
-import atlas.lib.Sink ;
+import org.openjena.atlas.lib.Sink ;
+
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;

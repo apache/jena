@@ -17,10 +17,10 @@ import java.util.Map ;
 import java.util.zip.GZIPInputStream ;
 import java.util.zip.InflaterInputStream ;
 
+import org.openjena.atlas.io.IO ;
+import org.openjena.atlas.logging.Log ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
-import atlas.io.IO ;
-import atlas.logging.Log ;
 
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.sparql.util.StrUtils ;

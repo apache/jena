@@ -8,7 +8,8 @@ package com.hp.hpl.jena.riot.tokens;
 
 import java.util.Iterator;
 
-import atlas.lib.Closeable ;
+import org.openjena.atlas.lib.Closeable ;
+
 
 public interface Tokenizer extends Iterator<Token>, Closeable
 {

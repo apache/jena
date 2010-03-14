@@ -8,8 +8,8 @@ package com.hp.hpl.jena.tdb.assembler;
 
 import static com.hp.hpl.jena.sparql.util.graph.GraphUtils.*;
 import static com.hp.hpl.jena.tdb.assembler.VocabTDB.*;
+import org.openjena.atlas.logging.Log ;
 
-import atlas.logging.Log;
 
 import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.rdf.model.*;

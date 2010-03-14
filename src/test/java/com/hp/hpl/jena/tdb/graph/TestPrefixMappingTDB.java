@@ -9,7 +9,7 @@ package com.hp.hpl.jena.tdb.graph;
 import java.util.Map;
 
 import org.junit.Test;
-import atlas.lib.FileOps;
+import org.openjena.atlas.lib.FileOps ;
 
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.shared.PrefixMapping;

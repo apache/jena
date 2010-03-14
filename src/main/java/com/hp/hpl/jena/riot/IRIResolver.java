@@ -8,9 +8,10 @@ package com.hp.hpl.jena.riot;
 
 import java.util.Iterator;
 
-import atlas.lib.Cache;
-import atlas.lib.CacheFactory;
-import atlas.lib.cache.Getter ;
+import org.openjena.atlas.lib.Cache ;
+import org.openjena.atlas.lib.CacheFactory ;
+import org.openjena.atlas.lib.cache.Getter ;
+
 
 import com.hp.hpl.jena.iri.IRI;
 import com.hp.hpl.jena.iri.IRIException;

@@ -8,7 +8,8 @@ package com.hp.hpl.jena.tdb.store;
 
 import java.util.Arrays;
 
-import atlas.lib.Bytes ;
+import org.openjena.atlas.lib.Bytes ;
+
 
 /** Hash values. */ 
 public class Hash

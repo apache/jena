@@ -12,10 +12,10 @@ import static com.hp.hpl.jena.tdb.base.record.RecordLib.r;
 import java.util.Iterator;
 import java.util.List;
 
-import atlas.test.BaseTest;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.openjena.atlas.test.BaseTest ;
 
 import com.hp.hpl.jena.tdb.base.record.Record;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;

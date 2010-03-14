@@ -6,7 +6,7 @@
 
 package dump;
 
-import atlas.lib.Bytes;
+import org.openjena.atlas.lib.Bytes ;
 
 import com.hp.hpl.jena.tdb.base.record.Record;
 

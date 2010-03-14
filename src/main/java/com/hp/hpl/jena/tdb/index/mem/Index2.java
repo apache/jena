@@ -11,8 +11,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import atlas.iterator.IteratorConcat;
-import atlas.lib.DS;
+import org.openjena.atlas.iterator.IteratorConcat ;
+import org.openjena.atlas.lib.DS ;
+
 
 
 import com.hp.hpl.jena.graph.Node;

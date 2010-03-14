@@ -6,15 +6,15 @@
 
 package com.hp.hpl.jena.tdb.base.block;
 
-import static atlas.lib.ByteBufferLib.fill;
+import static org.openjena.atlas.lib.ByteBufferLib.fill ;
 
 import java.nio.ByteBuffer;
 
-import atlas.test.BaseTest;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.openjena.atlas.test.BaseTest ;
 
 public abstract class AbstractTestBlockMgr extends BaseTest
 {

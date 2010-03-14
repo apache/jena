@@ -10,9 +10,6 @@ package com.hp.hpl.jena.tdb.index;
 import java.util.Iterator;
 import java.util.List;
 
-import atlas.iterator.Iter;
-import atlas.lib.Tuple;
-import atlas.test.BaseTest;
 
 
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
@@ -22,6 +19,9 @@ import com.hp.hpl.jena.tdb.store.NodeId;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 import org.junit.Test;
+import org.openjena.atlas.iterator.Iter ;
+import org.openjena.atlas.lib.Tuple ;
+import org.openjena.atlas.test.BaseTest ;
 
 
 public class TestTupleTable extends BaseTest

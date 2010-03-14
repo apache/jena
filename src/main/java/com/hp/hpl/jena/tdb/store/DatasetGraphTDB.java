@@ -10,10 +10,11 @@ package com.hp.hpl.jena.tdb.store;
 import java.util.Iterator;
 import java.util.Properties;
 
-import atlas.iterator.Iter;
-import atlas.iterator.Transform;
-import atlas.lib.PropertyUtils;
-import atlas.lib.Tuple;
+import org.openjena.atlas.iterator.Iter ;
+import org.openjena.atlas.iterator.Transform ;
+import org.openjena.atlas.lib.PropertyUtils ;
+import org.openjena.atlas.lib.Tuple ;
+
 
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;

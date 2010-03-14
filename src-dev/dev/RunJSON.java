@@ -6,15 +6,15 @@
 
 package dev;
 
-import atlas.io.IndentedWriter ;
-import atlas.json.JSON ;
-import atlas.json.JsonArray ;
-import atlas.json.JsonBoolean ;
-import atlas.json.JsonNumber ;
-import atlas.json.JsonObject ;
-import atlas.json.JsonString ;
-import atlas.json.JsonValue ;
-import atlas.json.io.JSWriter ;
+import org.openjena.atlas.io.IndentedWriter ;
+import org.openjena.atlas.json.JSON ;
+import org.openjena.atlas.json.JsonArray ;
+import org.openjena.atlas.json.JsonBoolean ;
+import org.openjena.atlas.json.JsonNumber ;
+import org.openjena.atlas.json.JsonObject ;
+import org.openjena.atlas.json.JsonString ;
+import org.openjena.atlas.json.JsonValue ;
+import org.openjena.atlas.json.io.JSWriter ;
 
 // To do:
 //   Escapes in output, input

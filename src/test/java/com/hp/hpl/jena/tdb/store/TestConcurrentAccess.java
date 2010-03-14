@@ -9,8 +9,8 @@ package com.hp.hpl.jena.tdb.store;
 import java.util.ConcurrentModificationException ;
 
 import org.junit.Test ;
-import atlas.lib.StrUtils ;
-import atlas.test.BaseTest ;
+import org.openjena.atlas.lib.StrUtils ;
+import org.openjena.atlas.test.BaseTest ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Triple ;

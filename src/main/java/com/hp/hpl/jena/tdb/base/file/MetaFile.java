@@ -17,10 +17,10 @@ import java.util.Properties;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import org.openjena.atlas.lib.PropertiesSorted ;
+import org.openjena.atlas.lib.PropertyUtils ;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import atlas.lib.PropertiesSorted;
-import atlas.lib.PropertyUtils;
 
 import com.hp.hpl.jena.sparql.core.Closeable;
 import com.hp.hpl.jena.sparql.util.Utils;

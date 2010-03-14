@@ -12,8 +12,9 @@ import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 
+import org.openjena.atlas.logging.Log ;
+
 import arq.cmdline.CmdARQ;
-import atlas.logging.Log;
 
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Triple;

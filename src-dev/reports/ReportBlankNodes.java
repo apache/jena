@@ -10,7 +10,7 @@ import java.util.Iterator ;
 
 import junit.framework.Assert ;
 import org.junit.Test ;
-import atlas.lib.Tuple ;
+import org.openjena.atlas.lib.Tuple ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
