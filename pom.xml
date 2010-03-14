@@ -108,22 +108,22 @@
       <artifactId>log4j</artifactId>
       <version>1.2.14</version>
       <exclusions>
-	<exclusion>
-	  <groupId>javax.jms</groupId>
-	  <artifactId>jms</artifactId>
-	</exclusion>
-	<exclusion>
-	  <groupId>com.sun.jdmk</groupId>
-	  <artifactId>jmxtools</artifactId>
-	</exclusion>
-	<exclusion>
-	  <groupId>com.sun.jmx</groupId>
-	  <artifactId>jmxri</artifactId>
-	</exclusion>
-	<exclusion>
-	  <groupId>javax.mail</groupId>
-	  <artifactId>mail</artifactId>
-	</exclusion>
+        <exclusion>
+          <groupId>javax.jms</groupId>
+          <artifactId>jms</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.sun.jdmk</groupId>
+          <artifactId>jmxtools</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.sun.jmx</groupId>
+          <artifactId>jmxri</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>javax.mail</groupId>
+          <artifactId>mail</artifactId>
+        </exclusion>
       </exclusions> 
     </dependency>
 
@@ -131,8 +131,8 @@
 
   <build>
     <!--
-    <sourceDirectory>src</sourceDirectory>
-    <testSourceDirectory>src-test</testSourceDirectory>
+      <sourceDirectory>src</sourceDirectory>
+      <testSourceDirectory>src-test</testSourceDirectory>
     -->
     <!-- The filter file is written by antrun -->
     <filters>
@@ -152,13 +152,13 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
-	  <encoding>UTF-8</encoding>
-	  <debug>true</debug>
-	  <debuglevel>source,lines,vars</debuglevel>
-	  <optimize>true</optimize>
-	  <source>1.5</source>
-	  <target>1.5</target>
-	</configuration>
+          <encoding>UTF-8</encoding>
+          <debug>true</debug>
+          <debuglevel>source,lines,vars</debuglevel>
+          <optimize>true</optimize>
+          <source>1.5</source>
+          <target>1.5</target>
+        </configuration>
       </plugin>
 
       <plugin>
@@ -166,9 +166,9 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
           <includes>
-	    <include>com/hp/hpl/jena/tdb/**/TS_*.java</include>
-	    <include>atlas/**/TS_*.java</include>
-	    <include>**/TS_*.java</include>
+            <include>com/hp/hpl/jena/tdb/**/TS_*.java</include>
+            <include>atlas/**/TS_*.java</include>
+            <include>**/TS_*.java</include>
           </includes>
         </configuration>
       </plugin>
@@ -214,12 +214,25 @@
           <encoding>UTF-8</encoding>
           <windowtitle>${project.name} ${project.version}</windowtitle>
           <doctitle>${project.name} ${project.version}</doctitle>
-	      <excludePackageNames>com.hp.hpl.jena.tdb.*,atlas.*</excludePackageNames>
+          <excludePackageNames>com.hp.hpl.jena.tdb.*,atlas.*</excludePackageNames>
           <bottom>
-	    Copyright &#169; 2007, 2008, 2009 Hewlett-Packard Development Company, LP
-	    Copyright &#169; 2010 Talis Information Ltd.
-	  </bottom> 
+            Copyright &#169; 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+            Copyright &#169; 2010 Talis Information Ltd.
+          </bottom> 
         </configuration>
+      </plugin>
+
+      <!-- see: http://maven.apache.org/guides/mini/guide-attached-tests.html -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>test-jar</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
 
       <plugin>
@@ -266,10 +279,10 @@
                   <format property="build.time.txt"  pattern="yyyy-MM-dd HH:mm z"/>
                 </tstamp>
                 <echo file="${project.basedir}/target/filter.properties">
-#begin
-build.time.xsd=${build.time.xsd}
-build.time.txt=${build.time.txt}
-#end
+                  #begin
+                  build.time.xsd=${build.time.xsd}
+                  build.time.txt=${build.time.txt}
+                  #end
                 </echo>
                 <echo message="version=${project.version}"/>
                 <echo message="build.time=${build.time.txt}"/>
@@ -312,7 +325,7 @@ build.time.txt=${build.time.txt}
     -->
   </reporting>
 
- <repositories>
+  <repositories>
 
     <!-- jena-repo is mirrored to Maven central repository -->
     <!-- In case mirroring has not happened yet ... -->
