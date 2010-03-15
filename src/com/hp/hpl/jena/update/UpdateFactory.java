@@ -13,13 +13,13 @@ import java.io.Reader;
 
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingUtils;
-import com.hp.hpl.jena.sparql.lang.ParserSPARQLUpdate;
+import com.hp.hpl.jena.sparql.lang.ParserARQUpdate ;
+//import com.hp.hpl.jena.sparql.lang.ParserSPARQLUpdate;
 import com.hp.hpl.jena.sparql.modify.UpdateProcessorFactory;
 import com.hp.hpl.jena.sparql.modify.UpdateProcessorRegistry;
 import com.hp.hpl.jena.sparql.modify.op.Update;
 
 import com.hp.hpl.jena.query.QuerySolution;
-
 
 public class UpdateFactory
 {
@@ -29,7 +29,8 @@ public class UpdateFactory
     /** Create an UpdateRequest by parsing the given string */
     public static UpdateRequest create(String str)
     { 
-        ParserSPARQLUpdate p = new ParserSPARQLUpdate() ;
+        //ParserSPARQLUpdate p = new ParserSPARQLUpdate() ;
+        ParserARQUpdate p = new ParserARQUpdate() ;
         UpdateRequest update = new UpdateRequest() ;
         p.parse(update, str) ;
         return update ;
@@ -55,7 +56,8 @@ public class UpdateFactory
     /** Create an UpdateRequest by reading it from an InputStream (note that conversion to UTF-8 will be applied automatically) */
     public static UpdateRequest read(InputStream in)
     {
-        ParserSPARQLUpdate p = new ParserSPARQLUpdate() ;
+        //ParserSPARQLUpdate p = new ParserSPARQLUpdate() ;
+        ParserARQUpdate p = new ParserARQUpdate() ;
         UpdateRequest update = new UpdateRequest() ;
         p.parse(update, in) ;
         return update ;
@@ -64,7 +66,8 @@ public class UpdateFactory
     /** Create an UpdateRequest by reading it from a Reader */
     private static UpdateRequest read(Reader in)
     {
-        ParserSPARQLUpdate p = new ParserSPARQLUpdate() ;
+        //ParserSPARQLUpdate p = new ParserSPARQLUpdate() ;
+        ParserARQUpdate p = new ParserARQUpdate() ;
         UpdateRequest update = new UpdateRequest() ;
         p.parse(update, in) ;
         return update ;
