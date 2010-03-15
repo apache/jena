@@ -7,6 +7,8 @@
 
 package dev;
 
+import java.io.Reader ;
+import java.io.StringReader ;
 import java.util.Iterator ;
 
 import arq.sparql ;
@@ -16,6 +18,7 @@ import com.hp.hpl.jena.Jena ;
 import com.hp.hpl.jena.query.* ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
+import com.hp.hpl.jena.shared.JenaException ;
 import com.hp.hpl.jena.sparql.algebra.Algebra ;
 import com.hp.hpl.jena.sparql.algebra.ExtBuilder ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
@@ -36,6 +39,8 @@ import com.hp.hpl.jena.sparql.engine.main.LeftJoinClassifier ;
 import com.hp.hpl.jena.sparql.engine.main.QC ;
 import com.hp.hpl.jena.sparql.engine.main.iterator.QueryIterLeftJoin ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
+import com.hp.hpl.jena.sparql.lang.ParserSPARQLUpdate ;
+import com.hp.hpl.jena.sparql.lang.sparql_11.SPARQLParser11 ;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
 import com.hp.hpl.jena.sparql.sse.Item ;
 import com.hp.hpl.jena.sparql.sse.ItemList ;
@@ -45,6 +50,8 @@ import com.hp.hpl.jena.sparql.sse.WriterSSE ;
 import com.hp.hpl.jena.sparql.sse.builders.BuildException ;
 import com.hp.hpl.jena.sparql.sse.builders.BuilderExec ;
 import com.hp.hpl.jena.sparql.util.* ;
+import com.hp.hpl.jena.update.UpdateFactory ;
+import com.hp.hpl.jena.update.UpdateRequest ;
 import com.hp.hpl.jena.util.FileManager ;
 
 public class RunARQ
@@ -72,6 +79,8 @@ public class RunARQ
     //@SuppressWarnings("deprecation")
     public static void main(String[] argv) throws Exception
     {
+        sparql11update() ; System.exit(0) ;
+        
         String q = "PREFIX foaf: <http://xmlns.com/foaf/0.1/> SELECT * FROM <http://xsparql.deri.org/data/relations.ttl> WHERE { $Person foaf:name $Name }";
 
         Dataset d1 = null ;
@@ -129,6 +138,52 @@ public class RunARQ
         System.exit(0) ;
     }
           
+    private static void sparql11update()
+    {
+        sparql11update_1("LOAD <foo> INTO <blah>") ;
+        System.out.println("DONE") ;
+        
+    }
+    
+    private static void sparql11update_1(String str)
+    {
+        System.out.println(str);
+        Reader r = new StringReader(str) ;
+        SPARQLParser11 parser = null ;
+        try {
+            parser = new SPARQLParser11(r) ;
+            parser.setUpdateRequest(null) ;
+            parser.UpdateUnit() ;
+            System.out.println();
+            //validateParsedUpdate(update) ;
+        }
+        catch (com.hp.hpl.jena.sparql.lang.sparql_11.ParseException ex)
+        { 
+            throw new QueryParseException(ex.getMessage(),
+                                          ex.currentToken.beginLine,
+                                          ex.currentToken.beginColumn
+            ) ; }
+        catch (com.hp.hpl.jena.sparql.lang.sparql_11.TokenMgrError tErr)
+        {
+            // Last valid token : not the same as token error message - but this should not happen
+            int col = parser.token.endColumn ;
+            int line = parser.token.endLine ;
+            throw new QueryParseException(tErr.getMessage(), line, col) ; }
+
+        catch (QueryException ex) { throw ex ; }
+        catch (JenaException ex)  { throw new QueryException(ex.getMessage(), ex) ; }
+        catch (Error err)
+        {
+            // The token stream can throw errors.
+            throw new QueryParseException(err.getMessage(), err, -1, -1) ;
+        }
+        catch (Throwable th)
+        {
+            ALog.fatal(RunARQ.class, "Unexpected throwable: ",th) ;
+            throw new QueryException(th.getMessage(), th) ;
+        }
+    }
+
     private static void exec(Query query, Model model)
     {
         if ( true )

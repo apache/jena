@@ -96,7 +96,9 @@
 [<LANG>]       ::= 'LANG'
 [<LANGMATCHES>] ::= 'LANGMATCHES'
 
-//[<IS_IRI>]     ::= ('isURI'|'isIRI')
+[<STRLANG>]     ::= 'STRLANG'
+[<STRDT>]       ::= 'STRDT'
+
 [<IS_IRI>]     ::= 'isIRI'
 [<IS_URI>]     ::= 'isURI'
 [<IS_BLANK>]   ::= 'isBLANK'
@@ -106,13 +108,13 @@
 [<TRUE>]       ::= 'true'
 [<FALSE>]      ::= 'false'
 
-
-
 [<MODIFY>]      ::= 'MODIFY'
 [<INSERT>]      ::= 'INSERT'
 [<DELETE>]      ::= 'DELETE'
 [<DATA>]        ::= 'DATA'
 [<LOAD>]        ::= 'LOAD' 
+[<INTO>]        ::= 'INTO' 
+[<WITH>]        ::= 'WITH' 
 [<CLEAR>]       ::= 'CLEAR' 
 [<CREATE>]      ::= 'CREATE' 
 [<SILENT>]      ::= 'SILENT' 

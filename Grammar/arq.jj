@@ -335,7 +335,7 @@ void OffsetClause() : { Token t ; }
     { getQuery().setOffset(integerValue(t.image)) ; }
 }
 
-// ---- SPARQL/Update
+// ---- SPARQL/Update (submission)
 
 
 void UpdateUnit() : {}
@@ -494,6 +494,7 @@ Element UpdatePattern() : { Element el ; }
 // }
 
 
+// SPARQL 1.1. Update
 // ---- General Graph Pattern 
 
 Element GroupGraphPattern() : { Element el = null ; Token t ; }
@@ -1633,7 +1634,11 @@ TOKEN [IGNORE_CASE] :
 {
   <MODIFY: "modify">
 | <INSERT: "insert">
-| <DELETE: "delete">
+//| <INSERT_DATA:     "insert" (<WS>)* "data">
+| <DELETE: "delete" >
+//| <DELETE_DATA:     "delete" (<WS>)* "data">
+//| <DELETE_WHERE:    "delete" (<WS>)* "where">
+
 | <DATA: "data">
 
 | <ADD: "add">
@@ -1645,6 +1650,9 @@ TOKEN [IGNORE_CASE] :
 | <SILENT: "silent" >
 | <DROP: "drop" >
 | <INTO: "into" >
+| < DFT: "default" >
+| < WITH: "with" >
+
 
 //| <BEGIN:       "begin" >
 //| <COMMIT:      "commit" >

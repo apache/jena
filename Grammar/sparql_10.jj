@@ -255,7 +255,8 @@ void OffsetClause() : { Token t ; }
     { getQuery().setOffset(integerValue(t.image)) ; }
 }
 
-// ---- SPARQL/Update
+// ---- SPARQL/Update (submission)
+// SPARQL 1.1. Update
 // ---- General Graph Pattern 
 
 Element GroupGraphPattern() : { Element el = null ; Token t ; }

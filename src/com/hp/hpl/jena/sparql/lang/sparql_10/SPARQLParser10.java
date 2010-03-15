@@ -509,7 +509,8 @@ public class SPARQLParser10 extends SPARQLParser10Base implements SPARQLParser10
       getQuery().setOffset(integerValue(t.image)) ;
   }
 
-// ---- SPARQL/Update
+// ---- SPARQL/Update (submission)
+// SPARQL 1.1. Update
 // ---- General Graph Pattern 
   final public Element GroupGraphPattern() throws ParseException {
                                 Element el = null ; Token t ;

@@ -119,6 +119,8 @@ TOKENS
 | <SILENT: "silent">
 | <DROP: "drop">
 | <INTO: "into">
+| <DFT: "default">
+| <WITH: "with">
 }
 
 // -------------------------------------------------
@@ -229,47 +231,26 @@ NON-TERMINALS
 	LimitOffsetClauses	:=	( LimitClause ( OffsetClause )? | OffsetClause ( LimitClause )? )
 	LimitClause	:=	<LIMIT> <INTEGER>
 	OffsetClause	:=	<OFFSET> <INTEGER>
-// ---- SPARQL/Update
+// ---- SPARQL/Update (submission)
+// SPARQL 1.1. Update
 	UpdateUnit	:=	Prologue Update <EOF>
-	Update	:=	( Update1 )+
-	Update1	:=	( Modify | Insert | Delete | Load | Clear | Create | Drop )
-	Modify	:=	<MODIFY> ( GraphIRI )* <DELETE> ConstructTemplate <INSERT> ConstructTemplate ( UpdatePattern )?
-	Delete	:=	<DELETE> ( DeleteData | DeleteTemplate )
-	DeleteData	:=	<DATA> ( ( <FROM> )? IRIref )* ConstructTemplate
-	DeleteTemplate	:=	( ( <FROM> )? IRIref )* ConstructTemplate ( UpdatePattern )?
-	Insert	:=	<INSERT> ( InsertData | InsertTemplate )
-	InsertData	:=	<DATA> ( ( <INTO> )? IRIref )* ConstructTemplate
-	InsertTemplate	:=	( ( <INTO> )? IRIref )* ConstructTemplate ( UpdatePattern )?
-	GraphIRI	:=	<GRAPH> IRIref
-	Load	:=	<LOAD> ( IRIref )+ ( <INTO> IRIref )?
-	Clear	:=	<CLEAR> ( GraphIRI )?
-	Create	:=	<CREATE> ( <SILENT> )? GraphIRI
-	Drop	:=	<DROP> ( <SILENT> )? GraphIRI
-	UpdatePattern	:=	( <WHERE> )? GroupGraphPattern
-// void Transaction() : {}
-// {
-//     TransBegin() | TransCommit() | TransAbort()
-// }
-// 
-// void TransBegin() : {}
-// {
-//     <BEGIN> (IRIref())?
-//     { System.out.println("++ Begin") ; }
-// }
-// 
-// void TransCommit() : {}
-// {
-//     <COMMIT> (IRIref())?
-//     { System.out.println("++ Commit") ; }
-// }
-// 
-// void TransAbort() : {}
-// {
-//     <ABORT> (IRIref())?
-//     { System.out.println("++ Abort") ; }
-// }
-
-
+	Update	:=	( Update1 )*
+	Update1	:=	( Modify | Load | Clear | Drop | Create ) ( <SEMICOLON> )?
+	Modify	:=	( <WITH> IRIref )? ( Insert | Delete )
+	Insert	:=	<INSERT> ( <DATA> QuadData | QuadTemplate <WHERE> GroupGraphPattern )
+	Delete	:=	<DELETE> ( <DATA> QuadData | <WHERE> QuadTemplate | QuadTemplate ( <INSERT> QuadTemplate )? <WHERE> GroupGraphPattern )
+	Clear	:=	<CLEAR> GraphRef
+	Load	:=	<LOAD> ( IRIref )+ ( <INTO> GraphRef )?
+	Drop	:=	<DROP> ( <SILENT> )? IRIref
+	Create	:=	<CREATE> ( <SILENT> )? IRIref
+	GraphRef	:=	( <DFT> | IRIref )
+	QuadTemplate	:=	<LBRACE> Quads <RBRACE>
+	Quads	:=	TriplesTemplate
+		|	<GRAPH> VarOrIRIref <LBRACE> TriplesTemplate <RBRACE> ( Quads )?
+	TriplesTemplate	:=	TriplesSameSubject ( <DOT> ( TriplesTemplate )? )?
+//Ground data
+// @@
+	QuadData	:=	<LBRACE> Quads <RBRACE>
 // ---- General Graph Pattern 
 	GroupGraphPattern	:=	<LBRACE> ( SubSelect | GroupGraphPatternSub ) <RBRACE>
 	GroupGraphPatternSub	:=	( TriplesBlock )? ( ( GraphPatternNotTriples | Filter ) ( <DOT> )? ( TriplesBlock )? )*
