@@ -27,7 +27,7 @@ public class RecordBufferPageMgr extends BlockConverter<RecordBufferPage>
     public RecordBufferPageMgr(RecordFactory factory, BlockMgr blockMgr)
     {
         super(null, blockMgr) ;
-        Block2RecordBufferPage conv = new Block2RecordBufferPage(factory, null) ;
+        Block2RecordBufferPage conv = new Block2RecordBufferPage(factory, this) ;
         super.setConverter(conv) ;
     }
 
