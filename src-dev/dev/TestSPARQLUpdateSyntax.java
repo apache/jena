@@ -66,15 +66,18 @@ public class TestSPARQLUpdateSyntax
     // INSERT
     @Test public void insert_01() { parse("INSERT DATA { <X> <p> 123 }") ; }
     @Test public void insert_02() { parse("WITH <x> INSERT DATA { <X> <p> 123 }") ; }
+    @Test public void insert_03() { parse("WITH <x> INSERT DATA { <X> <p> 123 GRAPH <g> { <x1> <p1> 456 . } }") ; }
+    @Test public void insert_04() { parse("WITH <x> INSERT DATA { <X> <p> 123 GRAPH<g> { <x1> <p1> 456 . }  <X> <p> 123 }") ; }
+    @Test public void insert_05() { parse("WITH <x> INSERT DATA { <X> <p> 123 GRAPH<g> { <x1> <p1> 456 . }  GRAPH<g> {<X> <p> 123 } } ") ; }
+
     
     @Test (expected=QueryParseException.class)
-    public void insert_03() { parse("WITH <x> INSERT WHERE { ?x ?p ?o }") ; }
+    public void insert_bad_01() { parse("WITH <x> INSERT WHERE { ?x ?p ?o }") ; }
     
     @Test (expected=QueryParseException.class)
-    public void insert_04() { parse("INSERT WHERE { GRAPH <g> { ?x ?p ?o } }") ; }
+    public void insert_bad_02() { parse("INSERT WHERE { GRAPH <g> { ?x ?p ?o } }") ; }
     
     // DELETE
-    
     @Test public void delete_01() { parse("DELETE WHERE { ?x ?p ?o }") ; }
     @Test public void delete_02() { parse("WITH <x> DELETE WHERE { ?x ?p ?o }") ; }
     @Test public void delete_03() { parse("DELETE WHERE { GRAPH <g> { ?x ?p ?o } }") ; }
@@ -101,6 +104,8 @@ public class TestSPARQLUpdateSyntax
             parser.UpdateUnit() ;
             //System.out.println();
             //validateParsedUpdate(update) ;
+            System.out.println(str);
+            System.out.println();
         }
         catch (com.hp.hpl.jena.sparql.lang.sparql_11.ParseException ex)
         { 

@@ -1,11 +1,17 @@
 PREFIX  :     <http://example/>
+PREFIX  foaf:   <http://xmlns.com/foaf/0.1/>
 
-SELECT ?item
+SELECT ?A ?y
 {
-    { SELECT (MIN(?ts) as ?minTS) { ?x :hasTimestamp ?ts } }
-      ?item :hasTimestamp ?minTS .
+  { LET(?A := 1)
+     :a foaf:knows{2} ?y
+  }
+UNION
+{
+   LET(?A := 2)
+     :a foaf:knows* ?y 
 }
-
+}
 
 ## ##SELECT  ?x (count(*) AS ?C)
 ## 

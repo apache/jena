@@ -564,7 +564,7 @@ void Update1() : { Update up = null ; }
   | Drop()
   | Create()
   )
-    (<SEMICOLON>) ?
+  (<SEMICOLON>) ?
 }
 
 void Modify() : { }
@@ -631,10 +631,19 @@ void QuadTemplate() : { }
     <RBRACE>
 }
 
-void Quads() : { Node n ; TripleCollector acc = new TemplateGroup() ; }
+void Quads() : { TripleCollector acc = new TemplateGroup() ; }
 {
-   TriplesTemplate(null, acc) | <GRAPH> n = VarOrIRIref() <LBRACE> TriplesTemplate(n, acc) <RBRACE>
-   (Quads())? 
+   (TriplesTemplate(null, acc))?
+   ( QuadsNotTriples(acc)
+     (<DOT>)?
+     (TriplesTemplate(null, acc))?
+   )*
+}
+
+// @@ Java broken
+void QuadsNotTriples(TripleCollector acc) : {Node n ; }
+{
+    <GRAPH> n = VarOrIRIref() <LBRACE> TriplesTemplate(n, acc) <RBRACE>
 }
 
 void TriplesTemplate(Node g, TripleCollector acc) : { }

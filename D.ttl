@@ -1,23 +1,8 @@
+@prefix foaf:   <http://xmlns.com/foaf/0.1/> .
 @prefix : <http://example/> .
-@prefix  rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 
-:x1 :hasTimestamp 10 .
-:x2 :hasTimestamp 9 .
-:x3 :hasTimestamp 4 .
-:x4 :hasTimestamp 3 .
+:a foaf:knows :b .
+:b foaf:knows :a .
 
-:x1 a :T .
-:x1 :p 1 .
-:x1 :p 2 .
-
-:x2 a :T .
-:x2 :p 9 .
-
-:x3 a :T .
-:x3 :p 5 .
-:x3 :q "x" .
-
-:x4 a :T .
-:x4 :q "z".
-
-
+:a foaf:knows :c .
+:c foaf:knows :a .

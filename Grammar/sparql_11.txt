@@ -245,8 +245,9 @@ NON-TERMINALS
 	Create	:=	<CREATE> ( <SILENT> )? IRIref
 	GraphRef	:=	( <DFT> | IRIref )
 	QuadTemplate	:=	<LBRACE> Quads <RBRACE>
-	Quads	:=	TriplesTemplate
-		|	<GRAPH> VarOrIRIref <LBRACE> TriplesTemplate <RBRACE> ( Quads )?
+	Quads	:=	( TriplesTemplate )? ( QuadsNotTriples ( <DOT> )? ( TriplesTemplate )? )*
+// @@ Java broken
+	QuadsNotTriples	:=	<GRAPH> VarOrIRIref <LBRACE> TriplesTemplate <RBRACE>
 	TriplesTemplate	:=	TriplesSameSubject ( <DOT> ( TriplesTemplate )? )?
 //Ground data
 // @@
