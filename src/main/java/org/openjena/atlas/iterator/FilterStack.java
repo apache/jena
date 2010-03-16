@@ -25,22 +25,30 @@ public abstract class FilterStack<T> implements  Filter<T>
     public final boolean accept(T item)
     {
         if ( subFilterLast )
-        {
-            if ( !  acceptAdditional(item) )
-                return false ;
-            if ( other != null || ! other.accept(item) )
-                return false ;
-        }
+            return acceptAdditionaOther(item) ;
         else
-        {
-            if ( other != null || ! other.accept(item) )
-                return false ;
-            if ( !  acceptAdditional(item) )
-                return false ;
-        }
+            return acceptOtherAdditional(item) ;
+    }
+    
+    private boolean acceptAdditionaOther(T item)
+    {
+        if ( ! acceptAdditional(item) )
+            return false ;
+        
+        if ( other != null && ! other.accept(item) )
+            return false ;
+        
         return true ;
     }
 
+    private boolean acceptOtherAdditional(T item)
+    {
+        if ( other != null && ! other.accept(item) )
+            return false ;
+        return  ! acceptAdditional(item) ;
+    }
+
+    
     /** Additional filter condition to apply */
     public abstract boolean acceptAdditional(T item) ;
 }

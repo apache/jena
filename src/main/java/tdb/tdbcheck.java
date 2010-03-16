@@ -6,26 +6,24 @@
 
 package tdb;
 
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.UnsupportedEncodingException;
-import java.util.List;
+import java.io.InputStream ;
+import java.io.InputStreamReader ;
+import java.io.Reader ;
+import java.io.UnsupportedEncodingException ;
+import java.util.List ;
 
 import org.openjena.atlas.logging.Log ;
+import arq.cmdline.CmdARQ ;
 
-import arq.cmdline.CmdARQ;
-
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.riot.Checker;
-import com.hp.hpl.jena.sparql.util.Utils;
-import com.hp.hpl.jena.sparql.util.graph.GraphSink;
-import com.hp.hpl.jena.tdb.TDB;
-import com.hp.hpl.jena.util.FileManager;
-import com.hp.hpl.jena.util.FileUtils;
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.ModelFactory ;
+import com.hp.hpl.jena.riot.Checker ;
+import com.hp.hpl.jena.sparql.util.Utils ;
+import com.hp.hpl.jena.sparql.util.graph.GraphSink ;
+import com.hp.hpl.jena.tdb.TDB ;
+import com.hp.hpl.jena.util.FileManager ;
 
 /** Check an N-Triples file (or any other syntax). */
 public class tdbcheck extends CmdARQ
@@ -78,7 +76,7 @@ public class tdbcheck extends CmdARQ
     private void execOne(String f)
     {
         // Black hole for triples - with checking.
-        // Trutle already does this checking.
+        // Turtle already does this checking.
         Graph g = new GraphCheckingSink() ;
         Model model = ModelFactory.createModelForGraph(g) ;
         
@@ -90,17 +88,20 @@ public class tdbcheck extends CmdARQ
         }
         else
         {
-            //model.read(System.in, null, "N-TRIPLES") ;
             // MUST BE N-TRIPLES
-            boolean forceISO8859 = false ;
-            Reader r = null ;
-            
-            if ( forceISO8859 )
-                r = readerISO8859(System.in) ;
+            if ( true )
+            {
+                // RIOT will make this UTF-8
+                model.read(System.in, null, "N-TRIPLES") ;    
+            }
             else
-                r= FileUtils.asUTF8(System.in) ;
+            {
+                // ASCII or ISO-8859-1
+                boolean strictASCII = false ;
+                Reader r = strictASCII ? readerASCII(System.in) : readerISO8859(System.in) ;
+                model.read(r, null, "N-TRIPLES") ;    
+            }
             
-            model.read(System.in, null, "N-TRIPLES") ;
         }
     }
 
@@ -111,6 +112,18 @@ public class tdbcheck extends CmdARQ
             //java.io canonical name: ISO8859_1 
             //java.nio canonical name: ISO-8859-1 
             return new InputStreamReader(inputStream, "ISO-8859-1") ;
+        } catch (UnsupportedEncodingException ex)
+        {
+            ex.printStackTrace();
+            return null ;
+        }
+    }
+    
+    private Reader readerASCII(InputStream inputStream)
+    {
+        try
+        {
+            return new InputStreamReader(inputStream, "ASCII") ;
         } catch (UnsupportedEncodingException ex)
         {
             ex.printStackTrace();

@@ -127,7 +127,7 @@ public class LabelToNode
 
         public Node create(String label)
         {
-            String $ = format("B%0x04X", ++counter) ;
+            String $ = format("B0x%04X", ++counter) ;
             return Node.createAnon(new AnonId($)) ;
         }
 
