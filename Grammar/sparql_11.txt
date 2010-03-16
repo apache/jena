@@ -272,6 +272,7 @@ NON-TERMINALS
 	Constraint	:=	( BrackettedExpression | BuiltInCall | FunctionCall )
 	FunctionCall	:=	IRIref ArgList
 	ArgList	:=	( <NIL> | <LPAREN> Expression ( <COMMA> Expression )* <RPAREN> )
+	ParamList	:=	( <LBRACKET> Expression ( <COMMA> Expression )* <RBRACKET> )
 // -------- Construct patterns
 	ConstructTemplate	:=	<LBRACE> ( ConstructTriples )? <RBRACE>
 	ConstructTriples	:=	TriplesSameSubject ( ( <DOT> ) TriplesSameSubject )* ( <DOT> )?
@@ -369,28 +370,10 @@ NON-TERMINALS
 	RegexExpression	:=	<REGEX> <LPAREN> Expression <COMMA> Expression ( <COMMA> Expression )? <RPAREN>
 	ExistsFunc	:=	<EXISTS> GroupGraphPattern
 	NotExistsFunc	:=	( <UNSAID> | <NOTEXISTS> ) GroupGraphPattern
-	Aggregate	:=	( <COUNT> <LPAREN> ( <STAR> | Var | <DISTINCT> ( <STAR> | Var ) ) <RPAREN> | <SUM> <LPAREN> Expression <RPAREN> | <MIN> <LPAREN> Expression <RPAREN> | <MAX> <LPAREN> Expression <RPAREN> | <AVG> <LPAREN> Expression <RPAREN> )
-// AggregateFactory AggregateCount() : { AggregateFactory agg ;
-//                                       boolean distinct = false ;
-//                                       Var v ; Token t ; }
-// {
-//     t = <COUNT> <LPAREN> 
-//     ( <STAR>        { agg = AggCount.get() ; }
-//     | v = Var()     { agg = new AggCountVar(v) ; }
-//     | <DISTINCT> 
-//       ( <STAR>      { agg = AggCountDistinct.get() ; }
-//       | v = Var()   { agg = new AggCountVarDistinct(v) ; }
-//       )
-//     )
-//     <RPAREN>
-//     { return agg ; }
-// }
-
-
-
-// The case of "q:name()" or just "q:name"
+	Aggregate	:=	( <COUNT> <LPAREN> ( <STAR> | Expression | <DISTINCT> ( <STAR> | Expression ) ) <RPAREN> | <SUM> <LPAREN> Expression <RPAREN> | <MIN> <LPAREN> Expression <RPAREN> | <MAX> <LPAREN> Expression <RPAREN> | <AVG> <LPAREN> Expression <RPAREN> )
+// The case of "q:name()" or "q:agg[]()" or just "q:name"
 // by expanding out FunctionCall()
-	IRIrefOrFunction	:=	IRIref ( ArgList )?
+	IRIrefOrFunction	:=	IRIref ( ParamList )? ( <DISTINCT> )? ( ArgList )?
 	RDFLiteral	:=	String ( ( <LANGTAG> ) | ( <DATATYPE> IRIref ) )?
 	NumericLiteral	:=	( NumericLiteralUnsigned | NumericLiteralPositive | NumericLiteralNegative )
 	NumericLiteralUnsigned	:=	<INTEGER>

@@ -663,11 +663,11 @@ public class BuilderExpr
             }
             else
             {
-                Var v = BuilderNode.buildVar(x.get(0)) ;
+                Expr expr = BuilderExpr.buildExpr(x.get(0)) ;
                 if ( ! distinct )
-                    agg = new AggCountVar(v) ;
+                    agg = new AggCountVar(expr) ;
                 else
-                    agg = new AggCountVarDistinct(v) ;
+                    agg = new AggCountVarDistinct(expr) ;
             }
             return new E_Aggregator((Var)null, agg.create()) ; 
         }

@@ -840,6 +840,30 @@ public class SPARQLParser10 extends SPARQLParser10Base implements SPARQLParser10
     throw new Error("Missing return statement in function");
   }
 
+  final public ExprList ParamList() throws ParseException {
+                         Expr expr ; ExprList args = new ExprList() ;
+    jj_consume_token(LBRACKET);
+    expr = Expression();
+                            args.add(expr) ;
+    label_12:
+    while (true) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case COMMA:
+        ;
+        break;
+      default:
+        jj_la1[37] = jj_gen;
+        break label_12;
+      }
+      jj_consume_token(COMMA);
+      expr = Expression();
+                                     args.add(expr) ;
+    }
+    jj_consume_token(RBRACKET);
+      {if (true) return args ;}
+    throw new Error("Missing return statement in function");
+  }
+
 // -------- Construct patterns
   final public Template ConstructTemplate() throws ParseException {
       setInConstructTemplate(true) ;
@@ -874,7 +898,7 @@ public class SPARQLParser10 extends SPARQLParser10Base implements SPARQLParser10
       ConstructTriples(g);
       break;
     default:
-      jj_la1[37] = jj_gen;
+      jj_la1[38] = jj_gen;
       ;
     }
     jj_consume_token(RBRACE);
@@ -917,12 +941,12 @@ public class SPARQLParser10 extends SPARQLParser10Base implements SPARQLParser10
         ConstructTriples(acc);
         break;
       default:
-        jj_la1[38] = jj_gen;
+        jj_la1[39] = jj_gen;
         ;
       }
       break;
     default:
-      jj_la1[39] = jj_gen;
+      jj_la1[40] = jj_gen;
       ;
     }
   }
@@ -965,7 +989,7 @@ public class SPARQLParser10 extends SPARQLParser10Base implements SPARQLParser10
       PropertyList(s, acc);
       break;
     default:
-      jj_la1[40] = jj_gen;
+      jj_la1[41] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -975,15 +999,15 @@ public class SPARQLParser10 extends SPARQLParser10Base implements SPARQLParser10
       Node p = null ;
     p = Verb();
     ObjectList(s, p, null, acc);
-    label_12:
+    label_13:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case SEMICOLON:
         ;
         break;
       default:
-        jj_la1[41] = jj_gen;
-        break label_12;
+        jj_la1[42] = jj_gen;
+        break label_13;
       }
       jj_consume_token(SEMICOLON);
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -997,7 +1021,7 @@ public class SPARQLParser10 extends SPARQLParser10Base implements SPARQLParser10
         ObjectList(s, p, null, acc);
         break;
       default:
-        jj_la1[42] = jj_gen;
+        jj_la1[43] = jj_gen;
         ;
       }
     }
@@ -1014,7 +1038,7 @@ public class SPARQLParser10 extends SPARQLParser10Base implements SPARQLParser10
       PropertyListNotEmpty(s, acc);
       break;
     default:
-      jj_la1[43] = jj_gen;
+      jj_la1[44] = jj_gen;
       ;
     }
   }
@@ -1022,15 +1046,15 @@ public class SPARQLParser10 extends SPARQLParser10Base implements SPARQLParser10
   final public void ObjectList(Node s, Node p, Path path, TripleCollector acc) throws ParseException {
                                                                    Node o ;
     Object(s, p, path, acc);
-    label_13:
+    label_14:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case COMMA:
         ;
         break;
       default:
-        jj_la1[44] = jj_gen;
-        break label_13;
+        jj_la1[45] = jj_gen;
+        break label_14;
       }
       jj_consume_token(COMMA);
       Object(s, p, path, acc);
@@ -1059,7 +1083,7 @@ public class SPARQLParser10 extends SPARQLParser10Base implements SPARQLParser10
                                  p = nRDFtype ;
       break;
     default:
-      jj_la1[45] = jj_gen;
+      jj_la1[46] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1086,7 +1110,7 @@ public class SPARQLParser10 extends SPARQLParser10Base implements SPARQLParser10
                                    {if (true) return n ;}
       break;
     default:
-      jj_la1[46] = jj_gen;
+      jj_la1[47] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1106,7 +1130,7 @@ public class SPARQLParser10 extends SPARQLParser10Base implements SPARQLParser10
   final public Node Collection(TripleCollector acc) throws ParseException {
       Node listHead = nRDFnil ; Node lastCell = null ; int mark ; Node n ;
     jj_consume_token(LPAREN);
-    label_14:
+    label_15:
     while (true) {
       Node cell = createListNode() ;
       if ( listHead == nRDFnil )
@@ -1146,8 +1170,8 @@ public class SPARQLParser10 extends SPARQLParser10Base implements SPARQLParser10
         ;
         break;
       default:
-        jj_la1[47] = jj_gen;
-        break label_14;
+        jj_la1[48] = jj_gen;
+        break label_15;
       }
     }
     jj_consume_token(RPAREN);
@@ -1193,7 +1217,7 @@ public class SPARQLParser10 extends SPARQLParser10Base implements SPARQLParser10
                          {if (true) return n ;}
       break;
     default:
-      jj_la1[48] = jj_gen;
+      jj_la1[49] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1231,7 +1255,7 @@ public class SPARQLParser10 extends SPARQLParser10Base implements SPARQLParser10
       n = GraphTerm();
       break;
     default:
-      jj_la1[49] = jj_gen;
+      jj_la1[50] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1254,7 +1278,7 @@ public class SPARQLParser10 extends SPARQLParser10Base implements SPARQLParser10
                                  n = createNode(iri) ;
       break;
     default:
-      jj_la1[50] = jj_gen;
+      jj_la1[51] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1272,7 +1296,7 @@ public class SPARQLParser10 extends SPARQLParser10Base implements SPARQLParser10
       t = jj_consume_token(VAR2);
       break;
     default:
-      jj_la1[51] = jj_gen;
+      jj_la1[52] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1323,7 +1347,7 @@ public class SPARQLParser10 extends SPARQLParser10Base implements SPARQLParser10
           {if (true) return nRDFnil ;}
       break;
     default:
-      jj_la1[52] = jj_gen;
+      jj_la1[53] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1341,15 +1365,15 @@ public class SPARQLParser10 extends SPARQLParser10Base implements SPARQLParser10
   final public Expr ConditionalOrExpression() throws ParseException {
                                    Expr expr1, expr2 ;
     expr1 = ConditionalAndExpression();
-    label_15:
+    label_16:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case SC_OR:
         ;
         break;
       default:
-        jj_la1[53] = jj_gen;
-        break label_15;
+        jj_la1[54] = jj_gen;
+        break label_16;
       }
       jj_consume_token(SC_OR);
       expr2 = ConditionalAndExpression();
@@ -1362,15 +1386,15 @@ public class SPARQLParser10 extends SPARQLParser10Base implements SPARQLParser10
   final public Expr ConditionalAndExpression() throws ParseException {
                                     Expr expr1, expr2 ;
     expr1 = ValueLogical();
-    label_16:
+    label_17:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case SC_AND:
         ;
         break;
       default:
-        jj_la1[54] = jj_gen;
-        break label_16;
+        jj_la1[55] = jj_gen;
+        break label_17;
       }
       jj_consume_token(SC_AND);
       expr2 = ValueLogical();
@@ -1429,13 +1453,13 @@ public class SPARQLParser10 extends SPARQLParser10Base implements SPARQLParser10
         expr1 = new E_GreaterThanOrEqual(expr1, expr2) ;
         break;
       default:
-        jj_la1[55] = jj_gen;
+        jj_la1[56] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
       break;
     default:
-      jj_la1[56] = jj_gen;
+      jj_la1[57] = jj_gen;
       ;
     }
       {if (true) return expr1 ;}
@@ -1452,7 +1476,7 @@ public class SPARQLParser10 extends SPARQLParser10Base implements SPARQLParser10
   final public Expr AdditiveExpression() throws ParseException {
                               Expr expr1, expr2, expr3 ; boolean addition ; Node n ;
     expr1 = MultiplicativeExpression();
-    label_17:
+    label_18:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case INTEGER_POSITIVE:
@@ -1466,8 +1490,8 @@ public class SPARQLParser10 extends SPARQLParser10Base implements SPARQLParser10
         ;
         break;
       default:
-        jj_la1[57] = jj_gen;
-        break label_17;
+        jj_la1[58] = jj_gen;
+        break label_18;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case PLUS:
@@ -1504,7 +1528,7 @@ public class SPARQLParser10 extends SPARQLParser10Base implements SPARQLParser10
          addition = false ;
           break;
         default:
-          jj_la1[58] = jj_gen;
+          jj_la1[59] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
@@ -1523,13 +1547,13 @@ public class SPARQLParser10 extends SPARQLParser10Base implements SPARQLParser10
                                             expr2 = new E_Divide(expr2, expr3) ;
             break;
           default:
-            jj_la1[59] = jj_gen;
+            jj_la1[60] = jj_gen;
             jj_consume_token(-1);
             throw new ParseException();
           }
           break;
         default:
-          jj_la1[60] = jj_gen;
+          jj_la1[61] = jj_gen;
           ;
         }
       if ( addition )
@@ -1538,7 +1562,7 @@ public class SPARQLParser10 extends SPARQLParser10Base implements SPARQLParser10
          expr1 = new E_Subtract(expr1, expr2) ;
         break;
       default:
-        jj_la1[61] = jj_gen;
+        jj_la1[62] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -1550,7 +1574,7 @@ public class SPARQLParser10 extends SPARQLParser10Base implements SPARQLParser10
   final public Expr MultiplicativeExpression() throws ParseException {
                                     Expr expr1, expr2 ;
     expr1 = UnaryExpression();
-    label_18:
+    label_19:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case STAR:
@@ -1558,8 +1582,8 @@ public class SPARQLParser10 extends SPARQLParser10Base implements SPARQLParser10
         ;
         break;
       default:
-        jj_la1[62] = jj_gen;
-        break label_18;
+        jj_la1[63] = jj_gen;
+        break label_19;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case STAR:
@@ -1573,7 +1597,7 @@ public class SPARQLParser10 extends SPARQLParser10Base implements SPARQLParser10
       expr1 = new E_Divide(expr1, expr2) ;
         break;
       default:
-        jj_la1[63] = jj_gen;
+        jj_la1[64] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -1636,7 +1660,7 @@ public class SPARQLParser10 extends SPARQLParser10Base implements SPARQLParser10
                                  {if (true) return expr ;}
       break;
     default:
-      jj_la1[64] = jj_gen;
+      jj_la1[65] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1700,7 +1724,7 @@ public class SPARQLParser10 extends SPARQLParser10Base implements SPARQLParser10
                  {if (true) return asExpr(gn) ;}
       break;
     default:
-      jj_la1[65] = jj_gen;
+      jj_la1[66] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1800,7 +1824,7 @@ public class SPARQLParser10 extends SPARQLParser10Base implements SPARQLParser10
                                {if (true) return expr ;}
       break;
     default:
-      jj_la1[66] = jj_gen;
+      jj_la1[67] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1820,7 +1844,7 @@ public class SPARQLParser10 extends SPARQLParser10Base implements SPARQLParser10
       flagsExpr = Expression();
       break;
     default:
-      jj_la1[67] = jj_gen;
+      jj_la1[68] = jj_gen;
       ;
     }
     jj_consume_token(RPAREN);
@@ -1828,10 +1852,10 @@ public class SPARQLParser10 extends SPARQLParser10Base implements SPARQLParser10
     throw new Error("Missing return statement in function");
   }
 
-// The case of "q:name()" or just "q:name"
+// The case of "q:name()" or "q:agg[]()" or just "q:name"
 // by expanding out FunctionCall()
   final public Expr IRIrefOrFunction() throws ParseException {
-                            String iri ; ExprList a = null ;
+                            String iri ; ExprList a = null ; ExprList aParam = null ; boolean distinct = false ;
     iri = IRIref();
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case LPAREN:
@@ -1839,7 +1863,7 @@ public class SPARQLParser10 extends SPARQLParser10Base implements SPARQLParser10
       a = ArgList();
       break;
     default:
-      jj_la1[68] = jj_gen;
+      jj_la1[69] = jj_gen;
       ;
     }
     if ( a == null ) {if (true) return asExpr(createNode(iri)) ;}
@@ -1864,13 +1888,13 @@ public class SPARQLParser10 extends SPARQLParser10Base implements SPARQLParser10
         uri = IRIref();
         break;
       default:
-        jj_la1[69] = jj_gen;
+        jj_la1[70] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
       break;
     default:
-      jj_la1[70] = jj_gen;
+      jj_la1[71] = jj_gen;
       ;
     }
       {if (true) return createLiteral(lex, lang, uri) ;}
@@ -1896,7 +1920,7 @@ public class SPARQLParser10 extends SPARQLParser10Base implements SPARQLParser10
       n = NumericLiteralNegative();
       break;
     default:
-      jj_la1[71] = jj_gen;
+      jj_la1[72] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1920,7 +1944,7 @@ public class SPARQLParser10 extends SPARQLParser10Base implements SPARQLParser10
                  {if (true) return createLiteralDouble(t.image) ;}
       break;
     default:
-      jj_la1[72] = jj_gen;
+      jj_la1[73] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1943,7 +1967,7 @@ public class SPARQLParser10 extends SPARQLParser10Base implements SPARQLParser10
                           {if (true) return createLiteralDouble(t.image) ;}
       break;
     default:
-      jj_la1[73] = jj_gen;
+      jj_la1[74] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1966,7 +1990,7 @@ public class SPARQLParser10 extends SPARQLParser10Base implements SPARQLParser10
                           {if (true) return createLiteralDouble(t.image) ;}
       break;
     default:
-      jj_la1[74] = jj_gen;
+      jj_la1[75] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1984,7 +2008,7 @@ public class SPARQLParser10 extends SPARQLParser10Base implements SPARQLParser10
             {if (true) return XSD_FALSE ;}
       break;
     default:
-      jj_la1[75] = jj_gen;
+      jj_la1[76] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -2011,7 +2035,7 @@ public class SPARQLParser10 extends SPARQLParser10Base implements SPARQLParser10
                                  lex = stripQuotes3(t.image) ;
       break;
     default:
-      jj_la1[76] = jj_gen;
+      jj_la1[77] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -2033,7 +2057,7 @@ public class SPARQLParser10 extends SPARQLParser10Base implements SPARQLParser10
                          {if (true) return iri ;}
       break;
     default:
-      jj_la1[77] = jj_gen;
+      jj_la1[78] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -2052,7 +2076,7 @@ public class SPARQLParser10 extends SPARQLParser10Base implements SPARQLParser10
       {if (true) return resolvePName(t.image, t.beginLine, t.beginColumn) ;}
       break;
     default:
-      jj_la1[78] = jj_gen;
+      jj_la1[79] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -2071,7 +2095,7 @@ public class SPARQLParser10 extends SPARQLParser10Base implements SPARQLParser10
            {if (true) return createBNode() ;}
       break;
     default:
-      jj_la1[79] = jj_gen;
+      jj_la1[80] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -2094,7 +2118,7 @@ public class SPARQLParser10 extends SPARQLParser10Base implements SPARQLParser10
   public Token jj_nt;
   private int jj_ntk;
   private int jj_gen;
-  final private int[] jj_la1 = new int[80];
+  final private int[] jj_la1 = new int[81];
   static private int[] jj_la1_0;
   static private int[] jj_la1_1;
   static private int[] jj_la1_2;
@@ -2106,16 +2130,16 @@ public class SPARQLParser10 extends SPARQLParser10Base implements SPARQLParser10
       jj_la1_init_3();
    }
    private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {0x3900000,0x40000,0x80000,0x0,0x600000,0x600000,0x3000,0x3000,0x0,0x3700,0x3700,0x0,0x0,0x0,0x700,0x0,0x10000000,0xc000000,0xc0003700,0xc0000000,0x3700,0xc0003700,0x8000000,0x4000000,0xc000000,0x3f00,0x0,0x0,0x0,0x3f00,0x3f00,0x0,0x0,0x0,0x700,0x0,0x0,0x3f00,0x3f00,0x0,0x3f00,0x0,0x23700,0x23700,0x0,0x23700,0x0,0x3f00,0x3f00,0x3f00,0x3700,0x3000,0xf00,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x3700,0x3700,0x0,0x0,0x0,0x4000,0x4000,0x0,0x0,0x0,0x0,0x0,0x0,0x700,0x600,0x800,};
+      jj_la1_0 = new int[] {0x3900000,0x40000,0x80000,0x0,0x600000,0x600000,0x3000,0x3000,0x0,0x3700,0x3700,0x0,0x0,0x0,0x700,0x0,0x10000000,0xc000000,0xc0003700,0xc0000000,0x3700,0xc0003700,0x8000000,0x4000000,0xc000000,0x3f00,0x0,0x0,0x0,0x3f00,0x3f00,0x0,0x0,0x0,0x700,0x0,0x0,0x0,0x3f00,0x3f00,0x0,0x3f00,0x0,0x23700,0x23700,0x0,0x23700,0x0,0x3f00,0x3f00,0x3f00,0x3700,0x3000,0xf00,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x3700,0x3700,0x0,0x0,0x0,0x4000,0x4000,0x0,0x0,0x0,0x0,0x0,0x0,0x700,0x600,0x800,};
    }
    private static void jj_la1_init_1() {
-      jj_la1_1 = new int[] {0x0,0x0,0x0,0x2,0x0,0x0,0x0,0x0,0x2,0x0,0x0,0x2,0x4,0x2,0x1,0x4,0x0,0x0,0x1ff300,0x0,0x1ff300,0x1ff300,0x0,0x0,0x0,0xff600000,0xb0,0xb0,0x0,0xff600000,0xff600000,0x0,0x30,0x40,0x1ff300,0x0,0x0,0xff600000,0xff600000,0x0,0xff600000,0x0,0x0,0x0,0x0,0x0,0x0,0xff600000,0xff600000,0xff600000,0x0,0x0,0xff600000,0x0,0x0,0x0,0x0,0xf8000000,0xf8000000,0x0,0x0,0xf8000000,0x0,0x0,0xff7ff300,0xff7ff300,0x1ff300,0x0,0x0,0x0,0x0,0xff000000,0x7000000,0x38000000,0xc0000000,0x600000,0x0,0x0,0x0,0x0,};
+      jj_la1_1 = new int[] {0x0,0x0,0x0,0x2,0x0,0x0,0x0,0x0,0x2,0x0,0x0,0x2,0x4,0x2,0x1,0x4,0x0,0x0,0x1ff300,0x0,0x1ff300,0x1ff300,0x0,0x0,0x0,0xff600000,0xb0,0xb0,0x0,0xff600000,0xff600000,0x0,0x30,0x40,0x1ff300,0x0,0x0,0x0,0xff600000,0xff600000,0x0,0xff600000,0x0,0x0,0x0,0x0,0x0,0x0,0xff600000,0xff600000,0xff600000,0x0,0x0,0xff600000,0x0,0x0,0x0,0x0,0xf8000000,0xf8000000,0x0,0x0,0xf8000000,0x0,0x0,0xff7ff300,0xff7ff300,0x1ff300,0x0,0x0,0x0,0x0,0xff000000,0x7000000,0x38000000,0xc0000000,0x600000,0x0,0x0,0x0,0x0,};
    }
    private static void jj_la1_init_2() {
-      jj_la1_2 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1000,0x0,0x0,0x0,0x0,0x0,0x200,0x0,0x200,0x200,0x0,0x0,0x0,0x14be1,0x1000,0x1000,0x80000,0x14be1,0x14be1,0x80000,0x1000,0x0,0x200,0x40000,0xa00,0x14be1,0x14be1,0x80000,0x14be1,0x20000,0x0,0x0,0x40000,0x0,0x4200,0x14be1,0x14be1,0x109e1,0x0,0x0,0x109e1,0x20000000,0x40000000,0x3f00000,0x3f00000,0x80000001,0x1,0x0,0x0,0x80000001,0x0,0x0,0x840003e1,0x3e1,0x0,0x40000,0xa00,0x0,0x0,0x1,0x0,0x0,0x1,0x0,0x1e0,0x0,0x0,0x10000,};
+      jj_la1_2 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1000,0x0,0x0,0x0,0x0,0x0,0x200,0x0,0x200,0x200,0x0,0x0,0x0,0x14be1,0x1000,0x1000,0x80000,0x14be1,0x14be1,0x80000,0x1000,0x0,0x200,0x40000,0xa00,0x40000,0x14be1,0x14be1,0x80000,0x14be1,0x20000,0x0,0x0,0x40000,0x0,0x4200,0x14be1,0x14be1,0x109e1,0x0,0x0,0x109e1,0x20000000,0x40000000,0x3f00000,0x3f00000,0x80000001,0x1,0x0,0x0,0x80000001,0x0,0x0,0x840003e1,0x3e1,0x0,0x40000,0xa00,0x0,0x0,0x1,0x0,0x0,0x1,0x0,0x1e0,0x0,0x0,0x10000,};
    }
    private static void jj_la1_init_3() {
-      jj_la1_3 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x2,0x0,0x0,0x2,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1,0x0,0x6,0x6,0x1,0x6,0x6,0x1,0x0,0x0,0x0,0x0,0x8,0x8,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
+      jj_la1_3 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x2,0x0,0x0,0x2,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1,0x0,0x6,0x6,0x1,0x6,0x6,0x1,0x0,0x0,0x0,0x0,0x8,0x8,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
    }
 
   /** Constructor with InputStream. */
@@ -2129,7 +2153,7 @@ public class SPARQLParser10 extends SPARQLParser10Base implements SPARQLParser10
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 80; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 81; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -2143,7 +2167,7 @@ public class SPARQLParser10 extends SPARQLParser10Base implements SPARQLParser10
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 80; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 81; i++) jj_la1[i] = -1;
   }
 
   /** Constructor. */
@@ -2153,7 +2177,7 @@ public class SPARQLParser10 extends SPARQLParser10Base implements SPARQLParser10
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 80; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 81; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -2163,7 +2187,7 @@ public class SPARQLParser10 extends SPARQLParser10Base implements SPARQLParser10
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 80; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 81; i++) jj_la1[i] = -1;
   }
 
   /** Constructor with generated Token Manager. */
@@ -2172,7 +2196,7 @@ public class SPARQLParser10 extends SPARQLParser10Base implements SPARQLParser10
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 80; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 81; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -2181,7 +2205,7 @@ public class SPARQLParser10 extends SPARQLParser10Base implements SPARQLParser10
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 80; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 81; i++) jj_la1[i] = -1;
   }
 
   private Token jj_consume_token(int kind) throws ParseException {
@@ -2237,7 +2261,7 @@ public class SPARQLParser10 extends SPARQLParser10Base implements SPARQLParser10
       la1tokens[jj_kind] = true;
       jj_kind = -1;
     }
-    for (int i = 0; i < 80; i++) {
+    for (int i = 0; i < 81; i++) {
       if (jj_la1[i] == jj_gen) {
         for (int j = 0; j < 32; j++) {
           if ((jj_la1_0[i] & (1<<j)) != 0) {

@@ -6,39 +6,39 @@
 
 package com.hp.hpl.jena.sparql.expr.aggregate;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashSet ;
+import java.util.Set ;
 
-import com.hp.hpl.jena.graph.Node;
-
-import com.hp.hpl.jena.sparql.core.NodeConst;
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.expr.NodeValue;
-import com.hp.hpl.jena.sparql.function.FunctionEnv;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.sparql.core.NodeConst ;
+import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.expr.Expr ;
+import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
+import com.hp.hpl.jena.sparql.expr.NodeValue ;
+import com.hp.hpl.jena.sparql.function.FunctionEnv ;
 
 public class AggCountVarDistinct implements AggregateFactory
 {
     // ---- COUNT(DISTINCT ?var)
-    private Var var ;
+    private Expr expr ;
 
     // ---- AggregatorFactory
-    public AggCountVarDistinct(Var var) { this.var = var ; } 
+    public AggCountVarDistinct(Expr expr) { this.expr = expr ; } 
 
     public Aggregator create()
     {
-        return new AggCountVarDistinctWorker(var) ;
+        return new AggCountVarDistinctWorker(expr) ;
     }
 
     // ---- Aggregator
     class AggCountVarDistinctWorker extends AggregatorBase
     {
         //private Var var ;
-        public AggCountVarDistinctWorker(Var var) { super() ; } //this.var = var ; }
+        public AggCountVarDistinctWorker(Expr expr) { super() ; } //this.var = var ; }
 
         @Override
-        public String toString()        { return "count(distinct "+var+")" ; }
-        public String toPrefixString()  { return "(count distinct "+var+")" ; }
+        public String toString()        { return "count(distinct "+expr+")" ; }
+        public String toPrefixString()  { return "(count distinct "+expr+")" ; }
 
         @Override
         protected Accumulator createAccumulator()
@@ -46,14 +46,14 @@ public class AggCountVarDistinct implements AggregateFactory
             return new AccCountVarDistinct() ; 
         }
         
-        private final Var getVar() { return var ; }
+        private final Expr getExpr() { return expr ; }
         
         public boolean equalsAsExpr(Aggregator other)
         {
             if ( ! ( other instanceof AggCountVarDistinctWorker ) )
                 return false ;
             AggCountVarDistinctWorker agg = (AggCountVarDistinctWorker)other ;
-            return agg.getVar().equals(getVar()) ;
+            return agg.getExpr().equals(getExpr()) ;
         } 
         
         @Override
@@ -63,15 +63,16 @@ public class AggCountVarDistinct implements AggregateFactory
     // ---- Accumulator
     class AccCountVarDistinct implements Accumulator
     {
-        private Set<Node> seen = new HashSet<Node>() ;
+        private Set<NodeValue> seen = new HashSet<NodeValue>() ;
         public AccCountVarDistinct() { } 
         // The group key part of binding will be the same for all elements of the group.
         public void accumulate(Binding binding, FunctionEnv functionEnv)
         { 
-            Node n = binding.get(var) ;
-            if ( n == null )
-                return ;
-            seen.add(n) ;
+            try {
+                NodeValue nv = expr.eval(binding, functionEnv) ;
+                seen.add(nv) ;
+            } catch (ExprEvalException ex)
+            {}
         }
         
         public NodeValue getValue()            

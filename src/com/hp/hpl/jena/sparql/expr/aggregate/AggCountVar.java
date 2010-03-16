@@ -6,22 +6,22 @@
 
 package com.hp.hpl.jena.sparql.expr.aggregate;
 
-import com.hp.hpl.jena.graph.Node;
-
-import com.hp.hpl.jena.sparql.core.NodeConst;
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.expr.NodeValue;
-import com.hp.hpl.jena.sparql.function.FunctionEnv;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.sparql.core.NodeConst ;
+import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.expr.Expr ;
+import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
+import com.hp.hpl.jena.sparql.expr.NodeValue ;
+import com.hp.hpl.jena.sparql.function.FunctionEnv ;
 
 public class AggCountVar implements AggregateFactory
 {
     // ---- COUNT(?var)
     
     // ---- AggregatorFactory
-    private Var var ;
+    private Expr expr ;
 
-    public AggCountVar(Var var) { this.var = var ; } 
+    public AggCountVar(Expr expr) { this.expr = expr ; } 
 
     public Aggregator create()
     {
@@ -39,8 +39,8 @@ public class AggCountVar implements AggregateFactory
         }
 
         @Override
-        public String toString() { return "count("+var+")" ; }
-        public String toPrefixString() { return "(count "+var+")" ; }
+        public String toString() { return "count("+expr+")" ; }
+        public String toPrefixString() { return "(count "+expr+")" ; }
 
         @Override
         protected Accumulator createAccumulator()
@@ -48,14 +48,14 @@ public class AggCountVar implements AggregateFactory
             return new AccCountVar() ;
         }
 
-        private final Var getVar() { return var ; }
+        private final Expr getExpr() { return expr ; }
         
         public boolean equalsAsExpr(Aggregator other)
         {
             if ( ! ( other instanceof AggCountVarWorker ) )
                 return false ;
             AggCountVarWorker agg = (AggCountVarWorker)other ;
-            return agg.getVar().equals(getVar()) ;
+            return agg.getExpr().equals(getExpr()) ;
         } 
         
         @Override
@@ -69,8 +69,11 @@ public class AggCountVar implements AggregateFactory
         public AccCountVar()   { }
         public void accumulate(Binding binding, FunctionEnv functionEnv)
         { 
-            if ( binding.contains(var) )
+            try {
+                NodeValue nv = expr.eval(binding, functionEnv) ;
                 count++ ;
+            } catch (ExprEvalException ex)
+            {}
         }
         public NodeValue getValue()             { return NodeValue.makeInteger(count) ; }
     }

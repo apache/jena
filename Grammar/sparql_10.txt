@@ -198,6 +198,7 @@ NON-TERMINALS
 	Constraint	:=	( BrackettedExpression | BuiltInCall | FunctionCall )
 	FunctionCall	:=	IRIref ArgList
 	ArgList	:=	( <NIL> | <LPAREN> Expression ( <COMMA> Expression )* <RPAREN> )
+	ParamList	:=	( <LBRACKET> Expression ( <COMMA> Expression )* <RBRACKET> )
 // -------- Construct patterns
 	ConstructTemplate	:=	<LBRACE> ( ConstructTriples )? <RBRACE>
 	ConstructTriples	:=	TriplesSameSubject ( <DOT> ( ConstructTriples )? )?
@@ -262,7 +263,7 @@ NON-TERMINALS
 		|	<IS_LITERAL> <LPAREN> Expression <RPAREN>
 		|	RegexExpression
 	RegexExpression	:=	<REGEX> <LPAREN> Expression <COMMA> Expression ( <COMMA> Expression )? <RPAREN>
-// The case of "q:name()" or just "q:name"
+// The case of "q:name()" or "q:agg[]()" or just "q:name"
 // by expanding out FunctionCall()
 	IRIrefOrFunction	:=	IRIref ( ArgList )?
 	RDFLiteral	:=	String ( ( <LANGTAG> ) | ( <DATATYPE> IRIref ) )?

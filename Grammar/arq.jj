@@ -694,11 +694,22 @@ ExprList ArgList() : { Expr expr ; ExprList args = new ExprList() ; }
   (
     <NIL>
   |
-   // Was <LPAREN> ( Expression() (<COMMA> Expression() )* )? <RPAREN>
     <LPAREN>
       expr = Expression() { args.add(expr) ; }
       (<COMMA> expr = Expression() { args.add(expr) ; } )*
     <RPAREN>
+   )
+    { return args ; }
+}
+
+ExprList ParamList() : { Expr expr ; ExprList args = new ExprList() ; }
+{
+    // "[ expr, expr ]"
+  (
+    <LBRACKET>
+      expr = Expression() { args.add(expr) ; }
+      (<COMMA> expr = Expression() { args.add(expr) ; } )*
+    <RBRACKET>
    )
     { return args ; }
 }
@@ -1327,14 +1338,14 @@ Expr NotExistsFunc() : { Element el ; }
 Expr Aggregate() : { AggregateFactory agg ;
                      boolean distinct = false ;
                      Expr expr ;
-                     Var v ; Token t ; }
+                     Token t ; }
 {
    ( t = <COUNT> <LPAREN>
         ( <STAR> { agg = AggCount.get() ; }
-        | v = Var() { agg = new AggCountVar(v) ; }
+        | expr = Expression() { agg = new AggCountVar(expr) ; }
         | <DISTINCT>
           ( <STAR> { agg = AggCountDistinct.get() ; }
-          | v = Var() { agg = new AggCountVarDistinct(v) ; }
+          | expr = Expression() { agg = new AggCountVarDistinct(expr) ; }
           )
         )
     <RPAREN>
@@ -1355,30 +1366,33 @@ Expr Aggregate() : { AggregateFactory agg ;
 }
 
 
-// AggregateFactory AggregateCount() : { AggregateFactory agg ;
-//                                       boolean distinct = false ;
-//                                       Var v ; Token t ; }
-// {
-//     t = <COUNT> <LPAREN> 
-//     ( <STAR>        { agg = AggCount.get() ; }
-//     | v = Var()     { agg = new AggCountVar(v) ; }
-//     | <DISTINCT> 
-//       ( <STAR>      { agg = AggCountDistinct.get() ; }
-//       | v = Var()   { agg = new AggCountVarDistinct(v) ; }
-//       )
-//     )
-//     <RPAREN>
-//     { return agg ; }
-// }
 
-
-
-// The case of "q:name()" or just "q:name"
+// The case of "q:name()" or "q:agg[]()" or just "q:name"
 // by expanding out FunctionCall()
 
-Expr IRIrefOrFunction() : { String iri ; ExprList a = null ; }
+Expr IRIrefOrFunction() : { String iri ; ExprList a = null ; ExprList aParam = null ; boolean distinct = false ; }
 {
   iri = IRIref()
+
+
+  ( // Aggregates only. @@
+    aParam = ParamList()
+    {
+     if ( ! allowAggregatesInExpressions )
+            throwParseException("Aggregate expression not legal at this point",
+                                 -1, -1) ;
+    }
+  )?
+
+     // Aggregates only. @@
+    (<DISTINCT> { distinct = true ; }
+     {
+     if ( ! allowAggregatesInExpressions )
+            throwParseException("Aggregate expression not legal at this point",
+                                 -1, -1) ;
+    }
+    )?
+
   ( a = ArgList() )?
   { if ( a == null ) return asExpr(createNode(iri)) ;
     return new E_Function(iri, a) ;

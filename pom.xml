@@ -102,13 +102,14 @@
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-log4j12</artifactId>
       <version>1.5.8</version>
+      <optional>true</optional>
     </dependency>
 
     <dependency>
-      <!-- Some of log4j dependencies are broken -->
       <groupId>log4j</groupId>
       <artifactId>log4j</artifactId>
       <version>1.2.14</version>
+      <optional>true</optional>
       <exclusions>
 	<exclusion>
 	  <groupId>javax.jms</groupId>
@@ -311,17 +312,50 @@ build.time.txt=${build.time.txt}
   </build>
 
   <reporting>
-    <!-- Does not include the script outputs!
-         <plugins>
-         <plugin>
-         <groupId>org.apache.maven.plugins</groupId>
-         <artifactId>maven-surefire-report-plugin</artifactId>
-         <configuration>
-         <outputDirectory>${project.basedir}/target/surefire-reports-html</outputDirectory>
-         </configuration>
-         </plugin>
-         </plugins>
-    -->
+    <!-- <outputDirectory>${project.build.directory}/site</outputDirectory> -->
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-report-plugin</artifactId>
+        <configuration>
+          <outputDirectory>${project.basedir}/target/surefire-reports-html</outputDirectory>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>cobertura-maven-plugin</artifactId>
+        <configuration>
+          <instrumentation>
+            <ignores>
+              <ignore>org.slf4j.*</ignore>
+            </ignores>
+          </instrumentation>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jxr-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-pmd-plugin</artifactId>
+	<!--<version>2.4</version>-->
+        <configuration>
+          <linkXref>true</linkXref>
+          <sourceEncoding>utf-8</sourceEncoding>
+          <minimumTokens>100</minimumTokens>
+          <targetJdk>1.5</targetJdk>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>findbugs-maven-plugin</artifactId>
+      </plugin>
+    </plugins>
   </reporting>
 
  <repositories>

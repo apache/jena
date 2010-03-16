@@ -383,11 +383,22 @@ ExprList ArgList() : { Expr expr ; ExprList args = new ExprList() ; }
   (
     <NIL>
   |
-   // Was <LPAREN> ( Expression() (<COMMA> Expression() )* )? <RPAREN>
     <LPAREN>
       expr = Expression() { args.add(expr) ; }
       (<COMMA> expr = Expression() { args.add(expr) ; } )*
     <RPAREN>
+   )
+    { return args ; }
+}
+
+ExprList ParamList() : { Expr expr ; ExprList args = new ExprList() ; }
+{
+    // "[ expr, expr ]"
+  (
+    <LBRACKET>
+      expr = Expression() { args.add(expr) ; }
+      (<COMMA> expr = Expression() { args.add(expr) ; } )*
+    <RBRACKET>
    )
     { return args ; }
 }
@@ -784,10 +795,10 @@ Expr RegexExpression() :
     <RPAREN>
       { return new E_Regex(expr, patExpr, flagsExpr) ; }
 }
-// The case of "q:name()" or just "q:name"
+// The case of "q:name()" or "q:agg[]()" or just "q:name"
 // by expanding out FunctionCall()
 
-Expr IRIrefOrFunction() : { String iri ; ExprList a = null ; }
+Expr IRIrefOrFunction() : { String iri ; ExprList a = null ; ExprList aParam = null ; boolean distinct = false ; }
 {
   iri = IRIref()
   ( a = ArgList() )?
