@@ -31,7 +31,7 @@ public class DevARQ
     
     
     // == Migration:
-    // JSON (via RIOT?)
+    // JSON
 
     // ----------
     // Abstract ValueSpace for extensibility
@@ -50,7 +50,7 @@ public class DevARQ
     // Test with grounded ?x and ?y
     
     // De-duplicate aggregator code.
-    // Junit3 ==> Junit4
+    // Junit3 ==> Junit4 TestExpressions.
     
     // Run ref engine and main engine in a test - remove ref only tests
     
