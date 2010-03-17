@@ -43,7 +43,9 @@ public final class BPTreeNode extends BPTreePage
     
     int parent ;            // Need to consider splitRoot - let the root id change?
     int count ;             // Number of records.
-    boolean isLeaf ;
+    // Leaf of the BPTree is the lowest level of ptr/key splits, not the data blocks.
+    // We need to now this to know which block manager the block poniters refer to.
+    boolean isLeaf ;        
     RecordBuffer records ;
     PtrBuffer ptrs ;
 

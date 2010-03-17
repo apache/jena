@@ -8,8 +8,6 @@ public class DevTDB
     //   many subproject, different version and releases.
     // ----
 
-    // JSON to atlas, not-RIOT
-    
     // 2 store dataset
     // Compact B+Trees
     // ARQ: dataset - quad interface (see graph)
@@ -22,6 +20,7 @@ public class DevTDB
     // owl:inverseOf, owl:SymmetricProperty, owl:TransitiveProperty
     // rdfs:subClassOf (aux table).
     // rdfs:subPropertyOf (aux table).
+    // Pipeline
     
     // TDB loader - triples version does not take .gz (yet)
     // BulkLoaderBase > BuldLoaderTriples, BulkLoaderDataset  

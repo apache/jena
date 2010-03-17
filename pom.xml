@@ -106,7 +106,7 @@
     <dependency>
       <groupId>log4j</groupId>
       <artifactId>log4j</artifactId>
-      <version>1.2.14</version>
+      <version>1.2.15</version>
       <optional>true</optional>
       <exclusions>
         <exclusion>
@@ -131,10 +131,6 @@
   </dependencies>
 
   <build>
-    <!--
-      <sourceDirectory>src</sourceDirectory>
-      <testSourceDirectory>src-test</testSourceDirectory>
-    -->
     <!-- The filter file is written by antrun -->
     <filters>
       <filter>${project.basedir}/target/filter.properties</filter>

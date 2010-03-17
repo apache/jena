@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.tdb.index.btree;
 
-import static com.hp.hpl.jena.tdb.base.block.BlockType.BTREE_BRANCH;
+import static com.hp.hpl.jena.tdb.base.block.BlockType.BTREE_NODE;
 import static com.hp.hpl.jena.tdb.base.block.BlockType.RECORD_BLOCK;
 
 import java.nio.ByteBuffer;
@@ -48,7 +48,7 @@ final class BTreePageMgr implements Session
         int id = blockMgr.allocateId() ;
         ByteBuffer bb = blockMgr.allocateBuffer(id) ;
 
-        BlockType bType = (makeLeaf ? RECORD_BLOCK : BTREE_BRANCH ) ;
+        BlockType bType = (makeLeaf ? RECORD_BLOCK : BTREE_NODE ) ;
         BTreeNode n = converter.createFromByteBuffer(bb, bType) ;
         n.id = id ;
         n.parent = parent ;
@@ -124,7 +124,7 @@ final class BTreePageMgr implements Session
                 int x = byteBuffer.getInt(0) ;
                 BlockType type = getType(x) ;
 
-                if ( type != BlockType.BTREE_BRANCH && type != BlockType.RECORD_BLOCK )
+                if ( type != BlockType.BTREE_NODE && type != BlockType.RECORD_BLOCK )
                     throw new BTreeException("Wrong block type: "+type) ; 
                 int count = decCount(x) ;
                 return overlay(btree, byteBuffer, (type==BlockType.RECORD_BLOCK), count) ;
@@ -137,7 +137,7 @@ final class BTreePageMgr implements Session
             // It's manipulated in-place so no conversion needed, 
             // Just the count needs to be fixed up. 
             ByteBuffer bb = node.getByteBuffer() ;
-            BlockType bType = (node.isLeaf ? RECORD_BLOCK : BTREE_BRANCH ) ;
+            BlockType bType = (node.isLeaf ? RECORD_BLOCK : BTREE_NODE ) ;
             int c = encCount(bType, node.count) ;
             bb.putInt(0, c) ;
             return bb ;

@@ -17,7 +17,6 @@ import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
 import com.hp.hpl.jena.tdb.base.block.BlockType ;
 import com.hp.hpl.jena.tdb.base.buffer.PtrBuffer ;
 import com.hp.hpl.jena.tdb.base.buffer.RecordBuffer ;
-import com.hp.hpl.jena.tdb.index.btree.BTreeException ;
 
 /** BPlusTreePageMgr = BPlusTreeNode manager */
 public final class BPTreeNodeMgr extends BPTreePageMgr
@@ -149,8 +148,8 @@ public final class BPTreeNodeMgr extends BPTreePageMgr
                 BlockType type = getType(x) ;
                 
                 if ( type != BPTREE_BRANCH && type != BPTREE_LEAF )
-                    throw new BTreeException("Wrong block type: "+type) ; 
-                int count = decCount(x) ;
+                    throw new BPTreeException("Wrong block type: "+type) ; 
+                int count = decodeCount(x) ;
                 return overlay(bpTree, byteBuffer, (type==BPTREE_LEAF), count) ;
             }
         }
@@ -162,7 +161,7 @@ public final class BPTreeNodeMgr extends BPTreePageMgr
             // Just the count needs to be fixed up. 
             ByteBuffer bb = node.getBackingByteBuffer() ;
             BlockType bType = (node.isLeaf ? BPTREE_LEAF : BPTREE_BRANCH ) ;
-            int c = encCount(bType, node.getCount()) ;
+            int c = encodeCount(bType, node.getCount()) ;
             bb.putInt(0, c) ;
             return bb ;
         }
@@ -179,12 +178,12 @@ public final class BPTreeNodeMgr extends BPTreePageMgr
         return BlockType.extract( x>>>24 ) ;
     }
     
-    private static final int encCount(BlockType type, int i)
+    private static final int encodeCount(BlockType type, int i)
     {
         return (type.id()<<24) | (i&0x00FFFFFF) ;
     }
     
-    private static final int decCount(int i)
+    private static final int decodeCount(int i)
     { 
         return i & 0x00FFFFFF ;
     }
@@ -235,7 +234,7 @@ public final class BPTreeNodeMgr extends BPTreePageMgr
         if ( n.getCount() < 0 )
         {
             numPtrs = 0 ;
-            n.setCount(decCount(n.getCount())) ; 
+            n.setCount(decodeCount(n.getCount())) ; 
         }
         else
             numPtrs = n.getCount()+1 ;
