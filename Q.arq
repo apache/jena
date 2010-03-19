@@ -1,30 +1,7 @@
-PREFIX  :     <http://example/>
-PREFIX  foaf:   <http://xmlns.com/foaf/0.1/>
+PREFIX onto: <http://example/>
 
-SELECT ?A ?y
-{
-  { LET(?A := 1)
-     :a foaf:knows{2} ?y
-  }
-UNION
-{
-   LET(?A := 2)
-     :a foaf:knows* ?y 
+SELECT ?marker_id WHERE {
+?marker_id onto:GenomicFeatureDetector ?marker_name .
+FILTER (?marker_name IN ("AMP4", "AMP1" , "EST5" ,"EST1" , "EST2" ,
+                         "ACP1" , "ICD1" , "AMP2" , "CAT1" , "AMP3") )
 }
-}
-
-## ##SELECT  ?x (count(*) AS ?C)
-## 
-## SELECT  ?x (sum(?v) AS ?C) (1/0 as ?V)
-## 
-## ## SELECT  ?x (count(?v) AS ?C) 
-## ##SELECT *
-## 
-## WHERE
-##   { ?x a :T
-##     OPTIONAL
-##       { ?x ?any ?v}
-##   }
-## GROUP BY ?x
-## ORDER BY str(?x)
-##  

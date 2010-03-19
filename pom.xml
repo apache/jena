@@ -17,9 +17,9 @@
     <url>http://www.openjena.org/</url>
   </organization>
   <developers>
-  	<developer>
-  		<name>Andy Seaborne</name>
-  	</developer>
+    <developer>
+      <name>Andy Seaborne</name>
+    </developer>
   </developers>
 
   <licenses>

@@ -28,6 +28,7 @@ import com.hp.hpl.jena.sparql.serializer.SerializationContext;
 import com.hp.hpl.jena.sparql.util.*;
 import com.hp.hpl.jena.vocabulary.XSD;
 
+import static com.hp.hpl.jena.sparql.expr.ValueSpaceClassification.* ;
 
 public abstract class NodeValue extends ExprNode
 {
@@ -108,8 +109,6 @@ public abstract class NodeValue extends ExprNode
     // Initialization
 //    static
 //    {}
-    
-    // ---- State
     
     private Node node = null ;     // Null used when a value has not be turned into a Node.
     
@@ -382,6 +381,7 @@ public abstract class NodeValue extends ExprNode
     
     // ToDo: dateTime and date are actually two value spaces : with and without timezone.
     
+    /*
     private static final int VSPACE_NUM             = 10 ;
     private static final int VSPACE_DATETIME     = 20 ; // To go
     
@@ -400,7 +400,7 @@ public abstract class NodeValue extends ExprNode
     private static final int VSPACE_DIFFERENT       = 90 ;    // Known to be different values spaces
     private static final int VSPACE_DURATION      	= 100 ;
     private static final int VSPACE_TIME       		= 110 ;
-    
+    */
     /** Return true if the two NodeValues are known to be the same value
      *  return false if known to be different values,
      *  throw ExprEvalException otherwise
@@ -411,7 +411,7 @@ public abstract class NodeValue extends ExprNode
         if ( nv1 == null || nv2 == null )
             throw new ARQInternalErrorException("Attempt to sameValueAs on a null") ;
         
-        int compType = classifyValueOp(nv1, nv2) ;
+        ValueSpaceClassification compType = classifyValueOp(nv1, nv2) ;
         
         // XXX Why is this different from compare?
         
@@ -591,7 +591,7 @@ public abstract class NodeValue extends ExprNode
         if ( nv2 == null )
             return Expr.CMP_GREATER ;
         
-        int compType = classifyValueOp(nv1, nv2) ;
+        ValueSpaceClassification compType = classifyValueOp(nv1, nv2) ;
         
         // Special case - date/dateTime comparison is affected by timezones and may be
         // interdeterminate based on the value of the dateTime/date.
@@ -605,7 +605,7 @@ public abstract class NodeValue extends ExprNode
                 if ( x != Expr.CMP_INDETERMINATE )
                     return x ;
                 // Indeterminate => can't compare as strict values.
-                compType = VSPACE_DIFFERENT ;
+                compType = ValueSpaceClassification.VSPACE_DIFFERENT ;
                 break ;
             }
             case VSPACE_DATE:
@@ -614,7 +614,7 @@ public abstract class NodeValue extends ExprNode
                 if ( x != Expr.CMP_INDETERMINATE )
                     return x ;
                 // Indeterminate => can't compare as strict values.
-                compType = VSPACE_DIFFERENT ;
+                compType = ValueSpaceClassification.VSPACE_DIFFERENT ;
                 break ;
             }
             case VSPACE_TIME:
@@ -623,7 +623,7 @@ public abstract class NodeValue extends ExprNode
                 if ( x != Expr.CMP_INDETERMINATE )
                     return x ;
                 // Indeterminate => can't compare as strict values.
-                compType = VSPACE_DIFFERENT ;
+                compType = ValueSpaceClassification.VSPACE_DIFFERENT ;
                 break ;
             }
             case VSPACE_DURATION:
@@ -632,9 +632,10 @@ public abstract class NodeValue extends ExprNode
                 if ( x != Expr.CMP_INDETERMINATE )
                     return x ;
                 // Indeterminate => can't compare as strict values.
-                compType = VSPACE_DIFFERENT ;
+                compType = ValueSpaceClassification.VSPACE_DIFFERENT ;
                 break ;
             }
+            default:
         }
             
         switch (compType)
@@ -734,10 +735,10 @@ public abstract class NodeValue extends ExprNode
         }
     }
 
-    private static int classifyValueOp(NodeValue nv1, NodeValue nv2)
+    private static ValueSpaceClassification classifyValueOp(NodeValue nv1, NodeValue nv2)
     {
-        int c1 = classifyValueSpace(nv1) ;
-        int c2 = classifyValueSpace(nv2) ;
+        ValueSpaceClassification c1 = classifyValueSpace(nv1) ;
+        ValueSpaceClassification c2 = classifyValueSpace(nv2) ;
         if ( c1 == c2 ) return c1 ;
         if ( c1 == VSPACE_UNKNOWN || c2 == VSPACE_UNKNOWN )
             return VSPACE_UNKNOWN ;
@@ -746,7 +747,7 @@ public abstract class NodeValue extends ExprNode
         return VSPACE_DIFFERENT ;
     }
     
-    private static int classifyValueSpace(NodeValue nv)
+    private static ValueSpaceClassification classifyValueSpace(NodeValue nv)
     {
         if ( nv.isNumber() )   return VSPACE_NUM ;
         if ( nv.isDateTime() ) return VSPACE_DATETIME ;

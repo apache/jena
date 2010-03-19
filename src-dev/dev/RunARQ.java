@@ -15,6 +15,9 @@ import arq.sparql ;
 import arq.sse_query ;
 
 import com.hp.hpl.jena.Jena ;
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
+import com.hp.hpl.jena.datatypes.xsd.XSDDuration ;
+import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.* ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
@@ -48,7 +51,13 @@ import com.hp.hpl.jena.sparql.sse.SSEParseException ;
 import com.hp.hpl.jena.sparql.sse.WriterSSE ;
 import com.hp.hpl.jena.sparql.sse.builders.BuildException ;
 import com.hp.hpl.jena.sparql.sse.builders.BuilderExec ;
-import com.hp.hpl.jena.sparql.util.* ;
+import com.hp.hpl.jena.sparql.util.ALog ;
+import com.hp.hpl.jena.sparql.util.IndentedLineBuffer ;
+import com.hp.hpl.jena.sparql.util.IndentedWriter ;
+import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
+import com.hp.hpl.jena.sparql.util.StrUtils ;
+import com.hp.hpl.jena.sparql.util.StringUtils ;
+import com.hp.hpl.jena.sparql.util.Timer ;
 import com.hp.hpl.jena.util.FileManager ;
 
 public class RunARQ
@@ -74,24 +83,32 @@ public class RunARQ
 //    }
     
     //@SuppressWarnings("deprecation")
+    
+    public static void run()
+    {
+        Node d1 = Node.createLiteral("PT1H1M1S", 
+                                     null, 
+                                     XSDDatatype.XSDduration) ;
+        Node d2 = Node.createLiteral("PT1H1M1.1S", 
+                                     null, 
+                                     XSDDatatype.XSDduration) ;
+        System.out.println(d1.getLiteral().isWellFormed()) ;
+        System.out.println(d2.getLiteral().isWellFormed()) ;
+        
+        
+        XSDDuration dur1 = 
+            (XSDDuration)d1.getLiteralValue() ;
+        XSDDuration dur2 = 
+            (XSDDuration)d2.getLiteralValue() ;
+        int cmp = dur1.compare(dur2) ;
+        System.out.println("Compare = "+cmp) ;
+    }
+    
     public static void main(String[] argv) throws Exception
     {
-        sparql11update() ; System.exit(0) ;
+        run() ;System.exit(0) ;
         
-        String q = "PREFIX foaf: <http://xmlns.com/foaf/0.1/> SELECT * FROM <http://xsparql.deri.org/data/relations.ttl> WHERE { $Person foaf:name $Name }";
-
-        Dataset d1 = null ;
-
-        {
-        Query query = QueryFactory.create(q) ;
-        d1 = DatasetUtils.createDataset(query.getGraphURIs(), query.getNamedGraphURIs()) ;
-        }
-        QueryExecution qe = QueryExecutionFactory.create(q);
-        d1 = qe.getDataset();
-        ResultSet rs = qe.execSelect() ;
-        d1 = qe.getDataset();
-        rs.hasNext() ;
-        d1 = qe.getDataset();
+        sparql11update() ; System.exit(0) ;
         System.exit(0) ;
         
         //execQuery("D.ttl", "P.arq") ;

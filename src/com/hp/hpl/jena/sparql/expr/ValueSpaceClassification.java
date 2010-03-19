@@ -1,49 +1,25 @@
 /*
- * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Information Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql;
+package com.hp.hpl.jena.sparql.expr;
 
-
-import junit.framework.TestSuite ;
-
-import com.hp.hpl.jena.sparql.core.TestContext ;
-import com.hp.hpl.jena.sparql.core.TestEsc ;
-import com.hp.hpl.jena.sparql.expr.TS_Expr ;
-import com.hp.hpl.jena.sparql.expr.TestExpressions ;
-import com.hp.hpl.jena.sparql.path.TestPath ;
-import com.hp.hpl.jena.sparql.syntax.TestResultSet ;
-import com.hp.hpl.jena.sparql.syntax.TestSerialization ;
-import com.hp.hpl.jena.sparql.util.TS_Util ;
-
-public class TS_General extends TestSuite
-{
-    static final String testSetName         = "General" ;
-
-    static public TestSuite suite() { return new TS_General(); }
-
-    public TS_General()
-    {
-        super(testSetName) ;
-
-        addTest(TS_Expr.suite()) ;
-        addTest(TestExpressions.suite()) ;
-        
-        addTest(TS_Util.suite()) ;
-        
-        addTest(TestPath.suite()) ;
-        addTest(TestEsc.suite()) ;
-        addTest(TestResultSet.suite()) ;
-        addTest(TestSerialization.suite()) ;
-        
-        addTest(TestContext.suite()) ;
-    }
+enum ValueSpaceClassification {
+    VSPACE_NODE,
+    VSPACE_NUM, 
+    VSPACE_DATETIME, VSPACE_DATETIME_TZ, 
+    VSPACE_DURATION,
+    VSPACE_DATE, VSPACE_DATE_TZ, VSPACE_DATE_NO_TZ,
+    VSPACE_STRING, VSPACE_LANG,
+    VSPACE_BOOLEAN,
+    VSPACE_UNKNOWN,
+    VSPACE_DIFFERENT,
+    VSPACE_TIME
 }
-
 /*
- * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Information Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
