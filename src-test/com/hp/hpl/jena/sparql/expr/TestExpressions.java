@@ -150,15 +150,19 @@ public class TestExpressions
     @Test public void testBoolean_66() { testBoolean(time4+" < "+time2, true) ; }
     @Test public void testBoolean_67() { testBoolean(time4+" > "+time2, false) ; }
     
-    @Test public void testBoolean_68() { testBoolean(duration1+" = "+duration1, true) ; }
-    @Test public void testBoolean_69() { testBoolean(duration1+" < "+duration2, true) ; }
-    @Test public void testBoolean_70() { testBoolean(duration1+" > "+duration2, false) ; }
-    @Test public void testBoolean_71() { testBoolean(duration1+" < "+duration2, true) ; }
-    @Test public void testBoolean_72() { testBoolean(duration1+" = "+duration3, true) ; }
-    @Test public void testBoolean_73() { testBoolean(duration1+" <= "+duration3, true) ; }
-    @Test public void testBoolean_74() { testBoolean(duration1+" >= "+duration3, true) ; }
-    @Test public void testBoolean_75() { testBoolean(duration5+" > "+duration4, true) ; }
-//    @Test public void testBoolean_76() { testBoolean(duration7+" < "+duration8, true) ; }
+    @Test public void testDuration_01() { testBoolean(duration1+" = "+duration1, true) ; }
+    @Test public void testDuration_02() { testBoolean(duration1+" < "+duration2, true) ; }
+    @Test public void testDuration_03() { testBoolean(duration1+" > "+duration2, false) ; }
+    @Test public void testDuration_04() { testBoolean(duration1+" < "+duration2, true) ; }
+    @Test public void testDuration_05() { testBoolean(duration1+" = "+duration3, true) ; }
+    @Test public void testDuration_06() { testBoolean(duration1+" <= "+duration3, true) ; }
+    @Test public void testDuration_07() { testBoolean(duration1+" >= "+duration3, true) ; }
+    
+    // Jena bug (<=2.6.2) for durations with fractional seconds.
+    // @Test public void testDuration_08() { testBoolean(duration5+" > "+duration4, true) ; }
+    
+    @Test public void testDuration_09() { testBoolean(duration7+" < "+duration8, true) ; }
+    
     @Test public void testURI_1() { testURI("<a>",     baseNS+"a", query, null, TestExpr.NO_FAILURE ) ; }
     @Test public void testURI_2() { testURI("<a\\u00E9>",     baseNS+"a\u00E9", query, null, TestExpr.NO_FAILURE ) ; }
     @Test public void testURI_3() { testURI("ex:b",     exNS+"b", query, null, TestExpr.NO_FAILURE ) ; }
@@ -293,7 +297,7 @@ public class TestExpressions
     static String duration3 = "'P1Y1M1DT1H1M1S"+"'^^<"+XSDDatatype.XSDduration.getURI()+">";
     static String duration4 = "'PT1H1M1S"+"'^^<"+XSDDatatype.XSDduration.getURI()+">";
     static String duration5 = "'PT1H1M1.1S"+"'^^<"+XSDDatatype.XSDduration.getURI()+">";
-    //static String duration7 = "'-PT1H1"+"'^^<"+XSDDatatype.XSDduration.getURI()+">";
+    static String duration7 = "'-PT1H"+"'^^<"+XSDDatatype.XSDduration.getURI()+">";
     static String duration8 = "'PT0H0M0S"+"'^^<"+XSDDatatype.XSDduration.getURI()+">";
     static String dateTime1 = "'2005-02-25T12:03:34Z'^^<"+XSDDatatype.XSDdateTime.getURI()+">" ;
     static String dateTime2 = "'2005-02-25T12:03:34Z'^^<"+XSDDatatype.XSDdateTime.getURI()+">" ;

@@ -86,6 +86,9 @@ public class RunARQ
     
     public static void run()
     {
+        
+        
+        
         Node d1 = Node.createLiteral("PT1H1M1S", 
                                      null, 
                                      XSDDatatype.XSDduration) ;
@@ -106,7 +109,13 @@ public class RunARQ
     
     public static void main(String[] argv) throws Exception
     {
-        run() ;System.exit(0) ;
+
+        Node d1 = Node.createLiteral("-PT1H", //"-PT1H1M1S", 
+                                     null, 
+                                     XSDDatatype.XSDduration) ;
+        System.out.println(d1.getLiteral().isWellFormed()) ;
+        System.exit(0) ;
+        
         
         sparql11update() ; System.exit(0) ;
         System.exit(0) ;
