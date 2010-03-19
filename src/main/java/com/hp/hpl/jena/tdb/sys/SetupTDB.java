@@ -183,13 +183,16 @@ public class SetupTDB
         
         String propertiesFile = "tdb.properties" ; 
         MetaFile metafile = locationMetadata(location) ;
-        Properties config = globalConfig ;
+        // dupulicate
+        Properties config = new Properties(globalConfig) ;
+        boolean localProperties = false ;
         
         if ( location.exists(propertiesFile) )
         {
-            Properties here = new Properties(config) ;
-            try { PropertyUtils.loadFromFile(here, propertiesFile) ; }
-            catch (IOException ex) { throw new TDBException(ex) ; } 
+            // Load now to test for errors.
+            localProperties = true ;
+            try { PropertyUtils.loadFromFile(config, propertiesFile) ; }
+            catch (IOException ex) { throw new TDBException(ex) ; }
         }
         
         // Only support this so far.
@@ -238,6 +241,27 @@ public class SetupTDB
 
         // Finalize
         metafile.flush() ;
+        
+        // Set TDB features.
+        if ( localProperties )
+        {
+            /*
+             * tdb.feature.????
+             */
+
+            String base = "tdb.feature." ;
+            String key= base+TDB.symUnionDefaultGraph.getSymbol() ;
+            
+            boolean unionDefaultGraph = PropertyUtils.getPropertyAsBoolean(config, key, false) ;
+            if ( unionDefaultGraph )
+                dsg.getContext().setTrue(TDB.symUnionDefaultGraph) ;
+            
+            // Settable on a per-dadaset basis.
+            //symUnionDefaultGraph
+            //symLogDuplicates
+            //symFileMode - later
+        }
+        
         return dsg ;
     }
 

@@ -62,7 +62,27 @@ public class PropertyUtils
             return defaultValue ;
         return Integer.parseInt(x) ;
     }
+
+    public static boolean getPropertyAsBoolean(Properties properties, String key, boolean dftValue)
+    {
+        String x = properties.getProperty(key) ;
+        if ( x == null )
+            return dftValue ;
+        if ( x.equalsIgnoreCase("true") ) return true ;
+        if ( x.equalsIgnoreCase("false") ) return true ;
+        throw new AtlasException("Value '"+x+"'not recognized for "+key) ;
+    }
     
+    public static Boolean getPropertyAsBoolean(Properties properties, String key)
+    {
+        String x = properties.getProperty(key) ;
+        if ( x == null )
+            throw new AtlasException("No such property key: "+key) ;
+        if ( x.equalsIgnoreCase("true") ) return true ;
+        if ( x.equalsIgnoreCase("false") ) return true ;
+        throw new AtlasException("Value '"+x+"'not recognized for "+key) ;
+    }
+
     
     /** Test whether a property has a value.  Null tests equal to not present. */
     public boolean propertyEquals(Properties properties, String key, String value)

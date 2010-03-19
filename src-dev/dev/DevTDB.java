@@ -3,7 +3,7 @@ package dev ;
 public class DevTDB
 {
     // == 0.8.5 / ARQ 2.8.3
-    
+    // Per datasetGraph feature enabling.
     // mavenization: modularization?
     //   many subproject, different version and releases.
     // ----

@@ -27,7 +27,7 @@ ChangeLog for TDB
 + Can now set TDB context symbols via Java's system properties 
   (-D when invoking Java).
   e.g. -Dtdb:logExec=true to enable log query execution 
-       (in conjucntion with the logging level). 
+       (in conjunction with the logging level). 
 + Add a shutdown hook to sync datasets (don't rely on it!)
 + Adding checking for concurrent modification situations.
   TDB supports multiple readers OR single writer.
@@ -35,6 +35,7 @@ ChangeLog for TDB
 
 + Bug fixes for peoprty functions and TDB.  apf:textMatch now works properly 
 + Fix XML of the POM file.
+  Build is now doen with maven, not ant/ivy
 + Fix bug in "SELECT * { GRAPH ?g {} }"   
 
 ==== 0.8.4
