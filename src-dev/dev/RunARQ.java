@@ -42,6 +42,7 @@ import com.hp.hpl.jena.sparql.engine.main.LeftJoinClassifier ;
 import com.hp.hpl.jena.sparql.engine.main.QC ;
 import com.hp.hpl.jena.sparql.engine.main.iterator.QueryIterLeftJoin ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
+import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.lang.sparql_11.SPARQLParser11 ;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
 import com.hp.hpl.jena.sparql.sse.Item ;
@@ -109,11 +110,33 @@ public class RunARQ
     
     public static void main(String[] argv) throws Exception
     {
-
-        Node d1 = Node.createLiteral("-PT1H", //"-PT1H1M1S", 
+        
+        /*
+        3.2.10 gYearMonth   dddd-mm
+        3.2.11 gYear        dddd
+        3.2.12 gMonthDay    --MM-DD
+        3.2.13 gDay         ---DD
+        3.2.14 gMonth       --MM
+         */
+        Node d1 = Node.createLiteral("2010", 
                                      null, 
-                                     XSDDatatype.XSDduration) ;
-        System.out.println(d1.getLiteral().isWellFormed()) ;
+                                     XSDDatatype.XSDgYear) ;
+        Node d2 = Node.createLiteral("2010-03", 
+                                     null, 
+                                     XSDDatatype.XSDgYearMonth) ;
+        
+        System.out.println("d1="+d1+" : "+d1.getLiteral().isWellFormed()) ;
+        System.out.println("d2="+d2+" : "+d2.getLiteral().isWellFormed()) ;
+
+        NodeValue nv1 = NodeValue.makeNode(d1) ;  
+        NodeValue nv2 = NodeValue.makeNode(d2) ;  
+        
+
+        System.out.println("sameValue     = "+NodeValue.sameAs(nv1, nv2)) ;
+        System.out.println("notSameValue  = "+NodeValue.notSameAs(nv1, nv2)) ;
+        //System.out.println("compare       = "+NodeValue.compare(nv1, nv2)) ;
+        System.out.println("compare2      = "+NodeValue.compareAlways(nv1, nv2)) ;
+        
         System.exit(0) ;
         
         

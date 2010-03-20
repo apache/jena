@@ -12,6 +12,11 @@ public class DevARQ
     // Durations - when? how?
     // ----
     
+    // gYear/gYearMonth etc
+    //  Need specific classes NodeValueGYear etc - return XSDDateTime.
+    //  Each a value space as not comparable.
+    //   Can't be cross compared.
+    
     // Sort out DatasetGraph:
     // DatasetGraphMem 
     // Down play DataSource[Graph]

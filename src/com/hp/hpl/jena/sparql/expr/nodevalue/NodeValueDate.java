@@ -33,7 +33,7 @@ public class NodeValueDate extends NodeValue
     @Override
     public boolean isDate() { return true ; }
     @Override
-    public XSDDateTime getDate()     { return date ; }
+    public XSDDateTime getDateTime()     { return date ; }
     
     @Override
     protected Node makeNode()

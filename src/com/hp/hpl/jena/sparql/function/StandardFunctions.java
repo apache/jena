@@ -46,6 +46,7 @@ public class StandardFunctions
         
         addCast(registry, XSDDatatype.XSDdateTime) ;
         addCast(registry, XSDDatatype.XSDdate) ;
+        addCast(registry, XSDDatatype.XSDduration) ;
         
         addCast(registry, XSDDatatype.XSDboolean) ;
         addCast(registry, XSDDatatype.XSDstring) ;
@@ -53,8 +54,11 @@ public class StandardFunctions
         addCast(registry, XSDDatatype.XSDanyURI) ;
         
         addCast(registry, XSDDatatype.XSDgYear) ;
-        addCast(registry, XSDDatatype.XSDgYear) ;
-        
+        addCast(registry, XSDDatatype.XSDgYearMonth) ;
+        addCast(registry, XSDDatatype.XSDgMonth) ;
+        addCast(registry, XSDDatatype.XSDgMonthDay) ;
+        addCast(registry, XSDDatatype.XSDgDay) ;
+
         //TODO op:numeric-greater-than etc.
         
         add(registry, xfn+"boolean", BEV.class) ;

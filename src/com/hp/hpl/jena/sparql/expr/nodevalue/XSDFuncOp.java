@@ -18,7 +18,7 @@ import com.hp.hpl.jena.sparql.expr.NodeValue;
 import com.hp.hpl.jena.sparql.util.ALog;
 import com.hp.hpl.jena.sparql.util.DateTimeStruct;
 import com.hp.hpl.jena.sparql.util.StringUtils;
-
+import static com.hp.hpl.jena.sparql.expr.nodevalue.NumericType.* ;
 /**
  * Implementation of XQuery/XPath functions and operators.
  * http://www.w3.org/TR/xpath-functions/
@@ -218,7 +218,7 @@ public class XSDFuncOp
     public static NodeValue unaryPlus(NodeValue nv) // F&O numeric-unary-plus
     {
         // Not quite a no-op - tests for a number
-        int opType = classifyNumeric("unaryPlus", nv) ;
+        NumericType opType = classifyNumeric("unaryPlus", nv) ;
         return nv ;
     }
 
@@ -442,16 +442,7 @@ public class XSDFuncOp
             throw new ExprEvalException("Not a string (second arg): "+str2) ;
     }
     
-    private static final int OP_INTEGER  = 10 ;
-    private static final int OP_DECIMAL  = 20 ;
-    private static final int OP_DOUBLE   = 30 ;
-    private static final int OP_FLOAT    = 40 ;
-    
-    // Classify the input arguments
-    // Preference is integer > decimal > float > double
-    // Note the need for coordination with NodeValueTYPE isTYPE and getTYPE operations.
-    
-    public static int classifyNumeric(String fName, NodeValue nv1, NodeValue nv2)
+    public static NumericType classifyNumeric(String fName, NodeValue nv1, NodeValue nv2)
     {
         if ( !nv1.isNumber() )
             throw new ExprEvalException("Not a number (first arg to "+fName+"): "+nv1) ;
@@ -501,7 +492,7 @@ public class XSDFuncOp
         throw new ARQInternalErrorException("Numeric op unrecognized (first arg to "+fName+"): "+nv1) ;
     }
     
-    public static int classifyNumeric(String fName, NodeValue nv)
+    public static NumericType classifyNumeric(String fName, NodeValue nv)
     {
         if ( ! nv.isNumber() )
             throw new ExprEvalException("Not a number: ("+fName+") "+nv) ;
@@ -529,7 +520,7 @@ public class XSDFuncOp
     
     public static int compareNumeric(NodeValue nv1, NodeValue nv2)
     {
-        int opType = classifyNumeric("compareNumeric", nv1, nv2) ;
+        NumericType opType = classifyNumeric("compareNumeric", nv1, nv2) ;
 
         switch (opType)
         {
@@ -573,7 +564,11 @@ public class XSDFuncOp
     // works for dates as well because they are implemented as dateTimes on their start point.
 
     /**
-     * Under strict F&O, dateTimes and dates with no timezone have one magcially applied. This default tiemzoine is impementation dependent and can lead to different answers to queries depending on the timezone. Normally, ARQ uses XMLSchema dateTime comparions, which an yield "indeterminate", which in turn is an evaluation error. F&O insists on true/false so can lkead to false positves and negatives. 
+     * Under strict F&O, dateTimes and dates with no timezone have one magically applied. 
+     * This default tiemzoine is implementation dependent and can lead to different answers
+     *  to queries depending on the timezone. Normally, ARQ uses XMLSchema dateTime comparions,
+     *  which an yield "indeterminate", which in turn is an evaluation error. 
+     *  F&O insists on true/false so can lead to false positves and negatives. 
      */
     public static boolean strictDateTimeFO = false ;
 
@@ -584,25 +579,46 @@ public class XSDFuncOp
         return compareXSDDateTime(nv1.getDateTime(), nv2.getDateTime()) ;
     }
 
-    public static int compareDate(NodeValue nv1, NodeValue nv2)
-    { 
-        if ( strictDateTimeFO )
-            return compareDateFO(nv1, nv2) ;
-        return compareXSDDateTime(nv1.getDate(), nv2.getDate()) ;
-    }
-    
-    public static int compareTime(NodeValue nv1, NodeValue nv2)
-    { 
-        if ( strictDateTimeFO )
-            return compareDateFO(nv1, nv2) ;
-        return compareXSDDateTime(nv1.getTime(), nv2.getTime()) ;
-    }
+//    public static int compareDate(NodeValue nv1, NodeValue nv2)
+//    { 
+//        if ( strictDateTimeFO )
+//            return compareDateFO(nv1, nv2) ;
+//        return compareXSDDateTime(nv1.getDateTime(), nv2.getDateTime()) ;
+//    }
+//    
+//    public static int compareTime(NodeValue nv1, NodeValue nv2)
+//    { 
+//        if ( strictDateTimeFO )
+//            return compareDateFO(nv1, nv2) ;
+//        return compareXSDDateTime(nv1.getDateTime(), nv2.getDateTime()) ;
+//    }
     
     public static int compareDuration(NodeValue nv1, NodeValue nv2)
     { 
         return compareXSDDuration(nv1.getDuration(), nv2.getDuration()) ;
     }
 
+    public static int compareGYear(NodeValue nv1, NodeValue nv2)
+    {
+        return -99 ;
+    }
+    public static int compareGYearMonth(NodeValue nv1, NodeValue nv2)
+    {
+        return -99 ;
+    }
+    public static int compareGMonth(NodeValue nv1, NodeValue nv2)
+    {
+        return -99 ;
+    }
+    public static int compareGMonthDay(NodeValue nv1, NodeValue nv2)
+    {
+        return -99 ;
+    }
+    public static int compareGDay(NodeValue nv1, NodeValue nv2)
+    {
+        return -99 ;
+    }
+    
     public static final String defaultTimezone = "Z" ;
     
     private static int compareDateTimeFO(NodeValue nv1, NodeValue nv2)
@@ -640,19 +656,20 @@ public class XSDFuncOp
         
     }
     
-    // This only diffres by some "dateTime" => "date" 
+    // XXX Remove
+    // This only differs by some "dateTime" => "date" 
     private static int compareDateFO(NodeValue nv1, NodeValue nv2)
     {
-        XSDDateTime dt1 = nv1.getDate() ;
-        XSDDateTime dt2 = nv2.getDate() ;
+        XSDDateTime dt1 = nv1.getDateTime() ;
+        XSDDateTime dt2 = nv2.getDateTime() ;
 
-        int x =  compareXSDDateTime(dt1, dt2) ;    // Yes - compareDateTIme
+        int x = compareXSDDateTime(dt1, dt2) ;    // Yes - compareDateTIme
         if ( x == XSDDateTime.INDETERMINATE )
         {
             NodeValue nv3 = fixupDate(nv1) ;
             if ( nv3 != null )
             {
-                XSDDateTime dt3 = nv3.getDate() ; 
+                XSDDateTime dt3 = nv3.getDateTime() ; 
                 x =  compareXSDDateTime(dt3, dt2) ;
                 if ( x == XSDDateTime.INDETERMINATE )
                     throw new ARQInternalErrorException("Still get indeterminate comparison") ;
@@ -662,7 +679,7 @@ public class XSDFuncOp
             nv3 = fixupDate(nv2) ;
             if ( nv3 != null )
             {
-                XSDDateTime dt3 = nv3.getDate() ; 
+                XSDDateTime dt3 = nv3.getDateTime() ; 
                 x =  compareXSDDateTime(dt1, dt3) ;
                 if ( x == XSDDateTime.INDETERMINATE )
                     throw new ARQInternalErrorException("Still get indeterminate comparison") ;
@@ -679,13 +696,11 @@ public class XSDFuncOp
         DateTimeStruct dts = DateTimeStruct.parseDateTime(nv.asNode().getLiteralLexicalForm()) ;
         if ( dts.timezone != null )
             return null ;
-        {
-            dts.timezone = defaultTimezone ;
-            nv = NodeValue.makeDateTime(dts.toString()) ;
-            if ( ! nv.isDateTime() )
-                throw new ARQInternalErrorException("Failed to reform an xsd:dateTime") ;
-            return nv ;
-        }
+        dts.timezone = defaultTimezone ;
+        nv = NodeValue.makeDateTime(dts.toString()) ;
+        if ( ! nv.isDateTime() )
+            throw new ARQInternalErrorException("Failed to reform an xsd:dateTime") ;
+        return nv ;
     }
     
     private static NodeValue fixupDate(NodeValue nv)
@@ -693,13 +708,11 @@ public class XSDFuncOp
         DateTimeStruct dts = DateTimeStruct.parseDate(nv.asNode().getLiteralLexicalForm()) ;
         if ( dts.timezone != null )
             return null ;
-        {
-            dts.timezone = defaultTimezone ;
-            nv = NodeValue.makeDate(dts.toString()) ;
-            if ( ! nv.isDate() )
-                throw new ARQInternalErrorException("Failed to reform an xsd:date") ;
-            return nv ;
-        }
+        dts.timezone = defaultTimezone ;
+        nv = NodeValue.makeDate(dts.toString()) ;
+        if ( ! nv.isDate() )
+            throw new ARQInternalErrorException("Failed to reform an xsd:date") ;
+        return nv ;
     }
 
     private static int compareXSDDateTime(XSDDateTime dt1 , XSDDateTime dt2)
@@ -738,19 +751,6 @@ public class XSDFuncOp
             return Expr.CMP_INDETERMINATE ;
         throw new ARQInternalErrorException("Unexpected return from XSDDuration.compare: "+x) ;
     }
-
-//    private static int compareCal(Calendar cal1 , Calendar cal2)
-//    {
-//        if ( cal1.after(cal2) )
-//            return Expr.CMP_GREATER ; 
-//
-//        if ( cal1.before(cal2) )
-//            return Expr.CMP_LESS ;
-//
-//        return Expr.CMP_EQUAL ;
-//        // Java 1.5.0 , not Java 1.4.2
-//        //return cal1.compareTo(cal2) ;
-//    }
 
     // --------------------------------
     // Boolean operations

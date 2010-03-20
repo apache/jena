@@ -17,6 +17,7 @@ import org.junit.Test ;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp ;
+import com.hp.hpl.jena.sparql.sse.SSE ;
 
 public class TestNodeValue extends TestCase
 {
@@ -211,7 +212,7 @@ public class TestNodeValue extends TestCase
     {
         NodeValue v1 = NodeValue.makeDate("2005-02-18+01:00") ;
         NodeValue v2 = NodeValue.makeNodeDate("2005-02-18+01:00") ;
-        assertEquals("Not Calendar.equals: ", v1.getDate(), v2.getDate()) ; 
+        assertEquals("Not Calendar.equals: ", v1.getDateTime(), v2.getDateTime()) ; 
     }
 
     @Test public void testDate4()
@@ -227,7 +228,7 @@ public class TestNodeValue extends TestCase
         assertTrue("Not a date: "+v, v.isDate()) ;
         assertFalse("A dateTime: "+v, v.isDateTime()) ;
         assertTrue("Not a node: "+v, v.hasNode()) ;
-        Calendar cal2 = v.getDate().asCalendar() ;
+        Calendar cal2 = v.getDateTime().asCalendar() ;
         assertEquals("Not equal: "+v, cal1, cal2) ;
     }
 
@@ -379,6 +380,63 @@ public class TestNodeValue extends TestCase
         //assertTrue("Not a node: "+v, v.hasNode()) ;
         assertFalse("Not false: "+v, v.getBoolean()) ;
         assertFalse("Not false: "+v, XSDFuncOp.booleanEffectiveValue(v)) ;
+    }
+    
+    static NodeValue make(String str)
+    {
+        Node n = SSE.parseNode(str) ;
+        NodeValue nv = NodeValue.makeNode(n) ;
+        return nv ;
+    }
+    
+    @Test public void gregorian_01() { 
+        NodeValue nv = make("'1999'^^xsd:gYear") ;
+
+        assertTrue(nv.isGYear()) ; 
+        assertFalse(nv.isGYearMonth()) ; 
+        assertFalse(nv.isGMonth()) ; 
+        assertFalse(nv.isGMonthDay()) ; 
+        assertFalse(nv.isGDay()) ; 
+    }
+    
+    @Test public void gregorian_02() { 
+        NodeValue nv = make("'1999-01'^^xsd:gYearMonth") ;
+
+        assertFalse(nv.isGYear()) ; 
+        assertTrue(nv.isGYearMonth()) ; 
+        assertFalse(nv.isGMonth()) ; 
+        assertFalse(nv.isGMonthDay()) ; 
+        assertFalse(nv.isGDay()) ; 
+    }
+
+    @Test public void gregorian_03() { 
+        NodeValue nv = make("'--01'^^xsd:gMonth") ;
+
+        assertFalse(nv.isGYear()) ; 
+        assertFalse(nv.isGYearMonth()) ; 
+        assertTrue(nv.isGMonth()) ; 
+        assertFalse(nv.isGMonthDay()) ; 
+        assertFalse(nv.isGDay()) ; 
+    }
+    
+    @Test public void gregorian_04() { 
+        NodeValue nv = make("'--01-30'^^xsd:gMonthDay") ;
+
+        assertFalse(nv.isGYear()) ; 
+        assertFalse(nv.isGYearMonth()) ; 
+        assertFalse(nv.isGMonth()) ; 
+        assertTrue(nv.isGMonthDay()) ; 
+        assertFalse(nv.isGDay()) ; 
+    }
+    
+    @Test public void gregorian_05() { 
+        NodeValue nv = make("'---30'^^xsd:gDay") ;
+
+        assertFalse(nv.isGYear()) ; 
+        assertFalse(nv.isGYearMonth()) ; 
+        assertFalse(nv.isGMonth()) ; 
+        assertFalse(nv.isGMonthDay()) ; 
+        assertTrue(nv.isGDay()) ; 
     }
 
     @Test public void testBadLexcial1()

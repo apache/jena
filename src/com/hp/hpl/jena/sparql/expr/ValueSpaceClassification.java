@@ -9,14 +9,21 @@ package com.hp.hpl.jena.sparql.expr;
 enum ValueSpaceClassification {
     VSPACE_NODE,
     VSPACE_NUM, 
-    VSPACE_DATETIME, VSPACE_DATETIME_TZ, 
+    VSPACE_DATETIME, 
+    VSPACE_DATE,
+    VSPACE_TIME,
     VSPACE_DURATION,
-    VSPACE_DATE, VSPACE_DATE_TZ, VSPACE_DATE_NO_TZ,
+    
+    VSPACE_G_YEAR,
+    VSPACE_G_YEARMONTH,
+    VSPACE_G_MONTHDAY,
+    VSPACE_G_MONTH,    
+    VSPACE_G_DAY,
+    
     VSPACE_STRING, VSPACE_LANG,
     VSPACE_BOOLEAN,
     VSPACE_UNKNOWN,
-    VSPACE_DIFFERENT,
-    VSPACE_TIME
+    VSPACE_DIFFERENT
 }
 /*
  * (c) Copyright 2010 Talis Information Ltd.

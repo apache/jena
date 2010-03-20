@@ -19,8 +19,12 @@ public interface NodeValueVisitor
     public void visit(NodeValueString nv) ;
     public void visit(NodeValueTime nv) ;
 	public void visit(NodeValueDuration nodeValueDuration);
-    
-    //public void visit(NodeValue nv) ;
+
+	public void visit(NodeValueGYear nv) ;
+    public void visit(NodeValueGYearMonth nv) ;
+    public void visit(NodeValueGMonth nv) ;
+    public void visit(NodeValueGMonthDay nv) ;
+    public void visit(NodeValueGDay nv) ;
 }
 
 /*

@@ -16,7 +16,8 @@ import org.junit.runners.Suite.SuiteClasses ;
     TestNodeValue.class 
     //, TestExpressions.class   //Not JUnit4 compatible.
     , TestFunctions.class
-    , TestNodeFunctions.class 
+    , TestNodeFunctions.class
+    , TestExpr.class
     , TestOrdering.class 
     , TestRegex.class
     , TestXSDFuncOp.class

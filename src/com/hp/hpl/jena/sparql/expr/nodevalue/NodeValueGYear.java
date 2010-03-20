@@ -11,35 +11,29 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.expr.ExprException;
 import com.hp.hpl.jena.sparql.expr.NodeValue;
 
-/** XSD Date (which is unrelated to XSD dateTime in the datatype hierarchy) */ 
-
-public class NodeValueTime extends NodeValue
+public class NodeValueGYear extends NodeValue
 {
-    XSDDateTime time ; 
+    XSDDateTime date ;
     
-    public NodeValueTime(XSDDateTime dt)
+    public NodeValueGYear(XSDDateTime dt)
     { 
-        time = dt ;
-        if (dt.getDays() != 0 && dt.getMonths() !=0 && dt.getYears() != 0) {
-        	throw new ExprException("Illegal time: "+dt) ;
-        }
-        if ( dt.getTimePart() == 0 ) 
-            throw new ExprException("Illegal time: "+dt) ;
+        date = dt ;
+        if ( dt.getTimePart() != 0 ) 
+            throw new ExprException("Illegal date: "+dt) ;
     }
     
-    public NodeValueTime(XSDDateTime dt, Node n) { super(n) ; time = dt ; }
+    public NodeValueGYear(XSDDateTime dt, Node n) { super(n) ; date = dt ; }
     
     @Override
-    public boolean isTime() { return true ; }
-    
+    public boolean isGYear() { return true ; }
     @Override
-    public XSDDateTime getDateTime()     { return time ; }
+    public XSDDateTime getDateTime()     { return date ; }
     
     @Override
     protected Node makeNode()
     {
-        String lex = time.toString() ;
-        return Node.createLiteral(lex, null, XSDDatatype.XSDtime) ;
+        String lex = date.toString() ;
+        return Node.createLiteral(lex, null, XSDDatatype.XSDgYear) ;
     }
     
     @Override
