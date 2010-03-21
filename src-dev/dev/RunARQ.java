@@ -42,7 +42,9 @@ import com.hp.hpl.jena.sparql.engine.main.LeftJoinClassifier ;
 import com.hp.hpl.jena.sparql.engine.main.QC ;
 import com.hp.hpl.jena.sparql.engine.main.iterator.QueryIterLeftJoin ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
+import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
+import com.hp.hpl.jena.sparql.function.FunctionEnvBase ;
 import com.hp.hpl.jena.sparql.lang.sparql_11.SPARQLParser11 ;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
 import com.hp.hpl.jena.sparql.sse.Item ;
@@ -52,13 +54,7 @@ import com.hp.hpl.jena.sparql.sse.SSEParseException ;
 import com.hp.hpl.jena.sparql.sse.WriterSSE ;
 import com.hp.hpl.jena.sparql.sse.builders.BuildException ;
 import com.hp.hpl.jena.sparql.sse.builders.BuilderExec ;
-import com.hp.hpl.jena.sparql.util.ALog ;
-import com.hp.hpl.jena.sparql.util.IndentedLineBuffer ;
-import com.hp.hpl.jena.sparql.util.IndentedWriter ;
-import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
-import com.hp.hpl.jena.sparql.util.StrUtils ;
-import com.hp.hpl.jena.sparql.util.StringUtils ;
-import com.hp.hpl.jena.sparql.util.Timer ;
+import com.hp.hpl.jena.sparql.util.* ;
 import com.hp.hpl.jena.util.FileManager ;
 
 public class RunARQ
@@ -85,6 +81,31 @@ public class RunARQ
     
     //@SuppressWarnings("deprecation")
     
+    public static NodeValue eval(String string)
+    {
+        try {
+            Expr expr = ExprUtils.parse(string) ;
+            return expr.eval(null, new FunctionEnvBase()) ;
+        } catch (ExprEvalException ex)
+        {
+            ex.printStackTrace(System.err) ;
+            return null ;
+        }
+    }
+    
+    public static void evalPrint(String string)
+    {
+        System.out.print(string) ;
+        System.out.print(" ==> ") ;
+        try {
+            Expr expr = ExprUtils.parse(string) ;
+            NodeValue nv = expr.eval(null, new FunctionEnvBase()) ;
+            System.out.println(nv) ;
+        } catch (ExprEvalException ex)
+        {
+            System.out.println(" ** "+ex) ;
+        }
+    }
    
     public static void main(String[] argv) throws Exception
     {
