@@ -9,13 +9,14 @@ public class DevARQ
 {
     // ==== ARQ 2.8.3
     
-    // Durations - when? how?
     // ----
     
     // gYear/gYearMonth etc
-    //  Need specific classes NodeValueGYear etc - return XSDDateTime.
-    //  Each a value space as not comparable.
-    //   Can't be cross compared.
+    // Special casting rules :  F&O 17.1.5 Casting to date and time types
+    // dateTime -> time
+    // dateTime -> date
+    // dateTime or date -> gYear, xs:gYearMonth, xs:gMonth, xs:gMonthDay, gDay
+    //  Each a value space as not directly comparable.
     
     // Sort out DatasetGraph:
     // DatasetGraphMem 

@@ -11,12 +11,18 @@ import java.io.Reader ;
 import java.io.StringReader ;
 import java.util.Iterator ;
 
+import javax.xml.datatype.DatatypeConfigurationException ;
+import javax.xml.datatype.DatatypeFactory ;
+import javax.xml.datatype.XMLGregorianCalendar ;
+
 import arq.sparql ;
 import arq.sse_query ;
 
 import com.hp.hpl.jena.Jena ;
+import com.hp.hpl.jena.datatypes.RDFDatatype ;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.datatypes.xsd.XSDDateTime ;
+import com.hp.hpl.jena.datatypes.xsd.impl.XSDAbstractDateTimeType ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.* ;
 import com.hp.hpl.jena.rdf.model.Model ;
@@ -70,17 +76,6 @@ public class RunARQ
     
     static { ALog.setLog4j() ; }
     
-//    public static void x(String str) 
-//    {
-//        System.out.println(str) ; 
-//        Item item = SSE.parse(str) ;
-//        ExprList exprList = BuilderExpr.buildExprOrExprList(item) ;
-//        System.out.println(exprList) ; 
-//        
-//    }
-    
-    //@SuppressWarnings("deprecation")
-    
     public static NodeValue eval(String string)
     {
         try {
@@ -107,6 +102,61 @@ public class RunARQ
         }
     }
    
+    // Special casting rules :  F&O 17.1.5 Casting to date and time types
+    // dateTime -> time
+    // dateTime -> date
+    // dateTime or date -> gYear, xs:gYearMonth, xs:gMonth, xs:gMonthDay, gDay
+    
+    // The XSD F&O rules for castring dateTimes.
+    public static NodeValue dateTimeCast(NodeValue nv, String typeURI) throws DatatypeConfigurationException
+    {
+       RDFDatatype dt = Node.getType(typeURI) ;
+       if ( ! ( dt instanceof XSDAbstractDateTimeType ) )
+           return null ;
+       XSDAbstractDateTimeType datatype = (XSDAbstractDateTimeType)dt ;
+       XMLGregorianCalendar c = DatatypeFactory.newInstance().newXMLGregorianCalendar() ;
+       
+       XSDDateTime xsdDT = nv.getDateTime() ;
+       
+       if ( XSDDatatype.XSDdateTime.equals(datatype) )
+       {
+           if ( nv.isDateTime() ) return nv ;
+           if ( ! nv.isDate() ) return null ;
+           // Append T00:00:00+Timezone
+           //c.setTimezone(xsdDT.??
+       }
+       
+       //XMLGregorianCalendar c = DatatypeFactory.newInstance().newXMLGregorianCalendar() ;
+       
+       if ( XSDDatatype.XSDdate.equals(datatype) )
+       {
+           if ( nv.isDate() ) return nv ;
+           if ( ! nv.isDateTime() ) return null ;
+               
+       }
+       
+       if ( XSDDatatype.XSDtime.equals(datatype) )
+       {}
+       
+       if ( XSDDatatype.XSDgYear.equals(datatype) )
+       {}
+           
+       if ( XSDDatatype.XSDgYearMonth.equals(datatype) )
+       {}
+           
+       if ( XSDDatatype.XSDgMonth.equals(datatype) )
+       {}
+       
+       if ( XSDDatatype.XSDgMonthDay.equals(datatype) )
+       {}
+       
+       if ( XSDDatatype.XSDgDay.equals(datatype) )
+       {}
+       
+       
+       return null ;
+    }
+    
     public static void main(String[] argv) throws Exception
     {
         {
@@ -162,50 +212,11 @@ public class RunARQ
 
         NodeValue nv1 = NodeValue.makeNode(d1) ;  
         NodeValue nv2 = NodeValue.makeNode(d2) ;  
-        
-
         System.out.println("sameValue     = "+NodeValue.sameAs(nv1, nv2)) ;
         System.out.println("notSameValue  = "+NodeValue.notSameAs(nv1, nv2)) ;
         //System.out.println("compare       = "+NodeValue.compare(nv1, nv2)) ;
         System.out.println("compare2      = "+NodeValue.compareAlways(nv1, nv2)) ;
         
-        System.exit(0) ;
-        
-        
-        sparql11update() ; System.exit(0) ;
-        System.exit(0) ;
-        
-        //execQuery("D.ttl", "P.arq") ;
-        arq.qparse.main("--print=opt", "--print=op", "--print=query", "SELECT * { ?x ?p ?o FILTER(?x IN (<x>,2,3) && ?x NOT IN (7,8,9)) }") ;
-        //arq.qparse.main("--print=opt", "--print=op", "--print=query", "SELECT * { ?x ?p ?o FILTER(1234 && (?x = <x> || ?z = <2> )) }") ;
-        //arq.qparse.main("--print=opt", "--print=op", "--print=query", "SELECT * { ?x ?p ?o FILTER(?x IN (1,2,3) ) }") ;
-        System.exit(0) ;
-        
-        //ARQ.getContext().setFalse(ARQ.filterPlacement) ;
-        
-        {
-            System.out.println(ARQ.VERSION); 
-            System.out.println(Jena.VERSION); 
-
-            Query query = QueryFactory.read("Q.rq") ;
-
-//            Op op = Algebra.compile(query.getQueryPattern()) ;
-//            Transform t = new TransformJoinStrategy(null) ;
-//            op = Transformer.transform(t, op) ;
-//            System.out.println(op) ; 
-//            System.exit(0) ;
-            
-            Model model = FileManager.get().loadModel("D.nt") ;
-            //Model model = null;
-            Timer timer = new Timer() ;
-            timer.startTimer() ;
-            exec(query, model) ;
-            long time = timer.endTimer() ;
-            System.out.printf("Time = %.2fs\n", time/1000.0) ;
-            System.exit(0) ;
-        }
-
-
         Query query = QueryFactory.create("SELECT * { FILTER ($a = 1 || $a = 2) }");
         Model model = ModelFactory.createDefaultModel();
         QuerySolutionMap map = new QuerySolutionMap();
@@ -260,6 +271,29 @@ public class RunARQ
             ALog.fatal(RunARQ.class, "Unexpected throwable: ",th) ;
             throw new QueryException(th.getMessage(), th) ;
         }
+    }
+    
+    private static void execTimed()
+    {
+        System.out.println(ARQ.VERSION); 
+        System.out.println(Jena.VERSION); 
+
+        Query query = QueryFactory.read("Q.rq") ;
+
+//        Op op = Algebra.compile(query.getQueryPattern()) ;
+//        Transform t = new TransformJoinStrategy(null) ;
+//        op = Transformer.transform(t, op) ;
+//        System.out.println(op) ; 
+//        System.exit(0) ;
+        
+        Model model = FileManager.get().loadModel("D.nt") ;
+        //Model model = null;
+        Timer timer = new Timer() ;
+        timer.startTimer() ;
+        exec(query, model) ;
+        long time = timer.endTimer() ;
+        System.out.printf("Time = %.2fs\n", time/1000.0) ;
+        System.exit(0) ;
     }
 
     private static void exec(Query query, Model model)
