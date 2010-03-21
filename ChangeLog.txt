@@ -7,6 +7,7 @@ ChangeLog for ARQ
 + Added IN and NOT IN operators
 + Add built-in function LANG(string, string) to make a literal with a language tag.
 + Add built-in function IRI(string) to make an IRI.
++ Add support for xsd:gYear/gYearMonth/gMonth/gMonthDay/gDay 
 + Results output in CSV and TSV.
 + Add "negative property classed" (experimental)
   !rdf:type matches anything except rdf:type

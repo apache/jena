@@ -16,7 +16,7 @@ import arq.sse_query ;
 
 import com.hp.hpl.jena.Jena ;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
-import com.hp.hpl.jena.datatypes.xsd.XSDDuration ;
+import com.hp.hpl.jena.datatypes.xsd.XSDDateTime ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.* ;
 import com.hp.hpl.jena.rdf.model.Model ;
@@ -85,32 +85,43 @@ public class RunARQ
     
     //@SuppressWarnings("deprecation")
     
-    public static void run()
-    {
-        
-        
-        
-        Node d1 = Node.createLiteral("PT1H1M1S", 
-                                     null, 
-                                     XSDDatatype.XSDduration) ;
-        Node d2 = Node.createLiteral("PT1H1M1.1S", 
-                                     null, 
-                                     XSDDatatype.XSDduration) ;
-        System.out.println(d1.getLiteral().isWellFormed()) ;
-        System.out.println(d2.getLiteral().isWellFormed()) ;
-        
-        
-        XSDDuration dur1 = 
-            (XSDDuration)d1.getLiteralValue() ;
-        XSDDuration dur2 = 
-            (XSDDuration)d2.getLiteralValue() ;
-        int cmp = dur1.compare(dur2) ;
-        System.out.println("Compare = "+cmp) ;
-    }
-    
+   
     public static void main(String[] argv) throws Exception
     {
-        
+        {
+            Node d1 = Node.createLiteral("1970-02-01T00:00:00", 
+                                         null, 
+                                         XSDDatatype.XSDdateTime) ;
+            Node d2 = Node.createLiteral("1970-02-01", 
+                                         null, 
+                                         XSDDatatype.XSDdate) ;
+//            Node d2 = Node.createLiteral("1999-01", null, XSDDatatype.XSDgYearMonth) ;
+            System.out.println(d1.getLiteral().isWellFormed()) ;
+            System.out.println(d2.getLiteral().isWellFormed()) ;
+
+
+            XSDDateTime dt1 = 
+                (XSDDateTime)d1.getLiteralValue() ;
+            XSDDateTime dt2 = 
+                (XSDDateTime)d2.getLiteralValue() ;
+
+            System.out.println(dt1) ;
+            System.out.println(dt2) ;
+
+            int cmp = dt1.compare(dt2) ;
+            System.out.println("Compare = "+cmp) ;
+            
+            NodeValue nv1 = NodeValue.makeNode(d1) ;  
+            NodeValue nv2 = NodeValue.makeNode(d2) ;  
+            
+
+            System.out.println("sameValue     = "+NodeValue.sameAs(nv1, nv2)) ;
+            System.out.println("notSameValue  = "+NodeValue.notSameAs(nv1, nv2)) ;
+            //System.out.println("compare       = "+NodeValue.compare(nv1, nv2)) ;
+            System.out.println("compare2      = "+NodeValue.compareAlways(nv1, nv2)) ;
+            
+            System.exit(0) ;
+        }
         /*
         3.2.10 gYearMonth   dddd-mm
         3.2.11 gYear        dddd

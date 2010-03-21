@@ -20,28 +20,28 @@ import com.hp.hpl.jena.sparql.util.ExprUtils ;
 public class TestExpr extends Assert
 {
     
-    @Test public void gregorian_eq_01()       { eval("'1999'^^xsd:gYear = '1999'^^xsd:gYear", true) ; }
-    @Test public void gregorian_eq_02()       { eval("'1999'^^xsd:gYear != '1999'^^xsd:gYear", false) ; }
+    @Test public void gregorian_eq_01()         { eval("'1999'^^xsd:gYear = '1999'^^xsd:gYear", true) ; }
+    @Test public void gregorian_eq_02()         { eval("'1999'^^xsd:gYear != '1999'^^xsd:gYear", false) ; }
     
     @Test (expected=ExprEvalException.class)
-    public void gregorian_eq_03()           { eval("'1999'^^xsd:gYear = '1999Z'^^xsd:gYear", false) ; }
+    public void gregorian_eq_03()               { eval("'1999'^^xsd:gYear = '1999Z'^^xsd:gYear", false) ; }
 
-    @Test  public void gregorian_eq_04()           { eval("'1999'^^xsd:gYear = '2001Z'^^xsd:gYear", false) ; }
+    @Test  public void gregorian_eq_04()        { eval("'1999'^^xsd:gYear = '2001Z'^^xsd:gYear", false) ; }
     
     // Different value spaces => different.
-    @Test public void gregorian_eq_05()           { eval("'1999-01'^^xsd:gYearMonth != '2001Z'^^xsd:gYear", true) ; }
+    @Test public void gregorian_eq_05()         { eval("'1999-01'^^xsd:gYearMonth != '2001Z'^^xsd:gYear", true) ; }
 
-    @Test public void gregorian_eq_06()           { eval("'--01'^^xsd:gMonth != '--01-25'^^xsd:gMonthDay", true) ; }
-    @Test public void gregorian_eq_07()           { eval("'---25'^^xsd:gDay = '---25'^^xsd:gDay", true) ; }
-    @Test public void gregorian_eq_08()           { eval("'1999-01'^^xsd:gYearMonth != '2001Z'^^xsd:gYear", true) ; }
-    @Test public void gregorian_eq_09()           { eval("'1999-01'^^xsd:gYearMonth != '2001Z'^^xsd:gYear", true) ; }
+    @Test public void gregorian_eq_06()         { eval("'--01'^^xsd:gMonth != '--01-25'^^xsd:gMonthDay", true) ; }
+    @Test public void gregorian_eq_07()         { eval("'---25'^^xsd:gDay = '---25'^^xsd:gDay", true) ; }
+    @Test public void gregorian_eq_08()         { eval("'1999-01'^^xsd:gYearMonth != '2001Z'^^xsd:gYear", true) ; }
+    @Test public void gregorian_eq_09()         { eval("'1999-01'^^xsd:gYearMonth != '2001Z'^^xsd:gYear", true) ; }
     
-    @Test public void gregorian_cmp_01()       { eval("'1999'^^xsd:gYear < '2000'^^xsd:gYear", true) ; }
-    @Test public void gregorian_cmp_02()       { eval("'1999'^^xsd:gYear > '2000'^^xsd:gYear", false) ; }
-    @Test public void gregorian_cmp_03()       { eval("'1999'^^xsd:gYear < '2000+01:00'^^xsd:gYear", true) ; }
+    @Test public void gregorian_cmp_01()        { eval("'1999'^^xsd:gYear < '2000'^^xsd:gYear", true) ; }
+    @Test public void gregorian_cmp_02()        { eval("'1999'^^xsd:gYear > '2000'^^xsd:gYear", false) ; }
+    @Test public void gregorian_cmp_03()        { eval("'1999'^^xsd:gYear < '2000+01:00'^^xsd:gYear", true) ; }
 
     @Test (expected=ExprEvalException.class)
-    public void gregorian_cmp_04()       { eval("'1999'^^xsd:gYear < '1999+05:00'^^xsd:gYear", false) ; }
+    public void gregorian_cmp_04()              { eval("'1999'^^xsd:gYear < '1999+05:00'^^xsd:gYear", false) ; }
     
     
     
