@@ -9,24 +9,16 @@ package com.hp.hpl.jena.sparql.expr;
 import org.junit.Assert ;
 import org.junit.Test ;
 
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.sparql.expr.Expr ;
-import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
-import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp ;
-import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.sparql.util.ExprUtils ;
 
-/** New (ARQ 2.8.3) expression testsing test suite
+/** New (ARQ 2.8.3) expression testing test suite
 * @see TestExpressions
 * @see TestExprLib
 * @see TestNodeValue
 */
 public class TestExpr extends Assert
 {
-    //private static Node n_gYear1 = SSE.parseNode("'1999^^xsd:gYear") ;
-    
-    
     
     @Test public void gregorian_eq_01()       { eval("'1999'^^xsd:gYear = '1999'^^xsd:gYear", true) ; }
     @Test public void gregorian_eq_02()       { eval("'1999'^^xsd:gYear != '1999'^^xsd:gYear", false) ; }
