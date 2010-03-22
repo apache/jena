@@ -4,6 +4,8 @@ public class DevTDB
 {
     // == 0.8.5 / ARQ 2.8.3
     // Per datasetGraph feature enabling.
+    // Assembler support - not property files.
+    
     // mavenization: modularization?
     //   many subproject, different version and releases.
     // ----
@@ -29,6 +31,8 @@ public class DevTDB
     
     // Stats and datasets
     //   tdbstats
+    
+    // Use  $(cygpath -wp "$jar")" when setting $jar.
     
     // RIOT
     //     NQuads in Trig ??
