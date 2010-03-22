@@ -263,6 +263,7 @@ NON-TERMINALS
 		|	<IS_LITERAL> <LPAREN> Expression <RPAREN>
 		|	RegexExpression
 	RegexExpression	:=	<REGEX> <LPAREN> Expression <COMMA> Expression ( <COMMA> Expression )? <RPAREN>
+// See also FunctionCall.
 // The case of "q:name()" or "q:agg[]()" or just "q:name"
 // by expanding out FunctionCall()
 	IRIrefOrFunction	:=	IRIref ( ArgList )?

@@ -372,9 +372,13 @@ Expr Constraint() : { Expr c ; }
 }
 
 
-Expr FunctionCall() : { String fname ; ExprList a ; }
+Expr FunctionCall() : { String fname ; ExprList a ;
+                        ExprList aParam = null ;
+                        boolean distinct = false ;}
 {
-  fname = IRIref() a = ArgList()
+
+  fname = IRIref()
+   a = ArgList()
     { return new E_Function(fname, a) ; }
 }
 
@@ -795,10 +799,13 @@ Expr RegexExpression() :
     <RPAREN>
       { return new E_Regex(expr, patExpr, flagsExpr) ; }
 }
+// See also FunctionCall.
 // The case of "q:name()" or "q:agg[]()" or just "q:name"
 // by expanding out FunctionCall()
 
-Expr IRIrefOrFunction() : { String iri ; ExprList a = null ; ExprList aParam = null ; boolean distinct = false ; }
+Expr IRIrefOrFunction() : { String iri ; ExprList a = null ;
+                            ExprList aParam = null ;
+                            boolean distinct = false ; }
 {
   iri = IRIref()
   ( a = ArgList() )?

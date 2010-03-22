@@ -1,6 +1,6 @@
 /*
- * (c) Copyright 2007, 2008, ;
- * 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Information Ltd
  * All rights reserved.
  * [See end of file]
  */
@@ -9,20 +9,15 @@ package dev;
 
 import java.io.Reader ;
 import java.io.StringReader ;
+import java.text.DecimalFormat ;
 import java.util.Iterator ;
 
-import javax.xml.datatype.DatatypeConfigurationException ;
-import javax.xml.datatype.DatatypeFactory ;
-import javax.xml.datatype.XMLGregorianCalendar ;
-
 import arq.sparql ;
-import arq.sse_query ;
 
 import com.hp.hpl.jena.Jena ;
 import com.hp.hpl.jena.datatypes.RDFDatatype ;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.datatypes.xsd.XSDDateTime ;
-import com.hp.hpl.jena.datatypes.xsd.impl.XSDAbstractDateTimeType ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.* ;
 import com.hp.hpl.jena.rdf.model.Model ;
@@ -31,22 +26,14 @@ import com.hp.hpl.jena.shared.JenaException ;
 import com.hp.hpl.jena.sparql.algebra.Algebra ;
 import com.hp.hpl.jena.sparql.algebra.ExtBuilder ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
-import com.hp.hpl.jena.sparql.algebra.OpAsQuery ;
 import com.hp.hpl.jena.sparql.algebra.OpExtRegistry ;
 import com.hp.hpl.jena.sparql.algebra.op.OpExt ;
 import com.hp.hpl.jena.sparql.algebra.op.OpFetch ;
 import com.hp.hpl.jena.sparql.algebra.op.OpFilter ;
-import com.hp.hpl.jena.sparql.algebra.op.OpJoin ;
-import com.hp.hpl.jena.sparql.algebra.op.OpLeftJoin ;
 import com.hp.hpl.jena.sparql.core.Prologue ;
 import com.hp.hpl.jena.sparql.core.QueryCheckException ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
-import com.hp.hpl.jena.sparql.engine.binding.BindingRoot ;
-import com.hp.hpl.jena.sparql.engine.main.JoinClassifier ;
-import com.hp.hpl.jena.sparql.engine.main.LeftJoinClassifier ;
-import com.hp.hpl.jena.sparql.engine.main.QC ;
-import com.hp.hpl.jena.sparql.engine.main.iterator.QueryIterLeftJoin ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
@@ -59,8 +46,12 @@ import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.sparql.sse.SSEParseException ;
 import com.hp.hpl.jena.sparql.sse.WriterSSE ;
 import com.hp.hpl.jena.sparql.sse.builders.BuildException ;
-import com.hp.hpl.jena.sparql.sse.builders.BuilderExec ;
-import com.hp.hpl.jena.sparql.util.* ;
+import com.hp.hpl.jena.sparql.util.ALog ;
+import com.hp.hpl.jena.sparql.util.ExprUtils ;
+import com.hp.hpl.jena.sparql.util.IndentedLineBuffer ;
+import com.hp.hpl.jena.sparql.util.IndentedWriter ;
+import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
+import com.hp.hpl.jena.sparql.util.Timer ;
 import com.hp.hpl.jena.util.FileManager ;
 
 public class RunARQ
@@ -107,89 +98,126 @@ public class RunARQ
     // dateTime -> date
     // dateTime or date -> gYear, xs:gYearMonth, xs:gMonth, xs:gMonthDay, gDay
     
-    // The XSD F&O rules for castring dateTimes.
-    public static NodeValue dateTimeCast(NodeValue nv, String typeURI) throws DatatypeConfigurationException
+    // The XSD F&O rules for casting dateTimes.
+    public static NodeValue dateTimeCast(NodeValue nv, String typeURI)  //throws DatatypeConfigurationException
     {
-       RDFDatatype dt = Node.getType(typeURI) ;
-       if ( ! ( dt instanceof XSDAbstractDateTimeType ) )
+       RDFDatatype t = Node.getType(typeURI) ;
+       if ( ! ( t instanceof XSDDatatype ) )
            return null ;
-       XSDAbstractDateTimeType datatype = (XSDAbstractDateTimeType)dt ;
-       XMLGregorianCalendar c = DatatypeFactory.newInstance().newXMLGregorianCalendar() ;
+       XSDDatatype xsd = (XSDDatatype)t ;
+       return dateTimeCast(nv, xsd) ;
+    }
        
+    public static NodeValue dateTimeCast(NodeValue nv, XSDDatatype xsd)
+    {
        XSDDateTime xsdDT = nv.getDateTime() ;
        
-       if ( XSDDatatype.XSDdateTime.equals(datatype) )
+       if ( XSDDatatype.XSDdateTime.equals(xsd) )
        {
+           // ==> DateTime
            if ( nv.isDateTime() ) return nv ;
            if ( ! nv.isDate() ) return null ;
-           // Append T00:00:00+Timezone
-           //c.setTimezone(xsdDT.??
+           // DateTime with time 00:00:00
+           String x = String.format("%04d-%02-%02dT00:00:00", xsdDT.getYears(), xsdDT.getMonths(),xsdDT.getDays()) ;
+           return NodeValue.makeNode(x, xsd) ;
        }
        
-       //XMLGregorianCalendar c = DatatypeFactory.newInstance().newXMLGregorianCalendar() ;
-       
-       if ( XSDDatatype.XSDdate.equals(datatype) )
+       if ( XSDDatatype.XSDdate.equals(xsd) )
        {
+           // ==> Date
            if ( nv.isDate() ) return nv ;
            if ( ! nv.isDateTime() ) return null ;
-               
+           String x = String.format("%04d-%02-%02d", xsdDT.getYears(), xsdDT.getMonths(),xsdDT.getDays()) ;
+           return NodeValue.makeNode(x, xsd) ;
        }
        
-       if ( XSDDatatype.XSDtime.equals(datatype) )
-       {}
+       if ( XSDDatatype.XSDtime.equals(xsd) )
+       {
+           // ==> time
+           if ( nv.isTime() ) return nv ;
+           if ( ! nv.isDateTime() ) return null ;
+           // Careful foratting 
+           DecimalFormat nf = new DecimalFormat("00.####") ;
+           nf.setDecimalSeparatorAlwaysShown(false) ;
+           String x = nf.format(xsdDT.getSeconds()) ;
+           x = String.format("%02d:%02d:%s", xsdDT.getHours(), xsdDT.getMinutes(),x) ;
+           return NodeValue.makeNode(x, xsd) ;
+       }
        
-       if ( XSDDatatype.XSDgYear.equals(datatype) )
-       {}
+       if ( XSDDatatype.XSDgYear.equals(xsd) )
+       {
+           // ==> Year
+           if ( nv.isGYear() ) return nv ;
+           if ( ! nv.isDateTime() && ! nv.isDate() ) return null ;
+           String x = String.format("%04d", xsdDT.getYears()) ;
+           return NodeValue.makeNode(x, xsd) ;
+       }
            
-       if ( XSDDatatype.XSDgYearMonth.equals(datatype) )
-       {}
+       if ( XSDDatatype.XSDgYearMonth.equals(xsd) )
+       {
+           // ==> YearMonth
+           if ( nv.isGYearMonth() ) return nv ;
+           if ( ! nv.isDateTime() && ! nv.isDate() ) return null ;
+           String x = String.format("%04d-%02d", xsdDT.getYears(), xsdDT.getMonths()) ;
+           return NodeValue.makeNode(x, xsd) ;
+       }
            
-       if ( XSDDatatype.XSDgMonth.equals(datatype) )
-       {}
+       if ( XSDDatatype.XSDgMonth.equals(xsd) )
+       {
+           // ==> Month
+           if ( nv.isGMonth() ) return nv ;
+           if ( ! nv.isDateTime() && ! nv.isDate() ) return null ;
+           String x = String.format("--%02d", xsdDT.getMonths()) ;
+           return NodeValue.makeNode(x, xsd) ;
+       }
        
-       if ( XSDDatatype.XSDgMonthDay.equals(datatype) )
-       {}
+       if ( XSDDatatype.XSDgMonthDay.equals(xsd) )
+       {
+           // ==> MonthDay
+           if ( nv.isGMonthDay() ) return nv ;
+           if ( ! nv.isDateTime() && ! nv.isDate() ) return null ;
+           String x = String.format("--%02d-%02d", xsdDT.getMonths(), xsdDT.getDays()) ;
+           return NodeValue.makeNode(x, xsd) ;
+       }
        
-       if ( XSDDatatype.XSDgDay.equals(datatype) )
-       {}
-       
-       
+       if ( XSDDatatype.XSDgDay.equals(xsd) )
+       {
+           // Day
+           if ( nv.isGDay() ) return nv ;
+           if ( ! nv.isDateTime() && ! nv.isDate() ) return null ;
+           String x = String.format("---%02d", xsdDT.getDays()) ;
+           return NodeValue.makeNode(x, xsd) ;
+       }
+
        return null ;
     }
     
     public static void main(String[] argv) throws Exception
     {
         {
-            Node d1 = Node.createLiteral("1970-02-01T00:00:00", 
-                                         null, 
-                                         XSDDatatype.XSDdateTime) ;
-            Node d2 = Node.createLiteral("1970-02-01", 
-                                         null, 
-                                         XSDDatatype.XSDdate) ;
-//            Node d2 = Node.createLiteral("1999-01", null, XSDDatatype.XSDgYearMonth) ;
-            System.out.println(d1.getLiteral().isWellFormed()) ;
-            System.out.println(d2.getLiteral().isWellFormed()) ;
-
-
+            NodeValue nv1 = NodeValue.makeNode("1970-02-01T01:02:03", XSDDatatype.XSDdateTime) ;
+            
+            NodeValue nv2 = NodeValue.makeNode("2010-03-22", XSDDatatype.XSDdate) ;
+            
             XSDDateTime dt1 = 
-                (XSDDateTime)d1.getLiteralValue() ;
+                (XSDDateTime)nv1.asNode().getLiteralValue() ;
             XSDDateTime dt2 = 
-                (XSDDateTime)d2.getLiteralValue() ;
+                (XSDDateTime)nv2.asNode().getLiteralValue() ;
 
             System.out.println(dt1) ;
             System.out.println(dt2) ;
-
-            int cmp = dt1.compare(dt2) ;
-            System.out.println("Compare = "+cmp) ;
             
-            NodeValue nv1 = NodeValue.makeNode(d1) ;  
-            NodeValue nv2 = NodeValue.makeNode(d2) ;  
+            NodeValue nv3 = dateTimeCast(nv1,  XSDDatatype.XSDtime) ;
             
-
-            System.out.println("sameValue     = "+NodeValue.sameAs(nv1, nv2)) ;
-            System.out.println("notSameValue  = "+NodeValue.notSameAs(nv1, nv2)) ;
-            //System.out.println("compare       = "+NodeValue.compare(nv1, nv2)) ;
-            System.out.println("compare2      = "+NodeValue.compareAlways(nv1, nv2)) ;
+            System.out.println("@--> "+nv3) ;
+            System.out.println(nv3.asNode().getLiteral().isWellFormed()) ;
+//            int cmp = dt1.compare(dt2) ;
+//            System.out.println("Compare = "+cmp) ;
+//
+//            System.out.println("sameValue     = "+NodeValue.sameAs(nv1, nv2)) ;
+//            System.out.println("notSameValue  = "+NodeValue.notSameAs(nv1, nv2)) ;
+//            //System.out.println("compare       = "+NodeValue.compare(nv1, nv2)) ;
+//            System.out.println("compare2      = "+NodeValue.compareAlways(nv1, nv2)) ;
             
             System.exit(0) ;
         }
@@ -298,116 +326,9 @@ public class RunARQ
 
     private static void exec(Query query, Model model)
     {
-        if ( true )
-        {
-            QueryExecution qexec = QueryExecutionFactory.create(query, model) ;
-            ResultSet rs = qexec.execSelect() ;
-            ResultSetFormatter.out(rs) ;
-        }
-        else
-        {
-            System.out.println("Experimental") ;
-            Op op = Algebra.compile(query.getQueryPattern()) ;
-            OpLeftJoin lj = (OpLeftJoin)op ;
-
-            boolean b = LeftJoinClassifier.isLinear(lj) ;
-            System.out.println(b) ;
-
-            if ( lj.getLeft() instanceof OpLeftJoin )
-            {        
-                boolean b2 = LeftJoinClassifier.isLinear((OpLeftJoin)lj.getLeft()) ;
-                System.out.println("Left: "+b2) ;
-            }
-
-            if ( lj.getRight() instanceof OpLeftJoin )
-            {        
-                boolean b3 = LeftJoinClassifier.isLinear((OpLeftJoin)lj.getRight()) ;
-                System.out.println("Right: "+b3) ;
-            }
-            
-            
-            Op op1 = Algebra.optimize(lj.getLeft()) ;
-            System.out.println(op1) ;
-            Op op2 = Algebra.optimize(lj.getRight()) ;
-            System.out.println(op2) ;
-            
-            ExecutionContext ec = new ExecutionContext(ARQ.getContext(), 
-                                                       model.getGraph(),
-                                                       null,
-                                                       null) ;
-            QueryIterator qIter1 = QC.execute(op1, BindingRoot.create(), ec) ;
-            QueryIterator qIter2 = QC.execute(op2, BindingRoot.create(), ec) ;
-            QueryIterator qIter = new QueryIterLeftJoin(qIter1, qIter2, null, ec) ;
-            while(qIter.hasNext())
-            {
-                System.out.println(qIter.next()) ;
-            }
-
-
-
-
-        }
-    }
-
-    
-    private static void classify()
-    {
-        String queryString = StrUtils.strjoinNL("PREFIX : <http://example/>",
-                                                "SELECT *",
-                                                "{",
-                                                "   {:x :p ?x} { :y :q ?w OPTIONAL { ?w :r ?x2 }}" ,
-                                                "}") ;
-        Query query = QueryFactory.create(queryString) ;
-        Op op = Algebra.compile(query) ;
-
-        boolean b = JoinClassifier.isLinear((OpJoin)op) ;
-
-        System.out.println(op) ;
-        System.out.println(b) ;
-        System.exit(0) ;
-    }
-    
-
-    
-    private static void testOpToSyntax(String opStr, String queryString)
-    {
-        Op op = SSE.parseOp(opStr) ;
-        Query queryConverted = OpAsQuery.asQuery(op) ;
-        queryConverted.setResultVars() ;
-        
-        Query queryExpected = QueryFactory.create(queryString) ;
-        System.out.println(queryConverted) ;
-        System.out.println(queryExpected) ;
-        queryExpected.setResultVars() ;
-        
-        System.out.println( queryExpected.getQueryPattern().equals(queryConverted.getQueryPattern()))  ;
-        System.out.println( queryExpected.equals(queryConverted))  ;
-    }
-
-    public static void report()
-    {
-        String sparqlQuery = StrUtils.strjoinNL(
-                  "PREFIX  rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>",
-                  "PREFIX  rdfs:   <http://www.w3.org/2000/01/rdf-schema#>",
-                  "PREFIX  pre:   <http://example/>",        
-                  "SELECT ?x WHERE { ?x rdf:type ?class . ?class rdfs:subClassOf pre:myClass . }"); 
-        Model model = ModelFactory.createDefaultModel() ;
-
-        while (true) {
-            Query query = QueryFactory.create(sparqlQuery, Syntax.syntaxSPARQL);
-            QueryExecution exec = QueryExecutionFactory.create(QueryFactory.create(query), model);
-            ResultSet result = exec.execSelect();
-
-                
-            while (result.hasNext()) {
-                // do something
-            }
-            result = null;
-            
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) { }
-        }
+        QueryExecution qexec = QueryExecutionFactory.create(query, model) ;
+        ResultSet rs = qexec.execSelect() ;
+        ResultSetFormatter.out(rs) ;
     }
     
     public static void check(Query query, boolean optimizeAlgebra)
@@ -472,67 +393,6 @@ public class RunARQ
 
     }
 
-    static void queryEquality()
-    {
-        String[] x1 = { "PREFIX  :     <http://example/>", 
-            "PREFIX  foaf: <http://xmlns.com/foaf/0.1/>",
-            "",
-            "SELECT  ?x ?n",
-            "WHERE", 
-            "  { ?x foaf:name ?n" ,
-            "    { SELECT  ?x",
-            "      WHERE",
-            "        { ?x foaf:knows ?z}",
-            "      GROUP BY ?x",
-            "      HAVING ( count(*) >= 10 )",
-            "    }",
-        "  }" } ;
-        
-        String[] x2 = { "PREFIX  :     <http://example/>", 
-            "PREFIX  foaf: <http://xmlns.com/foaf/0.1/>",
-            "SELECT  *",
-            "{ }",
-            "GROUP BY ?x",
-            "HAVING ( count(*) )"
-        } ;
-        
-        String[] x3 = { "(filter (>= ?.0 10)",
-            "   (group (?x) ((?.0 (count)))" ,
-            "   (table unit)",
-            "))" } ;
-        
-//        Op op = SSE.parseOp(StringUtils.join("\n", x3)) ;
-//        checkOp(op, false, null) ;
-//        System.out.println();
-        Query query = QueryFactory.create(StringUtils.join("\n", x2), Syntax.syntaxARQ) ;
-        check(query, false) ;
-        System.exit(0) ;
-
-    }
-    
-    private static void compare(String string, Op op1, Op op2)
-    {
-        divider() ;
-        System.out.println("Compare: "+string) ;
-        
-        if ( op1.hashCode() != op2.hashCode() )
-        {
-//            System.out.println(str) ;
-//            System.out.println(op) ;
-//            System.out.println(op2) ;
-//            
-            throw new QueryCheckException("reparsed algebra expression hashCode does not equal algebra from query") ;
-        }
-//        System.out.println(op) ;
-//        System.out.println(op2) ;
-        
-        // Expression in assignment for op 
-        
-        if ( ! op1.equals(op2) )
-            throw new QueryCheckException("reparsed algebra expression does not equal query algebra") ;
-        
-    }
-    
     public static void fetch()
     {
         OpFetch.enable() ;
@@ -651,42 +511,6 @@ public class RunARQ
         System.exit(0) ;
     }
 
-    private static void execQuery2(String datafile, String queryfile)
-    {
-        //QueryEngineMain.register() ;
-        String a[] = new String[]{
-            //"-v",
-            "--data="+datafile,
-            "-query="+queryfile , 
-        } ;
-        
-        sparql.main(a) ;
-        a = new String[]{
-            //"-v",
-            "--engine=ref", 
-            "--data="+datafile,
-            "-query="+queryfile , 
-        } ;
-        sparql.main(a) ;
-        
-        System.exit(0) ;
-    }
-    
-    private static void execQuerySSE(String datafile, String queryfile)
-    {
-        //com.hp.hpl.jena.sparql.engine.ref.QueryEngineRef.register() ;
-        String a[] = new String[]{
-            //"-v",
-            //"--engine=ref",
-            "--data="+datafile,
-            "-query="+queryfile , 
-        } ;
-        
-        sse_query.main(a) ;
-        System.exit(0) ;
-        
-    }
-    
     private static void execQueryCode(String datafile, String queryfile)
     {
         Model model = FileManager.get().loadModel(datafile) ;
@@ -710,18 +534,11 @@ public class RunARQ
         arq.remote.main(a2) ;
         System.exit(0) ;
     }
-    
-    private static void runExecuteSSE(String[] argv)
-    {
-        
-        String[] a = { "--file=SSE/all.sse" } ;
-        BuilderExec.main(a) ;
-        System.exit(0) ;
-    }
 }
 
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Information Ltd
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -270,7 +270,7 @@ NON-TERMINALS
 	GroupOrUnionGraphPattern	:=	GroupGraphPattern ( <UNION> GroupGraphPattern )*
 	Filter	:=	<FILTER> Constraint
 	Constraint	:=	( BrackettedExpression | BuiltInCall | FunctionCall )
-	FunctionCall	:=	IRIref ArgList
+	FunctionCall	:=	IRIref ( ParamList )? ( <DISTINCT> )? ArgList
 	ArgList	:=	( <NIL> | <LPAREN> Expression ( <COMMA> Expression )* <RPAREN> )
 	ParamList	:=	( <LBRACKET> Expression ( <COMMA> Expression )* <RBRACKET> )
 // -------- Construct patterns
@@ -371,6 +371,7 @@ NON-TERMINALS
 	ExistsFunc	:=	<EXISTS> GroupGraphPattern
 	NotExistsFunc	:=	( <UNSAID> | <NOTEXISTS> ) GroupGraphPattern
 	Aggregate	:=	( <COUNT> <LPAREN> ( <STAR> | Expression | <DISTINCT> ( <STAR> | Expression ) ) <RPAREN> | <SUM> <LPAREN> Expression <RPAREN> | <MIN> <LPAREN> Expression <RPAREN> | <MAX> <LPAREN> Expression <RPAREN> | <AVG> <LPAREN> Expression <RPAREN> )
+// See also FunctionCall.
 // The case of "q:name()" or "q:agg[]()" or just "q:name"
 // by expanding out FunctionCall()
 	IRIrefOrFunction	:=	IRIref ( ParamList )? ( <DISTINCT> )? ( ArgList )?

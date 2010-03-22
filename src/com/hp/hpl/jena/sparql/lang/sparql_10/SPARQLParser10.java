@@ -799,6 +799,8 @@ public class SPARQLParser10 extends SPARQLParser10Base implements SPARQLParser10
 
   final public Expr FunctionCall() throws ParseException {
                         String fname ; ExprList a ;
+                        ExprList aParam = null ;
+                        boolean distinct = false ;
     fname = IRIref();
     a = ArgList();
       {if (true) return new E_Function(fname, a) ;}
@@ -1852,10 +1854,13 @@ public class SPARQLParser10 extends SPARQLParser10Base implements SPARQLParser10
     throw new Error("Missing return statement in function");
   }
 
+// See also FunctionCall.
 // The case of "q:name()" or "q:agg[]()" or just "q:name"
 // by expanding out FunctionCall()
   final public Expr IRIrefOrFunction() throws ParseException {
-                            String iri ; ExprList a = null ; ExprList aParam = null ; boolean distinct = false ;
+                            String iri ; ExprList a = null ;
+                            ExprList aParam = null ;
+                            boolean distinct = false ;
     iri = IRIref();
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case LPAREN:
