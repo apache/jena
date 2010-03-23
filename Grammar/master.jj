@@ -1567,25 +1567,43 @@ Expr NotExistsFunc() : { Element el ; }
 }
 
 
-Expr Aggregate() : { AggregateFactory agg ;
+Expr Aggregate() : { AggregateFactory agg = null ;
                      boolean distinct = false ;
-                     Expr expr ;
+                     Expr expr = null ; ExprList aParam = null ; ExprList a = null ;
                      Token t ; }
 {
-   ( t = <COUNT> <LPAREN> 
-        ( <STAR>                { agg = AggCount.get() ; }
-        | expr = Expression()   { agg = new AggCountVar(expr) ; }
-        | <DISTINCT> 
-          ( <STAR>              { agg = AggCountDistinct.get() ; }
-          | expr = Expression() { agg = new AggCountVarDistinct(expr) ; }
-          )
-        )
-    <RPAREN>
+   // @@ Clean up and make a common interface to creating aggregates.
+   // Grammar becomes (COUNT|SUM|...)(DISTINCT)?(args)
 
-   | t = <SUM> <LPAREN>    expr = Expression() <RPAREN> { agg = new AggSum(expr) ; }
-   | t = <MIN> <LPAREN>    expr = Expression() <RPAREN> { agg = new AggMin(expr) ; }
-   | t = <MAX> <LPAREN>    expr = Expression() <RPAREN> { agg = new AggMax(expr) ; }
-   | t = <AVG> <LPAREN>    expr = Expression() <RPAREN> { agg = new AggAvg(expr) ; }
+   ( t = <COUNT> <LPAREN> 
+    ( <DISTINCT> { distinct = true ; } )?
+    ( <STAR> | expr = Expression() )
+    <RPAREN>
+    { if ( ! distinct && expr == null ) { agg = AggCount.get() ; }
+      if ( distinct   && expr == null ) { agg = AggCountDistinct.get() ; }
+      if ( ! distinct && expr != null ) { agg = new AggCountVar(expr) ; }
+      if ( distinct   && expr != null ) { agg = new AggCountVarDistinct(expr) ; }
+    }
+
+   | t = <SUM> <LPAREN> (<DISTINCT> { distinct = true ; } )?  
+        expr = Expression() <RPAREN> { agg = new AggSum(expr) ; }
+        <RPAREN>
+   | t = <MIN> <LPAREN> (<DISTINCT> { distinct = true ; } )?
+        expr = Expression() <RPAREN> { agg = new AggMin(expr) ; }
+        <RPAREN>
+   | t = <MAX> <LPAREN> (<DISTINCT> { distinct = true ; } )?
+       expr = Expression() <RPAREN> { agg = new AggMax(expr) ; }
+        <RPAREN>
+   | t = <AVG> <LPAREN> (<DISTINCT> { distinct = true ; } )?
+       expr = Expression() <RPAREN> { agg = new AggAvg(expr) ; }
+        <RPAREN>
+   | // @@
+     t = <GROUP_CONCAT> (aParam = ParamList())? 
+         <LPAREN> (<DISTINCT>)? a = ArgList()
+        <RPAREN>
+   | // @@
+     t = <SAMPLE> <LPAREN> (<DISTINCT>)? (Expression()) 
+        <RPAREN>
    )
    {
      if ( ! allowAggregatesInExpressions )
@@ -1821,6 +1839,7 @@ TOKEN [IGNORE_CASE] :
 #ifdef ARQ
 |  < SERVICE:     "service" >
 |  < LET:         "let" >
+|  < FETCH:       "fetch" >
 #endif
 #ifdef SPARQL_11 
 |  < EXISTS:      "exists" >
@@ -1837,7 +1856,8 @@ TOKEN [IGNORE_CASE] :
 |  < SUM:         "sum" >
 |  < AVG:         "avg" >
 |  < STDDEV:      "stdev" >
-|  < FETCH:       "fetch" >
+|  < SAMPLE:      "sample" >
+|  < GROUP_CONCAT: "group_concat" >
 #endif
 
 |  < FILTER:      "filter" >

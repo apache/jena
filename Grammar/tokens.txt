@@ -69,7 +69,8 @@
 [<MAX>]        ::= 'MAX'
 [<SUM>]        ::= 'SUM'
 [<AVG>]        ::= 'AVG'
-[<STDDEV>]     ::= 'STDEV'
+[<SAMPLE>]     ::= 'SAMPLE'
+[<GROUP_CONCAT>]     ::= 'GROUP_CONCAT'
 
 [<SERVICE>]     ::=    'SERVICE'
 [<FETCH>]       ::=    'FETCH'

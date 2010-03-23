@@ -78,7 +78,8 @@ TOKENS
 | <SUM: "sum">
 | <AVG: "avg">
 | <STDDEV: "stdev">
-| <FETCH: "fetch">
+| <SAMPLE: "sample">
+| <GROUP_CONCAT: "group_concat">
 | <FILTER: "filter">
 | <BOUND: "bound">
 | <COALESCE: "coalesce">
@@ -370,7 +371,7 @@ NON-TERMINALS
 	RegexExpression	:=	<REGEX> <LPAREN> Expression <COMMA> Expression ( <COMMA> Expression )? <RPAREN>
 	ExistsFunc	:=	<EXISTS> GroupGraphPattern
 	NotExistsFunc	:=	( <UNSAID> | <NOTEXISTS> ) GroupGraphPattern
-	Aggregate	:=	( <COUNT> <LPAREN> ( <STAR> | Expression | <DISTINCT> ( <STAR> | Expression ) ) <RPAREN> | <SUM> <LPAREN> Expression <RPAREN> | <MIN> <LPAREN> Expression <RPAREN> | <MAX> <LPAREN> Expression <RPAREN> | <AVG> <LPAREN> Expression <RPAREN> )
+	Aggregate	:=	( <COUNT> <LPAREN> ( <DISTINCT> )? ( <STAR> | Expression ) <RPAREN> | <SUM> <LPAREN> ( <DISTINCT> )? Expression <RPAREN> <RPAREN> | <MIN> <LPAREN> ( <DISTINCT> )? Expression <RPAREN> <RPAREN> | <MAX> <LPAREN> ( <DISTINCT> )? Expression <RPAREN> <RPAREN> | <AVG> <LPAREN> ( <DISTINCT> )? Expression <RPAREN> <RPAREN> | <GROUP_CONCAT> ( ParamList )? <LPAREN> ( <DISTINCT> )? ArgList <RPAREN> | <SAMPLE> <LPAREN> ( <DISTINCT> )? ( Expression ) <RPAREN> )
 // See also FunctionCall.
 // The case of "q:name()" or "q:agg[]()" or just "q:name"
 // by expanding out FunctionCall()
