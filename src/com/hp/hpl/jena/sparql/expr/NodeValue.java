@@ -791,6 +791,7 @@ public abstract class NodeValue extends ExprNode
     public boolean isFloat()        { return false ; }
     public boolean isDouble()       { return false ; }
     
+    public boolean hasDateTime()    { return isDateTime() || isDate() || isTime() || isGYear() || isGYearMonth() || isGMonth() || isGMonthDay() || isGDay() ; }
     public boolean isDateTime()     { return false ; }
     public boolean isDate()         { return false ; }
     public boolean isLiteral()      { return getNode() == null || getNode().isLiteral() ; }
@@ -805,16 +806,13 @@ public abstract class NodeValue extends ExprNode
     
     // getters
     
-    public boolean getBoolean()
-    { raise(new ExprEvalException("Not a boolean: "+this)) ; return false ; }
-    
-    public String      getString()      { raise(new ExprEvalException("Not a string: "+this)) ; return null ; }
-    public BigInteger  getInteger()     { raise(new ExprEvalException("Not an integer: "+this)) ; return null ; }
-    public BigDecimal  getDecimal()     { raise(new ExprEvalException("Not a decimal: "+this)) ; return null ; }
-    public float       getFloat()       { raise(new ExprEvalException("Not a float: "+this)) ; return Float.NaN ; }
-    public double      getDouble()      { raise(new ExprEvalException("Not a double: "+this)) ; return Double.NaN ; }
-    
-    public XSDDateTime getDateTime()    { raise(new ExprEvalException("No DateTime value: "+this)) ; return null ; }
+    public boolean     getBoolean()     { raise(new ExprEvalTypeException("Not a boolean: "+this)) ; return false ; }
+    public String      getString()      { raise(new ExprEvalTypeException("Not a string: "+this)) ; return null ; }
+    public BigInteger  getInteger()     { raise(new ExprEvalTypeException("Not an integer: "+this)) ; return null ; }
+    public BigDecimal  getDecimal()     { raise(new ExprEvalTypeException("Not a decimal: "+this)) ; return null ; }
+    public float       getFloat()       { raise(new ExprEvalTypeException("Not a float: "+this)) ; return Float.NaN ; }
+    public double      getDouble()      { raise(new ExprEvalTypeException("Not a double: "+this)) ; return Double.NaN ; }
+    public XSDDateTime getDateTime()    { raise(new ExprEvalTypeException("No DateTime value: "+this)) ; return null ; }
 //    public XSDDateTime getDate()        { raise(new ExprEvalException("Not a date: "+this)) ; return null ; }
 //    public XSDDateTime getTime()        { raise(new ExprEvalException("Not a time: "+this)) ; return null ; }
 //
@@ -832,20 +830,7 @@ public abstract class NodeValue extends ExprNode
 //    public XSDDateTime getGDay()        { raise(new ExprEvalException("Not a dateTime: "+this)) ; return null ; }
 
     
-    public XSDDuration    getDuration() { raise(new ExprEvalException("Not a duration: "+this)) ; return null ; }
-
-//    // ---- Force to a type : Needed? 
-//    
-//    public boolean asBoolean() { raise(new ExprEvalException("Not compatible with boolean: "+this)) ; return false ; } 
-//
-//    //public String asString() { raise(new ExprEvalException("Not a string: "+this)) ; return null ; }
-//
-//    public long asInteger()  { raise(new ExprEvalException("Not compatible with integer: "+this)) ; return -999 ; }
-//    public double asDouble() { raise(new ExprEvalException("Not compatible with double: "+this)) ; return Double.NaN ; }
-//    public float asFloat()   { raise(new ExprEvalException("Not compatible with float: "+this)) ; return Float.NaN ; }
-//    public BigDecimal asDecimal() { raise(new ExprEvalException("Not compatible with decimal: "+this)) ; return null ; }
-//    public Calendar asDate() { raise(new ExprEvalException("Not compatible with a date: "+this)) ; return null ; }
-    
+    public XSDDuration    getDuration() { raise(new ExprEvalTypeException("Not a duration: "+this)) ; return null ; }
 
     // ----------------------------------------------------------------
     // ---- Setting : used when a node is used to make a NodeValue

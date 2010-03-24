@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Information Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -8,8 +9,10 @@ package com.hp.hpl.jena.sparql.expr;
 
 import junit.framework.JUnit4TestAdapter ;
 import junit.framework.TestCase ;
+import org.junit.Assert ;
 import org.junit.Test ;
 
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
@@ -806,10 +809,76 @@ public class TestXSDFuncOp extends TestCase
         
         //assertTrue( two.asNode().sameValueAs(result.asNode()) ) ;
     }
+    
+    // All compatible - no timezone.
+    private static NodeValue nv_dt = NodeValue.makeNode("2010-03-22T20:31:54.5", XSDDatatype.XSDdateTime) ;
+    private static NodeValue nv_d = NodeValue.makeNode("2010-03-22", XSDDatatype.XSDdate) ;
+    private static NodeValue nv_gy = NodeValue.makeNode("2010", XSDDatatype.XSDgYear) ;
+    private static NodeValue nv_gym = NodeValue.makeNode("2010-03", XSDDatatype.XSDgYearMonth) ;
+    
+    private static NodeValue nv_gmd = NodeValue.makeNode("--03-22", XSDDatatype.XSDgMonthDay) ;
+    private static NodeValue nv_gm = NodeValue.makeNode("--03", XSDDatatype.XSDgMonth) ;
+    private static NodeValue nv_gd = NodeValue.makeNode("---22", XSDDatatype.XSDgDay) ;
+    private static NodeValue nv_t = NodeValue.makeNode("20:31:54.5", XSDDatatype.XSDtime) ;
+    
+    private static void testDateTimeCast(NodeValue nv, XSDDatatype xsd, NodeValue nvResult )
+    {
+        NodeValue nv2 = XSDFuncOp.dateTimeCast(nv, xsd) ;
+        Assert.assertEquals(nvResult, nv2) ;
+    }
+    
+    // datetime to other
+    @Test public void cast_gregorian_01() { testDateTimeCast(nv_dt, XSDDatatype.XSDdateTime, nv_dt) ; }
+    @Test public void cast_gregorian_02() { testDateTimeCast(nv_dt, XSDDatatype.XSDdate, nv_d) ; }
+    @Test public void cast_gregorian_03() { testDateTimeCast(nv_dt, XSDDatatype.XSDgYear, nv_gy) ; }
+    @Test public void cast_gregorian_04() { testDateTimeCast(nv_dt, XSDDatatype.XSDgYearMonth, nv_gym) ; }
+    @Test public void cast_gregorian_05() { testDateTimeCast(nv_dt, XSDDatatype.XSDgMonthDay, nv_gmd) ; }
+    @Test public void cast_gregorian_06() { testDateTimeCast(nv_dt, XSDDatatype.XSDgMonth, nv_gm) ; }
+    @Test public void cast_gregorian_07() { testDateTimeCast(nv_dt, XSDDatatype.XSDgDay, nv_gd) ; }
+    
+    @Test public void cast_gregorian_08() { testDateTimeCast(nv_dt, XSDDatatype.XSDtime, nv_t) ; }
+
+    // date to other
+    @Test public void cast_gregorian_10() { testDateTimeCast(nv_d, XSDDatatype.XSDdateTime, NodeValue.makeNode("2010-03-22T00:00:00", XSDDatatype.XSDdateTime)) ; }
+    @Test public void cast_gregorian_11() { testDateTimeCast(nv_d, XSDDatatype.XSDdate, nv_d) ; }
+    @Test public void cast_gregorian_12() { testDateTimeCast(nv_d, XSDDatatype.XSDgYear, nv_gy) ; }
+    @Test public void cast_gregorian_13() { testDateTimeCast(nv_d, XSDDatatype.XSDgYearMonth, nv_gym) ; }
+    @Test public void cast_gregorian_14() { testDateTimeCast(nv_d, XSDDatatype.XSDgMonthDay, nv_gmd) ; }
+    @Test public void cast_gregorian_15() { testDateTimeCast(nv_d, XSDDatatype.XSDgMonth, nv_gm) ; }
+    @Test public void cast_gregorian_16() { testDateTimeCast(nv_d, XSDDatatype.XSDgDay, nv_gd) ; }
+
+    // G* to self
+    @Test public void cast_gregorian_21() { testDateTimeCast(nv_gym, XSDDatatype.XSDgYearMonth, nv_gym) ; }
+    @Test public void cast_gregorian_22() { testDateTimeCast(nv_gy, XSDDatatype.XSDgYear, nv_gy) ; }
+    @Test public void cast_gregorian_23() { testDateTimeCast(nv_gmd, XSDDatatype.XSDgMonthDay, nv_gmd) ; }
+    @Test public void cast_gregorian_24() { testDateTimeCast(nv_gm, XSDDatatype.XSDgMonth, nv_gm) ; }
+    @Test public void cast_gregorian_25() { testDateTimeCast(nv_gd, XSDDatatype.XSDgDay, nv_gd) ; }
+
+    // G* to date
+    
+    @Test(expected=ExprEvalTypeException.class)
+    public void cast_gregorian_31()     { testDateTimeCast(nv_gym, XSDDatatype.XSDdate, nv_d) ; }
+    
+    @Test(expected=ExprEvalTypeException.class)
+    public void cast_gregorian_32()     { testDateTimeCast(nv_gy, XSDDatatype.XSDdate, NodeValue.makeDate("2010-01-01")) ; }
+    
+    @Test(expected=ExprEvalTypeException.class)
+    public void cast_gregorian_33()     { testDateTimeCast(nv_gmd, XSDDatatype.XSDdate, nv_d) ; }
+    
+    @Test(expected=ExprEvalTypeException.class)
+    public void cast_gregorian_34()     { testDateTimeCast(nv_gm, XSDDatatype.XSDdate, nv_d) ; }
+    
+    @Test(expected=ExprEvalTypeException.class)
+    public void cast_gregorian_35()     { testDateTimeCast(nv_gd, XSDDatatype.XSDdate, nv_d) ; }
+
+    // Junk to date/time thing.
+    @Test (expected=ExprEvalTypeException.class)
+    public void cast_err_gregorian_01() { testDateTimeCast(NodeValue.makeBoolean(false), XSDDatatype.XSDgDay, nv_gd) ; }
 }
 
 /*
  * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Information Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

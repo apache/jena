@@ -8,12 +8,17 @@ package com.hp.hpl.jena.sparql.expr.nodevalue;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.text.DecimalFormat ;
 
+import com.hp.hpl.jena.datatypes.RDFDatatype ;
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.datatypes.xsd.XSDDateTime;
 import com.hp.hpl.jena.datatypes.xsd.XSDDuration;
+import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.ExprEvalException;
+import com.hp.hpl.jena.sparql.expr.ExprEvalTypeException ;
 import com.hp.hpl.jena.sparql.expr.NodeValue;
 import com.hp.hpl.jena.sparql.util.ALog;
 import com.hp.hpl.jena.sparql.util.DateTimeStruct;
@@ -445,9 +450,9 @@ public class XSDFuncOp
     public static NumericType classifyNumeric(String fName, NodeValue nv1, NodeValue nv2)
     {
         if ( !nv1.isNumber() )
-            throw new ExprEvalException("Not a number (first arg to "+fName+"): "+nv1) ;
+            throw new ExprEvalTypeException("Not a number (first arg to "+fName+"): "+nv1) ;
         if ( !nv2.isNumber() )
-            throw new ExprEvalException("Not a number (second arg to "+fName+"): "+nv2) ;
+            throw new ExprEvalTypeException("Not a number (second arg to "+fName+"): "+nv2) ;
         
         if ( nv1.isInteger() )
         {
@@ -495,7 +500,7 @@ public class XSDFuncOp
     public static NumericType classifyNumeric(String fName, NodeValue nv)
     {
         if ( ! nv.isNumber() )
-            throw new ExprEvalException("Not a number: ("+fName+") "+nv) ;
+            throw new ExprEvalTypeException("Not a number: ("+fName+") "+nv) ;
         if ( nv.isInteger() )
             return OP_INTEGER ;
         if ( nv.isDecimal() )
@@ -787,6 +792,129 @@ public class XSDFuncOp
         if ( b1 && !b2 )
             return Expr.CMP_GREATER ;
         throw new ARQInternalErrorException("Weird boolean comparison: "+nv1+", "+nv2) ; 
+    }
+
+    /** Cast a NodeValue to a date/time type (xsd dateTime, date, time, g*) according to F&O
+     *  <a href="http://www.w3.org/TR/xpath-functions/#casting-to-datetimes">17.1.5 Casting to date and time types</a>
+     *  Throws an exception on incorrect case.
+     *   
+     *  @throws ExprEvalTypeException  
+     */
+    
+    public static NodeValue dateTimeCast(NodeValue nv, String typeURI)
+    {
+       RDFDatatype t = Node.getType(typeURI) ;
+       return dateTimeCast(nv, t) ;
+    }
+
+    /** Cast a NodeValue to a date/time type (xsd dateTime, date, time, g*) according to F&O
+     *  <a href="http://www.w3.org/TR/xpath-functions/#casting-to-datetimes">17.1.5 Casting to date and time types</a>
+     *  Throws an exception on incorrect case.
+     *   
+     *  @throws ExprEvalTypeException  
+     */
+    
+    public static NodeValue dateTimeCast(NodeValue nv, RDFDatatype rdfDatatype)
+    {
+       if ( ! ( rdfDatatype instanceof XSDDatatype ) )
+           throw new ExprEvalTypeException("Can't cast to XSDDatatype: "+nv) ;
+       XSDDatatype xsd = (XSDDatatype)rdfDatatype ;
+       return dateTimeCast(nv, xsd) ;
+    }
+
+    /** Cast a NodeValue to a date/time type (xsd dateTime, date, time, g*) according to F&O
+     *  <a href="http://www.w3.org/TR/xpath-functions/#casting-to-datetimes">17.1.5 Casting to date and time types</a>
+     *  Throws an exception on incorrect case.
+     *   
+     *  @throws ExprEvalTypeException  
+     */
+    
+    public static NodeValue dateTimeCast(NodeValue nv, XSDDatatype xsd)
+    {
+        // http://www.w3.org/TR/xpath-functions/#casting-to-datetimes
+        if ( ! nv.hasDateTime() )
+            throw new ExprEvalTypeException("Not a date/time type: "+nv) ;
+        
+        XSDDateTime xsdDT = nv.getDateTime() ;
+        
+        if ( XSDDatatype.XSDdateTime.equals(xsd) )
+        {
+            // ==> DateTime
+            if ( nv.isDateTime() ) return nv ;
+            if ( ! nv.isDate() ) throw new ExprEvalTypeException("Can't cast to XSD:dateTime: "+nv) ;
+            // DateTime with time 00:00:00
+            String x = String.format("%04d-%02d-%02dT00:00:00", xsdDT.getYears(), xsdDT.getMonths(),xsdDT.getDays()) ;
+            return NodeValue.makeNode(x, xsd) ;
+        }
+    
+        if ( XSDDatatype.XSDdate.equals(xsd) )
+        {
+            // ==> Date
+            if ( nv.isDate() ) return nv ;
+            if ( ! nv.isDateTime() ) throw new ExprEvalTypeException("Can't cast to XSD:date: "+nv) ;
+            String x = String.format("%04d-%02d-%02d", xsdDT.getYears(), xsdDT.getMonths(),xsdDT.getDays()) ;
+            return NodeValue.makeNode(x, xsd) ;
+        }
+    
+        if ( XSDDatatype.XSDtime.equals(xsd) )
+        {
+            // ==> time
+            if ( nv.isTime() ) return nv ;
+            if ( ! nv.isDateTime() ) throw new ExprEvalTypeException("Can't cast to XSD:time: "+nv) ;
+            // Careful foratting 
+            DecimalFormat nf = new DecimalFormat("00.####") ;
+            nf.setDecimalSeparatorAlwaysShown(false) ;
+            String x = nf.format(xsdDT.getSeconds()) ;
+            x = String.format("%02d:%02d:%s", xsdDT.getHours(), xsdDT.getMinutes(),x) ;
+            return NodeValue.makeNode(x, xsd) ;
+        }
+    
+        if ( XSDDatatype.XSDgYear.equals(xsd) )
+        {
+            // ==> Year
+            if ( nv.isGYear() ) return nv ;
+            if ( ! nv.isDateTime() && ! nv.isDate() ) throw new ExprEvalTypeException("Can't cast to XSD:gYear: "+nv) ;
+            String x = String.format("%04d", xsdDT.getYears()) ;
+            return NodeValue.makeNode(x, xsd) ;
+        }
+    
+        if ( XSDDatatype.XSDgYearMonth.equals(xsd) )
+        {
+            // ==> YearMonth
+            if ( nv.isGYearMonth() ) return nv ;
+            if ( ! nv.isDateTime() && ! nv.isDate() ) throw new ExprEvalTypeException("Can't cast to XSD:gYearMonth: "+nv) ;
+            String x = String.format("%04d-%02d", xsdDT.getYears(), xsdDT.getMonths()) ;
+            return NodeValue.makeNode(x, xsd) ;
+        }
+    
+        if ( XSDDatatype.XSDgMonth.equals(xsd) )
+        {
+            // ==> Month
+            if ( nv.isGMonth() ) return nv ;
+            if ( ! nv.isDateTime() && ! nv.isDate() ) throw new ExprEvalTypeException("Can't cast to XSD:gMonth: "+nv) ;
+            String x = String.format("--%02d", xsdDT.getMonths()) ;
+            return NodeValue.makeNode(x, xsd) ;
+        }
+    
+        if ( XSDDatatype.XSDgMonthDay.equals(xsd) )
+        {
+            // ==> MonthDay
+            if ( nv.isGMonthDay() ) return nv ;
+            if ( ! nv.isDateTime() && ! nv.isDate() ) throw new ExprEvalTypeException("Can't cast to XSD:gMonthDay: "+nv) ;
+            String x = String.format("--%02d-%02d", xsdDT.getMonths(), xsdDT.getDays()) ;
+            return NodeValue.makeNode(x, xsd) ;
+        }
+    
+        if ( XSDDatatype.XSDgDay.equals(xsd) )
+        {
+            // Day
+            if ( nv.isGDay() ) return nv ;
+            if ( ! nv.isDateTime() && ! nv.isDate() ) throw new ExprEvalTypeException("Can't cast to XSD:gDay: "+nv) ;
+            String x = String.format("---%02d", xsdDT.getDays()) ;
+            return NodeValue.makeNode(x, xsd) ;
+        }
+    
+        throw new ExprEvalTypeException("Can't case to <"+xsd.getURI()+">: "+nv) ;
     }
 
 }

@@ -9,16 +9,16 @@ package dev;
 
 import java.io.Reader ;
 import java.io.StringReader ;
-import java.text.DecimalFormat ;
 import java.util.Iterator ;
+
+import org.junit.Assert ;
+import org.junit.Test ;
 
 import arq.sparql ;
 
 import com.hp.hpl.jena.Jena ;
-import com.hp.hpl.jena.datatypes.RDFDatatype ;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.datatypes.xsd.XSDDateTime ;
-import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.* ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
@@ -36,7 +36,9 @@ import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
+import com.hp.hpl.jena.sparql.expr.ExprEvalTypeException ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
+import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp ;
 import com.hp.hpl.jena.sparql.function.FunctionEnvBase ;
 import com.hp.hpl.jena.sparql.lang.sparql_11.SPARQLParser11 ;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
@@ -92,108 +94,11 @@ public class RunARQ
             System.out.println(" ** "+ex) ;
         }
     }
-   
-    // Special casting rules :  F&O 17.1.5 Casting to date and time types
-    // dateTime -> time
-    // dateTime -> date
-    // dateTime or date -> gYear, xs:gYearMonth, xs:gMonth, xs:gMonthDay, gDay
-    
-    // The XSD F&O rules for casting dateTimes.
-    public static NodeValue dateTimeCast(NodeValue nv, String typeURI)  //throws DatatypeConfigurationException
-    {
-       RDFDatatype t = Node.getType(typeURI) ;
-       if ( ! ( t instanceof XSDDatatype ) )
-           return null ;
-       XSDDatatype xsd = (XSDDatatype)t ;
-       return dateTimeCast(nv, xsd) ;
-    }
-       
-    public static NodeValue dateTimeCast(NodeValue nv, XSDDatatype xsd)
-    {
-       XSDDateTime xsdDT = nv.getDateTime() ;
-       
-       if ( XSDDatatype.XSDdateTime.equals(xsd) )
-       {
-           // ==> DateTime
-           if ( nv.isDateTime() ) return nv ;
-           if ( ! nv.isDate() ) return null ;
-           // DateTime with time 00:00:00
-           String x = String.format("%04d-%02-%02dT00:00:00", xsdDT.getYears(), xsdDT.getMonths(),xsdDT.getDays()) ;
-           return NodeValue.makeNode(x, xsd) ;
-       }
-       
-       if ( XSDDatatype.XSDdate.equals(xsd) )
-       {
-           // ==> Date
-           if ( nv.isDate() ) return nv ;
-           if ( ! nv.isDateTime() ) return null ;
-           String x = String.format("%04d-%02-%02d", xsdDT.getYears(), xsdDT.getMonths(),xsdDT.getDays()) ;
-           return NodeValue.makeNode(x, xsd) ;
-       }
-       
-       if ( XSDDatatype.XSDtime.equals(xsd) )
-       {
-           // ==> time
-           if ( nv.isTime() ) return nv ;
-           if ( ! nv.isDateTime() ) return null ;
-           // Careful foratting 
-           DecimalFormat nf = new DecimalFormat("00.####") ;
-           nf.setDecimalSeparatorAlwaysShown(false) ;
-           String x = nf.format(xsdDT.getSeconds()) ;
-           x = String.format("%02d:%02d:%s", xsdDT.getHours(), xsdDT.getMinutes(),x) ;
-           return NodeValue.makeNode(x, xsd) ;
-       }
-       
-       if ( XSDDatatype.XSDgYear.equals(xsd) )
-       {
-           // ==> Year
-           if ( nv.isGYear() ) return nv ;
-           if ( ! nv.isDateTime() && ! nv.isDate() ) return null ;
-           String x = String.format("%04d", xsdDT.getYears()) ;
-           return NodeValue.makeNode(x, xsd) ;
-       }
-           
-       if ( XSDDatatype.XSDgYearMonth.equals(xsd) )
-       {
-           // ==> YearMonth
-           if ( nv.isGYearMonth() ) return nv ;
-           if ( ! nv.isDateTime() && ! nv.isDate() ) return null ;
-           String x = String.format("%04d-%02d", xsdDT.getYears(), xsdDT.getMonths()) ;
-           return NodeValue.makeNode(x, xsd) ;
-       }
-           
-       if ( XSDDatatype.XSDgMonth.equals(xsd) )
-       {
-           // ==> Month
-           if ( nv.isGMonth() ) return nv ;
-           if ( ! nv.isDateTime() && ! nv.isDate() ) return null ;
-           String x = String.format("--%02d", xsdDT.getMonths()) ;
-           return NodeValue.makeNode(x, xsd) ;
-       }
-       
-       if ( XSDDatatype.XSDgMonthDay.equals(xsd) )
-       {
-           // ==> MonthDay
-           if ( nv.isGMonthDay() ) return nv ;
-           if ( ! nv.isDateTime() && ! nv.isDate() ) return null ;
-           String x = String.format("--%02d-%02d", xsdDT.getMonths(), xsdDT.getDays()) ;
-           return NodeValue.makeNode(x, xsd) ;
-       }
-       
-       if ( XSDDatatype.XSDgDay.equals(xsd) )
-       {
-           // Day
-           if ( nv.isGDay() ) return nv ;
-           if ( ! nv.isDateTime() && ! nv.isDate() ) return null ;
-           String x = String.format("---%02d", xsdDT.getDays()) ;
-           return NodeValue.makeNode(x, xsd) ;
-       }
 
-       return null ;
-    }
-    
     public static void main(String[] argv) throws Exception
     {
+        // Timezone stuff on G*
+        arq.qexpr.main("1+2") ;
         {
             NodeValue nv1 = NodeValue.makeNode("1970-02-01T01:02:03", XSDDatatype.XSDdateTime) ;
             
@@ -207,7 +112,7 @@ public class RunARQ
             System.out.println(dt1) ;
             System.out.println(dt2) ;
             
-            NodeValue nv3 = dateTimeCast(nv1,  XSDDatatype.XSDtime) ;
+            NodeValue nv3 = XSDFuncOp.dateTimeCast(nv1,  XSDDatatype.XSDtime) ;
             
             System.out.println("@--> "+nv3) ;
             System.out.println(nv3.asNode().getLiteral().isWellFormed()) ;
@@ -221,29 +126,6 @@ public class RunARQ
             
             System.exit(0) ;
         }
-        /*
-        3.2.10 gYearMonth   dddd-mm
-        3.2.11 gYear        dddd
-        3.2.12 gMonthDay    --MM-DD
-        3.2.13 gDay         ---DD
-        3.2.14 gMonth       --MM
-         */
-        Node d1 = Node.createLiteral("2010", 
-                                     null, 
-                                     XSDDatatype.XSDgYear) ;
-        Node d2 = Node.createLiteral("2010-03", 
-                                     null, 
-                                     XSDDatatype.XSDgYearMonth) ;
-        
-        System.out.println("d1="+d1+" : "+d1.getLiteral().isWellFormed()) ;
-        System.out.println("d2="+d2+" : "+d2.getLiteral().isWellFormed()) ;
-
-        NodeValue nv1 = NodeValue.makeNode(d1) ;  
-        NodeValue nv2 = NodeValue.makeNode(d2) ;  
-        System.out.println("sameValue     = "+NodeValue.sameAs(nv1, nv2)) ;
-        System.out.println("notSameValue  = "+NodeValue.notSameAs(nv1, nv2)) ;
-        //System.out.println("compare       = "+NodeValue.compare(nv1, nv2)) ;
-        System.out.println("compare2      = "+NodeValue.compareAlways(nv1, nv2)) ;
         
         Query query = QueryFactory.create("SELECT * { FILTER ($a = 1 || $a = 2) }");
         Model model = ModelFactory.createDefaultModel();
