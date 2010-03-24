@@ -93,6 +93,14 @@ public class RunARQ
 
     public static void main(String[] argv) throws Exception
     {
+        // Need TZ
+        // Need own parser.
+        NodeValue nv = NodeValue.makeNode("1970-02-01T01:02:03+05:00", XSDDatatype.XSDdateTime) ;
+        XSDDateTime x = nv.getDateTime() ;
+        x.toString();
+        System.out.println(nv+" => "+nv.getDateTime()) ;
+        System.exit(0) ;
+        
         // Timezone stuff on G*
         arq.qexpr.main("1+2") ;
         {
