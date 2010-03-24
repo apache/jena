@@ -107,21 +107,17 @@ public class LucIndex implements TupleIndex
         reader = IndexReader.open(d) ;
     }
     
-    
-    
     //@Override
     public boolean add(Tuple<NodeId> tuple)
     {
         return false ;
     }
 
-
     //@Override
     public Iterator<Tuple<NodeId>> all()
     {
         return null ;
     }
-
 
     //@Override
     public boolean delete(Tuple<NodeId> tuple)
