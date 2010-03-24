@@ -9,7 +9,9 @@ package dev;
 
 import java.io.Reader ;
 import java.io.StringReader ;
+import java.util.HashSet ;
 import java.util.Iterator ;
+import java.util.Set ;
 
 import arq.sparql ;
 
@@ -31,10 +33,13 @@ import com.hp.hpl.jena.sparql.core.Prologue ;
 import com.hp.hpl.jena.sparql.core.QueryCheckException ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
+import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
+import com.hp.hpl.jena.sparql.expr.aggregate.Accumulator ;
 import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp ;
+import com.hp.hpl.jena.sparql.function.FunctionEnv ;
 import com.hp.hpl.jena.sparql.function.FunctionEnvBase ;
 import com.hp.hpl.jena.sparql.lang.sparql_11.SPARQLParser11 ;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
@@ -92,100 +97,36 @@ public class RunARQ
         }
     }
 
-    // Pase - assuming valid. 
-    public static void parse(String str)
+    // AggregateFactory change.
+    // Expression in agg call.
+    
+    /** Accumulator that only passes down the first unique binding */
+    static abstract class AccumulatorDistinct implements Accumulator
     {
-        System.out.println("Year") ;
-        int idx = 0 ;
-        int year = parse(str, 4, idx) ;
-        idx += 4 ;
+        Set<Binding> rows = new HashSet<Binding>() ;
         
-        if ( idx > str.length() )
-            return ;
-        check('-', str, idx) ;
-        idx += 1 ;
+        final public void accumulate(Binding binding, FunctionEnv functionEnv)
+        {
+            if ( rows.contains(binding) )
+                return ;
+            rows.add(binding) ;
+            accumulateDistinct(binding, functionEnv) ;
+        }
         
-        System.out.println("Month") ;
-        int month = parse(str, 2, idx) ;
-        idx += 2 ;
-        if ( idx > str.length() )
-            return ;
-       
-        check('-', str, idx) ;
-        idx += 1 ;
-
-        System.out.println("Day") ;
-        int day = parse(str, 2, idx) ;
-        idx += 2 ;
-        if ( idx > str.length() )
-            return ;
-
-        System.out.println(str+" ==> "+year+" "+month+" "+day) ;
-        
-        if ( idx == str.length() )
-            return ;
-        
-        check('T', str, idx) ;
-        idx++ ;
-        
-        System.out.println("Hour") ;
-        int hour = parse(str, 2, idx) ;
-        idx += 2 ;
-        
-        if ( idx > str.length() )
-            return ;
-        check(':', str, idx) ;
-        idx += 1 ;
-        
-        System.out.println("Minute") ;
-        int minute = parse(str, 2, idx) ;
-        idx += 2 ;
-        if ( idx > str.length() )
-            return ;
-       
-        check(':', str, idx) ;
-        idx += 1 ;
-
-        System.out.println("Second") ;
-        int second = parse(str, 2, idx) ;
-        idx += 2 ;
-        if ( idx > str.length() )
-            return ;
-        System.out.println(str+" ==> "+hour+" "+minute+" "+second) ;
-        
-        
-        
+        protected abstract void accumulateDistinct(Binding binding, FunctionEnv functionEnv) ;
     }
     
-    private static int parse(String str, int N, int idx)
-    {
-        int x = 0 ;
-        for ( int i = 0 ;  i < N ; i++ )
-        {
-            char ch = str.charAt(i+idx) ;
-            if ( ch < '0' || ch > '9' )
-                throw new DateTimeStruct.DateTimeParseException() ;
-            x = x*10 + ch -'0' ;
-        }
-        return x ;
-    }
-
-    private static void check(char c, String str, int idx)
-    {
-        if ( str.charAt(idx) != c )
-            throw new DateTimeStruct.DateTimeParseException() ;
-    }
-
+    
+    
     public static void main(String[] argv) throws Exception
     {
-        parse("1970-02-01") ;
-        parse("1970-02-01T01:02:03") ;
+        // DateTimeStruct - parse g*
+        DateTimeStruct.parseDate("1970-02-01") ;
+        DateTimeStruct.parseDateTime("1970-02-01T01:02:03") ;
         System.exit(0) ;
         
         // Need TZ
         // Need own parser to preserve time zone.
-        // Or have I written this already?
-        // Make DateTimeStruct robust to end of string.
         NodeValue nv = NodeValue.makeNode("1970-02-01T01:02:03+05:00", XSDDatatype.XSDdateTime) ;
         XSDDateTime x = nv.getDateTime() ;
         x.toString();

@@ -27,7 +27,7 @@ public class TS_General extends TestSuite
     public TS_General()
     {
         super(testSetName) ;
-
+        // Need to check eachis JUnit 4 compatible then remove all .suite and use @RunWith(Suite.class) @SuiteClasses
         addTest(TS_Expr.suite()) ;
         addTest(TestExpressions.suite()) ;
         

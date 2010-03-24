@@ -43,6 +43,7 @@ public class TestExpr extends Assert
     @Test (expected=ExprEvalException.class)
     public void gregorian_cmp_04()              { eval("'1999'^^xsd:gYear < '1999+05:00'^^xsd:gYear", false) ; }
     
+    public void gregorian_cast_01()              { eval("xsd:gYear('2010-03-22'^^xsd:date) = '2010'^^xsd:gYear", true ) ; }
     
     
     // It's easier to write tests that simple are expected to return true/false 

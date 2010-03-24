@@ -57,6 +57,13 @@ public class DateTimeStruct
     
     public static DateTimeStruct parseDate(String str)
     {
+        if ( true )
+        {
+            DateTimeStruct struct = _parse(str, false) ;
+            if ( struct.xsdDateTime )
+                throw new DateTimeParseException() ;
+        }
+        
         Matcher m = patternDate.matcher(str) ;
 
         if ( ! m.matches() ) 
@@ -80,6 +87,13 @@ public class DateTimeStruct
     
     public static DateTimeStruct parseDateTime(String str)
     {
+        if ( true )
+        {
+            DateTimeStruct struct = _parse(str, true) ;
+            if ( !struct.xsdDateTime )
+                throw new DateTimeParseException() ;
+        }
+        
         Matcher m = patternDateTime.matcher(str) ;
 
         if ( ! m.matches() ) 
@@ -114,116 +128,123 @@ public class DateTimeStruct
     }
     
 
-//    // --------
-//    // Alternative parser.  Enables better error messages.
-//    private static DateTimeStruct _parseDateTime(String str)
-//    {
-//        // -? YYYY-MM-DD T hh:mm:ss.ss TZ
-//        DateTimeStruct DateTimeParser = new DateTimeStruct() ;
-//        int idx = 0 ;
-//        
-//        if ( str.startsWith("-") )
-//        {
-//            DateTimeParser.neg = "-" ;
-//            idx = 1 ;
-//        }
-//        
-//        // ---- Year-Month-Day
-//        DateTimeParser.year = getDigits(4, str, idx) ;
-//        idx += 4 ;
-//        check(str, idx, '-') ;
-//        idx += 1 ;
-//        
-//        DateTimeParser.month = getDigits(2, str, idx) ;
-//        idx += 2 ;
-//        check(str, idx, '-') ;
-//        idx += 1 ;
-//        
-//        DateTimeParser.day = getDigits(2, str, idx) ;
-//        idx += 2 ;
-//        // ---- 
-//        check(str, idx, 'T') ;
-//        idx += 1 ;
-//        
-//        // ---- 
-//        // Hour-minute-seconds
-//        DateTimeParser.hour = getDigits(2, str, idx) ;
-//        idx += 2 ;
-//        check(str, idx, ':') ;
-//        idx += 1 ;
-//        
-//        DateTimeParser.minute = getDigits(2, str, idx) ;
-//        idx += 2 ;
-//        check(str, idx, ':') ;
-//        idx += 1 ;
-//        
-//        // seconds
-//        DateTimeParser.second = getDigits(2, str, idx) ;
-//        idx += 2 ;
-//        if ( idx < str.length() && str.charAt(idx) == '.' )
-//        {
-//            idx += 1 ;
-//            int idx2 = idx ;
-//            for ( ; idx2 < str.length() ; idx2++ )
-//            {
-//                char ch = str.charAt(idx) ;
-//                if ( ! Character.isDigit(ch) )
-//                    break ;
-//            }
-//            if ( idx == idx2 )
-//                throw new DateTimeParseException() ;
-//            DateTimeParser.second = DateTimeParser.second+'.'+str.substring(idx, idx2) ;
-//            idx = idx2 ;
-//        }
-//
-//        // timezone. Z or +/- 00:00
-//        
-//        if ( idx < str.length() )
-//        {
-//            if ( str.charAt(idx) == 'Z' )
-//            {
-//                DateTimeParser.timezone = "Z" ;
-//                idx += 1 ;
-//            }
-//            else
-//            {
-//                boolean signPlus = false ;
-//                if ( str.charAt(idx) == '+' )
-//                    signPlus = true ;
-//                else if ( str.charAt(idx) == '-' )
-//                    signPlus = false ;
-//                else
-//                    throw new DateTimeParseException() ;
-//                DateTimeParser.timezone = getDigits(2, str, idx) ;
-//                check(str, idx, ':') ;
-//                DateTimeParser.timezone = DateTimeParser.timezone+':'+getDigits(2, str, idx) ;
-//                idx += 5 ;
-//                 
-//            }
-//        }
-//        
-//        if ( idx != str.length() )
-//            throw new DateTimeParseException() ;
-//        return DateTimeParser ;
-//    }
-//
-//    private static String getDigits(int num, String string, int start)
-//    {
-//        for ( int i = start ; i < (start+num) ; i++ )
-//        {
-//            char ch = string.charAt(i) ;
-//            if ( ! Character.isDigit(ch) )
-//                throw new DateTimeParseException() ;
-//            continue ;
-//        }
-//        return string.substring(start, start+num) ;
-//    }
-//    
-//    private static void check(String string, int start, char x)
-//    {
-//        if ( string.charAt(start) != x ) 
-//            throw new DateTimeParseException() ;
-//    }
+    // --------
+    // Alternative parser.  Enables better error messages.
+    private static DateTimeStruct _parse(String str, boolean includeTime)
+    {
+        // -? YYYY-MM-DD T hh:mm:ss.ss TZ
+        DateTimeStruct struct = new DateTimeStruct() ;
+        int idx = 0 ;
+        
+        if ( str.startsWith("-") )
+        {
+            struct.neg = "-" ;
+            idx = 1 ;
+        }
+        
+        // ---- Year-Month-Day
+        struct.year = getDigits(4, str, idx) ;
+        idx += 4 ;
+        check(str, idx, '-') ;
+        idx += 1 ;
+        
+        struct.month = getDigits(2, str, idx) ;
+        idx += 2 ;
+        check(str, idx, '-') ;
+        idx += 1 ;
+        
+        struct.day = getDigits(2, str, idx) ;
+        idx += 2 ;
+        
+        struct.xsdDateTime = false ;
+
+        if ( includeTime )
+        {        
+            struct.xsdDateTime = true ;
+            // ---- 
+            check(str, idx, 'T') ;
+            idx += 1 ;
+            
+            // ---- 
+            // Hour-minute-seconds
+            struct.hour = getDigits(2, str, idx) ;
+            idx += 2 ;
+            check(str, idx, ':') ;
+            idx += 1 ;
+            
+            struct.minute = getDigits(2, str, idx) ;
+            idx += 2 ;
+            check(str, idx, ':') ;
+            idx += 1 ;
+            
+            // seconds
+            struct.second = getDigits(2, str, idx) ;
+            idx += 2 ;
+            if ( idx < str.length() && str.charAt(idx) == '.' )
+            {
+                idx += 1 ;
+                int idx2 = idx ;
+                for ( ; idx2 < str.length() ; idx2++ )
+                {
+                    char ch = str.charAt(idx) ;
+                    if ( ! Character.isDigit(ch) )
+                        break ;
+                }
+                if ( idx == idx2 )
+                    throw new DateTimeParseException() ;
+                struct.second = struct.second+'.'+str.substring(idx, idx2) ;
+                idx = idx2 ;
+            }
+        }
+        // timezone. Z or +/- 00:00
+        
+        if ( idx < str.length() )
+        {
+            if ( str.charAt(idx) == 'Z' )
+            {
+                struct.timezone = "Z" ;
+                idx += 1 ;
+            }
+            else
+            {
+                boolean signPlus = false ;
+                if ( str.charAt(idx) == '+' )
+                    signPlus = true ;
+                else if ( str.charAt(idx) == '-' )
+                    signPlus = false ;
+                else
+                    throw new DateTimeParseException() ;
+                struct.timezone = getDigits(2, str, idx) ;
+                check(str, idx, ':') ;
+                struct.timezone = struct.timezone+':'+getDigits(2, str, idx) ;
+                idx += 5 ;
+                 
+            }
+        }
+        
+        if ( idx != str.length() )
+            throw new DateTimeParseException() ;
+        return struct ;
+    }
+
+    private static String getDigits(int num, String string, int start)
+    {
+        for ( int i = start ; i < (start+num) ; i++ )
+        {
+            char ch = string.charAt(i) ;
+            // Only ASCII digits
+            if ( ch < '0' || ch > '9' )
+                throw new DateTimeParseException() ;
+            continue ;
+        }
+        return string.substring(start, start+num) ;
+    }
+    
+    private static void check(String string, int idx, char x)
+    {
+        if ( string.length() <= idx || string.charAt(idx) != x ) 
+            throw new DateTimeParseException() ;
+    }
 }
 
 /*

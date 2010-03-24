@@ -20,13 +20,15 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding0 ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap ;
 import com.hp.hpl.jena.sparql.function.FunctionEnvBase ;
-import com.hp.hpl.jena.sparql.junit.TestExpr ;
 import com.hp.hpl.jena.sparql.util.ExprUtils ;
 import com.hp.hpl.jena.vocabulary.RDF ;
 import com.hp.hpl.jena.vocabulary.XSD ;
 
 public class TestExpressions
 {
+    public final static int NO_FAILURE    = 100 ;
+    public final static int PARSE_FAIL    = 250 ;   // Parser should catch it.
+    public final static int EVAL_FAIL     = 200 ;   // Parser should pass it but eval should fail it
     
     public static junit.framework.Test suite() {
         return new JUnit4TestAdapter(TestExpressions.class);
@@ -163,42 +165,55 @@ public class TestExpressions
     
     @Test public void testDuration_09() { testBoolean(duration7+" < "+duration8, true) ; }
     
-    @Test public void testURI_1() { testURI("<a>",     baseNS+"a", query, null, TestExpr.NO_FAILURE ) ; }
-    @Test public void testURI_2() { testURI("<a\\u00E9>",     baseNS+"a\u00E9", query, null, TestExpr.NO_FAILURE ) ; }
-    @Test public void testURI_3() { testURI("ex:b",     exNS+"b", query, null, TestExpr.NO_FAILURE ) ; }
-    @Test public void testURI_4() { testURI("ex:b_",    exNS+"b_", query, null, TestExpr.NO_FAILURE ) ; }
-    @Test public void testURI_5() { testURI("ex:a_b",   exNS+"a_b", query, null, TestExpr.NO_FAILURE ) ; }
-    @Test public void testURI_6() { testURI("ex:", exNS,         query, null, TestExpr.NO_FAILURE ) ; }
-    @Test public void testURI_7() { testURI("x.:", xNS,          query, null, TestExpr.PARSE_FAIL) ; }
-    @Test public void testURI_8() { testURI("rdf:_2",   rdfNS+"_2", query, null, TestExpr.NO_FAILURE ) ; }
-    @Test public void testURI_9() { testURI("rdf:__2",  rdfNS+"__2", query, null, TestExpr.NO_FAILURE ) ; }
-    @Test public void testURI_10() { testURI(":b",       dftNS+"b", query, null, TestExpr.NO_FAILURE ) ; }
-    @Test public void testURI_11() { testURI(":", dftNS,        query, null, TestExpr.NO_FAILURE ) ; }
-    @Test public void testURI_12() { testURI(":\\u00E9", dftNS+"\u00E9", query, null, TestExpr.NO_FAILURE ) ; }
-    @Test public void testURI_13() { testURI("\\u0065\\u0078:", exNS,  query, null, TestExpr.NO_FAILURE ) ; }
-    @Test public void testURI_14() { testURI("select:a", selNS+"a", query, null, TestExpr.NO_FAILURE ) ; }
-    @Test(expected=QueryParseException.class) public void testSyntax_5() { testSyntax("_:") ; }
-    @Test public void testURI_15() { testURI("ex:a.",   exNS+"a", query, null, TestExpr.NO_FAILURE) ; }
-    @Test public void testURI_16() { testURI("ex:a.a",  exNS+"a.a", query, null, TestExpr.NO_FAILURE) ; }
-    @Test public void testURI_17() { testURI("x.:a.a",  xNS+"a.a", query, null, TestExpr.PARSE_FAIL) ; }
-    @Test public void testNumeric_28() { testNumeric("1:b", 1) ; }
-    @Test public void testURI_18() { testURI("ex:2",    exNS+"2", query, null, TestExpr.NO_FAILURE ) ; }
-    @Test public void testURI_19() { testURI("ex:2ab_c",    exNS+"2ab_c", query, null, TestExpr.NO_FAILURE ) ; }
-    @Test public void testBoolean_76() { testBoolean("'fred'@en = 'fred'", false ) ; }
-    @Test public void testBoolean_77() { testBoolean("'fred'@en = 'bert'", false ) ; }
-    @Test public void testBoolean_78() { testBoolean("'fred'@en != 'fred'", true ) ; }
-    @Test public void testBoolean_79() { testBoolean("'fred'@en != 'bert'", true ) ; }
-    @Test public void testBoolean_80() { testBoolean("'chat'@en = 'chat'@fr", false ) ; }
-    @Test public void testBoolean_81() { testBoolean("'chat'@en = 'maison'@fr", false ) ; }
-    @Test public void testBoolean_82() { testBoolean("'chat'@en != 'chat'@fr", true ) ; }
-    @Test public void testBoolean_83() { testBoolean("'chat'@en != 'maison'@fr", true ) ; }
-    @Test public void testBoolean_84() { testBoolean("'chat'@en = 'chat'@EN", true ) ; }
-    @Test public void testBoolean_85() { testBoolean("'chat'@en = 'chat'@en-uk", false ) ; }
-    @Test public void testBoolean_86() { testBoolean("'chat'@en != 'chat'@EN", false ) ; }
-    @Test public void testBoolean_87() { testBoolean("'chat'@en != 'chat'@en-uk", true ) ; }
-    @Test public void testBoolean_88() { testBoolean("'chat'@en = <http://example/>", false ) ; }
-    @Test public void testURI_20() { testURI("()", RDF.nil.getURI()) ; }
+    @Test public void testURI_1()       { testURI("<a>",     baseNS+"a" ) ; }
+    @Test public void testURI_2()       { testURI("<a\\u00E9>",     baseNS+"a\u00E9" ) ; }
+    @Test public void testURI_3()       { testURI("ex:b",     exNS+"b" ) ; }
+    @Test public void testURI_4()       { testURI("ex:b_",    exNS+"b_" ) ; }
+    @Test public void testURI_5()       { testURI("ex:a_b",   exNS+"a_b" ) ; }
+    @Test public void testURI_6()       { testURI("ex:", exNS ) ; }
+    
+    @Test(expected=QueryParseException.class)
+    public void testURI_7()             { testURI("x.:", xNS) ; }
+    
+    @Test public void testURI_8()       { testURI("rdf:_2",   rdfNS+"_2" ) ; }
+    @Test public void testURI_9()       { testURI("rdf:__2",  rdfNS+"__2" ) ; }
+    @Test public void testURI_10()      { testURI(":b",       dftNS+"b" ) ; }
+    @Test public void testURI_11()      { testURI(":", dftNS ) ; }
+    @Test public void testURI_12()      { testURI(":\\u00E9", dftNS+"\u00E9" ) ; }
+    @Test public void testURI_13()      { testURI("\\u0065\\u0078:", exNS ) ; }
+    @Test public void testURI_14()      { testURI("select:a", selNS+"a" ) ; }
+    
+    @Test(expected=QueryParseException.class)
+    public void testSyntax_5()          { testSyntax("_:") ; }
+    
+    @Test public void testURI_15()      { testURI("ex:a.",   exNS+"a") ; }
+    @Test public void testURI_16()      { testURI("ex:a.a",  exNS+"a.a") ; }
+    
+    @Test(expected=QueryParseException.class)
+    public void testURI_17()      { testURI("x.:a.a",  xNS+"a.a") ; }
+    
+    @Test public void testNumeric_28()  { testNumeric("1:b", 1) ; }
+    @Test public void testURI_18()      { testURI("ex:2",    exNS+"2" ) ; }
+    @Test public void testURI_19()      { testURI("ex:2ab_c",    exNS+"2ab_c" ) ; }
+    @Test public void testBoolean_76()  { testBoolean("'fred'@en = 'fred'", false ) ; }
+    @Test public void testBoolean_77()  { testBoolean("'fred'@en = 'bert'", false ) ; }
+    @Test public void testBoolean_78()  { testBoolean("'fred'@en != 'fred'", true ) ; }
+    @Test public void testBoolean_79()  { testBoolean("'fred'@en != 'bert'", true ) ; }
+    @Test public void testBoolean_80()  { testBoolean("'chat'@en = 'chat'@fr", false ) ; }
+    @Test public void testBoolean_81()  { testBoolean("'chat'@en = 'maison'@fr", false ) ; }
+    @Test public void testBoolean_82()  { testBoolean("'chat'@en != 'chat'@fr", true ) ; }
+    @Test public void testBoolean_83()  { testBoolean("'chat'@en != 'maison'@fr", true ) ; }
+    @Test public void testBoolean_84()  { testBoolean("'chat'@en = 'chat'@EN", true ) ; }
+    @Test public void testBoolean_85()  { testBoolean("'chat'@en = 'chat'@en-uk", false ) ; }
+    @Test public void testBoolean_86()  { testBoolean("'chat'@en != 'chat'@EN", false ) ; }
+    @Test public void testBoolean_87()  { testBoolean("'chat'@en != 'chat'@en-uk", true ) ; }
+    @Test public void testBoolean_88()  { testBoolean("'chat'@en = <http://example/>", false ) ; }
+    
+    @Test(expected=QueryParseException.class) 
+    public void testURI_20()      { testURI("()", RDF.nil.getURI()) ; }
+    
     @Test(expected=QueryParseException.class) public void testSyntax_6() { testSyntax("[]") ; }
+    
     @Test public void testBoolean_89() { testBoolean("'fred'^^<type1> = 'fred'^^<type1>", true ) ; }
     @Test(expected=ExprEvalException.class) public void testBoolean_90() { testEval("'fred'^^<type1> != 'joe'^^<type1>" ) ; }
     @Test(expected=ExprEvalException.class) public void testBoolean_91() { testEval("'fred'^^<type1> = 'fred'^^<type2>" ) ; }
@@ -230,10 +245,19 @@ public class TestExpressions
     @Test public void testString_8() { testString("'a\\\\b'", "a\\b") ; }
     @Test public void testString_9() { testString("'a\\u0020a'", "a a") ; }
     @Test public void testString_10() { testString("'a\\uF021'", "a\uF021") ; }
-    @Test public void testString_11() { testString("'a\\X'", "", TestExpr.PARSE_FAIL) ; }
-    @Test public void testString_12() { testString("'aaa\\'", "", TestExpr.PARSE_FAIL) ; }
-    @Test public void testString_13() { testString("'\\u'", "", TestExpr.PARSE_FAIL) ; }
-    @Test public void testString_14() { testString("'\\u111'", "", TestExpr.PARSE_FAIL) ; }
+    
+    @Test(expected=QueryParseException.class) 
+    public void testString_11() { testString("'a\\X'") ; }
+
+    @Test(expected=QueryParseException.class) 
+    public void testString_12() { testString("'aaa\\'") ; }
+    
+    @Test(expected=QueryParseException.class) 
+    public void testString_13() { testString("'\\u'") ; }
+    
+    @Test(expected=QueryParseException.class) 
+    public void testString_14() { testString("'\\u111'") ; }
+    
 //    @Test public void testBoolean_109() { testBoolean("\"fred\\1\" = 'fred1'", false ) ; }
 //    @Test public void testBoolean_110() { testBoolean("\"fred2\" = 'fred\\2'", true ) ; }
     @Test public void testBoolean_111() { testBoolean("'fred\\\\3' != \"fred3\"", true ) ; }
@@ -386,20 +410,28 @@ public class TestExpressions
         assertEquals(b, v.getBoolean()) ;
     }
 
-    private static void testURI(String string, String string2, Query query2, Object object, int noFailure)
-    {}
-
     private static void testURI(String string, String uri)
-    {}
+    {
+        Expr expr = parse(string) ;
+        NodeValue v = expr.eval( env, new FunctionEnvBase()) ;
+        assertTrue(v.isIRI()) ;
+        assertEquals(uri, v.getNode().getURI()) ;
+    }
 
     private static void testString(String string, String string2)
-    {}
+    {
+        Expr expr = parse(string) ;
+        NodeValue v = expr.eval( env, new FunctionEnvBase()) ;
+        assertTrue(v.isString()) ;
+        assertEquals(string2, v.getString()) ;
+    }
 
-    private static void testString(String string, int code)
-    {}
-
-    private static void testString(String string, String s2, int code)
-    {}
+    private static void testString(String string)
+    {
+        Expr expr = parse(string) ;
+        NodeValue v = expr.eval( env, new FunctionEnvBase()) ;
+        assertTrue(v.isString()) ;
+    }
 
 }
 

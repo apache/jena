@@ -6,28 +6,14 @@
 
 package com.hp.hpl.jena.sparql.util;
 
-import junit.framework.JUnit4TestAdapter ;
 import junit.framework.TestCase ;
 import org.junit.Test ;
 
-import com.hp.hpl.jena.sparql.util.DateTimeStruct ;
 import com.hp.hpl.jena.sparql.util.DateTimeStruct.DateTimeParseException ;
 
 
 public class TestDateTimeParsing extends TestCase
 {
-    public static junit.framework.Test suite()
-    {
-        return new JUnit4TestAdapter(TestDateTimeParsing.class) ;
-    }
-    
-//    public static Test suite()
-//    {
-//        TestSuite ts = new TestSuite(TestDateTimeParsing.class) ;
-//        ts.setName(Utils.classShortName(TestDateTimeParsing.class)) ;
-//        return ts ;
-//    }
-    
     @Test public void testDT_1()  { dateTimeTest("2007-08-31T12:34:56Z") ; }
     @Test public void testDT_2()  { dateTimeTest("2007-08-31T12:34:56") ; } 
     @Test public void testDT_3()  { dateTimeTest("2007-08-31T12:34:56.003") ; } 
