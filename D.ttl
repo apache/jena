@@ -1,8 +1,5 @@
 @prefix foaf:   <http://xmlns.com/foaf/0.1/> .
+@prefix  xsd:    <http://www.w3.org/2001/XMLSchema#> .
 @prefix : <http://example/> .
 
-:a foaf:knows :b .
-:b foaf:knows :a .
-
-:a foaf:knows :c .
-:c foaf:knows :a .
+:x :p "2010"^^xsd:gYear .

@@ -1,7 +1,8 @@
-PREFIX onto: <http://example/>
-
-SELECT ?marker_id WHERE {
-?marker_id onto:GenomicFeatureDetector ?marker_name .
-FILTER (?marker_name IN ("AMP4", "AMP1" , "EST5" ,"EST1" , "EST2" ,
-                         "ACP1" , "ICD1" , "AMP2" , "CAT1" , "AMP3") )
+prefix  xsd:    <http://www.w3.org/2001/XMLSchema#>
+prefix : <http://example/>
+SELECT *
+{
+  :x :p ?v .
+  LET(?a := str(?v))
+  LET(?b := ?v)
 }

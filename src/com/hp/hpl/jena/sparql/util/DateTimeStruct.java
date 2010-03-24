@@ -42,8 +42,10 @@ public class DateTimeStruct
             x = x+timezone ;
         return x ; 
     }
-    
+
+    // Sometime: don't use regex but work L to R respecting "-" in dates as absent.
     public static final String regexDate        = "(-?)(\\d{4})-(\\d{2})-(\\d{2})" ;
+    
     public static final String regexTime        = "(\\d{2}):(\\d{2}):(\\d{2}(?:\\.\\d+)?)" ;
     public static final String regexTZ          = "(Z|(?:(?:\\+|-)\\d{2}:\\d{2}))?" ;
     
@@ -68,7 +70,7 @@ public class DateTimeStruct
         dt.day      = matchStr(str, m, 4) ;
         dt.timezone = matchStrOrNull(str, m, 5) ;
         
-        // Because comparisons are based on xsd;ddate start point. 
+        // Because comparisons are based on xsd:date start point. 
         dt.hour = "00" ;
         dt.minute = "00" ;
         dt.second = "00" ;

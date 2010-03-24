@@ -44,8 +44,6 @@ public class StandardFunctions
         addCast(registry, XSDDatatype.XSDdouble) ;
         addCast(registry, XSDDatatype.XSDfloat) ;
         
-        addCast(registry, XSDDatatype.XSDdateTime) ;
-        addCast(registry, XSDDatatype.XSDdate) ;
         addCast(registry, XSDDatatype.XSDduration) ;
         
         addCast(registry, XSDDatatype.XSDboolean) ;
@@ -53,11 +51,14 @@ public class StandardFunctions
 
         addCast(registry, XSDDatatype.XSDanyURI) ;
         
-        addCast(registry, XSDDatatype.XSDgYear) ;
-        addCast(registry, XSDDatatype.XSDgYearMonth) ;
-        addCast(registry, XSDDatatype.XSDgMonth) ;
-        addCast(registry, XSDDatatype.XSDgMonthDay) ;
-        addCast(registry, XSDDatatype.XSDgDay) ;
+        // Specialzed casting rules
+        addCastDT(registry, XSDDatatype.XSDdateTime) ;
+        addCastDT(registry, XSDDatatype.XSDdate) ;
+        addCastDT(registry, XSDDatatype.XSDgYear) ;
+        addCastDT(registry, XSDDatatype.XSDgYearMonth) ;
+        addCastDT(registry, XSDDatatype.XSDgMonth) ;
+        addCastDT(registry, XSDDatatype.XSDgMonthDay) ;
+        addCastDT(registry, XSDDatatype.XSDgDay) ;
 
         //TODO op:numeric-greater-than etc.
         
@@ -102,6 +103,11 @@ public class StandardFunctions
     private static void addCast(FunctionRegistry registry, XSDDatatype dt)
     {
         registry.put(dt.getURI(), new CastXSD(dt) ) ;
+    }
+
+    private static void addCastDT(FunctionRegistry registry, XSDDatatype dt)
+    {
+        registry.put(dt.getURI(), new CastXSD_DT(dt) ) ;
     }
 
     private static void add(FunctionRegistry registry, String uri, Class<?> funcClass)

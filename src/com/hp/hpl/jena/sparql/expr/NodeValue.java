@@ -773,7 +773,7 @@ public abstract class NodeValue extends ExprNode
     public Node getNode() { return node ; }
     
     public boolean hasNode() { return node != null ; }
-
+    
     // ----------------------------------------------------------------
     // ---- Subclass operations 
     

@@ -5,10 +5,10 @@
 
 package com.hp.hpl.jena.sparql.function;
 
-import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.sparql.expr.ExprEvalException;
-import com.hp.hpl.jena.sparql.expr.NodeValue;
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
+import com.hp.hpl.jena.sparql.expr.NodeValue ;
 
 /** 
  * @author Andy Seaborne
@@ -16,7 +16,7 @@ import com.hp.hpl.jena.sparql.expr.NodeValue;
 
 public class CastXSD implements FunctionFactory
 {
-    private XSDDatatype castType ;
+    protected final XSDDatatype castType ;
     
     public CastXSD(XSDDatatype dt)
     {
@@ -29,7 +29,7 @@ public class CastXSD implements FunctionFactory
     }
 
 
-    private static class Instance extends FunctionBase1 
+    protected static class Instance extends FunctionBase1 
     {
         XSDDatatype castType ;
         Instance(XSDDatatype dt) {this.castType = dt ;  }
@@ -65,7 +65,7 @@ public class CastXSD implements FunctionFactory
 
             if ( s == null )
                 throw new ExprEvalException("CastXSD: Can't cast: "+v+ "(has no string appearance)") ;
-
+            
             //        // Special case - non-normalised xsd:booleans use 0 and 1.
             //        if ( v.isBoolean() )
             //        {
@@ -73,12 +73,17 @@ public class CastXSD implements FunctionFactory
             //            if ( s.equals("1") ) s = "true" ;
             //        }
 
-            // Unfortunately, this happens in NodeValue.makeNode as well.
+            NodeValue r = cast(s, v, castType) ;
+            return r ;
+        }
+
+        protected NodeValue cast(String s, NodeValue nv, XSDDatatype castType2)
+        {
+            // Plain cast.
             if ( ! castType.isValid(s) )
                 throw new ExprEvalException("CastXSD: Not a valid literal form: "+s) ;
-
-            NodeValue r = NodeValue.makeNode(s, castType) ;
-            return r ;
+            // Unfortunately, validity testing happens in NodeValue.makeNode as well.
+            return NodeValue.makeNode(s, castType) ;
         }
     }
 }

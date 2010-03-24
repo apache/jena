@@ -45,6 +45,7 @@ import com.hp.hpl.jena.sparql.sse.SSEParseException ;
 import com.hp.hpl.jena.sparql.sse.WriterSSE ;
 import com.hp.hpl.jena.sparql.sse.builders.BuildException ;
 import com.hp.hpl.jena.sparql.util.ALog ;
+import com.hp.hpl.jena.sparql.util.DateTimeStruct ;
 import com.hp.hpl.jena.sparql.util.ExprUtils ;
 import com.hp.hpl.jena.sparql.util.IndentedLineBuffer ;
 import com.hp.hpl.jena.sparql.util.IndentedWriter ;
@@ -91,10 +92,100 @@ public class RunARQ
         }
     }
 
+    // Pase - assuming valid. 
+    public static void parse(String str)
+    {
+        System.out.println("Year") ;
+        int idx = 0 ;
+        int year = parse(str, 4, idx) ;
+        idx += 4 ;
+        
+        if ( idx > str.length() )
+            return ;
+        check('-', str, idx) ;
+        idx += 1 ;
+        
+        System.out.println("Month") ;
+        int month = parse(str, 2, idx) ;
+        idx += 2 ;
+        if ( idx > str.length() )
+            return ;
+       
+        check('-', str, idx) ;
+        idx += 1 ;
+
+        System.out.println("Day") ;
+        int day = parse(str, 2, idx) ;
+        idx += 2 ;
+        if ( idx > str.length() )
+            return ;
+
+        System.out.println(str+" ==> "+year+" "+month+" "+day) ;
+        
+        if ( idx == str.length() )
+            return ;
+        
+        check('T', str, idx) ;
+        idx++ ;
+        
+        System.out.println("Hour") ;
+        int hour = parse(str, 2, idx) ;
+        idx += 2 ;
+        
+        if ( idx > str.length() )
+            return ;
+        check(':', str, idx) ;
+        idx += 1 ;
+        
+        System.out.println("Minute") ;
+        int minute = parse(str, 2, idx) ;
+        idx += 2 ;
+        if ( idx > str.length() )
+            return ;
+       
+        check(':', str, idx) ;
+        idx += 1 ;
+
+        System.out.println("Second") ;
+        int second = parse(str, 2, idx) ;
+        idx += 2 ;
+        if ( idx > str.length() )
+            return ;
+        System.out.println(str+" ==> "+hour+" "+minute+" "+second) ;
+        
+        
+        
+    }
+    
+    private static int parse(String str, int N, int idx)
+    {
+        int x = 0 ;
+        for ( int i = 0 ;  i < N ; i++ )
+        {
+            char ch = str.charAt(i+idx) ;
+            if ( ch < '0' || ch > '9' )
+                throw new DateTimeStruct.DateTimeParseException() ;
+            x = x*10 + ch -'0' ;
+        }
+        return x ;
+    }
+
+    private static void check(char c, String str, int idx)
+    {
+        if ( str.charAt(idx) != c )
+            throw new DateTimeStruct.DateTimeParseException() ;
+    }
+
     public static void main(String[] argv) throws Exception
     {
+        parse("1970-02-01") ;
+        parse("1970-02-01T01:02:03") ;
+        System.exit(0) ;
+        
         // Need TZ
-        // Need own parser.
+        // Need own parser to preserve time zone.
+        // Or have I written this already?
+        // Make DateTimeStruct robust to end of string.
         NodeValue nv = NodeValue.makeNode("1970-02-01T01:02:03+05:00", XSDDatatype.XSDdateTime) ;
         XSDDateTime x = nv.getDateTime() ;
         x.toString();

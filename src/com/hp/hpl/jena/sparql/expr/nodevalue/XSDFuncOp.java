@@ -794,6 +794,11 @@ public class XSDFuncOp
         throw new ARQInternalErrorException("Weird boolean comparison: "+nv1+", "+nv2) ; 
     }
 
+    public static boolean dateTimeCastCompatible(NodeValue nv, XSDDatatype xsd)
+    {
+        return nv.hasDateTime() ;
+    }
+    
     /** Cast a NodeValue to a date/time type (xsd dateTime, date, time, g*) according to F&O
      *  <a href="http://www.w3.org/TR/xpath-functions/#casting-to-datetimes">17.1.5 Casting to date and time types</a>
      *  Throws an exception on incorrect case.

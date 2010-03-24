@@ -43,6 +43,15 @@ public class NodeUtils
         return true ;
     }
     
+    public static boolean hasLang(Node node)
+    {
+        if ( ! node.isLiteral() ) return false ;
+        String x = node.getLiteralLanguage() ;
+        if ( x == null ) return false ;
+        if ( x.equals("") ) return false ;
+        return true ;
+    }
+    
     // Get the string value of plain literal or XSD string.  
     
     public static String stringLiteral(Node literal)
