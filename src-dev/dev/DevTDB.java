@@ -17,6 +17,10 @@ public class DevTDB
     //   Uses RIOT for I/O
     // ----
     
+    // ---- Core system
+    // Writer-visible block file for MR&SW
+    // ??
+    
     // Weak inferencing (in query rewriting):
     // owl:equivalentClass, owl:equivalentProperty,
     // owl:inverseOf, owl:SymmetricProperty, owl:TransitiveProperty

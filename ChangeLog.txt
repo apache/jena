@@ -42,7 +42,7 @@ ChangeLog for TDB
 
 + Experimental: filtering of quads (to support dynamic datasets and graph masking at some time).
 + Include src-examples in sources shipped.
-+ Bug fix: Turtle and N-triples reader could use the blank nod elbal as given, 
++ Bug fix: Turtle and N-triples reader could use the blank nod label as given, 
   not treat as a per run scoped label.    
 
 ==== 0.8.3
