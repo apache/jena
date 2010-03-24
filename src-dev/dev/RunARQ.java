@@ -11,9 +11,6 @@ import java.io.Reader ;
 import java.io.StringReader ;
 import java.util.Iterator ;
 
-import org.junit.Assert ;
-import org.junit.Test ;
-
 import arq.sparql ;
 
 import com.hp.hpl.jena.Jena ;
@@ -36,7 +33,6 @@ import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
-import com.hp.hpl.jena.sparql.expr.ExprEvalTypeException ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp ;
 import com.hp.hpl.jena.sparql.function.FunctionEnvBase ;
