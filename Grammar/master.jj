@@ -824,7 +824,7 @@ Element ExistsElt() : { Element el ; }
 
 Element NotExistsElt() : { Element el ; }
 {
-    (<UNSAID>|<NOTEXISTS>)
+    <NOTEXISTS>
     el = GroupGraphPattern()
     { return new ElementNotExists(el) ; }
 }

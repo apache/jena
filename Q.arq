@@ -1,8 +1,6 @@
-prefix  xsd:    <http://www.w3.org/2001/XMLSchema#>
 prefix : <http://example/>
+
 SELECT *
 {
-  :x :p ?v .
-  LET(?a := str(?v))
-  LET(?b := ?v)
+  ?s ?p ?o FILTER NOT EXISTS { ?x ?y ?z }
 }
