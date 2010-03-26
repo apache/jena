@@ -15,7 +15,7 @@ import com.hp.hpl.jena.tdb.TDBException;
 
 public enum NodeType implements Named
 {
-    // Do not allocate id 0 (which is the return for NULL in JDBC)
+    // Do not allocate id 0
 //  NULL
 //  {
 //  @Override public XSDDatatype getDatatype()  { return null ; }
