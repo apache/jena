@@ -123,7 +123,6 @@ public abstract class JenaReaderRIOT implements RDFReader
         try {
             model.notifyEvent( GraphEvents.startRead );
             readWorker(model, tokenizer,  base) ;
-            tokenizer.close() ;
         }
         catch (JenaException e)
         {
@@ -143,6 +142,7 @@ public abstract class JenaReaderRIOT implements RDFReader
     }
 
     // Called after decisions have been made.
+    // readWorker responsible for closing tokenizer.
     protected abstract void readWorker(Model model, Tokenizer tokenizer, String base) throws Exception;
 }
 

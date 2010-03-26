@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Information Ltd
  * All rights reserved.
  * [See end of file]
  */
@@ -29,16 +30,23 @@ public class JenaReaderTurtle2 extends JenaReaderRIOT
     {
         Sink<Triple> sink = new SinkToGraphTriples(model.getGraph()) ;
         Checker checker = new Checker() ; 
-        parser = new LangTurtle(base, tokenizer, checker, sink) ;
-        parser.parse() ;
-        // Merge prefixes.
-        for ( Map.Entry<String,IRI> e : parser.getPrefixMap().getMapping().entrySet() )
-            model.setNsPrefix(e.getKey(), e.getValue().toString()) ;
+        try {
+            parser = new LangTurtle(base, tokenizer, checker, sink) ;
+            parser.parse() ;
+            // Merge prefixes.
+            for ( Map.Entry<String,IRI> e : parser.getPrefixMap().getMapping().entrySet() )
+                model.setNsPrefix(e.getKey(), e.getValue().toString()) ;
+        } finally 
+        {
+            sink.close() ;
+            tokenizer.close() ;
+        }
     }
 }
 
 /*
  * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Information Ltd
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
