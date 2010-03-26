@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Information Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -77,11 +78,48 @@ public enum NodeType implements Named
 //        @Override public int getTypeId()            { return 7 ; }
 //        @Override public String getName()         { return "Datetime" ; }
 //    } ,
+    
+//  G_YEAR
+//  { 
+//      @Override public XSDDatatype getDatatype()  { return XSDDatatype.XSDgYear ; }
+//      @Override public int getTypeId()            { return 8 ; }
+//      @Override public String getName()         { return "gYear" ; }
+//  } ,
+    
+//  G_YEARMONTH
+//  { 
+//      @Override public XSDDatatype getDatatype()  { return XSDDatatype.XSDgYearMonth ; }
+//      @Override public int getTypeId()            { return 9 ; }
+//      @Override public String getName()         { return "gYearMonth" ; }
+//  } ,
+        
+//  G_MONTH
+//  { 
+//      @Override public XSDDatatype getDatatype()  { return XSDDatatype.XSDgMonth ; }
+//      @Override public int getTypeId()            { return 10 ; }
+//      @Override public String getName()         { return "gMonth" ; }
+//  } ,
+    
+//  G_MONTHDAY
+//  { 
+//      @Override public XSDDatatype getDatatype()  { return XSDDatatype.XSDgMonthDay ; }
+//      @Override public int getTypeId()            { return 11 ; }
+//      @Override public String getName()         { return "gMonthDay" ; }
+//  } ,
+    
+//  G_DAY
+//  { 
+//      @Override public XSDDatatype getDatatype()  { return XSDDatatype.XSDgDay ; }
+//      @Override public int getTypeId()            { return 12 ; }
+//      @Override public String getName()         { return "gDay" ; }
+//  } ,
+    
+            
 //
 //    VAR
 //    { 
 //        @Override public XSDDatatype getDatatype()  { return null ; }
-//        @Override public int getTypeId()            { return 8 ; }
+//        @Override public int getTypeId()            { return 40; }
 //        @Override public String getName()           { return "var" ; }
 //    } ,
 //
@@ -150,6 +188,7 @@ public enum NodeType implements Named
 
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Information Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
