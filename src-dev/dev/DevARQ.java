@@ -11,12 +11,7 @@ public class DevARQ
     
     // ----
     
-    // gYear/gYearMonth etc
-    // Special casting rules :  F&O 17.1.5 Casting to date and time types
-    // dateTime -> time
-    // dateTime -> date
-    // dateTime or date -> gYear, xs:gYearMonth, xs:gMonth, xs:gMonthDay, gDay
-    //  Each a value space as not directly comparable.
+    // DateTime parser year can be > 4 digits 
     
     // Sort out DatasetGraph:
     // DatasetGraphMem 
