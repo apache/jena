@@ -123,7 +123,7 @@ public class RunARQ
     public static void main(String[] argv) throws Exception
     {
         QueryEngineMain.unregister() ;
-        QueryEngineRef.register() ; // Check: register should go to front of registered engines
+        QueryEngineRef.register() ;
         
         String [] queries = { "Q1.sse", "Q2.sse" } ;
         String [] datafile = { "D1.ttl", "D2.ttl" } ;
