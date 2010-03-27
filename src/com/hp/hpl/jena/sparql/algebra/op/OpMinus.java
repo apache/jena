@@ -1,61 +1,48 @@
 /*
- * (c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) 2010 Talis Information Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.algebra;
+package com.hp.hpl.jena.sparql.algebra.op;
 
-import com.hp.hpl.jena.sparql.algebra.op.*;
+import com.hp.hpl.jena.sparql.algebra.Op;
+import com.hp.hpl.jena.sparql.algebra.OpVisitor;
+import com.hp.hpl.jena.sparql.algebra.Transform;
+import com.hp.hpl.jena.sparql.sse.Tags;
+import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
-public interface OpVisitor
+public class OpMinus extends Op2
 {
-    // Op0
-    public void visit(OpBGP opBGP) ;
-    public void visit(OpQuadPattern quadPattern) ;
-    public void visit(OpTriple opTriple) ;
-    public void visit(OpPath opPath) ;
-    public void visit(OpTable opTable) ;
-    public void visit(OpNull opNull) ;
+    public static Op create(Op left, Op right)
+    { 
+        return new OpMinus(left, right) ;
+    }
     
-    //Op1
-    public void visit(OpProcedure opProc) ;
-    public void visit(OpPropFunc opPropFunc) ;
-    public void visit(OpFilter opFilter) ;
-    public void visit(OpGraph opGraph) ;
-    public void visit(OpService opService) ;
-    public void visit(OpDatasetNames dsNames) ;
-    public void visit(OpLabel opLabel) ;
+    private OpMinus(Op left, Op right) { super(left, right) ; }
     
-    // Op2
-    public void visit(OpJoin opJoin) ;
-    public void visit(OpLeftJoin opLeftJoin) ;
-    public void visit(OpUnion opUnion) ;
-    public void visit(OpDiff opDiff) ;
-    public void visit(OpMinus opMinus) ;
-    
-    public void visit(OpConditional opCondition) ;
-    
-    // OpN
-    public void visit(OpSequence opSequence) ;
-    public void visit(OpDisjunction opDisjunction) ;
+    public String getName() { return Tags.tagMinus ; }
 
-    public void visit(OpExt opExt) ;
+    @Override
+    public Op apply(Transform transform, Op left, Op right)
+    { return transform.transform(this, left, right) ; }
+        
+    public void visit(OpVisitor opVisitor) { opVisitor.visit(this) ; }
+    @Override
+    public Op copy(Op newLeft, Op newRight)
+    { return new OpMinus(newLeft, newRight) ; }
     
-    // OpModifier
-    public void visit(OpList opList) ;
-    public void visit(OpOrder opOrder) ;
-    public void visit(OpProject opProject) ;
-    public void visit(OpReduced opReduced) ;
-    public void visit(OpDistinct opDistinct) ;
-    public void visit(OpSlice opSlice) ;
-    public void visit(OpAssign opAssign) ;
-
-    public void visit(OpGroupAgg opGroupAgg) ;
+    @Override
+    public boolean equalTo(Op op2, NodeIsomorphismMap labelMap)
+    {
+        if ( ! ( op2 instanceof OpMinus) ) return false ;
+        return super.sameArgumentsAs((Op2)op2, labelMap) ;
+    }
 }
 
 /*
  * (c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) 2010 Talis Information Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

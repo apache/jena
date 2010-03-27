@@ -34,6 +34,8 @@ import com.hp.hpl.jena.sparql.core.QueryCheckException ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.engine.main.QueryEngineMain ;
+import com.hp.hpl.jena.sparql.engine.ref.QueryEngineRef ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
@@ -120,6 +122,25 @@ public class RunARQ
     
     public static void main(String[] argv) throws Exception
     {
+        QueryEngineMain.unregister() ;
+        QueryEngineRef.register() ; // Check: register should go to front of registered engines
+        
+        String [] queries = { "Q1.sse", "Q2.sse" } ;
+        String [] datafile = { "D1.ttl", "D2.ttl" } ;
+        
+        for (String query : queries)
+        {
+            for (String data : datafile )
+            {
+                System.out.printf("Data = %s, Query = %s\n", data, query);
+                arq.sse_query.main("--v", "--print=op", "--data="+data, "--query="+query) ;
+                System.out.println();
+            }
+        }
+  
+        System.exit(0) ;
+        
+        
         // DateTimeStruct - parse g*
         DateTimeStruct.parseDate("1970-02-01") ;
         DateTimeStruct.parseDateTime("1970-02-01T01:02:03") ;

@@ -170,6 +170,9 @@ public class OpAsQuery
         public void visit(OpDiff opDiff)
         { throw new ARQNotImplemented("OpDiff") ; }
 
+        public void visit(OpMinus opMinus)
+        { throw new ARQNotImplemented("OpMinus") ; }
+
         public void visit(OpUnion opUnion)
         {
             Element eLeft = asElementGroup(opUnion.getLeft()) ;

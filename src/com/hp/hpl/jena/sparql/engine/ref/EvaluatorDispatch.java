@@ -137,6 +137,14 @@ public class EvaluatorDispatch implements OpVisitor
         push(table) ;
     }
 
+    public void visit(OpMinus opMinus)
+    {
+        Table left = eval(opMinus.getLeft()) ;
+        Table right = eval(opMinus.getRight()) ;
+        Table table = evaluator.minus(left, right) ;
+        push(table) ;
+    }
+
     public void visit(OpUnion opUnion)
     {
         Table left = eval(opUnion.getLeft()) ;

@@ -71,6 +71,7 @@ public class BuilderOp
         addBuild(Tags.tagDisjunction,   buildDisjunction) ;
         addBuild(Tags.tagLeftJoin,      buildLeftJoin) ;
         addBuild(Tags.tagDiff,          buildDiff) ;
+        addBuild(Tags.tagMinus,         buildMinus) ;
         addBuild(Tags.tagUnion,         buildUnion) ;
         addBuild(Tags.tagConditional,   buildConditional) ;
 
@@ -349,6 +350,18 @@ public class BuilderOp
             Op left = build(list, 1) ;
             Op right  = build(list, 2) ;
             Op op = OpDiff.create(left, right) ;
+            return op ;
+        }
+    } ;
+
+    final protected Build buildMinus = new Build()
+    {
+        public Op make(ItemList list)
+        {
+            BuilderLib.checkLength(3, 4, list, "minus: wanted 2 arguments") ;
+            Op left = build(list, 1) ;
+            Op right  = build(list, 2) ;
+            Op op = OpMinus.create(left, right) ;
             return op ;
         }
     } ;

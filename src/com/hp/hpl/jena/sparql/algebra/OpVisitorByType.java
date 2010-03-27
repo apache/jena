@@ -54,6 +54,9 @@ public abstract class OpVisitorByType implements OpVisitor
     public void visit(OpDiff opDiff)
     { visit2(opDiff) ; }
 
+    public void visit(OpMinus opMinus)
+    { visit2(opMinus) ; }
+
     public void visit(OpUnion opUnion)
     { visit2(opUnion) ; }
     

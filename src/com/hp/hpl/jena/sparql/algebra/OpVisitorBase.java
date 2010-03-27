@@ -45,6 +45,9 @@ public class OpVisitorBase implements OpVisitor
     public void visit(OpConditional opCond)
     {}
 
+    public void visit(OpMinus opMinus)
+    {}
+    
     public void visit(OpDiff opDiff)
     {}
     

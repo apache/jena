@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Information Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -58,6 +59,7 @@ public class Tags
     public static final String tagLeftJoin      = "leftjoin" ;
     public static final String tagConditional   = "conditional" ;
     public static final String tagDiff          = "diff" ;
+    public static final String tagMinus         = "minus" ;
     public static final String tagUnion         = "union" ;
 
     public static final String tagToList        = "tolist" ;
@@ -139,6 +141,7 @@ public class Tags
 
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP All rights
+ * (c) Copyright 2010 Talis Information Ltd.
  * reserved.
  * 
  * Redistribution and use in source and binary forms, with or without

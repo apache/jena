@@ -256,6 +256,9 @@ public class WriterOp
         public void visit(OpDiff opDiff)
         { visitOp2(opDiff, null) ; }
     
+        public void visit(OpMinus opMinus)
+        { visitOp2(opMinus, null) ; }
+
         public void visit(OpUnion opUnion)
         { visitOp2(opUnion, null) ; } 
     

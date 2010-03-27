@@ -219,6 +219,14 @@ public class OpExecutor
         return new QueryIterDiff(left, right, execCxt) ;
     }
     
+    protected QueryIterator execute(OpMinus opMinus, QueryIterator input)
+    { 
+        QueryIterator left = executeOp(opMinus.getLeft(), input) ;
+        QueryIterator right = executeOp(opMinus.getRight(), root()) ;
+        throw new ARQNotImplemented("diff/main engine") ;
+        //return new QueryIterMinus(left, right, execCxt) ;
+    }
+
     protected QueryIterator execute(OpUnion opUnion, QueryIterator input)
     {
         List<Op> x = flattenUnion(opUnion) ;
