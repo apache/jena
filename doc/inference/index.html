@@ -1723,6 +1723,14 @@ floating point or XSDDateTime).</div>
     </td>
   </tr>
   <tr> 
+    <td width="41%">makeSkolem(?x, ?v1, ... ?vn)</td>
+    <td width="59%"> 
+      <div align="left">Binds ?x to be a blank node. The blank node is generated
+      based on the values of the remain ?vi arguments, so the same combination of
+      arguments will generate the same bNode.</div>
+    </td>
+  </tr>
+  <tr> 
     <td width="41%">noValue(?x, ?p)<br>
       noValue(?x ?p ?v)</td>
     <td width="59%"> 
@@ -2067,7 +2075,7 @@ while (i.hasNext()) {
 <hr>
 <p>
   <i>Author: Dave Reynolds<br>
-  Last modification: $Id: index.html,v 1.40 2009-08-29 12:26:19 der Exp $</i>
+  Last modification: $Id: index.html,v 1.41 2010-03-28 11:59:36 der Exp $</i>
 </p>
 </body>
 </html>

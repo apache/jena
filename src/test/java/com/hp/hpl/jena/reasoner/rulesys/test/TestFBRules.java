@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestFBRules.java,v 1.2 2009-10-07 14:35:39 der Exp $
+ * $Id: TestFBRules.java,v 1.3 2010-03-28 11:59:36 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -35,7 +35,7 @@ import org.slf4j.LoggerFactory;
  * Test suite for the hybrid forward/backward rule system.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2009-10-07 14:35:39 $
+ * @version $Revision: 1.3 $ on $Date: 2010-03-28 11:59:36 $
  */
 public class TestFBRules extends TestCase {
     
@@ -1004,6 +1004,46 @@ public class TestFBRules extends TestCase {
         } finally {
             JenaParameters.enableFilteringOfHiddenInfNodes = prior;
         }
+    }
+    
+    /**
+     * Test skolem constant generation
+     */
+    public void testSkolem() {
+        assertEquals( getSkolem(a, Util.makeIntNode(42)), 
+                      getSkolem(a, Util.makeIntNode(42)) );
+        
+        assertNotSame( getSkolem(a, Util.makeIntNode(42)), 
+                       getSkolem(b, Util.makeIntNode(42)) );
+        
+        assertNotSame( getSkolem(a, Util.makeIntNode(42)), 
+                       getSkolem(a, Util.makeIntNode(43)) );
+        
+        assertNotSame( getSkolem(a, Node.createLiteral("foo")), 
+                       getSkolem(a, Node.createLiteral("foo", "en", false)) );
+        
+        assertEquals( getSkolem(Node.createLiteral("foo")),
+                getSkolem(Node.createLiteral("foo")));
+        
+        assertNotSame( getSkolem(Node.createLiteral("foo")),
+                       getSkolem(Node.createLiteral("bar")));
+    }
+    
+    private Node getSkolem(Node x, Node y) {
+        String rules =  "[r1: (?n p ?x) (?n q ?y) makeSkolem(?s ?x ?y) -> (?n s ?s)]";
+        Graph data = Factory.createGraphMem();
+        data.add(new Triple(n1, p, x));
+        data.add(new Triple(n1, q, y));
+        InfGraph infgraph = createInfGraph(rules, data);
+        return infgraph.find(n1, s, Node.ANY).next().getObject();
+    }
+    
+    private Node getSkolem(Node x) {
+        String rules =  "[r1: (?n p ?x)  makeSkolem(?s ?x) -> (?n s ?s)]";
+        Graph data = Factory.createGraphMem();
+        data.add(new Triple(n1, p, x));
+        InfGraph infgraph = createInfGraph(rules, data);
+        return infgraph.find(n1, s, Node.ANY).next().getObject();
     }
     
     /**
