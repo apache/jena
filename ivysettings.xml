@@ -1,4 +1,7 @@
 <ivysettings>
+
+  <!-- Must have all properties defined (no external ones) for IvyDE -->
+
   <property name="sftp.root.dev" value="repo-dev/com/hp/hpl/jena" override="false"/>
   <property name="sftp.root.main" value="repo/com/hp/hpl/jena" override="false"/>
 
