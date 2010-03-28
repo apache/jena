@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Information Ltd
  * All rights reserved.
  * [See end of file]
  */
@@ -7,13 +8,7 @@
 package dev;
 
 import org.openjena.atlas.io.IndentedWriter ;
-import org.openjena.atlas.json.JSON ;
-import org.openjena.atlas.json.JsonArray ;
-import org.openjena.atlas.json.JsonBoolean ;
-import org.openjena.atlas.json.JsonNumber ;
-import org.openjena.atlas.json.JsonObject ;
-import org.openjena.atlas.json.JsonString ;
-import org.openjena.atlas.json.JsonValue ;
+import org.openjena.atlas.json.* ;
 import org.openjena.atlas.json.io.JSWriter ;
 
 // To do:
@@ -22,6 +17,39 @@ import org.openjena.atlas.json.io.JSWriter ;
 
 public class RunJSON
 {
+    public static JsonValue accessPath(JsonValue obj, String ... path)
+    {
+        for ( int i = 0 ; i < path.length ; i++ )
+        {
+            String p = path[i] ;
+            if ( ! obj.isObject() )
+                throw new JsonException("Path traverses non-object") ;
+            obj = obj.getAsObject().get(p) ;
+        }
+        return obj ;
+    }
+    
+    public static JsonValue access(JsonValue obj, Object ... path)
+    {
+        for ( int i = 0 ; i < path.length ; i++ )
+        {
+            Object p = path[i] ;
+            if ( p instanceof String )
+            {
+                if ( ! obj.isObject() )
+                    throw new JsonException("Path traverses non-object") ;
+                obj = obj.getAsObject().get((String)p) ;
+            }
+            if ( p instanceof Integer )
+            {
+                if ( ! obj.isArray() )
+                    throw new JsonException("Path traverses non-array") ;
+                obj = obj.getAsArray().get((Integer)p) ;
+            }
+        }
+        return obj ;
+    }
+    
     public static void main(String... args)
     {
         if ( false )
@@ -73,6 +101,8 @@ public class RunJSON
             a.add(JsonNumber.value(5)) ;
             obj.put("array2", a) ;
             obj.output(IndentedWriter.stdout) ;
+            System.out.println() ;
+            System.out.println(access(obj, "x1")) ;
         }
         
         //IndentedWriter.stdout.flush();
@@ -83,6 +113,7 @@ public class RunJSON
 
 /*
  * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Information Ltd
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

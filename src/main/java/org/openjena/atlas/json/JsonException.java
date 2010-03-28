@@ -8,31 +8,19 @@
 package org.openjena.atlas.json;
 
 
-public class JsonParseException extends JsonException
+public class JsonException extends RuntimeException
 {
-    private int line = -1 ;
-    private int column = -1 ;
+    public JsonException()
+    { super() ; }
 
-    public JsonParseException(int line, int column)
-    { super() ; set(line, column) ; }
+    public JsonException(Throwable cause)
+    { super(cause) ; }
 
-    public JsonParseException(Throwable cause, int line, int column)
-    { super(cause) ; set(line, column) ; }
+    public JsonException(String msg)
+    { super(msg) ; }
 
-    public JsonParseException(String msg, int line, int column)
-    { super(msg) ; set(line, column) ; }
-
-    public JsonParseException(String msg, Throwable cause,int line, int column)
-    { super(msg, cause) ; set(line, column) ; }
-
-    private void set(int line, int column)
-    { this.line = line ; this.column = column ; }
-
-    /** Column number where the parse exception occurred. */
-    public int getColumn() { return column ; }
-
-    /** Line number where the parse exception occurred. */
-    public int getLine()   { return line ; }
+    public JsonException(String msg, Throwable cause)
+    { super(msg, cause) ; }
 }
 
 /*

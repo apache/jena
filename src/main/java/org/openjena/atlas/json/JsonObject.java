@@ -10,8 +10,9 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry ;
 
-public class JsonObject extends JsonValue implements Map<String, JsonValue>
+public class JsonObject extends JsonValue //implements Map<String, JsonValue>
 {
     private final Map<String, JsonValue> map = new HashMap<String, JsonValue>() ;
     
@@ -57,7 +58,7 @@ public class JsonObject extends JsonValue implements Map<String, JsonValue>
         return map.entrySet() ;
     }
     //@Override
-    public JsonValue get(Object key)
+    public JsonValue get(String key)
     {
         return map.get(key) ;
     }
