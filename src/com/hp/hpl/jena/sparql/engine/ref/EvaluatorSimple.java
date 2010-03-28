@@ -118,7 +118,7 @@ public class EvaluatorSimple implements Evaluator
     {
         if ( debug )
         {
-            System.out.println("Diff") ;
+            System.out.println("Minus") ;
             dump(tableLeft) ;
             dump(tableRight) ;
         }
@@ -267,6 +267,8 @@ public class EvaluatorSimple implements Evaluator
     
     private Table minusWorker(Table tableLeft, Table tableRight)
     {
+        // Minus(Ω1, Ω2) = { μ | μ in Ω1 such that for all μ' in Ω2, either μ and μ' are not compatible or dom(μ) and dom(μ') are disjoint }
+        
         TableN results = new TableN() ;
         QueryIterator iterLeft = tableLeft.iterator(execCxt) ;
         for ( ; iterLeft.hasNext() ; )
@@ -281,10 +283,10 @@ public class EvaluatorSimple implements Evaluator
             {
                 Binding bindingRight = iterRight.nextBinding() ;
                 if ( Algebra.disjoint(bindingLeft, bindingRight) )
-                    // Disjoint - not a reason to exclude.
+                    // Disjoint - not a reason to exclude
                     continue ;
                 
-                if ( Algebra.compatible(bindingLeft, bindingRight) )
+                if ( ! Algebra.compatible(bindingLeft, bindingRight) )
                     // Compatible - not a reason to exclude.
                     continue ;
                 

@@ -22,15 +22,21 @@ public class ElementWalker
     
     public static void walk(Element el, ElementVisitor visitor)
     {
-        el.visit(new Walker(visitor)) ;
+        walk(el, new Walker(visitor), visitor) ;
     }
 
+    public static void walk(Element el, Walker walker, ElementVisitor visitor)
+    {
+        el.visit(walker) ;
+    }
+
+    
 //    public void walk(Element el)
 //    {
 //        el.visit(new Walker(proc)) ;
 //    }
     
-    static protected class Walker implements ElementVisitor
+    static public class Walker implements ElementVisitor
     {
         protected ElementVisitor proc ;
         protected Walker(ElementVisitor visitor) { proc = visitor ; }

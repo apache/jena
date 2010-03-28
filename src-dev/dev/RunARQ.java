@@ -59,7 +59,6 @@ import com.hp.hpl.jena.sparql.util.IndentedWriter ;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
 import com.hp.hpl.jena.sparql.util.Timer ;
 import com.hp.hpl.jena.util.FileManager ;
-import com.hp.hpl.jena.util.FileUtils ;
 
 public class RunARQ
 {
@@ -119,21 +118,20 @@ public class RunARQ
         protected abstract void accumulateDistinct(Binding binding, FunctionEnv functionEnv) ;
     }
     
-    
     static void execOne(String datafile, String queryFile) throws Exception
     {
         System.out.printf("**** Data = %s, Query = %s\n", datafile, queryFile);
         
-        String $1 = FileUtils.readWholeFileAsUTF8(datafile) ;
-        System.out.println("--------") ;
-        System.out.print($1) ;
+//        String $1 = FileUtils.readWholeFileAsUTF8(datafile) ;
+//        System.out.println("--------") ;
+//        System.out.print($1) ;
+//        System.out.println("--------") ;
 //        System.out.println("") ;
 //        String $2 = FileUtils.readWholeFileAsUTF8(queryFile) ;
 //        System.out.print($2) ;
         
-        System.out.println("--------") ;
-        arq.query.main("--v", "--data="+datafile, "--query="+queryFile) ;
-        System.out.println("--------") ;
+        arq.query.main("--v", "--data=Workspace/Negation/"+datafile, "--query=Workspace/Negation/"+queryFile) ;
+        System.out.println("") ;
         System.out.println();
     }
     
@@ -144,10 +142,27 @@ public class RunARQ
         
         //EvaluatorSimple.debug = true ;
 
-        execOne("D1.ttl", "Q.arq") ;
-//        execOne("D1.ttl", "Q1.sse") ;
-//        execOne("D1.ttl", "Q1.sse") ;
-  
+        divider() ;
+        execOne("D1.ttl", "Q-minus-0.arq") ;
+        execOne("D1.ttl", "Q-notexists-0.arq") ;
+
+        divider() ;
+        execOne("D1.ttl", "Q-minus-1.arq") ;
+        execOne("D1.ttl", "Q-notexists-1.arq") ;
+
+        divider() ;
+        execOne("D1.ttl", "Q-minus-2.arq") ;
+        execOne("D1.ttl", "Q-notexists-2.arq") ;
+
+        divider() ;
+        execOne("D1.ttl", "Q-minus-3.arq") ;
+        execOne("D1.ttl", "Q-notexists-3.arq") ;
+
+        divider() ;
+        execOne("D1.ttl", "Q-minus-4.arq") ;
+        execOne("D1.ttl", "Q-notexists-4.arq") ;
+
+        divider() ;
         System.exit(0) ;
         
         

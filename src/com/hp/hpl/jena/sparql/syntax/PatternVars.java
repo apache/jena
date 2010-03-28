@@ -23,8 +23,26 @@ public class PatternVars
     public static Set<Var> vars(Set<Var> s, Element element)
     {
         ElementVisitor v = new PatternVarsVisitor(s) ;
-        ElementWalker.walk(element, v) ;
+        ElementWalker.Walker walker = new WalkerSkipMinus(v) ;
+        ElementWalker.walk(element, walker, v) ;
         return s ;
+    }
+    
+    static class WalkerSkipMinus extends ElementWalker.Walker
+    {
+
+        protected WalkerSkipMinus(ElementVisitor visitor)
+        {
+            super(visitor) ;
+        }
+        
+        @Override
+        public void visit(ElementMinus el)
+        {
+//            if ( el.getMinusElement() != null )
+//                el.getMinusElement().visit(this) ;
+            proc.visit(el) ;
+        }
     }
 
     static class PatternVarsVisitor extends ElementVisitorBase
