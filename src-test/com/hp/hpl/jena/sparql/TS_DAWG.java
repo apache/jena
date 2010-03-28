@@ -6,9 +6,13 @@
 
 package com.hp.hpl.jena.sparql;
 
-import junit.framework.TestSuite;
+import junit.framework.TestSuite ;
+import org.junit.AfterClass ;
+import org.junit.BeforeClass ;
 
-import com.hp.hpl.jena.sparql.junit.QueryTestSuiteFactory;
+import com.hp.hpl.jena.sparql.expr.E_Function ;
+import com.hp.hpl.jena.sparql.expr.NodeValue ;
+import com.hp.hpl.jena.sparql.junit.QueryTestSuiteFactory ;
 
 /** The test suite for all DAWG (the first SPARQL working group) approved tests. 
  *  Many are the same as or overlap with ARQ tests (because the ARQ ones were 
@@ -24,6 +28,31 @@ public class TS_DAWG extends TestSuite
     static final public String testDirWGApproved   = "testing/DAWG-Final" ;
 //    static final public String testDirWGPending    = "testing/DAWG-Pending" ;
 
+    private static boolean bVerboseWarnings ;
+    private static boolean bWarnOnUnknownFunction ;
+    
+    @BeforeClass public static void beforeClass()
+    {
+        bVerboseWarnings = NodeValue.VerboseWarnings ;
+        bWarnOnUnknownFunction = E_Function.WarnOnUnknownFunction ;
+        NodeValue.VerboseWarnings = false ;
+        E_Function.WarnOnUnknownFunction = false ;
+    }
+    
+    @AfterClass public static void afterClass()
+    {
+        NodeValue.VerboseWarnings = bVerboseWarnings ;
+        E_Function.WarnOnUnknownFunction = bWarnOnUnknownFunction ;
+    }
+
+    // Above does not work yet (Junit3/Junit4) ism.
+    static 
+    {
+        // Switch warnings off for thigns that do occur in the scripted test suites
+        NodeValue.VerboseWarnings = false ;
+        E_Function.WarnOnUnknownFunction = false ; 
+    }
+    
     static public TestSuite suite() { return new TS_DAWG(); }
 
     public TS_DAWG()
@@ -39,7 +68,7 @@ public class TS_DAWG extends TestSuite
 
         // These merely duplicate ARQ's syntax tests because Andy wrote the DAWG syntax tests,
         // but they are quick so include the snapshot
-        // But Eclipse get confused and may make them as not run (but they have).
+        // Eclipse can get confused and may mark them as not run (but they have).
         ts1.addTest(QueryTestSuiteFactory.make(testDirWGApproved+"/manifest-syntax.ttl")) ;
         addTest(ts1) ;
 

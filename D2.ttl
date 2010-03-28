@@ -1,0 +1,7 @@
+@prefix : <http://example/> .
+
+:a1 :p 123 .
+:a1 :q 456 .
+
+:a2 :p 789 .
+

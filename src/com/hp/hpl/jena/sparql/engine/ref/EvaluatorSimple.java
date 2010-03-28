@@ -13,7 +13,7 @@ import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.ResultSet ;
 import com.hp.hpl.jena.query.ResultSetFormatter ;
 import com.hp.hpl.jena.query.SortCondition ;
-import com.hp.hpl.jena.sparql.ARQNotImplemented ;
+import com.hp.hpl.jena.sparql.algebra.Algebra ;
 import com.hp.hpl.jena.sparql.algebra.Table ;
 import com.hp.hpl.jena.sparql.algebra.TableFactory ;
 import com.hp.hpl.jena.sparql.algebra.table.TableN ;
@@ -39,7 +39,7 @@ public class EvaluatorSimple implements Evaluator
     // Simple, slow, correct
 
     private ExecutionContext execCxt ;
-    boolean debug = false ;
+    public static boolean debug = false ;
 
     public EvaluatorSimple(ExecutionContext context)
     {
@@ -122,8 +122,8 @@ public class EvaluatorSimple implements Evaluator
             dump(tableLeft) ;
             dump(tableRight) ;
         }
-        throw new ARQNotImplemented("diff eval / ref engine") ;
-        //return minusWorker(tableLeft, tableRight) ;
+        
+        return minusWorker(tableLeft, tableRight) ;
     }
 
     public Table filter(ExprList expressions, Table table)
@@ -265,6 +265,42 @@ public class EvaluatorSimple implements Evaluator
         return r ;
     }
     
+    private Table minusWorker(Table tableLeft, Table tableRight)
+    {
+        TableN results = new TableN() ;
+        QueryIterator iterLeft = tableLeft.iterator(execCxt) ;
+        for ( ; iterLeft.hasNext() ; )
+        {
+            Binding bindingLeft = iterLeft.nextBinding() ;
+            boolean includeThisRow = true ;
+            // Find a reason not to include the row.
+            // That's is not disjoint and not compatible.
+            
+            QueryIterator iterRight = tableRight.iterator(execCxt) ;
+            for ( ; iterRight.hasNext() ; )
+            {
+                Binding bindingRight = iterRight.nextBinding() ;
+                if ( Algebra.disjoint(bindingLeft, bindingRight) )
+                    // Disjoint - not a reason to exclude.
+                    continue ;
+                
+                if ( Algebra.compatible(bindingLeft, bindingRight) )
+                    // Compatible - not a reason to exclude.
+                    continue ;
+                
+                includeThisRow = false ;
+                break ;
+                
+            }
+            iterRight.close();
+            if ( includeThisRow )
+                results.addBinding(bindingLeft) ;
+        } 
+
+        iterLeft.close();
+        return results ;
+    }
+
     private static void dump(Table table)
     {
         System.out.println("Table: "+Utils.className(table)) ;

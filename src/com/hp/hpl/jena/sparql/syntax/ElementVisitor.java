@@ -23,6 +23,7 @@ public interface ElementVisitor
     public void visit(ElementNamedGraph el) ;
     public void visit(ElementExists el) ;
     public void visit(ElementNotExists el) ;
+    public void visit(ElementMinus el) ;
     public void visit(ElementService el) ;
     public void visit(ElementFetch el) ;
     public void visit(ElementSubQuery el) ;

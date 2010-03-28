@@ -537,6 +537,8 @@ Element GraphPatternNotTriples() : { Element el = null ; }
    el = ExistsElt()
  |
    el = NotExistsElt()
+ |
+   el = MinusGraphPattern()
 
  )
   { return el ; }
@@ -563,9 +565,16 @@ Element ExistsElt() : { Element el ; }
 
 Element NotExistsElt() : { Element el ; }
 {
-    (<UNSAID>|<NOTEXISTS>)
+    <NOTEXISTS>
     el = GroupGraphPattern()
     { return new ElementNotExists(el) ; }
+}
+
+Element MinusGraphPattern() : { Element el ; }
+{
+    <MINUS_P>
+    el = GroupGraphPattern()
+    { return new ElementMinus(el) ; }
 }
 
 
@@ -1524,6 +1533,7 @@ TOKEN [IGNORE_CASE] :
 | < EXISTS: "exists" >
 | < NOT: "not" >
 | < NOTEXISTS: "not" (<WS>)* "exists" >
+| < MINUS_P: "minus" >
 | < UNSAID: "unsaid" >
 | < AS: "as" >
 | < GROUP: "group" >

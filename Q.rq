@@ -1,4 +1,5 @@
+PREFIX :  <http://example/>
 
 SELECT * 
-FROM <http://mmt.me.uk/foaf.rdf>
-{ ?s ?p ?o }
+{ ?x :p ?v1 OPTIONAL { ?x :q ?v2 } }
+

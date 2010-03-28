@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Information Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -77,6 +78,9 @@ public class RecursiveElementVisitor implements ElementVisitor
     public void startElement(ElementNotExists el) {}
     public void endElement  (ElementNotExists el) {}
     
+    public void startElement(ElementMinus el) {}
+    public void endElement  (ElementMinus el) {}
+
     public void endElement(ElementSubQuery el)      {}
     public void startElement(ElementSubQuery el)    {}
 
@@ -183,6 +187,14 @@ public class RecursiveElementVisitor implements ElementVisitor
         endElement(el) ;
     }
 
+    public final void visit(ElementMinus el)
+    {
+        startElement(el) ;
+        el.getMinusElement().visit(this) ;
+        endElement(el) ;
+    }
+
+
     
     public void visit(ElementSubQuery el)
     { 
@@ -198,6 +210,7 @@ public class RecursiveElementVisitor implements ElementVisitor
 
 /*
  * (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Information Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

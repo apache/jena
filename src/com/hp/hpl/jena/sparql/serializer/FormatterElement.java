@@ -392,7 +392,14 @@ public class FormatterElement extends FormatterBase
         visitElement1("NOT EXISTS", el) ;
     }
     
-
+    public void visit(ElementMinus el)
+    {
+        out.print("MINUS") ;
+        out.incIndent(INDENT) ;
+        out.newline() ;
+        visitAsGroup(el.getMinusElement()) ;
+        out.decIndent(INDENT) ;
+    }
     
     public void visit(ElementSubQuery el)
     {

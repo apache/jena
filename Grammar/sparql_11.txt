@@ -67,6 +67,7 @@ TOKENS
 | <EXISTS: "exists">
 | <NOT: "not">
 | <NOTEXISTS: "not" (<WS>)* "exists">
+| <MINUS_P: "minus">
 | <UNSAID: "unsaid">
 | <AS: "as">
 | <GROUP: "group">
@@ -260,12 +261,13 @@ NON-TERMINALS
 // Two versions - for SPARQL 1.0 and SPARQL 1.1 (with paths)
 	TriplesBlock	:=	TriplesSameSubjectPath ( <DOT> ( TriplesBlock )? )?
 // -----
-	GraphPatternNotTriples	:=	( OptionalGraphPattern | GroupOrUnionGraphPattern | GraphGraphPattern | ExistsElt | NotExistsElt )
+	GraphPatternNotTriples	:=	( OptionalGraphPattern | GroupOrUnionGraphPattern | GraphGraphPattern | ExistsElt | NotExistsElt | MinusGraphPattern )
 // ---- Definitions of each pattern element
 	OptionalGraphPattern	:=	<OPTIONAL> GroupGraphPattern
 	GraphGraphPattern	:=	<GRAPH> VarOrIRIref GroupGraphPattern
 	ExistsElt	:=	<EXISTS> GroupGraphPattern
-	NotExistsElt	:=	( <UNSAID> | <NOTEXISTS> ) GroupGraphPattern
+	NotExistsElt	:=	<NOTEXISTS> GroupGraphPattern
+	MinusGraphPattern	:=	<MINUS_P> GroupGraphPattern
 // G (union G)* can be a single group pattern
 // or a group pattern as part of an union.
 	GroupOrUnionGraphPattern	:=	GroupGraphPattern ( <UNION> GroupGraphPattern )*

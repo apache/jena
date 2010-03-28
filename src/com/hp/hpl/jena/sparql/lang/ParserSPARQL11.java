@@ -14,6 +14,7 @@ import com.hp.hpl.jena.query.QueryException ;
 import com.hp.hpl.jena.query.QueryParseException ;
 import com.hp.hpl.jena.query.Syntax ;
 import com.hp.hpl.jena.shared.JenaException ;
+import com.hp.hpl.jena.sparql.ARQNotImplemented ;
 import com.hp.hpl.jena.sparql.lang.sparql_11.SPARQLParser11 ;
 import com.hp.hpl.jena.sparql.syntax.Element ;
 import com.hp.hpl.jena.sparql.syntax.Template ;
@@ -27,6 +28,10 @@ public class ParserSPARQL11 extends Parser
     @Override
     public Query parse(final Query query, String queryString)
     {
+        
+        if ( true )
+            throw new ARQNotImplemented("SPARQL 1.1 grammar is not yet stable") ;
+        
         query.setSyntax(Syntax.syntaxSPARQL_11) ;
 
         Action action = new Action() {

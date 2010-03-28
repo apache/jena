@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) 2010 Talis Information Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -130,7 +131,7 @@ public class sse_query extends CmdARQ
                 plan.output(out) ;
                 out.flush();
             }
-            return ;
+            //return ;
         }
 
         // Do not optimize.  Execute as-is.
@@ -145,6 +146,7 @@ public class sse_query extends CmdARQ
 
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) 2010 Talis Information Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

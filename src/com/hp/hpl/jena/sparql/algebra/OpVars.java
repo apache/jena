@@ -13,6 +13,7 @@ import java.util.Set;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.sparql.algebra.OpWalker.WalkerVisitor ;
 import com.hp.hpl.jena.sparql.algebra.op.*;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.core.Quad;
@@ -33,7 +34,9 @@ public class OpVars
     
     public static void patternVars(Op op, Set<Var> acc)
     {
-        OpWalker.walk(op, new OpVarsPattern(acc)) ;
+        //OpWalker.walk(op, new OpVarsPattern(acc)) ;
+        OpVisitor visitor = new OpVarsPattern(acc) ;
+        OpWalker.walk(new WalkerVisitorSkipMinus(visitor), op, visitor) ;
     }
     
     public static Set<Var> allVars(Op op)
@@ -52,6 +55,26 @@ public class OpVars
     {
         for ( Triple triple : pattern )
             addVarsFromTriple(acc, triple) ;
+    }
+    
+    /** Don't accumulate RHS of OpMinus*/
+    static class WalkerVisitorSkipMinus extends WalkerVisitor
+    {
+        public WalkerVisitorSkipMinus(OpVisitor visitor)
+        {
+            super(visitor) ;
+        }
+        
+        @Override
+        public void visit(OpMinus op)
+        {
+            before(op) ;
+            if ( op.getLeft() != null ) op.getLeft().visit(this) ;
+            // Skip right.
+            //if ( op.getRight() != null ) op.getRight().visit(this) ;
+            if ( visitor != null ) op.visit(visitor) ;      
+            after(op) ;  
+        }
     }
     
     private static class OpVarsPattern extends OpVisitorBase

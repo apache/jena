@@ -115,6 +115,13 @@ public class ElementWalker
             proc.visit(el) ;
         }
 
+        public void visit(ElementMinus el)
+        {
+            if ( el.getMinusElement() != null )
+                el.getMinusElement().visit(this) ;
+            proc.visit(el) ;
+        }
+        
         public void visit(ElementSubQuery el)
         {
             proc.visit(el) ;

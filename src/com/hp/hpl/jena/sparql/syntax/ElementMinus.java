@@ -1,50 +1,55 @@
 /*
- * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Information Ltd
  * All rights reserved.
  * [See end of file]
  */
 
 package com.hp.hpl.jena.sparql.syntax;
 
-/** A ElementVisitor that does nothing.  It saves writing lots of
- * empty visits when only interested in a few element types.  
+import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
+
+/** An optional element in a query.
+ * 
+ * @author Andy Seaborne
  */
 
-public class ElementVisitorBase implements ElementVisitor 
+public class ElementMinus extends Element
 {
-    public void visit(ElementTriplesBlock el)   { }
+    Element minusPart ;
 
-    public void visit(ElementFilter el)         { }
+    public ElementMinus(Element minusPart)
+    {
+        this.minusPart = minusPart ;
+    }
+
+    public Element getMinusElement() { return minusPart ; }
+
+    @Override
+    public int hashCode()
+    {
+        int hash = Element.HashOptional ;
+        hash = hash ^ getMinusElement().hashCode() ;
+        return hash ;
+    }
+
+    @Override
+    public boolean equalTo(Element el2, NodeIsomorphismMap isoMap)
+    {
+        if ( el2 == null ) return false ;
+
+        if ( ! ( el2 instanceof ElementMinus ) ) 
+            return false ;
+        
+        ElementMinus opt2 = (ElementMinus)el2 ;
+        return getMinusElement().equalTo(opt2.getMinusElement(), isoMap) ;
+    }
     
-    public void visit(ElementAssign el)         { }
-
-    public void visit(ElementUnion el)          { }
-
-    public void visit(ElementDataset el)        { }
-
-    public void visit(ElementOptional el)       { }
-
-    public void visit(ElementGroup el)          { }
-
-    public void visit(ElementNamedGraph el)     { }
-
-    public void visit(ElementExists el)         { }
-    
-    public void visit(ElementNotExists el)      { }
-    
-    public void visit(ElementMinus el)          { }
-
-    public void visit(ElementService el)        { }
-    
-    public void visit(ElementFetch el)          { }
-
-    public void visit(ElementSubQuery el)       { }
-
-    public void visit(ElementPathBlock el)      { }
+    @Override
+    public void visit(ElementVisitor v) { v.visit(this) ; }
 }
 
 /*
- * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Information Ltd
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

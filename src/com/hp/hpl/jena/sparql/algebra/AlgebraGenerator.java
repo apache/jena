@@ -340,7 +340,6 @@ public class AlgebraGenerator
             ElementExists elt2 = (ElementExists)elt ;
             Op op = compileElementExists(current, elt2) ;
             return op ;
-            //return sequence(current, op) ;
         }
         
         if ( elt instanceof ElementNotExists )
@@ -348,7 +347,13 @@ public class AlgebraGenerator
             ElementNotExists elt2 = (ElementNotExists)elt ;
             Op op = compileElementNotExists(current, elt2) ;
             return op ;
-            //return sequence(current, op) ;
+        }
+        
+        if ( elt instanceof ElementMinus )
+        {
+            ElementMinus elt2 = (ElementMinus)elt ;
+            Op op = compileElementMinus(current, elt2) ;
+            return op ;
         }
         
         // All other elements: compile the element and then join on to the current group expression.
@@ -377,15 +382,22 @@ public class AlgebraGenerator
     private Op compileElementExists(Op current, ElementExists elt2)
     {
         Op op = compile(elt2.getElement()) ;    // "compile", not "compileElement" -- do simpliifcation 
-        op = simplify(op) ;
         Expr expr = new E_Exists(elt2, op) ;
         return OpFilter.filter(expr, current) ;
+    }
+
+    private Op compileElementMinus(Op current, ElementMinus elt2)
+    {
+        Op op = compile(elt2.getMinusElement()) ;
+        Op opMinus = OpMinus.create(current, op) ;
+        return opMinus ;
     }
 
     protected Op compileElementOptional(ElementOptional eltOpt, Op current)
     {
         Element subElt = eltOpt.getOptionalElement() ;
         Op op = compileElement(subElt) ;
+        
         ExprList exprs = null ;
         if ( op instanceof OpFilter )
         {

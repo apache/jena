@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Information Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -189,10 +190,23 @@ public class Algebra
         }
         return true ;
     }
+    
+    public static boolean disjoint(Binding binding1, Binding binding2)
+    {
+        Iterator<Var> iterVar1 = binding1.vars() ;
+        for ( ; iterVar1.hasNext() ; )
+        {
+            Var v = iterVar1.next() ; 
+            if ( binding2.contains(v) )
+                return false ;
+        }
+        return true ;
+    }
 }
 
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Information Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -59,6 +59,7 @@ import com.hp.hpl.jena.sparql.util.IndentedWriter ;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
 import com.hp.hpl.jena.sparql.util.Timer ;
 import com.hp.hpl.jena.util.FileManager ;
+import com.hp.hpl.jena.util.FileUtils ;
 
 public class RunARQ
 {
@@ -119,24 +120,33 @@ public class RunARQ
     }
     
     
+    static void execOne(String datafile, String queryFile) throws Exception
+    {
+        System.out.printf("**** Data = %s, Query = %s\n", datafile, queryFile);
+        
+        String $1 = FileUtils.readWholeFileAsUTF8(datafile) ;
+        System.out.println("--------") ;
+        System.out.print($1) ;
+//        System.out.println("") ;
+//        String $2 = FileUtils.readWholeFileAsUTF8(queryFile) ;
+//        System.out.print($2) ;
+        
+        System.out.println("--------") ;
+        arq.query.main("--v", "--data="+datafile, "--query="+queryFile) ;
+        System.out.println("--------") ;
+        System.out.println();
+    }
     
     public static void main(String[] argv) throws Exception
     {
         QueryEngineMain.unregister() ;
         QueryEngineRef.register() ;
         
-        String [] queries = { "Q1.sse", "Q2.sse" } ;
-        String [] datafile = { "D1.ttl", "D2.ttl" } ;
-        
-        for (String query : queries)
-        {
-            for (String data : datafile )
-            {
-                System.out.printf("Data = %s, Query = %s\n", data, query);
-                arq.sse_query.main("--v", "--print=op", "--data="+data, "--query="+query) ;
-                System.out.println();
-            }
-        }
+        //EvaluatorSimple.debug = true ;
+
+        execOne("D1.ttl", "Q.arq") ;
+//        execOne("D1.ttl", "Q1.sse") ;
+//        execOne("D1.ttl", "Q1.sse") ;
   
         System.exit(0) ;
         

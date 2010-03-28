@@ -81,13 +81,16 @@ public class WriterOp
     }
 
     // Actual work
-    public static void output(final IndentedWriter iWriter, final Op op, final SerializationContext sCxt)
+    public static void output(final IndentedWriter iWriter, final Op op, SerializationContext sCxt)
     {
+        if ( sCxt == null )
+            sCxt = new SerializationContext() ;
+        final SerializationContext sCxt2 = sCxt ;
         WriterBasePrefix.Fmt fmt = 
             new WriterBasePrefix.Fmt() {
-                public void format() {op.visit(new OpWriterWorker(iWriter, sCxt)) ;}
+                public void format() {op.visit(new OpWriterWorker(iWriter, sCxt2)) ;}
                 } ;
-        WriterBasePrefix.output(iWriter, fmt, sCxt.getPrologue()) ;
+        WriterBasePrefix.output(iWriter, fmt, sCxt2.getPrologue()) ;
     }        
     
     // Without the base/prefix wrapper. 
