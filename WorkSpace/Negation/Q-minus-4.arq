@@ -3,5 +3,5 @@ PREFIX : <http://example/>
 SELECT *
 {
   ?s ?p ?o 
-  MINUS { ?s :b :c . FILTER(?s = :a) }
+  MINUS { ?s :b :c . }
 }

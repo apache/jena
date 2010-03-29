@@ -18,6 +18,7 @@ import arq.sparql ;
 import com.hp.hpl.jena.Jena ;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.datatypes.xsd.XSDDateTime ;
+import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.* ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
@@ -34,8 +35,6 @@ import com.hp.hpl.jena.sparql.core.QueryCheckException ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
-import com.hp.hpl.jena.sparql.engine.main.QueryEngineMain ;
-import com.hp.hpl.jena.sparql.engine.ref.QueryEngineRef ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
@@ -130,15 +129,19 @@ public class RunARQ
 //        String $2 = FileUtils.readWholeFileAsUTF8(queryFile) ;
 //        System.out.print($2) ;
         
-        arq.query.main("--v", "--data=Workspace/Negation/"+datafile, "--query=Workspace/Negation/"+queryFile) ;
+        arq.query.main("--v", "--engine=ref", "--data=Workspace/Negation/"+datafile, "--query=Workspace/Negation/"+queryFile) ;
         System.out.println("") ;
         System.out.println();
     }
     
     public static void main(String[] argv) throws Exception
     {
-        QueryEngineMain.unregister() ;
-        QueryEngineRef.register() ;
+        Node n = Node.createAnon()  ;
+        String str = SSE.format(n) ;
+        System.out.println(str);
+        System.exit(0) ;
+         
+        
         
         //EvaluatorSimple.debug = true ;
 
