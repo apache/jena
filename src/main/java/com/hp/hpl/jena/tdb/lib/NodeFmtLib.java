@@ -23,7 +23,7 @@ import com.hp.hpl.jena.tdb.TDBException ;
 public class NodeFmtLib
 {
     // FmtUtils: This writes abbreviated bnodes (_:b0 etc)
-    // This utilities are lower level and reflect the bNodes label.
+    // These utilities are lower level and reflect the bNodes label.
     
     public static String str(Triple t)
     {
