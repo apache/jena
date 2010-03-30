@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package dev;
+package dev.newupdate;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
@@ -22,6 +22,9 @@ public class DatasetModifer
 
     public static void doPost(Graph graph) {  }
     public static void doPost(Node graphName, Graph graph) {  }
+
+    public static void doPatch(Graph graph) {  }
+    public static void doPatch(Node graphName, Graph graph) {  }
 
 }
 

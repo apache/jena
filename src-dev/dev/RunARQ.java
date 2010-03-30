@@ -117,61 +117,24 @@ public class RunARQ
         protected abstract void accumulateDistinct(Binding binding, FunctionEnv functionEnv) ;
     }
     
-    static void execOne(String datafile, String queryFile) throws Exception
-    {
-        System.out.printf("**** Data = %s, Query = %s\n", datafile, queryFile);
-        
-//        String $1 = FileUtils.readWholeFileAsUTF8(datafile) ;
-//        System.out.println("--------") ;
-//        System.out.print($1) ;
-//        System.out.println("--------") ;
-//        System.out.println("") ;
-//        String $2 = FileUtils.readWholeFileAsUTF8(queryFile) ;
-//        System.out.print($2) ;
-        
-        arq.query.main("--v", "--engine=ref", "--data=Workspace/Negation/"+datafile, "--query=Workspace/Negation/"+queryFile) ;
-        System.out.println("") ;
-        System.out.println();
-    }
-    
     public static void main(String[] argv) throws Exception
     {
-        Node n = Node.createAnon()  ;
-        String str = SSE.format(n) ;
-        System.out.println(str);
-        System.exit(0) ;
-         
+        Node n = Node.createLiteral("2001-01:00", null, XSDDatatype.XSDgYear) ;
+        System.out.println(n) ;
+        System.out.println(n.getLiteral().isWellFormed()) ;
         
+         // DateTimeStruct - parse g*
+        DateTimeStruct struct ; 
         
-        //EvaluatorSimple.debug = true ;
+        struct = DateTimeStruct.parseDate("1970-02-01") ;
+        System.out.println(struct) ;
 
-        divider() ;
-        execOne("D1.ttl", "Q-minus-0.arq") ;
-        execOne("D1.ttl", "Q-notexists-0.arq") ;
+        struct = DateTimeStruct.parseDateTime("1970-02-01T01:02:03") ;
+        System.out.println(struct) ;
 
-        divider() ;
-        execOne("D1.ttl", "Q-minus-1.arq") ;
-        execOne("D1.ttl", "Q-notexists-1.arq") ;
+        struct = DateTimeStruct.parseDateTime("1970Z") ;
+        System.out.println(struct) ;
 
-        divider() ;
-        execOne("D1.ttl", "Q-minus-2.arq") ;
-        execOne("D1.ttl", "Q-notexists-2.arq") ;
-
-        divider() ;
-        execOne("D1.ttl", "Q-minus-3.arq") ;
-        execOne("D1.ttl", "Q-notexists-3.arq") ;
-
-        divider() ;
-        execOne("D1.ttl", "Q-minus-4.arq") ;
-        execOne("D1.ttl", "Q-notexists-4.arq") ;
-
-        divider() ;
-        System.exit(0) ;
-        
-        
-        // DateTimeStruct - parse g*
-        DateTimeStruct.parseDate("1970-02-01") ;
-        DateTimeStruct.parseDateTime("1970-02-01T01:02:03") ;
         System.exit(0) ;
         
         // Need TZ

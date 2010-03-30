@@ -6,13 +6,34 @@
 
 package com.hp.hpl.jena.sparql.util;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
 
 /** Parse an xsd:dateTime or xsd:date lexical form */  
 
 public class DateTimeStruct
 {
+    // V2
+    // Does gregorian stuff
+    
+    // "2001Z"      gYear
+    // "2001-01Z"   gYearMonth
+    // "--01Z"      gMonth
+    // "--01-30Z"   gMonthDay
+    // "---30Z"     gDay
+
+    
+//    private static final int idxNeg = 0 ;
+//    private static final int idxYear = 1 ;
+//    private static final int idxMonth = 2 ;
+//    private static final int idxDay = 3 ;
+//
+//    private static final int idxHour = 4 ;
+//    private static final int idxMinute = 5 ;
+//    private static final int idxSecond = 6 ;
+//    private static final int idxTimezone = 7 ;
+//    
+//    private String data[] = new String[8] ;
+    
     public boolean xsdDateTime  ;
     public String neg = null ;         // Null if none. 
     public String year = null ;
@@ -43,120 +64,58 @@ public class DateTimeStruct
         return x ; 
     }
 
-    // Sometime: don't use regex but work L to R respecting "-" in dates as absent.
-    public static final String regexDate        = "(-?)(\\d{4})-(\\d{2})-(\\d{2})" ;
-    
-    public static final String regexTime        = "(\\d{2}):(\\d{2}):(\\d{2}(?:\\.\\d+)?)" ;
-    public static final String regexTZ          = "(Z|(?:(?:\\+|-)\\d{2}:\\d{2}))?" ;
-    
-    public static final String regexXSDDateTime = regexDate+"T"+regexTime+regexTZ ;
-    public static final String regexXSDDate     = regexDate+regexTZ ;
-    
-    public static final Pattern patternDateTime = Pattern.compile(regexXSDDateTime);
-    public static final Pattern patternDate     = Pattern.compile(regexXSDDate);
-    
-    public static DateTimeStruct parseDate(String str)
-    {
-        if ( true )
-        {
-            DateTimeStruct struct = _parse(str, false) ;
-            if ( struct.xsdDateTime )
-                throw new DateTimeParseException() ;
-        }
-        
-        Matcher m = patternDate.matcher(str) ;
-
-        if ( ! m.matches() ) 
-            throw new DateTimeParseException() ;
-
-        DateTimeStruct dt = new DateTimeStruct() ;
-        dt.xsdDateTime = false ;
-        dt.neg      = matchStrOrNull(str, m, 1) ;
-        dt.year     = matchStr(str, m, 2) ;
-        dt.month    = matchStr(str, m, 3) ;
-        dt.day      = matchStr(str, m, 4) ;
-        dt.timezone = matchStrOrNull(str, m, 5) ;
-        
-        // Because comparisons are based on xsd:date start point. 
-        dt.hour = "00" ;
-        dt.minute = "00" ;
-        dt.second = "00" ;
-        
-        return dt ;
-    }
-    
     public static DateTimeStruct parseDateTime(String str)
-    {
-        if ( true )
-        {
-            DateTimeStruct struct = _parse(str, true) ;
-            if ( !struct.xsdDateTime )
-                throw new DateTimeParseException() ;
-        }
-        
-        Matcher m = patternDateTime.matcher(str) ;
+    { return _parseYMD(str, true, true, true) ; }
 
-        if ( ! m.matches() ) 
-            throw new DateTimeParseException() ;
-
-        DateTimeStruct dt = new DateTimeStruct() ;
-        dt.xsdDateTime = true ;
-        
-        dt.neg      = matchStrOrNull(str, m, 1) ;
-        dt.year     = matchStr(str, m, 2) ;
-        dt.month    = matchStr(str, m, 3) ;
-        dt.day      = matchStr(str, m, 4) ;
-        dt.hour     = matchStr(str, m, 5) ;
-        dt.minute   = matchStr(str, m, 6) ;
-        dt.second   = matchStr(str, m, 7) ;
-        dt.timezone = matchStrOrNull(str, m, 8) ;
-        return dt ;
-    }
-
-    private static String matchStr(String str, Matcher m, int i)
-    {
-        if ( m.start(i) == -1 ) return "" ;
-        return str.substring(m.start(i), m.end(i)) ;
-    }
+    public static DateTimeStruct parseDate(String str)
+    { return _parseYMD(str, true, true, false) ; } 
     
-    private static String matchStrOrNull(String str, Matcher m, int i)
-    {
-        if ( m.start(i) == -1 ) return null ;
-        String s = str.substring(m.start(i), m.end(i)) ;
-        if ( s.length() == 0 ) return null ;
-        return s ;
-    }
-    
+    public static DateTimeStruct parseGYear(String str)
+    { return _parseYMD(str, false, false, false) ; } 
 
-    // --------
-    // Alternative parser.  Enables better error messages.
-    private static DateTimeStruct _parse(String str, boolean includeTime)
-    {
-        // -? YYYY-MM-DD T hh:mm:ss.ss TZ
+    public static DateTimeStruct parseGYearMonth(String str)
+    { return _parseYMD(str, true, false, false) ; } 
+    
+    public static DateTimeStruct parseGMonth(String str)
+    { return _parseMD(str, true, false) ; }
+    
+    public static DateTimeStruct parseGMonthDay(String str)    
+    { return _parseMD(str, true, true) ; }
+    
+    public static DateTimeStruct parseGDay(String str)      
+    { return _parseMD(str, false, true) ; }
+    
+    // Date with year: date, dateTime, gYear, gYearMonth but not gMonth, gMonthDay, 
+    private static DateTimeStruct _parseYMD(String str, boolean month, boolean day, boolean includeTime) 
+    { 
         DateTimeStruct struct = new DateTimeStruct() ;
         int idx = 0 ;
-        
-        if ( str.startsWith("-") )
+        boolean negYear = false ;
+
+        if ( str.charAt(idx) == '-' )
         {
             struct.neg = "-" ;
-            idx = 1 ;
+            idx ++ ;
         }
         
-        // ---- Year-Month-Day
         struct.year = getDigits(4, str, idx) ;
         idx += 4 ;
-        check(str, idx, '-') ;
-        idx += 1 ;
         
-        struct.month = getDigits(2, str, idx) ;
-        idx += 2 ;
-        check(str, idx, '-') ;
-        idx += 1 ;
-        
-        struct.day = getDigits(2, str, idx) ;
-        idx += 2 ;
-        
-        struct.xsdDateTime = false ;
+        if ( month )
+        {
+            check(str, idx, '-') ;
+            idx += 1 ;
+            struct.month = getDigits(2, str, idx) ;
+            idx += 2 ;
+        }        
+
+        if ( day )
+        {
+            check(str, idx, '-') ;
+            idx += 1 ;
+            struct.day = getDigits(2, str, idx) ;
+            idx += 2 ;
+        }
 
         if ( includeTime )
         {        
@@ -164,19 +123,19 @@ public class DateTimeStruct
             // ---- 
             check(str, idx, 'T') ;
             idx += 1 ;
-            
+
             // ---- 
             // Hour-minute-seconds
             struct.hour = getDigits(2, str, idx) ;
             idx += 2 ;
             check(str, idx, ':') ;
             idx += 1 ;
-            
+
             struct.minute = getDigits(2, str, idx) ;
             idx += 2 ;
             check(str, idx, ':') ;
             idx += 1 ;
-            
+
             // seconds
             struct.second = getDigits(2, str, idx) ;
             idx += 2 ;
@@ -186,7 +145,7 @@ public class DateTimeStruct
                 int idx2 = idx ;
                 for ( ; idx2 < str.length() ; idx2++ )
                 {
-                    char ch = str.charAt(idx) ;
+                    char ch = str.charAt(idx2) ;
                     if ( ! Character.isDigit(ch) )
                         break ;
                 }
@@ -196,8 +155,211 @@ public class DateTimeStruct
                 idx = idx2 ;
             }
         }
-        // timezone. Z or +/- 00:00
         
+        // Timezone
+        idx = _parseTimezone(struct, str, idx) ;
+        if ( idx != str.length() )
+            throw new DateTimeParseException() ;
+        return struct ; 
+    }
+    
+    // No year: gMonth, gMonthDay, gDay
+    private static DateTimeStruct _parseMD(String str, boolean month, boolean day)
+    {
+        DateTimeStruct struct = new DateTimeStruct() ;
+        int idx = 0 ;
+
+        check(str, idx, '-') ;
+        idx += 1 ;
+
+        check(str, idx, '-') ;
+        idx += 1 ;
+        
+        if ( month )
+        {
+            struct.month = getDigits(2, str, idx) ;
+            idx += 2 ; 
+        }
+        
+        if ( day )
+        {
+            check(str, idx, '-') ;
+            idx += 1 ;
+            struct.day = getDigits(2, str, idx) ;
+            idx += 2 ; 
+        }
+        
+        // Timezone
+        idx = _parseTimezone(struct, str, idx) ;
+        if ( idx != str.length() )
+            throw new DateTimeParseException() ;
+        return struct ; 
+    }
+    
+    
+    
+    private static int _parseTimezone(DateTimeStruct struct, String str, int idx)
+    {
+        if ( idx >= str.length() )
+        {
+            struct.timezone = null ;
+            return idx ;
+        }
+        
+        if ( str.charAt(idx) == 'Z' )
+        {
+            struct.timezone = "Z" ;
+            idx += 1 ;
+        }
+        else
+        {
+            StringBuilder sb = new StringBuilder() ;
+
+            if ( str.charAt(idx) == '+' )
+                sb.append('+') ;
+            else if ( str.charAt(idx) == '-' )
+                sb.append('-') ;
+            else
+                throw new DateTimeParseException() ;
+            idx += 1 ;
+
+            sb.append(getDigits(2, str, idx)) ;
+            idx += 2 ;
+
+            check(str, idx, ':') ;
+            sb.append(':') ;
+            idx += 1 ;
+
+            sb.append(getDigits(2, str, idx)) ;
+            idx += 2 ;
+            struct.timezone = sb.toString() ;
+        }
+        return idx ;
+    }
+
+    private static String _parse(DateTimeStruct struct, String str, int idx, int len)
+    {
+        String substring = null ;
+        if ( str.length() <= idx )
+            throw new DateTimeParseException() ;
+        if ( str.charAt(idx) == '-' )
+        {
+            substring = "-" ;
+            idx++ ;
+        }
+        else
+        {
+            substring = getDigits(len, str, idx) ;
+            idx += len ;
+        }
+        return substring ;
+    }
+    
+    private static String parseYear(DateTimeStruct struct, String str, int idx)
+    {
+        return _parse(struct, str, idx, 4) ;
+    }
+    
+    
+    
+    
+
+    
+//    public static DateTimeStruct2 parseDate(String str)
+//    {
+//        DateTimeStruct2 struct = _parse(str, false) ;
+//        if ( struct.xsdDateTime )
+//            throw new DateTimeParseException() ;
+//        return struct ;
+//
+//    }
+//
+//    public static DateTimeStruct2 parseDateTime(String str)
+//    {
+//        DateTimeStruct2 struct = _parse(str, true) ;
+//        if ( !struct.xsdDateTime )
+//            throw new DateTimeParseException() ;
+//        return struct ;
+//    }
+
+
+    // DateTime or Date.
+    // Replace with generic code.
+    private static DateTimeStruct _parse(String str, boolean includeTime)
+    {
+        // -? YYYY-MM-DD T hh:mm:ss.ss TZ
+        DateTimeStruct struct = new DateTimeStruct() ;
+        int idx = 0 ;
+
+        if ( str.startsWith("-") )
+        {
+            struct.neg = "-" ;
+            idx = 1 ;
+        }
+
+        // ---- Year-Month-Day
+        struct.year = getDigits(4, str, idx) ;
+        idx += 4 ;
+        check(str, idx, '-') ;
+        idx += 1 ;
+
+        struct.month = getDigits(2, str, idx) ;
+        idx += 2 ;
+        check(str, idx, '-') ;
+        idx += 1 ;
+
+        struct.day = getDigits(2, str, idx) ;
+        idx += 2 ;
+
+        struct.xsdDateTime = false ;
+
+        if ( includeTime )
+        {        
+            struct.xsdDateTime = true ;
+            // ---- 
+            check(str, idx, 'T') ;
+            idx += 1 ;
+
+            // ---- 
+            // Hour-minute-seconds
+            struct.hour = getDigits(2, str, idx) ;
+            idx += 2 ;
+            check(str, idx, ':') ;
+            idx += 1 ;
+
+            struct.minute = getDigits(2, str, idx) ;
+            idx += 2 ;
+            check(str, idx, ':') ;
+            idx += 1 ;
+
+            // seconds
+            struct.second = getDigits(2, str, idx) ;
+            idx += 2 ;
+            if ( idx < str.length() && str.charAt(idx) == '.' )
+            {
+                idx += 1 ;
+                int idx2 = idx ;
+                for ( ; idx2 < str.length() ; idx2++ )
+                {
+                    char ch = str.charAt(idx2) ;
+                    if ( ! Character.isDigit(ch) )
+                        break ;
+                }
+                if ( idx == idx2 )
+                    throw new DateTimeParseException() ;
+                struct.second = struct.second+'.'+str.substring(idx, idx2) ;
+                idx = idx2 ;
+            }
+        }
+        else
+        {
+            struct.hour =  null ;
+            struct.minute = null ;
+            struct.second = null ;
+
+        }
+        // timezone. Z or +/- 00:00
+
         if ( idx < str.length() )
         {
             if ( str.charAt(idx) == 'Z' )
@@ -207,21 +369,31 @@ public class DateTimeStruct
             }
             else
             {
-                boolean signPlus = false ;
+                StringBuilder sb = new StringBuilder() ;
+
                 if ( str.charAt(idx) == '+' )
-                    signPlus = true ;
+                    sb.append('+') ;
                 else if ( str.charAt(idx) == '-' )
-                    signPlus = false ;
+                    sb.append('-') ;
                 else
                     throw new DateTimeParseException() ;
-                struct.timezone = getDigits(2, str, idx) ;
+                idx += 1 ;
+
+                sb.append(getDigits(2, str, idx)) ;
+                idx += 2 ;
+
                 check(str, idx, ':') ;
-                struct.timezone = struct.timezone+':'+getDigits(2, str, idx) ;
-                idx += 5 ;
-                 
+                sb.append(':') ;
+                idx += 1 ;
+
+
+                sb.append(getDigits(2, str, idx)) ;
+                idx += 2 ;
+
+                struct.timezone = sb.toString() ;
             }
         }
-        
+    
         if ( idx != str.length() )
             throw new DateTimeParseException() ;
         return struct ;

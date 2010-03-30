@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package dev;
+package dev.newupdate;
 
 import java.io.Reader ;
 import java.io.StringReader ;
@@ -16,6 +16,8 @@ import com.hp.hpl.jena.query.QueryParseException ;
 import com.hp.hpl.jena.shared.JenaException ;
 import com.hp.hpl.jena.sparql.lang.sparql_11.SPARQLParser11 ;
 import com.hp.hpl.jena.sparql.util.ALog ;
+
+import dev.RunARQ ;
 
 public class TestSPARQLUpdateSyntax
 {

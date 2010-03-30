@@ -9,8 +9,6 @@ package com.hp.hpl.jena.sparql.util;
 import junit.framework.TestCase ;
 import org.junit.Test ;
 
-import com.hp.hpl.jena.sparql.util.DateTimeStruct.DateTimeParseException ;
-
 
 public class TestDateTimeParsing extends TestCase
 {
@@ -61,7 +59,126 @@ public class TestDateTimeParsing extends TestCase
               null) ;
     }
         
+    @Test public void testGYear_1()
+    {
+        DateTimeStruct dt = DateTimeStruct.parseGYear("2007") ;
+        check(dt, null, 
+              "2007", null, null,
+              null) ;
+    }
     
+    @Test public void testGYear_2()
+    {
+        DateTimeStruct dt = DateTimeStruct.parseGYear("2007Z") ;
+        check(dt, null, 
+              "2007", null, null,
+              "Z") ;
+    }
+
+    @Test public void testGYear_3()
+    {
+        DateTimeStruct dt = DateTimeStruct.parseGYear("2007+08:00") ;
+        check(dt, null, 
+              "2007", null, null,
+              "+08:00") ;
+    }
+
+    @Test public void testGYearMonth_1()
+    {
+        DateTimeStruct dt = DateTimeStruct.parseGYearMonth("2007-10") ;
+        check(dt, null, 
+              "2007", "10", null,
+              null) ;
+    }
+    
+    @Test public void testGYearMonth_2()
+    {
+        DateTimeStruct dt = DateTimeStruct.parseGYearMonth("2007-10Z") ;
+        check(dt, null, 
+              "2007", "10", null,
+              "Z") ;
+    }
+
+    @Test public void testGYearMonth_3()
+    {
+        DateTimeStruct dt = DateTimeStruct.parseGYearMonth("2007-10-08:00") ;
+        check(dt, null, 
+              "2007", "10", null,
+              "-08:00") ;
+    }
+
+    @Test public void testGMonth_1()
+    {
+        DateTimeStruct dt = DateTimeStruct.parseGMonth("--10") ;
+        check(dt, null, 
+              null, "10", null,
+              null) ;
+    }
+    
+    @Test public void testGMonth_2()
+    {
+        DateTimeStruct dt = DateTimeStruct.parseGMonth("--10Z") ;
+        check(dt, null, 
+              null, "10", null,
+              "Z") ;
+    }
+
+    @Test public void testGMonth_3()
+    {
+        DateTimeStruct dt = DateTimeStruct.parseGMonth("--10-08:00") ;
+        check(dt, null, 
+              null, "10", null,
+              "-08:00") ;
+    }
+
+    @Test public void testGMonthDay_1()
+    {
+        DateTimeStruct dt = DateTimeStruct.parseGMonthDay("--10-31") ;
+        check(dt, null, 
+              null, "10", "31",
+              null) ;
+    }
+    
+    @Test public void testGMonthDay_2()
+    {
+        DateTimeStruct dt = DateTimeStruct.parseGMonthDay("--10-31Z") ;
+        check(dt, null, 
+              null, "10", "31",
+              "Z") ;
+    }
+
+    @Test public void testGMonthDay_3()
+    {
+        DateTimeStruct dt = DateTimeStruct.parseGMonthDay("--10-31-08:00") ;
+        check(dt, null, 
+              null, "10", "31",
+              "-08:00") ;
+    }
+
+    @Test public void testGDay_1()
+    {
+        DateTimeStruct dt = DateTimeStruct.parseGDay("---31") ;
+        check(dt, null, 
+              null, null, "31",
+              null) ;
+    }
+    
+    @Test public void testGDay_2()
+    {
+        DateTimeStruct dt = DateTimeStruct.parseGDay("---31Z") ;
+        check(dt, null, 
+              null, null, "31",
+              "Z") ;
+    }
+
+    @Test public void testGDay_3()
+    {
+        DateTimeStruct dt = DateTimeStruct.parseGDay("---31-08:00") ;
+        check(dt, null, 
+              null, null, "31",
+              "-08:00") ;
+    }
+
     // ----
 
     private static void dateTimeTest(String str)
@@ -78,7 +195,7 @@ public class TestDateTimeParsing extends TestCase
             DateTimeStruct dt = DateTimeStruct.parseDateTime(str) ;
             fail("No exception; "+str) ;
         }
-        catch (DateTimeParseException ex) {}
+        catch (com.hp.hpl.jena.sparql.util.DateTimeStruct.DateTimeParseException ex) {}
     }
     
     private static void dateTest(String str)
@@ -95,7 +212,7 @@ public class TestDateTimeParsing extends TestCase
             DateTimeStruct dt = DateTimeStruct.parseDateTime(str) ;
             fail("No exception; "+str) ;
         }
-        catch (DateTimeParseException ex) {}
+        catch (DateTimeStruct.DateTimeParseException ex) {}
     }
     
     
@@ -103,33 +220,40 @@ public class TestDateTimeParsing extends TestCase
     {
         assertTrue(dt.neg == null || dt.neg.equals("-")) ;
 
-        assertNotNull(dt.year) ;
-        assertEquals(4, dt.year.length()) ;
+        if ( dt.year != null )
+            assertEquals(4, dt.year.length()) ;
         
-        assertNotNull(dt.month) ;
-        assertEquals(2, dt.month.length()) ;
+        if ( dt.month != null )
+            assertEquals(2, dt.month.length()) ;
         
-        assertNotNull(dt.day) ;
-        assertEquals(2, dt.day.length()) ;
+        if ( dt.day != null )
+            assertEquals(2, dt.day.length()) ;
         
-        assertNotNull(dt.hour) ;
-        assertEquals(2, dt.hour.length()) ;
-        
-        assertNotNull(dt.minute) ;
-        assertEquals(2, dt.minute.length()) ;
-        
-        assertNotNull(dt.second) ;
-        assertTrue(dt.hour.length() >= 0) ;
-        
+        if ( dt.xsdDateTime )
+        {
+            assertNotNull(dt.hour) ;
+            assertEquals(2, dt.hour.length()) ;
+            
+            assertNotNull(dt.minute) ;
+            assertEquals(2, dt.minute.length()) ;
+            
+            assertNotNull(dt.second) ;
+            assertTrue(dt.hour.length() >= 0) ;
+        }
+        else
+        {
+            assertNull(dt.hour) ;
+            assertNull(dt.minute) ; 
+            assertNull(dt.second) ; 
+        }
         assertTrue(dt.timezone == null || dt.timezone.equals("Z") || dt.timezone.length() == 6 )  ;
-        
     }
     
     private static void check(DateTimeStruct dt,
                               String neg, String year, String month, String day,
                               String hour, String minute, String second, String timezone)
     {
-        assertEquals(true, dt.xsdDateTime) ;
+        check(dt) ;
         assertEquals(neg, dt.neg) ;
         assertEquals(year, dt.year) ;
         assertEquals(month, dt.month) ;
@@ -144,15 +268,7 @@ public class TestDateTimeParsing extends TestCase
                               String neg, String year, String month, String day,
                               String timezone)
     {
-        assertEquals(false, dt.xsdDateTime) ;
-        assertEquals(neg, dt.neg) ;
-        assertEquals(year, dt.year) ;
-        assertEquals(month, dt.month) ;
-        assertEquals(day, dt.day) ;
-        assertEquals("00", dt.hour) ;
-        assertEquals("00", dt.minute) ;
-        assertEquals("00", dt.second) ;
-        assertEquals(timezone, dt.timezone) ;
+        check(dt, neg, year, month, day, null, null, null, timezone) ;
     }
 }
 
