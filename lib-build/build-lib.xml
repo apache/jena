@@ -650,5 +650,10 @@ deploy
     <delete dir="${artifacts.dir}"/>
     <mkdir dir="${artifacts.dir}"/>
   </target> 
+
+   <target name="convert">
+    <ivy:convertpom pomFile="pom.xml" ivyFile="ivy-convertedpom.xml" />
+  </target>
+
   
 </project>

@@ -1,5 +1,7 @@
 <project xmlns:ivy="antlib:org.apache.ivy.ant" name="TDB" default="build">
 
+  <!-- To do: separate properties file to share with Ivy -->
+
   <!-- Configuration as a properties file ? -->
   <!-- <property file="tdb-build.properties"/> -->
 
@@ -77,6 +79,10 @@
 
   <target name="pre-run-junit">
     <mkdir dir="tmp/testing"/>
+  </target>
+
+  <target name="convert">
+    <ivy:convertpom pomFile="pom.xml" ivyFile="ivy-convertedpom.xml" />
   </target>
 
 </project>
