@@ -46,6 +46,15 @@ for jar in "$LIBDIR"/*.jar
   #echo "Path: $jar"
   [ "$CP" != "" ] && CP="${CP}${SEP}"
   CP="${CP}$jar"
+
+##  # Suggested:
+##   if [ "$CYGWIN" = 1 ]
+##   then
+##     CP="${CP}$(cygpath -wp "$jar")"
+##   else
+##     CP="${CP}$jar"
+##   fi
+## 
 done
 
 # Prepend any classes/ directory
