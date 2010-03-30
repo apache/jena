@@ -115,6 +115,17 @@ public class SSE
         Item item = parse(s, pmap) ;
         return BuilderExpr.buildExpr(item) ;
     }
+
+    /** Parse a string, and obtain a graph */
+    public static Graph parseGraph(String string) { return parseGraph(string, null) ; }
+    
+    /** Parse a string, and obtain a graph */
+    public static Graph parseGraph(String string, PrefixMapping pmap)
+    { 
+        Item item = parse(string, pmap) ;
+        return BuilderGraph.buildGraph(item) ;
+    }
+
     
     /** Read in a file, parse, and obtain a graph */
     public static Graph readGraph(String filename) { return readGraph(filename, null) ; }

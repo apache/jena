@@ -9,22 +9,27 @@ package dev.newupdate;
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
 
-public class DatasetModifer
+public interface DatasetUpdater
 {
-    public static Graph doGet() { return null ; } 
-    public static Graph doGet(Node graphName) { return null ; }
+    // Get graph
+    public Graph doGet() ; 
+    public Graph doGet(Node graphName) ;
     
-    public static void doPut(Graph graph) {  }
-    public static void doPut(Node graphName, Graph graph) {  }
+    // Replace/create graph
+    public void doPut(Graph data) ;
+    public void doPut(Node graphName, Graph data) ;
 
-    public static void doDelete() {  }
-    public static void doDelete(Node graphName) {  }
+    // Remove graph
+    public void doDelete() ;
+    public void doDelete(Node graphName) ;
 
-    public static void doPost(Graph graph) {  }
-    public static void doPost(Node graphName, Graph graph) {  }
+    // Update graph
+    public void doPost(Graph data) ;
+    public void doPost(Node graphName, Graph data) ;
 
-    public static void doPatch(Graph graph) {  }
-    public static void doPatch(Node graphName, Graph graph) {  }
+    // Update graph
+    public void doPatch(Graph data) ;
+    public void doPatch(Node graphName, Graph data) ;
 
 }
 
