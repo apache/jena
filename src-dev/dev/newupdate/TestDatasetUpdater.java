@@ -10,6 +10,7 @@ import org.junit.Assert ;
 import org.junit.Test ;
 
 import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 
@@ -18,15 +19,12 @@ public abstract class TestDatasetUpdater extends Assert
     protected abstract DatasetGraph getEmptyDatasetGraph() ;
     protected abstract DatasetUpdater getDatasetUpdater(DatasetGraph dsg) ;
     
-    private static Graph make(String data)
-    {
-        return SSE.parseGraph(data) ;
-    }
-    
-    protected static final Graph graph1 = make("(graph (<x> <p> 1))") ;
+    protected static final Node n1 = SSE.parseNode("<example>") ;
+    protected static final Graph graph1 = SSE.parseGraph("(graph (<x> <p> 1))") ;
+    protected static final Graph graph2 = SSE.parseGraph("(graph (<x> <p> 2))") ;
     
     
-    @Test public void test1()
+    @Test public void get_01()
     {
         DatasetGraph dsg = getEmptyDatasetGraph() ;
         DatasetUpdater updater = getDatasetUpdater(dsg) ;
@@ -34,7 +32,16 @@ public abstract class TestDatasetUpdater extends Assert
         assertNotNull(graph) ;
     }
     
-    @Test public void test2()
+    @Test public void get_02()
+    {
+        DatasetGraph dsg = getEmptyDatasetGraph() ;
+        DatasetUpdater updater = getDatasetUpdater(dsg) ;
+        Graph graph = updater.doGet(n1) ;
+        assertNotNull(graph) ;
+    }
+    
+    
+    @Test public void put_01()
     {
         DatasetGraph dsg = getEmptyDatasetGraph() ;
         DatasetUpdater updater = getDatasetUpdater(dsg) ;
@@ -43,6 +50,23 @@ public abstract class TestDatasetUpdater extends Assert
         Graph graph = updater.doGet() ;
         assertNotNull(graph) ;
         assertTrue(graph.isIsomorphicWith(graph1)) ;
+    }
+
+    
+    @Test public void put_02()
+    {
+        DatasetGraph dsg = getEmptyDatasetGraph() ;
+        DatasetUpdater updater = getDatasetUpdater(dsg) ;
+        updater.doPut(n1, graph1) ;
+        
+        Graph graph = updater.doGet() ;
+        assertNotNull(graph) ;
+        assertTrue(graph.isEmpty()) ;
+        
+        graph = updater.doGet(n1) ;
+        assertNotNull(graph) ;
+        assertTrue(graph.isIsomorphicWith(graph1)) ;
+        
     }
 
 }
