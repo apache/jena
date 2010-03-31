@@ -69,7 +69,7 @@
 
     <!-- Log4j 1.2.15 referes to inaccessible modules as excluded below. -->
     <!--    -->
-    <dependency conf="dev->*"   org="log4j" name="log4j" rev="1.2.14"> 
+    <dependency conf="dev->*"   org="log4j" name="log4j" rev="1.2.15"> 
       <exclude org="com.sun.jmx" module="jmxri"/>
       <exclude org="com.sun.jdmk" module="jmxtools"/>
       <exclude org="javax.jms" module="jms"/>
