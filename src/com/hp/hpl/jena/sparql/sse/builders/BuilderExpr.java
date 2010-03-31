@@ -219,6 +219,10 @@ public class BuilderExpr
         dispatch.put(Tags.tagNot, buildNot) ;   // Same builders for (not ..) and (! ..)
         dispatch.put(Tags.symNot, buildNot) ;
         dispatch.put(Tags.tagStr, buildStr) ;
+        dispatch.put(Tags.tagStrLang, buildStrLang) ;
+        dispatch.put(Tags.tagStrDatatype, buildStrDatatype) ;
+        dispatch.put(Tags.tagStr, buildStr) ;
+        
         dispatch.put(Tags.tagLang, buildLang) ;
         dispatch.put(Tags.tagLangMatches, buildLangMatches) ;
         dispatch.put(Tags.tagSameTerm, buildSameTerm) ;
@@ -226,12 +230,17 @@ public class BuilderExpr
         dispatch.put(Tags.tagBound, buildBound) ;
         dispatch.put(Tags.tagCoalesce, buildCoalesce) ;
         dispatch.put(Tags.tagIf, buildConditional) ;
-        dispatch.put(Tags.tagIRI, buildIRI) ;
-        dispatch.put(Tags.tagURI, buildURI) ;
+        dispatch.put(Tags.tagIRI, buildIsIRI) ;
+        dispatch.put(Tags.tagURI, buildIsURI) ;
         dispatch.put(Tags.tagIsBlank, buildIsBlank) ;
         dispatch.put(Tags.tagIsLiteral, buildIsLiteral) ;
         dispatch.put(Tags.tagExists, buildExists) ;
         dispatch.put(Tags.tagNotExists, buildNotExists) ;
+        
+        dispatch.put(Tags.tagBNode, buildBNode) ;
+        dispatch.put(Tags.tagIri, buildIri) ;
+        dispatch.put(Tags.tagUri, buildUri) ;
+        
         dispatch.put(Tags.tagIn, buildIn) ;
         dispatch.put(Tags.tagNotIn, buildNotIn) ;
         
@@ -471,6 +480,28 @@ public class BuilderExpr
         }
     };
 
+    final protected Build buildStrLang = new Build()
+    {
+        public Expr make(ItemList list)
+        {
+            BuilderLib.checkLength(3, list, "strlang: wanted 2 arguments: got :"+list.size()) ;
+            Expr ex1 = buildExpr(list.get(1)) ;
+            Expr ex2 = buildExpr(list.get(2)) ;
+            return new E_StrLang(ex1, ex2) ;
+        }
+    };
+
+    final protected Build buildStrDatatype = new Build()
+    {
+        public Expr make(ItemList list)
+        {
+            BuilderLib.checkLength(3, list, "strlang: wanted 2 arguments: got :"+list.size()) ;
+            Expr ex1 = buildExpr(list.get(1)) ;
+            Expr ex2 = buildExpr(list.get(2)) ;
+            return new E_StrDatatype(ex1, ex2) ;
+        }
+    };
+    
     final protected Build buildLang = new Build()
     {
         public Expr make(ItemList list)
@@ -544,7 +575,7 @@ public class BuilderExpr
         }
     };
 
-    final protected Build buildIRI = new Build()
+    final protected Build buildIsIRI = new Build()
     {
         public Expr make(ItemList list)
         {
@@ -554,7 +585,7 @@ public class BuilderExpr
         }
     };
 
-    final protected Build buildURI = new Build()
+    final protected Build buildIsURI = new Build()
     {
         public Expr make(ItemList list)
         {
@@ -601,6 +632,39 @@ public class BuilderExpr
             BuilderLib.checkLength(2, list, "notexists: wanted 1 arguments: got: "+list.size()) ;
             Op op = BuilderOp.build(list.get(1)) ;
             return new E_NotExists(op) ;
+        }
+    };
+    
+    final protected Build buildBNode = new Build()
+    {
+        public Expr make(ItemList list)
+        {
+            BuilderLib.checkLength(1, 2, list, "bnode: wanted 0 or 1 arguments: got: "+list.size()) ;
+            if ( list.size() == 1 )
+                return new E_BNode() ;
+            
+            Expr expr = buildExpr(list.get(1)) ;
+            return new E_BNode(expr) ;
+        }
+    };
+    
+    final protected Build buildIri = new Build()
+    {
+        public Expr make(ItemList list)
+        {
+            BuilderLib.checkLength(2, list, "iri: wanted 1 argument: got: "+list.size()) ;
+            Expr expr = buildExpr(list.get(1)) ;
+            return new E_IRI(expr) ;
+        }
+    };
+    
+    final protected Build buildUri = new Build()
+    {
+        public Expr make(ItemList list)
+        {
+            BuilderLib.checkLength(2, list, "uri: wanted 1 argument: got: "+list.size()) ;
+            Expr expr = buildExpr(list.get(1)) ;
+            return new E_URI(expr) ;
         }
     };
     

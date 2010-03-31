@@ -5,25 +5,65 @@
 
 package com.hp.hpl.jena.sparql.expr;
 
+import java.util.IdentityHashMap ;
+
+import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.ARQNotImplemented ;
+import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.function.FunctionEnv ;
+import com.hp.hpl.jena.sparql.util.LabelToNodeMap ;
+import com.hp.hpl.jena.sparql.util.Symbol ;
 
 public class E_BNode extends ExprFunction1
 {
-    private static final String symbol = "BNODE" ;
+    private static final String symbol = "bnode" ;
+    
+    private static final Symbol keyMap = Symbol.create("arq:internal:bNodeMappings") ;
 
+    public E_BNode() { super(null,symbol) ; }
+    
     public E_BNode(Expr expr)
     {
         // Maybe null.
         super(expr, symbol) ;
     }
-
-    public E_BNode(Expr expr, String altSymbol)
-    {
-        super(expr, altSymbol) ;
-    }
     
     @Override
     public NodeValue eval(NodeValue v) { throw new ARQNotImplemented() ; }
+    
+    @Override
+    public NodeValue evalSpecial(Binding binding, FunctionEnv env)
+    { 
+        if ( expr == null )
+            return NodeValue.makeNode(Node.createAnon()) ;
+        
+        NodeValue x = expr.eval(binding, env) ;
+        if ( ! x.isString() )
+            throw new ExprEvalException("Not a string: "+x) ;
+
+        Integer key = System.identityHashCode(binding) ;
+        
+        // IdentityHashMap
+        // Normally bindings have structural equality (e.g. DISTINCT)
+        // we want identify as OpAssign mutates a binding to add new pairs.
+        @SuppressWarnings("unchecked")
+        IdentityHashMap<Binding, LabelToNodeMap> mapping = (IdentityHashMap<Binding, LabelToNodeMap>)env.getContext().get(keyMap) ;
+        
+        if ( mapping == null )
+        {
+            mapping = new IdentityHashMap<Binding, LabelToNodeMap>() ;
+            env.getContext().set(keyMap, mapping) ;
+        }        
+        LabelToNodeMap mapper = mapping.get(binding) ;
+        if ( mapper == null )
+        {
+            mapper = LabelToNodeMap.createBNodeMap() ;
+            mapping.put(binding, mapper) ;
+        }
+
+        Node bnode = mapper.asNode(x.getString()) ;
+        return NodeValue.makeNode(bnode) ; 
+    } 
     
     @Override
     public Expr copy(Expr expr) { return new E_BNode(expr) ; } 

@@ -9,7 +9,7 @@ package dev.newupdate;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphMem ;
 
-public class TestDatasetUpdaterMem extends TestDatasetUpdater
+public class TestDatasetUpdaterMem extends BaseTestDatasetUpdater
 {
 
     @Override

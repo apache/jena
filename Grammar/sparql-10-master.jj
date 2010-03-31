@@ -29,13 +29,13 @@ options
 //  DEBUG_TOKEN_MANAGER   = true ;
 }
 
-PARSER_BEGIN(ARQParser)
+PARSER_BEGIN(SPARQLParser10)
 /*
  * (c) Copyright 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  */
 
-package com.hp.hpl.jena.sparql.lang.arq ;
+package com.hp.hpl.jena.sparql.lang.sparql_10 ;
 
 import com.hp.hpl.jena.graph.* ;
 import com.hp.hpl.jena.query.* ;
@@ -44,41 +44,29 @@ import com.hp.hpl.jena.sparql.syntax.* ;
 import com.hp.hpl.jena.sparql.expr.* ;
 import com.hp.hpl.jena.sparql.path.* ;
 
-import com.hp.hpl.jena.sparql.expr.aggregate.* ;
 
 
-import com.hp.hpl.jena.sparql.modify.op.* ;
 
 
-public class ARQParser extends ARQParserBase
+
+
+public class SPARQLParser10 extends SPARQLParser10Base
 {
     private static long UNSET = P_Mod.UNSET ;
     private static long INF = P_Mod.INF ;
     boolean allowAggregatesInExpressions = false ;
 }
-PARSER_END(ARQParser)
-
-
-// Common top for single entry point.
-void Top(): {}
-{
-    Prologue()
-    ( Query() | Update() )
-    <EOF>
-}
-// Refactored fro SPARQL 1.1
+PARSER_END(SPARQLParser10)
 void QueryUnit(): { }
 {
-  Prologue()
   Query() <EOF>
 }
 
 void Query() : { }
 {
+  Prologue()
   ( SelectQuery() | ConstructQuery() | DescribeQuery() | AskQuery() )
 }
-
-
 void Prologue() : {}
 {
   ( BaseDecl() ) ?
@@ -127,38 +115,6 @@ void Project() : { Var v ; Expr expr ; Node n ; }
   (
     (
       ( v = Var() { getQuery().addResultVar(v) ; } )
-
-    |
-      // Similar to GROUP BY - adds to a different VarExprList
-      // Add BuiltInCall() & FunctionCall()
-      expr = Aggregate()
-      { getQuery().addResultVar((Var)null, expr) ; }
-    | expr = BuiltInCall() { getQuery().addResultVar((Var)null, expr) ; }
-
-    // PROBLEMS: 
-    // <uri>(?x)
-    // looks like a function call and also a "<uri> ( ?v )"
-    //| expr = FunctionCall()  { getQuery().addResultVar((Var)null, expr) ; }
-
-    // TIDY! This form is used at least twice.
-    //| expr = IRIrefOrFunction() { getQuery().addResultVar((Var)null, expr) ; }
-
-    | expr = FunctionCall() { getQuery().addResultVar((Var)null, expr) ; }
-    | n = RDFLiteral() { getQuery().addResultVar((Var)null, NodeValue.makeNode(n)) ; }
-    | n = NumericLiteral() { getQuery().addResultVar((Var)null, NodeValue.makeNode(n)) ; }
-    | n = BooleanLiteral() { getQuery().addResultVar((Var)null, NodeValue.makeNode(n)) ; }
-
-    // Syntax: ( expr [AS ?var] )
-    |
-      (
-        { v = null ; }
-        <LPAREN>
-          expr = Expression()
-          ( <AS> v = Var() )?
-        <RPAREN>
-        { getQuery().addResultVar(v, expr) ; }
-      )
-
     { getQuery().setQueryResultStar(false) ; }
    )+
   |
@@ -243,48 +199,12 @@ void WhereClause() : { Element el ; }
 void SolutionModifier() : { }
 {
 
-  ( GroupClause() )?
-  ( HavingClause() )?
+
+
 
   ( OrderClause() )?
   ( LimitOffsetClauses() )?
 }
-
-
-void GroupClause() : { }
-{
-  <GROUP> <BY> ( GroupCondition() )+
-}
-
-void GroupCondition() : { Var v = null ; Expr expr = null ; }
-{
-  ( expr = BuiltInCall() { getQuery().addGroupBy((Var)null, expr) ; }
-  | expr = FunctionCall() { getQuery().addGroupBy((Var)null, expr) ; }
-  |
-    <LPAREN>
-      expr = Expression()
-    ( <AS> v = Var() )?
-    <RPAREN>
-    { getQuery().addGroupBy(v ,expr) ; }
-  | v = Var()
-    { getQuery().addGroupBy(v) ; }
-  )
-}
-
-void HavingClause() : { }
-{
-    { allowAggregatesInExpressions = true ; }
-    <HAVING> (HavingCondition())+
-    { allowAggregatesInExpressions = false ; }
-}
-
-void HavingCondition() : { Expr c ; }
-{
-   c = Constraint()
-   { getQuery().addHavingCondition(c) ; }
-}
-
-
 void OrderClause() : { }
 {
   <ORDER> <BY> ( OrderCondition() )+
@@ -336,182 +256,13 @@ void OffsetClause() : { Token t ; }
 }
 
 // ---- SPARQL/Update (submission)
-
-
-void UpdateUnit() : {}
-{
-    Prologue()
-    Update()
-    <EOF>
-}
-
-void Update() : { }
-{
-    ( Update1() )+
-}
-
-void Update1() : { Update up = null ; GraphMgt mgt ; }
-{
-  ( up = Modify() | up = Insert() | up = Delete() |
-     up = Load() | up = Clear() | up = Create() | up = Drop() )
-    { getRequest().addUpdate(up) ; }
-}
-
-UpdateModify Modify() :
-{ UpdateModify up = new UpdateModify() ; String iri ; Template template ; Element el ; }
-{
-    <MODIFY>
-    ( iri = GraphIRI() { up.addGraphName(iri) ; } )*
-    <DELETE> template = ConstructTemplate() { up.setDeleteTemplate(template) ; }
-    <INSERT> template = ConstructTemplate() { up.setInsertTemplate(template) ; }
-    ( el = UpdatePattern() { up.setPattern(el) ; } )?
-    { return up ; }
-}
-
-Update Delete() : { Update up ; }
-{
-  <DELETE>
-  ( up = DeleteData() | up = DeleteTemplate() )
-    { return up ; }
-}
-
-Update DeleteData() :
-{ UpdateDeleteData update = new UpdateDeleteData() ;
-  String iri ; Template template ;
-  Token t ; }
-{
-    t = <DATA>
-    ((<FROM>)? iri = IRIref() { update.addGraphName(iri) ; } )*
-   template = ConstructTemplate()
-   { Graph triples = convertTemplateToTriples(template,
-                                        t.beginLine, t.beginColumn) ;
-     update.setData(triples) ;
-     return update ;
-    }
-}
-
-Update DeleteTemplate() :
-{ UpdateDelete up = new UpdateDelete() ; String iri ; Template template ; Element el ; }
-{
-  ((<FROM>)? iri = IRIref() { up.addGraphName(iri) ; } )*
-  template = ConstructTemplate() { up.setDeleteTemplate(template) ; }
-    ( el = UpdatePattern() { up.setPattern(el) ; } )?
-    { return up ; }
-}
-
-Update Insert() : { Update up ; }
-{
-  <INSERT>
-  ( up = InsertData() | up = InsertTemplate() )
-    { return up ; }
-}
-
-Update InsertData() :
-{ UpdateInsertData update = new UpdateInsertData() ;
-  String iri ; Template template ;
-  Token t ; }
-{
-   t = <DATA>
-   ((<INTO>)? iri = IRIref() { update.addGraphName(iri) ; } )*
-   template = ConstructTemplate()
-   { Graph triples = convertTemplateToTriples(template,
-                                        t.beginLine, t.beginColumn) ;
-     update.setData(triples) ;
-     return update ;
-    }
-}
-
-UpdatePattern InsertTemplate() :
-{ UpdateInsert up = new UpdateInsert() ; String iri ; Template template ; Element el ; }
-{
-  ((<INTO>)? iri = IRIref() { up.addGraphName(iri) ; } )*
-  template = ConstructTemplate() { up.setInsertTemplate(template) ; }
-    ( el = UpdatePattern() { up.setPattern(el) ; } )?
-    { return up ; }
-}
-
-String GraphIRI() : { String iri ; }
-{
-    <GRAPH> iri = IRIref() { return iri ; }
-}
-
-UpdateLoad Load() : { UpdateLoad up = new UpdateLoad() ; String iri ;}
-{
-    <LOAD> ( iri = IRIref() { up.addLoadIRI(iri) ; } )+
-    (<INTO> iri = IRIref() { up.setGraphName(iri) ; } )?
-    { return up ; }
-}
-
-UpdateClear Clear() : { UpdateClear up = new UpdateClear(); String iri ; }
-{
-    <CLEAR>
-    ( iri = GraphIRI() { up.setGraphName(iri) ; } )?
-    { return up ; }
-}
-
-UpdateCreate Create() : { boolean silent = false ; String iri ; }
-{
-    <CREATE>
-    (<SILENT> { silent = true ; } )?
-    iri = GraphIRI()
-    { return new UpdateCreate( iri, silent); }
-}
-
-UpdateDrop Drop() : { boolean silent = false ; String iri ; }
-{
-    <DROP>
-    (<SILENT>{ silent = true ; } )?
-    iri = GraphIRI()
-    { return new UpdateDrop(iri, silent) ; }
-}
-
-Element UpdatePattern() : { Element el ; }
-{
-   (<WHERE>)? el = GroupGraphPattern() { return el ; }
-}
-
-// void Transaction() : {}
-// {
-//     TransBegin() | TransCommit() | TransAbort()
-// }
-// 
-// void TransBegin() : {}
-// {
-//     <BEGIN> (IRIref())?
-//     { System.out.println("++ Begin") ; }
-// }
-// 
-// void TransCommit() : {}
-// {
-//     <COMMIT> (IRIref())?
-//     { System.out.println("++ Commit") ; }
-// }
-// 
-// void TransAbort() : {}
-// {
-//     <ABORT> (IRIref())?
-//     { System.out.println("++ Abort") ; }
-// }
-
-
 // SPARQL 1.1. Update
 // ---- General Graph Pattern 
 
 Element GroupGraphPattern() : { Element el = null ; Token t ; }
 {
   t = <LBRACE>
-
-  (
-    { startSubSelect() ; }
-    SubSelect()
-    {
-      Query q = endSubSelect(t.beginLine, t.beginColumn) ;
-      el = new ElementSubQuery(q) ;
-    }
-  | el = GroupGraphPatternSub()
-  )
-
-
+    el = GroupGraphPatternSub()
 
   <RBRACE>
     { return el ; }
@@ -548,17 +299,17 @@ Element GroupGraphPatternSub() : { Element el = null ; }
 
 // -- TriplesBlock
 // Two versions - for SPARQL 1.0 and SPARQL 1.1 (with paths)
-Element TriplesBlock(ElementPathBlock acc) : { }
+
+
+Element TriplesBlock(ElementTriplesBlock acc) : { }
 {
   { if ( acc == null )
-        acc = new ElementPathBlock() ;
+        acc = new ElementTriplesBlock() ;
   }
-  TriplesSameSubjectPath(acc)
+  TriplesSameSubject(acc)
   ( <DOT> (TriplesBlock(acc))? )?
     { return acc ; }
 }
-
-
 // -----
 
 Element GraphPatternNotTriples() : { Element el = null ; }
@@ -570,22 +321,6 @@ Element GraphPatternNotTriples() : { Element el = null ; }
    el = GroupOrUnionGraphPattern()
  |
    el = GraphGraphPattern()
-
- |
-   el = ServiceGraphPattern()
- |
-   el = Assignment()
- |
-   el = FetchGraph()
-
-
- |
-   el = ExistsElt()
- |
-   el = NotExistsElt()
- |
-   el = MinusGraphPattern()
-
  )
   { return el ; }
 }
@@ -602,61 +337,6 @@ Element GraphGraphPattern() : { Element el ; Node n ;}
   <GRAPH> n = VarOrIRIref() el = GroupGraphPattern()
     { return new ElementNamedGraph(n, el) ; }
 }
-
-
-
-Element ServiceGraphPattern() : { Element el ; Node n ; }
-{
-  <SERVICE>
-  n = VarOrIRIref()
-  el = GroupGraphPattern()
-    { return new ElementService(n, el) ; }
-}
-
-Element Assignment() : { Var v ; Expr expr ; }
-{
-  <LET>
-  <LPAREN>
-  v = Var()
-  <ASSIGN>
-  expr = Expression()
-  <RPAREN>
-    { return new ElementAssign(v, expr) ; }
-}
-
-Element FetchGraph() : { Node n ; }
-{
-  <FETCH>
-  n = VarOrIRIref()
-  { return new ElementFetch(n) ; }
-}
-
-
-
-
-Element ExistsElt() : { Element el ; }
-{
-    <EXISTS>
-    el = GroupGraphPattern()
-    { return new ElementExists(el) ; }
-}
-
-Element NotExistsElt() : { Element el ; }
-{
-    <NOTEXISTS>
-    el = GroupGraphPattern()
-    { return new ElementNotExists(el) ; }
-}
-
-Element MinusGraphPattern() : { Element el ; }
-{
-    <MINUS_P>
-    el = GroupGraphPattern()
-    { return new ElementMinus(el) ; }
-}
-
-
-
 // G (union G)* can be a single group pattern
 // or a group pattern as part of an union.
 Element GroupOrUnionGraphPattern() :
@@ -698,26 +378,6 @@ Expr FunctionCall() : { String fname ; ExprList a ;
 {
 
   fname = IRIref()
-
-  // Ugly duplication.
-  ( // Aggregates only. @@
-    aParam = ParamList()
-    {
-     if ( ! allowAggregatesInExpressions )
-            throwParseException("Aggregate expression not legal at this point",
-                                 -1, -1) ;
-    }
-  )?
-     // Aggregates only. @@
-    (<DISTINCT> { distinct = true ; }
-     {
-     if ( ! allowAggregatesInExpressions )
-            throwParseException("Aggregate expression not legal at this point",
-                                 -1, -1) ;
-    }
-    )?
-
-
    a = ArgList()
     { return new E_Function(fname, a) ; }
 }
@@ -763,15 +423,15 @@ Template ConstructTemplate() : { }
 void ConstructTriples(TemplateGroup acc) : { }
 {
 
-
-
-
-
-
-    // Rewrite for no recursion - grammar is not LL(1)
+// SPARQL - recursion - does not scale for SPARQL/Update
     TriplesSameSubject(acc)
-    (LOOKAHEAD(2) (<DOT>) TriplesSameSubject(acc))*
-    (<DOT>)?
+    (<DOT> (ConstructTriples(acc))? )?
+
+
+
+
+
+
 
 }
 
@@ -829,187 +489,7 @@ Node Verb() : { Node p ;}
 
 // -------- BGPs with paths.
 // -------- Entry point: TriplesSameSubjectPath
-
-
-void TriplesSameSubjectPath(TripleCollector acc) : { Node s ; }
-{
-  s = VarOrTerm()
-  PropertyListNotEmptyPath(s, acc)
-|
-  // Any of the triple generating syntax elements
-  s = TriplesNode(acc)
-  PropertyListPath(s, acc)
-}
-
-void PropertyListNotEmptyPath(Node s, TripleCollector acc) :
-    { Path path = null ; Node p = null ; }
-{
-  ( path = VerbPath()
-  | p = VerbSimple()
-  )
-
-  ObjectList(s, p, path, acc)
-  ( <SEMICOLON>
-    { path = null ; p = null ; }
-    (
-      ( path = VerbPath()
-      | p = VerbSimple()
-      )
-      ObjectList(s, p, path, acc)
-    )?
-  )*
-
-
-
-
-}
-
-void PropertyListPath(Node s, TripleCollector acc) : { }
-{
-  ( PropertyListNotEmpty(s, acc) ) ?
-}
-
-
-Path VerbPath() : {Node p ; Path path ; }
-{
-  path = Path() { return path ; }
-}
-
-Node VerbSimple() : { Node p ; }
-{
-  // "a" now allowed in paths.
-  //( p = Var() | <KW_A> { p = nRDFtype ; } )
-  p = Var()
-  { return p ; }
-}
-// End paths stuff.
-
-
 // -------- Paths
-
-
-Path PathUnit() : { Path p ; }
-{
-    p = Path()
-    <EOF>
-    { return p ; }
-}
-
-
-
-// Weakest outermost
-Path Path() : { Path p ; }
-{
-  p = PathAlternative() { return p ; }
-}
-
-Path PathAlternative() : { Path p1 , p2 ; }
-{
-   p1 = PathSequence()
-   (
-      <VBAR> p2 = PathSequence()
-      { p1 = new P_Alt(p1, p2) ; }
-   )*
-   { return p1 ; }
-}
-
-Path PathSequence() : { Path p1 , p2 ; }
-{
-    p1 = PathEltOrInverse()
-    ( <SLASH> p2 = PathEltOrInverse()
-      { p1 = new P_Seq(p1, p2) ; }
-    | <CARAT> p2 = PathElt()
-      { p1 = new P_Seq(p1, new P_Inverse(p2)) ; }
-    )*
-   { return p1; }
-}
-
-// Path unit element, no inverse
-Path PathElt() : { String str ; Node n ; Path p ; }
-{
-   p = PathPrimary()
-   ( p = PathMod(p) )?
-   { return p ; }
-}
-
-// Path unit element, including inverse.
-Path PathEltOrInverse() : { String str ; Node n ; Path p ; }
-{
-   ( p = PathElt()
-   | <CARAT>
-     p = PathElt()
-     { p = new P_Inverse(p) ; }
-   )
-   { return p ; }
-}
-
-Path PathMod(Path p) : { long i1 = UNSET ; long i2 = UNSET ; }
-{
-   ( <STAR> { return PathFactory.modZeroOrMode(p) ; }
-   | <QMARK> { return PathFactory.modZeroOrOne(p) ; }
-   | <PLUS> { return PathFactory.modOneOrMore(p) ; }
-   | <LBRACE>
-       ( // {N} {N,M} {N,}
-            i1 = Integer()
-            ( <COMMA>
-              ( <RBRACE> // case {N,}
-                    { return new P_Mod(p, i1, INF) ; }
-              | i2 = Integer() <RBRACE> // case {N,M}
-                    { return new P_Mod(p, i1, i2) ; }
-              )
-            |
-              <RBRACE> // {N}
-                     { return new P_Mod(p, i1) ; }
-            )
-       )
-    //   { return new P_Mod(p, i1, i2) ; } 
-   )
-}
-
-Path PathPrimary() : { String str ; Path p ; Node n ; }
-{
-  (
-    str = IRIref()
-     { n = createNode(str) ; p = new P_Link(n) ; }
-  | <KW_A>
-     { p = new P_Link(nRDFtype) ; }
-  | <BANG> p = PathNegatedPropertyClass()
-  | <LPAREN> p = Path() <RPAREN>
-  )
-    { return p ; }
-}
-
-Path PathNegatedPropertyClass() : {String str ; P_Path0 p ; P_NegPropClass pNegClass ; Node n ; }
-{
-  { pNegClass = new P_NegPropClass() ; }
-  ( p = PathOneInPropertyClass()
-    { pNegClass.add(p) ; }
-  | <LPAREN>
-    ( p = PathOneInPropertyClass() { pNegClass.add(p) ; }
-      (<VBAR> p = PathOneInPropertyClass() { pNegClass.add(p) ; }) *
-    )?
-    <RPAREN>
-  )
-  { return pNegClass ; }
-}
-
-P_Path0 PathOneInPropertyClass() : { String str ; Node n ; }
-{
-  ( str = IRIref() { n = createNode(str) ; return new P_Link(n) ; }
-  | <KW_A> { return new P_Link(nRDFtype) ; }
-  // This is the !(^:property) form.
-//  | <CARAT>  str = IRIref() { n = createNode(str) ; return new P_ReverseLink(n) ; } 
-  )
-}
-
-
-long Integer() : {Token t ;}
-{
-    t = <INTEGER>
-    { return integerValue(t.image) ; }
-}
-
-
 // -------- Triple expansions
 
 // Anything that can stand in a node slot and which is
@@ -1150,10 +630,10 @@ Expr RelationalExpression() : { Expr expr1, expr2 ; ExprList a ; }
   | <GE> expr2 = NumericExpression()
       { expr1 = new E_GreaterThanOrEqual(expr1, expr2) ; }
 
-  | <IN> a = ArgList()
-      { expr1 = new E_OneOf(expr1, a) ; }
-  | <NOT_IN> a = ArgList()
-      { expr1 = new E_NotOneOf(expr1, a) ; }
+
+
+
+
 
   )?
     { return expr1 ; }
@@ -1257,7 +737,7 @@ Expr PrimaryExpression() : { Expr expr ; Node gn ; }
   | gn = BooleanLiteral() { return asExpr(gn) ; }
   | gn = Var() { return asExpr(gn) ; }
 
-  | expr = Aggregate() { return expr ; }
+
 
   )
 }
@@ -1284,43 +764,6 @@ Expr BuiltInCall() : { Expr expr ; Expr expr1 = null ; Expr expr2 = null ;
 
   | <BOUND> <LPAREN> gn = Var() <RPAREN>
     { return new E_Bound(new ExprVar(gn)) ; }
-
-
-  | <IRI> <LPAREN> expr = Expression() <RPAREN>
-    { return new E_IRI(expr) ; }
-
-  | <URI> <LPAREN> expr = Expression() <RPAREN>
-    { return new E_URI(expr) ; }
-
-  | <BNODE>
-    // @@ FIXME
-    ( <LPAREN> expr1 = Expression() <RPAREN>
-      { return new E_BNode(expr1) ; }
-    |
-      <NIL> { return new E_BNode() ; }
-    )
-
-  | <COALESCE> a = ArgList()
-    { return new E_Coalesce(a) ; }
-
-  | <IF> <LPAREN> expr = Expression() <COMMA>
-                  expr1 = Expression() <COMMA>
-                  expr2 = Expression() <RPAREN>
-    { return new E_Conditional(expr, expr1, expr2) ; }
-
-  | <STRLANG> <LPAREN> expr1 = Expression() <COMMA> expr2 = Expression() <RPAREN>
-    { return new E_StrLang(expr1, expr2) ; }
-
-  | <STRDT> <LPAREN> expr1 = Expression() <COMMA> expr2 = Expression() <RPAREN>
-    { return new E_StrDatatype(expr1, expr2) ; }
-
-
-
-  // Can we do this with ?func(?a1,?a2,...)
-  | <CALL> a = ArgList()
-    { return new E_Call(a) ; }
-
-
   | <SAME_TERM> <LPAREN> expr1 = Expression() <COMMA> expr2 = Expression() <RPAREN>
     { return new E_SameTerm(expr1, expr2) ; }
 
@@ -1339,8 +782,8 @@ Expr BuiltInCall() : { Expr expr ; Expr expr1 = null ; Expr expr2 = null ;
   | // Regular expression matcher
     expr = RegexExpression() { return expr ; }
 
-  | expr = ExistsFunc() { return expr ; }
-  | expr = NotExistsFunc() { return expr ; }
+
+
 
 
 }
@@ -1356,73 +799,6 @@ Expr RegexExpression() :
     <RPAREN>
       { return new E_Regex(expr, patExpr, flagsExpr) ; }
 }
-
-
-Expr ExistsFunc() : { Element el ; }
-{
-   <EXISTS>
-   el = GroupGraphPattern()
-   { return createExprExists(el) ; }
-}
-
-Expr NotExistsFunc() : { Element el ; }
-{
-   <NOTEXISTS>
-   el = GroupGraphPattern()
-   { return createExprNotExists(el) ; }
-}
-
-
-Expr Aggregate() : { AggregateFactory agg = null ;
-                     boolean distinct = false ;
-                     Expr expr = null ; ExprList aParam = null ; ExprList a = null ;
-                     Token t ; }
-{
-   // @@ Clean up and make a common interface to creating aggregates.
-   // Grammar becomes (COUNT|SUM|...)(DISTINCT)?(args)
-
-   ( t = <COUNT> <LPAREN>
-    ( <DISTINCT> { distinct = true ; } )?
-    ( <STAR> | expr = Expression() )
-    <RPAREN>
-    { if ( ! distinct && expr == null ) { agg = AggCount.get() ; }
-      if ( distinct && expr == null ) { agg = AggCountDistinct.get() ; }
-      if ( ! distinct && expr != null ) { agg = new AggCountVar(expr) ; }
-      if ( distinct && expr != null ) { agg = new AggCountVarDistinct(expr) ; }
-    }
-
-   | t = <SUM> <LPAREN> (<DISTINCT> { distinct = true ; } )?
-        expr = Expression() <RPAREN> { agg = new AggSum(expr) ; }
-        <RPAREN>
-   | t = <MIN> <LPAREN> (<DISTINCT> { distinct = true ; } )?
-        expr = Expression() <RPAREN> { agg = new AggMin(expr) ; }
-        <RPAREN>
-   | t = <MAX> <LPAREN> (<DISTINCT> { distinct = true ; } )?
-       expr = Expression() <RPAREN> { agg = new AggMax(expr) ; }
-        <RPAREN>
-   | t = <AVG> <LPAREN> (<DISTINCT> { distinct = true ; } )?
-       expr = Expression() <RPAREN> { agg = new AggAvg(expr) ; }
-        <RPAREN>
-   | // @@
-     t = <GROUP_CONCAT> (aParam = ParamList())?
-         <LPAREN> (<DISTINCT>)? a = ArgList()
-        <RPAREN>
-   | // @@
-     t = <SAMPLE> <LPAREN> (<DISTINCT>)? (Expression())
-        <RPAREN>
-   )
-   {
-     if ( ! allowAggregatesInExpressions )
-            throwParseException("Aggregate expression not legal at this point",
-                                 t.beginLine, t.beginColumn) ;
-   }
-
-   { expr = getQuery().allocAggregate(agg) ;
-     return expr ; }
-}
-
-
-
 // See also FunctionCall.
 // The case of "q:name()" or "q:agg[]()" or just "q:name"
 // by expanding out FunctionCall()
@@ -1432,47 +808,11 @@ Expr IRIrefOrFunction() : { String iri ; ExprList a = null ;
                             boolean distinct = false ; }
 {
   iri = IRIref()
-
-
-  ( // Aggregates only. @@
-    aParam = ParamList()
-    {
-     if ( ! allowAggregatesInExpressions )
-            throwParseException("Aggregate expression not legal at this point",
-                                 -1, -1) ;
-    }
-  )?
-
-     // Aggregates only. @@
-    (<DISTINCT> { distinct = true ; }
-     {
-     if ( ! allowAggregatesInExpressions )
-            throwParseException("Aggregate expression not legal at this point",
-                                 -1, -1) ;
-    }
-    )?
-
   ( a = ArgList() )?
   { if ( a == null ) return asExpr(createNode(iri)) ;
     return new E_Function(iri, a) ;
   }
 }
-
-
-// The case of "?var()" or just "?var"
-Expr VarOrFunction() : { Var v ; ExprList a = null ; }
-{
-  v = Var()
-  { Expr ev = new ExprVar(v) ; }
-  ( a = ArgList() )?
-
-  { if ( a == null ) return ev ;
-    return new E_FunctionDynamic(ev, a) ;
-  }
-}
-
-
-
 Node RDFLiteral() : { Token t ; String lex = null ; }
 {
   lex = String()
@@ -1641,51 +981,10 @@ TOKEN [IGNORE_CASE] :
 | < GRAPH: "graph" >
 | < OPTIONAL: "optional" >
 | < UNION: "union" >
-
-
-| < SERVICE: "service" >
-| < LET: "let" >
-| < FETCH: "fetch" >
-
-
-| < EXISTS: "exists" >
-| < NOT: "not" >
-| < NOTEXISTS: "not" (<WS>)* "exists" >
-| < MINUS_P: "minus" >
-//|  < UNSAID:      "unsaid" >
-| < AS: "as" >
-| < GROUP: "group" >
-| < HAVING: "having" >
-| < AGG: "agg" >
-| < COUNT: "count" >
-| < MIN: "min" >
-| < MAX: "max" >
-| < SUM: "sum" >
-| < AVG: "avg" >
-| < STDDEV: "stdev" >
-| < SAMPLE: "sample" >
-| < GROUP_CONCAT: "group_concat" >
-
-
 | < FILTER: "filter" >
 
 // Expression operators
 | < BOUND: "bound" >
-
-| < COALESCE: "coalesce" >
-| < IN: "in" >
-| < NOT_IN: "not" (<WS>)* "in" >
-| < IF: "if" >
-| < BNODE: "bnode" >
-| < IRI: "iri" >
-| < URI: "uri" >
-| < CAST: "cast" >
-
-
-
-| < CALL: "call" >
-
-
 | < STR: "str" >
 | < STRLANG: "strlang" >
 | < STRDT: "strdt" >
@@ -1702,40 +1001,6 @@ TOKEN [IGNORE_CASE] :
 | <TRUE: "true" >
 | <FALSE: "false" >
 }
-
-
-// SPARQL/Update parts.
-
-TOKEN [IGNORE_CASE] :
-{
-  <MODIFY: "modify">
-| <INSERT: "insert">
-//| <INSERT_DATA:     "insert" (<WS>)* "data">
-| <DELETE: "delete" >
-//| <DELETE_DATA:     "delete" (<WS>)* "data">
-//| <DELETE_WHERE:    "delete" (<WS>)* "where">
-
-| <DATA: "data">
-
-| <ADD: "add">
-| <REMOVE: "remove">
-
-| <LOAD: "load" >
-| <CLEAR: "clear" >
-| <CREATE: "create" >
-| <SILENT: "silent" >
-| <DROP: "drop" >
-| <INTO: "into" >
-| < DFT: "default" >
-| < WITH: "with" >
-
-
-//| <BEGIN:       "begin" >
-//| <COMMIT:      "commit" >
-//| <ABORT:       "abort" >
-}
-
-
 // -------------------------------------------------
 
 TOKEN :
@@ -1821,17 +1086,6 @@ TOKEN :
 
 | < DATATYPE: "^^">
 | < AT: "@">
-
-| < ASSIGN: ":=">
-
-
-// Path related
-| < VBAR: "|" >
-| < CARAT: "^" >
-| < FPATH: "->" >
-| < RPATH: "<-" >
-| < QMARK: "?" >
-
 }
 
 // See XML chars.txt for notes

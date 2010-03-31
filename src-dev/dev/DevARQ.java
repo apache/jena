@@ -7,11 +7,18 @@ package dev;
 
 public class DevARQ
 {
-    // ==== ARQ 2.8.3
+    // ==== ARQ 2.8.4 dev
+
+    // ====
+    
+    // ARQ: check variable scope
+    //   Groups, SELECT expressions
+    //   SELECT expressions error to reuse a variable name.
+    //   Aggegator upgrade and specifc operators
+    //   Custom agregators
+
     
     // ----
-    
-    // DateTime parser year can be > 4 digits 
     
     // Sort out DatasetGraph:
     // DatasetGraphMem 
@@ -33,13 +40,8 @@ public class DevARQ
     // == Migration:
     // JSON
 
-    // ----------
-    // Abstract ValueSpace for extensibility
-
     // Example of OpExecutor
     // Deprecate StageGenerator
-    
-    // Check version info works
     
     // SPARQL/Update of a ja:RDFDataset - new graphs don't appear? 
     
@@ -48,9 +50,6 @@ public class DevARQ
     //{ ?x !(^rdf:type|rdf:type) ?y }
     // ^ not needed (either it's forward mode adnd can't match else backwars mode further out)
     // Test with grounded ?x and ?y
-    
-    // De-duplicate aggregator code.
-    // Junit3 ==> Junit4 TestExpressions.
     
     // Run ref engine and main engine in a test - remove ref only tests
     
@@ -83,15 +82,7 @@ public class DevARQ
     // Improve PathLib.ungroundedPath
     // e.g. if first step is a URI, use this to seed the process
     
-    // == Test
-    // Convert test suite by manifest to JUnit4. JUnit4TestAdapter
-    //   Partial: all the Test* use JUnit4TestAdapter
-    //   To do: Organise suites better.
-    //          TS ==> JUnit4
-    //          No more JUnit3.
-    
     // Library
-    // TEMP : dump necessary copies in c.h.h.j.sparql.lib until whole thing is sorted out.
     //   Combine StringUtils and StrUtils.
 
     // NodeFactory == SSE => Merge

@@ -5,13 +5,12 @@
 
 package com.hp.hpl.jena.sparql.expr;
 
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.iri.IRI ;
 import com.hp.hpl.jena.iri.IRIFactory ;
+import com.hp.hpl.jena.sparql.expr.nodevalue.NodeFunctions ;
 
 public class E_IRI extends ExprFunction1
 {
-    private static final String symbol = "IRI" ;
+    private static final String symbol = "iri" ;
     private static final IRIFactory iriFactory = IRIFactory.iriImplementation() ;
 
     public E_IRI(Expr expr)
@@ -27,17 +26,7 @@ public class E_IRI extends ExprFunction1
     @Override
     public NodeValue eval(NodeValue v)
     { 
-        if ( v.isIRI() )
-            return v ;
-        if ( v.isString() )
-        {
-            // Level of checking?
-            IRI iri = iriFactory.create(v.getString()) ;
-            if ( ! iri.isAbsolute() )
-                throw new ExprEvalException("Relative IRI string: "+v.getString()) ;
-            return NodeValue.makeNode(Node.createURI(iri.toString())) ;
-        }
-        throw new ExprEvalException("Can't make an IRI from "+v) ;
+        return NodeFunctions.iri(v) ;
     }
     
     @Override

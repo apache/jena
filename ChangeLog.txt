@@ -1,6 +1,10 @@
 ChangeLog for ARQ
 =================
 
+==== ARQ 2.8.4
+
++ Add BNODE() function to generate fresh bnodes
+
 ==== ARQ 2.8.3
 
 + Added commands arq.larq and arq.larqbuilder to query and build Lucense indexes for ARQ.

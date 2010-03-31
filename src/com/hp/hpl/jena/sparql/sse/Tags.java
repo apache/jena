@@ -109,6 +109,9 @@ public class Tags
     
     public static final String tagNot           = "not" ;
     public static final String tagStr           = "str" ;
+    public static final String tagStrLang       = "strlang" ;
+    public static final String tagStrDatatype   = "strdt" ;
+    
     public static final String tagLang          = "lang" ;
     public static final String tagLangMatches   = "langmatches" ;
     public static final String tagSameTerm      = "sameterm" ;
@@ -123,6 +126,10 @@ public class Tags
     public static final String tagRegex         = "regex" ;
     public static final String tagExists        = "exists" ;
     public static final String tagNotExists     = "notexists" ;
+    
+    public static final String tagBNode         = "bnode" ;
+    public static final String tagIri           = "iri" ;
+    public static final String tagUri           = "uri" ;
 
     public static final String tagIn             = "in" ;
     public static final String tagNotIn          = "notin" ;

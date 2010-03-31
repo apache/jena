@@ -14,7 +14,7 @@ import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 
-public abstract class TestDatasetUpdater extends Assert
+public abstract class BaseTestDatasetUpdater extends Assert
 {
     protected abstract DatasetGraph getEmptyDatasetGraph() ;
     protected abstract DatasetUpdater getDatasetUpdater(DatasetGraph dsg) ;
@@ -22,7 +22,6 @@ public abstract class TestDatasetUpdater extends Assert
     protected static final Node n1 = SSE.parseNode("<example>") ;
     protected static final Graph graph1 = SSE.parseGraph("(graph (<x> <p> 1))") ;
     protected static final Graph graph2 = SSE.parseGraph("(graph (<x> <p> 2))") ;
-    
     
     @Test public void get_01()
     {
@@ -39,7 +38,6 @@ public abstract class TestDatasetUpdater extends Assert
         Graph graph = updater.doGet(n1) ;
         assertNotNull(graph) ;
     }
-    
     
     @Test public void put_01()
     {

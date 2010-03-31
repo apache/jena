@@ -68,7 +68,6 @@ TOKENS
 | <NOT: "not">
 | <NOTEXISTS: "not" (<WS>)* "exists">
 | <MINUS_P: "minus">
-| <UNSAID: "unsaid">
 | <AS: "as">
 | <GROUP: "group">
 | <HAVING: "having">
@@ -357,7 +356,7 @@ NON-TERMINALS
 		|	<BOUND> <LPAREN> Var <RPAREN>
 		|	<IRI> <LPAREN> Expression <RPAREN>
 		|	<URI> <LPAREN> Expression <RPAREN>
-		|	<BNODE> <LPAREN> ( Expression )? <RPAREN>
+		|	<BNODE> ( <LPAREN> Expression <RPAREN> | <NIL> )
 		|	<COALESCE> ArgList
 		|	<IF> <LPAREN> Expression <COMMA> Expression <COMMA> Expression <RPAREN>
 		|	<STRLANG> <LPAREN> Expression <COMMA> Expression <RPAREN>
@@ -372,7 +371,7 @@ NON-TERMINALS
 		|	NotExistsFunc
 	RegexExpression	:=	<REGEX> <LPAREN> Expression <COMMA> Expression ( <COMMA> Expression )? <RPAREN>
 	ExistsFunc	:=	<EXISTS> GroupGraphPattern
-	NotExistsFunc	:=	( <UNSAID> | <NOTEXISTS> ) GroupGraphPattern
+	NotExistsFunc	:=	<NOTEXISTS> GroupGraphPattern
 	Aggregate	:=	( <COUNT> <LPAREN> ( <DISTINCT> )? ( <STAR> | Expression ) <RPAREN> | <SUM> <LPAREN> ( <DISTINCT> )? Expression <RPAREN> <RPAREN> | <MIN> <LPAREN> ( <DISTINCT> )? Expression <RPAREN> <RPAREN> | <MAX> <LPAREN> ( <DISTINCT> )? Expression <RPAREN> <RPAREN> | <AVG> <LPAREN> ( <DISTINCT> )? Expression <RPAREN> <RPAREN> | <GROUP_CONCAT> ( ParamList )? <LPAREN> ( <DISTINCT> )? ArgList <RPAREN> | <SAMPLE> <LPAREN> ( <DISTINCT> )? ( Expression ) <RPAREN> )
 // See also FunctionCall.
 // The case of "q:name()" or "q:agg[]()" or just "q:name"

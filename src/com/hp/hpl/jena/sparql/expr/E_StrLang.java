@@ -5,7 +5,7 @@
 
 package com.hp.hpl.jena.sparql.expr;
 
-import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.sparql.expr.nodevalue.NodeFunctions ;
 
 /** Create a literal from lexical form and language tag */ 
 public class E_StrLang extends ExprFunction2
@@ -19,17 +19,10 @@ public class E_StrLang extends ExprFunction2
     
     @Override
     public NodeValue eval(NodeValue v1, NodeValue v2)
-    { 
-        if ( ! v1.isString() ) throw new ExprEvalException("Not a string (arg 1): "+v1) ;
-        if ( ! v2.isString() ) throw new ExprEvalException("Not a string (arg 2): "+v2) ;
-        
-        String lex = v1.asString() ;
-        String lang = v2.asString() ;
-        // Check?
-        
-        Node n = Node.createLiteral(lex, lang, null) ;
-        return NodeValue.makeNode(n) ; 
+    {
+        return NodeFunctions.strLang(v1, v2) ;
     }
+    
     
     @Override
     public Expr copy(Expr expr1, Expr expr2) { return new E_StrLang(expr1, expr2) ; } 

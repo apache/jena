@@ -368,10 +368,18 @@ public abstract class NodeValue extends ExprNode
     //@Override
     public boolean isIRI()
     {
+        if ( node == null ) return false ;
         forceToNode() ;
         return node.isURI() ;
     }
 
+    //@Override
+    public boolean isBlank()
+    {
+        if ( node == null ) return false ;
+        forceToNode() ;
+        return node.isURI() ;
+    }
     
     // ----------------------------------------------------------------
     // ---- sameValueAs

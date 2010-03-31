@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Information Ltd.
  * [See end of file]
  */
 
@@ -210,7 +211,7 @@ abstract public class BindingBase implements Binding
         Binding binding = (Binding)other ;
         return equals(this, binding) ; 
     }
-    
+
     // Not everything derives from BindingBase.
     public static int hashCode(Binding bind)
     {
@@ -256,7 +257,8 @@ abstract public class BindingBase implements Binding
 }
 
 /*
- *  (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Information Ltd.
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

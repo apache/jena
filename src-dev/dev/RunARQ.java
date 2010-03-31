@@ -16,9 +16,6 @@ import java.util.Set ;
 import arq.sparql ;
 
 import com.hp.hpl.jena.Jena ;
-import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
-import com.hp.hpl.jena.datatypes.xsd.XSDDateTime ;
-import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.* ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
@@ -39,7 +36,6 @@ import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.expr.aggregate.Accumulator ;
-import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
 import com.hp.hpl.jena.sparql.function.FunctionEnvBase ;
 import com.hp.hpl.jena.sparql.lang.sparql_11.SPARQLParser11 ;
@@ -51,7 +47,6 @@ import com.hp.hpl.jena.sparql.sse.SSEParseException ;
 import com.hp.hpl.jena.sparql.sse.WriterSSE ;
 import com.hp.hpl.jena.sparql.sse.builders.BuildException ;
 import com.hp.hpl.jena.sparql.util.ALog ;
-import com.hp.hpl.jena.sparql.util.DateTimeStruct ;
 import com.hp.hpl.jena.sparql.util.ExprUtils ;
 import com.hp.hpl.jena.sparql.util.IndentedLineBuffer ;
 import com.hp.hpl.jena.sparql.util.IndentedWriter ;
@@ -119,61 +114,9 @@ public class RunARQ
     
     public static void main(String[] argv) throws Exception
     {
-        Node n = Node.createLiteral("2001-01:00", null, XSDDatatype.XSDgYear) ;
-        System.out.println(n) ;
-        System.out.println(n.getLiteral().isWellFormed()) ;
+        //SELECT (BNODE("xx") AS ?B1) (BNODE("xx") AS ?B2) {}
         
-         // DateTimeStruct - parse g*
-        DateTimeStruct struct ; 
-        
-        struct = DateTimeStruct.parseDate("1970-02-01") ;
-        System.out.println(struct) ;
-
-        struct = DateTimeStruct.parseDateTime("1970-02-01T01:02:03") ;
-        System.out.println(struct) ;
-
-        struct = DateTimeStruct.parseDateTime("1970Z") ;
-        System.out.println(struct) ;
-
-        System.exit(0) ;
-        
-        // Need TZ
-        // Need own parser to preserve time zone.
-        NodeValue nv = NodeValue.makeNode("1970-02-01T01:02:03+05:00", XSDDatatype.XSDdateTime) ;
-        XSDDateTime x = nv.getDateTime() ;
-        x.toString();
-        System.out.println(nv+" => "+nv.getDateTime()) ;
-        System.exit(0) ;
-        
-        // Timezone stuff on G*
-        arq.qexpr.main("1+2") ;
-        {
-            NodeValue nv1 = NodeValue.makeNode("1970-02-01T01:02:03", XSDDatatype.XSDdateTime) ;
-            
-            NodeValue nv2 = NodeValue.makeNode("2010-03-22", XSDDatatype.XSDdate) ;
-            
-            XSDDateTime dt1 = 
-                (XSDDateTime)nv1.asNode().getLiteralValue() ;
-            XSDDateTime dt2 = 
-                (XSDDateTime)nv2.asNode().getLiteralValue() ;
-
-            System.out.println(dt1) ;
-            System.out.println(dt2) ;
-            
-            NodeValue nv3 = XSDFuncOp.dateTimeCast(nv1,  XSDDatatype.XSDtime) ;
-            
-            System.out.println("@--> "+nv3) ;
-            System.out.println(nv3.asNode().getLiteral().isWellFormed()) ;
-//            int cmp = dt1.compare(dt2) ;
-//            System.out.println("Compare = "+cmp) ;
-//
-//            System.out.println("sameValue     = "+NodeValue.sameAs(nv1, nv2)) ;
-//            System.out.println("notSameValue  = "+NodeValue.notSameAs(nv1, nv2)) ;
-//            //System.out.println("compare       = "+NodeValue.compare(nv1, nv2)) ;
-//            System.out.println("compare2      = "+NodeValue.compareAlways(nv1, nv2)) ;
-            
-            System.exit(0) ;
-        }
+        arq.sparql.main("SELECT (BNODE('xx') AS ?B1) (BNODE('xx') AS ?B2) {}") ;
         
         Query query = QueryFactory.create("SELECT * { FILTER ($a = 1 || $a = 2) }");
         Model model = ModelFactory.createDefaultModel();

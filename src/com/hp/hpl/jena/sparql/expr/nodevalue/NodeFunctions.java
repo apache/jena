@@ -1,11 +1,14 @@
 /*
  * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Information Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
 package com.hp.hpl.jena.sparql.expr.nodevalue;
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.iri.IRI ;
+import com.hp.hpl.jena.iri.IRIFactory ;
 import com.hp.hpl.jena.sparql.expr.ExprEvalException;
 import com.hp.hpl.jena.sparql.expr.ExprTypeException;
 import com.hp.hpl.jena.sparql.expr.NodeValue;
@@ -14,10 +17,10 @@ import com.hp.hpl.jena.vocabulary.XSD;
 
 /**
  * Implementation of node-centric functions.  
- * @author Andy Seaborne
  */
 public class NodeFunctions
 {
+    // More shoudl mode here.
     private static final NodeValue xsdString = NodeValue.makeNode(XSD.xstring.asNode()) ;
     
     // -------- sameTerm
@@ -248,10 +251,63 @@ public class NodeFunctions
     // -------- isLiteral
     public static NodeValue isLiteral(NodeValue nv) { return NodeValue.booleanReturn(isLiteral(nv.asNode())) ; }
     public static boolean isLiteral(Node node) { return node.isLiteral() ; }
+    
+private static final IRIFactory iriFactory = IRIFactory.iriImplementation() ;
+    
+    public static NodeValue iri(NodeValue nv)
+    {
+        if ( nv.isIRI() )
+            return nv ;
+        
+        if ( nv.asNode().isBlank() )
+        {
+            // Don't ask, just don't ask.
+            String x = nv.asNode().getBlankNodeLabel() ;
+            Node n = Node.createURI("_:"+x) ;
+            return NodeValue.makeNode(n) ;
+        }
+        if ( nv.isString() )
+        {
+            // Level of checking?
+            IRI iri = iriFactory.create(nv.getString()) ;
+            if ( ! iri.isAbsolute() )
+                throw new ExprEvalException("Relative IRI string: "+nv.getString()) ;
+            return NodeValue.makeNode(Node.createURI(iri.toString())) ;
+        }
+        throw new ExprEvalException("Can't make an IRI from "+nv) ;
+    }
+    
+    public static NodeValue strDatatype(NodeValue v1, NodeValue v2)
+    {
+        if ( ! v1.isString() ) throw new ExprEvalException("Not a string (arg 1): "+v1) ;
+        if ( ! v2.isIRI() ) throw new ExprEvalException("Not an IRI (arg 2): "+v2) ;
+        
+        String lex = v1.asString() ;
+        Node dt = v2.asNode() ;
+        // Check?
+        
+        Node n = Node.createLiteral(lex, null, Node.getType(dt.getURI())) ;
+        return NodeValue.makeNode(n) ; 
+    }
+    
+    public static NodeValue strLang(NodeValue v1, NodeValue v2)
+    {
+        if ( ! v1.isString() ) throw new ExprEvalException("Not a string (arg 1): "+v1) ;
+        if ( ! v2.isString() ) throw new ExprEvalException("Not a string (arg 2): "+v2) ;
+        
+        String lex = v1.asString() ;
+        String lang = v2.asString() ;
+        // Check?
+        
+        Node n = Node.createLiteral(lex, lang, null) ;
+        return NodeValue.makeNode(n) ; 
+    }
+
 }
 
 /*
  * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Information Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

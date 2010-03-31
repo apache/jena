@@ -19,7 +19,8 @@ function execOne
     echo
 }
 
-for N in 1 2 3 4 5 6 7
+#for N in 1 2 3 4 5 6 7
+for N in 7
 do
 
   Q1="Q-notexists-$N.arq"

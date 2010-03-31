@@ -8,7 +8,7 @@ package com.hp.hpl.jena.sparql.expr;
 
 public class E_URI extends E_IRI
 {
-    private static final String symbol = "URI" ;
+    private static final String symbol = "uri" ;
 
     public E_URI(Expr expr)
     {
@@ -20,8 +20,8 @@ public class E_URI extends E_IRI
         super(expr, altSymbol) ;
     }
     
-    @Override
-    public NodeValue eval(NodeValue v) { return super.eval(v) ; }
+//    @Override
+//    public NodeValue eval(NodeValue v) { return super.eval(v) ; }
     
     @Override
     public Expr copy(Expr expr) { return new E_URI(expr) ; } 

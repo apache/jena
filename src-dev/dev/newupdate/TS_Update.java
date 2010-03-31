@@ -1,37 +1,28 @@
 /*
  * (c) Copyright 2010 Talis Information Ltd.
+ * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.expr;
+package dev.newupdate;
 
-import com.hp.hpl.jena.sparql.expr.nodevalue.NodeFunctions ;
+import org.junit.runner.RunWith ;
+import org.junit.runners.Suite ;
+import org.junit.runners.Suite.SuiteClasses ;
 
-/** Create a literal from lexical form and datatype URI */ 
-public class E_StrDatatype extends ExprFunction2
+@RunWith(Suite.class)
+@SuiteClasses( 
+   {  TestSPARQLUpdateSyntax.class
+   , TestDatasetUpdaterMem.class
+})
+public class TS_Update
 {
-    private static final String symbol = "strdt" ;
 
-    public E_StrDatatype(Expr expr1, Expr expr2)
-    {
-        super(expr1, expr2, symbol) ;
-    }
-    
-    @Override
-    public NodeValue eval(NodeValue v1, NodeValue v2)
-    { 
-        return NodeFunctions.strDatatype(v1, v2) ;
-    }
-    
-   
-    
-    @Override
-    public Expr copy(Expr expr1, Expr expr2) { return new E_StrDatatype(expr1, expr2) ; } 
 }
 
 /*
- *  (c) Copyright 2010 Talis Information Ltd.
- *  All rights reserved.
+ * (c) Copyright 2010 Talis Information Ltd.
+ * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
