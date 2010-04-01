@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Information 
  * All rights reserved.
  * [See end of file]
  */
@@ -18,6 +19,7 @@ public interface AggregateFactory
 
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Information 
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
