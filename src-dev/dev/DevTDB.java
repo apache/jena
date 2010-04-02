@@ -2,13 +2,17 @@ package dev ;
 
 public class DevTDB
 {
-    // == 0.8.5 / ARQ 2.8.3
+    // == 0.8.5
     // Per datasetGraph feature enabling.
     // Assembler support - not property files.
     
     // mavenization: modularization?
     //   many subproject, different version and releases.
     // ----
+    
+    // To ARQ:
+    // 1 - Context copy over : putAll (c.f setAll).
+    // 2 - QueryEngineMain - dataset context to execution context.
 
     // 2 store dataset
     // Compact B+Trees
