@@ -3,9 +3,8 @@ package dev ;
 public class DevTDB
 {
     // == 0.8.5
-    // Per datasetGraph feature enabling.
-    // Assembler support - not property files.
-    
+    // Testing (W64)
+    // Build-release
     // ----
     
     // To ARQ:
