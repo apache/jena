@@ -32,8 +32,8 @@ import com.hp.hpl.jena.util.iterator.Map1Iterator;
  */
 public class IndexLARQ
 {
-    private IndexReader reader = null ;
-    private QueryParser luceneQueryParser = null ;
+    protected IndexReader reader = null ;
+    protected QueryParser luceneQueryParser = null ;
 
     public IndexLARQ(IndexReader r)
     { 
@@ -160,6 +160,18 @@ public class IndexLARQ
                 reader.close() ;
         } catch (Exception e)
         { throw new ARQLuceneException("close", e) ; }
+    }
+
+    /** Return the Lucene IndexReader for this LARQ index */ 
+    public final IndexReader getLuceneReader()
+    {
+        return reader ;
+    }
+
+    /** Return the Lucene QueryParser for this LARQ index */ 
+    public final QueryParser getLuceneQueryParser()
+    {
+        return luceneQueryParser ;
     }
 }
 
