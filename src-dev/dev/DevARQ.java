@@ -9,9 +9,6 @@ public class DevARQ
 {
     // ==== ARQ 2.8.4 dev
 
-    // SERVICE to same server can block.
-    //  Large replies not getting serviced - consume all replies then do next substitution. 
-    
     // ====
     
     // ARQ: check variable scope
@@ -19,7 +16,6 @@ public class DevARQ
     //   SELECT expressions error to reuse a variable name.
     //   Aggegator upgrade and specifc operators
     //   Custom agregators
-
     
     // ----
     

@@ -39,7 +39,9 @@ public class QueryIterService extends QueryIterRepeatApply
         // There should be no variables in common because of the OpSubstitute.substitute 
         QueryIterator qIter2 = new QueryIterCommonParent(qIter, outerBinding, getExecContext()) ;
 
-        // Materialise, otherwise we may have outstanding incoming data. 
+        // Materialise, otherwise we may have outstanding incoming data.
+        // Alows the server to fulfil the request as soon as possible.
+        // In extremis, can cause a deadlock when SERVICE loops back to this server.
         QueryIterator qIter3 = new QueryIteratorCopy(qIter2) ;
         qIter3 = QueryIter.makeTracked(qIter3,  getExecContext()) ;
         
