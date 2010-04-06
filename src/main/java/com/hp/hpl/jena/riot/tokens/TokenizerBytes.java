@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 Talis Information Ltd.
+ * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  * Derived from TokenizerText : Copyright Hewlett-Packard Development Company, LP 
  * [See end of file]
@@ -936,7 +936,7 @@ public final class TokenizerBytes implements Tokenizer
     }
 }
 /*
- * (c) Copyright 2010 Talis Information Ltd.
+ * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

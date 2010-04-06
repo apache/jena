@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 Talis Information Limited
+ * (c) Copyright 2009 Talis Systems Limited
  * All rights reserved.
  * [See end of file]
  */
@@ -33,7 +33,7 @@ public class SinkPrint<T> implements Sink<T>
 }
 
 /*
- * (c) Copyright 2009 Talis Information Limited
+ * (c) Copyright 2009 Talis Systems Limited
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -1,6 +1,6 @@
 /*
  * (c) Copyright 2009 Hewlett-Packard Development Company, LP
- * Additions Copyright 2010 Talis Information Ltd.
+ * Additions Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  * [See end of file]
  */
