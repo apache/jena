@@ -32,7 +32,7 @@ Model/Resource API:
 Misc:
    o Patched AnonId using UID when running in environments like GAE
    
-Resoners:
+Reasoners:
    o added makeSkolem builtin
 
 ==== Jena 2.6.2
