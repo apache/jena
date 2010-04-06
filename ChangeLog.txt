@@ -1,6 +1,8 @@
 ChangeLog for TDB
 =================
 
+==== 0.8.6
+
 ==== 0.8.5
 
 + Partial support for TriG and NQuads input (no loading messages, not fully optimized)
@@ -14,7 +16,7 @@ ChangeLog for TDB
     Default graph can be the set union of several graphs (use multiple FROM)
     Multiple named graphs (multiple FROM NAMED) restricts visibility of named graphs.
     
-    This is a change in behvaiour from earlier versions where a dataset 
+    This is a change in behaviour from earlier versions where a dataset 
     description was ignored or a generalpurpose query executed (graphs pulled 
     from the web). 
     
@@ -33,7 +35,7 @@ ChangeLog for TDB
   TDB supports multiple readers OR single writer.
   See also java.util collections.
 
-+ Bug fixes for peoprty functions and TDB.  apf:textMatch now works properly 
++ Bug fixes for property functions and TDB.  apf:textMatch now works properly 
 + Fix XML of the POM file.
   Build is now doen with maven, not ant/ivy
 + Fix bug in "SELECT * { GRAPH ?g {} }"   
