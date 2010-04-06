@@ -9,6 +9,9 @@ public class DevARQ
 {
     // ==== ARQ 2.8.4 dev
 
+    // SERVICE to same server can block.
+    //  Large replies not getting serviced - consume all replies then do next substitution. 
+    
     // ====
     
     // ARQ: check variable scope

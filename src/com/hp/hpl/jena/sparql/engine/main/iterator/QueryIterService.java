@@ -1,20 +1,23 @@
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Systems Ltd
  * All rights reserved.
  * [See end of file]
  */
 
 package com.hp.hpl.jena.sparql.engine.main.iterator;
 
-import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.algebra.op.OpService;
-import com.hp.hpl.jena.sparql.engine.ExecutionContext;
-import com.hp.hpl.jena.sparql.engine.QueryIterator;
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.engine.http.Service;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIterCommonParent;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIterRepeatApply;
-import com.hp.hpl.jena.sparql.engine.main.QC;
+import com.hp.hpl.jena.sparql.algebra.Op ;
+import com.hp.hpl.jena.sparql.algebra.op.OpService ;
+import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
+import com.hp.hpl.jena.sparql.engine.QueryIterator ;
+import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.engine.http.Service ;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIter ;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIterCommonParent ;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIterRepeatApply ;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIteratorCopy ;
+import com.hp.hpl.jena.sparql.engine.main.QC ;
 
 
 public class QueryIterService extends QueryIterRepeatApply
@@ -35,13 +38,19 @@ public class QueryIterService extends QueryIterRepeatApply
         // Need to put the outerBinding as parent to every binding of the service call.
         // There should be no variables in common because of the OpSubstitute.substitute 
         QueryIterator qIter2 = new QueryIterCommonParent(qIter, outerBinding, getExecContext()) ;
-        return qIter2 ;
+
+        // Materialise, otherwise we may have outstanding incoming data. 
+        QueryIterator qIter3 = new QueryIteratorCopy(qIter2) ;
+        qIter3 = QueryIter.makeTracked(qIter3,  getExecContext()) ;
+        
+        return qIter3 ;
     }
 }
  
 
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Systems Ltd
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

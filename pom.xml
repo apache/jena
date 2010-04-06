@@ -232,48 +232,48 @@
 	    </goals>
 	  </execution>
 	</executions>
-
-	<plugin>
-	  <groupId>org.apache.maven.plugins</groupId>
-	  <artifactId>maven-resources-plugin</artifactId>
-	  <configuration>
-	    <encoding>UTF-8</encoding>
-	  </configuration>
-	</plugin>
-	
-	<plugin>
-	  <groupId>org.apache.maven.plugins</groupId>
-	  <artifactId>maven-antrun-plugin</artifactId>
-	  <executions>
-	    <execution>
-	      <id>ant-timestamp</id>
-	      <phase>generate-resources</phase>
-	      <configuration>
-		<tasks>
-		  <mkdir dir="${project.basedir}/target"/>
-		  <tstamp>
-		    <format property="build.time.xsd"  pattern="yyyy-MM-dd'T'HH:mm:ssZ"/>
-		    <format property="build.time.txt"  pattern="yyyy-MM-dd HH:mm z"/>
-		  </tstamp>
-		  <echo file="${project.basedir}/target/filter.properties">
-		    #begin
-		    build.time.xsd=${build.time.xsd}
-		    build.time.txt=${build.time.txt}
-		    #end
-		  </echo>
-		  <echo message="version=${project.version}"/>
-		  <echo message="build.time=${build.time.txt}"/>
-		</tasks>
-	      </configuration>
-	      <goals>
-		<goal>run</goal>
-	      </goals>
-	    </execution>
-	    <!-- Another task, another execution -->
-	  </executions>
-	</plugin>
-
       </plugin>
+
+      <plugin>
+	<groupId>org.apache.maven.plugins</groupId>
+	<artifactId>maven-resources-plugin</artifactId>
+	<configuration>
+	  <encoding>UTF-8</encoding>
+	</configuration>
+      </plugin>
+      
+      <plugin>
+	<groupId>org.apache.maven.plugins</groupId>
+	<artifactId>maven-antrun-plugin</artifactId>
+	<executions>
+	  <execution>
+	    <id>ant-timestamp</id>
+	    <phase>generate-resources</phase>
+	    <configuration>
+	      <tasks>
+		<mkdir dir="${project.basedir}/target"/>
+		<tstamp>
+		  <format property="build.time.xsd"  pattern="yyyy-MM-dd'T'HH:mm:ssZ"/>
+		  <format property="build.time.txt"  pattern="yyyy-MM-dd HH:mm z"/>
+		</tstamp>
+		<echo file="${project.basedir}/target/filter.properties">
+		  #begin
+		  build.time.xsd=${build.time.xsd}
+		  build.time.txt=${build.time.txt}
+		  #end
+		</echo>
+		<echo message="version=${project.version}"/>
+		<echo message="build.time=${build.time.txt}"/>
+	      </tasks>
+	    </configuration>
+	    <goals>
+	      <goal>run</goal>
+	    </goals>
+	  </execution>
+	  <!-- Another task, another execution -->
+	</executions>
+      </plugin>
+
 
       <plugin>
 	<!-- This must be the last plug-in atatched to the package phase 
