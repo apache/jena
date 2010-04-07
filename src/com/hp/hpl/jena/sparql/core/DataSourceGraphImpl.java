@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -21,7 +22,9 @@ import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.sparql.util.FmtUtils ;
 import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
 
-/** Graph-level dataset.
+/** @deprecated 
+ * Graph-level dataset that contains a preset (but alterable) set of graphs.
+ * 
  *  @see com.hp.hpl.jena.sparql.core.DatasetGraph
  *  @see com.hp.hpl.jena.query.Dataset
  * 
@@ -196,10 +199,36 @@ public class DataSourceGraphImpl implements DataSourceGraph
             g.close();
         }
     }
+
+    public void add(Quad quad)
+    { throw new UnsupportedOperationException("DataSourceGraph.add") ; }
+
+    public boolean contains(Node g, Node s, Node p, Node o)
+    { throw new UnsupportedOperationException("DataSourceGraph.add") ; }
+
+    public boolean contains(Quad quad)
+    { return contains(quad.getGraph(), quad.getSubject(), quad.getPredicate(), quad.getObject()) ; }
+
+    public void delete(Quad quad)
+    { throw new UnsupportedOperationException("DataSourceGraph.delete") ; }
+
+    public Iterator<Quad> find(Quad quad)
+    { return find(quad.getGraph(), quad.getSubject(), quad.getPredicate(), quad.getObject()) ; }
+
+    public Iterator<Quad> find(Node g, Node s, Node p, Node o)
+    {
+        return null ;
+    }
+
+    public boolean isEmpty()
+    {
+        return false ;
+    }
 }
 
 /*
  * (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

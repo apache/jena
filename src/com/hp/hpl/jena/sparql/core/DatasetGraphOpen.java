@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 Talis Information Ltd.
+ * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -9,21 +9,26 @@ package com.hp.hpl.jena.sparql.core;
 import java.util.HashMap ;
 import java.util.Iterator ;
 import java.util.Map ;
+import java.util.Map.Entry ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.shared.Lock ;
-import com.hp.hpl.jena.shared.LockMRSW ;
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import com.hp.hpl.jena.sparql.lib.iterator.Iter ;
 import com.hp.hpl.jena.sparql.util.Context ;
 
-/** Implementation of a DatasetGraph where all graphs "exist".
+/** Implementation of a DatasetGraph as an open set of graphs.
  * New graphs are created (via the policy of a GraphMaker) when a getGraph call is 
  * made to a graph that has not been allocated.
  */
-public class DatasetGraphOpen implements DatasetGraph
+public class DatasetGraphOpen extends DatasetGraphBase
 {
     public interface GraphMaker { public Graph create() ; }
+    
+    private static GraphMaker graphMakerNull = new GraphMaker() {
+        public Graph create()
+        {
+            return null ;
+        } } ;
     
     private Context context = new Context() ;
     private Map<Node, Graph> graphs = new HashMap<Node, Graph>() ;
@@ -36,56 +41,135 @@ public class DatasetGraphOpen implements DatasetGraph
         this.graphMaker = graphMaker ;
         defaultGraph = graphMaker.create() ;
     }
+    
+    protected DatasetGraphOpen(Graph graph)
+    {
+        this.graphMaker = graphMakerNull ;
+        defaultGraph = graph ;
+    }
 
+    @Override
     public boolean containsGraph(Node graphNode)
     {
         return true ;
     }
 
+    @Override
     public Graph getDefaultGraph()
     {
         return defaultGraph ;
     }
 
+    @Override
     public Graph getGraph(Node graphNode)
     {
         Graph g = graphs.get(graphNode) ;
         if ( g == null )
         {
             g = graphMaker.create() ;
-            graphs.put(graphNode, g) ;
+            if ( g != null )
+                graphs.put(graphNode, g) ;
         }
-        
         return g ;
     }
-
-    private Lock lock = new LockMRSW() ;
-    public Lock getLock()
+    
+    @Override
+    public void add(Quad quad)
     {
-        return lock ;
+        Graph g = fetchGraph(quad) ;
+        g.add(quad.asTriple()) ;
+    }
+    
+    protected Graph fetchGraph(Quad quad)
+    {
+        return fetchGraph(quad.getGraph()) ; 
+    }
+    
+    protected Graph fetchGraph(Node gn)
+    {
+        if ( Quad.isDefaultGraph(gn))
+            return getDefaultGraph() ;
+        else
+            return getGraph(gn) ;
     }
 
+    @Override
+    public void delete(Quad quad)
+    {
+        Graph g = fetchGraph(quad) ;
+        g.delete(quad.asTriple()) ;
+    }
+    
+//    @Override
+//    public Iterator<Quad> find(Quad quad)
+//    {
+//        return find(quad.getGraph(), quad.getSubject(), quad.getPredicate(), quad.getObject()) ;
+//    }
+    
+    @Override
+    public Iterator<Quad> find(final Node g, Node s, Node p , Node o)
+    {
+        if ( ! isWildcard(g) && ! Quad.isDefaultGraph(g))
+        {
+            Graph graph = ( Quad.isDefaultGraph(g) ? getDefaultGraph() : getGraph(g) ) ;
+            return triples2quadsNamedGraph(g, graph.find(s, p, o)) ;
+        }
+
+        // Wildcard
+        // Default graph
+        Iter<Quad> iter = triples2quadsDftGraph(defaultGraph.find(s, p, o)) ;
+        
+        // Named graphs
+        for ( final Entry<Node, Graph> e : graphs.entrySet() )
+        {
+            Iter<Quad> qIter = triples2quadsNamedGraph(e.getKey(), e.getValue().find(s, p, o)) ;
+            iter = iter.append(qIter) ;
+        }
+        return iter ;
+    }
+    
+//    @Override
+//    public boolean isEmpty()
+//    {
+//        return contains(Node.ANY, Node.ANY, Node.ANY, Node.ANY) ;
+//    }
+//    
+//    @Override
+//    public boolean contains(Quad quad) { return contains(quad.getGraph(), quad.getSubject(), quad.getPredicate(), quad.getObject()) ; }
+//
+//    @Override
+//    public boolean contains(Node g, Node s, Node p , Node o)
+//    {
+//        Iterator<Quad> iter = find(g, s, p, o) ;
+//        boolean b = iter.hasNext() ;
+//        Iter.close(iter) ;
+//        return b ;
+//    }
+
+    //@Override
     public Iterator<Node> listGraphNodes()
     {
         return graphs.keySet().iterator() ;
     }
 
-    public Context getContext()
-    {
-        return context ;
-    }
-
+    //@Override
     public int size()
     {
         return graphs.size() ;
     }
 
+    @Override
     public void close()
-    {}
+    { 
+        defaultGraph.close();
+        for ( Graph graph : graphs.values() )
+            graph.close();
+        super.close() ;
+    }
 }
 
 /*
- * (c) Copyright 2010 Talis Information Ltd.
+ * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

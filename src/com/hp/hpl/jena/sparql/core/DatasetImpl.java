@@ -25,8 +25,6 @@ import com.hp.hpl.jena.sparql.util.NodeUtils;
 
 public class DatasetImpl implements Dataset
 {
-    //Synchronization: need to protect the cache
-    
     protected DatasetGraph dsg = null ;
     
     // A small cache so that calls getDefaultModel()/getNamedModel() are
@@ -39,7 +37,7 @@ public class DatasetImpl implements Dataset
     public DatasetImpl(Model model)
     {
         defaultModel = model ;
-        this.dsg = new DataSourceGraphImpl(model.getGraph()) ;
+        this.dsg = DatasetGraphFactory.create(model.getGraph()) ;
     }
     
     public DatasetImpl(DatasetGraph dsg)

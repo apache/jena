@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Information Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -7,77 +8,103 @@
 package com.hp.hpl.jena.sparql.core;
 
 
+import java.util.Iterator ;
+
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.shared.Lock;
 import com.hp.hpl.jena.shared.LockMRSW;
-import com.hp.hpl.jena.sparql.lib.CacheFactory;
-import com.hp.hpl.jena.sparql.lib.Cache;
+import com.hp.hpl.jena.sparql.lib.iterator.Iter ;
+import com.hp.hpl.jena.sparql.lib.iterator.Transform ;
 import com.hp.hpl.jena.sparql.util.Context ;
 
 /** 
- * DatasetGraph that caches graphs created.
+ * DatasetGraph framework : readonly dataset need only provide find(g,s,p,o), getGraph() and getDefaultGraph()
+ * although it may wish to override and do better. 
  */
 abstract public class DatasetGraphBase implements DatasetGraph
 {
     private final Lock lock = new LockMRSW() ;
     private Context context = new Context() ;
-
-    
-    private final boolean caching = true ;
-    // read synchronised in this class, not need for a sync wrapper.
-    protected Graph defaultGraph = null ;
-    protected Cache<Node, Graph> namedGraphs = CacheFactory.createCache(100) ;
-    
-    abstract protected void _close() ;
-    abstract protected Graph _createNamedGraph(Node graphNode) ;
-    abstract protected Graph _createDefaultGraph() ;
-    abstract protected boolean _containsGraph(Node graphNode) ;
     
     protected DatasetGraphBase() {}
     
     //@Override
     public boolean containsGraph(Node graphNode)
     {
-        if ( namedGraphs.containsKey(graphNode) )
-            // Empty graph may or may not count.
-            // If they don't, need to override ths method.
-            return true ;
-        return _containsGraph(graphNode) ;
+        return contains(graphNode, Node.ANY, Node.ANY, Node.ANY) ;
     }
     
     //@Override
-    public final Graph getDefaultGraph()
-    {
-        if ( ! caching )
-            return _createDefaultGraph() ;
-        
-        synchronized(this)
-        {
-            if ( defaultGraph == null )
-                defaultGraph = _createDefaultGraph() ;
-        }
-        return defaultGraph ;
-    }
+    public abstract Graph getDefaultGraph() ;
 
     //@Override
-    public final Graph getGraph(Node graphNode)
-    {
-        if ( ! caching )
-            return _createNamedGraph(graphNode) ;
+    public abstract Graph getGraph(Node graphNode) ;
 
-        synchronized(this)
-        {   // MRSW - need to create and update the cache atomically.
-            Graph graph = namedGraphs.get(graphNode) ;
-            if ( graph == null )
+    //@Override
+    public void add(Quad quad) { throw new UnsupportedOperationException("DatasetGraph.add(Quad)") ; } 
+    
+    //@Override
+    public void delete(Quad quad) { throw new UnsupportedOperationException("DatasetGraph.delete(Quad)") ; }
+    
+    //@Override
+    public Iterator<Quad> find(Quad quad)
+    { return find(quad.getGraph(), quad.getSubject(), quad.getPredicate(), quad.getObject()) ; }
+    
+    //@Override
+    public abstract Iterator<Quad> find(Node g, Node s, Node p , Node o) ;
+    
+    protected static Iter<Quad> triples2quadsDftGraph(Iterator<Triple> iter)
+    {
+        return Iter.iter(iter).map(transformDftGraph) ;
+    }
+    
+    protected static Iter<Quad> triples2quadsNamedGraph(final Node graphNode, Iterator<Triple> iter)
+    {
+        Transform<Triple, Quad> transformNamedGraph = new Transform<Triple, Quad> () {
+            public Quad convert(Triple triple)
             {
-                graph = _createNamedGraph(graphNode) ;
-                namedGraphs.put(graphNode, graph) ;
+                return new Quad(graphNode, triple) ;
             }
-            return graph ;
+        } ;
+            
+        return Iter.iter(iter).map(transformNamedGraph) ;
+    }
+    
+    // Transform triples to quads
+    static private Transform<Triple, Quad> transformDftGraph = new Transform<Triple, Quad> () {
+        public Quad convert(Triple triple)
+        {
+            return new Quad(Quad.tripleInQuad, triple) ;
         }
+    } ;
+    
+    //@Override
+    public boolean contains(Quad quad) { return contains(quad.getGraph(), quad.getSubject(), quad.getPredicate(), quad.getObject()) ; }
+
+    //@Override
+    public boolean contains(Node g, Node s, Node p , Node o)
+    {
+        Iterator<Quad> iter = find(g, s, p, o) ;
+        boolean b = iter.hasNext() ;
+        Iter.close(iter) ;
+        return b ;
+    }
+    
+    protected static boolean isWildcard(Node g)
+    {
+        return g == null || g == Node.ANY ;
+    }
+    
+    //@Override
+    public boolean isEmpty()
+    {
+        return contains(Node.ANY, Node.ANY, Node.ANY, Node.ANY) ;
     }
 
+
+    
     //@Override
     public Lock getLock()
     {
@@ -90,31 +117,13 @@ abstract public class DatasetGraphBase implements DatasetGraph
     }
     
     //@Override
-    public final void close()
-    {
-        defaultGraph = null ;
-        namedGraphs.clear() ;
-        _close() ;
-    }
-
-//    @Override
-//    public Iterator<Node> listGraphNodes()
-//    {
-//        return null ;
-//    }
-
-//    @Override
-//    public int size()
-//    {
-//        return 0 ;
-//    }
-
-    
-    
+    public void close()
+    { }
 }
 
 /*
  * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Information Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -23,8 +23,6 @@ import com.hp.hpl.jena.sparql.util.NodeUtils;
 /** A implementation of a DataSource, which is a mutable Dataset,
  *  a set of a single unnamed graph and a number (zero or
  *  more) named graphs with graphs as Models. 
- * 
- * @author Andy Seaborne
  */
 
 public class DataSourceImpl implements DataSource

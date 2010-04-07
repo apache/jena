@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 Talis Information Ltd.
+ * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -43,6 +43,34 @@ public class DatasetGraphWrapper implements DatasetGraph
     { return dsg.listGraphNodes() ; }
 
     //@Override
+    public void add(Quad quad)
+    { dsg.add(quad) ; }
+
+    //@Override
+    public void delete(Quad quad)
+    { dsg.delete(quad) ; }
+
+    //@Override
+    public boolean isEmpty()
+    { return dsg.isEmpty() ; }
+    
+    //@Override
+    public Iterator<Quad> find(Quad quad)
+    { return dsg.find(quad) ; }
+
+    //@Override
+    public Iterator<Quad> find(Node g, Node s, Node p, Node o)
+    { return dsg.find(g, s, p, o) ; }
+
+    //@Override
+    public boolean contains(Quad quad)
+    { return dsg.contains(quad) ; }
+
+    //@Override
+    public boolean contains(Node g, Node s, Node p, Node o)
+    { return dsg.contains(g, s, p, o) ; }
+
+    //@Override
     public Context getContext()
     { return dsg.getContext() ; }
 
@@ -53,10 +81,11 @@ public class DatasetGraphWrapper implements DatasetGraph
     //@Override
     public void close()
     { dsg.close() ; }
+
 }
 
 /*
- * (c) Copyright 2010 Talis Information Ltd.
+ * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
