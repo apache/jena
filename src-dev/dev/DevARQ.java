@@ -7,6 +7,12 @@ package dev;
 
 public class DevARQ
 {
+    // Convert to quadism even for ARQ query if suitable dataset
+    //   SPARQL->quads
+    //   Union graph for all datasets
+    //   Quad support in OpExecutor
+    
+    
     // ==== ARQ 2.8.4 dev
 
     // ====
