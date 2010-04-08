@@ -64,21 +64,14 @@ public class GraphSPARQL extends GraphBase implements Graph
     
     public GraphSPARQL(Graph graph, QueryEngineFactory factory)
     {
-        this.dataset = new DataSourceGraphImpl(graph) ;
+        this.dataset = DatasetGraphFactory.create(graph) ;
         this.factory = factory ;
     }
     
     private DatasetGraph toDSG(DatasetGraph dataset, Node graphNode)
     {
-        // Put the target graph in the default graph of a DatasetGraph
-        DataSourceGraph dsGraph = new DataSourceGraphImpl() ;
-        if ( graphNode == null )
-            dsGraph.setDefaultGraph(dataset.getDefaultGraph()) ;
-        else
-            dsGraph.setDefaultGraph(dataset.getGraph(graphNode)) ;
-        
-        if ( dsGraph.getDefaultGraph() == null )
-            log.warn("Graph in underlying dataset does not exist") ;
+        Graph graph = ( graphNode == null ) ? dataset.getDefaultGraph() : dataset.getGraph(graphNode) ;
+        DatasetGraph dsGraph = DatasetGraphFactory.create(graph) ;
         return dsGraph ;
     }
 
