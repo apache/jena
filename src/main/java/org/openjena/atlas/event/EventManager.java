@@ -65,7 +65,11 @@ public class EventManager
         if ( x == null ) 
             return ;
         x.remove(listener);
+        // if the list has gone to zero, remove it. 
         if ( x.size() == 0 )
+            listeners.get(object).remove(type) ; 
+        // if the map for this object has gone to zero, remove it.
+        if ( listeners.get(object).size() == 0 )
             listeners.remove(object) ;
     }
     
