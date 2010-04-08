@@ -12,8 +12,9 @@ import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
-import com.hp.hpl.jena.sparql.core.DataSourceGraphImpl ;
+import com.hp.hpl.jena.sparql.core.DataSourceGraph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.sse.Item ;
 import com.hp.hpl.jena.sparql.sse.ItemList ;
@@ -95,8 +96,7 @@ public class BuilderGraph
         if ( item.isTagged(Tags.tagGraph) )
         {
             Graph g = BuilderGraph.buildGraph(item.getList()) ;
-            DataSourceGraphImpl ds = new DataSourceGraphImpl(g) ;
-            return ds ;
+            return DatasetGraphFactory.create(g) ;
         }
         
         if ( ! item.isTagged(Tags.tagDataset) )
@@ -108,7 +108,7 @@ public class BuilderGraph
     {
         BuilderLib.checkTag(list, Tags.tagDataset) ;
         list = list.cdr();
-        DataSourceGraphImpl ds = new DataSourceGraphImpl((Graph)null) ;
+        DataSourceGraph ds = DatasetGraphFactory.createDataSource() ;
         
         for (Item item : list)
         {
