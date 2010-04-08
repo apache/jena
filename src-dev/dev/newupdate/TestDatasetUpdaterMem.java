@@ -7,11 +7,10 @@
 package dev.newupdate;
 
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.sparql.core.DatasetGraphMem ;
+import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
 
 public class TestDatasetUpdaterMem extends BaseTestDatasetUpdater
 {
-
     @Override
     protected DatasetUpdater getDatasetUpdater(DatasetGraph dsg)
     {
@@ -21,9 +20,8 @@ public class TestDatasetUpdaterMem extends BaseTestDatasetUpdater
     @Override
     protected DatasetGraph getEmptyDatasetGraph()
     {
-        return new DatasetGraphMem() ;
+        return DatasetGraphFactory.createMem() ;
     }
-
 }
 
 /*
