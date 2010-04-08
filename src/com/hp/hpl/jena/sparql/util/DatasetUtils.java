@@ -15,10 +15,11 @@ import com.hp.hpl.jena.n3.IRIResolver ;
 import com.hp.hpl.jena.query.DataSource ;
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.sparql.core.DataSourceGraphImpl ;
+import com.hp.hpl.jena.sparql.core.DataSourceGraph ;
 import com.hp.hpl.jena.sparql.core.DataSourceImpl ;
 import com.hp.hpl.jena.sparql.core.DatasetDesc ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
 import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
 import com.hp.hpl.jena.util.FileManager ;
 
@@ -140,7 +141,7 @@ public class DatasetUtils
     public static DatasetGraph createDatasetGraph(List<String> uriList, List<String> namedSourceList,
                                                   FileManager fileManager, String baseURI)
     {
-        DataSourceGraphImpl ds = new DataSourceGraphImpl() ;
+        DataSourceGraph ds = DatasetGraphFactory.createDataSource() ;
         
         if ( fileManager == null )
             fileManager = FileManager.get() ;
