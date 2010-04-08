@@ -22,7 +22,7 @@ import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.sparql.util.FmtUtils ;
 import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
 
-/** @deprecated 
+/** 
  * Graph-level dataset that contains a preset (but alterable) set of graphs.
  * 
  *  @see com.hp.hpl.jena.sparql.core.DatasetGraph
@@ -30,7 +30,7 @@ import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
  * 
  * @author Andy Seaborne
  */
-
+@Deprecated 
 public class DataSourceGraphImpl implements DataSourceGraph
 {
     private Context context = new Context() ;
@@ -47,16 +47,56 @@ public class DataSourceGraphImpl implements DataSourceGraph
     public DataSourceGraphImpl(Model model)
     { this(model.getGraph()) ; }
 
-    // Copy over to own structures for later modification
-    public DataSourceGraphImpl(Dataset dataset)
-    { cloneDataset(dataset) ; } 
+//    // Copy over to own structures for later modification
+//    DataSourceGraphImpl(Dataset dataset)
+//    { cloneFromDataset(dataset) ; } 
 
-    public DataSourceGraphImpl(DatasetGraph dataset)
-    { cloneDatasetGraph(dataset) ; }    // Clone - 
+    protected DataSourceGraphImpl(DatasetGraph dataset)
+    { cloneFromDatasetGraph(dataset) ; }    // Clone - 
 
     public DataSourceGraphImpl()
     { this(GraphFactory.createDefaultGraph()) ; }
     
+    // Shallow copy
+    public void cloneFromDataset(Dataset dataset)
+    {
+        if ( dataset == null )
+            return ;
+        
+        if ( dataset.getDefaultModel() != null )
+            defaultGraph = dataset.getDefaultModel().getGraph() ;
+        
+        Iterator<String> iter = dataset.listNames() ;
+        while(iter.hasNext())
+        {
+            String uri = iter.next() ;
+            Node graphRef = Node.createURI(uri) ;
+            Model m = dataset.getNamedModel(uri) ;
+            if ( m == null )
+                continue ;
+            addGraph(graphRef, m.getGraph()) ;
+        }
+    }
+
+    
+    private void cloneFromDatasetGraph(DatasetGraph dataset)
+    {
+        if ( ! ( dataset instanceof DataSourceGraphImpl ) )
+        {
+            defaultGraph = dataset.getDefaultGraph() ;
+            namedGraphs = new HashMap<Node, Graph>() ;
+            for ( Iterator<Node> iter = dataset.listGraphNodes() ; iter.hasNext(); )
+            {
+                Node name = iter.next();
+                this.addGraph(name, dataset.getGraph(name)) ;
+            }
+            return ;
+        }            
+        DataSourceGraphImpl ds = (DataSourceGraphImpl)dataset ;
+        namedGraphs = new HashMap<Node, Graph>(ds.namedGraphs) ;
+        defaultGraph = ds.defaultGraph ;
+    }
+
     /** Get the default graph as a Jena Graph */
     public Graph getDefaultGraph()
     { 
@@ -121,27 +161,6 @@ public class DataSourceGraphImpl implements DataSourceGraph
         return lock ;
     }
 
-    // Shallow copy
-    public void cloneDataset(Dataset dataset)
-    {
-        if ( dataset == null )
-            return ;
-        
-        if ( dataset.getDefaultModel() != null )
-            defaultGraph = dataset.getDefaultModel().getGraph() ;
-        
-        Iterator<String> iter = dataset.listNames() ;
-        while(iter.hasNext())
-        {
-            String uri = iter.next() ;
-            Node graphRef = Node.createURI(uri) ;
-            Model m = dataset.getNamedModel(uri) ;
-            if ( m == null )
-                continue ;
-            addGraph(graphRef, m.getGraph()) ;
-        }
-    }
-    
     public DatasetGraph copy()
     {
         DataSourceGraphImpl ds = new DataSourceGraphImpl() ;
@@ -149,25 +168,6 @@ public class DataSourceGraphImpl implements DataSourceGraph
         ds.namedGraphs = new HashMap<Node, Graph>(namedGraphs) ;
         return ds ;
     }
-    
-    private void cloneDatasetGraph(DatasetGraph dataset)
-    {
-        if ( ! ( dataset instanceof DataSourceGraphImpl ) )
-        {
-            defaultGraph = dataset.getDefaultGraph() ;
-            namedGraphs = new HashMap<Node, Graph>() ;
-            for ( Iterator<Node> iter = dataset.listGraphNodes() ; iter.hasNext(); )
-            {
-                Node name = iter.next();
-                this.addGraph(name, dataset.getGraph(name)) ;
-            }
-            return ;
-        }            
-        DataSourceGraphImpl ds = (DataSourceGraphImpl)dataset ;
-        namedGraphs = new HashMap<Node, Graph>(ds.namedGraphs) ;
-        defaultGraph = ds.defaultGraph ;
-    }
-
     
     @Override
     public String toString()

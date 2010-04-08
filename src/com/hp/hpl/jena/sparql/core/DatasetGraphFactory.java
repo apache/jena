@@ -29,6 +29,12 @@ public class DatasetGraphFactory
     } ;
     
     public static DatasetGraph createMem() { return new  DatasetGraphOpen(memGraphMaker) ; }
+
+    @SuppressWarnings("deprecation")
+    public static DataSourceGraph createDataSource(DatasetGraph datasetGraph)
+    {
+        return new DataSourceGraphImpl(datasetGraph) ;
+    }
 }
 
 /*

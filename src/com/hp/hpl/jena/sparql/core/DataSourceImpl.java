@@ -39,7 +39,7 @@ public class DataSourceImpl implements DataSource
     private Map<Graph, Model> cache = new HashMap<Graph, Model>() ;      
 
     public DataSourceImpl()
-    { this.dsg = new DataSourceGraphImpl() ; }
+    { this.dsg = DatasetGraphFactory.createDataSource() ; }
 
     public DataSourceImpl(DataSourceGraph otherDSG)
     {
@@ -54,12 +54,12 @@ public class DataSourceImpl implements DataSource
     public DataSourceImpl(Model model)
     {
         addToCache(model) ;
-        this.dsg = new DataSourceGraphImpl(model.getGraph()) ;
+        this.dsg = DatasetGraphFactory.createDataSource(model.getGraph()) ;
     }
 
     public DataSourceImpl(Dataset ds)
     {
-        this.dsg = new DataSourceGraphImpl(ds) ;
+        this.dsg = DatasetGraphFactory.createDataSource(ds.asDatasetGraph()) ;
     }
 
     //  Does it matter if this is not the same model each time?

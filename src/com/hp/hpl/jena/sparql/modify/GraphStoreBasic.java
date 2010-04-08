@@ -13,11 +13,12 @@ import com.hp.hpl.jena.sparql.core.DataSourceImpl ;
 import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
 import com.hp.hpl.jena.update.GraphStore ;
 
+@SuppressWarnings("deprecation")
 public class GraphStoreBasic extends DataSourceGraphImpl implements GraphStore
 {
     public GraphStoreBasic() { super.setDefaultGraph(GraphFactory.createDefaultGraph()) ; }
     
-    public GraphStoreBasic(Dataset ds) { super(ds) ; }
+    public GraphStoreBasic(Dataset ds) { super(ds.asDatasetGraph()) ; }
     
     public GraphStoreBasic(Graph graph)
     {
