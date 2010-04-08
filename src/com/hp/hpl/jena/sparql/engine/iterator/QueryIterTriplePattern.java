@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Systems Ltd. 
  * All rights reserved.
  * [See end of file]
  */
@@ -11,6 +12,7 @@ import java.util.List;
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
@@ -23,7 +25,7 @@ import com.hp.hpl.jena.util.iterator.WrappedIterator;
 
 public class QueryIterTriplePattern extends QueryIterRepeatApply
 {
-    Triple pattern ;
+    private final Triple pattern ;
     
     public QueryIterTriplePattern( QueryIterator input,
                                    Triple pattern , 
@@ -47,10 +49,8 @@ public class QueryIterTriplePattern extends QueryIterRepeatApply
         private Node o ;
         private Binding binding ;
         private ClosableIterator<Triple> graphIter ;
-        //private Iterator graphIter ;
-
-        // This one-slot lookahead is common - but is it worth extracting?
         private Binding slot = null ;
+        private boolean finished = false ;
 
         TripleMapper(Binding binding, Triple pattern, ExecutionContext cxt)
         {
@@ -78,14 +78,14 @@ public class QueryIterTriplePattern extends QueryIterRepeatApply
                 this.graphIter = iter ;
         }
 
-        private Node tripleNode(Node node)
+        private static Node tripleNode(Node node)
         {
             if ( node.isVariable() )
                 return Node.ANY ;
             return node ;
         }
 
-        private Node substitute(Node node, Binding binding)
+        private static Node substitute(Node node, Binding binding)
         {
             if ( Var.isVar(node) )
             {
@@ -96,8 +96,6 @@ public class QueryIterTriplePattern extends QueryIterRepeatApply
             return node ;
         }
 
-        // ---- Iterator machinary
-        
         private Binding mapper(Triple r)
         {
             Binding results = new BindingMap(binding) ;
@@ -124,58 +122,11 @@ public class QueryIterTriplePattern extends QueryIterRepeatApply
             results.add(v, outputNode) ;
             return true ;
         }
-
-        // TODO Test and swap to this code.
-        // Avoid allocating a Binding.
-        private Binding _mapper(Triple r)
-        {
-            Binding results = new BindingMap(binding) ;
-
-            int z = 0 ; // Number of bindings that have occurred. 
-            
-            {
-                int x = _insert(s, r.getSubject(), results) ;
-                if ( x == -1 ) return null ;
-                z += x ;
-            }
-            
-            {
-                int x = _insert(p, r.getPredicate(), results) ;
-                if ( x == -1 ) return null ;
-                z += x ;
-            }
-            
-            {
-                int x = _insert(o, r.getObject(), results) ;
-                if ( x == -1 ) return null ;
-                z += x ;
-            }
-
-            if ( z == 0 )
-                // No binding occurred.
-                return binding ;
-            return results ;
-        }
-
-        // return -1 - no match ; 0 - OK, no binding change ; 1 - OK, binding happened
-        private static int _insert(Node inputNode, Node outputNode, Binding results)
-        {
-            if ( ! Var.isVar(inputNode) )
-                return 0 ;
-            
-            Var v = Var.alloc(inputNode) ;
-            Node x = results.get(v) ;
-            if ( x != null )
-                return outputNode.equals(x) ? 0 : -1 ;
-            
-            results.add(v, outputNode) ;
-            return 1 ;
-        }        
-        
         
         @Override
         protected boolean hasNextBinding()
         {
+            if ( finished ) return false ;
             if ( slot != null ) return true ;
 
             while(graphIter.hasNext() && slot == null )
@@ -183,13 +134,16 @@ public class QueryIterTriplePattern extends QueryIterRepeatApply
                 Triple t = graphIter.next() ;
                 slot = mapper(t) ;
             }
+            if ( slot == null )
+                finished = true ;
             return slot != null ;
         }
 
         @Override
         protected Binding moveToNextBinding()
         {
-            hasNextBinding() ;
+            if ( ! hasNextBinding() ) 
+                throw new ARQInternalErrorException() ;
             Binding r = slot ;
             slot = null ;
             return r ;
@@ -208,6 +162,7 @@ public class QueryIterTriplePattern extends QueryIterRepeatApply
 
 /*
  * (c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Systems Ltd. 
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

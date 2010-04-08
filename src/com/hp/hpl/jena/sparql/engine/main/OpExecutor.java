@@ -118,6 +118,8 @@ public class OpExecutor
 
     protected QueryIterator execute(OpQuadPattern quadPattern, QueryIterator input)
     {
+        // XXX 
+        //execCxt.getDataset().find(null)
         if ( false )
         {
             if ( quadPattern.isDefaultGraph() )

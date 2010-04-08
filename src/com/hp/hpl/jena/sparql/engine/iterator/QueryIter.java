@@ -6,10 +6,10 @@
 
 package com.hp.hpl.jena.sparql.engine.iterator;
 
-import com.hp.hpl.jena.sparql.engine.ExecutionContext;
-import com.hp.hpl.jena.sparql.engine.QueryIterator;
-import com.hp.hpl.jena.sparql.serializer.SerializationContext;
-import com.hp.hpl.jena.sparql.util.IndentedWriter;
+import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
+import com.hp.hpl.jena.sparql.engine.QueryIterator ;
+import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
+import com.hp.hpl.jena.sparql.util.IndentedWriter ;
 
 /**
  * This class provides the general machinary for iterators. 
@@ -37,6 +37,12 @@ public abstract class QueryIter extends QueryIteratorBase
             return (QueryIter)qIter ;
         return new QueryIterTracked(qIter, execCxt) ; 
     }
+
+    public static QueryIter materialize(QueryIterator qIter, ExecutionContext execCxt)
+    {
+        return makeTracked(new QueryIteratorCopy(qIter), execCxt) ;
+    }
+
     
     @Override
     public final void close()

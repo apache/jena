@@ -16,10 +16,9 @@ import com.hp.hpl.jena.sparql.serializer.SerializationContext;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 
 /** A QueryIterator that copies an iterator.
- *  Can get a QueryIterator over the copy.
+ *  @see QueryIter#materialize
  */  
 
-public 
 class QueryIteratorCopy extends QueryIteratorBase
 {
     // Not tracked.
@@ -27,7 +26,6 @@ class QueryIteratorCopy extends QueryIteratorBase
     QueryIterator iterator ;
     
     QueryIterator original ;        // Keep for debugging - This is closed as it is copied.
-    
     
     public QueryIteratorCopy(QueryIterator qIter)
     {

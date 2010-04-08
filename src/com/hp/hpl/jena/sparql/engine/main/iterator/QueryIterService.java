@@ -16,7 +16,6 @@ import com.hp.hpl.jena.sparql.engine.http.Service ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIter ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterCommonParent ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterRepeatApply ;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIteratorCopy ;
 import com.hp.hpl.jena.sparql.engine.main.QC ;
 
 
@@ -42,10 +41,7 @@ public class QueryIterService extends QueryIterRepeatApply
         // Materialise, otherwise we may have outstanding incoming data.
         // Alows the server to fulfil the request as soon as possible.
         // In extremis, can cause a deadlock when SERVICE loops back to this server.
-        QueryIterator qIter3 = new QueryIteratorCopy(qIter2) ;
-        qIter3 = QueryIter.makeTracked(qIter3,  getExecContext()) ;
-        
-        return qIter3 ;
+        return QueryIter.materialize(qIter2, getExecContext()) ;
     }
 }
  
