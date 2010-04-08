@@ -27,10 +27,7 @@ public class DevARQ
     // ----
     
     // Sort out DatasetGraph:
-    // DatasetGraphMem 
     // Down play DataSource[Graph]
-    // Contexts for datasets.
-    //    Adding quads to a DatasetGraph?
     
     // DatasetGraph
     //   DatasetGraphBase (abstract - caching - wraps persistent layers)
@@ -59,19 +56,10 @@ public class DevARQ
     
     // Run ref engine and main engine in a test - remove ref only tests
     
-    // CSV and TSV
-    //   Reengineer code.  Proper escaping.  strSafe in CSVOutput
-    //   Input: ResultSetFactory.load
-    //   Tests
-    
     // MicroAPI.
     //   results = query().select(vars).pattern().filter().groupby().agg()
     //    or build algebra this way.
     // ARQ warnings on cross product and unused project vars 
-    
-    // public class FmtUtils
-    // Consider a temporary SerialzationContext that does not abbreviate bNodes.
-    // PrefixMapping impl around PrefixMap.
     
     // ==== ARQ
     // JMX
@@ -84,9 +72,6 @@ public class DevARQ
     // ----
     
     // OpJoin optimization: If one side is a table, then sequence that first.
-    
-    // Improve PathLib.ungroundedPath
-    // e.g. if first step is a URI, use this to seed the process
     
     // Library
     //   Combine StringUtils and StrUtils.
