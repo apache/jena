@@ -8,23 +8,21 @@
 package arq;
 
 
-import arq.cmd.CmdException;
-import arq.cmd.TerminationException;
-import arq.cmdline.*;
+import arq.cmd.CmdException ;
+import arq.cmd.TerminationException ;
+import arq.cmdline.* ;
 
-import com.hp.hpl.jena.sparql.algebra.Algebra;
-import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.core.DataSourceImpl;
-import com.hp.hpl.jena.sparql.core.DatasetGraph;
-import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
-import com.hp.hpl.jena.sparql.engine.Plan;
-import com.hp.hpl.jena.sparql.engine.PlanOp;
-import com.hp.hpl.jena.sparql.engine.QueryIterator;
-import com.hp.hpl.jena.sparql.util.IndentedWriter;
-import com.hp.hpl.jena.sparql.util.QueryExecUtils;
-import com.hp.hpl.jena.sparql.util.Utils;
-
-import com.hp.hpl.jena.query.Dataset;
+import com.hp.hpl.jena.query.Dataset ;
+import com.hp.hpl.jena.sparql.algebra.Algebra ;
+import com.hp.hpl.jena.sparql.algebra.Op ;
+import com.hp.hpl.jena.sparql.core.DataSourceImpl ;
+import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import com.hp.hpl.jena.sparql.engine.Plan ;
+import com.hp.hpl.jena.sparql.engine.PlanOp ;
+import com.hp.hpl.jena.sparql.engine.QueryIterator ;
+import com.hp.hpl.jena.sparql.util.IndentedWriter ;
+import com.hp.hpl.jena.sparql.util.QueryExecUtils ;
+import com.hp.hpl.jena.sparql.util.Utils ;
 
 public class sse_query extends CmdARQ
 {
