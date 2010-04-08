@@ -14,9 +14,9 @@ import arq.cmdline.*;
 
 import com.hp.hpl.jena.sparql.algebra.Algebra;
 import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.core.DataSourceGraphImpl;
 import com.hp.hpl.jena.sparql.core.DataSourceImpl;
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
+import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
 import com.hp.hpl.jena.sparql.engine.Plan;
 import com.hp.hpl.jena.sparql.engine.PlanOp;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
@@ -110,7 +110,7 @@ public class sse_query extends CmdARQ
             dataset = new DataSourceImpl();
 
         modTime.startTimer() ;
-        DatasetGraph dsg = new DataSourceGraphImpl(dataset) ;
+        DatasetGraph dsg = dataset.asDatasetGraph() ;
 
         if ( printOp || printPlan )
         {
