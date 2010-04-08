@@ -223,11 +223,13 @@ public class SetupTDB
         
         log.debug("Object table: "+indexNode2Id+" - "+indexId2Node) ;
         
+        int n2idCacheSize = PropertyUtils.getPropertyAsInteger(config, Names.pNode2NodeIdCacheSize) ;
+        int id2nCacheSize = PropertyUtils.getPropertyAsInteger(config, Names.pNodeId2NodeCacheSize) ;
+        
         // Cache sizes should come from this.info.
         NodeTable nodeTable = makeNodeTable(location, 
-                                            indexNode2Id,
-                                            SystemTDB.Node2NodeIdCacheSize,
-                                            indexId2Node, SystemTDB.NodeId2NodeCacheSize) ;
+                                            indexNode2Id, n2idCacheSize,
+                                            indexId2Node, id2nCacheSize) ;
 
         TripleTable tripleTable = makeTripleTable(location, config, nodeTable, 
                                                   Names.primaryIndexTriples, Names.tripleIndexes) ;
