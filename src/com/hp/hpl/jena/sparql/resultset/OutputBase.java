@@ -40,8 +40,6 @@ public abstract class OutputBase implements OutputFormatter
             return null ;
         }
     }
-
-
 }
 
 /*
