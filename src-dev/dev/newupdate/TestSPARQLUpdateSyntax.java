@@ -17,8 +17,6 @@ import com.hp.hpl.jena.shared.JenaException ;
 import com.hp.hpl.jena.sparql.lang.sparql_11.SPARQLParser11 ;
 import com.hp.hpl.jena.sparql.util.ALog ;
 
-import dev.RunARQ ;
-
 public class TestSPARQLUpdateSyntax
 {
     @Test public void update_0() { parse("") ; }
@@ -120,7 +118,7 @@ public class TestSPARQLUpdateSyntax
         }
         catch (Throwable th)
         {
-            ALog.fatal(RunARQ.class, "Unexpected throwable: ",th) ;
+            ALog.fatal(TestSPARQLUpdateSyntax.class, "Unexpected throwable: ",th) ;
             throw new QueryException(th.getMessage(), th) ;
         }
     }
