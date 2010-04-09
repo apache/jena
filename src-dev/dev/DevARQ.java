@@ -9,10 +9,15 @@ public class DevARQ
 {
     // Convert to quadism even for ARQ query if suitable dataset
     //   SPARQL->quads
-    //   Union graph for all datasets
+    //   Union graph for all datasets ==> (distinct (graph [] (bgp ....))) 
     //   Quad support in OpExecutor
     //   TestCases
     
+    // Dump datset as:
+    //  NQuads
+    //  TriG
+    //  SPARQL Update
+    //  Add comments processing #pragma
     
     // ==== ARQ 2.8.4 dev
 
