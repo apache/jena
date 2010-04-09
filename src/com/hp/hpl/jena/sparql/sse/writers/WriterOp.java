@@ -290,7 +290,7 @@ public class WriterOp
         public void visit(OpGraph opGraph)
         {
             start(opGraph, NoNL) ;
-            out.println(FmtUtils.stringForNode(opGraph.getNode())) ;
+            out.println(FmtUtils.stringForNode(opGraph.getNode(), sContext)) ;
             opGraph.getSubOp().visit(this) ;
             finish(opGraph) ;
         }
@@ -298,7 +298,7 @@ public class WriterOp
         public void visit(OpService opService)
         {
             start(opService, NoNL) ;
-            out.println(FmtUtils.stringForNode(opService.getService())) ;
+            out.println(FmtUtils.stringForNode(opService.getService(), sContext)) ;
             opService.getSubOp().visit(this) ;
             finish(opService) ;
         }
