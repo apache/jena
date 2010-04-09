@@ -570,7 +570,7 @@ public class BuilderOp
         {
             BuilderLib.checkLength(2, list, "distinct") ;
             Op sub = build(list, 1) ;
-            return new OpDistinct(sub) ;
+            return OpDistinct.create(sub) ;
         }
     } ;
 
@@ -580,7 +580,7 @@ public class BuilderOp
         {
             BuilderLib.checkLength(2, list, "reduced") ;
             Op sub = build(list, 1) ;
-            return new OpReduced(sub) ;
+            return OpReduced.create(sub) ;
         }
     } ;
 

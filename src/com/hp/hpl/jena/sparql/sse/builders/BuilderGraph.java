@@ -64,8 +64,11 @@ public class BuilderGraph
     
     public static Graph buildGraph(Graph graph, ItemList list)
     {
-        BuilderLib.checkTag(list, Tags.tagGraph) ;
-        list = list.cdr();
+        if ( list.get(0).isSymbol() )
+        {
+            if ( list.get(0).isSymbol(Tags.tagGraph) )
+                list = list.cdr();
+        }
         
         for (Item item : list)
         {
@@ -78,9 +81,9 @@ public class BuilderGraph
     
     /** Format:
      * (dataset
-     *    (default (graph ...))
-     *    (namedgraph IRIa (graph ...))
-     *    (namedgraph IRIb (graph ...))
+     *    (graph ...))
+     *    (graph IRIa ...))
+     *    (graph IRIb ...))
      *    )
      * (graph ...) is an abbrevaition for a dataset with a default graph and no named graphs.
      */
@@ -112,30 +115,38 @@ public class BuilderGraph
         
         for (Item item : list)
         {
-            if ( item.isTagged(Tags.tagDefault) )
-            {
-                if ( ds.getDefaultGraph() != null )
-                    BuilderLib.broken(item, "Multiple default graphs") ;
-                // (default (graph ...))
-                BuilderLib.checkLength(2, item.getList(), "Expected (default (graph...))") ;
-                Graph g = BuilderGraph.buildGraph(item.getList().get(1)) ;
-                ds.setDefaultGraph(g) ;
-                continue ;
-            }
-            if ( item.isTagged(Tags.tagNamedGraph) )
-            {
-                ItemList ngList = item.getList() ;
-                BuilderLib.checkLength(3, ngList, "Expected (namedgraph IRI (graph...))") ;
-                Node n = BuilderNode.buildNode(ngList.get(1)) ;
-                Graph g = BuilderGraph.buildGraph(item.getList().get(2)) ;
-                ds.addGraph(n, g) ;
-                continue ;
-            }
-            BuilderLib.broken(item, "Not expected in dataset") ;
-        }
-        if ( ds.getDefaultGraph() == null )
-            ds.setDefaultGraph(GraphFactory.createDefaultGraph()) ;
+            if ( ! item.isTagged(Tags.tagGraph) )
+                BuilderLib.broken(item, "Expected (graph ...) as elements of a dataset") ;
             
+            Node name = null ;
+            ItemList graphContent = item.getList().cdr();
+            if ( graphContent.car().isNode() )
+            {
+                name = graphContent.car().getNode();
+                graphContent = graphContent.cdr() ;
+            }
+            
+            Graph g ;
+            if ( name == null )
+            {
+                g = ds.getDefaultGraph() ;
+                if ( g == null )
+                {
+                    g = GraphFactory.createGraph() ;
+                    ds.setDefaultGraph(GraphFactory.createGraph()) ;
+                }
+            }
+            else
+            {
+                g = ds.getGraph(name) ;
+                if ( g == null )
+                {
+                    g = GraphFactory.createGraph() ;
+                    ds.addGraph(name, g) ;
+                }
+            }
+            BuilderGraph.buildGraph(g, graphContent) ;
+        }
         return ds ;
     }
     
