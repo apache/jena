@@ -14,7 +14,14 @@ import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
 public class OpReduced extends OpModifier
 {
-    public OpReduced(Op subOp)
+    public static Op create(Op op)
+    {
+        if ( op instanceof OpReduced)
+            return op ;
+        return new OpReduced(op) ;
+    }
+    
+    private OpReduced(Op subOp)
     { super(subOp) ; }
     
     @Override

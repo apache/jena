@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -14,6 +15,13 @@ import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
 public class OpDistinct extends OpModifier
 {
+    public static Op create(Op op)
+    {
+        if ( op instanceof OpDistinct)
+            return op ;
+        return new OpDistinct(op) ;
+    }
+    
     public OpDistinct(Op subOp)
     { super(subOp) ; }
     
@@ -41,6 +49,7 @@ public class OpDistinct extends OpModifier
 
 /*
  * (c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
