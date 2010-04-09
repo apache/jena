@@ -17,7 +17,7 @@ import com.hp.hpl.jena.sparql.algebra.op.OpQuadPattern;
 import com.hp.hpl.jena.sparql.algebra.op.OpTable;
 import com.hp.hpl.jena.sparql.core.Quad;
 
-/*8 COnvert an algebra expression into a quad form */
+/** Convert an algebra expression into a quad form */
 public class AlgebraQuad extends TransformCopy
 {
     // Transform to a quad form:

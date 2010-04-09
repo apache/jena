@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -29,8 +30,8 @@ public class TransformCopy implements Transform
 
     public Op transform(OpProcedure opProc, Op subOp)               { return xform(opProc, subOp) ; }
     public Op transform(OpPropFunc opPropFunc, Op subOp)            { return xform(opPropFunc, subOp) ; }
-    public Op transform(OpDatasetNames dsNames)                     { return xform(dsNames) ; }
-    public Op transform(OpQuadPattern quadPattern)                  { return xform(quadPattern) ; }
+    public Op transform(OpDatasetNames opDatasetNames)              { return xform(opDatasetNames) ; }
+    public Op transform(OpQuadPattern opQuadPattern)                { return xform(opQuadPattern) ; }
 
     public Op transform(OpFilter opFilter, Op x)                    { return xform(opFilter, x) ; }
     public Op transform(OpGraph opGraph, Op x)                      { return xform(opGraph, x) ; }
@@ -45,7 +46,6 @@ public class TransformCopy implements Transform
 
     public Op transform(OpSequence opSequence, List<Op> elts)           { return xform(opSequence, elts) ; }
     public Op transform(OpDisjunction opDisjunction, List<Op> elts)     { return xform(opDisjunction, elts) ; }
-
     
     public Op transform(OpExt opExt)                                { return opExt ; }
     
@@ -104,6 +104,7 @@ public class TransformCopy implements Transform
 
 /*
  * (c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
