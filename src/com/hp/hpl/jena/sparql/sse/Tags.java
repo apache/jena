@@ -1,6 +1,6 @@
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
- * (c) Copyright 2010 Talis Information Ltd.
+ * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -39,7 +39,6 @@ public class Tags
 
     // SPARQL 
     public static final String tagDataset       = "dataset" ;
-    public static final String tagNamedGraph    = "namedgraph" ;
     public static final String tagBinding       = "binding" ;
     public static final String tagTable         = "table" ;
     public static final String tagResultSet     = "resultset" ;
@@ -148,7 +147,7 @@ public class Tags
 
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP All rights
- * (c) Copyright 2010 Talis Information Ltd.
+ * (c) Copyright 2010 Talis Systems Ltd.
  * reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
