@@ -1,5 +1,8 @@
 #!/bin/bash
 
+echo "tdbverify - not operational"
+exit 1
+
 if ! [ -e "testing" ] 
 then
     echo "Not in the root of a TDB installation" 1>&2
