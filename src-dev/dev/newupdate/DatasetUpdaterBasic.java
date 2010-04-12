@@ -8,8 +8,6 @@ package dev.newupdate;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.sparql.ARQException ;
-import com.hp.hpl.jena.sparql.core.DataSourceGraph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 
 public class DatasetUpdaterBasic implements DatasetUpdater
@@ -38,17 +36,9 @@ public class DatasetUpdaterBasic implements DatasetUpdater
     {
         Graph ng = dataset.getGraph(graphName) ;
         if ( ng == null )
-        {
-            if ( dataset instanceof DataSourceGraph )
-            {
-                DataSourceGraph dsg = (DataSourceGraph)dataset ;
-                dsg.addGraph(graphName, data) ;
-                return ;
-            }
-            throw new ARQException("Can't add graph to dataset") ;
-        }
-        
-        putGraph(ng, data) ;
+            dataset.addGraph(graphName, ng) ;
+        else
+            putGraph(ng, data) ;
     }
 
     //@Override
@@ -63,13 +53,8 @@ public class DatasetUpdaterBasic implements DatasetUpdater
         Graph ng = dataset.getGraph(graphName) ;
         if ( ng == null )
             return ;
-        if ( dataset instanceof DataSourceGraph )
-        {
-            DataSourceGraph dsg = (DataSourceGraph)dataset ;
-            dsg.removeGraph(graphName) ;
-            return ;
-        }
-        clearGraph(ng) ;
+        dataset.removeGraph(graphName) ;
+        //clearGraph(ng) ;
     }
 
     //@Override
@@ -84,13 +69,8 @@ public class DatasetUpdaterBasic implements DatasetUpdater
         Graph ng = dataset.getGraph(graphName) ;
         if ( ng == null )
         {
-            if ( dataset instanceof DataSourceGraph )
-            {
-                DataSourceGraph dsg = (DataSourceGraph)dataset ;
-                dsg.addGraph(graphName, data) ;
-                return ;
-            }
-            throw new ARQException("Can't add graph to dataset") ;
+            dataset.addGraph(graphName, data) ;
+            return ;
         }
         mergeGraph(ng, data) ;
     }

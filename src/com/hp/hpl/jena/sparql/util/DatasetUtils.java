@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -15,7 +16,6 @@ import com.hp.hpl.jena.n3.IRIResolver ;
 import com.hp.hpl.jena.query.DataSource ;
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.sparql.core.DataSourceGraph ;
 import com.hp.hpl.jena.sparql.core.DataSourceImpl ;
 import com.hp.hpl.jena.sparql.core.DatasetDesc ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
@@ -141,7 +141,7 @@ public class DatasetUtils
     public static DatasetGraph createDatasetGraph(List<String> uriList, List<String> namedSourceList,
                                                   FileManager fileManager, String baseURI)
     {
-        DataSourceGraph ds = DatasetGraphFactory.createDataSource() ;
+        DatasetGraph ds = DatasetGraphFactory.createMem() ;
         
         if ( fileManager == null )
             fileManager = FileManager.get() ;
@@ -196,6 +196,7 @@ public class DatasetUtils
  
 /*
  * (c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

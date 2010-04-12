@@ -6,20 +6,11 @@
 
 package com.hp.hpl.jena.sparql.core ;
 
-import com.hp.hpl.jena.graph.Graph ;
-import com.hp.hpl.jena.graph.Node;
 
+@Deprecated
 public interface DataSourceGraph extends DatasetGraph 
-{
-    /** Set the default graph.  Set the active graph if it was null */
-    public void setDefaultGraph(Graph g) ;
+{ }
 
-    public void addGraph(Node graphName, Graph graph) ;
-    
-    public Graph removeGraph(Node graphName) ;
-    
-    public void close() ;
-}
 /*
  * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.

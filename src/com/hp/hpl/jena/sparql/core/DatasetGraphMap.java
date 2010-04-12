@@ -6,91 +6,95 @@
 
 package com.hp.hpl.jena.sparql.core;
 
+import java.util.HashMap ;
 import java.util.Iterator ;
+import java.util.Map ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.shared.Lock ;
-import com.hp.hpl.jena.sparql.util.Context ;
 
-public class DatasetGraphWrapper implements DatasetGraph
+/** Implementation of a DatasetGraph as an extensible set of graphs.
+ */
+public class DatasetGraphMap extends DatasetGraphCollection
 {
-    protected final DatasetGraph dsg ;
+    private Map<Node, Graph> graphs = new HashMap<Node, Graph>() ;
 
-    public DatasetGraphWrapper(DatasetGraph dsg)
+    private Graph defaultGraph ;
+
+    public DatasetGraphMap(Graph initialDefaultGraph)
+    { 
+        this.defaultGraph = initialDefaultGraph ;
+    }
+    
+    DatasetGraphMap()
+    { }
+    
+    public DatasetGraphMap(DatasetGraph dsg)
     {
-        this.dsg = dsg ;
+        defaultGraph = dsg.getDefaultGraph() ;
+        for ( Iterator<Node> names = dsg.listGraphNodes() ; names.hasNext() ; )
+        {
+            Node gn = names.next() ;
+            dsg.addGraph(gn, dsg.getGraph(gn)) ;
+        }
     }
 
-    //@Override
+    @Override
     public boolean containsGraph(Node graphNode)
-    { return dsg.containsGraph(graphNode) ; }
+    {
+        return graphs.containsKey(graphNode) ;
+    }
 
-    //@Override
+    @Override
     public Graph getDefaultGraph()
-    { return dsg.getDefaultGraph(); }
+    {
+        return defaultGraph ;
+    }
 
-    //@Override
+    @Override
     public Graph getGraph(Node graphNode)
-    { return dsg.getGraph(graphNode) ; }
+    {
+        return graphs.get(graphNode) ;
+    }
 
+    @Override
     public void addGraph(Node graphName, Graph graph)
-    { dsg.addGraph(graphName, graph) ; }
+    { 
+        graphs.put(graphName, graph) ;
+    }
 
+    @Override
     public void removeGraph(Node graphName)
-    { dsg.removeGraph(graphName) ; }
+    {
+        graphs.remove(graphName) ;
+    }
 
+    @Override
     public void setDefaultGraph(Graph g)
-    { dsg.setDefaultGraph(g) ; }
+    {
+        defaultGraph = g ;
+    }
 
-    //@Override
-    public Lock getLock()
-    { return dsg.getLock() ; }
-
-    //@Override
+    @Override
     public Iterator<Node> listGraphNodes()
-    { return dsg.listGraphNodes() ; }
+    {
+        return graphs.keySet().iterator() ;
+    }
 
-    //@Override
-    public void add(Quad quad)
-    { dsg.add(quad) ; }
-
-    //@Override
-    public void delete(Quad quad)
-    { dsg.delete(quad) ; }
-
-    //@Override
-    public boolean isEmpty()
-    { return dsg.isEmpty() ; }
-    
-    //@Override
-    public Iterator<Quad> find(Quad quad)
-    { return dsg.find(quad) ; }
-
-    //@Override
-    public Iterator<Quad> find(Node g, Node s, Node p, Node o)
-    { return dsg.find(g, s, p, o) ; }
-
-    //@Override
-    public boolean contains(Quad quad)
-    { return dsg.contains(quad) ; }
-
-    //@Override
-    public boolean contains(Node g, Node s, Node p, Node o)
-    { return dsg.contains(g, s, p, o) ; }
-
-    //@Override
-    public Context getContext()
-    { return dsg.getContext() ; }
-
-    //@Override
+    @Override
     public long size()
-    { return dsg.size() ; }
+    {
+        return graphs.size() ;
+    }
 
-    //@Override
+    @Override
     public void close()
-    { dsg.close() ; }
-
+    { 
+        defaultGraph.close();
+        for ( Graph graph : graphs.values() )
+            graph.close();
+        super.close() ;
+    }
 }
 
 /*

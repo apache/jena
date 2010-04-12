@@ -10,7 +10,7 @@ import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.sparql.core.DataSourceImpl ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.sparql.core.DatasetGraphOne ;
+import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
 import com.hp.hpl.jena.sparql.core.DatasetImpl ;
 import com.hp.hpl.jena.sparql.engine.Plan ;
 import com.hp.hpl.jena.sparql.engine.QueryEngineFactory ;
@@ -452,7 +452,7 @@ public class QueryExecutionFactory
      
     public static Plan createPlan(Query query, Graph graph)
     {
-        return makePlan(query, new DatasetGraphOne(graph), null, null) ; 
+        return makePlan(query, DatasetGraphFactory.createOneGraph(graph), null, null) ; 
     }
     
     public static Plan createPlan(Query query, DatasetGraph dataset)

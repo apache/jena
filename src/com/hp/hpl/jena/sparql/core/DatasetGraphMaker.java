@@ -1,56 +1,64 @@
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.modify;
+package com.hp.hpl.jena.sparql.core;
 
 import com.hp.hpl.jena.graph.Graph ;
-import com.hp.hpl.jena.query.Dataset ;
-import com.hp.hpl.jena.sparql.core.DataSourceImpl ;
-import com.hp.hpl.jena.sparql.core.DatasetGraphMap ;
-import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
-import com.hp.hpl.jena.update.GraphStore ;
+import com.hp.hpl.jena.graph.Node ;
 
-public class GraphStoreBasic extends DatasetGraphMap implements GraphStore
+/** Implementation of a DatasetGraph as an open set of graphs where all graphs "exist".
+ *  New graphs are created (via the policy of a GraphMaker) when a getGraph call is 
+ *  made to a graph that has not been allocated.
+ */
+public class DatasetGraphMaker extends DatasetGraphMap
 {
-    public GraphStoreBasic()
-    { super(GraphFactory.createGraph()) ; }
-    
-    public GraphStoreBasic(Dataset ds)
-    { 
-        super(ds.asDatasetGraph()) ;
+    public interface GraphMaker { public Graph create() ; }
+
+    private static GraphMaker graphMakerNull = new GraphMaker() {
+        public Graph create()
+        {
+            return null ;
+        } } ;
+
+    private GraphMaker graphMaker ;
+
+    public DatasetGraphMaker(GraphMaker graphMaker)
+    {
+        super(graphMaker.create()) ;
+        this.graphMaker = graphMaker ;
     }
-    
-    public GraphStoreBasic(Graph graph)
+
+    public DatasetGraphMaker(Graph graph)
     {
         super(graph) ;
+        this.graphMaker = graphMakerNull ;
     }
-
-    
-    public Dataset toDataset()
-    {
-        return new DataSourceImpl(this) ;
-    }
-
-    public void startRequest()
-    { GraphStoreUtils.sendToAll(this, GraphStoreEvents.RequestStartEvent) ; }
-    public void finishRequest()
-    { GraphStoreUtils.sendToAll(this, GraphStoreEvents.RequestFinishEvent) ; }
     
     @Override
-    public void close()
+    public boolean containsGraph(Node graphNode)
     {
-        GraphStoreUtils.actionAll(this, 
-                                  new GraphStoreAction()
+        return true ;
+    }
+
+    @Override
+    public Graph getGraph(Node graphNode)
+    {
+        Graph g = super.getGraph(graphNode) ;
+        if ( g == null )
         {
-            public void exec(Graph graph){ graph.close() ; }
-        }) ;
+            g = graphMaker.create() ;
+            if ( g != null )
+                super.addGraph(graphNode, g) ;
+        }
+        return g ;
     }
 }
+
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

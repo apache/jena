@@ -64,7 +64,7 @@ public class Eval
 
         DatasetGraph dsg = evaluator.getExecContext().getDataset() ;
         Iterator<Node> iter = dsg.listGraphNodes() ;
-        List<Binding> list = new ArrayList<Binding>(dsg.size()) ;
+        List<Binding> list = new ArrayList<Binding>((int)dsg.size()) ;
         for ( ; iter.hasNext(); )
         {
             Node gn = iter.next();

@@ -43,6 +43,18 @@ abstract public class DatasetGraphBase implements DatasetGraph
     public abstract Graph getGraph(Node graphNode) ;
 
     //@Override
+    public void addGraph(Node graphName, Graph graph)
+    { throw new UnsupportedOperationException("DatasetGraph.addGraph") ; }
+
+    //@Override
+    public void removeGraph(Node graphName)
+    { throw new UnsupportedOperationException("DatasetGraph.removeGraph") ; }
+
+    //@Override
+    public void setDefaultGraph(Graph g)
+    { throw new UnsupportedOperationException("DatasetGraph.setDefaultGraph") ; }
+    
+    //@Override
     public void add(Quad quad) { throw new UnsupportedOperationException("DatasetGraph.add(Quad)") ; } 
     
     //@Override
@@ -103,7 +115,8 @@ abstract public class DatasetGraphBase implements DatasetGraph
         return contains(Node.ANY, Node.ANY, Node.ANY, Node.ANY) ;
     }
 
-
+    //@Override
+    public long size() { return -1 ; } 
     
     //@Override
     public Lock getLock()

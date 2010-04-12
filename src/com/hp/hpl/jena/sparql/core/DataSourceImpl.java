@@ -19,6 +19,7 @@ import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.shared.Lock;
 import com.hp.hpl.jena.sparql.util.NodeUtils;
+import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
 
 /** A implementation of a DataSource, which is a mutable Dataset,
  *  a set of a single unnamed graph and a number (zero or
@@ -35,31 +36,36 @@ public class DataSourceImpl implements DataSource
      * should be only one writer by contract.
      */
 
-    protected DataSourceGraph dsg = null ;
+    protected DatasetGraph dsg = null ;
     private Map<Graph, Model> cache = new HashMap<Graph, Model>() ;      
 
     public DataSourceImpl()
-    { this.dsg = DatasetGraphFactory.createDataSource() ; }
-
-    public DataSourceImpl(DataSourceGraph otherDSG)
     {
-        this.dsg = otherDSG ;
+        // This may not be a defaultJena model - during testing, 
+        // we use a graph that is not value-awar for xsd:String vs plain literals.
+        this(ModelFactory.createModelForGraph(GraphFactory.createDefaultGraph())) ;
+    }
+
+//    public DataSourceImpl(DataSourceGraph otherDSG)
+//    {
+//        this.dsg = otherDSG ;
+//    }
+    
+    public DataSourceImpl(DatasetGraph dSetGraph)
+    { 
+        // Clone structure.
+        dsg = new DatasetGraphMap(dSetGraph) ;
     }
     
-//    public DataSourceImpl(DatasetGraph dSetGraph)
-//    { 
-//        // Must clone.
-//    }
-//    
     public DataSourceImpl(Model model)
     {
         addToCache(model) ;
-        this.dsg = DatasetGraphFactory.createDataSource(model.getGraph()) ;
+        this.dsg = DatasetGraphFactory.create(model.getGraph()) ;
     }
 
     public DataSourceImpl(Dataset ds)
     {
-        this.dsg = DatasetGraphFactory.createDataSource(ds.asDatasetGraph()) ;
+        this.dsg = DatasetGraphFactory.create(ds.asDatasetGraph()) ;
     }
 
     //  Does it matter if this is not the same model each time?
@@ -70,8 +76,7 @@ public class DataSourceImpl implements DataSource
 
     public Lock getLock() { return dsg.getLock() ; }
 
-    public DataSourceGraph getDataSourceGraph() { return dsg ; }
-    
+    @Deprecated
     public DatasetGraph asDatasetGraph() { return dsg ; }
 
     public Model getNamedModel(String uri)

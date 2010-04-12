@@ -10,87 +10,36 @@ import java.util.Iterator ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.shared.Lock ;
-import com.hp.hpl.jena.sparql.util.Context ;
 
-public class DatasetGraphWrapper implements DatasetGraph
+/** A DatasetGraph base class that converts any graph class to quad calls. 
+ * @see DatasetGraphCollection
+ */
+public class DatasetGraphQuad extends DatasetGraphBase
 {
-    protected final DatasetGraph dsg ;
-
-    public DatasetGraphWrapper(DatasetGraph dsg)
+    private DatasetGraphQuad() {}
+    
+    @Override
+    public Iterator<Quad> find(Node g, Node s, Node p, Node o)
     {
-        this.dsg = dsg ;
+        return null ;
     }
 
-    //@Override
-    public boolean containsGraph(Node graphNode)
-    { return dsg.containsGraph(graphNode) ; }
-
-    //@Override
+    @Override
     public Graph getDefaultGraph()
-    { return dsg.getDefaultGraph(); }
+    {
+        return null ;
+    }
 
-    //@Override
+    @Override
     public Graph getGraph(Node graphNode)
-    { return dsg.getGraph(graphNode) ; }
+    {
+        return null ;
+    }
 
-    public void addGraph(Node graphName, Graph graph)
-    { dsg.addGraph(graphName, graph) ; }
-
-    public void removeGraph(Node graphName)
-    { dsg.removeGraph(graphName) ; }
-
-    public void setDefaultGraph(Graph g)
-    { dsg.setDefaultGraph(g) ; }
-
-    //@Override
-    public Lock getLock()
-    { return dsg.getLock() ; }
-
-    //@Override
     public Iterator<Node> listGraphNodes()
-    { return dsg.listGraphNodes() ; }
-
-    //@Override
-    public void add(Quad quad)
-    { dsg.add(quad) ; }
-
-    //@Override
-    public void delete(Quad quad)
-    { dsg.delete(quad) ; }
-
-    //@Override
-    public boolean isEmpty()
-    { return dsg.isEmpty() ; }
-    
-    //@Override
-    public Iterator<Quad> find(Quad quad)
-    { return dsg.find(quad) ; }
-
-    //@Override
-    public Iterator<Quad> find(Node g, Node s, Node p, Node o)
-    { return dsg.find(g, s, p, o) ; }
-
-    //@Override
-    public boolean contains(Quad quad)
-    { return dsg.contains(quad) ; }
-
-    //@Override
-    public boolean contains(Node g, Node s, Node p, Node o)
-    { return dsg.contains(g, s, p, o) ; }
-
-    //@Override
-    public Context getContext()
-    { return dsg.getContext() ; }
-
-    //@Override
-    public long size()
-    { return dsg.size() ; }
-
-    //@Override
-    public void close()
-    { dsg.close() ; }
-
+    {
+        return null ;
+    }
 }
 
 /*

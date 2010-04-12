@@ -24,6 +24,8 @@ import com.hp.hpl.jena.sparql.util.Context ;
  * */
 public interface DatasetGraph extends Closeable
 {
+    // ---- Graph container view
+
     /** Get the default graph as a Jena Graph */
     public Graph getDefaultGraph() ;
 
@@ -35,12 +37,33 @@ public interface DatasetGraph extends Closeable
 
     public boolean containsGraph(Node graphNode) ;
 
+    /** Set the default graph.  Set the active graph if it was null.
+     *  This replaces the contents default graph, not merge data into it.
+     *  Do not assume that the same object is returned by {@link #getDefaultGraph} 
+     */
+    public void setDefaultGraph(Graph g) ;
+
+    /** 
+     * Add the given graph to the dataset.
+     * <em>Replaces</em> any existing data for the named graph; to add data, 
+     * get the graph and add triples to it, or add quads to the dataset.
+     * Do not assume that the same Java object is returned by {@link #getGraph}  
+     */
+
+    public void addGraph(Node graphName, Graph graph) ;
+
+    /** Remove all data associated with the named graph */
+    public void removeGraph(Node graphName) ;
+
+    /** Iterate over all names of named graphs */
     public Iterator<Node> listGraphNodes() ;
 
-    /** Add a quad - may throw UnsupportedOperationException */
+    // ---- Quad view
+    
+    /** Add a quad */
     public void add(Quad quad) ;
     
-    /** Delete a quad - may throw UnsupportedOperationException */
+    /** Delete a quad */
     public void delete(Quad quad) ;
     
     /** Find matching quads in the datset - may include wildcards, Node.ANY or null
@@ -53,14 +76,14 @@ public interface DatasetGraph extends Closeable
      */
     public Iterator<Quad> find(Node g, Node s, Node p , Node o) ;
     
-    /** Test whether the dataset is empty */
-    public boolean isEmpty() ;
-    
     /** Test whether the dataset contains a quad - may include wildcards, Node.ANY or null */
     public boolean contains(Node g, Node s, Node p , Node o) ;
 
     /** Test whether the dataset contains a quad - may include wildcards, Node.ANY or null */
     public boolean contains(Quad quad) ;
+
+    /** Test whether the dataset is empty */
+    public boolean isEmpty() ;
     
     /** Return a lock for the dataset to help with concurrency control
      * @see Lock
@@ -70,8 +93,8 @@ public interface DatasetGraph extends Closeable
     /** Get the context associated with this object - may be null */
     public Context getContext() ; 
     
-    /** Get the size (number of graphs) - may be -1 for unknown */ 
-    public int size() ;
+    /** Get the size (number of named graphs) - may be -1 for unknown */ 
+    public long size() ;
     
     /** Close the dataset */
     public void close() ;

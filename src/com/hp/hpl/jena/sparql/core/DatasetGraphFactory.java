@@ -7,34 +7,39 @@
 package com.hp.hpl.jena.sparql.core;
 
 import com.hp.hpl.jena.graph.Graph ;
-import com.hp.hpl.jena.sparql.core.DatasetGraphOpen.GraphMaker ;
 import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
 
 public class DatasetGraphFactory
 {
-    public static DatasetGraph create(Graph graph) { return new DatasetGraphOne(graph) ; } 
+    /** Create a DatasetGraph based on an existing one;
+     *  this is a structre copy of the dataset struture 
+     *  but graph are shared 
+     */ 
+    public static DatasetGraph create(DatasetGraph dsg) { return new DatasetGraphMap(dsg) ; }
     
-    @SuppressWarnings("deprecation")
-    public static DataSourceGraph createDataSource(Graph graph) { return new DataSourceGraphImpl(graph) ; }
-
-    @SuppressWarnings("deprecation")
-    public static DataSourceGraph createDataSource() { return new DataSourceGraphImpl() ; }
+    /**
+     * Create a DatasetGraph starting with a single graph.
+     */
+    public static DatasetGraph create(Graph graph) { return new DatasetGraphMap(graph) ; }
     
+    /**
+     * Create a DatasetGraph which only ever has a single default graph.
+     */
+    public static DatasetGraph createOneGraph(Graph graph) { return new DatasetGraphOne(graph) ; } 
     
-    private static DatasetGraphOpen.GraphMaker memGraphMaker = new GraphMaker(){
+    private static DatasetGraphMaker.GraphMaker memGraphMaker = new DatasetGraphMaker.GraphMaker()
+    {
         public Graph create()
         {
-            return GraphFactory.createGraph() ;
+            return GraphFactory.createDefaultGraph() ;
         }
     } ;
     
-    public static DatasetGraph createMem() { return new  DatasetGraphOpen(memGraphMaker) ; }
+    /**
+     * Create a DatasetGraph which has all graphs in memory.
+     */
 
-    @SuppressWarnings("deprecation")
-    public static DataSourceGraph createDataSource(DatasetGraph datasetGraph)
-    {
-        return new DataSourceGraphImpl(datasetGraph) ;
-    }
+    public static DatasetGraph createMem() { return new DatasetGraphMaker(memGraphMaker) ; }
 }
 
 /*

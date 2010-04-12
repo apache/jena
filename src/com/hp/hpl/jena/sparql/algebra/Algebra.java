@@ -19,7 +19,7 @@ import com.hp.hpl.jena.shared.PrefixMapping ;
 import com.hp.hpl.jena.sparql.algebra.opt.Optimize ;
 import com.hp.hpl.jena.sparql.algebra.opt.TransformFilterEquality ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.sparql.core.DatasetGraphOne ;
+import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.Plan ;
 import com.hp.hpl.jena.sparql.engine.QueryEngineFactory ;
@@ -120,7 +120,7 @@ public class Algebra
 
     static public QueryIterator exec(Op op, Graph graph)
     {
-        return exec(op, new DatasetGraphOne(graph)) ;
+        return exec(op, DatasetGraphFactory.createOneGraph(graph)) ;
     }
 
     static public QueryIterator exec(Op op, DatasetGraph ds)
@@ -144,7 +144,7 @@ public class Algebra
 
     static public QueryIterator execRef(Op op, Graph graph)
     {
-        return execRef(op, new DatasetGraphOne(graph)) ;
+        return execRef(op, DatasetGraphFactory.createOneGraph(graph)) ;
     }
 
     static public QueryIterator execRef(Op op, DatasetGraph ds)

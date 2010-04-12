@@ -15,13 +15,13 @@ import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.lib.iterator.NullIterator ;
 
 /** 
- * DatasetGraph of a single graph. 
+ * Readonly DatasetGraph of a single graph. 
  */
 public class DatasetGraphOne extends DatasetGraphBase
 {
     private Graph graph ;
     
-    public DatasetGraphOne(Graph graph) { this.graph = graph ; }
+    DatasetGraphOne(Graph graph) { this.graph = graph ; }
     
     @Override
     public boolean containsGraph(Node graphNode)
@@ -40,7 +40,8 @@ public class DatasetGraphOne extends DatasetGraphBase
         return new NullIterator<Node>() ;
     }
 
-    public int size()
+    @Override
+    public long size()
     {
         return 0 ;
     }
@@ -63,6 +64,18 @@ public class DatasetGraphOne extends DatasetGraphBase
         else
             throw new UnsupportedOperationException("DatasetGraphOne.delete/named graph") ;
     }
+
+    @Override
+    public void setDefaultGraph(Graph g)    
+    { throw new UnsupportedOperationException("DatasetGraphOne.setDefaultGraph") ; }
+
+    @Override
+    public void addGraph(Node graphName, Graph graph)
+    { throw new UnsupportedOperationException("DatasetGraphOne.addGraph") ; }
+
+    @Override
+    public void removeGraph(Node graphName)
+    { throw new UnsupportedOperationException("DatasetGraphOne.removeGraph") ; }
 
     protected static boolean isDefaultGraph(Quad quad)
     {

@@ -16,7 +16,7 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.algebra.ExtBuilder;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpExtRegistry;
-import com.hp.hpl.jena.sparql.core.DataSourceGraph;
+import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.Substitute;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
@@ -77,7 +77,7 @@ public class OpFetch extends OpExt
         @Override
         protected QueryIterator nextStage(Binding binding)
         {
-            DataSourceGraph ds = (DataSourceGraph)super.getExecContext().getDataset() ;
+            DatasetGraph ds = super.getExecContext().getDataset() ;
             Node n = Substitute.substitute(node, binding) ;
             String uri = n.getURI();
             if ( ds.containsGraph(n) )
