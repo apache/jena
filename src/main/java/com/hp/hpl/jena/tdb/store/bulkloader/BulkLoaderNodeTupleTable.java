@@ -5,7 +5,7 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.store;
+package com.hp.hpl.jena.tdb.store.bulkloader;
 
 import java.util.Date ;
 import java.util.Iterator ;
@@ -21,6 +21,7 @@ import com.hp.hpl.jena.sparql.util.Timer ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 import com.hp.hpl.jena.tdb.index.TupleIndex ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable ;
+import com.hp.hpl.jena.tdb.store.NodeId ;
 import com.hp.hpl.jena.tdb.sys.Session ;
 
 /** Load into one NodeTupleTable (triples, quads, other) 
@@ -169,99 +170,117 @@ public abstract class BulkLoaderNodeTupleTable implements Sink<Node[]>
 
     private void createSecondaryIndexes(boolean printTiming)
     {
-        if ( doInParallel )
-            createSecondaryIndexesParallel(printTiming) ;
-        else if ( doInterleaved )
-            createSecondaryIndexesInterleaved(printTiming) ;
-        else
-            createSecondaryIndexesSequential(printTiming) ;
+        BuilderSecondaryIndexes builder ;
         
+        if ( doInParallel )
+            builder = new BuilderSecondaryIndexesParallel() ;
+        else if ( doInterleaved )
+            builder = new BuilderSecondaryIndexesInterleaved() ;
+        else
+            builder = new BuilderSecondaryIndexesSequential() ;
+        
+        builder.createSecondaryIndexes(primaryIndex, secondaryIndexes, printTiming) ;
+            
         // Re-attach the indexes.
         for ( int i = 1 ; i < numIndexes ; i++ )
             nodeTupleTable.getTupleTable().setTupleIndex(i, secondaryIndexes[i-1]) ;
         
     }
     
-    private void createSecondaryIndexesParallel(boolean printTiming)
+    class BuilderSecondaryIndexesParallel implements BuilderSecondaryIndexes
     {
-        println("** Parallel index building") ;
-        Timer timer = new Timer() ;
-        timer.startTimer() ;
-        
-        TupleIndex primary = nodeTupleTable.getTupleTable().getIndex(0) ;
-        
-        int semaCount = 0 ;
-        Semaphore sema = new Semaphore(0) ;
-
-        for ( TupleIndex index : secondaryIndexes )
+        public void createSecondaryIndexes(TupleIndex   primaryIndex ,
+                                           TupleIndex[] secondaryIndexes ,
+                                           boolean printTiming)
         {
-            if ( index != null )
+            println("** Parallel index building") ;
+            Timer timer = new Timer() ;
+            timer.startTimer() ;
+
+            int semaCount = 0 ;
+            Semaphore sema = new Semaphore(0) ;
+
+            for ( TupleIndex index : secondaryIndexes )
             {
-                Runnable builder = setup(sema, primary, index, index.getLabel(), printTiming) ;
-                new Thread(builder).start() ;
-                semaCount++ ;
+                if ( index != null )
+                {
+                    Runnable builder = setup(sema, primaryIndex, index, index.getLabel(), printTiming) ;
+                    new Thread(builder).start() ;
+                    semaCount++ ;
+                }
+            }
+
+            try {  sema.acquire(semaCount) ; } catch (InterruptedException ex) { ex.printStackTrace(); }
+
+            long time = timer.readTimer() ;
+            timer.endTimer() ;
+            if ( printTiming )
+                printf("Time for parallel indexing: %.2fs\n", time/1000.0) ;
+        }
+
+        private Runnable setup(final Semaphore sema, final TupleIndex srcIndex, final TupleIndex destIndex, final String label, final boolean printTiming)
+        {
+            Runnable builder = new Runnable(){
+                //@Override
+                public void run()
+                {
+                    copyIndex(srcIndex.all(), new TupleIndex[]{destIndex}, label, printTiming) ;
+                    sema.release() ;
+                }} ;
+
+                return builder ;
+        }
+    }
+
+    class BuilderSecondaryIndexesSequential implements BuilderSecondaryIndexes
+    {
+        // Create each secondary indexes, doing one at a time.
+        public void createSecondaryIndexes(TupleIndex   primaryIndex ,
+                                           TupleIndex[] secondaryIndexes ,
+                                           boolean printTiming)
+        {
+            Timer timer = new Timer() ;
+            timer.startTimer() ;
+            TupleIndex primary = nodeTupleTable.getTupleTable().getIndex(0) ;
+
+            for ( TupleIndex index : secondaryIndexes )
+            {
+                if ( index != null )
+                {
+                    long time1 = timer.readTimer() ;
+                    copyIndex(primary.all(), new TupleIndex[]{index}, index.getLabel(), printTiming) ;
+                    long time2 = timer.readTimer() ; ;
+                    //                if ( printTiming )
+                    //                    printf("Time for %s indexing: %.2fs\n", index.getLabel(), (time2-time1)/1000.0) ;
+                    if ( printTiming )
+                        println() ;
+                }  
             }
         }
-        
-        try {  sema.acquire(semaCount) ; } catch (InterruptedException ex) { ex.printStackTrace(); }
-
-        long time = timer.readTimer() ;
-        timer.endTimer() ;
-        if ( printTiming )
-            printf("Time for parallel indexing: %.2fs\n", time/1000.0) ;
     }
     
-    private Runnable setup(final Semaphore sema, final TupleIndex srcIndex, final TupleIndex destIndex, final String label, final boolean printTiming)
+    class BuilderSecondaryIndexesInterleaved implements BuilderSecondaryIndexes
     {
-        Runnable builder = new Runnable(){
-            //@Override
-            public void run()
-            {
-                copyIndex(srcIndex.all(), new TupleIndex[]{destIndex}, label, printTiming) ;
-                sema.release() ;
-            }} ;
-        
-        return builder ;
-    }
 
-    // Create each secondary indexes, doing one at a time.
-    private void createSecondaryIndexesSequential(boolean printTiming)
-    {
-        Timer timer = new Timer() ;
-        timer.startTimer() ;
-        TupleIndex primary = nodeTupleTable.getTupleTable().getIndex(0) ;
-        
-        for ( TupleIndex index : secondaryIndexes )
+        // Do as one pass over the SPO index, creating both other indexes at the same time.
+        // Can be hugely costly in system resources.
+        public void createSecondaryIndexes(TupleIndex   primaryIndex ,
+                                           TupleIndex[] secondaryIndexes ,
+                                           boolean printTiming)
         {
-            if ( index != null )
-            {
-                long time1 = timer.readTimer() ;
-                copyIndex(primary.all(), new TupleIndex[]{index}, index.getLabel(), printTiming) ;
-                long time2 = timer.readTimer() ; ;
-//                if ( printTiming )
-//                    printf("Time for %s indexing: %.2fs\n", index.getLabel(), (time2-time1)/1000.0) ;
-                if ( printTiming )
-                    println() ;
-            }  
+            Timer timer = new Timer() ;
+            timer.startTimer() ;
+
+            long time1 = timer.readTimer() ;
+
+            copyIndex(primaryIndex.all(), secondaryIndexes, "All", printTiming) ;
+
+            long time2 = timer.readTimer() ;
+            if ( printTiming )
+                printf("Time for all indexes: %.2fs\n", (time2-time1)/1000.0) ;
         }
     }
 
-    // Do as one pass over the SPO index, creating both other indexes at the same time.
-    // Can be hugely costly in system resources.
-    private void createSecondaryIndexesInterleaved(boolean printTiming)
-    {
-        Timer timer = new Timer() ;
-        timer.startTimer() ;
-        
-        long time1 = timer.readTimer() ;
-        
-        copyIndex(primaryIndex.all(), secondaryIndexes, "All", printTiming) ;
-        
-        long time2 = timer.readTimer() ;
-        if ( printTiming )
-            printf("Time for all indexes: %.2fs\n", (time2-time1)/1000.0) ;
-    }
-    
     private static Object lock = new Object() ;
 
     private void copyIndex(Iterator<Tuple<NodeId>> srcIter, TupleIndex[] destIndexes, String label, boolean printTiming)
@@ -272,7 +291,7 @@ public abstract class BulkLoaderNodeTupleTable implements Sink<Node[]>
         long c = 0 ;
         long last = 0 ;
         timer.startTimer() ;
-        
+
         for ( int counter = 0 ; srcIter.hasNext() ; counter++ )
         {
             Tuple<NodeId> tuple = srcIter.next();
@@ -290,7 +309,7 @@ public abstract class BulkLoaderNodeTupleTable implements Sink<Node[]>
                 long elapsed = t ;
                 last = t ;
                 printf("Index %s: %,d slots (Batch: %,d slots/s / Run: %,d slots/s)\n", 
-                                  label, cumulative, 1000*c/batchTime, 1000*cumulative/elapsed) ;
+                       label, cumulative, 1000*c/batchTime, 1000*cumulative/elapsed) ;
                 if (tickPoint(cumulative, quantum2) )
                 {
                     String timestamp = Utils.nowAsString() ;
@@ -302,22 +321,22 @@ public abstract class BulkLoaderNodeTupleTable implements Sink<Node[]>
                 c = 0 ;
             }
         }
-        
+
         for ( TupleIndex destIdx : destIndexes )
         {
             if ( destIdx != null )
                 destIdx.sync(true) ;
         }
-        
+
         long totalTime = timer.endTimer() ;
-        
+
         if ( printTiming )
         {
             if ( cumulative > 0 )
             {
                 if ( totalTime > 0 )
                     printf("Index %s: %,d triples indexed in %,.2fs [%,d slots/s]\n", 
-                                      label, cumulative, totalTime/1000.0, 1000*cumulative/totalTime) ;
+                           label, cumulative, totalTime/1000.0, 1000*cumulative/totalTime) ;
                 else
                     printf("Index %s: %,d triples indexed in %,.2fs\n", label, cumulative, totalTime/1000.0) ;
             }
@@ -325,7 +344,7 @@ public abstract class BulkLoaderNodeTupleTable implements Sink<Node[]>
                 printf("Index %s: 0 triples indexed\n", label) ;
         }
     }
-    
+   
     private static boolean tickPoint(long counter, long quantum)
     {
         return counter%quantum == 0 ;
