@@ -3,6 +3,13 @@ ChangeLog for ARQ
 
 ==== ARQ 2.8.4
 
++ Internal reorganisation of graph-lebvel DatasetGraph (no chnages to the application API)
+  There is now hanlding of quads,
+  The difference bewteen datasetGraph and DataSourceGraph is removed.
+  New classes to help with DatasetGraphs which are collections of graphs and 
+  ones that are colelctions of quads and triples.  
+  This does not affect Dataset or DataSource, the API interfaces.     
+
 + Add BNODE() function to generate fresh bnodes
 
 ==== ARQ 2.8.3
