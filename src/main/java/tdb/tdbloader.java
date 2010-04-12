@@ -19,7 +19,7 @@ import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.riot.Lang ;
 import com.hp.hpl.jena.tdb.TDBLoader ;
-import com.hp.hpl.jena.tdb.store.BulkLoader ;
+import com.hp.hpl.jena.tdb.store.BulkLoaderTriples ;
 import com.hp.hpl.jena.tdb.store.BulkLoaderDataset ;
 import com.hp.hpl.jena.tdb.store.GraphTDB ;
 
@@ -100,7 +100,7 @@ public class tdbloader extends CmdTDB
         if ( allTriples && graphName == null )
         {
             Graph graph = getGraph() ;
-            BulkLoader loader = new BulkLoader((GraphTDB)graph, timing, doInParallel, doIncremental, generateStats) ;
+            BulkLoaderTriples loader = new BulkLoaderTriples((GraphTDB)graph, timing, doInParallel, doIncremental, generateStats) ;
             loader.load(urls) ;
             return ;
         }

@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -31,28 +32,29 @@ public class ArrayUtils
     /** Allocation space and copy */ 
     public static <T> T[] copy(T[] array)
     {
+        return copy(array, 0, array.length) ;
+    }
+    
+    /** Allocation space and copy */ 
+    public static <T> T[] copy(T[] array, int start, int finish)
+    {    
         // *** Java6.
-        //return Arrays.copyOf(array, array.length) ;
+        //return Arrays.copyOfRange(array, start, finish) ;
 
         // Java5.
         // Fails for arrays of length 0;
-        if ( array.length == 0 )
-        {
-            throw new IllegalArgumentException("Zerro length array not supported") ;
-//            // Accessing this at runtime causes an error.
-//            @SuppressWarnings("unchecked")
-//            T[] array2 = (T[])new Object[0] ;
-//            return array2 ;
-        }
+        if ( array.length <= start )
+            throw new IllegalArgumentException("Zero length array not supported") ;
         @SuppressWarnings("unchecked")
-        T[] array2 = (T[])Array.newInstance(array[0].getClass(), array.length) ;
-        System.arraycopy(array, 0, array2, 0, array.length) ;
+        T[] array2 = (T[])Array.newInstance(array[start].getClass(), finish-start) ;
+        System.arraycopy(array, start, array2, 0, finish-start) ;
         return array2 ;
     }
 }
 
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -130,7 +130,7 @@ public final class BPTreeNodeMgr extends BPTreePageMgr
     
     /** Signal the completion of an update operation */
     public void finishUpdate()      { blockMgr.finishUpdate() ; }
-
+    
     private class Block2BPTreeNode implements BlockConverter.Converter<BPTreeNode>
     {
         //@Override

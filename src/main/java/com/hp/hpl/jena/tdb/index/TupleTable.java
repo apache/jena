@@ -195,7 +195,6 @@ public class TupleTable implements Sync, Closeable
         if ( index != null && index.getTupleLength() != tupleLen )
             throw new TDBException("Incompatible index: "+index.getLabel()) ;
         indexes[i] = index ;
-        
     }
 
     /** Number of indexes on this tuple table */

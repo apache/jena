@@ -14,7 +14,7 @@ import java.util.List ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.riot.Lang ;
 import com.hp.hpl.jena.sparql.util.Timer ;
-import com.hp.hpl.jena.tdb.store.BulkLoader ;
+import com.hp.hpl.jena.tdb.store.BulkLoaderTriples ;
 import com.hp.hpl.jena.tdb.store.BulkLoaderDataset ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.store.GraphTDB ;
@@ -75,7 +75,7 @@ public class TDBLoader
     /** Load the contents of URL into a model - may not be as efficient as bulk loading into a TDB graph  */
     public static long loadModel(Model model, String url, boolean showProgress)
     {
-        return BulkLoader.load(model, url, showProgress) ;
+        return BulkLoaderTriples.load(model, url, showProgress) ;
     }
 
     /** Load the contents of a listy of URLs into a model - may not be as efficient as bulk loading into a TDB graph  */
@@ -129,15 +129,15 @@ public class TDBLoader
                     throw new TDBException("Not a triples language") ;
             }
         }
-        BulkLoader bulkLoader = new BulkLoader(graph, showProgress, false, false, generateStats) ;
-        bulkLoader.load(urls) ;
+        BulkLoaderTriples bulkLoaderTriples = new BulkLoaderTriples(graph, showProgress, false, false, generateStats) ;
+        bulkLoaderTriples.load(urls) ;
     }
     
     /** Load a graph from an input stream which must be N-Triples */
     public void loadGraph(GraphTDB graph, InputStream input)
     {
-        BulkLoader bulkLoader = new BulkLoader(graph, showProgress, false, false, generateStats) ;
-        bulkLoader.load(input) ;
+        BulkLoaderTriples bulkLoaderTriples = new BulkLoaderTriples(graph, showProgress, false, false, generateStats) ;
+        bulkLoaderTriples.load(input) ;
     }
 
 

@@ -52,7 +52,7 @@ import com.hp.hpl.jena.util.FileManager ;
  * Not efficent for small, incremental additions to a graph.  
  */
 
-public class BulkLoader
+public class BulkLoaderTriples
 {
     private GraphTDB graph ;
     private Symbol symTesting = SystemTDB.allocSymbol("testing") ;
@@ -81,7 +81,7 @@ public class BulkLoader
     @Deprecated
     public static void load(GraphTDB graph, List<String> urls, boolean showProgress)
     {
-        BulkLoader loader = new BulkLoader(graph, showProgress) ;
+        BulkLoaderTriples loader = new BulkLoaderTriples(graph, showProgress) ;
         loader.load(urls) ;
     }
     
@@ -91,7 +91,7 @@ public class BulkLoader
     {
         List<String> list = new ArrayList<String>() ;
         list.add(url) ;
-        BulkLoader loader = new BulkLoader(graph, showProgress) ;
+        BulkLoaderTriples loader = new BulkLoaderTriples(graph, showProgress) ;
         loader.load(list) ;
     }
     
@@ -118,14 +118,14 @@ public class BulkLoader
     }
     
 
-    public BulkLoader(GraphTDB graph, boolean showProgress)
+    public BulkLoaderTriples(GraphTDB graph, boolean showProgress)
     {
         this(graph, showProgress, false, false, false) ;
     }
     
     /** Create a bulkloader for a graph : showProgress/parallel/incremental/generate statistics */ 
 
-    public BulkLoader(GraphTDB graph, boolean showProgress, boolean doInParallel, boolean doIncremental, boolean generateStats)
+    public BulkLoaderTriples(GraphTDB graph, boolean showProgress, boolean doInParallel, boolean doIncremental, boolean generateStats)
     {
         // Bulk loading restricted to triple indexes
         // Assumes that the NodeTupleTable is 3-way at the moment
