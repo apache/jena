@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            26-Mar-2003
  * Filename           $RCSfile: TestProperty.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-10-06 13:04:42 $
+ * Last modified on   $Date: 2010-04-13 14:12:51 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
@@ -34,12 +34,12 @@ import com.hp.hpl.jena.vocabulary.RDF;
 
 /**
  * <p>
- * Unit test cases for the Ontology class
+ * Unit test cases for the OntProperty class
  * </p>
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:ian_dickinson@users.sourceforge.net" >email</a>)
- * @version CVS $Id: TestProperty.java,v 1.2 2009-10-06 13:04:42 ian_dickinson Exp $
+ * @version CVS $Id: TestProperty.java,v 1.3 2010-04-13 14:12:51 ian_dickinson Exp $
  */
 public class TestProperty
     extends OntTestBase
@@ -212,6 +212,9 @@ public class TestProperty
                     OntProperty p = m.createObjectProperty( NS + "p" );
                     OntProperty q = m.createObjectProperty( NS + "q" );
                     OntProperty r = m.createObjectProperty( NS + "r" );
+
+                    assertFalse( p.isInverseOf( q ) );
+                    assertEquals( null, p.getInverseOf() );
 
                     p.addInverseOf( q );
                     assertEquals( "Cardinality should be 1", 1, p.getCardinality( prof.INVERSE_OF() ) );
@@ -548,7 +551,7 @@ public class TestProperty
                     if (m_owlLang) {assertTrue( "isSymmetricProperty not correct", p.isSymmetricProperty() ); }
                 }
             },
-            new OntTestCase( "OntProperty.inverse", true, true, true, false ) {
+            new OntTestCase( "ObjectProperty.inverse", true, true, true, false ) {
                 @Override
                 public void ontTest( OntModel m ) throws Exception {
                     ObjectProperty p = m.createObjectProperty( NS + "p" );
@@ -556,6 +559,7 @@ public class TestProperty
                     ObjectProperty r = m.createObjectProperty( NS + "r" );
 
                     assertFalse( "No inverse of p", p.hasInverse() );
+                    assertEquals( null, p.getInverse() );
 
                     q.addInverseOf( p );
                     assertTrue( "Inverse of p", p.hasInverse() );
