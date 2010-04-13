@@ -6,10 +6,76 @@
 
 package com.hp.hpl.jena.tdb.store.bulkloader;
 
+import java.util.Date ;
+
+import org.openjena.atlas.lib.Sink ;
+
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.sparql.util.StringUtils ;
+import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
+
 /** Overall framework for bulk loading */
 public class BulkLoader
 {
+    boolean showProgress = true ;
+    
+    public Sink<Triple> loadTriples(DatasetGraphTDB dsg)
+    {
+        final LoaderNodeTupleTable x = new LoaderNodeTupleTable(null, 
+                                                                dsg.getTripleTable().getNodeTupleTable(),
+                                                                true) ;
+        Sink<Triple> sink = new Sink<Triple>() {
+            public void send(Triple item)
+            {
+                Node[] nodes = new Node[3] ;
+                nodes[0] = item.getSubject() ;
+                nodes[1] = item.getPredicate() ;
+                nodes[2] = item.getObject() ;
+                x.load(item.getSubject(),item.getPredicate(),  item.getObject()) ;
+            }
 
+            public void flush() { x.sync() ; }
+            public void close() { x.close() ; }
+        } ;
+        return sink ;
+    }
+    
+    
+    // Start
+    // data
+    // finish
+    
+    // ---- Misc utilities
+    synchronized void printf(String fmt, Object... args)
+    {
+        if (!showProgress) return ;
+        System.out.printf(fmt, args) ;
+    }
+
+    synchronized void println()
+    {
+        if (!showProgress) return ;
+        System.out.println() ;
+    }
+
+    synchronized void println(String str)
+    {
+        if (!showProgress) return ;
+        System.out.println(str) ;
+    }
+
+    synchronized void now(String str)
+    {
+        if (!showProgress) return ;
+
+        if (str != null)
+        {
+            System.out.print(str) ;
+            System.out.print(" : ") ;
+        }
+        System.out.println(StringUtils.str(new Date())) ;
+    }
 }
 
 /*

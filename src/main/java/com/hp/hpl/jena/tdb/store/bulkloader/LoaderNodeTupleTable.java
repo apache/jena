@@ -12,7 +12,7 @@ import java.util.Iterator ;
 import java.util.concurrent.Semaphore ;
 
 import org.openjena.atlas.lib.ArrayUtils ;
-import org.openjena.atlas.lib.Sink ;
+import org.openjena.atlas.lib.Closeable ;
 import org.openjena.atlas.lib.Tuple ;
 
 import com.hp.hpl.jena.graph.Node ;
@@ -20,6 +20,7 @@ import com.hp.hpl.jena.sparql.util.StringUtils ;
 import com.hp.hpl.jena.sparql.util.Timer ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 import com.hp.hpl.jena.tdb.index.TupleIndex ;
+import com.hp.hpl.jena.tdb.lib.Sync ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
 import com.hp.hpl.jena.tdb.sys.Session ;
@@ -27,7 +28,7 @@ import com.hp.hpl.jena.tdb.sys.Session ;
 /** Load into one NodeTupleTable (triples, quads, other) 
  */
 
-public abstract class BulkLoaderNodeTupleTable implements Sink<Node[]>
+public class LoaderNodeTupleTable implements Closeable, Sync
 {
     private boolean showProgress    = false ;
     private boolean doInParallel    = false ;
@@ -53,14 +54,14 @@ public abstract class BulkLoaderNodeTupleTable implements Sink<Node[]>
     // triple load to named graph 
     // quads : two NodeTupleTables
     
-    public BulkLoaderNodeTupleTable(Session session, NodeTupleTable nodeTupleTable, boolean showProgress)
+    public LoaderNodeTupleTable(Session session, NodeTupleTable nodeTupleTable, boolean showProgress)
     {
         this(session, nodeTupleTable, showProgress, false, false, false) ;
     }
     
     /** Create a bulkloader for triples or quads: showProgress/parallel/incremental/generate statistics */ 
 
-    public BulkLoaderNodeTupleTable(Session session, NodeTupleTable nodeTupleTable, boolean showProgress, boolean doInParallel, boolean doIncremental, boolean generateStats)
+    public LoaderNodeTupleTable(Session session, NodeTupleTable nodeTupleTable, boolean showProgress, boolean doInParallel, boolean doIncremental, boolean generateStats)
     {
         this.session = session ;
         this.nodeTupleTable = nodeTupleTable ;
@@ -71,9 +72,6 @@ public abstract class BulkLoaderNodeTupleTable implements Sink<Node[]>
     }
 
     // -- LoaderFramework
-    
-    
-    
     
     protected void loadPrepare()
     {
@@ -128,18 +126,23 @@ public abstract class BulkLoaderNodeTupleTable implements Sink<Node[]>
         }
     }
 
-    protected abstract void statsPrepare() ;
-    protected abstract void statsFinalize() ;
+    // XXX
+    protected void statsPrepare() {}
+    protected void statsFinalize() {}
 
-    public void send(Node[] nodes)
+    public void load(Node... nodes)
     {
         nodeTupleTable.addRow(nodes) ;
     }
     
-    public void flush() {}
+    public void sync(boolean force) {}
+    public void sync() {}
     
     // --------
     
+    public void close()
+    { sync() ; }
+
     /** Tick point for messages during loading of data */
     public static int LoadTickPoint = 50000 ;
     /** Tick point for messages during secodnary index creation */
