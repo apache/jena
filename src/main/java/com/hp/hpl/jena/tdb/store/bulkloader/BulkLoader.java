@@ -12,7 +12,9 @@ import org.openjena.atlas.lib.Sink ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.util.StringUtils ;
+import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 
 /** Overall framework for bulk loading */
@@ -22,17 +24,18 @@ public class BulkLoader
     
     public Sink<Triple> loadTriples(DatasetGraphTDB dsg)
     {
+        return loadTriples(dsg, dsg.getTripleTable().getNodeTupleTable()) ;
+    }
+    
+    private Sink<Triple> loadTriples(DatasetGraphTDB dsg, NodeTupleTable nodeTupleTable)
+    {
         final LoaderNodeTupleTable x = new LoaderNodeTupleTable(null, 
                                                                 dsg.getTripleTable().getNodeTupleTable(),
                                                                 true) ;
         Sink<Triple> sink = new Sink<Triple>() {
-            public void send(Triple item)
+            public void send(Triple triple)
             {
-                Node[] nodes = new Node[3] ;
-                nodes[0] = item.getSubject() ;
-                nodes[1] = item.getPredicate() ;
-                nodes[2] = item.getObject() ;
-                x.load(item.getSubject(),item.getPredicate(),  item.getObject()) ;
+                x.load(triple.getSubject(), triple.getPredicate(),  triple.getObject()) ;
             }
 
             public void flush() { x.sync() ; }
@@ -40,7 +43,32 @@ public class BulkLoader
         } ;
         return sink ;
     }
+
+    public Sink<Triple> loadTriples(DatasetGraphTDB dsg, Node graphName)
+    {
+        NodeTupleTable ntt = dsg.getQuadTable().getNodeTupleTable() ;
+        NodeTupleTable ntt2 = null ;
+        // mask /project to quads[graphName]<->triple
+        return loadTriples(dsg, ntt2) ;
+    }
     
+    
+    public Sink<Quad> loadQuads(DatasetGraphTDB dsg)
+    {
+        final LoaderNodeTupleTable x = new LoaderNodeTupleTable(null, 
+                                                                dsg.getQuadTable().getNodeTupleTable(),
+                                                                true) ;
+        Sink<Quad> sink = new Sink<Quad>() {
+            public void send(Quad quad)
+            {
+                x.load(quad.getGraph(), quad.getSubject(), quad.getPredicate(),  quad.getObject()) ;
+            }
+
+            public void flush() { x.sync() ; }
+            public void close() { x.close() ; }
+        } ;
+        return sink ;
+    }
     
     // Start
     // data
