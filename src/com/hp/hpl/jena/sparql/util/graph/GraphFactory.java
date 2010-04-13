@@ -19,7 +19,10 @@ public class GraphFactory
 {
     private static RefBoolean usePlainGraph = new RefBoolean(ARQ.strictGraph) ;
     
-    public static Graph createGraph()
+    /** Create a graph that is a Jena memory graph 
+     * @see #createDefaultGraph
+     */
+    public static Graph createGraphMem()
     {
         return Factory.createGraphMem() ;
     }

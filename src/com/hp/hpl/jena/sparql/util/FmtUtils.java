@@ -340,6 +340,9 @@ public class FmtUtils
     {
         if ( context == null )
             return stringForURI(uri, null, null) ;
+//        if ( ! context.getPrologue().explicitlySetBaseURI() )
+//            return stringForURI(uri, null, context.getPrefixMapping()) ;
+        
         return stringForURI(uri, context.getBaseIRI(), context.getPrefixMapping()) ;
     }
 

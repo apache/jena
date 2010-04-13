@@ -44,7 +44,14 @@ public class WriterSSE
     { WriterGraph.output(out, dsg, sCxt(prologue)) ; }
 
     private static SerializationContext sCxt(Prologue prologue)
-    { return new SerializationContext(prologue) ; }
+    { 
+//        return new SerializationContext(prologue) ;
+        // Pragmatic.
+        if ( false && prologue.explicitlySetBaseURI() )
+            return new SerializationContext(prologue) ;
+        else
+            return new SerializationContext(prologue.getPrefixMapping()) ;
+    }
     
 }
 

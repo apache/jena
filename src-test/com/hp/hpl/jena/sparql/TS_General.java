@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -10,6 +11,7 @@ package com.hp.hpl.jena.sparql;
 import junit.framework.TestSuite ;
 
 import com.hp.hpl.jena.sparql.core.TestContext ;
+import com.hp.hpl.jena.sparql.core.TestDatasetGraph ;
 import com.hp.hpl.jena.sparql.core.TestEsc ;
 import com.hp.hpl.jena.sparql.expr.TS_Expr ;
 import com.hp.hpl.jena.sparql.expr.TestExpressions ;
@@ -27,7 +29,7 @@ public class TS_General extends TestSuite
     public TS_General()
     {
         super(testSetName) ;
-        // Need to check eachis JUnit 4 compatible then remove all .suite and use @RunWith(Suite.class) @SuiteClasses
+        // Need to check each is JUnit 4 compatible then remove all .suite and use @RunWith(Suite.class) @SuiteClasses
         addTest(TS_Expr.suite()) ;
         addTest(TestExpressions.suite()) ;
         
@@ -39,11 +41,14 @@ public class TS_General extends TestSuite
         addTest(TestSerialization.suite()) ;
         
         addTest(TestContext.suite()) ;
+        
+        addTest(TestDatasetGraph.suite()) ;
     }
 }
 
 /*
  * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

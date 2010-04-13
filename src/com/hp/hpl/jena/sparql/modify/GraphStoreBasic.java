@@ -16,7 +16,7 @@ import com.hp.hpl.jena.update.GraphStore ;
 public class GraphStoreBasic extends DatasetGraphMap implements GraphStore
 {
     public GraphStoreBasic()
-    { super(GraphFactory.createGraph()) ; }
+    { super(GraphFactory.createDefaultGraph()) ; }
     
     public GraphStoreBasic(Dataset ds)
     { 

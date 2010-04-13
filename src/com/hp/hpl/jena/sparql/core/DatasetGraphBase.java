@@ -10,14 +10,16 @@ package com.hp.hpl.jena.sparql.core;
 
 import java.util.Iterator ;
 
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.shared.Lock;
-import com.hp.hpl.jena.shared.LockMRSW;
+import com.hp.hpl.jena.shared.Lock ;
+import com.hp.hpl.jena.shared.LockMRSW ;
 import com.hp.hpl.jena.sparql.lib.iterator.Iter ;
 import com.hp.hpl.jena.sparql.lib.iterator.Transform ;
+import com.hp.hpl.jena.sparql.sse.writers.WriterGraph ;
 import com.hp.hpl.jena.sparql.util.Context ;
+import com.hp.hpl.jena.sparql.util.IndentedLineBuffer ;
 
 /** 
  * DatasetGraph framework : readonly dataset need only provide find(g,s,p,o), getGraph() and getDefaultGraph()
@@ -132,6 +134,15 @@ abstract public class DatasetGraphBase implements DatasetGraph
     //@Override
     public void close()
     { }
+    
+    @Override
+    public String toString()
+    {
+        // Using the size of the graphs would be better.
+        IndentedLineBuffer out = new IndentedLineBuffer() ;
+        WriterGraph.output(out, this, null) ;
+        return out.asString() ;
+    }
 }
 
 /*

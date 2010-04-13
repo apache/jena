@@ -131,8 +131,8 @@ public class BuilderGraph
                 g = ds.getDefaultGraph() ;
                 if ( g == null )
                 {
-                    g = GraphFactory.createGraph() ;
-                    ds.setDefaultGraph(GraphFactory.createGraph()) ;
+                    g = GraphFactory.createDefaultGraph() ;
+                    ds.setDefaultGraph(g) ;
                 }
             }
             else
@@ -140,7 +140,7 @@ public class BuilderGraph
                 g = ds.getGraph(name) ;
                 if ( g == null )
                 {
-                    g = GraphFactory.createGraph() ;
+                    g = GraphFactory.createDefaultGraph() ;
                     ds.addGraph(name, g) ;
                 }
             }

@@ -72,7 +72,6 @@ public class RunARQ
     }
     
     static { ALog.setLog4j() ; }
-    
 
     // AggregateFactory change.
     // Expression in agg call.
@@ -165,6 +164,9 @@ public class RunARQ
 
     public static void main(String[] argv) throws Exception
     {
+        
+        qparse("--print=op", "BASE <> SELECT *  { ?s <p> ?o}") ; System.exit(0) ;
+        
         String dir = "testing/ARQ/Union" ;
         
         ARQ.setStrictMode() ;
