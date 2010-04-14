@@ -1,5 +1,6 @@
-PREFIX :  <http://example/>
+#BASE <http://example/>
+PREFIX :  <http://example/X#>
 
 SELECT * 
-{ ?x :p ?v1 OPTIONAL { ?x :q ?v2 } }
+{ ?x <p> ?v1 OPTIONAL { ?x :q ?v2 } }
 
