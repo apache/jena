@@ -30,7 +30,7 @@ import com.hp.hpl.jena.tdb.migrate.DatasetPrefixStorage ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTableFactory ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTupleTableConcrete ;
-import com.hp.hpl.jena.tdb.nodetable.NodeTupleTableI ;
+import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable ;
 import com.hp.hpl.jena.tdb.sys.Names ;
 
 public class DatasetPrefixesTDB implements DatasetPrefixStorage
@@ -39,7 +39,9 @@ public class DatasetPrefixesTDB implements DatasetPrefixStorage
     // The nodetable is itself an index and a data file.
     
     static final String unamedGraphURI = "" ; //Quad.defaultGraphNode.getURI() ;
-    private final NodeTupleTableI nodeTupleTable ;
+    
+    // Use NodeTupleTableView?
+    private final NodeTupleTable nodeTupleTable ;
     static final ColumnMap colMap = new ColumnMap("GPU", "GPU") ;
     
     public static final RecordFactory factory = new RecordFactory(3*NodeId.SIZE, 0) ;
@@ -185,7 +187,7 @@ public class DatasetPrefixesTDB implements DatasetPrefixStorage
         Iter.close(iter) ;
     }
 
-    public NodeTupleTableI getNodeTupleTable()  { return nodeTupleTable ; }
+    public NodeTupleTable getNodeTupleTable()  { return nodeTupleTable ; }
     
     /** Return a PrefixMapping for the unamed graph */
     //@Override

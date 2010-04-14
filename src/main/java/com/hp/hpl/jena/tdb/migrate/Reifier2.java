@@ -7,41 +7,41 @@
 package com.hp.hpl.jena.tdb.migrate;
 
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
+import java.util.Collection ;
+import java.util.HashSet ;
+import java.util.Iterator ;
+import java.util.Set ;
 
 import org.openjena.atlas.iterator.Filter ;
 import org.openjena.atlas.iterator.Iter ;
 
-
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
-import com.hp.hpl.jena.util.iterator.NiceIterator;
-import com.hp.hpl.jena.util.iterator.NullIterator;
-import com.hp.hpl.jena.util.iterator.WrappedIterator;
-
-import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.shared.AlreadyReifiedException;
-import com.hp.hpl.jena.shared.CannotReifyException;
-import com.hp.hpl.jena.shared.ReificationStyle;
-import com.hp.hpl.jena.vocabulary.RDF;
-
-import com.hp.hpl.jena.sparql.algebra.Algebra;
-import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.core.DataSourceGraphImpl;
-import com.hp.hpl.jena.sparql.core.DatasetGraph;
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.engine.Plan;
-import com.hp.hpl.jena.sparql.engine.QueryEngineFactory;
-import com.hp.hpl.jena.sparql.engine.QueryEngineRegistry;
-import com.hp.hpl.jena.sparql.engine.QueryIterator;
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
-import com.hp.hpl.jena.sparql.engine.binding.BindingRoot;
-
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryFactory;
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.Reifier ;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.graph.TripleMatch ;
+import com.hp.hpl.jena.query.Query ;
+import com.hp.hpl.jena.query.QueryFactory ;
+import com.hp.hpl.jena.shared.AlreadyReifiedException ;
+import com.hp.hpl.jena.shared.CannotReifyException ;
+import com.hp.hpl.jena.shared.ReificationStyle ;
+import com.hp.hpl.jena.sparql.algebra.Algebra ;
+import com.hp.hpl.jena.sparql.algebra.Op ;
+import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
+import com.hp.hpl.jena.sparql.core.Var ;
+import com.hp.hpl.jena.sparql.engine.Plan ;
+import com.hp.hpl.jena.sparql.engine.QueryEngineFactory ;
+import com.hp.hpl.jena.sparql.engine.QueryEngineRegistry ;
+import com.hp.hpl.jena.sparql.engine.QueryIterator ;
+import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.engine.binding.BindingMap ;
+import com.hp.hpl.jena.sparql.engine.binding.BindingRoot ;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
+import com.hp.hpl.jena.util.iterator.NiceIterator ;
+import com.hp.hpl.jena.util.iterator.NullIterator ;
+import com.hp.hpl.jena.util.iterator.WrappedIterator ;
+import com.hp.hpl.jena.vocabulary.RDF ;
 
 /** A Reifier that only support one style Standard (intercept, no conceal 
  *  -- and intercept is a no-op anyway because all triples 
@@ -73,7 +73,7 @@ public class Reifier2 implements Reifier
     public Reifier2(Graph graph)
     {
         this.graph = graph ;
-        this.ds = new DataSourceGraphImpl(graph) ;
+        this.ds = DatasetGraphFactory.createOneGraph(graph) ;
         this.factory = QueryEngineRegistry.findFactory(op, ds, null) ;
     }
     

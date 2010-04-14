@@ -10,12 +10,11 @@ import java.util.Iterator ;
 
 import org.openjena.atlas.lib.Sink ;
 
-
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.sparql.core.DatasetGraphMem ;
+import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.sse.writers.WriterGraph ;
 import com.hp.hpl.jena.sparql.util.IndentedWriter ;
@@ -41,8 +40,8 @@ public class DatasetLib
      */
     public static boolean isomorphic(DatasetGraph dataset1, DatasetGraph dataset2)
     {
-        int x1 = dataset1.size() ;
-        int x2 = dataset2.size() ;
+        long x1 = dataset1.size() ;
+        long x2 = dataset2.size() ;
         if ( x1 >=0 && x1 != x2 )
             return false ;
         
@@ -73,7 +72,7 @@ public class DatasetLib
     // A DatasetGraph that creates memory graphs on mention */
     public static DatasetGraph createDatasetGraphMem()
     {
-        return new DatasetGraphMem() ;
+        return DatasetGraphFactory.createMem() ;
     }
 }
 

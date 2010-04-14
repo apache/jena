@@ -12,32 +12,34 @@ import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.util.StringUtils ;
-import com.hp.hpl.jena.tdb.nodetable.NodeTupleTableI ;
+import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable ;
+import com.hp.hpl.jena.tdb.nodetable.NodeTupleTableView ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 
 /** Overall framework for bulk loading */
 public class BulkLoader
 {
-    boolean showProgress = true ;
-    
-    LoaderNodeTupleTable[] tupleTables ;
-    
     public Destination<Triple> loadTriples(DatasetGraphTDB dsg)
     {
         return loadTriples(dsg, dsg.getTripleTable().getNodeTupleTable()) ;
     }
     
-    private Destination<Triple> loadTriples(DatasetGraphTDB dsg, NodeTupleTableI nodeTupleTable)
+    public Destination<Triple> loadTriples(DatasetGraphTDB dsg, Node graphName)
+    {
+        NodeTupleTable ntt = dsg.getQuadTable().getNodeTupleTable() ;
+        NodeTupleTable ntt2 = new NodeTupleTableView(ntt, graphName) ;
+        return loadTriples(dsg, ntt2) ;
+    }
+
+    private Destination<Triple> loadTriples(DatasetGraphTDB dsg, NodeTupleTable nodeTupleTable)
     {
         final LoaderNodeTupleTable x = new LoaderNodeTupleTable(null, 
                                                                 dsg.getTripleTable().getNodeTupleTable(),
                                                                 true) ;
-        tupleTables = new LoaderNodeTupleTable[]{x} ;
-        
         Destination<Triple> sink = new Destination<Triple>() {
             public void start()
             {
-                tupleTables[0].loadStart() ;
+                x.loadStart() ;
             }
             public void send(Triple triple)
             {
@@ -45,50 +47,41 @@ public class BulkLoader
             }
 
             public void flush() { }
-            public void close() {tupleTables[0].loadFinish() ; }
-
+            public void close() { x.loadFinish() ; }
+ 
         } ;
         return sink ;
     }
 
-    public Destination<Triple> loadTriples(DatasetGraphTDB dsg, Node graphName)
-    {
-        NodeTupleTableI ntt = dsg.getQuadTable().getNodeTupleTable() ;
-        NodeTupleTableI ntt2 = null ;
-        // mask /project to quads[graphName]<->triple
-        return loadTriples(dsg, ntt2) ;
-    }
-    
     public Destination<Quad> loadQuads(DatasetGraphTDB dsg)
     {
-        final LoaderNodeTupleTable x1 = new LoaderNodeTupleTable(null, 
+        final LoaderNodeTupleTable loaderTriples = new LoaderNodeTupleTable(null, 
                                                                 dsg.getTripleTable().getNodeTupleTable(),
                                                                 true) ;
-        final LoaderNodeTupleTable x2 = new LoaderNodeTupleTable(null, 
+        final LoaderNodeTupleTable loaderQuads = new LoaderNodeTupleTable(null, 
                                                                  dsg.getQuadTable().getNodeTupleTable(),
                                                                  true) ;
-        
-        tupleTables = new LoaderNodeTupleTable[]{x1,x2} ;
-        
         Destination<Quad> sink = new Destination<Quad>() {
             public void start()
             {
-                for ( LoaderNodeTupleTable ntt : tupleTables )
-                    ntt.loadStart() ;
+                loaderTriples.loadStart() ;
+                loaderQuads.loadStart() ;
             }
             
             public void send(Quad quad)
             {
-                
-                //x.load(quad.getGraph(), quad.getSubject(), quad.getPredicate(),  quad.getObject()) ;
+                if ( quad.isTriple() || quad.isDefaultGraph() )
+                    loaderTriples.load(quad.getSubject(), quad.getPredicate(),  quad.getObject()) ;
+                else
+                    loaderQuads.load(quad.getGraph(), quad.getSubject(), quad.getPredicate(),  quad.getObject()) ;
             }
 
             public void flush() { }
 
             public void close()
             {
-                for (LoaderNodeTupleTable ntt : tupleTables)
-                    ntt.loadFinish() ;
+                loaderTriples.loadFinish() ;
+                loaderQuads.loadFinish() ;
             }
         } ;
         return sink ;
@@ -97,6 +90,8 @@ public class BulkLoader
     // Start
     // data
     // finish
+    
+    boolean showProgress = true ;
     
     // ---- Misc utilities
     synchronized void printf(String fmt, Object... args)

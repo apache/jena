@@ -5,7 +5,9 @@ public class DevTDB
     // == 0.8.5
     // Testing (W64)
     // Build-release
-    // tdbverify
+    // tdbverifyTDB
+    // ----
+    // DatasetGraphSplit to triples and quads c.f.
     // ----
     
     // To ARQ:

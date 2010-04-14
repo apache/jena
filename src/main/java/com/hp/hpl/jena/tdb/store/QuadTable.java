@@ -23,7 +23,7 @@ import com.hp.hpl.jena.tdb.lib.Sync ;
 import com.hp.hpl.jena.tdb.lib.TupleLib ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTupleTableConcrete ;
-import com.hp.hpl.jena.tdb.nodetable.NodeTupleTableI ;
+import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable ;
 
 
 /** Quad table - a collection of TupleIndexes for 4-tuples
@@ -32,7 +32,7 @@ import com.hp.hpl.jena.tdb.nodetable.NodeTupleTableI ;
 
 public class QuadTable implements Sync, Closeable
 {
-    final NodeTupleTableI table ;
+    final NodeTupleTable table ;
     
     public QuadTable(TupleIndex[] indexes, NodeTable nodeTable)
     {
@@ -81,7 +81,7 @@ public class QuadTable implements Sync, Closeable
         }} ; 
     
     
-    public NodeTupleTableI getNodeTupleTable() { return table ; }
+    public NodeTupleTable getNodeTupleTable() { return table ; }
 
     //@Override
     public void sync() { sync(true) ; }

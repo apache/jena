@@ -22,7 +22,7 @@ import com.hp.hpl.jena.tdb.index.mem.Index3;
 import com.hp.hpl.jena.tdb.index.mem.IterFunc;
 import com.hp.hpl.jena.tdb.store.NodeId;
 
-/** In-mmeory structures and indexing. */
+/** In-memory structures and indexing. */
 public class TupleIndexMem extends TupleIndexBase
 {
     // Not used.

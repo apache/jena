@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -21,7 +22,7 @@ import com.hp.hpl.jena.tdb.lib.TupleLib ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
 
 /** Group a tuple table and node table togethr to provide a real NodeTupleTable */ 
-public class NodeTupleTableConcrete implements NodeTupleTableI
+public class NodeTupleTableConcrete implements NodeTupleTable
 {
     protected final NodeTable nodeTable ;
     protected final TupleTable tupleTable ;
@@ -83,7 +84,11 @@ public class NodeTupleTableConcrete implements NodeTupleTableI
         return iter2 ;
     }
     
-    /** Find by node - return an iterator of NodeIds. Can return "null" for not found as well as NullIterator */
+    /** Find by node - return an iterator of NodeIds. 
+     * Can return "null" (when a node is known to be unknown)
+     * for not found as well as NullIterator (when no tuples are found
+     * (unknown unknown).
+     */ 
     public Iterator<Tuple<NodeId>> findAsNodeIds(Node...nodes)
     {
         NodeId n[] = new NodeId[nodes.length] ;
@@ -155,6 +160,7 @@ public class NodeTupleTableConcrete implements NodeTupleTableI
 
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

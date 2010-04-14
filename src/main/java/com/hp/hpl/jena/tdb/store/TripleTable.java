@@ -22,7 +22,7 @@ import com.hp.hpl.jena.tdb.lib.Sync ;
 import com.hp.hpl.jena.tdb.lib.TupleLib ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTupleTableConcrete ;
-import com.hp.hpl.jena.tdb.nodetable.NodeTupleTableI ;
+import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable ;
 
 
 /** TripleTable - a collection of TupleIndexes for 3-tuples
@@ -34,7 +34,7 @@ import com.hp.hpl.jena.tdb.nodetable.NodeTupleTableI ;
 
 public class TripleTable implements Sync, Closeable
 {
-    final NodeTupleTableI table ;
+    final NodeTupleTable table ;
     
     public TripleTable(TupleIndex[] indexes, NodeTable nodeTable)
     {
@@ -69,7 +69,7 @@ public class TripleTable implements Sync, Closeable
             return new Triple(item.get(0), item.get(1), item.get(2)) ;
         }} ; 
     
-    public NodeTupleTableI getNodeTupleTable() { return table ; }
+    public NodeTupleTable getNodeTupleTable() { return table ; }
 
     //@Override
     public void sync() { sync(true) ; }

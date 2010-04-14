@@ -21,7 +21,7 @@ import com.hp.hpl.jena.sparql.util.Timer ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 import com.hp.hpl.jena.tdb.index.TupleIndex ;
 import com.hp.hpl.jena.tdb.lib.Sync ;
-import com.hp.hpl.jena.tdb.nodetable.NodeTupleTableI ;
+import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
 import com.hp.hpl.jena.tdb.sys.Session ;
 
@@ -41,7 +41,7 @@ public class LoaderNodeTupleTable implements Closeable, Sync
     private TupleIndex   primaryIndex ;
     private TupleIndex[] secondaryIndexes ;
     
-    private NodeTupleTableI nodeTupleTable ;
+    private NodeTupleTable nodeTupleTable ;
     
     // Variables across load operations
     private boolean dropAndRebuildIndexes ;
@@ -50,7 +50,7 @@ public class LoaderNodeTupleTable implements Closeable, Sync
 
     private Session session ; 
 
-    public LoaderNodeTupleTable(Session session, NodeTupleTableI nodeTupleTable, boolean showProgress)
+    public LoaderNodeTupleTable(Session session, NodeTupleTable nodeTupleTable, boolean showProgress)
     {
         this(session, nodeTupleTable, showProgress, false, false, false) ;
     }
@@ -58,7 +58,7 @@ public class LoaderNodeTupleTable implements Closeable, Sync
     /** Create a bulkloader for tuples of Nodes:
      *  showProgress/parallel/incremental/generate statistics */ 
 
-    public LoaderNodeTupleTable(Session session, NodeTupleTableI nodeTupleTable, boolean showProgress, boolean doInParallel, boolean doIncremental, boolean generateStats)
+    public LoaderNodeTupleTable(Session session, NodeTupleTable nodeTupleTable, boolean showProgress, boolean doInParallel, boolean doIncremental, boolean generateStats)
     {
         this.session = session ;
         this.nodeTupleTable = nodeTupleTable ;

@@ -18,7 +18,7 @@ import com.hp.hpl.jena.graph.TripleMatch;
 import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.sparql.util.Utils ;
 import com.hp.hpl.jena.tdb.migrate.DatasetPrefixStorage ;
-import com.hp.hpl.jena.tdb.nodetable.NodeTupleTableI ;
+import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable ;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
 /** A graph implementation that uses a triple table - free-standing graph or deafult graph of dataset */
@@ -79,7 +79,7 @@ public class GraphTriplesTDB extends GraphTDBBase
     }
 
     //@Override
-    public NodeTupleTableI getNodeTupleTable()           { return tripleTable.getNodeTupleTable()   ; }
+    public NodeTupleTable getNodeTupleTable()           { return tripleTable.getNodeTupleTable()   ; }
    
     @Override
     protected PrefixMapping createPrefixMapping()

@@ -18,7 +18,7 @@
 	<classpathentry kind="lib" path="lib/stax-api-1.0.1.jar"/>
 	<classpathentry kind="lib" path="lib/wstx-asl-3.2.9.jar"/>
 	<classpathentry kind="lib" path="lib/xercesImpl-2.7.1.jar"/>
-	<classpathentry kind="lib" path="lib/arq-2.8.3-tests.jar"/>
-	<classpathentry kind="lib" path="lib/arq-2.8.3.jar" sourcepath="lib/arq-2.8.3-sources.jar"/>
+	<classpathentry kind="lib" path="lib/arq-2.8.4-SNAPSHOT-tests.jar"/>
+	<classpathentry kind="lib" path="lib/arq-2.8.4-SNAPSHOT.jar" sourcepath="lib/arq-2.8.4-SNAPSHOT-sources.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>

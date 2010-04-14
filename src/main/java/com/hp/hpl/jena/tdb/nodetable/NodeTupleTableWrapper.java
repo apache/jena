@@ -4,19 +4,57 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.store.bulkloader;
+package com.hp.hpl.jena.tdb.nodetable;
 
-import com.hp.hpl.jena.tdb.index.TupleIndex ;
-import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
-import com.hp.hpl.jena.tdb.nodetable.NodeTupleTableConcrete ;
+import java.util.Iterator ;
 
-public class NodeTupleTableView extends NodeTupleTableConcrete
+import org.openjena.atlas.lib.Tuple ;
+
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.tdb.index.TupleTable ;
+import com.hp.hpl.jena.tdb.store.NodeId ;
+
+public class NodeTupleTableWrapper implements NodeTupleTable
 {
+    private NodeTupleTable nodeTupleTable ;
 
-    public NodeTupleTableView(int N, TupleIndex[] indexes, NodeTable nodeTable)
-    {
-        super(N, indexes, nodeTable) ;
-    }
+    public NodeTupleTableWrapper(NodeTupleTable ntt) { this.nodeTupleTable = ntt ; }
+     
+    public boolean addRow(Node... nodes)
+    { return nodeTupleTable.addRow(nodes) ; }
+
+    public boolean deleteRow(Node... nodes)
+    { return nodeTupleTable.deleteRow(nodes) ; }
+
+    public Iterator<Tuple<Node>> find(Node... nodes)
+    { return nodeTupleTable.find(nodes) ; }
+    
+    public Iterator<Tuple<NodeId>> find(NodeId... ids)
+    { return nodeTupleTable.find(ids) ; }
+    
+    public Iterator<Tuple<NodeId>> findAsNodeIds(Node... nodes)
+    { return nodeTupleTable.findAsNodeIds(nodes) ; }
+
+    public NodeTable getNodeTable()
+    { return nodeTupleTable.getNodeTable() ; }
+
+    public TupleTable getTupleTable()
+    { return nodeTupleTable.getTupleTable() ; }
+
+    public boolean isEmpty()
+    { return nodeTupleTable.isEmpty() ; }
+
+    public long size()
+    { return nodeTupleTable.size() ; }
+
+    public void sync()
+    { nodeTupleTable.sync() ; }
+
+    public void sync(boolean force)
+    { nodeTupleTable.sync(force) ; }
+
+    public void close()
+    { nodeTupleTable.close() ; }
 
 }
 

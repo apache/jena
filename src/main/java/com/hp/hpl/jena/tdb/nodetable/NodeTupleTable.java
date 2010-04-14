@@ -16,7 +16,7 @@ import com.hp.hpl.jena.tdb.index.TupleTable ;
 import com.hp.hpl.jena.tdb.lib.Sync ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
 
-public interface NodeTupleTableI extends Sync, Closeable
+public interface NodeTupleTable extends Sync, Closeable
 {
     public boolean addRow(Node... nodes) ;
 

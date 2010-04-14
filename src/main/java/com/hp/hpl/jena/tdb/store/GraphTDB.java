@@ -17,13 +17,13 @@ import com.hp.hpl.jena.sparql.core.Closeable;
 
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.lib.Sync;
-import com.hp.hpl.jena.tdb.nodetable.NodeTupleTableI ;
+import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable ;
 import com.hp.hpl.jena.tdb.solver.reorder.Reorderable;
 import com.hp.hpl.jena.tdb.sys.Session ;
 
 public interface GraphTDB extends Graph, Closeable, Sync, Reorderable, Session
 {
-    public NodeTupleTableI getNodeTupleTable() ;
+    public NodeTupleTable getNodeTupleTable() ;
     public Tuple<Node> asTuple(Triple triple) ;
     
     /** Get a lock that is shared for all graphs from teh same dataset (it is the dataset lock) */

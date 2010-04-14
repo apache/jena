@@ -7,34 +7,35 @@
 package com.hp.hpl.jena.tdb.store;
 
 
-import java.util.Iterator;
-import java.util.Properties;
+import java.util.Iterator ;
+import java.util.Properties ;
 
 import org.openjena.atlas.iterator.Iter ;
 import org.openjena.atlas.iterator.Transform ;
 import org.openjena.atlas.lib.PropertyUtils ;
 import org.openjena.atlas.lib.Tuple ;
 
-
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.query.Dataset;
-import com.hp.hpl.jena.sparql.core.Closeable;
-import com.hp.hpl.jena.sparql.core.DatasetGraph;
-import com.hp.hpl.jena.sparql.core.DatasetGraphBase;
-import com.hp.hpl.jena.sparql.core.DatasetImpl;
-import com.hp.hpl.jena.tdb.base.file.Location;
-import com.hp.hpl.jena.tdb.lib.NodeLib;
-import com.hp.hpl.jena.tdb.lib.Sync;
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.query.Dataset ;
+import com.hp.hpl.jena.sparql.core.Closeable ;
+import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import com.hp.hpl.jena.sparql.core.DatasetGraphBase ;
+import com.hp.hpl.jena.sparql.core.DatasetImpl ;
+import com.hp.hpl.jena.sparql.core.Quad ;
+import com.hp.hpl.jena.tdb.base.file.Location ;
+import com.hp.hpl.jena.tdb.lib.NodeLib ;
+import com.hp.hpl.jena.tdb.lib.Sync ;
 import com.hp.hpl.jena.tdb.migrate.DatasetPrefixStorage ;
-import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
-import com.hp.hpl.jena.tdb.sys.TDBMaker;
-import com.hp.hpl.jena.update.GraphStore;
+import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation ;
+import com.hp.hpl.jena.tdb.sys.TDBMaker ;
+import com.hp.hpl.jena.update.GraphStore ;
 
 /** TDB Dataset, updatable with SPARQL/Update */
 public class DatasetGraphTDB extends DatasetGraphBase 
                              implements DatasetGraph, Sync, Closeable, GraphStore
 {
+    // or DatasetGraphCaching
     private TripleTable tripleTable ;
     private QuadTable quadTable ;
     private DatasetPrefixStorage prefixes ;
@@ -70,13 +71,37 @@ public class DatasetGraphTDB extends DatasetGraphBase
     public TripleTable getTripleTable()     { return tripleTable ; } 
     
     @Override
-    public boolean containsGraph(Node graphNode)
+    public void add(Quad quad)
     {
-        return _containsGraph(graphNode) ;
+        if ( quad.isDefaultGraph() )
+            getTripleTable().add(quad.asTriple()) ;
+        else
+            getQuadTable().add(quad) ;
+    } 
+    
+    @Override
+    public void delete(Quad quad)
+    {
+        if ( quad.isDefaultGraph() )
+            getTripleTable().delete(quad.asTriple()) ;
+        else
+            getQuadTable().delete(quad) ;
     }
     
     @Override
-    protected boolean _containsGraph(Node graphNode)
+    protected Iter<Quad> findInDftGraph(Node s, Node p , Node o)
+    {
+        return triples2quadsDftGraph(getTripleTable().find(s, p, o)) ;
+    }
+    
+    @Override
+    protected Iter<Quad> findInNamedGraphs(Node g, Node s, Node p , Node o)
+    {
+        return Iter.iter(getQuadTable().find(g, s, p, o)) ;
+    }
+
+    @Override
+    public boolean containsGraph(Node graphNode)
     {
         NodeId graphNodeId = quadTable.getNodeTupleTable().getNodeTable().getNodeIdForNode(graphNode) ;
         Tuple<NodeId> pattern = Tuple.create(graphNodeId, null, null, null) ;
@@ -86,11 +111,12 @@ public class DatasetGraphTDB extends DatasetGraphBase
     }
 
     @Override
-    protected GraphTDB _createDefaultGraph()
-    {
-        return new GraphTriplesTDB(this, tripleTable, prefixes) ; 
-    }
+    public Graph getDefaultGraph() { return getDefaultGraphTDB() ; }
 
+    @Override
+    public Graph getGraph(Node graphNode) { return getGraphTDB(graphNode) ; }
+
+    
     public GraphTDB getDefaultGraphTDB()
     {
         return (GraphTDB)getDefaultGraph() ;
@@ -131,12 +157,6 @@ public class DatasetGraphTDB extends DatasetGraphBase
         return PropertyUtils.getPropertyAsInteger(config, key, dftValue) ;
     }
 
-    @Override
-    protected GraphTDB _createNamedGraph(Node graphNode)
-    {
-        return new GraphNamedTDB(this, graphNode) ;
-    }
-
     public ReorderTransformation getTransform()     { return transform ; }
     
     public DatasetPrefixStorage getPrefixes()       { return prefixes ; }
@@ -159,10 +179,10 @@ public class DatasetGraphTDB extends DatasetGraphBase
         return NodeLib.nodes(quadTable.getNodeTupleTable().getNodeTable(), z) ;
     }
 
-    //@Override
-    public int size()                   { return (int)Iter.count(listGraphNodes()) ; }
+    @Override
+    public long size()                   { return Iter.count(listGraphNodes()) ; }
 
-    //@Override
+    @Override
     public boolean isEmpty()            { return getTripleTable().isEmpty() && getQuadTable().isEmpty() ; }
 
     
@@ -177,10 +197,11 @@ public class DatasetGraphTDB extends DatasetGraphBase
         tripleTable.sync(force) ;
         quadTable.sync(force) ;
         prefixes.sync(force) ;
+        super.close() ;
     }
 
     @Override
-    protected void _close()
+    public void close()
     {
         tripleTable.close() ;
         quadTable.close() ;
@@ -206,24 +227,22 @@ public class DatasetGraphTDB extends DatasetGraphBase
 
     // ---- DataSourceGraph
     
-    //@Override
+    @Override
     public void addGraph(Node graphName, Graph graph)
     {
         Graph g = getGraph(graphName) ;
         g.getBulkUpdateHandler().add(graph) ;
     }
 
-    //@Override
-    public Graph removeGraph(Node graphName)
+    @Override
+    public void removeGraph(Node graphName)
     {
         Graph g = getGraph(graphName) ;
         g.getBulkUpdateHandler().removeAll() ;
-        // Return null (it's empty!)
-        return null ;
     }
 
     
-    //@Override
+    @Override
     public void setDefaultGraph(Graph g)
     { 
         throw new UnsupportedOperationException("Can't set default graph via GraphStore on a TDB-backed dataset") ;
