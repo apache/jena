@@ -6,40 +6,12 @@
 
 package com.hp.hpl.jena.sparql.core;
 
-import java.util.Iterator ;
-
-import com.hp.hpl.jena.graph.Graph ;
-import com.hp.hpl.jena.graph.Node ;
 
 /** A DatasetGraph base class that converts any graph class to quad calls. 
  * @see DatasetGraphCollection
  */
-public class DatasetGraphQuad extends DatasetGraphBase
+public class DatasetGraphQuad //extends DatasetGraphBase
 {
-    private DatasetGraphQuad() {}
-    
-    @Override
-    public Iterator<Quad> find(Node g, Node s, Node p, Node o)
-    {
-        return null ;
-    }
-
-    @Override
-    public Graph getDefaultGraph()
-    {
-        return null ;
-    }
-
-    @Override
-    public Graph getGraph(Node graphNode)
-    {
-        return null ;
-    }
-
-    public Iterator<Node> listGraphNodes()
-    {
-        return null ;
-    }
 }
 
 /*

@@ -12,6 +12,7 @@ import java.util.Iterator ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.sparql.lib.iterator.Iter ;
 import com.hp.hpl.jena.sparql.lib.iterator.NullIterator ;
 
 /** 
@@ -39,6 +40,14 @@ public class DatasetGraphOne extends DatasetGraphBase
     {
         return new NullIterator<Node>() ;
     }
+
+    @Override
+    protected Iter<Quad> findInDftGraph(Node s, Node p, Node o)
+    { return triples2quadsDftGraph(graph.find(s, p ,o)) ; }
+
+    @Override
+    protected Iter<Quad> findInNamedGraphs(Node g, Node s, Node p, Node o)
+    { return null ; }
 
     @Override
     public long size()

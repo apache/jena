@@ -67,14 +67,43 @@ abstract public class DatasetGraphBase implements DatasetGraph
     { return find(quad.getGraph(), quad.getSubject(), quad.getPredicate(), quad.getObject()) ; }
     
     //@Override
-    public abstract Iterator<Quad> find(Node g, Node s, Node p , Node o) ;
-    
+    public Iterator<Quad> find(Node g, Node s, Node p , Node o)
+    {
+        if ( ! isWildcard(g) )
+        {
+            if ( Quad.isDefaultGraph(g))
+                return findInDftGraph(s,p,o) ;
+            Iter<Quad> qIter = findInNamedGraphs(g, s, p, o) ;
+            if ( qIter == null )
+                return Iter.nullIterator() ;
+            return qIter ;
+        }
+        
+        // Wildcard for g
+        // Default graph
+        Iter<Quad> iter = findInDftGraph(s, p, o) ;
+
+        Iterator<Node> gnames = listGraphNodes() ;
+        // Named graphs
+        for ( ; gnames.hasNext() ; )  
+        {
+            Node gn = gnames.next();
+            Iter<Quad> qIter = findInNamedGraphs(gn, s, p, o) ;
+            if ( qIter != null )
+                iter = iter.append(qIter) ;
+        }
+        return iter ;
+    }
+
+    protected abstract Iter<Quad> findInDftGraph(Node s, Node p , Node o) ;
+    protected abstract Iter<Quad> findInNamedGraphs(Node g, Node s, Node p , Node o) ;
+
     protected static Iter<Quad> triples2quadsDftGraph(Iterator<Triple> iter)
     {
-        return Iter.iter(iter).map(transformDftGraph) ;
+        return triples2quads(Quad.tripleInQuad, iter) ;
     }
     
-    protected static Iter<Quad> triples2quadsNamedGraph(final Node graphNode, Iterator<Triple> iter)
+    protected static Iter<Quad> triples2quads(final Node graphNode, Iterator<Triple> iter)
     {
         Transform<Triple, Quad> transformNamedGraph = new Transform<Triple, Quad> () {
             public Quad convert(Triple triple)
@@ -85,14 +114,6 @@ abstract public class DatasetGraphBase implements DatasetGraph
             
         return Iter.iter(iter).map(transformNamedGraph) ;
     }
-    
-    // Transform triples to quads
-    static private Transform<Triple, Quad> transformDftGraph = new Transform<Triple, Quad> () {
-        public Quad convert(Triple triple)
-        {
-            return new Quad(Quad.tripleInQuad, triple) ;
-        }
-    } ;
     
     //@Override
     public boolean contains(Quad quad) { return contains(quad.getGraph(), quad.getSubject(), quad.getPredicate(), quad.getObject()) ; }

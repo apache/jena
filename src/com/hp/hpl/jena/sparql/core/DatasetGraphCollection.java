@@ -11,7 +11,6 @@ import java.util.Iterator ;
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.lib.iterator.Iter ;
-import com.hp.hpl.jena.util.iterator.NullIterator ;
 
 /** Base class for implementations of a DatasetGraph as a set of graphs.
  *  Translates quad calls to graph calls.
@@ -34,31 +33,20 @@ public abstract class DatasetGraphCollection extends DatasetGraphBase
     }
 
     @Override
-    public Iterator<Quad> find(final Node g, Node s, Node p , Node o)
+    protected Iter<Quad> findInDftGraph(Node s, Node p , Node o)
     {
-        if ( ! isWildcard(g) )
-        {
-            Graph graph = fetchGraph(g) ;
-            if ( graph == null )
-                return new NullIterator<Quad>() ;
-            return triples2quadsNamedGraph(g, graph.find(s, p, o)) ;
-        }
-        
-        // Wildcard
-        // Default graph
-        Iter<Quad> iter = triples2quadsDftGraph(getDefaultGraph().find(s, p, o)) ;
-
-        Iterator<Node> gnames = listGraphNodes() ;
-        // Named graphs
-        for ( ; gnames.hasNext() ; )  
-        {
-            Node gn = gnames.next();
-            Graph graph = getGraph(gn) ;
-            Iter<Quad> qIter = triples2quadsNamedGraph(gn, graph.find(s, p, o)) ;
-            iter = iter.append(qIter) ;
-        }
-        return iter ;
+        return triples2quadsDftGraph(getDefaultGraph().find(s, p, o)) ;
     }
+    
+    @Override
+    protected Iter<Quad> findInNamedGraphs(Node g, Node s, Node p , Node o)
+    {
+        Graph graph = fetchGraph(g) ;
+        if ( g == null )
+            return Iter.nullIter() ;
+        return triples2quads(g, graph.find(s, p, o)) ;
+    }
+
     
     //@Override
     public abstract Iterator<Node> listGraphNodes() ;
