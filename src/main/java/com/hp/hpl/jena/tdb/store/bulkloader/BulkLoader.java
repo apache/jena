@@ -8,13 +8,11 @@ package com.hp.hpl.jena.tdb.store.bulkloader;
 
 import java.util.Date ;
 
-import org.openjena.atlas.lib.Sink ;
-
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.util.StringUtils ;
-import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable ;
+import com.hp.hpl.jena.tdb.nodetable.NodeTupleTableI ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 
 /** Overall framework for bulk loading */
@@ -22,50 +20,76 @@ public class BulkLoader
 {
     boolean showProgress = true ;
     
-    public Sink<Triple> loadTriples(DatasetGraphTDB dsg)
+    LoaderNodeTupleTable[] tupleTables ;
+    
+    public Destination<Triple> loadTriples(DatasetGraphTDB dsg)
     {
         return loadTriples(dsg, dsg.getTripleTable().getNodeTupleTable()) ;
     }
     
-    private Sink<Triple> loadTriples(DatasetGraphTDB dsg, NodeTupleTable nodeTupleTable)
+    private Destination<Triple> loadTriples(DatasetGraphTDB dsg, NodeTupleTableI nodeTupleTable)
     {
         final LoaderNodeTupleTable x = new LoaderNodeTupleTable(null, 
                                                                 dsg.getTripleTable().getNodeTupleTable(),
                                                                 true) ;
-        Sink<Triple> sink = new Sink<Triple>() {
+        tupleTables = new LoaderNodeTupleTable[]{x} ;
+        
+        Destination<Triple> sink = new Destination<Triple>() {
+            public void start()
+            {
+                tupleTables[0].loadStart() ;
+            }
             public void send(Triple triple)
             {
                 x.load(triple.getSubject(), triple.getPredicate(),  triple.getObject()) ;
             }
 
-            public void flush() { x.sync() ; }
-            public void close() { x.close() ; }
+            public void flush() { }
+            public void close() {tupleTables[0].loadFinish() ; }
+
         } ;
         return sink ;
     }
 
-    public Sink<Triple> loadTriples(DatasetGraphTDB dsg, Node graphName)
+    public Destination<Triple> loadTriples(DatasetGraphTDB dsg, Node graphName)
     {
-        NodeTupleTable ntt = dsg.getQuadTable().getNodeTupleTable() ;
-        NodeTupleTable ntt2 = null ;
+        NodeTupleTableI ntt = dsg.getQuadTable().getNodeTupleTable() ;
+        NodeTupleTableI ntt2 = null ;
         // mask /project to quads[graphName]<->triple
         return loadTriples(dsg, ntt2) ;
     }
     
-    
-    public Sink<Quad> loadQuads(DatasetGraphTDB dsg)
+    public Destination<Quad> loadQuads(DatasetGraphTDB dsg)
     {
-        final LoaderNodeTupleTable x = new LoaderNodeTupleTable(null, 
-                                                                dsg.getQuadTable().getNodeTupleTable(),
+        final LoaderNodeTupleTable x1 = new LoaderNodeTupleTable(null, 
+                                                                dsg.getTripleTable().getNodeTupleTable(),
                                                                 true) ;
-        Sink<Quad> sink = new Sink<Quad>() {
+        final LoaderNodeTupleTable x2 = new LoaderNodeTupleTable(null, 
+                                                                 dsg.getQuadTable().getNodeTupleTable(),
+                                                                 true) ;
+        
+        tupleTables = new LoaderNodeTupleTable[]{x1,x2} ;
+        
+        Destination<Quad> sink = new Destination<Quad>() {
+            public void start()
+            {
+                for ( LoaderNodeTupleTable ntt : tupleTables )
+                    ntt.loadStart() ;
+            }
+            
             public void send(Quad quad)
             {
-                x.load(quad.getGraph(), quad.getSubject(), quad.getPredicate(),  quad.getObject()) ;
+                
+                //x.load(quad.getGraph(), quad.getSubject(), quad.getPredicate(),  quad.getObject()) ;
             }
 
-            public void flush() { x.sync() ; }
-            public void close() { x.close() ; }
+            public void flush() { }
+
+            public void close()
+            {
+                for (LoaderNodeTupleTable ntt : tupleTables)
+                    ntt.loadFinish() ;
+            }
         } ;
         return sink ;
     }

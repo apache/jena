@@ -29,7 +29,8 @@ import com.hp.hpl.jena.tdb.index.TupleIndexRecord ;
 import com.hp.hpl.jena.tdb.migrate.DatasetPrefixStorage ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTableFactory ;
-import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable ;
+import com.hp.hpl.jena.tdb.nodetable.NodeTupleTableConcrete ;
+import com.hp.hpl.jena.tdb.nodetable.NodeTupleTableI ;
 import com.hp.hpl.jena.tdb.sys.Names ;
 
 public class DatasetPrefixesTDB implements DatasetPrefixStorage
@@ -38,7 +39,7 @@ public class DatasetPrefixesTDB implements DatasetPrefixStorage
     // The nodetable is itself an index and a data file.
     
     static final String unamedGraphURI = "" ; //Quad.defaultGraphNode.getURI() ;
-    private final NodeTupleTable nodeTupleTable ;
+    private final NodeTupleTableI nodeTupleTable ;
     static final ColumnMap colMap = new ColumnMap("GPU", "GPU") ;
     
     public static final RecordFactory factory = new RecordFactory(3*NodeId.SIZE, 0) ;
@@ -74,14 +75,14 @@ public class DatasetPrefixesTDB implements DatasetPrefixStorage
             filesetNodeTable = new FileSet(location, Names.prefixId2Node) ;
         
         NodeTable nodes = NodeTableFactory.create(indexBuilder, filesetNodeTable, filesetNodeTableIdx, -1, -1) ;
-        nodeTupleTable = new NodeTupleTable(3, indexes, nodes) ;
+        nodeTupleTable = new NodeTupleTableConcrete(3, indexes, nodes) ;
     }
 
     //---- DI version
     
     public DatasetPrefixesTDB(TupleIndex[] indexes, NodeTable nodes)
     {
-        this.nodeTupleTable = new NodeTupleTable(3, indexes, nodes) ;
+        this.nodeTupleTable = new NodeTupleTableConcrete(3, indexes, nodes) ;
     }
     
     private DatasetPrefixesTDB()
@@ -184,7 +185,7 @@ public class DatasetPrefixesTDB implements DatasetPrefixStorage
         Iter.close(iter) ;
     }
 
-    public NodeTupleTable getNodeTupleTable()  { return nodeTupleTable ; }
+    public NodeTupleTableI getNodeTupleTable()  { return nodeTupleTable ; }
     
     /** Return a PrefixMapping for the unamed graph */
     //@Override

@@ -12,25 +12,21 @@ import java.util.Iterator ;
 import org.openjena.atlas.iterator.NullIterator ;
 import org.openjena.atlas.lib.Tuple ;
 
-
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.sparql.core.Closeable ;
 import com.hp.hpl.jena.tdb.TDBException ;
 import com.hp.hpl.jena.tdb.index.TupleIndex ;
 import com.hp.hpl.jena.tdb.index.TupleTable ;
 import com.hp.hpl.jena.tdb.lib.NodeLib ;
-import com.hp.hpl.jena.tdb.lib.Sync ;
 import com.hp.hpl.jena.tdb.lib.TupleLib ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
 
-
-/** Support code to group tuple table and node table */ 
-public class NodeTupleTable implements Sync, Closeable
+/** Group a tuple table and node table togethr to provide a real NodeTupleTable */ 
+public class NodeTupleTableConcrete implements NodeTupleTableI
 {
     protected final NodeTable nodeTable ;
     protected final TupleTable tupleTable ;
     
-    public NodeTupleTable(int N, TupleIndex[] indexes, NodeTable nodeTable)
+    public NodeTupleTableConcrete(int N, TupleIndex[] indexes, NodeTable nodeTable)
     {
         if ( indexes.length == 0 || indexes[0] == null )
             throw new TDBException("A primary index is required") ;

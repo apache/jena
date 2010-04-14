@@ -26,19 +26,19 @@ import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 
 import com.hp.hpl.jena.tdb.nodetable.NodeTable;
-import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable;
+import com.hp.hpl.jena.tdb.nodetable.NodeTupleTableI ;
 import com.hp.hpl.jena.tdb.store.NodeId;
 
 public class StageMatchTuple extends RepeatApplyIterator<BindingNodeId>
 {
-    private final NodeTupleTable nodeTupleTable ;
+    private final NodeTupleTableI nodeTupleTable ;
     private final Tuple<Node> patternTuple ;
 
     private final ExecutionContext execCxt ;
     private boolean anyGraphs ;
     private Filter<Tuple<NodeId>> filter ;
 
-    public StageMatchTuple(NodeTupleTable nodeTupleTable, Iterator<BindingNodeId> input, 
+    public StageMatchTuple(NodeTupleTableI nodeTupleTable, Iterator<BindingNodeId> input, 
                             Tuple<Node> tuple, boolean anyGraphs, 
                             Filter<Tuple<NodeId>> filter, 
                             ExecutionContext execCxt)

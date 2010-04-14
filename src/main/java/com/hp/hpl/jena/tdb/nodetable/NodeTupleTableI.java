@@ -1,51 +1,60 @@
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.store;
+package com.hp.hpl.jena.tdb.nodetable ;
+
+import java.util.Iterator ;
 
 import org.openjena.atlas.lib.Tuple ;
 
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.sparql.core.Closeable ;
+import com.hp.hpl.jena.tdb.index.TupleTable ;
+import com.hp.hpl.jena.tdb.lib.Sync ;
+import com.hp.hpl.jena.tdb.store.NodeId ;
 
-import com.hp.hpl.jena.shared.Lock;
-import com.hp.hpl.jena.sparql.core.Closeable;
-
-import com.hp.hpl.jena.tdb.base.file.Location;
-import com.hp.hpl.jena.tdb.lib.Sync;
-import com.hp.hpl.jena.tdb.nodetable.NodeTupleTableI ;
-import com.hp.hpl.jena.tdb.solver.reorder.Reorderable;
-import com.hp.hpl.jena.tdb.sys.Session ;
-
-public interface GraphTDB extends Graph, Closeable, Sync, Reorderable, Session
+public interface NodeTupleTableI extends Sync, Closeable
 {
-    public NodeTupleTableI getNodeTupleTable() ;
-    public Tuple<Node> asTuple(Triple triple) ;
-    
-    /** Get a lock that is shared for all graphs from teh same dataset (it is the dataset lock) */
-    public Lock getLock() ;
-    
-    /**
-     * Return the graph node for this graph if it's in a quad table, else return
-     * null for a triple table based (e.g. the default graph of a dataset)
-     */ 
-    public Node getGraphNode() ;
-    
-    /** Return the TDB-backed daatset for this graph.
-     *  Maybe null - indicating it's a simple graph backed by TDB
-     *  (and also the concrete default graph) 
+    public boolean addRow(Node... nodes) ;
+
+    public boolean deleteRow(Node... nodes) ;
+
+    /** Find by node. */
+    public Iterator<Tuple<Node>> find(Node... nodes) ;
+
+    /** Find by node - return an iterator of NodeIds. Can return "null" for not found as well as NullIterator */
+    public Iterator<Tuple<NodeId>> findAsNodeIds(Node... nodes) ;
+
+    /** Find by NodeId. */
+    public Iterator<Tuple<NodeId>> find(NodeId... ids) ;
+
+    /** Return the undelying tuple table - used with great care by tools
+     * that directly manipulate internal structures. 
      */
-    public DatasetGraphTDB getDataset() ;
-    
-    public Location getLocation() ; 
+    public TupleTable getTupleTable() ;
+
+    /** Return the node table */
+    public NodeTable getNodeTable() ;
+
+    public boolean isEmpty() ;
+
+    public long size() ;
+//
+//    //@Override
+//    public void close() ;
+//
+//    //@Override
+//    public void sync() ;
+//
+//    //@Override
+//    public void sync(boolean force) ;
 }
 
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

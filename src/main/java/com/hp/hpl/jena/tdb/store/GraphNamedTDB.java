@@ -22,7 +22,7 @@ import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.sparql.core.Quad;
 import com.hp.hpl.jena.sparql.util.Utils ;
 import com.hp.hpl.jena.tdb.TDBException;
-import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable;
+import com.hp.hpl.jena.tdb.nodetable.NodeTupleTableI ;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
 /** A graph implementation that projects a graph from a quad table */
@@ -140,7 +140,7 @@ public class GraphNamedTDB extends GraphTDBBase
     protected final Logger getLog() { return log ; }
     
     //@Override
-    public NodeTupleTable getNodeTupleTable()
+    public NodeTupleTableI getNodeTupleTable()
     {
         // Concrete default graph.
         if ( graphNode == null || Quad.isDefaultGraph(graphNode) )

@@ -21,7 +21,7 @@ import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.tdb.index.TupleIndex ;
 import com.hp.hpl.jena.tdb.index.TupleTable ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
-import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable ;
+import com.hp.hpl.jena.tdb.nodetable.NodeTupleTableI ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.store.DatasetPrefixesTDB ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
@@ -32,8 +32,8 @@ public class DumpOps
     {
         DatasetGraphTDB dsg = (DatasetGraphTDB)(ds.asDatasetGraph()) ;
 
-        NodeTupleTable nodeTupleTableTriples = dsg.getTripleTable().getNodeTupleTable() ;
-        NodeTupleTable nodeTupleTableQuads = dsg.getQuadTable().getNodeTupleTable() ;
+        NodeTupleTableI nodeTupleTableTriples = dsg.getTripleTable().getNodeTupleTable() ;
+        NodeTupleTableI nodeTupleTableQuads = dsg.getQuadTable().getNodeTupleTable() ;
 
         if ( nodeTupleTableTriples.getNodeTable() != nodeTupleTableQuads.getNodeTable() )
             throw new CmdException("Different node tables for triples and quads") ;
@@ -72,7 +72,7 @@ public class DumpOps
             System.out.print("## Prefix Table\n") ;  
             DatasetPrefixesTDB prefixes = (DatasetPrefixesTDB)dsg.getPrefixes() ;
 
-            NodeTupleTable pntt = prefixes.getNodeTupleTable() ;
+            NodeTupleTableI pntt = prefixes.getNodeTupleTable() ;
             if ( ! dumpedNodeTables.contains(pntt.getNodeTable()))
             {
                 dumpNodeTable(pntt.getNodeTable(), dumpedNodeTables) ;

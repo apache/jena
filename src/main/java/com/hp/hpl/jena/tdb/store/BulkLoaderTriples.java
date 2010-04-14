@@ -41,7 +41,7 @@ import com.hp.hpl.jena.sparql.util.graph.GraphLoadMonitor ;
 import com.hp.hpl.jena.tdb.TDBException ;
 import com.hp.hpl.jena.tdb.TDBLoader ;
 import com.hp.hpl.jena.tdb.index.TupleIndex ;
-import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable ;
+import com.hp.hpl.jena.tdb.nodetable.NodeTupleTableI ;
 import com.hp.hpl.jena.tdb.solver.stats.StatsCollector ;
 import com.hp.hpl.jena.tdb.sys.Names ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
@@ -69,7 +69,7 @@ public class BulkLoaderTriples
     private TupleIndex[] secondaryIndexes ;
     
     private Item statsItem = null ;
-    private NodeTupleTable nodeTupleTable ;
+    private NodeTupleTableI nodeTupleTable ;
     
     // Variables acorss load operations
     private boolean dropAndRebuildIndexes ;

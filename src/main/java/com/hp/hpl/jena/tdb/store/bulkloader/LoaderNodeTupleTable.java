@@ -21,11 +21,12 @@ import com.hp.hpl.jena.sparql.util.Timer ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 import com.hp.hpl.jena.tdb.index.TupleIndex ;
 import com.hp.hpl.jena.tdb.lib.Sync ;
-import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable ;
+import com.hp.hpl.jena.tdb.nodetable.NodeTupleTableI ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
 import com.hp.hpl.jena.tdb.sys.Session ;
 
-/** Load into one NodeTupleTable (triples, quads, other) 
+/** 
+ * Load into one NodeTupleTable (triples, quads, other) 
  */
 
 public class LoaderNodeTupleTable implements Closeable, Sync
@@ -40,7 +41,7 @@ public class LoaderNodeTupleTable implements Closeable, Sync
     private TupleIndex   primaryIndex ;
     private TupleIndex[] secondaryIndexes ;
     
-    private NodeTupleTable nodeTupleTable ;
+    private NodeTupleTableI nodeTupleTable ;
     
     // Variables across load operations
     private boolean dropAndRebuildIndexes ;
@@ -49,19 +50,15 @@ public class LoaderNodeTupleTable implements Closeable, Sync
 
     private Session session ; 
 
-    // cases:
-    // triple load : source => NodeTupleTable 
-    // triple load to named graph 
-    // quads : two NodeTupleTables
-    
-    public LoaderNodeTupleTable(Session session, NodeTupleTable nodeTupleTable, boolean showProgress)
+    public LoaderNodeTupleTable(Session session, NodeTupleTableI nodeTupleTable, boolean showProgress)
     {
         this(session, nodeTupleTable, showProgress, false, false, false) ;
     }
     
-    /** Create a bulkloader for triples or quads: showProgress/parallel/incremental/generate statistics */ 
+    /** Create a bulkloader for tuples of Nodes:
+     *  showProgress/parallel/incremental/generate statistics */ 
 
-    public LoaderNodeTupleTable(Session session, NodeTupleTable nodeTupleTable, boolean showProgress, boolean doInParallel, boolean doIncremental, boolean generateStats)
+    public LoaderNodeTupleTable(Session session, NodeTupleTableI nodeTupleTable, boolean showProgress, boolean doInParallel, boolean doIncremental, boolean generateStats)
     {
         this.session = session ;
         this.nodeTupleTable = nodeTupleTable ;
@@ -81,19 +78,21 @@ public class LoaderNodeTupleTable implements Closeable, Sync
         
         if ( dropAndRebuildIndexes )
         {
-            //XXX
-            println("** Load empty XYZ") ;
+            println("** Load empty table") ;
             // SPO only.
             dropSecondaryIndexes() ;
         }
         else
         {
-            println("** Load graph with existing data") ;
+            println("** Load into table with existing data") ;
             generateStats = false ;
         }
 
         if ( generateStats )
             statsPrepare() ;
+        
+        timer = new Timer() ;
+        timer.startTimer() ;
     }
         
     protected void loadFinalize()
@@ -113,7 +112,7 @@ public class LoaderNodeTupleTable implements Closeable, Sync
         }
 
         if ( showProgress )
-            println("** Close graph") ;
+            println("** Close") ;
         
         session.finishUpdate() ;
 
@@ -130,11 +129,26 @@ public class LoaderNodeTupleTable implements Closeable, Sync
     protected void statsPrepare() {}
     protected void statsFinalize() {}
 
+    /** Notify start of loading process */
+    public void loadStart()
+    {
+        loadPrepare() ;
+    }
+    
+    /** Stream in items to load ... */
     public void load(Node... nodes)
     {
         nodeTupleTable.addRow(nodes) ;
     }
     
+    /** Notify End of data to load - this operation may 
+     * undertake a significant amount of work.
+     */
+    public void loadFinish()
+    {
+        loadFinalize() ;
+    }
+
     public void sync(boolean force) {}
     public void sync() {}
     
@@ -147,14 +161,6 @@ public class LoaderNodeTupleTable implements Closeable, Sync
     public static int LoadTickPoint = 50000 ;
     /** Tick point for messages during secodnary index creation */
     public static long IndexTickPoint = 100000 ;
-    
-    private <T> T[] copyx(T[] array)
-    {
-        @SuppressWarnings("unchecked")
-        T[] array2 = (T[])new Object[array.length] ;
-        System.arraycopy(array, 0, array2, 0, array.length) ;
-        return array2 ;
-    }
     
     private void dropSecondaryIndexes()
     {

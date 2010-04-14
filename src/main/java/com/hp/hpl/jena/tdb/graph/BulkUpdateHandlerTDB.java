@@ -16,7 +16,7 @@ import com.hp.hpl.jena.graph.BulkUpdateHandler;
 import com.hp.hpl.jena.graph.GraphEvents;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.impl.SimpleBulkUpdateHandler;
-import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable;
+import com.hp.hpl.jena.tdb.nodetable.NodeTupleTableI ;
 import com.hp.hpl.jena.tdb.store.GraphTDBBase;
 import com.hp.hpl.jena.tdb.store.NodeId;
 
@@ -101,7 +101,7 @@ public class BulkUpdateHandlerTDB extends SimpleBulkUpdateHandler implements Bul
         // That way, there is no active iterator when a delete 
         // from the indexes happens.
         
-        NodeTupleTable t = graphTDB.getNodeTupleTable() ;
+        NodeTupleTableI t = graphTDB.getNodeTupleTable() ;
         Node gn = graphTDB.getGraphNode() ;
         
         @SuppressWarnings("unchecked")

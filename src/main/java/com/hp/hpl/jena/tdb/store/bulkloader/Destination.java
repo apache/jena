@@ -1,51 +1,20 @@
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Information Ltd
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.store;
+package com.hp.hpl.jena.tdb.store.bulkloader;
 
-import org.openjena.atlas.lib.Tuple ;
+import org.openjena.atlas.lib.Sink ;
 
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-
-import com.hp.hpl.jena.shared.Lock;
-import com.hp.hpl.jena.sparql.core.Closeable;
-
-import com.hp.hpl.jena.tdb.base.file.Location;
-import com.hp.hpl.jena.tdb.lib.Sync;
-import com.hp.hpl.jena.tdb.nodetable.NodeTupleTableI ;
-import com.hp.hpl.jena.tdb.solver.reorder.Reorderable;
-import com.hp.hpl.jena.tdb.sys.Session ;
-
-public interface GraphTDB extends Graph, Closeable, Sync, Reorderable, Session
+public interface Destination<T> extends Sink<T>
 {
-    public NodeTupleTableI getNodeTupleTable() ;
-    public Tuple<Node> asTuple(Triple triple) ;
-    
-    /** Get a lock that is shared for all graphs from teh same dataset (it is the dataset lock) */
-    public Lock getLock() ;
-    
-    /**
-     * Return the graph node for this graph if it's in a quad table, else return
-     * null for a triple table based (e.g. the default graph of a dataset)
-     */ 
-    public Node getGraphNode() ;
-    
-    /** Return the TDB-backed daatset for this graph.
-     *  Maybe null - indicating it's a simple graph backed by TDB
-     *  (and also the concrete default graph) 
-     */
-    public DatasetGraphTDB getDataset() ;
-    
-    public Location getLocation() ; 
+    public void start() ;
 }
 
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Information Ltd
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
