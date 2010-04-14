@@ -6,7 +6,7 @@
 
 package org.openjena.atlas.lib.cache;
 
-import org.openjena.atlas.lib.Action ;
+import org.openjena.atlas.iterator.Action ;
 import org.openjena.atlas.lib.ActionKeyValue ;
 import org.openjena.atlas.lib.CacheSet ;
 

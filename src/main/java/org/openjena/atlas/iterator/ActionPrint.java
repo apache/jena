@@ -8,7 +8,6 @@ package org.openjena.atlas.iterator;
 
 import org.openjena.atlas.io.IndentedWriter ;
 import org.openjena.atlas.io.Printable ;
-import org.openjena.atlas.lib.Action ;
 
 public class ActionPrint <T extends Printable> implements Action<T> 
 {

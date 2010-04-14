@@ -10,7 +10,6 @@ package org.openjena.atlas.iterator;
 import java.io.PrintStream ;
 import java.util.* ;
 
-import org.openjena.atlas.lib.Action ;
 import org.openjena.atlas.lib.ActionKeyValue ;
 import org.openjena.atlas.lib.Closeable ;
 

@@ -42,7 +42,8 @@ public class NodeTableWrapper implements NodeTable
     {
         return nodeTable.getNodeForNodeId(id) ;
     }
-
+    
+    //@Override
     public Iterator<Pair<NodeId, Node>> all()
     {
         return nodeTable.all();

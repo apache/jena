@@ -10,12 +10,12 @@ package com.hp.hpl.jena.tdb.solver;
 import java.util.Iterator;
 import java.util.List;
 
+import org.openjena.atlas.iterator.Action ;
 import org.openjena.atlas.iterator.Filter ;
 import org.openjena.atlas.iterator.Iter ;
 import org.openjena.atlas.iterator.NullIterator ;
 import org.openjena.atlas.iterator.RepeatApplyIterator ;
 import org.openjena.atlas.iterator.Transform ;
-import org.openjena.atlas.lib.Action ;
 import org.openjena.atlas.lib.Tuple ;
 
 

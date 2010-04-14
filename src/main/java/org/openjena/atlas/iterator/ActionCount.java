@@ -6,7 +6,6 @@
 
 package org.openjena.atlas.iterator;
 
-import org.openjena.atlas.lib.Action ;
 
 public class ActionCount<T> implements Action<T>
 {

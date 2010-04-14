@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package org.openjena.atlas.lib;
+package org.openjena.atlas.iterator;
 
 public interface Action<T>
 {
