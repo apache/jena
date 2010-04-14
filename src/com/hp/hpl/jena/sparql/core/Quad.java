@@ -73,10 +73,16 @@ public class Quad
         return node.equals(defaultGraphNodeGenerated) ;
     }
     
-    /** Default graph (either generated or explicitly named) */
+    /** Default, concrete graph (either generated or explicitly named) */
     public static boolean isDefaultGraph(Node node)
     {
         return node.equals(defaultGraphNodeGenerated) || node.equals(defaultGraphIRI) ; 
+    }
+    
+    public boolean isDefaultGraph()
+    {
+        /** Default, concrete graph (either generated or explicitly named) */
+        return  isDefaultGraph(getGraph()) ;
     }
     
     /** node used for the RDF merge of named graphs */
