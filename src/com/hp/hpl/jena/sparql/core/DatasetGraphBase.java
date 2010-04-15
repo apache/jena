@@ -73,7 +73,7 @@ abstract public class DatasetGraphBase implements DatasetGraph
         {
             if ( Quad.isDefaultGraph(g))
                 return findInDftGraph(s,p,o) ;
-            Iter<Quad> qIter = findInNamedGraphs(g, s, p, o) ;
+            Iterator<Quad> qIter = findInNamedGraphs(g, s, p, o) ;
             if ( qIter == null )
                 return Iter.nullIterator() ;
             return qIter ;
@@ -81,24 +81,24 @@ abstract public class DatasetGraphBase implements DatasetGraph
         
         // Wildcard for g
         // Default graph
-        Iter<Quad> iter = findInDftGraph(s, p, o) ;
+        Iterator<Quad> iter = findInDftGraph(s, p, o) ;
 
         Iterator<Node> gnames = listGraphNodes() ;
         // Named graphs
         for ( ; gnames.hasNext() ; )  
         {
             Node gn = gnames.next();
-            Iter<Quad> qIter = findInNamedGraphs(gn, s, p, o) ;
+            Iterator<Quad> qIter = findInNamedGraphs(gn, s, p, o) ;
             if ( qIter != null )
-                iter = iter.append(qIter) ;
+                iter = Iter.append(iter, qIter) ;
         }
         return iter ;
     }
 
-    protected abstract Iter<Quad> findInDftGraph(Node s, Node p , Node o) ;
-    protected abstract Iter<Quad> findInNamedGraphs(Node g, Node s, Node p , Node o) ;
+    protected abstract Iterator<Quad> findInDftGraph(Node s, Node p , Node o) ;
+    protected abstract Iterator<Quad> findInNamedGraphs(Node g, Node s, Node p , Node o) ;
 
-    protected static Iter<Quad> triples2quadsDftGraph(Iterator<Triple> iter)
+    protected static Iterator<Quad> triples2quadsDftGraph(Iterator<Triple> iter)
     {
         return triples2quads(Quad.tripleInQuad, iter) ;
     }

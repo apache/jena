@@ -33,7 +33,7 @@ public abstract class DatasetGraphCollection extends DatasetGraphBase
     }
 
     @Override
-    protected Iter<Quad> findInDftGraph(Node s, Node p , Node o)
+    protected Iterator<Quad> findInDftGraph(Node s, Node p , Node o)
     {
         return triples2quadsDftGraph(getDefaultGraph().find(s, p, o)) ;
     }

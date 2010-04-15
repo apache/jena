@@ -42,7 +42,7 @@ public class DatasetGraphOne extends DatasetGraphBase
     }
 
     @Override
-    protected Iter<Quad> findInDftGraph(Node s, Node p, Node o)
+    protected Iterator<Quad> findInDftGraph(Node s, Node p, Node o)
     { return triples2quadsDftGraph(graph.find(s, p ,o)) ; }
 
     @Override
