@@ -20,7 +20,7 @@ import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.sparql.core.Closeable ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.sparql.core.DatasetGraphBase ;
+import com.hp.hpl.jena.sparql.core.DatasetGraphCaching ;
 import com.hp.hpl.jena.sparql.core.DatasetImpl ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
@@ -32,7 +32,7 @@ import com.hp.hpl.jena.tdb.sys.TDBMaker ;
 import com.hp.hpl.jena.update.GraphStore ;
 
 /** TDB Dataset, updatable with SPARQL/Update */
-public class DatasetGraphTDB extends DatasetGraphBase 
+public class DatasetGraphTDB extends DatasetGraphCaching 
                              implements DatasetGraph, Sync, Closeable, GraphStore
 {
     // or DatasetGraphCaching
@@ -89,15 +89,15 @@ public class DatasetGraphTDB extends DatasetGraphBase
     }
     
     @Override
-    protected Iter<Quad> findInDftGraph(Node s, Node p , Node o)
+    protected Iterator<Quad> findInDftGraph(Node s, Node p , Node o)
     {
         return triples2quadsDftGraph(getTripleTable().find(s, p, o)) ;
     }
     
     @Override
-    protected Iter<Quad> findInNamedGraphs(Node g, Node s, Node p , Node o)
+    protected Iterator<Quad> findInNamedGraphs(Node g, Node s, Node p , Node o)
     {
-        return Iter.iter(getQuadTable().find(g, s, p, o)) ;
+        return getQuadTable().find(g, s, p, o) ;
     }
 
     @Override
@@ -110,25 +110,55 @@ public class DatasetGraphTDB extends DatasetGraphBase
         return result ;
     }
 
-    @Override
-    public Graph getDefaultGraph() { return getDefaultGraphTDB() ; }
-
-    @Override
-    public Graph getGraph(Node graphNode) { return getGraphTDB(graphNode) ; }
-
-    
     public GraphTDB getDefaultGraphTDB()
     {
-        return (GraphTDB)getDefaultGraph() ;
+        return new GraphTriplesTDB(this, tripleTable, prefixes) ; 
     }
 
     public GraphTDB getGraphTDB(Node graphNode)
     {
-        return (GraphTDB)getGraph(graphNode) ;
+        return new GraphNamedTDB(this, graphNode) ;
     }
 
     // The effective graph may not be the concrete storage one (e.g. union)
     
+    @Override
+    protected void _close()
+    {
+        tripleTable.close() ;
+        quadTable.close() ;
+        prefixes.close();
+        
+        // Which will cause reuse to throw exceptions early.
+        tripleTable = null ;
+        quadTable = null ;
+        prefixes = null ;
+        
+        TDBMaker.releaseDataset(this) ;
+    }
+
+    @Override
+    protected boolean _containsGraph(Node graphNode)
+    {
+        NodeId graphNodeId = quadTable.getNodeTupleTable().getNodeTable().getNodeIdForNode(graphNode) ;
+        Tuple<NodeId> pattern = Tuple.create(graphNodeId, null, null, null) ;
+        Iterator<Tuple<NodeId>> x = quadTable.getNodeTupleTable().getTupleTable().find(pattern) ;
+        boolean result = x.hasNext() ;
+        return result ;
+    }
+
+    @Override
+    protected Graph _createDefaultGraph()
+    {
+        return new GraphTriplesTDB(this, tripleTable, prefixes) ; 
+    }
+
+    @Override
+    protected Graph _createNamedGraph(Node graphNode)
+    {
+        return new GraphNamedTDB(this, graphNode) ;
+    }
+
     //@Override
     public void setEffectiveDefaultGraph(GraphTDB g) { effectiveDefaultGraph = g ; }
 
@@ -197,23 +227,9 @@ public class DatasetGraphTDB extends DatasetGraphBase
         tripleTable.sync(force) ;
         quadTable.sync(force) ;
         prefixes.sync(force) ;
-        super.close() ;
     }
-
-    @Override
-    public void close()
-    {
-        tripleTable.close() ;
-        quadTable.close() ;
-        prefixes.close();
-        
-        // Which will cause reuse to throw exceptions early.
-        tripleTable = null ;
-        quadTable = null ;
-        prefixes = null ;
-        
-        TDBMaker.releaseDataset(this) ;
-    }
+    
+    // Done by superclass that then call _close. public void close()
 
     // --- GraphStore
     //@Override
@@ -246,6 +262,12 @@ public class DatasetGraphTDB extends DatasetGraphBase
     public void setDefaultGraph(Graph g)
     { 
         throw new UnsupportedOperationException("Can't set default graph via GraphStore on a TDB-backed dataset") ;
+    }
+
+    @Override
+    public Iterator<Quad> find(Node g, Node s, Node p, Node o)
+    {
+        return null ;
     }    
 }
 
