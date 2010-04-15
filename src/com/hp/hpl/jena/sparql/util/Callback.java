@@ -6,6 +6,7 @@
 
 package com.hp.hpl.jena.sparql.util ;
 
+// Retire and use atlas version
 public interface Callback
 {
     public void event(Symbol property) ;
