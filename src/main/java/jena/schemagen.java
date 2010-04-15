@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            14-Apr-2003
  * Filename           $RCSfile: schemagen.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-10-06 13:04:42 $
+ * Last modified on   $Date: 2010-04-15 23:43:56 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
@@ -52,7 +52,7 @@ import com.hp.hpl.jena.shared.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:ian_dickinson@users.sourceforge.net" >email</a>)
- * @version CVS $Id: schemagen.java,v 1.2 2009-10-06 13:04:42 ian_dickinson Exp $
+ * @version CVS $Id: schemagen.java,v 1.3 2010-04-15 23:43:56 ian_dickinson Exp $
  */
 public class schemagen {
     // Constants
@@ -80,118 +80,6 @@ public class schemagen {
     public static final int COMMENT_LENGTH_LIMIT = 80;
 
 
-    /* Constants for the various options we can set */
-
-    /** Select an alternative config file; use <code>-c &lt;filename&gt;</code> on command line */
-    protected static final Object OPT_CONFIG_FILE = new Object();
-
-    /** Turn off all comment output; use <code>--nocomments</code> on command line;  use <code>sgen:noComments</code> in config file */
-    protected static final Object OPT_NO_COMMENTS = new Object();
-
-    /** Nominate the URL of the input document; use <code>-i &lt;URL&gt;</code> on command line;  use <code>sgen:input</code> in config file */
-    protected static final Object OPT_INPUT = new Object();
-
-    /** Specify that the language of the source is DAML+OIL; use <code>--daml</code> on command line;  use <code>sgen:daml</code> in config file */
-    protected static final Object OPT_LANG_DAML = new Object();
-
-    /** Specify that the language of the source is OWL (the default); use <code>--owl</code> on command line;  use <code>sgen:owl</code> in config file */
-    protected static final Object OPT_LANG_OWL = new Object();
-
-    /** Specify that the language of the source is RDFS; use <code>--rdfs</code> on command line;  use <code>sgen:rdfs</code> in config file */
-    protected static final Object OPT_LANG_RDFS = new Object();
-
-    /** Specify that destination file; use <code>-o &lt;fileName&gt;</code> on command line;  use <code>sgen:output</code> in config file */
-    protected static final Object OPT_OUTPUT = new Object();
-
-    /** Specify the file header; use <code>--header "..."</code> on command line;  use <code>sgen:header</code> in config file */
-    protected static final Object OPT_HEADER = new Object();
-
-    /** Specify the file footer; use <code>--footer "..."</code> on command line;  use <code>sgen:footer</code> in config file */
-    protected static final Object OPT_FOOTER = new Object();
-
-    /** Specify the uri of the configuration root node; use <code>--root &lt;URL&gt;</code> on command line */
-    protected static final Object OPT_ROOT = new Object();
-
-    /** Specify the marker string for substitutions, default is '%'; use <code>-m "..."</code> on command line; use <code>sgen:marker</code> in config file */
-    protected static final Object OPT_MARKER = new Object();
-
-    /** Specify the packagename; use <code>--package &lt;packagename&gt;</code> on command line; use <code>sgen:package</code> in config file */
-    protected static final Object OPT_PACKAGENAME = new Object();
-
-    /** Use ontology terms in preference to vanilla RDF; use <code>--ontology</code> on command line; use <code>sgen:ontology</code> in config file */
-    protected static final Object OPT_ONTOLOGY = new Object();
-
-    /** The name of the generated class; use <code>-n &lt;classname&gt;</code> on command line; use <code>sgen:classname</code> in config file */
-    protected static final Object OPT_CLASSNAME = new Object();
-
-    /** Additional decoration for class header (such as implements); use <code>--classdec &lt;classname&gt;</code> on command line; use <code>sgen:classdec</code> in config file */
-    protected static final Object OPT_CLASSDEC = new Object();
-
-    /** The namespace URI for the vocabulary; use <code>-a &lt;uri&gt;</code> on command line; use <code>sgen:namespace</code> in config file */
-    protected static final Object OPT_NAMESPACE = new Object();
-
-    /** Additional declarations to add at the top of the class; use <code>--declarations &lt;...&gt;</code> on command line; use <code>sgen:declarations</code> in config file */
-    protected static final Object OPT_DECLARATIONS = new Object();
-
-    /** Section declaration for properties section; use <code>--propSection &lt;...&gt;</code> on command line; use <code>sgen:propSection</code> in config file */
-    protected static final Object OPT_PROPERTY_SECTION = new Object();
-
-    /** Section declaration for class section; use <code>--classSection &lt;...&gt;</code> on command line; use <code>sgen:classSection</code> in config file */
-    protected static final Object OPT_CLASS_SECTION = new Object();
-
-    /** Section declaration for individuals section; use <code>--individualsSection &lt;...&gt;</code> on command line; use <code>sgen:individualsSection</code> in config file */
-    protected static final Object OPT_INDIVIDUALS_SECTION = new Object();
-
-    /** Option to suppress properties in vocab file; use <code>--noproperties &lt;...&gt;</code> on command line; use <code>sgen:noproperties</code> in config file */
-    protected static final Object OPT_NOPROPERTIES = new Object();
-
-    /** Option to suppress classes in vocab file; use <code>--noclasses &lt;...&gt;</code> on command line; use <code>sgen:noclasses</code> in config file */
-    protected static final Object OPT_NOCLASSES = new Object();
-
-    /** Option to suppress individuals in vocab file; use <code>--noindividuals &lt;...&gt;</code> on command line; use <code>sgen:noindividuals</code> in config file */
-    protected static final Object OPT_NOINDIVIDUALS = new Object();
-
-    /** Option for no file header; use <code>--noheader &lt;...&gt;</code> on command line; use <code>sgen:noheader</code> in config file */
-    protected static final Object OPT_NOHEADER = new Object();
-
-    /** Template for writing out property declarations; use <code>--propTemplate &lt;...&gt;</code> on command line; use <code>sgen:propTemplate</code> in config file */
-    protected static final Object OPT_PROP_TEMPLATE = new Object();
-
-    /** Template for writing out class declarations; use <code>--classTemplate &lt;...&gt;</code> on command line; use <code>sgen:classTemplate</code> in config file */
-    protected static final Object OPT_CLASS_TEMPLATE = new Object();
-
-    /** Template for writing out individual declarations; use <code>--individualTemplate &lt;...&gt;</code> on command line; use <code>sgen:individualTemplate</code> in config file */
-    protected static final Object OPT_INDIVIDUAL_TEMPLATE = new Object();
-
-    /** Option for mapping constant names to uppercase; use <code>--uppercase &lt;...&gt;</code> on command line; use <code>sgen:uppercase</code> in config file */
-    protected static final Object OPT_UC_NAMES = new Object();
-
-    /** Option for including non-local URI's in vocabulary; use <code>--include &lt;uri&gt;</code> on command line; use <code>sgen:include</code> in config file */
-    protected static final Object OPT_INCLUDE = new Object();
-
-    /** Option for adding a suffix to the generated class name; use <code>--classnamesuffix &lt;uri&gt;</code> on command line; use <code>sgen:classnamesuffix</code> in config file */
-    protected static final Object OPT_CLASSNAME_SUFFIX = new Object();
-
-    /** Option for the presentation syntax (encoding) of the file; use <code>-e <i>encoding</i></code> on command line; use <code>sgen:encoding</code> in config file */
-    protected static final Object OPT_ENCODING = new Object();
-
-    /** Option to show the usage message; use --help on command line */
-    protected static final Object OPT_HELP = new Object();
-
-    /** Option to generate an output file with DOS (\r\n) line endings. Default is Unix line endings. */
-    protected static final Object OPT_DOS = new Object();
-
-    /** Option to generate to force the model to perform inference, off by default. */
-    protected static final Object OPT_USE_INF = new Object();
-
-    /** Option to exclude instances of classes in the allowed namespaces, where the individuals themselves are in other namespaces; use <code>--strictIndividuals</code> on command line; use <code>sgen:strictIndividuals</code> in config file */
-    protected static final Object OPT_STRICT_INDIVIDUALS = new Object();
-
-    /** Option to include the ontology source code in the generated file */
-    protected static final Object OPT_INCLUDE_SOURCE = new Object();
-
-    /** Option to turn off strict checking in .a() */
-    protected static final Object OPT_NO_STRICT = new Object();
 
     /** List of Java reserved keywords, see <a href="http://java.sun.com/docs/books/tutorial/java/nutsandbolts/_keywords.html">this list</a>. */
     public static final String[] JAVA_KEYWORDS = {
@@ -219,14 +107,8 @@ public class schemagen {
     // Instance variables
     //////////////////////////////////
 
-    /** The list of command line arguments */
-    protected List<String> m_cmdLineArgs;
-
-    /** The root of the options in the config file */
-    protected Resource m_root;
-
-    /** The model that contains the configuration information */
-    protected Model m_config = ModelFactory.createDefaultModel();
+    /** Schemagen options interface */
+    protected SchemagenOptions m_options;
 
     /** The model that contains the input source */
     protected OntModel m_source;
@@ -235,46 +117,6 @@ public class schemagen {
     protected PrintStream m_output;
 
     /** Option definitions */
-    protected Object[][] m_optionDefinitions = new Object[][] {
-        {OPT_CONFIG_FILE,         new OptionDefinition( "-c", null ) },
-        {OPT_ROOT,                new OptionDefinition( "-r", null ) },
-        {OPT_NO_COMMENTS,         new OptionDefinition( "--nocomments", "noComments" ) },
-        {OPT_INPUT,               new OptionDefinition( "-i", "input" ) },
-        {OPT_LANG_DAML,           new OptionDefinition( "--daml", "daml" ) },
-        {OPT_LANG_OWL,            new OptionDefinition( "--owl", "owl" ) },
-        {OPT_LANG_RDFS,           new OptionDefinition( "--rdfs", "rdfs" ) },
-        {OPT_OUTPUT,              new OptionDefinition( "-o", "output" ) },
-        {OPT_HEADER,              new OptionDefinition( "--header", "header" ) },
-        {OPT_FOOTER,              new OptionDefinition( "--footer", "footer" ) },
-        {OPT_MARKER,              new OptionDefinition( "--marker", "marker" ) },
-        {OPT_PACKAGENAME,         new OptionDefinition( "--package", "package" ) },
-        {OPT_ONTOLOGY,            new OptionDefinition( "--ontology", "ontology" ) },
-        {OPT_CLASSNAME,           new OptionDefinition( "-n", "classname" ) },
-        {OPT_CLASSDEC,            new OptionDefinition( "--classdec", "classdec" ) },
-        {OPT_NAMESPACE,           new OptionDefinition( "-a", "namespace" ) },
-        {OPT_DECLARATIONS,        new OptionDefinition( "--declarations", "declarations" ) },
-        {OPT_PROPERTY_SECTION,    new OptionDefinition( "--propSection", "propSection" ) },
-        {OPT_CLASS_SECTION,       new OptionDefinition( "--classSection", "classSection" ) },
-        {OPT_INDIVIDUALS_SECTION, new OptionDefinition( "--individualsSection", "individualsSection" ) },
-        {OPT_NOPROPERTIES,        new OptionDefinition( "--noproperties", "noproperties" ) },
-        {OPT_NOCLASSES,           new OptionDefinition( "--noclasses", "noclasses" ) },
-        {OPT_NOINDIVIDUALS,       new OptionDefinition( "--noindividuals", "noindividuals" ) },
-        {OPT_PROP_TEMPLATE,       new OptionDefinition( "--propTemplate", "propTemplate" ) },
-        {OPT_CLASS_TEMPLATE,      new OptionDefinition( "--classTemplate", "classTemplate" ) },
-        {OPT_INDIVIDUAL_TEMPLATE, new OptionDefinition( "--individualTemplate", "individualTemplate" ) },
-        {OPT_UC_NAMES,            new OptionDefinition( "--uppercase", "uppercase" ) },
-        {OPT_INCLUDE,             new OptionDefinition( "--include", "include" ) },
-        {OPT_CLASSNAME_SUFFIX,    new OptionDefinition( "--classnamesuffix", "classnamesuffix" )},
-        {OPT_NOHEADER,            new OptionDefinition( "--noheader", "noheader" )},
-        {OPT_ENCODING,            new OptionDefinition( "-e", "encoding" )},
-        {OPT_HELP,                new OptionDefinition( "--help", null )},
-        {OPT_DOS,                 new OptionDefinition( "--dos", "dos" )},
-        {OPT_USE_INF,             new OptionDefinition( "--inference", "inference" )},
-        {OPT_STRICT_INDIVIDUALS,  new OptionDefinition( "--strictIndividuals", "strictIndividuals" )},
-        {OPT_INCLUDE_SOURCE,      new OptionDefinition( "--includeSource", "includeSource" )},
-        {OPT_NO_STRICT,           new OptionDefinition( "--nostrict", "noStrict")},
-    };
-
     /** Stack of replacements to apply */
     protected List<Replacement> m_replacements = new ArrayList<Replacement>();
 
@@ -302,7 +144,19 @@ public class schemagen {
 
     /* Main entry point. See Javadoc for details of the many command line arguments */
     public static void main( String[] args ) {
-        new schemagen().go( args );
+        try {
+            new schemagen().go( args );
+        }
+        catch (SchemagenException e) {
+            System.err.println( "Schemagen failed to run:" );
+            System.err.println( e.getMessage() );
+
+            if (e.getCause() != null) {
+                System.err.println( "Caused by: " + e.getCause().getMessage() );
+            }
+
+            System.exit( 1 );
+        }
     }
 
 
@@ -311,31 +165,19 @@ public class schemagen {
 
     /** Read the configuration parameters and do setup */
     protected void go( String[] args ) {
-        // save the command line parameters
-        m_cmdLineArgs = Arrays.asList( args );
+        go( new SchemagenOptionsImpl( args ) );
+    }
+
+    /** Handle initial configuration options, then initiate processing */
+    protected void go( SchemagenOptions options ) {
+        m_options = options;
+
 
         // check for user requesting help
-        if (m_cmdLineArgs.contains( getOpt( OPT_HELP ).m_cmdLineForm )) {
+        if (m_options.hasHelpOption()) {
             usage();
         }
 
-        // check to see if there's a specified config file
-        String configURL = DEFAULT_CONFIG_URI;
-        if (hasValue( OPT_CONFIG_FILE )) {
-            // check for protocol; add file: if not specified
-            configURL = urlCheck( getValue( OPT_CONFIG_FILE ) );
-        }
-
-        // try to read the config URI
-        try {
-            FileManager.get().readModel( m_config, configURL );
-        }
-        catch (Exception e) {
-            // if the user left the default config URI in place, it's not an error to fail to read it
-            if (!configURL.equals( DEFAULT_CONFIG_URI )) {
-                abort( "Failed to read configuration from URI " + configURL, e );
-            }
-        }
 
         // got the configuration, now we can begin processing
         processInput();
@@ -343,7 +185,7 @@ public class schemagen {
 
     /** The sequence of steps to process an entire file */
     protected void processInput() {
-        determineConfigRoot();
+        addIncludes();
         determineLanguage();
         selectInput();
         selectOutput();
@@ -360,43 +202,27 @@ public class schemagen {
         closeOutput();
     }
 
-    /** Determine the root resource in the configuration file */
-    protected void determineConfigRoot() {
-        if (hasValue( OPT_ROOT )) {
-            String rootURI = getValue( OPT_ROOT );
-            m_root = m_config.getResource( rootURI );
-        }
-        else {
-            // no specified root, we assume there is only one with type sgen:Config
-            StmtIterator i = m_config.listStatements( null, RDF.type, m_config.getResource( NS + "Config" ) );
-            if (i.hasNext()) {
-                m_root = i.nextStatement().getSubject();
-            }
-            else {
-                // no configuration root, so we invent one
-                m_root = m_config.createResource();
-            }
-        }
-
+    /** Add the included files */
+    protected void addIncludes() {
         // add any extra uri's that are allowed in the filter
-        m_includeURI.addAll( getAllValues( OPT_INCLUDE ) );
+        m_includeURI.addAll( m_options.getIncludeOption() );
     }
 
     /** Create the source model after determining which input language */
     protected void determineLanguage() {
         OntModelSpec s = null;
-        if (isTrue( OPT_LANG_DAML )) {
+        if (m_options.hasLangDamlOption()) {
             // DAML language specified
-            if (isTrue( OPT_USE_INF )) {
+            if (m_options.hasUseInfOption()) {
                 s = OntModelSpec.DAML_MEM_RULE_INF;
             }
             else {
                 s = OntModelSpec.DAML_MEM;
             }
         }
-        else if (isTrue( OPT_LANG_RDFS )) {
+        else if (m_options.hasLangRdfsOption()) {
             // RDFS language specified
-            if (isTrue( OPT_USE_INF )) {
+            if (m_options.hasUseInfOption()) {
                 s = OntModelSpec.RDFS_MEM_RDFS_INF;
             }
             else {
@@ -406,7 +232,7 @@ public class schemagen {
         else {
             // owl is the default
             // s = OntModelSpec.getDefaultSpec( ProfileRegistry.OWL_LANG );
-            if (isTrue( OPT_USE_INF )) {
+            if (m_options.hasUseInfOption()) {
                 s = OntModelSpec.OWL_MEM_RULE_INF;
             }
             else {
@@ -418,19 +244,19 @@ public class schemagen {
         m_source.getDocumentManager().setProcessImports( false );
 
         // turn off strict checking on request
-        if (isTrue( OPT_NO_STRICT )) {
+        if (m_options.hasNoStrictOption()) {
             m_source.setStrictMode( false );
         }
     }
 
     /** Identify the URL that is to be read in and translated to a vocabulary file, and load the source into the source model */
     protected void selectInput() {
-        if (!hasResourceValue( OPT_INPUT )) {
+        if (!m_options.hasInputOption()) {
             usage();
         }
 
-        String input = urlCheck( getValue( OPT_INPUT ) );
-        String syntax = getValue( OPT_ENCODING );
+        String input = SchemagenUtils.urlCheck( m_options.getInputOption().getURI() );
+        String syntax = m_options.getEncodingOption();
 
         try {
             FileManager.get().readModel( m_source, input, syntax );
@@ -442,7 +268,7 @@ public class schemagen {
 
     /** Identify the file we are to write the output to */
     protected void selectOutput() {
-        String outFile = getValue( OPT_OUTPUT );
+        String outFile = m_options.getOutputOption();
         if (outFile == null) {
             m_output = System.out;
         }
@@ -464,26 +290,26 @@ public class schemagen {
         }
 
         // check for DOS line endings
-        if (isTrue( OPT_DOS )) {
+        if (m_options.hasDosOption()) {
             m_nl = "\r\n";
         }
     }
 
     /** Process the header at the start of the file, if defined */
     protected void processHeader() {
-        String header = hasValue( OPT_HEADER ) ? getValue( OPT_HEADER ) : DEFAULT_HEADER_TEMPLATE;
+        String header = m_options.hasHeaderOption() ? m_options.getHeaderOption() : DEFAULT_HEADER_TEMPLATE;
 
         // user can turn of header processing, default is to have it on
-        if (!isTrue( OPT_NOHEADER )) {
+        if (!m_options.hasNoheaderOption()) {
             writeln( 0, substitute( header ) );
         }
         else {
             // we have to do the imports at least
             writeln( 0, "import com.hp.hpl.jena.rdf.model.*;" );
-            if (isTrue( OPT_ONTOLOGY )) {
+            if (m_options.hasOntologyOption()) {
                 writeln( 0, "import com.hp.hpl.jena.ontology.*;" );
             }
-            if (isTrue( OPT_INCLUDE_SOURCE)) {
+            if (m_options.hasIncludeSourceOption()) {
                 writeln( 0, "import java.io.ByteArrayInputStream;" );
             }
         }
@@ -491,7 +317,7 @@ public class schemagen {
 
     /** Process the footer at the end of the file, if defined */
     protected void processFooter() {
-        String footer = getValue( OPT_FOOTER );
+        String footer = m_options.getFooterOption();
 
         if (footer != null) {
             writeln( 0, substitute( footer ) );
@@ -501,17 +327,17 @@ public class schemagen {
     /** The list of replacements that are always available */
     protected void setGlobalReplacements() {
         addReplacementPattern( "date", new SimpleDateFormat( "dd MMM yyyy HH:mm").format( new Date() ) );
-        addReplacementPattern( "package", hasValue( OPT_PACKAGENAME ) ? ("package " + getValue( OPT_PACKAGENAME ) + ";") : "" );
+        addReplacementPattern( "package", m_options.hasPackagenameOption() ? ("package " + m_options.getPackagenameOption() + ";") : "" );
         addReplacementPattern( "imports", getImports() );
         addReplacementPattern( "classname", getClassName() );
-        addReplacementPattern( "sourceURI", getResource( OPT_INPUT ).getURI() );
+        addReplacementPattern( "sourceURI", m_options.getInputOption().getURI() );
         addReplacementPattern( "nl", m_nl );
     }
 
     /** Add a pattern-value pair to the list of available patterns */
     protected void addReplacementPattern( String key, String replacement ) {
         if (replacement != null && key != null) {
-            String marker = getValue( OPT_MARKER );
+            String marker = m_options.getMarkerOption();
             marker = (marker == null) ? DEFAULT_MARKER : marker;
 
             try {
@@ -539,78 +365,9 @@ public class schemagen {
     }
 
 
-    /** Answer true if the given option is set to true */
-    protected boolean isTrue( Object option ) {
-        return getOpt( option ).isTrue();
-    }
-
-    /** Answer true if the given option has value */
-    protected boolean hasValue( Object option ) {
-        return getOpt( option ).hasValue();
-    }
-
-    /** Answer true if the given option has a resource value */
-    protected boolean hasResourceValue( Object option ) {
-        return getOpt( option ).hasResourceValue();
-    }
-
-    /** Answer the value of the option or null */
-    protected String getValue( Object option ) {
-        return getOpt( option ).getValue();
-    }
-
-    /** Answer all values for the given options as Strings */
-    protected List<String> getAllValues( Object option ) {
-        List<String> values = new ArrayList<String>();
-        OptionDefinition opt = getOpt( option );
-
-        // look in the command line arguments
-        for (Iterator<String> i = m_cmdLineArgs.iterator(); i.hasNext(); ) {
-            String s = i.next();
-            if (s.equals( opt.m_cmdLineForm )) {
-                // next iterator value is the arg value
-                values.add( i.next() );
-            }
-        }
-
-        // now look in the config file
-        for (StmtIterator i = m_root.listProperties( opt.m_prop ); i.hasNext(); ) {
-            Statement s = i.nextStatement();
-
-            if (s.getObject() instanceof Literal) {
-                values.add( s.getString() );
-            }
-            else {
-                values.add( s.getResource().getURI() );
-            }
-        }
-
-        return values;
-    }
-
-    /** Answer the value of the option or null */
-    protected Resource getResource( Object option ) {
-        return getOpt( option ).getResource();
-    }
-
-    /** Answer the option object for the given option */
-    protected OptionDefinition getOpt( Object option ) {
-        for (int i = 0;  i < m_optionDefinitions.length;  i++) {
-            if (m_optionDefinitions[i][0] == option) {
-                return (OptionDefinition) m_optionDefinitions[i][1];
-            }
-        }
-
-        return null;
-    }
-
     /** Abort due to exception */
-    protected void abort( String msg, Exception e ) {
-        System.err.println( msg );
-        if (e != null) {
-            System.err.println( e );
-        }
-        System.exit( 1 );
+    protected void abort( String msg, Exception cause ) {
+        throw new SchemagenException( msg, cause );
     }
 
     /** Print usage message and abort */
@@ -699,12 +456,12 @@ public class schemagen {
     /** Determine the class name of the vocabulary from the URI */
     protected String getClassName() {
         // if a class name is given, just use that
-        if (hasValue( OPT_CLASSNAME )) {
-            return getValue(( OPT_CLASSNAME ));
+        if (m_options.hasClassnameOption()) {
+            return m_options.getClassnameOption();
         }
 
         // otherwise, we generate a name based on the URI
-        String uri = getValue( OPT_INPUT );
+        String uri = m_options.getInputOption().getURI();
 
         // remove any suffixes
         uri = (uri.endsWith( "#" )) ? uri.substring( 0, uri.length() - 1 ) : uri;
@@ -728,8 +485,8 @@ public class schemagen {
         String name = uri.substring( i );
 
         // optionally add name suffix
-        if (hasValue( OPT_CLASSNAME_SUFFIX )) {
-            name = name + getValue( OPT_CLASSNAME_SUFFIX );
+        if (m_options.hasClassnameSuffixOption()) {
+            name = name + m_options.getClassnameSuffixOption();
         }
 
         // now we make the name into a legal Java identifier
@@ -738,17 +495,17 @@ public class schemagen {
 
     /** Answer true if we are using ontology terms in this vocabulary */
     protected boolean useOntology() {
-        return isTrue( OPT_ONTOLOGY );
+        return m_options.hasOntologyOption();
     }
 
     /** Answer true if all comments are suppressed */
     protected boolean noComments() {
-        return isTrue( OPT_NO_COMMENTS );
+        return m_options.hasNoCommentsOption();
     }
 
     /** Answer true if ontology source code is to be included */
     protected boolean includeSource() {
-        return isTrue( OPT_INCLUDE_SOURCE );
+        return m_options.hasIncludeSourceOption();
     }
 
     /** Convert s to a legal Java identifier; capitalise first char if cap is true */
@@ -786,8 +543,8 @@ public class schemagen {
         write( 0, getClassName() );
         write( 0, " " );
 
-        if (hasValue( OPT_CLASSDEC )) {
-            write( 0, getValue( OPT_CLASSDEC ) );
+        if (m_options.hasClassdecOption()) {
+            write( 0, m_options.getClassdecOption() );
         }
 
         writeln( 0, "{" );
@@ -804,8 +561,8 @@ public class schemagen {
         writeSource();
         writeNamespace();
 
-        if (hasValue( OPT_DECLARATIONS )) {
-            writeln( 0, getValue( OPT_DECLARATIONS ));
+        if (m_options.hasDeclarationsOption()) {
+            writeln( 0, m_options.getDeclarationsOption() );
         }
     }
 
@@ -813,10 +570,10 @@ public class schemagen {
     protected void writeModelDeclaration() {
         if (useOntology()) {
             String lang = "OWL";
-            if (isTrue( OPT_LANG_DAML )) {
+            if (m_options.hasLangDamlOption()) {
                 lang = "DAML";
             }
-            else if (isTrue( OPT_LANG_RDFS )) {
+            else if (m_options.hasLangRdfsOption()) {
                 lang = "RDFS";
             }
             writeln( 1, "/** <p>The ontology model that holds the vocabulary terms</p> */" );
@@ -961,7 +718,7 @@ public class schemagen {
 
     /** User has set namespace via a schemagen option */
     protected String getOptionNamespace() {
-        return hasResourceValue( OPT_NAMESPACE ) ? getResource( OPT_NAMESPACE ).getURI() : null;
+        return m_options.hasNamespaceOption() ? m_options.getNamespaceOption().getURI() : null;
     }
 
     /** Document has set an empty prefix for the model */
@@ -1050,12 +807,12 @@ public class schemagen {
 
     /** Write the list of properties */
     protected void writeProperties() {
-        if (isTrue( OPT_NOPROPERTIES )) {
+        if (m_options.hasNopropertiesOption()) {
             return;
         }
 
-        if (hasValue( OPT_PROPERTY_SECTION )) {
-            writeln( 0, getValue( OPT_PROPERTY_SECTION ));
+        if (m_options.hasPropertySectionOption()) {
+            writeln( 0, m_options.getPropertySectionOption());
         }
 
         if (useOntology()) {
@@ -1074,9 +831,9 @@ public class schemagen {
 
     /** Write any object properties in the vocabulary */
     protected void writeObjectProperties() {
-        String template = hasValue( OPT_PROP_TEMPLATE ) ?  getValue( OPT_PROP_TEMPLATE ) : DEFAULT_TEMPLATE;
+        String template = m_options.hasPropTemplateOption() ?  m_options.getPropTemplateOption() : DEFAULT_TEMPLATE;
 
-        if (!isTrue( OPT_LANG_RDFS )) {
+        if (!m_options.hasLangRdfsOption()) {
             for (Iterator<? extends RDFNode> i = sorted( m_source.listObjectProperties() ); i.hasNext(); ) {
                 writeValue( (Resource) i.next(), template, "ObjectProperty", "createObjectProperty", "_PROP" );
             }
@@ -1085,9 +842,9 @@ public class schemagen {
 
     /** Write any datatype properties in the vocabulary */
     protected void writeDatatypeProperties() {
-        String template = hasValue( OPT_PROP_TEMPLATE ) ?  getValue( OPT_PROP_TEMPLATE ) : DEFAULT_TEMPLATE;
+        String template = m_options.hasPropTemplateOption() ?  m_options.getPropTemplateOption() : DEFAULT_TEMPLATE;
 
-        if (!isTrue( OPT_LANG_RDFS )) {
+        if (!m_options.hasLangRdfsOption()) {
             for (Iterator<? extends RDFNode> i = sorted( m_source.listDatatypeProperties() ); i.hasNext(); ) {
                 writeValue( (Resource) i.next(), template, "DatatypeProperty", "createDatatypeProperty", "_PROP" );
             }
@@ -1096,9 +853,9 @@ public class schemagen {
 
     /** Write any annotation properties in the vocabulary */
     protected void writeAnnotationProperties() {
-        String template = hasValue( OPT_PROP_TEMPLATE ) ?  getValue( OPT_PROP_TEMPLATE ) : DEFAULT_TEMPLATE;
+        String template = m_options.hasPropTemplateOption() ?  m_options.getPropTemplateOption() : DEFAULT_TEMPLATE;
 
-        if (!isTrue( OPT_LANG_RDFS )) {
+        if (!m_options.hasLangRdfsOption()) {
             for (Iterator<? extends RDFNode> i = sorted( m_source.listAnnotationProperties() ); i.hasNext(); ) {
                 writeValue( (Resource) i.next(), template, "AnnotationProperty", "createAnnotationProperty", "_PROP" );
             }
@@ -1107,15 +864,15 @@ public class schemagen {
 
     /** Write any vanilla RDF properties in the vocabulary */
     protected void writeRDFProperties( boolean useOntProperty ) {
-        String template = hasValue( OPT_PROP_TEMPLATE ) ?  getValue( OPT_PROP_TEMPLATE ) : DEFAULT_TEMPLATE;
+        String template = m_options.hasPropTemplateOption() ?  m_options.getPropTemplateOption() : DEFAULT_TEMPLATE;
         String propType = useOntProperty ? "OntProperty" : "Property";
 
         // select the appropriate properties based on the language choice
         Resource[] props;
-        if (isTrue( OPT_LANG_OWL )) {
+        if (m_options.hasLangOwlOption()) {
             props = new Resource[] {OWL.ObjectProperty, OWL.DatatypeProperty, RDF.Property};
         }
-        else if (isTrue( OPT_LANG_DAML )) {
+        else if (m_options.hasLangDamlOption()) {
             props = new Resource[] {DAML_OIL.ObjectProperty, DAML_OIL.DatatypeProperty, RDF.Property};
         }
         else {
@@ -1138,12 +895,12 @@ public class schemagen {
 
     /** Write any classes in the vocabulary */
     protected void writeClasses() {
-        if (isTrue( OPT_NOCLASSES )) {
+        if (m_options.hasNoclassesOption()) {
             return;
         }
 
-        if (hasValue( OPT_CLASS_SECTION )) {
-            writeln( 0, getValue( OPT_CLASS_SECTION ));
+        if (m_options.hasClassSectionOption()) {
+            writeln( 0, m_options.getClassSectionOption());
         }
 
         if (useOntology()) {
@@ -1156,7 +913,7 @@ public class schemagen {
 
     /** Write classes as ontology terms */
     protected void writeOntClasses() {
-        String template = hasValue( OPT_CLASS_TEMPLATE ) ?  getValue( OPT_CLASS_TEMPLATE ) : DEFAULT_TEMPLATE;
+        String template = m_options.hasClassTemplateOption() ?  m_options.getClassTemplateOption() : DEFAULT_TEMPLATE;
 
         for (Iterator<? extends RDFNode> i = sorted( m_source.listClasses() ); i.hasNext(); ) {
             writeValue( (Resource) i.next(), template, "OntClass", "createClass", "_CLASS" );
@@ -1165,14 +922,14 @@ public class schemagen {
 
     /** Write classes as vanilla RDF terms */
     protected void writeRDFClasses() {
-        String template = hasValue( OPT_CLASS_TEMPLATE ) ?  getValue( OPT_CLASS_TEMPLATE ) : DEFAULT_TEMPLATE;
+        String template = m_options.hasClassTemplateOption() ?  m_options.getClassTemplateOption() : DEFAULT_TEMPLATE;
 
         // make sure we're looking for the appropriate type of class
         Resource cls = OWL.Class;
-        if (isTrue( OPT_LANG_DAML )) {
+        if (m_options.hasLangDamlOption()) {
             cls = DAML_OIL.Class;
         }
-        else if (isTrue( OPT_LANG_RDFS )) {
+        else if (m_options.hasLangRdfsOption()) {
             cls = RDFS.Class;
         }
 
@@ -1190,12 +947,12 @@ public class schemagen {
 
     /** Write any instances (individuals) in the vocabulary */
     protected void writeIndividuals() {
-        if (isTrue( OPT_NOINDIVIDUALS )) {
+        if (m_options.hasNoindividualsOption()) {
             return;
         }
 
-        if (hasValue( OPT_INDIVIDUALS_SECTION )) {
-            writeln( 0, getValue( OPT_INDIVIDUALS_SECTION ));
+        if (m_options.hasIndividualsSectionOption()) {
+            writeln( 0, m_options.getIndividualsSectionOption() );
         }
 
         if (useOntology()) {
@@ -1208,7 +965,7 @@ public class schemagen {
 
     /** Write individuals as ontology terms */
     protected void writeOntIndividuals() {
-        String template = hasValue( OPT_INDIVIDUAL_TEMPLATE ) ?  getValue( OPT_INDIVIDUAL_TEMPLATE ) : DEFAULT_INDIVIDUAL_TEMPLATE;
+        String template = m_options.hasIndividualTemplateOption() ?  m_options.getIndividualTemplateOption() : DEFAULT_INDIVIDUAL_TEMPLATE;
 
         for (Iterator<? extends RDFNode> i = selectIndividuals(); i.hasNext(); ) {
             Individual ind = ((Resource) i.next()).as( Individual.class );
@@ -1230,7 +987,7 @@ public class schemagen {
 
     /** Write individuals as vanilla RDF terms */
     protected void writeRDFIndividuals() {
-        String template = hasValue( OPT_INDIVIDUAL_TEMPLATE ) ?  getValue( OPT_INDIVIDUAL_TEMPLATE ) : DEFAULT_TEMPLATE;
+        String template = m_options.hasIndividualTemplateOption() ?  m_options.getIndividualTemplateOption() : DEFAULT_INDIVIDUAL_TEMPLATE;
 
         for (Iterator<? extends RDFNode> i = selectIndividuals(); i.hasNext(); ) {
             writeValue( (Resource) i.next(), template, "Resource", "createResource", "_INSTANCE" );
@@ -1428,7 +1185,7 @@ public class schemagen {
         }
 
         // we allow individuals whose class is not in the included NS's, unless opt strict-individuals is true */
-        if (!isTrue( OPT_STRICT_INDIVIDUALS )) {
+        if (!m_options.hasStrictIndividualsOption()) {
             for (StmtIterator j = r.listProperties( RDF.type ); j.hasNext(); ) {
                 // we search the rdf:types of this resource
                 Resource typeRes = j.nextStatement().getResource();
@@ -1455,7 +1212,7 @@ public class schemagen {
     /** Answer the Java value name for the URI */
     protected String getValueName( Resource r, String disambiguator ) {
         // the id name is basically the local name of the resource, possibly in upper case
-        String name = isTrue( OPT_UC_NAMES ) ? getUCValueName( r ) : r.getLocalName();
+        String name = m_options.hasUcNamesOption() ? getUCValueName( r ) : r.getLocalName();
 
         // must be legal java
         name = asLegalJavaID( name, false );
@@ -1494,42 +1251,6 @@ public class schemagen {
         }
 
         return buf.toString();
-    }
-
-    /** Return a URI formed from the given string, unchanged if it's already a URI or
-     *  converted to a file URI otherwise.  If not recognisable as a URL, abort.
-     */
-    protected String urlCheck( String uriOrFile ) {
-        boolean legal = true;
-        String url = uriOrFile;
-
-        // is it a URI already?  to check, we make a URL and see what happens!
-        try {
-            new URL( url );
-        }
-        catch (MalformedURLException ignore) {
-            legal = false;
-        }
-
-        // if not a legal url, assume it's a file
-        if (!legal) {
-            legal = true;
-            String slash = System.getProperty( "file.separator" );
-            url = "file:" + (uriOrFile.startsWith( slash ) ? (slash + slash) : "") + uriOrFile;
-
-            try {
-                new URL( url );
-            }
-            catch (MalformedURLException ignore) {
-                legal = false;
-            }
-        }
-
-        if (!legal) {
-            abort( "Could not parse " + uriOrFile + " as a legal URL or a file reference. Aborting.", null );
-        }
-
-        return url;
     }
 
     /** Answer an iterator that contains the elements of the given list, but sorted by URI */
@@ -1579,8 +1300,429 @@ public class schemagen {
     // Inner class definitions
     //==============================================================================
 
+    public interface SchemagenOptions {
+        /* Constants for the various options we can set */
+
+       /** Select an alternative config file; use <code>-c &lt;filename&gt;</code> on command line */
+        public static final Object OPT_CONFIG_FILE = new Object();
+
+        /** Turn off all comment output; use <code>--nocomments</code> on command line;  use <code>sgen:noComments</code> in config file */
+        public static final Object OPT_NO_COMMENTS = new Object();
+
+        /** Nominate the URL of the input document; use <code>-i &lt;URL&gt;</code> on command line;  use <code>sgen:input</code> in config file */
+        public static final Object OPT_INPUT = new Object();
+
+        /** Specify that the language of the source is DAML+OIL; use <code>--daml</code> on command line;  use <code>sgen:daml</code> in config file */
+        public static final Object OPT_LANG_DAML = new Object();
+
+        /** Specify that the language of the source is OWL (the default); use <code>--owl</code> on command line;  use <code>sgen:owl</code> in config file */
+        public static final Object OPT_LANG_OWL = new Object();
+
+        /** Specify that the language of the source is RDFS; use <code>--rdfs</code> on command line;  use <code>sgen:rdfs</code> in config file */
+        public static final Object OPT_LANG_RDFS = new Object();
+
+        /** Specify that destination file; use <code>-o &lt;fileName&gt;</code> on command line;  use <code>sgen:output</code> in config file */
+        public static final Object OPT_OUTPUT = new Object();
+
+        /** Specify the file header; use <code>--header "..."</code> on command line;  use <code>sgen:header</code> in config file */
+        public static final Object OPT_HEADER = new Object();
+
+        /** Specify the file footer; use <code>--footer "..."</code> on command line;  use <code>sgen:footer</code> in config file */
+        public static final Object OPT_FOOTER = new Object();
+
+        /** Specify the uri of the configuration root node; use <code>--root &lt;URL&gt;</code> on command line */
+        public static final Object OPT_ROOT = new Object();
+
+        /** Specify the marker string for substitutions, default is '%'; use <code>-m "..."</code> on command line; use <code>sgen:marker</code> in config file */
+        public static final Object OPT_MARKER = new Object();
+
+        /** Specify the packagename; use <code>--package &lt;packagename&gt;</code> on command line; use <code>sgen:package</code> in config file */
+        public static final Object OPT_PACKAGENAME = new Object();
+
+        /** Use ontology terms in preference to vanilla RDF; use <code>--ontology</code> on command line; use <code>sgen:ontology</code> in config file */
+        public static final Object OPT_ONTOLOGY = new Object();
+
+        /** The name of the generated class; use <code>-n &lt;classname&gt;</code> on command line; use <code>sgen:classname</code> in config file */
+        public static final Object OPT_CLASSNAME = new Object();
+
+        /** Additional decoration for class header (such as implements); use <code>--classdec &lt;classname&gt;</code> on command line; use <code>sgen:classdec</code> in config file */
+        public static final Object OPT_CLASSDEC = new Object();
+
+        /** The namespace URI for the vocabulary; use <code>-a &lt;uri&gt;</code> on command line; use <code>sgen:namespace</code> in config file */
+        public static final Object OPT_NAMESPACE = new Object();
+
+        /** Additional declarations to add at the top of the class; use <code>--declarations &lt;...&gt;</code> on command line; use <code>sgen:declarations</code> in config file */
+        public static final Object OPT_DECLARATIONS = new Object();
+
+        /** Section declaration for properties section; use <code>--propSection &lt;...&gt;</code> on command line; use <code>sgen:propSection</code> in config file */
+        public static final Object OPT_PROPERTY_SECTION = new Object();
+
+        /** Section declaration for class section; use <code>--classSection &lt;...&gt;</code> on command line; use <code>sgen:classSection</code> in config file */
+        public static final Object OPT_CLASS_SECTION = new Object();
+
+        /** Section declaration for individuals section; use <code>--individualsSection &lt;...&gt;</code> on command line; use <code>sgen:individualsSection</code> in config file */
+        public static final Object OPT_INDIVIDUALS_SECTION = new Object();
+
+        /** Option to suppress properties in vocab file; use <code>--noproperties &lt;...&gt;</code> on command line; use <code>sgen:noproperties</code> in config file */
+        public static final Object OPT_NOPROPERTIES = new Object();
+
+        /** Option to suppress classes in vocab file; use <code>--noclasses &lt;...&gt;</code> on command line; use <code>sgen:noclasses</code> in config file */
+        public static final Object OPT_NOCLASSES = new Object();
+
+        /** Option to suppress individuals in vocab file; use <code>--noindividuals &lt;...&gt;</code> on command line; use <code>sgen:noindividuals</code> in config file */
+        public static final Object OPT_NOINDIVIDUALS = new Object();
+
+        /** Option for no file header; use <code>--noheader &lt;...&gt;</code> on command line; use <code>sgen:noheader</code> in config file */
+        public static final Object OPT_NOHEADER = new Object();
+
+        /** Template for writing out property declarations; use <code>--propTemplate &lt;...&gt;</code> on command line; use <code>sgen:propTemplate</code> in config file */
+        public static final Object OPT_PROP_TEMPLATE = new Object();
+
+        /** Template for writing out class declarations; use <code>--classTemplate &lt;...&gt;</code> on command line; use <code>sgen:classTemplate</code> in config file */
+        public static final Object OPT_CLASS_TEMPLATE = new Object();
+
+        /** Template for writing out individual declarations; use <code>--individualTemplate &lt;...&gt;</code> on command line; use <code>sgen:individualTemplate</code> in config file */
+        public static final Object OPT_INDIVIDUAL_TEMPLATE = new Object();
+
+        /** Option for mapping constant names to uppercase; use <code>--uppercase &lt;...&gt;</code> on command line; use <code>sgen:uppercase</code> in config file */
+        public static final Object OPT_UC_NAMES = new Object();
+
+        /** Option for including non-local URI's in vocabulary; use <code>--include &lt;uri&gt;</code> on command line; use <code>sgen:include</code> in config file */
+        public static final Object OPT_INCLUDE = new Object();
+
+        /** Option for adding a suffix to the generated class name; use <code>--classnamesuffix &lt;uri&gt;</code> on command line; use <code>sgen:classnamesuffix</code> in config file */
+        public static final Object OPT_CLASSNAME_SUFFIX = new Object();
+
+        /** Option for the presentation syntax (encoding) of the file; use <code>-e <i>encoding</i></code> on command line; use <code>sgen:encoding</code> in config file */
+        public static final Object OPT_ENCODING = new Object();
+
+        /** Option to show the usage message; use --help on command line */
+        public static final Object OPT_HELP = new Object();
+
+        /** Option to generate an output file with DOS (\r\n) line endings. Default is Unix line endings. */
+        public static final Object OPT_DOS = new Object();
+
+        /** Option to generate to force the model to perform inference, off by default. */
+        public static final Object OPT_USE_INF = new Object();
+
+        /** Option to exclude instances of classes in the allowed namespaces, where the individuals themselves are in other namespaces; use <code>--strictIndividuals</code> on command line; use <code>sgen:strictIndividuals</code> in config file */
+        public static final Object OPT_STRICT_INDIVIDUALS = new Object();
+
+        /** Option to include the ontology source code in the generated file */
+        public static final Object OPT_INCLUDE_SOURCE = new Object();
+
+        /** Option to turn off strict checking in .a() */
+        public static final Object OPT_NO_STRICT = new Object();
+
+        public static final Object[][] m_optionDefinitions = new Object[][] {
+                {OPT_CONFIG_FILE,         new OptionDefinition( "-c", null ) },
+                {OPT_ROOT,                new OptionDefinition( "-r", null ) },
+                {OPT_NO_COMMENTS,         new OptionDefinition( "--nocomments", "noComments" ) },
+                {OPT_INPUT,               new OptionDefinition( "-i", "input" ) },
+                {OPT_LANG_DAML,           new OptionDefinition( "--daml", "daml" ) },
+                {OPT_LANG_OWL,            new OptionDefinition( "--owl", "owl" ) },
+                {OPT_LANG_RDFS,           new OptionDefinition( "--rdfs", "rdfs" ) },
+                {OPT_OUTPUT,              new OptionDefinition( "-o", "output" ) },
+                {OPT_HEADER,              new OptionDefinition( "--header", "header" ) },
+                {OPT_FOOTER,              new OptionDefinition( "--footer", "footer" ) },
+                {OPT_MARKER,              new OptionDefinition( "--marker", "marker" ) },
+                {OPT_PACKAGENAME,         new OptionDefinition( "--package", "package" ) },
+                {OPT_ONTOLOGY,            new OptionDefinition( "--ontology", "ontology" ) },
+                {OPT_CLASSNAME,           new OptionDefinition( "-n", "classname" ) },
+                {OPT_CLASSDEC,            new OptionDefinition( "--classdec", "classdec" ) },
+                {OPT_NAMESPACE,           new OptionDefinition( "-a", "namespace" ) },
+                {OPT_DECLARATIONS,        new OptionDefinition( "--declarations", "declarations" ) },
+                {OPT_PROPERTY_SECTION,    new OptionDefinition( "--propSection", "propSection" ) },
+                {OPT_CLASS_SECTION,       new OptionDefinition( "--classSection", "classSection" ) },
+                {OPT_INDIVIDUALS_SECTION, new OptionDefinition( "--individualsSection", "individualsSection" ) },
+                {OPT_NOPROPERTIES,        new OptionDefinition( "--noproperties", "noproperties" ) },
+                {OPT_NOCLASSES,           new OptionDefinition( "--noclasses", "noclasses" ) },
+                {OPT_NOINDIVIDUALS,       new OptionDefinition( "--noindividuals", "noindividuals" ) },
+                {OPT_PROP_TEMPLATE,       new OptionDefinition( "--propTemplate", "propTemplate" ) },
+                {OPT_CLASS_TEMPLATE,      new OptionDefinition( "--classTemplate", "classTemplate" ) },
+                {OPT_INDIVIDUAL_TEMPLATE, new OptionDefinition( "--individualTemplate", "individualTemplate" ) },
+                {OPT_UC_NAMES,            new OptionDefinition( "--uppercase", "uppercase" ) },
+                {OPT_INCLUDE,             new OptionDefinition( "--include", "include" ) },
+                {OPT_CLASSNAME_SUFFIX,    new OptionDefinition( "--classnamesuffix", "classnamesuffix" )},
+                {OPT_NOHEADER,            new OptionDefinition( "--noheader", "noheader" )},
+                {OPT_ENCODING,            new OptionDefinition( "-e", "encoding" )},
+                {OPT_HELP,                new OptionDefinition( "--help", null )},
+                {OPT_DOS,                 new OptionDefinition( "--dos", "dos" )},
+                {OPT_USE_INF,             new OptionDefinition( "--inference", "inference" )},
+                {OPT_STRICT_INDIVIDUALS,  new OptionDefinition( "--strictIndividuals", "strictIndividuals" )},
+                {OPT_INCLUDE_SOURCE,      new OptionDefinition( "--includeSource", "includeSource" )},
+                {OPT_NO_STRICT,           new OptionDefinition( "--nostrict", "noStrict")},
+            };
+
+        public boolean hasConfigFileOption();
+        public String getConfigFileOption();
+        public boolean hasRootOption();
+        public String getRootOption();
+        public boolean hasNoCommentsOption();
+        public String getNoCommentsOption();
+        public boolean hasInputOption();
+        public Resource getInputOption();
+        public boolean hasLangDamlOption();
+        public String getLangDamlOption();
+        public boolean hasLangOwlOption();
+        public String getLangOwlOption();
+        public boolean hasLangRdfsOption();
+        public String getLangRdfsOption();
+        public boolean hasOutputOption();
+        public String getOutputOption();
+        public boolean hasHeaderOption();
+        public String getHeaderOption();
+        public boolean hasFooterOption();
+        public String getFooterOption();
+        public boolean hasMarkerOption();
+        public String getMarkerOption();
+        public boolean hasPackagenameOption();
+        public String getPackagenameOption();
+        public boolean hasOntologyOption();
+        public String getOntologyOption();
+        public boolean hasClassnameOption();
+        public String getClassnameOption();
+        public boolean hasClassdecOption();
+        public String getClassdecOption();
+        public boolean hasNamespaceOption();
+        public Resource getNamespaceOption();
+        public boolean hasDeclarationsOption();
+        public String getDeclarationsOption();
+        public boolean hasPropertySectionOption();
+        public String getPropertySectionOption();
+        public boolean hasClassSectionOption();
+        public String getClassSectionOption();
+        public boolean hasIndividualsSectionOption();
+        public String getIndividualsSectionOption();
+        public boolean hasNopropertiesOption();
+        public boolean hasNoclassesOption();
+        public boolean hasNoindividualsOption();
+        public boolean hasPropTemplateOption();
+        public String getPropTemplateOption();
+        public boolean hasClassTemplateOption();
+        public String getClassTemplateOption();
+        public boolean hasIndividualTemplateOption();
+        public String getIndividualTemplateOption();
+        public boolean hasUcNamesOption();
+        public boolean hasIncludeOption();
+        public List<String> getIncludeOption();
+        public boolean hasClassnameSuffixOption();
+        public String getClassnameSuffixOption();
+        public boolean hasNoheaderOption();
+        public boolean hasEncodingOption();
+        public String getEncodingOption();
+        public boolean hasHelpOption();
+        public String getHelpOption();
+        public boolean hasDosOption();
+        public boolean hasUseInfOption();
+        public boolean hasStrictIndividualsOption();
+        public boolean hasIncludeSourceOption();
+        public boolean hasNoStrictOption();
+    }
+
+    public static class SchemagenOptionsImpl
+        implements SchemagenOptions
+    {
+        // Instance variables
+        /** The list of command line arguments */
+        private List<String> m_cmdLineArgs = new ArrayList<String>();
+
+        /** The root of the options in the config file */
+        protected Resource m_root;
+
+        /** The model that contains the configuration information */
+        protected Model m_config = ModelFactory.createDefaultModel();
+
+        // Constructor
+
+        public SchemagenOptionsImpl( String[] args ) {
+            m_cmdLineArgs = Arrays.asList( args );
+
+            // check to see if there's a specified config file
+            String configURL = DEFAULT_CONFIG_URI;
+            if (hasConfigFileOption()) {
+                // check for protocol; add file: if not specified
+                configURL = SchemagenUtils.urlCheck( getConfigFileOption() );
+            }
+
+            // ensure we have a root URI for the configuration model
+            determineConfigRoot();
+
+            // try to read the config URI
+            try {
+                FileManager.get().readModel( m_config, configURL );
+            }
+            catch (Exception e) {
+                // if the user left the default config URI in place, it's not an error to fail to read it
+                if (!configURL.equals( DEFAULT_CONFIG_URI )) {
+                    throw new SchemagenException( "Failed to read configuration from URL: " + configURL, e );
+                }
+            }
+        }
+
+        // Internal implementation methods
+
+        /** Determine the root resource in the configuration file */
+        protected void determineConfigRoot() {
+            if (hasRootURIOption()) {
+                m_root = m_config.getResource( getRootURIOption() );
+            }
+            else {
+                // no specified root, we assume there is only one with type sgen:Config
+                StmtIterator i = m_config.listStatements( null, RDF.type, m_config.getResource( NS + "Config" ) );
+                if (i.hasNext()) {
+                    m_root = i.nextStatement().getSubject();
+                }
+                else {
+                    // no configuration root, so we invent one
+                    m_root = m_config.createResource();
+                }
+            }
+        }
+
+        public String getRootURIOption() {
+            return getValue( OPT_ROOT );
+        }
+
+        public boolean hasRootURIOption() {
+            return hasValue( OPT_ROOT );
+        }
+
+        /** Answer true if the given option is set to true */
+        protected boolean isTrue( Object option ) {
+            return getOpt( option ).isTrue( m_cmdLineArgs, m_root );
+        }
+
+        /** Answer true if the given option has value */
+        protected boolean hasValue( Object option ) {
+            return getOpt( option ).hasValue( m_cmdLineArgs, m_root );
+        }
+
+        /** Answer true if the given option has a resource value */
+        protected boolean hasResourceValue( Object option ) {
+            return getOpt( option ).hasResourceValue( m_cmdLineArgs, m_root );
+        }
+
+        /** Answer the value of the option or null */
+        protected String getValue( Object option ) {
+            return getOpt( option ).getValue( m_cmdLineArgs, m_root );
+        }
+
+        /** Answer all values for the given options as Strings */
+        protected List<String> getAllValues( Object option ) {
+            List<String> values = new ArrayList<String>();
+            OptionDefinition opt = getOpt( option );
+
+            // look in the command line arguments
+            for (Iterator<String> i = m_cmdLineArgs.iterator(); i.hasNext(); ) {
+                String s = i.next();
+                if (s.equals( opt.m_cmdLineForm )) {
+                    // next iterator value is the arg value
+                    values.add( i.next() );
+                }
+            }
+
+            // now look in the config file
+            for (StmtIterator i = m_root.listProperties( opt.m_prop ); i.hasNext(); ) {
+                Statement s = i.nextStatement();
+
+                if (s.getObject() instanceof Literal) {
+                    values.add( s.getString() );
+                }
+                else {
+                    values.add( s.getResource().getURI() );
+                }
+            }
+
+            return values;
+        }
+
+        /** Answer the value of the option or null */
+        protected Resource getResource( Object option ) {
+            return getOpt( option ).getResource( m_cmdLineArgs, m_root );
+        }
+
+        /** Answer the option object for the given option */
+        protected OptionDefinition getOpt( Object option ) {
+            for (int i = 0;  i < m_optionDefinitions.length;  i++) {
+                if (m_optionDefinitions[i][0] == option) {
+                    return (OptionDefinition) m_optionDefinitions[i][1];
+                }
+            }
+
+            return null;
+        }
+
+        // External interface methods
+
+        public boolean hasConfigFileOption() { return hasValue( OPT_CONFIG_FILE ); }
+        public String getConfigFileOption() { return getValue( OPT_CONFIG_FILE ); }
+        public boolean hasRootOption() { return hasValue( OPT_ROOT ); }
+        public String getRootOption() { return getValue( OPT_ROOT ); }
+        public boolean hasNoCommentsOption() { return isTrue( OPT_NO_COMMENTS ); }
+        public String getNoCommentsOption() { return getValue( OPT_NO_COMMENTS ); }
+        public boolean hasInputOption() { return hasValue( OPT_INPUT ); }
+        public Resource getInputOption() { return getResource( OPT_INPUT ); }
+        public boolean hasLangDamlOption() { return isTrue( OPT_LANG_DAML ); }
+        public String getLangDamlOption() { return getValue( OPT_LANG_DAML ); }
+        public boolean hasLangOwlOption() { return isTrue( OPT_LANG_OWL ); }
+        public String getLangOwlOption() { return getValue( OPT_LANG_OWL ); }
+        public boolean hasLangRdfsOption() { return isTrue( OPT_LANG_RDFS ); }
+        public String getLangRdfsOption() { return getValue( OPT_LANG_RDFS ); }
+        public boolean hasOutputOption() { return hasValue( OPT_OUTPUT ); }
+        public String getOutputOption() { return getValue( OPT_OUTPUT ); }
+        public boolean hasHeaderOption() { return isTrue( OPT_HEADER ); }
+        public String getHeaderOption() { return getValue( OPT_HEADER ); }
+        public boolean hasFooterOption() { return isTrue( OPT_FOOTER ); }
+        public String getFooterOption() { return getValue( OPT_FOOTER ); }
+        public boolean hasMarkerOption() { return hasValue( OPT_MARKER ); }
+        public String getMarkerOption() { return getValue( OPT_MARKER ); }
+        public boolean hasPackagenameOption() { return hasValue( OPT_PACKAGENAME ); }
+        public String getPackagenameOption() { return getValue( OPT_PACKAGENAME ); }
+        public boolean hasOntologyOption() { return isTrue( OPT_ONTOLOGY ); }
+        public String getOntologyOption() { return getValue( OPT_ONTOLOGY ); }
+        public boolean hasClassnameOption() { return hasValue( OPT_CLASSNAME ); }
+        public String getClassnameOption() { return getValue( OPT_CLASSNAME ); }
+        public boolean hasClassdecOption() { return hasValue( OPT_CLASSDEC ); }
+        public String getClassdecOption() { return getValue( OPT_CLASSDEC ); }
+        public boolean hasNamespaceOption() { return hasValue( OPT_NAMESPACE ); }
+        public Resource getNamespaceOption() { return getResource( OPT_NAMESPACE ); }
+        public boolean hasDeclarationsOption() { return hasValue( OPT_DECLARATIONS ); }
+        public String getDeclarationsOption() { return getValue( OPT_DECLARATIONS ); }
+        public boolean hasPropertySectionOption() { return hasValue( OPT_PROPERTY_SECTION ); }
+        public String getPropertySectionOption() { return getValue( OPT_PROPERTY_SECTION ); }
+        public boolean hasClassSectionOption() { return hasValue( OPT_CLASS_SECTION ); }
+        public String getClassSectionOption() { return getValue( OPT_CLASS_SECTION ); }
+        public boolean hasIndividualsSectionOption() { return hasValue( OPT_INDIVIDUALS_SECTION ); }
+        public String getIndividualsSectionOption() { return getValue( OPT_INDIVIDUALS_SECTION ); }
+        public boolean hasNopropertiesOption() { return isTrue( OPT_NOPROPERTIES ); }
+        public boolean hasNoclassesOption() { return isTrue( OPT_NOCLASSES ); }
+        public boolean hasNoindividualsOption() { return isTrue( OPT_NOINDIVIDUALS ); }
+        public boolean hasPropTemplateOption() { return hasValue( OPT_PROP_TEMPLATE ); }
+        public String getPropTemplateOption() { return getValue( OPT_PROP_TEMPLATE ); }
+        public boolean hasClassTemplateOption() { return hasValue( OPT_CLASS_TEMPLATE ); }
+        public String getClassTemplateOption() { return getValue( OPT_CLASS_TEMPLATE ); }
+        public boolean hasIndividualTemplateOption() { return hasValue( OPT_INDIVIDUAL_TEMPLATE ); }
+        public String getIndividualTemplateOption() { return getValue( OPT_INDIVIDUAL_TEMPLATE ); }
+        public boolean hasUcNamesOption() { return isTrue( OPT_UC_NAMES ); }
+        public boolean hasIncludeOption() { return hasValue( OPT_INCLUDE ); }
+        public List<String> getIncludeOption() { return getAllValues( OPT_INCLUDE ); }
+        public boolean hasClassnameSuffixOption() { return hasValue( OPT_CLASSNAME_SUFFIX ); }
+        public String getClassnameSuffixOption() { return getValue( OPT_CLASSNAME_SUFFIX ); }
+        public boolean hasNoheaderOption() { return isTrue( OPT_NOHEADER ); }
+        public boolean hasEncodingOption() { return hasValue( OPT_ENCODING ); }
+        public String getEncodingOption() { return getValue( OPT_ENCODING ); }
+        public boolean hasHelpOption() { return hasValue( OPT_HELP ); }
+        public String getHelpOption() { return getValue( OPT_HELP ); }
+        public boolean hasDosOption() { return isTrue( OPT_DOS ); }
+        public boolean hasUseInfOption() { return isTrue( OPT_USE_INF ); }
+        public boolean hasStrictIndividualsOption() { return isTrue( OPT_STRICT_INDIVIDUALS ); }
+        public boolean hasIncludeSourceOption() { return isTrue( OPT_INCLUDE_SOURCE ); }
+        public boolean hasNoStrictOption() { return isTrue( OPT_NO_STRICT ); }
+    }
+
     /** An option that can be set either on the command line or in the RDF config */
-    protected class OptionDefinition
+    protected static class OptionDefinition
     {
         protected String m_cmdLineForm;
         protected Property m_prop;
@@ -1588,7 +1730,7 @@ public class schemagen {
         protected OptionDefinition( String cmdLineForm, String name ) {
             m_cmdLineForm = cmdLineForm;
             if (name != null) {
-                m_prop = m_config.getProperty( NS, name );
+                m_prop = ResourceFactory.createProperty( NS, name );
             }
         }
 
@@ -1598,13 +1740,13 @@ public class schemagen {
          *
          * @return boolean
          */
-        protected boolean isTrue() {
-            if (m_cmdLineArgs.contains( m_cmdLineForm )) {
+        protected boolean isTrue( List<String> cmdLineArgs, Resource confRoot ) {
+            if (cmdLineArgs.contains( m_cmdLineForm )) {
                 return true;
             }
 
-            if (m_root.hasProperty( m_prop )) {
-                return m_root.getRequiredProperty( m_prop ).getBoolean();
+            if (confRoot.hasProperty( m_prop )) {
+                return confRoot.getRequiredProperty( m_prop ).getBoolean();
             }
 
             return false;
@@ -1616,20 +1758,20 @@ public class schemagen {
          *
          * @return String
          */
-        protected String getValue() {
-            int index = m_cmdLineArgs.indexOf( m_cmdLineForm );
+        protected String getValue( List<String> cmdLineArgs, Resource confRoot ) {
+            int index = cmdLineArgs.indexOf( m_cmdLineForm );
 
             if (index >= 0) {
                 try {
-                    return m_cmdLineArgs.get( index + 1 );
+                    return cmdLineArgs.get( index + 1 );
                 }
                 catch (IndexOutOfBoundsException e) {
                     System.err.println( "Value for parameter " + m_cmdLineForm  + " not set! Aborting.");
                 }
             }
 
-            if (m_prop != null  &&  m_root.hasProperty( m_prop )) {
-                RDFNode val = m_root.getRequiredProperty( m_prop ).getObject();
+            if (m_prop != null  &&  confRoot.hasProperty( m_prop )) {
+                RDFNode val = confRoot.getRequiredProperty( m_prop ).getObject();
                 if (val.isLiteral()) {
                     return ((Literal) val).getLexicalForm();
                 } else {
@@ -1646,8 +1788,8 @@ public class schemagen {
          *
          * @return boolean
          */
-        protected boolean hasValue() {
-            return getValue() != null;
+        protected boolean hasValue( List<String> cmdLineArgs, Resource confRoot ) {
+            return getValue( cmdLineArgs, confRoot ) != null;
         }
 
 
@@ -1656,20 +1798,20 @@ public class schemagen {
          *
          * @return String
          */
-        protected Resource getResource() {
-            int index = m_cmdLineArgs.indexOf( m_cmdLineForm );
+        protected Resource getResource( List<String> cmdLineArgs, Resource confRoot ) {
+            int index = cmdLineArgs.indexOf( m_cmdLineForm );
 
             if (index >= 0) {
                 try {
-                    return m_config.getResource( m_cmdLineArgs.get( index + 1 ) );
+                    return confRoot.getModel().getResource( cmdLineArgs.get( index + 1 ) );
                 }
                 catch (IndexOutOfBoundsException e) {
                     System.err.println( "Value for parameter " + m_cmdLineForm  + " not set! Aborting.");
                 }
             }
 
-            if (m_prop != null  &&  m_root.hasProperty( m_prop )) {
-                return m_root.getRequiredProperty( m_prop ).getResource();
+            if (m_prop != null  &&  confRoot.hasProperty( m_prop )) {
+                return confRoot.getRequiredProperty( m_prop ).getResource();
             }
 
             // not set
@@ -1681,8 +1823,8 @@ public class schemagen {
          *
          * @return boolean
          */
-        protected boolean hasResourceValue() {
-            return getResource() != null;
+        protected boolean hasResourceValue( List<String> cmdLineArgs, Resource confRoot ) {
+            return getResource( cmdLineArgs, confRoot ) != null;
         }
     }  // end inner class OptionDefinition
 
@@ -1698,6 +1840,57 @@ public class schemagen {
             this.pattern = pattern;
         }
     } // end inner class Replacement
+
+    /**
+     * <p>Schemagen runtime exception</p>
+     */
+    public static class SchemagenException
+        extends RuntimeException
+    {
+        public SchemagenException( String msg, Throwable cause ) {
+            super( msg, cause );
+        }
+    }
+
+    /** Utility method container */
+    public static class SchemagenUtils
+    {
+        /** Return a URI formed from the given string, unchanged if it's already a URI or
+         *  converted to a file URI otherwise.  If not recognisable as a URL, abort.
+         */
+        public static String urlCheck( String uriOrFile ) {
+            boolean legal = true;
+            String url = uriOrFile;
+
+            // is it a URI already?  to check, we make a URL and see what happens!
+            try {
+                new URL( url );
+            }
+            catch (MalformedURLException ignore) {
+                legal = false;
+            }
+
+            // if not a legal url, assume it's a file
+            if (!legal) {
+                legal = true;
+                String slash = System.getProperty( "file.separator" );
+                url = "file:" + (uriOrFile.startsWith( slash ) ? (slash + slash) : "") + uriOrFile;
+
+                try {
+                    new URL( url );
+                }
+                catch (MalformedURLException ignore) {
+                    legal = false;
+                }
+            }
+
+            if (!legal) {
+                throw new SchemagenException( "Could not parse " + uriOrFile + " as a legal URL or a file reference. Aborting.", null );
+            }
+
+            return url;
+        }
+    } /* End class SchemagenUtils */
 }
 
 

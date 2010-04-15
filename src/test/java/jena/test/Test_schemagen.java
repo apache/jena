@@ -6,11 +6,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            8 Sep 2006
  * Filename           $RCSfile: Test_schemagen.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-08-05 16:08:51 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2010-04-15 23:44:03 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
@@ -30,6 +30,7 @@ import java.util.StringTokenizer;
 import java.util.regex.Pattern;
 
 import jena.schemagen;
+import jena.schemagen.SchemagenOptionsImpl;
 import junit.framework.TestCase;
 
 import org.slf4j.Logger;
@@ -46,7 +47,7 @@ import com.hp.hpl.jena.util.FileUtils;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: Test_schemagen.java,v 1.2 2009-08-05 16:08:51 andy_seaborne Exp $
+ * @version CVS $Id: Test_schemagen.java,v 1.3 2010-04-15 23:44:03 ian_dickinson Exp $
  */
 public class Test_schemagen
     extends TestCase
@@ -301,14 +302,14 @@ public class Test_schemagen
         String SOURCE = PREFIX + "ex:A a owl:Class .";
         SchemaGenAux fixture = new SchemaGenAux() {
             @Override
-            protected String getValue( Object option ) {
-                if (option.equals( OPT_INPUT )) {
-                    // without the -n option, this will force the classname to be Soggy
-                    return "http://example.org/soggy";
-                }
-                else {
-                    return super.getValue( option );
-                }
+            protected void go( String[] args ) {
+                SchemagenOptionsFixture sgf = new SchemagenOptionsFixture( args ) {
+                    @Override
+                    public Resource getInputOption() {
+                        return ResourceFactory.createResource( "http://example.org/soggy" );
+                    }
+                };
+                go( sgf );
             }
         };
 
@@ -624,30 +625,28 @@ public class Test_schemagen
             go( args );
         }
 
-        // option faking
         @Override
-        protected String getValue( Object option ) {
-            if (option.equals( OPT_INPUT )) {
-                return "http://example.org/sg";
-            }
-            else {
-                return super.getValue( option );
-            }
-        }
-
-        @Override
-        protected Resource getResource( Object option ) {
-            if (option.equals( OPT_INPUT )) {
-                return ResourceFactory.createResource( "http://example.org/sg" );
-            }
-            else {
-                return super.getResource( option );
-            }
+        protected void go( String[] args ) {
+            go( new SchemagenOptionsFixture( args ) );
         }
 
         @Override
         protected void abort( String msg, Exception e ) {
             throw new RuntimeException( msg, e );
+        }
+    }
+
+    static class SchemagenOptionsFixture
+        extends SchemagenOptionsImpl
+    {
+
+        public SchemagenOptionsFixture( String[] args ) {
+            super( args );
+        }
+
+        @Override
+        public Resource getInputOption() {
+            return ResourceFactory.createResource( "http://example.org/sg" );
         }
     }
 }
