@@ -10,6 +10,7 @@ import java.util.Date ;
 
 import org.openjena.atlas.event.Event ;
 import org.openjena.atlas.event.EventListener ;
+import org.openjena.atlas.event.EventManager ;
 import org.openjena.atlas.event.EventType ;
 
 import com.hp.hpl.jena.graph.Node ;
@@ -55,17 +56,16 @@ public class BulkLoader
     public static long IndexTickPoint = 20 ;
     
     // Events.
-    
+    // Either one "bulkload" event with args for status or
+    // better hierarchies of event types.  Event type = list
     
     private static String baseNameGeneral = "http://openjena.org/TDB/event#" ;
 
     private static String baseName = "http://openjena.org/TDB/bulkload/event#" ;
     
     
-    static EventType evBulkload = new EventType(baseName+"start-bulkload") ;
+    static EventType evBulkload = new EventType(baseName+"bulkload") ;
     static EventType evTick = new EventType(baseNameGeneral+"tick") ;
-
-
     
     static EventType evStartBulkload = new EventType(baseName+"start-bulkload") ;
     static EventType evFinishBulkload = new EventType(baseName+"finish-bulkload") ;
@@ -76,15 +76,10 @@ public class BulkLoader
     static EventType evStartIndexBulkload = new EventType(baseName+"start-bulkload-data") ;
     static EventType evFinishIndexBulkload = new EventType(baseName+"finish-bulkload-data") ;
     
-    static class TickPointEvent extends Event
-    {
-        TickPointEvent() { super(evBulkload, null) ; }
-    }
-    
-    EventListener listener = new EventListener() {
+    static EventListener listener = new EventListener() {
         public void event(Object dest, Event event)
         {
-            event.getArgument() ;
+            System.out.printf("%s\n", event.getType()) ;
         }
     } ;
         
@@ -101,8 +96,11 @@ public class BulkLoader
 //        EventManager.register(dsg, eventType, listener) ;
 //    }
     
-    private static Destination<Triple> loadTriples(DatasetGraphTDB dsg, NodeTupleTable nodeTupleTable, final boolean showProgress)
+    private static Destination<Triple> loadTriples(final DatasetGraphTDB dsg, NodeTupleTable nodeTupleTable, final boolean showProgress)
     {
+
+        EventManager.register(dsg, evStartBulkload, listener) ;
+        EventManager.register(dsg, evFinishBulkload, listener) ;
         
         final LoaderNodeTupleTable x = new LoaderNodeTupleTable( 
                                                                 dsg.getTripleTable().getNodeTupleTable(),
@@ -112,6 +110,7 @@ public class BulkLoader
             
             public void start()
             {
+                EventManager.send(dsg, new Event(evStartBulkload, null)) ;
                 if ( ticker != null )
                     ticker.start() ;
                 x.loadStart() ;
@@ -131,6 +130,7 @@ public class BulkLoader
                 x.loadFinish() ;
                 if ( ticker != null )
                     ticker.finish() ;
+                EventManager.send(dsg, new Event(evFinishBulkload, null)) ;
             }
         } ;
         return sink ;

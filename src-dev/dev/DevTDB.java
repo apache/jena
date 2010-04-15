@@ -6,6 +6,7 @@ public class DevTDB
     // Sink: just a send()
     // Destination start-send-finish
     // SinkClosable
+    // Consolidate all event types.
     
     // Testing (W64)
     // Build-release
