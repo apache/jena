@@ -13,14 +13,12 @@ import java.util.Set ;
 
 import org.openjena.atlas.io.IO ;
 import org.openjena.atlas.iterator.Filter ;
-import org.openjena.atlas.lib.FileOps ;
 import org.openjena.atlas.lib.Sink ;
 import org.openjena.atlas.lib.SinkCounting ;
 import org.openjena.atlas.lib.SinkPrint ;
 import org.openjena.atlas.lib.SinkWrapper ;
 import org.openjena.atlas.lib.Tuple ;
 import org.openjena.atlas.logging.Log ;
-
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
@@ -30,28 +28,28 @@ import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.query.QueryExecution ;
 import com.hp.hpl.jena.query.QueryExecutionFactory ;
 import com.hp.hpl.jena.query.QueryFactory ;
-import com.hp.hpl.jena.rdf.model.AnonId ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.riot.ParserFactory ;
 import com.hp.hpl.jena.riot.lang.LangRIOT ;
 import com.hp.hpl.jena.riot.tokens.Tokenizer ;
 import com.hp.hpl.jena.riot.tokens.TokenizerFactory ;
-import com.hp.hpl.jena.shared.uuid.JenaUUID ;
 import com.hp.hpl.jena.sparql.algebra.Algebra ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.Transformer ;
+import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.engine.Plan ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingRoot ;
 import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.sparql.util.QueryExecUtils ;
 import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.TDBFactory ;
-import com.hp.hpl.jena.tdb.lib.NodeFmtLib ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
 import com.hp.hpl.jena.tdb.solver.QueryEngineTDB ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
 import com.hp.hpl.jena.tdb.store.TransformDynamicDataset ;
+import com.hp.hpl.jena.tdb.store.bulkloader.BulkLoader ;
+import com.hp.hpl.jena.tdb.store.bulkloader.Destination ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 import com.hp.hpl.jena.util.FileManager ;
 
@@ -69,23 +67,15 @@ public class RunTDB
 
     public static void main(String[] args) throws IOException
     {
-        System.out.printf("0x%02X\n", (int)'\r') ;
-        System.out.printf("0x%02X\n", (int)'\n') ;
-        System.exit(0) ;
-        //UUID uuid = UUID.randomUUID() ;
-        JenaUUID uuid = JenaUUID.generate() ;
-
-        AnonId aid = new AnonId(uuid.toString()) ;
         
+        DatasetGraph dsg = TDBFactory.createDataset().asDatasetGraph() ;
+        InputStream in = IO.openFile("D.nt") ; 
         
-        Node n = Node.createAnon(aid) ;
-        
-        String $ = NodeFmtLib.serialize(n) ;
-        System.out.println($) ;
-        System.exit(0) ;
-        
-        FileOps.clearDirectory("DB") ;
-        tdb.tdbloader.main("--loc=D", "tmp/cofog-provenance.trig") ;
+        Destination<Triple> dest = BulkLoader.loadTriples((DatasetGraphTDB)dsg, false) ;
+        LangRIOT parser = ParserFactory.createParserNTriples(in, dest) ;
+        dest.start() ;
+        parser.parse() ;
+        dest.finish() ;
         System.exit(0) ;
         
         

@@ -23,7 +23,6 @@ import com.hp.hpl.jena.tdb.index.TupleIndex ;
 import com.hp.hpl.jena.tdb.lib.Sync ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
-import com.hp.hpl.jena.tdb.sys.Session ;
 
 /** 
  * Load into one NodeTupleTable (triples, quads, other) 
@@ -43,24 +42,22 @@ public class LoaderNodeTupleTable implements Closeable, Sync
     
     private NodeTupleTable nodeTupleTable ;
     
-    // Variables across load operations
     private boolean dropAndRebuildIndexes ;
-    private Timer timer ;
+    //private Timer timer ;
     private long count ;
 
-    private Session session ; 
+    //private Session session ; 
 
-    public LoaderNodeTupleTable(Session session, NodeTupleTable nodeTupleTable, boolean showProgress)
+    public LoaderNodeTupleTable(NodeTupleTable nodeTupleTable, boolean showProgress)
     {
-        this(session, nodeTupleTable, showProgress, false, false, false) ;
+        this(nodeTupleTable, showProgress, false, false, false) ;
     }
     
     /** Create a bulkloader for tuples of Nodes:
      *  showProgress/parallel/incremental/generate statistics */ 
 
-    public LoaderNodeTupleTable(Session session, NodeTupleTable nodeTupleTable, boolean showProgress, boolean doInParallel, boolean doIncremental, boolean generateStats)
+    public LoaderNodeTupleTable(NodeTupleTable nodeTupleTable, boolean showProgress, boolean doInParallel, boolean doIncremental, boolean generateStats)
     {
-        this.session = session ;
         this.nodeTupleTable = nodeTupleTable ;
         this.showProgress = showProgress ;
         this.doInParallel = doInParallel ;
@@ -91,8 +88,8 @@ public class LoaderNodeTupleTable implements Closeable, Sync
         if ( generateStats )
             statsPrepare() ;
         
-        timer = new Timer() ;
-        timer.startTimer() ;
+//        timer = new Timer() ;
+//        timer.startTimer() ;
     }
         
     protected void loadFinalize()
@@ -114,15 +111,13 @@ public class LoaderNodeTupleTable implements Closeable, Sync
         if ( showProgress )
             println("** Close") ;
         
-        session.finishUpdate() ;
-
-        long time = timer.getTimeInterval() ;
-        if ( showProgress )
-        {
-            long tps = 1000*count/time ;
-            println() ;
-            printf("Time for load: %.2fs [%,d triples/s]\n", time/1000.0, tps) ;
-        }
+//        long time = timer.getTimeInterval() ;
+//        if ( showProgress )
+//        {
+//            long tps = 1000*count/time ;
+//            println() ;
+//            printf("Time for load: %.2fs [%,d triples/s]\n", time/1000.0, tps) ;
+//        }
     }
 
     // XXX

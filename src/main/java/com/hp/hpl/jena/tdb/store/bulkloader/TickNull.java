@@ -1,22 +1,33 @@
 /*
- * (c) Copyright 2010 Talis Information Ltd
+ * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
 package com.hp.hpl.jena.tdb.store.bulkloader;
 
-import org.openjena.atlas.lib.Sink ;
-
-
-public interface Destination<T> extends Sink<T>
+public class TickNull extends Ticker
 {
-    public void start() ;
-    public void finish() ;
+    TickNull(int tickInternal)
+    {
+        super(tickInternal, false) ;
+    }
+
+    @Override
+    protected void _finish(int totalTicks, int incTicks)
+    {}
+
+    @Override
+    protected void _start()
+    {}
+
+    @Override
+    protected void tickPoint(int totalTicks, int incTicks)
+    {}
 }
 
 /*
- * (c) Copyright 2010 Talis Information Ltd
+ * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

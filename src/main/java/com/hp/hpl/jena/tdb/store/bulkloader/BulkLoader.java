@@ -8,6 +8,10 @@ package com.hp.hpl.jena.tdb.store.bulkloader;
 
 import java.util.Date ;
 
+import org.openjena.atlas.event.Event ;
+import org.openjena.atlas.event.EventListener ;
+import org.openjena.atlas.event.EventType ;
+
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.sparql.core.Quad ;
@@ -19,46 +23,125 @@ import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 /** Overall framework for bulk loading */
 public class BulkLoader
 {
-    public Destination<Triple> loadTriples(DatasetGraphTDB dsg)
+    /*
+     * Process model
+     *   load start
+     *   data load start
+     *   data load finish
+     *   index building start
+     *   index building finish
+     *   load finish
+     * 
+     */
+    
+    // Event callbacks for the load stages?
+    // On what object?  The dataset.
+    
+    public static Destination<Triple> loadTriples(DatasetGraphTDB dsg, boolean showProgress)
     {
-        return loadTriples(dsg, dsg.getTripleTable().getNodeTupleTable()) ;
+        return loadTriples(dsg, dsg.getTripleTable().getNodeTupleTable(), showProgress) ;
     }
     
-    public Destination<Triple> loadTriples(DatasetGraphTDB dsg, Node graphName)
+    public static Destination<Triple> loadTriples(DatasetGraphTDB dsg, Node graphName, boolean showProgress)
     {
         NodeTupleTable ntt = dsg.getQuadTable().getNodeTupleTable() ;
         NodeTupleTable ntt2 = new NodeTupleTableView(ntt, graphName) ;
-        return loadTriples(dsg, ntt2) ;
+        return loadTriples(dsg, ntt2, showProgress) ;
     }
 
-    private Destination<Triple> loadTriples(DatasetGraphTDB dsg, NodeTupleTable nodeTupleTable)
+    /** Tick point for messages during loading of data */
+    public static int LoadTickPoint = 10 ;
+    /** Tick point for messages during secondary index creation */
+    public static long IndexTickPoint = 20 ;
+    
+    // Events.
+    
+    
+    private static String baseNameGeneral = "http://openjena.org/TDB/event#" ;
+
+    private static String baseName = "http://openjena.org/TDB/bulkload/event#" ;
+    
+    
+    static EventType evBulkload = new EventType(baseName+"start-bulkload") ;
+    static EventType evTick = new EventType(baseNameGeneral+"tick") ;
+
+
+    
+    static EventType evStartBulkload = new EventType(baseName+"start-bulkload") ;
+    static EventType evFinishBulkload = new EventType(baseName+"finish-bulkload") ;
+
+    static EventType evStartDataBulkload = new EventType(baseName+"start-bulkload-data") ;
+    static EventType evFinishDataBulkload = new EventType(baseName+"finish-bulkload-data") ;
+    
+    static EventType evStartIndexBulkload = new EventType(baseName+"start-bulkload-data") ;
+    static EventType evFinishIndexBulkload = new EventType(baseName+"finish-bulkload-data") ;
+    
+    static class TickPointEvent extends Event
     {
-        final LoaderNodeTupleTable x = new LoaderNodeTupleTable(null, 
+        TickPointEvent() { super(evBulkload, null) ; }
+    }
+    
+    EventListener listener = new EventListener() {
+        public void event(Object dest, Event event)
+        {
+            event.getArgument() ;
+        }
+    } ;
+        
+//    static class LoadEvent extends Event
+//    {
+//        public LoadEvent(Object argument)
+//        {
+//            super(evBulkload, argument) ;
+//        }
+//    }
+//        
+//    private void addListeners(DatasetGraph dsg)
+//    {
+//        EventManager.register(dsg, eventType, listener) ;
+//    }
+    
+    private static Destination<Triple> loadTriples(DatasetGraphTDB dsg, NodeTupleTable nodeTupleTable, final boolean showProgress)
+    {
+        
+        final LoaderNodeTupleTable x = new LoaderNodeTupleTable( 
                                                                 dsg.getTripleTable().getNodeTupleTable(),
                                                                 true) ;
         Destination<Triple> sink = new Destination<Triple>() {
+            Ticker ticker = (showProgress? new TickEvent(LoadTickPoint) : null ) ;
+            
             public void start()
             {
+                if ( ticker != null )
+                    ticker.start() ;
                 x.loadStart() ;
             }
             public void send(Triple triple)
             {
                 x.load(triple.getSubject(), triple.getPredicate(),  triple.getObject()) ;
+                if ( ticker != null )
+                    ticker.tick() ;
             }
 
             public void flush() { }
-            public void close() { x.loadFinish() ; }
- 
+            public void close() { }
+
+            public void finish()
+            {
+                x.loadFinish() ;
+                if ( ticker != null )
+                    ticker.finish() ;
+            }
         } ;
         return sink ;
     }
 
     public Destination<Quad> loadQuads(DatasetGraphTDB dsg)
     {
-        final LoaderNodeTupleTable loaderTriples = new LoaderNodeTupleTable(null, 
+        final LoaderNodeTupleTable loaderTriples = new LoaderNodeTupleTable( 
                                                                 dsg.getTripleTable().getNodeTupleTable(),
                                                                 true) ;
-        final LoaderNodeTupleTable loaderQuads = new LoaderNodeTupleTable(null, 
+        final LoaderNodeTupleTable loaderQuads = new LoaderNodeTupleTable( 
                                                                  dsg.getQuadTable().getNodeTupleTable(),
                                                                  true) ;
         Destination<Quad> sink = new Destination<Quad>() {
@@ -76,13 +159,14 @@ public class BulkLoader
                     loaderQuads.load(quad.getGraph(), quad.getSubject(), quad.getPredicate(),  quad.getObject()) ;
             }
 
-            public void flush() { }
-
-            public void close()
+            public void finish()
             {
                 loaderTriples.loadFinish() ;
                 loaderQuads.loadFinish() ;
             }
+            
+            public void flush() { }
+            public void close() { }
         } ;
         return sink ;
     }

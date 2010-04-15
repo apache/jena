@@ -3,6 +3,10 @@ package dev ;
 public class DevTDB
 {
     // == 0.8.5
+    // Sink: just a send()
+    // Destination start-send-finish
+    // SinkClosable
+    
     // Testing (W64)
     // Build-release
     // tdbverifyTDB

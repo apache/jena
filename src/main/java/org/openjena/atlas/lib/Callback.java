@@ -1,22 +1,18 @@
 /*
- * (c) Copyright 2010 Talis Information Ltd
+ * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.store.bulkloader;
+package org.openjena.atlas.lib;
 
-import org.openjena.atlas.lib.Sink ;
-
-
-public interface Destination<T> extends Sink<T>
+public interface Callback<T>
 {
-    public void start() ;
-    public void finish() ;
+    public void proc(T arg) ;
 }
 
 /*
- * (c) Copyright 2010 Talis Information Ltd
+ * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
