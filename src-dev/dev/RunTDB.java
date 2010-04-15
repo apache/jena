@@ -71,7 +71,7 @@ public class RunTDB
         DatasetGraph dsg = TDBFactory.createDataset().asDatasetGraph() ;
         InputStream in = IO.openFile("D.nt") ; 
         
-        Destination<Triple> dest = BulkLoader.loadTriples((DatasetGraphTDB)dsg, false) ;
+        Destination<Triple> dest = BulkLoader.loadTriples((DatasetGraphTDB)dsg, true) ;
         LangRIOT parser = ParserFactory.createParserNTriples(in, dest) ;
         dest.start() ;
         parser.parse() ;

@@ -47,8 +47,15 @@ public class TickEvent extends Ticker
     protected void tickPoint(int totalTicks, int incTicks)
     {
         tickMessage(totalTicks, incTicks, tickInternal, timer.readTimer()) ;
+        if ( totalTicks != 0 && totalTicks % (10*super.tickInternal) == 0 )
+        {
+            String x = num(timer.readTimer()/1000F) ;
+            String timestamp = StringUtils.str(new Date()) ; 
+            println(label, "  Elapsed: "+x+" seconds ["+timestamp+"]") ;
+        }
     }
         
+    
     private void tickMessage(int totalTicks, int incTicks, int tickUnit, long timePoint)
     {
         long thisTime = timePoint - lastTime ;
