@@ -101,6 +101,8 @@
 
 [<STRLANG>]     ::= 'STRLANG'
 [<STRDT>]       ::= 'STRDT'
+[<IN>]          ::= 'IN'
+[<NOT_IN>]      ::= 'NOT IN'
 
 [<DFT>]        ::= 'DEFAULT'
 
