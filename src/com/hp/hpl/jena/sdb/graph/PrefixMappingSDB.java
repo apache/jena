@@ -39,17 +39,9 @@ public class PrefixMappingSDB extends PrefixMappingImpl
     static public final int    prefixColWidth   = 50 ;  // Minimum
     static public final int    uriColWidth      = 500 ; // Minimum
     
-    // TODO Currently, two of these sharing a connection don't work completely.
-    // Some PrefixMappingImpl operations directly iterate over the internal maps.
-    // Would work if they all called a minimal interface and leave the checking to
-    // general code.
-    
     // TODO Per-graph prefix mappings.
-    
     // TODO: Encode capital letters in prefix names.
-    
     // new design needed : safe failures of other updates.
-    
     
     // We are an in-memory prefix mapping except the update operations
     // are also applied to the table.
