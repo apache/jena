@@ -81,7 +81,7 @@ public abstract class SqlNodeBase extends AnnotationsBase implements SqlNode
     @Override public String toString()
     {
         IndentedLineBuffer buff = new IndentedLineBuffer() ;
-        output(buff.getIndentedWriter(), true) ;
+        output(buff, true) ;
         return buff.asString() ;
     }
 }

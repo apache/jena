@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.sdb.SDB ;
 import com.hp.hpl.jena.sdb.Store;
 import com.hp.hpl.jena.sdb.compiler.SDBCompile;
 import com.hp.hpl.jena.sdb.compiler.OpSQL;
@@ -44,7 +45,7 @@ public class QueryEngineSDB extends QueryEngineBase
 
     public QueryEngineSDB(Store store, Query q)
     {
-        this(new DatasetStoreGraph(store), q, BindingRoot.create(), null) ;
+        this(new DatasetStoreGraph(store, SDB.getContext().copy()), q, BindingRoot.create(), null) ;
     }
     
     public QueryEngineSDB(DatasetStoreGraph dsg, Query query, Binding initialBinding, Context context)
@@ -106,7 +107,7 @@ public class QueryEngineSDB extends QueryEngineBase
         {
             // Not top - invoke the main query engine as a framework to
             // put all the sub-opSQL parts together.
-            QueryIterator input = new QueryIterSingleton(binding, execCxt) ;
+            QueryIterator input = QueryIterSingleton.create(binding, execCxt) ;
             QueryIterator qIter = QC.execute(op, input, execCxt) ;  // OpExecutor from main query engine.
             qIter = QueryIteratorCheck.check(qIter, execCxt) ;
             return qIter ;

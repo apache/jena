@@ -25,7 +25,7 @@ public class StreamsPrint
     public static <T extends Printable> String printString(Iterable<? extends T> struct, String sep)
     {
         IndentedLineBuffer b = new IndentedLineBuffer() ;
-        apply(struct, new ActionPrint<T>(b.getIndentedWriter(), sep)) ;
+        apply(struct, new ActionPrint<T>(b, sep)) ;
         return b.asString() ; 
     }
     

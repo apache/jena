@@ -14,7 +14,7 @@ public class GenerateSQLOracle extends GenerateSQL
     @Override
     protected SqlNodeVisitor makeVisitor(IndentedLineBuffer buff)
     {
-        return new GeneratorVisitorOracle(buff.getIndentedWriter()) ;
+        return new GeneratorVisitorOracle(buff) ;
     }
 }
 

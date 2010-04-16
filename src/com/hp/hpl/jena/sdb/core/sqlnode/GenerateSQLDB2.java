@@ -14,7 +14,7 @@ public class GenerateSQLDB2 extends GenerateSQL
     @Override
     protected SqlNodeVisitor makeVisitor(IndentedLineBuffer buff)
     {
-        return new GeneratorVisitorDB2(buff.getIndentedWriter()) ;
+        return new GeneratorVisitorDB2(buff) ;
     }
 }
 

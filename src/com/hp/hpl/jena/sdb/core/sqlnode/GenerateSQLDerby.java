@@ -14,7 +14,7 @@ public class GenerateSQLDerby extends GenerateSQL
     @Override
     protected SqlNodeVisitor makeVisitor(IndentedLineBuffer buff)
     {
-        return new GeneratorVisitorDerby(buff.getIndentedWriter()) ;
+        return new GeneratorVisitorDerby(buff) ;
     }
 }
 

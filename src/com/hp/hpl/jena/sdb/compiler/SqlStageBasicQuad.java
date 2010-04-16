@@ -46,12 +46,12 @@ public class SqlStageBasicQuad implements SqlStage
     public SqlNode build(SDBRequest request, SlotCompiler slotCompiler)
     {
         SqlExprList conditions = new SqlExprList() ;
-        boolean defaultGraph = quad.isDefaultGraph() ;
+        boolean defaultGraph = Quad.isDefaultGraph(quad.getGraph()) ; // ARQ 2.8.4 quad.isDefaultGraph() ;
         boolean unionGraph = quad.isUnionGraph() ;
         
         // ---- Choose the mode of access.
         
-        boolean accessStoredDefaultGraph = quad.isDefaultGraph() ;
+        boolean accessStoredDefaultGraph = Quad.isDefaultGraph(quad.getGraph()); //quad.isDefaultGraph() ;
         boolean accessUnionGraph = false ;
         
         if ( accessStoredDefaultGraph && request.getContext().isTrue(SDB.unionDefaultGraph) )
@@ -98,7 +98,7 @@ public class SqlStageBasicQuad implements SqlStage
         
         SqlTable table = new SqlTable(alias, tableDesc.getTableName()) ;
         if ( accessStoredDefaultGraph )
-            table.addNote(FmtUtils.stringForTriple(quad.getTriple(), request.getPrefixMapping())) ;
+            table.addNote(FmtUtils.stringForTriple(quad.asTriple(), request.getPrefixMapping())) ;
         else
             table.addNote(FmtUtils.stringForQuad(quad, request.getPrefixMapping())) ;
 

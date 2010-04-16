@@ -6,57 +6,118 @@
 
 package dev;
 
-import static sdb.SDBCmd.sdbconfig;
-import static sdb.SDBCmd.sdbload;
-import static sdb.SDBCmd.sdbquery;
-import static sdb.SDBCmd.setExitOnError;
-import static sdb.SDBCmd.setSDBConfig;
-import static sdb.SDBCmd.sparql;
+import static sdb.SDBCmd.sdbconfig ;
+import static sdb.SDBCmd.sdbload ;
+import static sdb.SDBCmd.sdbquery ;
+import static sdb.SDBCmd.setExitOnError ;
+import static sdb.SDBCmd.setSDBConfig ;
+import static sdb.SDBCmd.sparql ;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.Iterator;
+import java.sql.Connection ;
+import java.sql.SQLException ;
+import java.util.Iterator ;
 
-import sdb.SDBCmd;
-import arq.cmd.CmdUtils;
+import sdb.SDBCmd ;
+import arq.cmd.CmdUtils ;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.query.Dataset;
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryExecution;
-import com.hp.hpl.jena.query.QueryExecutionFactory;
-import com.hp.hpl.jena.query.QueryFactory;
-import com.hp.hpl.jena.query.ResultSetFormatter;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.RDFNode;
-import com.hp.hpl.jena.sdb.SDBFactory;
-import com.hp.hpl.jena.sdb.Store;
-import com.hp.hpl.jena.sdb.sql.JDBC;
-import com.hp.hpl.jena.sdb.sql.SDBConnection;
-import com.hp.hpl.jena.sdb.store.StoreConfig;
-import com.hp.hpl.jena.sdb.test.junit.SDBTestUtils;
-import com.hp.hpl.jena.sparql.core.DatasetGraph;
-import com.hp.hpl.jena.sparql.lib.iterator.Iter;
-import com.hp.hpl.jena.sparql.resultset.ResultsFormat;
-import com.hp.hpl.jena.sparql.sse.SSE;
-import com.hp.hpl.jena.sparql.util.ALog;
-import com.hp.hpl.jena.sparql.util.IndentedWriter;
-import com.hp.hpl.jena.sparql.util.QueryExecUtils;
-import com.hp.hpl.jena.update.GraphStore;
-import com.hp.hpl.jena.update.UpdateAction;
-import com.hp.hpl.jena.util.FileManager;
+import com.hp.hpl.jena.assembler.Assembler ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.query.Dataset ;
+import com.hp.hpl.jena.query.DatasetFactory ;
+import com.hp.hpl.jena.query.Query ;
+import com.hp.hpl.jena.query.QueryExecution ;
+import com.hp.hpl.jena.query.QueryExecutionFactory ;
+import com.hp.hpl.jena.query.QueryFactory ;
+import com.hp.hpl.jena.query.ResultSetFormatter ;
+import com.hp.hpl.jena.rdf.model.Literal ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.Property ;
+import com.hp.hpl.jena.rdf.model.RDFNode ;
+import com.hp.hpl.jena.rdf.model.Resource ;
+import com.hp.hpl.jena.sdb.SDBFactory ;
+import com.hp.hpl.jena.sdb.Store ;
+import com.hp.hpl.jena.sdb.sql.JDBC ;
+import com.hp.hpl.jena.sdb.sql.SDBConnection ;
+import com.hp.hpl.jena.sdb.store.DatasetStoreGraph ;
+import com.hp.hpl.jena.sdb.store.StoreConfig ;
+import com.hp.hpl.jena.sdb.test.junit.SDBTestUtils ;
+import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import com.hp.hpl.jena.sparql.lib.iterator.Iter ;
+import com.hp.hpl.jena.sparql.resultset.ResultsFormat ;
+import com.hp.hpl.jena.sparql.sse.SSE ;
+import com.hp.hpl.jena.sparql.util.ALog ;
+import com.hp.hpl.jena.sparql.util.IndentedWriter ;
+import com.hp.hpl.jena.sparql.util.QueryExecUtils ;
+import com.hp.hpl.jena.update.GraphStore ;
+import com.hp.hpl.jena.update.UpdateAction ;
+import com.hp.hpl.jena.util.FileManager ;
 
 public class RunSDB
 {
     static { ALog.setLog4j() ; CmdUtils.setN3Params() ; }
     
+    private static Store create(Model assem)
+    {
+        // Create a store and format
+        Dataset ds = DatasetFactory.assemble(assem) ;
+        Store store = ((DatasetStoreGraph)ds.asDatasetGraph()).getStore() ;
+        store.getTableFormatter().create() ;
+        return store ;
+    }
+    
     public static void main(String ... argv) throws SQLException
     {
-        //sdb.sdbconfig.main("--sdb=sdb.ttl", "--create") ;
-        //sdb.sdbprint.main("--sdb=sdb.ttl", "select *  where { GRAPH<G> { ?s ?p ?o}} limit 5") ;
-        sdb.sdbprint.main("--sdb=sdb.ttl", "--file=Q.rq") ;
-        System.exit(0) ;
-        
+        {
+            String dir = "testing/Assembler/" ; 
+            Model assem = FileManager.get().loadModel(dir+"graph-assembler.ttl") ;
+            Resource xDft = assem.getResource("http://example/test#graphDft") ;
+            Resource xNamed = assem.getResource("http://example/test#graphNamed") ;
+
+            Store store = create(assem) ;
+
+            Model model1 = (Model)Assembler.general.open(xDft) ;
+            Model model2 = (Model)Assembler.general.open(xNamed) ;
+            
+            Resource s = model1.createResource() ;
+            Property p = model1.createProperty("http://example/p") ;
+            Literal o = model1.createLiteral("foo") ;
+            
+            model1.add(s,p,o) ;
+            System.out.println(model1.contains(s, p, o)) ;
+            
+            System.out.println("----") ;
+            model1.write(System.out, "TTL") ;
+            System.out.println("----") ;
+            model2.write(System.out, "TTL") ;
+            System.out.println("----") ;
+            
+            model1.size() ;
+            
+            System.out.println("Size 1 : "+model1.size()) ;
+            System.out.println("Size 2 : "+model2.size()) ;
+            
+//            System.out.println("model1:") ;
+//            StmtIterator sIter1 = model1.listStatements() ;
+//            for ( ; sIter1.hasNext() ; )
+//                System.out.println(sIter1.next()) ;
+//            
+//            System.out.println("model2:") ;
+//            StmtIterator sIter2 = model1.listStatements() ;
+//            for ( ; sIter2.hasNext() ; )
+//                System.out.println(sIter2.next()) ;
+            
+            System.out.println((model1.isIsomorphicWith(model2))) ;
+            System.exit(0) ;
+            
+        }
+        {
+            
+            
+            //sdb.sdbconfig.main("--sdb=sdb.ttl", "--create") ;
+            //sdb.sdbprint.main("--sdb=sdb.ttl", "select *  where { GRAPH<G> { ?s ?p ?o}} limit 5") ;
+            sdb.sdbprint.main("--sdb=sdb.ttl", "--file=Q.rq") ;
+            System.exit(0) ;
+        }        
         {
             // Make sure the database is created but empty first.
             String modelName = "http://example/g1" ;

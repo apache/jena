@@ -50,7 +50,7 @@ public class GenerateSQL implements SQLGenerator
     
     protected SqlNodeVisitor makeVisitor(IndentedLineBuffer buff)
     {
-        return new GenerateSQLVisitor(buff.getIndentedWriter()) ;
+        return new GenerateSQLVisitor(buff) ;
     }
     
     public static SqlNode ensureProject(SDBRequest request, SqlNode sqlNode)

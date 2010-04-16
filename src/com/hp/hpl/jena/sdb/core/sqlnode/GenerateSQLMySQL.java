@@ -15,7 +15,7 @@ public class GenerateSQLMySQL extends GenerateSQL
     @Override
     protected SqlNodeVisitor makeVisitor(IndentedLineBuffer buff)
     {
-        return new GeneratorVisitorMySQL(buff.getIndentedWriter()) ;
+        return new GeneratorVisitorMySQL(buff) ;
     }
 }
 

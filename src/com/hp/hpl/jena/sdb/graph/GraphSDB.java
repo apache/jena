@@ -72,7 +72,7 @@ public class GraphSDB extends GraphBase2 implements Graph
         this.graphNode = graphNode ;
         
         // Avoid looping here : DatasetStoreGraph can make GraphSDB's
-        datasetStore = new DatasetStoreGraph(store, this) ;
+        datasetStore = new DatasetStoreGraph(store, this, SDB.getContext().copy()) ;
         
         //readPrefixMapping() ;
     }
@@ -148,7 +148,6 @@ public class GraphSDB extends GraphBase2 implements Graph
         
         // If null, create and remember a variable, else use the node.
         final Node s = (m.getMatchSubject()==null)   ? Var.alloc("s")   :  m.getMatchSubject() ;
-        
         final Node p = (m.getMatchPredicate()==null) ? Var.alloc("p")   :  m.getMatchPredicate() ;
         final Node o = (m.getMatchObject()==null)    ? Var.alloc("o")   :  m.getMatchObject() ;
 
@@ -171,7 +170,8 @@ public class GraphSDB extends GraphBase2 implements Graph
         {
             // ---- Safe version: 
             List<Binding> bindings = new ArrayList<Binding>() ;
-            while ( qIter.hasNext() ) bindings.add(qIter.nextBinding()) ;
+            while ( qIter.hasNext() ) 
+                bindings.add(qIter.nextBinding()) ;
             qIter.close();
             
             // QueryIterPlainWrapper is just to make it ia QuyerIterator again.

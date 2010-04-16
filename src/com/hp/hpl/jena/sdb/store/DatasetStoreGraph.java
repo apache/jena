@@ -6,50 +6,56 @@
 
 package com.hp.hpl.jena.sdb.store;
 
-import java.util.Iterator;
+import java.util.Iterator ;
 
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.query.Dataset;
-import com.hp.hpl.jena.sdb.SDBFactory;
-import com.hp.hpl.jena.sdb.Store;
-import com.hp.hpl.jena.sdb.graph.GraphSDB;
-import com.hp.hpl.jena.sdb.layout1.StoreRDB;
-import com.hp.hpl.jena.sdb.shared.SDBNotImplemented;
-import com.hp.hpl.jena.sdb.util.StoreUtils;
-import com.hp.hpl.jena.shared.Lock;
-import com.hp.hpl.jena.shared.LockMRSW;
-import com.hp.hpl.jena.sparql.core.Closeable;
-import com.hp.hpl.jena.sparql.core.DatasetGraph;
-import com.hp.hpl.jena.sparql.core.DatasetImpl;
-import com.hp.hpl.jena.update.GraphStore;
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.query.Dataset ;
+import com.hp.hpl.jena.sdb.Store ;
+import com.hp.hpl.jena.sdb.graph.GraphSDB ;
+import com.hp.hpl.jena.sdb.shared.SDBNotImplemented ;
+import com.hp.hpl.jena.sdb.util.StoreUtils ;
+import com.hp.hpl.jena.shared.Lock ;
+import com.hp.hpl.jena.shared.LockMRSW ;
+import com.hp.hpl.jena.sparql.core.Closeable ;
+import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import com.hp.hpl.jena.sparql.core.DatasetImpl ;
+import com.hp.hpl.jena.sparql.util.Context ;
+import com.hp.hpl.jena.update.GraphStore ;
 
 /** A graph-level dataset for SDB - triggers SDB SQL processing when used in a query */
 public class DatasetStoreGraph implements DatasetGraph, Closeable, GraphStore //implements DatasetGraph
 {
-    Store store ;
+    final Store store ;
     Graph defaultGraph = null ;
     Lock lock = new LockMRSW() ;
+    final Context context ;
     
-    public DatasetStoreGraph(Store store)
+    public DatasetStoreGraph(Store store, Context context)
     {
-        this.store = store ; 
+        this(store, null, context) ;
     }
     
-    public DatasetStoreGraph(Store store, GraphSDB graph)
+    public DatasetStoreGraph(Store store, GraphSDB graph, Context context)
     {
         this.store = store ;
         // Force the "default" graph
         this.defaultGraph = graph ;
+        this.context = context ;
     }
 
-    public DatasetStoreGraph(StoreRDB store)
-    {
-        this.store = store ; 
-        this.defaultGraph = SDBFactory.connectDefaultGraph(store) ;
-    }
+//    public DatasetStoreGraph(StoreRDB store, Context context)
+//    {
+//        this.store = store ; 
+//        this.defaultGraph = SDBFactory.connectDefaultGraph(store) ;
+//    }
     
     public Store getStore() { return store ; }
+
+    public Context getContext()
+    {
+        return context ;
+    }
 
     public Iterator<Node> listGraphNodes()
     {

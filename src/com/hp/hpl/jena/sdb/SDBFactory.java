@@ -180,8 +180,8 @@ public class SDBFactory
      * @return GraphStore
      */
     public static GraphStore connectGraphStore(Store store)
-    { //return new GraphStoreSDB(store) ; }
-        return new DatasetStoreGraph(store) ; 
+    {
+        return new DatasetStoreGraph(store, SDB.getContext().copy()) ; 
     }
 
     /**

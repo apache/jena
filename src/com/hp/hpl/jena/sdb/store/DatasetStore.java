@@ -32,7 +32,7 @@ public class DatasetStore extends DataSourceImpl
     
     public static DatasetStoreGraph createDatasetStoreGraph(Store store)
     { 
-        return new DatasetStoreGraph(store) ;
+        return new DatasetStoreGraph(store, SDB.getContext().copy()) ;
     }
 
     private DatasetStore() {}

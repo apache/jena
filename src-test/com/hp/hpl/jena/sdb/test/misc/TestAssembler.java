@@ -6,27 +6,27 @@
 
 package com.hp.hpl.jena.sdb.test.misc;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse ;
+import static org.junit.Assert.assertNotNull ;
+import static org.junit.Assert.assertTrue ;
 
-import java.sql.Connection;
+import java.sql.Connection ;
 
-import org.junit.Test;
+import org.junit.Test ;
 
-import com.hp.hpl.jena.assembler.Assembler;
-import com.hp.hpl.jena.query.Dataset;
-import com.hp.hpl.jena.query.DatasetFactory;
-import com.hp.hpl.jena.rdf.model.Literal;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.Property;
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.sdb.SDBFactory;
-import com.hp.hpl.jena.sdb.Store;
-import com.hp.hpl.jena.sdb.StoreDesc;
-import com.hp.hpl.jena.sdb.store.DatasetStoreGraph;
-import com.hp.hpl.jena.sparql.core.DatasetGraph;
-import com.hp.hpl.jena.util.FileManager;
+import com.hp.hpl.jena.assembler.Assembler ;
+import com.hp.hpl.jena.query.Dataset ;
+import com.hp.hpl.jena.query.DatasetFactory ;
+import com.hp.hpl.jena.rdf.model.Literal ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.Property ;
+import com.hp.hpl.jena.rdf.model.Resource ;
+import com.hp.hpl.jena.sdb.SDBFactory ;
+import com.hp.hpl.jena.sdb.Store ;
+import com.hp.hpl.jena.sdb.StoreDesc ;
+import com.hp.hpl.jena.sdb.store.DatasetStoreGraph ;
+import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import com.hp.hpl.jena.util.FileManager ;
 
 
 public class TestAssembler
@@ -110,8 +110,11 @@ public class TestAssembler
         Literal o = model1.createLiteral("foo") ;
         
         model1.add(s,p,o) ;
+        assertTrue(model1.contains(s, p, o)) ;
+        
         assertTrue(model1.size() == 1 ) ;
         assertTrue(model2.size() == 0 ) ;
+        
         assertFalse(model1.isIsomorphicWith(model2)) ;
     }
         

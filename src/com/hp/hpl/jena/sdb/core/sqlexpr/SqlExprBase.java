@@ -25,7 +25,7 @@ public abstract class SqlExprBase extends AnnotationsBase implements SqlExpr
     public static String asSQL(SqlExpr expr)
     {
         IndentedLineBuffer buff = new IndentedLineBuffer() ;
-        SqlExprVisitor v = new SqlExprGenerateSQL(buff.getIndentedWriter()) ;
+        SqlExprVisitor v = new SqlExprGenerateSQL(buff) ;
         expr.visit(v) ;
         return buff.toString() ; 
     }

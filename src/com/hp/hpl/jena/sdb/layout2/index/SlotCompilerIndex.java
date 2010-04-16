@@ -118,7 +118,7 @@ public class SlotCompilerIndex extends SlotCompiler2
         for ( Quad quad : quadBlock )
         {
             // Some constants are only markers and are not stored in the database.
-            if ( ! quad.isDefaultGraph() && ! quad.isUnionGraph() )
+            if ( ! Quad.isDefaultGraph(quad.getGraph()) && ! quad.isUnionGraph() )  // quad.isDefaultGraph ARQ 2.8.4 and later
                 acc(constants, vars, quad.getGraph()) ;
             acc(constants, vars, quad.getSubject()) ;
             acc(constants, vars, quad.getPredicate()) ;

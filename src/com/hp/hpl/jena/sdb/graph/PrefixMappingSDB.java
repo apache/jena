@@ -100,10 +100,10 @@ public class PrefixMappingSDB extends PrefixMappingImpl
     protected String get(String prefix)
     {
         String x = super.get(prefix) ;
-        if ( x !=  null )
+        if ( x != null )
             return x ;
-        // In case it has been updated.
-        return readFromPrefixMap(prefix) ;
+        x = readFromPrefixMap(prefix) ;
+        return x ;
     }
     
     @Override
@@ -189,7 +189,9 @@ public class PrefixMappingSDB extends PrefixMappingImpl
                 ) ;
             connection.execUpdate(sqlStmt) ;
         } catch (SQLException ex)
-        { throw new SDBExceptionSQL(format("Failed to set prefix (%s,%s)", prefix, uri), ex) ; }
+        { 
+            throw new SDBExceptionSQL(format("Failed to set prefix (%s,%s)", prefix, uri), ex) ; 
+        }
     }
     
     private void removeFromPrefixMap(String prefix, String uri)

@@ -6,24 +6,24 @@
 
 package com.hp.hpl.jena.sdb;
 
-import com.hp.hpl.jena.assembler.assemblers.AssemblerGroup;
-import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
-import com.hp.hpl.jena.query.ARQ;
-import com.hp.hpl.jena.sdb.assembler.AssemblerVocab;
-import com.hp.hpl.jena.sdb.core.SDBConstants;
-import com.hp.hpl.jena.sdb.engine.QueryEngineSDB;
-import com.hp.hpl.jena.sdb.modify.UpdateProcessorSDB;
-import com.hp.hpl.jena.sdb.util.DerbyUtils;
-import com.hp.hpl.jena.shared.PrefixMapping;
-import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
-import com.hp.hpl.jena.sparql.ARQInternalErrorException;
-import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils;
-import com.hp.hpl.jena.sparql.lib.Metadata;
-import com.hp.hpl.jena.sparql.util.Context;
-import com.hp.hpl.jena.sparql.util.Symbol;
-import com.hp.hpl.jena.vocabulary.OWL;
-import com.hp.hpl.jena.vocabulary.RDF;
-import com.hp.hpl.jena.vocabulary.RDFS;
+import com.hp.hpl.jena.assembler.assemblers.AssemblerGroup ;
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
+import com.hp.hpl.jena.query.ARQ ;
+import com.hp.hpl.jena.sdb.assembler.AssemblerVocab ;
+import com.hp.hpl.jena.sdb.core.SDBConstants ;
+import com.hp.hpl.jena.sdb.engine.QueryEngineSDB ;
+import com.hp.hpl.jena.sdb.modify.UpdateProcessorSDB ;
+import com.hp.hpl.jena.sdb.util.DerbyUtils ;
+import com.hp.hpl.jena.shared.PrefixMapping ;
+import com.hp.hpl.jena.shared.impl.PrefixMappingImpl ;
+import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
+import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils ;
+import com.hp.hpl.jena.sparql.lib.Metadata ;
+import com.hp.hpl.jena.sparql.util.Context ;
+import com.hp.hpl.jena.sparql.util.Symbol ;
+import com.hp.hpl.jena.vocabulary.OWL ;
+import com.hp.hpl.jena.vocabulary.RDF ;
+import com.hp.hpl.jena.vocabulary.RDFS ;
 
 
 public class SDB
@@ -79,7 +79,7 @@ public class SDB
         initialized = true ;
         
         // Better not to break up BGPs too much.
-        ARQ.getContext().set(ARQ.filterPlacement, false) ;
+        ARQ.getContext().set(ARQ.optFilterPlacement, false) ;
         
         // Default is 1000 4Kpages.
         DerbyUtils.setDerbyPageCacheSize(10000) ;
