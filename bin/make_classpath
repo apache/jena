@@ -19,6 +19,7 @@ LIBDIR="$DIRROOT/lib"
 # List
 CPDIR1="$DIRROOT/classes"
 CPDIR2="$DIRROOT/build/classes"
+CPDIR3="$DIRROOT/target/classes"
 ETCDIR="$DIRROOT/etc"
 
 # Cygwin - on Windows, the Java separator is ;
@@ -58,7 +59,7 @@ for jar in "$LIBDIR"/*.jar
 done
 
 # Prepend any classes/ directory
-for dir in "$CPDIR2" "$CPDIR1"
+for dir in "$CPDIR2" "$CPDIR1" "$CPDIR3"
 do
   if [ -e "$dir" ]
       then
