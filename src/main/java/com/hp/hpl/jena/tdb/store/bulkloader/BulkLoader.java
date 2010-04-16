@@ -98,7 +98,7 @@ public class BulkLoader
     
     private static Destination<Triple> loadTriples(final DatasetGraphTDB dsg, NodeTupleTable nodeTupleTable, final boolean showProgress)
     {
-
+        // Testing.
         EventManager.register(dsg, evStartBulkload, listener) ;
         EventManager.register(dsg, evFinishBulkload, listener) ;
         
