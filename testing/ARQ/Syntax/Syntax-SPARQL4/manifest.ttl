@@ -5,11 +5,11 @@
 @prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
 
 <>  rdf:type mf:Manifest ;
-    rdfs:label "Syntax" ;
-    mfx:include (
-         <Syntax-SPARQL/manifest.ttl>
-         <Syntax-SPARQL2/manifest.ttl>
-         <Syntax-SPARQL3/manifest.ttl>
-         <Syntax-SPARQL4/manifest.ttl>
-         <Syntax-ARQ/manifest.ttl>
+    rdfs:comment "Syntax tests SPARQL 1.1" ;
+    mf:entries
+    (
+##       [  mf:name    "syntax-basic-01.rq" ;
+##          rdf:type   mfx:TestSyntax ;
+##          mf:action  <syntax-basic-01.rq> ; 
+##       ]
     ) .

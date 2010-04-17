@@ -20,8 +20,16 @@ source syn-func.sh
 (   source syn-func.sh  
     cd Syntax-SPARQL3
     clean
-    source ../syn-dev.sh
+    source ../syn-sparql3.sh
     createManifest "Syntax-SPARQL3"
+ )
+
+# SPARQL 11
+(   source syn-func.sh  
+    cd Syntax-SPARQL4
+    clean
+    source ../syn-sparql4.sh
+    createManifest "Syntax-SPARQL4"
  )
 
 # ARQ
