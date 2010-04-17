@@ -45,7 +45,7 @@ public abstract class Ticker
     
         if ( currentTicks % tickInternal == 0 )
         {
-            tickPoint(totalTicks, currentTicks) ;
+            tickPoint(currentTicks, totalTicks) ;
             currentTicks = 0 ;
         }
             

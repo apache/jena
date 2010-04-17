@@ -23,15 +23,13 @@ import com.hp.hpl.jena.riot.tokens.Tokenizer ;
 /** Jena reader for RIOT Turtle */
 public class JenaReaderTurtle2 extends JenaReaderRIOT
 {
-    private LangTurtle parser = null ; 
-
     @Override
     protected void readWorker(Model model, Tokenizer tokenizer, String base)
     {
         Sink<Triple> sink = new SinkToGraphTriples(model.getGraph()) ;
         Checker checker = new Checker() ; 
         try {
-            parser = new LangTurtle(base, tokenizer, checker, sink) ;
+            LangTurtle parser = new LangTurtle(base, tokenizer, checker, sink) ;
             parser.parse() ;
             // Merge prefixes.
             for ( Map.Entry<String,IRI> e : parser.getPrefixMap().getMapping().entrySet() )

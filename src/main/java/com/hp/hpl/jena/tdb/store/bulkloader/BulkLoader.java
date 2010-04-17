@@ -55,6 +55,10 @@ public class BulkLoader
     /** Tick point for messages during secondary index creation */
     public static long IndexTickPoint = 20 ;
     
+    /** Number of ticks per super tick */
+    public static int superTick = 2 ;
+
+    
     // Events.
     // Either one "bulkload" event with args for status or
     // better hierarchies of event types.  Event type = list
@@ -104,7 +108,7 @@ public class BulkLoader
         
         final LoaderNodeTupleTable x = new LoaderNodeTupleTable( 
                                                                 dsg.getTripleTable().getNodeTupleTable(),
-                                                                true) ;
+                                                                showProgress) ;
         Destination<Triple> sink = new Destination<Triple>() {
             Ticker ticker = (showProgress? new TickEvent(LoadTickPoint) : null ) ;
             
@@ -140,7 +144,7 @@ public class BulkLoader
     {
         final LoaderNodeTupleTable loaderTriples = new LoaderNodeTupleTable( 
                                                                 dsg.getTripleTable().getNodeTupleTable(),
-                                                                true) ;
+                                                                showProgress) ;
         final LoaderNodeTupleTable loaderQuads = new LoaderNodeTupleTable( 
                                                                  dsg.getQuadTable().getNodeTupleTable(),
                                                                  true) ;

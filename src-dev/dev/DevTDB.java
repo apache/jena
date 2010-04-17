@@ -3,44 +3,42 @@ package dev ;
 public class DevTDB
 {
     // == 0.8.5
+    
+    // -- Loader
+    // .gz files.
     // Sink: just a send()
     // Destination start-send-finish
     // SinkClosable
     // Consolidate all event types.
+    // Test bulk loader
+    
+    // DBPedia load
+    
+    // RIOT
+    //  Option passing (old Jena style).
+    //  Options: pass/reject bad URIs, bad literals. -> "SKIP", "PASS", "FAIL"
+    //  Exposing quads
     
     // Testing (W64)
     // Build-release
     // tdbverifyTDB
     // ----
-    // DatasetGraphSplit to triples and quads c.f.
-    // ----
-    
-    // To ARQ:
-    // 1 - Context copy over : putAll (c.f setAll).
-    // 2 - QueryEngineMain - dataset context to execution context.
     
     // 2 store dataset
     // Compact B+Trees
-    // ARQ: dataset - quad interface (see graph)
     // TDB - wrapper version
     //   Uses RIOT for I/O
     // ----
     
     // ---- Core system
-    // Writer-visible block file for MR&SW
-    // ??
-    
+
+    // ---- Pipeline
     // Weak inferencing (in query rewriting):
     // owl:equivalentClass, owl:equivalentProperty,
     // owl:inverseOf, owl:SymmetricProperty, owl:TransitiveProperty
     // rdfs:subClassOf (aux table).
     // rdfs:subPropertyOf (aux table).
-    // Pipeline
     
-    // TDB loader - triples version does not take .gz (yet)
-    // BulkLoaderBase > BuldLoaderTriples, BulkLoaderDataset  
-    //    Redo triples loader to be like dataset loader and have common superclass.
-    //  Test framework for both loaders
     
     // Stats and datasets
     //   tdbstats
@@ -52,23 +50,14 @@ public class DevTDB
     //     Trailing dots ??
     // Document
     
-    // Documentation: Update
-    // http://openjena.org/wiki/TDB/Commands
-    
     // --------
 
-    // *** Pipeline (Where?)
-    
     // Early truncation of patterns
     //  ?s <p> <foo> . ?s <q> ?v . ?s <r> ?x
     // If <r> has no solutions fall back to triple pattern 1
     // Just need to keep var -> first def mapping but all mentions may be useful. 
     // (Idea from Alisdair)
     
-    // **** Per dataset context.  Need ARQ change.
-    //   Set in assembler
-    //   Global context for this as well TDB.getDatasetDefault() ;
-    // 
     // In-JVM caches - make a function of heap size.
     // Settable in this.info.
     //   NodeCache

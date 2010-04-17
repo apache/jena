@@ -43,7 +43,6 @@ public abstract class JenaReaderRIOT implements RDFReader
     final
 	public void read(Model model, String url) 
 	{
-
         // See AFS/dev.ContentNeg
         try {
             URLConnection conn = new URL(url).openConnection();

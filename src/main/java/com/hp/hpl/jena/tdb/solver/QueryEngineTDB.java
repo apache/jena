@@ -56,18 +56,12 @@ public class QueryEngineTDB extends QueryEngineMain
     {
         super(op, dataset, input, context) ;
         this.initialInput = input ;
-
-        // Push up to QueryEngineMain after TDB 0.8.5 release
-        if ( dataset.getContext() != null )
-            context.setAll(dataset.getContext()) ;
     }
     
     protected QueryEngineTDB(Query query, DatasetGraphTDB dataset, Binding input, Context context)
     { 
         super(query, dataset, input, context) ; 
         this.initialInput = input ; 
-        if ( dataset.getContext() != null )
-            context.setAll(dataset.getContext()) ;
     }
     
     // Choose the algebra-level optimizations to invoke. 

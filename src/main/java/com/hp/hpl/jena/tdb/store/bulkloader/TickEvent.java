@@ -25,10 +25,10 @@ public class TickEvent extends Ticker
     protected void _start() { }
     
     @Override
-    protected void _finish(int totalTicks, int incTicks)
+    protected void _finish(int incTicks, int totalTicks)
     {
         if ( incTicks != 0 )
-            tickMessage(totalTicks, incTicks, super.tickInternal, timer.getTimeInterval()) ;
+            tickMessage(incTicks, totalTicks, super.tickInternal, timer.getTimeInterval()) ;
         printAtEnd(totalTicks, super.tickInternal) ;
     }
     
@@ -44,50 +44,47 @@ public class TickEvent extends Ticker
     }
     
     @Override
-    protected void tickPoint(int totalTicks, int incTicks)
+    protected void tickPoint(int incTicks, int totalTicks)
     {
-        tickMessage(totalTicks, incTicks, tickInternal, timer.readTimer()) ;
-        if ( totalTicks != 0 && totalTicks % (10*super.tickInternal) == 0 )
+        long timePoint = timer.readTimer() ;
+        tickMessage(incTicks, totalTicks, tickInternal, timePoint) ;
+        
+        if ( totalTicks > 0 && (totalTicks%(BulkLoader.superTick*super.tickInternal)) == 0 )
         {
-            String x = num(timer.readTimer()/1000F) ;
+            String x = num(timePoint/1000F) ;
             String timestamp = StringUtils.str(new Date()) ; 
             println(label, "  Elapsed: "+x+" seconds ["+timestamp+"]") ;
         }
     }
         
     
-    private void tickMessage(int totalTicks, int incTicks, int tickUnit, long timePoint)
+    private void tickMessage(int incTicks, int totalTicks, int tickUnit, long timePoint)
     {
+        //System.out.printf("inc = %d total = %d \n", incTicks, totalTicks ) ;
+
         long thisTime = timePoint - lastTime ;
 
-      // *1000L is milli to second conversion
-      //   addNotePoint/ (thisTime/1000L)
+        // *1000L is milli to second conversion
+        //   addNotePoint/ (thisTime/1000L)
 
         long batchAvgRate = (incTicks * 1000L) / thisTime;
         long runAvgRate   = (totalTicks * 1000L) / timePoint ;
 
-        // SORT OUT MESSAGE
+        // XXX SORT OUT MESSAGE
         String msg = "Add: "+num(incTicks)+" ABC  (Batch: "+num(batchAvgRate)+" / Run: "+num(runAvgRate)+")" ;
-      if ( label != null )
-          msg = msg+label ;
-      
-      if ( displayMemory )
-      {
-          long mem = Runtime.getRuntime().totalMemory() ;
-          long free = Runtime.getRuntime().freeMemory() ;
-          msg = msg+"   [M:"+num(mem)+"/F:"+num(free)+"]" ;
-      }
-    
-          println(label, msg) ;
+        if ( label != null )
+            msg = msg+label ;
 
-      if ( totalTicks > 0 && (totalTicks%10) == 0 )
-      {
-          String x = num(timePoint/1000F) ;
-          String timestamp = StringUtils.str(new Date()) ; 
-          println(label, "  Elapsed: "+x+" seconds ["+timestamp+"]") ;
-      }
+        if ( displayMemory )
+        {
+            long mem = Runtime.getRuntime().totalMemory() ;
+            long free = Runtime.getRuntime().freeMemory() ;
+            msg = msg+"   [M:"+num(mem)+"/F:"+num(free)+"]" ;
+        }
 
-      lastTime = timePoint ;        
+        println(label, msg) ;
+
+        lastTime = timePoint ;        
     }
     
     private static String num(long v)
