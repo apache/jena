@@ -64,7 +64,7 @@ public class ModSymbol implements ArgModuleGeneral
             context.set(symbol, value) ;
         }
         
-        ARQ.getContext().setAll(context) ;
+        ARQ.getContext().putAll(context) ;
     }
     
     public void verbose() { verbose(System.out) ; }

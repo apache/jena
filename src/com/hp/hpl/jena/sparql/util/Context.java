@@ -28,7 +28,7 @@ public class Context
      *  Shallow copy: the values themselves are not copied
      */ 
     public Context(Context cxt)
-    { setAll(cxt) ; }
+    { putAll(cxt) ; }
     
     /** Return a copy of this context.  Modifications of the copy 
      * do not affect the original context.
@@ -108,6 +108,7 @@ public class Context
         return x.toString() ;
     }
 
+    @Deprecated
     public void setAll(Context other)
     {
         if ( other != null )
@@ -115,6 +116,13 @@ public class Context
             context.putAll(other.context) ;
             callbacks.addAll(other.callbacks) ;
         }
+    }
+    
+    public void putAll(Context other)
+    {
+        if ( other != null )
+            // Does not copy callbacks
+            context.putAll(other.context) ;
     }
     
     // -- true/false

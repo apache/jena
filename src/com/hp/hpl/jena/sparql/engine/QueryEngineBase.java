@@ -54,30 +54,36 @@ public abstract class QueryEngineBase implements OpEval, Closeable
     
     private QueryEngineBase(DatasetGraph dataset, Binding input, Context context)
     {
-        this.dataset = dataset ;    // Maybe null i.e. in query
-        if ( context == null )      // Copy of global context to protect against chnage.
-            context = ARQ.getContext().copy() ;
-        this.context = context ;
+        this.dataset = dataset ;    // Maybe null e.g. in query
+        this.context = setupContext(context, dataset) ;
+        
         if ( input == null )
         {
             ALog.warn(this, "Null initial input") ;
             input = BindingRoot.create() ;
         }
         this.startBinding = input ;
-        
-        initContext(context) ;
     }
     
     // Put any per-query execution global configuration state here.
-    private static void initContext(Context context)
+    private static Context setupContext(Context context, DatasetGraph dataset)
     {
+        if ( context == null )      // Copy of global context to protect against chnage.
+            context = ARQ.getContext() ;
+        context = context.copy() ;
+
+        if ( dataset.getContext() != null )
+            context.putAll(dataset.getContext()) ;
+        
         context.set(ARQConstants.sysCurrentTime, NodeFactory.nowAsDateTime()) ;
         
+        // Allocators.
 //        context.set(ARQConstants.sysVarAllocNamed, new VarAlloc(ARQConstants.allocVarMarkerExec)) ;
 //        context.set(ARQConstants.sysVarAllocAnon,  new VarAlloc(ARQConstants.allocVarAnonMarkerExec)) ;
-        
         // Add VarAlloc for variables and bNodes (this is not the parse name). 
         // More added later e.g. query (if there is a query), algebra form (in setOp)
+        
+        return context ; 
     }
     
     public Plan getPlan()
