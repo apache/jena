@@ -20,11 +20,16 @@ import com.hp.hpl.jena.Jena ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.* ;
 import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.shared.JenaException ;
 import com.hp.hpl.jena.sparql.ARQConstants ;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
-import com.hp.hpl.jena.sparql.algebra.* ;
+import com.hp.hpl.jena.sparql.algebra.Algebra ;
+import com.hp.hpl.jena.sparql.algebra.ExtBuilder ;
+import com.hp.hpl.jena.sparql.algebra.Op ;
+import com.hp.hpl.jena.sparql.algebra.OpExtRegistry ;
+import com.hp.hpl.jena.sparql.algebra.OpVisitorBase ;
+import com.hp.hpl.jena.sparql.algebra.TransformCopy ;
+import com.hp.hpl.jena.sparql.algebra.Transformer ;
 import com.hp.hpl.jena.sparql.algebra.op.OpBGP ;
 import com.hp.hpl.jena.sparql.algebra.op.OpDistinct ;
 import com.hp.hpl.jena.sparql.algebra.op.OpExt ;
@@ -164,77 +169,46 @@ public class RunARQ
 
     public static void main(String[] argv) throws Exception
     {
+        //qparse("--print=op", "PREFIX : <http://example/> SELECT :function(?x +?y) ?z {}" ) ;
         
-        qparse("--print=op", "BASE <> SELECT *  { ?s <p> ?o}") ; System.exit(0) ;
+//        String dir = "testing/ARQ/Union" ;
+//        ARQ.setStrictMode() ;
+//        execQuery(dir+"/data-1.ttl", dir+"/union-5.rq") ;
         
-        String dir = "testing/ARQ/Union" ;
-        
-        ARQ.setStrictMode() ;
-        execQuery(dir+"/data-1.ttl", dir+"/union-5.rq") ;
-        
-        {
             // Tests of SSE. 
             // Round triple items.
             
-            String x = StrUtils.strjoinNL("(dataset",
-                                          "  (graph (<s> <p> <o>) (<x> <p> <o>) (<x2> <p> <o>))",
-                                          "  (graph <g1> (triple <s> <p> <o1>))",
-                                          "  (graph <g2> (triple <s> <p> <o2>))",
-                                          ")") ;
-            Item item = SSE.parse(x) ;
-            DatasetGraph dsg = BuilderGraph.buildDataset(item) ;
-//            System.out.println(dsg) ;
-//            
-//            WriterGraph.output(IndentedWriter.stdout, dsg, null) ;
-//            IndentedWriter.stdout.flush() ;
-//            
-//            System.exit(0) ;
-            
-            System.out.println(SSE.parseOp("(graph _:a (bgp (?s ?p _:b)))")) ;
-            
-            
-            Query query = QueryFactory.create("SELECT * { ?s ?p [] }") ;
-            query.setResultVars() ;
-            Op op = Algebra.compile(query) ;
-            QueryExecUtils.executeAlgebra(op, dsg, ResultsFormat.FMT_TEXT) ;
-            
-            
-            divider() ;
-            System.out.println(op) ;
+        String x = StrUtils.strjoinNL("(dataset",
+                                      "  (graph (<s> <p> <o>) (<x> <p> <o>) (<x2> <p> <o>))",
+                                      "  (graph <g1> (triple <s1> <p1> <o1>))",
+                                      "  (graph <g2> (triple <s2> <p2> <o2>))",
+                                      ")") ;
+        Item item = SSE.parse(x) ;
+        DatasetGraph dsg = BuilderGraph.buildDataset(item) ;
 
-            TransformUnionQuery t = new TransformUnionQuery() ;
+        Query query = QueryFactory.create("SELECT ?s ?p { ?s ?p [] }") ;
+        query.setResultVars() ;
+        Op op = Algebra.compile(query) ;
+//        QueryExecUtils.executeAlgebra(op, dsg, ResultsFormat.FMT_TEXT) ;
 
-            Op op2 = Transformer.transform(t, op, new Pusher(t.currentGraph), new Popper(t.currentGraph)) ;
-            
-//            divider() ;
-//            System.out.println(op2) ;
 
-            Op op3 = SSE.parseOp(op2.toString());
+//        divider() ;
+//        System.out.println(op) ;
 
-            System.out.print(OpAsQuery.asQuery(op3)) ;
-//            divider() ;
-//            System.out.println(op3) ;
-            
-            if ( t.currentGraph.size() != 1 )
-                throw new ARQInternalErrorException() ;
+        TransformUnionQuery t = new TransformUnionQuery() ;
 
-            QueryExecUtils.executeAlgebra(op3, dsg, ResultsFormat.FMT_TEXT) ;
-            
-            System.exit(0) ;
-        }
+        Op op2 = Transformer.transform(t, op, new Pusher(t.currentGraph), new Popper(t.currentGraph)) ;
+//        Op op3 = SSE.parseOp(op2.toString());
+//        System.out.print(OpAsQuery.asQuery(op3)) ;
 
-        //SELECT (BNODE("xx") AS ?B1) (BNODE("xx") AS ?B2) {}
+        if ( t.currentGraph.size() != 1 )
+            throw new ARQInternalErrorException() ;
 
-        arq.sparql.main("SELECT (BNODE('xx') AS ?B1) (BNODE('xx') AS ?B2) {}") ;
-        Query query = QueryFactory.create("SELECT * { FILTER ($a = 1 || $a = 2) }");
-        Model model = ModelFactory.createDefaultModel();
-        QuerySolutionMap map = new QuerySolutionMap();
-        map.add("a", model.createLiteral("qwe"));
-        QueryExecution queryExecution = QueryExecutionFactory.create(query, model, map);
-        ResultSet resultSet = queryExecution.execSelect();
-        ResultSetFormatter.out(resultSet) ;
+        QueryExecUtils.executeAlgebra(op2, dsg, ResultsFormat.FMT_TEXT) ;
+
         System.exit(0) ;
     }
+    
           
     private static void sparql11update()
     {

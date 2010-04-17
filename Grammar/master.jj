@@ -1,29 +1,15 @@
-// ARQ/SPARQL Grammar - native syntax for the query engine
+// ARQ/SPARQL 1.1 Grammar - native syntax for the query engine
 #if 0
 // (Run through cpp -P -C first)
 #endif
 
-// #if !defined(ARQ) && !defined(SPARQL_10) && !defined(SPARQL_11)
-// #error Please define one of ARQ, SPARQL_10 or SPARQL11
-// #endif
-// 
-// #if defined(SPARQL_10)
-// #define SPARQL
-// #endif
 
-
-#if !defined(ARQ) && !defined(SPARQL)
-#error Please define one of ARQ, SPARQL or SPARQL11
+#if !defined(ARQ) && !defined(SPARQL_11)
+#error Please define one of ARQ and SPARQL_11
 #endif
 
-#if defined(ARQ) && defined(SPARQL)
+#if defined(ARQ) && defined(SPARQL11)
 #error Please define only one of ARQ and SPARQL
-#endif
-
-#ifdef SPARQL_10
-#define PACKAGE     lang.sparql_10
-#define CLASS       SPARQLParser10
-#define PARSERBASE  SPARQLParser10Base
 #endif
 
 #ifdef SPARQL_11
@@ -35,7 +21,6 @@
 #endif
 
 #ifdef ARQ
-#define SPARQL_11
 #define PACKAGE     lang.arq
 #define CLASS       ARQParser
 #define PARSERBASE  ARQParserBase
@@ -43,8 +28,9 @@
 #define UPDATE
 #endif
 
-// Author:  Andy Seaborne andy.seaborne@hp.com
+// Author:  Andy Seaborne andy.seaborne@talis.com
 // (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+// (c) Copyright 2010 Talis Systems Ltd.
 // All rights reserved.
 // See end of file for details.
 //
@@ -64,7 +50,8 @@ options
 
 PARSER_BEGIN(CLASS)
 /*
- * (c) Copyright 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Systems Ltd
  * All rights reserved.
  */
 
@@ -76,12 +63,8 @@ import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.syntax.* ;
 import com.hp.hpl.jena.sparql.expr.* ;
 import com.hp.hpl.jena.sparql.path.* ;
-#ifdef SPARQL_11
 import com.hp.hpl.jena.sparql.expr.aggregate.* ;
-#endif
-#ifdef UPDATE
 import com.hp.hpl.jena.sparql.modify.op.* ;
-#endif
 
 public class CLASS extends PARSERBASE
 {
@@ -91,7 +74,6 @@ public class CLASS extends PARSERBASE
 }
 PARSER_END(CLASS)
 
-#ifdef SPARQL_11
 // Common top for single entry point.
 void Top(): {}
 {
@@ -99,25 +81,11 @@ void Top(): {}
     ( Query() | Update() )
     <EOF>
 }
-#endif
 
-#ifdef SPARQL_10
+// Query only entry point
 void QueryUnit(): { }
 {
-  Query() <EOF>
-}
-
-void Query() : { }
-{
-  Prologue()
-  ( SelectQuery() | ConstructQuery() | DescribeQuery() | AskQuery() )
-}
-#endif
-#ifdef SPARQL_11
-// Refactored fro SPARQL 1.1
-void QueryUnit(): { }
-{
-  Prologue()
+  Prologue()    
   Query() <EOF>
 }
 
@@ -125,7 +93,6 @@ void Query() : { }
 {
   ( SelectQuery() | ConstructQuery() | DescribeQuery() | AskQuery() )
 }
-#endif
 
 void Prologue() : {}
 {
@@ -139,7 +106,6 @@ void BaseDecl() : { String iri ; }
   { getPrologue().setBaseURI(iri) ; }
 }
 
-
 void PrefixDecl() : { Token t ; String iri ; }
 {
     <PREFIX> t = <PNAME_NS> iri = IRI_REF()
@@ -151,7 +117,7 @@ void PrefixDecl() : { Token t ; String iri ; }
 
 void SelectQuery() : { }
 {  
-  Project()
+  SelectClause()
   ( DatasetClause() )*
   WhereClause()
   SolutionModifier()
@@ -159,56 +125,56 @@ void SelectQuery() : { }
 
 void SubSelect() :{ }
 {  
-  Project()
+  SelectClause()
   WhereClause()
   SolutionModifier()
 } 
 
-void Project() : {  Var v ; Expr expr ; Node n ; }
+void SelectClause() : {  Var v ; Expr expr ; Node n ; }
 {
   <SELECT>
     { getQuery().setQuerySelectType() ; }
   ( <DISTINCT> { getQuery().setDistinct(true);} 
   | <REDUCED>  { getQuery().setReduced(true); }
   )? 
+
   { allowAggregatesInExpressions = true ; }
   (
     (
-      ( v = Var() { getQuery().addResultVar(v) ; } )
-#ifdef SPARQL_11
+      v = Var()                     { getQuery().addResultVar(v) ; }
     | 
-      // Similar to GROUP BY - adds to a different VarExprList
-      // Add BuiltInCall() & FunctionCall()
-      expr = Aggregate() 
-      { getQuery().addResultVar((Var)null, expr) ; }
-    | expr = BuiltInCall()   { getQuery().addResultVar((Var)null, expr) ; }
-
-    // PROBLEMS: 
-    // <uri>(?x)
-    // looks like a function call and also a "<uri> ( ?v )"
-    //| expr = FunctionCall()  { getQuery().addResultVar((Var)null, expr) ; }
-
-    // TIDY! This form is used at least twice.
-    //| expr = IRIrefOrFunction() { getQuery().addResultVar((Var)null, expr) ; }
-
-    | expr = FunctionCall()  { getQuery().addResultVar((Var)null, expr) ; }
-    | n = RDFLiteral()     { getQuery().addResultVar((Var)null, NodeValue.makeNode(n)) ; }
-    | n = NumericLiteral() { getQuery().addResultVar((Var)null, NodeValue.makeNode(n)) ; }
-    | n = BooleanLiteral() { getQuery().addResultVar((Var)null, NodeValue.makeNode(n)) ; }
-
-    // Syntax: ( expr [AS ?var] )
+#if ARQ
+      // Expressions without ()
+      ( LOOKAHEAD(2)
+        expr = Aggregate()          { getQuery().addResultVar((Var)null, expr) ; }
+      | expr = BuiltInCall()        { getQuery().addResultVar((Var)null, expr) ; }
+      | expr = FunctionCall()       { getQuery().addResultVar((Var)null, expr) ; }
+      | n = RDFLiteral()            { getQuery().addResultVar((Var)null, NodeValue.makeNode(n)) ; }
+      | n = NumericLiteral()        { getQuery().addResultVar((Var)null, NodeValue.makeNode(n)) ; }
+      | n = BooleanLiteral()        { getQuery().addResultVar((Var)null, NodeValue.makeNode(n)) ; }
+      )
+      // PROBLEMS: expr = FunctionCall()
+      // <uri>(?x)
+      // looks like a function call and also a "<uri> ( ?v )"
+      //| expr = FunctionCall()  { getQuery().addResultVar((Var)null, expr) ; }
     |
+#endif      
+        // Expressions with ()
       (
         { v = null ; }
         <LPAREN>
-          expr = Expression() 
-          ( <AS>  v = Var() )?
+        expr = Expression() 
+#ifdef SPARQL_11
+        <AS> v = Var()
+#endif
+#ifdef ARQ
+        ( <AS> v = Var() ) ?
+#endif
         <RPAREN>
         { getQuery().addResultVar(v, expr) ; }
       )
-#endif
-    { getQuery().setQueryResultStar(false) ; }
-   )+
+      { getQuery().setQueryResultStar(false) ; }
+    )+
   |
     <STAR> { getQuery().setQueryResultStar(true) ; }
   )
@@ -290,15 +256,12 @@ void WhereClause() : { Element el ; }
 
 void SolutionModifier() : { }
 {
-#ifdef SPARQL_11
   ( GroupClause() )?
   ( HavingClause() )?
-#endif
   ( OrderClause() )?
   ( LimitOffsetClauses() )? 
 }
 
-#ifdef SPARQL_11
 void GroupClause() : { }
 {
   <GROUP> <BY> ( GroupCondition() )+
@@ -331,7 +294,6 @@ void HavingCondition() : { Expr c ; }
    c = Constraint()
    { getQuery().addHavingCondition(c) ; }
 }
-#endif
 
 void OrderClause() : { }
 {
@@ -385,7 +347,8 @@ void OffsetClause() : { Token t ; }
 
 // ---- SPARQL/Update (submission)
 
-#ifdef UPDATE_SUBMISSION
+#ifdef UPDATE
+// Update only entry point
 void UpdateUnit() : {}
 {
     Prologue()
@@ -398,6 +361,7 @@ void Update() : { }
     ( Update1() )+
 }
 
+#ifdef UPDATE_SUBMISSION
 void Update1() : { Update up = null ; GraphMgt mgt ; }
 {
   (  up = Modify() | up = Insert() | up = Delete() | 
@@ -540,22 +504,11 @@ Element UpdatePattern() : { Element el ; }
 //     <ABORT> (IRIref())?
 //     { System.out.println("++ Abort") ; }
 // }
+// End UPDATE_SUBMISSION
 #endif
 
-// SPARQL 1.1. Update
+// SPARQL 1.1 Update
 #ifdef UPDATE_SPARQL_11
-void UpdateUnit() : {}
-{
-    Prologue()
-    Update()
-    <EOF>
-}
-
-void Update() : { }
-{
-    ( Update1() )*
-}
-
 void Update1() : { Update up = null ; }
 {
   ( Modify()
@@ -662,6 +615,9 @@ void QuadData() : { }
     <RBRACE>
 }
 
+// UPDATE_SPARQL_11
+#endif
+// UPDATE
 #endif
 
 // ---- General Graph Pattern 
@@ -669,7 +625,6 @@ void QuadData() : { }
 Element GroupGraphPattern() : { Element el = null ; Token t ; }
 {
   t = <LBRACE>
-#ifdef SPARQL_11
   ( 
     { startSubSelect() ; }
     SubSelect()
@@ -679,9 +634,6 @@ Element GroupGraphPattern() : { Element el = null ; Token t ; }
     }
   | el = GroupGraphPatternSub()
   )
-#else
-    el = GroupGraphPatternSub()
-#endif
   <RBRACE>
     { return el ; }
 }
@@ -718,19 +670,18 @@ Element GroupGraphPatternSub() : { Element el = null ; }
 // -- TriplesBlock
 // Two versions - for SPARQL 1.0 and SPARQL 1.1 (with paths)
 
-#ifdef SPARQL_10
-Element TriplesBlock(ElementTriplesBlock acc) : { }
-{
-  { if ( acc == null )
-        acc = new ElementTriplesBlock() ;
-  }
-  TriplesSameSubject(acc)
-  ( <DOT> (TriplesBlock(acc))? )?
-    { return acc ; }
-}
-#endif
+// #ifdef SPARQL_10
+// Element TriplesBlock(ElementTriplesBlock acc) : { }
+// {
+//   { if ( acc == null )
+//         acc = new ElementTriplesBlock() ;
+//   }
+//   TriplesSameSubject(acc)
+//   ( <DOT> (TriplesBlock(acc))? )?
+//     { return acc ; }
+// }
+// #endif
 
-#ifdef SPARQL_11
 Element TriplesBlock(ElementPathBlock acc) : { }
 {
   { if ( acc == null )
@@ -740,7 +691,6 @@ Element TriplesBlock(ElementPathBlock acc) : { }
   ( <DOT> (TriplesBlock(acc))? )?
     { return acc ; }
 }
-#endif
 
 // -----
 
@@ -753,21 +703,19 @@ Element GraphPatternNotTriples() : { Element el = null ; }
    el = GroupOrUnionGraphPattern()
  |
    el = GraphGraphPattern()
-#ifdef ARQ
  |
    el = ServiceGraphPattern()
- |
-   el = Assignment()
- | 
-   el = FetchGraph()
-#endif
-#ifdef SPARQL_11
  |
    el = ExistsElt()
  |
    el = NotExistsElt()
  |
    el = MinusGraphPattern()
+#ifdef ARQ
+ |
+   el = Assignment()
+ | 
+   el = FetchGraph()
 #endif
  )
   { return el ; }
@@ -786,7 +734,6 @@ Element GraphGraphPattern() : { Element el ; Node n ;}
     { return new ElementNamedGraph(n, el) ; }
 }
 
-#ifdef ARQ
 
 Element ServiceGraphPattern() : { Element el ; Node n ; }
 {
@@ -795,6 +742,8 @@ Element ServiceGraphPattern() : { Element el ; Node n ; }
   el = GroupGraphPattern()
     { return new ElementService(n, el) ; }
 }
+
+#ifdef ARQ
 
 Element Assignment() : { Var v ; Expr expr ; }
 {
@@ -815,7 +764,6 @@ Element FetchGraph() : { Node n ; }
 }
 #endif
 
-#ifdef SPARQL_11
 
 Element ExistsElt() : { Element el ; }
 {
@@ -837,8 +785,6 @@ Element MinusGraphPattern() : { Element el ; }
     el = GroupGraphPattern()
     { return new ElementMinus(el) ; }
 }
-
-#endif
 
 // G (union G)* can be a single group pattern
 // or a group pattern as part of an union.
@@ -881,7 +827,6 @@ Expr FunctionCall() : { String fname ; ExprList a ;
 {
 
   fname = IRIref() 
-#ifdef SPARQL_11
   // Ugly duplication.
   ( // Aggregates only. @@
     aParam = ParamList()
@@ -899,7 +844,6 @@ Expr FunctionCall() : { String fname ; ExprList a ;
                                  -1, -1) ;
     }
     )?
-#endif
 
    a = ArgList()
     { return new E_Function(fname, a) ; }
@@ -945,12 +889,12 @@ Template ConstructTemplate() : { }
 
 void ConstructTriples(TemplateGroup acc) : { }
 {
-#ifdef SPARQL_10
+#ifdef SPARQL_11
 // SPARQL - recursion - does not scale for SPARQL/Update
     TriplesSameSubject(acc)
     (<DOT> (ConstructTriples(acc))? )?
 #endif
-#ifdef SPARQL_11
+#ifdef ARQ
     // Rewrite for no recursion - grammar is not LL(1)
     TriplesSameSubject(acc)
     (LOOKAHEAD(2) (<DOT>) TriplesSameSubject(acc))*
@@ -1013,7 +957,6 @@ Node Verb() : { Node p ;}
 // -------- BGPs with paths.
 // -------- Entry point: TriplesSameSubjectPath
 
-#ifdef SPARQL_11
 void TriplesSameSubjectPath(TripleCollector acc) : { Node s ; } 
 {
   s = VarOrTerm()
@@ -1066,7 +1009,6 @@ Node VerbSimple() : { Node p ; }
   { return p ; }
 }
 // End paths stuff.
-#endif
 
 // -------- Paths
 
@@ -1078,7 +1020,6 @@ Path PathUnit() : { Path p ; }
     { return p ; }
 }
 #endif
-#ifdef SPARQL_11
 
 // Weakest outermost
 Path Path() : { Path p ; }
@@ -1191,7 +1132,6 @@ long Integer() : {Token t ;}
     t = <INTEGER> 
     { return integerValue(t.image) ; }
 }
-#endif
 
 // -------- Triple expansions
 
@@ -1357,12 +1297,10 @@ Expr RelationalExpression() : { Expr expr1, expr2 ; ExprList a ; }
       { expr1 = new E_LessThanOrEqual(expr1, expr2) ; }
   | <GE> expr2 = NumericExpression()
       { expr1 = new E_GreaterThanOrEqual(expr1, expr2) ; }
-#ifdef SPARQL_11
   | <IN> a = ArgList()
       { expr1 = new E_OneOf(expr1, a) ; }
   | <NOT_IN> a = ArgList()
       { expr1 = new E_NotOneOf(expr1, a) ; }
-#endif
   )?
     { return expr1 ; }
 }
@@ -1464,9 +1402,7 @@ Expr PrimaryExpression() : { Expr expr ; Node gn ; }
   | gn = NumericLiteral()  { return asExpr(gn) ; }
   | gn = BooleanLiteral()  { return asExpr(gn) ; }
   | gn = Var()             { return asExpr(gn) ; }
-#ifdef SPARQL_11
   | expr = Aggregate() { return expr ; }
-#endif
   )
 }
 
@@ -1493,7 +1429,6 @@ Expr BuiltInCall() : { Expr expr ; Expr expr1 = null ; Expr expr2 = null ;
   | <BOUND> <LPAREN> gn = Var() <RPAREN>
     { return new E_Bound(new ExprVar(gn)) ; }
 
-#ifdef SPARQL_11
   | <IRI> <LPAREN> expr = Expression() <RPAREN>
     { return new E_IRI(expr) ; }
 
@@ -1521,7 +1456,6 @@ Expr BuiltInCall() : { Expr expr ; Expr expr1 = null ; Expr expr2 = null ;
 
   | <STRDT> <LPAREN> expr1 = Expression() <COMMA> expr2 = Expression() <RPAREN>
     { return new E_StrDatatype(expr1, expr2) ; }
-#endif
 
 #ifdef ARQ
   // Can we do this with ?func(?a1,?a2,...)
@@ -1546,11 +1480,10 @@ Expr BuiltInCall() : { Expr expr ; Expr expr1 = null ; Expr expr2 = null ;
 
   | // Regular expression matcher
     expr = RegexExpression() { return expr ; }
-#ifdef SPARQL_11
-  | expr = ExistsFunc()      { return expr ; }
-  | expr = NotExistsFunc()   { return expr ; }
-#endif
 
+  | expr = ExistsFunc()      { return expr ; }
+
+  | expr = NotExistsFunc()   { return expr ; }
 }
 
 Expr RegexExpression() :
@@ -1565,7 +1498,6 @@ Expr RegexExpression() :
       { return new E_Regex(expr, patExpr, flagsExpr) ; }
 }
 
-#ifdef SPARQL_11
 Expr ExistsFunc() : { Element el ; }
 {
    <EXISTS>
@@ -1628,8 +1560,6 @@ Expr Aggregate() : { AggregateFactory agg = null ;
    { expr = getQuery().allocAggregate(agg) ;
      return expr ; }
 }
-#endif
-
 
 // See also FunctionCall.
 // The case of "q:name()" or "q:agg[]()" or just "q:name"
@@ -1641,7 +1571,6 @@ Expr IRIrefOrFunction() : { String iri ; ExprList a = null ;
 {
   iri = IRIref()
 
-#ifdef SPARQL_11
   ( // Aggregates only. @@
     aParam = ParamList()
     {
@@ -1659,7 +1588,6 @@ Expr IRIrefOrFunction() : { String iri ; ExprList a = null ;
                                  -1, -1) ;
     }
     )?
-#endif
   ( a = ArgList() )?
   { if ( a == null ) return asExpr(createNode(iri)) ;
     return new E_Function(iri, a) ;
@@ -1855,7 +1783,6 @@ TOKEN [IGNORE_CASE] :
 |  < LET:         "let" >
 |  < FETCH:       "fetch" >
 #endif
-#ifdef SPARQL_11 
 |  < EXISTS:      "exists" >
 |  < NOT:         "not" >
 |  < NOTEXISTS:   "not" (<WS>)* "exists" >
@@ -1873,13 +1800,11 @@ TOKEN [IGNORE_CASE] :
 |  < STDDEV:      "stdev" >
 |  < SAMPLE:      "sample" >
 |  < GROUP_CONCAT: "group_concat" >
-#endif
 
 |  < FILTER:      "filter" >
 
 // Expression operators
 |  < BOUND:       "bound" >
-#ifdef SPARQL_11
 |  < COALESCE:    "coalesce" >
 |  < IN:          "in" >
 |  < NOT_IN:      "not" (<WS>)* "in" >
@@ -1888,7 +1813,6 @@ TOKEN [IGNORE_CASE] :
 |  < IRI:         "iri" >
 |  < URI:         "uri" >
 |  < CAST:        "cast" >
-#endif
 
 #ifdef ARQ
 |  < CALL:        "call" >
@@ -1907,8 +1831,8 @@ TOKEN [IGNORE_CASE] :
 |  < REGEX:       "regex" >
 |  < SAME_TERM:   "sameTerm" >
 
-|  <TRUE:         "true" >
-|  <FALSE:        "false" >
+|  < TRUE:        "true" >
+|  < FALSE:       "false" >
 }
 
 #ifdef UPDATE
@@ -1916,31 +1840,27 @@ TOKEN [IGNORE_CASE] :
 
 TOKEN [IGNORE_CASE] :
 {
-  <MODIFY:          "modify">
-| <INSERT:          "insert">
-//| <INSERT_DATA:     "insert" (<WS>)* "data">
-| <DELETE:          "delete" >
-//| <DELETE_DATA:     "delete" (<WS>)* "data">
-//| <DELETE_WHERE:    "delete" (<WS>)* "where">
+  < INSERT:       "insert">
+| < DELETE:       "delete" >
 
-| <DATA:        "data">
+#ifdef UPDATE_SUBMISSION
+|  < MODIFY:      "modify">
+#endif
 
-| <ADD:         "add">
-| <REMOVE:      "remove">
-
-| <LOAD:        "load" >
-| <CLEAR:       "clear" >
-| <CREATE:      "create" >
-| <SILENT:      "silent" >
-| <DROP:        "drop" >
-| <INTO:        "into" >
-| < DFT:        "default" >
-| < WITH:       "with" >
+| < DATA:         "data">
+| < LOAD:         "load" >
+| < CLEAR:        "clear" >
+| < CREATE:       "create" >
+| < SILENT:       "silent" >
+| < DROP:         "drop" >
+| < INTO:         "into" >
+| < DFT:          "default" >
+| < WITH:         "with" >
 
 
-//| <BEGIN:       "begin" >
-//| <COMMIT:      "commit" >
-//| <ABORT:       "abort" >
+//| < BEGIN:       "begin" >
+//| < COMMIT:      "commit" >
+//| < ABORT:       "abort" >
 }
 #endif
 
@@ -2032,14 +1952,13 @@ TOKEN :
 #ifdef ARQ
 | < ASSIGN:     ":=">
 #endif
-#ifdef SPARQL_11
+
 // Path related
 | < VBAR:     "|" >
 | < CARAT:    "^" >
 | < FPATH:    "->" >
 | < RPATH:    "<-" >
 | < QMARK:    "?" >
-#endif
 }
 
 // See XML chars.txt for notes

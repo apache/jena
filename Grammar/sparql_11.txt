@@ -108,12 +108,9 @@ TOKENS
 
 // SPARQL/Update parts.
 <DEFAULT> TOKEN [IGNORE_CASE] : {
-<MODIFY: "modify">
-| <INSERT: "insert">
+<INSERT: "insert">
 | <DELETE: "delete">
 | <DATA: "data">
-| <ADD: "add">
-| <REMOVE: "remove">
 | <LOAD: "load">
 | <CLEAR: "clear">
 | <CREATE: "create">
@@ -203,16 +200,16 @@ TOKENS
 NON-TERMINALS
 // Common top for single entry point.
 	Top	:=	Prologue ( Query | Update ) <EOF>
-// Refactored fro SPARQL 1.1
+// Query only entry point
 	QueryUnit	:=	Prologue Query <EOF>
 	Query	:=	( SelectQuery | ConstructQuery | DescribeQuery | AskQuery )
 	Prologue	:=	( BaseDecl )? ( PrefixDecl )*
 	BaseDecl	:=	<BASE> IRI_REF
 	PrefixDecl	:=	<PREFIX> <PNAME_NS> IRI_REF
 // ---- Query type clauses
-	SelectQuery	:=	Project ( DatasetClause )* WhereClause SolutionModifier
-	SubSelect	:=	Project WhereClause SolutionModifier
-	Project	:=	<SELECT> ( <DISTINCT> | <REDUCED> )? ( ( ( Var ) | Aggregate | BuiltInCall | FunctionCall | RDFLiteral | NumericLiteral | BooleanLiteral | ( <LPAREN> Expression ( <AS> Var )? <RPAREN> ) )+ | <STAR> )
+	SelectQuery	:=	SelectClause ( DatasetClause )* WhereClause SolutionModifier
+	SubSelect	:=	SelectClause WhereClause SolutionModifier
+	SelectClause	:=	<SELECT> ( <DISTINCT> | <REDUCED> )? ( ( Var | ( <LPAREN> Expression <AS> Var <RPAREN> ) )+ | <STAR> )
 	ConstructQuery	:=	<CONSTRUCT> ConstructTemplate ( DatasetClause )* WhereClause SolutionModifier
 	DescribeQuery	:=	<DESCRIBE> ( ( VarOrIRIref )+ | <STAR> ) ( DatasetClause )* ( WhereClause )? SolutionModifier
 	AskQuery	:=	<ASK> ( DatasetClause )* WhereClause
@@ -233,9 +230,12 @@ NON-TERMINALS
 	LimitClause	:=	<LIMIT> <INTEGER>
 	OffsetClause	:=	<OFFSET> <INTEGER>
 // ---- SPARQL/Update (submission)
-// SPARQL 1.1. Update
+
+
+// Update only entry point
 	UpdateUnit	:=	Prologue Update <EOF>
-	Update	:=	( Update1 )*
+	Update	:=	( Update1 )+
+// SPARQL 1.1 Update
 	Update1	:=	( Modify | Load | Clear | Drop | Create ) ( <SEMICOLON> )?
 	Modify	:=	( <WITH> IRIref )? ( Insert | Delete )
 	Insert	:=	<INSERT> ( <DATA> QuadData | QuadTemplate <WHERE> GroupGraphPattern )
@@ -253,11 +253,28 @@ NON-TERMINALS
 //Ground data
 // @@
 	QuadData	:=	<LBRACE> Quads <RBRACE>
+// UPDATE_SPARQL_11
+
+// UPDATE
+
+
 // ---- General Graph Pattern 
 	GroupGraphPattern	:=	<LBRACE> ( SubSelect | GroupGraphPatternSub ) <RBRACE>
 	GroupGraphPatternSub	:=	( TriplesBlock )? ( ( GraphPatternNotTriples | Filter ) ( <DOT> )? ( TriplesBlock )? )*
 // -- TriplesBlock
 // Two versions - for SPARQL 1.0 and SPARQL 1.1 (with paths)
+
+// #ifdef SPARQL_10
+// Element TriplesBlock(ElementTriplesBlock acc) : { }
+// {
+//   { if ( acc == null )
+//         acc = new ElementTriplesBlock() ;
+//   }
+//   TriplesSameSubject(acc)
+//   ( <DOT> (TriplesBlock(acc))? )?
+//     { return acc ; }
+// }
+// #endif
 	TriplesBlock	:=	TriplesSameSubjectPath ( <DOT> ( TriplesBlock )? )?
 // -----
 	GraphPatternNotTriples	:=	( OptionalGraphPattern | GroupOrUnionGraphPattern | GraphGraphPattern | ExistsElt | NotExistsElt | MinusGraphPattern )
@@ -277,7 +294,7 @@ NON-TERMINALS
 	ParamList	:=	( <LBRACKET> Expression ( <COMMA> Expression )* <RBRACKET> )
 // -------- Construct patterns
 	ConstructTemplate	:=	<LBRACE> ( ConstructTriples )? <RBRACE>
-	ConstructTriples	:=	TriplesSameSubject ( ( <DOT> ) TriplesSameSubject )* ( <DOT> )?
+	ConstructTriples	:=	TriplesSameSubject ( <DOT> ( ConstructTriples )? )?
 // -------- Triple lists with property and object lists
 // -------- Without paths: entry: TriplesSameSubject
 	TriplesSameSubject	:=	VarOrTerm PropertyListNotEmpty
@@ -296,7 +313,6 @@ NON-TERMINALS
 	VerbPath	:=	Path
 	VerbSimple	:=	Var
 // End paths stuff.
-
 
 // -------- Paths
 // Weakest outermost
