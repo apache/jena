@@ -16,7 +16,7 @@ import com.hp.hpl.jena.sparql.lib.iterator.Iter ;
  *  Translates quad calls to graph calls.
  * @see DatasetGraphQuad Base class for a quad view, converting graph calls to quads. 
  */
-public abstract class DatasetGraphCollection extends DatasetGraphBase
+public abstract class DatasetGraphCollection extends DatasetGraphBaseFind
 {
     @Override
     public void add(Quad quad)

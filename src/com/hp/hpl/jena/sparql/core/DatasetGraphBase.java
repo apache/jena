@@ -12,18 +12,23 @@ import java.util.Iterator ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.shared.Lock ;
 import com.hp.hpl.jena.shared.LockMRSW ;
 import com.hp.hpl.jena.sparql.lib.iterator.Iter ;
-import com.hp.hpl.jena.sparql.lib.iterator.Transform ;
 import com.hp.hpl.jena.sparql.sse.writers.WriterGraph ;
 import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.sparql.util.IndentedLineBuffer ;
 
 /** 
- * DatasetGraph framework : readonly dataset need only provide find(g,s,p,o), getGraph() and getDefaultGraph()
- * although it may wish to override and do better. 
+ * <p>DatasetGraph framework : readonly dataset need only provide find(g,s,p,o), getGraph() and getDefaultGraph()
+ * although it may wish to override other operations and do better.</p>
+ * 
+ * <p>Other implementations include:</p>
+ * <ul>
+ * <li>{@link DatasetGraphBase} that adds an implementation of find based on default / named graphs.</li>
+ * <li>{@link DatasetGraphCollection} that adds mutating quad operations mapped to a collection of graphs.</li>
+ * <li>{@link DatasetGraphQuad} that maps graph operations to a quad view.
+ * </ul> 
  */
 abstract public class DatasetGraphBase implements DatasetGraph
 {
@@ -67,54 +72,8 @@ abstract public class DatasetGraphBase implements DatasetGraph
     { return find(quad.getGraph(), quad.getSubject(), quad.getPredicate(), quad.getObject()) ; }
     
     //@Override
-    public Iterator<Quad> find(Node g, Node s, Node p , Node o)
-    {
-        if ( ! isWildcard(g) )
-        {
-            if ( Quad.isDefaultGraph(g))
-                return findInDftGraph(s,p,o) ;
-            Iterator<Quad> qIter = findInNamedGraphs(g, s, p, o) ;
-            if ( qIter == null )
-                return Iter.nullIterator() ;
-            return qIter ;
-        }
-        
-        // Wildcard for g
-        // Default graph
-        Iterator<Quad> iter = findInDftGraph(s, p, o) ;
+    public abstract Iterator<Quad> find(Node g, Node s, Node p , Node o) ;
 
-        Iterator<Node> gnames = listGraphNodes() ;
-        // Named graphs
-        for ( ; gnames.hasNext() ; )  
-        {
-            Node gn = gnames.next();
-            Iterator<Quad> qIter = findInNamedGraphs(gn, s, p, o) ;
-            if ( qIter != null )
-                iter = Iter.append(iter, qIter) ;
-        }
-        return iter ;
-    }
-
-    protected abstract Iterator<Quad> findInDftGraph(Node s, Node p , Node o) ;
-    protected abstract Iterator<Quad> findInNamedGraphs(Node g, Node s, Node p , Node o) ;
-
-    protected static Iterator<Quad> triples2quadsDftGraph(Iterator<Triple> iter)
-    {
-        return triples2quads(Quad.tripleInQuad, iter) ;
-    }
-    
-    protected static Iter<Quad> triples2quads(final Node graphNode, Iterator<Triple> iter)
-    {
-        Transform<Triple, Quad> transformNamedGraph = new Transform<Triple, Quad> () {
-            public Quad convert(Triple triple)
-            {
-                return new Quad(graphNode, triple) ;
-            }
-        } ;
-            
-        return Iter.iter(iter).map(transformNamedGraph) ;
-    }
-    
     //@Override
     public boolean contains(Quad quad) { return contains(quad.getGraph(), quad.getSubject(), quad.getPredicate(), quad.getObject()) ; }
 

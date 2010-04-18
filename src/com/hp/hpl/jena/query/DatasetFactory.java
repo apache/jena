@@ -41,6 +41,13 @@ public class DatasetFactory
     public static DataSource create(Model model)
     { return new DataSourceImpl(model) ; }
 
+    /** Create a dataset with the given model as the default graph
+     * @param dataset
+     * @return DataSource (Updateable Dataset) 
+     */ 
+    public static DataSource create(Dataset dataset)
+    { return new DataSourceImpl(dataset) ; }
+
     
     /** Create a dataset based on a list of URIs : these are merged into the default graph of teh dataset.
      * 

@@ -8,15 +8,19 @@
 package com.hp.hpl.jena.sparql.core;
 
 
-import java.util.Iterator ;
-
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.sparql.lib.CacheFactory;
-import com.hp.hpl.jena.sparql.lib.Cache;
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.sparql.lib.Cache ;
+import com.hp.hpl.jena.sparql.lib.CacheFactory ;
 
 /** 
- * DatasetGraph that is comprised of graphs and the graphs are cached.
+ * DatasetGraph that <em>caches</em> calls to make graph implementations.  
+ * Useful for storage layers that use triples+quads storage and the
+ * graphs are wrappers to the actual storage layer.
+ * 
+ * The cache is finite and grapsh will be dropped as needed. 
+ *  
+ * {@link DatasetGraphMap} provides an implementation which is an extensable collection of graphs.
  */
 abstract public class DatasetGraphCaching extends DatasetGraphBase
 {
@@ -30,7 +34,14 @@ abstract public class DatasetGraphCaching extends DatasetGraphBase
     abstract protected Graph _createDefaultGraph() ;
     abstract protected boolean _containsGraph(Node graphNode) ;
     
-    protected DatasetGraphCaching() {}
+    protected DatasetGraphCaching() { this(100) ; }
+    
+    protected DatasetGraphCaching(int cacheSize)
+    {
+        if ( cacheSize <= 0 )
+            throw new IllegalArgumentException("Cache size is less that 1: "+cacheSize) ;
+        namedGraphs = CacheFactory.createCache(cacheSize) ;
+    }
     
     @Override
     public boolean containsGraph(Node graphNode)
@@ -74,9 +85,6 @@ abstract public class DatasetGraphCaching extends DatasetGraphBase
         }
     }
 
-    @Override
-    public abstract Iterator<Quad> find(Node g, Node s, Node p , Node o) ;
-    
     @Override
     public void close()
     {

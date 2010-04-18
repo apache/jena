@@ -18,7 +18,7 @@ import com.hp.hpl.jena.sparql.lib.iterator.NullIterator ;
 /** 
  * Readonly DatasetGraph of a single graph. 
  */
-public class DatasetGraphOne extends DatasetGraphBase
+public class DatasetGraphOne extends DatasetGraphBaseFind
 {
     private Graph graph ;
     

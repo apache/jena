@@ -7,6 +7,8 @@ package dev;
 
 public class DevARQ
 {
+    // Documentation for CSV etc.
+    
     // TestDatasetGraph
     
     // Convert to quadism even for ARQ query if suitable dataset
@@ -30,22 +32,8 @@ public class DevARQ
     
     // ----
     
-    // Sort out DatasetGraph:
-    // Down play DataSource[Graph]
-    
-    // DatasetGraph
-    //   DatasetGraphBase (abstract - caching - wraps persistent layers)
-    //   DatasetGraphOpen (all graphs exist - GraphMaker - not caching)
-    //     DatasetGraphMem
-    //   DatasetGraphWrapper
-    //   DataSourceGraph -- adds setDefaultGraph, addGraph, removeGraph
-    //     DataSourceGraphImpl
-    //       GraphStoreBasic
-    //    GraphStore
-    //       GraphStoreBasic
-    
     // == Migration:
-    // JSON
+    // Atlas, JSON
 
     // Example of OpExecutor
     // Deprecate StageGenerator
