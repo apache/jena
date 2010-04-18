@@ -17,10 +17,11 @@ import org.openjena.atlas.lib.Tuple ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.sparql.core.Closeable ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.sparql.core.DatasetGraphCaching ;
+import com.hp.hpl.jena.sparql.core.DatasetGraphTriplesQuads ;
 import com.hp.hpl.jena.sparql.core.DatasetImpl ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
@@ -32,7 +33,7 @@ import com.hp.hpl.jena.tdb.sys.TDBMaker ;
 import com.hp.hpl.jena.update.GraphStore ;
 
 /** TDB Dataset, updatable with SPARQL/Update */
-public class DatasetGraphTDB extends DatasetGraphCaching 
+public class DatasetGraphTDB extends DatasetGraphTriplesQuads
                              implements DatasetGraph, Sync, Closeable, GraphStore
 {
     // or DatasetGraphCaching
@@ -70,6 +71,49 @@ public class DatasetGraphTDB extends DatasetGraphCaching
     public QuadTable getQuadTable()         { return quadTable ; }
     public TripleTable getTripleTable()     { return tripleTable ; } 
     
+    // Move this to DatasetGraphTriplesQuads
+    // Sort out caching vs BaseFind.
+    // Move caching above BaseFind?
+    @Override
+    public Iterator<Quad> find(Node g, Node s, Node p, Node o)
+    {
+        if ( ! isWildcard(g) )
+        {
+            if ( Quad.isDefaultGraph(g))
+                return triples2quadsDftGraph(getTripleTable().find(s,p,o)) ;
+            Iterator<Quad> qIter = getQuadTable().find(g, s, p, o) ;
+            if ( qIter == null )
+                return Iter.nullIterator() ;
+            return qIter ;
+        }
+        return findAny(s,p,o) ;
+    }
+    
+    private Iterator<Quad> findAny(Node s, Node p, Node o)
+    {
+        Iterator<Quad> iter1 = triples2quadsDftGraph(getTripleTable().find(s,p,o)) ;
+        Iterator<Quad> iter2 = getQuadTable().find(Node.ANY, s, p, o) ;
+
+        return Iter.append(iter1, iter2) ;
+    }
+
+    protected static Iterator<Quad> triples2quadsDftGraph(Iterator<Triple> iter)
+    {
+        return triples2quads(Quad.tripleInQuad, iter) ;
+    }
+
+    protected static Iter<Quad> triples2quads(final Node graphNode, Iterator<Triple> iter)
+    {
+        Transform<Triple, Quad> transformNamedGraph = new Transform<Triple, Quad> () {
+            public Quad convert(Triple triple)
+            {
+                return new Quad(graphNode, triple) ;
+            }
+        } ;
+
+        return Iter.iter(iter).map(transformNamedGraph) ;
+    }
+    
     @Override
     public void add(Quad quad)
     {
@@ -88,17 +132,17 @@ public class DatasetGraphTDB extends DatasetGraphCaching
             getQuadTable().delete(quad) ;
     }
     
-    @Override
-    protected Iterator<Quad> findInDftGraph(Node s, Node p , Node o)
-    {
-        return triples2quadsDftGraph(getTripleTable().find(s, p, o)) ;
-    }
-    
-    @Override
-    protected Iterator<Quad> findInNamedGraphs(Node g, Node s, Node p , Node o)
-    {
-        return getQuadTable().find(g, s, p, o) ;
-    }
+//    //@Override
+//    protected Iterator<Quad> findInDftGraph(Node s, Node p , Node o)
+//    {
+//        return triples2quadsDftGraph(getTripleTable().find(s, p, o)) ;
+//    }
+//    
+//    //@Override
+//    protected Iterator<Quad> findInNamedGraphs(Node g, Node s, Node p , Node o)
+//    {
+//        return getQuadTable().find(g, s, p, o) ;
+//    }
 
     @Override
     public boolean containsGraph(Node graphNode)
@@ -201,7 +245,6 @@ public class DatasetGraphTDB extends DatasetGraphCaching
     } ;
     
 
-    //@Override
     public Iterator<Node> listGraphNodes()
     {
         Iterator<Tuple<NodeId>> x = quadTable.getNodeTupleTable().getTupleTable().getIndex(0).all() ;
@@ -263,12 +306,6 @@ public class DatasetGraphTDB extends DatasetGraphCaching
     { 
         throw new UnsupportedOperationException("Can't set default graph via GraphStore on a TDB-backed dataset") ;
     }
-
-    @Override
-    public Iterator<Quad> find(Node g, Node s, Node p, Node o)
-    {
-        return null ;
-    }    
 }
 
 /*

@@ -7,8 +7,8 @@
 	<classpathentry kind="src" path="src-examples"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/J2SE-1.5"/>
 	<classpathentry kind="lib" path="lib/icu4j-3.4.4.jar"/>
-	<classpathentry kind="lib" path="lib/iri-0.8.jar"/>
-	<classpathentry kind="lib" path="lib/jena-2.6.2-tests.jar"/>
+	<classpathentry kind="lib" path="lib/iri-0.8.jar" sourcepath="lib/iri-0.8-sources.jar"/>
+	<classpathentry kind="lib" path="lib/jena-2.6.2-tests.jar" sourcepath="lib/jena-2.6.2-test-sources.jar"/>
 	<classpathentry kind="lib" path="lib/jena-2.6.2.jar" sourcepath="lib/jena-2.6.2-sources.jar"/>
 	<classpathentry kind="lib" path="lib/junit-4.5.jar"/>
 	<classpathentry kind="lib" path="lib/log4j-1.2.15.jar"/>
@@ -18,7 +18,7 @@
 	<classpathentry kind="lib" path="lib/stax-api-1.0.1.jar"/>
 	<classpathentry kind="lib" path="lib/wstx-asl-3.2.9.jar"/>
 	<classpathentry kind="lib" path="lib/xercesImpl-2.7.1.jar"/>
-	<classpathentry kind="lib" path="lib/arq-2.8.4-SNAPSHOT-tests.jar"/>
+	<classpathentry kind="lib" path="lib/arq-2.8.4-SNAPSHOT-tests.jar" sourcepath="lib/arq-2.8.4-SNAPSHOT-test-sources.jar"/>
 	<classpathentry kind="lib" path="lib/arq-2.8.4-SNAPSHOT.jar" sourcepath="lib/arq-2.8.4-SNAPSHOT-sources.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>

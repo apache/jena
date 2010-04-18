@@ -18,7 +18,7 @@ public class EnvTDB
     public static void processGlobalSystemProperties()
     {
         Context context = processProperties(System.getProperties()) ;
-        TDB.getContext().setAll(context) ;
+        TDB.getContext().putAll(context) ;
     }
     
     static final String prefix = SystemTDB.tdbSymbolPrefix+":" ;
