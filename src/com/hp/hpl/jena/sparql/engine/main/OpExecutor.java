@@ -118,8 +118,6 @@ public class OpExecutor
 
     protected QueryIterator execute(OpQuadPattern quadPattern, QueryIterator input)
     {
-        // XXX 
-        //execCxt.getDataset().find(null)
         if ( false )
         {
             if ( quadPattern.isDefaultGraph() )
@@ -353,7 +351,6 @@ public class OpExecutor
 
     protected QueryIterator execute(OpProject opProject, QueryIterator input)
     {
-        // TODO If the input has any vars bound, ensure that project does not mask them
         QueryIterator  qIter = executeOp(opProject.getSubOp(), input) ;
         qIter = new QueryIterProject(qIter, opProject.getVars(), execCxt) ;
         return qIter ;
