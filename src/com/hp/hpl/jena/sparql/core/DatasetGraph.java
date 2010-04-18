@@ -66,6 +66,9 @@ public interface DatasetGraph extends Closeable
     /** Delete a quad */
     public void delete(Quad quad) ;
     
+    /** Delete any quads matching the pattern */
+    public void deleteAny(Node g, Node s, Node p, Node o) ;
+
     /** Find matching quads in the datset - may include wildcards, Node.ANY or null
      * @see Graph#find(TripleMatch)
      */

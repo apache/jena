@@ -31,7 +31,7 @@ public abstract class DatasetGraphCollection extends DatasetGraphBaseFind
         Graph g = fetchGraph(quad.getGraph()) ;
         g.delete(quad.asTriple()) ;
     }
-
+    
     @Override
     protected Iterator<Quad> findInDftGraph(Node s, Node p , Node o)
     {
@@ -39,12 +39,29 @@ public abstract class DatasetGraphCollection extends DatasetGraphBaseFind
     }
     
     @Override
-    protected Iter<Quad> findInNamedGraphs(Node g, Node s, Node p , Node o)
+    protected Iter<Quad> findInSpecificNamedGraphs(Node g, Node s, Node p , Node o)
     {
         Graph graph = fetchGraph(g) ;
         if ( g == null )
             return Iter.nullIter() ;
         return triples2quads(g, graph.find(s, p, o)) ;
+    }
+
+    @Override
+    protected Iterator<Quad> findInAnyNamedGraphs(Node s, Node p, Node o)
+    {
+        Iterator<Node> gnames = listGraphNodes() ;
+        Iterator<Quad> iter = null ;
+      // Named graphs
+      for ( ; gnames.hasNext() ; )  
+      {
+          Node gn = gnames.next();
+          Iterator<Quad> qIter = findInSpecificNamedGraphs(gn, s, p, o) ;
+          if ( qIter != null )
+              // copes with null for iter
+              iter = Iter.append(iter, qIter) ;
+      }
+      return iter ;
     }
 
     

@@ -36,7 +36,7 @@ public class Iterator2<T> implements Iterator<T>, Iterable<T>
             Iterator<X> x = (Iterator<X>)iter1 ;
             return x ;
         }
-        
+
         return new Iterator2<X>(iter1, iter2) ;
     }
     

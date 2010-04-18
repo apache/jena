@@ -9,12 +9,15 @@ package com.hp.hpl.jena.sparql.core;
 
 
 import java.util.Iterator ;
+import java.util.List ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.shared.Lock ;
 import com.hp.hpl.jena.shared.LockMRSW ;
 import com.hp.hpl.jena.sparql.lib.iterator.Iter ;
+import com.hp.hpl.jena.sparql.lib.iterator.Transform ;
 import com.hp.hpl.jena.sparql.sse.writers.WriterGraph ;
 import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.sparql.util.IndentedLineBuffer ;
@@ -39,9 +42,7 @@ abstract public class DatasetGraphBase implements DatasetGraph
     
     //@Override
     public boolean containsGraph(Node graphNode)
-    {
-        return contains(graphNode, Node.ANY, Node.ANY, Node.ANY) ;
-    }
+    { return contains(graphNode, Node.ANY, Node.ANY, Node.ANY) ; }
     
     //@Override
     public abstract Graph getDefaultGraph() ;
@@ -68,11 +69,72 @@ abstract public class DatasetGraphBase implements DatasetGraph
     public void delete(Quad quad) { throw new UnsupportedOperationException("DatasetGraph.delete(Quad)") ; }
     
     //@Override
+    /** Simple implementation */
+    public void deleteAny(Node g, Node s, Node p, Node o)
+    { 
+        Iterator<Quad> iter = find(g, s, p, o) ;
+        List<Quad> list = Iter.toList(iter) ;
+        for ( Quad q : list )
+            delete(q) ;
+    }
+    
+    //@Override
     public Iterator<Quad> find(Quad quad)
     { return find(quad.getGraph(), quad.getSubject(), quad.getPredicate(), quad.getObject()) ; }
     
-    //@Override
-    public abstract Iterator<Quad> find(Node g, Node s, Node p , Node o) ;
+//    /** Implementation of find based on spltting into triples (default graph) and quads (named graph) */
+//    //@Override
+//    public Iterator<Quad> find(Node g, Node s, Node p , Node o)
+//    {
+//        if ( ! isWildcard(g) )
+//        {
+//            if ( Quad.isDefaultGraph(g))
+//                return findInDftGraph(s,p,o) ;
+//            Iterator<Quad> qIter = findInNamedGraphs(g, s, p, o) ;
+//            if ( qIter == null )
+//                return Iter.nullIterator() ;
+//            return qIter ;
+//        }
+//        
+//        return findAny(s, p, o) ;
+//    }
+//    
+//    public Iterator<Quad> findAny(Node s, Node p , Node o) 
+//    {
+//        // Pass g in for symmetry and to "pass" to findInNamedGraphs
+//        // Default graph
+//        Iterator<Quad> iter1 = findInDftGraph(s, p, o) ;
+//        Iterator<Quad> iter2 = findInNamedGraphs(Node.ANY, s, p, o) ;
+//        
+//        if ( iter1 ==null && iter2 == null )
+//            return Iter.nullIterator() ;
+//        if ( iter1 == null )
+//            return iter2 ;
+//        if ( iter2 == null )
+//            return iter1 ;
+//        return Iter.append(iter1, iter2) ;
+//    }
+//
+//    protected abstract Iterator<Quad> findInDftGraph(Node s, Node p , Node o) ;
+//    protected abstract Iterator<Quad> findInNamedGraphs(Node g, Node s, Node p , Node o) ;
+//
+//    protected static Iterator<Quad> triples2quadsDftGraph(Iterator<Triple> iter)
+//    {
+//        return triples2quads(Quad.tripleInQuad, iter) ;
+//    }
+//    
+//    protected static Iter<Quad> triples2quads(final Node graphNode, Iterator<Triple> iter)
+//    {
+//        Transform<Triple, Quad> transformNamedGraph = new Transform<Triple, Quad> () {
+//            public Quad convert(Triple triple)
+//            {
+//                return new Quad(graphNode, triple) ;
+//            }
+//        } ;
+//            
+//        return Iter.iter(iter).map(transformNamedGraph) ;
+//    }
+
 
     //@Override
     public boolean contains(Quad quad) { return contains(quad.getGraph(), quad.getSubject(), quad.getPredicate(), quad.getObject()) ; }
@@ -123,6 +185,28 @@ abstract public class DatasetGraphBase implements DatasetGraph
         WriterGraph.output(out, this, null) ;
         return out.asString() ;
     }
+
+    // Helpers
+    
+    protected static Iterator<Quad> triples2quadsDftGraph(Iterator<Triple> iter)
+    {
+        return triples2quads(Quad.tripleInQuad, iter) ;
+    }
+
+    protected static Iter<Quad> triples2quads(final Node graphNode, Iterator<Triple> iter)
+    {
+        Transform<Triple, Quad> transformNamedGraph = new Transform<Triple, Quad> () {
+            public Quad convert(Triple triple)
+            {
+                return new Quad(graphNode, triple) ;
+            }
+        } ;
+
+        return Iter.iter(iter).map(transformNamedGraph) ;
+    }
+
+    
+
 }
 
 /*

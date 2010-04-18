@@ -42,14 +42,6 @@ public class DatasetGraphOne extends DatasetGraphBaseFind
     }
 
     @Override
-    protected Iterator<Quad> findInDftGraph(Node s, Node p, Node o)
-    { return triples2quadsDftGraph(graph.find(s, p ,o)) ; }
-
-    @Override
-    protected Iter<Quad> findInNamedGraphs(Node g, Node s, Node p, Node o)
-    { return null ; }
-
-    @Override
     public long size()
     {
         return 0 ;
@@ -86,6 +78,31 @@ public class DatasetGraphOne extends DatasetGraphBaseFind
     public void removeGraph(Node graphName)
     { throw new UnsupportedOperationException("DatasetGraphOne.removeGraph") ; }
 
+    // -- Not needed -- implement find(g,s,p,o) directly.
+    @Override
+    protected Iterator<Quad> findInDftGraph(Node s, Node p, Node o)
+    { 
+        if ( true ) throw new UnsupportedOperationException() ;
+        return triples2quadsDftGraph(graph.find(s, p ,o)) ; }
+
+    // -- Not needed.
+    @Override
+    protected Iterator<Quad> findInSpecificNamedGraphs(Node g, Node s, Node p, Node o)
+    {
+        if ( true ) throw new UnsupportedOperationException() ;
+        // There are no named graphs
+        return Iter.nullIterator() ;
+    }
+
+    // -- Not needed.
+    @Override
+    protected Iterator<Quad> findInAnyNamedGraphs(Node s, Node p, Node o)
+    {
+        if ( true ) throw new UnsupportedOperationException() ;
+        // There are no named graphs
+        return Iter.nullIterator() ;
+    }
+
     protected static boolean isDefaultGraph(Quad quad)
     {
         return isDefaultGraph(quad.getGraph()) ;
@@ -96,6 +113,7 @@ public class DatasetGraphOne extends DatasetGraphBaseFind
         return ( quadGraphNode == null || Quad.isDefaultGraph(quadGraphNode) ) ;
     }
 
+    // It's just easier and more direct ...
     @Override
     public Iterator<Quad> find(Node g, Node s, Node p , Node o)
     {

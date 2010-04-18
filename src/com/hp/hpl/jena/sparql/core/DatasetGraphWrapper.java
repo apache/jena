@@ -59,6 +59,9 @@ public class DatasetGraphWrapper implements DatasetGraph
     public void delete(Quad quad)
     { dsg.delete(quad) ; }
 
+    public void deleteAny(Node g, Node s, Node p, Node o)
+    { dsg.deleteAny(g, s, p, o) ; }
+
     //@Override
     public boolean isEmpty()
     { return dsg.isEmpty() ; }

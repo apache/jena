@@ -18,7 +18,7 @@ import com.hp.hpl.jena.sparql.lib.CacheFactory ;
  * Useful for storage layers that use triples+quads storage and the
  * graphs are wrappers to the actual storage layer.
  * 
- * The cache is finite and grapsh will be dropped as needed. 
+ * The cache is finite and graphs will be dropped as needed. 
  *  
  * {@link DatasetGraphMap} provides an implementation which is an extensable collection of graphs.
  */
@@ -83,6 +83,16 @@ abstract public class DatasetGraphCaching extends DatasetGraphBase
             }
             return graph ;
         }
+    }
+    
+//    @Override
+//    public void addGraph(Node graphName, Graph graph)
+//    { deleteAny(
+
+    @Override
+    public void removeGraph(Node graphName)
+    { 
+        deleteAny(graphName, Node.ANY, Node.ANY, Node.ANY) ;
     }
 
     @Override
