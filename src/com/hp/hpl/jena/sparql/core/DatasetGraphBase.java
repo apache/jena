@@ -156,7 +156,7 @@ abstract public class DatasetGraphBase implements DatasetGraph
     //@Override
     public boolean isEmpty()
     {
-        return contains(Node.ANY, Node.ANY, Node.ANY, Node.ANY) ;
+        return ! contains(Node.ANY, Node.ANY, Node.ANY, Node.ANY) ;
     }
 
     //@Override

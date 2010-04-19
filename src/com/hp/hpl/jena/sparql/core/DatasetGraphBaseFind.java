@@ -14,10 +14,16 @@ import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.lib.iterator.Iter ;
 
 /** 
- * DatasetGraph framework.  This class contains a convenience implementation of find that maps to defaultGraph/named graphs.
+ * DatasetGraph framework.  
+ * This class contains a convenience implementation of find that maps to a split between 
+ * defaultGraph/named graphs.
+ * @see DatasetGraphTriplesQuads
+ * @see DatasetGraphCollection
+ * 
  */
 abstract public class DatasetGraphBaseFind extends DatasetGraphBase 
 {
+    // Better name?  DSGBase and make the other "Top"
     protected DatasetGraphBaseFind() {}
     
     /** Implementation of find based on spltting into triples (default graph) and quads (named graph) */
@@ -37,18 +43,15 @@ abstract public class DatasetGraphBaseFind extends DatasetGraphBase
         return findAny(s, p, o) ;
     }
 
-    public Iterator<Quad> findAny(Node s, Node p , Node o) 
+    protected Iterator<Quad> findAny(Node s, Node p , Node o) 
     {
         // Default graph
         Iterator<Quad> iter1 = findInDftGraph(s, p, o) ;
         Iterator<Quad> iter2 = findInAnyNamedGraphs(s, p, o) ;
 
-        if ( iter1 ==null && iter2 == null )
+        if ( iter1 == null && iter2 == null )
             return Iter.nullIterator() ;
-        if ( iter1 == null )
-            return iter2 ;
-        if ( iter2 == null )
-            return iter1 ;
+        // Copes with null in either position.
         return Iter.append(iter1, iter2) ;
     }
 

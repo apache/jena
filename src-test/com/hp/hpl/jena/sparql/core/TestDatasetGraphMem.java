@@ -6,43 +6,20 @@
 
 package com.hp.hpl.jena.sparql.core;
 
-import java.util.Iterator ;
+import junit.framework.JUnit4TestAdapter ;
 
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.sparql.lib.iterator.Iter ;
-import com.hp.hpl.jena.sparql.lib.iterator.Transform ;
-
-
-/** A DatasetGraph base class for pure quad-centric storage.     
- */
-public abstract class DatasetGraphQuad extends DatasetGraphBase
+public class TestDatasetGraphMem extends DatasetGraphTests
 {
-    static Transform<Quad, Node> projectGraphName = new Transform<Quad, Node>() {
-        public Node convert(Quad quad)
-        {
-            return quad.getGraph() ; 
-        }} ;
-    
-    public Iterator<Node> listGraphNodes()
+    public static junit.framework.Test suite()
     {
-        Iter<Quad> iter = Iter.iter(find(Node.ANY, Node.ANY, Node.ANY, Node.ANY)) ;
-        return iter.map(projectGraphName).distinct() ;
-    }
-
-    @Override
-    public void removeGraph(Node graphName)
-    { 
-        deleteAny(graphName, Node.ANY, Node.ANY, Node.ANY) ;
+        return new JUnit4TestAdapter(TestDatasetGraphMem.class) ;
     }
     
-    //@Override
-    public abstract Iterator<Quad> find(Node g, Node s, Node p, Node o) ;
-
     @Override
-    public abstract void add(Quad quad) ;
-
-    @Override
-    public abstract void delete(Quad quad) ;
+    protected DatasetGraph emptyDataset()
+    {
+        return DatasetGraphFactory.createMem() ;
+    }
 }
 
 /*

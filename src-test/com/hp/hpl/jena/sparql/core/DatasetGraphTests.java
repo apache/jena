@@ -5,45 +5,53 @@
  */
 
 package com.hp.hpl.jena.sparql.core;
-import static org.junit.Assert.* ; 
+import static org.junit.Assert.assertEquals ;
+import static org.junit.Assert.assertFalse ;
+import static org.junit.Assert.assertNotNull ;
+import static org.junit.Assert.assertTrue ;
 
 import java.util.Iterator ;
-
-import junit.framework.JUnit4TestAdapter ;
-
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.sparql.sse.SSE ;
-import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
+import java.util.Set ;
 
 import org.junit.Test ;
 
-public /*abstract*/ class TestDatasetGraph
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.sparql.lib.iterator.Iter ;
+import com.hp.hpl.jena.sparql.sse.SSE ;
+import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
+
+public abstract class DatasetGraphTests
 {
-    public static junit.framework.Test suite()
-    {
-        return new JUnit4TestAdapter(TestDatasetGraph.class) ;
-    }
-    
-    //abstract DatasetGraph emptyDataset() ;
-    
-    DatasetGraph emptyDataset()
-    {
-        return DatasetGraphFactory.createMem() ;
-    }
+    abstract DatasetGraph emptyDataset() ;
     
     @Test public void create_1()
     {
         DatasetGraph dsg = emptyDataset() ;
         assertNotNull(dsg) ;
+        assertNotNull(dsg.getDefaultGraph()) ;
+        assertTrue(dsg.getDefaultGraph().isEmpty()) ;
     }
     
+    // Quad operations 
+    /*
+     * void add(Quad quad)
+     * void delete(Quad quad)
+     * void deleteAny(Node g, Node s, Node p, Node o)
+     * Iterator<Quad> find(Quad quad)
+     * Iterator<Quad> find(Node g, Node s, Node p , Node o)
+     * boolean contains(Node g, Node s, Node p , Node o)
+     * boolean contains(Quad quad)
+     */
     @Test public void quad_01()
     {
         DatasetGraph dsg = emptyDataset() ;
         assertNotNull(dsg) ;
         Quad quad = SSE.parseQuad("(quad <g> <s> <p> <o>)") ;
         dsg.add(quad) ;
+        assertTrue(dsg.contains(quad)) ;
+        
         Iterator<Quad> iter = dsg.find(quad) ;
         assertTrue(iter.hasNext()) ;
         Quad quad2 = iter.next();
@@ -61,12 +69,55 @@ public /*abstract*/ class TestDatasetGraph
         assertNotNull(dsg) ;
         Quad quad = SSE.parseQuad("(quad <g> <s> <p> <o>)") ;
         dsg.add(quad) ;
+        dsg.containsGraph(Node.createURI("g")) ;
         
         dsg.delete(quad) ;
+        assertTrue(dsg.isEmpty()) ;
         assertTrue(dsg.getDefaultGraph().isEmpty()) ;
         assertTrue(dsg.getGraph(Node.createURI("g")).isEmpty()) ;
     }
+    
+    @Test public void quad_03()
+    {
+        DatasetGraph dsg = emptyDataset() ;
+        assertNotNull(dsg) ;
+        Quad quad1 = SSE.parseQuad("(quad <g> <s> <p> <o1>)") ;
+        Quad quad2 = SSE.parseQuad("(quad <g> <s> <p> <o2>)") ;
+        dsg.add(quad1) ; 
+        dsg.add(quad2) ; 
+        
+        dsg.deleteAny(Node.createURI("g"), Node.createURI("s"), null, null) ;
+        assertFalse(dsg.contains(quad1)) ; 
+        assertFalse(dsg.contains(quad2)) ; 
+    }
+    
+    @Test public void quad_04()
+    {
+        DatasetGraph dsg = emptyDataset() ;
+        assertNotNull(dsg) ;
+        Quad quad1 = SSE.parseQuad("(quad <g> <s> <p> <o1>)") ;
+        Quad quad2 = SSE.parseQuad("(quad <g> <s> <p> <o2>)") ;
+        dsg.add(quad1) ; 
+        dsg.add(quad2) ; 
+        Iterator<Quad> iter = dsg.find(Node.createURI("g"), Node.createURI("s"), null, null) ;
 
+        assertTrue(iter.hasNext()) ;
+        Set<Quad> x = Iter.iter(iter).toSet() ;
+        assertEquals(2, x.size()) ;
+        assertTrue(x.contains(quad1)) ;
+        assertTrue(x.contains(quad2)) ;
+    }
+
+    /*
+     * getDefaultGraph()
+     * getGraph(Node) 
+     * containsGraph(Node)
+     * ???? setDefaultGraph(Graph) 
+     * addGraph(Node, Graph)
+     * removeGraph(Node)
+     * listGraphNodes()
+     */
+    // Graph centric operations
     @Test public void graph_01()
     {
         DatasetGraph dsg = emptyDataset() ;
@@ -106,6 +157,16 @@ public /*abstract*/ class TestDatasetGraph
         assertTrue(dsg.getDefaultGraph().isEmpty()) ;
         assertTrue(dsg.getGraph(Node.createURI("g")).isEmpty()) ;
         assertFalse(dsg.find(Node.ANY, Node.ANY, Node.ANY, Node.ANY).hasNext()) ; 
+    }
+    
+    @Test public void graph_03()
+    {
+        Node g = Node.createURI("g") ;
+        DatasetGraph dsg = emptyDataset() ;
+        Graph data = SSE.parseGraph("(graph (<s> <p> <o>))") ;
+        dsg.addGraph(g, data) ;
+        Quad quad = SSE.parseQuad("(quad <g> <s> <p> <o>)") ;
+        assertTrue(dsg.contains(quad)) ;
     }
 }
 

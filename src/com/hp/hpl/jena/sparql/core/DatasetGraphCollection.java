@@ -13,8 +13,6 @@ import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.lib.iterator.Iter ;
 
 /** Base class for implementations of a DatasetGraph as a set of graphs.
- *  Translates quad calls to graph calls.
- * @see DatasetGraphQuad Base class for a quad view, converting graph calls to quads. 
  */
 public abstract class DatasetGraphCollection extends DatasetGraphBaseFind
 {
@@ -52,16 +50,16 @@ public abstract class DatasetGraphCollection extends DatasetGraphBaseFind
     {
         Iterator<Node> gnames = listGraphNodes() ;
         Iterator<Quad> iter = null ;
-      // Named graphs
-      for ( ; gnames.hasNext() ; )  
-      {
-          Node gn = gnames.next();
-          Iterator<Quad> qIter = findInSpecificNamedGraphs(gn, s, p, o) ;
-          if ( qIter != null )
-              // copes with null for iter
-              iter = Iter.append(iter, qIter) ;
-      }
-      return iter ;
+        // Named graphs
+        for ( ; gnames.hasNext() ; )  
+        {
+            Node gn = gnames.next();
+            Iterator<Quad> qIter = findInSpecificNamedGraphs(gn, s, p, o) ;
+            if ( qIter != null )
+                // copes with null for iter
+                iter = Iter.append(iter, qIter) ;
+        }
+        return iter ;
     }
 
     

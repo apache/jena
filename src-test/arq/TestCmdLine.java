@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package arq.cmdline.test;
+package arq;
 import java.util.* ; 
 
 import arq.cmdline.*;

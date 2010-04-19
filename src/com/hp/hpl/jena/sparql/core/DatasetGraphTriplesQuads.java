@@ -6,24 +6,36 @@
 
 package com.hp.hpl.jena.sparql.core;
 
-import java.util.Iterator ;
-
 import com.hp.hpl.jena.graph.Node ;
+
 
 
 /** A DatasetGraph base class for triples+quads storage.     
  */
-public abstract class DatasetGraphTriplesQuads extends DatasetGraphCaching
+public abstract class DatasetGraphTriplesQuads extends DatasetGraphBaseFind
 {
-    //@Override
-    public abstract Iterator<Quad> find(Node g, Node s, Node p, Node o) ;
+    @Override
+    public void add(Quad quad)
+    {
+        if ( quad.isDefaultGraph() )
+            addToDftGraph(quad.getSubject(), quad.getPredicate(), quad.getObject()) ;
+        else
+            addToNamedGraph(quad.getGraph(), quad.getSubject(), quad.getPredicate(), quad.getObject()) ;
+    }
 
     @Override
-    public abstract void add(Quad quad) ;
+    public void delete(Quad quad)
+    {
+        if ( quad.isDefaultGraph() )
+            deleteFromDftGraph(quad.getSubject(), quad.getPredicate(), quad.getObject()) ;
+        else
+            deleteFromNamedGraph(quad.getGraph(), quad.getSubject(), quad.getPredicate(), quad.getObject()) ;
+    }
 
-    @Override
-    public abstract void delete(Quad quad) ;
-
+    protected abstract void addToDftGraph(Node s, Node p, Node o) ;
+    protected abstract void addToNamedGraph(Node g, Node s, Node p, Node o) ;
+    protected abstract void deleteFromDftGraph(Node s, Node p, Node o) ;
+    protected abstract void deleteFromNamedGraph(Node g, Node s, Node p, Node o) ;
 }
 
 /*

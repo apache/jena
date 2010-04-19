@@ -11,7 +11,8 @@ package com.hp.hpl.jena.sparql;
 import junit.framework.TestSuite ;
 
 import com.hp.hpl.jena.sparql.core.TestContext ;
-import com.hp.hpl.jena.sparql.core.TestDatasetGraph ;
+import com.hp.hpl.jena.sparql.core.TestDatasetGraphMem ;
+import com.hp.hpl.jena.sparql.core.TestDatasetGraphMemTriplesQuads ;
 import com.hp.hpl.jena.sparql.core.TestEsc ;
 import com.hp.hpl.jena.sparql.expr.TS_Expr ;
 import com.hp.hpl.jena.sparql.expr.TestExpressions ;
@@ -42,7 +43,8 @@ public class TS_General extends TestSuite
         
         addTest(TestContext.suite()) ;
         
-        addTest(TestDatasetGraph.suite()) ;
+        addTest(TestDatasetGraphMem.suite()) ;
+        addTest(TestDatasetGraphMemTriplesQuads.suite()) ;
     }
 }
 

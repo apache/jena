@@ -21,17 +21,15 @@ public class DatasetGraphMap extends DatasetGraphCollection
 
     private Graph defaultGraph ;
 
-    public DatasetGraphMap(Graph initialDefaultGraph)
-    { 
-        this.defaultGraph = initialDefaultGraph ;
-    }
-    
-    DatasetGraphMap()
+    private DatasetGraphMap()
     { }
+
+    public DatasetGraphMap(Graph defaultGraph)
+    { this.defaultGraph = defaultGraph ; }
     
     public DatasetGraphMap(DatasetGraph dsg)
     {
-        defaultGraph = dsg.getDefaultGraph() ;
+        this(dsg.getDefaultGraph()) ;
         for ( Iterator<Node> names = dsg.listGraphNodes() ; names.hasNext() ; )
         {
             Node gn = names.next() ;

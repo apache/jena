@@ -51,10 +51,10 @@ public class Quad
         this.object = o ;
     }
 
-    public Node getGraph()      { return graph ; }
-    public Node getSubject()    { return subject ; }
-    public Node getPredicate()  { return predicate ; }
-    public Node getObject()     { return object ; }
+    public final Node getGraph()      { return graph ; }
+    public final Node getSubject()    { return subject ; }
+    public final Node getPredicate()  { return predicate ; }
+    public final Node getObject()     { return object ; }
 
     private Triple triple = null ;
     /** Get as a triple - useful because quads often come in blocks for the same graph */  
@@ -128,6 +128,17 @@ public class Quad
         return true ;
     }
     
+    public boolean matches(Node g, Node s, Node p, Node o)
+    {
+        return matches(getGraph(), g) && matches(getSubject(), s) &&
+               matches(getPredicate(), p) && matches(getObject(), o) ;
+    }
+
+    private static boolean matches(Node thisNode, Node otherNode)
+    {
+        return otherNode.matches(thisNode) ;
+    }
+
     @Override
     public String toString()
     {

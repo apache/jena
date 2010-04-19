@@ -22,7 +22,7 @@ import com.hp.hpl.jena.sparql.lib.CacheFactory ;
  *  
  * {@link DatasetGraphMap} provides an implementation which is an extensable collection of graphs.
  */
-abstract public class DatasetGraphCaching extends DatasetGraphBase
+abstract public class DatasetGraphCaching extends DatasetGraphTriplesQuads
 {
     private final boolean caching = true ;
     // read synchronised in this class, not needed for a sync wrapper.
@@ -48,7 +48,7 @@ abstract public class DatasetGraphCaching extends DatasetGraphBase
     {
         if ( namedGraphs.containsKey(graphNode) )
             // Empty graph may or may not count.
-            // If they don't, need to override ths method.
+            // If they don't, need to override this method.
             return true ;
         return _containsGraph(graphNode) ;
     }
@@ -85,14 +85,21 @@ abstract public class DatasetGraphCaching extends DatasetGraphBase
         }
     }
     
-//    @Override
-//    public void addGraph(Node graphName, Graph graph)
-//    { deleteAny(
-
     @Override
-    public void removeGraph(Node graphName)
+    public void addGraph(Node graphName, Graph graph)
+    {
+        removeGraph(graphName) ;
+        getGraph(graphName).getBulkUpdateHandler().add(graph) ;
+    }
+    
+    @Override
+    public final void removeGraph(Node graphName)
     { 
         deleteAny(graphName, Node.ANY, Node.ANY, Node.ANY) ;
+        synchronized(this)
+        {
+            namedGraphs.remove(graphName) ;
+        }
     }
 
     @Override

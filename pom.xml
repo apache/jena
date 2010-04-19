@@ -74,10 +74,14 @@
     </dependency>
 
     <dependency>
+      <!-- ARQ includes code that parses DAWG/SPARQL test manifests
+	   and produces JUnit test suites.  Old style JUnit3 invokation
+	   is needed.
+      -->
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>4.5</version>
-      <!-- <scope>test</scope> -->
+      <scope>test</scope>
     </dependency>
 
     <dependency>
