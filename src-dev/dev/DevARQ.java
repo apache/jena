@@ -9,13 +9,13 @@ public class DevARQ
 {
     // Documentation for CSV etc.
     
+    // Combine DatasetImpl and DataSourceImpl?
+    
     // **TestDatasetGraph all operations (check for unsupported etc). 
     // Really simple triples+Quads impl.
     // TestDataset, TestDataSource inc replaceNamedGraph
-
-    // deleteAny(Quad) in to include wildcards.
     
-    // Convert to quadism even for ARQ query if suitable dataset
+    // Tests: version that converts to quadism even for ARQ query if suitable dataset
     // TransformUnionQuery
     //   TestCases
     

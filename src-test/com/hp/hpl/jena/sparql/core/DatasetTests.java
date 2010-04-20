@@ -22,7 +22,7 @@ import com.hp.hpl.jena.sparql.lib.iterator.Iter ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
 
-public abstract class DatasetGraphTests
+public abstract class DatasetTests
 {
     abstract DatasetGraph emptyDataset() ;
     
@@ -168,6 +168,14 @@ public abstract class DatasetGraphTests
         Quad quad = SSE.parseQuad("(quad <g> <s> <p> <o>)") ;
         assertTrue(dsg.contains(quad)) ;
     }
+    
+    // ---- Dataset level tests
+    
+//    @Test public void x()
+//    {
+//        DatasetGraph dsg = emptyDataset() ;
+//        Dataset ds = new DatasetImpl(dsg) ; // DataSourceImpl
+//    }
 }
 
 /*

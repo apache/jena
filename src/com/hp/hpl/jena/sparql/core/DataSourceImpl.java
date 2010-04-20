@@ -124,7 +124,7 @@ public class DataSourceImpl implements DataSource
         return dsg.containsGraph(n) ;
     }
 
-    // Don't look in the cahe - go direct to source
+    // Don't look in the cache - go direct to source
     public Iterator<String> listNames()
     { 
         return NodeUtils.nodesToURIs(dsg.listGraphNodes()) ;

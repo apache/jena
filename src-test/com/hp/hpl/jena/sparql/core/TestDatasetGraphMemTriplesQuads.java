@@ -8,7 +8,7 @@ package com.hp.hpl.jena.sparql.core;
 
 import junit.framework.JUnit4TestAdapter ;
 
-public class TestDatasetGraphMemTriplesQuads extends DatasetGraphTests
+public class TestDatasetGraphMemTriplesQuads extends DatasetTests
 {
     public static junit.framework.Test suite()
     {
