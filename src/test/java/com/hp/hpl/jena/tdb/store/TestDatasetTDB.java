@@ -6,127 +6,248 @@
 
 package com.hp.hpl.jena.tdb.store;
 
-
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
-import org.openjena.atlas.iterator.Iter ;
 import org.openjena.atlas.test.BaseTest ;
 
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.query.Dataset;
-import com.hp.hpl.jena.sparql.sse.SSE;
-import com.hp.hpl.jena.tdb.ConfigTest;
-import com.hp.hpl.jena.tdb.base.file.Location;
-import com.hp.hpl.jena.tdb.junit.GraphLocation;
-import com.hp.hpl.jena.tdb.sys.TDBMaker;
+import com.hp.hpl.jena.query.*;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.rdf.model.Property;
+import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.sparql.core.Quad;
+import com.hp.hpl.jena.tdb.TDB;
+import com.hp.hpl.jena.tdb.TDBFactory;
+import com.hp.hpl.jena.util.FileManager;
 
-/** Testing the quad support for TDB */ 
+/** Tests of datasets, prefixes, special URIs etc (see also {@link com.hp.hpl.jena.tdb.graph.TestGraphs} */
 public class TestDatasetTDB extends BaseTest
 {
-    static Node n0 = SSE.parseNode("<http://example/n0>") ; 
-    static Node n1 = SSE.parseNode("<http://example/n1>") ;
-    static Node n2 = SSE.parseNode("<http://example/n2>") ;
     
-    static GraphLocation graphLocation = null ;
-    
-    @BeforeClass public static void beforeClass()
+    private static Dataset create()
     {
-        graphLocation = new GraphLocation(new Location(ConfigTest.getTestingDirDB())) ;
+        return TDBFactory.createDataset() ;
+    }
+    
+    private static void load(Model model, String file)
+    {
+        FileManager.get().readModel(model, file) ;
+    }
+    
+    private static String base1 = "http://example/" ;
+    private static String baseNS = "http://example/ns#" ;
+    
+    private static void load1(Model model)
+    {
+        model.setNsPrefix("", base1) ;
+        Resource r1 = model.createResource(base1+"r1") ;
+        Property p1 = model.createProperty(baseNS+"p1") ;
+        model.add(r1, p1, "x1") ;
+        model.add(r1, p1, "x2") ;
+    }
+    
+    private static void load2(Model model)
+    {
+        Resource r1 = model.createResource(base1+"r2") ;
+        Property p1 = model.createProperty(baseNS+"p1") ;
+        model.add(r1, p1, "x1") ;
+        model.add(r1, p1, "x2") ;
     }
 
-    @AfterClass public static void afterClass()
-    { 
-        graphLocation.release() ;
-        graphLocation.clearDirectory() ;
-    }
-    
-    @Before public void before()
-    {   
-        graphLocation.clearDirectory() ; 
-        graphLocation.createDataset() ;
-    }
-    
-    @After public void after()
-    {   
-        graphLocation.release() ;
-        TDBMaker.clearDatasetCache() ;
-    }
-    
-    @Test public void dataset1()
+    private static void load3(Model model)
     {
-        Dataset ds = graphLocation.getDataset() ;
-        assertTrue( ds.asDatasetGraph() instanceof DatasetGraphTDB ) ;
-        assertTrue( ds.getDefaultModel().getGraph() instanceof GraphTriplesTDB ) ;
-        assertTrue( ds.getNamedModel("http://example/").getGraph() instanceof GraphNamedTDB ) ;
-    }
-    
-    @Test public void dataset2()
-    {
-        Dataset ds = graphLocation.getDataset() ;
-        Graph g1 = ds.getDefaultModel().getGraph() ;
-        Graph g2 = ds.getNamedModel("http://example/").getGraph() ;
-        
-        g1.add(new Triple(n0,n1,n2) ) ;
-        assertTrue(g1.contains(n0,n1,n2) ) ;
-        assertFalse(g2.contains(n0,n1,n2) ) ;
+        Resource r1 = model.createResource(base1+"r3") ;
+        Property p1 = model.createProperty(baseNS+"p2") ;
+        model.add(r1, p1, "x1") ;
+        model.add(r1, p1, "x2") ;
     }
 
-    @Test public void dataset3()
+    @Test public void prefix1()
     {
-        Dataset ds = graphLocation.getDataset() ;
-        Graph g1 = ds.getDefaultModel().getGraph() ;
-        // Sometimes, under windows, deleting the files by 
-        // graphLocation.clearDirectory does not work.  
-        // Needed for safe tests on windows.
-        g1.getBulkUpdateHandler().removeAll() ;
-        
-        Graph g2 = ds.getNamedModel("http://example/").getGraph() ;
-        g2.add(new Triple(n0,n1,n2) ) ;
-        assertTrue(g2.contains(n0,n1,n2) ) ;
-        assertFalse(g1.contains(n0,n1,n2) ) ;
-    }
-
-    @Test public void dataset4()
-    {
-        String graphName = "http://example/" ;
-        Triple triple = SSE.parseTriple("(<x> <y> <z>)") ;
-        Dataset ds = graphLocation.getDataset() ;
-        Graph g2 = ds.asDatasetGraph().getGraph(Node.createURI(graphName)) ;
-        // Graphs only exists if they have a triple in them
-        assertFalse(ds.containsNamedModel(graphName)) ;
-        
-        Iterator<String> iter = ds.listNames() ;
-        assertFalse(iter.hasNext()) ;
-        
-        assertEquals(0, ds.asDatasetGraph().size()) ;
+        Dataset ds = create() ;
+        Model m = ds.getDefaultModel() ;
+        load1(m) ;
+        String x = m.expandPrefix(":x") ;
+        assertEquals(x, base1+"x") ;
     }
     
-    @Test public void dataset5()
+    @Test public void prefix2()
     {
-        String graphName = "http://example/" ;
-        Triple triple = SSE.parseTriple("(<x> <y> <z>)") ;
-        Dataset ds = graphLocation.getDataset() ;
-        Graph g2 = ds.asDatasetGraph().getGraph(Node.createURI(graphName)) ;
-        // Graphs only exists if they have a triple in them
-        g2.add(triple) ;
-        
-        assertTrue(ds.containsNamedModel(graphName)) ;
-        Iterator<String> iter = ds.listNames() ;
-        List<String> x = Iter.toList(iter) ;
-        List<String> y = Arrays.asList(graphName) ;
-        assertEquals(x,y) ;
-        
-        assertEquals(1, ds.asDatasetGraph().size()) ;
+        Dataset ds = create() ;
+        Model m = ds.getDefaultModel() ;
+        load1(m) ;
+        Model m2 = ds.getNamedModel("http://example/graph/") ;
+        String x = m2.expandPrefix(":x") ;
+        assertEquals(x, ":x") ;
     }
+    
+    @Test public void query1()
+    {
+        Dataset ds = create() ;
+        Model m = ds.getDefaultModel() ;
+        load1(m) ;
+        
+        String qs = "CONSTRUCT {?s ?p ?o } WHERE {?s ?p ?o}" ;
+        Query q = QueryFactory.create(qs) ;
+        QueryExecution qExec = QueryExecutionFactory.create(q, ds) ;
+        Model m2 = qExec.execConstruct() ;
+        assertTrue(m.isIsomorphicWith(m2)) ;
+    }
+    
+    @Test public void query2()
+    {
+        Dataset ds = create() ;
+        Model m = ds.getDefaultModel() ;
+        load1(m) ;
+        
+        String qs = "CONSTRUCT {?s ?p ?o } WHERE { GRAPH <http://example/graph/> {?s ?p ?o}}" ;
+        Query q = QueryFactory.create(qs) ;
+        QueryExecution qExec = QueryExecutionFactory.create(q, ds) ;
+        Model m2 = qExec.execConstruct() ;
+        assertTrue(m2.isEmpty()) ;
+    }
+    
+    static String defaultGraph = Quad.defaultGraphIRI.getURI() ; 
+    static String unionGraph = Quad.unionGraph.getURI() ;
+    
+    @Test public void special1()
+    {
+        Dataset ds = create() ;
+        Model m = ds.getDefaultModel() ;
+        load1(m) ;
+        
+        String qs = "CONSTRUCT {?s ?p ?o } WHERE { GRAPH <"+defaultGraph+"> {?s ?p ?o}}" ;
+        Query q = QueryFactory.create(qs) ;
+        QueryExecution qExec = QueryExecutionFactory.create(q, ds) ;
+        Model m2 = qExec.execConstruct() ;
+        assertTrue(m.isIsomorphicWith(m2)) ;
+    }
+    
+    @Test public void special2()
+    {
+        Dataset ds = create() ;
+
+        load1(ds.getDefaultModel()) ;
+        load2(ds.getNamedModel("http://example/graph1")) ;
+        load3(ds.getNamedModel("http://example/graph2")) ;
+        
+        Model m = ModelFactory.createDefaultModel() ;
+        load2(m) ;
+        load3(m) ;
+        
+        String qs = "CONSTRUCT {?s ?p ?o } WHERE { GRAPH <"+unionGraph+"> {?s ?p ?o}}" ;
+        Query q = QueryFactory.create(qs) ;
+        QueryExecution qExec = QueryExecutionFactory.create(q, ds) ;
+        Model m2 = qExec.execConstruct() ;
+        assertTrue(m.isIsomorphicWith(m2)) ;
+    }
+    
+    @Test public void special3()
+    {
+        Dataset ds = create() ;
+
+        load1(ds.getDefaultModel()) ;
+        load2(ds.getNamedModel("http://example/graph1")) ;
+        load3(ds.getNamedModel("http://example/graph2")) ;
+        
+        Model m = ModelFactory.createDefaultModel() ;
+        load2(m) ;
+        load3(m) ;
+        
+        String qs = "CONSTRUCT {?s ?p ?o } WHERE { ?s ?p ?o }" ;
+        Query q = QueryFactory.create(qs) ;
+        QueryExecution qExec = QueryExecutionFactory.create(q, ds) ;
+        qExec.getContext().set(TDB.symUnionDefaultGraph, true) ;
+        Model m2 = qExec.execConstruct() ;
+        assertTrue(m.isIsomorphicWith(m2)) ;
+    }
+    
+    @Test public void special4()
+    {
+        Dataset ds = create() ;
+
+        load1(ds.getDefaultModel()) ;
+        load2(ds.getNamedModel("http://example/graph1")) ;
+        load3(ds.getNamedModel("http://example/graph2")) ;
+        
+        Model m = ModelFactory.createDefaultModel() ;
+        load2(m) ;
+        load3(m) ;
+        TDB.sync(ds) ;
+        
+        String qs = "PREFIX : <"+baseNS+"> SELECT (COUNT(?x) as ?c) WHERE { ?x (:p1|:p2) 'x1' }" ;
+        Query q = QueryFactory.create(qs, Syntax.syntaxARQ) ; 
+        QueryExecution qExec = QueryExecutionFactory.create(q, ds) ;
+        qExec.getContext().set(TDB.symUnionDefaultGraph, true) ;
+        long c1 = qExec.execSelect().next().getLiteral("c").getLong() ;
+        qExec.close() ;
+        
+        qExec = QueryExecutionFactory.create(q, m) ;
+        long c2 = qExec.execSelect().next().getLiteral("c").getLong() ;
+        assertEquals(c1, c2) ; 
+        qExec.close() ;
+    }
+    
+    
+    
+    // Put a model into a general dataset and use it.
+    @Test public void generalDataset1()
+    {
+        Dataset ds = create() ;
+        load1(ds.getDefaultModel()) ;
+        load2(ds.getNamedModel("http://example/graph1")) ;
+        load3(ds.getNamedModel("http://example/graph2")) ;
+        Model m = ds.getNamedModel("http://example/graph2") ;
+        
+        // Use graph2 as default model.
+        DataSource ds2 = DatasetFactory.create() ;
+        ds2.setDefaultModel(ds.getNamedModel("http://example/graph2")) ;
+        
+        String qs = "CONSTRUCT {?s ?p ?o } WHERE { ?s ?p ?o}" ;
+        Query q = QueryFactory.create(qs) ;
+        QueryExecution qExec = QueryExecutionFactory.create(q, ds2) ;
+        Model m2 = qExec.execConstruct() ;
+        assertTrue(m.isIsomorphicWith(m2)) ;
+    }
+    
+    @Test public void generalDataset2()
+    {
+        Dataset ds = create() ;
+        load1(ds.getDefaultModel()) ;
+        load2(ds.getNamedModel("http://example/graph1")) ;
+        load3(ds.getNamedModel("http://example/graph2")) ;
+        Model m = ds.getNamedModel("http://example/graph2") ;
+        
+        // Use graph1 as a differently named model.
+        DataSource ds2 = DatasetFactory.create() ;
+        ds2.addNamedModel("http://example/graphOther", m) ;
+        
+        String qs = "CONSTRUCT {?s ?p ?o } WHERE { {?s ?p ?o} UNION { GRAPH <http://example/graphOther> {?s ?p ?o} } }" ;
+        Query q = QueryFactory.create(qs) ;
+        QueryExecution qExec = QueryExecutionFactory.create(q, ds2) ;
+        Model m2 = qExec.execConstruct() ;
+        assertTrue(m.isIsomorphicWith(m2)) ;
+    }
+    
+    @Test public void generalDataset3()
+    {
+        Dataset ds = create() ;
+        load1(ds.getDefaultModel()) ;
+        load2(ds.getNamedModel("http://example/graph1")) ;
+        load3(ds.getNamedModel("http://example/graph2")) ;
+        Model m = ds.getDefaultModel() ;
+        
+        // Use the default model in one dataset as a named model in another.
+        DataSource ds2 = DatasetFactory.create() ;
+        ds2.addNamedModel("http://example/graphOther", m) ;
+        
+        String qs = "CONSTRUCT {?s ?p ?o } WHERE { {?s ?p ?o} UNION { GRAPH <http://example/graphOther> {?s ?p ?o} } }" ;
+        Query q = QueryFactory.create(qs) ;
+        QueryExecution qExec = QueryExecutionFactory.create(q, ds2) ;
+        Model m2 = qExec.execConstruct() ;
+        assertTrue(m.isIsomorphicWith(m2)) ;
+    }
+
+    // removeAll
 }
 
 /*

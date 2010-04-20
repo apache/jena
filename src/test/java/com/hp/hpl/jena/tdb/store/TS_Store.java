@@ -15,8 +15,8 @@ import org.junit.runners.Suite;
     , TestTripleTable.class
     , TestGraphTDB.class
     , TestGraphNamedTDB.class
+    , TestDatasetTDBPersist.class
     , TestDatasetTDB.class
-    , TestDataset.class
     // The script suite
     , TestSuiteGraphTDB.class
     , Test_SPARQL_TDB.class
