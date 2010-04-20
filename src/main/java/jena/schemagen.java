@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            14-Apr-2003
  * Filename           $RCSfile: schemagen.java,v $
- * Revision           $Revision: 1.3 $
+ * Revision           $Revision: 1.4 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2010-04-15 23:43:56 $
+ * Last modified on   $Date: 2010-04-20 20:47:16 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
@@ -52,7 +52,7 @@ import com.hp.hpl.jena.shared.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:ian_dickinson@users.sourceforge.net" >email</a>)
- * @version CVS $Id: schemagen.java,v 1.3 2010-04-15 23:43:56 ian_dickinson Exp $
+ * @version CVS $Id: schemagen.java,v 1.4 2010-04-20 20:47:16 ian_dickinson Exp $
  */
 public class schemagen {
     // Constants
@@ -748,6 +748,18 @@ public class schemagen {
             char ch = uri.charAt( uri.length() - 1 );
             boolean endsWithNCNameCh = XMLChar.isNCName( ch );
             uri = endsWithNCNameCh ? uri + "#" : uri;
+
+            // check for ambiguous answers
+            if (i.hasNext()) {
+                System.err.println( "Warning: ambiguous default namespace - there is more than one owl:Ontology element." );
+                System.err.println( "Picking first choice: " + uri  + ". Other choices are:" );
+                while (i.hasNext()) {
+                    System.err.print( " " );
+                    System.err.print( i.nextStatement().getString() );
+                }
+                System.err.println();
+                System.err.println( "Use the -a option to specify a particular namespace if required." );
+            }
         }
 
         return uri;
