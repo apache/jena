@@ -5,6 +5,11 @@ public class DevTDB
     // == 0.8.5
     // DatasetGraphTDB has redundant code - should be in ARQ ... some how (need taints or addins - or multiple inheritance!)
     
+    // Tuples
+    // Interface, TupleFactory, TupleImpl
+    // TupleMask (or TupleImpl itself has a length field?? TupleMask(T[] or Tuple<T>)) 
+    // TupleSlice
+    
     // -- Loader
     // .gz files.
     // Sink: just a send()

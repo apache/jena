@@ -11,6 +11,8 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
+import com.hp.hpl.jena.tdb.lib.TupleLib ;
+
 import org.openjena.atlas.iterator.Iter ;
 import org.openjena.atlas.iterator.IteratorArray ;
 import org.openjena.atlas.iterator.Transform ;
@@ -46,6 +48,22 @@ public final class Tuple<T> implements Iterable<T>
         return Iter.map(iter, projection) ;
     }
     
+
+    public static <T> Iterator<Tuple<T>> prefix(final int prefixLength, Iterator<Tuple<T>> iter)
+    {
+        Transform<Tuple<T>, Tuple<T>> sub = new Transform<Tuple<T>, Tuple<T>>(){
+            //@Override
+            public Tuple<T> convert(Tuple<T> tuple)
+            {
+                // Or a making Tuple.
+               //T[] x = new T[prefixLength] ;
+               T[] x = null ;
+                return Tuple.create(x) ;
+            }
+        } ;
+        return Iter.map(iter, sub) ;
+    }
+
     // May need to be Object[] (+ cast on access)
     // to support 
     final T[] tuple ;
