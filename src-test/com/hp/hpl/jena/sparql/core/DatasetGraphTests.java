@@ -22,7 +22,7 @@ import com.hp.hpl.jena.sparql.lib.iterator.Iter ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
 
-public abstract class DatasetTests
+public abstract class DatasetGraphTests
 {
     abstract DatasetGraph emptyDataset() ;
     

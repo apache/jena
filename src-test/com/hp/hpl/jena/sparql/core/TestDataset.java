@@ -6,20 +6,49 @@
 
 package com.hp.hpl.jena.sparql.core;
 
-import junit.framework.JUnit4TestAdapter ;
+import java.util.Iterator ;
 
-public class TestDatasetGraphMemTriplesQuads extends DatasetGraphTests
+import org.junit.Test ;
+
+import com.hp.hpl.jena.query.Dataset ;
+import com.hp.hpl.jena.query.LabelExistsException ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.shared.Lock ;
+
+import static junit.framework.Assert.* ;
+
+public abstract class TestDataset
 {
-    public static junit.framework.Test suite()
+    protected abstract Dataset create() ;
+    
+    @Test public void dataset_01()
     {
-        return new JUnit4TestAdapter(TestDatasetGraphMemTriplesQuads.class) ;
+        Dataset ds = create() ;
+        assertNotNull(ds.getDefaultModel()) ;
+        assertNotNull(ds.asDatasetGraph()) ;
     }
     
-    @Override
-    protected DatasetGraph emptyDataset()
+    /*
+    public Model getDefaultModel() ;
+    public Model getNamedModel(String uri) ;
+    public boolean containsNamedModel(String uri) ;
+    public Iterator<String> listNames() ;
+    public Lock getLock() ;
+    public DatasetGraph asDatasetGraph() ; 
+    public void close() ;
+
+    public void  setDefaultModel(Model model) ;
+    public void  addNamedModel(String uri, Model model) throws LabelExistsException ;
+    public void  removeNamedModel(String uri) ;
+    public void  replaceNamedModel(String uri, Model model) ;
+     */
+    
+    @Test public void dataset_02()
     {
-        return new DSG_Mem() ;
+        Dataset ds = create() ;
+        //
     }
+    
 }
 
 /*
