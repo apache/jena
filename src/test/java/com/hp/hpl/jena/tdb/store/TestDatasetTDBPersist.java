@@ -29,7 +29,7 @@ import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.junit.GraphLocation;
 import com.hp.hpl.jena.tdb.sys.TDBMaker;
 
-/** Testing the quad support for TDB */ 
+/** Testing persistence  */ 
 public class TestDatasetTDBPersist extends BaseTest
 {
     static Node n0 = SSE.parseNode("<http://example/n0>") ; 
