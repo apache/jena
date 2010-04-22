@@ -1,6 +1,7 @@
-#BASE <http://example/>
-PREFIX :  <http://example/X#>
-
-SELECT * 
-{ ?x <p> ?v1 OPTIONAL { ?x :q ?v2 } }
-
+PREFIX : <http://example/>
+CONSTRUCT { _:a :p ?x } WHERE { _:a :q ?x }
+## SELECT *
+## {
+##   _:a :p ?x .
+##   OPTIONAL { _:a :w ?y }
+## }

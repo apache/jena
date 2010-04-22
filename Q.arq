@@ -2,6 +2,6 @@ PREFIX : <http://example/>
 
 SELECT *
 {
-  ?s ?p ?o 
-  MINUS { :a :b :c }
+  _:a :p ?x .
+  { SELECT * { _:a :p ?y } }
 }
