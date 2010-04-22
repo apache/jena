@@ -14,7 +14,6 @@ import org.junit.runner.notification.Failure;
 
 public class TextListener2 extends TextListener
 {
-
     private PrintStream out ;
     int count = 0 ;
 
