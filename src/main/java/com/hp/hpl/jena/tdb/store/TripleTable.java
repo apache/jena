@@ -43,7 +43,12 @@ public class TripleTable implements Sync, Closeable
     
     public boolean add( Triple triple ) 
     { 
-        return table.addRow(triple.getSubject(), triple.getPredicate(), triple.getObject()) ;
+        return add(triple.getSubject(), triple.getPredicate(), triple.getObject()) ;
+    }
+
+    public boolean add(Node s, Node p, Node o) 
+    { 
+        return table.addRow(s, p, o) ;
     }
     
     /** Delete a triple  - return true if it was deleted, false if it didn't exist */
@@ -52,6 +57,12 @@ public class TripleTable implements Sync, Closeable
         return table.deleteRow(triple.getSubject(), triple.getPredicate(), triple.getObject()) ;
     }
     
+    /** Delete a triple  - return true if it was deleted, false if it didn't exist */
+    public boolean delete(Node s, Node p, Node o) 
+    { 
+        return table.deleteRow(s, p, o) ;
+    }
+
     /** Find matching triples */
     public Iterator<Triple> find(Node s, Node p, Node o)
     {

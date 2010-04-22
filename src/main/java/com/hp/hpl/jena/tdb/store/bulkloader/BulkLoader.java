@@ -140,8 +140,13 @@ public class BulkLoader
         return sink ;
     }
 
-    public Destination<Quad> loadQuads(DatasetGraphTDB dsg)
+    public static Destination<Quad> loadQuads(final DatasetGraphTDB dsg, final boolean showProgress)
     {
+        
+        EventManager.register(dsg, evStartBulkload, listener) ;
+        EventManager.register(dsg, evFinishBulkload, listener) ;
+        
+        
         final LoaderNodeTupleTable loaderTriples = new LoaderNodeTupleTable( 
                                                                 dsg.getTripleTable().getNodeTupleTable(),
                                                                 showProgress) ;
@@ -149,6 +154,8 @@ public class BulkLoader
                                                                  dsg.getQuadTable().getNodeTupleTable(),
                                                                  true) ;
         Destination<Quad> sink = new Destination<Quad>() {
+            Ticker ticker = (showProgress? new TickEvent(LoadTickPoint) : null ) ;
+            
             public void start()
             {
                 loaderTriples.loadStart() ;
@@ -167,6 +174,9 @@ public class BulkLoader
             {
                 loaderTriples.loadFinish() ;
                 loaderQuads.loadFinish() ;
+                if ( ticker != null )
+                    ticker.finish() ;
+                EventManager.send(dsg, new Event(evFinishBulkload, null)) ;
             }
             
             public void flush() { }

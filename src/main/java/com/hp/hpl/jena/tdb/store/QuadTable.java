@@ -42,27 +42,40 @@ public class QuadTable implements Sync, Closeable
     /** Add a quad - return true if it was added, false if it already existed */
     public boolean add( Quad quad ) 
     { 
-        return table.addRow(quad.getGraph(), quad.getSubject(), quad.getPredicate(), quad.getObject()) ;
+        return add(quad.getGraph(), quad.getSubject(), quad.getPredicate(), quad.getObject()) ;
     }
 
     /** Add a quad (as graph node and triple) - return true if it was added, false if it already existed */
-    public boolean add( Node gn, Triple triple ) 
+    public boolean add(Node gn, Triple triple ) 
     { 
-        return table.addRow(gn, triple.getSubject(), triple.getPredicate(), triple.getObject()) ;
+        return add(gn, triple.getSubject(), triple.getPredicate(), triple.getObject()) ;
+    }
+    
+    /** Add a quad - return true if it was added, false if it already existed */
+    public boolean add(Node g, Node s, Node p, Node o) 
+    { 
+        return table.addRow(g,s,p,o) ;
     }
     
     /** Delete a quad - return true if it was deleted, false if it didn't exist */
     public boolean delete( Quad quad ) 
     { 
-        return table.deleteRow(quad.getGraph(), quad.getSubject(), quad.getPredicate(), quad.getObject()) ;
+        return delete(quad.getGraph(), quad.getSubject(), quad.getPredicate(), quad.getObject()) ;
     }
 
     /** Delete a quad (as graph node and triple) - return true if it was deleted, false if it didn't exist */
     public boolean delete( Node gn, Triple triple ) 
     { 
-        return table.deleteRow(gn, triple.getSubject(), triple.getPredicate(), triple.getObject()) ;
+        return delete(gn, triple.getSubject(), triple.getPredicate(), triple.getObject()) ;
     }
 
+    /** Delete a quad - return true if it was deleted, false if it didn't exist */
+    public boolean delete(Node g, Node s, Node p, Node o) 
+    { 
+        return table.deleteRow(g, s, p, o) ;
+    }
+
+    
     /** Find matching quads */
     public Iterator<Quad> find(Node g, Node s, Node p, Node o)
     {

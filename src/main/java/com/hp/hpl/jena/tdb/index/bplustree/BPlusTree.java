@@ -309,7 +309,8 @@ public class BPlusTree implements Iterable<Record>, RangeIndex, Session
     //@Override
     public boolean isEmpty()
     {
-        return nodeManager.getBlockMgr().isEmpty() ;
+        return root.getCount() == 0 ;
+        //return nodeManager.getBlockMgr().isEmpty() ;
     }
     
     //@Override

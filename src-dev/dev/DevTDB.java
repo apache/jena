@@ -3,7 +3,6 @@ package dev ;
 public class DevTDB
 {
     // == 0.8.5
-    // DatasetGraphTDB has redundant code - should be in ARQ ... some how (need taints or addins - or multiple inheritance!)
     
     // Tuples
     // Interface, TupleFactory, TupleImpl

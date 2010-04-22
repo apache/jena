@@ -13,36 +13,42 @@ import org.openjena.atlas.lib.Pair ;
 
 public class C2
 {
+    // interface or class
+    // record? or present the structure?
+    // structure.
     
     public interface Value {} // ByteBuffer
-    public interface KeyElt {}
 
-    public interface Key {}  // ByteBuffer //extends Tuple<KeyElt>{}
+    public class Key<T> {}  // ByteBuffer //extends Tuple<KeyElt>{}
     
     
-    public interface KeyPattern {} // extends Tuple<KeyElt> {}
+    public interface KeyPattern<K> {} // extends Tuple<KeyElt> {}
     public interface SortOrder {}
     
-    public interface KV
+
+    
+    
+    
+    public interface KeyValueStore<K,V>
     {
-        Value get(Key key) ;
+        V get(K key) ;
 
-        void put(Key key, Value value) ;
+        void put(K key, V value) ;
 
-        void delete(Key key) ;
+        void delete(K key) ;
 
         void close() ;
     }
 
-    public interface KStream
-    {
-        // Special case of Value == Key
-        // Or Tuples : key is first part
-        Iterator<Value> findValues(KeyPattern key, SortOrder sortOrder) ;
-        Iterator<Pair<Key,Value>> findPairs(KeyPattern key, SortOrder sortOrder) ;
+    //--- The tuple indexes  
 
-        void add(Iterator<Pair<Key, Value>> stuff) ;
-        void add2(Pair<Key, Value>[] stuff) ;
+    public interface KeyValueStreamStore<K,V> extends KeyValueStore<K,V>
+    {
+        Iterator<V> findValues(KeyPattern<K> key, SortOrder sortOrder) ;
+        Iterator<Pair<K,V>> findPairs(KeyPattern<K> key, SortOrder sortOrder) ;
+
+        void add(Iterator<Pair<K, V>> stuff) ;
+        void add2(Pair<K, V>[] stuff) ;
     }
 
 }

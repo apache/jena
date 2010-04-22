@@ -37,9 +37,12 @@ import com.hp.hpl.jena.sparql.algebra.Algebra ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.Transformer ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.engine.Plan ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingRoot ;
+import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.sparql.util.Context ;
+import com.hp.hpl.jena.sparql.util.IndentedWriter ;
 import com.hp.hpl.jena.sparql.util.QueryExecUtils ;
 import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.TDBFactory ;
@@ -69,13 +72,15 @@ public class RunTDB
     {
         
         DatasetGraph dsg = TDBFactory.createDataset().asDatasetGraph() ;
-        InputStream in = IO.openFile("D.nt") ; 
+        InputStream in = IO.openFile("D.nq") ; 
         
-        Destination<Triple> dest = BulkLoader.loadTriples((DatasetGraphTDB)dsg, true) ;
-        LangRIOT parser = ParserFactory.createParserNTriples(in, dest) ;
+        Destination<Quad> dest = BulkLoader.loadQuads((DatasetGraphTDB)dsg, true) ;
+        LangRIOT parser = ParserFactory.createParserNQuads(in, dest) ;
         dest.start() ;
         parser.parse() ;
         dest.finish() ;
+        SSE.write(IndentedWriter.stdout, dsg) ;
+        IndentedWriter.stdout.flush();
         System.exit(0) ;
         
         
