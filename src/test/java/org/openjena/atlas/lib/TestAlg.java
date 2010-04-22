@@ -12,8 +12,8 @@ import java.nio.IntBuffer;
 
 
 import org.junit.Test;
+import org.openjena.atlas.junit.BaseTest ;
 import org.openjena.atlas.lib.Alg ;
-import org.openjena.atlas.test.BaseTest ;
 
 public class TestAlg extends BaseTest
 {

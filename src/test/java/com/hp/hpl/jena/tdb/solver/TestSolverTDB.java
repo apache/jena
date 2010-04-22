@@ -14,7 +14,7 @@ import java.util.List;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openjena.atlas.iterator.Iter ;
-import org.openjena.atlas.junit.TestBase ;
+import org.openjena.atlas.junit.BaseTest ;
 import org.openjena.atlas.lib.StrUtils ;
 
 import com.hp.hpl.jena.graph.Graph;
@@ -39,7 +39,7 @@ import com.hp.hpl.jena.sparql.util.ResultSetUtils;
 import com.hp.hpl.jena.tdb.TDBFactory;
 import com.hp.hpl.jena.util.FileManager;
 
-public class TestSolverTDB extends TestBase
+public class TestSolverTDB extends BaseTest
 {
     static final String graphData = "testing/data.ttl" ;
     static Graph graph = null ;

@@ -12,8 +12,8 @@ import java.io.InputStream ;
 
 import org.junit.Test ;
 import org.openjena.atlas.io.InputStreamBuffered ;
+import org.openjena.atlas.junit.BaseTest ;
 import org.openjena.atlas.lib.Bytes ;
-import org.openjena.atlas.test.BaseTest ;
 
 public class TestInputStreamBuffered extends BaseTest
 {

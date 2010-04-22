@@ -10,7 +10,7 @@ import java.io.Reader ;
 import java.io.StringReader ;
 
 import org.junit.Test ;
-import org.openjena.atlas.test.BaseTest ;
+import org.openjena.atlas.junit.BaseTest ;
 
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;

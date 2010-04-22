@@ -14,7 +14,7 @@ import java.io.Writer;
 
 import org.junit.Test;
 import org.openjena.atlas.io.OutputUtils ;
-import org.openjena.atlas.test.BaseTest ;
+import org.openjena.atlas.junit.BaseTest ;
 
 public class TestPrintUtils extends BaseTest
 {

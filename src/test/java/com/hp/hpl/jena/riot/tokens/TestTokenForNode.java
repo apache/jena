@@ -8,7 +8,7 @@ package com.hp.hpl.jena.riot.tokens;
 
 import org.junit.BeforeClass ;
 import org.junit.Test ;
-import org.openjena.atlas.test.BaseTest ;
+import org.openjena.atlas.junit.BaseTest ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.rdf.model.AnonId ;

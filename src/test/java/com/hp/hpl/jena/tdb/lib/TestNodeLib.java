@@ -8,12 +8,12 @@ package com.hp.hpl.jena.tdb.lib;
 
 import static com.hp.hpl.jena.tdb.lib.NodeLib.hash ;
 import org.junit.Test ;
-import org.openjena.atlas.junit.TestBase ;
+import org.openjena.atlas.junit.BaseTest ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 
-public class TestNodeLib extends TestBase
+public class TestNodeLib extends BaseTest
 {
     // Tests of TDBs NodeLib
     @Test public void hash1() 

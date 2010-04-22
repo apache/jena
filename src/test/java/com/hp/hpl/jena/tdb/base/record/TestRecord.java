@@ -12,7 +12,7 @@ import static com.hp.hpl.jena.tdb.base.record.RecordLib.recordToInt;
 import com.hp.hpl.jena.tdb.base.record.Record;
 
 import org.junit.Test;
-import org.openjena.atlas.test.BaseTest ;
+import org.openjena.atlas.junit.BaseTest ;
 
 public class TestRecord extends BaseTest
 {

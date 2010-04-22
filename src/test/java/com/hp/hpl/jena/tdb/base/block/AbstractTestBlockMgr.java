@@ -14,7 +14,7 @@ import java.nio.ByteBuffer;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.openjena.atlas.test.BaseTest ;
+import org.openjena.atlas.junit.BaseTest ;
 
 public abstract class AbstractTestBlockMgr extends BaseTest
 {

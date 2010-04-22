@@ -10,8 +10,8 @@ package com.hp.hpl.jena.riot.lang;
 import java.io.StringReader ;
 
 import org.junit.Test ;
+import org.openjena.atlas.junit.BaseTest ;
 import org.openjena.atlas.lib.SinkCounting ;
-import org.openjena.atlas.test.BaseTest ;
 
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.rdf.model.Model ;

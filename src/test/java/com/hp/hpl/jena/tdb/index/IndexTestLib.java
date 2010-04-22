@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import org.openjena.atlas.junit.TestBase ;
+import org.openjena.atlas.junit.BaseTest ;
 
 
 
@@ -153,7 +153,7 @@ public class IndexTestLib
         }
         
         for ( Record r : x )
-            TestBase.assertFalse(index.contains(r)) ;
+            BaseTest.assertFalse(index.contains(r)) ;
         long size2 = index.size() ;
         long size2a = index.sessionTripleCount() ;
 

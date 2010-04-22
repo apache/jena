@@ -8,9 +8,9 @@ package org.openjena.atlas.lib;
 
 
 import org.junit.Test;
+import org.openjena.atlas.junit.BaseTest ;
 import org.openjena.atlas.lib.ColumnMap ;
 import org.openjena.atlas.lib.Tuple ;
-import org.openjena.atlas.test.BaseTest ;
 
 public class TestColumnMap extends BaseTest
 {

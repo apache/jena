@@ -8,7 +8,7 @@ package org.openjena.atlas.io;
 
 import org.junit.Test;
 import org.openjena.atlas.io.IndentedLineBuffer ;
-import org.openjena.atlas.test.BaseTest ;
+import org.openjena.atlas.junit.BaseTest ;
 
 public class TestIndentedWriter extends BaseTest
 {

@@ -17,8 +17,8 @@ import java.nio.charset.CharsetEncoder ;
 
 import org.junit.Test ;
 import org.openjena.atlas.io.StreamUTF8 ;
+import org.openjena.atlas.junit.BaseTest ;
 import org.openjena.atlas.lib.Chars ;
-import org.openjena.atlas.test.BaseTest ;
 
 public class TestStreamUTF8 extends BaseTest
     {

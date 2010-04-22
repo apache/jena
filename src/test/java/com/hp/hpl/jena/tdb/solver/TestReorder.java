@@ -10,7 +10,7 @@ import static com.hp.hpl.jena.tdb.solver.TestSolverLib.bgp;
 import static com.hp.hpl.jena.tdb.solver.TestSolverLib.matcher;
 import static com.hp.hpl.jena.tdb.solver.TestSolverLib.triple;
 import org.junit.Test;
-import org.openjena.atlas.test.BaseTest ;
+import org.openjena.atlas.junit.BaseTest ;
 
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.sparql.core.BasicPattern;

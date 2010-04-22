@@ -7,9 +7,9 @@
 package com.hp.hpl.jena.tdb.lib;
 
 import org.junit.Test;
-import org.openjena.atlas.junit.TestBase ;
+import org.openjena.atlas.junit.BaseTest ;
 
-public class TestStringAbbrev extends TestBase
+public class TestStringAbbrev extends BaseTest
 {
     @Test public void abbrev_01()
     {

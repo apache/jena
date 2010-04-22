@@ -14,7 +14,7 @@ import org.junit.Test;
 import org.openjena.atlas.iterator.Iter ;
 import org.openjena.atlas.iterator.IteratorArray ;
 import org.openjena.atlas.iterator.PeekIterator ;
-import org.openjena.atlas.test.BaseTest ;
+import org.openjena.atlas.junit.BaseTest ;
 
 public class TestIterator extends BaseTest
 {

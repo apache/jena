@@ -16,7 +16,7 @@ import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.openjena.atlas.test.BaseTest ;
+import org.openjena.atlas.junit.BaseTest ;
 
 public class TestPtrBuffer extends BaseTest
 {

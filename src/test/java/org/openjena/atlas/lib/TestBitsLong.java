@@ -7,8 +7,8 @@
 package org.openjena.atlas.lib;
 
 import org.junit.Test;
+import org.openjena.atlas.junit.BaseTest ;
 import org.openjena.atlas.lib.BitsLong ;
-import org.openjena.atlas.test.BaseTest ;
 
 
 public class TestBitsLong extends BaseTest

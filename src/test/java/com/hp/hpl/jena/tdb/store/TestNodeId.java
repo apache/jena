@@ -7,7 +7,7 @@
 package com.hp.hpl.jena.tdb.store;
 
 import org.junit.Test;
-import org.openjena.atlas.junit.TestBase ;
+import org.openjena.atlas.junit.BaseTest ;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.graph.Node;
@@ -16,7 +16,7 @@ import com.hp.hpl.jena.sparql.sse.SSE;
 
 import com.hp.hpl.jena.tdb.store.NodeId;
 
-public class TestNodeId extends TestBase
+public class TestNodeId extends BaseTest
 {
     @Test public void nodeId_01()
     {

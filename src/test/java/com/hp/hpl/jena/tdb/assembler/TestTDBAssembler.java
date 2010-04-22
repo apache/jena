@@ -10,8 +10,8 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.openjena.atlas.junit.BaseTest ;
 import org.openjena.atlas.lib.FileOps ;
-import org.openjena.atlas.test.BaseTest ;
 
 import com.hp.hpl.jena.assembler.JA;
 import com.hp.hpl.jena.assembler.exceptions.AssemblerException ;

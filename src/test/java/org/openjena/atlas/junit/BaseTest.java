@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package org.openjena.atlas.test;
+package org.openjena.atlas.junit;
 
 import org.junit.Assert;
 

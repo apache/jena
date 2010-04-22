@@ -10,7 +10,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 
 import org.junit.Test;
-import org.openjena.atlas.test.BaseTest ;
+import org.openjena.atlas.junit.BaseTest ;
 
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.rdf.model.Model;

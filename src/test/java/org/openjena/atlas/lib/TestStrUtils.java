@@ -7,8 +7,8 @@
 package org.openjena.atlas.lib;
 
 import org.junit.Test;
+import org.openjena.atlas.junit.BaseTest ;
 import org.openjena.atlas.lib.StrUtils ;
-import org.openjena.atlas.test.BaseTest ;
 
 public class TestStrUtils extends BaseTest
 {

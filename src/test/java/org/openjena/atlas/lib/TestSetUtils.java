@@ -14,8 +14,8 @@ import java.util.Set;
 
 
 import org.junit.Test;
+import org.openjena.atlas.junit.BaseTest ;
 import org.openjena.atlas.lib.SetUtils ;
-import org.openjena.atlas.test.BaseTest ;
 
 public class TestSetUtils extends BaseTest
 {

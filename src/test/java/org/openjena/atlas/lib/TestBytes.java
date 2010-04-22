@@ -10,8 +10,8 @@ import java.nio.ByteBuffer;
 
 
 import org.junit.Test;
+import org.openjena.atlas.junit.BaseTest ;
 import org.openjena.atlas.lib.Bytes ;
-import org.openjena.atlas.test.BaseTest ;
 
 public class TestBytes extends BaseTest
 {

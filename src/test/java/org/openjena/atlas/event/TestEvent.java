@@ -11,7 +11,7 @@ import org.openjena.atlas.event.Event ;
 import org.openjena.atlas.event.EventListener ;
 import org.openjena.atlas.event.EventManager ;
 import org.openjena.atlas.event.EventType ;
-import org.openjena.atlas.test.BaseTest ;
+import org.openjena.atlas.junit.BaseTest ;
 
 
 public class TestEvent extends BaseTest

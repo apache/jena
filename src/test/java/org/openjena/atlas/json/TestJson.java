@@ -15,7 +15,7 @@ import org.openjena.atlas.json.JsonNumber ;
 import org.openjena.atlas.json.JsonObject ;
 import org.openjena.atlas.json.JsonParseException ;
 import org.openjena.atlas.json.JsonString ;
-import org.openjena.atlas.test.BaseTest ;
+import org.openjena.atlas.junit.BaseTest ;
 
 public class TestJson extends BaseTest
 {

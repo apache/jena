@@ -6,17 +6,17 @@
 
 package com.hp.hpl.jena.tdb.junit;
 
-import org.junit.Test;
-import org.openjena.atlas.junit.TestBase ;
+import org.junit.Test ;
+import org.openjena.atlas.junit.BaseTest ;
 
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.sparql.sse.SSE;
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.sparql.sse.SSE ;
 
 /** Basic add and delete tests for a graph */
 
-public abstract class AbstractTestGraph2 extends TestBase
+public abstract class AbstractTestGraph2 extends BaseTest
 {
     // This will become the basis for a general graph test in Jena
     protected static final Node s1 = makeNode("<ex:s1>") ;

@@ -13,9 +13,9 @@ import java.util.Set;
 
 import org.junit.Test;
 import org.openjena.atlas.iterator.Iter ;
+import org.openjena.atlas.junit.BaseTest ;
 import org.openjena.atlas.lib.ColumnMap ;
 import org.openjena.atlas.lib.Tuple ;
-import org.openjena.atlas.test.BaseTest ;
 import tdb.Cmd;
 
 import com.hp.hpl.jena.tdb.base.file.FileSet;

@@ -6,23 +6,23 @@
 
 package dev;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.junit.BeforeClass;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.openjena.atlas.junit.TestBase ;
+import org.apache.log4j.Level ;
+import org.apache.log4j.Logger ;
+import org.junit.BeforeClass ;
+import org.junit.runner.RunWith ;
+import org.junit.runners.Suite ;
+import org.openjena.atlas.junit.BaseTest ;
 
-import com.hp.hpl.jena.tdb.solver.reorder.ReorderLib;
-import com.hp.hpl.jena.tdb.store.TS_Store;
-import com.hp.hpl.jena.tdb.sys.SystemTDB;
+import com.hp.hpl.jena.tdb.solver.reorder.ReorderLib ;
+import com.hp.hpl.jena.tdb.store.TS_Store ;
+import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
     TS_Store.class
 })
 
-public class TS_Dev extends TestBase
+public class TS_Dev extends BaseTest
 {
     @BeforeClass static public void beforeClass()   
     {

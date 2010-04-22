@@ -20,8 +20,8 @@ import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 import org.junit.Test;
 import org.openjena.atlas.iterator.Iter ;
+import org.openjena.atlas.junit.BaseTest ;
 import org.openjena.atlas.lib.Tuple ;
-import org.openjena.atlas.test.BaseTest ;
 
 
 public class TestTupleTable extends BaseTest

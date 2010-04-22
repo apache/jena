@@ -9,7 +9,7 @@ package com.hp.hpl.jena.tdb.index.bplustree;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.openjena.atlas.junit.TestBase ;
+import org.openjena.atlas.junit.BaseTest ;
 
 import com.hp.hpl.jena.tdb.base.block.BlockMgr;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory;
@@ -25,7 +25,7 @@ import com.hp.hpl.jena.tdb.index.bplustree.BPlusTree;
 import com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
-public class TestBPTreeRecords extends TestBase
+public class TestBPTreeRecords extends BaseTest
 {
     static private boolean oldNullOut ;
     static private boolean oldCheckingNode ;

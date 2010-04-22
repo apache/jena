@@ -17,7 +17,7 @@ import com.hp.hpl.jena.riot.Prologue;
 import com.hp.hpl.jena.sparql.sse.SSE;
 
 import org.junit.Test;
-import org.openjena.atlas.test.BaseTest ;
+import org.openjena.atlas.junit.BaseTest ;
 
 public class TestOutput extends BaseTest
 {

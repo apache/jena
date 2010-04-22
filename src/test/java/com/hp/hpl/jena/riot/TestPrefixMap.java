@@ -10,7 +10,7 @@ import com.hp.hpl.jena.iri.IRIFactory;
 import com.hp.hpl.jena.riot.PrefixMap;
 
 import org.junit.Test;
-import org.openjena.atlas.test.BaseTest ;
+import org.openjena.atlas.junit.BaseTest ;
 
 public class TestPrefixMap extends BaseTest
 {

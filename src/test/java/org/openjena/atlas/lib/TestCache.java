@@ -16,11 +16,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openjena.atlas.iterator.Iter ;
+import org.openjena.atlas.junit.BaseTest ;
 import org.openjena.atlas.lib.Cache ;
 import org.openjena.atlas.lib.CacheFactory ;
 import org.openjena.atlas.lib.cache.CacheStatsAtomic ;
 import org.openjena.atlas.lib.cache.CacheStatsSimple ;
-import org.openjena.atlas.test.BaseTest ;
 
 @RunWith(Parameterized.class)
 public class TestCache extends BaseTest

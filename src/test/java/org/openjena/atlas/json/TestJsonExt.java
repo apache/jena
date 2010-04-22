@@ -12,7 +12,7 @@ import org.junit.Test ;
 import org.openjena.atlas.json.JsonNumber ;
 import org.openjena.atlas.json.JsonObject ;
 import org.openjena.atlas.json.JsonString ;
-import org.openjena.atlas.test.BaseTest ;
+import org.openjena.atlas.junit.BaseTest ;
 
 /** Test that are of extension of JSON */ 
 public class TestJsonExt extends BaseTest
