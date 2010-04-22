@@ -7,21 +7,20 @@
 package org.openjena.atlas.lib;
 
 
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-
-import com.hp.hpl.jena.tdb.lib.TupleLib ;
+import java.util.Arrays ;
+import java.util.Iterator ;
+import java.util.List ;
 
 import org.openjena.atlas.iterator.Iter ;
 import org.openjena.atlas.iterator.IteratorArray ;
 import org.openjena.atlas.iterator.Transform ;
 
-
-
 /** Tuple class - tuples are immutable and must be created initialized */
 public final class Tuple<T> implements Iterable<T>
 {
+    // Interface this.
+    // Classes: TupleImpl, TupleSlice
+    
     // Or use an ArrayList<T>
     
 //    public static <X> Tuple<X> blankTuple(Class<X> clazz, int capacity)
@@ -35,7 +34,7 @@ public final class Tuple<T> implements Iterable<T>
     { return new Tuple<X>(elements) ; }
     
     
-   //TupleLib??
+    //TupleLib??
     public static <T> Iterator<T> project(final int slot, Iterator<Tuple<T>> iter)
     {
         Transform<Tuple<T>, T> projection = new Transform<Tuple<T>, T>(){
@@ -55,9 +54,7 @@ public final class Tuple<T> implements Iterable<T>
             //@Override
             public Tuple<T> convert(Tuple<T> tuple)
             {
-                // Or a making Tuple.
-               //T[] x = new T[prefixLength] ;
-               T[] x = null ;
+                T[] x = ArrayUtils.copy(tuple.tuple,0, prefixLength) ;
                 return Tuple.create(x) ;
             }
         } ;
