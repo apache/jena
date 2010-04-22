@@ -6,16 +6,10 @@
 
 package com.hp.hpl.jena.sparql.core;
 
-import java.util.Iterator ;
-
+import static junit.framework.Assert.assertNotNull ;
 import org.junit.Test ;
 
 import com.hp.hpl.jena.query.Dataset ;
-import com.hp.hpl.jena.query.LabelExistsException ;
-import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.shared.Lock ;
-
-import static junit.framework.Assert.* ;
 
 public abstract class TestDataset
 {
