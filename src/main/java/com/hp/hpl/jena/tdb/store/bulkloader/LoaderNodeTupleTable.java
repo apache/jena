@@ -7,9 +7,7 @@
 
 package com.hp.hpl.jena.tdb.store.bulkloader;
 
-import java.util.Date ;
 import java.util.Iterator ;
-import java.util.concurrent.Semaphore ;
 
 import org.openjena.atlas.lib.ArrayUtils ;
 import org.openjena.atlas.lib.Closeable ;
@@ -45,6 +43,9 @@ public class LoaderNodeTupleTable implements Closeable, Sync
     private boolean dropAndRebuildIndexes ;
     //private Timer timer ;
     private long count ;
+    
+    //static private Logger logLoad = LoggerFactory.getLogger("loader") ;
+    private Printer printer ;
 
     //private Session session ; 
 
@@ -60,6 +61,7 @@ public class LoaderNodeTupleTable implements Closeable, Sync
     {
         this.nodeTupleTable = nodeTupleTable ;
         this.showProgress = showProgress ;
+        printer = new Printer(showProgress) ; 
         this.doInParallel = doInParallel ;
         this.doIncremental = doIncremental ;
         this.generateStats = generateStats ;
@@ -75,13 +77,13 @@ public class LoaderNodeTupleTable implements Closeable, Sync
         
         if ( dropAndRebuildIndexes )
         {
-            println("** Load empty table") ;
+            printer.println("** Load empty table") ;
             // SPO only.
             dropSecondaryIndexes() ;
         }
         else
         {
-            println("** Load into table with existing data") ;
+            printer.println("** Load into table with existing data") ;
             generateStats = false ;
         }
 
@@ -97,19 +99,19 @@ public class LoaderNodeTupleTable implements Closeable, Sync
         if ( generateStats )
             statsFinalize() ;
 
-        println() ;
+        printer.println() ;
         if ( dropAndRebuildIndexes )
         {
-            now("-- Start index phase") ;
+            printer.now("-- Start index phase") ;
             if ( showProgress )
-                println("** Secondary indexes") ;
+                printer.println("** Secondary indexes") ;
             // Now do secondary indexes.
             createSecondaryIndexes(showProgress) ;
-            now("-- Finish index phase") ;
+            printer.now("-- Finish index phase") ;
         }
 
         if ( showProgress )
-            println("** Close") ;
+            printer.println("** Close") ;
         
 //        long time = timer.getTimeInterval() ;
 //        if ( showProgress )
@@ -177,11 +179,11 @@ public class LoaderNodeTupleTable implements Closeable, Sync
         BuilderSecondaryIndexes builder ;
         
         if ( doInParallel )
-            builder = new BuilderSecondaryIndexesParallel() ;
+            builder = new BuilderSecondaryIndexesParallel(printer) ;
         else if ( doInterleaved )
-            builder = new BuilderSecondaryIndexesInterleaved() ;
+            builder = new BuilderSecondaryIndexesInterleaved(printer) ;
         else
-            builder = new BuilderSecondaryIndexesSequential() ;
+            builder = new BuilderSecondaryIndexesSequential(printer) ;
         
         builder.createSecondaryIndexes(primaryIndex, secondaryIndexes, printTiming) ;
             
@@ -191,103 +193,10 @@ public class LoaderNodeTupleTable implements Closeable, Sync
         
     }
     
-    class BuilderSecondaryIndexesParallel implements BuilderSecondaryIndexes
-    {
-        public void createSecondaryIndexes(TupleIndex   primaryIndex ,
-                                           TupleIndex[] secondaryIndexes ,
-                                           boolean printTiming)
-        {
-            println("** Parallel index building") ;
-            Timer timer = new Timer() ;
-            timer.startTimer() ;
-
-            int semaCount = 0 ;
-            Semaphore sema = new Semaphore(0) ;
-
-            for ( TupleIndex index : secondaryIndexes )
-            {
-                if ( index != null )
-                {
-                    Runnable builder = setup(sema, primaryIndex, index, index.getLabel(), printTiming) ;
-                    new Thread(builder).start() ;
-                    semaCount++ ;
-                }
-            }
-
-            try {  sema.acquire(semaCount) ; } catch (InterruptedException ex) { ex.printStackTrace(); }
-
-            long time = timer.readTimer() ;
-            timer.endTimer() ;
-            if ( printTiming )
-                printf("Time for parallel indexing: %.2fs\n", time/1000.0) ;
-        }
-
-        private Runnable setup(final Semaphore sema, final TupleIndex srcIndex, final TupleIndex destIndex, final String label, final boolean printTiming)
-        {
-            Runnable builder = new Runnable(){
-                //@Override
-                public void run()
-                {
-                    copyIndex(srcIndex.all(), new TupleIndex[]{destIndex}, label, printTiming) ;
-                    sema.release() ;
-                }} ;
-
-                return builder ;
-        }
-    }
-
-    class BuilderSecondaryIndexesSequential implements BuilderSecondaryIndexes
-    {
-        // Create each secondary indexes, doing one at a time.
-        public void createSecondaryIndexes(TupleIndex   primaryIndex ,
-                                           TupleIndex[] secondaryIndexes ,
-                                           boolean printTiming)
-        {
-            Timer timer = new Timer() ;
-            timer.startTimer() ;
-            TupleIndex primary = nodeTupleTable.getTupleTable().getIndex(0) ;
-
-            for ( TupleIndex index : secondaryIndexes )
-            {
-                if ( index != null )
-                {
-                    long time1 = timer.readTimer() ;
-                    copyIndex(primary.all(), new TupleIndex[]{index}, index.getLabel(), printTiming) ;
-                    long time2 = timer.readTimer() ; ;
-                    //                if ( printTiming )
-                    //                    printf("Time for %s indexing: %.2fs\n", index.getLabel(), (time2-time1)/1000.0) ;
-                    if ( printTiming )
-                        println() ;
-                }  
-            }
-        }
-    }
-    
-    class BuilderSecondaryIndexesInterleaved implements BuilderSecondaryIndexes
-    {
-
-        // Do as one pass over the SPO index, creating both other indexes at the same time.
-        // Can be hugely costly in system resources.
-        public void createSecondaryIndexes(TupleIndex   primaryIndex ,
-                                           TupleIndex[] secondaryIndexes ,
-                                           boolean printTiming)
-        {
-            Timer timer = new Timer() ;
-            timer.startTimer() ;
-
-            long time1 = timer.readTimer() ;
-
-            copyIndex(primaryIndex.all(), secondaryIndexes, "All", printTiming) ;
-
-            long time2 = timer.readTimer() ;
-            if ( printTiming )
-                printf("Time for all indexes: %.2fs\n", (time2-time1)/1000.0) ;
-        }
-    }
-
     private static Object lock = new Object() ;
 
-    private void copyIndex(Iterator<Tuple<NodeId>> srcIter, TupleIndex[] destIndexes, String label, boolean printTiming)
+    static void copyIndex(Iterator<Tuple<NodeId>> srcIter, TupleIndex[] destIndexes, String label, 
+                                  Printer printer, boolean printTiming)
     {
         long quantum2 = 5*IndexTickPoint ;
         Timer timer = new Timer() ;
@@ -312,14 +221,14 @@ public class LoaderNodeTupleTable implements Closeable, Sync
                 long batchTime = t-last ;
                 long elapsed = t ;
                 last = t ;
-                printf("Index %s: %,d slots (Batch: %,d slots/s / Run: %,d slots/s)\n", 
+                printer.printf("Index %s: %,d slots (Batch: %,d slots/s / Run: %,d slots/s)\n", 
                        label, cumulative, 1000*c/batchTime, 1000*cumulative/elapsed) ;
                 if (tickPoint(cumulative, quantum2) )
                 {
                     String timestamp = Utils.nowAsString() ;
                     String x = StringUtils.str(elapsed/1000F) ;
                     // Print elapsed.  Common formatting with GraphLoadMonitor - but now to share?
-                    printf("  Elapsed: %s seconds [%s]\n", x, timestamp) ;
+                    printer.printf("  Elapsed: %s seconds [%s]\n", x, timestamp) ;
                     //now(label) ; 
                 }
                 c = 0 ;
@@ -339,13 +248,13 @@ public class LoaderNodeTupleTable implements Closeable, Sync
             if ( cumulative > 0 )
             {
                 if ( totalTime > 0 )
-                    printf("Index %s: %,d triples indexed in %,.2fs [%,d slots/s]\n", 
+                    printer.printf("Index %s: %,d triples indexed in %,.2fs [%,d slots/s]\n", 
                            label, cumulative, totalTime/1000.0, 1000*cumulative/totalTime) ;
                 else
-                    printf("Index %s: %,d triples indexed in %,.2fs\n", label, cumulative, totalTime/1000.0) ;
+                    printer.printf("Index %s: %,d triples indexed in %,.2fs\n", label, cumulative, totalTime/1000.0) ;
             }
             else
-                printf("Index %s: 0 triples indexed\n", label) ;
+                printer.printf("Index %s: 0 triples indexed\n", label) ;
         }
     }
    
@@ -353,39 +262,6 @@ public class LoaderNodeTupleTable implements Closeable, Sync
     {
         return counter%quantum == 0 ;
     }
-
-    
-    // ---- Misc utilities
-    private synchronized void printf(String fmt, Object... args)
-    {
-        if (!showProgress) return ;
-        System.out.printf(fmt, args) ;
-    }
-
-    private synchronized void println()
-    {
-        if (!showProgress) return ;
-        System.out.println() ;
-    }
-
-    private synchronized void println(String str)
-    {
-        if (!showProgress) return ;
-        System.out.println(str) ;
-    }
-
-    private synchronized void now(String str)
-    {
-        if (!showProgress) return ;
-
-        if (str != null)
-        {
-            System.out.print(str) ;
-            System.out.print(" : ") ;
-        }
-        System.out.println(StringUtils.str(new Date())) ;
-    }
-    
     
 }
 
