@@ -51,9 +51,9 @@ public class BulkLoader
     }
 
     /** Tick point for messages during loading of data */
-    public static int LoadTickPoint = 10 ;
+    public static int LoadTickPoint = 10000 ;
     /** Tick point for messages during secondary index creation */
-    public static long IndexTickPoint = 20 ;
+    public static long IndexTickPoint = 50000 ;
     
     /** Number of ticks per super tick */
     public static int superTick = 2 ;
@@ -158,6 +158,9 @@ public class BulkLoader
             
             public void start()
             {
+                EventManager.send(dsg, new Event(evStartBulkload, null)) ;
+                if ( ticker != null )
+                    ticker.start() ;
                 loaderTriples.loadStart() ;
                 loaderQuads.loadStart() ;
             }
@@ -168,6 +171,8 @@ public class BulkLoader
                     loaderTriples.load(quad.getSubject(), quad.getPredicate(),  quad.getObject()) ;
                 else
                     loaderQuads.load(quad.getGraph(), quad.getSubject(), quad.getPredicate(),  quad.getObject()) ;
+                if ( ticker != null )
+                    ticker.tick() ;
             }
 
             public void finish()

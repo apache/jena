@@ -72,15 +72,18 @@ public class RunTDB
     {
         
         DatasetGraph dsg = TDBFactory.createDataset().asDatasetGraph() ;
-        InputStream in = IO.openFile("D.nq") ; 
+        InputStream in = IO.openFile("/home/afs/Datasets/MusicBrainz/tracks.nt") ; 
         
         Destination<Quad> dest = BulkLoader.loadQuads((DatasetGraphTDB)dsg, true) ;
         LangRIOT parser = ParserFactory.createParserNQuads(in, dest) ;
         dest.start() ;
         parser.parse() ;
         dest.finish() ;
-        SSE.write(IndentedWriter.stdout, dsg) ;
-        IndentedWriter.stdout.flush();
+        if ( false )
+        {
+            SSE.write(IndentedWriter.stdout, dsg) ;
+            IndentedWriter.stdout.flush();
+        }
         System.exit(0) ;
         
         

@@ -11,9 +11,9 @@ import com.hp.hpl.jena.tdb.index.TupleIndex ;
 
 class BuilderSecondaryIndexesSequential implements BuilderSecondaryIndexes
 {
-    private Printer printer ;
+    private LogFormatter printer ;
 
-    BuilderSecondaryIndexesSequential(Printer printer) { this.printer = printer ; } 
+    BuilderSecondaryIndexesSequential(LogFormatter printer) { this.printer = printer ; } 
     
     // Create each secondary indexes, doing one at a time.
     public void createSecondaryIndexes(TupleIndex   primaryIndex ,

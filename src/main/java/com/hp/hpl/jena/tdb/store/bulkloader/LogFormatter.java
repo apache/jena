@@ -10,52 +10,51 @@ import java.util.Date ;
 
 import com.hp.hpl.jena.sparql.util.StringUtils ;
 
-class Printer
+import org.slf4j.Logger ;
+
+
+public class LogFormatter
 {
+    private Logger log ;
+
+    public LogFormatter(Logger log) { this.log = log ; }
     
+    public void print(String fmt, Object...args)
+    {
+        if ( ! logging() ) return ;
+        output(String.format(fmt, args)) ;
+    }
+
+    public void print()
+    {
+        if ( ! logging() ) return ;
+        output("") ;
+    }
+
     
-    // Become an event handler.
-    // Wrap a logger.
+    public void now()
+    {
+        now(null) ;
+    }
     
-    private boolean showProgress ;
-
-    Printer(boolean showProgress)
+    public void now(String fmt, Object ...args)
     {
-        this.showProgress = showProgress ;
+        if (!logging()) return ;
+        log.info(String.format(fmt, args) + " : "+StringUtils.str(new Date())) ;
+    }
+    
+    private boolean logging()
+    {
+        return log.isInfoEnabled() ;
     }
 
-    // ---- Misc utilities
-    synchronized void printf(String fmt, Object... args)
+    private void output(String fmt, Object...args)
     {
-        if (!showProgress) return ;
-        System.out.printf(fmt, args) ;
+        log.info(String.format(fmt, args)) ;
     }
-
-    synchronized void println()
-    {
-        if (!showProgress) return ;
-        System.out.println() ;
-    }
-
-    synchronized void println(String str)
-    {
-        if (!showProgress) return ;
-        System.out.println(str) ;
-    }
-
-    synchronized void now(String str)
-    {
-        if (!showProgress) return ;
-
-        if (str != null)
-        {
-            System.out.print(str) ;
-            System.out.print(" : ") ;
-        }
-        System.out.println(StringUtils.str(new Date())) ;
-    }
-
+    
 }
+
 /*
  * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.

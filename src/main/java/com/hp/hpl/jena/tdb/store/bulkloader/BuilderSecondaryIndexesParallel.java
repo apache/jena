@@ -14,15 +14,15 @@ import com.hp.hpl.jena.tdb.index.TupleIndex ;
 class BuilderSecondaryIndexesParallel implements BuilderSecondaryIndexes
 {
     
-    private Printer printer ;
+    private LogFormatter printer ;
 
-    BuilderSecondaryIndexesParallel(Printer printer) { this.printer = printer ; } 
+    BuilderSecondaryIndexesParallel(LogFormatter printer) { this.printer = printer ; } 
     
     public void createSecondaryIndexes(TupleIndex   primaryIndex ,
                                        TupleIndex[] secondaryIndexes ,
                                        boolean printTiming)
     {
-        printer.println("** Parallel index building") ;
+        printer.print("** Parallel index building") ;
         Timer timer = new Timer() ;
         timer.startTimer() ;
 
@@ -44,7 +44,7 @@ class BuilderSecondaryIndexesParallel implements BuilderSecondaryIndexes
         long time = timer.readTimer() ;
         timer.endTimer() ;
         if ( printTiming )
-            printer.printf("Time for parallel indexing: %.2fs\n", time/1000.0) ;
+            printer.print("Time for parallel indexing: %.2fs\n", time/1000.0) ;
     }
 
     private Runnable setup(final Semaphore sema, final TupleIndex srcIndex, final TupleIndex destIndex, final String label, final boolean printTiming)

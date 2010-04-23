@@ -12,6 +12,8 @@ import java.util.Iterator ;
 import org.openjena.atlas.lib.ArrayUtils ;
 import org.openjena.atlas.lib.Closeable ;
 import org.openjena.atlas.lib.Tuple ;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.util.StringUtils ;
@@ -44,8 +46,8 @@ public class LoaderNodeTupleTable implements Closeable, Sync
     //private Timer timer ;
     private long count ;
     
-    //static private Logger logLoad = LoggerFactory.getLogger("loader") ;
-    private Printer printer ;
+    static private Logger logLoad = LoggerFactory.getLogger("com.hp.hpl.jena.tdb.loader") ;
+    private LogFormatter printer = new LogFormatter(logLoad) ;
 
     //private Session session ; 
 
@@ -61,7 +63,6 @@ public class LoaderNodeTupleTable implements Closeable, Sync
     {
         this.nodeTupleTable = nodeTupleTable ;
         this.showProgress = showProgress ;
-        printer = new Printer(showProgress) ; 
         this.doInParallel = doInParallel ;
         this.doIncremental = doIncremental ;
         this.generateStats = generateStats ;
@@ -77,13 +78,13 @@ public class LoaderNodeTupleTable implements Closeable, Sync
         
         if ( dropAndRebuildIndexes )
         {
-            printer.println("** Load empty table") ;
+            printer.print("** Load empty table") ;
             // SPO only.
             dropSecondaryIndexes() ;
         }
         else
         {
-            printer.println("** Load into table with existing data") ;
+            printer.print("** Load into table with existing data") ;
             generateStats = false ;
         }
 
@@ -99,19 +100,19 @@ public class LoaderNodeTupleTable implements Closeable, Sync
         if ( generateStats )
             statsFinalize() ;
 
-        printer.println() ;
+        printer.print() ;
         if ( dropAndRebuildIndexes )
         {
             printer.now("-- Start index phase") ;
             if ( showProgress )
-                printer.println("** Secondary indexes") ;
+                printer.print("** Secondary indexes") ;
             // Now do secondary indexes.
             createSecondaryIndexes(showProgress) ;
             printer.now("-- Finish index phase") ;
         }
 
         if ( showProgress )
-            printer.println("** Close") ;
+            printer.print("** Close") ;
         
 //        long time = timer.getTimeInterval() ;
 //        if ( showProgress )
@@ -155,9 +156,9 @@ public class LoaderNodeTupleTable implements Closeable, Sync
     { sync() ; }
 
     /** Tick point for messages during loading of data */
-    public static int LoadTickPoint = 50000 ;
+    public static int LoadTickPoint = 2000 ;
     /** Tick point for messages during secodnary index creation */
-    public static long IndexTickPoint = 100000 ;
+    public static long IndexTickPoint = 5000 ;
     
     private void dropSecondaryIndexes()
     {
@@ -196,7 +197,7 @@ public class LoaderNodeTupleTable implements Closeable, Sync
     private static Object lock = new Object() ;
 
     static void copyIndex(Iterator<Tuple<NodeId>> srcIter, TupleIndex[] destIndexes, String label, 
-                                  Printer printer, boolean printTiming)
+                          LogFormatter printer, boolean printTiming)
     {
         long quantum2 = 5*IndexTickPoint ;
         Timer timer = new Timer() ;
@@ -221,14 +222,14 @@ public class LoaderNodeTupleTable implements Closeable, Sync
                 long batchTime = t-last ;
                 long elapsed = t ;
                 last = t ;
-                printer.printf("Index %s: %,d slots (Batch: %,d slots/s / Run: %,d slots/s)\n", 
+                printer.print("Index %s: %,d slots (Batch: %,d slots/s / Run: %,d slots/s)", 
                        label, cumulative, 1000*c/batchTime, 1000*cumulative/elapsed) ;
                 if (tickPoint(cumulative, quantum2) )
                 {
                     String timestamp = Utils.nowAsString() ;
                     String x = StringUtils.str(elapsed/1000F) ;
                     // Print elapsed.  Common formatting with GraphLoadMonitor - but now to share?
-                    printer.printf("  Elapsed: %s seconds [%s]\n", x, timestamp) ;
+                    printer.print("  Elapsed: %s seconds [%s]", x, timestamp) ;
                     //now(label) ; 
                 }
                 c = 0 ;
@@ -248,13 +249,13 @@ public class LoaderNodeTupleTable implements Closeable, Sync
             if ( cumulative > 0 )
             {
                 if ( totalTime > 0 )
-                    printer.printf("Index %s: %,d triples indexed in %,.2fs [%,d slots/s]\n", 
+                    printer.print("Index %s: %,d triples indexed in %,.2fs [%,d slots/s]", 
                            label, cumulative, totalTime/1000.0, 1000*cumulative/totalTime) ;
                 else
-                    printer.printf("Index %s: %,d triples indexed in %,.2fs\n", label, cumulative, totalTime/1000.0) ;
+                    printer.print("Index %s: %,d triples indexed in %,.2fs", label, cumulative, totalTime/1000.0) ;
             }
             else
-                printer.printf("Index %s: 0 triples indexed\n", label) ;
+                printer.print("Index %s: 0 triples indexed", label) ;
         }
     }
    
