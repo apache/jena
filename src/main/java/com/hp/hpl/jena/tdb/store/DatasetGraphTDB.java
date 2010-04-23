@@ -32,7 +32,7 @@ import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation ;
 import com.hp.hpl.jena.tdb.sys.TDBMaker ;
 import com.hp.hpl.jena.update.GraphStore ;
 
-/** TDB Dataset, updatable with SPARQL/Update */
+/** TDB Dataset, updateable with SPARQL/Update */
 public class DatasetGraphTDB extends DatasetGraphCaching
                              implements DatasetGraph, Sync, Closeable, GraphStore
 {
@@ -45,6 +45,7 @@ public class DatasetGraphTDB extends DatasetGraphCaching
     private final Properties config ;
     
     private GraphTDB effectiveDefaultGraph ;
+    private boolean closed = false ;
 
     public DatasetGraphTDB(TripleTable tripleTable, QuadTable quadTable, DatasetPrefixStorage prefixes, 
                            ReorderTransformation transform, Location location, Properties config)

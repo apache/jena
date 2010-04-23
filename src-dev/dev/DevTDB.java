@@ -3,6 +3,7 @@ package dev ;
 public class DevTDB
 {
     // == 0.8.5
+    // DatasetGraphTDB.close() seems to loop.
     
     // Tuples
     // Interface, TupleFactory, TupleImpl

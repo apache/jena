@@ -70,8 +70,11 @@ public class RunTDB
 
     public static void main(String[] args) throws IOException
     {
-        
         DatasetGraph dsg = TDBFactory.createDataset().asDatasetGraph() ;
+        dsg.close() ;
+        System.out.println("Done"); 
+        System.exit(0) ;
+        
         InputStream in = IO.openFile("/home/afs/Datasets/MusicBrainz/tracks.nt") ; 
         
         Destination<Quad> dest = BulkLoader.loadQuads((DatasetGraphTDB)dsg, true) ;
