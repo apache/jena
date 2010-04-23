@@ -3,5 +3,11 @@ PREFIX : <http://example/>
 SELECT *
 {
   _:a :p ?x .
-  { SELECT * { _:a :p ?y } }
+#  { SELECT * { _:a :p ?y } }
 }
+BINDINGS ?x
+{
+   ( "x" )
+   ( UNDEF )
+}
+

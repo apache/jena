@@ -55,6 +55,8 @@ TOKENS
 | <OFFSET: "offset">
 | <ORDER: "order">
 | <BY: "by">
+| <BINDINGS: "bindings">
+| <UNDEF: "undef">
 | <ASC: "asc">
 | <DESC: "desc">
 | <NAMED: "named">
@@ -64,6 +66,7 @@ TOKENS
 | <GRAPH: "graph">
 | <OPTIONAL: "optional">
 | <UNION: "union">
+| <SERVICE: "service">
 | <EXISTS: "exists">
 | <NOT: "not">
 | <NOTEXISTS: "not" (<WS>)* "exists">
@@ -207,7 +210,7 @@ NON-TERMINALS
 	BaseDecl	:=	<BASE> IRI_REF
 	PrefixDecl	:=	<PREFIX> <PNAME_NS> IRI_REF
 // ---- Query type clauses
-	SelectQuery	:=	SelectClause ( DatasetClause )* WhereClause SolutionModifier
+	SelectQuery	:=	SelectClause ( DatasetClause )* WhereClause SolutionModifier BindingsClause
 	SubSelect	:=	SelectClause WhereClause SolutionModifier
 	SelectClause	:=	<SELECT> ( <DISTINCT> | <REDUCED> )? ( ( Var | ( <LPAREN> Expression <AS> Var <RPAREN> ) )+ | <STAR> )
 	ConstructQuery	:=	<CONSTRUCT> ConstructTemplate ( DatasetClause )* WhereClause SolutionModifier
@@ -229,6 +232,12 @@ NON-TERMINALS
 	LimitOffsetClauses	:=	( LimitClause ( OffsetClause )? | OffsetClause ( LimitClause )? )
 	LimitClause	:=	<LIMIT> <INTEGER>
 	OffsetClause	:=	<OFFSET> <INTEGER>
+	BindingsClause	:=	( <BINDINGS> ( Var )+ <LBRACE> ( <LPAREN> ( BindingValue )+ <RPAREN> )* <RBRACE> )?
+	BindingValue	:=	IRIref
+		|	RDFLiteral
+		|	NumericLiteral
+		|	BooleanLiteral
+		|	<UNDEF>
 // ---- SPARQL/Update (submission)
 
 
@@ -260,7 +269,7 @@ NON-TERMINALS
 
 // ---- General Graph Pattern 
 	GroupGraphPattern	:=	<LBRACE> ( SubSelect | GroupGraphPatternSub ) <RBRACE>
-	GroupGraphPatternSub	:=	( TriplesBlock )? ( ( GraphPatternNotTriples | Filter ) ( <DOT> )? ( TriplesBlock )? )*
+	GroupGraphPatternSub	:=	( TriplesBlock )? ( GraphPatternNotTriples ( <DOT> )? ( TriplesBlock )? )*
 // -- TriplesBlock
 // Two versions - for SPARQL 1.0 and SPARQL 1.1 (with paths)
 
@@ -277,13 +286,18 @@ NON-TERMINALS
 // #endif
 	TriplesBlock	:=	TriplesSameSubjectPath ( <DOT> ( TriplesBlock )? )?
 // -----
-	GraphPatternNotTriples	:=	( OptionalGraphPattern | GroupOrUnionGraphPattern | GraphGraphPattern | ExistsElt | NotExistsElt | MinusGraphPattern )
+	GraphPatternNotTriples	:=	( GroupGraphPattern | OptionalGraphPattern | UnionGraphPattern | MinusGraphPattern | GraphGraphPattern | ServiceGraphPattern | ExistsElt | NotExistsElt | Filter )
 // ---- Definitions of each pattern element
 	OptionalGraphPattern	:=	<OPTIONAL> GroupGraphPattern
 	GraphGraphPattern	:=	<GRAPH> VarOrIRIref GroupGraphPattern
+	ServiceGraphPattern	:=	<SERVICE> VarOrIRIref GroupGraphPattern
 	ExistsElt	:=	<EXISTS> GroupGraphPattern
 	NotExistsElt	:=	<NOTEXISTS> GroupGraphPattern
 	MinusGraphPattern	:=	<MINUS_P> GroupGraphPattern
+	UnionGraphPattern	:=	<UNION> GroupGraphPattern
+// SPARQL 1.0: {pattern} UNION {pattern} UNION {pattern} ... :: 
+// SPARQL 1.1: { pattern UNION pattern UNION ... }
+
 // G (union G)* can be a single group pattern
 // or a group pattern as part of an union.
 	GroupOrUnionGraphPattern	:=	GroupGraphPattern ( <UNION> GroupGraphPattern )*

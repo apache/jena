@@ -1,7 +1,6 @@
 PREFIX : <http://example/>
-CONSTRUCT { _:a :p ?x } WHERE { _:a :q ?x }
-## SELECT *
-## {
-##   _:a :p ?x .
-##   OPTIONAL { _:a :w ?y }
-## }
+
+SELECT *
+{
+   ?s ?p ?o UNION {?s ?p ?o }
+}

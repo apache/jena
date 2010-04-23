@@ -52,6 +52,8 @@
 [<OFFSET>]     ::= 'OFFSET'
 [<ORDER>]      ::= 'ORDER'
 [<BY>]         ::= 'BY'
+[<BINDINGS>]   ::= 'BINDINGS'
+[<UNDEF>]      ::= 'UNDEF'
 
 [<FROM>]       ::= 'FROM'
 [<NAMED>]      ::= 'NAMED'

@@ -207,8 +207,15 @@ public class FormatterElement extends FormatterBase
         {
             // If this is an element of just one, just do it inplace
             // Can't happen from a parsed query.
-            Element e = el.getElements().get(0) ;
-            visitAsGroup(e) ;
+            // Now can :-)
+            
+            // SPARQL 1.1 inline UNION.
+            // Same as OPTIONAL, MINUS
+            out.print("UNION") ;
+            out.incIndent(INDENT) ;
+            out.newline() ;
+            visitAsGroup(el.getElements().get(0)) ;
+            out.decIndent(INDENT) ;
             return ;
         }
 

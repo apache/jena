@@ -8,8 +8,8 @@
 #error Please define one of ARQ and SPARQL_11
 #endif
 
-#if defined(ARQ) && defined(SPARQL11)
-#error Please define only one of ARQ and SPARQL
+#if defined(ARQ) && defined(SPARQL_11)
+#error Please define only one of ARQ and SPARQL_11
 #endif
 
 #ifdef SPARQL_11
@@ -121,6 +121,7 @@ void SelectQuery() : { }
   ( DatasetClause() )*
   WhereClause()
   SolutionModifier()
+  BindingsClause()
 }
 
 void SubSelect() :{ }
@@ -343,6 +344,30 @@ void OffsetClause() : { Token t ; }
 {
   <OFFSET> t = <INTEGER>
     { getQuery().setOffset(integerValue(t.image)) ; }
+}
+
+void BindingsClause() : { Var v ; Node n ; }
+{
+  (
+    // @@ Zero allowed?
+    <BINDINGS> ( v = Var() )+
+    <LBRACE>
+      ( 
+        <LPAREN> 
+            (n = BindingValue())+
+        <RPAREN> 
+      )*
+    <RBRACE>
+  )?
+}
+
+Node BindingValue() : { Node n ; String iri ; }
+{
+  iri = IRIref()        { return createNode(iri) ; }
+| n = RDFLiteral()      { return n ; }
+| n = NumericLiteral()  { return n ; }
+| n = BooleanLiteral()  { return n ; }
+| <UNDEF>               { return null ; }
 }
 
 // ---- SPARQL/Update (submission)
@@ -652,8 +677,9 @@ Element GroupGraphPatternSub() : { Element el = null ; }
       elg.addElement(el) ; } 
   )?
   (
-    ( el = GraphPatternNotTriples() | el = Filter() )
+    el = GraphPatternNotTriples() 
     { elg.addElement(el) ; }
+
     (<DOT>)?
 
     (
@@ -697,10 +723,13 @@ Element TriplesBlock(ElementPathBlock acc) : { }
 Element GraphPatternNotTriples() : { Element el = null ; }
 {
  (
+   el = GroupGraphPattern()
+ |
    el = OptionalGraphPattern()
  |
-   // "GroupPattern" or "GroupPattern" union "GroupPattern"
-   el = GroupOrUnionGraphPattern()
+   el = UnionGraphPattern()
+ |
+   el = MinusGraphPattern()
  |
    el = GraphGraphPattern()
  |
@@ -710,7 +739,7 @@ Element GraphPatternNotTriples() : { Element el = null ; }
  |
    el = NotExistsElt()
  |
-   el = MinusGraphPattern()
+   el = Filter()
 #ifdef ARQ
  |
    el = Assignment()
@@ -718,7 +747,7 @@ Element GraphPatternNotTriples() : { Element el = null ; }
    el = FetchGraph()
 #endif
  )
-  { return el ; }
+ { return el ; }
 }
 
 // ---- Definitions of each pattern element
@@ -785,6 +814,16 @@ Element MinusGraphPattern() : { Element el ; }
     el = GroupGraphPattern()
     { return new ElementMinus(el) ; }
 }
+
+Element UnionGraphPattern() : { Element el ; }
+{
+    <UNION>
+    el = GroupGraphPattern()
+    { return new ElementUnion(el) ; }
+}
+
+// SPARQL 1.0: {pattern} UNION {pattern} UNION {pattern} ... :: 
+// SPARQL 1.1: { pattern UNION pattern UNION ... }
 
 // G (union G)* can be a single group pattern
 // or a group pattern as part of an union.
@@ -1763,6 +1802,8 @@ TOKEN [IGNORE_CASE] :
 |  < OFFSET:      "offset" >
 |  < ORDER:       "order" >
 |  < BY:          "by" >
+|  < BINDINGS:    "bindings" >
+|  < UNDEF:       "undef" >
 
 |  < ASC:         "asc" >
 |  < DESC:        "desc" >
@@ -1777,9 +1818,9 @@ TOKEN [IGNORE_CASE] :
 |  < GRAPH:       "graph" >
 |  < OPTIONAL:    "optional" >
 |  < UNION:       "union" >
+|  < SERVICE:     "service" >
 
 #ifdef ARQ
-|  < SERVICE:     "service" >
 |  < LET:         "let" >
 |  < FETCH:       "fetch" >
 #endif

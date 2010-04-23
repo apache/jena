@@ -29,7 +29,7 @@ public class ParserSPARQL11 extends Parser
     public Query parse(final Query query, String queryString)
     {
         
-        if ( true )
+        if ( false )
             throw new ARQNotImplemented("SPARQL 1.1 grammar is not yet stable") ;
         
         query.setSyntax(Syntax.syntaxSPARQL_11) ;

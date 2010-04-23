@@ -8,6 +8,11 @@ package dev;
 public class DevARQ
 {
     // Documentation for CSV etc.
+    // Union Transform.
+    //   The use of a bNode in (graph) needs coping with the distinct.
+    //   Or a "really don't bind" treatment of that bnode.
+    
+    // Aggregates
     
     // DSG: CollectionOfGraphs, quads, quads+triples
     

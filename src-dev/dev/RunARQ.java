@@ -12,37 +12,24 @@ import java.io.StringReader ;
 import java.util.HashSet ;
 import java.util.Iterator ;
 import java.util.Set ;
-import java.util.Stack ;
 
 import arq.sparql ;
 
 import com.hp.hpl.jena.Jena ;
-import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.* ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.shared.JenaException ;
-import com.hp.hpl.jena.sparql.ARQConstants ;
-import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
 import com.hp.hpl.jena.sparql.algebra.Algebra ;
 import com.hp.hpl.jena.sparql.algebra.ExtBuilder ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.OpExtRegistry ;
-import com.hp.hpl.jena.sparql.algebra.OpVisitorBase ;
-import com.hp.hpl.jena.sparql.algebra.TransformCopy ;
-import com.hp.hpl.jena.sparql.algebra.Transformer ;
-import com.hp.hpl.jena.sparql.algebra.op.OpBGP ;
-import com.hp.hpl.jena.sparql.algebra.op.OpDistinct ;
+import com.hp.hpl.jena.sparql.algebra.TransformUnionQuery ;
 import com.hp.hpl.jena.sparql.algebra.op.OpExt ;
 import com.hp.hpl.jena.sparql.algebra.op.OpFetch ;
 import com.hp.hpl.jena.sparql.algebra.op.OpFilter ;
-import com.hp.hpl.jena.sparql.algebra.op.OpGraph ;
-import com.hp.hpl.jena.sparql.algebra.op.OpQuadPattern ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.Prologue ;
-import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.core.QueryCheckException ;
-import com.hp.hpl.jena.sparql.core.Var ;
-import com.hp.hpl.jena.sparql.core.VarAlloc ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
@@ -97,77 +84,46 @@ public class RunARQ
         protected abstract void accumulateDistinct(Binding binding, FunctionEnv functionEnv) ;
     }
     
-    // ** SEE AlgebraQuad
-    
-    // General (unquadified) rewrite to make the default graph the
-    // Need to catch on the way down and the way up. 
-    static class TransformUnionQuery extends TransformCopy
-    {
-        //Deque in Java 6.
-        Stack<Node> currentGraph = new Stack<Node>() ;
-        VarAlloc varAlloc = new VarAlloc(ARQConstants.allocParserAnonVars+"-") ; // Making ???a etc
-
-        public TransformUnionQuery()
-        {
-            currentGraph.push(Quad.defaultGraphNodeGenerated) ;
-        }
-        
-        @Override
-        public Op transform(OpQuadPattern quadPattern)
-        {
-            return super.transform(quadPattern) ;
-        }
-
-        @Override
-        public Op transform(OpBGP opBGP)
-        {
-            Node current = currentGraph.peek();
-            if ( current == Quad.defaultGraphNodeGenerated ||
-                current == Quad.unionGraph )
-            {
-                 
-                Var v = varAlloc.allocVar() ; 
-                Op op = new OpGraph(v, opBGP) ;
-                op = OpDistinct.create(op) ;
-                return op ;
-            }
-            
-            // Not perfect - see AlgebraQuad 
-            return new OpQuadPattern(currentGraph.peek(), opBGP.getPattern()) ;
-        }
-
-        @Override
-        public Op transform(OpGraph opGraph, Op x)
-        {
-            return super.transform(opGraph, x) ;
-        }
-    }
-
-    static class Pusher extends OpVisitorBase
-    {
-        private Stack<Node> stack ;
-        Pusher(Stack<Node> stack) { this.stack = stack ; }
-        @Override
-        public void visit(OpGraph opGraph) 
-        {
-            stack.push(opGraph.getNode()) ;
-        }
-    }
-
-    static class Popper extends OpVisitorBase
-    {
-        private Stack<Node> stack ;
-        Popper(Stack<Node> stack) { this.stack = stack ; }
-        @Override
-        public void visit(OpGraph opGraph) 
-        {
-            Node n = stack.pop() ;
-            if ( ! opGraph.getNode().equals(n))
-                throw new ARQInternalErrorException() ;
-        }
-    }
 
     public static void main(String[] argv) throws Exception
+    {
+        //unionTransform() ;
+        
+        {
+            arq.qparse.main("--syntax=arq", "SELECT * {} BINDINGS ?x { ( 'hello' ) }") ; System.exit(0) ;
+            
+            String str1 = StrUtils.strjoinNL("PREFIX : <http://example/>",
+                                             "SELECT * {",
+                                             "?s ?p ?o UNION {?s1 ?p1 ?o1 }",
+            "}") ;
+            String str2 = StrUtils.strjoinNL("PREFIX : <http://example/>",
+                                             "SELECT * {",
+                                             "{ ?s ?p ?o } UNION {?s1 ?p1 ?o1 }",
+            "}") ;
+
+            divider() ;
+            System.out.println("=== SPARQL 1.1 No {}") ;
+            arq.qparse.main("--syntax=sparql_11", "--print=op", "--print=query", str1) ;
+
+            divider() ;
+            System.out.println("=== SPARQL 1.0 with {}") ;
+            arq.qparse.main("--syntax=sparql_10", str2) ;
+
+            divider() ;
+            System.out.println("=== SPARQL ARQ with {}") ;
+            arq.qparse.main("--syntax=arq", str2) ;
+
+            divider() ;
+            System.out.println("=== SPARQL 1.1 with {}") ;
+            arq.qparse.main("--syntax=sparql_11", "--print=op", "--print=query", str2) ;
+            //            Query query = new Query() ;
+            //            new ParserSPARQL11().parse(query, str) ;
+            //            System.out.println(query) ;
+            //            System.exit(0) ;
+        }
+    }
+    
+    public static void unionTransform()
     {
         //qparse("--print=op", "PREFIX : <http://example/> SELECT :function(?x +?y) ?z {}" ) ;
         
@@ -182,11 +138,12 @@ public class RunARQ
                                       "  (graph (<s> <p> <o>) (<x> <p> <o>) (<x2> <p> <o>))",
                                       "  (graph <g1> (triple <s1> <p1> <o1>))",
                                       "  (graph <g2> (triple <s2> <p2> <o2>))",
+                                      "  (graph <g3> (triple <s2> <p2> <o2>))", // Duplicate triple
                                       ")") ;
         Item item = SSE.parse(x) ;
         DatasetGraph dsg = BuilderGraph.buildDataset(item) ;
 
-        Query query = QueryFactory.create("SELECT ?s ?p { ?s ?p [] }") ;
+        Query query = QueryFactory.create("SELECT ?s ?p ?o { ?s ?p ?o }") ;
         query.setResultVars() ;
         Op op = Algebra.compile(query) ;
 //        QueryExecUtils.executeAlgebra(op, dsg, ResultsFormat.FMT_TEXT) ;
@@ -195,14 +152,9 @@ public class RunARQ
 //        divider() ;
 //        System.out.println(op) ;
 
-        TransformUnionQuery t = new TransformUnionQuery() ;
-
-        Op op2 = Transformer.transform(t, op, new Pusher(t.currentGraph), new Popper(t.currentGraph)) ;
-//        Op op3 = SSE.parseOp(op2.toString());
+        Op op2 = TransformUnionQuery.transform(op) ;
+        System.out.print(op2) ;
 //        System.out.print(OpAsQuery.asQuery(op3)) ;
-
-        if ( t.currentGraph.size() != 1 )
-            throw new ARQInternalErrorException() ;
 
         QueryExecUtils.executeAlgebra(op2, dsg, ResultsFormat.FMT_TEXT) ;
 

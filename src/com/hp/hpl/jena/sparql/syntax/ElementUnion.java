@@ -22,6 +22,14 @@ public class ElementUnion extends Element
     public ElementUnion()
     { }
 
+    public ElementUnion(Element el)
+    { 
+        //Used by the SPARQL 1.1 style UNION
+        this() ;
+        addElement(el) ;
+    }
+
+    
     public void addElement(Element el) { elements.add(el) ; }
     public List<Element> getElements() { return elements ; }
    

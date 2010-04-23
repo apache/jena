@@ -128,11 +128,12 @@ public class AlgebraGenerator
     
     protected Op compileElementUnion(ElementUnion el)
     { 
-        if ( el.getElements().size() == 1 )
-        {
-            Element subElt = el.getElements().get(0) ;
-            return compileElement(subElt) ;
-        }
+//        if ( el.getElements().size() == 1 )
+//        {
+//            // SPARQL 1.0 but never happens in a legal syntax query.
+//            Element subElt = el.getElements().get(0) ;
+//            return compileElement(subElt) ;
+//        }
         
         Op current = null ;
         
@@ -356,6 +357,17 @@ public class AlgebraGenerator
             return op ;
         }
         
+        // SPARQL 1.1 UNION
+        if ( elt instanceof ElementUnion )
+        {
+            ElementUnion elt2 = (ElementUnion)elt ;
+            if ( elt2.getElements().size() == 1 )
+            {
+                Op op = compileElementUnion(current, elt2) ;
+                return op ;
+            }
+        }
+        
         // All other elements: compile the element and then join on to the current group expression.
         if ( elt instanceof ElementGroup || 
              elt instanceof ElementNamedGraph ||
@@ -391,6 +403,14 @@ public class AlgebraGenerator
         Op op = compile(elt2.getMinusElement()) ;
         Op opMinus = OpMinus.create(current, op) ;
         return opMinus ;
+    }
+
+    private Op compileElementUnion(Op current, ElementUnion elt2)
+    {
+        // Special SPARQL 1.1 case.
+        Op op = compile(elt2.getElements().get(0)) ;
+        Op opUnion = OpUnion.create(current, op) ;
+        return opUnion ;
     }
 
     protected Op compileElementOptional(ElementOptional eltOpt, Op current)
