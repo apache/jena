@@ -25,6 +25,8 @@ import com.hp.hpl.jena.sparql.lib.CacheFactory ;
 abstract public class DatasetGraphCaching extends DatasetGraphTriplesQuads
 {
     private final boolean caching = true ;
+    private boolean closed = false ;
+
     // read synchronised in this class, not needed for a sync wrapper.
     protected Graph defaultGraph = null ;
     protected Cache<Node, Graph> namedGraphs = CacheFactory.createCache(100) ;
@@ -103,8 +105,12 @@ abstract public class DatasetGraphCaching extends DatasetGraphTriplesQuads
     }
 
     @Override
-    public void close()
+    public synchronized void close()
     {
+        if ( closed )
+            return ;
+        closed = true ;
+        
         defaultGraph = null ;
         namedGraphs.clear() ;
         _close() ;
