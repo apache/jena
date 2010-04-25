@@ -8,6 +8,7 @@ public class DevTDB
     // Tuples
     // Interface, TupleFactory, TupleImpl
     // TupleMask (or TupleImpl itself has a length field?? TupleMask(T[] or Tuple<T>)) 
+    // Sort : with colmap?
     // TupleSlice
     
     // -- Loader
@@ -29,6 +30,8 @@ public class DevTDB
     // Build-release
     // tdbverifyTDB
     // ----
+    
+    // Free block recycling.
     
     // 2 store dataset
     // Compact B+Trees
