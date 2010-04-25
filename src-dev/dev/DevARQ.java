@@ -10,12 +10,13 @@ public class DevARQ
     // Documentation for CSV etc.
     // Union Transform.
     //   The use of a bNode in (graph) needs coping with the distinct.
-    //   Or a "really don't bind" treatment of that bnode.
+    //   Or a "really don't bind" treatment of that bnode. Var.ANON
+    //   ref.Eval and main.OpExecutor.execute(OpGraph)->QueryIterGraphInner.nextIterator
+    //   Modify bindings (all!) for Var.ANON 
+    // Swapping DatasetGraph
     
     // Aggregates
-    
-    // DSG: CollectionOfGraphs, quads, quads+triples
-    
+
     // Combine DatasetImpl and DataSourceImpl?
     
     // Convert to quadism even for ARQ query if suitable dataset

@@ -53,12 +53,6 @@ public class QueryIterGraph extends QueryIterRepeatApply
 
     private static Node resolve(Binding b, Node n)
     {
-//        if (  b == null )
-//            return null ;
-//
-//        if ( n == null )
-//            return n ;
-        
         if ( ! n.isVariable() )
             return n ;
 

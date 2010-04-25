@@ -17,14 +17,25 @@ import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.expr.ExprVar;
 
-/** A SPARQL variable
- * 
- * @author Andy Seaborne
- */
+/** A SPARQL variable */
 
 public class Var extends Node_Variable
 {
-    public static Var alloc(String varName)     { return new Var(varName) ; }
+    /* Variable used to indicate "don't bind"
+     * Each use is unique.
+     */
+    
+    // Legal SPARQL variable name but note it must be exactly this
+    // object, not just the same name, to be anonymous.
+    public static Var ANON = new Var("_") ; 
+    
+    public static Var alloc(String varName)
+    {
+//        if ( varName.equals("_") )
+//            return ANON ;
+        return new Var(varName) ;
+    }
+    
     public static Var alloc(Node_Variable v)    // asVar?
     { 
         if ( v instanceof Var )
@@ -32,7 +43,7 @@ public class Var extends Node_Variable
         return new Var(v) ;
     }
     
-    public static Var alloc(Node v) // asVar?
+    public static Var alloc(Node v)
     { 
         if ( v instanceof Var )
             return (Var)v ;
@@ -42,10 +53,9 @@ public class Var extends Node_Variable
     }
     
     public static Var alloc(Var v)
-    { 
+    {
         return v ;
     }
-    
     
     public static Var alloc(ExprVar nv)         { return new Var(nv) ; }
     
@@ -101,6 +111,8 @@ public class Var extends Node_Variable
     
     public boolean isAllocVar() { return isAllocVarName(getName()) ; }
     
+    public boolean isAnonVar() { return isAnonVar(this) ; }
+    
     // -------
     
     public static String canonical(String x)
@@ -145,6 +157,11 @@ public class Var extends Node_Variable
         for (String obj : varNames)
             x.add(Var.alloc(obj)) ;
         return x ;
+    }
+    
+    public static boolean isAnonVar(Var var)
+    {
+        return var == ANON ;
     }
     
     /** Return a list of String names from a collection of variables */ 

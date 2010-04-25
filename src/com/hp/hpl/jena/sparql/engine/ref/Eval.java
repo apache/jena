@@ -35,8 +35,7 @@ import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterRoot;
 import com.hp.hpl.jena.sparql.engine.main.StageBuilder;
 
-
-
+// Spit out a few of the longer ops.
 public class Eval
 {
     public static Table eval(Evaluator evaluator, Op op)
@@ -79,8 +78,6 @@ public class Eval
     
     static Table evalGraph(OpGraph opGraph, Evaluator evaluator)
     {
-        // Complicated by the fact we can't eval the subnode then eval the op.
-        // This would be true if we had a more quad-like view of execution.
         ExecutionContext execCxt = evaluator.getExecContext() ;
         
         if ( ! Var.isVar(opGraph.getNode()) )

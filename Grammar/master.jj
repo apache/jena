@@ -154,7 +154,7 @@ void SelectClause() : {  Var v ; Expr expr ; Node n ; }
       | n = NumericLiteral()        { getQuery().addResultVar((Var)null, NodeValue.makeNode(n)) ; }
       | n = BooleanLiteral()        { getQuery().addResultVar((Var)null, NodeValue.makeNode(n)) ; }
       )
-      // PROBLEMS: expr = FunctionCall()
+      // @@ PROBLEMS: expr = FunctionCall()
       // <uri>(?x)
       // looks like a function call and also a "<uri> ( ?v )"
       //| expr = FunctionCall()  { getQuery().addResultVar((Var)null, expr) ; }
@@ -612,7 +612,8 @@ void QuadTemplate() : { }
 void Quads() : { TripleCollector acc = new TemplateGroup() ; }
 {
    (TriplesTemplate(null, acc))?
-   ( QuadsNotTriples(acc)
+   (
+     QuadsNotTriples(acc)
      (<DOT>)?
      (TriplesTemplate(null, acc))?
    )*
@@ -825,25 +826,25 @@ Element UnionGraphPattern() : { Element el ; }
 // SPARQL 1.0: {pattern} UNION {pattern} UNION {pattern} ... :: 
 // SPARQL 1.1: { pattern UNION pattern UNION ... }
 
-// G (union G)* can be a single group pattern
-// or a group pattern as part of an union.
-Element GroupOrUnionGraphPattern() :
-{ Element el = null ; ElementUnion el2 = null ; }
-{
-  el = GroupGraphPattern()
-  ( <UNION>
-    { if ( el2 == null )
-      {
-        el2 = new ElementUnion() ;
-        el2.addElement(el) ;
-      }
-    }
-  el = GroupGraphPattern()
-    { el2.addElement(el) ; } 
-  )*
-    { return (el2==null)? el : el2 ; }
-}
-
+// // G (union G)* can be a single group pattern
+// // or a group pattern as part of an union.
+// Element GroupOrUnionGraphPattern() :
+// { Element el = null ; ElementUnion el2 = null ; }
+// {
+//   el = GroupGraphPattern()
+//   ( <UNION>
+//     { if ( el2 == null )
+//       {
+//         el2 = new ElementUnion() ;
+//         el2.addElement(el) ;
+//       }
+//     }
+//   el = GroupGraphPattern()
+//     { el2.addElement(el) ; } 
+//   )*
+//     { return (el2==null)? el : el2 ; }
+// }
+// 
 Element Filter() : { Expr c ; }
 {
   <FILTER> c = Constraint()
@@ -859,41 +860,27 @@ Expr Constraint() : { Expr c ; }
   { return c ; }
 }
 
-
-Expr FunctionCall() : { String fname ; ExprList a ; 
-                        ExprList aParam = null ; 
-                        boolean distinct = false ;}
+Expr FunctionCall() : { String fname ; ExprList a ; }
 {
-
-  fname = IRIref() 
-  // Ugly duplication.
-  ( // Aggregates only. @@
-    aParam = ParamList()
-    {
-     if ( ! allowAggregatesInExpressions )
-            throwParseException("Aggregate expression not legal at this point",
-                                 -1, -1) ;
-    }
-  )?
-     // Aggregates only. @@
-    (<DISTINCT> { distinct = true ; }
-     {
-     if ( ! allowAggregatesInExpressions )
-            throwParseException("Aggregate expression not legal at this point",
-                                 -1, -1) ;
-    }
-    )?
-
-   a = ArgList()
-    { return new E_Function(fname, a) ; }
+  fname = IRIref()
+  a = ArgList()
+  { return new E_Function(fname, a) ; }
 }
 
-ExprList ArgList() : { Expr expr ;  ExprList args = new ExprList() ; }
+ExprList ArgList() : { Expr expr ; boolean distinct = false ;
+                      ExprList args = new ExprList() ; Token t ; }
 { 
   (
     <NIL>
   |
-    <LPAREN> 
+    <LPAREN>
+      (t = <DISTINCT> { distinct = true ; }
+        {
+          if ( ! allowAggregatesInExpressions )
+              throwParseException("Aggregate expression not legal at this point",
+                                 t.beginLine, t.beginColumn) ;
+        }
+      )?
       expr = Expression() { args.add(expr) ; } 
       (<COMMA> expr = Expression() { args.add(expr) ; } )*
     <RPAREN>
@@ -901,17 +888,52 @@ ExprList ArgList() : { Expr expr ;  ExprList args = new ExprList() ; }
     { return args ; }
 }
 
-ExprList ParamList() : { Expr expr ;  ExprList args = new ExprList() ; }
-{ 
-    // "[ expr, expr ]"
-  (
-    <LBRACKET> 
-      expr = Expression() { args.add(expr) ; } 
-      (<COMMA> expr = Expression() { args.add(expr) ; } )*
-    <RBRACKET>
-   )
-    { return args ; }
+
+// ExprList Params() : { Expr expr ;  ExprList args = new ExprList() ; Token t = null ; }
+// { 
+//   // "; name=expr ..."
+//   t = <SEMICOLON>
+//   {
+//     if ( ! allowAggregatesInExpressions )
+//           throwParseException("Aggregate expression not legal at this point",
+//                                t.beginLine, t.beginColumn) ;
+//   }
+//   (
+//     expr = Expression() { args.add(expr) ; } 
+//     (<COMMA> expr = Expression() { args.add(expr) ; } )*
+//   )?
+//   { return args ; }
+// }
+
+// Singe expression aggregate argument
+Expr ExprAggArg() : { Expr expr = null ; boolean distinct = false ; Token t ; }
+{
+  <LPAREN>
+  ( t = <DISTINCT> { distinct = true ; }
+    {
+     if ( ! allowAggregatesInExpressions )
+          throwParseException("Aggregate expression not legal at this point",
+                              t.beginLine, t.beginColumn) ;
+     }
+  )?
+  expr = Expression()
+  <RPAREN> 
+  { return expr ; }
 }
+
+ExprList ExpressionList() : { Expr expr = null ; ExprList args = new ExprList() ;}
+{
+  (
+    <NIL>
+  |
+    <LPAREN>
+    expr = Expression() { args.add(expr) ; } 
+      (<COMMA> expr = Expression() { args.add(expr) ; } )* 
+    <RPAREN>
+  )
+  { return args ; }
+}
+
 
 // -------- Construct patterns
 
@@ -1142,7 +1164,7 @@ Path PathPrimary() : { String str ; Path p ; Node n ; }
     { return p ; }
 }
 
-Path PathNegatedPropertyClass() : {String str ; P_Path0 p ; P_NegPropClass pNegClass ; Node n ; }
+Path PathNegatedPropertyClass() : { P_Path0 p ; P_NegPropClass pNegClass ; }
 {
   { pNegClass = new P_NegPropClass() ; }
   ( p = PathOneInPropertyClass()
@@ -1336,9 +1358,9 @@ Expr RelationalExpression() : { Expr expr1, expr2 ; ExprList a ; }
       { expr1 = new E_LessThanOrEqual(expr1, expr2) ; }
   | <GE> expr2 = NumericExpression()
       { expr1 = new E_GreaterThanOrEqual(expr1, expr2) ; }
-  | <IN> a = ArgList()
+  | <IN> a = ExpressionList()
       { expr1 = new E_OneOf(expr1, a) ; }
-  | <NOT_IN> a = ArgList()
+  | <NOT_IN> a = ExpressionList()
       { expr1 = new E_NotOneOf(expr1, a) ; }
   )?
     { return expr1 ; }
@@ -1482,7 +1504,7 @@ Expr BuiltInCall() : { Expr expr ; Expr expr1 = null ; Expr expr2 = null ;
       <NIL> { return new E_BNode() ; }
     )
 
-  | <COALESCE> a = ArgList()
+  | <COALESCE> a = ExpressionList()
     { return new E_Coalesce(a) ; }
 
   | <IF> <LPAREN> expr = Expression() <COMMA> 
@@ -1497,8 +1519,8 @@ Expr BuiltInCall() : { Expr expr ; Expr expr1 = null ; Expr expr2 = null ;
     { return new E_StrDatatype(expr1, expr2) ; }
 
 #ifdef ARQ
-  // Can we do this with ?func(?a1,?a2,...)
-  | <CALL> a = ArgList()
+  // Alos allowed ?func(?a1,?a2,...)
+  | <CALL> a = ExpressionList()
     { return new E_Call(a) ; }
 #endif
 
@@ -1552,13 +1574,13 @@ Expr NotExistsFunc() : { Element el ; }
 }
 
 
-Expr Aggregate() : { AggregateFactory agg = null ;
+Expr Aggregate() : { AggregateFactory agg = null ; String sep = null ;
                      boolean distinct = false ;
-                     Expr expr = null ; ExprList aParam = null ; ExprList a = null ;
+                     Expr expr = null ; ExprList a = new ExprList() ;
                      Token t ; }
 {
-   // @@ Clean up and make a common interface to creating aggregates.
-   // Grammar becomes (COUNT|SUM|...)(DISTINCT)?(args)
+    // Count is special because of COUNT(*)
+    // GROUP_CONCAT is special
 
    ( t = <COUNT> <LPAREN> 
     ( <DISTINCT> { distinct = true ; } )?
@@ -1570,65 +1592,42 @@ Expr Aggregate() : { AggregateFactory agg = null ;
       if ( distinct   && expr != null ) { agg = new AggCountVarDistinct(expr) ; }
     }
 
-   | t = <SUM> <LPAREN> (<DISTINCT> { distinct = true ; } )?  
-        expr = Expression() <RPAREN> { agg = new AggSum(expr) ; }
-        <RPAREN>
-   | t = <MIN> <LPAREN> (<DISTINCT> { distinct = true ; } )?
-        expr = Expression() <RPAREN> { agg = new AggMin(expr) ; }
-        <RPAREN>
-   | t = <MAX> <LPAREN> (<DISTINCT> { distinct = true ; } )?
-       expr = Expression() <RPAREN> { agg = new AggMax(expr) ; }
-        <RPAREN>
-   | t = <AVG> <LPAREN> (<DISTINCT> { distinct = true ; } )?
-       expr = Expression() <RPAREN> { agg = new AggAvg(expr) ; }
-        <RPAREN>
-   | // @@
-     t = <GROUP_CONCAT> (aParam = ParamList())? 
-         <LPAREN> (<DISTINCT>)? a = ArgList()
-        <RPAREN>
-   | // @@
-     t = <SAMPLE> <LPAREN> (<DISTINCT>)? (Expression()) 
-        <RPAREN>
+  | t = <SUM> expr = ExprAggArg()       { agg = new AggSum(expr) ; }
+  | t = <MIN> expr = ExprAggArg()       { agg = new AggMin(expr) ; }
+  | t = <MAX> expr = ExprAggArg()       { agg = new AggMax(expr) ; }
+  | t = <AVG> expr = ExprAggArg()       { agg = new AggAvg(expr) ; }
+  | t = <SAMPLE> expr = ExprAggArg()    //{ agg = new AggSample(a) ; }
+  | t = <GROUP_CONCAT>
+    <LPAREN>
+    (t = <DISTINCT> { distinct = true ; })?
+    expr = Expression() { a.add(expr) ; } 
+    (<COMMA> expr = Expression() { a.add(expr) ; } )*
+    (<SEMICOLON> <SEPARATOR> <EQ> sep=String())
+    <RPAREN>
+//     { agg = new AggGroupConcat(a, sep) ; }
    )
    {
      if ( ! allowAggregatesInExpressions )
             throwParseException("Aggregate expression not legal at this point",
                                  t.beginLine, t.beginColumn) ;
    }
-
-   { expr = getQuery().allocAggregate(agg) ;
+   { if ( agg != null )
+        expr = getQuery().allocAggregate(agg) ;
      return expr ; }
 }
 
 // See also FunctionCall.
-// The case of "q:name()" or "q:agg[]()" or just "q:name"
+// The case of "q:name()" or "q:agg()" or just "q:name"
 // by expanding out FunctionCall()
 
 Expr IRIrefOrFunction() : { String iri ; ExprList a = null ; 
-                            ExprList aParam = null ; 
+                            ExprList params = null ; 
                             boolean distinct = false ; }
 {
   iri = IRIref()
-
-  ( // Aggregates only. @@
-    aParam = ParamList()
-    {
-     if ( ! allowAggregatesInExpressions )
-            throwParseException("Aggregate expression not legal at this point",
-                                 -1, -1) ;
-    }
-  )?
-
-     // Aggregates only. @@
-    (<DISTINCT> { distinct = true ; }
-     {
-     if ( ! allowAggregatesInExpressions )
-            throwParseException("Aggregate expression not legal at this point",
-                                 -1, -1) ;
-    }
-    )?
-  ( a = ArgList() )?
-  { if ( a == null ) return asExpr(createNode(iri)) ;
+  (a = ArgList())?
+  { if ( a == null ) 
+       return asExpr(createNode(iri)) ;
     return new E_Function(iri, a) ;
   }
 }
@@ -1639,8 +1638,7 @@ Expr VarOrFunction() : { Var v ; ExprList a = null ; }
 {
   v = Var()
   { Expr ev = new ExprVar(v) ; }
-  ( a = ArgList() )?
-
+  ( a = ExpressionList() )?
   { if ( a == null ) return ev ;
     return new E_FunctionDynamic(ev, a) ;
   }
@@ -1832,6 +1830,7 @@ TOKEN [IGNORE_CASE] :
 |  < AS:          "as" >
 |  < GROUP:       "group" >
 |  < HAVING:      "having" >
+|  < SEPARATOR:   "separator" >
 |  < AGG:         "agg" >
 |  < COUNT:       "count" >
 |  < MIN:         "min" >

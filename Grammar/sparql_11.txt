@@ -74,6 +74,7 @@ TOKENS
 | <AS: "as">
 | <GROUP: "group">
 | <HAVING: "having">
+| <SEPARATOR: "separator">
 | <AGG: "agg">
 | <COUNT: "count">
 | <MIN: "min">
@@ -298,14 +299,48 @@ NON-TERMINALS
 // SPARQL 1.0: {pattern} UNION {pattern} UNION {pattern} ... :: 
 // SPARQL 1.1: { pattern UNION pattern UNION ... }
 
-// G (union G)* can be a single group pattern
-// or a group pattern as part of an union.
-	GroupOrUnionGraphPattern	:=	GroupGraphPattern ( <UNION> GroupGraphPattern )*
+// // G (union G)* can be a single group pattern
+// // or a group pattern as part of an union.
+// Element GroupOrUnionGraphPattern() :
+// { Element el = null ; ElementUnion el2 = null ; }
+// {
+//   el = GroupGraphPattern()
+//   ( <UNION>
+//     { if ( el2 == null )
+//       {
+//         el2 = new ElementUnion() ;
+//         el2.addElement(el) ;
+//       }
+//     }
+//   el = GroupGraphPattern()
+//     { el2.addElement(el) ; } 
+//   )*
+//     { return (el2==null)? el : el2 ; }
+// }
+// 
 	Filter	:=	<FILTER> Constraint
 	Constraint	:=	( BrackettedExpression | BuiltInCall | FunctionCall )
-	FunctionCall	:=	IRIref ( ParamList )? ( <DISTINCT> )? ArgList
-	ArgList	:=	( <NIL> | <LPAREN> Expression ( <COMMA> Expression )* <RPAREN> )
-	ParamList	:=	( <LBRACKET> Expression ( <COMMA> Expression )* <RBRACKET> )
+	FunctionCall	:=	IRIref ArgList
+	ArgList	:=	( <NIL> | <LPAREN> ( <DISTINCT> )? Expression ( <COMMA> Expression )* <RPAREN> )
+// ExprList Params() : { Expr expr ;  ExprList args = new ExprList() ; Token t = null ; }
+// { 
+//   // "; name=expr ..."
+//   t = <SEMICOLON>
+//   {
+//     if ( ! allowAggregatesInExpressions )
+//           throwParseException("Aggregate expression not legal at this point",
+//                                t.beginLine, t.beginColumn) ;
+//   }
+//   (
+//     expr = Expression() { args.add(expr) ; } 
+//     (<COMMA> expr = Expression() { args.add(expr) ; } )*
+//   )?
+//   { return args ; }
+// }
+
+// Singe expression aggregate argument
+	ExprAggArg	:=	<LPAREN> ( <DISTINCT> )? Expression <RPAREN>
+	ExpressionList	:=	( <NIL> | <LPAREN> Expression ( <COMMA> Expression )* <RPAREN> )
 // -------- Construct patterns
 	ConstructTemplate	:=	<LBRACE> ( ConstructTriples )? <RBRACE>
 	ConstructTriples	:=	TriplesSameSubject ( <DOT> ( ConstructTriples )? )?
@@ -369,7 +404,7 @@ NON-TERMINALS
 	ConditionalOrExpression	:=	ConditionalAndExpression ( <SC_OR> ConditionalAndExpression )*
 	ConditionalAndExpression	:=	ValueLogical ( <SC_AND> ValueLogical )*
 	ValueLogical	:=	RelationalExpression
-	RelationalExpression	:=	NumericExpression ( <EQ> NumericExpression | <NE> NumericExpression | <LT> NumericExpression | <GT> NumericExpression | <LE> NumericExpression | <GE> NumericExpression | <IN> ArgList | <NOT_IN> ArgList )?
+	RelationalExpression	:=	NumericExpression ( <EQ> NumericExpression | <NE> NumericExpression | <LT> NumericExpression | <GT> NumericExpression | <LE> NumericExpression | <GE> NumericExpression | <IN> ExpressionList | <NOT_IN> ExpressionList )?
 	NumericExpression	:=	AdditiveExpression
 	AdditiveExpression	:=	MultiplicativeExpression ( <PLUS> MultiplicativeExpression | <MINUS> MultiplicativeExpression | ( NumericLiteralPositive | NumericLiteralNegative ) ( ( <STAR> UnaryExpression ) | ( <SLASH> UnaryExpression ) )? )*
 	MultiplicativeExpression	:=	UnaryExpression ( <STAR> UnaryExpression | <SLASH> UnaryExpression )*
@@ -387,7 +422,7 @@ NON-TERMINALS
 		|	<IRI> <LPAREN> Expression <RPAREN>
 		|	<URI> <LPAREN> Expression <RPAREN>
 		|	<BNODE> ( <LPAREN> Expression <RPAREN> | <NIL> )
-		|	<COALESCE> ArgList
+		|	<COALESCE> ExpressionList
 		|	<IF> <LPAREN> Expression <COMMA> Expression <COMMA> Expression <RPAREN>
 		|	<STRLANG> <LPAREN> Expression <COMMA> Expression <RPAREN>
 		|	<STRDT> <LPAREN> Expression <COMMA> Expression <RPAREN>
@@ -402,11 +437,11 @@ NON-TERMINALS
 	RegexExpression	:=	<REGEX> <LPAREN> Expression <COMMA> Expression ( <COMMA> Expression )? <RPAREN>
 	ExistsFunc	:=	<EXISTS> GroupGraphPattern
 	NotExistsFunc	:=	<NOTEXISTS> GroupGraphPattern
-	Aggregate	:=	( <COUNT> <LPAREN> ( <DISTINCT> )? ( <STAR> | Expression ) <RPAREN> | <SUM> <LPAREN> ( <DISTINCT> )? Expression <RPAREN> <RPAREN> | <MIN> <LPAREN> ( <DISTINCT> )? Expression <RPAREN> <RPAREN> | <MAX> <LPAREN> ( <DISTINCT> )? Expression <RPAREN> <RPAREN> | <AVG> <LPAREN> ( <DISTINCT> )? Expression <RPAREN> <RPAREN> | <GROUP_CONCAT> ( ParamList )? <LPAREN> ( <DISTINCT> )? ArgList <RPAREN> | <SAMPLE> <LPAREN> ( <DISTINCT> )? ( Expression ) <RPAREN> )
+	Aggregate	:=	( <COUNT> <LPAREN> ( <DISTINCT> )? ( <STAR> | Expression ) <RPAREN> | <SUM> ExprAggArg | <MIN> ExprAggArg | <MAX> ExprAggArg | <AVG> ExprAggArg | <SAMPLE> ExprAggArg | <GROUP_CONCAT> <LPAREN> ( <DISTINCT> )? Expression ( <COMMA> Expression )* ( <SEMICOLON> <SEPARATOR> <EQ> String ) <RPAREN> )
 // See also FunctionCall.
-// The case of "q:name()" or "q:agg[]()" or just "q:name"
+// The case of "q:name()" or "q:agg()" or just "q:name"
 // by expanding out FunctionCall()
-	IRIrefOrFunction	:=	IRIref ( ParamList )? ( <DISTINCT> )? ( ArgList )?
+	IRIrefOrFunction	:=	IRIref ( ArgList )?
 	RDFLiteral	:=	String ( ( <LANGTAG> ) | ( <DATATYPE> IRIref ) )?
 	NumericLiteral	:=	( NumericLiteralUnsigned | NumericLiteralPositive | NumericLiteralNegative )
 	NumericLiteralUnsigned	:=	<INTEGER>

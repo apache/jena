@@ -65,6 +65,7 @@
 [<EXT>]        ::= 'EXT'
 [<GROUP>]      ::= 'GROUP'
 [<HAVING>]     ::= 'HAVING'
+[<SEPARATOR>]  ::= 'SEPARATOR'
 [<AGG>]        ::= 'AGG'
 [<COUNT>]      ::= 'COUNT'
 [<MIN>]        ::= 'MIN'
