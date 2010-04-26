@@ -148,8 +148,9 @@ public class QueryIterGraph extends QueryIterRepeatApply
 //            ExecutionContext execCxt2 = new ExecutionContext(getExecContext(), g) ;
                 
             Binding b = parentBinding ;
-            if ( Var.isVar(opGraph.getNode()) ) 
-                // Binding the variable (if "GRAPH ?var")
+            if ( Var.isVar(opGraph.getNode()) )
+                // (graph ?g (...))
+                // XXX If Var.ANON then no-opt.
                 b = new Binding1(b, Var.alloc(opGraph.getNode()), gn) ;
             
             QueryIterator qIter = buildIterator(b, gn, opGraph, getExecContext()) ; 
