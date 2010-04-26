@@ -30,10 +30,8 @@ import com.hp.hpl.jena.tdb.store.NodeId ;
 
 public class LoaderNodeTupleTable implements Closeable, Sync
 {
-    private boolean showProgress    = false ;
-    private boolean doInParallel    = false ;
+    private LoadMonitor monitor          = null ;
     private boolean doIncremental   = false ;
-    private boolean doInterleaved   = false ;
     private boolean generateStats   = false ;
 
     private int          numIndexes ; 
@@ -47,25 +45,13 @@ public class LoaderNodeTupleTable implements Closeable, Sync
     private long count ;
     
     static private Logger logLoad = LoggerFactory.getLogger("com.hp.hpl.jena.tdb.loader") ;
-    private LogFormatter printer = new LogFormatter(logLoad) ;
 
-    //private Session session ; 
-
-    public LoaderNodeTupleTable(NodeTupleTable nodeTupleTable, boolean showProgress)
-    {
-        this(nodeTupleTable, showProgress, false, false, false) ;
-    }
-    
-    /** Create a bulkloader for tuples of Nodes:
-     *  showProgress/parallel/incremental/generate statistics */ 
-
-    public LoaderNodeTupleTable(NodeTupleTable nodeTupleTable, boolean showProgress, boolean doInParallel, boolean doIncremental, boolean generateStats)
+    public LoaderNodeTupleTable(NodeTupleTable nodeTupleTable, LoadMonitor monitor)
     {
         this.nodeTupleTable = nodeTupleTable ;
-        this.showProgress = showProgress ;
-        this.doInParallel = doInParallel ;
-        this.doIncremental = doIncremental ;
-        this.generateStats = generateStats ;
+        this.monitor = monitor ;
+        this.doIncremental = false ;    // Until we know it's safe.
+        this.generateStats = false ;
     }
 
     // -- LoaderFramework
@@ -75,16 +61,16 @@ public class LoaderNodeTupleTable implements Closeable, Sync
         dropAndRebuildIndexes = ! doIncremental ;
         if ( ! nodeTupleTable.isEmpty() )
             dropAndRebuildIndexes = false ;
-        
+
         if ( dropAndRebuildIndexes )
         {
-            printer.print("** Load empty table") ;
+            monitor.print("** Load empty table") ;
             // SPO only.
             dropSecondaryIndexes() ;
         }
         else
         {
-            printer.print("** Load into table with existing data") ;
+            monitor.print("** Load into table with existing data") ;
             generateStats = false ;
         }
 
@@ -95,25 +81,19 @@ public class LoaderNodeTupleTable implements Closeable, Sync
 //        timer.startTimer() ;
     }
         
-    protected void loadFinalize()
+    protected void loadSecondaryIndexes()
     {
         if ( generateStats )
             statsFinalize() ;
 
-        printer.print() ;
         if ( dropAndRebuildIndexes )
         {
-            printer.now("-- Start index phase") ;
-            if ( showProgress )
-                printer.print("** Secondary indexes") ;
+            monitor.print("-- Start index phase") ;
             // Now do secondary indexes.
-            createSecondaryIndexes(showProgress) ;
-            printer.now("-- Finish index phase") ;
+            createSecondaryIndexes() ;
+            monitor.print("-- Finish index phase") ;
         }
 
-        if ( showProgress )
-            printer.print("** Close") ;
-        
 //        long time = timer.getTimeInterval() ;
 //        if ( showProgress )
 //        {
@@ -130,12 +110,15 @@ public class LoaderNodeTupleTable implements Closeable, Sync
     /** Notify start of loading process */
     public void loadStart()
     {
+        monitor.startLoad() ;
+        monitor.startDataPhase() ;
         loadPrepare() ;
     }
     
     /** Stream in items to load ... */
     public void load(Node... nodes)
     {
+        
         nodeTupleTable.addRow(nodes) ;
     }
     
@@ -144,7 +127,11 @@ public class LoaderNodeTupleTable implements Closeable, Sync
      */
     public void loadFinish()
     {
-        loadFinalize() ;
+        monitor.finishDataPhase() ;
+        monitor.startIndexPhase() ;
+        loadSecondaryIndexes() ;
+        monitor.finishIndexPhase() ;
+        monitor.finishLoad() ;
     }
 
     public void sync(boolean force) {}
@@ -175,18 +162,18 @@ public class LoaderNodeTupleTable implements Closeable, Sync
             nodeTupleTable.getTupleTable().setTupleIndex(i, null) ;
     }
 
-    private void createSecondaryIndexes(boolean printTiming)
+    private void createSecondaryIndexes()
     {
-        BuilderSecondaryIndexes builder ;
+        BuilderSecondaryIndexes builder = new BuilderSecondaryIndexesSequential(monitor) ;
         
-        if ( doInParallel )
-            builder = new BuilderSecondaryIndexesParallel(printer) ;
-        else if ( doInterleaved )
-            builder = new BuilderSecondaryIndexesInterleaved(printer) ;
-        else
-            builder = new BuilderSecondaryIndexesSequential(printer) ;
+//        if ( doInParallel )
+//            builder = new BuilderSecondaryIndexesParallel(printer) ;
+//        else if ( doInterleaved )
+//            builder = new BuilderSecondaryIndexesInterleaved(printer) ;
+//        else
+//            builder = new BuilderSecondaryIndexesSequential(printer) ;
         
-        builder.createSecondaryIndexes(primaryIndex, secondaryIndexes, printTiming) ;
+        builder.createSecondaryIndexes(primaryIndex, secondaryIndexes) ;
             
         // Re-attach the indexes.
         for ( int i = 1 ; i < numIndexes ; i++ )
@@ -196,8 +183,7 @@ public class LoaderNodeTupleTable implements Closeable, Sync
     
     private static Object lock = new Object() ;
 
-    static void copyIndex(Iterator<Tuple<NodeId>> srcIter, TupleIndex[] destIndexes, String label, 
-                          LogFormatter printer, boolean printTiming)
+    static void copyIndex(Iterator<Tuple<NodeId>> srcIter, TupleIndex[] destIndexes, String label, LoadMonitor monitor)
     {
         long quantum2 = 5*IndexTickPoint ;
         Timer timer = new Timer() ;
@@ -216,20 +202,20 @@ public class LoaderNodeTupleTable implements Closeable, Sync
             }
             c++ ;
             cumulative++ ;
-            if ( printTiming && tickPoint(cumulative,IndexTickPoint) )
+            if ( tickPoint(cumulative,IndexTickPoint) )
             {
                 long t = timer.readTimer() ;
                 long batchTime = t-last ;
                 long elapsed = t ;
                 last = t ;
-                printer.print("Index %s: %,d slots (Batch: %,d slots/s / Run: %,d slots/s)", 
+                monitor.print("Index %s: %,d slots (Batch: %,d slots/s / Run: %,d slots/s)", 
                        label, cumulative, 1000*c/batchTime, 1000*cumulative/elapsed) ;
                 if (tickPoint(cumulative, quantum2) )
                 {
                     String timestamp = Utils.nowAsString() ;
                     String x = StringUtils.str(elapsed/1000F) ;
                     // Print elapsed.  Common formatting with GraphLoadMonitor - but now to share?
-                    printer.print("  Elapsed: %s seconds [%s]", x, timestamp) ;
+                    monitor.print("  Elapsed: %s seconds [%s]", x, timestamp) ;
                     //now(label) ; 
                 }
                 c = 0 ;
@@ -244,19 +230,16 @@ public class LoaderNodeTupleTable implements Closeable, Sync
 
         long totalTime = timer.endTimer() ;
 
-        if ( printTiming )
+        if ( cumulative > 0 )
         {
-            if ( cumulative > 0 )
-            {
-                if ( totalTime > 0 )
-                    printer.print("Index %s: %,d triples indexed in %,.2fs [%,d slots/s]", 
-                           label, cumulative, totalTime/1000.0, 1000*cumulative/totalTime) ;
-                else
-                    printer.print("Index %s: %,d triples indexed in %,.2fs", label, cumulative, totalTime/1000.0) ;
-            }
+            if ( totalTime > 0 )
+                monitor.print("Index %s: %,d triples indexed in %,.2fs [%,d slots/s]", 
+                              label, cumulative, totalTime/1000.0, 1000*cumulative/totalTime) ;
             else
-                printer.print("Index %s: 0 triples indexed", label) ;
+                monitor.print("Index %s: %,d triples indexed in %,.2fs", label, cumulative, totalTime/1000.0) ;
         }
+        else
+            monitor.print("Index %s: 0 triples indexed", label) ;
     }
    
     private static boolean tickPoint(long counter, long quantum)

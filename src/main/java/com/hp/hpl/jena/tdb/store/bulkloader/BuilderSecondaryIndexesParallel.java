@@ -13,16 +13,14 @@ import com.hp.hpl.jena.tdb.index.TupleIndex ;
 
 class BuilderSecondaryIndexesParallel implements BuilderSecondaryIndexes
 {
-    
-    private LogFormatter printer ;
+    private LoadMonitor monitor ;
 
-    BuilderSecondaryIndexesParallel(LogFormatter printer) { this.printer = printer ; } 
+    BuilderSecondaryIndexesParallel(LoadMonitor monitor) { this.monitor = monitor ; } 
     
     public void createSecondaryIndexes(TupleIndex   primaryIndex ,
-                                       TupleIndex[] secondaryIndexes ,
-                                       boolean printTiming)
+                                       TupleIndex[] secondaryIndexes)
     {
-        printer.print("** Parallel index building") ;
+        monitor.print("** Parallel index building") ;
         Timer timer = new Timer() ;
         timer.startTimer() ;
 
@@ -33,7 +31,7 @@ class BuilderSecondaryIndexesParallel implements BuilderSecondaryIndexes
         {
             if ( index != null )
             {
-                Runnable builder = setup(sema, primaryIndex, index, index.getLabel(), printTiming) ;
+                Runnable builder = setup(sema, primaryIndex, index, index.getLabel()) ;
                 new Thread(builder).start() ;
                 semaCount++ ;
             }
@@ -43,17 +41,16 @@ class BuilderSecondaryIndexesParallel implements BuilderSecondaryIndexes
 
         long time = timer.readTimer() ;
         timer.endTimer() ;
-        if ( printTiming )
-            printer.print("Time for parallel indexing: %.2fs\n", time/1000.0) ;
+        monitor.print("Time for parallel indexing: %.2fs\n", time/1000.0) ;
     }
 
-    private Runnable setup(final Semaphore sema, final TupleIndex srcIndex, final TupleIndex destIndex, final String label, final boolean printTiming)
+    private Runnable setup(final Semaphore sema, final TupleIndex srcIndex, final TupleIndex destIndex, final String label)
     {
         Runnable builder = new Runnable(){
             //@Override
             public void run()
             {
-                LoaderNodeTupleTable.copyIndex(srcIndex.all(), new TupleIndex[]{destIndex}, label, printer, printTiming) ;
+                LoaderNodeTupleTable.copyIndex(srcIndex.all(), new TupleIndex[]{destIndex}, label, monitor) ;
                 sema.release() ;
             }} ;
 

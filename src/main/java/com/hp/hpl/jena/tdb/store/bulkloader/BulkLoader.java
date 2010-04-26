@@ -12,6 +12,8 @@ import org.openjena.atlas.event.Event ;
 import org.openjena.atlas.event.EventListener ;
 import org.openjena.atlas.event.EventManager ;
 import org.openjena.atlas.event.EventType ;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
@@ -51,9 +53,9 @@ public class BulkLoader
     }
 
     /** Tick point for messages during loading of data */
-    public static int LoadTickPoint = 10000 ;
+    public static int LoadTickPoint = 1000 ;
     /** Tick point for messages during secondary index creation */
-    public static long IndexTickPoint = 50000 ;
+    public static long IndexTickPoint = 5000 ;
     
     /** Number of ticks per super tick */
     public static int superTick = 2 ;
@@ -68,17 +70,16 @@ public class BulkLoader
     private static String baseName = "http://openjena.org/TDB/bulkload/event#" ;
     
     
-    static EventType evBulkload = new EventType(baseName+"bulkload") ;
-    static EventType evTick = new EventType(baseNameGeneral+"tick") ;
-    
     static EventType evStartBulkload = new EventType(baseName+"start-bulkload") ;
     static EventType evFinishBulkload = new EventType(baseName+"finish-bulkload") ;
 
     static EventType evStartDataBulkload = new EventType(baseName+"start-bulkload-data") ;
     static EventType evFinishDataBulkload = new EventType(baseName+"finish-bulkload-data") ;
     
-    static EventType evStartIndexBulkload = new EventType(baseName+"start-bulkload-data") ;
-    static EventType evFinishIndexBulkload = new EventType(baseName+"finish-bulkload-data") ;
+    static EventType evStartIndexBulkload = new EventType(baseName+"start-bulkload-index") ;
+    static EventType evFinishIndexBulkload = new EventType(baseName+"finish-bulkload-index") ;
+    
+    static private Logger loadLogger = LoggerFactory.getLogger("com.hp.hpl.jena.tdb.loader") ;
     
     static EventListener listener = new EventListener() {
         public void event(Object dest, Event event)
@@ -105,25 +106,29 @@ public class BulkLoader
         // Testing.
         EventManager.register(dsg, evStartBulkload, listener) ;
         EventManager.register(dsg, evFinishBulkload, listener) ;
+
+        EventManager.register(dsg, evStartDataBulkload, listener) ;
+        EventManager.register(dsg, evFinishDataBulkload, listener) ;
+
+        EventManager.register(dsg, evStartIndexBulkload, listener) ;
+        EventManager.register(dsg, evFinishIndexBulkload, listener) ;
         
-        final LoaderNodeTupleTable x = new LoaderNodeTupleTable( 
-                                                                dsg.getTripleTable().getNodeTupleTable(),
-                                                                showProgress) ;
+        final LoadMonitor monitor = (showProgress ? 
+                                       new LoadMonitor(dsg, loadLogger, LoadTickPoint, IndexTickPoint) :
+                                       new LoadMonitor(dsg, null, LoadTickPoint, IndexTickPoint) ) ;
+
+        final LoaderNodeTupleTable x = new LoaderNodeTupleTable(dsg.getTripleTable().getNodeTupleTable(),
+                                                                monitor) ;
+        
         Destination<Triple> sink = new Destination<Triple>() {
-            Ticker ticker = (showProgress? new TickEvent(LoadTickPoint) : null ) ;
-            
             public void start()
             {
-                EventManager.send(dsg, new Event(evStartBulkload, null)) ;
-                if ( ticker != null )
-                    ticker.start() ;
                 x.loadStart() ;
             }
             public void send(Triple triple)
             {
                 x.load(triple.getSubject(), triple.getPredicate(),  triple.getObject()) ;
-                if ( ticker != null )
-                    ticker.tick() ;
+                monitor.dataItem() ;
             }
 
             public void flush() { }
@@ -132,9 +137,6 @@ public class BulkLoader
             public void finish()
             {
                 x.loadFinish() ;
-                if ( ticker != null )
-                    ticker.finish() ;
-                EventManager.send(dsg, new Event(evFinishBulkload, null)) ;
             }
         } ;
         return sink ;
@@ -146,21 +148,21 @@ public class BulkLoader
         EventManager.register(dsg, evStartBulkload, listener) ;
         EventManager.register(dsg, evFinishBulkload, listener) ;
         
+        final LoadMonitor monitor = (showProgress ? 
+                                       new LoadMonitor(dsg, loadLogger, LoadTickPoint, IndexTickPoint) :
+                                       new LoadMonitor(dsg, null, LoadTickPoint, IndexTickPoint) ) ;
+
         
-        final LoaderNodeTupleTable loaderTriples = new LoaderNodeTupleTable( 
+        final LoaderNodeTupleTable loaderTriples = new LoaderNodeTupleTable(
                                                                 dsg.getTripleTable().getNodeTupleTable(),
-                                                                showProgress) ;
+                                                                monitor) ;
         final LoaderNodeTupleTable loaderQuads = new LoaderNodeTupleTable( 
                                                                  dsg.getQuadTable().getNodeTupleTable(),
-                                                                 true) ;
+                                                                 monitor) ;
         Destination<Quad> sink = new Destination<Quad>() {
-            Ticker ticker = (showProgress? new TickEvent(LoadTickPoint) : null ) ;
             
             public void start()
             {
-                EventManager.send(dsg, new Event(evStartBulkload, null)) ;
-                if ( ticker != null )
-                    ticker.start() ;
                 loaderTriples.loadStart() ;
                 loaderQuads.loadStart() ;
             }
@@ -171,17 +173,13 @@ public class BulkLoader
                     loaderTriples.load(quad.getSubject(), quad.getPredicate(),  quad.getObject()) ;
                 else
                     loaderQuads.load(quad.getGraph(), quad.getSubject(), quad.getPredicate(),  quad.getObject()) ;
-                if ( ticker != null )
-                    ticker.tick() ;
+                monitor.dataItem() ;
             }
 
             public void finish()
             {
                 loaderTriples.loadFinish() ;
                 loaderQuads.loadFinish() ;
-                if ( ticker != null )
-                    ticker.finish() ;
-                EventManager.send(dsg, new Event(evFinishBulkload, null)) ;
             }
             
             public void flush() { }

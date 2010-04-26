@@ -11,26 +11,24 @@ import com.hp.hpl.jena.tdb.index.TupleIndex ;
 
 class BuilderSecondaryIndexesInterleaved implements BuilderSecondaryIndexes
 {
-    private LogFormatter printer ;
+    private LoadMonitor monitor ;
 
-    BuilderSecondaryIndexesInterleaved(LogFormatter printer) { this.printer = printer ; } 
+    BuilderSecondaryIndexesInterleaved(LoadMonitor monitor) { this.monitor = monitor ; } 
     
     // Do as one pass over the SPO index, creating both other indexes at the same time.
     // Can be hugely costly in system resources.
     public void createSecondaryIndexes(TupleIndex   primaryIndex ,
-                                       TupleIndex[] secondaryIndexes ,
-                                       boolean printTiming)
+                                       TupleIndex[] secondaryIndexes)
     {
         Timer timer = new Timer() ;
         timer.startTimer() ;
 
         long time1 = timer.readTimer() ;
 
-        LoaderNodeTupleTable.copyIndex(primaryIndex.all(), secondaryIndexes, "All", printer, printTiming) ;
+        LoaderNodeTupleTable.copyIndex(primaryIndex.all(), secondaryIndexes, "All", monitor) ;
 
         long time2 = timer.readTimer() ;
-        if ( printTiming )
-            printer.print("Time for all indexes: %.2fs\n", (time2-time1)/1000.0) ;
+        monitor.print("Time for all indexes: %.2fs\n", (time2-time1)/1000.0) ;
     }
 }
 /*

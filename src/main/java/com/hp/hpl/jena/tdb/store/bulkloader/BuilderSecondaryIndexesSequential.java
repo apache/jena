@@ -11,14 +11,13 @@ import com.hp.hpl.jena.tdb.index.TupleIndex ;
 
 class BuilderSecondaryIndexesSequential implements BuilderSecondaryIndexes
 {
-    private LogFormatter printer ;
+    private LoadMonitor monitor ;
 
-    BuilderSecondaryIndexesSequential(LogFormatter printer) { this.printer = printer ; } 
+    BuilderSecondaryIndexesSequential(LoadMonitor monitor) { this.monitor = monitor ; } 
     
     // Create each secondary indexes, doing one at a time.
     public void createSecondaryIndexes(TupleIndex   primaryIndex ,
-                                       TupleIndex[] secondaryIndexes ,
-                                       boolean printTiming)
+                                       TupleIndex[] secondaryIndexes)
     {
         Timer timer = new Timer() ;
         timer.startTimer() ;
@@ -28,7 +27,7 @@ class BuilderSecondaryIndexesSequential implements BuilderSecondaryIndexes
             if ( index != null )
             {
                 long time1 = timer.readTimer() ;
-                LoaderNodeTupleTable.copyIndex(primaryIndex.all(), new TupleIndex[]{index}, index.getLabel(), printer, printTiming) ;
+                LoaderNodeTupleTable.copyIndex(primaryIndex.all(), new TupleIndex[]{index}, index.getLabel(), monitor) ;
                 long time2 = timer.readTimer() ; ;
                 //                if ( printTiming )
                 //                    printf("Time for %s indexing: %.2fs\n", index.getLabel(), (time2-time1)/1000.0) ;

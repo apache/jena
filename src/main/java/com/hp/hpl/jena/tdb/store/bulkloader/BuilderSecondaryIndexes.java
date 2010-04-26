@@ -10,9 +10,7 @@ import com.hp.hpl.jena.tdb.index.TupleIndex ;
 
 public interface BuilderSecondaryIndexes
 {
-    public void createSecondaryIndexes(TupleIndex   primaryIndex ,
-                                       TupleIndex[] secondaryIndexes ,
-                                       boolean printTiming) ;
+    public void createSecondaryIndexes(TupleIndex primaryIndex, TupleIndex[] secondaryIndexes) ;
 }
 
 /*
