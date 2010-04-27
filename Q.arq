@@ -1,13 +1,7 @@
-PREFIX : <http://example/>
-
-SELECT *
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+SELECT (SUM(?age) AS ?sum)
 {
-  _:a :p ?x .
-#  { SELECT * { _:a :p ?y } }
-}
-BINDINGS ?x
-{
-   ( "x" )
-   ( UNDEF )
+   ?x a foaf:Person;
+        foaf:age ?age.
 }
 
