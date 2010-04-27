@@ -42,7 +42,7 @@ public class LoaderNodeTupleTable implements Closeable, Sync
     
     private boolean dropAndRebuildIndexes ;
     //private Timer timer ;
-    private long count ;
+    private long count = 0 ;
     
     static private Logger logLoad = LoggerFactory.getLogger("com.hp.hpl.jena.tdb.loader") ;
 
@@ -118,7 +118,7 @@ public class LoaderNodeTupleTable implements Closeable, Sync
     /** Stream in items to load ... */
     public void load(Node... nodes)
     {
-        
+        count++ ;
         nodeTupleTable.addRow(nodes) ;
     }
     
@@ -128,9 +128,13 @@ public class LoaderNodeTupleTable implements Closeable, Sync
     public void loadFinish()
     {
         monitor.finishDataPhase() ;
-        monitor.startIndexPhase() ;
-        loadSecondaryIndexes() ;
-        monitor.finishIndexPhase() ;
+        if ( count > 0 )
+        {
+            // Do index phase only if any items seen. 
+            monitor.startIndexPhase() ;
+            loadSecondaryIndexes() ;
+            monitor.finishIndexPhase() ;
+        }
         monitor.finishLoad() ;
     }
 
