@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            14-Apr-2003
  * Filename           $RCSfile: schemagen.java,v $
- * Revision           $Revision: 1.4 $
+ * Revision           $Revision: 1.5 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2010-04-20 20:47:16 $
+ * Last modified on   $Date: 2010-04-27 22:49:40 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
@@ -52,7 +52,7 @@ import com.hp.hpl.jena.shared.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:ian_dickinson@users.sourceforge.net" >email</a>)
- * @version CVS $Id: schemagen.java,v 1.4 2010-04-20 20:47:16 ian_dickinson Exp $
+ * @version CVS $Id: schemagen.java,v 1.5 2010-04-27 22:49:40 ian_dickinson Exp $
  */
 public class schemagen {
     // Constants
@@ -1315,155 +1315,158 @@ public class schemagen {
     public interface SchemagenOptions {
         /* Constants for the various options we can set */
 
-       /** Select an alternative config file; use <code>-c &lt;filename&gt;</code> on command line */
-        public static final Object OPT_CONFIG_FILE = new Object();
+        enum OPT {
+            /** Select an alternative config file; use <code>-c &lt;filename&gt;</code> on command line */
+            CONFIG_FILE,
 
-        /** Turn off all comment output; use <code>--nocomments</code> on command line;  use <code>sgen:noComments</code> in config file */
-        public static final Object OPT_NO_COMMENTS = new Object();
+            /** Turn off all comment output; use <code>--nocomments</code> on command line;  use <code>sgen:noComments</code> in config file */
+            NO_COMMENTS,
 
-        /** Nominate the URL of the input document; use <code>-i &lt;URL&gt;</code> on command line;  use <code>sgen:input</code> in config file */
-        public static final Object OPT_INPUT = new Object();
+            /** Nominate the URL of the input document; use <code>-i &lt;URL&gt;</code> on command line;  use <code>sgen:input</code> in config file */
+            INPUT,
 
-        /** Specify that the language of the source is DAML+OIL; use <code>--daml</code> on command line;  use <code>sgen:daml</code> in config file */
-        public static final Object OPT_LANG_DAML = new Object();
+            /** Specify that the language of the source is DAML+OIL; use <code>--daml</code> on command line;  use <code>sgen:daml</code> in config file */
+            LANG_DAML,
 
-        /** Specify that the language of the source is OWL (the default); use <code>--owl</code> on command line;  use <code>sgen:owl</code> in config file */
-        public static final Object OPT_LANG_OWL = new Object();
+            /** Specify that the language of the source is OWL (the default); use <code>--owl</code> on command line;  use <code>sgen:owl</code> in config file */
+            LANG_OWL,
 
-        /** Specify that the language of the source is RDFS; use <code>--rdfs</code> on command line;  use <code>sgen:rdfs</code> in config file */
-        public static final Object OPT_LANG_RDFS = new Object();
+            /** Specify that the language of the source is RDFS; use <code>--rdfs</code> on command line;  use <code>sgen:rdfs</code> in config file */
+            LANG_RDFS,
 
-        /** Specify that destination file; use <code>-o &lt;fileName&gt;</code> on command line;  use <code>sgen:output</code> in config file */
-        public static final Object OPT_OUTPUT = new Object();
+            /** Specify that destination file; use <code>-o &lt;fileName&gt;</code> on command line;  use <code>sgen:output</code> in config file */
+            OUTPUT,
 
-        /** Specify the file header; use <code>--header "..."</code> on command line;  use <code>sgen:header</code> in config file */
-        public static final Object OPT_HEADER = new Object();
+            /** Specify the file header; use <code>--header "..."</code> on command line;  use <code>sgen:header</code> in config file */
+            HEADER,
 
-        /** Specify the file footer; use <code>--footer "..."</code> on command line;  use <code>sgen:footer</code> in config file */
-        public static final Object OPT_FOOTER = new Object();
+            /** Specify the file footer; use <code>--footer "..."</code> on command line;  use <code>sgen:footer</code> in config file */
+            FOOTER,
 
-        /** Specify the uri of the configuration root node; use <code>--root &lt;URL&gt;</code> on command line */
-        public static final Object OPT_ROOT = new Object();
+            /** Specify the uri of the configuration root node; use <code>--root &lt;URL&gt;</code> on command line */
+            ROOT,
 
-        /** Specify the marker string for substitutions, default is '%'; use <code>-m "..."</code> on command line; use <code>sgen:marker</code> in config file */
-        public static final Object OPT_MARKER = new Object();
+            /** Specify the marker string for substitutions, default is '%'; use <code>-m "..."</code> on command line; use <code>sgen:marker</code> in config file */
+            MARKER,
 
-        /** Specify the packagename; use <code>--package &lt;packagename&gt;</code> on command line; use <code>sgen:package</code> in config file */
-        public static final Object OPT_PACKAGENAME = new Object();
+            /** Specify the packagename; use <code>--package &lt;packagename&gt;</code> on command line; use <code>sgen:package</code> in config file */
+            PACKAGENAME,
 
-        /** Use ontology terms in preference to vanilla RDF; use <code>--ontology</code> on command line; use <code>sgen:ontology</code> in config file */
-        public static final Object OPT_ONTOLOGY = new Object();
+            /** Use ontology terms in preference to vanilla RDF; use <code>--ontology</code> on command line; use <code>sgen:ontology</code> in config file */
+            ONTOLOGY,
 
-        /** The name of the generated class; use <code>-n &lt;classname&gt;</code> on command line; use <code>sgen:classname</code> in config file */
-        public static final Object OPT_CLASSNAME = new Object();
+            /** The name of the generated class; use <code>-n &lt;classname&gt;</code> on command line; use <code>sgen:classname</code> in config file */
+            CLASSNAME,
 
-        /** Additional decoration for class header (such as implements); use <code>--classdec &lt;classname&gt;</code> on command line; use <code>sgen:classdec</code> in config file */
-        public static final Object OPT_CLASSDEC = new Object();
+            /** Additional decoration for class header (such as implements); use <code>--classdec &lt;classname&gt;</code> on command line; use <code>sgen:classdec</code> in config file */
+            CLASSDEC,
 
-        /** The namespace URI for the vocabulary; use <code>-a &lt;uri&gt;</code> on command line; use <code>sgen:namespace</code> in config file */
-        public static final Object OPT_NAMESPACE = new Object();
+            /** The namespace URI for the vocabulary; use <code>-a &lt;uri&gt;</code> on command line; use <code>sgen:namespace</code> in config file */
+            NAMESPACE,
 
-        /** Additional declarations to add at the top of the class; use <code>--declarations &lt;...&gt;</code> on command line; use <code>sgen:declarations</code> in config file */
-        public static final Object OPT_DECLARATIONS = new Object();
+            /** Additional declarations to add at the top of the class; use <code>--declarations &lt;...&gt;</code> on command line; use <code>sgen:declarations</code> in config file */
+            DECLARATIONS,
 
-        /** Section declaration for properties section; use <code>--propSection &lt;...&gt;</code> on command line; use <code>sgen:propSection</code> in config file */
-        public static final Object OPT_PROPERTY_SECTION = new Object();
+            /** Section declaration for properties section; use <code>--propSection &lt;...&gt;</code> on command line; use <code>sgen:propSection</code> in config file */
+            PROPERTY_SECTION,
 
-        /** Section declaration for class section; use <code>--classSection &lt;...&gt;</code> on command line; use <code>sgen:classSection</code> in config file */
-        public static final Object OPT_CLASS_SECTION = new Object();
+            /** Section declaration for class section; use <code>--classSection &lt;...&gt;</code> on command line; use <code>sgen:classSection</code> in config file */
+            CLASS_SECTION,
 
-        /** Section declaration for individuals section; use <code>--individualsSection &lt;...&gt;</code> on command line; use <code>sgen:individualsSection</code> in config file */
-        public static final Object OPT_INDIVIDUALS_SECTION = new Object();
+            /** Section declaration for individuals section; use <code>--individualsSection &lt;...&gt;</code> on command line; use <code>sgen:individualsSection</code> in config file */
+            INDIVIDUALS_SECTION,
 
-        /** Option to suppress properties in vocab file; use <code>--noproperties &lt;...&gt;</code> on command line; use <code>sgen:noproperties</code> in config file */
-        public static final Object OPT_NOPROPERTIES = new Object();
+            /** Option to suppress properties in vocab file; use <code>--noproperties &lt;...&gt;</code> on command line; use <code>sgen:noproperties</code> in config file */
+            NOPROPERTIES,
 
-        /** Option to suppress classes in vocab file; use <code>--noclasses &lt;...&gt;</code> on command line; use <code>sgen:noclasses</code> in config file */
-        public static final Object OPT_NOCLASSES = new Object();
+            /** Option to suppress classes in vocab file; use <code>--noclasses &lt;...&gt;</code> on command line; use <code>sgen:noclasses</code> in config file */
+            NOCLASSES,
 
-        /** Option to suppress individuals in vocab file; use <code>--noindividuals &lt;...&gt;</code> on command line; use <code>sgen:noindividuals</code> in config file */
-        public static final Object OPT_NOINDIVIDUALS = new Object();
+            /** Option to suppress individuals in vocab file; use <code>--noindividuals &lt;...&gt;</code> on command line; use <code>sgen:noindividuals</code> in config file */
+            NOINDIVIDUALS,
 
-        /** Option for no file header; use <code>--noheader &lt;...&gt;</code> on command line; use <code>sgen:noheader</code> in config file */
-        public static final Object OPT_NOHEADER = new Object();
+            /** Option for no file header; use <code>--noheader &lt;...&gt;</code> on command line; use <code>sgen:noheader</code> in config file */
+            NOHEADER,
 
-        /** Template for writing out property declarations; use <code>--propTemplate &lt;...&gt;</code> on command line; use <code>sgen:propTemplate</code> in config file */
-        public static final Object OPT_PROP_TEMPLATE = new Object();
+            /** Template for writing out property declarations; use <code>--propTemplate &lt;...&gt;</code> on command line; use <code>sgen:propTemplate</code> in config file */
+            PROP_TEMPLATE,
 
-        /** Template for writing out class declarations; use <code>--classTemplate &lt;...&gt;</code> on command line; use <code>sgen:classTemplate</code> in config file */
-        public static final Object OPT_CLASS_TEMPLATE = new Object();
+            /** Template for writing out class declarations; use <code>--classTemplate &lt;...&gt;</code> on command line; use <code>sgen:classTemplate</code> in config file */
+            CLASS_TEMPLATE,
 
-        /** Template for writing out individual declarations; use <code>--individualTemplate &lt;...&gt;</code> on command line; use <code>sgen:individualTemplate</code> in config file */
-        public static final Object OPT_INDIVIDUAL_TEMPLATE = new Object();
+            /** Template for writing out individual declarations; use <code>--individualTemplate &lt;...&gt;</code> on command line; use <code>sgen:individualTemplate</code> in config file */
+            INDIVIDUAL_TEMPLATE,
 
-        /** Option for mapping constant names to uppercase; use <code>--uppercase &lt;...&gt;</code> on command line; use <code>sgen:uppercase</code> in config file */
-        public static final Object OPT_UC_NAMES = new Object();
+            /** Option for mapping constant names to uppercase; use <code>--uppercase &lt;...&gt;</code> on command line; use <code>sgen:uppercase</code> in config file */
+            UC_NAMES,
 
-        /** Option for including non-local URI's in vocabulary; use <code>--include &lt;uri&gt;</code> on command line; use <code>sgen:include</code> in config file */
-        public static final Object OPT_INCLUDE = new Object();
+            /** Option for including non-local URI's in vocabulary; use <code>--include &lt;uri&gt;</code> on command line; use <code>sgen:include</code> in config file */
+            INCLUDE,
 
-        /** Option for adding a suffix to the generated class name; use <code>--classnamesuffix &lt;uri&gt;</code> on command line; use <code>sgen:classnamesuffix</code> in config file */
-        public static final Object OPT_CLASSNAME_SUFFIX = new Object();
+            /** Option for adding a suffix to the generated class name; use <code>--classnamesuffix &lt;uri&gt;</code> on command line; use <code>sgen:classnamesuffix</code> in config file */
+            CLASSNAME_SUFFIX,
 
-        /** Option for the presentation syntax (encoding) of the file; use <code>-e <i>encoding</i></code> on command line; use <code>sgen:encoding</code> in config file */
-        public static final Object OPT_ENCODING = new Object();
+            /** Option for the presentation syntax (encoding) of the file; use <code>-e <i>encoding</i></code> on command line; use <code>sgen:encoding</code> in config file */
+            ENCODING,
 
-        /** Option to show the usage message; use --help on command line */
-        public static final Object OPT_HELP = new Object();
+            /** Option to show the usage message; use --help on command line */
+            HELP,
 
-        /** Option to generate an output file with DOS (\r\n) line endings. Default is Unix line endings. */
-        public static final Object OPT_DOS = new Object();
+            /** Option to generate an output file with DOS (\r\n) line endings. Default is Unix line endings. */
+            DOS,
 
-        /** Option to generate to force the model to perform inference, off by default. */
-        public static final Object OPT_USE_INF = new Object();
+            /** Option to generate to force the model to perform inference, off by default. */
+            USE_INF,
 
-        /** Option to exclude instances of classes in the allowed namespaces, where the individuals themselves are in other namespaces; use <code>--strictIndividuals</code> on command line; use <code>sgen:strictIndividuals</code> in config file */
-        public static final Object OPT_STRICT_INDIVIDUALS = new Object();
+            /** Option to exclude instances of classes in the allowed namespaces, where the individuals themselves are in other namespaces; use <code>--strictIndividuals</code> on command line; use <code>sgen:strictIndividuals</code> in config file */
+            STRICT_INDIVIDUALS,
 
-        /** Option to include the ontology source code in the generated file */
-        public static final Object OPT_INCLUDE_SOURCE = new Object();
+            /** Option to include the ontology source code in the generated file */
+            INCLUDE_SOURCE,
 
-        /** Option to turn off strict checking in .a() */
-        public static final Object OPT_NO_STRICT = new Object();
+            /** Option to turn off strict checking in .a() */
+            NO_STRICT
+        }
+
 
         public static final Object[][] m_optionDefinitions = new Object[][] {
-                {OPT_CONFIG_FILE,         new OptionDefinition( "-c", null ) },
-                {OPT_ROOT,                new OptionDefinition( "-r", null ) },
-                {OPT_NO_COMMENTS,         new OptionDefinition( "--nocomments", "noComments" ) },
-                {OPT_INPUT,               new OptionDefinition( "-i", "input" ) },
-                {OPT_LANG_DAML,           new OptionDefinition( "--daml", "daml" ) },
-                {OPT_LANG_OWL,            new OptionDefinition( "--owl", "owl" ) },
-                {OPT_LANG_RDFS,           new OptionDefinition( "--rdfs", "rdfs" ) },
-                {OPT_OUTPUT,              new OptionDefinition( "-o", "output" ) },
-                {OPT_HEADER,              new OptionDefinition( "--header", "header" ) },
-                {OPT_FOOTER,              new OptionDefinition( "--footer", "footer" ) },
-                {OPT_MARKER,              new OptionDefinition( "--marker", "marker" ) },
-                {OPT_PACKAGENAME,         new OptionDefinition( "--package", "package" ) },
-                {OPT_ONTOLOGY,            new OptionDefinition( "--ontology", "ontology" ) },
-                {OPT_CLASSNAME,           new OptionDefinition( "-n", "classname" ) },
-                {OPT_CLASSDEC,            new OptionDefinition( "--classdec", "classdec" ) },
-                {OPT_NAMESPACE,           new OptionDefinition( "-a", "namespace" ) },
-                {OPT_DECLARATIONS,        new OptionDefinition( "--declarations", "declarations" ) },
-                {OPT_PROPERTY_SECTION,    new OptionDefinition( "--propSection", "propSection" ) },
-                {OPT_CLASS_SECTION,       new OptionDefinition( "--classSection", "classSection" ) },
-                {OPT_INDIVIDUALS_SECTION, new OptionDefinition( "--individualsSection", "individualsSection" ) },
-                {OPT_NOPROPERTIES,        new OptionDefinition( "--noproperties", "noproperties" ) },
-                {OPT_NOCLASSES,           new OptionDefinition( "--noclasses", "noclasses" ) },
-                {OPT_NOINDIVIDUALS,       new OptionDefinition( "--noindividuals", "noindividuals" ) },
-                {OPT_PROP_TEMPLATE,       new OptionDefinition( "--propTemplate", "propTemplate" ) },
-                {OPT_CLASS_TEMPLATE,      new OptionDefinition( "--classTemplate", "classTemplate" ) },
-                {OPT_INDIVIDUAL_TEMPLATE, new OptionDefinition( "--individualTemplate", "individualTemplate" ) },
-                {OPT_UC_NAMES,            new OptionDefinition( "--uppercase", "uppercase" ) },
-                {OPT_INCLUDE,             new OptionDefinition( "--include", "include" ) },
-                {OPT_CLASSNAME_SUFFIX,    new OptionDefinition( "--classnamesuffix", "classnamesuffix" )},
-                {OPT_NOHEADER,            new OptionDefinition( "--noheader", "noheader" )},
-                {OPT_ENCODING,            new OptionDefinition( "-e", "encoding" )},
-                {OPT_HELP,                new OptionDefinition( "--help", null )},
-                {OPT_DOS,                 new OptionDefinition( "--dos", "dos" )},
-                {OPT_USE_INF,             new OptionDefinition( "--inference", "inference" )},
-                {OPT_STRICT_INDIVIDUALS,  new OptionDefinition( "--strictIndividuals", "strictIndividuals" )},
-                {OPT_INCLUDE_SOURCE,      new OptionDefinition( "--includeSource", "includeSource" )},
-                {OPT_NO_STRICT,           new OptionDefinition( "--nostrict", "noStrict")},
+                {OPT.CONFIG_FILE,         new OptionDefinition( "-c", null ) },
+                {OPT.ROOT,                new OptionDefinition( "-r", null ) },
+                {OPT.NO_COMMENTS,         new OptionDefinition( "--nocomments", "noComments" ) },
+                {OPT.INPUT,               new OptionDefinition( "-i", "input" ) },
+                {OPT.LANG_DAML,           new OptionDefinition( "--daml", "daml" ) },
+                {OPT.LANG_OWL,            new OptionDefinition( "--owl", "owl" ) },
+                {OPT.LANG_RDFS,           new OptionDefinition( "--rdfs", "rdfs" ) },
+                {OPT.OUTPUT,              new OptionDefinition( "-o", "output" ) },
+                {OPT.HEADER,              new OptionDefinition( "--header", "header" ) },
+                {OPT.FOOTER,              new OptionDefinition( "--footer", "footer" ) },
+                {OPT.MARKER,              new OptionDefinition( "--marker", "marker" ) },
+                {OPT.PACKAGENAME,         new OptionDefinition( "--package", "package" ) },
+                {OPT.ONTOLOGY,            new OptionDefinition( "--ontology", "ontology" ) },
+                {OPT.CLASSNAME,           new OptionDefinition( "-n", "classname" ) },
+                {OPT.CLASSDEC,            new OptionDefinition( "--classdec", "classdec" ) },
+                {OPT.NAMESPACE,           new OptionDefinition( "-a", "namespace" ) },
+                {OPT.DECLARATIONS,        new OptionDefinition( "--declarations", "declarations" ) },
+                {OPT.PROPERTY_SECTION,    new OptionDefinition( "--propSection", "propSection" ) },
+                {OPT.CLASS_SECTION,       new OptionDefinition( "--classSection", "classSection" ) },
+                {OPT.INDIVIDUALS_SECTION, new OptionDefinition( "--individualsSection", "individualsSection" ) },
+                {OPT.NOPROPERTIES,        new OptionDefinition( "--noproperties", "noproperties" ) },
+                {OPT.NOCLASSES,           new OptionDefinition( "--noclasses", "noclasses" ) },
+                {OPT.NOINDIVIDUALS,       new OptionDefinition( "--noindividuals", "noindividuals" ) },
+                {OPT.PROP_TEMPLATE,       new OptionDefinition( "--propTemplate", "propTemplate" ) },
+                {OPT.CLASS_TEMPLATE,      new OptionDefinition( "--classTemplate", "classTemplate" ) },
+                {OPT.INDIVIDUAL_TEMPLATE, new OptionDefinition( "--individualTemplate", "individualTemplate" ) },
+                {OPT.UC_NAMES,            new OptionDefinition( "--uppercase", "uppercase" ) },
+                {OPT.INCLUDE,             new OptionDefinition( "--include", "include" ) },
+                {OPT.CLASSNAME_SUFFIX,    new OptionDefinition( "--classnamesuffix", "classnamesuffix" )},
+                {OPT.NOHEADER,            new OptionDefinition( "--noheader", "noheader" )},
+                {OPT.ENCODING,            new OptionDefinition( "-e", "encoding" )},
+                {OPT.HELP,                new OptionDefinition( "--help", null )},
+                {OPT.DOS,                 new OptionDefinition( "--dos", "dos" )},
+                {OPT.USE_INF,             new OptionDefinition( "--inference", "inference" )},
+                {OPT.STRICT_INDIVIDUALS,  new OptionDefinition( "--strictIndividuals", "strictIndividuals" )},
+                {OPT.INCLUDE_SOURCE,      new OptionDefinition( "--includeSource", "includeSource" )},
+                {OPT.NO_STRICT,           new OptionDefinition( "--nostrict", "noStrict")},
             };
 
         public boolean hasConfigFileOption();
@@ -1593,11 +1596,11 @@ public class schemagen {
         }
 
         public String getRootURIOption() {
-            return getValue( OPT_ROOT );
+            return getValue( OPT.ROOT );
         }
 
         public boolean hasRootURIOption() {
-            return hasValue( OPT_ROOT );
+            return hasValue( OPT.ROOT );
         }
 
         /** Answer true if the given option is set to true */
@@ -1667,70 +1670,70 @@ public class schemagen {
 
         // External interface methods
 
-        public boolean hasConfigFileOption() { return hasValue( OPT_CONFIG_FILE ); }
-        public String getConfigFileOption() { return getValue( OPT_CONFIG_FILE ); }
-        public boolean hasRootOption() { return hasValue( OPT_ROOT ); }
-        public String getRootOption() { return getValue( OPT_ROOT ); }
-        public boolean hasNoCommentsOption() { return isTrue( OPT_NO_COMMENTS ); }
-        public String getNoCommentsOption() { return getValue( OPT_NO_COMMENTS ); }
-        public boolean hasInputOption() { return hasValue( OPT_INPUT ); }
-        public Resource getInputOption() { return getResource( OPT_INPUT ); }
-        public boolean hasLangDamlOption() { return isTrue( OPT_LANG_DAML ); }
-        public String getLangDamlOption() { return getValue( OPT_LANG_DAML ); }
-        public boolean hasLangOwlOption() { return isTrue( OPT_LANG_OWL ); }
-        public String getLangOwlOption() { return getValue( OPT_LANG_OWL ); }
-        public boolean hasLangRdfsOption() { return isTrue( OPT_LANG_RDFS ); }
-        public String getLangRdfsOption() { return getValue( OPT_LANG_RDFS ); }
-        public boolean hasOutputOption() { return hasValue( OPT_OUTPUT ); }
-        public String getOutputOption() { return getValue( OPT_OUTPUT ); }
-        public boolean hasHeaderOption() { return isTrue( OPT_HEADER ); }
-        public String getHeaderOption() { return getValue( OPT_HEADER ); }
-        public boolean hasFooterOption() { return isTrue( OPT_FOOTER ); }
-        public String getFooterOption() { return getValue( OPT_FOOTER ); }
-        public boolean hasMarkerOption() { return hasValue( OPT_MARKER ); }
-        public String getMarkerOption() { return getValue( OPT_MARKER ); }
-        public boolean hasPackagenameOption() { return hasValue( OPT_PACKAGENAME ); }
-        public String getPackagenameOption() { return getValue( OPT_PACKAGENAME ); }
-        public boolean hasOntologyOption() { return isTrue( OPT_ONTOLOGY ); }
-        public String getOntologyOption() { return getValue( OPT_ONTOLOGY ); }
-        public boolean hasClassnameOption() { return hasValue( OPT_CLASSNAME ); }
-        public String getClassnameOption() { return getValue( OPT_CLASSNAME ); }
-        public boolean hasClassdecOption() { return hasValue( OPT_CLASSDEC ); }
-        public String getClassdecOption() { return getValue( OPT_CLASSDEC ); }
-        public boolean hasNamespaceOption() { return hasValue( OPT_NAMESPACE ); }
-        public Resource getNamespaceOption() { return getResource( OPT_NAMESPACE ); }
-        public boolean hasDeclarationsOption() { return hasValue( OPT_DECLARATIONS ); }
-        public String getDeclarationsOption() { return getValue( OPT_DECLARATIONS ); }
-        public boolean hasPropertySectionOption() { return hasValue( OPT_PROPERTY_SECTION ); }
-        public String getPropertySectionOption() { return getValue( OPT_PROPERTY_SECTION ); }
-        public boolean hasClassSectionOption() { return hasValue( OPT_CLASS_SECTION ); }
-        public String getClassSectionOption() { return getValue( OPT_CLASS_SECTION ); }
-        public boolean hasIndividualsSectionOption() { return hasValue( OPT_INDIVIDUALS_SECTION ); }
-        public String getIndividualsSectionOption() { return getValue( OPT_INDIVIDUALS_SECTION ); }
-        public boolean hasNopropertiesOption() { return isTrue( OPT_NOPROPERTIES ); }
-        public boolean hasNoclassesOption() { return isTrue( OPT_NOCLASSES ); }
-        public boolean hasNoindividualsOption() { return isTrue( OPT_NOINDIVIDUALS ); }
-        public boolean hasPropTemplateOption() { return hasValue( OPT_PROP_TEMPLATE ); }
-        public String getPropTemplateOption() { return getValue( OPT_PROP_TEMPLATE ); }
-        public boolean hasClassTemplateOption() { return hasValue( OPT_CLASS_TEMPLATE ); }
-        public String getClassTemplateOption() { return getValue( OPT_CLASS_TEMPLATE ); }
-        public boolean hasIndividualTemplateOption() { return hasValue( OPT_INDIVIDUAL_TEMPLATE ); }
-        public String getIndividualTemplateOption() { return getValue( OPT_INDIVIDUAL_TEMPLATE ); }
-        public boolean hasUcNamesOption() { return isTrue( OPT_UC_NAMES ); }
-        public boolean hasIncludeOption() { return hasValue( OPT_INCLUDE ); }
-        public List<String> getIncludeOption() { return getAllValues( OPT_INCLUDE ); }
-        public boolean hasClassnameSuffixOption() { return hasValue( OPT_CLASSNAME_SUFFIX ); }
-        public String getClassnameSuffixOption() { return getValue( OPT_CLASSNAME_SUFFIX ); }
-        public boolean hasNoheaderOption() { return isTrue( OPT_NOHEADER ); }
-        public boolean hasEncodingOption() { return hasValue( OPT_ENCODING ); }
-        public String getEncodingOption() { return getValue( OPT_ENCODING ); }
-        public boolean hasHelpOption() { return hasValue( OPT_HELP ); }
-        public String getHelpOption() { return getValue( OPT_HELP ); }
-        public boolean hasDosOption() { return isTrue( OPT_DOS ); }
-        public boolean hasUseInfOption() { return isTrue( OPT_USE_INF ); }
-        public boolean hasStrictIndividualsOption() { return isTrue( OPT_STRICT_INDIVIDUALS ); }
-        public boolean hasIncludeSourceOption() { return isTrue( OPT_INCLUDE_SOURCE ); }
-        public boolean hasNoStrictOption() { return isTrue( OPT_NO_STRICT ); }
+        public boolean hasConfigFileOption() { return hasValue( OPT.CONFIG_FILE ); }
+        public String getConfigFileOption() { return getValue( OPT.CONFIG_FILE ); }
+        public boolean hasRootOption() { return hasValue( OPT.ROOT ); }
+        public String getRootOption() { return getValue( OPT.ROOT ); }
+        public boolean hasNoCommentsOption() { return isTrue( OPT.NO_COMMENTS ); }
+        public String getNoCommentsOption() { return getValue( OPT.NO_COMMENTS ); }
+        public boolean hasInputOption() { return hasValue( OPT.INPUT ); }
+        public Resource getInputOption() { return getResource( OPT.INPUT ); }
+        public boolean hasLangDamlOption() { return isTrue( OPT.LANG_DAML ); }
+        public String getLangDamlOption() { return getValue( OPT.LANG_DAML ); }
+        public boolean hasLangOwlOption() { return isTrue( OPT.LANG_OWL ); }
+        public String getLangOwlOption() { return getValue( OPT.LANG_OWL ); }
+        public boolean hasLangRdfsOption() { return isTrue( OPT.LANG_RDFS ); }
+        public String getLangRdfsOption() { return getValue( OPT.LANG_RDFS ); }
+        public boolean hasOutputOption() { return hasValue( OPT.OUTPUT ); }
+        public String getOutputOption() { return getValue( OPT.OUTPUT ); }
+        public boolean hasHeaderOption() { return isTrue( OPT.HEADER ); }
+        public String getHeaderOption() { return getValue( OPT.HEADER ); }
+        public boolean hasFooterOption() { return isTrue( OPT.FOOTER ); }
+        public String getFooterOption() { return getValue( OPT.FOOTER ); }
+        public boolean hasMarkerOption() { return hasValue( OPT.MARKER ); }
+        public String getMarkerOption() { return getValue( OPT.MARKER ); }
+        public boolean hasPackagenameOption() { return hasValue( OPT.PACKAGENAME ); }
+        public String getPackagenameOption() { return getValue( OPT.PACKAGENAME ); }
+        public boolean hasOntologyOption() { return isTrue( OPT.ONTOLOGY ); }
+        public String getOntologyOption() { return getValue( OPT.ONTOLOGY ); }
+        public boolean hasClassnameOption() { return hasValue( OPT.CLASSNAME ); }
+        public String getClassnameOption() { return getValue( OPT.CLASSNAME ); }
+        public boolean hasClassdecOption() { return hasValue( OPT.CLASSDEC ); }
+        public String getClassdecOption() { return getValue( OPT.CLASSDEC ); }
+        public boolean hasNamespaceOption() { return hasValue( OPT.NAMESPACE ); }
+        public Resource getNamespaceOption() { return getResource( OPT.NAMESPACE ); }
+        public boolean hasDeclarationsOption() { return hasValue( OPT.DECLARATIONS ); }
+        public String getDeclarationsOption() { return getValue( OPT.DECLARATIONS ); }
+        public boolean hasPropertySectionOption() { return hasValue( OPT.PROPERTY_SECTION ); }
+        public String getPropertySectionOption() { return getValue( OPT.PROPERTY_SECTION ); }
+        public boolean hasClassSectionOption() { return hasValue( OPT.CLASS_SECTION ); }
+        public String getClassSectionOption() { return getValue( OPT.CLASS_SECTION ); }
+        public boolean hasIndividualsSectionOption() { return hasValue( OPT.INDIVIDUALS_SECTION ); }
+        public String getIndividualsSectionOption() { return getValue( OPT.INDIVIDUALS_SECTION ); }
+        public boolean hasNopropertiesOption() { return isTrue( OPT.NOPROPERTIES ); }
+        public boolean hasNoclassesOption() { return isTrue( OPT.NOCLASSES ); }
+        public boolean hasNoindividualsOption() { return isTrue( OPT.NOINDIVIDUALS ); }
+        public boolean hasPropTemplateOption() { return hasValue( OPT.PROP_TEMPLATE ); }
+        public String getPropTemplateOption() { return getValue( OPT.PROP_TEMPLATE ); }
+        public boolean hasClassTemplateOption() { return hasValue( OPT.CLASS_TEMPLATE ); }
+        public String getClassTemplateOption() { return getValue( OPT.CLASS_TEMPLATE ); }
+        public boolean hasIndividualTemplateOption() { return hasValue( OPT.INDIVIDUAL_TEMPLATE ); }
+        public String getIndividualTemplateOption() { return getValue( OPT.INDIVIDUAL_TEMPLATE ); }
+        public boolean hasUcNamesOption() { return isTrue( OPT.UC_NAMES ); }
+        public boolean hasIncludeOption() { return hasValue( OPT.INCLUDE ); }
+        public List<String> getIncludeOption() { return getAllValues( OPT.INCLUDE ); }
+        public boolean hasClassnameSuffixOption() { return hasValue( OPT.CLASSNAME_SUFFIX ); }
+        public String getClassnameSuffixOption() { return getValue( OPT.CLASSNAME_SUFFIX ); }
+        public boolean hasNoheaderOption() { return isTrue( OPT.NOHEADER ); }
+        public boolean hasEncodingOption() { return hasValue( OPT.ENCODING ); }
+        public String getEncodingOption() { return getValue( OPT.ENCODING ); }
+        public boolean hasHelpOption() { return hasValue( OPT.HELP ); }
+        public String getHelpOption() { return getValue( OPT.HELP ); }
+        public boolean hasDosOption() { return isTrue( OPT.DOS ); }
+        public boolean hasUseInfOption() { return isTrue( OPT.USE_INF ); }
+        public boolean hasStrictIndividualsOption() { return isTrue( OPT.STRICT_INDIVIDUALS ); }
+        public boolean hasIncludeSourceOption() { return isTrue( OPT.INCLUDE_SOURCE ); }
+        public boolean hasNoStrictOption() { return isTrue( OPT.NO_STRICT ); }
     }
 
     /** An option that can be set either on the command line or in the RDF config */
