@@ -208,6 +208,39 @@
         mf:result  <count-23.srx>
       ]
 
+
+      [  mf:name    "Sum - 1 - sum(?v)" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <sum-01.arq> ;
+              qt:data   <data-1.ttl> ] ;
+        mf:result  <sum-01.srj>
+      ]
+
+      [  mf:name    "Min - 1 - min(?v)" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <min-01.arq> ;
+              qt:data   <data-1.ttl> ] ;
+        mf:result  <min-01.srj>
+      ]
+
+      [  mf:name    "Max - 1 - max(?v)" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <max-01.arq> ;
+              qt:data   <data-1.ttl> ] ;
+        mf:result  <max-01.srj>
+      ]
+
+      [  mf:name    "Avg - 1 - avg(?v)" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <avg-01.arq> ;
+              qt:data   <data-1.ttl> ] ;
+        mf:result  <avg-01.srj>
+      ]
+
     ## HAVING
 
       [  mf:name    "Having - 1" ;
