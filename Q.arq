@@ -1,7 +1,6 @@
-PREFIX foaf: <http://xmlns.com/foaf/0.1/>
-SELECT (SUM(?age) AS ?sum)
+SELECT *
 {
-   ?x a foaf:Person;
-        foaf:age ?age.
+  {SELECT * {?s ?p ?o } LIMIT 500}
+  UNION 
+  {SELECT * {GRAPH ?g {?s ?p ?o }} LIMIT 500}
 }
-
