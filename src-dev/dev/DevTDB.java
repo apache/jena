@@ -5,6 +5,8 @@ public class DevTDB
     // == 0.8.5
     // IRI checking - sort out error and warnings.
     // Loading from an InputStream (other than stdin) 
+    // No checking loading.
+    // tdbloader from quads?
     
     // Tuples
     // Interface, TupleFactory, TupleImpl

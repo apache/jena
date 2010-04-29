@@ -20,7 +20,7 @@ class LoadMonitor
 {
     private final Logger log ;
     private final DatasetGraph dataset ;
-    private final long superTick = 2 ;
+    private final long superTick = 10 ;
     private final long dataTickPoint ;
     private final long indexTickPoint ;
     protected final Timer timer ;
