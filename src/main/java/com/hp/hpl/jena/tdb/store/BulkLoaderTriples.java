@@ -52,7 +52,7 @@ import com.hp.hpl.jena.util.FileManager ;
  * Not efficent for small, incremental additions to a graph.  
  */
 
-public class BulkLoaderTriples
+class BulkLoaderTriples
 {
     private GraphTDB graph ;
     private Symbol symTesting = SystemTDB.allocSymbol("testing") ;

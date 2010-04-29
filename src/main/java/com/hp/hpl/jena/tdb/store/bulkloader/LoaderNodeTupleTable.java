@@ -43,17 +43,17 @@ public class LoaderNodeTupleTable implements Closeable, Sync
     private boolean dropAndRebuildIndexes ;
     //private Timer timer ;
     private long count = 0 ;
-    private String itemName ;
+    private String itemsName ;
     
     static private Logger logLoad = LoggerFactory.getLogger("com.hp.hpl.jena.tdb.loader") ;
 
-    public LoaderNodeTupleTable(NodeTupleTable nodeTupleTable, String itemName, LoadMonitor monitor)
+    public LoaderNodeTupleTable(NodeTupleTable nodeTupleTable, String itemsName, LoadMonitor monitor)
     {
         this.nodeTupleTable = nodeTupleTable ;
         this.monitor = monitor ;
         this.doIncremental = false ;        // Until we know it's safe.
         this.generateStats = false ;
-        this.itemName = itemName ;          // "triples", "quads", "tuples" (plural)
+        this.itemsName = itemsName ;          // "triples", "quads", "tuples" (plural)
     }
 
     // -- LoaderFramework
@@ -66,21 +66,18 @@ public class LoaderNodeTupleTable implements Closeable, Sync
 
         if ( dropAndRebuildIndexes )
         {
-            monitor.print("** Load empty %s table", itemName) ;
+            monitor.print("** Load empty %s table", itemsName) ;
             // SPO only.
             dropSecondaryIndexes() ;
         }
         else
         {
-            monitor.print("** Load into table with existing data") ;
+            monitor.print("** Load into %s table with existing data", itemsName) ;
             generateStats = false ;
         }
 
         if ( generateStats )
             statsPrepare() ;
-        
-//        timer = new Timer() ;
-//        timer.startTimer() ;
     }
         
     protected void loadSecondaryIndexes()
@@ -89,30 +86,20 @@ public class LoaderNodeTupleTable implements Closeable, Sync
             statsFinalize() ;
 
         if ( dropAndRebuildIndexes )
-        {
-            monitor.print("-- Start index phase") ;
             // Now do secondary indexes.
             createSecondaryIndexes() ;
-            monitor.print("-- Finish index phase") ;
-        }
-
-//        long time = timer.getTimeInterval() ;
-//        if ( showProgress )
-//        {
-//            long tps = 1000*count/time ;
-//            println() ;
-//            printf("Time for load: %.2fs [%,d triples/s]\n", time/1000.0, tps) ;
-//        }
     }
 
     // XXX
     protected void statsPrepare() {}
     protected void statsFinalize() {}
 
+    public void loadStart()     { monitor.startLoad() ; }
+    public void loadFinish()    { monitor.finishLoad() ; }
+    
     /** Notify start of loading process */
-    public void loadStart()
+    public void loadDataStart()
     {
-        monitor.startLoad() ;
         monitor.startDataPhase() ;
         loadPrepare() ;
     }
@@ -129,19 +116,28 @@ public class LoaderNodeTupleTable implements Closeable, Sync
     /** Notify End of data to load - this operation may 
      * undertake a significant amount of work.
      */
-    public void loadFinish()
+    public void loadDataFinish()
     {
         monitor.finishDataPhase() ;
+    }
+    
+    public void loadIndexStart()
+    {
         if ( count > 0 )
         {
             // Do index phase only if any items seen. 
             monitor.startIndexPhase() ;
             loadSecondaryIndexes() ;
-            monitor.finishIndexPhase() ;
         }
-        monitor.finishLoad() ;
     }
 
+    public void loadIndexFinish()
+    {
+        if ( count > 0 )
+            monitor.finishIndexPhase() ;
+    }
+    
+    
     public void sync(boolean force) {}
     public void sync() {}
     

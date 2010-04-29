@@ -39,8 +39,6 @@ import com.hp.hpl.jena.riot.tokens.TokenizerFactory ;
 import com.hp.hpl.jena.sparql.algebra.Algebra ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.Transformer ;
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.engine.Plan ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingRoot ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
@@ -49,13 +47,13 @@ import com.hp.hpl.jena.sparql.util.IndentedWriter ;
 import com.hp.hpl.jena.sparql.util.QueryExecUtils ;
 import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.TDBFactory ;
+import com.hp.hpl.jena.tdb.TDBLoader ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
 import com.hp.hpl.jena.tdb.solver.QueryEngineTDB ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
 import com.hp.hpl.jena.tdb.store.TransformDynamicDataset ;
 import com.hp.hpl.jena.tdb.store.bulkloader.BulkLoader ;
-import com.hp.hpl.jena.tdb.store.bulkloader.Destination ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 import com.hp.hpl.jena.util.FileManager ;
 
@@ -73,9 +71,8 @@ public class RunTDB
 
     public static void main(String[] args) throws IOException
     {
-        DatasetGraph dsg = TDBFactory.createDataset().asDatasetGraph() ;
-        
-        InputStream in = IO.openFile("/home/afs/Datasets/MusicBrainz/tracks-10k.nt") ; 
+        DatasetGraphTDB dsg = (DatasetGraphTDB)TDBFactory.createDataset().asDatasetGraph() ;
+        String filename = "/home/afs/Datasets/MusicBrainz/tracks-10k.nt" ; 
 
         EventListener listener = new EventListener() {
             public void event(Object dest, Event event)
@@ -86,33 +83,23 @@ public class RunTDB
             
 
         // Testing.
-        EventManager.register(null, BulkLoader.evStartBulkload, listener) ;
-        EventManager.register(null, BulkLoader.evFinishBulkload, listener) ;
-
-        EventManager.register(null, BulkLoader.evStartDataBulkload, listener) ;
-        EventManager.register(null, BulkLoader.evFinishDataBulkload, listener) ;
-
-        EventManager.register(null, BulkLoader.evStartIndexBulkload, listener) ;
-        EventManager.register(null, BulkLoader.evFinishIndexBulkload, listener) ;
+        if ( false )
+        {
+            EventManager.register(null, BulkLoader.evStartBulkload, listener) ;
+            EventManager.register(null, BulkLoader.evFinishBulkload, listener) ;
+    
+            EventManager.register(null, BulkLoader.evStartDataBulkload, listener) ;
+            EventManager.register(null, BulkLoader.evFinishDataBulkload, listener) ;
+    
+            EventManager.register(null, BulkLoader.evStartIndexBulkload, listener) ;
+            EventManager.register(null, BulkLoader.evFinishIndexBulkload, listener) ;
+        }
         
         boolean asTriples = true ;
         if ( asTriples )
-        {
-            Destination<Triple> dest = BulkLoader.loadTriples((DatasetGraphTDB)dsg, true) ;
-            LangRIOT parser = ParserFactory.createParserNTriples(in, dest) ;
-            dest.start() ;
-            parser.parse() ;
-            dest.finish() ;
-            
-        }
+            TDBLoader.load(dsg.getDefaultGraphTDB(), filename, true) ;
         else
-        {
-            Destination<Quad> dest = BulkLoader.loadQuads((DatasetGraphTDB)dsg, true) ;
-            LangRIOT parser = ParserFactory.createParserNQuads(in, dest) ;
-            dest.start() ;
-            parser.parse() ;
-            dest.finish() ;
-        }
+            TDBLoader.load(dsg, filename, true) ;
 
         if ( false )
         {

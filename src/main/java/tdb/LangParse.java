@@ -91,7 +91,6 @@ public abstract class LangParse<X> extends CmdGeneral
             if ( super.getPositional().size() > 1 && modTime.timingEnabled() )
                 output("Total", totalTriples, totalMillis) ;
         }
-        
     }
 
     public void parse(String filename)

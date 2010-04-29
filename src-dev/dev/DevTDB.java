@@ -3,7 +3,8 @@ package dev ;
 public class DevTDB
 {
     // == 0.8.5
-    // IRI checkign - sort out error and warnings.
+    // IRI checking - sort out error and warnings.
+    // Loading from an InputStream (other than stdin) 
     
     // Tuples
     // Interface, TupleFactory, TupleImpl

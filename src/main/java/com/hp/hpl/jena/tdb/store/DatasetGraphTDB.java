@@ -141,12 +141,12 @@ public class DatasetGraphTDB extends DatasetGraphCaching
 
     public GraphTDB getDefaultGraphTDB()
     {
-        return new GraphTriplesTDB(this, tripleTable, prefixes) ; 
+        return (GraphTDB)getDefaultGraph() ;
     }
 
     public GraphTDB getGraphTDB(Node graphNode)
     {
-        return new GraphNamedTDB(this, graphNode) ;
+        return (GraphTDB)getGraph(graphNode) ;
     }
 
     // The effective graph may not be the concrete storage one (e.g. union)

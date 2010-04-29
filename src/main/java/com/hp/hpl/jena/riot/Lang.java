@@ -51,7 +51,7 @@ public enum Lang
     public String getName() { return name ; }
     
     public boolean isTriples() { return isTriples ; }
-    public boolean isQuads() { return !isTriples ; }
+    public boolean isQuads() { return ! isTriples ; }
     
     @Override
     public String toString() { return "lang:"+name ; }

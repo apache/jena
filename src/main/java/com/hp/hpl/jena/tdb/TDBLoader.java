@@ -7,17 +7,16 @@
 
 package com.hp.hpl.jena.tdb;
 
-import java.io.InputStream ;
 import java.util.ArrayList ;
 import java.util.List ;
 
+import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.riot.Lang ;
 import com.hp.hpl.jena.sparql.util.Timer ;
-import com.hp.hpl.jena.tdb.store.BulkLoaderTriples ;
-import com.hp.hpl.jena.tdb.store.BulkLoaderDataset ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.store.GraphTDB ;
+import com.hp.hpl.jena.tdb.store.bulkloader.BulkLoader ;
 
 /** Public interfacr to the loader functionality */ 
 public class TDBLoader
@@ -25,24 +24,36 @@ public class TDBLoader
     
     // ---- Load dataset
 
-    /** Load the contents of URL into a dataset.  URL must name a quads format file (NQuads or TriG).
-     *  To a triples format, use @link{#load(GraphTDB, String)} 
+    /** Load the contents of URL into a dataset.  URL must name a quads format file (NQuads or TriG - NTriples is also accepted).
+     *  To a triples format, use @link{#load(GraphTDB, String)}
+     *  or @link{#loadTriples(DatasetGraphTDB, List<String>, boolean)}
     */
     public static void load(DatasetGraphTDB dataset, String url)
     {
         load(dataset, url, false) ;
     }
 
-    /** Load the contents of URL into a dataset.  URL must name a quads format file (NQuads or TriG).
+    /** Load the contents of URL into a dataset.  URL must name a quads format file (NQuads or TriG - NTriples is also accepted).
      *  To a triples format, use @link{#load(GraphTDB, String, boolean)} 
+     *  or @link{#loadTriples(DatasetGraphTDB, List<String>, boolean)}
     */
     public static void load(DatasetGraphTDB dataset, String url, boolean showProgress)
     {
         load(dataset, asList(url), showProgress) ;
     }
 
-    /** Load the contents of URL into a dataset.  URL must name a quads format file (NQuads or TriG).
+    /** Load the contents of URL into a dataset.  URL must name a quads format file (NQuads or TriG - NTriples is also accepted).
      *  To load a triples format, use @link{#load(GraphTDB, List<String>, boolean)} 
+     *  or @link{#loadTriples(DatasetGraphTDB, List<String>, boolean)} 
+    */
+    public static void load(DatasetGraphTDB dataset, List<String> urls)
+    {
+        load(dataset, urls, false) ;
+    }
+    
+    /** Load the contents of URL into a dataset.  URL must name a quads format file (NQuads or TriG - NTriples is also accepted).
+     *  To load a triples format, use @link{#load(GraphTDB, List<String>, boolean)} 
+     *  or @link{#loadTriples(DatasetGraphTDB, List<String>, boolean)} 
     */
     public static void load(DatasetGraphTDB dataset, List<String> urls, boolean showProgress)
     {
@@ -50,6 +61,7 @@ public class TDBLoader
         loader.setShowProgress(showProgress) ;
         loader.loadDataset(dataset, urls) ;
     }
+    
     
     /** Load the contents of URL into a graph */
     public static void load(GraphTDB graph, String url)
@@ -63,6 +75,12 @@ public class TDBLoader
         load(graph, asList(url), showProgress) ;
     }
 
+    /** Load the contents of URL into a graph */
+    public static void load(GraphTDB graph, List<String> urls)
+    {
+        load(graph, urls, false) ;
+    }
+    
     /** Load the contents of URL into a graph */
     public static void load(GraphTDB graph, List<String> urls, boolean showProgress)
     {
@@ -97,9 +115,10 @@ public class TDBLoader
                 System.out.printf("Load: %s\n", s) ;
             loadModel(model, s, showProgress) ;
         }
-
-        //long time = timer.endTimer() ;
-        //System.out.printf("Time for load: %.2fs [%,d triples/s]\n", time/1000.0, (triples/time)) ;
+        
+        long time = timer.endTimer() ;
+        if ( showProgress )
+            System.out.printf("Time for load: %.2fs\n", time/1000.0) ;
         model.close();
     }
     
@@ -108,50 +127,22 @@ public class TDBLoader
     private boolean showProgress = true ;
     private boolean generateStats = false ;
     
-    public TDBLoader() {}
+    // ---- The class itself.
     
-    public static List<String> asList(String string)
-    {
-        List<String> list = new ArrayList<String>() ;
-        list.add(string) ;
-        return list ;
-    }
+    public TDBLoader() {}
 
-    /** Load a graph from a URL - assumes URL names a triples format */
+    /** Load a graph from a URL - assumes URL names a triples format document*/
     public void loadGraph(GraphTDB graph, String url)
     {
         loadGraph(graph, asList(url)) ;
     }
     
     /** Load a graph from a list of URL - assumes the URLs name triples format documents */
-    private void loadGraph(GraphTDB graph, List<String> urls)
+    public void loadGraph(GraphTDB graph, List<String> urls)
     {
         loadGraph$(graph, urls) ;
     }
     
-    private void loadGraph$(GraphTDB graph, List<String> urls)
-    {
-        if ( false )
-        {
-            for ( String url : urls )
-            {
-                Lang lang = Lang.guess(url) ;
-                if ( lang != null && ! lang.isQuads() )
-                    throw new TDBException("Not a triples language") ;
-            }
-        }
-        BulkLoaderTriples bulkLoaderTriples = new BulkLoaderTriples(graph, showProgress, false, false, generateStats) ;
-        bulkLoaderTriples.load(urls) ;
-    }
-    
-    /** Load a graph from an input stream which must be N-Triples */
-    public void loadGraph(GraphTDB graph, InputStream input)
-    {
-        BulkLoaderTriples bulkLoaderTriples = new BulkLoaderTriples(graph, showProgress, false, false, generateStats) ;
-        bulkLoaderTriples.load(input) ;
-    }
-
-
     /** Load a dataset from a URL - assumes URL names a quads format */
     public void loadDataset(DatasetGraphTDB dataset, String url)
     {
@@ -161,38 +152,16 @@ public class TDBLoader
     /** Load a dataset from a list of URL - assumes the URLs name quads format documents */
     public void loadDataset(DatasetGraphTDB dataset, List<String> urls)
     {
-        for ( String url : urls )
-        {
-            if ( url.equals("-") )
-                continue ;
-            Lang lang = Lang.guess(url) ;
-            if ( lang == null || lang.isTriples() )
-                throw new TDBException("Not a quads language") ;
-        }
-
-        BulkLoaderDataset loader = new BulkLoaderDataset(dataset, showProgress, generateStats) ;
-        loader.load(urls) ;
-        
-//        // Placeholder for something clever
-//        for ( String url : urls )
-//        {
-//            if ( url.equals("-") )
-//            {
-//                loadDataset(dataset, System.in) ;
-//                continue ;
-//            }
-//            Lang lang = Lang.guess(url) ;
-//            InputStream input = IO.openFile(url) ; 
-//            DatasetLib.read(input,  dataset, lang, IRIResolver.chooseBaseURI(url).toString()) ; 
-//        }
+        // Triples languages are quads languages so no test for quad-ness needed.
+        loadDataset$(dataset, urls, showProgress) ;
     }
     
-    /** Load a dataset from an input steram which must be in N-Quads form */
-    public void loadDataset(DatasetGraphTDB dataset, InputStream input)
-    {
-        BulkLoaderDataset loader = new BulkLoaderDataset(dataset, showProgress, generateStats) ;
-        loader.load(input, Lang.NQUADS, null) ; 
-    }
+//    /** Load a dataset from an input steram which must be in N-Quads form */
+//    public void loadDataset(DatasetGraphTDB dataset, InputStream input)
+//    {
+//        BulkLoaderDataset loader = new BulkLoaderDataset(dataset, showProgress, generateStats) ;
+//        loader.load(input, Lang.NQUADS, null) ; 
+//    }
 
     public boolean getShowProgress()  
     { return showProgress ; }
@@ -206,10 +175,51 @@ public class TDBLoader
     public final void setGenerateStats(boolean generateStats)
     { this.generateStats = generateStats ; }
     
+    private void loadGraph$(GraphTDB graph, List<String> urls)
+    {
+        if ( false )
+        {
+            for ( String url : urls )
+            {
+                Lang lang = Lang.guess(url) ;
+                if ( lang != null && ! lang.isQuads() )
+                    throw new TDBException("Not a triples language") ;
+            }
+        }
+        
+        if ( graph.getGraphNode() == null )
+            loadDefaultGraph$(graph.getDataset(), urls, showProgress) ;
+        else
+            loadNamedGraph$(graph.getDataset(), graph.getGraphNode(), urls, showProgress) ;
+    }
+
+    // These are the basic operations.
+    private static void loadDefaultGraph$(DatasetGraphTDB dataset, List<String> urls, boolean showProgress)
+    {
+        BulkLoader.loadDefaultGraph(dataset, urls, showProgress) ;
+    }
+
+    private static void loadNamedGraph$(DatasetGraphTDB dataset, Node graphName, List<String> urls, boolean showProgress)
+    {
+        BulkLoader.loadNamedGraph(dataset, graphName, urls, showProgress) ;
+    }
+
+    private static void loadDataset$(DatasetGraphTDB dataset, List<String> urls, boolean showProgress)
+    {
+        BulkLoader.loadDataset(dataset, urls, showProgress) ;
+    }
+
     /** Load any model, not necessarily efficiently. */ 
     private static void loadAnything(Model model, String url, boolean showProgress)
     {
         model.read(url) ;
+    }
+
+    private static List<String> asList(String string)
+    {
+        List<String> list = new ArrayList<String>() ;
+        list.add(string) ;
+        return list ;
     }
 }
 
