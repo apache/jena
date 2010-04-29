@@ -43,15 +43,17 @@ public class LoaderNodeTupleTable implements Closeable, Sync
     private boolean dropAndRebuildIndexes ;
     //private Timer timer ;
     private long count = 0 ;
+    private String itemName ;
     
     static private Logger logLoad = LoggerFactory.getLogger("com.hp.hpl.jena.tdb.loader") ;
 
-    public LoaderNodeTupleTable(NodeTupleTable nodeTupleTable, LoadMonitor monitor)
+    public LoaderNodeTupleTable(NodeTupleTable nodeTupleTable, String itemName, LoadMonitor monitor)
     {
         this.nodeTupleTable = nodeTupleTable ;
         this.monitor = monitor ;
-        this.doIncremental = false ;    // Until we know it's safe.
+        this.doIncremental = false ;        // Until we know it's safe.
         this.generateStats = false ;
+        this.itemName = itemName ;          // "triples", "quads", "tuples" (plural)
     }
 
     // -- LoaderFramework
@@ -64,7 +66,7 @@ public class LoaderNodeTupleTable implements Closeable, Sync
 
         if ( dropAndRebuildIndexes )
         {
-            monitor.print("** Load empty table") ;
+            monitor.print("** Load empty %s table", itemName) ;
             // SPO only.
             dropSecondaryIndexes() ;
         }
@@ -119,6 +121,8 @@ public class LoaderNodeTupleTable implements Closeable, Sync
     public void load(Node... nodes)
     {
         count++ ;
+        monitor.dataItem() ;
+        // SuperTick??
         nodeTupleTable.addRow(nodes) ;
     }
     
@@ -237,7 +241,7 @@ public class LoaderNodeTupleTable implements Closeable, Sync
         if ( cumulative > 0 )
         {
             if ( totalTime > 0 )
-                monitor.print("Index %s: %,d triples indexed in %,.2fs [%,d slots/s]", 
+                monitor.print("Index %s: %,d slots indexed in %,.2fs [%,d slots/s]", 
                               label, cumulative, totalTime/1000.0, 1000*cumulative/totalTime) ;
             else
                 monitor.print("Index %s: %,d triples indexed in %,.2fs", label, cumulative, totalTime/1000.0) ;

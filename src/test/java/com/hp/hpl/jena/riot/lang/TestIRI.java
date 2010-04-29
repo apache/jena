@@ -45,6 +45,9 @@ public class TestIRI
     @Test(expected=ExWarning.class) 
     public void iriErr2()  { test("http:///::") ; }
 
+    @Test(expected=ExWarning.class) 
+    public void iriErr3()  { test("http://example/.") ; }
+
     
     private void test(String uriStr)
     {

@@ -47,7 +47,7 @@ public final class Checker
     }
     
     private boolean allowRelativeIRIs = false ;
-    private boolean warningsAreErrors = true ;
+    private boolean warningsAreErrors = false ;
     private ErrorHandler handler ;
 
     public Checker()
@@ -217,6 +217,7 @@ public final class Checker
         if ( iri.hasViolation(true) )
         {
             Iterator<Violation> iter = iri.violations(true) ; 
+            
             boolean errorSeen = false ;
             boolean warningSeen = false ;
             
@@ -262,10 +263,16 @@ public final class Checker
                     v.getComponent() == IRIComponents.SCHEME)
                 {
                     if (! allowRelativeIRIs )
-                        handler.warning("Relative URIs are not permitted in RDF: specifically <"+iriStr+">", line, col);
+                        handler.error("Relative URIs are not permitted in RDF: specifically <"+iriStr+">", line, col);
                 } 
                 else
-                    handler.warning("Bad IRI: "+msg, line, col);
+                {
+                    if ( v.isError() )
+                        // We will treat as an error in a moment.
+                        handler.warning("Bad IRI: "+msg, line, col);
+                    else
+                        handler.warning("Not advised IRI: "+msg, line, col);
+                }
             }
             
             // and report our choosen error.

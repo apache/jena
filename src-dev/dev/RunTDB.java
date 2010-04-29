@@ -11,6 +11,9 @@ import java.io.InputStream ;
 import java.util.HashSet ;
 import java.util.Set ;
 
+import org.openjena.atlas.event.Event ;
+import org.openjena.atlas.event.EventListener ;
+import org.openjena.atlas.event.EventManager ;
 import org.openjena.atlas.io.IO ;
 import org.openjena.atlas.iterator.Filter ;
 import org.openjena.atlas.lib.Sink ;
@@ -74,6 +77,24 @@ public class RunTDB
         
         InputStream in = IO.openFile("/home/afs/Datasets/MusicBrainz/tracks-10k.nt") ; 
 
+        EventListener listener = new EventListener() {
+            public void event(Object dest, Event event)
+            {
+                System.out.printf("%s\n", event.getType()) ;
+            }
+        } ;
+            
+
+        // Testing.
+        EventManager.register(null, BulkLoader.evStartBulkload, listener) ;
+        EventManager.register(null, BulkLoader.evFinishBulkload, listener) ;
+
+        EventManager.register(null, BulkLoader.evStartDataBulkload, listener) ;
+        EventManager.register(null, BulkLoader.evFinishDataBulkload, listener) ;
+
+        EventManager.register(null, BulkLoader.evStartIndexBulkload, listener) ;
+        EventManager.register(null, BulkLoader.evFinishIndexBulkload, listener) ;
+        
         boolean asTriples = true ;
         if ( asTriples )
         {

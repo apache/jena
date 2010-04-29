@@ -17,6 +17,7 @@ import java.util.Map ;
  */
 public class EventManager
 {
+    
     private static EventManager eventManager = new EventManager() ;
     
     // Public operations 
@@ -36,18 +37,22 @@ public class EventManager
     
     // ---- The object EventManager itself
     
-    private Map<Object, Map<EventType, List<EventListener>>> listeners = new HashMap<Object, Map<EventType, List<EventListener>>>() ;
+    // There are 2 event sets: one for specific objects and one for general event types (no object)  
+    private Map<Object, Map<EventType, List<EventListener>>> listenersByObject = new HashMap<Object, Map<EventType, List<EventListener>>>() ;
+    private Map<EventType, List<EventListener>> listenersAllObjects = new HashMap<EventType, List<EventListener>>() ;
 
     // Singleton above.
     private EventManager () {}
     
     private void register$(Object object, EventType type, EventListener listener) 
     {
-        Map<EventType, List<EventListener>> x = listeners.get(object) ;
+        
+        Map<EventType, List<EventListener>> x = get(object) ;
         if ( x == null )
         {
+            // Because listeners2 is never null.
             x = new HashMap<EventType, List<EventListener>> () ;
-            listeners.put(object, x) ;
+            listenersByObject.put(object, x) ;
         }
         List<EventListener> z = x.get(type) ;
         if ( z == null )
@@ -66,31 +71,67 @@ public class EventManager
             return ;
         x.remove(listener);
         // if the list has gone to zero, remove it. 
-        if ( x.size() == 0 )
-            listeners.get(object).remove(type) ; 
+        if ( x.size() != 0 )
+            return ;
+
+        if ( object == null )
+        {
+            listenersAllObjects.remove(type) ;
+            return ;
+        }
+
+        listenersByObject.get(object).remove(type) ; 
         // if the map for this object has gone to zero, remove it.
-        if ( listeners.get(object).size() == 0 )
-            listeners.remove(object) ;
+        if ( listenersByObject.get(object).size() == 0 )
+            listenersByObject.remove(object) ;
     }
     
     private void send$(Object dest, Event event)
     {
-        List<EventListener> x = find(dest, event.getType()) ;
-        if ( x == null ) 
+        // Send on the specific object channel. 
+        if ( dest != null )
         {
-            deliveryFailure(dest, event) ;
-            return ;
+            Map<EventType, List<EventListener>> map = listenersByObject.get(dest) ;
+            if ( map != null )
+                send(dest, event, map) ;
         }
-        for ( EventListener listener : x )
-            listener.event(dest, event) ;
+
+//        // Check.
+//            List<EventListener> x = find(dest, event.getType()) ;
+//        if ( x == null ) 
+//        {
+//            deliveryFailure(dest, event) ;
+//            return ;
+//        }
+
+        // Now send on the "all objects channel"
+        send(dest, event, listenersAllObjects) ;
+    }
+    
+    private void send(Object dest, Event event, Map<EventType, List<EventListener>> listeners)
+    {
+        List<EventListener> x = listeners.get(event.getType()) ;
+        if ( x != null )
+        {
+            for ( EventListener listener : x )
+                listener.event(dest, event) ;
+        }
     }
     
     private void deliveryFailure(Object object, Event event)
     {}
     
+    private Map<EventType, List<EventListener>> get(Object object)
+    {
+        if ( object == null )
+            return listenersAllObjects ;
+        else
+            return listenersByObject.get(object) ;
+    }
+
     private List<EventListener> find(Object object, EventType type)
     {
-        Map<EventType, List<EventListener>> x = listeners.get(object) ;
+        Map<EventType, List<EventListener>> x = get(object) ;
         if ( x == null )
             return null ;
         List<EventListener> z = x.get(type) ;

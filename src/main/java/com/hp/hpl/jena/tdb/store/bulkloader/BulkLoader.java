@@ -6,11 +6,6 @@
 
 package com.hp.hpl.jena.tdb.store.bulkloader;
 
-import java.util.Date ;
-
-import org.openjena.atlas.event.Event ;
-import org.openjena.atlas.event.EventListener ;
-import org.openjena.atlas.event.EventManager ;
 import org.openjena.atlas.event.EventType ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
@@ -18,7 +13,6 @@ import org.slf4j.LoggerFactory ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.sparql.core.Quad ;
-import com.hp.hpl.jena.sparql.util.StringUtils ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTupleTableView ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
@@ -26,25 +20,43 @@ import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 /** Overall framework for bulk loading */
 public class BulkLoader
 {
-    /*
-     * Process model
-     *   load start
-     *   data load start
-     *   data load finish
-     *   index building start
-     *   index building finish
-     *   load finish
-     * 
-     */
+    // Coordinate the NodeTupleTable loading.
+
+    /** Tick point for messages during loading of data */
+    public static final int LoadTickPoint = 1000 ;
+    /** Tick point for messages during secondary index creation */
+    public static final long IndexTickPoint = 5000 ;
+    
+    /** Number of ticks per super tick */
+    public static int superTick = 2 ;
+    
+    // Events.
+    //private static String baseNameGeneral = "http://openjena.org/TDB/event#" ;
+
+    private static String baseName = "http://openjena.org/TDB/bulkload/event#" ;
+    
+    
+    public static EventType evStartBulkload = new EventType(baseName+"start-bulkload") ;
+    public static EventType evFinishBulkload = new EventType(baseName+"finish-bulkload") ;
+
+    public static EventType evStartDataBulkload = new EventType(baseName+"start-bulkload-data") ;
+    public static EventType evFinishDataBulkload = new EventType(baseName+"finish-bulkload-data") ;
+    
+    public static EventType evStartIndexBulkload = new EventType(baseName+"start-bulkload-index") ;
+    public static EventType evFinishIndexBulkload = new EventType(baseName+"finish-bulkload-index") ;
+    
+    static private Logger loadLogger = LoggerFactory.getLogger("com.hp.hpl.jena.tdb.loader") ;
     
     // Event callbacks for the load stages?
     // On what object?  The dataset.
     
+    /** Load into default graph */
     public static Destination<Triple> loadTriples(DatasetGraphTDB dsg, boolean showProgress)
     {
         return loadTriples(dsg, dsg.getTripleTable().getNodeTupleTable(), showProgress) ;
     }
-    
+
+    /** Load into named graph */
     public static Destination<Triple> loadTriples(DatasetGraphTDB dsg, Node graphName, boolean showProgress)
     {
         NodeTupleTable ntt = dsg.getQuadTable().getNodeTupleTable() ;
@@ -52,75 +64,18 @@ public class BulkLoader
         return loadTriples(dsg, ntt2, showProgress) ;
     }
 
-    /** Tick point for messages during loading of data */
-    public static int LoadTickPoint = 1000 ;
-    /** Tick point for messages during secondary index creation */
-    public static long IndexTickPoint = 5000 ;
-    
-    /** Number of ticks per super tick */
-    public static int superTick = 2 ;
-
-    
-    // Events.
-    // Either one "bulkload" event with args for status or
-    // better hierarchies of event types.  Event type = list
-    
-    private static String baseNameGeneral = "http://openjena.org/TDB/event#" ;
-
-    private static String baseName = "http://openjena.org/TDB/bulkload/event#" ;
-    
-    
-    static EventType evStartBulkload = new EventType(baseName+"start-bulkload") ;
-    static EventType evFinishBulkload = new EventType(baseName+"finish-bulkload") ;
-
-    static EventType evStartDataBulkload = new EventType(baseName+"start-bulkload-data") ;
-    static EventType evFinishDataBulkload = new EventType(baseName+"finish-bulkload-data") ;
-    
-    static EventType evStartIndexBulkload = new EventType(baseName+"start-bulkload-index") ;
-    static EventType evFinishIndexBulkload = new EventType(baseName+"finish-bulkload-index") ;
-    
-    static private Logger loadLogger = LoggerFactory.getLogger("com.hp.hpl.jena.tdb.loader") ;
-    
-    static EventListener listener = new EventListener() {
-        public void event(Object dest, Event event)
-        {
-            System.out.printf("%s\n", event.getType()) ;
-        }
-    } ;
-        
-//    static class LoadEvent extends Event
-//    {
-//        public LoadEvent(Object argument)
-//        {
-//            super(evBulkload, argument) ;
-//        }
-//    }
-//        
-//    private void addListeners(DatasetGraph dsg)
-//    {
-//        EventManager.register(dsg, eventType, listener) ;
-//    }
-    
     private static Destination<Triple> loadTriples(final DatasetGraphTDB dsg, NodeTupleTable nodeTupleTable, final boolean showProgress)
     {
-        // Testing.
-        EventManager.register(dsg, evStartBulkload, listener) ;
-        EventManager.register(dsg, evFinishBulkload, listener) ;
-
-        EventManager.register(dsg, evStartDataBulkload, listener) ;
-        EventManager.register(dsg, evFinishDataBulkload, listener) ;
-
-        EventManager.register(dsg, evStartIndexBulkload, listener) ;
-        EventManager.register(dsg, evFinishIndexBulkload, listener) ;
-        
         final LoadMonitor monitor = (showProgress ? 
                                        new LoadMonitor(dsg, loadLogger, LoadTickPoint, IndexTickPoint) :
                                        new LoadMonitor(dsg, null, LoadTickPoint, IndexTickPoint) ) ;
 
         final LoaderNodeTupleTable x = new LoaderNodeTupleTable(dsg.getTripleTable().getNodeTupleTable(),
+                                                                "triples",
                                                                 monitor) ;
         
         Destination<Triple> sink = new Destination<Triple>() {
+            long count = 0 ;
             public void start()
             {
                 x.loadStart() ;
@@ -128,7 +83,7 @@ public class BulkLoader
             public void send(Triple triple)
             {
                 x.load(triple.getSubject(), triple.getPredicate(),  triple.getObject()) ;
-                monitor.dataItem() ;
+                count++ ;
             }
 
             public void flush() { }
@@ -144,10 +99,6 @@ public class BulkLoader
 
     public static Destination<Quad> loadQuads(final DatasetGraphTDB dsg, final boolean showProgress)
     {
-        
-        EventManager.register(dsg, evStartBulkload, listener) ;
-        EventManager.register(dsg, evFinishBulkload, listener) ;
-        
         final LoadMonitor monitor = (showProgress ? 
                                        new LoadMonitor(dsg, loadLogger, LoadTickPoint, IndexTickPoint) :
                                        new LoadMonitor(dsg, null, LoadTickPoint, IndexTickPoint) ) ;
@@ -155,12 +106,14 @@ public class BulkLoader
         
         final LoaderNodeTupleTable loaderTriples = new LoaderNodeTupleTable(
                                                                 dsg.getTripleTable().getNodeTupleTable(),
+                                                                "triples",
                                                                 monitor) ;
         final LoaderNodeTupleTable loaderQuads = new LoaderNodeTupleTable( 
                                                                  dsg.getQuadTable().getNodeTupleTable(),
+                                                                 "quads",
                                                                  monitor) ;
         Destination<Quad> sink = new Destination<Quad>() {
-            
+            long count = 0 ;
             public void start()
             {
                 loaderTriples.loadStart() ;
@@ -173,7 +126,7 @@ public class BulkLoader
                     loaderTriples.load(quad.getSubject(), quad.getPredicate(),  quad.getObject()) ;
                 else
                     loaderQuads.load(quad.getGraph(), quad.getSubject(), quad.getPredicate(),  quad.getObject()) ;
-                monitor.dataItem() ;
+                count++ ;
             }
 
             public void finish()
@@ -186,43 +139,6 @@ public class BulkLoader
             public void close() { }
         } ;
         return sink ;
-    }
-    
-    // Start
-    // data
-    // finish
-    
-    boolean showProgress = true ;
-    
-    // ---- Misc utilities
-    synchronized void printf(String fmt, Object... args)
-    {
-        if (!showProgress) return ;
-        System.out.printf(fmt, args) ;
-    }
-
-    synchronized void println()
-    {
-        if (!showProgress) return ;
-        System.out.println() ;
-    }
-
-    synchronized void println(String str)
-    {
-        if (!showProgress) return ;
-        System.out.println(str) ;
-    }
-
-    synchronized void now(String str)
-    {
-        if (!showProgress) return ;
-
-        if (str != null)
-        {
-            System.out.print(str) ;
-            System.out.print(" : ") ;
-        }
-        System.out.println(StringUtils.str(new Date())) ;
     }
 }
 

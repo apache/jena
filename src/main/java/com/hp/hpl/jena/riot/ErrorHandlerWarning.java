@@ -17,9 +17,12 @@ public class ErrorHandlerWarning extends ErrorHandlerLogger
         super(log) ;
     }
     
-    /** report an error */
+    /** report an error but continue */
     @Override
-    public void error(String message, long line, long col)       { log.warn(fmtMessage(message, line, col)) ; }
+    public void error(String message, long line, long col)
+    { 
+        log.error(fmtMessage(message, line, col)) ;
+    }
 }
 
 /*

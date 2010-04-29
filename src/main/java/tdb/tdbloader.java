@@ -9,32 +9,27 @@ package tdb;
 import java.util.List ;
 
 import org.openjena.atlas.logging.Log ;
-
 import tdb.cmdline.CmdTDB ;
 import tdb.cmdline.ModModel ;
 import arq.cmdline.ArgDecl ;
 
-import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.query.ARQ ;
-import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.riot.Lang ;
 import com.hp.hpl.jena.tdb.TDBLoader ;
-import com.hp.hpl.jena.tdb.store.BulkLoaderTriples ;
-import com.hp.hpl.jena.tdb.store.BulkLoaderDataset ;
 import com.hp.hpl.jena.tdb.store.GraphTDB ;
 
 public class tdbloader extends CmdTDB
 {
 //    private static final ArgDecl argGraphDeafult = new ArgDecl(ArgDecl.NoValue, "default") ;
     
-    private static final ArgDecl argParallel         = new ArgDecl(ArgDecl.NoValue, "parallel") ;
+//    private static final ArgDecl argParallel         = new ArgDecl(ArgDecl.NoValue, "parallel") ;
     private static final ArgDecl argIncremental      = new ArgDecl(ArgDecl.NoValue, "incr", "incremental") ;
     private static final ArgDecl argStats            = new ArgDecl(ArgDecl.NoValue, "stats") ;
     
     private static final ModModel modRDFS            = new ModModel("rdfs") ;
     
-    private boolean timing = true ;
-    private boolean doInParallel = false ;
+    private boolean showProgress = true ;
+//    private boolean doInParallel = false ;
     private boolean doIncremental = false ;
     private boolean generateStats = false ;
     
@@ -48,8 +43,8 @@ public class tdbloader extends CmdTDB
     {
         super(argv) ;
         
-        super.add(argParallel, "--parallel", "Do rebuilding of secondary indexes in a parallel") ;
-        super.add(argIncremental, "--incremental", "Do an incremental load (keep indexes during load, don't rebuild)") ;
+//        super.add(argParallel, "--parallel", "Do rebuilding of secondary indexes in a parallel") ;
+        super.add(argIncremental, "--incremental", "Do an incremental load (keep indexes during data load)") ;
         super.add(argStats, "--stats", "Generate statistics while loading (new graph only)") ;
         //super.addModule(modRDFS) ;
     }
@@ -58,7 +53,7 @@ public class tdbloader extends CmdTDB
     protected void processModulesAndArgs()
     {
         super.processModulesAndArgs() ;
-        doInParallel = super.contains(argParallel) ;
+//        doInParallel = super.contains(argParallel) ;
         doIncremental = super.contains(argIncremental) ;
         generateStats = super.contains(argStats) ;
     }
@@ -78,9 +73,9 @@ public class tdbloader extends CmdTDB
             System.out.println(ARQ.getContext()) ;
         }
         if ( isVerbose() )
-            timing = true ;
+            showProgress = true ;
         if ( isQuiet() )
-            timing = false ;
+            showProgress = false ;
         
         List<String> urls = getPositional() ;
         if ( urls.size() == 0 )
@@ -99,37 +94,50 @@ public class tdbloader extends CmdTDB
         
         if ( allTriples && graphName == null )
         {
-            Graph graph = getGraph() ;
-            BulkLoaderTriples loader = new BulkLoaderTriples((GraphTDB)graph, timing, doInParallel, doIncremental, generateStats) ;
-            loader.load(urls) ;
+            loadDefaultGraph(urls) ;
             return ;
         }
         
         if ( graphName == null )
         {
-            BulkLoaderDataset loader = new BulkLoaderDataset(getDatasetGraph(), timing, generateStats) ;
-            loader.load(urls) ;
-            return ;
-//            // Quads
-//            for ( String url : urls )
-//            {
-//                
-//                Lang lang = Lang.guess(url) ;
-//                DatasetLib.read(url, getDatasetGraph(), lang, url) ;
-//            }
-//            return ;
+            loadQuads(urls) ;
+            return ; 
         }
 
-        // Explicitly named graph
-        Model model = getModel() ;
-        for ( String url : urls )
+        // graphName != null
+        if ( ! allTriples )
         {
-            Lang lang = Lang.guess(url) ;
-            if ( lang != null && ! lang.isTriples() )
-                cmdError("Can only load triples into a named model: "+url) ;
+            for ( String url : urls )
+            {
+                Lang lang = Lang.guess(url) ;
+                if ( lang != null && ! lang.isTriples() )
+                    cmdError("Can only load triples into a named model: "+url) ;
+            }
+            cmdError("Internal error: deteched quad input but can't find it again") ;
+            return ;
         }
+        
+        loadNamedGraph(urls) ;
+    }
+    
+    void loadDefaultGraph(List<String> urls)
+    {
+        GraphTDB graph = getGraph() ;
+        TDBLoader.load(graph, urls, showProgress) ;
+        return ;
+    }
+    
+    void loadNamedGraph(List<String> urls)
+    {
+        GraphTDB graph = getGraph() ;
+        TDBLoader.load(graph, urls, showProgress) ;
+        return ;
+    }
 
-        TDBLoader.loadModel(model, urls, timing) ;
+    void loadQuads(List<String> urls)
+    {
+        TDBLoader.load(getDatasetGraph(), urls, showProgress) ;
+        return ;
     }
 }
 

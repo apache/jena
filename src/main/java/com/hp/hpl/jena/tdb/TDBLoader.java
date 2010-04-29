@@ -50,7 +50,7 @@ public class TDBLoader
         loader.setShowProgress(showProgress) ;
         loader.loadDataset(dataset, urls) ;
     }
-
+    
     /** Load the contents of URL into a graph */
     public static void load(GraphTDB graph, String url)
     {
@@ -63,7 +63,6 @@ public class TDBLoader
         load(graph, asList(url), showProgress) ;
     }
 
-
     /** Load the contents of URL into a graph */
     public static void load(GraphTDB graph, List<String> urls, boolean showProgress)
     {
@@ -71,25 +70,32 @@ public class TDBLoader
         loader.setShowProgress(showProgress) ;
         loader.loadGraph(graph, urls) ;
     }
+
+    /** Load the contents of URL into a model - may not be as efficient as bulk loading into a TDB graph  */
+    public static void loadModel(Model model, String url)
+    {
+        loadModel(model, url, false) ;
+    }
+    
+
     
     /** Load the contents of URL into a model - may not be as efficient as bulk loading into a TDB graph  */
-    public static long loadModel(Model model, String url, boolean showProgress)
+    public static void loadModel(Model model, String url, boolean showProgress)
     {
-        return BulkLoaderTriples.load(model, url, showProgress) ;
+        loadAnything(model, url, showProgress) ;
     }
 
-    /** Load the contents of a listy of URLs into a model - may not be as efficient as bulk loading into a TDB graph  */
+    /** Load the contents of a list of URLs into a model - may not be as efficient as bulk loading into a TDB graph  */
     public static void loadModel(Model model, List<String> urls, boolean showProgress)
     {
         Timer timer = new Timer() ;
         timer.startTimer() ;
-        long count = 0 ;
 
         for ( String s : urls )
         {
             if ( showProgress ) 
                 System.out.printf("Load: %s\n", s) ;
-            count += loadModel(model, s, showProgress) ;
+            loadModel(model, s, showProgress) ;
         }
 
         //long time = timer.endTimer() ;
@@ -104,7 +110,7 @@ public class TDBLoader
     
     public TDBLoader() {}
     
-    private static List<String> asList(String string)
+    public static List<String> asList(String string)
     {
         List<String> list = new ArrayList<String>() ;
         list.add(string) ;
@@ -118,7 +124,12 @@ public class TDBLoader
     }
     
     /** Load a graph from a list of URL - assumes the URLs name triples format documents */
-    public void loadGraph(GraphTDB graph, List<String> urls)
+    private void loadGraph(GraphTDB graph, List<String> urls)
+    {
+        loadGraph$(graph, urls) ;
+    }
+    
+    private void loadGraph$(GraphTDB graph, List<String> urls)
     {
         if ( false )
         {
@@ -195,7 +206,11 @@ public class TDBLoader
     public final void setGenerateStats(boolean generateStats)
     { this.generateStats = generateStats ; }
     
-    
+    /** Load any model, not necessarily efficiently. */ 
+    private static void loadAnything(Model model, String url, boolean showProgress)
+    {
+        model.read(url) ;
+    }
 }
 
 /*
