@@ -68,7 +68,7 @@ class LoadMonitor
 
         print("-- Finish %s load", itemsName) ;
         if ( totalTicks > 0 )
-            print("%,d %s loaded in %.2f seconds [Rate: %.2f per second]",
+            print("Completed: %,d %s loaded in %,.2f seconds [Rate: %,.2f per second]",
                   totalTicks,
                   itemsName,
                   processTime/1000.0F,
@@ -93,7 +93,7 @@ class LoadMonitor
         
         print("-- Finish %s data phase", itemsName) ;
         if ( totalTicks > 0 )
-            print("%,d %s loaded in %.2f seconds [Rate: %.2f per second]",
+            print("%,d %s loaded in %,.2f seconds [Rate: %,.2f per second]",
                   totalTicks,
                   itemsName,
                   dataTime/1000.0F,
@@ -116,7 +116,7 @@ class LoadMonitor
 
         print("-- Finish %s index phase", itemsName) ;
         if ( totalTicks > 0 )
-            print("%,d %s indexed in %.2f seconds [Rate: %.2f per second]",
+            print("%,d %s indexed in %,.2f seconds [Rate: %,.2f per second]",
                   totalTicks,
                   itemsName,
                   indexTime/1000.0F,
@@ -145,7 +145,7 @@ class LoadMonitor
 
         long batchAvgRate = (incTicks * 1000L) / thisTime;
         long runAvgRate   = (totalTicks * 1000L) / timePoint ;
-        print("Add: %,d %s (Batch: %d / Run: %d)", totalTicks, itemsName, batchAvgRate, runAvgRate) ;
+        print("Add: %,d %s (Batch: %,d / Run: %,d)", totalTicks, itemsName, batchAvgRate, runAvgRate) ;
         lastTime = timePoint ;
     }
 

@@ -146,11 +146,6 @@ public class LoaderNodeTupleTable implements Closeable, Sync
     public void close()
     { sync() ; }
 
-    /** Tick point for messages during loading of data */
-    public static int LoadTickPoint = 2000 ;
-    /** Tick point for messages during secodnary index creation */
-    public static long IndexTickPoint = 5000 ;
-    
     private void dropSecondaryIndexes()
     {
         // Remember first ...
@@ -189,7 +184,7 @@ public class LoaderNodeTupleTable implements Closeable, Sync
 
     static void copyIndex(Iterator<Tuple<NodeId>> srcIter, TupleIndex[] destIndexes, String label, LoadMonitor monitor)
     {
-        long quantum2 = 5*IndexTickPoint ;
+        long quantum2 = 5*(BulkLoader.IndexTickPoint) ;
         Timer timer = new Timer() ;
         long cumulative = 0 ;
         long c = 0 ;
@@ -206,7 +201,7 @@ public class LoaderNodeTupleTable implements Closeable, Sync
             }
             c++ ;
             cumulative++ ;
-            if ( tickPoint(cumulative,IndexTickPoint) )
+            if ( tickPoint(cumulative, BulkLoader.IndexTickPoint) )
             {
                 long t = timer.readTimer() ;
                 long batchTime = t-last ;

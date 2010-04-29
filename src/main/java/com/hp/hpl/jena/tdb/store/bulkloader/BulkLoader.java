@@ -32,9 +32,9 @@ public class BulkLoader
     // Coordinate the NodeTupleTable loading.
 
     /** Tick point for messages during loading of data */
-    public static final int LoadTickPoint = 1000 ;
+    public static final int LoadTickPoint = 50*1000 ;
     /** Tick point for messages during secondary index creation */
-    public static final long IndexTickPoint = 5000 ;
+    public static final long IndexTickPoint = 100*1000 ;
     
     /** Number of ticks per super tick */
     public static int superTick = 2 ;
