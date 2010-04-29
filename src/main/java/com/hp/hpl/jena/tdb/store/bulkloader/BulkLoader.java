@@ -149,6 +149,8 @@ public class BulkLoader
                 base = null ;
             Lang lang = Lang.get(url, Lang.NTRIPLES) ;
             LangRIOT parser = ParserFactory.createParserTriples(in, lang, base, dest) ;
+            // XXX
+            parser.setChecker(null) ;
             parser.parse() ;
         }            
         dest.finish() ;
@@ -169,6 +171,7 @@ public class BulkLoader
                 base = null ;
             Lang lang = Lang.get(url, Lang.NQUADS) ;
             LangRIOT parser = ParserFactory.createParserQuads(in, lang, base, dest) ;
+            parser.setChecker(null) ;
             parser.parse() ;
         }            
         dest.finish() ;
