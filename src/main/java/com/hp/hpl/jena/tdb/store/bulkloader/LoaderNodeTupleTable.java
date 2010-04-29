@@ -16,9 +16,6 @@ import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.sparql.util.StringUtils ;
-import com.hp.hpl.jena.sparql.util.Timer ;
-import com.hp.hpl.jena.sparql.util.Utils ;
 import com.hp.hpl.jena.tdb.index.TupleIndex ;
 import com.hp.hpl.jena.tdb.lib.Sync ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable ;
@@ -181,43 +178,19 @@ public class LoaderNodeTupleTable implements Closeable, Sync
     }
     
     private static Object lock = new Object() ;
-
+    
     static void copyIndex(Iterator<Tuple<NodeId>> srcIter, TupleIndex[] destIndexes, String label, LoadMonitor monitor)
     {
-        long quantum2 = 5*(BulkLoader.IndexTickPoint) ;
-        Timer timer = new Timer() ;
-        long cumulative = 0 ;
-        long c = 0 ;
-        long last = 0 ;
-        timer.startTimer() ;
-
+        monitor.startIndex(label) ;
+        
         for ( int counter = 0 ; srcIter.hasNext() ; counter++ )
         {
             Tuple<NodeId> tuple = srcIter.next();
+            monitor.indexItem() ;
             for ( TupleIndex destIdx : destIndexes )
             {
                 if ( destIdx != null )
                     destIdx.add(tuple) ;
-            }
-            c++ ;
-            cumulative++ ;
-            if ( tickPoint(cumulative, BulkLoader.IndexTickPoint) )
-            {
-                long t = timer.readTimer() ;
-                long batchTime = t-last ;
-                long elapsed = t ;
-                last = t ;
-                monitor.print("Index %s: %,d slots (Batch: %,d slots/s / Run: %,d slots/s)", 
-                       label, cumulative, 1000*c/batchTime, 1000*cumulative/elapsed) ;
-                if (tickPoint(cumulative, quantum2) )
-                {
-                    String timestamp = Utils.nowAsString() ;
-                    String x = StringUtils.str(elapsed/1000F) ;
-                    // Print elapsed.  Common formatting with GraphLoadMonitor - but now to share?
-                    monitor.print("  Elapsed: %s seconds [%s]", x, timestamp) ;
-                    //now(label) ; 
-                }
-                c = 0 ;
             }
         }
 
@@ -227,19 +200,69 @@ public class LoaderNodeTupleTable implements Closeable, Sync
                 destIdx.sync(true) ;
         }
 
-        long totalTime = timer.endTimer() ;
-
-        if ( cumulative > 0 )
-        {
-            if ( totalTime > 0 )
-                monitor.print("Index %s: %,d slots indexed in %,.2fs [%,d slots/s]", 
-                              label, cumulative, totalTime/1000.0, 1000*cumulative/totalTime) ;
-            else
-                monitor.print("Index %s: %,d triples indexed in %,.2fs", label, cumulative, totalTime/1000.0) ;
-        }
-        else
-            monitor.print("Index %s: 0 triples indexed", label) ;
+        monitor.finishIndex(label) ;
     }
+
+
+//    static void copyIndex(Iterator<Tuple<NodeId>> srcIter, TupleIndex[] destIndexes, String label, LoadMonitor monitor)
+//    {
+//        long quantum2 = 5*(BulkLoader.IndexTickPoint) ;
+//        Timer timer = new Timer() ;
+//        long cumulative = 0 ;
+//        long c = 0 ;
+//        long last = 0 ;
+//        timer.startTimer() ;
+//
+//        for ( int counter = 0 ; srcIter.hasNext() ; counter++ )
+//        {
+//            Tuple<NodeId> tuple = srcIter.next();
+//            for ( TupleIndex destIdx : destIndexes )
+//            {
+//                if ( destIdx != null )
+//                    destIdx.add(tuple) ;
+//            }
+//            
+//            c++ ;
+//            cumulative++ ;
+//            if ( tickPoint(cumulative, BulkLoader.IndexTickPoint) )
+//            {
+//                long t = timer.readTimer() ;
+//                long batchTime = t-last ;
+//                long elapsed = t ;
+//                last = t ;
+//                monitor.print("Index %s: %,d slots (Batch: %,d slots/s / Run: %,d slots/s)", 
+//                       label, cumulative, 1000*c/batchTime, 1000*cumulative/elapsed) ;
+//                if (tickPoint(cumulative, quantum2) )
+//                {
+//                    String timestamp = Utils.nowAsString() ;
+//                    String x = StringUtils.str(elapsed/1000F) ;
+//                    // Print elapsed.  Common formatting with GraphLoadMonitor - but now to share?
+//                    monitor.print("  Elapsed: %s seconds [%s]", x, timestamp) ;
+//                    //now(label) ; 
+//                }
+//                c = 0 ;
+//            }
+//        }
+//
+//        for ( TupleIndex destIdx : destIndexes )
+//        {
+//            if ( destIdx != null )
+//                destIdx.sync(true) ;
+//        }
+//        
+//        long totalTime = timer.endTimer() ;
+//
+//        if ( cumulative > 0 )
+//        {
+//            if ( totalTime > 0 )
+//                monitor.print("Index %s: %,d slots indexed in %,.2fs [%,d slots/s]", 
+//                              label, cumulative, totalTime/1000.0, 1000*cumulative/totalTime) ;
+//            else
+//                monitor.print("Index %s: %,d triples indexed in %,.2fs", label, cumulative, totalTime/1000.0) ;
+//        }
+//        else
+//            monitor.print("Index %s: 0 triples indexed", label) ;
+//    }
    
     private static boolean tickPoint(long counter, long quantum)
     {

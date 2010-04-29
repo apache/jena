@@ -12,9 +12,10 @@ import java.io.InputStream ;
 import java.util.List ;
 import java.util.Properties ;
 
+import org.apache.log4j.Level ;
+import org.apache.log4j.LogManager ;
 import org.apache.log4j.PropertyConfigurator ;
 import org.openjena.atlas.lib.StrUtils ;
-import org.openjena.atlas.logging.Log ;
 import tdb.cmdline.CmdTDB ;
 import tdb.cmdline.ModModel ;
 import arq.cmdline.ArgDecl ;
@@ -22,6 +23,7 @@ import arq.cmdline.ArgDecl ;
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.riot.Lang ;
 import com.hp.hpl.jena.sparql.util.StringUtils ;
+import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.TDBLoader ;
 import com.hp.hpl.jena.tdb.store.GraphTDB ;
 
@@ -43,7 +45,7 @@ public class tdbloader extends CmdTDB
     static public void main(String... argv)
     { 
         // Default the log4j setup.
-        Log.setLog4j() ;
+        //Log.setLog4j() ;
         if ( System.getProperty("log4j.configuration") == null )
         {
             // Turn off optimizer warning.
@@ -52,7 +54,7 @@ public class tdbloader extends CmdTDB
                                           "## Loader - custom output.",
                                           "log4j.appender.loader=org.apache.log4j.ConsoleAppender",
                                           "log4j.appender.loader.layout=org.apache.log4j.PatternLayout",
-                                          "log4j.appender.loader.layout.ConversionPattern=Loader: %m%n",
+                                          "log4j.appender.loader.layout.ConversionPattern=%m%n",
                                           "## Loader output",
                                           "log4j.additivity.com.hp.hpl.jena.tdb.loader=false",
                                           "log4j.logger.com.hp.hpl.jena.tdb.loader=ALL, loader") ;
@@ -60,6 +62,8 @@ public class tdbloader extends CmdTDB
             try { p.load(in) ; } catch (IOException ex) {}
             PropertyConfigurator.configure(p) ;
             
+            LogManager.getLogger(TDB.logInfoName).setLevel(Level.ERROR) ;
+            //Log.disable("com.hp.hpl.jena.tdb.info") ;
         }
         new tdbloader(argv).mainRun() ;
     }

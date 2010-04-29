@@ -95,6 +95,9 @@ public class RunTDB
             EventManager.register(null, BulkLoader.evFinishIndexBulkload, listener) ;
         }
         
+        BulkLoader.DataTickPoint = 1000 ;
+        BulkLoader.IndexTickPoint = 5000 ;
+        
         boolean asTriples = true ;
         if ( asTriples )
             TDBLoader.load(dsg.getDefaultGraphTDB(), filename, true) ;

@@ -32,9 +32,9 @@ public class BulkLoader
     // Coordinate the NodeTupleTable loading.
 
     /** Tick point for messages during loading of data */
-    public static final int LoadTickPoint = 50*1000 ;
+    public static int DataTickPoint = 50*1000 ;
     /** Tick point for messages during secondary index creation */
-    public static final long IndexTickPoint = 100*1000 ;
+    public static long IndexTickPoint = 100*1000 ;
     
     /** Number of ticks per super tick */
     public static int superTick = 2 ;
@@ -174,25 +174,6 @@ public class BulkLoader
         dest.finish() ;
     }
     
-//    private static void loadDataset(Destination<Quad> dest, Node graphNode, List<String> urls, boolean showProgress)
-//    {
-//        dest.start() ;
-//        for ( String url : urls )
-//        {
-//            String printName = nameForURL(url) ;  
-//            InputStream in = IO.openFile(url) ; 
-//            loadLogger.info("Load: "+printName+" -- "+Utils.nowAsString()) ;
-//            String base = url ;
-//            if ( base.equals("-") )
-//                base = null ;
-//            Lang lang = Lang.get(url, Lang.NQUADS) ;
-//            LangRIOT parser = ParserFactory.createParserQuads(in, lang, base, dest) ;
-//            parser.parse() ;
-//            loadLogger.info("Finish load: "+printName+" -- "+Utils.nowAsString()) ;
-//        }            
-//        dest.finish() ;
-//    }
-    
     private static Destination<Triple> destinationNamedGraph(DatasetGraphTDB dsg, Node graphName, boolean showProgress)
     {
         if ( graphName == null )
@@ -206,9 +187,9 @@ public class BulkLoader
     private static LoadMonitor createLoadMonitor(DatasetGraphTDB dsg, String itemName, boolean showProgress)
     {
         if ( showProgress ) 
-            return new LoadMonitor(dsg, loadLogger, itemName, LoadTickPoint, IndexTickPoint) ;
+            return new LoadMonitor(dsg, loadLogger, itemName, DataTickPoint, IndexTickPoint) ;
         else
-            return new LoadMonitor(dsg, null, itemName, LoadTickPoint, IndexTickPoint) ; 
+            return new LoadMonitor(dsg, null, itemName, DataTickPoint, IndexTickPoint) ; 
     }
     
     private static Destination<Triple> destination(final DatasetGraphTDB dsg, NodeTupleTable nodeTupleTable, final boolean showProgress)
@@ -220,21 +201,21 @@ public class BulkLoader
         
         Destination<Triple> sink = new Destination<Triple>() {
             long count = 0 ;
-            public void start()
+            final public void start()
             {
                 loaderTriples.loadStart() ;
                 loaderTriples.loadDataStart() ;
             }
-            public void send(Triple triple)
+            final public void send(Triple triple)
             {
                 loaderTriples.load(triple.getSubject(), triple.getPredicate(),  triple.getObject()) ;
                 count++ ;
             }
 
-            public void flush() { }
+            final public void flush() { }
             public void close() { }
 
-            public void finish()
+            final public void finish()
             {
                 loaderTriples.loadDataFinish() ;
                 loaderTriples.loadIndexStart() ;
@@ -259,7 +240,7 @@ public class BulkLoader
                                                                  monitor2) ;
         Destination<Quad> sink = new Destination<Quad>() {
             long count = 0 ;
-            public void start()
+            final public void start()
             {
                 loaderTriples.loadStart() ;
                 loaderQuads.loadStart() ;
@@ -268,7 +249,7 @@ public class BulkLoader
                 loaderQuads.loadDataStart() ;
             }
             
-            public void send(Quad quad)
+            final public void send(Quad quad)
             {
                 if ( quad.isTriple() || quad.isDefaultGraph() )
                     loaderTriples.load(quad.getSubject(), quad.getPredicate(),  quad.getObject()) ;
@@ -277,7 +258,7 @@ public class BulkLoader
                 count++ ;
             }
 
-            public void finish()
+            final public void finish()
             {
                 loaderTriples.loadDataFinish() ;
                 loaderQuads.loadDataFinish() ;
@@ -292,8 +273,8 @@ public class BulkLoader
                 loaderQuads.loadFinish() ;
             }
             
-            public void flush() { }
-            public void close() { }
+            final public void flush() { }
+            final public void close() { }
         } ;
         return sink ;
     }

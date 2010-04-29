@@ -49,12 +49,14 @@ public class TDB
     
     // Internal logging
     private static final Logger log = LoggerFactory.getLogger(TDB.class) ;
-    
+
+    public static final String logInfoName = "com.hp.hpl.jena.tdb.info" ;
     /** Logger for general information */ 
-    public static final Logger logInfo = LoggerFactory.getLogger("com.hp.hpl.jena.tdb.info") ;
+    public static final Logger logInfo = LoggerFactory.getLogger(logInfoName) ;
     
+    public static final String logExecName = "com.hp.hpl.jena.tdb.exec" ;
     /** Logger for execution information */
-    public static final Logger logExec = LoggerFactory.getLogger("com.hp.hpl.jena.tdb.exec") ;
+    public static final Logger logExec = LoggerFactory.getLogger(logExecName) ;
     
     public final static String namespace = "http://jena.hpl.hp.com/2008/tdb#" ;
 

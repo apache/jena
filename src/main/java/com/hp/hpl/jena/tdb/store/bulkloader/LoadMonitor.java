@@ -6,39 +6,52 @@
 
 package com.hp.hpl.jena.tdb.store.bulkloader;
 
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.sparql.util.StringUtils ;
-import com.hp.hpl.jena.sparql.util.Timer ;
-
+import static com.hp.hpl.jena.sparql.util.Utils.nowAsString ;
 import org.openjena.atlas.event.Event ;
 import org.openjena.atlas.event.EventManager ;
 import org.slf4j.Logger ;
+
+import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import com.hp.hpl.jena.sparql.util.StringUtils ;
+import com.hp.hpl.jena.sparql.util.Timer ;
 
 /** Abstract the load logging */
 class LoadMonitor
 {
     private final Logger log ;
     private final DatasetGraph dataset ;
+    private final long superTick = 2 ;
     private final long dataTickPoint ;
     private final long indexTickPoint ;
     protected final Timer timer ;
-    
-    private long tickInterval ; 
-    private long currentTicks = 0 ;
-    private long totalTicks = 0 ;
-    private long lastTime = 0 ;
-    
+
+    // Overall
     private long processStartTime = 0 ;
     private long processFinishTime = 0 ;
     private long processTime = 0 ;
     
+    // Data phase variables
+    private long totalDataItems = 0 ;
+    
     private long dataStartTime = 0 ;
     private long dataFinishTime = 0 ;
     private long dataTime = 0 ;
+
+    // Index phase variables.
+    private long totalIndexItems = 0 ;
     
     private long indexStartTime = 0 ;
     private long indexFinishTime = 0 ;
     private long indexTime = 0 ;
+    
+    
+    // Work variables.
+    private long currentItems = 0 ;
+    private long lastTime = 0 ;
+    private long phaseStartTime = 0 ;
+    private long phaseFinishTime = 0 ;
+    private long phaseLastTime = 0 ;
+    
     private String itemsName ;
 
     LoadMonitor(DatasetGraph dsg, Logger log, String itemsName,
@@ -53,6 +66,7 @@ class LoadMonitor
         this.timer = new Timer() ;
     }
     
+    // ---- Overall
     void startLoad()
     {
         EventManager.send(dataset, new Event(BulkLoader.evStartBulkload, null)) ;
@@ -67,21 +81,25 @@ class LoadMonitor
         processTime = processFinishTime - processStartTime ;
 
         print("-- Finish %s load", itemsName) ;
-        if ( totalTicks > 0 )
-            print("Completed: %,d %s loaded in %,.2f seconds [Rate: %,.2f per second]",
-                  totalTicks,
+        if ( totalDataItems > 0 )
+            print("** Completed: %,d %s loaded in %,.2f seconds [Rate: %,.2f per second]",
+                  totalDataItems,
                   itemsName,
                   processTime/1000.0F,
-                  1000F*totalTicks/processTime) ;
+                  1000F*totalDataItems/processTime) ;
         
         EventManager.send(dataset, new Event(BulkLoader.evFinishBulkload, null)) ;
     }
     
+    // ---- Data phase
+    
     void startDataPhase()
     {
-        tickInterval = dataTickPoint ;
         print("-- Start %s data phase", itemsName) ;
         dataStartTime = timer.readTimer() ;
+        phaseStartTime = dataStartTime ;
+        currentItems = 0 ;
+        totalDataItems = 0 ;
         EventManager.send(dataset, new Event(BulkLoader.evStartDataBulkload, null)) ;
     }
     
@@ -92,19 +110,45 @@ class LoadMonitor
         dataTime = dataFinishTime - dataStartTime ; 
         
         print("-- Finish %s data phase", itemsName) ;
-        if ( totalTicks > 0 )
+        if ( totalDataItems > 0 )
             print("%,d %s loaded in %,.2f seconds [Rate: %,.2f per second]",
-                  totalTicks,
+                  totalDataItems,
                   itemsName,
                   dataTime/1000.0F,
-                  1000F*totalTicks/dataTime) ;
+                  1000F*totalDataItems/dataTime) ;
+    }
+
+    /** Note when one item (triple, quad) is loaded */
+    final void dataItem()
+    {
+        currentItems++ ;
+        totalDataItems ++ ; 
+    
+        if ( tickPoint(totalDataItems, dataTickPoint) )
+        {
+            long timePoint = timer.readTimer() ;
+            long thisTime = timePoint - lastTime ;
+        
+            // *1000L is milli to second conversion
+        
+            long batchAvgRate = (currentItems * 1000L) / thisTime;
+            long runAvgRate   = (totalDataItems * 1000L) / timePoint ;
+            print("Add: %,d %s (Batch: %,d / Run: %,d)", totalDataItems, itemsName, batchAvgRate, runAvgRate) ;
+            lastTime = timePoint ;
+
+            if ( tickPoint(totalDataItems, superTick*dataTickPoint) )
+                elapsed(timePoint) ;
+            currentItems = 0 ;
+            lastTime = timePoint ;
+        }
+            
     }
 
     void startIndexPhase()    
     {
-        tickInterval = indexTickPoint ;
         print("-- Start %s index phase", itemsName) ;
         indexStartTime = timer.readTimer() ;
+        currentItems = 0 ;
         EventManager.send(dataset, new Event(BulkLoader.evStartIndexBulkload, null)) ;
     }
 
@@ -115,38 +159,72 @@ class LoadMonitor
         indexTime = indexFinishTime - indexStartTime ; 
 
         print("-- Finish %s index phase", itemsName) ;
-        if ( totalTicks > 0 )
-            print("%,d %s indexed in %,.2f seconds [Rate: %,.2f per second]",
-                  totalTicks,
-                  itemsName,
-                  indexTime/1000.0F,
-                  1000F*totalTicks/indexTime) ;
+        if ( totalIndexItems > 0 )
+        {
+            if ( indexTime > 0 )
+                print("** %,d %s indexed in %,.2f seconds [Rate: %,.2f per second]",
+                      totalIndexItems, itemsName, indexTime/1000.0F, 1000F*totalIndexItems/indexTime) ;
+            else
+                print("** %,d %s indexed", totalIndexItems, itemsName) ;
+                
+        }
     }
 
-    /** Note when one item (triple, quad) is loaded */
-    void dataItem()
+    String indexLabel ;
+    void startIndex(String label)
     {
-        currentTicks ++ ;
-        totalTicks ++ ; 
+        phaseStartTime = timer.readTimer() ;
+        indexLabel = label ;
+        currentItems = 0 ;
+        totalIndexItems = 0 ;
+    }
     
-        if ( currentTicks % tickInterval == 0 )
+    void finishIndex(String label)
+    {
+        phaseFinishTime = timer.readTimer() ;
+        long phaseTime = phaseFinishTime - phaseStartTime ;
+        
+        
+        if ( totalIndexItems > 0 )
         {
-            tickPoint(currentTicks, totalTicks) ;
-            currentTicks = 0 ;
+            if ( phaseTime > 0 )
+                print("** Index %s: %,d slots indexed in %,.2f seconds [Rate: %,.2f per second]",
+                      label,
+                      totalIndexItems,
+                      phaseTime/1000.0F,
+                      1000F*totalIndexItems/phaseTime) ;
+            else
+                print("** Index %s: %,d slots indexed", label, totalIndexItems) ;
+            
         }
     }
     
-    private void tickPoint(long incTicks, long totalTicks)
+    // ---- Indexing
+    
+    final void indexItem()
     {
-        long timePoint = timer.readTimer() ;
-        long thisTime = timePoint - lastTime ;
-
-        // *1000L is milli to second conversion
-
-        long batchAvgRate = (incTicks * 1000L) / thisTime;
-        long runAvgRate   = (totalTicks * 1000L) / timePoint ;
-        print("Add: %,d %s (Batch: %,d / Run: %,d)", totalTicks, itemsName, batchAvgRate, runAvgRate) ;
-        lastTime = timePoint ;
+        currentItems++ ;
+        totalIndexItems++ ;
+    
+        if ( tickPoint(totalIndexItems, indexTickPoint) )
+        {
+            long timePoint = timer.readTimer() ;
+            long thisTime = timePoint - lastTime ;
+            
+            long batchAvgRate = (currentItems * 1000L) / thisTime;
+            long runAvgRate   = (totalDataItems * 1000L) / timePoint ;
+            
+            print("Index %s: %,d slots (Batch: %,d slots/s / Run: %,d slots/s)", 
+                  indexLabel, totalIndexItems, batchAvgRate, runAvgRate) ;
+    
+            if ( tickPoint(totalIndexItems, superTick*indexTickPoint) )
+                elapsed(timePoint) ;
+    
+            currentItems = 0 ;
+            lastTime = timePoint ;
+        }
+    
+    
     }
 
     void print(String fmt, Object...args)
@@ -158,6 +236,19 @@ class LoadMonitor
         }
     }
  
+    
+    private void elapsed(long timerReading)
+    {
+        float elapsedSecs = (timerReading-phaseStartTime)/1000F ;
+        print("  Elapsed: %,.2f seconds [%s]", elapsedSecs, nowAsString()) ;
+        phaseLastTime = timerReading ;
+    }
+
+    private static boolean tickPoint(long counter, long quantum)
+    {
+        return counter%quantum == 0 ;
+    }
+
     private static String num(long v)
     {
         return StringUtils.str(v) ;
