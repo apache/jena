@@ -71,8 +71,11 @@ abstract public class BPTreePage implements Page
     /** Test whether this page is full (has no space for a new element) - used in "insert" */
     abstract boolean isFull() ;
     
-    /**  Test whether this page is of minimum size (removing a record woudl violate the packing limits) - used in "delete" */
+    /**  Test whether this page is of minimum size (removing a record would violate the packing limits) - used in "delete" */
     abstract boolean isMinSize() ;
+    
+    /**  Test whether this page has any keys */
+    abstract boolean hasAnyKeys() ;
 
     /** Find a record; return null if not found */
     abstract Record internalSearch(Record rec) ;

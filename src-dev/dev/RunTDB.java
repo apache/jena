@@ -16,6 +16,7 @@ import org.openjena.atlas.event.EventListener ;
 import org.openjena.atlas.event.EventManager ;
 import org.openjena.atlas.io.IO ;
 import org.openjena.atlas.iterator.Filter ;
+import org.openjena.atlas.lib.FileOps ;
 import org.openjena.atlas.lib.Sink ;
 import org.openjena.atlas.lib.SinkCounting ;
 import org.openjena.atlas.lib.SinkPrint ;
@@ -71,8 +72,12 @@ public class RunTDB
 
     public static void main(String[] args) throws IOException
     {
+        FileOps.clearDirectory("DB") ;
         DatasetGraphTDB dsg = (DatasetGraphTDB)TDBFactory.createDataset().asDatasetGraph() ;
-        String filename = "/home/afs/Datasets/MusicBrainz/tracks-10k.nt" ; 
+//        DatasetGraphTDB dsg = (DatasetGraphTDB)TDBFactory.createDataset("DB").asDatasetGraph() ;
+//        dsg.getDefaultGraph().add(SSE.parseTriple("(<s> <p> <o>)")) ;
+//        System.out.println(dsg.getDefaultGraph().size());
+        String filename = "/home/afs/Datasets/MusicBrainz/tracks.nt" ; 
 
         EventListener listener = new EventListener() {
             public void event(Object dest, Event event)
@@ -95,8 +100,8 @@ public class RunTDB
             EventManager.register(null, BulkLoader.evFinishIndexBulkload, listener) ;
         }
         
-        BulkLoader.DataTickPoint = 1000 ;
-        BulkLoader.IndexTickPoint = 5000 ;
+//        BulkLoader.DataTickPoint = 1000 ;
+//        BulkLoader.IndexTickPoint = 2500 ;
         
         boolean asTriples = true ;
         if ( asTriples )

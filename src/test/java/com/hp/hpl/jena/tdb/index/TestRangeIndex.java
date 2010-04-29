@@ -46,6 +46,7 @@ public abstract class TestRangeIndex extends BaseTest
         int[] keys = {};
         rIndex = makeRangeIndex(2) ;
         testInsert(rIndex, keys) ;
+        assertTrue(rIndex.isEmpty()) ;
         assertNull(rIndex.minKey()) ;
         assertNull(rIndex.maxKey()) ;
     }
@@ -55,6 +56,8 @@ public abstract class TestRangeIndex extends BaseTest
         int[] keys = {0, 1, 2};
         rIndex = makeRangeIndex(2) ;
         testInsert(rIndex, keys) ;
+        assertFalse(rIndex.isEmpty()) ;
+
         assertEquals(0, r(rIndex.minKey())) ;
         assertEquals(2, r(rIndex.maxKey())) ;
     }

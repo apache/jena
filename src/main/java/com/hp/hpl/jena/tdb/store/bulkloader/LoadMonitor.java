@@ -44,7 +44,6 @@ class LoadMonitor
     private long indexFinishTime = 0 ;
     private long indexTime = 0 ;
     
-    
     // Work variables.
     private long currentItems = 0 ;
     private long lastTime = 0 ;

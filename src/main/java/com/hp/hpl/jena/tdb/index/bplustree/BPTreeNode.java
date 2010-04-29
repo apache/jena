@@ -129,7 +129,7 @@ public final class BPTreeNode extends BPTreePage
     
     // ---------- Public calls.
     // None of these are called recursively.
-
+    
     /** Find a record, using the active comparator */
     public Record search(Record rec)
     {
@@ -294,7 +294,7 @@ public final class BPTreeNode extends BPTreePage
     
     public long size()
     {
-        System.err.println("B+Tree size - not implemented.  Iterator over all records instead") ;
+        System.err.println("B+Tree size - not implemented.  Iterate over all records instead") ;
         return -1 ;
     }
 //    public long size()
@@ -1043,6 +1043,23 @@ public final class BPTreeNode extends BPTreePage
         // Count is of records.  
         return count >= maxRecords() ;
     }
+    
+    /** Return true if there are no keys here or below this node */
+    @Override
+    final boolean hasAnyKeys()
+    {
+        if ( this.count > 0 ) 
+            return true ;
+        if ( ! isRoot() )
+            return false ;
+        
+        // The root can be zero size and point to a single data block.
+        int id = this.getPtrBuffer().getLow() ;
+        BPTreePage page = get(id) ;
+        return page.hasAnyKeys() ;
+    }
+
+
     
     @Override
     final boolean isMinSize()

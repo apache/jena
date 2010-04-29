@@ -240,7 +240,7 @@ public class BTree implements Iterable<Record>, RangeIndex, Session
     //@Override
     public boolean isEmpty()
     {
-        return pageMgr.getBlockMgr().isEmpty() ;
+        return root.getCount() == 0 ;
     }
 
     //@Override

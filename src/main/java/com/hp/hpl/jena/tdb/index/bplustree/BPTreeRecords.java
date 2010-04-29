@@ -56,6 +56,12 @@ final class BPTreeRecords extends BPTreePage
     }
 
     @Override
+    boolean hasAnyKeys()
+    {
+        return rBuff.size() > 0 ;
+    }
+
+    @Override
     boolean isMinSize()
     {
         // 50% packing minimum.
