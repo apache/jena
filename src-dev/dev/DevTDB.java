@@ -3,6 +3,7 @@ package dev ;
 public class DevTDB
 {
     // == 0.8.5
+    // Enable FILTER assignment for strings (and numbers?) via dataset context setting?
     // IRI checking - sort out error and warnings.
     // Loading from an InputStream (other than stdin) 
     // No checking loading.
