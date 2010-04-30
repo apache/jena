@@ -7,6 +7,9 @@ package dev;
 
 public class DevARQ
 {
+    // Daatset to indicate if plain string and XSD string are the same to affact FILTER(?x="string") optimziation.
+    // Does dataset contexts fix this?
+    
     // Documentation for CSV etc.
     // Union Transform.
     //   The use of a bNode in (graph) needs coping with the distinct.
