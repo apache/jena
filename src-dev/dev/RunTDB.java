@@ -72,13 +72,20 @@ public class RunTDB
 
     public static void main(String[] args) throws IOException
     {
-        FileOps.clearDirectory("DB") ;
-        DatasetGraphTDB dsg = (DatasetGraphTDB)TDBFactory.createDataset().asDatasetGraph() ;
-//        DatasetGraphTDB dsg = (DatasetGraphTDB)TDBFactory.createDataset("DB").asDatasetGraph() ;
+        DatasetGraphTDB dsg = null ;
+        if ( true )
+        {
+            dsg = (DatasetGraphTDB)TDBFactory.createDataset().asDatasetGraph() ;
+        }
+        else
+        {
+            FileOps.clearDirectory("DB") ;
+            dsg = (DatasetGraphTDB)TDBFactory.createDataset("DB").asDatasetGraph() ;
+        }
 //        dsg.getDefaultGraph().add(SSE.parseTriple("(<s> <p> <o>)")) ;
 //        System.out.println(dsg.getDefaultGraph().size());
         String filename = "/home/afs/Datasets/MusicBrainz/tracks.nt" ; 
-
+        filename = "D.ttl.gz" ;
         EventListener listener = new EventListener() {
             public void event(Object dest, Event event)
             {

@@ -147,7 +147,7 @@ public class BulkLoader
             String base = url ;
             if ( base.equals("-") )
                 base = null ;
-            Lang lang = Lang.get(url, Lang.NTRIPLES) ;
+            Lang lang = Lang.guess(url, Lang.NTRIPLES) ;
             LangRIOT parser = ParserFactory.createParserTriples(in, lang, base, dest) ;
             parser.parse() ;
         }            

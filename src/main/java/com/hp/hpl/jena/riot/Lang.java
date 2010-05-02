@@ -80,14 +80,27 @@ public enum Lang
         if ( name.equalsIgnoreCase(langTriG) )                  return TRIG ;
         return dftLang ;
     }
+
+    /** Guess the language, based on filename, or URL, extenstion.
+     * Returns null if there isn't a guess available
+     */
+    public static Lang guess(String resourceIRI, Lang dftLang)
+    {
+        Lang lang = guess(resourceIRI) ;
+        if ( lang != null )
+            return lang ;
+        return dftLang ;
+    }
     
-    /** Guess the filetype, based on filename, or URL, extenstion.
+    /** Guess the language, based on filename, or URL, extenstion.
      * Returns null if there isn't a guess available
      */
     public static Lang guess(String resourceIRI)
     {
+        if ( resourceIRI.endsWith(".gz") )
+            resourceIRI = resourceIRI.substring(0, resourceIRI.length()-".gz".length()) ;
         String ext = FileUtils.getFilenameExt(resourceIRI).toLowerCase() ;
-        
+                
         if ( isOneOf(ext, extRDFXML) )      return RDFXML ;
         if ( isOneOf(ext, extNTriples) )    return NTRIPLES ;
         if ( isOneOf(ext, extNTurtle) )     return TURTLE ;
