@@ -46,12 +46,14 @@ public class WebContent
     public static final String charsetUTF8                = "utf-8" ;
     
     // Names used in Jena for the parsers
+    // See also Lang enum
     public static final String langRDFXML           = "RDF/XML" ;
     public static final String langRDFXMLAbbrev     = "RDF/XML-ABBREV" ;
     public static final String langNTriple          = "N-TRIPLE" ;
     public static final String langNTriples         = "N-TRIPLES" ;
     public static final String langN3               = "N3" ;
     public static final String langTurtle           = "TURTLE" ;
+    public static final String langTTL              = "TTL" ;
 
     public static final String langNQuads           = "NQUADS" ;
     public static final String langTriG             = "TRIG" ;

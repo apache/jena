@@ -16,7 +16,7 @@ public class DevTDB
     // TupleSlice
     
     // -- Loader
-    // .gz files.
+    // .gz files. [DONE - IO.openFile and Lang.guess]
     // Sink: just a send()
     // Destination start-send-finish
     // SinkClosable

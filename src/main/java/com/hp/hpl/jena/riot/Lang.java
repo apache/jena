@@ -12,18 +12,19 @@ import com.hp.hpl.jena.util.FileUtils ;
 
 public enum Lang
 {
-    RDFXML("RDF/XML", true) ,
-    NTRIPLES("N-Triples", true) ,
+    RDFXML("RDF/XML", true, langRDFXML, langRDFXMLAbbrev) ,
+    NTRIPLES("N-Triples", true, langNTriples, langNTriple) ,
     N3("N3", true) ,
-    TURTLE("Turtle", true) ,
+    TURTLE("Turtle", true, langTTL) ,
     
-    NQUADS("N-Quads", false) ,
+    NQUADS("N-Quads", false, langNQuads) ,
     TRIG("TriG", false)
     ;
     
     
     private final String name ;
     private final boolean isTriples ;
+    private final String[] altNames ;
 
 //    public static final String langXML          = langXML ;
 //    public static final String langNTriple      = langNTriple ; // FileUtils is wrong.
@@ -41,10 +42,11 @@ public enum Lang
     public static final String[] extTrig        = { "trig" } ;
 
     
-    private Lang(String name, boolean isTriples)
+    private Lang(String name, boolean isTriples, String...altNames)
     {
         this.name = name ;
         this.isTriples = isTriples ;
+        this.altNames = altNames ;
     }
     
     
@@ -71,16 +73,26 @@ public enum Lang
      */
     public static Lang get(String name, Lang dftLang)
     {
-        if ( name.equalsIgnoreCase(langRDFXML) )                return RDFXML ;
-        if ( name.equalsIgnoreCase(langRDFXMLAbbrev) )          return RDFXML ;
-        if ( name.equalsIgnoreCase(langNTriple) )               return NTRIPLES ;
-        if ( name.equalsIgnoreCase(langNTriples) )              return NTRIPLES ;
-        if ( name.equalsIgnoreCase(langTurtle) )                return TURTLE ;
-        if ( name.equalsIgnoreCase(langNQuads) )                return NQUADS ;
-        if ( name.equalsIgnoreCase(langTriG) )                  return TRIG ;
+        if ( matchesLangName(name, Lang.RDFXML) )       return RDFXML ;
+        if ( matchesLangName(name, Lang.NTRIPLES) )     return NTRIPLES ;
+        if ( matchesLangName(name, Lang.TURTLE) )       return TURTLE ;
+        if ( matchesLangName(name, Lang.NQUADS) )       return NQUADS ;
+        if ( matchesLangName(name, Lang.TRIG) )         return TRIG ;
         return dftLang ;
     }
 
+    private static boolean matchesLangName(String name, Lang lang)
+    {
+        if ( name.equalsIgnoreCase(lang.name) ) return true ;
+        if ( lang.altNames != null )
+            for ( String x : lang.altNames )
+            {
+                if ( x.equalsIgnoreCase(name))
+                    return true ;
+            }
+        return false ;
+    }
+    
     /** Guess the language, based on filename, or URL, extenstion.
      * Returns null if there isn't a guess available
      */
@@ -97,10 +109,13 @@ public enum Lang
      */
     public static Lang guess(String resourceIRI)
     {
-        if ( resourceIRI.endsWith(".gz") )
-            resourceIRI = resourceIRI.substring(0, resourceIRI.length()-".gz".length()) ;
         String ext = FileUtils.getFilenameExt(resourceIRI).toLowerCase() ;
-                
+        if ( ext != null && ext.equals("gz") )
+        {
+            resourceIRI = resourceIRI.substring(0, resourceIRI.length()-".gz".length()) ;
+            ext = FileUtils.getFilenameExt(resourceIRI).toLowerCase() ;
+        }
+        
         if ( isOneOf(ext, extRDFXML) )      return RDFXML ;
         if ( isOneOf(ext, extNTriples) )    return NTRIPLES ;
         if ( isOneOf(ext, extNTurtle) )     return TURTLE ;
