@@ -41,7 +41,6 @@ public class TestLang extends BaseTest
     
     @Test public void lang_09()
     { assertEquals(Lang.TRIG, Lang.get(WebContent.langTriG)) ; }
-
 }
 
 /*
