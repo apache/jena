@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            14-Apr-2003
  * Filename           $RCSfile: schemagen.java,v $
- * Revision           $Revision: 1.6 $
+ * Revision           $Revision: 1.7 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2010-05-03 19:46:45 $
+ * Last modified on   $Date: 2010-05-03 22:22:06 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
@@ -52,7 +52,7 @@ import com.hp.hpl.jena.shared.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:ian_dickinson@users.sourceforge.net" >email</a>)
- * @version CVS $Id: schemagen.java,v 1.6 2010-05-03 19:46:45 ian_dickinson Exp $
+ * @version CVS $Id: schemagen.java,v 1.7 2010-05-03 22:22:06 ian_dickinson Exp $
  */
 public class schemagen {
     // Constants
@@ -1430,8 +1430,8 @@ public class schemagen {
 
 
         public static final Object[][] m_optionDefinitions = new Object[][] {
-                {OPT.CONFIG_FILE,         new OptionDefinition( "-c", null ) },
-                {OPT.ROOT,                new OptionDefinition( "-r", null ) },
+                {OPT.CONFIG_FILE,         new OptionDefinition( "-c", "configFile" ) },
+                {OPT.ROOT,                new OptionDefinition( "-r", "root" ) },
                 {OPT.NO_COMMENTS,         new OptionDefinition( "--nocomments", "noComments" ) },
                 {OPT.INPUT,               new OptionDefinition( "-i", "input" ) },
                 {OPT.LANG_DAML,           new OptionDefinition( "--daml", "daml" ) },
@@ -1461,7 +1461,7 @@ public class schemagen {
                 {OPT.CLASSNAME_SUFFIX,    new OptionDefinition( "--classnamesuffix", "classnamesuffix" )},
                 {OPT.NOHEADER,            new OptionDefinition( "--noheader", "noheader" )},
                 {OPT.ENCODING,            new OptionDefinition( "-e", "encoding" )},
-                {OPT.HELP,                new OptionDefinition( "--help", null )},
+                {OPT.HELP,                new OptionDefinition( "--help", "help" )},
                 {OPT.DOS,                 new OptionDefinition( "--dos", "dos" )},
                 {OPT.USE_INF,             new OptionDefinition( "--inference", "inference" )},
                 {OPT.STRICT_INDIVIDUALS,  new OptionDefinition( "--strictIndividuals", "strictIndividuals" )},
@@ -1543,10 +1543,10 @@ public class schemagen {
         private List<String> m_cmdLineArgs = new ArrayList<String>();
 
         /** The root of the options in the config file */
-        protected Resource m_root;
+        private Resource m_root;
 
         /** The model that contains the configuration information */
-        protected Model m_config = ModelFactory.createDefaultModel();
+        private Model m_config = ModelFactory.createDefaultModel();
 
         // Constructor
 
@@ -1573,6 +1573,25 @@ public class schemagen {
                     throw new SchemagenException( "Failed to read configuration from URL: " + configURL, e );
                 }
             }
+        }
+
+        /**
+         * Return the configuration model used to hold config information
+         * @return
+         */
+        protected Model getConfigModel() {
+            return m_config;
+        }
+
+        /**
+         * Return the root resource to which configuration information is attached
+         * @return
+         */
+        protected Resource getConfigRoot() {
+            if (m_root == null) {
+                determineConfigRoot();
+            }
+            return m_root;
         }
 
         // Internal implementation methods
@@ -1742,6 +1761,23 @@ public class schemagen {
         }
 
         /**
+         * Return the RDF property that is used when configuring this option
+         * via a {@link com.hp.hpl.jena.rdf.Model}
+         * @return The declaration property, or null
+         */
+        public Property getDeclarationProperty() {
+            return m_prop;
+        }
+
+        /**
+         * Return the command line form of this option
+         * @return The command line form as a String
+         */
+        public String getCommandLineForm() {
+            return m_cmdLineForm;
+        }
+
+        /**
          * Answer true if this option is set to true, either on the command line
          * or in the config model
          *
@@ -1777,7 +1813,7 @@ public class schemagen {
                 }
             }
 
-            if (m_prop != null  &&  confRoot.hasProperty( m_prop )) {
+            if (m_prop != null && confRoot != null  &&  confRoot.hasProperty( m_prop )) {
                 RDFNode val = confRoot.getRequiredProperty( m_prop ).getObject();
                 if (val.isLiteral()) {
                     return ((Literal) val).getLexicalForm();
