@@ -51,7 +51,7 @@ import com.hp.hpl.jena.util.FileManager ;
 /** To directly load data, including manipulating the indexes at a quite low level for efficiency.
  * Not efficent for small, incremental additions to a graph.  
  */
-
+@Deprecated
 class BulkLoaderTriples
 {
     private GraphTDB graph ;

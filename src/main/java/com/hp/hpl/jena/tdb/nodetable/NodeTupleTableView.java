@@ -76,8 +76,8 @@ public class NodeTupleTableView extends NodeTupleTableWrapper
 
     @Override
     public TupleTable getTupleTable()
-    // Need a projection of this.
-    { throw new UnsupportedOperationException() ; }
+    // Need a projection of this?
+    { return super.getTupleTable() ; }
 }
 
 /*

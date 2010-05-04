@@ -7,6 +7,7 @@
 
 package com.hp.hpl.jena.tdb;
 
+import java.io.InputStream ;
 import java.util.ArrayList ;
 import java.util.List ;
 
@@ -18,11 +19,9 @@ import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.store.GraphTDB ;
 import com.hp.hpl.jena.tdb.store.bulkloader.BulkLoader ;
 
-/** Public interfacr to the loader functionality */ 
+/** Public interface to the loader functionality */ 
 public class TDBLoader
 {
-    
-    // ---- Load dataset
 
     /** Load the contents of URL into a dataset.  URL must name a quads format file (NQuads or TriG - NTriples is also accepted).
      *  To a triples format, use @link{#load(GraphTDB, String)}
@@ -61,6 +60,18 @@ public class TDBLoader
         loader.setShowProgress(showProgress) ;
         loader.loadDataset(dataset, urls) ;
     }
+    
+    /** Load the contents of URL into a dataset.  URL must name a quads format file (NQuads or TriG - NTriples is also accepted).
+     *  To load a triples format, use @link{#load(GraphTDB, List<String>, boolean)} 
+     *  or @link{#loadTriples(DatasetGraphTDB, List<String>, boolean)} 
+    */
+    public static void load(DatasetGraphTDB dataset, InputStream input, boolean showProgress)
+    {
+        TDBLoader loader = new TDBLoader() ;
+        loader.setShowProgress(showProgress) ;
+        loader.loadDataset(dataset, input) ;
+    }
+    
     
     
     /** Load the contents of URL into a graph */
@@ -140,7 +151,13 @@ public class TDBLoader
     /** Load a graph from a list of URL - assumes the URLs name triples format documents */
     public void loadGraph(GraphTDB graph, List<String> urls)
     {
-        loadGraph$(graph, urls) ;
+        loadGraph$(graph, urls, showProgress) ;
+    }
+    
+    /** Load a graph from a list of URL - assumes the URLs name triples format documents */
+    public void loadGraph(GraphTDB graph, InputStream in)
+    {
+        loadGraph$(graph, in, showProgress) ;
     }
     
     /** Load a dataset from a URL - assumes URL names a quads format */
@@ -156,12 +173,12 @@ public class TDBLoader
         loadDataset$(dataset, urls, showProgress) ;
     }
     
-//    /** Load a dataset from an input steram which must be in N-Quads form */
-//    public void loadDataset(DatasetGraphTDB dataset, InputStream input)
-//    {
-//        BulkLoaderDataset loader = new BulkLoaderDataset(dataset, showProgress, generateStats) ;
-//        loader.load(input, Lang.NQUADS, null) ; 
-//    }
+    /** Load a dataset from an input steram which must be in N-Quads form */
+    public void loadDataset(DatasetGraphTDB dataset, InputStream input)
+    {
+        // Triples languages are quads languages so no test for quad-ness needed.
+        loadDataset$(dataset, input, showProgress) ;
+    }
 
     public boolean getShowProgress()  
     { return showProgress ; }
@@ -175,7 +192,7 @@ public class TDBLoader
     public final void setGenerateStats(boolean generateStats)
     { this.generateStats = generateStats ; }
     
-    private void loadGraph$(GraphTDB graph, List<String> urls)
+    private static void loadGraph$(GraphTDB graph, List<String> urls, boolean showProgress)
     {
         if ( false )
         {
@@ -193,22 +210,52 @@ public class TDBLoader
             loadNamedGraph$(graph.getDataset(), graph.getGraphNode(), urls, showProgress) ;
     }
 
-    // These are the basic operations.
+    // These are the basic operations for TDBLoader.
+
+    private static void loadGraph$(GraphTDB graph, InputStream input, boolean showProgress)
+    {
+        if ( graph.getGraphNode() == null )
+            loadDefaultGraph$(graph.getDataset(), input, showProgress) ;
+        else
+            loadNamedGraph$(graph.getDataset(), graph.getGraphNode(), input, showProgress) ;
+    }
+
     private static void loadDefaultGraph$(DatasetGraphTDB dataset, List<String> urls, boolean showProgress)
     {
+        //N-Triples
         BulkLoader.loadDefaultGraph(dataset, urls, showProgress) ;
+    }
+
+    private static void loadDefaultGraph$(DatasetGraphTDB dataset, InputStream input, boolean showProgress)
+    {
+        //N-Triples
+        BulkLoader.loadDefaultGraph(dataset, input, showProgress) ;
     }
 
     private static void loadNamedGraph$(DatasetGraphTDB dataset, Node graphName, List<String> urls, boolean showProgress)
     {
+        //N-Triples
         BulkLoader.loadNamedGraph(dataset, graphName, urls, showProgress) ;
+    }
+
+    private static void loadNamedGraph$(DatasetGraphTDB dataset, Node graphName, InputStream input, boolean showProgress)
+    {
+        //N-Triples
+        BulkLoader.loadNamedGraph(dataset, graphName, input, showProgress) ;
     }
 
     private static void loadDataset$(DatasetGraphTDB dataset, List<String> urls, boolean showProgress)
     {
+        //N-Quads
         BulkLoader.loadDataset(dataset, urls, showProgress) ;
     }
 
+    private static void loadDataset$(DatasetGraphTDB dataset, InputStream input, boolean showProgress)
+    {
+        //N-Quads
+        BulkLoader.loadDataset(dataset, input, showProgress) ;
+    }
+    
     /** Load any model, not necessarily efficiently. */ 
     private static void loadAnything(Model model, String url, boolean showProgress)
     {

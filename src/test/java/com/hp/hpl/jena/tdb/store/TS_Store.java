@@ -17,11 +17,13 @@ import org.junit.runners.Suite;
     , TestGraphNamedTDB.class
     , TestDatasetTDBPersist.class
     , TestDatasetTDB.class
+    , TestLoader.class
     // The script suite
     , TestSuiteGraphTDB.class
     , Test_SPARQL_TDB.class
     , TestConcurrentAccess.class
     , TestDynamicDataset.class
+    , TestLoader.class
 } )
 public class TS_Store
 { 

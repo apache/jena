@@ -30,6 +30,7 @@ import com.hp.hpl.jena.tdb.lib.SinkQuadsToDataset ;
 import com.hp.hpl.jena.tdb.sys.Names ;
 
 /** Mechanism for loading datasets */
+@Deprecated
 class BulkLoaderDataset
 {
     private final DatasetGraphTDB dataset ;

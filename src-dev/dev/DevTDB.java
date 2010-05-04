@@ -9,6 +9,8 @@ public class DevTDB
     // No checking loading.
     // tdbloader from quads?
     
+    // Simpler lock impl?  Non-reentrant.
+    
     // Tuples
     // Interface, TupleFactory, TupleImpl
     // TupleMask (or TupleImpl itself has a length field?? TupleMask(T[] or Tuple<T>)) 

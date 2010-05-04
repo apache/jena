@@ -162,7 +162,7 @@ public class GraphNamedTDB extends GraphTDBBase
     }
     
     @Override
-    public String toString() { return Utils.className(this) ; }
+    public String toString() { return Utils.className(this)+":<"+this.graphNode+">" ; }
 }
 
 /*

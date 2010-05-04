@@ -13,7 +13,6 @@ import java.util.List ;
 import org.openjena.atlas.event.EventType ;
 import org.openjena.atlas.io.IO ;
 import org.slf4j.Logger ;
-import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
@@ -22,6 +21,7 @@ import com.hp.hpl.jena.riot.ParserFactory ;
 import com.hp.hpl.jena.riot.lang.LangRIOT ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.util.Utils ;
+import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTupleTableView ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
@@ -54,7 +54,8 @@ public class BulkLoader
     public static EventType evStartIndexBulkload = new EventType(baseName+"start-bulkload-index") ;
     public static EventType evFinishIndexBulkload = new EventType(baseName+"finish-bulkload-index") ;
     
-    static private Logger loadLogger = LoggerFactory.getLogger("com.hp.hpl.jena.tdb.loader") ;
+    
+    static private Logger loadLogger = TDB.logLoader ;
     
     // Event callbacks for the load stages?
     // On what object?  The dataset.
@@ -69,16 +70,14 @@ public class BulkLoader
     public static void loadDefaultGraph(DatasetGraphTDB dsg, List<String> urls, boolean showProgress)
     {
         Destination<Triple> dest = destinationDefaultGraph(dsg, showProgress) ;
-        loadTriples$(dest, urls, showProgress) ;
+        loadTriples$(dest, urls) ;
     }
 
     /** Load into default graph */
-    public static void loadDefaultGraph(DatasetGraphTDB dsg, LangRIOT parser, boolean showProgress)
+    public static void loadDefaultGraph(DatasetGraphTDB dsg, InputStream input, boolean showProgress)
     {
         Destination<Triple> dest = destinationDefaultGraph(dsg, showProgress) ;
-        dest.start() ;
-        parser.parse() ;
-        dest.finish() ;
+        loadTriples$(dest, input) ;
     }
 
     private static String nameForURL(String url)
@@ -97,46 +96,41 @@ public class BulkLoader
     
     private static Destination<Triple> destinationDefaultGraph(DatasetGraphTDB dsg, boolean showProgress)
     {
-        NodeTupleTable ntt = dsg.getQuadTable().getNodeTupleTable() ;
+        NodeTupleTable ntt = dsg.getTripleTable().getNodeTupleTable() ;
         return destination(dsg, ntt, showProgress) ;
-    }
-
-    
-    
-    /** Load into named graph */
-    public static void loadNamedGraph(DatasetGraphTDB dsg, Node graphNode, LangRIOT parser, boolean showProgress)
-    {
-        Destination<Triple> dest = destinationNamedGraph(dsg, graphNode, showProgress) ;
-        dest.start() ;
-        parser.parse() ;
-        dest.finish() ;
     }
 
     /** Load into named graph */
     public static void loadNamedGraph(DatasetGraphTDB dsg, Node graphNode, List<String> urls, boolean showProgress)
     {
         Destination<Triple> dest = destinationNamedGraph(dsg, graphNode, showProgress) ;
-        loadTriples$(dest, urls, showProgress) ;
+        loadTriples$(dest, urls) ;
     }
     
-    /** Load into a dataset */
-    public static void loadDataset(DatasetGraphTDB dsg, LangRIOT parser, boolean showProgress)
+    /** Load into named graph */
+    public static void loadNamedGraph(DatasetGraphTDB dsg, Node graphNode, InputStream input, boolean showProgress)
     {
-        Destination<Quad> dest = destinationDataset(dsg, showProgress) ;
-        dest.start() ;
-        parser.parse() ;
-        dest.finish() ;
+        Destination<Triple> dest = destinationNamedGraph(dsg, graphNode, showProgress) ;
+        loadTriples$(dest, input) ;
     }
-    
+
     /** Load into a dataset */
     public static void loadDataset(DatasetGraphTDB dsg, List<String> urls, boolean showProgress)
     {
         Destination<Quad> dest = destinationDataset(dsg, showProgress) ;
-        loadQuads$(dest, urls, showProgress) ;
+        loadQuads$(dest, urls) ;
     }
     
-    /** Load into default graph */
-    private static void loadTriples$(Destination<Triple> dest, List<String> urls, boolean showProgress)
+    /** Load into a dataset */
+    public static void loadDataset(DatasetGraphTDB dsg, InputStream input, boolean showProgress)
+    {
+        Destination<Quad> dest = destinationDataset(dsg, showProgress) ;
+        loadQuads$(dest, input) ;
+    }
+    
+
+    /** Load into a graph */
+    private static void loadTriples$(Destination<Triple> dest, List<String> urls)
     {
         dest.start() ;
         for ( String url : urls )
@@ -154,7 +148,19 @@ public class BulkLoader
         dest.finish() ;
     }
 
-    private static void loadQuads$(Destination<Quad> dest, List<String> urls, boolean showProgress)
+    /** Load into a graph */
+    private static void loadTriples$(Destination<Triple> dest, InputStream input)
+    {
+        loadLogger.info("Load: from input stream -- "+Utils.nowAsString()) ;
+        dest.start() ;
+        LangRIOT parser = ParserFactory.createParserNTriples(input, dest) ;
+        parser.parse() ;
+        dest.finish() ;
+        
+    }
+    
+    /** Load quads into a dataset */
+    private static void loadQuads$(Destination<Quad> dest, List<String> urls)
     {
         // REFACTOR (but how?)
         // This occurs for triples
@@ -173,6 +179,18 @@ public class BulkLoader
         }            
         dest.finish() ;
     }
+
+    /** Load quads into a dataset */
+    private static void loadQuads$(Destination<Quad> dest, InputStream input)
+    {
+        loadLogger.info("Load: from input stream -- "+Utils.nowAsString()) ;
+        dest.start() ;
+        LangRIOT parser = ParserFactory.createParserNQuads(input, dest) ;
+        parser.parse() ;
+        dest.finish() ;
+    }
+    
+        
     
     private static Destination<Triple> destinationNamedGraph(DatasetGraphTDB dsg, Node graphName, boolean showProgress)
     {
@@ -195,7 +213,7 @@ public class BulkLoader
     private static Destination<Triple> destination(final DatasetGraphTDB dsg, NodeTupleTable nodeTupleTable, final boolean showProgress)
     {
         LoadMonitor monitor = createLoadMonitor(dsg, "triples", showProgress) ;
-        final LoaderNodeTupleTable loaderTriples = new LoaderNodeTupleTable(dsg.getTripleTable().getNodeTupleTable(),
+        final LoaderNodeTupleTable loaderTriples = new LoaderNodeTupleTable(nodeTupleTable,
                                                                             "triples",
                                                                             monitor) ;
         

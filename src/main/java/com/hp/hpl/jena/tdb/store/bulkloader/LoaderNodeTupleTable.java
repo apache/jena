@@ -146,6 +146,7 @@ public class LoaderNodeTupleTable implements Closeable, Sync
     private void dropSecondaryIndexes()
     {
         // Remember first ...
+        // CAUTION - the TupleTable may be a view and these return the real tuple table.
         numIndexes = nodeTupleTable.getTupleTable().numIndexes() ;
         primaryIndex = nodeTupleTable.getTupleTable().getIndex(0) ;
         
