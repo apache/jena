@@ -87,7 +87,6 @@ public class LoaderNodeTupleTable implements Closeable, Sync
             createSecondaryIndexes() ;
     }
 
-    // XXX
     protected void statsPrepare() {}
     protected void statsFinalize() {}
 
