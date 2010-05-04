@@ -26,7 +26,7 @@ import com.hp.hpl.jena.query.QueryParseException;
 import com.hp.hpl.jena.update.UpdateRequest;
 
 
-public class ParserSPARQLUpdate
+public class ParserSPARQL11Update
 {
     public UpdateRequest parse(UpdateRequest update, String queryString)
     {

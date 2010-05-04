@@ -7,7 +7,9 @@ package dev;
 
 public class DevARQ
 {
-    // Daatset to indicate if plain string and XSD string are the same to affact FILTER(?x="string") optimziation.
+    // Which update language?
+    
+    // Dataset to indicate if plain string and XSD string are the same to affact FILTER(?x="string") optimziation.
     // Does dataset contexts fix this?
     
     // Documentation for CSV etc.

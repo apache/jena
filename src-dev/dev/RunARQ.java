@@ -7,6 +7,7 @@
 
 package dev;
 
+import java.io.ByteArrayInputStream ;
 import java.io.Reader ;
 import java.io.StringReader ;
 import java.util.HashSet ;
@@ -39,6 +40,7 @@ import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.expr.aggregate.Accumulator ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
 import com.hp.hpl.jena.sparql.function.FunctionEnvBase ;
+import com.hp.hpl.jena.sparql.lang.ParserSPARQL11Update ;
 import com.hp.hpl.jena.sparql.lang.sparql_11.SPARQLParser11 ;
 import com.hp.hpl.jena.sparql.resultset.ResultsFormat ;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
@@ -50,6 +52,8 @@ import com.hp.hpl.jena.sparql.sse.WriterSSE ;
 import com.hp.hpl.jena.sparql.sse.builders.BuildException ;
 import com.hp.hpl.jena.sparql.sse.builders.BuilderGraph ;
 import com.hp.hpl.jena.sparql.util.* ;
+import com.hp.hpl.jena.update.UpdateFactory ;
+import com.hp.hpl.jena.update.UpdateRequest ;
 import com.hp.hpl.jena.util.FileManager ;
 
 public class RunARQ
@@ -87,6 +91,21 @@ public class RunARQ
 
     public static void main(String[] argv) throws Exception
     {
+        String $1 = "insert into <urn:x:a> { <urn:x:s> <urn:x:p> <urn:x:o> }" ;
+        String $2 = "PREFIX : <http://example/> MODIFY DELETE {?s ?p ?o } INSERT {?s ?p ?o } WHERE {}" ;
+        String $3 = "PREFIX dc: <http://purl.org/dc/elements/1.1/> INSERT DATA INTO <http://example/bookStore> { <http://example/book3>  dc:title  \"Fundamentals of Compiler Design\" }" ;
+        
+        UpdateRequest up = UpdateFactory.create($3) ;
+        System.out.println(up) ;
+        
+        UpdateRequest updateRequest = new UpdateRequest() ;
+        ByteArrayInputStream in = new ByteArrayInputStream($3.getBytes("UTF-8")) ;
+        ParserSPARQL11Update p = new ParserSPARQL11Update() ;
+        p.parse(updateRequest, in) ;
+        
+        System.out.println("Done") ;
+        System.exit(0) ;
+        
         //unionTransform() ;
         
         {

@@ -29,7 +29,6 @@ public class UpdateFactory
     /** Create an UpdateRequest by parsing the given string */
     public static UpdateRequest create(String str)
     { 
-        //ParserSPARQLUpdate p = new ParserSPARQLUpdate() ;
         ParserARQUpdate p = new ParserARQUpdate() ;
         UpdateRequest update = new UpdateRequest() ;
         p.parse(update, str) ;
