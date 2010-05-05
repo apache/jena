@@ -11,12 +11,8 @@ import java.io.InputStream ;
 import java.util.HashSet ;
 import java.util.Set ;
 
-import org.openjena.atlas.event.Event ;
-import org.openjena.atlas.event.EventListener ;
-import org.openjena.atlas.event.EventManager ;
 import org.openjena.atlas.io.IO ;
 import org.openjena.atlas.iterator.Filter ;
-import org.openjena.atlas.lib.FileOps ;
 import org.openjena.atlas.lib.Sink ;
 import org.openjena.atlas.lib.SinkCounting ;
 import org.openjena.atlas.lib.SinkPrint ;
@@ -42,19 +38,15 @@ import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.Transformer ;
 import com.hp.hpl.jena.sparql.engine.Plan ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingRoot ;
-import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.sparql.util.Context ;
-import com.hp.hpl.jena.sparql.util.IndentedWriter ;
 import com.hp.hpl.jena.sparql.util.QueryExecUtils ;
 import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.TDBFactory ;
-import com.hp.hpl.jena.tdb.TDBLoader ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
 import com.hp.hpl.jena.tdb.solver.QueryEngineTDB ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
 import com.hp.hpl.jena.tdb.store.TransformDynamicDataset ;
-import com.hp.hpl.jena.tdb.store.bulkloader.BulkLoader ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 import com.hp.hpl.jena.util.FileManager ;
 
@@ -72,55 +64,9 @@ public class RunTDB
 
     public static void main(String[] args) throws IOException
     {
-        DatasetGraphTDB dsg = null ;
-        if ( true )
-        {
-            dsg = (DatasetGraphTDB)TDBFactory.createDataset().asDatasetGraph() ;
-        }
-        else
-        {
-            FileOps.clearDirectory("DB") ;
-            dsg = (DatasetGraphTDB)TDBFactory.createDataset("DB").asDatasetGraph() ;
-        }
-//        dsg.getDefaultGraph().add(SSE.parseTriple("(<s> <p> <o>)")) ;
-//        System.out.println(dsg.getDefaultGraph().size());
-        String filename = "/home/afs/Datasets/MusicBrainz/tracks.nt" ; 
-        filename = "D.ttl.gz" ;
-        EventListener listener = new EventListener() {
-            public void event(Object dest, Event event)
-            {
-                System.out.printf("%s\n", event.getType()) ;
-            }
-        } ;
-            
-
-        // Testing.
-        if ( false )
-        {
-            EventManager.register(null, BulkLoader.evStartBulkload, listener) ;
-            EventManager.register(null, BulkLoader.evFinishBulkload, listener) ;
-    
-            EventManager.register(null, BulkLoader.evStartDataBulkload, listener) ;
-            EventManager.register(null, BulkLoader.evFinishDataBulkload, listener) ;
-    
-            EventManager.register(null, BulkLoader.evStartIndexBulkload, listener) ;
-            EventManager.register(null, BulkLoader.evFinishIndexBulkload, listener) ;
-        }
+        String fn = "c:/home/afs/Datasets/MusicBrainz/artists.nt.gz" ;
+        RunLoaderExperiment.main("fn") ;
         
-//        BulkLoader.DataTickPoint = 1000 ;
-//        BulkLoader.IndexTickPoint = 2500 ;
-        
-        boolean asTriples = true ;
-        if ( asTriples )
-            TDBLoader.load(dsg.getDefaultGraphTDB(), filename, true) ;
-        else
-            TDBLoader.load(dsg, filename, true) ;
-
-        if ( false )
-        {
-            SSE.write(IndentedWriter.stdout, dsg) ;
-            IndentedWriter.stdout.flush();
-        }
         System.exit(0) ;
         
         

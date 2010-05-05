@@ -16,7 +16,7 @@ import com.hp.hpl.jena.sparql.util.StringUtils ;
 import com.hp.hpl.jena.sparql.util.Timer ;
 
 /** Abstract the load logging */
-class LoadMonitor
+public class LoadMonitor
 {
     private final Logger log ;
     private final DatasetGraph dataset ;
@@ -53,9 +53,9 @@ class LoadMonitor
     
     private String itemsName ;
 
-    LoadMonitor(DatasetGraph dsg, Logger log, String itemsName,
-                long dataTickPoint,  
-                long indexTickPoint)
+    public LoadMonitor(DatasetGraph dsg, Logger log, String itemsName,
+                       long dataTickPoint,  
+                       long indexTickPoint)
     {
         this.dataset = dsg ;
         this.log = log ;
@@ -66,14 +66,14 @@ class LoadMonitor
     }
     
     // ---- Overall
-    void startLoad()
+    public void startLoad()
     {
         EventManager.send(dataset, new Event(BulkLoader.evStartBulkload, null)) ;
         timer.startTimer() ;
         processStartTime = timer.readTimer() ;
     }
     
-    void finishLoad()
+    public void finishLoad()
     {
         timer.endTimer() ;
         processFinishTime = timer.getTimeInterval() ;
@@ -92,7 +92,7 @@ class LoadMonitor
     
     // ---- Data phase
     
-    void startDataPhase()
+    public void startDataPhase()
     {
         print("-- Start %s data phase", itemsName) ;
         dataStartTime = timer.readTimer() ;
@@ -102,7 +102,7 @@ class LoadMonitor
         EventManager.send(dataset, new Event(BulkLoader.evStartDataBulkload, null)) ;
     }
     
-    void finishDataPhase()
+    public void finishDataPhase()
     {
         EventManager.send(dataset, new Event(BulkLoader.evFinishDataBulkload, null)) ;
         dataFinishTime = timer.readTimer() ;
@@ -118,7 +118,7 @@ class LoadMonitor
     }
 
     /** Note when one item (triple, quad) is loaded */
-    final void dataItem()
+    public final void dataItem()
     {
         currentItems++ ;
         totalDataItems ++ ; 
@@ -143,7 +143,7 @@ class LoadMonitor
             
     }
 
-    void startIndexPhase()    
+    public void startIndexPhase()    
     {
         print("-- Start %s index phase", itemsName) ;
         indexStartTime = timer.readTimer() ;
@@ -151,7 +151,7 @@ class LoadMonitor
         EventManager.send(dataset, new Event(BulkLoader.evStartIndexBulkload, null)) ;
     }
 
-    void finishIndexPhase()
+    public void finishIndexPhase()
     {
         EventManager.send(dataset, new Event(BulkLoader.evFinishIndexBulkload, null)) ;
         indexFinishTime = timer.readTimer() ;
@@ -170,7 +170,7 @@ class LoadMonitor
     }
 
     String indexLabel ;
-    void startIndex(String label)
+    public void startIndex(String label)
     {
         phaseStartTime = timer.readTimer() ;
         indexLabel = label ;
@@ -178,7 +178,7 @@ class LoadMonitor
         totalIndexItems = 0 ;
     }
     
-    void finishIndex(String label)
+    public void finishIndex(String label)
     {
         phaseFinishTime = timer.readTimer() ;
         long phaseTime = phaseFinishTime - phaseStartTime ;
@@ -226,7 +226,7 @@ class LoadMonitor
     
     }
 
-    void print(String fmt, Object...args)
+    public void print(String fmt, Object...args)
     {
         if ( log != null && log.isInfoEnabled() )
         {

@@ -11,6 +11,8 @@ import java.io.InputStream ;
 import java.util.ArrayList ;
 import java.util.List ;
 
+import org.slf4j.Logger ;
+
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.riot.Lang ;
@@ -137,6 +139,7 @@ public class TDBLoader
     
     private boolean showProgress = true ;
     private boolean generateStats = false ;
+    private Logger loaderLog  = TDB.logLoader ;
     
     // ---- The class itself.
     
@@ -191,6 +194,12 @@ public class TDBLoader
 
     public final void setGenerateStats(boolean generateStats)
     { this.generateStats = generateStats ; }
+    
+//    public final Logger getLogger()
+//    { return this.loaderLog ; }
+//
+//    public final void setLogger(Logger log)
+//    { this.loaderLog = log ; }
     
     private static void loadGraph$(GraphTDB graph, List<String> urls, boolean showProgress)
     {

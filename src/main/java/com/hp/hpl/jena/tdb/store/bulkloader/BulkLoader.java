@@ -213,9 +213,7 @@ public class BulkLoader
     private static Destination<Triple> destination(final DatasetGraphTDB dsg, NodeTupleTable nodeTupleTable, final boolean showProgress)
     {
         LoadMonitor monitor = createLoadMonitor(dsg, "triples", showProgress) ;
-        final LoaderNodeTupleTable loaderTriples = new LoaderNodeTupleTable(nodeTupleTable,
-                                                                            "triples",
-                                                                            monitor) ;
+        final LoaderNodeTupleTable loaderTriples = new LoaderNodeTupleTable(nodeTupleTable, "triples", monitor) ;
         
         Destination<Triple> sink = new Destination<Triple>() {
             long count = 0 ;

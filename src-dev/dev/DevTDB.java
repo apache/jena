@@ -9,21 +9,11 @@ public class DevTDB
     // No checking loading.
     // tdbloader from quads?
     
-    // Simpler lock impl?  Non-reentrant.
-    
     // Tuples
     // Interface, TupleFactory, TupleImpl
     // TupleMask (or TupleImpl itself has a length field?? TupleMask(T[] or Tuple<T>)) 
     // Sort : with colmap?
     // TupleSlice
-    
-    // -- Loader
-    // .gz files. [DONE - IO.openFile and Lang.guess]
-    // Sink: just a send()
-    // Destination start-send-finish
-    // SinkClosable
-    // Consolidate all event types.
-    // Test bulk loader
     
     // DBPedia load
     
