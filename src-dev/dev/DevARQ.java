@@ -8,6 +8,7 @@ package dev;
 public class DevARQ
 {
     // Which update language?
+    // SPARQL 1.1 Update ++ INSERT/DELETE DATA to take variables (must be prebound)
     
     // Dataset to indicate if plain string and XSD string are the same to affact FILTER(?x="string") optimziation.
     // Does dataset contexts fix this?
