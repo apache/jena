@@ -59,7 +59,7 @@ public class LangNQuads extends LangNTuple<Quad>
         // Check end of tuple.
         
         if ( xToken.getType() != TokenType.DOT )
-            exception("Quad not terminated by DOT: %s", xToken) ;
+            exception(xToken, "Quad not terminated by DOT: %s", xToken) ;
         
         Checker checker = getChecker() ;
         

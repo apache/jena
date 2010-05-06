@@ -149,14 +149,21 @@ public abstract class LangBase<X> implements LangRIOT
     
     protected final void expect(String msg, TokenType ttype)
     {
+        
         if ( ! lookingAt(ttype) )
-            exception(msg) ;
+        {
+            Token location = peekToken() ;
+            exception(location, msg) ;
+        }
         nextToken() ;
     }
 
-    protected final void exception(String msg, Object... args)
+    protected final void exception(Token token, String msg, Object... args)
     { 
-        exceptionDirect(String.format(msg, args), peekToken().getLine(), peekToken().getColumn()) ;
+        if ( token != null )
+            exceptionDirect(String.format(msg, args), token.getLine(), token.getColumn()) ;
+        else
+            exceptionDirect(String.format(msg, args), -1, -1) ;
     }
 
     protected final void exceptionDirect(String msg, long line, long col)

@@ -91,14 +91,14 @@ public abstract class LangNTuple<X> extends LangBase<X> implements Iterator<X>
     {
         if ( ! ( token.hasType(TokenType.BNODE) ||
                  token.hasType(TokenType.IRI) ) )
-            exception("Expected BNode or IRI", token) ;
+            exception(token, "Expected BNode or IRI: Got: %s", token) ;
         return tokenAsNode(token) ;
     }
 
     protected final Node parseIRI(Token token)
     {
         if ( ! token.hasType(TokenType.IRI) )
-            exception("Expected IRI", token) ;
+            exception(token, "Expected IRI: Got: %s", token) ;
         return tokenAsNode(token) ;
     }
 
@@ -114,10 +114,10 @@ public abstract class LangNTuple<X> extends LangBase<X> implements Iterator<X>
                 break ;
             case STRING1:
                 if ( STRICT )
-                    exception("Illegal single quoted string", token) ;
+                    exception(token, "Illegal single quoted string: %s", token) ;
                 break ;
             default:
-                exception("Illegal object", token) ;
+                exception(token, "Illegal object: %s", token) ;
         }
             
         return tokenAsNode(token) ;

@@ -151,7 +151,8 @@ public abstract class LangTurtleBase<X> extends LangBase<X>
     protected final void directive()
     {
         // It's a directive ...
-        String x = peekToken().getImage() ;
+        Token t = peekToken() ; 
+        String x = t.getImage() ;
         nextToken() ;
         
         if ( x.equals("base") )
@@ -165,20 +166,20 @@ public abstract class LangTurtleBase<X> extends LangBase<X>
             directivePrefix() ;
             return ;
         }
-        exception("Unregcognized directive: %s", x) ;
+        exception(t, "Unregcognized directive: %s", x) ;
     }
     
     protected final void directivePrefix()
     {
         // Raw - unresolved prefix name.
         if ( ! lookingAt(PREFIXED_NAME) )
-            exception("@prefix requires a prefix (found '"+peekToken()+"')") ;
+            exception(peekToken(), "@prefix requires a prefix (found '"+peekToken()+"')") ;
         if ( peekToken().getImage2().length() != 0 )
-            exception("@prefix requires a prefix and no suffix (found '"+peekToken()+"')") ;
+            exception(peekToken(), "@prefix requires a prefix and no suffix (found '"+peekToken()+"')") ;
         String prefix = peekToken().getImage() ;
         nextToken() ;
         if ( ! lookingAt(IRI) )
-            exception("@prefix requires an IRI (found '"+peekToken()+"')") ;
+            exception(peekToken(), "@prefix requires an IRI (found '"+peekToken()+"')") ;
         String iriStr = peekToken().getImage() ;
         // CHECK
         IRI iri = prologue.getResolver().resolveSilent(iriStr) ;
@@ -240,18 +241,19 @@ public abstract class LangTurtleBase<X> extends LangBase<X>
                 expectEndOfTriples() ;
                 return ;
             }
-            exception("Unexpected token : %s", peekToken()) ;
+            exception(peekToken(), "Unexpected token : %s", peekToken()) ;
         }
-        exception("Out of place: %s", peekToken()) ;
+        exception(peekToken(), "Out of place: %s", peekToken()) ;
     }
 
     // Must be at least one triple. 
     protected final void triples()
     {
+        
         // Looking at a node.
         Node subject = node() ;
         if ( subject == null )
-            exception("Not recognized: expected node: %s", peekToken().text()) ;
+            exception(peekToken(), "Not recognized: expected node: %s", peekToken().text()) ;
         
         nextToken() ;
         predicateObjectList(subject) ;
@@ -303,6 +305,7 @@ public abstract class LangTurtleBase<X> extends LangBase<X>
     {
         if ( lookingAt(TokenType.KEYWORD) )
         {
+            Token tErr = peekToken() ;
             String image = peekToken().getImage() ;
             if ( image.equals(KW_A) )
                 return NodeConst.nodeRDFType ;
@@ -310,7 +313,7 @@ public abstract class LangTurtleBase<X> extends LangBase<X>
                 return nodeSameAs ;
             if ( !strict && image.equals(KW_LOG_IMPLIES) )
                 return NodeConst.nodeRDFType ;
-            exception("Unrecognized: "+image) ;
+            exception(tErr, "Unrecognized: "+image) ;
         }
             
         // Maybe null
@@ -380,6 +383,7 @@ public abstract class LangTurtleBase<X> extends LangBase<X>
         // Special words.
         if ( lookingAt(TokenType.KEYWORD) )
         {
+            Token tErr = peekToken() ;
             // Location independent node words
             String image = peekToken().getImage() ;
             nextToken() ;
@@ -388,9 +392,9 @@ public abstract class LangTurtleBase<X> extends LangBase<X>
             if ( image.equals(KW_FALSE) )
                 return NodeConst.nodeFalse ;
             if ( image.equals(KW_A) )
-                exception("Keyword 'a' not legal at this point") ; 
+                exception(tErr, "Keyword 'a' not legal at this point") ; 
 
-            exception("Unrecognized keyword: "+image) ; 
+            exception(tErr, "Unrecognized keyword: "+image) ; 
         }
         
         return triplesNodeCompound() ;
@@ -415,7 +419,7 @@ public abstract class LangTurtleBase<X> extends LangBase<X>
             return triplesFormula() ;
         if ( lookingAt(LPAREN) )
             return triplesList() ;
-        exception("Unrecognized: "+peekToken()) ;
+        exception(peekToken(), "Unrecognized: "+peekToken()) ;
         return null ;
     }
     
@@ -434,7 +438,7 @@ public abstract class LangTurtleBase<X> extends LangBase<X>
     
     protected final Node triplesFormula()
     {
-        exception("Not implemented") ;
+        exception(peekToken(), "Not implemented") ;
         return null ;
     }
     
@@ -446,8 +450,9 @@ public abstract class LangTurtleBase<X> extends LangBase<X>
         
         for ( ;; )
         {
+            Token errorToken = peekToken() ;
             if ( eof() )
-                exception ("Unterminated list") ;
+                exception (peekToken(), "Unterminated list") ;
             
             if ( lookingAt(RPAREN) ) 
             {
@@ -459,7 +464,7 @@ public abstract class LangTurtleBase<X> extends LangBase<X>
             Node n = triplesNode() ;
             
             if ( n == null )
-                exception("Malformed list") ;
+                exception(errorToken, "Malformed list") ;
             
             // Node for the list structre.
             Node nextCell = Node.createAnon() ;

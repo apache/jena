@@ -78,6 +78,7 @@ public class LangTriG extends LangTurtleBase<Quad>
         // <foo> = { ... }
         if ( token.isNode() )
         {
+            Token t = token ;   // Keep for error message. 
             graphNode = node() ;
             checker.check(graphNode,  token.getLine(), token.getColumn()) ;
             nextToken() ;
@@ -86,7 +87,7 @@ public class LangTriG extends LangTurtleBase<Quad>
             if ( graphNode.isURI() )
                 setCurrentGraph(graphNode) ; 
             else
-                exception("Not a legal graph name: "+graphNode) ;
+                exception(t, "Not a legal graph name: "+graphNode) ;
         }
         else
             setCurrentGraph(Quad.tripleInQuad) ;
@@ -100,7 +101,7 @@ public class LangTriG extends LangTurtleBase<Quad>
         }
         
         if ( token.getType() != TokenType.LBRACE )
-            exception("Expected start of graph: got %s", peekToken()) ;
+            exception(token, "Expected start of graph: got %s", peekToken()) ;
         nextToken() ;
         
         // **** Turtle but no directives.
@@ -122,7 +123,7 @@ public class LangTriG extends LangTurtleBase<Quad>
         // **** Turtle.
         token = peekToken() ;
         if ( token.getType() != TokenType.RBRACE )
-            exception("Expected end of graph: got %s", peekToken()) ;
+            exception(token, "Expected end of graph: got %s", peekToken()) ;
         nextToken() ;
         // End graph block.
         setCurrentGraph(Quad.tripleInQuad) ;
@@ -150,7 +151,7 @@ public class LangTriG extends LangTurtleBase<Quad>
         if ( lookingAt(RBRACE) )
             // Don't consume the RBRACE
             return ;
-        exception("Triples not terminated properly") ;
+        exception(peekToken(), "Triples not terminated properly") ;
     }
 
     

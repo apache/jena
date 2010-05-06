@@ -41,7 +41,7 @@ public class LangNTriples extends LangNTuple<Triple>
 
         Token x = nextToken() ;
         if ( x.getType() != TokenType.DOT )
-            exception("Triple not terminated by DOT: %s", x, x) ;
+            exception(x, "Triple not terminated by DOT: %s", x) ;
         Checker checker = getChecker() ;
         if ( checker != null )
         {
