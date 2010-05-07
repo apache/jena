@@ -19,7 +19,6 @@ import org.openjena.atlas.lib.SinkCounting ;
 import org.openjena.atlas.lib.SinkPrint ;
 import org.openjena.atlas.lib.SinkWrapper ;
 import org.openjena.atlas.lib.Tuple ;
-import org.openjena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;

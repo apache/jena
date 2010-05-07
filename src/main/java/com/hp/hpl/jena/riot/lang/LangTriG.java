@@ -151,7 +151,7 @@ public class LangTriG extends LangTurtleBase<Quad>
         if ( lookingAt(RBRACE) )
             // Don't consume the RBRACE
             return ;
-        exception(peekToken(), "Triples not terminated properly") ;
+        exception(peekToken(), "Triples not terminated properly: expected '.', '}' or EOF: got %s", peekToken()) ;
     }
 
     

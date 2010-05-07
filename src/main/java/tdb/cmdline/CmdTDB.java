@@ -35,30 +35,34 @@ import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 public abstract class CmdTDB extends CmdARQ
 {
-    private static final ArgDecl argNamedGraph       = new ArgDecl(ArgDecl.HasValue, "graph") ;
-    protected final ModTDBDataset tdbDatasetAssembler = new ModTDBDataset() ;
+    private static final ArgDecl argNamedGraph          = new ArgDecl(ArgDecl.HasValue, "graph") ;
+    protected final ModTDBDataset tdbDatasetAssembler   = new ModTDBDataset() ;
 
-    private static final String log4Jsetup = StringUtils.join("\n",
-                                                        "## Loader - plain output",
-                                                        "log4j.appender.tdb.plain=org.apache.log4j.ConsoleAppender",
-                                                        "log4j.appender.tdb.plain.target=System.err",
-                                                        "log4j.appender.tdb.plain.layout=org.apache.log4j.PatternLayout",
-                                                        "log4j.appender.tdb.plain.layout.ConversionPattern=%m%n",
-                                                        "## Loader output",
-                                                        "log4j.additivity."+TDB.logLoaderName+"=false",
-                                                        "log4j.logger."+TDB.logLoaderName+"=ALL, tdb.plain",
+    private static final String log4Jsetup = StringUtils.join("\n"
+                                                        , "## Plain output"
+                                                        , "log4j.appender.tdb.plain=org.apache.log4j.ConsoleAppender"
+                                                        , "log4j.appender.tdb.plain.target=System.err"
+                                                        , "log4j.appender.tdb.plain.layout=org.apache.log4j.PatternLayout"
+                                                        , "log4j.appender.tdb.plain.layout.ConversionPattern=%m%n"
+
+                                                        , "## Plain output with level"
+                                                        , "log4j.appender.tdb.plainlevel=org.apache.log4j.ConsoleAppender"
+                                                        , "log4j.appender.tdb.plainlevel.target=System.err"
+                                                        , "log4j.appender.tdb.plainlevel.layout=org.apache.log4j.PatternLayout"
+                                                        , "log4j.appender.tdb.plainlevel.layout.ConversionPattern=%-5p %m%n"
+
+                                                        , "## Everything"
+                                                        , "log4j.rootLogger=INFO, tdb.plainlevel"
                                                         
-                                                        "## Parser - plain + level",
-                                                        "log4j.appender.tdb.plainlevel=org.apache.log4j.ConsoleAppender",
-                                                        "log4j.appender.tdb.plainlevel.target=System.err",
-                                                        "log4j.appender.tdb.plainlevel.layout=org.apache.log4j.PatternLayout",
-                                                        "log4j.appender.tdb.plainlevel.layout.ConversionPattern=%-5p %m%n",
-                                                        "## Parser output",
-                                                        "log4j.additivity."+RIOT.riotLoggerName+"=false",
-                                                        "log4j.logger."+RIOT.riotLoggerName+"=INFO, tdb.plainlevel ",
-                                                        ""
+                                                        , "## Loader output"
+                                                        , "log4j.additivity."+TDB.logLoaderName+"=false"
+                                                        , "log4j.logger."+TDB.logLoaderName+"=INFO, tdb.plain"
+                                                        
+                                                        , "## Parser output"
+                                                        , "log4j.additivity."+RIOT.riotLoggerName+"=false"
+                                                        , "log4j.logger."+RIOT.riotLoggerName+"=INFO, tdb.plainlevel "
                                                           ) ;
-    private static boolean loggingInitialized = false ;
+    private static boolean initialized = false ;
     
     protected String graphName = null ;
     
@@ -73,8 +77,12 @@ public abstract class CmdTDB extends CmdARQ
         super.modVersion.addClass(TDB.class) ;
     }
     
-    public static void init()
+    public static synchronized void init()
     {
+        if ( initialized )
+            return ;
+        // attempt once.
+        initialized = true ;
         setLogging() ;
         // This sets context based on system properties.
         // ModSymbol can then override. 
@@ -82,15 +90,9 @@ public abstract class CmdTDB extends CmdARQ
         ModSymbol.addPrefixMapping(SystemTDB.tdbSymbolPrefix, SystemTDB.symbolNamespace) ;
     }
     
-    public static synchronized void setLogging()
+    /** Reset the logging to be good for command line tools */
+    public static void setLogging()
     {
-        if ( loggingInitialized )
-            return ;
-        // attempt once.
-        loggingInitialized = true ;
-        
-        String x = System.getProperty("log4j.configuration") ; 
-        
         //if ( ! Log.setLog4j() ) 
         //if ( System.getProperty("log4j.configuration") == null )
         {

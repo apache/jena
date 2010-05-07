@@ -7,25 +7,24 @@
 package com.hp.hpl.jena.tdb.index;
 
 
-import java.util.Iterator;
-import java.util.Set;
+import java.util.Iterator ;
+import java.util.Set ;
 
-
-import org.junit.Test;
+import org.junit.Test ;
 import org.openjena.atlas.iterator.Iter ;
 import org.openjena.atlas.junit.BaseTest ;
 import org.openjena.atlas.lib.ColumnMap ;
 import org.openjena.atlas.lib.Tuple ;
-import tdb.Cmd;
+import org.openjena.atlas.logging.Log ;
 
-import com.hp.hpl.jena.tdb.base.file.FileSet;
-import com.hp.hpl.jena.tdb.base.record.RecordFactory;
-import com.hp.hpl.jena.tdb.store.NodeId;
-import com.hp.hpl.jena.tdb.sys.SystemTDB;
+import com.hp.hpl.jena.tdb.base.file.FileSet ;
+import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
+import com.hp.hpl.jena.tdb.store.NodeId ;
+import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 public class TestTupleIndexRecord extends BaseTest
 {
-    static { Cmd.setLog4j() ; }
+    static { Log.setLog4j() ; }
     
     static RecordFactory factory = new RecordFactory(3*SystemTDB.SizeOfNodeId, 0) ;
     static NodeId n1 = new NodeId(1) ;

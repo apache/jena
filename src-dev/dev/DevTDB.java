@@ -5,10 +5,6 @@ public class DevTDB
     // == 0.8.5
     // Enable FILTER assignment for strings (and numbers?) via dataset context setting?
     
-    // Loader - load bad UIRs?
-    // IRI checking - sort out error and warnings.
-    // No checking loading.
-    
     // Tuples
     // Interface, TupleFactory, TupleImpl
     // TupleMask (or TupleImpl itself has a length field?? TupleMask(T[] or Tuple<T>)) 
@@ -16,24 +12,23 @@ public class DevTDB
     // TupleSlice
     
     // RIOT
-    //  Option passing (old Jena style).
-    //  Options: pass/reject bad URIs, bad literals. -> "SKIP", "PASS", "FAIL"
-    //  Recovery parsing - scan to DOT?
-    //  Command line - catch parser error,pritn and and exit(1)
-    
-    // Testing (W64)
-    // Build-release
-    // tdbverifyTDB
-    // ----
+    // Fix: Parsing "foo"^^ .
+    // Respect system property for log4j if ALog not called.?
+    //   Option passing (old Jena style).
+    //   Options: pass/reject bad URIs, bad literals. -> "SKIP", "PASS", "FAIL"
+    //   Recovery parsing - scan to DOT?
+    //   Command line - add filename to message.
+    //   Does --time print to stdout or stderr or shoudl it be a logger?
+    //   Fixed line/col field.
+    // Document
+    //  --sink, --skip, --time
+    // RIOT extensions
+    //     NQuads in Trig ??
     
     // Free block recycling.
     
     // 2 store dataset
     // Compact B+Trees
-    // TDB - wrapper version
-    //   Uses RIOT for I/O
-    // ----
-    
     // ---- Core system
 
     // ---- Pipeline
@@ -49,20 +44,14 @@ public class DevTDB
     
     // Use  $(cygpath -wp "$jar")" when setting $jar.
     
-    // RIOT
-    //     NQuads in Trig ??
-    //     Trailing dots ??
-    // Document
     
-    // --------
-
     // Early truncation of patterns
     //  ?s <p> <foo> . ?s <q> ?v . ?s <r> ?x
     // If <r> has no solutions fall back to triple pattern 1
     // Just need to keep var -> first def mapping but all mentions may be useful. 
     // (Idea from Alisdair)
     
-    // In-JVM caches - make a function of heap size.
+    // In-JVM caches - make a function of heap size. (stil not perfect)
     // Settable in this.info.
     //   NodeCache
     //   Block cache for 32 bit
@@ -93,8 +82,6 @@ public class DevTDB
     //   <s> p1 ?o1 ; p2 ?o2 ; p3 ?o3 ... and do ((<s> 0 0)->(<s>+1 0 0)]
     //   Materialized answers.
     
-    // Dataset.close() always calls TDBMaker.releaseDataset - shouldn't there be a reference count?
-    
     // NodeId:  
     // Bit 0: 0 - 63 bits of id (hash!) or block allocation for cluster.
     // Bit 0: 1 - inline
@@ -107,13 +94,11 @@ public class DevTDB
     
     // ** Grand roll out
     //    atlas to atlas
-    //    riot to ARQ, PrrefixMapping=>PrefixMap, Prologue change.
+    //    riot to riot
+    //        ARQ, PrefixMapping=>PrefixMap, Prologue change.
     //    FmtUtils and NodeFmtLib 
     
     // Sort out NodecSSE and NodecLib
-    
-    // **** Redo IndexBuilder and NodeTableBuilder (with caching
-    //   ?? SetupTDB(IndexBuilder, NodeTableBuilder, PrefixTableBuilder) ;
     
     // === Projects
     // -> Stopping long running queries - 

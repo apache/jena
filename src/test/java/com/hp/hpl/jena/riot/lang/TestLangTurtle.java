@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -11,12 +12,17 @@ import java.io.StringReader ;
 
 import org.junit.Test ;
 import org.openjena.atlas.junit.BaseTest ;
+import org.openjena.atlas.lib.SinkNull ;
 
+import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.rdf.model.RDFReader ;
 import com.hp.hpl.jena.riot.JenaReaderTurtle2 ;
-import com.hp.hpl.jena.shared.JenaException ;
+import com.hp.hpl.jena.riot.ParseException ;
+import com.hp.hpl.jena.riot.ParserFactory ;
+import com.hp.hpl.jena.riot.tokens.Tokenizer ;
+import com.hp.hpl.jena.riot.tokens.TokenizerFactory ;
 
 public class TestLangTurtle extends BaseTest
 {
@@ -33,7 +39,7 @@ public class TestLangTurtle extends BaseTest
         String x = m.listStatements().next().getSubject().getId().getLabelString() ;
         assertNotEquals(x, "a") ;
 
-        // reset - reread -  new bNode.
+        // reset - reread - new bNode.
         r = new StringReader(s) ;
         reader.read(m, r, null) ;
         assertEquals(2, m.size()) ;
@@ -63,29 +69,29 @@ public class TestLangTurtle extends BaseTest
         assertEquals("http://example/x", model.getNsPrefixURI("x")) ;
     }
     
-    @Test(expected=JenaException.class)
-    public void errorJunk()
+    // Call parser directly.
+    
+    private static void parse(String string)
     {
-        JenaReaderTurtle2 parser = new JenaReaderTurtle2() ;
-        Model model = ModelFactory.createDefaultModel() ;
         Reader reader = new StringReader("<p>") ;
-        parser.read(model, reader, "http://example/base/") ;
+        Tokenizer tokenizer = TokenizerFactory.makeTokenizer(reader) ;
+        LangTurtle parser = ParserFactory.createParserTurtle(tokenizer, "http://base/", new SinkNull<Triple>()) ;
+        parser.parse() ;
     }
     
-    @Test(expected=JenaException.class)
-    public void errorNoPrefixDef()
-    {
-        JenaReaderTurtle2 parser = new JenaReaderTurtle2() ;
-        Model model = ModelFactory.createDefaultModel() ;
-        Reader reader = new StringReader("x:p <p> 'q' .") ;
-        parser.read(model, reader, "http://example/base/") ;
-    }
+    @Test(expected=ParseException.class)
+    public void errorJunk()             { parse("<p>") ; }
     
+    @Test(expected=ParseException.class)
+    public void errorNoPrefixDef()      { parse("x:p <p> 'q' .") ; }
     
+    @Test(expected=ParseException.class)
+    public void errorBadDatatype()      { parse("<p> <p> 'q'^^.") ; }
 }
 
 /*
  * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

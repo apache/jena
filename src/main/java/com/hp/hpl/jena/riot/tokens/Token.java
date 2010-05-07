@@ -172,7 +172,8 @@ public final class Token
         return toString(false) ;
     }
      
-    static final String delim = "|" ;
+    static final String delim1 = "" ;
+    static final String delim2 = "" ;
     public String toString(boolean addLocation)
     {
         StringBuilder sb = new StringBuilder() ;
@@ -187,23 +188,23 @@ public final class Token
         if ( getImage() != null )
         {
             sb.append(":") ;
-            sb.append(delim) ;
+            sb.append(delim1) ;
             sb.append(getImage()) ;
-            sb.append(delim) ;
+            sb.append(delim1) ;
             
             if ( getImage2() != null )
             {
                 sb.append(":") ;
-                sb.append(delim) ;
+                sb.append(delim2) ;
                 sb.append(getImage2()) ;
-                sb.append(delim) ;
+                sb.append(delim2) ;
             }
             if ( getSubToken() != null )
             {
                 sb.append(";") ;
-                sb.append(delim) ;
+                sb.append(delim2) ;
                 sb.append(getSubToken().toString()) ;
-                sb.append(delim) ;
+                sb.append(delim2) ;
             }   
 
         }
