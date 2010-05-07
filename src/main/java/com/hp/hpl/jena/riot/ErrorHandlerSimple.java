@@ -6,16 +6,19 @@
 
 package com.hp.hpl.jena.riot;
 
-import org.slf4j.Logger ;
+import static com.hp.hpl.jena.riot.RIOT.fmtMessage ;
 
-public class ErrorHandlerLib
+public class ErrorHandlerSimple implements ErrorHandler
 {
-    static public final Logger stdLogger = RIOT.getLogger() ;
-    
-    static public final ErrorHandler errorHandlerStd = new ErrorHandlerStd(stdLogger) ;
-    static public final ErrorHandler errorHandlerStrict = new ErrorHandlerStd(stdLogger) ;
-    static public final ErrorHandler errorHandlerWarn = new ErrorHandlerWarning(stdLogger) ;
-    static public final ErrorHandler errorHandlerNoLogging = new ErrorHandlerSimple() ;
+
+    public void warning(String message, long line, long col)
+    {}
+
+    public void error(String message, long line, long col)
+    { throw new RiotException(fmtMessage(message, line, col)) ; }
+
+    public void fatal(String message, long line, long col)
+    { throw new RiotException(fmtMessage(message, line, col)) ; }
 }
 
 /*

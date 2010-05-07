@@ -20,11 +20,17 @@ public class ErrorHandlerLogger implements ErrorHandler
     }
 
     /** report a warning */
-    public void warning(String message, long line, long col)     { log.warn(fmtMessage(message, line, col)) ; }
+    public void warning(String message, long line, long col)
+    {
+        log.warn(fmtMessage(message, line, col)) ;
+    }
     
     /** report an error */
-    public void error(String message, long line, long col)       { log.error(fmtMessage(message, line, col)) ; }
-    
+    public void error(String message, long line, long col)
+    {
+        log.error(fmtMessage(message, line, col)) ;
+    }
+
     /** report a catastrophic error.  Must not return. */    
     public void fatal(String message, long line, long col)
     { 

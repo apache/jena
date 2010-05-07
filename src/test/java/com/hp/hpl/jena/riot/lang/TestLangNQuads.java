@@ -6,18 +6,11 @@
 
 package com.hp.hpl.jena.riot.lang;
 
-import java.io.StringReader ;
-
 import org.junit.Test ;
-import org.openjena.atlas.junit.BaseTest ;
 import org.openjena.atlas.lib.Sink ;
 import org.openjena.atlas.lib.SinkCounting ;
 
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.rdf.model.ModelFactory ;
-import com.hp.hpl.jena.rdf.model.RDFReader ;
-import com.hp.hpl.jena.riot.JenaReaderNTriples2 ;
 import com.hp.hpl.jena.riot.ParseException ;
 import com.hp.hpl.jena.riot.ParserFactory ;
 import com.hp.hpl.jena.riot.tokens.Tokenizer ;
@@ -26,110 +19,8 @@ import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.tdb.lib.DatasetLib ;
 
-
-public class TestLangNQuads extends BaseTest
+public class TestLangNQuads extends TestLangNTuples
 {
-    // TODO Quads
-    @Test public void nt0()
-    {
-        SinkCounting<Quad> sink = parseToSink("") ;
-        assertEquals(0, sink.getCount()) ;
-    }
-    
-    @Test public void nt1()
-    {
-        SinkCounting<Quad> sink = parseToSink("<x> <y> <z>.") ;
-        assertEquals(1, sink.getCount()) ;
-    }
-    
-    @Test public void nt2()
-    {
-        SinkCounting<Quad> sink = parseToSink("<x> <y> \"z\".") ;
-        assertEquals(1, sink.getCount()) ;
-    }
-    
-    @Test public void nt3()
-    {
-        SinkCounting<Quad> sink = parseToSink("<x> <y> <z>. <x> <y> <z>.") ;
-        assertEquals(2, sink.getCount()) ;
-    }
-
-    @Test public void nt4()
-    {
-        SinkCounting<Quad> sink = parseToSink("<x> <y> \"123\"^^<int>.") ;
-        assertEquals(1, sink.getCount()) ;
-    }
-
-    @Test public void nt5()
-    {
-        SinkCounting<Quad> sink = parseToSink("<x> <y> \"123\"@lang.") ;
-        assertEquals(1, sink.getCount()) ;
-    }
-    
-    @Test public void nt_reader_twice()
-    {
-        String s = "_:a <p> 'foo' . " ;
-        StringReader r = new StringReader(s) ;
-        Model m = ModelFactory.createDefaultModel() ;
-        
-        RDFReader reader = new JenaReaderNTriples2() ;
-        reader.read(m, r, null) ;
-        assertEquals(1, m.size()) ;
-        
-        String x = m.listStatements().next().getSubject().getId().getLabelString() ;
-        assertNotEquals(x, "a") ;
-        
-
-        // reset - reread -  new bNode.
-        r = new StringReader(s) ;
-        reader.read(m, r, null) ;
-        assertEquals(2, m.size()) ;
-    }
-    
-    // Test iterator interface.
-
-    // Test parse errors interface.
-    @Test(expected=ParseException.class)
-    public void nt_bad_01()
-    {
-        parseToSink("<x> <y> <z>") ;          // No DOT
-    }
-    
-    @Test(expected=ParseException.class)
-    public void nt_bad_02()
-    {
-        parseToSink("<x> _:a <z> .") ;        // Bad predicate
-    }
-
-    @Test(expected=ParseException.class)
-    public void nt_bad_03()
-    {
-        parseToSink("<x> \"p\" <z> .") ;      // Bad predicate 
-    }
-
-    @Test(expected=ParseException.class)
-    public void nt_bad_4()
-    {
-        parseToSink("\"x\" <p> <z> .") ;      // Bad subject
-    }
-
-    @Test(expected=ParseException.class)
-    public void nt_bad_5()
-    {
-        parseToSink("<x> <p> ?var .") ;        // No variables 
-    }
-    
-    @Test(expected=ParseException.class)
-    public void nt_bad_6()
-    {
-        parseToSink("<x> <p> 123 .") ;        // No abbreviations. 
-    }
-    
-    @Test(expected=ParseException.class)
-    public void nt_bad_7()
-    {
-        parseToSink("<x> <p> x:y .") ;        // No prefixed names 
-    }
     
     @Test
     public void quad_1()
@@ -152,15 +43,15 @@ public class TestLangNQuads extends BaseTest
         assertEquals(0, dsg.getDefaultGraph().size()) ;
     }
 
-    private static SinkCounting<Quad> parseToSink(String string)
+    @Override
+    protected long parseToSink(String string)
     {
-        
         Tokenizer tokenizer = TokenizerFactory.makeTokenizerString(string) ;
         SinkCounting<Quad> sink = new SinkCounting<Quad>() ;
         
         LangNQuads x = ParserFactory.createParserNQuads(tokenizer, sink) ;
         x.parse() ;
-        return sink ;
+        return sink.getCount() ;
     }
     
     private static DatasetGraph parseToDataset(String string)

@@ -249,7 +249,6 @@ public abstract class LangTurtleBase<X> extends LangBase<X>
     // Must be at least one triple. 
     protected final void triples()
     {
-        
         // Looking at a node.
         Node subject = node() ;
         if ( subject == null )
@@ -260,18 +259,8 @@ public abstract class LangTurtleBase<X> extends LangBase<X>
         expectEndOfTriples() ;
     }
 
+    // Differs between Trutle and TriG.
     protected abstract void expectEndOfTriples() ;
-//    {
-//        // The DOT is required by Turtle (strictly).
-//        // It is not in N3 and SPARQL.
-//
-//        //expect("Triples not terminated by DOT", DOT) ;
-//        
-//        if ( strict )
-//            expect("Triples not terminated by DOT", DOT) ;
-//        else
-//            expectOrEOF("Triples not terminated by DOT", DOT) ;
-//    }
 
     protected final void predicateObjectList(Node subject)
     {
@@ -303,7 +292,9 @@ public abstract class LangTurtleBase<X> extends LangBase<X>
     /** Get predicate - maybe null for "illegal" */
     protected final Node predicate()
     {
-        if ( lookingAt(TokenType.KEYWORD) )
+        Token t = peekToken() ;
+        
+        if ( t.hasType(TokenType.KEYWORD) )
         {
             Token tErr = peekToken() ;
             String image = peekToken().getImage() ;
@@ -315,9 +306,11 @@ public abstract class LangTurtleBase<X> extends LangBase<X>
                 return NodeConst.nodeRDFType ;
             exception(tErr, "Unrecognized: "+image) ;
         }
-            
-        // Maybe null
-        return node() ; 
+        
+        Node n = node() ;
+        if ( n == null || ! n.isURI() )
+            exception(t, "Expected IRI for predicate: got: %s", t) ; 
+        return n ; 
     }
 
     /** Check raw token to see if it might be a predciate */
@@ -343,10 +336,13 @@ public abstract class LangTurtleBase<X> extends LangBase<X>
         return false ;
     }
     
+    /** Maybe "null" for not-a-node. */
     protected final Node node()
     {
         // Token to Node
         Node n = tokenAsNode(peekToken()) ;
+        if ( n == null )
+            return null ;
         // CHECK
         if ( getChecker() != null )
             getChecker().check(n, peekToken().getLine(), peekToken().getColumn()) ; 

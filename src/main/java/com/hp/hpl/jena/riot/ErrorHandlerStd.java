@@ -22,7 +22,7 @@ public class ErrorHandlerStd extends ErrorHandlerLogger
     public void warning(String message, long line, long col)
     { super.warning(message, line, col) ; }
     
-    /** report an error but carry on */
+    /** report an error */
     @Override
     public void error(String message, long line, long col)
     { 

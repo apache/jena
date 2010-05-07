@@ -8,10 +8,21 @@ package com.hp.hpl.jena.riot;
 
 public class ParseException extends RiotException
 {
+    final private long line ;
+    final private long column ;
+    final private String message ;
+
     public ParseException(String msg, long line, long column)
     {
         super(RIOT.fmtMessage(msg,line,column)); 
+        this.message = msg ; 
+        this.line = line ;
+        this.column = column ;
     }
+    
+    public long getLine()   { return line ; }
+    public long getCol()    { return column ; }
+    public String getOriginalMessage()    { return message ; }
 }
 
 /*

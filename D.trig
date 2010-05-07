@@ -1,7 +1,8 @@
 @prefix : <http://example/> .
 {
     # No trailing dot
-    :x :p "123" 
+    :x :p "123"^^:p
+ 
 }
 :graph1
 

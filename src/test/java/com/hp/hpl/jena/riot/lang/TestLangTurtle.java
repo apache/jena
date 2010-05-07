@@ -18,9 +18,11 @@ import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.rdf.model.RDFReader ;
+import com.hp.hpl.jena.riot.Checker ;
+import com.hp.hpl.jena.riot.ErrorHandlerLib ;
 import com.hp.hpl.jena.riot.JenaReaderTurtle2 ;
-import com.hp.hpl.jena.riot.ParseException ;
 import com.hp.hpl.jena.riot.ParserFactory ;
+import com.hp.hpl.jena.riot.RiotException ;
 import com.hp.hpl.jena.riot.tokens.Tokenizer ;
 import com.hp.hpl.jena.riot.tokens.TokenizerFactory ;
 
@@ -73,19 +75,27 @@ public class TestLangTurtle extends BaseTest
     
     private static void parse(String string)
     {
-        Reader reader = new StringReader("<p>") ;
+        Reader reader = new StringReader(string) ;
         Tokenizer tokenizer = TokenizerFactory.makeTokenizer(reader) ;
         LangTurtle parser = ParserFactory.createParserTurtle(tokenizer, "http://base/", new SinkNull<Triple>()) ;
+        parser.setChecker(new Checker(ErrorHandlerLib.errorHandlerNoLogging)) ;
         parser.parse() ;
     }
     
-    @Test(expected=ParseException.class)
-    public void errorJunk()             { parse("<p>") ; }
+    @Test
+    public void triple()             { parse("<s> <p> <o> .") ; }
+
     
-    @Test(expected=ParseException.class)
+    @Test(expected=RiotException.class)
+    public void errorJunk_1()             { parse("<p>") ; }
+    
+    @Test(expected=RiotException.class)
+    public void errorJunk_2()             { parse("<r> <p>") ; }
+
+    @Test(expected=RiotException.class)
     public void errorNoPrefixDef()      { parse("x:p <p> 'q' .") ; }
     
-    @Test(expected=ParseException.class)
+    @Test(expected=RiotException.class)
     public void errorBadDatatype()      { parse("<p> <p> 'q'^^.") ; }
 }
 

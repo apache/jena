@@ -10,7 +10,6 @@ package com.hp.hpl.jena.riot.lang;
 import java.io.StringReader ;
 
 import org.junit.Test ;
-import org.openjena.atlas.junit.BaseTest ;
 import org.openjena.atlas.lib.SinkCounting ;
 
 import com.hp.hpl.jena.graph.Triple ;
@@ -19,50 +18,13 @@ import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.rdf.model.RDFReader ;
 import com.hp.hpl.jena.riot.JenaReaderNTriples2 ;
 import com.hp.hpl.jena.riot.ParserFactory ;
-import com.hp.hpl.jena.riot.ParseException ;
 import com.hp.hpl.jena.riot.tokens.Tokenizer ;
 import com.hp.hpl.jena.riot.tokens.TokenizerFactory ;
 
 
-public class TestLangNTriples extends BaseTest
+public class TestLangNTriples extends TestLangNTuples
 {
     // Test streaming interface.
-    
-    @Test public void nt0()
-    {
-        SinkCounting<Triple> sink = parseToSink("") ;
-        assertEquals(0, sink.getCount()) ;
-    }
-    
-    @Test public void nt1()
-    {
-        SinkCounting<Triple> sink = parseToSink("<x> <y> <z>.") ;
-        assertEquals(1, sink.getCount()) ;
-    }
-    
-    @Test public void nt2()
-    {
-        SinkCounting<Triple> sink = parseToSink("<x> <y> \"z\".") ;
-        assertEquals(1, sink.getCount()) ;
-    }
-    
-    @Test public void nt3()
-    {
-        SinkCounting<Triple> sink = parseToSink("<x> <y> <z>. <x> <y> <z>.") ;
-        assertEquals(2, sink.getCount()) ;
-    }
-
-    @Test public void nt4()
-    {
-        SinkCounting<Triple> sink = parseToSink("<x> <y> \"123\"^^<int>.") ;
-        assertEquals(1, sink.getCount()) ;
-    }
-
-    @Test public void nt5()
-    {
-        SinkCounting<Triple> sink = parseToSink("<x> <y> \"123\"@lang.") ;
-        assertEquals(1, sink.getCount()) ;
-    }
     
     @Test public void nt_reader_twice()
     {
@@ -86,47 +48,6 @@ public class TestLangNTriples extends BaseTest
     // Test iterator interface.
 
     // Test parse errors interface.
-    @Test(expected=ParseException.class)
-    public void nt_bad_01()
-    {
-        parseToSink("<x> <y> <z>") ;          // No DOT
-    }
-    
-    @Test(expected=ParseException.class)
-    public void nt_bad_02()
-    {
-        parseToSink("<x> _:a <z> .") ;        // Bad predicate
-    }
-
-    @Test(expected=ParseException.class)
-    public void nt_bad_03()
-    {
-        parseToSink("<x> \"p\" <z> .") ;      // Bad predicate 
-    }
-
-    @Test(expected=ParseException.class)
-    public void nt_bad_4()
-    {
-        parseToSink("\"x\" <p> <z> .") ;      // Bad subject
-    }
-
-    @Test(expected=ParseException.class)
-    public void nt_bad_5()
-    {
-        parseToSink("<x> <p> ?var .") ;        // No variables 
-    }
-    
-    @Test(expected=ParseException.class)
-    public void nt_bad_6()
-    {
-        parseToSink("<x> <p> 123 .") ;        // No abbreviations. 
-    }
-    
-    @Test(expected=ParseException.class)
-    public void nt_bad_7()
-    {
-        parseToSink("<x> <p> x:y .") ;        // No prefixed names 
-    }
     
     @Test
     public void nt_model_1()
@@ -137,21 +58,23 @@ public class TestLangNTriples extends BaseTest
         assertTrue(m1.isIsomorphicWith(m2)) ;
     }
 
-    private static SinkCounting<Triple> parseToSink(String string)
+
+    @Override
+    protected long parseToSink(String string)
     {
         Tokenizer tokenizer = TokenizerFactory.makeTokenizerString(string) ;
         SinkCounting<Triple> sink = new SinkCounting<Triple>() ;
-        
+
         LangNTriples x = ParserFactory.createParserNTriples(tokenizer, sink) ;
         x.parse() ;
-        return sink ;
+        return sink.getCount() ;
     }
-    
-    private static Model parseToModel(String string)
+
+    protected Model parseToModel(String string)
     {
         StringReader r = new StringReader(string) ;
         Model model = ModelFactory.createDefaultModel() ;
-        
+
         RDFReader reader = new JenaReaderNTriples2() ;
         reader.read(model, r, null) ;
         return model ;

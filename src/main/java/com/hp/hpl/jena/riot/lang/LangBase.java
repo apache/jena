@@ -34,7 +34,8 @@ public abstract class LangBase<X> implements LangRIOT
     
     protected LabelToNode labelmap ;
 
-    private final ErrorHandler errorHandler ;
+    // This is a bit ugly but externall, encapsulating the errorhandler in the checker is convenient.  
+    private ErrorHandler errorHandler ;
 
 //    protected LangBase(Tokenizer tokens,
 //                    Sink<X> sink,
@@ -49,7 +50,6 @@ public abstract class LangBase<X> implements LangRIOT
                        LabelToNode map)
     {
         setChecker(checker) ;
-        this.errorHandler = checker.getHandler() ;
         this.sink = sink ;
         this.tokens = tokens ;
         this.peekIter = new PeekIterator<Token>(tokens) ;
@@ -59,7 +59,8 @@ public abstract class LangBase<X> implements LangRIOT
     //@Override
     public Checker getChecker()                 { return checker ; }
     //@Override
-    public void    setChecker(Checker checker)  { this.checker = checker ; }
+    public void    setChecker(Checker checker)  { this.checker = checker ; this.errorHandler = checker.getHandler() ;
+}
     
     public void parse()
     {
@@ -121,7 +122,7 @@ public abstract class LangBase<X> implements LangRIOT
         return peekToken().hasType(tokenType) ;
     }
     
-    // Remembver line/col for messages.
+    // Remember line/col for messages.
     protected long currLine = -1 ;
     protected long currCol = -1 ;
     
@@ -130,10 +131,18 @@ public abstract class LangBase<X> implements LangRIOT
         if ( eof() )
             return tokenEOF ;
         
-        Token t = peekIter.next() ;
-        currLine = t.getLine() ;
-        currCol = t.getColumn() ;
-        return t ;
+        // Tokenizer errors appear here!
+        try {
+            Token t = peekIter.next() ;
+            currLine = t.getLine() ;
+            currCol = t.getColumn() ;
+            return t ;
+        } catch (ParseException ex)
+        {
+            // Intercept to log it.
+            raiseException(ex) ;
+            throw ex ;
+        }
     }
 
     protected abstract Node tokenAsNode(Token token) ;
@@ -172,12 +181,15 @@ public abstract class LangBase<X> implements LangRIOT
 
     protected final void exceptionDirect(String msg, long line, long col)
     { 
-        if ( errorHandler != null )
-            errorHandler.fatal(msg, line, col) ;
-        throw new ParseException(msg, line, col) ;
+        raiseException(new ParseException(msg, line, col)) ;
     }
-
- 
+    
+    protected final void raiseException(ParseException ex)
+    { 
+        if ( errorHandler != null )
+            errorHandler.fatal(ex.getOriginalMessage(), ex.getLine(), ex.getCol()) ;
+        throw ex ;
+    }
 }
 
 /*
