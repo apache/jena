@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis System Ltd
  * All rights reserved.
  * [See end of file]
  */
@@ -31,8 +32,6 @@ import com.hp.hpl.jena.query.QueryFactory ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.riot.ParserFactory ;
 import com.hp.hpl.jena.riot.lang.LangRIOT ;
-import com.hp.hpl.jena.riot.tokens.Tokenizer ;
-import com.hp.hpl.jena.riot.tokens.TokenizerFactory ;
 import com.hp.hpl.jena.sparql.algebra.Algebra ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.Transformer ;
@@ -64,20 +63,13 @@ public class RunTDB
 
     public static void main(String[] args) throws IOException
     {
-        String fn = "c:/home/afs/Datasets/MusicBrainz/artists.nt.gz" ;
-        RunLoaderExperiment.main("fn") ;
+//        String fn = "c:/home/afs/Datasets/MusicBrainz/artists.nt.gz" ;
+//        RunLoaderExperiment.main("fn") ;
+//        
+//        System.exit(0) ;
+
+        tdb.ntriples.main("D.nt") ; System.exit(0) ;
         
-        System.exit(0) ;
-        
-        
-        Tokenizer tokenizer = TokenizerFactory.makeTokenizerString("_:abc.abc") ;
-        
-        for ( ; tokenizer.hasNext() ; )
-        {
-            System.out.println(tokenizer.next()) ;
-        }
-        System.exit(0) ;
-        tdb.tdbdump.main() ; System.exit(0) ;
         
         DevCmds.tdbquery("--query=Q.arq") ;
         
@@ -259,6 +251,7 @@ public class RunTDB
 
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis System Ltd
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

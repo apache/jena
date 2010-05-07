@@ -20,7 +20,8 @@ public class DevTDB
     // RIOT
     //  Option passing (old Jena style).
     //  Options: pass/reject bad URIs, bad literals. -> "SKIP", "PASS", "FAIL"
-    //  Exposing quads
+    //  Recovery parsing - scan to DOT?
+    //  Command line - catch parser error,pritn and and exit(1)
     
     // Testing (W64)
     // Build-release

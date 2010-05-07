@@ -14,7 +14,6 @@ import org.openjena.atlas.lib.Sink ;
 import org.openjena.atlas.lib.SinkCounting ;
 import org.openjena.atlas.lib.SinkNull ;
 import org.openjena.atlas.logging.Log ;
-
 import tdb.cmdline.ModLangParse ;
 import arq.cmdline.CmdGeneral ;
 import arq.cmdline.ModTime ;
@@ -70,20 +69,7 @@ public abstract class LangParse<X> extends CmdGeneral
             else
             {
                 for ( String fn : super.getPositional() )
-                {
-                    try {
-                        parse(fn) ;
-                    } catch (RiotException ex)
-                    {
-                        if ( ! modLangParse.stopOnBadTerm() )
-                        {
-                            // otherwise the checker sent the error message  
-                            System.err.println(ex.getMessage()) ;
-                            //ex.printStackTrace(System.err) ;
-                        }
-                        return ;
-                    }
-                }
+                    parse(fn) ;
             }
         } finally {
             System.err.flush() ;
@@ -115,9 +101,8 @@ public abstract class LangParse<X> extends CmdGeneral
     {   
         parseRIOT(baseURI, filename, in) ;
     }
-
     
-    public void parseRIOT(String baseURI, String filename, InputStream in)
+    private void parseRIOT(String baseURI, String filename, InputStream in)
     {
         Tokenizer tokenizer = makeTokenizer(in) ;
         
@@ -127,8 +112,6 @@ public abstract class LangParse<X> extends CmdGeneral
             s =  makePrintSink(System.out) ;
         
         SinkCounting<X> sink = new SinkCounting<X>(s) ;
-        
-        modTime.startTimer() ;
         
         Checker checker = null ;
         if ( modLangParse.checking() )
@@ -141,21 +124,32 @@ public abstract class LangParse<X> extends CmdGeneral
                 checker = new Checker(ErrorHandlerLib.errorHandlerWarn) ;
         }
         
+        modTime.startTimer() ;
         try
         {
             parseEngine(tokenizer, baseURI, sink, checker, modLangParse.skipOnBadTerm()) ;
+        }
+        catch (RiotException ex)
+        {
+            if ( ! modLangParse.stopOnBadTerm() )
+            {
+                // otherwise the checker sent the error message  
+                System.err.println(ex.getMessage()) ;
+                //ex.printStackTrace(System.err) ;
+            }
+            return ;
         }
         finally {
             tokenizer.close() ;
             s.close() ;
         }
-        
+        // Not convinced long finally blocks are a good idea.
         long x = modTime.endTimer() ;
         long n = sink.getCount() ;
 
         totalTriples += n ;
         totalMillis += x ;
-        
+
         if ( modTime.timingEnabled() )
             output(filename, n, x) ;
     }
