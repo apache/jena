@@ -59,6 +59,7 @@ public abstract class LangBase<X> implements LangRIOT
     //@Override
     public Checker getChecker()                 { return checker ; }
     //@Override
+    // Bad separation of responsibilitied :-(
     public void    setChecker(Checker checker)  { this.checker = checker ; this.errorHandler = checker.getHandler() ;
 }
     

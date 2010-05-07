@@ -10,7 +10,7 @@ package com.hp.hpl.jena.riot.lang;
 import org.junit.Test ;
 import org.openjena.atlas.junit.BaseTest ;
 
-import com.hp.hpl.jena.riot.ParseException ;
+import com.hp.hpl.jena.riot.RiotException ;
 
 
 abstract public class TestLangNTuples extends BaseTest
@@ -56,43 +56,43 @@ abstract public class TestLangNTuples extends BaseTest
     // Test iterator interface.
 
     // Test parse errors interface.
-    @Test(expected=ParseException.class)
+    @Test(expected=RiotException.class)
     public void nt_bad_01()
     {
         parseToSink("<x> <y> <z>") ;          // No DOT
     }
     
-    @Test(expected=ParseException.class)
+    @Test(expected=RiotException.class)
     public void nt_bad_02()
     {
         parseToSink("<x> _:a <z> .") ;        // Bad predicate
     }
 
-    @Test(expected=ParseException.class)
+    @Test(expected=RiotException.class)
     public void nt_bad_03()
     {
         parseToSink("<x> \"p\" <z> .") ;      // Bad predicate 
     }
 
-    @Test(expected=ParseException.class)
+    @Test(expected=RiotException.class)
     public void nt_bad_4()
     {
         parseToSink("\"x\" <p> <z> .") ;      // Bad subject
     }
 
-    @Test(expected=ParseException.class)
+    @Test(expected=RiotException.class)
     public void nt_bad_5()
     {
         parseToSink("<x> <p> ?var .") ;        // No variables 
     }
     
-    @Test(expected=ParseException.class)
+    @Test(expected=RiotException.class)
     public void nt_bad_6()
     {
         parseToSink("<x> <p> 123 .") ;        // No abbreviations. 
     }
     
-    @Test(expected=ParseException.class)
+    @Test(expected=RiotException.class)
     public void nt_bad_7()
     {
         parseToSink("<x> <p> x:y .") ;        // No prefixed names 

@@ -6,8 +6,11 @@
 
 package com.hp.hpl.jena.riot;
 
+import org.junit.AfterClass ;
+import org.junit.BeforeClass ;
 import org.junit.runner.RunWith ;
 import org.junit.runners.Suite ;
+
 
 import com.hp.hpl.jena.riot.lang.* ;
 import com.hp.hpl.jena.riot.out.TestOutputNTriples ;
@@ -39,6 +42,15 @@ import com.hp.hpl.jena.riot.tokens.TestTokenizer ;
 
 public class TS_Riot
 {
+    @BeforeClass public static void beforeClass()
+    { 
+        ErrorHandlerLib.setTestLogging(false) ;
+    }
+
+    @AfterClass public static void afterClass()
+    { 
+        ErrorHandlerLib.setTestLogging(true) ;
+    }
 
 }
 

@@ -12,10 +12,18 @@ public class ErrorHandlerLib
 {
     static public final Logger stdLogger = RIOT.getLogger() ;
     
-    static public final ErrorHandler errorHandlerStd = new ErrorHandlerStd(stdLogger) ;
-    static public final ErrorHandler errorHandlerStrict = new ErrorHandlerStd(stdLogger) ;
-    static public final ErrorHandler errorHandlerWarn = new ErrorHandlerWarning(stdLogger) ;
-    static public final ErrorHandler errorHandlerNoLogging = new ErrorHandlerSimple() ;
+    static public ErrorHandler errorHandlerStd = new ErrorHandlerStd(stdLogger) ;
+    static public ErrorHandler errorHandlerStrict = new ErrorHandlerStd(stdLogger) ;
+    static public ErrorHandler errorHandlerWarn = new ErrorHandlerWarning(stdLogger) ;
+    static public ErrorHandler errorHandlerNoLogging = new ErrorHandlerSimple() ;
+    
+    static public void setTestLogging(boolean visible)
+    {
+        if ( visible )
+            errorHandlerStd = new ErrorHandlerStd(stdLogger) ;
+        else
+            errorHandlerStd = new ErrorHandlerSimple() ;
+    }
 }
 
 /*

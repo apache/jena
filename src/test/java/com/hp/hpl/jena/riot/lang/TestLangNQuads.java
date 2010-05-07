@@ -11,7 +11,7 @@ import org.openjena.atlas.lib.Sink ;
 import org.openjena.atlas.lib.SinkCounting ;
 
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.riot.ParseException ;
+import com.hp.hpl.jena.riot.RiotException ;
 import com.hp.hpl.jena.riot.ParserFactory ;
 import com.hp.hpl.jena.riot.tokens.Tokenizer ;
 import com.hp.hpl.jena.riot.tokens.TokenizerFactory ;
@@ -28,7 +28,7 @@ public class TestLangNQuads extends TestLangNTuples
         parseToSink("<x> <p> <s> <g> .") ; 
     }
     
-    @Test(expected=ParseException.class)
+    @Test(expected=RiotException.class)
     public void quad_2()
     {
         parseToSink("<x> <p> <s> <g>") ;        // No trailing DOT
