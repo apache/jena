@@ -14,6 +14,7 @@ import com.hp.hpl.jena.riot.tokens.Token ;
 import com.hp.hpl.jena.riot.tokens.TokenType ;
 import com.hp.hpl.jena.riot.tokens.Tokenizer ;
 import com.hp.hpl.jena.sparql.core.Quad ;
+import com.hp.hpl.jena.sparql.util.FmtUtils ;
 
 /**
  * N-Quads.
@@ -72,7 +73,8 @@ public class LangNQuads extends LangNTuple<Quad>
                 b &= checker.check(c, xToken.getLine(), xToken.getColumn()) ;
             if ( !b && skipOnBadTerm )
             {
-                skipOne(new Quad(c, s, p, o)) ;
+                Quad q = new Quad(c, s, p, o) ;
+                skipOne(q, FmtUtils.stringForQuad(q)) ;
                 return null ;
             }
         }

@@ -68,7 +68,7 @@ public class RunTDB
 //        
 //        System.exit(0) ;
 
-        tdb.ntriples.main("D.nt") ; System.exit(0) ;
+        tdb.ntriples.main("--skip","D.nt") ; System.exit(0) ;
         
         
         DevCmds.tdbquery("--query=Q.arq") ;

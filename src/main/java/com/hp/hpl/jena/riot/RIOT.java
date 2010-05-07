@@ -29,7 +29,7 @@ public class RIOT
 
     public static Logger getLogger()
     {
-        return LoggerFactory.getLogger("RIOT") ;
+        return LoggerFactory.getLogger("com.hp.hpl.jena.tdb.RIOT") ;
     }
 
 }

@@ -224,24 +224,24 @@ public final class Checker
             // What to finally report.
             Violation vError = null ;
             Violation vWarning = null ;
-            Violation vSub = null ;
+            Violation xvSub = null ;
             
             for ( ; iter.hasNext() ; )
             {
                 Violation v = iter.next();
                 int code = v.getViolationCode() ;
+                boolean isError = v.isError() ;
                 
-                // Treat these with low priority.
+                // Ignore these.
                 if ( code == Violation.LOWERCASE_PREFERRED ||
                     code == Violation.PERCENT_ENCODING_SHOULD_BE_UPPERCASE )
-                {
-                    if ( vSub == null )
-                        vSub = v ;
                     continue ;
-                }
+
+                // Anything we want to reprioritise?
+                // [nothing at present]
                 
-                // Remember first.
-                if ( v.isError() )
+                // Remember first error and first warning.
+                if ( isError )
                 {
                     errorSeen = true ;
                     if ( vError == null )
@@ -257,35 +257,39 @@ public final class Checker
                 
                 String msg = v.getShortMessage();
                 String iriStr = iri.toString();
-    
+
+                // Ideally, we might want to output all messages relating to this IRI
+                // then cause the error or continue.
+                // But that's tricky given the current errorhandler architecture.
+                
                 // Put out warnings for all IRI issues - later, exception for errors.
                 if (v.getViolationCode() == ViolationCodes.REQUIRED_COMPONENT_MISSING &&
                     v.getComponent() == IRIComponents.SCHEME)
                 {
                     if (! allowRelativeIRIs )
-                        handler.error("Relative URIs are not permitted in RDF: specifically <"+iriStr+">", line, col);
+                        handler.error("Relative URIs are not permitted in RDF: <"+iriStr+">", line, col);
                 } 
                 else
                 {
-                    if ( v.isError() )
-                        // We will treat as an error in a moment.
+                    if ( isError || warningsAreErrors )
+                        // IRI errors are warning at the level of parsing - they got through syntax checks.  
                         handler.warning("Bad IRI: "+msg, line, col);
                     else
                         handler.warning("Not advised IRI: "+msg, line, col);
                 }
             }
             
-            // and report our choosen error.
-            if ( errorSeen || (warningsAreErrors && warningSeen) )
-            {
-                String msg = null ;
-                if ( vError != null ) msg = vError.getShortMessage() ;
-                if ( msg == null && vWarning != null ) msg = vWarning.getShortMessage() ;
-                if ( msg == null )
-                    handler.error("Bad IRI: "+iri, line, col) ;
-                else
-                    handler.error("Bad IRI: "+iri+" : "+msg, line, col) ;
-            }
+//            // and report our choosen error.
+//            if ( errorSeen || (warningsAreErrors && warningSeen) )
+//            {
+//                String msg = null ;
+//                if ( vError != null ) msg = vError.getShortMessage() ;
+//                if ( msg == null && vWarning != null ) msg = vWarning.getShortMessage() ;
+//                if ( msg == null )
+//                    handler.error("Bad IRI: <"+iri+">", line, col) ;
+//                else
+//                    handler.error("Bad IRI: "+msg, line, col) ;
+//            }
         }
     
     }

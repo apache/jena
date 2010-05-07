@@ -4,18 +4,16 @@ public class DevTDB
 {
     // == 0.8.5
     // Enable FILTER assignment for strings (and numbers?) via dataset context setting?
+    
+    // Loader - load bad UIRs?
     // IRI checking - sort out error and warnings.
-    // Loading from an InputStream (other than stdin) 
     // No checking loading.
-    // tdbloader from quads?
     
     // Tuples
     // Interface, TupleFactory, TupleImpl
     // TupleMask (or TupleImpl itself has a length field?? TupleMask(T[] or Tuple<T>)) 
     // Sort : with colmap?
     // TupleSlice
-    
-    // DBPedia load
     
     // RIOT
     //  Option passing (old Jena style).

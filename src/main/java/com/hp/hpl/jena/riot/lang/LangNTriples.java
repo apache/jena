@@ -16,6 +16,7 @@ import com.hp.hpl.jena.riot.Checker ;
 import com.hp.hpl.jena.riot.tokens.Token ;
 import com.hp.hpl.jena.riot.tokens.TokenType ;
 import com.hp.hpl.jena.riot.tokens.Tokenizer ;
+import com.hp.hpl.jena.sparql.util.FmtUtils ;
 
 public class LangNTriples extends LangNTuple<Triple>
 {
@@ -50,7 +51,8 @@ public class LangNTriples extends LangNTuple<Triple>
             b &= checker.check(o, oToken.getLine(), oToken.getColumn()) ;
             if ( !b && skipOnBadTerm )
             {
-                skipOne(new Triple(s, p, o)) ;
+                Triple t = new Triple(s, p, o) ;
+                skipOne(t, FmtUtils.stringForTriple(t)) ;
                 return null ;
             }
         }

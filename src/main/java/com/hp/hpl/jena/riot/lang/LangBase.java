@@ -15,6 +15,7 @@ import org.openjena.atlas.lib.Sink ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.riot.Checker ;
+import com.hp.hpl.jena.riot.ErrorHandler ;
 import com.hp.hpl.jena.riot.ParseException ;
 import com.hp.hpl.jena.riot.RIOT ;
 import com.hp.hpl.jena.riot.tokens.Token ;
@@ -33,6 +34,8 @@ public abstract class LangBase<X> implements LangRIOT
     
     protected LabelToNode labelmap ;
 
+    private final ErrorHandler errorHandler ;
+
 //    protected LangBase(Tokenizer tokens,
 //                    Sink<X> sink,
 //                    Checker checker)
@@ -46,6 +49,7 @@ public abstract class LangBase<X> implements LangRIOT
                        LabelToNode map)
     {
         setChecker(checker) ;
+        this.errorHandler = checker.getHandler() ;
         this.sink = sink ;
         this.tokens = tokens ;
         this.peekIter = new PeekIterator<Token>(tokens) ;
@@ -168,6 +172,8 @@ public abstract class LangBase<X> implements LangRIOT
 
     protected final void exceptionDirect(String msg, long line, long col)
     { 
+        if ( errorHandler != null )
+            errorHandler.fatal(msg, line, col) ;
         throw new ParseException(msg, line, col) ;
     }
 

@@ -81,9 +81,9 @@ public abstract class LangNTuple<X> extends LangBase<X> implements Iterator<X>
     protected abstract X parseOne() ;
     
     /** Note a tuple not being output */
-    protected void skipOne(X object)
+    protected void skipOne(X object, String printForm)
     {
-        checker.getHandler().warning("Skip: "+object, -1, -1) ;
+        checker.getHandler().warning("Skip: "+printForm, -1, -1) ;
     }
 
     
