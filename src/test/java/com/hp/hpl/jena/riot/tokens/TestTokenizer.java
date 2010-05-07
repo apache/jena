@@ -863,8 +863,26 @@ private void pnameToken(Token token, String string1, String string2)
         assertFalse(tokenizer.hasNext()) ;
     }
 
-    @Test(expected = ParseException.class)
+    @Test
     public void tokenLiteralDT_2()
+    {
+        Tokenizer tokenizer = tokenizer("'123'^^:y") ;
+        assertTrue(tokenizer.hasNext()) ;
+        Token token = tokenizer.next() ;
+        assertNotNull(token) ;
+        assertEquals(TokenType.LITERAL_DT, token.getType()) ;
+        assertEquals("123", token.getImage()) ;
+        
+        Token token2 = token.getSubToken() ; 
+        assertEquals(TokenType.PREFIXED_NAME, token2.getType()) ;
+        assertEquals("", token2.getImage()) ;
+        assertEquals("y", token2.getImage2()) ;
+        
+        assertFalse(tokenizer.hasNext()) ;
+    }
+
+    @Test(expected = ParseException.class)
+    public void tokenLiteralDT_bad_1()
     {
         Tokenizer tokenizer = tokenizer("'123'^^ <x> ") ;
         assertTrue(tokenizer.hasNext()) ;
@@ -873,7 +891,7 @@ private void pnameToken(Token token, String string1, String string2)
     }
 
     @Test(expected = ParseException.class)
-    public void tokenLiteralDT_3()
+    public void tokenLiteralDT_bad_2()
     {
         Tokenizer tokenizer = tokenizer("'123' ^^<x> ") ;
         assertTrue(tokenizer.hasNext()) ;
@@ -888,7 +906,7 @@ private void pnameToken(Token token, String string1, String string2)
     }
 
     @Test(expected = ParseException.class)
-    public void tokenLiteralDT_4()
+    public void tokenLiteralDT_bad_3()
     {
         Tokenizer tokenizer = tokenizer("'123'^ ^<x> ") ;
         assertTrue(tokenizer.hasNext()) ;
@@ -897,7 +915,7 @@ private void pnameToken(Token token, String string1, String string2)
     }
 
     @Test(expected = ParseException.class)
-    public void tokenLiteralDT_5()
+    public void tokenLiteralDT_bad_4()
     {
         Tokenizer tokenizer = tokenizer("'123'^^ x:y") ;
         assertTrue(tokenizer.hasNext()) ;

@@ -12,7 +12,6 @@ public class DevTDB
     // TupleSlice
     
     // RIOT
-    // Fix: Parsing "foo"^^ .
     // Respect system property for log4j if ALog not called.?
     //   Option passing (old Jena style).
     //   Options: pass/reject bad URIs, bad literals. -> "SKIP", "PASS", "FAIL"

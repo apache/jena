@@ -195,12 +195,16 @@ public final class TokenizerText implements Tokenizer
                 int nextCh = reader.peekChar() ;
                 if ( isWhitespace(nextCh) )
                     exception("No whitespace after ^^ in literal with datatype") ;
-                if ( nextCh != '<' && ! isAlpha(nextCh) )
-                    exception("Datatype URI required after ^^ - URI or prefixed name expected") ;
+//                // Now done by getting the next token and checking what type it is. 
+//                if ( nextCh != '<' && ! isAlpha(nextCh) && nextCh != ':' )
+//                    exception("Datatype URI required after ^^ - URI or prefixed name expected") ;
 
                 // Stash current token.
                 Token mainToken = token ;
                 Token subToken = parseToken() ;
+                if ( ! subToken.isIRI() )
+                    exception("Datatype URI required after ^^ - URI or prefixed name expected") ;
+                
                 token = mainToken ;
                 token.setSubToken(subToken) ;
                 token.setType(TokenType.LITERAL_DT) ;

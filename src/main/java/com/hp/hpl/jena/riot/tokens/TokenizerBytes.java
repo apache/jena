@@ -210,13 +210,11 @@ public final class TokenizerBytes implements Tokenizer
                 int nextCh = inputStream.peekByte() ;
                 if ( isWhitespace(nextCh) )
                     exception("No whitespace after ^^ in literal with datatype") ;
-                // ASCII assumed here.
-                if ( nextCh != '<' && ! isA2Z(nextCh) )
-                    exception("Datatype URI required after ^^ - URI or prefixed name expected") ;
-
                 // Stash current token.
                 Token mainToken = token ;
                 Token subToken = parseToken() ;
+                if ( ! subToken.isIRI() )
+                    exception("Datatype URI required after ^^ - URI or prefixed name expected") ;
                 token = mainToken ;
                 token.setSubToken(subToken) ;
                 token.setType(TokenType.LITERAL_DT) ;
