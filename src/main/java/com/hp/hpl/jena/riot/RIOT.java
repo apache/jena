@@ -12,6 +12,8 @@ import org.slf4j.LoggerFactory ;
 
 public class RIOT
 {
+    public static final String riotLoggerName = "com.hp.hpl.jena.tdb.RIOT" ;
+    private static Logger riotLogger = LoggerFactory.getLogger(riotLoggerName) ;
     public static final EventType startRead = new EventType(RIOT.class, "StartRead") ;
     public static final EventType finishRead = new EventType(RIOT.class, "FinishRead") ;
     
@@ -29,7 +31,7 @@ public class RIOT
 
     public static Logger getLogger()
     {
-        return LoggerFactory.getLogger("com.hp.hpl.jena.tdb.RIOT") ;
+        return riotLogger ;
     }
 
 }

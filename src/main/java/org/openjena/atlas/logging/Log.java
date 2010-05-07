@@ -175,8 +175,8 @@ public class Log
         java.util.logging.Logger.getLogger(logger.getName()).setLevel(java.util.logging.Level.OFF) ;
     }
     
-    /** Set log4j - try to find a file "log4j.properties" if nothing already set */
-    public static void setLog4j()
+    /** Set log4j - try to find a file "log4j.properties" if nothing already set.  Return true if we think Log4J is not initialized. */
+    public static boolean setLog4j()
     {
         if ( System.getProperty("log4j.configuration") == null )
         {
@@ -185,6 +185,8 @@ public class Log
             if ( f.exists() ) 
                 System.setProperty("log4j.configuration", "file:"+fn) ;
         }
+        
+        return (System.getProperty("log4j.configuration") != null ) ;
     }
     
     /** Set log4j properties (XML or properties file) */

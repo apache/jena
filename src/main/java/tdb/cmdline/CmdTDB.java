@@ -6,6 +6,16 @@
 
 package tdb.cmdline;
 
+import java.io.ByteArrayInputStream ;
+import java.io.IOException ;
+import java.io.InputStream ;
+import java.util.Properties ;
+
+import org.apache.log4j.Level ;
+import org.apache.log4j.LogManager ;
+import org.apache.log4j.PropertyConfigurator ;
+import org.openjena.atlas.lib.StrUtils ;
+import org.openjena.atlas.logging.Log ;
 import arq.cmd.CmdException ;
 import arq.cmdline.ArgDecl;
 import arq.cmdline.CmdARQ;
@@ -15,6 +25,8 @@ import com.hp.hpl.jena.Jena;
 import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.riot.RIOT ;
+import com.hp.hpl.jena.sparql.util.StringUtils ;
 import com.hp.hpl.jena.sparql.util.Utils;
 import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.base.file.Location;
@@ -27,6 +39,22 @@ public abstract class CmdTDB extends CmdARQ
     private static final ArgDecl argNamedGraph       = new ArgDecl(ArgDecl.HasValue, "graph") ;
     protected final ModTDBDataset tdbDatasetAssembler = new ModTDBDataset() ;
 
+    private static final String log4Jsetup = StringUtils.join("\n",
+                                                        "## Loader - plain out for commands output.",
+                                                        "log4j.appender.tdbcmd=org.apache.log4j.ConsoleAppender",
+                                                        "log4j.appender.tdbcmd.target=System.err",
+                                                        "log4j.appender.tdbcmd.layout=org.apache.log4j.PatternLayout",
+                                                        "log4j.appender.tdbcmd.layout.ConversionPattern=%m%n",
+                                                        "## Loader output",
+                                                        "log4j.additivity."+TDB.logLoaderName+"=false",
+                                                        "log4j.logger."+TDB.logLoaderName+"=ALL, tdbcmd",
+                                                        "## Parser output",
+                                                        "log4j.additivity."+RIOT.riotLoggerName+"=false",
+                                                        "log4j.logger."+RIOT.riotLoggerName+"=INFO, tdbcmd ",
+                                                        ""
+                                                          ) ;
+    private static boolean loggingInitialized = false ;
+    
     protected String graphName = null ;
     
     protected CmdTDB(String[] argv)
@@ -42,12 +70,38 @@ public abstract class CmdTDB extends CmdARQ
     
     public static void init()
     {
+        setLogging() ;
         // This sets context based on system properties.
         // ModSymbol can then override. 
         TDB.init() ;
         ModSymbol.addPrefixMapping(SystemTDB.tdbSymbolPrefix, SystemTDB.symbolNamespace) ;
     }
     
+    public static synchronized void setLogging()
+    {
+        if ( loggingInitialized )
+            return ;
+        // attempt once.
+        loggingInitialized = true ;
+        
+        String x = System.getProperty("log4j.configuration") ; 
+        
+        //if ( ! Log.setLog4j() ) 
+        //if ( System.getProperty("log4j.configuration") == null )
+        {
+            // Turn off optimizer warning.
+            // Use a plain logger for output. 
+            Properties p = new Properties() ;
+           
+            InputStream in = new ByteArrayInputStream(StrUtils.asUTF8bytes(log4Jsetup)) ;
+            try { p.load(in) ; } catch (IOException ex) {}
+            PropertyConfigurator.configure(p) ;
+            
+            LogManager.getLogger(TDB.logInfoName).setLevel(Level.ERROR) ;
+            System.setProperty("log4j.configuration", "set") ;
+        }
+    }
+
     @Override
     protected void processModulesAndArgs()
     {

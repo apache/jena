@@ -74,7 +74,7 @@ public class LangNQuads extends LangNTuple<Quad>
             if ( !b && skipOnBadTerm )
             {
                 Quad q = new Quad(c, s, p, o) ;
-                skipOne(q, FmtUtils.stringForQuad(q)) ;
+                skipOne(q, FmtUtils.stringForQuad(q), sToken.getLine(), sToken.getColumn()) ;
                 return null ;
             }
         }

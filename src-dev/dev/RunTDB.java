@@ -51,7 +51,7 @@ import com.hp.hpl.jena.util.FileManager ;
 
 public class RunTDB
 {
-    static { Log.setLog4j() ; }
+    //static { Log.setLog4j() ; }
     static String divider = "----------" ;
     static String nextDivider = null ;
     static void divider()

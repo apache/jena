@@ -14,6 +14,7 @@ import org.openjena.atlas.lib.Sink ;
 import org.openjena.atlas.lib.SinkCounting ;
 import org.openjena.atlas.lib.SinkNull ;
 import org.openjena.atlas.logging.Log ;
+import tdb.cmdline.CmdTDB ;
 import tdb.cmdline.ModLangParse ;
 import arq.cmdline.CmdGeneral ;
 import arq.cmdline.ModTime ;
@@ -30,7 +31,8 @@ import com.hp.hpl.jena.tdb.TDB ;
 /** Common framework for running RIOT parsers */
 public abstract class LangParse<X> extends CmdGeneral
 {
-    static { Log.setLog4j() ; }
+    // We are not a TDB command but still set the logging.
+    static { CmdTDB.setLogging() ; }
     // Module.
     protected ModTime modTime                 = new ModTime() ;
     protected ModLangParse modLangParse       = new ModLangParse() ;
@@ -131,19 +133,13 @@ public abstract class LangParse<X> extends CmdGeneral
         }
         catch (RiotException ex)
         {
-            if ( ! modLangParse.stopOnBadTerm() )
-            {
-                // otherwise the checker sent the error message  
-                System.err.println(ex.getMessage()) ;
-                //ex.printStackTrace(System.err) ;
-            }
-            return ;
+            if ( modLangParse.stopOnBadTerm() )
+                return ;
         }
         finally {
             tokenizer.close() ;
             s.close() ;
         }
-        // Not convinced long finally blocks are a good idea.
         long x = modTime.endTimer() ;
         long n = sink.getCount() ;
 

@@ -3,6 +3,11 @@ ChangeLog for TDB
 
 ==== 0.8.6
 
++ Imporve performance when loading quads (N-Quads, TriG)
++ Loader output now to a logger (name in constant TDB.loadLoggerName)
++ Parser output now to a logger (name in constant RIOT.riotLoggerName)
++ Warnings and errors from TDB command line tools now go to stderr so not mixed with parser triples/quads output.  
+
 ==== 0.8.5
 
 + Partial support for TriG and NQuads input (no loading messages, not fully optimized)

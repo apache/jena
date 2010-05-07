@@ -52,7 +52,7 @@ public class LangNTriples extends LangNTuple<Triple>
             if ( !b && skipOnBadTerm )
             {
                 Triple t = new Triple(s, p, o) ;
-                skipOne(t, FmtUtils.stringForTriple(t)) ;
+                skipOne(t, FmtUtils.stringForTriple(t), sToken.getLine(), sToken.getColumn()) ;
                 return null ;
             }
         }
