@@ -13,7 +13,6 @@ import org.openjena.atlas.io.IO ;
 import org.openjena.atlas.lib.Sink ;
 import org.openjena.atlas.lib.SinkCounting ;
 import org.openjena.atlas.lib.SinkNull ;
-import org.openjena.atlas.logging.Log ;
 import tdb.cmdline.CmdTDB ;
 import tdb.cmdline.ModLangParse ;
 import arq.cmdline.CmdGeneral ;

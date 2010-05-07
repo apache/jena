@@ -15,24 +15,23 @@ import org.apache.log4j.Level ;
 import org.apache.log4j.LogManager ;
 import org.apache.log4j.PropertyConfigurator ;
 import org.openjena.atlas.lib.StrUtils ;
-import org.openjena.atlas.logging.Log ;
 import arq.cmd.CmdException ;
-import arq.cmdline.ArgDecl;
-import arq.cmdline.CmdARQ;
-import arq.cmdline.ModSymbol;
+import arq.cmdline.ArgDecl ;
+import arq.cmdline.CmdARQ ;
+import arq.cmdline.ModSymbol ;
 
-import com.hp.hpl.jena.Jena;
-import com.hp.hpl.jena.query.ARQ;
-import com.hp.hpl.jena.query.Dataset;
-import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.Jena ;
+import com.hp.hpl.jena.query.ARQ ;
+import com.hp.hpl.jena.query.Dataset ;
+import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.riot.RIOT ;
 import com.hp.hpl.jena.sparql.util.StringUtils ;
-import com.hp.hpl.jena.sparql.util.Utils;
-import com.hp.hpl.jena.tdb.TDB;
-import com.hp.hpl.jena.tdb.base.file.Location;
-import com.hp.hpl.jena.tdb.store.DatasetGraphTDB;
-import com.hp.hpl.jena.tdb.store.GraphTDB;
-import com.hp.hpl.jena.tdb.sys.SystemTDB;
+import com.hp.hpl.jena.sparql.util.Utils ;
+import com.hp.hpl.jena.tdb.TDB ;
+import com.hp.hpl.jena.tdb.base.file.Location ;
+import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
+import com.hp.hpl.jena.tdb.store.GraphTDB ;
+import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 public abstract class CmdTDB extends CmdARQ
 {
@@ -40,17 +39,23 @@ public abstract class CmdTDB extends CmdARQ
     protected final ModTDBDataset tdbDatasetAssembler = new ModTDBDataset() ;
 
     private static final String log4Jsetup = StringUtils.join("\n",
-                                                        "## Loader - plain out for commands output.",
-                                                        "log4j.appender.tdbcmd=org.apache.log4j.ConsoleAppender",
-                                                        "log4j.appender.tdbcmd.target=System.err",
-                                                        "log4j.appender.tdbcmd.layout=org.apache.log4j.PatternLayout",
-                                                        "log4j.appender.tdbcmd.layout.ConversionPattern=%m%n",
+                                                        "## Loader - plain output",
+                                                        "log4j.appender.tdb.plain=org.apache.log4j.ConsoleAppender",
+                                                        "log4j.appender.tdb.plain.target=System.err",
+                                                        "log4j.appender.tdb.plain.layout=org.apache.log4j.PatternLayout",
+                                                        "log4j.appender.tdb.plain.layout.ConversionPattern=%m%n",
                                                         "## Loader output",
                                                         "log4j.additivity."+TDB.logLoaderName+"=false",
-                                                        "log4j.logger."+TDB.logLoaderName+"=ALL, tdbcmd",
+                                                        "log4j.logger."+TDB.logLoaderName+"=ALL, tdb.plain",
+                                                        
+                                                        "## Parser - plain + level",
+                                                        "log4j.appender.tdb.plainlevel=org.apache.log4j.ConsoleAppender",
+                                                        "log4j.appender.tdb.plainlevel.target=System.err",
+                                                        "log4j.appender.tdb.plainlevel.layout=org.apache.log4j.PatternLayout",
+                                                        "log4j.appender.tdb.plainlevel.layout.ConversionPattern=%-5p %m%n",
                                                         "## Parser output",
                                                         "log4j.additivity."+RIOT.riotLoggerName+"=false",
-                                                        "log4j.logger."+RIOT.riotLoggerName+"=INFO, tdbcmd ",
+                                                        "log4j.logger."+RIOT.riotLoggerName+"=INFO, tdb.plainlevel ",
                                                         ""
                                                           ) ;
     private static boolean loggingInitialized = false ;
