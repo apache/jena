@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: LPInterpreter.java,v 1.1 2009-06-29 08:55:33 castagna Exp $
+ * $Id: LPInterpreter.java,v 1.2 2010-05-08 19:38:22 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -25,7 +25,7 @@ import org.slf4j.LoggerFactory;
  * parallel query.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:33 $
+ * @version $Revision: 1.2 $ on $Date: 2010-05-08 19:38:22 $
  */
 public class LPInterpreter {
 
@@ -157,11 +157,9 @@ public class LPInterpreter {
      * either finished or the calling application has had enough. 
      */
     public void close() {
-        synchronized (engine) {
-            isComplete = true;
-            engine.detach(this);
-            if (cpFrame != null) cpFrame.close();
-        }
+        isComplete = true;
+        engine.detach(this);
+        if (cpFrame != null) cpFrame.close();
     }
     
     /**

@@ -34,6 +34,7 @@ Misc:
 
 Reasoners:
    o added makeSkolem builtin
+   o fixed deadlock problem with hybrid rule systems
 
 Ontology API:
    o Fixed NPE bug when an ObjectProperty was not the inverseOf another property

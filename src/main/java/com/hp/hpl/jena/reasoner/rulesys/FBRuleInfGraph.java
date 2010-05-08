@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: FBRuleInfGraph.java,v 1.2 2009-08-02 15:06:55 der Exp $
+ * $Id: FBRuleInfGraph.java,v 1.3 2010-05-08 19:38:23 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -41,7 +41,7 @@ import org.slf4j.LoggerFactory;
  * for future reference).
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2009-08-02 15:06:55 $
+ * @version $Revision: 1.3 $ on $Date: 2010-05-08 19:38:23 $
  */
 public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements BackwardRuleInfGraphI {
     
@@ -380,7 +380,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
      * this prepration is done.
      */
     @Override
-    public void prepare() {
+    public synchronized void prepare() {
         if (!isPrepared) {
             isPrepared = true;
             

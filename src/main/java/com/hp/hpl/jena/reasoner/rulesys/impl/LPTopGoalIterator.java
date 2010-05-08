@@ -5,7 +5,7 @@
  *
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: LPTopGoalIterator.java,v 1.1 2009-06-29 08:55:33 castagna Exp $
+ * $Id: LPTopGoalIterator.java,v 1.2 2010-05-08 19:38:22 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -23,7 +23,7 @@ import java.util.*;
  * inference graph if the iterator hits the end of the result set.
  *
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:33 $
+ * @version $Revision: 1.2 $ on $Date: 2010-05-08 19:38:22 $
  */
 public class LPTopGoalIterator implements ClosableIterator<Triple>, LPInterpreterContext {
     /** The next result to be returned, or null if we have finished */
@@ -72,10 +72,8 @@ public class LPTopGoalIterator implements ClosableIterator<Triple>, LPInterprete
         checkClosed();
         LPBRuleEngine lpEngine = interpreter.getEngine();
         synchronized (lpEngine) {
-            // LoggerFactory.getLogger( getClass() ).debug( "Entering moveForward sync block on " + interpreter.getEngine() );
 
             lookaheadValid = true;
-            // LogFactory.getLog( getClass() ).debug( "interpreter = " + interpreter );
 
             // TODO nasty dynamic typing here.
             Object next = interpreter.next();
@@ -97,8 +95,6 @@ public class LPTopGoalIterator implements ClosableIterator<Triple>, LPInterprete
                     }
                 }
             }
-            // LogFactory.getLog( getClass() ).debug( "Leaving moveForward sync block " );
-
         }
     }
 
