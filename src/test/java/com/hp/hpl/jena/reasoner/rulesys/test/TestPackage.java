@@ -5,10 +5,16 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestPackage.java,v 1.3 2010-05-08 19:38:22 der Exp $
+ * $Id: TestPackage.java,v 1.4 2010-05-09 09:41:31 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
+
+import java.lang.management.ManagementFactory;
+import java.lang.management.ThreadMXBean;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import junit.framework.*;
 
@@ -16,11 +22,13 @@ import junit.framework.*;
  * Aggregate tester that runs all the test associated with the rulesys package.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2010-05-08 19:38:22 $
+ * @version $Revision: 1.4 $ on $Date: 2010-05-09 09:41:31 $
  */
 
 public class TestPackage extends TestSuite {
 
+    protected static Logger logger = LoggerFactory.getLogger(TestPackage.class);
+    
     static public TestSuite suite() {
         return new TestPackage();
     }
@@ -43,7 +51,16 @@ public class TestPackage extends TestSuite {
         addTest( "TestBugs", TestBugs.suite() );
         addTest( "TestOWLMisc", TestOWLMisc.suite() );
         addTest( "TestCapabilities", TestCapabilities.suite() );
-        addTest( "ConcurrentyTest", ConcurrencyTest.suite() );
+        
+        try {
+            // Check the JVM supports the management interfaces needed for
+            // running the concurrency test
+            ThreadMXBean tmx = ManagementFactory.getThreadMXBean();
+            long[] ids = tmx.findDeadlockedThreads();
+            addTest( "ConcurrentyTest", ConcurrencyTest.suite() );
+        } catch (Throwable t) {
+            logger.warn("Skipping concurrency test, JVM doesn't seem to support fileDeadlockedThreads");
+        }
         addTestSuite( TestInferenceReification.class );
         addTestSuite( TestRestrictionsDontNeedTyping.class );
         

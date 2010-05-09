@@ -4,7 +4,7 @@
  * Created on:  8 May 2010
  * 
  * (c) Copyright 2010, Epimorphics Limited
- * $Id: ConcurrencyTest.java,v 1.1 2010-05-08 19:38:22 der Exp $
+ * $Id: ConcurrencyTest.java,v 1.2 2010-05-09 09:41:31 der Exp $
  *****************************************************************/
 
 package com.hp.hpl.jena.reasoner.rulesys.test;
@@ -36,7 +36,7 @@ import junit.framework.TestSuite;
  * <p>Test inspired by suggestions from Timm Linder</p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class ConcurrencyTest  extends TestCase {
 
@@ -88,12 +88,15 @@ public class ConcurrencyTest  extends TestCase {
     private void doTestConcurrency(final OntModel model) throws InterruptedException {
         // initialize the model
         final String NS = PrintUtil.egNS;
+        
+        model.enterCriticalSection(Lock.WRITE);
         final OntClass Top = model.createClass(NS + "Top");
         for (int i = 0; i < MODEL_SIZE; i++) {
             OntClass C = model.createClass(NS + "C" + i);
             Top.addSubClass(C);
             model.createIndividual(NS + "i" + i, C);
         }
+        model.leaveCriticalSection();
 
         class QueryExecutingRunnable implements Runnable {
             @SuppressWarnings("unchecked")
