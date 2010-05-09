@@ -31,6 +31,7 @@ Model/Resource API:
 
 Misc:
    o Patched AnonId using UID when running in environments like GAE
+   o Fixed problem with comparison on XSDDurations with fractional seconds
 
 Reasoners:
    o added makeSkolem builtin

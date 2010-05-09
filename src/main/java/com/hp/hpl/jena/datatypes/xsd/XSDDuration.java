@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: XSDDuration.java,v 1.1 2009-06-29 08:56:03 castagna Exp $
+ * $Id: XSDDuration.java,v 1.2 2010-05-09 10:22:07 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.datatypes.xsd;
 
@@ -20,8 +20,9 @@ import com.hp.hpl.jena.datatypes.xsd.impl.XSDAbstractDateTimeType;
  * decimals for seconds.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:56:03 $
+ * @version $Revision: 1.2 $ on $Date: 2010-05-09 10:22:07 $
  */
+
 public class XSDDuration extends AbstractDateTime {
 
     /**
@@ -145,6 +146,8 @@ public class XSDDuration extends AbstractDateTime {
          return message.toString();
      }
 
+    // The following duration comparison code is based on Xerces DurationDV, Apache Software Foundation
+    
     // order-relation on duration is a partial order. The dates below are used to
     // for comparison of 2 durations, based on the fact that
     // duration x and y is x<=y iff s+x<=s+y
@@ -185,6 +188,7 @@ public class XSDDuration extends AbstractDateTime {
 
         //try and see if the objects are equal
         resultA = compareOrder (date1, date2);
+        short baseResult = resultA;   // Full comparison including time fractions
         if ( resultA == 0 ) {
             return 0;
         }
@@ -220,6 +224,11 @@ public class XSDDuration extends AbstractDateTime {
         resultB = compareOrder(tempA, tempB);
         resultA = compareResults(resultA, resultB, strict);
 
+        if (resultA == 0) {
+            // determinate equality for data portion, so base comparison
+            // (which includes fractional time) is the correct result
+            return baseResult;
+        }
         return resultA;
     }
 

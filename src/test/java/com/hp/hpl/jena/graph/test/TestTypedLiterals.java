@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestTypedLiterals.java,v 1.2 2009-07-27 09:13:36 andy_seaborne Exp $
+ * $Id: TestTypedLiterals.java,v 1.3 2010-05-09 10:22:07 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.graph.test;
 
@@ -34,7 +34,7 @@ import org.apache.xerces.impl.dv.util.HexBin;
  * TypeMapper and LiteralLabel.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2009-07-27 09:13:36 $
+ * @version $Revision: 1.3 $ on $Date: 2010-05-09 10:22:07 $
  */
 public class TestTypedLiterals extends TestCase {
               
@@ -564,6 +564,14 @@ public class TestTypedLiterals extends TestCase {
         l1 = m.createTypedLiteral("-P120D", XSDDatatype.XSDduration);
         Literal l2 = m.createTypedLiteral( l1.getValue() );
         assertEquals("-P120D", l2.getLexicalForm() );
+
+        // Duration equality bug
+        Literal d1 = m.createTypedLiteral("PT1H1M1S", XSDDatatype.XSDduration);
+        Literal d2 = m.createTypedLiteral("PT1H1M1.1S", XSDDatatype.XSDduration);
+        assertTrue("duration compare", !d1.sameValueAs(d2));
+        XSDDuration dur1 = (XSDDuration)d1.getValue() ;
+        XSDDuration dur2 = (XSDDuration)d2.getValue() ;
+        assertEquals("duration compare order", 1, dur2.compare(dur1)) ;
         
         // dateTime
         l1 = m.createTypedLiteral("1999-05-31T02:09:32Z", XSDDatatype.XSDdateTime);
