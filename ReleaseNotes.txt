@@ -36,6 +36,9 @@ Misc:
 Reasoners:
    o added makeSkolem builtin
    o fixed deadlock problem with hybrid rule systems
+   o changed interpretation of Functors so they are neither literals nor objects,
+     this allows validation of nested reasoners to cope with the introduction of 
+     functors representing inferred individuals
 
 Ontology API:
    o Fixed NPE bug when an ObjectProperty was not the inverseOf another property

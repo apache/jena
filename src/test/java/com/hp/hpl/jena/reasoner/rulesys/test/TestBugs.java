@@ -5,7 +5,7 @@
  *
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestBugs.java,v 1.3 2009-07-27 09:13:36 andy_seaborne Exp $
+ * $Id: TestBugs.java,v 1.4 2010-05-09 11:02:30 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -53,7 +53,7 @@ import com.hp.hpl.jena.vocabulary.ReasonerVocabulary;
  * Unit tests for reported bugs in the rule system.
  *
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2009-07-27 09:13:36 $
+ * @version $Revision: 1.4 $ on $Date: 2010-05-09 11:02:30 $
  */
 public class TestBugs extends TestCase {
 
@@ -71,7 +71,7 @@ public class TestBugs extends TestCase {
     public static TestSuite suite() {
         return new TestSuite( TestBugs.class );
 //        TestSuite suite = new TestSuite();
-//        suite.addTest(new TestBugs( "testLiteralsInErrorReports" ));
+//        suite.addTest(new TestBugs( "testLayeredValidation" ));
 //        return suite;
     }
 
@@ -929,6 +929,21 @@ public class TestBugs extends TestCase {
         assertTrue( im.contains(prop, RDFS.subPropertyOf, prop) );
     }
     
+    
+    /**
+     * Layering one reasoner on another leads to exposed functors which
+     * used to trip up validation
+     */
+    public void testLayeredValidation() {
+        Model ont = FileManager.get().loadModel("testing/reasoners/bugs/layeredValidation.owl");
+        InfModel infModel =
+            ModelFactory.createInfModel(ReasonerRegistry.getOWLReasoner(), ont);
+        OntModel model = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM_RULE_INF,
+            infModel);
+        ValidityReport validity = model.validate();
+        assertTrue(validity.isClean());
+    }
+
     // debug assistant
 //    private void tempList(Model m, Resource s, Property p, RDFNode o) {
 //        System.out.println("Listing of " + PrintUtil.print(s) + " " + PrintUtil.print(p) + " " + PrintUtil.print(o));

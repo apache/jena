@@ -5,18 +5,19 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: IsLiteral.java,v 1.1 2009-06-29 08:55:36 castagna Exp $
+ * $Id: IsLiteral.java,v 1.2 2010-05-09 11:02:30 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.builtins;
 
 import com.hp.hpl.jena.reasoner.rulesys.*;
+import com.hp.hpl.jena.reasoner.rulesys.Functor.FunctorDatatype;
 import com.hp.hpl.jena.graph.*;
 
 /**
  * Tests the single argument to make sure it is a literal.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:36 $
+ * @version $Revision: 1.2 $ on $Date: 2010-05-09 11:02:30 $
  */
 public class IsLiteral extends BaseBuiltin {
 
@@ -49,8 +50,17 @@ public class IsLiteral extends BaseBuiltin {
     @Override
     public boolean bodyCall(Node[] args, int length, RuleContext context) {
         checkArgs(length, context);
-        return getArg(0, args, context).isLiteral();
+        Node arg = getArg(0, args, context);
+        if (arg.isLiteral()) {
+            if (FunctorDatatype.theFunctorDatatype.equals( arg.getLiteralDatatype() )) {
+                return false;  // functors are indeterminate, can represent literals or objects
+            } else {
+                return true;
+            }
+        }
+        return false;
     }
+    
     
 }
 
