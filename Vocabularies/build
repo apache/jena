@@ -27,7 +27,8 @@ function proc
 }
 
 ## syntaxCheck test-manifest-x.n3
-syntaxCheck test-manifest.n3
+## syntaxCheck test-manifest.n3
+## syntaxCheck test-manifest_11.n3
 
 ## syntaxCheck test-query.n3
 ## syntaxCheck test-dawg.n3
@@ -36,10 +37,13 @@ syntaxCheck test-manifest.n3
 ##  proc result-set.n3 Result~/Projects/ARQ/vocabularies/SetGraphVocab \
 ##      'http://www.w3.org/2001/sw/DataAccess/tests/result-set#'
  
-syntaxCheck test-manifest.n3
-proc test-manifest.n3 TestManifest \
-    "http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#"
+## syntaxCheck test-manifest.n3
+## proc test-manifest.n3 TestManifest \
+##     "http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#"
 
+syntaxCheck test-manifest-1_1.n3
+proc test-manifest-1_1.n3 TestManifest_11 \
+    "http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#"
 
 ## syntaxCheck test-manifest-x.n3
 ## proc test-manifest-x.n3 TestManifestX \

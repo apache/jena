@@ -51,8 +51,22 @@ public class TestItem
     private String queryFile ;
     private Syntax queryFileSyntax ;
     
-    public TestItem(Resource entry, Resource defaultTestType,
-                    Syntax defaultQuerySyntax, DataFormat defaultDataSyntax)
+    public static TestItem create(Resource entry, Resource defaultTestType,
+                             Syntax defaultQuerySyntax, DataFormat defaultDataSyntax)
+    {
+        return new TestItem(entry, defaultTestType, defaultQuerySyntax, defaultDataSyntax) ;
+    }
+    
+    public static TestItem create(String _name,
+                                         String _queryFile,
+                                         String _dataFile,
+                                         String _resultFile)
+    {
+        return new TestItem(_name, _queryFile, _dataFile, _resultFile) ;
+    }
+    
+    private TestItem(Resource entry, Resource defaultTestType,
+                     Syntax defaultQuerySyntax, DataFormat defaultDataSyntax)
     {
         testResource = entry ;
         
@@ -85,7 +99,7 @@ public class TestItem
         buildLuceneIndex = _getTextIndex() ;
     }
         
-    public TestItem(String _name,
+    private TestItem(String _name,
              String _queryFile,
              String _dataFile,
              String _resultFile)
