@@ -83,7 +83,11 @@ public abstract class CmdTDB extends CmdARQ
             return ;
         // attempt once.
         initialized = true ;
-        setLogging() ;
+        // We are a command - ignore any log4j setting.
+        String log4jProperty =  System.getProperty("log4j.configuration") ;
+        //if ( log4jProperty == null || log4jProperty.equals("cmdsettings") )
+            setLogging() ;
+        
         // This sets context based on system properties.
         // ModSymbol can then override. 
         TDB.init() ;
@@ -93,20 +97,16 @@ public abstract class CmdTDB extends CmdARQ
     /** Reset the logging to be good for command line tools */
     public static void setLogging()
     {
-        //if ( ! Log.setLog4j() ) 
-        //if ( System.getProperty("log4j.configuration") == null )
-        {
-            // Turn off optimizer warning.
-            // Use a plain logger for output. 
-            Properties p = new Properties() ;
-           
-            InputStream in = new ByteArrayInputStream(StrUtils.asUTF8bytes(log4Jsetup)) ;
-            try { p.load(in) ; } catch (IOException ex) {}
-            PropertyConfigurator.configure(p) ;
-            
-            LogManager.getLogger(TDB.logInfoName).setLevel(Level.ERROR) ;
-            System.setProperty("log4j.configuration", "set") ;
-        }
+        // Turn off optimizer warning.
+        // Use a plain logger for output. 
+        Properties p = new Properties() ;
+
+        InputStream in = new ByteArrayInputStream(StrUtils.asUTF8bytes(log4Jsetup)) ;
+        try { p.load(in) ; } catch (IOException ex) {}
+        PropertyConfigurator.configure(p) ;
+
+        LogManager.getLogger(TDB.logInfoName).setLevel(Level.ERROR) ;
+        System.setProperty("log4j.configuration", "set") ;
     }
 
     @Override

@@ -12,13 +12,11 @@ public class DevTDB
     // TupleSlice
     
     // RIOT
-    // Respect system property for log4j if ALog not called.?
     //   Option passing (old Jena style).
     //   Options: pass/reject bad URIs, bad literals. -> "SKIP", "PASS", "FAIL"
     //   Recovery parsing - scan to DOT?
     //   Command line - add filename to message.
-    //   Does --time print to stdout or stderr or shoudl it be a logger?
-    //   Fixed line/col field.
+    //   Does --time print to stdout or stderr or should it be the logger?
     // Document
     //  --sink, --skip, --time
     // RIOT extensions

@@ -29,6 +29,7 @@ import com.hp.hpl.jena.query.QueryExecution ;
 import com.hp.hpl.jena.query.QueryExecutionFactory ;
 import com.hp.hpl.jena.query.QueryFactory ;
 import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.StmtIterator ;
 import com.hp.hpl.jena.riot.ParserFactory ;
 import com.hp.hpl.jena.riot.lang.LangRIOT ;
 import com.hp.hpl.jena.sparql.algebra.Algebra ;
@@ -68,11 +69,20 @@ public class RunTDB
 //        System.exit(0) ;
 
         //tdb.ntriples.main("--skip","D.nt") ; System.exit(0) ;
-        tdb.turtle.main("D.ttl") ; System.exit(0) ;
+        //tdb.turtle.main("D.ttl") ; System.exit(0) ;
         
         
-        DevCmds.tdbquery("--query=Q.arq") ;
+        //DevCmds.tdbquery("--query=Q.arq") ;
         
+        Model m = TDBFactory.createModel("DB") ;
+        
+        StmtIterator sIter = m.listStatements() ;
+        for ( ; sIter.hasNext(); )
+        {
+            System.out.println(sIter.next()) ;
+        }
+        System.out.println("DONE") ;
+        System.exit(0) ;
         //tdb.trig.main("D.trig") ; System.exit(0) ;
         
         fastParse() ; System.exit(0) ;

@@ -25,8 +25,8 @@ public class RIOT
             return String.format("[line: %d] %s", line, message) ;
         if ( col != -1 && line == -1 )
             return String.format("[col: %d] %s", col, message) ;
-        
-        return String.format("[line: %d, col: %d] %s", line, col, message) ;
+        // Mild attempt to keep some alignment
+        return String.format("[line: %d, col: %-2d] %s", line, col, message) ;
     }
 
     public static Logger getLogger()
