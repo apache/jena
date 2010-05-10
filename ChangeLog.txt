@@ -3,10 +3,11 @@ ChangeLog for TDB
 
 ==== 0.8.6
 
-+ Imporve performance when loading quads (N-Quads, TriG)
++ Improve performance when loading quads (N-Quads, TriG)
 + Loader output now to a logger (name in constant TDB.loadLoggerName)
 + Parser output now to a logger (name in constant RIOT.riotLoggerName)
-+ Warnings and errors from TDB command line tools now go to stderr so not mixed with parser triples/quads output.  
++ Warnings and errors from TDB command line tools now go to stderr so not mixed with parser triples/quads output.
++ Bug fix: reconstructing XSD DateTime involving fractional seconds coudl omit leading 0s in fractional part.   
 
 ==== 0.8.5
 

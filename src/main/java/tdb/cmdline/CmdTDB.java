@@ -39,29 +39,29 @@ public abstract class CmdTDB extends CmdARQ
     protected final ModTDBDataset tdbDatasetAssembler   = new ModTDBDataset() ;
 
     private static final String log4Jsetup = StringUtils.join("\n"
-                                                        , "## Plain output"
-                                                        , "log4j.appender.tdb.plain=org.apache.log4j.ConsoleAppender"
-                                                        , "log4j.appender.tdb.plain.target=System.err"
-                                                        , "log4j.appender.tdb.plain.layout=org.apache.log4j.PatternLayout"
-                                                        , "log4j.appender.tdb.plain.layout.ConversionPattern=%m%n"
+                   , "## Plain output"
+                   , "log4j.appender.tdb.plain=org.apache.log4j.ConsoleAppender"
+                   , "log4j.appender.tdb.plain.target=System.err"
+                   , "log4j.appender.tdb.plain.layout=org.apache.log4j.PatternLayout"
+                   , "log4j.appender.tdb.plain.layout.ConversionPattern=%m%n"
 
-                                                        , "## Plain output with level"
-                                                        , "log4j.appender.tdb.plainlevel=org.apache.log4j.ConsoleAppender"
-                                                        , "log4j.appender.tdb.plainlevel.target=System.err"
-                                                        , "log4j.appender.tdb.plainlevel.layout=org.apache.log4j.PatternLayout"
-                                                        , "log4j.appender.tdb.plainlevel.layout.ConversionPattern=%-5p %m%n"
+                   , "## Plain output with level"
+                   , "log4j.appender.tdb.plainlevel=org.apache.log4j.ConsoleAppender"
+                   , "log4j.appender.tdb.plainlevel.target=System.err"
+                   , "log4j.appender.tdb.plainlevel.layout=org.apache.log4j.PatternLayout"
+                   , "log4j.appender.tdb.plainlevel.layout.ConversionPattern=%-5p %m%n"
 
-                                                        , "## Everything"
-                                                        , "log4j.rootLogger=INFO, tdb.plainlevel"
-                                                        
-                                                        , "## Loader output"
-                                                        , "log4j.additivity."+TDB.logLoaderName+"=false"
-                                                        , "log4j.logger."+TDB.logLoaderName+"=INFO, tdb.plain"
-                                                        
-                                                        , "## Parser output"
-                                                        , "log4j.additivity."+RIOT.riotLoggerName+"=false"
-                                                        , "log4j.logger."+RIOT.riotLoggerName+"=INFO, tdb.plainlevel "
-                                                          ) ;
+                   , "## Everything"
+                   , "log4j.rootLogger=INFO, tdb.plainlevel"
+
+                   , "## Loader output"
+                   , "log4j.additivity."+TDB.logLoaderName+"=false"
+                   , "log4j.logger."+TDB.logLoaderName+"=INFO, tdb.plain"
+
+                   , "## Parser output"
+                   , "log4j.additivity."+RIOT.riotLoggerName+"=false"
+                   , "log4j.logger."+RIOT.riotLoggerName+"=INFO, tdb.plainlevel "
+    ) ;
     private static boolean initialized = false ;
     
     protected String graphName = null ;

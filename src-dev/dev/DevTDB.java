@@ -5,11 +5,17 @@ public class DevTDB
     // == 0.8.5
     // Enable FILTER assignment for strings (and numbers?) via dataset context setting?
     
+    // Basis tools.
+    // Dump index (numbers)
+    // Dump node table.
+    
     // Tuples
     // Interface, TupleFactory, TupleImpl
     // TupleMask (or TupleImpl itself has a length field?? TupleMask(T[] or Tuple<T>)) 
     // Sort : with colmap?
     // TupleSlice
+    
+    // Loader: cumulative triples, not reset per file.  Ditto time.
     
     // RIOT
     //   Option passing (old Jena style).

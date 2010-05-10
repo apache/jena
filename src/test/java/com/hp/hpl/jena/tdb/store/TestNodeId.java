@@ -70,24 +70,24 @@ public class TestNodeId extends BaseTest
     { test("-1.0",  SSE.parseNode("-1.0")) ; }
     
     @Test public void nodeId_dateTime_1()
-    { test("'2008-04-28T15:36:15+01:00'^^xsd:dateTime",  SSE.parseNode("'2008-04-28T15:36:15+01:00'^^xsd:dateTime")) ; }
+    { test("'2008-04-28T15:36:15+01:00'^^xsd:dateTime") ; }
 
     @Test public void nodeId_dateTime_2()
-    { test("'2008-04-28T15:36:15Z'^^xsd:dateTime",  SSE.parseNode("'2008-04-28T15:36:15Z'^^xsd:dateTime")) ; }
+    { test("'2008-04-28T15:36:15Z'^^xsd:dateTime") ; }
 
     @Test public void nodeId_dateTime_3()
-    { test("'2008-04-28T15:36:15+00:00'^^xsd:dateTime",  SSE.parseNode("'2008-04-28T15:36:15+00:00'^^xsd:dateTime")) ; }
+    { test("'2008-04-28T15:36:15+00:00'^^xsd:dateTime") ; }
 
     @Test public void nodeId_dateTime_4()
-    { test("'2008-04-28T15:36:15-05:00'^^xsd:dateTime",  SSE.parseNode("'2008-04-28T15:36:15-05:00'^^xsd:dateTime")) ; }
+    { test("'2008-04-28T15:36:15-05:00'^^xsd:dateTime") ; }
 
     // No timezone.
     @Test public void nodeId_dateTime_5()
-    { test("'2008-04-28T15:36:15'^^xsd:dateTime",  SSE.parseNode("'2008-04-28T15:36:15'^^xsd:dateTime")) ; }
+    { test("'2008-04-28T15:36:15'^^xsd:dateTime") ; }
 
     // Note the trailing zero - system does not preserve perfect lexical forms. 
     @Test public void nodeId_dateTime_6()
-    { test("'2008-04-28T15:36:05.450'^^xsd:dateTime",  SSE.parseNode("'2008-04-28T15:36:05.450'^^xsd:dateTime")) ; }
+    { test("'2008-04-28T15:36:05.450'^^xsd:dateTime") ; }
 
     // Java bug: T24:00:00 not accepted by DatatypeFactory.newXMLGregorianCalendar(lex)
 //    @Test public void nodeId_dateTime_7()
@@ -96,6 +96,9 @@ public class TestNodeId extends BaseTest
     @Test public void nodeId_dateTime_8()
     { test("'8008-04-28T15:36:05.450'^^xsd:dateTime", null) ; }
 
+    @Test public void nodeId_dateTime_9()
+    { test("'2008-04-28T15:36:05.001'^^xsd:dateTime") ; }
+    
     @Test public void nodeId_date_1()
     { test("'2008-04-28Z'^^xsd:date", SSE.parseNode("'2008-04-28Z'^^xsd:date")) ; }
 
@@ -123,6 +126,11 @@ public class TestNodeId extends BaseTest
     @Test public void nodeId_boolean_4()
     { test("'0'^^xsd:boolean", SSE.parseNode("'false'^^xsd:boolean")) ; }
 
+    private void test(String x)
+    {
+        test(x, SSE.parseNode(x)) ;
+    }
+    
     private void test(String x, Node correct)
     {
         Node n = SSE.parseNode(x) ;

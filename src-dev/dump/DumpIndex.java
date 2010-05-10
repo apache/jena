@@ -39,7 +39,7 @@ public class DumpIndex
     {
 
         RecordFactory rf = null ;
-
+        // INFO FILE
         if ( contains(name, Names.tripleIndexes) )
             rf = SystemTDB.indexRecordTripleFactory ;
         else if ( contains(name, Names.quadIndexes) )

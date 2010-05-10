@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -160,9 +161,13 @@ public class DateTimeNode
         int months = (int)BitsLong.unpack(v, MONTH, MONTH+MONTH_LEN) ;
         int days = (int)BitsLong.unpack(v, DAY, DAY+DAY_LEN) ;
         
+        // Hours: 5, mins 6, milli 16, TZ 7 => 34 bits 
         int hours = (int)BitsLong.unpack(v, HOUR, HOUR+HOUR_LEN) ;
         int minutes = (int)BitsLong.unpack(v, MINUTES, MINUTES+MINUTES_LEN) ; 
         int milliSeconds = (int)BitsLong.unpack(v, MILLI, MILLI+MILLI_LEN) ;
+        
+        int tz = (int)BitsLong.unpack(v, TZ, TZ+TZ_LEN);
+        
         int sec = milliSeconds / 1000 ;
         int fractionSec = milliSeconds % 1000 ;
         
@@ -186,12 +191,11 @@ public class DateTimeNode
         if ( isDateTime && fractionSec != 0 )
         {
             sb.append(".") ;
-            NumberUtils.formatInt(sb, fractionSec) ;
+            NumberUtils.formatInt(sb, fractionSec, 3) ;
         }
           
         // tz in 15min units
             
-        int tz = (int)BitsLong.unpack(v, TZ, TZ+TZ_LEN);
         if ( tz == TZ_Z )
         {
             sb.append("Z") ;
@@ -258,6 +262,7 @@ public class DateTimeNode
 
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
