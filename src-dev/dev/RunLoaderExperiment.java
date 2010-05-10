@@ -50,15 +50,20 @@ public class RunLoaderExperiment
         LoadMonitor loadMonitor = new LoadMonitor(null, log, "triples", BulkLoader.DataTickPoint, BulkLoader.IndexTickPoint) ;
         Sink<Triple> nodesOnly = new StreamTriples(nodeTable, loadMonitor) ;
         
-        InputStream in = System.in ; 
-        if ( argv.length > 0 )
-            in = IO.openFile(argv[0]) ;
+         
+        if ( argv.length == 0 )
+            argv = new String[]{"-"} ;
         
-        LangRIOT parser = ParserFactory.createParserNTriples(in, nodesOnly) ;
+        
         
         loadMonitor.startLoad() ;
         loadMonitor.startDataPhase() ;
-        parser.parse() ;
+        for ( String s : argv )
+        {
+            InputStream in = IO.openFile(s) ;
+            LangRIOT parser = ParserFactory.createParserNTriples(in, nodesOnly) ;
+            parser.parse() ;
+        }
         nodesOnly.close() ;
         loadMonitor.finishDataPhase() ;
         loadMonitor.finishLoad() ;
