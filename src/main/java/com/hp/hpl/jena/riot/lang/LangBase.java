@@ -75,6 +75,7 @@ public abstract class LangBase<X> implements LangRIOT
         EventManager.send(sink, new Event(RIOT.startRead, null)) ;
         runParser() ;
         EventManager.send(sink, new Event(RIOT.finishRead, null)) ;
+        tokens.close();
     }
     
     // ---- Managing tokens.

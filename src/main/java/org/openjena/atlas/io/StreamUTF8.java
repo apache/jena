@@ -91,10 +91,10 @@ public final class StreamUTF8 extends Reader implements CharStream
     @Override
     public void close() throws IOException
     { input.close() ; }
-
+    
     //@Override
     public void closeStream()
-    { try { close(); } catch (IOException ex) { IO.exception(ex) ; } }
+    { IO.close(input) ; }
 
     @Override
     public int read(char[] cbuf, int off, int len) throws IOException

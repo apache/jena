@@ -41,7 +41,7 @@ public final class StreamASCII extends Reader implements CharStream
 
     //@Override
     public void closeStream()
-    { try { close(); } catch (IOException ex) { IO.exception(ex) ; } }
+    { IO.close(input) ; }
 
     @Override
     public int read(char[] cbuf, int off, int len) throws IOException

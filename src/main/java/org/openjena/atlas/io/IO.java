@@ -10,7 +10,9 @@ import java.io.FileInputStream ;
 import java.io.IOException ;
 import java.io.InputStream ;
 import java.io.InputStreamReader ;
+import java.io.OutputStream ;
 import java.io.Reader ;
+import java.io.Writer ;
 import java.nio.charset.Charset ;
 import java.util.zip.GZIPInputStream ;
 
@@ -78,6 +80,26 @@ public class IO
         return new InputStreamReader(in, charset) ;
     }
 
+    public static void close(InputStream in)
+    {
+        try { in.close(); } catch (IOException ex) { exception(ex) ; }
+    }
+    
+    public static void close(OutputStream out)
+    {
+        try { out.close(); } catch (IOException ex) { exception(ex) ; }
+    }
+    
+    public static void close(Reader in)
+    {
+        try { in.close(); } catch (IOException ex) { exception(ex) ; }
+    }
+    
+    public static void close(Writer out)
+    {
+        try { out.close(); } catch (IOException ex) { exception(ex) ; }
+    }
+    
     public static void exception(IOException ex)
     {
         throw new AtlasException(ex) ;

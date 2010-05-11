@@ -125,7 +125,7 @@ public final class PeekReader extends Reader
         // Advance always so that the peek character is valid (is character 0) 
         // Returns the character before the file starts (i.e. UNSET).
     }
-
+    
     public long getLineNum()            { return lineNum; }
 
     public long getColNum()             { return colNum; }

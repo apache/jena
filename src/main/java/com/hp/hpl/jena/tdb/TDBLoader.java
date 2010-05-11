@@ -140,6 +140,16 @@ public class TDBLoader
     private boolean showProgress = true ;
     private boolean generateStats = false ;
     private Logger loaderLog  = TDB.logLoader ;
+    private boolean checking ;
+    
+    // XXX Context control block
+    // Checker
+    // Error handler
+    // verbose flag?
+    // logger
+    // generateStats
+    // checking flag
+    
     
     // ---- The class itself.
     
@@ -183,6 +193,13 @@ public class TDBLoader
         loadDataset$(dataset, input, showProgress) ;
     }
 
+    public boolean getChecking()  
+    { return checking ; }
+    
+    public void setChecking(boolean checking)  
+    { this.checking = checking ; }
+
+    
     public boolean getShowProgress()  
     { return showProgress ; }
 

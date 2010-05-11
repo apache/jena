@@ -15,10 +15,14 @@ public class DevTDB
     // Sort : with colmap?
     // TupleSlice
     
-    // Loader: cumulative triples, not reset per file.  Ditto time.
+    // Loader:
+    // cumulative triples, not reset per file.  Ditto time.
     // Reset run rate on each index.
+    // Are buffers full y closed on each file. Tokenizer.close => Peekreader.close=>Input.close
+    
     
     // RIOT
+    //   Interfacization of checker
     //   Option passing (old Jena style).
     //   Options: pass/reject bad URIs, bad literals. -> "SKIP", "PASS", "FAIL"
     //   Recovery parsing - scan to DOT?
