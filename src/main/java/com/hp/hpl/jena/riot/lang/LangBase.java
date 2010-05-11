@@ -16,6 +16,7 @@ import org.openjena.atlas.lib.Sink ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.riot.Checker ;
 import com.hp.hpl.jena.riot.ErrorHandler ;
+import com.hp.hpl.jena.riot.ErrorHandlerLib ;
 import com.hp.hpl.jena.riot.ParseException ;
 import com.hp.hpl.jena.riot.RIOT ;
 import com.hp.hpl.jena.riot.tokens.Token ;
@@ -60,8 +61,14 @@ public abstract class LangBase<X> implements LangRIOT
     public Checker getChecker()                 { return checker ; }
     //@Override
     // Bad separation of responsibilitied :-(
-    public void    setChecker(Checker checker)  { this.checker = checker ; this.errorHandler = checker.getHandler() ;
-}
+    public void    setChecker(Checker checker)
+    { 
+        this.checker = checker ;
+        if ( checker != null)
+            this.errorHandler = checker.getHandler() ;
+        else
+            this.errorHandler = ErrorHandlerLib.errorHandlerNoLogging ;
+    }
     
     public void parse()
     {

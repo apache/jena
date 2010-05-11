@@ -50,11 +50,8 @@ public class RunLoaderExperiment
         LoadMonitor loadMonitor = new LoadMonitor(null, log, "triples", BulkLoader.DataTickPoint, BulkLoader.IndexTickPoint) ;
         Sink<Triple> nodesOnly = new StreamTriples(nodeTable, loadMonitor) ;
         
-         
         if ( argv.length == 0 )
             argv = new String[]{"-"} ;
-        
-        
         
         loadMonitor.startLoad() ;
         loadMonitor.startDataPhase() ;
@@ -76,7 +73,10 @@ public class RunLoaderExperiment
         private LoadMonitor loadMonitor ; 
 
         public StreamTriples(NodeTable nodeTable, LoadMonitor loadMonitor)
-        { this.nodeTable = nodeTable ; this.loadMonitor = loadMonitor ; }
+        {
+            this.nodeTable = nodeTable ;
+            this.loadMonitor = loadMonitor ;
+        }
 
         public void send(Triple triple)
         {

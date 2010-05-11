@@ -105,7 +105,6 @@ public class LoaderNodeTupleTable implements Closeable, Sync
     {
         count++ ;
         monitor.dataItem() ;
-        // SuperTick??
         nodeTupleTable.addRow(nodes) ;
     }
     

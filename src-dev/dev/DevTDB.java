@@ -16,6 +16,7 @@ public class DevTDB
     // TupleSlice
     
     // Loader: cumulative triples, not reset per file.  Ditto time.
+    // Reset run rate on each index.
     
     // RIOT
     //   Option passing (old Jena style).
