@@ -143,6 +143,8 @@ public class BulkLoader
                 base = null ;
             Lang lang = Lang.guess(url, Lang.NTRIPLES) ;
             LangRIOT parser = ParserFactory.createParserTriples(in, lang, base, dest) ;
+            // XXX
+            parser.setChecker(null) ;
             parser.parse() ;
         }            
         dest.finish() ;
