@@ -22,11 +22,13 @@ public class DevTDB
     
     
     // RIOT
+    //   RDF/XML wrapper.
     //   Interfaceization of checker
-    //   Output "# Filename" bewtenn outputs
     //   Option passing (old Jena style).
     //   Options: pass/reject bad URIs, bad literals. -> "SKIP", "PASS", "FAIL"
     //   Recovery parsing - scan to DOT?
+    // RIOT Commands
+    //   Output "# Filename" bewteen outputs
     //   Command line - add filename to message.
     // Document
     //  --sink, --skip, --time

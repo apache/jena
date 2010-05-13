@@ -3,6 +3,9 @@ ChangeLog for TDB
 
 ==== 0.8.6
 
++ New command "riot" that parsers any format and outputs N-Triples/N-Quads
+  Language determination based on filename extension. 
+  Use command with specific fomat name to force the format
 + Improve performance when loading quads (N-Quads, TriG)
 + Loader output now to a logger (name in constant TDB.loadLoggerName)
 + Parser output now to a logger (name in constant RIOT.riotLoggerName)
