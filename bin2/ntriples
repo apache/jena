@@ -6,4 +6,5 @@ then
     exit 1
     fi
 
-exec "${TDBROOT}/bin/ntriples" "$@"
+TDB_CMD=$(basename $0)
+exec "${TDBROOT}/bin/${TDB_CMD}" "$@"

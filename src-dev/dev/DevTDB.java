@@ -23,6 +23,7 @@ public class DevTDB
     
     // RIOT
     //   Interfacization of checker
+    //   Can we combine the "parser any" command structure and the loader?  Quads always?
     //   Option passing (old Jena style).
     //   Options: pass/reject bad URIs, bad literals. -> "SKIP", "PASS", "FAIL"
     //   Recovery parsing - scan to DOT?
