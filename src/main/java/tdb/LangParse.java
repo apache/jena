@@ -16,6 +16,7 @@ import org.openjena.atlas.lib.SinkNull ;
 import tdb.cmdline.CmdTDB ;
 import tdb.cmdline.ModLangParse ;
 import arq.cmdline.CmdGeneral ;
+import arq.cmdline.ModBase ;
 import arq.cmdline.ModTime ;
 
 import com.hp.hpl.jena.Jena ;
@@ -66,11 +67,11 @@ public abstract class LangParse<X> extends CmdGeneral
     {
         try {
             if ( super.getPositional().isEmpty() )
-                parse("-") ;
+                parseFile("-") ;
             else
             {
                 for ( String fn : super.getPositional() )
-                    parse(fn) ;
+                    parseFile(fn) ;
             }
         } finally {
             System.err.flush() ;
@@ -80,11 +81,11 @@ public abstract class LangParse<X> extends CmdGeneral
         }
     }
 
-    public void parse(String filename)
+    public void parseFile(String filename)
     {
         InputStream in = null ;
         if ( filename.equals("-") )
-            parse("http://base/", "stdin", System.in) ;
+            parseFile("http://base/", "stdin", System.in) ;
         else
         {
             try {
@@ -94,16 +95,17 @@ public abstract class LangParse<X> extends CmdGeneral
                 System.err.println("Can't open '"+filename+"' "+ex.getMessage()) ;
                 return ;
             }
-            parse(filename, filename, in) ;
+            parseFile(filename, filename, in) ;
+            IO.close(in) ;
         }
     }
 
-    public void parse(String baseURI, String filename, InputStream in)
+    public void parseFile(String baseURI, String filename, InputStream in)
     {   
         parseRIOT(baseURI, filename, in) ;
     }
     
-    private void parseRIOT(String baseURI, String filename, InputStream in)
+    protected void parseRIOT(String baseURI, String filename, InputStream in)
     {
         Tokenizer tokenizer = makeTokenizer(in) ;
         

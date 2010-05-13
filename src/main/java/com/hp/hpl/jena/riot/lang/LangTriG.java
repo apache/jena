@@ -75,7 +75,7 @@ public class LangTriG extends LangTurtleBase<Quad>
         Node graphNode = Quad.tripleInQuad ;
         Token token = peekToken() ;
 
-        // <foo> = { ... }
+        // <foo> = { ... } .
         if ( token.isNode() )
         {
             Token t = token ;   // Keep for error message. 
@@ -121,10 +121,16 @@ public class LangTriG extends LangTurtleBase<Quad>
         }
         
         // **** Turtle.
-        token = peekToken() ;
+        token = nextToken() ;
         if ( token.getType() != TokenType.RBRACE )
-            exception(token, "Expected end of graph: got %s", peekToken()) ;
-        nextToken() ;
+            exception(token, "Expected end of graph: got %s", token) ;
+        
+        // Skip DOT
+        token = peekToken() ;
+        if ( token.hasType(TokenType.DOT) )
+            nextToken() ;
+        
+        
         // End graph block.
         setCurrentGraph(Quad.tripleInQuad) ;
     }

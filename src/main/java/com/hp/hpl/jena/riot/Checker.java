@@ -12,39 +12,20 @@ import java.util.Iterator ;
 
 import org.openjena.atlas.lib.Cache ;
 import org.openjena.atlas.lib.CacheFactory ;
-
+import org.openjena.atlas.lib.IRILib ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.graph.impl.LiteralLabel ;
 import com.hp.hpl.jena.iri.IRI ;
 import com.hp.hpl.jena.iri.IRIComponents ;
-import com.hp.hpl.jena.iri.IRIFactory ;
 import com.hp.hpl.jena.iri.Violation ;
 import com.hp.hpl.jena.iri.ViolationCodes ;
 
 /** A checker validates RDF terms. */
 public final class Checker
 {
-    //static IRIFactory iriFactory = IRIFactory.jenaImplementation() ;
-    //static IRIFactory iriFactory = IRIFactory.iriImplementation();
-    
-    /** The IRI checker setup - more than usual Jena but not full IRI. */
-    static IRIFactory iriFactory = new IRIFactory();
-    static {
-        // IRIFactory.iriImplementation() ...
-        iriFactory.useSpecificationIRI(true);
-        iriFactory.useSchemeSpecificRules("*",true);
 
-        //iriFactory.shouldViolation(false,true);
-
-        // Moderate it -- allow unwise chars and any scheme name.
-        iriFactory.setIsError(ViolationCodes.UNWISE_CHARACTER,false);
-        iriFactory.setIsWarning(ViolationCodes.UNWISE_CHARACTER,false);
-
-        iriFactory.setIsError(ViolationCodes.UNREGISTERED_IANA_SCHEME,false);
-        iriFactory.setIsWarning(ViolationCodes.UNREGISTERED_IANA_SCHEME,false);
-    }
     
     private boolean allowRelativeIRIs = false ;
     private boolean warningsAreErrors = false ;
@@ -193,7 +174,7 @@ public final class Checker
         if ( cache != null && cache.containsKey(node) )
             return true ;
         
-        IRI iri = iriFactory.create(node.getURI()); // always works - no exceptions.
+        IRI iri = IRILib.iriFactory.create(node.getURI()); // always works - no exceptions.
         boolean b = checkIRI(iri, line, col) ;
         // If OK, put in cache.
         if ( cache != null && b )

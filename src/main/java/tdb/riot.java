@@ -4,39 +4,15 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.riot.lang;
+package tdb;
 
-import java.io.Reader ;
-import java.io.StringReader ;
-
-import org.junit.Test ;
-import org.openjena.atlas.junit.BaseTest ;
-import org.openjena.atlas.lib.SinkNull ;
-
-import com.hp.hpl.jena.riot.Checker ;
-import com.hp.hpl.jena.riot.ErrorHandlerLib ;
-import com.hp.hpl.jena.riot.ParserFactory ;
-import com.hp.hpl.jena.riot.tokens.Tokenizer ;
-import com.hp.hpl.jena.riot.tokens.TokenizerFactory ;
-import com.hp.hpl.jena.sparql.core.Quad ;
-
-public class TestLangTrig extends BaseTest
+/** Parse to triples/quads for Turtle, TriG, N-Triples, N-Quads */ 
+public class riot
 {
-    @Test public void trig_01()     { parse("{}") ; } 
-    @Test public void trig_02()     { parse("{}.") ; }
-    @Test public void trig_03()     { parse("<g> {}") ; }
-    @Test public void trig_04()     { parse("<g> = {}") ; }
-    @Test public void trig_05()     { parse("<g> = {} .") ; }
-
-    private static void parse(String string)
-    {
-        Reader reader = new StringReader(string) ;
-        Tokenizer tokenizer = TokenizerFactory.makeTokenizer(reader) ;
-        LangTriG parser = ParserFactory.createParserTriG(tokenizer, "http://base/", new SinkNull<Quad>()) ;
-        parser.setChecker(new Checker(ErrorHandlerLib.errorHandlerNoLogging)) ;
-        parser.parse() ;
-    }
-    
+    // --base
+    // --sime
+    // --time
+    // Split up LangParse
 }
 
 /*

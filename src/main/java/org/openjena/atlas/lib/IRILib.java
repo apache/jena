@@ -4,39 +4,44 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.riot.lang;
+package org.openjena.atlas.lib;
 
-import java.io.Reader ;
-import java.io.StringReader ;
+import com.hp.hpl.jena.iri.IRI ;
+import com.hp.hpl.jena.iri.IRIFactory ;
+import com.hp.hpl.jena.iri.ViolationCodes ;
 
-import org.junit.Test ;
-import org.openjena.atlas.junit.BaseTest ;
-import org.openjena.atlas.lib.SinkNull ;
-
-import com.hp.hpl.jena.riot.Checker ;
-import com.hp.hpl.jena.riot.ErrorHandlerLib ;
-import com.hp.hpl.jena.riot.ParserFactory ;
-import com.hp.hpl.jena.riot.tokens.Tokenizer ;
-import com.hp.hpl.jena.riot.tokens.TokenizerFactory ;
-import com.hp.hpl.jena.sparql.core.Quad ;
-
-public class TestLangTrig extends BaseTest
+public class IRILib
 {
-    @Test public void trig_01()     { parse("{}") ; } 
-    @Test public void trig_02()     { parse("{}.") ; }
-    @Test public void trig_03()     { parse("<g> {}") ; }
-    @Test public void trig_04()     { parse("<g> = {}") ; }
-    @Test public void trig_05()     { parse("<g> = {} .") ; }
+    //static IRIFactory iriFactory = IRIFactory.jenaImplementation() ;
+    //static IRIFactory iriFactory = IRIFactory.iriImplementation();
+    
+    /** The IRI checker setup - more than usual Jena but not full IRI. */
+    public static IRIFactory iriFactory = new IRIFactory();
+    static {
+        // IRIFactory.iriImplementation() ...
+        iriFactory.useSpecificationIRI(true);
+        iriFactory.useSchemeSpecificRules("*",true);
 
-    private static void parse(String string)
-    {
-        Reader reader = new StringReader(string) ;
-        Tokenizer tokenizer = TokenizerFactory.makeTokenizer(reader) ;
-        LangTriG parser = ParserFactory.createParserTriG(tokenizer, "http://base/", new SinkNull<Quad>()) ;
-        parser.setChecker(new Checker(ErrorHandlerLib.errorHandlerNoLogging)) ;
-        parser.parse() ;
+        //iriFactory.shouldViolation(false,true);
+
+        // Moderate it -- allow unwise chars and any scheme name.
+        iriFactory.setIsError(ViolationCodes.UNWISE_CHARACTER,false);
+        iriFactory.setIsWarning(ViolationCodes.UNWISE_CHARACTER,false);
+
+        iriFactory.setIsError(ViolationCodes.UNREGISTERED_IANA_SCHEME,false);
+        iriFactory.setIsWarning(ViolationCodes.UNREGISTERED_IANA_SCHEME,false);
     }
     
+    public static boolean checkIRI(String iriStr)
+    {
+        IRI iri = parseIRI(iriStr);
+        return iri.hasViolation(false) ;
+    }
+    
+    public static IRI parseIRI(String iriStr)
+    {
+        return iriFactory.create(iriStr);
+    }
 }
 
 /*
