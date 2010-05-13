@@ -9,8 +9,6 @@ package tdb;
 import java.io.PrintStream ;
 
 import org.openjena.atlas.lib.Sink ;
-import org.openjena.atlas.logging.Log ;
-
 
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.riot.Checker ;
@@ -19,12 +17,11 @@ import com.hp.hpl.jena.riot.out.SinkTripleOutput ;
 import com.hp.hpl.jena.riot.tokens.Tokenizer ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 
-public class turtle extends LangParse<Triple>
+public class turtle extends LangParseFixed<Triple>
 {
     /** Run the N-triples parser - and produce N-triples */
     public static void main(String... argv)
     {
-        Log.setLog4j() ;
         new turtle(argv).mainRun() ;
     }    
     
@@ -49,7 +46,7 @@ public class turtle extends LangParse<Triple>
     }
 
     @Override
-    protected Sink<Triple> makePrintSink(PrintStream out)
+    protected Sink<Triple> makeOutputSink(PrintStream out)
     {
         return new SinkTripleOutput(out) ;
     }

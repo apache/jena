@@ -30,6 +30,7 @@ import com.hp.hpl.jena.query.QueryExecutionFactory ;
 import com.hp.hpl.jena.query.QueryFactory ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.StmtIterator ;
+import com.hp.hpl.jena.riot.IRIResolver ;
 import com.hp.hpl.jena.riot.ParserFactory ;
 import com.hp.hpl.jena.riot.lang.LangRIOT ;
 import com.hp.hpl.jena.sparql.algebra.Algebra ;
@@ -63,6 +64,11 @@ public class RunTDB
 
     public static void main(String[] args) throws IOException
     {
+        String baseURI = "filename.ext" ;
+        baseURI = IRIResolver.resolveGlobalAsString(baseURI) ;
+        System.out.println(baseURI) ;
+        System.exit(0) ;
+        
 //        String fn = "c:/home/afs/Datasets/MusicBrainz/artists.nt.gz" ;
 //        RunLoaderExperiment.main("fn") ;
 //        

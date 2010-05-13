@@ -68,6 +68,8 @@ public class SinkQuadOutput implements Sink<Quad>
 //            throw new TurtleParseException("["+line+", "+col+"] : Error: Predicate is not a URI") ;
 //        if ( ! ( o.isURI() || o.isBlank() || o.isLiteral() ) ) 
 //            throw new TurtleParseException("["+line+", "+col+"] : Error: Object is not a URI, blank node or literal") ;
+//        if ( ! g.isURI() ) 
+//            throw new TurtleParseException("["+line+", "+col+"] : Error: Graph is not a URI") ;
       
         if ( false )
         {

@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Systems Ltd
  * All rights reserved.
  * [See end of file]
  */
@@ -30,7 +31,7 @@ import com.hp.hpl.jena.riot.tokens.Tokenizer ;
  * In addition, the NTuples subsystem allows triples/quads with "bad" terms
  * to be skipped.
  * 
- * Checking can be switched off completely. if the dat is known to be correct,
+ * Checking can be switched off completely. If the data is known to be correct,
  * no checking can be a large performance gain. <i>Caveat emptor</i>.
  */
 

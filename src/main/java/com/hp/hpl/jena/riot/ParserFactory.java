@@ -62,11 +62,14 @@ public class ParserFactory
     {
         switch (lang)
         {
+            case NTRIPLES : // Or move N-Triples just go through N-Quads. 
             case N3 :
             case TURTLE :
-            case NTRIPLES :
             case RDFXML :
-                throw new RiotException("Not a quads language: "+lang) ;
+                // Add a triples to quads wrapper.
+                SinkExtendTriplesToQuads converter = new SinkExtendTriplesToQuads(sink) ;
+                return createParserTriples(tokenizer, lang, baseIRI, converter) ;
+                //throw new RiotException("Not a quads language: "+lang) ;
             case NQUADS :
                 return createParserNQuads(tokenizer, sink) ;
             case TRIG :
@@ -74,8 +77,6 @@ public class ParserFactory
         }
         return null ;
     }
-    
-    
     
     /** Create a parser for Turtle, with default behaviour */
     public static LangTurtle createParserTurtle(InputStream input, String baseIRI, Sink<Triple> sink)

@@ -9,8 +9,6 @@ package tdb;
 import java.io.PrintStream ;
 
 import org.openjena.atlas.lib.Sink ;
-import org.openjena.atlas.logging.Log ;
-
 
 import com.hp.hpl.jena.riot.Checker ;
 import com.hp.hpl.jena.riot.lang.LangTriG ;
@@ -19,12 +17,11 @@ import com.hp.hpl.jena.riot.tokens.Tokenizer ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 
-public class trig extends LangParse<Quad>
+public class trig extends LangParseFixed<Quad>
 {
     /** Run the N-triples parser - and produce N-triples */
     public static void main(String... argv)
     {
-        Log.setLog4j() ;
         new trig(argv).mainRun() ;
     }    
     
@@ -49,7 +46,7 @@ public class trig extends LangParse<Quad>
     }
     
     @Override
-    protected Sink<Quad> makePrintSink(PrintStream out)
+    protected Sink<Quad> makeOutputSink(PrintStream out)
     {
         return new SinkQuadOutput(out) ;
     }

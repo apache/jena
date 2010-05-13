@@ -46,7 +46,6 @@ public final class Tuple<T> implements Iterable<T>
         } ;
         return Iter.map(iter, projection) ;
     }
-    
 
     public static <T> Iterator<Tuple<T>> prefix(final int prefixLength, Iterator<Tuple<T>> iter)
     {

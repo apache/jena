@@ -1,60 +1,39 @@
 /*
- * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
-package tdb;
-
-import java.io.PrintStream ;
+package com.hp.hpl.jena.riot;
 
 import org.openjena.atlas.lib.Sink ;
 
-
 import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.riot.Checker ;
-import com.hp.hpl.jena.riot.lang.LangNTriples ;
-import com.hp.hpl.jena.riot.out.SinkTripleOutput ;
-import com.hp.hpl.jena.riot.tokens.Tokenizer ;
-import com.hp.hpl.jena.sparql.util.Utils ;
+import com.hp.hpl.jena.sparql.core.Quad ;
 
-public class ntriples extends LangParseFixed<Triple>
+class SinkExtendTriplesToQuads implements Sink<Triple>
 {
-    /** Run the N-triples parser - and produce N-triples */
-    public static void main(String... argv)
-    {
-        new ntriples(argv).mainRun() ;
-    }        
+    private Sink<Quad> sinkQuad ;
 
-    protected ntriples(String[] argv)
+    public SinkExtendTriplesToQuads(Sink<Quad> sinkQuad)
     {
-        super(argv) ;
+        this.sinkQuad = sinkQuad ;
     }
-    
-    @Override
-    protected String getCommandName()
+    public void flush()
+    {}
+
+    public void send(Triple item)
     {
-        return Utils.classShortName(ntriples.class) ;
-    }
-    
-    @Override
-    protected void parseEngine(Tokenizer tokenizer, String baseIRI, Sink<Triple> sink, Checker checker, boolean skipOnBadTerm)
-    {
-        LangNTriples parser = new LangNTriples(tokenizer, checker, sink) ;
-        parser.setSkipOnBadTerm(skipOnBadTerm) ;
-        parser.parse();
-        sink.close() ;
+        Quad quad = new Quad(Quad.tripleInQuad, item.getSubject(), item.getPredicate(), item.getObject() ) ;
+        sinkQuad.send(quad) ;
     }
 
-    @Override
-    protected Sink<Triple> makeOutputSink(PrintStream out)
-    {
-        return new SinkTripleOutput(out) ;
-    }
+    public void close()
+    {}
+    
 }
-
 /*
- * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

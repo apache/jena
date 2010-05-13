@@ -17,6 +17,7 @@ import com.hp.hpl.jena.iri.IRI;
 import com.hp.hpl.jena.iri.IRIException;
 import com.hp.hpl.jena.iri.IRIFactory;
 import com.hp.hpl.jena.iri.Violation;
+import com.hp.hpl.jena.iri.ViolationCodes ;
 import com.hp.hpl.jena.util.FileUtils;
 
 /** Package up IRI reolver functionality. 
@@ -27,25 +28,71 @@ public class IRIResolver
     /**
      * An IRIFactory appropriately configuired.
      */
-    static final IRIFactory factory = new IRIFactory(IRIFactory
+    static final IRIFactory factoryX = new IRIFactory(IRIFactory
             .jenaImplementation());
     static {
-        factory.setSameSchemeRelativeReferences("file");
+        factoryX.setSameSchemeRelativeReferences("file");
     }
 
+    //static IRIFactory iriFactory = IRIFactory.jenaImplementation() ;
+    //static IRIFactory iriFactory = IRIFactory.iriImplementation();
+    
+    /** The IRI checker setup - more than usual Jena but not full IRI. */
+    public static IRIFactory factory = new IRIFactory();
+    static {
+        // IRIFactory.iriImplementation() ...
+        factory.useSpecificationIRI(true);
+        factory.useSchemeSpecificRules("*",true);
+        
+        // Allow relative URIs for file: URLs.
+        factory.setSameSchemeRelativeReferences("file");
+
+        //iriFactory.shouldViolation(false,true);
+
+        // Moderate it -- allow unwise chars and any scheme name.
+        factory.setIsError(ViolationCodes.UNWISE_CHARACTER,false);
+        factory.setIsWarning(ViolationCodes.UNWISE_CHARACTER,false);
+
+        factory.setIsError(ViolationCodes.UNREGISTERED_IANA_SCHEME,false);
+        factory.setIsWarning(ViolationCodes.UNREGISTERED_IANA_SCHEME,false);
+    }
+    
+    /** Check an IRI string (does not resolve it) */
+    public static boolean checkIRI(String iriStr)
+    {
+        IRI iri = parseIRI(iriStr);
+        return iri.hasViolation(false) ;
+    }
+    
+    /** Parse an IRI (does not resolve it) */
+    public static IRI parseIRI(String iriStr)
+    {
+        return factory.create(iriStr);
+    }
+    /**
+     * Resolve the relative URI str against the current global base.
+     * @param str
+     * @return IRI
+     */
+    public static IRI resolveGlobal(String str) {
+        return exceptions(cwd.resolve(str)) ;
+    }
+    
+    /**
+     * Resolve the relative URI str against the current global base.
+     * @param str
+     * @return String
+     */
+    public static String resolveGlobalAsString(String str) {
+        return exceptions(cwd.resolve(str)).toString() ;
+    }
+
+    
     /**
      * The current working directory, as a string.
      */
-    static private String globalBase = "http://localhost/LocalHostBase/" ;
+    static private String globalBase = FileUtils.toURL(".").replace("/./", "/") ;
     
-    // Try to set the global base from the current directory.  
-    // Security (e.g. Tomcat) may prevent this in which case we
-    // use a common default set above.
-    static {
-        try { globalBase = FileUtils.toURL("."); }
-        catch (Throwable th) {  }
-    }
-        
     /**
      * The current working directory, as an IRI.
      */
@@ -59,6 +106,7 @@ public class IRIResolver
             System.err.println("Unexpected IRIException in initializer: "
                     + e.getMessage());
             cwdx = factory.create("file:///");
+            e.printStackTrace(System.err) ;
         }
         cwd = cwdx;
     }
@@ -237,16 +285,6 @@ public class IRIResolver
     public static void suppressExceptions()
         { showExceptions = false; }
     
-    /**
-     * Resolve the relative URI str against the current
-     * working directory.
-     * @param str
-     * @return IRI
-     */
-    public static IRI resolveGlobal(String str) {
-        return exceptions(cwd.resolve(str)) ;
-    }
-
     /**
      * Choose a base URI based on the current directory
      * 

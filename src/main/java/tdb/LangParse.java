@@ -7,12 +7,8 @@
 package tdb;
 
 import java.io.InputStream ;
-import java.io.PrintStream ;
 
 import org.openjena.atlas.io.IO ;
-import org.openjena.atlas.lib.Sink ;
-import org.openjena.atlas.lib.SinkCounting ;
-import org.openjena.atlas.lib.SinkNull ;
 import tdb.cmdline.CmdTDB ;
 import tdb.cmdline.ModLangParse ;
 import arq.cmdline.CmdGeneral ;
@@ -20,16 +16,14 @@ import arq.cmdline.ModTime ;
 
 import com.hp.hpl.jena.Jena ;
 import com.hp.hpl.jena.query.ARQ ;
-import com.hp.hpl.jena.riot.Checker ;
-import com.hp.hpl.jena.riot.ErrorHandlerLib ;
+import com.hp.hpl.jena.riot.IRIResolver ;
 import com.hp.hpl.jena.riot.Lang ;
-import com.hp.hpl.jena.riot.RiotException ;
 import com.hp.hpl.jena.riot.tokens.Tokenizer ;
 import com.hp.hpl.jena.riot.tokens.TokenizerFactory ;
 import com.hp.hpl.jena.tdb.TDB ;
 
 /** Common framework for running RIOT parsers */
-public abstract class LangParse<X> extends CmdGeneral
+public abstract class LangParse extends CmdGeneral
 {
     // We are not a TDB command but still set the logging.
     static { CmdTDB.setLogging() ; }
@@ -58,8 +52,8 @@ public abstract class LangParse<X> extends CmdGeneral
     protected void processModulesAndArgs()
     { }
 
-    private long totalMillis = 0 ; 
-    private long totalTriples = 0 ; 
+    protected long totalMillis = 0 ; 
+    protected long totalTuples = 0 ; 
     
 
     @Override
@@ -77,7 +71,7 @@ public abstract class LangParse<X> extends CmdGeneral
             System.err.flush() ;
             System.out.flush() ;
             if ( super.getPositional().size() > 1 && modTime.timingEnabled() )
-                output("Total", totalTriples, totalMillis) ;
+                output("Total", totalTuples, totalMillis) ;
         }
     }
 
@@ -101,78 +95,82 @@ public abstract class LangParse<X> extends CmdGeneral
         }
     }
 
-    public void parseFile(String baseURI, String filename, InputStream in)
+    public void parseFile(String defaultBaseURI, String filename, InputStream in)
     {   
+        String baseURI = modLangParse.getBaseIRI() ;
+        if ( baseURI == null )
+            baseURI = defaultBaseURI ;
+        // Make absolute
+        baseURI = IRIResolver.resolveGlobalAsString(baseURI) ;
         parseRIOT(baseURI, filename, in) ;
     }
     
-    protected void parseRIOT(String baseURI, String filename, InputStream in)
-    {
-        Tokenizer tokenizer = makeTokenizer(in) ;
-        
-        Sink<X> s = new SinkNull<X>() ;
-        
-        if ( ! modLangParse.toBitBucket() )
-            s = makePrintSink(System.out) ;
-        
-        SinkCounting<X> sink = new SinkCounting<X>(s) ;
-        
-        Checker checker = null ;
-        if ( modLangParse.checking() )
-        {
-            // Skip on bad terms is done include the N-Tuples parser
-            // Not available for Turtle etc.
-            if ( modLangParse.stopOnBadTerm() )
-                checker = new Checker(ErrorHandlerLib.errorHandlerStd)  ;
-            else
-                checker = new Checker(ErrorHandlerLib.errorHandlerWarn) ;
-        }
-        
-        modTime.startTimer() ;
-        try
-        {
-            parseEngine(tokenizer, baseURI, sink, checker, modLangParse.skipOnBadTerm()) ;
-        }
-        catch (RiotException ex)
-        {
-            if ( modLangParse.stopOnBadTerm() )
-                return ;
-        }
-        finally {
-            tokenizer.close() ;
-            s.close() ;
-        }
-        long x = modTime.endTimer() ;
-        long n = sink.getCount() ;
-
-        totalTriples += n ;
-        totalMillis += x ;
-
-        if ( modTime.timingEnabled() )
-            output(filename, n, x) ;
-    }
-
+    abstract protected void parseRIOT(String baseURI, String filename, InputStream in) ;
+//    {
+//        Tokenizer tokenizer = makeTokenizer(in) ;
+//        
+//        Sink<X> s = new SinkNull<X>() ;
+//        
+//        if ( ! modLangParse.toBitBucket() )
+//            s = makePrintSink(System.out) ;
+//        
+//        SinkCounting<X> sink = new SinkCounting<X>(s) ;
+//        
+//        Checker checker = null ;
+//        if ( modLangParse.checking() )
+//        {
+//            if ( modLangParse.stopOnBadTerm() )
+//                checker = new Checker(ErrorHandlerLib.errorHandlerStd)  ;
+//            else
+//                checker = new Checker(ErrorHandlerLib.errorHandlerWarn) ;
+//        }
+//        
+//        modTime.startTimer() ;
+//        try
+//        {
+//            parseEngine(tokenizer, baseURI, sink, checker, modLangParse.skipOnBadTerm()) ;
+//        }
+//        catch (RiotException ex)
+//        {
+//            if ( modLangParse.stopOnBadTerm() )
+//                return ;
+//        }
+//        finally {
+//            tokenizer.close() ;
+//            s.close() ;
+//        }
+//        long x = modTime.endTimer() ;
+//        long n = sink.getCount() ;
+//
+//        totalTriples += n ;
+//        totalMillis += x ;
+//
+//        if ( modTime.timingEnabled() )
+//            output(filename, n, x) ;
+//    }
+//
+//    protected abstract void parseEngine(Tokenizer tokens,
+//                                        String baseIRI,
+//                                        Sink<X> sink,
+//                                        Checker checker,
+//                                        boolean skipOnBadTerms) ;
+//                                        
+//    protected abstract Sink<X> makePrintSink(PrintStream out) ;
+//    
+//
+    
     protected Tokenizer makeTokenizer(InputStream in)
     {
         Tokenizer tokenizer = TokenizerFactory.makeTokenizer(in) ;
         return tokenizer ;
     }
-
-
-    protected abstract void parseEngine(Tokenizer tokens,
-                                        String baseIRI,
-                                        Sink<X> sink,
-                                        Checker checker,
-                                        boolean skipOnBadTerms) ;
-                                        
-    protected abstract Sink<X> makePrintSink(PrintStream out) ;
     
-
-    private static void output(String label, long numberTriples, long timeMillis)
+    protected static void output(String label, long numberTriples, long timeMillis)
     {
         double timeSec = timeMillis/1000.0 ;
         
-        System.out.printf(label+" : %,5.2f sec  %,d triples  %,.2f TPS\n",
+        System.out.printf("%s : %,5.2f sec  %,d triples  %,.2f TPS\n",
+                          label,
                           timeMillis/1000.0, numberTriples,
                           timeSec == 0 ? 0.0 : numberTriples/timeSec ) ;
     }
