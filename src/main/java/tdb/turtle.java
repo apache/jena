@@ -1,25 +1,18 @@
 /*
  * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
 package tdb;
 
-import java.io.PrintStream ;
-
-import org.openjena.atlas.lib.Sink ;
-
-import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.riot.Checker ;
-import com.hp.hpl.jena.riot.lang.LangTurtle ;
-import com.hp.hpl.jena.riot.out.SinkTripleOutput ;
-import com.hp.hpl.jena.riot.tokens.Tokenizer ;
+import com.hp.hpl.jena.riot.Lang ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 
-public class turtle extends LangParseFixed<Triple>
+/** Run the Turtle parser - and produce N-triples */
+public class turtle extends LangParse
 {
-    /** Run the N-triples parser - and produce N-triples */
     public static void main(String... argv)
     {
         new turtle(argv).mainRun() ;
@@ -37,23 +30,28 @@ public class turtle extends LangParseFixed<Triple>
     }
 
     @Override
-    protected void parseEngine(Tokenizer tokens, String baseIRI, Sink<Triple> sink, Checker checker, boolean skipOnBadTerm)
-    {
-        LangTurtle parser = new LangTurtle(baseIRI, tokens, checker, sink) ;
-        parser.setChecker(checker) ;
-        parser.parse();
-        sink.close() ;
-    }
-
-    @Override
-    protected Sink<Triple> makeOutputSink(PrintStream out)
-    {
-        return new SinkTripleOutput(out) ;
-    }
+    protected Lang selectLang(String filename, Lang nquads) 
+    { return Lang.TRIG ; }
+ 
+//    @Override
+//    protected void parseEngine(Tokenizer tokens, String baseIRI, Sink<Triple> sink, Checker checker, boolean skipOnBadTerm)
+//    {
+//        LangTurtle parser = new LangTurtle(baseIRI, tokens, checker, sink) ;
+//        parser.setChecker(checker) ;
+//        parser.parse();
+//        sink.close() ;
+//    }
+//
+//    @Override
+//    protected Sink<Triple> makeOutputSink(PrintStream out)
+//    {
+//        return new SinkTripleOutput(out) ;
+//    }
 }
 
 /*
  * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

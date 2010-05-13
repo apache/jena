@@ -1,25 +1,18 @@
 /*
  * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
 package tdb;
 
-import java.io.PrintStream ;
-
-import org.openjena.atlas.lib.Sink ;
-
-import com.hp.hpl.jena.riot.Checker ;
-import com.hp.hpl.jena.riot.lang.LangTriG ;
-import com.hp.hpl.jena.riot.out.SinkQuadOutput ;
-import com.hp.hpl.jena.riot.tokens.Tokenizer ;
-import com.hp.hpl.jena.sparql.core.Quad ;
+import com.hp.hpl.jena.riot.Lang ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 
-public class trig extends LangParseFixed<Quad>
+/** Run the TriG parser - and produce N-Quads */
+public class trig extends LangParse
 {
-    /** Run the N-triples parser - and produce N-triples */
     public static void main(String... argv)
     {
         new trig(argv).mainRun() ;
@@ -37,23 +30,28 @@ public class trig extends LangParseFixed<Quad>
     }
 
     @Override
-    protected void parseEngine(Tokenizer tokens, String baseIRI, Sink<Quad> sink, Checker checker, boolean skipOnBadTerm)
-    {
-        LangTriG parser = new LangTriG(baseIRI, tokens, checker, sink) ;
-        parser.setChecker(checker) ;
-        parser.parse();
-        sink.close() ;
-    }
+    protected Lang selectLang(String filename, Lang nquads) 
+    { return Lang.TRIG ; }
     
-    @Override
-    protected Sink<Quad> makeOutputSink(PrintStream out)
-    {
-        return new SinkQuadOutput(out) ;
-    }
+//    @Override
+//    protected void parseEngine(Tokenizer tokens, String baseIRI, Sink<Quad> sink, Checker checker, boolean skipOnBadTerm)
+//    {
+//        LangTriG parser = new LangTriG(baseIRI, tokens, checker, sink) ;
+//        parser.setChecker(checker) ;
+//        parser.parse();
+//        sink.close() ;
+//    }
+//    
+//    @Override
+//    protected Sink<Quad> makeOutputSink(PrintStream out)
+//    {
+//        return new SinkQuadOutput(out) ;
+//    }
 }
 
 /*
  * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

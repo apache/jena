@@ -1,26 +1,18 @@
 /*
  * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
 package tdb;
 
-import java.io.PrintStream ;
-
-import org.openjena.atlas.lib.Sink ;
-
-
-import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.riot.Checker ;
-import com.hp.hpl.jena.riot.lang.LangNTriples ;
-import com.hp.hpl.jena.riot.out.SinkTripleOutput ;
-import com.hp.hpl.jena.riot.tokens.Tokenizer ;
+import com.hp.hpl.jena.riot.Lang ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 
-public class ntriples extends LangParseFixed<Triple>
+/** Run the N-triples parser - and produce N-triples */
+public class ntriples extends LangParse
 {
-    /** Run the N-triples parser - and produce N-triples */
     public static void main(String... argv)
     {
         new ntriples(argv).mainRun() ;
@@ -38,23 +30,28 @@ public class ntriples extends LangParseFixed<Triple>
     }
     
     @Override
-    protected void parseEngine(Tokenizer tokenizer, String baseIRI, Sink<Triple> sink, Checker checker, boolean skipOnBadTerm)
-    {
-        LangNTriples parser = new LangNTriples(tokenizer, checker, sink) ;
-        parser.setSkipOnBadTerm(skipOnBadTerm) ;
-        parser.parse();
-        sink.close() ;
-    }
-
-    @Override
-    protected Sink<Triple> makeOutputSink(PrintStream out)
-    {
-        return new SinkTripleOutput(out) ;
-    }
+    protected Lang selectLang(String filename, Lang nquads) 
+    { return Lang.NTRIPLES ; }
+    
+//    @Override
+//    protected void parseEngine(Tokenizer tokenizer, String baseIRI, Sink<Triple> sink, Checker checker, boolean skipOnBadTerm)
+//    {
+//        LangNTriples parser = new LangNTriples(tokenizer, checker, sink) ;
+//        parser.setSkipOnBadTerm(skipOnBadTerm) ;
+//        parser.parse();
+//        sink.close() ;
+//    }
+//
+//    @Override
+//    protected Sink<Triple> makeOutputSink(PrintStream out)
+//    {
+//        return new SinkTripleOutput(out) ;
+//    }
 }
 
 /*
  * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

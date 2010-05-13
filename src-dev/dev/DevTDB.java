@@ -22,13 +22,12 @@ public class DevTDB
     
     
     // RIOT
-    //   Interfacization of checker
-    //   Can we combine the "parser any" command structure and the loader?  Quads always?
+    //   Interfaceization of checker
+    //   Output "# Filename" bewtenn outputs
     //   Option passing (old Jena style).
     //   Options: pass/reject bad URIs, bad literals. -> "SKIP", "PASS", "FAIL"
     //   Recovery parsing - scan to DOT?
     //   Command line - add filename to message.
-    //   Does --time print to stdout or stderr or should it be the logger?
     // Document
     //  --sink, --skip, --time
     // RIOT extensions

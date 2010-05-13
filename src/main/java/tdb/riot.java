@@ -6,124 +6,36 @@
 
 package tdb;
 
-import java.io.InputStream ;
-
-import org.openjena.atlas.io.IO ;
-import org.openjena.atlas.lib.Sink ;
-import org.openjena.atlas.lib.SinkCounting ;
-import org.openjena.atlas.lib.SinkNull ;
-
-import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.riot.Checker ;
-import com.hp.hpl.jena.riot.ErrorHandlerLib ;
 import com.hp.hpl.jena.riot.Lang ;
-import com.hp.hpl.jena.riot.ParserFactory ;
-import com.hp.hpl.jena.riot.RiotException ;
-import com.hp.hpl.jena.riot.lang.LangParseRDFXML ;
-import com.hp.hpl.jena.riot.lang.LangRIOT ;
-import com.hp.hpl.jena.riot.out.SinkQuadOutput ;
-import com.hp.hpl.jena.riot.out.SinkTripleOutput ;
-import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 
-/** Parse to triples/quads for Turtle, TriG, N-Triples, N-Quads */ 
+/**
+ * Guess the syntax from the filename. 
+ */
 public class riot extends LangParse
 {
-    
     public static void main(String... argv)
     {
         new riot(argv).mainRun() ;
-    }    
-    
+    }        
+
     protected riot(String[] argv)
     {
         super(argv) ;
     }
-
-    @Override
-    protected void parseRIOT(String baseURI, String filename, InputStream in)
-    {
-        Checker checker = null ;
-        if ( modLangParse.checking() )
-        {
-            if ( modLangParse.stopOnBadTerm() )
-                checker = new Checker(ErrorHandlerLib.errorHandlerStd)  ;
-            else
-                checker = new Checker(ErrorHandlerLib.errorHandlerWarn) ;
-        }
-        
-        
-        Lang lang = Lang.guess(filename, Lang.NQUADS) ; 
-        
-        if ( lang.equals(Lang.RDFXML) )
-        {
-            // Does not count output.
-            modTime.startTimer() ;
-            // Support RDF/XML.
-            long n = LangParseRDFXML.parseRDFXML(baseURI, filename, checker.getHandler(), in, !modLangParse.toBitBucket()) ;
-            long x = modTime.endTimer() ;
-            
-            if ( modTime.timingEnabled() )
-                output(filename, n, x) ;
-            totalMillis += x ;
-            totalTuples += n ;
-            return ;
-        }
-        
-        SinkCounting<?> sink ;
-        LangRIOT parser ;
-
-        // Uglyness because quads and triples aren't subtype of some Tuple<Node>
-        // That would change a lot (Triples came several years before Quads). 
-        if ( lang.isTriples() )
-        {
-            Sink <Triple> s = SinkNull.create() ;
-            if ( ! modLangParse.toBitBucket() )
-                s = new SinkTripleOutput(System.out) ;
-            SinkCounting<Triple> sink2 = new SinkCounting<Triple>(s) ;
-            parser = ParserFactory.createParserTriples(in, lang, baseURI, sink2) ;
-            sink = sink2 ;
-        }
-        else
-        {
-            Sink <Quad> s = SinkNull.create() ;
-            if ( ! modLangParse.toBitBucket() )
-                s = new SinkQuadOutput(System.out) ;
-            SinkCounting<Quad> sink2 = new SinkCounting<Quad>(s) ;
-            parser = ParserFactory.createParserQuads(in, lang, baseURI, sink2) ;
-            sink = sink2 ;
-        }
-        
-        modTime.startTimer() ;
-        try
-        {
-            parser.parse() ;
-        }
-        catch (RiotException ex)
-        {
-            if ( modLangParse.stopOnBadTerm() )
-                return ;
-        }
-        finally {
-            IO.close(in) ;
-            sink.close() ;
-        }
-        long x = modTime.endTimer() ;
-        long n = sink.getCount() ;
-        
-
-        if ( modTime.timingEnabled() )
-            output(filename, n, x) ;
-        
-        totalMillis += x ;
-        totalTuples += n ;
-    }
     
+    @Override
+    protected Lang selectLang(String filename, Lang nquads)
+    {
+        return Lang.guess(filename, Lang.NQUADS) ;
+    }
+
     @Override
     protected String getCommandName()
     {
         return Utils.classShortName(riot.class) ;
     }
+
 }
 
 /*
