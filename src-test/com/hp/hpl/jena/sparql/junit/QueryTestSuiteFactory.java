@@ -97,7 +97,6 @@ public class QueryTestSuiteFactory extends TestFactoryManifest
                 test = new SyntaxTest(testName, results, item) ;
            
 
-            // TODO
             // Bad syntax 1.1
             if ( item.getTestType().equals(TestManifest_11.NegativeSyntaxTest_11) 
                 || item.getTestType().equals(TestManifestX.TestBadSyntax) )

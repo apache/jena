@@ -1,0 +1,3 @@
+@prefix : <http://example/> .
+
+:s :p "1"^^xs:integer

@@ -14,6 +14,8 @@ import java.util.HashSet ;
 import java.util.Iterator ;
 import java.util.Set ;
 
+import junit.framework.TestSuite ;
+
 import arq.sparql ;
 
 import com.hp.hpl.jena.Jena ;
@@ -40,6 +42,8 @@ import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.expr.aggregate.Accumulator ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
 import com.hp.hpl.jena.sparql.function.FunctionEnvBase ;
+import com.hp.hpl.jena.sparql.junit.QueryTestSuiteFactory ;
+import com.hp.hpl.jena.sparql.junit.SimpleTestRunner ;
 import com.hp.hpl.jena.sparql.lang.ParserSPARQL11Update ;
 import com.hp.hpl.jena.sparql.lang.sparql_11.SPARQLParser11 ;
 import com.hp.hpl.jena.sparql.resultset.ResultsFormat ;
@@ -91,20 +95,26 @@ public class RunARQ
 
     public static void main(String[] argv) throws Exception
     {
-        String $1 = "insert into <urn:x:a> { <urn:x:s> <urn:x:p> <urn:x:o> }" ;
-        String $2 = "PREFIX : <http://example/> MODIFY DELETE {?s ?p ?o } INSERT {?s ?p ?o } WHERE {}" ;
-        String $3 = "PREFIX dc: <http://purl.org/dc/elements/1.1/> INSERT DATA INTO <http://example/bookStore> { <http://example/book3>  dc:title  \"Fundamentals of Compiler Design\" }" ;
-        
-        UpdateRequest up = UpdateFactory.create($3) ;
-        System.out.println(up) ;
-        
-        UpdateRequest updateRequest = new UpdateRequest() ;
-        ByteArrayInputStream in = new ByteArrayInputStream($3.getBytes("UTF-8")) ;
-        ParserSPARQL11Update p = new ParserSPARQL11Update() ;
-        p.parse(updateRequest, in) ;
-        
-        System.out.println("Done") ;
-        System.exit(0) ;
+        if ( true )
+        {
+            String $1 = "insert into <urn:x:a> { <urn:x:s> <urn:x:p> <urn:x:o> }" ;
+            String $2 = "PREFIX : <http://example/> MODIFY DELETE {?s ?p ?o } INSERT {?s ?p ?o } WHERE {}" ;
+            String $3 = "PREFIX dc: <http://purl.org/dc/elements/1.1/> INSERT DATA INTO <http://example/bookStore> { <http://example/book3>  dc:title  \"Fundamentals of Compiler Design\" }" ;
+
+            UpdateRequest up = UpdateFactory.create($3) ;
+            System.out.println(up) ;
+
+            UpdateRequest updateRequest = new UpdateRequest() ;
+            ByteArrayInputStream in = new ByteArrayInputStream($3.getBytes("UTF-8")) ;
+            ParserSPARQL11Update p = new ParserSPARQL11Update() ;
+            p.parse(updateRequest, in) ;
+
+            System.out.println("Done") ;
+            System.exit(0) ;
+        }
+
+        TestSuite ts = QueryTestSuiteFactory.make("testing/ARQ/??") ;
+        SimpleTestRunner.runAndReport(ts) ;
         
         //unionTransform() ;
         
