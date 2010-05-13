@@ -92,6 +92,11 @@ public class ModLangParse implements ArgModuleGeneral
         return bitbucket ;
     }
 
+    public String getBaseIRI()
+    {
+        return baseIRI ;
+    }
+
 }
 
 /*

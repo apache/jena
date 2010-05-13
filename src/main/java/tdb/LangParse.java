@@ -16,13 +16,13 @@ import org.openjena.atlas.lib.SinkNull ;
 import tdb.cmdline.CmdTDB ;
 import tdb.cmdline.ModLangParse ;
 import arq.cmdline.CmdGeneral ;
-import arq.cmdline.ModBase ;
 import arq.cmdline.ModTime ;
 
 import com.hp.hpl.jena.Jena ;
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.riot.Checker ;
 import com.hp.hpl.jena.riot.ErrorHandlerLib ;
+import com.hp.hpl.jena.riot.Lang ;
 import com.hp.hpl.jena.riot.RiotException ;
 import com.hp.hpl.jena.riot.tokens.Tokenizer ;
 import com.hp.hpl.jena.riot.tokens.TokenizerFactory ;
@@ -51,7 +51,7 @@ public abstract class LangParse<X> extends CmdGeneral
     @Override
     protected String getSummary()
     {
-        return getCommandName()+" [--time] [--check|--noCheck] [--sink] [--skip | --stopOnError] file ..." ;
+        return getCommandName()+" [--time] [--check|--noCheck] [--sink] [--base=IRI] [--skip | --stopOnError] file ..." ;
     }
 
     @Override
@@ -89,6 +89,7 @@ public abstract class LangParse<X> extends CmdGeneral
         else
         {
             try {
+                Lang lang = Lang.guess(filename) ; 
                 in = IO.openFile(filename) ;
             } catch (Exception ex)
             {
@@ -112,7 +113,7 @@ public abstract class LangParse<X> extends CmdGeneral
         Sink<X> s = new SinkNull<X>() ;
         
         if ( ! modLangParse.toBitBucket() )
-            s =  makePrintSink(System.out) ;
+            s = makePrintSink(System.out) ;
         
         SinkCounting<X> sink = new SinkCounting<X>(s) ;
         

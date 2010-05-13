@@ -71,6 +71,8 @@ public class RunTDB
         //tdb.ntriples.main("--skip","D.nt") ; System.exit(0) ;
         //tdb.turtle.main("D.ttl") ; System.exit(0) ;
         
+        tdb.tdbloader.main("--loc=DB2", "D.trig") ; System.exit(0) ;
+        
         
         //DevCmds.tdbquery("--query=Q.arq") ;
         

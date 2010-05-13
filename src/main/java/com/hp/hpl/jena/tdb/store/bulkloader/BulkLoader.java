@@ -173,7 +173,7 @@ public class BulkLoader
             String base = url ;
             if ( base.equals("-") )
                 base = null ;
-            Lang lang = Lang.get(url, Lang.NQUADS) ;
+            Lang lang = Lang.guess(url, Lang.NQUADS) ;
             LangRIOT parser = ParserFactory.createParserQuads(in, lang, base, dest) ;
             parser.parse() ;
         }            
