@@ -7,9 +7,9 @@
 <>  rdf:type mf:Manifest ;
     rdfs:label "Syntax" ;
     mfx:include (
-         <Syntax-SPARQL/manifest.ttl>
-         <Syntax-SPARQL2/manifest.ttl>
-         <Syntax-SPARQL3/manifest.ttl>
-         <Syntax-SPARQL4/manifest.ttl>
-         <Syntax-ARQ/manifest.ttl>
+        <Syntax-SPARQL/manifest.ttl>
+        <Syntax-SPARQL2/manifest.ttl>
+        <Syntax-SPARQL3/manifest.ttl>
+        <Syntax-SPARQL4/manifest.ttl>   ## SPARQL 1.1
+        <Syntax-ARQ/manifest.ttl>
     ) .

@@ -3,10 +3,12 @@
 # Functions in support of syntax tests
 # Source this file.
 
-declare -a GOOD
-GOOD_N=0
-declare -a BAD
-BAD_N=0
+declare -a GOOD_S10
+declare -a GOOD_S11
+declare -a GOOD_ARQ
+declare -a BAD_S10
+declare -a BAD_S11
+declare -a BAD_ARQ
 
 function fname
 {
@@ -20,18 +22,40 @@ function fname
 # reads from stdin
 function testGood
 {
-    local FN="$1"
-    local I=${#GOOD[*]}
-    GOOD[$I]=$FN
+    if [ "$#" != 2 ]
+	then
+	echo "Problems with $*"
+    fi
+    local LANG="$1"
+    local FN="$2"
+    local I
+    case "$LANG" in
+	($SPARQL10) I=${#GOOD_S10[*]} ; GOOD_S10[$I]=$FN ;;
+	($SPARQL11) I=${#GOOD_S11[*]} ; GOOD_S11[$I]=$FN ;;
+	($ARQ)      I=${#GOOD_ARQ[*]} ; GOOD_ARQ[$I]=$FN ;;
+	    *)      echo "Unrecognized: $*" ;;
+    esac
+
     cat > $FN
 }
 
 # reads from stdin
 function testBad
 {
-    local FN="$1"
-    local I=${#BAD[*]}
-    BAD[$I]=$FN
+    if [ "$#" != 2 ]
+	then
+	echo "Problems with $*"
+    fi
+    local LANG="$1"
+    local FN="$2"
+    local I
+    case "$LANG" in
+	($SPARQL10) I=${#BAD_S10[*]} ; BAD_S10[$I]=$FN ;;
+	($SPARQL11) I=${#BAD_S11[*]} ; BAD_S11[$I]=$FN ;;
+	($ARQ)      I=${#BAD_ARQ[*]} ; BAD_ARQ[$I]=$FN ;;
+	    *)      echo "Unrecognized: $*" ;;
+    esac
+
     cat > $FN
 }
 
@@ -41,6 +65,22 @@ function clean
     rm -f *.arq
     rm -f *.ttl
 }
+
+function output
+{
+    local FN="$1"
+    local TYPE="$2"
+    shift
+    shift
+    cat >> manifest.ttl <<EOF
+      [  mf:name    "$FN" ;
+         rdf:type   $TYPE ;
+         mf:action  <$FN> ; 
+      ]
+EOF
+}
+    
+
 
 function createManifest
 {
@@ -58,27 +98,39 @@ function createManifest
     mf:entries
     ( 
 EOF
-    # Queries good syntax
-    for f in "${GOOD[@]}"
-      do
-      cat >> manifest.ttl <<EOF
-      [  mf:name    "$f" ;
-         rdf:type   mfx:TestSyntax ;
-         mf:action  <$f> ; 
-      ]
-EOF
-    done
 
-    # Queries - bad syntax
-    for f in "${BAD[@]}"
-      do
-      cat >> manifest.ttl <<EOF
-      [  mf:name    "$f" ;
-         rdf:type   mfx:TestBadSyntax ;
-         mf:action  <$f> ; 
-      ]
-EOF
-    done
+    # SPARQL 1.0
+    for f in "${GOOD_S10[@]}"
+    do
+      output "$f" "mf:PositiveSyntaxTest"
+      done
+
+    for f in "${BAD_S10[@]}"
+    do
+      output "$f" "mf:NegativeSyntaxTest"
+      done
+
+    # SPARQL 1.1
+    for f in "${GOOD_S11[@]}"
+    do
+      output "$f" "mf:PositiveSyntaxTest11"
+      done
+
+    for f in "${BAD_S11[@]}"
+    do
+      output "$f" "mf:NegativeSyntaxTest11"
+      done
+
+    # ARQ
+    for f in "${GOOD_ARQ[@]}"
+    do
+      output "$f" "mfx:PositiveSyntaxTestARQ"
+      done
+
+    for f in "${BAD_ARQ[@]}"
+    do
+      output "$f" "mfx:NegativeSyntaxTestARQ"
+      done
 
 ## Trailer
     cat >> manifest.ttl <<EOF

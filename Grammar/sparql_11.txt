@@ -437,7 +437,7 @@ NON-TERMINALS
 	RegexExpression	:=	<REGEX> <LPAREN> Expression <COMMA> Expression ( <COMMA> Expression )? <RPAREN>
 	ExistsFunc	:=	<EXISTS> GroupGraphPattern
 	NotExistsFunc	:=	<NOTEXISTS> GroupGraphPattern
-	Aggregate	:=	( <COUNT> <LPAREN> ( <DISTINCT> )? ( <STAR> | Expression ) <RPAREN> | <SUM> ExprAggArg | <MIN> ExprAggArg | <MAX> ExprAggArg | <AVG> ExprAggArg | <SAMPLE> ExprAggArg | <GROUP_CONCAT> <LPAREN> ( <DISTINCT> )? Expression ( <COMMA> Expression )* ( <SEMICOLON> <SEPARATOR> <EQ> String ) <RPAREN> )
+	Aggregate	:=	( <COUNT> <LPAREN> ( <DISTINCT> )? ( <STAR> | Expression ) <RPAREN> | <SUM> ExprAggArg | <MIN> ExprAggArg | <MAX> ExprAggArg | <AVG> ExprAggArg | <SAMPLE> ExprAggArg | <GROUP_CONCAT> <LPAREN> ( <DISTINCT> )? Expression ( <COMMA> Expression )* ( <SEMICOLON> <SEPARATOR> <EQ> String )? <RPAREN> )
 // See also FunctionCall.
 // The case of "q:name()" or "q:agg()" or just "q:name"
 // by expanding out FunctionCall()

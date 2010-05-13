@@ -5,11 +5,187 @@
 @prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
 
 <>  rdf:type mf:Manifest ;
-    rdfs:comment "Syntax tests SPARQL 1.1" ;
+    rdfs:comment "Syntax tests Syntax-SPARQL4" ;
     mf:entries
-    (
-##       [  mf:name    "syntax-basic-01.rq" ;
-##          rdf:type   mfx:TestSyntax ;
-##          mf:action  <syntax-basic-01.rq> ; 
-##       ]
+    ( 
+      [  mf:name    "syntax-select-expr-01.rq" ;
+         rdf:type   mf:PositiveSyntaxTest11 ;
+         mf:action  <syntax-select-expr-01.rq> ; 
+      ]
+      [  mf:name    "syntax-select-expr-02.rq" ;
+         rdf:type   mf:PositiveSyntaxTest11 ;
+         mf:action  <syntax-select-expr-02.rq> ; 
+      ]
+      [  mf:name    "syntax-select-expr-03.rq" ;
+         rdf:type   mf:PositiveSyntaxTest11 ;
+         mf:action  <syntax-select-expr-03.rq> ; 
+      ]
+      [  mf:name    "syntax-select-expr-04.rq" ;
+         rdf:type   mf:PositiveSyntaxTest11 ;
+         mf:action  <syntax-select-expr-04.rq> ; 
+      ]
+      [  mf:name    "syntax-select-expr-05.rq" ;
+         rdf:type   mf:PositiveSyntaxTest11 ;
+         mf:action  <syntax-select-expr-05.rq> ; 
+      ]
+      [  mf:name    "syntax-aggregate-01.rq" ;
+         rdf:type   mf:PositiveSyntaxTest11 ;
+         mf:action  <syntax-aggregate-01.rq> ; 
+      ]
+      [  mf:name    "syntax-aggregate-02.rq" ;
+         rdf:type   mf:PositiveSyntaxTest11 ;
+         mf:action  <syntax-aggregate-02.rq> ; 
+      ]
+      [  mf:name    "syntax-aggregate-03.rq" ;
+         rdf:type   mf:PositiveSyntaxTest11 ;
+         mf:action  <syntax-aggregate-03.rq> ; 
+      ]
+      [  mf:name    "syntax-aggregate-04.rq" ;
+         rdf:type   mf:PositiveSyntaxTest11 ;
+         mf:action  <syntax-aggregate-04.rq> ; 
+      ]
+      [  mf:name    "syntax-aggregate-05.rq" ;
+         rdf:type   mf:PositiveSyntaxTest11 ;
+         mf:action  <syntax-aggregate-05.rq> ; 
+      ]
+      [  mf:name    "syntax-aggregate-06.rq" ;
+         rdf:type   mf:PositiveSyntaxTest11 ;
+         mf:action  <syntax-aggregate-06.rq> ; 
+      ]
+      [  mf:name    "syntax-aggregate-07.rq" ;
+         rdf:type   mf:PositiveSyntaxTest11 ;
+         mf:action  <syntax-aggregate-07.rq> ; 
+      ]
+      [  mf:name    "syntax-aggregate-08.rq" ;
+         rdf:type   mf:PositiveSyntaxTest11 ;
+         mf:action  <syntax-aggregate-08.rq> ; 
+      ]
+      [  mf:name    "syntax-aggregate-09.rq" ;
+         rdf:type   mf:PositiveSyntaxTest11 ;
+         mf:action  <syntax-aggregate-09.rq> ; 
+      ]
+      [  mf:name    "syntax-aggregate-10.rq" ;
+         rdf:type   mf:PositiveSyntaxTest11 ;
+         mf:action  <syntax-aggregate-10.rq> ; 
+      ]
+      [  mf:name    "syntax-aggregate-11.rq" ;
+         rdf:type   mf:PositiveSyntaxTest11 ;
+         mf:action  <syntax-aggregate-11.rq> ; 
+      ]
+      [  mf:name    "syntax-aggregate-12.rq" ;
+         rdf:type   mf:PositiveSyntaxTest11 ;
+         mf:action  <syntax-aggregate-12.rq> ; 
+      ]
+      [  mf:name    "syntax-aggregate-13.rq" ;
+         rdf:type   mf:PositiveSyntaxTest11 ;
+         mf:action  <syntax-aggregate-13.rq> ; 
+      ]
+      [  mf:name    "syntax-aggregate-14.rq" ;
+         rdf:type   mf:PositiveSyntaxTest11 ;
+         mf:action  <syntax-aggregate-14.rq> ; 
+      ]
+      [  mf:name    "syntax-aggregate-15.rq" ;
+         rdf:type   mf:PositiveSyntaxTest11 ;
+         mf:action  <syntax-aggregate-15.rq> ; 
+      ]
+      [  mf:name    "syntax-subquery-01.rq" ;
+         rdf:type   mf:PositiveSyntaxTest11 ;
+         mf:action  <syntax-subquery-01.rq> ; 
+      ]
+      [  mf:name    "syntax-subquery-02.rq" ;
+         rdf:type   mf:PositiveSyntaxTest11 ;
+         mf:action  <syntax-subquery-02.rq> ; 
+      ]
+      [  mf:name    "syntax-subquery-03.rq" ;
+         rdf:type   mf:PositiveSyntaxTest11 ;
+         mf:action  <syntax-subquery-03.rq> ; 
+      ]
+      [  mf:name    "syntax-not-exists-01.rq" ;
+         rdf:type   mf:PositiveSyntaxTest11 ;
+         mf:action  <syntax-not-exists-01.rq> ; 
+      ]
+      [  mf:name    "syntax-not-exists-02.rq" ;
+         rdf:type   mf:PositiveSyntaxTest11 ;
+         mf:action  <syntax-not-exists-02.rq> ; 
+      ]
+      [  mf:name    "syntax-not-exists-03.rq" ;
+         rdf:type   mf:PositiveSyntaxTest11 ;
+         mf:action  <syntax-not-exists-03.rq> ; 
+      ]
+      [  mf:name    "syntax-exists-01.rq" ;
+         rdf:type   mf:PositiveSyntaxTest11 ;
+         mf:action  <syntax-exists-01.rq> ; 
+      ]
+      [  mf:name    "syntax-exists-02.rq" ;
+         rdf:type   mf:PositiveSyntaxTest11 ;
+         mf:action  <syntax-exists-02.rq> ; 
+      ]
+      [  mf:name    "syntax-not-exists-03.rq" ;
+         rdf:type   mf:PositiveSyntaxTest11 ;
+         mf:action  <syntax-not-exists-03.rq> ; 
+      ]
+      [  mf:name    "syntax-minus-01.rq" ;
+         rdf:type   mf:PositiveSyntaxTest11 ;
+         mf:action  <syntax-minus-01.rq> ; 
+      ]
+      [  mf:name    "syntax-oneof-01.rq" ;
+         rdf:type   mf:PositiveSyntaxTest11 ;
+         mf:action  <syntax-oneof-01.rq> ; 
+      ]
+      [  mf:name    "syntax-oneof-02.rq" ;
+         rdf:type   mf:PositiveSyntaxTest11 ;
+         mf:action  <syntax-oneof-02.rq> ; 
+      ]
+      [  mf:name    "syntax-oneof-03.rq" ;
+         rdf:type   mf:PositiveSyntaxTest11 ;
+         mf:action  <syntax-oneof-03.rq> ; 
+      ]
+      [  mf:name    "syntax-union11-01.rq" ;
+         rdf:type   mf:PositiveSyntaxTest11 ;
+         mf:action  <syntax-union11-01.rq> ; 
+      ]
+      [  mf:name    "syntax-union11-02.rq" ;
+         rdf:type   mf:PositiveSyntaxTest11 ;
+         mf:action  <syntax-union11-02.rq> ; 
+      ]
+      [  mf:name    "syntax-service-01.rq" ;
+         rdf:type   mf:PositiveSyntaxTest11 ;
+         mf:action  <syntax-service-01.rq> ; 
+      ]
+      [  mf:name    "syntax-service-02.rq" ;
+         rdf:type   mf:PositiveSyntaxTest11 ;
+         mf:action  <syntax-service-02.rq> ; 
+      ]
+      [  mf:name    "syntax-bindings-01.rq" ;
+         rdf:type   mf:PositiveSyntaxTest11 ;
+         mf:action  <syntax-bindings-01.rq> ; 
+      ]
+      [  mf:name    "syntax-bindings-02.rq" ;
+         rdf:type   mf:PositiveSyntaxTest11 ;
+         mf:action  <syntax-bindings-02.rq> ; 
+      ]
+      [  mf:name    "syntax-bindings-03.rq" ;
+         rdf:type   mf:PositiveSyntaxTest11 ;
+         mf:action  <syntax-bindings-03.rq> ; 
+      ]
+      [  mf:name    "syn-bad-01.rq" ;
+         rdf:type   mf:NegativeSyntaxTest11 ;
+         mf:action  <syn-bad-01.rq> ; 
+      ]
+      [  mf:name    "syn-bad-02.rq" ;
+         rdf:type   mf:NegativeSyntaxTest11 ;
+         mf:action  <syn-bad-02.rq> ; 
+      ]
+      [  mf:name    "syn-bad-03.rq" ;
+         rdf:type   mf:NegativeSyntaxTest11 ;
+         mf:action  <syn-bad-03.rq> ; 
+      ]
+      [  mf:name    "syn-bad-04.rq" ;
+         rdf:type   mf:NegativeSyntaxTest11 ;
+         mf:action  <syn-bad-04.rq> ; 
+      ]
+      [  mf:name    "syn-bad-05.rq" ;
+         rdf:type   mf:NegativeSyntaxTest11 ;
+         mf:action  <syn-bad-05.rq> ; 
+      ]
     ) .

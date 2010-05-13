@@ -22,10 +22,10 @@
 :TestQuery rdf:type rdfs:Class ;
     rdfs:comment "The class of test that are Query tests (query, data, results)".
 
-:TestSyntax rdf:type rdfs:Class ;
+:PositiveSyntaxTestARQ rdf:type rdfs:Class ;
     rdfs:comment "Syntax tests (query)" .
 
-:TestBadSyntax rdf:type rdfs:Class ;
+:NegativeSyntaxTestARQ rdf:type rdfs:Class ;
     rdfs:subClassOf :TestSyntax ;
     rdfs:comment "Syntax tests which expect a parse failure" .
 

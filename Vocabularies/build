@@ -4,7 +4,7 @@ function syntaxCheck
 {
     FILE="$1"
     echo "Syntax check: $FILE"
-    n3 -n -rdf "$FILE"
+    turtle --sink "$FILE"
 }
 
 function proc
@@ -26,34 +26,34 @@ function proc
     mv "$TMP" "$CLASS".java
 }
 
-## syntaxCheck test-manifest-x.n3
-## syntaxCheck test-manifest.n3
-## syntaxCheck test-manifest_11.n3
+## syntaxCheck test-manifest-x.ttl
+## syntaxCheck test-manifest.ttl
+## syntaxCheck test-manifest_11.ttl
 
-## syntaxCheck test-query.n3
-## syntaxCheck test-dawg.n3
+## syntaxCheck test-query.ttl
+## syntaxCheck test-dawg.ttl
 
-##  syntaxCheck result-set.n3
-##  proc result-set.n3 Result~/Projects/ARQ/vocabularies/SetGraphVocab \
+##  syntaxCheck result-set.ttl
+##  proc result-set.ttl Result~/Projects/ARQ/vocabularies/SetGraphVocab \
 ##      'http://www.w3.org/2001/sw/DataAccess/tests/result-set#'
  
-## syntaxCheck test-manifest.n3
-## proc test-manifest.n3 TestManifest \
+## syntaxCheck test-manifest.ttl
+## proc test-manifest.ttl TestManifest \
 ##     "http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#"
 
-syntaxCheck test-manifest-1_1.n3
-proc test-manifest-1_1.n3 TestManifest_11 \
+syntaxCheck test-manifest-1_1.ttl
+proc test-manifest-1_1.ttl TestManifest_11 \
     "http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#"
 
-## syntaxCheck test-manifest-x.n3
-## proc test-manifest-x.n3 TestManifestX \
+## syntaxCheck test-manifest-x.ttl
+## proc test-manifest-x.ttl TestManifestX \
 ##     "http://jena.hpl.hp.com/2005/05/test-manifest-extra#"
 
 
-## proc test-query.n3 VocabTestQuery \
+## proc test-query.ttl VocabTestQuery \
 ##     "http://www.w3.org/2001/sw/DataAccess/tests/test-query#"
 ## 
-## proc test-dawg.n3 TestDAWGVocab \
+## proc test-dawg.ttl TestDAWGVocab \
 ##     "http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#"
 
 ## syntaxCheck  list-pfunction.ttl

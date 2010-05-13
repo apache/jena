@@ -22,12 +22,12 @@
 
 ## ---- Test Case Type ---
 
-:PositiveSyntaxTest_11 rdf:type rdfs:Class ;
+:PositiveSyntaxTest11 rdf:type rdfs:Class ;
     rdfs:label "Positive Syntax Test (SPARQL 1.1 specific)" ;
     rdfs:comment """A type of test specifically for syntax testing for SPARQL 1.1.""" ;
     .
 
-:NegativeSyntaxTest_11 rdf:type rdfs:Class ;
+:NegativeSyntaxTest11 rdf:type rdfs:Class ;
     rdfs:label "Negative Syntax Test (SPARQL 1.1 specific)" ;
     rdfs:comment """A type of test specifically for syntax testing for SPARQL 1.1.""" ;
     .

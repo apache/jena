@@ -95,7 +95,7 @@ public class RunARQ
 
     public static void main(String[] argv) throws Exception
     {
-        if ( true )
+        if ( false )
         {
             String $1 = "insert into <urn:x:a> { <urn:x:s> <urn:x:p> <urn:x:o> }" ;
             String $2 = "PREFIX : <http://example/> MODIFY DELETE {?s ?p ?o } INSERT {?s ?p ?o } WHERE {}" ;
@@ -113,8 +113,27 @@ public class RunARQ
             System.exit(0) ;
         }
 
-        TestSuite ts = QueryTestSuiteFactory.make("testing/ARQ/??") ;
-        SimpleTestRunner.runAndReport(ts) ;
+        TestSuite ts = null ;
+//        ts = QueryTestSuiteFactory.make("testing/ARQ/Syntax/Syntax-SPARQL/manifest.ttl") ;
+//        SimpleTestRunner.runAndReport(ts) ;
+//
+//        ts = QueryTestSuiteFactory.make("testing/ARQ/Syntax/Syntax-SPARQL2/manifest.ttl") ;
+//        SimpleTestRunner.runAndReport(ts) ;
+//
+//        ts = QueryTestSuiteFactory.make("testing/ARQ/Syntax/Syntax-SPARQL3/manifest.ttl") ;
+//        SimpleTestRunner.runAndReport(ts) ;
+//        
+//        ts = QueryTestSuiteFactory.make("testing/ARQ/Syntax/Syntax-ARQ/manifest.ttl") ;
+//        SimpleTestRunner.runAndReport(ts) ;
+//        
+//      ts = QueryTestSuiteFactory.make("testing/ARQ/Syntax/Syntax-SPARQL4/manifest.ttl") ;
+//      SimpleTestRunner.runAndReport(ts) ;
+
+      ts = QueryTestSuiteFactory.make("testing/ARQ/Syntax/manifest-syntax.ttl") ;
+      SimpleTestRunner.runAndReport(ts) ;
+
+        
+        System.exit(0) ;
         
         //unionTransform() ;
         

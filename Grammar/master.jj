@@ -504,7 +504,7 @@ UpdateDrop Drop() : { boolean silent = false ; String iri ; }
 
 Element UpdatePattern() : { Element el ; }
 {
-   (<WHERE>)? el = GroupGraphPattern() { return el ; }
+   (<WHERE>) el = GroupGraphPattern() { return el ; }
 }
 
 // void Transaction() : {}
@@ -1602,7 +1602,7 @@ Expr Aggregate() : { AggregateFactory agg = null ; String sep = null ;
     (t = <DISTINCT> { distinct = true ; })?
     expr = Expression() { a.add(expr) ; } 
     (<COMMA> expr = Expression() { a.add(expr) ; } )*
-    (<SEMICOLON> <SEPARATOR> <EQ> sep=String())
+    (<SEMICOLON> <SEPARATOR> <EQ> sep=String())?
     <RPAREN>
 //     { agg = new AggGroupConcat(a, sep) ; }
    )
