@@ -14,8 +14,6 @@ import java.util.HashSet ;
 import java.util.Iterator ;
 import java.util.Set ;
 
-import junit.framework.TestSuite ;
-
 import arq.sparql ;
 
 import com.hp.hpl.jena.Jena ;
@@ -42,8 +40,6 @@ import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.expr.aggregate.Accumulator ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
 import com.hp.hpl.jena.sparql.function.FunctionEnvBase ;
-import com.hp.hpl.jena.sparql.junit.QueryTestSuiteFactory ;
-import com.hp.hpl.jena.sparql.junit.SimpleTestRunner ;
 import com.hp.hpl.jena.sparql.lang.ParserSPARQL11Update ;
 import com.hp.hpl.jena.sparql.lang.sparql_11.SPARQLParser11 ;
 import com.hp.hpl.jena.sparql.resultset.ResultsFormat ;
@@ -113,27 +109,9 @@ public class RunARQ
             System.exit(0) ;
         }
 
-        TestSuite ts = null ;
-//        ts = QueryTestSuiteFactory.make("testing/ARQ/Syntax/Syntax-SPARQL/manifest.ttl") ;
+//        TestSuite ts = QueryTestSuiteFactory.make("testing/ARQ/Syntax/Syntax-SPARQL/manifest.ttl") ;
 //        SimpleTestRunner.runAndReport(ts) ;
-//
-//        ts = QueryTestSuiteFactory.make("testing/ARQ/Syntax/Syntax-SPARQL2/manifest.ttl") ;
-//        SimpleTestRunner.runAndReport(ts) ;
-//
-//        ts = QueryTestSuiteFactory.make("testing/ARQ/Syntax/Syntax-SPARQL3/manifest.ttl") ;
-//        SimpleTestRunner.runAndReport(ts) ;
-//        
-//        ts = QueryTestSuiteFactory.make("testing/ARQ/Syntax/Syntax-ARQ/manifest.ttl") ;
-//        SimpleTestRunner.runAndReport(ts) ;
-//        
-//      ts = QueryTestSuiteFactory.make("testing/ARQ/Syntax/Syntax-SPARQL4/manifest.ttl") ;
-//      SimpleTestRunner.runAndReport(ts) ;
-
-      ts = QueryTestSuiteFactory.make("testing/ARQ/Syntax/manifest-syntax.ttl") ;
-      SimpleTestRunner.runAndReport(ts) ;
-
-        
-        System.exit(0) ;
+//        System.exit(0) ;
         
         //unionTransform() ;
         
