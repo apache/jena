@@ -36,7 +36,7 @@ import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.tdb.TDB ;
 
 /** Common framework for running RIOT parsers */
-public abstract class LangParse extends CmdGeneral
+public abstract class CmdLangParse extends CmdGeneral
 {
     // We are not a TDB command but still set the logging.
     static { CmdTDB.setLogging() ; }
@@ -44,7 +44,7 @@ public abstract class LangParse extends CmdGeneral
     protected ModTime modTime                 = new ModTime() ;
     protected ModLangParse modLangParse       = new ModLangParse() ;
     
-    protected LangParse(String[] argv)
+    protected CmdLangParse(String[] argv)
     {
         super(argv) ;
         super.addModule(modTime) ;

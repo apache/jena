@@ -12,7 +12,7 @@ import com.hp.hpl.jena.sparql.util.Utils ;
 /**
  * Guess the syntax from the filename. 
  */
-public class riot extends LangParse
+public class riot extends CmdLangParse
 {
     public static void main(String... argv)
     {

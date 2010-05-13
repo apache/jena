@@ -1,6 +1,6 @@
 # <x> <p> ["1"] .
 
-<http://example/bad[uri> <http://example/p> "1" .
+#<http://example/bad[uri> <http://example/p> "1" .
 #<x> <p> ["1"] .
 <x> <p> "2" .
 

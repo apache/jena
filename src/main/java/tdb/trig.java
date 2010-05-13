@@ -11,7 +11,7 @@ import com.hp.hpl.jena.riot.Lang ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 
 /** Run the TriG parser - and produce N-Quads */
-public class trig extends LangParse
+public class trig extends CmdLangParse
 {
     public static void main(String... argv)
     {

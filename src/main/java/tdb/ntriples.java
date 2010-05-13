@@ -11,7 +11,7 @@ import com.hp.hpl.jena.riot.Lang ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 
 /** Run the N-triples parser - and produce N-triples */
-public class ntriples extends LangParse
+public class ntriples extends CmdLangParse
 {
     public static void main(String... argv)
     {

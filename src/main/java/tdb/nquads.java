@@ -11,7 +11,7 @@ import com.hp.hpl.jena.riot.Lang ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 
 /** Run the N-Quads parser - and produce N-Quads */
-public class nquads extends LangParse
+public class nquads extends CmdLangParse
 {
     public static void main(String... argv)
     {
