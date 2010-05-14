@@ -24,7 +24,7 @@ import com.hp.hpl.jena.riot.Checker ;
 import com.hp.hpl.jena.riot.ErrorHandlerLib ;
 import com.hp.hpl.jena.riot.IRIResolver ;
 import com.hp.hpl.jena.riot.Lang ;
-import com.hp.hpl.jena.riot.ParserFactory ;
+import com.hp.hpl.jena.riot.RiotReader ;
 import com.hp.hpl.jena.riot.RiotException ;
 import com.hp.hpl.jena.riot.lang.LangParseRDFXML ;
 import com.hp.hpl.jena.riot.lang.LangRIOT ;
@@ -96,7 +96,6 @@ public abstract class CmdLangParse extends CmdGeneral
         else
         {
             try {
-                Lang lang = Lang.guess(filename) ; 
                 in = IO.openFile(filename) ;
             } catch (Exception ex)
             {
@@ -137,7 +136,7 @@ public abstract class CmdLangParse extends CmdGeneral
         {
             // Does not count output.
             modTime.startTimer() ;
-            // Support RDF/XML.
+            // Support RDF/XML, sort of.
             long n = LangParseRDFXML.parseRDFXML(baseURI, filename, checker.getHandler(), in, !modLangParse.toBitBucket()) ;
             long x = modTime.endTimer() ;
             
@@ -159,7 +158,7 @@ public abstract class CmdLangParse extends CmdGeneral
             if ( ! modLangParse.toBitBucket() )
                 s = new SinkTripleOutput(System.out) ;
             SinkCounting<Triple> sink2 = new SinkCounting<Triple>(s) ;
-            parser = ParserFactory.createParserTriples(in, lang, baseURI, sink2) ;
+            parser = RiotReader.createParserTriples(in, lang, baseURI, sink2) ;
             sink = sink2 ;
         }
         else
@@ -168,7 +167,7 @@ public abstract class CmdLangParse extends CmdGeneral
             if ( ! modLangParse.toBitBucket() )
                 s = new SinkQuadOutput(System.out) ;
             SinkCounting<Quad> sink2 = new SinkCounting<Quad>(s) ;
-            parser = ParserFactory.createParserQuads(in, lang, baseURI, sink2) ;
+            parser = RiotReader.createParserQuads(in, lang, baseURI, sink2) ;
             sink = sink2 ;
         }
         

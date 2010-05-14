@@ -10,12 +10,12 @@ import org.openjena.atlas.event.EventType ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
-public class RIOT
+public class SysRIOT
 {
     public static final String riotLoggerName = "com.hp.hpl.jena.tdb.RIOT" ;
     private static Logger riotLogger = LoggerFactory.getLogger(riotLoggerName) ;
-    public static final EventType startRead = new EventType(RIOT.class, "StartRead") ;
-    public static final EventType finishRead = new EventType(RIOT.class, "FinishRead") ;
+    public static final EventType startRead = new EventType(SysRIOT.class, "StartRead") ;
+    public static final EventType finishRead = new EventType(SysRIOT.class, "FinishRead") ;
     
     static public String fmtMessage(String message, long line, long col)
     {

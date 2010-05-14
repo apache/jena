@@ -58,14 +58,14 @@ public class Loader
     {
         if ( language == Lang.NQUADS )
         {
-            LangRIOT parser = ParserFactory.createParserNQuads(input, sink) ;
+            LangRIOT parser = RiotReader.createParserNQuads(input, sink) ;
             parser.parse() ;
             sink.flush();
             return ;
         }
         if ( language == Lang.TRIG )
         {
-            LangRIOT parser = ParserFactory.createParserTriG(input, baseURI, sink) ;
+            LangRIOT parser = RiotReader.createParserTriG(input, baseURI, sink) ;
             parser.parse() ;
             sink.flush();
             return ;

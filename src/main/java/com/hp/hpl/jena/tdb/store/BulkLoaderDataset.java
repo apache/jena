@@ -19,7 +19,7 @@ import org.openjena.atlas.logging.Log ;
 
 
 import com.hp.hpl.jena.riot.Lang ;
-import com.hp.hpl.jena.riot.ParserFactory ;
+import com.hp.hpl.jena.riot.RiotReader ;
 import com.hp.hpl.jena.riot.RiotException ;
 import com.hp.hpl.jena.riot.lang.LangRIOT ;
 import com.hp.hpl.jena.sparql.core.Quad ;
@@ -127,9 +127,9 @@ class BulkLoaderDataset
         switch(lang)
         {
             case NQUADS :
-                return ParserFactory.createParserNQuads(input, sink) ;
+                return RiotReader.createParserNQuads(input, sink) ;
             case TRIG :
-                return ParserFactory.createParserTriG(input, baseURI, sink) ;
+                return RiotReader.createParserTriG(input, baseURI, sink) ;
             default:
                 throw new RiotException("Language not supported for quads: "+lang) ;
         }

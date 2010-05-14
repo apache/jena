@@ -10,7 +10,7 @@ import org.slf4j.Logger ;
 
 public class ErrorHandlerLib
 {
-    static public final Logger stdLogger = RIOT.getLogger() ;
+    static public final Logger stdLogger = SysRIOT.getLogger() ;
     
     static public ErrorHandler errorHandlerStd = new ErrorHandlerStd(stdLogger) ;
     static public ErrorHandler errorHandlerStrict = new ErrorHandlerStd(stdLogger) ;

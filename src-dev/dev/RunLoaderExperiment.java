@@ -15,7 +15,7 @@ import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.riot.ParserFactory ;
+import com.hp.hpl.jena.riot.RiotReader ;
 import com.hp.hpl.jena.riot.lang.LangRIOT ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
@@ -58,7 +58,7 @@ public class RunLoaderExperiment
         for ( String s : argv )
         {
             InputStream in = IO.openFile(s) ;
-            LangRIOT parser = ParserFactory.createParserNTriples(in, nodesOnly) ;
+            LangRIOT parser = RiotReader.createParserNTriples(in, nodesOnly) ;
             parser.parse() ;
         }
         nodesOnly.close() ;

@@ -21,7 +21,7 @@ import com.hp.hpl.jena.rdf.model.RDFReader ;
 import com.hp.hpl.jena.riot.Checker ;
 import com.hp.hpl.jena.riot.ErrorHandlerLib ;
 import com.hp.hpl.jena.riot.JenaReaderTurtle2 ;
-import com.hp.hpl.jena.riot.ParserFactory ;
+import com.hp.hpl.jena.riot.RiotReader ;
 import com.hp.hpl.jena.riot.RiotException ;
 import com.hp.hpl.jena.riot.tokens.Tokenizer ;
 import com.hp.hpl.jena.riot.tokens.TokenizerFactory ;
@@ -77,7 +77,7 @@ public class TestLangTurtle extends BaseTest
     {
         Reader reader = new StringReader(string) ;
         Tokenizer tokenizer = TokenizerFactory.makeTokenizer(reader) ;
-        LangTurtle parser = ParserFactory.createParserTurtle(tokenizer, "http://base/", new SinkNull<Triple>()) ;
+        LangTurtle parser = RiotReader.createParserTurtle(tokenizer, "http://base/", new SinkNull<Triple>()) ;
         parser.setChecker(new Checker(ErrorHandlerLib.errorHandlerNoLogging)) ;
         parser.parse() ;
     }

@@ -12,7 +12,7 @@ import junit.framework.TestCase ;
 import org.openjena.atlas.io.IO ;
 import org.openjena.atlas.lib.SinkNull ;
 
-import com.hp.hpl.jena.riot.ParserFactory ;
+import com.hp.hpl.jena.riot.RiotReader ;
 import com.hp.hpl.jena.riot.RiotException ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 
@@ -27,7 +27,7 @@ public class UnitTestTrigBadSyntax extends TestCase
     {
         InputStream in = IO.openFile(uri) ;
         assertNotNull(in) ;
-        LangRIOT parser = ParserFactory.createParserTriG(in, uri, new SinkNull<Quad>()) ;
+        LangRIOT parser = RiotReader.createParserTriG(in, uri, new SinkNull<Quad>()) ;
         try {
             parser.parse() ;
         } catch (RiotException ex) { return ; }

@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.riot;
 
-import static com.hp.hpl.jena.riot.RIOT.fmtMessage ;
+import static com.hp.hpl.jena.riot.SysRIOT.fmtMessage ;
 import org.slf4j.Logger ;
 
 /** An error handler that logs messages only for errors and warnings */ 

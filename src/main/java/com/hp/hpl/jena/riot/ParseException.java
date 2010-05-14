@@ -14,7 +14,7 @@ public class ParseException extends RiotException
 
     public ParseException(String msg, long line, long column)
     {
-        super(RIOT.fmtMessage(msg,line,column)); 
+        super(SysRIOT.fmtMessage(msg,line,column)); 
         this.message = msg ; 
         this.line = line ;
         this.column = column ;

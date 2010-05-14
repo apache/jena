@@ -23,13 +23,15 @@ public class DevTDB
     
     // RIOT
     //   RDF/XML wrapper.
+    //   ParseFactory => RIOT
+    //   ** Add tests for parser calls.
+    //
     //   Interfaceization of checker
-    //   Move command code for "any file" into the main library.
     //   Option passing (old Jena style).
     //   Options: pass/reject bad URIs, bad literals. -> "SKIP", "PASS", "FAIL"
     //   Recovery parsing - scan to DOT?
     // RIOT Commands
-    //   Output "# Filename" bewteen outputs
+    //   Output "# Filename" between outputs or in error messages
     //   Command line - add filename to message.
     // Document
     //  --sink, --skip, --time

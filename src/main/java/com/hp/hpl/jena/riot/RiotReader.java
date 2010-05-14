@@ -8,8 +8,10 @@ package com.hp.hpl.jena.riot;
 
 import java.io.InputStream ;
 
+import org.openjena.atlas.io.IO ;
 import org.openjena.atlas.lib.Sink ;
 
+import static com.hp.hpl.jena.riot.Lang.* ;
 
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.riot.lang.LangNQuads ;
@@ -21,9 +23,97 @@ import com.hp.hpl.jena.riot.tokens.Tokenizer ;
 import com.hp.hpl.jena.riot.tokens.TokenizerFactory ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 
-
-public class ParserFactory
+public class RiotReader
 {
+    // TODO Content negotiation & FileManager integration.
+ 
+    // -------- Triples
+    
+    /** Parse a number of files, sending triples to a sink.
+     * Must be in a triples syntax.
+     * @param url   URL to read.  File names may also be given. 
+     * @param sink  Where to send the triples from the parser.
+     */  
+    public static void parseTriples(String url, Sink<Triple> sink)
+    { parseTriples(url, null, null, sink) ; }
+    
+    /** Parse a number of files, sending triples to a sink.
+     * Must be in a triples syntax.
+     * @param url   URL to read.  File names may also be given. 
+     * @param lang      Language, or null for "guess from URL" (e.g. file extension)
+     * @param baseIRI   Base IRI, or null for base on input URL
+     * @param sink      Where to send the triples from the parser.
+     */  
+    public static void parseTriples(String url, Lang lang, String baseIRI, Sink<Triple> sink)
+    {
+        checkTriplesLanguage(url, lang) ;
+
+        String printName = nameForURL(url) ;  
+        InputStream in = IO.openFile(url) ; 
+        // Logging:
+        //--    loadLogger.info("Load: "+printName+" -- "+Utils.nowAsString()) ;
+        String base = chooseBaseIRI(baseIRI, url) ;
+        if ( lang == null )
+            lang = Lang.guess(url, NTRIPLES) ;     // ** N-Triples
+        parseTriples(in, lang, base, sink) ;
+        IO.close(in) ;
+    }
+
+    /** Parse a number of files, sending quads to a sink.
+     * @param in        Source for bytes to parse.
+     * @param lang      Language.
+     * @param baseIRI   Base IRI. 
+     * @param sink      Where to send the triples from the parser.
+     */
+
+    public static void parseTriples(InputStream in, Lang lang, String baseIRI, Sink<Triple> sink)
+    {
+        LangRIOT parser = RiotReader.createParserTriples(in, lang, baseIRI, sink) ;
+        parser.parse() ;
+    }
+    
+    // -------- Quads
+    
+    /** Parse a number of files, sending quads to a sink.
+     * @param url   URL to read.  File names may also be given. 
+     * @param sink  Where to send the quads from the parser.
+     */
+    public static void parseQuads(String url, Sink<Quad> sink)
+    { parseQuads(url, null, null, sink) ; }
+    
+    /** Parse a number of files, sending quads to a sink.
+     * @param url   URL to read.  File names may also be given. 
+     * @param lang      Language, or null for "guess from URL" (e.g. file extension)
+     * @param baseIRI   Base IRI, or null for base on input URL
+     * @param sink      Where to send the quads from the parser.
+     */
+    public static void parseQuads(String url, Lang lang, String baseIRI, Sink<Quad> sink)
+    {
+        String printName = nameForURL(url) ;  
+        InputStream in = IO.openFile(url) ; 
+        // Logging:
+        //--    loadLogger.info("Load: "+printName+" -- "+Utils.nowAsString()) ;
+        String base = chooseBaseIRI(baseIRI, url) ;
+        if ( lang == null )
+            lang = Lang.guess(url, NQUADS) ;     // ** N-Quads
+        parseQuads(in, lang, base, sink) ;
+        IO.close(in) ;
+    }
+
+    /** Parse a number of files, sending quads to a sink.
+     * @param in        Source for bytes to parse.
+     * @param lang      Language.
+     * @param baseIRI   Base IRI. 
+     * @param sink      Where to send the quads from the parser.
+     */
+    public static void parseQuads(InputStream in, Lang lang, String baseIRI, Sink<Quad> sink)
+    {
+        LangRIOT parser = RiotReader.createParserQuads(in, lang, baseIRI, sink) ;
+        parser.parse() ;
+    }
+
+    // -------- Parsers
+    
     /** Create a parser for a triples language */  
     public static LangRIOT createParserTriples(InputStream input, Lang lang, String baseIRI, Sink<Triple> sink)
     {
@@ -32,7 +122,7 @@ public class ParserFactory
     }
     
     /** Create a parser for a triples language */  
-    private static LangRIOT createParserTriples(Tokenizer tokenizer, Lang lang, String baseIRI, Sink<Triple> sink)
+    public static LangRIOT createParserTriples(Tokenizer tokenizer, Lang lang, String baseIRI, Sink<Triple> sink)
     {
         switch (lang)
         {
@@ -58,7 +148,7 @@ public class ParserFactory
     }
     
     /** Create a parser for a quads language */  
-    private static LangRIOT createParserQuads(Tokenizer tokenizer, Lang lang, String baseIRI, Sink<Quad> sink)
+    public static LangRIOT createParserQuads(Tokenizer tokenizer, Lang lang, String baseIRI, Sink<Quad> sink)
     {
         switch (lang)
         {
@@ -134,6 +224,36 @@ public class ParserFactory
     {
         LangNQuads parser = new LangNQuads(tokenizer, new Checker(), sink) ;
         return parser ;
+    }
+    
+    private static String chooseBaseIRI(String baseIRI, String url)
+    {
+        if ( baseIRI != null )
+            return baseIRI ;
+        if ( url == null || url.equals("-") )
+            return "http://localhost/stdin/" ;
+        return url ;
+    }
+
+    private static String nameForURL(String url)
+    {
+        if ( url == null || url.equals("-") )
+            return "stdin" ;
+        return url ;
+    }
+
+    private static void checkTriplesLanguage(String url, Lang lang)
+    {
+        if ( lang != null )
+        {
+            if ( ! lang.isTriples() )
+                throw new RiotException("Can only parse triples languages to a triples sink: "+lang.getName()) ;
+            return ;
+        }
+    
+        lang = Lang.guess(url) ;
+        if ( lang != null && ! lang.isTriples() )
+            throw new RiotException("Can only parse triples languages to a triples sink: "+lang.getName()) ; 
     }
     
         

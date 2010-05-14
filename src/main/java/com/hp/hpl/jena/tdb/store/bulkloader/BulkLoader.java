@@ -6,19 +6,17 @@
 
 package com.hp.hpl.jena.tdb.store.bulkloader;
 
+import static com.hp.hpl.jena.riot.Lang.NTRIPLES ;
+
 import java.io.InputStream ;
-import java.util.ArrayList ;
 import java.util.List ;
 
 import org.openjena.atlas.event.EventType ;
-import org.openjena.atlas.io.IO ;
 import org.slf4j.Logger ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.riot.Lang ;
-import com.hp.hpl.jena.riot.ParserFactory ;
-import com.hp.hpl.jena.riot.lang.LangRIOT ;
+import com.hp.hpl.jena.riot.RiotReader ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 import com.hp.hpl.jena.tdb.TDB ;
@@ -80,20 +78,6 @@ public class BulkLoader
         loadTriples$(dest, input) ;
     }
 
-    private static String nameForURL(String url)
-    {
-        if ( url == null || url.equals("-") )
-            return "stdin" ;
-        return url ;
-    }
-
-    private static List<String> asList(String string)
-    {
-        List<String> list = new ArrayList<String>() ;
-        list.add(string) ;
-        return list ;
-    }
-    
     private static Destination<Triple> destinationDefaultGraph(DatasetGraphTDB dsg, boolean showProgress)
     {
         NodeTupleTable ntt = dsg.getTripleTable().getNodeTupleTable() ;
@@ -135,15 +119,8 @@ public class BulkLoader
         dest.start() ;
         for ( String url : urls )
         {
-            String printName = nameForURL(url) ;  
-            InputStream in = IO.openFile(url) ; 
-            loadLogger.info("Load: "+printName+" -- "+Utils.nowAsString()) ;
-            String base = url ;
-            if ( base.equals("-") )
-                base = null ;
-            Lang lang = Lang.guess(url, Lang.NTRIPLES) ;
-            LangRIOT parser = ParserFactory.createParserTriples(in, lang, base, dest) ;
-            parser.parse() ;
+            loadLogger.info("Load: "+url+" -- "+Utils.nowAsString()) ;
+            RiotReader.parseTriples(url, dest) ;
         }            
         dest.finish() ;
     }
@@ -153,29 +130,17 @@ public class BulkLoader
     {
         loadLogger.info("Load: from input stream -- "+Utils.nowAsString()) ;
         dest.start() ;
-        LangRIOT parser = ParserFactory.createParserNTriples(input, dest) ;
-        parser.parse() ;
+        RiotReader.parseTriples(input, NTRIPLES, null, dest) ;
         dest.finish() ;
-        
     }
     
     /** Load quads into a dataset */
     private static void loadQuads$(Destination<Quad> dest, List<String> urls)
     {
-        // REFACTOR (but how?)
-        // This occurs for triples
         dest.start() ;
         for ( String url : urls )
         {
-            String printName = nameForURL(url) ;  
-            InputStream in = IO.openFile(url) ; 
-            loadLogger.info("Load: "+printName+" -- "+Utils.nowAsString()) ;
-            String base = url ;
-            if ( base.equals("-") )
-                base = null ;
-            Lang lang = Lang.guess(url, Lang.NQUADS) ;
-            LangRIOT parser = ParserFactory.createParserQuads(in, lang, base, dest) ;
-            parser.parse() ;
+            RiotReader.parseQuads(url, dest) ;
         }            
         dest.finish() ;
     }
@@ -185,8 +150,7 @@ public class BulkLoader
     {
         loadLogger.info("Load: from input stream -- "+Utils.nowAsString()) ;
         dest.start() ;
-        LangRIOT parser = ParserFactory.createParserNQuads(input, dest) ;
-        parser.parse() ;
+        RiotReader.parseQuads(input, NTRIPLES, null, dest) ;
         dest.finish() ;
     }
     

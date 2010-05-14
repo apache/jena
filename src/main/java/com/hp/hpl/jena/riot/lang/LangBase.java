@@ -18,7 +18,7 @@ import com.hp.hpl.jena.riot.Checker ;
 import com.hp.hpl.jena.riot.ErrorHandler ;
 import com.hp.hpl.jena.riot.ErrorHandlerLib ;
 import com.hp.hpl.jena.riot.ParseException ;
-import com.hp.hpl.jena.riot.RIOT ;
+import com.hp.hpl.jena.riot.SysRIOT ;
 import com.hp.hpl.jena.riot.tokens.Token ;
 import com.hp.hpl.jena.riot.tokens.TokenType ;
 import com.hp.hpl.jena.riot.tokens.Tokenizer ;
@@ -72,9 +72,9 @@ public abstract class LangBase<X> implements LangRIOT
     
     public void parse()
     {
-        EventManager.send(sink, new Event(RIOT.startRead, null)) ;
+        EventManager.send(sink, new Event(SysRIOT.startRead, null)) ;
         runParser() ;
-        EventManager.send(sink, new Event(RIOT.finishRead, null)) ;
+        EventManager.send(sink, new Event(SysRIOT.finishRead, null)) ;
         tokens.close();
     }
     

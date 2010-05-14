@@ -15,7 +15,7 @@ import org.openjena.atlas.lib.SinkNull ;
 
 import com.hp.hpl.jena.riot.Checker ;
 import com.hp.hpl.jena.riot.ErrorHandlerLib ;
-import com.hp.hpl.jena.riot.ParserFactory ;
+import com.hp.hpl.jena.riot.RiotReader ;
 import com.hp.hpl.jena.riot.tokens.Tokenizer ;
 import com.hp.hpl.jena.riot.tokens.TokenizerFactory ;
 import com.hp.hpl.jena.sparql.core.Quad ;
@@ -32,7 +32,7 @@ public class TestLangTrig extends BaseTest
     {
         Reader reader = new StringReader(string) ;
         Tokenizer tokenizer = TokenizerFactory.makeTokenizer(reader) ;
-        LangTriG parser = ParserFactory.createParserTriG(tokenizer, "http://base/", new SinkNull<Quad>()) ;
+        LangTriG parser = RiotReader.createParserTriG(tokenizer, "http://base/", new SinkNull<Quad>()) ;
         parser.setChecker(new Checker(ErrorHandlerLib.errorHandlerNoLogging)) ;
         parser.parse() ;
     }

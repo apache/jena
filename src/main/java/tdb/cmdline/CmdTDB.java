@@ -24,7 +24,7 @@ import com.hp.hpl.jena.Jena ;
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.riot.RIOT ;
+import com.hp.hpl.jena.riot.SysRIOT ;
 import com.hp.hpl.jena.sparql.util.StringUtils ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 import com.hp.hpl.jena.tdb.TDB ;
@@ -59,8 +59,8 @@ public abstract class CmdTDB extends CmdARQ
                    , "log4j.logger."+TDB.logLoaderName+"=INFO, tdb.plain"
 
                    , "## Parser output"
-                   , "log4j.additivity."+RIOT.riotLoggerName+"=false"
-                   , "log4j.logger."+RIOT.riotLoggerName+"=INFO, tdb.plainlevel "
+                   , "log4j.additivity."+SysRIOT.riotLoggerName+"=false"
+                   , "log4j.logger."+SysRIOT.riotLoggerName+"=INFO, tdb.plainlevel "
     ) ;
     private static boolean initialized = false ;
     

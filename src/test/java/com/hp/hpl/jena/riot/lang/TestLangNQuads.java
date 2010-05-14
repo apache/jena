@@ -12,7 +12,7 @@ import org.openjena.atlas.lib.SinkCounting ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.riot.RiotException ;
-import com.hp.hpl.jena.riot.ParserFactory ;
+import com.hp.hpl.jena.riot.RiotReader ;
 import com.hp.hpl.jena.riot.tokens.Tokenizer ;
 import com.hp.hpl.jena.riot.tokens.TokenizerFactory ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
@@ -49,7 +49,7 @@ public class TestLangNQuads extends TestLangNTuples
         Tokenizer tokenizer = TokenizerFactory.makeTokenizerString(string) ;
         SinkCounting<Quad> sink = new SinkCounting<Quad>() ;
         
-        LangNQuads x = ParserFactory.createParserNQuads(tokenizer, sink) ;
+        LangNQuads x = RiotReader.createParserNQuads(tokenizer, sink) ;
         x.parse() ;
         return sink.getCount() ;
     }
@@ -60,7 +60,7 @@ public class TestLangNQuads extends TestLangNTuples
         Sink<Quad> sink = DatasetLib.datasetSink(dsg) ;
         
         Tokenizer tokenizer = TokenizerFactory.makeTokenizerString(string) ;
-        LangRIOT parser = ParserFactory.createParserNQuads(tokenizer, sink) ;
+        LangRIOT parser = RiotReader.createParserNQuads(tokenizer, sink) ;
         parser.parse() ;
         sink.flush();
         return dsg ;
