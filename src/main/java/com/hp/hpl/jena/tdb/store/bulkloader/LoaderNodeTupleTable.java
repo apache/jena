@@ -120,7 +120,7 @@ public class LoaderNodeTupleTable implements Closeable, Sync
     {
         if ( count > 0 )
         {
-            // Do index phase only if any items seen. 
+            // Do index phase only if any items seen.
             monitor.startIndexPhase() ;
             loadSecondaryIndexes() ;
         }

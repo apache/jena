@@ -16,23 +16,19 @@ public class DevTDB
     // TupleSlice
     
     // Loader:
-    // cumulative triples, not reset per file.  Ditto time.
     // Reset run rate on each index.
-    // Are buffers full y closed on each file. Tokenizer.close => Peekreader.close=>Input.close
     
     
     // RIOT
     //   RDF/XML wrapper.
-    //   ParseFactory => RIOT
     //   ** Add tests for parser calls.
+    //   Read from URL, Content negotiation.
     //
     //   Interfaceization of checker
     //   Option passing (old Jena style).
     //   Options: pass/reject bad URIs, bad literals. -> "SKIP", "PASS", "FAIL"
     //   Recovery parsing - scan to DOT?
     // RIOT Commands
-    //   Output "# Filename" between outputs or in error messages
-    //   Command line - add filename to message.
     // Document
     //  --sink, --skip, --time
     // RIOT extensions
