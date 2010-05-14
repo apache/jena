@@ -60,7 +60,7 @@ public class TestFactoryTDB extends TestFactoryManifest
         if ( testRootName != null )
             testName = testRootName+testName ;
         
-        TestItem testItem = new TestItem(entry, null, Syntax.syntaxARQ, DataFormat.langXML) ;
+        TestItem testItem = TestItem.create(entry, null, Syntax.syntaxARQ, DataFormat.langXML) ;
         
         TestCase test = null ;
         
