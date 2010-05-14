@@ -14,18 +14,32 @@ import org.openjena.atlas.io.IO ;
 import com.hp.hpl.jena.riot.tokens.Token ;
 import com.hp.hpl.jena.riot.tokens.Tokenizer ;
 import com.hp.hpl.jena.riot.tokens.TokenizerFactory ;
+import com.hp.hpl.jena.sparql.util.Timer ;
 
+/** Raw token-level perforamnce measure. */
 public class Tokens 
 {
     public static void main(String...args)
     {
         InputStream in = IO.openFile(args[0]) ;
         Tokenizer tokenize = TokenizerFactory.makeTokenizer(in) ;
+        Timer timer = new Timer() ;
+        long count = 0 ; 
+        timer.startTimer() ;
         for ( ; tokenize.hasNext() ; )
         {
             Token t = tokenize.next() ;
+            count++ ;
         }
         tokenize.close();
+        long millis = timer.endTimer() ;
+        if ( millis == 0 )
+            System.out.printf("Tokens=%d : Time=0.00s\n", count) ;
+        else
+        {
+            double seconds = millis/1000.0 ;
+            System.out.printf("Tokens=%d : Time=%.2fs : Rate=%.2f\n", count, seconds, count/seconds) ;
+        }
     }
 }
 /*

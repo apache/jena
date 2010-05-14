@@ -30,7 +30,6 @@ import com.hp.hpl.jena.query.QueryExecutionFactory ;
 import com.hp.hpl.jena.query.QueryFactory ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.StmtIterator ;
-import com.hp.hpl.jena.riot.IRIResolver ;
 import com.hp.hpl.jena.riot.RiotReader ;
 import com.hp.hpl.jena.riot.lang.LangRIOT ;
 import com.hp.hpl.jena.sparql.algebra.Algebra ;
@@ -50,6 +49,8 @@ import com.hp.hpl.jena.tdb.store.TransformDynamicDataset ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 import com.hp.hpl.jena.util.FileManager ;
 
+import dump.DumpNodeTable ;
+
 public class RunTDB
 {
     //static { Log.setLog4j() ; }
@@ -64,9 +65,7 @@ public class RunTDB
 
     public static void main(String[] args) throws IOException
     {
-        String baseURI = "filename.ext" ;
-        baseURI = IRIResolver.resolveGlobalAsString(baseURI) ;
-        System.out.println(baseURI) ;
+        DumpNodeTable.dumpNodes(System.out, args[0]==null?"DB":args[0]) ;
         System.exit(0) ;
         
 //        String fn = "c:/home/afs/Datasets/MusicBrainz/artists.nt.gz" ;

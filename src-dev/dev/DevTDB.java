@@ -21,6 +21,7 @@ public class DevTDB
     
     // RIOT
     //   RDF/XML wrapper.
+    //   Output bad term quads/triples to special sink. 
     //   ** Add tests for parser calls.
     //   Read from URL, Content negotiation.
     //

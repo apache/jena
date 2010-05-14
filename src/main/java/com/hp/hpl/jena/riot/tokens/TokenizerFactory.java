@@ -15,6 +15,7 @@ import org.openjena.atlas.io.PeekReader ;
 
 public class TokenizerFactory
 {
+    /** Discouraged - be careful about character sets */ 
     public static Tokenizer makeTokenizer(Reader reader)
     {
         PeekReader peekReader = PeekReader.make(reader) ;
