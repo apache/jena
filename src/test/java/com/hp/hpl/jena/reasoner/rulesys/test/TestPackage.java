@@ -5,24 +5,20 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestPackage.java,v 1.5 2010-05-15 17:12:36 der Exp $
+ * $Id: TestPackage.java,v 1.6 2010-05-15 20:12:17 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
 
-import java.lang.management.ManagementFactory;
-import java.lang.management.ThreadMXBean;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import junit.framework.*;
+import junit.framework.TestSuite ;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
 
 /**
  * Aggregate tester that runs all the test associated with the rulesys package.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.5 $ on $Date: 2010-05-15 17:12:36 $
+ * @version $Revision: 1.6 $ on $Date: 2010-05-15 20:12:17 $
  */
 
 public class TestPackage extends TestSuite {

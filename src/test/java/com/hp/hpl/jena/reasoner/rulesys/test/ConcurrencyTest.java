@@ -4,31 +4,27 @@
  * Created on:  8 May 2010
  * 
  * (c) Copyright 2010, Epimorphics Limited
- * $Id: ConcurrencyTest.java,v 1.3 2010-05-15 17:12:36 der Exp $
+ * $Id: ConcurrencyTest.java,v 1.4 2010-05-15 20:12:17 andy_seaborne Exp $
  *****************************************************************/
 
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
-import java.lang.management.ManagementFactory;
-import java.lang.management.ThreadInfo;
-import java.lang.management.ThreadMXBean;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.ExecutorService ;
+import java.util.concurrent.Executors ;
 
-import com.hp.hpl.jena.ontology.OntClass;
-import com.hp.hpl.jena.ontology.OntModel;
-import com.hp.hpl.jena.ontology.OntModelSpec;
-import com.hp.hpl.jena.ontology.OntResource;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.StmtIterator;
-import com.hp.hpl.jena.shared.JenaException;
-import com.hp.hpl.jena.shared.Lock;
-import com.hp.hpl.jena.util.PrintUtil;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+import junit.framework.TestCase ;
+import junit.framework.TestSuite ;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import com.hp.hpl.jena.ontology.OntClass ;
+import com.hp.hpl.jena.ontology.OntModel ;
+import com.hp.hpl.jena.ontology.OntModelSpec ;
+import com.hp.hpl.jena.ontology.OntResource ;
+import com.hp.hpl.jena.rdf.model.ModelFactory ;
+import com.hp.hpl.jena.rdf.model.StmtIterator ;
+import com.hp.hpl.jena.shared.JenaException ;
+import com.hp.hpl.jena.shared.Lock ;
+import com.hp.hpl.jena.util.PrintUtil ;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
 
 /**
  * Test for deadlock and concurrency problems in rule engines.
@@ -36,7 +32,7 @@ import junit.framework.TestSuite;
  * <p>Test inspired by suggestions from Timm Linder</p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class ConcurrencyTest  extends TestCase {
 
