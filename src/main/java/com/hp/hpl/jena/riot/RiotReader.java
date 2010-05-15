@@ -25,36 +25,34 @@ import com.hp.hpl.jena.sparql.core.Quad ;
 
 public class RiotReader
 {
-    // TODO Content negotiation & FileManager integration.
- 
     // -------- Triples
     
     /** Parse a number of files, sending triples to a sink.
      * Must be in a triples syntax.
-     * @param url   URL to read.  File names may also be given. 
+     * @param filename 
      * @param sink  Where to send the triples from the parser.
      */  
-    public static void parseTriples(String url, Sink<Triple> sink)
-    { parseTriples(url, null, null, sink) ; }
+    public static void parseTriples(String filename, Sink<Triple> sink)
+    { parseTriples(filename, null, null, sink) ; }
     
     /** Parse a number of files, sending triples to a sink.
      * Must be in a triples syntax.
-     * @param url   URL to read.  File names may also be given. 
+     * @param filename 
      * @param lang      Language, or null for "guess from URL" (e.g. file extension)
-     * @param baseIRI   Base IRI, or null for base on input URL
+     * @param baseIRI   Base IRI, or null for based on input filename
      * @param sink      Where to send the triples from the parser.
      */  
-    public static void parseTriples(String url, Lang lang, String baseIRI, Sink<Triple> sink)
+    public static void parseTriples(String filename, Lang lang, String baseIRI, Sink<Triple> sink)
     {
-        checkTriplesLanguage(url, lang) ;
+        checkTriplesLanguage(filename, lang) ;
 
-        String printName = nameForURL(url) ;  
-        InputStream in = IO.openFile(url) ; 
+        String printName = nameForFile(filename) ;  
+        InputStream in = IO.openFile(filename) ; 
         // Logging:
         //--    loadLogger.info("Load: "+printName+" -- "+Utils.nowAsString()) ;
-        String base = chooseBaseIRI(baseIRI, url) ;
+        String base = chooseBaseIRI(baseIRI, filename) ;
         if ( lang == null )
-            lang = Lang.guess(url, NTRIPLES) ;     // ** N-Triples
+            lang = Lang.guess(filename, NTRIPLES) ;     // ** N-Triples
         parseTriples(in, lang, base, sink) ;
         IO.close(in) ;
     }
@@ -75,27 +73,27 @@ public class RiotReader
     // -------- Quads
     
     /** Parse a number of files, sending quads to a sink.
-     * @param url   URL to read.  File names may also be given. 
+     * @param filename
      * @param sink  Where to send the quads from the parser.
      */
-    public static void parseQuads(String url, Sink<Quad> sink)
-    { parseQuads(url, null, null, sink) ; }
+    public static void parseQuads(String filename, Sink<Quad> sink)
+    { parseQuads(filename, null, null, sink) ; }
     
     /** Parse a number of files, sending quads to a sink.
-     * @param url   URL to read.  File names may also be given. 
-     * @param lang      Language, or null for "guess from URL" (e.g. file extension)
-     * @param baseIRI   Base IRI, or null for base on input URL
+     * @param filename 
+     * @param lang      Language, or null for "guess from filename" (e.g. extension)
+     * @param baseIRI   Base IRI, or null for base on input filename
      * @param sink      Where to send the quads from the parser.
      */
-    public static void parseQuads(String url, Lang lang, String baseIRI, Sink<Quad> sink)
+    public static void parseQuads(String filename, Lang lang, String baseIRI, Sink<Quad> sink)
     {
-        String printName = nameForURL(url) ;  
-        InputStream in = IO.openFile(url) ; 
+        String printName = nameForFile(filename) ;  
+        InputStream in = IO.openFile(filename) ; 
         // Logging:
         //--    loadLogger.info("Load: "+printName+" -- "+Utils.nowAsString()) ;
-        String base = chooseBaseIRI(baseIRI, url) ;
+        String base = chooseBaseIRI(baseIRI, filename) ;
         if ( lang == null )
-            lang = Lang.guess(url, NQUADS) ;     // ** N-Quads
+            lang = Lang.guess(filename, NQUADS) ;     // ** N-Quads
         parseQuads(in, lang, base, sink) ;
         IO.close(in) ;
     }
@@ -226,23 +224,23 @@ public class RiotReader
         return parser ;
     }
     
-    private static String chooseBaseIRI(String baseIRI, String url)
+    private static String chooseBaseIRI(String baseIRI, String filename)
     {
         if ( baseIRI != null )
             return baseIRI ;
-        if ( url == null || url.equals("-") )
+        if ( filename == null || filename.equals("-") )
             return "http://localhost/stdin/" ;
-        return url ;
+        return filename ;
     }
 
-    private static String nameForURL(String url)
+    private static String nameForFile(String filename)
     {
-        if ( url == null || url.equals("-") )
+        if ( filename == null || filename.equals("-") )
             return "stdin" ;
-        return url ;
+        return filename ;
     }
 
-    private static void checkTriplesLanguage(String url, Lang lang)
+    private static void checkTriplesLanguage(String filename, Lang lang)
     {
         if ( lang != null )
         {
@@ -251,7 +249,7 @@ public class RiotReader
             return ;
         }
     
-        lang = Lang.guess(url) ;
+        lang = Lang.guess(filename) ;
         if ( lang != null && ! lang.isTriples() )
             throw new RiotException("Can only parse triples languages to a triples sink: "+lang.getName()) ; 
     }

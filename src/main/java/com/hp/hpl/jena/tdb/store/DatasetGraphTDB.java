@@ -79,7 +79,7 @@ public class DatasetGraphTDB extends DatasetGraphCaching
     }
 
     @Override
-    protected Iterator<Quad> findInSpecificNamedGraphs(Node g, Node s, Node p, Node o)
+    protected Iterator<Quad> findInSpecificNamedGraph(Node g, Node s, Node p, Node o)
     {
         return getQuadTable().find(Node.ANY, s, p, o) ;
     }

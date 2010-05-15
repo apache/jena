@@ -1,0 +1,13 @@
+#!/bin/bash
+# Run something 
+
+if [ "$#" = 0 ]
+then
+    echo "Usage: $0 [VMargs] classname [args ...]"
+    exit 1
+    fi
+
+source "$TDBROOT/bin/tdb_init"
+
+
+exec java $JVM_ARGS $SOCKS -cp "$TDB_CP" "$@"

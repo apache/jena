@@ -65,7 +65,7 @@ public class RunTDB
 
     public static void main(String[] args) throws IOException
     {
-        DumpNodeTable.dumpNodes(System.out, args[0]==null?"DB":args[0]) ;
+        DumpNodeTable.dumpNodes(System.out, args.length==0?"DB":args[0]) ;
         System.exit(0) ;
         
 //        String fn = "c:/home/afs/Datasets/MusicBrainz/artists.nt.gz" ;

@@ -8,11 +8,14 @@ package dump;
 
 import java.io.OutputStream ;
 import java.util.Iterator ;
+import java.util.regex.Matcher ;
+import java.util.regex.Pattern ;
 
 import org.openjena.atlas.io.IndentedWriter ;
 import org.openjena.atlas.lib.Pair ;
 
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.sparql.util.Utils ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
@@ -22,6 +25,29 @@ import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 public class DumpNodeTable
 {
+    public static void main(String ... argv)
+    {
+        if (  argv.length == 0 || isHelp(argv) )
+            usage() ;
+        dumpNodes(System.out, argv[0]) ;
+    }
+    
+    static Pattern pattern = Pattern.compile("/(-|--)(h|help)") ; 
+    
+    private static boolean isHelp(String[] argv)
+    {
+        if ( argv.length == 0 ) return false ;
+        Matcher m = pattern.matcher(argv[0]) ;
+        return m.matches() ;
+    }
+
+     
+    
+    private static void usage()
+    {
+        System.err.println("Usage: "+Utils.className(pattern)+"location") ;
+    }
+
     public static void dumpNodes(OutputStream w, String location)
     {
         dump(w, location, Names.indexNode2Id, SystemTDB.Node2NodeIdCacheSize, Names.indexId2Node, SystemTDB.NodeId2NodeCacheSize) ;
