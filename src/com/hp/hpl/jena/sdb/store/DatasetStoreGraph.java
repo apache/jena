@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -13,18 +13,19 @@ import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.sdb.Store ;
 import com.hp.hpl.jena.sdb.graph.GraphSDB ;
-import com.hp.hpl.jena.sdb.shared.SDBNotImplemented ;
 import com.hp.hpl.jena.sdb.util.StoreUtils ;
 import com.hp.hpl.jena.shared.Lock ;
 import com.hp.hpl.jena.shared.LockMRSW ;
 import com.hp.hpl.jena.sparql.core.Closeable ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import com.hp.hpl.jena.sparql.core.DatasetGraphCaching ;
 import com.hp.hpl.jena.sparql.core.DatasetImpl ;
+import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.update.GraphStore ;
 
-/** A graph-level dataset for SDB - triggers SDB SQL processing when used in a query */
-public class DatasetStoreGraph implements DatasetGraph, Closeable, GraphStore //implements DatasetGraph
+public class DatasetStoreGraph extends DatasetGraphCaching
+implements DatasetGraph, Closeable, GraphStore 
 {
     final Store store ;
     Graph defaultGraph = null ;
@@ -43,50 +44,13 @@ public class DatasetStoreGraph implements DatasetGraph, Closeable, GraphStore //
         this.defaultGraph = graph ;
         this.context = context ;
     }
-
-//    public DatasetStoreGraph(StoreRDB store, Context context)
-//    {
-//        this.store = store ; 
-//        this.defaultGraph = SDBFactory.connectDefaultGraph(store) ;
-//    }
     
     public Store getStore() { return store ; }
-
-    public Context getContext()
-    {
-        return context ;
-    }
-
+    
     public Iterator<Node> listGraphNodes()
     {
-        return StoreUtils.storeGraphNames(store) ;//.iterator() ;
+        return StoreUtils.storeGraphNames(store) ;
     }
-
-    public Lock getLock() { return lock ; }
-
-    public boolean containsGraph(Node gn)
-    {
-        // Think about this ... 
-        throw new SDBNotImplemented("DatasetStore.containsGraph") ;
-        //return false ;
-    }
-
-    public Graph getDefaultGraph()
-    {
-        if ( defaultGraph == null )
-            defaultGraph = new GraphSDB(store) ;
-        return defaultGraph ;
-    }
-
-    public Graph getGraph(Node gn)
-    {
-        return new GraphSDB(store, gn) ;
-    }
-    
-    public int size() { return -1 ; }
-
-    public void close()
-    { store.close(); }
 
     //---- Update
     public void startRequest()
@@ -97,27 +61,62 @@ public class DatasetStoreGraph implements DatasetGraph, Closeable, GraphStore //
 
     public Dataset toDataset()
     { return new DatasetImpl(this) ; }
-
-    public void addGraph(Node graphName, Graph graph)
+    
+    @Override
+    protected boolean _containsGraph(Node graphNode)
     {
-        Graph g = getGraph(graphName) ;
-        g.getBulkUpdateHandler().add(graph) ;
+        return StoreUtils.containsGraph(store, graphNode) ;
     }
 
-    public Graph removeGraph(Node graphName)
+    @Override
+    protected Graph _createDefaultGraph()
     {
-        Graph g = getGraph(graphName) ;
-        g.getBulkUpdateHandler().removeAll() ;
-        // Return null (it's empty!)
-        return null ;
+        return new GraphSDB(store) ;
     }
 
-    public void setDefaultGraph(Graph g)
-    { throw new UnsupportedOperationException("Can't set default graph via GraphStore on a SDB-backed dataset") ; }  
+    @Override
+    protected Graph _createNamedGraph(Node graphNode)
+    {
+        return new GraphSDB(store, graphNode) ;
+    }
+
+    // Use unsubtle helper versions (the bulk loader copes with large additions).
+    @Override
+    protected void addToDftGraph(Node s, Node p, Node o)
+    { Helper.addToDftGraph(this, s, p, o) ; }
+
+    @Override
+    protected void addToNamedGraph(Node g, Node s, Node p, Node o)
+    { Helper.addToNamedGraph(this, g, s, p, o) ; }
+
+    @Override
+    protected void deleteFromDftGraph(Node s, Node p, Node o)
+    { Helper.deleteFromDftGraph(this, s, p, o) ; }
+
+    @Override
+    protected void deleteFromNamedGraph(Node g, Node s, Node p, Node o)
+    { Helper.deleteFromNamedGraph(this, g, s, p, o) ; }
+
+    @Override
+    protected Iterator<Quad> findInDftGraph(Node s, Node p, Node o)
+    { return Helper.findInDftGraph(this, s, p, o) ; }
+
+    @Override
+    protected Iterator<Quad> findInAnyNamedGraphs(Node s, Node p, Node o)
+    { return Helper.findInAnyNamedGraphs(this, s, p, o) ; } 
+
+    @Override
+    protected Iterator<Quad> findInSpecificNamedGraph(Node g, Node s, Node p, Node o)
+    { return Helper.findInSpecificNamedGraph(this, g, s, p, o) ; }
+
+    @Override
+    protected void _close()
+    { store.close() ; }
+
 }
 
 /*
- * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

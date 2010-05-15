@@ -94,7 +94,7 @@ public class QueryTestSDBFactory extends TestFactoryManifest
             // action -> query specific query[+data]
             // results
             
-            TestItem testItem = new TestItem(entry, defaultTestType, querySyntax, DataFormat.langXML) ;
+            TestItem testItem = TestItem.create(entry, defaultTestType, querySyntax, DataFormat.langXML) ;
             TestCase test = null ;
             
             if ( testItem.getTestType() != null )
