@@ -6,6 +6,7 @@
 
 package com.hp.hpl.jena.tdb.store.bulkloader;
 
+import static com.hp.hpl.jena.riot.Lang.NQUADS ;
 import static com.hp.hpl.jena.riot.Lang.NTRIPLES ;
 
 import java.io.InputStream ;
@@ -150,11 +151,9 @@ public class BulkLoader
     {
         loadLogger.info("Load: from input stream -- "+Utils.nowAsString()) ;
         dest.start() ;
-        RiotReader.parseQuads(input, NTRIPLES, null, dest) ;
+        RiotReader.parseQuads(input, NQUADS, null, dest) ;
         dest.finish() ;
     }
-    
-        
     
     private static Destination<Triple> destinationNamedGraph(DatasetGraphTDB dsg, Node graphName, boolean showProgress)
     {
