@@ -4,7 +4,7 @@
  * Created on:  8 May 2010
  * 
  * (c) Copyright 2010, Epimorphics Limited
- * $Id: ConcurrencyTest.java,v 1.2 2010-05-09 09:41:31 der Exp $
+ * $Id: ConcurrencyTest.java,v 1.3 2010-05-15 17:12:36 der Exp $
  *****************************************************************/
 
 package com.hp.hpl.jena.reasoner.rulesys.test;
@@ -36,7 +36,7 @@ import junit.framework.TestSuite;
  * <p>Test inspired by suggestions from Timm Linder</p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class ConcurrencyTest  extends TestCase {
 
@@ -148,26 +148,29 @@ public class ConcurrencyTest  extends TestCase {
         }
         
         if(!executorService.isTerminated()) {
-            // Check for deadlock
-            ThreadMXBean tmx = ManagementFactory.getThreadMXBean();
-            long[] ids = tmx.findDeadlockedThreads();
-            if (ids != null) {
-                ThreadInfo[] infos = tmx.getThreadInfo(ids, true, true);
-                
-                System.err.println("*** Deadlocked threads");
-                for (ThreadInfo ti : infos) {
-                    System.err.println("Thread \"" + ti.getThreadName() + "\" id=" + ti.getThreadId() + " " 
-                            + ti.getThreadState().toString());
-                    System.err.println("Lock name: " + ti.getLockName() + " owned by \""
-                            + ti.getLockOwnerName() + "\" id=" + ti.getLockOwnerId());
-                    System.err.println("\nStack trace:");
-                    for(StackTraceElement st : ti.getStackTrace())
-                        System.err.println("   " + st.getClassName() + "." + st.getMethodName() 
-                                + " (" + st.getFileName() + ":" + st.getLineNumber() + ")" );
-                    System.err.println();
-                }
-            }
-            Assert.assertTrue("Deadlock detected!", false);
+            /* uncomment this block to perform deadlock checking, only on java 1.6 */
+//            // Check for deadlock
+//            ThreadMXBean tmx = ManagementFactory.getThreadMXBean();
+//            long[] ids = tmx.findDeadlockedThreads();
+//            if (ids != null) {
+//                ThreadInfo[] infos = tmx.getThreadInfo(ids, true, true);
+//                
+//                System.err.println("*** Deadlocked threads");
+//                for (ThreadInfo ti : infos) {
+//                    System.err.println("Thread \"" + ti.getThreadName() + "\" id=" + ti.getThreadId() + " " 
+//                            + ti.getThreadState().toString());
+//                    System.err.println("Lock name: " + ti.getLockName() + " owned by \""
+//                            + ti.getLockOwnerName() + "\" id=" + ti.getLockOwnerId());
+//                    System.err.println("\nStack trace:");
+//                    for(StackTraceElement st : ti.getStackTrace())
+//                        System.err.println("   " + st.getClassName() + "." + st.getMethodName() 
+//                                + " (" + st.getFileName() + ":" + st.getLineNumber() + ")" );
+//                    System.err.println();
+//                }
+//            }
+//            Assert.assertTrue("Deadlock detected!", false);
+            /* end deadlock block */
+            assertTrue("Failed to terminate execution", false);
         }
     }
     

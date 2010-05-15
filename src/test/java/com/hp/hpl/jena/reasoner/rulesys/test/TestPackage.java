@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestPackage.java,v 1.4 2010-05-09 09:41:31 der Exp $
+ * $Id: TestPackage.java,v 1.5 2010-05-15 17:12:36 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -22,7 +22,7 @@ import junit.framework.*;
  * Aggregate tester that runs all the test associated with the rulesys package.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2010-05-09 09:41:31 $
+ * @version $Revision: 1.5 $ on $Date: 2010-05-15 17:12:36 $
  */
 
 public class TestPackage extends TestSuite {
@@ -53,10 +53,11 @@ public class TestPackage extends TestSuite {
         addTest( "TestCapabilities", TestCapabilities.suite() );
         
         try {
-            // Check the JVM supports the management interfaces needed for
-            // running the concurrency test
-            ThreadMXBean tmx = ManagementFactory.getThreadMXBean();
-            long[] ids = tmx.findDeadlockedThreads();
+            /* uncomment the following block when we switch to java 1.6 and update ConcurrentTest to do deadlock detection */
+//            // Check the JVM supports the management interfaces needed for
+//            // running the concurrency test
+//            ThreadMXBean tmx = ManagementFactory.getThreadMXBean();
+//            long[] ids = tmx.findDeadlockedThreads();
             addTest( "ConcurrentyTest", ConcurrencyTest.suite() );
         } catch (Throwable t) {
             logger.warn("Skipping concurrency test, JVM doesn't seem to support fileDeadlockedThreads");
