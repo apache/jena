@@ -205,6 +205,14 @@ public class TransformSDB extends TransformCopy
         return doBridge(request, (OpSQL)subOp, vars, opProject) ;
     }
     
+    @Override
+    public Op transform(OpService opService, Op subOp)
+    {
+        // Do not walk in any further.
+        // See ARQ Optimize class for a better way to do this.
+        return opService ;
+    }
+    
     // See QueryCompilerMain.SqlNodesFinisher.visit(OpExt op)
     // Be careful about being done twice.
     // XXX SHARE CODE!
