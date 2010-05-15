@@ -37,7 +37,7 @@ public abstract class DatasetGraphCollection extends DatasetGraphBaseFind
     }
     
     @Override
-    protected Iter<Quad> findInSpecificNamedGraphs(Node g, Node s, Node p , Node o)
+    protected Iter<Quad> findInSpecificNamedGraph(Node g, Node s, Node p , Node o)
     {
         Graph graph = fetchGraph(g) ;
         if ( g == null )
@@ -54,7 +54,7 @@ public abstract class DatasetGraphCollection extends DatasetGraphBaseFind
         for ( ; gnames.hasNext() ; )  
         {
             Node gn = gnames.next();
-            Iterator<Quad> qIter = findInSpecificNamedGraphs(gn, s, p, o) ;
+            Iterator<Quad> qIter = findInSpecificNamedGraph(gn, s, p, o) ;
             if ( qIter != null )
                 // copes with null for iter
                 iter = Iter.append(iter, qIter) ;

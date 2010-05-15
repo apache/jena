@@ -87,7 +87,7 @@ public class DatasetGraphOne extends DatasetGraphBaseFind
 
     // -- Not needed.
     @Override
-    protected Iterator<Quad> findInSpecificNamedGraphs(Node g, Node s, Node p, Node o)
+    protected Iterator<Quad> findInSpecificNamedGraph(Node g, Node s, Node p, Node o)
     {
         if ( true ) throw new UnsupportedOperationException() ;
         // There are no named graphs

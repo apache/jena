@@ -34,7 +34,7 @@ abstract public class DatasetGraphBaseFind extends DatasetGraphBase
         {
             if ( Quad.isDefaultGraph(g))
                 return findInDftGraph(s,p,o) ;
-            Iterator<Quad> qIter = findInSpecificNamedGraphs(g, s, p, o) ;
+            Iterator<Quad> qIter = findInSpecificNamedGraph(g, s, p, o) ;
             if ( qIter == null )
                 return Iter.nullIterator() ;
             return qIter ;
@@ -56,7 +56,7 @@ abstract public class DatasetGraphBaseFind extends DatasetGraphBase
     }
 
     protected abstract Iterator<Quad> findInDftGraph(Node s, Node p , Node o) ;
-    protected abstract Iterator<Quad> findInSpecificNamedGraphs(Node g, Node s, Node p , Node o) ;
+    protected abstract Iterator<Quad> findInSpecificNamedGraph(Node g, Node s, Node p , Node o) ;
     protected abstract Iterator<Quad> findInAnyNamedGraphs(Node s, Node p , Node o) ;
 
 //    @Override

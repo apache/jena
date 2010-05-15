@@ -63,7 +63,7 @@ public class DSG_Mem extends DatasetGraphCaching // extends DatasetGraphTriplesQ
     }
     
     @Override
-    protected Iterator<Quad> findInSpecificNamedGraphs(Node g, Node s, Node p , Node o)
+    protected Iterator<Quad> findInSpecificNamedGraph(Node g, Node s, Node p , Node o)
     {
         List<Quad> results = new ArrayList<Quad>() ;
         for ( Quad q : quads )
