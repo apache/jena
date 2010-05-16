@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            14-Apr-2003
  * Filename           $RCSfile: schemagen.java,v $
- * Revision           $Revision: 1.7 $
+ * Revision           $Revision: 1.8 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2010-05-03 22:22:06 $
+ * Last modified on   $Date: 2010-05-16 23:42:50 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
@@ -52,7 +52,7 @@ import com.hp.hpl.jena.shared.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:ian_dickinson@users.sourceforge.net" >email</a>)
- * @version CVS $Id: schemagen.java,v 1.7 2010-05-03 22:22:06 ian_dickinson Exp $
+ * @version CVS $Id: schemagen.java,v 1.8 2010-05-16 23:42:50 ian_dickinson Exp $
  */
 public class schemagen {
     // Constants
@@ -1599,7 +1599,7 @@ public class schemagen {
         /** Determine the root resource in the configuration file */
         protected void determineConfigRoot() {
             if (hasValue( OPT.ROOT )) {
-                m_root = m_config.getResource( getValue( OPT.ROOT ) );
+                m_root = m_config.getResource( getStringValue( OPT.ROOT ) );
             }
             else {
                 // no specified root, we assume there is only one with type sgen:Config
@@ -1625,8 +1625,13 @@ public class schemagen {
         }
 
         /** Answer the value of the option or null */
-        protected String getValue( OPT option ) {
+        protected RDFNode getValue( OPT option ) {
             return getOpt( option ).getValue( m_cmdLineArgs, m_root );
+        }
+
+        /** Answer the String value of the option or null */
+        protected String getStringValue( OPT option ) {
+            return getOpt( option ).getStringValue( m_cmdLineArgs, m_root );
         }
 
         /** Answer true if the given option has a resource value */
@@ -1682,64 +1687,64 @@ public class schemagen {
         // External interface methods
 
         public boolean hasConfigFileOption() { return hasValue( OPT.CONFIG_FILE ); }
-        public String getConfigFileOption() { return getValue( OPT.CONFIG_FILE ); }
+        public String getConfigFileOption() { return getStringValue( OPT.CONFIG_FILE ); }
         public boolean hasRootOption() { return hasValue( OPT.ROOT ); }
-        public String getRootOption() { return getValue( OPT.ROOT ); }
+        public String getRootOption() { return getStringValue( OPT.ROOT ); }
         public boolean hasNoCommentsOption() { return isTrue( OPT.NO_COMMENTS ); }
-        public String getNoCommentsOption() { return getValue( OPT.NO_COMMENTS ); }
+        public String getNoCommentsOption() { return getStringValue( OPT.NO_COMMENTS ); }
         public boolean hasInputOption() { return hasValue( OPT.INPUT ); }
         public Resource getInputOption() { return getResource( OPT.INPUT ); }
         public boolean hasLangDamlOption() { return isTrue( OPT.LANG_DAML ); }
-        public String getLangDamlOption() { return getValue( OPT.LANG_DAML ); }
+        public String getLangDamlOption() { return getStringValue( OPT.LANG_DAML ); }
         public boolean hasLangOwlOption() { return isTrue( OPT.LANG_OWL ); }
-        public String getLangOwlOption() { return getValue( OPT.LANG_OWL ); }
+        public String getLangOwlOption() { return getStringValue( OPT.LANG_OWL ); }
         public boolean hasLangRdfsOption() { return isTrue( OPT.LANG_RDFS ); }
-        public String getLangRdfsOption() { return getValue( OPT.LANG_RDFS ); }
+        public String getLangRdfsOption() { return getStringValue( OPT.LANG_RDFS ); }
         public boolean hasOutputOption() { return hasValue( OPT.OUTPUT ); }
-        public String getOutputOption() { return getValue( OPT.OUTPUT ); }
+        public String getOutputOption() { return getStringValue( OPT.OUTPUT ); }
         public boolean hasHeaderOption() { return isTrue( OPT.HEADER ); }
-        public String getHeaderOption() { return getValue( OPT.HEADER ); }
+        public String getHeaderOption() { return getStringValue( OPT.HEADER ); }
         public boolean hasFooterOption() { return isTrue( OPT.FOOTER ); }
-        public String getFooterOption() { return getValue( OPT.FOOTER ); }
+        public String getFooterOption() { return getStringValue( OPT.FOOTER ); }
         public boolean hasMarkerOption() { return hasValue( OPT.MARKER ); }
-        public String getMarkerOption() { return getValue( OPT.MARKER ); }
+        public String getMarkerOption() { return getStringValue( OPT.MARKER ); }
         public boolean hasPackagenameOption() { return hasValue( OPT.PACKAGENAME ); }
-        public String getPackagenameOption() { return getValue( OPT.PACKAGENAME ); }
+        public String getPackagenameOption() { return getStringValue( OPT.PACKAGENAME ); }
         public boolean hasOntologyOption() { return isTrue( OPT.ONTOLOGY ); }
-        public String getOntologyOption() { return getValue( OPT.ONTOLOGY ); }
+        public String getOntologyOption() { return getStringValue( OPT.ONTOLOGY ); }
         public boolean hasClassnameOption() { return hasValue( OPT.CLASSNAME ); }
-        public String getClassnameOption() { return getValue( OPT.CLASSNAME ); }
+        public String getClassnameOption() { return getStringValue( OPT.CLASSNAME ); }
         public boolean hasClassdecOption() { return hasValue( OPT.CLASSDEC ); }
-        public String getClassdecOption() { return getValue( OPT.CLASSDEC ); }
+        public String getClassdecOption() { return getStringValue( OPT.CLASSDEC ); }
         public boolean hasNamespaceOption() { return hasValue( OPT.NAMESPACE ); }
         public Resource getNamespaceOption() { return getResource( OPT.NAMESPACE ); }
         public boolean hasDeclarationsOption() { return hasValue( OPT.DECLARATIONS ); }
-        public String getDeclarationsOption() { return getValue( OPT.DECLARATIONS ); }
+        public String getDeclarationsOption() { return getStringValue( OPT.DECLARATIONS ); }
         public boolean hasPropertySectionOption() { return hasValue( OPT.PROPERTY_SECTION ); }
-        public String getPropertySectionOption() { return getValue( OPT.PROPERTY_SECTION ); }
+        public String getPropertySectionOption() { return getStringValue( OPT.PROPERTY_SECTION ); }
         public boolean hasClassSectionOption() { return hasValue( OPT.CLASS_SECTION ); }
-        public String getClassSectionOption() { return getValue( OPT.CLASS_SECTION ); }
+        public String getClassSectionOption() { return getStringValue( OPT.CLASS_SECTION ); }
         public boolean hasIndividualsSectionOption() { return hasValue( OPT.INDIVIDUALS_SECTION ); }
-        public String getIndividualsSectionOption() { return getValue( OPT.INDIVIDUALS_SECTION ); }
+        public String getIndividualsSectionOption() { return getStringValue( OPT.INDIVIDUALS_SECTION ); }
         public boolean hasNopropertiesOption() { return isTrue( OPT.NOPROPERTIES ); }
         public boolean hasNoclassesOption() { return isTrue( OPT.NOCLASSES ); }
         public boolean hasNoindividualsOption() { return isTrue( OPT.NOINDIVIDUALS ); }
         public boolean hasPropTemplateOption() { return hasValue( OPT.PROP_TEMPLATE ); }
-        public String getPropTemplateOption() { return getValue( OPT.PROP_TEMPLATE ); }
+        public String getPropTemplateOption() { return getStringValue( OPT.PROP_TEMPLATE ); }
         public boolean hasClassTemplateOption() { return hasValue( OPT.CLASS_TEMPLATE ); }
-        public String getClassTemplateOption() { return getValue( OPT.CLASS_TEMPLATE ); }
+        public String getClassTemplateOption() { return getStringValue( OPT.CLASS_TEMPLATE ); }
         public boolean hasIndividualTemplateOption() { return hasValue( OPT.INDIVIDUAL_TEMPLATE ); }
-        public String getIndividualTemplateOption() { return getValue( OPT.INDIVIDUAL_TEMPLATE ); }
+        public String getIndividualTemplateOption() { return getStringValue( OPT.INDIVIDUAL_TEMPLATE ); }
         public boolean hasUcNamesOption() { return isTrue( OPT.UC_NAMES ); }
         public boolean hasIncludeOption() { return hasValue( OPT.INCLUDE ); }
         public List<String> getIncludeOption() { return getAllValues( OPT.INCLUDE ); }
         public boolean hasClassnameSuffixOption() { return hasValue( OPT.CLASSNAME_SUFFIX ); }
-        public String getClassnameSuffixOption() { return getValue( OPT.CLASSNAME_SUFFIX ); }
+        public String getClassnameSuffixOption() { return getStringValue( OPT.CLASSNAME_SUFFIX ); }
         public boolean hasNoheaderOption() { return isTrue( OPT.NOHEADER ); }
         public boolean hasEncodingOption() { return hasValue( OPT.ENCODING ); }
-        public String getEncodingOption() { return getValue( OPT.ENCODING ); }
+        public String getEncodingOption() { return getStringValue( OPT.ENCODING ); }
         public boolean hasHelpOption() { return hasValue( OPT.HELP ); }
-        public String getHelpOption() { return getValue( OPT.HELP ); }
+        public String getHelpOption() { return getStringValue( OPT.HELP ); }
         public boolean hasDosOption() { return isTrue( OPT.DOS ); }
         public boolean hasUseInfOption() { return isTrue( OPT.USE_INF ); }
         public boolean hasStrictIndividualsOption() { return isTrue( OPT.STRICT_INDIVIDUALS ); }
@@ -1762,7 +1767,7 @@ public class schemagen {
 
         /**
          * Return the RDF property that is used when configuring this option
-         * via a {@link com.hp.hpl.jena.rdf.Model}
+         * via a {@link Model}
          * @return The declaration property, or null
          */
         public Property getDeclarationProperty() {
@@ -1801,25 +1806,31 @@ public class schemagen {
          *
          * @return String
          */
-        protected String getValue( List<String> cmdLineArgs, Resource confRoot ) {
+        protected String getStringValue( List<String> cmdLineArgs, Resource confRoot ) {
+            RDFNode n = getValue( cmdLineArgs, confRoot );
+            return (n == null) ? null : (n.isLiteral() ? n.asLiteral().getLexicalForm() : n.toString() );
+        }
+
+        /**
+         * Return the value of the parameter if set, or null otherwise. Note command line
+         * has precedence.
+         *
+         * @return The argument value as an RDFNode
+         */
+        protected RDFNode getValue( List<String> cmdLineArgs, Resource confRoot ) {
             int index = cmdLineArgs.indexOf( m_cmdLineForm );
 
             if (index >= 0) {
                 try {
-                    return cmdLineArgs.get( index + 1 );
+                    return ResourceFactory.createPlainLiteral( cmdLineArgs.get( index + 1 ) );
                 }
                 catch (IndexOutOfBoundsException e) {
-                    System.err.println( "Value for parameter " + m_cmdLineForm  + " not set! Aborting.");
+                    throw new SchemagenException( "Value for parameter " + m_cmdLineForm  + " not set! Aborting.", e );
                 }
             }
 
             if (m_prop != null && confRoot != null  &&  confRoot.hasProperty( m_prop )) {
-                RDFNode val = confRoot.getRequiredProperty( m_prop ).getObject();
-                if (val.isLiteral()) {
-                    return ((Literal) val).getLexicalForm();
-                } else {
-                    return ((Resource) val).getURI().toString();
-                }
+                return confRoot.getRequiredProperty( m_prop ).getObject();
             }
 
             // not set
