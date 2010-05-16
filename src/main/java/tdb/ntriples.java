@@ -32,21 +32,6 @@ public class ntriples extends CmdLangParse
     @Override
     protected Lang selectLang(String filename, Lang nquads) 
     { return Lang.NTRIPLES ; }
-    
-//    @Override
-//    protected void parseEngine(Tokenizer tokenizer, String baseIRI, Sink<Triple> sink, Checker checker, boolean skipOnBadTerm)
-//    {
-//        LangNTriples parser = new LangNTriples(tokenizer, checker, sink) ;
-//        parser.setSkipOnBadTerm(skipOnBadTerm) ;
-//        parser.parse();
-//        sink.close() ;
-//    }
-//
-//    @Override
-//    protected Sink<Triple> makeOutputSink(PrintStream out)
-//    {
-//        return new SinkTripleOutput(out) ;
-//    }
 }
 
 /*

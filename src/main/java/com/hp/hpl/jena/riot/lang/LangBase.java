@@ -35,7 +35,7 @@ public abstract class LangBase<X> implements LangRIOT
     
     protected LabelToNode labelmap ;
 
-    // This is a bit ugly but externall, encapsulating the errorhandler in the checker is convenient.  
+    // This is a bit ugly but externally, encapsulating the errorhandler in the checker is convenient.  
     private ErrorHandler errorHandler ;
 
 //    protected LangBase(Tokenizer tokens,

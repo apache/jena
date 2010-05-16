@@ -49,8 +49,6 @@ import com.hp.hpl.jena.tdb.store.TransformDynamicDataset ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 import com.hp.hpl.jena.util.FileManager ;
 
-import dump.DumpNodeTable ;
-
 public class RunTDB
 {
     //static { Log.setLog4j() ; }
@@ -65,16 +63,8 @@ public class RunTDB
 
     public static void main(String[] args) throws IOException
     {
-        DumpNodeTable.dumpNodes(System.out, args.length==0?"DB":args[0]) ;
-        System.exit(0) ;
-        
-//        String fn = "c:/home/afs/Datasets/MusicBrainz/artists.nt.gz" ;
-//        RunLoaderExperiment.main("fn") ;
-//        
-//        System.exit(0) ;
-
         //tdb.ntriples.main("--skip","D.nt") ; System.exit(0) ;
-        //tdb.turtle.main("D.ttl") ; System.exit(0) ;
+        tdb.turtle.main("D.ttl") ; System.exit(0) ;
         
         tdb.tdbloader.main("--loc=DB2", "D.trig") ; System.exit(0) ;
         

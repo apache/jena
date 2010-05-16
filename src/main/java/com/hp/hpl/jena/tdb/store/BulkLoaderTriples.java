@@ -9,7 +9,6 @@ package com.hp.hpl.jena.tdb.store;
 import java.io.FileOutputStream ;
 import java.io.IOException ;
 import java.io.InputStream ;
-import java.util.ArrayList ;
 import java.util.Date ;
 import java.util.HashMap ;
 import java.util.Iterator ;
@@ -21,7 +20,6 @@ import org.openjena.atlas.lib.ArrayUtils ;
 import org.openjena.atlas.lib.InternalErrorException ;
 import org.openjena.atlas.lib.MapUtils ;
 import org.openjena.atlas.lib.Tuple ;
-
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
@@ -39,7 +37,6 @@ import com.hp.hpl.jena.sparql.util.Utils ;
 import com.hp.hpl.jena.sparql.util.graph.GraphListenerBase ;
 import com.hp.hpl.jena.sparql.util.graph.GraphLoadMonitor ;
 import com.hp.hpl.jena.tdb.TDBException ;
-import com.hp.hpl.jena.tdb.TDBLoader ;
 import com.hp.hpl.jena.tdb.index.TupleIndex ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable ;
 import com.hp.hpl.jena.tdb.solver.stats.StatsCollector ;
@@ -76,47 +73,46 @@ class BulkLoaderTriples
     private Timer timer ;
     private long count ; 
     
-    // ---- Load graph
-    /** @deprecated Use {@link TDBLoader} */
-    @Deprecated
-    public static void load(GraphTDB graph, List<String> urls, boolean showProgress)
-    {
-        BulkLoaderTriples loader = new BulkLoaderTriples(graph, showProgress) ;
-        loader.load(urls) ;
-    }
-    
-    /** @deprecated Use {@link TDBLoader} */
-    @Deprecated
-    public static void load(GraphTDB graph, String url, boolean showProgress)
-    {
-        List<String> list = new ArrayList<String>() ;
-        list.add(url) ;
-        BulkLoaderTriples loader = new BulkLoaderTriples(graph, showProgress) ;
-        loader.load(list) ;
-    }
-    
-    // --------
-    
-    /** @deprecated Use {@link TDBLoader} */
-    @Deprecated
-    public static void loadSimple(Model model, List<String> urls, boolean showProgress)
-    {
-        Timer timer = new Timer() ;
-        timer.startTimer() ;
-        long count = 0 ;
-        
-        for ( String s : urls )
-        {
-            if ( showProgress ) 
-                System.out.printf("Load: %s\n", s) ;
-            count += load(model, s, showProgress) ;
-        }
-
-        //long time = timer.endTimer() ;
-        //System.out.printf("Time for load: %.2fs [%,d triples/s]\n", time/1000.0, (triples/time)) ;
-        model.close();
-    }
-    
+//    // ---- Load graph
+//    /** @deprecated Use {@link TDBLoader} */
+//    @Deprecated
+//    public static void load(GraphTDB graph, List<String> urls, boolean showProgress)
+//    {
+//        BulkLoaderTriples loader = new BulkLoaderTriples(graph, showProgress) ;
+//        loader.load(urls) ;
+//    }
+//    
+//    /** @deprecated Use {@link TDBLoader} */
+//    @Deprecated
+//    public static void load(GraphTDB graph, String url, boolean showProgress)
+//    {
+//        List<String> list = new ArrayList<String>() ;
+//        list.add(url) ;
+//        BulkLoaderTriples loader = new BulkLoaderTriples(graph, showProgress) ;
+//        loader.load(list) ;
+//    }
+//    
+//    // --------
+//    
+//    /** @deprecated Use {@link TDBLoader} */
+//    @Deprecated
+//    public static void loadSimple(Model model, List<String> urls, boolean showProgress)
+//    {
+//        Timer timer = new Timer() ;
+//        timer.startTimer() ;
+//        long count = 0 ;
+//        
+//        for ( String s : urls )
+//        {
+//            if ( showProgress ) 
+//                System.out.printf("Load: %s\n", s) ;
+//            count += load(model, s, showProgress) ;
+//        }
+//
+//        //long time = timer.endTimer() ;
+//        //System.out.printf("Time for load: %.2fs [%,d triples/s]\n", time/1000.0, (triples/time)) ;
+//        model.close();
+//    }
 
     public BulkLoaderTriples(GraphTDB graph, boolean showProgress)
     {

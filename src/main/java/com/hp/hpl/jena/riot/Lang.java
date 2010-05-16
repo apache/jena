@@ -21,7 +21,6 @@ public enum Lang
     TRIG("TriG", false)
     ;
     
-    
     private final String name ;
     private final boolean isTriples ;
     private final String[] altNames ;

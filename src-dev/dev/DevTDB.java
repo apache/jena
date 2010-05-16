@@ -50,7 +50,6 @@ public class DevTDB
     
     // Use  $(cygpath -wp "$jar")" when setting $jar.
     
-    
     // Early truncation of patterns
     //  ?s <p> <foo> . ?s <q> ?v . ?s <r> ?x
     // If <r> has no solutions fall back to triple pattern 1

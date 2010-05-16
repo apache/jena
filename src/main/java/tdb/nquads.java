@@ -29,26 +29,9 @@ public class nquads extends CmdLangParse
         return Utils.classShortName(nquads.class) ;
     }
     
-    
     @Override
     protected Lang selectLang(String filename, Lang nquads) 
     { return Lang.NQUADS ; }
-
-//    @Override
-//    protected void parseEngine(Tokenizer tokens, String baseIRI, Sink<Quad> sink, Checker checker, boolean skipOnBadTerm)
-//    {
-//        LangNQuads parser = new LangNQuads(tokens, checker, sink) ;
-//        parser.setSkipOnBadTerm(skipOnBadTerm) ;
-//        parser.setChecker(checker) ;
-//        parser.parse();
-//        sink.close() ;
-//    }
-//
-//    @Override
-//    protected Sink<Quad> makeOutputSink(PrintStream out)
-//    {
-//        return new SinkQuadOutput(out) ;
-//    }
 }
 
 /*

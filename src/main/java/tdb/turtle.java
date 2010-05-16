@@ -31,22 +31,7 @@ public class turtle extends CmdLangParse
 
     @Override
     protected Lang selectLang(String filename, Lang nquads) 
-    { return Lang.TRIG ; }
- 
-//    @Override
-//    protected void parseEngine(Tokenizer tokens, String baseIRI, Sink<Triple> sink, Checker checker, boolean skipOnBadTerm)
-//    {
-//        LangTurtle parser = new LangTurtle(baseIRI, tokens, checker, sink) ;
-//        parser.setChecker(checker) ;
-//        parser.parse();
-//        sink.close() ;
-//    }
-//
-//    @Override
-//    protected Sink<Triple> makeOutputSink(PrintStream out)
-//    {
-//        return new SinkTripleOutput(out) ;
-//    }
+    { return Lang.TURTLE ; }
 }
 
 /*

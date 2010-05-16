@@ -7,6 +7,8 @@
 package tdb;
 
 import java.io.InputStream ;
+import java.util.HashMap ;
+import java.util.Map ;
 
 import org.openjena.atlas.io.IO ;
 import org.openjena.atlas.lib.Sink ;
@@ -14,6 +16,7 @@ import org.openjena.atlas.lib.SinkCounting ;
 import org.openjena.atlas.lib.SinkNull ;
 import tdb.cmdline.CmdTDB ;
 import tdb.cmdline.ModLangParse ;
+import arq.cmd.CmdException ;
 import arq.cmdline.CmdGeneral ;
 import arq.cmdline.ModTime ;
 
@@ -24,9 +27,9 @@ import com.hp.hpl.jena.riot.Checker ;
 import com.hp.hpl.jena.riot.ErrorHandlerLib ;
 import com.hp.hpl.jena.riot.IRIResolver ;
 import com.hp.hpl.jena.riot.Lang ;
-import com.hp.hpl.jena.riot.RiotReader ;
 import com.hp.hpl.jena.riot.RiotException ;
-import com.hp.hpl.jena.riot.lang.LangParseRDFXML ;
+import com.hp.hpl.jena.riot.RiotReader ;
+import com.hp.hpl.jena.riot.lang.LangRDFXML ;
 import com.hp.hpl.jena.riot.lang.LangRIOT ;
 import com.hp.hpl.jena.riot.out.SinkQuadOutput ;
 import com.hp.hpl.jena.riot.out.SinkTripleOutput ;
@@ -43,6 +46,41 @@ public abstract class CmdLangParse extends CmdGeneral
     // Module.
     protected ModTime modTime                 = new ModTime() ;
     protected ModLangParse modLangParse       = new ModLangParse() ;
+    
+    interface LangHandler {
+        String getItemsName() ;
+        String getRateName() ;
+    }
+
+    static LangHandler langHandlerQuads = new LangHandler()
+    {
+        public String getItemsName()        { return "quads" ; }
+        public String getRateName()         { return "QPS" ; }
+    } ;
+    static LangHandler langHandlerTriples = new LangHandler()
+    {
+        public String getItemsName()        { return "triples" ; }
+        public String getRateName()         { return "TPS" ; }
+    } ;
+    static LangHandler langHandlerAny = new LangHandler()
+    {
+        public String getItemsName()        { return "tuples" ; }
+        public String getRateName()         { return "TPS" ; }
+    } ;
+    
+    protected static Map<Lang, LangHandler> dispatch = new HashMap<Lang, LangHandler>() ; 
+    static {
+        
+        for ( Lang lang : Lang.values())
+        {
+            if ( lang.isQuads() )
+                dispatch.put(lang, langHandlerQuads) ;
+            else
+                dispatch.put(lang, langHandlerTriples) ;
+        }
+    }
+    
+    protected LangHandler langHandlerOverall = null ;
     
     protected CmdLangParse(String[] argv)
     {
@@ -84,7 +122,7 @@ public abstract class CmdLangParse extends CmdGeneral
             System.err.flush() ;
             System.out.flush() ;
             if ( super.getPositional().size() > 1 && modTime.timingEnabled() )
-                output("Total", totalTuples, totalMillis) ;
+                output("Total", totalTuples, totalMillis, langHandlerOverall) ;
         }
     }
 
@@ -131,25 +169,25 @@ public abstract class CmdLangParse extends CmdGeneral
         }
         
         Lang lang = selectLang(filename, Lang.NQUADS) ;  
+        LangHandler handler = dispatch.get(lang) ;
+        if ( handler == null )
+            throw new CmdException("Undefined language: "+lang) ; 
         
-        if ( lang.equals(Lang.RDFXML) )
+        // If multiple files, choose the overall labels. 
+        if ( langHandlerOverall == null )
+            langHandlerOverall = handler ;
+        else
         {
-            // Does not count output.
-            modTime.startTimer() ;
-            // Support RDF/XML, sort of.
-            long n = LangParseRDFXML.parseRDFXML(baseURI, filename, checker.getHandler(), in, !modLangParse.toBitBucket()) ;
-            long x = modTime.endTimer() ;
-            
-            if ( modTime.timingEnabled() )
-                output(filename, n, x) ;
-            totalMillis += x ;
-            totalTuples += n ;
-            return ;
+            if ( langHandlerOverall != langHandlerAny )
+            {
+                if ( langHandlerOverall != handler )
+                    langHandlerOverall = langHandlerAny ;
+            }
         }
         
         SinkCounting<?> sink ;
         LangRIOT parser ;
-
+        
         // Uglyness because quads and triples aren't subtype of some Tuple<Node>
         // That would change a lot (Triples came several years before Quads). 
         if ( lang.isTriples() )
@@ -158,7 +196,11 @@ public abstract class CmdLangParse extends CmdGeneral
             if ( ! modLangParse.toBitBucket() )
                 s = new SinkTripleOutput(System.out) ;
             SinkCounting<Triple> sink2 = new SinkCounting<Triple>(s) ;
-            parser = RiotReader.createParserTriples(in, lang, baseURI, sink2) ;
+            if ( lang.equals(Lang.RDFXML) )
+                // Adapter round ARP RDF/XML reader.
+                parser = new LangRDFXML(in, baseURI, filename, checker, sink2) ;
+            else
+                parser = RiotReader.createParserTriples(in, lang, baseURI, sink2) ;
             sink = sink2 ;
         }
         else
@@ -190,7 +232,7 @@ public abstract class CmdLangParse extends CmdGeneral
         
 
         if ( modTime.timingEnabled() )
-            output(filename, n, x) ;
+            output(filename, n, x, handler) ;
         
         totalMillis += x ;
         totalTuples += n ;
@@ -202,14 +244,16 @@ public abstract class CmdLangParse extends CmdGeneral
         return tokenizer ;
     }
     
-    protected static void output(String label, long numberTriples, long timeMillis)
+    protected void output(String label, long numberTriples, long timeMillis, LangHandler handler)
     {
         double timeSec = timeMillis/1000.0 ;
         
-        System.out.printf("%s : %,5.2f sec  %,d triples  %,.2f TPS\n",
+        System.out.printf("%s : %,5.2f sec  %,d %s  %,.2f %s\n",
                           label,
                           timeMillis/1000.0, numberTriples,
-                          timeSec == 0 ? 0.0 : numberTriples/timeSec ) ;
+                          handler.getItemsName(),
+                          timeSec == 0 ? 0.0 : numberTriples/timeSec,
+                          handler.getRateName()) ;
     }
 }
 

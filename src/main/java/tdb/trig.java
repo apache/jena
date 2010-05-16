@@ -32,21 +32,6 @@ public class trig extends CmdLangParse
     @Override
     protected Lang selectLang(String filename, Lang nquads) 
     { return Lang.TRIG ; }
-    
-//    @Override
-//    protected void parseEngine(Tokenizer tokens, String baseIRI, Sink<Quad> sink, Checker checker, boolean skipOnBadTerm)
-//    {
-//        LangTriG parser = new LangTriG(baseIRI, tokens, checker, sink) ;
-//        parser.setChecker(checker) ;
-//        parser.parse();
-//        sink.close() ;
-//    }
-//    
-//    @Override
-//    protected Sink<Quad> makeOutputSink(PrintStream out)
-//    {
-//        return new SinkQuadOutput(out) ;
-//    }
 }
 
 /*

@@ -6,12 +6,13 @@
 
 package com.hp.hpl.jena.riot;
 
+import static com.hp.hpl.jena.riot.Lang.NQUADS ;
+import static com.hp.hpl.jena.riot.Lang.NTRIPLES ;
+
 import java.io.InputStream ;
 
 import org.openjena.atlas.io.IO ;
 import org.openjena.atlas.lib.Sink ;
-
-import static com.hp.hpl.jena.riot.Lang.* ;
 
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.riot.lang.LangNQuads ;
@@ -180,6 +181,16 @@ public class RiotReader
         return parser ;
     }
 
+//    /** Create a parser for RDF/XML */
+//    public static LangRDFXML createParserRDFXML(InputStream input, String baseIRI, Sink<Triple> sink)
+//    {
+//        if ( baseIRI == null )
+//            baseIRI = IRIResolver.chooseBaseURI().toString() ;
+//        LangRDFXML parser = new LangRDFXML(input, baseIRI, filename, new Checker(), sink) ;
+//        return parser ;
+//    }
+
+    
     /** Create a parser for Trig, with default behaviour */
     public static LangTriG createParserTriG(InputStream input, String baseIRI, Sink<Quad> sink)
     {

@@ -35,7 +35,6 @@ public class riot extends CmdLangParse
     {
         return Utils.classShortName(riot.class) ;
     }
-
 }
 
 /*
