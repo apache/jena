@@ -7,14 +7,18 @@ package dev;
 
 public class DevARQ
 {
-    // Which update language?
-    // SPARQL 1.1 Update ++ INSERT/DELETE DATA to take variables (must be prebound)
+    // Modules: atlas, RIOT
+    // Migrate: Reifier2, GraphBase2, DatasetPrefixStorage
+    
+    // SPARQL 1.1 Update
+    //   Syntax tests
     
     // Dataset to indicate if plain string and XSD string are the same to affact FILTER(?x="string") optimziation.
     // Does dataset contexts fix this?
     
     // Documentation for CSV etc.
-    // Union Transform.
+    // Union Transform.  TransformUnionQuery
+    //   TestCases
     //   The use of a bNode in (graph) needs coping with the distinct.
     //   Or a "really don't bind" treatment of that bnode. Var.ANON
     //   ref.Eval and main.OpExecutor.execute(OpGraph)->QueryIterGraphInner.nextIterator
@@ -22,23 +26,13 @@ public class DevARQ
     // Swapping DatasetGraph
     
     // Aggregates
-
-    // Combine DatasetImpl and DataSourceImpl?
-    
-    // Convert to quadism even for ARQ query if suitable dataset
-    
-    // Tests: version that converts to quadism even for ARQ query if suitable dataset
-    // TransformUnionQuery
-    //   TestCases
     
     // Dump dataset as:
     //  NQuads
     //  TriG
     //  SPARQL Update
     
-    // ==== ARQ 2.8.4 dev
-
-    // ====
+   // ====
     
     // ARQ: check variable scope
     //   Groups, SELECT expressions
