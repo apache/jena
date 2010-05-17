@@ -92,27 +92,23 @@ public class TestParserFactory extends BaseTest
         assertEquals(1, sink.things.size()) ;
         
         Triple t = SSE.parseTriple("(<http://base/x> <http://base/p> <http://base/q>)") ;
-        Quad q = new Quad(null, t) ;
+        Quad q = new Quad(Quad.tripleInQuad, t) ;
         assertEquals(q, sink.getLast()) ;
     }
-
     
-    //    private Triple triple(String sStr, String pStr, String oStr)
-//    {
-//        Node s = SSE.parseNode(sStr) ;
-//        Node p = SSE.parseNode(pStr) ;
-//        Node o = SSE.parseNode(oStr) ;
-//        return new Triple(s,p,o) ;
-//    }
-//
-//    private Quad quad(String gnStr, String sStr, String pStr, String oStr)
-//    {
-//        Node g = SSE.parseNode(gnStr) ;
-//        Node s = SSE.parseNode(sStr) ;
-//        Node p = SSE.parseNode(pStr) ;
-//        Node o = SSE.parseNode(oStr) ;
-//        return new Quad(g,s,p,o) ;
-//    }
+    @Test public void trig_02() 
+    {
+        Tokenizer tokenizer = TokenizerFactory.makeTokenizerString("<g> { <x> <p> <q> }") ; 
+        CatchSink<Quad> sink = new CatchSink<Quad>() ;
+        LangRIOT parser = RiotReader.createParserTriG(tokenizer, "http://base/", sink) ;
+        parser.parse();
+        assertEquals(1, sink.flushCalled) ;
+        assertEquals(0, sink.closeCalled) ;
+        assertEquals(1, sink.things.size()) ;
+        
+        Quad q = SSE.parseQuad("(<http://base/g> <http://base/x> <http://base/p> <http://base/q>)") ;
+        assertEquals(q, sink.getLast()) ;
+    }
 }
 
 /*
