@@ -16,10 +16,8 @@ public class DevTDB
     
     
     // RIOT
-    //   RDF/XML wrapper.
     //   Output bad term quads/triples to special sink. 
-    //   ** Add tests for parser calls.
-    //   Read from URL, Content negotiation.
+    //   WebReader: Read from URL, Content negotiation.
     //
     //   Interfaceization of checker
     //   Option passing (old Jena style).
