@@ -37,6 +37,8 @@ import com.hp.hpl.jena.riot.tokens.TestTokenizer ;
     , TestLangTrig.class
     , TestSuiteTrig.class
 
+    , TestParserFactory.class
+
     , TestOutputNTriples.class
 })
 

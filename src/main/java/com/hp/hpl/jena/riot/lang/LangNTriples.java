@@ -33,16 +33,27 @@ public class LangNTriples extends LangNTuple<Triple>
     protected final Triple parseOne() 
     { 
         Token sToken = nextToken() ;
+        if ( sToken.isEOF() )
+            exception(sToken, "Premature end of file: %s", sToken) ;
+        
         Token pToken = nextToken() ;
+        if ( pToken.isEOF() )
+            exception(pToken, "Premature end of file: %s", pToken) ;
+        
         Token oToken = nextToken() ;
+        if ( oToken.isEOF() )
+            exception(oToken, "Premature end of file: %s", oToken) ;
+
         
         Node s = parseIRIOrBNode(sToken) ;
         Node p = parseIRI(pToken) ;
         Node o = parseRDFTerm(oToken) ;
 
         Token x = nextToken() ;
+        
         if ( x.getType() != TokenType.DOT )
             exception(x, "Triple not terminated by DOT: %s", x) ;
+        
         Checker checker = getChecker() ;
         if ( checker != null )
         {

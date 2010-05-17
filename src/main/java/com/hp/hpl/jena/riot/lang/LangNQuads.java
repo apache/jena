@@ -34,12 +34,24 @@ public class LangNQuads extends LangNTuple<Quad>
     protected final Quad parseOne()
     {
         Token sToken = nextToken() ;
+        if ( sToken.getType() == TokenType.EOF )
+            exception(sToken, "Premature end of file: %s", sToken) ;
+        
         Token pToken = nextToken() ;
+        if ( pToken.getType() == TokenType.EOF )
+            exception(pToken, "Premature end of file: %s", pToken) ;
+        
         Token oToken = nextToken() ;
+        if ( oToken.getType() == TokenType.EOF )
+            exception(oToken, "Premature end of file: %s", oToken) ;
+        
         Token xToken = nextToken() ;    // Maybe DOT
+        if ( xToken.getType() == TokenType.EOF )
+            exception(xToken, "Premature end of file: Quad not terminated by DOT: %s", xToken) ;
         
         // Process graph node first to set bnode label scope (if not global)
         Node c = null ;
+
         if ( xToken.getType() != TokenType.DOT )
         {
             //c = parseRDFTerm(cToken) ;
