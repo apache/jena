@@ -20,14 +20,18 @@ import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.rdf.arp.ALiteral ;
 import com.hp.hpl.jena.rdf.arp.ARP ;
 import com.hp.hpl.jena.rdf.arp.AResource ;
+import com.hp.hpl.jena.rdf.arp.NamespaceHandler ;
 import com.hp.hpl.jena.rdf.arp.ParseException ;
 import com.hp.hpl.jena.rdf.arp.StatementHandler ;
+import com.hp.hpl.jena.rdf.arp.impl.ARPSaxErrorHandler ;
+import com.hp.hpl.jena.rdf.model.RDFErrorHandler ;
 import com.hp.hpl.jena.riot.Checker ;
 import com.hp.hpl.jena.riot.ErrorHandler ;
 
 public class LangRDFXML implements LangRIOT
 {
-    // This is not a full member of the RIOT suite because it needs to work with Xerces. 
+    // This is not a full member of the RIOT suite because it needs to work
+    // with Xerces and already carries out it's own error handling and output
     
     private ARP arp = new ARP() ;
     private long count = 0 ;
@@ -58,14 +62,17 @@ public class LangRDFXML implements LangRIOT
         // Hacked out of ARP because of all the "private" methods
         count = 0 ;
         ErrorHandler errHandler = checker.getHandler() ; 
-        StatementHandler rslt = new StatementHandlerSink(sink, checker) ;
+        HandlerSink rslt = new HandlerSink(sink, checker) ;
         arp.getHandlers().setStatementHandler(rslt);
+        arp.getHandlers().setErrorHandler(rslt) ;
+        arp.getHandlers().setNamespaceHandler(rslt) ;
+        
         try {
             arp.load(input, xmlBase);
         } catch (IOException e) {
             errHandler.error(filename + ": " + ParseException.formatMessage(e), -1 , -1) ;
         } catch (SAXParseException e) {
-            // already reported. :-(
+            // already reported.
         } catch (SAXException sax) {
             errHandler.error(filename + ": " + ParseException.formatMessage(sax), -1 , -1) ;
         }
@@ -73,13 +80,13 @@ public class LangRDFXML implements LangRIOT
     }
 
     
-    private static class StatementHandlerSink implements StatementHandler
+    private static class HandlerSink extends ARPSaxErrorHandler implements StatementHandler, NamespaceHandler
     {
-        
         private Sink<Triple> sink ;
         private Checker checker ;
-        StatementHandlerSink(Sink<Triple> sink, Checker checker)
+        HandlerSink(Sink<Triple> sink, Checker checker)
         {
+            super(new ErrorHandlerBridge(checker.getHandler())) ;
             this.sink = sink ;
             this.checker = checker ;
         }
@@ -130,7 +137,26 @@ public class LangRDFXML implements LangRIOT
             checker.checkLiteral(object, -1, -1) ;
             return Triple.create(convert(s), convert(p), object);
         }
+        
+        public void endPrefixMapping(String prefix)
+        {}  // TODO
 
+        public void startPrefixMapping(String prefix, String uri)
+        {}
+    }
+    
+    private static class ErrorHandlerBridge implements RDFErrorHandler
+    {
+        private ErrorHandler errorHandler ;
+
+        ErrorHandlerBridge(ErrorHandler hander)
+        {
+            this.errorHandler = hander ;
+        }
+        
+        public void warning(Exception e)        { errorHandler.warning(e.getMessage(), -1, -1) ; }
+        public void error(Exception e)          { errorHandler.error(e.getMessage(), -1, -1) ; }
+        public void fatalError(Exception e)     { errorHandler.fatal(e.getMessage(), -1, -1) ; }
     }
 }
 
