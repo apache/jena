@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            14-Apr-2003
  * Filename           $RCSfile: schemagen.java,v $
- * Revision           $Revision: 1.8 $
+ * Revision           $Revision: 1.9 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2010-05-16 23:42:50 $
+ * Last modified on   $Date: 2010-05-17 22:20:03 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
@@ -24,22 +24,23 @@ package jena;
 
 // Imports
 ///////////////
-import java.util.*;
-import java.util.regex.*;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
-import org.slf4j.LoggerFactory;
 import org.apache.xerces.util.XMLChar;
+import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.shared.JenaException;
 import com.hp.hpl.jena.util.FileManager;
 import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.vocabulary.*;
-import com.hp.hpl.jena.shared.*;
 
 
 
@@ -52,7 +53,7 @@ import com.hp.hpl.jena.shared.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:ian_dickinson@users.sourceforge.net" >email</a>)
- * @version CVS $Id: schemagen.java,v 1.8 2010-05-16 23:42:50 ian_dickinson Exp $
+ * @version CVS $Id: schemagen.java,v 1.9 2010-05-17 22:20:03 ian_dickinson Exp $
  */
 public class schemagen {
     // Constants
@@ -330,8 +331,14 @@ public class schemagen {
         addReplacementPattern( "package", m_options.hasPackagenameOption() ? ("package " + m_options.getPackagenameOption() + ";") : "" );
         addReplacementPattern( "imports", getImports() );
         addReplacementPattern( "classname", getClassName() );
-        addReplacementPattern( "sourceURI", m_options.getInputOption().getURI() );
         addReplacementPattern( "nl", m_nl );
+
+        // protect \ in Windows file pathnames
+        String source = m_options.getInputOption().getURI();
+        if (source.startsWith( "file:" )) {
+            source = source.replace( "\\", "\\\\" );
+        }
+        addReplacementPattern( "sourceURI", source );
     }
 
     /** Add a pattern-value pair to the list of available patterns */
@@ -1016,8 +1023,18 @@ public class schemagen {
                 Resource candObj = candidate.getResource();
                 Resource candSubj = candidate.getSubject();
 
+                // ignore RDFS and OWL builtins
+                if (!candObj.isAnon()) {
+                    String candTypeURI = candObj.getURI();
+                    if (candTypeURI.startsWith( RDF.getURI() ) ||
+                        candTypeURI.startsWith( OWL.getURI() ) ||
+                        candTypeURI.startsWith( RDFS.getURI() )) {
+                        continue;
+                    }
+                }
+
                 // note that whether candSubj is included is tested later on by {@link #filter}
-                if (!candSubj.isAnon() && isIncluded( candObj )) {
+                if (!candSubj.isAnon() && (isIncluded( candObj ) || isIncluded( candSubj )) && !candidates.contains( candSubj )) {
                     candidates.add( candSubj );
                 }
             }

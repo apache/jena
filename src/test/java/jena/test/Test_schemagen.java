@@ -6,10 +6,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            8 Sep 2006
  * Filename           $RCSfile: Test_schemagen.java,v $
- * Revision           $Revision: 1.3 $
+ * Revision           $Revision: 1.4 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2010-04-15 23:44:03 $
+ * Last modified on   $Date: 2010-05-17 22:20:16 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
@@ -47,7 +47,7 @@ import com.hp.hpl.jena.util.FileUtils;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: Test_schemagen.java,v 1.3 2010-04-15 23:44:03 ian_dickinson Exp $
+ * @version CVS $Id: Test_schemagen.java,v 1.4 2010-05-17 22:20:16 ian_dickinson Exp $
  */
 public class Test_schemagen
     extends TestCase
@@ -183,6 +183,15 @@ public class Test_schemagen
                              new String[] {} );
     }
 
+    /** Bug report by Brian: instance is in the namespace, but the class itself is not */
+    public void testInstance4() throws Exception {
+        String SOURCE = PREFIX + "@prefix ex2: <http://example.org/otherNS#>. ex2:A a rdfs:Class . ex:i a ex2:A .";
+        testSchemagenOutput( SOURCE, null,
+                             new String[] {"-a", "http://example.com/sg#", "--rdfs"},
+                             new String[] {".*public static final Resource i.*"},
+                             new String[] {} );
+    }
+
     /** Bug report by Richard Cyganiak */
     public void testRC0() throws Exception {
         String SOURCE = PREFIX + "ex:class a owl:Class .";
@@ -207,6 +216,22 @@ public class Test_schemagen
                              new String[] {"-a", "http://example.com/sg#", "--owl", "--nocomments"},
                              new String[] {},
                              new String[] {" */\\*\\* <p>commentcomment</p> \\*/ *"} );
+    }
+
+    public void testComment2() throws Exception {
+        String SOURCE = PREFIX + "ex:A a owl:Class ; rdfs:comment \"commentcomment\" .";
+
+        // we don't want the input fixed to be http://example.com/sg
+        SchemaGenAux sga = new SchemaGenAux() {
+            @Override
+            protected void go( String[] args ) {
+                go( new SchemagenOptionsImpl( args ) );
+            }
+        };
+        testSchemagenOutput( SOURCE, sga,
+                             new String[] {"-a", "http://example.com/sg#", "--owl", "-i", "file:\\\\C:\\Users\\fubar/vocabs/test.ttl"},
+                             new String[] {".*Vocabulary definitions from file:\\\\\\\\C:\\\\Users\\\\fubar/vocabs/test.ttl.*"},
+                             new String[] {} );
     }
 
     public void testOntClass0() throws Exception {
