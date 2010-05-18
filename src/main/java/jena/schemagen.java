@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            14-Apr-2003
  * Filename           $RCSfile: schemagen.java,v $
- * Revision           $Revision: 1.9 $
+ * Revision           $Revision: 1.10 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2010-05-17 22:20:03 $
+ * Last modified on   $Date: 2010-05-18 14:41:26 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
@@ -51,9 +51,9 @@ import com.hp.hpl.jena.vocabulary.*;
  * Designed to be highly flexible and customisable.
  * </p>
  *
- * @author Ian Dickinson, HP Labs
+ * @author Ian Dickinson
  *         (<a  href="mailto:ian_dickinson@users.sourceforge.net" >email</a>)
- * @version CVS $Id: schemagen.java,v 1.9 2010-05-17 22:20:03 ian_dickinson Exp $
+ * @version CVS $Id: schemagen.java,v 1.10 2010-05-18 14:41:26 ian_dickinson Exp $
  */
 public class schemagen {
     // Constants
