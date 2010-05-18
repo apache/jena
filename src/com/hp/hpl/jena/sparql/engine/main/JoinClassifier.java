@@ -8,8 +8,10 @@ package com.hp.hpl.jena.sparql.engine.main ;
 import java.util.Set ;
 
 import com.hp.hpl.jena.sparql.algebra.Op ;
+import com.hp.hpl.jena.sparql.algebra.op.OpDiff ;
 import com.hp.hpl.jena.sparql.algebra.op.OpExt ;
 import com.hp.hpl.jena.sparql.algebra.op.OpJoin ;
+import com.hp.hpl.jena.sparql.algebra.op.OpMinus ;
 import com.hp.hpl.jena.sparql.algebra.op.OpModifier ;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.util.SetUtils ;
@@ -33,6 +35,8 @@ public class JoinClassifier
         // With SELECT *, it's as if the subquery were just the pattern.
 
         if (right instanceof OpModifier) return false ;
+        if (right instanceof OpDiff) return false ;
+        if (right instanceof OpMinus) return false ;
 
         // Assume something will not commute these later on.
         return check(left, right) ;

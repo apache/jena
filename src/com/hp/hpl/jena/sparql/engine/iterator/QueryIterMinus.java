@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Systems Ltd
  * All rights reserved.
  * [See end of file]
  */
@@ -7,16 +8,19 @@
 package com.hp.hpl.jena.sparql.engine.iterator;
 
 import java.util.Iterator ;
+import java.util.Set ;
 
 import com.hp.hpl.jena.sparql.algebra.Algebra ;
+import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.lib.iterator.Iter ;
 
-/** Diff by materializing the RHS - this is not streamed on the right */
-public class QueryIterDiff extends QueryIter2LoopOnLeft
+/** Minus by materializing the RHS - this is not streamed on the right */
+public class QueryIterMinus extends QueryIter2LoopOnLeft
 {
-    public QueryIterDiff(QueryIterator left, QueryIterator right, ExecutionContext qCxt)
+    public QueryIterMinus(QueryIterator left, QueryIterator right, ExecutionContext qCxt)
     {
         super(left, right, qCxt) ;
     }
@@ -25,10 +29,14 @@ public class QueryIterDiff extends QueryIter2LoopOnLeft
     protected Binding getNextSlot(Binding bindingLeft)
     {
         boolean accept = true ;
+        Set<Var> varsLeft = Iter.toSet(bindingLeft.vars()) ;
 
         for ( Iterator<Binding> iter = tableRight.iterator(null) ; iter.hasNext() ; )
         {
             Binding bindingRight = iter.next() ;
+            
+            if ( ! commonVariable(varsLeft, bindingRight) )
+                continue ;
             if ( Algebra.compatible(bindingLeft, bindingRight) )
             {
                 accept = false ;
@@ -40,10 +48,22 @@ public class QueryIterDiff extends QueryIter2LoopOnLeft
             return bindingLeft ;
         return null ;
     }
+
+    private boolean commonVariable(Set<Var> varsLeft, Binding bindingRight)
+    {
+        for ( Iterator<Var> iter = bindingRight.vars() ; iter.hasNext() ; )
+        {
+            Var v = iter.next() ;
+            if ( varsLeft.contains(v) )
+                return true ;
+        }
+        return false ;
+    }
 }
 
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Systems Ltd
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

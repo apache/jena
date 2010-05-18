@@ -1,5 +1,8 @@
-@prefix : <http://example/> .
-@prefix  xs:    <http://www.w3.org/2001/XMLSchema#> .
+@prefix i: <http://example/> .
+@prefix n: <http://example/ns#> .
 
-:s :p "1"^^xs:integer .
+i:Jules n:memberOf  i:abc .
+i:Jules n:related        i:Jim .
+i:Jim    n:memberOf i:def .
+
 

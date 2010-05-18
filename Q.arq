@@ -1,0 +1,7 @@
+prefix i: <http://example/> 
+prefix n: <http://example/ns#> 
+
+select * where {
+    ?x n:memberOf ?org .
+    {{?x n:related ?y} minus {?y n:memberOf ?org}}
+} 

@@ -24,6 +24,7 @@ import com.hp.hpl.jena.sparql.expr.ExprList;
  */ 
 public abstract class QueryIterJoinBase extends QueryIter2
 {
+    // Use QuryIter2LoopOnLeft
     private QueryIterator current ;
     protected Table tableRight ;          // Materialized iterator
     protected ExprList exprs ;

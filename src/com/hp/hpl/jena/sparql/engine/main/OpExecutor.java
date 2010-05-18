@@ -223,8 +223,7 @@ public class OpExecutor
     { 
         QueryIterator left = executeOp(opMinus.getLeft(), input) ;
         QueryIterator right = executeOp(opMinus.getRight(), root()) ;
-        throw new ARQNotImplemented("diff/main engine") ;
-        //return new QueryIterMinus(left, right, execCxt) ;
+        return new QueryIterMinus(left, right, execCxt) ;
     }
 
     protected QueryIterator execute(OpUnion opUnion, QueryIterator input)

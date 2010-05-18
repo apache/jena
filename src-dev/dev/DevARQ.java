@@ -7,6 +7,9 @@ package dev;
 
 public class DevARQ
 {
+    // Main translation of minus to execution plan.
+    // Join classifier is insensitive to MINUS.
+    
     // Modules: atlas, RIOT
     // Migrate: Reifier2, GraphBase2, DatasetPrefixStorage
     

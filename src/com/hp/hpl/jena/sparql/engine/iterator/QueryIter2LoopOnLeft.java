@@ -1,49 +1,74 @@
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Systems Ltd
  * All rights reserved.
  * [See end of file]
  */
 
 package com.hp.hpl.jena.sparql.engine.iterator;
 
-import java.util.Iterator ;
-
-import com.hp.hpl.jena.sparql.algebra.Algebra ;
+import com.hp.hpl.jena.sparql.algebra.Table ;
+import com.hp.hpl.jena.sparql.algebra.TableFactory ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 
-/** Diff by materializing the RHS - this is not streamed on the right */
-public class QueryIterDiff extends QueryIter2LoopOnLeft
+/** Binary operation done by looping on the left, and materializing the right - this is not streamed on the right
+ * See also QueryIterRepeatApply */
+public abstract class QueryIter2LoopOnLeft extends QueryIter2
 {
-    public QueryIterDiff(QueryIterator left, QueryIterator right, ExecutionContext qCxt)
+    Table tableRight ; 
+    Binding slot = null ;
+    
+    public QueryIter2LoopOnLeft(QueryIterator left, QueryIterator right, ExecutionContext qCxt)
     {
         super(left, right, qCxt) ;
+        
+        // Materialized right.
+        tableRight = TableFactory.create(getRight()) ;
+        getRight().close();
     }
 
     @Override
-    protected Binding getNextSlot(Binding bindingLeft)
+    protected final void releaseResources()
+    { tableRight.close(); }
+   
+    @Override
+    protected final boolean hasNextBinding()
     {
-        boolean accept = true ;
-
-        for ( Iterator<Binding> iter = tableRight.iterator(null) ; iter.hasNext() ; )
+        if ( slot != null )
+            return true ;
+        
+        while ( getLeft().hasNext() )
         {
-            Binding bindingRight = iter.next() ;
-            if ( Algebra.compatible(bindingLeft, bindingRight) )
+            Binding bindingLeft = getLeft().nextBinding() ;
+            slot = getNextSlot(bindingLeft) ;
+            if ( slot != null )
             {
-                accept = false ;
-                break ;
+                slot = bindingLeft ; 
+                return true ;
             }
         }
+        getLeft().close() ;
+        return false ;
+    }
 
-        if ( accept )
-            return bindingLeft ;
-        return null ;
+    protected abstract Binding getNextSlot(Binding bindingLeft) ;
+
+    @Override
+    protected final Binding moveToNextBinding()
+    {
+        if ( ! hasNextBinding() )
+            return null ;
+        Binding x = slot ;
+        slot = null ;
+        return x ;
     }
 }
 
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Systems Ltd
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
