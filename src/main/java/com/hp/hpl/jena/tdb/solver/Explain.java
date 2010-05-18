@@ -121,7 +121,7 @@ Document:
     
     public static void explain(String message, BasicPattern bgp, Context context)
     {
-        if ( explaining(InfoLevel.ALL, logExec,context) )
+        if ( explaining(InfoLevel.ALL, logExec, context) )
             _explain(logExec, message, bgp.toString(), false) ;
     }
     
@@ -201,10 +201,10 @@ Document:
         }
     }
 
-    public static boolean explaining(InfoLevel level, Context context)
-    {
-        return explaining(level, logInfo, context) ;
-    }
+//    public static boolean explaining(InfoLevel level, Context context)
+//    {
+//        return explaining(level, logExec, context) ;
+//    }
     
 
     

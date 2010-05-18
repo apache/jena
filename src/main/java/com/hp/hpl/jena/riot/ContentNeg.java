@@ -55,68 +55,6 @@ public class ContentNeg
     {
         
     }
-    
-//    interface ParserGenerator { LangRIOT make(InputStream input, String baseIRI, Sink<Triple> sink) ; }
-//    
-//    static ParserGenerator parserTurtle = new ParserGenerator(){
-//        //@Override
-//        public LangRIOT make(InputStream input, String baseIRI, Sink<Triple> sink)
-//        {
-//            return ParserFactory.createParserTurtle(input, baseIRI, sink) ;
-//        }
-//    } ;
-//    static ParserGenerator parserNTriples = new ParserGenerator(){
-//        //@Override
-//        public LangRIOT make(InputStream input, String baseIRI, Sink<Triple> sink)
-//        {
-//            return ParserFactory.createParserNTriples(input, sink) ;
-//        }
-//    } ;
-//
-//    static ParserGenerator parserRDFXML = new ParserGenerator(){
-//        //@Override
-//        public LangRIOT make(InputStream input, String baseIRI, Sink<Triple> sink)
-//        {
-//            throw new NotImplemented() ;
-//        }
-//    } ;
-//
-//    static ParserGenerator parserNQuads = new ParserGenerator(){
-//        //@Override
-//        public LangRIOT make(InputStream input, String baseIRI, Sink<Triple> sink)
-//        {
-//            throw new NotImplemented() ;
-//        }
-//    } ;
-//
-//    static ParserGenerator parserTrig = new ParserGenerator(){
-//        //@Override
-//        public LangRIOT make(InputStream input, String baseIRI, Sink<Triple> sink)
-//        {
-//            throw new NotImplemented() ;
-//        }
-//    } ;
-    
-//    //NO - triples vs quads
-//    static LangRIOT getParser(String langStr, String baseIRI, InputStream input, Sink<Triple> sink)
-//    {
-//        Lang lang = Lang.get(langStr, Lang.RDFXML) ;
-//        switch(lang)
-//        {
-//            case NQUADS :
-//                break ;
-//            case NTRIPLES :
-//                return parserNTriples.make(input, baseIRI, sink) ; 
-//            case RDFXML :
-//                return parserRDFXML.make(input, baseIRI, sink) ;
-//            case TRIG :
-//                break ;
-//            case N3:
-//            case TURTLE :
-//                return parserTurtle.make(input, baseIRI, sink) ;
-//            
-//        }
-//    }
 
     /*
      * https://sourceforge.net/mailarchive/message.php?msg_id=4B1D5C7F.3040109%40talis.com

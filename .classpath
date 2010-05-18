@@ -19,6 +19,6 @@
 	<classpathentry kind="lib" path="lib/wstx-asl-3.2.9.jar"/>
 	<classpathentry kind="lib" path="lib/xercesImpl-2.7.1.jar"/>
 	<classpathentry kind="lib" path="lib/arq-2.8.4-RC-2-tests.jar"/>
-	<classpathentry kind="lib" path="lib/arq-2.8.4-RC-2.jar"/>
+	<classpathentry kind="lib" path="lib/arq-2.8.4-RC-2.jar" sourcepath="lib/arq-2.8.4-RC-2-sources.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>

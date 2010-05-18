@@ -1,7 +1,7 @@
-PREFIX  foaf:   <http://xmlns.com/foaf/0.1/>
-PREFIX : <http://example/>
+# Same query as above but going via the authorList predicate
+# Times out for me
+select ?book where {
+?book <http://purl.org/ontology/bibo/authorList> ?list .
+?list <http://www.w3.org/1999/02/22-rdf-syntax-ns#li> <http://openlibrary.org/a/OL25712A> .
+} limit 10
 
-select *
-where { ?s :p ?o.
-        optional { ?o :q ?z }.
-      }

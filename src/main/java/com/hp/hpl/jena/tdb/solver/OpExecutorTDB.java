@@ -358,8 +358,7 @@ public class OpExecutorTDB extends OpExecutor
             if ( g instanceof GraphTDB )
             {
                 BasicPattern bgp = opBGP.getPattern() ;
-                if ( Explain.explaining(Explain.InfoLevel.ALL, execCxt.getContext()) )
-                    Explain.explain("Execute", bgp, execCxt.getContext()) ;
+                Explain.explain("Execute", bgp, execCxt.getContext()) ;
                 // Triple-backed (but may be named as explicit default graph).
                 return SolverLib.execute((GraphTDB)g, bgp, input, filter, execCxt) ;
             }
@@ -376,10 +375,7 @@ public class OpExecutorTDB extends OpExecutor
             if ( execCxt.getDataset() instanceof DatasetGraphTDB )
             {
                 DatasetGraphTDB ds = (DatasetGraphTDB)execCxt.getDataset() ;
-                
-                if ( Explain.explaining(Explain.InfoLevel.ALL, execCxt.getContext()) )
-                    Explain.explain("Execute", opQuadPattern.getPattern(), execCxt.getContext()) ;
-
+                Explain.explain("Execute", opQuadPattern.getPattern(), execCxt.getContext()) ;
                 BasicPattern bgp = opQuadPattern.getBasicPattern() ;
                 return SolverLib.execute(ds, gn, bgp, input, filter, execCxt) ;
             }
@@ -389,21 +385,17 @@ public class OpExecutorTDB extends OpExecutor
             {
                 if ( g instanceof GraphTriplesTDB )
                 {
-                    // Triples graph from TDB (which is the defaul tgraph of the dataset),
+                    // Triples graph from TDB (which is the default graph of the dataset),
                     // used a named graph in a composite dataset.
                     BasicPattern bgp = opQuadPattern.getBasicPattern() ;
-                    if ( Explain.explaining(Explain.InfoLevel.ALL, execCxt.getContext()) )
-                        Explain.explain("Execute", bgp, execCxt.getContext()) ;
+                    Explain.explain("Execute", bgp, execCxt.getContext()) ;
                     return SolverLib.execute((GraphTDB)g, bgp, input, filter, execCxt) ;
                 }
                 
                 if ( g instanceof GraphNamedTDB )
                 {
-                    // Legacy - when ARQ upgrades, this will be deprecated and need updating.
-                    
-                    if ( Explain.explaining(Explain.InfoLevel.ALL, execCxt.getContext()) )
-                        Explain.explain("Execute", opQuadPattern.getPattern(), execCxt.getContext()) ;
-
+                    // Legacy?/ Does not now happen?
+                    Explain.explain("Execute", opQuadPattern.getPattern(), execCxt.getContext()) ;
                     // Quad-backed graph
                     return SolverLib.execute(((GraphTDB)g).getDataset(), opQuadPattern.getGraphNode(), opQuadPattern.getBasicPattern(), 
                                              input, filter, execCxt) ;

@@ -63,6 +63,10 @@ public class RunTDB
 
     public static void main(String[] args) throws IOException
     {
+        
+        tdb.tdbquery.main("--set=tdb:logExec=true", "--query=Q.rq") ; System.exit(0) ;
+        
+        
         //tdb.ntriples.main("--skip","D.nt") ; System.exit(0) ;
         tdb.turtle.main("D.ttl") ; System.exit(0) ;
         

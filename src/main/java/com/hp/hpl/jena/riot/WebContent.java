@@ -34,8 +34,7 @@ public class WebContent
     public static final String contentTypeTriG            = "application/x-trig" ;
     public static final String contentTypeNQuads          = "text/x-nquads" ;
 
-    
-    // There is no MIME for a SPARQL query.
+    // There is no MIME type for a SPARQL query.
     // Either it is a GET or it is a "x-www-form-urlencoded"
     
     //public static final String contentSPARQL_X            = "application/x-sparql-query" ;
