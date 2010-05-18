@@ -25,9 +25,7 @@ public class DevTDB
     //   Recovery parsing - scan to DOT?
     // RIOT Commands
     // Document
-    //  --sink, --skip, --time
-    // RIOT extensions
-    //     NQuads in Trig ??
+    //  --sink, --skip, --time. --stats?
     
     // Free block recycling.
     
