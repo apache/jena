@@ -99,6 +99,7 @@ public class query extends CmdARQ
             modTime.startTimer() ;
             QueryExecution qe = QueryExecutionFactory.create(query, dataset) ;
             // Check there is a dataset
+            // XXXXXXXX
             
             if ( dataset == null && ! query.hasDatasetDescription() )
             {

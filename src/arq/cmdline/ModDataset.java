@@ -6,8 +6,7 @@
 
 package arq.cmdline;
 
-import com.hp.hpl.jena.query.Dataset;
-import com.hp.hpl.jena.query.DatasetFactory ;
+import com.hp.hpl.jena.query.Dataset ;
 
 public abstract class ModDataset extends ModBase
 {
@@ -20,10 +19,7 @@ public abstract class ModDataset extends ModBase
         if ( ! createAttempted )
             dataset = createDataset() ;
         createAttempted = true ;
-
-        if ( dataset == null )
-            dataset = DatasetFactory.create() ;
-        
+        // Can still be null (nothing on command line set the datset - hope the query does something).
         return dataset ;
     }
     

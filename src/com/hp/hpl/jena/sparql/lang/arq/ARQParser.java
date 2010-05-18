@@ -1719,12 +1719,6 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     case SERVICE:
       el = ServiceGraphPattern();
       break;
-    case EXISTS:
-      el = ExistsElt();
-      break;
-    case NOTEXISTS:
-      el = NotExistsElt();
-      break;
     case FILTER:
       el = Filter();
       break;
@@ -1733,6 +1727,12 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
       break;
     case FETCH:
       el = FetchGraph();
+      break;
+    case EXISTS:
+      el = ExistsElt();
+      break;
+    case NOTEXISTS:
+      el = NotExistsElt();
       break;
     default:
       jj_la1[68] = jj_gen;

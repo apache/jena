@@ -597,16 +597,16 @@ Element GraphPatternNotTriples() : { Element el = null ; }
  |
    el = ServiceGraphPattern()
  |
-   el = ExistsElt()
- |
-   el = NotExistsElt()
- |
    el = Filter()
 
  |
    el = Assignment()
  |
    el = FetchGraph()
+ |
+   el = ExistsElt()
+ |
+   el = NotExistsElt()
 
  )
  { return el ; }
@@ -655,7 +655,6 @@ Element FetchGraph() : { Node n ; }
 }
 
 
-
 Element ExistsElt() : { Element el ; }
 {
     <EXISTS>
@@ -669,6 +668,7 @@ Element NotExistsElt() : { Element el ; }
     el = GroupGraphPattern()
     { return new ElementNotExists(el) ; }
 }
+
 
 Element MinusGraphPattern() : { Element el ; }
 {

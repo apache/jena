@@ -91,6 +91,13 @@ public class RunARQ
 
     public static void main(String[] argv) throws Exception
     {
+        String a[] = new String[]{
+            "--query=Q.rq" 
+        } ;
+        
+        sparql.main(a) ;
+        System.exit(0) ;
+        
         if ( false )
         {
             String $1 = "insert into <urn:x:a> { <urn:x:s> <urn:x:p> <urn:x:o> }" ;

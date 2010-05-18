@@ -287,13 +287,11 @@ NON-TERMINALS
 // #endif
 	TriplesBlock	:=	TriplesSameSubjectPath ( <DOT> ( TriplesBlock )? )?
 // -----
-	GraphPatternNotTriples	:=	( GroupGraphPattern | OptionalGraphPattern | UnionGraphPattern | MinusGraphPattern | GraphGraphPattern | ServiceGraphPattern | ExistsElt | NotExistsElt | Filter )
+	GraphPatternNotTriples	:=	( GroupGraphPattern | OptionalGraphPattern | UnionGraphPattern | MinusGraphPattern | GraphGraphPattern | ServiceGraphPattern | Filter )
 // ---- Definitions of each pattern element
 	OptionalGraphPattern	:=	<OPTIONAL> GroupGraphPattern
 	GraphGraphPattern	:=	<GRAPH> VarOrIRIref GroupGraphPattern
 	ServiceGraphPattern	:=	<SERVICE> VarOrIRIref GroupGraphPattern
-	ExistsElt	:=	<EXISTS> GroupGraphPattern
-	NotExistsElt	:=	<NOTEXISTS> GroupGraphPattern
 	MinusGraphPattern	:=	<MINUS_P> GroupGraphPattern
 	UnionGraphPattern	:=	<UNION> GroupGraphPattern
 // SPARQL 1.0: {pattern} UNION {pattern} UNION {pattern} ... :: 

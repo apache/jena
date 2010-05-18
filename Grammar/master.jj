@@ -736,16 +736,16 @@ Element GraphPatternNotTriples() : { Element el = null ; }
  |
    el = ServiceGraphPattern()
  |
-   el = ExistsElt()
- |
-   el = NotExistsElt()
- |
    el = Filter()
 #ifdef ARQ
  |
    el = Assignment()
  | 
    el = FetchGraph()
+ |
+   el = ExistsElt()
+ |
+   el = NotExistsElt()
 #endif
  )
  { return el ; }
@@ -792,7 +792,6 @@ Element FetchGraph() : { Node n ; }
   n = VarOrIRIref() 
   { return new ElementFetch(n) ; }
 }
-#endif
 
 
 Element ExistsElt() : { Element el ; }
@@ -808,6 +807,7 @@ Element NotExistsElt() : { Element el ; }
     el = GroupGraphPattern()
     { return new ElementNotExists(el) ; }
 }
+#endif
 
 Element MinusGraphPattern() : { Element el ; }
 {

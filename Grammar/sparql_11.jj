@@ -544,17 +544,7 @@ Element GraphPatternNotTriples() : { Element el = null ; }
  |
    el = ServiceGraphPattern()
  |
-   el = ExistsElt()
- |
-   el = NotExistsElt()
- |
    el = Filter()
-
-
-
-
-
-
  )
  { return el ; }
 }
@@ -580,20 +570,6 @@ Element ServiceGraphPattern() : { Element el ; Node n ; }
   el = GroupGraphPattern()
     { return new ElementService(n, el) ; }
 }
-Element ExistsElt() : { Element el ; }
-{
-    <EXISTS>
-    el = GroupGraphPattern()
-    { return new ElementExists(el) ; }
-}
-
-Element NotExistsElt() : { Element el ; }
-{
-    <NOTEXISTS>
-    el = GroupGraphPattern()
-    { return new ElementNotExists(el) ; }
-}
-
 Element MinusGraphPattern() : { Element el ; }
 {
     <MINUS_P>
