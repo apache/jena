@@ -32,20 +32,33 @@ public class TestChecker
     static Checker checker = new Checker(handler) ;
     
 //    boolean b ;
-//    @Before public void before() { b =JenaParameters.enableWhitespaceCheckingOfTypedLiterals ; } 
-//    @After public void after()   { JenaParameters.enableWhitespaceCheckingOfTypedLiterals = b ; } 
+//
+//    @Before
+//    public void before()
+//    {
+//        b = JenaParameters.enableWhitespaceCheckingOfTypedLiterals ;
+//        JenaParameters.enableWhitespaceCheckingOfTypedLiterals = false ;
+//    }
+//
+//    @After
+//    public void after()
+//    {
+//        JenaParameters.enableWhitespaceCheckingOfTypedLiterals = b ;
+//    }
     
     @Test public void checker01() { check("''") ; }
     @Test public void checker02() { check("''@en") ; }
     @Test public void checker03() { check("<x>") ; }
     
-    @Test(expected=ExWarning.class) public void checker10() { check("''^^xsd:dateTime") ; }
+    @Test (expected=ExWarning.class) public void checker10() { check("''^^xsd:dateTime") ; }
 
     // Whitespace facet processing means that these are legal.
     //--@Test public void checker11() { check("'  2010-05-19T01:01:01.01+0100'^^xsd:dateTime") ; }
-    //--@Test public void checker12() { check("'\\n2010-05-19T01:01:01.01+0100'^^xsd:dateTime") ; }
+  //--@Test public void checker12() { check("'\\n2010-05-19T01:01:01.01+0100'^^xsd:dateTime") ; }
     @Test public void checker13() { check("' 123'^^xsd:integer") ; }
-    //--@Test public void checker14() { check("'12 3'^^xsd:integer") ; }
+    
+    // Internal white space - illegal
+    @Test (expected=ExWarning.class) public void checker14() { check("'12 3'^^xsd:integer") ; }
     @Test public void checker15() { check("'\\n123'^^xsd:integer") ; }
 
     @Test public void checker16() { check("'123.0  '^^xsd:float") ; }

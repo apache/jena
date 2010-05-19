@@ -54,20 +54,15 @@ public class RunTDB
 
     public static void main(String[] args) throws IOException
     {
-        {   // Whitespace facets in SD datatypes.
+        {
+            
+            // Whitespace facets in SD datatypes.
             // WS is space, \n \r \t
             // Warning for non-canonical literals?
             // In NT, NQ.
             
-            
-            
 //            String str = "'  2010-05-19T01:02:03'^^<http://www.w3.org/2001/XMLSchema#dateTime>" ;
 //            String dtname = "dateTime" ;
-            
-            System.out.print("--") ;
-            System.out.print("\n abc   \t  ".trim()) ;
-            System.out.print("--") ;
-            System.out.println() ;
             
             String str = "'\\n  123'^^<http://www.w3.org/2001/XMLSchema#integer>" ;
             String dtname = "integer" ;

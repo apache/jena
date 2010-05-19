@@ -180,7 +180,9 @@ public class NodeId
             if ( ! XSDDatatype.XSDdecimal.isValidLiteral(lit) ) 
                 return null ;
             
-            BigDecimal decimal = (BigDecimal)(lit.getValue()) ;
+            // Not lit.getValue() because that may be the narrowest type e.g. Integer.
+            // .trim is how Jen adoes it but it rather savage. spc, \n \r \t.
+            BigDecimal decimal = new BigDecimal(lit.getLexicalForm().trim()) ;
             // Does range checking.
             DecimalNode dn = DecimalNode.valueOf(decimal) ;
             // null is "does not fit"
