@@ -25,8 +25,8 @@ import com.hp.hpl.jena.sparql.engine.main.QC ;
 import com.hp.hpl.jena.sparql.engine.main.StageBuilder ;
 import com.hp.hpl.jena.sparql.engine.main.StageGenerator ;
 import com.hp.hpl.jena.sparql.lib.Metadata ;
-import com.hp.hpl.jena.sparql.mgt.ARQMgt;
-import com.hp.hpl.jena.sparql.mgt.SystemInfo;
+import com.hp.hpl.jena.sparql.mgt.ARQMgt ;
+import com.hp.hpl.jena.sparql.mgt.SystemInfo ;
 import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.sparql.util.Symbol ;
 import com.hp.hpl.jena.tdb.assembler.AssemblerTDB ;
@@ -187,6 +187,14 @@ public class TDB
         if ( initialized )
             return ;
         initialized = true ;
+     
+        // By default, Jena accepts numeric values with whitespace as valid (as does Xerces).
+        // But it's strictly illegal.
+        // We get strict - 
+        // Commented out : the Checker does strict checking.
+        // JenaParameters.enableWhitespaceCheckingOfTypedLiterals = true ;
+        
+
         
         SystemTDB.init() ;
         ARQ.init() ;

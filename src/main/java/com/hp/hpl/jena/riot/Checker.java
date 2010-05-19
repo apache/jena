@@ -9,11 +9,22 @@ package com.hp.hpl.jena.riot;
 import static com.hp.hpl.jena.riot.ErrorHandlerLib.errorHandlerStd ;
 
 import java.util.Iterator ;
+import java.util.regex.Pattern ;
 
+import org.apache.xerces.impl.dv.InvalidDatatypeValueException ;
+import org.apache.xerces.impl.dv.ValidatedInfo ;
+import org.apache.xerces.impl.dv.ValidationContext ;
+import org.apache.xerces.impl.dv.XSSimpleType ;
+import org.apache.xerces.impl.validation.ValidationState ;
 import org.openjena.atlas.lib.Cache ;
 import org.openjena.atlas.lib.CacheFactory ;
 import org.openjena.atlas.lib.IRILib ;
 
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
+import com.hp.hpl.jena.datatypes.xsd.impl.XSDAbstractDateTimeType ;
+import com.hp.hpl.jena.datatypes.xsd.impl.XSDBaseNumericType ;
+import com.hp.hpl.jena.datatypes.xsd.impl.XSDDouble ;
+import com.hp.hpl.jena.datatypes.xsd.impl.XSDFloat ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.graph.impl.LiteralLabel ;
@@ -25,8 +36,6 @@ import com.hp.hpl.jena.iri.ViolationCodes ;
 /** A checker validates RDF terms. */
 public final class Checker
 {
-
-    
     private boolean allowRelativeIRIs = false ;
     private boolean warningsAreErrors = false ;
     private ErrorHandler handler ;
@@ -100,7 +109,6 @@ public final class Checker
             return false ;
         }
             
-            
         if ( predicate == null || ( ! predicate.isURI() ) )
         {
             errorHandlerStd.error(msg+": Predicate not a URI", -1, -1) ;
@@ -118,36 +126,72 @@ public final class Checker
     final public boolean checkVar(Node node, long line, long col)
     { return true ; }
 
+    final private Pattern langPattern = Pattern.compile("[a-zA-Z]{1,8}(-[a-zA-Z]{1,8})*") ;
+    
     final public boolean checkLiteral(Node node, long line, long col)
     {
         LiteralLabel lit = node.getLiteral() ;
 
         // Datatype check (and plain literals are always well formed)
-        if ( lit.getDatatype() != null && ! lit.isWellFormed() )
-        {
-            handler.warning("Lexical not valid for datatype: "+node, line, col) ;
-            return false; 
-        }
-
-        if (lit.language() != null )
+        if ( lit.getDatatype() != null )
+            return validateByDatatype(lit, node, line, col) ;
+        
+        // No datatype.
+        String lang = lit.language() ;
+        if (lang != null && ! lang.equals("") )
         {
             // Not a perfect test.
-            String lang = lit.language() ;
-            if ( lang.length() > 0 && ! lang.matches("[a-zA-Z]{1,8}(-[a-zA-Z]{1,8})*") )
+            if ( lang.length() > 0 && ! langPattern.matcher(lang).matches() ) 
             {
                 handler.warning("Language not valid: "+node, line, col) ;
                 return false; 
             }
         }
         
-        if ( lit.getDatatype() != null  && (lit.language() != null && ! lit.language().equals("")) )
-        {
-            handler.error("Illegal: Both language and datatype: "+node, line, col) ;
-            return false; 
-        }
         return true ;
     }
 
+    private final boolean validateByDatatype(LiteralLabel lit, Node node, long line, long col)
+    {
+        String lex = lit.getLexicalForm() ;
+        
+        if ( ! ( lit.getDatatype() instanceof XSDDatatype ) )
+            return lit.getDatatype().isValidLiteral(lit) ;
+        
+        if ( lit.getDatatype() == XSDDatatype.XSDstring || lit.getDatatype() == XSDDatatype.XSDnormalizedString )
+            return true ;
+
+        // Enforce whitespace checking.
+        if ( lit.getDatatype() instanceof XSDBaseNumericType || lit.getDatatype() instanceof XSDFloat || lit.getDatatype() instanceof XSDDouble )
+        {
+            // Do a white space check as well for numerics.
+            if ( lex.contains(" ") )  { handler.warning("Whitespace in numeric XSD literal: "+node, line, col) ; return false ; } 
+            if ( lex.contains("\n") ) { handler.warning("Newline in numeric XSD literal: "+node, line, col) ; return false ; }
+            if ( lex.contains("\r") ) { handler.warning("Newline in numeric XSD literal: "+node, line, col) ; return false ; }
+        }
+        
+        if ( lit.getDatatype() instanceof XSDAbstractDateTimeType )
+        {
+            // Do a white space check as well for numerics.
+            if ( lex.contains(" ") )  { handler.warning("Whitespace in numeric XSD date or time literal: "+node, line, col) ; return false ; } 
+            if ( lex.contains("\n") ) { handler.warning("Newline in numeric XSD date or time literal: "+node, line, col) ; return false ; }
+            if ( lex.contains("\r") ) { handler.warning("Newline in numeric XSD date or time literal: "+node, line, col) ; return false ; }
+        }
+            
+        // From Jena 2.6.3, XSDDatatype.parse
+        XSSimpleType typeDeclaration = (XSSimpleType)lit.getDatatype().extendedTypeDefinition() ;
+        try {
+            ValidationContext context = new ValidationState();
+            ValidatedInfo resultInfo = new ValidatedInfo();
+            Object result = typeDeclaration.validate(lex, context, resultInfo);
+            return true ;
+        } catch (InvalidDatatypeValueException e) {
+            handler.warning("Lexical form not valid for datatype: "+node, line, col) ;
+            return false ;
+        }
+    }
+    
+    
     final public boolean checkBlank(Node node, long line, long col)
     {
         String x =  node.getBlankNodeLabel() ;

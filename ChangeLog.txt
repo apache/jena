@@ -3,6 +3,7 @@ ChangeLog for TDB
 
 ==== 0.8.6
 
++ Parsing NTriples/NQuads/Turtle/TriG is now strict about checking white space in XSD datatypes (all except strings).  
 + New command "riot" that parsers any format and outputs N-Triples/N-Quads
   Language determination based on filename extension. 
   Use command with specific fomat name to force the format

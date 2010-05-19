@@ -7,8 +7,10 @@
 
 package com.hp.hpl.jena.tdb.store.bulkloader;
 
+import java.util.Arrays ;
 import java.util.Iterator ;
 
+import org.openjena.atlas.iterator.Iter ;
 import org.openjena.atlas.lib.ArrayUtils ;
 import org.openjena.atlas.lib.Closeable ;
 import org.openjena.atlas.lib.Tuple ;
@@ -103,9 +105,15 @@ public class LoaderNodeTupleTable implements Closeable, Sync
     /** Stream in items to load ... */
     public void load(Node... nodes)
     {
+        try {
         count++ ;
         monitor.dataItem() ;
         nodeTupleTable.addRow(nodes) ;
+        } catch (RuntimeException ex)
+        {
+            System.err.println(Iter.asString(Arrays.asList(nodes))) ;
+            ex.printStackTrace(System.err) ;
+        }
     }
     
     /** Notify End of data to load - this operation may 

@@ -20,6 +20,7 @@ import org.openjena.atlas.lib.SinkPrint ;
 import org.openjena.atlas.lib.SinkWrapper ;
 import org.openjena.atlas.lib.Tuple ;
 
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.query.ARQ ;
@@ -30,6 +31,7 @@ import com.hp.hpl.jena.query.QueryExecutionFactory ;
 import com.hp.hpl.jena.query.QueryFactory ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.StmtIterator ;
+import com.hp.hpl.jena.riot.Checker ;
 import com.hp.hpl.jena.riot.RiotReader ;
 import com.hp.hpl.jena.riot.lang.LangRIOT ;
 import com.hp.hpl.jena.sparql.algebra.Algebra ;
@@ -63,6 +65,22 @@ public class RunTDB
 
     public static void main(String[] args) throws IOException
     {
+//        tdb.ntriples.main("--sink", "/home/afs/Datasets/GovData/NaPTAN/stop-area.nt") ;
+//        System.exit(0) ;
+        
+        Node n = Node.createLiteral("  2010-05-05T17:25:42.97+01:00", null, XSDDatatype.XSDdateTime) ;
+        new Checker(null).checkLiteral(n, -1, -1) ;
+        n = Node.createLiteral("\n  2010-05-05T17:25:42.97+01:00", null, XSDDatatype.XSDdateTime) ;
+        new Checker(null).checkLiteral(n, -1, -1) ;
+        
+        
+        System.out.println(XSDDatatype.XSDdateTime.isValid("\n  2010-05-05T17:25:42.97+01:00")) ;
+        
+        System.out.println("DONE") ;
+        System.exit(0) ;
+        
+        tdb.tdbloader.main("--loc=DB", "/home/afs/Datasets/GovData/NaPTAN/stop-area.nt") ;
+        System.exit(0) ;
         
         tdb.tdbquery.main("--set=tdb:logExec=true", "--query=Q.rq") ; System.exit(0) ;
         

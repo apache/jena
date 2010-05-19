@@ -15,9 +15,9 @@ import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.util.StringUtils ;
 import com.hp.hpl.jena.sparql.util.Timer ;
 
-/** Abstract the load logging */
-public class LoadMonitor
+public final class LoadMonitor
 {
+    /* Parameterize the load logging */
     private final Logger log ;
     private final DatasetGraph dataset ;
     private final long superTick = 10 ;

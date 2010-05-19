@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -8,12 +8,12 @@ package com.hp.hpl.jena.riot.lang;
 
 import org.junit.Test ;
 
-import com.hp.hpl.jena.iri.IRI ;
-import com.hp.hpl.jena.iri.IRIFactory ;
+import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.riot.Checker ;
 import com.hp.hpl.jena.riot.ErrorHandler ;
+import com.hp.hpl.jena.sparql.sse.SSE ;
 
-public class TestIRI
+public class TestChecker
 {
     private static class ExFatal extends RuntimeException {} ;
     private static class ExError extends RuntimeException {} ;
@@ -33,31 +33,48 @@ public class TestIRI
     } ;
     static Checker checker = new Checker(handler) ;
     
-    static IRIFactory factory = IRIFactory.iriImplementation() ;
+    @Test public void checker01() { check("''") ; }
+    @Test public void checker02() { check("''@en") ; }
+    @Test public void checker03() { check("<x>") ; }
     
-    @Test public void iri1()  { test("http://example/") ; }
-    @Test public void iri2()  { test("example") ; }             // Relative is OK to the checker
+    // Whitespace
+    @Test(expected=ExWarning.class) public void checker10() { check("''^^xsd:dateTime") ; }
+    @Test(expected=ExWarning.class) public void checker11() { check("'  2010-05-19T01:01:01.01+0100'^^xsd:dateTime") ; }
+    @Test(expected=ExWarning.class) public void checker12() { check("'\\n2010-05-19T01:01:01.01+0100'^^xsd:dateTime") ; }
+    @Test(expected=ExWarning.class) public void checker13() { check("' 123'^^xsd:integer") ; }
+    @Test(expected=ExWarning.class) public void checker14() { check("'12 3'^^xsd:integer") ; }
+    @Test(expected=ExWarning.class) public void checker15() { check("'\\n123'^^xsd:integer") ; }
+
+    @Test(expected=ExWarning.class) public void checker16() { check("'123.0  '^^xsd:float") ; }
+    @Test(expected=ExWarning.class) public void checker17() { check("'123.0\\n'^^xsd:double") ; }
+
     
-    @Test(expected=ExWarning.class) 
-    public void iriErr1()  { test("http:") ; }
-
-    @Test(expected=ExWarning.class) 
-    public void iriErr2()  { test("http:///::") ; }
-
-    @Test(expected=ExWarning.class) 
-    public void iriErr3()  { test("http://example/.") ; }
+    // Other bad lexical forms.
+    @Test(expected=ExWarning.class) public void checker20() { check("'XYZ'^^xsd:integer") ; }
+    // Lang tag
+    @Test(expected=ExWarning.class) public void checker21() { check("'XYZ'@abcdefghijklmn") ; }
+    
+    
+    @Test(expected=ExWarning.class) public void checker30() { check("<http://base/[]iri>") ; }
+    
+    //Bad IRI
 
     
-    private void test(String uriStr)
+    //@Test public void checker12() { check("''@en") ; }
+    
+    
+    
+
+    private static void check(String string)
     {
-        IRI iri = factory.create(uriStr) ;
-        checker.checkIRI(iri, -1, -1) ;
+        Node n = SSE.parseNode(string) ;
+        checker.check(n, -1, -1) ;
     }
     
 }
 
 /*
- * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -39,13 +39,13 @@ public abstract class CmdTDB extends CmdARQ
     protected final ModTDBDataset tdbDatasetAssembler   = new ModTDBDataset() ;
 
     private static final String log4Jsetup = StringUtils.join("\n"
-                   , "## Plain output"
+                   , "## Plain output to stdout"
                    , "log4j.appender.tdb.plain=org.apache.log4j.ConsoleAppender"
-                   , "log4j.appender.tdb.plain.target=System.err"
+                   , "log4j.appender.tdb.plain.target=System.out"
                    , "log4j.appender.tdb.plain.layout=org.apache.log4j.PatternLayout"
                    , "log4j.appender.tdb.plain.layout.ConversionPattern=%m%n"
 
-                   , "## Plain output with level"
+                   , "## Plain output with level, to stderr"
                    , "log4j.appender.tdb.plainlevel=org.apache.log4j.ConsoleAppender"
                    , "log4j.appender.tdb.plainlevel.target=System.err"
                    , "log4j.appender.tdb.plainlevel.layout=org.apache.log4j.PatternLayout"
