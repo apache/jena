@@ -6,10 +6,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            8 Sep 2006
  * Filename           $RCSfile: Test_schemagen.java,v $
- * Revision           $Revision: 1.5 $
+ * Revision           $Revision: 1.6 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2010-05-19 09:22:07 $
+ * Last modified on   $Date: 2010-05-19 10:31:46 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
@@ -47,7 +47,7 @@ import com.hp.hpl.jena.util.FileUtils;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: Test_schemagen.java,v 1.5 2010-05-19 09:22:07 ian_dickinson Exp $
+ * @version CVS $Id: Test_schemagen.java,v 1.6 2010-05-19 10:31:46 ian_dickinson Exp $
  */
 public class Test_schemagen
     extends TestCase
@@ -190,6 +190,32 @@ public class Test_schemagen
                              new String[] {"-a", "http://example.com/sg#", "--rdfs"},
                              new String[] {".*public static final Resource i.*"},
                              new String[] {} );
+    }
+
+    /** Bug report by Brian: instances not being recognised */
+    public void testInstance5() throws Exception {
+        String SOURCE = "@prefix :        <http://ontology.earthster.org/eco/impact#> .\n" +
+                "@prefix core:    <http://ontology.earthster.org/eco/core#> .\n" +
+                "@prefix ecoinvent:  <http://ontology.earthster.org/eco/ecoinvent#> .\n" +
+                "@prefix owl:     <http://www.w3.org/2002/07/owl#> .\n" +
+                "@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .\n" +
+                "@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .\n" +
+                "@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .\n" +
+                "\n" +
+                "<http://ontology.earthster.org/eco/impact>\n" +
+                "      rdf:type owl:Ontology ;\n" +
+                "      owl:imports <http://ontology.earthster.org/eco/ecoinvent> , <http://ontology.earthster.org/eco/core> ;\n" +
+                "      owl:versionInfo \"Created with TopBraid Composer\"^^xsd:string .\n" +
+                "\n" +
+                ":CD-CML2001-AbioticDepletion\n" +
+                "      rdf:type core:ImpactAssessmentMethodCategoryDescription ;\n" +
+                "      rdfs:label \"abiotic resource depletion\"^^xsd:string ;\n" +
+                "      core:hasImpactCategory\n" +
+                "              :abioticDepletion .";
+        testSchemagenOutput( SOURCE, null,
+                             new String[] {"--owl", "--inference"},
+                             new String[] {".*public static final Resource CD_CML2001_AbioticDepletion.*"},
+                             new String[] {".*valtype.*"} );
     }
 
     /** Bug report by Richard Cyganiak */
