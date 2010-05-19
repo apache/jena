@@ -6,10 +6,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            8 Sep 2006
  * Filename           $RCSfile: Test_schemagen.java,v $
- * Revision           $Revision: 1.4 $
+ * Revision           $Revision: 1.5 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2010-05-17 22:20:16 $
+ * Last modified on   $Date: 2010-05-19 09:22:07 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
@@ -47,7 +47,7 @@ import com.hp.hpl.jena.util.FileUtils;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: Test_schemagen.java,v 1.4 2010-05-17 22:20:16 ian_dickinson Exp $
+ * @version CVS $Id: Test_schemagen.java,v 1.5 2010-05-19 09:22:07 ian_dickinson Exp $
  */
 public class Test_schemagen
     extends TestCase
@@ -231,6 +231,22 @@ public class Test_schemagen
         testSchemagenOutput( SOURCE, sga,
                              new String[] {"-a", "http://example.com/sg#", "--owl", "-i", "file:\\\\C:\\Users\\fubar/vocabs/test.ttl"},
                              new String[] {".*Vocabulary definitions from file:\\\\\\\\C:\\\\Users\\\\fubar/vocabs/test.ttl.*"},
+                             new String[] {} );
+    }
+
+    public void testComment3() throws Exception {
+        String SOURCE = PREFIX + "ex:A a owl:Class ; rdfs:comment \"commentcomment\" .";
+
+        // we don't want the input fixed to be http://example.com/sg
+        SchemaGenAux sga = new SchemaGenAux() {
+            @Override
+            protected void go( String[] args ) {
+                go( new SchemagenOptionsImpl( args ) );
+            }
+        };
+        testSchemagenOutput( SOURCE, sga,
+                             new String[] {"-a", "http://example.com/sg#", "--owl", "-i", "C:\\Users\\fubar/vocabs/test.ttl"},
+                             new String[] {".*Vocabulary definitions from C:\\\\Users\\\\fubar/vocabs/test.ttl.*"},
                              new String[] {} );
     }
 

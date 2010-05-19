@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            14-Apr-2003
  * Filename           $RCSfile: schemagen.java,v $
- * Revision           $Revision: 1.10 $
+ * Revision           $Revision: 1.11 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2010-05-18 14:41:26 $
+ * Last modified on   $Date: 2010-05-19 09:19:17 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
@@ -53,7 +53,7 @@ import com.hp.hpl.jena.vocabulary.*;
  *
  * @author Ian Dickinson
  *         (<a  href="mailto:ian_dickinson@users.sourceforge.net" >email</a>)
- * @version CVS $Id: schemagen.java,v 1.10 2010-05-18 14:41:26 ian_dickinson Exp $
+ * @version CVS $Id: schemagen.java,v 1.11 2010-05-19 09:19:17 ian_dickinson Exp $
  */
 public class schemagen {
     // Constants
@@ -334,8 +334,9 @@ public class schemagen {
         addReplacementPattern( "nl", m_nl );
 
         // protect \ in Windows file pathnames
+        // looks for file:.* or C:.* (or variants thereof)
         String source = m_options.getInputOption().getURI();
-        if (source.startsWith( "file:" )) {
+        if (source.matches( "(file:|[A-Za-z]:).*$" )) {
             source = source.replace( "\\", "\\\\" );
         }
         addReplacementPattern( "sourceURI", source );
