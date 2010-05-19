@@ -65,7 +65,7 @@ public class DateTimeStruct
             x = x+timezone ;
         return x ; 
     }
-
+    
     public static DateTimeStruct parseDateTime(String str)
     { return _parseYMD(str, true, true, true) ; }
 
@@ -91,7 +91,7 @@ public class DateTimeStruct
     private static DateTimeStruct _parseYMD(String str, boolean month, boolean day, boolean includeTime) 
     { 
         DateTimeStruct struct = new DateTimeStruct() ;
-        int idx = 0 ;
+        int idx = 0 ; // if whitespace fact processing -- skipWhitespace(str, 0) ;
         boolean negYear = false ;
 
         if ( str.charAt(idx) == '-' )
@@ -163,8 +163,11 @@ public class DateTimeStruct
         
         // Timezone
         idx = _parseTimezone(struct, str, idx) ;
+        
+        idx = skipWhitespace(str, idx) ;
+        
         if ( idx != str.length() )
-            throw new DateTimeParseException("Trailing charcster after date/time") ;
+            throw new DateTimeParseException("Trailing characters after date/time") ;
         return struct ; 
     }
     
@@ -387,6 +390,18 @@ public class DateTimeStruct
             continue ;
         }
         return string.substring(start, i) ;
+    }
+    
+    private static int skipWhitespace(String string, int idx)
+    {
+        while ( idx < string.length() )
+        {
+            char ch = string.charAt(idx) ;
+            if ( ! Character.isWhitespace(ch) )
+                return idx ;
+            idx++ ;
+        }
+        return idx ;
     }
     
     private static void check(String string, int idx, char x)
