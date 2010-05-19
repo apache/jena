@@ -14,6 +14,9 @@ public class DevTDB
     // Loader:
     // Reset run rate on each index.
     
+    // Whitespace facet processing
+    //   Jena seems to do white around numbers bu tnot whitespace in numbers nor anythign to do with XSD dateTime etc.  
+    //   TestChecker tests 11,12,14.
     
     // RIOT
     //   Output bad term quads/triples to special sink. 

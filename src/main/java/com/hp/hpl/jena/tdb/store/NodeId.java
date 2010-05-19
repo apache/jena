@@ -180,9 +180,10 @@ public class NodeId
             if ( ! XSDDatatype.XSDdecimal.isValidLiteral(lit) ) 
                 return null ;
             
-            BigDecimal decimal = new BigDecimal(lit.getLexicalForm()) ;
+            BigDecimal decimal = (BigDecimal)(lit.getValue()) ;
             // Does range checking.
             DecimalNode dn = DecimalNode.valueOf(decimal) ;
+            // null is "does not fit"
             if ( dn != null )
                 // setType
                 return new NodeId(dn.pack()) ;

@@ -7,17 +7,16 @@
 
 package com.hp.hpl.jena.tdb.store;
 
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeConstants;
-import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.XMLGregorianCalendar;
+import javax.xml.datatype.DatatypeConfigurationException ;
+import javax.xml.datatype.DatatypeConstants ;
+import javax.xml.datatype.DatatypeFactory ;
+import javax.xml.datatype.XMLGregorianCalendar ;
 
 import org.openjena.atlas.lib.BitsInt ;
 import org.openjena.atlas.lib.BitsLong ;
 import org.openjena.atlas.lib.NumberUtils ;
 
-
-import com.hp.hpl.jena.tdb.TDBException;
+import com.hp.hpl.jena.tdb.TDBException ;
 
 public class DateTimeNode
 {
@@ -100,25 +99,33 @@ public class DateTimeNode
         return v ;
     }
 
-    // From string.  Assumed legal.  Retains all infor this way.
+    // From string.  Assumed legal.  Retains all info this way.
     // returns -1 for unpackable. 
     public static long packDate(String lex)
     {
         return packDateTime(lex) ;
     }
 
-    
     // From string.  Assumed legal.
     // Returns -1 for unpackable.
     public static long packDateTime(String lex)
     {
         long v = 0 ;
         
+        // Whitespace facet processing.
+        
         boolean containsZ = (lex.indexOf('Z') > 0 ) ;
         // Bug in Java 1.6 (build 5 at least)
         // T24:00:00 not accepted.
         // See also TestNodeId.nodeId_date_time_7
-        XMLGregorianCalendar xcal = datatypeFactory.newXMLGregorianCalendar(lex) ;
+        
+        XMLGregorianCalendar xcal = null ;
+        
+        try {
+            // This does not accept whitespace even if legalin XSD
+            // so we can get gete then get an exception.
+            xcal = datatypeFactory.newXMLGregorianCalendar(lex) ;
+        } catch (Exception ex) { return -1 ; } 
         
         int y = xcal.getYear() ;
         

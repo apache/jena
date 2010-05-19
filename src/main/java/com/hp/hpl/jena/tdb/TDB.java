@@ -188,14 +188,6 @@ public class TDB
             return ;
         initialized = true ;
      
-        // By default, Jena accepts numeric values with whitespace as valid (as does Xerces).
-        // But it's strictly illegal.
-        // We get strict - 
-        // Commented out : the Checker does strict checking.
-        // JenaParameters.enableWhitespaceCheckingOfTypedLiterals = true ;
-        
-
-        
         SystemTDB.init() ;
         ARQ.init() ;
         EnvTDB.processGlobalSystemProperties() ;

@@ -12,6 +12,9 @@ import java.io.InputStream ;
 import java.util.HashSet ;
 import java.util.Set ;
 
+import javax.xml.datatype.DatatypeConfigurationException ;
+import javax.xml.datatype.DatatypeFactory ;
+
 import org.openjena.atlas.io.IO ;
 import org.openjena.atlas.iterator.Filter ;
 import org.openjena.atlas.lib.Sink ;
@@ -21,6 +24,7 @@ import org.openjena.atlas.lib.SinkWrapper ;
 import org.openjena.atlas.lib.Tuple ;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
+import com.hp.hpl.jena.datatypes.xsd.XSDDateTime ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.query.ARQ ;
@@ -39,9 +43,11 @@ import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.Transformer ;
 import com.hp.hpl.jena.sparql.engine.Plan ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingRoot ;
+import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.sparql.util.QueryExecUtils ;
 import com.hp.hpl.jena.tdb.TDB ;
+import com.hp.hpl.jena.tdb.TDBException ;
 import com.hp.hpl.jena.tdb.TDBFactory ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
 import com.hp.hpl.jena.tdb.solver.QueryEngineTDB ;
@@ -63,8 +69,39 @@ public class RunTDB
         nextDivider = divider ;
     }
 
+    static DatatypeFactory datatypeFactory = null ;
+    static
+    { 
+        try 
+        { datatypeFactory = DatatypeFactory.newInstance() ; }
+        catch (DatatypeConfigurationException ex)
+        { throw new TDBException("DateTimeNode", ex) ; }
+    }
+    
     public static void main(String[] args) throws IOException
     {
+        {
+            // WS is space, \n \r \t
+            
+            Node n = SSE.parseNode("'  2010-05-19T01:02:03'^^<http://www.w3.org/2001/XMLSchema#dateTime>") ;
+            
+            System.out.println("well formed: "+n.getLiteral().isWellFormed()) ;
+            System.out.println("isValidLiteral: "+n.getLiteral().getDatatype().isValidLiteral(n.getLiteral())) ;
+            System.out.println("isValid: "+n.getLiteral().getDatatype().isValid(n.getLiteral().getLexicalForm())) ;
+            
+            Object obj = n.getLiteral().getValue() ;
+            XSDDateTime dt = (XSDDateTime)obj ;
+            String x = dt.toString() ;
+            System.out.println("|"+x+"|") ;
+            
+//            String lex = "2010-05-05T17:25:42.97" ;
+//            DateTimeStruct dst = DateTimeStruct.parseDateTime(lex) ;
+//            
+//            XMLGregorianCalendar xcal = datatypeFactory.newXMLGregorianCalendar(lex) ;
+//            System.out.println(xcal) ;
+            System.exit(0) ;
+        }
+        
 //        tdb.ntriples.main("--sink", "/home/afs/Datasets/GovData/NaPTAN/stop-area.nt") ;
 //        System.exit(0) ;
         
