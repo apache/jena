@@ -29,7 +29,7 @@ public class TestFilterTransform
         return new JUnit4TestAdapter(TestFilterTransform.class) ;
     }
     
-    private Transform t_equality    = new TransformFilterEquality() ;
+    private Transform t_equality    = new TransformFilterEquality(false) ;
     private Transform t_disjunction = new TransformFilterDisjunction() ;
     private Transform t_placement   = new TransformFilterPlacement() ;
     private Transform t_expandOneOf = new TransformExpandOneOf() ;

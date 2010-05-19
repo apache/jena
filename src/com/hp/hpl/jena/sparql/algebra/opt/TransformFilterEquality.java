@@ -35,7 +35,15 @@ public class TransformFilterEquality extends TransformCopy
     // Aggressive on strings goes for efficient over exactlness of xsd:string/plain literal.
     // Extend to disjunctions of equalties.
     
-    public TransformFilterEquality() {}
+    private boolean transformPlainStrings ;
+
+    public TransformFilterEquality(boolean plainStrings)
+    {
+        //  XSD string is not a simple literal
+        // Inactive.
+        // What about numbers? 
+        this.transformPlainStrings = plainStrings ;
+    }
     
     @Override
     public Op transform(OpFilter opFilter, Op subOp)
@@ -109,15 +117,6 @@ public class TransformFilterEquality extends TransformCopy
         Expr left = eq.getArg1() ;
         Expr right = eq.getArg2() ;
 
-        // This gets cardinality wrong.
-//        if ( left.isVariable() && right.isVariable() )
-//        {
-//            // Both must be used or else.
-//            if ( patternVars.contains(left.asVar()) &&
-//                 patternVars.contains(right.asVar()) )
-//                return subst(subOp, left.getExprVar(), right.getExprVar()) ;
-//        }
-        
         Var var = null ;
         NodeValue constant = null ;
 
@@ -150,6 +149,7 @@ public class TransformFilterEquality extends TransformCopy
         if ( e instanceof E_Equals )
         {
             // Value based?
+            // XXX Optimize here.
             if ( ! ARQ.isStrictMode() && constant.isLiteral() )
                 return null ;
         }

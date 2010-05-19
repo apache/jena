@@ -7,14 +7,17 @@ package dev;
 
 public class DevARQ
 {
-    // Main translation of minus to execution plan.
-    // Join classifier is insensitive to MINUS.
-    
     // Modules: atlas, RIOT
     // Migrate: Reifier2, GraphBase2, DatasetPrefixStorage
     
-    // SPARQL 1.1 Update
+    // == SPARQL 1.1 Query
+    //   Rework aggregates to better match the formalism in the spec
+    //   Implement Group_Concat, sample
+    
+    // == SPARQL 1.1 Update
     //   Syntax tests
+    
+    // ----
     
     // Dataset to indicate if plain string and XSD string are the same to affact FILTER(?x="string") optimziation.
     // Does dataset contexts fix this?

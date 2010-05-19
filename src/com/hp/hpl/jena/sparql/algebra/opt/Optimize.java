@@ -148,7 +148,7 @@ public class Optimize implements Rewrite
         // or improve to place in a sequence.
         
         if ( context.isTrueOrUndef(ARQ.optFilterEquality) )
-            op = apply("Filter Equality", new TransformFilterEquality(), op) ;
+            op = apply("Filter Equality", new TransformFilterEquality(false), op) ;
         
         if ( context.isTrueOrUndef(ARQ.optFilterDisjunction) )
             op = apply("Filter Disjunction", new TransformFilterDisjunction(), op) ;

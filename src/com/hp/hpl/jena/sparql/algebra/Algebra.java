@@ -17,7 +17,6 @@ import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.shared.PrefixMapping ;
 import com.hp.hpl.jena.sparql.algebra.opt.Optimize ;
-import com.hp.hpl.jena.sparql.algebra.opt.TransformFilterEquality ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
 import com.hp.hpl.jena.sparql.core.Var ;
@@ -38,8 +37,6 @@ import com.hp.hpl.jena.sparql.util.Context ;
 /** Utilities to produce SPARQL algebra */
 public class Algebra
 {
-    private static Transform optimization() { return new TransformFilterEquality() ; }
-    
     // -------- Optimize
     
     /** Apply static transformations to a query to optimize it */
