@@ -4,13 +4,11 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.riot.lang;
+package com.hp.hpl.jena.riot;
 
 import org.junit.Test ;
 
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.riot.Checker ;
-import com.hp.hpl.jena.riot.ErrorHandler ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 
 public class TestChecker
@@ -32,6 +30,10 @@ public class TestChecker
 
     } ;
     static Checker checker = new Checker(handler) ;
+    
+//    boolean b ;
+//    @Before public void before() { b =JenaParameters.enableWhitespaceCheckingOfTypedLiterals ; } 
+//    @After public void after()   { JenaParameters.enableWhitespaceCheckingOfTypedLiterals = b ; } 
     
     @Test public void checker01() { check("''") ; }
     @Test public void checker02() { check("''@en") ; }

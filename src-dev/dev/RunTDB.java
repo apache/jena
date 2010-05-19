@@ -9,12 +9,13 @@ package dev;
 
 import java.io.IOException ;
 import java.io.InputStream ;
-import java.util.HashSet ;
-import java.util.Set ;
 
-import javax.xml.datatype.DatatypeConfigurationException ;
-import javax.xml.datatype.DatatypeFactory ;
-
+import org.apache.xerces.impl.dv.InvalidDatatypeValueException ;
+import org.apache.xerces.impl.dv.SchemaDVFactory ;
+import org.apache.xerces.impl.dv.ValidatedInfo ;
+import org.apache.xerces.impl.dv.ValidationContext ;
+import org.apache.xerces.impl.dv.XSSimpleType ;
+import org.apache.xerces.impl.validation.ValidationState ;
 import org.openjena.atlas.io.IO ;
 import org.openjena.atlas.iterator.Filter ;
 import org.openjena.atlas.lib.Sink ;
@@ -23,37 +24,19 @@ import org.openjena.atlas.lib.SinkPrint ;
 import org.openjena.atlas.lib.SinkWrapper ;
 import org.openjena.atlas.lib.Tuple ;
 
-import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.datatypes.xsd.XSDDateTime ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.query.Dataset ;
-import com.hp.hpl.jena.query.Query ;
-import com.hp.hpl.jena.query.QueryExecution ;
-import com.hp.hpl.jena.query.QueryExecutionFactory ;
-import com.hp.hpl.jena.query.QueryFactory ;
 import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.rdf.model.StmtIterator ;
-import com.hp.hpl.jena.riot.Checker ;
 import com.hp.hpl.jena.riot.RiotReader ;
 import com.hp.hpl.jena.riot.lang.LangRIOT ;
-import com.hp.hpl.jena.sparql.algebra.Algebra ;
-import com.hp.hpl.jena.sparql.algebra.Op ;
-import com.hp.hpl.jena.sparql.algebra.Transformer ;
-import com.hp.hpl.jena.sparql.engine.Plan ;
-import com.hp.hpl.jena.sparql.engine.binding.BindingRoot ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
-import com.hp.hpl.jena.sparql.util.Context ;
-import com.hp.hpl.jena.sparql.util.QueryExecUtils ;
 import com.hp.hpl.jena.tdb.TDB ;
-import com.hp.hpl.jena.tdb.TDBException ;
 import com.hp.hpl.jena.tdb.TDBFactory ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
-import com.hp.hpl.jena.tdb.solver.QueryEngineTDB ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
-import com.hp.hpl.jena.tdb.store.TransformDynamicDataset ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 import com.hp.hpl.jena.util.FileManager ;
 
@@ -69,21 +52,36 @@ public class RunTDB
         nextDivider = divider ;
     }
 
-    static DatatypeFactory datatypeFactory = null ;
-    static
-    { 
-        try 
-        { datatypeFactory = DatatypeFactory.newInstance() ; }
-        catch (DatatypeConfigurationException ex)
-        { throw new TDBException("DateTimeNode", ex) ; }
-    }
-    
     public static void main(String[] args) throws IOException
     {
-        {
+        {   // Whitespace facets in SD datatypes.
             // WS is space, \n \r \t
+            // Warning for non-canonical literals?
+            // In NT, NQ.
             
-            Node n = SSE.parseNode("'  2010-05-19T01:02:03'^^<http://www.w3.org/2001/XMLSchema#dateTime>") ;
+            
+            
+//            String str = "'  2010-05-19T01:02:03'^^<http://www.w3.org/2001/XMLSchema#dateTime>" ;
+//            String dtname = "dateTime" ;
+            
+            System.out.print("--") ;
+            System.out.print("\n abc   \t  ".trim()) ;
+            System.out.print("--") ;
+            System.out.println() ;
+            
+            String str = "'\\n  123'^^<http://www.w3.org/2001/XMLSchema#integer>" ;
+            String dtname = "integer" ;
+            
+            Node n = SSE.parseNode(str) ;
+            XSSimpleType typeDeclaration = SchemaDVFactory.getInstance().getBuiltInType(dtname);
+            try {
+                ValidationContext context = new ValidationState();
+                ValidatedInfo resultInfo = new ValidatedInfo();
+                Object result = typeDeclaration.validate(n.getLiteralLexicalForm(), context, resultInfo);
+                System.out.println(result) ;
+            } catch (InvalidDatatypeValueException e) { 
+                e.printStackTrace(System.err);
+            } 
             
             System.out.println("well formed: "+n.getLiteral().isWellFormed()) ;
             System.out.println("isValidLiteral: "+n.getLiteral().getDatatype().isValidLiteral(n.getLiteral())) ;
@@ -93,150 +91,10 @@ public class RunTDB
             XSDDateTime dt = (XSDDateTime)obj ;
             String x = dt.toString() ;
             System.out.println("|"+x+"|") ;
-            
-//            String lex = "2010-05-05T17:25:42.97" ;
-//            DateTimeStruct dst = DateTimeStruct.parseDateTime(lex) ;
-//            
-//            XMLGregorianCalendar xcal = datatypeFactory.newXMLGregorianCalendar(lex) ;
-//            System.out.println(xcal) ;
             System.exit(0) ;
         }
-        
-//        tdb.ntriples.main("--sink", "/home/afs/Datasets/GovData/NaPTAN/stop-area.nt") ;
-//        System.exit(0) ;
-        
-        Node n = Node.createLiteral("  2010-05-05T17:25:42.97+01:00", null, XSDDatatype.XSDdateTime) ;
-        new Checker(null).checkLiteral(n, -1, -1) ;
-        n = Node.createLiteral("\n  2010-05-05T17:25:42.97+01:00", null, XSDDatatype.XSDdateTime) ;
-        new Checker(null).checkLiteral(n, -1, -1) ;
-        
-        
-        System.out.println(XSDDatatype.XSDdateTime.isValid("\n  2010-05-05T17:25:42.97+01:00")) ;
-        
-        System.out.println("DONE") ;
-        System.exit(0) ;
-        
-        tdb.tdbloader.main("--loc=DB", "/home/afs/Datasets/GovData/NaPTAN/stop-area.nt") ;
-        System.exit(0) ;
         
         tdb.tdbquery.main("--set=tdb:logExec=true", "--query=Q.rq") ; System.exit(0) ;
-        
-        
-        //tdb.ntriples.main("--skip","D.nt") ; System.exit(0) ;
-        tdb.turtle.main("D.ttl") ; System.exit(0) ;
-        
-        tdb.tdbloader.main("--loc=DB2", "D.trig") ; System.exit(0) ;
-        
-        
-        //DevCmds.tdbquery("--query=Q.arq") ;
-        
-        Model m = TDBFactory.createModel("DB") ;
-        
-        StmtIterator sIter = m.listStatements() ;
-        for ( ; sIter.hasNext(); )
-        {
-            System.out.println(sIter.next()) ;
-        }
-        System.out.println("DONE") ;
-        System.exit(0) ;
-        //tdb.trig.main("D.trig") ; System.exit(0) ;
-        
-        fastParse() ; System.exit(0) ;
-        
-        System.getProperties().setProperty("tdb:fileMode","mapped") ;
-        DevCmds.tdbloader("D.ttl") ;
-        System.exit(0) ;
-        
-        dynamicDataset() ;
-
-    }
-    
-    public static void fastParse() throws IOException
-    {
-        //String fn = "/home/afs/Datasets/MusicBrainz/artists.nt" ;
-        String fn = "/home/afs/Datasets/MusicBrainz/tracks.nt" ;
-        tdb.ntriples.main("--time", "--sink", fn) ;
-        System.exit(0) ;
-    }
-
-
-
-    private static void dynamicDataset()
-    {
-        String desc = "FROM <http://example/dft1> FROM <http://example/dft2> FROM NAMED <http://example/g1> FROM NAMED <http://example/g2>" ; 
-        
-        //String qs = "SELECT * "+desc+" { { GRAPH ?g { ?s ?p ?g } } UNION { GRAPH <http://example/g1> { ?s ?p ?o } } }" ;
-        String qs = "SELECT * "+desc+" { ?s ?p ?g }" ;
-        //qs = "SELECT * "+desc+" { GRAPH ?g {} }" ;
-
-        Query query = QueryFactory.create(qs) ;
-
-        if ( false )
-        {
-            Dataset ds = TDBFactory.createDataset() ;
-            Context context =  ARQ.getContext().copy() ;
-            Plan plan = QueryEngineTDB.getFactory().create(query, ds.asDatasetGraph(), BindingRoot.create(), context) ;
-            Op op = plan.getOp() ;
-            System.out.print(op) ;
-            System.exit(0) ;
-        }
-        divider() ;
-        
-        Op op = Algebra.compile(query) ;
-        System.out.print(op) ;
-
-        Set<Node> defaultGraph = new HashSet<Node>() ;
-        Set<Node> namedGraphs = new HashSet<Node>() ;
-        namedGraphs.add(Node.createURI("http://example/g1")) ;
-        namedGraphs.add(Node.createURI("http://example/g2")) ;
-        
-        defaultGraph.add(Node.createURI("http://example/dft1")) ;
-        defaultGraph.add(Node.createURI("http://example/dft2")) ;
-
-        if ( false )
-        {
-            divider() ;
-            System.out.println("-- Triple forms") ;
-            System.out.println() ;
-            Op opTriples = Transformer.transform(new TransformDynamicDataset(defaultGraph, namedGraphs, false), op) ;
-            System.out.print(opTriples) ;
-            divider() ;
-            System.out.println("-- Triples: optimized") ;
-            System.out.println() ;         
-            opTriples = Algebra.optimize(opTriples) ;
-            System.out.print(opTriples) ;
-            
-            Op op2 = Algebra.optimize(opTriples) ;
-            op2 = Algebra.toQuadForm(op2) ;
-            divider() ;
-            System.out.println("-- Triples -> Quad") ;
-            System.out.print(op2) ;
-        }
-        
-        if ( true )
-        {
-            divider() ;
-            System.out.println("-- Quad forms") ;
-            System.out.println() ;
-            Op opQuad = Algebra.toQuadForm(op) ;
-            System.out.print(opQuad) ;
-            opQuad = Transformer.transform(new TransformDynamicDataset(defaultGraph, namedGraphs, false), opQuad) ;
-            divider() ;
-            System.out.println("-- Transformed") ;
-            System.out.println() ;
-            System.out.print(opQuad) ;
-        }
-
-        System.exit(0) ;
-    }
-
-    static void genericQuery(Dataset ds)
-    {
-        String queryString = "prefix : <http://example/> SELECT * { ?s ?p 123 }" ;
-        Query query = QueryFactory.create(queryString) ;
-        QueryExecution qExec = QueryExecutionFactory.create(query, ds) ;
-        QueryExecUtils.executeQuery(query, qExec) ;
-        qExec.close();
     }
     
     static void tupleFilter()

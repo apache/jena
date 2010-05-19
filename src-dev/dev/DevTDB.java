@@ -15,7 +15,7 @@ public class DevTDB
     // Reset run rate on each index.
     
     // Whitespace facet processing
-    //   Jena seems to do white around numbers bu tnot whitespace in numbers nor anythign to do with XSD dateTime etc.  
+    //   Jena seems to do white around numbers but not whitespace in numbers nor anythign to do with XSD dateTime etc.  
     //   TestChecker tests 11,12,14.
     
     // RIOT
