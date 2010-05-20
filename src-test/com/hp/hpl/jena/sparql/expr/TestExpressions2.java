@@ -59,7 +59,6 @@ public class TestExpressions2 extends Assert
     @Test (expected=ExprEvalException.class)
     public void if_04()                         { evalErr("IF(true, 1/0, 'no') = 'no'") ; }
     
-    
     // NOT IN, IN
     @Test public void in_01()                   { eval("1 IN(1,2,3)", true) ; }
     @Test public void in_02()                   { eval("1 IN(<x>,2,1)", true) ; }
@@ -71,6 +70,7 @@ public class TestExpressions2 extends Assert
     @Test public void not_in_03()                   { eval("1 NOT IN()", true) ; }
     @Test public void not_in_04()                   { eval("1 NOT IN(7)", true) ; }
     
+    // Term constructors
     @Test public void term_constructor_iri_01()     { eval("IRI('http://example/') = <http://example/>", true) ; }
     
     @Test (expected=ExprEvalException.class)
@@ -98,6 +98,8 @@ public class TestExpressions2 extends Assert
 
     @Test (expected=ExprEvalException.class)
     public void term_constructor_strlang_03()       { evalErr("STRLANG('abc'@en, 'en') = 'abc'@en") ; }
+    
+    // ---- Workers
     
     private static void evalErr(String string)
     { 
