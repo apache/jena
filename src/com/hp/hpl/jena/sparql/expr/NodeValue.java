@@ -393,7 +393,6 @@ public abstract class NodeValue extends ExprNode
      */
     public static boolean sameAs(NodeValue nv1, NodeValue nv2)
     {
-        // Currently only called from E_Equals
         if ( nv1 == null || nv2 == null )
             throw new ARQInternalErrorException("Attempt to sameValueAs on a null") ;
         
