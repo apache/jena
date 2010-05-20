@@ -31,7 +31,7 @@ public class E_Coalesce extends ExprFunctionN
                 return nv ;
             } catch (ExprEvalException ex) {}
         }
-        return null ;
+        throw new ExprEvalException("COALESCE: no value") ;
     }
     
     @Override

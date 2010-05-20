@@ -12,12 +12,12 @@ import org.junit.Test ;
 import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp ;
 import com.hp.hpl.jena.sparql.util.ExprUtils ;
 
-/** New (ARQ 2.8.3) expression testing test suite
+/** Break expression testing suite into parts
 * @see TestExpressions
 * @see TestExprLib
 * @see TestNodeValue
 */
-public class TestExpr extends Assert
+public class TestExpressions2 extends Assert
 {
     
     @Test public void gregorian_eq_01()         { eval("'1999'^^xsd:gYear = '1999'^^xsd:gYear", true) ; }
@@ -43,8 +43,13 @@ public class TestExpr extends Assert
     @Test (expected=ExprEvalException.class)
     public void gregorian_cmp_04()              { eval("'1999'^^xsd:gYear < '1999+05:00'^^xsd:gYear", false) ; }
     
-    public void gregorian_cast_01()              { eval("xsd:gYear('2010-03-22'^^xsd:date) = '2010'^^xsd:gYear", true ) ; }
-    
+    public void gregorian_cast_01()             { eval("xsd:gYear('2010-03-22'^^xsd:date) = '2010'^^xsd:gYear", true ) ; }
+
+    @Test (expected=ExprEvalException.class)
+    public void coalesce_01()                   { eval("COALESCE()", true) ; } 
+    @Test public void coalesce_02()             { eval("COALESCE(1) = 1", true) ; } 
+    @Test public void coalesce_03()             { eval("COALESCE(?x,1) = 1", true) ; } 
+    @Test public void coalesce_04()             { eval("COALESCE(9,1) = 9", true) ; } 
     
     // It's easier to write tests that simple are expected to return true/false 
     private static void eval(String string, boolean result)

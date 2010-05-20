@@ -14,10 +14,11 @@ import org.junit.runners.Suite.SuiteClasses ;
 @RunWith(Suite.class)
 @SuiteClasses( { 
     TestNodeValue.class 
-    //, TestExpressions.class   //Not JUnit4 compatible.
+    , TestExpressions.class
+    , TestExpressions2.class
     , TestFunctions.class
     , TestNodeFunctions.class
-    , TestExpr.class
+    , TestExpressions2.class
     , TestOrdering.class 
     , TestRegex.class
     , TestXSDFuncOp.class
