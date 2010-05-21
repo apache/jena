@@ -10,12 +10,6 @@ package dev;
 import java.io.IOException ;
 import java.io.InputStream ;
 
-import org.apache.xerces.impl.dv.InvalidDatatypeValueException ;
-import org.apache.xerces.impl.dv.SchemaDVFactory ;
-import org.apache.xerces.impl.dv.ValidatedInfo ;
-import org.apache.xerces.impl.dv.ValidationContext ;
-import org.apache.xerces.impl.dv.XSSimpleType ;
-import org.apache.xerces.impl.validation.ValidationState ;
 import org.openjena.atlas.io.IO ;
 import org.openjena.atlas.iterator.Filter ;
 import org.openjena.atlas.lib.Sink ;
@@ -23,15 +17,14 @@ import org.openjena.atlas.lib.SinkCounting ;
 import org.openjena.atlas.lib.SinkPrint ;
 import org.openjena.atlas.lib.SinkWrapper ;
 import org.openjena.atlas.lib.Tuple ;
+import org.openjena.atlas.logging.Log ;
 
-import com.hp.hpl.jena.datatypes.xsd.XSDDateTime ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.riot.RiotReader ;
 import com.hp.hpl.jena.riot.lang.LangRIOT ;
-import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.TDBFactory ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
@@ -42,7 +35,7 @@ import com.hp.hpl.jena.util.FileManager ;
 
 public class RunTDB
 {
-    //static { Log.setLog4j() ; }
+    static { Log.setLog4j() ; }
     static String divider = "----------" ;
     static String nextDivider = null ;
     static void divider()
@@ -54,44 +47,8 @@ public class RunTDB
 
     public static void main(String[] args) throws IOException
     {
-        
         tdb.tdbloader.main("--loc=DB", "D.rdf") ;
         System.exit(0) ;
-        
-        {
-            
-            // Whitespace facets in SD datatypes.
-            // WS is space, \n \r \t
-            // Warning for non-canonical literals?
-            // In NT, NQ.
-            
-//            String str = "'  2010-05-19T01:02:03'^^<http://www.w3.org/2001/XMLSchema#dateTime>" ;
-//            String dtname = "dateTime" ;
-            
-            String str = "'\\n  123'^^<http://www.w3.org/2001/XMLSchema#integer>" ;
-            String dtname = "integer" ;
-            
-            Node n = SSE.parseNode(str) ;
-            XSSimpleType typeDeclaration = SchemaDVFactory.getInstance().getBuiltInType(dtname);
-            try {
-                ValidationContext context = new ValidationState();
-                ValidatedInfo resultInfo = new ValidatedInfo();
-                Object result = typeDeclaration.validate(n.getLiteralLexicalForm(), context, resultInfo);
-                System.out.println(result) ;
-            } catch (InvalidDatatypeValueException e) { 
-                e.printStackTrace(System.err);
-            } 
-            
-            System.out.println("well formed: "+n.getLiteral().isWellFormed()) ;
-            System.out.println("isValidLiteral: "+n.getLiteral().getDatatype().isValidLiteral(n.getLiteral())) ;
-            System.out.println("isValid: "+n.getLiteral().getDatatype().isValid(n.getLiteral().getLexicalForm())) ;
-            
-            Object obj = n.getLiteral().getValue() ;
-            XSDDateTime dt = (XSDDateTime)obj ;
-            String x = dt.toString() ;
-            System.out.println("|"+x+"|") ;
-            System.exit(0) ;
-        }
         
         tdb.tdbquery.main("--set=tdb:logExec=true", "--query=Q.rq") ; System.exit(0) ;
     }
@@ -133,18 +90,20 @@ public class RunTDB
         DevCmds.tdbquery("--tdb=tdb.ttl", qs) ;
     }
     
-    static class SinkGapper<T> extends SinkWrapper<T>
+    static class SinkInsertText<T> extends SinkWrapper<T>
     {
-        public SinkGapper(Sink<T> sink)
+        String string ;
+        public SinkInsertText(Sink<T> sink, String string)
         {
             super(sink) ;
+            this.string = string ;
         }
         
         @Override
         public void send(T item)
         {
             super.send(item) ;
-            System.out.println("--") ;
+            System.out.print(string) ;
         }
     }
     
@@ -156,7 +115,7 @@ public class RunTDB
         
         SinkCounting<Triple> inputSink1 = new SinkCounting<Triple>(new InferenceExpander(outputSink, m)) ;
         // Add gaps between parser triples. 
-        Sink<Triple> inputSink2 = new SinkGapper<Triple>(inputSink1) ;
+        Sink<Triple> inputSink2 = new SinkInsertText<Triple>(inputSink1, "--\n") ;
         
         Sink<Triple> inputSink = inputSink2 ;
         

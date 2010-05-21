@@ -14,6 +14,7 @@ import arq.cmdline.ArgDecl ;
 
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.riot.Lang ;
+import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.TDBLoader ;
 import com.hp.hpl.jena.tdb.store.GraphTDB ;
 
@@ -34,6 +35,7 @@ public class tdbloader extends CmdTDB
     
     static public void main(String... argv)
     { 
+        TDB.setOptimizerWarningFlag(false) ;
         new tdbloader(argv).mainRun() ;
     }
 

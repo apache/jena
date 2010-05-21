@@ -39,6 +39,7 @@ import com.hp.hpl.jena.tdb.solver.StageGeneratorDirectTDB ;
 import com.hp.hpl.jena.tdb.solver.Explain.InfoLevel ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.sys.EnvTDB ;
+import com.hp.hpl.jena.tdb.sys.SetupTDB ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 import com.hp.hpl.jena.tdb.sys.TDBMaker ;
 
@@ -129,6 +130,12 @@ public class TDB
         TDBMaker.clearDatasetCache() ;
     }
     
+    /** Set the global flag that control the "No BGP optimizer" warning.
+     * Set to false to silence the warning
+     */
+    public static void setOptimizerWarningFlag(boolean b)
+    { SetupTDB.setOptimizerWarningFlag(b) ; }
+    
     /** Sync a TDB-backed Model. Do nothing if not TDB-backed. */
     public static void sync(Model model)
     {
@@ -218,13 +225,11 @@ public class TDB
         // Attempt to sync everything on exit.
         // This can not be gauaranteed
         Runnable runnable = new Runnable() {
-
             public void run()
             { try { TDBMaker.syncDatasetCache() ; } catch (Exception ex) {} }
         } ;
         
         Runtime.getRuntime().addShutdownHook(new Thread(runnable)) ;
-
         
         if ( log.isDebugEnabled() )
             log.debug("\n"+ARQ.getContext()) ;

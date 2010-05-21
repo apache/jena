@@ -2,8 +2,12 @@ package dev ;
 
 public class DevTDB
 {
-    // == 0.8.5
+    // == 0.8.6
+    
+    
+    // =====
     // Enable FILTER assignment for strings (and numbers?) via dataset context setting?
+    // Avoid "no optimizer warning for loader"
     
     // Tuples
     // Interface, TupleFactory, TupleImpl

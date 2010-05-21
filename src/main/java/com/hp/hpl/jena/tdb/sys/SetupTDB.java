@@ -98,6 +98,7 @@ public class SetupTDB
     
     /**  The JVM-wide parameters (these can change without a change to on-disk structure) */ 
     public final static Properties globalConfig = new Properties() ;
+
     static {
         globalConfig.setProperty(Names.pNode2NodeIdCacheSize,  Integer.toString(Node2NodeIdCacheSize)) ;
         globalConfig.setProperty(Names.pNodeId2NodeCacheSize,  Integer.toString(NodeId2NodeCacheSize)) ;
@@ -697,6 +698,12 @@ public class SetupTDB
         return BPlusTree.attach(params, blkMgrNodes, blkMgrRecords) ;
     }
 
+    /** Set the global flag that control the "No BGP optimizer" warning.
+     * Set to false to silence the warning
+     */
+    public static void setOptimizerWarningFlag(boolean b) { warnAboutOptimizer = b ; }
+    private static boolean warnAboutOptimizer = true ;
+
     public static ReorderTransformation chooseOptimizer(Location location)
     {
         if ( location == null )
@@ -730,7 +737,7 @@ public class SetupTDB
         if ( reorder == null )
             reorder = SystemTDB.defaultOptimizer ;
         
-        if ( reorder == null )
+        if ( reorder == null && warnAboutOptimizer )
             logExec.warn("No BGP optimizer") ;
         
         return reorder ; 
