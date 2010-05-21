@@ -19,6 +19,7 @@ public class DevARQ
     //   Syntax tests
     
     // ----
+    // http://www.w3.org/TR/xmlschema11-2/ : precisionDecimal : dayTimeDuration : yearTimeDuration 
     
     // Dataset to indicate if plain string and XSD string are the same to affact FILTER(?x="string") optimziation.
     // Does dataset contexts fix this?
