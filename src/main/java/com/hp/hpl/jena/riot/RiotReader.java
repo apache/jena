@@ -6,8 +6,7 @@
 
 package com.hp.hpl.jena.riot;
 
-import static com.hp.hpl.jena.riot.Lang.NQUADS ;
-import static com.hp.hpl.jena.riot.Lang.NTRIPLES ;
+import static com.hp.hpl.jena.riot.Lang.* ;
 
 import java.io.InputStream ;
 
@@ -17,6 +16,7 @@ import org.openjena.atlas.lib.Sink ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.riot.lang.LangNQuads ;
 import com.hp.hpl.jena.riot.lang.LangNTriples ;
+import com.hp.hpl.jena.riot.lang.LangRDFXML ;
 import com.hp.hpl.jena.riot.lang.LangRIOT ;
 import com.hp.hpl.jena.riot.lang.LangTriG ;
 import com.hp.hpl.jena.riot.lang.LangTurtle ;
@@ -54,6 +54,16 @@ public class RiotReader
         String base = chooseBaseIRI(baseIRI, filename) ;
         if ( lang == null )
             lang = Lang.guess(filename, NTRIPLES) ;     // ** N-Triples
+        
+        if ( lang == RDFXML )
+        {
+            // Fudge to make the bulk loader process RDF/XML files.
+            LangRDFXML.create(in, base, filename, new Checker(), sink).parse() ;
+            IO.close(in) ;
+            return ;
+        }
+        
+        
         parseTriples(in, lang, base, sink) ;
         IO.close(in) ;
     }
@@ -241,7 +251,7 @@ public class RiotReader
             return baseIRI ;
         if ( filename == null || filename.equals("-") )
             return "http://localhost/stdin/" ;
-        return filename ;
+        return IRIResolver.resolveGlobalAsString(filename) ;
     }
 
     private static String nameForFile(String filename)

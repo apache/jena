@@ -198,7 +198,7 @@ public abstract class CmdLangParse extends CmdGeneral
             SinkCounting<Triple> sink2 = new SinkCounting<Triple>(s) ;
             if ( lang.equals(Lang.RDFXML) )
                 // Adapter round ARP RDF/XML reader.
-                parser = new LangRDFXML(in, baseURI, filename, checker, sink2) ;
+                parser = LangRDFXML.create(in, baseURI, filename, checker, sink2) ;
             else
                 parser = RiotReader.createParserTriples(in, lang, baseURI, sink2) ;
             sink = sink2 ;

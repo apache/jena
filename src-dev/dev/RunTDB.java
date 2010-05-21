@@ -54,6 +54,10 @@ public class RunTDB
 
     public static void main(String[] args) throws IOException
     {
+        
+        tdb.tdbloader.main("--loc=DB", "D.rdf") ;
+        System.exit(0) ;
+        
         {
             
             // Whitespace facets in SD datatypes.

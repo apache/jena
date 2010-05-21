@@ -9,6 +9,7 @@ package com.hp.hpl.jena.riot.lang;
 import java.io.IOException ;
 import java.io.InputStream ;
 
+import org.openjena.atlas.io.IO ;
 import org.openjena.atlas.lib.Sink ;
 import org.xml.sax.SAXException ;
 import org.xml.sax.SAXParseException ;
@@ -42,7 +43,17 @@ public class LangRDFXML implements LangRIOT
     private String filename ;
     private Sink<Triple> sink ;
     
-    public LangRDFXML(InputStream in, String xmlBase, String filename, Checker checker, Sink<Triple> sink)
+    public static LangRDFXML create(InputStream in, String xmlBase, String filename, Checker checker, Sink<Triple> sink)
+    {
+        return new LangRDFXML(in, xmlBase, filename, checker, sink) ;
+    }
+    
+    public static LangRDFXML create(String xmlBase, String filename, Checker checker, Sink<Triple> sink)
+    {
+        return create(IO.openFile(filename), xmlBase, filename, checker, sink) ;
+    }
+    
+    private LangRDFXML(InputStream in, String xmlBase, String filename, Checker checker, Sink<Triple> sink)
     {
         this.input = in ;
         this.xmlBase = xmlBase ;
