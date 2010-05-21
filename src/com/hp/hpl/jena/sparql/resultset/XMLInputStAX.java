@@ -221,7 +221,9 @@ class XMLInputStAX extends SPARQLResult
             staxError("XMLStreamException: "+ex.getMessage(), ex) ;
         }
         row++ ;
-        return binding != null ;
+        boolean b = (binding != null) ;
+        //parser.close() ; // Some way to close the input stream.
+        return b ;
     }
 
     public QuerySolution next()

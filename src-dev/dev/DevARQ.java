@@ -9,6 +9,7 @@ public class DevARQ
 {
     // Modules: atlas, RIOT
     // Migrate: Reifier2, GraphBase2, DatasetPrefixStorage
+    // Autoclose of results sets from QueryEngineHTTP
     
     // == SPARQL 1.1 Query
     //   Rework aggregates to better match the formalism in the spec

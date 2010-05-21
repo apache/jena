@@ -11,6 +11,9 @@ import java.util.ArrayList ;
 import java.util.Iterator ;
 import java.util.List ;
 
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
+
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.query.Query ;
@@ -27,6 +30,8 @@ import com.hp.hpl.jena.util.FileManager ;
 
 public class QueryEngineHTTP implements QueryExecution
 {
+    private static Logger log = LoggerFactory.getLogger(QueryEngineHTTP.class) ;
+    
     public static final String QUERY_MIME_TYPE = "application/sparql-query" ;
     String queryString ;
     String service ;
@@ -40,6 +45,10 @@ public class QueryEngineHTTP implements QueryExecution
     List<String> namedGraphURIs  = new ArrayList<String>() ;
     private String user = null ;
     private char[] password = null ;
+    
+    // Releasing HTTP input streams is important. We remember this for SELECT,
+    // and will close when the engine is closed
+    private InputStream retainedConnection = null;
     
     public QueryEngineHTTP(String serviceURI, Query query)
     { 
@@ -121,6 +130,7 @@ public class QueryEngineHTTP implements QueryExecution
         httpQuery.setAccept(HttpParams.contentTypeResultsXML) ;
         InputStream in = httpQuery.exec() ;
         ResultSet rs = ResultSetFactory.fromXML(in) ;
+        retainedConnection = in; // This will be closed on close()
         return rs ;
     }
 
@@ -146,7 +156,11 @@ public class QueryEngineHTTP implements QueryExecution
         HttpQuery httpQuery = makeHttpQuery() ;
         httpQuery.setAccept(HttpParams.contentTypeResultsXML) ;
         InputStream in = httpQuery.exec() ;
-        return XMLInput.booleanFromXML(in) ;
+        boolean result = XMLInput.booleanFromXML(in) ;
+        // Ensure connection is released
+        try { in.close(); }
+        catch (java.io.IOException e) { log.warn("Failed to close connection", e); }
+        return result;
     }
 
     public Context getContext() { return context ; }
@@ -176,7 +190,13 @@ public class QueryEngineHTTP implements QueryExecution
     
     public void abort() { }
 
-    public void close() { }
+    public void close() {
+        if (retainedConnection != null) {
+            try { retainedConnection.close(); }
+            catch (java.io.IOException e) { log.warn("Failed to close connection", e); }
+            finally { retainedConnection = null; }
+        }
+    }
 
 //    public boolean isActive() { return false ; }
     
