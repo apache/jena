@@ -10,6 +10,7 @@ import org.openjena.atlas.logging.Log ;
 import tdb.cmdline.CmdTDB;
 
 import com.hp.hpl.jena.sparql.sse.Item;
+import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.solver.stats.StatsCollector;
 import com.hp.hpl.jena.tdb.store.GraphTDB;
 
@@ -19,6 +20,7 @@ public class tdbstats extends CmdTDB
     // tdbconfig?
     static public void main(String... argv)
     { 
+        TDB.setOptimizerWarningFlag(false) ;
         Log.setLog4j() ;
         new tdbstats(argv).mainRun() ;
     }

@@ -180,8 +180,10 @@ public class NodeId
             if ( ! XSDDatatype.XSDdecimal.isValidLiteral(lit) ) 
                 return null ;
             
-            // Not lit.getValue() because that may be the narrowest type e.g. Integer.
-            // .trim is how Jen adoes it but it rather savage. spc, \n \r \t.
+            // Not lit.getValue() because that may be a narrower type e.g. Integer.
+            // .trim is how Jena does it but it rather savage. spc, \n \r \t.
+            // But at this point we know it's a valid literal so the excessive
+            // chopping by .trim is safe.
             BigDecimal decimal = new BigDecimal(lit.getLexicalForm().trim()) ;
             // Does range checking.
             DecimalNode dn = DecimalNode.valueOf(decimal) ;
@@ -208,6 +210,8 @@ public class NodeId
         
         if ( XSDDatatype.XSDdateTime.isValidLiteral(lit) ) 
         {
+            // Could use the Jena/XSDDateTime object here rather than reparse the lexical form.
+            // But this works and it's close to a release ... 
             long v = DateTimeNode.packDateTime(lit.getLexicalForm()) ;
             if ( v == -1 )
                 return null ; 

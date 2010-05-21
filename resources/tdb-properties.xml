@@ -3,6 +3,6 @@
 
 <properties version="1.0">
   <comment>TDB System Properties</comment>
-  <entry key="com.hp.hpl.jena.tdb.version">@VERSION@</entry>
-  <entry key="com.hp.hpl.jena.tdb.build.datetime">@BUILD_TIME_XSD@</entry>
+  <entry key="com.hp.hpl.jena.tdb.version">${project.version}</entry>
+  <entry key="com.hp.hpl.jena.tdb.build.datetime">${build.time.xsd}</entry>
 </properties>

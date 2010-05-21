@@ -7,7 +7,7 @@
   <artifactId>tdb</artifactId>
   <packaging>jar</packaging>
   <name>TDB</name>
-  <version>0.8.6-RC-2</version>
+  <version>0.8.6-RC-4</version>
 
   <description>TDB is a storage subsystem for Jena and ARQ</description>
   <url>http://openjena.org/TDB</url>
@@ -318,11 +318,12 @@
                   <format property="build.time.xsd"  pattern="yyyy-MM-dd'T'HH:mm:ssZ"/>
                   <format property="build.time.txt"  pattern="yyyy-MM-dd HH:mm z"/>
                 </tstamp>
+		<!-- Do not indent (it does not work) -->
                 <echo file="${project.basedir}/target/filter.properties">
-                  #begin
-                  build.time.xsd=${build.time.xsd}
-                  build.time.txt=${build.time.txt}
-                  #end
+#begin
+build.time.xsd=${build.time.xsd}
+build.time.txt=${build.time.txt}
+#end
                 </echo>
                 <echo message="version=${project.version}"/>
                 <echo message="build.time=${build.time.txt}"/>

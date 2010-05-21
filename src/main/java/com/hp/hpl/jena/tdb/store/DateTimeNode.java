@@ -122,8 +122,8 @@ public class DateTimeNode
         XMLGregorianCalendar xcal = null ;
         
         try {
-            // This does not accept whitespace even if legal in XSD
-            // so we can get gete then get an exception.
+            // Play very safe.
+            // This does not accept whitespace even if legal in XSD.
             xcal = datatypeFactory.newXMLGregorianCalendar(lex.trim()) ;
         } catch (Exception ex) { return -1 ; } 
         
