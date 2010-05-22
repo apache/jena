@@ -12,7 +12,7 @@ public class DevARQ
     // Autoclose of results sets from QueryEngineHTTP
     
     // == SPARQL 1.1 Query
-    //   Rework aggregates to better match the formalism in the spec
+    //   Rework aggregates to better match the formalism in the spec; stream/accumulatros based.
     //   Implement Group_Concat, sample
     
     // == SPARQL 1.1 Update
@@ -20,6 +20,8 @@ public class DevARQ
     
     // ----
     // http://www.w3.org/TR/xmlschema11-2/ : precisionDecimal : dayTimeDuration : yearTimeDuration 
+    // Version registration: URI + ver string ; apf:version
+    
     
     // Dataset to indicate if plain string and XSD string are the same to affact FILTER(?x="string") optimziation.
     // Does dataset contexts fix this?
