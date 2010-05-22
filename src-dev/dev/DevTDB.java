@@ -7,24 +7,18 @@ public class DevTDB
     
     // =====
     // Enable FILTER assignment for strings (and numbers?) via dataset context setting?
-    // Avoid "no optimizer warning for loader"
-    
     // Tuples
     // Interface, TupleFactory, TupleImpl
     // TupleMask (or TupleImpl itself has a length field?? TupleMask(T[] or Tuple<T>)) 
     // Sort : with colmap?
     // TupleSlice
     
+    // Build: copy/filter a file, don't inline properties file.
+    
+    // Version registration (from ARQ).
+    
     // Loader:
     // Reset run rate on each index.
-    
-    // ** Whitespace facet processing
-    //   Jena seems to do whitespace around numbers but not whitespace in numbers nor anything to do with XSD dateTime etc.  
-    //   TestChecker tests 11,12,14.
-    //   DateTimeNode.pack and from NodeId.inline
-    //      - catch any exception and carry on.
-    //      quick isValid check
-    // Then better NodeId.inline testing.
     
     // RIOT
     //   Output bad term quads/triples to special sink. 
@@ -55,10 +49,9 @@ public class DevTDB
     // Stats and datasets
     //   tdbstats
     
-    // Use  $(cygpath -wp "$jar")" when setting $jar.
-    
     // Early truncation of patterns
     //  ?s <p> <foo> . ?s <q> ?v . ?s <r> ?x
+    // Favour connected next triple pattern (but grounding makes this less relevant) 
     // If <r> has no solutions fall back to triple pattern 1
     // Just need to keep var -> first def mapping but all mentions may be useful. 
     // (Idea from Alisdair)

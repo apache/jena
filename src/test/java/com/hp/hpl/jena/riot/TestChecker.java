@@ -53,8 +53,8 @@ public class TestChecker
     @Test (expected=ExWarning.class) public void checker10() { check("''^^xsd:dateTime") ; }
 
     // Whitespace facet processing means that these are legal.
-    //--@Test public void checker11() { check("'  2010-05-19T01:01:01.01+0100'^^xsd:dateTime") ; }
-  //--@Test public void checker12() { check("'\\n2010-05-19T01:01:01.01+0100'^^xsd:dateTime") ; }
+    @Test public void checker11() { check("'  2010-05-19T01:01:01.01+01:00'^^xsd:dateTime") ; }
+    @Test public void checker12() { check("'\\n2010-05-19T01:01:01.01+01:00\\t\\r  '^^xsd:dateTime") ; }
     @Test public void checker13() { check("' 123'^^xsd:integer") ; }
     
     // Internal white space - illegal
@@ -63,6 +63,8 @@ public class TestChecker
 
     @Test public void checker16() { check("'123.0  '^^xsd:float") ; }
     @Test public void checker17() { check("'123.0\\n'^^xsd:double") ; }
+    // Jena "bug"
+    //@Test(expected=ExWarning.class) public void checker18() { check("'\\b123.0\\n'^^xsd:double") ; }
 
     
     // Other bad lexical forms.
