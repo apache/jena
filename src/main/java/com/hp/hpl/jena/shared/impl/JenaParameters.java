@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: JenaParameters.java,v 1.3 2010-01-06 11:52:32 der Exp $
+ * $Id: JenaParameters.java,v 1.4 2010-05-22 16:30:25 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.shared.impl;
 
@@ -20,7 +20,7 @@ package com.hp.hpl.jena.shared.impl;
  * moved to being model-specific rather than global.
  * </p>
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2010-01-06 11:52:32 $
+ * @version $Revision: 1.4 $ on $Date: 2010-05-22 16:30:25 $
  */
 public class JenaParameters {
     
@@ -77,6 +77,7 @@ public class JenaParameters {
      * leading and trailing white space is silently trimmed when parsing an
      * XSD numberic typed literal.
      */
+     // Remove this sometime. 
     public static boolean enableWhitespaceCheckingOfTypedLiterals = false;
     
     /**
