@@ -325,6 +325,21 @@ public abstract class TestUpdateGraph extends TestUpdateBase
         assertTrue(graphEmpty(graph)) ;
     }
     
+    @Test public void testUpdateInitialBinding4()
+    {
+        // Empty pattern
+        GraphStore gStore = getEmptyGraphStore() ;
+        defaultGraphData(gStore, graph1) ;
+        String update = "DELETE  { ?x <http://example/p> 2007 } INSERT { ?x <http://example/p> 1999 }" ;
+        UpdateRequest req = UpdateFactory.create(update) ;
+        
+        Binding b = new Binding1(null, Var.alloc("x"), s) ;
+        UpdateAction.execute(req, gStore, b) ;
+        assertEquals(1, gStore.getDefaultGraph().size()) ;
+        assertTrue(gStore.getDefaultGraph().contains(s, p, NodeFactory.parseNode("1999"))) ;
+    }
+    
+    
     private static Graph data1()
     {
         Graph graph = Factory.createDefaultGraph() ;

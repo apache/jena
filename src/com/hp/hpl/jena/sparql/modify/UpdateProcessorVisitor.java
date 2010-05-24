@@ -35,12 +35,12 @@ public class UpdateProcessorVisitor implements UpdateVisitor
 {
 
     private GraphStore graphStore ;
-    private Binding binding ;
+    private Binding initialBinding ;
 
     public UpdateProcessorVisitor(GraphStore graphStore, Binding initialBinding)
     {
         this.graphStore = graphStore ;
-        this.binding = initialBinding ;
+        this.initialBinding = initialBinding ;
     }
     
     public void visit(final UpdateInsertData insertData)
@@ -77,9 +77,11 @@ public class UpdateProcessorVisitor implements UpdateVisitor
     private List<Binding> evalBindings(Element pattern)
     {
         List<Binding> bindings = new ArrayList<Binding>() ;
+        
+        
         if ( pattern != null )
         {
-            Plan plan = QueryExecutionFactory.createPlan(pattern, graphStore, binding) ;
+            Plan plan = QueryExecutionFactory.createPlan(pattern, graphStore, initialBinding) ;
             QueryIterator qIter = plan.iterator() ;
 
             for( ; qIter.hasNext() ; )
@@ -90,7 +92,12 @@ public class UpdateProcessorVisitor implements UpdateVisitor
             qIter.close() ;
         }
         else
-            bindings.add(BindingRoot.create()) ;
+        {
+            if ( initialBinding != null )
+                bindings.add(initialBinding) ;
+            else
+                bindings.add(BindingRoot.create()) ;
+        }
         return bindings ;
     }
 
