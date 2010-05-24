@@ -64,13 +64,10 @@ public class RunTDB
         System.out.println("Filter: "+target) ;
         
         Filter<Tuple<NodeId>> filter = new Filter<Tuple<NodeId>>() {
-            
             public boolean accept(Tuple<NodeId> item)
             {
-                
                 // Reverse the lookup as a demo
                 Node n = nodeTable.getNodeForNodeId(target) ;
-                
                 //System.err.println(item) ;
                 if ( item.size() == 4 && item.get(0).equals(target) )
                 {

@@ -19,6 +19,7 @@ import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.impl.RDFReaderFImpl ;
 import com.hp.hpl.jena.riot.JenaReaderNTriples2 ;
 import com.hp.hpl.jena.riot.JenaReaderTurtle2 ;
+import com.hp.hpl.jena.sparql.SystemARQ ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils ;
 import com.hp.hpl.jena.sparql.engine.main.QC ;
@@ -199,11 +200,6 @@ public class TDB
         ARQ.init() ;
         EnvTDB.processGlobalSystemProperties() ;
         
-        // Set management information.
-        // Needs ARQ > 2.8.0
-        String NS = TDB.PATH ;
-        ARQMgt.register(NS+".system:type=SystemInfo", new SystemInfo(TDB.tdbIRI, TDB.VERSION, TDB.BUILD_DATE)) ;
-
         AssemblerUtils.init() ;
         AssemblerTDB.init();
         QueryEngineTDB.register() ;
@@ -277,7 +273,15 @@ public class TDB
     }
 
     private static void initlization2()
-    { }
+    { 
+        // Set management information.
+        // Needs ARQ > 2.8.0
+        String NS = TDB.PATH ;
+        SystemInfo systemInfo = new SystemInfo(TDB.tdbIRI, TDB.VERSION, TDB.BUILD_DATE) ;
+        ARQMgt.register(NS+".system:type=SystemInfo", systemInfo) ;
+        SystemARQ.registerSubSystem(systemInfo) ;
+    }
+    
 }
 
 /*

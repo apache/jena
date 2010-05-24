@@ -31,6 +31,9 @@ public class DevTDB
     // RIOT Commands
     // Document
     //  --sink, --skip, --time. --stats?
+    // In an ideal world, Jena's 
+    // Roll out jenaParameters consistently, enableWhitespaceCheckingOfTypedLiterals
+    // 
     
     // Free block recycling.
     

@@ -6,9 +6,12 @@
 
 package com.hp.hpl.jena.riot;
 
+import org.junit.After ;
+import org.junit.Before ;
 import org.junit.Test ;
 
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.shared.impl.JenaParameters ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 
 public class TestChecker
@@ -31,20 +34,22 @@ public class TestChecker
     } ;
     static Checker checker = new Checker(handler) ;
     
-//    boolean b ;
-//
-//    @Before
-//    public void before()
-//    {
-//        b = JenaParameters.enableWhitespaceCheckingOfTypedLiterals ;
-//        JenaParameters.enableWhitespaceCheckingOfTypedLiterals = false ;
-//    }
-//
-//    @After
-//    public void after()
-//    {
-//        JenaParameters.enableWhitespaceCheckingOfTypedLiterals = b ;
-//    }
+    boolean b ;
+
+    @Before
+    public void before()
+    {
+        b = JenaParameters.enableWhitespaceCheckingOfTypedLiterals ;
+        // The default is false which allows whitespace around integers.
+        // Jena seems to allow white space around dateTimes either way. 
+        //JenaParameters.enableWhitespaceCheckingOfTypedLiterals = true ;
+    }
+
+    @After
+    public void after()
+    {
+        JenaParameters.enableWhitespaceCheckingOfTypedLiterals = b ;
+    }
     
     @Test public void checker01() { check("''") ; }
     @Test public void checker02() { check("''@en") ; }
@@ -52,7 +57,10 @@ public class TestChecker
     
     @Test (expected=ExWarning.class) public void checker10() { check("''^^xsd:dateTime") ; }
 
-    // Whitespace facet processing means that these are legal.
+    // Whitespace facet processing.  
+    // Strictly illegal RDF but Jena accepts them.
+    // See JenaParameters.enableWhitespaceCheckingOfTypedLiterals
+    
     @Test public void checker11() { check("'  2010-05-19T01:01:01.01+01:00'^^xsd:dateTime") ; }
     @Test public void checker12() { check("'\\n2010-05-19T01:01:01.01+01:00\\t\\r  '^^xsd:dateTime") ; }
     @Test public void checker13() { check("' 123'^^xsd:integer") ; }
