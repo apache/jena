@@ -2,7 +2,7 @@
   (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP, all rights reserved.
   (c) Copyright 2009 TopQuadrant, Inc.
   [See end of file]
-  $Id: GraphEvents.java,v 1.3 2009-12-11 03:36:51 jeremy_carroll Exp $
+  $Id: GraphEvents.java,v 1.4 2010-05-24 13:25:47 andy_seaborne Exp $
 */
 package com.hp.hpl.jena.graph;
 
@@ -86,7 +86,6 @@ public class GraphEvents
      * <dt><q>removeAll</q></dt><dd>{@link #removeAll}</dd>
      * <dt><q>remove</q></dt><dd>{@link #remove(Node, Node, Node)}</dd>
      * </dl>
-     * @return
      */
     public Object getTitle()
         { return title; }
