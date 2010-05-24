@@ -17,8 +17,11 @@ import com.hp.hpl.jena.sdb.util.DerbyUtils ;
 import com.hp.hpl.jena.shared.PrefixMapping ;
 import com.hp.hpl.jena.shared.impl.PrefixMappingImpl ;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
+import com.hp.hpl.jena.sparql.SystemARQ ;
 import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils ;
 import com.hp.hpl.jena.sparql.lib.Metadata ;
+import com.hp.hpl.jena.sparql.mgt.ARQMgt ;
+import com.hp.hpl.jena.sparql.mgt.SystemInfo ;
 import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.sparql.util.Symbol ;
 import com.hp.hpl.jena.vocabulary.OWL ;
@@ -28,8 +31,10 @@ import com.hp.hpl.jena.vocabulary.RDFS ;
 
 public class SDB
 {
-    /** SDB namespace */
+    /** IRI for SDB */  
+    public static final String sdbIRI = "http://jena.hpl.hp.com/#sdb" ;
     
+    /** SDB namespace */
     public final static String namespace = "http://jena.hpl.hp.com/2007/sdb#" ;
     public final static String symbolPrefix = "sdb" ;
     public final static String symbolSpace = "http://jena.hpl.hp.com/SDB/symbol#" ;
@@ -146,6 +151,19 @@ public class SDB
    
     /** The date and time at which this release was built */   
     public static final String BUILD_DATE = metadata.get(PATH+".build.datetime", "unset") ;
+    
+ // Final initialization (in case any statics in this file are important). 
+    static {
+        initlization2() ;
+    }
+
+    private static void initlization2()
+    { 
+        String NS = SDB.PATH ;
+        SystemInfo systemInfo = new SystemInfo(SDB.sdbIRI, SDB.VERSION, SDB.BUILD_DATE) ;
+        ARQMgt.register(NS+".system:type=SystemInfo", systemInfo) ;
+        SystemARQ.registerSubSystem(systemInfo) ;
+    }
 }
 
 /*
