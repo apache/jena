@@ -40,16 +40,17 @@ public final class LoadMonitor
     // Index phase variables.
     private long totalIndexItems = 0 ;
     
+    // Time over all indexes
     private long indexStartTime = 0 ;
     private long indexFinishTime = 0 ;
     private long indexTime = 0 ;
-    
+
     // Work variables.
     private long currentItems = 0 ;
     private long lastTime = 0 ;
-    private long phaseStartTime = 0 ;
-    private long phaseFinishTime = 0 ;
-    private long phaseLastTime = 0 ;
+    private long currentStartTime = 0 ;       // Used for each index
+    private long currentFinishTime = 0 ;
+    private long elapsedLastTime = 0 ;
     
     private String itemsName ;
 
@@ -96,7 +97,8 @@ public final class LoadMonitor
     {
         print("-- Start %s data phase", itemsName) ;
         dataStartTime = timer.readTimer() ;
-        phaseStartTime = dataStartTime ;
+        currentStartTime = dataStartTime ;
+        elapsedLastTime = dataStartTime ;
         currentItems = 0 ;
         totalDataItems = 0 ;
         EventManager.send(dataset, new Event(BulkLoader.evStartDataBulkload, null)) ;
@@ -125,18 +127,19 @@ public final class LoadMonitor
     
         if ( tickPoint(totalDataItems, dataTickPoint) )
         {
-            long timePoint = timer.readTimer() ;
+            long readTime = timer.readTimer() ;
+            long timePoint = readTime - currentStartTime ;
             long thisTime = timePoint - lastTime ;
         
             // *1000L is milli to second conversion
         
             long batchAvgRate = (currentItems * 1000L) / thisTime;
             long runAvgRate   = (totalDataItems * 1000L) / timePoint ;
-            print("Add: %,d %s (Batch: %,d / Run: %,d)", totalDataItems, itemsName, batchAvgRate, runAvgRate) ;
+            print("Add: %,d %s (Batch: %,d / Avg: %,d)", totalDataItems, itemsName, batchAvgRate, runAvgRate) ;
             lastTime = timePoint ;
 
             if ( tickPoint(totalDataItems, superTick*dataTickPoint) )
-                elapsed(timePoint) ;
+                elapsed(readTime) ;
             currentItems = 0 ;
             lastTime = timePoint ;
         }
@@ -172,26 +175,27 @@ public final class LoadMonitor
     String indexLabel ;
     public void startIndex(String label)
     {
-        phaseStartTime = timer.readTimer() ;
+        currentStartTime = timer.readTimer() ;
         indexLabel = label ;
         currentItems = 0 ;
         totalIndexItems = 0 ;
+        elapsedLastTime = currentStartTime ;
+        lastTime = 0 ;
     }
     
     public void finishIndex(String label)
     {
-        phaseFinishTime = timer.readTimer() ;
-        long phaseTime = phaseFinishTime - phaseStartTime ;
-        
+        currentFinishTime = timer.readTimer() ;
+        long indexTime = currentFinishTime - currentStartTime ;
         
         if ( totalIndexItems > 0 )
         {
-            if ( phaseTime > 0 )
+            if ( indexTime > 0 )
                 print("** Index %s: %,d slots indexed in %,.2f seconds [Rate: %,.2f per second]",
                       label,
                       totalIndexItems,
-                      phaseTime/1000.0F,
-                      1000F*totalIndexItems/phaseTime) ;
+                      indexTime/1000.0F,
+                      1000F*totalIndexItems/indexTime) ;
             else
                 print("** Index %s: %,d slots indexed", label, totalIndexItems) ;
             
@@ -207,17 +211,18 @@ public final class LoadMonitor
     
         if ( tickPoint(totalIndexItems, indexTickPoint) )
         {
-            long timePoint = timer.readTimer() ;
+            long readTimer = timer.readTimer() ;
+            long timePoint = readTimer - currentStartTime ; ;
             long thisTime = timePoint - lastTime ;
             
             long batchAvgRate = (currentItems * 1000L) / thisTime;
-            long runAvgRate   = (totalDataItems * 1000L) / timePoint ;
+            long runAvgRate   = (totalIndexItems * 1000L) / timePoint ;
             
-            print("Index %s: %,d slots (Batch: %,d slots/s / Run: %,d slots/s)", 
+            print("Index %s: %,d slots (Batch: %,d slots/s / Avg: %,d slots/s)", 
                   indexLabel, totalIndexItems, batchAvgRate, runAvgRate) ;
     
             if ( tickPoint(totalIndexItems, superTick*indexTickPoint) )
-                elapsed(timePoint) ;
+                elapsed(timer.readTimer()) ;
     
             currentItems = 0 ;
             lastTime = timePoint ;
@@ -238,9 +243,8 @@ public final class LoadMonitor
     
     private void elapsed(long timerReading)
     {
-        float elapsedSecs = (timerReading-phaseStartTime)/1000F ;
+        float elapsedSecs = (timerReading-processStartTime)/1000F ;
         print("  Elapsed: %,.2f seconds [%s]", elapsedSecs, nowAsString()) ;
-        phaseLastTime = timerReading ;
     }
 
     private static boolean tickPoint(long counter, long quantum)
