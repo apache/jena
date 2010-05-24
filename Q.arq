@@ -1,7 +1,3 @@
-prefix i: <http://example/> 
-prefix n: <http://example/ns#> 
-
-select * where {
-    ?x n:memberOf ?org .
-    {{?x n:related ?y} minus {?y n:memberOf ?org}}
-} 
+SELECT ?predicate (count( DISTINCT *) AS ?uniquePredicates) 
+{ ?s ?predicate ?o }
+GROUP BY ?predicate
