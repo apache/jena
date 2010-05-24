@@ -114,13 +114,14 @@ class BulkLoaderTriples
 //        model.close();
 //    }
 
+    @Deprecated
     public BulkLoaderTriples(GraphTDB graph, boolean showProgress)
     {
         this(graph, showProgress, false, false, false) ;
     }
     
     /** Create a bulkloader for a graph : showProgress/parallel/incremental/generate statistics */ 
-
+    @Deprecated
     public BulkLoaderTriples(GraphTDB graph, boolean showProgress, boolean doInParallel, boolean doIncremental, boolean generateStats)
     {
         // Bulk loading restricted to triple indexes
@@ -309,7 +310,10 @@ class BulkLoaderTriples
         }
     }
 
-    /** Load a model, with monitoring */ 
+    /** Load a model, with monitoring.
+     * @deprecated use operations from TDBLoader
+     */
+    @Deprecated
     public static long load(Model model, InputStream input, boolean showProgress)
     {
         // TODO Switch to better event system
@@ -325,7 +329,10 @@ class BulkLoaderTriples
         return showProgress ? monitor.getAddCount() : -1 ;
     }
     
-    /** Load a model, with monitoring */ 
+    /** Load a model, with monitoring
+     * @deprecated use operations from TDBLoader
+     */ 
+    @Deprecated
     public static long load(Model model, String url, boolean showProgress)
     {
         // TODO Switch to better event system

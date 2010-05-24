@@ -69,6 +69,7 @@ public class TestChecker
     @Test (expected=ExWarning.class) public void checker14() { check("'12 3'^^xsd:integer") ; }
     @Test public void checker15() { check("'\\n123'^^xsd:integer") ; }
 
+    // Test all the daat ttype hierarchies that whietspace foo affects.
     @Test public void checker16() { check("'123.0  '^^xsd:float") ; }
     @Test public void checker17() { check("'123.0\\n'^^xsd:double") ; }
     // Jena "bug"
