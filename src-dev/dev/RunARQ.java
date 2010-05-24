@@ -91,10 +91,11 @@ public class RunARQ
 
     public static void main(String[] argv) throws Exception
     {
-        arq.qexpr.main("COALESCE()") ; System.exit(0) ;
+        //arq.qexpr.main("COALESCE()") ; System.exit(0) ;
         
         String a[] = new String[]{
-            "--query=Q.rq" 
+            "--data=D.nt",
+            "--query=Q.rq"
         } ;
         
         sparql.main(a) ;

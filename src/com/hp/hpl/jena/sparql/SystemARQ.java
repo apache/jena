@@ -1,60 +1,36 @@
 /*
- * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.mgt;
+package com.hp.hpl.jena.sparql;
 
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.n3.IRIResolver ;
+import java.util.ArrayList ;
+import java.util.Iterator ;
+import java.util.List ;
 
+import com.hp.hpl.jena.query.ARQ ;
+import com.hp.hpl.jena.sparql.mgt.SystemInfo ;
 
-public class SystemInfo implements SystemInfoMBean
+public class SystemARQ
 {
-    private final String name ;
-    private final Node   iri ;
-    private final String version ;
-    private final String buildDate ;
-
-    public SystemInfo(String name, String version, String buildDate)
+    public static final SystemInfo sysInfo = new SystemInfo(ARQ.arqIRI, ARQ.VERSION, ARQ.BUILD_DATE) ;
+    
+    private static List<SystemInfo> versions = new ArrayList<SystemInfo>() ;
+    public static void registerSubSystem(SystemInfo systemInfo)
     {
-        this.name = name ;
-        this.iri = createIRI(name) ;
-        this.version = version ;
-        this.buildDate = buildDate ;
+        versions.add(systemInfo) ;
     }
     
-    private static Node createIRI(String iriStr)
+    public static Iterator<SystemInfo> registeredSubsystems()
     {
-        try {
-            return Node.createURI(IRIResolver.resolveGlobal(iriStr)) ;
-        } catch (RuntimeException ex) { return null ; }
-    }
-        
-    public String getBuildDate()
-    {
-        return buildDate ;
-    }
-
-    public String getVersion()
-    {
-        return version ;
-    }
-
-    public String getName()
-    { 
-        return name ;
-    }
-    
-    public Node getIRI()
-    { 
-        return Node.createURI(name) ;
+        return versions.iterator() ;
     }
 }
 
 /*
- * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

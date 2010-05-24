@@ -6,15 +6,16 @@
 
 package com.hp.hpl.jena.query;
 
-import com.hp.hpl.jena.assembler.assemblers.AssemblerGroup;
-import com.hp.hpl.jena.sparql.ARQConstants;
-import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils;
-import com.hp.hpl.jena.sparql.engine.main.StageBuilder;
-import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp;
-import com.hp.hpl.jena.sparql.lib.Metadata;
+import com.hp.hpl.jena.assembler.assemblers.AssemblerGroup ;
+import com.hp.hpl.jena.sparql.ARQConstants ;
+import com.hp.hpl.jena.sparql.SystemARQ ;
+import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils ;
+import com.hp.hpl.jena.sparql.engine.main.StageBuilder ;
+import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp ;
+import com.hp.hpl.jena.sparql.lib.Metadata ;
 import com.hp.hpl.jena.sparql.mgt.ARQMgt ;
-import com.hp.hpl.jena.sparql.util.Context;
-import com.hp.hpl.jena.sparql.util.Symbol;
+import com.hp.hpl.jena.sparql.util.Context ;
+import com.hp.hpl.jena.sparql.util.Symbol ;
 
 
 /** ARQ - miscellaneous settings
@@ -298,7 +299,9 @@ public class ARQ
         globalContext = defaultSettings() ;
         StageBuilder.init() ;
         ARQMgt.init() ;         // After context and after PATH/NAME/VERSION/BUILD_DATE are set
+        SystemARQ.registerSubSystem(SystemARQ.sysInfo) ;
     }
+    
     // Force a call
     static { init() ; }
     
