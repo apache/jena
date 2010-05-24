@@ -155,7 +155,7 @@ public class DatasetUtils
                 String sourceURI = iter.next() ;
                 String absURI = null ;
                 if ( baseURI != null )
-                    absURI = IRIResolver.resolve(baseURI, sourceURI) ;
+                    absURI = IRIResolver.resolve(sourceURI, baseURI) ;
                 else
                     absURI = IRIResolver.resolveGlobal(sourceURI) ;
                 // FileManager.readGraph?

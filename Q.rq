@@ -1,1 +1,1 @@
-junk
+SELECT * FROM <http://www.purl.org/net/ontology/beer.owl> { ?s ?p ?o }

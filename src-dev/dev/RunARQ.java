@@ -91,6 +91,8 @@ public class RunARQ
 
     public static void main(String[] argv) throws Exception
     {
+        arq.sparql.main("--results=srj", "SELECT * FROM <http://www.purl.org/net/ontology/beer.owl> { ?x a ?C}" ) ; System.exit(0) ;
+        
         //arq.qexpr.main("COALESCE()") ; System.exit(0) ;
         
         String a[] = new String[]{
