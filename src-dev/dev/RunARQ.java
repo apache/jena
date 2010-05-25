@@ -23,6 +23,7 @@ import com.hp.hpl.jena.shared.JenaException ;
 import com.hp.hpl.jena.sparql.algebra.Algebra ;
 import com.hp.hpl.jena.sparql.algebra.ExtBuilder ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
+import com.hp.hpl.jena.sparql.algebra.OpAsQuery ;
 import com.hp.hpl.jena.sparql.algebra.OpExtRegistry ;
 import com.hp.hpl.jena.sparql.algebra.TransformUnionQuery ;
 import com.hp.hpl.jena.sparql.algebra.op.OpExt ;
@@ -91,6 +92,27 @@ public class RunARQ
 
     public static void main(String[] argv) throws Exception
     {
+        if ( false )
+        {
+            String str = "SELECT count(*) {?s ?p ?o}" ;
+            Query query = QueryFactory.create(str, Syntax.syntaxARQ) ;
+            Op op = Algebra.compile(query) ;
+            System.out.println(op) ;
+            Query query2 = OpAsQuery.asQuery(op) ;
+            System.out.println(query2) ;
+            System.exit(0) ;
+        }
+        
+        if ( true )
+        {
+            String str = "(sequence (filter (= ?z 234) (bgp (?x ?y ?z))) (bgp (?x1 ?y2 ?z1)) )" ;
+            Op op = SSE.parseOp(str) ;
+            System.out.println(op) ;
+            Query query2 = OpAsQuery.asQuery(op) ;
+            System.out.println(query2) ;
+            System.exit(0) ;
+        }        
+
         arq.sparql.main("--results=srj", "SELECT * FROM <http://www.purl.org/net/ontology/beer.owl> { ?x a ?C}" ) ; System.exit(0) ;
         
         //arq.qexpr.main("COALESCE()") ; System.exit(0) ;

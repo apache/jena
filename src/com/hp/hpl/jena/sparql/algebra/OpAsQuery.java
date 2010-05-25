@@ -95,7 +95,25 @@ public class OpAsQuery
         
         public void visit(OpSequence opSequence)
         {
-            throw new ARQNotImplemented("OpSequence") ;
+            ElementGroup g = currentGroup() ;
+            boolean nestGroup = ! g.isEmpty() ;
+            if ( nestGroup )
+            {
+                startSubGroup() ;
+                g = currentGroup() ;
+            }
+            
+            Iterator<Op> iter = opSequence.iterator() ;
+            
+            for ( ; iter.hasNext() ; )
+            {
+                Op op = iter.next() ;
+                Element e = asElement(op) ;
+                g.addElement(e) ;
+            }
+            if ( nestGroup )
+                endSubGroup() ;
+            return ;
         }
         
         public void visit(OpDisjunction opDisjunction)

@@ -22,12 +22,11 @@ public class DevARQ
     // http://www.w3.org/TR/xmlschema11-2/ : precisionDecimal : dayTimeDuration : yearTimeDuration 
     // Version registration: URI + ver string ; apf:version
     
-    
     // Dataset to indicate if plain string and XSD string are the same to affact FILTER(?x="string") optimziation.
     // Does dataset contexts fix this?
     
     // Documentation for CSV etc.
-    // Union Transform.  TransformUnionQuery
+    // Union Transform,  TransformUnionQuery
     //   TestCases
     //   The use of a bNode in (graph) needs coping with the distinct.
     //   Or a "really don't bind" treatment of that bnode. Var.ANON
