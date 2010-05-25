@@ -15,25 +15,17 @@ public class DevTDB
     
     // Build: copy/filter a file, don't inline properties file.
     
-    // Version registration (from ARQ).
-    
-    // Loader:
-    // Reset run rate on each index.
-    
     // RIOT
     //   Output bad term quads/triples to special sink. 
     //   WebReader: Read from URL, Content negotiation.
     //
-    //   Interfaceization of checker
+    //   Interface checker
     //   Option passing (old Jena style).
     //   Options: pass/reject bad URIs, bad literals. -> "SKIP", "PASS", "FAIL"
     //   Recovery parsing - scan to DOT?
     // RIOT Commands
     // Document
     //  --sink, --skip, --time. --stats?
-    // In an ideal world, Jena's 
-    // Roll out jenaParameters consistently, enableWhitespaceCheckingOfTypedLiterals
-    // 
     
     // Free block recycling.
     
@@ -85,11 +77,6 @@ public class DevTDB
     //   ?? Maintain a free block disk
     //   ==> recordfile level.
     
-    
-    // Special cases
-    //   <s> p1 ?o1 ; p2 ?o2 ; p3 ?o3 ... and do ((<s> 0 0)->(<s>+1 0 0)]
-    //   Materialized answers.
-    
     // NodeId:  
     // Bit 0: 0 - 63 bits of id (hash!) or block allocation for cluster.
     // Bit 0: 1 - inline
@@ -130,7 +117,6 @@ public class DevTDB
     // Node cache on 64bit machines needs to be bigger or rebalence
     // Cache stats counters (prep for JMX but useful now)
     
-    // == tdbdump && tdbrestore
     // ---- Optimizer
     
     // ---- Documentation
