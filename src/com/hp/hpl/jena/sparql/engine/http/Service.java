@@ -6,16 +6,16 @@
 
 package com.hp.hpl.jena.sparql.engine.http;
 
-import java.io.InputStream;
+import java.io.InputStream ;
 
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryExecException;
-import com.hp.hpl.jena.query.ResultSet;
-import com.hp.hpl.jena.query.ResultSetFactory;
-import com.hp.hpl.jena.sparql.algebra.OpAsQuery;
-import com.hp.hpl.jena.sparql.algebra.op.OpService;
-import com.hp.hpl.jena.sparql.engine.QueryIterator;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIteratorResultSet;
+import com.hp.hpl.jena.query.Query ;
+import com.hp.hpl.jena.query.QueryExecException ;
+import com.hp.hpl.jena.query.ResultSet ;
+import com.hp.hpl.jena.query.ResultSetFactory ;
+import com.hp.hpl.jena.sparql.algebra.OpAsQuery ;
+import com.hp.hpl.jena.sparql.algebra.op.OpService ;
+import com.hp.hpl.jena.sparql.engine.QueryIterator ;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIteratorResultSet ;
 
 /** Execution of OpService */
 
@@ -26,14 +26,17 @@ public class Service
         if ( ! op.getService().isURI() )
             throw new QueryExecException("Service URI not bound: "+op.getService()) ; 
         
-        Query query = OpAsQuery.asQuery(op.getSubOp()) ;
-        
-        // Alternative: use the original syntax.
-        // Can't always do this - may be built programmatically.
-        // Not also teh optimizer tries not to optimize OpService,
-        // so leaving the algebre in the original generated form. 
+        Query query ;
+        // XXX Needs more testing
 //        if ( op.getServiceElement() != null )
-//            query.setQueryPattern(op.getServiceElement()) ;
+//        {
+//            query = QueryFactory.make() ;
+//            query.setQueryPattern(op.getServiceElement().getElement()) ;
+//            query.setQuerySelectType() ;
+//            query.setQueryResultStar(true) ;
+//        }
+//        else
+            query = OpAsQuery.asQuery(op.getSubOp()) ;
         
         HttpQuery httpQuery = new HttpQuery(op.getService().getURI()) ;
         httpQuery.addParam(HttpParams.pQuery, query.toString() );

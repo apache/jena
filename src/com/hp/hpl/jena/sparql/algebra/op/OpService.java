@@ -19,10 +19,10 @@ public class OpService extends Op1
 {
     Node serviceNode = null ;
     private ElementService serviceElement = null ;    
+    
     public OpService(Node serviceNode, Op subOp)
     {
-        super(subOp) ;
-        this.serviceNode = serviceNode ;
+        this(serviceNode, subOp, null) ;
     }
 
     public OpService(Node serviceNode, Op subOp, ElementService elt)

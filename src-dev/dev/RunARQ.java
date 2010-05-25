@@ -92,9 +92,10 @@ public class RunARQ
 
     public static void main(String[] argv) throws Exception
     {
-        if ( false )
+        if ( true )
         {
-            String str = "SELECT count(*) {?s ?p ?o}" ;
+            // OpAssign is semibroken.
+            String str = "SELECT (count(*) AS ?count) {?s ?p ?o}" ;
             Query query = QueryFactory.create(str, Syntax.syntaxARQ) ;
             Op op = Algebra.compile(query) ;
             System.out.println(op) ;
