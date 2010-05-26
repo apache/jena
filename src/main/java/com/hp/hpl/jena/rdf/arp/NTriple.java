@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: NTriple.java,v 1.1 2009-06-29 08:55:46 castagna Exp $
+ * * $Id: NTriple.java,v 1.2 2010-05-26 20:29:17 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -41,7 +41,10 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.Locator;
@@ -512,7 +515,7 @@ int debugC = 0;
 	static private void resource(AResource r) {
 		if (r.isAnonymous()) {
 			print("_:j");
-			print(r.getAnonymousID());
+			print(escapeNTriple(r.getAnonymousID()));
 			print(" ");
 		} else {
 			print("<");
@@ -520,6 +523,51 @@ int debugC = 0;
 			print("> ");
 		}
 	}
+	
+	
+	static private Pattern ntripleBnode=Pattern.compile("[a-zA-Y0-9]*");
+	/**
+	 * 
+	 * Replace any non-legal char (or Z) with ZNN where NN are the hex codes
+	 * in UTF-8
+	 * @param anonymousID Is something that corresponds to an XMLName 
+	 * @return an ascii string that is legal NTriple
+	 */
+	static String escapeNTriple(String anonymousID) {
+		Matcher matcher = ntripleBnode.matcher(anonymousID);
+		if (matcher.matches())
+			return anonymousID;
+		matcher.reset();
+		StringBuffer rslt = new StringBuffer();
+		int lastNotMatched = 0;
+		while (matcher.find()) {
+			
+			String unmatched = anonymousID.substring(lastNotMatched, matcher.start());
+			
+			rslt.append(escapeUTF8(unmatched));
+			lastNotMatched = matcher.end();
+			rslt.append(matcher.group());
+		}
+		rslt.append(escapeUTF8(anonymousID.substring(lastNotMatched)));
+		return rslt.toString();
+	}
+
+	private static StringBuffer escapeUTF8(String str) {
+		StringBuffer rslt = new StringBuffer();
+		try {
+			for (byte b : str.getBytes("utf-8")) {
+				rslt.append("Z");
+				if ((0xff&b)<16) {
+					rslt.append("0");
+				}
+				rslt.append(Integer.toHexString(0xff&b));
+			}
+		} catch (UnsupportedEncodingException e) {
+			throw new Error(e);
+		}
+		return rslt;
+	}
+
 	static private void escape(String s) {
 		int lg = s.length();
 		for (int i = 0; i < lg; i++) {
