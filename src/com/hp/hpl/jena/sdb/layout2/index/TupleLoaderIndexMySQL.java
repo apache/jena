@@ -60,6 +60,37 @@ public class TupleLoaderIndexMySQL extends TupleLoaderIndexBase {
 		
 		return stmt.toString();
 	}
+
+        // MYSQL bug, doesn't use indexes for IN. = works
+        @Override
+        public String getDeleteTuples() {
+            StringBuilder stmt = new StringBuilder();
+
+            stmt.append("DELETE FROM ").append(this.getTableName()).append(" \nWHERE\n");
+            for (int i = 0; i < this.getTableWidth(); i++) {
+                if (i != 0) {
+                    stmt.append(" AND\n");
+                }
+                stmt.append(getTableDesc().getColNames().get(i)).append(" = (SELECT id FROM Nodes WHERE hash = ?) ");
+            }
+
+            return stmt.toString();
+	}
+
+        // See above
+        @Override
+	public String getDeleteAllTuples() {
+            StringBuilder stmt = new StringBuilder();
+
+            stmt.append("DELETE FROM ").append(this.getTableName());
+            if (this.getTableWidth() != 3) { // not a triple table, delete based on first column
+                stmt.append(" \nWHERE\n");
+                stmt.append(getTableDesc().getColNames().get(0));
+                stmt.append(" = (SELECT id FROM Nodes WHERE hash = ?) ");
+            }
+
+            return stmt.toString();
+	}
 }
 
 /*
