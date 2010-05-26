@@ -2,7 +2,7 @@
  *  (c)     Copyright 2000, 2001, 2002, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  *   All rights reserved.
  * [See end of file]
- *  $Id: MoreTests.java,v 1.2 2010-05-26 20:29:53 jeremy_carroll Exp $
+ *  $Id: MoreTests.java,v 1.3 2010-05-26 23:07:09 jeremy_carroll Exp $
  */
 
 package com.hp.hpl.jena.rdf.arp;
@@ -560,7 +560,7 @@ public class MoreTests extends TestCase implements RDFErrorHandler,
     	String data[][] = {
     			{ "foo", "foo" },
     			{ "fooZX", "fooZ5aX" },
-    			{ "André", "AndrZc3Za9" },
+    			{ "Andr\u00E9", "AndrZc3Za9" },
     			{ "a.b", "aZ2eb" },
     			{ "a:b", "aZ3ab" },
     	};
