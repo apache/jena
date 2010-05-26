@@ -9,6 +9,7 @@ Documentation:
 ==== SDB v1.3.2
 
 + Enable OFFSET/LIMIT processing of SQL.
++ Work around MySQL bug concerning IN
 
 ==== SDB v1.3.1
 
