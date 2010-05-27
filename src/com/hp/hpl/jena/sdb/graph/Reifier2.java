@@ -266,7 +266,10 @@ public class Reifier2 implements Reifier
         // Check it's a well-formed reification by Jena's uniqueness rules 
         Triple t = getTriple(node) ;
         if ( t == null )
+        {
+            t = getTriple(node) ; // Debug
             throw new CannotReifyException(node) ;
+        }
         return node ;
     }
 
