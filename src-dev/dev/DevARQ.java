@@ -8,6 +8,7 @@ package dev;
 public class DevARQ
 {
     // OpAsQuery : aggregates
+    // Lucene upgrade
     
     // Modules: atlas, RIOT
     // Migrate: Reifier2, GraphBase2, DatasetPrefixStorage
