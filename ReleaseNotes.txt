@@ -37,13 +37,20 @@ Reasoners:
    o added makeSkolem builtin
    o fixed deadlock problem with hybrid rule systems
    o changed interpretation of Functors so they are neither literals nor objects,
-     this allows validation of nested reasoners to cope with the introduction of 
+     this allows validation of nested reasoners to cope with the introduction of
      functors representing inferred individuals
    o improved RETE initialization so that fewer triples are injected
      into the rule network in cases such as the RDFS no-resource rules
 
 Ontology API:
    o Fixed NPE bug when an ObjectProperty was not the inverseOf another property
+
+Schemagen:
+   o Internal refactoring, which should not affect the external behaviour but should
+     make it easier to extend the schemagen class
+   o Individuals in an included namespace now appear in the output, even if their
+     rdf:type is not included.
+
 
 ==== Jena 2.6.2
 
