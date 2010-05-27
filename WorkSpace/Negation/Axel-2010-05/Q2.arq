@@ -1,0 +1,6 @@
+PREFIX : <http://example/>
+
+select ?x ?y where {
+ ?x :p ?y OPTIONAL { ?y :q ?z}
+ filter( ! exists {?v :q ?z FILTER(?y != ?v) })
+}
