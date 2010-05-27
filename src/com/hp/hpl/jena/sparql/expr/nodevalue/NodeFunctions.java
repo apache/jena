@@ -6,12 +6,16 @@
  */
 
 package com.hp.hpl.jena.sparql.expr.nodevalue;
+import java.util.Iterator ;
+
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.iri.IRI ;
 import com.hp.hpl.jena.iri.IRIFactory ;
+import com.hp.hpl.jena.iri.Violation ;
 import com.hp.hpl.jena.sparql.expr.ExprEvalException;
 import com.hp.hpl.jena.sparql.expr.ExprTypeException;
 import com.hp.hpl.jena.sparql.expr.NodeValue;
+import com.hp.hpl.jena.sparql.util.ALog ;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
 import com.hp.hpl.jena.vocabulary.XSD;
 
@@ -252,7 +256,8 @@ public class NodeFunctions
     public static NodeValue isLiteral(NodeValue nv) { return NodeValue.booleanReturn(isLiteral(nv.asNode())) ; }
     public static boolean isLiteral(Node node) { return node.isLiteral() ; }
     
-private static final IRIFactory iriFactory = IRIFactory.iriImplementation() ;
+    private static final IRIFactory iriFactory = IRIFactory.iriImplementation() ;
+    public  static boolean warningsForIRIs = false ;
     
     public static NodeValue iri(NodeValue nv)
     {
@@ -272,6 +277,17 @@ private static final IRIFactory iriFactory = IRIFactory.iriImplementation() ;
             IRI iri = iriFactory.create(nv.getString()) ;
             if ( ! iri.isAbsolute() )
                 throw new ExprEvalException("Relative IRI string: "+nv.getString()) ;
+            if ( warningsForIRIs && iri.hasViolation(false) )
+            {
+                String msg = "unknown violation from IRI library" ; 
+                Iterator<Violation> iter = iri.violations(false) ;
+                if ( iter.hasNext() )
+                {
+                    Violation viol = iter.next() ;
+                    msg = viol.getShortMessage() ;
+                }
+                ALog.warn(NodeFunctions.class, "Bad IRI: "+msg+": "+iri) ;
+            }
             return NodeValue.makeNode(Node.createURI(iri.toString())) ;
         }
         throw new ExprEvalException("Can't make an IRI from "+nv) ;

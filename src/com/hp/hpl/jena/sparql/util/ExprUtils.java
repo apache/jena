@@ -5,29 +5,36 @@
 
 package com.hp.hpl.jena.sparql.util;
 
-import java.io.Reader;
-import java.io.StringReader;
-import java.util.List;
+import java.io.Reader ;
+import java.io.StringReader ;
+import java.util.List ;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.shared.PrefixMapping;
-
-import com.hp.hpl.jena.sparql.ARQConstants;
-import com.hp.hpl.jena.sparql.engine.ExecutionContext;
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.expr.*;
-import com.hp.hpl.jena.sparql.function.FunctionEnv;
-import com.hp.hpl.jena.sparql.lang.arq.* ;
-import com.hp.hpl.jena.sparql.serializer.FmtExpr;
-import com.hp.hpl.jena.sparql.serializer.SerializationContext;
-import com.hp.hpl.jena.sparql.sse.SSE;
-import com.hp.hpl.jena.sparql.sse.SSEParseException;
-import com.hp.hpl.jena.sparql.sse.builders.ExprBuildException;
-
-import com.hp.hpl.jena.query.ARQ;
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryFactory;
-import com.hp.hpl.jena.query.QueryParseException;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.query.ARQ ;
+import com.hp.hpl.jena.query.Query ;
+import com.hp.hpl.jena.query.QueryFactory ;
+import com.hp.hpl.jena.query.QueryParseException ;
+import com.hp.hpl.jena.shared.PrefixMapping ;
+import com.hp.hpl.jena.sparql.ARQConstants ;
+import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
+import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.engine.binding.BindingRoot ;
+import com.hp.hpl.jena.sparql.expr.Expr ;
+import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
+import com.hp.hpl.jena.sparql.expr.ExprList ;
+import com.hp.hpl.jena.sparql.expr.ExprVar ;
+import com.hp.hpl.jena.sparql.expr.NodeValue ;
+import com.hp.hpl.jena.sparql.function.FunctionEnv ;
+import com.hp.hpl.jena.sparql.lang.arq.ARQParser ;
+import com.hp.hpl.jena.sparql.lang.arq.ARQParserTokenManager ;
+import com.hp.hpl.jena.sparql.lang.arq.ParseException ;
+import com.hp.hpl.jena.sparql.lang.arq.Token ;
+import com.hp.hpl.jena.sparql.lang.arq.TokenMgrError ;
+import com.hp.hpl.jena.sparql.serializer.FmtExpr ;
+import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
+import com.hp.hpl.jena.sparql.sse.SSE ;
+import com.hp.hpl.jena.sparql.sse.SSEParseException ;
+import com.hp.hpl.jena.sparql.sse.builders.ExprBuildException ;
 
 
 /** Misc support for Expr
@@ -207,10 +214,7 @@ public class ExprUtils
     public static void evalPrint(Expr expr, Binding binding)
     {
         try {
-            Context context = ARQ.getContext().copy() ;
-            context.set(ARQConstants.sysCurrentTime, NodeFactory.nowAsDateTime()) ;
-            FunctionEnv env = new ExecutionContext(context, null, null, null) ; 
-            NodeValue r = expr.eval(binding, env) ;
+            NodeValue r = eval(expr, binding) ;
             //System.out.println(r.asQuotedString()) ;
             Node n = r.asNode() ;
             String s = FmtUtils.stringForNode(n) ;
@@ -227,6 +231,20 @@ public class ExprUtils
         }
     }
 
+    public static NodeValue eval(Expr expr)
+    {
+        return eval(expr, BindingRoot.create()) ; 
+    }
+    
+    public static NodeValue eval(Expr expr, Binding binding)
+    {
+        Context context = ARQ.getContext().copy() ;
+        context.set(ARQConstants.sysCurrentTime, NodeFactory.nowAsDateTime()) ;
+        FunctionEnv env = new ExecutionContext(context, null, null, null) ; 
+        NodeValue r = expr.eval(binding, env) ;
+        return r ;
+    }
+    
     public static void exprPrefix(String string, Binding binding)
     {
         try {

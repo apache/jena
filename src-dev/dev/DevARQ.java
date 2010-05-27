@@ -7,6 +7,8 @@ package dev;
 
 public class DevARQ
 {
+    // OpAsQuery : aggregates
+    
     // Modules: atlas, RIOT
     // Migrate: Reifier2, GraphBase2, DatasetPrefixStorage
     // Autoclose of results sets from QueryEngineHTTP
