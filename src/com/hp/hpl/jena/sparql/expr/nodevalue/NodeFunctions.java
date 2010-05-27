@@ -12,12 +12,12 @@ import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.iri.IRI ;
 import com.hp.hpl.jena.iri.IRIFactory ;
 import com.hp.hpl.jena.iri.Violation ;
-import com.hp.hpl.jena.sparql.expr.ExprEvalException;
-import com.hp.hpl.jena.sparql.expr.ExprTypeException;
-import com.hp.hpl.jena.sparql.expr.NodeValue;
+import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
+import com.hp.hpl.jena.sparql.expr.ExprTypeException ;
+import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.util.ALog ;
-import com.hp.hpl.jena.sparql.util.FmtUtils;
-import com.hp.hpl.jena.vocabulary.XSD;
+import com.hp.hpl.jena.sparql.util.FmtUtils ;
+import com.hp.hpl.jena.vocabulary.XSD ;
 
 /**
  * Implementation of node-centric functions.  
@@ -83,8 +83,8 @@ public class NodeFunctions
         if ( n1.isLiteral() && n2.isLiteral() )
         {
             // Two literals, may be sameTerm by language tag case insensitivity.
-            String lang1 =  n1.getLiteralLanguage() ;
-            String lang2 =  n2.getLiteralLanguage() ;
+            String lang1 = n1.getLiteralLanguage() ;
+            String lang2 = n2.getLiteralLanguage() ;
                 
             if ( ! lang1.equals("") && lang1.equalsIgnoreCase(lang2) )
             {
@@ -259,7 +259,7 @@ public class NodeFunctions
     private static final IRIFactory iriFactory = IRIFactory.iriImplementation() ;
     public  static boolean warningsForIRIs = false ;
     
-    public static NodeValue iri(NodeValue nv)
+    public static NodeValue iri(NodeValue nv, String baseIRI)
     {
         if ( nv.isIRI() )
             return nv ;
@@ -271,10 +271,21 @@ public class NodeFunctions
             Node n = Node.createURI("_:"+x) ;
             return NodeValue.makeNode(n) ;
         }
+        
         if ( nv.isString() )
         {
+            IRI iri = null ;
+            String iriStr = nv.getString() ;
+            
             // Level of checking?
-            IRI iri = iriFactory.create(nv.getString()) ;
+            if ( baseIRI != null )
+            {
+                IRI base = iriFactory.create(baseIRI);
+                iri = base.create(iriStr);
+            }
+            else
+                iri = iriFactory.create(iriStr);
+            
             if ( ! iri.isAbsolute() )
                 throw new ExprEvalException("Relative IRI string: "+nv.getString()) ;
             if ( warningsForIRIs && iri.hasViolation(false) )

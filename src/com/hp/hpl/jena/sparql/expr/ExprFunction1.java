@@ -5,8 +5,9 @@
 
 package com.hp.hpl.jena.sparql.expr;
 
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.function.FunctionEnv;
+import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.function.FunctionEnv ;
+import com.hp.hpl.jena.sparql.function.FunctionEnvBase ;
 
 /** A function that has a single argument */
  
@@ -54,9 +55,11 @@ public abstract class ExprFunction1 extends ExprFunction
             return s ;
         
         NodeValue x = expr.eval(binding, env) ;
-        return eval(x) ;
+        return eval(x, env) ;
     }
     
+    // Ideally, we woudl only have the FunctionEnv form but that break compatibility. 
+    public NodeValue eval(NodeValue v, FunctionEnv env) { return eval(v) ; }
     public abstract NodeValue eval(NodeValue v) ;
     
     // Allow special cases.
@@ -71,7 +74,7 @@ public abstract class ExprFunction1 extends ExprFunction
         {
             try {
                 if ( e.isConstant() )
-                    return eval(e.getConstant()) ;
+                    return eval(e.getConstant(), new FunctionEnvBase()) ;
             } catch (ExprEvalException ex) { /* Drop through */ }
         }
         return copy(e) ;

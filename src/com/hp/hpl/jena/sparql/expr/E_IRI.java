@@ -5,13 +5,15 @@
 
 package com.hp.hpl.jena.sparql.expr;
 
-import com.hp.hpl.jena.iri.IRIFactory ;
+import com.hp.hpl.jena.query.Query ;
+import com.hp.hpl.jena.sparql.ARQConstants ;
+import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
 import com.hp.hpl.jena.sparql.expr.nodevalue.NodeFunctions ;
+import com.hp.hpl.jena.sparql.function.FunctionEnv ;
 
 public class E_IRI extends ExprFunction1
 {
     private static final String symbol = "iri" ;
-    private static final IRIFactory iriFactory = IRIFactory.iriImplementation() ;
 
     public E_IRI(Expr expr)
     {
@@ -23,14 +25,25 @@ public class E_IRI extends ExprFunction1
         super(expr, altSymbol) ;
     }
     
+    // Use the hook to get the env.
     @Override
-    public NodeValue eval(NodeValue v)
+    public NodeValue eval(NodeValue v, FunctionEnv env)
     { 
-        return NodeFunctions.iri(v) ;
+        Query query = (Query)env.getContext().get(ARQConstants.sysCurrentQuery) ;
+        String baseIRI = null ;
+        if ( query != null )
+            baseIRI = query.getBaseURI() ;
+        return NodeFunctions.iri(v, baseIRI) ;
     }
     
     @Override
-    public Expr copy(Expr expr) { return new E_IRI(expr) ; } 
+    public Expr copy(Expr expr) { return new E_IRI(expr) ; }
+
+    @Override
+    public NodeValue eval(NodeValue v)
+    {
+        throw new ARQInternalErrorException("Should not be called") ;
+    } 
 }
 
 /*

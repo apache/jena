@@ -60,12 +60,14 @@ public abstract class ExprFunction2 extends ExprFunction
         
         NodeValue x = expr1.eval(binding, env) ;
         NodeValue y = expr2.eval(binding, env) ;
-        return eval(x, y) ;
+        return eval(x, y, env) ;
     }
     
     /** Special form evaluation (example, don't eval the arguments first) */
     protected NodeValue evalSpecial(Binding binding, FunctionEnv env) { return null ; } 
     
+    public NodeValue eval(NodeValue x, NodeValue y, FunctionEnv env) { return eval(x,y) ; }
+
     public abstract NodeValue eval(NodeValue x, NodeValue y) ; 
 
     // ---- Duplication
