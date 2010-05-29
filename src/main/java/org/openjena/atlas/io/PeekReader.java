@@ -15,7 +15,8 @@ import java.io.IOException ;
 import java.io.InputStream ;
 import java.io.Reader ;
 
-import com.hp.hpl.jena.riot.RiotException ;
+import org.openjena.riot.RiotException ;
+
 import com.hp.hpl.jena.shared.JenaException ;
 import com.hp.hpl.jena.util.FileUtils ;
 

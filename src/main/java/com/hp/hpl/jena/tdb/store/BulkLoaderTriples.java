@@ -20,12 +20,12 @@ import org.openjena.atlas.lib.ArrayUtils ;
 import org.openjena.atlas.lib.InternalErrorException ;
 import org.openjena.atlas.lib.MapUtils ;
 import org.openjena.atlas.lib.Tuple ;
+import org.openjena.riot.Lang ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
-import com.hp.hpl.jena.riot.Lang ;
 import com.hp.hpl.jena.sparql.sse.Item ;
 import com.hp.hpl.jena.sparql.sse.ItemWriter ;
 import com.hp.hpl.jena.sparql.util.ALog ;

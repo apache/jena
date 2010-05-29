@@ -6,18 +6,18 @@
 
 package com.hp.hpl.jena.tdb.store.bulkloader;
 
-import static com.hp.hpl.jena.riot.Lang.NQUADS ;
-import static com.hp.hpl.jena.riot.Lang.NTRIPLES ;
+import static org.openjena.riot.Lang.NQUADS ;
+import static org.openjena.riot.Lang.NTRIPLES ;
 
 import java.io.InputStream ;
 import java.util.List ;
 
 import org.openjena.atlas.event.EventType ;
+import org.openjena.riot.RiotReader ;
 import org.slf4j.Logger ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.riot.RiotReader ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 import com.hp.hpl.jena.tdb.TDB ;

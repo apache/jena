@@ -14,8 +14,8 @@ import org.junit.BeforeClass ;
 import org.junit.runner.RunWith ;
 import org.junit.runners.Suite ;
 import org.openjena.atlas.TC_Atlas ;
+import org.openjena.riot.TS_Riot ;
 
-import com.hp.hpl.jena.riot.TS_Riot ;
 import com.hp.hpl.jena.tdb.assembler.TS_TDBAssembler ;
 import com.hp.hpl.jena.tdb.base.TC_Base ;
 import com.hp.hpl.jena.tdb.graph.TS_Graph ;

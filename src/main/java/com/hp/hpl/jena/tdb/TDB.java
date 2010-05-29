@@ -8,6 +8,8 @@ package com.hp.hpl.jena.tdb;
 
 import java.util.Iterator ;
 
+import org.openjena.riot.JenaReaderNTriples2 ;
+import org.openjena.riot.JenaReaderTurtle2 ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
@@ -17,8 +19,6 @@ import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.impl.RDFReaderFImpl ;
-import com.hp.hpl.jena.riot.JenaReaderNTriples2 ;
-import com.hp.hpl.jena.riot.JenaReaderTurtle2 ;
 import com.hp.hpl.jena.sparql.SystemARQ ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils ;

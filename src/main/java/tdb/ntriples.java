@@ -7,7 +7,8 @@
 
 package tdb;
 
-import com.hp.hpl.jena.riot.Lang ;
+import org.openjena.riot.Lang ;
+
 import com.hp.hpl.jena.sparql.util.Utils ;
 
 /** Run the N-triples parser - and produce N-triples */

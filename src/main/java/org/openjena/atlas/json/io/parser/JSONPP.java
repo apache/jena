@@ -6,12 +6,12 @@
 
 package org.openjena.atlas.json.io.parser;
 
-import static com.hp.hpl.jena.riot.tokens.TokenType.COLON ;
-import static com.hp.hpl.jena.riot.tokens.TokenType.COMMA ;
-import static com.hp.hpl.jena.riot.tokens.TokenType.KEYWORD ;
-import static com.hp.hpl.jena.riot.tokens.TokenType.LBRACE ;
-import static com.hp.hpl.jena.riot.tokens.TokenType.RBRACE ;
-import static com.hp.hpl.jena.riot.tokens.TokenType.RBRACKET ;
+import static org.openjena.riot.tokens.TokenType.COLON ;
+import static org.openjena.riot.tokens.TokenType.COMMA ;
+import static org.openjena.riot.tokens.TokenType.KEYWORD ;
+import static org.openjena.riot.tokens.TokenType.LBRACE ;
+import static org.openjena.riot.tokens.TokenType.RBRACE ;
+import static org.openjena.riot.tokens.TokenType.RBRACKET ;
 import org.openjena.atlas.json.io.JSONHandler ;
 
 /** Json (extended) parser

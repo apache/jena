@@ -14,7 +14,8 @@ import java.io.FileNotFoundException ;
 import java.io.IOException ;
 import java.io.InputStream ;
 
-import com.hp.hpl.jena.riot.RiotException ;
+import org.openjena.riot.RiotException ;
+
 import com.hp.hpl.jena.shared.JenaException ;
 
 /** Parsing-centric input stream.

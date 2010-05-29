@@ -6,13 +6,13 @@
 
 package org.openjena.atlas.json.io.parser;
 
-import static com.hp.hpl.jena.riot.tokens.TokenType.EOF;
+import static org.openjena.riot.tokens.TokenType.EOF ;
 import org.openjena.atlas.iterator.PeekIterator ;
 import org.openjena.atlas.json.JsonParseException ;
+import org.openjena.riot.tokens.Token ;
+import org.openjena.riot.tokens.TokenType ;
+import org.openjena.riot.tokens.Tokenizer ;
 
-import com.hp.hpl.jena.riot.tokens.Token;
-import com.hp.hpl.jena.riot.tokens.TokenType;
-import com.hp.hpl.jena.riot.tokens.Tokenizer;
 
 public class ParserBase
 {

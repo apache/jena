@@ -7,9 +7,9 @@
 package tdb;
 
 import org.openjena.atlas.logging.Log ;
+import org.openjena.riot.RiotWriter ;
 import tdb.cmdline.CmdTDB ;
 
-import com.hp.hpl.jena.riot.RiotWriter ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 
 public class tdbdump extends CmdTDB

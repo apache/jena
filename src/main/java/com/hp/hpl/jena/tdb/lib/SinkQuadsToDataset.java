@@ -1,10 +1,10 @@
 package com.hp.hpl.jena.tdb.lib;
 
 import org.openjena.atlas.lib.Sink ;
+import org.openjena.riot.lang.SinkToGraphTriples ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.riot.lang.SinkToGraphTriples ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.util.Utils ;

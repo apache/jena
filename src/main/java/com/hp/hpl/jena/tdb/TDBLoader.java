@@ -11,11 +11,11 @@ import java.io.InputStream ;
 import java.util.ArrayList ;
 import java.util.List ;
 
+import org.openjena.riot.Lang ;
 import org.slf4j.Logger ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.riot.Lang ;
 import com.hp.hpl.jena.sparql.util.Timer ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.store.GraphTDB ;

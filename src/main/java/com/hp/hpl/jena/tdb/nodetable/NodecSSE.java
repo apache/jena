@@ -12,12 +12,12 @@ import org.openjena.atlas.lib.Bytes ;
 import org.openjena.atlas.lib.Pool ;
 import org.openjena.atlas.lib.PoolSync ;
 import org.openjena.atlas.lib.StrUtils ;
+import org.openjena.riot.tokens.Tokenizer ;
+import org.openjena.riot.tokens.TokenizerFactory ;
 
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.rdf.model.AnonId ;
-import com.hp.hpl.jena.riot.tokens.Tokenizer ;
-import com.hp.hpl.jena.riot.tokens.TokenizerFactory ;
 import com.hp.hpl.jena.shared.PrefixMapping ;
 import com.hp.hpl.jena.tdb.TDBException ;
 import com.hp.hpl.jena.tdb.lib.NodeFmtLib ;

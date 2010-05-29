@@ -16,12 +16,12 @@ import org.openjena.atlas.io.IO ;
 import org.openjena.atlas.lib.Sink ;
 import org.openjena.atlas.lib.SinkSplit ;
 import org.openjena.atlas.logging.Log ;
+import org.openjena.riot.Lang ;
+import org.openjena.riot.RiotException ;
+import org.openjena.riot.RiotReader ;
+import org.openjena.riot.lang.LangRIOT ;
 
 
-import com.hp.hpl.jena.riot.Lang ;
-import com.hp.hpl.jena.riot.RiotReader ;
-import com.hp.hpl.jena.riot.RiotException ;
-import com.hp.hpl.jena.riot.lang.LangRIOT ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.util.ALog ;
 import com.hp.hpl.jena.sparql.util.StringUtils ;

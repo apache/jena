@@ -14,9 +14,9 @@ import java.util.TreeSet ;
 import org.openjena.atlas.io.IndentedWriter ;
 import org.openjena.atlas.json.* ;
 import org.openjena.atlas.lib.BitsInt ;
+import org.openjena.riot.RiotChars ;
 
 
-import com.hp.hpl.jena.riot.RiotChars ;
 
 public class JsonWriter implements JsonVisitor
 {

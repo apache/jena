@@ -13,13 +13,13 @@ import java.io.UnsupportedEncodingException ;
 import java.util.List ;
 
 import org.openjena.atlas.logging.Log ;
+import org.openjena.riot.Checker ;
 import arq.cmdline.CmdARQ ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
-import com.hp.hpl.jena.riot.Checker ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 import com.hp.hpl.jena.sparql.util.graph.GraphSink ;
 import com.hp.hpl.jena.tdb.TDB ;

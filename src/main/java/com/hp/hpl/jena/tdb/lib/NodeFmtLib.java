@@ -7,14 +7,14 @@
 package com.hp.hpl.jena.tdb.lib;
 
 import org.openjena.atlas.lib.Chars ;
+import org.openjena.riot.PrefixMap ;
+import org.openjena.riot.Prologue ;
+import org.openjena.riot.RiotChars ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Node_Literal ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.rdf.model.RDFNode ;
-import com.hp.hpl.jena.riot.PrefixMap ;
-import com.hp.hpl.jena.riot.Prologue ;
-import com.hp.hpl.jena.riot.RiotChars ;
 import com.hp.hpl.jena.shared.PrefixMapping ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.util.FmtUtils ;
