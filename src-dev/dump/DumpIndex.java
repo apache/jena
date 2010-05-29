@@ -15,12 +15,12 @@ import java.util.Iterator ;
 
 import org.openjena.atlas.lib.Bytes ;
 import org.openjena.atlas.lib.InternalErrorException ;
+import org.openjena.riot.tokens.Token ;
+import org.openjena.riot.tokens.TokenType ;
+import org.openjena.riot.tokens.Tokenizer ;
+import org.openjena.riot.tokens.TokenizerFactory ;
 
 
-import com.hp.hpl.jena.riot.tokens.Token ;
-import com.hp.hpl.jena.riot.tokens.TokenType ;
-import com.hp.hpl.jena.riot.tokens.Tokenizer ;
-import com.hp.hpl.jena.riot.tokens.TokenizerFactory ;
 import com.hp.hpl.jena.tdb.TDBException ;
 import com.hp.hpl.jena.tdb.base.file.FileSet ;
 import com.hp.hpl.jena.tdb.base.file.Location ;

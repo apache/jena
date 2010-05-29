@@ -9,11 +9,11 @@ package perf;
 import java.io.InputStream ;
 
 import org.openjena.atlas.io.IO ;
+import org.openjena.riot.tokens.Token ;
+import org.openjena.riot.tokens.Tokenizer ;
+import org.openjena.riot.tokens.TokenizerFactory ;
 
 
-import com.hp.hpl.jena.riot.tokens.Token ;
-import com.hp.hpl.jena.riot.tokens.Tokenizer ;
-import com.hp.hpl.jena.riot.tokens.TokenizerFactory ;
 import com.hp.hpl.jena.sparql.util.Timer ;
 
 /** Raw token-level perforamnce measure. */

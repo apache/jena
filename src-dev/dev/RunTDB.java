@@ -18,13 +18,13 @@ import org.openjena.atlas.lib.SinkPrint ;
 import org.openjena.atlas.lib.SinkWrapper ;
 import org.openjena.atlas.lib.Tuple ;
 import org.openjena.atlas.logging.Log ;
+import org.openjena.riot.RiotReader ;
+import org.openjena.riot.lang.LangRIOT ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.riot.RiotReader ;
-import com.hp.hpl.jena.riot.lang.LangRIOT ;
 import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.TDBFactory ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable ;

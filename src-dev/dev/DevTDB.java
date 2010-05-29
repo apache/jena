@@ -2,8 +2,7 @@ package dev ;
 
 public class DevTDB
 {
-    // == 0.8.6
-    
+    // Check writing to union graph is handled appropriately.
     
     // =====
     // Enable FILTER assignment for strings (and numbers?) via dataset context setting?
@@ -16,6 +15,8 @@ public class DevTDB
     // Build: copy/filter a file, don't inline properties file.
     
     // RIOT
+    //   Filename in error messages
+    //   SysRIOT.fmtMessage, ParseException
     //   Output bad term quads/triples to special sink. 
     //   WebReader: Read from URL, Content negotiation.
     //
