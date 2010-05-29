@@ -16,7 +16,7 @@ import org.openjena.riot.tokens.TokenizerFactory ;
 
 import com.hp.hpl.jena.sparql.util.Timer ;
 
-/** Raw token-level perforamnce measure. */
+/** Raw token-level performance measure. */
 public class Tokens 
 {
     public static void main(String...args)
