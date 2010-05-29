@@ -1,0 +1,5 @@
+@prefix : <http://example/> .
+
+:Jules :memberOf :abc .
+:Jules :related  :Jim .
+:Jim   :memberOf :def .
