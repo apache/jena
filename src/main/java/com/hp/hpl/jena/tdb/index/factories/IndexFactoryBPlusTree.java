@@ -1,6 +1,7 @@
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
+ * (c) Copyright 2010 IBM Corp. All rights reserved.
  * [See end of file]
  */
 
@@ -21,6 +22,7 @@ import com.hp.hpl.jena.tdb.index.RangeIndex;
 import com.hp.hpl.jena.tdb.index.bplustree.BPlusTree;
 import com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams;
 import com.hp.hpl.jena.tdb.sys.Names;
+import com.hp.hpl.jena.tdb.sys.SetupTDB;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 public class IndexFactoryBPlusTree implements IndexFactory, IndexRangeFactory
@@ -63,14 +65,15 @@ public class IndexFactoryBPlusTree implements IndexFactory, IndexRangeFactory
         
         String fnNodes = fileset.filename(filename) ;
         return BlockMgrFactory.createFile(fnNodes, blockSize, 
-                                          SystemTDB.BlockReadCacheSize,
-                                          SystemTDB.BlockWriteCacheSize) ;
+                                          SetupTDB.systemInfo.getBlockReadCacheSize(), //SystemTDB.BlockReadCacheSize,
+                                          SetupTDB.systemInfo.getBlockWriteCacheSize()) ; //SystemTDB.BlockWriteCacheSize) ;
     }
 }
 
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
+ * (c) Copyright 2010 IBM Corp. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions

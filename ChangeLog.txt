@@ -3,7 +3,7 @@ ChangeLog for TDB
 
 ==== 0.8.6
 
-+ No longer outpout an optimizer wanign when loading data with tdbloader.
++ No longer output an optimizer warning when loading data with tdbloader.
 + New command "riot" that parsers any format and outputs N-Triples/N-Quads
   Language determination based on filename extension. 
   Use command with specific fomat name to force the format
@@ -11,7 +11,7 @@ ChangeLog for TDB
 + Loader output now to a logger (name in constant TDB.loadLoggerName)
 + Parser output now to a logger (name in constant RIOT.riotLoggerName)
 + Warnings and errors from TDB command line tools now go to stderr so not mixed with parser triples/quads output.
-+ Bug fix: reconstructing XSD DateTime involving fractional seconds coudl omit leading 0s in fractional part.   
++ Bug fix: reconstructing XSD DateTime involving fractional seconds could omit leading 0s in fractional part.   
 
 ==== 0.8.5
 

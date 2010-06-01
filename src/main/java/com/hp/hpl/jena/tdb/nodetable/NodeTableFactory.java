@@ -1,18 +1,20 @@
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
+ * (c) Copyright 2010 IBM Corp. All rights reserved.
  * [See end of file]
  */
 
 package com.hp.hpl.jena.tdb.nodetable;
 
-import com.hp.hpl.jena.tdb.base.file.FileFactory ;
+import com.hp.hpl.jena.tdb.base.file.FileFactory;
 import com.hp.hpl.jena.tdb.base.file.FileSet;
 import com.hp.hpl.jena.tdb.base.file.Location;
-import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile ;
-import com.hp.hpl.jena.tdb.index.Index ;
+import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile;
+import com.hp.hpl.jena.tdb.index.Index;
 import com.hp.hpl.jena.tdb.index.IndexBuilder;
 import com.hp.hpl.jena.tdb.sys.Names;
+import com.hp.hpl.jena.tdb.sys.SetupTDB;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 public class NodeTableFactory
@@ -47,8 +49,8 @@ public class NodeTableFactory
             filesetIdx = new FileSet(location, Names.indexNode2Id) ;
         
         return  create(indexBuilder, filesetNodeTable, filesetIdx,
-                       SystemTDB.Node2NodeIdCacheSize,
-                       SystemTDB.NodeId2NodeCacheSize) ;
+                       SetupTDB.systemInfo.getNode2NodeIdCacheSize(),
+                       SetupTDB.systemInfo.getNodeId2NodeCacheSize()) ;
     }
 
     /** Custom node table */
@@ -95,6 +97,7 @@ public class NodeTableFactory
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
+ * (c) Copyright 2010 IBM Corp. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions

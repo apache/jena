@@ -1,6 +1,7 @@
 /*
  * (c) Copyright 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
+ * (c) Copyright 2010 IBM Corp. All rights reserved.
  * [See end of file]
  */
 
@@ -46,6 +47,7 @@ import com.hp.hpl.jena.tdb.index.TupleIndex ;
 import com.hp.hpl.jena.tdb.index.TupleIndexRecord ;
 import com.hp.hpl.jena.tdb.index.bplustree.BPlusTree ;
 import com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams ;
+import com.hp.hpl.jena.tdb.mgt.TDBSystemInfoMBean;
 import com.hp.hpl.jena.tdb.migrate.DatasetPrefixStorage ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTableNative ;
@@ -106,7 +108,20 @@ public class SetupTDB
         globalConfig.setProperty(Names.pBlockReadCacheSize,    Integer.toString(BlockReadCacheSize)) ;
         globalConfig.setProperty(Names.pSyncTick,              Integer.toString(SyncTick)) ;
     }
-
+    
+    public final static TDBSystemInfoMBean systemInfo = new TDBSystemInfoMBean() {
+		public int getSyncTick() { return getIntProperty(Names.pSyncTick); }
+		public int getSegmentSize() { return SystemTDB.SegmentSize; }
+		public int getNodeId2NodeCacheSize() { return getIntProperty(Names.pNodeId2NodeCacheSize); }
+		public int getNode2NodeIdCacheSize() { return getIntProperty(Names.pNode2NodeIdCacheSize); }
+		public int getBlockWriteCacheSize() { return getIntProperty(Names.pBlockWriteCacheSize); }
+		public int getBlockSize() { return SystemTDB.BlockSize; }
+		public int getBlockReadCacheSize() { return getIntProperty(Names.pBlockReadCacheSize); }
+		
+		private int getIntProperty(String name) {
+			return Integer.parseInt(globalConfig.getProperty(name));
+		}
+	};
     // And here we make datasets ... 
     public static DatasetGraphTDB buildDataset(Location location)
     {
@@ -759,6 +774,7 @@ public class SetupTDB
 /*
  * (c) Copyright 2009 Hewlett-Packard Development Company, LP All rights
  * reserved.
+ * (c) Copyright 2010 IBM Corp. All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
