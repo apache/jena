@@ -1,12 +1,13 @@
 /*
  * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Systems Ltd
  * All rights reserved.
  * [See end of file]
  */
 
 package com.hp.hpl.jena.tdb.mgt;
 
-/** Static infomation relting to TDB */
+/** Static information relating to TDB */
 public interface TDBSystemInfoMBean
 {
     /** Size, in bytes, of a disk block */

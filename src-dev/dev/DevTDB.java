@@ -3,6 +3,7 @@ package dev ;
 public class DevTDB
 {
     // Check writing to union graph is handled appropriately.
+    // assembly.xml ship source files for ARQ and Jena (ditto ARQ, and javadoc).
     
     // =====
     // Enable FILTER assignment for strings (and numbers?) via dataset context setting?
@@ -26,7 +27,7 @@ public class DevTDB
     //   Recovery parsing - scan to DOT?
     // RIOT Commands
     // Document
-    //  --sink, --skip, --time. --stats?
+    //  --sink, --skip, --time, --stats?
     
     // Free block recycling.
     

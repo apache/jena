@@ -7,7 +7,7 @@
   <artifactId>tdb</artifactId>
   <packaging>jar</packaging>
   <name>TDB</name>
-  <version>0.8.7-SNAPSHOT</version>
+  <version>0.8.6</version>
 
   <description>TDB is a storage subsystem for Jena and ARQ</description>
   <url>http://openjena.org/TDB</url>
@@ -452,8 +452,11 @@ build.time.txt=${build.time.txt}
       <name>Jena repo</name>
 
       <!--<url>sftp://openjena.org/var/repo</url>-->
+
       <!-- Because RC's are snapshots IMHO -->
       <url>sftp://openjena.org/var/repo-dev</url>
+
+      <!--<url>file:tmp</url>-->
       <layout>default</layout>
     </repository> 
 
