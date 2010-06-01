@@ -33,7 +33,7 @@ ChangeLog for TDB
     See wiki for details.
     http://openjena.org/wiki/TDB/Datasets#Dynamic_Datasets
 
-+ The internal library functions in the "altas" package hierarchy have been
++ The internal library functions in the "atlas" package hierarchy have been
   moved to "org.openjena.atlas". 
 
 + Can now set TDB context symbols via Java's system properties 
