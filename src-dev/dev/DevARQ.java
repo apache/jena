@@ -7,10 +7,16 @@ package dev;
 
 public class DevARQ
 {
-    // OpAsQuery : aggregates
-    // Lucene upgrade
+    // Jena: Consolidate treatement of white space for floaf/double/num/abstractdate
+    // Jena: upgrades 
+    // Xerces 2.7.1 (released 2005-06) --> 2.9.x
+    // ICU4J 3.4.4 (released 2006-02) --> 4.4.x (but it'sa lot larger)
+    // Woodstox 3.2.9 (released 2009-05) --> 4.0.x (actually a dependency of ARQ)
+    // ARQ: Upgrade Lucene to 3.0
     
-    // Modules: atlas, RIOT
+    // OpAsQuery : aggregates
+    
+    // Modules: atlas, RIOT(->org.openjena)
     // Migrate: Reifier2, GraphBase2, DatasetPrefixStorage
     // Autoclose of results sets from QueryEngineHTTP
     
@@ -23,12 +29,12 @@ public class DevARQ
     
     // ----
     // http://www.w3.org/TR/xmlschema11-2/ : precisionDecimal : dayTimeDuration : yearTimeDuration 
-    // Version registration: URI + ver string ; apf:version
-    
+
     // Dataset to indicate if plain string and XSD string are the same to affact FILTER(?x="string") optimziation.
     // Does dataset contexts fix this?
     
     // Documentation for CSV etc.
+
     // Union Transform,  TransformUnionQuery
     //   TestCases
     //   The use of a bNode in (graph) needs coping with the distinct.
@@ -37,41 +43,18 @@ public class DevARQ
     //   Modify bindings (all!) for Var.ANON 
     // Swapping DatasetGraph
     
-    // Aggregates
-    
-    // Dump dataset as:
-    //  NQuads
-    //  TriG
-    //  SPARQL Update
-    
-   // ====
-    
-    // ARQ: check variable scope
+    // SPARQL: check variable scope
     //   Groups, SELECT expressions
     //   SELECT expressions error to reuse a variable name.
     //   Aggegator upgrade and specifc operators
     //   Custom agregators
     
-    // ----
-    
-    // == Migration:
-    // Atlas, JSON
-
-    // Example of OpExecutor
-    // Deprecate StageGenerator
-    
     // SPARQL/Update of a ja:RDFDataset - new graphs don't appear? 
-    
-    // Property paths: { ?x !rdf:type ?y }
-    // What about ^ reverse?
-    //{ ?x !(^rdf:type|rdf:type) ?y }
-    // ^ not needed (either it's forward mode adnd can't match else backwars mode further out)
-    // Test with grounded ?x and ?y
     
     // Run ref engine and main engine in a test - remove ref only tests
     
     // MicroAPI.
-    //   results = query().select(vars).pattern().filter().groupby().agg()
+    //   results = query().select(vars).pattern().filter().groupBy().agg()
     //    or build algebra this way.
     // ARQ warnings on cross product and unused project vars 
     
@@ -85,8 +68,6 @@ public class DevARQ
     //   Remote queries made
     // ----
     
-    // OpJoin optimization: If one side is a table, then sequence that first.
-    
     // Library
     //   Combine StringUtils and StrUtils.
 
@@ -99,7 +80,6 @@ public class DevARQ
     // Initial bindings && Initial table (do as iterator of initial bindings)
     // { LET (...) pattern } becomes (join [assign ((...)) (table unit)] pattern
     //    which can be simplified to a sequence.
-    //  Generate a sequence always? 
     
     // == Clearup
     // Prefer OpExecutor much more.

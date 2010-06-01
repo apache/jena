@@ -14,8 +14,8 @@
 	<classpathentry kind="lib" path="lib/stax-api-1.0.1.jar"/>
 	<classpathentry kind="lib" path="lib/wstx-asl-3.2.9.jar"/>
 	<classpathentry kind="lib" path="lib/xercesImpl.jar"/>
-	<classpathentry kind="lib" path="lib/jena-2.6.3-RC-1-tests.jar"/>
-	<classpathentry kind="lib" path="lib/jena-2.6.3-RC-1.jar" sourcepath="lib/jena-2.6.3-RC-1-sources.jar"/>
 	<classpathentry kind="lib" path="lib/log4j-1.2.14.jar"/>
+	<classpathentry kind="lib" path="lib/jena-2.6.3-tests.jar" sourcepath="lib/jena-2.6.3-test-sources.jar"/>
+	<classpathentry kind="lib" path="lib/jena-2.6.3.jar" sourcepath="lib/jena-2.6.3-sources.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>
