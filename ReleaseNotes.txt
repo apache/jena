@@ -1,6 +1,8 @@
 Release Notes
 =============
 
+==== Jena 2.6.3
+
 GraphBase:
    o Added limits to the number of triples thatr GraphBase.toString() will
      serialise.
