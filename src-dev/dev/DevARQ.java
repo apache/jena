@@ -7,6 +7,8 @@ package dev;
 
 public class DevARQ
 {
+    // Check the assembly: javadoc,lib/*sources*
+    
     // Jena: Consolidate treatement of white space for floaf/double/num/abstractdate
     // Jena: upgrades 
     // Xerces 2.7.1 (released 2005-06) --> 2.9.x
