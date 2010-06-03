@@ -238,7 +238,7 @@ public class RunARQ
         }
         catch (Throwable th)
         {
-            ALog.fatal(CopyOfRunARQ.class, "Unexpected throwable: ",th) ;
+            ALog.fatal(RunARQ.class, "Unexpected throwable: ",th) ;
             throw new QueryException(th.getMessage(), th) ;
         }
     }

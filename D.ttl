@@ -1,8 +1,8 @@
-@prefix i: <http://example/> .
-@prefix n: <http://example/ns#> .
+@prefix : <http://example/> .
 
-i:Jules n:memberOf  i:abc .
-i:Jules n:related        i:Jim .
-i:Jim    n:memberOf i:def .
-
-
+:a :p :b .
+:b :p :z .
+:a :p :c .
+:c :p :z .
+:c :p :c .
+#:z :p :X .
