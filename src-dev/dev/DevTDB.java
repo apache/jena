@@ -5,6 +5,8 @@ public class DevTDB
     // Check writing to union graph is handled appropriately.
     // assembly.xml ship source files for ARQ and Jena (ditto ARQ, and javadoc).
     
+    // RIOT: setting the file type.
+    
     // =====
     // Enable FILTER assignment for strings (and numbers?) via dataset context setting?
     // Tuples
