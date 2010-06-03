@@ -10,9 +10,7 @@ package dev;
 import java.io.ByteArrayInputStream ;
 import java.io.Reader ;
 import java.io.StringReader ;
-import java.util.HashSet ;
 import java.util.Iterator ;
-import java.util.Set ;
 
 import arq.sparql ;
 
@@ -34,12 +32,9 @@ import com.hp.hpl.jena.sparql.core.Prologue ;
 import com.hp.hpl.jena.sparql.core.QueryCheckException ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
-import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
-import com.hp.hpl.jena.sparql.expr.aggregate.Accumulator ;
-import com.hp.hpl.jena.sparql.function.FunctionEnv ;
 import com.hp.hpl.jena.sparql.function.FunctionEnvBase ;
 import com.hp.hpl.jena.sparql.lang.ParserSPARQL11Update ;
 import com.hp.hpl.jena.sparql.lang.sparql_11.SPARQLParser11 ;
@@ -73,25 +68,11 @@ public class RunARQ
     // AggregateFactory change.
     // Expression in agg call.
     
-    /** Accumulator that only passes down the first unique binding */
-    static abstract class AccumulatorDistinct implements Accumulator
-    {
-        Set<Binding> rows = new HashSet<Binding>() ;
-        
-        final public void accumulate(Binding binding, FunctionEnv functionEnv)
-        {
-            if ( rows.contains(binding) )
-                return ;
-            rows.add(binding) ;
-            accumulateDistinct(binding, functionEnv) ;
-        }
-        
-        protected abstract void accumulateDistinct(Binding binding, FunctionEnv functionEnv) ;
-    }
-    
-
     public static void main(String[] argv) throws Exception
     {
+        arq.qexpr.main("IRI('http://example/abc/./xyz')") ; System.exit(0) ;
+        
+        
         if ( true )
         {
             // OpAssign is semibroken.
