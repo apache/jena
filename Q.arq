@@ -1,3 +1,0 @@
-SELECT ?predicate (count( DISTINCT *) AS ?uniquePredicates) 
-{ ?s ?predicate ?o }
-GROUP BY ?predicate
