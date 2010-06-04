@@ -269,10 +269,10 @@ public class TDB
     
     // Final initialization (in case any statics in this file are important). 
     static {
-        initlization2() ;
+        initialization2() ;
     }
 
-    private static void initlization2()
+    private static void initialization2()
     { 
         // Set management information.
         // Needs ARQ > 2.8.0
