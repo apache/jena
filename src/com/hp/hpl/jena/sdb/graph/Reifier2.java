@@ -19,6 +19,8 @@ import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.graph.TripleMatch ;
 import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.query.QueryFactory ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.shared.AlreadyReifiedException ;
 import com.hp.hpl.jena.shared.CannotReifyException ;
 import com.hp.hpl.jena.shared.ReificationStyle ;
@@ -245,6 +247,9 @@ public class Reifier2 implements Reifier
     //@Override
     public Node reifyAs(Node node, Triple triple)
     {
+        Model model = ModelFactory.createModelForGraph(graph) ;
+        model.write(System.out, "N-TRIPLES") ;
+        
         if ( node == null )
             node = Node.createAnon() ;
         else
@@ -262,13 +267,18 @@ public class Reifier2 implements Reifier
         graph.add(new Triple(node, subject, triple.getSubject())) ;
         graph.add(new Triple(node, predicate, triple.getPredicate())) ;
         graph.add(new Triple(node, object, triple.getObject())) ;
-
-        // Check it's a well-formed reification by Jena's uniqueness rules 
-        Triple t = getTriple(node) ;
-        if ( t == null )
+        
+        
+        // Check it's a well-formed reification by Jena's uniqueness rules
+        // Check does not work - triples may be cached in the bulk loader.
+        if ( false )
         {
-            t = getTriple(node) ; // Debug
-            throw new CannotReifyException(node) ;
+            Triple t = getTriple(node) ;
+            if ( t == null )
+            {
+                t = getTriple(node) ; // Debug
+                throw new CannotReifyException(node) ;
+            }
         }
         return node ;
     }

@@ -16,15 +16,15 @@
 
 <#conn> rdf:type sdb:SDBConnection ;
 
-##    sdb:sdbType        "h2:mem" ;
-##    sdb:sdbName        "mem" ;
+    sdb:sdbType        "h2:mem" ;
+    sdb:sdbName        "mem" ;
 
 ##     sdb:sdbType        "h2:file" ;
 ##     sdb:sdbName        "DB/H2" ;
 
-     sdb:sdbHost        "localhost" ;
-     sdb:sdbType        "derby" ;
-     sdb:sdbName        "DB/derby" ;
+##      sdb:sdbHost        "localhost" ;
+##      sdb:sdbType        "derby" ;
+##      sdb:sdbName        "DB/derby" ;
 
 ##     ##    sdb:jdbcURL       "jdbc:mysql://localhost/test2-hash?useUnicode=true&characterEncoding=UTF-8" ;
 ##     sdb:sdbType       "MySQL" ;

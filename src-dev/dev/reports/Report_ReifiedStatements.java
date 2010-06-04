@@ -6,40 +6,46 @@
 
 package dev.reports;
 
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.rdf.model.AnonId ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.rdf.model.ReifiedStatement ;
 import com.hp.hpl.jena.rdf.model.ResourceFactory ;
 import com.hp.hpl.jena.rdf.model.Statement ;
 import com.hp.hpl.jena.sdb.SDBFactory ;
+import com.hp.hpl.jena.sdb.Store ;
 import com.hp.hpl.jena.vocabulary.RDFS ;
 
 public class Report_ReifiedStatements
 {
     public static void main(String...argv)
     {
-        Node n = Node.createAnon(new AnonId("8124122:128f960d4a4:-7fda")) ;
-        
         // Add stmt to in memory model and reify it:
         Model model = ModelFactory.createDefaultModel();
-        Model sdbModel = SDBFactory.connectDefaultModel("sdb.ttl") ;
+        
+        Store store = SDBFactory.connectStore("sdb.ttl") ;
+        store.getTableFormatter().create() ;
+        
+        Model sdbModel = SDBFactory.connectDefaultModel(store) ;
+        
         Statement stmt = model.createStatement(ResourceFactory
                                                .createResource("urn:test:t1"), RDFS.label, "foo1");
         
         model.add(stmt);
         ReifiedStatement rs = stmt.createReifiedStatement();
-        rs.addProperty(ResourceFactory.createProperty("urn:property:foo"),
-        "Foo");
+        rs.addProperty(ResourceFactory.createProperty("urn:property:foo"),"Foo");
 
         System.out.println("Model:");
-        model.write(System.out, "N3");
+        model.write(System.out, "N-TRIPLES");
         System.out.println();
 
         // now add in memory model to SDB model
         sdbModel.add(model); // <-------  CannotReifyException THROWN HERE!!!!!!!!!!!!!!!
 
+        System.out.println("SDB Model:");
+        sdbModel.write(System.out, "N-TRIPLES");
+        System.out.println();
+
+        
         System.out.println("DONE");
     }
 }
