@@ -1,5 +1,4 @@
 /*
- * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  * [See end of file]
@@ -7,22 +6,55 @@
 
 package com.hp.hpl.jena.sparql.expr.aggregate;
 
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.expr.NodeValue;
-import com.hp.hpl.jena.sparql.function.FunctionEnv;
+import com.hp.hpl.jena.sparql.expr.Expr ;
+import com.hp.hpl.jena.sparql.expr.ExprList ;
+import com.hp.hpl.jena.sparql.util.ALog ;
 
-/** An Accumulator is the processor for each section of a group, so
- *  there is one Accumulator for each group key.
- */
-
-public interface Accumulator
+public class AggregatorFactory
 {
-    public void accumulate(Binding binding, FunctionEnv functionEnv) ;
-    public NodeValue getValue() ;
+    public static AggregateFactory createCount(boolean distinct)
+    { 
+        return distinct ? AggCountDistinct.get() : AggCount.get() ;
+    }
+
+    public static AggregateFactory createCountExpr(boolean distinct, Expr expr)
+    { 
+        return distinct ? new AggCountVarDistinct(expr) : new AggCountVar(expr) ;
+    }
+    
+    public static AggregateFactory createSum(boolean distinct, Expr expr)
+    { 
+        return distinct ? err("sum distinct") : new AggSum(expr) ;
+    }
+    
+    public static AggregateFactory createMin(boolean distinct, Expr expr)
+    { 
+        return distinct ? err("min distinct") : new AggMin(expr) ;
+    }
+    
+    public static AggregateFactory createMax(boolean distinct, Expr expr)
+    { 
+        return distinct ? err("max distinct") : new AggMax(expr) ;
+    }
+    
+    public static AggregateFactory createAvg(boolean distinct, Expr expr)
+    { 
+        return distinct ? err("avg distinct") : new AggAvg(expr) ;
+    }
+        
+    public static AggregateFactory createSample(boolean distinct, Expr expr)    { return null ; }
+    
+    public static AggregateFactory createGroupConcat(boolean distinct, ExprList exprList, String separator)
+    { return null ; }
+    
+    private static AggregateFactory err(String label)
+    {
+        ALog.fatal(AggregatorFactory.class, "Not implemented: "+label) ;
+        return null ;
+    }
 }
 
 /*
- * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  *

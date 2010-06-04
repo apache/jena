@@ -65,10 +65,9 @@ public class RunARQ
 
     public static void main(String[] argv) throws Exception
     {
-        String x = "INSERT { _:a a ?type. } WHERE { SELECT distinct ?type { GRAPH <http://www.example.com/model> { [] a ?type.  } } }" ;
-        UpdateRequest req = UpdateFactory.create(x) ;
-        System.out.println(req) ;
+        execQuery("testing/ARQ/GroupBy/data-1.ttl", "testing/ARQ/GroupBy/count-06.arq") ;
         System.exit(0) ;
+        
         
         if ( false )
         {

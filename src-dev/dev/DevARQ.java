@@ -11,9 +11,12 @@ public class DevARQ
     // Zero-length paths
     
     // Aggregates for SPARQL 1.1
-    // Accumulator base classes
-    // FunctionEnv everywhere
-    // rgex and str()
+    // Accumulator conversion
+    //  Sum,Min,Max, Avg for Distinct
+    //  Sample, GroupConcat
+    
+    
+    // regex and str()
     // SameTerm for strings by dataset context. 
     
     // Jena: Consolidate treatement of white space for floaf/double/num/abstractdate

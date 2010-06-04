@@ -24,7 +24,7 @@ public interface Aggregator
     /** Value if there are no elements in any group : return null for no result */
     public Node getValueEmpty() ;
     public String toPrefixString()  ;
-    // Key to identify an aggregator as synatx for duplictae use in a query.
+    // Key to identify an aggregator as synatx for duplicate use in a query.
     public String key() ;           
     public boolean equalsAsExpr(Aggregator other) ;
 }

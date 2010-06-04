@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -10,7 +11,6 @@ import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.core.NodeConst ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
-import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
 
@@ -40,6 +40,7 @@ public class AggCountVar implements AggregateFactory
 
         @Override
         public String toString() { return "count("+expr+")" ; }
+        @Override
         public String toPrefixString() { return "(count "+expr+")" ; }
 
         @Override
@@ -63,24 +64,26 @@ public class AggCountVar implements AggregateFactory
     }
 
     // ---- Accumulator
-    private class AccCountVar implements Accumulator
+    private class AccCountVar extends AccumulatorExpr
     {
         private long count = 0 ;
-        public AccCountVar()   { }
-        public void accumulate(Binding binding, FunctionEnv functionEnv)
-        { 
-            try {
-                NodeValue nv = expr.eval(binding, functionEnv) ;
-                count++ ;
-            } catch (ExprEvalException ex)
-            {}
-        }
+        public AccCountVar()   { super(expr) ; }
+
+        @Override
+        public void accumulate(NodeValue nv, Binding binding, FunctionEnv functionEnv)
+        { count++ ; }
+
+        @Override
+        protected void accumulateError(Binding binding, FunctionEnv functionEnv)
+        {}
+
         public NodeValue getValue()             { return NodeValue.makeInteger(count) ; }
     }
 }
 
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -7,10 +7,9 @@
 
 package com.hp.hpl.jena.sparql.expr.aggregate;
 
-
-//-- AggregatorFactory : global factory for Aggregators
-//-- Aggregator - per query (strictly, one per SELECT level)
-//-- Accumulator - per group section processors (from AggregatorBase)
+//-- AggregatorFactory : factory for Aggregators - delays creation 
+//-- Aggregator - per query (strictly, one per SELECT level), unique even if mentioned several times.
+//-- Accumulator - per group per key section processors (from AggregatorBase)
 
 public interface AggregateFactory
 {

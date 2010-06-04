@@ -1,3 +1,11 @@
-SELECT *
-FROM <http://services.data.gov.uk/education/sparql?query=prefix+sch-ont%3A++%3Chttp%3A%2F%2Feducation.data.gov.uk%2Fdef%2Fschool%2F%3E%0D%0A%0D%0Aconstruct+{+%3Chttp%3A%2F%2Feducation.org%2Fschool%3E+sch-ont%3AestablishmentName+%3Fname+}%0D%0AWHERE+{%0D%0A++%3Fschool+a+sch-ont%3ASchool%3B%0D%0A+++++sch-ont%3AestablishmentName+%3Fname%3B%0D%0A+++++sch-ont%3AdistrictAdministrative%0D%0A++++++++%3Chttp%3A%2F%2Fstatistics.data.gov.uk%2Fid%2Flocal-authority-district%2F00AA%3E+%3B%0D%0A}%0D%0AORDER+BY+%3Fname%0D%0A> 
-WHERE { ?s ?p ?o }
+#prefix apf: <http://jena.hpl.hp.com/ARQ/property#>
+prefix apf: <java:com.hp.hpl.jena.sparql.pfunction.library.>
+PREFIX  rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX  rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
+
+select ?s ?l
+{
+ ?s <http://example/fruits> ?seq .
+ ?seq apf:seq ?l .
+ #   ?seq rdfs:member ?l .
+} ORDER BY ?l

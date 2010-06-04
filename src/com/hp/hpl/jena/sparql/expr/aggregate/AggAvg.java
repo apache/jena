@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -46,6 +47,7 @@ public class AggAvg implements AggregateFactory
 
         @Override
         public String toString() { return "sum("+ExprUtils.fmtSPARQL(expr)+")" ; }
+        @Override
         public String toPrefixString() { return "(sum "+WriterExpr.asString(expr)+")" ; }
 
         @Override
@@ -112,6 +114,7 @@ public class AggAvg implements AggregateFactory
 
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

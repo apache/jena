@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -13,65 +14,60 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.expr.NodeValue;
 import com.hp.hpl.jena.sparql.function.FunctionEnv;
 
-public class AggCount implements AggregateFactory
+public class AggCount implements AggregateFactory 
 {
     // ---- COUNT(*)
 
     // ---- AggregatorFactory
     private static AggCount singleton = new AggCount() ;
     public static AggregateFactory get() { return singleton ; }
-
-    private AggCount() {} 
+    
+    private AggCount() { }
 
     public Aggregator create()
     {
         // One per each time there is an aggregation.
         // For count(*) - one per group operator (so shared with having clause)
-        return new AggCountWorker() ;
+        return new AggregateCount() ;
     }
-    
-    // ---- Aggregator
-    static class AggCountWorker extends AggregatorBase
-    {
-        public AggCountWorker()
-        {
-            super() ;
-        }
 
-        @Override
-        public String toString() { return "count(*)" ; }
-        public String toPrefixString() { return "(count)" ; }
+    static class AggregateCount extends AggregatorBase
+    {
+        AggregateCount() {}
+
+        public boolean equalsAsExpr(Aggregator other)
+        {
+            return other instanceof AggregateCount ;
+        }
 
         @Override
         protected Accumulator createAccumulator()
         { 
-            return new AccCount() ;
+            return new AggregateCount.AccCount();
         }
-        
-        public boolean equalsAsExpr(Aggregator other)
-        {
-            // Stateless as expression
-            return ( other instanceof AggCountWorker ) ;
-        } 
 
+        @Override
+        public String toString()        { return "count(*)" ; }
+        @Override
+        public String toPrefixString()  { return "(count)" ; }
 
         @Override
         public Node getValueEmpty()     { return NodeConst.nodeZero ; } 
-    }
 
-    // ---- Accumulator
-    static class AccCount implements Accumulator
-    {
-        private long count = 0 ;
-        public AccCount()   { }
-        public void accumulate(Binding binding, FunctionEnv functionEnv)
-        { count++ ; }
-        public NodeValue getValue()             { return NodeValue.makeInteger(count) ; }
+        static class AccCount implements Accumulator
+        {
+            private long count = 0 ;
+            public AccCount()   { }
+            public void accumulate(Binding binding, FunctionEnv functionEnv)
+            { count++ ; }
+            public NodeValue getValue()             { return NodeValue.makeInteger(count) ; }
+        }
     }
 }
 
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

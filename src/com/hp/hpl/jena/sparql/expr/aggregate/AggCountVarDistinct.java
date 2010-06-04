@@ -1,19 +1,16 @@
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
 package com.hp.hpl.jena.sparql.expr.aggregate;
 
-import java.util.HashSet ;
-import java.util.Set ;
-
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.core.NodeConst ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
-import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
 
@@ -38,6 +35,7 @@ public class AggCountVarDistinct implements AggregateFactory
 
         @Override
         public String toString()        { return "count(distinct "+expr+")" ; }
+        @Override
         public String toPrefixString()  { return "(count distinct "+expr+")" ; }
 
         @Override
@@ -61,27 +59,28 @@ public class AggCountVarDistinct implements AggregateFactory
     }
 
     // ---- Accumulator
-    class AccCountVarDistinct implements Accumulator
+    class AccCountVarDistinct extends AccumulatorDistinctExpr
     {
-        private Set<NodeValue> seen = new HashSet<NodeValue>() ;
-        public AccCountVarDistinct() { } 
+        private long count = 0 ;
+        
+        public AccCountVarDistinct() { super(expr) ; } 
         // The group key part of binding will be the same for all elements of the group.
-        public void accumulate(Binding binding, FunctionEnv functionEnv)
-        { 
-            try {
-                NodeValue nv = expr.eval(binding, functionEnv) ;
-                seen.add(nv) ;
-            } catch (ExprEvalException ex)
-            {}
-        }
+        @Override
+        public void accumulateDistinct(NodeValue nv, Binding binding, FunctionEnv functionEnv)
+        { count++ ; } 
+
+        @Override
+        protected void accumulateError(Binding binding, FunctionEnv functionEnv)
+        {}
         
         public NodeValue getValue()            
-        { return NodeValue.makeInteger(seen.size()) ; }
+        { return NodeValue.makeInteger(count) ; }
     }
 }
 
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

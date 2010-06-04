@@ -1,29 +1,38 @@
 /*
- * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
- * (c) Copyright 2010 Talis Information 
+ * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
 package com.hp.hpl.jena.sparql.expr.aggregate;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.HashMap ;
+import java.util.Map ;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.sparql.ARQInternalErrorException;
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.engine.binding.BindingKey;
-import com.hp.hpl.jena.sparql.expr.NodeValue;
-import com.hp.hpl.jena.sparql.function.FunctionEnv;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
+import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.engine.binding.BindingKey ;
+import com.hp.hpl.jena.sparql.expr.NodeValue ;
+import com.hp.hpl.jena.sparql.function.FunctionEnv ;
 
-/** Splits bindings by their keys and manages one accumulator per key
- * 
- * @author Andy Seaborne
- */
-
-public abstract class AggregatorBase implements Aggregator
+/** Aggregate that does everything except the per-group aggregation that is needed for each operation */  
+public abstract class AggregatorBase implements Aggregator 
 {
+    // Aggregator -- handles one aggregation over one group, and is the syntax unit.
+    
+    // AggregateFactory -- delays the creating of Aggregator so multiple mentions over the same group gives the same Aggregator
+    
+    // Accumulator -- the per-group, per-key accumulator for the aggregate
+    // queries track their aggregators so if one is used twice, the calculataion is only done once.
+    // For distinct, that means only uniquefier. 
+    
+    // Built-ins: COUNT, SUM, MIN, MAX, AVG, GROUP_CONCAT, and SAMPLE
+    // but COUNT(*) and COUNT(Expr) are different beasts
+    // each in DISTINCT and non-DISTINCT versions 
+    
+    protected AggregatorBase() {}
+    
     private Map<BindingKey, Accumulator> buckets = new HashMap<BindingKey, Accumulator>() ;   // Bindingkey => Accumulator
 
     final
@@ -40,7 +49,7 @@ public abstract class AggregatorBase implements Aggregator
 
     protected abstract Accumulator createAccumulator() ;
     
-    public abstract Node getValueEmpty() ;      // Return null for no answer. 
+    public abstract Node getValueEmpty() ;
 
     public Node getValue(BindingKey key)
     {
@@ -53,12 +62,16 @@ public abstract class AggregatorBase implements Aggregator
         return nv.asNode() ;
     }
     
-    public String key() { return toPrefixString() ; }
+    public String key() {  return toPrefixString() ; }
+    
+    @Override
+    public abstract String toString() ;
+
+    public abstract String toPrefixString() ;
 }
 
 /*
- * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
- * (c) Copyright 2010 Talis Information 
+ * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

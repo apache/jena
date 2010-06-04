@@ -481,6 +481,8 @@ public class Query extends Prologue implements Cloneable
     
     public E_Aggregator allocAggregate(AggregateFactory agg)
     {
+        // We need to track the aggregators in case one aggregator is used twice, e.g. in HAVING and in SELECT expression
+        // (is is that much harm to do twice?  Yes, if distinct.
         Aggregator a = agg.create() ;
         String key = a.key() ;
         E_Aggregator expr = aggregatorsAllocated.get(key); 

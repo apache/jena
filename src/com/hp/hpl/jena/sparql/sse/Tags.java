@@ -143,6 +143,9 @@ public class Tags
     public static final String tagSum           = "sum" ;
     public static final String tagMin           = "min" ;
     public static final String tagMax           = "max" ;
+    public static final String tagAvg           = "avg" ;
+    public static final String tagSample        = "sample" ;
+    public static final String tagGroupConcat   = "groupConcat" ;
 }
 
 /*

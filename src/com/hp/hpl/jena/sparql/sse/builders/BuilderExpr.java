@@ -248,6 +248,9 @@ public class BuilderExpr
         dispatch.put(Tags.tagSum, buildSum) ;
         dispatch.put(Tags.tagMin, buildMin) ;
         dispatch.put(Tags.tagMax, buildMax) ;
+        dispatch.put(Tags.tagAvg, buildAvg) ;
+        dispatch.put(Tags.tagSample, buildSample) ;
+        dispatch.put(Tags.tagGroupConcat, buildGroupConcat) ;
     }
 
     // See exprbuilder.rb
@@ -700,81 +703,124 @@ public class BuilderExpr
     // Need a canonical name for the variable that will be set by the aggregation.
     // Aggregator.getVarName.
     
+    static boolean startsWithDistinct(ItemList x) 
+    {
+        if ( x.size() > 0 && x.car().isSymbol(Tags.tagDistinct) )
+            return true ;
+        return false ;
+    }
+    
+    // All the one expression cases
+    static abstract class BuildAggCommon implements Build
+    {
+        public final Expr make(ItemList list)
+        {
+            ItemList x = list.cdr();    // drop "sum"
+            boolean distinct = startsWithDistinct(x) ;
+            if ( distinct )
+                x = x.cdr();
+            BuilderLib.checkLength(1, x, "Broken syntax: "+list.shortString()) ;
+            // (sum ?var) 
+            Expr expr = buildExpr(x.get(0)) ;
+            return make(distinct, expr) ;
+        }
+
+        public abstract Expr make(boolean distinct, Expr expr) ;
+    }
+    
     final protected Build buildCount = new Build()
     {
         public Expr make(final ItemList list)
         {
             ItemList x = list.cdr();    // drop "count"
-            boolean distinct = false ;
-            if ( x.size() > 0 && x.car().isSymbol(Tags.tagDistinct) )
-            {
-                distinct = true ;
+            boolean distinct = startsWithDistinct(x) ;
+            if ( distinct )
                 x = x.cdr();
-            }
+            
+            BuilderLib.checkLength(0, 1, x, "Broken syntax: "+list.shortString()) ;
             
             AggregateFactory agg = null ;
-            
-            if ( x.size() > 1 )
-                BuilderLib.broken(list, "Broken syntax: "+list.shortString()) ;
-            
             if ( x.size() == 0 )
-            {
-                
-                if ( ! distinct )
-                    agg = AggCount.get() ;
-                else
-                    agg = AggCountDistinct.get() ;
-            }
+                agg = AggregatorFactory.createCount(distinct) ;
             else
             {
                 Expr expr = BuilderExpr.buildExpr(x.get(0)) ;
-                if ( ! distinct )
-                    agg = new AggCountVar(expr) ;
-                else
-                    agg = new AggCountVarDistinct(expr) ;
+                agg = AggregatorFactory.createCountExpr(distinct, expr) ;
             }
             return new E_Aggregator((Var)null, agg.create()) ; 
         }
     };
     
-    final protected Build buildSum = new Build()
+    final protected Build buildSum = new BuildAggCommon()
     {
-        public Expr make(final ItemList list)
+        @Override
+        public Expr make(boolean distinct, Expr expr)
         {
-            ItemList x = list.cdr();    // drop "sum"
-            if ( x.size() != 1 )
-                BuilderLib.broken(list, "Broken syntax: "+list.shortString()) ;
-            // (sum ?var) 
-            Expr expr = buildExpr(x.get(0)) ;
-            AggregateFactory agg = new AggSum(expr) ;
+            AggregateFactory agg = AggregatorFactory.createSum(distinct, expr) ;
             return new E_Aggregator((Var)null, agg.create()) ; 
         }
     };
     
-    final protected Build buildMin = new Build()
+    final protected Build buildMin = new BuildAggCommon()
     {
-        public Expr make(final ItemList list)
+        @Override
+        public Expr make(boolean distinct, Expr expr)
         {
-            ItemList x = list.cdr();
-            if ( x.size() != 1 )
-                BuilderLib.broken(list, "Broken syntax: "+list.shortString()) ;
-            // (sum ?var) 
-            Expr expr = buildExpr(x.get(0)) ;
-            AggregateFactory agg = new AggMin(expr) ;
+            AggregateFactory agg = AggregatorFactory.createMin(distinct, expr) ;
             return new E_Aggregator((Var)null, agg.create()) ; 
         }
     };
     
-    final protected Build buildMax = new Build()
+    final protected Build buildMax = new BuildAggCommon()
+    {
+        @Override
+        public Expr make(boolean distinct, Expr expr)
+        {
+            AggregateFactory agg = AggregatorFactory.createMax(distinct, expr) ;
+            return new E_Aggregator((Var)null, agg.create()) ; 
+        }
+    };
+
+    final protected Build buildAvg = new BuildAggCommon()
+    {
+        @Override
+        public Expr make(boolean distinct, Expr expr)
+        {
+            AggregateFactory agg = AggregatorFactory.createAvg(distinct, expr) ;
+            return new E_Aggregator((Var)null, agg.create()) ; 
+        }
+    };
+
+    final protected Build buildSample = new BuildAggCommon()
+    {
+        @Override
+        public Expr make(boolean distinct, Expr expr)
+        {
+            AggregateFactory agg = AggregatorFactory.createSample(distinct, expr) ;
+            return new E_Aggregator((Var)null, agg.create()) ; 
+        }
+    };
+    
+    final protected Build buildGroupConcat = new Build()
     {
         public Expr make(final ItemList list)
         {
-            ItemList x = list.cdr();    // drop "sum"
-            if ( x.size() != 1 )
+            ItemList x = list.cdr();    // drop "avg"
+            boolean distinct = startsWithDistinct(x) ;
+            if ( distinct )
+                x = x.cdr();
+            
+            // Complex syntax:
+            // (groupConcat sep expr ...)
+            if ( x.size() == 0 )
                 BuilderLib.broken(list, "Broken syntax: "+list.shortString()) ;
-            // (sum ?var) 
-            Expr expr = buildExpr(x.get(0)) ;
-            AggregateFactory agg = new AggMax(expr) ;
+            Node nSep = BuilderNode.buildNode(x.get(0)) ; 
+            String sep = nSep.getLiteralLexicalForm() ;
+            if ( sep == null )
+                BuilderLib.broken(list, "Separate string required: "+list.shortString()) ;
+            x = x.cdr();
+            ExprList exprList = buildExprListUntagged(x, 0) ;
+            AggregateFactory agg = AggregatorFactory.createGroupConcat(distinct, exprList, sep) ;
             return new E_Aggregator((Var)null, agg.create()) ; 
         }
     };

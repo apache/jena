@@ -1,28 +1,41 @@
-/*
- * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
- * (c) Copyright 2010 Talis Systems Ltd.
- * All rights reserved.
- * [See end of file]
- */
-
 package com.hp.hpl.jena.sparql.expr.aggregate;
 
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.expr.NodeValue;
-import com.hp.hpl.jena.sparql.function.FunctionEnv;
+import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.expr.Expr ;
+import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
+import com.hp.hpl.jena.sparql.expr.NodeValue ;
+import com.hp.hpl.jena.sparql.function.FunctionEnv ;
 
-/** An Accumulator is the processor for each section of a group, so
- *  there is one Accumulator for each group key.
- */
-
-public interface Accumulator
+/** Accumulator that passes down every value of an expression */
+abstract class AccumulatorExpr implements Accumulator
 {
-    public void accumulate(Binding binding, FunctionEnv functionEnv) ;
-    public NodeValue getValue() ;
+    private long errorCount = 0 ; 
+    private final Expr expr ;
+    
+    protected AccumulatorExpr(Expr expr)
+    {
+        this.expr = expr ;
+    }
+    
+    final public void accumulate(Binding binding, FunctionEnv functionEnv)
+    {
+        try { 
+            NodeValue nv = expr.eval(binding, functionEnv) ;
+            accumulate(nv, binding, functionEnv) ;
+        } catch (ExprEvalException ex)
+        {
+            errorCount++ ;
+            accumulateError(binding, functionEnv) ;
+        }
+    }
+    
+    protected long getErrorCount() { return errorCount ; }
+     
+    protected abstract void accumulate(NodeValue nv, Binding binding, FunctionEnv functionEnv) ;
+    protected abstract void accumulateError(Binding binding, FunctionEnv functionEnv) ;
 }
 
 /*
- * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  *

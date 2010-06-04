@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Systems Ltd
  * All rights reserved.
  * [See end of file]
  */
@@ -31,18 +32,18 @@ public class ParserQueryBase extends ParserBase
     {
         setPrologue(request) ;
         this.request = request ;
-        setPrologue(request) ;
+        // And create a query because we may have nested selects.
+        this.query = new Query () ;
     }
     
     protected UpdateRequest getRequest() { return request ; }
     
     protected void startSubSelect()
     {
-        // ** Query is null in an update.
+        // Query is null in an update.
         stack.push(query) ;
-        Query subQuery = new Query(query) ;
+        Query subQuery = new Query(getPrologue()) ;
         query = subQuery ;
-        setPrologue(subQuery) ;
     }
     
     protected Query endSubSelect(int line, int column)
@@ -51,13 +52,13 @@ public class ParserQueryBase extends ParserBase
         if ( ! subQuery.isSelectType() )
             throwParseException("Subquery not a SELECT query", line, column) ;
         query = stack.pop();
-        setPrologue(query) ;
         return subQuery ;
     }
 }
 
 /*
  * (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Systems Ltd
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
