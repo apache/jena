@@ -23,7 +23,6 @@ import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.sparql.ARQException ;
-import com.hp.hpl.jena.sparql.SystemARQ ;
 import com.hp.hpl.jena.sparql.engine.QueryEngineBase ;
 import com.hp.hpl.jena.sparql.util.ALog ;
 
@@ -51,7 +50,7 @@ public class ARQMgt
             ContextMBean cxtBean = new ContextMBean(ARQ.getContext()) ;
             QueryEngineInfo qeInfo = QueryEngineBase.queryEngineInfo ;
 
-            register(NS+".system:type=SystemInfo", SystemARQ.sysInfo) ;
+            // Done in ARQ initialization -- register(NS+".system:type=SystemInfo", ARQ.systemInfo) ;
             register(NS+".system:type=Context", cxtBean) ;
             register(NS+".system:type=Engine", qeInfo) ;
 

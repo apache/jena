@@ -10,13 +10,10 @@ import java.util.ArrayList ;
 import java.util.Iterator ;
 import java.util.List ;
 
-import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.sparql.mgt.SystemInfo ;
 
 public class SystemARQ
 {
-    public static final SystemInfo sysInfo = new SystemInfo(ARQ.arqIRI, ARQ.VERSION, ARQ.BUILD_DATE) ;
-    
     private static List<SystemInfo> versions = new ArrayList<SystemInfo>() ;
     public static void registerSubSystem(SystemInfo systemInfo)
     {

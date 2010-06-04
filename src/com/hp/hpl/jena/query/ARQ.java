@@ -14,9 +14,9 @@ import com.hp.hpl.jena.sparql.engine.main.StageBuilder ;
 import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp ;
 import com.hp.hpl.jena.sparql.lib.Metadata ;
 import com.hp.hpl.jena.sparql.mgt.ARQMgt ;
+import com.hp.hpl.jena.sparql.mgt.SystemInfo ;
 import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.sparql.util.Symbol ;
-
 
 /** ARQ - miscellaneous settings
  * 
@@ -299,7 +299,12 @@ public class ARQ
         globalContext = defaultSettings() ;
         StageBuilder.init() ;
         ARQMgt.init() ;         // After context and after PATH/NAME/VERSION/BUILD_DATE are set
-        SystemARQ.registerSubSystem(SystemARQ.sysInfo) ;
+        
+        // This is the pattern for any subsystem to register. 
+        String NS = ARQ.PATH ;
+        SystemInfo sysInfo = new SystemInfo(ARQ.arqIRI, ARQ.VERSION, ARQ.BUILD_DATE) ;
+        ARQMgt.register(NS+".system:type=SystemInfo", sysInfo) ;
+        SystemARQ.registerSubSystem(sysInfo) ;
     }
     
     // Force a call
