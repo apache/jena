@@ -6,6 +6,8 @@
 
 package dev.reports;
 
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.rdf.model.AnonId ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.rdf.model.ReifiedStatement ;
@@ -18,11 +20,14 @@ public class Report_ReifiedStatements
 {
     public static void main(String...argv)
     {
+        Node n = Node.createAnon(new AnonId("8124122:128f960d4a4:-7fda")) ;
+        
         // Add stmt to in memory model and reify it:
         Model model = ModelFactory.createDefaultModel();
         Model sdbModel = SDBFactory.connectDefaultModel("sdb.ttl") ;
         Statement stmt = model.createStatement(ResourceFactory
                                                .createResource("urn:test:t1"), RDFS.label, "foo1");
+        
         model.add(stmt);
         ReifiedStatement rs = stmt.createReifiedStatement();
         rs.addProperty(ResourceFactory.createProperty("urn:property:foo"),

@@ -23,6 +23,6 @@
 	<classpathentry kind="lib" path="lib/arq-2.8.4-tests.jar"/>
 	<classpathentry kind="lib" path="lib/arq-2.8.4.jar" sourcepath="lib/arq-2.8.4-sources.jar"/>
 	<classpathentry kind="lib" path="lib/jena-2.6.3-tests.jar"/>
-	<classpathentry kind="lib" path="lib/jena-2.6.3.jar"/>
+	<classpathentry kind="lib" path="lib/jena-2.6.3.jar" sourcepath="lib/jena-2.6.3-sources.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>
