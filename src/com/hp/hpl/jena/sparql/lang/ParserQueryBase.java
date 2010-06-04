@@ -38,6 +38,7 @@ public class ParserQueryBase extends ParserBase
     
     protected void startSubSelect()
     {
+        // ** Query is null in an update.
         stack.push(query) ;
         Query subQuery = new Query(query) ;
         query = subQuery ;

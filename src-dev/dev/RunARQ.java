@@ -12,8 +12,6 @@ import java.io.Reader ;
 import java.io.StringReader ;
 import java.util.Iterator ;
 
-import arq.sparql ;
-
 import com.hp.hpl.jena.Jena ;
 import com.hp.hpl.jena.query.* ;
 import com.hp.hpl.jena.rdf.model.Model ;
@@ -67,6 +65,11 @@ public class RunARQ
 
     public static void main(String[] argv) throws Exception
     {
+        String x = "INSERT { _:a a ?type. } WHERE { SELECT distinct ?type { GRAPH <http://www.example.com/model> { [] a ?type.  } } }" ;
+        UpdateRequest req = UpdateFactory.create(x) ;
+        System.out.println(req) ;
+        System.exit(0) ;
+        
         if ( false )
         {
             String str = "SELECT count(*) {?s ?p ?o}" ;
@@ -97,7 +100,7 @@ public class RunARQ
             "--query=Q.rq"
         } ;
         
-        sparql.main(a) ;
+        arq.sparql.main(a) ;
         System.exit(0) ;
         
         if ( false )
@@ -338,7 +341,7 @@ public class RunARQ
     public static void fetch()
     {
         OpFetch.enable() ;
-        sparql.main(new String[]{"--file=Q.arq"}) ;
+        arq.sparql.main(new String[]{"--file=Q.arq"}) ;
         //System.out.println("----") ;
         System.exit(0) ; 
     }
@@ -475,7 +478,7 @@ public class RunARQ
             "-query="+queryfile , 
         } ;
         
-        sparql.main(a) ;
+        arq.sparql.main(a) ;
         System.exit(0) ;
     }
 

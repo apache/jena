@@ -1,5 +1,5 @@
 prefix : <http://example/> 
 
-select * where {
-    :a :p{2} ?z
+select ?x where {
+    ?x :p{0} :s .
 } 
