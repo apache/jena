@@ -8,6 +8,7 @@ package dev;
 public class DevARQ
 {
     // Check the assembly: javadoc,lib/*sources*
+    // Zero-length paths
     
     // Aggregates for SPARQL 1.1
     // Accumulator base classes
