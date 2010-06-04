@@ -905,21 +905,21 @@ ExprList ArgList() : { Expr expr ; boolean distinct = false ;
 //   { return args ; }
 // }
 
-// Singe expression aggregate argument
-Expr ExprAggArg() : { Expr expr = null ; boolean distinct = false ; Token t ; }
-{
-  <LPAREN>
-  ( t = <DISTINCT> { distinct = true ; }
-    {
-     if ( ! allowAggregatesInExpressions )
-          throwParseException("Aggregate expression not legal at this point",
-                              t.beginLine, t.beginColumn) ;
-     }
-  )?
-  expr = Expression()
-  <RPAREN> 
-  { return expr ; }
-}
+// // Single expression aggregate argument
+// Expr ExprAggArg() : { Expr expr = null ; boolean distinct = false ; Token t ; }
+// {
+//   <LPAREN>
+//   ( t = <DISTINCT> { distinct = true ; }
+//     {
+//      if ( ! allowAggregatesInExpressions )
+//           throwParseException("Aggregate expression not legal at this point",
+//                               t.beginLine, t.beginColumn) ;
+//      }
+//   )?
+//   expr = Expression()
+//   <RPAREN> 
+//   { return expr ; }
+// }
 
 ExprList ExpressionList() : { Expr expr = null ; ExprList args = new ExprList() ;}
 {
@@ -1579,24 +1579,32 @@ Expr Aggregate() : { AggregateFactory agg = null ; String sep = null ;
                      Expr expr = null ; ExprList a = new ExprList() ;
                      Token t ; }
 {
-    // Count is special because of COUNT(*)
-    // GROUP_CONCAT is special
+  // Count is special because of COUNT(*)
+  // GROUP_CONCAT is special because of separator=
 
-   ( t = <COUNT> <LPAREN> 
+  ( t = <COUNT> <LPAREN> 
     ( <DISTINCT> { distinct = true ; } )?
     ( <STAR> | expr = Expression() )
     <RPAREN>
-    { if ( ! distinct && expr == null ) { agg = AggCount.get() ; }
-      if ( distinct   && expr == null ) { agg = AggCountDistinct.get() ; }
-      if ( ! distinct && expr != null ) { agg = new AggCountVar(expr) ; }
-      if ( distinct   && expr != null ) { agg = new AggCountVarDistinct(expr) ; }
+    { if ( expr == null ) { agg = AggregatorFactory.createCount(distinct) ; }
+      if ( expr != null ) { agg = AggregatorFactory.createCountExpr(distinct, expr) ; }
     }
 
-  | t = <SUM> expr = ExprAggArg()       { agg = new AggSum(expr) ; }
-  | t = <MIN> expr = ExprAggArg()       { agg = new AggMin(expr) ; }
-  | t = <MAX> expr = ExprAggArg()       { agg = new AggMax(expr) ; }
-  | t = <AVG> expr = ExprAggArg()       { agg = new AggAvg(expr) ; }
-  | t = <SAMPLE> expr = ExprAggArg()    //{ agg = new AggSample(a) ; }
+  | t = <SUM> <LPAREN> ( <DISTINCT> { distinct = true ; } )? expr = Expression() <RPAREN> 
+    { agg = AggregatorFactory.createSum(distinct, expr) ; }
+
+  | t = <MIN> <LPAREN> ( <DISTINCT> { distinct = true ; } )? expr = Expression() <RPAREN>
+    { agg = AggregatorFactory.createMin(distinct, expr) ; }
+
+  | t = <MAX> <LPAREN> ( <DISTINCT> { distinct = true ; } )? expr = Expression() <RPAREN>
+    { agg = AggregatorFactory.createMax(distinct, expr) ; }
+
+  | t = <AVG> <LPAREN> ( <DISTINCT> { distinct = true ; } )? expr = Expression() <RPAREN>
+    { agg = AggregatorFactory.createAvg(distinct, expr) ; }
+
+  | t = <SAMPLE> <LPAREN> ( <DISTINCT> { distinct = true ; } )? expr = Expression() <RPAREN>
+    { agg = AggregatorFactory.createSample(distinct, expr) ; }
+
   | t = <GROUP_CONCAT>
     <LPAREN>
     (t = <DISTINCT> { distinct = true ; })?
@@ -1604,8 +1612,9 @@ Expr Aggregate() : { AggregateFactory agg = null ; String sep = null ;
     (<COMMA> expr = Expression() { a.add(expr) ; } )*
     (<SEMICOLON> <SEPARATOR> <EQ> sep=String())?
     <RPAREN>
-//     { agg = new AggGroupConcat(a, sep) ; }
+    { agg = AggregatorFactory.createGroupConcat(distinct, a, sep) ; }
    )
+
    {
      if ( ! allowAggregatesInExpressions )
             throwParseException("Aggregate expression not legal at this point",

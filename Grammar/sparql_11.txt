@@ -336,8 +336,21 @@ NON-TERMINALS
 //   { return args ; }
 // }
 
-// Singe expression aggregate argument
-	ExprAggArg	:=	<LPAREN> ( <DISTINCT> )? Expression <RPAREN>
+// // Single expression aggregate argument
+// Expr ExprAggArg() : { Expr expr = null ; boolean distinct = false ; Token t ; }
+// {
+//   <LPAREN>
+//   ( t = <DISTINCT> { distinct = true ; }
+//     {
+//      if ( ! allowAggregatesInExpressions )
+//           throwParseException("Aggregate expression not legal at this point",
+//                               t.beginLine, t.beginColumn) ;
+//      }
+//   )?
+//   expr = Expression()
+//   <RPAREN> 
+//   { return expr ; }
+// }
 	ExpressionList	:=	( <NIL> | <LPAREN> Expression ( <COMMA> Expression )* <RPAREN> )
 // -------- Construct patterns
 	ConstructTemplate	:=	<LBRACE> ( ConstructTriples )? <RBRACE>
@@ -435,7 +448,7 @@ NON-TERMINALS
 	RegexExpression	:=	<REGEX> <LPAREN> Expression <COMMA> Expression ( <COMMA> Expression )? <RPAREN>
 	ExistsFunc	:=	<EXISTS> GroupGraphPattern
 	NotExistsFunc	:=	<NOTEXISTS> GroupGraphPattern
-	Aggregate	:=	( <COUNT> <LPAREN> ( <DISTINCT> )? ( <STAR> | Expression ) <RPAREN> | <SUM> ExprAggArg | <MIN> ExprAggArg | <MAX> ExprAggArg | <AVG> ExprAggArg | <SAMPLE> ExprAggArg | <GROUP_CONCAT> <LPAREN> ( <DISTINCT> )? Expression ( <COMMA> Expression )* ( <SEMICOLON> <SEPARATOR> <EQ> String )? <RPAREN> )
+	Aggregate	:=	( <COUNT> <LPAREN> ( <DISTINCT> )? ( <STAR> | Expression ) <RPAREN> | <SUM> <LPAREN> ( <DISTINCT> )? Expression <RPAREN> | <MIN> <LPAREN> ( <DISTINCT> )? Expression <RPAREN> | <MAX> <LPAREN> ( <DISTINCT> )? Expression <RPAREN> | <AVG> <LPAREN> ( <DISTINCT> )? Expression <RPAREN> | <SAMPLE> <LPAREN> ( <DISTINCT> )? Expression <RPAREN> | <GROUP_CONCAT> <LPAREN> ( <DISTINCT> )? Expression ( <COMMA> Expression )* ( <SEMICOLON> <SEPARATOR> <EQ> String )? <RPAREN> )
 // See also FunctionCall.
 // The case of "q:name()" or "q:agg()" or just "q:name"
 // by expanding out FunctionCall()
