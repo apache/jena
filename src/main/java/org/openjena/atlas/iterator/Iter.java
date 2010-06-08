@@ -57,11 +57,39 @@ public class Iter<T> implements Iterable<T>, Iterator<T>
         return reduce(stream, action) ;
     }
 
+    public interface Folder<X,Y> { Y eval(Y acc, X arg) ; }
+    
+    public static <T, R> R foldLeft(Iterable<? extends T> stream, Folder<T, R> function, R value)
+    { return foldLeft(stream.iterator(), function, value) ; }
+    
+    public static <T, R> R foldLeft(Iterator<? extends T> stream, Folder<T, R> function, R value)
+    {
+        // Tail recursion, unwound
+        for ( ; stream.hasNext() ; )
+        {
+            T item = stream.next(); 
+            value = function.eval(value, item) ;
+        }
+        return value ;
+    }
+    
+    public static <T, R> R foldRight(Iterable<? extends T> stream, Folder<T, R> function, R value)
+    { return foldRight(stream.iterator(), function, value) ; }
+
+    public static <T, R> R foldRight(Iterator<? extends T> stream, Folder<T, R> function, R value)
+    {
+        // Recursive.
+        if ( ! stream.hasNext() ) return value ;
+        T item = stream.next() ;
+        return function.eval( foldRight(stream, function, value) , item ) ;
+    }
+    
     // Note fold-left and fold-right
     // http://en.wikipedia.org/wiki/Fold_%28higher-order_function%29
-    // This reduce is fold-right (take first element, apply to rest of list)
+    
+    // This reduce is fold-left (take first element, apply to rest of list)
     // which copes with infinite lists.
-    // Fold-left starts combining from the list tail.
+    // Fold-left starts by combining the first element, then moves on.
     
     public static <T, R> R reduce(Iterable<? extends T> stream, Accumulate<T, R> aggregator)
     { return reduce(stream.iterator(), aggregator) ; }

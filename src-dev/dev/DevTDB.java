@@ -7,6 +7,8 @@ public class DevTDB
     
     // RIOT: setting the file type.
     
+    // Experimental Merge engine.
+    
     // =====
     // Enable FILTER assignment for strings (and numbers?) via dataset context setting?
     // Tuples

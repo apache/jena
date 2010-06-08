@@ -7,6 +7,7 @@
 package org.openjena.atlas.iterator;
 
 import java.util.ArrayList;
+import java.util.Arrays ;
 import java.util.Iterator;
 import java.util.List;
 
@@ -90,6 +91,46 @@ public class TestIter
         }
         assertFalse(iter.hasNext()) ;
     }
+    
+    static Iter.Folder<String, String> f1 = new Iter.Folder<String, String>() {
+                                                 public String eval(String acc, String arg)
+                                                 {
+                                                     return acc + arg ;
+                                                 }
+                                             } ;
+    
+    @Test
+    public void fold_01() 
+    {
+        String[] x = { "a", "b", "c" } ;
+        String z = Iter.foldLeft(Arrays.asList(x), f1, "X") ;
+        assertEquals("Xabc", z) ;
+    }
+    
+    @Test
+    public void fold_02() 
+    {
+        String[] x = { "a", "b", "c" } ;
+        String z = Iter.foldRight(Arrays.asList(x), f1, "X") ;
+        assertEquals("Xcba", z) ;
+    }
+    
+    @Test
+    public void fold_03() 
+    {
+        String[] x = {  } ;
+        String z = Iter.foldLeft(Arrays.asList(x), f1, "X") ;
+        assertEquals("X", z) ;
+    }
+    
+    @Test
+    public void fold_04() 
+    {
+        String[] x = { } ;
+        String z = Iter.foldRight(Arrays.asList(x), f1, "X") ;
+        assertEquals("X", z) ;
+    }
+
 }
 
 /*
