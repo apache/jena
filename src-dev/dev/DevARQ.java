@@ -7,14 +7,16 @@ package dev;
 
 public class DevARQ
 {
+    // 1/ Enable sameTermString optimization
+    // 2/ If an equality is repeated do once only. 
+    
     // Check the assembly: javadoc,lib/*sources*
     // Zero-length paths
     
-    // Aggregates for SPARQL 1.1
-    // Accumulator conversion
-    //  Sum,Min,Max, Avg for Distinct
-    //  Sample, GroupConcat
-    
+    // == SPARQL 1.1 Query
+    // Aggregates 
+    //   Sum,Min,Max,Avg for Distinct
+    //   Sample, GroupConcat
     
     // regex and str()
     // SameTerm for strings by dataset context. 
@@ -22,7 +24,7 @@ public class DevARQ
     // Jena: Consolidate treatement of white space for floaf/double/num/abstractdate
     // Jena: upgrades 
     // Xerces 2.7.1 (released 2005-06) --> 2.9.x
-    // ICU4J 3.4.4 (released 2006-02) --> 4.4.x (but it'sa lot larger)
+    // ICU4J 3.4.4 (released 2006-02) --> 4.4.x (but it's a lot larger)
     // Woodstox 3.2.9 (released 2009-05) --> 4.0.x (actually a dependency of ARQ)
     // ARQ: Upgrade Lucene to 3.0
     
@@ -32,19 +34,12 @@ public class DevARQ
     // Migrate: Reifier2, GraphBase2, DatasetPrefixStorage
     // Autoclose of results sets from QueryEngineHTTP
     
-    // == SPARQL 1.1 Query
-    //   Rework aggregates to better match the formalism in the spec; stream/accumulatros based.
-    //   Implement Group_Concat, sample
-    
     // == SPARQL 1.1 Update
     //   Syntax tests
     
     // ----
     // http://www.w3.org/TR/xmlschema11-2/ : precisionDecimal : dayTimeDuration : yearTimeDuration 
 
-    // Dataset to indicate if plain string and XSD string are the same to affact FILTER(?x="string") optimziation.
-    // Does dataset contexts fix this?
-    
     // Documentation for CSV etc.
 
     // Union Transform,  TransformUnionQuery

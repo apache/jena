@@ -739,7 +739,7 @@ public class BuilderExpr
             
             BuilderLib.checkLength(0, 1, x, "Broken syntax: "+list.shortString()) ;
             
-            AggregateFactory agg = null ;
+            Aggregator agg = null ;
             if ( x.size() == 0 )
                 agg = AggregatorFactory.createCount(distinct) ;
             else
@@ -747,7 +747,7 @@ public class BuilderExpr
                 Expr expr = BuilderExpr.buildExpr(x.get(0)) ;
                 agg = AggregatorFactory.createCountExpr(distinct, expr) ;
             }
-            return new E_Aggregator((Var)null, agg.create()) ; 
+            return new E_Aggregator((Var)null, agg) ; 
         }
     };
     
@@ -756,8 +756,8 @@ public class BuilderExpr
         @Override
         public Expr make(boolean distinct, Expr expr)
         {
-            AggregateFactory agg = AggregatorFactory.createSum(distinct, expr) ;
-            return new E_Aggregator((Var)null, agg.create()) ; 
+            Aggregator agg = AggregatorFactory.createSum(distinct, expr) ;
+            return new E_Aggregator((Var)null, agg) ; 
         }
     };
     
@@ -766,8 +766,8 @@ public class BuilderExpr
         @Override
         public Expr make(boolean distinct, Expr expr)
         {
-            AggregateFactory agg = AggregatorFactory.createMin(distinct, expr) ;
-            return new E_Aggregator((Var)null, agg.create()) ; 
+            Aggregator agg = AggregatorFactory.createMin(distinct, expr) ;
+            return new E_Aggregator((Var)null, agg) ; 
         }
     };
     
@@ -776,8 +776,8 @@ public class BuilderExpr
         @Override
         public Expr make(boolean distinct, Expr expr)
         {
-            AggregateFactory agg = AggregatorFactory.createMax(distinct, expr) ;
-            return new E_Aggregator((Var)null, agg.create()) ; 
+            Aggregator agg = AggregatorFactory.createMax(distinct, expr) ;
+            return new E_Aggregator((Var)null, agg) ; 
         }
     };
 
@@ -786,8 +786,8 @@ public class BuilderExpr
         @Override
         public Expr make(boolean distinct, Expr expr)
         {
-            AggregateFactory agg = AggregatorFactory.createAvg(distinct, expr) ;
-            return new E_Aggregator((Var)null, agg.create()) ; 
+            Aggregator agg = AggregatorFactory.createAvg(distinct, expr) ;
+            return new E_Aggregator((Var)null, agg) ; 
         }
     };
 
@@ -796,8 +796,8 @@ public class BuilderExpr
         @Override
         public Expr make(boolean distinct, Expr expr)
         {
-            AggregateFactory agg = AggregatorFactory.createSample(distinct, expr) ;
-            return new E_Aggregator((Var)null, agg.create()) ; 
+            Aggregator agg = AggregatorFactory.createSample(distinct, expr) ;
+            return new E_Aggregator((Var)null, agg) ; 
         }
     };
     
@@ -820,8 +820,8 @@ public class BuilderExpr
                 BuilderLib.broken(list, "Separate string required: "+list.shortString()) ;
             x = x.cdr();
             ExprList exprList = buildExprListUntagged(x, 0) ;
-            AggregateFactory agg = AggregatorFactory.createGroupConcat(distinct, exprList, sep) ;
-            return new E_Aggregator((Var)null, agg.create()) ; 
+            Aggregator agg = AggregatorFactory.createGroupConcat(distinct, exprList, sep) ;
+            return new E_Aggregator((Var)null, agg) ; 
         }
     };
 

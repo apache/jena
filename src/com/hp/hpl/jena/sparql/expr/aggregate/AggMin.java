@@ -16,66 +16,48 @@ import com.hp.hpl.jena.sparql.function.FunctionEnv;
 import com.hp.hpl.jena.sparql.sse.writers.WriterExpr;
 import com.hp.hpl.jena.sparql.util.ExprUtils;
 
-public class AggMin implements AggregateFactory
+public class AggMin extends AggregatorBase
 {
     // ---- MIN(?var)
-    
+
     // ---- AggregatorFactory
     private Expr expr ;
 
     public AggMin(Expr var) { this.expr = var ; } 
 
-    public Aggregator create()
-    {
-        // One per each time there is an aggregation.
-        return new AggMinWorker() ;
+    @Override
+    public String toString() { return "min("+ExprUtils.fmtSPARQL(expr)+")" ; }
+    @Override
+    public String toPrefixString() { return "(min "+WriterExpr.asString(expr)+")" ; }
+
+    @Override
+    protected Accumulator createAccumulator()
+    { 
+        return new AccMinVar() ;
     }
-    
-    private static final NodeValue noValuesToMin = null ; 
-    
-    // ---- Aggregator
-    class AggMinWorker extends AggregatorBase
+
+    private final Expr getExpr() { return expr ; }
+
+    public boolean equalsAsExpr(Aggregator other)
     {
-        public AggMinWorker()
-        {
-            super() ;
-        }
+        if ( ! ( other instanceof AggMin ) )
+            return false ;
+        AggMin agg = (AggMin)other ;
+        return agg.getExpr().equals(getExpr()) ;
+    } 
 
-        @Override
-        public String toString() { return "min("+ExprUtils.fmtSPARQL(expr)+")" ; }
-        @Override
-        public String toPrefixString() { return "(min "+WriterExpr.asString(expr)+")" ; }
-
-        @Override
-        protected Accumulator createAccumulator()
-        { 
-            return new AccMinVar() ;
-        }
-        
-        private final Expr getExpr() { return expr ; }
-        
-        public boolean equalsAsExpr(Aggregator other)
-        {
-            if ( ! ( other instanceof AggMinWorker ) )
-                return false ;
-            AggMinWorker agg = (AggMinWorker)other ;
-            return agg.getExpr().equals(getExpr()) ;
-        } 
-
-        
-        /* null is SQL-like. */ 
-        @Override
-        public Node getValueEmpty()     { return null ; } 
-    }
+    /* null is SQL-like. */ 
+    @Override
+    public Node getValueEmpty()     { return null ; } 
 
     // ---- Accumulator
     class AccMinVar implements Accumulator
     {
         // Non-empty case but still can be nothing because the expression may be undefined.
         private NodeValue minSoFar = null ;
-        
+
         public AccMinVar() {}
-        
+
         static final boolean DEBUG = false ;
 
         public void accumulate(Binding binding, FunctionEnv functionEnv)
@@ -88,14 +70,14 @@ public class AggMin implements AggregateFactory
                     if ( DEBUG ) System.out.println("min: init : "+nv) ;
                     return ;
                 }
-                
+
                 int x = NodeValue.compareAlways(minSoFar, nv) ;
                 if ( x > 0 )
                     minSoFar = nv ;
-                
+
                 if ( DEBUG ) System.out.println("min: "+nv+" ==> "+minSoFar) ;
 
-                
+
             } catch (ExprEvalException ex)
             {}
         }

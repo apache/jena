@@ -12,42 +12,42 @@ import com.hp.hpl.jena.sparql.util.ALog ;
 
 public class AggregatorFactory
 {
-    public static AggregateFactory createCount(boolean distinct)
+    public static Aggregator createCount(boolean distinct)
     { 
-        return distinct ? AggCountDistinct.get() : AggCount.get() ;
+        return distinct ? new AggCountDistinct() : new AggCount() ;
     }
 
-    public static AggregateFactory createCountExpr(boolean distinct, Expr expr)
+    public static Aggregator createCountExpr(boolean distinct, Expr expr)
     { 
         return distinct ? new AggCountVarDistinct(expr) : new AggCountVar(expr) ;
     }
     
-    public static AggregateFactory createSum(boolean distinct, Expr expr)
+    public static Aggregator createSum(boolean distinct, Expr expr)
     { 
         return distinct ? err("sum distinct") : new AggSum(expr) ;
     }
     
-    public static AggregateFactory createMin(boolean distinct, Expr expr)
+    public static Aggregator createMin(boolean distinct, Expr expr)
     { 
         return distinct ? err("min distinct") : new AggMin(expr) ;
     }
     
-    public static AggregateFactory createMax(boolean distinct, Expr expr)
+    public static Aggregator createMax(boolean distinct, Expr expr)
     { 
         return distinct ? err("max distinct") : new AggMax(expr) ;
     }
     
-    public static AggregateFactory createAvg(boolean distinct, Expr expr)
+    public static Aggregator createAvg(boolean distinct, Expr expr)
     { 
         return distinct ? err("avg distinct") : new AggAvg(expr) ;
     }
         
-    public static AggregateFactory createSample(boolean distinct, Expr expr)    { return null ; }
+    public static Aggregator createSample(boolean distinct, Expr expr)    { return null ; }
     
-    public static AggregateFactory createGroupConcat(boolean distinct, ExprList exprList, String separator)
+    public static Aggregator createGroupConcat(boolean distinct, ExprList exprList, String separator)
     { return null ; }
     
-    private static AggregateFactory err(String label)
+    private static Aggregator err(String label)
     {
         ALog.fatal(AggregatorFactory.class, "Not implemented: "+label) ;
         return null ;

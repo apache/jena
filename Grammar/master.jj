@@ -1574,7 +1574,7 @@ Expr NotExistsFunc() : { Element el ; }
 }
 
 
-Expr Aggregate() : { AggregateFactory agg = null ; String sep = null ;
+Expr Aggregate() : { Aggregator agg = null ; String sep = null ;
                      boolean distinct = false ;
                      Expr expr = null ; ExprList a = new ExprList() ;
                      Token t ; }

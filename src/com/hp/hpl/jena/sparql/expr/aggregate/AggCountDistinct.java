@@ -13,44 +13,30 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
 
-public class AggCountDistinct implements AggregateFactory
+public class AggCountDistinct extends AggregatorBase
 {
     // ---- COUNT(DISTINCT *)
+    public AggCountDistinct() { super() ; }
 
-    private static AggCountDistinct singleton = new AggCountDistinct() ;
-    public static AggregateFactory get() { return singleton ; }
+    @Override
+    public String toString()        { return "count(distinct *)" ; }
+    @Override
+    public String toPrefixString()  { return "(count distinct)" ; }
 
-    private AggCountDistinct() {} 
-
-    public Aggregator create()
-    {
-        return new AggCountDistinctWorker() ;
+    @Override
+    protected Accumulator createAccumulator()
+    { 
+        return new AccCountDistinct() ; 
     }
 
-    static class AggCountDistinctWorker extends AggregatorBase
+    @Override
+    public Node getValueEmpty()     { return NodeConst.nodeZero ; }
+
+    public boolean equalsAsExpr(Aggregator other)
     {
-        public AggCountDistinctWorker() { super() ; }
-
-        @Override
-        public String toString()        { return "count(distinct *)" ; }
-        @Override
-        public String toPrefixString()  { return "(count distinct)" ; }
-
-        @Override
-        protected Accumulator createAccumulator()
-        { 
-            return new AccCountDistinct() ; 
-        }
-        
-        @Override
-        public Node getValueEmpty()     { return NodeConst.nodeZero ; }
-
-        public boolean equalsAsExpr(Aggregator other)
-        {
-            // Stateless as expression
-            return ( other instanceof AggCountDistinctWorker ) ;
-        } 
-    }
+        // Stateless as expression
+        return ( other instanceof AggCountDistinct ) ;
+    } 
 
     static class AccCountDistinct extends AccumulatorDistinctAll
     {

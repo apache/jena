@@ -14,54 +14,36 @@ import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
 
-public class AggCountVar implements AggregateFactory
+public class AggCountVar extends AggregatorBase
 {
     // ---- COUNT(?var)
-    
-    // ---- AggregatorFactory
     private Expr expr ;
 
-    public AggCountVar(Expr expr) { this.expr = expr ; } 
+    public AggCountVar(Expr expr) { this.expr = expr ; }
 
-    public Aggregator create()
-    {
-        // One per each time there is an aggregation.
-        // For count(*) - one per group operator (so shared with having clause)
-        return new AggCountVarWorker() ;
+    @Override
+    public String toString() { return "count("+expr+")" ; }
+    @Override
+    public String toPrefixString() { return "(count "+expr+")" ; }
+
+    @Override
+    protected Accumulator createAccumulator()
+    { 
+        return new AccCountVar() ;
     }
-    
-    // ---- Aggregator
-    private class AggCountVarWorker extends AggregatorBase
+
+    private final Expr getExpr() { return expr ; }
+
+    public boolean equalsAsExpr(Aggregator other)
     {
-        public AggCountVarWorker()
-        {
-            super() ;
-        }
+        if ( ! ( other instanceof AggCountVar ) )
+            return false ;
+        AggCountVar agg = (AggCountVar)other ;
+        return agg.getExpr().equals(getExpr()) ;
+    } 
 
-        @Override
-        public String toString() { return "count("+expr+")" ; }
-        @Override
-        public String toPrefixString() { return "(count "+expr+")" ; }
-
-        @Override
-        protected Accumulator createAccumulator()
-        { 
-            return new AccCountVar() ;
-        }
-
-        private final Expr getExpr() { return expr ; }
-        
-        public boolean equalsAsExpr(Aggregator other)
-        {
-            if ( ! ( other instanceof AggCountVarWorker ) )
-                return false ;
-            AggCountVarWorker agg = (AggCountVarWorker)other ;
-            return agg.getExpr().equals(getExpr()) ;
-        } 
-        
-        @Override
-        public Node getValueEmpty()     { return NodeConst.nodeZero ; } 
-    }
+    @Override
+    public Node getValueEmpty()     { return NodeConst.nodeZero ; } 
 
     // ---- Accumulator
     private class AccCountVar extends AccumulatorExpr

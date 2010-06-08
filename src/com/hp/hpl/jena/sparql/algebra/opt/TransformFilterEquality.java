@@ -14,9 +14,11 @@ import com.hp.hpl.jena.sparql.algebra.OpVars ;
 import com.hp.hpl.jena.sparql.algebra.TransformCopy ;
 import com.hp.hpl.jena.sparql.algebra.op.OpAssign ;
 import com.hp.hpl.jena.sparql.algebra.op.OpBGP ;
+import com.hp.hpl.jena.sparql.algebra.op.OpConditional ;
 import com.hp.hpl.jena.sparql.algebra.op.OpFilter ;
 import com.hp.hpl.jena.sparql.algebra.op.OpGraph ;
 import com.hp.hpl.jena.sparql.algebra.op.OpQuadPattern ;
+import com.hp.hpl.jena.sparql.algebra.op.OpSequence ;
 import com.hp.hpl.jena.sparql.core.Substitute ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.expr.E_Equals ;
@@ -29,34 +31,25 @@ import com.hp.hpl.jena.sparql.expr.NodeValue ;
 
 public class TransformFilterEquality extends TransformCopy
 {
-    // TODO E_OneOf
+    // E_OneOf -- done by expansion earlier.
     
-    // TODO (Carefully) Two forms - aggressive and strict
+    // TODO (Carefully) transformPlainStrings
     // Aggressive on strings goes for efficient over exactlness of xsd:string/plain literal.
-    // Extend to disjunctions of equalties.
     
-    private boolean transformPlainStrings ;
-
-    public TransformFilterEquality(boolean plainStrings)
+    private boolean stringsAsTerms ;
+    
+    public TransformFilterEquality(boolean stringsAsTerms)
     {
-        //  XSD string is not a simple literal
+        // XSD string is not a simple literal
         // Inactive.
         // What about numbers? 
-        this.transformPlainStrings = plainStrings ;
+        this.stringsAsTerms = stringsAsTerms ;
     }
     
     @Override
     public Op transform(OpFilter opFilter, Op subOp)
     { 
-        // What about filter of OpSequence? 
-        
-        // Safe for BGPs, quads and GRAPH 
-        // (and unions and joins of BGPs) 
-        // Optionals - be careful.
-        // Optionals+bound - be very careful.
-        if ( ! (subOp instanceof OpBGP) &&
-             ! (subOp instanceof OpQuadPattern) &&
-             ! (subOp instanceof OpGraph) )
+        if ( ! safeToTransform(subOp) )
             return super.transform(opFilter, subOp) ;
         
         ExprList exprs = opFilter.getExprs() ;
@@ -65,7 +58,9 @@ public class TransformFilterEquality extends TransformCopy
         Set<Var> patternVars = OpVars.patternVars(op) ;
         
         // Any assignments must go inside filters so the filters see the assignments.
-        ExprList exprs2 = new ExprList() ;
+        // For each filter in the expr list ...
+        
+        ExprList exprs2 = new ExprList() ;      // Unchanged filters.  Put around the result. 
         
         for (  Expr e : exprs.getList() )
         {
@@ -91,9 +86,26 @@ public class TransformFilterEquality extends TransformCopy
         return op2 ;
     }
     
+    private static boolean safeToTransform(Op op)
+    {
+        if ( op instanceof OpBGP || op instanceof OpQuadPattern ) return true ;
+        if ( op instanceof OpConditional || op instanceof OpSequence ) return true ;
+        
+        if ( op instanceof OpGraph )
+        {
+            OpGraph opg = (OpGraph)op ;
+            return safeToTransform(opg.getSubOp()) ;
+        }
+        
+        return false ;
+    }
+    
+    // ++ called by TransformFilterDisjunction
     /** Return null for "no change" */
     public static Op processFilter(Expr e, Op subOp)
     {
+        if ( ! safeToTransform(subOp) )
+            return null ;
         return processFilterWorker(e, subOp, null) ;
     }
 

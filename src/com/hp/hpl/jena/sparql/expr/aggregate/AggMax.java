@@ -16,68 +16,48 @@ import com.hp.hpl.jena.sparql.function.FunctionEnv;
 import com.hp.hpl.jena.sparql.sse.writers.WriterExpr;
 import com.hp.hpl.jena.sparql.util.ExprUtils;
 
-public class AggMax implements AggregateFactory
+public class AggMax extends AggregatorBase
 {
     // ---- MAX(?var)
-    
-    // ---- AggregatorFactory
     private Expr expr ;
 
     public AggMax(Expr var) { this.expr = var ; } 
 
-    public Aggregator create()
-    {
-        // One per each time there is an aggregation.
-        return new AggMaxWorker() ;
+    @Override
+    public String toString() { return "max("+ExprUtils.fmtSPARQL(expr)+")" ; }
+    @Override
+    public String toPrefixString() { return "(max "+WriterExpr.asString(expr)+")" ; }
+
+    @Override
+    protected Accumulator createAccumulator()
+    { 
+        return new AccMaxVar() ;
     }
-    
-    private static final NodeValue noValuesToMin = null ; 
-    
-    // ---- Aggregator
-    class AggMaxWorker extends AggregatorBase
+
+    private final Expr getExpr() { return expr ; }
+
+    public boolean equalsAsExpr(Aggregator other)
     {
-        public AggMaxWorker()
-        {
-            super() ;
-        }
+        if ( ! ( other instanceof AggMax ) )
+            return false ;
+        AggMax agg = (AggMax)other ;
+        return agg.getExpr().equals(getExpr()) ;
+    } 
 
-        @Override
-        public String toString() { return "max("+ExprUtils.fmtSPARQL(expr)+")" ; }
-        @Override
-        public String toPrefixString() { return "(max "+WriterExpr.asString(expr)+")" ; }
-
-        @Override
-        protected Accumulator createAccumulator()
-        { 
-            return new AccMaxVar() ;
-        }
-        
-        private final Expr getExpr() { return expr ; }
-        
-        public boolean equalsAsExpr(Aggregator other)
-        {
-            if ( ! ( other instanceof AggMaxWorker ) )
-                return false ;
-            AggMaxWorker agg = (AggMaxWorker)other ;
-            return agg.getExpr().equals(getExpr()) ;
-        } 
-
-        
-        /* null is SQL-like. */ 
-        @Override
-        public Node getValueEmpty()     { return null ; } 
-    }
+    /* null is SQL-like. */ 
+    @Override
+    public Node getValueEmpty()     { return null ; } 
 
     // ---- Accumulator
     class AccMaxVar implements Accumulator
     {
         // Non-empty case but still can be nothing because the expression may be undefined.
         private NodeValue maxSoFar = null ;
-        
+
         public AccMaxVar() {}
 
         static final boolean DEBUG = false ;
-        
+
         public void accumulate(Binding binding, FunctionEnv functionEnv)
         { 
             try {
@@ -88,13 +68,13 @@ public class AggMax implements AggregateFactory
                     if ( DEBUG ) System.out.println("max: init : "+nv) ;
                     return ;
                 }
-                
+
                 int x = NodeValue.compareAlways(maxSoFar, nv) ;
                 if ( x < 0 )
                     maxSoFar = nv ;
-                
+
                 if ( DEBUG ) System.out.println("max: "+nv+" ==> "+maxSoFar) ;
-                
+
             } catch (ExprEvalException ex)
             {}
         }

@@ -14,55 +14,42 @@ import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
 
-public class AggCountVarDistinct implements AggregateFactory
+public class AggCountVarDistinct extends AggregatorBase
 {
     // ---- COUNT(DISTINCT ?var)
     private Expr expr ;
 
-    // ---- AggregatorFactory
     public AggCountVarDistinct(Expr expr) { this.expr = expr ; } 
 
-    public Aggregator create()
-    {
-        return new AggCountVarDistinctWorker(expr) ;
+    @Override
+    public String toString()        { return "count(distinct "+expr+")" ; }
+    @Override
+    public String toPrefixString()  { return "(count distinct "+expr+")" ; }
+
+    @Override
+    protected Accumulator createAccumulator()
+    { 
+        return new AccCountVarDistinct() ; 
     }
 
-    // ---- Aggregator
-    class AggCountVarDistinctWorker extends AggregatorBase
+    private final Expr getExpr() { return expr ; }
+
+    public boolean equalsAsExpr(Aggregator other)
     {
-        //private Var var ;
-        public AggCountVarDistinctWorker(Expr expr) { super() ; } //this.var = var ; }
+        if ( ! ( other instanceof AggCountVarDistinct ) )
+            return false ;
+        AggCountVarDistinct agg = (AggCountVarDistinct)other ;
+        return agg.getExpr().equals(getExpr()) ;
+    } 
 
-        @Override
-        public String toString()        { return "count(distinct "+expr+")" ; }
-        @Override
-        public String toPrefixString()  { return "(count distinct "+expr+")" ; }
-
-        @Override
-        protected Accumulator createAccumulator()
-        { 
-            return new AccCountVarDistinct() ; 
-        }
-        
-        private final Expr getExpr() { return expr ; }
-        
-        public boolean equalsAsExpr(Aggregator other)
-        {
-            if ( ! ( other instanceof AggCountVarDistinctWorker ) )
-                return false ;
-            AggCountVarDistinctWorker agg = (AggCountVarDistinctWorker)other ;
-            return agg.getExpr().equals(getExpr()) ;
-        } 
-        
-        @Override
-        public Node getValueEmpty()     { return NodeConst.nodeZero ; } 
-    }
+    @Override
+    public Node getValueEmpty()     { return NodeConst.nodeZero ; } 
 
     // ---- Accumulator
     class AccCountVarDistinct extends AccumulatorDistinctExpr
     {
         private long count = 0 ;
-        
+
         public AccCountVarDistinct() { super(expr) ; } 
         // The group key part of binding will be the same for all elements of the group.
         @Override
@@ -72,7 +59,7 @@ public class AggCountVarDistinct implements AggregateFactory
         @Override
         protected void accumulateError(Binding binding, FunctionEnv functionEnv)
         {}
-        
+
         public NodeValue getValue()            
         { return NodeValue.makeInteger(count) ; }
     }

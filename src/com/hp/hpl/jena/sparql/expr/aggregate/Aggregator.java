@@ -19,6 +19,9 @@ import com.hp.hpl.jena.sparql.function.FunctionEnv;
 
 public interface Aggregator
 {
+    //-- Aggregator - per query (strictly, one per SELECT level), unique even if mentioned several times.
+    //-- Accumulator - per group per key section processors (from AggregatorBase)
+
     public void accumulate(BindingKey key, Binding b, FunctionEnv functionEnv) ;
     public Node getValue(BindingKey key) ;
     /** Value if there are no elements in any group : return null for no result */

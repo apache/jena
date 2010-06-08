@@ -5,35 +5,34 @@
 
 package com.hp.hpl.jena.query;
 
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.io.OutputStream ;
+import java.util.ArrayList ;
+import java.util.Collection ;
+import java.util.HashMap ;
+import java.util.Iterator ;
+import java.util.List ;
+import java.util.Map ;
+import java.util.Set ;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.sparql.ARQConstants;
-import com.hp.hpl.jena.sparql.core.Prologue;
-import com.hp.hpl.jena.sparql.core.QueryCompare;
-import com.hp.hpl.jena.sparql.core.QueryHashCode;
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.core.VarAlloc;
-import com.hp.hpl.jena.sparql.core.VarExprList;
-import com.hp.hpl.jena.sparql.expr.E_Aggregator;
-import com.hp.hpl.jena.sparql.expr.Expr;
-import com.hp.hpl.jena.sparql.expr.ExprVar;
-import com.hp.hpl.jena.sparql.expr.aggregate.AggregateFactory;
-import com.hp.hpl.jena.sparql.expr.aggregate.Aggregator;
-import com.hp.hpl.jena.sparql.serializer.Serializer;
-import com.hp.hpl.jena.sparql.syntax.Element;
-import com.hp.hpl.jena.sparql.syntax.Template;
-import com.hp.hpl.jena.sparql.util.ALog;
-import com.hp.hpl.jena.sparql.util.FmtUtils;
-import com.hp.hpl.jena.sparql.util.IndentedLineBuffer;
-import com.hp.hpl.jena.sparql.util.IndentedWriter;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.sparql.ARQConstants ;
+import com.hp.hpl.jena.sparql.core.Prologue ;
+import com.hp.hpl.jena.sparql.core.QueryCompare ;
+import com.hp.hpl.jena.sparql.core.QueryHashCode ;
+import com.hp.hpl.jena.sparql.core.Var ;
+import com.hp.hpl.jena.sparql.core.VarAlloc ;
+import com.hp.hpl.jena.sparql.core.VarExprList ;
+import com.hp.hpl.jena.sparql.expr.E_Aggregator ;
+import com.hp.hpl.jena.sparql.expr.Expr ;
+import com.hp.hpl.jena.sparql.expr.ExprVar ;
+import com.hp.hpl.jena.sparql.expr.aggregate.Aggregator ;
+import com.hp.hpl.jena.sparql.serializer.Serializer ;
+import com.hp.hpl.jena.sparql.syntax.Element ;
+import com.hp.hpl.jena.sparql.syntax.Template ;
+import com.hp.hpl.jena.sparql.util.ALog ;
+import com.hp.hpl.jena.sparql.util.FmtUtils ;
+import com.hp.hpl.jena.sparql.util.IndentedLineBuffer ;
+import com.hp.hpl.jena.sparql.util.IndentedWriter ;
 
 /** The data structure for a query as presented externally.
  *  There are two ways of creating a query - use the parser to turn
@@ -479,21 +478,26 @@ public class Query extends Prologue implements Cloneable
     public boolean hasAggregators() { return aggregators.size() != 0  ; }
     public List<E_Aggregator> getAggregators() { return aggregators ; }
     
-    public E_Aggregator allocAggregate(AggregateFactory agg)
+    public E_Aggregator allocAggregate(Aggregator agg)
     {
         // We need to track the aggregators in case one aggregator is used twice, e.g. in HAVING and in SELECT expression
-        // (is is that much harm to do twice?  Yes, if distinct.
-        Aggregator a = agg.create() ;
-        String key = a.key() ;
+        // (is is that much harm to do twice?  Yes, if distinct.)
+        String key = agg.key() ;
         E_Aggregator expr = aggregatorsAllocated.get(key); 
         
         if ( expr == null )
         {
             // Not see before.  Build the expression. 
             Var v = allocInternVar() ;
-            expr = new E_Aggregator(v, agg.create()) ;
+            expr = new E_Aggregator(v, agg) ;
             aggregatorsAllocated.put(key, expr) ;
             aggregators.add(expr) ;
+        }
+        else
+        {
+            // Consistentecy checking
+            if ( ! agg.equalsAsExpr(expr.getAggregator()) )
+                ALog.warn(Query.class, "Internal inconsistency: Aggregator: "+agg) ;
         }
         return expr ;
     }

@@ -65,6 +65,9 @@ public class RunARQ
 
     public static void main(String[] argv) throws Exception
     {
+        qparse("--print=opt", "SELECT * { ?s ?p ?o . FILTER (?s = <urn:x> || ?s = <urn:x> )}") ;
+        System.exit(0) ;
+        
         execQuery("testing/ARQ/GroupBy/data-1.ttl", "testing/ARQ/GroupBy/count-06.arq") ;
         System.exit(0) ;
         

@@ -14,54 +14,38 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.expr.NodeValue;
 import com.hp.hpl.jena.sparql.function.FunctionEnv;
 
-public class AggCount implements AggregateFactory 
+public class AggCount extends AggregatorBase
 {
     // ---- COUNT(*)
 
-    // ---- AggregatorFactory
-    private static AggCount singleton = new AggCount() ;
-    public static AggregateFactory get() { return singleton ; }
-    
-    private AggCount() { }
+    public AggCount() { }
 
-    public Aggregator create()
+    public boolean equalsAsExpr(Aggregator other)
     {
-        // One per each time there is an aggregation.
-        // For count(*) - one per group operator (so shared with having clause)
-        return new AggregateCount() ;
+        return other instanceof AggCount ;
     }
 
-    static class AggregateCount extends AggregatorBase
+    @Override
+    protected Accumulator createAccumulator()
+    { 
+        return new AggCount.AccCount();
+    }
+
+    @Override
+    public String toString()        { return "count(*)" ; }
+    @Override
+    public String toPrefixString()  { return "(count)" ; }
+
+    @Override
+    public Node getValueEmpty()     { return NodeConst.nodeZero ; } 
+
+    static class AccCount implements Accumulator
     {
-        AggregateCount() {}
-
-        public boolean equalsAsExpr(Aggregator other)
-        {
-            return other instanceof AggregateCount ;
-        }
-
-        @Override
-        protected Accumulator createAccumulator()
-        { 
-            return new AggregateCount.AccCount();
-        }
-
-        @Override
-        public String toString()        { return "count(*)" ; }
-        @Override
-        public String toPrefixString()  { return "(count)" ; }
-
-        @Override
-        public Node getValueEmpty()     { return NodeConst.nodeZero ; } 
-
-        static class AccCount implements Accumulator
-        {
-            private long count = 0 ;
-            public AccCount()   { }
-            public void accumulate(Binding binding, FunctionEnv functionEnv)
-            { count++ ; }
-            public NodeValue getValue()             { return NodeValue.makeInteger(count) ; }
-        }
+        private long count = 0 ;
+        public AccCount()   { }
+        public void accumulate(Binding binding, FunctionEnv functionEnv)
+        { count++ ; }
+        public NodeValue getValue()             { return NodeValue.makeInteger(count) ; }
     }
 }
 

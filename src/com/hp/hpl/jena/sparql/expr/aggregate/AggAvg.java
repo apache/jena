@@ -18,59 +18,41 @@ import com.hp.hpl.jena.sparql.function.FunctionEnv;
 import com.hp.hpl.jena.sparql.sse.writers.WriterExpr;
 import com.hp.hpl.jena.sparql.util.ExprUtils;
 
-public class AggAvg implements AggregateFactory
+public class AggAvg extends AggregatorBase
 {
     // ---- AVG(?var)
-    
-    // ---- AggregatorFactory
     private Expr expr ;
 
     public AggAvg(Expr var) { this.expr = var ; } 
 
-    public Aggregator create()
-    {
-        // One per each time there is an aggregation.
-        return new AggAvgWorker() ;
-    }
-    
     // XQuery/XPath Functions&Operators suggests zero
     // SQL suggests null.
     private static final NodeValue noValuesToAvg = NodeValue.nvZERO ; // null 
-    
-    // ---- Aggregator
-    class AggAvgWorker extends AggregatorBase
-    {
-        public AggAvgWorker()
-        {
-            super() ;
-        }
 
-        @Override
-        public String toString() { return "sum("+ExprUtils.fmtSPARQL(expr)+")" ; }
-        @Override
-        public String toPrefixString() { return "(sum "+WriterExpr.asString(expr)+")" ; }
+    @Override
+    public String toString() { return "sum("+ExprUtils.fmtSPARQL(expr)+")" ; }
+    @Override
+    public String toPrefixString() { return "(sum "+WriterExpr.asString(expr)+")" ; }
 
-        @Override
-        protected Accumulator createAccumulator()
-        { 
-            return new AccAvgVar() ;
-        }
-        
-        private final Expr getExpr() { return expr ; }
-        
-        public boolean equalsAsExpr(Aggregator other)
-        {
-            if ( ! ( other instanceof AggAvgWorker ) )
-                return false ;
-            AggAvgWorker agg = (AggAvgWorker)other ;
-            return agg.getExpr().equals(getExpr()) ;
-        } 
-
-        
-        /* null is SQL-like.  NodeValue.nodeIntZERO is F&O like */ 
-        @Override
-        public Node getValueEmpty()     { return NodeValue.toNode(noValuesToAvg) ; } 
+    @Override
+    protected Accumulator createAccumulator()
+    { 
+        return new AccAvgVar() ;
     }
+
+    private final Expr getExpr() { return expr ; }
+
+    public boolean equalsAsExpr(Aggregator other)
+    {
+        if ( ! ( other instanceof AggAvg ) )
+            return false ;
+        AggAvg agg = (AggAvg)other ;
+        return agg.getExpr().equals(getExpr()) ;
+    } 
+
+    /* null is SQL-like.  NodeValue.nodeIntZERO is F&O like */ 
+    @Override
+    public Node getValueEmpty()     { return NodeValue.toNode(noValuesToAvg) ; } 
 
     // ---- Accumulator
     class AccAvgVar implements Accumulator

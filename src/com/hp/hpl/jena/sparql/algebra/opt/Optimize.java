@@ -142,18 +142,23 @@ public class Optimize implements Rewrite
 
         if ( context.isTrueOrUndef(ARQ.optFilterExpandOneOf) )
             op = apply("Break up IN and NOT IN", new TransformExpandOneOf(), op) ;
+
+        // Find joins/leftJoin that can be done by index joins (generally preferred as fixed memory overhead).
+        op = apply("Join strategy", new TransformJoinStrategy(context), op) ;
         
         // TODO Improve filter placement to go through assigns that have no effect.
         // Do this before filter placement and other sequence generating transformations.
         // or improve to place in a sequence.
         
         if ( context.isTrueOrUndef(ARQ.optFilterEquality) )
-            op = apply("Filter Equality", new TransformFilterEquality(false), op) ;
+        {
+            // 
+            boolean termStrings = context.isDefined(ARQ.optTermStrings) ;
+            op = apply("Filter Equality", new TransformFilterEquality(!termStrings), op) ;
+        }
         
         if ( context.isTrueOrUndef(ARQ.optFilterDisjunction) )
             op = apply("Filter Disjunction", new TransformFilterDisjunction(), op) ;
-        
-        op = apply("Join strategy", new TransformJoinStrategy(context), op) ;
         
         if ( context.isTrueOrUndef(ARQ.optFilterPlacement) )
             // This can be done too early (breaks up BGPs).

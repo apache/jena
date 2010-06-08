@@ -7,7 +7,9 @@
 package com.hp.hpl.jena.sparql.algebra.opt;
 
 import java.util.ArrayList ;
+import java.util.HashSet ;
 import java.util.List ;
+import java.util.Set ;
 
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.TransformCopy ;
@@ -47,6 +49,8 @@ public class TransformFilterDisjunction extends TransformCopy
         
         ExprList exprList2 = new ExprList() ;
         Op newOp = subOp ;
+        // remember what's been seen so that FILTER(?x = <x> || ?x = <x> ) does not result in two transforms. 
+        Set<Expr> doneSoFar = new HashSet<Expr>() ;
         
         for ( Expr expr : exprList )
         {
@@ -56,6 +60,13 @@ public class TransformFilterDisjunction extends TransformCopy
                 exprList2.add(expr) ;
                 continue ;
             }
+            
+//            // Relies on expression equality.
+//            if ( doneSoFar.contains(expr) )
+//                continue ;
+//            // Must be canonical: ?x = <x> is the same as <x> = ?x
+//            doneSoFar.add(expr) ;
+            
             Op op2 = expandDisjunction(expr, newOp) ;
             
             if ( op2 != null )
@@ -108,10 +119,6 @@ public class TransformFilterDisjunction extends TransformCopy
                 exprList2.add(e) ;
                 //continue ;
                 // Can't do one so don't do any as the original pattern is still executed. 
-                
-                
-                
-                
             }
 
             op = OpDisjunction.create(op, op2) ;

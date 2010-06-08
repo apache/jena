@@ -3559,7 +3559,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
   }
 
   final public Expr Aggregate() throws ParseException {
-                     AggregateFactory agg = null ; String sep = null ;
+                     Aggregator agg = null ; String sep = null ;
                      boolean distinct = false ;
                      Expr expr = null ; ExprList a = new ExprList() ;
                      Token t ;

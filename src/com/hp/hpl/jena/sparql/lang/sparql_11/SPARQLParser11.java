@@ -3247,7 +3247,7 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
   }
 
   final public Expr Aggregate() throws ParseException {
-                     AggregateFactory agg = null ; String sep = null ;
+                     Aggregator agg = null ; String sep = null ;
                      boolean distinct = false ;
                      Expr expr = null ; ExprList a = new ExprList() ;
                      Token t ;

@@ -176,6 +176,13 @@ public class ARQ
     public static final Symbol optFilterEquality = ARQConstants.allocSymbol("optFilterEquality") ;
 
     /** 
+     *  Context key for a declaration that xsd:strings and simple literals are
+     *  different in the storage.  They are the same value in a memory store.
+     *  When in doubt, xsd:strings are assuned to be the same value as simple literals   
+     */  
+    public static final Symbol optTermStrings = ARQConstants.allocSymbol("optTermStrings") ;
+
+    /** 
      *  Context key controlling whether the standard optimizer applies
      *  optimizations to conjunctions (&&) in filters.
      */  

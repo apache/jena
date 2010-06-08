@@ -18,66 +18,49 @@ import com.hp.hpl.jena.sparql.function.FunctionEnv;
 import com.hp.hpl.jena.sparql.sse.writers.WriterExpr;
 import com.hp.hpl.jena.sparql.util.ExprUtils;
 
-public class AggSum implements AggregateFactory
+public class AggSum  extends AggregatorBase
 {
     // ---- SUM(?var)
-    
-    // ---- AggregatorFactory
     private Expr expr ;
 
     public AggSum(Expr var) { this.expr = var ; } 
-
-    public Aggregator create()
-    {
-        // One per each time there is an aggregation.
-        return new AggSumWorker() ;
-    }
     
     // XQuery/XPath Functions&Operators suggests zero
     // SQL suggests null.
     private static final NodeValue noValuesToSum = NodeValue.nvZERO ; // null 
     
-    // ---- Aggregator
-    class AggSumWorker extends AggregatorBase
-    {
-        public AggSumWorker()
-        {
-            super() ;
-        }
+    @Override
+    public String toString() { return "sum("+ExprUtils.fmtSPARQL(expr)+")" ; }
+    @Override
+    public String toPrefixString() { return "(sum "+WriterExpr.asString(expr)+")" ; }
 
-        @Override
-        public String toString() { return "sum("+ExprUtils.fmtSPARQL(expr)+")" ; }
-        @Override
-        public String toPrefixString() { return "(sum "+WriterExpr.asString(expr)+")" ; }
-
-        @Override
-        protected Accumulator createAccumulator()
-        { 
-            return new AccSumVar() ;
-        }
-        
-        private final Expr getExpr() { return expr ; }
-        
-        public boolean equalsAsExpr(Aggregator other)
-        {
-            if ( ! ( other instanceof AggSumWorker ) )
-                return false ;
-            AggSumWorker agg = (AggSumWorker)other ;
-            return agg.getExpr().equals(getExpr()) ;
-        } 
-
-        
-        /* null is SQL-like.  NodeValue.nodeIntZERO is F&O like */ 
-        @Override
-        public Node getValueEmpty()     { return NodeValue.toNode(noValuesToSum) ; } 
+    @Override
+    protected Accumulator createAccumulator()
+    { 
+        return new AccSumVar() ;
     }
+
+    private final Expr getExpr() { return expr ; }
+
+    public boolean equalsAsExpr(Aggregator other)
+    {
+        if ( ! ( other instanceof AggSum ) )
+            return false ;
+        AggSum agg = (AggSum)other ;
+        return agg.getExpr().equals(getExpr()) ;
+    } 
+
+
+    /* null is SQL-like.  NodeValue.nodeIntZERO is F&O like */ 
+    @Override
+    public Node getValueEmpty()     { return NodeValue.toNode(noValuesToSum) ; } 
 
     // ---- Accumulator
     class AccSumVar implements Accumulator
     {
         // Non-empty case but still can be nothing because the expression may be undefined.
         private NodeValue total = noValuesToSum ;
-        
+
         public AccSumVar() {}
 
         public void accumulate(Binding binding, FunctionEnv functionEnv)
