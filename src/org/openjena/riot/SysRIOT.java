@@ -6,6 +6,8 @@
 
 package org.openjena.riot;
 
+import com.hp.hpl.jena.rdf.model.impl.RDFReaderFImpl ;
+
 import org.openjena.atlas.event.EventType ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
@@ -32,6 +34,21 @@ public class SysRIOT
     public static Logger getLogger()
     {
         return riotLogger ;
+    }
+    
+    public static void wireIntoJena()
+    {
+        // Override N-TRIPLES and Turtle with faster implementations.
+        String readerNT = JenaReaderNTriples2.class.getName() ;
+        RDFReaderFImpl.setBaseReaderClassName("N-TRIPLES", readerNT) ;
+        RDFReaderFImpl.setBaseReaderClassName("N-TRIPLE", readerNT) ;
+        
+        String readerTTL = JenaReaderTurtle2.class.getName() ;
+        RDFReaderFImpl.setBaseReaderClassName("N3", readerTTL) ;
+        RDFReaderFImpl.setBaseReaderClassName("TURTLE", readerTTL) ;
+        RDFReaderFImpl.setBaseReaderClassName("Turtle", readerTTL) ;
+        RDFReaderFImpl.setBaseReaderClassName("TTL", readerTTL) ;
+
     }
 
 }

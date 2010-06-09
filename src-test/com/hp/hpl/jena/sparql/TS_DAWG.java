@@ -73,11 +73,12 @@ public class TS_DAWG extends TestSuite
         addTest(ts1) ;
 
         TestSuite ts3 = new TestSuite("Misc") ;
+        // Others in DAWG-Final::
         ts3.addTest(QueryTestSuiteFactory.make(testDirDAWG+"/Misc/manifest.n3")) ;
         ts3.addTest(QueryTestSuiteFactory.make(testDirDAWG+"/Syntax/manifest.n3")) ;
         ts3.addTest(QueryTestSuiteFactory.make(testDirDAWG+"/regex/manifest.n3")) ;
         ts3.addTest(QueryTestSuiteFactory.make(testDirDAWG+"/examples/manifest.n3")) ;  // Value testing examples
-        ts3.addTest(QueryTestSuiteFactory.make(testDirDAWG+"/i18n/manifest.ttl")) ;
+        //In DAWG-Final:: ts3.addTest(QueryTestSuiteFactory.make(testDirDAWG+"/i18n/manifest.ttl")) ;
         addTest(ts3) ;
     }
 }

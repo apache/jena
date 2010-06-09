@@ -6,6 +6,8 @@
 
 package com.hp.hpl.jena.query;
 
+import org.openjena.riot.SysRIOT ;
+
 import com.hp.hpl.jena.assembler.assemblers.AssemblerGroup ;
 import com.hp.hpl.jena.sparql.ARQConstants ;
 import com.hp.hpl.jena.sparql.SystemARQ ;
@@ -312,6 +314,7 @@ public class ARQ
         SystemInfo sysInfo = new SystemInfo(ARQ.arqIRI, ARQ.VERSION, ARQ.BUILD_DATE) ;
         ARQMgt.register(NS+".system:type=SystemInfo", sysInfo) ;
         SystemARQ.registerSubSystem(sysInfo) ;
+        SysRIOT.wireIntoJena() ;
     }
     
     // Force a call

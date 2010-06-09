@@ -10,8 +10,18 @@ public class DevARQ
     // 1/ Enable sameTermString optimization
     // 2/ If an equality is repeated do once only. 
     
+    // Commands: like TDB with an arq_init script
+    // Migrate riot commands to ARQ
+    // --strict
+    
     // Check the assembly: javadoc,lib/*sources*
     // Zero-length paths
+    
+    // RIOT: Tune error checking of URIs - be more permissive when parssing from code
+    // but --string when from command line.  jenaImplementation vs IRI implementation.
+    
+    // Reenable i18n tests: TS_DAWG, DAWG_Final/maniest-evaluation.ttl
+    // Removed dups between DAGE and DAWG-Final
     
     // == SPARQL 1.1 Query
     // Aggregates 

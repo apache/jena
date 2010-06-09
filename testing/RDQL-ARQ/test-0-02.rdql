@@ -3,4 +3,4 @@
 
 SELECT *
 FROM   <model0.nt>
-WHERE  (<urn:/*not_a_comment*/>, ?y, ?z)
+WHERE  (<urn:xyz:abc>, ?y, ?z)

@@ -23,6 +23,8 @@ import com.hp.hpl.jena.rdf.model.Model ;
 /** Jena reader for RIOT Turtle */
 public class JenaReaderTurtle2 extends JenaReaderRIOT
 {
+    public JenaReaderTurtle2() {}
+    
     @Override
     protected void readWorker(Model model, Tokenizer tokenizer, String base)
     {

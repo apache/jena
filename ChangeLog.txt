@@ -3,6 +3,8 @@ ChangeLog for ARQ
 
 ==== ARQ 2.8.5
 
++ Parsing of URIs in data is now stricter (Turtle, TriG). 
+
 + Import all of atlas and riot subsystems from TDB
   Consoldiate use of classes around these versions.
   These will become submodules of ARQ sometime.
