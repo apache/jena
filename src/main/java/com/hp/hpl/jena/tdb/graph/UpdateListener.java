@@ -6,13 +6,12 @@
 
 package com.hp.hpl.jena.tdb.graph;
 
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.Triple;
+import org.openjena.atlas.lib.Sync ;
 
-import com.hp.hpl.jena.sparql.modify.GraphStoreEvents;
-import com.hp.hpl.jena.sparql.util.graph.GraphListenerBase;
-
-import com.hp.hpl.jena.tdb.lib.Sync;
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.sparql.modify.GraphStoreEvents ;
+import com.hp.hpl.jena.sparql.util.graph.GraphListenerBase ;
 
 
 /** Listen for end of update events and sync when seen */

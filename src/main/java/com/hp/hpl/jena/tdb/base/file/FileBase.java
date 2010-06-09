@@ -6,13 +6,14 @@
 
 package com.hp.hpl.jena.tdb.base.file;
 
-import java.io.IOException;
-import java.io.RandomAccessFile;
-import java.nio.channels.FileChannel;
+import java.io.IOException ;
+import java.io.RandomAccessFile ;
+import java.nio.channels.FileChannel ;
 
-import com.hp.hpl.jena.sparql.core.Closeable;
-import com.hp.hpl.jena.tdb.base.block.BlockException;
-import com.hp.hpl.jena.tdb.lib.Sync;
+import org.openjena.atlas.lib.Closeable ;
+import org.openjena.atlas.lib.Sync ;
+
+import com.hp.hpl.jena.tdb.base.block.BlockException ;
 
 public class FileBase implements Sync, Closeable
 {

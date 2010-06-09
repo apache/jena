@@ -8,6 +8,7 @@ package com.hp.hpl.jena.tdb;
 
 import java.util.Iterator ;
 
+import org.openjena.atlas.lib.Sync ;
 import org.openjena.riot.JenaReaderNTriples2 ;
 import org.openjena.riot.JenaReaderTurtle2 ;
 import org.slf4j.Logger ;
@@ -31,7 +32,6 @@ import com.hp.hpl.jena.sparql.mgt.SystemInfo ;
 import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.sparql.util.Symbol ;
 import com.hp.hpl.jena.tdb.assembler.AssemblerTDB ;
-import com.hp.hpl.jena.tdb.lib.Sync ;
 import com.hp.hpl.jena.tdb.modify.UpdateProcessorTDB ;
 import com.hp.hpl.jena.tdb.solver.Explain ;
 import com.hp.hpl.jena.tdb.solver.OpExecutorTDB ;

@@ -6,12 +6,13 @@
 
 package com.hp.hpl.jena.tdb.migrate;
 
-import java.util.Map;
-import java.util.Set;
+import java.util.Map ;
+import java.util.Set ;
 
-import com.hp.hpl.jena.shared.PrefixMapping;
-import com.hp.hpl.jena.sparql.core.Closeable;
-import com.hp.hpl.jena.tdb.lib.Sync;
+import org.openjena.atlas.lib.Closeable ;
+import org.openjena.atlas.lib.Sync ;
+
+import com.hp.hpl.jena.shared.PrefixMapping ;
 
 /** Abstract of prefix storage for graphs in an RDF dataset */
 

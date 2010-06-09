@@ -8,12 +8,11 @@ package com.hp.hpl.jena.tdb.nodetable;
 
 import java.util.Iterator ;
 
+import org.openjena.atlas.lib.Closeable ;
 import org.openjena.atlas.lib.Pair ;
-
+import org.openjena.atlas.lib.Sync ;
 
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.sparql.core.Closeable ;
-import com.hp.hpl.jena.tdb.lib.Sync ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
 
 /** Node table - conceptually a two way mapping of Node<->NodeId 

@@ -6,9 +6,9 @@
 
 package com.hp.hpl.jena.tdb.graph;
 
-import com.hp.hpl.jena.sparql.util.graph.GraphListenerCounter;
+import org.openjena.atlas.lib.Sync ;
 
-import com.hp.hpl.jena.tdb.lib.Sync;
+import com.hp.hpl.jena.sparql.util.graph.GraphListenerCounter ;
 
 
 /** Calls sync every tickCount additions and at the end of a bulk load. */ 

@@ -6,16 +6,13 @@
 
 package com.hp.hpl.jena.tdb.index;
 
-import java.util.Iterator;
+import java.util.Iterator ;
 
+import org.openjena.atlas.lib.Closeable ;
+import org.openjena.atlas.lib.Sync ;
 import org.openjena.atlas.lib.Tuple ;
 
-
-
-import com.hp.hpl.jena.sparql.core.Closeable;
-
-import com.hp.hpl.jena.tdb.lib.Sync;
-import com.hp.hpl.jena.tdb.store.NodeId;
+import com.hp.hpl.jena.tdb.store.NodeId ;
 
 public interface TupleIndex extends Sync, Closeable
 {

@@ -9,11 +9,9 @@ package com.hp.hpl.jena.tdb.base.objectfile;
 import java.nio.ByteBuffer ;
 import java.util.Iterator ;
 
+import org.openjena.atlas.lib.Closeable ;
 import org.openjena.atlas.lib.Pair ;
-
-
-import com.hp.hpl.jena.sparql.core.Closeable ;
-import com.hp.hpl.jena.tdb.lib.Sync ;
+import org.openjena.atlas.lib.Sync ;
 
 /** Temporary name.
  */

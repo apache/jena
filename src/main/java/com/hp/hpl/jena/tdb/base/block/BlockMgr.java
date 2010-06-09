@@ -8,9 +8,9 @@ package com.hp.hpl.jena.tdb.base.block;
 
 import java.nio.ByteBuffer;
 
-import com.hp.hpl.jena.sparql.core.Closeable;
+import org.openjena.atlas.lib.Closeable ;
+import org.openjena.atlas.lib.Sync ;
 
-import com.hp.hpl.jena.tdb.lib.Sync;
 import com.hp.hpl.jena.tdb.sys.Session ;
 
 public interface BlockMgr extends Sync, Closeable, Session
