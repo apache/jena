@@ -11,13 +11,14 @@ package com.hp.hpl.jena.sparql.core;
 import java.util.Iterator ;
 import java.util.List ;
 
+import org.openjena.atlas.iterator.Iter ;
+import org.openjena.atlas.iterator.Transform ;
+
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.shared.Lock ;
 import com.hp.hpl.jena.shared.LockMRSW ;
-import com.hp.hpl.jena.sparql.lib.iterator.Iter ;
-import com.hp.hpl.jena.sparql.lib.iterator.Transform ;
 import com.hp.hpl.jena.sparql.sse.writers.WriterGraph ;
 import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.sparql.util.IndentedLineBuffer ;

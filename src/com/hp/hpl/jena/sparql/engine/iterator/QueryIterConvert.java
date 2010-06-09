@@ -36,7 +36,8 @@ public class QueryIterConvert extends QueryIter1
     }
     
     @Override
-    protected void closeSubIterator() {}
+    protected void 
+    closeSubIterator() {}
 
     @Override
     public boolean hasNextBinding()

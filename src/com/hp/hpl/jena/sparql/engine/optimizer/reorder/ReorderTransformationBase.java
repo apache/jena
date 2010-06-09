@@ -6,25 +6,24 @@
 
 package com.hp.hpl.jena.sparql.engine.optimizer.reorder;
 
-import java.util.ArrayList;
-import java.util.List;
+import static com.hp.hpl.jena.sparql.util.StringUtils.printAbbrev ;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.ArrayList ;
+import java.util.List ;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
+import org.openjena.atlas.iterator.AccString ;
+import org.openjena.atlas.iterator.Iter ;
+import org.openjena.atlas.iterator.Transform ;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
 
-import com.hp.hpl.jena.sparql.ARQException;
-import com.hp.hpl.jena.sparql.core.BasicPattern;
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.lib.iterator.AccString;
-import com.hp.hpl.jena.sparql.lib.iterator.Iter;
-import com.hp.hpl.jena.sparql.lib.iterator.Transform;
-import com.hp.hpl.jena.sparql.sse.Item;
-import com.hp.hpl.jena.sparql.util.StrUtils;
-
-import static com.hp.hpl.jena.sparql.util.StringUtils.printAbbrev;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.sparql.ARQException ;
+import com.hp.hpl.jena.sparql.core.BasicPattern ;
+import com.hp.hpl.jena.sparql.core.Var ;
+import com.hp.hpl.jena.sparql.sse.Item ;
+import com.hp.hpl.jena.sparql.util.StrUtils ;
 
 /** Machinary */
 public abstract class ReorderTransformationBase implements ReorderTransformation

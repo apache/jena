@@ -10,6 +10,8 @@ import java.util.ArrayList ;
 import java.util.Iterator ;
 import java.util.List ;
 
+import org.openjena.atlas.iterator.Iter ;
+
 import com.hp.hpl.jena.query.QueryExecException ;
 import com.hp.hpl.jena.sparql.ARQNotImplemented ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
@@ -27,7 +29,6 @@ import com.hp.hpl.jena.sparql.engine.main.iterator.QueryIterService ;
 import com.hp.hpl.jena.sparql.engine.main.iterator.QueryIterUnion ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.expr.ExprList ;
-import com.hp.hpl.jena.sparql.lib.iterator.Iter ;
 import com.hp.hpl.jena.sparql.procedure.ProcEval ;
 import com.hp.hpl.jena.sparql.procedure.Procedure ;
 

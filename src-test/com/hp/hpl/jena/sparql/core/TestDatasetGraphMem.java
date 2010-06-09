@@ -16,7 +16,7 @@ public class TestDatasetGraphMem extends DatasetGraphTests
     }
     
     @Override
-    protected DatasetGraph emptyDataset()
+    public DatasetGraph emptyDataset()
     {
         return DatasetGraphFactory.createMem() ;
     }

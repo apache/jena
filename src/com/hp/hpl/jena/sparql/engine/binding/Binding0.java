@@ -7,9 +7,10 @@ package com.hp.hpl.jena.sparql.engine.binding;
 
 import java.util.* ;
 
+import org.openjena.atlas.iterator.Iter ;
+
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.lib.iterator.NullIterator;
 
 /** Special purpose binding for nothing. 
  */
@@ -28,7 +29,7 @@ public class Binding0 extends BindingBase
     /** Iterate over all the names of variables.
      */
     @Override
-    public Iterator<Var> vars1() { return new NullIterator<Var>() ; }
+    public Iterator<Var> vars1() { return Iter.nullIterator() ; }
 
     @Override
     protected int size1() { return 0 ; }

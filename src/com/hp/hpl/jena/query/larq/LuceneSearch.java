@@ -6,36 +6,34 @@
 
 package com.hp.hpl.jena.query.larq;
 
-import java.util.Iterator;
+import java.util.Iterator ;
 
-import com.hp.hpl.jena.util.iterator.Map1;
-import com.hp.hpl.jena.util.iterator.Map1Iterator;
+import org.openjena.atlas.iterator.IteratorTruncate ;
 
-import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
-import com.hp.hpl.jena.graph.Node;
-
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.engine.ExecutionContext;
-import com.hp.hpl.jena.sparql.engine.QueryIterator;
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIterNullIterator;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIterSingleton;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIterSlice;
-import com.hp.hpl.jena.sparql.expr.ExprEvalException;
-import com.hp.hpl.jena.sparql.expr.NodeValue;
-import com.hp.hpl.jena.sparql.lib.iterator.IteratorTruncate ;
-import com.hp.hpl.jena.sparql.pfunction.PropFuncArg;
-import com.hp.hpl.jena.sparql.pfunction.PropFuncArgType;
-import com.hp.hpl.jena.sparql.pfunction.PropertyFunctionEval;
-import com.hp.hpl.jena.sparql.util.ALog;
-import com.hp.hpl.jena.sparql.util.IterLib;
-import com.hp.hpl.jena.sparql.util.NodeFactory;
-
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryBuildException;
-import com.hp.hpl.jena.query.QueryExecException;
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.query.Query ;
+import com.hp.hpl.jena.query.QueryBuildException ;
+import com.hp.hpl.jena.query.QueryExecException ;
+import com.hp.hpl.jena.sparql.core.Var ;
+import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
+import com.hp.hpl.jena.sparql.engine.QueryIterator ;
+import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.engine.binding.BindingMap ;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIterNullIterator ;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper ;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIterSingleton ;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIterSlice ;
+import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
+import com.hp.hpl.jena.sparql.expr.NodeValue ;
+import com.hp.hpl.jena.sparql.pfunction.PropFuncArg ;
+import com.hp.hpl.jena.sparql.pfunction.PropFuncArgType ;
+import com.hp.hpl.jena.sparql.pfunction.PropertyFunctionEval ;
+import com.hp.hpl.jena.sparql.util.ALog ;
+import com.hp.hpl.jena.sparql.util.IterLib ;
+import com.hp.hpl.jena.sparql.util.NodeFactory ;
+import com.hp.hpl.jena.util.iterator.Map1 ;
+import com.hp.hpl.jena.util.iterator.Map1Iterator ;
 
 /** Base class for searching a IndexLARQ */
 

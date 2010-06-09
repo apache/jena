@@ -6,18 +6,19 @@
 
 package com.hp.hpl.jena.sparql.util;
 
-import java.io.UnsupportedEncodingException;
-import java.text.DateFormat;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.regex.Pattern;
+import java.io.UnsupportedEncodingException ;
+import java.text.DateFormat ;
+import java.text.DecimalFormat ;
+import java.text.NumberFormat ;
+import java.text.SimpleDateFormat ;
+import java.util.Date ;
+import java.util.List ;
+import java.util.regex.Pattern ;
 
-import com.hp.hpl.jena.sparql.ARQInternalErrorException;
-import com.hp.hpl.jena.sparql.expr.Expr;
-import com.hp.hpl.jena.sparql.lib.iterator.Iter;
+import org.openjena.atlas.iterator.Iter ;
+
+import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
+import com.hp.hpl.jena.sparql.expr.Expr ;
 
 
 public class StringUtils

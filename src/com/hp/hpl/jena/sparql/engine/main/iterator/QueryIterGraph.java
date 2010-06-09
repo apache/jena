@@ -9,6 +9,9 @@ package com.hp.hpl.jena.sparql.engine.main.iterator;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+import org.openjena.atlas.iterator.Iter ;
+import org.openjena.atlas.iterator.SingletonIterator ;
+
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException;
@@ -25,8 +28,6 @@ import com.hp.hpl.jena.sparql.engine.iterator.QueryIterRepeatApply;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterSingleton;
 import com.hp.hpl.jena.sparql.engine.main.QC;
 import com.hp.hpl.jena.sparql.util.Utils;
-import com.hp.hpl.jena.sparql.lib.iterator.NullIterator;
-import com.hp.hpl.jena.sparql.lib.iterator.SingletonIterator;
 
 
 public class QueryIterGraph extends QueryIterRepeatApply
@@ -66,7 +67,7 @@ public class QueryIterGraph extends QueryIterRepeatApply
         
         if ( n2 != null && ! n2.isURI() )
             // Bloank node or literal possible after resolving
-            return new NullIterator<Node>() ;
+            return Iter.nullIterator() ;
         
         // n2 is a URI or null.
         

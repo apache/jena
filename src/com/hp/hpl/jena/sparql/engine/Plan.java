@@ -6,9 +6,10 @@
 
 package com.hp.hpl.jena.sparql.engine;
 
-import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.core.Closeable;
-import com.hp.hpl.jena.sparql.util.PrintSerializable;
+import org.openjena.atlas.lib.Closeable ;
+
+import com.hp.hpl.jena.sparql.algebra.Op ;
+import com.hp.hpl.jena.sparql.util.PrintSerializable ;
 
 public interface Plan extends PrintSerializable, Closeable
 {

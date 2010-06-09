@@ -6,12 +6,13 @@
 
 package com.hp.hpl.jena.sparql.engine;
 
-import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.core.Closeable;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIteratorCloseable;
-import com.hp.hpl.jena.sparql.serializer.SerializationContext;
-import com.hp.hpl.jena.sparql.util.IndentedWriter;
-import com.hp.hpl.jena.sparql.util.Utils;
+import org.openjena.atlas.lib.Closeable ;
+
+import com.hp.hpl.jena.sparql.algebra.Op ;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIteratorCloseable ;
+import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
+import com.hp.hpl.jena.sparql.util.IndentedWriter ;
+import com.hp.hpl.jena.sparql.util.Utils ;
 
 public class PlanOp extends PlanBase
 {

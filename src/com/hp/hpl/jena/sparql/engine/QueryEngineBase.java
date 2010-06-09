@@ -6,12 +6,13 @@
 
 package com.hp.hpl.jena.sparql.engine;
 
+import org.openjena.atlas.lib.Closeable ;
+
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.sparql.ARQConstants ;
 import com.hp.hpl.jena.sparql.algebra.Algebra ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
-import com.hp.hpl.jena.sparql.core.Closeable ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingRoot ;

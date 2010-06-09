@@ -8,9 +8,10 @@ package com.hp.hpl.jena.sparql.core;
 
 import java.util.Iterator ;
 
+import org.openjena.atlas.iterator.Iter ;
+
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.sparql.lib.iterator.Iter ;
 
 /** Base class for implementations of a DatasetGraph as a set of graphs.
  */

@@ -6,8 +6,9 @@
 
 package com.hp.hpl.jena.sparql.engine.iterator;
 
-import com.hp.hpl.jena.sparql.core.Closeable;
-import com.hp.hpl.jena.sparql.engine.QueryIterator;
+import org.openjena.atlas.lib.Closeable ;
+
+import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 
 public class QueryIteratorCloseable extends QueryIteratorWrapper
 {

@@ -13,6 +13,8 @@ import java.util.InvalidPropertiesFormatException;
 import java.util.List;
 import java.util.Properties;
 
+import org.openjena.atlas.lib.SystemUtils ;
+
 import com.hp.hpl.jena.sparql.ARQException;
 import com.hp.hpl.jena.sparql.util.ALog;
 

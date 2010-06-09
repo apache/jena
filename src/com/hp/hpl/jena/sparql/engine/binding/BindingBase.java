@@ -6,15 +6,15 @@
 
 package com.hp.hpl.jena.sparql.engine.binding;
 
-import java.util.Iterator;
+import java.util.Iterator ;
 
-import com.hp.hpl.jena.graph.Node;
+import org.openjena.atlas.iterator.IteratorConcat ;
 
-import com.hp.hpl.jena.sparql.ARQInternalErrorException;
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.util.ALog;
-import com.hp.hpl.jena.sparql.util.FmtUtils;
-import com.hp.hpl.jena.sparql.lib.iterator.IteratorConcat;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
+import com.hp.hpl.jena.sparql.core.Var ;
+import com.hp.hpl.jena.sparql.util.ALog ;
+import com.hp.hpl.jena.sparql.util.FmtUtils ;
 
 /** Machinary encapsulating a mapping from a name to a value.
  * 

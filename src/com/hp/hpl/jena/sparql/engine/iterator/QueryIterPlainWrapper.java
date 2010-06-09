@@ -8,9 +8,10 @@ package com.hp.hpl.jena.sparql.engine.iterator;
 
 import java.util.Iterator ;
 
+import org.openjena.atlas.iterator.Iter ;
+
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
-import com.hp.hpl.jena.sparql.lib.iterator.Iter ;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
 import com.hp.hpl.jena.sparql.util.IndentedWriter ;
 import com.hp.hpl.jena.sparql.util.Utils ;

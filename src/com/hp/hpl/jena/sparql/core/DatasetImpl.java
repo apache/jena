@@ -6,17 +6,18 @@
 
 package com.hp.hpl.jena.sparql.core;
 
-import java.util.Iterator;
+import java.util.Iterator ;
 
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.query.Dataset;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.shared.Lock;
-import com.hp.hpl.jena.sparql.lib.Cache;
-import com.hp.hpl.jena.sparql.lib.CacheFactory ;
-import com.hp.hpl.jena.sparql.util.NodeUtils;
+import org.openjena.atlas.lib.Cache ;
+import org.openjena.atlas.lib.CacheFactory ;
+
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.query.Dataset ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.ModelFactory ;
+import com.hp.hpl.jena.shared.Lock ;
+import com.hp.hpl.jena.sparql.util.NodeUtils ;
 
 /** Wrapper around a DatasetGraph. See also DataSourceImpl.
  * 

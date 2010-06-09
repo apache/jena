@@ -12,6 +12,9 @@ import java.util.LinkedHashSet ;
 import java.util.List ;
 import java.util.Set ;
 
+import org.openjena.atlas.iterator.Filter ;
+import org.openjena.atlas.iterator.Iter ;
+import org.openjena.atlas.iterator.Transform ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
@@ -23,9 +26,6 @@ import com.hp.hpl.jena.rdf.model.NodeIterator ;
 import com.hp.hpl.jena.rdf.model.RDFNode ;
 import com.hp.hpl.jena.rdf.model.impl.NodeIteratorImpl ;
 import com.hp.hpl.jena.sparql.ARQException ;
-import com.hp.hpl.jena.sparql.lib.iterator.Filter ;
-import com.hp.hpl.jena.sparql.lib.iterator.Iter ;
-import com.hp.hpl.jena.sparql.lib.iterator.Transform ;
 import com.hp.hpl.jena.sparql.util.ALog ;
 import com.hp.hpl.jena.sparql.util.ModelUtils ;
 

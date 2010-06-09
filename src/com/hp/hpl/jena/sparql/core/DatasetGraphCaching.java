@@ -10,12 +10,13 @@ package com.hp.hpl.jena.sparql.core;
 
 import java.util.Iterator ;
 
+import org.openjena.atlas.iterator.Iter ;
+import org.openjena.atlas.lib.Cache ;
+import org.openjena.atlas.lib.CacheFactory ;
+
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.sparql.lib.Cache ;
-import com.hp.hpl.jena.sparql.lib.CacheFactory ;
-import com.hp.hpl.jena.sparql.lib.iterator.Iter ;
 
 /** 
  * DatasetGraph that <em>caches</em> calls to make graph implementations.  

@@ -14,11 +14,11 @@ import java.util.Iterator ;
 import java.util.Set ;
 
 import org.junit.Test ;
+import org.openjena.atlas.iterator.Iter ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.sparql.lib.iterator.Iter ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
 

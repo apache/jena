@@ -53,7 +53,7 @@ public class DSG_Mem extends DatasetGraphCaching // extends DatasetGraphTriplesQ
     }
     
     @Override
-    protected Iterator<Quad> findInDftGraph(Node s, Node p , Node o) 
+    public Iterator<Quad> findInDftGraph(Node s, Node p , Node o) 
     {
         List<Quad> results = new ArrayList<Quad>() ;
         for ( Triple t : triples )
@@ -63,7 +63,7 @@ public class DSG_Mem extends DatasetGraphCaching // extends DatasetGraphTriplesQ
     }
     
     @Override
-    protected Iterator<Quad> findInSpecificNamedGraph(Node g, Node s, Node p , Node o)
+    public Iterator<Quad> findInSpecificNamedGraph(Node g, Node s, Node p , Node o)
     {
         List<Quad> results = new ArrayList<Quad>() ;
         for ( Quad q : quads )
@@ -73,7 +73,7 @@ public class DSG_Mem extends DatasetGraphCaching // extends DatasetGraphTriplesQ
     }
     
     @Override
-    protected Iterator<Quad> findInAnyNamedGraphs(Node s, Node p , Node o)
+    public Iterator<Quad> findInAnyNamedGraphs(Node s, Node p , Node o)
     {
         List<Quad> results = new ArrayList<Quad>() ;
         for ( Quad q : quads )

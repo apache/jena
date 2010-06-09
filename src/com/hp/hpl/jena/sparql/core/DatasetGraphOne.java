@@ -10,10 +10,11 @@ package com.hp.hpl.jena.sparql.core;
 
 import java.util.Iterator ;
 
+import org.openjena.atlas.iterator.Iter ;
+import org.openjena.atlas.iterator.NullIterator ;
+
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.sparql.lib.iterator.Iter ;
-import com.hp.hpl.jena.sparql.lib.iterator.NullIterator ;
 
 /** 
  * Readonly DatasetGraph of a single graph. 

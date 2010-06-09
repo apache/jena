@@ -8,7 +8,7 @@ package com.hp.hpl.jena.sparql.lib;
 
 import java.util.*;
 
-import com.hp.hpl.jena.sparql.lib.iterator.Iter;
+import org.openjena.atlas.iterator.Iter ;
 
 /** Datastructure factory - allows indirecly to other implementations */ 
 

@@ -10,12 +10,13 @@ package com.hp.hpl.jena.sparql.engine.iterator;
 import java.util.Iterator ;
 import java.util.Set ;
 
+import org.openjena.atlas.iterator.Iter ;
+
 import com.hp.hpl.jena.sparql.algebra.Algebra ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
-import com.hp.hpl.jena.sparql.lib.iterator.Iter ;
 
 /** Minus by materializing the RHS - this is not streamed on the right */
 public class QueryIterMinus extends QueryIter2LoopOnLeft

@@ -15,6 +15,7 @@ import static junit.framework.Assert.assertTrue ;
 import java.util.List ;
 
 import org.junit.Test ;
+import org.openjena.atlas.iterator.Iter ;
 
 import com.hp.hpl.jena.query.DataSource ;
 import com.hp.hpl.jena.query.Dataset ;
@@ -22,7 +23,6 @@ import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.rdf.model.Property ;
 import com.hp.hpl.jena.rdf.model.Resource ;
-import com.hp.hpl.jena.sparql.lib.iterator.Iter ;
 
 public abstract class TestDataset
 {

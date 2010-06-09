@@ -7,6 +7,8 @@ package com.hp.hpl.jena.sparql;
 
 
 import junit.framework.TestSuite ;
+import org.openjena.atlas.TC_Atlas ;
+import org.openjena.riot.TC_Riot ;
 
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.sparql.algebra.TS_Algebra ;
@@ -33,14 +35,19 @@ public class ARQTestSuite extends TestSuite
     
     static public TestSuite suite()
     {
+        TestSuite ts = new ARQTestSuite() ;
+
+        // ARQ dependencies
+        // Add
+        ts.addTest(new junit.framework.JUnit4TestAdapter(TC_Atlas.class)) ;
+        ts.addTest(new junit.framework.JUnit4TestAdapter(TC_Riot.class)) ;
+        
         // Fiddle around with the config if necessary
         if ( false )
         {
             QueryEngineMain.unregister() ;
             QueryEngineRef.register() ;
         }
-        
-        TestSuite ts = new ARQTestSuite() ;
 
         // Tests should be silent.
         NodeValue.VerboseWarnings = false ;

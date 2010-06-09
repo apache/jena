@@ -8,9 +8,10 @@ package com.hp.hpl.jena.sparql.core;
 
 import java.util.Iterator ;
 
+import org.openjena.atlas.iterator.Iter ;
+import org.openjena.atlas.iterator.Transform ;
+
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.sparql.lib.iterator.Iter ;
-import com.hp.hpl.jena.sparql.lib.iterator.Transform ;
 
 
 /** A DatasetGraph base class for pure quad-centric storage.     

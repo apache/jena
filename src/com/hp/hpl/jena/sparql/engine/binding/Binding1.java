@@ -7,9 +7,10 @@ package com.hp.hpl.jena.sparql.engine.binding;
 
 import java.util.Iterator;
 
+import org.openjena.atlas.iterator.Iter ;
+
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.lib.iterator.SingletonIterator;
 
 
 /** Special purpose binding for adding just one name/value slot. 
@@ -48,7 +49,7 @@ public class Binding1 extends BindingBase
     @Override
     public Iterator<Var> vars1() 
     {
-        return new SingletonIterator<Var>(var) ;
+        return Iter.singleton(var) ;
     }
     
     @Override

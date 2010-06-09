@@ -10,6 +10,8 @@ package com.hp.hpl.jena.sparql.core ;
 
 import java.util.Iterator ;
 
+import org.openjena.atlas.lib.Closeable ;
+
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.TripleMatch ;

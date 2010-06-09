@@ -1,5 +1,5 @@
 prefix : <http://example/> 
 
-select ?x where {
-    ?x :p{0} :s .
-} 
+select count(*) where { 
+    ?s ?p ?o
+} GROUP BY ?s

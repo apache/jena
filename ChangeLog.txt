@@ -3,6 +3,12 @@ ChangeLog for ARQ
 
 ==== ARQ 2.8.5
 
++ Import all of atlas and riot subsystems from TDB
+  Consoldiate use of classes around these versions.
+  These will become submodules of ARQ sometime.
+  Atlas contains all non-RDF related library code.
+  RIOT contains parsers for N-triples, N-Quads, Turtle and TriG 
+
 ==== ARQ 2.8.4
 
 + Internal reorganisation of graph-lebvel DatasetGraph (no chnages to the application API)
