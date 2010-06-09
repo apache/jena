@@ -6,14 +6,14 @@
 
 package tdb.cmdline;
 
-import com.hp.hpl.jena.iri.IRI ;
-
-import org.openjena.atlas.lib.IRILib ;
 import arq.cmd.CmdException ;
 import arq.cmdline.ArgDecl ;
 import arq.cmdline.ArgModuleGeneral ;
 import arq.cmdline.CmdArgModule ;
 import arq.cmdline.CmdGeneral ;
+
+import com.hp.hpl.jena.iri.IRI ;
+import com.hp.hpl.jena.sparql.lib.IRILib ;
 
 public class ModLangParse implements ArgModuleGeneral
 {
