@@ -1,6 +1,20 @@
+@prefix foaf: <http://example/> .
+@prefix HR: <http://example/> .
 @prefix : <http://example/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
-:s :p :o .
+#:s :p "abc"^^xsd:integer .
+
+## [ foaf:name "Alice" ;
+##   HR:resumé "Alice's normalized resumé" ] .
+## 
+## [ foaf:name "Bob" ;
+##   HR:resumé "Bob's non-normalized resumé" ] .
+
+[]  HR:resumé "Bob's non-normalized resumé" .
+
+
+## :s :p :o .
 
 
 ## :a :p :b .

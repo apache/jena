@@ -6,8 +6,8 @@
 
 package org.openjena.riot.tokens;
 
+import static org.openjena.atlas.lib.Chars.* ;
 import static org.openjena.riot.RiotChars.* ;
-
 
 import java.io.IOException ;
 import java.util.NoSuchElementException;

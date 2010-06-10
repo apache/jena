@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development  Company, LP
  * (c) Copyright 2010 Talis Systems Ltd
  * All rights reserved.
  * [See end of file]
@@ -8,9 +8,14 @@
 package dev;
 
 import java.io.ByteArrayInputStream ;
+import java.io.FileInputStream ;
 import java.io.Reader ;
 import java.io.StringReader ;
 import java.util.Iterator ;
+
+import org.openjena.riot.RiotChars ;
+import org.openjena.riot.tokens.Tokenizer ;
+import org.openjena.riot.tokens.TokenizerFactory ;
 
 import com.hp.hpl.jena.Jena ;
 import com.hp.hpl.jena.query.* ;
@@ -65,6 +70,14 @@ public class RunARQ
 
     public static void main(String[] argv) throws Exception
     {
+//        Tokenizer t = TokenizerFactory.makeTokenizer(new FileInputStream("D.dat")) ;
+//        for ( ; t.hasNext() ; )
+//            System.out.println(t.next()) ;
+//        System.exit(0) ;
+
+        //RiotChars.turtle.main("D.ttl") ;
+        System.exit(0) ;
+        
         qparse("--print=opt", "SELECT * { ?s ?p ?o . FILTER (?s = <urn:x> || ?s = <urn:x> )}") ;
         System.exit(0) ;
         

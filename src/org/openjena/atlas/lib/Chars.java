@@ -77,6 +77,82 @@ public class Chars
         buff.append(Chars.hexDigits[hi]) ;                
         buff.append(Chars.hexDigits[lo]) ;
     }
+    
+    /** End of file - not a Unicode codepoint */
+    public static final int EOF             = -1 ;
+    
+    /** undefined character (exact maning depends on use) - not a Unicode codepoint */
+    public static final int UNSET           =  -2 ;
+    
+    
+    public static final char NL              = '\n' ;
+    public static final char CR              = '\r' ;
+    
+    public static final char CH_LBRACKET     = '[' ;
+    public static final char CH_RBRACKET     = ']' ;
+    
+    public static final char CH_LBRACE       = '{' ;
+    public static final char CH_RBRACE       = '}' ;
+
+    public static final char CH_LPAREN       = '(' ;
+    public static final char CH_RPAREN       = ')' ;
+
+    public static final char CH_LT           = '<' ;
+    public static final char CH_GT           = '>' ;
+    public static final char CH_UNDERSCORE   = '_' ;
+
+    public static final char CH_QUOTE1       = '\'' ;
+    public static final char CH_QUOTE2       = '"' ;
+
+    public static final char CH_EQUALS       = '=' ;
+    public static final char CH_STAR         = '*' ;
+    public static final char CH_DOT          = '.' ;
+    public static final char CH_COMMA        = ',' ;
+    public static final char CH_SEMICOLON    = ';' ;
+    public static final char CH_COLON        = ':' ;
+    public static final char CH_AT           = '@' ;
+    public static final char CH_QMARK        = '?' ;
+    public static final char CH_HASH         = '#' ;
+    public static final char CH_PLUS         = '+' ;
+    public static final char CH_MINUS        = '-' ;
+    public static final char CH_SLASH        = '/' ;
+    public static final char CH_RSLASH       = '\\' ;
+    
+    // Byte versions of the above
+    public static final byte B_NL            = NL ;
+    public static final byte B_CR            = CR ;
+    
+    public static final byte B_LBRACKET      = '[' ;
+    public static final byte B_RBRACKET      = ']' ;
+    
+    public static final byte B_LBRACE        = '{' ;
+    public static final byte B_RBRACE        = '}' ;
+
+    public static final byte B_LPAREN        = '(' ;
+    public static final byte B_RPAREN        = ')' ;
+
+    public static final byte B_LT            = '<' ;
+    public static final byte B_GT            = '>' ;
+    public static final byte B_UNDERSCORE    = '_' ;
+
+    public static final byte B_QUOTE1        = '\'' ;
+    public static final byte B_QUOTE2        = '"' ;
+
+    public static final byte B_EQUALS        = '=' ;
+    public static final byte B_STAR          = '*' ;
+    public static final byte B_DOT           = '.' ;
+    public static final byte B_COMMA         = ',' ;
+    public static final byte B_SEMICOLON     = ';' ;
+    public static final byte B_COLON         = ':' ;
+    public static final byte B_AT            = '@' ;
+    public static final byte B_QMARK         = '?' ;
+    public static final byte B_HASH          = '#' ;
+    public static final byte B_PLUS          = '+' ;
+    public static final byte B_MINUS         = '-' ;
+    public static final byte B_SLASH         = '/' ;
+    public static final byte B_RSLASH        = '\\' ;
+    
+
 }
 
 /*

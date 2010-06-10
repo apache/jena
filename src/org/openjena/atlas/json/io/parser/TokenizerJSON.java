@@ -6,7 +6,7 @@
 
 package org.openjena.atlas.json.io.parser;
 
-import static org.openjena.riot.RiotChars.* ;
+import static org.openjena.atlas.lib.Chars.* ;
 
 import java.io.IOException ;
 import java.util.NoSuchElementException ;

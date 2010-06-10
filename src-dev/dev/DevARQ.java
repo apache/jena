@@ -19,6 +19,8 @@ public class DevARQ
     
     // RIOT: Tune error checking of URIs - be more permissive when parssing from code
     // but --string when from command line.  jenaImplementation vs IRI implementation.
+    // Include combining chars as allowed in prefixed names.
+    
     
     // Reenable i18n tests: TS_DAWG, DAWG_Final/maniest-evaluation.ttl
     // Removed dups between DAGE and DAWG-Final

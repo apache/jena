@@ -6,6 +6,9 @@
 
 package org.openjena.atlas.json.io;
 
+import static org.openjena.atlas.lib.Chars.CH_QUOTE1 ;
+import static org.openjena.atlas.lib.Chars.CH_QUOTE2 ;
+
 import java.io.OutputStream ;
 import java.util.Set ;
 import java.util.SortedSet ;
@@ -14,9 +17,6 @@ import java.util.TreeSet ;
 import org.openjena.atlas.io.IndentedWriter ;
 import org.openjena.atlas.json.* ;
 import org.openjena.atlas.lib.BitsInt ;
-import org.openjena.riot.RiotChars ;
-
-
 
 public class JsonWriter implements JsonVisitor
 {
@@ -75,7 +75,7 @@ public class JsonWriter implements JsonVisitor
      *  and not without space then ... */
     private void outputQuotedString(String string,  boolean allowBareWords)
     { 
-        char quoteChar = RiotChars.CH_QUOTE2 ;
+        char quoteChar = CH_QUOTE2 ;
         int len = string.length() ;
         
         if ( writeJavaScript )
@@ -103,7 +103,7 @@ public class JsonWriter implements JsonVisitor
         }
 
         if ( writeJavaScript )
-            quoteChar = RiotChars.CH_QUOTE1 ;
+            quoteChar = CH_QUOTE1 ;
         
         out.print(quoteChar) ;
         for (int i = 0; i < len; i++)

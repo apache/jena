@@ -1,77 +1,43 @@
 /*
  * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
-package org.openjena.riot;
+package arq;
 
-public class RiotChars
+import org.openjena.riot.Lang ;
+
+import com.hp.hpl.jena.sparql.util.Utils ;
+
+/** Run the Turtle parser - and produce N-triples */
+public class turtle extends CmdLangParse
 {
-    // ---- Character classes 
+    public static void main(String... argv)
+    {
+        new turtle(argv).mainRun() ;
+    }    
     
-    public static boolean isAlpha(int codepoint)
+    protected turtle(String[] argv)
     {
-        return Character.isLetter(codepoint) ;
-    }
-    
-    public static boolean isAlphaNumeric(int codepoint)
-    {
-        return Character.isLetterOrDigit(codepoint) ;
-    }
-    
-    /** ASCII A-Z */
-    public static boolean isA2Z(int ch)
-    {
-        return range(ch, 'a', 'z') || range(ch, 'A', 'Z') ;
+        super(argv) ;
     }
 
-    /** ASCII A-Z or 0-9 */
-    public static boolean isA2ZN(int ch)
+    @Override
+    protected String getCommandName()
     {
-        return range(ch, 'a', 'z') || range(ch, 'A', 'Z') || range(ch, '0', '9') ;
+        return Utils.classShortName(turtle.class) ;
     }
 
-    /** ASCII 0-9 */
-    public static boolean isDigit(int ch)
-    {
-        return range(ch, '0', '9') ;
-    }
-    
-    public static boolean isWhitespace(int ch)
-    {
-        // ch = ch | 0xFF ;
-        return ch == ' ' || ch == '\t' || ch == '\r' || ch == '\n' || ch == '\f' ;    
-    }
-    
-    public static boolean isNewlineChar(int ch)
-    {
-        return ch == '\r' || ch == '\n' ;
-    }
-
-    public static int valHexChar(int ch)
-    {
-        if ( range(ch, '0', '9') )
-            return ch-'0' ;
-        if ( range(ch, 'a', 'f') )
-            return ch-'a'+10 ;
-        if ( range(ch, 'A', 'F') )
-            return ch-'A'+10 ;
-        return -1 ;
-    }
-
-    
-    public static boolean range(int ch, char a, char b)
-    {
-        return ( ch >= a && ch <= b ) ;
-    }
-
-
-
+    @Override
+    protected Lang selectLang(String filename, Lang nquads) 
+    { return Lang.TURTLE ; }
 }
 
 /*
  * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

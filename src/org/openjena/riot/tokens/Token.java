@@ -7,15 +7,7 @@
 package org.openjena.riot.tokens;
 
 import static com.hp.hpl.jena.sparql.util.Utils.equal ;
-import static org.openjena.riot.RiotChars.CH_COMMA ;
-import static org.openjena.riot.RiotChars.CH_DOT ;
-import static org.openjena.riot.RiotChars.CH_LBRACE ;
-import static org.openjena.riot.RiotChars.CH_LBRACKET ;
-import static org.openjena.riot.RiotChars.CH_LPAREN ;
-import static org.openjena.riot.RiotChars.CH_RBRACE ;
-import static org.openjena.riot.RiotChars.CH_RBRACKET ;
-import static org.openjena.riot.RiotChars.CH_RPAREN ;
-import static org.openjena.riot.RiotChars.CH_SEMICOLON ;
+import static org.openjena.atlas.lib.Chars.* ;
 import static org.openjena.riot.tokens.TokenType.BNODE ;
 import static org.openjena.riot.tokens.TokenType.DECIMAL ;
 import static org.openjena.riot.tokens.TokenType.DOUBLE ;
