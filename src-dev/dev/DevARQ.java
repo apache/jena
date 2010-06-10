@@ -7,6 +7,9 @@ package dev;
 
 public class DevARQ
 {
+    // { BGP {BGP} UNION { BGP } }
+    // MINUS is the same
+    
     // 1/ Enable sameTermString optimization
     // 2/ If an equality is repeated do once only. 
     
