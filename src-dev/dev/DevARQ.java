@@ -7,6 +7,8 @@ package dev;
 
 public class DevARQ
 {
+    // Joseki - expose "-print=opt" in validator
+    
     // { BGP {BGP} UNION { BGP } }
     // MINUS is the same
     
