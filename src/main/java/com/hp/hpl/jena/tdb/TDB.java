@@ -9,8 +9,6 @@ package com.hp.hpl.jena.tdb;
 import java.util.Iterator ;
 
 import org.openjena.atlas.lib.Sync ;
-import org.openjena.riot.JenaReaderNTriples2 ;
-import org.openjena.riot.JenaReaderTurtle2 ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
@@ -19,7 +17,6 @@ import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.rdf.model.impl.RDFReaderFImpl ;
 import com.hp.hpl.jena.sparql.SystemARQ ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils ;
@@ -206,17 +203,6 @@ public class TDB
         UpdateProcessorTDB.register() ;
 
         wireIntoExecution() ;
-        
-        // Override N-TRIPLES and Turtle with faster implementations.
-        String readerNT = JenaReaderNTriples2.class.getName() ;
-        RDFReaderFImpl.setBaseReaderClassName("N-TRIPLES", readerNT) ;
-        RDFReaderFImpl.setBaseReaderClassName("N-TRIPLE", readerNT) ;
-        
-        String readerTTL = JenaReaderTurtle2.class.getName() ;
-        RDFReaderFImpl.setBaseReaderClassName("N3", readerTTL) ;
-        RDFReaderFImpl.setBaseReaderClassName("TURTLE", readerTTL) ;
-        RDFReaderFImpl.setBaseReaderClassName("Turtle", readerTTL) ;
-        RDFReaderFImpl.setBaseReaderClassName("TTL", readerTTL) ;
         
         // Attempt to sync everything on exit.
         // This can not be gauaranteed

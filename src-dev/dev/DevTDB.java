@@ -3,6 +3,7 @@ package dev ;
 public class DevTDB
 {
     // Migration: tdb.migrate package
+    // Migrate riot commands to ARQ
     
     // Check writing to union graph is handled appropriately.
     // assembly.xml ship source files for ARQ and Jena (ditto ARQ, and javadoc).
@@ -12,6 +13,7 @@ public class DevTDB
     // Configuring for union graph in assembler/location
     
     // Experimental Merge engine.
+    
     
     // =====
     // Enable FILTER assignment for strings (and numbers?) via dataset context setting?
