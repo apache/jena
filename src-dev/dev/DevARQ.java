@@ -7,6 +7,19 @@ package dev;
 
 public class DevARQ
 {
+    // Tests:
+    // Suppress warning from tests (RIOT issue?)
+    // Reenable normalization tests
+    //     POM -> run tests TS_*
+    //   Is this or more run from ARQTestSuite?
+
+    // 1/ Enable sameTermString optimization
+    // 2/ If an equality is repeated do once only.
+
+    // Commands: like TDB with an arq_init script
+    // Migrate riot commands to ARQ
+    // --strict
+
     // Joseki - expose "-print=opt" in validator
     
     // { BGP {BGP} UNION { BGP } }
