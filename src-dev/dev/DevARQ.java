@@ -9,7 +9,8 @@ public class DevARQ
 {
     // Tests:
     // Suppress warning from tests (RIOT issue?)
-    // Reenable normalization tests
+    // Checker parameters.
+    // Re-enable normalization tests
     //     POM -> run tests TS_*
     //   Is this or more run from ARQTestSuite?
 

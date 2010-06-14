@@ -8,14 +8,10 @@
 package dev;
 
 import java.io.ByteArrayInputStream ;
-import java.io.FileInputStream ;
 import java.io.Reader ;
 import java.io.StringReader ;
 import java.util.Iterator ;
 
-import org.openjena.riot.RiotChars ;
-import org.openjena.riot.tokens.Tokenizer ;
-import org.openjena.riot.tokens.TokenizerFactory ;
 
 import com.hp.hpl.jena.Jena ;
 import com.hp.hpl.jena.query.* ;
