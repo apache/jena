@@ -7,14 +7,15 @@ package com.hp.hpl.jena.sparql.engine.main ;
 
 import java.util.Set ;
 
+import org.openjena.atlas.lib.SetUtils ;
+
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.op.OpDiff ;
 import com.hp.hpl.jena.sparql.algebra.op.OpExt ;
 import com.hp.hpl.jena.sparql.algebra.op.OpJoin ;
 import com.hp.hpl.jena.sparql.algebra.op.OpMinus ;
 import com.hp.hpl.jena.sparql.algebra.op.OpModifier ;
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.util.SetUtils ;
+import com.hp.hpl.jena.sparql.core.Var ;
 
 public class JoinClassifier
 {
