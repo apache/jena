@@ -1,5 +1,11 @@
 prefix : <http://example/> 
 
-select count(*) where { 
-    ?s ?p ?o
-} GROUP BY ?s
+select ?x
+{
+  :x :p :o 
+  OPTIONAL {
+  SERVICE <http://localhost/> {
+    :s ?p ?o }
+ }
+}
+

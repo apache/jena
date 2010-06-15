@@ -7,6 +7,7 @@ package dev;
 
 public class DevARQ
 {
+    // Two kinds of IndentedWriter
     // Parsing SPARQL : Use RIOT checker.
     
     // Quad transformation goes through SERVICE.
