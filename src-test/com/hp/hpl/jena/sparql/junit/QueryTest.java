@@ -82,13 +82,14 @@ public class QueryTest extends EarlTestCase
             resetNeeded = true ;
             ARQ.setTrue(ARQ.strictGraph) ;
         }
+        // Turn parser warnings off for the test data. 
+        oldWarningFlag = Checker.WarnOnBadLexicalForms ;
+        Checker.WarnOnBadLexicalForms = false ;
+
         // Sort out data.
         // Not here - done during test execution because it needs to look in the query for source URIs
         resultsModel = testItem.getResultModel() ;
 
-        // Turn parser warnings off for the test data. 
-        oldWarningFlag = Checker.WarnOnBadLexicalForms ;
-        Checker.WarnOnBadLexicalForms = false ;
     }
     
     @Override

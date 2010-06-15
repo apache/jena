@@ -4,13 +4,13 @@
  * [See end of file]
  */
 
-package dev.checker;
+package org.openjena.riot.checker;
 
 import org.openjena.riot.ErrorHandler ;
 
 import com.hp.hpl.jena.graph.Node ;
 
-public class CheckerBlankNodes implements Check
+public class CheckerBlankNodes implements NodeChecker
 {
     private ErrorHandler handler ;
 

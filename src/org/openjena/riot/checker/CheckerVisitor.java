@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package dev.checker;
+package org.openjena.riot.checker;
 
 import com.hp.hpl.jena.graph.NodeVisitor ;
 import com.hp.hpl.jena.graph.Node_ANY ;

@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package dev.checker;
+package org.openjena.riot.checker;
 
 import java.util.Iterator ;
 
@@ -21,7 +21,7 @@ import com.hp.hpl.jena.iri.Violation ;
 import com.hp.hpl.jena.iri.ViolationCodes ;
 import com.hp.hpl.jena.sparql.lib.IRILib ;
 
-public class CheckerIRI implements Check
+public class CheckerIRI implements NodeChecker
 {
     private boolean allowRelativeIRIs = false ;
     private boolean warningsAreErrors = false ;
