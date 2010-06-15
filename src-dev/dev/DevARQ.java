@@ -7,6 +7,12 @@ package dev;
 
 public class DevARQ
 {
+    // Parsing SPARQL : Use RIOT checker.
+    
+    // Quad transformation goes through SERVICE.
+    // Where is the SERVICE avoiding code?
+    // See Optimize
+    
     // Tests:
     // Suppress warning from tests (RIOT issue?)
     // Checker parameters.
