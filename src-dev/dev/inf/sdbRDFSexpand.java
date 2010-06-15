@@ -6,16 +6,17 @@
 
 package dev.inf;
 
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.sparql.sse.Item;
-import com.hp.hpl.jena.sparql.sse.ItemWriter;
-import com.hp.hpl.jena.sparql.util.IndentedWriter;
-import com.hp.hpl.jena.util.FileManager;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
-import com.hp.hpl.jena.vocabulary.RDFS;
+import org.openjena.atlas.io.IndentedWriter ;
+
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.sparql.sse.Item ;
+import com.hp.hpl.jena.sparql.sse.ItemWriter ;
+import com.hp.hpl.jena.util.FileManager ;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
+import com.hp.hpl.jena.vocabulary.RDFS ;
 
 public class sdbRDFSexpand
 {

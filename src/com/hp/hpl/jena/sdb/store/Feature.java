@@ -6,10 +6,14 @@
 
 package com.hp.hpl.jena.sdb.store;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.openjena.atlas.io.IndentedWriter ;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
 
-import com.hp.hpl.jena.sparql.util.*;
+import com.hp.hpl.jena.sparql.util.Named ;
+import com.hp.hpl.jena.sparql.util.Printable ;
+import com.hp.hpl.jena.sparql.util.PrintableBase ;
+import com.hp.hpl.jena.sparql.util.Symbol ;
 
 /** A Feature is a name/value pair */
 

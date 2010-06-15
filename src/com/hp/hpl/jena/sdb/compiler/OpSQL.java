@@ -6,20 +6,20 @@
 
 package com.hp.hpl.jena.sdb.compiler;
 
-import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.algebra.op.OpExt;
-import com.hp.hpl.jena.sparql.engine.ExecutionContext;
-import com.hp.hpl.jena.sparql.engine.Plan;
-import com.hp.hpl.jena.sparql.engine.QueryIterator;
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.engine.binding.BindingRoot;
-import com.hp.hpl.jena.sparql.serializer.SerializationContext;
-import com.hp.hpl.jena.sparql.util.IndentedWriter;
-import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
+import org.openjena.atlas.io.IndentedWriter ;
 
-import com.hp.hpl.jena.sdb.core.SDBRequest;
-import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
-import com.hp.hpl.jena.sdb.store.SQLBridge;
+import com.hp.hpl.jena.sdb.core.SDBRequest ;
+import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode ;
+import com.hp.hpl.jena.sdb.store.SQLBridge ;
+import com.hp.hpl.jena.sparql.algebra.Op ;
+import com.hp.hpl.jena.sparql.algebra.op.OpExt ;
+import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
+import com.hp.hpl.jena.sparql.engine.Plan ;
+import com.hp.hpl.jena.sparql.engine.QueryIterator ;
+import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.engine.binding.BindingRoot ;
+import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
+import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
 
 public class OpSQL extends OpExt
 {

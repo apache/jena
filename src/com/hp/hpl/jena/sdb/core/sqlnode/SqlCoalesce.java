@@ -9,7 +9,7 @@ package com.hp.hpl.jena.sdb.core.sqlnode;
 import java.util.HashSet ;
 import java.util.Set ;
 
-import org.openjena.atlas.iterator.SetUtils ;
+import org.openjena.atlas.lib.SetUtils ;
 import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.sdb.core.AliasesSql ;

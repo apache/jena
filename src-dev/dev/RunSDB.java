@@ -17,6 +17,7 @@ import java.sql.Connection ;
 import java.sql.SQLException ;
 import java.util.Iterator ;
 
+import org.openjena.atlas.io.IndentedWriter ;
 import org.openjena.atlas.iterator.Iter ;
 import sdb.SDBCmd ;
 import arq.cmd.CmdUtils ;
@@ -46,7 +47,6 @@ import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.resultset.ResultsFormat ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.sparql.util.ALog ;
-import com.hp.hpl.jena.sparql.util.IndentedWriter ;
 import com.hp.hpl.jena.sparql.util.QueryExecUtils ;
 import com.hp.hpl.jena.update.GraphStore ;
 import com.hp.hpl.jena.update.UpdateAction ;

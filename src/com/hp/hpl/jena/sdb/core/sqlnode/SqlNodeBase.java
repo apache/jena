@@ -11,8 +11,8 @@ import java.util.Set;
 
 import com.hp.hpl.jena.sdb.core.AnnotationsBase;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
-import com.hp.hpl.jena.sparql.util.IndentedLineBuffer;
-import com.hp.hpl.jena.sparql.util.IndentedWriter;
+import org.openjena.atlas.io.IndentedLineBuffer;
+import org.openjena.atlas.io.IndentedWriter;
 import com.hp.hpl.jena.sparql.util.Utils;
 
 

@@ -23,7 +23,7 @@ import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExprList ;
 import com.hp.hpl.jena.sdb.shared.SDBInternalError ;
 import com.hp.hpl.jena.sdb.shared.SDBNotImplemented ;
 import com.hp.hpl.jena.sparql.core.Var ;
-import com.hp.hpl.jena.sparql.util.IndentedWriter ;
+import org.openjena.atlas.io.IndentedWriter ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 
 // This is not a general purpose SQL writer - it needs only work with the

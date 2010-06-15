@@ -12,7 +12,7 @@ import java.util.List ;
 
 import org.openjena.atlas.iterator.Iter ;
 
-import com.hp.hpl.jena.sparql.util.IndentedWriter ;
+import org.openjena.atlas.io.IndentedWriter ;
 import com.hp.hpl.jena.sparql.util.Printable ;
 import com.hp.hpl.jena.sparql.util.PrintableBase ;
 

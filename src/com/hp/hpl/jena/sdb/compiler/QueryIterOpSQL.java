@@ -13,7 +13,7 @@ import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterRepeatApply;
-import com.hp.hpl.jena.sparql.util.IndentedWriter;
+import org.openjena.atlas.io.IndentedWriter;
 
 public class QueryIterOpSQL extends QueryIterRepeatApply
 {

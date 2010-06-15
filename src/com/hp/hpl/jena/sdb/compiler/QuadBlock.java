@@ -17,7 +17,7 @@ import com.hp.hpl.jena.sparql.algebra.op.OpQuadPattern ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import org.openjena.atlas.iterator.Action ;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
-import com.hp.hpl.jena.sparql.util.IndentedWriter ;
+import org.openjena.atlas.io.IndentedWriter ;
 import com.hp.hpl.jena.sparql.util.PrintSerializable ;
 import com.hp.hpl.jena.sparql.util.PrintUtils ;
 

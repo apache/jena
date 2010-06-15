@@ -6,8 +6,8 @@
 
 package com.hp.hpl.jena.sdb.core.sqlnode;
 
-import com.hp.hpl.jena.sparql.util.IndentedLineBuffer;
-import com.hp.hpl.jena.sparql.util.IndentedWriter;
+import org.openjena.atlas.io.IndentedLineBuffer;
+import org.openjena.atlas.io.IndentedWriter;
 
 public class GenerateSQLOracle extends GenerateSQL
 {

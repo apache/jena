@@ -18,7 +18,7 @@ import com.hp.hpl.jena.sdb.core.sqlnode.SqlTable;
 import com.hp.hpl.jena.sdb.layout2.TableDescQuads;
 import com.hp.hpl.jena.sparql.core.Quad;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
-import com.hp.hpl.jena.sparql.util.IndentedWriter;
+import org.openjena.atlas.io.IndentedWriter;
 
 public class SqlStageBasicQuad implements SqlStage
 {
