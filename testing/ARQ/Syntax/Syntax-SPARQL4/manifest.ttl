@@ -140,14 +140,6 @@
          rdf:type   mf:PositiveSyntaxTest11 ;
          mf:action  <syntax-oneof-03.rq> ; 
       ]
-      [  mf:name    "syntax-union11-01.rq" ;
-         rdf:type   mf:PositiveSyntaxTest11 ;
-         mf:action  <syntax-union11-01.rq> ; 
-      ]
-      [  mf:name    "syntax-union11-02.rq" ;
-         rdf:type   mf:PositiveSyntaxTest11 ;
-         mf:action  <syntax-union11-02.rq> ; 
-      ]
       [  mf:name    "syntax-service-01.rq" ;
          rdf:type   mf:PositiveSyntaxTest11 ;
          mf:action  <syntax-service-01.rq> ; 

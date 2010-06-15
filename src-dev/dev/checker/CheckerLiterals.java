@@ -13,7 +13,7 @@ import com.hp.hpl.jena.graph.impl.LiteralLabel ;
 
 import org.openjena.riot.ErrorHandler ;
 
-public class CheckerLiterals implements Check
+public class CheckerLiterals implements NodeChecker
 {
     private ErrorHandler handler ;
     private boolean allowBadLexicalForms ;

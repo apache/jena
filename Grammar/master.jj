@@ -724,11 +724,13 @@ Element TriplesBlock(ElementPathBlock acc) : { }
 Element GraphPatternNotTriples() : { Element el = null ; }
 {
  (
-   el = GroupGraphPattern()
+//    el = GroupGraphPattern()
+//  |
+//    el = UnionGraphPattern()
+//  |
+   el = GroupOrUnionGraphPattern()
  |
    el = OptionalGraphPattern()
- |
-   el = UnionGraphPattern()
  |
    el = MinusGraphPattern()
  |
@@ -816,35 +818,38 @@ Element MinusGraphPattern() : { Element el ; }
     { return new ElementMinus(el) ; }
 }
 
-Element UnionGraphPattern() : { Element el ; }
-{
-    <UNION>
-    el = GroupGraphPattern()
-    { return new ElementUnion(el) ; }
-}
+// Element UnionGraphPattern() : { Element el ; }
+// {
+//     <UNION>
+//     el = GroupGraphPattern()
+//     { return new ElementUnion(el) ; }
+// }
+
 
 // SPARQL 1.0: {pattern} UNION {pattern} UNION {pattern} ... :: 
-// SPARQL 1.1: { pattern UNION pattern UNION ... }
+// SPARQL 1.1 may introduce: { pattern UNION pattern UNION ... }
 
-// // G (union G)* can be a single group pattern
-// // or a group pattern as part of an union.
-// Element GroupOrUnionGraphPattern() :
-// { Element el = null ; ElementUnion el2 = null ; }
-// {
-//   el = GroupGraphPattern()
-//   ( <UNION>
-//     { if ( el2 == null )
-//       {
-//         el2 = new ElementUnion() ;
-//         el2.addElement(el) ;
-//       }
-//     }
-//   el = GroupGraphPattern()
-//     { el2.addElement(el) ; } 
-//   )*
-//     { return (el2==null)? el : el2 ; }
-// }
-// 
+
+// G (union G)* can be a single group pattern
+// or a group pattern as part of an union.
+Element GroupOrUnionGraphPattern() :
+    { Element el = null ; ElementUnion el2 = null ; }
+{
+  el = GroupGraphPattern()
+  ( <UNION>
+    { if ( el2 == null )
+      {
+        el2 = new ElementUnion() ;
+        el2.addElement(el) ;
+      }
+    }
+  el = GroupGraphPattern()
+    { el2.addElement(el) ; } 
+  )*
+    { return (el2==null)? el : el2 ; }
+}
+
+
 Element Filter() : { Expr c ; }
 {
   <FILTER> c = Constraint()

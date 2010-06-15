@@ -77,7 +77,7 @@
 
 [<SERVICE>]    ::=    'SERVICE'
 [<FETCH>]      ::=    'FETCH'
-[<MINUS>]      ::=    'MINUS'
+[<MINUS_P>]    ::=    'MINUS'
 [<DIFF>]       ::=    'DIFF'
 [<EXISTS>]     ::=    'EXISTS'
 [<NOT>]        ::=    'NOT'

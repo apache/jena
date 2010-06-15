@@ -1,6 +1,6 @@
-SELECT *
- WHERE 
- { 
-   ?s ?p ?o . FILTER(?x = "foo") 
+PREFIX : <http://example/>
 
+SELECT *
+ { 
+    :x :p ?v {?v :q1 ?v1} OPTIONAL {?v :q2 ?v2 }
 }

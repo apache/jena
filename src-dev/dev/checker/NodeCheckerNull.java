@@ -8,9 +8,9 @@ package dev.checker;
 
 import com.hp.hpl.jena.graph.Node ;
 
-public interface Check
+public class NodeCheckerNull implements NodeChecker
 {
-    public boolean check(Node node, long line, long col) ;
+    public boolean check(Node node, long line, long col) { return true ; }
 }
 
 /*

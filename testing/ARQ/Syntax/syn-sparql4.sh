@@ -162,15 +162,15 @@ N=$((N+1)) ; testGood $SPARQL11 $(fname "syntax-oneof-" $N) <<EOF
 SELECT * { ?s ?p ?o FILTER(?o IN(1,<x>)) }
 EOF
 
-## ---- UNION without left {}
-N=0
-N=$((N+1)) ; testGood $SPARQL11 $(fname "syntax-union11-" $N) <<EOF
-SELECT * { ?s ?p ?o UNION { ?s ?p ?o } }
-EOF
-
-N=$((N+1)) ; testGood $SPARQL11 $(fname "syntax-union11-" $N) <<EOF
-SELECT * { ?s1 ?p1 ?o1 . ?s ?p ?o UNION { ?s ?p ?o } }
-EOF
+## ## ---- UNION without left {}  May not make SPARQL 1.1
+## N=0
+## N=$((N+1)) ; testGood $SPARQL11 $(fname "syntax-union11-" $N) <<EOF
+## SELECT * { ?s ?p ?o UNION { ?s ?p ?o } }
+## EOF
+## 
+## N=$((N+1)) ; testGood $SPARQL11 $(fname "syntax-union11-" $N) <<EOF
+## SELECT * { ?s1 ?p1 ?o1 . ?s ?p ?o UNION { ?s ?p ?o } }
+## EOF
 
 ## ---- SERVICE
 

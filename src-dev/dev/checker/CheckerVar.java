@@ -11,7 +11,7 @@ import org.openjena.riot.ErrorHandler ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.core.Var ;
 
-public class CheckerVar implements Check
+public class CheckerVar implements NodeChecker
 {
     private ErrorHandler handler ;
 

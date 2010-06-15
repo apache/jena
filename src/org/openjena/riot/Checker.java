@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Systems Limited
  * All rights reserved.
  * [See end of file]
  */
@@ -318,6 +319,7 @@ public final class Checker
 
 /*
  * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Systems Limited
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
