@@ -6,27 +6,25 @@
 
 package com.hp.hpl.jena.sdb.core.sqlnode;
 
-import static com.hp.hpl.jena.sparql.lib.iterator.Iter.map;
-import static com.hp.hpl.jena.sparql.lib.iterator.Iter.toSet;
+import java.util.List ;
+import java.util.Set ;
 
-import java.util.List;
-import java.util.Set;
+import org.openjena.atlas.iterator.Iter ;
+import org.openjena.atlas.iterator.Transform ;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.hp.hpl.jena.sdb.SDB;
-import com.hp.hpl.jena.sdb.core.Annotations;
-import com.hp.hpl.jena.sdb.core.sqlexpr.S_Equal;
-import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
-import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExpr;
-import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExprList;
-import com.hp.hpl.jena.sdb.shared.SDBInternalError;
-import com.hp.hpl.jena.sdb.shared.SDBNotImplemented;
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.lib.iterator.Transform;
-import com.hp.hpl.jena.sparql.util.IndentedWriter;
-import com.hp.hpl.jena.sparql.util.Utils;
+import com.hp.hpl.jena.sdb.SDB ;
+import com.hp.hpl.jena.sdb.core.Annotations ;
+import com.hp.hpl.jena.sdb.core.sqlexpr.S_Equal ;
+import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn ;
+import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExpr ;
+import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExprList ;
+import com.hp.hpl.jena.sdb.shared.SDBInternalError ;
+import com.hp.hpl.jena.sdb.shared.SDBNotImplemented ;
+import com.hp.hpl.jena.sparql.core.Var ;
+import com.hp.hpl.jena.sparql.util.IndentedWriter ;
+import com.hp.hpl.jena.sparql.util.Utils ;
 
 // This is not a general purpose SQL writer - it needs only work with the
 // SQL node trees that the SDB compiler generate.
@@ -248,7 +246,7 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
     
     private static Set<SqlTable> tables(Set<SqlColumn> cols)
     {
-        return toSet(map(cols, colToTable)) ;
+        return Iter.toSet(Iter.map(cols, colToTable)) ;
     }
 
     public void visit(SqlJoinLeftOuter join)    { visitJoin(join) ; }

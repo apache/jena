@@ -6,16 +6,19 @@
 
 package com.hp.hpl.jena.sdb.core.sqlnode;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashSet ;
+import java.util.Set ;
 
-import org.slf4j.LoggerFactory;
+import org.openjena.atlas.iterator.SetUtils ;
+import org.slf4j.LoggerFactory ;
 
-import com.hp.hpl.jena.sparql.core.Var;
-
-import com.hp.hpl.jena.sdb.core.*;
-import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
-import com.hp.hpl.jena.sparql.lib.iterator.SetUtils;
+import com.hp.hpl.jena.sdb.core.AliasesSql ;
+import com.hp.hpl.jena.sdb.core.Annotation1 ;
+import com.hp.hpl.jena.sdb.core.SDBRequest ;
+import com.hp.hpl.jena.sdb.core.Scope ;
+import com.hp.hpl.jena.sdb.core.ScopeRename ;
+import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn ;
+import com.hp.hpl.jena.sparql.core.Var ;
 
 public class SqlCoalesce extends SqlNodeBase1
 {

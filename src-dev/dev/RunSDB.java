@@ -17,6 +17,7 @@ import java.sql.Connection ;
 import java.sql.SQLException ;
 import java.util.Iterator ;
 
+import org.openjena.atlas.iterator.Iter ;
 import sdb.SDBCmd ;
 import arq.cmd.CmdUtils ;
 
@@ -42,7 +43,6 @@ import com.hp.hpl.jena.sdb.store.DatasetStoreGraph ;
 import com.hp.hpl.jena.sdb.store.StoreConfig ;
 import com.hp.hpl.jena.sdb.test.junit.SDBTestUtils ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.sparql.lib.iterator.Iter ;
 import com.hp.hpl.jena.sparql.resultset.ResultsFormat ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.sparql.util.ALog ;
@@ -67,6 +67,9 @@ public class RunSDB
     
     public static void main(String ... argv) throws SQLException
     {
+        sdb.sdbprint.main("--sdb=sdb.ttl", "--print=op", "@Q.arq") ;
+        System.exit(0) ;
+        
         {
             String dir = "testing/Assembler/" ; 
             Model assem = FileManager.get().loadModel(dir+"graph-assembler.ttl") ;

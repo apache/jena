@@ -6,11 +6,12 @@
 
 package com.hp.hpl.jena.sdb.core;
 
-import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.lib.Action;
-import com.hp.hpl.jena.sparql.lib.iterator.Filter;
-import com.hp.hpl.jena.sparql.lib.iterator.Transform;
+import org.openjena.atlas.iterator.Action ;
+import org.openjena.atlas.iterator.Filter ;
+import org.openjena.atlas.iterator.Transform ;
+
+import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn ;
+import com.hp.hpl.jena.sparql.core.Var ;
 
 public class ScopeEntry
 {

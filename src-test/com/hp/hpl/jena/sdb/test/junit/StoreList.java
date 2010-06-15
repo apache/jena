@@ -6,28 +6,29 @@
 
 package com.hp.hpl.jena.sdb.test.junit;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.ArrayList ;
+import java.util.List ;
 
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryExecution;
-import com.hp.hpl.jena.query.QueryExecutionFactory;
-import com.hp.hpl.jena.query.QueryFactory;
-import com.hp.hpl.jena.query.QuerySolution;
-import com.hp.hpl.jena.query.ResultSet;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.Property;
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.sdb.SDB;
-import com.hp.hpl.jena.sdb.Store;
-import com.hp.hpl.jena.sdb.StoreDesc;
-import com.hp.hpl.jena.sdb.store.StoreFactory;
-import com.hp.hpl.jena.sdb.util.Pair;
-import com.hp.hpl.jena.sdb.util.StrUtils;
-import com.hp.hpl.jena.sdb.util.Vocab;
-import com.hp.hpl.jena.sparql.lib.iterator.Iter;
-import com.hp.hpl.jena.sparql.lib.iterator.Transform;
-import com.hp.hpl.jena.util.FileManager;
+import org.openjena.atlas.iterator.Iter ;
+import org.openjena.atlas.iterator.Transform ;
+
+import com.hp.hpl.jena.query.Query ;
+import com.hp.hpl.jena.query.QueryExecution ;
+import com.hp.hpl.jena.query.QueryExecutionFactory ;
+import com.hp.hpl.jena.query.QueryFactory ;
+import com.hp.hpl.jena.query.QuerySolution ;
+import com.hp.hpl.jena.query.ResultSet ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.Property ;
+import com.hp.hpl.jena.rdf.model.Resource ;
+import com.hp.hpl.jena.sdb.SDB ;
+import com.hp.hpl.jena.sdb.Store ;
+import com.hp.hpl.jena.sdb.StoreDesc ;
+import com.hp.hpl.jena.sdb.store.StoreFactory ;
+import com.hp.hpl.jena.sdb.util.Pair ;
+import com.hp.hpl.jena.sdb.util.StrUtils ;
+import com.hp.hpl.jena.sdb.util.Vocab ;
+import com.hp.hpl.jena.util.FileManager ;
 
 public class StoreList
 {

@@ -6,18 +6,18 @@
 
 package dev.db;
 
-import com.hp.hpl.jena.sparql.lib.iterator.Iter ;
-import static com.hp.hpl.jena.sdb.sql.SQLUtils.sqlStr;
+import static com.hp.hpl.jena.sdb.sql.SQLUtils.sqlStr ;
+import static dev.db.DBSyntax.col ;
 
-import static dev.db.DBSyntax.col;
+import java.sql.SQLException ;
 
-import java.sql.SQLException;
+import org.openjena.atlas.iterator.Iter ;
+import org.openjena.atlas.iterator.Transform ;
 
-import com.hp.hpl.jena.sdb.layout2.TableDescNodes;
-import com.hp.hpl.jena.sdb.sql.SDBConnection;
-import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
-import com.hp.hpl.jena.sdb.store.TableDesc;
-import com.hp.hpl.jena.sparql.lib.iterator.Transform;
+import com.hp.hpl.jena.sdb.layout2.TableDescNodes ;
+import com.hp.hpl.jena.sdb.sql.SDBConnection ;
+import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL ;
+import com.hp.hpl.jena.sdb.store.TableDesc ;
 
 public class FmtStdHash extends StoreFormatterStd
 {

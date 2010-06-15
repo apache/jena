@@ -6,29 +6,35 @@
 
 package com.hp.hpl.jena.sdb.graph;
 
-import java.util.*;
+import java.util.HashMap ;
+import java.util.Iterator ;
+import java.util.Map ;
+import java.util.Set ;
 
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.graph.query.*;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
-import com.hp.hpl.jena.util.iterator.WrappedIterator;
+import org.openjena.atlas.iterator.Iter ;
+import org.openjena.atlas.iterator.Transform ;
 
-import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.algebra.OpVars;
-import com.hp.hpl.jena.sparql.algebra.op.OpQuadPattern;
-import com.hp.hpl.jena.sparql.core.BasicPattern;
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.engine.Plan;
-import com.hp.hpl.jena.sparql.engine.QueryIterator;
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.lib.iterator.Iter;
-import com.hp.hpl.jena.sparql.lib.iterator.Transform;
-
-import com.hp.hpl.jena.sdb.engine.QueryEngineSDB;
-import com.hp.hpl.jena.sdb.shared.SDBNotImplemented;
-import com.hp.hpl.jena.sdb.store.DatasetStoreGraph;
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.graph.query.BindingQueryPlan ;
+import com.hp.hpl.jena.graph.query.Domain ;
+import com.hp.hpl.jena.graph.query.Query ;
+import com.hp.hpl.jena.graph.query.SimpleQueryHandler ;
+import com.hp.hpl.jena.graph.query.TreeQueryPlan ;
+import com.hp.hpl.jena.sdb.engine.QueryEngineSDB ;
+import com.hp.hpl.jena.sdb.shared.SDBNotImplemented ;
+import com.hp.hpl.jena.sdb.store.DatasetStoreGraph ;
+import com.hp.hpl.jena.sparql.algebra.Op ;
+import com.hp.hpl.jena.sparql.algebra.OpVars ;
+import com.hp.hpl.jena.sparql.algebra.op.OpQuadPattern ;
+import com.hp.hpl.jena.sparql.core.BasicPattern ;
+import com.hp.hpl.jena.sparql.core.Var ;
+import com.hp.hpl.jena.sparql.engine.Plan ;
+import com.hp.hpl.jena.sparql.engine.QueryIterator ;
+import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
+import com.hp.hpl.jena.util.iterator.WrappedIterator ;
 
 public class GraphQueryHandlerSDB extends SimpleQueryHandler
 {

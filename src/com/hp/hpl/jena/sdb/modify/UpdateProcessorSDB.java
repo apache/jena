@@ -6,18 +6,19 @@
 
 package com.hp.hpl.jena.sdb.modify;
 
-import java.util.Iterator;
+import java.util.Iterator ;
 
-import com.hp.hpl.jena.sdb.store.DatasetStoreGraph;
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.lib.iterator.Iter;
-import com.hp.hpl.jena.sparql.modify.UpdateProcessorFactory;
-import com.hp.hpl.jena.sparql.modify.UpdateProcessorRegistry;
-import com.hp.hpl.jena.sparql.modify.UpdateVisitor;
-import com.hp.hpl.jena.sparql.modify.op.Update;
-import com.hp.hpl.jena.update.GraphStore;
-import com.hp.hpl.jena.update.UpdateProcessor;
-import com.hp.hpl.jena.update.UpdateRequest;
+import org.openjena.atlas.iterator.Iter ;
+
+import com.hp.hpl.jena.sdb.store.DatasetStoreGraph ;
+import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.modify.UpdateProcessorFactory ;
+import com.hp.hpl.jena.sparql.modify.UpdateProcessorRegistry ;
+import com.hp.hpl.jena.sparql.modify.UpdateVisitor ;
+import com.hp.hpl.jena.sparql.modify.op.Update ;
+import com.hp.hpl.jena.update.GraphStore ;
+import com.hp.hpl.jena.update.UpdateProcessor ;
+import com.hp.hpl.jena.update.UpdateRequest ;
 
 public class UpdateProcessorSDB implements UpdateProcessor
 {

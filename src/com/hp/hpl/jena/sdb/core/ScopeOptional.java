@@ -6,10 +6,11 @@
 
 package com.hp.hpl.jena.sdb.core;
 
-import java.util.Set;
+import java.util.Set ;
 
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.lib.iterator.Iter;
+import org.openjena.atlas.iterator.Iter ;
+
+import com.hp.hpl.jena.sparql.core.Var ;
 
 public class ScopeOptional implements Scope
 {

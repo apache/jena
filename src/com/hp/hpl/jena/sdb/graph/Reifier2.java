@@ -12,6 +12,9 @@ import java.util.HashSet ;
 import java.util.Iterator ;
 import java.util.Set ;
 
+import org.openjena.atlas.iterator.Filter ;
+import org.openjena.atlas.iterator.Iter ;
+
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Reifier ;
@@ -36,8 +39,6 @@ import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingRoot ;
-import com.hp.hpl.jena.sparql.lib.iterator.Filter ;
-import com.hp.hpl.jena.sparql.lib.iterator.Iter ;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
 import com.hp.hpl.jena.util.iterator.NiceIterator ;
 import com.hp.hpl.jena.util.iterator.NullIterator ;

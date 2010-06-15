@@ -47,7 +47,7 @@ public abstract class QueryCompilerMain implements QueryCompiler
         }
         
         Transform t = new TransformSDB(request, quadCompiler) ;
-        Op op2 = Transformer.transform(t, op) ;
+        Op op2 = Transformer.transformSkipService(t, op) ;
         
         // Modifiers: the structure is:
         //    slice

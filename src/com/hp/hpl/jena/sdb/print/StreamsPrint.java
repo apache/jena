@@ -6,12 +6,12 @@
 
 package com.hp.hpl.jena.sdb.print;
 
-import static com.hp.hpl.jena.sparql.lib.iterator.Iter.apply;
+import static org.openjena.atlas.iterator.Iter.apply ;
+import org.openjena.atlas.io.IndentedLineBuffer ;
+import org.openjena.atlas.io.IndentedWriter ;
+import org.openjena.atlas.io.Printable ;
+import org.openjena.atlas.iterator.ActionPrint ;
 
-import com.hp.hpl.jena.sparql.lib.iterator.ActionPrint;
-import com.hp.hpl.jena.sparql.util.IndentedLineBuffer;
-import com.hp.hpl.jena.sparql.util.IndentedWriter;
-import com.hp.hpl.jena.sparql.util.Printable;
 
 public class StreamsPrint
 {

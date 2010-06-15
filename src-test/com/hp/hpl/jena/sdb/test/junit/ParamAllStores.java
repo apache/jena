@@ -6,18 +6,18 @@
 
 package com.hp.hpl.jena.sdb.test.junit;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.ArrayList ;
+import java.util.Collection ;
+import java.util.List ;
 
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.runners.Parameterized.Parameters ;
+import org.openjena.atlas.iterator.Iter ;
+import org.openjena.atlas.iterator.Transform ;
 
-import com.hp.hpl.jena.sdb.Store;
-import com.hp.hpl.jena.sdb.StoreDesc;
-import com.hp.hpl.jena.sdb.test.SDBTestSetup;
-import com.hp.hpl.jena.sdb.util.Pair;
-import com.hp.hpl.jena.sparql.lib.iterator.Iter;
-import com.hp.hpl.jena.sparql.lib.iterator.Transform;
+import com.hp.hpl.jena.sdb.Store ;
+import com.hp.hpl.jena.sdb.StoreDesc ;
+import com.hp.hpl.jena.sdb.test.SDBTestSetup ;
+import com.hp.hpl.jena.sdb.util.Pair ;
 
 //@RunWith(Parameterized.class)
 public abstract class ParamAllStores

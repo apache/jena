@@ -16,7 +16,6 @@ import com.hp.hpl.jena.sdb.graph.GraphSDB ;
 import com.hp.hpl.jena.sdb.util.StoreUtils ;
 import com.hp.hpl.jena.shared.Lock ;
 import com.hp.hpl.jena.shared.LockMRSW ;
-import com.hp.hpl.jena.sparql.core.Closeable ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphCaching ;
 import com.hp.hpl.jena.sparql.core.DatasetImpl ;
@@ -25,7 +24,7 @@ import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.update.GraphStore ;
 
 public class DatasetStoreGraph extends DatasetGraphCaching
-implements DatasetGraph, Closeable, GraphStore 
+implements DatasetGraph, org.openjena.atlas.lib.Closeable, GraphStore 
 {
     final Store store ;
     Graph defaultGraph = null ;

@@ -6,14 +6,14 @@
 
 package dev.inf;
 
-import static com.hp.hpl.jena.sparql.sse.builders.BuilderLib.checkLength;
-import static com.hp.hpl.jena.sparql.sse.builders.BuilderLib.checkList;
-import static com.hp.hpl.jena.sparql.sse.builders.BuilderLib.checkNode;
+import static com.hp.hpl.jena.sparql.sse.builders.BuilderLib.checkLength ;
+import static com.hp.hpl.jena.sparql.sse.builders.BuilderLib.checkList ;
+import static com.hp.hpl.jena.sparql.sse.builders.BuilderLib.checkNode ;
+import org.openjena.atlas.iterator.Iter ;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.sparql.lib.iterator.Iter ;
-import com.hp.hpl.jena.sparql.sse.Item;
-import com.hp.hpl.jena.sparql.sse.ItemList;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.sparql.sse.Item ;
+import com.hp.hpl.jena.sparql.sse.ItemList ;
 
 class TransGraphNode extends TransGraph<Node>
 {

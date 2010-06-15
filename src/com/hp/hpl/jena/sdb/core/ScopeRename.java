@@ -6,18 +6,17 @@
 
 package com.hp.hpl.jena.sdb.core;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.HashMap ;
+import java.util.HashSet ;
+import java.util.Map ;
+import java.util.Set ;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.openjena.atlas.iterator.Transform ;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
 
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.lib.iterator.Transform;
-
-import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
+import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn ;
+import com.hp.hpl.jena.sparql.core.Var ;
 
 public class ScopeRename implements Scope
 {

@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.sdb.compiler;
 
-import static com.hp.hpl.jena.sparql.lib.iterator.Iter.apply ;
+import static org.openjena.atlas.iterator.Iter.apply ;
 
 import java.util.ArrayList ;
 import java.util.List ;
@@ -15,7 +15,7 @@ import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.shared.PrefixMapping ;
 import com.hp.hpl.jena.sparql.algebra.op.OpQuadPattern ;
 import com.hp.hpl.jena.sparql.core.Quad ;
-import com.hp.hpl.jena.sparql.lib.Action ;
+import org.openjena.atlas.iterator.Action ;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
 import com.hp.hpl.jena.sparql.util.IndentedWriter ;
 import com.hp.hpl.jena.sparql.util.PrintSerializable ;

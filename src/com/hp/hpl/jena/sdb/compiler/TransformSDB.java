@@ -6,10 +6,8 @@
 
 package com.hp.hpl.jena.sdb.compiler;
 
-import static com.hp.hpl.jena.sparql.lib.iterator.Iter.filter ;
-import static com.hp.hpl.jena.sparql.lib.iterator.Iter.map ;
-import static com.hp.hpl.jena.sparql.lib.iterator.Iter.toSet ;
-import static com.hp.hpl.jena.sparql.lib.iterator.SetUtils.intersection ;
+import static org.openjena.atlas.iterator.Iter.* ;
+import static  org.openjena.atlas.lib.SetUtils.intersection ;
 
 import java.util.List ;
 import java.util.Set ;
@@ -36,7 +34,7 @@ import com.hp.hpl.jena.sparql.algebra.op.* ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.expr.ExprList ;
-import com.hp.hpl.jena.sparql.lib.iterator.Iter ;
+import  org.openjena.atlas.iterator.Iter ;
 
 public class TransformSDB extends TransformCopy
 {
@@ -54,7 +52,7 @@ public class TransformSDB extends TransformCopy
     
     @Override
     public Op transform(OpBGP opBGP)
-    { throw new SDBInternalError("OpBGP should not appear") ; }
+    { return opBGP ; } //Ignore - untransformed BGPs can occur :: throw new SDBInternalError("OpBGP should not appear") ; }
 
     @Override
     public Op transform(OpQuadPattern quadPattern)

@@ -6,14 +6,15 @@
 
 package com.hp.hpl.jena.sdb.store;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.ArrayList ;
+import java.util.Iterator ;
+import java.util.List ;
 
-import com.hp.hpl.jena.sparql.lib.iterator.Iter;
-import com.hp.hpl.jena.sparql.util.IndentedWriter;
-import com.hp.hpl.jena.sparql.util.Printable;
-import com.hp.hpl.jena.sparql.util.PrintableBase;
+import org.openjena.atlas.iterator.Iter ;
+
+import com.hp.hpl.jena.sparql.util.IndentedWriter ;
+import com.hp.hpl.jena.sparql.util.Printable ;
+import com.hp.hpl.jena.sparql.util.PrintableBase ;
 
 /** A set of features (order retained */
 

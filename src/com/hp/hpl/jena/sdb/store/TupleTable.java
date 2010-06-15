@@ -6,27 +6,26 @@
 
 package com.hp.hpl.jena.sdb.store;
 
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
+import java.sql.SQLException ;
+import java.util.ArrayList ;
+import java.util.List ;
 
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.engine.ExecutionContext;
-import com.hp.hpl.jena.sparql.engine.QueryIterator;
-import com.hp.hpl.jena.sparql.engine.binding.BindingRoot;
-import com.hp.hpl.jena.sparql.lib.iterator.Iter;
-import com.hp.hpl.jena.sparql.util.Context;
+import org.openjena.atlas.iterator.Iter ;
 
-import com.hp.hpl.jena.query.ResultSetFactory;
-import com.hp.hpl.jena.query.ResultSetFormatter;
-
-import com.hp.hpl.jena.sdb.Store;
-import com.hp.hpl.jena.sdb.core.SDBRequest;
-import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
-import com.hp.hpl.jena.sdb.core.sqlnode.SqlTable;
-import com.hp.hpl.jena.sdb.sql.RS;
-import com.hp.hpl.jena.sdb.sql.ResultSetJDBC;
-import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
+import com.hp.hpl.jena.query.ResultSetFactory ;
+import com.hp.hpl.jena.query.ResultSetFormatter ;
+import com.hp.hpl.jena.sdb.Store ;
+import com.hp.hpl.jena.sdb.core.SDBRequest ;
+import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn ;
+import com.hp.hpl.jena.sdb.core.sqlnode.SqlTable ;
+import com.hp.hpl.jena.sdb.sql.RS ;
+import com.hp.hpl.jena.sdb.sql.ResultSetJDBC ;
+import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL ;
+import com.hp.hpl.jena.sparql.core.Var ;
+import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
+import com.hp.hpl.jena.sparql.engine.QueryIterator ;
+import com.hp.hpl.jena.sparql.engine.binding.BindingRoot ;
+import com.hp.hpl.jena.sparql.util.Context ;
 
 public class TupleTable
 {
