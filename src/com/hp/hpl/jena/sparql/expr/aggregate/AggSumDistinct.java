@@ -7,79 +7,75 @@
 
 package com.hp.hpl.jena.sparql.expr.aggregate;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.expr.Expr;
-import com.hp.hpl.jena.sparql.expr.ExprEvalException;
-import com.hp.hpl.jena.sparql.expr.NodeValue;
-import com.hp.hpl.jena.sparql.function.FunctionEnv;
-import com.hp.hpl.jena.sparql.sse.writers.WriterExpr;
-import com.hp.hpl.jena.sparql.util.ExprUtils;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.expr.Expr ;
+import com.hp.hpl.jena.sparql.expr.NodeValue ;
+import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp ;
+import com.hp.hpl.jena.sparql.function.FunctionEnv ;
+import com.hp.hpl.jena.sparql.sse.writers.WriterExpr ;
+import com.hp.hpl.jena.sparql.util.ExprUtils ;
 
-public class AggMax extends AggregatorBase
+public class AggSumDistinct  extends AggregatorBase
 {
-    // ---- MAX(expr)
-    private final Expr expr ;
+    // ---- SUM(DISTINCT expr)
+    private Expr expr ;
 
-    public AggMax(Expr expr) { this.expr = expr ; } 
-
+    public AggSumDistinct(Expr expr) { this.expr = expr ; } 
+    
+    private static final NodeValue noValuesToSum = NodeValue.nvZERO ; 
+    
     @Override
-    public String toString() { return "max("+ExprUtils.fmtSPARQL(expr)+")" ; }
+    public String toString() { return "sum(distinct "+ExprUtils.fmtSPARQL(expr)+")" ; }
     @Override
-    public String toPrefixString() { return "(max "+WriterExpr.asString(expr)+")" ; }
+    public String toPrefixString() { return "(sum distinct "+WriterExpr.asString(expr)+")" ; }
 
     @Override
     protected Accumulator createAccumulator()
     { 
-        return new AccMax() ;
+        return new AccSumDistinct(expr) ;
     }
 
-    protected final Expr getExpr() { return expr ; }
+    private final Expr getExpr() { return expr ; }
 
     public boolean equalsAsExpr(Aggregator other)
     {
-        if ( ! ( other instanceof AggMax ) )
+        if ( ! ( other instanceof AggSumDistinct ) )
             return false ;
-        AggMax agg = (AggMax)other ;
+        AggSumDistinct agg = (AggSumDistinct)other ;
         return agg.getExpr().equals(getExpr()) ;
     } 
 
-    /* null is SQL-like. */ 
+
+    /* null is SQL-like.  NodeValue.nodeIntZERO is F&O like */ 
     @Override
-    public Node getValueEmpty()     { return null ; } 
+    public Node getValueEmpty()     { return NodeValue.toNode(noValuesToSum) ; } 
 
     // ---- Accumulator
-    class AccMax implements Accumulator
+    class AccSumDistinct extends AccumulatorDistinctExpr
     {
         // Non-empty case but still can be nothing because the expression may be undefined.
-        private NodeValue maxSoFar = null ;
+        private NodeValue total = null ;
 
-        public AccMax() {}
+        public AccSumDistinct(Expr expr) { super(expr) ; }
 
-        static final boolean DEBUG = false ;
-
-        public void accumulate(Binding binding, FunctionEnv functionEnv)
+        @Override
+        public void accumulateDistinct(NodeValue nv, Binding binding, FunctionEnv functionEnv)
         { 
-            try {
-                NodeValue nv = expr.eval(binding, functionEnv) ;
-                if ( maxSoFar == null )
-                {
-                    maxSoFar = nv ;
-                    if ( DEBUG ) System.out.println("max: init : "+nv) ;
-                    return ;
-                }
-
-                int x = NodeValue.compareAlways(maxSoFar, nv) ;
-                if ( x < 0 )
-                    maxSoFar = nv ;
-
-                if ( DEBUG ) System.out.println("max: "+nv+" ==> "+maxSoFar) ;
-
-            } catch (ExprEvalException ex)
-            {}
+            if ( nv.isNumber() )
+            {
+                if ( total == null )
+                    total = nv ;
+                else
+                    total = XSDFuncOp.add(nv, total) ;
+            }
         }
         public NodeValue getValue()
-        { return maxSoFar ; }
+        { return total ; }
+
+        @Override
+        protected void accumulateError(Binding binding, FunctionEnv functionEnv)
+        {}
     }
 }
 

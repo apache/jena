@@ -7,79 +7,84 @@
 
 package com.hp.hpl.jena.sparql.expr.aggregate;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.expr.Expr;
-import com.hp.hpl.jena.sparql.expr.ExprEvalException;
-import com.hp.hpl.jena.sparql.expr.NodeValue;
-import com.hp.hpl.jena.sparql.function.FunctionEnv;
-import com.hp.hpl.jena.sparql.sse.writers.WriterExpr;
-import com.hp.hpl.jena.sparql.util.ExprUtils;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.expr.Expr ;
+import com.hp.hpl.jena.sparql.expr.NodeValue ;
+import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp ;
+import com.hp.hpl.jena.sparql.function.FunctionEnv ;
+import com.hp.hpl.jena.sparql.sse.writers.WriterExpr ;
+import com.hp.hpl.jena.sparql.util.ExprUtils ;
 
-public class AggMax extends AggregatorBase
+public class AggAvgDistinct extends AggregatorBase
 {
-    // ---- MAX(expr)
-    private final Expr expr ;
+    // ---- AVG(DISTINCT expr)
+    private Expr expr ;
 
-    public AggMax(Expr expr) { this.expr = expr ; } 
+    public AggAvgDistinct(Expr expr) { this.expr = expr ; } 
+
+    private static final NodeValue noValuesToAvg = NodeValue.nvZERO ; 
 
     @Override
-    public String toString() { return "max("+ExprUtils.fmtSPARQL(expr)+")" ; }
+    public String toString() { return "avg(distinct "+ExprUtils.fmtSPARQL(expr)+")" ; }
     @Override
-    public String toPrefixString() { return "(max "+WriterExpr.asString(expr)+")" ; }
+    public String toPrefixString() { return "(avg distinct "+WriterExpr.asString(expr)+")" ; }
 
     @Override
     protected Accumulator createAccumulator()
     { 
-        return new AccMax() ;
+        return new AccAvgDistinct(expr) ;
     }
 
-    protected final Expr getExpr() { return expr ; }
+    private final Expr getExpr() { return expr ; }
 
     public boolean equalsAsExpr(Aggregator other)
     {
-        if ( ! ( other instanceof AggMax ) )
+        if ( ! ( other instanceof AggAvgDistinct ) )
             return false ;
-        AggMax agg = (AggMax)other ;
+        AggAvgDistinct agg = (AggAvgDistinct)other ;
         return agg.getExpr().equals(getExpr()) ;
     } 
 
-    /* null is SQL-like. */ 
+    /* null is SQL-like.  NodeValue.nodeIntZERO is F&O like */ 
     @Override
-    public Node getValueEmpty()     { return null ; } 
+    public Node getValueEmpty()     { return NodeValue.toNode(noValuesToAvg) ; } 
 
     // ---- Accumulator
-    class AccMax implements Accumulator
+    class AccAvgDistinct extends AccumulatorDistinctExpr
     {
         // Non-empty case but still can be nothing because the expression may be undefined.
-        private NodeValue maxSoFar = null ;
-
-        public AccMax() {}
-
+        private NodeValue total = noValuesToAvg ;
+        private int count = 0 ;
+        
         static final boolean DEBUG = false ;
+        
+        public AccAvgDistinct(Expr expr) { super(expr) ; }
 
-        public void accumulate(Binding binding, FunctionEnv functionEnv)
+        @Override
+        protected void accumulateDistinct(NodeValue nv, Binding binding, FunctionEnv functionEnv)
         { 
-            try {
-                NodeValue nv = expr.eval(binding, functionEnv) ;
-                if ( maxSoFar == null )
-                {
-                    maxSoFar = nv ;
-                    if ( DEBUG ) System.out.println("max: init : "+nv) ;
-                    return ;
-                }
-
-                int x = NodeValue.compareAlways(maxSoFar, nv) ;
-                if ( x < 0 )
-                    maxSoFar = nv ;
-
-                if ( DEBUG ) System.out.println("max: "+nv+" ==> "+maxSoFar) ;
-
-            } catch (ExprEvalException ex)
-            {}
+            if ( nv.isNumber() )
+            {
+                count++ ;
+                if ( total == noValuesToAvg )
+                    total = nv ;
+                else
+                    total = XSDFuncOp.add(nv, total) ;
+            }
+            if ( DEBUG ) System.out.println("avg: ("+total+","+count+")") ;
         }
+
         public NodeValue getValue()
-        { return maxSoFar ; }
+        {
+            if ( count == 0 ) return noValuesToAvg ;
+            NodeValue nvCount = NodeValue.makeInteger(count) ;
+            return XSDFuncOp.divide(total, nvCount) ;
+        }
+
+        @Override
+        protected void accumulateError(Binding binding, FunctionEnv functionEnv)
+        {}
     }
 }
 

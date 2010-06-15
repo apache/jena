@@ -15,6 +15,8 @@ import java.util.Iterator ;
 import java.util.List ;
 import java.util.Set ;
 
+import org.openjena.riot.Checker ;
+
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.query.* ;
 import com.hp.hpl.jena.rdf.model.Model ;
@@ -67,6 +69,8 @@ public class QueryTest extends EarlTestCase
         s = s.replace(')',']') ;
         return s ;
     }
+
+    private boolean oldWarningFlag  ;
     
     @Override
     protected void setUp() throws Exception
@@ -80,8 +84,11 @@ public class QueryTest extends EarlTestCase
         }
         // Sort out data.
         // Not here - done during test execution because it needs to look in the query for source URIs
-        
         resultsModel = testItem.getResultModel() ;
+
+        // Turn parser warnings off for the test data. 
+        oldWarningFlag = Checker.WarnOnBadLexicalForms ;
+        Checker.WarnOnBadLexicalForms = false ;
     }
     
     @Override
@@ -89,6 +96,7 @@ public class QueryTest extends EarlTestCase
     {
         if ( resetNeeded )
             ARQ.setFalse(ARQ.strictGraph) ;
+        Checker.WarnOnBadLexicalForms = oldWarningFlag ;
         super.tearDown() ;
     }
     

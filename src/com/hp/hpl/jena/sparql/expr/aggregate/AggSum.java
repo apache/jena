@@ -20,14 +20,12 @@ import com.hp.hpl.jena.sparql.util.ExprUtils;
 
 public class AggSum  extends AggregatorBase
 {
-    // ---- SUM(?var)
+    // ---- SUM(expr)
+    private static final NodeValue noValuesToSum = NodeValue.nvZERO ; 
     private Expr expr ;
 
-    public AggSum(Expr var) { this.expr = var ; } 
+    public AggSum(Expr expr) { this.expr = expr ; } 
     
-    // XQuery/XPath Functions&Operators suggests zero
-    // SQL suggests null.
-    private static final NodeValue noValuesToSum = NodeValue.nvZERO ; // null 
     
     @Override
     public String toString() { return "sum("+ExprUtils.fmtSPARQL(expr)+")" ; }
@@ -37,7 +35,7 @@ public class AggSum  extends AggregatorBase
     @Override
     protected Accumulator createAccumulator()
     { 
-        return new AccSumVar() ;
+        return new AccSum() ;
     }
 
     private final Expr getExpr() { return expr ; }
@@ -50,18 +48,17 @@ public class AggSum  extends AggregatorBase
         return agg.getExpr().equals(getExpr()) ;
     } 
 
-
     /* null is SQL-like.  NodeValue.nodeIntZERO is F&O like */ 
     @Override
     public Node getValueEmpty()     { return NodeValue.toNode(noValuesToSum) ; } 
 
     // ---- Accumulator
-    class AccSumVar implements Accumulator
+    class AccSum implements Accumulator
     {
         // Non-empty case but still can be nothing because the expression may be undefined.
-        private NodeValue total = noValuesToSum ;
+        private NodeValue total = null ;
 
-        public AccSumVar() {}
+        public AccSum() {}
 
         public void accumulate(Binding binding, FunctionEnv functionEnv)
         { 
@@ -69,7 +66,7 @@ public class AggSum  extends AggregatorBase
                 NodeValue nv = expr.eval(binding, functionEnv) ;
                 if ( nv.isNumber() )
                 {
-                    if ( total == noValuesToSum )
+                    if ( total == null )
                         total = nv ;
                     else
                         total = XSDFuncOp.add(nv, total) ;

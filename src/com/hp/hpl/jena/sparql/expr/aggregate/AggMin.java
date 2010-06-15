@@ -19,11 +19,9 @@ import com.hp.hpl.jena.sparql.util.ExprUtils;
 public class AggMin extends AggregatorBase
 {
     // ---- MIN(?var)
-
-    // ---- AggregatorFactory
     private Expr expr ;
 
-    public AggMin(Expr var) { this.expr = var ; } 
+    public AggMin(Expr expr) { this.expr = expr ; } 
 
     @Override
     public String toString() { return "min("+ExprUtils.fmtSPARQL(expr)+")" ; }
@@ -33,10 +31,10 @@ public class AggMin extends AggregatorBase
     @Override
     protected Accumulator createAccumulator()
     { 
-        return new AccMinVar() ;
+        return new AccMin() ;
     }
 
-    private final Expr getExpr() { return expr ; }
+    protected final Expr getExpr() { return expr ; }
 
     public boolean equalsAsExpr(Aggregator other)
     {
@@ -51,12 +49,12 @@ public class AggMin extends AggregatorBase
     public Node getValueEmpty()     { return null ; } 
 
     // ---- Accumulator
-    class AccMinVar implements Accumulator
+    class AccMin implements Accumulator
     {
         // Non-empty case but still can be nothing because the expression may be undefined.
         private NodeValue minSoFar = null ;
 
-        public AccMinVar() {}
+        public AccMin() {}
 
         static final boolean DEBUG = false ;
 

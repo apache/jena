@@ -1,4 +1,5 @@
 /*
+ * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  * [See end of file]
@@ -7,52 +8,27 @@
 package com.hp.hpl.jena.sparql.expr.aggregate;
 
 import com.hp.hpl.jena.sparql.expr.Expr ;
-import com.hp.hpl.jena.sparql.expr.ExprList ;
-import com.hp.hpl.jena.sparql.util.ALog ;
+import com.hp.hpl.jena.sparql.sse.writers.WriterExpr ;
+import com.hp.hpl.jena.sparql.util.ExprUtils ;
 
-public class AggregatorFactory
+public class AggMaxDistinct extends AggMax
 {
-    public static Aggregator createCount(boolean distinct)
-    { 
-        return distinct ? new AggCountDistinct() : new AggCount() ;
-    }
+    // ---- MAX(expr)
+    // Same as MAX(expr) but remembers the syntax
+    public AggMaxDistinct(Expr expr) { super(expr) ; } 
 
-    public static Aggregator createCountExpr(boolean distinct, Expr expr)
-    { 
-        return distinct ? new AggCountVarDistinct(expr) : new AggCountVar(expr) ;
-    }
-    
-    public static Aggregator createSum(boolean distinct, Expr expr)
-    { 
-        return distinct ? new AggSumDistinct(expr) : new AggSum(expr) ;
-    }
-    
-    public static Aggregator createMin(boolean distinct, Expr expr)
-    { 
-        // Only remember it's DISTINCT for getting the printing right.
-        return distinct ? new AggMinDistinct(expr) : new AggMin(expr) ;
-    }
-    
-    public static Aggregator createMax(boolean distinct, Expr expr)
-    { 
-        return distinct ? new AggMaxDistinct(expr)  : new AggMax(expr) ;
-    }
-    
-    public static Aggregator createAvg(boolean distinct, Expr expr)
-    { 
-        return distinct ? new AggAvgDistinct(expr) : new AggAvg(expr) ;
-    }
-        
-    public static Aggregator createSample(boolean distinct, Expr expr)    { err("sample") ; return null ; }
-    
-    public static Aggregator createGroupConcat(boolean distinct, ExprList exprList, String separator)
-    { err("group_concat") ; return null ; }
-    
-    private static Aggregator err(String label)
+    @Override
+    public String toString() { return "max(distinct "+ExprUtils.fmtSPARQL(getExpr())+")" ; }
+    @Override
+    public String toPrefixString() { return "(max distinct "+WriterExpr.asString(getExpr())+")" ; }
+
+    @Override
+    public boolean equalsAsExpr(Aggregator other)
     {
-        ALog.fatal(AggregatorFactory.class, "Not implemented: "+label) ;
-        return null ;
-    }
+        if ( ! ( other instanceof AggMaxDistinct ) )
+            return false ;
+        return super.equalsAsExpr(other) ;
+    } 
 }
 
 /*

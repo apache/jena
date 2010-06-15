@@ -23,7 +23,7 @@ public class AggAvg extends AggregatorBase
     // ---- AVG(?var)
     private Expr expr ;
 
-    public AggAvg(Expr var) { this.expr = var ; } 
+    public AggAvg(Expr expr) { this.expr = expr ; } 
 
     // XQuery/XPath Functions&Operators suggests zero
     // SQL suggests null.
@@ -37,7 +37,7 @@ public class AggAvg extends AggregatorBase
     @Override
     protected Accumulator createAccumulator()
     { 
-        return new AccAvgVar() ;
+        return new AccAvg() ;
     }
 
     private final Expr getExpr() { return expr ; }
@@ -55,7 +55,7 @@ public class AggAvg extends AggregatorBase
     public Node getValueEmpty()     { return NodeValue.toNode(noValuesToAvg) ; } 
 
     // ---- Accumulator
-    class AccAvgVar implements Accumulator
+    class AccAvg implements Accumulator
     {
         // Non-empty case but still can be nothing because the expression may be undefined.
         private NodeValue total = noValuesToAvg ;
@@ -63,7 +63,7 @@ public class AggAvg extends AggregatorBase
         
         static final boolean DEBUG = false ;
         
-        public AccAvgVar() {}
+        public AccAvg() {}
 
         public void accumulate(Binding binding, FunctionEnv functionEnv)
         { 

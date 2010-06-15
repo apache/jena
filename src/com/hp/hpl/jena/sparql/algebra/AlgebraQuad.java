@@ -39,7 +39,7 @@ public class AlgebraQuad extends TransformCopy
         OpVisitor after = new Popper(stack) ;
         
         TransformQuadGraph qg = new TransformQuadGraph(stack) ;
-        return Transformer.transform(qg, op, before, after) ;
+        return Transformer.transformSkipService(qg, op, before, after) ;
     }
     
     private static class Pusher extends OpVisitorBase

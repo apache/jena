@@ -12,6 +12,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Stack;
 
+import com.hp.hpl.jena.sparql.algebra.OpWalker.WalkerVisitor ;
 import com.hp.hpl.jena.sparql.algebra.op.*;
 import com.hp.hpl.jena.sparql.util.ALog;
 
@@ -25,6 +26,7 @@ public class Transformer
     /** Set the current transformer - use with care */
     public static void set(Transformer value) { Transformer.singleton = value; }
     
+    /** Transform an algebra expression */
     public static Op transform(Transform transform, Op op)
     { return get().transformation(transform, op, null, null) ; }
     
@@ -32,14 +34,41 @@ public class Transformer
     {
         return get().transformation(transform, op, beforeVisitor, afterVisitor) ;
     }
+
+    /** Transform an algebra expression except skip (leave alone) any OpService nodes */
+    public static Op transformSkipService(Transform transform, Op op)
+    {
+        return transformSkipService(transform, op, null, null) ; 
+    }
+
     
-    public Op transformation(Transform transform, Op op, OpVisitor beforeVisitor, OpVisitor afterVisitor)
+    /** Transform an algebra expression except skip (leave alone) any OpService nodes */
+    public static Op transformSkipService(Transform transform, Op op, OpVisitor beforeVisitor, OpVisitor afterVisitor)
+    {
+        // Skip SERVICE
+        if ( true )
+        {
+            // Simplest way but still walks the OpService subtree (and throws away the transformation).
+            transform = new TransformSkipService(transform) ;
+            return Transformer.transform(transform, op, beforeVisitor, afterVisitor) ;
+        }
+        else
+        {
+            // Don't transform OpService and don't walk the sub-op 
+            ApplyTransformVisitorServiceAsLeaf v = new ApplyTransformVisitorServiceAsLeaf(transform) ;
+            WalkerVisitorSkipService walker = new WalkerVisitorSkipService(v, beforeVisitor, afterVisitor) ;
+            OpWalker.walk(walker, op, v) ;
+            return v.result() ;
+        }
+    }
+    
+    private Op transformation(Transform transform, Op op, OpVisitor beforeVisitor, OpVisitor afterVisitor)
     {
         ApplyTransformVisitor v = new ApplyTransformVisitor(transform) ;
         return transformation(v, op, beforeVisitor, afterVisitor) ;
     }
     
-    public Op transformation(ApplyTransformVisitor transformApply,
+    private Op transformation(ApplyTransformVisitor transformApply,
                              Op op, OpVisitor beforeVisitor, OpVisitor afterVisitor)
     {
         if ( op == null )
@@ -136,6 +165,73 @@ public class Transformer
         {
             push(transform.transform(op)) ;
         }
+    }
+    
+    // --------------------------------
+    // Transformations that avoid touching SERVICE.
+    // Modified classes to avoid transforming SERVICE/OpService.
+    // Plan A: In the application of the transform, skip OpService. 
+    
+    /** Treat OpService as a leaf of the tree */
+    static class ApplyTransformVisitorServiceAsLeaf extends ApplyTransformVisitor
+    {
+        public ApplyTransformVisitorServiceAsLeaf(Transform transform)
+        {
+            super(transform) ;
+        }
+        
+        @Override
+        public void visit(OpService op)
+        {
+            // Treat as a leaf that does not change.
+            push(op) ;
+        }
+    }
+    
+    // Plan B: The walker skips walking into OpService nodes.
+    
+    /** Don't walk down an OpService sub-operation */
+    static class WalkerVisitorSkipService extends WalkerVisitor
+    {
+        public WalkerVisitorSkipService(OpVisitor visitor, OpVisitor beforeVisitor, OpVisitor afterVisitor)
+        {
+            super(visitor, beforeVisitor, afterVisitor) ;
+        }
+        
+        public WalkerVisitorSkipService(OpVisitor visitor)
+        {
+            super(visitor) ;
+        }
+        
+        @Override
+        public void visit(OpService op)
+        { 
+            before(op) ;
+            // visit1 code from WalkerVisitor
+//            if ( op.getSubOp() != null ) op.getSubOp().visit(this) ;
+            
+            // Just visit the OpService node itself.
+            // The transformer needs to push teh code as a result (see ApplyTransformVisitorSkipService)
+            if ( visitor != null ) op.visit(visitor) ;
+            
+            after(op) ;
+        }
+        
+    }
+    
+    // --------------------------------
+    // Safe: ignore transformation of OpService and return the original.
+    // Still walks the sub-op of OpService 
+    static class TransformSkipService extends TransformWrapper
+    {
+        public TransformSkipService(Transform transform)
+        {
+            super(transform) ;
+        }
+        
+        @Override
+        public Op transform(OpService opService, Op subOp)
+        { return opService ; } 
     }
 }
 

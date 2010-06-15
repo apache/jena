@@ -13,15 +13,10 @@ import org.slf4j.LoggerFactory ;
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.sparql.ARQConstants ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
-import com.hp.hpl.jena.sparql.algebra.OpVisitor ;
 import com.hp.hpl.jena.sparql.algebra.OpWalker ;
 import com.hp.hpl.jena.sparql.algebra.Transform ;
-import com.hp.hpl.jena.sparql.algebra.TransformWrapper ;
 import com.hp.hpl.jena.sparql.algebra.Transformer ;
-import com.hp.hpl.jena.sparql.algebra.OpWalker.WalkerVisitor ;
-import com.hp.hpl.jena.sparql.algebra.Transformer.ApplyTransformVisitor ;
 import com.hp.hpl.jena.sparql.algebra.op.OpLabel ;
-import com.hp.hpl.jena.sparql.algebra.op.OpService ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.sparql.util.Symbol ;
@@ -32,7 +27,6 @@ public class Optimize implements Rewrite
 
     // A small (one slot) registry to allow plugging in an alternative optimizer
     public interface Factory { Rewrite create(Context context) ; }
-    
     
     // ----    
     public static Factory noOptimizationFactory = new Factory()
@@ -170,27 +164,10 @@ public class Optimize implements Rewrite
             op = OpLabel.create("Transformed", op) ;
         return op ;
     }
-
+    
     public static Op apply(String label, Transform transform, Op op)
     {
-        Op op2 ;
-        // Skip SERVICE
-        // This avoids needing to ensure every optimizer transform knows not to touch OpService. 
-        if ( true )
-        {
-            // Simplest way but still walks the OpService subtree (and throws away the transformation).
-            transform = new TransformSkipService(transform) ;
-            op2 = Transformer.transform(transform, op) ;
-        }
-        else
-        {
-            // Don't transform OpService and don't walk the sub-op 
-            ApplyTransformVisitorServiceAsLeaf v = new ApplyTransformVisitorServiceAsLeaf(transform) ;
-            WalkerVisitorSkipService walker = new WalkerVisitorSkipService(v) ;
-            OpWalker.walk(walker, op, v) ;
-            op2 = v.result() ;
-        }
-
+        Op op2 = Transformer.transformSkipService(transform, op) ;
         
         final boolean debug = false ;
         
@@ -213,71 +190,6 @@ public class Optimize implements Rewrite
         }
         return op2 ;
     }
-    
-
-    // --------------------------------
-    // Modified classes to avoid transforming SERVICE/OpService.
-    // Plan A: In the application of the transform, skip OpService. 
-    
-    /** Treat OpService as a leaf of the tree */
-    static class ApplyTransformVisitorServiceAsLeaf extends ApplyTransformVisitor
-    {
-        public ApplyTransformVisitorServiceAsLeaf(Transform transform)
-        {
-            super(transform) ;
-        }
-        
-        @Override
-        public void visit(OpService op)
-        {
-            // Treat as a leaf that does not change.
-            push(op) ;
-        }
-    }
-    
-    // Plan B: The walker skips walking into OpService nodes.
-    
-    /** Don't walk down an OpService sub-operation */
-    static class WalkerVisitorSkipService extends WalkerVisitor
-    {
-        public WalkerVisitorSkipService(OpVisitor visitor)
-        {
-            super(visitor) ;
-        }
-        
-        @Override
-        public void visit(OpService op)
-        { 
-            before(op) ;
-            // visit1 code from WalkerVisitor
-//            if ( op.getSubOp() != null ) op.getSubOp().visit(this) ;
-            
-            // Just visit the OpService node itself.
-            // The transformer needs to push teh code as a result (see ApplyTransformVisitorSkipService)
-            if ( visitor != null ) op.visit(visitor) ;
-            
-            after(op) ;
-        }
-        
-    }
-    
-    // --------------------------------
-    // Safe: ignore transformation of OpService and return the original.
-    // Still walks the sub-op of OpService 
-    static class TransformSkipService extends TransformWrapper
-    {
-        public TransformSkipService(Transform transform)
-        {
-            super(transform) ;
-        }
-        
-        @Override
-        public Op transform(OpService opService, Op subOp)
-        { return opService ; } 
-
-        
-    }
-
 }
 
 /*

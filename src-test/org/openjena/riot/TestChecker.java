@@ -6,6 +6,9 @@
 
 package org.openjena.riot;
 
+import java.util.ArrayList ;
+import java.util.List ;
+
 import org.junit.After ;
 import org.junit.Before ;
 import org.junit.Test ;
@@ -22,7 +25,7 @@ public class TestChecker
     private static class ExError extends RuntimeException {} ;
     private static class ExWarning extends RuntimeException {} ;
     
-    static ErrorHandler handler = new ErrorHandler()
+    static ErrorHandler handlerEx = new ErrorHandler()
     {
         public void error(String message, long line, long col)
         { throw new ExError() ; }
@@ -32,9 +35,24 @@ public class TestChecker
 
         public void warning(String message, long line, long col)
         { throw new ExWarning() ; }
-
     } ;
-    static Checker checker = new Checker(handler) ;
+    
+    static ErrorHandler handlerMsg = new ErrorHandler()
+    {
+        //SysRIOT.fmtMessage(message, line, col)
+        List<String> msgs = new ArrayList<String>() ;
+        
+        public void error(String message, long line, long col)
+        { msgs.add(message) ; }
+
+        public void fatal(String message, long line, long col)
+        { msgs.add(message) ; throw new ExFatal() ; }
+ 
+        public void warning(String message, long line, long col)
+        { msgs.add(message) ; }
+    } ;
+    
+    static Checker checker = new Checker(handlerEx) ;
     
     boolean b ;
 
@@ -44,7 +62,7 @@ public class TestChecker
         b = JenaParameters.enableWhitespaceCheckingOfTypedLiterals ;
         // The default is false which allows whitespace around integers.
         // Jena seems to allow white space around dateTimes either way. 
-        //JenaParameters.enableWhitespaceCheckingOfTypedLiterals = true ;
+        // JenaParameters.enableWhitespaceCheckingOfTypedLiterals = true ;
     }
 
     @After
@@ -71,7 +89,7 @@ public class TestChecker
     @Test (expected=ExWarning.class) public void checker14() { check("'12 3'^^xsd:integer") ; }
     @Test public void checker15() { check("'\\n123'^^xsd:integer") ; }
 
-    // Test all the daat ttype hierarchies that whietspace foo affects.
+    // Test all the data ttype hierarchies that whitespace foo affects.
     @Test public void checker16() { check("'123.0  '^^xsd:float") ; }
     @Test public void checker17() { check("'123.0\\n'^^xsd:double") ; }
     // Jena "bug"
