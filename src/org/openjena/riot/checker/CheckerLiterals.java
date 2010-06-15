@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package dev.checker;
+package org.openjena.riot.checker;
 
 import java.util.regex.Pattern ;
 
@@ -13,7 +13,7 @@ import com.hp.hpl.jena.graph.impl.LiteralLabel ;
 
 import org.openjena.riot.ErrorHandler ;
 
-public class CheckerLiterals implements Check
+public class CheckerLiterals implements NodeChecker
 {
     private ErrorHandler handler ;
     private boolean allowBadLexicalForms ;
@@ -52,7 +52,7 @@ public class CheckerLiterals implements Check
         return true ;
     }
 
-    private final boolean validateByDatatype(LiteralLabel lit, Node node, long line, long col)
+    protected boolean validateByDatatype(LiteralLabel lit, Node node, long line, long col)
     {
         if ( allowBadLexicalForms )
             return true ;
