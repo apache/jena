@@ -9,8 +9,8 @@ package com.hp.hpl.jena.sparql.serializer;
 import java.io.OutputStream;
 
 import com.hp.hpl.jena.sparql.util.ALog;
-import com.hp.hpl.jena.sparql.util.IndentedLineBuffer;
-import com.hp.hpl.jena.sparql.util.IndentedWriter;
+import org.openjena.atlas.io.IndentedLineBuffer;
+import org.openjena.atlas.io.IndentedWriter;
 import com.hp.hpl.jena.sparql.util.NodeToLabelMapBNode;
 
 import com.hp.hpl.jena.query.Query;

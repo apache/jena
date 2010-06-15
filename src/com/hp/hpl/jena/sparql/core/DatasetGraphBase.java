@@ -21,7 +21,7 @@ import com.hp.hpl.jena.shared.Lock ;
 import com.hp.hpl.jena.shared.LockMRSW ;
 import com.hp.hpl.jena.sparql.sse.writers.WriterGraph ;
 import com.hp.hpl.jena.sparql.util.Context ;
-import com.hp.hpl.jena.sparql.util.IndentedLineBuffer ;
+import org.openjena.atlas.io.IndentedLineBuffer ;
 
 /** 
  * <p>DatasetGraph framework : readonly dataset need only provide find(g,s,p,o), getGraph() and getDefaultGraph()

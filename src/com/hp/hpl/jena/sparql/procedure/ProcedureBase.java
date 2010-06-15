@@ -14,7 +14,7 @@ import com.hp.hpl.jena.sparql.expr.ExprList;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext;
 import com.hp.hpl.jena.sparql.sse.writers.WriterExpr;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
-import com.hp.hpl.jena.sparql.util.IndentedWriter;
+import org.openjena.atlas.io.IndentedWriter;
 import com.hp.hpl.jena.sparql.util.IterLib;
 import com.hp.hpl.jena.sparql.util.PrintSerializableBase;
 

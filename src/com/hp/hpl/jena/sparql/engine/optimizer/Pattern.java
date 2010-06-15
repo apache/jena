@@ -7,7 +7,7 @@
 package com.hp.hpl.jena.sparql.engine.optimizer;
 
 import com.hp.hpl.jena.sparql.sse.Item;
-import com.hp.hpl.jena.sparql.util.IndentedWriter;
+import org.openjena.atlas.io.IndentedWriter;
 import com.hp.hpl.jena.sparql.util.PrintUtils;
 import com.hp.hpl.jena.sparql.util.Printable;
 

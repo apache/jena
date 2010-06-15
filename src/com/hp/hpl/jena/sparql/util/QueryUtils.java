@@ -6,6 +6,8 @@
 
 package com.hp.hpl.jena.sparql.util;
 
+import org.openjena.atlas.io.IndentedLineBuffer ;
+
 import com.hp.hpl.jena.sparql.algebra.Algebra;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.core.QueryCheckException;

@@ -8,7 +8,7 @@ package com.hp.hpl.jena.sparql.util;
 
 import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext;
-import com.hp.hpl.jena.sparql.util.IndentedWriter;
+import org.openjena.atlas.io.IndentedWriter;
 
 public interface PrintSerializable extends Printable
 {

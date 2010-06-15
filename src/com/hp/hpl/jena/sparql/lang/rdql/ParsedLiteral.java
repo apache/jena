@@ -9,7 +9,7 @@ package com.hp.hpl.jena.sparql.lang.rdql;
 import com.hp.hpl.jena.graph.query.IndexValues ;
 import com.hp.hpl.jena.graph.impl.LiteralLabel;
 import com.hp.hpl.jena.query.*;
-import com.hp.hpl.jena.sparql.util.IndentedWriter;
+import org.openjena.atlas.io.IndentedWriter;
 
 // An implementation of value that is created from the parsing process.
 // This is no more than a jena.graph.Node  with some caching 

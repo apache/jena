@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 import com.hp.hpl.jena.graph.query.IndexValues ;
 import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException;
-import com.hp.hpl.jena.sparql.util.IndentedWriter;
+import org.openjena.atlas.io.IndentedWriter;
 
 
 

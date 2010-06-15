@@ -13,7 +13,7 @@ import org.openjena.atlas.iterator.Iter ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
-import com.hp.hpl.jena.sparql.util.IndentedWriter ;
+import org.openjena.atlas.io.IndentedWriter ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 import com.hp.hpl.jena.util.iterator.NiceIterator ;
 

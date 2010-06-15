@@ -18,7 +18,7 @@ import com.hp.hpl.jena.graph.Node;
 
 import com.hp.hpl.jena.sparql.modify.op.UpdateLoad;
 import com.hp.hpl.jena.sparql.sse.SSE;
-import com.hp.hpl.jena.sparql.util.IndentedWriter;
+import org.openjena.atlas.io.IndentedWriter;
 import com.hp.hpl.jena.sparql.util.Utils;
 import com.hp.hpl.jena.sparql.util.graph.GraphLoadMonitor;
 

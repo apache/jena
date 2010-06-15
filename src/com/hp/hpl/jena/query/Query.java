@@ -31,8 +31,8 @@ import com.hp.hpl.jena.sparql.syntax.Element ;
 import com.hp.hpl.jena.sparql.syntax.Template ;
 import com.hp.hpl.jena.sparql.util.ALog ;
 import com.hp.hpl.jena.sparql.util.FmtUtils ;
-import com.hp.hpl.jena.sparql.util.IndentedLineBuffer ;
-import com.hp.hpl.jena.sparql.util.IndentedWriter ;
+import org.openjena.atlas.io.IndentedLineBuffer ;
+import org.openjena.atlas.io.IndentedWriter ;
 
 /** The data structure for a query as presented externally.
  *  There are two ways of creating a query - use the parser to turn

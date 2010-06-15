@@ -6,10 +6,12 @@
 
 package com.hp.hpl.jena.sparql.util;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.lang.reflect.Field ;
+import java.util.ArrayList ;
+import java.util.Iterator ;
+import java.util.List ;
+
+import org.openjena.atlas.io.IndentedWriter ;
 
 /** Manage version information for subsystems */
 public class Version

@@ -18,7 +18,7 @@ import com.hp.hpl.jena.sparql.sse.writers.WriterExpr;
 import com.hp.hpl.jena.sparql.sse.writers.WriterGraph;
 import com.hp.hpl.jena.sparql.sse.writers.WriterNode;
 import com.hp.hpl.jena.sparql.sse.writers.WriterOp;
-import com.hp.hpl.jena.sparql.util.IndentedWriter;
+import org.openjena.atlas.io.IndentedWriter;
 
 public class WriterSSE
 {

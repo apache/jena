@@ -6,6 +6,8 @@
 
 package com.hp.hpl.jena.query;
 
+import org.openjena.atlas.io.IndentedWriter ;
+
 import com.hp.hpl.jena.graph.Node;
 
 import com.hp.hpl.jena.sparql.core.Var;

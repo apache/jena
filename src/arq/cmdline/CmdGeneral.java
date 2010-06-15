@@ -12,7 +12,7 @@ import arq.cmd.CmdUtils;
 import arq.cmd.TerminationException;
 
 import com.hp.hpl.jena.sparql.util.ALog;
-import com.hp.hpl.jena.sparql.util.IndentedWriter;
+import org.openjena.atlas.io.IndentedWriter;
 
 // Added usage + some common flags
 // This is the usual starting point for any sub 

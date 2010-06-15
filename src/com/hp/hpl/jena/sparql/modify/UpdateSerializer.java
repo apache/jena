@@ -18,7 +18,7 @@ import com.hp.hpl.jena.sparql.serializer.FormatterElement;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext;
 import com.hp.hpl.jena.sparql.syntax.Template;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
-import com.hp.hpl.jena.sparql.util.IndentedWriter;
+import org.openjena.atlas.io.IndentedWriter;
 
 public class UpdateSerializer implements UpdateVisitor
 {

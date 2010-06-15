@@ -9,7 +9,7 @@ package com.hp.hpl.jena.sparql.engine.iterator;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
-import com.hp.hpl.jena.sparql.util.IndentedWriter ;
+import org.openjena.atlas.io.IndentedWriter ;
 
 /**
  * This class provides the general machinary for iterators. 

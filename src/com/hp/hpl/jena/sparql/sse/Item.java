@@ -12,7 +12,7 @@ import java.util.Iterator;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
-import com.hp.hpl.jena.sparql.util.IndentedLineBuffer;
+import org.openjena.atlas.io.IndentedLineBuffer;
 
 public class Item extends ItemLocation
 {

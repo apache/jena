@@ -13,7 +13,7 @@ import java.util.ListIterator ;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.sparql.sse.writers.WriterNode ;
-import com.hp.hpl.jena.sparql.util.IndentedLineBuffer ;
+import org.openjena.atlas.io.IndentedLineBuffer ;
 
 
 /** A class whose purpose is to give a name to a collection of quads

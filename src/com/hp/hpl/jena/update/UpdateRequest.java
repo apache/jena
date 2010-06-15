@@ -14,7 +14,7 @@ import com.hp.hpl.jena.sparql.core.Prologue;
 import com.hp.hpl.jena.sparql.modify.op.Update;
 import com.hp.hpl.jena.sparql.serializer.PrologueSerializer;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext;
-import com.hp.hpl.jena.sparql.util.IndentedWriter;
+import org.openjena.atlas.io.IndentedWriter;
 import com.hp.hpl.jena.sparql.util.PrintUtils;
 import com.hp.hpl.jena.sparql.util.Printable;
 

@@ -8,7 +8,7 @@ package com.hp.hpl.jena.sparql.junit;
 
 
 import com.hp.hpl.jena.sparql.sse.SSEParseException;
-import com.hp.hpl.jena.sparql.util.IndentedLineBuffer;
+import org.openjena.atlas.io.IndentedLineBuffer;
 import com.hp.hpl.jena.sparql.util.QueryUtils;
 
 import com.hp.hpl.jena.query.Query;

@@ -15,7 +15,7 @@ import com.hp.hpl.jena.graph.query.Expression;
 import com.hp.hpl.jena.graph.query.IndexValues;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryException;
-import com.hp.hpl.jena.sparql.util.IndentedWriter;
+import org.openjena.atlas.io.IndentedWriter;
 
 public class Q_StringLangEqual extends ExprNodeRDQL implements ExprRDQL, ExprBoolean
 {

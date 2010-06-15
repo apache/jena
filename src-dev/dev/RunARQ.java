@@ -12,6 +12,8 @@ import java.io.Reader ;
 import java.io.StringReader ;
 import java.util.Iterator ;
 
+import org.openjena.atlas.io.IndentedLineBuffer ;
+import org.openjena.atlas.io.IndentedWriter ;
 
 import com.hp.hpl.jena.Jena ;
 import com.hp.hpl.jena.query.* ;
@@ -46,7 +48,12 @@ import com.hp.hpl.jena.sparql.sse.SSEParseException ;
 import com.hp.hpl.jena.sparql.sse.WriterSSE ;
 import com.hp.hpl.jena.sparql.sse.builders.BuildException ;
 import com.hp.hpl.jena.sparql.sse.builders.BuilderGraph ;
-import com.hp.hpl.jena.sparql.util.* ;
+import com.hp.hpl.jena.sparql.util.ALog ;
+import com.hp.hpl.jena.sparql.util.ExprUtils ;
+import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
+import com.hp.hpl.jena.sparql.util.QueryExecUtils ;
+import com.hp.hpl.jena.sparql.util.StrUtils ;
+import com.hp.hpl.jena.sparql.util.Timer ;
 import com.hp.hpl.jena.update.UpdateFactory ;
 import com.hp.hpl.jena.update.UpdateRequest ;
 import com.hp.hpl.jena.util.FileManager ;

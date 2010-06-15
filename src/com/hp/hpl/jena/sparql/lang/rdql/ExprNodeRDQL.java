@@ -28,7 +28,7 @@ import com.hp.hpl.jena.sparql.expr.ExprWalker;
 import com.hp.hpl.jena.sparql.expr.NodeValue;
 import com.hp.hpl.jena.sparql.function.FunctionEnv;
 import com.hp.hpl.jena.sparql.util.ALog;
-import com.hp.hpl.jena.sparql.util.IndentedWriter;
+import org.openjena.atlas.io.IndentedWriter;
 
 
 /** A node that is a RDQL constraint expression that can be evaluated to true or false */

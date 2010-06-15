@@ -7,7 +7,7 @@
 package arq.cmdline;
 
 
-import com.hp.hpl.jena.sparql.util.IndentedWriter;
+import org.openjena.atlas.io.IndentedWriter;
 import com.hp.hpl.jena.sparql.util.PrintUtils;
 
 import com.hp.hpl.jena.query.Query;

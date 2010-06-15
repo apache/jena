@@ -11,7 +11,7 @@ import java.util.regex.PatternSyntaxException;
 import com.hp.hpl.jena.graph.query.Expression; 
 import com.hp.hpl.jena.graph.query.IndexValues ;
 import com.hp.hpl.jena.query.*;
-import com.hp.hpl.jena.sparql.util.IndentedWriter;
+import org.openjena.atlas.io.IndentedWriter;
 
 public class Q_StringMatch extends ExprNodeRDQL implements ExprRDQL, ExprBoolean
 {

@@ -29,7 +29,7 @@ import com.hp.hpl.jena.sparql.sse.ItemException;
 import com.hp.hpl.jena.sparql.sse.ItemList;
 import com.hp.hpl.jena.sparql.sse.SSE;
 import com.hp.hpl.jena.sparql.util.ALog;
-import com.hp.hpl.jena.sparql.util.IndentedWriter;
+import org.openjena.atlas.io.IndentedWriter;
 
 /** Stats format:<pre>(stats
  *    (meta ...)

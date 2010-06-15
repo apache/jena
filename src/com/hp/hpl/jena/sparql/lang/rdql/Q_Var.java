@@ -14,7 +14,7 @@ import com.hp.hpl.jena.graph.query.VariableIndexes;
 
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.util.ALog;
-import com.hp.hpl.jena.sparql.util.IndentedWriter;
+import org.openjena.atlas.io.IndentedWriter;
 
 public class Q_Var extends ExprNodeRDQL implements ExprRDQL
 {

@@ -7,7 +7,7 @@
 package com.hp.hpl.jena.sparql.modify.op;
 
 import com.hp.hpl.jena.sparql.modify.UpdateVisitor;
-import com.hp.hpl.jena.sparql.util.IndentedWriter;
+import org.openjena.atlas.io.IndentedWriter;
 import com.hp.hpl.jena.sparql.util.Utils;
 
 public abstract class UpdateExt extends Update

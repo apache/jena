@@ -6,6 +6,9 @@
 package com.hp.hpl.jena.sparql.util;
 
 import java.net.MalformedURLException;
+
+import org.openjena.atlas.io.IndentedWriter ;
+
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Node_Literal;
 import com.hp.hpl.jena.graph.Triple;
