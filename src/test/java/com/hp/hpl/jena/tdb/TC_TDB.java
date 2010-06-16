@@ -13,8 +13,7 @@ import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.junit.runner.RunWith ;
 import org.junit.runners.Suite ;
-import org.openjena.atlas.TC_Atlas ;
-import org.openjena.riot.TS_Riot ;
+import org.openjena.atlas.lib.ByteBufferLib ;
 
 import com.hp.hpl.jena.tdb.assembler.TS_TDBAssembler ;
 import com.hp.hpl.jena.tdb.base.TC_Base ;
@@ -34,14 +33,8 @@ import com.hp.hpl.jena.tdb.sys.TS_Sys ;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
-    TC_Atlas.class
-    
-    // RIOT
-    , TS_Riot.class
-
     // TDB
-
-    , TC_Base.class         // Test Collection.    
+    TC_Base.class         // Test Collection.    
     , TS_LibTDB.class
     , TS_NodeTable.class
     , TS_Index.class
@@ -61,6 +54,10 @@ public class TC_TDB
         Logger.getLogger("com.hp.hpl.jena.tdb.info").setLevel(Level.WARN) ;
         //Logger.getLogger("com.hp.hpl.jena.tdb.exec").setLevel(Level.WARN) ;
         SystemTDB.defaultOptimizer = ReorderLib.identity() ;
+        
+        // Null out needed for testing.
+        SystemTDB.NullOut = true ;
+        ByteBufferLib.NullOut = true ;  // Users of ByteBufferLib: BufferBase and ObjectFileMem 
     }
     
     @AfterClass static public void afterClass() {}   

@@ -6,34 +6,32 @@
 
 package com.hp.hpl.jena.tdb.solver.stats;
 
-import static com.hp.hpl.jena.tdb.solver.reorder.PatternElements.*;
+import static com.hp.hpl.jena.tdb.solver.reorder.PatternElements.* ;
 
-import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.PrintStream ;
+import java.util.ArrayList ;
+import java.util.HashMap ;
+import java.util.List ;
+import java.util.Map ;
 
+import org.openjena.atlas.io.IndentedWriter ;
 import org.openjena.atlas.lib.NotImplemented ;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-
-import com.hp.hpl.jena.sparql.core.NodeConst;
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.sse.Item;
-import com.hp.hpl.jena.sparql.sse.ItemException;
-import com.hp.hpl.jena.sparql.sse.ItemList;
-import com.hp.hpl.jena.sparql.sse.SSE;
-import com.hp.hpl.jena.sparql.util.ALog;
-import com.hp.hpl.jena.sparql.util.IndentedWriter;
-import com.hp.hpl.jena.sparql.util.PrintUtils;
-import com.hp.hpl.jena.sparql.util.Printable;
-
-import com.hp.hpl.jena.tdb.TDBException;
-import com.hp.hpl.jena.tdb.solver.reorder.PatternTriple;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.sparql.core.NodeConst ;
+import com.hp.hpl.jena.sparql.core.Var ;
+import com.hp.hpl.jena.sparql.sse.Item ;
+import com.hp.hpl.jena.sparql.sse.ItemException ;
+import com.hp.hpl.jena.sparql.sse.ItemList ;
+import com.hp.hpl.jena.sparql.sse.SSE ;
+import com.hp.hpl.jena.sparql.util.ALog ;
+import com.hp.hpl.jena.sparql.util.PrintUtils ;
+import com.hp.hpl.jena.sparql.util.Printable ;
+import com.hp.hpl.jena.tdb.TDBException ;
+import com.hp.hpl.jena.tdb.solver.reorder.PatternTriple ;
 
 /** Stats format:<pre>(stats
  *    (meta ...)

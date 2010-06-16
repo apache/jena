@@ -6,6 +6,7 @@
 
 package com.hp.hpl.jena.tdb.solver;
 
+import org.openjena.atlas.io.IndentedLineBuffer ;
 import org.openjena.atlas.lib.StrUtils ;
 import org.slf4j.Logger ;
 
@@ -18,7 +19,6 @@ import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.sparql.sse.writers.WriterNode ;
 import com.hp.hpl.jena.sparql.util.Context ;
-import com.hp.hpl.jena.sparql.util.IndentedLineBuffer ;
 import com.hp.hpl.jena.sparql.util.Symbol ;
 import com.hp.hpl.jena.tdb.TDB ;
 

@@ -1,7 +1,13 @@
 package dev ;
 
+
 public class DevTDB
 {
+    /* TC_TDB:
+     *  SystemTDB.NullOut = true ;
+        ByteBufferLib.NullOut = true ;
+     */
+    
     // Migration: tdb.migrate package
     // Migrate riot commands to ARQ
     

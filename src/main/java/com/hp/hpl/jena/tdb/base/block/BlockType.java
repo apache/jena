@@ -6,10 +6,11 @@
 
 package com.hp.hpl.jena.tdb.base.block;
 
-import com.hp.hpl.jena.sparql.util.IndentedWriter;
-import com.hp.hpl.jena.sparql.util.Named;
-import com.hp.hpl.jena.sparql.util.Printable;
-import com.hp.hpl.jena.tdb.TDBException;
+import org.openjena.atlas.io.IndentedWriter ;
+
+import com.hp.hpl.jena.sparql.util.Named ;
+import com.hp.hpl.jena.sparql.util.Printable ;
+import com.hp.hpl.jena.tdb.TDBException ;
 
 public enum BlockType implements Printable, Named
 {
