@@ -67,14 +67,14 @@ public class UpdateProcessorVisitor implements UpdateVisitor
     
     public void visit(UpdateInsert insert)      { visitModify(insert) ; }
 
-    private void visitModify(final UpdateModifyBase modify)
+    protected void visitModify(final UpdateModifyBase modify)
     {
         final List<Binding> bindings = evalBindings(modify.getElement() ) ;
         GraphStoreUtils.action(graphStore, modify.getGraphNames(), new GraphStoreAction() { public void exec(Graph graph) { execDeletes(modify, graph, bindings) ; }}) ;
         GraphStoreUtils.action(graphStore, modify.getGraphNames(), new GraphStoreAction() { public void exec(Graph graph) { execInserts(modify, graph, bindings) ; }}) ;
     }
   
-    private List<Binding> evalBindings(Element pattern)
+    protected List<Binding> evalBindings(Element pattern)
     {
         List<Binding> bindings = new ArrayList<Binding>() ;
         
@@ -101,7 +101,7 @@ public class UpdateProcessorVisitor implements UpdateVisitor
         return bindings ;
     }
 
-    private void execDeletes(UpdateModifyBase modify, Graph graph, List<Binding> bindings)
+    protected void execDeletes(UpdateModifyBase modify, Graph graph, List<Binding> bindings)
     {
         if ( modify.getDeletes() != null )
         {
@@ -111,7 +111,7 @@ public class UpdateProcessorVisitor implements UpdateVisitor
         }
     }
 
-    private void execInserts(UpdateModifyBase modify, Graph graph, List<Binding> bindings)
+    protected void execInserts(UpdateModifyBase modify, Graph graph, List<Binding> bindings)
     {
         if ( modify.getInserts() != null )
         {
