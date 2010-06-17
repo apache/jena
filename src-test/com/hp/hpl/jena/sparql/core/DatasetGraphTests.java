@@ -24,7 +24,7 @@ import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
 
 public abstract class DatasetGraphTests
 {
-    abstract DatasetGraph emptyDataset() ;
+    protected abstract DatasetGraph emptyDataset() ;
     
     @Test public void create_1()
     {
