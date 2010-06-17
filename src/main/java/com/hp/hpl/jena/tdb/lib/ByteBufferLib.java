@@ -7,7 +7,6 @@
 package com.hp.hpl.jena.tdb.lib;
 
 import static java.lang.System.arraycopy ;
-import static com.hp.hpl.jena.tdb.sys.SystemTDB.NullOut ;
 
 import java.io.PrintStream ;
 import java.nio.ByteBuffer ;
@@ -15,19 +14,11 @@ import java.util.Arrays ;
 
 public class ByteBufferLib
 {
-    //public static boolean NullOut = false ;
-
+    // Now in atlas. 
     public static boolean allowArray  = false ;
 
     private ByteBufferLib() {}
     
-//    protected static void fill(ByteBuffer bb, byte fillValue)
-//    {
-//        for ( int i = 0; i < bb.limit(); i++ )
-//            bb.put(i, fillValue) ;
-//    }
-    
-
     public static void fill(ByteBuffer bb, byte v)
     { fill(bb, bb.position(), bb.limit(), v) ; }
     
@@ -145,8 +136,6 @@ public class ByteBufferLib
 
     final public static void bbfill(ByteBuffer bb, int fromIdx, int toIdx, byte fillValue, int slotLen)
     {
-        if ( ! NullOut )
-            return ;
         if ( allowArray && bb.hasArray() )
         {
             afillArray(bb, fromIdx, toIdx, fillValue, slotLen) ;
@@ -191,10 +180,8 @@ public class ByteBufferLib
 
     final private static void afillArray(ByteBuffer bb, int fromIdx, int toIdx, byte fillValue, int slotLen)
     {
-        if ( NullOut )
-            Arrays.fill(bb.array(), fromIdx+bb.arrayOffset(), toIdx+bb.arrayOffset(), fillValue) ;
+        Arrays.fill(bb.array(), fromIdx+bb.arrayOffset(), toIdx+bb.arrayOffset(), fillValue) ;
     }
-
 }
 
 /*

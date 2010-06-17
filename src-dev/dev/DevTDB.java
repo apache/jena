@@ -3,14 +3,7 @@ package dev ;
 
 public class DevTDB
 {
-    /* TC_TDB:
-     *  SystemTDB.NullOut = true ;
-        ByteBufferLib.NullOut = true ;
-     */
-    
     // Migration: tdb.migrate package
-    // Migrate riot commands to ARQ
-    
     // Check writing to union graph is handled appropriately.
     // assembly.xml ship source files for ARQ and Jena (ditto ARQ, and javadoc).
     

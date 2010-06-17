@@ -171,7 +171,11 @@ public class SystemTDB
 //    public static boolean getNullOut()
 //    { return SystemTDB.NullOut ; }
 
+    /** null out (wuth the FillByte) freed up space in buffers */
     public static boolean NullOut = false ;
+    
+    /** FillByte value for NullOut */
+    public static final byte FillByte = (byte)0xFF ;
 
     public static boolean Checking = false ;       // This isn't used enough!
 

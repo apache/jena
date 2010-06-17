@@ -8,6 +8,7 @@ package com.hp.hpl.jena.tdb.base.buffer;
 
 import static com.hp.hpl.jena.tdb.sys.SystemTDB.NetworkOrder ;
 import static com.hp.hpl.jena.tdb.sys.SystemTDB.NullOut ;
+import static com.hp.hpl.jena.tdb.sys.SystemTDB.FillByte;
 import static java.lang.String.format ;
 
 import java.nio.ByteBuffer ;
@@ -21,8 +22,6 @@ abstract class BufferBase
 {
     public static boolean CheckBuffer = false ;
     
-    static final byte FillByte = (byte)0xFF ;
-        
     protected ByteBuffer bb ;
     protected int slotLen ;
     protected int numSlot ;                 // Number of records in use
