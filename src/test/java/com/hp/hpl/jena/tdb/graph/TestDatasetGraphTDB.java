@@ -6,6 +6,8 @@
 
 package com.hp.hpl.jena.tdb.graph;
 
+import org.junit.Test ;
+
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphTests ;
 import com.hp.hpl.jena.tdb.TDBFactory ;
@@ -15,6 +17,11 @@ public class TestDatasetGraphTDB extends DatasetGraphTests
 {
     @Override
     protected DatasetGraph emptyDataset() { return TDBFactory.createDatasetGraph() ; }
+
+    @Override
+    // Empty graph tests: N/A
+    @Test public void graph_01()
+    {}
 
 }
 
