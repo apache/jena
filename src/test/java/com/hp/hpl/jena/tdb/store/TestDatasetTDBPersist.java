@@ -7,27 +7,27 @@
 package com.hp.hpl.jena.tdb.store;
 
 
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
+import java.util.Arrays ;
+import java.util.Iterator ;
+import java.util.List ;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.After ;
+import org.junit.AfterClass ;
+import org.junit.Before ;
+import org.junit.BeforeClass ;
+import org.junit.Test ;
 import org.openjena.atlas.iterator.Iter ;
 import org.openjena.atlas.junit.BaseTest ;
 
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.query.Dataset;
-import com.hp.hpl.jena.sparql.sse.SSE;
-import com.hp.hpl.jena.tdb.ConfigTest;
-import com.hp.hpl.jena.tdb.base.file.Location;
-import com.hp.hpl.jena.tdb.junit.GraphLocation;
-import com.hp.hpl.jena.tdb.sys.TDBMaker;
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.query.Dataset ;
+import com.hp.hpl.jena.sparql.sse.SSE ;
+import com.hp.hpl.jena.tdb.ConfigTest ;
+import com.hp.hpl.jena.tdb.base.file.Location ;
+import com.hp.hpl.jena.tdb.junit.GraphLocation ;
+import com.hp.hpl.jena.tdb.sys.TDBMaker ;
 
 /** Testing persistence  */ 
 public class TestDatasetTDBPersist extends BaseTest
@@ -51,8 +51,19 @@ public class TestDatasetTDBPersist extends BaseTest
     
     @Before public void before()
     {   
-        graphLocation.clearDirectory() ; 
-        graphLocation.createDataset() ;
+        // Windows/memory mapped does not allow deleting memory mapped files.
+        if ( false )
+        {
+            if ( graphLocation.getDataset() == null )
+                graphLocation.createDataset() ;
+            else
+                graphLocation.getDataset().asDatasetGraph().deleteAny(null, null, null, null) ;
+        }
+        else
+        {
+            graphLocation.clearDirectory() ; 
+            graphLocation.createDataset() ;
+        }
     }
     
     @After public void after()
@@ -99,8 +110,21 @@ public class TestDatasetTDBPersist extends BaseTest
     {
         String graphName = "http://example/" ;
         Triple triple = SSE.parseTriple("(<x> <y> <z>)") ;
+        Node gn = Node.createURI(graphName) ;
+
         Dataset ds = graphLocation.getDataset() ;
-        Graph g2 = ds.asDatasetGraph().getGraph(Node.createURI(graphName)) ;
+        // ?? See TupleLib.
+        ds.asDatasetGraph().deleteAny(gn, null, null, null) ;
+        
+        Graph g2 = ds.asDatasetGraph().getGraph(gn) ;
+        
+//        if ( true )
+//        {
+//            PrintStream ps = System.err ;
+//            ps.println("Dataset names: ") ;
+//            Iter.print(ps, ds.listNames()) ;
+//        }
+        
         // Graphs only exists if they have a triple in them
         assertFalse(ds.containsNamedModel(graphName)) ;
         

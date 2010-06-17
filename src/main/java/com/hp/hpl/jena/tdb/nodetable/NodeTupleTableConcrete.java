@@ -137,6 +137,8 @@ public class NodeTupleTableConcrete implements NodeTupleTable
     
     public boolean isEmpty()        { return tupleTable.isEmpty() ; }
     
+    public void clear()             { tupleTable.clear(); }
+    
     public long size()              { return tupleTable.size() ; }
     
     //@Override

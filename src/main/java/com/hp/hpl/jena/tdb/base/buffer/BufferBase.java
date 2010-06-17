@@ -6,16 +6,14 @@
 
 package com.hp.hpl.jena.tdb.base.buffer;
 
-import static com.hp.hpl.jena.tdb.sys.SystemTDB.NetworkOrder;
-import static com.hp.hpl.jena.tdb.sys.SystemTDB.NullOut;
-import static java.lang.String.format;
+import static com.hp.hpl.jena.tdb.sys.SystemTDB.NetworkOrder ;
+import static com.hp.hpl.jena.tdb.sys.SystemTDB.NullOut ;
+import static java.lang.String.format ;
 
-import java.nio.ByteBuffer;
+import java.nio.ByteBuffer ;
 
-import org.openjena.atlas.lib.ByteBufferLib ;
-
-
-import com.hp.hpl.jena.tdb.base.record.RecordException;
+import com.hp.hpl.jena.tdb.base.record.RecordException ;
+import com.hp.hpl.jena.tdb.lib.ByteBufferLib ;
 
 
 /** ByteBuffer specialization - Common operations for RecordBuffer and PtrBuffer */  

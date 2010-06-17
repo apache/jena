@@ -175,6 +175,11 @@ public class LucIndex implements TupleIndex
 
 
     //@Override
+    public void clear()
+    {}
+
+
+    //@Override
     public long size()
     {
         return 0 ;

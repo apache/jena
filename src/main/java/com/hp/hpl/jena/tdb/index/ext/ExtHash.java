@@ -21,6 +21,7 @@ import org.openjena.atlas.lib.Bytes ;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.hp.hpl.jena.sparql.util.Utils ;
 import com.hp.hpl.jena.tdb.base.StorageException;
 import com.hp.hpl.jena.tdb.base.block.BlockMgr;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory;
@@ -310,6 +311,10 @@ public class ExtHash implements Index
        // No idea.
        return false ;
     }
+    
+    //@Override
+    public void clear()
+    { throw new UnsupportedOperationException("RangeIndex("+Utils.classShortName(this.getClass())+").clear") ; }
 
     //@Override
     public long size()

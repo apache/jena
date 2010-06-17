@@ -47,6 +47,9 @@ public interface Index extends Iterable<Record>, Sync, Closeable
      * (e.g. transactional index)  */
     public boolean isEmpty() ;
     
+    /** Clear the index */
+    public void clear() ;
+    
     /** Perform checks on this index */
     public void check() ;
     

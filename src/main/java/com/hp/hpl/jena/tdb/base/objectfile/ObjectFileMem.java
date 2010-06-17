@@ -6,16 +6,17 @@
 
 package com.hp.hpl.jena.tdb.base.objectfile;
 
-import java.nio.ByteBuffer;
-import java.util.ArrayList;
+import java.nio.ByteBuffer ;
+import java.util.ArrayList ;
 import java.util.Iterator ;
-import java.util.List;
+import java.util.List ;
 
 import org.openjena.atlas.iterator.Iter ;
 import org.openjena.atlas.iterator.IteratorInteger ;
 import org.openjena.atlas.iterator.Transform ;
-import org.openjena.atlas.lib.ByteBufferLib ;
 import org.openjena.atlas.lib.Pair ;
+
+import com.hp.hpl.jena.tdb.lib.ByteBufferLib ;
 
 
 

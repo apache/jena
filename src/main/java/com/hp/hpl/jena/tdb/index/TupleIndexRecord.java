@@ -235,6 +235,12 @@ public class TupleIndexRecord extends TupleIndexBase
     }
     
     //@Override
+    public void clear()
+    {
+        index.clear() ;
+    }
+    
+    //@Override
     public long size()
     {
         return index.size() ;

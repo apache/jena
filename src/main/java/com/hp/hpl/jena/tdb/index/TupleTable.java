@@ -175,6 +175,15 @@ public class TupleTable implements Sync, Closeable
 
     public boolean isEmpty()        { return indexes[0].isEmpty() ; }
     
+    public void clear()
+    {
+        for ( TupleIndex idx : indexes )
+        {
+            if ( idx != null )
+                idx.clear() ;
+        }
+    }
+    
     public long size()
     {
         return indexes[0].size() ;

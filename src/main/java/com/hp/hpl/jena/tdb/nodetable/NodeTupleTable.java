@@ -40,17 +40,13 @@ public interface NodeTupleTable extends Sync, Closeable
     public NodeTable getNodeTable() ;
 
     public boolean isEmpty() ;
+    
+    public void clear() ;
 
+    // No clear operation - need to manage the tuple table 
+    // and node tables separately.
+    
     public long size() ;
-//
-//    //@Override
-//    public void close() ;
-//
-//    //@Override
-//    public void sync() ;
-//
-//    //@Override
-//    public void sync(boolean force) ;
 }
 
 /*

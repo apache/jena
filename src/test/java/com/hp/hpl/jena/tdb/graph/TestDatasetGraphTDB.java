@@ -1,36 +1,25 @@
 /*
- * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
-package dump;
+package com.hp.hpl.jena.tdb.graph;
 
-import java.io.PrintStream;
-import java.nio.ByteBuffer;
-import com.hp.hpl.jena.tdb.lib.ByteBufferLib ;
+import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import com.hp.hpl.jena.sparql.core.DatasetGraphTests ;
+import com.hp.hpl.jena.tdb.TDBFactory ;
 
-import com.hp.hpl.jena.tdb.base.block.BlockMgr;
-
-public class DumpBlockMgr
+// Quad tests
+public class TestDatasetGraphTDB extends DatasetGraphTests
 {
-    public static void dump(PrintStream out, BlockMgr blkMgr)
-    {
-        try {
-            for ( int id = 0 ; id < 9999999 ; id++)
-            {
-                if ( ! blkMgr.valid(id) ) break ;
-                ByteBuffer bb = blkMgr.get(id) ;
-                ByteBufferLib.print(out, bb) ;
-            }
-        } catch (Exception ex) { 
-            ex.printStackTrace() ;
-        }
-    }
+    @Override
+    protected DatasetGraph emptyDataset() { return TDBFactory.createDatasetGraph() ; }
+
 }
 
 /*
- * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -19,6 +19,7 @@ import org.openjena.atlas.iterator.Iter ;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.hp.hpl.jena.sparql.util.Utils ;
 import com.hp.hpl.jena.tdb.base.block.BlockMgr;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory;
 import com.hp.hpl.jena.tdb.base.record.Record;
@@ -311,6 +312,10 @@ public class BPlusTree implements Iterable<Record>, RangeIndex, Session
     {
         return ! root.hasAnyKeys() ;
     }
+    
+    //@Override
+    public void clear()
+    { throw new UnsupportedOperationException("RangeIndex("+Utils.classShortName(this.getClass())+").clear") ; }
     
     //@Override
     public void sync() { sync(true) ; }

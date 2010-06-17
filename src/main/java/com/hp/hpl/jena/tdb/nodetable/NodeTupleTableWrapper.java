@@ -43,6 +43,9 @@ public class NodeTupleTableWrapper implements NodeTupleTable
 
     public boolean isEmpty()
     { return nodeTupleTable.isEmpty() ; }
+    
+    public void clear()
+    { nodeTupleTable.clear(); }
 
     public long size()
     { return nodeTupleTable.size() ; }

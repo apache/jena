@@ -6,14 +6,14 @@
 
 package com.hp.hpl.jena.tdb.base.block;
 
-import static org.openjena.atlas.lib.ByteBufferLib.fill ;
 
-import java.nio.ByteBuffer;
+import java.nio.ByteBuffer ;
 
+import static com.hp.hpl.jena.tdb.lib.ByteBufferLib.fill ;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.After ;
+import org.junit.Before ;
+import org.junit.Test ;
 import org.openjena.atlas.junit.BaseTest ;
 
 public abstract class AbstractTestBlockMgr extends BaseTest

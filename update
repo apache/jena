@@ -1,7 +1,3 @@
-#!/bin./bash
-( cd lib ; 
-  for f in arq*
-    do cp ../../ARQ/target/$f .
-    done
-)
+#!/bin/bash
 
+mvn dependency:copy-dependencies

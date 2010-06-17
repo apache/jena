@@ -26,7 +26,7 @@ import com.hp.hpl.jena.tdb.store.NodeId;
 public class TupleIndexMem extends TupleIndexBase
 {
     // Not used.
-    // Converty to TupleIndexBaseFind.
+    // Convert to TupleIndexBaseFind.
     // Simple in-memory structure.
     private Index3<NodeId, NodeId, NodeId, Tuple<NodeId>> index = new Index3<NodeId, NodeId, NodeId, Tuple<NodeId>>() ;
     
@@ -106,6 +106,12 @@ public class TupleIndexMem extends TupleIndexBase
     public boolean isEmpty()
     {
         return index.isEmpty() ;
+    }
+    
+    //@Override
+    public void clear()
+    {
+        index = new Index3<NodeId, NodeId, NodeId, Tuple<NodeId>>() ;
     }
 
     //@Override

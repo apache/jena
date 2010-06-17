@@ -107,6 +107,17 @@ public class QuadTable implements Sync, Closeable
     //@Override
     public void close()
     { table.close() ; }
+
+    /** Clear - does not clear the associated node tuple table */
+    public void clearQuads()
+    { table.getTupleTable().clear() ; }
+
+//    /** Clear - including the associated node tuple table */
+//    public void clear()
+//    { 
+//        table.getTupleTable().clear() ;
+//        table.getNodeTable().clear() ;
+//    }
 }
 
 /*

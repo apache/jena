@@ -163,7 +163,14 @@ public class SystemTDB
     public static ReorderTransformation defaultOptimizer = null ; //ReorderLib.fixed() ;
 
     public static final ByteOrder NetworkOrder      = ByteOrder.BIG_ENDIAN ;
-    
+
+//    public static void setNullOut(boolean nullOut)
+//    { SystemTDB.NullOut = nullOut ; }
+//
+//    /** Are we nulling out unused space in bytebuffers (records, points etc) */ 
+//    public static boolean getNullOut()
+//    { return SystemTDB.NullOut ; }
+
     public static boolean NullOut = false ;
 
     public static boolean Checking = false ;       // This isn't used enough!

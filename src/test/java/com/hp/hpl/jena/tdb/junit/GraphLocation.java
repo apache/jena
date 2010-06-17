@@ -7,23 +7,22 @@
 package com.hp.hpl.jena.tdb.junit;
 
 
-import java.util.Iterator;
-import java.util.List;
+import java.util.Iterator ;
+import java.util.List ;
 
 import org.openjena.atlas.iterator.Iter ;
 import org.openjena.atlas.lib.FileOps ;
 
-
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.query.Dataset;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.sparql.core.DatasetImpl;
-import com.hp.hpl.jena.tdb.TDBFactory;
-import com.hp.hpl.jena.tdb.base.file.Location;
-import com.hp.hpl.jena.tdb.store.DatasetGraphTDB;
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.query.Dataset ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.ModelFactory ;
+import com.hp.hpl.jena.sparql.core.DatasetImpl ;
+import com.hp.hpl.jena.tdb.TDBFactory ;
+import com.hp.hpl.jena.tdb.base.file.Location ;
+import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 
 /** Manage a graph at a fixed location */
 public class GraphLocation
@@ -49,7 +48,7 @@ public class GraphLocation
         if ( dsg == null ) return null ;
         return new DatasetImpl(dsg) ;
     }
-    
+
     public Dataset createDataset() 
     {
         if ( dsg != null )

@@ -94,35 +94,16 @@ public class TripleTable implements Sync, Closeable
     
     public boolean isEmpty()        { return table.isEmpty() ; }
     
-//    /** Find by node. */
-//    public Iterator<Triple> find(Node s, Node p, Node o)
-//    {
-//        NodeId subj = idForNode(s) ;
-//        if ( subj == NodeId.NodeDoesNotExist )
-//            return new NullIterator<Triple>() ;
-//        
-//        NodeId pred = idForNode(p) ;
-//        if ( pred == NodeId.NodeDoesNotExist )
-//            return new NullIterator<Triple>() ;
-//        
-//        NodeId obj = idForNode(o) ;
-//        if ( obj == NodeId.NodeDoesNotExist )
-//            return new NullIterator<Triple>() ;
-//
-//        Iterator<Tuple<NodeId>> _iter = find(subj, pred, obj) ;
-//        Iterator<Triple> iter = TupleLib.convertToTriples(nodeTable, _iter) ;
-//        return iter ;
-//    }
-//    
-//    
-//    /** Find by NodeId. */
-//    public Iterator<Tuple<NodeId>> find(NodeId subj, NodeId pred, NodeId obj)
-//    {
-//        Tuple<NodeId> tuple = Tuple.create(subj, pred, obj) ;
-//        Iterator<Tuple<NodeId>> iter = tupleTable.find(tuple) ;
-//        return iter ;
-//    }
+    /** Clear - does not clear the associated node tuple table */
+    public void clearTriples()
+    { table.getTupleTable().clear() ; }
 
+//    /** Clear - including the associated node tuple table */
+//    public void clear()
+//    { 
+//        table.getTupleTable().clear() ;
+//        table.getNodeTable().clear() ;
+//    }
 }
 
 /*
