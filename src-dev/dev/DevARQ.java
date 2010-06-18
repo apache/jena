@@ -7,8 +7,7 @@ package dev;
 
 public class DevARQ
 {
-
-    // daatset(Graph).clear
+    // Dataset[Graph].clear
     // Parsing SPARQL : Use RIOT checker.
     
     // Quad transformation goes through SERVICE.
