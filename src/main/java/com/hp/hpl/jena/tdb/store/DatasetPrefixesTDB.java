@@ -18,6 +18,7 @@ import org.openjena.atlas.lib.Tuple ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.shared.PrefixMapping ;
+import com.hp.hpl.jena.sparql.core.DatasetPrefixStorage ;
 import com.hp.hpl.jena.tdb.base.file.FileSet ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
@@ -25,7 +26,6 @@ import com.hp.hpl.jena.tdb.graph.GraphPrefixesProjection ;
 import com.hp.hpl.jena.tdb.index.IndexBuilder ;
 import com.hp.hpl.jena.tdb.index.TupleIndex ;
 import com.hp.hpl.jena.tdb.index.TupleIndexRecord ;
-import com.hp.hpl.jena.tdb.migrate.DatasetPrefixStorage ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTableFactory ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable ;

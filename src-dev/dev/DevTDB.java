@@ -4,6 +4,7 @@ package dev ;
 public class DevTDB
 {
     // Migration: tdb.migrate package
+    
     // Check writing to union graph is handled appropriately.
     // assembly.xml ship source files for ARQ and Jena (ditto ARQ, and javadoc).
     

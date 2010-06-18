@@ -18,13 +18,13 @@ import arq.cmdline.CmdARQ ;
 import arq.cmdline.ModVersion ;
 
 import com.hp.hpl.jena.shared.PrefixMapping ;
+import com.hp.hpl.jena.sparql.core.DatasetPrefixStorage ;
 import com.hp.hpl.jena.sparql.sse.Item ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.base.file.FileFactory ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.base.objectfile.StringFile ;
-import com.hp.hpl.jena.tdb.migrate.DatasetPrefixStorage ;
 import com.hp.hpl.jena.tdb.solver.stats.StatsCollector ;
 import com.hp.hpl.jena.tdb.store.GraphTDB ;
 import com.hp.hpl.jena.tdb.sys.SetupTDB ;

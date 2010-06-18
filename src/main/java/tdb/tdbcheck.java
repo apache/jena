@@ -10,8 +10,10 @@ import java.io.InputStream ;
 import java.io.InputStreamReader ;
 import java.io.Reader ;
 import java.io.UnsupportedEncodingException ;
+import java.util.Arrays ;
 import java.util.List ;
 
+import org.openjena.atlas.iterator.Iter ;
 import org.openjena.atlas.logging.Log ;
 import org.openjena.riot.Checker ;
 import arq.cmdline.CmdARQ ;
@@ -32,6 +34,7 @@ public class tdbcheck extends CmdARQ
     { 
         TDB.init(); // Includes reorganising the Jena readers.
         Log.setLog4j() ;
+        Log.warn(tdbcheck.class, "Deprecated: Use the RIOT commands (part of ARQ) instead: 'riot --sink --time "+Iter.asString(Arrays.asList(argv))) ;
         // Checking done in graph.
         new tdbcheck(argv).mainRun() ;
     }

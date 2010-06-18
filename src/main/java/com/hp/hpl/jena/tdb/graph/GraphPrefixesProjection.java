@@ -11,7 +11,7 @@ import java.util.Map.Entry;
 
 import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
-import com.hp.hpl.jena.tdb.migrate.DatasetPrefixStorage ;
+import com.hp.hpl.jena.sparql.core.DatasetPrefixStorage ;
 
 /** View of a dataset's prefixes for a particular graph */
 

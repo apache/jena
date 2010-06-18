@@ -29,6 +29,7 @@ import org.openjena.atlas.lib.PropertyUtils ;
 import org.openjena.atlas.lib.StrUtils ;
 import org.slf4j.Logger ;
 
+import com.hp.hpl.jena.sparql.core.DatasetPrefixStorage ;
 import com.hp.hpl.jena.sparql.sse.SSEParseException ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 import com.hp.hpl.jena.tdb.TDB ;
@@ -49,7 +50,6 @@ import com.hp.hpl.jena.tdb.index.TupleIndexRecord ;
 import com.hp.hpl.jena.tdb.index.bplustree.BPlusTree ;
 import com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams ;
 import com.hp.hpl.jena.tdb.mgt.TDBSystemInfoMBean;
-import com.hp.hpl.jena.tdb.migrate.DatasetPrefixStorage ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTableNative ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTableCache ;
