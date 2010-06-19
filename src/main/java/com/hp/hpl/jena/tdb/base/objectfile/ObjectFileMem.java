@@ -16,8 +16,7 @@ import org.openjena.atlas.iterator.IteratorInteger ;
 import org.openjena.atlas.iterator.Transform ;
 import org.openjena.atlas.lib.Pair ;
 
-import com.hp.hpl.jena.tdb.lib.ByteBufferLib ;
-
+import org.openjena.atlas.lib.ByteBufferLib ;
 
 
 /** In-memory ByteBufferFile (for testing) - copies bytes in and out

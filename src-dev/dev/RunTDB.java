@@ -25,6 +25,7 @@ import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.TDBFactory ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
@@ -47,6 +48,17 @@ public class RunTDB
 
     public static void main(String[] args) throws IOException
     {
+        Dataset ds = TDBFactory.createDataset() ;
+        DatasetGraphTDB dsg = (DatasetGraphTDB)(ds.asDatasetGraph()) ;
+        
+        Node gn = Node.createURI("http://example/graph1") ;
+        
+        dsg.deleteAny(gn, null, null, null) ;
+        
+        SSE.write(dsg) ;
+        System.exit(0) ;
+        
+        
         tdb.tdbloader.main("--loc=DB", "D.rdf") ;
         System.exit(0) ;
         

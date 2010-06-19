@@ -14,7 +14,7 @@ import static java.lang.String.format ;
 import java.nio.ByteBuffer ;
 
 import com.hp.hpl.jena.tdb.base.record.RecordException ;
-import com.hp.hpl.jena.tdb.lib.ByteBufferLib ;
+import org.openjena.atlas.lib.ByteBufferLib ;
 
 
 /** ByteBuffer specialization - Common operations for RecordBuffer and PtrBuffer */  

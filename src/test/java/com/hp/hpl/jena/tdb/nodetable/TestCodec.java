@@ -15,7 +15,7 @@ import org.junit.runner.RunWith ;
 import org.junit.runners.Parameterized ;
 import org.junit.runners.Parameterized.Parameters ;
 import org.openjena.atlas.junit.BaseTest ;
-import com.hp.hpl.jena.tdb.lib.ByteBufferLib ;
+import org.openjena.atlas.lib.ByteBufferLib ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.rdf.model.AnonId ;

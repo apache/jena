@@ -6,11 +6,12 @@
 
 package dump;
 
-import java.io.PrintStream;
-import java.nio.ByteBuffer;
-import com.hp.hpl.jena.tdb.lib.ByteBufferLib ;
+import java.io.PrintStream ;
+import java.nio.ByteBuffer ;
 
-import com.hp.hpl.jena.tdb.base.block.BlockMgr;
+import org.openjena.atlas.lib.ByteBufferLib ;
+
+import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
 
 public class DumpBlockMgr
 {

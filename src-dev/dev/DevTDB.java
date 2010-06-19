@@ -3,10 +3,15 @@ package dev ;
 
 public class DevTDB
 {
-    // Migration: tdb.migrate package
-    
     // Check writing to union graph is handled appropriately.
-    // assembly.xml ship source files for ARQ and Jena (ditto ARQ, and javadoc).
+
+    // BPT rewriters
+    
+    // kill -9 ism's
+    
+    // Build:
+    //  assembly.xml ship source files for ARQ and Jena (ditto ARQ, and javadoc).
+    //  Use,locate resources maven style.
     
     // Loader stats numbers of quads+triples
     
@@ -24,20 +29,6 @@ public class DevTDB
     // TupleSlice
     
     // Build: copy/filter a file, don't inline properties file.
-    
-    // RIOT
-    //   Filename in error messages
-    //   SysRIOT.fmtMessage, ParseException
-    //   Output bad term quads/triples to special sink. 
-    //   WebReader: Read from URL, Content negotiation.
-    //
-    //   Interface checker
-    //   Option passing (old Jena style).
-    //   Options: pass/reject bad URIs, bad literals. -> "SKIP", "PASS", "FAIL"
-    //   Recovery parsing - scan to DOT?
-    // RIOT Commands
-    // Document
-    //  --sink, --skip, --time, --stats?
     
     // Free block recycling.
     
