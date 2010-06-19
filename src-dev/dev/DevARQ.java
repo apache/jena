@@ -9,14 +9,11 @@ public class DevARQ
 {
     // Dataset[Graph].clear
     // Parsing SPARQL : Use RIOT checker.
-    
-    // Quad transformation goes through SERVICE.
-    // Where is the SERVICE avoiding code?
-    // See Optimize
+ 
+    // Commands and default log4j.
+    // Build: use maven resources for the etching of version.  
     
     // Tests:
-    // Suppress warning from tests (RIOT issue?)
-    // Checker parameters.
     // Re-enable normalization tests
     //     POM -> run tests TS_*
     //   Is this or more run from ARQTestSuite?
@@ -24,29 +21,26 @@ public class DevARQ
     // 1/ Enable sameTermString optimization
     // 2/ If an equality is repeated do once only.
 
-    // Commands: like TDB with an arq_init script
-    // Migrate riot commands to ARQ
-    // --strict
-
+    // RIOT
+    //   Document
+    //   Filename in error messages
+    //   SysRIOT.fmtMessage, ParseException
+    //   Output bad term quads/triples to special sink.
+    //   Checker architecture - Jena-ish IRI tuned.
+    //   WebReader: Read from URL, Content negotiation.
+    //
+    //   Interface checker
+    //   Option passing (old Jena style).
+    //   Options: pass/reject bad URIs, bad literals. -> "SKIP", "PASS", "FAIL"
+    //   Recovery parsing - scan to DOT?
+    // RIOT Commands
+    //  --sink, --skip, --time, --stats?
+   
+    
     // Joseki - expose "-print=opt" in validator
-    
-    // { BGP {BGP} UNION { BGP } }
-    // MINUS is the same
-    
-    // 1/ Enable sameTermString optimization
-    // 2/ If an equality is repeated do once only. 
-    
-    // Commands: like TDB with an arq_init script
-    // Migrate riot commands to ARQ
-    // --strict
     
     // Check the assembly: javadoc,lib/*sources*
     // Zero-length paths
-    
-    // RIOT: Tune error checking of URIs - be more permissive when parssing from code
-    // but --string when from command line.  jenaImplementation vs IRI implementation.
-    // Include combining chars as allowed in prefixed names.
-    
     
     // Reenable i18n tests: TS_DAWG, DAWG_Final/maniest-evaluation.ttl
     // Removed dups between DAGE and DAWG-Final

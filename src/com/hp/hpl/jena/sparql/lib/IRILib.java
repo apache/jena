@@ -12,8 +12,59 @@ import com.hp.hpl.jena.iri.ViolationCodes ;
 
 public class IRILib
 {
-    //static IRIFactory iriFactory = IRIFactory.jenaImplementation() ;
-    //static IRIFactory iriFactory = IRIFactory.iriImplementation();
+    // Code from the IRI library v0.8
+
+    /* -----------
+    static {
+        // call static initializers
+        new ViolationCodes.Initialize();
+    }
+
+    static private IRIFactory jenaFactory;
+    static private IRIFactory theSemWebFactory;
+    static private IRIFactory theURIFactory;
+    static private IRIFactory theIRIFactory;
+
+    static {
+        theIRIFactory = new IRIFactory();
+        theIRIFactory.useSpecificationIRI(true);
+        theIRIFactory.useSchemeSpecificRules("*",true);
+        theIRIFactory.create("");
+
+
+        jenaFactory = new IRIFactory();
+        //            jenaFactory.dnsViolation(false,false);
+        //            jenaFactory.setSameSchemeRelativeReferences("file");
+        jenaFactory.shouldViolation(false,false);
+        jenaFactory.securityViolation(false,false);
+        jenaFactory.useSpecificationRDF(false);
+        jenaFactory.setIsError(ViolationCodes.UNREGISTERED_IANA_SCHEME,false);
+        jenaFactory.setIsWarning(ViolationCodes.UNREGISTERED_IANA_SCHEME,false);
+        jenaFactory.setIsError(ViolationCodes.CONTROL_CHARACTER,false);
+        jenaFactory.setIsWarning(ViolationCodes.CONTROL_CHARACTER,false);
+        //            jenaFactory.setIsError(PORT_SHOULD_NOT_BE_WELL_KNOWN,false);
+        //            jenaFactory.setIsWarning(PORT_SHOULD_NOT_BE_WELL_KNOWN,false);
+        jenaFactory.useSchemeSpecificRules("http",true);
+        jenaFactory.create("");
+
+        theURIFactory = new IRIFactory();
+        theURIFactory.useSpecificationURI(true);
+        theURIFactory.useSchemeSpecificRules("*",true);
+        theURIFactory.create("");
+
+        theSemWebFactory = new IRIFactory();
+        theSemWebFactory.useSpecificationRDF(true);
+        theSemWebFactory.useSpecificationIRI(true);
+        theSemWebFactory.useSpecificationXLink(true);
+        theSemWebFactory.useSchemeSpecificRules("*",true);
+        theSemWebFactory.setIsError(ViolationCodes.NON_INITIAL_DOT_SEGMENT,true);
+        theSemWebFactory.create("");
+    }
+    
+    private static IRIFactory iriFactoryJena = IRIFactory.jenaImplementation() ;
+    private static IRIFactory iriFactoryIRI  = IRIFactory.iriImplementation();
+    ---- */
+    
     
     /** The IRI checker setup - more than usual Jena but not full IRI. */
     public static IRIFactory iriFactory = new IRIFactory();
