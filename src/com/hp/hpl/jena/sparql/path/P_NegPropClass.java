@@ -10,37 +10,36 @@ import java.util.ArrayList ;
 import java.util.List ;
 
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.sparql.ARQException ;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
 
 public class P_NegPropClass extends PathBase
 {
     List<P_Path0> nodes ;
     List<Node> forwardNodes ;
-    //List<Node> backwardNodes ;
+    List<Node> backwardNodes ;
     
     public P_NegPropClass()
     {
         nodes = new ArrayList<P_Path0>() ;
         forwardNodes = new ArrayList<Node>() ;
-        //backwardNodes = new ArrayList<Node>() ;
+        backwardNodes = new ArrayList<Node>() ;
     }
     
+    // addFwd, addBkwd?
     public void add(P_Path0 p)
     {
         nodes.add(p) ;
         if ( p.isForward() )
             forwardNodes.add(p.getNode()) ;
         else
-            throw new ARQException("Reverse path step added to negated property class") ;
-            //backwardNodes.add(p.getNode()) ;
+            backwardNodes.add(p.getNode()) ;
     }
 
-    public List<Node> getExcludedNodes() { return forwardNodes ; }
+    //public List<Node> getExcludedNodes() { return forwardNodes ; }
 
-    //public List<P_Path0> getNodes() { return nodes ; }
-    //public List<Node> getFwdNodes() { return forwardNodes ; }
-    //public List<Node> getBwdNodes() { return backwardNodes ; }
+    public List<P_Path0> getNodes() { return nodes ; }
+    public List<Node> getFwdNodes() { return forwardNodes ; }
+    public List<Node> getBwdNodes() { return backwardNodes ; }
 
     //@Override
     public void visit(PathVisitor visitor)

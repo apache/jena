@@ -15,6 +15,7 @@ import java.util.Set ;
 import org.openjena.atlas.iterator.Filter ;
 import org.openjena.atlas.iterator.Iter ;
 import org.openjena.atlas.iterator.Transform ;
+import org.openjena.atlas.logging.Log ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
@@ -136,11 +137,16 @@ public class PathEval
         //@Override
         public void visit(P_NegPropClass pathNotOneOf)
         {
-            List<Node> props = pathNotOneOf.getExcludedNodes()  ;
+            if ( pathNotOneOf.getBwdNodes().size() > 0 )
+                Log.warn(this, "Only forward negated property classes implemented") ;
+            
+            // X !(:a|:b|^:c|^:d) Y = { X !(:a|:b) Y } UNION { Y !(:c|:d) X } 
+            
+            List<Node> props = pathNotOneOf.getFwdNodes() ;
             if ( props.size() == 0 )
                 throw new ARQException("Bad path element: Negative property class found with no elements") ;
             //Iterator<Node> nodes = doOneExclude(pathNotOneOf.getFwdNodes(), pathNotOneOf.getBwdNodes()) ;
-            Iterator<Node> nodes = doOneExclude(pathNotOneOf.getExcludedNodes()) ;
+            Iterator<Node> nodes = doOneExclude(pathNotOneOf.getFwdNodes()) ;
             fill(nodes) ;
         }
         
