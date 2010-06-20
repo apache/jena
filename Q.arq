@@ -2,10 +2,6 @@ prefix : <http://example/>
 
 select ?x
 {
-  :x :p :o 
-  OPTIONAL {
-  SERVICE <http://localhost/> {
-    :s ?p ?o }
- }
+  ?x !(:p|^:q) :o 
 }
 
