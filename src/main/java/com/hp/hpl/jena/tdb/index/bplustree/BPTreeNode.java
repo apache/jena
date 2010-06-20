@@ -282,15 +282,21 @@ public final class BPTreeNode extends BPTreePage
     public ByteBuffer getBackingByteBuffer()       { return byteBuffer ; }
     
     /** Do not use without great care */
-    public RecordBuffer getRecordBuffer()       { return records ; }
+    public RecordBuffer getRecordBuffer()   { return records ; }
     /** Do not use without great care */
-    public PtrBuffer getPtrBuffer()       { return ptrs ; }
+    public PtrBuffer getPtrBuffer()         { return ptrs ; }
 
     //@Override
     public int getId()                      { return id ; }
 
     //@Override
     public void setId(int id)               { this.id = id ; }
+
+    //@Override
+    public void setIsLeaf(boolean isLeaf)   { this.isLeaf = isLeaf ; }
+
+    //@Override
+    public boolean isLeaf()                 { return this.isLeaf ; }
     
     public long size()
     {
@@ -1160,7 +1166,7 @@ public final class BPTreeNode extends BPTreePage
         {
             out.println();
             
-            if ( i == this.getId() )
+            if ( i == this.getId() && !isLeaf )
             {
                 // Oops
                 log.warn("Node points to itself: "+getId()) ;
