@@ -191,6 +191,8 @@ public class ExtHash implements Index
             log("resize: %d ==> %d", oldSize, newSize) ;
         }
         
+        log("resize: %d ==> %d", oldSize, newSize) ;
+        
         IntBuffer newDictionary = dictionaryFile.ensure(newSize*SystemTDB.SizeOfInt).asIntBuffer() ;
         if ( dictionary != null )
         {
@@ -199,7 +201,7 @@ public class ExtHash implements Index
             for ( int i = oldSize-1 ; i>=0 ; i-- )
             {
                 int b = dictionary.get(i) ; 
-                if ( logging() ) log("Resize: put: (%d, %d)", 2*i, b) ;
+                //if ( logging() ) log("Resize: put: (%d, %d)", 2*i, b) ;
                 newDictionary.put(2*i, b) ; 
                 newDictionary.put(2*i+1, b) ; 
             }
@@ -210,8 +212,8 @@ public class ExtHash implements Index
 
         if ( logging() )
         {
-            dump() ;
-            log(this) ; 
+            if ( false ) dump() ;
+            if ( false ) log(this) ; 
             log("<<<<Resize") ;
         }
         internalCheck() ;
@@ -267,7 +269,7 @@ public class ExtHash implements Index
         if ( logging() )
         {
             log("<< add(%s)", record) ;
-            dump() ;
+            //dump() ;
         }
         internalCheck() ;
         return b ;
@@ -421,7 +423,7 @@ public class ExtHash implements Index
         {
             log("splitAndReorganise: idx=%d, id=%d, bitLen=%d, bucket.hashLength=%d",
                 dictionaryIdx, bucketId, bitLen, bucket.getTrieBitLen()) ;
-            dump() ;
+            if ( false ) dump() ;
         }
 
         if ( Checking )
@@ -487,7 +489,7 @@ public class ExtHash implements Index
         if ( logging() )
         {
             log("Reorg complete") ;
-            dump() ;
+            if ( false ) dump() ;
         }
     }
     
