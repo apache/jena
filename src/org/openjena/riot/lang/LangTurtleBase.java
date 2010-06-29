@@ -526,13 +526,11 @@ public abstract class LangTurtleBase<X> extends LangBase<X>
                 return profile.createTypedLiteral(str, XSDDatatype.XSDinteger, line, col) ;
             case LITERAL_DT :
             {
-                return profile.createTypedLiteral(str, prologue,token.getSubToken().getImage(), line, col) ; 
-//                Node n = tokenAsNode(token.getSubToken()) ;
-//                if ( ! n.isURI() )
-//                    throw new RiotException("Invalid token: "+token) ;
-//                
-//                RDFDatatype dt =  Node.getType(n.getURI()) ;
-//                return Node.createLiteral(str, null, dt)  ;
+                // TODO
+                //checkIsIRIorPrefixedName.
+                Node n = tokenAsNode(token.getSubToken()) ;
+                RDFDatatype dt =  Node.getType(n.getURI()) ;
+                return profile.createTypedLiteral(str, dt, line, col) ; 
             }
             case LITERAL_LANG : 
                 return Node.createLiteral(str, token.getImage2(), null)  ;

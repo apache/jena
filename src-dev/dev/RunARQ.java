@@ -12,6 +12,8 @@ import java.io.Reader ;
 import java.io.StringReader ;
 import java.util.Iterator ;
 
+import jena.turtle ;
+
 import org.openjena.atlas.io.IndentedLineBuffer ;
 import org.openjena.atlas.io.IndentedWriter ;
 
@@ -73,27 +75,9 @@ public class RunARQ
 
     public static void main(String[] argv) throws Exception
     {
-//        Tokenizer t = TokenizerFactory.makeTokenizer(new FileInputStream("D.dat")) ;
-//        for ( ; t.hasNext() ; )
-//            System.out.println(t.next()) ;
-//        System.exit(0) ;
-
-        //RiotChars.turtle.main("D.ttl") ;
+        ARQ.init();
+        arq.turtle.main("testing/ARQ/BasicPatterns/model8.n3") ;
         
-        // BUG The parser tokenizer calls IRI resolution
-        // Don't need to check again later?
-        // Throws an exception but not printed.
-        
-        argv = new String[] { "D.ttl" } ;
-        arq.turtle.main(argv) ;
-        System.exit(0) ;
-        
-        System.exit(0) ;
-        
-        qparse("--print=opt", "SELECT * { ?s ?p ?o . FILTER (?s = <urn:x> || ?s = <urn:x> )}") ;
-        System.exit(0) ;
-        
-        execQuery("testing/ARQ/GroupBy/data-1.ttl", "testing/ARQ/GroupBy/count-06.arq") ;
         System.exit(0) ;
         
         
