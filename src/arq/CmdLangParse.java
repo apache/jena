@@ -14,12 +14,7 @@ import org.openjena.atlas.io.IO ;
 import org.openjena.atlas.lib.Sink ;
 import org.openjena.atlas.lib.SinkCounting ;
 import org.openjena.atlas.lib.SinkNull ;
-import org.openjena.riot.Checker ;
-import org.openjena.riot.ErrorHandlerLib ;
-import org.openjena.riot.IRIResolver ;
-import org.openjena.riot.Lang ;
-import org.openjena.riot.RiotException ;
-import org.openjena.riot.RiotReader ;
+import org.openjena.riot.* ;
 import org.openjena.riot.lang.LangRDFXML ;
 import org.openjena.riot.lang.LangRIOT ;
 import org.openjena.riot.out.SinkQuadOutput ;
@@ -157,13 +152,14 @@ public abstract class CmdLangParse extends CmdGeneral
 
     protected void parseRIOT(String baseURI, String filename, InputStream in)
     {
+        ErrorHandler errHandler = null ;
         Checker checker = null ;
         if ( modLangParse.checking() )
         {
             if ( modLangParse.stopOnBadTerm() )
-                checker = new Checker(ErrorHandlerLib.errorHandlerStd)  ;
+                errHandler = ErrorHandlerLib.errorHandlerStd  ;
             else
-                checker = new Checker(ErrorHandlerLib.errorHandlerWarn) ;
+                errHandler = ErrorHandlerLib.errorHandlerWarn ;
         }
         
         Lang lang = selectLang(filename, Lang.NQUADS) ;  
@@ -196,7 +192,7 @@ public abstract class CmdLangParse extends CmdGeneral
             SinkCounting<Triple> sink2 = new SinkCounting<Triple>(s) ;
             if ( lang.equals(Lang.RDFXML) )
                 // Adapter round ARP RDF/XML reader.
-                parser = LangRDFXML.create(in, baseURI, filename, checker, sink2) ;
+                parser = LangRDFXML.create(in, baseURI, filename, errHandler, sink2) ;
             else
                 parser = RiotReader.createParserTriples(in, lang, baseURI, sink2) ;
             sink = sink2 ;

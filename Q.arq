@@ -1,7 +1,8 @@
-prefix : <http://example/> 
+PREFIX books:   <http://example.org/book/>
+PREFIX dc:      <http://purl.org/dc/elements/1.1/>
 
-select ?x
-{
-  ?x !(:p|^:q) :o 
+SELECT ?book ?title
+WHERE {
+     SERVICE <http://www.sparql.org/sparql> 
+     { SELECT * { ?book dc:title ?title  } LIMIT 1 }
 }
-

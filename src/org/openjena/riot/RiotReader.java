@@ -12,6 +12,7 @@ import java.io.InputStream ;
 
 import org.openjena.atlas.io.IO ;
 import org.openjena.atlas.lib.Sink ;
+import org.openjena.riot.checker.CheckerLiterals ;
 import org.openjena.riot.lang.LangNQuads ;
 import org.openjena.riot.lang.LangNTriples ;
 import org.openjena.riot.lang.LangRDFXML ;
@@ -26,6 +27,8 @@ import com.hp.hpl.jena.sparql.core.Quad ;
 
 public class RiotReader
 {
+    static Maker maker = new MakerChecker(ErrorHandlerLib.errorHandlerStd, new CheckerLiterals(ErrorHandlerLib.errorHandlerStd)) ;
+    
     // -------- Triples
     
     /** Parse a number of files, sending triples to a sink.
@@ -58,7 +61,7 @@ public class RiotReader
         if ( lang == RDFXML )
         {
             // Fudge to make the bulk loader process RDF/XML files.
-            LangRDFXML.create(in, base, filename, new Checker(), sink).parse() ;
+            LangRDFXML.create(in, base, filename, ErrorHandlerLib.errorHandlerStd, sink).parse() ;
             IO.close(in) ;
             return ;
         }
@@ -187,7 +190,7 @@ public class RiotReader
     /** Create a parser for Turtle, with default behaviour */
     public static LangTurtle createParserTurtle(Tokenizer tokenizer, String baseIRI, Sink<Triple> sink)
     {
-        LangTurtle parser = new LangTurtle(baseIRI, tokenizer, new Checker(), sink) ;
+        LangTurtle parser = new LangTurtle(baseIRI, tokenizer, maker, sink) ;
         return parser ;
     }
 
@@ -213,7 +216,7 @@ public class RiotReader
     {
         if ( baseIRI == null )
             baseIRI = IRIResolver.chooseBaseURI().toString() ;
-        LangTriG parser = new LangTriG(baseIRI, tokenizer, new Checker(), sink) ;
+        LangTriG parser = new LangTriG(baseIRI, tokenizer, maker, sink) ;
         return parser ;
     }
 

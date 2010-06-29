@@ -11,9 +11,10 @@ import java.io.InputStream ;
 
 import org.openjena.atlas.io.IO ;
 import org.openjena.atlas.lib.Sink ;
-import org.openjena.riot.Checker ;
 import org.openjena.riot.ErrorHandler ;
 import org.openjena.riot.Maker ;
+import org.openjena.riot.MakerBase ;
+import org.openjena.riot.checker.CheckerLiterals ;
 import org.xml.sax.SAXException ;
 import org.xml.sax.SAXParseException ;
 
@@ -39,44 +40,43 @@ public class LangRDFXML implements LangRIOT
     private long count = 0 ;
     
     private InputStream input = null ;
-    private Maker maker = null ;            // ARP does it's own checking for many things.
     private String xmlBase ;
     private String filename ;
     private Sink<Triple> sink ;
+    private ErrorHandler errorHandler ;
     
-    public static LangRDFXML create(InputStream in, String xmlBase, String filename, Maker maker, Sink<Triple> sink)
+    public Maker getMaker()
     {
-        return new LangRDFXML(in, xmlBase, filename, maker, sink) ;
+        return null ;
+    }
+
+    public void setMaker(Maker maker)
+    { errorHandler = maker.getHandler() ; }
+
+    public static LangRDFXML create(InputStream in, String xmlBase, String filename, ErrorHandler errorHandler, Sink<Triple> sink)
+    {
+        return new LangRDFXML(in, xmlBase, filename, errorHandler, sink) ;
     }
     
-    public static LangRDFXML create(String xmlBase, String filename, Maker maker, Sink<Triple> sink)
+    public static LangRDFXML create(String xmlBase, String filename, ErrorHandler errorHandler, Sink<Triple> sink)
     {
-        return create(IO.openFile(filename), xmlBase, filename, maker, sink) ;
+        return create(IO.openFile(filename), xmlBase, filename, errorHandler, sink) ;
     }
     
-    private LangRDFXML(InputStream in, String xmlBase, String filename, Maker maker, Sink<Triple> sink)
+    private LangRDFXML(InputStream in, String xmlBase, String filename, ErrorHandler errorHandler, Sink<Triple> sink)
     {
         this.input = in ;
         this.xmlBase = xmlBase ;
         this.filename = filename ;
         this.sink = sink ;
-        setMaker(maker); 
+        this.errorHandler = errorHandler ;
     }
     
-    public Maker getMaker()
-    {
-        return maker ;
-    }
-
-    public void setMaker(Maker maker)
-    { this.maker = maker ; }
-
     public void parse()
     {   
         // Hacked out of ARP because of all the "private" methods
         count = 0 ;
-        ErrorHandler errHandler = maker.getHandler() ; 
-        HandlerSink rslt = new HandlerSink(sink, maker) ;
+        HandlerSink rslt = new HandlerSink(sink, errorHandler) ;
         arp.getHandlers().setStatementHandler(rslt);
         arp.getHandlers().setErrorHandler(rslt) ;
         arp.getHandlers().setNamespaceHandler(rslt) ;
@@ -84,11 +84,11 @@ public class LangRDFXML implements LangRIOT
         try {
             arp.load(input, xmlBase);
         } catch (IOException e) {
-            errHandler.error(filename + ": " + ParseException.formatMessage(e), -1 , -1) ;
+            errorHandler.error(filename + ": " + ParseException.formatMessage(e), -1 , -1) ;
         } catch (SAXParseException e) {
             // already reported.
         } catch (SAXException sax) {
-            errHandler.error(filename + ": " + ParseException.formatMessage(sax), -1 , -1) ;
+            errorHandler.error(filename + ": " + ParseException.formatMessage(sax), -1 , -1) ;
         }
         sink.flush() ;
     }
@@ -97,12 +97,15 @@ public class LangRDFXML implements LangRIOT
     private static class HandlerSink extends ARPSaxErrorHandler implements StatementHandler, NamespaceHandler
     {
         private Sink<Triple> sink ;
-        private Maker maker ;
-        HandlerSink(Sink<Triple> sink, Maker maker)
+        private ErrorHandler errHandler ;
+        private CheckerLiterals checker ;
+
+        HandlerSink(Sink<Triple> sink, ErrorHandler errHandler)
         {
-            super(new ErrorHandlerBridge(maker.getHandler())) ;
+            super(new ErrorHandlerBridge(errHandler)) ;
             this.sink = sink ;
-            this.maker = maker ;
+            this.errHandler = errHandler ;
+            this.checker = new CheckerLiterals(errHandler) ;
         }
         
         public void statement(AResource subj, AResource pred, AResource obj)
@@ -148,7 +151,7 @@ public class LangRDFXML implements LangRIOT
         private Triple convert(AResource s, AResource p, ALiteral o)
         {
             Node object = convert(o) ;
-            maker.checkLiteral(object, -1, -1) ;
+            checker.checkLiteral(object, -1, -1) ;
             return Triple.create(convert(s), convert(p), object);
         }
         
