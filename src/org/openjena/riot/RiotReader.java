@@ -227,7 +227,8 @@ public class RiotReader
     /** Create a parser for N-Triples, with default behaviour */
     public static LangNTriples createParserNTriples(Tokenizer tokenizer, Sink<Triple> sink)
     {
-        LangNTriples parser = new LangNTriples(tokenizer, new Checker(), sink) ;
+        Maker maker = new MakerBase() ;
+        LangNTriples parser = new LangNTriples(tokenizer, maker, sink) ;
         return parser ;
     }
     
@@ -241,7 +242,8 @@ public class RiotReader
     /** Create a parser for NQuads, with default behaviour */
     public static LangNQuads createParserNQuads(Tokenizer tokenizer, Sink<Quad> sink)
     {
-        LangNQuads parser = new LangNQuads(tokenizer, new Checker(), sink) ;
+        Maker maker = new MakerBase() ;
+        LangNQuads parser = new LangNQuads(tokenizer, maker, sink) ;
         return parser ;
     }
     

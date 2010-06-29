@@ -31,7 +31,7 @@ public class JenaReaderTurtle2 extends JenaReaderRIOT
         Sink<Triple> sink = new SinkToGraphTriples(model.getGraph()) ;
         Checker checker = new Checker() ; 
         try {
-            LangTurtle parser = new LangTurtle(base, tokenizer, checker, sink) ;
+            LangTurtle parser = RiotReader.createParserTurtle(tokenizer, base, sink) ;
             parser.parse() ;
             // Merge prefixes.
             for ( Map.Entry<String,IRI> e : parser.getPrefixMap().getMapping().entrySet() )

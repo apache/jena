@@ -18,6 +18,11 @@ public class CheckerLiterals implements NodeChecker
     private ErrorHandler handler ;
     private boolean allowBadLexicalForms ;
 
+    public CheckerLiterals(ErrorHandler handler)
+    {
+        this(handler, false) ;
+    }
+ 
     public CheckerLiterals(ErrorHandler handler, boolean allowBadLexicalForms)
     {
         this.handler = handler ;

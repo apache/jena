@@ -8,7 +8,6 @@
 package org.openjena.riot;
 
 import org.openjena.atlas.lib.Sink ;
-import org.openjena.riot.lang.LangNTriples ;
 import org.openjena.riot.lang.LangRIOT ;
 import org.openjena.riot.lang.SinkToGraphTriples ;
 import org.openjena.riot.tokens.Tokenizer ;
@@ -22,10 +21,10 @@ public class JenaReaderNTriples2 extends JenaReaderRIOT
     @Override
     protected void readWorker(Model model, Tokenizer tokenizer, String base)
     {
-        Checker checker = new Checker() ;
+        Maker maker = new MakerBase() ;
         Sink<Triple> sink = new SinkToGraphTriples(model.getGraph()) ;
         try {
-            LangRIOT parser = new LangNTriples(tokenizer, checker, sink) ;
+            LangRIOT parser = RiotReader.createParserNTriples(tokenizer, sink) ;
             parser.parse() ;
         } finally {
             sink.close();

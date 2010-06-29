@@ -10,6 +10,7 @@ import static org.openjena.riot.tokens.TokenType.* ;
 import org.openjena.atlas.lib.Sink ;
 import org.openjena.riot.Checker ;
 import org.openjena.riot.IRIResolver ;
+import org.openjena.riot.Maker ;
 import org.openjena.riot.PrefixMap ;
 import org.openjena.riot.Prologue ;
 import org.openjena.riot.RiotException ;
@@ -117,9 +118,12 @@ public abstract class LangTurtleBase<X> extends LangBase<X>
      */
     public PrefixMap getPrefixMap()        { return prologue.getPrefixMap() ; }
     
-    public LangTurtleBase(String baseURI, Tokenizer tokens, Checker checker, Sink<X> sink, LabelToNode labelMap) 
+    protected LangTurtleBase(String baseURI, Tokenizer tokens,
+                             Maker maker, Sink<X> sink,
+                             //Checker checker, Sink<X> sink,
+                             LabelToNode labelMap) 
     { 
-        super(tokens, sink, checker, labelMap) ;
+        super(tokens, sink, maker, labelMap) ;
         this.prologue = new Prologue(new PrefixMap(), new IRIResolver(baseURI)) ;
     }
     
@@ -181,10 +185,7 @@ public abstract class LangTurtleBase<X> extends LangBase<X>
         if ( ! lookingAt(IRI) )
             exception(peekToken(), "@prefix requires an IRI (found '"+peekToken()+"')") ;
         String iriStr = peekToken().getImage() ;
-        // CHECK
-        IRI iri = prologue.getResolver().resolveSilent(iriStr) ;
-        if ( getChecker() != null ) 
-            getChecker().checkIRI(iri, peekToken().getLine(), peekToken().getColumn()) ;
+        IRI iri = maker.makeIRI(prologue, iriStr, currLine, currCol) ;
         prologue.getPrefixMap().add(prefix, iri) ;
 
         nextToken() ;
@@ -194,11 +195,7 @@ public abstract class LangTurtleBase<X> extends LangBase<X>
     protected final void directiveBase()
     {
         String baseStr = peekToken().getImage() ;
-        // CHECK
-        IRI baseIRI = prologue.getResolver().resolve(baseStr) ;
-        if ( getChecker() != null )
-            getChecker().checkIRI(baseIRI, peekToken().getLine(), peekToken().getColumn()) ;
-        
+        IRI baseIRI = maker.makeIRI(prologue, baseStr, currLine, currCol) ;
         nextToken() ;
         
         expect("Base directive not terminated by a dot", DOT) ;
@@ -343,9 +340,9 @@ public abstract class LangTurtleBase<X> extends LangBase<X>
         Node n = tokenAsNode(peekToken()) ;
         if ( n == null )
             return null ;
-        // CHECK
-        if ( getChecker() != null )
-            getChecker().check(n, peekToken().getLine(), peekToken().getColumn()) ; 
+        //TODO
+//        // CHECK
+//        getChecker().check(n, peekToken().getLine(), peekToken().getColumn()) ; 
         return n ;
     }
     
@@ -489,62 +486,65 @@ public abstract class LangTurtleBase<X> extends LangBase<X>
     protected final void checkEmitTriple(Node subject, Node predicate, Node object)
     {
         // The syntax should make this impossible.
-        if ( checker != null )
-            checker.checkTriple(subject, predicate, object, currLine, currCol) ;
+        //TODO 
+        //checker.checkTriple(subject, predicate, object, currLine, currCol) ;
         emit(subject, predicate, object) ;
     }
 
-    @Override
     protected final Node tokenAsNode(Token token) 
     {
+        long line = token.getLine() ;
+        long col = token.getColumn() ;
+        String str = token.getImage() ;
         switch(token.getType())
         {
             case BNODE : 
             {
-                String label = token.getImage() ;
-                Node n = scopedBNode(currentGraph, label) ;
+                String label = str ;
+                Node n = maker.createBlankNode(labelmap, currentGraph, label, line, col) ;
                 return n ;
             }
             case IRI :
             {
-                String resolvedIRI = prologue.getResolver().resolve(token.getImage()).toString() ;
-                return Node.createURI(resolvedIRI) ;
+                return maker.createURI(prologue, str, line, col) ;
             }
             case PREFIXED_NAME :
             {
-                String prefix = token.getImage() ;
+                String prefix = str ;
                 String suffix   = token.getImage2() ;
                 String expansion = prologue.getPrefixMap().expand(prefix, suffix) ;
                 if ( expansion == null )
                     exceptionDirect("Undefined prefix: "+prefix, token.getLine(), token.getColumn()) ;
                 return Node.createURI(expansion) ;
             }
+            // TODO 
             case DECIMAL :
-                return Node.createLiteral(token.getImage(), null, XSDDatatype.XSDdecimal)  ; 
+                return maker.createTypedLiteral(str, XSDDatatype.XSDdecimal, line, col)  ; 
             case DOUBLE :
-                return Node.createLiteral(token.getImage(), null, XSDDatatype.XSDdouble)  ;
+                return maker.createTypedLiteral(str, XSDDatatype.XSDdouble, line, col)  ;
             case INTEGER:
-                return Node.createLiteral(token.getImage(), null, XSDDatatype.XSDinteger) ;
+                return maker.createTypedLiteral(str, XSDDatatype.XSDinteger, line, col) ;
             case LITERAL_DT :
             {
-                Node n = tokenAsNode(token.getSubToken()) ;
-                if ( ! n.isURI() )
-                    throw new RiotException("Invalid token: "+token) ;
-                
-                RDFDatatype dt =  Node.getType(n.getURI()) ;
-                return Node.createLiteral(token.getImage(), null, dt)  ;
+                return maker.createTypedLiteral(str, prologue,token.getSubToken().getImage(), line, col) ; 
+//                Node n = tokenAsNode(token.getSubToken()) ;
+//                if ( ! n.isURI() )
+//                    throw new RiotException("Invalid token: "+token) ;
+//                
+//                RDFDatatype dt =  Node.getType(n.getURI()) ;
+//                return Node.createLiteral(str, null, dt)  ;
             }
             case LITERAL_LANG : 
-                return Node.createLiteral(token.getImage(), token.getImage2(), null)  ;
+                return Node.createLiteral(str, token.getImage2(), null)  ;
                 
             case STRING:                
             case STRING1:
             case STRING2:
             case LONG_STRING1:
             case LONG_STRING2:
-                return Node.createLiteral(token.getImage()) ;
+                return Node.createLiteral(str) ;
             
-            default: break ;
+            default: exception(token, "Not a valid token for an RDF term") ;
         }
         return null ;
     }

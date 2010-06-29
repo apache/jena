@@ -1,22 +1,24 @@
 /*
  * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Systems Ltd
  * All rights reserved.
  * [See end of file]
  */
 
 package org.openjena.riot.lang;
 
-import org.openjena.riot.Checker ;
+import org.openjena.riot.Maker ;
 
 public interface LangRIOT
 {
-    public Checker          getChecker() ;
-    public void             setChecker(Checker checker) ;
+    public Maker            getMaker() ;
+    public void             setMaker(Maker maker) ;
     public void             parse() ;    
 }
 
 /*
  * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Systems Ltd
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

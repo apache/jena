@@ -6,57 +6,17 @@
 
 package org.openjena.riot;
 
-import org.junit.AfterClass ;
-import org.junit.BeforeClass ;
 import org.junit.runner.RunWith ;
 import org.junit.runners.Suite ;
-import org.openjena.riot.ErrorHandlerLib ;
-import org.openjena.riot.lang.* ;
-import org.openjena.riot.out.TestOutputNTriples ;
-import org.openjena.riot.tokens.TestTokenForNode ;
-import org.openjena.riot.tokens.TestTokenizer ;
-
-
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
-      TestTokenizer.class
-    , TestTokenForNode.class
-    , TestPrefixMap.class
-    , TestIRI.class
-    , TestChecker.class
-    , TestLang.class
-    , TestNodeAllocator.class
-    
-    , TestTurtleTerms.class
-
-    , TestLangNTriples.class
-    , TestLangNQuads.class
-
-    , TestLangTurtle.class
-    , TestSuiteTurtle.class
-
-    , TestLangTrig.class
-    , TestSuiteTrig.class
-
-    , TestParserFactory.class
-
-    , TestOutputNTriples.class
+      TS_Riot.class
 })
 
+// Just a renaming to give a test collection for RIOT */
 public class TC_Riot
-{
-    @BeforeClass public static void beforeClass()
-    { 
-        ErrorHandlerLib.setTestLogging(false) ;
-    }
-
-    @AfterClass public static void afterClass()
-    { 
-        ErrorHandlerLib.setTestLogging(true) ;
-    }
-
-}
+{}
 
 /*
  * (c) Copyright 2009 Hewlett-Packard Development Company, LP

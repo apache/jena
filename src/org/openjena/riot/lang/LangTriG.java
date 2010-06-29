@@ -9,7 +9,7 @@ package org.openjena.riot.lang;
 import static org.openjena.riot.tokens.TokenType.DOT ;
 import static org.openjena.riot.tokens.TokenType.RBRACE ;
 import org.openjena.atlas.lib.Sink ;
-import org.openjena.riot.Checker ;
+import org.openjena.riot.Maker ;
 import org.openjena.riot.tokens.Token ;
 import org.openjena.riot.tokens.TokenType ;
 import org.openjena.riot.tokens.Tokenizer ;
@@ -38,10 +38,10 @@ public class LangTriG extends LangTurtleBase<Quad>
         
      */
     public LangTriG(String baseURI, Tokenizer tokens, 
-                    Checker checker, 
+                    Maker maker, 
                     Sink<Quad> sink) 
     {
-        super(baseURI, tokens, checker, sink, chooseLabelScoping()) ;
+        super(baseURI, tokens, maker, sink, chooseLabelScoping()) ;
     }
 
     static LabelToNode chooseLabelScoping()
@@ -80,7 +80,7 @@ public class LangTriG extends LangTurtleBase<Quad>
         {
             Token t = token ;   // Keep for error message. 
             graphNode = node() ;
-            checker.check(graphNode,  token.getLine(), token.getColumn()) ;
+            // TODO Ensure tests cover bad IRI for graph
             nextToken() ;
             token = peekToken() ;
 

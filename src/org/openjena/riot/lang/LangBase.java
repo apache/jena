@@ -12,9 +12,9 @@ import org.openjena.atlas.event.Event ;
 import org.openjena.atlas.event.EventManager ;
 import org.openjena.atlas.iterator.PeekIterator ;
 import org.openjena.atlas.lib.Sink ;
-import org.openjena.riot.Checker ;
 import org.openjena.riot.ErrorHandler ;
 import org.openjena.riot.ErrorHandlerLib ;
+import org.openjena.riot.Maker ;
 import org.openjena.riot.RiotParseException ;
 import org.openjena.riot.SysRIOT ;
 import org.openjena.riot.tokens.Token ;
@@ -26,7 +26,10 @@ import com.hp.hpl.jena.graph.Node ;
 /** Common operations for RIOT parsers */
 public abstract class LangBase<X> implements LangRIOT
 {
-    protected Checker checker = null ;
+    //protected Checker checker = null ;
+    // Temp
+    protected Maker maker ; //= new MakerChecker(ErrorHandlerLib.errorHandlerNoLogging, 
+                              //        new CheckerLiterals(ErrorHandlerLib.errorHandlerNoLogging, false )) ;
 
     protected final Tokenizer tokens ;
     private final PeekIterator<Token> peekIter ;
@@ -35,40 +38,47 @@ public abstract class LangBase<X> implements LangRIOT
     
     protected LabelToNode labelmap ;
 
-    // This is a bit ugly but externally, encapsulating the errorhandler in the checker is convenient.  
+    // This is a bit ugly but externally, encapsulating the errorhandler in the maker is convenient.  
     private ErrorHandler errorHandler ;
-
-//    protected LangBase(Tokenizer tokens,
-//                    Sink<X> sink,
-//                    Checker checker)
-//    {
-//        this(tokens, sink, checker, LabelToNode.createOneScope()) ;
-//    }
     
     protected LangBase(Tokenizer tokens,
                        Sink<X> sink,
-                       Checker checker, 
+                       //Checker checker, 
+                       Maker maker,
                        LabelToNode map)
     {
-        setChecker(checker) ;
+        //setChecker(checker) ;
+        setMaker(maker) ;
         this.sink = sink ;
         this.tokens = tokens ;
         this.peekIter = new PeekIterator<Token>(tokens) ;
         this.labelmap = map ;
     }
-        
+     
     //@Override
-    public Checker getChecker()                 { return checker ; }
+    public Maker getMaker()                     { return maker ; }
     //@Override
-    // Bad separation of responsibilitied :-(
-    public void    setChecker(Checker checker)
-    { 
-        this.checker = checker ;
-        if ( checker != null)
-            this.errorHandler = checker.getHandler() ;
+    public void setMaker(Maker maker)
+    {
+        this.maker = maker ;
+        if ( maker != null)
+            this.errorHandler = maker.getHandler() ;
         else
             this.errorHandler = ErrorHandlerLib.errorHandlerNoLogging ;
     }
+    
+//    //@Override
+//    public Checker getChecker()                 { return checker ; }
+//    //@Override
+//    // Bad separation of responsibilitied :-(
+//    public void    setChecker(Checker checker)
+//    { 
+//        this.checker = checker ;
+//        if ( checker != null)
+//            this.errorHandler = checker.getHandler() ;
+//        else
+//            this.errorHandler = ErrorHandlerLib.errorHandlerNoLogging ;
+//    }
     
     public void parse()
     {
@@ -154,8 +164,6 @@ public abstract class LangBase<X> implements LangRIOT
             throw ex ;
         }
     }
-
-    protected abstract Node tokenAsNode(Token token) ;
 
     protected final Node scopedBNode(Node scopeNode, String label)
     {

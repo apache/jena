@@ -10,7 +10,7 @@ package org.openjena.riot.lang;
 import java.util.Iterator ;
 
 import org.openjena.atlas.lib.Sink ;
-import org.openjena.riot.Checker ;
+import org.openjena.riot.Maker ;
 import org.openjena.riot.tokens.Token ;
 import org.openjena.riot.tokens.TokenType ;
 import org.openjena.riot.tokens.Tokenizer ;
@@ -43,10 +43,10 @@ public abstract class LangNTuple<X> extends LangBase<X> implements Iterator<X>
     protected boolean skipOnBadTerm = false ;
     
     protected LangNTuple(Tokenizer tokens,
-                         Checker checker,
+                         Maker maker,
                          Sink<X> sink)
     { 
-        super(tokens, sink, checker, LabelToNode.createScopeByDocument()) ;
+        super(tokens, sink, maker, LabelToNode.createScopeByDocument()) ;
     }
 
     /** Method to parse the whole stream of triples, sending each to the sink */ 
@@ -84,26 +84,25 @@ public abstract class LangNTuple<X> extends LangBase<X> implements Iterator<X>
     /** Note a tuple not being output */
     protected void skipOne(X object, String printForm, long line, long col)
     {
-        checker.getHandler().warning("Skip: "+printForm, line, col) ;
+        maker.getHandler().warning("Skip: "+printForm, line, col) ;
     }
 
-    
-    protected final Node parseIRIOrBNode(Token token)
+    protected abstract Node tokenAsNode(Token token) ;
+
+    protected final void checkIRIOrBNode(Token token)
     {
-        if ( ! ( token.hasType(TokenType.BNODE) ||
-                 token.hasType(TokenType.IRI) ) )
-            exception(token, "Expected BNode or IRI: Got: %s", token) ;
-        return tokenAsNode(token) ;
+        if ( token.hasType(TokenType.IRI) ) return ;
+        if ( token.hasType(TokenType.BNODE) ) return ; 
+        exception(token, "Expected BNode or IRI: Got: %s", token) ;
     }
 
-    protected final Node parseIRI(Token token)
+    protected final void checkIRI(Token token)
     {
-        if ( ! token.hasType(TokenType.IRI) )
-            exception(token, "Expected IRI: Got: %s", token) ;
-        return tokenAsNode(token) ;
+        if ( token.hasType(TokenType.IRI) ) return ;
+        exception(token, "Expected IRI: Got: %s", token) ;
     }
 
-    protected final Node parseRDFTerm(Token token)
+    protected final void checkRDFTerm(Token token)
     {
         switch(token.getType())
         {
@@ -112,7 +111,7 @@ public abstract class LangNTuple<X> extends LangBase<X> implements Iterator<X>
             case STRING2:
             case LITERAL_DT:
             case LITERAL_LANG:
-                break ;
+                return ;
             case STRING1:
                 if ( STRICT )
                     exception(token, "Illegal single quoted string: %s", token) ;
@@ -120,8 +119,6 @@ public abstract class LangNTuple<X> extends LangBase<X> implements Iterator<X>
             default:
                 exception(token, "Illegal object: %s", token) ;
         }
-            
-        return tokenAsNode(token) ;
     }
 
     /** SkipOnBadTerm - do not output tuples with bad RDF terms */ 

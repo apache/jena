@@ -21,15 +21,14 @@ public class TestIRI
     
     static ErrorHandler handler = new ErrorHandler()
     {
+        public void warning(String message, long line, long col)
+        { throw new ExWarning() ; }
+
         public void error(String message, long line, long col)
         { throw new ExError() ; }
 
         public void fatal(String message, long line, long col)
         { throw new ExFatal() ; }
-
-        public void warning(String message, long line, long col)
-        { throw new ExWarning() ; }
-
     } ;
     static Checker checker = new Checker(handler) ;
     

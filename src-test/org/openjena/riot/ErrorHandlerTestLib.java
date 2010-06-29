@@ -6,19 +6,44 @@
 
 package org.openjena.riot;
 
-import static org.openjena.riot.SysRIOT.fmtMessage ;
+import java.util.ArrayList ;
+import java.util.List ;
 
-public class ErrorHandlerSimple implements ErrorHandler
+public class ErrorHandlerTestLib
 {
+    public static class ExFatal extends RuntimeException {}
 
-    public void warning(String message, long line, long col)
-    {}
+    public static class ExError extends RuntimeException {}
 
-    public void error(String message, long line, long col)
-    { throw new RiotException(fmtMessage(message, line, col)) ; }
+    public static class ExWarning extends RuntimeException {}
 
-    public void fatal(String message, long line, long col)
-    { throw new RiotException(fmtMessage(message, line, col)) ; }
+    public static class ErrorHandlerEx implements ErrorHandler
+    {
+        public void warning(String message, long line, long col)
+        { throw new ExWarning() ; }
+    
+        public void error(String message, long line, long col)
+        { throw new ExError() ; }
+    
+        public void fatal(String message, long line, long col)
+        { throw new ExFatal() ; }
+    }
+
+    // Error handler that records messages
+    public static class ErrorHandlerMsg implements ErrorHandler
+    {
+        public List<String> msgs = new ArrayList<String>() ;
+    
+        public void warning(String message, long line, long col)
+        { msgs.add(message) ; }
+    
+        public void error(String message, long line, long col)
+        { msgs.add(message) ; }
+    
+        public void fatal(String message, long line, long col)
+        { msgs.add(message) ; throw new ExFatal() ; }
+    }
+
 }
 
 /*

@@ -5,8 +5,53 @@
 
 package dev;
 
+import org.openjena.atlas.lib.Sink ;
+import org.openjena.atlas.lib.Tuple ;
+import org.openjena.riot.ErrorHandler ;
+import org.openjena.riot.Maker ;
+
+import com.hp.hpl.jena.graph.Node ;
+
 public class DevARQ
 {
+    // RIOT bug
+    // Look for TODOs
+    // NTriples checks line structure twice, once in parser, once in createTriple.
+    // ParserParamObject
+    //     Maker
+    //       Turtle - resolved URIs, prefixes
+    //                Prefixes - resolve URI, not a token (or token->Node, discard Node)
+    //       N-triples - raw URIs,
+    //     Checker
+    //     ErrorHandler
+    //     Exceptions only from error handlers
+    //     Sink<Tuple<T>> -> Sink<Triple>, Sink<Quad> 
+    // have a triple, quad checker AFTER emit. Need line/col
+    // (Feature of Maker    
+    //     Mode: strict, lax
+    
+    static final class ParserParamObject<T>
+    {
+        // Or in LangBase
+        public final Maker maker ;
+        public final ErrorHandler errorHandler ;
+        public final Sink<T> sink ;
+        public final boolean strict ;
+        //public Enum mode ;
+        
+        public ParserParamObject(Maker maker, ErrorHandler errorHandler, Sink<T> sink, boolean strict)
+        {
+            this.maker = maker ;
+            this.errorHandler = errorHandler ;
+            this.sink = sink ;
+            this.strict = strict ;
+        }
+    }
+
+    // Extend:
+    //   Add bare date/datetime to tokenizer?? Syntax?
+    //   Generalize and trap non-triples at emission time.
+    
     // Dataset[Graph].clear
     // Parsing SPARQL : Use RIOT checker.
  

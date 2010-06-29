@@ -6,16 +6,18 @@
 
 package org.openjena.riot;
 
+import static org.openjena.riot.SysRIOT.fmtMessage ;
 import org.slf4j.Logger ;
 
 public class ErrorHandlerLib
 {
     static public final Logger stdLogger = SysRIOT.getLogger() ;
+    static public final Logger noLogger = null ;
     
-    static public ErrorHandler errorHandlerStd = new ErrorHandlerStd(stdLogger) ;
-    static public ErrorHandler errorHandlerStrict = new ErrorHandlerStd(stdLogger) ;
-    static public ErrorHandler errorHandlerWarn = new ErrorHandlerWarning(stdLogger) ;
-    static public ErrorHandler errorHandlerNoLogging = new ErrorHandlerSimple() ;
+    static public ErrorHandler errorHandlerStd          = new ErrorHandlerStd(stdLogger) ;
+    static public ErrorHandler errorHandlerStrict       = new ErrorHandlerStrict(stdLogger) ;
+    static public ErrorHandler errorHandlerWarn         = new ErrorHandlerWarning(stdLogger) ;
+    static public ErrorHandler errorHandlerNoLogging    = new ErrorHandlerSimple() ;
     
     static public void setTestLogging(boolean visible)
     {
@@ -23,6 +25,127 @@ public class ErrorHandlerLib
             errorHandlerStd = new ErrorHandlerStd(stdLogger) ;
         else
             errorHandlerStd = new ErrorHandlerSimple() ;
+    }
+    
+    /** Messages to a logger. */ 
+    private static class ErrorLogger
+    {
+        protected final Logger log ;
+
+        public ErrorLogger(Logger log)
+        {
+            this.log = log ;
+        }
+
+        /** report a warning */
+        public void logWarning(String message, long line, long col)
+        {
+            log.warn(fmtMessage(message, line, col)) ;
+        }
+        
+        /** report an error */
+        public void logError(String message, long line, long col)
+        {
+            log.error(fmtMessage(message, line, col)) ;
+        }
+
+        /** report a catastrophic error */    
+        public void logFatal(String message, long line, long col)
+        { 
+            logError(message, line, col) ;
+        }
+    }
+    
+    private static class ErrorHandlerSimple implements ErrorHandler
+    {
+        public void warning(String message, long line, long col)
+        {}
+        public void error(String message, long line, long col)
+        { throw new RiotException(fmtMessage(message, line, col)) ; }
+
+        public void fatal(String message, long line, long col)
+        { throw new RiotException(fmtMessage(message, line, col)) ; }
+    }
+    
+    /** An error handler that logs message then throws exceptions for errors but not warnings */ 
+    private static class ErrorHandlerStd extends ErrorLogger implements ErrorHandler
+    {
+        public ErrorHandlerStd(Logger log)
+        {
+            super(log) ;
+        }
+        
+        /** report a warning */
+        //@Override
+        public void warning(String message, long line, long col)
+        { logWarning(message, line, col) ; }
+        
+        /** report an error */
+        //@Override
+        public void error(String message, long line, long col)
+        { 
+            logError(message, line, col) ;
+            throw new RiotException(fmtMessage(message, line, col)) ;
+        }
+
+        /** report a fatal error - does not return */
+        //@Override
+        public void fatal(String message, long line, long col)
+        {
+            logFatal(message, line, col) ;
+            throw new RiotException(fmtMessage(message, line, col)) ;
+        }
+    }
+    
+    /** An error handler that logs message for errors and warnings and throw exceptions on either */ 
+    private static class ErrorHandlerStrict extends ErrorLogger implements ErrorHandler
+    {
+        public ErrorHandlerStrict(Logger log)
+        {
+            super(log) ;
+        }
+        
+        /** report a warning  - do not carry on */
+        //@Override
+        public void warning(String message, long line, long col)
+        { 
+            logWarning(message, line, col) ;
+            throw new RiotException(fmtMessage(message, line, col)) ;
+        }
+        
+        /** report an error - do not carry on */
+        //@Override
+        public void error(String message, long line, long col)
+        { 
+            logError(message, line, col) ;
+            throw new RiotException(fmtMessage(message, line, col)) ;
+        }
+
+        public void fatal(String message, long line, long col)
+        {
+            logFatal(message, line, col) ;
+            throw new RiotException(fmtMessage(message, line, col)) ;
+        }
+    }
+    
+    /** An error handler that logs messages only for errors and warnings */ 
+    private static class ErrorHandlerWarning extends ErrorLogger implements ErrorHandler
+    {
+        public ErrorHandlerWarning(Logger log)
+        { super(log) ; }
+        
+        //@Override
+        public void warning(String message, long line, long col)
+        {}
+        
+        /** report an error but continue */
+        //@Override
+        public void error(String message, long line, long col)
+        { logError(message, line, col) ; }
+
+        //@Override
+        public void fatal(String message, long line, long col)
+        { logFatal(message, line, col) ; }
     }
 }
 

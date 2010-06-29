@@ -6,14 +6,11 @@
 
 package org.openjena.riot;
 
-import java.util.ArrayList ;
-import java.util.List ;
 
 import org.junit.After ;
 import org.junit.Before ;
 import org.junit.Test ;
 import org.openjena.riot.Checker ;
-import org.openjena.riot.ErrorHandler ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.shared.impl.JenaParameters ;
@@ -21,38 +18,7 @@ import com.hp.hpl.jena.sparql.sse.SSE ;
 
 public class TestChecker
 {
-    private static class ExFatal extends RuntimeException {} ;
-    private static class ExError extends RuntimeException {} ;
-    private static class ExWarning extends RuntimeException {} ;
-    
-    static ErrorHandler handlerEx = new ErrorHandler()
-    {
-        public void error(String message, long line, long col)
-        { throw new ExError() ; }
-
-        public void fatal(String message, long line, long col)
-        { throw new ExFatal() ; }
-
-        public void warning(String message, long line, long col)
-        { throw new ExWarning() ; }
-    } ;
-    
-    static ErrorHandler handlerMsg = new ErrorHandler()
-    {
-        //SysRIOT.fmtMessage(message, line, col)
-        List<String> msgs = new ArrayList<String>() ;
-        
-        public void error(String message, long line, long col)
-        { msgs.add(message) ; }
-
-        public void fatal(String message, long line, long col)
-        { msgs.add(message) ; throw new ExFatal() ; }
- 
-        public void warning(String message, long line, long col)
-        { msgs.add(message) ; }
-    } ;
-    
-    static Checker checker = new Checker(handlerEx) ;
+    static Checker checker = new Checker(new ErrorHandlerTestLib.ErrorHandlerEx()) ;
     
     boolean b ;
 
@@ -75,7 +41,7 @@ public class TestChecker
     @Test public void checker02() { check("''@en") ; }
     @Test public void checker03() { check("<x>") ; }
     
-    @Test (expected=ExWarning.class) public void checker10() { check("''^^xsd:dateTime") ; }
+    @Test (expected=ErrorHandlerTestLib.ExWarning.class) public void checker10() { check("''^^xsd:dateTime") ; }
 
     // Whitespace facet processing.  
     // Strictly illegal RDF but Jena accepts them.
@@ -86,7 +52,7 @@ public class TestChecker
     @Test public void checker13() { check("' 123'^^xsd:integer") ; }
     
     // Internal white space - illegal
-    @Test (expected=ExWarning.class) public void checker14() { check("'12 3'^^xsd:integer") ; }
+    @Test (expected=ErrorHandlerTestLib.ExWarning.class) public void checker14() { check("'12 3'^^xsd:integer") ; }
     @Test public void checker15() { check("'\\n123'^^xsd:integer") ; }
 
     // Test all the data ttype hierarchies that whitespace foo affects.
@@ -97,12 +63,12 @@ public class TestChecker
 
     
     // Other bad lexical forms.
-    @Test(expected=ExWarning.class) public void checker20() { check("'XYZ'^^xsd:integer") ; }
+    @Test(expected=ErrorHandlerTestLib.ExWarning.class) public void checker20() { check("'XYZ'^^xsd:integer") ; }
     // Lang tag
-    @Test(expected=ExWarning.class) public void checker21() { check("'XYZ'@abcdefghijklmn") ; }
+    @Test(expected=ErrorHandlerTestLib.ExWarning.class) public void checker21() { check("'XYZ'@abcdefghijklmn") ; }
     
     
-    @Test(expected=ExWarning.class) public void checker30() { check("<http://base/[]iri>") ; }
+    @Test(expected=ErrorHandlerTestLib.ExWarning.class) public void checker30() { check("<http://base/[]iri>") ; }
     
     //Bad IRI
 

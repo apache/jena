@@ -79,6 +79,15 @@ public class RunARQ
 //        System.exit(0) ;
 
         //RiotChars.turtle.main("D.ttl") ;
+        
+        // BUG The parser tokenizer calls IRI resolution
+        // Don't need to check again later?
+        // Throws an exception but not printed.
+        
+        argv = new String[] { "D.ttl" } ;
+        arq.turtle.main(argv) ;
+        System.exit(0) ;
+        
         System.exit(0) ;
         
         qparse("--print=opt", "SELECT * { ?s ?p ?o . FILTER (?s = <urn:x> || ?s = <urn:x> )}") ;

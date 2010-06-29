@@ -6,23 +6,34 @@
 
 package org.openjena.riot;
 
-import static org.openjena.riot.SysRIOT.fmtMessage ;
-import org.slf4j.Logger ;
+import org.openjena.riot.lang.LabelToNode ;
+import org.openjena.riot.tokens.Token ;
 
-/** An error handler that logs messages only for errors and warnings */ 
-public class ErrorHandlerWarning extends ErrorHandlerLogger
+import com.hp.hpl.jena.datatypes.RDFDatatype ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.iri.IRI ;
+import com.hp.hpl.jena.sparql.core.Quad ;
+
+public interface Maker
 {
-    public ErrorHandlerWarning(Logger log)
-    {
-        super(log) ;
-    }
+//    public DatasetGraph createDatasetGraph(long line, long col) ;
+//    public Graph createGraph(long line, long col) ;
+    public String resolveIRI(Prologue prologue, String uriStr, long line, long col) ;
+    public IRI makeIRI(Prologue prologue, String uriStr, long line, long col) ;
     
-    /** report an error but continue */
-    @Override
-    public void error(String message, long line, long col)
-    { 
-        log.error(fmtMessage(message, line, col)) ;
-    }
+    public Triple createTriple(Node subject, Node predicate, Node object, long line, long col) ;
+    public Quad createQuad(Node graph, Node subject, Node predicate, Node object, long line, long col) ;    
+    public Node createURI(Prologue prologue, String uriStr, long line, long col) ;
+    public Node createTypedLiteral(String lexical, Prologue prologue, String datatype, long line, long col) ;
+    public Node createTypedLiteral(String lexical, RDFDatatype datatype, long line, long col) ;
+    public Node createLangLiteral(String lexical, String langTag, long line, long col) ;
+    public Node createPlainLiteral(String lexical, long line, long col) ;
+    public Node createBlankNode(LabelToNode map, Node scope, String label, long line, long col) ;
+    
+    public Node create(Prologue prologue, LabelToNode map, Node currentGraph, Token token) ;
+    
+    public ErrorHandler getHandler() ;
 }
 
 /*

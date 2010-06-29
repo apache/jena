@@ -16,8 +16,10 @@ import org.openjena.atlas.lib.SinkNull ;
 import org.openjena.riot.Checker ;
 import org.openjena.riot.ErrorHandlerLib ;
 import org.openjena.riot.JenaReaderTurtle2 ;
+import org.openjena.riot.MakerChecker ;
 import org.openjena.riot.RiotException ;
 import org.openjena.riot.RiotReader ;
+import org.openjena.riot.checker.CheckerLiterals ;
 import org.openjena.riot.lang.LangTurtle ;
 import org.openjena.riot.tokens.Tokenizer ;
 import org.openjena.riot.tokens.TokenizerFactory ;
@@ -79,25 +81,47 @@ public class TestLangTurtle extends BaseTest
         Reader reader = new StringReader(string) ;
         Tokenizer tokenizer = TokenizerFactory.makeTokenizer(reader) ;
         LangTurtle parser = RiotReader.createParserTurtle(tokenizer, "http://base/", new SinkNull<Triple>()) ;
-        parser.setChecker(new Checker(ErrorHandlerLib.errorHandlerNoLogging)) ;
+        parser.setMaker(new MakerChecker(ErrorHandlerLib.errorHandlerNoLogging,
+                                         new CheckerLiterals(ErrorHandlerLib.errorHandlerNoLogging))) ;
         parser.parse() ;
     }
     
+    private static void parseSilent(String string)
+    {
+        Reader reader = new StringReader(string) ;
+        Tokenizer tokenizer = TokenizerFactory.makeTokenizer(reader) ;
+        LangTurtle parser = RiotReader.createParserTurtle(tokenizer, "http://base/", new SinkNull<Triple>()) ;
+        // TODO Tidy up
+        parser.setMaker(new MakerChecker(ErrorHandlerLib.errorHandlerNoLogging,
+                                         new CheckerLiterals(ErrorHandlerLib.errorHandlerNoLogging))) ;
+        parser.parse() ;
+    }
+
     @Test
-    public void triple()             { parse("<s> <p> <o> .") ; }
+    public void triple()                    { parse("<s> <p> <o> .") ; }
+    
+    @Test(expected=RiotException.class)
+    public void errorJunk_1()               { parse("<p>") ; }
+    
+    @Test(expected=RiotException.class)
+    public void errorJunk_2()               { parse("<r> <p>") ; }
 
+    @Test(expected=RiotException.class)
+    public void errorNoPrefixDef()          { parse("x:p <p> 'q' .") ; }
     
     @Test(expected=RiotException.class)
-    public void errorJunk_1()             { parse("<p>") ; }
+    public void errorBadDatatype()          { parse("<p> <p> 'q'^^.") ; }
     
     @Test(expected=RiotException.class)
-    public void errorJunk_2()             { parse("<r> <p>") ; }
+    public void errorBadURI_1()
+    { parseSilent("<http://example/a b> <http://example/p> 123 .") ; }
 
     @Test(expected=RiotException.class)
-    public void errorNoPrefixDef()      { parse("x:p <p> 'q' .") ; }
+    public void errorBadURI_2()
+    { parseSilent("<http://example/a%aAb> <http://example/p> 123 .") ; }
+
+    // Test that messages get printed
     
-    @Test(expected=RiotException.class)
-    public void errorBadDatatype()      { parse("<p> <p> 'q'^^.") ; }
 }
 
 /*

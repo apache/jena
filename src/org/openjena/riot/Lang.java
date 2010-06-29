@@ -18,7 +18,8 @@ public enum Lang
     TURTLE("Turtle", true, langTTL) ,
     
     NQUADS("N-Quads", false, langNQuads) ,
-    TRIG("TriG", false)
+    TRIG("TriG", false) ,
+    //TUPLE("rdf-tuples", true, langNTuple)
     ;
     
     private final String name ;
@@ -33,13 +34,13 @@ public enum Lang
 //    public static final String langNQuads       = "N-QUADS" ;
 //    public static final String langTrig         = "TRIG" ;
 
-    public static final String[] extRDFXML      = { "rdf", "owl", "xml" } ;
-    public static final String[] extNTriples    = { "nt" } ;
-    public static final String[] extNTurtle     = { "ttl" } ;
-    public static final String[] extN3          = { "n3" } ;
-    public static final String[] extNQuads      = { "nq" } ;
-    public static final String[] extTrig        = { "trig" } ;
-
+    // File extension names
+    private static final String[] extRDFXML      = { "rdf", "owl", "xml" } ;
+    private static final String[] extNTriples    = { "nt" } ;
+    private static final String[] extNTurtle     = { "ttl" } ;
+    private static final String[] extN3          = { "n3" } ;
+    private static final String[] extNQuads      = { "nq" } ;
+    private static final String[] extTrig        = { "trig" } ;
     
     private Lang(String name, boolean isTriples, String...altNames)
     {

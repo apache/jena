@@ -8,6 +8,7 @@ package org.openjena.riot.lang;
 
 import org.openjena.atlas.lib.Sink ;
 import org.openjena.riot.Checker ;
+import org.openjena.riot.Maker ;
 import org.openjena.riot.tokens.Token ;
 import org.openjena.riot.tokens.TokenType ;
 import org.openjena.riot.tokens.Tokenizer ;
@@ -23,10 +24,10 @@ public class LangNTriples extends LangNTuple<Triple>
     private static Logger messageLog = LoggerFactory.getLogger("N-Triples") ;
     
     public LangNTriples(Tokenizer tokens,
-                        Checker checker,
+                        Maker maker,
                         Sink<Triple> sink)
     {
-        super(tokens, checker, sink) ;
+        super(tokens, maker, sink) ;
     }
 
     @Override
@@ -44,39 +45,43 @@ public class LangNTriples extends LangNTuple<Triple>
         if ( oToken.isEOF() )
             exception(oToken, "Premature end of file: %s", oToken) ;
 
-        
-        Node s = parseIRIOrBNode(sToken) ;
-        Node p = parseIRI(pToken) ;
-        Node o = parseRDFTerm(oToken) ;
+        // Check in createTriple.
+//        checkIRIOrBNode(sToken) ;
+//        checkIRI(pToken) ;
+//        checkRDFTerm(oToken) ;
 
+        Node s = tokenAsNode(sToken) ;
+        Node p = tokenAsNode(pToken) ;
+        Node o = tokenAsNode(oToken) ;
+        
         Token x = nextToken() ;
         
         if ( x.getType() != TokenType.DOT )
             exception(x, "Triple not terminated by DOT: %s", x) ;
         
-        Checker checker = getChecker() ;
-        if ( checker != null )
-        {
-            boolean b = checker.check(s, sToken.getLine(), sToken.getColumn()) ;
-            b &= checker.check(p, pToken.getLine(), pToken.getColumn()) ;
-            b &= checker.check(o, oToken.getLine(), oToken.getColumn()) ;
-            if ( !b && skipOnBadTerm )
-            {
-                Triple t = new Triple(s, p, o) ;
-                skipOne(t, FmtUtils.stringForTriple(t), sToken.getLine(), sToken.getColumn()) ;
-                return null ;
-            }
-        }
-        return new Triple(s, p, o) ; 
+        // TODO Does not need checking.
+        return maker.createTriple(s, p, o, currLine, currCol) ;
+        
+//        Checker checker = getChecker() ;
+//        if ( checker != null )
+//        {
+//            boolean b = checker.check(s, sToken.getLine(), sToken.getColumn()) ;
+//            b &= checker.check(p, pToken.getLine(), pToken.getColumn()) ;
+//            b &= checker.check(o, oToken.getLine(), oToken.getColumn()) ;
+//            if ( !b && skipOnBadTerm )
+//            {
+//                Triple t = new Triple(s, p, o) ;
+//                skipOne(t, FmtUtils.stringForTriple(t), sToken.getLine(), sToken.getColumn()) ;
+//                return null ;
+//            }
+//        }
+//        return new Triple(s, p, o) ; 
     }
     
     @Override
-    protected final Node tokenAsNode(Token token) 
+    protected Node tokenAsNode(Token token)
     {
-        if ( token.hasType(TokenType.BNODE) )
-            return scopedBNode(null, token.getImage()) ;
-        // Leave IRIs alone (don't resolve)
-        return token.asNode() ;
+        return maker.create(null, labelmap, null, token) ;
     }
 }
 

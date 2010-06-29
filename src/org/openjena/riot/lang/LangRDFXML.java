@@ -13,6 +13,7 @@ import org.openjena.atlas.io.IO ;
 import org.openjena.atlas.lib.Sink ;
 import org.openjena.riot.Checker ;
 import org.openjena.riot.ErrorHandler ;
+import org.openjena.riot.Maker ;
 import org.xml.sax.SAXException ;
 import org.xml.sax.SAXParseException ;
 
@@ -38,42 +39,44 @@ public class LangRDFXML implements LangRIOT
     private long count = 0 ;
     
     private InputStream input = null ;
-    private Checker checker = null ;            // ARP does it's own checking for many things.
+    private Maker maker = null ;            // ARP does it's own checking for many things.
     private String xmlBase ;
     private String filename ;
     private Sink<Triple> sink ;
     
-    public static LangRDFXML create(InputStream in, String xmlBase, String filename, Checker checker, Sink<Triple> sink)
+    public static LangRDFXML create(InputStream in, String xmlBase, String filename, Maker maker, Sink<Triple> sink)
     {
-        return new LangRDFXML(in, xmlBase, filename, checker, sink) ;
+        return new LangRDFXML(in, xmlBase, filename, maker, sink) ;
     }
     
-    public static LangRDFXML create(String xmlBase, String filename, Checker checker, Sink<Triple> sink)
+    public static LangRDFXML create(String xmlBase, String filename, Maker maker, Sink<Triple> sink)
     {
-        return create(IO.openFile(filename), xmlBase, filename, checker, sink) ;
+        return create(IO.openFile(filename), xmlBase, filename, maker, sink) ;
     }
     
-    private LangRDFXML(InputStream in, String xmlBase, String filename, Checker checker, Sink<Triple> sink)
+    private LangRDFXML(InputStream in, String xmlBase, String filename, Maker maker, Sink<Triple> sink)
     {
         this.input = in ;
         this.xmlBase = xmlBase ;
         this.filename = filename ;
         this.sink = sink ;
-        setChecker(checker) ; 
+        setMaker(maker); 
     }
     
-    public Checker getChecker()
-    { return checker ; }
-    
-    public void setChecker(Checker checker)
-    { this.checker = checker ; }
+    public Maker getMaker()
+    {
+        return maker ;
+    }
+
+    public void setMaker(Maker maker)
+    { this.maker = maker ; }
 
     public void parse()
     {   
         // Hacked out of ARP because of all the "private" methods
         count = 0 ;
-        ErrorHandler errHandler = checker.getHandler() ; 
-        HandlerSink rslt = new HandlerSink(sink, checker) ;
+        ErrorHandler errHandler = maker.getHandler() ; 
+        HandlerSink rslt = new HandlerSink(sink, maker) ;
         arp.getHandlers().setStatementHandler(rslt);
         arp.getHandlers().setErrorHandler(rslt) ;
         arp.getHandlers().setNamespaceHandler(rslt) ;
@@ -94,12 +97,12 @@ public class LangRDFXML implements LangRIOT
     private static class HandlerSink extends ARPSaxErrorHandler implements StatementHandler, NamespaceHandler
     {
         private Sink<Triple> sink ;
-        private Checker checker ;
-        HandlerSink(Sink<Triple> sink, Checker checker)
+        private Maker maker ;
+        HandlerSink(Sink<Triple> sink, Maker maker)
         {
-            super(new ErrorHandlerBridge(checker.getHandler())) ;
+            super(new ErrorHandlerBridge(maker.getHandler())) ;
             this.sink = sink ;
-            this.checker = checker ;
+            this.maker = maker ;
         }
         
         public void statement(AResource subj, AResource pred, AResource obj)
@@ -145,7 +148,7 @@ public class LangRDFXML implements LangRIOT
         private Triple convert(AResource s, AResource p, ALiteral o)
         {
             Node object = convert(o) ;
-            checker.checkLiteral(object, -1, -1) ;
+            maker.checkLiteral(object, -1, -1) ;
             return Triple.create(convert(s), convert(p), object);
         }
         

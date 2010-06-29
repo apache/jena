@@ -16,13 +16,11 @@ import org.openjena.atlas.io.IO ;
 import org.openjena.atlas.io.PeekReader ;
 import org.openjena.riot.RiotParseException ;
 
-
-
 /** Tokenizer for all sorts of things RDF-ish */
 
 public final class TokenizerText implements Tokenizer
 {
-    // TODO Various allow/deny options
+    // Various allow/deny options (via checker?)
     
     // RDF mode:
     //   Prefixes - yes and no.

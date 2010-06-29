@@ -11,7 +11,6 @@ import static org.openjena.riot.ErrorHandlerLib.errorHandlerStd ;
 import org.openjena.riot.checker.CheckerBlankNodes ;
 import org.openjena.riot.checker.CheckerIRI ;
 import org.openjena.riot.checker.CheckerLiterals ;
-import org.openjena.riot.checker.CheckerLiteralsAllowBadLexicalForms ;
 import org.openjena.riot.checker.CheckerVar ;
 import org.openjena.riot.checker.NodeChecker ;
 
@@ -23,7 +22,7 @@ import com.hp.hpl.jena.sparql.lib.IRILib ;
 /** A checker validates RDF terms. */
 public final class Checker
 {
-    /** For tests, allow the bad lexical form terst to be turned off */
+    /** For tests, allow the bad lexical form test to be turned off */
     public static boolean WarnOnBadLexicalForms = true ;
     
     private boolean allowRelativeIRIs = false ;
@@ -46,10 +45,8 @@ public final class Checker
             handler = errorHandlerStd ;
         this.handler = handler ;
         
-        checkLiterals = new CheckerLiterals(handler, allowRelativeIRIs) ;
-        if ( ! WarnOnBadLexicalForms )
-            checkLiterals = new CheckerLiteralsAllowBadLexicalForms(handler, allowRelativeIRIs) ;
-        
+        checkLiterals = new CheckerLiterals(handler, !WarnOnBadLexicalForms) ;
+       
         checkURIs = new CheckerIRI(handler, IRILib.iriFactory) ;
         checkBlankNodes = new CheckerBlankNodes(handler) ;
         checkVars = new CheckerVar(handler) ;        

@@ -8,6 +8,7 @@ package org.openjena.riot.lang;
 import static com.hp.hpl.jena.sparql.util.Utils.equal ;
 import org.openjena.atlas.lib.Sink ;
 import org.openjena.riot.Checker ;
+import org.openjena.riot.Maker ;
 import org.openjena.riot.tokens.Token ;
 import org.openjena.riot.tokens.TokenType ;
 import org.openjena.riot.tokens.Tokenizer ;
@@ -25,9 +26,9 @@ public class LangNQuads extends LangNTuple<Quad>
     // Null for no graph.
     private Node currentGraph = null ;
     
-    public LangNQuads(Tokenizer tokens, Checker checker, Sink<Quad> sink)
+    public LangNQuads(Tokenizer tokens, Maker maker, Sink<Quad> sink)
     {
-        super(tokens, checker, sink) ;
+        super(tokens, maker, sink) ;
     }
 
     @Override
@@ -49,13 +50,14 @@ public class LangNQuads extends LangNTuple<Quad>
         if ( xToken.getType() == TokenType.EOF )
             exception(xToken, "Premature end of file: Quad not terminated by DOT: %s", xToken) ;
         
-        // Process graph node first to set bnode label scope (if not global)
+        // Process graph node first, before S,P,O
+        // to set bnode label scope (if not global)
         Node c = null ;
 
         if ( xToken.getType() != TokenType.DOT )
         {
-            //c = parseRDFTerm(cToken) ;
-            c = parseIRI(xToken) ;
+            checkIRI(xToken) ;
+            c = tokenAsNode(xToken) ;
             xToken = nextToken() ;
             currentGraph = c ;
         }
@@ -65,41 +67,44 @@ public class LangNQuads extends LangNTuple<Quad>
             currentGraph = null ;
         }
         
-        Node s = parseIRIOrBNode(sToken) ;
-        Node p = parseIRI(pToken) ;
-        Node o = parseRDFTerm(oToken) ;
+        checkIRIOrBNode(sToken) ;
+        checkIRI(pToken) ;
+        checkRDFTerm(oToken) ;
+
+        Node s = tokenAsNode(sToken) ;
+        Node p = tokenAsNode(pToken) ;
+        Node o = tokenAsNode(oToken) ;
         
         // Check end of tuple.
         
         if ( xToken.getType() != TokenType.DOT )
             exception(xToken, "Quad not terminated by DOT: %s", xToken) ;
         
-        Checker checker = getChecker() ;
+        return maker.createQuad(c, s, p, o, currLine, currCol) ;
         
-        if ( checker != null )
-        {
-            boolean b = checker.check(s, sToken.getLine(), sToken.getColumn()) ;
-            b &= checker.check(p, pToken.getLine(), pToken.getColumn()) ;
-            b &= checker.check(o, oToken.getLine(), oToken.getColumn()) ;
-            if ( ! equal(c, Quad.tripleInQuad) ) 
-                b &= checker.check(c, xToken.getLine(), xToken.getColumn()) ;
-            if ( !b && skipOnBadTerm )
-            {
-                Quad q = new Quad(c, s, p, o) ;
-                skipOne(q, FmtUtils.stringForQuad(q), sToken.getLine(), sToken.getColumn()) ;
-                return null ;
-            }
-        }
-        return new Quad(c, s, p, o) ;
+//        Checker checker = getChecker() ;
+//        
+//        if ( checker != null )
+//        {
+//            boolean b = checker.check(s, sToken.getLine(), sToken.getColumn()) ;
+//            b &= checker.check(p, pToken.getLine(), pToken.getColumn()) ;
+//            b &= checker.check(o, oToken.getLine(), oToken.getColumn()) ;
+//            if ( ! equal(c, Quad.tripleInQuad) ) 
+//                b &= checker.check(c, xToken.getLine(), xToken.getColumn()) ;
+//            if ( !b && skipOnBadTerm )
+//            {
+//                Quad q = new Quad(c, s, p, o) ;
+//                skipOne(q, FmtUtils.stringForQuad(q), sToken.getLine(), sToken.getColumn()) ;
+//                return null ;
+//            }
+//        }
+//        return new Quad(c, s, p, o) ;
     }
     
     @Override
     protected final Node tokenAsNode(Token token) 
     {
-        if ( token.hasType(TokenType.BNODE) )
-            return scopedBNode(currentGraph, token.getImage()) ;
-        // Leave IRIs alone (don't resolve)
-        return token.asNode() ;
+        return maker.create(null, labelmap, currentGraph, token) ;
     }
 }
 
