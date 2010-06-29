@@ -8,7 +8,7 @@ package dev;
 import org.openjena.atlas.lib.Sink ;
 import org.openjena.atlas.lib.Tuple ;
 import org.openjena.riot.ErrorHandler ;
-import org.openjena.riot.Maker ;
+import org.openjena.riot.ParserProfile ;
 
 import com.hp.hpl.jena.graph.Node ;
 
@@ -33,13 +33,13 @@ public class DevARQ
     static final class ParserParamObject<T>
     {
         // Or in LangBase
-        public final Maker maker ;
+        public final ParserProfile maker ;
         public final ErrorHandler errorHandler ;
         public final Sink<T> sink ;
         public final boolean strict ;
         //public Enum mode ;
         
-        public ParserParamObject(Maker maker, ErrorHandler errorHandler, Sink<T> sink, boolean strict)
+        public ParserParamObject(ParserProfile maker, ErrorHandler errorHandler, Sink<T> sink, boolean strict)
         {
             this.maker = maker ;
             this.errorHandler = errorHandler ;

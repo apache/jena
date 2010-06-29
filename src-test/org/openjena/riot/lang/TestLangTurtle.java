@@ -16,7 +16,7 @@ import org.openjena.atlas.lib.SinkNull ;
 import org.openjena.riot.Checker ;
 import org.openjena.riot.ErrorHandlerLib ;
 import org.openjena.riot.JenaReaderTurtle2 ;
-import org.openjena.riot.MakerChecker ;
+import org.openjena.riot.ParserProfileChecker ;
 import org.openjena.riot.RiotException ;
 import org.openjena.riot.RiotReader ;
 import org.openjena.riot.checker.CheckerLiterals ;
@@ -81,7 +81,7 @@ public class TestLangTurtle extends BaseTest
         Reader reader = new StringReader(string) ;
         Tokenizer tokenizer = TokenizerFactory.makeTokenizer(reader) ;
         LangTurtle parser = RiotReader.createParserTurtle(tokenizer, "http://base/", new SinkNull<Triple>()) ;
-        parser.setMaker(new MakerChecker(ErrorHandlerLib.errorHandlerNoLogging,
+        parser.setMaker(new ParserProfileChecker(ErrorHandlerLib.errorHandlerNoLogging,
                                          new CheckerLiterals(ErrorHandlerLib.errorHandlerNoLogging))) ;
         parser.parse() ;
     }
@@ -92,7 +92,7 @@ public class TestLangTurtle extends BaseTest
         Tokenizer tokenizer = TokenizerFactory.makeTokenizer(reader) ;
         LangTurtle parser = RiotReader.createParserTurtle(tokenizer, "http://base/", new SinkNull<Triple>()) ;
         // TODO Tidy up
-        parser.setMaker(new MakerChecker(ErrorHandlerLib.errorHandlerNoLogging,
+        parser.setMaker(new ParserProfileChecker(ErrorHandlerLib.errorHandlerNoLogging,
                                          new CheckerLiterals(ErrorHandlerLib.errorHandlerNoLogging))) ;
         parser.parse() ;
     }

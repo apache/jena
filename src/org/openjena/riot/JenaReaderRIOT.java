@@ -131,6 +131,7 @@ public abstract class JenaReaderRIOT implements RDFReader
         }
         catch (Exception ex)
         {
+            //ex.printStackTrace(System.err) ;
             if ( errorHandler == null ) throw new JenaException(ex) ;
             errorHandler.error(ex) ;
         }

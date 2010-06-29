@@ -14,7 +14,7 @@ import org.openjena.atlas.iterator.PeekIterator ;
 import org.openjena.atlas.lib.Sink ;
 import org.openjena.riot.ErrorHandler ;
 import org.openjena.riot.ErrorHandlerLib ;
-import org.openjena.riot.Maker ;
+import org.openjena.riot.ParserProfile ;
 import org.openjena.riot.RiotParseException ;
 import org.openjena.riot.SysRIOT ;
 import org.openjena.riot.tokens.Token ;
@@ -28,7 +28,7 @@ public abstract class LangBase<X> implements LangRIOT
 {
     //protected Checker checker = null ;
     // Temp
-    protected Maker maker ; //= new MakerChecker(ErrorHandlerLib.errorHandlerNoLogging, 
+    protected ParserProfile profile ; //= new MakerChecker(ErrorHandlerLib.errorHandlerNoLogging, 
                               //        new CheckerLiterals(ErrorHandlerLib.errorHandlerNoLogging, false )) ;
 
     protected final Tokenizer tokens ;
@@ -36,19 +36,20 @@ public abstract class LangBase<X> implements LangRIOT
 
     protected final Sink<X> sink ; 
     
+    // TODO Move to parser profile.
     protected LabelToNode labelmap ;
 
-    // This is a bit ugly but externally, encapsulating the errorhandler in the maker is convenient.  
+    // This is a bit ugly but externally, encapsulating the errorhandler in the profile is convenient.  
     private ErrorHandler errorHandler ;
     
     protected LangBase(Tokenizer tokens,
                        Sink<X> sink,
                        //Checker checker, 
-                       Maker maker,
+                       ParserProfile profile,
                        LabelToNode map)
     {
         //setChecker(checker) ;
-        setMaker(maker) ;
+        setMaker(profile) ;
         this.sink = sink ;
         this.tokens = tokens ;
         this.peekIter = new PeekIterator<Token>(tokens) ;
@@ -56,13 +57,13 @@ public abstract class LangBase<X> implements LangRIOT
     }
      
     //@Override
-    public Maker getMaker()                     { return maker ; }
+    public ParserProfile getMaker()                     { return profile ; }
     //@Override
-    public void setMaker(Maker maker)
+    public void setMaker(ParserProfile profile)
     {
-        this.maker = maker ;
-        if ( maker != null)
-            this.errorHandler = maker.getHandler() ;
+        this.profile = profile ;
+        if ( profile != null)
+            this.errorHandler = profile.getHandler() ;
         else
             this.errorHandler = ErrorHandlerLib.errorHandlerNoLogging ;
     }

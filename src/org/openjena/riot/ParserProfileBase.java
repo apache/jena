@@ -18,10 +18,10 @@ import com.hp.hpl.jena.iri.IRI ;
 import com.hp.hpl.jena.rdf.model.AnonId ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 
-/** Basic maker of things, with key operations based on a simple
+/** Basic profile of things, with key operations based on a simple
  *  use of the parse elements into Nodes (e.g. no URI resolution). 
  */
-public class MakerBase implements Maker
+public class ParserProfileBase implements ParserProfile
 {
     public ErrorHandler getHandler() { return ErrorHandlerLib.errorHandlerStd ; }
     
@@ -52,7 +52,7 @@ public class MakerBase implements Maker
 
     public Node createBlankNode(LabelToNode map, Node scope, String label, long line, long col)
     {
-        return Node.createAnon(new AnonId(label)) ;
+        return map.get(scope, label) ;
     }
 
     public Node createTypedLiteral(String lexical, Prologue prologue, String datatype, long line, long col)

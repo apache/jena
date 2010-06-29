@@ -10,7 +10,7 @@ import static org.openjena.riot.tokens.TokenType.* ;
 import org.openjena.atlas.lib.Sink ;
 import org.openjena.riot.Checker ;
 import org.openjena.riot.IRIResolver ;
-import org.openjena.riot.Maker ;
+import org.openjena.riot.ParserProfile ;
 import org.openjena.riot.PrefixMap ;
 import org.openjena.riot.Prologue ;
 import org.openjena.riot.RiotException ;
@@ -119,11 +119,11 @@ public abstract class LangTurtleBase<X> extends LangBase<X>
     public PrefixMap getPrefixMap()        { return prologue.getPrefixMap() ; }
     
     protected LangTurtleBase(String baseURI, Tokenizer tokens,
-                             Maker maker, Sink<X> sink,
+                             ParserProfile profile, Sink<X> sink,
                              //Checker checker, Sink<X> sink,
                              LabelToNode labelMap) 
     { 
-        super(tokens, sink, maker, labelMap) ;
+        super(tokens, sink, profile, labelMap) ;
         this.prologue = new Prologue(new PrefixMap(), new IRIResolver(baseURI)) ;
     }
     
@@ -185,7 +185,7 @@ public abstract class LangTurtleBase<X> extends LangBase<X>
         if ( ! lookingAt(IRI) )
             exception(peekToken(), "@prefix requires an IRI (found '"+peekToken()+"')") ;
         String iriStr = peekToken().getImage() ;
-        IRI iri = maker.makeIRI(prologue, iriStr, currLine, currCol) ;
+        IRI iri = profile.makeIRI(prologue, iriStr, currLine, currCol) ;
         prologue.getPrefixMap().add(prefix, iri) ;
 
         nextToken() ;
@@ -195,7 +195,7 @@ public abstract class LangTurtleBase<X> extends LangBase<X>
     protected final void directiveBase()
     {
         String baseStr = peekToken().getImage() ;
-        IRI baseIRI = maker.makeIRI(prologue, baseStr, currLine, currCol) ;
+        IRI baseIRI = profile.makeIRI(prologue, baseStr, currLine, currCol) ;
         nextToken() ;
         
         expect("Base directive not terminated by a dot", DOT) ;
@@ -501,12 +501,12 @@ public abstract class LangTurtleBase<X> extends LangBase<X>
             case BNODE : 
             {
                 String label = str ;
-                Node n = maker.createBlankNode(labelmap, currentGraph, label, line, col) ;
+                Node n = profile.createBlankNode(labelmap, currentGraph, label, line, col) ;
                 return n ;
             }
             case IRI :
             {
-                return maker.createURI(prologue, str, line, col) ;
+                return profile.createURI(prologue, str, line, col) ;
             }
             case PREFIXED_NAME :
             {
@@ -519,14 +519,14 @@ public abstract class LangTurtleBase<X> extends LangBase<X>
             }
             // TODO 
             case DECIMAL :
-                return maker.createTypedLiteral(str, XSDDatatype.XSDdecimal, line, col)  ; 
+                return profile.createTypedLiteral(str, XSDDatatype.XSDdecimal, line, col)  ; 
             case DOUBLE :
-                return maker.createTypedLiteral(str, XSDDatatype.XSDdouble, line, col)  ;
+                return profile.createTypedLiteral(str, XSDDatatype.XSDdouble, line, col)  ;
             case INTEGER:
-                return maker.createTypedLiteral(str, XSDDatatype.XSDinteger, line, col) ;
+                return profile.createTypedLiteral(str, XSDDatatype.XSDinteger, line, col) ;
             case LITERAL_DT :
             {
-                return maker.createTypedLiteral(str, prologue,token.getSubToken().getImage(), line, col) ; 
+                return profile.createTypedLiteral(str, prologue,token.getSubToken().getImage(), line, col) ; 
 //                Node n = tokenAsNode(token.getSubToken()) ;
 //                if ( ! n.isURI() )
 //                    throw new RiotException("Invalid token: "+token) ;

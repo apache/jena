@@ -27,7 +27,9 @@ import com.hp.hpl.jena.sparql.core.Quad ;
 
 public class RiotReader
 {
-    static Maker maker = new MakerChecker(ErrorHandlerLib.errorHandlerStd, new CheckerLiterals(ErrorHandlerLib.errorHandlerStd)) ;
+    // TODO LabelToNodeMap goes in profile
+    static ParserProfile profileTTL = new ParserProfileChecker(ErrorHandlerLib.errorHandlerStd, new CheckerLiterals(ErrorHandlerLib.errorHandlerStd)) ;
+    static ParserProfile profileNT = new ParserProfileBase() ;
     
     // -------- Triples
     
@@ -190,7 +192,7 @@ public class RiotReader
     /** Create a parser for Turtle, with default behaviour */
     public static LangTurtle createParserTurtle(Tokenizer tokenizer, String baseIRI, Sink<Triple> sink)
     {
-        LangTurtle parser = new LangTurtle(baseIRI, tokenizer, maker, sink) ;
+        LangTurtle parser = new LangTurtle(baseIRI, tokenizer, profileTTL, sink) ;
         return parser ;
     }
 
@@ -216,7 +218,7 @@ public class RiotReader
     {
         if ( baseIRI == null )
             baseIRI = IRIResolver.chooseBaseURI().toString() ;
-        LangTriG parser = new LangTriG(baseIRI, tokenizer, maker, sink) ;
+        LangTriG parser = new LangTriG(baseIRI, tokenizer, profileTTL, sink) ;
         return parser ;
     }
 
@@ -230,8 +232,7 @@ public class RiotReader
     /** Create a parser for N-Triples, with default behaviour */
     public static LangNTriples createParserNTriples(Tokenizer tokenizer, Sink<Triple> sink)
     {
-        Maker maker = new MakerBase() ;
-        LangNTriples parser = new LangNTriples(tokenizer, maker, sink) ;
+        LangNTriples parser = new LangNTriples(tokenizer, profileNT, sink) ;
         return parser ;
     }
     
@@ -245,8 +246,7 @@ public class RiotReader
     /** Create a parser for NQuads, with default behaviour */
     public static LangNQuads createParserNQuads(Tokenizer tokenizer, Sink<Quad> sink)
     {
-        Maker maker = new MakerBase() ;
-        LangNQuads parser = new LangNQuads(tokenizer, maker, sink) ;
+        LangNQuads parser = new LangNQuads(tokenizer, profileNT, sink) ;
         return parser ;
     }
     

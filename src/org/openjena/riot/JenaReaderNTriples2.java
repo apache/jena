@@ -21,7 +21,7 @@ public class JenaReaderNTriples2 extends JenaReaderRIOT
     @Override
     protected void readWorker(Model model, Tokenizer tokenizer, String base)
     {
-        Maker maker = new MakerBase() ;
+        ParserProfile profile = new ParserProfileBase() ;
         Sink<Triple> sink = new SinkToGraphTriples(model.getGraph()) ;
         try {
             LangRIOT parser = RiotReader.createParserNTriples(tokenizer, sink) ;

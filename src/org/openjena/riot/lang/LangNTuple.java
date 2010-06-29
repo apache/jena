@@ -10,7 +10,7 @@ package org.openjena.riot.lang;
 import java.util.Iterator ;
 
 import org.openjena.atlas.lib.Sink ;
-import org.openjena.riot.Maker ;
+import org.openjena.riot.ParserProfile ;
 import org.openjena.riot.tokens.Token ;
 import org.openjena.riot.tokens.TokenType ;
 import org.openjena.riot.tokens.Tokenizer ;
@@ -43,10 +43,10 @@ public abstract class LangNTuple<X> extends LangBase<X> implements Iterator<X>
     protected boolean skipOnBadTerm = false ;
     
     protected LangNTuple(Tokenizer tokens,
-                         Maker maker,
+                         ParserProfile profile,
                          Sink<X> sink)
     { 
-        super(tokens, sink, maker, LabelToNode.createScopeByDocument()) ;
+        super(tokens, sink, profile, LabelToNode.createScopeByDocument()) ;
     }
 
     /** Method to parse the whole stream of triples, sending each to the sink */ 
@@ -84,7 +84,7 @@ public abstract class LangNTuple<X> extends LangBase<X> implements Iterator<X>
     /** Note a tuple not being output */
     protected void skipOne(X object, String printForm, long line, long col)
     {
-        maker.getHandler().warning("Skip: "+printForm, line, col) ;
+        profile.getHandler().warning("Skip: "+printForm, line, col) ;
     }
 
     protected abstract Node tokenAsNode(Token token) ;

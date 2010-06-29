@@ -12,8 +12,8 @@ import java.io.InputStream ;
 import org.openjena.atlas.io.IO ;
 import org.openjena.atlas.lib.Sink ;
 import org.openjena.riot.ErrorHandler ;
-import org.openjena.riot.Maker ;
-import org.openjena.riot.MakerBase ;
+import org.openjena.riot.ParserProfile ;
+import org.openjena.riot.ParserProfileBase ;
 import org.openjena.riot.checker.CheckerLiterals ;
 import org.xml.sax.SAXException ;
 import org.xml.sax.SAXParseException ;
@@ -45,13 +45,13 @@ public class LangRDFXML implements LangRIOT
     private Sink<Triple> sink ;
     private ErrorHandler errorHandler ;
     
-    public Maker getMaker()
+    public ParserProfile getMaker()
     {
         return null ;
     }
 
-    public void setMaker(Maker maker)
-    { errorHandler = maker.getHandler() ; }
+    public void setMaker(ParserProfile profile)
+    { errorHandler = profile.getHandler() ; }
 
     public static LangRDFXML create(InputStream in, String xmlBase, String filename, ErrorHandler errorHandler, Sink<Triple> sink)
     {

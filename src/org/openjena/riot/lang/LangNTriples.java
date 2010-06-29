@@ -8,7 +8,7 @@ package org.openjena.riot.lang;
 
 import org.openjena.atlas.lib.Sink ;
 import org.openjena.riot.Checker ;
-import org.openjena.riot.Maker ;
+import org.openjena.riot.ParserProfile ;
 import org.openjena.riot.tokens.Token ;
 import org.openjena.riot.tokens.TokenType ;
 import org.openjena.riot.tokens.Tokenizer ;
@@ -24,10 +24,10 @@ public class LangNTriples extends LangNTuple<Triple>
     private static Logger messageLog = LoggerFactory.getLogger("N-Triples") ;
     
     public LangNTriples(Tokenizer tokens,
-                        Maker maker,
+                        ParserProfile profile,
                         Sink<Triple> sink)
     {
-        super(tokens, maker, sink) ;
+        super(tokens, profile, sink) ;
     }
 
     @Override
@@ -46,9 +46,9 @@ public class LangNTriples extends LangNTuple<Triple>
             exception(oToken, "Premature end of file: %s", oToken) ;
 
         // Check in createTriple.
-//        checkIRIOrBNode(sToken) ;
-//        checkIRI(pToken) ;
-//        checkRDFTerm(oToken) ;
+        checkIRIOrBNode(sToken) ;
+        checkIRI(pToken) ;
+        checkRDFTerm(oToken) ;
 
         Node s = tokenAsNode(sToken) ;
         Node p = tokenAsNode(pToken) ;
@@ -60,7 +60,7 @@ public class LangNTriples extends LangNTuple<Triple>
             exception(x, "Triple not terminated by DOT: %s", x) ;
         
         // TODO Does not need checking.
-        return maker.createTriple(s, p, o, currLine, currCol) ;
+        return profile.createTriple(s, p, o, currLine, currCol) ;
         
 //        Checker checker = getChecker() ;
 //        if ( checker != null )
@@ -81,7 +81,7 @@ public class LangNTriples extends LangNTuple<Triple>
     @Override
     protected Node tokenAsNode(Token token)
     {
-        return maker.create(null, labelmap, null, token) ;
+        return profile.create(null, labelmap, null, token) ;
     }
 }
 

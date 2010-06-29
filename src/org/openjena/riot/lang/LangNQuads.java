@@ -8,7 +8,7 @@ package org.openjena.riot.lang;
 import static com.hp.hpl.jena.sparql.util.Utils.equal ;
 import org.openjena.atlas.lib.Sink ;
 import org.openjena.riot.Checker ;
-import org.openjena.riot.Maker ;
+import org.openjena.riot.ParserProfile ;
 import org.openjena.riot.tokens.Token ;
 import org.openjena.riot.tokens.TokenType ;
 import org.openjena.riot.tokens.Tokenizer ;
@@ -26,9 +26,9 @@ public class LangNQuads extends LangNTuple<Quad>
     // Null for no graph.
     private Node currentGraph = null ;
     
-    public LangNQuads(Tokenizer tokens, Maker maker, Sink<Quad> sink)
+    public LangNQuads(Tokenizer tokens, ParserProfile profile, Sink<Quad> sink)
     {
-        super(tokens, maker, sink) ;
+        super(tokens, profile, sink) ;
     }
 
     @Override
@@ -70,6 +70,7 @@ public class LangNQuads extends LangNTuple<Quad>
         checkIRIOrBNode(sToken) ;
         checkIRI(pToken) ;
         checkRDFTerm(oToken) ;
+        // Already done. checkIRI(xToken) ;
 
         Node s = tokenAsNode(sToken) ;
         Node p = tokenAsNode(pToken) ;
@@ -80,7 +81,7 @@ public class LangNQuads extends LangNTuple<Quad>
         if ( xToken.getType() != TokenType.DOT )
             exception(xToken, "Quad not terminated by DOT: %s", xToken) ;
         
-        return maker.createQuad(c, s, p, o, currLine, currCol) ;
+        return profile.createQuad(c, s, p, o, currLine, currCol) ;
         
 //        Checker checker = getChecker() ;
 //        
@@ -104,7 +105,7 @@ public class LangNQuads extends LangNTuple<Quad>
     @Override
     protected final Node tokenAsNode(Token token) 
     {
-        return maker.create(null, labelmap, currentGraph, token) ;
+        return profile.create(null, labelmap, currentGraph, token) ;
     }
 }
 

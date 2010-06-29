@@ -15,7 +15,7 @@ import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.iri.IRI ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 
-public interface Maker
+public interface ParserProfile
 {
 //    public DatasetGraph createDatasetGraph(long line, long col) ;
 //    public Graph createGraph(long line, long col) ;

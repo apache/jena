@@ -9,7 +9,7 @@ package org.openjena.riot.lang;
 import static org.openjena.riot.tokens.TokenType.DOT ;
 import static org.openjena.riot.tokens.TokenType.RBRACE ;
 import org.openjena.atlas.lib.Sink ;
-import org.openjena.riot.Maker ;
+import org.openjena.riot.ParserProfile ;
 import org.openjena.riot.tokens.Token ;
 import org.openjena.riot.tokens.TokenType ;
 import org.openjena.riot.tokens.Tokenizer ;
@@ -38,10 +38,10 @@ public class LangTriG extends LangTurtleBase<Quad>
         
      */
     public LangTriG(String baseURI, Tokenizer tokens, 
-                    Maker maker, 
+                    ParserProfile profile, 
                     Sink<Quad> sink) 
     {
-        super(baseURI, tokens, maker, sink, chooseLabelScoping()) ;
+        super(baseURI, tokens, profile, sink, chooseLabelScoping()) ;
     }
 
     static LabelToNode chooseLabelScoping()

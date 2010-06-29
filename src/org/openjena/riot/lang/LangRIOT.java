@@ -7,12 +7,12 @@
 
 package org.openjena.riot.lang;
 
-import org.openjena.riot.Maker ;
+import org.openjena.riot.ParserProfile ;
 
 public interface LangRIOT
 {
-    public Maker            getMaker() ;
-    public void             setMaker(Maker maker) ;
+    public ParserProfile            getMaker() ;
+    public void             setMaker(ParserProfile profile) ;
     public void             parse() ;    
 }
 

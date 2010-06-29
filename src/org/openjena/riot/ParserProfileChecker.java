@@ -16,12 +16,12 @@ import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.iri.IRI ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 
-public class MakerChecker extends MakerBase implements Maker 
+public class ParserProfileChecker extends ParserProfileBase implements ParserProfile 
 {
     private final ErrorHandler errorHandler ;
     private final NodeChecker literalChecker ;
     
-    public MakerChecker(ErrorHandler errorHandler, NodeChecker literalChecker)
+    public ParserProfileChecker(ErrorHandler errorHandler, NodeChecker literalChecker)
     {
         this.errorHandler = errorHandler ;
         this.literalChecker = literalChecker ;

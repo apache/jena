@@ -9,7 +9,7 @@ package org.openjena.riot.lang;
 import static org.openjena.riot.tokens.TokenType.DOT ;
 import org.openjena.atlas.lib.Sink ;
 import org.openjena.riot.Checker ;
-import org.openjena.riot.Maker ;
+import org.openjena.riot.ParserProfile ;
 import org.openjena.riot.tokens.Tokenizer ;
 
 import com.hp.hpl.jena.graph.Node ;
@@ -18,10 +18,10 @@ import com.hp.hpl.jena.graph.Triple ;
 public class LangTurtle extends LangTurtleBase<Triple>
 {
     public LangTurtle(String baseURI, Tokenizer tokens, 
-                      Maker maker, 
+                      ParserProfile profile, 
                       Sink<Triple> sink) 
     {
-        super(baseURI, tokens, maker, sink, LabelToNode.createScopeByDocument()) ;
+        super(baseURI, tokens, profile, sink, LabelToNode.createScopeByDocument()) ;
         setCurrentGraph(null) ;
     }
 
