@@ -8,16 +8,24 @@
 package dev;
 
 import java.io.ByteArrayInputStream ;
+import java.io.InputStream ;
 import java.io.Reader ;
 import java.io.StringReader ;
 import java.util.Iterator ;
 
-import jena.turtle ;
-
+import org.openjena.atlas.io.IO ;
 import org.openjena.atlas.io.IndentedLineBuffer ;
 import org.openjena.atlas.io.IndentedWriter ;
+import org.openjena.atlas.lib.Sink ;
+import org.openjena.atlas.lib.SinkCounting ;
+import org.openjena.atlas.lib.SinkPrint ;
+import org.openjena.atlas.lib.SinkWrapper ;
+import org.openjena.riot.RiotReader ;
+import org.openjena.riot.inf.InferenceExpanderRDFS ;
+import org.openjena.riot.lang.LangRIOT ;
 
 import com.hp.hpl.jena.Jena ;
+import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.query.* ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.shared.JenaException ;
@@ -210,6 +218,46 @@ public class RunARQ
         System.exit(0) ;
     }
     
+    static class SinkInsertText<T> extends SinkWrapper<T>
+    {
+        String string ;
+        public SinkInsertText(Sink<T> sink, String string)
+        {
+            super(sink) ;
+            this.string = string ;
+        }
+        
+        @Override
+        public void send(T item)
+        {
+            super.send(item) ;
+            System.out.print(string) ;
+        }
+    }
+    
+    public static void streamInference()
+    {
+        Model m = FileManager.get().loadModel("V.ttl") ;
+        
+        SinkCounting<Triple> outputSink = new SinkCounting<Triple>(new SinkPrint<Triple>()) ;
+        
+        SinkCounting<Triple> inputSink1 = new SinkCounting<Triple>(new InferenceExpanderRDFS(outputSink, m)) ;
+        // Add gaps between parser triples. 
+        Sink<Triple> inputSink2 = new SinkInsertText<Triple>(inputSink1, "--\n") ;
+        
+        Sink<Triple> inputSink = inputSink2 ;
+        
+        InputStream input = IO.openFile("D.ttl") ;
+        
+        LangRIOT parser = RiotReader.createParserTurtle(input, "http://base/", inputSink) ;
+        parser.parse() ;
+        inputSink.flush() ;
+
+        System.out.println() ;
+        System.out.printf("Input  =  %d\n", inputSink1.getCount()) ;
+        System.out.printf("Total  =  %d\n", outputSink.getCount()) ;
+    }
+
           
     private static void sparql11update()
     {

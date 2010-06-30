@@ -644,7 +644,7 @@ public final class TokenizerText implements Tokenizer
         }
     }
 
-    // Blank node label: letters, numbers and '-'
+    // Strict: Blank node label: letters, numbers and '-'
     private String readBlankNodeLabel()
     {
         stringBuilder.setLength(0) ;

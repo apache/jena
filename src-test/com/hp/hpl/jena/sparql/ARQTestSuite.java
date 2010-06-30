@@ -27,7 +27,6 @@ import com.hp.hpl.jena.sparql.syntax.TS_Syntax ;
 
 /**
  * All the ARQ tests 
- * @author		Andy Seaborne
  */
 
 public class ARQTestSuite extends TestSuite

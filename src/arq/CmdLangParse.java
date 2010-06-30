@@ -215,7 +215,7 @@ public abstract class CmdLangParse extends CmdGeneral
         catch (RiotException ex)
         {
             // Should have handled the exception and logged a message by now.
-            System.err.println("++++"+ex.getMessage()); 
+            //System.err.println("++++"+ex.getMessage()); 
            
             if ( modLangParse.stopOnBadTerm() )
                 return ;

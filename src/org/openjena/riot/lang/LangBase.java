@@ -8,6 +8,7 @@ package org.openjena.riot.lang;
 
 import static org.openjena.riot.tokens.TokenType.EOF ;
 import static org.openjena.riot.tokens.TokenType.NODE ;
+import org.openjena.atlas.AtlasException ;
 import org.openjena.atlas.event.Event ;
 import org.openjena.atlas.event.EventManager ;
 import org.openjena.atlas.iterator.PeekIterator ;
@@ -163,6 +164,13 @@ public abstract class LangBase<X> implements LangRIOT
             // Intercept to log it.
             raiseException(ex) ;
             throw ex ;
+        }
+        catch (AtlasException ex)
+        {
+            // Bad I/O
+            RiotParseException ex2 = new RiotParseException(ex.getMessage(), -1, -1) ;
+            raiseException(ex2) ;
+            throw ex2 ;
         }
     }
 

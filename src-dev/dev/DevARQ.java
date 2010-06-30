@@ -5,48 +5,13 @@
 
 package dev;
 
-import org.openjena.atlas.lib.Sink ;
-import org.openjena.atlas.lib.Tuple ;
-import org.openjena.riot.ErrorHandler ;
-import org.openjena.riot.ParserProfile ;
-
-import com.hp.hpl.jena.graph.Node ;
 
 public class DevARQ
 {
     // RIOT bug
+    // Check messges printed
     // Look for TODOs
-    // NTriples checks line structure twice, once in parser, once in createTriple.
-    // ParserParamObject
-    //     Maker
-    //       Turtle - resolved URIs, prefixes
-    //                Prefixes - resolve URI, not a token (or token->Node, discard Node)
-    //       N-triples - raw URIs,
-    //     Checker
-    //     ErrorHandler
-    //     Exceptions only from error handlers
-    //     Sink<Tuple<T>> -> Sink<Triple>, Sink<Quad> 
-    // have a triple, quad checker AFTER emit. Need line/col
-    // (Feature of Maker    
-    //     Mode: strict, lax
-    
-    static final class ParserParamObject<T>
-    {
-        // Or in LangBase
-        public final ParserProfile maker ;
-        public final ErrorHandler errorHandler ;
-        public final Sink<T> sink ;
-        public final boolean strict ;
-        //public Enum mode ;
-        
-        public ParserParamObject(ParserProfile maker, ErrorHandler errorHandler, Sink<T> sink, boolean strict)
-        {
-            this.maker = maker ;
-            this.errorHandler = errorHandler ;
-            this.sink = sink ;
-            this.strict = strict ;
-        }
-    }
+    // More in ParserProfile - error handler, IRI reolver.
 
     // Extend:
     //   Add bare date/datetime to tokenizer?? Syntax?
@@ -55,8 +20,13 @@ public class DevARQ
     // Dataset[Graph].clear
     // Parsing SPARQL : Use RIOT checker.
  
+    // Non-strict
+    // "_" in blank node ids
+    
     // Commands and default log4j.
     // Build: use maven resources for the etching of version.  
+    
+    
     
     // Tests:
     // Re-enable normalization tests
