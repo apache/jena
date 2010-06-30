@@ -644,24 +644,39 @@ public final class TokenizerText implements Tokenizer
         }
     }
 
-    // Strict: Blank node label: letters, numbers and '-'
+    // Blank node label: letters, numbers and '-', '_'
+    // Stricky, can't start with "-" or digits.
+    
     private String readBlankNodeLabel()
     {
         stringBuilder.setLength(0) ;
-        boolean seen = false ;
+        // First character.
+        {
+            int ch = reader.peekChar() ;
+            if ( ch == EOF )
+                exception("Blank node label missing (EOF found)") ;
+            if ( isWhitespace(ch))
+                exception("Blank node label missing") ;
+            //if ( ! isAlpha(ch) && ch != '_' )
+            // Not strict
+            if ( ! isAlphaNumeric(ch) && ch != '_' )
+                exception("Blank node label does not start with alphabetic or _ :"+(char)ch) ;
+            reader.readChar() ;
+            stringBuilder.append((char)ch) ;
+        }
+        // Remainder.
         for(;;)
         {
             int ch = reader.peekChar() ;
             if ( ch == EOF )
                 break ;
-            if ( ! isAlphaNumeric(ch) && ch != '-' )
+            if ( ! isAlphaNumeric(ch) && ch != '-' && ch != '_' )
                 break ;
             reader.readChar() ;
             stringBuilder.append((char)ch) ;
-            seen = true ;
         }
-        if ( ! seen )
-            exception("Blank node label missing") ;
+//        if ( ! seen )
+//            exception("Blank node label missing") ;
         return stringBuilder.toString() ; 
     }
 

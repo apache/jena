@@ -21,7 +21,8 @@ public class DevARQ
     // Parsing SPARQL : Use RIOT checker.
  
     // Non-strict
-    // "_" in blank node ids
+    //   leading digits in blank node ids (need strict mode in Tokenizer)
+    //   ??
     
     // Commands and default log4j.
     // Build: use maven resources for the etching of version.  

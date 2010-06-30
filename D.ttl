@@ -1,1 +1,4 @@
-<http://dbpedia.org/page/x > <http://example/p> "123" .
+@prefix  xsd:    <http://www.w3.org/2001/XMLSchema#> .
+
+<http://dbpedia.org/page/x> <http://example/p> "123a"^^xsd:integer .
+<http://dbpedia.org/page/x[]> <http://example/p> "123a"^^xsd:integer .

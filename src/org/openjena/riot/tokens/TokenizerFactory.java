@@ -29,7 +29,7 @@ public class TokenizerFactory
         {
             // Byte parser
             // This is the fastest way but is less tested
-            // At most 10% faster.
+            // At most 10% faster, sometimes not at all.
             PeekInputStream pin = PeekInputStream.make(in) ;
             Tokenizer tokenizer = new TokenizerBytes(pin) ;
             return tokenizer ;

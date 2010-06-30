@@ -24,6 +24,7 @@ import org.openjena.riot.RiotParseException ;
 public final class TokenizerBytes implements Tokenizer
 {
     // UNFINISHED: ASCII only.
+    // Almost certainly out of date.
     
     // This class works directly on bytes but can't handle some multi-byte
     // cases (e.g. start of a prefixed name).  Better to work in character space
@@ -667,19 +668,33 @@ public final class TokenizerBytes implements Tokenizer
     private String readBlankNodeLabel()
     {
         stringBuilder.setLength(0) ;
-        boolean seen = false ;
+        // First character.
+        {
+            int ch = inputStream.peekByte() ;
+            if ( ch == EOF )
+                exception("Blank node label missing (EOF found)") ;
+            if ( isWhitespace(ch))
+                exception("Blank node label missing") ;
+            //if ( ! isAlpha(ch) && ch != '_' )
+            // Not strict
+            if ( ! isAlphaNumeric(ch) && ch != '_' )
+                exception("Blank node label does not start with alphabetic or _ :"+(char)ch) ;
+            inputStream.readByte() ;
+            stringBuilder.append((char)ch) ;
+        }
+        // Remainder.
         for(;;)
         {
-            int ch = inputStream.readByte() ;
+            int ch = inputStream.peekByte() ;
             if ( ch == EOF )
                 break ;
-            if ( ! isAlphaNumeric(ch) && ch != '-' )
+            if ( ! isAlphaNumeric(ch) && ch != '-' && ch != '_' )
                 break ;
+            inputStream.readByte() ;
             stringBuilder.append((char)ch) ;
-            seen = true ;
         }
-        if ( ! seen )
-            exception("Blank node label missing") ;
+//        if ( ! seen )
+//            exception("Blank node label missing") ;
         return stringBuilder.toString() ; 
     }
 
