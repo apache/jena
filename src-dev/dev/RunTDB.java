@@ -8,23 +8,13 @@
 package dev;
 
 import java.io.IOException ;
-import java.io.InputStream ;
 
-import org.openjena.atlas.io.IO ;
 import org.openjena.atlas.iterator.Filter ;
-import org.openjena.atlas.lib.Sink ;
-import org.openjena.atlas.lib.SinkCounting ;
-import org.openjena.atlas.lib.SinkPrint ;
-import org.openjena.atlas.lib.SinkWrapper ;
 import org.openjena.atlas.lib.Tuple ;
 import org.openjena.atlas.logging.Log ;
-import org.openjena.riot.RiotReader ;
-import org.openjena.riot.lang.LangRIOT ;
 
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.query.Dataset ;
-import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.TDBFactory ;
@@ -32,7 +22,6 @@ import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
-import com.hp.hpl.jena.util.FileManager ;
 
 public class RunTDB
 {
@@ -97,46 +86,6 @@ public class RunTDB
         //String qs = "SELECT * { GRAPH ?g { ?s ?p ?o } }" ;
         
         DevCmds.tdbquery("--tdb=tdb.ttl", qs) ;
-    }
-    
-    static class SinkInsertText<T> extends SinkWrapper<T>
-    {
-        String string ;
-        public SinkInsertText(Sink<T> sink, String string)
-        {
-            super(sink) ;
-            this.string = string ;
-        }
-        
-        @Override
-        public void send(T item)
-        {
-            super.send(item) ;
-            System.out.print(string) ;
-        }
-    }
-    
-    public static void streamInference()
-    {
-        Model m = FileManager.get().loadModel("V.ttl") ;
-        
-        SinkCounting<Triple> outputSink = new SinkCounting<Triple>(new SinkPrint<Triple>()) ;
-        
-        SinkCounting<Triple> inputSink1 = new SinkCounting<Triple>(new InferenceExpander(outputSink, m)) ;
-        // Add gaps between parser triples. 
-        Sink<Triple> inputSink2 = new SinkInsertText<Triple>(inputSink1, "--\n") ;
-        
-        Sink<Triple> inputSink = inputSink2 ;
-        
-        InputStream input = IO.openFile("D.ttl") ;
-        
-        LangRIOT parser = RiotReader.createParserTurtle(input, "http://base/", inputSink) ;
-        parser.parse() ;
-        inputSink.flush() ;
-
-        System.out.println() ;
-        System.out.printf("Input  =  %d\n", inputSink1.getCount()) ;
-        System.out.printf("Total  =  %d\n", outputSink.getCount()) ;
     }
 }
 
