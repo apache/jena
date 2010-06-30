@@ -8,11 +8,15 @@ package dev;
 
 public class DevARQ
 {
-    // RIOT bug
-    // Check messges printed
-    // Look for TODOs
-    // More in ParserProfile - error handler, IRI reolver.
+    // RIOT
+    //   Check messges printed
+    //   Look for TODOs
+    //   More in ParserProfile - error handler, IRI reolver.
+    // Read to dataset.
 
+    // RIOT docuemnt:
+    //   DatasetLoader
+    
     // Extend:
     //   Add bare date/datetime to tokenizer?? Syntax?
     //   Generalize and trap non-triples at emission time.
@@ -26,9 +30,7 @@ public class DevARQ
     
     // Commands and default log4j.
     // Build: use maven resources for the etching of version.  
-    
-    
-    
+
     // Tests:
     // Re-enable normalization tests
     //     POM -> run tests TS_*
