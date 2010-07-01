@@ -29,7 +29,11 @@ public class RiotReader
 {
     // TODO LabelToNodeMap goes in profile
     static ParserProfile profileTTL = new ParserProfileChecker(ErrorHandlerLib.errorHandlerStd, new CheckerLiterals(ErrorHandlerLib.errorHandlerStd)) ;
-    static ParserProfile profileNT = new ParserProfileBase() ;
+    
+    // TODO checking version
+    // and errorhandler
+    // Tests!!
+    static ParserProfile profileNT = profileTTL ; // new ParserProfileBase() ;
     
     // -------- Triples
     

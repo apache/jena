@@ -15,7 +15,6 @@ import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.iri.IRI ;
-import com.hp.hpl.jena.rdf.model.AnonId ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 
 /** Basic profile of things, with key operations based on a simple
@@ -23,59 +22,76 @@ import com.hp.hpl.jena.sparql.core.Quad ;
  */
 public class ParserProfileBase implements ParserProfile
 {
-    public ErrorHandler getHandler() { return ErrorHandlerLib.errorHandlerStd ; }
+    protected final ErrorHandler errorHandler ;
+
+    public ParserProfileBase(ErrorHandler errorHandler)
+    { this.errorHandler = errorHandler ; }
     
+    //@Override
+    public ErrorHandler getHandler() { return errorHandler ; }
+    
+    //@Override
     public String resolveIRI(Prologue prologue, String uriStr, long line, long col)
     {
         return uriStr ;
     }
     
+    //@Override
     public IRI makeIRI(Prologue prologue, String uriStr, long line, long col)
     {
         throw new UnsupportedOperationException() ;
     }
 
+    //@Override
     public Quad createQuad(Node g, Node s, Node p, Node o, long line, long col)
     {
         return new Quad(g,s,p,o) ;
     }
 
+    //@Override
     public Triple createTriple(Node s, Node p, Node o, long line, long col)
     {
         return new Triple(s,p,o) ;
     }
 
+    //@Override
     public Node createURI(Prologue prologue, String uriStr, long line, long col)
     {
         return Node.createURI(uriStr) ;
     }
 
+    //@Override
     public Node createBlankNode(LabelToNode map, Node scope, String label, long line, long col)
     {
         return map.get(scope, label) ;
     }
 
+    //@Override
     public Node createTypedLiteral(String lexical, Prologue prologue, String datatype, long line, long col)
     {
         RDFDatatype dt = Node.getType(datatype) ;
         return createTypedLiteral(lexical, dt, line, col) ;
     }
     
+    //@Override
     public Node createTypedLiteral(String lexical, RDFDatatype dt, long line, long col)
     {
         return Node.createLiteral(lexical, null, dt)  ;
     }
 
+    //@Override
     public Node createLangLiteral(String lexical, String langTag, long line, long col)
     {
         return Node.createLiteral(lexical, langTag, null)  ;
     }
 
+    //@Override
     public Node createPlainLiteral(String lexical, long line, long col)
     {
         return Node.createLiteral(lexical) ;
     }
 
+    //@Override
     public Node create(Prologue prologue, LabelToNode labelmap, Node currentGraph, Token token)
     {
         // Dispatches to the underlying operation

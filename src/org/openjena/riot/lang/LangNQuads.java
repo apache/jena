@@ -105,7 +105,7 @@ public class LangNQuads extends LangNTuple<Quad>
     @Override
     protected final Node tokenAsNode(Token token) 
     {
-        return profile.create(null, labelmap, currentGraph, token) ;
+        return profile.create(prologue, labelmap, currentGraph, token) ;
     }
 }
 

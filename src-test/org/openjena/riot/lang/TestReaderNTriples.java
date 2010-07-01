@@ -1,39 +1,17 @@
 /*
- * (c) Copyright 2009 Hewlett-Packard Development Company, LP
  * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
-package org.openjena.riot;
+package org.openjena.riot.lang;
 
-import org.openjena.atlas.lib.Sink ;
-import org.openjena.riot.lang.LangRIOT ;
-import org.openjena.riot.lang.SinkToGraphTriples ;
-import org.openjena.riot.tokens.Tokenizer ;
-
-import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.rdf.model.Model ;
-
-/** Jena reader for RIOT N-Triples */
-public class JenaReaderNTriples2 extends JenaReaderRIOT
+public class TestReaderNTriples
 {
-    @Override
-    protected void readWorker(Model model, Tokenizer tokenizer, String base)
-    {
-        Sink<Triple> sink = new SinkToGraphTriples(model.getGraph()) ;
-        try {
-            LangRIOT parser = RiotReader.createParserNTriples(tokenizer, sink) ;
-            parser.parse() ;
-        } finally {
-            sink.close();
-            tokenizer.close();
-        }
-    }
+
 }
 
 /*
- * (c) Copyright 2009 Hewlett-Packard Development Company, LP
  * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  *

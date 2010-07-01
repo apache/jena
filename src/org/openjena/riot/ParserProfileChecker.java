@@ -18,12 +18,11 @@ import com.hp.hpl.jena.sparql.core.Quad ;
 
 public class ParserProfileChecker extends ParserProfileBase implements ParserProfile 
 {
-    private final ErrorHandler errorHandler ;
     private final NodeChecker literalChecker ;
     
     public ParserProfileChecker(ErrorHandler errorHandler, NodeChecker literalChecker)
     {
-        this.errorHandler = errorHandler ;
+        super(errorHandler) ;
         this.literalChecker = literalChecker ;
     }
 

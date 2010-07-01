@@ -81,7 +81,7 @@ public class LangNTriples extends LangNTuple<Triple>
     @Override
     protected Node tokenAsNode(Token token)
     {
-        return profile.create(null, labelmap, null, token) ;
+        return profile.create(prologue, labelmap, null, token) ;
     }
 }
 
