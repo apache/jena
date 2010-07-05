@@ -68,6 +68,7 @@ public class LangNQuads extends LangNTuple<Quad>
             currentGraph = null ;
         }
         
+        // createQuad may also check but these checks are cheap and do form syntax errors.
         checkIRIOrBNode(sToken) ;
         checkIRI(pToken) ;
         checkRDFTerm(oToken) ;
@@ -82,25 +83,7 @@ public class LangNQuads extends LangNTuple<Quad>
         if ( xToken.getType() != TokenType.DOT )
             exception(xToken, "Quad not terminated by DOT: %s", xToken) ;
         
-        return profile.createQuad(c, s, p, o, currLine, currCol) ;
-        
-//        Checker checker = getChecker() ;
-//        
-//        if ( checker != null )
-//        {
-//            boolean b = checker.check(s, sToken.getLine(), sToken.getColumn()) ;
-//            b &= checker.check(p, pToken.getLine(), pToken.getColumn()) ;
-//            b &= checker.check(o, oToken.getLine(), oToken.getColumn()) ;
-//            if ( ! equal(c, Quad.tripleInQuad) ) 
-//                b &= checker.check(c, xToken.getLine(), xToken.getColumn()) ;
-//            if ( !b && skipOnBadTerm )
-//            {
-//                Quad q = new Quad(c, s, p, o) ;
-//                skipOne(q, FmtUtils.stringForQuad(q), sToken.getLine(), sToken.getColumn()) ;
-//                return null ;
-//            }
-//        }
-//        return new Quad(c, s, p, o) ;
+        return profile.createQuad(c, s, p, o, sToken.getLine(), sToken.getColumn()) ;
     }
     
     @Override

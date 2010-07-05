@@ -1,7 +1,7 @@
 PREFIX :      <http://example/>
 
-SELECT (MIN(?earliest) AS ?earliestEarliest)
+SELECT (GROUP_CONCAT(?x) AS ?str)
 {
-?s :P "thingy"; :Q "wossname".
-?s :not-before ?earliest.
+    ?s :p ?x .
 }
+GROUP BY(?s)

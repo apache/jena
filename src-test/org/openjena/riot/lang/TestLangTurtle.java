@@ -13,11 +13,13 @@ import java.io.StringReader ;
 import org.junit.Test ;
 import org.openjena.atlas.junit.BaseTest ;
 import org.openjena.atlas.lib.SinkNull ;
+import org.openjena.riot.ErrorHandler ;
 import org.openjena.riot.ErrorHandlerLib ;
 import org.openjena.riot.JenaReaderTurtle2 ;
-import org.openjena.riot.Lang ;
-import org.openjena.riot.RiotException ;
 import org.openjena.riot.RiotReader ;
+import org.openjena.riot.ErrorHandlerTestLib.ErrorHandlerEx ;
+import org.openjena.riot.ErrorHandlerTestLib.ExFatal ;
+import org.openjena.riot.ErrorHandlerTestLib.ExWarning ;
 import org.openjena.riot.tokens.Tokenizer ;
 import org.openjena.riot.tokens.TokenizerFactory ;
 
@@ -35,7 +37,7 @@ public class TestLangTurtle extends BaseTest
         Model m = ModelFactory.createDefaultModel() ;
         
         RDFReader reader = new JenaReaderTurtle2() ;
-        reader.read(m, r, null) ;
+        readProtected(reader,m, r, null) ;
         assertEquals(1, m.size()) ;
         
         String x = m.listStatements().next().getSubject().getId().getLabelString() ;
@@ -53,9 +55,8 @@ public class TestLangTurtle extends BaseTest
         String s = "_:a <http://example/p> 'foo' . _:a <http://example/p> 'foo' ." ;
         StringReader r = new StringReader(s) ;
         Model m = ModelFactory.createDefaultModel() ;
-        
         RDFReader reader = new JenaReaderTurtle2() ;
-        reader.read(m, r, null) ;
+        readProtected(reader,m, r, null) ;
         assertEquals(1, m.size()) ;
     }
 
@@ -66,9 +67,17 @@ public class TestLangTurtle extends BaseTest
         Model model = ModelFactory.createDefaultModel() ;
         Reader reader = new StringReader("@prefix x: <http://example/x>.") ;
         parser.read(model, reader, "http://example/base/") ;
-        
         assertEquals(1, model.getNsPrefixMap().size()) ;
         assertEquals("http://example/x", model.getNsPrefixURI("x")) ;
+    }
+    
+    private void readProtected(RDFReader reader, Model m, Reader r, String base)
+    {
+        ErrorHandler errHandler = ErrorHandlerLib.errorHandlerStd ;
+        ErrorHandlerLib.errorHandlerStd = ErrorHandlerLib.errorHandlerNoLogging ;
+        try {
+            reader.read(m, r, base) ;
+        } finally { ErrorHandlerLib.errorHandlerStd = errHandler ; }
     }
     
     // Call parser directly.
@@ -79,7 +88,7 @@ public class TestLangTurtle extends BaseTest
         String baseIRI = "http://base/" ;
         Tokenizer tokenizer = TokenizerFactory.makeTokenizer(reader) ;
         LangTurtle parser = RiotReader.createParserTurtle(tokenizer, "http://base/", new SinkNull<Triple>()) ;
-        parser.setProfile(RiotReader.profile(Lang.TURTLE, baseIRI, ErrorHandlerLib.errorHandlerNoLogging)) ;
+        parser.getProfile().setHandler(new ErrorHandlerEx()) ;
         parser.parse() ;
     }
     
@@ -96,28 +105,32 @@ public class TestLangTurtle extends BaseTest
     @Test
     public void triple()                    { parse("<s> <p> <o> .") ; }
     
-    @Test(expected=RiotException.class)
+    @Test(expected=ExFatal.class)
     public void errorJunk_1()               { parse("<p>") ; }
     
-    @Test(expected=RiotException.class)
+    @Test(expected=ExFatal.class)
     public void errorJunk_2()               { parse("<r> <p>") ; }
 
-    @Test(expected=RiotException.class)
+    @Test(expected=ExFatal.class)
     public void errorNoPrefixDef()          { parse("x:p <p> 'q' .") ; }
     
-    @Test(expected=RiotException.class)
+    @Test(expected=ExFatal.class)
     public void errorNoPrefixDefDT()        { parse("<p> <p> 'q'^^x:foo .") ; }
 
-    @Test(expected=RiotException.class)
+    @Test(expected=ExFatal.class)
     public void errorBadDatatype()          { parse("<p> <p> 'q'^^.") ; }
     
-    @Test(expected=RiotException.class)
+    @Test(expected=ExWarning.class)
     public void errorBadURI_1()
     { parse("<http://example/a b> <http://example/p> 123 .") ; }
 
-    @Test(expected=RiotException.class)
+    @Test(expected=ExWarning.class)
     public void errorBadURI_2()
-    { parse("<http://example/a%aAb> <http://example/p> 123 .") ; }
+    { parse("<http://example/a%XAb> <http://example/p> 123 .") ; }
+
+    @Test(expected=ExWarning.class)
+    public void errorBadURI_3()
+    { parse("<http://example/a%Aab> <http://example/p> 123 .") ; }
 
     // Test that messages get printed
     

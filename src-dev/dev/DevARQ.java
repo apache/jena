@@ -10,27 +10,14 @@ public class DevARQ
 {
     // RIOT
     //   Check messages printed
-    //   Look for TODOs
-    // ** riot parsing N-triples does not check for relative IRIs witrh checking on.
-    // Read to dataset.
     
     // Skip on bad terms.
 
-    // NTriples, NQuads - default to no checking (esp URIs)
-    // Checking if riot parsing or loading /cmd line
-    //   With reprofiling option
     // Filename in log messages
-    //     TestReaderNTriples
-    //     TestLangTriG
+    //     TestReaderNTriples, TestLangTriG etc etc
     
-    // ?? remove "Checker" --> CheckerLibrary  Statics for each check.
-    // CmdLangParser rto update echekco/nocheck configuration
-    
-    // IRIResolver to have all IRI factories as sttaics - and no one else.
-    // See also IRILib
-    
-    // RIOT docuemnt:
-    //   DatasetLoader
+    // RIOT document:
+    //   RiotReader, DatasetLoader
     
     // Extend:
     //   Add bare date/datetime to tokenizer?? Syntax?

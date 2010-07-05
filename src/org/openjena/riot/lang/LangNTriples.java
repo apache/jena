@@ -47,7 +47,7 @@ public class LangNTriples extends LangNTuple<Triple>
         if ( oToken.isEOF() )
             exception(oToken, "Premature end of file: %s", oToken) ;
 
-        // Check in createTriple.
+        // Check in createTriple - but this is cheap so do it anyway.
         checkIRIOrBNode(sToken) ;
         checkIRI(pToken) ;
         checkRDFTerm(oToken) ;
@@ -61,23 +61,7 @@ public class LangNTriples extends LangNTuple<Triple>
         if ( x.getType() != TokenType.DOT )
             exception(x, "Triple not terminated by DOT: %s", x) ;
         
-        // TODO Does not need checking.
-        return profile.createTriple(s, p, o, currLine, currCol) ;
-        
-//        Checker checker = getChecker() ;
-//        if ( checker != null )
-//        {
-//            boolean b = checker.check(s, sToken.getLine(), sToken.getColumn()) ;
-//            b &= checker.check(p, pToken.getLine(), pToken.getColumn()) ;
-//            b &= checker.check(o, oToken.getLine(), oToken.getColumn()) ;
-//            if ( !b && skipOnBadTerm )
-//            {
-//                Triple t = new Triple(s, p, o) ;
-//                skipOne(t, FmtUtils.stringForTriple(t), sToken.getLine(), sToken.getColumn()) ;
-//                return null ;
-//            }
-//        }
-//        return new Triple(s, p, o) ; 
+        return profile.createTriple(s, p, o, sToken.getLine(), sToken.getColumn()) ;
     }
     
     @Override

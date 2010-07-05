@@ -137,7 +137,7 @@ public class Utils
         return sign+tzH_str+":"+tzM_str ;
     }
     
-    /** Compare two object-things for quality - allow null to be equals to null */
+    /** Compare two object-things for quality - allow null to be equal to null */
     
     public static boolean equal(Object obj1, Object obj2)
     {

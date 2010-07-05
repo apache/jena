@@ -165,7 +165,9 @@ public class ParserProfileBase implements ParserProfile
             case LONG_STRING2:
                 return createPlainLiteral(str, line, col) ;
             // XXX Centralize exceptions
-            default: throw new RiotException(SysRIOT.fmtMessage("Not a valid token for an RDF term", line , col)) ;
+            default: 
+                errorHandler.fatal("Not a valid token for an RDF term", line , col) ;
+                return null ;
         }
     }
     
@@ -173,7 +175,7 @@ public class ParserProfileBase implements ParserProfile
     {
         String expansion = prologue.getPrefixMap().expand(prefix, localPart) ;
         if ( expansion == null )
-            throw new RiotParseException("Undefined prefix: "+prefix, token.getLine(), token.getColumn()) ;
+            errorHandler.fatal("Undefined prefix: "+prefix, token.getLine(), token.getColumn()) ;
         return expansion ;
     }
 }

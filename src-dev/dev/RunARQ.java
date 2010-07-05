@@ -88,7 +88,8 @@ public class RunARQ
 
     public static void main(String[] argv) throws Exception
     {
-        arq.riot.main("--check=true", "D.nt") ;
+        //arq.qparse.main("--file=Q.arq") ;
+        arq.sparql.main("--data=D.ttl", "--file=Q.arq") ;
         System.exit(0) ;
         
         IRI iri = IRIFactory.iriImplementation().create("x") ;

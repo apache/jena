@@ -805,22 +805,29 @@ public class BuilderExpr
     {
         public Expr make(final ItemList list)
         {
-            ItemList x = list.cdr();    // drop "avg"
+            ItemList x = list.cdr();    // drop "group_concat"
             boolean distinct = startsWithDistinct(x) ;
             if ( distinct )
                 x = x.cdr();
             
             // Complex syntax:
-            // (groupConcat sep expr ...)
+            // (groupConcat (separator "string) expr )
             if ( x.size() == 0 )
                 BuilderLib.broken(list, "Broken syntax: "+list.shortString()) ;
-            Node nSep = BuilderNode.buildNode(x.get(0)) ; 
-            String sep = nSep.getLiteralLexicalForm() ;
-            if ( sep == null )
-                BuilderLib.broken(list, "Separate string required: "+list.shortString()) ;
-            x = x.cdr();
-            ExprList exprList = buildExprListUntagged(x, 0) ;
-            Aggregator agg = AggregatorFactory.createGroupConcat(distinct, exprList, sep) ;
+            String separator = null ;
+            if ( x.get(0).isTagged(Tags.tagSeparator))
+            {
+                ItemList y = x.get(0).getList() ;
+                BuilderLib.checkLength(2, y, "Broken syntax: "+list) ;
+                Node n = y.get(1).getNode() ;
+                if ( ! n.isLiteral() || n.getLiteralDatatype() != null )
+                    BuilderLib.broken(y, "Need string for separator: "+y) ;
+                separator = n.getLiteralLexicalForm() ;
+                x = x.cdr();
+            }
+            
+            Expr expr = buildExpr(x.get(0)) ;
+            Aggregator agg = AggregatorFactory.createGroupConcat(distinct, expr, separator) ;
             return new E_Aggregator((Var)null, agg) ; 
         }
     };

@@ -48,7 +48,7 @@ public class LangTurtle extends LangTurtleBase<Triple>
     @Override
     protected void emit(Node subject, Node predicate, Node object)
     {
-        Triple t = new Triple(subject, predicate, object) ;
+        Triple t = profile.createTriple(subject, predicate, object, currLine, currCol) ;
         sink.send(t) ;
     }
 }

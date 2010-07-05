@@ -136,7 +136,6 @@ public class OpVars
         {   
             // Seems a tad wasteful to do all that work then throw it away.
             // But it needs the walker redone.
-            // TODO Rethink walker for part walks. 
             // Better: extend a Walking visitor - OpWalker.Walker
             acc.clear() ;
             acc.addAll(opProject.getVars()) ;

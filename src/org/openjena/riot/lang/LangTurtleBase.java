@@ -472,9 +472,6 @@ public abstract class LangTurtleBase<X> extends LangBase<X>
    
     protected final void checkEmitTriple(Node subject, Node predicate, Node object)
     {
-        // The syntax should make this impossible.
-        //TODO 
-        //checker.checkTriple(subject, predicate, object, currLine, currCol) ;
         emit(subject, predicate, object) ;
     }
 

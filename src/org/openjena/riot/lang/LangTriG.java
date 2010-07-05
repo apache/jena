@@ -79,7 +79,6 @@ public class LangTriG extends LangTurtleBase<Quad>
         {
             Token t = token ;   // Keep for error message. 
             graphNode = node() ;
-            // TODO Ensure tests cover bad IRI for graph
             nextToken() ;
             token = peekToken() ;
 
@@ -168,7 +167,7 @@ public class LangTriG extends LangTurtleBase<Quad>
         if ( graph == Quad.defaultGraphNodeGenerated )
             graph = Quad.tripleInQuad ;
         
-        Quad quad = new Quad(graph, subject, predicate, object) ;
+        Quad quad = profile.createQuad(graph, subject, predicate, object, currLine, currCol) ;
         sink.send(quad) ;
     }
 }

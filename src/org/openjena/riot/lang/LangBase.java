@@ -14,7 +14,6 @@ import org.openjena.atlas.event.EventManager ;
 import org.openjena.atlas.iterator.PeekIterator ;
 import org.openjena.atlas.lib.Sink ;
 import org.openjena.riot.ErrorHandler ;
-import org.openjena.riot.ErrorHandlerLib ;
 import org.openjena.riot.ParserProfile ;
 import org.openjena.riot.RiotParseException ;
 import org.openjena.riot.SysRIOT ;
@@ -37,9 +36,6 @@ public abstract class LangBase<X> implements LangRIOT
 
     protected final Sink<X> sink ; 
     
-    // This is a bit ugly but externally, encapsulating the errorhandler in the profile is convenient.  
-    private ErrorHandler errorHandler ;
-    
     protected LangBase(Tokenizer tokens,
                        Sink<X> sink,
                        ParserProfile profile)
@@ -58,10 +54,6 @@ public abstract class LangBase<X> implements LangRIOT
     public void setProfile(ParserProfile profile)
     {
         this.profile = profile ;
-        if ( profile != null)
-            this.errorHandler = profile.getHandler() ;
-        else
-            this.errorHandler = ErrorHandlerLib.errorHandlerNoLogging ;
     }
     
 //    //@Override
@@ -139,7 +131,7 @@ public abstract class LangBase<X> implements LangRIOT
         return peekToken().hasType(tokenType) ;
     }
     
-    // Remember line/col for messages.
+    // Remember line/col of last token for messages 
     protected long currLine = -1 ;
     protected long currCol = -1 ;
     
@@ -208,6 +200,7 @@ public abstract class LangBase<X> implements LangRIOT
     
     protected final void raiseException(RiotParseException ex)
     { 
+        ErrorHandler errorHandler = profile.getHandler() ; 
         if ( errorHandler != null )
             errorHandler.fatal(ex.getOriginalMessage(), ex.getLine(), ex.getCol()) ;
         throw ex ;

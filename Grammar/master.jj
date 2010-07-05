@@ -1614,10 +1614,14 @@ Expr Aggregate() : { Aggregator agg = null ; String sep = null ;
     <LPAREN>
     (t = <DISTINCT> { distinct = true ; })?
     expr = Expression() { a.add(expr) ; } 
-    (<COMMA> expr = Expression() { a.add(expr) ; } )*
+    // Single arg version
     (<SEMICOLON> <SEPARATOR> <EQ> sep=String())?
     <RPAREN>
-    { agg = AggregatorFactory.createGroupConcat(distinct, a, sep) ; }
+    { agg = AggregatorFactory.createGroupConcat(distinct, expr, sep) ; }
+//     (<COMMA> expr = Expression() { a.add(expr) ; } )*
+//     (<SEMICOLON> <SEPARATOR> <EQ> sep=String())?
+//     <RPAREN>
+//     { agg = AggregatorFactory.createGroupConcat(distinct, a, sep) ; }
    )
 
    {

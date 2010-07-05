@@ -7,7 +7,6 @@
 package com.hp.hpl.jena.sparql.expr.aggregate;
 
 import com.hp.hpl.jena.sparql.expr.Expr ;
-import com.hp.hpl.jena.sparql.expr.ExprList ;
 import com.hp.hpl.jena.sparql.util.ALog ;
 
 public class AggregatorFactory
@@ -43,10 +42,15 @@ public class AggregatorFactory
         return distinct ? new AggAvgDistinct(expr) : new AggAvg(expr) ;
     }
         
-    public static Aggregator createSample(boolean distinct, Expr expr)    { err("sample") ; return null ; }
+    public static Aggregator createSample(boolean distinct, Expr expr)
+    { 
+        return distinct ? new AggSampleDistinct(expr) : new AggSample(expr) ;
+    }
     
-    public static Aggregator createGroupConcat(boolean distinct, ExprList exprList, String separator)
-    { err("group_concat") ; return null ; }
+    public static Aggregator createGroupConcat(boolean distinct, Expr expr, String separator)
+    { 
+        return distinct ? new AggGroupConcatDistinct(expr, separator) : new AggGroupConcat(expr, separator) ;
+    }
     
     private static Aggregator err(String label)
     {

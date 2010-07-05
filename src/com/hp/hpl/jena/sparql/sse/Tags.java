@@ -145,7 +145,8 @@ public class Tags
     public static final String tagMax           = "max" ;
     public static final String tagAvg           = "avg" ;
     public static final String tagSample        = "sample" ;
-    public static final String tagGroupConcat   = "groupConcat" ;
+    public static final String tagGroupConcat   = "group_concat" ;
+    public static final String tagSeparator     = "separator" ;
 }
 
 /*

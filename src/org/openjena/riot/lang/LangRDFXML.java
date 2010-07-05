@@ -160,10 +160,10 @@ public class LangRDFXML implements LangRIOT
         }
         
         public void endPrefixMapping(String prefix)
-        {}  // TODO
+        {}
 
         public void startPrefixMapping(String prefix, String uri)
-        {}  // TODO
+        {}
     }
     
     private static class ErrorHandlerBridge implements RDFErrorHandler
