@@ -11,16 +11,20 @@ import java.io.StringReader ;
 
 import org.junit.Test ;
 import org.openjena.atlas.lib.SinkCounting ;
+import org.openjena.atlas.lib.StrUtils ;
 import org.openjena.riot.JenaReaderNTriples2 ;
 import org.openjena.riot.RiotReader ;
+import org.openjena.riot.ErrorHandlerTestLib.* ;
 import org.openjena.riot.lang.LangNTriples ;
 import org.openjena.riot.tokens.Tokenizer ;
 import org.openjena.riot.tokens.TokenizerFactory ;
 
+import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.rdf.model.RDFReader ;
+import com.hp.hpl.jena.sparql.sse.SSE ;
 
 /** Test of syntax by a triples parser (does not include node validitiy checking) */ 
 
@@ -47,10 +51,6 @@ public class TestLangNTriples extends TestLangNTuples
         assertEquals(2, m.size()) ;
     }
 
-    // Test iterator interface.
-
-    // Test parse errors interface.
-    
     @Test
     public void nt_model_1()
     {
@@ -58,25 +58,49 @@ public class TestLangNTriples extends TestLangNTuples
         assertEquals(1, m1.size()) ;
         Model m2 = parseToModel("<x> <p> \"abc\". ") ;
         assertTrue(m1.isIsomorphicWith(m2)) ;
+        Graph g1 = SSE.parseGraph("(graph (triple <x> <p> \"abc\"))") ;
+        assertTrue(g1.isIsomorphicWith(m1.getGraph())) ;
     }
 
+    @Test(expected=ExFatal.class) 
+    public void nt_only_1()
+    {
+        parseCount("<x> <p> <s> <g> .") ; 
+    }
+
+    @Test(expected=ExFatal.class) 
+    public void nt_only_2()
+    {
+        parseCount("@base <http://example/> . <x> <p> <s> .") ; 
+    }
 
     @Override
-    protected long parseToSink(String string)
+    protected long parseCount(String... strings)
     {
+        String string = StrUtils.join("\n", strings) ;
         Tokenizer tokenizer = TokenizerFactory.makeTokenizerString(string) ;
         SinkCounting<Triple> sink = new SinkCounting<Triple>() ;
-
         LangNTriples x = RiotReader.createParserNTriples(tokenizer, sink) ;
+        x.getProfile().setHandler(new ErrorHandlerEx()) ;
         x.parse() ;
         return sink.getCount() ;
+    }
+
+    @Override
+    protected void parseCheck(String... strings)
+    {
+        String string = StrUtils.join("\n", strings) ;
+        Tokenizer tokenizer = TokenizerFactory.makeTokenizerString(string) ;
+        SinkCounting<Triple> sink = new SinkCounting<Triple>() ;
+        LangNTriples x = RiotReader.createParserNTriples(tokenizer, sink) ;
+        x.setProfile(RiotReader.profile(null, false, true, new ErrorHandlerEx())) ;
+        x.parse() ;
     }
 
     protected Model parseToModel(String string)
     {
         StringReader r = new StringReader(string) ;
         Model model = ModelFactory.createDefaultModel() ;
-
         RDFReader reader = new JenaReaderNTriples2() ;
         reader.read(model, r, null) ;
         return model ;

@@ -9,8 +9,11 @@ package org.openjena.riot.lang;
 import org.junit.Test ;
 import org.openjena.atlas.lib.Sink ;
 import org.openjena.atlas.lib.SinkCounting ;
-import org.openjena.riot.RiotException ;
+import org.openjena.atlas.lib.SinkNull ;
+import org.openjena.atlas.lib.StrUtils ;
 import org.openjena.riot.RiotReader ;
+import org.openjena.riot.ErrorHandlerTestLib.ErrorHandlerEx ;
+import org.openjena.riot.ErrorHandlerTestLib.ExFatal ;
 import org.openjena.riot.tokens.Tokenizer ;
 import org.openjena.riot.tokens.TokenizerFactory ;
 
@@ -27,14 +30,28 @@ public class TestLangNQuads extends TestLangNTuples
     @Test
     public void quad_1()
     {
-        parseToSink("<x> <p> <s> <g> .") ; 
+        parseCount("<x> <p> <s> <g> .") ; 
     }
     
-    @Test(expected=RiotException.class)
+    @Test(expected=ExFatal.class)
     public void quad_2()
     {
-        parseToSink("<x> <p> <s> <g>") ;        // No trailing DOT
+        parseCount("<x> <p> <s> <g>") ;        // No trailing DOT
     }
+    
+
+    @Test(expected=ExFatal.class) 
+    public void nq_only_1()
+    {
+        parseCount("<x> <p> <s> <g> <c> .") ; 
+    }
+
+    @Test(expected=ExFatal.class) 
+    public void nq_only_2()
+    {
+        parseCount("@base <http://example/> . <x> <p> <s> .") ; 
+    }
+
     
     @Test
     public void dataset_1()
@@ -47,10 +64,10 @@ public class TestLangNQuads extends TestLangNTuples
     }
 
     @Override
-    protected long parseToSink(String string)
+    protected long parseCount(String... strings)
     {
         SinkCounting<Quad> sink = new SinkCounting<Quad>() ;
-        parse(string, sink) ;
+        parse(sink, strings) ;
         return sink.getCount() ;
     }
     
@@ -58,17 +75,31 @@ public class TestLangNQuads extends TestLangNTuples
     {
         DatasetGraph dsg = DatasetLib.createDatasetGraphMem() ;
         Sink<Quad> sink = DatasetLib.datasetSink(dsg) ;
-        parse(string, sink) ;
+        parse(sink, string) ;
         return dsg ;
     }
     
-    private static void parse(String string, Sink<Quad> sink) 
+    private static void parse(Sink<Quad> sink, String... strings ) 
     {
+        String string = StrUtils.join("\n", strings) ;
         Tokenizer tokenizer = TokenizerFactory.makeTokenizerString(string) ;
         LangRIOT parser = RiotReader.createParserNQuads(tokenizer, sink) ;
+        parser.getProfile().setHandler(new ErrorHandlerEx()) ;
         parser.parse() ;
         sink.flush();
     }
+    
+    @Override
+    protected void parseCheck(String... strings)
+    {
+        String string = StrUtils.join("\n", strings) ;
+        Tokenizer tokenizer = TokenizerFactory.makeTokenizerString(string) ;
+        Sink<Quad> sink = new SinkNull<Quad>() ;
+        LangRIOT parser = RiotReader.createParserNQuads(tokenizer, sink) ;
+        parser.setProfile(RiotReader.profile(null, false, true, new ErrorHandlerEx())) ;
+        parser.parse() ;
+    }
+
 }
 
 /*

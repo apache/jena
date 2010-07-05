@@ -6,16 +6,13 @@
 
 package org.openjena.riot.lang;
 
-import java.io.Reader ;
-import java.io.StringReader ;
-
 import org.junit.Test ;
 import org.openjena.atlas.junit.BaseTest ;
 import org.openjena.atlas.lib.Sink ;
-import org.openjena.atlas.lib.SinkNull ;
 import org.openjena.atlas.lib.StrUtils ;
 import org.openjena.riot.RiotReader ;
-import org.openjena.riot.ErrorHandlerTestLib.* ;
+import org.openjena.riot.ErrorHandlerTestLib.ErrorHandlerEx ;
+import org.openjena.riot.ErrorHandlerTestLib.ExWarning ;
 import org.openjena.riot.tokens.Tokenizer ;
 import org.openjena.riot.tokens.TokenizerFactory ;
 
@@ -37,7 +34,7 @@ public class TestLangTrig extends BaseTest
     // Need to check we get resolved URIs.
     @Test public void trig_10()     //{ parse("{ <x> <p> <q> }") ; }
     {
-        DatasetGraph dsg = read("{ <x> <p> <q> }") ;
+        DatasetGraph dsg = parse("{ <x> <p> <q> }") ;
         assertEquals(1, dsg.getDefaultGraph().size()) ;
         Triple t = dsg.getDefaultGraph().find(null,null,null).next();
         Triple t2 = SSE.parseTriple("(<http://base/x> <http://base/p> <http://base/q>)") ;
@@ -46,8 +43,8 @@ public class TestLangTrig extends BaseTest
     
     @Test public void trig_11()
     {
-        DatasetGraph dsg = read("@prefix ex:  <http://example/> .",
-                                "{ ex:s ex:p 123 }") ;
+        DatasetGraph dsg = parse("@prefix ex:  <http://example/> .",
+                                 "{ ex:s ex:p 123 }") ;
         assertEquals(1, dsg.getDefaultGraph().size()) ;
         Triple t = dsg.getDefaultGraph().find(null,null,null).next();
         Triple t2 = SSE.parseTriple("(<http://example/s> <http://example/p> 123)") ;
@@ -72,19 +69,9 @@ public class TestLangTrig extends BaseTest
     @Test (expected=ExWarning.class)
     public void trig_23()     { parse("@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .", "{ <x> <p> 'number'^^xsd:byte }") ; }
 
-    private static void parse(String... strings)
-    {
-        String string = StrUtils.join("\n", strings) ;
-        Reader reader = new StringReader(string) ;
-        Tokenizer tokenizer = TokenizerFactory.makeTokenizer(reader) ;
-        LangTriG parser = RiotReader.createParserTriG(tokenizer, "http://base/", new SinkNull<Quad>()) ;
-        parser.getProfile().setHandler(new ErrorHandlerEx()) ;
-        parser.parse() ;
-    }
-
     //Check reading into a dataset.
     
-    private static DatasetGraph read(String... strings)
+    private static DatasetGraph parse(String... strings)
     {
         String string = StrUtils.join("\n", strings) ;
         DatasetGraph dsg = DatasetLib.createDatasetGraphMem() ;

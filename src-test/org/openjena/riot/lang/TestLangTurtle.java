@@ -12,7 +12,8 @@ import java.io.StringReader ;
 
 import org.junit.Test ;
 import org.openjena.atlas.junit.BaseTest ;
-import org.openjena.atlas.lib.SinkNull ;
+import org.openjena.atlas.lib.Sink ;
+import org.openjena.atlas.lib.StrUtils ;
 import org.openjena.riot.ErrorHandler ;
 import org.openjena.riot.ErrorHandlerLib ;
 import org.openjena.riot.JenaReaderTurtle2 ;
@@ -23,10 +24,13 @@ import org.openjena.riot.ErrorHandlerTestLib.ExWarning ;
 import org.openjena.riot.tokens.Tokenizer ;
 import org.openjena.riot.tokens.TokenizerFactory ;
 
+import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.rdf.model.RDFReader ;
+import com.hp.hpl.jena.sparql.sse.SSE ;
+import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
 
 public class TestLangTurtle extends BaseTest
 {
@@ -82,14 +86,27 @@ public class TestLangTurtle extends BaseTest
     
     // Call parser directly.
     
-    private static void parse(String string)
+    private static Graph parse(String ...strings)
     {
+        String string = StrUtils.join("\n", strings) ;
         Reader reader = new StringReader(string) ;
         String baseIRI = "http://base/" ;
         Tokenizer tokenizer = TokenizerFactory.makeTokenizer(reader) ;
-        LangTurtle parser = RiotReader.createParserTurtle(tokenizer, "http://base/", new SinkNull<Triple>()) ;
+        
+        Graph graph = GraphFactory.createDefaultGraph() ;
+        Sink<Triple> sink = new SinkToGraphTriples(graph) ;
+        
+        LangTurtle parser = RiotReader.createParserTurtle(tokenizer, "http://base/", sink) ;
         parser.getProfile().setHandler(new ErrorHandlerEx()) ;
         parser.parse() ;
+        return graph ;
+    }
+    
+    private static Triple parseOneTriple(String ...strings)
+    {
+        Graph graph = parse(strings) ;
+        assertEquals(1, graph.size()) ;
+        return graph.find(null, null, null).next();
     }
     
 //    private static void parseSilent(String string)
@@ -132,8 +149,48 @@ public class TestLangTurtle extends BaseTest
     public void errorBadURI_3()
     { parse("<http://example/a%Aab> <http://example/p> 123 .") ; }
 
-    // Test that messages get printed
+
+    @Test
+    public void turtle_01()         
+    { 
+        Triple t = parseOneTriple("<s> <p> 123 . ") ;
+        Triple t2 = SSE.parseTriple("(<http://base/s> <http://base/p> 123)") ;
+        assertEquals(t2, t) ;
+    }
+
+    @Test
+    public void turtle_02()         
+    { 
+        Triple t = parseOneTriple("@base <http://example/> . <s> <p> 123 . ") ;
+        Triple t2 = SSE.parseTriple("(<http://example/s> <http://example/p> 123)") ;
+        assertEquals(t2, t) ;
+    }
+
+    @Test
+    public void turtle_03()         
+    { 
+        Triple t = parseOneTriple("@prefix ex: <http://example/x/> . ex:s ex:p 123 . ") ;
+        Triple t2 = SSE.parseTriple("(<http://example/x/s> <http://example/x/p> 123)") ;
+        assertEquals(t2, t) ;
+    }
     
+    // No Formulae. Not trig.
+    @Test (expected=ExFatal.class)
+    public void turtle_10()     { parse("@prefix ex:  <http://example/> .  { ex:s ex:p 123 . } ") ; }
+    
+    // Bad terms.
+    @Test (expected=ExWarning.class)
+    public void turtle_20()     { parse("@prefix ex:  <bad iri> .  ex:s ex:p 123 ") ; }
+    
+    @Test (expected=ExWarning.class)
+    public void turtle_21()     { parse("@prefix ex:  <http://example/> . ex:s <http://example/broken p> 123") ; }
+    
+    @Test (expected=ExWarning.class)
+    public void turtle_22()     { parse("<x> <p> 'number'^^<bad uri> ") ; }
+
+    @Test (expected=ExWarning.class)
+    public void turtle_23()     { parse("@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> . <x> <p> 'number'^^xsd:byte }") ; }
+
 }
 
 /*

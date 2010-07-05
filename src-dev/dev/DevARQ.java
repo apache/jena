@@ -14,7 +14,6 @@ public class DevARQ
     // Skip on bad terms.
 
     // Filename in log messages
-    //     TestReaderNTriples, TestLangTriG etc etc
     
     // RIOT document:
     //   RiotReader, DatasetLoader

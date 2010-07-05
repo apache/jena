@@ -104,13 +104,7 @@ public class RunARQ
         System.out.println("DONE") ;
         
         CheckerIRI.iriViolations(iri, ErrorHandlerLib.errorHandlerWarn) ;
-        
         System.exit(0) ;
-        
-        ARQ.init();
-        arq.turtle.main("testing/ARQ/BasicPatterns/model8.n3") ;
-        
-        
         
         if ( false )
         {
@@ -282,6 +276,22 @@ public class RunARQ
     }
 
           
+    private static void processIRI(String iriStr)
+    {
+        IRI iri = IRIFactory.iriImplementation().create(iriStr) ;
+        System.out.println(iri) ;
+        System.out.println(iri.isRelative()) ;
+
+        Iterator<Violation> vIter = iri.violations(true) ;
+        for ( ; vIter.hasNext() ; )
+        {
+            System.out.println(vIter.next()) ;
+        }
+        System.out.println(iriStr + " ==> "+iri) ;
+        CheckerIRI.iriViolations(iri, ErrorHandlerLib.errorHandlerWarn) ;
+        System.exit(0) ;
+    }
+    
     private static void sparql11update()
     {
         sparql11update_1("LOAD <foo> INTO <blah>") ;
