@@ -9,9 +9,9 @@ package dev;
 public class DevARQ
 {
     // RIOT
-    //   Check messages printed
-    
-    // Skip on bad terms.
+    // Skip on bad terms. Output bad term quads/triples to special sink.
+    //   Option passing (old Jena style).
+    //   Recovery parsing - scan to DOT?
 
     // Filename in log messages
     
@@ -41,20 +41,8 @@ public class DevARQ
     // 2/ If an equality is repeated do once only.
 
     // RIOT
-    //   Document
-    //   Filename in error messages
-    //   SysRIOT.fmtMessage, ParseException
-    //   Output bad term quads/triples to special sink.
-    //   Checker architecture - Jena-ish IRI tuned.
     //   WebReader: Read from URL, Content negotiation.
-    //
-    //   Interface checker
-    //   Option passing (old Jena style).
     //   Options: pass/reject bad URIs, bad literals. -> "SKIP", "PASS", "FAIL"
-    //   Recovery parsing - scan to DOT?
-    // RIOT Commands
-    //  --sink, --skip, --time, --stats?
-   
     
     // Joseki - expose "-print=opt" in validator
     
@@ -65,10 +53,7 @@ public class DevARQ
     // Removed dups between DAGE and DAWG-Final
     
     // == SPARQL 1.1 Query
-    // Aggregates 
-    //   Sum,Min,Max,Avg for Distinct
-    //   Sample, GroupConcat
-    
+    // Tests for aggregates
     // regex and str()
     // SameTerm for strings by dataset context. 
     

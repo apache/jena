@@ -1,6 +1,6 @@
 PREFIX :      <http://example/>
 
-SELECT (GROUP_CONCAT(?x) AS ?str)
+SELECT (sample(DISTINCT ?x) AS ?str)
 {
     ?s :p ?x .
 }
