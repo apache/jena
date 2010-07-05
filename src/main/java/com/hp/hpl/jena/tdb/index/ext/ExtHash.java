@@ -149,6 +149,7 @@ public class ExtHash implements Index
     static HashRecordKey hash4bytes = new HashRecordKey(){
         //@Override
         public int hashCode(byte[] key)
+        // BAD CHOICE.
         { return Bytes.getInt(key) ; }
     } ;
 
@@ -190,8 +191,6 @@ public class ExtHash implements Index
             log(">>>>Resize") ;
             log("resize: %d ==> %d", oldSize, newSize) ;
         }
-        
-        log("resize: %d ==> %d", oldSize, newSize) ;
         
         IntBuffer newDictionary = dictionaryFile.ensure(newSize*SystemTDB.SizeOfInt).asIntBuffer() ;
         if ( dictionary != null )
@@ -369,8 +368,7 @@ public class ExtHash implements Index
     // Reentrant part of "put"
     private boolean put(Record record, int hash)  
     {
-        if ( logging() ) 
-            log("put(%s,0x%08X)", record, hash) ;
+        if ( logging() ) log("put(%s,0x%08X)", record, hash) ;
         int dictIdx = trieKey(hash, bitLen) ;       // Dictionary index
         int blockId = dictionary.get(dictIdx) ;
         
@@ -378,35 +376,49 @@ public class ExtHash implements Index
         
         if ( ! bucket.isFull() )
         {
-            if ( Debugging )
-                System.out.printf("Insert [(0x%04X) %s]: %d\n", hash, record, bucket.getId()) ; 
+            if ( Debugging ) log("Insert [(0x%04X) %s]: %d", hash, record, bucket.getId()) ; 
             boolean b = bucket.put(record) ;
             hashBucketMgr.put(bucket) ;
             return b ;
         }
 
-        if ( Debugging )
-            System.out.printf("Bucket full: %d\n", bucket.getId()) ; 
+        //Is this and +1 the same?  Is the block splitable? 
         
         // Bucket full.
         if (  bitLen == bucket.getTrieBitLen() )
         {
-            if ( Debugging )
-                System.out.printf("Bucket can't be split\n") ; 
-            // Bucket not splitable..
-            // TODO Overflow buckets.
+            // Log it anyway
+            if ( ! logging() ) log("put(%s,0x%08X)", record, hash) ;
+
+            boolean oldLogging = Logging ;
+            boolean oldDebugging = Debugging ;
+            try {
+                Logging = true ;
+                Debugging = true ; 
+                
+                if ( Debugging ) 
+                { 
+                    log("Bucket full: %d", bucket.getId()) ; 
+                    log("Bucket can't be split - dictionary resize needed") ;
+                    //log(bucket) ;
+                    this.dump() ;
+                }
+                // --- DBG
+                // ---
             
-            // Expand the dictionary.
-            int x = dictionarySize() ;
-            resizeDictionary() ;
-            if ( Debugging )
-                System.out.printf("Resize: %d -> %d\n", x, dictionarySize()) ; 
-            // Try again
-            return put(record, hash) ;
+                // Bucket not splitable..
+                // TODO Overflow buckets.
+                
+                // Expand the dictionary.
+                int x = dictionarySize() ;
+                resizeDictionary() ;
+                if ( Debugging ) log("Resize: %d -> %d", x, dictionarySize()) ; 
+                // Try again
+                return put(record, hash) ;
+            } finally { Logging = oldLogging ; Debugging = oldDebugging ;} 
         }
 
-        if ( Debugging )
-            System.out.printf("Split bucket: %d\n", bucket.getId()) ;
+        if ( Debugging ) log("Split bucket: %d", bucket.getId()) ;
         
         // bitLen >  bucket.getHashBitLen() : bucket can be split
         splitAndReorganise(bucket, dictIdx, blockId, hash) ;
@@ -592,8 +604,8 @@ public class ExtHash implements Index
     
     private void dump(IndentedWriter out)
     {
-        out.printf("Bitlen      = %d \n" , bitLen) ;
-        out.printf("Dictionary  = %d \n" , 1<<bitLen ) ;
+        out.printf("Bitlen      = %d\n" , bitLen) ;
+        out.printf("Dictionary  = %d\n" , 1<<bitLen ) ;
         out.incIndent(4) ;
         for ( int i = 0 ; i < (1<<bitLen) ; i++ )
         {
@@ -688,6 +700,7 @@ public class ExtHash implements Index
         //if ( ! logging() ) return ;
         log.debug(format(format, args)) ;
     }
+    
     private final void log(Object obj)
     {
         //if ( ! logging() ) return ;

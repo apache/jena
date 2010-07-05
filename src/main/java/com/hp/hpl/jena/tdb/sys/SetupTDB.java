@@ -87,8 +87,6 @@ public class SetupTDB
     
     // IndexBuilder for metadata files. 
     
-    // TODO Tests.
-    // TODO remove constructors (e.g. DatasetPrefixesTDB) that encapsulate the choices).  DI!
     // TODO Check everywhere else for non-DI constructors.
     
     // Old code:
@@ -189,8 +187,8 @@ public class SetupTDB
         // Check and set defaults.
         // On return, can just read the metadata key/value. 
         
-        /* Semi-global
-         * TODO
+        /* Semi-global 
+         * TODO Configure caches.
          * tdb.cache.node2id.size=100000  # Smaller? Much smaller!
          * tdb.cache.id2node.size=100000
          * tdb.cache.blockwrite.size=2000
