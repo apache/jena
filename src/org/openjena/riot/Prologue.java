@@ -9,6 +9,7 @@ package org.openjena.riot;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.hp.hpl.jena.iri.IRI ;
 import com.hp.hpl.jena.shared.PrefixMapping;
 
 
@@ -30,27 +31,18 @@ public class Prologue
             for ( Entry<String, String> e : x.entrySet() )
                 pmap.add(e.getKey(), e.getValue()) ;
         }
-        
         IRIResolver resolver = null ;
         if ( base != null )
-            resolver = new IRIResolver(base) ;
+            resolver = IRIResolver.create(base) ;
         return new Prologue(pmap, resolver) ;
     }
     
-    public Prologue() { prefixMap = new PrefixMap() ; }
+    public Prologue()
+    { 
+        this.prefixMap = new PrefixMap() ;
+        this.resolver = null ;
+    }
     
-//    public Prologue2(PrefixMapping pmap)
-//    { 
-//        this.prefixMap = pmap.getNsPrefixMap() ; 
-//        this.resolver = null ;
-//    }
-//    
-//    public Prologue2(PrefixMapping pmap, String base)
-//    { 
-//        this.prefixMap = pmap ;
-//        setBaseURI(base) ;
-//    }
-//    
     public Prologue(PrefixMap pmap, IRIResolver resolver)
     {
         this.prefixMap = pmap ; 
@@ -71,14 +63,15 @@ public class Prologue
     
     public void usePrologueFrom(Prologue other)
     {
+        // Copy.
         prefixMap = new PrefixMap(other.prefixMap) ;
         seenBaseURI = false ;
         if ( other.resolver != null )
-            resolver = new IRIResolver(other.resolver.getBaseIRI()) ;
+            resolver = IRIResolver.create(other.resolver.getBaseIRIasString()) ;
     }
     
-    public Prologue sub(PrefixMap newMappings) { return sub(newMappings, null) ; }
-    public Prologue sub(String base) { return sub(null, base) ; }
+    public Prologue sub(PrefixMap newMappings)  { return sub(newMappings, null) ; }
+    public Prologue sub(String base)            { return sub(null, base) ; }
     
     public Prologue sub(PrefixMap newMappings, String base)
     {
@@ -89,7 +82,7 @@ public class Prologue
         // New base.
         IRIResolver r = resolver ;
         if ( base != null )
-            r = new IRIResolver(base) ;
+            r = IRIResolver.create(base) ;
         return new Prologue(ext, r) ;
     }
     
@@ -108,7 +101,7 @@ public class Prologue
         
 //        if ( baseURI == null )
 //            setDefaultBaseIRI() ;
-        return resolver.getBaseIRI();
+        return resolver.getBaseIRIasString();
     }
     /**
      * @param baseURI The baseURI to set.
@@ -116,9 +109,15 @@ public class Prologue
     public void setBaseURI(String baseURI)
     {
         this.seenBaseURI = true ;
-        this.resolver = new IRIResolver(baseURI) ; 
+        this.resolver = IRIResolver.create(baseURI) ; 
     }
     
+    public void setBaseURI(IRI iri)
+    {
+        this.seenBaseURI = true ;
+        this.resolver = IRIResolver.create(iri) ; 
+    }
+
     /**
      * @param resolver IRI resolver
      */

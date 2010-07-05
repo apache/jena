@@ -12,8 +12,8 @@ import java.io.InputStream ;
 import org.openjena.atlas.io.IO ;
 import org.openjena.atlas.lib.Sink ;
 import org.openjena.riot.ErrorHandler ;
+import org.openjena.riot.Lang ;
 import org.openjena.riot.ParserProfile ;
-import org.openjena.riot.ParserProfileBase ;
 import org.openjena.riot.checker.CheckerLiterals ;
 import org.xml.sax.SAXException ;
 import org.xml.sax.SAXParseException ;
@@ -45,12 +45,12 @@ public class LangRDFXML implements LangRIOT
     private Sink<Triple> sink ;
     private ErrorHandler errorHandler ;
     
-    public ParserProfile getMaker()
+    public ParserProfile getProfile()
     {
         return null ;
     }
 
-    public void setMaker(ParserProfile profile)
+    public void setProfile(ParserProfile profile)
     { errorHandler = profile.getHandler() ; }
 
     public static LangRDFXML create(InputStream in, String xmlBase, String filename, ErrorHandler errorHandler, Sink<Triple> sink)
@@ -71,6 +71,10 @@ public class LangRDFXML implements LangRIOT
         this.sink = sink ;
         this.errorHandler = errorHandler ;
     }
+    
+    //@Override
+    public Lang getLang()   { return Lang.RDFXML ; }
+
     
     public void parse()
     {   
@@ -151,7 +155,7 @@ public class LangRDFXML implements LangRIOT
         private Triple convert(AResource s, AResource p, ALiteral o)
         {
             Node object = convert(o) ;
-            checker.checkLiteral(object, -1, -1) ;
+            checker.check(object, -1, -1) ;
             return Triple.create(convert(s), convert(p), object);
         }
         
@@ -159,7 +163,7 @@ public class LangRDFXML implements LangRIOT
         {}  // TODO
 
         public void startPrefixMapping(String prefix, String uri)
-        {}
+        {}  // TODO
     }
     
     private static class ErrorHandlerBridge implements RDFErrorHandler

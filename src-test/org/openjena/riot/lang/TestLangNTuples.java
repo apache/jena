@@ -12,6 +12,7 @@ import org.openjena.atlas.junit.BaseTest ;
 import org.openjena.riot.RiotException ;
 
 
+/** Test of syntax by a tuples parser (does not include node validitiy checking) */ 
 
 abstract public class TestLangNTuples extends BaseTest
 {

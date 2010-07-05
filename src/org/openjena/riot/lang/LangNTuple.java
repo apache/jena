@@ -10,10 +10,7 @@ package org.openjena.riot.lang;
 import java.util.Iterator ;
 
 import org.openjena.atlas.lib.Sink ;
-import org.openjena.riot.IRIResolver ;
 import org.openjena.riot.ParserProfile ;
-import org.openjena.riot.PrefixMap ;
-import org.openjena.riot.Prologue ;
 import org.openjena.riot.tokens.Token ;
 import org.openjena.riot.tokens.TokenType ;
 import org.openjena.riot.tokens.Tokenizer ;
@@ -42,7 +39,6 @@ public abstract class LangNTuple<X> extends LangBase<X> implements Iterator<X>
 {
     private static Logger log = LoggerFactory.getLogger(LangNTuple.class) ;
     
-    protected final Prologue prologue ; 
     public static final boolean STRICT = false ;
     protected boolean skipOnBadTerm = false ;
     
@@ -50,8 +46,7 @@ public abstract class LangNTuple<X> extends LangBase<X> implements Iterator<X>
                          ParserProfile profile,
                          Sink<X> sink)
     { 
-        super(tokens, sink, profile, LabelToNode.createScopeByDocument()) ;
-        this.prologue = new Prologue(null, new IRIResolver()) ;
+        super(tokens, sink, profile) ;
     }
 
     /** Method to parse the whole stream of triples, sending each to the sink */ 

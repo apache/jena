@@ -20,12 +20,17 @@ import org.openjena.atlas.lib.Sink ;
 import org.openjena.atlas.lib.SinkCounting ;
 import org.openjena.atlas.lib.SinkPrint ;
 import org.openjena.atlas.lib.SinkWrapper ;
+import org.openjena.riot.ErrorHandlerLib ;
 import org.openjena.riot.RiotReader ;
+import org.openjena.riot.checker.CheckerIRI ;
 import org.openjena.riot.inf.InferenceExpanderRDFS ;
 import org.openjena.riot.lang.LangRIOT ;
 
 import com.hp.hpl.jena.Jena ;
 import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.iri.IRI ;
+import com.hp.hpl.jena.iri.IRIFactory ;
+import com.hp.hpl.jena.iri.Violation ;
 import com.hp.hpl.jena.query.* ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.shared.JenaException ;
@@ -83,10 +88,27 @@ public class RunARQ
 
     public static void main(String[] argv) throws Exception
     {
+        arq.riot.main("--check=true", "D.nt") ;
+        System.exit(0) ;
+        
+        IRI iri = IRIFactory.iriImplementation().create("x") ;
+        System.out.println(iri) ;
+        System.out.println(iri.isRelative()) ;
+
+        Iterator<Violation> vIter = iri.violations(true) ;
+        for ( ; vIter.hasNext() ; )
+        {
+            System.out.println(vIter.next()) ;
+        }
+        System.out.println("DONE") ;
+        
+        CheckerIRI.iriViolations(iri, ErrorHandlerLib.errorHandlerWarn) ;
+        
+        System.exit(0) ;
+        
         ARQ.init();
         arq.turtle.main("testing/ARQ/BasicPatterns/model8.n3") ;
         
-        System.exit(0) ;
         
         
         if ( false )

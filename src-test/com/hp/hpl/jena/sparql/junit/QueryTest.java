@@ -15,7 +15,7 @@ import java.util.Iterator ;
 import java.util.List ;
 import java.util.Set ;
 
-import org.openjena.riot.Checker ;
+import org.openjena.riot.checker.CheckerLiterals ;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.query.* ;
@@ -83,8 +83,8 @@ public class QueryTest extends EarlTestCase
             ARQ.setTrue(ARQ.strictGraph) ;
         }
         // Turn parser warnings off for the test data. 
-        oldWarningFlag = Checker.WarnOnBadLexicalForms ;
-        Checker.WarnOnBadLexicalForms = false ;
+        oldWarningFlag = CheckerLiterals.WarnOnBadLiterals ;
+        CheckerLiterals.WarnOnBadLiterals = false ;
 
         // Sort out data.
         // Not here - done during test execution because it needs to look in the query for source URIs
@@ -97,7 +97,7 @@ public class QueryTest extends EarlTestCase
     {
         if ( resetNeeded )
             ARQ.setFalse(ARQ.strictGraph) ;
-        Checker.WarnOnBadLexicalForms = oldWarningFlag ;
+        CheckerLiterals.WarnOnBadLiterals = oldWarningFlag ;
         super.tearDown() ;
     }
     

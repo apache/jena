@@ -8,7 +8,6 @@ package org.openjena.riot;
 
 import org.openjena.riot.lang.LabelToNode ;
 import org.openjena.riot.tokens.Token ;
-import org.openjena.riot.tokens.TokenType ;
 
 import com.hp.hpl.jena.datatypes.RDFDatatype ;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
@@ -22,24 +21,40 @@ import com.hp.hpl.jena.sparql.core.Quad ;
  */
 public class ParserProfileBase implements ParserProfile
 {
-    protected final ErrorHandler errorHandler ;
+    protected ErrorHandler errorHandler ;
+    protected final Prologue prologue ;
+    protected final LabelToNode labelMapping ;
 
-    public ParserProfileBase(ErrorHandler errorHandler)
-    { this.errorHandler = errorHandler ; }
-    
-    //@Override
-    public ErrorHandler getHandler() { return errorHandler ; }
-    
-    //@Override
-    public String resolveIRI(Prologue prologue, String uriStr, long line, long col)
-    {
-        return uriStr ;
+    public ParserProfileBase(Prologue prologue, ErrorHandler errorHandler)
+    { 
+        this.prologue = prologue ;
+        this.errorHandler = errorHandler ; 
+        this.labelMapping = LabelToNode.createScopeByDocument() ;
     }
     
     //@Override
-    public IRI makeIRI(Prologue prologue, String uriStr, long line, long col)
+    public ErrorHandler getHandler()    { return errorHandler ; }
+
+    //@Override
+    public void setHandler(ErrorHandler handler) { errorHandler = handler ; }
+
+    //@Override
+    public Prologue getPrologue()       { return prologue ; }      
+    
+    //@Override
+    public LabelToNode getLabelToNode() { return labelMapping ; }
+
+    //@Override
+    public String resolveIRI(String uriStr, long line, long col)
     {
-        throw new UnsupportedOperationException() ;
+        return makeIRI(uriStr, line, col).toString() ;
+    }
+    
+    //@Override
+    public IRI makeIRI(String uriStr, long line, long col)
+    {
+        IRI iri = prologue.getResolver().resolve(uriStr) ;
+        return iri ;
     }
 
     //@Override
@@ -55,23 +70,23 @@ public class ParserProfileBase implements ParserProfile
     }
 
     //@Override
-    public Node createURI(Prologue prologue, String uriStr, long line, long col)
+    public Node createURI(String uriStr, long line, long col)
     {
         return Node.createURI(uriStr) ;
     }
 
     //@Override
-    public Node createBlankNode(LabelToNode map, Node scope, String label, long line, long col)
+    public Node createBlankNode(Node scope, String label, long line, long col)
     {
-        return map.get(scope, label) ;
+        return labelMapping.get(scope, label) ;
     }
 
-    //@Override
-    public Node createTypedLiteral(String lexical, Prologue prologue, String datatype, long line, long col)
-    {
-        RDFDatatype dt = Node.getType(datatype) ;
-        return createTypedLiteral(lexical, dt, line, col) ;
-    }
+//    //@Override
+//    public Node createTypedLiteral(String lexical, String datatype, long line, long col)
+//    {
+//        RDFDatatype dt = Node.getType(datatype) ;
+//        return createTypedLiteral(lexical, dt, line, col) ;
+//    }
     
     //@Override
     public Node createTypedLiteral(String lexical, RDFDatatype dt, long line, long col)
@@ -92,7 +107,7 @@ public class ParserProfileBase implements ParserProfile
     }
 
     //@Override
-    public Node create(Prologue prologue, LabelToNode labelmap, Node currentGraph, Token token)
+    public Node create(Node currentGraph, Token token)
     {
         // Dispatches to the underlying operation
         long line = token.getLine() ;
@@ -100,16 +115,14 @@ public class ParserProfileBase implements ParserProfile
         String str = token.getImage() ;
         switch(token.getType())
         {
-            case BNODE:         return createBlankNode(labelmap, currentGraph, str, line, col) ;
-            case IRI:           return createURI(prologue, str, line, col) ;
+            case BNODE:         return createBlankNode(currentGraph, str, line, col) ;
+            case IRI:           return createURI(str, line, col) ;
             case PREFIXED_NAME:
             {
                 String prefix = str ;
                 String suffix   = token.getImage2() ;
-                String expansion = prologue.getPrefixMap().expand(prefix, suffix) ;
-                if ( expansion == null )
-                    new RiotParseException("Undefined prefix: "+prefix, token.getLine(), token.getColumn()) ;
-                return createURI(prologue, str, line, col) ;
+                String expansion = expandPrefixedName(prefix, suffix, token) ;
+                return createURI(expansion, line, col) ;
             }
             case DECIMAL :
                 return createTypedLiteral(str, XSDDatatype.XSDdecimal, line, col) ;
@@ -119,10 +132,29 @@ public class ParserProfileBase implements ParserProfile
                 return createTypedLiteral(str, XSDDatatype.XSDinteger, line, col) ;
             case LITERAL_DT :
             {
-                if ( ! token.getSubToken().hasType(TokenType.IRI) )
-                    throw new RiotException("Expected datatype URI: "+token) ;
-                return createTypedLiteral(str, prologue, token.getSubToken().getImage(), line, col) ;
+                
+                Token tokenDT = token.getSubToken() ;
+                String uriStr ;
+                
+                switch(tokenDT.getType())
+                {
+                    case IRI:               uriStr = tokenDT.getImage() ; break ;
+                    case PREFIXED_NAME:
+                    {
+                        String prefix = tokenDT.getImage() ;
+                        String suffix   = tokenDT.getImage2() ;
+                        uriStr = expandPrefixedName(prefix, suffix, tokenDT) ;
+                        break ;
+                    }
+                    default:
+                        throw new RiotException("Expected IRI for datatype: "+token) ;
+                }
+                
+                uriStr = resolveIRI(uriStr, tokenDT.getLine(), tokenDT.getColumn()) ;
+                RDFDatatype dt = Node.getType(uriStr) ;
+                return createTypedLiteral(str, dt, line, col) ;
             }
+            
             case LITERAL_LANG : 
                 return createLangLiteral(str, token.getImage2(), line, col)  ;
                 
@@ -135,6 +167,14 @@ public class ParserProfileBase implements ParserProfile
             // XXX Centralize exceptions
             default: throw new RiotException(SysRIOT.fmtMessage("Not a valid token for an RDF term", line , col)) ;
         }
+    }
+    
+    private String expandPrefixedName(String prefix, String localPart, Token token)
+    {
+        String expansion = prologue.getPrefixMap().expand(prefix, localPart) ;
+        if ( expansion == null )
+            throw new RiotParseException("Undefined prefix: "+prefix, token.getLine(), token.getColumn()) ;
+        return expansion ;
     }
 }
 

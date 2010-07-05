@@ -39,9 +39,13 @@ public class TestChecker
     
     @Test public void checker01() { check("''") ; }
     @Test public void checker02() { check("''@en") ; }
-    @Test public void checker03() { check("<x>") ; }
+    @Test public void checker03() { check("<http://example/x>") ; }
+
+    @Test(expected=ErrorHandlerTestLib.ExError.class)
+    public void checker04() { check("<x>") ; }
     
-    @Test (expected=ErrorHandlerTestLib.ExWarning.class) public void checker10() { check("''^^xsd:dateTime") ; }
+    @Test (expected=ErrorHandlerTestLib.ExWarning.class) 
+    public void checker10() { check("''^^xsd:dateTime") ; }
 
     // Whitespace facet processing.  
     // Strictly illegal RDF but Jena accepts them.

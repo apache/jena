@@ -6,13 +6,14 @@
 
 package org.openjena.riot;
 
-import static org.openjena.riot.Lang.* ;
+import static org.openjena.riot.Lang.NQUADS ;
+import static org.openjena.riot.Lang.NTRIPLES ;
+import static org.openjena.riot.Lang.RDFXML ;
 
 import java.io.InputStream ;
 
 import org.openjena.atlas.io.IO ;
 import org.openjena.atlas.lib.Sink ;
-import org.openjena.riot.checker.CheckerLiterals ;
 import org.openjena.riot.lang.LangNQuads ;
 import org.openjena.riot.lang.LangNTriples ;
 import org.openjena.riot.lang.LangRDFXML ;
@@ -27,14 +28,56 @@ import com.hp.hpl.jena.sparql.core.Quad ;
 
 public class RiotReader
 {
-    // TODO LabelToNodeMap goes in profile
-    static ParserProfile profileTTL = new ParserProfileChecker(ErrorHandlerLib.errorHandlerStd, new CheckerLiterals(ErrorHandlerLib.errorHandlerStd)) ;
+    public static ParserProfile profile(Lang lang, String baseIRI)
+    {
+        return profile(lang, baseIRI, ErrorHandlerLib.errorHandlerStd) ;
+    }
     
-    // TODO checking version
-    // and errorhandler
-    // Tests!!
-    static ParserProfile profileNT = profileTTL ; // new ParserProfileBase() ;
+    public static ParserProfile profile(Lang lang, String baseIRI, ErrorHandler handler)
+    {
+        switch (lang)
+        {
+            case NQUADS :
+            case NTRIPLES :
+                return profile(baseIRI, false, false, handler) ;
+            case N3 :
+            case TURTLE :
+            case TRIG :
+            case RDFXML :
+                return profile(baseIRI, true, true, handler) ;
+            
+        }
+        return null ;
+    }
+
+    public static ParserProfile profile(String baseIRI, boolean resolveIRIs, boolean checking, ErrorHandler handler)
+    {
+        Prologue prologue ;
+        if ( resolveIRIs )
+            prologue = new Prologue(new PrefixMap(), IRIResolver.create(baseIRI)) ;
+        else
+            prologue = new Prologue(null, IRIResolver.createNoResolve()) ;
+
+        if ( checking )
+            return new ParserProfileChecker(prologue, handler) ;
+        else
+            return new ParserProfileBase(prologue, handler) ;
+    }
     
+//    public static ParserProfile profileTTL(String baseIRI)
+//    {
+//        Prologue prologue = new Prologue(new PrefixMap(), IRIResolver.create(baseIRI)) ;
+//        ErrorHandler handler = ErrorHandlerLib.errorHandlerStd ;
+//        return new ParserProfileChecker(prologue, handler) ;
+//    }
+//
+//    public static ParserProfile profileNT()
+//    {
+//        Prologue prologue = new Prologue(null, IRIResolver.createNoResolve()) ;
+//        ErrorHandler handler = ErrorHandlerLib.errorHandlerStd ;
+//        return new ParserProfileBase(prologue, handler) ;
+//    }
+
     // -------- Triples
     
     /** Parse a number of files, sending triples to a sink.
@@ -196,7 +239,7 @@ public class RiotReader
     /** Create a parser for Turtle, with default behaviour */
     public static LangTurtle createParserTurtle(Tokenizer tokenizer, String baseIRI, Sink<Triple> sink)
     {
-        LangTurtle parser = new LangTurtle(baseIRI, tokenizer, profileTTL, sink) ;
+        LangTurtle parser = new LangTurtle(baseIRI, tokenizer, profile(Lang.TURTLE, baseIRI), sink) ;
         return parser ;
     }
 
@@ -222,11 +265,11 @@ public class RiotReader
     {
         if ( baseIRI == null )
             baseIRI = IRIResolver.chooseBaseURI().toString() ;
-        LangTriG parser = new LangTriG(baseIRI, tokenizer, profileTTL, sink) ;
+        LangTriG parser = new LangTriG(baseIRI, tokenizer, profile(Lang.TRIG, baseIRI), sink) ;
         return parser ;
     }
 
-/** Create a parser for N-Triples, with default behaviour */
+    /** Create a parser for N-Triples, with default behaviour */
     public static LangNTriples createParserNTriples(InputStream input, Sink<Triple> sink)
     {
         Tokenizer tokenizer = TokenizerFactory.makeTokenizer(input) ;
@@ -236,7 +279,7 @@ public class RiotReader
     /** Create a parser for N-Triples, with default behaviour */
     public static LangNTriples createParserNTriples(Tokenizer tokenizer, Sink<Triple> sink)
     {
-        LangNTriples parser = new LangNTriples(tokenizer, profileNT, sink) ;
+        LangNTriples parser = new LangNTriples(tokenizer, profile(Lang.NTRIPLES, null), sink) ;
         return parser ;
     }
     
@@ -250,7 +293,7 @@ public class RiotReader
     /** Create a parser for NQuads, with default behaviour */
     public static LangNQuads createParserNQuads(Tokenizer tokenizer, Sink<Quad> sink)
     {
-        LangNQuads parser = new LangNQuads(tokenizer, profileNT, sink) ;
+        LangNQuads parser = new LangNQuads(tokenizer, profile(Lang.NQUADS, null), sink) ;
         return parser ;
     }
     
@@ -260,7 +303,7 @@ public class RiotReader
             return baseIRI ;
         if ( filename == null || filename.equals("-") )
             return "http://localhost/stdin/" ;
-        return IRIResolver.resolveGlobalAsString(filename) ;
+        return IRIResolver.resolveGlobalToString(filename) ;
     }
 
     private static String nameForFile(String filename)

@@ -289,7 +289,7 @@ public final class TokenizerText implements Tokenizer
             case CH_UNDERSCORE: reader.readChar() ; token.setType(TokenType.UNDERSCORE) ; token.setImage("_") ; return token ;
             case CH_LT:         reader.readChar() ; token.setType(TokenType.LT) ; token.setImage("<") ; return token ;
             case CH_GT:         reader.readChar() ; token.setType(TokenType.GT) ; token.setImage(">") ; return token ;
-            // TODO
+            // TODO : Multi character symbols 
             // GE, LE
             // Single character symbols for * / + -
 

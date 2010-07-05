@@ -22,6 +22,7 @@ import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.rdf.model.RDFReader ;
 
+/** Test of syntax by a triples parser (does not include node validitiy checking) */ 
 
 public class TestLangNTriples extends TestLangNTuples
 {

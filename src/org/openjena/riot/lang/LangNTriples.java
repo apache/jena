@@ -7,7 +7,7 @@
 package org.openjena.riot.lang;
 
 import org.openjena.atlas.lib.Sink ;
-import org.openjena.riot.Checker ;
+import org.openjena.riot.Lang ;
 import org.openjena.riot.ParserProfile ;
 import org.openjena.riot.tokens.Token ;
 import org.openjena.riot.tokens.TokenType ;
@@ -17,7 +17,6 @@ import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.sparql.util.FmtUtils ;
 
 public class LangNTriples extends LangNTuple<Triple>
 {
@@ -29,6 +28,9 @@ public class LangNTriples extends LangNTuple<Triple>
     {
         super(tokens, profile, sink) ;
     }
+    
+    //@Override
+    public Lang getLang()   { return Lang.NTRIPLES ; }
 
     @Override
     protected final Triple parseOne() 
@@ -81,7 +83,7 @@ public class LangNTriples extends LangNTuple<Triple>
     @Override
     protected Node tokenAsNode(Token token)
     {
-        return profile.create(prologue, labelmap, null, token) ;
+        return profile.create(null, token) ;
     }
 }
 

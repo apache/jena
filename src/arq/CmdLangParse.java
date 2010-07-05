@@ -144,22 +144,30 @@ public abstract class CmdLangParse extends CmdGeneral
         if ( baseURI == null )
             baseURI = defaultBaseURI ;
         // Make absolute
-        baseURI = IRIResolver.resolveGlobalAsString(baseURI) ;
+        baseURI = IRIResolver.resolveGlobalToString(baseURI) ;
         parseRIOT(baseURI, filename, in) ;
     }
     
-    protected abstract Lang selectLang(String filename, Lang nquads) ;
+    protected abstract Lang selectLang(String filename, Lang lang) ;
 
     protected void parseRIOT(String baseURI, String filename, InputStream in)
     {
+        boolean checking = true ;
+        if ( modLangParse.explicitChecking() )  checking = true ;
+        if ( modLangParse.explicitNoChecking() ) checking = false ;
+        
         ErrorHandler errHandler = null ;
-        Checker checker = null ;
-        if ( modLangParse.checking() )
+        if ( checking )
         {
             if ( modLangParse.stopOnBadTerm() )
                 errHandler = ErrorHandlerLib.errorHandlerStd  ;
             else
                 errHandler = ErrorHandlerLib.errorHandlerWarn ;
+        }
+        
+        if ( modLangParse.skipOnBadTerm() )
+        {
+            // TODO skipOnBadterm
         }
         
         Lang lang = selectLang(filename, Lang.NQUADS) ;  
@@ -210,6 +218,17 @@ public abstract class CmdLangParse extends CmdGeneral
         modTime.startTimer() ;
         try
         {
+            // Default behaviour is "check":
+            
+            if ( checking )
+            {
+                if ( parser.getLang() == Lang.NTRIPLES ||  parser.getLang() == Lang.NQUADS )
+                    parser.setProfile(RiotReader.profile(baseURI, false, true, errHandler)) ;
+                else
+                    parser.setProfile(RiotReader.profile(baseURI, true, true, errHandler)) ;
+            }
+            else
+                parser.setProfile(RiotReader.profile(baseURI, false, false, errHandler)) ;
             parser.parse() ;
         }
         catch (RiotException ex)

@@ -1,50 +1,18 @@
 /*
- * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
-package org.openjena.riot.out;
+package org.openjena.riot;
 
-import java.io.PrintStream;
-import java.util.Iterator;
-
-import org.openjena.atlas.lib.Sink ;
-import org.openjena.riot.Prologue ;
-
-
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-
-public class NTriplesWriter
+public interface IRIResolverI
 {
-    public static void write(PrintStream out, Graph graph)
-    {
-        Prologue prologue = Prologue.create(null,  graph.getPrefixMapping()) ;
-        Sink<Triple> sink = new SinkTripleOutput(out, prologue) ;
-        graphToSink(graph, sink) ;
-    }
-    
-    private static void graphToSink(Graph graph, Sink<Triple> sink)
-    {
-        Iterator<Triple> iter = graph.find(Node.ANY, Node.ANY, Node.ANY) ;
-        graphToSink(iter, sink) ;
-    }
-    
-    private static void graphToSink(Iterator<Triple> iter, Sink<Triple> sink)
-    {
-        for ( ; iter.hasNext() ; )
-        {
-            Triple triple = iter.next() ;
-            sink.send(triple) ;
-        }
-        sink.close();
-    }
+
 }
 
 /*
- * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

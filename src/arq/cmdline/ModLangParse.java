@@ -6,10 +6,10 @@
 
 package arq.cmdline;
 
+import org.openjena.riot.IRIResolver ;
 import arq.cmd.CmdException ;
 
 import com.hp.hpl.jena.iri.IRI ;
-import com.hp.hpl.jena.sparql.lib.IRILib ;
 
 public class ModLangParse implements ArgModuleGeneral
 {
@@ -24,7 +24,8 @@ public class ModLangParse implements ArgModuleGeneral
     private ArgDecl argBase     = new ArgDecl(ArgDecl.HasValue, "base") ;
 
     private  String baseIRI         = null ;
-    private boolean check           = true ;
+    private boolean explicitCheck   = false ;
+    private boolean explicitNoCheck = false ;
     private boolean skipOnBadTerm   = false ;
     private boolean stopOnBadTerm   = false ;
     private boolean bitbucket       = false ; 
@@ -34,20 +35,24 @@ public class ModLangParse implements ArgModuleGeneral
         cmdLine.getUsage().startCategory("Parser control") ;
         cmdLine.add(argSink,    "--sink",           "Parse but throw away output") ;
         cmdLine.add(argBase,    "--base=URI",       "Set the base URI (does not apply to N-triples and N-Quads)") ;
-        cmdLine.add(argCheck,   "--check=boolean",  "Addition checking of RDF terms (default true)") ;
-        cmdLine.add(argNoCheck, "--nocheck",        "Turn off checking of RDF terms") ;
-        cmdLine.add(argSkip,    "--skip",           "Skip (do not output) triples failing the RDF term tests") ;
-        cmdLine.add(argNoSkip,  "--noSkip",         "Include triples failing the RDF term tests (not recommended)") ;
-        cmdLine.add(argStop,    "--stop",           "Stop parsing on encountering a bad RDF term") ;
+        cmdLine.add(argCheck,   "--check=boolean",  "Addition checking of RDF terms (default: off for N-triples, N-Quads, on for Turtle and TriG)") ;
+//        cmdLine.add(argNoCheck, "--nocheck",        "Turn off checking of RDF terms") ;
+//        cmdLine.add(argSkip,    "--skip",           "Skip (do not output) triples failing the RDF term tests") ;
+//        cmdLine.add(argNoSkip,  "--noSkip",         "Include triples failing the RDF term tests (not recommended)") ;
+//        cmdLine.add(argStop,    "--stop",           "Stop parsing on encountering a bad RDF term") ;
     }
 
     public void processArgs(CmdArgModule cmdLine)
     {
         if ( cmdLine.contains(argNoCheck) )
-            check = false ;
+            explicitNoCheck = false ;
         
         if ( cmdLine.contains(argCheck) )
-            check = ! cmdLine.getArg(argCheck).getValue().equalsIgnoreCase("false") ;
+        {
+            boolean b = ! cmdLine.getArg(argCheck).getValue().equalsIgnoreCase("false") ;
+            explicitCheck = b ;
+            explicitNoCheck = !b ;
+        }
         
         if ( cmdLine.contains(argSkip) )
             skipOnBadTerm = true ; 
@@ -57,7 +62,7 @@ public class ModLangParse implements ArgModuleGeneral
         if ( cmdLine.contains(argBase) )
         {
             baseIRI = cmdLine.getValue(argBase) ;
-            IRI iri = IRILib.parseIRI(baseIRI) ;
+            IRI iri = IRIResolver.resolveGlobal(baseIRI) ;
             if ( iri.hasViolation(false) )
                 throw new CmdException("Bad base IRI: "+baseIRI) ;
             if ( ! iri.isAbsolute() )
@@ -68,9 +73,14 @@ public class ModLangParse implements ArgModuleGeneral
         bitbucket = cmdLine.contains(argSink) ; 
     }
 
-    public boolean checking()
+    public boolean explicitChecking()
     {
-        return check ;
+        return explicitCheck ;
+    }
+
+    public boolean explicitNoChecking()
+    {
+        return explicitNoCheck ;
     }
 
     public boolean skipOnBadTerm()

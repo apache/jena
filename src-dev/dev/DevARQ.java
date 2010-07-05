@@ -9,12 +9,25 @@ package dev;
 public class DevARQ
 {
     // RIOT
-    //   Check messges printed
+    //   Check messages printed
     //   Look for TODOs
-    //   More in ParserProfile - error handler, IRI reolver.
+    // ** riot parsing N-triples does not check for relative IRIs witrh checking on.
     // Read to dataset.
+    
+    // Skip on bad terms.
+
+    // NTriples, NQuads - default to no checking (esp URIs)
+    // Checking if riot parsing or loading /cmd line
+    //   With reprofiling option
     // Filename in log messages
     //     TestReaderNTriples
+    //     TestLangTriG
+    
+    // ?? remove "Checker" --> CheckerLibrary  Statics for each check.
+    // CmdLangParser rto update echekco/nocheck configuration
+    
+    // IRIResolver to have all IRI factories as sttaics - and no one else.
+    // See also IRILib
     
     // RIOT docuemnt:
     //   DatasetLoader

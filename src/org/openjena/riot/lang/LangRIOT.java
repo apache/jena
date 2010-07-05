@@ -7,13 +7,16 @@
 
 package org.openjena.riot.lang;
 
+import org.openjena.riot.Lang ;
 import org.openjena.riot.ParserProfile ;
 
 public interface LangRIOT
 {
-    public ParserProfile            getMaker() ;
-    public void             setMaker(ParserProfile profile) ;
+    public ParserProfile    getProfile() ;
+    public void             setProfile(ParserProfile profile) ;
+    
     public void             parse() ;    
+    public Lang             getLang() ;
 }
 
 /*

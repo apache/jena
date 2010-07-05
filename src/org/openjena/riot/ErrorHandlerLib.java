@@ -56,6 +56,7 @@ public class ErrorHandlerLib
         }
     }
     
+    /** Ignores warnings, throws exceptions for errors */ 
     private static class ErrorHandlerSimple implements ErrorHandler
     {
         public void warning(String message, long line, long col)

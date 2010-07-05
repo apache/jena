@@ -104,6 +104,7 @@ public class SinkTripleOutput implements Sink<Triple>
         OutputLangUtils.output(out, o, prologue) ;
         out.output(" .") ;
         out.output("\n") ;
+        out.flush();
     }
 
     public void close()

@@ -19,21 +19,25 @@ public interface ParserProfile
 {
 //    public DatasetGraph createDatasetGraph(long line, long col) ;
 //    public Graph createGraph(long line, long col) ;
-    public String resolveIRI(Prologue prologue, String uriStr, long line, long col) ;
-    public IRI makeIRI(Prologue prologue, String uriStr, long line, long col) ;
+    
+    public String resolveIRI(String uriStr, long line, long col) ;
+    public IRI makeIRI(String uriStr, long line, long col) ;
     
     public Triple createTriple(Node subject, Node predicate, Node object, long line, long col) ;
     public Quad createQuad(Node graph, Node subject, Node predicate, Node object, long line, long col) ;    
-    public Node createURI(Prologue prologue, String uriStr, long line, long col) ;
-    public Node createTypedLiteral(String lexical, Prologue prologue, String datatype, long line, long col) ;
+    public Node createURI(String uriStr, long line, long col) ;
     public Node createTypedLiteral(String lexical, RDFDatatype datatype, long line, long col) ;
     public Node createLangLiteral(String lexical, String langTag, long line, long col) ;
     public Node createPlainLiteral(String lexical, long line, long col) ;
-    public Node createBlankNode(LabelToNode map, Node scope, String label, long line, long col) ;
+    public Node createBlankNode(Node scope, String label, long line, long col) ;
     
-    public Node create(Prologue prologue, LabelToNode map, Node currentGraph, Token token) ;
+    /** Make any node from a token as appropriate */
+    public Node create(Node currentGraph, Token token) ;
     
+    public LabelToNode getLabelToNode() ;
     public ErrorHandler getHandler() ;
+    public void setHandler(ErrorHandler handler) ;
+    public Prologue getPrologue() ;
 }
 
 /*

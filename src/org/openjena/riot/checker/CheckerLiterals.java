@@ -8,48 +8,75 @@ package org.openjena.riot.checker;
 
 import java.util.regex.Pattern ;
 
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.impl.LiteralLabel ;
-
 import org.openjena.riot.ErrorHandler ;
+
+import com.hp.hpl.jena.datatypes.RDFDatatype ;
+import com.hp.hpl.jena.graph.Node ;
 
 public class CheckerLiterals implements NodeChecker
 {
+    // A flag to anble the test suite to read bad data.
+    public static boolean WarnOnBadLiterals = true ;
+    
     private ErrorHandler handler ;
-    private boolean allowBadLexicalForms ;
-
     public CheckerLiterals(ErrorHandler handler)
     {
-        this(handler, false) ;
-    }
- 
-    public CheckerLiterals(ErrorHandler handler, boolean allowBadLexicalForms)
-    {
         this.handler = handler ;
-        this.allowBadLexicalForms = allowBadLexicalForms ;
     }
     
     public boolean check(Node node, long line, long col)
-    { return node.isLiteral() && checkLiteral(node, line, col) ; }
+    { return node.isLiteral() && checkLiteral(node, handler, line, col) ; }
     
-    final private Pattern langPattern = Pattern.compile("[a-zA-Z]{1,8}(-[a-zA-Z]{1,8})*") ;
+    final static private Pattern langPattern = Pattern.compile("[a-zA-Z]{1,8}(-[a-zA-Z]{1,8})*") ;
     
-    public boolean checkLiteral(Node node, long line, long col)
+    public static boolean checkLiteral(Node node, ErrorHandler handler, long line, long col)
     {
-        LiteralLabel lit = node.getLiteral() ;
+        if ( ! node.isLiteral() )
+        {
+            handler.error("Not a literal: "+node, line, col) ;
+            return false ;
+        }
+       
+        return checkLiteral(node.getLiteralLexicalForm(), node.getLiteralLanguage(), node.getLiteralDatatype(),  
+                            handler, line, col) ;
+    }
+    
+    
+    public static boolean checkLiteral(String lexicalForm, RDFDatatype datatype, 
+                                       ErrorHandler handler, long line, long col)
+    {
+        return checkLiteral(lexicalForm, null, datatype, handler, line, col) ;
+    }
 
-        // Datatype check (and plain literals are always well formed)
-        if ( lit.getDatatype() != null )
-            return validateByDatatype(lit, node, line, col) ;
+    public static boolean checkLiteral(String lexicalForm, String lang, 
+                                       ErrorHandler handler, long line, long col)
+    {
+        return checkLiteral(lexicalForm, lang, null, handler, line, col) ;
+    }
+    
+    public static boolean checkLiteral(String lexicalForm, String lang, RDFDatatype datatype, 
+                                       ErrorHandler handler, long line, long col)
+    {
+        if ( ! WarnOnBadLiterals )
+            return true ;
         
-        // No datatype.
-        String lang = lit.language() ;
-        if (lang != null && ! lang.equals("") )
+        boolean hasLang = lang != null && ! lang.equals("") ;
+        
+        if ( datatype != null && hasLang )
+            handler.error("Literal has datatype and language", line, col) ;
+        
+        // Datatype check (and plain literals are always well formed)
+        if ( datatype != null )
+            return validateByDatatype(lexicalForm, datatype, handler, line, col) ;
+        
+        // No datatype.  Language?
+
+        if ( hasLang )
         {
             // Not a perfect test.
             if ( lang.length() > 0 && ! langPattern.matcher(lang).matches() ) 
             {
-                handler.warning("Language not valid: "+node, line, col) ;
+                handler.warning("Language not valid: "+lang, line, col) ;
                 return false; 
             }
         }
@@ -57,16 +84,11 @@ public class CheckerLiterals implements NodeChecker
         return true ;
     }
 
-    protected boolean validateByDatatype(LiteralLabel lit, Node node, long line, long col)
+    protected static boolean validateByDatatype(String lexicalForm, RDFDatatype datatype, ErrorHandler handler, long line, long col)
     {
-        if ( allowBadLexicalForms )
-            return true ;
-        
-        String lex = lit.getLexicalForm() ;
-        boolean b = lit.getDatatype().isValidLiteral(lit) ;
-        if ( !b ) 
-            handler.warning("Lexical form not valid for datatype: "+node, line, col) ;
-        return b ;
+        if ( datatype.isValid(lexicalForm) ) return true ; 
+        handler.warning("Lexical form '"+lexicalForm+"'not valid for datatype "+datatype.getURI(), line, col) ;
+        return false ;
         
         // Not sure about this.  white space for XSD numbers is whitespace facet collapse. 
         //Just: return lit.getDatatype().isValidLiteral(lit) ;

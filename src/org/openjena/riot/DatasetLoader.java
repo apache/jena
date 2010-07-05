@@ -11,6 +11,8 @@ import java.io.InputStream ;
 import org.openjena.atlas.io.IO ;
 import org.openjena.atlas.lib.Sink ;
 import org.openjena.riot.lang.LangRIOT ;
+import org.openjena.riot.tokens.Tokenizer ;
+import org.openjena.riot.tokens.TokenizerFactory ;
 
 
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
@@ -39,6 +41,30 @@ public class DatasetLoader
         return dsg ;
     }
     
+    /** Parse a string and return the quads in a dataset (in-memory) (convenience operation)*/ 
+    public static DatasetGraph fromString(String string, Lang language, String baseURI)
+    {
+        DatasetGraph dsg = DatasetLib.createDatasetGraphMem() ;
+        Sink<Quad> sink = DatasetLib.datasetSink(dsg) ;
+        Tokenizer tokenizer = TokenizerFactory.makeTokenizerString(string) ;
+        
+        if ( language == Lang.NQUADS )
+        {
+            LangRIOT parser = RiotReader.createParserNQuads(tokenizer, sink) ;
+            parser.parse() ;
+            sink.flush();
+            return dsg;
+        }
+        if ( language == Lang.TRIG )
+        {
+            LangRIOT parser = RiotReader.createParserTriG(tokenizer, baseURI, sink) ;
+            parser.parse() ;
+            sink.flush();
+            return dsg;
+        }
+        return dsg ;
+    }
+
     /** Parse a file and send the quads to a dataset */ 
     public static void read(String filename, DatasetGraph dataset, Lang lang, String baseURI)
     {

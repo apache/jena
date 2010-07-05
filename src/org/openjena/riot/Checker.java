@@ -17,14 +17,10 @@ import org.openjena.riot.checker.NodeChecker ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.iri.IRI ;
-import com.hp.hpl.jena.sparql.lib.IRILib ;
 
 /** A checker validates RDF terms. */
 public final class Checker
 {
-    /** For tests, allow the bad lexical form test to be turned off */
-    public static boolean WarnOnBadLexicalForms = true ;
-    
     private boolean allowRelativeIRIs = false ;
     private boolean warningsAreErrors = false ;
     private ErrorHandler handler ;
@@ -45,12 +41,11 @@ public final class Checker
             handler = errorHandlerStd ;
         this.handler = handler ;
         
-        checkLiterals = new CheckerLiterals(handler, !WarnOnBadLexicalForms) ;
+        checkLiterals = new CheckerLiterals(handler) ;
        
-        checkURIs = new CheckerIRI(handler, IRILib.iriFactory) ;
+        checkURIs = new CheckerIRI(handler, IRIResolver.iriFactory) ;
         checkBlankNodes = new CheckerBlankNodes(handler) ;
         checkVars = new CheckerVar(handler) ;        
-        
     }
 
     public ErrorHandler getHandler()                { return handler ; } 

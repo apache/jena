@@ -9,6 +9,7 @@ package org.openjena.riot.lang;
 import static org.openjena.riot.tokens.TokenType.DOT ;
 import static org.openjena.riot.tokens.TokenType.RBRACE ;
 import org.openjena.atlas.lib.Sink ;
+import org.openjena.riot.Lang ;
 import org.openjena.riot.ParserProfile ;
 import org.openjena.riot.tokens.Token ;
 import org.openjena.riot.tokens.TokenType ;
@@ -41,27 +42,25 @@ public class LangTriG extends LangTurtleBase<Quad>
                     ParserProfile profile, 
                     Sink<Quad> sink) 
     {
-        super(baseURI, tokens, profile, sink, chooseLabelScoping()) ;
+        super(baseURI, tokens, profile, sink) ;
     }
+    
+    //@Override
+    public Lang getLang()   { return Lang.TRIG ; }
 
-    static LabelToNode chooseLabelScoping()
-    {
-        return LabelToNode.createScopeByDocument() ;
-    }
-    
-    public enum BNodeLabelScope { document , graph }  
-    
-    public void setBNodeLabelScoping(BNodeLabelScope labelscope)
-    {
-        switch (labelscope) {
-            case document : 
-                super.labelmap = LabelToNode.createScopeByDocument() ;
-                break ;
-            case graph :
-                super.labelmap = LabelToNode.createScopeByGraph() ;
-                break ;
-        }
-    }
+//    public enum BNodeLabelScope { document , graph }  
+//    
+//    public void setBNodeLabelScoping(BNodeLabelScope labelscope)
+//    {
+//        switch (labelscope) {
+//            case document : 
+//                super.labelmap = LabelToNode.createScopeByDocument() ;
+//                break ;
+//            case graph :
+//                super.labelmap = LabelToNode.createScopeByGraph() ;
+//                break ;
+//        }
+//    }
     
     @Override
     protected final void oneTopLevelElement()

@@ -1,61 +1,51 @@
 /*
  * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Information Systems Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
 package org.openjena.riot;
 
-import java.util.Iterator;
-
 import org.openjena.atlas.lib.Cache ;
 import org.openjena.atlas.lib.CacheFactory ;
 import org.openjena.atlas.lib.cache.Getter ;
 
-
-import com.hp.hpl.jena.iri.IRI;
-import com.hp.hpl.jena.iri.IRIException;
-import com.hp.hpl.jena.iri.IRIFactory;
-import com.hp.hpl.jena.iri.Violation;
+import com.hp.hpl.jena.iri.IRI ;
+import com.hp.hpl.jena.iri.IRIException ;
+import com.hp.hpl.jena.iri.IRIFactory ;
 import com.hp.hpl.jena.iri.ViolationCodes ;
-import com.hp.hpl.jena.util.FileUtils;
+import com.hp.hpl.jena.util.FileUtils ;
 
 /** Package up IRI reolver functionality. 
  */
 
-public class IRIResolver
+public abstract class IRIResolver
 {
-    /**
-     * An IRIFactory appropriately configuired.
-     */
-    static final IRIFactory factoryX = new IRIFactory(IRIFactory
-            .jenaImplementation());
-    static {
-        factoryX.setSameSchemeRelativeReferences("file");
-    }
-
     //static IRIFactory iriFactory = IRIFactory.jenaImplementation() ;
     //static IRIFactory iriFactory = IRIFactory.iriImplementation();
     
     /** The IRI checker setup - more than usual Jena but not full IRI. */
-    public static IRIFactory factory = new IRIFactory();
+    public static IRIFactory iriFactory = new IRIFactory();
+    private static boolean showExceptions = true;
     static {
         // IRIFactory.iriImplementation() ...
-        factory.useSpecificationIRI(true);
-        factory.useSchemeSpecificRules("*",true);
-        
-        // Allow relative URIs for file: URLs.
-        factory.setSameSchemeRelativeReferences("file");
+        iriFactory.useSpecificationIRI(true);
+        iriFactory.useSchemeSpecificRules("*",true);
+
+        // Allow relative references for file: URLs.
+        iriFactory.setSameSchemeRelativeReferences("file");
 
         //iriFactory.shouldViolation(false,true);
 
         // Moderate it -- allow unwise chars and any scheme name.
-        factory.setIsError(ViolationCodes.UNWISE_CHARACTER,false);
-        factory.setIsWarning(ViolationCodes.UNWISE_CHARACTER,false);
+        iriFactory.setIsError(ViolationCodes.UNWISE_CHARACTER,false);
+        iriFactory.setIsWarning(ViolationCodes.UNWISE_CHARACTER,false);
 
-        factory.setIsError(ViolationCodes.UNREGISTERED_IANA_SCHEME,false);
-        factory.setIsWarning(ViolationCodes.UNREGISTERED_IANA_SCHEME,false);
+        iriFactory.setIsError(ViolationCodes.UNREGISTERED_IANA_SCHEME,false);
+        iriFactory.setIsWarning(ViolationCodes.UNREGISTERED_IANA_SCHEME,false);
     }
+
     
     /** Check an IRI string (does not resolve it) */
     public static boolean checkIRI(String iriStr)
@@ -67,15 +57,16 @@ public class IRIResolver
     /** Parse an IRI (does not resolve it) */
     public static IRI parseIRI(String iriStr)
     {
-        return factory.create(iriStr);
+        return iriFactory.create(iriStr);
     }
     /**
      * Resolve the relative URI str against the current global base.
      * @param str
      * @return IRI
      */
-    public static IRI resolveGlobal(String str) {
-        return exceptions(cwd.resolve(str)) ;
+    public static IRI resolveGlobal(String str)
+    {
+        return globalResolver.resolve(str) ;
     }
     
     /**
@@ -83,8 +74,8 @@ public class IRIResolver
      * @param str
      * @return String
      */
-    public static String resolveGlobalAsString(String str) {
-        return exceptions(cwd.resolve(str)).toString() ;
+    public static String resolveGlobalToString(String str) {
+        return globalResolver.resolveToString(str) ;
     }
 
     
@@ -93,22 +84,22 @@ public class IRIResolver
      */
     static private String globalBase = FileUtils.toURL(".").replace("/./", "/") ;
     
+    static IRIResolver globalResolver ; 
+    
     /**
-     * The current working directory, as an IRI.
+     * The current global resolver based on the working directory
      */
-    static final IRI cwd;
     static {
-        
-        IRI cwdx;
+        IRI cwd ;
         try {
-            cwdx = factory.construct(globalBase);
+            cwd = iriFactory.construct(globalBase);
         } catch (IRIException e) {
             System.err.println("Unexpected IRIException in initializer: "
                     + e.getMessage());
-            cwdx = factory.create("file:///");
+            cwd = iriFactory.create("file:///");
             e.printStackTrace(System.err) ;
         }
-        cwd = cwdx;
+        globalResolver = IRIResolver.create(cwd) ;
     }
     
     /**
@@ -119,24 +110,15 @@ public class IRIResolver
      * @return String The filename as an absolute URL
      */
     static public String resolveFileURL(String filename) throws IRIException {
-        IRI r = cwd.resolve(filename);
-        if (!r.getScheme().equalsIgnoreCase("file")) {
+        IRI r = globalResolver.resolve(filename);
+        if (!r.getScheme().equalsIgnoreCase("file")) 
+        {
+            // Pragmatic hack that copes with "c:"
             return resolveFileURL("./" + filename);
         }
         return r.toString();
     }
 
-    // The cache.  Maybe this should be in Prologue.
-    private static final int CacheSize = 1000 ;
-    final private Getter<String, IRI> getter = new Getter<String, IRI>() {
-        public IRI get(String relURI) { return  base.resolve(relURI) ; }
-    } ;
-    
-    // Not static - contains relative IRIs
-    // Could split into absolute (satical, global cached) and relative.
-    private Cache<String, IRI> resolvedIRIs = CacheFactory.createCache(getter, CacheSize) ;
-    
-    
     /**
      * Create resolve a URI against a base. If baseStr is a relative file IRI
      * then it is first resolved against the current working directory.
@@ -157,140 +139,39 @@ public class IRIResolver
      * No exception thrown by this method.
      */
     static private IRI resolveIRI(String relStr, String baseStr) {
-        IRI i = factory.create(relStr);
+        IRI i = iriFactory.create(relStr);
         if (i.isAbsolute())
             // removes excess . segments
-            return cwd.create(i);
+            return globalResolver.getBaseIRI().create(i);
 
-        IRI base = factory.create(baseStr);
+        IRI base = iriFactory.create(baseStr);
 
         if ("file".equalsIgnoreCase(base.getScheme()))
-            return cwd.create(base).create(i);
+            return globalResolver.getBaseIRI().create(i);
         return base.create(i);
     }
 
-    final private IRI base;
-    /**
-     * Construct an IRIResolver with base as the 
-     * current working directory.
-     *
-     */
-    public IRIResolver() {
-        this((String)null);
-    }
+    public static IRIResolver create()                  { return new IRIResolverNormal() ; }
+    
+    public static IRIResolver create(String baseStr)    { return new IRIResolverNormal(baseStr) ; }
+    
+    public static IRIResolver create(IRI baseIRI)       { return new IRIResolverNormal(baseIRI) ; } 
 
-    /**
-     * Construct an IRIResolver with base determined
-     * by the argument URI. If this is relative,
-     * it is relative against the current working directory.
-     * @param baseS
-     * 
-     * @throws RiotException
-     *             If resulting base would not be legal, absolute IRI
-     */
-    public IRIResolver(String baseS) {
-        if (baseS == null)
-            base = chooseBaseURI();
-        else
-            base = exceptions(cwd.create(baseS));
-    }
-    
-    public IRIResolver(IRI baseIRI) {
-        if (baseIRI == null)
-            baseIRI = chooseBaseURI();
-        base = baseIRI ;
-    }
-
-    /**
-     * The base of this IRIResolver.
-     * @return String
-     */
-    public String getBaseIRI() {
-        return base.toString();
-    }
-
-    /**
-     * Resolve the relative URI against the base of
-     * this IRIResolver.
-     * @param relURI
-     * @return the resolved IRI
-     * @throws RiotException
-     *             If resulting URI would not be legal, absolute IRI
-    
-     */
-    public IRI resolve(String relURI) {
-        return exceptions(resolveSilent(relURI)) ;
-    }
-
-    /**
-     * Resolve the relative URI against the base of
-     * this IRIResolver.  
-     * @param relURI
-     * @return the resolved IRI - not checked for violations.
-     */
-    
-    public IRI resolveSilent(String relURI)
-    {
-        if ( resolvedIRIs != null && resolvedIRIs.containsKey(relURI) ) 
-            return resolvedIRIs.get(relURI) ;
-        IRI iri = base.resolve(relURI) ;
-        if ( resolvedIRIs != null )
-            resolvedIRIs.put(relURI, iri) ;
-        return iri ;
-    }
-    
-    /**
-     * Print violations - convenience.
-     * @param iri
-     * @return iri
-     */
-    static private IRI exceptions2(IRI iri) {
-        if (showExceptions && iri.hasViolation(false)) {
-            try {
-                IRI iri2 = cwd.create(iri);
-                Iterator<Violation> vIter = iri2.violations(true) ;
-                for ( ; vIter.hasNext() ; )
-                {
-                    Violation v = vIter.next() ;
-                    System.err.println(v) ;
-                }
-            } catch (IRIException e) {
-                throw new RiotException(e);
-            }
-        }
-        return iri;
-    }
-    
-    /**
-     * Throw any exceptions resulting from IRI.
-     * @param iri
-     * @return iri
-     */
-    static private IRI exceptions(IRI iri) {
-        if (showExceptions && iri.hasViolation(false)) {
-            try {
-                cwd.construct(iri);
-            } catch (IRIException e) {
-                throw new RiotException(e);
-            }
-        }
-        return iri;
-    }
-    
-    private static boolean showExceptions = true;
+    // Used for N-triples, N-Quads
+    public static IRIResolver createNoResolve()         { return new IRIResolverNoOp() ; } 
 
     /**
         To allow Eyeball to bypass IRI checking (because it's doing its own)
     */
     public static void suppressExceptions()
-        { showExceptions = false; }
-    
+    { showExceptions = false; }
+
     /**
      * Choose a base URI based on the current directory
      * 
      * @return String Absolute URI
      */
-
+    
     static public IRI chooseBaseURI() {
         return chooseBaseURI(null);
     }
@@ -300,17 +181,212 @@ public class IRIResolver
      * 
      * @return IRI (if relative, relative to current working directory).
      */
-
+    
     static public IRI chooseBaseURI(String baseURI) {
         if (baseURI == null)
             baseURI = "file:.";
         return resolveGlobal(baseURI);
     }
 
+    public String getBaseIRIasString()
+    { 
+        IRI iri = getBaseIRI() ;
+        if ( iri == null )
+            return null ;
+        return iri.toString();
+    }
+    protected abstract IRI getBaseIRI() ;
+    
+    /** Create a URI, resolving relative IRIs, and throw exception on bad a IRI */
+    public abstract IRI resolve(String uriStr) ;
+    /** Create a URI, resolving relative IRIs, but do not throw exception on bad a IRI */
+    public abstract IRI resolveSilent(String uriStr) ;
+    public abstract String resolveToString(String uriStr) ;
+    
+    protected IRIResolver() {}
+    
+//    /**
+//     * Print violations - convenience.
+//     * @param iri
+//     * @return iri
+//     */
+//    static private IRI exceptions2(IRI iri) {
+//        if (showExceptions && iri.hasViolation(false)) {
+//            try {
+//                IRI iri2 = cwd.create(iri);
+//                Iterator<Violation> vIter = iri2.violations(true) ;
+//                for ( ; vIter.hasNext() ; )
+//                {
+//                    Violation v = vIter.next() ;
+//                    System.err.println(v) ;
+//                }
+//            } catch (IRIException e) {
+//                throw new RiotException(e);
+//            }
+//        }
+//        return iri;
+//    }
+    
+    /**
+     * Throw any exceptions resulting from IRI.
+     * @param iri
+     * @return iri
+     */
+    private static IRI exceptions(IRI iri) {
+        if ( !showExceptions ) return iri ;
+        if ( ! iri.hasViolation(false) ) return iri ;
+        String msg = iri.violations(false).next().getShortMessage() ;
+        throw new RiotException(msg) ;
+    }
+
+    private static final int CacheSize = 1000 ;
+
+    /** A resolver that does not resolve IRIs against base.  Can generate relative IRIs. **/ 
+    static class IRIResolverNoOp extends IRIResolver
+    {
+        protected IRIResolverNoOp() {}
+
+        final private Getter<String, IRI> getter = new Getter<String, IRI>() {
+            public IRI get(String relURI) { return  iriFactory.create(relURI) ; }
+        } ;
+        private Cache<String, IRI> resolvedIRIs = CacheFactory.createCache(getter, CacheSize) ;
+
+        @Override
+        protected IRI getBaseIRI()
+        {
+            return null ;
+        }
+
+        @Override
+        public IRI resolve(String uriStr)
+        {
+            return iriFactory.create(uriStr) ;
+        }
+
+        @Override
+        public IRI resolveSilent(String uriStr)
+        {
+            if ( resolvedIRIs != null && resolvedIRIs.containsKey(uriStr) ) 
+                return resolvedIRIs.get(uriStr) ;
+            IRI iri = iriFactory.create(uriStr) ;
+            if ( resolvedIRIs != null )
+                resolvedIRIs.put(uriStr, iri) ;
+            return iri ;
+        }
+
+        
+        @Override
+        public String resolveToString(String uriStr)
+        {
+            return uriStr ;
+        }
+    }
+
+    /** Resolving resolver **/   
+    static class IRIResolverNormal extends IRIResolver
+    {
+        final private IRI base;
+        // The cache.  Maybe this should be in Prologue.
+        final private Getter<String, IRI> getter = new Getter<String, IRI>() {
+            public IRI get(String relURI) { return  base.resolve(relURI) ; }
+        } ;
+        // Not static - contains relative IRIs
+        // Could split into absolute (statical, global cached) and relative.
+        private Cache<String, IRI> resolvedIRIs = CacheFactory.createCache(getter, CacheSize) ;
+
+
+        /**
+         * Construct an IRIResolver with base as the 
+         * current working directory.
+         *
+         */
+        public IRIResolverNormal() { this((String)null); }
+
+        /**
+         * Construct an IRIResolver with base determined
+         * by the argument URI. If this is relative,
+         * it is relative against the current working directory.
+         * @param baseS
+         * 
+         * @throws RiotException
+         *             If resulting base would not be legal, absolute IRI
+         */
+        public IRIResolverNormal(String baseS) {
+            if (baseS == null)
+                base = chooseBaseURI();
+            else
+                base = globalResolver.resolve(baseS) ;
+        }
+
+        public IRIResolverNormal(IRI baseIRI) {
+            if (baseIRI == null)
+                baseIRI = chooseBaseURI();
+            base = baseIRI ;
+        }
+
+        /**
+         * The base of this IRIResolver.
+         * @return String
+         */
+        @Override
+        public IRI getBaseIRI() {
+            return base ;
+        }
+
+        /**
+         * Resolve the relative URI against the base of
+         * this IRIResolver.
+         * @param relURI
+         * @return the resolved IRI
+         * @throws RiotException
+         *             If resulting URI would not be legal, absolute IRI
+
+         */
+        @Override
+        public IRI resolve(String relURI)
+        {
+            return exceptions(resolveSilent(relURI)) ;
+        }
+
+        /**
+         * Resolve the relative URI against the base of
+         * this IRIResolver.
+         * @param relURI
+         * @return the resolved IRI as a string
+         * @throws RiotException
+         *             If resulting URI would not be legal, absolute IRI
+
+         */
+        @Override
+        public String resolveToString(String relURI)
+        {
+            return exceptions(resolveSilent(relURI)).toString() ;
+        }
+
+        /**
+         * Resolve the relative URI against the base of
+         * this IRIResolver.  
+         * @param relURI
+         * @return the resolved IRI - not checked for violations.
+         */
+
+        @Override
+        public IRI resolveSilent(String relURI)
+        {
+            if ( resolvedIRIs != null && resolvedIRIs.containsKey(relURI) ) 
+                return resolvedIRIs.get(relURI) ;
+            IRI iri = base.resolve(relURI) ;
+            if ( resolvedIRIs != null )
+                resolvedIRIs.put(relURI, iri) ;
+            return iri ;
+        }
+    }
 }
 
 /*
  * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Information Systems Ltd.
+ * 
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

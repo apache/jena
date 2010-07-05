@@ -37,30 +37,25 @@ public abstract class LangBase<X> implements LangRIOT
 
     protected final Sink<X> sink ; 
     
-    // TODO Move to parser profile.
-    protected LabelToNode labelmap ;
-
     // This is a bit ugly but externally, encapsulating the errorhandler in the profile is convenient.  
     private ErrorHandler errorHandler ;
     
     protected LangBase(Tokenizer tokens,
                        Sink<X> sink,
-                       //Checker checker, 
-                       ParserProfile profile,
-                       LabelToNode map)
+                       ParserProfile profile)
+
     {
         //setChecker(checker) ;
-        setMaker(profile) ;
+        setProfile(profile) ;
         this.sink = sink ;
         this.tokens = tokens ;
         this.peekIter = new PeekIterator<Token>(tokens) ;
-        this.labelmap = map ;
     }
      
     //@Override
-    public ParserProfile getMaker()                     { return profile ; }
+    public ParserProfile getProfile()                     { return profile ; }
     //@Override
-    public void setMaker(ParserProfile profile)
+    public void setProfile(ParserProfile profile)
     {
         this.profile = profile ;
         if ( profile != null)
@@ -176,7 +171,7 @@ public abstract class LangBase<X> implements LangRIOT
 
     protected final Node scopedBNode(Node scopeNode, String label)
     {
-        return labelmap.get(scopeNode, label) ;
+        return profile.getLabelToNode().get(scopeNode, label) ;
     }
     
     protected final void expectOrEOF(String msg, TokenType tokenType)

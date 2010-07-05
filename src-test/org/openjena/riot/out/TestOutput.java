@@ -22,7 +22,7 @@ import org.openjena.riot.out.OutputLangUtils ;
 
 public class TestOutput extends BaseTest
 {
-    static Prologue prologue = new Prologue() ;
+    static Prologue prologue = new Prologue(null) ;
     static {
         prologue.getPrefixMap().add("", "http://example/") ;
         prologue.getPrefixMap().add("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#") ;

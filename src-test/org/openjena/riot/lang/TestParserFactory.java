@@ -13,7 +13,6 @@ import org.junit.Test ;
 import org.openjena.atlas.junit.BaseTest ;
 import org.openjena.atlas.lib.Sink ;
 import org.openjena.riot.RiotReader ;
-import org.openjena.riot.lang.LangRIOT ;
 import org.openjena.riot.tokens.Tokenizer ;
 import org.openjena.riot.tokens.TokenizerFactory ;
 
@@ -21,7 +20,7 @@ import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 
-/** System-level testing of the parsers - tesing the parser plumbing, not the language details */
+/** System-level testing of the parsers - testing the parser plumbing, not the language details */
 public class TestParserFactory extends BaseTest
 {
     static class CatchSink<T> implements Sink<T>
@@ -49,6 +48,7 @@ public class TestParserFactory extends BaseTest
         CatchSink<Triple> sink = new CatchSink<Triple>() ;
         
         LangRIOT parser = RiotReader.createParserNTriples(tokenizer, sink) ;
+        parserSetup(parser) ;
         parser.parse();
         assertEquals(1, sink.flushCalled) ;
         assertEquals(0, sink.closeCalled) ;
@@ -61,6 +61,7 @@ public class TestParserFactory extends BaseTest
         Tokenizer tokenizer = TokenizerFactory.makeTokenizerString("<x> <p> <q> .") ; 
         CatchSink<Triple> sink = new CatchSink<Triple>() ;
         LangRIOT parser = RiotReader.createParserTurtle(tokenizer, "http://base/", sink) ;
+        parserSetup(parser) ;
         parser.parse();
         assertEquals(1, sink.flushCalled) ;
         assertEquals(0, sink.closeCalled) ;
@@ -73,6 +74,7 @@ public class TestParserFactory extends BaseTest
         Tokenizer tokenizer = TokenizerFactory.makeTokenizerString("<x> <p> <q> <g>.") ; 
         CatchSink<Quad> sink = new CatchSink<Quad>() ;
         LangRIOT parser = RiotReader.createParserNQuads(tokenizer, sink) ;
+        parserSetup(parser) ;
         parser.parse();
         assertEquals(1, sink.flushCalled) ;
         assertEquals(0, sink.closeCalled) ;
@@ -87,6 +89,7 @@ public class TestParserFactory extends BaseTest
         Tokenizer tokenizer = TokenizerFactory.makeTokenizerString("{ <x> <p> <q> }") ; 
         CatchSink<Quad> sink = new CatchSink<Quad>() ;
         LangRIOT parser = RiotReader.createParserTriG(tokenizer, "http://base/", sink) ;
+        parserSetup(parser) ;
         parser.parse();
         assertEquals(1, sink.flushCalled) ;
         assertEquals(0, sink.closeCalled) ;
@@ -102,6 +105,7 @@ public class TestParserFactory extends BaseTest
         Tokenizer tokenizer = TokenizerFactory.makeTokenizerString("<g> { <x> <p> <q> }") ; 
         CatchSink<Quad> sink = new CatchSink<Quad>() ;
         LangRIOT parser = RiotReader.createParserTriG(tokenizer, "http://base/", sink) ;
+        parserSetup(parser) ;
         parser.parse();
         assertEquals(1, sink.flushCalled) ;
         assertEquals(0, sink.closeCalled) ;
@@ -109,6 +113,12 @@ public class TestParserFactory extends BaseTest
         
         Quad q = SSE.parseQuad("(<http://base/g> <http://base/x> <http://base/p> <http://base/q>)") ;
         assertEquals(q, sink.getLast()) ;
+    }
+    
+    private static void parserSetup(LangRIOT parser)
+    {
+//        ParserProfile profile = new ParserProfileBase(null) ;
+//        parser.setProfile(profile) ;
     }
 }
 

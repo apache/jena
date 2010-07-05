@@ -8,18 +8,11 @@ package org.openjena.riot.lang;
 
 import static org.openjena.riot.tokens.TokenType.* ;
 import org.openjena.atlas.lib.Sink ;
-import org.openjena.riot.Checker ;
-import org.openjena.riot.IRIResolver ;
 import org.openjena.riot.ParserProfile ;
-import org.openjena.riot.PrefixMap ;
-import org.openjena.riot.Prologue ;
-import org.openjena.riot.RiotException ;
 import org.openjena.riot.tokens.Token ;
 import org.openjena.riot.tokens.TokenType ;
 import org.openjena.riot.tokens.Tokenizer ;
 
-import com.hp.hpl.jena.datatypes.RDFDatatype ;
-import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.iri.IRI ;
 import com.hp.hpl.jena.sparql.core.NodeConst ;
@@ -88,7 +81,7 @@ public abstract class LangTurtleBase<X> extends LangBase<X>
     //protected final static boolean CHECKING         = true ;
     protected final boolean strict                  = false ;
     
-    protected final Prologue prologue ;
+//    protected final Prologue prologue ;
     
     // Current graph - null for default graph
     private Node currentGraph = null ;
@@ -107,24 +100,21 @@ public abstract class LangTurtleBase<X> extends LangBase<X>
         this.currentGraph = graph ;
     }
 
-    /** Provide access to the prologue.  
-     * Use with care.
-     */
-    public Prologue getPrologue()        { return prologue ; }
-
-    /** Provide access to the prefix map.  
-     * Note this parser uses a custom, lightweight prefix mapping implementation.
-     * Use with care.
-     */
-    public PrefixMap getPrefixMap()        { return prologue.getPrefixMap() ; }
+//    /** Provide access to the prologue.  
+//     * Use with care.
+//     */
+//    public Prologue getPrologue()        { return profile ; }
+//
+//    /** Provide access to the prefix map.  
+//     * Note this parser uses a custom, lightweight prefix mapping implementation.
+//     * Use with care.
+//     */
+//    public PrefixMap getPrefixMap()        { return prologue.getPrefixMap() ; }
     
     protected LangTurtleBase(String baseURI, Tokenizer tokens,
-                             ParserProfile profile, Sink<X> sink,
-                             //Checker checker, Sink<X> sink,
-                             LabelToNode labelMap) 
+                             ParserProfile profile, Sink<X> sink)
     { 
-        super(tokens, sink, profile, labelMap) ;
-        this.prologue = new Prologue(new PrefixMap(), new IRIResolver(baseURI)) ;
+        super(tokens, sink, profile) ;
     }
     
     @Override
@@ -185,8 +175,8 @@ public abstract class LangTurtleBase<X> extends LangBase<X>
         if ( ! lookingAt(IRI) )
             exception(peekToken(), "@prefix requires an IRI (found '"+peekToken()+"')") ;
         String iriStr = peekToken().getImage() ;
-        IRI iri = profile.makeIRI(prologue, iriStr, currLine, currCol) ;
-        prologue.getPrefixMap().add(prefix, iri) ;
+        IRI iri = profile.makeIRI(iriStr, currLine, currCol) ;
+        profile.getPrologue().getPrefixMap().add(prefix, iri) ;
 
         nextToken() ;
         expect("Prefix directive not terminated by a dot", DOT) ;
@@ -195,11 +185,11 @@ public abstract class LangTurtleBase<X> extends LangBase<X>
     protected final void directiveBase()
     {
         String baseStr = peekToken().getImage() ;
-        IRI baseIRI = profile.makeIRI(prologue, baseStr, currLine, currCol) ;
+        IRI baseIRI = profile.makeIRI(baseStr, currLine, currCol) ;
         nextToken() ;
         
         expect("Base directive not terminated by a dot", DOT) ;
-        prologue.setBaseURI(new IRIResolver(baseIRI)) ;
+        profile.getPrologue().setBaseURI(baseIRI) ;
     }
     
     // Unlike many operations in this parser suite 
@@ -340,9 +330,6 @@ public abstract class LangTurtleBase<X> extends LangBase<X>
         Node n = tokenAsNode(peekToken()) ;
         if ( n == null )
             return null ;
-        //TODO
-//        // CHECK
-//        getChecker().check(n, peekToken().getLine(), peekToken().getColumn()) ; 
         return n ;
     }
     
@@ -493,58 +480,58 @@ public abstract class LangTurtleBase<X> extends LangBase<X>
 
     protected final Node tokenAsNode(Token token) 
     {
-        long line = token.getLine() ;
-        long col = token.getColumn() ;
-        String str = token.getImage() ;
-        switch(token.getType())
-        {
-            case BNODE : 
-            {
-                String label = str ;
-                Node n = profile.createBlankNode(labelmap, currentGraph, label, line, col) ;
-                return n ;
-            }
-            case IRI :
-            {
-                return profile.createURI(prologue, str, line, col) ;
-            }
-            case PREFIXED_NAME :
-            {
-                String prefix = str ;
-                String suffix   = token.getImage2() ;
-                String expansion = prologue.getPrefixMap().expand(prefix, suffix) ;
-                if ( expansion == null )
-                    exceptionDirect("Undefined prefix: "+prefix, token.getLine(), token.getColumn()) ;
-                return Node.createURI(expansion) ;
-            }
-            // TODO 
-            case DECIMAL :
-                return profile.createTypedLiteral(str, XSDDatatype.XSDdecimal, line, col)  ; 
-            case DOUBLE :
-                return profile.createTypedLiteral(str, XSDDatatype.XSDdouble, line, col)  ;
-            case INTEGER:
-                return profile.createTypedLiteral(str, XSDDatatype.XSDinteger, line, col) ;
-            case LITERAL_DT :
-            {
-                // TODO
-                //checkIsIRIorPrefixedName.
-                Node n = tokenAsNode(token.getSubToken()) ;
-                RDFDatatype dt =  Node.getType(n.getURI()) ;
-                return profile.createTypedLiteral(str, dt, line, col) ; 
-            }
-            case LITERAL_LANG : 
-                return Node.createLiteral(str, token.getImage2(), null)  ;
-                
-            case STRING:                
-            case STRING1:
-            case STRING2:
-            case LONG_STRING1:
-            case LONG_STRING2:
-                return Node.createLiteral(str) ;
-            
-            default: exception(token, "Not a valid token for an RDF term") ;
-        }
-        return null ;
+        return profile.create(currentGraph, token) ;
+//        
+//        long line = token.getLine() ;
+//        long col = token.getColumn() ;
+//        String str = token.getImage() ;
+//        switch(token.getType())
+//        {
+//            case BNODE : 
+//            {
+//                String label = str ;
+//                Node n = profile.createBlankNode(labelmap, currentGraph, label, line, col) ;
+//                return n ;
+//            }
+//            case IRI :
+//            {
+//                return profile.createURI(prologue, str, line, col) ;
+//            }
+//            case PREFIXED_NAME :
+//            {
+//                String prefix = str ;
+//                String suffix   = token.getImage2() ;
+//                String expansion = prologue.getPrefixMap().expand(prefix, suffix) ;
+//                if ( expansion == null )
+//                    exceptionDirect("Undefined prefix: "+prefix, token.getLine(), token.getColumn()) ;
+//                return Node.createURI(expansion) ;
+//            }
+//            case DECIMAL :
+//                return profile.createTypedLiteral(str, XSDDatatype.XSDdecimal, line, col)  ; 
+//            case DOUBLE :
+//                return profile.createTypedLiteral(str, XSDDatatype.XSDdouble, line, col)  ;
+//            case INTEGER:
+//                return profile.createTypedLiteral(str, XSDDatatype.XSDinteger, line, col) ;
+//            case LITERAL_DT :
+//            {
+//                //checkIsIRIorPrefixedName.
+//                Node n = tokenAsNode(token.getSubToken()) ;
+//                RDFDatatype dt =  Node.getType(n.getURI()) ;
+//                return profile.createTypedLiteral(str, dt, line, col) ; 
+//            }
+//            case LITERAL_LANG : 
+//                return Node.createLiteral(str, token.getImage2(), null)  ;
+//                
+//            case STRING:                
+//            case STRING1:
+//            case STRING2:
+//            case LONG_STRING1:
+//            case LONG_STRING2:
+//                return Node.createLiteral(str) ;
+//            
+//            default: exception(token, "Not a valid token for an RDF term") ;
+//        }
+//        return null ;
     }
 
         

@@ -301,7 +301,6 @@ public final class TokenizerBytes implements Tokenizer
             case B_UNDERSCORE: inputStream.readByte() ; token.setType(TokenType.UNDERSCORE) ; token.setImage("_") ; return token ;
             case B_LT:         inputStream.readByte() ; token.setType(TokenType.LT) ; token.setImage("<") ; return token ;
             case B_GT:         inputStream.readByte() ; token.setType(TokenType.GT) ; token.setImage(">") ; return token ;
-            // TODO
             // GE, LE
             // Single character symbols for * / + -
 

@@ -9,6 +9,7 @@ package org.openjena.riot.lang;
 import org.junit.Test ;
 import org.openjena.riot.Checker ;
 import org.openjena.riot.ErrorHandler ;
+import org.openjena.riot.checker.CheckerIRI ;
 
 import com.hp.hpl.jena.iri.IRI ;
 import com.hp.hpl.jena.iri.IRIFactory ;
@@ -35,7 +36,10 @@ public class TestIRI
     static IRIFactory factory = IRIFactory.iriImplementation() ;
     
     @Test public void iri1()  { test("http://example/") ; }
-    @Test public void iri2()  { test("example") ; }             // Relative is OK to the checker
+    
+    @Test(expected=ExError.class)
+    // No relative IRIs
+    public void iri2()  { test("example") ; }
     
     @Test(expected=ExWarning.class) 
     public void iriErr1()  { test("http:") ; }
@@ -50,7 +54,7 @@ public class TestIRI
     private void test(String uriStr)
     {
         IRI iri = factory.create(uriStr) ;
-        checker.checkIRI(iri, -1, -1) ;
+        CheckerIRI.iriViolations(iri, handler) ;
     }
     
 }

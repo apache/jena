@@ -21,7 +21,6 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.util.StrUtils ;
 import com.hp.hpl.jena.util.FileUtils ;
 
-// TODO
 /** Convenient comma separated values - see also TSV (tab separated values)
  *  which output full RDf terms (in Turtle-style).
  *  

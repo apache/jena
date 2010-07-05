@@ -29,12 +29,11 @@ public class JenaReaderTurtle2 extends JenaReaderRIOT
     protected void readWorker(Model model, Tokenizer tokenizer, String base)
     {
         Sink<Triple> sink = new SinkToGraphTriples(model.getGraph()) ;
-        Checker checker = new Checker() ; 
         try {
             LangTurtle parser = RiotReader.createParserTurtle(tokenizer, base, sink) ;
             parser.parse() ;
             // Merge prefixes.
-            for ( Map.Entry<String,IRI> e : parser.getPrefixMap().getMapping().entrySet() )
+            for ( Map.Entry<String,IRI> e : parser.getProfile().getPrologue().getPrefixMap().getMapping().entrySet() )
                 model.setNsPrefix(e.getKey(), e.getValue().toString()) ;
         } finally 
         {

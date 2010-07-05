@@ -11,8 +11,6 @@ import org.openjena.atlas.lib.Sink ;
 import org.openjena.atlas.lib.SinkCounting ;
 import org.openjena.riot.RiotException ;
 import org.openjena.riot.RiotReader ;
-import org.openjena.riot.lang.LangNQuads ;
-import org.openjena.riot.lang.LangRIOT ;
 import org.openjena.riot.tokens.Tokenizer ;
 import org.openjena.riot.tokens.TokenizerFactory ;
 
@@ -20,6 +18,8 @@ import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.lib.DatasetLib ;
+
+/** Test of syntax by a quads parser (does not include node validitiy checking) */ 
 
 public class TestLangNQuads extends TestLangNTuples
 {
@@ -39,6 +39,7 @@ public class TestLangNQuads extends TestLangNTuples
     @Test
     public void dataset_1()
     {
+        // This must parse to <g> 
         DatasetGraph dsg = parseToDataset("<x> <p> <s> <g> .") ;
         assertEquals(1,dsg.size()) ;
         assertEquals(1, dsg.getGraph(Node.createURI("g")).size()) ;
@@ -48,11 +49,8 @@ public class TestLangNQuads extends TestLangNTuples
     @Override
     protected long parseToSink(String string)
     {
-        Tokenizer tokenizer = TokenizerFactory.makeTokenizerString(string) ;
         SinkCounting<Quad> sink = new SinkCounting<Quad>() ;
-        
-        LangNQuads x = RiotReader.createParserNQuads(tokenizer, sink) ;
-        x.parse() ;
+        parse(string, sink) ;
         return sink.getCount() ;
     }
     
@@ -60,12 +58,16 @@ public class TestLangNQuads extends TestLangNTuples
     {
         DatasetGraph dsg = DatasetLib.createDatasetGraphMem() ;
         Sink<Quad> sink = DatasetLib.datasetSink(dsg) ;
-        
+        parse(string, sink) ;
+        return dsg ;
+    }
+    
+    private static void parse(String string, Sink<Quad> sink) 
+    {
         Tokenizer tokenizer = TokenizerFactory.makeTokenizerString(string) ;
         LangRIOT parser = RiotReader.createParserNQuads(tokenizer, sink) ;
         parser.parse() ;
         sink.flush();
-        return dsg ;
     }
 }
 

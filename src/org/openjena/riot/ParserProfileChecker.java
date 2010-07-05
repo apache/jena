@@ -7,8 +7,7 @@
 package org.openjena.riot;
 
 import org.openjena.riot.checker.CheckerIRI ;
-import org.openjena.riot.checker.NodeChecker ;
-import org.openjena.riot.lang.LabelToNode ;
+import org.openjena.riot.checker.CheckerLiterals ;
 
 import com.hp.hpl.jena.datatypes.RDFDatatype ;
 import com.hp.hpl.jena.graph.Node ;
@@ -18,25 +17,25 @@ import com.hp.hpl.jena.sparql.core.Quad ;
 
 public class ParserProfileChecker extends ParserProfileBase implements ParserProfile 
 {
-    private final NodeChecker literalChecker ;
+    private boolean checkLiterals = true ;
+    private boolean resolveURIs = true ;
     
-    public ParserProfileChecker(ErrorHandler errorHandler, NodeChecker literalChecker)
+    public ParserProfileChecker(Prologue prologue, ErrorHandler errorHandler)
     {
-        super(errorHandler) ;
-        this.literalChecker = literalChecker ;
+        super(prologue, errorHandler) ;
     }
 
     @Override
-    public String resolveIRI(Prologue prologue, String uriStr, long line, long col)
+    public String resolveIRI(String uriStr, long line, long col)
     {
-        return makeIRI(prologue, uriStr, line, col).toString() ;
+        return makeIRI(uriStr, line, col).toString() ;
     }
     
     @Override
-    public IRI makeIRI(Prologue prologue, String uriStr, long line, long col)
+    public IRI makeIRI(String uriStr, long line, long col)
     {
-        IRI iri = prologue.getResolver().resolve(uriStr) ;
-        CheckerIRI.violations(iri, errorHandler, false, false, line, col) ;
+        IRI iri = prologue.getResolver().resolveSilent(uriStr) ;
+        CheckerIRI.iriViolations(iri, errorHandler, line, col) ;
         return iri ;
     }
     
@@ -75,7 +74,7 @@ public class ParserProfileChecker extends ParserProfileBase implements ParserPro
     
     private void checkQuad(Node graph, Node subject, Node predicate, Node object, long line, long col)
     {
-        if ( graph == null || ( ! graph.isURI() ) )
+        if ( graph != null && ! graph.isURI() )
         {
             errorHandler.error("Graph name is not a URI", line, col) ;
             throw new RiotException("Bad graph name: "+graph) ;
@@ -84,10 +83,10 @@ public class ParserProfileChecker extends ParserProfileBase implements ParserPro
     }
     
     @Override
-    public Node createURI(Prologue prologue, String x, long line, long col)
+    public Node createURI(String x, long line, long col)
     { 
         try {
-            String resolvedIRI = resolveIRI(prologue, x, line, col) ;
+            String resolvedIRI = resolveIRI(x, line, col) ;
             return Node.createURI(resolvedIRI) ;
         } catch (RiotException ex)
         {
@@ -96,20 +95,20 @@ public class ParserProfileChecker extends ParserProfileBase implements ParserPro
         }
     }
 
-    @Override
-    public Node createTypedLiteral(String lexical, Prologue prologue, String datatype, long line, long col)
-    {
-        // Resolve datatype.
-        datatype = resolveIRI(prologue, datatype, line, col) ;
-        RDFDatatype dt = Node.getType(datatype) ;
-        return createTypedLiteral(lexical, dt, line, col) ;
-}
+//    @Override
+//    public Node createTypedLiteral(String lexical, String datatype, long line, long col)
+//    {
+//        // Resolve datatype.
+//        datatype = resolveIRI(datatype, line, col) ;
+//        RDFDatatype dt = Node.getType(datatype) ;
+//        return createTypedLiteral(lexical, dt, line, col) ;
+//    }
     
     @Override
     public Node createTypedLiteral(String lexical, RDFDatatype datatype, long line, long col)
     {
         Node n = Node.createLiteral(lexical, null, datatype)  ;
-        literalChecker.check(n, line, col) ;
+        CheckerLiterals.checkLiteral(lexical, datatype, errorHandler, line, col) ;
         return n ;
     }
 
@@ -117,7 +116,7 @@ public class ParserProfileChecker extends ParserProfileBase implements ParserPro
     public Node createLangLiteral(String lexical, String langTag, long line, long col)
     {
         Node n = Node.createLiteral(lexical, langTag, null)  ;
-        literalChecker.check(n, line, col) ;
+        CheckerLiterals.checkLiteral(lexical, langTag, errorHandler, line, col) ;
         return n ;
     }
     
@@ -128,9 +127,9 @@ public class ParserProfileChecker extends ParserProfileBase implements ParserPro
     }
 
     @Override
-    public Node createBlankNode(LabelToNode map, Node scope, String label, long line, long col)
+    public Node createBlankNode(Node scope, String label, long line, long col)
     {
-        return map.get(scope, label) ;
+        return labelMapping.get(scope, label) ;
     }
     
 }

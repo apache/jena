@@ -11,18 +11,21 @@ import java.io.StringReader ;
 
 import org.junit.Test ;
 import org.openjena.atlas.junit.BaseTest ;
+import org.openjena.atlas.lib.Sink ;
 import org.openjena.atlas.lib.SinkNull ;
-import org.openjena.riot.Checker ;
-import org.openjena.riot.ErrorHandlerLib ;
-import org.openjena.riot.ParserProfileChecker ;
+import org.openjena.atlas.lib.StrUtils ;
 import org.openjena.riot.RiotReader ;
-import org.openjena.riot.checker.CheckerLiterals ;
-import org.openjena.riot.lang.LangTriG ;
+import org.openjena.riot.ErrorHandlerTestLib.* ;
 import org.openjena.riot.tokens.Tokenizer ;
 import org.openjena.riot.tokens.TokenizerFactory ;
 
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.Quad ;
+import com.hp.hpl.jena.sparql.lib.DatasetLib ;
+import com.hp.hpl.jena.sparql.sse.SSE ;
 
+/** Test the behaviour of the RIOT reader for TriG.  TriG includes checking of terms */
 public class TestLangTrig extends BaseTest
 {
     @Test public void trig_01()     { parse("{}") ; } 
@@ -30,15 +33,67 @@ public class TestLangTrig extends BaseTest
     @Test public void trig_03()     { parse("<g> {}") ; }
     @Test public void trig_04()     { parse("<g> = {}") ; }
     @Test public void trig_05()     { parse("<g> = {} .") ; }
-
-    private static void parse(String string)
+    
+    // Need to check we get resolved URIs.
+    @Test public void trig_10()     //{ parse("{ <x> <p> <q> }") ; }
     {
+        DatasetGraph dsg = read("{ <x> <p> <q> }") ;
+        assertEquals(1, dsg.getDefaultGraph().size()) ;
+        Triple t = dsg.getDefaultGraph().find(null,null,null).next();
+        Triple t2 = SSE.parseTriple("(<http://base/x> <http://base/p> <http://base/q>)") ;
+        assertEquals(t2, t) ;
+    }
+    
+    @Test public void trig_11()
+    {
+        DatasetGraph dsg = read("@prefix ex:  <http://example/> .",
+                                "{ ex:s ex:p 123 }") ;
+        assertEquals(1, dsg.getDefaultGraph().size()) ;
+        Triple t = dsg.getDefaultGraph().find(null,null,null).next();
+        Triple t2 = SSE.parseTriple("(<http://example/s> <http://example/p> 123)") ;
+    }
+    
+    
+    @Test public void trig_12()     { parse("@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .",
+                                            "{ <x> <p> '1'^^xsd:byte }") ; }
+    
+    // Also need to check that the RiotExpection is called in normal use. 
+    
+    // Bad terms.
+    @Test (expected=ExWarning.class)
+    public void trig_20()     { parse("@prefix ex:  <bad iri> .", "{ ex:s ex:p 123 }") ; }
+    
+    @Test (expected=ExWarning.class)
+    public void trig_21()     { parse("@prefix ex:  <http://example/> .", "{ ex:s <http://example/broken p> 123 }") ; }
+    
+    @Test (expected=ExWarning.class)
+    public void trig_22()     { parse("{ <x> <p> 'number'^^<bad uri> }") ; }
+
+    @Test (expected=ExWarning.class)
+    public void trig_23()     { parse("@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .", "{ <x> <p> 'number'^^xsd:byte }") ; }
+
+    private static void parse(String... strings)
+    {
+        String string = StrUtils.join("\n", strings) ;
         Reader reader = new StringReader(string) ;
         Tokenizer tokenizer = TokenizerFactory.makeTokenizer(reader) ;
         LangTriG parser = RiotReader.createParserTriG(tokenizer, "http://base/", new SinkNull<Quad>()) ;
-        parser.setMaker(new ParserProfileChecker(ErrorHandlerLib.errorHandlerNoLogging,
-                                         new CheckerLiterals(ErrorHandlerLib.errorHandlerNoLogging))) ;
+        parser.getProfile().setHandler(new ErrorHandlerEx()) ;
         parser.parse() ;
+    }
+
+    //Check reading into a dataset.
+    
+    private static DatasetGraph read(String... strings)
+    {
+        String string = StrUtils.join("\n", strings) ;
+        DatasetGraph dsg = DatasetLib.createDatasetGraphMem() ;
+        Sink<Quad> sink = DatasetLib.datasetSink(dsg) ;
+        Tokenizer tokenizer = TokenizerFactory.makeTokenizerString(string) ;
+        LangTriG parser = RiotReader.createParserTriG(tokenizer, "http://base/", sink) ;
+        parser.getProfile().setHandler(new ErrorHandlerEx()) ;
+        parser.parse();
+        return dsg ;
     }
     
 }

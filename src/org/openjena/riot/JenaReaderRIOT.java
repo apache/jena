@@ -118,7 +118,7 @@ public abstract class JenaReaderRIOT implements RDFReader
         // The reader has been checked, if possible, by now or
         // constructed correctly by code here. 
         if ( base != null )
-            base = IRIResolver.resolveGlobalAsString(base) ;
+            base = IRIResolver.resolveGlobalToString(base) ;
         try {
             model.notifyEvent( GraphEvents.startRead );
             readWorker(model, tokenizer,  base) ;
@@ -129,6 +129,7 @@ public abstract class JenaReaderRIOT implements RDFReader
                 throw e;
             errorHandler.error(e) ;
         }
+        //catch (NullPointerException ex) { ex.printStackTrace(System.err) ;  throw new JenaException(ex) ; }
         catch (Exception ex)
         {
             //ex.printStackTrace(System.err) ;

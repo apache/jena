@@ -5,9 +5,8 @@
  */
 
 package org.openjena.riot.lang;
-import static com.hp.hpl.jena.sparql.util.Utils.equal ;
 import org.openjena.atlas.lib.Sink ;
-import org.openjena.riot.Checker ;
+import org.openjena.riot.Lang ;
 import org.openjena.riot.ParserProfile ;
 import org.openjena.riot.tokens.Token ;
 import org.openjena.riot.tokens.TokenType ;
@@ -15,7 +14,6 @@ import org.openjena.riot.tokens.Tokenizer ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.core.Quad ;
-import com.hp.hpl.jena.sparql.util.FmtUtils ;
 
 /**
  * N-Quads.
@@ -31,6 +29,9 @@ public class LangNQuads extends LangNTuple<Quad>
         super(tokens, profile, sink) ;
     }
 
+    //@Override
+    public Lang getLang()   { return Lang.NQUADS ; }
+    
     @Override
     protected final Quad parseOne()
     {
@@ -105,7 +106,7 @@ public class LangNQuads extends LangNTuple<Quad>
     @Override
     protected final Node tokenAsNode(Token token) 
     {
-        return profile.create(prologue, labelmap, currentGraph, token) ;
+        return profile.create(currentGraph, token) ;
     }
 }
 

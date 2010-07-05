@@ -9,6 +9,7 @@ import org.junit.Test ;
 import org.openjena.atlas.junit.BaseTest ;
 import org.openjena.atlas.lib.Sink ;
 import org.openjena.atlas.lib.SinkNull ;
+import org.openjena.riot.PrefixMap ;
 import org.openjena.riot.RiotReader ;
 import org.openjena.riot.lang.LangTurtle ;
 import org.openjena.riot.tokens.Tokenizer ;
@@ -235,16 +236,17 @@ public class TestTurtleTerms extends BaseTest
 	    Sink<Triple> sink = new SinkNull<Triple>() ;
 
 	    LangTurtle parser = RiotReader.createParserTurtle(tokenizer, "http://base/", sink) ;
+	    PrefixMap prefixMap = parser.getProfile().getPrologue().getPrefixMap() ;
 
-	    parser.getPrefixMap().add("a", "http://host/a#") ;
-        parser.getPrefixMap().add("x", "http://host/a#") ;
+	    prefixMap.add("a", "http://host/a#") ;
+        prefixMap.add("x", "http://host/a#") ;
         // Unicode 00E9 is e-acute
         // Unicode 03B1 is alpha
-        parser.getPrefixMap().add("\u00E9", "http://host/e-acute/") ;
-        parser.getPrefixMap().add("\u03B1", "http://host/alpha/") ;
-        parser.getPrefixMap().add("", "http://host/") ;
-        parser.getPrefixMap().add("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#") ;
-        parser.getPrefixMap().add("xsd", "http://www.w3.org/2001/XMLSchema#") ;
+        prefixMap.add("\u00E9", "http://host/e-acute/") ;
+        prefixMap.add("\u03B1", "http://host/alpha/") ;
+        prefixMap.add("", "http://host/") ;
+        prefixMap.add("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#") ;
+        prefixMap.add("xsd", "http://www.w3.org/2001/XMLSchema#") ;
         parser.parse();
 
         tokenizer.close();
