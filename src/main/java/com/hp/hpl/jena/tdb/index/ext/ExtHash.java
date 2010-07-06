@@ -148,7 +148,7 @@ public final class ExtHash implements Index
     // Hash function that is the first 4 bytes of the key (key must be at least 4 bytes long). 
     static HashRecordKey hash4bytes = new HashRecordKey(){
         //@Override
-        public int hashCode(byte[] key)
+        public final int hashCode(byte[] key)
         { return Bytes.getInt(key) ; }
     } ;
     
@@ -167,7 +167,7 @@ public final class ExtHash implements Index
         private static final long FNV_BASIS = 0x811c9dc5;
         private static final long FNV_PRIME = (1 << 24) + 0x193;
         //@Override
-        public int hashCode(byte[] key)
+        public final int hashCode(byte[] key)
         {
             long hash = FNV_BASIS;
             for(int i = 0; i < key.length; i++) {
