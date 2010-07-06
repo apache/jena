@@ -3,6 +3,7 @@
  * All rights reserved.
  * [See end of file]
  */
+/* This file contains code under the Apache 2 license - see hashFNV */
 
 package com.hp.hpl.jena.tdb.index.ext;
 
@@ -37,7 +38,7 @@ import com.hp.hpl.jena.tdb.sys.SystemTDB;
  * http://en.wikipedia.org/wiki/Extendible_hashing
  */
 
-public class ExtHash implements Index
+public final class ExtHash implements Index
 {
     /* Hashing.
      * Extendible hashing is based on taking more of the bits of the hash
@@ -141,17 +142,42 @@ public class ExtHash implements Index
 
     // See java.util.HashMap#hash for discussion of supplemental hashing. 
 
-    
     interface HashRecordKey { public int hashCode(byte[] key) ; }
-    private HashRecordKey hashFunction = hash4bytes ;
+    private HashRecordKey hashFunction = hashFNV ; //hash4bytes ;
     
     // Hash function that is the first 4 bytes of the key (key must be at least 4 bytes long). 
     static HashRecordKey hash4bytes = new HashRecordKey(){
         //@Override
         public int hashCode(byte[] key)
-        // BAD CHOICE.
         { return Bytes.getInt(key) ; }
     } ;
+    
+    /** From Project Voldemort / Apache License / Thanks! 
+     *  who in turn got it from 
+     *  
+     *  Taken from http://www.isthe.com/chongo/tech/comp/fnv
+     * 
+     * hash = basis for each octet_of_data to be hashed hash 
+     *      = hash * FNV_prime hash
+     *      = hash xor octet_of_data return hash
+     * 
+     */
+    
+    static HashRecordKey hashFNV = new HashRecordKey(){
+        private static final long FNV_BASIS = 0x811c9dc5;
+        private static final long FNV_PRIME = (1 << 24) + 0x193;
+        //@Override
+        public int hashCode(byte[] key)
+        {
+            long hash = FNV_BASIS;
+            for(int i = 0; i < key.length; i++) {
+                hash ^= 0xFF & key[i];
+                hash *= FNV_PRIME;
+            }
+            return (int) hash;
+        }
+    } ;
+    
 
     /** Turn a key into a bit trie hash value */ 
     private int trieKey(Record k)             
@@ -387,14 +413,14 @@ public class ExtHash implements Index
         // Bucket full.
         if (  bitLen == bucket.getTrieBitLen() )
         {
-            // Log it anyway
-            if ( ! logging() ) log("put(%s,0x%08X)", record, hash) ;
+//            // Log it anyway
+//            if ( ! logging() ) log("put(%s,0x%08X)", record, hash) ;
 
             boolean oldLogging = Logging ;
             boolean oldDebugging = Debugging ;
             try {
-                Logging = true ;
-                Debugging = true ; 
+//                Logging = true ;
+//                Debugging = true ; 
                 
                 if ( Debugging ) 
                 { 
@@ -403,8 +429,6 @@ public class ExtHash implements Index
                     //log(bucket) ;
                     this.dump() ;
                 }
-                // --- DBG
-                // ---
             
                 // Bucket not splitable..
                 // TODO Overflow buckets.
