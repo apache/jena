@@ -118,6 +118,7 @@ public abstract class CmdLangParse extends CmdGeneral
     protected CmdLangParse(String[] argv)
     {
         super(argv) ;
+        // As a command, we take control of logging ourselves. 
         setLogging() ;
         super.addModule(modTime) ;
         super.addModule(modLangParse) ;
