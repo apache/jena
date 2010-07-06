@@ -376,9 +376,9 @@ NON-TERMINALS
 // Path unit element, including inverse.
 	PathEltOrInverse	:=	( PathElt | <CARAT> PathElt )
 	PathMod	:=	( <STAR> | <QMARK> | <PLUS> | <LBRACE> ( Integer ( <COMMA> ( <RBRACE> | Integer <RBRACE> ) | <RBRACE> ) ) )
-	PathPrimary	:=	( IRIref | <KW_A> | <BANG> PathNegatedPropertyClass | <LPAREN> Path <RPAREN> )
-	PathNegatedPropertyClass	:=	( PathOneInPropertyClass | <LPAREN> ( PathOneInPropertyClass ( <VBAR> PathOneInPropertyClass )* )? <RPAREN> )
-	PathOneInPropertyClass	:=	( IRIref | <KW_A> | <CARAT> IRIref )
+	PathPrimary	:=	( IRIref | <KW_A> | <BANG> PathNegatedPropertySet | <LPAREN> Path <RPAREN> )
+	PathNegatedPropertySet	:=	( PathOneInPropertySet | <LPAREN> ( PathOneInPropertySet ( <VBAR> PathOneInPropertySet )* )? <RPAREN> )
+	PathOneInPropertySet	:=	( IRIref | <KW_A> | <CARAT> IRIref )
 	Integer	:=	<INTEGER>
 // -------- Triple expansions
 

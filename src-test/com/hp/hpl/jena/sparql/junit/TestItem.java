@@ -94,8 +94,12 @@ public class TestItem
         queryFile = _getQueryFile() ;
         queryFileSyntax = _getSyntax(entry.getModel(), queryFile, defaultQuerySyntax) ;
         if ( queryFileSyntax == null && queryFile != null )
+        {
             queryFileSyntax = Syntax.guessQueryFileSyntax(queryFile) ;
-        
+            if ( queryFileSyntax == Syntax.syntaxSPARQL_10 )
+                // Upgrade :-)
+                queryFileSyntax = Syntax.syntaxSPARQL_11 ;
+        }
         buildLuceneIndex = _getTextIndex() ;
     }
         

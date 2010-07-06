@@ -12,13 +12,13 @@ import java.util.List ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
 
-public class P_NegPropClass extends PathBase
+public class P_NegPropSet extends PathBase
 {
     List<P_Path0> nodes ;
     List<Node> forwardNodes ;
     List<Node> backwardNodes ;
     
-    public P_NegPropClass()
+    public P_NegPropSet()
     {
         nodes = new ArrayList<P_Path0>() ;
         forwardNodes = new ArrayList<Node>() ;
@@ -48,8 +48,8 @@ public class P_NegPropClass extends PathBase
     @Override
     public boolean equalTo(Path path2, NodeIsomorphismMap isoMap)
     {
-        if ( ! ( path2 instanceof P_NegPropClass ) ) return false ;
-        P_NegPropClass other = (P_NegPropClass)path2 ;
+        if ( ! ( path2 instanceof P_NegPropSet ) ) return false ;
+        P_NegPropSet other = (P_NegPropSet)path2 ;
         return nodes.equals(other.nodes) ;
     }
 

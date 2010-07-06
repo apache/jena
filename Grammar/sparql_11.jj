@@ -914,27 +914,35 @@ Path PathPrimary() : { String str ; Path p ; Node n ; }
      { n = createNode(str) ; p = new P_Link(n) ; }
   | <KW_A>
      { p = new P_Link(nRDFtype) ; }
-  | <BANG> p = PathNegatedPropertyClass()
+  | <BANG> p = PathNegatedPropertySet()
   | <LPAREN> p = Path() <RPAREN>
   )
     { return p ; }
 }
 
-Path PathNegatedPropertyClass() : { P_Path0 p ; P_NegPropClass pNegClass ; }
+Path PathNegatedPropertySet() : { P_Path0 p ; P_NegPropSet pNegSet ; }
 {
-  { pNegClass = new P_NegPropClass() ; }
-  ( p = PathOneInPropertyClass()
-    { pNegClass.add(p) ; }
+  { pNegSet = new P_NegPropSet() ; }
+
+  ( p = PathOneInPropertySet()
+    { pNegSet.add(p) ; }
   | <LPAREN>
-    ( p = PathOneInPropertyClass() { pNegClass.add(p) ; }
-      (<VBAR> p = PathOneInPropertyClass() { pNegClass.add(p) ; }) *
+    ( p = PathOneInPropertySet() { pNegSet.add(p) ; }
+      (<VBAR> p = PathOneInPropertySet() { pNegSet.add(p) ; }) *
     )?
-    <RPAREN>
+     <RPAREN>
   )
-  { return pNegClass ; }
+
+// //If () required
+//   <LPAREN> 
+//     ( p = PathOneInPropertySet() { pNegSet.add(p) ; }
+//       (<VBAR> p = PathOneInPropertySet() { pNegSet.add(p) ; }) *
+//     )? 
+//   <RPAREN>
+  { return pNegSet ; }
 }
 
-P_Path0 PathOneInPropertyClass() : { String str ; Node n ; }
+P_Path0 PathOneInPropertySet() : { String str ; Node n ; }
 {
   ( str = IRIref() { n = createNode(str) ; return new P_Link(n) ; }
   | <KW_A> { return new P_Link(nRDFtype) ; }

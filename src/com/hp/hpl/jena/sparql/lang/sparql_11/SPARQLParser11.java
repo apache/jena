@@ -2266,7 +2266,7 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
       break;
     case BANG:
       jj_consume_token(BANG);
-      p = PathNegatedPropertyClass();
+      p = PathNegatedPropertySet();
       break;
     case LPAREN:
       jj_consume_token(LPAREN);
@@ -2282,17 +2282,17 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
     throw new Error("Missing return statement in function");
   }
 
-  final public Path PathNegatedPropertyClass() throws ParseException {
-                                    P_Path0 p ; P_NegPropClass pNegClass ;
-    pNegClass = new P_NegPropClass() ;
+  final public Path PathNegatedPropertySet() throws ParseException {
+                                  P_Path0 p ; P_NegPropSet pNegSet ;
+    pNegSet = new P_NegPropSet() ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case IRIref:
     case PNAME_NS:
     case PNAME_LN:
     case KW_A:
     case CARAT:
-      p = PathOneInPropertyClass();
-      pNegClass.add(p) ;
+      p = PathOneInPropertySet();
+      pNegSet.add(p) ;
       break;
     case LPAREN:
       jj_consume_token(LPAREN);
@@ -2302,8 +2302,8 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
       case PNAME_LN:
       case KW_A:
       case CARAT:
-        p = PathOneInPropertyClass();
-                                     pNegClass.add(p) ;
+        p = PathOneInPropertySet();
+                                   pNegSet.add(p) ;
         label_26:
         while (true) {
           switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -2315,8 +2315,8 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
             break label_26;
           }
           jj_consume_token(VBAR);
-          p = PathOneInPropertyClass();
-                                             pNegClass.add(p) ;
+          p = PathOneInPropertySet();
+                                           pNegSet.add(p) ;
         }
         break;
       default:
@@ -2330,12 +2330,12 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
       jj_consume_token(-1);
       throw new ParseException();
     }
-    {if (true) return pNegClass ;}
+    {if (true) return pNegSet ;}
     throw new Error("Missing return statement in function");
   }
 
-  final public P_Path0 PathOneInPropertyClass() throws ParseException {
-                                     String str ; Node n ;
+  final public P_Path0 PathOneInPropertySet() throws ParseException {
+                                   String str ; Node n ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case IRIref:
     case PNAME_NS:

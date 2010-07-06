@@ -1,0 +1,7 @@
+PREFIX ex: <negation/subset-exclusion#>
+SELECT ?animal { 
+  ?animal a ex:Animal MINUS {
+    ?animal a ?type
+    FILTER(?type = ex:Reptile || ?type = ex:Insect)
+  } 
+}

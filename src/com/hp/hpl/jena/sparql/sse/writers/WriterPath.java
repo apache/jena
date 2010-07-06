@@ -134,7 +134,7 @@ public class WriterPath
         }
 
         //@Override
-        public void visit(P_NegPropClass pathNotOneOf)
+        public void visit(P_NegPropSet pathNotOneOf)
         {
             out.print("(") ;
             out.print(Tags.pathNotOneOf) ;

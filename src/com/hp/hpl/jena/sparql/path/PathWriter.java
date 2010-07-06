@@ -95,7 +95,7 @@ public class PathWriter
         }
 
         //@Override
-        public void visit(P_NegPropClass pathNotOneOf)
+        public void visit(P_NegPropSet pathNotOneOf)
         {
             List<P_Path0> props = pathNotOneOf.getNodes() ;
             if ( props.size() == 0 )

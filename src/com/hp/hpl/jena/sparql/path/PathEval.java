@@ -135,16 +135,16 @@ public class PathEval
         }
 
         //@Override
-        public void visit(P_NegPropClass pathNotOneOf)
+        public void visit(P_NegPropSet pathNotOneOf)
         {
             if ( pathNotOneOf.getBwdNodes().size() > 0 )
-                Log.warn(this, "Only forward negated property classes implemented") ;
+                Log.warn(this, "Only forward negated property sets implemented") ;
             
             // X !(:a|:b|^:c|^:d) Y = { X !(:a|:b) Y } UNION { Y !(:c|:d) X } 
             
             List<Node> props = pathNotOneOf.getFwdNodes() ;
             if ( props.size() == 0 )
-                throw new ARQException("Bad path element: Negative property class found with no elements") ;
+                throw new ARQException("Bad path element: Negative property set found with no elements") ;
             //Iterator<Node> nodes = doOneExclude(pathNotOneOf.getFwdNodes(), pathNotOneOf.getBwdNodes()) ;
             Iterator<Node> nodes = doOneExclude(pathNotOneOf.getFwdNodes()) ;
             fill(nodes) ;

@@ -107,7 +107,7 @@ public class BuilderPath
         public Path make(ItemList list)
         {
             BuilderLib.checkLengthAtLeast(1, list, "path: negative property set: must be at least one element") ;
-            P_NegPropClass pNegClass = new P_NegPropClass() ;
+            P_NegPropSet pNegClass = new P_NegPropSet() ;
             for ( int i = 1 ; i < list.size() ; i++ )
             {
                 Item item = list.get(i) ;

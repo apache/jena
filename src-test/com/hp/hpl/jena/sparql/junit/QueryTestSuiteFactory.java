@@ -54,8 +54,9 @@ public class QueryTestSuiteFactory extends TestFactoryManifest
         if ( querySyntax != null )
         {
             if ( ! querySyntax.equals(Syntax.syntaxRDQL) &&
-            ! querySyntax.equals(Syntax.syntaxARQ) &&
-            ! querySyntax.equals(Syntax.syntaxSPARQL) )
+                 ! querySyntax.equals(Syntax.syntaxARQ) &&
+                 ! querySyntax.equals(Syntax.syntaxSPARQL_10) &&
+                 ! querySyntax.equals(Syntax.syntaxSPARQL_11) )
                 throw new QueryTestException("Unknown syntax: "+querySyntax) ;
         }
         

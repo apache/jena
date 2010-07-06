@@ -2571,7 +2571,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
       break;
     case BANG:
       jj_consume_token(BANG);
-      p = PathNegatedPropertyClass();
+      p = PathNegatedPropertySet();
       break;
     case LPAREN:
       jj_consume_token(LPAREN);
@@ -2587,17 +2587,17 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     throw new Error("Missing return statement in function");
   }
 
-  final public Path PathNegatedPropertyClass() throws ParseException {
-                                    P_Path0 p ; P_NegPropClass pNegClass ;
-    pNegClass = new P_NegPropClass() ;
+  final public Path PathNegatedPropertySet() throws ParseException {
+                                  P_Path0 p ; P_NegPropSet pNegSet ;
+    pNegSet = new P_NegPropSet() ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case IRIref:
     case PNAME_NS:
     case PNAME_LN:
     case KW_A:
     case CARAT:
-      p = PathOneInPropertyClass();
-      pNegClass.add(p) ;
+      p = PathOneInPropertySet();
+      pNegSet.add(p) ;
       break;
     case LPAREN:
       jj_consume_token(LPAREN);
@@ -2607,8 +2607,8 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
       case PNAME_LN:
       case KW_A:
       case CARAT:
-        p = PathOneInPropertyClass();
-                                     pNegClass.add(p) ;
+        p = PathOneInPropertySet();
+                                   pNegSet.add(p) ;
         label_31:
         while (true) {
           switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -2620,8 +2620,8 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
             break label_31;
           }
           jj_consume_token(VBAR);
-          p = PathOneInPropertyClass();
-                                             pNegClass.add(p) ;
+          p = PathOneInPropertySet();
+                                           pNegSet.add(p) ;
         }
         break;
       default:
@@ -2635,12 +2635,12 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
       jj_consume_token(-1);
       throw new ParseException();
     }
-    {if (true) return pNegClass ;}
+    {if (true) return pNegSet ;}
     throw new Error("Missing return statement in function");
   }
 
-  final public P_Path0 PathOneInPropertyClass() throws ParseException {
-                                     String str ; Node n ;
+  final public P_Path0 PathOneInPropertySet() throws ParseException {
+                                   String str ; Node n ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case IRIref:
     case PNAME_NS:
@@ -4081,11 +4081,6 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
-  private boolean jj_3R_47() {
-    if (jj_3R_49()) return true;
-    return false;
-  }
-
   private boolean jj_3R_48() {
     Token xsp;
     xsp = jj_scanpos;
@@ -4106,29 +4101,13 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
-  private boolean jj_3R_46() {
-    if (jj_3R_48()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_38() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_46()) {
-    jj_scanpos = xsp;
-    if (jj_3R_47()) return true;
-    }
-    return false;
-  }
-
   private boolean jj_3R_78() {
     if (jj_scan_token(ANON)) return true;
     return false;
   }
 
-  private boolean jj_3_2() {
-    if (jj_scan_token(DOT)) return true;
-    if (jj_3R_38()) return true;
+  private boolean jj_3R_47() {
+    if (jj_3R_49()) return true;
     return false;
   }
 
@@ -4147,8 +4126,29 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
+  private boolean jj_3R_46() {
+    if (jj_3R_48()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_38() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_46()) {
+    jj_scanpos = xsp;
+    if (jj_3R_47()) return true;
+    }
+    return false;
+  }
+
   private boolean jj_3R_89() {
     if (jj_scan_token(PNAME_NS)) return true;
+    return false;
+  }
+
+  private boolean jj_3_2() {
+    if (jj_scan_token(DOT)) return true;
+    if (jj_3R_38()) return true;
     return false;
   }
 
@@ -4253,11 +4253,6 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
-  private boolean jj_3_1() {
-    if (jj_3R_37()) return true;
-    return false;
-  }
-
   private boolean jj_3R_53() {
     if (jj_3R_57()) return true;
     return false;
@@ -4315,6 +4310,11 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
   private boolean jj_3R_44() {
     if (jj_scan_token(SAMPLE)) return true;
     if (jj_scan_token(LPAREN)) return true;
+    return false;
+  }
+
+  private boolean jj_3_1() {
+    if (jj_3R_37()) return true;
     return false;
   }
 
