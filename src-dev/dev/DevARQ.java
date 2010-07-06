@@ -9,9 +9,11 @@ package dev;
 public class DevARQ
 {
     // RIOT
-    // Skip on bad terms. Output bad term quads/triples to special sink.
+    // Skip on bad terms /stop on bad term is choice of errorhandler.
+    // Output bad term quads/triples to special sink.
     //   Option passing (old Jena style).
     //   Recovery parsing - scan to DOT?
+    // Commands and default log4j.
 
     // Filename in log messages
     // Or log at start.
@@ -30,9 +32,7 @@ public class DevARQ
     //   leading digits in blank node ids (need strict mode in Tokenizer)
     //   ??
     
-    // Commands and default log4j.
     // Build: use maven resources for the etching of version.  
-
     // Tests:
     // Re-enable normalization tests
     //     POM -> run tests TS_*
