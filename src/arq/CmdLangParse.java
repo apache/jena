@@ -6,14 +6,19 @@
 
 package arq;
 
+import java.io.ByteArrayInputStream ;
+import java.io.IOException ;
 import java.io.InputStream ;
 import java.util.HashMap ;
 import java.util.Map ;
+import java.util.Properties ;
 
+import org.apache.log4j.PropertyConfigurator ;
 import org.openjena.atlas.io.IO ;
 import org.openjena.atlas.lib.Sink ;
 import org.openjena.atlas.lib.SinkCounting ;
 import org.openjena.atlas.lib.SinkNull ;
+import org.openjena.atlas.lib.StrUtils ;
 import org.openjena.riot.* ;
 import org.openjena.riot.lang.LangRDFXML ;
 import org.openjena.riot.lang.LangRIOT ;
@@ -30,6 +35,7 @@ import com.hp.hpl.jena.Jena ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.sparql.core.Quad ;
+import com.hp.hpl.jena.sparql.util.StringUtils ;
 
 /** Common framework for running RIOT parsers */
 public abstract class CmdLangParse extends CmdGeneral
@@ -63,7 +69,6 @@ public abstract class CmdLangParse extends CmdGeneral
     
     protected static Map<Lang, LangHandler> dispatch = new HashMap<Lang, LangHandler>() ; 
     static {
-        
         for ( Lang lang : Lang.values())
         {
             if ( lang.isQuads() )
@@ -75,9 +80,45 @@ public abstract class CmdLangParse extends CmdGeneral
     
     protected LangHandler langHandlerOverall = null ;
     
+    private static final String log4Jsetup = StringUtils.join("\n"
+                    , "## Plain output to stdout"
+                    , "log4j.appender.riot.plain=org.apache.log4j.ConsoleAppender"
+                    , "log4j.appender.riot.plain.target=System.out"
+                    , "log4j.appender.riot.plain.layout=org.apache.log4j.PatternLayout"
+                    , "log4j.appender.riot.plain.layout.ConversionPattern=%m%n"
+
+                    , "## Plain output to stderr"
+                    , "log4j.appender.riot.plainerr=org.apache.log4j.ConsoleAppender"
+                    , "log4j.appender.riot.plainerr.target=System.err"
+                    , "log4j.appender.riot.plainerr.layout=org.apache.log4j.PatternLayout"
+                    , "log4j.appender.riot.plainerr.layout.ConversionPattern=%-5p %m%n"
+
+                    , "## Everything"
+                    , "log4j.rootLogger=INFO, riot.plainerr"
+
+                    , "## Parser output"
+                    , "log4j.additivity."+SysRIOT.riotLoggerName+"=false"
+                    , "log4j.logger."+SysRIOT.riotLoggerName+"=ALL, riot.plainerr "
+     ) ;
+
+    /** Reset the logging to be good for command line tools */
+    public static void setLogging()
+    {
+        // Turn off optimizer warning.
+        // Use a plain logger for output. 
+        Properties p = new Properties() ;
+        InputStream in = new ByteArrayInputStream(StrUtils.asUTF8bytes(log4Jsetup)) ;
+        try { p.load(in) ; } catch (IOException ex) {}
+        PropertyConfigurator.configure(p) ;
+        //LogManager.getLogger(SysRIOT.riotLoggerName).setLevel(Level.ALL) ;
+        System.setProperty("log4j.configuration", "set") ;
+    }
+    
+    
     protected CmdLangParse(String[] argv)
     {
         super(argv) ;
+        setLogging() ;
         super.addModule(modTime) ;
         super.addModule(modLangParse) ;
         

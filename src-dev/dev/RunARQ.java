@@ -88,6 +88,9 @@ public class RunARQ
 
     public static void main(String[] argv) throws Exception
     {
+        arq.turtle.main("D.nt") ;
+        System.exit(0) ;
+        
         String dir = "/home/afs/W3C/SPARQL-docs/tests/data-sparql11/subquery/" ;
         arq.sparql.main("--syntax=sparql_11", "--namedGraph="+dir+"sq01.rdf", "--file="+dir+"sq04.rq") ;
         System.exit(0) ;

@@ -137,7 +137,7 @@ public class ErrorHandlerLib
         
         //@Override
         public void warning(String message, long line, long col)
-        {}
+        { logWarning(message, line, col) ; }
         
         /** report an error but continue */
         //@Override

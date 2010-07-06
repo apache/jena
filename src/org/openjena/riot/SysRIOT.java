@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory ;
 
 public class SysRIOT
 {
-    public static final String riotLoggerName = "com.hp.hpl.jena.tdb.RIOT" ;
+    public static final String riotLoggerName = "org.openjena.riot" ;
     private static Logger riotLogger = LoggerFactory.getLogger(riotLoggerName) ;
     public static final EventType startRead = new EventType(SysRIOT.class, "StartRead") ;
     public static final EventType finishRead = new EventType(SysRIOT.class, "FinishRead") ;
