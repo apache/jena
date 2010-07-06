@@ -10,6 +10,8 @@ import java.io.IOException ;
 import java.io.InputStream ;
 import java.io.Reader ;
 
+import org.openjena.atlas.AtlasException ;
+
 /** Fast and streaming.
  */
 public final class StreamASCII extends Reader implements CharStream
@@ -55,6 +57,8 @@ public final class StreamASCII extends Reader implements CharStream
                     return -1 ;
                 return (i-off) ;
             }
+            if ( x > 128 )
+                throw new AtlasException("Illegal ASCII character : "+x) ;
             cbuf[i] = (char)x ;
         }
         return len ; 

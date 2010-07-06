@@ -16,6 +16,7 @@ import java.util.Iterator ;
 import org.openjena.atlas.io.IO ;
 import org.openjena.atlas.io.IndentedLineBuffer ;
 import org.openjena.atlas.io.IndentedWriter ;
+import org.openjena.atlas.io.StreamUTF8 ;
 import org.openjena.atlas.lib.Sink ;
 import org.openjena.atlas.lib.SinkCounting ;
 import org.openjena.atlas.lib.SinkPrint ;
@@ -88,6 +89,11 @@ public class RunARQ
 
     public static void main(String[] argv) throws Exception
     {
+        {
+        String str = StreamUTF8.decode(new byte[]{(byte)0xD0, (byte)0x20}) ;
+        System.out.printf("%s\n", str) ;
+        System.exit(0) ;
+        }
         arq.riot.main("D.trig") ;System.exit(0) ;
         //arq.qparse.main("--file=Q.arq") ;
         arq.sparql.main("--data=D.ttl", "--file=Q.arq") ;

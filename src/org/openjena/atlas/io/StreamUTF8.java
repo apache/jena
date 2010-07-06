@@ -6,6 +6,7 @@
 
 package org.openjena.atlas.io;
 
+import java.io.ByteArrayInputStream ;
 import java.io.IOException ;
 import java.io.InputStream ;
 import java.io.Reader ;
@@ -149,16 +150,16 @@ public final class StreamUTF8 extends Reader implements CharStream
         // 10 => extension byte
         // 110..... => 2 bytes
         if ( (x & 0xE0) == 0xC0 ) 
-            return read2(input, x & 0x1F, 2) ;
+            return readMultiBytes(input, x & 0x1F, 2) ;
         //  1110.... => 3 bytes : 16 bits : not outside 16bit chars 
         if ( (x & 0xF0) == 0xE0 ) 
-            return read2(input, x & 0x0F, 3) ;
+            return readMultiBytes(input, x & 0x0F, 3) ;
 
         // Looking like 4 byte charcater.
         int y = -2 ;
         // 11110zzz => 4 bytes 
         if ( (x & 0xF8) == 0xF0 ) 
-             y = read2(input, x & 0x08, 4) ;
+             y = readMultiBytes(input, x & 0x08, 4) ;
 
         if ( y == -2 )
             IO.exception(new IOException("Illegal UTF-8: "+x)) ;
@@ -167,7 +168,7 @@ public final class StreamUTF8 extends Reader implements CharStream
         return x ;
     }
     
-    private static int read2(InputStreamBuffered input, int start, int len) //throws IOException
+    private static int readMultiBytes(InputStreamBuffered input, int start, int len) //throws IOException
     {
         //System.out.print(" -("+len+")") ; p(start) ;
         
@@ -193,6 +194,24 @@ public final class StreamUTF8 extends Reader implements CharStream
         System.out.printf(" %02X", ch) ;
         if ( ch == -1 )
             System.out.println();
+    }
+    
+    public static String decode(byte[] bytes)
+    {
+        try
+        {
+            char[] chars = new char[bytes.length] ;
+            InputStream in = new ByteArrayInputStream(bytes) ;
+            StringBuilder buff = new StringBuilder() ;
+            Reader r = new StreamUTF8(in) ;
+            int len ;
+            len = r.read(chars) ;
+            return new String(chars, 0, len) ;
+        } catch (IOException ex)
+        {
+            IO.exception(ex) ;
+            return null ;
+        }
     }
 }
 

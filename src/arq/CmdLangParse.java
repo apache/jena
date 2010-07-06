@@ -162,6 +162,7 @@ public abstract class CmdLangParse extends CmdGeneral
             if ( modLangParse.stopOnBadTerm() )
                 errHandler = ErrorHandlerLib.errorHandlerStd  ;
             else
+                // Try to go on if possible.  This is the default behaviour.
                 errHandler = ErrorHandlerLib.errorHandlerWarn ;
         }
         
@@ -216,6 +217,8 @@ public abstract class CmdLangParse extends CmdGeneral
         }
         
         modTime.startTimer() ;
+        // Pending log message having he filename in them.
+        // output(filename) ;
         try
         {
             // Default behaviour is "check":
@@ -270,6 +273,11 @@ public abstract class CmdLangParse extends CmdGeneral
                           handler.getItemsName(),
                           timeSec == 0 ? 0.0 : numberTriples/timeSec,
                           handler.getRateName()) ;
+    }
+    
+    protected void output(String label)
+    {
+        System.out.printf("%s : \n", label) ;
     }
 }
 
