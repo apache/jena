@@ -146,7 +146,10 @@ public class ErrorHandlerLib
 
         //@Override
         public void fatal(String message, long line, long col)
-        { logFatal(message, line, col) ; }
+        { 
+            logFatal(message, line, col) ;
+            throw new RiotException(SysRIOT.fmtMessage(message, line, col)) ; 
+        }
     }
 }
 

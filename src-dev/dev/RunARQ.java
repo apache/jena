@@ -88,6 +88,7 @@ public class RunARQ
 
     public static void main(String[] argv) throws Exception
     {
+        arq.riot.main("D.trig") ;System.exit(0) ;
         //arq.qparse.main("--file=Q.arq") ;
         arq.sparql.main("--data=D.ttl", "--file=Q.arq") ;
         System.exit(0) ;

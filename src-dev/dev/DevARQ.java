@@ -14,6 +14,7 @@ public class DevARQ
     //   Recovery parsing - scan to DOT?
 
     // Filename in log messages
+    // Or log at start.
     
     // RIOT document:
     //   RiotReader, DatasetLoader
