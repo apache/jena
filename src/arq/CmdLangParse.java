@@ -79,23 +79,21 @@ public abstract class CmdLangParse extends CmdGeneral
     }
     
     protected LangHandler langHandlerOverall = null ;
-    
-    private static final String log4Jsetup = StringUtils.join("\n"
-                    , "## Plain output to stdout"
-                    , "log4j.appender.riot.plain=org.apache.log4j.ConsoleAppender"
-                    , "log4j.appender.riot.plain.target=System.out"
-                    , "log4j.appender.riot.plain.layout=org.apache.log4j.PatternLayout"
-                    , "log4j.appender.riot.plain.layout.ConversionPattern=%m%n"
 
+    // This is teh setup for command for their message via the logging in ErrorHandlers
+    private static final String log4Jsetup = StringUtils.join("\n"
+//                    , "## Plain output to stdout"
+//                    , "log4j.appender.riot.plain=org.apache.log4j.ConsoleAppender"
+//                    , "log4j.appender.riot.plain.target=System.out"
+//                    , "log4j.appender.riot.plain.layout=org.apache.log4j.PatternLayout"
+//                    , "log4j.appender.riot.plain.layout.ConversionPattern=%m%n"
                     , "## Plain output to stderr"
                     , "log4j.appender.riot.plainerr=org.apache.log4j.ConsoleAppender"
                     , "log4j.appender.riot.plainerr.target=System.err"
                     , "log4j.appender.riot.plainerr.layout=org.apache.log4j.PatternLayout"
                     , "log4j.appender.riot.plainerr.layout.ConversionPattern=%-5p %m%n"
-
                     , "## Everything"
                     , "log4j.rootLogger=INFO, riot.plainerr"
-
                     , "## Parser output"
                     , "log4j.additivity."+SysRIOT.riotLoggerName+"=false"
                     , "log4j.logger."+SysRIOT.riotLoggerName+"=ALL, riot.plainerr "
