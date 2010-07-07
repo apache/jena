@@ -7,12 +7,22 @@
 package com.hp.hpl.jena.sparql.algebra;
 
 
-import junit.framework.TestSuite;
+import junit.framework.TestSuite ;
+import org.junit.runner.RunWith ;
+import org.junit.runners.Suite ;
+
+@RunWith(Suite.class)
+@Suite.SuiteClasses( {
+    TestClassify.class,
+    TestFilterTransform.class,
+    TestVarRename.class
+})
 
 public class TS_Algebra extends TestSuite
 {
     static final String testSetName         = "Algebra Transformation" ;
 
+    // Old style.
     static public TestSuite suite() { return new TS_Algebra(); }
 
     public TS_Algebra()
@@ -20,6 +30,7 @@ public class TS_Algebra extends TestSuite
         super(testSetName) ;
         addTest(TestClassify.suite()) ;
         addTest(TestFilterTransform.suite()) ;
+        addTest(TestVarRename.suite()) ;
     }
 }
 

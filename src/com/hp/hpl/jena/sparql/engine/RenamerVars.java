@@ -4,29 +4,44 @@
  * [See end of file]
  */
 
-package org.openjena.atlas;
+package com.hp.hpl.jena.sparql.engine;
 
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
-import org.openjena.atlas.event.TS_Event ;
-import org.openjena.atlas.io.TS_IO ;
-import org.openjena.atlas.iterator.TS_Iterator ;
-import org.openjena.atlas.json.TS_JSON ;
-import org.openjena.atlas.lib.TS_Lib ;
+import java.util.HashMap ;
+import java.util.Map ;
+import java.util.Set ;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-    // Library
-      TS_Lib.class
-    , TS_Iterator.class
-    , TS_Event.class
-    , TS_IO.class
-    , TS_JSON.class
-}) 
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.sparql.core.Var ;
 
-public class TC_Atlas
-{}
+public class RenamerVars implements Renamer
+{
+    private final Map<Var, Var> aliases = new HashMap<Var, Var>() ;
+    private final Set<Var> constants ;
+    public RenamerVars(Set<Var> constants)
+    {
+        this.constants = constants ;
+    }
+    
+    public final Node rename(Node node)
+    {
+        if ( ! Var.isVar(node) ) return node ;
+        if ( constants.contains(node ) ) return node ;
 
+        Var var = (Var)node ;
+        Var var2 = aliases.get(var) ;
+        if ( var2 != null )
+            return var2 ;
+        // TODO The new name is the old name with a "/" - clashes?
+        // Provided the old name isn't a constant as well, this is safe 
+        // if renaming is bottom up. 
+        // Really safe - use the global allocator.
+        //var2 = allocator.allocVar() ;
+        var2 = Var.alloc("/"+var.getVarName()) ;
+        aliases.put(var, var2) ;
+        return var2 ; 
+    }
+    
+}
 /*
  * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.

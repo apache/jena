@@ -30,77 +30,75 @@ public interface SSE_ParserCoreConstants {
   /** RegularExpression Id. */
   int VAR_NAMED = 7;
   /** RegularExpression Id. */
-  int VAR_NAMED2 = 8;
+  int VAR_OTHER = 8;
   /** RegularExpression Id. */
-  int VAR_ANON = 9;
+  int DIGITS = 9;
   /** RegularExpression Id. */
-  int DIGITS = 10;
+  int INTEGER = 10;
   /** RegularExpression Id. */
-  int INTEGER = 11;
+  int DECIMAL = 11;
   /** RegularExpression Id. */
-  int DECIMAL = 12;
+  int DOUBLE = 12;
   /** RegularExpression Id. */
-  int DOUBLE = 13;
+  int EXPONENT = 13;
   /** RegularExpression Id. */
-  int EXPONENT = 14;
+  int QUOTE_3D = 14;
   /** RegularExpression Id. */
-  int QUOTE_3D = 15;
+  int QUOTE_3S = 15;
   /** RegularExpression Id. */
-  int QUOTE_3S = 16;
+  int ECHAR = 16;
   /** RegularExpression Id. */
-  int ECHAR = 17;
+  int STRING_LITERAL1 = 17;
   /** RegularExpression Id. */
-  int STRING_LITERAL1 = 18;
+  int STRING_LITERAL2 = 18;
   /** RegularExpression Id. */
-  int STRING_LITERAL2 = 19;
+  int STRING_LITERAL_LONG1 = 19;
   /** RegularExpression Id. */
-  int STRING_LITERAL_LONG1 = 20;
+  int STRING_LITERAL_LONG2 = 20;
   /** RegularExpression Id. */
-  int STRING_LITERAL_LONG2 = 21;
+  int LPAREN = 21;
   /** RegularExpression Id. */
-  int LPAREN = 22;
+  int RPAREN = 22;
   /** RegularExpression Id. */
-  int RPAREN = 23;
+  int LBRACE = 23;
   /** RegularExpression Id. */
-  int LBRACE = 24;
+  int RBRACE = 24;
   /** RegularExpression Id. */
-  int RBRACE = 25;
+  int LBRACKET = 25;
   /** RegularExpression Id. */
-  int LBRACKET = 26;
+  int RBRACKET = 26;
   /** RegularExpression Id. */
-  int RBRACKET = 27;
+  int DATATYPE = 27;
   /** RegularExpression Id. */
-  int DATATYPE = 28;
+  int LANGTAG = 28;
   /** RegularExpression Id. */
-  int LANGTAG = 29;
+  int AT = 29;
   /** RegularExpression Id. */
-  int AT = 30;
+  int A2Z = 30;
   /** RegularExpression Id. */
-  int A2Z = 31;
+  int A2ZN = 31;
   /** RegularExpression Id. */
-  int A2ZN = 32;
+  int PN_CHARS_BASE = 32;
   /** RegularExpression Id. */
-  int PN_CHARS_BASE = 33;
+  int PN_CHARS_U = 33;
   /** RegularExpression Id. */
-  int PN_CHARS_U = 34;
+  int PN_CHARS = 34;
   /** RegularExpression Id. */
-  int PN_CHARS = 35;
+  int PN_PREFIX = 35;
   /** RegularExpression Id. */
-  int PN_PREFIX = 36;
+  int PN_LOCAL = 36;
   /** RegularExpression Id. */
-  int PN_LOCAL = 37;
+  int VARNAME = 37;
   /** RegularExpression Id. */
-  int VARNAME = 38;
+  int SYM = 38;
   /** RegularExpression Id. */
-  int SYM = 39;
+  int SYM1 = 39;
   /** RegularExpression Id. */
-  int SYM1 = 40;
+  int SYM_ESC = 40;
   /** RegularExpression Id. */
-  int SYM_ESC = 41;
+  int SYMBOL = 41;
   /** RegularExpression Id. */
-  int SYMBOL = 42;
-  /** RegularExpression Id. */
-  int UNKNOWN = 43;
+  int UNKNOWN = 42;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -115,8 +113,7 @@ public interface SSE_ParserCoreConstants {
     "<PNAME>",
     "<BLANK_NODE_LABEL>",
     "<VAR_NAMED>",
-    "<VAR_NAMED2>",
-    "<VAR_ANON>",
+    "<VAR_OTHER>",
     "<DIGITS>",
     "<INTEGER>",
     "<DECIMAL>",

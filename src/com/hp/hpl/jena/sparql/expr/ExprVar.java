@@ -9,6 +9,7 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.sparql.engine.Renamer ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.function.FunctionEnv;
 import org.openjena.atlas.io.IndentedWriter;
@@ -46,10 +47,17 @@ public class ExprVar extends ExprNode
     }
 
     @Override
-    public Expr copySubstitute(Binding binding, boolean foldConstants)
+    public Expr copySubstitute(Binding binding, boolean foldConstants, Renamer renamer)
     {
+        Var v = varNode ;  
+        if ( renamer != null )
+            v = (Var)renamer.rename(varNode) ;
+        
+        // Before or after renaming?
         if ( binding == null || !binding.contains(varNode) )
-            return copy() ;
+            return new ExprVar(v) ;
+        
+        // Eval against the old name. 
         return eval(binding, null) ;
 //        catch (VariableNotBoundException ex)
 //        {
@@ -59,6 +67,7 @@ public class ExprVar extends ExprNode
     }
     
     public Expr copy()  { return new ExprVar(varNode) ; }
+    
     
     public void visit(ExprVisitor visitor) { visitor.visit(this) ; }
     

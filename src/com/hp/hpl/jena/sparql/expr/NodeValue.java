@@ -21,6 +21,7 @@ import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 import com.hp.hpl.jena.sparql.core.NodeConst;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
+import com.hp.hpl.jena.sparql.engine.Renamer ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.expr.nodevalue.*;
 import com.hp.hpl.jena.sparql.function.FunctionEnv;
@@ -339,26 +340,17 @@ public abstract class NodeValue extends ExprNode
 
     // NodeValues are immutable so no need to duplicate.
     @Override
-    public Expr copySubstitute(Binding binding, boolean foldConstants)
+    public Expr copySubstitute(Binding binding, boolean foldConstants, Renamer renamer)
     {  // return this ; 
         Node n = asNode() ;
         return makeNode(n) ;
     }
     
-    // New version
-    public NodeValue evalNodeValue(Binding binding, ExecutionContext execCxt)
-    {
-         //return this ;
-        System.err.println("eval - convert back to NodeValue") ;
-        return null ;
-    }
-
     public Node evalNode(Binding binding, ExecutionContext execCxt)
     {
         return asNode() ;
     }
 
-    
     @Override
     public boolean isConstant() { return true ; }
 

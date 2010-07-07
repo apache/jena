@@ -5,6 +5,9 @@
 
 package com.hp.hpl.jena.sparql.expr;
 
+import java.util.List ;
+
+import com.hp.hpl.jena.sparql.engine.Renamer ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 
 /** A function in the expression hierarchy.
@@ -34,16 +37,17 @@ public abstract class ExprFunctionN extends ExprFunction
     @Override
     public int numArgs() { return args.size() ; }
     
-    //public List getArgs() { return args.getList() ; }
+    @Override
+    public List<Expr> getArgs() { return args.getList() ; }
 
     @Override
-    public Expr copySubstitute(Binding binding, boolean foldConstants)
+    public Expr copySubstitute(Binding binding, boolean foldConstants, Renamer renamer)
     {
         ExprList newArgs = new ExprList() ;
         for ( int i = 1 ; i <= numArgs() ; i++ )
         {
             Expr e = getArg(i) ;
-            e = e.copySubstitute(binding, foldConstants) ;
+            e = e.copySubstitute(binding, foldConstants, renamer) ;
             newArgs.add(e) ;
         }
         return copy(newArgs) ;

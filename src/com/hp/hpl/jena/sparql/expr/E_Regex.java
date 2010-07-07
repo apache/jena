@@ -6,6 +6,7 @@
 package com.hp.hpl.jena.sparql.expr;
 
 import com.hp.hpl.jena.query.ARQ;
+import com.hp.hpl.jena.sparql.engine.Renamer ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.function.FunctionEnv;
 import com.hp.hpl.jena.sparql.util.ALog;
@@ -148,12 +149,11 @@ public class E_Regex extends ExprFunction
     }
 
     @Override
-    public Expr copySubstitute(Binding binding, boolean foldConstants)
+    public Expr copySubstitute(Binding binding, boolean foldConstants, Renamer renamer)
     {
-        Expr e = expr.copySubstitute(binding, foldConstants) ;
-        Expr p = pattern.copySubstitute(binding, foldConstants) ;
-        Expr f = (flags==null)? null : flags.copySubstitute(binding, foldConstants) ;
-        
+        Expr e = expr.copySubstitute(binding, foldConstants, renamer) ;
+        Expr p = pattern.copySubstitute(binding, foldConstants, renamer) ;
+        Expr f = (flags==null)? null : flags.copySubstitute(binding, foldConstants, renamer) ;
         return new E_Regex(e,p,f) ;
     }
 

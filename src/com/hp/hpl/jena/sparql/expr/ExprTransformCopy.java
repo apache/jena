@@ -1,80 +1,28 @@
 /*
- * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.util;
+package com.hp.hpl.jena.sparql.expr;
 
-import com.hp.hpl.jena.util.cache.Cache;
-
-/** A one slot cache */
-
-public class Cache1 implements Cache
+public interface ExprTransformCopy
 {
-    boolean isEnabled = true ;
-    Object cacheKey = null ;
-    Object cacheValue = null ;
-    
-    int numGet = 0 ;
-    int numPut = 0 ;
-    int numHits = 0 ;
-    
-    public Object get(Object key)
-    {
-        if ( ! isEnabled )
-            return null ;
-        
-        numGet ++ ;
-        
-        if ( cacheKey == null )
-            return null ;
-        
-        if ( cacheKey.equals(key) )
-        {
-            numHits ++ ;
-            return cacheValue ;
-        }
-        
-        return null ;
-    }
-
-    public void put(Object key, Object value)
-    {
-        if ( ! isEnabled )
-            return ;
-        numPut ++ ;
-        cacheKey = key ; 
-        cacheValue = value ;
-    }
-
-    public boolean getEnabled()
-    {
-        return isEnabled ;
-    }
-
-    public boolean setEnabled(boolean enabled)
-    {
-        boolean b = isEnabled ;
-        isEnabled = enabled ;
-        return b ;
-    }
-
-    public void clear()
-    {
-        cacheKey = null ;
-        cacheValue = null ;
-    }
-
-    public long getGets() { return numGet ; }
-
-    public long getPuts() { return numPut ; }
-
-    public long getHits() { return numHits ; }
+//    public static final boolean COPY_ALWAYS         = true ;
+//    public static final boolean COPY_ONLY_ON_CHANGE = false ;
+//    private boolean alwaysCopy = false ;
+//    
+//    public TransformCopy()                                          { this(COPY_ONLY_ON_CHANGE) ; }
+//    public TransformCopy(boolean alwaysDuplicate)                   { this.alwaysCopy = alwaysDuplicate ; }
+//    
+//    void visit(ExprFunction func) ;
+//    void visit(ExprFunctionOp funcOp) ;
+//    void visit(NodeValue nv) ;
+//    void visit(ExprVar nv) ;        // AKA ExprFunction0
 }
 
 /*
- * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

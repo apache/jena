@@ -17,6 +17,7 @@ import com.hp.hpl.jena.graph.query.VariableIndexes;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.sparql.engine.Renamer ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingIndex;
 import com.hp.hpl.jena.sparql.expr.Expr;
@@ -50,7 +51,7 @@ abstract class ExprNodeRDQL
     
     public Expr copySubstitute(Binding binding) { return null ; }
 
-    public Expr copySubstitute(Binding binding, boolean foldConstants) { return null ; }
+    public Expr copySubstitute(Binding binding, boolean foldConstants, Renamer renamer) { return null ; }
 
     public Expr deepCopy() { return null ; }
 

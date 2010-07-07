@@ -47,7 +47,6 @@ public class AllTestsARQ extends TestSuite
          */
         
         // Scripted tests for ARQ examples.
-        // 
         ts.addTest(QueryTestSuiteFactory.make(ARQTestSuite.testDirARQ+"/Examples/manifest.ttl")) ;
         ts.addTest(TestLARQExamples.suite()) ;
         return ts ;

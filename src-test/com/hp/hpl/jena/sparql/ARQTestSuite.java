@@ -6,13 +6,14 @@
 package com.hp.hpl.jena.sparql;
 
 
+import junit.framework.JUnit4TestAdapter ;
 import junit.framework.TestSuite ;
 import org.openjena.atlas.TC_Atlas ;
 import org.openjena.riot.ErrorHandlerLib ;
 import org.openjena.riot.TC_Riot ;
 
 import com.hp.hpl.jena.query.ARQ ;
-import com.hp.hpl.jena.sparql.algebra.TS_Algebra ;
+import com.hp.hpl.jena.sparql.algebra.TC_Algebra ;
 import com.hp.hpl.jena.sparql.api.TestAPI ;
 import com.hp.hpl.jena.sparql.engine.main.QueryEngineMain ;
 import com.hp.hpl.jena.sparql.engine.ref.QueryEngineRef ;
@@ -40,10 +41,12 @@ public class ARQTestSuite extends TestSuite
         // No warnings (e.g. bad lexical forms).
         ErrorHandlerLib.setTestLogging(false) ;
 
+        
         // ARQ dependencies
-        // Add
-        ts.addTest(new junit.framework.JUnit4TestAdapter(TC_Atlas.class)) ;
-        ts.addTest(new junit.framework.JUnit4TestAdapter(TC_Riot.class)) ;
+        
+        // TODO Convert more: 
+        ts.addTest(new JUnit4TestAdapter(TC_Atlas.class)) ;
+        ts.addTest(new JUnit4TestAdapter(TC_Riot.class)) ;
         
         // Fiddle around with the config if necessary
         if ( false )
@@ -60,7 +63,7 @@ public class ARQTestSuite extends TestSuite
         ts.addTest(TS_General.suite() );
 
         // Algebra
-        ts.addTest(TS_Algebra.suite() );
+        ts.addTest(new JUnit4TestAdapter(TC_Algebra.class)) ;
         
         // Syntax
         ts.addTest(TS_Syntax.suite()) ;

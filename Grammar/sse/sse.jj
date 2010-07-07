@@ -134,7 +134,8 @@ void Var() : { Token t ; }
     // Includes non-distinguished variables as ??0
     // Includes internal allocated variables as ?.0
 
-  ( t = <VAR_NAMED> | t = <VAR_NAMED2> | t = <VAR_ANON> )
+//  ( t = <VAR_NAMED> | t = <VAR_NAMED2> | t = <VAR_ANON> )
+  ( t = <VAR_NAMED> | t = <VAR_OTHER> )
   { emitVar(t.beginLine, t.beginColumn, stripChars(t.image, 1)) ; }
 }
 

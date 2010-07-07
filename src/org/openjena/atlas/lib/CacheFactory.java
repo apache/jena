@@ -41,6 +41,12 @@ public class CacheFactory
         return new CacheSimple<Key, Value>(size) ; 
     }
     
+    /** One slot cache */
+    public static <Key, Value> Cache<Key, Value> createOneSlotCache()
+    {
+        return new Cache1<Key, Value>() ;
+    }
+
     public static <Key, Value> CacheStats<Key, Value> createStats(Cache<Key, Value> cache)
     {
         if ( cache instanceof CacheStats<?,?>)

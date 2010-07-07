@@ -21,7 +21,7 @@ public class Transformer
     private static Transformer singleton = new Transformer();
     
     /** Get the current transformer */
-    public static Transformer get() { return singleton; }
+    private static Transformer get() { return singleton; }
     
     /** Set the current transformer - use with care */
     public static void set(Transformer value) { Transformer.singleton = value; }

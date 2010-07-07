@@ -10,6 +10,7 @@ import java.util.Set;
 
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.sparql.engine.Renamer ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp;
 import com.hp.hpl.jena.sparql.function.FunctionEnv;
@@ -57,12 +58,12 @@ public abstract class ExprNode implements Expr
     public abstract boolean equals(Object other) ;
     
     final public Expr copySubstitute(Binding binding)
-    { return copySubstitute(binding, false) ; }
+    { return copySubstitute(binding, false, null) ; }
     
     final public Expr deepCopy()                     
-    { return copySubstitute(null, false) ; }
+    { return copySubstitute(null, false, null) ; }
     
-    public abstract Expr copySubstitute(Binding binding, boolean foldConstants) ;
+    public abstract Expr copySubstitute(Binding binding, boolean foldConstants, Renamer renamer) ;
     
     // ---- Default implementations
     public boolean isVariable()        { return false ; }

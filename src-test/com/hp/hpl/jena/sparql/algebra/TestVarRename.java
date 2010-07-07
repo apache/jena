@@ -4,28 +4,50 @@
  * [See end of file]
  */
 
-package org.openjena.atlas;
+package com.hp.hpl.jena.sparql.algebra;
 
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
-import org.openjena.atlas.event.TS_Event ;
-import org.openjena.atlas.io.TS_IO ;
-import org.openjena.atlas.iterator.TS_Iterator ;
-import org.openjena.atlas.json.TS_JSON ;
-import org.openjena.atlas.lib.TS_Lib ;
+import java.util.HashSet ;
+import java.util.Set ;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-    // Library
-      TS_Lib.class
-    , TS_Iterator.class
-    , TS_Event.class
-    , TS_IO.class
-    , TS_JSON.class
-}) 
+import junit.framework.JUnit4TestAdapter ;
 
-public class TC_Atlas
-{}
+import org.junit.Test ;
+import org.openjena.atlas.junit.BaseTest ;
+
+import com.hp.hpl.jena.sparql.algebra.Op ;
+import com.hp.hpl.jena.sparql.core.Var ;
+import com.hp.hpl.jena.sparql.engine.main.VarRename ;
+import com.hp.hpl.jena.sparql.sse.SSE ;
+
+public class TestVarRename extends BaseTest
+{
+
+    public static junit.framework.Test suite()
+    {
+        return new JUnit4TestAdapter(TestVarRename.class) ;
+    }
+
+    @Test public void rename_01() { rename("(bgp (<s> <p> <o>))", "(bgp (<s> <p> <o>))") ; }
+    @Test public void rename_02() { rename("(bgp (<s> ?p <o>))", "(bgp (<s> ?/p <o>))") ; }
+    @Test public void rename_03() { rename("(bgp (?s ?p <o>))", "(bgp (?s ?/p <o>))", "s") ; }
+    @Test public void rename_04() { rename("(filter (+ ?s ?x) (bgp (?s ?p <o>)))", "(filter (+ ?s ?/x) (bgp (?s ?/p <o>)))", "s") ; }
+
+    private static void rename(String string, String string2, String... varNames)
+    {
+        Set<Var> s = new HashSet<Var>() ;
+        for ( String vn : varNames )
+            s.add(Var.alloc(vn)) ;
+        rename(string,string2, s) ;
+    }
+
+    private static void rename(String string, String string2,  Set<Var> constant)
+    {
+        Op op = SSE.parseOp(string) ;
+        Op op2 = SSE.parseOp(string2) ;
+        Op op3 = VarRename.rename(op, constant) ;
+        assertEquals(op2, op3) ;
+    }
+}
 
 /*
  * (c) Copyright 2010 Talis Systems Ltd.

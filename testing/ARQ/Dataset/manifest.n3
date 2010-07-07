@@ -93,5 +93,12 @@
             ] ;
         mf:result  <graph-11-result.n3> ;
       ]
-    # End of tests
+    [  mf:name    "graph-subquery-1.rq" ;
+        mf:action
+            [ qt:query  <graph-subquery-1.rq> ;
+              qt:graphData  <data-sq.ttl> ;
+            ] ;
+        mf:result  <graph-subquery-1.srx>
+      ]
+
    ).

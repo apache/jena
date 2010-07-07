@@ -1,0 +1,6 @@
+SELECT *
+{
+  GRAPH ?g
+  # Scope: different ?g
+  { SELECT ?x { ?x ?p ?g } }
+}

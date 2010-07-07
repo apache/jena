@@ -15,6 +15,7 @@ import java.util.Set;
 
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
+import com.hp.hpl.jena.sparql.engine.Renamer ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.util.Context;
 
@@ -57,14 +58,14 @@ public class ExprList implements Iterable<Expr>
             expr.varsMentioned(acc) ;
     }
     
-    public ExprList copySubstitute(Binding binding) { return copySubstitute(binding, true) ; }
-    public ExprList copySubstitute(Binding binding, boolean foldConstants)
+    public ExprList copySubstitute(Binding binding) { return copySubstitute(binding, true, null) ; }
+    public ExprList copySubstitute(Binding binding, boolean foldConstants, Renamer renamer)
     {
         ExprList x = new ExprList() ;
         for ( Iterator<Expr> iter = expressions.iterator() ; iter.hasNext() ; )
         {
             Expr expr = iter.next();
-            expr = expr.copySubstitute(binding, foldConstants) ;
+            expr = expr.copySubstitute(binding, foldConstants, renamer) ;
             x.add(expr) ;
         }
         return x ;

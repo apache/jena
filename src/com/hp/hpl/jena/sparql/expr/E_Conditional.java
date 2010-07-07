@@ -5,6 +5,7 @@
 
 package com.hp.hpl.jena.sparql.expr;
 
+import com.hp.hpl.jena.sparql.engine.Renamer ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.function.FunctionEnv;
 
@@ -44,11 +45,11 @@ public class E_Conditional extends ExprFunction
     }
 
     @Override
-    public Expr copySubstitute(Binding binding, boolean foldConstants)
+    public Expr copySubstitute(Binding binding, boolean foldConstants, Renamer renamer)
     {
-        Expr e1 = condition.copySubstitute(binding, foldConstants) ;
-        Expr e2 = thenExpr.copySubstitute(binding, foldConstants) ;
-        Expr e3 = elseExpr.copySubstitute(binding, foldConstants) ;
+        Expr e1 = condition.copySubstitute(binding, foldConstants, renamer) ;
+        Expr e2 = thenExpr.copySubstitute(binding, foldConstants, renamer) ;
+        Expr e3 = elseExpr.copySubstitute(binding, foldConstants, renamer) ;
         
         return new E_Conditional(e1, e2, e3) ;
     }

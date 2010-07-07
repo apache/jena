@@ -9,6 +9,10 @@ package dev;
 
 public class DevARQ
 {
+    // Bug: GRAPH ?g { SELECT ?x { ?x ?p ?g } }  
+    // Need to rename through a (project)
+    // AlgebraGenerator - rename IFF nested.
+    
     // RIOT
     // Skip on bad terms /stop on bad term is choice of errorhandler.
     // Output bad term quads/triples to special sink.
@@ -21,6 +25,9 @@ public class DevARQ
     
     // RIOT document:
     //   RiotReader, DatasetLoader
+    
+    // Atlas:
+    // Move stuff from sparql.util/sparql.lib to Atlas.
     
     // Extend:
     //   Add bare date/datetime to tokenizer?? Syntax?

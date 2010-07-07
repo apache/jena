@@ -1,34 +1,25 @@
 /*
- * (c) Copyright 2010 Talis Systems Ltd.
+ * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package org.openjena.atlas;
+package com.hp.hpl.jena.sparql.algebra;
+
 
 import org.junit.runner.RunWith ;
 import org.junit.runners.Suite ;
-import org.openjena.atlas.event.TS_Event ;
-import org.openjena.atlas.io.TS_IO ;
-import org.openjena.atlas.iterator.TS_Iterator ;
-import org.openjena.atlas.json.TS_JSON ;
-import org.openjena.atlas.lib.TS_Lib ;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
-    // Library
-      TS_Lib.class
-    , TS_Iterator.class
-    , TS_Event.class
-    , TS_IO.class
-    , TS_JSON.class
-}) 
+    TS_Algebra.class
+})
 
-public class TC_Atlas
-{}
+public class TC_Algebra
+{ }
 
 /*
- * (c) Copyright 2010 Talis Systems Ltd.
+ * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

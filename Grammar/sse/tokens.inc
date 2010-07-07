@@ -18,8 +18,6 @@ SPECIAL_TOKEN :
     <SINGLE_LINE_COMMENT2: ";" (~["\n","\r"])* ("\n"|"\r"|"\r\n")? >
 }
 
-#define VAR_ANY     " ", 
-
 TOKEN:
 {
    <IRIref: "<" (~[">","<","\u0000"-"\u0020"])* ">" >
@@ -27,15 +25,17 @@ TOKEN:
 |  <BLANK_NODE_LABEL: "_:" (<PN_LOCAL>)? >  // Allows no label
 
     // Co-ordinate with ARQConstants
-
     // Named variable - allows no name
 |  <VAR_NAMED:   "?" (<VARNAME>)?>
-    // Non-distinguished variable (BNode in SPARQL)
-|  <VAR_NAMED2:   "?." (~[" " , "\t" , "\n" , "\r" , "\f",
-                            "(", ")", "[", "]", "{", "}"])* >
 
-|  <VAR_ANON:     "??" (~[ " " , "\t" , "\n" , "\r" , "\f",
-                            "(", ")", "[", "]", "{", "}"])* >
+//     // Non-distinguished variable (BNode in SPARQL)
+// |  <VAR_NAMED2:   "?." (~[" " , "\t" , "\n" , "\r" , "\f",
+//                             "(", ")", "[", "]", "{", "}"])* >
+// 
+// |  <VAR_ANON:     "??" (~[ " " , "\t" , "\n" , "\r" , "\f",
+//                            "(", ")", "[", "]", "{", "}"])* >
+
+| <VAR_OTHER: "?" (<SYM>)+ >
 }
 
 TOKEN :

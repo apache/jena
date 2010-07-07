@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.sparql.expr;
 
-// Walk the expression tree
+// Walk the expression tree, bottom up.
 
 public class ExprWalker //implements ExprVisitor 
 {
@@ -20,10 +20,11 @@ public class ExprWalker //implements ExprVisitor
     public void walk(Expr expr) { expr.visit(visitor) ; }
 
     static public void walk(ExprVisitor visitor, Expr expr)
-    { expr.visit(new WalkerTopDown(visitor)) ; }
+    { expr.visit(new WalkerBottomUp(visitor)) ; }
     
-    
-    
+//    static public void walk(ExprVisitor visitor, Expr expr)
+//    { expr.visit(new WalkerTopDown(visitor)) ; }
+
     static class Walker implements ExprVisitor
     {
         ExprVisitor visitor ;

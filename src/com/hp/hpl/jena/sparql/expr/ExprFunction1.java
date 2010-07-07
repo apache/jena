@@ -5,6 +5,7 @@
 
 package com.hp.hpl.jena.sparql.expr;
 
+import com.hp.hpl.jena.sparql.engine.Renamer ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
 import com.hp.hpl.jena.sparql.function.FunctionEnvBase ;
@@ -58,7 +59,7 @@ public abstract class ExprFunction1 extends ExprFunction
         return eval(x, env) ;
     }
     
-    // Ideally, we woudl only have the FunctionEnv form but that break compatibility. 
+    // Ideally, we would only have the FunctionEnv form but that break compatibility. 
     public NodeValue eval(NodeValue v, FunctionEnv env) { return eval(v) ; }
     public abstract NodeValue eval(NodeValue v) ;
     
@@ -66,9 +67,9 @@ public abstract class ExprFunction1 extends ExprFunction
     protected NodeValue evalSpecial(Binding binding, FunctionEnv env) { return null ; } 
     
     @Override
-    final public Expr copySubstitute(Binding binding, boolean foldConstants)
+    final public Expr copySubstitute(Binding binding, boolean foldConstants, Renamer renamer)
     {
-        Expr e = expr.copySubstitute(binding, foldConstants) ;
+        Expr e = expr.copySubstitute(binding, foldConstants, renamer) ;
         
         if ( foldConstants)
         {

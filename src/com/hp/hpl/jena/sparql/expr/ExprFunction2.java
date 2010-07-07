@@ -5,6 +5,7 @@
 
 package com.hp.hpl.jena.sparql.expr;
 
+import com.hp.hpl.jena.sparql.engine.Renamer ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.function.FunctionEnv;
 
@@ -73,10 +74,10 @@ public abstract class ExprFunction2 extends ExprFunction
     // ---- Duplication
     
     @Override
-    final public Expr copySubstitute(Binding binding, boolean foldConstants)
+    final public Expr copySubstitute(Binding binding, boolean foldConstants, Renamer renamer)
     {
-        Expr e1 = expr1.copySubstitute(binding, foldConstants) ;
-        Expr e2 = expr2.copySubstitute(binding, foldConstants) ;
+        Expr e1 = expr1.copySubstitute(binding, foldConstants, renamer) ;
+        Expr e2 = expr2.copySubstitute(binding, foldConstants, renamer) ;
         
         if ( foldConstants)
         {

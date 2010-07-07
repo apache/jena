@@ -48,8 +48,7 @@ public class SSE_ParserCore extends ParserSSEBase implements SSE_ParserCoreConst
     case PNAME:
     case BLANK_NODE_LABEL:
     case VAR_NAMED:
-    case VAR_NAMED2:
-    case VAR_ANON:
+    case VAR_OTHER:
     case INTEGER:
     case DECIMAL:
     case DOUBLE:
@@ -163,8 +162,7 @@ public class SSE_ParserCore extends ParserSSEBase implements SSE_ParserCoreConst
       case PNAME:
       case BLANK_NODE_LABEL:
       case VAR_NAMED:
-      case VAR_NAMED2:
-      case VAR_ANON:
+      case VAR_OTHER:
       case INTEGER:
       case DECIMAL:
       case DOUBLE:
@@ -198,8 +196,7 @@ public class SSE_ParserCore extends ParserSSEBase implements SSE_ParserCoreConst
       PrefixedName();
       break;
     case VAR_NAMED:
-    case VAR_NAMED2:
-    case VAR_ANON:
+    case VAR_OTHER:
       Var();
       break;
     case INTEGER:
@@ -245,11 +242,8 @@ public class SSE_ParserCore extends ParserSSEBase implements SSE_ParserCoreConst
     case VAR_NAMED:
       t = jj_consume_token(VAR_NAMED);
       break;
-    case VAR_NAMED2:
-      t = jj_consume_token(VAR_NAMED2);
-      break;
-    case VAR_ANON:
-      t = jj_consume_token(VAR_ANON);
+    case VAR_OTHER:
+      t = jj_consume_token(VAR_OTHER);
       break;
     default:
       jj_la1[10] = jj_gen;
@@ -390,10 +384,10 @@ public class SSE_ParserCore extends ParserSSEBase implements SSE_ParserCoreConst
       jj_la1_init_1();
    }
    private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {0x2,0x2,0x47c3bf0,0x2,0x2,0x2,0x2,0x4400000,0x47c3bf0,0x3c3bf0,0x380,0x3c3800,0x3c0000,0x30,0x30000000,0x30000000,0x3800,};
+      jj_la1_0 = new int[] {0x2,0x2,0x23e1df0,0x2,0x2,0x2,0x2,0x2200000,0x23e1df0,0x1e1df0,0x180,0x1e1c00,0x1e0000,0x30,0x18000000,0x18000000,0x1c00,};
    }
    private static void jj_la1_init_1() {
-      jj_la1_1 = new int[] {0x0,0x0,0x400,0x0,0x0,0x0,0x0,0x0,0x400,0x400,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
+      jj_la1_1 = new int[] {0x0,0x0,0x200,0x0,0x0,0x0,0x0,0x0,0x200,0x200,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
    }
 
   /** Constructor with InputStream. */
@@ -510,7 +504,7 @@ public class SSE_ParserCore extends ParserSSEBase implements SSE_ParserCoreConst
   /** Generate ParseException. */
   public ParseException generateParseException() {
     jj_expentries.clear();
-    boolean[] la1tokens = new boolean[44];
+    boolean[] la1tokens = new boolean[43];
     if (jj_kind >= 0) {
       la1tokens[jj_kind] = true;
       jj_kind = -1;
@@ -527,7 +521,7 @@ public class SSE_ParserCore extends ParserSSEBase implements SSE_ParserCoreConst
         }
       }
     }
-    for (int i = 0; i < 44; i++) {
+    for (int i = 0; i < 43; i++) {
       if (la1tokens[i]) {
         jj_expentry = new int[1];
         jj_expentry[0] = i;

@@ -4,28 +4,19 @@
  * [See end of file]
  */
 
-package org.openjena.atlas;
+package com.hp.hpl.jena.sparql.expr;
 
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
-import org.openjena.atlas.event.TS_Event ;
-import org.openjena.atlas.io.TS_IO ;
-import org.openjena.atlas.iterator.TS_Iterator ;
-import org.openjena.atlas.json.TS_JSON ;
-import org.openjena.atlas.lib.TS_Lib ;
+import java.util.List ;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-    // Library
-      TS_Lib.class
-    , TS_Iterator.class
-    , TS_Event.class
-    , TS_IO.class
-    , TS_JSON.class
-}) 
+import com.hp.hpl.jena.sparql.algebra.Op ;
 
-public class TC_Atlas
-{}
+public interface ExprTransform
+{
+    public Expr transform(ExprFunction func, List<Expr> args) ;
+    public Expr transform(ExprFunctionOp funcOp, List<Expr> args, Op opArg) ;
+    public Expr transform(NodeValue nv) ;
+    public Expr transform(ExprVar nv) ;        // AKA ExprFunction0
+}
 
 /*
  * (c) Copyright 2010 Talis Systems Ltd.

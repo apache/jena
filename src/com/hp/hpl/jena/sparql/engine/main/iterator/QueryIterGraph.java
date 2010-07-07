@@ -66,7 +66,7 @@ public class QueryIterGraph extends QueryIterRepeatApply
         Node n2 = resolve(b, graphVar) ;
         
         if ( n2 != null && ! n2.isURI() )
-            // Bloank node or literal possible after resolving
+            // Blank node or literal possible after resolving
             return Iter.nullIterator() ;
         
         // n2 is a URI or null.

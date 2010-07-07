@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.Set;
 
 import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.sparql.engine.Renamer ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.function.FunctionEnv;
 
@@ -48,8 +49,12 @@ public interface Expr
     /** Deep copy with substitution */
     public Expr copySubstitute(Binding binding) ;
 
-    /** Deep copy with substitution, possibly collapsing constant sub-expressions */
-    public Expr copySubstitute(Binding binding, boolean foldConstants) ;
+    /** Deep copy with substitution, possibly collapsing constant sub-expressions 
+     * @param renamer TODO*/
+    public Expr copySubstitute(Binding binding, boolean foldConstants, Renamer renamer) ;
+
+//    /** Transform. */
+//    public Expr apply() ;
     
     /** Deep copy */
     public Expr deepCopy() ;
