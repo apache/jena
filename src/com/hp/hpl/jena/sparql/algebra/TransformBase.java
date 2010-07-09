@@ -48,7 +48,7 @@ public class TransformBase implements Transform
     public Op transform(OpReduced opReduced, Op subOp)      { return opReduced ; }
     public Op transform(OpSlice opSlice, Op subOp)          { return opSlice ; }
     public Op transform(OpAssign opAssign, Op subOp)        { return opAssign ; }
-    public Op transform(OpGroupAgg opGroupAgg, Op subOp)    { return opGroupAgg ; }
+    public Op transform(OpGroup opGroup, Op subOp)    { return opGroup ; }
 }
 
 /*

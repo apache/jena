@@ -22,6 +22,7 @@ public class AggAvgDistinct extends AggregatorBase
     private Expr expr ;
 
     public AggAvgDistinct(Expr expr) { this.expr = expr ; } 
+    public Aggregator copy() { return new AggAvgDistinct(expr) ; }
 
     private static final NodeValue noValuesToAvg = NodeValue.nvZERO ; 
 

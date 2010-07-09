@@ -11,9 +11,7 @@ import java.io.ByteArrayInputStream ;
 import java.io.InputStream ;
 import java.io.Reader ;
 import java.io.StringReader ;
-import java.util.HashSet ;
 import java.util.Iterator ;
-import java.util.Set ;
 
 import org.openjena.atlas.io.IO ;
 import org.openjena.atlas.io.IndentedLineBuffer ;
@@ -48,10 +46,8 @@ import com.hp.hpl.jena.sparql.algebra.op.OpFilter ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.Prologue ;
 import com.hp.hpl.jena.sparql.core.QueryCheckException ;
-import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
-import com.hp.hpl.jena.sparql.engine.main.VarRename ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
@@ -92,27 +88,29 @@ public class RunARQ
 
     public static void main(String[] argv) throws Exception
     {
-        {
-            Op op = SSE.parseOp("(graph ?g (filter (+ ?g ?o) (bgp (?s ?g ?o) (?s ?g ?o) )))") ;
-            Set<Var> constant = new HashSet<Var>() ;
-            constant.add(Var.alloc("o")) ;
-            System.out.println("op =") ;
-            System.out.println(op) ;
-            Op op2 = VarRename.rename(op, constant) ;
-            System.out.println("op =") ;
-            System.out.println(op) ;
-            System.out.println("op2 =") ;
-            System.out.println(op2) ;
-            System.exit(0) ;
-        }
+//        {
+//            Op op = SSE.parseOp("(graph ?g (filter (+ ?g ?o) (bgp (?s ?g ?o) (?s ?g ?o) )))") ;
+//            Set<Var> constant = new HashSet<Var>() ;
+//            constant.add(Var.alloc("o")) ;
+//            System.out.println("op =") ;
+//            System.out.println(op) ;
+//            Op op2 = VarRename.rename(op, constant) ;
+//            System.out.println("op =") ;
+//            System.out.println(op) ;
+//            System.out.println("op2 =") ;
+//            System.out.println(op2) ;
+//            System.exit(0) ;
+//        }
         
+        String dir = "testing/ARQ/SubQuery/" ;
+//        String queryFile = dir+"graph-subquery-1.rq" ;
+//        String dataFile = "--data="+dir+"data-sq.ttl" ;
+        String queryFile = dir+"sub-select-03.arq" ;
+        String dataFile = "--data="+dir+"data.ttl" ;
         
-        String dir = "/home/afs/W3C/SPARQL-docs/tests/data-sparql11/subquery/" ;
-        String queryFile = dir+"sq03.rq" ;
-        
-        arq.qparse.main("--syntax=sparql_11","--print=op", "--print=opt", "--file="+queryFile) ;
-        arq.sparql.main("--syntax=sparql_11", "--namedGraph="+dir+"sq01.rdf", "--file="+queryFile) ;
-        arq.sparql.main("--engine=ref", "--syntax=sparql_11", "--namedGraph="+dir+"sq01.rdf", "--file="+queryFile) ;
+//        arq.qparse.main("--syntax=sparql_11","--print=opt", "--file=Q.arq") ;
+        arq.sparql.main("--syntax=sparql_11", dataFile, "--file="+queryFile) ;
+        arq.sparql.main("--engine=ref", "--syntax=sparql_11", dataFile, "--file="+queryFile) ;
         System.exit(0) ;
         
         IRI iri = IRIFactory.iriImplementation().create("x") ;

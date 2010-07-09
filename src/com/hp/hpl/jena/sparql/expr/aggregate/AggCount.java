@@ -19,6 +19,7 @@ public class AggCount extends AggregatorBase
     // ---- COUNT(*)
 
     public AggCount() { }
+    public Aggregator copy() { return new AggCount() ; }
 
     public boolean equalsAsExpr(Aggregator other)
     {

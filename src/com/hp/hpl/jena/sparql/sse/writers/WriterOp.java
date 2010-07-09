@@ -358,7 +358,7 @@ public class WriterOp
             visitOp1(opList) ;
         }
         
-        public void visit(OpGroupAgg opGroup)
+        public void visit(OpGroup opGroup)
         {
             start(opGroup, NoNL) ;
             writeNamedExprList(opGroup.getGroupVars()) ;

@@ -9,6 +9,8 @@ package com.hp.hpl.jena.sparql.expr;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.sparql.engine.Renamer ;
+import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.expr.aggregate.Aggregator;
 import com.hp.hpl.jena.sparql.util.Utils;
 
@@ -54,6 +56,15 @@ public class E_Aggregator extends ExprVar
     public String asSparqlExpr()        
     { return aggregator.toString() ; }
     
+    @Override
+    public E_Aggregator copySubstitute(Binding binding, boolean foldConstants, Renamer renamer)
+    {
+        Var v = varNode ;  
+        if ( renamer != null )
+            v = (Var)renamer.rename(varNode) ;
+        return new E_Aggregator(v, aggregator) ;
+    }
+    
     // DEBUGGING
     @Override
     public String toString()
@@ -62,6 +73,9 @@ public class E_Aggregator extends ExprVar
     { return "(AGG "+
                 (varNode==null?"<>":"?"+super.varNode.getVarName())+
                 " "+aggregator.toString()+")"; }
+    
+    @Override
+    public Expr copy()  { return new E_Aggregator(varNode, aggregator.copy()) ; }
 }
 
 /*

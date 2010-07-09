@@ -17,6 +17,8 @@ public class AggMinDistinct extends AggMin
     // Same as MIN(expr) but remembers the syntax
     
     public AggMinDistinct(Expr expr) { super(expr) ; }
+    @Override
+    public Aggregator copy() { return new AggMinDistinct(expr) ; }
 
     @Override
     public String toString() { return "min(distinct "+ExprUtils.fmtSPARQL(getExpr())+")" ; }

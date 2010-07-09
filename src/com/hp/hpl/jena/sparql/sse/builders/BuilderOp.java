@@ -502,7 +502,7 @@ public class BuilderOp
             }
             
             Op sub = build(list, list.size()-1) ;
-            Op op = new OpGroupAgg(sub,vars, aggregators) ;
+            Op op = new OpGroup(sub,vars, aggregators) ;
             return op ;
         }
     } ;

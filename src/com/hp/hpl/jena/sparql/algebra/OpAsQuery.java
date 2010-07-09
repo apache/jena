@@ -331,8 +331,8 @@ public class OpAsQuery
             opSlice.getSubOp().visit(this) ;
         }
 
-        public void visit(OpGroupAgg opGroupAgg)
-        { throw new ARQNotImplemented("OpGroupAgg") ; }
+        public void visit(OpGroup opGroup)
+        { throw new ARQNotImplemented("OpGroup") ; }
         
         private Element lastElement()
         {

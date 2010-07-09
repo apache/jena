@@ -51,7 +51,7 @@ public interface OpVisitor
     public void visit(OpSlice opSlice) ;
     public void visit(OpAssign opAssign) ;
 
-    public void visit(OpGroupAgg opGroupAgg) ;
+    public void visit(OpGroup opGroup) ;
 }
 
 /*

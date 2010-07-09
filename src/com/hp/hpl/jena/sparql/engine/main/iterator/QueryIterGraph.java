@@ -6,28 +6,28 @@
 
 package com.hp.hpl.jena.sparql.engine.main.iterator;
 
-import java.util.Iterator;
-import java.util.NoSuchElementException;
+import java.util.Iterator ;
+import java.util.NoSuchElementException ;
 
 import org.openjena.atlas.iterator.Iter ;
 import org.openjena.atlas.iterator.SingletonIterator ;
 
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.sparql.ARQInternalErrorException;
-import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.algebra.op.OpGraph;
-import com.hp.hpl.jena.sparql.core.DatasetGraph;
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.engine.ExecutionContext;
-import com.hp.hpl.jena.sparql.engine.QueryIterator;
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.engine.binding.Binding1;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIter;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIterRepeatApply;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIterSingleton;
-import com.hp.hpl.jena.sparql.engine.main.QC;
-import com.hp.hpl.jena.sparql.util.Utils;
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
+import com.hp.hpl.jena.sparql.algebra.Op ;
+import com.hp.hpl.jena.sparql.algebra.op.OpGraph ;
+import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import com.hp.hpl.jena.sparql.core.Var ;
+import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
+import com.hp.hpl.jena.sparql.engine.QueryIterator ;
+import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.engine.binding.Binding1 ;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIter ;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIterRepeatApply ;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIterSingleton ;
+import com.hp.hpl.jena.sparql.engine.main.QC ;
+import com.hp.hpl.jena.sparql.util.Utils ;
 
 
 public class QueryIterGraph extends QueryIterRepeatApply
@@ -44,7 +44,12 @@ public class QueryIterGraph extends QueryIterRepeatApply
     protected QueryIterator nextStage(Binding outerBinding)
     {
         DatasetGraph ds = getExecContext().getDataset() ;
+        // Is this closed?
         Iterator<Node> graphNameNodes = makeSources(ds, outerBinding, opGraph.getNode());
+        
+//        List<Node> x = Iter.toList(graphNameNodes) ;
+//        graphNameNodes = x.iterator() ;
+//        System.out.println(x) ;
         
         QueryIterator current = new QueryIterGraphInner(
                                                outerBinding, graphNameNodes, 
@@ -126,12 +131,16 @@ public class QueryIterGraph extends QueryIterRepeatApply
         @Override
         protected void closeIterator()
         {
+            Iter.close(graphNames) ;
             if ( subIter != null )
                 subIter.close() ;
             subIter = null ;
         }
         
-        // This is very like QueryIteratorRepeatApply except its not repeating over bindings
+        // This code predates ARQ using Java 1.5.
+
+        // This is very like QueryIteratorRepeatApply except its not
+        // repeating over bindings, but over graph nodes.
         // There is a tradeoff of generalising QueryIteratorRepeatApply to Objects
         // and hence no type safety. Or duplicating code (generics?)
         

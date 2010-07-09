@@ -7,12 +7,25 @@
 package dev;
 
 
+
 public class DevARQ
 {
+    // Static check of legal vars in SELECT with group.
+    
+    // QueryEngines MainQuad and RefQuad
+    // RefQuad:  execution of quad patterns, graph+subquery 
+    // MainQuad: execution of quad patterns 
+    //   Tests to run all engines.
+    
     // Bug: GRAPH ?g { SELECT ?x { ?x ?p ?g } }  
     // Need to rename through a (project)
-    // AlgebraGenerator - rename IFF nested.
+    // AlgebraGenerator - rename IFF nested DONE.
+    // Not the linearization of (graph ?g) is causing project to tbe wrong.
     
+    // OpExecutor.execute(OpProject)
+    // 1 - pass in a negative set to QueryIterProject (hide these) based on pattern. 
+    // 2 - always add back input.
+
     // RIOT
     // Skip on bad terms /stop on bad term is choice of errorhandler.
     // Output bad term quads/triples to special sink.

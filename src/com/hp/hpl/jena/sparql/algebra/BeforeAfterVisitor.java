@@ -191,9 +191,9 @@ public class BeforeAfterVisitor extends OpVisitorByType//implements OpVisitor
 //		before(opAssign) ; mainVisitor.visit(opAssign) ; after(opAssign) ;
 //	}
 //    
-//    public void visit(OpGroupAgg opGroupAgg)
+//    public void visit(OpGroup opGroup)
 //    {
-//		before(opGroupAgg) ; mainVisitor.visit(opGroupAgg) ; after(opGroupAgg) ;
+//		before(opGroup) ; mainVisitor.visit(opGroup) ; after(opGroup) ;
 //	}
 }
 /*

@@ -27,10 +27,23 @@ public class AggGroupConcat extends AggregatorBase
 
     public AggGroupConcat(Expr expr, String separator)
     {
-        this.expr = expr ; 
-        separatorSeen = separator ;
-        this.separator =  ( separator != null ) ? separator : SeparatorDefault ; 
+        this(expr, 
+             ( separator != null ) ? separator : SeparatorDefault ,
+             separator) ;
+//        this.expr = expr ; 
+//        separatorSeen = separator ;
+//        this.separator = ( separator != null ) ? separator : SeparatorDefault ; 
     } 
+    
+    private AggGroupConcat(Expr expr, String separator, String separatorSeen)
+    {
+        this.expr = expr ; 
+        this.separatorSeen = separatorSeen ;
+        this.separator = separator ; 
+    }
+    
+    public Aggregator copy() { return new AggGroupConcat(expr, separator, separatorSeen) ; }
+
 
     @Override
     public String toString()

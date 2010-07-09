@@ -14,7 +14,7 @@ import com.hp.hpl.jena.sparql.algebra.op.*;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.util.ALog;
 
-/**  Class to provide type-safe execution ispatch using the visitor support of Op */ 
+/**  Class to provide type-safe execution dispatch using the visitor support of Op */ 
 
 class ExecutionDispatch implements OpVisitor
 {
@@ -242,10 +242,10 @@ class ExecutionDispatch implements OpVisitor
         push(qIter) ;
     }
     
-    public void visit(OpGroupAgg opGroupAgg)
+    public void visit(OpGroup opGroup)
     { 
         QueryIterator input = pop() ;
-        QueryIterator qIter = opExecutor.execute(opGroupAgg, input) ;
+        QueryIterator qIter = opExecutor.execute(opGroup, input) ;
         push(qIter) ;
     }
     

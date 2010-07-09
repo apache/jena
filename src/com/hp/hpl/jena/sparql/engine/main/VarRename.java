@@ -6,6 +6,9 @@
 
 package com.hp.hpl.jena.sparql.engine.main;
 
+import java.util.ArrayList ;
+import java.util.Collection ;
+import java.util.List ;
 import java.util.Set ;
 
 import com.hp.hpl.jena.graph.Node ;
@@ -20,8 +23,10 @@ import com.hp.hpl.jena.sparql.core.BasicPattern ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.core.QuadPattern ;
 import com.hp.hpl.jena.sparql.core.Var ;
+import com.hp.hpl.jena.sparql.core.VarExprList ;
 import com.hp.hpl.jena.sparql.engine.Renamer ;
 import com.hp.hpl.jena.sparql.engine.RenamerVars ;
+import com.hp.hpl.jena.sparql.expr.E_Aggregator ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.expr.ExprList ;
 
@@ -29,9 +34,11 @@ import com.hp.hpl.jena.sparql.expr.ExprList ;
 public class VarRename
 {
     // See also OpVar, VarFiner and VarLib - needs to be pulled together really.
+    // Also need to renaming support for renames where only a
+    // certain set are mapped (for (assign (?x ?.0)))
     
-    /** Rename all variables in a patter, EXCEPT for those named as constant */ 
-    public static Op rename(Op op, Set<Var> constants)
+    /** Rename all variables in a pattern, EXCEPT for those named as constant */ 
+    public static Op rename(Op op, Collection<Var> constants)
     {
         Renamer renamer = new RenamerVars(constants) ;
         Transform transform = new TransformRename(renamer) ; 
@@ -54,7 +61,7 @@ public class VarRename
         return exprList2 ;
     }
     
-    /** Rename all variables in an expression, EXCEPT for those named as constant*/ 
+    /** Rename all variables in an expression, EXCEPT for those named as constant */ 
     public static Expr rename(Expr expr, Set<Var> constants)
     {
         //Like copySubstitute.
@@ -90,9 +97,7 @@ public class VarRename
         @Override public Op transform(OpFilter opFilter, Op subOp)
         { 
             ExprList exprList = opFilter.getExprs() ;
-            ExprList exprList2 = new ExprList() ;
-            for ( Expr expr : exprList )
-                exprList2.add(expr.copySubstitute(null, false, renamer)) ;
+            ExprList exprList2 = rename(exprList) ;
             return OpFilter.filter(exprList2, subOp) ;
         }        
         
@@ -133,6 +138,9 @@ public class VarRename
         
         @Override public Op transform(OpTable opTable)
         {
+            if ( opTable.isJoinIdentity() )
+                return opTable ;
+            
             throw new ARQNotImplemented() ;
             //return null ;
         }
@@ -145,10 +153,27 @@ public class VarRename
         
         @Override public Op transform(OpAssign opAssign, Op subOp)
         { 
-            throw new ARQNotImplemented() ;
-            //return null ;
+            VarExprList varExprList = opAssign.getVarExprList() ;
+            VarExprList varExprList2 = rename(varExprList) ;
+            return OpAssign.assign(subOp, varExprList2) ;
         }
-
+        
+        @Override public Op transform(OpGroup opGroup, Op subOp)
+        {
+            // E_Aggregate is a subclass of ExprVar
+            // so override copySubstitute as well.??
+            
+            VarExprList groupVars = rename(opGroup.getGroupVars()) ;
+            
+            // These need renaming as well.
+            List<E_Aggregator> aggregators = new ArrayList<E_Aggregator>() ;
+            for ( E_Aggregator agg : opGroup.getAggregators() )
+                aggregators.add(agg.copySubstitute(null, false, renamer)) ;
+            
+            //if ( true )throw new ARQNotImplemented() ;
+            return new OpGroup(subOp, groupVars, aggregators) ;
+        }
+        
         // Rename BGP - return original BGP for "no change"
         private BasicPattern rename(BasicPattern pattern)  
         {
@@ -224,6 +249,39 @@ public class VarRename
             if ( ! change )
                 return quad ;
             return new Quad(g,s,p,o) ;
+        }
+        
+        private VarExprList rename(VarExprList varExprList)
+        {
+            VarExprList varExprList2 = new VarExprList() ;
+            for ( Var v : varExprList.getVars() )
+            {
+                Expr expr = varExprList.getExpr(v) ;
+                Var v2 = (Var)renamer.rename(v) ;
+                Expr expr2 = ( expr != null ) ? rename(expr) : null ;
+                varExprList2.add(v2, expr2) ;
+            }
+            return varExprList2 ;
+        }
+
+        private ExprList rename(ExprList exprList)
+        {
+              ExprList exprList2 = new ExprList() ;
+              boolean changed = false ;
+              for(Expr expr : exprList)
+              {
+                  Expr expr2 = rename(expr) ;
+                  if ( expr != expr2 )
+                      changed = true ;
+                  exprList2.add(expr2) ;
+              }
+              if ( ! changed ) return exprList ;
+              return exprList2 ;
+        }
+        
+        private Expr rename(Expr expr)
+        {
+            return expr.copySubstitute(null, false, renamer) ;
         }
     }
     

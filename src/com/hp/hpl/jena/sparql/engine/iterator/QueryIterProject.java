@@ -59,37 +59,6 @@ public class QueryIterProject extends QueryIterConvert
             return new BindingProject(projectionVars, bind) ;
         }
     }
-//    
-//    static
-//    class ProjectionExpr implements QueryIterConvert.Converter
-//    {
-//        FunctionEnv funcEnv ;
-//        VarExprList projectionVars ; 
-//
-//        ProjectionExpr(VarExprList vars, ExecutionContext qCxt)
-//        { 
-//            this.projectionVars = vars ;
-//            funcEnv = qCxt ;
-//        }
-//
-//        public Binding convert(Binding bind)
-//        {
-//            Binding b = new BindingMap(bind) ;
-//            for ( Iterator iter = projectionVars.getVars().iterator() ; iter.hasNext(); )
-//            {
-//                Var v = (Var)iter.next();
-//                // Only add those variables that have expressions associated with them
-//                // The parent, bind, already has bound variables for the non-expressions. 
-//                if ( ! projectionVars.hasExpr(v) )
-//                    continue ;
-//                
-//                Node n = projectionVars.get(v, bind, funcEnv) ;
-//                if ( n != null )
-//                    b.add(v, n) ;
-//            }
-//            return new BindingProject(projectionVars.getVars(), b) ;
-//        }
-//    }
 }
 
 /*

@@ -9,7 +9,7 @@ package com.hp.hpl.jena.sparql.expr;
 import java.util.Stack ;
 
 import com.hp.hpl.jena.sparql.util.ALog ;
-
+//NOT TESTED
 public class ExprTransformer
 {
     private static ExprTransformer singleton = new ExprTransformer();

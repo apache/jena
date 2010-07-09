@@ -10,7 +10,7 @@
         <uri>http://example/b</uri>
       </binding>
       <binding name="g">
-        <uri>file:///C:/home/afs/Projects/ARQ/testing/ARQ/Dataset/data-sq.ttl</uri>
+        <uri>file:///C:/home/afs/Projects/ARQ/testing/ARQ/SubQuery/data-sq.ttl</uri>
       </binding>
     </result>
     <result>
@@ -18,7 +18,7 @@
         <uri>http://example/a</uri>
       </binding>
       <binding name="g">
-        <uri>file:///C:/home/afs/Projects/ARQ/testing/ARQ/Dataset/data-sq.ttl</uri>
+        <uri>file:///C:/home/afs/Projects/ARQ/testing/ARQ/SubQuery/data-sq.ttl</uri>
       </binding>
     </result>
   </results>

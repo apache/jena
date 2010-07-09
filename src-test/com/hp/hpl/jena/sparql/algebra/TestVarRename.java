@@ -32,6 +32,15 @@ public class TestVarRename extends BaseTest
     @Test public void rename_03() { rename("(bgp (?s ?p <o>))", "(bgp (?s ?/p <o>))", "s") ; }
     @Test public void rename_04() { rename("(filter (+ ?s ?x) (bgp (?s ?p <o>)))", "(filter (+ ?s ?/x) (bgp (?s ?/p <o>)))", "s") ; }
 
+    @Test public void rename_05() { rename("(group ((?.1 (str ?x))) ((?.0 (count))) (bgp (triple ?x :p ?v)))",
+                                           "(group ((?/.1 (str ?x))) ((?/.0 (count))) (bgp (triple ?x :p ?/v)))", "x" ) ; }
+
+    @Test public void rename_06() { rename("(assign ((?x (+ ?/a ?/b))) (table unit))", 
+                                           "(assign ((?/x (+ ?//a ?//b))) (table unit))") ; }
+    @Test public void rename_07() { rename("(assign ((?x (+ ?/a ?/b))) (table unit))", 
+                                           "(assign ((?/x (+ ?/a ?//b))) (table unit))",
+                                           "/a") ; }
+    
     private static void rename(String string, String string2, String... varNames)
     {
         Set<Var> s = new HashSet<Var>() ;

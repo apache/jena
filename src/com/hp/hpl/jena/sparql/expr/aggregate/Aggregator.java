@@ -30,6 +30,7 @@ public interface Aggregator
     // Key to identify an aggregator as synatx for duplicate use in a query.
     public String key() ;           
     public boolean equalsAsExpr(Aggregator other) ;
+    public Aggregator copy() ;
 }
 
 /*

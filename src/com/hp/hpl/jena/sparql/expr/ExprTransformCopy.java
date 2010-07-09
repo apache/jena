@@ -6,8 +6,12 @@
 
 package com.hp.hpl.jena.sparql.expr;
 
-public interface ExprTransformCopy
+//NOT FINISHED
+
+public class ExprTransformCopy
 {
+    // Repurpose copysSubstitute
+    
 //    public static final boolean COPY_ALWAYS         = true ;
 //    public static final boolean COPY_ONLY_ON_CHANGE = false ;
 //    private boolean alwaysCopy = false ;

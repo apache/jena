@@ -20,6 +20,7 @@ public class AggCountVar extends AggregatorBase
     private Expr expr ;
 
     public AggCountVar(Expr expr) { this.expr = expr ; }
+    public Aggregator copy() { return new AggCountVar(expr) ; }
 
     @Override
     public String toString() { return "count("+expr+")" ; }

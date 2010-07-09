@@ -17,6 +17,7 @@ public class AggCountDistinct extends AggregatorBase
 {
     // ---- COUNT(DISTINCT *)
     public AggCountDistinct() { super() ; }
+    public Aggregator copy() { return new AggCountDistinct() ; }
 
     @Override
     public String toString()        { return "count(distinct *)" ; }

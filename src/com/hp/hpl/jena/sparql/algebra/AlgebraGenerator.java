@@ -20,6 +20,7 @@ import com.hp.hpl.jena.sparql.core.BasicPattern ;
 import com.hp.hpl.jena.sparql.core.PathBlock ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.core.VarExprList ;
+import com.hp.hpl.jena.sparql.engine.main.VarRename ;
 import com.hp.hpl.jena.sparql.expr.E_Aggregator ;
 import com.hp.hpl.jena.sparql.expr.E_Exists ;
 import com.hp.hpl.jena.sparql.expr.E_LogicalNot ;
@@ -42,6 +43,7 @@ public class AlgebraGenerator
     private boolean fixedFilterPosition = false ;
     private Context context ;
     private PathCompiler pathCompiler = new PathCompiler() ;
+    private int subQueryDepth = 0 ;
     
     // simplifyInAlgebraGeneration=true is the alternative reading of
     // the DAWG Algebra translation algorithm. 
@@ -481,7 +483,9 @@ public class AlgebraGenerator
 
     protected Op compileElementSubquery(ElementSubQuery eltSubQuery)
     {
+        subQueryDepth++ ;
         Op sub = this.compile(eltSubQuery.getQuery()) ;
+        subQueryDepth-- ;
         return sub ;
     }
     
@@ -506,20 +510,20 @@ public class AlgebraGenerator
         if ( query.hasGroupBy() || query.getAggregators().size() > 0 )
         {
             // When there is no GroupBy but there are some aggregates, it's a group of no variables.
-            op = new OpGroupAgg(op, query.getGroupBy(), query.getAggregators()) ;
+            op = new OpGroup(op, query.getGroupBy(), query.getAggregators()) ;
             // Modified exprs.
         }
         
         //---- Assignments from SELECT and other places (TBD) (so available to ORDER and HAVING)
         // Now do assignments from expressions 
-        // Must be after "group by" has intriduces it's variables.
+        // Must be after "group by" has introduces it's variables.
+        
         if ( ! projectVars.isEmpty() && ! query.isQueryResultStar())
         {
             // Don't project for QueryResultStar so initial bindings show
             // through in SELECT *
             if ( projectVars.size() == 0 && query.isSelectType() )
                 ALog.warn(this,"No project variables") ;
-
             // Separate assignments and variable projection.
             for ( Var v : query.getProject().getVars() )
             {
@@ -564,7 +568,17 @@ public class AlgebraGenerator
         // Needed for CONSTRUCT and initial bindings + SELECT *
         
         if ( vars.size() > 0 )
+        {
+            // Hide inner variables.
+            if ( subQueryDepth > 0 )
+            {
+//                Set<Var> exposed = new HashSet<Var>() ;
+//                for ( Var v : query.getProject().getVars() )
+//                    exposed.add(v) ;
+                op = VarRename.rename(op, vars) ;
+            }   
             op = new OpProject(op, vars) ;
+        }
         
         // ---- DISTINCT
         if ( query.isDistinct() )

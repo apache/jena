@@ -1,7 +1,17 @@
-PREFIX :      <http://example/>
+PREFIX : <http://example/> 
 
-SELECT (sample(DISTINCT ?x) AS ?str)
+SELECT *
 {
-    ?s :p ?x .
+
+ ?x a :X .
+  { SELECT ( count(*) AS ?c) { ?x :p ?v } GROUP BY str(?x) }
+
+##     GRAPH ?g 
+##     {
+##         ?s ?p ?o .
+##         { SELECT ?y { LET (?y := 56 ) } }
+##     }
+
+##   ?x a :X .
+##   { SELECT ?x ( count(*) AS ?c) { ?x :p ?v } GROUP BY ?x }
 }
-GROUP BY(?s)

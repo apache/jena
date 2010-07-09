@@ -62,13 +62,15 @@ public class Transformer
         }
     }
     
-    private Op transformation(Transform transform, Op op, OpVisitor beforeVisitor, OpVisitor afterVisitor)
+    // To allow subclassing this class.  we use the singleton pattern 
+    // and theses protected methods.
+    protected Op transformation(Transform transform, Op op, OpVisitor beforeVisitor, OpVisitor afterVisitor)
     {
         ApplyTransformVisitor v = new ApplyTransformVisitor(transform) ;
         return transformation(v, op, beforeVisitor, afterVisitor) ;
     }
     
-    private Op transformation(ApplyTransformVisitor transformApply,
+    protected Op transformation(ApplyTransformVisitor transformApply,
                              Op op, OpVisitor beforeVisitor, OpVisitor afterVisitor)
     {
         if ( op == null )

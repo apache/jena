@@ -7,7 +7,7 @@
 package com.hp.hpl.jena.sparql.expr;
 
 // Walk the expression tree, bottom up.
-
+// NOT FINISHED
 public class ExprWalker //implements ExprVisitor 
 {
     ExprVisitor visitor ;

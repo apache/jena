@@ -21,7 +21,8 @@ public class AggSample extends AggregatorBase
     private final Expr expr ;
 
     public AggSample(Expr expr) { this.expr = expr ; } 
-
+    public Aggregator copy() { return new AggSample(expr) ; }
+    
     @Override
     public String toString() { return "sample("+ExprUtils.fmtSPARQL(expr)+")" ; }
     @Override

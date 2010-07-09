@@ -108,8 +108,8 @@ public abstract class OpVisitorByType implements OpVisitor
     public void visit(OpSlice opSlice)
     { visit1(opSlice) ; }
 
-    public void visit(OpGroupAgg opGroupAgg)
-    { visit1(opGroupAgg) ; }
+    public void visit(OpGroup opGroup)
+    { visit1(opGroup) ; }
 }
 
 /*

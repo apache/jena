@@ -6,13 +6,15 @@
 
 package arq.cmdline;
 
-import java.util.Iterator;
-import java.util.List;
+import java.util.Iterator ;
+import java.util.List ;
 
-import arq.cmd.CmdException;
+import arq.cmd.CmdException ;
 
-import com.hp.hpl.jena.sparql.engine.main.QueryEngineMain;
-import com.hp.hpl.jena.sparql.engine.ref.QueryEngineRef;
+import com.hp.hpl.jena.sparql.engine.main.QueryEngineMain ;
+import com.hp.hpl.jena.sparql.engine.main.QueryEngineMainQuad ;
+import com.hp.hpl.jena.sparql.engine.ref.QueryEngineRef ;
+import com.hp.hpl.jena.sparql.engine.ref.QueryEngineRefQuad ;
 
 
 public class ModEngine extends ModBase
@@ -45,7 +47,10 @@ public class ModEngine extends ModBase
     {
        
         List<String> x = cmdLine.getValues(engineDecl) ;
-
+        
+//        if ( x.size() > 0 )
+//            QueryEngineRegistry.get().factories().clear() ;
+        
         for ( Iterator<String> iter = x.iterator() ; iter.hasNext() ; )
         {
             String engineName = iter.next() ;
@@ -56,11 +61,26 @@ public class ModEngine extends ModBase
                 continue ;
             }
             
+            if ( engineName.equalsIgnoreCase("refQuad") )
+            {
+                QueryEngineRefQuad.register() ;
+                continue ;
+            }
+            
+            
             if ( engineName.equalsIgnoreCase("main") )
             {
                 QueryEngineMain.register() ;
                 continue ;
             }
+            
+            if ( engineName.equalsIgnoreCase("quad") )
+            {
+                QueryEngineMainQuad.register() ;
+                continue ;
+            }
+
+            
             throw new CmdException("Engine name not recognized: "+engineName) ;
         }
 
@@ -73,9 +93,19 @@ public class ModEngine extends ModBase
                 QueryEngineRef.unregister() ;
                 continue ;
             }
+            if ( engineName.equalsIgnoreCase("refQuad") )
+            {
+                QueryEngineRefQuad.unregister() ;
+                continue ;
+            }
             if ( engineName.equalsIgnoreCase("main") )
             {
                 QueryEngineMain.unregister() ;
+                continue ;
+            }
+            if ( engineName.equalsIgnoreCase("main") )
+            {
+                QueryEngineMainQuad.unregister() ;
                 continue ;
             }
             throw new CmdException("Engine name not recognized: "+engineName) ;

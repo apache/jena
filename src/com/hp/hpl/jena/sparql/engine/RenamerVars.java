@@ -6,9 +6,9 @@
 
 package com.hp.hpl.jena.sparql.engine;
 
+import java.util.Collection ;
 import java.util.HashMap ;
 import java.util.Map ;
-import java.util.Set ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.core.Var ;
@@ -16,8 +16,8 @@ import com.hp.hpl.jena.sparql.core.Var ;
 public class RenamerVars implements Renamer
 {
     private final Map<Var, Var> aliases = new HashMap<Var, Var>() ;
-    private final Set<Var> constants ;
-    public RenamerVars(Set<Var> constants)
+    private final Collection<Var> constants ;
+    public RenamerVars(Collection<Var> constants)
     {
         this.constants = constants ;
     }

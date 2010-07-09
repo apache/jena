@@ -22,7 +22,8 @@ public class AggSumDistinct  extends AggregatorBase
     private Expr expr ;
 
     public AggSumDistinct(Expr expr) { this.expr = expr ; } 
-    
+    public Aggregator copy() { return new AggSumDistinct(expr) ; }
+
     private static final NodeValue noValuesToSum = NodeValue.nvZERO ; 
     
     @Override

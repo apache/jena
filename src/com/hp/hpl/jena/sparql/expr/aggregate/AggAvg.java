@@ -24,6 +24,7 @@ public class AggAvg extends AggregatorBase
     private Expr expr ;
 
     public AggAvg(Expr expr) { this.expr = expr ; } 
+    public Aggregator copy() { return new AggAvg(expr) ; }
 
     // XQuery/XPath Functions&Operators suggests zero
     // SQL suggests null.

@@ -25,10 +25,22 @@ public class AggGroupConcatDistinct extends AggregatorBase
 
     public AggGroupConcatDistinct(Expr expr, String separator)
     { 
-        this.expr = expr ; 
-        this.separatorSeen = separator ;
-        this.separator =  ( separator != null ) ? separator : AggGroupConcat.SeparatorDefault ; 
+        this(expr, 
+             ( separator != null ) ? separator : AggGroupConcat.SeparatorDefault ,
+             separator) ;
+//        this.expr = expr ; 
+//        this.separatorSeen = separator ;
+//        this.separator =  ( separator != null ) ? separator : AggGroupConcat.SeparatorDefault ; 
     }
+
+    private AggGroupConcatDistinct(Expr expr, String separator, String separatorSeen)
+    {
+        this.expr = expr ; 
+        this.separatorSeen = separatorSeen ;
+        this.separator = separator ; 
+    }
+    
+    public Aggregator copy() { return new AggGroupConcatDistinct(expr, separator, separatorSeen) ; }
 
     @Override
     public String toString()

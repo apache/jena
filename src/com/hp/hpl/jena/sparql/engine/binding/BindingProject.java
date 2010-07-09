@@ -23,7 +23,12 @@ public class  BindingProject extends BindingBase
 
     public BindingProject(Collection<Var> vars, Binding bind)
     { 
-        super(null) ;
+        this(vars, bind, null) ;
+    }
+    
+    public BindingProject(Collection<Var> vars, Binding bind, Binding parent)
+    { 
+        super(parent) ;
         binding = bind ;
         this.projectionVars = vars ;
     }

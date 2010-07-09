@@ -17,12 +17,12 @@ import com.hp.hpl.jena.sparql.sse.Tags;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 import com.hp.hpl.jena.sparql.util.Utils;
 
-public class OpGroupAgg extends OpModifier
+public class OpGroup extends OpModifier
 {
     private VarExprList groupVars ;
     private List<E_Aggregator> aggregators ;
 
-    public OpGroupAgg(Op subOp, VarExprList groupVars, List<E_Aggregator> aggregators)
+    public OpGroup(Op subOp, VarExprList groupVars, List<E_Aggregator> aggregators)
     { 
         super(subOp) ;
         this.groupVars  = groupVars ;
@@ -35,7 +35,7 @@ public class OpGroupAgg extends OpModifier
 
     public void visit(OpVisitor opVisitor)      { opVisitor.visit(this) ; }
     @Override
-    public Op copy(Op subOp)                    { return new OpGroupAgg(subOp, groupVars, aggregators) ; }
+    public Op copy(Op subOp)                    { return new OpGroup(subOp, groupVars, aggregators) ; }
 
     @Override
     public Op apply(Transform transform, Op subOp)
@@ -55,8 +55,8 @@ public class OpGroupAgg extends OpModifier
     @Override
     public boolean equalTo(Op other, NodeIsomorphismMap labelMap)
     {
-        if ( ! (other instanceof OpGroupAgg) ) return false ;
-        OpGroupAgg opGroup = (OpGroupAgg)other ;
+        if ( ! (other instanceof OpGroup) ) return false ;
+        OpGroup opGroup = (OpGroup)other ;
         if ( ! Utils.equal(groupVars, opGroup.groupVars) ) 
             return false ;
         if ( ! Utils.equal(aggregators, opGroup.aggregators) )

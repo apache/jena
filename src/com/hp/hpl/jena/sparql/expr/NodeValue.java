@@ -390,8 +390,6 @@ public abstract class NodeValue extends ExprNode
         
         ValueSpaceClassification compType = classifyValueOp(nv1, nv2) ;
         
-        // XXX Why is this different from compare?
-        
         // Special case - date/dateTime comparison is affected by timezones and may be
         // interdeterminate based on the value of the dateTime/date.
 

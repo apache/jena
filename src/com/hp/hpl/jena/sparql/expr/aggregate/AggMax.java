@@ -19,10 +19,11 @@ import com.hp.hpl.jena.sparql.util.ExprUtils;
 public class AggMax extends AggregatorBase
 {
     // ---- MAX(expr)
-    private final Expr expr ;
+    protected final Expr expr ;
 
     public AggMax(Expr expr) { this.expr = expr ; } 
-
+    public Aggregator copy() { return new AggMax(expr) ; }
+    
     @Override
     public String toString() { return "max("+ExprUtils.fmtSPARQL(expr)+")" ; }
     @Override

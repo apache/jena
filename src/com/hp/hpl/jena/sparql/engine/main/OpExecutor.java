@@ -85,6 +85,8 @@ public class OpExecutor
     
     protected ExecutionContext execCxt ;
     protected ExecutionDispatch dispatcher = null ;
+    protected static final int TOP_LEVEL = 0 ; 
+    protected int level = TOP_LEVEL-1 ;
 
     protected OpExecutor(ExecutionContext execCxt)
     { 
@@ -101,7 +103,11 @@ public class OpExecutor
     
     public QueryIterator executeOp(Op op, QueryIterator input)
     {
-        return dispatcher.exec(op, input) ;
+        level++ ;
+        QueryIterator qIter = dispatcher.exec(op, input) ;
+        // Intentionally not try/finally so excetion leeave some evidence around.
+        level-- ;
+        return qIter ;
     }
     
     // ---- All the cases
@@ -351,8 +357,20 @@ public class OpExecutor
 
     protected QueryIterator execute(OpProject opProject, QueryIterator input)
     {
-        QueryIterator  qIter = executeOp(opProject.getSubOp(), input) ;
-        qIter = new QueryIterProject(qIter, opProject.getVars(), execCxt) ;
+        // This may be under a (graph) in which case we need to operate 
+        // the active graph.
+        
+        // More intelligent QueryIterProject needed.
+        
+        if ( input instanceof QueryIterRoot )
+        {
+            QueryIterator  qIter = executeOp(opProject.getSubOp(), input) ;
+            qIter = new QueryIterProject(qIter, opProject.getVars(), execCxt) ;
+            return qIter ;
+        }
+        // Nested projected : need to ensure the input is seen.
+        // ROLL into QueryIterProject
+        QueryIterator qIter = new QueryIterProject2(opProject, input, this, execCxt) ; 
         return qIter ;
     }
 
@@ -363,10 +381,10 @@ public class OpExecutor
         return qIter ;
     }
     
-    protected QueryIterator execute(OpGroupAgg opGroupAgg, QueryIterator input)
+    protected QueryIterator execute(OpGroup opGroup, QueryIterator input)
     { 
-        QueryIterator qIter = executeOp(opGroupAgg.getSubOp(), input) ;
-        qIter = new QueryIterGroup(qIter, opGroupAgg.getGroupVars(), opGroupAgg.getAggregators(), execCxt) ;
+        QueryIterator qIter = executeOp(opGroup.getSubOp(), input) ;
+        qIter = new QueryIterGroup(qIter, opGroup.getGroupVars(), opGroup.getAggregators(), execCxt) ;
         return qIter ;
     }
     

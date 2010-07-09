@@ -19,9 +19,10 @@ import com.hp.hpl.jena.sparql.util.ExprUtils;
 public class AggMin extends AggregatorBase
 {
     // ---- MIN(?var)
-    private Expr expr ;
+    protected final Expr expr ;
 
     public AggMin(Expr expr) { this.expr = expr ; } 
+    public Aggregator copy() { return new AggMin(expr) ; }
 
     @Override
     public String toString() { return "min("+ExprUtils.fmtSPARQL(expr)+")" ; }

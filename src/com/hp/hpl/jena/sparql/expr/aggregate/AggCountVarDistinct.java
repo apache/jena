@@ -20,6 +20,7 @@ public class AggCountVarDistinct extends AggregatorBase
     private Expr expr ;
 
     public AggCountVarDistinct(Expr expr) { this.expr = expr ; } 
+    public Aggregator copy() { return new AggCountVarDistinct(expr) ; }
 
     @Override
     public String toString()        { return "count(distinct "+expr+")" ; }

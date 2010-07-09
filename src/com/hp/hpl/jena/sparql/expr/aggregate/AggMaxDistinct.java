@@ -16,6 +16,8 @@ public class AggMaxDistinct extends AggMax
     // ---- MAX(expr)
     // Same as MAX(expr) but remembers the syntax
     public AggMaxDistinct(Expr expr) { super(expr) ; } 
+    @Override
+    public Aggregator copy() { return new AggMaxDistinct(expr) ; }
 
     @Override
     public String toString() { return "max(distinct "+ExprUtils.fmtSPARQL(getExpr())+")" ; }

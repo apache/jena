@@ -56,7 +56,7 @@ public class TransformWrapper implements Transform
     public Op transform(OpReduced opReduced, Op subOp)      { return transform.transform(opReduced, subOp) ; }
     public Op transform(OpSlice opSlice, Op subOp)          { return transform.transform(opSlice, subOp) ; }
     public Op transform(OpAssign opAssign, Op subOp)        { return transform.transform(opAssign, subOp) ; }
-    public Op transform(OpGroupAgg opGroupAgg, Op subOp)    { return transform.transform(opGroupAgg, subOp) ; }
+    public Op transform(OpGroup opGroup, Op subOp)    { return transform.transform(opGroup, subOp) ; }
 }
 
 /*

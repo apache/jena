@@ -257,10 +257,10 @@ public class EvaluatorDispatch implements OpVisitor
         push(table) ;
     }
 
-    public void visit(OpGroupAgg opGroupAgg)
+    public void visit(OpGroup opGroup)
     {
-        Table table = eval(opGroupAgg.getSubOp()) ;
-        table = evaluator.groupBy(table, opGroupAgg.getGroupVars(), opGroupAgg.getAggregators()) ;
+        Table table = eval(opGroup.getSubOp()) ;
+        table = evaluator.groupBy(table, opGroup.getGroupVars(), opGroup.getAggregators()) ;
         push(table) ;
     }
 
