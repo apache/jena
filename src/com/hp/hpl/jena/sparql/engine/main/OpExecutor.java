@@ -125,17 +125,17 @@ public class OpExecutor
 
     protected QueryIterator execute(OpQuadPattern quadPattern, QueryIterator input)
     {
-        if ( false )
+        // Convert to BGP forms to execute in this graph-centric engine.
+        if ( quadPattern.isDefaultGraph() )
         {
-            if ( quadPattern.isDefaultGraph() )
-            {
-                // Easy case.
-                OpBGP opBGP = new OpBGP(quadPattern.getBasicPattern()) ;
-                return execute(opBGP, input) ;  
-            }
-        }        
-        // Turn into a OpGraph/OpBGP.
-        throw new ARQNotImplemented("execute/OpQuadPattern") ;
+            // Easy case.
+            OpBGP opBGP = new OpBGP(quadPattern.getBasicPattern()) ;
+            return execute(opBGP, input) ;  
+        }
+        // Not default graph - (graph .... )
+        OpBGP opBGP = new OpBGP(quadPattern.getBasicPattern()) ;
+        OpGraph op = new OpGraph(quadPattern.getGraphNode(), opBGP) ;
+        return execute(op, input) ;
     }
 
     protected QueryIterator execute(OpPath opPath, QueryIterator input)

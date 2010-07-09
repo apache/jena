@@ -38,9 +38,10 @@ public class qparse extends CmdARQ
     
     boolean printQuery = false ;
     boolean printOp = false ;
-    boolean printQuad = false ;
-    boolean printPlan = false ;
     boolean printOpt = false ;
+    boolean printQuad = false ;
+    boolean printQuadOpt = false ;
+    boolean printPlan = false ;
     
     public static void main(String... argv)
     {
@@ -76,11 +77,13 @@ public class qparse extends CmdARQ
             else if ( arg.equalsIgnoreCase("quad"))     { printQuad = true ; }
             else if ( arg.equalsIgnoreCase("plan"))     { printPlan = true ; }
             else if ( arg.equalsIgnoreCase("opt"))      { printOpt = true ; }
+            else if ( arg.equalsIgnoreCase("optquad"))  { printQuadOpt = true ; }
+            else if ( arg.equalsIgnoreCase("quadopt"))  { printQuadOpt = true ; }
             else
-                throw new CmdException("Not a recognized print form: "+arg+" : Choices are: query, op, quad, opt") ;
+                throw new CmdException("Not a recognized print form: "+arg+" : Choices are: query, op, quad, opt, optquad") ;
         }
         
-        if ( ! printQuery && ! printOp && ! printQuad && ! printPlan && ! printOpt )
+        if ( ! printQuery && ! printOp && ! printQuad && ! printPlan && ! printOpt && ! printQuadOpt )
             printQuery = true ;
     }
 
@@ -129,6 +132,9 @@ public class qparse extends CmdARQ
             
             if ( printOpt )
             { divider() ; modOutput.outputOp(query, true) ; }
+            
+            if ( printQuadOpt )
+            { divider() ; modOutput.outputQuad(query, true) ; }
             
             if ( printPlan )
             { 
