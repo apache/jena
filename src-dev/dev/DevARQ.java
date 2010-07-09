@@ -6,10 +6,10 @@
 
 package dev;
 
-
-
 public class DevARQ
 {
+    // SPARQL Update
+    
     // Static check of legal vars in SELECT with group.
     
     // QueryEngines MainQuad and RefQuad
@@ -17,21 +17,12 @@ public class DevARQ
     // MainQuad: execution of quad patterns 
     //   Tests to run all engines.
     
-    // Bug: GRAPH ?g { SELECT ?x { ?x ?p ?g } }  
-    // Need to rename through a (project)
-    // AlgebraGenerator - rename IFF nested DONE.
-    // Not the linearization of (graph ?g) is causing project to tbe wrong.
-    
-    // OpExecutor.execute(OpProject)
-    // 1 - pass in a negative set to QueryIterProject (hide these) based on pattern. 
-    // 2 - always add back input.
-
     // RIOT
     // Skip on bad terms /stop on bad term is choice of errorhandler.
     // Output bad term quads/triples to special sink.
     //   Option passing (old Jena style).
     //   Recovery parsing - scan to DOT?
-    // Commands and default log4j.
+    // NT & ASCII
 
     // Filename in log messages
     // Or log at start.
@@ -74,11 +65,6 @@ public class DevARQ
     // Reenable i18n tests: TS_DAWG, DAWG_Final/maniest-evaluation.ttl
     // Removed dups between DAGE and DAWG-Final
     
-    // == SPARQL 1.1 Query
-    // Tests for aggregates
-    // regex and str()
-    // SameTerm for strings by dataset context. 
-    
     // Jena: Consolidate treatement of white space for floaf/double/num/abstractdate
     // Jena: upgrades 
     // Xerces 2.7.1 (released 2005-06) --> 2.9.x
@@ -87,10 +73,6 @@ public class DevARQ
     // ARQ: Upgrade Lucene to 3.0
     
     // OpAsQuery : aggregates
-    
-    // Modules: atlas, RIOT(->org.openjena)
-    // Migrate: Reifier2, GraphBase2, DatasetPrefixStorage
-    // Autoclose of results sets from QueryEngineHTTP
     
     // == SPARQL 1.1 Update
     //   Syntax tests
@@ -108,30 +90,10 @@ public class DevARQ
     //   Modify bindings (all!) for Var.ANON 
     // Swapping DatasetGraph
     
-    // SPARQL: check variable scope
-    //   Groups, SELECT expressions
-    //   SELECT expressions error to reuse a variable name.
-    //   Aggegator upgrade and specifc operators
-    //   Custom agregators
-    
-    // SPARQL/Update of a ja:RDFDataset - new graphs don't appear? 
-    
-    // Run ref engine and main engine in a test - remove ref only tests
-    
     // MicroAPI.
     //   results = query().select(vars).pattern().filter().groupBy().agg()
     //    or build algebra this way.
     // ARQ warnings on cross product and unused project vars 
-    
-    // ==== ARQ
-    // JMX
-    //   Document
-    //   Query count
-    //   Last query
-    //   (list of queries)
-    //   ??Datasets opened, closed
-    //   Remote queries made
-    // ----
     
     // Library
     //   Combine StringUtils and StrUtils.
@@ -155,6 +117,4 @@ public class DevARQ
     // ---- SPARQL/Update
     // GraphStoreFactory.create clones the dataset, so hiding changes to the dataset.
     // Dataset.sync, Dataset.close as well as GraphStore.sync, GraphStore.close.
-
-    // ---- OpAssign - needs expression prepare (for function binding)?
 }
