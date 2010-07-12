@@ -143,10 +143,10 @@ public class CheckerIRI implements NodeChecker
                 int code = v.getViolationCode() ;
                 boolean isError = v.isError() ;
                 
-//                // Ignore these.
-//                if ( code == Violation.LOWERCASE_PREFERRED ||
-//                    code == Violation.PERCENT_ENCODING_SHOULD_BE_UPPERCASE )
-//                    continue ;
+                // Ignore these.
+                if ( code == Violation.LOWERCASE_PREFERRED ||
+                    code == Violation.PERCENT_ENCODING_SHOULD_BE_UPPERCASE )
+                    continue ;
 
                 // Anything we want to reprioritise?
                 // [nothing at present]
