@@ -1,6 +1,5 @@
-PREFIX : <http://example/>
+PREFIX :       <http://example/>
+PREFIX  rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT *
- { 
-    :x :p ?v {?v :q1 ?v1} OPTIONAL {?v :q2 ?v2 }
-}
+SELECT * 
+{ GRAPH ?g {?s :p ?o } }
