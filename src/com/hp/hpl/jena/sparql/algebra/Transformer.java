@@ -20,8 +20,9 @@ public class Transformer
 {
     private static Transformer singleton = new Transformer();
     
+    // TopQuadrant extend Transformer foruse in their SPARQL debugger.
     /** Get the current transformer */
-    private static Transformer get() { return singleton; }
+    public static Transformer get() { return singleton; }
     
     /** Set the current transformer - use with care */
     public static void set(Transformer value) { Transformer.singleton = value; }

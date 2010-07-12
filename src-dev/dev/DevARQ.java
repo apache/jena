@@ -18,7 +18,9 @@ public class DevARQ
     //   Tests to run all engines.
     
     // RIOT
-    // Skip on bad terms /stop on bad term is choice of errorhandler.
+    // Version mgt
+    // RIOT.init()
+    // Skip on bad terms / stop on bad term is choice of errorhandler.
     // Output bad term quads/triples to special sink.
     //   Option passing (old Jena style).
     //   Recovery parsing - scan to DOT?
