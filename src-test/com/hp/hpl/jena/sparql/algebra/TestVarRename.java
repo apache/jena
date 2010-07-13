@@ -34,10 +34,12 @@ public class TestVarRename extends BaseTest
 
     @Test public void rename_05() { rename("(group ((?.1 (str ?x))) ((?.0 (count))) (bgp (triple ?x :p ?v)))",
                                            "(group ((?/.1 (str ?x))) ((?/.0 (count))) (bgp (triple ?x :p ?/v)))", "x" ) ; }
+    @Test public void rename_06() { rename("(group ((?.1 (str ?x))) ((?.0 (max ?v))) (bgp (triple ?x :p ?v)))",
+                                           "(group ((?/.1 (str ?x))) ((?/.0 (max ?/v))) (bgp (triple ?x :p ?/v)))", "x" ) ; }
 
-    @Test public void rename_06() { rename("(assign ((?x (+ ?/a ?/b))) (table unit))", 
-                                           "(assign ((?/x (+ ?//a ?//b))) (table unit))") ; }
     @Test public void rename_07() { rename("(assign ((?x (+ ?/a ?/b))) (table unit))", 
+                                           "(assign ((?/x (+ ?//a ?//b))) (table unit))") ; }
+    @Test public void rename_08() { rename("(assign ((?x (+ ?/a ?/b))) (table unit))", 
                                            "(assign ((?/x (+ ?/a ?//b))) (table unit))",
                                            "/a") ; }
     

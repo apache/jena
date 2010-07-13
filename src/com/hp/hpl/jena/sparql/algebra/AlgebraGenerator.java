@@ -572,9 +572,8 @@ public class AlgebraGenerator
             // Hide inner variables.
             if ( subQueryDepth > 0 )
             {
-//                Set<Var> exposed = new HashSet<Var>() ;
-//                for ( Var v : query.getProject().getVars() )
-//                    exposed.add(v) ;
+                // In the ref engine, this is not necessary but 
+                // we don't know yet which engine will be used.
                 op = VarRename.rename(op, vars) ;
             }   
             op = new OpProject(op, vars) ;
