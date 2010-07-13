@@ -8,6 +8,8 @@ package dev;
 
 public class DevARQ
 {
+    // Test subquery sq08
+    
     // SPARQL Update
     
     // Static check of legal vars in SELECT with group.

@@ -7,6 +7,7 @@
 package com.hp.hpl.jena.sparql.expr.aggregate;
 
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.sparql.engine.Renamer ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
@@ -22,6 +23,7 @@ public class AggSampleDistinct extends AggregatorBase
 
     public AggSampleDistinct(Expr expr) { this.expr = expr ; } 
     public Aggregator copy() { return new AggSampleDistinct(expr) ; }
+    public Aggregator copyRename(Renamer renamer) { return new AggSampleDistinct(expr.copySubstitute(null, false, renamer)) ; }
 
     @Override
     public String toString() { return "SAMPLE(DISTINCT "+ExprUtils.fmtSPARQL(expr)+")" ; }

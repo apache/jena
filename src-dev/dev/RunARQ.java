@@ -105,12 +105,12 @@ public class RunARQ
         String dir = "testing/ARQ/SubQuery/" ;
 //        String queryFile = dir+"graph-subquery-1.rq" ;
 //        String dataFile = "--data="+dir+"data-sq.ttl" ;
-        String queryFile = dir+"sub-select-03.arq" ;
-        String dataFile = "--data="+dir+"data.ttl" ;
+        String queryFile = "--query=Q.arq" ;
+        String dataFile = "--data=D.ttl" ;
         
-//        arq.qparse.main("--syntax=sparql_11","--print=opt", "--file=Q.arq") ;
-        arq.sparql.main("--syntax=sparql_11", dataFile, "--file="+queryFile) ;
-        arq.sparql.main("--engine=ref", "--syntax=sparql_11", dataFile, "--file="+queryFile) ;
+        arq.qparse.main(/*"--engine=ref",*/ "--print=opt", queryFile) ;
+//        arq.sparql.main(/*"--engine=ref",*/ "--syntax=sparql_11", dataFile, queryFile) ;
+        arq.sse_query.main("--engine=ref", dataFile, "--query=Q.sse") ;
         System.exit(0) ;
         
         IRI iri = IRIFactory.iriImplementation().create("x") ;

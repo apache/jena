@@ -7,10 +7,11 @@
 
 package com.hp.hpl.jena.sparql.expr.aggregate;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.engine.binding.BindingKey;
-import com.hp.hpl.jena.sparql.function.FunctionEnv;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.sparql.engine.Renamer ;
+import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.engine.binding.BindingKey ;
+import com.hp.hpl.jena.sparql.function.FunctionEnv ;
 
 /** An Aggregator is the processor for the whole result stream.
  *  BindingKeys identify which section of a group we're in. 
@@ -27,10 +28,11 @@ public interface Aggregator
     /** Value if there are no elements in any group : return null for no result */
     public Node getValueEmpty() ;
     public String toPrefixString()  ;
-    // Key to identify an aggregator as synatx for duplicate use in a query.
+    // Key to identify an aggregator as syntax for duplicate use in a query.
     public String key() ;           
     public boolean equalsAsExpr(Aggregator other) ;
     public Aggregator copy() ;
+    public Aggregator copyRename(Renamer renamer) ;
 }
 
 /*

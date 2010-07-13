@@ -8,6 +8,7 @@
 package com.hp.hpl.jena.sparql.expr.aggregate;
 
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.sparql.engine.Renamer ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.ExprEvalException;
@@ -23,7 +24,8 @@ public class AggMax extends AggregatorBase
 
     public AggMax(Expr expr) { this.expr = expr ; } 
     public Aggregator copy() { return new AggMax(expr) ; }
-    
+    public Aggregator copyRename(Renamer renamer) { return new AggMax(expr.copySubstitute(null, false, renamer)) ; }
+
     @Override
     public String toString() { return "max("+ExprUtils.fmtSPARQL(expr)+")" ; }
     @Override

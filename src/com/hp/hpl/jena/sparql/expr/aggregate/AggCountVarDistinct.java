@@ -9,6 +9,7 @@ package com.hp.hpl.jena.sparql.expr.aggregate;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.core.NodeConst ;
+import com.hp.hpl.jena.sparql.engine.Renamer ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
@@ -21,6 +22,7 @@ public class AggCountVarDistinct extends AggregatorBase
 
     public AggCountVarDistinct(Expr expr) { this.expr = expr ; } 
     public Aggregator copy() { return new AggCountVarDistinct(expr) ; }
+    public Aggregator copyRename(Renamer renamer) { return new AggCountVarDistinct(expr.copySubstitute(null, false, renamer)) ; }
 
     @Override
     public String toString()        { return "count(distinct "+expr+")" ; }

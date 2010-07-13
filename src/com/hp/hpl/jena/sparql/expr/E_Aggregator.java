@@ -59,10 +59,14 @@ public class E_Aggregator extends ExprVar
     @Override
     public E_Aggregator copySubstitute(Binding binding, boolean foldConstants, Renamer renamer)
     {
-        Var v = varNode ;  
+        Var v = varNode ;
+        Aggregator agg = aggregator ;
         if ( renamer != null )
+        {
             v = (Var)renamer.rename(varNode) ;
-        return new E_Aggregator(v, aggregator) ;
+            agg = aggregator.copyRename(renamer) ;
+        }
+        return new E_Aggregator(v, agg) ;
     }
     
     // DEBUGGING

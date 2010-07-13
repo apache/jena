@@ -164,11 +164,17 @@ public class VarRename
             // so override copySubstitute as well.??
             
             VarExprList groupVars = rename(opGroup.getGroupVars()) ;
-            
+
+            // Rename the vars in the expression as well.
+            // .e.g max(?y) ==> max(?/y)  
             // These need renaming as well.
             List<E_Aggregator> aggregators = new ArrayList<E_Aggregator>() ;
             for ( E_Aggregator agg : opGroup.getAggregators() )
+            {
                 aggregators.add(agg.copySubstitute(null, false, renamer)) ;
+            }
+            
+            
             
             //if ( true )throw new ARQNotImplemented() ;
             return new OpGroup(subOp, groupVars, aggregators) ;
