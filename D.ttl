@@ -1,8 +1,10 @@
-@prefix :       <http://example/> .
+@prefix ex:      <http://www.example.org/schema#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix in:      <http://www.example.org/instance#> .
 
-:x1 :p 1 ; :q 1 .
-:x2 :p 2 ; :q 2 .
-:x3 :p 3 ; :q 3 .
-:x4 :p 4 ; :q 4 .
+in:a
+    ex:p        2 , 1 .
 
-
+in:b
+    ex:p        3 .

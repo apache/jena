@@ -1,17 +1,7 @@
-PREFIX : <http://example/> 
+prefix ex:	<http://www.example.org/schema#>
+prefix in:	<http://www.example.org/instance#>
 
-SELECT *
-{
-
- ?x a :X .
-  { SELECT ( count(*) AS ?c) { ?x :p ?v } GROUP BY str(?x) }
-
-##     GRAPH ?g 
-##     {
-##         ?s ?p ?o .
-##         { SELECT ?y { LET (?y := 56 ) } }
-##     }
-
-##   ?x a :X .
-##   { SELECT ?x ( count(*) AS ?c) { ?x :p ?v } GROUP BY ?x }
+select * where {
+{select (max(?y) as ?max) where {?x ex:p ?y} } 
+#?x ex:p ?max
 }

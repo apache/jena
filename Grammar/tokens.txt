@@ -108,6 +108,7 @@
 [<NOT_IN>]      ::= 'NOT IN'
 
 [<DFT>]        ::= 'DEFAULT'
+[<ALL>]        ::= 'ALL'
 
 [<IS_IRI>]     ::= 'isIRI'
 [<IS_URI>]     ::= 'isURI'

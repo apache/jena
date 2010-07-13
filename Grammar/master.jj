@@ -577,7 +577,7 @@ void Delete() : { }
 
 void Clear() : {}
 {
-   <CLEAR> GraphRef() 
+   <CLEAR> (<SILENT>)? GraphRefAll()
 }
 
 void Load() : {}
@@ -589,7 +589,7 @@ void Load() : {}
 
 void Drop() : {}
 {
-   <DROP> (<SILENT>)? IRIref()
+   <DROP> (<SILENT>)? GraphRefAll()
 }
 
 void Create() : {}
@@ -600,6 +600,11 @@ void Create() : {}
 void GraphRef() : {}
 {
    (<DFT> | IRIref())
+}
+
+void GraphRefAll() : {}
+{
+   (<DFT> | IRIref() | <ALL>)
 }
 
 void QuadTemplate() : { }
@@ -1921,6 +1926,7 @@ TOKEN [IGNORE_CASE] :
 | < DROP:         "drop" >
 | < INTO:         "into" >
 | < DFT:          "default" >
+| < ALL:          "all" >
 | < WITH:         "with" >
 
 
