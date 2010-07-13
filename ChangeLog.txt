@@ -3,17 +3,29 @@ ChangeLog for ARQ
 
 ==== ARQ 2.8.5
 
-+ Parsing of URIs in data is now stricter (Turtle, TriG). 
++ RIOT: New parsers covering N-triples, N-Quads, Turtle and TriG
+  URI and literal checking in Trutle amd TriG. 
+  New command line tools:
+    arq.riot (parse based on file ext), arq.ntriple, arq.nquads, arq.turtle, arq.trig
+    Parse files to N-Triples/N-Quads.
+    By default, checkign turned on for N-triples and N_quads when used at command line.  
 
 + Import all of atlas and riot subsystems from TDB
-  Consoldiate use of classes around these versions.
   These will become submodules of ARQ sometime.
   Atlas contains all non-RDF related library code.
-  RIOT contains parsers for N-triples, N-Quads, Turtle and TriG 
+
++ SPARQL 1.1 status:
+    SPARQL 1.1 Query: implemented except for corner cases of property paths
+      Use Syntax.syntaxSPARQL_11
+    SPARQL 1.1 Update: Only W3C submission supported for execution.
+      Someparsing of WG design for SPARQL 1.1. Update but (at time or release) language not agreed. 
+
++ Bug fixes:
+  Parsing of UNION in non-SPARQL 1.0 queries.
 
 ==== ARQ 2.8.4
 
-+ Internal reorganisation of graph-lebvel DatasetGraph (no chnages to the application API)
++ Internal reorganisation of graph-level DatasetGraph (no chnages to the application API)
   There is now hanlding of quads,
   The difference bewteen DatasetGraph and DataSourceGraph is removed.
   New classes to help with DatasetGraphs which are collections of graphs and 

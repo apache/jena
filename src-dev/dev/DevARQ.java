@@ -8,7 +8,7 @@ package dev;
 
 public class DevARQ
 {
-    // Consider wrapping passed in binding for project subquery, rather than a renaming scheme.
+    // Consider wrapping passed-in binding for project subquery, rather than a renaming scheme.
     
     // SPARQL Update
     
