@@ -7,6 +7,8 @@
 package arq.examples.larq;
 
 
+import org.openjena.atlas.lib.StrUtils ;
+
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.query.QueryExecution ;
@@ -18,7 +20,6 @@ import com.hp.hpl.jena.query.larq.IndexLARQ ;
 import com.hp.hpl.jena.query.larq.LARQ ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
-import com.hp.hpl.jena.sparql.util.StringUtils ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 import com.hp.hpl.jena.util.FileManager ;
 
@@ -43,14 +44,13 @@ public class ExLucene1
         // Search for 
         String searchString = "+document" ;
         
-        String queryString = StringUtils.join("\n", new String[]{
+        String queryString = StrUtils.strjoin("\n", 
             "PREFIX xsd:    <http://www.w3.org/2001/XMLSchema#>" ,
             "PREFIX :       <http://example/>" ,
             "PREFIX pf:     <http://jena.hpl.hp.com/ARQ/property#>",
             "SELECT * {" ,
             "    ?lit pf:textMatch '"+searchString+"'.",
-            "}"
-        }) ;
+            "}") ;
         
         // Two of three docuemnts should match. 
         performQuery(model, index, queryString) ;

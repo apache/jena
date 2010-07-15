@@ -18,6 +18,8 @@ import javax.xml.stream.XMLStreamConstants ;
 import javax.xml.stream.XMLStreamException ;
 import javax.xml.stream.XMLStreamReader ;
 
+import org.openjena.atlas.lib.StrUtils ;
+
 import com.hp.hpl.jena.datatypes.RDFDatatype ;
 import com.hp.hpl.jena.datatypes.TypeMapper ;
 import com.hp.hpl.jena.graph.Node ;
@@ -33,7 +35,6 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap ;
 import com.hp.hpl.jena.sparql.util.ALog ;
 import com.hp.hpl.jena.sparql.util.LabelToNodeMap ;
-import com.hp.hpl.jena.sparql.util.StringUtils ;
 import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
 
 /** Code that reads an XML Results format and builds the ARQ structure for the same.
@@ -332,11 +333,11 @@ class XMLInputStAX extends SPARQLResult
         {
             String s1 = "" ;
             if ( startElementNames != null )
-                s1 = StringUtils.join(", ",startElementNames) ;
+                s1 = StrUtils.strjoin(", ",startElementNames) ;
             
             String s2 = "" ;
             if ( stopElementNames != null )
-                s2 = StringUtils.join(", ",stopElementNames) ;
+                s2 = StrUtils.strjoin(", ",stopElementNames) ;
             ALog.warn(this, "Failed to find start of stop of specified elements: "+s1+" :: "+s2) ; 
         }
     }

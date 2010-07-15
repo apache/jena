@@ -6,6 +6,8 @@
 
 package arq.examples.bgpmatching;
 
+import org.openjena.atlas.lib.StrUtils ;
+
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.query.QueryExecution ;
@@ -17,7 +19,6 @@ import com.hp.hpl.jena.rdf.model.Property ;
 import com.hp.hpl.jena.rdf.model.Resource ;
 import com.hp.hpl.jena.sparql.engine.main.StageGenerator ;
 import com.hp.hpl.jena.sparql.util.QueryExecUtils ;
-import com.hp.hpl.jena.sparql.util.StringUtils ;
 
 /** Example to execute a query but handle the
  *  basic graph patterns in the query in some special way.
@@ -63,7 +64,7 @@ public class StageAltMain
             ARQ.getContext().set(ARQ.stageGenerator, stageGenAlt) ;
         }
         
-        Query query = QueryFactory.create( StringUtils.join("\n", queryString)) ;
+        Query query = QueryFactory.create( StrUtils.strjoin("\n", queryString)) ;
         QueryExecution engine = QueryExecutionFactory.create(query, makeData()) ;
         
         // ... or set on a per-execution basis.

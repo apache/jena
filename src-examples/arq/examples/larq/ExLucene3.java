@@ -7,12 +7,13 @@
 package arq.examples.larq;
 
 
+import org.openjena.atlas.lib.StrUtils ;
+
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.query.larq.IndexBuilderString ;
 import com.hp.hpl.jena.query.larq.IndexLARQ ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
-import com.hp.hpl.jena.sparql.util.StringUtils ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 import com.hp.hpl.jena.util.FileManager ;
 import com.hp.hpl.jena.vocabulary.DC ;
@@ -39,15 +40,14 @@ public class ExLucene3
         String searchString = "+document" ;
         
         // This time, find documents with a matching DC title. 
-        String queryString = StringUtils.join("\n", new String[]{
+        String queryString = StrUtils.strjoin("\n", 
             "PREFIX xsd:    <http://www.w3.org/2001/XMLSchema#>" ,
             "PREFIX :       <http://example/>" ,
             "PREFIX pf:     <http://jena.hpl.hp.com/ARQ/property#>",
             "PREFIX  dc:    <http://purl.org/dc/elements/1.1/>",
             "SELECT ?title {" ,
             "    ?title pf:textMatch '"+searchString+"'.",
-            "}"
-        }) ;
+            "}") ;
         
         // Two of three docuemnts should match. 
         ExLucene1.performQuery(model, index, queryString) ;

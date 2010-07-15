@@ -81,7 +81,7 @@ public class TestLangNQuads extends TestLangNTuples
     
     private static void parse(Sink<Quad> sink, String... strings ) 
     {
-        String string = StrUtils.join("\n", strings) ;
+        String string = StrUtils.strjoin("\n", strings) ;
         Tokenizer tokenizer = TokenizerFactory.makeTokenizerString(string) ;
         LangRIOT parser = RiotReader.createParserNQuads(tokenizer, sink) ;
         parser.getProfile().setHandler(new ErrorHandlerEx()) ;
@@ -92,7 +92,7 @@ public class TestLangNQuads extends TestLangNTuples
     @Override
     protected void parseCheck(String... strings)
     {
-        String string = StrUtils.join("\n", strings) ;
+        String string = StrUtils.strjoin("\n", strings) ;
         Tokenizer tokenizer = TokenizerFactory.makeTokenizerString(string) ;
         Sink<Quad> sink = new SinkNull<Quad>() ;
         LangRIOT parser = RiotReader.createParserNQuads(tokenizer, sink) ;

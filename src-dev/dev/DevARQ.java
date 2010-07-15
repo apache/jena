@@ -12,12 +12,12 @@ public class DevARQ
     //   lib-src
     // documentation: API -> dataset, not model.
     
-    // DaatsetGraph.find/4 : what about in NG only?  findNG/4
+    // DatasetGraph.find/4 : what about in NG only?  findNG/4
     
     // copySubstiute generalise with a renaming function.
-    
+
+    // Scoping:
     // Consider wrapping passed-in binding for project subquery, rather than a renaming scheme.
-    // Optimize "GRAPH ?g {} FILTER (?g = <uri1> || ?g = <uri2> )
     
     // Should be able to now JoinClassify with OpModifier (see JoinClassify.isLinear) [but is it worth it?]
     
@@ -46,9 +46,12 @@ public class DevARQ
     
     // RIOT document:
     //   RiotReader, DatasetLoader
+    // RIOT output: FmtUtils, 
+    
     
     // Atlas:
     // Move stuff from sparql.util/sparql.lib to Atlas.
+    // StrUtils, StringUtils, Timer
     
     // Extend:
     //   Add bare date/datetime to tokenizer?? Syntax?

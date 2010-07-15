@@ -11,6 +11,8 @@ import java.math.BigDecimal ;
 import java.math.BigInteger ;
 import java.util.Calendar ;
 
+import org.openjena.atlas.lib.StrUtils ;
+
 import com.hp.hpl.jena.datatypes.DatatypeFormatException ;
 import com.hp.hpl.jena.datatypes.RDFDatatype ;
 import com.hp.hpl.jena.datatypes.TypeMapper ;
@@ -644,7 +646,7 @@ public abstract class NodeValue extends ExprNode
                 // Two literals, both with language tags.
                 Node node1 = nv1.asNode() ;
                 Node node2 = nv2.asNode() ;
-                int x = StringUtils.strCompareIgnoreCase(node1.getLiteralLanguage(), node2.getLiteralLanguage()) ;
+                int x = StrUtils.strCompareIgnoreCase(node1.getLiteralLanguage(), node2.getLiteralLanguage()) ;
                 
                 if ( x != Expr.CMP_EQUAL )
                 {
@@ -656,12 +658,12 @@ public abstract class NodeValue extends ExprNode
                 }
 
                 // same lang tag (case insensitive)
-                x = StringUtils.strCompare(node1.getLiteralLexicalForm(), node2.getLiteralLexicalForm()) ;
+                x = StrUtils.strCompare(node1.getLiteralLexicalForm(), node2.getLiteralLexicalForm()) ;
                 if ( x != Expr.CMP_EQUAL )
                     return x ;
                 // Same lexcial forms, same lang tag by value
                 // Try to split by syntactic lang tags.
-                x = StringUtils.strCompare(node1.getLiteralLanguage(), node2.getLiteralLanguage()) ;
+                x = StrUtils.strCompare(node1.getLiteralLanguage(), node2.getLiteralLanguage()) ;
                 // Maybe they are the same after all!
                 // Should be node.equals by now.
                 if ( x == Expr.CMP_EQUAL  && ! NodeFunctions.sameTerm(node1, node2) )

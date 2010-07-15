@@ -8,6 +8,8 @@ package com.hp.hpl.jena.sparql.junit;
 
 import java.util.Iterator ;
 
+import org.openjena.atlas.lib.StrUtils ;
+
 import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.query.QueryExecution ;
 import com.hp.hpl.jena.query.QueryExecutionFactory ;
@@ -19,7 +21,6 @@ import com.hp.hpl.jena.query.larq.IndexLARQ ;
 import com.hp.hpl.jena.query.larq.LARQ ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
-import com.hp.hpl.jena.sparql.util.StringUtils ;
 import com.hp.hpl.jena.util.FileManager ;
 import com.hp.hpl.jena.util.iterator.NiceIterator ;
 
@@ -30,14 +31,13 @@ public class TestLARQUtils
 
     public static QueryExecution query(Model model, String pattern, IndexLARQ index)
     {
-        String queryString = StringUtils.join("\n", new String[]{
+        String queryString = StrUtils.strjoin("\n", 
             "PREFIX xsd:    <http://www.w3.org/2001/XMLSchema#>" ,
             "PREFIX :       <http://example/>" ,
             "PREFIX pf:     <http://jena.hpl.hp.com/ARQ/property#>",
             "PREFIX  dc:    <http://purl.org/dc/elements/1.1/>",
             "SELECT *",
-            pattern,
-        }) ;
+            pattern ) ;
         Query query = QueryFactory.create(queryString) ;
         QueryExecution qExec = QueryExecutionFactory.create(query, model) ;
         if ( index != null )

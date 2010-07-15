@@ -6,6 +6,7 @@
 
 package com.hp.hpl.jena.sparql.mgt;
 
+import org.openjena.atlas.lib.StrUtils ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
@@ -14,7 +15,6 @@ import com.hp.hpl.jena.sparql.ARQConstants ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.core.BasicPattern ;
 import com.hp.hpl.jena.sparql.util.Context ;
-import com.hp.hpl.jena.sparql.util.StrUtils ;
 import com.hp.hpl.jena.sparql.util.Symbol ;
 
 public class Explain

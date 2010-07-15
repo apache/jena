@@ -73,7 +73,7 @@ public class TestLangTrig extends BaseTest
     
     private static DatasetGraph parse(String... strings)
     {
-        String string = StrUtils.join("\n", strings) ;
+        String string = StrUtils.strjoin("\n", strings) ;
         DatasetGraph dsg = DatasetLib.createDatasetGraphMem() ;
         Sink<Quad> sink = DatasetLib.datasetSink(dsg) ;
         Tokenizer tokenizer = TokenizerFactory.makeTokenizerString(string) ;

@@ -17,12 +17,12 @@ import java.util.Iterator ;
 import java.util.List ;
 import java.util.Map ;
 
+import org.openjena.atlas.lib.Base64 ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.shared.JenaException ;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
-import com.hp.hpl.jena.sparql.util.Base64 ;
 import com.hp.hpl.jena.sparql.util.Convert ;
 import com.hp.hpl.jena.util.FileUtils ;
 

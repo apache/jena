@@ -12,6 +12,8 @@ import java.util.Iterator ;
 import java.util.List ;
 import java.util.Set ;
 
+import org.openjena.atlas.lib.StrUtils ;
+
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
@@ -30,7 +32,6 @@ import com.hp.hpl.jena.rdf.model.StmtIterator ;
 import com.hp.hpl.jena.sparql.util.NotUniqueException ;
 import com.hp.hpl.jena.sparql.util.PropertyRequiredException ;
 import com.hp.hpl.jena.sparql.util.QueryExecUtils ;
-import com.hp.hpl.jena.sparql.util.StringUtils ;
 import com.hp.hpl.jena.sparql.util.TypeNotUniqueException ;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
 import com.hp.hpl.jena.vocabulary.RDF ;
@@ -167,11 +168,11 @@ public class GraphUtils
     
     public static Resource findRootByType(Model model, Resource atype)
     {
-        String s = StringUtils.join("\n", new String[]{
+        String s = StrUtils.strjoin("\n", 
             "PREFIX  rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>" ,
             "PREFIX  rdfs:   <http://www.w3.org/2000/01/rdf-schema#>",
-            "SELECT DISTINCT ?root { { ?root rdf:type ?ATYPE } UNION { ?root rdf:type ?t . ?t rdfs:subClassOf ?ATYPE } }"
-        }) ;
+            "SELECT DISTINCT ?root { { ?root rdf:type ?ATYPE } UNION { ?root rdf:type ?t . ?t rdfs:subClassOf ?ATYPE } }") ;
+        
         Query q = QueryFactory.create(s) ;
         QuerySolutionMap qsm = new QuerySolutionMap() ;
         qsm.add("ATYPE", atype) ;

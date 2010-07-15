@@ -15,6 +15,8 @@ import java.math.BigDecimal ;
 import java.math.BigInteger ;
 import java.text.DecimalFormat ;
 
+import org.openjena.atlas.lib.StrUtils ;
+
 import com.hp.hpl.jena.datatypes.RDFDatatype ;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.datatypes.xsd.XSDDateTime ;
@@ -27,7 +29,6 @@ import com.hp.hpl.jena.sparql.expr.ExprEvalTypeException ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.util.ALog ;
 import com.hp.hpl.jena.sparql.util.DateTimeStruct ;
-import com.hp.hpl.jena.sparql.util.StringUtils ;
 /**
  * Implementation of XQuery/XPath functions and operators.
  * http://www.w3.org/TR/xpath-functions/
@@ -401,8 +402,7 @@ public class XSDFuncOp
     public static NodeValue strContains(NodeValue string, NodeValue match)
     {
         strCheck(string, match) ;
-        // Indirect to centralise a Java 1.5ism.
-        boolean x = StringUtils.contains(string.getString(), match.getString()) ;
+        boolean x = StrUtils.contains(string.getString(), match.getString()) ;
         return NodeValue.booleanReturn(x) ;
     }
     

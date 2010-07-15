@@ -77,7 +77,7 @@ public class TestLangNTriples extends TestLangNTuples
     @Override
     protected long parseCount(String... strings)
     {
-        String string = StrUtils.join("\n", strings) ;
+        String string = StrUtils.strjoin("\n", strings) ;
         Tokenizer tokenizer = TokenizerFactory.makeTokenizerString(string) ;
         SinkCounting<Triple> sink = new SinkCounting<Triple>() ;
         LangNTriples x = RiotReader.createParserNTriples(tokenizer, sink) ;
@@ -89,7 +89,7 @@ public class TestLangNTriples extends TestLangNTuples
     @Override
     protected void parseCheck(String... strings)
     {
-        String string = StrUtils.join("\n", strings) ;
+        String string = StrUtils.strjoin("\n", strings) ;
         Tokenizer tokenizer = TokenizerFactory.makeTokenizerString(string) ;
         SinkCounting<Triple> sink = new SinkCounting<Triple>() ;
         LangNTriples x = RiotReader.createParserNTriples(tokenizer, sink) ;

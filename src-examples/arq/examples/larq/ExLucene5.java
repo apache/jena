@@ -8,6 +8,8 @@ package arq.examples.larq;
 
 import java.io.StringReader ;
 
+import org.openjena.atlas.lib.StrUtils ;
+
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.query.larq.IndexBuilderNode ;
 import com.hp.hpl.jena.query.larq.IndexLARQ ;
@@ -16,7 +18,6 @@ import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.rdf.model.Resource ;
 import com.hp.hpl.jena.rdf.model.ResourceFactory ;
-import com.hp.hpl.jena.sparql.util.StringUtils ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 
 /** Example code to index subjects by some external content.
@@ -42,12 +43,11 @@ public class ExLucene5
         String searchString = "+document" ;
         
         // This time, find documents with a matching DC title. 
-        String queryString = StringUtils.join("\n", new String[]{
+        String queryString = StrUtils.strjoin("\n", 
             "PREFIX pf:     <http://jena.hpl.hp.com/ARQ/property#>",
             "SELECT ?doc {" ,
             "    ?doc pf:textMatch '"+searchString+"'.",
-            "}"
-        }) ;
+            "}") ;
         
         // Two of three docuemnts should match. 
         ExLucene1.performQuery(model, index, queryString) ;

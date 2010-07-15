@@ -8,6 +8,8 @@ package com.hp.hpl.jena.sparql.util;
 
 import java.util.Iterator ;
 
+import org.openjena.atlas.lib.StrUtils ;
+
 import com.hp.hpl.jena.datatypes.RDFDatatype ;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.graph.Node ;
@@ -100,7 +102,7 @@ public class NodeUtils
             {
                 String s1 = node1.getBlankNodeId().getLabelString() ;
                 String s2 = node2.getBlankNodeId().getLabelString() ;
-                return StringUtils.strCompare(s1, s2) ;
+                return StrUtils.strCompare(s1, s2) ;
             }
             // bNodes before anything else.
             return Expr.CMP_LESS ;
@@ -118,7 +120,7 @@ public class NodeUtils
             {
                 String s1 = node1.getURI() ;
                 String s2 = node2.getURI() ;
-                return StringUtils.strCompare(s1, s2) ; 
+                return StrUtils.strCompare(s1, s2) ; 
             }
             return Expr.CMP_LESS ;
         }
@@ -154,7 +156,7 @@ public class NodeUtils
         String lex1 = node1.getLiteralLexicalForm() ;
         String lex2 = node2.getLiteralLexicalForm() ;
         
-        int x = StringUtils.strCompare(lex1, lex2) ;
+        int x = StrUtils.strCompare(lex1, lex2) ;
         if ( x != Expr.CMP_EQUAL )
             return x ;
  
@@ -197,17 +199,17 @@ public class NodeUtils
         {
               // Syntactic - lang tags case considered
               // case sensitive if necessary
-              x = StringUtils.strCompareIgnoreCase(lang1, lang2) ;
+              x = StrUtils.strCompareIgnoreCase(lang1, lang2) ;
               if ( x != Expr.CMP_EQUAL )
                   return x ;
-              x = StringUtils.strCompare(lang1, lang2) ;
+              x = StrUtils.strCompare(lang1, lang2) ;
               if ( x != Expr.CMP_EQUAL )
                   return x ;
               throw new ARQInternalErrorException("compareLiteralsBySyntax: lexical form and languages tags identical on non.equals literals");
         }
         
         // Two datatypes.
-        return StringUtils.strCompare(dt1, dt2) ;
+        return StrUtils.strCompare(dt1, dt2) ;
     }
     
     private static boolean simpleLiteral(Node node)

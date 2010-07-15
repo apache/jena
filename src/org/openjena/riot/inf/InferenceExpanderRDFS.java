@@ -12,6 +12,7 @@ import java.util.List ;
 import java.util.Map ;
 
 import org.openjena.atlas.lib.Sink ;
+import org.openjena.atlas.lib.StrUtils ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
@@ -23,7 +24,6 @@ import com.hp.hpl.jena.query.QuerySolution ;
 import com.hp.hpl.jena.query.ResultSet ;
 import com.hp.hpl.jena.query.Syntax ;
 import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.sparql.util.StrUtils ;
 import com.hp.hpl.jena.vocabulary.RDF ;
 
 

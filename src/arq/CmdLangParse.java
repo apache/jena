@@ -41,7 +41,6 @@ import com.hp.hpl.jena.Jena ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.sparql.core.Quad ;
-import com.hp.hpl.jena.sparql.util.StringUtils ;
 
 /** Common framework for running RIOT parsers */
 public abstract class CmdLangParse extends CmdGeneral
@@ -87,7 +86,7 @@ public abstract class CmdLangParse extends CmdGeneral
     protected LangHandler langHandlerOverall = null ;
 
     // This is teh setup for command for their message via the logging in ErrorHandlers
-    private static final String log4Jsetup = StringUtils.join("\n"
+    private static final String log4Jsetup = StrUtils.strjoin("\n"
 //                    , "## Plain output to stdout"
 //                    , "log4j.appender.riot.plain=org.apache.log4j.ConsoleAppender"
 //                    , "log4j.appender.riot.plain.target=System.out"

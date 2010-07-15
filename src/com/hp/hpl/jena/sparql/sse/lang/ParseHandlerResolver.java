@@ -9,12 +9,13 @@ package com.hp.hpl.jena.sparql.sse.lang;
 import java.util.Iterator ;
 import java.util.Stack ;
 
+import org.openjena.atlas.lib.StrUtils ;
+
 import com.hp.hpl.jena.shared.PrefixMapping ;
 import com.hp.hpl.jena.sparql.core.Prologue ;
 import com.hp.hpl.jena.sparql.sse.Item ;
 import com.hp.hpl.jena.sparql.sse.ItemList ;
 import com.hp.hpl.jena.sparql.sse.builders.BuilderPrefixMapping ;
-import com.hp.hpl.jena.sparql.util.StringUtils ;
 
 
 /** Resolve syntacic forms like (base ...) and (prefix...)
@@ -166,7 +167,7 @@ public class ParseHandlerResolver extends ParseHandlerForm
         if ( prologue.getPrefixMapping() == null )
             throwException("No prefix mapping for prefixed name: "+pname, line, column) ;
         
-        if ( ! StringUtils.contains(pname, ":") )
+        if ( ! StrUtils.contains(pname, ":") )
             throwException("Prefixed name does not have a ':': "+pname, line, column) ;
         
         String uri =  prologue.getPrefixMapping().expandPrefix(pname) ;

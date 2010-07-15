@@ -13,10 +13,9 @@ import java.util.Map ;
 
 import com.hp.hpl.jena.n3.turtle.ParserBase ;
 import com.hp.hpl.jena.sparql.util.FmtUtils ;
-import com.hp.hpl.jena.sparql.util.StringUtils ;
 
 
-public class StrUtils extends StringUtils
+public class StrUtils //extends StringUtils
 {
     private StrUtils() {}
     
@@ -42,6 +41,31 @@ public class StrUtils extends StringUtils
     public static String strjoin(String sep, List<String> args)
     {
         return join(sep, args) ;
+    }
+    
+    private static String join(String sep, List<String> a)
+    {
+        return join(sep, a.toArray(new String[0])) ;
+    }
+    
+    private static String join(String sep, String...a)
+    {
+        if ( a.length == 0 )
+            return "" ;
+
+        if ( a.length == 1)
+            return a[0] ;
+
+        StringBuffer sbuff = new StringBuffer() ;
+        sbuff.append(a[0]) ;
+
+        for ( int i = 1 ; i < a.length ; i++ )
+        {
+            if ( sep != null )
+                sbuff.append(sep) ;
+            sbuff.append(a[i]) ;
+        }
+        return sbuff.toString() ;
     }
     
     public static final int CMP_GREATER  = +1 ;

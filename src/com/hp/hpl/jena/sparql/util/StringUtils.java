@@ -1,12 +1,12 @@
 /*
  * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Information Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
 package com.hp.hpl.jena.sparql.util;
 
-import java.io.UnsupportedEncodingException ;
 import java.text.DateFormat ;
 import java.text.DecimalFormat ;
 import java.text.NumberFormat ;
@@ -17,82 +17,9 @@ import java.util.regex.Pattern ;
 
 import org.openjena.atlas.iterator.Iter ;
 
-import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
-import com.hp.hpl.jena.sparql.expr.Expr ;
-
-
+/** @see org.openjena.atlas.lib.StrUtils */
 public class StringUtils
 {
-    /** Join an array of strings */
-    public static String join(String sep, String...a)
-    {
-        if ( a.length == 0 )
-            return "" ;
-        
-        if ( a.length == 1)
-            return a[0] ;
-
-        StringBuffer sbuff = new StringBuffer() ;
-        sbuff.append(a[0]) ;
-        
-        for ( int i = 1 ; i < a.length ; i++ )
-        {
-            if ( sep != null )
-                sbuff.append(sep) ;
-            sbuff.append(a[i]) ;
-        }
-        return sbuff.toString() ;
-    }
-    
-    /** Join a list of strings */
-    public static String join(String sep, List<String> a)
-    {
-        return join(sep, a.toArray(new String[0])) ;
-    }
-    
-    public static int strCompare(String s1, String s2)
-    {
-        // Value is the difference of the first differing chars
-        int x = s1.compareTo(s2) ;
-        if ( x < 0 ) return Expr.CMP_LESS ;
-        if ( x > 0 ) return Expr.CMP_GREATER ;
-        if ( x == 0 ) return Expr.CMP_EQUAL ;
-        throw new ARQInternalErrorException("String comparison failure") ;
-    }
-    
-    public static int strCompareIgnoreCase(String s1, String s2)
-    {
-        // Value is the difference of the first differing chars
-        int x = s1.compareToIgnoreCase(s2) ;
-        if ( x < 0 ) return Expr.CMP_LESS ;
-        if ( x > 0 ) return Expr.CMP_GREATER ;
-        if ( x == 0 ) return Expr.CMP_EQUAL ;
-        throw new ARQInternalErrorException("String comparison failure") ;
-    }
-
-    public static byte[] asUTF8bytes(String s)
-    {
-        try { return s.getBytes("UTF-8") ; }
-        catch (UnsupportedEncodingException ex)
-        { throw new ARQInternalErrorException("UTF-8 not supported!") ; } 
-    }
-    
-    // See FmtUtils.toString()
-//    public static String toString(Printable f)
-//    { 
-//        IndentedLineBuffer buff = new IndentedLineBuffer() ;
-//        IndentedWriter out = buff.getIndentedWriter() ;
-//        f.output(out) ;
-//        out.flush();
-//        return buff.toString() ;
-//    }
-    
-    public static String str(Object x)
-    {
-        if ( x == null ) return "<null>" ;
-        return x.toString() ;
-    }
-
     static NumberFormat integerFormat = NumberFormat.getNumberInstance() ;
     public static String str(long v)
     {
@@ -116,17 +43,6 @@ public class StringUtils
         return decimalFormat.format(value) ;
     }
     
-    /** Does one string contain another string?
-     * @param str1
-     * @param str2
-     * @return true if str1 contains str2
-     */
-    public static boolean contains(String str1, String str2)
-    {
-        // java 1.5 String.contains
-        return str1.indexOf(str2) >= 0 ;
-    }
-    
     private static Pattern p = Pattern.compile("http:[^ \n]*[#/]([^/ \n]*)") ;
     /** Abbreviate, crudely, URI in strings, leaving only their last component. */ 
     public static String printAbbrev(Object obj)
@@ -147,6 +63,7 @@ public class StringUtils
 
 /*
  * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Information Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

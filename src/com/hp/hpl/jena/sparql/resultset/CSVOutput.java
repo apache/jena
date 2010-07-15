@@ -13,12 +13,13 @@ import java.io.Writer ;
 import java.util.ArrayList ;
 import java.util.List ;
 
+import org.openjena.atlas.lib.StrUtils ;
+
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.ResultSet ;
 import com.hp.hpl.jena.sparql.ARQException ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
-import com.hp.hpl.jena.sparql.util.StrUtils ;
 import com.hp.hpl.jena.util.FileUtils ;
 
 /** Convenient comma separated values - see also TSV (tab separated values)

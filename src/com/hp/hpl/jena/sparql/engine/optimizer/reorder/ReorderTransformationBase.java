@@ -14,6 +14,7 @@ import java.util.List ;
 import org.openjena.atlas.iterator.AccString ;
 import org.openjena.atlas.iterator.Iter ;
 import org.openjena.atlas.iterator.Transform ;
+import org.openjena.atlas.lib.StrUtils ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
@@ -23,7 +24,6 @@ import com.hp.hpl.jena.sparql.ARQException ;
 import com.hp.hpl.jena.sparql.core.BasicPattern ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.sse.Item ;
-import com.hp.hpl.jena.sparql.util.StrUtils ;
 
 /** Machinary */
 public abstract class ReorderTransformationBase implements ReorderTransformation

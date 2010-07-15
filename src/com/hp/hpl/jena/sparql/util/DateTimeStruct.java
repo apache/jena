@@ -6,8 +6,6 @@
 
 package com.hp.hpl.jena.sparql.util;
 
-
-
 /** Parse an xsd:dateTime or xsd:date lexical form */  
 
 public class DateTimeStruct

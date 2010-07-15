@@ -88,7 +88,7 @@ public class TestLangTurtle extends BaseTest
     
     private static Graph parse(String ...strings)
     {
-        String string = StrUtils.join("\n", strings) ;
+        String string = StrUtils.strjoin("\n", strings) ;
         Reader reader = new StringReader(string) ;
         String baseIRI = "http://base/" ;
         Tokenizer tokenizer = TokenizerFactory.makeTokenizer(reader) ;

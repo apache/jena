@@ -7,6 +7,7 @@
 package reports;
 
 import org.junit.Test ;
+import org.openjena.atlas.lib.StrUtils ;
 
 import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.query.QueryFactory ;
@@ -18,7 +19,6 @@ import com.hp.hpl.jena.sparql.core.Substitute ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.sparql.util.NodeFactory ;
-import com.hp.hpl.jena.sparql.util.StrUtils ;
 
 public class ReportAssignSubstitute
 {
