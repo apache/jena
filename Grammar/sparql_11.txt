@@ -122,6 +122,7 @@ TOKENS
 | <DROP: "drop">
 | <INTO: "into">
 | <DFT: "default">
+| <ALL: "all">
 | <WITH: "with">
 }
 
@@ -250,11 +251,12 @@ NON-TERMINALS
 	Modify	:=	( <WITH> IRIref )? ( Insert | Delete )
 	Insert	:=	<INSERT> ( <DATA> QuadData | QuadTemplate <WHERE> GroupGraphPattern )
 	Delete	:=	<DELETE> ( <DATA> QuadData | <WHERE> QuadTemplate | QuadTemplate ( <INSERT> QuadTemplate )? <WHERE> GroupGraphPattern )
-	Clear	:=	<CLEAR> GraphRef
 	Load	:=	<LOAD> ( IRIref )+ ( <INTO> GraphRef )?
-	Drop	:=	<DROP> ( <SILENT> )? IRIref
-	Create	:=	<CREATE> ( <SILENT> )? IRIref
-	GraphRef	:=	( <DFT> | IRIref )
+	Clear	:=	<CLEAR> ( <SILENT> )? GraphRefAll
+	Drop	:=	<DROP> ( <SILENT> )? GraphRefAll
+	Create	:=	<CREATE> ( <SILENT> )? GraphRef
+	GraphRef	:=	<GRAPH> IRIref
+	GraphRefAll	:=	( GraphRef | <DFT> | <NAMED> | <ALL> )
 	QuadTemplate	:=	<LBRACE> Quads <RBRACE>
 	Quads	:=	( TriplesTemplate )? ( QuadsNotTriples ( <DOT> )? ( TriplesTemplate )? )*
 // @@ Java broken

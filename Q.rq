@@ -1,5 +1,6 @@
-PREFIX :       <http://example/>
-PREFIX  rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-
-SELECT * 
-{ GRAPH ?g {?s :p ?o } }
+SELECT  *
+WHERE
+  { 
+?s ?p ?o
+{ FILTER(?o < 5 ) }
+  }

@@ -1757,6 +1757,7 @@ TOKEN [IGNORE_CASE] :
 | < DROP: "drop" >
 | < INTO: "into" >
 | < DFT: "default" >
+| < ALL: "all" >
 | < WITH: "with" >
 
 
