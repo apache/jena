@@ -18,22 +18,22 @@ WHERE
       FILTER ( ( ( ?g = <https://shelsen.torolab.ibm.com:9443/jazz/storage/com.ibm.xtools.rmps.index/resource1> ) || ( ?g = <https://shelsen.torolab.ibm.com:9443/jazz/storage/com.ibm.xtools.rmps.index/resource2> ) ) || ( ?g = <https://shelsen.torolab.ibm.com:9443/jazz/storage/com.ibm.xtools.rmps.index/resource3> ) )
     }
     { FILTER ( ( fn:matches(?quickSearch0, "(\\s)?class", "i") && fn:matches(?quickSearch1, "(\\s)?diagram", "i") ) && fn:matches(?quickSearch2, "(\\s)?main", "i") ) }
-    { ?serverUri  foaf:page  ?f . }
-    OPTIONAL
-      { ?serverUri  foaf:name  ?name . }
-    OPTIONAL
-      { ?serverUri  rmpsIndex:diagramTypeName  ?diagramTypeName . }
-    { ?serverUri  rdf:type  ?type . }
-    { ?f   rmpsIndex:externalMetaData  ?md ;
-           dcterms:publisher     ?publisher .
-      ?md  dcterms:created       ?created ;
-           dcterms:creator       ?creator ;
-           dcterms:contributor   ?contributor ;
-           dcterms:modified      ?modified .
-    }
-    { ?contentProvider
-                <http://jazz.net/xmlns/rmps/1.0/provides>  ?publisher .
-    }
+##     { ?serverUri  foaf:page  ?f . }
+##     OPTIONAL
+##       { ?serverUri  foaf:name  ?name . }
+##     OPTIONAL
+##       { ?serverUri  rmpsIndex:diagramTypeName  ?diagramTypeName . }
+##     { ?serverUri  rdf:type  ?type . }
+##     { ?f   rmpsIndex:externalMetaData  ?md ;
+##            dcterms:publisher     ?publisher .
+##       ?md  dcterms:created       ?created ;
+##            dcterms:creator       ?creator ;
+##            dcterms:contributor   ?contributor ;
+##            dcterms:modified      ?modified .
+##     }
+## ##     { ?contentProvider
+##                 <http://jazz.net/xmlns/rmps/1.0/provides>  ?publisher .
+##     }
     OPTIONAL
       { ?type  dcterms:title  ?typeName . }
   }
