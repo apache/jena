@@ -22,6 +22,7 @@ ChangeLog for ARQ
 
 + Bug fixes:
   Parsing of UNION in non-SPARQL 1.0 queries.
+  False optimization of GRAPH when mixed with extra {} and FILTERs.
 
 ==== ARQ 2.8.4
 
