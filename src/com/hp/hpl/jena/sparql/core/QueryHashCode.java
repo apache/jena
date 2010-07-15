@@ -7,8 +7,8 @@
 package com.hp.hpl.jena.sparql.core ;
 
 
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryVisitor;
+import com.hp.hpl.jena.query.Query ;
+import com.hp.hpl.jena.query.QueryVisitor ;
 
 //Calculate hashcode (inline with QueryCompare) 
 

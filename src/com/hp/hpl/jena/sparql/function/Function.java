@@ -7,9 +7,9 @@
 package com.hp.hpl.jena.sparql.function;
 
 
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.expr.ExprList;
-import com.hp.hpl.jena.sparql.expr.NodeValue;
+import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.expr.ExprList ;
+import com.hp.hpl.jena.sparql.expr.NodeValue ;
 
 /** Interface to value-testing extensions to the expression evaluator.
  * 

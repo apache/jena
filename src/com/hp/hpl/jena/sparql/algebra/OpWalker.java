@@ -6,9 +6,13 @@
 
 package com.hp.hpl.jena.sparql.algebra;
 
-import java.util.Iterator;
+import java.util.Iterator ;
 
-import com.hp.hpl.jena.sparql.algebra.op.*;
+import com.hp.hpl.jena.sparql.algebra.op.Op0 ;
+import com.hp.hpl.jena.sparql.algebra.op.Op1 ;
+import com.hp.hpl.jena.sparql.algebra.op.Op2 ;
+import com.hp.hpl.jena.sparql.algebra.op.OpExt ;
+import com.hp.hpl.jena.sparql.algebra.op.OpN ;
 
 /** Apply a visitor to the whole structure of Ops, recursively.
  *  Visit sub Op before the current level

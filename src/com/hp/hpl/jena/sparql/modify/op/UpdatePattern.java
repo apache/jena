@@ -6,9 +6,8 @@
 
 package com.hp.hpl.jena.sparql.modify.op;
 
-import com.hp.hpl.jena.sparql.syntax.Element;
-
-import com.hp.hpl.jena.query.QueryFactory;
+import com.hp.hpl.jena.query.QueryFactory ;
+import com.hp.hpl.jena.sparql.syntax.Element ;
 
 /**
  * @author Andy Seaborne

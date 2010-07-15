@@ -6,9 +6,9 @@
 
 package com.hp.hpl.jena.sparql.algebra.opt;
 
-import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.algebra.TransformCopy;
-import com.hp.hpl.jena.sparql.algebra.op.OpLabel;
+import com.hp.hpl.jena.sparql.algebra.Op ;
+import com.hp.hpl.jena.sparql.algebra.TransformCopy ;
+import com.hp.hpl.jena.sparql.algebra.op.OpLabel ;
 
 public class TransformRemoveLabels extends TransformCopy
 {

@@ -6,10 +6,10 @@
 
 package com.hp.hpl.jena.sparql.pfunction;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.sparql.engine.ExecutionContext;
-import com.hp.hpl.jena.sparql.engine.QueryIterator;
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
+import com.hp.hpl.jena.sparql.engine.QueryIterator ;
+import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 
 /** Basic property function handler that calls the implementation 
  * subclass one binding at a time after evaluating the arguments (if bound).

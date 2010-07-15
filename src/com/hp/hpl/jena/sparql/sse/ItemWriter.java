@@ -6,15 +6,16 @@
 
 package com.hp.hpl.jena.sparql.sse;
 
-import java.io.OutputStream;
-import java.util.Iterator;
-import java.util.Map;
+import java.io.OutputStream ;
+import java.util.Iterator ;
+import java.util.Map ;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.shared.PrefixMapping;
-import com.hp.hpl.jena.sparql.serializer.SerializationContext;
-import com.hp.hpl.jena.sparql.util.FmtUtils;
-import org.openjena.atlas.io.IndentedWriter;
+import org.openjena.atlas.io.IndentedWriter ;
+
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.shared.PrefixMapping ;
+import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
+import com.hp.hpl.jena.sparql.util.FmtUtils ;
 
 public class ItemWriter
 {

@@ -1,12 +1,12 @@
 package com.hp.hpl.jena.sparql.function.library;
 // Contribution from Leigh Dodds 
 
-import com.hp.hpl.jena.sparql.expr.ExprEvalException;
-import com.hp.hpl.jena.sparql.expr.NodeValue;
-import com.hp.hpl.jena.sparql.function.FunctionBase1;
+import java.security.MessageDigest ;
+import java.security.NoSuchAlgorithmException ;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
+import com.hp.hpl.jena.sparql.expr.NodeValue ;
+import com.hp.hpl.jena.sparql.function.FunctionBase1 ;
 
 /**
  * ARQ Extension Function that will calculate the 

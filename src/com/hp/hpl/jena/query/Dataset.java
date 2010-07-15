@@ -6,11 +6,11 @@
 
 package com.hp.hpl.jena.query;
 
-import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.shared.Lock;
-import com.hp.hpl.jena.sparql.core.DatasetGraph;
+import java.util.Iterator ;
 
-import java.util.* ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.shared.Lock ;
+import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 
 /** Query is over a Dataset, a collection of named graphs
  *  and a background graph (also called the default

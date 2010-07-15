@@ -5,27 +5,26 @@
 
 package com.hp.hpl.jena.sparql.engine.http;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.io.ByteArrayInputStream ;
+import java.io.IOException ;
+import java.io.InputStream ;
+import java.io.OutputStream ;
+import java.io.UnsupportedEncodingException ;
+import java.net.HttpURLConnection ;
+import java.net.MalformedURLException ;
+import java.net.URL ;
+import java.util.Iterator ;
+import java.util.List ;
+import java.util.Map ;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
 
-import com.hp.hpl.jena.shared.JenaException;
-
-import com.hp.hpl.jena.sparql.ARQInternalErrorException;
-import com.hp.hpl.jena.sparql.util.Base64;
-import com.hp.hpl.jena.sparql.util.Convert;
-import com.hp.hpl.jena.util.FileUtils;
+import com.hp.hpl.jena.shared.JenaException ;
+import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
+import com.hp.hpl.jena.sparql.util.Base64 ;
+import com.hp.hpl.jena.sparql.util.Convert ;
+import com.hp.hpl.jena.util.FileUtils ;
 
 /** Create an execution object for performing a query on a model
  *  over HTTP.  This is the main protocol engine for HTTP query.

@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.sparql.util;
 
-import com.hp.hpl.jena.query.ARQ;
+import com.hp.hpl.jena.query.ARQ ;
 
 
 public class RefBoolean

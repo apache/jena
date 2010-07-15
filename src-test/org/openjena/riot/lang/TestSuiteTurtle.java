@@ -7,9 +7,9 @@
 package org.openjena.riot.lang;
 
 
-import junit.framework.TestSuite;
-import org.junit.runner.RunWith;
-import org.junit.runners.AllTests;
+import junit.framework.TestSuite ;
+import org.junit.runner.RunWith ;
+import org.junit.runners.AllTests ;
 import org.openjena.riot.TestVocabRIOT ;
 
 @RunWith(AllTests.class)

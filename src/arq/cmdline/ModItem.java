@@ -6,10 +6,9 @@
 
 package arq.cmdline;
 
-import com.hp.hpl.jena.util.FileManager;
-
-import com.hp.hpl.jena.sparql.sse.Item;
-import com.hp.hpl.jena.sparql.sse.SSE;
+import com.hp.hpl.jena.sparql.sse.Item ;
+import com.hp.hpl.jena.sparql.sse.SSE ;
+import com.hp.hpl.jena.util.FileManager ;
 
 public class ModItem implements ArgModuleGeneral
 {

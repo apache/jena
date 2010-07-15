@@ -6,15 +6,15 @@
 
 package com.hp.hpl.jena.sparql.syntax;
 
-import java.util.Collection;
-import java.util.Map;
+import java.util.Collection ;
+import java.util.Map ;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.engine.binding.BindingUtils;
-import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
-import com.hp.hpl.jena.sparql.util.Utils;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.engine.binding.BindingUtils ;
+import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
+import com.hp.hpl.jena.sparql.util.Utils ;
 
 
 /** A single triple template.

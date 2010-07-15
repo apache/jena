@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.sparql.sse;
 
-import com.hp.hpl.jena.sparql.ARQException;
+import com.hp.hpl.jena.sparql.ARQException ;
 
 public class SSEParseException extends ARQException
 {

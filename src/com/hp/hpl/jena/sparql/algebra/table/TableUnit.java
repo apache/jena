@@ -6,17 +6,17 @@
 
 package com.hp.hpl.jena.sparql.algebra.table;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.ArrayList ;
+import java.util.List ;
 
-import com.hp.hpl.jena.sparql.algebra.Table;
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.engine.ExecutionContext;
-import com.hp.hpl.jena.sparql.engine.QueryIterator;
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.engine.binding.Binding0;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIterSingleton;
-import com.hp.hpl.jena.sparql.expr.ExprList;
+import com.hp.hpl.jena.sparql.algebra.Table ;
+import com.hp.hpl.jena.sparql.core.Var ;
+import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
+import com.hp.hpl.jena.sparql.engine.QueryIterator ;
+import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.engine.binding.Binding0 ;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIterSingleton ;
+import com.hp.hpl.jena.sparql.expr.ExprList ;
 
 public class TableUnit extends TableBase
 {

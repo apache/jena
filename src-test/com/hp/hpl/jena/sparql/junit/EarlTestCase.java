@@ -6,13 +6,12 @@
 
 package com.hp.hpl.jena.sparql.junit;
 
-import com.hp.hpl.jena.sparql.ARQException;
+import junit.framework.AssertionFailedError ;
+import junit.framework.TestCase ;
 
-import junit.framework.AssertionFailedError;
-import junit.framework.TestCase;
-
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryFactory;
+import com.hp.hpl.jena.query.Query ;
+import com.hp.hpl.jena.query.QueryFactory ;
+import com.hp.hpl.jena.sparql.ARQException ;
 
 
 public abstract class EarlTestCase extends TestCase

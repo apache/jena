@@ -6,12 +6,16 @@
 
 package com.hp.hpl.jena.sparql.algebra.opt;
 
-import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.algebra.TransformCopy;
-import com.hp.hpl.jena.sparql.algebra.op.*;
-import com.hp.hpl.jena.sparql.engine.main.JoinClassifier;
-import com.hp.hpl.jena.sparql.engine.main.LeftJoinClassifier;
-import com.hp.hpl.jena.sparql.util.Context;
+import com.hp.hpl.jena.sparql.algebra.Op ;
+import com.hp.hpl.jena.sparql.algebra.TransformCopy ;
+import com.hp.hpl.jena.sparql.algebra.op.OpConditional ;
+import com.hp.hpl.jena.sparql.algebra.op.OpFilter ;
+import com.hp.hpl.jena.sparql.algebra.op.OpJoin ;
+import com.hp.hpl.jena.sparql.algebra.op.OpLeftJoin ;
+import com.hp.hpl.jena.sparql.algebra.op.OpSequence ;
+import com.hp.hpl.jena.sparql.engine.main.JoinClassifier ;
+import com.hp.hpl.jena.sparql.engine.main.LeftJoinClassifier ;
+import com.hp.hpl.jena.sparql.util.Context ;
 
 /** Choose join strategy */ 
 public class TransformJoinStrategy extends TransformCopy

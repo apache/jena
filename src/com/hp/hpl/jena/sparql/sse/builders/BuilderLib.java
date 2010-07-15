@@ -6,9 +6,9 @@
 
 package com.hp.hpl.jena.sparql.sse.builders;
 
-import com.hp.hpl.jena.sparql.sse.Item;
-import com.hp.hpl.jena.sparql.sse.ItemList;
-import com.hp.hpl.jena.sparql.sse.ItemLocation;
+import com.hp.hpl.jena.sparql.sse.Item ;
+import com.hp.hpl.jena.sparql.sse.ItemList ;
+import com.hp.hpl.jena.sparql.sse.ItemLocation ;
 
 public class BuilderLib
 {

@@ -8,13 +8,13 @@ package com.hp.hpl.jena.sparql.function.library;
 
 //import org.apache.commons.logging.*;
 
-import java.util.List;
+import java.util.List ;
 
-import com.hp.hpl.jena.sparql.ARQInternalErrorException;
-import com.hp.hpl.jena.sparql.expr.ExprList;
-import com.hp.hpl.jena.sparql.expr.NodeValue;
-import com.hp.hpl.jena.sparql.function.FunctionBase;
-import com.hp.hpl.jena.sparql.util.Utils;
+import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
+import com.hp.hpl.jena.sparql.expr.ExprList ;
+import com.hp.hpl.jena.sparql.expr.NodeValue ;
+import com.hp.hpl.jena.sparql.function.FunctionBase ;
+import com.hp.hpl.jena.sparql.util.Utils ;
 
 /** Function that concatenates arguments as strings.
  *  fn:concat

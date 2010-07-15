@@ -6,11 +6,10 @@
 
 package com.hp.hpl.jena.sparql.engine.optimizer.reorder;
 
-import com.hp.hpl.jena.graph.Triple;
-
-import com.hp.hpl.jena.sparql.ARQException;
-import com.hp.hpl.jena.sparql.core.BasicPattern;
-import com.hp.hpl.jena.sparql.util.ALog;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.sparql.ARQException ;
+import com.hp.hpl.jena.sparql.core.BasicPattern ;
+import com.hp.hpl.jena.sparql.util.ALog ;
 
 public class ReorderProcIndexes implements ReorderProc
 {

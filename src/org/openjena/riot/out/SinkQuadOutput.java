@@ -16,7 +16,6 @@ import org.openjena.atlas.lib.Chars ;
 import org.openjena.atlas.lib.Sink ;
 import org.openjena.riot.Prologue ;
 
-
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 

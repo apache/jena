@@ -6,14 +6,14 @@
 
 package com.hp.hpl.jena.query;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.HashMap ;
+import java.util.Iterator ;
+import java.util.Map ;
 
-import com.hp.hpl.jena.rdf.model.RDFNode;
-import com.hp.hpl.jena.sparql.core.QuerySolutionBase;
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.util.FmtUtils;
+import com.hp.hpl.jena.rdf.model.RDFNode ;
+import com.hp.hpl.jena.sparql.core.QuerySolutionBase ;
+import com.hp.hpl.jena.sparql.core.Var ;
+import com.hp.hpl.jena.sparql.util.FmtUtils ;
 
 /** Implementation of QuerySolution that is backed by an in-memory map.
  * 

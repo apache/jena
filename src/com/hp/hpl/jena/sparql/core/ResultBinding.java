@@ -5,16 +5,16 @@
 
 package com.hp.hpl.jena.sparql.core;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.ArrayList ;
+import java.util.Iterator ;
+import java.util.List ;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.RDFNode;
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.engine.binding.BindingBase;
-import com.hp.hpl.jena.sparql.util.ModelUtils;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.RDFNode ;
+import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.engine.binding.BindingBase ;
+import com.hp.hpl.jena.sparql.util.ModelUtils ;
 
 
 /** A mapping from variable name to an RDF value.

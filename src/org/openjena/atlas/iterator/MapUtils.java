@@ -6,7 +6,7 @@
 
 package org.openjena.atlas.iterator;
 
-import java.util.Map;
+import java.util.Map ;
 
 import org.openjena.atlas.lib.ActionKeyValue ;
 

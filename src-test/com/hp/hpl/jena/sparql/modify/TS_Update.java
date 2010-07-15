@@ -7,7 +7,7 @@
 package com.hp.hpl.jena.sparql.modify;
 
 
-import junit.framework.TestSuite;
+import junit.framework.TestSuite ;
 
 
 public class TS_Update extends TestSuite

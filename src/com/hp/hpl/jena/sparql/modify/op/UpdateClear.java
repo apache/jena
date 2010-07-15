@@ -7,7 +7,7 @@
 package com.hp.hpl.jena.sparql.modify.op;
 
 
-import com.hp.hpl.jena.sparql.modify.UpdateVisitor;
+import com.hp.hpl.jena.sparql.modify.UpdateVisitor ;
 
 public class UpdateClear extends GraphUpdate1
 {

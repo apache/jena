@@ -6,10 +6,9 @@
 
 package com.hp.hpl.jena.sparql.syntax;
 
-import com.hp.hpl.jena.graph.Node;
-
-import com.hp.hpl.jena.sparql.util.ALog;
-import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.sparql.util.ALog ;
+import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
 
 /** A SERVICE pattern - access a remote SPARQL service.
  * 

@@ -6,8 +6,8 @@
 
 package com.hp.hpl.jena.sparql.function.library;
 
-import com.hp.hpl.jena.sparql.expr.NodeValue;
-import com.hp.hpl.jena.sparql.function.FunctionBase1;
+import com.hp.hpl.jena.sparql.expr.NodeValue ;
+import com.hp.hpl.jena.sparql.function.FunctionBase1 ;
 
 /** string length - F&O operation */
 

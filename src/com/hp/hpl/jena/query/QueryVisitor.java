@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.query;
 
-import com.hp.hpl.jena.sparql.core.Prologue;
+import com.hp.hpl.jena.sparql.core.Prologue ;
 
 /** Query visitor pattern */
 

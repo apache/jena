@@ -6,13 +6,13 @@
 
 package com.hp.hpl.jena.update;
 
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.query.Dataset;
-import com.hp.hpl.jena.query.QuerySolution;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.engine.binding.BindingUtils;
-import com.hp.hpl.jena.sparql.modify.op.Update;
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.query.Dataset ;
+import com.hp.hpl.jena.query.QuerySolution ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.engine.binding.BindingUtils ;
+import com.hp.hpl.jena.sparql.modify.op.Update ;
 
 /** A class of convenience forms for executing SPARQL/Update operations */
 

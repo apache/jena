@@ -6,9 +6,9 @@
 
 package com.hp.hpl.jena.sparql.function.library;
 
-import com.hp.hpl.jena.sparql.expr.NodeValue;
-import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp;
-import com.hp.hpl.jena.sparql.function.FunctionBase2;
+import com.hp.hpl.jena.sparql.expr.NodeValue ;
+import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp ;
+import com.hp.hpl.jena.sparql.function.FunctionBase2 ;
 
 /** max(expression, expression) */ 
 

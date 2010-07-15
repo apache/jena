@@ -6,18 +6,22 @@
 
 package com.hp.hpl.jena.sparql.resultset;
 
-import java.util.ArrayList;
+import java.util.ArrayList ;
 
-import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.shared.JenaException;
-import com.hp.hpl.jena.shared.PropertyNotFoundException;
-import com.hp.hpl.jena.vocabulary.RDF;
-
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
-import com.hp.hpl.jena.sparql.util.ALog;
-import com.hp.hpl.jena.sparql.vocabulary.ResultSetGraphVocab;
+import com.hp.hpl.jena.rdf.model.Literal ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.RDFNode ;
+import com.hp.hpl.jena.rdf.model.Resource ;
+import com.hp.hpl.jena.rdf.model.Statement ;
+import com.hp.hpl.jena.rdf.model.StmtIterator ;
+import com.hp.hpl.jena.shared.JenaException ;
+import com.hp.hpl.jena.shared.PropertyNotFoundException ;
+import com.hp.hpl.jena.sparql.core.Var ;
+import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.engine.binding.BindingMap ;
+import com.hp.hpl.jena.sparql.util.ALog ;
+import com.hp.hpl.jena.sparql.vocabulary.ResultSetGraphVocab ;
+import com.hp.hpl.jena.vocabulary.RDF ;
 
 
 public class RDFInput extends ResultSetMem

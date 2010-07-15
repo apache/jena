@@ -6,10 +6,8 @@
 
 package org.openjena.atlas.lib;
 
-import org.junit.Test;
+import org.junit.Test ;
 import org.openjena.atlas.junit.BaseTest ;
-import org.openjena.atlas.lib.FileOps ;
-import org.openjena.atlas.lib.Tuple ;
 
 public class TestFileOps extends BaseTest
 {

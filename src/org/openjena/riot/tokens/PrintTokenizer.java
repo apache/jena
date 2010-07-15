@@ -6,8 +6,8 @@
 
 package org.openjena.riot.tokens;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
 
 /** Print a logging message on every token */
 public class PrintTokenizer extends TokenizerWrapper

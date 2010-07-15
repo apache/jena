@@ -6,16 +6,16 @@
 
 package com.hp.hpl.jena.sparql.algebra;
 
-import java.util.Stack;
+import java.util.Stack ;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.sparql.algebra.op.OpBGP;
-import com.hp.hpl.jena.sparql.algebra.op.OpDatasetNames;
-import com.hp.hpl.jena.sparql.algebra.op.OpGraph;
-import com.hp.hpl.jena.sparql.algebra.op.OpPath;
-import com.hp.hpl.jena.sparql.algebra.op.OpQuadPattern;
-import com.hp.hpl.jena.sparql.algebra.op.OpTable;
-import com.hp.hpl.jena.sparql.core.Quad;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.sparql.algebra.op.OpBGP ;
+import com.hp.hpl.jena.sparql.algebra.op.OpDatasetNames ;
+import com.hp.hpl.jena.sparql.algebra.op.OpGraph ;
+import com.hp.hpl.jena.sparql.algebra.op.OpPath ;
+import com.hp.hpl.jena.sparql.algebra.op.OpQuadPattern ;
+import com.hp.hpl.jena.sparql.algebra.op.OpTable ;
+import com.hp.hpl.jena.sparql.core.Quad ;
 
 /** Convert an algebra expression into a quad form */
 public class AlgebraQuad extends TransformCopy

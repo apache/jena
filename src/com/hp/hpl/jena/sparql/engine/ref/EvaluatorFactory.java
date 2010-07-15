@@ -7,7 +7,7 @@
 package com.hp.hpl.jena.sparql.engine.ref;
 
 
-import com.hp.hpl.jena.sparql.engine.ExecutionContext;
+import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 
 public class EvaluatorFactory
 {

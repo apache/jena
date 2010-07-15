@@ -7,14 +7,14 @@
 
 package com.hp.hpl.jena.sparql.lang.rdql;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.query.IndexValues;
-import com.hp.hpl.jena.graph.query.Valuator;
-import com.hp.hpl.jena.graph.query.VariableIndexes;
+import org.openjena.atlas.io.IndentedWriter ;
 
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.util.ALog;
-import org.openjena.atlas.io.IndentedWriter;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.query.IndexValues ;
+import com.hp.hpl.jena.graph.query.Valuator ;
+import com.hp.hpl.jena.graph.query.VariableIndexes ;
+import com.hp.hpl.jena.sparql.core.Var ;
+import com.hp.hpl.jena.sparql.util.ALog ;
 
 public class Q_Var extends ExprNodeRDQL implements ExprRDQL
 {

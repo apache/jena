@@ -12,9 +12,9 @@ import org.openjena.atlas.event.EventManager ;
 import org.openjena.atlas.event.EventType ;
 import org.openjena.atlas.lib.Sink ;
 
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.GraphEvents;
-import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.GraphEvents ;
+import com.hp.hpl.jena.graph.Triple ;
 
 
 public abstract class SinkToGraph implements Sink<Triple>

@@ -6,14 +6,14 @@
 
 package com.hp.hpl.jena.sparql.algebra;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.sparql.algebra.table.Table1;
-import com.hp.hpl.jena.sparql.algebra.table.TableEmpty;
-import com.hp.hpl.jena.sparql.algebra.table.TableN;
-import com.hp.hpl.jena.sparql.algebra.table.TableUnit;
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.engine.QueryIterator;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIterRoot;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.sparql.algebra.table.Table1 ;
+import com.hp.hpl.jena.sparql.algebra.table.TableEmpty ;
+import com.hp.hpl.jena.sparql.algebra.table.TableN ;
+import com.hp.hpl.jena.sparql.algebra.table.TableUnit ;
+import com.hp.hpl.jena.sparql.core.Var ;
+import com.hp.hpl.jena.sparql.engine.QueryIterator ;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIterRoot ;
 
 public class TableFactory
 {

@@ -6,10 +6,10 @@
 
 package com.hp.hpl.jena.sparql.core.assembler;
 
-import com.hp.hpl.jena.assembler.JA;
-import com.hp.hpl.jena.rdf.model.Property;
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.rdf.model.ResourceFactory;
+import com.hp.hpl.jena.assembler.JA ;
+import com.hp.hpl.jena.rdf.model.Property ;
+import com.hp.hpl.jena.rdf.model.Resource ;
+import com.hp.hpl.jena.rdf.model.ResourceFactory ;
 
 public class DatasetAssemblerVocab
 {

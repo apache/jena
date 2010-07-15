@@ -6,9 +6,8 @@
 
 package arq.cmdline;
 
-import com.hp.hpl.jena.Jena;
-
-import com.hp.hpl.jena.sparql.util.Version;
+import com.hp.hpl.jena.Jena ;
+import com.hp.hpl.jena.sparql.util.Version ;
 
 public class ModVersion implements ArgModuleGeneral
 {

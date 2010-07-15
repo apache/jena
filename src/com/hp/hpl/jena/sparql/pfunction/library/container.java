@@ -6,29 +6,29 @@
 
 package com.hp.hpl.jena.sparql.pfunction.library;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.ArrayList ;
+import java.util.Collection ;
+import java.util.HashSet ;
+import java.util.Iterator ;
+import java.util.List ;
+import java.util.Set ;
 
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.engine.ExecutionContext;
-import com.hp.hpl.jena.sparql.engine.QueryIterator;
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.engine.binding.Binding1;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIterConcat;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIterYieldN;
-import com.hp.hpl.jena.sparql.pfunction.PFuncSimple;
-import com.hp.hpl.jena.sparql.util.IterLib;
-import com.hp.hpl.jena.sparql.util.graph.GraphContainerUtils;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
-import com.hp.hpl.jena.vocabulary.RDF;
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.sparql.core.Var ;
+import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
+import com.hp.hpl.jena.sparql.engine.QueryIterator ;
+import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.engine.binding.Binding1 ;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIterConcat ;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper ;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIterYieldN ;
+import com.hp.hpl.jena.sparql.pfunction.PFuncSimple ;
+import com.hp.hpl.jena.sparql.util.IterLib ;
+import com.hp.hpl.jena.sparql.util.graph.GraphContainerUtils ;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
+import com.hp.hpl.jena.vocabulary.RDF ;
 
 /** container - super class of bag/alt/seq - rdfs:member
  * 

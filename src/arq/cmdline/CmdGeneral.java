@@ -6,13 +6,13 @@
 
 package arq.cmdline;
 
-import java.io.PrintStream;
+import java.io.PrintStream ;
 
-import arq.cmd.CmdUtils;
-import arq.cmd.TerminationException;
+import org.openjena.atlas.io.IndentedWriter ;
+import arq.cmd.CmdUtils ;
+import arq.cmd.TerminationException ;
 
-import com.hp.hpl.jena.sparql.util.ALog;
-import org.openjena.atlas.io.IndentedWriter;
+import com.hp.hpl.jena.sparql.util.ALog ;
 
 // Added usage + some common flags
 // This is the usual starting point for any sub 

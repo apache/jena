@@ -7,31 +7,28 @@
 package com.hp.hpl.jena.sparql.util;
 
 
-import java.util.List;
+import java.util.List ;
 
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.RDFNode;
-import com.hp.hpl.jena.rdf.model.RDFWriter;
-
-import com.hp.hpl.jena.shared.PrefixMapping;
-import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
-
-import com.hp.hpl.jena.sparql.ARQConstants;
-import com.hp.hpl.jena.sparql.ARQException;
-import com.hp.hpl.jena.sparql.algebra.Algebra;
-import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.algebra.OpVars;
-import com.hp.hpl.jena.sparql.algebra.op.OpProject;
-import com.hp.hpl.jena.sparql.core.DatasetGraph;
-import com.hp.hpl.jena.sparql.core.Prologue;
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.engine.QueryIterator;
-import com.hp.hpl.jena.sparql.resultset.PlainFormat;
-import com.hp.hpl.jena.sparql.resultset.ResultSetApply;
-import com.hp.hpl.jena.sparql.resultset.ResultsFormat;
-import com.hp.hpl.jena.sparql.vocabulary.ResultSetGraphVocab;
-
-import com.hp.hpl.jena.query.*;
+import com.hp.hpl.jena.query.* ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.RDFNode ;
+import com.hp.hpl.jena.rdf.model.RDFWriter ;
+import com.hp.hpl.jena.shared.PrefixMapping ;
+import com.hp.hpl.jena.shared.impl.PrefixMappingImpl ;
+import com.hp.hpl.jena.sparql.ARQConstants ;
+import com.hp.hpl.jena.sparql.ARQException ;
+import com.hp.hpl.jena.sparql.algebra.Algebra ;
+import com.hp.hpl.jena.sparql.algebra.Op ;
+import com.hp.hpl.jena.sparql.algebra.OpVars ;
+import com.hp.hpl.jena.sparql.algebra.op.OpProject ;
+import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import com.hp.hpl.jena.sparql.core.Prologue ;
+import com.hp.hpl.jena.sparql.core.Var ;
+import com.hp.hpl.jena.sparql.engine.QueryIterator ;
+import com.hp.hpl.jena.sparql.resultset.PlainFormat ;
+import com.hp.hpl.jena.sparql.resultset.ResultSetApply ;
+import com.hp.hpl.jena.sparql.resultset.ResultsFormat ;
+import com.hp.hpl.jena.sparql.vocabulary.ResultSetGraphVocab ;
 
 /** Some utilities for query processing. 
  * 

@@ -5,27 +5,27 @@
 
 package com.hp.hpl.jena.sparql.util;
 
-import java.net.MalformedURLException;
+import java.net.MalformedURLException ;
 
 import org.openjena.atlas.io.IndentedWriter ;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Node_Literal;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.iri.IRI;
-import com.hp.hpl.jena.iri.IRIFactory;
-import com.hp.hpl.jena.iri.IRIRelativize;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.RDFNode;
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.shared.PrefixMapping;
-import com.hp.hpl.jena.sparql.ARQConstants;
-import com.hp.hpl.jena.sparql.ARQInternalErrorException;
-import com.hp.hpl.jena.sparql.core.BasicPattern;
-import com.hp.hpl.jena.sparql.core.Prologue;
-import com.hp.hpl.jena.sparql.core.Quad;
-import com.hp.hpl.jena.sparql.serializer.SerializationContext;
-import com.hp.hpl.jena.vocabulary.XSD;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.Node_Literal ;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.iri.IRI ;
+import com.hp.hpl.jena.iri.IRIFactory ;
+import com.hp.hpl.jena.iri.IRIRelativize ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.RDFNode ;
+import com.hp.hpl.jena.rdf.model.Resource ;
+import com.hp.hpl.jena.shared.PrefixMapping ;
+import com.hp.hpl.jena.sparql.ARQConstants ;
+import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
+import com.hp.hpl.jena.sparql.core.BasicPattern ;
+import com.hp.hpl.jena.sparql.core.Prologue ;
+import com.hp.hpl.jena.sparql.core.Quad ;
+import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
+import com.hp.hpl.jena.vocabulary.XSD ;
 
 /** Presentation forms of various kinds of objects.
  *  Beware that bNodes are abbreviated to _:b0 etc.

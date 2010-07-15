@@ -6,9 +6,9 @@
 
 package com.hp.hpl.jena.sparql.core;
 
-import com.hp.hpl.jena.sparql.util.Symbol;
-import com.hp.hpl.jena.sparql.util.TranslationTable;
-import com.hp.hpl.jena.util.FileUtils;
+import com.hp.hpl.jena.sparql.util.Symbol ;
+import com.hp.hpl.jena.sparql.util.TranslationTable ;
+import com.hp.hpl.jena.util.FileUtils ;
 
 
 public class DataFormat extends Symbol

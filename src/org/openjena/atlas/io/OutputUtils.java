@@ -6,8 +6,8 @@
 
 package org.openjena.atlas.io;
 
-import java.io.IOException;
-import java.io.Writer;
+import java.io.IOException ;
+import java.io.Writer ;
 
 import org.openjena.atlas.lib.BitsInt ;
 import org.openjena.atlas.lib.Chars ;

@@ -6,12 +6,12 @@
 
 package com.hp.hpl.jena.sparql.core.describe;
 
-import com.hp.hpl.jena.query.*;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.sparql.ARQConstants;
-import com.hp.hpl.jena.sparql.util.Closure;
-import com.hp.hpl.jena.sparql.util.Context;
+import com.hp.hpl.jena.query.* ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.Resource ;
+import com.hp.hpl.jena.sparql.ARQConstants ;
+import com.hp.hpl.jena.sparql.util.Closure ;
+import com.hp.hpl.jena.sparql.util.Context ;
 
 /** DescribeHandler that calculates the bNode closure.
  *  Takes all the statements of this resource, and for every object that is

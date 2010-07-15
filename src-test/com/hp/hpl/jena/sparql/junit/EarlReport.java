@@ -6,18 +6,18 @@
 
 package com.hp.hpl.jena.sparql.junit;
 
-import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
-import com.hp.hpl.jena.rdf.model.Literal;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.rdf.model.ResourceFactory;
-import com.hp.hpl.jena.sparql.util.Utils;
-import com.hp.hpl.jena.sparql.vocabulary.EARL;
-import com.hp.hpl.jena.sparql.vocabulary.FOAF;
-import com.hp.hpl.jena.vocabulary.DC;
-import com.hp.hpl.jena.vocabulary.DCTerms;
-import com.hp.hpl.jena.vocabulary.RDF;
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
+import com.hp.hpl.jena.rdf.model.Literal ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.ModelFactory ;
+import com.hp.hpl.jena.rdf.model.Resource ;
+import com.hp.hpl.jena.rdf.model.ResourceFactory ;
+import com.hp.hpl.jena.sparql.util.Utils ;
+import com.hp.hpl.jena.sparql.vocabulary.EARL ;
+import com.hp.hpl.jena.sparql.vocabulary.FOAF ;
+import com.hp.hpl.jena.vocabulary.DC ;
+import com.hp.hpl.jena.vocabulary.DCTerms ;
+import com.hp.hpl.jena.vocabulary.RDF ;
 
 public class EarlReport
 {

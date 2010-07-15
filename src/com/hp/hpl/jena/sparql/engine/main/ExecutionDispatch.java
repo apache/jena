@@ -6,13 +6,13 @@
 
 package com.hp.hpl.jena.sparql.engine.main;
 
-import java.util.Stack;
+import java.util.Stack ;
 
-import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.algebra.OpVisitor;
-import com.hp.hpl.jena.sparql.algebra.op.*;
-import com.hp.hpl.jena.sparql.engine.QueryIterator;
-import com.hp.hpl.jena.sparql.util.ALog;
+import com.hp.hpl.jena.sparql.algebra.Op ;
+import com.hp.hpl.jena.sparql.algebra.OpVisitor ;
+import com.hp.hpl.jena.sparql.algebra.op.* ;
+import com.hp.hpl.jena.sparql.engine.QueryIterator ;
+import com.hp.hpl.jena.sparql.util.ALog ;
 
 /**  Class to provide type-safe execution dispatch using the visitor support of Op */ 
 

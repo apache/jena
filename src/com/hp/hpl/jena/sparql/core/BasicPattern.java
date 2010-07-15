@@ -10,11 +10,12 @@ import java.util.ArrayList ;
 import java.util.Iterator ;
 import java.util.List ;
 
+import org.openjena.atlas.io.IndentedLineBuffer ;
+
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.sparql.sse.writers.WriterNode ;
-import org.openjena.atlas.io.IndentedLineBuffer ;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 

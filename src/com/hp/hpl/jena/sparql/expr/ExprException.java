@@ -5,7 +5,7 @@
  */
 
 package com.hp.hpl.jena.sparql.expr;
-import com.hp.hpl.jena.query.QueryException;
+import com.hp.hpl.jena.query.QueryException ;
 
 /** The root of all expression exceptions
  * 

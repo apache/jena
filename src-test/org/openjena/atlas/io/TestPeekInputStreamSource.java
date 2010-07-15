@@ -9,8 +9,6 @@ package org.openjena.atlas.io;
 import java.io.ByteArrayInputStream ;
 import java.io.UnsupportedEncodingException ;
 
-import org.openjena.atlas.io.PeekInputStream ;
-
 public class TestPeekInputStreamSource extends AbstractTestPeekInputStream
 {
     @Override

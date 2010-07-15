@@ -6,7 +6,9 @@
 
 package com.hp.hpl.jena.sparql.util;
 
-import java.util.*; ;
+import java.util.HashMap ;
+import java.util.Iterator ;
+import java.util.Map ;
 
 /** Maps string to string for use with convenience names.
  * 

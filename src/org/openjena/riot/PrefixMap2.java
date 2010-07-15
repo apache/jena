@@ -8,7 +8,7 @@ package org.openjena.riot;
 
 import org.openjena.atlas.logging.Log ;
 
-import com.hp.hpl.jena.iri.IRI;
+import com.hp.hpl.jena.iri.IRI ;
 
 // UNUSED
 /** Extend a PrefixMap - never alters the partent PrefixMap */

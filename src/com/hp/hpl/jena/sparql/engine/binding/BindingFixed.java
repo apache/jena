@@ -5,10 +5,10 @@
 
 package com.hp.hpl.jena.sparql.engine.binding;
 
-import java.util.Iterator;
+import java.util.Iterator ;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.sparql.core.Var ;
 
 /** A binding that is fixed - used in calculating DISTINCT result sets.
  *  .hashCode and .equals are overridden for content equality semantics (where

@@ -6,7 +6,11 @@
 
 package com.hp.hpl.jena.sparql.algebra;
 
-import com.hp.hpl.jena.sparql.algebra.op.*;
+import com.hp.hpl.jena.sparql.algebra.op.Op0 ;
+import com.hp.hpl.jena.sparql.algebra.op.Op1 ;
+import com.hp.hpl.jena.sparql.algebra.op.Op2 ;
+import com.hp.hpl.jena.sparql.algebra.op.OpExt ;
+import com.hp.hpl.jena.sparql.algebra.op.OpN ;
 
 public class BeforeAfterVisitor extends OpVisitorByType//implements OpVisitor
 {

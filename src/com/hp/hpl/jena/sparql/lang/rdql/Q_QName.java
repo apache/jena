@@ -6,8 +6,9 @@
 
 package com.hp.hpl.jena.sparql.lang.rdql;
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.query.*;
-import com.hp.hpl.jena.sparql.ARQInternalErrorException;
+import com.hp.hpl.jena.query.Query ;
+import com.hp.hpl.jena.query.QueryException ;
+import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
 
 
 public class Q_QName extends Q_URI

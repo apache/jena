@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.sparql.sse.lang;
 
-import com.hp.hpl.jena.sparql.sse.Item;
+import com.hp.hpl.jena.sparql.sse.Item ;
 
 public interface ParseHandler
 {

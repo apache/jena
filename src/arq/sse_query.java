@@ -8,6 +8,7 @@
 package arq;
 
 
+import org.openjena.atlas.io.IndentedWriter ;
 import arq.cmd.CmdException ;
 import arq.cmd.TerminationException ;
 import arq.cmdline.* ;
@@ -20,7 +21,6 @@ import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.engine.Plan ;
 import com.hp.hpl.jena.sparql.engine.PlanOp ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
-import org.openjena.atlas.io.IndentedWriter ;
 import com.hp.hpl.jena.sparql.util.QueryExecUtils ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 

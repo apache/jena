@@ -7,9 +7,9 @@
 
 package com.hp.hpl.jena.sparql.lang;
 
-import java.util.Stack;
+import java.util.Stack ;
 
-import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.update.UpdateRequest ;
 
 public class ParserQueryBase extends ParserBase 

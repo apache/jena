@@ -6,13 +6,15 @@
 
 package com.hp.hpl.jena.sparql.util;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.query.QueryException;
-import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.rdf.model.impl.LiteralImpl;
-import com.hp.hpl.jena.rdf.model.impl.ResourceImpl;
-import com.hp.hpl.jena.sparql.ARQInternalErrorException;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.query.QueryException ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.RDFNode ;
+import com.hp.hpl.jena.rdf.model.Statement ;
+import com.hp.hpl.jena.rdf.model.impl.LiteralImpl ;
+import com.hp.hpl.jena.rdf.model.impl.ResourceImpl ;
+import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
 
 
 public class ModelUtils

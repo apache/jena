@@ -6,17 +6,17 @@
 
 package com.hp.hpl.jena.sparql.util;
 
-import java.util.Iterator;
+import java.util.Iterator ;
 
-import com.hp.hpl.jena.datatypes.RDFDatatype;
-import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.sparql.ARQInternalErrorException;
-import com.hp.hpl.jena.sparql.expr.Expr;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
-import com.hp.hpl.jena.util.iterator.MapFilter;
-import com.hp.hpl.jena.util.iterator.MapFilterIterator;
-import com.hp.hpl.jena.util.iterator.WrappedIterator;
+import com.hp.hpl.jena.datatypes.RDFDatatype ;
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
+import com.hp.hpl.jena.sparql.expr.Expr ;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
+import com.hp.hpl.jena.util.iterator.MapFilter ;
+import com.hp.hpl.jena.util.iterator.MapFilterIterator ;
+import com.hp.hpl.jena.util.iterator.WrappedIterator ;
 
 
 /** Node utilities. 

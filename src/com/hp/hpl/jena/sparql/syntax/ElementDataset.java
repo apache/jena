@@ -6,8 +6,8 @@
 
 package com.hp.hpl.jena.sparql.syntax;
 
-import com.hp.hpl.jena.sparql.core.DatasetGraph;
-import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
+import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
 
 /** ElementDataset - an association of an RDF Dataset 
  * (graph level version) with a query pattern.

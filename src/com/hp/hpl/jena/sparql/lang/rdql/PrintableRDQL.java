@@ -8,7 +8,7 @@
  */
 
 package com.hp.hpl.jena.sparql.lang.rdql;
-import org.openjena.atlas.io.IndentedWriter;
+import org.openjena.atlas.io.IndentedWriter ;
 
 public interface PrintableRDQL
 {

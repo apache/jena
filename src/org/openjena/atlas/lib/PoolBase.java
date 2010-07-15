@@ -6,7 +6,7 @@
 
 package org.openjena.atlas.lib;
 
-import java.util.Stack;
+import java.util.Stack ;
 
 /** A Pool of objects. Base implements a non-blocking pool (returns null on no entry)
  * with infinite upper bound.  Set effective size by creating the right number of

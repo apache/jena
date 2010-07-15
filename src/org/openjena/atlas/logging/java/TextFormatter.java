@@ -6,9 +6,9 @@
 
 package org.openjena.atlas.logging.java;
 
-import java.util.Date;
-import java.util.logging.Formatter;
-import java.util.logging.LogRecord;
+import java.util.Date ;
+import java.util.logging.Formatter ;
+import java.util.logging.LogRecord ;
 
 /** A pattern-like log formatter */
 public class TextFormatter extends Formatter

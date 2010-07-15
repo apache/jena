@@ -8,8 +8,6 @@ package org.openjena.atlas.lib;
 
 import org.junit.Test ;
 import org.openjena.atlas.junit.BaseTest ;
-import org.openjena.atlas.lib.Cache ;
-import org.openjena.atlas.lib.CacheFactory ;
 import org.openjena.atlas.lib.cache.Cache1 ;
 import org.openjena.atlas.lib.cache.Getter ;
 

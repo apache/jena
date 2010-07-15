@@ -6,10 +6,10 @@
 
 package com.hp.hpl.jena.sparql.pfunction;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.sparql.engine.ExecutionContext;
-import com.hp.hpl.jena.sparql.engine.QueryIterator;
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
+import com.hp.hpl.jena.sparql.engine.QueryIterator ;
+import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 
 /** Common case: take a node (object) and
  *  calculate something else, assign it to a

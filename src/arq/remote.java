@@ -6,19 +6,19 @@
 
 package arq;
 
-import arq.cmd.CmdException;
-import arq.cmdline.CmdARQ;
-import arq.cmdline.ModDatasetGeneral;
-import arq.cmdline.ModQueryIn;
-import arq.cmdline.ModRemote;
-import arq.cmdline.ModResultsOut;
+import arq.cmd.CmdException ;
+import arq.cmdline.CmdARQ ;
+import arq.cmdline.ModDatasetGeneral ;
+import arq.cmdline.ModQueryIn ;
+import arq.cmdline.ModRemote ;
+import arq.cmdline.ModResultsOut ;
 
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryExecution;
-import com.hp.hpl.jena.query.QueryExecutionFactory;
-import com.hp.hpl.jena.sparql.engine.http.HttpQuery;
-import com.hp.hpl.jena.sparql.engine.http.QueryExceptionHTTP;
-import com.hp.hpl.jena.sparql.util.QueryExecUtils;
+import com.hp.hpl.jena.query.Query ;
+import com.hp.hpl.jena.query.QueryExecution ;
+import com.hp.hpl.jena.query.QueryExecutionFactory ;
+import com.hp.hpl.jena.sparql.engine.http.HttpQuery ;
+import com.hp.hpl.jena.sparql.engine.http.QueryExceptionHTTP ;
+import com.hp.hpl.jena.sparql.util.QueryExecUtils ;
 
 public class remote extends CmdARQ
 {

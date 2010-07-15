@@ -7,13 +7,14 @@
 package com.hp.hpl.jena.sparql.modify.op;
 
 
-import com.hp.hpl.jena.shared.PrefixMapping;
-import com.hp.hpl.jena.sparql.modify.UpdateSerializer;
-import com.hp.hpl.jena.sparql.modify.UpdateVisitor;
-import com.hp.hpl.jena.sparql.serializer.SerializationContext;
-import org.openjena.atlas.io.IndentedWriter;
-import com.hp.hpl.jena.sparql.util.PrintSerializable;
-import com.hp.hpl.jena.sparql.util.PrintUtils;
+import org.openjena.atlas.io.IndentedWriter ;
+
+import com.hp.hpl.jena.shared.PrefixMapping ;
+import com.hp.hpl.jena.sparql.modify.UpdateSerializer ;
+import com.hp.hpl.jena.sparql.modify.UpdateVisitor ;
+import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
+import com.hp.hpl.jena.sparql.util.PrintSerializable ;
+import com.hp.hpl.jena.sparql.util.PrintUtils ;
 
 public abstract class Update implements PrintSerializable
 {

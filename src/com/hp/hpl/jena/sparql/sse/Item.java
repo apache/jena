@@ -7,12 +7,13 @@
 package com.hp.hpl.jena.sparql.sse;
 
 
-import java.util.Iterator;
+import java.util.Iterator ;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.util.FmtUtils;
-import org.openjena.atlas.io.IndentedLineBuffer;
+import org.openjena.atlas.io.IndentedLineBuffer ;
+
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.sparql.core.Var ;
+import com.hp.hpl.jena.sparql.util.FmtUtils ;
 
 public class Item extends ItemLocation
 {

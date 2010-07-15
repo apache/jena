@@ -9,7 +9,9 @@ package org.openjena.riot.lang;
 
 import org.junit.Test ;
 import org.openjena.atlas.junit.BaseTest ;
-import org.openjena.riot.ErrorHandlerTestLib.* ;
+import org.openjena.riot.ErrorHandlerTestLib.ExError ;
+import org.openjena.riot.ErrorHandlerTestLib.ExFatal ;
+import org.openjena.riot.ErrorHandlerTestLib.ExWarning ;
 
 /** Test of syntax by a tuples parser (does not include node validitiy checking) */ 
 

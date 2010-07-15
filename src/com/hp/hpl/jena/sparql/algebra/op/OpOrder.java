@@ -6,15 +6,14 @@
 
 package com.hp.hpl.jena.sparql.algebra.op;
 
-import java.util.List;
+import java.util.List ;
 
-import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.algebra.OpVisitor;
-import com.hp.hpl.jena.sparql.algebra.Transform;
-import com.hp.hpl.jena.sparql.sse.Tags;
-import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
-
-import com.hp.hpl.jena.query.SortCondition;
+import com.hp.hpl.jena.query.SortCondition ;
+import com.hp.hpl.jena.sparql.algebra.Op ;
+import com.hp.hpl.jena.sparql.algebra.OpVisitor ;
+import com.hp.hpl.jena.sparql.algebra.Transform ;
+import com.hp.hpl.jena.sparql.sse.Tags ;
+import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
 
 public class OpOrder extends OpModifier
 {

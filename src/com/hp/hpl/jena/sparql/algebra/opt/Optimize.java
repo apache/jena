@@ -132,7 +132,7 @@ public class Optimize implements Rewrite
             op = apply("Property Functions", new TransformPropertyFunction(context), op) ;
 
         if ( context.isTrueOrUndef(ARQ.optFilterConjunction) )
-            op = apply("Break up filter conjunctions", new TransformFilterConjunction(), op) ;
+            op = apply("filter conjunctions to ExprLists", new TransformFilterConjunction(), op) ;
 
         if ( context.isTrueOrUndef(ARQ.optFilterExpandOneOf) )
             op = apply("Break up IN and NOT IN", new TransformExpandOneOf(), op) ;

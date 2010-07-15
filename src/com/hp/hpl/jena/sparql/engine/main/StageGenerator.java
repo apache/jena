@@ -6,9 +6,9 @@
 
 package com.hp.hpl.jena.sparql.engine.main;
 
-import com.hp.hpl.jena.sparql.core.BasicPattern;
-import com.hp.hpl.jena.sparql.engine.ExecutionContext;
-import com.hp.hpl.jena.sparql.engine.QueryIterator;
+import com.hp.hpl.jena.sparql.core.BasicPattern ;
+import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
+import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 
 /** Interface for execution of a basic graph pattern.
  *  A StageGenerator is registred in the context of an query

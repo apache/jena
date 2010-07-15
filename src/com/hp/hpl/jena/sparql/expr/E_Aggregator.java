@@ -6,13 +6,13 @@
 
 package com.hp.hpl.jena.sparql.expr;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.sparql.ARQInternalErrorException;
-import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
+import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.Renamer ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
-import com.hp.hpl.jena.sparql.expr.aggregate.Aggregator;
-import com.hp.hpl.jena.sparql.util.Utils;
+import com.hp.hpl.jena.sparql.expr.aggregate.Aggregator ;
+import com.hp.hpl.jena.sparql.util.Utils ;
 
 /** Group aggregation functions calculate a value during grouping and
  *  place it in the output binding.  This class is relationship of 

@@ -7,8 +7,8 @@
 package org.openjena.atlas.json.io;
 
 
-import java.io.OutputStream;
-import java.util.Stack;
+import java.io.OutputStream ;
+import java.util.Stack ;
 
 import org.openjena.atlas.io.IndentedWriter ;
 import org.openjena.atlas.lib.Ref ;

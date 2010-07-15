@@ -6,18 +6,18 @@
 
 package com.hp.hpl.jena.sparql.expr;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.ArrayList ;
+import java.util.Collection ;
+import java.util.HashSet ;
+import java.util.Iterator ;
+import java.util.List ;
+import java.util.Set ;
 
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.engine.ExecutionContext;
+import com.hp.hpl.jena.sparql.core.Var ;
+import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.engine.Renamer ;
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.util.Context;
+import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.util.Context ;
 
 public class ExprList implements Iterable<Expr>
 {

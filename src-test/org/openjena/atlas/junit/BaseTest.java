@@ -6,7 +6,7 @@
 
 package org.openjena.atlas.junit;
 
-import org.junit.Assert;
+import org.junit.Assert ;
 
 public class BaseTest extends Assert
 {

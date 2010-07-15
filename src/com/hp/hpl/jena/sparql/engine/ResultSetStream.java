@@ -5,13 +5,14 @@
 
 package com.hp.hpl.jena.sparql.engine;
 
-import java.util.*;
+import java.util.List ;
+import java.util.NoSuchElementException ;
 
-import com.hp.hpl.jena.query.QuerySolution;
-import com.hp.hpl.jena.query.ResultSet;
-import com.hp.hpl.jena.rdf.model.* ;
-import com.hp.hpl.jena.sparql.core.ResultBinding;
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
+import com.hp.hpl.jena.query.QuerySolution ;
+import com.hp.hpl.jena.query.ResultSet ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.sparql.core.ResultBinding ;
+import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 
 
 /** The main ResultSet implementation for returning results from queries.

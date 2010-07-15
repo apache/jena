@@ -8,15 +8,17 @@ package com.hp.hpl.jena.query;
 
 import org.openjena.atlas.io.IndentedWriter ;
 
-import com.hp.hpl.jena.graph.Node;
-
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.expr.E_Function;
-import com.hp.hpl.jena.sparql.expr.Expr;
-import com.hp.hpl.jena.sparql.expr.ExprVar;
-import com.hp.hpl.jena.sparql.serializer.FmtExpr;
-import com.hp.hpl.jena.sparql.serializer.SerializationContext;
-import com.hp.hpl.jena.sparql.util.*;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.sparql.core.Var ;
+import com.hp.hpl.jena.sparql.expr.E_Function ;
+import com.hp.hpl.jena.sparql.expr.Expr ;
+import com.hp.hpl.jena.sparql.expr.ExprVar ;
+import com.hp.hpl.jena.sparql.serializer.FmtExpr ;
+import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
+import com.hp.hpl.jena.sparql.util.ALog ;
+import com.hp.hpl.jena.sparql.util.ExprUtils ;
+import com.hp.hpl.jena.sparql.util.PrintSerializableBase ;
+import com.hp.hpl.jena.sparql.util.Utils ;
 
 
 public class SortCondition extends PrintSerializableBase

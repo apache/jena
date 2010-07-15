@@ -5,11 +5,13 @@
 
 package com.hp.hpl.jena.sparql.lang.rdql;
 
+import org.openjena.atlas.io.IndentedWriter ;
+
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.query.IndexValues;
-import com.hp.hpl.jena.graph.query.Expression;
-import com.hp.hpl.jena.query.*;
-import org.openjena.atlas.io.IndentedWriter;
+import com.hp.hpl.jena.graph.query.Expression ;
+import com.hp.hpl.jena.graph.query.IndexValues ;
+import com.hp.hpl.jena.query.Query ;
+import com.hp.hpl.jena.query.QueryException ;
 
 public class Q_StringEqual extends ExprNodeRDQL implements ExprRDQL, ExprBoolean
 {

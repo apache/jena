@@ -6,15 +6,15 @@
 
 package arq.cmdline;
 
-import arq.cmd.CmdException;
+import arq.cmd.CmdException ;
 
-import com.hp.hpl.jena.assembler.exceptions.AssemblerException;
-import com.hp.hpl.jena.query.Dataset;
-import com.hp.hpl.jena.sparql.ARQException;
-import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils;
-import com.hp.hpl.jena.sparql.core.assembler.DatasetAssemblerVocab;
-import com.hp.hpl.jena.update.GraphStore;
-import com.hp.hpl.jena.update.GraphStoreFactory;
+import com.hp.hpl.jena.assembler.exceptions.AssemblerException ;
+import com.hp.hpl.jena.query.Dataset ;
+import com.hp.hpl.jena.sparql.ARQException ;
+import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils ;
+import com.hp.hpl.jena.sparql.core.assembler.DatasetAssemblerVocab ;
+import com.hp.hpl.jena.update.GraphStore ;
+import com.hp.hpl.jena.update.GraphStoreFactory ;
 
 public class ModGraphStore extends ModAssembler
 {

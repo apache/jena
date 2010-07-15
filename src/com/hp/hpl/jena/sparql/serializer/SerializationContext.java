@@ -6,10 +6,9 @@
 
 package com.hp.hpl.jena.sparql.serializer;
 
-import com.hp.hpl.jena.shared.PrefixMapping;
-
-import com.hp.hpl.jena.sparql.core.Prologue;
-import com.hp.hpl.jena.sparql.util.NodeToLabelMap;
+import com.hp.hpl.jena.shared.PrefixMapping ;
+import com.hp.hpl.jena.sparql.core.Prologue ;
+import com.hp.hpl.jena.sparql.util.NodeToLabelMap ;
 
 /** Information needed to serialize things */
 

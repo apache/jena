@@ -6,10 +6,9 @@
 
 package com.hp.hpl.jena.sparql.path;
 
-import com.hp.hpl.jena.graph.Node;
-
-import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
-import com.hp.hpl.jena.sparql.util.Utils;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
+import com.hp.hpl.jena.sparql.util.Utils ;
 
 public class P_Link extends P_Path0
 {

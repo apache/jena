@@ -6,16 +6,16 @@
 
 package com.hp.hpl.jena.sparql.pfunction;
 
-import com.hp.hpl.jena.graph.Node;
+import org.openjena.atlas.io.IndentedWriter ;
 
-import com.hp.hpl.jena.sparql.engine.ExecutionContext;
-import com.hp.hpl.jena.sparql.engine.QueryIterator;
-import com.hp.hpl.jena.sparql.expr.ExprList;
-import com.hp.hpl.jena.sparql.procedure.Procedure;
-import com.hp.hpl.jena.sparql.serializer.SerializationContext;
-import com.hp.hpl.jena.sparql.util.FmtUtils;
-import org.openjena.atlas.io.IndentedWriter;
-import com.hp.hpl.jena.sparql.util.PrintSerializableBase;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
+import com.hp.hpl.jena.sparql.engine.QueryIterator ;
+import com.hp.hpl.jena.sparql.expr.ExprList ;
+import com.hp.hpl.jena.sparql.procedure.Procedure ;
+import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
+import com.hp.hpl.jena.sparql.util.FmtUtils ;
+import com.hp.hpl.jena.sparql.util.PrintSerializableBase ;
 
 /** Adapter between property functions and server procedures
  *  When called, this wrapper reconstructs the usual property function calling conventions.

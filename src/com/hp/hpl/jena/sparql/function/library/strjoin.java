@@ -8,17 +8,17 @@ package com.hp.hpl.jena.sparql.function.library;
 
 //import org.apache.commons.logging.*;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.ArrayList ;
+import java.util.Iterator ;
+import java.util.List ;
 
-import com.hp.hpl.jena.query.QueryBuildException;
-import com.hp.hpl.jena.sparql.ARQInternalErrorException;
-import com.hp.hpl.jena.sparql.expr.ExprList;
-import com.hp.hpl.jena.sparql.expr.NodeValue;
-import com.hp.hpl.jena.sparql.function.FunctionBase;
-import com.hp.hpl.jena.sparql.util.StringUtils;
-import com.hp.hpl.jena.sparql.util.Utils;
+import com.hp.hpl.jena.query.QueryBuildException ;
+import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
+import com.hp.hpl.jena.sparql.expr.ExprList ;
+import com.hp.hpl.jena.sparql.expr.NodeValue ;
+import com.hp.hpl.jena.sparql.function.FunctionBase ;
+import com.hp.hpl.jena.sparql.util.StringUtils ;
+import com.hp.hpl.jena.sparql.util.Utils ;
 
 /** Function that concatenates strings using a separator.
  *  This is not fn:string-join because 

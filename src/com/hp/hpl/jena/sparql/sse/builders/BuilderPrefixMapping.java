@@ -7,14 +7,13 @@
 package com.hp.hpl.jena.sparql.sse.builders;
 
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.shared.PrefixMapping;
-import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
-
-import com.hp.hpl.jena.sparql.sse.Item;
-import com.hp.hpl.jena.sparql.sse.ItemList;
-import com.hp.hpl.jena.sparql.sse.Tags;
-import com.hp.hpl.jena.sparql.util.StringUtils;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.shared.PrefixMapping ;
+import com.hp.hpl.jena.shared.impl.PrefixMappingImpl ;
+import com.hp.hpl.jena.sparql.sse.Item ;
+import com.hp.hpl.jena.sparql.sse.ItemList ;
+import com.hp.hpl.jena.sparql.sse.Tags ;
+import com.hp.hpl.jena.sparql.util.StringUtils ;
 
 /** Build a prefixmapping, tagged (prefixmap pairs) or (prefixmapping pairs)
  * each pair being a PrefixName, but must end : and an IRI.

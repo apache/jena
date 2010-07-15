@@ -6,15 +6,15 @@
 
 package com.hp.hpl.jena.sparql.engine;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
+import java.util.ArrayList ;
+import java.util.Collection ;
+import java.util.Iterator ;
 
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.sparql.core.DatasetGraph;
-import com.hp.hpl.jena.sparql.engine.main.OpExecutorFactory;
-import com.hp.hpl.jena.sparql.function.FunctionEnv;
-import com.hp.hpl.jena.sparql.util.Context;
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import com.hp.hpl.jena.sparql.engine.main.OpExecutorFactory ;
+import com.hp.hpl.jena.sparql.function.FunctionEnv ;
+import com.hp.hpl.jena.sparql.util.Context ;
 
 public class ExecutionContext implements FunctionEnv
 {

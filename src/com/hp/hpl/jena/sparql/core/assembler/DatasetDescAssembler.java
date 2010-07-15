@@ -6,14 +6,14 @@
 
 package com.hp.hpl.jena.sparql.core.assembler;
 
-import java.util.List;
+import java.util.List ;
 
-import com.hp.hpl.jena.assembler.Assembler;
-import com.hp.hpl.jena.assembler.Mode;
-import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.sparql.core.DatasetDesc;
-import com.hp.hpl.jena.sparql.util.graph.GraphUtils;
+import com.hp.hpl.jena.assembler.Assembler ;
+import com.hp.hpl.jena.assembler.Mode ;
+import com.hp.hpl.jena.assembler.assemblers.AssemblerBase ;
+import com.hp.hpl.jena.rdf.model.Resource ;
+import com.hp.hpl.jena.sparql.core.DatasetDesc ;
+import com.hp.hpl.jena.sparql.util.graph.GraphUtils ;
 
 public class DatasetDescAssembler extends AssemblerBase implements Assembler
 {

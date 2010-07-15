@@ -6,13 +6,13 @@
 
 package com.hp.hpl.jena.sparql.core.describe;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.ArrayList ;
+import java.util.Iterator ;
+import java.util.List ;
 
-import com.hp.hpl.jena.query.ARQ;
-import com.hp.hpl.jena.sparql.ARQConstants;
-import com.hp.hpl.jena.sparql.util.Context;
+import com.hp.hpl.jena.query.ARQ ;
+import com.hp.hpl.jena.sparql.ARQConstants ;
+import com.hp.hpl.jena.sparql.util.Context ;
 
 /** Registry of DescribeHandlers.     
  * 

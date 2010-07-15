@@ -6,13 +6,13 @@
 
 package org.openjena.riot.lang;
 
-import junit.framework.TestCase;
+import junit.framework.TestCase ;
 import org.openjena.riot.JenaReaderTurtle2 ;
 
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.RDFReader;
-import com.hp.hpl.jena.shared.JenaException;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.ModelFactory ;
+import com.hp.hpl.jena.rdf.model.RDFReader ;
+import com.hp.hpl.jena.shared.JenaException ;
 
 
 public class UnitTestTurtleBadSyntax extends TestCase

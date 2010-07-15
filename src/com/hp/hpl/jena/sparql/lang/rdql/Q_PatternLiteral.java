@@ -4,12 +4,13 @@
  */
 
 package com.hp.hpl.jena.sparql.lang.rdql;
-import java.util.regex.Pattern;
+import java.util.regex.Pattern ;
+
+import org.openjena.atlas.io.IndentedWriter ;
 
 import com.hp.hpl.jena.graph.query.IndexValues ;
-import com.hp.hpl.jena.query.*;
-import com.hp.hpl.jena.sparql.ARQInternalErrorException;
-import org.openjena.atlas.io.IndentedWriter;
+import com.hp.hpl.jena.query.Query ;
+import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
 
 
 

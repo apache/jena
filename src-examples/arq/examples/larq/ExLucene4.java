@@ -7,15 +7,15 @@
 package arq.examples.larq;
 
 
-import com.hp.hpl.jena.query.ARQ;
-import com.hp.hpl.jena.query.larq.IndexBuilderSubject;
-import com.hp.hpl.jena.query.larq.IndexLARQ;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.sparql.util.StringUtils;
-import com.hp.hpl.jena.sparql.util.Utils;
-import com.hp.hpl.jena.util.FileManager;
-import com.hp.hpl.jena.vocabulary.DC;
+import com.hp.hpl.jena.query.ARQ ;
+import com.hp.hpl.jena.query.larq.IndexBuilderSubject ;
+import com.hp.hpl.jena.query.larq.IndexLARQ ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.ModelFactory ;
+import com.hp.hpl.jena.sparql.util.StringUtils ;
+import com.hp.hpl.jena.sparql.util.Utils ;
+import com.hp.hpl.jena.util.FileManager ;
+import com.hp.hpl.jena.vocabulary.DC ;
 
 /** Example code to load a model from a file, index subjects by DC title property, 
  * then execute a SPARQL query with a Lucene search in it.

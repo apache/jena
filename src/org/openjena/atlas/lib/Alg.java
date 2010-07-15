@@ -6,9 +6,9 @@
 
 package org.openjena.atlas.lib;
 
-import java.nio.IntBuffer;
-import java.util.Comparator;
-import java.util.List;
+import java.nio.IntBuffer ;
+import java.util.Comparator ;
+import java.util.List ;
 
 public class Alg
 {

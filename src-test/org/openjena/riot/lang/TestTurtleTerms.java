@@ -11,7 +11,6 @@ import org.openjena.atlas.lib.Sink ;
 import org.openjena.atlas.lib.SinkNull ;
 import org.openjena.riot.PrefixMap ;
 import org.openjena.riot.RiotReader ;
-import org.openjena.riot.lang.LangTurtle ;
 import org.openjena.riot.tokens.Tokenizer ;
 import org.openjena.riot.tokens.TokenizerFactory ;
 

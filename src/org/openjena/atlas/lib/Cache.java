@@ -6,7 +6,7 @@
 
 package org.openjena.atlas.lib;
 
-import java.util.Iterator;
+import java.util.Iterator ;
 
 /** A cache */
 public interface Cache<Key, Value>

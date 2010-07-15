@@ -6,9 +6,9 @@
 
 package com.hp.hpl.jena.sparql.util.graph;
 
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.sparql.core.BasicPattern;
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.sparql.core.BasicPattern ;
 
 
 public class GNode

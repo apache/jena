@@ -6,8 +6,8 @@
 
 package com.hp.hpl.jena.sparql.syntax;
 
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
+import com.hp.hpl.jena.query.Query ;
+import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
 
 public class ElementSubQuery extends Element
 {

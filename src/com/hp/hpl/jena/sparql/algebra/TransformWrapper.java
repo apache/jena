@@ -6,9 +6,9 @@
 
 package com.hp.hpl.jena.sparql.algebra;
 
-import java.util.List;
+import java.util.List ;
 
-import com.hp.hpl.jena.sparql.algebra.op.*;
+import com.hp.hpl.jena.sparql.algebra.op.* ;
 
 /** Wrap another tranform and pass on the transform operation */
 public class TransformWrapper implements Transform

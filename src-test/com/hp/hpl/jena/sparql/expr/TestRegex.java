@@ -11,9 +11,6 @@ import junit.framework.TestCase ;
 import org.junit.Test ;
 
 import com.hp.hpl.jena.query.ARQ ;
-import com.hp.hpl.jena.sparql.expr.E_Regex ;
-import com.hp.hpl.jena.sparql.expr.Expr ;
-import com.hp.hpl.jena.sparql.expr.NodeValue ;
 
 /** com.hp.hpl.jena.query.test.TestMisc
  * 

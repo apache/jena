@@ -6,7 +6,7 @@
 
 package arq;
 
-import arq.cmdline.ModVersion;
+import arq.cmdline.ModVersion ;
 
 public class version
 {

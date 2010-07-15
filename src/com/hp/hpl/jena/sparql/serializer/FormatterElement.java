@@ -6,21 +6,21 @@
 
 package com.hp.hpl.jena.sparql.serializer;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.ArrayList ;
+import java.util.Iterator ;
+import java.util.List ;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
+import org.openjena.atlas.io.IndentedLineBuffer ;
+import org.openjena.atlas.io.IndentedWriter ;
 
-import com.hp.hpl.jena.sparql.core.BasicPattern;
-import com.hp.hpl.jena.sparql.core.PathBlock;
-import com.hp.hpl.jena.sparql.core.TriplePath;
-import com.hp.hpl.jena.sparql.expr.Expr;
-import com.hp.hpl.jena.sparql.path.PathWriter;
-import com.hp.hpl.jena.sparql.syntax.*;
-import org.openjena.atlas.io.IndentedLineBuffer;
-import org.openjena.atlas.io.IndentedWriter;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.sparql.core.BasicPattern ;
+import com.hp.hpl.jena.sparql.core.PathBlock ;
+import com.hp.hpl.jena.sparql.core.TriplePath ;
+import com.hp.hpl.jena.sparql.expr.Expr ;
+import com.hp.hpl.jena.sparql.path.PathWriter ;
+import com.hp.hpl.jena.sparql.syntax.* ;
 
 
 /**

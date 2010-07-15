@@ -6,21 +6,22 @@
 
 package com.hp.hpl.jena.sparql.serializer;
 
-import java.io.OutputStream;
-import java.util.List;
+import java.io.OutputStream ;
+import java.util.List ;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryVisitor;
-import com.hp.hpl.jena.query.SortCondition;
-import com.hp.hpl.jena.sparql.core.Prologue;
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.core.VarExprList;
-import com.hp.hpl.jena.sparql.expr.Expr;
-import com.hp.hpl.jena.sparql.syntax.Element;
-import com.hp.hpl.jena.sparql.syntax.Template;
-import com.hp.hpl.jena.sparql.util.FmtUtils;
-import org.openjena.atlas.io.IndentedWriter;
+import org.openjena.atlas.io.IndentedWriter ;
+
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.query.Query ;
+import com.hp.hpl.jena.query.QueryVisitor ;
+import com.hp.hpl.jena.query.SortCondition ;
+import com.hp.hpl.jena.sparql.core.Prologue ;
+import com.hp.hpl.jena.sparql.core.Var ;
+import com.hp.hpl.jena.sparql.core.VarExprList ;
+import com.hp.hpl.jena.sparql.expr.Expr ;
+import com.hp.hpl.jena.sparql.syntax.Element ;
+import com.hp.hpl.jena.sparql.syntax.Template ;
+import com.hp.hpl.jena.sparql.util.FmtUtils ;
 
 /** Serialize a query into SPARQL or ARQ formats */
 

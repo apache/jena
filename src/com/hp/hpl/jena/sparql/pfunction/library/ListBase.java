@@ -6,22 +6,22 @@
 
 package com.hp.hpl.jena.sparql.pfunction.library;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
+import java.util.Collection ;
+import java.util.List ;
+import java.util.Set ;
 
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.engine.ExecutionContext;
-import com.hp.hpl.jena.sparql.engine.QueryIterator;
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.engine.binding.Binding1;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIterConcat;
-import com.hp.hpl.jena.sparql.pfunction.PropFuncArg;
-import com.hp.hpl.jena.sparql.pfunction.PropFuncArgType;
-import com.hp.hpl.jena.sparql.pfunction.PropertyFunctionEval;
-import com.hp.hpl.jena.sparql.util.graph.GraphList;
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.sparql.core.Var ;
+import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
+import com.hp.hpl.jena.sparql.engine.QueryIterator ;
+import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.engine.binding.Binding1 ;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIterConcat ;
+import com.hp.hpl.jena.sparql.pfunction.PropFuncArg ;
+import com.hp.hpl.jena.sparql.pfunction.PropFuncArgType ;
+import com.hp.hpl.jena.sparql.pfunction.PropertyFunctionEval ;
+import com.hp.hpl.jena.sparql.util.graph.GraphList ;
 
 /** Base class for list realted operations */ 
 public abstract class ListBase extends PropertyFunctionEval

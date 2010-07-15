@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.sparql.engine.optimizer.reorder;
 
-import com.hp.hpl.jena.sparql.core.BasicPattern;
+import com.hp.hpl.jena.sparql.core.BasicPattern ;
 
 public interface ReorderTransformation
 {

@@ -5,7 +5,7 @@
 
 package com.hp.hpl.jena.sparql.expr;
 
-import com.hp.hpl.jena.sparql.expr.nodevalue.NodeFunctions;
+import com.hp.hpl.jena.sparql.expr.nodevalue.NodeFunctions ;
 
 /** 
  * @author Andy Seaborne

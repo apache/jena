@@ -6,8 +6,8 @@
 
 package com.hp.hpl.jena.sparql.util.graph;
 
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.Triple ;
 
 /** Adds a regular "tick" based on the number of adds or deletes seen.
  *  The additions and deletions ticks are independent.  

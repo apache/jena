@@ -6,18 +6,17 @@
 
 package arq;
 
-import arq.cmd.TerminationException;
-import arq.cmdline.ArgDecl;
-import arq.cmdline.CmdARQ_SSE;
+import org.openjena.atlas.io.IndentedWriter ;
+import arq.cmd.TerminationException ;
+import arq.cmdline.ArgDecl ;
+import arq.cmdline.CmdARQ_SSE ;
 
-import com.hp.hpl.jena.shared.PrefixMapping;
-
-import com.hp.hpl.jena.sparql.serializer.SerializationContext;
-import com.hp.hpl.jena.sparql.sse.Item;
-import com.hp.hpl.jena.sparql.sse.ItemWriter;
-import com.hp.hpl.jena.sparql.sse.SSE;
-import org.openjena.atlas.io.IndentedWriter;
-import com.hp.hpl.jena.sparql.util.Utils;
+import com.hp.hpl.jena.shared.PrefixMapping ;
+import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
+import com.hp.hpl.jena.sparql.sse.Item ;
+import com.hp.hpl.jena.sparql.sse.ItemWriter ;
+import com.hp.hpl.jena.sparql.sse.SSE ;
+import com.hp.hpl.jena.sparql.util.Utils ;
 
 public class sse extends CmdARQ_SSE
 {

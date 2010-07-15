@@ -13,8 +13,6 @@ import org.junit.Test ;
 import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.query.QueryFactory ;
 import com.hp.hpl.jena.query.Syntax ;
-import com.hp.hpl.jena.sparql.algebra.Algebra ;
-import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.op.OpJoin ;
 import com.hp.hpl.jena.sparql.algebra.op.OpLeftJoin ;
 import com.hp.hpl.jena.sparql.engine.main.JoinClassifier ;

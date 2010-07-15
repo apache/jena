@@ -6,19 +6,19 @@
 
 package com.hp.hpl.jena.sparql.core;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.HashMap ;
+import java.util.Iterator ;
+import java.util.Map ;
 
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.query.DataSource;
-import com.hp.hpl.jena.query.Dataset;
-import com.hp.hpl.jena.query.LabelExistsException;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.shared.Lock;
-import com.hp.hpl.jena.sparql.util.NodeUtils;
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.query.DataSource ;
+import com.hp.hpl.jena.query.Dataset ;
+import com.hp.hpl.jena.query.LabelExistsException ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.ModelFactory ;
+import com.hp.hpl.jena.shared.Lock ;
+import com.hp.hpl.jena.sparql.util.NodeUtils ;
 import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
 
 /** A implementation of a DataSource, which is a mutable Dataset,

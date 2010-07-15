@@ -6,7 +6,7 @@
 
 package org.openjena.atlas.lib;
 
-import org.slf4j.Logger;
+import org.slf4j.Logger ;
 
 public class SinkLogging<T> implements Sink<T>
 {

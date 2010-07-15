@@ -5,10 +5,12 @@
 
 package com.hp.hpl.jena.sparql.engine.binding;
 
-import java.util.* ;
+import java.util.HashMap ;
+import java.util.Iterator ;
+import java.util.Map ;
 
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.sparql.core.Var ;
 
 
 /** A mapping from a name to a value such that we can create a tree of levels

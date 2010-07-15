@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.sparql.procedure;
 
-import com.hp.hpl.jena.sparql.procedure.library.debug;
+import com.hp.hpl.jena.sparql.procedure.library.debug ;
 
 
 public class StandardProcedures

@@ -6,18 +6,17 @@
 
 package org.openjena.riot.out;
 
-import java.io.OutputStream;
-import java.nio.ByteBuffer;
-import java.nio.charset.CharsetEncoder;
+import java.io.OutputStream ;
+import java.nio.ByteBuffer ;
+import java.nio.charset.CharsetEncoder ;
 
 import org.openjena.atlas.io.BufferingWriter ;
 import org.openjena.atlas.lib.Chars ;
 import org.openjena.atlas.lib.Sink ;
 import org.openjena.riot.Prologue ;
 
-
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.Triple ;
 
 /** A class that print triples, N-triples style */ 
 public class SinkTripleOutput implements Sink<Triple>

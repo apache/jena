@@ -6,9 +6,8 @@
 
 package com.hp.hpl.jena.sparql.util;
 
-import com.hp.hpl.jena.graph.Node;
-
-import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.sparql.core.Var ;
 
 public class NodeToLabelMapBNode extends NodeToLabelMap
 {

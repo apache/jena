@@ -6,13 +6,13 @@
 
 package com.hp.hpl.jena.sparql.serializer;
 
-import com.hp.hpl.jena.shared.PrefixMapping;
+import org.openjena.atlas.io.IndentedWriter ;
 
-import com.hp.hpl.jena.sparql.algebra.OpAsQuery;
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.expr.*;
-import com.hp.hpl.jena.sparql.syntax.Element;
-import org.openjena.atlas.io.IndentedWriter;
+import com.hp.hpl.jena.shared.PrefixMapping ;
+import com.hp.hpl.jena.sparql.algebra.OpAsQuery ;
+import com.hp.hpl.jena.sparql.core.Var ;
+import com.hp.hpl.jena.sparql.expr.* ;
+import com.hp.hpl.jena.sparql.syntax.Element ;
 
 /** Output expressions in the syntax that ARQ expects them */
 

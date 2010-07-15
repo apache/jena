@@ -6,14 +6,13 @@
 
 package com.hp.hpl.jena.sparql.util;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashSet ;
+import java.util.Set ;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-
-import com.hp.hpl.jena.sparql.core.TriplePath;
-import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.sparql.core.TriplePath ;
+import com.hp.hpl.jena.sparql.core.Var ;
 
 public class VarUtils
 {

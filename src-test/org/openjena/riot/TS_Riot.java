@@ -10,7 +10,6 @@ import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.junit.runner.RunWith ;
 import org.junit.runners.Suite ;
-import org.openjena.riot.ErrorHandlerLib ;
 import org.openjena.riot.lang.* ;
 import org.openjena.riot.out.TestOutputNTriples ;
 import org.openjena.riot.tokens.TestTokenForNode ;

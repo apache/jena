@@ -6,9 +6,8 @@
 
 package com.hp.hpl.jena.sparql.modify.op;
 
-import com.hp.hpl.jena.sparql.syntax.Template;
-
-import com.hp.hpl.jena.query.QueryFactory;
+import com.hp.hpl.jena.query.QueryFactory ;
+import com.hp.hpl.jena.sparql.syntax.Template ;
 
 public abstract class UpdateModifyBase extends UpdatePattern
 {

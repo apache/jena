@@ -6,9 +6,9 @@
 
 package org.openjena.atlas.iterator;
 
-import java.util.Iterator;
-import java.util.NoSuchElementException;
-import java.util.concurrent.BlockingQueue;
+import java.util.Iterator ;
+import java.util.NoSuchElementException ;
+import java.util.concurrent.BlockingQueue ;
 
 /** Iterator over a blocking queue until queue end seen */
 

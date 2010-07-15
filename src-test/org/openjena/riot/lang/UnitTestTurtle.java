@@ -7,20 +7,20 @@
 package org.openjena.riot.lang;
 
 
-import java.io.InputStream;
-import java.io.Reader;
+import java.io.InputStream ;
+import java.io.Reader ;
 
-import junit.framework.TestCase;
+import junit.framework.TestCase ;
 import org.openjena.atlas.io.PeekReader ;
 import org.openjena.riot.JenaReaderNTriples2 ;
 import org.openjena.riot.JenaReaderTurtle2 ;
 import org.openjena.riot.RiotParseException ;
 
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.RDFReader;
-import com.hp.hpl.jena.util.FileManager;
-import com.hp.hpl.jena.util.FileUtils;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.ModelFactory ;
+import com.hp.hpl.jena.rdf.model.RDFReader ;
+import com.hp.hpl.jena.util.FileManager ;
+import com.hp.hpl.jena.util.FileUtils ;
 
 public class UnitTestTurtle extends TestCase
 {

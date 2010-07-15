@@ -6,8 +6,8 @@
 
 package com.hp.hpl.jena.sparql.core.assembler;
 
-import com.hp.hpl.jena.assembler.exceptions.AssemblerException;
-import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.assembler.exceptions.AssemblerException ;
+import com.hp.hpl.jena.rdf.model.Resource ;
 
 
 public class DatasetAssemblerException extends AssemblerException

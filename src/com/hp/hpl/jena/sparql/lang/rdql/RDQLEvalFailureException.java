@@ -9,7 +9,7 @@
 
 
 package com.hp.hpl.jena.sparql.lang.rdql;
-import com.hp.hpl.jena.sparql.expr.ExprEvalException;
+import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
 
 public class RDQLEvalFailureException extends ExprEvalException
 {

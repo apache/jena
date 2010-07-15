@@ -6,12 +6,12 @@
 
 package arq.cmdline;
 
-import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.io.PrintStream ;
+import java.util.ArrayList ;
+import java.util.Iterator ;
+import java.util.List ;
 
-import org.openjena.atlas.io.IndentedWriter;
+import org.openjena.atlas.io.IndentedWriter ;
 
 public class Usage
 {

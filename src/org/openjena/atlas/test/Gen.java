@@ -8,7 +8,7 @@ package org.openjena.atlas.test;
 
 import static org.openjena.atlas.lib.RandomLib.random ;
 
-import java.util.Arrays;
+import java.util.Arrays ;
 
 
 /** Support for testing BTrees */

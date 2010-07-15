@@ -6,7 +6,13 @@
 
 package org.openjena.atlas.lib;
 
-import java.util.* ;
+import java.util.ArrayList ;
+import java.util.Collections ;
+import java.util.Comparator ;
+import java.util.Enumeration ;
+import java.util.Iterator ;
+import java.util.List ;
+import java.util.Properties ;
 
 /** Sorted output */
 public class PropertiesSorted extends Properties

@@ -6,13 +6,12 @@
 
 package com.hp.hpl.jena.sparql.modify;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.ArrayList ;
+import java.util.Iterator ;
+import java.util.List ;
 
-
-import com.hp.hpl.jena.update.GraphStore;
-import com.hp.hpl.jena.update.UpdateRequest;
+import com.hp.hpl.jena.update.GraphStore ;
+import com.hp.hpl.jena.update.UpdateRequest ;
 
 public class UpdateProcessorRegistry
 {

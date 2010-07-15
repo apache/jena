@@ -6,11 +6,7 @@
 
 package org.openjena.atlas.event;
 
-import org.junit.Test;
-import org.openjena.atlas.event.Event ;
-import org.openjena.atlas.event.EventListener ;
-import org.openjena.atlas.event.EventManager ;
-import org.openjena.atlas.event.EventType ;
+import org.junit.Test ;
 import org.openjena.atlas.junit.BaseTest ;
 
 

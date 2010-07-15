@@ -6,20 +6,20 @@
 
 package com.hp.hpl.jena.sparql.pfunction.library;
 
-import java.util.List;
+import java.util.List ;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.query.QueryBuildException;
-import com.hp.hpl.jena.query.QueryExecException;
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.engine.ExecutionContext;
-import com.hp.hpl.jena.sparql.engine.QueryIterator;
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIterExtendByVar;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIterYieldN;
-import com.hp.hpl.jena.sparql.pfunction.PropFuncArg;
-import com.hp.hpl.jena.sparql.util.graph.GNode;
-import com.hp.hpl.jena.sparql.util.graph.GraphList;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.query.QueryBuildException ;
+import com.hp.hpl.jena.query.QueryExecException ;
+import com.hp.hpl.jena.sparql.core.Var ;
+import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
+import com.hp.hpl.jena.sparql.engine.QueryIterator ;
+import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIterExtendByVar ;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIterYieldN ;
+import com.hp.hpl.jena.sparql.pfunction.PropFuncArg ;
+import com.hp.hpl.jena.sparql.util.graph.GNode ;
+import com.hp.hpl.jena.sparql.util.graph.GraphList ;
 
 
 /** List membership : property function implementation of list:member. 

@@ -2,7 +2,10 @@ package com.hp.hpl.jena.sparql.vocabulary;
 
 /* CVS $Id: TestDAWG.java,v 1.1 2005/02/09 14:59:46 andy_seaborne Exp $ */
  
-import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.ModelFactory ;
+import com.hp.hpl.jena.rdf.model.Property ;
+import com.hp.hpl.jena.rdf.model.Resource ;
  
 /**
  * Vocabulary definitions from test-dawg.n3 

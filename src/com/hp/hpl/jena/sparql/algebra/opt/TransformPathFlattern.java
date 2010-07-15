@@ -6,12 +6,12 @@
 
 package com.hp.hpl.jena.sparql.algebra.opt;
 
-import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.algebra.TransformCopy;
-import com.hp.hpl.jena.sparql.algebra.op.OpPath;
-import com.hp.hpl.jena.sparql.core.PathBlock;
-import com.hp.hpl.jena.sparql.path.PathCompiler;
-import com.hp.hpl.jena.sparql.path.PathLib;
+import com.hp.hpl.jena.sparql.algebra.Op ;
+import com.hp.hpl.jena.sparql.algebra.TransformCopy ;
+import com.hp.hpl.jena.sparql.algebra.op.OpPath ;
+import com.hp.hpl.jena.sparql.core.PathBlock ;
+import com.hp.hpl.jena.sparql.path.PathCompiler ;
+import com.hp.hpl.jena.sparql.path.PathLib ;
 
 public class TransformPathFlattern extends TransformCopy
 {

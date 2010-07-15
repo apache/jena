@@ -7,14 +7,15 @@
 
 package com.hp.hpl.jena.sparql.lang.sparql_11 ;
 
-import com.hp.hpl.jena.graph.* ;
-import com.hp.hpl.jena.query.* ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.sparql.core.Var ;
-import com.hp.hpl.jena.sparql.syntax.* ;
 import com.hp.hpl.jena.sparql.expr.* ;
+import com.hp.hpl.jena.sparql.expr.aggregate.Aggregator ;
+import com.hp.hpl.jena.sparql.expr.aggregate.AggregatorFactory ;
+import com.hp.hpl.jena.sparql.modify.op.Update ;
 import com.hp.hpl.jena.sparql.path.* ;
-import com.hp.hpl.jena.sparql.expr.aggregate.* ;
-import com.hp.hpl.jena.sparql.modify.op.* ;
+import com.hp.hpl.jena.sparql.syntax.* ;
 
 public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11Constants {
     private static long UNSET = P_Mod.UNSET ;

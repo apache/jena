@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.sparql.path;
 
-import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
+import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
 
 public class P_Seq extends P_Path2
 {

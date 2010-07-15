@@ -6,19 +6,18 @@
 
 package org.openjena.riot.out;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
-import java.io.Writer;
+import java.io.ByteArrayOutputStream ;
+import java.io.IOException ;
+import java.io.OutputStreamWriter ;
+import java.io.UnsupportedEncodingException ;
+import java.io.Writer ;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.sparql.sse.SSE;
-
-import org.junit.Test;
+import org.junit.Test ;
 import org.openjena.atlas.junit.BaseTest ;
 import org.openjena.riot.Prologue ;
-import org.openjena.riot.out.OutputLangUtils ;
+
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.sparql.sse.SSE ;
 
 public class TestOutput extends BaseTest
 {

@@ -7,12 +7,12 @@
 package com.hp.hpl.jena.sparql.modify.op;
 
 
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.sparql.modify.UpdateVisitor;
-import com.hp.hpl.jena.sparql.syntax.Template;
-import com.hp.hpl.jena.sparql.syntax.TemplateTriple;
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.sparql.modify.UpdateVisitor ;
+import com.hp.hpl.jena.sparql.syntax.Template ;
+import com.hp.hpl.jena.sparql.syntax.TemplateTriple ;
 
 public class UpdateDelete extends UpdateModifyBase
 {

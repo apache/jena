@@ -7,10 +7,10 @@
 package arq.cmdline;
 
 
-import com.hp.hpl.jena.query.ResultSet;
-import com.hp.hpl.jena.sparql.core.Prologue;
-import com.hp.hpl.jena.sparql.resultset.ResultsFormat;
-import com.hp.hpl.jena.sparql.util.QueryExecUtils;
+import com.hp.hpl.jena.query.ResultSet ;
+import com.hp.hpl.jena.sparql.core.Prologue ;
+import com.hp.hpl.jena.sparql.resultset.ResultsFormat ;
+import com.hp.hpl.jena.sparql.util.QueryExecUtils ;
 
 public class ModResultsOut implements ArgModuleGeneral
 {

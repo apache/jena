@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.sparql.pfunction.library;
 
-import com.hp.hpl.jena.vocabulary.RDF;
+import com.hp.hpl.jena.vocabulary.RDF ;
 
 
 /** Seq membership 

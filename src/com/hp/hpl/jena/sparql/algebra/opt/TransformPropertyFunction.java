@@ -6,13 +6,13 @@
 
 package com.hp.hpl.jena.sparql.algebra.opt;
 
-import com.hp.hpl.jena.query.ARQ;
-import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.algebra.PropertyFunctionGenerator;
-import com.hp.hpl.jena.sparql.algebra.TransformCopy;
-import com.hp.hpl.jena.sparql.algebra.op.OpBGP;
-import com.hp.hpl.jena.sparql.algebra.op.OpTriple;
-import com.hp.hpl.jena.sparql.util.Context;
+import com.hp.hpl.jena.query.ARQ ;
+import com.hp.hpl.jena.sparql.algebra.Op ;
+import com.hp.hpl.jena.sparql.algebra.PropertyFunctionGenerator ;
+import com.hp.hpl.jena.sparql.algebra.TransformCopy ;
+import com.hp.hpl.jena.sparql.algebra.op.OpBGP ;
+import com.hp.hpl.jena.sparql.algebra.op.OpTriple ;
+import com.hp.hpl.jena.sparql.util.Context ;
 
 /** Rewrite to replace a property function property with the call to the property function implementation */
 public class TransformPropertyFunction extends TransformCopy

@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.sparql.resultset;
 
-import com.hp.hpl.jena.sparql.ARQConstants;
+import com.hp.hpl.jena.sparql.ARQConstants ;
 
 
 public interface XMLResults

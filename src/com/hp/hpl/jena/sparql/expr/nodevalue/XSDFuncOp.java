@@ -6,24 +6,28 @@
 
 package com.hp.hpl.jena.sparql.expr.nodevalue;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
+import static com.hp.hpl.jena.sparql.expr.nodevalue.NumericType.OP_DECIMAL ;
+import static com.hp.hpl.jena.sparql.expr.nodevalue.NumericType.OP_DOUBLE ;
+import static com.hp.hpl.jena.sparql.expr.nodevalue.NumericType.OP_FLOAT ;
+import static com.hp.hpl.jena.sparql.expr.nodevalue.NumericType.OP_INTEGER ;
+
+import java.math.BigDecimal ;
+import java.math.BigInteger ;
 import java.text.DecimalFormat ;
 
 import com.hp.hpl.jena.datatypes.RDFDatatype ;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
-import com.hp.hpl.jena.datatypes.xsd.XSDDateTime;
-import com.hp.hpl.jena.datatypes.xsd.XSDDuration;
+import com.hp.hpl.jena.datatypes.xsd.XSDDateTime ;
+import com.hp.hpl.jena.datatypes.xsd.XSDDuration ;
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.sparql.ARQInternalErrorException;
-import com.hp.hpl.jena.sparql.expr.Expr;
-import com.hp.hpl.jena.sparql.expr.ExprEvalException;
+import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
+import com.hp.hpl.jena.sparql.expr.Expr ;
+import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
 import com.hp.hpl.jena.sparql.expr.ExprEvalTypeException ;
-import com.hp.hpl.jena.sparql.expr.NodeValue;
-import com.hp.hpl.jena.sparql.util.ALog;
-import com.hp.hpl.jena.sparql.util.DateTimeStruct;
-import com.hp.hpl.jena.sparql.util.StringUtils;
-import static com.hp.hpl.jena.sparql.expr.nodevalue.NumericType.* ;
+import com.hp.hpl.jena.sparql.expr.NodeValue ;
+import com.hp.hpl.jena.sparql.util.ALog ;
+import com.hp.hpl.jena.sparql.util.DateTimeStruct ;
+import com.hp.hpl.jena.sparql.util.StringUtils ;
 /**
  * Implementation of XQuery/XPath functions and operators.
  * http://www.w3.org/TR/xpath-functions/

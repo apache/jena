@@ -13,7 +13,6 @@ import java.util.Map ;
 
 import org.openjena.atlas.lib.Sink ;
 
-
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.query.Query ;

@@ -7,18 +7,19 @@
 package com.hp.hpl.jena.sparql.modify;
 
 
-import java.util.Iterator;
+import java.util.Iterator ;
 
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.sparql.modify.op.*;
-import com.hp.hpl.jena.sparql.serializer.FmtTemplate;
-import com.hp.hpl.jena.sparql.serializer.FormatterElement;
-import com.hp.hpl.jena.sparql.serializer.SerializationContext;
-import com.hp.hpl.jena.sparql.syntax.Template;
-import com.hp.hpl.jena.sparql.util.FmtUtils;
-import org.openjena.atlas.io.IndentedWriter;
+import org.openjena.atlas.io.IndentedWriter ;
+
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.sparql.modify.op.* ;
+import com.hp.hpl.jena.sparql.serializer.FmtTemplate ;
+import com.hp.hpl.jena.sparql.serializer.FormatterElement ;
+import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
+import com.hp.hpl.jena.sparql.syntax.Template ;
+import com.hp.hpl.jena.sparql.util.FmtUtils ;
 
 public class UpdateSerializer implements UpdateVisitor
 {

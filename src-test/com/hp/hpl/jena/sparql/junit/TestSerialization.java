@@ -7,12 +7,12 @@
 package com.hp.hpl.jena.sparql.junit;
 
 
-import com.hp.hpl.jena.sparql.sse.SSEParseException;
-import org.openjena.atlas.io.IndentedLineBuffer;
-import com.hp.hpl.jena.sparql.util.QueryUtils;
+import org.openjena.atlas.io.IndentedLineBuffer ;
 
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.Syntax;
+import com.hp.hpl.jena.query.Query ;
+import com.hp.hpl.jena.query.Syntax ;
+import com.hp.hpl.jena.sparql.sse.SSEParseException ;
+import com.hp.hpl.jena.sparql.util.QueryUtils ;
 
 public class TestSerialization extends EarlTestCase
 {

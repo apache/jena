@@ -9,7 +9,7 @@
 
 package com.hp.hpl.jena.sparql;
 
-import com.hp.hpl.jena.query.QueryFatalException;
+import com.hp.hpl.jena.query.QueryFatalException ;
 
 public class ARQNotImplemented extends QueryFatalException
 {

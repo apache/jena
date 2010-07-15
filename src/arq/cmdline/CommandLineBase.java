@@ -5,7 +5,8 @@
 
 package arq.cmdline;
 
-import java.util.* ;
+import java.util.ArrayList ;
+import java.util.List ;
 
 /** 
  * Incoming String[] to a list of argument/values + items.

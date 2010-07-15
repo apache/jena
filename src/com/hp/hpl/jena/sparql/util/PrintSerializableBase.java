@@ -8,7 +8,7 @@ package com.hp.hpl.jena.sparql.util;
 
 import org.openjena.atlas.io.IndentedWriter ;
 
-import com.hp.hpl.jena.shared.PrefixMapping;
+import com.hp.hpl.jena.shared.PrefixMapping ;
 
 /** Simple implementation of PrintSerializable.  Subclasses should override
  * output(IndentedWriter, SerializationContext) or output(IndentedWriter).

@@ -5,8 +5,8 @@
 
 package com.hp.hpl.jena.sparql.expr;
 
-import org.apache.xerces.impl.xpath.regex.RegularExpression;
-import org.apache.xerces.impl.xpath.regex.ParseException;
+import org.apache.xerces.impl.xpath.regex.ParseException ;
+import org.apache.xerces.impl.xpath.regex.RegularExpression ;
 
 /** 
  * @author Andy Seaborne

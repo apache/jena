@@ -6,8 +6,8 @@
 
 package com.hp.hpl.jena.sparql.resultset;
 
-import com.hp.hpl.jena.query.ResultSet;
-import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.query.ResultSet ;
+import com.hp.hpl.jena.rdf.model.Model ;
 
 /**
  * 

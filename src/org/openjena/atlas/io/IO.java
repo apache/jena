@@ -6,13 +6,18 @@
 
 package org.openjena.atlas.io;
 
-import java.io.* ;
+import java.io.FileInputStream ;
+import java.io.IOException ;
+import java.io.InputStream ;
+import java.io.InputStreamReader ;
+import java.io.OutputStream ;
+import java.io.Reader ;
+import java.io.Writer ;
 import java.nio.charset.Charset ;
 import java.util.zip.GZIPInputStream ;
 
 import org.openjena.atlas.AtlasException ;
 import org.openjena.atlas.logging.Log ;
-
 
 import com.hp.hpl.jena.util.FileUtils ;
 

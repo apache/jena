@@ -7,10 +7,10 @@ package com.hp.hpl.jena.sparql.expr.nodevalue;
 
 //import java.math.BigDecimal;
 
-import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.sparql.expr.NodeValue;
-import com.hp.hpl.jena.sparql.util.Utils;
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.sparql.expr.NodeValue ;
+import com.hp.hpl.jena.sparql.util.Utils ;
 
 
 public class NodeValueDouble extends NodeValue

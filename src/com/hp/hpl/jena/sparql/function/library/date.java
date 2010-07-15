@@ -6,12 +6,11 @@
 
 package com.hp.hpl.jena.sparql.function.library;
 
-import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
-
-import com.hp.hpl.jena.sparql.expr.ExprEvalException;
-import com.hp.hpl.jena.sparql.expr.NodeValue;
-import com.hp.hpl.jena.sparql.function.FunctionBase1;
-import com.hp.hpl.jena.sparql.util.ALog;
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
+import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
+import com.hp.hpl.jena.sparql.expr.NodeValue ;
+import com.hp.hpl.jena.sparql.function.FunctionBase1 ;
+import com.hp.hpl.jena.sparql.util.ALog ;
 
 /** date(expression) => XSD dateTime 
  *  Attempt to convert an expression to an XSD dateTime.

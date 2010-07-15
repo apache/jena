@@ -6,12 +6,13 @@
 
 package com.hp.hpl.jena.sparql.lang.sparql_10 ;
 
-import com.hp.hpl.jena.graph.* ;
-import com.hp.hpl.jena.query.* ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.sparql.core.Var ;
-import com.hp.hpl.jena.sparql.syntax.* ;
 import com.hp.hpl.jena.sparql.expr.* ;
-import com.hp.hpl.jena.sparql.path.* ;
+import com.hp.hpl.jena.sparql.path.P_Mod ;
+import com.hp.hpl.jena.sparql.path.Path ;
+import com.hp.hpl.jena.sparql.syntax.* ;
 
 
 

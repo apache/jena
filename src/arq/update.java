@@ -6,19 +6,18 @@
 
 package arq;
 
-import java.util.Iterator;
-import java.util.List;
+import java.util.Iterator ;
+import java.util.List ;
 
-import arq.cmd.CmdException;
-import arq.cmdline.ArgDecl;
-import arq.cmdline.CmdUpdate;
+import arq.cmd.CmdException ;
+import arq.cmdline.ArgDecl ;
+import arq.cmdline.CmdUpdate ;
 
-import com.hp.hpl.jena.sparql.sse.SSE;
-import com.hp.hpl.jena.sparql.util.Utils;
-
-import com.hp.hpl.jena.update.GraphStore;
-import com.hp.hpl.jena.update.UpdateFactory;
-import com.hp.hpl.jena.update.UpdateRequest;
+import com.hp.hpl.jena.sparql.sse.SSE ;
+import com.hp.hpl.jena.sparql.util.Utils ;
+import com.hp.hpl.jena.update.GraphStore ;
+import com.hp.hpl.jena.update.UpdateFactory ;
+import com.hp.hpl.jena.update.UpdateRequest ;
 
 public class update extends CmdUpdate
 {

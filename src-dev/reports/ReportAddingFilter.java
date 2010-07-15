@@ -6,27 +6,27 @@
 
 package reports;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
+import java.text.ParseException ;
+import java.text.SimpleDateFormat ;
+import java.util.Calendar ;
+import java.util.Date ;
 
-import com.hp.hpl.jena.datatypes.xsd.XSDDateTime;
-import com.hp.hpl.jena.ontology.OntModel;
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryExecution;
-import com.hp.hpl.jena.query.QueryExecutionFactory;
-import com.hp.hpl.jena.query.QueryFactory;
-import com.hp.hpl.jena.query.ResultSetFormatter;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.sparql.expr.E_Equals;
-import com.hp.hpl.jena.sparql.expr.Expr;
-import com.hp.hpl.jena.sparql.expr.ExprVar;
-import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueDateTime;
-import com.hp.hpl.jena.sparql.syntax.ElementFilter;
-import com.hp.hpl.jena.sparql.syntax.ElementGroup;
-import com.hp.hpl.jena.sparql.syntax.ElementVisitor;
-import com.hp.hpl.jena.sparql.syntax.ElementVisitorBase;
+import com.hp.hpl.jena.datatypes.xsd.XSDDateTime ;
+import com.hp.hpl.jena.ontology.OntModel ;
+import com.hp.hpl.jena.query.Query ;
+import com.hp.hpl.jena.query.QueryExecution ;
+import com.hp.hpl.jena.query.QueryExecutionFactory ;
+import com.hp.hpl.jena.query.QueryFactory ;
+import com.hp.hpl.jena.query.ResultSetFormatter ;
+import com.hp.hpl.jena.rdf.model.ModelFactory ;
+import com.hp.hpl.jena.sparql.expr.E_Equals ;
+import com.hp.hpl.jena.sparql.expr.Expr ;
+import com.hp.hpl.jena.sparql.expr.ExprVar ;
+import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueDateTime ;
+import com.hp.hpl.jena.sparql.syntax.ElementFilter ;
+import com.hp.hpl.jena.sparql.syntax.ElementGroup ;
+import com.hp.hpl.jena.sparql.syntax.ElementVisitor ;
+import com.hp.hpl.jena.sparql.syntax.ElementVisitorBase ;
 
 public class ReportAddingFilter {
 

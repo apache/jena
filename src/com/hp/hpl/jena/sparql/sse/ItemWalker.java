@@ -6,9 +6,9 @@
 
 package com.hp.hpl.jena.sparql.sse;
 
-import java.util.Iterator;
+import java.util.Iterator ;
 
-import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.Node ;
 
 public class ItemWalker
 {

@@ -6,13 +6,12 @@
 
 package org.openjena.atlas.iterator;
 
-import java.util.Iterator;
-import java.util.NoSuchElementException;
+import java.util.Iterator ;
+import java.util.NoSuchElementException ;
 
 import org.openjena.atlas.lib.Closeable ;
 
-
-import com.hp.hpl.jena.sparql.util.Utils;
+import com.hp.hpl.jena.sparql.util.Utils ;
 
 public abstract class RepeatApplyIterator<T> implements Iterator<T>, Closeable
 {

@@ -6,24 +6,20 @@
 
 package com.hp.hpl.jena.sparql.lang;
 
-import java.io.FileReader;
-import java.io.InputStream;
-import java.io.Reader;
-import java.io.StringReader;
+import java.io.FileReader ;
+import java.io.InputStream ;
+import java.io.Reader ;
+import java.io.StringReader ;
 
-import org.slf4j.LoggerFactory;
+import org.slf4j.LoggerFactory ;
 
-import com.hp.hpl.jena.util.FileUtils;
-
-import com.hp.hpl.jena.shared.JenaException;
-
-import com.hp.hpl.jena.sparql.lang.sparql_11.SPARQLParser11;
-import com.hp.hpl.jena.sparql.util.ALog;
-
-import com.hp.hpl.jena.query.QueryException;
-import com.hp.hpl.jena.query.QueryParseException;
-
-import com.hp.hpl.jena.update.UpdateRequest;
+import com.hp.hpl.jena.query.QueryException ;
+import com.hp.hpl.jena.query.QueryParseException ;
+import com.hp.hpl.jena.shared.JenaException ;
+import com.hp.hpl.jena.sparql.lang.sparql_11.SPARQLParser11 ;
+import com.hp.hpl.jena.sparql.util.ALog ;
+import com.hp.hpl.jena.update.UpdateRequest ;
+import com.hp.hpl.jena.util.FileUtils ;
 
 
 public class ParserSPARQL11Update

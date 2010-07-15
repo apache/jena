@@ -6,9 +6,11 @@
 
 package com.hp.hpl.jena.sparql.util;
 
-import java.util.*;
+import java.util.HashMap ;
+import java.util.Iterator ;
+import java.util.Map ;
 
-import com.hp.hpl.jena.sparql.ARQConstants;
+import com.hp.hpl.jena.sparql.ARQConstants ;
 
 
 public class MappedLoader

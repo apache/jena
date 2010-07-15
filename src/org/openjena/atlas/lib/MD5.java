@@ -8,12 +8,12 @@
 package org.openjena.atlas.lib;
 
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
+import java.io.ByteArrayInputStream ;
+import java.io.File ;
+import java.io.FileInputStream ;
+import java.io.IOException ;
+import java.io.InputStream ;
+import java.io.UnsupportedEncodingException ;
 
 public class MD5 {
     private static final int BUFFER_SIZE = 1024 ;

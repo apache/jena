@@ -6,7 +6,7 @@
 
 package org.openjena.atlas.lib;
 
-import java.util.Map;
+import java.util.Map ;
 
 /** Map specific functions */
 public class MapUtils

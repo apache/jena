@@ -5,7 +5,7 @@
  */
 
 package com.hp.hpl.jena.sparql.serializer;
-import com.hp.hpl.jena.sparql.syntax.TemplateVisitor;
+import com.hp.hpl.jena.sparql.syntax.TemplateVisitor ;
 
 /** 
  * @author Andy Seaborne

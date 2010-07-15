@@ -6,7 +6,6 @@
 
 package org.openjena.atlas.io;
 
-import org.openjena.atlas.io.PeekReader ;
 
 
 public class TestPeekReaderCharSequence extends AbstractTestPeekReader

@@ -6,10 +6,10 @@
 
 package com.hp.hpl.jena.sparql.junit;
 
-import com.hp.hpl.jena.query.Syntax;
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.sparql.vocabulary.TestManifestX;
-import com.hp.hpl.jena.util.junit.TestUtils;
+import com.hp.hpl.jena.query.Syntax ;
+import com.hp.hpl.jena.rdf.model.Resource ;
+import com.hp.hpl.jena.sparql.vocabulary.TestManifestX ;
+import com.hp.hpl.jena.util.junit.TestUtils ;
 
 /** com.hp.hpl.jena.query.test.TestUtils
  * 

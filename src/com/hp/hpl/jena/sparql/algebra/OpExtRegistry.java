@@ -6,14 +6,14 @@
 
 package com.hp.hpl.jena.sparql.algebra;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.HashMap ;
+import java.util.Map ;
 
-import com.hp.hpl.jena.sparql.ARQException;
-import com.hp.hpl.jena.sparql.algebra.op.OpExt;
-import com.hp.hpl.jena.sparql.sse.ItemList;
-import com.hp.hpl.jena.sparql.sse.Tags;
-import com.hp.hpl.jena.sparql.sse.builders.BuilderOp;
+import com.hp.hpl.jena.sparql.ARQException ;
+import com.hp.hpl.jena.sparql.algebra.op.OpExt ;
+import com.hp.hpl.jena.sparql.sse.ItemList ;
+import com.hp.hpl.jena.sparql.sse.Tags ;
+import com.hp.hpl.jena.sparql.sse.builders.BuilderOp ;
 
 /** Manage extension algebra operations */
 public class OpExtRegistry

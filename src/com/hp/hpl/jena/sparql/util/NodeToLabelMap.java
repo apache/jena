@@ -6,10 +6,10 @@
 
 package com.hp.hpl.jena.sparql.util;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.HashMap ;
+import java.util.Map ;
 
-import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.Node ;
 
 /** Map nodes to blank node representations.
  * 

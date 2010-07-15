@@ -6,9 +6,8 @@
 
 package org.openjena.atlas.lib;
 
-import org.junit.Test;
+import org.junit.Test ;
 import org.openjena.atlas.junit.BaseTest ;
-import org.openjena.atlas.lib.BitsInt ;
 
 
 public class TestBitsInt extends BaseTest

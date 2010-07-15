@@ -6,7 +6,12 @@
 
 package com.hp.hpl.jena.sparql.util;
 
-import java.util.*;
+import java.util.ArrayList ;
+import java.util.HashMap ;
+import java.util.Iterator ;
+import java.util.List ;
+import java.util.Map ;
+import java.util.Set ;
 
 /** A class for setting and keeping named values.  Used to pass 
  *  implementation-specific parameters across general

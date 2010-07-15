@@ -6,23 +6,21 @@
 
 package com.hp.hpl.jena.sparql.core.assembler;
 
-import java.util.Iterator;
-import java.util.List;
+import java.util.Iterator ;
+import java.util.List ;
 
-import com.hp.hpl.jena.assembler.Assembler;
-import com.hp.hpl.jena.assembler.Mode;
-import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.RDFNode;
-import com.hp.hpl.jena.rdf.model.Resource;
-
-import com.hp.hpl.jena.sparql.util.ALog;
-import com.hp.hpl.jena.sparql.util.FmtUtils;
+import com.hp.hpl.jena.assembler.Assembler ;
+import com.hp.hpl.jena.assembler.Mode ;
+import com.hp.hpl.jena.assembler.assemblers.AssemblerBase ;
+import com.hp.hpl.jena.query.DataSource ;
+import com.hp.hpl.jena.query.DatasetFactory ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.RDFNode ;
+import com.hp.hpl.jena.rdf.model.Resource ;
+import com.hp.hpl.jena.sparql.util.ALog ;
+import com.hp.hpl.jena.sparql.util.FmtUtils ;
 import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
-import com.hp.hpl.jena.sparql.util.graph.GraphUtils;
-
-import com.hp.hpl.jena.query.DataSource;
-import com.hp.hpl.jena.query.DatasetFactory;
+import com.hp.hpl.jena.sparql.util.graph.GraphUtils ;
 
 public class DataSourceAssembler extends AssemblerBase implements Assembler
 {

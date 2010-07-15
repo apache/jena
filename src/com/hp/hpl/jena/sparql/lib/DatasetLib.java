@@ -8,6 +8,7 @@ package com.hp.hpl.jena.sparql.lib;
 
 import java.util.Iterator ;
 
+import org.openjena.atlas.io.IndentedWriter ;
 import org.openjena.atlas.lib.Sink ;
 
 import com.hp.hpl.jena.graph.Graph ;
@@ -17,7 +18,6 @@ import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.sse.writers.WriterGraph ;
-import org.openjena.atlas.io.IndentedWriter ;
 
 public class DatasetLib
 {

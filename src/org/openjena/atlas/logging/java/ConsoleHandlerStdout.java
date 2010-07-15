@@ -6,7 +6,10 @@
 
 package org.openjena.atlas.logging.java;
 
-import java.util.logging.*;
+import java.util.logging.Formatter ;
+import java.util.logging.Handler ;
+import java.util.logging.LogManager ;
+import java.util.logging.LogRecord ;
 
 
 public class ConsoleHandlerStdout extends Handler 

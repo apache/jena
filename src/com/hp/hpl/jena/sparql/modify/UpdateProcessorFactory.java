@@ -6,11 +6,10 @@
 
 package com.hp.hpl.jena.sparql.modify;
 
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
-
-import com.hp.hpl.jena.update.GraphStore;
-import com.hp.hpl.jena.update.UpdateProcessor;
-import com.hp.hpl.jena.update.UpdateRequest;
+import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.update.GraphStore ;
+import com.hp.hpl.jena.update.UpdateProcessor ;
+import com.hp.hpl.jena.update.UpdateRequest ;
 
 /** Interface for factories that accept and make requests for some class of GraphStores. */
 

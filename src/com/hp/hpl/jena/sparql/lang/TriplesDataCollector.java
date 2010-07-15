@@ -6,14 +6,13 @@
 
 package com.hp.hpl.jena.sparql.lang;
 
-import java.util.Collection;
+import java.util.Collection ;
 
-import com.hp.hpl.jena.graph.Triple;
-
-import com.hp.hpl.jena.sparql.syntax.Template;
-import com.hp.hpl.jena.sparql.syntax.TemplateGroup;
-import com.hp.hpl.jena.sparql.syntax.TemplateTriple;
-import com.hp.hpl.jena.sparql.syntax.TemplateVisitor;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.sparql.syntax.Template ;
+import com.hp.hpl.jena.sparql.syntax.TemplateGroup ;
+import com.hp.hpl.jena.sparql.syntax.TemplateTriple ;
+import com.hp.hpl.jena.sparql.syntax.TemplateVisitor ;
 
 public class TriplesDataCollector implements TemplateVisitor
 {

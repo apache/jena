@@ -6,8 +6,8 @@
 
 package com.hp.hpl.jena.sparql.expr;
 
-import com.hp.hpl.jena.sparql.engine.OpEval;
-import com.hp.hpl.jena.sparql.util.Context;
+import com.hp.hpl.jena.sparql.engine.OpEval ;
+import com.hp.hpl.jena.sparql.util.Context ;
 
 /** Visitor class to run over expressions and initialise them
  *  

@@ -7,12 +7,12 @@
 package arq.examples.larq;
 
 
-import com.hp.hpl.jena.sparql.util.StringUtils;
-import com.hp.hpl.jena.sparql.util.Utils;
-import com.hp.hpl.jena.query.ARQ;
-import com.hp.hpl.jena.query.larq.IndexLARQ;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.query.ARQ ;
+import com.hp.hpl.jena.query.larq.IndexLARQ ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.ModelFactory ;
+import com.hp.hpl.jena.sparql.util.StringUtils ;
+import com.hp.hpl.jena.sparql.util.Utils ;
 
 /** Example code to load a model from a file,
  * index all string literals,

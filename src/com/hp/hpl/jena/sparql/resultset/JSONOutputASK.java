@@ -7,11 +7,13 @@
 package com.hp.hpl.jena.sparql.resultset;
 
 
-import java.io.OutputStream;
+import static com.hp.hpl.jena.sparql.resultset.JSONResults.dfBoolean ;
+import static com.hp.hpl.jena.sparql.resultset.JSONResults.dfHead ;
 
-import com.hp.hpl.jena.sparql.lib.org.json.*;
+import java.io.OutputStream ;
 
-import static com.hp.hpl.jena.sparql.resultset.JSONResults.* ;
+import com.hp.hpl.jena.sparql.lib.org.json.JSONObject ;
+import com.hp.hpl.jena.sparql.lib.org.json.JSONStringer ;
 
 /** JSON Output (ASK format)
  * 

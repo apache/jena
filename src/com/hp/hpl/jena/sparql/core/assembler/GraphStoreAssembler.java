@@ -6,14 +6,12 @@
 
 package com.hp.hpl.jena.sparql.core.assembler;
 
-import com.hp.hpl.jena.assembler.Assembler;
-import com.hp.hpl.jena.assembler.Mode;
-import com.hp.hpl.jena.rdf.model.Resource;
-
-import com.hp.hpl.jena.query.DataSource;
-
-import com.hp.hpl.jena.update.GraphStore;
-import com.hp.hpl.jena.update.GraphStoreFactory;
+import com.hp.hpl.jena.assembler.Assembler ;
+import com.hp.hpl.jena.assembler.Mode ;
+import com.hp.hpl.jena.query.DataSource ;
+import com.hp.hpl.jena.rdf.model.Resource ;
+import com.hp.hpl.jena.update.GraphStore ;
+import com.hp.hpl.jena.update.GraphStoreFactory ;
 
 public class GraphStoreAssembler extends DataSourceAssembler
 {

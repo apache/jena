@@ -8,8 +8,6 @@ package org.openjena.atlas.json;
 
 
 import static org.junit.Assert.assertEquals ;
-import org.openjena.atlas.json.JSON ;
-import org.openjena.atlas.json.JsonValue ;
 
 public class LibJsonTest
 {

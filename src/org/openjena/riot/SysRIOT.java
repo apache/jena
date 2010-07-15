@@ -6,11 +6,11 @@
 
 package org.openjena.riot;
 
-import com.hp.hpl.jena.rdf.model.impl.RDFReaderFImpl ;
-
 import org.openjena.atlas.event.EventType ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
+
+import com.hp.hpl.jena.rdf.model.impl.RDFReaderFImpl ;
 
 public class SysRIOT
 {

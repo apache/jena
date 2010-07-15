@@ -6,10 +6,10 @@
 
 package com.hp.hpl.jena.sparql.core;
 
-import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.vocabulary.OWL;
-import com.hp.hpl.jena.vocabulary.RDF;
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.vocabulary.OWL ;
+import com.hp.hpl.jena.vocabulary.RDF ;
 
 public class NodeConst
 {

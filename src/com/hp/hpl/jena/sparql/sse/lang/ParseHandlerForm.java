@@ -6,10 +6,10 @@
 
 package com.hp.hpl.jena.sparql.sse.lang;
 
-import java.util.Stack;
+import java.util.Stack ;
 
-import com.hp.hpl.jena.sparql.sse.Item;
-import com.hp.hpl.jena.sparql.sse.ItemList;
+import com.hp.hpl.jena.sparql.sse.Item ;
+import com.hp.hpl.jena.sparql.sse.ItemList ;
 
 /** Resolve syntacic forms like (base ...) and (prefix...)
  *  where the syntax modifies the enclosed sub term.

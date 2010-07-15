@@ -6,13 +6,14 @@
 
 package com.hp.hpl.jena.sparql.engine.iterator;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.ArrayList ;
+import java.util.List ;
 
-import com.hp.hpl.jena.sparql.engine.QueryIterator;
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.serializer.SerializationContext;
-import org.openjena.atlas.io.IndentedWriter;
+import org.openjena.atlas.io.IndentedWriter ;
+
+import com.hp.hpl.jena.sparql.engine.QueryIterator ;
+import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
 
 /** A caching QueryIterator.  On demand, the application can ask for a new
  *  query iterator which will repeat the bindings yielded so far.

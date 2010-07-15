@@ -6,19 +6,20 @@
 
 package com.hp.hpl.jena.sparql.sse;
 
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.core.DatasetGraph;
-import com.hp.hpl.jena.sparql.core.Prologue;
-import com.hp.hpl.jena.sparql.expr.Expr;
-import com.hp.hpl.jena.sparql.serializer.SerializationContext;
-import com.hp.hpl.jena.sparql.sse.writers.WriterExpr;
-import com.hp.hpl.jena.sparql.sse.writers.WriterGraph;
-import com.hp.hpl.jena.sparql.sse.writers.WriterNode;
-import com.hp.hpl.jena.sparql.sse.writers.WriterOp;
-import org.openjena.atlas.io.IndentedWriter;
+import org.openjena.atlas.io.IndentedWriter ;
+
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.sparql.algebra.Op ;
+import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import com.hp.hpl.jena.sparql.core.Prologue ;
+import com.hp.hpl.jena.sparql.expr.Expr ;
+import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
+import com.hp.hpl.jena.sparql.sse.writers.WriterExpr ;
+import com.hp.hpl.jena.sparql.sse.writers.WriterGraph ;
+import com.hp.hpl.jena.sparql.sse.writers.WriterNode ;
+import com.hp.hpl.jena.sparql.sse.writers.WriterOp ;
 
 public class WriterSSE
 {

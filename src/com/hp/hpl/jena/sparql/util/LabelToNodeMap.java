@@ -6,13 +6,13 @@
 
 package com.hp.hpl.jena.sparql.util;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.HashMap ;
+import java.util.Map ;
+import java.util.Set ;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.sparql.ARQConstants;
-import com.hp.hpl.jena.sparql.core.VarAlloc;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.sparql.ARQConstants ;
+import com.hp.hpl.jena.sparql.core.VarAlloc ;
 
 
 /** Map from _:* form to bNodes

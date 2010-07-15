@@ -6,33 +6,33 @@
 
 package arq;
 
-import java.util.Iterator;
+import java.util.Iterator ;
 
-import arq.cmd.CmdException;
-import arq.cmd.CmdUtils;
-import arq.cmd.TerminationException;
-import arq.cmdline.ArgDecl;
-import arq.cmdline.CmdLineArgs;
+import org.openjena.atlas.io.IndentedWriter ;
+import arq.cmd.CmdException ;
+import arq.cmd.CmdUtils ;
+import arq.cmd.TerminationException ;
+import arq.cmdline.ArgDecl ;
+import arq.cmdline.CmdLineArgs ;
 
-import com.hp.hpl.jena.Jena;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.query.ARQ;
-import com.hp.hpl.jena.query.QueryParseException;
-import com.hp.hpl.jena.shared.PrefixMapping;
-import com.hp.hpl.jena.sparql.ARQConstants;
-import com.hp.hpl.jena.sparql.core.Prologue;
-import com.hp.hpl.jena.sparql.engine.ExecutionContext;
-import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
-import com.hp.hpl.jena.sparql.expr.Expr;
-import com.hp.hpl.jena.sparql.expr.ExprEvalException;
-import com.hp.hpl.jena.sparql.expr.NodeValue;
-import com.hp.hpl.jena.sparql.function.FunctionEnv;
-import com.hp.hpl.jena.sparql.sse.WriterSSE;
-import com.hp.hpl.jena.sparql.util.ALog;
-import com.hp.hpl.jena.sparql.util.ExprUtils;
-import com.hp.hpl.jena.sparql.util.FmtUtils;
-import org.openjena.atlas.io.IndentedWriter;
-import com.hp.hpl.jena.sparql.util.NodeFactory;
+import com.hp.hpl.jena.Jena ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.query.ARQ ;
+import com.hp.hpl.jena.query.QueryParseException ;
+import com.hp.hpl.jena.shared.PrefixMapping ;
+import com.hp.hpl.jena.sparql.ARQConstants ;
+import com.hp.hpl.jena.sparql.core.Prologue ;
+import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
+import com.hp.hpl.jena.sparql.engine.binding.BindingMap ;
+import com.hp.hpl.jena.sparql.expr.Expr ;
+import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
+import com.hp.hpl.jena.sparql.expr.NodeValue ;
+import com.hp.hpl.jena.sparql.function.FunctionEnv ;
+import com.hp.hpl.jena.sparql.sse.WriterSSE ;
+import com.hp.hpl.jena.sparql.util.ALog ;
+import com.hp.hpl.jena.sparql.util.ExprUtils ;
+import com.hp.hpl.jena.sparql.util.FmtUtils ;
+import com.hp.hpl.jena.sparql.util.NodeFactory ;
 
 /** A program to execute expressions from the command line.
   *

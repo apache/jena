@@ -6,10 +6,10 @@
 
 package com.hp.hpl.jena.sparql.pfunction.library;
 
-import com.hp.hpl.jena.query.larq.IndexLARQ;
-import com.hp.hpl.jena.query.larq.LARQ;
-import com.hp.hpl.jena.query.larq.LuceneSearch;
-import com.hp.hpl.jena.sparql.engine.ExecutionContext;
+import com.hp.hpl.jena.query.larq.IndexLARQ ;
+import com.hp.hpl.jena.query.larq.LARQ ;
+import com.hp.hpl.jena.query.larq.LuceneSearch ;
+import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 
 /** Property function to search the default Lucene index (which is 
  *  the one set by {@link LARQ#setDefaultIndex(IndexLARQ) })

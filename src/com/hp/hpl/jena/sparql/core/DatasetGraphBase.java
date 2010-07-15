@@ -11,6 +11,7 @@ package com.hp.hpl.jena.sparql.core;
 import java.util.Iterator ;
 import java.util.List ;
 
+import org.openjena.atlas.io.IndentedLineBuffer ;
 import org.openjena.atlas.iterator.Iter ;
 import org.openjena.atlas.iterator.Transform ;
 
@@ -21,7 +22,6 @@ import com.hp.hpl.jena.shared.Lock ;
 import com.hp.hpl.jena.shared.LockMRSW ;
 import com.hp.hpl.jena.sparql.sse.writers.WriterGraph ;
 import com.hp.hpl.jena.sparql.util.Context ;
-import org.openjena.atlas.io.IndentedLineBuffer ;
 
 /** 
  * <p>DatasetGraph framework : readonly dataset need only provide find(g,s,p,o), getGraph() and getDefaultGraph()

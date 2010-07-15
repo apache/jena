@@ -6,6 +6,9 @@
 
 package com.hp.hpl.jena.sparql.sse.writers;
 
+import org.openjena.atlas.io.IndentedLineBuffer ;
+import org.openjena.atlas.io.IndentedWriter ;
+
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.core.Prologue ;
 import com.hp.hpl.jena.sparql.core.TriplePath ;
@@ -13,8 +16,6 @@ import com.hp.hpl.jena.sparql.path.* ;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
 import com.hp.hpl.jena.sparql.sse.Tags ;
 import com.hp.hpl.jena.sparql.util.FmtUtils ;
-import org.openjena.atlas.io.IndentedLineBuffer ;
-import org.openjena.atlas.io.IndentedWriter ;
 
 /** SSE Writer */
 public class WriterPath

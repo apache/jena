@@ -3,10 +3,10 @@
 package com.hp.hpl.jena.sparql.lib.org.json;
 
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
+import java.io.BufferedReader ;
+import java.io.IOException ;
+import java.io.Reader ;
+import java.io.StringReader ;
 
 /*
 Copyright (c) 2002 JSON.org

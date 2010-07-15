@@ -5,10 +5,10 @@
 
 package com.hp.hpl.jena.sparql.engine.binding;
 
-import java.util.Iterator;
+import java.util.Iterator ;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.sparql.core.Var ;
 
 /** A binding helper that can be a key in a Set or Map.
  *  Changing the key binding while in such a structure is not supported.  

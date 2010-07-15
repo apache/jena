@@ -6,14 +6,12 @@
 
 package org.openjena.atlas.lib;
 
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.IntBuffer;
+import java.nio.ByteBuffer ;
+import java.nio.ByteOrder ;
+import java.nio.IntBuffer ;
 
-
-import org.junit.Test;
+import org.junit.Test ;
 import org.openjena.atlas.junit.BaseTest ;
-import org.openjena.atlas.lib.Alg ;
 
 public class TestAlg extends BaseTest
 {

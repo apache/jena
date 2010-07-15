@@ -6,15 +6,15 @@
 
 package com.hp.hpl.jena.sparql.pfunction.library;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.query.QueryExecException;
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.engine.ExecutionContext;
-import com.hp.hpl.jena.sparql.engine.QueryIterator;
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.pfunction.PFuncSimple;
-import com.hp.hpl.jena.sparql.util.FmtUtils;
-import com.hp.hpl.jena.sparql.util.IterLib;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.query.QueryExecException ;
+import com.hp.hpl.jena.sparql.core.Var ;
+import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
+import com.hp.hpl.jena.sparql.engine.QueryIterator ;
+import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.pfunction.PFuncSimple ;
+import com.hp.hpl.jena.sparql.util.FmtUtils ;
+import com.hp.hpl.jena.sparql.util.IterLib ;
 
 /** Assignment: does not change the value of an existing binding.
  *  Either the subject or object must be a constant or be a bound variable.

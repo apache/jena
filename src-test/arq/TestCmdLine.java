@@ -5,10 +5,11 @@
  */
 
 package arq;
-import java.util.* ; 
+import java.util.Iterator ;
 
-import arq.cmdline.*;
-import junit.framework.*;
+import junit.framework.TestCase ;
+import arq.cmdline.ArgDecl ;
+import arq.cmdline.CmdLineArgs ;
 
 /** 
  * @author Andy Seaborne

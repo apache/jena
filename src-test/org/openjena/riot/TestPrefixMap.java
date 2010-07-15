@@ -6,11 +6,10 @@
 
 package org.openjena.riot;
 
-import com.hp.hpl.jena.iri.IRIFactory;
-
-import org.junit.Test;
+import org.junit.Test ;
 import org.openjena.atlas.junit.BaseTest ;
-import org.openjena.riot.PrefixMap ;
+
+import com.hp.hpl.jena.iri.IRIFactory ;
 
 public class TestPrefixMap extends BaseTest
 {

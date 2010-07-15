@@ -6,7 +6,7 @@
 
 package org.openjena.riot.tokens;
 
-import java.util.Iterator;
+import java.util.Iterator ;
 
 import org.openjena.atlas.lib.Closeable ;
 

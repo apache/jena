@@ -6,7 +6,7 @@
 
 package org.openjena.atlas.iterator;
 
-import java.util.Iterator;
+import java.util.Iterator ;
 
 public class WrapperIterator<T> implements Iterator<T>
 {

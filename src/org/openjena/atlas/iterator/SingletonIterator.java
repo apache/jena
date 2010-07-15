@@ -6,8 +6,8 @@
 
 package org.openjena.atlas.iterator;
 
-import java.util.Iterator;
-import java.util.NoSuchElementException;
+import java.util.Iterator ;
+import java.util.NoSuchElementException ;
 
 public class SingletonIterator<T> implements Iterator<T>, Iterable<T>
 {

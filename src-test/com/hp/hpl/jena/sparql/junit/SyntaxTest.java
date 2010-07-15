@@ -8,7 +8,7 @@ package com.hp.hpl.jena.sparql.junit;
 
 //import java.io.IOException;
 
-import com.hp.hpl.jena.query.*;
+import com.hp.hpl.jena.query.QueryException ;
 
 
 public class SyntaxTest extends EarlTestCase

@@ -6,10 +6,16 @@
 
 package com.hp.hpl.jena.sparql.junit;
 
-import junit.framework.*;
-import junit.runner.*;
-import java.io.*;
-import java.util.*;
+import java.io.PrintStream ;
+import java.util.Enumeration ;
+
+import junit.framework.AssertionFailedError ;
+import junit.framework.Test ;
+import junit.framework.TestCase ;
+import junit.framework.TestFailure ;
+import junit.framework.TestListener ;
+import junit.framework.TestResult ;
+import junit.runner.BaseTestRunner ;
 
 
 /** Simple, text output, test runner

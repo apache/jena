@@ -5,11 +5,16 @@
 
 package com.hp.hpl.jena.sparql.expr;
 
-import java.io.* ;
+import java.io.ByteArrayInputStream ;
 
-import com.hp.hpl.jena.sparql.lang.rdql.*;
+import junit.framework.TestCase ;
+import junit.framework.TestSuite ;
 
-import junit.framework.* ;
+import com.hp.hpl.jena.sparql.lang.rdql.ExprBoolean ;
+import com.hp.hpl.jena.sparql.lang.rdql.ExprNumeric ;
+import com.hp.hpl.jena.sparql.lang.rdql.ExprRDQL ;
+import com.hp.hpl.jena.sparql.lang.rdql.RDQLParser ;
+import com.hp.hpl.jena.sparql.lang.rdql.RDQL_NodeValue ;
 
 
 public class TS_ExprRDQL extends TestSuite

@@ -6,15 +6,15 @@
 
 package com.hp.hpl.jena.sparql.serializer;
 
-import java.io.OutputStream;
+import java.io.OutputStream ;
 
-import com.hp.hpl.jena.sparql.util.ALog;
-import org.openjena.atlas.io.IndentedLineBuffer;
-import org.openjena.atlas.io.IndentedWriter;
-import com.hp.hpl.jena.sparql.util.NodeToLabelMapBNode;
+import org.openjena.atlas.io.IndentedLineBuffer ;
+import org.openjena.atlas.io.IndentedWriter ;
 
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.Syntax;
+import com.hp.hpl.jena.query.Query ;
+import com.hp.hpl.jena.query.Syntax ;
+import com.hp.hpl.jena.sparql.util.ALog ;
+import com.hp.hpl.jena.sparql.util.NodeToLabelMapBNode ;
 
 
 public class Serializer

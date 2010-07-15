@@ -6,40 +6,47 @@
 
 package com.hp.hpl.jena.sparql.sse;
 
-import java.io.*;
+import java.io.FileInputStream ;
+import java.io.FileNotFoundException ;
+import java.io.IOException ;
+import java.io.InputStream ;
+import java.io.OutputStream ;
+import java.io.Reader ;
+import java.io.StringReader ;
 
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.query.Dataset;
-import com.hp.hpl.jena.shared.NotFoundException;
-import com.hp.hpl.jena.shared.PrefixMapping;
-import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
-import com.hp.hpl.jena.sparql.ARQConstants;
-import com.hp.hpl.jena.sparql.ARQException;
-import com.hp.hpl.jena.sparql.algebra.Algebra;
-import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.algebra.Table;
-import com.hp.hpl.jena.sparql.core.BasicPattern;
-import com.hp.hpl.jena.sparql.core.DatasetGraph;
-import com.hp.hpl.jena.sparql.core.Prologue;
-import com.hp.hpl.jena.sparql.core.Quad;
-import com.hp.hpl.jena.sparql.expr.Expr;
-import com.hp.hpl.jena.sparql.serializer.SerializationContext;
-import com.hp.hpl.jena.sparql.sse.builders.BuilderExpr;
-import com.hp.hpl.jena.sparql.sse.builders.BuilderGraph;
-import com.hp.hpl.jena.sparql.sse.builders.BuilderOp;
-import com.hp.hpl.jena.sparql.sse.builders.BuilderTable;
-import com.hp.hpl.jena.sparql.sse.lang.ParseHandler;
-import com.hp.hpl.jena.sparql.sse.lang.ParseHandlerPlain;
-import com.hp.hpl.jena.sparql.sse.lang.ParseHandlerResolver;
-import com.hp.hpl.jena.sparql.sse.lang.SSE_Parser;
-import com.hp.hpl.jena.sparql.sse.writers.WriterGraph;
-import com.hp.hpl.jena.sparql.sse.writers.WriterNode;
-import com.hp.hpl.jena.sparql.sse.writers.WriterOp;
-import com.hp.hpl.jena.sparql.util.FmtUtils;
-import org.openjena.atlas.io.IndentedWriter;
-import com.hp.hpl.jena.util.FileUtils;
+import org.openjena.atlas.io.IndentedWriter ;
+
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.query.Dataset ;
+import com.hp.hpl.jena.shared.NotFoundException ;
+import com.hp.hpl.jena.shared.PrefixMapping ;
+import com.hp.hpl.jena.shared.impl.PrefixMappingImpl ;
+import com.hp.hpl.jena.sparql.ARQConstants ;
+import com.hp.hpl.jena.sparql.ARQException ;
+import com.hp.hpl.jena.sparql.algebra.Algebra ;
+import com.hp.hpl.jena.sparql.algebra.Op ;
+import com.hp.hpl.jena.sparql.algebra.Table ;
+import com.hp.hpl.jena.sparql.core.BasicPattern ;
+import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import com.hp.hpl.jena.sparql.core.Prologue ;
+import com.hp.hpl.jena.sparql.core.Quad ;
+import com.hp.hpl.jena.sparql.expr.Expr ;
+import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
+import com.hp.hpl.jena.sparql.sse.builders.BuilderExpr ;
+import com.hp.hpl.jena.sparql.sse.builders.BuilderGraph ;
+import com.hp.hpl.jena.sparql.sse.builders.BuilderOp ;
+import com.hp.hpl.jena.sparql.sse.builders.BuilderTable ;
+import com.hp.hpl.jena.sparql.sse.lang.ParseHandler ;
+import com.hp.hpl.jena.sparql.sse.lang.ParseHandlerPlain ;
+import com.hp.hpl.jena.sparql.sse.lang.ParseHandlerResolver ;
+import com.hp.hpl.jena.sparql.sse.lang.SSE_Parser ;
+import com.hp.hpl.jena.sparql.sse.writers.WriterGraph ;
+import com.hp.hpl.jena.sparql.sse.writers.WriterNode ;
+import com.hp.hpl.jena.sparql.sse.writers.WriterOp ;
+import com.hp.hpl.jena.sparql.util.FmtUtils ;
+import com.hp.hpl.jena.util.FileUtils ;
 
 public class SSE
 {

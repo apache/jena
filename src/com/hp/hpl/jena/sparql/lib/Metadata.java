@@ -6,17 +6,17 @@
 
 package com.hp.hpl.jena.sparql.lib;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.InvalidPropertiesFormatException;
-import java.util.List;
-import java.util.Properties;
+import java.io.IOException ;
+import java.io.InputStream ;
+import java.util.ArrayList ;
+import java.util.InvalidPropertiesFormatException ;
+import java.util.List ;
+import java.util.Properties ;
 
 import org.openjena.atlas.lib.SystemUtils ;
 
-import com.hp.hpl.jena.sparql.ARQException;
-import com.hp.hpl.jena.sparql.util.ALog;
+import com.hp.hpl.jena.sparql.ARQException ;
+import com.hp.hpl.jena.sparql.util.ALog ;
 
 /** Simple wrapper for reading metadata, once, from a system resource.
  *  Note that in some environments, it's tricky to get a class loader.  

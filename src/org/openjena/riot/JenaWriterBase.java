@@ -6,19 +6,18 @@
 
 package org.openjena.riot;
 
-import java.io.OutputStream;
-import java.io.Writer;
-import java.util.HashMap;
-import java.util.Map;
+import java.io.OutputStream ;
+import java.io.Writer ;
+import java.util.HashMap ;
+import java.util.Map ;
 
 import org.openjena.atlas.io.BufferingWriter ;
 import org.openjena.atlas.logging.Log ;
 
-
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.RDFErrorHandler;
-import com.hp.hpl.jena.rdf.model.RDFWriter;
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.RDFErrorHandler ;
+import com.hp.hpl.jena.rdf.model.RDFWriter ;
 
 public abstract class JenaWriterBase implements RDFWriter
 {

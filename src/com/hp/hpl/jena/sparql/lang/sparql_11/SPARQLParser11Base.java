@@ -5,7 +5,7 @@
  */
 
 package com.hp.hpl.jena.sparql.lang.sparql_11;
-import com.hp.hpl.jena.sparql.lang.ParserQueryBase;
+import com.hp.hpl.jena.sparql.lang.ParserQueryBase ;
 
 class SPARQLParser11Base
         extends ParserQueryBase

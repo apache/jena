@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.sparql.modify;
 
-import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.graph.Graph ;
 
 public interface GraphStoreAction { public void exec(Graph graph) ; }
 /*

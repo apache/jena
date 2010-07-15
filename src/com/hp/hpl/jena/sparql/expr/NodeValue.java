@@ -5,31 +5,31 @@
 
 package com.hp.hpl.jena.sparql.expr;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.Calendar;
-
-import com.hp.hpl.jena.datatypes.DatatypeFormatException;
-import com.hp.hpl.jena.datatypes.RDFDatatype;
-import com.hp.hpl.jena.datatypes.TypeMapper;
-import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
-import com.hp.hpl.jena.datatypes.xsd.XSDDateTime;
-import com.hp.hpl.jena.datatypes.xsd.XSDDuration;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.impl.LiteralLabel;
-import com.hp.hpl.jena.query.ARQ;
-import com.hp.hpl.jena.sparql.ARQInternalErrorException;
-import com.hp.hpl.jena.sparql.core.NodeConst;
-import com.hp.hpl.jena.sparql.engine.ExecutionContext;
-import com.hp.hpl.jena.sparql.engine.Renamer ;
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.expr.nodevalue.*;
-import com.hp.hpl.jena.sparql.function.FunctionEnv;
-import com.hp.hpl.jena.sparql.serializer.SerializationContext;
-import com.hp.hpl.jena.sparql.util.*;
-import com.hp.hpl.jena.vocabulary.XSD;
-
 import static com.hp.hpl.jena.sparql.expr.ValueSpaceClassification.* ;
+
+import java.math.BigDecimal ;
+import java.math.BigInteger ;
+import java.util.Calendar ;
+
+import com.hp.hpl.jena.datatypes.DatatypeFormatException ;
+import com.hp.hpl.jena.datatypes.RDFDatatype ;
+import com.hp.hpl.jena.datatypes.TypeMapper ;
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
+import com.hp.hpl.jena.datatypes.xsd.XSDDateTime ;
+import com.hp.hpl.jena.datatypes.xsd.XSDDuration ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.impl.LiteralLabel ;
+import com.hp.hpl.jena.query.ARQ ;
+import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
+import com.hp.hpl.jena.sparql.core.NodeConst ;
+import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
+import com.hp.hpl.jena.sparql.engine.Renamer ;
+import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.expr.nodevalue.* ;
+import com.hp.hpl.jena.sparql.function.FunctionEnv ;
+import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
+import com.hp.hpl.jena.sparql.util.* ;
+import com.hp.hpl.jena.vocabulary.XSD ;
 
 public abstract class NodeValue extends ExprNode
 {

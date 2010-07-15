@@ -6,11 +6,11 @@
 
 package com.hp.hpl.jena.sparql.core;
 
-import com.hp.hpl.jena.n3.IRIResolver;
-import com.hp.hpl.jena.shared.PrefixMapping;
-import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
-import com.hp.hpl.jena.sparql.util.ALog;
-import com.hp.hpl.jena.sparql.util.PrefixMapping2;
+import com.hp.hpl.jena.n3.IRIResolver ;
+import com.hp.hpl.jena.shared.PrefixMapping ;
+import com.hp.hpl.jena.shared.impl.PrefixMappingImpl ;
+import com.hp.hpl.jena.sparql.util.ALog ;
+import com.hp.hpl.jena.sparql.util.PrefixMapping2 ;
 
 public class Prologue
 {

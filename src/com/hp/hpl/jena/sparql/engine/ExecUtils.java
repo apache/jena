@@ -4,16 +4,15 @@
  */
 
 package com.hp.hpl.jena.sparql.engine;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.Iterator ;
+import java.util.List ;
+import java.util.Set ;
 
-import com.hp.hpl.jena.graph.Triple;
-
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.engine.binding.BindingUtils;
-import com.hp.hpl.jena.sparql.util.ALog;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.sparql.core.Var ;
+import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.engine.binding.BindingUtils ;
+import com.hp.hpl.jena.sparql.util.ALog ;
 
 /**
  * @author     Andy Seaborne

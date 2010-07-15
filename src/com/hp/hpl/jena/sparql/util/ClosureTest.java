@@ -10,7 +10,8 @@
  
 package com.hp.hpl.jena.sparql.util;
 
-import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.rdf.model.Resource ;
+import com.hp.hpl.jena.rdf.model.Statement ;
 
 public interface ClosureTest
 {

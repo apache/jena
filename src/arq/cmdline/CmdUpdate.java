@@ -6,8 +6,8 @@
 
 package arq.cmdline;
 
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.update.GraphStore;
+import com.hp.hpl.jena.rdf.model.ModelFactory ;
+import com.hp.hpl.jena.update.GraphStore ;
 
 public abstract class CmdUpdate extends CmdARQ
 {

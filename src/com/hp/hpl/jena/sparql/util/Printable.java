@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.sparql.util;
 
-import org.openjena.atlas.io.IndentedWriter;
+import org.openjena.atlas.io.IndentedWriter ;
 
 public interface Printable
 {

@@ -6,7 +6,7 @@
 
 package org.openjena.atlas.json;
 
-import java.math.BigDecimal;
+import java.math.BigDecimal ;
 
 public class JsonNumber extends JsonPrimitive
 {

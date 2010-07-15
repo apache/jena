@@ -5,10 +5,10 @@
 
 package com.hp.hpl.jena.sparql.expr.nodevalue;
 
-import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
-import com.hp.hpl.jena.datatypes.xsd.XSDDateTime;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.sparql.expr.NodeValue;
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
+import com.hp.hpl.jena.datatypes.xsd.XSDDateTime ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.sparql.expr.NodeValue ;
 
 /** XSD dateTime (which is unrelated to XSD date in the datatype hierarchy) */ 
 

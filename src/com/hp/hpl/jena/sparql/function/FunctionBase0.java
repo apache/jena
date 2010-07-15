@@ -5,14 +5,14 @@
 
 package com.hp.hpl.jena.sparql.function;
 
-import java.util.List;
+import java.util.List ;
 
-import com.hp.hpl.jena.query.QueryBuildException;
-import com.hp.hpl.jena.sparql.ARQInternalErrorException;
-import com.hp.hpl.jena.sparql.expr.ExprEvalException;
-import com.hp.hpl.jena.sparql.expr.ExprList;
-import com.hp.hpl.jena.sparql.expr.NodeValue;
-import com.hp.hpl.jena.sparql.util.Utils;
+import com.hp.hpl.jena.query.QueryBuildException ;
+import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
+import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
+import com.hp.hpl.jena.sparql.expr.ExprList ;
+import com.hp.hpl.jena.sparql.expr.NodeValue ;
+import com.hp.hpl.jena.sparql.util.Utils ;
 
 /** Support for a function of zero arguments. 
  * @author Andy Seaborne

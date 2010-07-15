@@ -6,9 +6,9 @@
 
 package com.hp.hpl.jena.sparql.pfunction;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.sparql.engine.ExecutionContext;
-import com.hp.hpl.jena.sparql.engine.QueryIterator;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
+import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 
 /* Abstraction: QueryStage = PlanElement has a single "build"
  * but it's never worng - this two step process here allows for checking 

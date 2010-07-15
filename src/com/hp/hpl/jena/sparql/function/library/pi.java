@@ -6,8 +6,8 @@
 
 package com.hp.hpl.jena.sparql.function.library;
 
-import com.hp.hpl.jena.sparql.expr.NodeValue;
-import com.hp.hpl.jena.sparql.function.FunctionBase0;
+import com.hp.hpl.jena.sparql.expr.NodeValue ;
+import com.hp.hpl.jena.sparql.function.FunctionBase0 ;
 
 /** Value of pi */  
 

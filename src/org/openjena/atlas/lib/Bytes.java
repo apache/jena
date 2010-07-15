@@ -6,13 +6,13 @@
 
 package org.openjena.atlas.lib;
 
-import java.io.UnsupportedEncodingException;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.CharBuffer;
-import java.nio.charset.CharsetDecoder;
-import java.nio.charset.CharsetEncoder;
-import java.nio.charset.CoderResult;
+import java.io.UnsupportedEncodingException ;
+import java.nio.ByteBuffer ;
+import java.nio.ByteOrder ;
+import java.nio.CharBuffer ;
+import java.nio.charset.CharsetDecoder ;
+import java.nio.charset.CharsetEncoder ;
+import java.nio.charset.CoderResult ;
 
 /** Byte-oriented operations.  Packing and unpacking integers
  *  is in network order (Big endian - which is the preferred order in Java)

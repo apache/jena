@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.sparql.pfunction;
 
-import com.hp.hpl.jena.sparql.util.Symbol;
+import com.hp.hpl.jena.sparql.util.Symbol ;
 
 public class PropFuncArgType extends Symbol
 {

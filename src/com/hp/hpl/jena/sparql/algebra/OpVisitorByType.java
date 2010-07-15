@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.sparql.algebra;
 
-import com.hp.hpl.jena.sparql.algebra.op.*;
+import com.hp.hpl.jena.sparql.algebra.op.* ;
 
 /** A vistor helper that maps all visits to a few general ones */ 
 public abstract class OpVisitorByType implements OpVisitor

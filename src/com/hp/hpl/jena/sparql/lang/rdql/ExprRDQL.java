@@ -5,9 +5,9 @@
 
 package com.hp.hpl.jena.sparql.lang.rdql;
 
-import com.hp.hpl.jena.graph.query.IndexValues;
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.sparql.expr.Expr;
+import com.hp.hpl.jena.graph.query.IndexValues ;
+import com.hp.hpl.jena.query.Query ;
+import com.hp.hpl.jena.sparql.expr.Expr ;
 
 public interface ExprRDQL extends PrintableRDQL, Expr
 {

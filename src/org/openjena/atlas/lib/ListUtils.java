@@ -7,8 +7,8 @@
 package org.openjena.atlas.lib;
 
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.ArrayList ;
+import java.util.List ;
 
 import org.openjena.atlas.iterator.FilterUnique ;
 import org.openjena.atlas.iterator.Iter ;

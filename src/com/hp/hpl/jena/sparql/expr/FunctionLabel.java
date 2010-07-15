@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.sparql.expr;
 
-import com.hp.hpl.jena.sparql.util.Symbol;
+import com.hp.hpl.jena.sparql.util.Symbol ;
 
 public class FunctionLabel extends Symbol
 {

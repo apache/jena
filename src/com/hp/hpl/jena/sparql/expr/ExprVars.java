@@ -6,12 +6,12 @@
 
 package com.hp.hpl.jena.sparql.expr;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Collection ;
+import java.util.HashSet ;
+import java.util.Set ;
 
-import com.hp.hpl.jena.sparql.algebra.OpVars;
-import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.sparql.algebra.OpVars ;
+import com.hp.hpl.jena.sparql.core.Var ;
 
 public class ExprVars
 {

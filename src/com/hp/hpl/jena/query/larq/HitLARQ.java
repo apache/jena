@@ -6,9 +6,9 @@
 
 package com.hp.hpl.jena.query.larq;
 
-import org.apache.lucene.search.Hit;
+import org.apache.lucene.search.Hit ;
 
-import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.Node ;
 
 public class HitLARQ
 {

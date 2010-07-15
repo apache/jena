@@ -5,9 +5,9 @@
 
 package com.hp.hpl.jena.sparql.expr.nodevalue;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.sparql.expr.NodeValue;
-import com.hp.hpl.jena.sparql.util.FmtUtils;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.sparql.expr.NodeValue ;
+import com.hp.hpl.jena.sparql.util.FmtUtils ;
 
 
 public class NodeValueString extends NodeValue

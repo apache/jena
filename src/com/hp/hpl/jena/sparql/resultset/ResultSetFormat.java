@@ -6,8 +6,8 @@
 
 package com.hp.hpl.jena.sparql.resultset;
 
-import com.hp.hpl.jena.sparql.util.Symbol;
-import com.hp.hpl.jena.sparql.util.TranslationTable;
+import com.hp.hpl.jena.sparql.util.Symbol ;
+import com.hp.hpl.jena.sparql.util.TranslationTable ;
 
 public class ResultSetFormat extends Symbol
 {

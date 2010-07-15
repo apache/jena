@@ -6,9 +6,9 @@
 
 package com.hp.hpl.jena.sparql.util;
 
-import com.hp.hpl.jena.datatypes.BaseDatatype;
-import com.hp.hpl.jena.datatypes.DatatypeFormatException;
-import com.hp.hpl.jena.datatypes.TypeMapper;
+import com.hp.hpl.jena.datatypes.BaseDatatype ;
+import com.hp.hpl.jena.datatypes.DatatypeFormatException ;
+import com.hp.hpl.jena.datatypes.TypeMapper ;
 
 public class RomanNumeralDatatype extends BaseDatatype //implements RDFDatatype
 {

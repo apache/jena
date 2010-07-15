@@ -6,8 +6,8 @@
 
 package com.hp.hpl.jena.sparql.path;
 
-import com.hp.hpl.jena.sparql.core.Prologue;
-import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
+import com.hp.hpl.jena.sparql.core.Prologue ;
+import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
 
 public interface Path
 {

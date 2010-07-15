@@ -6,8 +6,8 @@
 
 package com.hp.hpl.jena.sparql.engine.main.iterator;
 
-import com.hp.hpl.jena.sparql.engine.ExecutionContext;
-import com.hp.hpl.jena.sparql.engine.QueryIterator;
+import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
+import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 
 /** Join by materializing the RHS - this is not streamed */
 public class QueryIterJoin extends QueryIterJoinBase

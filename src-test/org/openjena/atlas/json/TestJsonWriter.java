@@ -8,8 +8,6 @@ package org.openjena.atlas.json;
 
 import static org.openjena.atlas.json.LibJsonTest.writeRead ;
 import org.junit.Test ;
-import org.openjena.atlas.json.JsonString ;
-import org.openjena.atlas.json.JsonValue ;
 import org.openjena.atlas.junit.BaseTest ;
 
 public class TestJsonWriter extends BaseTest

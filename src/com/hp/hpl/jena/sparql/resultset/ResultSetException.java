@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.sparql.resultset;
 
-import com.hp.hpl.jena.query.QueryException;
+import com.hp.hpl.jena.query.QueryException ;
 
 
 public class ResultSetException extends QueryException

@@ -6,9 +6,9 @@
 
 package com.hp.hpl.jena.sparql.function;
 
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.sparql.core.DatasetGraph;
-import com.hp.hpl.jena.sparql.util.Context;
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import com.hp.hpl.jena.sparql.util.Context ;
 
 /** Environment passed to functions */
 

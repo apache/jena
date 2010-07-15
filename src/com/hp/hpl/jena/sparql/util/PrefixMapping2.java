@@ -6,11 +6,11 @@
 
 package com.hp.hpl.jena.sparql.util;
 
-import java.util.Map;
-import java.util.Iterator;
+import java.util.Iterator ;
+import java.util.Map ;
 
-import com.hp.hpl.jena.shared.PrefixMapping;
-import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
+import com.hp.hpl.jena.shared.PrefixMapping ;
+import com.hp.hpl.jena.shared.impl.PrefixMappingImpl ;
 
 /** A prefix mapping based on global and local mappings.
  *  Updates go to the local (second) copy only.

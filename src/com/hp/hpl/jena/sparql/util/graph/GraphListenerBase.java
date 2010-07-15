@@ -6,13 +6,13 @@
 
 package com.hp.hpl.jena.sparql.util.graph;
 
-import java.util.Iterator;
-import java.util.List;
+import java.util.Iterator ;
+import java.util.List ;
 
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.GraphEvents;
-import com.hp.hpl.jena.graph.GraphListener;
-import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.GraphEvents ;
+import com.hp.hpl.jena.graph.GraphListener ;
+import com.hp.hpl.jena.graph.Triple ;
 
 /** Convert the full, wide GraphListener interface into something more specific to loading
  *  including flagging the start and finish of a load operation.

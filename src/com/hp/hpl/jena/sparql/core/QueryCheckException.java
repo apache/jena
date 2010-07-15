@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.sparql.core;
 
-import com.hp.hpl.jena.query.QueryException;
+import com.hp.hpl.jena.query.QueryException ;
 
 public class QueryCheckException extends QueryException
 {

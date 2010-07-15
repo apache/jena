@@ -12,10 +12,6 @@ import org.junit.Test ;
 import org.openjena.atlas.io.PeekReader ;
 import org.openjena.atlas.junit.BaseTest ;
 import org.openjena.riot.RiotParseException ;
-import org.openjena.riot.tokens.Token ;
-import org.openjena.riot.tokens.TokenType ;
-import org.openjena.riot.tokens.Tokenizer ;
-import org.openjena.riot.tokens.TokenizerText ;
 
 
 public class TestTokenizer extends BaseTest

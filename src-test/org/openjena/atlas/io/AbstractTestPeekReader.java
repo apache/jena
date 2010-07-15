@@ -7,7 +7,6 @@
 package org.openjena.atlas.io;
 
 import org.junit.Test ;
-import org.openjena.atlas.io.PeekReader ;
 import org.openjena.atlas.junit.BaseTest ;
 
 public abstract class AbstractTestPeekReader extends BaseTest

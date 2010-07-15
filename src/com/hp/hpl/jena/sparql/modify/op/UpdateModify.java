@@ -7,8 +7,8 @@
 package com.hp.hpl.jena.sparql.modify.op;
 
 
-import com.hp.hpl.jena.sparql.modify.UpdateVisitor;
-import com.hp.hpl.jena.sparql.syntax.Template;
+import com.hp.hpl.jena.sparql.modify.UpdateVisitor ;
+import com.hp.hpl.jena.sparql.syntax.Template ;
 
 public class UpdateModify extends UpdateModifyBase
 {

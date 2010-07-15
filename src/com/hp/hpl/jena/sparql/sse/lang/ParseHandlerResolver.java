@@ -6,15 +6,15 @@
 
 package com.hp.hpl.jena.sparql.sse.lang;
 
-import java.util.Iterator;
-import java.util.Stack;
+import java.util.Iterator ;
+import java.util.Stack ;
 
-import com.hp.hpl.jena.shared.PrefixMapping;
-import com.hp.hpl.jena.sparql.core.Prologue;
-import com.hp.hpl.jena.sparql.sse.Item;
-import com.hp.hpl.jena.sparql.sse.ItemList;
-import com.hp.hpl.jena.sparql.sse.builders.BuilderPrefixMapping;
-import com.hp.hpl.jena.sparql.util.StringUtils;
+import com.hp.hpl.jena.shared.PrefixMapping ;
+import com.hp.hpl.jena.sparql.core.Prologue ;
+import com.hp.hpl.jena.sparql.sse.Item ;
+import com.hp.hpl.jena.sparql.sse.ItemList ;
+import com.hp.hpl.jena.sparql.sse.builders.BuilderPrefixMapping ;
+import com.hp.hpl.jena.sparql.util.StringUtils ;
 
 
 /** Resolve syntacic forms like (base ...) and (prefix...)

@@ -6,13 +6,16 @@
 
 package arq.cmdline;
 
-import java.util.*;
+import java.util.ArrayList ;
+import java.util.HashMap ;
+import java.util.Iterator ;
+import java.util.List ;
+import java.util.Map ;
 
-import arq.cmd.CmdException;
+import arq.cmd.CmdException ;
 
-import com.hp.hpl.jena.util.FileManager;
-
-import com.hp.hpl.jena.sparql.util.ALog;
+import com.hp.hpl.jena.sparql.util.ALog ;
+import com.hp.hpl.jena.util.FileManager ;
 
 
 /** Command line, using the common named/positional arguments paradigm

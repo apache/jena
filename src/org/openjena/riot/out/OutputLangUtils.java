@@ -14,7 +14,6 @@ import org.openjena.atlas.io.OutputUtils ;
 import org.openjena.riot.PrefixMap ;
 import org.openjena.riot.Prologue ;
 
-
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.iri.IRI ;

@@ -6,10 +6,10 @@
 
 package com.hp.hpl.jena.sparql.algebra.opt;
 
-import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.algebra.TransformCopy;
-import com.hp.hpl.jena.sparql.algebra.op.OpFilter;
-import com.hp.hpl.jena.sparql.expr.ExprList;
+import com.hp.hpl.jena.sparql.algebra.Op ;
+import com.hp.hpl.jena.sparql.algebra.TransformCopy ;
+import com.hp.hpl.jena.sparql.algebra.op.OpFilter ;
+import com.hp.hpl.jena.sparql.expr.ExprList ;
 
 /* Improvements to filters that do not change the rest of the tree 
  * (so, for example, not filter replacement or equality/assignment
@@ -34,7 +34,8 @@ public class TransformFilterConjunction extends TransformCopy
     {
         ExprList exprList = opFilter.getExprs() ;
         exprList = ExprList.splitConjunction(exprList) ;
-        return OpFilter.filter(exprList, subOp) ;
+        // Do not use -- OpFilter.filter(exprList, subOp) -- it compresses (filter (..) (filter ))
+        return OpFilter.filterRaw(exprList, subOp) ;
     }
 
 }

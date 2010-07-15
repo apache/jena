@@ -6,16 +6,15 @@
 
 package com.hp.hpl.jena.sparql.engine;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.ArrayList ;
+import java.util.Iterator ;
+import java.util.List ;
 
-import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.core.DatasetGraph;
-import com.hp.hpl.jena.sparql.engine.main.QueryEngineMain;
-import com.hp.hpl.jena.sparql.util.Context;
-
-import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.Query ;
+import com.hp.hpl.jena.sparql.algebra.Op ;
+import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import com.hp.hpl.jena.sparql.engine.main.QueryEngineMain ;
+import com.hp.hpl.jena.sparql.util.Context ;
 
 
 public class QueryEngineRegistry

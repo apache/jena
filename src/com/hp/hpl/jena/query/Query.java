@@ -14,6 +14,9 @@ import java.util.List ;
 import java.util.Map ;
 import java.util.Set ;
 
+import org.openjena.atlas.io.IndentedLineBuffer ;
+import org.openjena.atlas.io.IndentedWriter ;
+
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.ARQConstants ;
 import com.hp.hpl.jena.sparql.core.Prologue ;
@@ -31,8 +34,6 @@ import com.hp.hpl.jena.sparql.syntax.Element ;
 import com.hp.hpl.jena.sparql.syntax.Template ;
 import com.hp.hpl.jena.sparql.util.ALog ;
 import com.hp.hpl.jena.sparql.util.FmtUtils ;
-import org.openjena.atlas.io.IndentedLineBuffer ;
-import org.openjena.atlas.io.IndentedWriter ;
 
 /** The data structure for a query as presented externally.
  *  There are two ways of creating a query - use the parser to turn

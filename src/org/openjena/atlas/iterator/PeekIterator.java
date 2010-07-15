@@ -7,7 +7,7 @@
 package org.openjena.atlas.iterator;
 
 import java.util.Iterator ;
-import java.util.NoSuchElementException;
+import java.util.NoSuchElementException ;
 
 /** PeekIterator - is one slot ahead from the wrapped iterator */ 
 public class PeekIterator<T> implements Iterator<T>

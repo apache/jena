@@ -6,8 +6,8 @@
 
 package com.hp.hpl.jena.sparql.util;
 
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.shared.JenaException;
+import com.hp.hpl.jena.rdf.model.Resource ;
+import com.hp.hpl.jena.shared.JenaException ;
 
 
 public class TypeNotUniqueException extends JenaException

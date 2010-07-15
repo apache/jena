@@ -7,14 +7,19 @@
 
 package com.hp.hpl.jena.sparql.algebra;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Stack;
+import java.util.ArrayList ;
+import java.util.Iterator ;
+import java.util.List ;
+import java.util.Stack ;
 
 import com.hp.hpl.jena.sparql.algebra.OpWalker.WalkerVisitor ;
-import com.hp.hpl.jena.sparql.algebra.op.*;
-import com.hp.hpl.jena.sparql.util.ALog;
+import com.hp.hpl.jena.sparql.algebra.op.Op0 ;
+import com.hp.hpl.jena.sparql.algebra.op.Op1 ;
+import com.hp.hpl.jena.sparql.algebra.op.Op2 ;
+import com.hp.hpl.jena.sparql.algebra.op.OpExt ;
+import com.hp.hpl.jena.sparql.algebra.op.OpN ;
+import com.hp.hpl.jena.sparql.algebra.op.OpService ;
+import com.hp.hpl.jena.sparql.util.ALog ;
 
 public class Transformer
 {

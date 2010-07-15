@@ -7,7 +7,15 @@
 package org.openjena.riot.tokens;
 
 import static com.hp.hpl.jena.sparql.util.Utils.equal ;
-import static org.openjena.atlas.lib.Chars.* ;
+import static org.openjena.atlas.lib.Chars.CH_COMMA ;
+import static org.openjena.atlas.lib.Chars.CH_DOT ;
+import static org.openjena.atlas.lib.Chars.CH_LBRACE ;
+import static org.openjena.atlas.lib.Chars.CH_LBRACKET ;
+import static org.openjena.atlas.lib.Chars.CH_LPAREN ;
+import static org.openjena.atlas.lib.Chars.CH_RBRACE ;
+import static org.openjena.atlas.lib.Chars.CH_RBRACKET ;
+import static org.openjena.atlas.lib.Chars.CH_RPAREN ;
+import static org.openjena.atlas.lib.Chars.CH_SEMICOLON ;
 import static org.openjena.riot.tokens.TokenType.BNODE ;
 import static org.openjena.riot.tokens.TokenType.DECIMAL ;
 import static org.openjena.riot.tokens.TokenType.DOUBLE ;
@@ -27,7 +35,6 @@ import org.openjena.atlas.lib.Pair ;
 import org.openjena.riot.PrefixMap ;
 import org.openjena.riot.Prologue ;
 import org.openjena.riot.RiotException ;
-
 
 import com.hp.hpl.jena.datatypes.RDFDatatype ;
 import com.hp.hpl.jena.datatypes.TypeMapper ;

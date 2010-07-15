@@ -6,14 +6,14 @@
 
 package org.openjena.riot;
 
-import java.io.Writer;
-import java.util.Iterator;
+import java.io.Writer ;
+import java.util.Iterator ;
 
 import org.openjena.riot.out.OutputLangUtils ;
 
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.Triple ;
 
 public class JenaWriterNTriples2 extends JenaWriterBase
 {

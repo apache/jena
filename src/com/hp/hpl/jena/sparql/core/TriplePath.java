@@ -6,12 +6,11 @@
 
 package com.hp.hpl.jena.sparql.core;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-
-import com.hp.hpl.jena.sparql.path.P_Link;
-import com.hp.hpl.jena.sparql.path.Path;
-import com.hp.hpl.jena.sparql.util.ALog;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.sparql.path.P_Link ;
+import com.hp.hpl.jena.sparql.path.Path ;
+import com.hp.hpl.jena.sparql.util.ALog ;
 
 /** Like a triple except it can be a path or a triple.  
  * The triple can have a variable predicate.  

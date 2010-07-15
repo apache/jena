@@ -6,20 +6,19 @@
 
 package com.hp.hpl.jena.sparql.modify.op;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.Collection ;
+import java.util.Iterator ;
+import java.util.Map ;
 
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.syntax.Template;
-import com.hp.hpl.jena.sparql.syntax.TemplateGroup;
-import com.hp.hpl.jena.sparql.syntax.TemplateTriple;
-import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
-
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.syntax.Template ;
+import com.hp.hpl.jena.sparql.syntax.TemplateGroup ;
+import com.hp.hpl.jena.sparql.syntax.TemplateTriple ;
+import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
 
 public class TemplateGraph extends TemplateGroup
 {

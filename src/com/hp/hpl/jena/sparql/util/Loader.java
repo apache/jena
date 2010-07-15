@@ -6,8 +6,8 @@
 
 package com.hp.hpl.jena.sparql.util;
 
-import com.hp.hpl.jena.sparql.ARQConstants;
-import com.hp.hpl.jena.sparql.ARQInternalErrorException;
+import com.hp.hpl.jena.sparql.ARQConstants ;
+import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
 
 
 public class Loader

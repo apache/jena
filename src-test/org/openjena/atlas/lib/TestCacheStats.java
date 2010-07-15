@@ -9,9 +9,6 @@ package org.openjena.atlas.lib;
 import org.junit.Before ;
 import org.junit.Test ;
 import org.openjena.atlas.junit.BaseTest ;
-import org.openjena.atlas.lib.Cache ;
-import org.openjena.atlas.lib.CacheFactory ;
-import org.openjena.atlas.lib.CacheStats ;
 import org.openjena.atlas.lib.cache.CacheStatsAtomic ;
 
 public class TestCacheStats extends BaseTest

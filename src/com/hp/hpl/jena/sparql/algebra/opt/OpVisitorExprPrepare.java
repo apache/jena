@@ -6,10 +6,10 @@
 
 package com.hp.hpl.jena.sparql.algebra.opt;
 
-import com.hp.hpl.jena.sparql.algebra.OpVisitorBase;
-import com.hp.hpl.jena.sparql.algebra.op.OpFilter;
-import com.hp.hpl.jena.sparql.algebra.op.OpLeftJoin;
-import com.hp.hpl.jena.sparql.util.Context;
+import com.hp.hpl.jena.sparql.algebra.OpVisitorBase ;
+import com.hp.hpl.jena.sparql.algebra.op.OpFilter ;
+import com.hp.hpl.jena.sparql.algebra.op.OpLeftJoin ;
+import com.hp.hpl.jena.sparql.util.Context ;
 
 public class OpVisitorExprPrepare extends OpVisitorBase
 {

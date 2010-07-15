@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.sparql.sse.builders;
 
-import com.hp.hpl.jena.sparql.sse.ItemException;
+import com.hp.hpl.jena.sparql.sse.ItemException ;
 
 public class BuildException extends ItemException
 {

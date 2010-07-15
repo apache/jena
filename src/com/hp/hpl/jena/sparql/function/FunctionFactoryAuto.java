@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.sparql.function;
 
-import com.hp.hpl.jena.query.QueryBuildException;
+import com.hp.hpl.jena.query.QueryBuildException ;
 
 /** Extension factory that instantiates a class each time.
  * 

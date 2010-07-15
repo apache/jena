@@ -6,15 +6,15 @@
 
 package com.hp.hpl.jena.sparql.function.library;
 
-import java.util.List;
+import java.util.List ;
 
-import com.hp.hpl.jena.query.QueryBuildException;
-import com.hp.hpl.jena.sparql.expr.ExprEvalException;
-import com.hp.hpl.jena.sparql.expr.ExprList;
-import com.hp.hpl.jena.sparql.expr.NodeValue;
-import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp;
-import com.hp.hpl.jena.sparql.function.FunctionBase;
-import com.hp.hpl.jena.sparql.util.Utils;
+import com.hp.hpl.jena.query.QueryBuildException ;
+import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
+import com.hp.hpl.jena.sparql.expr.ExprList ;
+import com.hp.hpl.jena.sparql.expr.NodeValue ;
+import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp ;
+import com.hp.hpl.jena.sparql.function.FunctionBase ;
+import com.hp.hpl.jena.sparql.util.Utils ;
 
 /** substring(string, start[, finish]) - Java style */
 

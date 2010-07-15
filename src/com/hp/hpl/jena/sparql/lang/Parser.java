@@ -6,9 +6,9 @@
 
 package com.hp.hpl.jena.sparql.lang;
 
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryParseException;
-import com.hp.hpl.jena.query.Syntax;
+import com.hp.hpl.jena.query.Query ;
+import com.hp.hpl.jena.query.QueryParseException ;
+import com.hp.hpl.jena.query.Syntax ;
 
 /** This class provides the root of lower level access to all the parsers.
  *  Each subclass hides the details of the per-language exception handlers and other

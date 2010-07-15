@@ -6,9 +6,10 @@
 
 package com.hp.hpl.jena.sparql.syntax;
 
-import java.util.* ;
+import java.util.ArrayList ;
+import java.util.List ;
 
-import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
+import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
 
 /** 
  * 

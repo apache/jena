@@ -14,7 +14,6 @@ import org.openjena.riot.lang.LangTurtle ;
 import org.openjena.riot.lang.SinkToGraphTriples ;
 import org.openjena.riot.tokens.Tokenizer ;
 
-
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.iri.IRI ;
 import com.hp.hpl.jena.rdf.model.Model ;

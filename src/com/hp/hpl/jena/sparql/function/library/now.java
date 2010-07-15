@@ -8,7 +8,7 @@ package com.hp.hpl.jena.sparql.function.library;
 
 //import org.apache.commons.logging.*;
 
-import com.hp.hpl.jena.sparql.ARQConstants;
+import com.hp.hpl.jena.sparql.ARQConstants ;
 
 /** Function that accesses the current time (the time the query started).
  * 

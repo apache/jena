@@ -9,7 +9,7 @@
 
 package com.hp.hpl.jena.sparql.lang.rdql;
 
-import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.Node ;
 
 interface NodeValueSettable extends RDQL_NodeValue
 {

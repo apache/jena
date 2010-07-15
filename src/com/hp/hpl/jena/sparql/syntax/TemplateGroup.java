@@ -6,15 +6,18 @@
 
 package com.hp.hpl.jena.sparql.syntax;
 
-import java.util.*;
+import java.util.ArrayList ;
+import java.util.Collection ;
+import java.util.Iterator ;
+import java.util.List ;
+import java.util.Map ;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-
-import com.hp.hpl.jena.sparql.ARQException;
-import com.hp.hpl.jena.sparql.core.TriplePath;
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.sparql.ARQException ;
+import com.hp.hpl.jena.sparql.core.TriplePath ;
+import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
 
 /** A number of templates, grouped together.
  *  Kept as a list so printing maintains order.

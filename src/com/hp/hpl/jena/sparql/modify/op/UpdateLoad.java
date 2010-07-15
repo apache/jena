@@ -6,10 +6,10 @@
 
 package com.hp.hpl.jena.sparql.modify.op;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.ArrayList ;
+import java.util.List ;
 
-import com.hp.hpl.jena.sparql.modify.UpdateVisitor;
+import com.hp.hpl.jena.sparql.modify.UpdateVisitor ;
 
 public class UpdateLoad extends GraphUpdate1
 {

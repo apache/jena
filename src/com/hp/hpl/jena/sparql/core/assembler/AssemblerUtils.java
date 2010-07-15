@@ -7,17 +7,17 @@
 package com.hp.hpl.jena.sparql.core.assembler;
 
 
-import com.hp.hpl.jena.assembler.Assembler;
-import com.hp.hpl.jena.assembler.JA;
-import com.hp.hpl.jena.assembler.assemblers.AssemblerGroup;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.rdf.model.ResourceFactory;
-import com.hp.hpl.jena.shared.PrefixMapping;
-import com.hp.hpl.jena.sparql.ARQException;
-import com.hp.hpl.jena.sparql.util.TypeNotUniqueException;
-import com.hp.hpl.jena.sparql.util.graph.GraphUtils;
-import com.hp.hpl.jena.util.FileManager;
+import com.hp.hpl.jena.assembler.Assembler ;
+import com.hp.hpl.jena.assembler.JA ;
+import com.hp.hpl.jena.assembler.assemblers.AssemblerGroup ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.Resource ;
+import com.hp.hpl.jena.rdf.model.ResourceFactory ;
+import com.hp.hpl.jena.shared.PrefixMapping ;
+import com.hp.hpl.jena.sparql.ARQException ;
+import com.hp.hpl.jena.sparql.util.TypeNotUniqueException ;
+import com.hp.hpl.jena.sparql.util.graph.GraphUtils ;
+import com.hp.hpl.jena.util.FileManager ;
 
 
 public class AssemblerUtils

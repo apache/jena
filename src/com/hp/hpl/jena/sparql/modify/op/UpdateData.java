@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.sparql.modify.op;
 
-import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.graph.Graph ;
 
 
 public abstract class UpdateData extends GraphUpdateN

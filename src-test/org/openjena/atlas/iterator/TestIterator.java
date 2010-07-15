@@ -6,14 +6,10 @@
 
 package org.openjena.atlas.iterator;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.ArrayList ;
+import java.util.List ;
 
-
-import org.junit.Test;
-import org.openjena.atlas.iterator.Iter ;
-import org.openjena.atlas.iterator.IteratorArray ;
-import org.openjena.atlas.iterator.PeekIterator ;
+import org.junit.Test ;
 import org.openjena.atlas.junit.BaseTest ;
 
 public class TestIterator extends BaseTest

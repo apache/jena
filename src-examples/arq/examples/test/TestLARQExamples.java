@@ -6,16 +6,16 @@
 
 package arq.examples.test;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
+import java.io.ByteArrayOutputStream ;
+import java.io.PrintStream ;
 
-import junit.framework.JUnit4TestAdapter;
-import org.junit.Test;
-import arq.examples.larq.ExLucene1;
-import arq.examples.larq.ExLucene2;
-import arq.examples.larq.ExLucene3;
-import arq.examples.larq.ExLucene4;
-import arq.examples.larq.ExLucene5;
+import junit.framework.JUnit4TestAdapter ;
+import org.junit.Test ;
+import arq.examples.larq.ExLucene1 ;
+import arq.examples.larq.ExLucene2 ;
+import arq.examples.larq.ExLucene3 ;
+import arq.examples.larq.ExLucene4 ;
+import arq.examples.larq.ExLucene5 ;
 
 public class TestLARQExamples
 {

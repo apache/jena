@@ -12,9 +12,6 @@ import org.junit.Test ;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
-import com.hp.hpl.jena.sparql.expr.ExprTypeException ;
-import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.expr.nodevalue.NodeFunctions ;
 import com.hp.hpl.jena.vocabulary.XSD ;
 

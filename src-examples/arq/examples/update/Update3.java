@@ -6,9 +6,10 @@
 
 package arq.examples.update;
 
-import com.hp.hpl.jena.sparql.sse.SSE;
-
-import com.hp.hpl.jena.update.*;
+import com.hp.hpl.jena.sparql.sse.SSE ;
+import com.hp.hpl.jena.update.GraphStore ;
+import com.hp.hpl.jena.update.GraphStoreFactory ;
+import com.hp.hpl.jena.update.UpdateAction ;
 
 /** Simple example of SPARQL/Update : read a update script from a file */ 
 public class Update3

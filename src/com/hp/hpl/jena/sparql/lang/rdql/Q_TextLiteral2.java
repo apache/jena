@@ -7,7 +7,7 @@
 
 package com.hp.hpl.jena.sparql.lang.rdql ;
 
-import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.Query ;
 
 public class Q_TextLiteral2 extends ParsedLiteral {
 

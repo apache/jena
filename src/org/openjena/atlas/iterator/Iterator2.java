@@ -6,8 +6,8 @@
 
 package org.openjena.atlas.iterator;
 
-import java.util.Iterator;
-import java.util.NoSuchElementException;
+import java.util.Iterator ;
+import java.util.NoSuchElementException ;
 
 /** Iterator2 : the concatenation of two iterators.
  * 

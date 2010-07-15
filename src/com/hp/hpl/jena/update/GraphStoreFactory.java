@@ -6,15 +6,12 @@
 
 package com.hp.hpl.jena.update;
 
-import com.hp.hpl.jena.rdf.model.Model;
-
-import com.hp.hpl.jena.graph.Graph;
-
-import com.hp.hpl.jena.sparql.core.DataSourceImpl;
-import com.hp.hpl.jena.sparql.core.DatasetImpl;
-import com.hp.hpl.jena.sparql.modify.GraphStoreBasic;
-
-import com.hp.hpl.jena.query.Dataset;
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.query.Dataset ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.sparql.core.DataSourceImpl ;
+import com.hp.hpl.jena.sparql.core.DatasetImpl ;
+import com.hp.hpl.jena.sparql.modify.GraphStoreBasic ;
 
 /** Operations to create a GraphStore
  */

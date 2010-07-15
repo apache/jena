@@ -13,7 +13,6 @@ import org.openjena.atlas.io.IO ;
 import org.openjena.atlas.lib.SinkNull ;
 import org.openjena.riot.RiotException ;
 import org.openjena.riot.RiotReader ;
-import org.openjena.riot.lang.LangRIOT ;
 
 import com.hp.hpl.jena.sparql.core.Quad ;
 

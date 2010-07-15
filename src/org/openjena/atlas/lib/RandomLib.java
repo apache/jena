@@ -6,8 +6,8 @@
 
 package org.openjena.atlas.lib;
 
-import java.security.SecureRandom;
-import java.util.Random;
+import java.security.SecureRandom ;
+import java.util.Random ;
 
 public class RandomLib
 {

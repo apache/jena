@@ -6,14 +6,14 @@
 
 package org.openjena.atlas.lib;
 
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.io.UnsupportedEncodingException ;
+import java.util.ArrayList ;
+import java.util.List ;
+import java.util.Map ;
 
-import com.hp.hpl.jena.n3.turtle.ParserBase;
+import com.hp.hpl.jena.n3.turtle.ParserBase ;
 import com.hp.hpl.jena.sparql.util.FmtUtils ;
-import com.hp.hpl.jena.sparql.util.StringUtils;
+import com.hp.hpl.jena.sparql.util.StringUtils ;
 
 
 public class StrUtils extends StringUtils

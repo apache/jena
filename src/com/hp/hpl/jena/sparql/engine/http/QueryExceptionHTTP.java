@@ -5,7 +5,7 @@
 
 package com.hp.hpl.jena.sparql.engine.http;
 
-import com.hp.hpl.jena.query.QueryException;
+import com.hp.hpl.jena.query.QueryException ;
 
 /** Exception class for all operations in the Joseki client library.
  *  Error codes are as HTTP statsus codes.

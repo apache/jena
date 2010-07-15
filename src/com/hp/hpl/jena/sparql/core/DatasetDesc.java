@@ -6,12 +6,12 @@
 
 package com.hp.hpl.jena.sparql.core;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.ArrayList ;
+import java.util.Iterator ;
+import java.util.List ;
 
-import com.hp.hpl.jena.query.Dataset;
-import com.hp.hpl.jena.sparql.util.DatasetUtils;
+import com.hp.hpl.jena.query.Dataset ;
+import com.hp.hpl.jena.sparql.util.DatasetUtils ;
 
 // TODO Integrate this
 //   use in FROM/FROM NAMED and change Query class.

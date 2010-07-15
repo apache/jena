@@ -6,9 +6,9 @@
 
 package com.hp.hpl.jena.sparql.sse;
 
-import java.util.Stack;
+import java.util.Stack ;
 
-import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.Node ;
 
 
 public class ItemTransformer

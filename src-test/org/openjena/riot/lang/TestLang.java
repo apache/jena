@@ -6,12 +6,12 @@
 
 package org.openjena.riot.lang;
 
-import com.hp.hpl.jena.util.FileUtils ;
-
 import org.junit.Test ;
 import org.openjena.atlas.junit.BaseTest ;
 import org.openjena.riot.Lang ;
 import org.openjena.riot.WebContent ;
+
+import com.hp.hpl.jena.util.FileUtils ;
 
 public class TestLang extends BaseTest
 {

@@ -8,18 +8,17 @@ package com.hp.hpl.jena.sparql.util;
 
 import org.openjena.atlas.io.IndentedLineBuffer ;
 
-import com.hp.hpl.jena.sparql.algebra.Algebra;
-import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.core.QueryCheckException;
-import com.hp.hpl.jena.sparql.lang.ParserRegistry;
-import com.hp.hpl.jena.sparql.sse.SSE;
-import com.hp.hpl.jena.sparql.sse.SSEParseException;
-import com.hp.hpl.jena.sparql.sse.WriterSSE;
-import com.hp.hpl.jena.sparql.sse.builders.BuildException;
-
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryException;
-import com.hp.hpl.jena.query.QueryFactory;
+import com.hp.hpl.jena.query.Query ;
+import com.hp.hpl.jena.query.QueryException ;
+import com.hp.hpl.jena.query.QueryFactory ;
+import com.hp.hpl.jena.sparql.algebra.Algebra ;
+import com.hp.hpl.jena.sparql.algebra.Op ;
+import com.hp.hpl.jena.sparql.core.QueryCheckException ;
+import com.hp.hpl.jena.sparql.lang.ParserRegistry ;
+import com.hp.hpl.jena.sparql.sse.SSE ;
+import com.hp.hpl.jena.sparql.sse.SSEParseException ;
+import com.hp.hpl.jena.sparql.sse.WriterSSE ;
+import com.hp.hpl.jena.sparql.sse.builders.BuildException ;
 
 public class QueryUtils
 {

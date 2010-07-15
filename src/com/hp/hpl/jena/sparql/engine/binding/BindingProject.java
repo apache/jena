@@ -6,13 +6,13 @@
 
 package com.hp.hpl.jena.sparql.engine.binding;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
+import java.util.ArrayList ;
+import java.util.Collection ;
+import java.util.Iterator ;
+import java.util.List ;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.sparql.core.Var ;
 
 public class  BindingProject extends BindingBase
 {

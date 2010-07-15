@@ -5,10 +5,10 @@
 
 package com.hp.hpl.jena.sparql.expr;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.ArrayList ;
+import java.util.List ;
 
-import com.hp.hpl.jena.sparql.serializer.SerializationContext;
+import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
 
 /** A function in the expression hierarchy.
  *  Everything that is evaluable (i.e. not NodeValue, NodeVar) is a function).

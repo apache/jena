@@ -6,9 +6,8 @@
 
 package com.hp.hpl.jena.sparql.syntax;
 
-import com.hp.hpl.jena.graph.Node;
-
-import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
 
 /** Evaluate a query element based on source information in a named collection.
  * 

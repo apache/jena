@@ -6,11 +6,11 @@
 
 package org.openjena.atlas.junit;
 
-import java.io.PrintStream;
+import java.io.PrintStream ;
 
-import org.junit.internal.TextListener;
-import org.junit.runner.Description;
-import org.junit.runner.notification.Failure;
+import org.junit.internal.TextListener ;
+import org.junit.runner.Description ;
+import org.junit.runner.notification.Failure ;
 
 public class TextListener2 extends TextListener
 {

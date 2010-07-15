@@ -6,9 +6,9 @@
 
 package com.hp.hpl.jena.sparql.util;
 
-import java.io.File;
+import java.io.File ;
 
-import org.slf4j.LoggerFactory;
+import org.slf4j.LoggerFactory ;
 
 /** Convenience logging when it's just the odd log message.  Classes don't need to import
  *  the logging system, or have excessive pirvate static loggers for non-performance

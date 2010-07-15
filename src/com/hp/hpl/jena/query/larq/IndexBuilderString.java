@@ -7,13 +7,13 @@
 package com.hp.hpl.jena.query.larq;
 
 
-import java.io.File;
+import java.io.File ;
 
-import org.apache.lucene.index.IndexWriter;
+import org.apache.lucene.index.IndexWriter ;
 
-import com.hp.hpl.jena.rdf.model.Literal;
-import com.hp.hpl.jena.rdf.model.Property;
-import com.hp.hpl.jena.rdf.model.Statement;
+import com.hp.hpl.jena.rdf.model.Literal ;
+import com.hp.hpl.jena.rdf.model.Property ;
+import com.hp.hpl.jena.rdf.model.Statement ;
 
 /** Index literals which are plain strings, string with a language tag or 
  *  which have a datatype of XSD string.  

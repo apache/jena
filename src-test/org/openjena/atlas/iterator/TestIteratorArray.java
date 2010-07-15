@@ -6,12 +6,10 @@
 
 package org.openjena.atlas.iterator;
 
-import java.util.Iterator;
-import java.util.NoSuchElementException;
+import java.util.Iterator ;
+import java.util.NoSuchElementException ;
 
-
-import org.junit.Test;
-import org.openjena.atlas.iterator.IteratorArray ;
+import org.junit.Test ;
 import org.openjena.atlas.junit.BaseTest ;
 
 public class TestIteratorArray extends BaseTest

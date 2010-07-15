@@ -6,11 +6,11 @@
 
 package org.openjena.riot;
 
-import java.util.Map;
-import java.util.Map.Entry;
+import java.util.Map ;
+import java.util.Map.Entry ;
 
 import com.hp.hpl.jena.iri.IRI ;
-import com.hp.hpl.jena.shared.PrefixMapping;
+import com.hp.hpl.jena.shared.PrefixMapping ;
 
 
 public class Prologue

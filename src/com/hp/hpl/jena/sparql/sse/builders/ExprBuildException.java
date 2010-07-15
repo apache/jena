@@ -6,7 +6,6 @@
 
 package com.hp.hpl.jena.sparql.sse.builders;
 
-import com.hp.hpl.jena.sparql.sse.builders.BuildException;
 
 public class ExprBuildException extends BuildException
     {

@@ -6,10 +6,10 @@
 
 package org.openjena.atlas.json;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.Collection ;
+import java.util.HashMap ;
+import java.util.Map ;
+import java.util.Set ;
 import java.util.Map.Entry ;
 
 public class JsonObject extends JsonValue //implements Map<String, JsonValue>

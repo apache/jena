@@ -5,7 +5,7 @@
 
 package com.hp.hpl.jena.sparql.lang.rdql;
 
-import com.hp.hpl.jena.query.*;
+import com.hp.hpl.jena.query.QueryException ;
 
 
 public class Q_StringNotEqual extends Q_StringEqual implements ExprRDQL, ExprBoolean

@@ -6,13 +6,13 @@
 
 package com.hp.hpl.jena.query;
 
-import com.hp.hpl.jena.n3.IRIResolver;
-import com.hp.hpl.jena.sparql.lang.Parser;
-import com.hp.hpl.jena.sparql.lang.ParserRegistry;
-import com.hp.hpl.jena.sparql.lang.ParserARQ;
-import com.hp.hpl.jena.sparql.syntax.Element;
-import com.hp.hpl.jena.sparql.syntax.Template;
-import com.hp.hpl.jena.util.FileManager;
+import com.hp.hpl.jena.n3.IRIResolver ;
+import com.hp.hpl.jena.sparql.lang.Parser ;
+import com.hp.hpl.jena.sparql.lang.ParserARQ ;
+import com.hp.hpl.jena.sparql.lang.ParserRegistry ;
+import com.hp.hpl.jena.sparql.syntax.Element ;
+import com.hp.hpl.jena.sparql.syntax.Template ;
+import com.hp.hpl.jena.util.FileManager ;
 
 
 public class QueryFactory

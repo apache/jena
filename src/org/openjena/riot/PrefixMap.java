@@ -6,16 +6,15 @@
 
 package org.openjena.riot;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
+import java.util.Collections ;
+import java.util.HashMap ;
+import java.util.Map ;
+import java.util.Map.Entry ;
 
 import org.openjena.atlas.lib.Pair ;
 
-
-import com.hp.hpl.jena.iri.IRI;
-import com.hp.hpl.jena.iri.IRIFactory;
+import com.hp.hpl.jena.iri.IRI ;
+import com.hp.hpl.jena.iri.IRIFactory ;
 
 /** Lightweight, prefixmapping for parsers.  No XML rules, no reverse lookup. */
 public class PrefixMap

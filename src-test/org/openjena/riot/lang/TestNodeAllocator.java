@@ -8,7 +8,6 @@ package org.openjena.riot.lang;
 
 import org.junit.Test ;
 import org.openjena.atlas.junit.BaseTest ;
-import org.openjena.riot.lang.LabelToNode ;
 
 import com.hp.hpl.jena.graph.Node ;
 

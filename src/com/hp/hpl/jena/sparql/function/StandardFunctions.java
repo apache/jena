@@ -6,9 +6,9 @@
 
 package com.hp.hpl.jena.sparql.function;
 
-import com.hp.hpl.jena.datatypes.xsd.*;
-import com.hp.hpl.jena.sparql.ARQConstants;
-import com.hp.hpl.jena.sparql.function.library.*;
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
+import com.hp.hpl.jena.sparql.ARQConstants ;
+import com.hp.hpl.jena.sparql.function.library.* ;
 
 /** Standard function library.
  * 

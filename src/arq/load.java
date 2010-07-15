@@ -6,24 +6,22 @@
 
 package arq;
 
-import java.util.Iterator;
-import java.util.List;
+import java.util.Iterator ;
+import java.util.List ;
 
-import arq.cmd.CmdException;
-import arq.cmdline.ArgDecl;
-import arq.cmdline.CmdUpdate;
+import org.openjena.atlas.io.IndentedWriter ;
+import arq.cmd.CmdException ;
+import arq.cmdline.ArgDecl ;
+import arq.cmdline.CmdUpdate ;
 
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.Node;
-
-import com.hp.hpl.jena.sparql.modify.op.UpdateLoad;
-import com.hp.hpl.jena.sparql.sse.SSE;
-import org.openjena.atlas.io.IndentedWriter;
-import com.hp.hpl.jena.sparql.util.Utils;
-import com.hp.hpl.jena.sparql.util.graph.GraphLoadMonitor;
-
-import com.hp.hpl.jena.update.GraphStore;
-import com.hp.hpl.jena.update.UpdateFactory;
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.sparql.modify.op.UpdateLoad ;
+import com.hp.hpl.jena.sparql.sse.SSE ;
+import com.hp.hpl.jena.sparql.util.Utils ;
+import com.hp.hpl.jena.sparql.util.graph.GraphLoadMonitor ;
+import com.hp.hpl.jena.update.GraphStore ;
+import com.hp.hpl.jena.update.UpdateFactory ;
 
 public class load extends CmdUpdate
 {

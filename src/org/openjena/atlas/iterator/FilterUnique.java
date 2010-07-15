@@ -6,8 +6,8 @@
 
 package org.openjena.atlas.iterator;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashSet ;
+import java.util.Set ;
 
 public class FilterUnique<T> implements Filter<T>
 {

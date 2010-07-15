@@ -6,16 +6,18 @@
 
 package arq.examples.larq;
 
-import java.io.StringReader;
+import java.io.StringReader ;
 
-import com.hp.hpl.jena.rdf.model.*;
-
-import com.hp.hpl.jena.sparql.util.StringUtils;
-import com.hp.hpl.jena.sparql.util.Utils;
-
-import com.hp.hpl.jena.query.ARQ;
-import com.hp.hpl.jena.query.larq.IndexBuilderNode;
-import com.hp.hpl.jena.query.larq.IndexLARQ;
+import com.hp.hpl.jena.query.ARQ ;
+import com.hp.hpl.jena.query.larq.IndexBuilderNode ;
+import com.hp.hpl.jena.query.larq.IndexLARQ ;
+import com.hp.hpl.jena.rdf.model.Literal ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.ModelFactory ;
+import com.hp.hpl.jena.rdf.model.Resource ;
+import com.hp.hpl.jena.rdf.model.ResourceFactory ;
+import com.hp.hpl.jena.sparql.util.StringUtils ;
+import com.hp.hpl.jena.sparql.util.Utils ;
 
 /** Example code to index subjects by some external content.
  *  Pattern 3. 

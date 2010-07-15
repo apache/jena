@@ -6,21 +6,21 @@
 
 package com.hp.hpl.jena.sparql.algebra;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Stack;
+import java.util.Iterator ;
+import java.util.List ;
+import java.util.Stack ;
 
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryFactory;
-import com.hp.hpl.jena.query.SortCondition;
-import com.hp.hpl.jena.sparql.ARQNotImplemented;
-import com.hp.hpl.jena.sparql.algebra.op.*;
-import com.hp.hpl.jena.sparql.core.BasicPattern;
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.expr.Expr;
-import com.hp.hpl.jena.sparql.expr.ExprList;
-import com.hp.hpl.jena.sparql.syntax.*;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.query.Query ;
+import com.hp.hpl.jena.query.QueryFactory ;
+import com.hp.hpl.jena.query.SortCondition ;
+import com.hp.hpl.jena.sparql.ARQNotImplemented ;
+import com.hp.hpl.jena.sparql.algebra.op.* ;
+import com.hp.hpl.jena.sparql.core.BasicPattern ;
+import com.hp.hpl.jena.sparql.core.Var ;
+import com.hp.hpl.jena.sparql.expr.Expr ;
+import com.hp.hpl.jena.sparql.expr.ExprList ;
+import com.hp.hpl.jena.sparql.syntax.* ;
 
 /** Convert an Op expression in SPARQL syntax, that is, the reverse of algebra generation */   
 public class OpAsQuery

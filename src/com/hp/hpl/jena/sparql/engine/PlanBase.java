@@ -6,13 +6,13 @@
 
 package com.hp.hpl.jena.sparql.engine;
 
+import org.openjena.atlas.io.IndentedWriter ;
 import org.openjena.atlas.lib.Closeable ;
 
 import com.hp.hpl.jena.sparql.ARQConstants ;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
-import org.openjena.atlas.io.IndentedWriter ;
 import com.hp.hpl.jena.sparql.util.PrintSerializableBase ;
 
 public abstract class PlanBase extends PrintSerializableBase implements Plan

@@ -6,15 +6,16 @@
 
 package com.hp.hpl.jena.sparql.serializer;
 
-import java.util.Iterator;
+import java.util.Iterator ;
 
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.sparql.core.BasicPattern;
-import com.hp.hpl.jena.sparql.syntax.Template;
-import com.hp.hpl.jena.sparql.syntax.TemplateGroup;
-import com.hp.hpl.jena.sparql.syntax.TemplateTriple;
-import org.openjena.atlas.io.IndentedLineBuffer;
-import org.openjena.atlas.io.IndentedWriter;
+import org.openjena.atlas.io.IndentedLineBuffer ;
+import org.openjena.atlas.io.IndentedWriter ;
+
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.sparql.core.BasicPattern ;
+import com.hp.hpl.jena.sparql.syntax.Template ;
+import com.hp.hpl.jena.sparql.syntax.TemplateGroup ;
+import com.hp.hpl.jena.sparql.syntax.TemplateTriple ;
 
 /** com.hp.hpl.jena.query.core.FormatterARQ
  * 

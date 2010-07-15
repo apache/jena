@@ -2,7 +2,10 @@ package com.hp.hpl.jena.sparql.vocabulary;
 
 /* CVS $Id: VocabTestQuery.java,v 1.1 2005/05/21 12:58:35 andy_seaborne Exp $ */
  
-import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.ModelFactory ;
+import com.hp.hpl.jena.rdf.model.Property ;
+import com.hp.hpl.jena.rdf.model.Resource ;
  
 /**
  * Vocabulary definitions from test-query.n3 

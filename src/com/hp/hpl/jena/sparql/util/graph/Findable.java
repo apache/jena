@@ -6,10 +6,10 @@
 
 package com.hp.hpl.jena.sparql.util.graph;
 
-import java.util.Iterator;
+import java.util.Iterator ;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.Triple ;
 
 public interface Findable
 {

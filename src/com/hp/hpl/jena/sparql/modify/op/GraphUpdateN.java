@@ -6,10 +6,10 @@
 
 package com.hp.hpl.jena.sparql.modify.op;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.ArrayList ;
+import java.util.List ;
 
-import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.Node ;
 
 /**
  * @author Andy Seaborne

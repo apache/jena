@@ -2,7 +2,9 @@ package com.hp.hpl.jena.sparql.vocabulary ;
 
 /* CVS $Id: $ */
  
-import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.ModelFactory ;
+import com.hp.hpl.jena.rdf.model.Resource ;
  
 /**
  * Vocabulary definitions from test-manifest-1_1.ttl 

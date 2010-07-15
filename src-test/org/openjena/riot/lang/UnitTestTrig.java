@@ -7,8 +7,8 @@
 package org.openjena.riot.lang;
 
 import junit.framework.TestCase ;
-import org.openjena.riot.Lang ;
 import org.openjena.riot.DatasetLoader ;
+import org.openjena.riot.Lang ;
 import org.openjena.riot.RiotParseException ;
 
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;

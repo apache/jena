@@ -6,14 +6,14 @@
 
 package arq.cmdline;
 
-import arq.cmd.CmdException;
+import arq.cmd.CmdException ;
 
-import com.hp.hpl.jena.query.DataSource;
-import com.hp.hpl.jena.query.Dataset;
-import com.hp.hpl.jena.shared.JenaException;
-import com.hp.hpl.jena.shared.NotFoundException;
-import com.hp.hpl.jena.sparql.ARQException;
-import com.hp.hpl.jena.sparql.core.assembler.DatasetAssemblerVocab;
+import com.hp.hpl.jena.query.DataSource ;
+import com.hp.hpl.jena.query.Dataset ;
+import com.hp.hpl.jena.shared.JenaException ;
+import com.hp.hpl.jena.shared.NotFoundException ;
+import com.hp.hpl.jena.sparql.ARQException ;
+import com.hp.hpl.jena.sparql.core.assembler.DatasetAssemblerVocab ;
 
 /** Add assembler to a general dataset description */
 public class ModDatasetAssembler extends ModDatasetGeneral

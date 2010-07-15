@@ -6,24 +6,24 @@
 
 package com.hp.hpl.jena.query.larq;
 
-import java.io.Reader;
+import java.io.Reader ;
 
-import org.apache.lucene.document.Document;
-import org.apache.lucene.document.Field;
+import org.apache.lucene.document.Document ;
+import org.apache.lucene.document.Field ;
 
-import com.hp.hpl.jena.datatypes.RDFDatatype;
-import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Node_Blank;
-import com.hp.hpl.jena.graph.Node_Literal;
-import com.hp.hpl.jena.graph.Node_URI;
-import com.hp.hpl.jena.query.ARQ;
-import com.hp.hpl.jena.rdf.model.AnonId;
-import com.hp.hpl.jena.rdf.model.Literal;
-import com.hp.hpl.jena.sparql.ARQConstants;
-import com.hp.hpl.jena.sparql.util.Context;
-import com.hp.hpl.jena.sparql.util.NodeFactory;
-import com.hp.hpl.jena.sparql.util.Symbol;
+import com.hp.hpl.jena.datatypes.RDFDatatype ;
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.Node_Blank ;
+import com.hp.hpl.jena.graph.Node_Literal ;
+import com.hp.hpl.jena.graph.Node_URI ;
+import com.hp.hpl.jena.query.ARQ ;
+import com.hp.hpl.jena.rdf.model.AnonId ;
+import com.hp.hpl.jena.rdf.model.Literal ;
+import com.hp.hpl.jena.sparql.ARQConstants ;
+import com.hp.hpl.jena.sparql.util.Context ;
+import com.hp.hpl.jena.sparql.util.NodeFactory ;
+import com.hp.hpl.jena.sparql.util.Symbol ;
 
 public class LARQ
 {

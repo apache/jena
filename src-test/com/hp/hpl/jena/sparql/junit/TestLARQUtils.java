@@ -6,17 +6,22 @@
 
 package com.hp.hpl.jena.sparql.junit;
 
-import java.util.Iterator;
+import java.util.Iterator ;
 
-import com.hp.hpl.jena.query.*;
-import com.hp.hpl.jena.query.larq.IndexBuilderModel;
-import com.hp.hpl.jena.query.larq.IndexLARQ;
-import com.hp.hpl.jena.query.larq.LARQ;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.sparql.util.StringUtils;
-import com.hp.hpl.jena.util.FileManager;
-import com.hp.hpl.jena.util.iterator.NiceIterator;
+import com.hp.hpl.jena.query.Query ;
+import com.hp.hpl.jena.query.QueryExecution ;
+import com.hp.hpl.jena.query.QueryExecutionFactory ;
+import com.hp.hpl.jena.query.QueryFactory ;
+import com.hp.hpl.jena.query.ResultSet ;
+import com.hp.hpl.jena.query.ResultSetFormatter ;
+import com.hp.hpl.jena.query.larq.IndexBuilderModel ;
+import com.hp.hpl.jena.query.larq.IndexLARQ ;
+import com.hp.hpl.jena.query.larq.LARQ ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.ModelFactory ;
+import com.hp.hpl.jena.sparql.util.StringUtils ;
+import com.hp.hpl.jena.util.FileManager ;
+import com.hp.hpl.jena.util.iterator.NiceIterator ;
 
 public class TestLARQUtils
 {

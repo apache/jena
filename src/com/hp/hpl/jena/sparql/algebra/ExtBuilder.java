@@ -6,8 +6,8 @@
 
 package com.hp.hpl.jena.sparql.algebra;
 
-import com.hp.hpl.jena.sparql.algebra.op.OpExt;
-import com.hp.hpl.jena.sparql.sse.ItemList;
+import com.hp.hpl.jena.sparql.algebra.op.OpExt ;
+import com.hp.hpl.jena.sparql.sse.ItemList ;
 
 public interface ExtBuilder
 {

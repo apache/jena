@@ -6,13 +6,13 @@
 
 package arq.cmdline;
 
-import arq.cmd.TerminationException;
+import arq.cmd.TerminationException ;
 
-import com.hp.hpl.jena.query.ResultSet;
-import com.hp.hpl.jena.query.ResultSetFactory;
-import com.hp.hpl.jena.shared.NotFoundException;
-import com.hp.hpl.jena.sparql.ARQInternalErrorException;
-import com.hp.hpl.jena.sparql.resultset.ResultSetFormat;
+import com.hp.hpl.jena.query.ResultSet ;
+import com.hp.hpl.jena.query.ResultSetFactory ;
+import com.hp.hpl.jena.shared.NotFoundException ;
+import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
+import com.hp.hpl.jena.sparql.resultset.ResultSetFormat ;
 
 public class ModResultsIn implements ArgModuleGeneral
 {

@@ -6,30 +6,31 @@
 package com.hp.hpl.jena.sparql.lang.rdql;
 
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Collection ;
+import java.util.HashSet ;
+import java.util.Set ;
 
-import com.hp.hpl.jena.graph.query.Expression;
-import com.hp.hpl.jena.graph.query.IndexValues;
-import com.hp.hpl.jena.graph.query.Valuator;
-import com.hp.hpl.jena.graph.query.VariableIndexes;
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.sparql.ARQInternalErrorException;
-import com.hp.hpl.jena.sparql.core.Var;
+import org.openjena.atlas.io.IndentedWriter ;
+
+import com.hp.hpl.jena.graph.query.Expression ;
+import com.hp.hpl.jena.graph.query.IndexValues ;
+import com.hp.hpl.jena.graph.query.Valuator ;
+import com.hp.hpl.jena.graph.query.VariableIndexes ;
+import com.hp.hpl.jena.query.Query ;
+import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
+import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.Renamer ;
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.engine.binding.BindingIndex;
-import com.hp.hpl.jena.sparql.expr.Expr;
-import com.hp.hpl.jena.sparql.expr.ExprBuild;
-import com.hp.hpl.jena.sparql.expr.ExprFunction;
-import com.hp.hpl.jena.sparql.expr.ExprVar;
-import com.hp.hpl.jena.sparql.expr.ExprVisitor;
-import com.hp.hpl.jena.sparql.expr.ExprWalker;
-import com.hp.hpl.jena.sparql.expr.NodeValue;
-import com.hp.hpl.jena.sparql.function.FunctionEnv;
-import com.hp.hpl.jena.sparql.util.ALog;
-import org.openjena.atlas.io.IndentedWriter;
+import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.engine.binding.BindingIndex ;
+import com.hp.hpl.jena.sparql.expr.Expr ;
+import com.hp.hpl.jena.sparql.expr.ExprBuild ;
+import com.hp.hpl.jena.sparql.expr.ExprFunction ;
+import com.hp.hpl.jena.sparql.expr.ExprVar ;
+import com.hp.hpl.jena.sparql.expr.ExprVisitor ;
+import com.hp.hpl.jena.sparql.expr.ExprWalker ;
+import com.hp.hpl.jena.sparql.expr.NodeValue ;
+import com.hp.hpl.jena.sparql.function.FunctionEnv ;
+import com.hp.hpl.jena.sparql.util.ALog ;
 
 
 /** A node that is a RDQL constraint expression that can be evaluated to true or false */

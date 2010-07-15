@@ -5,12 +5,12 @@
 
 package com.hp.hpl.jena.sparql.expr.nodevalue;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
+import java.math.BigDecimal ;
+import java.math.BigInteger ;
 
-import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.sparql.expr.NodeValue;
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.sparql.expr.NodeValue ;
 
 
 public class NodeValueInteger extends NodeValue

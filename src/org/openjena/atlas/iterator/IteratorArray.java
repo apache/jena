@@ -6,8 +6,8 @@
 
 package org.openjena.atlas.iterator;
 
-import java.util.Iterator;
-import java.util.NoSuchElementException;
+import java.util.Iterator ;
+import java.util.NoSuchElementException ;
 
 /** Iterator over a Java base array */
 public final class IteratorArray<T> implements Iterator<T>

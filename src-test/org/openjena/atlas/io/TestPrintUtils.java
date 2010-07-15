@@ -6,14 +6,12 @@
 
 package org.openjena.atlas.io;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
+import java.io.ByteArrayOutputStream ;
+import java.io.IOException ;
+import java.io.OutputStreamWriter ;
+import java.io.Writer ;
 
-
-import org.junit.Test;
-import org.openjena.atlas.io.OutputUtils ;
+import org.junit.Test ;
 import org.openjena.atlas.junit.BaseTest ;
 
 public class TestPrintUtils extends BaseTest

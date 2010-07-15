@@ -3,8 +3,8 @@
 package com.hp.hpl.jena.sparql.lib.org.json;
 
 
-import java.io.IOException;
-import java.io.Writer;
+import java.io.IOException ;
+import java.io.Writer ;
 
 /*
 Copyright (c) 2006 JSON.org

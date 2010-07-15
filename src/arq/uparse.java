@@ -6,17 +6,17 @@
 
 package arq;
 
-import java.io.IOException;
-import java.util.Iterator;
-import java.util.List;
+import java.io.IOException ;
+import java.util.Iterator ;
+import java.util.List ;
 
-import arq.cmdline.ArgDecl;
-import arq.cmdline.CmdARQ;
+import arq.cmdline.ArgDecl ;
+import arq.cmdline.CmdARQ ;
 
-import com.hp.hpl.jena.sparql.util.Utils;
-import com.hp.hpl.jena.update.UpdateFactory;
-import com.hp.hpl.jena.update.UpdateRequest;
-import com.hp.hpl.jena.util.FileUtils;
+import com.hp.hpl.jena.sparql.util.Utils ;
+import com.hp.hpl.jena.update.UpdateFactory ;
+import com.hp.hpl.jena.update.UpdateRequest ;
+import com.hp.hpl.jena.util.FileUtils ;
 
 public class uparse extends CmdARQ
 {

@@ -10,11 +10,9 @@ import java.util.HashSet ;
 import java.util.Set ;
 
 import junit.framework.JUnit4TestAdapter ;
-
 import org.junit.Test ;
 import org.openjena.atlas.junit.BaseTest ;
 
-import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.main.VarRename ;
 import com.hp.hpl.jena.sparql.sse.SSE ;

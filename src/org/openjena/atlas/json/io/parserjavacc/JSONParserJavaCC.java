@@ -13,7 +13,6 @@ import org.openjena.atlas.json.io.JSONHandler ;
 import org.openjena.atlas.json.io.parserjavacc.javacc.JSON_Parser ;
 import org.openjena.atlas.json.io.parserjavacc.javacc.ParseException ;
 
-
 import com.hp.hpl.jena.n3.turtle.parser.TokenMgrError ;
 
 

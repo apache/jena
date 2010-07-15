@@ -6,8 +6,8 @@
 
 package com.hp.hpl.jena.sparql.util;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.regex.Matcher ;
+import java.util.regex.Pattern ;
 
 /**
  * References:

@@ -6,12 +6,19 @@
 
 package com.hp.hpl.jena.sparql.algebra.opt;
 
-import static com.hp.hpl.jena.sparql.expr.NodeValue.FALSE ; 
-import static com.hp.hpl.jena.sparql.expr.NodeValue.TRUE ; 
+import static com.hp.hpl.jena.sparql.expr.NodeValue.FALSE ;
+import static com.hp.hpl.jena.sparql.expr.NodeValue.TRUE ;
+
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.TransformCopy ;
 import com.hp.hpl.jena.sparql.algebra.op.OpFilter ;
-import com.hp.hpl.jena.sparql.expr.* ;
+import com.hp.hpl.jena.sparql.expr.E_Equals ;
+import com.hp.hpl.jena.sparql.expr.E_LogicalOr ;
+import com.hp.hpl.jena.sparql.expr.E_NotEquals ;
+import com.hp.hpl.jena.sparql.expr.E_NotOneOf ;
+import com.hp.hpl.jena.sparql.expr.E_OneOf ;
+import com.hp.hpl.jena.sparql.expr.Expr ;
+import com.hp.hpl.jena.sparql.expr.ExprList ;
 
 public class TransformExpandOneOf extends TransformCopy
 {

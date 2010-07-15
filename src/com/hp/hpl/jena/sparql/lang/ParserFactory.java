@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.sparql.lang;
 
-import com.hp.hpl.jena.query.Syntax;
+import com.hp.hpl.jena.query.Syntax ;
 
 /** original code - contribution from Olaf Hartig */
 public interface ParserFactory

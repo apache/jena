@@ -6,21 +6,20 @@
 
 package com.hp.hpl.jena.sparql.util;
 
-import java.math.BigDecimal;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.List;
-import java.util.TimeZone;
+import java.math.BigDecimal ;
+import java.text.DateFormat ;
+import java.text.SimpleDateFormat ;
+import java.util.Calendar ;
+import java.util.Date ;
+import java.util.GregorianCalendar ;
+import java.util.List ;
+import java.util.TimeZone ;
 
-import com.hp.hpl.jena.datatypes.xsd.XSDDateTime;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-
-import com.hp.hpl.jena.sparql.core.TriplePath;
-import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.datatypes.xsd.XSDDateTime ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.sparql.core.TriplePath ;
+import com.hp.hpl.jena.sparql.core.Var ;
 
 /** Miscellaneous operations - not query specific */
 

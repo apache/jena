@@ -6,18 +6,18 @@
 
 package org.openjena.riot.out;
 
-import java.io.ByteArrayOutputStream;
-import java.io.OutputStream;
+import java.io.ByteArrayOutputStream ;
+import java.io.OutputStream ;
 
-import org.junit.Test;
+import org.junit.Test ;
 import org.openjena.atlas.junit.BaseTest ;
 import org.openjena.riot.JenaWriterNTriples2 ;
 
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.RDFWriter;
-import com.hp.hpl.jena.sparql.sse.SSE;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.ModelFactory ;
+import com.hp.hpl.jena.rdf.model.RDFWriter ;
+import com.hp.hpl.jena.sparql.sse.SSE ;
 
 public class TestOutputNTriples extends BaseTest
 {

@@ -6,8 +6,8 @@
 
 package org.openjena.atlas.iterator;
 
-import java.util.Iterator;
-import java.util.NoSuchElementException;
+import java.util.Iterator ;
+import java.util.NoSuchElementException ;
 
 /** Null Iterator - also guaranteed sharable and immutable */
 public class NullIterator<T> implements Iterator<T>, Iterable<T>

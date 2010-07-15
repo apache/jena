@@ -6,9 +6,13 @@
 
 package com.hp.hpl.jena.sparql.engine.http;
 
-import java.util.* ;
+import java.util.ArrayList ;
+import java.util.HashMap ;
+import java.util.Iterator ;
+import java.util.List ;
+import java.util.Map ;
 
-import com.hp.hpl.jena.sparql.util.Convert;
+import com.hp.hpl.jena.sparql.util.Convert ;
 
 /** A collection of parameters for protocol use. */
 

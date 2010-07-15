@@ -6,15 +6,14 @@
 
 package com.hp.hpl.jena.query.larq;
 
-import java.io.File;
+import java.io.File ;
 
-import org.apache.lucene.index.IndexWriter;
+import org.apache.lucene.index.IndexWriter ;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.rdf.model.Property;
-import com.hp.hpl.jena.rdf.model.Statement;
-
-import com.hp.hpl.jena.sparql.ARQNotImplemented;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.rdf.model.Property ;
+import com.hp.hpl.jena.rdf.model.Statement ;
+import com.hp.hpl.jena.sparql.ARQNotImplemented ;
 
 /** 
  * Class for indexing by subject (i.e. index is a literal and the 

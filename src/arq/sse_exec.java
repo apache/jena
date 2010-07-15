@@ -6,11 +6,11 @@
 
 package arq;
 
-import arq.cmdline.CmdARQ_SSE;
+import arq.cmdline.CmdARQ_SSE ;
 
-import com.hp.hpl.jena.sparql.sse.Item;
-import com.hp.hpl.jena.sparql.sse.builders.BuilderExec;
-import com.hp.hpl.jena.sparql.util.Utils;
+import com.hp.hpl.jena.sparql.sse.Item ;
+import com.hp.hpl.jena.sparql.sse.builders.BuilderExec ;
+import com.hp.hpl.jena.sparql.util.Utils ;
 
 public class sse_exec extends CmdARQ_SSE
 {

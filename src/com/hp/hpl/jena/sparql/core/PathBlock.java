@@ -6,12 +6,12 @@
 
 package com.hp.hpl.jena.sparql.core;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ListIterator;
+import java.util.ArrayList ;
+import java.util.List ;
+import java.util.ListIterator ;
 
-import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
-import com.hp.hpl.jena.sparql.util.Utils;
+import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
+import com.hp.hpl.jena.sparql.util.Utils ;
 
 /** A class whose purpose is to give a name to a collection of triple paths. */ 
 

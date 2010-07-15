@@ -7,12 +7,12 @@
 package reports;
 
 
-import com.hp.hpl.jena.sparql.sse.SSE;
-import com.hp.hpl.jena.update.GraphStore;
-import com.hp.hpl.jena.update.GraphStoreFactory;
-import com.hp.hpl.jena.update.UpdateAction;
-import com.hp.hpl.jena.update.UpdateFactory;
-import com.hp.hpl.jena.update.UpdateRequest;
+import com.hp.hpl.jena.sparql.sse.SSE ;
+import com.hp.hpl.jena.update.GraphStore ;
+import com.hp.hpl.jena.update.GraphStoreFactory ;
+import com.hp.hpl.jena.update.UpdateAction ;
+import com.hp.hpl.jena.update.UpdateFactory ;
+import com.hp.hpl.jena.update.UpdateRequest ;
 
 
 public class ReportUpdate1

@@ -6,21 +6,20 @@
 
 package org.openjena.atlas.io;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.Writer;
-import java.nio.ByteBuffer;
-import java.nio.CharBuffer;
-import java.nio.channels.WritableByteChannel;
-
+import java.io.IOException ;
+import java.io.OutputStream ;
+import java.io.Writer ;
+import java.nio.ByteBuffer ;
+import java.nio.CharBuffer ;
+import java.nio.channels.WritableByteChannel ;
 
 import org.openjena.atlas.AtlasException ;
 import org.openjena.atlas.lib.Bytes ;
 import org.openjena.atlas.lib.Sink ;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
 
-import com.hp.hpl.jena.sparql.util.ALog;
+import com.hp.hpl.jena.sparql.util.ALog ;
 
 
 /** A buffering writer, send output to a channel (WriteableByteChannel)

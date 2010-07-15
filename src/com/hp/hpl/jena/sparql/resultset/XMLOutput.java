@@ -6,9 +6,9 @@
 
 package com.hp.hpl.jena.sparql.resultset;
 
-import java.io.*;
+import java.io.OutputStream ;
 
-import com.hp.hpl.jena.query.ResultSet;
+import com.hp.hpl.jena.query.ResultSet ;
 
 
 public class XMLOutput extends OutputBase

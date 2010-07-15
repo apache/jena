@@ -5,12 +5,12 @@
 
 package com.hp.hpl.jena.sparql.expr;
 
-import com.hp.hpl.jena.query.ARQ;
+import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.sparql.engine.Renamer ;
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.function.FunctionEnv;
-import com.hp.hpl.jena.sparql.util.ALog;
-import com.hp.hpl.jena.sparql.util.Symbol;
+import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.function.FunctionEnv ;
+import com.hp.hpl.jena.sparql.util.ALog ;
+import com.hp.hpl.jena.sparql.util.Symbol ;
 
 //import java.util.regex.* ;
 

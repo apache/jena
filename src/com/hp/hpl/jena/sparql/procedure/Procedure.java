@@ -5,12 +5,11 @@
  */
 
 package com.hp.hpl.jena.sparql.procedure ;
-import com.hp.hpl.jena.graph.Node;
-
-import com.hp.hpl.jena.sparql.engine.ExecutionContext;
-import com.hp.hpl.jena.sparql.engine.QueryIterator;
-import com.hp.hpl.jena.sparql.expr.ExprList;
-import com.hp.hpl.jena.sparql.util.PrintSerializable;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
+import com.hp.hpl.jena.sparql.engine.QueryIterator ;
+import com.hp.hpl.jena.sparql.expr.ExprList ;
+import com.hp.hpl.jena.sparql.util.PrintSerializable ;
 
 public interface Procedure extends PrintSerializable
 {

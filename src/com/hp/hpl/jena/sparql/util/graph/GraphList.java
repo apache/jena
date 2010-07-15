@@ -6,19 +6,19 @@
 
 package com.hp.hpl.jena.sparql.util.graph;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.ArrayList ;
+import java.util.Collection ;
+import java.util.HashSet ;
+import java.util.Iterator ;
+import java.util.List ;
+import java.util.Set ;
 
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.sparql.util.ALog;
-import com.hp.hpl.jena.util.iterator.NiceIterator;
-import com.hp.hpl.jena.vocabulary.RDF;
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.sparql.util.ALog ;
+import com.hp.hpl.jena.util.iterator.NiceIterator ;
+import com.hp.hpl.jena.vocabulary.RDF ;
 
 // Support function for RDF collections (graph level)
 

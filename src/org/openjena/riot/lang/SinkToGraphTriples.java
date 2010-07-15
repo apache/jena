@@ -6,8 +6,8 @@
 
 package org.openjena.riot.lang;
 
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.Triple ;
 
 
 public class SinkToGraphTriples extends SinkToGraph

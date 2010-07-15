@@ -6,6 +6,8 @@
 
 package org.openjena.riot;
 
+import static org.openjena.riot.out.OutputLangUtils.output ;
+
 import java.io.IOException ;
 import java.io.OutputStreamWriter ;
 import java.io.PrintStream ;
@@ -13,13 +15,9 @@ import java.io.UnsupportedEncodingException ;
 import java.io.Writer ;
 import java.util.Iterator ;
 
-
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
-
-import static org.openjena.riot.out.OutputLangUtils.* ;
-
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
 

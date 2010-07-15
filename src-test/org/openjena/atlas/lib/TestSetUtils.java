@@ -8,14 +8,12 @@ package org.openjena.atlas.lib;
 
 import static org.openjena.atlas.lib.ListUtils.asList ;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.HashSet ;
+import java.util.List ;
+import java.util.Set ;
 
-
-import org.junit.Test;
+import org.junit.Test ;
 import org.openjena.atlas.junit.BaseTest ;
-import org.openjena.atlas.lib.SetUtils ;
 
 public class TestSetUtils extends BaseTest
 {

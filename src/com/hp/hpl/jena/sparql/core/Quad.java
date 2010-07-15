@@ -6,9 +6,10 @@
 
 package com.hp.hpl.jena.sparql.core;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-import static com.hp.hpl.jena.sparql.util.Utils.* ;
+import static com.hp.hpl.jena.sparql.util.Utils.equal ;
+
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.Triple ;
 
 public class Quad
 {

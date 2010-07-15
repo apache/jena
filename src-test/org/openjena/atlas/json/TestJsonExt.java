@@ -9,9 +9,6 @@ package org.openjena.atlas.json;
 import static org.openjena.atlas.json.LibJsonTest.read ;
 import static org.openjena.atlas.json.LibJsonTest.writeRead ;
 import org.junit.Test ;
-import org.openjena.atlas.json.JsonNumber ;
-import org.openjena.atlas.json.JsonObject ;
-import org.openjena.atlas.json.JsonString ;
 import org.openjena.atlas.junit.BaseTest ;
 
 /** Test that are of extension of JSON */ 

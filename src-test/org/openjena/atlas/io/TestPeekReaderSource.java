@@ -8,8 +8,6 @@ package org.openjena.atlas.io;
 
 import java.io.StringReader ;
 
-import org.openjena.atlas.io.PeekReader ;
-
 public class TestPeekReaderSource extends AbstractTestPeekReader
 {
     @Override

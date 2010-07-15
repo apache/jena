@@ -5,8 +5,8 @@
 
 package com.hp.hpl.jena.sparql.expr.nodevalue;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.sparql.expr.NodeValue;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.sparql.expr.NodeValue ;
 
 
 /** A NodeValue that isn't anything else - unrecognized literals, URIs and blank nodes.

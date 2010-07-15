@@ -7,9 +7,9 @@
 
 package com.hp.hpl.jena.sparql.algebra;
 
-import java.util.List;
+import java.util.List ;
 
-import com.hp.hpl.jena.sparql.algebra.op.*;
+import com.hp.hpl.jena.sparql.algebra.op.* ;
 
 /** One step in the transformation process.
  *  Used with Transformer, performs a a bottom-up rewrite.

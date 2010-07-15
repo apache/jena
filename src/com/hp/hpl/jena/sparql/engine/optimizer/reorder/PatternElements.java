@@ -6,8 +6,8 @@
 
 package com.hp.hpl.jena.sparql.engine.optimizer.reorder;
 
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.sse.Item;
+import com.hp.hpl.jena.sparql.core.Var ;
+import com.hp.hpl.jena.sparql.sse.Item ;
 
 public class PatternElements
 {

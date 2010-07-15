@@ -6,10 +6,10 @@
 
 package com.hp.hpl.jena.sparql.syntax;
 
-import junit.framework.TestSuite;
+import junit.framework.TestSuite ;
 
 import com.hp.hpl.jena.sparql.ARQTestSuite ;
-import com.hp.hpl.jena.sparql.junit.QueryTestSuiteFactory;
+import com.hp.hpl.jena.sparql.junit.QueryTestSuiteFactory ;
 
 
 public class TS_Serialization extends TestSuite

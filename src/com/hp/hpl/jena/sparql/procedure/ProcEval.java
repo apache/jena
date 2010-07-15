@@ -6,14 +6,17 @@
 
 package com.hp.hpl.jena.sparql.procedure;
 
-import com.hp.hpl.jena.graph.Node;
-
-import com.hp.hpl.jena.sparql.algebra.op.OpProcedure;
-import com.hp.hpl.jena.sparql.engine.ExecutionContext;
-import com.hp.hpl.jena.sparql.engine.QueryIterator;
-import com.hp.hpl.jena.sparql.expr.ExprList;
-import com.hp.hpl.jena.sparql.pfunction.*;
-import com.hp.hpl.jena.sparql.util.Context;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.sparql.algebra.op.OpProcedure ;
+import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
+import com.hp.hpl.jena.sparql.engine.QueryIterator ;
+import com.hp.hpl.jena.sparql.expr.ExprList ;
+import com.hp.hpl.jena.sparql.pfunction.ProcedurePF ;
+import com.hp.hpl.jena.sparql.pfunction.PropFuncArg ;
+import com.hp.hpl.jena.sparql.pfunction.PropertyFunction ;
+import com.hp.hpl.jena.sparql.pfunction.PropertyFunctionFactory ;
+import com.hp.hpl.jena.sparql.pfunction.PropertyFunctionRegistry ;
+import com.hp.hpl.jena.sparql.util.Context ;
 
 public class ProcEval
 {

@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.sparql.syntax;
 
-import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
+import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
 
 /** An optional element in a query.
  * 

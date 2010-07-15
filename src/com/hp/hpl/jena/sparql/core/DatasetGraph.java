@@ -13,9 +13,9 @@ import java.util.Iterator ;
 import org.openjena.atlas.lib.Closeable ;
 
 import com.hp.hpl.jena.graph.Graph ;
-import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.TripleMatch ;
-import com.hp.hpl.jena.shared.Lock;
+import com.hp.hpl.jena.shared.Lock ;
 import com.hp.hpl.jena.sparql.util.Context ;
 
 /** DatasetGraph

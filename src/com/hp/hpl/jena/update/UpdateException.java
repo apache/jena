@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.update;
 
-import com.hp.hpl.jena.shared.JenaException;
+import com.hp.hpl.jena.shared.JenaException ;
 
 /** Exception root for SPARQL/Update */ 
 public class UpdateException extends JenaException

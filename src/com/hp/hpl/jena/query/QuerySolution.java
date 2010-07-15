@@ -5,11 +5,11 @@
  */
 
 package com.hp.hpl.jena.query;
-import java.util.Iterator;
+import java.util.Iterator ;
 
-import com.hp.hpl.jena.rdf.model.Literal;
-import com.hp.hpl.jena.rdf.model.RDFNode;
-import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.rdf.model.Literal ;
+import com.hp.hpl.jena.rdf.model.RDFNode ;
+import com.hp.hpl.jena.rdf.model.Resource ;
 
 
 /**

@@ -7,8 +7,8 @@
 package org.openjena.atlas.lib;
 
 
-import java.util.Iterator;
-import java.util.Map;
+import java.util.Iterator ;
+import java.util.Map ;
 
 import org.openjena.atlas.iterator.Iter ;
 

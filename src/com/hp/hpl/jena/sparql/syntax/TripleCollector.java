@@ -6,9 +6,8 @@
 
 package com.hp.hpl.jena.sparql.syntax;
 
-import com.hp.hpl.jena.graph.Triple;
-
-import com.hp.hpl.jena.sparql.core.TriplePath;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.sparql.core.TriplePath ;
 
 
 public interface TripleCollector

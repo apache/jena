@@ -6,7 +6,12 @@
 
 package org.openjena.riot;
 
-import static org.openjena.riot.WebContent.* ;
+import static org.openjena.riot.WebContent.langNQuads ;
+import static org.openjena.riot.WebContent.langNTriple ;
+import static org.openjena.riot.WebContent.langNTriples ;
+import static org.openjena.riot.WebContent.langRDFXML ;
+import static org.openjena.riot.WebContent.langRDFXMLAbbrev ;
+import static org.openjena.riot.WebContent.langTTL ;
 
 import com.hp.hpl.jena.util.FileUtils ;
 

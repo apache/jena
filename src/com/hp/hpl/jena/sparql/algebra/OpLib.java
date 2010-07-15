@@ -6,7 +6,12 @@
 
 package com.hp.hpl.jena.sparql.algebra;
 
-import com.hp.hpl.jena.sparql.algebra.op.*;
+import com.hp.hpl.jena.sparql.algebra.op.Op1 ;
+import com.hp.hpl.jena.sparql.algebra.op.OpDistinct ;
+import com.hp.hpl.jena.sparql.algebra.op.OpOrder ;
+import com.hp.hpl.jena.sparql.algebra.op.OpProject ;
+import com.hp.hpl.jena.sparql.algebra.op.OpReduced ;
+import com.hp.hpl.jena.sparql.algebra.op.OpSlice ;
 
 // NB Operations take and return nulls for convenience.
 

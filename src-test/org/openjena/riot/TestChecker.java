@@ -10,7 +10,6 @@ package org.openjena.riot;
 import org.junit.After ;
 import org.junit.Before ;
 import org.junit.Test ;
-import org.openjena.riot.Checker ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.shared.impl.JenaParameters ;

@@ -6,14 +6,14 @@
 
 package com.hp.hpl.jena.sparql.engine.binding;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.ArrayList ;
+import java.util.Iterator ;
+import java.util.List ;
 
-import com.hp.hpl.jena.graph.query.IndexValues;
-import com.hp.hpl.jena.graph.query.VariableIndexes;
-import com.hp.hpl.jena.shared.DoesNotExistException;
-import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.graph.query.IndexValues ;
+import com.hp.hpl.jena.graph.query.VariableIndexes ;
+import com.hp.hpl.jena.shared.DoesNotExistException ;
+import com.hp.hpl.jena.sparql.core.Var ;
 
 /** com.hp.hpl.jena.query.core.BindingIndex
  *  Convert between Bindings (the core main abstraction)

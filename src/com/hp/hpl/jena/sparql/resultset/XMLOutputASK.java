@@ -6,8 +6,9 @@
 
 package com.hp.hpl.jena.sparql.resultset;
 
-import java.io.OutputStream;
-import org.openjena.atlas.io.IndentedWriter;
+import java.io.OutputStream ;
+
+import org.openjena.atlas.io.IndentedWriter ;
 
 /** XML Output (ASK format)
  * 

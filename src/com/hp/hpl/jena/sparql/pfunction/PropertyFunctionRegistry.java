@@ -5,17 +5,19 @@
  */
 
 package com.hp.hpl.jena.sparql.pfunction;
-import java.util.*;
+import java.util.HashMap ;
+import java.util.HashSet ;
+import java.util.Iterator ;
+import java.util.Map ;
+import java.util.Set ;
 
-import com.hp.hpl.jena.vocabulary.RDFS;
-
-import com.hp.hpl.jena.sparql.ARQConstants;
-import com.hp.hpl.jena.sparql.util.ALog;
-import com.hp.hpl.jena.sparql.util.Context;
-import com.hp.hpl.jena.sparql.util.MappedLoader;
-import com.hp.hpl.jena.sparql.vocabulary.ListPFunction;
-
-import com.hp.hpl.jena.query.ARQ;
+import com.hp.hpl.jena.query.ARQ ;
+import com.hp.hpl.jena.sparql.ARQConstants ;
+import com.hp.hpl.jena.sparql.util.ALog ;
+import com.hp.hpl.jena.sparql.util.Context ;
+import com.hp.hpl.jena.sparql.util.MappedLoader ;
+import com.hp.hpl.jena.sparql.vocabulary.ListPFunction ;
+import com.hp.hpl.jena.vocabulary.RDFS ;
 
 
 /** 

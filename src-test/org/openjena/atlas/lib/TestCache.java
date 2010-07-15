@@ -6,19 +6,17 @@
 
 package org.openjena.atlas.lib;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.util.Arrays ;
+import java.util.Collection ;
+import java.util.List ;
 
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.Before ;
+import org.junit.Test ;
+import org.junit.runner.RunWith ;
+import org.junit.runners.Parameterized ;
+import org.junit.runners.Parameterized.Parameters ;
 import org.openjena.atlas.iterator.Iter ;
 import org.openjena.atlas.junit.BaseTest ;
-import org.openjena.atlas.lib.Cache ;
-import org.openjena.atlas.lib.CacheFactory ;
 import org.openjena.atlas.lib.cache.CacheStatsAtomic ;
 import org.openjena.atlas.lib.cache.CacheStatsSimple ;
 

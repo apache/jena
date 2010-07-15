@@ -6,17 +6,17 @@
 
 package com.hp.hpl.jena.sparql.engine.iterator;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
+import java.util.ArrayList ;
+import java.util.Arrays ;
+import java.util.Comparator ;
+import java.util.Iterator ;
+import java.util.List ;
 
-import com.hp.hpl.jena.sparql.engine.ExecutionContext;
-import com.hp.hpl.jena.sparql.engine.QueryIterator;
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.engine.binding.BindingComparator;
-import com.hp.hpl.jena.query.SortCondition;
+import com.hp.hpl.jena.query.SortCondition ;
+import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
+import com.hp.hpl.jena.sparql.engine.QueryIterator ;
+import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.engine.binding.BindingComparator ;
 
 /** Sort a query iterator.  Uses an in-memory sort, so limiting the size of
  * iterators that can be handled.

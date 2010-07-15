@@ -6,36 +6,35 @@
 
 package arq;
 
-import java.io.File;
+import java.io.File ;
 
-import junit.framework.TestSuite;
-import arq.cmd.CmdException;
-import arq.cmd.TerminationException;
-import arq.cmdline.ArgDecl;
-import arq.cmdline.CmdARQ;
-import arq.cmdline.ModEngine;
+import junit.framework.TestSuite ;
+import arq.cmd.CmdException ;
+import arq.cmd.TerminationException ;
+import arq.cmdline.ArgDecl ;
+import arq.cmdline.CmdARQ ;
+import arq.cmdline.ModEngine ;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.n3.IRIResolver;
-import com.hp.hpl.jena.rdf.model.Literal;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.vocabulary.DC;
-import com.hp.hpl.jena.vocabulary.DCTerms;
-import com.hp.hpl.jena.vocabulary.RDF;
-import com.hp.hpl.jena.vocabulary.XSD;
-
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.n3.IRIResolver ;
+import com.hp.hpl.jena.rdf.model.Literal ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.Resource ;
 import com.hp.hpl.jena.sparql.ARQTestSuite ;
-import com.hp.hpl.jena.sparql.expr.E_Function;
-import com.hp.hpl.jena.sparql.expr.NodeValue;
-import com.hp.hpl.jena.sparql.junit.EarlReport;
-import com.hp.hpl.jena.sparql.junit.QueryTestSuiteFactory;
-import com.hp.hpl.jena.sparql.junit.SimpleTestRunner;
-import com.hp.hpl.jena.sparql.util.NodeFactory;
-import com.hp.hpl.jena.sparql.util.Utils;
-import com.hp.hpl.jena.sparql.vocabulary.DOAP;
-import com.hp.hpl.jena.sparql.vocabulary.FOAF;
-import com.hp.hpl.jena.sparql.vocabulary.TestManifest;
+import com.hp.hpl.jena.sparql.expr.E_Function ;
+import com.hp.hpl.jena.sparql.expr.NodeValue ;
+import com.hp.hpl.jena.sparql.junit.EarlReport ;
+import com.hp.hpl.jena.sparql.junit.QueryTestSuiteFactory ;
+import com.hp.hpl.jena.sparql.junit.SimpleTestRunner ;
+import com.hp.hpl.jena.sparql.util.NodeFactory ;
+import com.hp.hpl.jena.sparql.util.Utils ;
+import com.hp.hpl.jena.sparql.vocabulary.DOAP ;
+import com.hp.hpl.jena.sparql.vocabulary.FOAF ;
+import com.hp.hpl.jena.sparql.vocabulary.TestManifest ;
+import com.hp.hpl.jena.vocabulary.DC ;
+import com.hp.hpl.jena.vocabulary.DCTerms ;
+import com.hp.hpl.jena.vocabulary.RDF ;
+import com.hp.hpl.jena.vocabulary.XSD ;
 
 
 /** A program to execute query test suites

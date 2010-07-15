@@ -6,18 +6,17 @@
 
 package com.hp.hpl.jena.query;
 
-import java.util.List;
+import java.util.List ;
 
-import com.hp.hpl.jena.assembler.Assembler;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.util.FileManager;
-
-import com.hp.hpl.jena.sparql.ARQException;
-import com.hp.hpl.jena.sparql.core.DataSourceImpl;
-import com.hp.hpl.jena.sparql.core.assembler.DataSourceAssembler;
-import com.hp.hpl.jena.sparql.util.DatasetUtils;
-import com.hp.hpl.jena.sparql.util.graph.GraphUtils;
+import com.hp.hpl.jena.assembler.Assembler ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.Resource ;
+import com.hp.hpl.jena.sparql.ARQException ;
+import com.hp.hpl.jena.sparql.core.DataSourceImpl ;
+import com.hp.hpl.jena.sparql.core.assembler.DataSourceAssembler ;
+import com.hp.hpl.jena.sparql.util.DatasetUtils ;
+import com.hp.hpl.jena.sparql.util.graph.GraphUtils ;
+import com.hp.hpl.jena.util.FileManager ;
 
 /** Make Datasets and DataSources in various ways   
  * 

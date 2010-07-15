@@ -5,9 +5,11 @@
 
 package com.hp.hpl.jena.sparql.expr;
 
-import java.util.regex.* ;
+import java.util.regex.Matcher ;
+import java.util.regex.Pattern ;
+import java.util.regex.PatternSyntaxException ;
 
-import com.hp.hpl.jena.query.QueryParseException;
+import com.hp.hpl.jena.query.QueryParseException ;
 
 /** 
  * @author Andy Seaborne

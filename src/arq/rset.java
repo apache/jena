@@ -6,11 +6,11 @@
 
 package arq;
 
-import arq.cmdline.CmdARQ;
-import arq.cmdline.ModResultsIn;
-import arq.cmdline.ModResultsOut;
+import arq.cmdline.CmdARQ ;
+import arq.cmdline.ModResultsIn ;
+import arq.cmdline.ModResultsOut ;
 
-import com.hp.hpl.jena.query.ResultSet;
+import com.hp.hpl.jena.query.ResultSet ;
 
 /** Read and write result sets */
 

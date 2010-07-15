@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.sparql.engine.main;
 
-import com.hp.hpl.jena.sparql.engine.ExecutionContext;
+import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 
 public interface OpExecutorFactory { OpExecutor create(ExecutionContext execCxt) ; }
 /*
