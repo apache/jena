@@ -1,9 +1,0 @@
-#Metadata: Fileset: GPOS
-#Wed Jul 14 14:48:53 BST 2010
-tdb.file.type=rangeindex
-tdb.file.indexorder=GPOS
-tdb.file.impl.version=bplustree-v1
-tdb.file.impl=bplustree
-tdb.bplustree.record=32,0
-tdb.bplustree.order=113
-tdb.bplustree.blksize=8192
