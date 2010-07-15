@@ -37,6 +37,14 @@ public class RunTDB
 
     public static void main(String[] args) throws IOException
     {
+        String dir = "IBM-2010-07-14" ;
+        
+        TDB.getContext().set(TDB.symLogExec,true) ;
+
+        
+        tdb.tdbquery.main("--loc="+dir+"/DB", "--query="+dir+"/Q2.rq" ) ;
+        System.exit(0) ;
+        
         Dataset ds = TDBFactory.createDataset() ;
         DatasetGraphTDB dsg = (DatasetGraphTDB)(ds.asDatasetGraph()) ;
         

@@ -1,0 +1,1 @@
+SELECT count(*) { GRAPH ?g { ?s ?p ?o } }

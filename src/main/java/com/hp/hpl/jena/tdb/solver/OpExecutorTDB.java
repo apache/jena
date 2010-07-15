@@ -96,6 +96,9 @@ public class OpExecutorTDB extends OpExecutor
         if ( ! isForTDB )
             return super.execute(opFilter, input) ;
         
+        // If the filter does not apply to the input??
+        // Where does ARQ catch this?
+        
         // (filter (bgp ...))
         if ( OpBGP.isBGP(opFilter.getSubOp()) )
         {

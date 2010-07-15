@@ -1,0 +1,6 @@
+#Metadata: Fileset: prefixes
+#Wed Jul 14 14:48:49 BST 2010
+tdb.object.encoding=sse
+tdb.file.type=object
+tdb.file.impl.version=dat-v1
+tdb.file.impl=dat

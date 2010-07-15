@@ -23,7 +23,7 @@ CPDIR2="$DIRROOT/target/classes"
 ETCDIR="$DIRROOT/etc"
 
 # Cygwin - on Windows, the Java separator is ;
-# Form in UNIX style, trun into windows form at the end.
+# Alternative: Form in UNIX style, turn into windows form at the end.
 
 CYGWIN=0
 SEP=':'
@@ -44,6 +44,9 @@ for jar in "$LIBDIR"/*.jar
   do
   # Check for no expansion
   [ -e "$jar" ] || break
+  # Check not sources and no javadoc.
+  [ "${jar/sources}" = "${jar}" ] || continue
+  [ "${jar/javadoc}" = "${jar}" ] || continue
   #echo "Path: $jar"
   [ "$CP" != "" ] && CP="${CP}${SEP}"
   CP="${CP}$jar"

@@ -1,0 +1,7 @@
+<https://shelsen.torolab.ibm.com:9444/rmps/models/2#_OuhkQtXhEd62Us8xDl43BQ> <http://jazz.net/xmlns/rmps/index/1.0/main> "true"^^<http://www.w3.org/2001/XMLSchema#boolean> .
+<https://shelsen.torolab.ibm.com:9444/rmps/models/2#_OuhkQtXhEd62Us8xDl43BQ> <http://xmlns.com/foaf/0.1/page> <https://shelsen.torolab.ibm.com:9444/rmps/models/2> .
+<https://shelsen.torolab.ibm.com:9444/rmps/models/2#_OuhkQtXhEd62Us8xDl43BQ> <http://xmlns.com/foaf/0.1/name> "Main" .
+<https://shelsen.torolab.ibm.com:9444/rmps/models/2#_OuhkQtXhEd62Us8xDl43BQ> <http://jazz.net/xmlns/rmps/index/1.0/diagramTypeName> "Class" .
+<https://shelsen.torolab.ibm.com:9444/rmps/models/2#_OuhkQtXhEd62Us8xDl43BQ> <http://jazz.net/xmlns/rmps/index/quicksearch/1.0/discoverable> "true"^^<http://www.w3.org/2001/XMLSchema#boolean> .
+<https://shelsen.torolab.ibm.com:9444/rmps/models/2#_OuhkQtXhEd62Us8xDl43BQ> <http://jazz.net/xmlns/rmps/index/quicksearch/1.0/quickSearch> "Class Main   diagram UMLDiagram" .
+<https://shelsen.torolab.ibm.com:9444/rmps/models/2#_OuhkQtXhEd62Us8xDl43BQ_0> <http://xmlns.com/foaf/0.1/page> <https://shelsen.torolab.ibm.com:9444/rmps/models/2> .
