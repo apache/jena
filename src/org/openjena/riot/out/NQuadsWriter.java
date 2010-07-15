@@ -1,45 +1,49 @@
 /*
- * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
- * (c) Copyright 2010 Talis Information Ltd
+ * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Information Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.algebra;
+package org.openjena.riot.out;
 
+import java.io.OutputStream ;
+import java.util.Iterator ;
 
-import junit.framework.TestSuite ;
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
+import org.openjena.atlas.lib.Sink ;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-    TestVarFinder.class
-    , TestClassify.class
-    , TestFilterTransform.class
-    , TestVarRename.class
-})
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import com.hp.hpl.jena.sparql.core.Quad ;
 
-public class TS_Algebra extends TestSuite
+public class NQuadsWriter
 {
-    static final String testSetName         = "Algebra Transformation" ;
-
-//    // Old style.
-//    static public TestSuite suite() { return new TS_Algebra(); }
-//
-//    public TS_Algebra()
-//    {
-//        super(testSetName) ;
-//        addTest(TestVarFinder.suite()) ;
-//        addTest(TestClassify.suite()) ;
-//        addTest(TestFilterTransform.suite()) ;
-//        addTest(TestVarRename.suite()) ;
-//    }
+    public static void write(OutputStream out, DatasetGraph dsg)
+    {
+        Sink<Quad> sink = new SinkQuadOutput(out) ;
+        datasetToSink(dsg, sink) ;
+    }
+    
+    private static void datasetToSink(DatasetGraph dsg, Sink<Quad> sink)
+    {
+        Iterator<Quad> iter = dsg.find(Node.ANY, Node.ANY, Node.ANY, Node.ANY) ;
+        datasetToSink(iter, sink) ;
+    }
+    
+    private static void datasetToSink(Iterator<Quad> iter, Sink<Quad> sink)
+    {
+        for ( ; iter.hasNext() ; )
+        {
+            Quad quad = iter.next() ;
+            sink.send(quad) ;
+        }
+        sink.close();
+    }
 }
 
 /*
- * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
- * (c) Copyright 2010 Talis Information Ltd
+ * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Information Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

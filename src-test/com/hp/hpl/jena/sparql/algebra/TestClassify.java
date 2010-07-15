@@ -97,6 +97,22 @@ public class TestClassify extends TestCase
     @Test public void testClassify_Join_31() 
     { classifyJ("{ ?x ?y ?z {SELECT ?s { ?s ?p ?o} } }", false) ; }
 
+    // Use of a filter variable not in from the LHS
+    @Test public void testClassify_Join_32() 
+    { classifyJ("{ GRAPH ?g { ?x ?y ?z } { FILTER (?a) } }", true) ; }
+
+    // Use of a filter variable from the LHS
+    @Test public void testClassify_Join_33() 
+    { classifyJ("{ GRAPH ?g { ?x ?y ?z } { FILTER (?z) } }", false) ; }
+
+    // Use of a filter variable from the LHS but grounded in RHS
+    @Test public void testClassify_Join_34() 
+    { classifyJ("{ GRAPH ?g { ?x ?y ?z } { ?a ?b ?z FILTER (?z) } }", true) ; }
+
+    // Use of a filter variable from the LHS but optional in RHS
+    @Test public void testClassify_Join_35() 
+    { classifyJ("{ GRAPH ?g { ?x ?y ?z } { OPTIONAL{?a ?b ?z} FILTER (?z) } }", false) ; }
+    
     private void classifyJ(String pattern, boolean expected)
     {
         String qs1 = "PREFIX : <http://example/>\n" ;

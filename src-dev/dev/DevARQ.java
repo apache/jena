@@ -8,7 +8,18 @@ package dev;
 
 public class DevARQ
 {
+    // Build: sources, javadoc to elsewhere, mvn_update
+    //   lib-src
+    // documentation: API -> dataset, not model.
+    
+    // DaatsetGraph.find/4 : what about in NG only?  findNG/4
+    
+    // copySubstiute generalise with a renaming function.
+    
     // Consider wrapping passed-in binding for project subquery, rather than a renaming scheme.
+    // Optimize "GRAPH ?g {} FILTER (?g = <uri1> || ?g = <uri2> )
+    
+    // Should be able to now JoinClassify with OpModifier (see JoinClassify.isLinear) [but is it worth it?]
     
     // SPARQL Update
     
@@ -21,6 +32,8 @@ public class DevARQ
     
     // RIOT
     // Version mgt
+    // Add ??read(Model model, file) c.f. DatasetLoader
+    // 
     // RIOT.init()
     // Skip on bad terms / stop on bad term is choice of errorhandler.
     // Output bad term quads/triples to special sink.

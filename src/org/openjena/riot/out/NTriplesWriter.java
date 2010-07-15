@@ -6,22 +6,21 @@
 
 package org.openjena.riot.out;
 
-import java.io.PrintStream;
-import java.util.Iterator;
+import java.io.OutputStream ;
+import java.util.Iterator ;
 
 import org.openjena.atlas.lib.Sink ;
 import org.openjena.riot.Prologue ;
 
-
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.Triple ;
 
 public class NTriplesWriter
 {
-    public static void write(PrintStream out, Graph graph)
+    public static void write(OutputStream out, Graph graph)
     {
-        Prologue prologue = Prologue.create(null,  graph.getPrefixMapping()) ;
+        Prologue prologue = Prologue.create(null, null) ; // (null, graph.getPrefixMapping()) ;
         Sink<Triple> sink = new SinkTripleOutput(out, prologue) ;
         graphToSink(graph, sink) ;
     }

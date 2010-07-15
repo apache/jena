@@ -24,6 +24,13 @@ public class DatasetLoader
     
 //    static private Loader loader = new Loader() ;
 //    static public Loader get() { return loader ; }
+
+    /** Parse a file and return the quads in a dataset (in-memory) */ 
+    public static DatasetGraph load(String filename)
+    {
+        return load(filename, Lang.guess(filename, Lang.NQUADS)) ;
+    }
+
     
     /** Parse a file and return the quads in a dataset (in-memory) */ 
     public static DatasetGraph load(String filename, Lang lang)

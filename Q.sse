@@ -1,0 +1,9 @@
+(prefix ((ex: <http://www.example.org/schema#>)
+         (in: <http://www.example.org/instance#>))
+  (project (?x ?max)
+    (join #sequence
+      (project (?max)
+        (assign ((?max ?/.0))
+          (group () ((?/.0 (max ?/y)))
+            (bgp (triple ?/x ex:p ?/y)))))
+      (bgp (triple ?x ex:p ?max)))))

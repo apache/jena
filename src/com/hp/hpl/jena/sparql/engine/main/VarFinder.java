@@ -19,23 +19,23 @@ import com.hp.hpl.jena.sparql.algebra.op.*;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.core.Var;
 
-class VarFinder
+public class VarFinder
 {
     // See also VarUtils and OpVars.
     // This class is specific to the needs of the main query engine and scoping of variables
     
-    static Set<Var> optDefined(Op op)
+    public static Set<Var> optDefined(Op op)
     {
         return VarUsageVisitor.apply(op).optDefines ;
     }
     
-    private static Set<Var> fixed(Op op)
+    public static Set<Var> fixed(Op op)
     {
         return VarUsageVisitor.apply(op).defines ;
     }
     
     
-    static Set<Var> filter(Op op)
+    public static Set<Var> filter(Op op)
     {
         return VarUsageVisitor.apply(op).filterMentions ;
     }
@@ -61,7 +61,7 @@ class VarFinder
 
     VarUsageVisitor varUsageVisitor ;
     
-    VarFinder(Op op)
+    public VarFinder(Op op)
     { varUsageVisitor = VarUsageVisitor.apply(op) ; }
     
     public Set<Var> getOpt() { return varUsageVisitor.optDefines ; }
@@ -182,6 +182,7 @@ class VarFinder
         public void visit(OpGraph opGraph)
         {
             slot(defines, opGraph.getNode()) ;
+            opGraph.getSubOp().visit(this) ;
         }
         
         // @Override

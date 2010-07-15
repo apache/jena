@@ -21,6 +21,9 @@ import org.openjena.atlas.io.IndentedWriter ;
 
 public class DatasetLib
 {
+    /** Write, in SSE format (a debugging format).
+     * @see{riot.Dump} for output in N-quads and other formats.  
+     */
     public static void dump(DatasetGraph dataset)
     {
         WriterGraph.output(IndentedWriter.stdout, dataset, null) ;

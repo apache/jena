@@ -22,6 +22,9 @@ public class Iterator2<T> implements Iterator<T>, Iterable<T>
 
     public static <X> Iterator<X> create(Iterator<? extends X> iter1, Iterator<? extends X> iter2)
     {
+        if ( iter1 == null && iter2 == null )
+            return Iter.nullIter() ;
+        
         // The casts are safe because an iterator can only return X, and does not take an X an an assignment.  
         if ( iter1 == null )
         {

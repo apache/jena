@@ -76,15 +76,15 @@ public interface DatasetGraph extends Closeable
      */
     public Iterator<Quad> find(Quad quad) ;
     
-    /** Find matching quads in the datset - may include wildcards, Node.ANY or null
+    /** Find matching quads in the dataset (including default graph) - may include wildcards, Node.ANY or null
      * @see Graph#find(Node,Node,Node)
      */
     public Iterator<Quad> find(Node g, Node s, Node p , Node o) ;
     
-    /** Test whether the dataset contains a quad - may include wildcards, Node.ANY or null */
+    /** Test whether the dataset  (including default graph) contains a quad - may include wildcards, Node.ANY or null */
     public boolean contains(Node g, Node s, Node p , Node o) ;
 
-    /** Test whether the dataset contains a quad - may include wildcards, Node.ANY or null */
+    /** Test whether the dataset contains a quad  (including default graph)- may include wildcards, Node.ANY or null */
     public boolean contains(Quad quad) ;
 
     /** Test whether the dataset is empty */

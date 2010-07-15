@@ -32,7 +32,8 @@ public class JoinClassifier
          left = effectiveOp(left) ;
          right = effectiveOp(right) ;
 
-        // Subquery with modifier. Substitution does not apply.
+        // Old: Subquery with modifier. Substitution does not apply.
+         // Renaming should make this work.
         // With SELECT *, it's as if the subquery were just the pattern.
 
         if (right instanceof OpModifier) return false ;
@@ -44,23 +45,25 @@ public class JoinClassifier
     }
 
     // Check left can stream into right
-    static private boolean check(Op op, Op other)
+    static private boolean check(Op leftOp, Op rightOp)
     {
         // This is probably overly cautious.
         if (print)
         {
-            System.err.println(op) ;
-            System.err.println(other) ;
+            System.err.println(leftOp) ;
+            System.err.println(rightOp) ;
         }
 
         // Need only check left/rght.
-        VarFinder vfLeft = new VarFinder(op) ;
+        VarFinder vfLeft = new VarFinder(leftOp) ;
         Set<Var> vLeftFixed = vfLeft.getFixed() ;
         Set<Var> vLeftOpt = vfLeft.getOpt() ;
+        //Set<Var> vLeftFilter = vfLeft.getFilter() ;
         if (print) System.err.println("Left/fixed:    " + vLeftFixed) ;
         if (print) System.err.println("Left/opt:      " + vLeftOpt) ;
+        //if (print) System.err.println("Left/filter:   " + vLeftFilter) ;
 
-        VarFinder vfRight = new VarFinder(other) ;
+        VarFinder vfRight = new VarFinder(rightOp) ;
         Set<Var> vRightFixed = vfRight.getFixed() ;
         Set<Var> vRightOpt = vfRight.getOpt() ;
         Set<Var> vRightFilter = vfRight.getFilter() ;
@@ -75,7 +78,7 @@ public class JoinClassifier
         vRightOpt = SetUtils.difference(vRightOpt, vRightFixed) ;
 
         // And also filter variables in the RHS which are always defined in the
-        // RHS.
+        // RHS.  Leaves any potentially free variables in RHS filter. 
         vRightFilter = SetUtils.difference(vRightFilter, vRightFixed) ;
 
         if (print) System.err.println() ;

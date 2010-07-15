@@ -1,45 +1,67 @@
 /*
- * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
- * (c) Copyright 2010 Talis Information Ltd
+ * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.algebra;
+package riot.dump;
 
+import java.io.OutputStream ;
+import java.util.Iterator ;
 
-import junit.framework.TestSuite ;
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
+import org.openjena.riot.out.NQuadsWriter ;
+import org.openjena.riot.out.NTriplesWriter ;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-    TestVarFinder.class
-    , TestClassify.class
-    , TestFilterTransform.class
-    , TestVarRename.class
-})
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.query.Dataset ;
+import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import com.hp.hpl.jena.sparql.core.Quad ;
 
-public class TS_Algebra extends TestSuite
+public class Dump
 {
-    static final String testSetName         = "Algebra Transformation" ;
+    public static void write(OutputStream out, Graph g)
+    {
+        NTriplesWriter.write(out, g) ;
+    }
+    
+    public static void write(OutputStream out, DatasetGraph dsg)
+    {
+        NQuadsWriter.write(out, dsg) ;
 
-//    // Old style.
-//    static public TestSuite suite() { return new TS_Algebra(); }
-//
-//    public TS_Algebra()
-//    {
-//        super(testSetName) ;
-//        addTest(TestVarFinder.suite()) ;
-//        addTest(TestClassify.suite()) ;
-//        addTest(TestFilterTransform.suite()) ;
-//        addTest(TestVarRename.suite()) ;
-//    }
+        if ( false )
+        {
+            Graph g = dsg.getDefaultGraph() ;
+            write(out, g) ;
+
+            Iterator<Node> names = dsg.listGraphNodes() ;
+            for ( ; names.hasNext() ; )
+            {
+                Node gn = names.next() ;
+                Iterator<Quad> quads = dsg.find(gn, null, null, null ) ;
+                for ( ; quads.hasNext() ; )
+                {
+                    Quad q = quads.next() ;
+                    write(out, q) ;
+                }
+            }
+        }
+    }
+    
+    private static void write(OutputStream out, Quad q)
+    {
+
+    }
+
+    public static void write(OutputStream out, Dataset ds)
+    {
+        write(out, ds.asDatasetGraph()) ;
+    }
+
 }
 
 /*
- * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
- * (c) Copyright 2010 Talis Information Ltd
+ * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

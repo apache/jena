@@ -33,7 +33,8 @@ public class SinkTripleOutput implements Sink<Triple>
     
     public SinkTripleOutput(OutputStream outs, Prologue prologue)
     {
-        encoder = Chars.charsetUTF8.newEncoder() ;
+        //encoder = Chars.charsetUTF8.newEncoder() ;
+        encoder = Chars.charsetASCII.newEncoder() ;
         Sink<ByteBuffer> dest = new BufferingWriter.SinkOutputStream(outs) ; 
         out = new BufferingWriter(dest) ;
         setPrologue(prologue) ;

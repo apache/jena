@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Information Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -115,7 +116,8 @@ public class SinkQuadOutput implements Sink<Quad>
         OutputLangUtils.output(out, p, prologue) ;
         out.output(" ") ;
         OutputLangUtils.output(out, o, prologue) ;
-        if ( g != Quad.tripleInQuad )
+        
+        if ( g != null && g != Quad.tripleInQuad )
         {
             out.output(" ") ;
             OutputLangUtils.output(out, g, prologue) ;
@@ -132,6 +134,8 @@ public class SinkQuadOutput implements Sink<Quad>
 }
 /*
  * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Information Ltd.
+ * 
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -145,7 +145,8 @@ public class TestLangTurtle extends BaseTest
     public void errorBadURI_2()
     { parse("<http://example/a%XAb> <http://example/p> 123 .") ; }
 
-    @Test(expected=ExWarning.class)
+    @Test //(expected=ExWarning.class)
+    // No check for escape sequence case.
     public void errorBadURI_3()
     { parse("<http://example/a%Aab> <http://example/p> 123 .") ; }
 

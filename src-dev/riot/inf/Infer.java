@@ -1,45 +1,34 @@
 /*
- * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
- * (c) Copyright 2010 Talis Information Ltd
+ * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.algebra;
+package riot.inf;
 
+import org.openjena.atlas.io.IO ;
+import org.openjena.atlas.lib.Sink ;
+import org.openjena.riot.RiotReader ;
+import org.openjena.riot.inf.InferenceExpanderRDFS ;
+import org.openjena.riot.out.SinkTripleOutput ;
 
-import junit.framework.TestSuite ;
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.rdf.model.Model ;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-    TestVarFinder.class
-    , TestClassify.class
-    , TestFilterTransform.class
-    , TestVarRename.class
-})
-
-public class TS_Algebra extends TestSuite
+public class Infer
 {
-    static final String testSetName         = "Algebra Transformation" ;
-
-//    // Old style.
-//    static public TestSuite suite() { return new TS_Algebra(); }
-//
-//    public TS_Algebra()
-//    {
-//        super(testSetName) ;
-//        addTest(TestVarFinder.suite()) ;
-//        addTest(TestClassify.suite()) ;
-//        addTest(TestFilterTransform.suite()) ;
-//        addTest(TestVarRename.suite()) ;
-//    }
+    public static void expand(String filename, Model vocab)
+    {
+        Sink<Triple> sink = new SinkTripleOutput(System.out) ;
+        sink = new InferenceExpanderRDFS(sink, vocab) ;
+        RiotReader.parseTriples(filename, sink) ;
+        IO.flush(System.out); 
+        
+    }
 }
 
 /*
- * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
- * (c) Copyright 2010 Talis Information Ltd
+ * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

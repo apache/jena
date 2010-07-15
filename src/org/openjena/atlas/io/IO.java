@@ -6,13 +6,7 @@
 
 package org.openjena.atlas.io;
 
-import java.io.FileInputStream ;
-import java.io.IOException ;
-import java.io.InputStream ;
-import java.io.InputStreamReader ;
-import java.io.OutputStream ;
-import java.io.Reader ;
-import java.io.Writer ;
+import java.io.* ;
 import java.nio.charset.Charset ;
 import java.util.zip.GZIPInputStream ;
 
@@ -104,6 +98,12 @@ public class IO
     {
         throw new AtlasException(ex) ;
     }
+
+    public static void flush(OutputStream out)
+    { try { out.flush(); } catch (IOException ex) { exception(ex) ; } }
+    
+    public static void flush(Writer out)
+    { try { out.flush(); } catch (IOException ex) { exception(ex) ; } }
 }
 
 /*

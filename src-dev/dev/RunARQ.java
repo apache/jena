@@ -7,27 +7,19 @@
 
 package dev;
 
-import java.io.ByteArrayInputStream ;
-import java.io.InputStream ;
 import java.io.Reader ;
 import java.io.StringReader ;
 import java.util.Iterator ;
 
-import org.openjena.atlas.io.IO ;
 import org.openjena.atlas.io.IndentedLineBuffer ;
 import org.openjena.atlas.io.IndentedWriter ;
 import org.openjena.atlas.lib.Sink ;
-import org.openjena.atlas.lib.SinkCounting ;
-import org.openjena.atlas.lib.SinkPrint ;
 import org.openjena.atlas.lib.SinkWrapper ;
 import org.openjena.riot.ErrorHandlerLib ;
-import org.openjena.riot.RiotReader ;
 import org.openjena.riot.checker.CheckerIRI ;
-import org.openjena.riot.inf.InferenceExpanderRDFS ;
-import org.openjena.riot.lang.LangRIOT ;
+import riot.inf.Infer ;
 
 import com.hp.hpl.jena.Jena ;
-import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.iri.IRI ;
 import com.hp.hpl.jena.iri.IRIFactory ;
 import com.hp.hpl.jena.iri.Violation ;
@@ -37,22 +29,24 @@ import com.hp.hpl.jena.shared.JenaException ;
 import com.hp.hpl.jena.sparql.algebra.Algebra ;
 import com.hp.hpl.jena.sparql.algebra.ExtBuilder ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
-import com.hp.hpl.jena.sparql.algebra.OpAsQuery ;
 import com.hp.hpl.jena.sparql.algebra.OpExtRegistry ;
 import com.hp.hpl.jena.sparql.algebra.TransformUnionQuery ;
 import com.hp.hpl.jena.sparql.algebra.op.OpExt ;
 import com.hp.hpl.jena.sparql.algebra.op.OpFetch ;
 import com.hp.hpl.jena.sparql.algebra.op.OpFilter ;
+import com.hp.hpl.jena.sparql.algebra.op.OpJoin ;
+import com.hp.hpl.jena.sparql.algebra.opt.Optimize ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.Prologue ;
 import com.hp.hpl.jena.sparql.core.QueryCheckException ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
+import com.hp.hpl.jena.sparql.engine.main.JoinClassifier ;
+import com.hp.hpl.jena.sparql.engine.ref.QueryEngineRef ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.function.FunctionEnvBase ;
-import com.hp.hpl.jena.sparql.lang.ParserSPARQL11Update ;
 import com.hp.hpl.jena.sparql.lang.sparql_11.SPARQLParser11 ;
 import com.hp.hpl.jena.sparql.resultset.ResultsFormat ;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
@@ -69,8 +63,6 @@ import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
 import com.hp.hpl.jena.sparql.util.QueryExecUtils ;
 import com.hp.hpl.jena.sparql.util.StrUtils ;
 import com.hp.hpl.jena.sparql.util.Timer ;
-import com.hp.hpl.jena.update.UpdateFactory ;
-import com.hp.hpl.jena.update.UpdateRequest ;
 import com.hp.hpl.jena.util.FileManager ;
 
 public class RunARQ
@@ -85,137 +77,43 @@ public class RunARQ
     }
     
     static { ALog.setLog4j() ; }
+    
+    public static void runTest()
+    {
+        String dir = "testing/ARQ/SubQuery/" ;
+//      String queryFile = dir+"graph-subquery-1.rq" ;
+//      String dataFile = "--data="+dir+"data-sq.ttl" ;
+      String queryFile = "--query=Q.arq" ;
+      String dataFile = "--data=D.ttl" ;
+      
+      arq.qparse.main(/*"--engine=ref",*/ "--print=opt", queryFile) ;
+//      arq.sparql.main(/*"--engine=ref",*/ "--syntax=sparql_11", dataFile, queryFile) ;
+      arq.sse_query.main("--engine=ref", dataFile, "--query=Q.sse") ;
+      System.exit(0) ;
+    }
 
     public static void main(String[] argv) throws Exception
     {
-//        {
-//            Op op = SSE.parseOp("(graph ?g (filter (+ ?g ?o) (bgp (?s ?g ?o) (?s ?g ?o) )))") ;
-//            Set<Var> constant = new HashSet<Var>() ;
-//            constant.add(Var.alloc("o")) ;
-//            System.out.println("op =") ;
-//            System.out.println(op) ;
-//            Op op2 = VarRename.rename(op, constant) ;
-//            System.out.println("op =") ;
-//            System.out.println(op) ;
-//            System.out.println("op2 =") ;
-//            System.out.println(op2) ;
-//            System.exit(0) ;
-//        }
         
-        String dir = "testing/ARQ/SubQuery/" ;
-//        String queryFile = dir+"graph-subquery-1.rq" ;
-//        String dataFile = "--data="+dir+"data-sq.ttl" ;
-        String queryFile = "--query=Q.arq" ;
-        String dataFile = "--data=D.ttl" ;
-        
-        arq.qparse.main(/*"--engine=ref",*/ "--print=opt", queryFile) ;
-//        arq.sparql.main(/*"--engine=ref",*/ "--syntax=sparql_11", dataFile, queryFile) ;
-        arq.sse_query.main("--engine=ref", dataFile, "--query=Q.sse") ;
-        System.exit(0) ;
-        
-        IRI iri = IRIFactory.iriImplementation().create("x") ;
-        System.out.println(iri) ;
-        System.out.println(iri.isRelative()) ;
-
-        Iterator<Violation> vIter = iri.violations(true) ;
-        for ( ; vIter.hasNext() ; )
-        {
-            System.out.println(vIter.next()) ;
-        }
-        System.out.println("DONE") ;
-        
-        CheckerIRI.iriViolations(iri, ErrorHandlerLib.errorHandlerWarn) ;
-        System.exit(0) ;
-        
-        if ( false )
-        {
-            String str = "SELECT count(*) {?s ?p ?o}" ;
-            Query query = QueryFactory.create(str, Syntax.syntaxARQ) ;
-            Op op = Algebra.compile(query) ;
-            System.out.println(op) ;
-            Query query2 = OpAsQuery.asQuery(op) ;
-            System.out.println(query2) ;
-            System.exit(0) ;
-        }
-        
-        if ( true )
-        {
-            String str = "(sequence (filter (= ?z 234) (bgp (?x ?y ?z))) (bgp (?x1 ?y2 ?z1)) )" ;
-            Op op = SSE.parseOp(str) ;
-            System.out.println(op) ;
-            Query query2 = OpAsQuery.asQuery(op) ;
-            System.out.println(query2) ;
-            System.exit(0) ;
-        }        
-
-        arq.sparql.main("--results=srj", "SELECT * FROM <http://www.purl.org/net/ontology/beer.owl> { ?x a ?C}" ) ; System.exit(0) ;
-        
-        //arq.qexpr.main("COALESCE()") ; System.exit(0) ;
-        
-        String a[] = new String[]{
-            "--data=D.nt",
-            "--query=Q.rq"
-        } ;
-        
-        arq.sparql.main(a) ;
-        System.exit(0) ;
-        
-        if ( false )
-        {
-            String $1 = "insert into <urn:x:a> { <urn:x:s> <urn:x:p> <urn:x:o> }" ;
-            String $2 = "PREFIX : <http://example/> MODIFY DELETE {?s ?p ?o } INSERT {?s ?p ?o } WHERE {}" ;
-            String $3 = "PREFIX dc: <http://purl.org/dc/elements/1.1/> INSERT DATA INTO <http://example/bookStore> { <http://example/book3>  dc:title  \"Fundamentals of Compiler Design\" }" ;
-
-            UpdateRequest up = UpdateFactory.create($3) ;
-            System.out.println(up) ;
-
-            UpdateRequest updateRequest = new UpdateRequest() ;
-            ByteArrayInputStream in = new ByteArrayInputStream($3.getBytes("UTF-8")) ;
-            ParserSPARQL11Update p = new ParserSPARQL11Update() ;
-            p.parse(updateRequest, in) ;
-
-            System.out.println("Done") ;
-            System.exit(0) ;
-        }
-
-//        TestSuite ts = QueryTestSuiteFactory.make("testing/ARQ/Syntax/Syntax-SPARQL/manifest.ttl") ;
-//        SimpleTestRunner.runAndReport(ts) ;
+//        DatasetGraph dsg = DatasetLoader.load("D.trig") ;
+//        Dump.write(System.out, dsg) ;
+//        System.out.println("DONE") ;
 //        System.exit(0) ;
+        
+        
+//        final Binding b = new Binding0() ;
+//        Renamer renamer = new Renamer() {
+//            public Node rename(Node node)
+//            {
+//                if ( ! Var.isVar(node) ) return null ;
+//                Var v = Var.alloc(node) ;
+//                return b.get(v) ;
+//            } } ;
+        
+        streamInference() ;
         
         //unionTransform() ;
         
-        {
-            arq.qparse.main("--syntax=arq", "SELECT * {} BINDINGS ?x { ( 'hello' ) }") ; System.exit(0) ;
-            
-            String str1 = StrUtils.strjoinNL("PREFIX : <http://example/>",
-                                             "SELECT * {",
-                                             "?s ?p ?o UNION {?s1 ?p1 ?o1 }",
-            "}") ;
-            String str2 = StrUtils.strjoinNL("PREFIX : <http://example/>",
-                                             "SELECT * {",
-                                             "{ ?s ?p ?o } UNION {?s1 ?p1 ?o1 }",
-            "}") ;
-
-            divider() ;
-            System.out.println("=== SPARQL 1.1 No {}") ;
-            arq.qparse.main("--syntax=sparql_11", "--print=op", "--print=query", str1) ;
-
-            divider() ;
-            System.out.println("=== SPARQL 1.0 with {}") ;
-            arq.qparse.main("--syntax=sparql_10", str2) ;
-
-            divider() ;
-            System.out.println("=== SPARQL ARQ with {}") ;
-            arq.qparse.main("--syntax=arq", str2) ;
-
-            divider() ;
-            System.out.println("=== SPARQL 1.1 with {}") ;
-            arq.qparse.main("--syntax=sparql_11", "--print=op", "--print=query", str2) ;
-            //            Query query = new Query() ;
-            //            new ParserSPARQL11().parse(query, str) ;
-            //            System.out.println(query) ;
-            //            System.exit(0) ;
-        }
     }
     
     public static void unionTransform()
@@ -275,25 +173,102 @@ public class RunARQ
     
     public static void streamInference()
     {
-        Model m = FileManager.get().loadModel("V.ttl") ;
+        String dir = "../TDB/IBM-2010-07-14" ;
+        String base = "https://shelsen.torolab.ibm.com:9443/jazz/storage/com.ibm.xtools.rmps.index/resource" ;
         
-        SinkCounting<Triple> outputSink = new SinkCounting<Triple>(new SinkPrint<Triple>()) ;
+                        
         
-        SinkCounting<Triple> inputSink1 = new SinkCounting<Triple>(new InferenceExpanderRDFS(outputSink, m)) ;
-        // Add gaps between parser triples. 
-        Sink<Triple> inputSink2 = new SinkInsertText<Triple>(inputSink1, "--\n") ;
         
-        Sink<Triple> inputSink = inputSink2 ;
+        DataSource ds = DatasetFactory.create() ;
         
-        InputStream input = IO.openFile("D.ttl") ;
+        // Q1 is right, Q2 is wrong - std engine
+        String queryfile = dir+"/Q4.rq" ;
         
-        LangRIOT parser = RiotReader.createParserTurtle(input, "http://base/", inputSink) ;
-        parser.parse() ;
-        inputSink.flush() ;
+//        arq.sparql.main("--namedGraph="+dir+"/resource1.nt", "--namedGraph="+dir+"/resource2.nt", "--namedGraph="+dir+"/resource3.nt", "--namedGraph="+dir+"/resource4.nt", "--namedGraph="+dir+"/resource5.nt", 
+//                        "--namedGraph="+dir+"/resource6.nt", "--namedGraph="+dir+"/resource7.nt", "--namedGraph="+dir+"/resource8.nt", "--namedGraph="+dir+"/resource9.nt" , 
+//                        "--data="+dir+"/resource1.nt", "--data="+dir+"/resource2.nt", "--data="+dir+"/resource3.nt", "--data="+dir+"/resource4.nt", "--data="+dir+"/resource5.nt", 
+//                        "--data="+dir+"/resource6.nt", "--data="+dir+"/resource7.nt", "--data="+dir+"/resource8.nt", "--data="+dir+"/resource9.nt",
+//                        "--query="+queryfile) ;
+//        System.exit(0) ;
 
-        System.out.println() ;
-        System.out.printf("Input  =  %d\n", inputSink1.getCount()) ;
-        System.out.printf("Total  =  %d\n", outputSink.getCount()) ;
+        
+        //arq.qparse.main("--print=opt", "--query="+queryfile) ;
+        
+        for ( int i = 1 ; i <= 9 ; i++ )
+        {
+            String fn = dir+"/resource"+i+".nt" ;
+            
+            Model model1 = FileManager.get().loadModel(fn) ;
+            Model model2 = FileManager.get().loadModel(fn) ;
+            ds.addNamedModel(base+i, model1) ;
+            ds.getDefaultModel().add(model2) ;
+        }
+
+        if ( true )
+        {
+            System.out.println("----") ;
+            Query query = QueryFactory.read(queryfile) ;
+            Op op1 = Algebra.compile(query) ;
+            System.out.println("op1 = \n"+op1) ;
+            Op op2 = Algebra.optimize(op1) ;
+            System.out.println("op2 = \n"+op2) ;
+            System.out.println() ;
+            
+            Optimize.noOptimizer() ;
+            
+            System.out.println("Execute op1") ;
+            QueryExecUtils.executeAlgebra(op1, ds.asDatasetGraph(), ResultsFormat.FMT_TEXT) ;
+
+            System.out.println("Execute op2") ;
+            QueryExecUtils.executeAlgebra(op2, ds.asDatasetGraph(), ResultsFormat.FMT_TEXT) ;
+
+//            QueryEngineRef.register() ;
+//
+//            System.out.println("Execute op1 (ref)") ;
+//            QueryExecUtils.executeAlgebra(op1, ds.asDatasetGraph(), ResultsFormat.FMT_TEXT) ;
+//            
+//
+//            QueryEngineRef.unregister() ;
+            System.exit(0) ;
+            
+        }
+        
+        {
+            Query query = QueryFactory.read(queryfile) ;
+            QueryExecution qExec = QueryExecutionFactory.create(query, ds) ;
+            ResultSetFormatter.out(qExec.execSelect()) ;
+        }
+        QueryEngineRef.register() ;
+        {
+            Query query = QueryFactory.read(queryfile) ;
+            QueryExecution qExec = QueryExecutionFactory.create(query, ds) ;
+            ResultSetFormatter.out(qExec.execSelect()) ;
+        }
+
+        System.exit(0) ;
+        
+        
+        Model m = FileManager.get().loadModel("V.ttl") ;
+
+        Infer.expand("D.ttl", m) ;
+        
+//        SinkCounting<Triple> outputSink = new SinkCounting<Triple>(new SinkPrint<Triple>()) ;
+//        
+//        SinkCounting<Triple> inputSink1 = new SinkCounting<Triple>(new InferenceExpanderRDFS(outputSink, m)) ;
+//        // Add gaps between parser triples. 
+//        Sink<Triple> inputSink2 = new SinkInsertText<Triple>(inputSink1, "--\n") ;
+//        
+//        Sink<Triple> inputSink = inputSink2 ;
+//        
+//        InputStream input = IO.openFile("D.ttl") ;
+//        
+//        LangRIOT parser = RiotReader.createParserTurtle(input, "http://base/", inputSink) ;
+//        parser.parse() ;
+//        inputSink.flush() ;
+//
+//        System.out.println() ;
+//        System.out.printf("Input  =  %d\n", inputSink1.getCount()) ;
+//        System.out.printf("Total  =  %d\n", outputSink.getCount()) ;
     }
 
           
