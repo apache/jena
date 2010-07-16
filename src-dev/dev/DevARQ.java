@@ -14,7 +14,7 @@ public class DevARQ
     
     // DatasetGraph.find/4 : what about in NG only?  findNG/4
     
-    // copySubstiute generalise with a renaming function.
+    // copySubstitute generalise with a renaming function.
 
     // Scoping:
     // Consider wrapping passed-in binding for project subquery, rather than a renaming scheme.

@@ -314,7 +314,7 @@ public class ARQ
         SystemInfo sysInfo = new SystemInfo(ARQ.arqIRI, ARQ.VERSION, ARQ.BUILD_DATE) ;
         ARQMgt.register(NS+".system:type=SystemInfo", sysInfo) ;
         SystemARQ.registerSubSystem(sysInfo) ;
-        SysRIOT.wireIntoJena() ;
+        SysRIOT.init() ;
     }
     
     // Force a call

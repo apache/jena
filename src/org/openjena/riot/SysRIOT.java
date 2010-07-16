@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Information Ltd
  * All rights reserved.
  * [See end of file]
  */
@@ -36,25 +37,60 @@ public class SysRIOT
         return riotLogger ;
     }
     
+    static String jenaNTriplesReader = "com.hp.hpl.jena.rdf.model.impl.NTripleReader" ; 
+    static String jenaTurtleReader = "com.hp.hpl.jena.n3.turtle.TurtleReader" ; 
+    static String jenaN3Reader = jenaTurtleReader ; 
+    
+    static boolean initialized = false ;
+    public static synchronized void init()
+    {
+        if ( initialized ) return ;
+        initialized = true ;
+        wireIntoJena() ;
+    }
+    
     public static void wireIntoJena()
     {
+        /* No getter (!!)
+         * Standard:
+            com.hp.hpl.jena.rdf.model.impl.NTripleReader
+            com.hp.hpl.jena.rdf.model.impl.NTripleReader
+            
+            com.hp.hpl.jena.n3.turtle.TurtleReader 
+            com.hp.hpl.jena.n3.turtle.TurtleReader 
+            com.hp.hpl.jena.n3.turtle.TurtleReader 
+            com.hp.hpl.jena.n3.turtle.TurtleReader 
+         */
+        
         // Override N-TRIPLES and Turtle with faster implementations.
         String readerNT = JenaReaderNTriples2.class.getName() ;
         RDFReaderFImpl.setBaseReaderClassName("N-TRIPLES", readerNT) ;
-        RDFReaderFImpl.setBaseReaderClassName("N-TRIPLE", readerNT) ;
+        RDFReaderFImpl.setBaseReaderClassName("N-TRIPLE",   readerNT) ;
         
         String readerTTL = JenaReaderTurtle2.class.getName() ;
-        RDFReaderFImpl.setBaseReaderClassName("N3", readerTTL) ;
+        RDFReaderFImpl.setBaseReaderClassName("N3",     readerTTL) ;
         RDFReaderFImpl.setBaseReaderClassName("TURTLE", readerTTL) ;
         RDFReaderFImpl.setBaseReaderClassName("Turtle", readerTTL) ;
-        RDFReaderFImpl.setBaseReaderClassName("TTL", readerTTL) ;
+        RDFReaderFImpl.setBaseReaderClassName("TTL",    readerTTL) ;
 
+    }
+    
+    public static void resetJenaReaders()
+    {
+        RDFReaderFImpl.setBaseReaderClassName("N-TRIPLES", jenaNTriplesReader) ;
+        RDFReaderFImpl.setBaseReaderClassName("N-TRIPLE",  jenaNTriplesReader) ;
+        
+        RDFReaderFImpl.setBaseReaderClassName("N3",     jenaTurtleReader) ;
+        RDFReaderFImpl.setBaseReaderClassName("TURTLE", jenaTurtleReader) ;
+        RDFReaderFImpl.setBaseReaderClassName("Turtle", jenaTurtleReader) ;
+        RDFReaderFImpl.setBaseReaderClassName("TTL",    jenaTurtleReader) ;
     }
 
 }
 
 /*
  * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Information Ltd
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
