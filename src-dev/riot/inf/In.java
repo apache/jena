@@ -10,20 +10,70 @@ import org.openjena.atlas.io.IO ;
 import org.openjena.atlas.lib.Sink ;
 import org.openjena.riot.RiotReader ;
 import org.openjena.riot.inf.InferenceExpanderRDFS ;
+import org.openjena.riot.lang.LangRIOT ;
 import org.openjena.riot.out.SinkTripleOutput ;
+
+import arq.riot ;
+import arq.cmd.CmdException ;
+import arq.cmdline.ArgDecl ;
+import arq.cmdline.CmdGeneral ;
 
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.util.FileManager ;
 
-public class Infer
+public class In extends CmdGeneral
 {
-    public static void expand(String filename, Model vocab)
+    static final ArgDecl argRDFS = new ArgDecl(ArgDecl.HasValue, "rdfs") ;
+    private Model vocab ;
+    
+    public static void main(String... argv)
+    {
+        new In(argv).mainRun() ;
+    }        
+
+    protected In(String[] argv)
+    {
+        super(argv) ;
+    }
+
+//    public static void expand(String filename, Model vocab)
+//    {
+//        Sink<Triple> sink = new SinkTripleOutput(System.out) ;
+//        sink = new InferenceExpanderRDFS(sink, vocab) ;
+//        RiotReader.parseTriples(filename, sink) ;
+//        IO.flush(System.out); 
+//    }
+
+    @Override
+    protected String getSummary()
+    {
+        return "infer --rdfs=vocab" ;
+    }
+
+    @Override
+    protected void processModulesAndArgs()
+    {
+        if ( ! contains(argRDFS) )
+            throw new CmdException("Required argument missing: --"+argRDFS.getKeyName()) ;
+        String fn = getValue(argRDFS) ;
+        vocab = FileManager.get().loadModel(fn) ;
+    }
+
+    @Override
+    protected void exec()
     {
         Sink<Triple> sink = new SinkTripleOutput(System.out) ;
         sink = new InferenceExpanderRDFS(sink, vocab) ;
-        RiotReader.parseTriples(filename, sink) ;
+        LangRIOT parser = RiotReader.createParserNTriples(System.in, sink) ;
+        parser.parse() ;
         IO.flush(System.out); 
-        
+    }
+
+    @Override
+    protected String getCommandName()
+    {
+        return null ;
     }
 }
 

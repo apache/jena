@@ -8,6 +8,8 @@ package dev;
 
 public class DevARQ
 {
+    // RELEASE
+    
     // Build: sources, javadoc to elsewhere, mvn_update
     //   lib-src
     // documentation: API -> dataset, not model.
@@ -30,11 +32,11 @@ public class DevARQ
     // MainQuad: execution of quad patterns 
     //   Tests to run all engines.
     
-    // RIOT
+    // ---- RIOT
     // Version mgt
     // Add ??read(Model model, file) c.f. DatasetLoader
     // 
-    // RIOT.init()
+    // RIOT.init() (SysRIOT)
     // Skip on bad terms / stop on bad term is choice of errorhandler.
     // Output bad term quads/triples to special sink.
     //   Option passing (old Jena style).
@@ -51,11 +53,7 @@ public class DevARQ
     
     // Atlas:
     // Move stuff from sparql.util/sparql.lib to Atlas.
-    // StrUtils, StringUtils, Timer
-    
-    // Extend:
-    //   Add bare date/datetime to tokenizer?? Syntax?
-    //   Generalize and trap non-triples at emission time.
+    //   Remaining: Timer
     
     // Dataset[Graph].clear
     // Parsing SPARQL : Use RIOT checker.

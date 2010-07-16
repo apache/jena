@@ -128,7 +128,7 @@ public abstract class CmdLangParse extends CmdGeneral
         
         super.modVersion.addClass(Jena.class) ;
         super.modVersion.addClass(ARQ.class) ;
-        //super.modVersion.addClass(TDB.class) ;
+        //super.modVersion.addClass(SysRIOT.class) ;
     }
 
     @Override
