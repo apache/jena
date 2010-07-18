@@ -109,17 +109,21 @@ public class InferenceExpanderRDFS implements Sink<Triple>
 
         subClass(s,p,o) ;
         subProperty(s,p,o) ;
+
+        // domain() and range() also go through subClass processing. 
         domain(s,p,o) ;
         // Beware of literal subjects.
         range(s,p,o) ;
+        
     }
 
     /*
-     [rdfs8:  (?a rdfs:subClassOf ?b), (?b rdfs:subClassOf ?c) -> (?a rdfs:subClassOf ?c)] 
-     [rdfs9:  (?x rdfs:subClassOf ?y), (?a rdf:type ?x) -> (?a rdf:type ?y)] 
+     * [rdfs8:  (?a rdfs:subClassOf ?b), (?b rdfs:subClassOf ?c) -> (?a rdfs:subClassOf ?c)] 
+     * [rdfs9:  (?x rdfs:subClassOf ?y), (?a rdf:type ?x) -> (?a rdf:type ?y)] 
      */
     final private void subClass(Node s, Node p, Node o)
     {
+        // Does not output (s,p,o) itself.
         if ( p.equals(rdfType) )
         {
             List<Node> x = transClasses.get(o) ;
@@ -132,9 +136,9 @@ public class InferenceExpanderRDFS implements Sink<Triple>
     // Rule extracts from Jena's RDFS rules etc/rdfs.rules 
     
     /*
-    [rdfs5a: (?a rdfs:subPropertyOf ?b), (?b rdfs:subPropertyOf ?c) -> (?a rdfs:subPropertyOf ?c)] 
-    [rdfs6:  (?a ?p ?b), (?p rdfs:subPropertyOf ?q) -> (?a ?q ?b)] 
-    */
+     * [rdfs5a: (?a rdfs:subPropertyOf ?b), (?b rdfs:subPropertyOf ?c) -> (?a rdfs:subPropertyOf ?c)] 
+     * [rdfs6:  (?a ?p ?b), (?p rdfs:subPropertyOf ?q) -> (?a ?q ?b)] 
+     */
     private void subProperty(Node s, Node p, Node o)
     {
         List<Node> x = transProperties.get(p) ;
@@ -146,8 +150,9 @@ public class InferenceExpanderRDFS implements Sink<Triple>
     }
 
     /*
-     [rdfs2:  (?p rdfs:domain ?c) -> [(?x rdf:type ?c) <- (?x ?p ?y)] ] 
-    */
+     * [rdfs2:  (?p rdfs:domain ?c) -> [(?x rdf:type ?c) <- (?x ?p ?y)] ]
+     * [rdfs9:  (?x rdfs:subClassOf ?y), (?a rdf:type ?x) -> (?a rdf:type ?y)]  
+     */
     final private void domain(Node s, Node p, Node o)
     {
         List<Node> x = domainList.get(p) ;
@@ -162,7 +167,8 @@ public class InferenceExpanderRDFS implements Sink<Triple>
     }
 
     /*
-    [rdfs3:  (?p rdfs:range ?c)  -> [(?y rdf:type ?c) <- (?x ?p ?y)] ]
+     * [rdfs3:  (?p rdfs:range ?c)  -> [(?y rdf:type ?c) <- (?x ?p ?y)] ]
+     * [rdfs9:  (?x rdfs:subClassOf ?y), (?a rdf:type ?x) -> (?a rdf:type ?y)]  
      */ 
     final private void range(Node s, Node p, Node o)
     {

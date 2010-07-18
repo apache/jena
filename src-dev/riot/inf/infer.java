@@ -23,7 +23,7 @@ import com.hp.hpl.jena.util.FileManager ;
 /*
  * TDB Infer
  *   RDFS
- *   owl:sameAs (in vocabulary)
+ *   owl:sameAs (in T-Box, not A-Box)
  *   owl:equivalentClass, owl:equivalentProperty
  *   owl:TransitiveProperty, owl:SymmetricProperty
  *
