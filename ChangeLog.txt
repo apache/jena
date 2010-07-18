@@ -1,6 +1,9 @@
 ChangeLog for ARQ
 =================
 
+==== ARQ 2.8.6
+
+
 ==== ARQ 2.8.5
 
 + RIOT: New parsers covering N-triples, N-Quads, Turtle and TriG
