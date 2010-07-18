@@ -25,7 +25,6 @@ import com.hp.hpl.jena.Jena ;
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.sparql.util.StringUtils ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
@@ -38,7 +37,7 @@ public abstract class CmdTDB extends CmdARQ
     private static final ArgDecl argNamedGraph          = new ArgDecl(ArgDecl.HasValue, "graph") ;
     protected final ModTDBDataset tdbDatasetAssembler   = new ModTDBDataset() ;
 
-    private static final String log4Jsetup = StringUtils.join("\n"
+    private static final String log4Jsetup = StrUtils.strjoin("\n"
                    , "## Plain output to stdout"
                    , "log4j.appender.tdb.plain=org.apache.log4j.ConsoleAppender"
                    , "log4j.appender.tdb.plain.target=System.out"

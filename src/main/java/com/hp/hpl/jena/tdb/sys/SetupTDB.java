@@ -291,7 +291,7 @@ public class SetupTDB
         
         if ( indexes.length != 3 )
             SetupTDB.error(log, "Wrong number of triple table indexes: "+StrUtils.strjoin(",", indexes)) ;
-        log.debug("Triple table: "+primary+" :: "+StrUtils.join(",", indexes)) ;
+        log.debug("Triple table: "+primary+" :: "+StrUtils.strjoin(",", indexes)) ;
         
         TupleIndex tripleIndexes[] = makeTupleIndexes(location, config, primary, indexes, indexes) ;
         if ( tripleIndexes.length != indexes.length )
@@ -310,7 +310,7 @@ public class SetupTDB
 
         if ( indexes.length != 6 )
             SetupTDB.error(log, "Wrong number of quad table indexes: "+StrUtils.strjoin(",", indexes)) ;
-        log.debug("Quad table: "+primary+" :: "+StrUtils.join(",", indexes)) ;
+        log.debug("Quad table: "+primary+" :: "+StrUtils.strjoin(",", indexes)) ;
         
         TupleIndex quadIndexes[] = makeTupleIndexes(location, config, primary, indexes, indexes) ;
         if ( quadIndexes.length != indexes.length )
@@ -651,10 +651,10 @@ public class SetupTDB
         if ( layout.equals("v1") )
         {
             metafile.ensurePropertySet("tdb.indexes.triples.primary", Names.primaryIndexTriples) ;
-            metafile.ensurePropertySet("tdb.indexes.triples", StrUtils.join(",", Names.tripleIndexes)) ;
+            metafile.ensurePropertySet("tdb.indexes.triples", StrUtils.strjoin(",", Names.tripleIndexes)) ;
 
             metafile.ensurePropertySet("tdb.indexes.quads.primary", Names.primaryIndexQuads) ;
-            metafile.ensurePropertySet("tdb.indexes.quads", StrUtils.join(",", Names.quadIndexes)) ;
+            metafile.ensurePropertySet("tdb.indexes.quads", StrUtils.strjoin(",", Names.quadIndexes)) ;
             
             metafile.ensurePropertySet("tdb.nodetable.mapping.node2id", Names.indexNode2Id) ;
             metafile.ensurePropertySet("tdb.nodetable.mapping.id2node", Names.indexId2Node) ;
