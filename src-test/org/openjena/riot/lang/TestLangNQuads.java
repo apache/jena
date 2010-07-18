@@ -11,6 +11,7 @@ import org.openjena.atlas.lib.Sink ;
 import org.openjena.atlas.lib.SinkCounting ;
 import org.openjena.atlas.lib.SinkNull ;
 import org.openjena.atlas.lib.StrUtils ;
+import org.openjena.riot.RiotLoader ;
 import org.openjena.riot.RiotReader ;
 import org.openjena.riot.ErrorHandlerTestLib.ErrorHandlerEx ;
 import org.openjena.riot.ErrorHandlerTestLib.ExFatal ;
@@ -74,7 +75,7 @@ public class TestLangNQuads extends TestLangNTuples
     private static DatasetGraph parseToDataset(String string)
     {
         DatasetGraph dsg = DatasetLib.createDatasetGraphMem() ;
-        Sink<Quad> sink = DatasetLib.datasetSink(dsg) ;
+        Sink<Quad> sink = RiotLoader.datasetSink(dsg) ;
         parse(sink, string) ;
         return dsg ;
     }

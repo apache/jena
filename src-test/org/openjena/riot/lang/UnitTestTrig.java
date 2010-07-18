@@ -7,7 +7,7 @@
 package org.openjena.riot.lang;
 
 import junit.framework.TestCase ;
-import org.openjena.riot.DatasetLoader ;
+import org.openjena.riot.RiotLoader ;
 import org.openjena.riot.Lang ;
 import org.openjena.riot.RiotParseException ;
 
@@ -33,11 +33,11 @@ public class UnitTestTrig extends TestCase
     {
         try {
             DatasetGraph dsg = DatasetLib.createDatasetGraphMem() ;
-            DatasetLoader.read(input, dsg, Lang.TRIG, baseIRI) ;
+            RiotLoader.read(input, dsg, Lang.TRIG, baseIRI) ;
             //DatasetLib.dump(dsg) ;
             
             DatasetGraph dsg2 = DatasetLib.createDatasetGraphMem() ;
-            DatasetLoader.read(output, dsg2, Lang.NQUADS, null) ;
+            RiotLoader.read(output, dsg2, Lang.NQUADS, null) ;
 
             // Compare with expected.
 

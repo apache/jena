@@ -10,6 +10,7 @@ import org.junit.Test ;
 import org.openjena.atlas.junit.BaseTest ;
 import org.openjena.atlas.lib.Sink ;
 import org.openjena.atlas.lib.StrUtils ;
+import org.openjena.riot.RiotLoader ;
 import org.openjena.riot.RiotReader ;
 import org.openjena.riot.ErrorHandlerTestLib.ErrorHandlerEx ;
 import org.openjena.riot.ErrorHandlerTestLib.ExWarning ;
@@ -75,7 +76,7 @@ public class TestLangTrig extends BaseTest
     {
         String string = StrUtils.strjoin("\n", strings) ;
         DatasetGraph dsg = DatasetLib.createDatasetGraphMem() ;
-        Sink<Quad> sink = DatasetLib.datasetSink(dsg) ;
+        Sink<Quad> sink = RiotLoader.datasetSink(dsg) ;
         Tokenizer tokenizer = TokenizerFactory.makeTokenizerString(string) ;
         LangTriG parser = RiotReader.createParserTriG(tokenizer, "http://base/", sink) ;
         parser.getProfile().setHandler(new ErrorHandlerEx()) ;

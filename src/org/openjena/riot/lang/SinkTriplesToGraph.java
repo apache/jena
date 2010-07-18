@@ -10,9 +10,9 @@ import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Triple ;
 
 
-public class SinkToGraphTriples extends SinkToGraph
+public class SinkTriplesToGraph extends SinkToGraph
 {
-    public SinkToGraphTriples(Graph g)
+    public SinkTriplesToGraph(Graph g)
     {
         super(g) ;
     }

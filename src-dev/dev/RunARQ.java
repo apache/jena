@@ -18,7 +18,7 @@ import org.openjena.atlas.lib.SinkWrapper ;
 import org.openjena.atlas.lib.StrUtils ;
 import org.openjena.riot.ErrorHandlerLib ;
 import org.openjena.riot.checker.CheckerIRI ;
-import riot.inf.In ;
+import riot.inf.infer ;
 
 import com.hp.hpl.jena.Jena ;
 import com.hp.hpl.jena.iri.IRI ;
@@ -248,7 +248,7 @@ public class RunARQ
         
         Model m = FileManager.get().loadModel("V.ttl") ;
 
-        In.main("--rdfs=V.ttl") ;
+        infer.main("--rdfs=V.ttl") ;
         
 //        SinkCounting<Triple> outputSink = new SinkCounting<Triple>(new SinkPrint<Triple>()) ;
 //        

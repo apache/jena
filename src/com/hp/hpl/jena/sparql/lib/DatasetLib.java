@@ -9,14 +9,12 @@ package com.hp.hpl.jena.sparql.lib;
 import java.util.Iterator ;
 
 import org.openjena.atlas.io.IndentedWriter ;
-import org.openjena.atlas.lib.Sink ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
-import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.sse.writers.WriterGraph ;
 
 public class DatasetLib
@@ -64,12 +62,6 @@ public class DatasetLib
         }
         
         return true ;
-    }
-    
-    /** Work in progress */
-    public static Sink<Quad> datasetSink(DatasetGraph dataset)
-    {
-        return new SinkQuadsToDataset(dataset) ;
     }
     
     // A DatasetGraph that creates memory graphs on mention */

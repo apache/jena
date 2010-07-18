@@ -17,6 +17,7 @@ import org.openjena.atlas.lib.StrUtils ;
 import org.openjena.riot.ErrorHandler ;
 import org.openjena.riot.ErrorHandlerLib ;
 import org.openjena.riot.JenaReaderTurtle2 ;
+import org.openjena.riot.RiotLoader ;
 import org.openjena.riot.RiotReader ;
 import org.openjena.riot.ErrorHandlerTestLib.ErrorHandlerEx ;
 import org.openjena.riot.ErrorHandlerTestLib.ExFatal ;
@@ -94,7 +95,7 @@ public class TestLangTurtle extends BaseTest
         Tokenizer tokenizer = TokenizerFactory.makeTokenizer(reader) ;
         
         Graph graph = GraphFactory.createDefaultGraph() ;
-        Sink<Triple> sink = new SinkToGraphTriples(graph) ;
+        Sink<Triple> sink = RiotLoader.graphSink(graph) ;
         
         LangTurtle parser = RiotReader.createParserTurtle(tokenizer, "http://base/", sink) ;
         parser.getProfile().setHandler(new ErrorHandlerEx()) ;

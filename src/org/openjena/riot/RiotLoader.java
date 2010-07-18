@@ -11,16 +11,19 @@ import java.io.InputStream ;
 import org.openjena.atlas.io.IO ;
 import org.openjena.atlas.lib.Sink ;
 import org.openjena.riot.lang.LangRIOT ;
+import org.openjena.riot.lang.SinkQuadsToDataset ;
+import org.openjena.riot.lang.SinkTriplesToGraph ;
 import org.openjena.riot.tokens.Tokenizer ;
 import org.openjena.riot.tokens.TokenizerFactory ;
 
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.lib.DatasetLib ;
 
-public class DatasetLoader
+public class RiotLoader
 {
-    
 //    static private Loader loader = new Loader() ;
 //    static public Loader get() { return loader ; }
 
@@ -48,10 +51,10 @@ public class DatasetLoader
     }
     
     /** Parse a string and return the quads in a dataset (in-memory) (convenience operation)*/ 
-    public static DatasetGraph fromString(String string, Lang language, String baseURI)
+    public static DatasetGraph datasetFromString(String string, Lang language, String baseURI)
     {
         DatasetGraph dsg = DatasetLib.createDatasetGraphMem() ;
-        Sink<Quad> sink = DatasetLib.datasetSink(dsg) ;
+        Sink<Quad> sink = RiotLoader.datasetSink(dsg) ;
         Tokenizer tokenizer = TokenizerFactory.makeTokenizerString(string) ;
         
         if ( language == Lang.NQUADS )
@@ -81,7 +84,7 @@ public class DatasetLoader
     /** Parse an input stream and send the quads to a dataset */ 
     public static void read(InputStream input, DatasetGraph dataset, Lang language, String baseURI)
     {
-        Sink<Quad> sink = DatasetLib.datasetSink(dataset) ;
+        Sink<Quad> sink = RiotLoader.datasetSink(dataset) ;
         read(input, language, baseURI, sink) ;
     }
     
@@ -103,6 +106,20 @@ public class DatasetLoader
             return ;
         }
         throw new RiotException("Language not supported for quads: "+language) ;
+    }
+
+
+    // Better place?
+    // DatasetLoader + "ModelLib" with model graph versions
+    public static Sink<Triple> graphSink(Graph graph)
+    {
+        return new SinkTriplesToGraph(graph) ;
+    }
+
+
+    public static Sink<Quad> datasetSink(DatasetGraph dataset)
+    {
+        return new SinkQuadsToDataset(dataset) ;
     }
     
     

@@ -4,11 +4,10 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.lib;
+package org.openjena.riot.lang;
 
 import org.openjena.atlas.lib.Sink ;
 import org.openjena.atlas.lib.Sync ;
-import org.openjena.riot.lang.SinkToGraphTriples ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
@@ -16,7 +15,7 @@ import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 
-/** @see SinkToGraphTriples */ 
+/** @see SinkTriplesToGraph */ 
 public class SinkQuadsToDataset implements Sink<Quad>
 {
     /* See also SinkToGraphTriples */ 

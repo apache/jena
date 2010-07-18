@@ -9,6 +9,9 @@ package dev;
 public class DevARQ
 {
     // RELEASE
+    // Inference
+    // StringUTF8
+    // RiotLoader
     
     // Build: sources, javadoc to elsewhere, mvn_update
     //   lib-src

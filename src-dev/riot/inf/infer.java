@@ -12,8 +12,6 @@ import org.openjena.riot.RiotReader ;
 import org.openjena.riot.inf.InferenceExpanderRDFS ;
 import org.openjena.riot.lang.LangRIOT ;
 import org.openjena.riot.out.SinkTripleOutput ;
-
-import arq.riot ;
 import arq.cmd.CmdException ;
 import arq.cmdline.ArgDecl ;
 import arq.cmdline.CmdGeneral ;
@@ -22,19 +20,68 @@ import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.util.FileManager ;
 
-public class In extends CmdGeneral
+/*
+ * TDB Infer
+ *   RDFS
+ *   owl:sameAs (in vocabulary)
+ *   owl:equivalentClass, owl:equivalentProperty
+ *   owl:TransitiveProperty, owl:SymmetricProperty
+ *
+ * OWLprime - Oracle
+- rdfs:domain
+- rdfs:range
+- rdfs:subClassOf
+- rdfs:subPropertyOf
+- owl:equivalentClass
+- owl:equivalentProperty
+- owl:sameAs
+- owl:inverseOf
+- owl:TransitiveProperty
+- owl:SymmetricProperty
+- owl:FunctionalProperty
+- owl:InverseFunctionalProperty
+
+ JimH: RDFS3:
+ #
+    * equivalentClass
+    * equivalentProperty
+    * sameAs
+    * differentFrom (and allDifferent) 
+
+# Property Characteristics:
+
+    * inverseOf
+    * TransitiveProperty
+    * SymmetricProperty
+    * FunctionalProperty
+    * InverseFunctionalProperty
+    * ObjectProperty
+    * DatatypeProperty
+    * disjointWith 
+
+AllegroGraph RDFS++
+    * rdf:type
+    * rdfs:subClassOf
+    * rdfs:domain and rdfs:range
+    * rdfs:subPropertyOf
+    * owl:sameAs
+    * owl:inverseOf
+    * owl:TransitiveProperty
+ */
+public class infer extends CmdGeneral
 {
     static final ArgDecl argRDFS = new ArgDecl(ArgDecl.HasValue, "rdfs") ;
     private Model vocab ;
     
     public static void main(String... argv)
     {
-        new In(argv).mainRun() ;
+        new infer(argv).mainRun() ;
     }        
 
-    protected In(String[] argv)
+    protected infer(String[] argv)
     {
         super(argv) ;
+        super.add(argRDFS) ;
     }
 
 //    public static void expand(String filename, Model vocab)
