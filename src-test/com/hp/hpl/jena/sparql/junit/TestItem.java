@@ -137,7 +137,13 @@ public class TestItem
             return null ;
         Model model = GraphFactory.makeJenaDefaultModel() ;
         // Like ResultSetFactory.loadAsModel(filename) except we have control of the model type.
-        ResultSetFactory.loadAsModel(model, resultFile) ;
+        try { 
+            ResultSetFactory.loadAsModel(model, resultFile) ;
+        } catch (RuntimeException ex)
+        {
+            System.err.println("Failed to read results: "+resultFile) ;
+            ex.printStackTrace(System.err) ;
+        }
         return model ; 
     }
     

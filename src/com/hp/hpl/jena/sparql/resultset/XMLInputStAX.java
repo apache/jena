@@ -466,6 +466,8 @@ class XMLInputStAX extends SPARQLResult
                             dType = TypeMapper.getInstance().getSafeTypeByName(datatype);
                         
                         Node n = Node.createLiteral(text,  langTag, dType) ;
+                        if ( varName == null )
+                            throw new ResultSetException("No name for variable") ;
                         binding.add(Var.alloc(varName), n) ;
                         break ;
                     }

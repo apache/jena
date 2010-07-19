@@ -78,22 +78,22 @@ public class RunARQ
     
     public static void runTest()
     {
-        String dir = "testing/ARQ/SubQuery/" ;
+        String dir = "/home/afs/W3C/SPARQL-docs/tests/data-sparql11/negation/" ;
 //      String queryFile = dir+"graph-subquery-1.rq" ;
 //      String dataFile = "--data="+dir+"data-sq.ttl" ;
-      String queryFile = "--query=Q.arq" ;
-      String dataFile = "--data=D.ttl" ;
+      String queryFile = "--query="+dir+"temporalProximity01.rq" ;
+      String dataFile = "--data="+dir+"temporalProximity01.ttl" ;
       
-      arq.qparse.main(/*"--engine=ref",*/ "--print=opt", queryFile) ;
-//      arq.sparql.main(/*"--engine=ref",*/ "--syntax=sparql_11", dataFile, queryFile) ;
-      arq.sse_query.main("--engine=ref", dataFile, "--query=Q.sse") ;
+      arq.qtest.main(dir+"/manifest.ttl") ;System.exit(0) ;
+      arq.rset.main(dir+"/temporalProximity01.srx") ;System.exit(0) ;
+      
+      arq.sparql.main(/*"--engine=ref",*/ "--syntax=sparql_11", dataFile, queryFile) ;
       System.exit(0) ;
     }
 
     public static void main(String[] argv) throws Exception
     {
-        
-        arq.riot.main("D.nt") ; System.exit(0) ;
+        runTest() ;
         
 //        DatasetGraph dsg = DatasetLoader.load("D.trig") ;
 //        Dump.write(System.out, dsg) ;
