@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.sdb.sql;
 
-import static com.hp.hpl.jena.sdb.util.StrUtils.strjoin;
+import static org.openjena.atlas.lib.StrUtils.strjoin ;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;

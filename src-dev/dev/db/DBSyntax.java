@@ -7,7 +7,7 @@
 package dev.db;
 
 import static java.lang.String.format ;
-import static com.hp.hpl.jena.sdb.util.StrUtils.strjoin ;
+import static org.openjena.atlas.lib.StrUtils.strjoin ;
 
 import java.util.List;
 

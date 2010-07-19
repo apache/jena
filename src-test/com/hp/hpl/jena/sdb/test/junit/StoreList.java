@@ -6,6 +6,8 @@
 
 package com.hp.hpl.jena.sdb.test.junit;
 
+import static org.openjena.atlas.lib.StrUtils.strjoinNL ;
+
 import java.util.ArrayList ;
 import java.util.List ;
 
@@ -26,7 +28,6 @@ import com.hp.hpl.jena.sdb.Store ;
 import com.hp.hpl.jena.sdb.StoreDesc ;
 import com.hp.hpl.jena.sdb.store.StoreFactory ;
 import com.hp.hpl.jena.sdb.util.Pair ;
-import com.hp.hpl.jena.sdb.util.StrUtils ;
 import com.hp.hpl.jena.sdb.util.Vocab ;
 import com.hp.hpl.jena.util.FileManager ;
 
@@ -37,7 +38,7 @@ public class StoreList
     static Resource storeListClass = Vocab.property(SDB.namespace, "StoreList") ;
     
     static boolean formatStores     = false ;
-    static String queryString = StrUtils.strjoinNL
+    static String queryString = strjoinNL
             (   
              "PREFIX sdb:      <http://jena.hpl.hp.com/2007/sdb#>" ,
              "PREFIX rdf:      <http://www.w3.org/1999/02/22-rdf-syntax-ns#>" ,

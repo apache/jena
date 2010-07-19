@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.sdb.sql;
 
-import static com.hp.hpl.jena.sdb.util.StrUtils.strjoinNL;
+import static org.openjena.atlas.lib.StrUtils.strjoinNL ;
 
 public class SQLUtils
 {

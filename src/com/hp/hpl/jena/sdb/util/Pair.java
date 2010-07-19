@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.sdb.util;
 
-import static com.hp.hpl.jena.sparql.util.StringUtils.str;
+import static org.openjena.atlas.lib.StrUtils.str ;
 import static com.hp.hpl.jena.sparql.util.Utils.hashCodeObject;
 import com.hp.hpl.jena.sparql.util.Utils ;
 

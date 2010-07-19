@@ -1,6 +1,11 @@
-PREFIX : <http://example/>
-SELECT *
-{
-   ?p a :Person .
-   ?p :location 'Minnesota' .
+PREFIX acm: <http://sample.com/ont/ACM#> 
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> 
+
+SELECT DISTINCT ?s 
+where 
+{ GRAPH ?g {?s ?p ?o.
+   ?s acm:businessUnit ?businessUnit . 
+   }
 }
+LIMIT 10

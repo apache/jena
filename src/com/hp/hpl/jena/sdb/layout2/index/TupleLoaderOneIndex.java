@@ -6,26 +6,26 @@
 
 package com.hp.hpl.jena.sdb.layout2.index;
 
-import static com.hp.hpl.jena.sdb.util.StrUtils.strjoinNL;
+import static org.openjena.atlas.lib.StrUtils.strjoinNL ;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.ResultSet ;
+import java.sql.SQLException ;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.sdb.SDBException;
-import com.hp.hpl.jena.sdb.Store;
-import com.hp.hpl.jena.sdb.core.sqlexpr.SqlConstant;
-import com.hp.hpl.jena.sdb.layout2.NodeLayout2;
-import com.hp.hpl.jena.sdb.layout2.TableDescNodes;
-import com.hp.hpl.jena.sdb.sql.RS;
-import com.hp.hpl.jena.sdb.sql.ResultSetJDBC;
-import com.hp.hpl.jena.sdb.sql.SDBConnection;
-import com.hp.hpl.jena.sdb.sql.SQLUtils;
-import com.hp.hpl.jena.sdb.store.TableDesc;
-import com.hp.hpl.jena.sdb.store.TupleLoaderOne;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.sdb.SDBException ;
+import com.hp.hpl.jena.sdb.Store ;
+import com.hp.hpl.jena.sdb.core.sqlexpr.SqlConstant ;
+import com.hp.hpl.jena.sdb.layout2.NodeLayout2 ;
+import com.hp.hpl.jena.sdb.layout2.TableDescNodes ;
+import com.hp.hpl.jena.sdb.sql.RS ;
+import com.hp.hpl.jena.sdb.sql.ResultSetJDBC ;
+import com.hp.hpl.jena.sdb.sql.SDBConnection ;
+import com.hp.hpl.jena.sdb.sql.SQLUtils ;
+import com.hp.hpl.jena.sdb.store.TableDesc ;
+import com.hp.hpl.jena.sdb.store.TupleLoaderOne ;
 
 public class TupleLoaderOneIndex extends TupleLoaderOne
 {

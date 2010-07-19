@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.sdb.layout2.hash;
 
-import static com.hp.hpl.jena.sdb.util.StrUtils.strjoinNL;
+import static org.openjena.atlas.lib.StrUtils.strjoinNL;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

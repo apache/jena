@@ -7,7 +7,7 @@
 package com.hp.hpl.jena.sdb.store;
 
 import static com.hp.hpl.jena.sdb.util.StrUtils.sqlList;
-import static com.hp.hpl.jena.sdb.util.StrUtils.strjoin;
+import static org.openjena.atlas.lib.StrUtils.strjoin ;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
