@@ -8,9 +8,19 @@ package org.openjena.riot.checker;
 
 import java.util.regex.Pattern ;
 
+import org.apache.xerces.impl.dv.InvalidDatatypeValueException ;
+import org.apache.xerces.impl.dv.ValidatedInfo ;
+import org.apache.xerces.impl.dv.ValidationContext ;
+import org.apache.xerces.impl.dv.XSSimpleType ;
+import org.apache.xerces.impl.validation.ValidationState ;
 import org.openjena.riot.ErrorHandler ;
+import org.openjena.riot.SysRIOT ;
 
 import com.hp.hpl.jena.datatypes.RDFDatatype ;
+import com.hp.hpl.jena.datatypes.xsd.impl.XSDAbstractDateTimeType ;
+import com.hp.hpl.jena.datatypes.xsd.impl.XSDBaseNumericType ;
+import com.hp.hpl.jena.datatypes.xsd.impl.XSDDouble ;
+import com.hp.hpl.jena.datatypes.xsd.impl.XSDFloat ;
 import com.hp.hpl.jena.graph.Node ;
 
 public class CheckerLiterals implements NodeChecker
@@ -28,7 +38,7 @@ public class CheckerLiterals implements NodeChecker
     { return node.isLiteral() && checkLiteral(node, handler, line, col) ; }
     
     final static private Pattern langPattern = Pattern.compile("[a-zA-Z]{1,8}(-[a-zA-Z]{1,8})*") ;
-    
+
     public static boolean checkLiteral(Node node, ErrorHandler handler, long line, long col)
     {
         if ( ! node.isLiteral() )
@@ -86,28 +96,42 @@ public class CheckerLiterals implements NodeChecker
 
     protected static boolean validateByDatatype(String lexicalForm, RDFDatatype datatype, ErrorHandler handler, long line, long col)
     {
-        if ( datatype.isValid(lexicalForm) ) return true ; 
-        handler.warning("Lexical form '"+lexicalForm+"'not valid for datatype "+datatype.getURI(), line, col) ;
-        return false ;
-        
-        // Not sure about this.  white space for XSD numbers is whitespace facet collapse. 
-        //Just: return lit.getDatatype().isValidLiteral(lit) ;
+        // XXX Reconsider.
+        if ( SysRIOT.StrictXSDLexicialForms )
+        {
+            if ( datatype instanceof XSDBaseNumericType || datatype instanceof XSDFloat || datatype instanceof XSDDouble )
+                return validateByDatatypeNumeric(lexicalForm, datatype, handler, line, col) ;
+            if ( datatype instanceof XSDAbstractDateTimeType )
+                return validateByDatatypeDateTime(lexicalForm, datatype, handler, line, col) ;
+        }
+        return validateByDatatypeJena(lexicalForm, datatype, handler, line, col) ;
+    }
 
-//        if ( ! ( lit.getDatatype() instanceof XSDDatatype ) )
-//            return lit.getDatatype().isValidLiteral(lit) ;
-//
-//        if ( lit.getDatatype() == XSDDatatype.XSDstring || lit.getDatatype() == XSDDatatype.XSDnormalizedString )
-//            return true ;
-//
-//        // Enforce whitespace checking.
-//        if ( lit.getDatatype() instanceof XSDBaseNumericType || lit.getDatatype() instanceof XSDFloat || lit.getDatatype() instanceof XSDDouble )
-//        {
-//            // Do a white space check as well for numerics.
-//            if ( lex.contains(" ") )  { handler.warning("Whitespace in numeric XSD literal: "+node, line, col) ; return false ; } 
-//            if ( lex.contains("\n") ) { handler.warning("Newline in numeric XSD literal: "+node, line, col) ; return false ; }
-//            if ( lex.contains("\r") ) { handler.warning("Newline in numeric XSD literal: "+node, line, col) ; return false ; }
-//        }
-//
+    protected static boolean validateByDatatypeJena(String lexicalForm, RDFDatatype datatype, ErrorHandler handler, long line, long col)
+    {
+        if ( datatype.isValid(lexicalForm) )
+            return true ; 
+        handler.warning("Lexical form '"+lexicalForm+"' not valid for datatype "+datatype.getURI(), line, col) ;
+        return false ;
+    }
+    
+    protected static boolean validateByDatatypeDateTime(String lexicalForm, RDFDatatype datatype, ErrorHandler handler, long line, long col)
+    {
+        if ( lexicalForm.contains(" ") )  { handler.warning("Whitespace in XSD date or time literal: '"+lexicalForm+"'", line, col) ; return false ; }
+        if ( lexicalForm.contains("\n") ) { handler.warning("Newline in XSD date or time literal: '"+lexicalForm+"'", line, col) ; return false ; }
+        if ( lexicalForm.contains("\r") ) { handler.warning("Newline in XSD date or time literal: '"+lexicalForm+"'", line, col) ; return false ; }
+        //if ( ! StrictXSDLexicialForms )
+        // Jena is already strict.
+        return validateByDatatypeJena(lexicalForm, datatype, handler, line, col) ;
+    }
+    
+    protected static boolean validateByDatatypeNumeric(String lexicalForm, RDFDatatype datatype, ErrorHandler handler, long line, long col)
+    {
+        // Do a white space check as well for numerics.
+        if ( lexicalForm.contains(" ") )  { handler.warning("Whitespace in numeric XSD literal: '"+lexicalForm+"'", line, col) ; return false ; } 
+        if ( lexicalForm.contains("\n") ) { handler.warning("Newline in numeric XSD literal: '"+lexicalForm+"'", line, col) ; return false ; }
+        if ( lexicalForm.contains("\r") ) { handler.warning("Carriage return in numeric XSD literal: '"+lexicalForm+"'", line, col) ; return false ; }
+        
 //        if ( lit.getDatatype() instanceof XSDAbstractDateTimeType )
 //        {
 //            // Do a white space check as well for numerics.
@@ -116,19 +140,21 @@ public class CheckerLiterals implements NodeChecker
 //            if ( lex.contains("\r") ) { handler.warning("Newline in XSD date or time literal: "+node, line, col) ; return false ; }
 //        }
 //
-//        // From Jena 2.6.3, XSDDatatype.parse
-//        XSSimpleType typeDeclaration = (XSSimpleType)lit.getDatatype().extendedTypeDefinition() ;
-//        try {
-//            ValidationContext context = new ValidationState();
-//            ValidatedInfo resultInfo = new ValidatedInfo();
-//            Object result = typeDeclaration.validate(lex, context, resultInfo);
-//            return true ;
-//        } catch (InvalidDatatypeValueException e) {
-//            handler.warning("Lexical form not valid for datatype: "+node, line, col) ;
-//            return false ;
-//        }
+        if ( ! SysRIOT.StrictXSDLexicialForms )
+            return validateByDatatypeJena(lexicalForm, datatype, handler, line, col) ;
+        
+        // From Jena 2.6.3, XSDDatatype.parse
+        XSSimpleType typeDeclaration = (XSSimpleType)datatype.extendedTypeDefinition() ;
+        try {
+            ValidationContext context = new ValidationState();
+            ValidatedInfo resultInfo = new ValidatedInfo();
+            Object result = typeDeclaration.validate(lexicalForm, context, resultInfo);
+            return true ;
+        } catch (InvalidDatatypeValueException e) {
+            handler.warning("Lexical form '"+lexicalForm+"' not valid for datatype "+datatype.getURI(), line, col) ;
+            return false ;
+        }
     }
-
 }
 
 /*

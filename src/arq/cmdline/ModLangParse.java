@@ -17,6 +17,9 @@ public class ModLangParse implements ArgModuleGeneral
     private ArgDecl argNoCheck    = new ArgDecl(ArgDecl.NoValue, "nocheck") ;
     private ArgDecl argSink     = new ArgDecl(ArgDecl.NoValue, "sink", "null") ;
 
+    private ArgDecl argStrict   = new ArgDecl(ArgDecl.NoValue, "strict") ;
+    private ArgDecl argValidate = new ArgDecl(ArgDecl.NoValue, "validate") ;
+    
     private ArgDecl argSkip     = new ArgDecl(ArgDecl.NoValue, "skip") ;
     private ArgDecl argNoSkip   = new ArgDecl(ArgDecl.NoValue, "noSkip") ;
     private ArgDecl argStop     = new ArgDecl(ArgDecl.NoValue, "stopOnError", "stoponerror", "stop") ;
@@ -29,6 +32,8 @@ public class ModLangParse implements ArgModuleGeneral
     private boolean skipOnBadTerm   = false ;
     private boolean stopOnBadTerm   = false ;
     private boolean bitbucket       = false ; 
+    private boolean strict          = false ;
+    private boolean validate        = false ;
     
     public void registerWith(CmdGeneral cmdLine)
     {
@@ -36,6 +41,8 @@ public class ModLangParse implements ArgModuleGeneral
         cmdLine.add(argSink,    "--sink",           "Parse but throw away output") ;
         cmdLine.add(argBase,    "--base=URI",       "Set the base URI (does not apply to N-triples and N-Quads)") ;
         cmdLine.add(argCheck,   "--check=boolean",  "Addition checking of RDF terms (default: off for N-triples, N-Quads, on for Turtle and TriG)") ;
+        cmdLine.add(argStrict,  "--strict",         "Run with in strict mode") ;
+        cmdLine.add(argValidate,"--validate",       "Same as --sink --check=true --strict") ;
 //        cmdLine.add(argNoCheck, "--nocheck",        "Turn off checking of RDF terms") ;
 //        cmdLine.add(argSkip,    "--skip",           "Skip (do not output) triples failing the RDF term tests") ;
 //        cmdLine.add(argNoSkip,  "--noSkip",         "Include triples failing the RDF term tests (not recommended)") ;
@@ -44,6 +51,15 @@ public class ModLangParse implements ArgModuleGeneral
 
     public void processArgs(CmdArgModule cmdLine)
     {
+        if ( cmdLine.contains(argValidate) )
+        {
+            validate = true ;
+            strict = true ;
+            explicitCheck = true ;
+            bitbucket = true ;
+        }
+        
+
         if ( cmdLine.contains(argNoCheck) )
             explicitNoCheck = false ;
         
@@ -54,6 +70,9 @@ public class ModLangParse implements ArgModuleGeneral
             explicitNoCheck = !b ;
         }
         
+        if ( cmdLine.contains(argStrict) )
+            strict = true ;
+
         if ( cmdLine.contains(argSkip) )
             skipOnBadTerm = true ; 
         if ( cmdLine.contains(argNoSkip) )
@@ -69,8 +88,11 @@ public class ModLangParse implements ArgModuleGeneral
                 throw new CmdException("Base IRI must be an absolute IRI: "+baseIRI) ;
         }
         
-        stopOnBadTerm = cmdLine.contains(argStop) ;
-        bitbucket = cmdLine.contains(argSink) ; 
+        if ( cmdLine.contains(argStop) )
+            stopOnBadTerm = true ;
+        
+        if ( cmdLine.contains(argSink) )
+            bitbucket = true ;
     }
 
     public boolean explicitChecking()
@@ -81,6 +103,16 @@ public class ModLangParse implements ArgModuleGeneral
     public boolean explicitNoChecking()
     {
         return explicitNoCheck ;
+    }
+
+    public boolean strictMode()
+    {
+        return strict ;
+    }
+
+    public boolean validate()
+    {
+        return validate ;
     }
 
     public boolean skipOnBadTerm()

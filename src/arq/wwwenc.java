@@ -40,7 +40,7 @@ public class wwwenc
         for ( String x : args)
         {
             // Not URLEncoder which does www-form-encoding.
-            String y = StrUtils.encode(x, '%', reserved) ;
+            String y = StrUtils.encodeHex(x, '%', reserved) ;
             System.out.println(y) ;
         }
     }

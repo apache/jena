@@ -21,10 +21,10 @@ public class TestStrUtils extends BaseTest
     
     static void test(String x, String z)
     {
-        String y = StrUtils.encode(x, marker, esc) ;
+        String y = StrUtils.encodeHex(x, marker, esc) ;
         if ( z != null )
             assertEquals(z, y) ;
-        String x2 = StrUtils.decode(y, marker) ;
+        String x2 = StrUtils.decodeHex(y, marker) ;
         assertEquals(x, x2) ;
     }
     

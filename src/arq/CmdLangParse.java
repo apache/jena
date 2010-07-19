@@ -148,6 +148,11 @@ public abstract class CmdLangParse extends CmdGeneral
     @Override
     protected void exec()
     {
+        if ( modLangParse.strictMode() )
+        {
+            SysRIOT.StrictXSDLexicialForms = true ;
+        }
+        
         try {
             if ( super.getPositional().isEmpty() )
                 parseFile("-") ;

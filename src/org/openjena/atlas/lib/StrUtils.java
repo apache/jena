@@ -181,7 +181,7 @@ public class StrUtils //extends StringUtils
      * @param escapees  Characters to encode (must include the marker)
      * @return          Encoded string (returns input object if no change)
      */
-    public static String encode(String str, char marker, char[] escapees)
+    public static String encodeHex(String str, char marker, char[] escapees)
     {
         // We make a first pass to see if there is anything to do.
         // This is assuming
@@ -241,7 +241,7 @@ public class StrUtils //extends StringUtils
      * @param marker    The marker charcater
      * @return          Decoded string (returns input object on no change)
      */
-    public static String decode(String str, char marker)
+    public static String decodeHex(String str, char marker)
     {
         int idx = str.indexOf(marker) ;
         if ( idx == -1 )

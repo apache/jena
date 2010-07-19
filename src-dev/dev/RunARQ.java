@@ -93,6 +93,8 @@ public class RunARQ
     public static void main(String[] argv) throws Exception
     {
         
+        arq.riot.main("D.nt") ; System.exit(0) ;
+        
 //        DatasetGraph dsg = DatasetLoader.load("D.trig") ;
 //        Dump.write(System.out, dsg) ;
 //        System.out.println("DONE") ;

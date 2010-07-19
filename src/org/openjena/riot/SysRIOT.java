@@ -20,6 +20,8 @@ public class SysRIOT
     public static final EventType startRead = new EventType(SysRIOT.class, "StartRead") ;
     public static final EventType finishRead = new EventType(SysRIOT.class, "FinishRead") ;
     
+    public static boolean StrictXSDLexicialForms = false ;
+    
     static public String fmtMessage(String message, long line, long col)
     {
         if ( col == -1 && line == -1 )

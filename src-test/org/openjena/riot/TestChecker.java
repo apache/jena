@@ -58,7 +58,7 @@ public class TestChecker
     @Test (expected=ErrorHandlerTestLib.ExWarning.class) public void checker14() { check("'12 3'^^xsd:integer") ; }
     @Test public void checker15() { check("'\\n123'^^xsd:integer") ; }
 
-    // Test all the data ttype hierarchies that whitespace foo affects.
+    // Test all the data type hierarchies that whitespace foo affects.
     @Test public void checker16() { check("'123.0  '^^xsd:float") ; }
     @Test public void checker17() { check("'123.0\\n'^^xsd:double") ; }
     // Jena "bug"

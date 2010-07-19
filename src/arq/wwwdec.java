@@ -17,7 +17,7 @@ public class wwwdec
     {
         for ( String x : args)
         {
-            String y = StrUtils.decode(x, '%') ;
+            String y = StrUtils.decodeHex(x, '%') ;
             System.out.println(y) ;
         }
     }
