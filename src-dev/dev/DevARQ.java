@@ -8,7 +8,7 @@ package dev;
 
 public class DevARQ
 {
-    // Rename and Op is E_Exists
+    // BUG: Property functions (and other tranforms) in [NOT]EXISTS clauses.  
     
     // Inference
     // StringUTF8
@@ -20,8 +20,6 @@ public class DevARQ
     
     // DatasetGraph.find/4 : what about in NG only?  findNG/4
     
-    // copySubstitute generalise with a renaming function.
-
     // Scoping:
     // Consider wrapping passed-in binding for project subquery, rather than a renaming scheme.
     
@@ -40,7 +38,6 @@ public class DevARQ
     // Version mgt
     // Add ??read(Model model, file) c.f. DatasetLoader
     // 
-    // RIOT.init() (SysRIOT)
     // Skip on bad terms / stop on bad term is choice of errorhandler.
     // Output bad term quads/triples to special sink.
     //   Option passing (old Jena style).

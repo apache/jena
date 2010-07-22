@@ -9,14 +9,15 @@ package com.hp.hpl.jena.sparql.expr;
 import com.hp.hpl.jena.sparql.engine.Renamer ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
+import com.hp.hpl.jena.sparql.util.Utils ;
 
 
 /** A function of two arguments */
  
 public abstract class ExprFunction2 extends ExprFunction
 {
-    Expr expr1 = null ;
-    Expr expr2 = null ;
+    protected final Expr expr1 ;
+    protected final Expr expr2 ;
 
     protected ExprFunction2(Expr expr1, Expr expr2, String fName) { this(expr1, expr2, fName, null) ; }
     
@@ -27,8 +28,8 @@ public abstract class ExprFunction2 extends ExprFunction
         this.expr2 = expr2 ;
     }
     
-    public Expr getArg1() { return getArg(1) ; }
-    public Expr getArg2() { return getArg(2) ; }
+    public Expr getArg1() { return expr1 ; }
+    public Expr getArg2() { return expr2 ; }
     
     @Override
     public Expr getArg(int i)
@@ -49,8 +50,8 @@ public abstract class ExprFunction2 extends ExprFunction
     public int hashCode()
     {
         return getFunctionSymbol().hashCode() ^
-               getArg1().hashCode() ^
-               getArg2().hashCode() ;
+                Utils.hashCodeObject(expr1) ^
+                Utils.hashCodeObject(expr2) ;
     }
 
     @Override
@@ -60,8 +61,8 @@ public abstract class ExprFunction2 extends ExprFunction
         if ( s != null )
             return s ;
         
-        NodeValue x = expr1.eval(binding, env) ;
-        NodeValue y = expr2.eval(binding, env) ;
+        NodeValue x = eval(binding, env, expr1) ;
+        NodeValue y = eval(binding, env, expr2) ;
         return eval(x, y, env) ;
     }
     
@@ -77,13 +78,13 @@ public abstract class ExprFunction2 extends ExprFunction
     @Override
     final public Expr copySubstitute(Binding binding, boolean foldConstants)
     {
-        Expr e1 = expr1.copySubstitute(binding, foldConstants) ;
-        Expr e2 = expr2.copySubstitute(binding, foldConstants) ;
+        Expr e1 = (expr1 == null ? null : expr1.copySubstitute(binding, foldConstants)) ;
+        Expr e2 = (expr2 == null ? null : expr2.copySubstitute(binding, foldConstants)) ;
         
         if ( foldConstants)
         {
             try {
-                if ( e1.isConstant() && e2.isConstant() )
+                if ( e1 != null && e2 != null && e1.isConstant() && e2.isConstant() )
                     return eval(e1.getConstant(), e2.getConstant()) ;
             } catch (ExprEvalException ex) { /* Drop through */ }
         }
@@ -92,10 +93,10 @@ public abstract class ExprFunction2 extends ExprFunction
     
 
     //@Override
-    public Expr copyNodeTransform(Renamer renamer)
+    final public Expr copyNodeTransform(Renamer renamer)
     {
-        Expr e1 = expr1.copyNodeTransform(renamer) ;
-        Expr e2 = expr2.copyNodeTransform(renamer) ;
+        Expr e1 = (expr1 == null ? null : expr1.copyNodeTransform(renamer)) ;
+        Expr e2 = (expr2 == null ? null : expr2.copyNodeTransform(renamer)) ;
         return copy(e1, e2) ;
     }
 

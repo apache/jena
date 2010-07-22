@@ -32,11 +32,14 @@ import com.hp.hpl.jena.sparql.algebra.Algebra ;
 import com.hp.hpl.jena.sparql.algebra.ExtBuilder ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.OpExtRegistry ;
+import com.hp.hpl.jena.sparql.algebra.Transform ;
 import com.hp.hpl.jena.sparql.algebra.TransformUnionQuery ;
+import com.hp.hpl.jena.sparql.algebra.Transformer ;
 import com.hp.hpl.jena.sparql.algebra.op.OpExt ;
 import com.hp.hpl.jena.sparql.algebra.op.OpFetch ;
 import com.hp.hpl.jena.sparql.algebra.op.OpFilter ;
 import com.hp.hpl.jena.sparql.algebra.opt.Optimize ;
+import com.hp.hpl.jena.sparql.algebra.opt.TransformPropertyFunction ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.Prologue ;
 import com.hp.hpl.jena.sparql.core.QueryCheckException ;
@@ -89,12 +92,19 @@ public class RunARQ
       arq.rset.main(dir+"/temporalProximity01.srx") ;System.exit(0) ;
       
       arq.sparql.main(/*"--engine=ref",*/ "--syntax=sparql_11", dataFile, queryFile) ;
-      System.exit(0) ;
+      System.exit(0) ; 
     }
 
     public static void main(String[] argv) throws Exception
     {
-
+        Transform t = new TransformPropertyFunction(ARQ.getContext()) ;
+        Op op = SSE.parseOp("(prefix ((list: <http://jena.hpl.hp.com/ARQ/list#>)) (filter (exists (bgp (?s list:member ?o))) (bgp (?s1 list:member ?o1))))") ;
+        Op op2 = Transformer.transform(t, op) ;
+        System.out.println(op2) ;
+        System.exit(0) ;
+        
+        
+        
         Model model = FileManager.get().loadModel("tmp/holger-test.ttl") ;
         
         Query q1 = QueryFactory.read("tmp/Q1.rq") ;

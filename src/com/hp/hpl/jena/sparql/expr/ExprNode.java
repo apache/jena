@@ -56,6 +56,12 @@ public abstract class ExprNode implements Expr
     @Override
     public abstract boolean equals(Object other) ;
     
+    protected static NodeValue eval(Binding binding, FunctionEnv funcEnv, Expr expr)
+    {   
+        if ( expr == null ) return null ;
+        return expr.eval(binding, funcEnv) ;
+    }
+    
     final public Expr copySubstitute(Binding binding)
     { return copySubstitute(binding, false) ; }
     

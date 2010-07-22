@@ -20,7 +20,6 @@ public class E_NotExists extends ExprFunctionOp
 {
     // Translated to "(not (exists (...)))" 
     private static final String symbol = "notexists" ;
-    private Op op ;
 
     public E_NotExists(Op op)
     {
@@ -41,7 +40,7 @@ public class E_NotExists extends ExprFunctionOp
     public Expr copySubstitute(Binding binding, boolean foldConstants)
     {
         // Does not pass down fold constants.  Oh well.
-        Op op2 = Substitute.substitute(op, binding) ;
+        Op op2 = Substitute.substitute(getOp(), binding) ;
         return new E_NotExists(getElement(), op2) ;
     }
 

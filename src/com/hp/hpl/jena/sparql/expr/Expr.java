@@ -59,7 +59,7 @@ public interface Expr
     public Expr copyNodeTransform(Renamer renamer) ;
 
 //    /** Transform. */
-//    public Expr apply() ;
+//    public Expr apply(ExprTransform transform) ;
     
     /** Deep copy */
     public Expr deepCopy() ;

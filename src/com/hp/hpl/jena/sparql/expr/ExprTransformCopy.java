@@ -6,23 +6,46 @@
 
 package com.hp.hpl.jena.sparql.expr;
 
+import java.util.List ;
+
+import com.hp.hpl.jena.sparql.algebra.Op ;
+
 //NOT FINISHED
 
-public class ExprTransformCopy
+public class ExprTransformCopy implements ExprTransform
 {
-    // Repurpose copysSubstitute
+    public static final boolean COPY_ALWAYS         = true ;
+    public static final boolean COPY_ONLY_ON_CHANGE = false ;
+    private boolean alwaysCopy = false ;
     
-//    public static final boolean COPY_ALWAYS         = true ;
-//    public static final boolean COPY_ONLY_ON_CHANGE = false ;
-//    private boolean alwaysCopy = false ;
-//    
-//    public TransformCopy()                                          { this(COPY_ONLY_ON_CHANGE) ; }
-//    public TransformCopy(boolean alwaysDuplicate)                   { this.alwaysCopy = alwaysDuplicate ; }
-//    
-//    void visit(ExprFunction func) ;
-//    void visit(ExprFunctionOp funcOp) ;
-//    void visit(NodeValue nv) ;
-//    void visit(ExprVar nv) ;        // AKA ExprFunction0
+    public ExprTransformCopy()                          { this(COPY_ONLY_ON_CHANGE) ; }
+    public ExprTransformCopy(boolean alwaysDuplicate)   { this.alwaysCopy = alwaysDuplicate ; }
+    
+    public Expr transform(ExprFunction func, List<Expr> args)               { return xform(func, args) ; }
+    public Expr transform(ExprFunctionOp funcOp, List<Expr> args, Op opArg) { return xform(funcOp, args, opArg) ; }
+    public Expr transform(NodeValue nv)                                     { return xform(nv) ; }
+    public Expr transform(ExprVar exprVar)                                  { return xform(exprVar) ; }
+    
+    
+    private Expr xform(ExprFunction func, List<Expr> args)
+    {
+        return null ;
+    }
+    
+    private Expr xform(ExprFunctionOp funcOp, List<Expr> args, Op opArg)
+    {
+        return null ;
+    }
+    
+    private Expr xform(NodeValue nv)
+    {
+        return null ;
+    }
+    
+    private Expr xform(ExprVar exprVar)
+    {
+        return null ;
+    }
 }
 
 /*

@@ -9,44 +9,57 @@ package com.hp.hpl.jena.sparql.expr;
 import com.hp.hpl.jena.sparql.engine.Renamer ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
-import com.hp.hpl.jena.sparql.function.FunctionEnvBase ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 
-/** A function that has a single argument */
- 
-public abstract class ExprFunction1 extends ExprFunction
-{
-    protected final Expr expr ;
 
-    protected ExprFunction1(Expr expr, String fName) { this(expr, fName, null) ; }
+/** A function of three arguments */
+ 
+public abstract class ExprFunction3 extends ExprFunction
+{
+    protected final Expr expr1 ;
+    protected final Expr expr2 ;
+    protected final Expr expr3 ;
+
+    protected ExprFunction3(Expr expr1, Expr expr2, Expr expr3, String fName) { this(expr1, expr2, expr3, fName, null) ; }
     
-    protected ExprFunction1(Expr expr, String fName, String opSign)
+    protected ExprFunction3(Expr expr1, Expr expr2, Expr expr3, String fName, String opSign)
     {
         super(fName, opSign) ;
-        this.expr = expr ;
+        this.expr1 = expr1 ;
+        this.expr2 = expr2 ;
+        this.expr3 = expr3 ;
     }
-
-    public Expr getArg() { return expr ; }
-
+    
+    public Expr getArg1() { return expr1 ; }
+    public Expr getArg2() { return expr2 ; }
+    public Expr getArg3() { return expr3 ; }
+    
     @Override
     public Expr getArg(int i)
     {
         if ( i == 1 )
-            return expr ; 
+            return expr1 ; 
+        if ( i == 2 )
+            return expr2 ; 
+        if ( i == 3 )
+            return expr3 ; 
         return null ;
     }
     
     @Override
-    public int hashCode()
-    {
-        return getFunctionSymbol().hashCode() ^ Utils.hashCodeObject(expr) ;
-    }
-
-    @Override
-    public int numArgs() { return 1 ; }
+    public int numArgs() { return 3 ; }
     
     // ---- Evaluation
     
+    @Override
+    public int hashCode()
+    {
+        return getFunctionSymbol().hashCode() ^
+               Utils.hashCodeObject(expr1) ^
+               Utils.hashCodeObject(expr2) ^
+               Utils.hashCodeObject(expr3) ;
+    }
+
     @Override
     final public NodeValue eval(Binding binding, FunctionEnv env)
     {
@@ -54,40 +67,51 @@ public abstract class ExprFunction1 extends ExprFunction
         if ( s != null )
             return s ;
         
-        NodeValue x = eval(binding, env, expr) ;
-        return eval(x, env) ;
+        NodeValue x = eval(binding, env, expr1) ;
+        NodeValue y = eval(binding, env, expr2) ;
+        NodeValue z = eval(binding, env, expr3) ;
+        return eval(x, y, z, env) ;
     }
     
-    // Ideally, we would only have the FunctionEnv form but that break compatibility. 
-    public NodeValue eval(NodeValue v, FunctionEnv env) { return eval(v) ; }
-    public abstract NodeValue eval(NodeValue v) ;
-    
-    // Allow special cases.
+    /** Special form evaluation (example, don't eval the arguments first) */
     protected NodeValue evalSpecial(Binding binding, FunctionEnv env) { return null ; } 
+    
+    public NodeValue eval(NodeValue x, NodeValue y, NodeValue z, FunctionEnv env) { return eval(x,y, z) ; }
+
+    public abstract NodeValue eval(NodeValue x, NodeValue y, NodeValue z) ; 
+
+    // ---- Duplication
     
     @Override
     final public Expr copySubstitute(Binding binding, boolean foldConstants)
     {
-        Expr e = (expr == null ? null : expr.copySubstitute(binding, foldConstants)) ;
+        Expr e1 = (expr1 == null ? null : expr1.copySubstitute(binding, foldConstants)) ;
+        Expr e2 = (expr2 == null ? null : expr2.copySubstitute(binding, foldConstants)) ;
+        Expr e3 = (expr3 == null ? null : expr3.copySubstitute(binding, foldConstants)) ;
         
         if ( foldConstants)
         {
             try {
-                if ( e != null && e.isConstant() )
-                    return eval(e.getConstant(), new FunctionEnvBase()) ;
+                if ( e1 != null && e2 != null && e3 != null &&
+                     e1.isConstant() && e2.isConstant() && e3.isConstant() )
+                    return eval(e1.getConstant(), e2.getConstant(), e3.getConstant()) ;
             } catch (ExprEvalException ex) { /* Drop through */ }
         }
-        return copy(e) ;
+        return copy(e1, e2, e3) ;
     }
+    
 
     //@Override
     final public Expr copyNodeTransform(Renamer renamer)
     {
-        Expr e = (expr == null ? null : expr.copyNodeTransform(renamer)) ;
-        return copy(e) ;
+        Expr e1 = (expr1 == null ? null : expr1.copyNodeTransform(renamer)) ;
+        Expr e2 = (expr2 == null ? null : expr2.copyNodeTransform(renamer)) ;
+        Expr e3 = (expr3 == null ? null : expr3.copyNodeTransform(renamer)) ;
+        return copy(e1, e2, e3) ;
     }
-    
-    public abstract Expr copy(Expr expr) ;
+
+
+    public abstract Expr copy(Expr arg1, Expr arg2, Expr arg3) ;
 }
 
 /*

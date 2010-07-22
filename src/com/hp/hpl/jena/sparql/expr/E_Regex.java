@@ -6,9 +6,6 @@
 package com.hp.hpl.jena.sparql.expr;
 
 import com.hp.hpl.jena.query.ARQ ;
-import com.hp.hpl.jena.sparql.engine.Renamer ;
-import com.hp.hpl.jena.sparql.engine.binding.Binding ;
-import com.hp.hpl.jena.sparql.function.FunctionEnv ;
 import com.hp.hpl.jena.sparql.util.ALog ;
 import com.hp.hpl.jena.sparql.util.Symbol ;
 
@@ -19,7 +16,7 @@ import com.hp.hpl.jena.sparql.util.Symbol ;
  * @author Andy Seaborne
  */
 
-public class E_Regex extends ExprFunction
+public class E_Regex extends ExprFunction3
 {
     private static Symbol regexImpl = null ;
     static
@@ -46,47 +43,48 @@ public class E_Regex extends ExprFunction
     private static final String name = "regex" ;
     private RegexEngine regexEngine = null ;
     
-    private Expr expr ;
-    private Expr pattern ;
-    private Expr flags ;
+//    private final Expr expr ;
+//    private final Expr pattern ;
+//    private final Expr flags ;
     
     public E_Regex(Expr _expr, Expr _pattern, Expr _flags)
     {
-        super(name) ;
-        expr = _expr ;
-        pattern = _pattern ;
-        flags = _flags ;
-        init() ;
+        super(_expr, _pattern, _flags, name) ;
+//        // Better names.
+//        expr = _expr ;
+//        pattern = _pattern ;
+//        flags = _flags ;
+        init(_pattern, _flags) ;
     }
 
     // Not used by parser
     public E_Regex(Expr _expr, String _pattern, String _flags)
     {
-        super(name) ;
-        expr = _expr ;
-        pattern = NodeValue.makeString(_pattern) ;
-        flags = NodeValue.makeString(_flags) ;
-        init() ;
+        super(_expr, NodeValue.makeString(_pattern), NodeValue.makeString(_flags), name) ;
+//        expr = expr1 ;
+//        pattern = expr2 ;
+//        flags = expr3 ;
+        init(expr2, expr3) ;
     }
     
-    private void init()
+    private void init(Expr pattern, Expr flags)
     {
         if ( pattern.isConstant() && pattern.getConstant().isString() && ( flags==null || flags.isConstant() ) )
             regexEngine = makeRegexEngine(pattern.getConstant(), (flags==null)?null:flags.getConstant()) ;
     }
     
+
     @Override
-    public NodeValue eval(Binding binding, FunctionEnv env)
+    public NodeValue eval(NodeValue v, NodeValue vPattern, NodeValue vFlags)
     {
-        NodeValue v = expr.eval(binding, env) ;
         if ( ! v.isString() )
-            throw new ExprEvalException("REGEX: "+expr+" evaluates to "+v+", which is not a string") ;
+            throw new ExprEvalException("REGEX: "+v+" is not a string") ;
 
         RegexEngine regex = regexEngine ;
         if ( regex == null  )
         {
-            NodeValue vPattern = pattern.eval(binding, env) ;
-            NodeValue vFlags = (flags==null) ? null : flags.eval(binding, env) ;
+//            NodeValue vPattern = pattern.eval(binding, env) ;
+//            NodeValue vFlags = (flags==null) ? null : flags.eval(binding, env) ;
             regex = makeRegexEngine(vPattern, vFlags) ;
         }
         
@@ -114,56 +112,31 @@ public class E_Regex extends ExprFunction
     }
     
     @Override
-    public Expr getArg(int i)
-    {
-        if ( i == 1 )
-            return expr ;
-        if ( i == 2 )
-            return pattern ;
-        if ( i == 3 )
-            return flags ;
-        
-        return null ;
-    }
-
-    @Override
     public int numArgs()
     {
-        if ( flags != null )
+        if ( expr3 != null )
             return 3 ;
         return 2 ;
     }
 
     /** @return Returns the expr of the regex */
-    public Expr getRegexExpr() { return expr ; }
+    public final Expr getRegexExpr() { return expr2 ; }
 
     /** @return Returns the flags. */
-    public Expr getFlags() { return flags ; }
+    public final Expr getFlags() { return expr3 ; }
 
     /**
      * @return Returns the pattern.
      */
-    public Expr getPattern()
+    public final Expr getPattern()
     {
-        return pattern ;
+        return expr1 ;
     }
 
     @Override
-    public Expr copySubstitute(Binding binding, boolean foldConstants)
+    public Expr copy(Expr arg1, Expr arg2, Expr arg3)
     {
-        Expr e = expr.copySubstitute(binding, foldConstants) ;
-        Expr p = pattern.copySubstitute(binding, foldConstants) ;
-        Expr f = (flags==null)? null : flags.copySubstitute(binding, foldConstants) ;
-        return new E_Regex(e,p,f) ;
-    }
-
-    //@Override
-    public Expr copyNodeTransform(Renamer renamer)
-    {
-        Expr e = expr.copyNodeTransform(renamer) ;
-        Expr p = pattern.copyNodeTransform(renamer) ;
-        Expr f = (flags==null)? null : flags.copyNodeTransform(renamer) ;
-        return new E_Regex(e,p,f) ;
+        return new E_Regex(arg1, arg2, arg3) ;
     }
 }
 
