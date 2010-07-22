@@ -6,10 +6,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            8 Sep 2006
  * Filename           $RCSfile: Test_schemagen.java,v $
- * Revision           $Revision: 1.6 $
+ * Revision           $Revision: 1.7 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2010-05-19 10:31:46 $
+ * Last modified on   $Date: 2010-07-22 10:01:16 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
@@ -47,7 +47,7 @@ import com.hp.hpl.jena.util.FileUtils;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: Test_schemagen.java,v 1.6 2010-05-19 10:31:46 ian_dickinson Exp $
+ * @version CVS $Id: Test_schemagen.java,v 1.7 2010-07-22 10:01:16 ian_dickinson Exp $
  */
 public class Test_schemagen
     extends TestCase
@@ -605,9 +605,20 @@ public class Test_schemagen
      * @param className
      * @throws Exception
      */
-    protected void testCompile( String source, String className )
+    protected void testCompile( String source, String defaultClassName )
         throws Exception
     {
+        String className = defaultClassName;
+
+        // ensure we use the right class name for the temp file
+        // should do this with a regex, but java Pattern & Matcher is borked
+        String key = "public class ";
+        int i = source.indexOf( key );
+        if (i > 0) {
+            i += key.length();
+            className = source.substring( i, source.indexOf( " ", i ) );
+        }
+
         // first write the source file to a temp dir
         File tmpDir = FileUtils.getScratchDirectory( "schemagen" );
         File srcFile = new File( tmpDir, className + ".java" );
