@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory;
 final
 public class BlockMgrMapped extends BlockMgrFile
 {
-    /* Blocks are addressed by postive ints - 
+    /* Blocks are addressed by positive ints - 
      * Is that a limit?
      * One billion is 2^30
      * If a block is 8K, the 2^31*2^13 =  2^44 bits or 2^14 billion = 16K Billion. = 16 trillion bytes.
