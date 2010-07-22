@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Systems Ltd.
  * [See end of file]
  */
 
@@ -41,23 +42,37 @@ public abstract class ExprFunctionN extends ExprFunction
     public List<Expr> getArgs() { return args.getList() ; }
 
     @Override
-    public Expr copySubstitute(Binding binding, boolean foldConstants, Renamer renamer)
+    public Expr copySubstitute(Binding binding, boolean foldConstants)
     {
         ExprList newArgs = new ExprList() ;
         for ( int i = 1 ; i <= numArgs() ; i++ )
         {
             Expr e = getArg(i) ;
-            e = e.copySubstitute(binding, foldConstants, renamer) ;
+            e = e.copySubstitute(binding, foldConstants) ;
             newArgs.add(e) ;
         }
         return copy(newArgs) ;
     }
 
+    //@Override
+    public Expr copyNodeTransform(Renamer renamer)
+    {
+        ExprList newArgs = new ExprList() ;
+        for ( int i = 1 ; i <= numArgs() ; i++ )
+        {
+            Expr e = getArg(i) ;
+            e = e.copyNodeTransform(renamer) ;
+            newArgs.add(e) ;
+        }
+        return copy(newArgs) ;
+    }
+    
     protected abstract Expr copy(ExprList newArgs) ;
 }
 
 /*
- *  (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Systems Ltd.
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

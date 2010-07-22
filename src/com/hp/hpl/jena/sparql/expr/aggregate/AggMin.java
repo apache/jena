@@ -24,7 +24,7 @@ public class AggMin extends AggregatorBase
 
     public AggMin(Expr expr) { this.expr = expr ; } 
     public Aggregator copy() { return new AggMin(expr) ; }
-    public Aggregator copyRename(Renamer renamer) { return new AggMin(expr.copySubstitute(null, false, renamer)) ; }
+    public Aggregator copyRename(Renamer renamer) { return new AggMin(expr.copyNodeTransform(renamer)) ; }
 
     @Override
     public String toString() { return "min("+ExprUtils.fmtSPARQL(expr)+")" ; }

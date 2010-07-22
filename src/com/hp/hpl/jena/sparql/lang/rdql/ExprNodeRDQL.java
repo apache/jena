@@ -52,7 +52,9 @@ abstract class ExprNodeRDQL
     
     public Expr copySubstitute(Binding binding) { return null ; }
 
-    public Expr copySubstitute(Binding binding, boolean foldConstants, Renamer renamer) { return null ; }
+    public Expr copySubstitute(Binding binding, boolean foldConstants) { return null ; }
+    
+    public Expr copyNodeTransform(Renamer renamer) { return null ; }
 
     public Expr deepCopy() { return null ; }
 

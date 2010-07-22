@@ -44,7 +44,7 @@ public class AggGroupConcat extends AggregatorBase
     }
     
     public Aggregator copy() { return new AggGroupConcat(expr, separator, separatorSeen) ; }
-    public Aggregator copyRename(Renamer renamer) { return new AggGroupConcat(expr.copySubstitute(null, false, renamer), separator) ; }
+    public Aggregator copyRename(Renamer renamer) { return new AggGroupConcat(expr.copyNodeTransform(renamer), separator) ; }
 
     @Override
     public String toString()

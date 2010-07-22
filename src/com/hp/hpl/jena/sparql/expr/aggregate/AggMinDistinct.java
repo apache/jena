@@ -21,7 +21,7 @@ public class AggMinDistinct extends AggMin
     @Override
     public Aggregator copy() { return new AggMinDistinct(expr) ; }
     @Override
-    public Aggregator copyRename(Renamer renamer) { return new AggMinDistinct(expr.copySubstitute(null, false, renamer)) ; }
+    public Aggregator copyRename(Renamer renamer) { return new AggMinDistinct(expr.copyNodeTransform(renamer)) ; }
 
     @Override
     public String toString() { return "min(distinct "+ExprUtils.fmtSPARQL(getExpr())+")" ; }

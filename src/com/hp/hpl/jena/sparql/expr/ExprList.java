@@ -65,7 +65,7 @@ public class ExprList implements Iterable<Expr>
         for ( Iterator<Expr> iter = expressions.iterator() ; iter.hasNext() ; )
         {
             Expr expr = iter.next();
-            expr = expr.copySubstitute(binding, foldConstants, renamer) ;
+            expr = expr.copySubstitute(binding, foldConstants) ;
             x.add(expr) ;
         }
         return x ;

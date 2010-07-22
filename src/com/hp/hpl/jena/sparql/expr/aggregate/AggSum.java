@@ -26,7 +26,7 @@ public class AggSum  extends AggregatorBase
 
     public AggSum(Expr expr) { this.expr = expr ; } 
     public Aggregator copy() { return new AggSum(expr) ; }
-    public Aggregator copyRename(Renamer renamer) { return new AggSum(expr.copySubstitute(null, false, renamer)) ; }
+    public Aggregator copyRename(Renamer renamer) { return new AggSum(expr.copyNodeTransform(renamer)) ; }
 
     @Override
     public String toString() { return "sum("+ExprUtils.fmtSPARQL(expr)+")" ; }

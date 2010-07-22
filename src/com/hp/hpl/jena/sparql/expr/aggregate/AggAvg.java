@@ -25,7 +25,7 @@ public class AggAvg extends AggregatorBase
 
     public AggAvg(Expr expr) { this.expr = expr ; } 
     public Aggregator copy() { return new AggAvg(expr) ; }
-    public Aggregator copyRename(Renamer renamer) { return new AggAvg(expr.copySubstitute(null, false, renamer)) ; }
+    public Aggregator copyRename(Renamer renamer) { return new AggAvg(expr.copyNodeTransform(renamer)) ; }
 
     // XQuery/XPath Functions&Operators suggests zero
     // SQL suggests null.

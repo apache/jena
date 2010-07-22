@@ -22,7 +22,7 @@ public class AggCountVar extends AggregatorBase
 
     public AggCountVar(Expr expr) { this.expr = expr ; }
     public Aggregator copy() { return new AggCountVar(expr) ; }
-    public Aggregator copyRename(Renamer renamer) { return new AggCountVar(expr.copySubstitute(null, false, renamer)) ; }
+    public Aggregator copyRename(Renamer renamer) { return new AggCountVar(expr.copyNodeTransform(renamer)) ; }
 
     @Override
     public String toString() { return "count("+expr+")" ; }

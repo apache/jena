@@ -17,6 +17,7 @@ import org.openjena.atlas.lib.Sink ;
 import org.openjena.atlas.lib.SinkWrapper ;
 import org.openjena.atlas.lib.StrUtils ;
 import org.openjena.riot.ErrorHandlerLib ;
+import org.openjena.riot.RiotLib ;
 import org.openjena.riot.checker.CheckerIRI ;
 import riot.inf.infer ;
 
@@ -93,6 +94,41 @@ public class RunARQ
 
     public static void main(String[] argv) throws Exception
     {
+
+        Model model = FileManager.get().loadModel("tmp/holger-test.ttl") ;
+        
+        Query q1 = QueryFactory.read("tmp/Q1.rq") ;
+        System.out.println(q1) ;
+        Query q2 = QueryFactory.read("tmp/Q2.rq") ;
+        System.out.println(q2) ;
+
+        exec(q1, model) ;
+        exec(q2, model) ;
+
+        
+        System.out.println("----") ;
+        {
+            Timer t1 = new Timer() ;
+            t1.startTimer() ;
+            exec(q1, model) ;
+            long x = t1.endTimer() ;
+            System.out.printf("Time = %.2f\n", (x/1000.0)) ;
+        }
+        {
+            Timer t2 = new Timer() ;
+            t2.startTimer() ;
+            exec(q2, model) ;
+            long x = t2.endTimer() ;
+            System.out.printf("Time = %.2f\n", (x/1000.0)) ;
+        }
+
+        System.exit(0) ;
+        
+        System.out.println(RiotLib.parse("'hello'")) ;
+        System.out.println(RiotLib.parse("123")) ;
+        System.out.println(RiotLib.parse("'123'^^xsd:byte")) ;
+        System.exit(0) ;
+        
         runTest() ;
         
 //        DatasetGraph dsg = DatasetLoader.load("D.trig") ;
@@ -360,8 +396,7 @@ public class RunARQ
     private static void exec(Query query, Model model)
     {
         QueryExecution qexec = QueryExecutionFactory.create(query, model) ;
-        ResultSet rs = qexec.execSelect() ;
-        ResultSetFormatter.out(rs) ;
+        QueryExecUtils.executeQuery(query, qexec) ;
     }
     
     public static void check(Query query, boolean optimizeAlgebra)
@@ -567,7 +602,7 @@ public class RunARQ
         } ;
         
         arq.sparql.main(a) ;
-        System.exit(0) ;
+        //System.exit(0) ;
     }
 
     private static void execQueryCode(String datafile, String queryfile)
@@ -581,7 +616,6 @@ public class RunARQ
         
         QueryExecution qExec = QueryExecutionFactory.create(query, model, initialBinding) ;
         ResultSetFormatter.out(qExec.execSelect()) ;
-        System.exit(0) ;
     }
 
     private static void execRemote()

@@ -22,7 +22,7 @@ public class AggCountVarDistinct extends AggregatorBase
 
     public AggCountVarDistinct(Expr expr) { this.expr = expr ; } 
     public Aggregator copy() { return new AggCountVarDistinct(expr) ; }
-    public Aggregator copyRename(Renamer renamer) { return new AggCountVarDistinct(expr.copySubstitute(null, false, renamer)) ; }
+    public Aggregator copyRename(Renamer renamer) { return new AggCountVarDistinct(expr.copyNodeTransform(renamer)) ; }
 
     @Override
     public String toString()        { return "count(distinct "+expr+")" ; }

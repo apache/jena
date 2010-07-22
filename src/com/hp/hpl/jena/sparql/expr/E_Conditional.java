@@ -45,12 +45,20 @@ public class E_Conditional extends ExprFunction
     }
 
     @Override
-    public Expr copySubstitute(Binding binding, boolean foldConstants, Renamer renamer)
+    public Expr copySubstitute(Binding binding, boolean foldConstants)
     {
-        Expr e1 = condition.copySubstitute(binding, foldConstants, renamer) ;
-        Expr e2 = thenExpr.copySubstitute(binding, foldConstants, renamer) ;
-        Expr e3 = elseExpr.copySubstitute(binding, foldConstants, renamer) ;
-        
+        Expr e1 = condition.copySubstitute(binding, foldConstants) ;
+        Expr e2 = thenExpr.copySubstitute(binding, foldConstants) ;
+        Expr e3 = elseExpr.copySubstitute(binding, foldConstants) ;
+        return new E_Conditional(e1, e2, e3) ;
+    }
+
+    //@Override
+    public Expr copyNodeTransform(Renamer renamer)
+    {
+        Expr e1 = condition.copyNodeTransform(renamer) ;
+        Expr e2 = thenExpr.copyNodeTransform(renamer) ;
+        Expr e3 = elseExpr.copyNodeTransform(renamer) ;
         return new E_Conditional(e1, e2, e3) ;
     }
 

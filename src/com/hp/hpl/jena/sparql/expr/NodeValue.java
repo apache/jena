@@ -30,7 +30,13 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.expr.nodevalue.* ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
-import com.hp.hpl.jena.sparql.util.* ;
+import com.hp.hpl.jena.sparql.util.ALog ;
+import com.hp.hpl.jena.sparql.util.FmtUtils ;
+import com.hp.hpl.jena.sparql.util.NodeUtils ;
+import com.hp.hpl.jena.sparql.util.RefBoolean ;
+import com.hp.hpl.jena.sparql.util.RomanNumeral ;
+import com.hp.hpl.jena.sparql.util.RomanNumeralDatatype ;
+import com.hp.hpl.jena.sparql.util.Utils ;
 import com.hp.hpl.jena.vocabulary.XSD ;
 
 public abstract class NodeValue extends ExprNode
@@ -342,12 +348,20 @@ public abstract class NodeValue extends ExprNode
 
     // NodeValues are immutable so no need to duplicate.
     @Override
-    public Expr copySubstitute(Binding binding, boolean foldConstants, Renamer renamer)
+    public Expr copySubstitute(Binding binding, boolean foldConstants)
     {  // return this ; 
         Node n = asNode() ;
         return makeNode(n) ;
     }
     
+    //@Override
+    public Expr copyNodeTransform(Renamer renamer)
+    { 
+        Node n = asNode() ;
+        n = renamer.rename(n) ;
+        return makeNode(n) ;
+    }
+
     public Node evalNode(Binding binding, ExecutionContext execCxt)
     {
         return asNode() ;

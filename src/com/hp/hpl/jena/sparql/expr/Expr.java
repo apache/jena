@@ -50,8 +50,13 @@ public interface Expr
     public Expr copySubstitute(Binding binding) ;
 
     /** Deep copy with substitution, possibly collapsing constant sub-expressions 
-     * @param renamer TODO*/
-    public Expr copySubstitute(Binding binding, boolean foldConstants, Renamer renamer) ;
+     */
+    public Expr copySubstitute(Binding binding, boolean foldConstants) ;
+
+    /**
+     * Rewrite, applying a node->node transformation
+     */
+    public Expr copyNodeTransform(Renamer renamer) ;
 
 //    /** Transform. */
 //    public Expr apply() ;

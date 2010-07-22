@@ -20,7 +20,7 @@ public class AggMaxDistinct extends AggMax
     @Override
     public Aggregator copy() { return new AggMaxDistinct(expr) ; }
     @Override
-    public Aggregator copyRename(Renamer renamer) { return new AggMaxDistinct(expr.copySubstitute(null, false, renamer)) ; }
+    public Aggregator copyRename(Renamer renamer) { return new AggMaxDistinct(expr.copyNodeTransform(renamer)) ; }
 
     @Override
     public String toString() { return "max(distinct "+ExprUtils.fmtSPARQL(getExpr())+")" ; }

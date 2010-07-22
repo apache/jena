@@ -14,6 +14,7 @@ import org.openjena.atlas.lib.SinkCounting ;
 import org.openjena.atlas.lib.StrUtils ;
 import org.openjena.riot.JenaReaderNTriples2 ;
 import org.openjena.riot.RiotReader ;
+import org.openjena.riot.RiotLib ;
 import org.openjena.riot.ErrorHandlerTestLib.ErrorHandlerEx ;
 import org.openjena.riot.ErrorHandlerTestLib.ExFatal ;
 import org.openjena.riot.tokens.Tokenizer ;
@@ -93,7 +94,7 @@ public class TestLangNTriples extends TestLangNTuples
         Tokenizer tokenizer = TokenizerFactory.makeTokenizerString(string) ;
         SinkCounting<Triple> sink = new SinkCounting<Triple>() ;
         LangNTriples x = RiotReader.createParserNTriples(tokenizer, sink) ;
-        x.setProfile(RiotReader.profile(null, false, true, new ErrorHandlerEx())) ;
+        x.setProfile(RiotLib.profile(null, false, true, new ErrorHandlerEx())) ;
         x.parse() ;
     }
 

@@ -48,23 +48,25 @@ public class ExprVar extends ExprNode
     }
 
     @Override
-    public Expr copySubstitute(Binding binding, boolean foldConstants, Renamer renamer)
+    public Expr copySubstitute(Binding binding, boolean foldConstants)
     {
         Var v = varNode ;  
-        if ( renamer != null )
-            v = (Var)renamer.rename(varNode) ;
-        
-        // Before or after renaming?
         if ( binding == null || !binding.contains(varNode) )
             return new ExprVar(v) ;
-        
-        // Eval against the old name. 
         return eval(binding, null) ;
 //        catch (VariableNotBoundException ex)
 //        {
 //            ALog.warn(this, "Failed to eval bound variable (was bound earlier!)");
 //            throw ex ;
 //        }
+    }
+    
+    //@Override
+    public Expr copyNodeTransform(Renamer renamer)
+    {
+        Var v = varNode ;  
+        v = (Var)renamer.rename(varNode) ;
+        return new ExprVar(v) ;
     }
     
     public Expr copy()  { return new ExprVar(varNode) ; }

@@ -158,7 +158,7 @@ public class Substitute
 //                    // logical assignment will test value.  
 //                    continue ;
                 Expr expr = opAssign.getVarExprList().getExpr(v) ;
-                expr = expr.copySubstitute(binding, true, null) ;
+                expr = expr.copySubstitute(binding, true) ;
                 varExprList2.add(v, expr) ;
             }
             

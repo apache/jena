@@ -12,6 +12,7 @@ import com.hp.hpl.jena.sparql.core.Substitute ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.Renamer ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.engine.main.VarRename ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
 import com.hp.hpl.jena.sparql.syntax.Element ;
 
@@ -37,13 +38,20 @@ public class E_NotExists extends ExprFunctionOp
     }
 
     @Override
-    public Expr copySubstitute(Binding binding, boolean foldConstants, Renamer renamer)
+    public Expr copySubstitute(Binding binding, boolean foldConstants)
     {
         // Does not pass down fold constants.  Oh well.
         Op op2 = Substitute.substitute(op, binding) ;
         return new E_NotExists(getElement(), op2) ;
     }
 
+    //@Override
+    public Expr copyNodeTransform(Renamer renamer)
+    {
+        Op op2 = VarRename.rename(getOp(), renamer) ;
+        return new E_Exists(getElement(), op2) ;
+    }
+    
     @Override
     protected NodeValue eval(Binding binding, QueryIterator qIter, FunctionEnv env)
     {

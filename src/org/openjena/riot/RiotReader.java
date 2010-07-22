@@ -28,58 +28,6 @@ import com.hp.hpl.jena.sparql.core.Quad ;
 
 public class RiotReader
 {
-    public static ParserProfile profile(Lang lang, String baseIRI)
-    {
-        return profile(lang, baseIRI, ErrorHandlerLib.errorHandlerStd) ;
-    }
-    
-    public static ParserProfile profile(Lang lang, String baseIRI, ErrorHandler handler)
-    {
-        switch (lang)
-        {
-            case NQUADS :
-            case NTRIPLES :
-                return profile(baseIRI, false, false, handler) ;
-            case N3 :
-            case TURTLE :
-            case TRIG :
-            case RDFXML :
-                return profile(baseIRI, true, true, handler) ;
-            
-        }
-        return null ;
-    }
-
-    public static ParserProfile profile(String baseIRI, boolean resolveIRIs, boolean checking, ErrorHandler handler)
-    {
-        Prologue prologue ;
-        if ( resolveIRIs )
-            prologue = new Prologue(new PrefixMap(), IRIResolver.create(baseIRI)) ;
-        else
-            prologue = new Prologue(null, IRIResolver.createNoResolve()) ;
-
-        if ( checking )
-            return new ParserProfileChecker(prologue, handler) ;
-        else
-            return new ParserProfileBase(prologue, handler) ;
-    }
-    
-//    public static ParserProfile profileTTL(String baseIRI)
-//    {
-//        Prologue prologue = new Prologue(new PrefixMap(), IRIResolver.create(baseIRI)) ;
-//        ErrorHandler handler = ErrorHandlerLib.errorHandlerStd ;
-//        return new ParserProfileChecker(prologue, handler) ;
-//    }
-//
-//    public static ParserProfile profileNT()
-//    {
-//        Prologue prologue = new Prologue(null, IRIResolver.createNoResolve()) ;
-//        ErrorHandler handler = ErrorHandlerLib.errorHandlerStd ;
-//        return new ParserProfileBase(prologue, handler) ;
-//    }
-
-    // -------- Triples
-    
     /** Parse a number of files, sending triples to a sink.
      * Must be in a triples syntax.
      * @param filename 
@@ -239,7 +187,7 @@ public class RiotReader
     /** Create a parser for Turtle, with default behaviour */
     public static LangTurtle createParserTurtle(Tokenizer tokenizer, String baseIRI, Sink<Triple> sink)
     {
-        LangTurtle parser = new LangTurtle(baseIRI, tokenizer, profile(Lang.TURTLE, baseIRI), sink) ;
+        LangTurtle parser = new LangTurtle(baseIRI, tokenizer, RiotLib.profile(Lang.TURTLE, baseIRI), sink) ;
         return parser ;
     }
 
@@ -265,7 +213,7 @@ public class RiotReader
     {
         if ( baseIRI == null )
             baseIRI = IRIResolver.chooseBaseURI().toString() ;
-        LangTriG parser = new LangTriG(baseIRI, tokenizer, profile(Lang.TRIG, baseIRI), sink) ;
+        LangTriG parser = new LangTriG(baseIRI, tokenizer, RiotLib.profile(Lang.TRIG, baseIRI), sink) ;
         return parser ;
     }
 
@@ -279,7 +227,7 @@ public class RiotReader
     /** Create a parser for N-Triples, with default behaviour */
     public static LangNTriples createParserNTriples(Tokenizer tokenizer, Sink<Triple> sink)
     {
-        LangNTriples parser = new LangNTriples(tokenizer, profile(Lang.NTRIPLES, null), sink) ;
+        LangNTriples parser = new LangNTriples(tokenizer, RiotLib.profile(Lang.NTRIPLES, null), sink) ;
         return parser ;
     }
     
@@ -293,7 +241,7 @@ public class RiotReader
     /** Create a parser for NQuads, with default behaviour */
     public static LangNQuads createParserNQuads(Tokenizer tokenizer, Sink<Quad> sink)
     {
-        LangNQuads parser = new LangNQuads(tokenizer, profile(Lang.NQUADS, null), sink) ;
+        LangNQuads parser = new LangNQuads(tokenizer, RiotLib.profile(Lang.NQUADS, null), sink) ;
         return parser ;
     }
     

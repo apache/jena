@@ -57,15 +57,19 @@ public class E_Aggregator extends ExprVar
     { return aggregator.toString() ; }
     
     @Override
-    public E_Aggregator copySubstitute(Binding binding, boolean foldConstants, Renamer renamer)
+    public E_Aggregator copySubstitute(Binding binding, boolean foldConstants)
     {
         Var v = varNode ;
         Aggregator agg = aggregator ;
-        if ( renamer != null )
-        {
-            v = (Var)renamer.rename(varNode) ;
-            agg = aggregator.copyRename(renamer) ;
-        }
+        return new E_Aggregator(v, agg) ;
+    }
+    
+    @Override
+    public E_Aggregator copyNodeTransform(Renamer renamer)
+    {
+        Var v = (Var)renamer.rename(varNode) ;
+        // XXXX
+        Aggregator agg = aggregator.copyRename(renamer) ;
         return new E_Aggregator(v, agg) ;
     }
     

@@ -19,13 +19,7 @@ import org.openjena.atlas.lib.Sink ;
 import org.openjena.atlas.lib.SinkCounting ;
 import org.openjena.atlas.lib.SinkNull ;
 import org.openjena.atlas.lib.StrUtils ;
-import org.openjena.riot.ErrorHandler ;
-import org.openjena.riot.ErrorHandlerLib ;
-import org.openjena.riot.IRIResolver ;
-import org.openjena.riot.Lang ;
-import org.openjena.riot.RiotException ;
-import org.openjena.riot.RiotReader ;
-import org.openjena.riot.SysRIOT ;
+import org.openjena.riot.* ;
 import org.openjena.riot.lang.LangRDFXML ;
 import org.openjena.riot.lang.LangRIOT ;
 import org.openjena.riot.out.SinkQuadOutput ;
@@ -276,12 +270,12 @@ public abstract class CmdLangParse extends CmdGeneral
             if ( checking )
             {
                 if ( parser.getLang() == Lang.NTRIPLES ||  parser.getLang() == Lang.NQUADS )
-                    parser.setProfile(RiotReader.profile(baseURI, false, true, errHandler)) ;
+                    parser.setProfile(RiotLib.profile(baseURI, false, true, errHandler)) ;
                 else
-                    parser.setProfile(RiotReader.profile(baseURI, true, true, errHandler)) ;
+                    parser.setProfile(RiotLib.profile(baseURI, true, true, errHandler)) ;
             }
             else
-                parser.setProfile(RiotReader.profile(baseURI, false, false, errHandler)) ;
+                parser.setProfile(RiotLib.profile(baseURI, false, false, errHandler)) ;
             parser.parse() ;
         }
         catch (RiotException ex)

@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Systems Ltd.
  * [See end of file]
  */
 
@@ -67,9 +68,9 @@ public abstract class ExprFunction1 extends ExprFunction
     protected NodeValue evalSpecial(Binding binding, FunctionEnv env) { return null ; } 
     
     @Override
-    final public Expr copySubstitute(Binding binding, boolean foldConstants, Renamer renamer)
+    final public Expr copySubstitute(Binding binding, boolean foldConstants)
     {
-        Expr e = expr.copySubstitute(binding, foldConstants, renamer) ;
+        Expr e = expr.copySubstitute(binding, foldConstants) ;
         
         if ( foldConstants)
         {
@@ -81,11 +82,19 @@ public abstract class ExprFunction1 extends ExprFunction
         return copy(e) ;
     }
 
+    //@Override
+    public Expr copyNodeTransform(Renamer renamer)
+    {
+        Expr e = expr.copyNodeTransform(renamer) ;
+        return copy(e) ;
+    }
+    
     public abstract Expr copy(Expr expr) ;
 }
 
 /*
- *  (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Systems Ltd.
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

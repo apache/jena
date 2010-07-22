@@ -23,7 +23,7 @@ public class AggSample extends AggregatorBase
 
     public AggSample(Expr expr) { this.expr = expr ; } 
     public Aggregator copy() { return new AggSample(expr) ; }
-    public Aggregator copyRename(Renamer renamer) { return new AggSample(expr.copySubstitute(null, false, renamer)) ; }
+    public Aggregator copyRename(Renamer renamer) { return new AggSample(expr.copyNodeTransform(renamer)) ; }
     
     @Override
     public String toString() { return "sample("+ExprUtils.fmtSPARQL(expr)+")" ; }

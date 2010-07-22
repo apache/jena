@@ -23,7 +23,7 @@ public class AggSampleDistinct extends AggregatorBase
 
     public AggSampleDistinct(Expr expr) { this.expr = expr ; } 
     public Aggregator copy() { return new AggSampleDistinct(expr) ; }
-    public Aggregator copyRename(Renamer renamer) { return new AggSampleDistinct(expr.copySubstitute(null, false, renamer)) ; }
+    public Aggregator copyRename(Renamer renamer) { return new AggSampleDistinct(expr.copyNodeTransform(renamer)) ; }
 
     @Override
     public String toString() { return "SAMPLE(DISTINCT "+ExprUtils.fmtSPARQL(expr)+")" ; }

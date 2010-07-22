@@ -24,7 +24,7 @@ public class AggSumDistinct  extends AggregatorBase
 
     public AggSumDistinct(Expr expr) { this.expr = expr ; } 
     public Aggregator copy() { return new AggSumDistinct(expr) ; }
-    public Aggregator copyRename(Renamer renamer) { return new AggSumDistinct(expr.copySubstitute(null, false, renamer)) ; }
+    public Aggregator copyRename(Renamer renamer) { return new AggSumDistinct(expr.copyNodeTransform(renamer)) ; }
 
     private static final NodeValue noValuesToSum = NodeValue.nvZERO ; 
     

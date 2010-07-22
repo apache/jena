@@ -327,7 +327,7 @@ public final class Token
     
     /** Token to Node, a very direct form that is purely driven off the token.
      *  Turtle and N-triples need to process the token and not call this:
-     *  1/ Ues bNode label as given
+     *  1/ Use bNode label as given
      *  2/ No prefix or URI resolution.
      */
     public Node asNode()

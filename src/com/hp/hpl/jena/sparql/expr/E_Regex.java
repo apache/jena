@@ -149,14 +149,22 @@ public class E_Regex extends ExprFunction
     }
 
     @Override
-    public Expr copySubstitute(Binding binding, boolean foldConstants, Renamer renamer)
+    public Expr copySubstitute(Binding binding, boolean foldConstants)
     {
-        Expr e = expr.copySubstitute(binding, foldConstants, renamer) ;
-        Expr p = pattern.copySubstitute(binding, foldConstants, renamer) ;
-        Expr f = (flags==null)? null : flags.copySubstitute(binding, foldConstants, renamer) ;
+        Expr e = expr.copySubstitute(binding, foldConstants) ;
+        Expr p = pattern.copySubstitute(binding, foldConstants) ;
+        Expr f = (flags==null)? null : flags.copySubstitute(binding, foldConstants) ;
         return new E_Regex(e,p,f) ;
     }
 
+    //@Override
+    public Expr copyNodeTransform(Renamer renamer)
+    {
+        Expr e = expr.copyNodeTransform(renamer) ;
+        Expr p = pattern.copyNodeTransform(renamer) ;
+        Expr f = (flags==null)? null : flags.copyNodeTransform(renamer) ;
+        return new E_Regex(e,p,f) ;
+    }
 }
 
 /*

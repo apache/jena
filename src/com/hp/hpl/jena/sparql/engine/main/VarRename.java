@@ -40,19 +40,25 @@ public class VarRename
     /** Rename all variables in a pattern, EXCEPT for those named as constant */ 
     public static Op rename(Op op, Collection<Var> constants)
     {
-        Renamer renamer = new RenamerVars(constants) ;
+        return rename(op, new RenamerVars(constants)) ;
+    }
+
+    /** Rename all variables in a pattern, EXCEPT for those named as constant */ 
+    public static Op rename(Op op, Renamer renamer)
+    {
         Transform transform = new TransformRename(renamer) ; 
         return Transformer.transform(transform, op) ;
     }
-
+    
     /** Rename all variables in an expression, EXCEPT for those named as constant */ 
     public static ExprList rename(ExprList exprList, Set<Var> constants)
     {
+        Renamer renamer = new RenamerVars(constants) ;
         ExprList exprList2 = new ExprList() ;
         boolean changed = false ;
         for(Expr expr : exprList)
         {
-            Expr expr2 = rename(expr, constants) ;
+            Expr expr2 = expr.copyNodeTransform(renamer) ;
             if ( expr != expr2 )
                 changed = true ;
             exprList2.add(expr2) ;
@@ -64,8 +70,8 @@ public class VarRename
     /** Rename all variables in an expression, EXCEPT for those named as constant */ 
     public static Expr rename(Expr expr, Set<Var> constants)
     {
-        //Like copySubstitute.
-        return null ;
+        Renamer renamer = new RenamerVars(constants) ;
+        return expr.copyNodeTransform(renamer) ;
     }
 
     
@@ -160,9 +166,6 @@ public class VarRename
         
         @Override public Op transform(OpGroup opGroup, Op subOp)
         {
-            // E_Aggregate is a subclass of ExprVar
-            // so override copySubstitute as well.??
-            
             VarExprList groupVars = rename(opGroup.getGroupVars()) ;
 
             // Rename the vars in the expression as well.
@@ -170,12 +173,8 @@ public class VarRename
             // These need renaming as well.
             List<E_Aggregator> aggregators = new ArrayList<E_Aggregator>() ;
             for ( E_Aggregator agg : opGroup.getAggregators() )
-            {
-                aggregators.add(agg.copySubstitute(null, false, renamer)) ;
-            }
-            
-            
-            
+                aggregators.add(agg.copyNodeTransform(renamer)) ;
+
             //if ( true )throw new ARQNotImplemented() ;
             return new OpGroup(subOp, groupVars, aggregators) ;
         }
@@ -287,7 +286,7 @@ public class VarRename
         
         private Expr rename(Expr expr)
         {
-            return expr.copySubstitute(null, false, renamer) ;
+            return expr.copyNodeTransform(renamer) ;
         }
     }
     

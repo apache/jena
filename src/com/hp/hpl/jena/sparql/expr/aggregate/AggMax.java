@@ -24,7 +24,7 @@ public class AggMax extends AggregatorBase
 
     public AggMax(Expr expr) { this.expr = expr ; } 
     public Aggregator copy() { return new AggMax(expr) ; }
-    public Aggregator copyRename(Renamer renamer) { return new AggMax(expr.copySubstitute(null, false, renamer)) ; }
+    public Aggregator copyRename(Renamer renamer) { return new AggMax(expr.copyNodeTransform(renamer)) ; }
 
     @Override
     public String toString() { return "max("+ExprUtils.fmtSPARQL(expr)+")" ; }
