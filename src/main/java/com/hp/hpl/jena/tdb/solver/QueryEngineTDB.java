@@ -10,16 +10,12 @@ import java.util.Set ;
 
 import org.openjena.atlas.logging.Log ;
 
-
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.sparql.algebra.Algebra ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.Transform ;
-import com.hp.hpl.jena.sparql.algebra.TransformCopy ;
 import com.hp.hpl.jena.sparql.algebra.Transformer ;
-import com.hp.hpl.jena.sparql.algebra.op.OpGraph ;
-import com.hp.hpl.jena.sparql.algebra.op.OpQuadPattern ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.core.Substitute ;
@@ -31,9 +27,10 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.main.QueryEngineMain ;
 import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.tdb.TDB ;
+import com.hp.hpl.jena.tdb.migrate.A2 ;
+import com.hp.hpl.jena.tdb.migrate.TransformDynamicDataset ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.store.GraphNamedTDB ;
-import com.hp.hpl.jena.tdb.store.TransformDynamicDataset ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 // This exists to intercept the query execution setup.
@@ -94,9 +91,8 @@ public class QueryEngineTDB extends QueryEngineMain
         // Fix DatasetGraph for global union.
         if ( context.isTrue(TDB.symUnionDefaultGraph) ) 
         {
+            op = A2.unionDefaultGraphQuads(op) ;
             // Rewrite so that any explicitly named "default graph" is union graph.
-            Transform t = new TransformGraphRename(Quad.defaultGraphNodeGenerated, Quad.unionGraph)  ;
-            op = Transformer.transform(t, op) ;
 
             // And set the default graph to be the union graph as well.
             DatasetGraphTDB ds = ((DatasetGraphTDB)dsg).duplicate() ;
@@ -108,39 +104,6 @@ public class QueryEngineTDB extends QueryEngineMain
     
     // Execution time (needs wiring to ARQ).
     public long getMillis() { return -1 ; }
-    
-    // ---- Rewrite that looks for a fixed node as the graph name 
-    // (in (graph) and (quad)) and changes it to another one.
-    private static class TransformGraphRename extends TransformCopy
-    { 
-        private Node oldGraphName ;
-        private Node newGraphName ;
-
-        public TransformGraphRename(Node oldGraphName, Node newGraphName)
-        {
-            this.oldGraphName = oldGraphName ;
-            this.newGraphName = newGraphName ;
-        }
-
-        // Does not affect variables.
-        @Override
-        public Op transform(OpGraph opGraph, Op x)
-        { 
-            if ( opGraph.getNode().equals(oldGraphName) )
-                opGraph = new OpGraph(newGraphName, x) ;
-            return super.transform(opGraph, x) ;
-        }
-
-        @Override
-        public Op transform(OpQuadPattern opQuadPattern)
-        {
-            if ( opQuadPattern.getGraphNode().equals(oldGraphName) )
-                opQuadPattern = new OpQuadPattern(newGraphName, opQuadPattern.getBasicPattern()) ;
-            return super.transform(opQuadPattern) ;
-        }
-    } ;
-    
-    
     
     // ---- Factory
     private static QueryEngineFactory factory = new QueryEngineFactoryTDB() ;

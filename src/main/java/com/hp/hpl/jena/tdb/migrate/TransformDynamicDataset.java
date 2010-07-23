@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.store;
+package com.hp.hpl.jena.tdb.migrate;
 
 import java.util.HashSet ;
 import java.util.Set ;
@@ -26,7 +26,7 @@ import com.hp.hpl.jena.sparql.engine.main.QC ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
 
 /**
- * Transform to restrict a query to subset of the named graphs in a daatsets,
+ * Transform to restrict a query to subset of the named graphs in a datasets,
  * both in the named graphs visible, and the default graph as a composition of
  * graphs in the datasets.
  */

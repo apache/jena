@@ -30,6 +30,7 @@ import com.hp.hpl.jena.sparql.algebra.Transformer ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.TDBFactory ;
+import com.hp.hpl.jena.tdb.migrate.TransformDynamicDataset ;
 import com.hp.hpl.jena.tdb.solver.SolverLib ;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderLib ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
