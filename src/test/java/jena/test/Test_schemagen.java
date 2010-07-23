@@ -6,10 +6,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            8 Sep 2006
  * Filename           $RCSfile: Test_schemagen.java,v $
- * Revision           $Revision: 1.7 $
+ * Revision           $Revision: 1.8 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2010-07-22 10:01:16 $
+ * Last modified on   $Date: 2010-07-23 16:22:34 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
@@ -24,9 +24,8 @@ package jena.test;
 // Imports
 ///////////////
 import java.io.*;
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
-import java.util.StringTokenizer;
+import java.util.*;
 import java.util.regex.Pattern;
 
 import jena.schemagen;
@@ -47,7 +46,7 @@ import com.hp.hpl.jena.util.FileUtils;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: Test_schemagen.java,v 1.7 2010-07-22 10:01:16 ian_dickinson Exp $
+ * @version CVS $Id: Test_schemagen.java,v 1.8 2010-07-23 16:22:34 ian_dickinson Exp $
  */
 public class Test_schemagen
     extends TestCase
@@ -626,43 +625,53 @@ public class Test_schemagen
         out.write(  source );
         out.close();
 
-        // now get ready to invoke javac
+        // now get ready to invoke javac using the new javax.tools package
         try {
-            Class<?> jcMain = Class.forName(  "sun.tools.javac.Main" );
+            Class<?> tp = Class.forName(  "javax.tools.ToolProvider" );
 
-            // constructor
-            Constructor<?> jcConstruct = jcMain.getConstructor( new Class[] {OutputStream.class, String.class} );
-            Method jcCompile = jcMain.getMethod( "compile", new Class[] {String[].class} );
-            ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
-            Object jc = jcConstruct.newInstance( new Object[] {byteOut, "javac"} );
+            // static method to get the Java compiler tool
+            Method gsjc = tp.getMethod( "getSystemJavaCompiler" );
+            Object sjc = gsjc.invoke( null );
+
+            // get the run method for the Java compiler tool
+            Class<?> jc = Class.forName( "javax.tools.JavaCompiler" );
+            Method jcRun = jc.getMethod( "run", new Class[] {InputStream.class, OutputStream.class, OutputStream.class, String[].class} );
 
             // build the args list for javac
-            String[] args = new String[] {"-classpath", getClassPath( tmpDir ), "-d", tmpDir.getPath(), srcFile.getPath() };
+            String[] args = new String[] {"-classpath", getClassPath( tmpDir ), "-d", tmpDir.getPath(), srcFile.getPath()};
 
-            Boolean success = (Boolean) jcCompile.invoke( jc, new Object[] {args} );
-            log.debug( "compiled - success = " + success );
-            log.debug( "message = " + byteOut.toString() );
-            assertTrue( "Errors reported from compilation of schemagen output", success.booleanValue() );
+            int success = (Integer) jcRun.invoke( sjc, null, null, null, args );
+            assertEquals( "Errors reported from compilation of schemagen output", 0, success );
         }
         catch (ClassNotFoundException nf) {
-            log.debug( "sun.tools.java.Main not found (no tools.jar on classpath?). schemagen compilation test skipped." );
+            log.debug( "javax.tools not found (no tools.jar on classpath?). schemagen compilation test skipped." );
+        }
+        catch (Exception e) {
+            log.debug( e.getMessage(), e );
+            fail( e.getMessage() );
         }
 
         // clean up
-        srcFile.deleteOnExit();
-        new File( tmpDir, className + ".class" ).deleteOnExit();
-        tmpDir.deleteOnExit();
+        List<File> toClean = new ArrayList<File>();
+        toClean.add( tmpDir );
+
+        while (!toClean.isEmpty()) {
+            File f = toClean.remove( 0 );
+            f.deleteOnExit();
+
+            if (f.isDirectory()) {
+                for (File g: f.listFiles()) {toClean.add( g );}
+            }
+        }
     }
 
     /**
-     * answer the classpath we can use to compile the sg output files
+     * Return the classpath we can use to compile the sg output files
      * @param tmpDir
      * @return
      */
     protected String getClassPath( File tmpDir ) {
-        return System.getProperty ("java.class.path") +
-               System.getProperty ("path.separator") +
-               tmpDir.getPath();
+        return System.getProperty ("java.class.path");
     }
 
     //==============================================================================
