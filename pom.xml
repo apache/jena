@@ -7,7 +7,7 @@
   <artifactId>sdb</artifactId>
   <packaging>jar</packaging>
   <name>SDB</name>
-  <version>1.3.2</version>
+  <version>1.3.3-SNAPSHOT</version>
   <description/>
   <url>http://openjena.org/SDB</url>
 
@@ -357,8 +357,8 @@ build.time.txt=${build.time.txt}
       <name>Jena repo</name>
 
       <!-- RC to development repo -->
-      <url>sftp://openjena.org/var/repo</url>
-      <!--<url>sftp://openjena.org/var/repo-dev</url>-->
+      <!--<url>sftp://openjena.org/var/repo</url>-->
+      <url>sftp://openjena.org/var/repo-dev</url>
 
       <layout>default</layout>
     </repository> 
