@@ -90,8 +90,6 @@ public abstract class ExprFunction extends ExprNode
         return true ;
     }
     
-    public void visit(ExprVisitor visitor) { visitor.visit(this) ; }
-    
     /** Name used for output:
      *    SPARQL format: just the extension functions
      *    Prefix format: the function name, dafaulting to the symbol string

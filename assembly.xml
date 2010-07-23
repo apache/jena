@@ -10,7 +10,7 @@
     <format>zip</format>
   </formats>
 
-  <!-- To exclude filess may be better to use a fileset -->
+  <!-- To exclude files may be better to use a fileset -->
   <dependencySets>
     <dependencySet>
       <unpack>false</unpack>
@@ -52,6 +52,7 @@
 
     <fileSet>
       <directory>bin</directory>
+      <directory>bin2</directory>
     </fileSet>
 
     <fileSet>

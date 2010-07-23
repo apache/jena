@@ -74,6 +74,8 @@ public class ExprVar extends ExprNode
     
     public void visit(ExprVisitor visitor) { visitor.visit(this) ; }
     
+    public Expr apply(ExprTransform transform)  { return transform.transform(this) ; }
+    
     public void format(Query query, IndentedWriter out)
     {
         out.print('?') ;

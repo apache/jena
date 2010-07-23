@@ -1,3 +1,1 @@
-<http://www.host.org/> <p> "123a" .
-## <http://www.host.org/> <p> "123a"^^<xx> .
-<http://www.host.org/> <http://www.host.org/p> "xxxa"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://example/x> <http://example/p> " 123"^^<http://www.w3.org/2001/XMLSchema#byte> .

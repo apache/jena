@@ -25,7 +25,7 @@ public class ExprWalker //implements ExprVisitor
 //    static public void walk(ExprVisitor visitor, Expr expr)
 //    { expr.visit(new WalkerTopDown(visitor)) ; }
 
-    static class Walker implements ExprVisitor
+    static class Walker extends ExprVisitorFunction
     {
         ExprVisitor visitor ;
         boolean topDown = true ;
@@ -38,7 +38,8 @@ public class ExprWalker //implements ExprVisitor
         
         public void startVisit() {}
         
-        public void visit(ExprFunction func)
+        @Override
+        protected void visitExprFunction(ExprFunction func)
         {
             if ( topDown )
                 func.visit(visitor) ;    

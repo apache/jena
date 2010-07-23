@@ -6,14 +6,15 @@
 
 package com.hp.hpl.jena.sparql.expr;
 
-import java.util.List ;
-
 import com.hp.hpl.jena.sparql.algebra.Op ;
 
 public interface ExprTransform
 {
-    public Expr transform(ExprFunction func, List<Expr> args) ;
-    public Expr transform(ExprFunctionOp funcOp, List<Expr> args, Op opArg) ;
+    public Expr transform(ExprFunction1 func, Expr expr1) ;
+    public Expr transform(ExprFunction2 func, Expr expr1, Expr expr2) ;
+    public Expr transform(ExprFunction3 func, Expr expr1, Expr expr2, Expr expr3) ;
+    public Expr transform(ExprFunctionN func, ExprList args) ;
+    public Expr transform(ExprFunctionOp funcOp, ExprList args, Op opArg) ;
     public Expr transform(NodeValue nv) ;
     public Expr transform(ExprVar nv) ;        // AKA ExprFunction0
 }

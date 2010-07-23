@@ -6,13 +6,14 @@
 
 package com.hp.hpl.jena.sparql.expr;
 
-// Walk the expression tree
-
 public class ExprVisitorBase implements ExprVisitor 
 {
     public void startVisit()                {}
     
-    public void visit(ExprFunction func)    {}
+    public void visit(ExprFunction1 func)   {}
+    public void visit(ExprFunction2 func)   {}
+    public void visit(ExprFunction3 func)   {}
+    public void visit(ExprFunctionN func)   {}
     public void visit(ExprFunctionOp op)    {}
     public void visit(NodeValue nv)         {}
     public void visit(ExprVar nv)           {}

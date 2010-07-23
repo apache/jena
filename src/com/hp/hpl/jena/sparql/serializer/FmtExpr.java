@@ -71,8 +71,13 @@ public class FmtExpr
 
         public void startVisit() { }
 
-        private void visitFunction1(ExprFunction1 expr)
+        public void visit(ExprFunction1 expr)
         {
+            if ( expr.getOpName() == null )
+            {
+                printInFunctionForm(expr) ;
+                return ;
+            }
             out.print("( ") ;
             out.print( expr.getOpName() ) ;
             out.print(" ") ;
@@ -80,8 +85,13 @@ public class FmtExpr
             out.print(" )");
         }
 
-        private void visitFunction2(ExprFunction2 expr)
+        public void visit(ExprFunction2 expr)
         {
+            if ( expr.getOpName() == null )
+            {
+                printInFunctionForm(expr) ;
+                return ;
+            }
             out.print("( ") ;
             expr.getArg1().visit(this) ;
             out.print(" ") ;
@@ -91,20 +101,14 @@ public class FmtExpr
             out.print(" )");
         }
 
-        public void visit(ExprFunction func)
+        public void visit(ExprFunction3 expr)
         {
-            if ( func.getOpName() != null && func instanceof ExprFunction2 )
-            {
-                visitFunction2((ExprFunction2)func) ;
-                return ;
-            }
+            printInFunctionForm(expr) ;
+        }
 
-            if ( func.getOpName() != null && func instanceof ExprFunction1 )
-            {
-                visitFunction1((ExprFunction1)func) ;
-                return ;
-            }
-            
+
+        public void visit(ExprFunctionN func)
+        {
             if ( func instanceof E_OneOf )
             {
                 E_OneOf oneOf = (E_OneOf)func ;
@@ -126,11 +130,15 @@ public class FmtExpr
                 out.print(" )") ;
                 return ;
             }
+            printInFunctionForm(func) ;
+        }
 
+        private void printInFunctionForm(ExprFunction func)
+        {
             out.print( func.getFunctionPrintName(context) ) ;
             printExprList(func.getArgs()) ;
         }
-
+        
         private void printExprList(Iterable<Expr> exprs)
         {
             out.print("(") ;

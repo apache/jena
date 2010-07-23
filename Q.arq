@@ -1,7 +1,20 @@
-prefix ex:	<http://www.example.org/schema#>
-prefix in:	<http://www.example.org/instance#>
+prefix :	<http://example/>
+PREFIX  rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX  list:   <http://jena.hpl.hp.com/ARQ/list#>
 
-select * where {
-{select (max(?y) as ?max) where {?x ex:p ?y} } 
-#?x ex:p ?max
+# Sets where s1 is a subset of s2
+# i.e. every memebr of s1 is a member of s2
+SELECT *
+WHERE
+{ 
+   ?s2 rdf:type :Set .
+   ?s1 rdf:type :Set .
+   #FILTER (?s1 != ?s2)
+   MINUS { 
+    ?s1 rdf:type :Set .
+    ?s2 rdf:type :Set .
+    # Is ?x1 NOT in s2.
+    ?s1 :member ?x . 
+    FILTER NOT EXISTS { ?s2 :member ?x . }
+    }
 }

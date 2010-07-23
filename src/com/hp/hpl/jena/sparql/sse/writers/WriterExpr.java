@@ -17,7 +17,7 @@ import com.hp.hpl.jena.sparql.expr.ExprFunction ;
 import com.hp.hpl.jena.sparql.expr.ExprFunctionOp ;
 import com.hp.hpl.jena.sparql.expr.ExprList ;
 import com.hp.hpl.jena.sparql.expr.ExprVar ;
-import com.hp.hpl.jena.sparql.expr.ExprVisitor ;
+import com.hp.hpl.jena.sparql.expr.ExprVisitorFunction ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
 
@@ -81,7 +81,7 @@ public class WriterExpr
 
     // ----
     static final boolean ONELINE = true ;
-    static class FmtExprPrefixVisitor implements ExprVisitor
+    static class FmtExprPrefixVisitor extends ExprVisitorFunction
     {
         IndentedWriter out ;
         SerializationContext context ;
@@ -94,7 +94,8 @@ public class WriterExpr
 
         public void startVisit() {}
 
-        public void visit(ExprFunction func)
+        @Override
+        protected void visitExprFunction(ExprFunction func)
         {
             out.print("(") ;
 

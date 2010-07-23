@@ -1108,6 +1108,8 @@ public abstract class NodeValue extends ExprNode
 
     public abstract void visit(NodeValueVisitor visitor) ;
     
+    public Expr apply(ExprTransform transform)  { return transform.transform(this) ; }
+
     @Override
     public String toString()
     { 

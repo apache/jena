@@ -59,8 +59,8 @@ public class ExprVars
     
     static class ExprVarsWorker<T> extends ExprVisitorBase
     {
-        Collection<T> acc ;
-        Action<T> action ;
+        final Collection<T> acc ;
+        final Action<T> action ;
         
         public ExprVarsWorker(Collection<T> acc, Action<T> action)
         { this.acc = acc ; this.action = action ; }

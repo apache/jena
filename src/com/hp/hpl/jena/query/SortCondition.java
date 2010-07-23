@@ -56,10 +56,19 @@ public class SortCondition extends PrintSerializableBase
         }
         
         if ( direction == Query.ORDER_ASCENDING )
+        {
+            // Not always necessary but safe.
+            // At this point theer must be brackets but some forms (e.g. ?x+?y)
+            // are going to put their own brackets in regardless.
             writer.print("ASC") ;
+            //needParens = true ;
+        }
         
         if ( direction == Query.ORDER_DESCENDING )
+        {
             writer.print("DESC") ;
+            needParens = true ;
+        }
         
         if ( needParens )
             writer.print("(") ;

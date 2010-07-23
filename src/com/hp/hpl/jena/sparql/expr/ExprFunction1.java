@@ -88,6 +88,9 @@ public abstract class ExprFunction1 extends ExprFunction
     }
     
     public abstract Expr copy(Expr expr) ;
+    
+    public void visit(ExprVisitor visitor) { visitor.visit(this) ; }
+    public Expr apply(ExprTransform transform, Expr sub) { return transform.transform(this, sub) ; }
 }
 
 /*

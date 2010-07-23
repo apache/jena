@@ -19,9 +19,9 @@ import org.openjena.atlas.lib.StrUtils ;
 import org.openjena.riot.ErrorHandlerLib ;
 import org.openjena.riot.RiotLib ;
 import org.openjena.riot.checker.CheckerIRI ;
+import reports.ReportSlowDatatype ;
 import riot.inf.infer ;
 
-import com.hp.hpl.jena.Jena ;
 import com.hp.hpl.jena.iri.IRI ;
 import com.hp.hpl.jena.iri.IRIFactory ;
 import com.hp.hpl.jena.iri.Violation ;
@@ -66,7 +66,6 @@ import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
 import com.hp.hpl.jena.sparql.util.QueryExecUtils ;
 import com.hp.hpl.jena.sparql.util.Timer ;
 import com.hp.hpl.jena.util.FileManager ;
-
 public class RunARQ
 {
     static String divider = "----------" ;
@@ -97,41 +96,24 @@ public class RunARQ
 
     public static void main(String[] argv) throws Exception
     {
-        Transform t = new TransformPropertyFunction(ARQ.getContext()) ;
-        Op op = SSE.parseOp("(prefix ((list: <http://jena.hpl.hp.com/ARQ/list#>)) (filter (exists (bgp (?s list:member ?o))) (bgp (?s1 list:member ?o1))))") ;
-        Op op2 = Transformer.transform(t, op) ;
-        System.out.println(op2) ;
-        System.exit(0) ;
         
-        
-        
-        Model model = FileManager.get().loadModel("tmp/holger-test.ttl") ;
-        
-        Query q1 = QueryFactory.read("tmp/Q1.rq") ;
-        System.out.println(q1) ;
-        Query q2 = QueryFactory.read("tmp/Q2.rq") ;
-        System.out.println(q2) ;
+//        Expr expr = SSE.parseExpr("(+ ?x ?y)") ;
+//        ExprTransform et = new ExprTransformCopy(true) ;
+//        Expr expr2 = ExprTransformer.transform(et, expr) ;
+//        System.out.println(expr2) ;
+//        System.exit(0) ;
 
-        exec(q1, model) ;
-        exec(q2, model) ;
-
-        
-        System.out.println("----") ;
+        if ( false )
         {
-            Timer t1 = new Timer() ;
-            t1.startTimer() ;
-            exec(q1, model) ;
-            long x = t1.endTimer() ;
-            System.out.printf("Time = %.2f\n", (x/1000.0)) ;
-        }
-        {
-            Timer t2 = new Timer() ;
-            t2.startTimer() ;
-            exec(q2, model) ;
-            long x = t2.endTimer() ;
-            System.out.printf("Time = %.2f\n", (x/1000.0)) ;
+            // BUG
+            Transform t = new TransformPropertyFunction(ARQ.getContext()) ;
+            Op op = SSE.parseOp("(prefix ((list: <http://jena.hpl.hp.com/ARQ/list#>)) (filter (exists (bgp (?s list:member ?o))) (bgp (?s1 list:member ?o1))))") ;
+            Op op2 = Transformer.transform(t, op) ;
+            System.out.println(op2) ;
+            System.exit(0) ;
         }
 
+        ReportSlowDatatype.main() ;
         System.exit(0) ;
         
         System.out.println(RiotLib.parse("'hello'")) ;
@@ -380,27 +362,16 @@ public class RunARQ
         }
     }
     
-    private static void execTimed()
+    private static void execTimed(Query query, Model model)
     {
-        System.out.println(ARQ.VERSION); 
-        System.out.println(Jena.VERSION); 
+//        System.out.println(ARQ.VERSION); 
+//        System.out.println(Jena.VERSION); 
 
-        Query query = QueryFactory.read("Q.rq") ;
-
-//        Op op = Algebra.compile(query.getQueryPattern()) ;
-//        Transform t = new TransformJoinStrategy(null) ;
-//        op = Transformer.transform(t, op) ;
-//        System.out.println(op) ; 
-//        System.exit(0) ;
-        
-        Model model = FileManager.get().loadModel("D.nt") ;
-        //Model model = null;
         Timer timer = new Timer() ;
         timer.startTimer() ;
         exec(query, model) ;
         long time = timer.endTimer() ;
         System.out.printf("Time = %.2fs\n", time/1000.0) ;
-        System.exit(0) ;
     }
 
     private static void exec(Query query, Model model)

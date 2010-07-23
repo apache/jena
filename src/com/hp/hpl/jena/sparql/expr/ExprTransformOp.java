@@ -1,30 +1,20 @@
 /*
- * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
 package com.hp.hpl.jena.sparql.expr;
 
+import com.hp.hpl.jena.sparql.algebra.Transform ;
 
-public interface ExprVisitor
+public interface ExprTransformOp extends ExprTransform
 {
-    void startVisit() ;
-    
-    //void visit(ExprFunction func) ;
-    void visit(ExprFunction1 func) ;
-    void visit(ExprFunction2 func) ;
-    void visit(ExprFunction3 func) ;
-    void visit(ExprFunctionN func) ;
-    void visit(ExprFunctionOp funcOp) ;
-    void visit(NodeValue nv) ;
-    void visit(ExprVar nv) ;        // AKA ExprFunction0
-
-    void finishVisit() ;
+    public Transform getTransform() ;
 }
 
 /*
- * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

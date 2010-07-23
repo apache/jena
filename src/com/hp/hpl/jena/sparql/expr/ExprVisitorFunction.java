@@ -1,30 +1,23 @@
 /*
- * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Syatems Ltd
  * All rights reserved.
  * [See end of file]
  */
 
 package com.hp.hpl.jena.sparql.expr;
 
-
-public interface ExprVisitor
+public abstract class ExprVisitorFunction implements ExprVisitor 
 {
-    void startVisit() ;
-    
-    //void visit(ExprFunction func) ;
-    void visit(ExprFunction1 func) ;
-    void visit(ExprFunction2 func) ;
-    void visit(ExprFunction3 func) ;
-    void visit(ExprFunctionN func) ;
-    void visit(ExprFunctionOp funcOp) ;
-    void visit(NodeValue nv) ;
-    void visit(ExprVar nv) ;        // AKA ExprFunction0
+    public void visit(ExprFunction1 func) { visitExprFunction(func) ; }
+    public void visit(ExprFunction2 func) { visitExprFunction(func) ; }
+    public void visit(ExprFunction3 func) { visitExprFunction(func) ; }
+    public void visit(ExprFunctionN func) { visitExprFunction(func) ; }
 
-    void finishVisit() ;
+    protected abstract void visitExprFunction(ExprFunction func) ;
 }
 
 /*
- * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Syatems Ltd
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

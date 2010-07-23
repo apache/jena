@@ -64,9 +64,8 @@ public abstract class ExprFunctionOp extends ExprFunction
     
     protected abstract NodeValue eval(Binding binding, QueryIterator iter, FunctionEnv env) ;
     
-    @Override
-    public void visit(ExprVisitor visitor) 
-    { visitor.visit(this) ; }
+    public void visit(ExprVisitor visitor) { visitor.visit(this) ; }
+    public Expr apply(ExprTransform transform, ExprList args, Op x) { return transform.transform(this, args, x) ; }
 }
 
 /*

@@ -8,9 +8,8 @@ package com.hp.hpl.jena.sparql.expr;
 
 import java.util.List ;
 
+import com.hp.hpl.jena.sparql.ARQNotImplemented ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
-
-//NOT FINISHED
 
 public class ExprTransformCopy implements ExprTransform
 {
@@ -21,30 +20,90 @@ public class ExprTransformCopy implements ExprTransform
     public ExprTransformCopy()                          { this(COPY_ONLY_ON_CHANGE) ; }
     public ExprTransformCopy(boolean alwaysDuplicate)   { this.alwaysCopy = alwaysDuplicate ; }
     
-    public Expr transform(ExprFunction func, List<Expr> args)               { return xform(func, args) ; }
-    public Expr transform(ExprFunctionOp funcOp, List<Expr> args, Op opArg) { return xform(funcOp, args, opArg) ; }
-    public Expr transform(NodeValue nv)                                     { return xform(nv) ; }
-    public Expr transform(ExprVar exprVar)                                  { return xform(exprVar) ; }
+    public Expr transform(ExprFunction1 func, Expr expr1)                   
+    { return xform(func, expr1) ; }
     
+    public Expr transform(ExprFunction2 func, Expr expr1, Expr expr2)
+    { return xform(func, expr1, expr2) ; }
     
-    private Expr xform(ExprFunction func, List<Expr> args)
+    public Expr transform(ExprFunction3 func, Expr expr1, Expr expr2, Expr expr3)
+    { return xform(func, expr1, expr2, expr3) ; }
+    
+    public Expr transform(ExprFunctionN func, ExprList args)
+    { return xform(func, args) ; }
+
+    public Expr transform(ExprFunctionN func, List<Expr> args)
     {
         return null ;
     }
+    public Expr transform(ExprFunctionOp funcOp, ExprList args, Op opArg)
+    { return xform(funcOp, args, opArg) ; }
     
-    private Expr xform(ExprFunctionOp funcOp, List<Expr> args, Op opArg)
+    public Expr transform(NodeValue nv)     
+    { return xform(nv) ; }
+    
+    public Expr transform(ExprVar exprVar)       
+    { return xform(exprVar) ; }
+    
+    private Expr xform(ExprFunction1 func, Expr expr1)
     {
-        return null ;
+        if ( !alwaysCopy && expr1 == func.getArg() )
+            return func ;
+        return func.copy(expr1) ;
+    }
+    
+    private Expr xform(ExprFunction2 func, Expr expr1, Expr expr2)
+    {
+        if ( !alwaysCopy && 
+                expr1 == func.getArg1() &&
+                expr2 == func.getArg2() )
+            return func ;
+        return func.copy(expr1, expr2) ;
+    }
+    
+    private Expr xform(ExprFunction3 func, Expr expr1, Expr expr2, Expr expr3)
+    {
+        if ( !alwaysCopy && 
+                expr1 == func.getArg1() &&
+                expr2 == func.getArg2() &&
+                expr3 == func.getArg3() )
+        return func ;
+    return func.copy(expr1, expr2, expr3) ;
+    }
+    
+    private Expr xform(ExprFunctionN func, ExprList args)
+    {
+        if ( ! alwaysCopy && equals1(func.getArgs(), args.getList()) )
+            return func ;
+        return func.copy(args) ;
+    }
+    
+    private boolean equals1(List<Expr> list1, List<Expr> list2)
+    {
+        if ( list1.size() != list2.size() )
+            return false ;
+        for ( int i = 0 ; i < list1.size() ; i++ )
+        {
+            if ( list1.get(i) != list2.get(i) )
+                return false ;
+        }
+        return true ;
+    }
+    
+    private Expr xform(ExprFunctionOp funcOp, ExprList args, Op opArg)
+    {
+        throw new ARQNotImplemented() ;
+        //return null ;
     }
     
     private Expr xform(NodeValue nv)
     {
-        return null ;
+        return nv ;
     }
     
     private Expr xform(ExprVar exprVar)
     {
-        return null ;
+        return exprVar ;
     }
 }
 

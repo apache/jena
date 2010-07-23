@@ -21,16 +21,18 @@ import com.hp.hpl.jena.sparql.util.Context ;
 
 public class ExprList implements Iterable<Expr>
 {
-    private List<Expr> expressions = new ArrayList<Expr>() ;
+    private final List<Expr> expressions ;
     
-    public ExprList() {}
-    public ExprList(ExprList other) { expressions.addAll(other.expressions) ; }
+    public ExprList() { expressions = new ArrayList<Expr>() ; }
+    public ExprList(ExprList other) { this() ; expressions.addAll(other.expressions) ; }
     public ExprList(Expr expr)
     {
         this() ;
         expressions.add(expr) ;
     }
     
+    public ExprList(List<Expr> x)   { expressions = x ; }
+
     public boolean isSatisfied(Binding binding, ExecutionContext execCxt)
     {
         for (Expr expr : expressions)

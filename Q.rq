@@ -1,6 +1,7 @@
 SELECT  *
 WHERE
   { 
-?s ?p true
-FILTER(?o < 5 ) 
+    ?s ?p true
+    FILTER (!regex(?v, "^yes$"))
+    FILTER regex(?v, "^yes$", "i")
   }

@@ -6,10 +6,14 @@
 
 package com.hp.hpl.jena.sparql.expr;
 
+import java.util.ArrayList ;
+import java.util.List ;
 import java.util.Stack ;
 
+import com.hp.hpl.jena.sparql.algebra.Op ;
+import com.hp.hpl.jena.sparql.algebra.Transformer ;
 import com.hp.hpl.jena.sparql.util.ALog ;
-//NOT TESTED
+
 public class ExprTransformer
 {
     private static ExprTransformer singleton = new ExprTransformer();
@@ -69,10 +73,11 @@ public class ExprTransformer
         public void startVisit()    {}
         public void finishVisit()   {}
 
-        // Needs all subcases :-(
-        public void visit(ExprFunction func)
+        
+        public void visit(ExprFunction1 func)
         {
-//            
+            stack.push(func.apply(transform, func.expr)) ;
+            
 //            for ( int i = 0 ; i < func.numArgs() ; i++ )
 //            {
 //                Expr expr = stack.pop() ;
@@ -81,19 +86,71 @@ public class ExprTransformer
 //            stack.push(expr2) ;
         }
 
+        public void visit(ExprFunction2 func)
+        {
+            Expr right = stack.pop() ;
+            Expr left = stack.pop() ;
+            Expr e = func.apply(transform, left, right) ;
+            stack.push(e) ;
+        }
+
+        public void visit(ExprFunction3 func)
+        {
+            Expr e3 = stack.pop() ;
+            Expr e2 = stack.pop() ;
+            Expr e1 = stack.pop() ;
+            Expr e = func.apply(transform, e1, e2, e3) ;
+            stack.push(e) ;
+        }
+
+        public void visit(ExprFunctionN func)
+        {
+            ExprList x = process(func.getArgs()) ;
+            Expr e = func.apply(transform, x) ;
+            stack.push(e) ;
+        }
+        
+        private ExprList process(List<Expr> exprList)
+        {
+            int N = exprList.size() ;
+            List<Expr> x = new ArrayList<Expr>(N) ;
+            for ( int i = 0 ; i < N ; i++ )
+            {
+                Expr e2 = stack.pop() ;
+                // Add in reverse.
+                x.add(0, e2) ;
+            }
+            return new ExprList(x) ;
+        }
+        
         public void visit(ExprFunctionOp funcOp)
         {
-//            funcOp.apply(transform) ;
+            ExprList x = null ;
+            if ( funcOp.getArgs() != null )
+                x = process(funcOp.getArgs()) ;
+            Op op = funcOp.getGraphPttern() ;
+            if ( transform instanceof ExprTransformOp )
+            {
+                ExprTransformOp t = (ExprTransformOp)transform ;
+                op = Transformer.transform(t.getTransform(), op) ; 
+            }
+            
+            Expr e = funcOp.apply(transform, x, op) ;
+            stack.push(e) ;
+
         }
 
         public void visit(NodeValue nv)
         {
-//            nv.apply(transform) ;
+            Expr e = nv.apply(transform) ;
+            stack.push(e) ;
+            
         }
 
         public void visit(ExprVar var)
         {
-//            var.apply(transform) ;
+            Expr e = var.apply(transform) ;
+            stack.push(e) ;
         }
         
     }
