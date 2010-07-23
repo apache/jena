@@ -108,6 +108,9 @@ public abstract class NodeValue extends ExprNode
     public static final NodeValue nvZERO = NodeValue.makeNode(NodeConst.nodeZero) ;
     public static final NodeValue nvONE  = NodeValue.makeNode(NodeConst.nodeOne) ;
     
+    // Use "==" for equality.
+    public static final NodeValue nvNothing  = NodeValue.makeNode(Node.createURI("node value nothing")) ;
+    
     // Use NodeValue.toNode(NodeValue) 
 //    public static Node asNode(NodeValue nv)
 //    {

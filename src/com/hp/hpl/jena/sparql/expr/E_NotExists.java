@@ -40,14 +40,14 @@ public class E_NotExists extends ExprFunctionOp
     public Expr copySubstitute(Binding binding, boolean foldConstants)
     {
         // Does not pass down fold constants.  Oh well.
-        Op op2 = Substitute.substitute(getOp(), binding) ;
+        Op op2 = Substitute.substitute(getGraphPattern(), binding) ;
         return new E_NotExists(getElement(), op2) ;
     }
 
     //@Override
     public Expr copyNodeTransform(Renamer renamer)
     {
-        Op op2 = VarRename.rename(getOp(), renamer) ;
+        Op op2 = VarRename.rename(getGraphPattern(), renamer) ;
         return new E_Exists(getElement(), op2) ;
     }
     
@@ -61,7 +61,7 @@ public class E_NotExists extends ExprFunctionOp
     @Override
     public int hashCode()
     {
-        return symbol.hashCode() ^ getOp().hashCode() ;
+        return symbol.hashCode() ^ getGraphPattern().hashCode() ;
     }
     
     @Override
@@ -73,7 +73,7 @@ public class E_NotExists extends ExprFunctionOp
             return false ;
         
         E_NotExists ex = (E_NotExists)other ;
-        return this.getOp().equals(ex.getOp()) ;
+        return this.getGraphPattern().equals(ex.getGraphPattern()) ;
     }
 }
 

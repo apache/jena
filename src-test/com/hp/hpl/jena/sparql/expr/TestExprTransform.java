@@ -1,55 +1,48 @@
 /*
- * (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Systems Ltd.
+ * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.engine.binding;
+package com.hp.hpl.jena.sparql.expr;
 
-import java.util.Iterator ;
+import com.hp.hpl.jena.sparql.sse.SSE ;
 
-import org.openjena.atlas.iterator.Iter ;
+import org.junit.Test ;
+import org.openjena.atlas.junit.BaseTest ;
 
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.sparql.core.Var ;
-
-/** Special purpose binding for nothing. Surprisingly useful.
- */
-
-public class Binding0 extends BindingBase
+public class TestExprTransform extends BaseTest
 {
-    public Binding0() { super(null) ; }
-    public Binding0(Binding parent) { super(parent) ; }
+    ExprTransform et1 = new ExprTransformCopy() 
+    {   @Override
+        public Expr transform(ExprVar exprVar)  
+        { return new ExprVar(exprVar.getVarName().toUpperCase()) ; } 
+    } ;
+    
+    @Test public void exprTransform_01()    { test("?v", "?V", et1 ) ; }
+    @Test public void exprTransform_02()    { test("(+ ?v 1)", "(+ ?V 1)", et1 ) ; }
+    @Test public void exprTransform_03()    { test("(str (+ ?v 1))", "(str (+ ?V 1))", et1 ) ; }
+    @Test public void exprTransform_04()    { test("(if (+ ?v 1) ?a ?b)", "(if (+ ?V 1) ?A ?B)", et1 ) ; }
+    
+    // 2 or 3 ?
+    @Test public void exprTransform_05()    { test("(regex ?a ?b ?c)", "(regex ?A ?B ?C)", et1) ; }  
+    @Test public void exprTransform_06()    { test("(regex ?a ?b)", "(regex ?A ?B)", et1) ; }
 
-    @Override
-    protected void add1(Var var, Node node)
+    
+    private void test(String string, String string2, ExprTransform et)
     {
-        throw new UnsupportedOperationException("Binding0.add1") ;
+        Expr e1 = SSE.parseExpr(string) ;
+        Expr e2 = SSE.parseExpr(string2) ;
+        
+        Expr e3 = ExprTransformer.transform(et, e1) ;
+        assertEquals(e2, e3) ;
+        
     }
-    
-    /** Iterate over all the names of variables.
-     */
-    @Override
-    public Iterator<Var> vars1() { return Iter.nullIterator() ; }
-
-    @Override
-    protected int size1() { return 0 ; }
-    
-    @Override
-    protected boolean isEmpty1() { return true ; }
-    
-    @Override
-    public boolean contains1(Var var) { return false ; }
-    
-    @Override
-    public Node get1(Var var) { return null ; }
-
-    @Override
-    protected void checkAdd1(Var var, Node node) { }
 }
 
 /*
- *  (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
- *  All rights reserved.
+ * (c) Copyright 2010 Talis Systems Ltd.
+ * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions

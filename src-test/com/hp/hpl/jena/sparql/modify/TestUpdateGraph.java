@@ -16,7 +16,7 @@ import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.query.QueryFactory ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
-import com.hp.hpl.jena.sparql.engine.binding.Binding1 ;
+import com.hp.hpl.jena.sparql.engine.binding.BindingFactory ;
 import com.hp.hpl.jena.sparql.modify.op.UpdateDelete ;
 import com.hp.hpl.jena.sparql.modify.op.UpdateDeleteData ;
 import com.hp.hpl.jena.sparql.modify.op.UpdateInsert ;
@@ -296,7 +296,7 @@ public abstract class TestUpdateGraph extends TestUpdateBase
         delete.setDeleteTemplate("{ ?s <http://example/p> ?o}") ;
         req.addUpdate(delete) ;
         
-        Binding b = new Binding1(null, v, n) ;
+        Binding b = BindingFactory.binding(null, v, n) ;
         UpdateAction.execute(req, gStore, b) ;
         
         return gStore.getDefaultGraph() ;
@@ -333,7 +333,7 @@ public abstract class TestUpdateGraph extends TestUpdateBase
         String update = "DELETE  { ?x <http://example/p> 2007 } INSERT { ?x <http://example/p> 1999 }" ;
         UpdateRequest req = UpdateFactory.create(update) ;
         
-        Binding b = new Binding1(null, Var.alloc("x"), s) ;
+        Binding b = BindingFactory.binding(Var.alloc("x"), s) ;
         UpdateAction.execute(req, gStore, b) ;
         assertEquals(1, gStore.getDefaultGraph().size()) ;
         assertTrue(gStore.getDefaultGraph().contains(s, p, NodeFactory.parseNode("1999"))) ;

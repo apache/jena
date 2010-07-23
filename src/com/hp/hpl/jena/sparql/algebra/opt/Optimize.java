@@ -26,10 +26,10 @@ public class Optimize implements Rewrite
     static private Logger log = LoggerFactory.getLogger(Optimize.class) ;
 
     // A small (one slot) registry to allow plugging in an alternative optimizer
-    public interface Factory { Rewrite create(Context context) ; }
+    public interface RewriterFactory { Rewrite create(Context context) ; }
     
     // ----    
-    public static Factory noOptimizationFactory = new Factory()
+    public static RewriterFactory noOptimizationFactory = new RewriterFactory()
     {
         public Rewrite create(Context context)
         {
@@ -41,7 +41,7 @@ public class Optimize implements Rewrite
                 }} ;
         }} ;
         
-    public static Factory stdOptimizationFactory = new Factory()
+    public static RewriterFactory stdOptimizationFactory = new RewriterFactory()
     {
         public Rewrite create(Context context)
         {
@@ -50,7 +50,7 @@ public class Optimize implements Rewrite
     } ;
     
     // Set this to a different factory implementation to have a different general optimizer.  
-    private static Factory factory = stdOptimizationFactory ;
+    private static RewriterFactory factory = stdOptimizationFactory ;
     
     // ----        
         
@@ -74,7 +74,7 @@ public class Optimize implements Rewrite
 
     static private Rewrite decideOptimizer(Context context)
     {
-        Factory f = (Factory)context.get(ARQConstants.sysOptimizer) ;
+        RewriterFactory f = (RewriterFactory)context.get(ARQConstants.sysOptimizerFactory) ;
         if ( f == null )
             f = factory ;
         if ( f == null )
@@ -84,11 +84,11 @@ public class Optimize implements Rewrite
 
     
     /** Globably set the fcaory for making optimizers */ 
-    public static void setFactory(Factory aFactory)
+    public static void setFactory(RewriterFactory aFactory)
     { factory = aFactory ; }
 
     /** Get the global factory for making optimizers */ 
-    public static Factory getFactory(Factory aFactory)
+    public static RewriterFactory getFactory(RewriterFactory aFactory)
     { return factory ; }
     
     // ---- The object proper for the standard optimizations
@@ -110,6 +110,9 @@ public class Optimize implements Rewrite
     @SuppressWarnings("deprecation")
     public Op rewrite(Op op)
     {
+        if ( context.get(ARQConstants.sysOptimizer) == null )
+            context.set(ARQConstants.sysOptimizer, this) ;
+        
         if ( context.isDefined(filterPlacement2) ) 
         {
             if ( context.isUndef(ARQ.filterPlacement) )

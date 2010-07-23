@@ -22,7 +22,7 @@ import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
-import com.hp.hpl.jena.sparql.engine.binding.Binding1 ;
+import com.hp.hpl.jena.sparql.engine.binding.BindingFactory ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIter ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterRepeatApply ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterSingleton ;
@@ -161,7 +161,7 @@ public class QueryIterGraph extends QueryIterRepeatApply
             if ( Var.isVar(opGraph.getNode()) )
                 // (graph ?g (...))
                 // XXX If Var.ANON then no-opt.
-                b = new Binding1(b, Var.alloc(opGraph.getNode()), gn) ;
+                b = BindingFactory.binding(b, Var.alloc(opGraph.getNode()), gn) ;
             
             QueryIterator qIter = buildIterator(b, gn, opGraph, getExecContext()) ; 
             return qIter ;

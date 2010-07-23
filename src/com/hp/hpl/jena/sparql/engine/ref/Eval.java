@@ -27,7 +27,7 @@ import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
-import com.hp.hpl.jena.sparql.engine.binding.Binding1 ;
+import com.hp.hpl.jena.sparql.engine.binding.BindingFactory ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingRoot ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterConcat ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper ;
@@ -66,7 +66,7 @@ public class Eval
         for ( ; iter.hasNext(); )
         {
             Node gn = iter.next();
-            Binding b = new Binding1(null, Var.alloc(graphNode), gn) ;
+            Binding b = BindingFactory.binding(Var.alloc(graphNode), gn) ;
             list.add(b) ;
         }
 
@@ -155,7 +155,7 @@ public class Eval
                 //Op tableVarURI = TableFactory.create(gn.getName(), Node.createURI(uri)) ;
                 
                 Graph g = cxt.getDataset().getGraph(gn) ;
-                Binding b = new Binding1(BindingRoot.create(), gVar, gn) ;
+                Binding b = BindingFactory.binding(BindingRoot.create(), gVar, gn) ;
                 ExecutionContext cxt2 = new ExecutionContext(cxt, g) ;
 
                 // Eval the pattern, eval the variable, join.

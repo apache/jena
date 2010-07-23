@@ -24,7 +24,7 @@ import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
-import com.hp.hpl.jena.sparql.engine.binding.Binding1 ;
+import com.hp.hpl.jena.sparql.engine.binding.BindingFactory ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingUtils ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterConcat ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper ;
@@ -153,7 +153,7 @@ public class PathLib
         for (; iter.hasNext();)
         {
             Node n = iter.next() ;
-            results.add(new Binding1(binding, var, n)) ;
+            results.add(BindingFactory.binding(binding, var, n)) ;
         }
         return new QueryIterPlainWrapper(results.iterator()) ;
     }
@@ -182,7 +182,7 @@ public class PathLib
         for ( ; iter.hasNext() ; )
         {
             Node n = iter.next() ;
-            Binding b2 = new Binding1(binding, sVar, n) ;
+            Binding b2 = BindingFactory.binding(binding, sVar, n) ;
             Iterator<Node> pathIter = PathEval.eval(graph, n, path) ;
             QueryIterator qIter = _execTriplePath(b2, pathIter, oVar, execCxt) ;
             qIterCat.add(qIter) ;

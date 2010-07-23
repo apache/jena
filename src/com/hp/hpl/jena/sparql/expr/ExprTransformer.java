@@ -64,7 +64,7 @@ public class ExprTransformer
         { 
             if ( stack.size() != 1 )
                 ALog.warn(this, "Stack is not aligned") ;
-            return stack.pop() ; 
+            return stack.peek() ; 
         }
 
         ApplyExprTransformVisitor(ExprTransform transform)
@@ -76,7 +76,9 @@ public class ExprTransformer
         
         public void visit(ExprFunction1 func)
         {
-            stack.push(func.apply(transform, func.expr)) ;
+            Expr e = stack.pop() ;
+            Expr e2 = func.apply(transform, e) ;
+            stack.push(e2) ;
             
 //            for ( int i = 0 ; i < func.numArgs() ; i++ )
 //            {
@@ -99,6 +101,8 @@ public class ExprTransformer
             Expr e3 = stack.pop() ;
             Expr e2 = stack.pop() ;
             Expr e1 = stack.pop() ;
+            if ( e3 == NodeValue.nvNothing )
+                e3 = null ;
             Expr e = func.apply(transform, e1, e2, e3) ;
             stack.push(e) ;
         }
@@ -128,7 +132,7 @@ public class ExprTransformer
             ExprList x = null ;
             if ( funcOp.getArgs() != null )
                 x = process(funcOp.getArgs()) ;
-            Op op = funcOp.getGraphPttern() ;
+            Op op = funcOp.getGraphPattern() ;
             if ( transform instanceof ExprTransformOp )
             {
                 ExprTransformOp t = (ExprTransformOp)transform ;

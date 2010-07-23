@@ -32,10 +32,6 @@ public class ExprTransformCopy implements ExprTransform
     public Expr transform(ExprFunctionN func, ExprList args)
     { return xform(func, args) ; }
 
-    public Expr transform(ExprFunctionN func, List<Expr> args)
-    {
-        return null ;
-    }
     public Expr transform(ExprFunctionOp funcOp, ExprList args, Op opArg)
     { return xform(funcOp, args, opArg) ; }
     

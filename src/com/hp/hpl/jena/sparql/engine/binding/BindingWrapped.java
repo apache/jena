@@ -25,7 +25,9 @@ public class BindingWrapped implements Binding
     public Binding getWrapped() { return binding ; }
     
     public void add(Var var, Node node)
-    { binding.add(var, node) ; }
+    { 
+        if ( ! Var.isAnonVar(var) )
+        binding.add(var, node) ; }
 
     public void addAll(Binding other)
     { binding.addAll(other) ; }

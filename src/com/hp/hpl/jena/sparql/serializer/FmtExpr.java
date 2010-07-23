@@ -162,7 +162,7 @@ public class FmtExpr
             out.print(" ") ;
             Element el = funcOp.getElement() ; 
             if ( el == null )
-                el = OpAsQuery.asQuery(funcOp.getOp()).getQueryPattern() ;
+                el = OpAsQuery.asQuery(funcOp.getGraphPattern()).getQueryPattern() ;
             el.visit(fmtElt) ;
         }
 

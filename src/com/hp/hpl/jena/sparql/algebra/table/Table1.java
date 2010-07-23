@@ -15,7 +15,7 @@ import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding0 ;
-import com.hp.hpl.jena.sparql.engine.binding.Binding1 ;
+import com.hp.hpl.jena.sparql.engine.binding.BindingFactory ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterNullIterator ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterSingleton ;
 import com.hp.hpl.jena.sparql.expr.ExprList ;
@@ -50,7 +50,7 @@ public class Table1 extends TableBase
         if ( other == null )
         {
             // Not present - return the merge = the other binding + this (var/value)
-            Binding mergedBinding = new Binding1(bindingLeft, var, value) ;
+            Binding mergedBinding = BindingFactory.binding(bindingLeft, var, value) ;
             return QueryIterSingleton.create(mergedBinding, execContext) ;
         }
         

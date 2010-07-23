@@ -76,6 +76,14 @@ public class Algebra
         return AlgebraQuad.quadize(op) ;
     }
     
+    /** Transform an algebra expression so that default graph is union of the named graphs;
+     *  this is the triples-based transformation, not a quads based one. 
+     */
+    public static Op unionDefaultGraph(Op op)
+    {
+        return TransformUnionQuery.transform(op) ;
+    }
+    
     // -------- SSE
     
     static public Op read(String filename)

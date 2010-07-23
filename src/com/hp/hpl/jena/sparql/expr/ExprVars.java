@@ -72,7 +72,7 @@ public class ExprVars
         @Override
         public void visit(ExprFunctionOp funcOp)
         { 
-            Set<Var> vars = OpVars.allVars(funcOp.getOp()) ;
+            Set<Var> vars = OpVars.allVars(funcOp.getGraphPattern()) ;
             
             for ( Var v : vars )
                 action.var(acc, v) ;

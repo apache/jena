@@ -35,7 +35,8 @@ public class BindingMap extends BindingBase
     @Override
     protected void add1(Var var, Node node)
     {
-        map.put(var, node) ;
+        if ( ! Var.isAnonVar(var) )
+            map.put(var, node) ;
     }
 
     @Override

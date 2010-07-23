@@ -20,8 +20,9 @@ import com.hp.hpl.jena.sparql.syntax.Element ;
  
 public abstract class ExprFunctionOp extends ExprFunction
 {
-    private Op op ;
-    private Element element ;
+    private final Op op ;
+    private Op opRun = null ;
+    private final Element element ;
     
     protected ExprFunctionOp(String fName, Element el, Op op)
     {
@@ -36,7 +37,11 @@ public abstract class ExprFunctionOp extends ExprFunction
         return null ;
     }
     
-    public Op getOp()       { return op ; }
+    @Override
+    public boolean isGraphPattern()    { return true ; }
+    @Override
+    public Op getGraphPattern()         { return op ; }
+
     public Element getElement()       { return element ; }
     
     @Override
@@ -47,6 +52,15 @@ public abstract class ExprFunctionOp extends ExprFunction
     @Override
     public final NodeValue eval(Binding binding, FunctionEnv env)
     {
+        // Substitute?
+        // Apply optimize transforms after substitution?
+//        if ( opRun == null )
+//        {
+//            opRun = op ;
+//            if ( env.getContext().isTrueOrUndef(ARQ.propertyFunctions) )
+//                opRun = Optimize.apply("Property Functions", new TransformPropertyFunction(env.getContext()), opRun) ;
+//        }
+        
         ExecutionContext execCxt = new ExecutionContext(env.getContext(),
                                                         env.getActiveGraph(),
                                                         env.getDataset(),

@@ -12,7 +12,7 @@ import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
-import com.hp.hpl.jena.sparql.engine.binding.Binding1 ;
+import com.hp.hpl.jena.sparql.engine.binding.BindingFactory ;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
 
 /** A singleton iterator 
@@ -25,7 +25,7 @@ public class QueryIterSingleton extends QueryIterYieldN
     // A common usage?
     public static QueryIterSingleton create(Binding parent, Var var, Node value, ExecutionContext execCxt)
     {
-        Binding b = new Binding1(parent, var, value) ;
+        Binding b = BindingFactory.binding(parent, var, value) ;
         return QueryIterSingleton.create(b, execCxt) ;
     }
     

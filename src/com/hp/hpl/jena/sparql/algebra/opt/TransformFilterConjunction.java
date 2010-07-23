@@ -35,7 +35,7 @@ public class TransformFilterConjunction extends TransformCopy
         ExprList exprList = opFilter.getExprs() ;
         exprList = ExprList.splitConjunction(exprList) ;
         // Do not use -- OpFilter.filter(exprList, subOp) -- it compresses (filter (..) (filter ))
-        return OpFilter.filterRaw(exprList, subOp) ;
+        return OpFilter.filterDirect(exprList, subOp) ;
     }
 
 }

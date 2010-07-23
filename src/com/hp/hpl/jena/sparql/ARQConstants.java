@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Systems Ltd
  * All rights reserved.
  * [See end of file]
  */
@@ -161,42 +162,45 @@ public class ARQConstants
     /** Context key for the query for the current query execution 
      * (may be null if was not created from a query string )
      * */
-    public static final Symbol sysCurrentQuery  = Symbol.create(systemVarNS+"query") ;
+    public static final Symbol sysCurrentQuery          = Symbol.create(systemVarNS+"query") ;
 
     /** Context key for the OpExecutor to be used */
-    public static final Symbol sysOpExecutorFactory  = Symbol.create(systemVarNS+"opExecutorFactory") ;
+    public static final Symbol sysOpExecutorFactory     = Symbol.create(systemVarNS+"opExecutorFactory") ;
 
-    /** Context key for the optimizer to be used */
-    public static final Symbol sysOptimizer  = Symbol.create(systemVarNS+"optimizer") ;
+    /** Context key for the optimizer factory to be used */
+    public static final Symbol sysOptimizerFactory      = Symbol.create(systemVarNS+"optimizerFactory") ;
     
+    /** Context key for the optimizer used in this execution */
+    public static final Symbol sysOptimizer             = Symbol.create(systemVarNS+"optimizer") ;
+
     /** Context key for the dataset for the current query execution 
      * May be null if was not created from a query string.
      */
-    public static final Symbol sysCurrentDataset  = Symbol.create(systemVarNS+"dataset") ;
+    public static final Symbol sysCurrentDataset        = Symbol.create(systemVarNS+"dataset") ;
 
     /** Context key for the algebra expression of the query execution after optimization */
-    public static final Symbol sysCurrentAlgebra  = Symbol.create(systemVarNS+"algebra") ;
+    public static final Symbol sysCurrentAlgebra        = Symbol.create(systemVarNS+"algebra") ;
 
 //    /** Context key for the algebra execution engine of the query execution */
 //    public static final Symbol sysCurrentOpExec   = Symbol.create(systemVarNS+"opExec") ;
 
     /** Context key for the current time of query execution */
-    public static final Symbol sysCurrentTime  = Symbol.create(systemVarNS+"now") ;
+    public static final Symbol sysCurrentTime           = Symbol.create(systemVarNS+"now") ;
     
     /** Context key for ARQ version */
-    public static final Symbol sysVersionARQ   = Symbol.create(systemVarNS+"version/ARQ") ;
+    public static final Symbol sysVersionARQ            = Symbol.create(systemVarNS+"version/ARQ") ;
     
     /** Context key for Jena version */
-    public static final Symbol sysVersionJena  = Symbol.create(systemVarNS+"version/Jena") ;
+    public static final Symbol sysVersionJena           = Symbol.create(systemVarNS+"version/Jena") ;
 
     /** Context key for the execution-scoped named variable generator */
-    public static final Symbol sysVarAllocNamed  = Symbol.create(systemVarNS+"namedVarAlloc") ;
+    public static final Symbol sysVarAllocNamed         = Symbol.create(systemVarNS+"namedVarAlloc") ;
     
     /** Context key for the execution-scoped bNode variable generator */
-    public static final Symbol sysVarAllocAnon  = Symbol.create(systemVarNS+"namedVarAnon") ;
+    public static final Symbol sysVarAllocAnon          = Symbol.create(systemVarNS+"namedVarAnon") ;
     
     /** Context key for making all SELECT queries have DISTINCT applied, whether stated ot not */
-    public static final Symbol autoDistinct = ARQConstants.allocSymbol("autoDistinct") ;
+    public static final Symbol autoDistinct             = ARQConstants.allocSymbol("autoDistinct") ;
     
     // Context keys : some here, some in ARQ - sort out
     
@@ -223,6 +227,7 @@ public class ARQConstants
 
 /*
  * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Systems Ltd
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

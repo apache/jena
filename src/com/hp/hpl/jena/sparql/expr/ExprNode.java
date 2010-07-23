@@ -83,7 +83,7 @@ public abstract class ExprNode implements Expr
     public ExprFunction getFunction()  { return null ; }
     
     public boolean isGraphPattern()    { return false ; }
-    public Op getGraphPttern()         { return null ; }
+    public Op getGraphPattern()        { return null ; }
     
     // ---- 
     

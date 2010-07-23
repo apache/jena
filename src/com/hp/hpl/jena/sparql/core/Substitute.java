@@ -19,7 +19,7 @@ import com.hp.hpl.jena.sparql.algebra.op.OpPath ;
 import com.hp.hpl.jena.sparql.algebra.op.OpQuadPattern ;
 import com.hp.hpl.jena.sparql.algebra.op.OpService ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
-import com.hp.hpl.jena.sparql.engine.binding.Binding1 ;
+import com.hp.hpl.jena.sparql.engine.binding.BindingFactory ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.expr.ExprList ;
 import com.hp.hpl.jena.sparql.path.PathLib ;
@@ -37,7 +37,7 @@ public class Substitute
     
     public static Op substitute(Op op, Var var, Node node)
     {
-        Binding b = new Binding1(null, var, node) ;
+        Binding b = BindingFactory.binding(var, node) ;
         return substitute(op, b) ;
     }
     

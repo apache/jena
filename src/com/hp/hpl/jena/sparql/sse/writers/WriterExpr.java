@@ -136,7 +136,7 @@ public class WriterExpr
             out.print(funcOp.getFunctionName(context)) ;
             out.incIndent() ;
             
-            Op op = funcOp.getOp() ;
+            Op op = funcOp.getGraphPattern() ;
             if ( oneLine(op) )
                 out.print(" ") ;
             else
@@ -145,7 +145,7 @@ public class WriterExpr
             //Ensures we are unit indent under the (operator ...)
             
             //Without trappings.
-            WriterOp.outputNoPrologue(out, funcOp.getOp(), context) ;
+            WriterOp.outputNoPrologue(out, funcOp.getGraphPattern(), context) ;
             out.decIndent() ;
             out.decIndent(x) ;
             out.print(")") ;

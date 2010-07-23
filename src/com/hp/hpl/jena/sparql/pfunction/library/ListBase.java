@@ -16,7 +16,7 @@ import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
-import com.hp.hpl.jena.sparql.engine.binding.Binding1 ;
+import com.hp.hpl.jena.sparql.engine.binding.BindingFactory ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterConcat ;
 import com.hp.hpl.jena.sparql.pfunction.PropFuncArg ;
 import com.hp.hpl.jena.sparql.pfunction.PropFuncArgType ;
@@ -91,7 +91,7 @@ public abstract class ListBase extends PropertyFunctionEval
         QueryIterConcat qIter = new QueryIterConcat(execCxt) ;
         for ( Node n : x )
         {
-            Binding b = new Binding1(binding, listVar, n) ;
+            Binding b = BindingFactory.binding(binding, listVar, n) ;
             QueryIterator q = execOneList(b, n, predicate, argObject, execCxt) ;
             qIter.add(q) ;
         }

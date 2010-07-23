@@ -12,7 +12,7 @@ import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
-import com.hp.hpl.jena.sparql.engine.binding.Binding1 ;
+import com.hp.hpl.jena.sparql.engine.binding.BindingFactory ;
 
 /**
  * Yield new bindings, with a fixed parent, with values from an iterator. 
@@ -42,7 +42,7 @@ public class QueryIterExtendByVar extends QueryIter
     protected Binding moveToNextBinding()
     {
         Node n = members.next() ;
-        Binding b = new Binding1(binding, var, n) ;
+        Binding b = BindingFactory.binding(binding, var, n) ;
         return b ;
     }
 

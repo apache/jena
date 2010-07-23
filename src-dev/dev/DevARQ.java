@@ -20,6 +20,9 @@ public class DevARQ
     
     // DatasetGraph.find/4 : what about in NG only?  findNG/4
     
+    // Migrate quad union transform from TDB.
+    // OpExecutor to understand Quad quad.unionGraph -- See OpExecutor.execute(QuadPattern)
+    
     // Scoping:
     // Consider wrapping passed-in binding for project subquery, rather than a renaming scheme.
     
@@ -102,12 +105,7 @@ public class DevARQ
     // Documentation for CSV etc.
 
     // Union Transform,  TransformUnionQuery
-    //   TestCases
-    //   The use of a bNode in (graph) needs coping with the distinct.
-    //   Or a "really don't bind" treatment of that bnode. Var.ANON
-    //   ref.Eval and main.OpExecutor.execute(OpGraph)->QueryIterGraphInner.nextIterator
-    //   Modify bindings (all!) for Var.ANON 
-    // Swapping DatasetGraph
+    // Tests
     
     // MicroAPI.
     //   results = query().select(vars).pattern().filter().groupBy().agg()

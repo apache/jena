@@ -20,7 +20,7 @@ import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
-import com.hp.hpl.jena.sparql.engine.binding.Binding1 ;
+import com.hp.hpl.jena.sparql.engine.binding.BindingFactory ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterConcat ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterYieldN ;
@@ -71,7 +71,7 @@ public class container extends PFuncSimple
         {
             Node cn = iter.next() ;
             //Binding the container node. 
-            Binding b = new Binding1(binding, cVar, cn) ;
+            Binding b = BindingFactory.binding(binding, cVar, cn) ;
             Node m = member ;
             // Special case of ?x rdfs:member ?x
             if ( Var.isVar(member) && member.equals(cVar) )
@@ -104,7 +104,7 @@ public class container extends PFuncSimple
         for ( Iterator<Node> iter = x.iterator() ; iter.hasNext() ; )
         {
             Node n = iter.next() ;
-            Binding b = new Binding1(binding, memberVar, n) ;
+            Binding b = BindingFactory.binding(binding, memberVar, n) ;
             bindings.add(b) ;
         }
         

@@ -1,78 +1,31 @@
 /*
- * (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Systems Ltd.
+ * All rights reserved.
  * [See end of file]
  */
 
 package com.hp.hpl.jena.sparql.engine.binding;
 
-import java.util.Iterator ;
-
-import org.openjena.atlas.iterator.Iter ;
-
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.core.Var ;
 
-
-/** Special purpose binding for adding just one name/value slot. 
- * 
- * @author   Andy Seaborne
- */
-
-
-public class Binding1 extends BindingBase
+public class BindingFactory
 {
-    private final Var var ;
-    private final Node value ;
+    public static final Binding noParent = null ; 
     
-    /*package*/ Binding1(Binding parent, Var _var, Node _node)
-    { 
-        super(parent) ;
-        checkAdd1(_var, _node) ;
-        var = _var ; 
-        value = _node ;
-    }
+    public static Binding binding(Var var, Node node) { return binding(noParent, var, node) ; }
     
-    @Override
-    protected void add1(Var v, Node node)
+    public static Binding binding(Binding parent, Var var, Node node)
     {
-        throw new UnsupportedOperationException("Binding1.add1") ;
+        if ( Var.isAnonVar(var) )
+            return new Binding0(parent) ;
+        return new Binding1(parent, var, node) ;
     }
-
-    @Override
-    protected int size1() { return 1 ; }
-    
-    @Override
-    protected boolean isEmpty1() { return false ; }
-    
-    /** Iterate over all the names of variables.
-     */
-    @Override
-    public Iterator<Var> vars1() 
-    {
-        return Iter.singleton(var) ;
-    }
-    
-    @Override
-    public boolean contains1(Var n)
-    {
-        return var.equals(n) ;
-    }
-    
-    @Override
-    public Node get1(Var v)
-    {
-        if ( v.equals(var) )
-            return value ;
-        return null ;
-    }
-
-    @Override
-    protected void checkAdd1(Var v, Node val) { }
 }
 
 /*
- *  (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
- *  All rights reserved.
+ * (c) Copyright 2010 Talis Systems Ltd.
+ * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions

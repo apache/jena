@@ -33,9 +33,9 @@ public class TransformCopy implements Transform
     public Op transform(OpDatasetNames opDatasetNames)              { return xform(opDatasetNames) ; }
     public Op transform(OpQuadPattern opQuadPattern)                { return xform(opQuadPattern) ; }
 
-    public Op transform(OpFilter opFilter, Op x)                    { return xform(opFilter, x) ; }
-    public Op transform(OpGraph opGraph, Op x)                      { return xform(opGraph, x) ; }
-    public Op transform(OpService opService, Op x)                  { return xform(opService, x) ; }
+    public Op transform(OpFilter opFilter, Op subOp)                { return xform(opFilter, subOp) ; }
+    public Op transform(OpGraph opGraph, Op subOp)                  { return xform(opGraph, subOp) ; }
+    public Op transform(OpService opService, Op subOp)              { return xform(opService, subOp) ; }
     
     public Op transform(OpJoin opJoin, Op left, Op right)           { return xform(opJoin, left, right) ; }
     public Op transform(OpLeftJoin opLeftJoin, Op left, Op right)   { return xform(opLeftJoin, left, right) ; }

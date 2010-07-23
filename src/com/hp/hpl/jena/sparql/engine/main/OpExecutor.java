@@ -17,6 +17,7 @@ import com.hp.hpl.jena.sparql.ARQNotImplemented ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.op.* ;
 import com.hp.hpl.jena.sparql.core.BasicPattern ;
+import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
@@ -31,6 +32,7 @@ import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.expr.ExprList ;
 import com.hp.hpl.jena.sparql.procedure.ProcEval ;
 import com.hp.hpl.jena.sparql.procedure.Procedure ;
+import com.hp.hpl.jena.sparql.util.ALog ;
 
 /**
  * Turn an Op expression into an execution of QueryIterators.
@@ -132,6 +134,9 @@ public class OpExecutor
             OpBGP opBGP = new OpBGP(quadPattern.getBasicPattern()) ;
             return execute(opBGP, input) ;  
         }
+        if ( Quad.isQuadUnionGraph(quadPattern.getGraphNode()) )
+            ALog.warn(this, "Not implemented yet: quad/union default graph in general OpExecutor") ;
+        
         // Not default graph - (graph .... )
         OpBGP opBGP = new OpBGP(quadPattern.getBasicPattern()) ;
         OpGraph op = new OpGraph(quadPattern.getGraphNode(), opBGP) ;

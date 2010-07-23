@@ -110,7 +110,6 @@ public abstract class ExprFunction3 extends ExprFunction
         return copy(e1, e2, e3) ;
     }
 
-
     public abstract Expr copy(Expr arg1, Expr arg2, Expr arg3) ;
     
     public void visit(ExprVisitor visitor) { visitor.visit(this) ; }

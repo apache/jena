@@ -23,6 +23,7 @@ import org.junit.runners.Suite.SuiteClasses ;
     , TestRegex.class
     , TestXSDFuncOp.class
     , TestExprLib.class
+    , TestExprTransform.class
 })
 
 public class TS_Expr

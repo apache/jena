@@ -17,7 +17,7 @@ import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
-import com.hp.hpl.jena.sparql.engine.binding.Binding1 ;
+import com.hp.hpl.jena.sparql.engine.binding.BindingFactory ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterNullIterator ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper ;
@@ -140,7 +140,7 @@ public class localname extends PFuncSimple
         if ( ! nodeLocalname.sameValueAs(localname) )
             return ;
         // Bind subject to this node.
-        Binding b = new Binding1(input, subjVar, node) ; 
+        Binding b = BindingFactory.binding(input, subjVar, node) ; 
         bindings.add(b) ;
     }
 

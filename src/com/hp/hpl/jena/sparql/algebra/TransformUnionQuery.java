@@ -9,7 +9,6 @@ package com.hp.hpl.jena.sparql.algebra;
 import java.util.Stack ;
 
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.sparql.ARQConstants ;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
 import com.hp.hpl.jena.sparql.algebra.op.OpBGP ;
 import com.hp.hpl.jena.sparql.algebra.op.OpDistinct ;
@@ -17,7 +16,6 @@ import com.hp.hpl.jena.sparql.algebra.op.OpGraph ;
 import com.hp.hpl.jena.sparql.algebra.op.OpQuadPattern ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.core.Var ;
-import com.hp.hpl.jena.sparql.core.VarAlloc ;
 
 
 public class TransformUnionQuery extends TransformCopy
@@ -29,15 +27,12 @@ public class TransformUnionQuery extends TransformCopy
         return op2 ;
     }
 
-    // ** SEE AlgebraQuad : Pusher and Popper
-    // TODO The (distinct (graph [] (bgp (?s ?p ?p))) 
-    // causes duplicates as [] is a pseudo-var ??-0.  
+    // ** SEE AlgebraQuad : Pusher and Popper :share.
 
     // General (unquadified) rewrite to make the default graph the
-    // Need to catch on the way down and the way up. 
+    
     //Deque in Java 6.
     Stack<Node> currentGraph = new Stack<Node>() ;
-    VarAlloc varAlloc = new VarAlloc(ARQConstants.allocParserAnonVars+"-") ; // Making ???a etc
 
     public TransformUnionQuery()
     {
@@ -57,8 +52,9 @@ public class TransformUnionQuery extends TransformCopy
         if ( current == Quad.defaultGraphNodeGenerated ||
             current == Quad.unionGraph )
         {
-
-            Var v = varAlloc.allocVar() ; 
+            // By using the unbinding Var.ANON, the distinct works.
+            // Else, we get duplicates from projection out of the graph var. 
+            Var v = Var.ANON ; //varAlloc.allocVar() ; 
             Op op = new OpGraph(v, opBGP) ;
             op = OpDistinct.create(op) ;
             return op ;

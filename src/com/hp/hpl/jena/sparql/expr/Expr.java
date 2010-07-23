@@ -46,6 +46,9 @@ public interface Expr
      */
     public NodeValue eval(Binding binding, FunctionEnv env) ;
     
+    // These (copySubstitute, copyNodeTransform) predate transform support and should be chnaged.
+    // But they work so there is no hurry.
+    
     /** Deep copy with substitution */
     public Expr copySubstitute(Binding binding) ;
 

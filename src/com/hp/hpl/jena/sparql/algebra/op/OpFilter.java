@@ -42,14 +42,21 @@ public class OpFilter extends Op1
         return f ;
     }
     
-    public static Op filterRaw(ExprList exprs, Op op)
+    
+//    public static Op filterRaw(ExprList exprs, Op op)
+//    {
+//        if ( exprs.isEmpty() )
+//            return op ;
+//        OpFilter f = new OpFilter(exprs, op) ;
+//        return f ;
+//    }
+
+    /** Make a OpFilter - guarantteed to return an OpFilter */
+    public static OpFilter filterDirect(ExprList exprs, Op op)
     {
-        if ( exprs.isEmpty() )
-            return op ;
-        OpFilter f = new OpFilter(op) ;
-        f.getExprs().addAll(exprs) ;
-        return f ;
+        return new OpFilter(exprs, op) ;
     }
+
     
     private OpFilter(Op sub)
     { 

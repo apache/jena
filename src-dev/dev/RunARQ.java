@@ -28,13 +28,8 @@ import com.hp.hpl.jena.iri.Violation ;
 import com.hp.hpl.jena.query.* ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.shared.JenaException ;
-import com.hp.hpl.jena.sparql.algebra.Algebra ;
-import com.hp.hpl.jena.sparql.algebra.ExtBuilder ;
-import com.hp.hpl.jena.sparql.algebra.Op ;
-import com.hp.hpl.jena.sparql.algebra.OpExtRegistry ;
-import com.hp.hpl.jena.sparql.algebra.Transform ;
-import com.hp.hpl.jena.sparql.algebra.TransformUnionQuery ;
-import com.hp.hpl.jena.sparql.algebra.Transformer ;
+import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
+import com.hp.hpl.jena.sparql.algebra.* ;
 import com.hp.hpl.jena.sparql.algebra.op.OpExt ;
 import com.hp.hpl.jena.sparql.algebra.op.OpFetch ;
 import com.hp.hpl.jena.sparql.algebra.op.OpFilter ;
@@ -46,9 +41,7 @@ import com.hp.hpl.jena.sparql.core.QueryCheckException ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.ref.QueryEngineRef ;
-import com.hp.hpl.jena.sparql.expr.Expr ;
-import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
-import com.hp.hpl.jena.sparql.expr.NodeValue ;
+import com.hp.hpl.jena.sparql.expr.* ;
 import com.hp.hpl.jena.sparql.function.FunctionEnvBase ;
 import com.hp.hpl.jena.sparql.lang.sparql_11.SPARQLParser11 ;
 import com.hp.hpl.jena.sparql.resultset.ResultsFormat ;
@@ -94,8 +87,45 @@ public class RunARQ
       System.exit(0) ; 
     }
 
+    static class TransformApplyInsideExprFunctionOp extends TransformWrapper
+    {
+        TransformApplyInsideExprFunctionOp(Transform transform)
+        {
+            super(transform) ;
+        }
+        
+        @Override
+        public Op transform(OpFilter opFilter, Op x) 
+        {
+            ExprTransformCopy t2 = new ExprTransformCopy() { 
+                @Override
+                public Expr transform(ExprFunctionOp funcOp, ExprList args, Op opArg)
+                {
+                    Op opArg2 = Transformer.transform(transform, opArg) ;
+                    if ( opArg2 == opArg )
+                        return super.transform(funcOp, args, opArg) ;
+                    if ( funcOp instanceof E_Exists )
+                        return new E_Exists(opArg2) ;
+                    if ( funcOp instanceof E_NotExists )
+                        return new E_NotExists(opArg2) ;
+                    throw new ARQInternalErrorException("Unrecognized ExprFunctionOp: \n"+funcOp) ;
+                }
+            } ;
+            
+            ExprList ex = new ExprList() ;
+            for ( Expr e : opFilter.getExprs() )
+            {
+                Expr e2 = ExprTransformer.transform(t2, e) ;
+                ex.add(e2) ;
+            }
+            OpFilter f = (OpFilter)OpFilter.filter(ex, x) ;
+            return super.transform(f, x) ;
+        }
+    }
+    
     public static void main(String[] argv) throws Exception
     {
+        //unionTransform() ;
         
 //        Expr expr = SSE.parseExpr("(+ ?x ?y)") ;
 //        ExprTransform et = new ExprTransformCopy(true) ;
@@ -103,13 +133,27 @@ public class RunARQ
 //        System.out.println(expr2) ;
 //        System.exit(0) ;
 
-        if ( false )
+        if ( true )
         {
             // BUG
+            // Fix 1 : rewrite during execution (each substitution)
+            // Fix 2 : do in optimizer transforms.
             Transform t = new TransformPropertyFunction(ARQ.getContext()) ;
+            
+            divider() ;
             Op op = SSE.parseOp("(prefix ((list: <http://jena.hpl.hp.com/ARQ/list#>)) (filter (exists (bgp (?s list:member ?o))) (bgp (?s1 list:member ?o1))))") ;
+            System.out.println(op) ;
+            
+            Transform t2 = new TransformApplyInsideExprFunctionOp(t) ;  
+            // Better is to apply it all in one go.
+
+            divider() ;
             Op op2 = Transformer.transform(t, op) ;
             System.out.println(op2) ;
+
+            divider() ;
+            Op op3 = Transformer.transform(t2, op) ;
+            System.out.println(op3) ;
             System.exit(0) ;
         }
 
@@ -155,6 +199,8 @@ public class RunARQ
             // Tests of SSE. 
             // Round triple items.
             
+        
+        // TODO The (graph ??-0 ...) cause duplicates.  Need a "non-binding" variable. 
         String x = StrUtils.strjoinNL("(dataset",
                                       "  (graph (<s> <p> <o>) (<x> <p> <o>) (<x2> <p> <o>))",
                                       "  (graph <g1> (triple <s1> <p1> <o1>))",
