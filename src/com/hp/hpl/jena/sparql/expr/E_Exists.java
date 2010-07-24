@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Systems Ltd
  * All rights reserved.
  * [See end of file]
  */
@@ -75,10 +76,14 @@ public class E_Exists extends ExprFunctionOp
         E_Exists ex = (E_Exists)other ;
         return this.getGraphPattern().equals(ex.getGraphPattern()) ;
     }
+    
+    @Override
+    public ExprFunctionOp copy(ExprList args, Op x) { return new E_Exists(x) ; }
 }
 
 /*
  * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Systems Ltd
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

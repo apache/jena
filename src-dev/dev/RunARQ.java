@@ -28,6 +28,7 @@ import com.hp.hpl.jena.sparql.algebra.Algebra ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.Transform ;
 import com.hp.hpl.jena.sparql.algebra.Transformer ;
+import com.hp.hpl.jena.sparql.algebra.opt.TransformApplyInsideExprFunctionOp ;
 import com.hp.hpl.jena.sparql.algebra.opt.TransformPropertyFunction ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.expr.Expr ;

@@ -6,9 +6,12 @@
 
 package dev;
 
+
 public class DevARQ
 {
     // BUG: Property functions (and other tranforms) in [NOT]EXISTS clauses.
+    // Need test case - disabled in Optimize.apply
+    // Some test failures - stack aligned (RDQL!)
     // ready to go.
 
     // Tests for unionTransformation

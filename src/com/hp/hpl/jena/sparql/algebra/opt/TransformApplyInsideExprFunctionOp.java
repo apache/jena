@@ -1,4 +1,4 @@
-package dev;
+package com.hp.hpl.jena.sparql.algebra.opt;
 
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.Transform ;
@@ -13,8 +13,8 @@ import com.hp.hpl.jena.sparql.expr.ExprTransformer ;
  */
 public class TransformApplyInsideExprFunctionOp extends TransformWrapper
 {
-    final ExprTransformApplyTransform exprTransform ; 
-    TransformApplyInsideExprFunctionOp(Transform transform)
+    final private ExprTransformApplyTransform exprTransform ; 
+    public TransformApplyInsideExprFunctionOp(Transform transform)
     {
         super(transform) ;
         exprTransform = new ExprTransformApplyTransform(transform) ;

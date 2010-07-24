@@ -8,7 +8,6 @@ package com.hp.hpl.jena.sparql.expr;
 
 import java.util.List ;
 
-import com.hp.hpl.jena.sparql.ARQNotImplemented ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
 
 public class ExprTransformCopy implements ExprTransform
@@ -76,6 +75,13 @@ public class ExprTransformCopy implements ExprTransform
     
     private boolean equals1(List<Expr> list1, List<Expr> list2)
     {
+        if ( list1 == null && list2 == null )
+            return true ;
+        if ( list1 == null )
+            return false ;
+        if ( list2 == null )
+            return false ;
+        
         if ( list1.size() != list2.size() )
             return false ;
         for ( int i = 0 ; i < list1.size() ; i++ )
@@ -88,8 +94,9 @@ public class ExprTransformCopy implements ExprTransform
     
     private Expr xform(ExprFunctionOp funcOp, ExprList args, Op opArg)
     {
-        throw new ARQNotImplemented() ;
-        //return null ;
+        if ( ! alwaysCopy && equals1(funcOp.getArgs(), args.getList()) && funcOp.getGraphPattern() == opArg )
+            return funcOp ;
+        return funcOp.copy(args, opArg) ;
     }
     
     private Expr xform(NodeValue nv)

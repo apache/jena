@@ -21,6 +21,7 @@ import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.sparql.util.Symbol ;
 
+
 public class Optimize implements Rewrite
 {
     static private Logger log = LoggerFactory.getLogger(Optimize.class) ;
@@ -170,7 +171,14 @@ public class Optimize implements Rewrite
     
     public static Op apply(String label, Transform transform, Op op)
     {
-        Op op2 = Transformer.transformSkipService(transform, op) ;
+        // Use this to apply inside NOT EXISTS and EXISTS 
+        // Transform transform2 = new TransformApplyInsideExprFunctionOp(transform) ;
+        // Remember there is an outer substitue to the NOT EXISTS operation. 
+
+        //Transform transform2 = new TransformApplyInsideExprFunctionOp(transform) ;
+        Transform transform2 = transform ;
+        
+        Op op2 = Transformer.transformSkipService(transform2, op) ;
         
         final boolean debug = false ;
         

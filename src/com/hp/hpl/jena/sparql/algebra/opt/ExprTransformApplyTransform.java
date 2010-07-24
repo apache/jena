@@ -1,4 +1,4 @@
-package dev;
+package com.hp.hpl.jena.sparql.algebra.opt;
 
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
