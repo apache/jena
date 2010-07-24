@@ -7,19 +7,15 @@
 
 package dev;
 
+import static org.openjena.atlas.lib.StrUtils.strjoinNL ;
+
 import java.io.Reader ;
 import java.io.StringReader ;
 import java.util.Iterator ;
 
-import org.openjena.atlas.io.IndentedLineBuffer ;
-import org.openjena.atlas.io.IndentedWriter ;
-import org.openjena.atlas.lib.Sink ;
-import org.openjena.atlas.lib.SinkWrapper ;
 import org.openjena.atlas.lib.StrUtils ;
 import org.openjena.riot.ErrorHandlerLib ;
-import org.openjena.riot.RiotLib ;
 import org.openjena.riot.checker.CheckerIRI ;
-import reports.ReportSlowDatatype ;
 import riot.inf.infer ;
 
 import com.hp.hpl.jena.iri.IRI ;
@@ -28,34 +24,23 @@ import com.hp.hpl.jena.iri.Violation ;
 import com.hp.hpl.jena.query.* ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.shared.JenaException ;
-import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
-import com.hp.hpl.jena.sparql.algebra.* ;
-import com.hp.hpl.jena.sparql.algebra.op.OpExt ;
-import com.hp.hpl.jena.sparql.algebra.op.OpFetch ;
-import com.hp.hpl.jena.sparql.algebra.op.OpFilter ;
-import com.hp.hpl.jena.sparql.algebra.opt.Optimize ;
+import com.hp.hpl.jena.sparql.algebra.Algebra ;
+import com.hp.hpl.jena.sparql.algebra.Op ;
+import com.hp.hpl.jena.sparql.algebra.Transform ;
+import com.hp.hpl.jena.sparql.algebra.Transformer ;
 import com.hp.hpl.jena.sparql.algebra.opt.TransformPropertyFunction ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.sparql.core.Prologue ;
-import com.hp.hpl.jena.sparql.core.QueryCheckException ;
-import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
-import com.hp.hpl.jena.sparql.engine.QueryIterator ;
-import com.hp.hpl.jena.sparql.engine.ref.QueryEngineRef ;
-import com.hp.hpl.jena.sparql.expr.* ;
+import com.hp.hpl.jena.sparql.expr.Expr ;
+import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
+import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.function.FunctionEnvBase ;
 import com.hp.hpl.jena.sparql.lang.sparql_11.SPARQLParser11 ;
 import com.hp.hpl.jena.sparql.resultset.ResultsFormat ;
-import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
 import com.hp.hpl.jena.sparql.sse.Item ;
-import com.hp.hpl.jena.sparql.sse.ItemList ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
-import com.hp.hpl.jena.sparql.sse.SSEParseException ;
-import com.hp.hpl.jena.sparql.sse.WriterSSE ;
-import com.hp.hpl.jena.sparql.sse.builders.BuildException ;
 import com.hp.hpl.jena.sparql.sse.builders.BuilderGraph ;
 import com.hp.hpl.jena.sparql.util.ALog ;
 import com.hp.hpl.jena.sparql.util.ExprUtils ;
-import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
 import com.hp.hpl.jena.sparql.util.QueryExecUtils ;
 import com.hp.hpl.jena.sparql.util.Timer ;
 import com.hp.hpl.jena.util.FileManager ;
@@ -87,45 +72,14 @@ public class RunARQ
       System.exit(0) ; 
     }
 
-    static class TransformApplyInsideExprFunctionOp extends TransformWrapper
-    {
-        TransformApplyInsideExprFunctionOp(Transform transform)
-        {
-            super(transform) ;
-        }
-        
-        @Override
-        public Op transform(OpFilter opFilter, Op x) 
-        {
-            ExprTransformCopy t2 = new ExprTransformCopy() { 
-                @Override
-                public Expr transform(ExprFunctionOp funcOp, ExprList args, Op opArg)
-                {
-                    Op opArg2 = Transformer.transform(transform, opArg) ;
-                    if ( opArg2 == opArg )
-                        return super.transform(funcOp, args, opArg) ;
-                    if ( funcOp instanceof E_Exists )
-                        return new E_Exists(opArg2) ;
-                    if ( funcOp instanceof E_NotExists )
-                        return new E_NotExists(opArg2) ;
-                    throw new ARQInternalErrorException("Unrecognized ExprFunctionOp: \n"+funcOp) ;
-                }
-            } ;
-            
-            ExprList ex = new ExprList() ;
-            for ( Expr e : opFilter.getExprs() )
-            {
-                Expr e2 = ExprTransformer.transform(t2, e) ;
-                ex.add(e2) ;
-            }
-            OpFilter f = (OpFilter)OpFilter.filter(ex, x) ;
-            return super.transform(f, x) ;
-        }
-    }
+    // ----
     
     public static void main(String[] argv) throws Exception
     {
+        //ReportSlowDatatype.main() ;
         //unionTransform() ;
+        //streamInference() ;
+
         
 //        Expr expr = SSE.parseExpr("(+ ?x ?y)") ;
 //        ExprTransform et = new ExprTransformCopy(true) ;
@@ -141,9 +95,16 @@ public class RunARQ
             Transform t = new TransformPropertyFunction(ARQ.getContext()) ;
             
             divider() ;
-            Op op = SSE.parseOp("(prefix ((list: <http://jena.hpl.hp.com/ARQ/list#>)) (filter (exists (bgp (?s list:member ?o))) (bgp (?s1 list:member ?o1))))") ;
+            Op op = SSE.parseOp(strjoinNL("(prefix ((list: <http://jena.hpl.hp.com/ARQ/list#>))",
+                                          "  (join",
+                                          "     (bgp (?x ?y ?z))",
+                                          "     (filter (&& (notexists (bgp (?s list:member ?o)))",
+                                          "                 (< 1 2))",
+                                          "        (bgp (?s1 list:member ?o1)))",
+                                          "   ))")) ;
             System.out.println(op) ;
             
+            // Move this to Optimize.apply.
             Transform t2 = new TransformApplyInsideExprFunctionOp(t) ;  
             // Better is to apply it all in one go.
 
@@ -156,51 +117,10 @@ public class RunARQ
             System.out.println(op3) ;
             System.exit(0) ;
         }
-
-        ReportSlowDatatype.main() ;
-        System.exit(0) ;
-        
-        System.out.println(RiotLib.parse("'hello'")) ;
-        System.out.println(RiotLib.parse("123")) ;
-        System.out.println(RiotLib.parse("'123'^^xsd:byte")) ;
-        System.exit(0) ;
-        
-        runTest() ;
-        
-//        DatasetGraph dsg = DatasetLoader.load("D.trig") ;
-//        Dump.write(System.out, dsg) ;
-//        System.out.println("DONE") ;
-//        System.exit(0) ;
-        
-        
-//        final Binding b = new Binding0() ;
-//        Renamer renamer = new Renamer() {
-//            public Node rename(Node node)
-//            {
-//                if ( ! Var.isVar(node) ) return null ;
-//                Var v = Var.alloc(node) ;
-//                return b.get(v) ;
-//            } } ;
-        
-        streamInference() ;
-        
-        //unionTransform() ;
-        
     }
     
     public static void unionTransform()
     {
-        //qparse("--print=op", "PREFIX : <http://example/> SELECT :function(?x +?y) ?z {}" ) ;
-        
-//        String dir = "testing/ARQ/Union" ;
-//        ARQ.setStrictMode() ;
-//        execQuery(dir+"/data-1.ttl", dir+"/union-5.rq") ;
-        
-            // Tests of SSE. 
-            // Round triple items.
-            
-        
-        // TODO The (graph ??-0 ...) cause duplicates.  Need a "non-binding" variable. 
         String x = StrUtils.strjoinNL("(dataset",
                                       "  (graph (<s> <p> <o>) (<x> <p> <o>) (<x2> <p> <o>))",
                                       "  (graph <g1> (triple <s1> <p1> <o1>))",
@@ -213,115 +133,14 @@ public class RunARQ
         Query query = QueryFactory.create("SELECT ?s ?p ?o { ?s ?p ?o }") ;
         query.setResultVars() ;
         Op op = Algebra.compile(query) ;
-//        QueryExecUtils.executeAlgebra(op, dsg, ResultsFormat.FMT_TEXT) ;
-
-
-//        divider() ;
-//        System.out.println(op) ;
-
-        Op op2 = TransformUnionQuery.transform(op) ;
+        Op op2 = Algebra.unionDefaultGraph(op) ;
         System.out.print(op2) ;
-//        System.out.print(OpAsQuery.asQuery(op3)) ;
-
         QueryExecUtils.executeAlgebra(op2, dsg, ResultsFormat.FMT_TEXT) ;
-
         System.exit(0) ;
-    }
-    
-    static class SinkInsertText<T> extends SinkWrapper<T>
-    {
-        String string ;
-        public SinkInsertText(Sink<T> sink, String string)
-        {
-            super(sink) ;
-            this.string = string ;
-        }
-        
-        @Override
-        public void send(T item)
-        {
-            super.send(item) ;
-            System.out.print(string) ;
-        }
     }
     
     public static void streamInference()
     {
-        String dir = "../TDB/IBM-2010-07-14" ;
-        String base = "https://shelsen.torolab.ibm.com:9443/jazz/storage/com.ibm.xtools.rmps.index/resource" ;
-        
-                        
-        
-        
-        DataSource ds = DatasetFactory.create() ;
-        
-        // Q1 is right, Q2 is wrong - std engine
-        String queryfile = dir+"/Q4.rq" ;
-        
-//        arq.sparql.main("--namedGraph="+dir+"/resource1.nt", "--namedGraph="+dir+"/resource2.nt", "--namedGraph="+dir+"/resource3.nt", "--namedGraph="+dir+"/resource4.nt", "--namedGraph="+dir+"/resource5.nt", 
-//                        "--namedGraph="+dir+"/resource6.nt", "--namedGraph="+dir+"/resource7.nt", "--namedGraph="+dir+"/resource8.nt", "--namedGraph="+dir+"/resource9.nt" , 
-//                        "--data="+dir+"/resource1.nt", "--data="+dir+"/resource2.nt", "--data="+dir+"/resource3.nt", "--data="+dir+"/resource4.nt", "--data="+dir+"/resource5.nt", 
-//                        "--data="+dir+"/resource6.nt", "--data="+dir+"/resource7.nt", "--data="+dir+"/resource8.nt", "--data="+dir+"/resource9.nt",
-//                        "--query="+queryfile) ;
-//        System.exit(0) ;
-
-        
-        //arq.qparse.main("--print=opt", "--query="+queryfile) ;
-        
-        for ( int i = 1 ; i <= 9 ; i++ )
-        {
-            String fn = dir+"/resource"+i+".nt" ;
-            
-            Model model1 = FileManager.get().loadModel(fn) ;
-            Model model2 = FileManager.get().loadModel(fn) ;
-            ds.addNamedModel(base+i, model1) ;
-            ds.getDefaultModel().add(model2) ;
-        }
-
-        if ( true )
-        {
-            System.out.println("----") ;
-            Query query = QueryFactory.read(queryfile) ;
-            Op op1 = Algebra.compile(query) ;
-            System.out.println("op1 = \n"+op1) ;
-            Op op2 = Algebra.optimize(op1) ;
-            System.out.println("op2 = \n"+op2) ;
-            System.out.println() ;
-            
-            Optimize.noOptimizer() ;
-            
-            System.out.println("Execute op1") ;
-            QueryExecUtils.executeAlgebra(op1, ds.asDatasetGraph(), ResultsFormat.FMT_TEXT) ;
-
-            System.out.println("Execute op2") ;
-            QueryExecUtils.executeAlgebra(op2, ds.asDatasetGraph(), ResultsFormat.FMT_TEXT) ;
-
-//            QueryEngineRef.register() ;
-//
-//            System.out.println("Execute op1 (ref)") ;
-//            QueryExecUtils.executeAlgebra(op1, ds.asDatasetGraph(), ResultsFormat.FMT_TEXT) ;
-//            
-//
-//            QueryEngineRef.unregister() ;
-            System.exit(0) ;
-            
-        }
-        
-        {
-            Query query = QueryFactory.read(queryfile) ;
-            QueryExecution qExec = QueryExecutionFactory.create(query, ds) ;
-            ResultSetFormatter.out(qExec.execSelect()) ;
-        }
-        QueryEngineRef.register() ;
-        {
-            Query query = QueryFactory.read(queryfile) ;
-            QueryExecution qExec = QueryExecutionFactory.create(query, ds) ;
-            ResultSetFormatter.out(qExec.execSelect()) ;
-        }
-
-        System.exit(0) ;
-        
-        
         Model m = FileManager.get().loadModel("V.ttl") ;
 
         infer.main("--rdfs=V.ttl") ;
@@ -426,145 +245,6 @@ public class RunARQ
         QueryExecUtils.executeQuery(query, qexec) ;
     }
     
-    public static void check(Query query, boolean optimizeAlgebra)
-    {
-        Op op = Algebra.compile(query) ;
-        check( op, optimizeAlgebra, query) ;        
-    }
-    
-    private static void check(Op op, boolean optimizeAlgebra, Prologue prologue)
-    {
-        IndentedLineBuffer buff = new IndentedLineBuffer() ;
-        if ( optimizeAlgebra )
-            op =  Algebra.optimize(op) ;
-        WriterSSE.out(buff, op, prologue) ;
-        String str = buff.toString() ;
-        
-        try {
-            Op op2 = SSE.parseOp(str) ;
-            if ( op.hashCode() != op2.hashCode() )
-            {
-                System.out.println(str) ;
-                System.out.println(op) ;
-                System.out.println(op2) ;
-                
-                throw new QueryCheckException("reparsed algebra expression hashCode does not equal algebra from query") ;
-            }
-            System.out.println(op) ;
-            System.out.println(op2) ;
-            
-            // Expression in assignment for op 
-            
-            if ( ! op.equals(op2) )
-            {
-                Expr e1 = ((OpFilter)op).getExprs().get(0) ;
-                Expr e2 = ((OpFilter)op2).getExprs().get(0) ;
-
-                op = ((OpFilter)op).getSubOp() ;
-                op2 = ((OpFilter)op2).getSubOp() ;
-
-                if ( ! op.equals(op2) )
-                    System.err.println("Sub patterns unequal") ;
-                
-                if ( ! e1.equals(e2) )
-                {
-                    System.err.println(e1) ;
-                    System.err.println(e2) ;
-                    System.err.println("Expressions unequal") ;
-                }
-                
-                throw new QueryCheckException("reparsed algebra expression does not equal query algebra") ;
-            }
-        } catch (SSEParseException ex)
-        { 
-            System.err.println(str);
-            throw ex ; 
-        }      // Breakpoint
-        catch (BuildException ex)
-        {
-            System.err.println(str);
-            throw ex ; 
-        }
-
-    }
-
-    public static void fetch()
-    {
-        OpFetch.enable() ;
-        arq.sparql.main(new String[]{"--file=Q.arq"}) ;
-        //System.out.println("----") ;
-        System.exit(0) ; 
-    }
-    
-    public static void opExtension()
-    {
-        OpExtRegistry.register(new ExtBuilder(){
-            public OpExt make(ItemList argList)
-            {
-                System.out.println("Args: "+argList) ;
-                return new OpExtTest(argList) ;
-            }
-
-            public String getTagName() { return "ABC" ; }
-        }) ;
-        
-        Op op1 = SSE.parseOp("(ext ABC 123 667)") ;
-        System.out.println(op1); 
-
-        Op op2 = SSE.parseOp("(ABC 123 667)") ;
-        System.out.println(op2); 
-
-        System.out.println("----") ; System.exit(0) ; 
-    }
-
-    static class OpExtTest extends OpExt 
-    {
-        private ItemList argList ;
-    
-        public OpExtTest(ItemList argList)
-        { super("TAG") ; this.argList = argList ; }
-    
-        @Override
-        public Op effectiveOp()
-        {
-            return null ;
-        }
-    
-        @Override
-        public QueryIterator eval(QueryIterator input, ExecutionContext execCxt)
-        {
-            return null ;
-        }
-    
-        @Override
-        public boolean equalTo(Op other, NodeIsomorphismMap labelMap)
-        {
-            if ( ! ( other instanceof OpExtTest) ) return false ;
-            return argList.equals(((OpExtTest)other).argList) ;
-        }
-    
-        @Override
-        public void outputArgs(IndentedWriter out, SerializationContext sCxt)
-        {
-            boolean first = true ;
-            for ( Iterator<Item> iter = argList.iterator() ; iter.hasNext() ; )
-            {
-                Item item = iter.next();
-                if ( first )
-                    first = false ;
-                else
-                    out.print(" ") ;
-                out.print(item) ;
-            }
-        }
-        
-        @Override
-        public int hashCode()
-        {
-            return argList.hashCode() ;
-        }
-    }
-
     public static NodeValue eval(String string)
     {
         try {

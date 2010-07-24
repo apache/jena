@@ -8,7 +8,16 @@ package dev;
 
 public class DevARQ
 {
-    // BUG: Property functions (and other tranforms) in [NOT]EXISTS clauses.  
+    // BUG: Property functions (and other tranforms) in [NOT]EXISTS clauses.
+    // ready to go.
+
+    // Tests for unionTransformation
+    
+    // Comparsion (ORDER BY) costs
+    // Holger's slow datatype example.
+    
+    // Exception in thread "main" com.hp.hpl.jena.sparql.junit.QueryTestException: TestItem with no name (http://www.w3.org/2009/sparql/docs/tests/data-sparql11/negation/manifest#subset-01)
+    // Manifest has :sebset-1 ptr to :subset-01
     
     // Inference
     // StringUTF8
