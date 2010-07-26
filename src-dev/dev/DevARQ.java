@@ -7,14 +7,33 @@
 package dev;
 
 
+
 public class DevARQ
 {
     // BUG: Property functions (and other tranforms) in [NOT]EXISTS clauses.
-    // Need test case - disabled in Optimize.apply
-    // Some test failures - stack aligned (RDQL!)
-    // ready to go.
+    //   Need test case
+    //     ** testing/ARQ/PropertyFunction/list-8
 
+    //   Substitute isn't substituting into EXISTS
+    //   PFs do it themselves in PropertyFunctionBase/PropertyFunctionEval
+    //   CHANGE TO PFs to make this happen?
+    
+    // Finish group in Transformer
+    
     // Tests for unionTransformation
+    
+    /* pom upgrade
+<plugin>
+   <groupId>org.apache.maven.plugins</groupId>
+   <artifactId>maven-eclipse-plugin</artifactId>
+   <configuration>
+ 
+    <buildOutputDirectory>${project.build.directory}/classes</buildOutputDirectory>
+     <downloadSources>true</downloadSources>
+     <downloadJavadocs>false</downloadJavadocs>
+   </configuration>
+</plugin>
+     */
     
     // Comparsion (ORDER BY) costs
     // Holger's slow datatype example.

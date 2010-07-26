@@ -7,7 +7,6 @@
 
 package com.hp.hpl.jena.sparql.expr.aggregate;
 
-import com.hp.hpl.jena.sparql.engine.Renamer ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.sse.writers.WriterExpr ;
 import com.hp.hpl.jena.sparql.util.ExprUtils ;
@@ -19,9 +18,7 @@ public class AggMinDistinct extends AggMin
     
     public AggMinDistinct(Expr expr) { super(expr) ; }
     @Override
-    public Aggregator copy() { return new AggMinDistinct(expr) ; }
-    @Override
-    public Aggregator copyRename(Renamer renamer) { return new AggMinDistinct(expr.copyNodeTransform(renamer)) ; }
+    public Aggregator copy(Expr expr) { return new AggMinDistinct(expr) ; }
 
     @Override
     public String toString() { return "min(distinct "+ExprUtils.fmtSPARQL(getExpr())+")" ; }

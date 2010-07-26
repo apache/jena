@@ -8,7 +8,6 @@
 package com.hp.hpl.jena.sparql.expr.aggregate;
 
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.sparql.engine.Renamer ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
@@ -24,8 +23,7 @@ public class AggAvg extends AggregatorBase
     private Expr expr ;
 
     public AggAvg(Expr expr) { this.expr = expr ; } 
-    public Aggregator copy() { return new AggAvg(expr) ; }
-    public Aggregator copyRename(Renamer renamer) { return new AggAvg(expr.copyNodeTransform(renamer)) ; }
+    public Aggregator copy(Expr expr) { return new AggAvg(expr) ; }
 
     // XQuery/XPath Functions&Operators suggests zero
     // SQL suggests null.
@@ -42,7 +40,7 @@ public class AggAvg extends AggregatorBase
         return new AccAvg() ;
     }
 
-    private final Expr getExpr() { return expr ; }
+    public final Expr getExpr() { return expr ; }
 
     public boolean equalsAsExpr(Aggregator other)
     {

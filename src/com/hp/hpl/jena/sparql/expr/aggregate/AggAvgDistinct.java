@@ -8,7 +8,6 @@
 package com.hp.hpl.jena.sparql.expr.aggregate;
 
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.sparql.engine.Renamer ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
@@ -23,8 +22,7 @@ public class AggAvgDistinct extends AggregatorBase
     private Expr expr ;
 
     public AggAvgDistinct(Expr expr) { this.expr = expr ; } 
-    public Aggregator copy() { return new AggAvgDistinct(expr) ; }
-    public Aggregator copyRename(Renamer renamer) { return new AggAvgDistinct(expr.copyNodeTransform(renamer)) ; }
+    public Aggregator copy(Expr expr) { return new AggAvgDistinct(expr) ; }
 
     private static final NodeValue noValuesToAvg = NodeValue.nvZERO ; 
 
@@ -39,7 +37,7 @@ public class AggAvgDistinct extends AggregatorBase
         return new AccAvgDistinct(expr) ;
     }
 
-    private final Expr getExpr() { return expr ; }
+    public final Expr getExpr() { return expr ; }
 
     public boolean equalsAsExpr(Aggregator other)
     {

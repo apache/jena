@@ -10,6 +10,7 @@ import java.util.Iterator ;
 import java.util.List ;
 import java.util.Stack ;
 
+import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.query.QueryFactory ;
@@ -20,7 +21,10 @@ import com.hp.hpl.jena.sparql.core.BasicPattern ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.expr.ExprList ;
+import com.hp.hpl.jena.sparql.pfunction.PropFuncArg ;
 import com.hp.hpl.jena.sparql.syntax.* ;
+import com.hp.hpl.jena.sparql.util.graph.GraphList ;
+import com.hp.hpl.jena.vocabulary.RDF ;
 
 /** Convert an Op expression in SPARQL syntax, that is, the reverse of algebra generation */   
 public class OpAsQuery
@@ -90,7 +94,25 @@ public class OpAsQuery
         
         public void visit(OpPropFunc opPropFunc)
         {
-            throw new ARQNotImplemented("OpPropFunc") ;
+            Node s = processPropFuncArg(opPropFunc.getSubjectArgs()) ;
+            Node o = processPropFuncArg(opPropFunc.getObjectArgs()) ;
+            Triple t = new Triple(s, opPropFunc.getProperty(), o) ;
+            currentGroup().addElement(process(t)) ;
+        }
+        
+        private Node processPropFuncArg(PropFuncArg args)
+        {
+            if ( args.isNode() )
+                return args.getArg() ;
+
+            // List ...
+            List<Node> list = args.getArgList() ;
+            if ( list.size() == 0 )
+                return RDF.Nodes.nil ;
+            BasicPattern bgp = new BasicPattern() ;
+            Node head = GraphList.listToTriples(list, bgp) ;
+            currentGroup().addElement(process(bgp)) ;
+            return head ;
         }
         
         public void visit(OpSequence opSequence)

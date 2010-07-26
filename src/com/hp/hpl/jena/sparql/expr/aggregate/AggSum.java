@@ -8,7 +8,6 @@
 package com.hp.hpl.jena.sparql.expr.aggregate;
 
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.sparql.engine.Renamer ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
@@ -25,8 +24,7 @@ public class AggSum  extends AggregatorBase
     private Expr expr ;
 
     public AggSum(Expr expr) { this.expr = expr ; } 
-    public Aggregator copy() { return new AggSum(expr) ; }
-    public Aggregator copyRename(Renamer renamer) { return new AggSum(expr.copyNodeTransform(renamer)) ; }
+    public Aggregator copy(Expr expr) { return new AggSum(expr) ; }
 
     @Override
     public String toString() { return "sum("+ExprUtils.fmtSPARQL(expr)+")" ; }
@@ -39,7 +37,7 @@ public class AggSum  extends AggregatorBase
         return new AccSum() ;
     }
 
-    private final Expr getExpr() { return expr ; }
+    public Expr getExpr() { return expr ; }
 
     public boolean equalsAsExpr(Aggregator other)
     {

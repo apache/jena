@@ -45,17 +45,15 @@ public abstract class PropertyFunctionBase implements PropertyFunction
             if ( argSubject.isList() )
                 throw new QueryBuildException("List arguments (subject) to "+predicate.getURI()) ;
         
-        if ( subjArgType.equals(PropFuncArgType.PF_ARG_LIST) )
-            if ( ! argSubject.isList() )
+        if ( subjArgType.equals(PropFuncArgType.PF_ARG_LIST) && ! argSubject.isList() )
                 throw new QueryBuildException("Single argument, list expected (subject) to "+predicate.getURI()) ;
 
-        if ( objFuncArgType.equals(PropFuncArgType.PF_ARG_SINGLE) )
-            if ( argObject.isList() )
-            {
-                if ( ! argObject.isNode() )
-                    // But allow rdf:nil.
-                    throw new QueryBuildException("List arguments (object) to "+predicate.getURI()) ;
-            }
+        if ( objFuncArgType.equals(PropFuncArgType.PF_ARG_SINGLE) && argObject.isList() )
+        {
+            if ( ! argObject.isNode() )
+                // But allow rdf:nil.
+                throw new QueryBuildException("List arguments (object) to "+predicate.getURI()) ;
+        }
         
         if ( objFuncArgType.equals(PropFuncArgType.PF_ARG_LIST) )
             if ( ! argObject.isList() )
@@ -66,20 +64,25 @@ public abstract class PropertyFunctionBase implements PropertyFunction
     
     public QueryIterator exec(QueryIterator input, PropFuncArg argSubject, Node predicate, PropFuncArg argObject, ExecutionContext execCxt)
     {
-        return new RepeatApplyIterator(input, argSubject, predicate, argObject, execCxt) ;
+        // This is the property function equivalent of Substitute.
+        // To allow property functions to see the whole input stream,
+        // the exec() operation allows the PF implementation to get at the
+        // input iterator.  Normally, we just want that applied one binding at a time.
+
+        return new RepeatApplyIteratorPF(input, argSubject, predicate, argObject, execCxt) ;
     }
     
     public abstract QueryIterator exec(Binding binding, PropFuncArg argSubject, Node predicate, PropFuncArg argObject, ExecutionContext execCxt) ;
     
     
-    class RepeatApplyIterator extends QueryIterRepeatApply
+    class RepeatApplyIteratorPF extends QueryIterRepeatApply
     {
         private ExecutionContext execCxt ;
         private PropFuncArg argSubject ; 
         private Node predicate ;
         private PropFuncArg argObject ;
         
-       public RepeatApplyIterator(QueryIterator input, PropFuncArg argSubject, Node predicate, PropFuncArg argObject, ExecutionContext execCxt)
+       public RepeatApplyIteratorPF(QueryIterator input, PropFuncArg argSubject, Node predicate, PropFuncArg argObject, ExecutionContext execCxt)
        { 
            super(input, execCxt) ;
            this.argSubject = argSubject ;

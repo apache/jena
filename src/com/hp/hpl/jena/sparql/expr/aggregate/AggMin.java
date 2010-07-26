@@ -8,7 +8,6 @@
 package com.hp.hpl.jena.sparql.expr.aggregate;
 
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.sparql.engine.Renamer ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
@@ -23,8 +22,7 @@ public class AggMin extends AggregatorBase
     protected final Expr expr ;
 
     public AggMin(Expr expr) { this.expr = expr ; } 
-    public Aggregator copy() { return new AggMin(expr) ; }
-    public Aggregator copyRename(Renamer renamer) { return new AggMin(expr.copyNodeTransform(renamer)) ; }
+    public Aggregator copy(Expr expr) { return new AggMin(expr) ; }
 
     @Override
     public String toString() { return "min("+ExprUtils.fmtSPARQL(expr)+")" ; }
@@ -37,7 +35,7 @@ public class AggMin extends AggregatorBase
         return new AccMin() ;
     }
 
-    protected final Expr getExpr() { return expr ; }
+    public Expr getExpr() { return expr ; }
 
     public boolean equalsAsExpr(Aggregator other)
     {

@@ -53,6 +53,12 @@ public class OpAssign extends Op1
         return opAssign ;
     }
     
+    /** Make a OpAssign - guaranteed to return an OpFilter */
+    public static OpAssign assignDirect(Op op, VarExprList exprs)
+    {
+        return new OpAssign(op, exprs) ;
+    }
+
     static private Op createAssign(Op op, Var var, Expr expr)
     {
         VarExprList x = new VarExprList() ;

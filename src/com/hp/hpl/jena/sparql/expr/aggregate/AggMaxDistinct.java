@@ -7,7 +7,6 @@
 
 package com.hp.hpl.jena.sparql.expr.aggregate;
 
-import com.hp.hpl.jena.sparql.engine.Renamer ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.sse.writers.WriterExpr ;
 import com.hp.hpl.jena.sparql.util.ExprUtils ;
@@ -18,9 +17,7 @@ public class AggMaxDistinct extends AggMax
     // Same as MAX(expr) but remembers the syntax
     public AggMaxDistinct(Expr expr) { super(expr) ; } 
     @Override
-    public Aggregator copy() { return new AggMaxDistinct(expr) ; }
-    @Override
-    public Aggregator copyRename(Renamer renamer) { return new AggMaxDistinct(expr.copyNodeTransform(renamer)) ; }
+    public Aggregator copy(Expr expr) { return new AggMaxDistinct(expr) ; }
 
     @Override
     public String toString() { return "max(distinct "+ExprUtils.fmtSPARQL(getExpr())+")" ; }

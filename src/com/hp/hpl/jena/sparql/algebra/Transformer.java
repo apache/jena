@@ -12,13 +12,17 @@ import java.util.Iterator ;
 import java.util.List ;
 import java.util.Stack ;
 
+import com.hp.hpl.jena.query.SortCondition ;
 import com.hp.hpl.jena.sparql.algebra.OpWalker.WalkerVisitor ;
-import com.hp.hpl.jena.sparql.algebra.op.Op0 ;
-import com.hp.hpl.jena.sparql.algebra.op.Op1 ;
-import com.hp.hpl.jena.sparql.algebra.op.Op2 ;
-import com.hp.hpl.jena.sparql.algebra.op.OpExt ;
-import com.hp.hpl.jena.sparql.algebra.op.OpN ;
-import com.hp.hpl.jena.sparql.algebra.op.OpService ;
+import com.hp.hpl.jena.sparql.algebra.op.* ;
+import com.hp.hpl.jena.sparql.algebra.opt.ExprTransformApplyTransform ;
+import com.hp.hpl.jena.sparql.core.Var ;
+import com.hp.hpl.jena.sparql.core.VarExprList ;
+import com.hp.hpl.jena.sparql.expr.E_Aggregator ;
+import com.hp.hpl.jena.sparql.expr.Expr ;
+import com.hp.hpl.jena.sparql.expr.ExprList ;
+import com.hp.hpl.jena.sparql.expr.ExprTransformer ;
+import com.hp.hpl.jena.sparql.expr.aggregate.Aggregator ;
 import com.hp.hpl.jena.sparql.util.ALog ;
 
 public class Transformer
@@ -77,14 +81,20 @@ public class Transformer
     }
     
     protected Op transformation(ApplyTransformVisitor transformApply,
-                             Op op, OpVisitor beforeVisitor, OpVisitor afterVisitor)
+                                Op op, OpVisitor beforeVisitor, OpVisitor afterVisitor)
     {
         if ( op == null )
         {
             ALog.warn(this, "Attempt to transform a null Op - ignored") ;
             return op ;
         }
+        return applyTransformation(transformApply, op, beforeVisitor, afterVisitor) ;
+    }
 
+    /** The primitive operation to apply a transformation to an Op */
+    protected Op applyTransformation(ApplyTransformVisitor transformApply,
+                                     Op op, OpVisitor beforeVisitor, OpVisitor afterVisitor)
+    {
         OpWalker.walk(op, transformApply, beforeVisitor, afterVisitor) ;
         Op r = transformApply.result() ;
         return r ;
@@ -93,12 +103,12 @@ public class Transformer
     
     protected Transformer() { }
     
-    protected static boolean noDupIfSame = true ;
-    
     public static
     class ApplyTransformVisitor extends OpVisitorByType
     {
         protected final Transform transform ;
+        private final ExprTransformApplyTransform exprTransform ;
+
         private final Stack<Op> stack = new Stack<Op>() ;
         protected final Op pop() { return stack.pop(); }
         
@@ -108,18 +118,142 @@ public class Transformer
             stack.push(op) ;
         }
         
+        
+        
         public ApplyTransformVisitor(Transform transform)
         { 
             this.transform = transform ;
+            this.exprTransform = new ExprTransformApplyTransform(transform) ;
+
         }
         
-        public final Op result()
+        final Op result()
         { 
             if ( stack.size() != 1 )
                 ALog.warn(this, "Stack is not aligned") ;
             return pop() ; 
         }
     
+        // ----
+        // Algebra operations that involve an Expr, and so might include NOT EXISTS 
+        
+        @Override
+        public void visit(OpFilter opFilter)
+        {
+            ExprList ex = new ExprList() ;
+            boolean changed = false ;
+            for ( Expr e : opFilter.getExprs() )
+            {
+                Expr e2 = ExprTransformer.transform(exprTransform, e) ;
+                ex.add(e2) ;
+                if ( e != e2 )
+                    changed = true ;
+            }
+            OpFilter f = opFilter ;
+            if ( changed )
+                f = (OpFilter)OpFilter.filter(ex, opFilter.getSubOp()) ;
+            visit1(f) ;
+        }
+
+        @Override
+        public void visit(OpOrder opOrder)
+        {
+            List<SortCondition> conditions = opOrder.getConditions() ;
+            List<SortCondition> conditions2 = new ArrayList<SortCondition>() ;
+            boolean changed = false ;
+
+            for ( SortCondition sc : conditions )
+            {
+                Expr e = sc.getExpression() ;
+                Expr e2 = ExprTransformer.transform(exprTransform, e) ;
+                conditions2.add(new SortCondition(e2, sc.getDirection())) ;
+                if ( e != e2 )
+                    changed = true ;
+            }
+            OpOrder x = opOrder ;
+            if ( changed )
+                x = new OpOrder(opOrder.getSubOp(), conditions2) ;
+            visit1(x) ;
+        }
+        
+        @Override
+        public void visit(OpAssign opAssign)
+        { 
+            VarExprList varExpr = opAssign.getVarExprList() ;
+            List<Var> vars = varExpr.getVars() ;
+            VarExprList varExpr2 = process(varExpr) ;
+            OpAssign opAssign2 = opAssign ;
+            if ( varExpr != varExpr2 )
+                opAssign2 = OpAssign.assignDirect(opAssign.getSubOp(), varExpr2) ;
+            visit1(opAssign2) ;
+        }
+        
+        private VarExprList process(VarExprList varExpr)
+        {
+            List<Var> vars = varExpr.getVars() ;
+            VarExprList varExpr2 = new VarExprList() ;
+            boolean changed = false ;
+            for ( Var v : vars )
+            {
+                Expr e = varExpr.getExpr(v) ;
+                Expr e2 =  e ;
+                if ( e != null )
+                    e2 = ExprTransformer.transform(exprTransform, e) ;
+                if ( e2 == null )
+                    varExpr2.add(v) ;
+                else
+                    varExpr2.add(v, e2) ; 
+                if ( e != e2 )
+                    changed = true ;
+            }
+            if ( ! changed ) return varExpr ;
+            return varExpr2 ;
+        }
+
+        @Override
+        public void visit(OpGroup opGroup)
+        {
+            boolean changed = false ;
+            VarExprList varExpr = opGroup.getGroupVars() ;
+            VarExprList varExpr2 = process(varExpr) ;
+            OpGroup opGroup2 = opGroup ;
+            List<E_Aggregator> aggs = opGroup.getAggregators() ;
+            List<E_Aggregator> aggs2 = aggs ;
+            
+            if ( varExpr != varExpr2 )
+                changed = true ;
+            
+            //And the aggregators...
+            
+            aggs2 = new ArrayList<E_Aggregator>() ;
+            for ( E_Aggregator agg : aggs )
+            {
+                Aggregator a = agg.getAggregator() ;
+                Expr eVar = agg.getExprVar() ;
+                Expr eVar2 = ExprTransformer.transform(exprTransform, eVar) ;
+                if ( eVar != eVar2 )
+                    changed = true ;
+
+                // Need to copy with changes of variable?
+                Var var = agg.asVar() ;
+                //Get the Aggregator expression:
+                Expr e = a.getExpr() ;
+                Expr e2 = e ;
+                if ( e != null )    // Null means "no relevant expression" e.g. COUNT(*)
+                    ExprTransformer.transform(exprTransform, e) ;
+                if ( e != e2 )
+                    changed = true ;
+                Aggregator a2 = a.copy(e2) ;
+                aggs2.add(new E_Aggregator(var, a2)) ;
+            }
+
+            if ( changed )
+                opGroup2 = new OpGroup(opGroup.getSubOp(), varExpr2, aggs2) ;
+            visit1(opGroup2) ;
+        }
+        
+        // ----
+
         @Override
         protected void visit0(Op0 op)
         {
@@ -134,7 +268,7 @@ public class Transformer
                 subOp = pop() ;
             push(op.apply(transform, subOp)) ;
         }
-    
+
         @Override
         protected void visit2(Op2 op)
         { 

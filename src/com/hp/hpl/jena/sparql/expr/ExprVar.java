@@ -69,7 +69,7 @@ public class ExprVar extends ExprNode
         return new ExprVar(v) ;
     }
     
-    public Expr copy()  { return new ExprVar(varNode) ; }
+    public Expr copy(Var v)  { return new ExprVar(v) ; }
     
     
     public void visit(ExprVisitor visitor) { visitor.visit(this) ; }

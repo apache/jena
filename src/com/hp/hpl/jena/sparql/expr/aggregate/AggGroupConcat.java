@@ -9,7 +9,6 @@ package com.hp.hpl.jena.sparql.expr.aggregate;
 import org.openjena.atlas.lib.StrUtils ;
 
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.sparql.engine.Renamer ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
@@ -43,8 +42,7 @@ public class AggGroupConcat extends AggregatorBase
         this.separator = separator ; 
     }
     
-    public Aggregator copy() { return new AggGroupConcat(expr, separator, separatorSeen) ; }
-    public Aggregator copyRename(Renamer renamer) { return new AggGroupConcat(expr.copyNodeTransform(renamer), separator) ; }
+    public Aggregator copy(Expr expr) { return new AggGroupConcat(expr, separator, separatorSeen) ; }
 
     @Override
     public String toString()
@@ -79,7 +77,7 @@ public class AggGroupConcat extends AggregatorBase
         return new AccGroupConcat() ;
     }
 
-    protected final Expr getExpr() { return expr ; }
+    public Expr getExpr() { return expr ; }
     protected final String getSeparator() { return separator ; }
 
     public boolean equalsAsExpr(Aggregator other)

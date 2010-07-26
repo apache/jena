@@ -22,7 +22,7 @@ import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
 public class OpPropFunc extends Op1
 {
     // c.f. OpProcedure which is similar except for the handling of arguments.
-    // Safer to have two (Ops are mainly asbrtact synatx , not executional).
+    // Safer to have two (Ops are mainly abstract syntax, not executional).
     private Node uri ;
     private PropFuncArg subjectArgs ;
     private PropFuncArg objectArgs2 ;

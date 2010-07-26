@@ -163,7 +163,6 @@ public class OpExecutor
         return new QueryIterProcedure(qIter, procedure, execCxt) ;
     }
 
-
     protected QueryIterator execute(OpJoin opJoin, QueryIterator input)
     {
         // Need to clone input into left and right.

@@ -3,6 +3,8 @@ ChangeLog for ARQ
 
 ==== ARQ 2.8.6
 
++ Bug fix: Property functions in FILTER NOT EXISTS
+  To be continued ...
 
 ==== ARQ 2.8.5
 

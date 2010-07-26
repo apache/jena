@@ -68,7 +68,6 @@ public class E_Aggregator extends ExprVar
     public E_Aggregator copyNodeTransform(Renamer renamer)
     {
         Var v = (Var)renamer.rename(varNode) ;
-        // XXXX
         Aggregator agg = aggregator.copyRename(renamer) ;
         return new E_Aggregator(v, agg) ;
     }
@@ -83,7 +82,7 @@ public class E_Aggregator extends ExprVar
                 " "+aggregator.toString()+")"; }
     
     @Override
-    public Expr copy()  { return new E_Aggregator(varNode, aggregator.copy()) ; }
+    public Expr copy(Var v)  { return new E_Aggregator(v, aggregator.copy(aggregator.getExpr())) ; }
 }
 
 /*

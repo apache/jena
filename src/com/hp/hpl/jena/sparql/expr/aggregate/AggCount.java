@@ -9,24 +9,30 @@ package com.hp.hpl.jena.sparql.expr.aggregate;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.core.NodeConst ;
-import com.hp.hpl.jena.sparql.engine.Renamer ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
+import com.hp.hpl.jena.sparql.util.ALog ;
 
 public class AggCount extends AggregatorBase
 {
     // ---- COUNT(*)
 
     public AggCount() { }
-    public Aggregator copy() { return new AggCount() ; }
-    public Aggregator copyRename(Renamer renamer) { return copy() ; }
+    public Aggregator copy(Expr expr)
+    { 
+        if ( expr != null )
+            ALog.warn(this, "Copying non-null expression for COUNT(*)") ;
+        return new AggCount() ; }
 
     public boolean equalsAsExpr(Aggregator other)
     {
         return other instanceof AggCount ;
     }
-
+    
+    public Expr getExpr()       { return null ; }
+    
     @Override
     protected Accumulator createAccumulator()
     { 

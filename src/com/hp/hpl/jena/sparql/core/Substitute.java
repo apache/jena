@@ -11,13 +11,7 @@ import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.TransformCopy ;
 import com.hp.hpl.jena.sparql.algebra.Transformer ;
-import com.hp.hpl.jena.sparql.algebra.op.OpAssign ;
-import com.hp.hpl.jena.sparql.algebra.op.OpBGP ;
-import com.hp.hpl.jena.sparql.algebra.op.OpFilter ;
-import com.hp.hpl.jena.sparql.algebra.op.OpGraph ;
-import com.hp.hpl.jena.sparql.algebra.op.OpPath ;
-import com.hp.hpl.jena.sparql.algebra.op.OpQuadPattern ;
-import com.hp.hpl.jena.sparql.algebra.op.OpService ;
+import com.hp.hpl.jena.sparql.algebra.op.* ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingFactory ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
@@ -139,10 +133,29 @@ public class Substitute
             return new OpPath(PathLib.substitute(opPath.getTriplePath(), binding)) ;
         }
 
+        // Property functions "see" the incoming iterator and do their own substitution in PropertyFunctionEval.eval 
+        @Override
+        public Op transform(OpPropFunc opPropFunc, Op subOp)
+        {
+            return super.transform(opPropFunc, subOp) ;
+            
+//            PropFuncArg sArgs = opPropFunc.getSubjectArgs() ;
+//            PropFuncArg oArgs = opPropFunc.getObjectArgs() ;
+//            
+//            PropFuncArg sArgs2 = sArgs.evalIfExists(binding) ;
+//            PropFuncArg oArgs2 = oArgs.evalIfExists(binding) ;
+//            
+//            if ( sArgs2 == sArgs && oArgs2 == oArgs && opPropFunc.getSubOp() == subOp)
+//                return super.transform(opPropFunc, subOp) ;
+//            return new OpPropFunc(opPropFunc.getProperty(), sArgs2, oArgs2, subOp) ; 
+        }
+        
         @Override
         public Op transform(OpFilter filter, Op op)
         {
             ExprList exprs = filter.getExprs().copySubstitute(binding, true, null) ;
+            if ( exprs == filter.getExprs() )
+                return filter ;
             return OpFilter.filter(exprs, op) ; 
         }
 

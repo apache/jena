@@ -16,13 +16,13 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap ;
 import com.hp.hpl.jena.sparql.pfunction.PropFuncArg ;
 import com.hp.hpl.jena.sparql.pfunction.PropFuncArgType ;
-import com.hp.hpl.jena.sparql.pfunction.PropertyFunctionBase ;
+import com.hp.hpl.jena.sparql.pfunction.PropertyFunctionEval ;
 import com.hp.hpl.jena.sparql.util.ALog ;
 import com.hp.hpl.jena.sparql.util.IterLib ;
 import com.hp.hpl.jena.sparql.util.NodeUtils ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 
-public class splitIRI extends PropertyFunctionBase
+public class splitIRI extends PropertyFunctionEval //PropertyFunctionBase
 {
     public splitIRI()
     {
@@ -50,12 +50,11 @@ public class splitIRI extends PropertyFunctionBase
     // Do not throw an exception except when an internal error situation occurs. 
     
     @Override
-    public QueryIterator exec(Binding binding, PropFuncArg argSubject, Node predicate, PropFuncArg argObject, ExecutionContext execCxt)
+    public QueryIterator execEvaluated(Binding binding, PropFuncArg argSubject, Node predicate, PropFuncArg argObject, ExecutionContext execCxt)
     {
         try {
-            argSubject = argSubject.evalIfExists(binding) ;
-            argObject = argObject.evalIfExists(binding) ;
-    
+//            argSubject = argSubject.evalIfExists(binding) ;
+//            argObject = argObject.evalIfExists(binding) ;
             // Subject bound to something other a URI. 
             if ( argSubject.getArg().isLiteral() || argSubject.getArg().isBlank() )
                 // Only split IRIs

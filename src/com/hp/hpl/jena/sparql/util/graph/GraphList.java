@@ -16,6 +16,7 @@ import java.util.Set ;
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.sparql.core.BasicPattern ;
 import com.hp.hpl.jena.sparql.util.ALog ;
 import com.hp.hpl.jena.util.iterator.NiceIterator ;
 import com.hp.hpl.jena.vocabulary.RDF ;
@@ -269,6 +270,32 @@ public class GraphList
             acc.add(NIL) ;
         
         return acc ;
+    }
+    
+    /** Convert a list of nodes into triples, placing them in BPG, returning the head of the list*/
+    public static Node listToTriples(List<Node> list, BasicPattern bgp)
+    {
+        // List ...
+        if ( list.size() == 0 )
+            return RDF.Nodes.nil ;
+        
+        Node head = Node.createAnon() ;
+        Node n = head ;
+        for ( Node elt : list )
+        {
+            // Cell:
+            Node consCell = Node.createAnon() ;
+            // Last cell to this one.
+            Triple t = new Triple(n, RDF.Nodes.rest, consCell) ;
+            Triple t1 = new Triple(consCell, RDF.Nodes.first, elt) ;
+            n = consCell ;
+            bgp.add(t) ;
+            bgp.add(t1) ;
+        }
+        // Finish list.
+        Triple t = new Triple(n, RDF.Nodes.rest, RDF.Nodes.nil) ;
+        bgp.add(t) ;
+        return head ;
     }
     
     private static final Node CAR = RDF.first.asNode() ;

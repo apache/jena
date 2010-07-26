@@ -11,8 +11,10 @@ import java.util.Map ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
+import com.hp.hpl.jena.sparql.engine.Renamer ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingKey ;
+import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
 
@@ -63,6 +65,14 @@ public abstract class AggregatorBase implements Aggregator
     }
     
     public String key() {  return toPrefixString() ; }
+    
+    public final Aggregator copyRename(Renamer renamer)
+    {
+        Expr e = getExpr() ;
+        if ( e != null )
+            e = e.copyNodeTransform(renamer) ;
+        return copy(e) ;
+    }
     
     @Override
     public abstract String toString() ;
