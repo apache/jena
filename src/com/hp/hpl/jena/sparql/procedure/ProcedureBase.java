@@ -32,7 +32,7 @@ public abstract class ProcedureBase extends PrintSerializableBase implements Pro
  
     public final QueryIterator proc(QueryIterator input, ExecutionContext execCxt)
     {
-        return new RepeatApplyIterator(input, execCxt) ;
+        return new RepeatApplyIteratorProc(input, execCxt) ;
     }
     
     public abstract QueryIterator exec(Binding binding, Node name, ExprList args, ExecutionContext execCxt) ;
@@ -47,12 +47,12 @@ public abstract class ProcedureBase extends PrintSerializableBase implements Pro
         out.println() ;
     }
     
-    class RepeatApplyIterator extends QueryIterRepeatApply
+    class RepeatApplyIteratorProc extends QueryIterRepeatApply
     {
         private ExecutionContext execCxt ;
         private Node name ;
         
-       public RepeatApplyIterator(QueryIterator input, ExecutionContext execCxt)
+       public RepeatApplyIteratorProc(QueryIterator input, ExecutionContext execCxt)
        { 
            super(input, execCxt) ;
        }

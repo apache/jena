@@ -26,7 +26,6 @@ import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.shared.JenaException ;
 import com.hp.hpl.jena.sparql.algebra.Algebra ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
-import com.hp.hpl.jena.sparql.algebra.OpAsQuery ;
 import com.hp.hpl.jena.sparql.algebra.Transform ;
 import com.hp.hpl.jena.sparql.algebra.Transformer ;
 import com.hp.hpl.jena.sparql.algebra.opt.TransformPropertyFunction ;
@@ -45,6 +44,7 @@ import com.hp.hpl.jena.sparql.util.ExprUtils ;
 import com.hp.hpl.jena.sparql.util.QueryExecUtils ;
 import com.hp.hpl.jena.sparql.util.Timer ;
 import com.hp.hpl.jena.util.FileManager ;
+
 public class RunARQ
 {
     static String divider = "----------" ;
@@ -92,7 +92,7 @@ public class RunARQ
             // Fix 2 : do in optimizer transforms.
             Transform t = new TransformPropertyFunction(ARQ.getContext()) ;
             
-            divider() ;
+//            divider() ;
 //            Query query = QueryFactory.create(strjoinNL("PREFIX list: <http://jena.hpl.hp.com/ARQ/list#>",
 //                                                        "PREFIX  apf:     <http://jena.hpl.hp.com/ARQ/property#>",
 //                                                        "PREFIX  rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>", 
@@ -101,7 +101,7 @@ public class RunARQ
 //                                                        "   ?s1 list:member ?o1 .",
 //                                                        "   FILTER NOT EXISTS { ?s apf:splitIRI (?ns ?ln) }",
 //                                                        "}"), Syntax.syntaxSPARQL_11) ;
-
+//
 //            Query query = QueryFactory.create(strjoinNL("PREFIX list: <http://jena.hpl.hp.com/ARQ/list#>",
 //                                                        "PREFIX  apf:     <http://jena.hpl.hp.com/ARQ/property#>",
 //                                                        "PREFIX  rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>", 
@@ -110,15 +110,15 @@ public class RunARQ
 //                                                        "   ?s ?p ?o",
 //                                                        "   LET(?x := NOT EXISTS { ?list list:member ?x })" ,
 //                                                        "}"), Syntax.syntaxARQ) ;
-
-            Query query = QueryFactory.create(strjoinNL("PREFIX list: <http://jena.hpl.hp.com/ARQ/list#>",
-                                                        "PREFIX  apf:     <http://jena.hpl.hp.com/ARQ/property#>",
-                                                        "PREFIX  rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>", 
-                                                        "SELECT *",
-                                                        "{",
-                                                        "   ?s ?p ?o",
-                                                        "} GROUP BY NOT EXISTS { ?s list:member ?x }"), Syntax.syntaxARQ) ;
-
+//
+//            Query query = QueryFactory.create(strjoinNL("PREFIX list: <http://jena.hpl.hp.com/ARQ/list#>",
+//                                                        "PREFIX  apf:     <http://jena.hpl.hp.com/ARQ/property#>",
+//                                                        "PREFIX  rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>", 
+//                                                        "SELECT *",
+//                                                        "{",
+//                                                        "   ?s ?p ?o",
+//                                                        "} GROUP BY NOT EXISTS { ?s list:member ?x }"), Syntax.syntaxARQ) ;
+//
 //            Query query = QueryFactory.create(strjoinNL("PREFIX list: <http://jena.hpl.hp.com/ARQ/list#>",
 //                                                        "PREFIX  apf:     <http://jena.hpl.hp.com/ARQ/property#>",
 //                                                        "PREFIX  rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>", 
@@ -126,17 +126,17 @@ public class RunARQ
 //                                                        "{",
 //                                                        "   ?s ?p ?o",
 //                                                        "} ORDER BY NOT EXISTS { ?s list:member ?x }"), Syntax.syntaxARQ) ;
-
+//
+//            
+//            Op op = Algebra.compile(query) ;
             
-            Op op = Algebra.compile(query) ;
-            
-//            Op op = SSE.parseOp(strjoinNL("(prefix ((list: <http://jena.hpl.hp.com/ARQ/list#>))",
-//                                          "  (join",
-//                                          "     (bgp (?x ?y ?z))",
-//                                          "     (filter (&& (notexists (bgp (?s list:member ?o)))",
-//                                          "                 (< 1 2))",
-//                                          "        (bgp (?s1 list:member ?o1)))",
-//                                          "   ))")) ;
+            Op op = SSE.parseOp(strjoinNL("(prefix ((list: <http://jena.hpl.hp.com/ARQ/list#>))",
+                                          "  (join",
+                                          "     (bgp (?x ?y ?z))",
+                                          "     (filter (&& (notexists (bgp (?s list:member ?o)))",
+                                          "                 (< 1 2))",
+                                          "        (bgp (?s1 list:member ?o1)))",
+                                          "   ))")) ;
             //System.out.println(op) ;
             
             // Move this to Optimize.apply.

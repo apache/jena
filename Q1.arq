@@ -1,0 +1,24 @@
+prefix :	<http://example/>
+PREFIX  rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX  list:   <http://jena.hpl.hp.com/ARQ/list#>
+
+# Sets where s1 is a subset of s2
+# i.e. every member of s1 is a member of s2
+SELECT ?s1 ?s2
+WHERE
+{ 
+    ?s1 :elements ?e1 .
+    ?s2 :elements ?e2 .
+    ?e1 list:member ?x .
+    FILTER NOT EXISTS { ?e2 list:member ?x . }
+
+##     ?s1 :elements ?e1 .
+##     ?s2 :elements ?e2 .
+##     FILTER ( ?s1 != ?s2 )
+##     MINUS {
+##         ?s1 :elements ?e1 .
+##         ?s2 :elements ?e2 .
+##         ?e1 list:member ?x .
+##         FILTER NOT EXISTS { ?e2 list:member ?x . }
+##     }
+}

@@ -29,8 +29,6 @@ import com.hp.hpl.jena.sparql.util.Context ;
  * to all query execution created after the point of setting.
  * 
  * Helper static methods for setting the stage generator are provided.  
- * 
- * @see StageGenerator
  */
 
 public class StageBuilder

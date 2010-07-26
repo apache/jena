@@ -5,21 +5,24 @@
 
 package com.hp.hpl.jena.sparql.engine.iterator;
 import java.util.HashSet ;
+import java.util.Iterator ;
+import java.util.List ;
 import java.util.Set ;
 
 import org.openjena.atlas.io.IndentedWriter ;
 
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.graph.query.BindingQueryPlan ;
 import com.hp.hpl.jena.graph.query.Domain ;
 import com.hp.hpl.jena.graph.query.QueryHandler ;
 import com.hp.hpl.jena.sparql.core.BasicPattern ;
 import com.hp.hpl.jena.sparql.core.Var ;
-import com.hp.hpl.jena.sparql.engine.ExecUtils ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap ;
+import com.hp.hpl.jena.sparql.engine.binding.BindingUtils ;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
 import com.hp.hpl.jena.sparql.util.ALog ;
 import com.hp.hpl.jena.sparql.util.FmtUtils ;
@@ -27,9 +30,8 @@ import com.hp.hpl.jena.sparql.util.Utils ;
 import com.hp.hpl.jena.util.iterator.ClosableIterator ;
 
 
-/** An Iterator that takes a binding and executes a pattern.
- * 
- * @author     Andy Seaborne
+/** An Iterator that takes a binding and executes 
+ * a pattern via the Jena graph QueryHandler interface.
  */
  
 public class QueryIterBlockTriplesQH extends QueryIterRepeatApply
@@ -81,8 +83,8 @@ public class QueryIterBlockTriplesQH extends QueryIterRepeatApply
             //System.out.println("StageBasePattern: "+pattern) ;
             
             Set<Var> vars = new HashSet<Var>() ;
-            ExecUtils.compilePattern(graphQuery, pattern.getList(), binding, vars) ;
-            projectionVars = ExecUtils.projectionVars(vars) ; 
+            compilePattern(graphQuery, pattern.getList(), binding, vars) ;
+            projectionVars = projectionVars(vars) ; 
             // **** No constraints done here currently
             //QueryEngineUtils.compileConstraints(graphQuery, constraints) ;
             
@@ -118,6 +120,47 @@ public class QueryIterBlockTriplesQH extends QueryIterRepeatApply
                 graphIter = null ;
             }
         }
+    }
+    
+    private static void compilePattern(com.hp.hpl.jena.graph.query.Query graphQuery,
+                                      List<Triple> pattern, Binding presets, Set<Var> vars)
+    {
+        if ( pattern == null )
+            return ;
+        for (Iterator<Triple>iter = pattern.listIterator(); iter.hasNext();)
+        {
+            Triple t = iter.next();
+            t = BindingUtils.substituteIntoTriple(t, presets) ;
+            if ( vars != null )
+            {
+                if ( t.getSubject().isVariable() )
+                    vars.add(Var.alloc(t.getSubject())) ;
+                if ( t.getPredicate().isVariable() )
+                    vars.add(Var.alloc(t.getPredicate())) ;
+                if ( t.getObject().isVariable() )
+                    vars.add(Var.alloc(t.getObject())) ;
+            }
+            graphQuery.addMatch(t);
+        }
+    }
+    
+    private static void compileConstraints(com.hp.hpl.jena.graph.query.Query graphQuery, List<?> constraints)
+    {
+        ALog.warn(QueryIterBlockTriplesQH.class, "Call to compileConstraints for Jena Expressions") ;
+    }
+    
+    public static Var[] projectionVars(Set<Var> vars)
+    {
+        Var[] result = new Var[vars.size()] ;
+    
+        int i = 0 ; 
+        for ( Iterator<Var> iter = vars.iterator() ; iter.hasNext() ; )
+        {
+            Var n = iter.next() ;
+            result[i] = n ;
+            i++ ;
+        }
+        return result ;
     }
     
     private static Binding graphResultsToBinding(Binding parent, Domain d, Var[] projectionVars)

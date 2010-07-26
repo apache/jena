@@ -1,0 +1,11 @@
+# Check property function in size NOT EXISTS
+
+PREFIX  list:  <http://jena.hpl.hp.com/ARQ/list#>
+PREFIX  :      <http://example.org/>
+
+SELECT DISTINCT ?x
+{ 
+    ?x :q ?list .
+    ?list list:member "a" .
+#    FILTER EXISTS { ?list list:member "a" }
+}

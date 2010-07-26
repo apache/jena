@@ -7,6 +7,7 @@
 package com.hp.hpl.jena.sparql.pfunction;
 
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.sparql.core.Substitute ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
@@ -27,8 +28,8 @@ public abstract class PropertyFunctionEval extends PropertyFunctionBase
     @Override
     public final QueryIterator exec(Binding binding, PropFuncArg argSubject, Node predicate, PropFuncArg argObject, ExecutionContext execCxt)
     {
-        argSubject = argSubject.evalIfExists(binding) ;
-        argObject = argObject.evalIfExists(binding) ;
+        argSubject = Substitute.substitute(argSubject, binding) ;
+        argObject =  Substitute.substitute(argObject, binding) ;
         return execEvaluated(binding, argSubject, predicate, argObject, execCxt) ;
     }
     

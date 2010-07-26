@@ -4,7 +4,7 @@
 @prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
 
 <>  rdf:type mf:Manifest ;
-    rdfs:label "Function Properties" ;
+    rdfs:label "Property Functions" ;
     mf:entries
     # data-0 is a zero triple graph.
     ( 
@@ -55,12 +55,12 @@
         mf:result  <list-7.srx>
       ]
 
-##       [  mf:name    "Property Function - list 8" ;
-##          mf:action
-##             [ qt:query  <list-8.rq> ;
-##               qt:data   <data-1.ttl> ] ;
-##         mf:result  <list-8.srx>
-##       ]
+      [  mf:name    "Property Function - list 8" ;
+         mf:action
+            [ qt:query  <list-8.rq> ;
+              qt:data   <data-1.ttl> ] ;
+        mf:result  <list-8.srx>
+      ]
 
       [  mf:name    "Property Function - list length 1" ;
          mf:action

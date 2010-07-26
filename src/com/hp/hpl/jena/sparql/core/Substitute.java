@@ -6,6 +6,9 @@
 
 package com.hp.hpl.jena.sparql.core;
 
+import java.util.ArrayList ;
+import java.util.List ;
+
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
@@ -17,6 +20,7 @@ import com.hp.hpl.jena.sparql.engine.binding.BindingFactory ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.expr.ExprList ;
 import com.hp.hpl.jena.sparql.path.PathLib ;
+import com.hp.hpl.jena.sparql.pfunction.PropFuncArg ;
 
 public class Substitute
 {
@@ -69,6 +73,17 @@ public class Substitute
     public static Node substitute(Node n, Binding b)
     {
         return Var.lookup(b, n) ;
+    }
+    
+    public static PropFuncArg substitute(PropFuncArg propFuncArg, Binding binding)
+    {
+        if ( propFuncArg.isNode() )
+            return new PropFuncArg(substitute(propFuncArg.getArg(), binding)) ;
+        
+        List<Node> newArgList = new ArrayList<Node>() ;
+        for ( Node n : propFuncArg.getArgList() )
+            newArgList.add(substitute(n, binding)) ;
+        return new PropFuncArg(newArgList) ;
     }
 
     private static boolean isNotNeeded(Binding b)
@@ -133,21 +148,18 @@ public class Substitute
             return new OpPath(PathLib.substitute(opPath.getTriplePath(), binding)) ;
         }
 
-        // Property functions "see" the incoming iterator and do their own substitution in PropertyFunctionEval.eval 
         @Override
         public Op transform(OpPropFunc opPropFunc, Op subOp)
         {
-            return super.transform(opPropFunc, subOp) ;
+            PropFuncArg sArgs = opPropFunc.getSubjectArgs() ;
+            PropFuncArg oArgs = opPropFunc.getObjectArgs() ;
             
-//            PropFuncArg sArgs = opPropFunc.getSubjectArgs() ;
-//            PropFuncArg oArgs = opPropFunc.getObjectArgs() ;
-//            
-//            PropFuncArg sArgs2 = sArgs.evalIfExists(binding) ;
-//            PropFuncArg oArgs2 = oArgs.evalIfExists(binding) ;
-//            
-//            if ( sArgs2 == sArgs && oArgs2 == oArgs && opPropFunc.getSubOp() == subOp)
-//                return super.transform(opPropFunc, subOp) ;
-//            return new OpPropFunc(opPropFunc.getProperty(), sArgs2, oArgs2, subOp) ; 
+            PropFuncArg sArgs2 = substitute(sArgs, binding) ;
+            PropFuncArg oArgs2 = substitute(oArgs, binding) ;
+            
+            if ( sArgs2 == sArgs && oArgs2 == oArgs && opPropFunc.getSubOp() == subOp)
+                return super.transform(opPropFunc, subOp) ;
+            return new OpPropFunc(opPropFunc.getProperty(), sArgs2, oArgs2, subOp) ; 
         }
         
         @Override

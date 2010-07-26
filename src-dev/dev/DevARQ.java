@@ -10,18 +10,7 @@ package dev;
 
 public class DevARQ
 {
-    // BUG: Property functions (and other tranforms) in [NOT]EXISTS clauses.
-    //   Need test case
-    //     ** testing/ARQ/PropertyFunction/list-8
-
-    //   Substitute isn't substituting into EXISTS
-    //   PFs do it themselves in PropertyFunctionBase/PropertyFunctionEval
-    //   CHANGE TO PFs to make this happen?
-    
-    // Finish group in Transformer
-    
     // Tests for unionTransformation
-    
     /* pom upgrade
 <plugin>
    <groupId>org.apache.maven.plugins</groupId>

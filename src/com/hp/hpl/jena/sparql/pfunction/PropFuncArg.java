@@ -6,7 +6,6 @@
 
 package com.hp.hpl.jena.sparql.pfunction;
 
-import java.util.ArrayList ;
 import java.util.Iterator ;
 import java.util.List ;
 
@@ -14,8 +13,6 @@ import org.openjena.atlas.io.IndentedWriter ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.core.NodeConst ;
-import com.hp.hpl.jena.sparql.core.Var ;
-import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.expr.ExprList ;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
@@ -29,7 +26,6 @@ import com.hp.hpl.jena.sparql.util.PrintUtils ;
  * 
  *  Blank nodes from the query will be seen as variables.  Most implementations will want to
  *  work with the property function arguments after substitution from the current binding.
- *  See method {@link #evalIfExists(Binding)} below.   
  *  
  * @author Andy Seaborne
  */
@@ -128,33 +124,33 @@ public class PropFuncArg extends PrintSerializableBase
             out.print(FmtUtils.stringForNode(arg)) ;
     }
     
-    /** Create a new PropFuncArg by replacing any variables by their values given in the binding.
-     *  If there is no binding, keep the variable.
-     *  
-     * @param binding
-     * @return A PropFuncArg with any varibales substituted by values in the binding
-     */  
-    
-    public PropFuncArg evalIfExists(Binding binding)
-    {
-        if ( isNode() )
-            return new PropFuncArg(evalIfExistsOneArg(binding, arg)) ;
-        List<Node> newArgList = new ArrayList<Node>() ;
-        for ( Iterator<Node> iter = argList.iterator() ; iter.hasNext() ; )
-        {
-            Node n = iter.next();
-            newArgList.add(evalIfExistsOneArg(binding, n)) ;
-        }
-        return new PropFuncArg(newArgList) ;
-    }
-    
-    private static Node evalIfExistsOneArg(Binding binding, Node n)
-    {
-        if ( ! n.isVariable() )
-            return n ;
-        Node r = binding.get(Var.alloc(n)) ; 
-        return ( r != null ) ? r : n ; 
-    }
+//    /** Create a new PropFuncArg by replacing any variables by their values given in the binding.
+//     *  If there is no binding, keep the variable.
+//     *  
+//     * @param binding
+//     * @return A PropFuncArg with any varibales substituted by values in the binding
+//     */  
+//    
+//    public PropFuncArg evalIfExists(Binding binding)
+//    {
+//        if ( isNode() )
+//            return new PropFuncArg(evalIfExistsOneArg(binding, arg)) ;
+//        List<Node> newArgList = new ArrayList<Node>() ;
+//        for ( Iterator<Node> iter = argList.iterator() ; iter.hasNext() ; )
+//        {
+//            Node n = iter.next();
+//            newArgList.add(evalIfExistsOneArg(binding, n)) ;
+//        }
+//        return new PropFuncArg(newArgList) ;
+//    }
+//    
+//    private static Node evalIfExistsOneArg(Binding binding, Node n)
+//    {
+//        if ( ! n.isVariable() )
+//            return n ;
+//        Node r = binding.get(Var.alloc(n)) ; 
+//        return ( r != null ) ? r : n ; 
+//    }
 }
 
 /*

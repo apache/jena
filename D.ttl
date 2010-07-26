@@ -1,15 +1,6 @@
 @prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix :        <http://example/> .
 
-:a rdf:type :Set .
-:a :member 1 .
-:a :member 2 .
-:a :member 3 .
-
-:b rdf:type :Set .
-:b :member 1 .
-:b :member 9 .
-
-:c rdf:type :Set .
-:c :member 1 .
-:c :member 2 .
+:a :list (1 2) .
+:b :list (9) .
+:c :list () .
