@@ -6,10 +6,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            8 Sep 2006
  * Filename           $RCSfile: Test_schemagen.java,v $
- * Revision           $Revision: 1.8 $
+ * Revision           $Revision: 1.9 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2010-07-23 16:22:34 $
+ * Last modified on   $Date: 2010-07-26 10:01:23 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
@@ -46,7 +46,7 @@ import com.hp.hpl.jena.util.FileUtils;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: Test_schemagen.java,v 1.8 2010-07-23 16:22:34 ian_dickinson Exp $
+ * @version CVS $Id: Test_schemagen.java,v 1.9 2010-07-26 10:01:23 ian_dickinson Exp $
  */
 public class Test_schemagen
     extends TestCase
@@ -671,7 +671,10 @@ public class Test_schemagen
      * @return
      */
     protected String getClassPath( File tmpDir ) {
-        return System.getProperty ("java.class.path");
+        Properties pp = System.getProperties();
+        // if we're running under maven, use Special Secret Knowledge to identify the class path
+        // otherwise, default to the CP that Java thinks it's using
+        return pp.getProperty( "surefire.test.class.path", pp.getProperty( "java.class.path" ) );
     }
 
     //==============================================================================
