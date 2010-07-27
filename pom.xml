@@ -307,6 +307,15 @@ build.time.txt=${build.time.txt}
 	</executions>
       </plugin>
 
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-eclipse-plugin</artifactId>
+        <configuration>
+         <buildOutputDirectory>${project.build.directory}/classes</buildOutputDirectory>
+	     <downloadSources>true</downloadSources>
+         <downloadJavadocs>false</downloadJavadocs>
+    	</configuration>
+      </plugin>
 
       <plugin>
 	<!-- This must be the last plug-in atatched to the package phase 
@@ -343,7 +352,6 @@ build.time.txt=${build.time.txt}
 	  <overWriteIfNewer>true</overWriteIfNewer>
 	</configuration>
       </plugin>
-
       <plugin>
 	<groupId>org.apache.maven.plugins</groupId>
 	<artifactId>maven-eclipse-plugin</artifactId>
