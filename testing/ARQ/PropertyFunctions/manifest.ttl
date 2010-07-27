@@ -62,6 +62,13 @@
         mf:result  <list-8.srx>
       ]
 
+      [  mf:name    "Property Function - list 9" ;
+         mf:action
+            [ qt:query  <list-9.rq> ;
+              qt:data   <data-1.ttl> ] ;
+        mf:result  <list-9.srx>
+      ]
+
       [  mf:name    "Property Function - list length 1" ;
          mf:action
             [ qt:query  <list-length-1.rq> ;

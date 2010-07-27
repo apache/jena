@@ -75,89 +75,79 @@ public class RunARQ
         //ReportSlowDatatype.main() ;
         //unionTransform() ;
         //streamInference() ;
-        //runTest() ;
         
+        //new TransformFilterPlacement()
+        arq.sparql.main("--data=D1.ttl", "--query=Q.arq", "--engine=ref") ;
+        arq.sparql.main("--data=D1.ttl", "--query=Q.arq"/*, "--engine=ref"*/) ; System.exit(0) ;
         
+        // DELETE
         
-//        Expr expr = SSE.parseExpr("(+ ?x ?y)") ;
-//        ExprTransform et = new ExprTransformCopy(true) ;
-//        Expr expr2 = ExprTransformer.transform(et, expr) ;
-//        System.out.println(expr2) ;
-//        System.exit(0) ;
+        Transform t = new TransformPropertyFunction(ARQ.getContext()) ;
 
-        if ( true )
+        divider() ;
+//        Query query = QueryFactory.create(strjoinNL("PREFIX list: <http://jena.hpl.hp.com/ARQ/list#>",
+//                                                    "PREFIX  apf:     <http://jena.hpl.hp.com/ARQ/property#>",
+//                                                    "PREFIX  rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>", 
+//                                                    "SELECT *",
+//                                                    "{",
+//                                                    "   ?s1 list:member ?o1 .",
+//                                                    "   FILTER NOT EXISTS { ?s apf:splitIRI (?ns ?ln) }",
+//                                                    "}"), Syntax.syntaxSPARQL_11) ;
+//
+//        Query query = QueryFactory.create(strjoinNL("PREFIX list: <http://jena.hpl.hp.com/ARQ/list#>",
+//                                                    "PREFIX  apf:     <http://jena.hpl.hp.com/ARQ/property#>",
+//                                                    "PREFIX  rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>", 
+//                                                    "SELECT *",
+//                                                    "{",
+//                                                    "   ?s ?p ?o",
+//                                                    "   LET(?x := NOT EXISTS { ?list list:member ?x })" ,
+//                                                    "}"), Syntax.syntaxARQ) ;
+//
+//        Query query = QueryFactory.create(strjoinNL("PREFIX list: <http://jena.hpl.hp.com/ARQ/list#>",
+//                                                    "PREFIX  apf:     <http://jena.hpl.hp.com/ARQ/property#>",
+//                                                    "PREFIX  rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>", 
+//                                                    "SELECT *",
+//                                                    "{",
+//                                                    "   ?s ?p ?o",
+//                                                    "} GROUP BY NOT EXISTS { ?s list:member ?x }"), Syntax.syntaxARQ) ;
+//
+//        Query query = QueryFactory.create(strjoinNL("PREFIX list: <http://jena.hpl.hp.com/ARQ/list#>",
+//                                                    "PREFIX  apf:     <http://jena.hpl.hp.com/ARQ/property#>",
+//                                                    "PREFIX  rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>", 
+//                                                    "SELECT *",
+//                                                    "{",
+//                                                    "   ?s ?p ?o",
+//                                                    "} ORDER BY NOT EXISTS { ?s list:member ?x }"), Syntax.syntaxARQ) ;
+//
+//        Op op = Algebra.compile(query) ;
+
+        Op op = SSE.parseOp(strjoinNL("(prefix ((list: <http://jena.hpl.hp.com/ARQ/list#>))",
+                                      "  (join",
+                                      "     (bgp (?x ?y ?z))",
+                                      "     (filter (&& (notexists (bgp (?s list:member ?o)))",
+                                      "                 (< 1 2))",
+                                      "        (bgp (?s1 list:member ?o1)))",
+        "   ))")) ;
+        //System.out.println(op) ;
+
+        // Move this to Optimize.apply.
+        //Transform t2 = new TransformApplyInsideExprFunctionOp(t) ;
+        Transform t2 = t ;
+        // Better is to apply it all in one go.
+
+        if ( t2 != t )
         {
-            // BUG
-            // Fix 1 : rewrite during execution (each substitution)
-            // Fix 2 : do in optimizer transforms.
-            Transform t = new TransformPropertyFunction(ARQ.getContext()) ;
-            
-//            divider() ;
-//            Query query = QueryFactory.create(strjoinNL("PREFIX list: <http://jena.hpl.hp.com/ARQ/list#>",
-//                                                        "PREFIX  apf:     <http://jena.hpl.hp.com/ARQ/property#>",
-//                                                        "PREFIX  rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>", 
-//                                                        "SELECT *",
-//                                                        "{",
-//                                                        "   ?s1 list:member ?o1 .",
-//                                                        "   FILTER NOT EXISTS { ?s apf:splitIRI (?ns ?ln) }",
-//                                                        "}"), Syntax.syntaxSPARQL_11) ;
-//
-//            Query query = QueryFactory.create(strjoinNL("PREFIX list: <http://jena.hpl.hp.com/ARQ/list#>",
-//                                                        "PREFIX  apf:     <http://jena.hpl.hp.com/ARQ/property#>",
-//                                                        "PREFIX  rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>", 
-//                                                        "SELECT *",
-//                                                        "{",
-//                                                        "   ?s ?p ?o",
-//                                                        "   LET(?x := NOT EXISTS { ?list list:member ?x })" ,
-//                                                        "}"), Syntax.syntaxARQ) ;
-//
-//            Query query = QueryFactory.create(strjoinNL("PREFIX list: <http://jena.hpl.hp.com/ARQ/list#>",
-//                                                        "PREFIX  apf:     <http://jena.hpl.hp.com/ARQ/property#>",
-//                                                        "PREFIX  rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>", 
-//                                                        "SELECT *",
-//                                                        "{",
-//                                                        "   ?s ?p ?o",
-//                                                        "} GROUP BY NOT EXISTS { ?s list:member ?x }"), Syntax.syntaxARQ) ;
-//
-//            Query query = QueryFactory.create(strjoinNL("PREFIX list: <http://jena.hpl.hp.com/ARQ/list#>",
-//                                                        "PREFIX  apf:     <http://jena.hpl.hp.com/ARQ/property#>",
-//                                                        "PREFIX  rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>", 
-//                                                        "SELECT *",
-//                                                        "{",
-//                                                        "   ?s ?p ?o",
-//                                                        "} ORDER BY NOT EXISTS { ?s list:member ?x }"), Syntax.syntaxARQ) ;
-//
-//            
-//            Op op = Algebra.compile(query) ;
-            
-            Op op = SSE.parseOp(strjoinNL("(prefix ((list: <http://jena.hpl.hp.com/ARQ/list#>))",
-                                          "  (join",
-                                          "     (bgp (?x ?y ?z))",
-                                          "     (filter (&& (notexists (bgp (?s list:member ?o)))",
-                                          "                 (< 1 2))",
-                                          "        (bgp (?s1 list:member ?o1)))",
-                                          "   ))")) ;
-            //System.out.println(op) ;
-            
-            // Move this to Optimize.apply.
-            //Transform t2 = new TransformApplyInsideExprFunctionOp(t) ;
-            Transform t2 = t ;
-            // Better is to apply it all in one go.
-
-            if ( t2 != t )
-            {
-                divider() ;
-                Op op2 = Transformer.transform(t, op) ;
-                System.out.println(op2) ;
-            }
             divider() ;
-            Op op3 = Transformer.transform(t2, op) ;
-            System.out.println(op3) ;
-//            Query q2 = OpAsQuery.asQuery(op3) ;
-//            q2.getPrefixMapping().setNsPrefixes(query.getPrefixMapping()) ;
-//            System.out.println(q2) ;
-            System.exit(0) ;
+            Op op2 = Transformer.transform(t, op) ;
+            System.out.println(op2) ;
         }
+        divider() ;
+        Op op3 = Transformer.transform(t2, op) ;
+        System.out.println(op3) ;
+        //            Query q2 = OpAsQuery.asQuery(op3) ;
+        //            q2.getPrefixMapping().setNsPrefixes(query.getPrefixMapping()) ;
+        //            System.out.println(q2) ;
+        System.exit(0) ;
     }
     
     public static void unionTransform()

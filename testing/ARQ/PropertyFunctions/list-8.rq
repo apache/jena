@@ -3,9 +3,11 @@
 PREFIX  list:  <http://jena.hpl.hp.com/ARQ/list#>
 PREFIX  :      <http://example.org/>
 
-SELECT DISTINCT ?x
+SELECT ?x
 { 
     ?x :q ?list .
-    ?list list:member "a" .
-#    FILTER EXISTS { ?list list:member "a" }
+    FILTER EXISTS { ?list list:member "a" }
 }
+
+# same as:
+#SELECT DSITINCT ?x {  ?x :q ?list . ?list list:member "a" }

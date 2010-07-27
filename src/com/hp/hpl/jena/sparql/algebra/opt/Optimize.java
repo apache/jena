@@ -176,9 +176,8 @@ public class Optimize implements Rewrite
         // Remember there is an outer substitue to the NOT EXISTS operation. 
 
         //Transform transform2 = new TransformApplyInsideExprFunctionOp(transform) ;
-        Transform transform2 = transform ;
         
-        Op op2 = Transformer.transformSkipService(transform2, op) ;
+        Op op2 = Transformer.transformSkipService(transform, op) ;
         
         final boolean debug = false ;
         

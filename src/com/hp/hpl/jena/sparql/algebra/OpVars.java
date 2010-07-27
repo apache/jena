@@ -19,6 +19,7 @@ import com.hp.hpl.jena.sparql.algebra.op.* ;
 import com.hp.hpl.jena.sparql.core.BasicPattern ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.core.Var ;
+import com.hp.hpl.jena.sparql.pfunction.PropFuncArg ;
 
 /** Get vars for a pattern  */ 
 
@@ -146,6 +147,31 @@ public class OpVars
             acc.addAll(opAssign.getVarExprList().getVars()) ;
             //opAssign.getSubOp().visit(this) ;
         }
+        
+        @Override
+        public void visit(OpPropFunc opPropFunc)
+        {
+            addvars(opPropFunc.getSubjectArgs()) ;
+            addvars(opPropFunc.getObjectArgs()) ;
+        }
+        
+        private void addvars(PropFuncArg pfArg)
+        {
+            if ( pfArg.isNode() )
+            {
+                addVar(acc, pfArg.getArg()) ;
+                return ;
+            }
+            for ( Node n : pfArg.getArgList() )
+                addVar(acc,n) ;
+        }
+        
+        @Override
+        public void visit(OpProcedure opProc)
+        {
+            opProc.getArgs().varsMentioned(acc) ;
+        }
+
     }
     
     private static class OpVarsQuery extends OpVarsPattern
@@ -168,6 +194,7 @@ public class OpVars
                 acc.addAll(x) ;
             }
         }
+        
     }
 
     private static void addVarsFromTriple(Collection<Var> acc, Triple t)

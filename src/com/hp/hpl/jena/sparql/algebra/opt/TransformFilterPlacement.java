@@ -129,7 +129,7 @@ public class TransformFilterPlacement extends TransformCopy
             // Attempt to place any filters
             op = insertAnyFilter(exprs, patternVarsScope, op) ;
         } 
-        // Leave any remainign filter expressions - don't wrap up any as somethign else may take them.
+        // Leave any remaining filter expressions - don't wrap up any as somethign else may take them.
         return op ;
     }
     

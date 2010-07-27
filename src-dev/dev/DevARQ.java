@@ -10,38 +10,25 @@ package dev;
 
 public class DevARQ
 {
+
     // Tests for unionTransformation
-    /* pom upgrade
-<plugin>
-   <groupId>org.apache.maven.plugins</groupId>
-   <artifactId>maven-eclipse-plugin</artifactId>
-   <configuration>
- 
-    <buildOutputDirectory>${project.build.directory}/classes</buildOutputDirectory>
-     <downloadSources>true</downloadSources>
-     <downloadJavadocs>false</downloadJavadocs>
-   </configuration>
-</plugin>
-     */
-    
+  
     // Comparsion (ORDER BY) costs
     // Holger's slow datatype example.
     
     // Exception in thread "main" com.hp.hpl.jena.sparql.junit.QueryTestException: TestItem with no name (http://www.w3.org/2009/sparql/docs/tests/data-sparql11/negation/manifest#subset-01)
-    // Manifest has :sebset-1 ptr to :subset-01
+    // Manifest has :subset-1 ptr to :subset-01
     
     // Inference
     // StringUTF8
     // RiotLoader
-    
+
+    // Thorsen suggestion for POM.xml.
     // Build: sources, javadoc to elsewhere, mvn_update
     //   lib-src
     // documentation: API -> dataset, not model.
     
     // DatasetGraph.find/4 : what about in NG only?  findNG/4
-    
-    // Migrate quad union transform from TDB.
-    // OpExecutor to understand Quad quad.unionGraph -- See OpExecutor.execute(QuadPattern)
     
     // Scoping:
     // Consider wrapping passed-in binding for project subquery, rather than a renaming scheme.
@@ -49,7 +36,6 @@ public class DevARQ
     // Should be able to now JoinClassify with OpModifier (see JoinClassify.isLinear) [but is it worth it?]
     
     // SPARQL Update
-    
     // Static check of legal vars in SELECT with group.
     
     // QueryEngines MainQuad and RefQuad

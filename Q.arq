@@ -5,7 +5,6 @@ PREFIX  list:   <http://jena.hpl.hp.com/ARQ/list#>
 SELECT *
 WHERE
 { 
-    ?x :list ?list .
-    ?list list:member ?z .
+    ?x :elements ?list .
     FILTER EXISTS { ?list list:member 1 }
 }
