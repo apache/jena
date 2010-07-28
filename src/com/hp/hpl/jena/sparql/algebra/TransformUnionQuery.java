@@ -42,6 +42,14 @@ public class TransformUnionQuery extends TransformCopy
     @Override
     public Op transform(OpQuadPattern quadPattern)
     {
+        if ( quadPattern.isDefaultGraph() || quadPattern.isUnionGraph() )
+        {
+            OpBGP opBGP = new OpBGP(quadPattern.getBasicPattern()) ;
+            return union(opBGP) ;
+        }
+        
+        // Leave alone.
+        // if ( quadPattern.isExplicitDefaultGraph() ) {}
         return super.transform(quadPattern) ;
     }
 
@@ -49,24 +57,30 @@ public class TransformUnionQuery extends TransformCopy
     public Op transform(OpBGP opBGP)
     {
         Node current = currentGraph.peek();
-        if ( current == Quad.defaultGraphNodeGenerated ||
-            current == Quad.unionGraph )
-        {
-            // By using the unbinding Var.ANON, the distinct works.
-            // Else, we get duplicates from projection out of the graph var. 
-            Var v = Var.ANON ; //varAlloc.allocVar() ; 
-            Op op = new OpGraph(v, opBGP) ;
-            op = OpDistinct.create(op) ;
-            return op ;
-        }
-
-        // Not perfect - see AlgebraQuad 
-        return new OpQuadPattern(currentGraph.peek(), opBGP.getPattern()) ;
+        if ( current == Quad.defaultGraphNodeGenerated || current == Quad.unionGraph )
+            return union(opBGP) ;
+//        // Turn into a quad pattern.
+//        // Not perfect - see AlgebraQuad 
+//        return new OpQuadPattern(currentGraph.peek(), opBGP.getPattern()) ;
+        // BGP over a named graph.
+        // Leave as-is.
+        return super.transform(opBGP) ;
     }
 
+    private Op union(OpBGP opBGP)
+    {
+        // By using the unbinding Var.ANON, the distinct works.
+        // Else, we get duplicates from projection out of the graph var. 
+        Var v = Var.ANON ; //varAlloc.allocVar() ; 
+        Op op = new OpGraph(v, opBGP) ;
+        op = OpDistinct.create(op) ;
+        return op ;
+    }
+    
     @Override
     public Op transform(OpGraph opGraph, Op x)
     {
+        // Remove any Quad.unionGraph - OpBGPs wil be rewritten.
         return super.transform(opGraph, x) ;
     }
 

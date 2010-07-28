@@ -13,7 +13,6 @@ import java.io.Reader ;
 import java.io.StringReader ;
 import java.util.Iterator ;
 
-import org.openjena.atlas.lib.StrUtils ;
 import org.openjena.riot.ErrorHandlerLib ;
 import org.openjena.riot.checker.CheckerIRI ;
 import riot.inf.infer ;
@@ -24,21 +23,16 @@ import com.hp.hpl.jena.iri.Violation ;
 import com.hp.hpl.jena.query.* ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.shared.JenaException ;
-import com.hp.hpl.jena.sparql.algebra.Algebra ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.Transform ;
 import com.hp.hpl.jena.sparql.algebra.Transformer ;
 import com.hp.hpl.jena.sparql.algebra.opt.TransformPropertyFunction ;
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.function.FunctionEnvBase ;
 import com.hp.hpl.jena.sparql.lang.sparql_11.SPARQLParser11 ;
-import com.hp.hpl.jena.sparql.resultset.ResultsFormat ;
-import com.hp.hpl.jena.sparql.sse.Item ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
-import com.hp.hpl.jena.sparql.sse.builders.BuilderGraph ;
 import com.hp.hpl.jena.sparql.util.ALog ;
 import com.hp.hpl.jena.sparql.util.ExprUtils ;
 import com.hp.hpl.jena.sparql.util.QueryExecUtils ;
@@ -147,26 +141,6 @@ public class RunARQ
         //            Query q2 = OpAsQuery.asQuery(op3) ;
         //            q2.getPrefixMapping().setNsPrefixes(query.getPrefixMapping()) ;
         //            System.out.println(q2) ;
-        System.exit(0) ;
-    }
-    
-    public static void unionTransform()
-    {
-        String x = StrUtils.strjoinNL("(dataset",
-                                      "  (graph (<s> <p> <o>) (<x> <p> <o>) (<x2> <p> <o>))",
-                                      "  (graph <g1> (triple <s1> <p1> <o1>))",
-                                      "  (graph <g2> (triple <s2> <p2> <o2>))",
-                                      "  (graph <g3> (triple <s2> <p2> <o2>))", // Duplicate triple
-                                      ")") ;
-        Item item = SSE.parse(x) ;
-        DatasetGraph dsg = BuilderGraph.buildDataset(item) ;
-
-        Query query = QueryFactory.create("SELECT ?s ?p ?o { ?s ?p ?o }") ;
-        query.setResultVars() ;
-        Op op = Algebra.compile(query) ;
-        Op op2 = Algebra.unionDefaultGraph(op) ;
-        System.out.print(op2) ;
-        QueryExecUtils.executeAlgebra(op2, dsg, ResultsFormat.FMT_TEXT) ;
         System.exit(0) ;
     }
     

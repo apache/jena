@@ -12,6 +12,7 @@ import java.util.List ;
 
 import org.openjena.atlas.iterator.Iter ;
 
+import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.QueryExecException ;
 import com.hp.hpl.jena.sparql.ARQNotImplemented ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
@@ -107,7 +108,7 @@ public class OpExecutor
     {
         level++ ;
         QueryIterator qIter = dispatcher.exec(op, input) ;
-        // Intentionally not try/finally so excetion leeave some evidence around.
+        // Intentionally not try/finally so exceptions leave some evidence around.
         level-- ;
         return qIter ;
     }
@@ -128,8 +129,9 @@ public class OpExecutor
     protected QueryIterator execute(OpQuadPattern quadPattern, QueryIterator input)
     {
         // Convert to BGP forms to execute in this graph-centric engine.
-        if ( quadPattern.isDefaultGraph() )
+        if ( quadPattern.isDefaultGraph() && execCxt.getActiveGraph() == execCxt.getDataset().getDefaultGraph() )
         {
+            // Note we tested that the containgin graph was the dataset's default graph. 
             // Easy case.
             OpBGP opBGP = new OpBGP(quadPattern.getBasicPattern()) ;
             return execute(opBGP, input) ;  
@@ -140,6 +142,7 @@ public class OpExecutor
         // Not default graph - (graph .... )
         OpBGP opBGP = new OpBGP(quadPattern.getBasicPattern()) ;
         OpGraph op = new OpGraph(quadPattern.getGraphNode(), opBGP) ;
+        // This passes to the  
         return execute(op, input) ;
     }
 
@@ -279,9 +282,35 @@ public class OpExecutor
 
     protected QueryIterator execute(OpGraph opGraph, QueryIterator input)
     { 
+        QueryIterator qIter = specialcase(opGraph.getNode(), opGraph.getSubOp(), input) ;
+        if ( qIter != null )
+            return qIter ;
         return new QueryIterGraph(input, opGraph, execCxt) ;
     }
     
+    private QueryIterator specialcase(Node gn, Op subOp, QueryIterator input)
+    {
+        if ( true ) return null ;
+        
+        if ( gn == Quad.defaultGraphIRI || gn == Quad.defaultGraphNodeGenerated )
+        {
+            ExecutionContext cxt2 = new ExecutionContext(execCxt, execCxt.getDataset().getDefaultGraph()) ;
+            return execute(subOp, cxt2) ;
+        }
+        
+//        if ( gn == Quad.unionGraph )
+//        {
+//            
+//        }
+        
+        /*
+        
+        if ( gn == Quad.tripleInQuad ) {}
+         */
+
+        return null ;
+    }
+
     protected QueryIterator execute(OpService opService, QueryIterator input)
     {
         return new QueryIterService(input, opService, execCxt) ;

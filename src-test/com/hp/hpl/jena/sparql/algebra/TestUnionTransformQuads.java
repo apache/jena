@@ -1,48 +1,27 @@
 /*
- * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
- * (c) Copyright 2010 Talis Information Ltd
+ * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
 package com.hp.hpl.jena.sparql.algebra;
 
+import com.hp.hpl.jena.sparql.sse.SSE ;
 
-import junit.framework.TestSuite ;
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
-
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-    TestVarFinder.class
-    , TestClassify.class
-    , TestFilterTransform.class
-    , TestVarRename.class
-//    , TestUnionGraph.class
-//    , TestUnionTransformTriples.class
-//    , TestUnionTransformQuads.class
-})
-
-public class TS_Algebra extends TestSuite
+public class TestUnionTransformQuads extends UnionTransformTests  
 {
-    static final String testSetName         = "Algebra Transformation" ;
-
-//    // Old style.
-//    static public TestSuite suite() { return new TS_Algebra(); }
-//
-//    public TS_Algebra()
-//    {
-//        super(testSetName) ;
-//        addTest(TestVarFinder.suite()) ;
-//        addTest(TestClassify.suite()) ;
-//        addTest(TestFilterTransform.suite()) ;
-//        addTest(TestVarRename.suite()) ;
-//    }
+    @Override
+    protected Op op(String pattern)
+    {
+        Op op = SSE.parseOp(pattern) ;
+        op =  Algebra.toQuadForm(op) ;
+        Op op2 = Algebra.unionDefaultGraph(op) ;
+        return op2 ;
+    }
 }
 
 /*
- * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
- * (c) Copyright 2010 Talis Information Ltd
+ * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

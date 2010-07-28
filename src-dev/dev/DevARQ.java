@@ -6,15 +6,33 @@
 
 package dev;
 
-
-
 public class DevARQ
 {
-
+    // Union transformation
+    // Transform rewrites BGP to (graph ?_ bgp)
+    // Transform rewrites QuadBlock to (graph ?_ bgp)
+    // Implicit default graph and named union.
+    //   Split in two?
+    
+    // Next:
+    // ** (graph <unionGraph> BGP) rewrites the BGP but leaves the (graph <union> ...) wrapper.
+    //  ==> (graph <unionGraph> (distinct (graph ?_ bgp)))
+    // More runtime processing and less transformation?
+    // Or just strip <graph <union> ...) on the way past.
+    
+    // OpExecutor for BGP over union graph.
+    // OpExecutor.execute(OpQuadPattern, )
+    
     // Tests for unionTransformation
+    //   TestUnionTransformTriples
+    //   TestUnionTransformQuads
+    //   TestUnionGraph
+    // ** Enable in TS_Algebra.
   
     // Comparsion (ORDER BY) costs
     // Holger's slow datatype example.
+    
+    // PropertyPaths
     
     // Exception in thread "main" com.hp.hpl.jena.sparql.junit.QueryTestException: TestItem with no name (http://www.w3.org/2009/sparql/docs/tests/data-sparql11/negation/manifest#subset-01)
     // Manifest has :subset-1 ptr to :subset-01
@@ -23,7 +41,7 @@ public class DevARQ
     // StringUTF8
     // RiotLoader
 
-    // Thorsen suggestion for POM.xml.
+    // Thorsten's suggestion for POM.xml.
     // Build: sources, javadoc to elsewhere, mvn_update
     //   lib-src
     // documentation: API -> dataset, not model.

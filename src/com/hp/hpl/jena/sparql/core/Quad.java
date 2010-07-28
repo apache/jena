@@ -70,7 +70,7 @@ public class Quad
     public static boolean isQuadDefaultGraphNode(Node node)
     {
         // The node used by the quad generator for the default graph 
-        // Not the named graph 
+        // Not the named graph that refers to the default graph.
         return node.equals(defaultGraphNodeGenerated) ;
     }
     

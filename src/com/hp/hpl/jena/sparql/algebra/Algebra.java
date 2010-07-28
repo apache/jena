@@ -71,20 +71,19 @@ public class Algebra
         return new AlgebraGenerator().compile(elt) ;
     }
 
+    /** Turn an algebra expression into quad form */
     public static Op toQuadForm(Op op)
     {
         return AlgebraQuad.quadize(op) ;
     }
     
-    /** Transform an algebra expression so that default graph is union of the named graphs;
-     *  this is the triples-based transformation, not a quads based one. 
-     */
+    /** Transform an algebra expression so that default graph is union of the named graphs. */
     public static Op unionDefaultGraph(Op op)
     {
         return TransformUnionQuery.transform(op) ;
     }
     
-    // -------- SSE
+    // -------- SSE uses these operations ...
     
     static public Op read(String filename)
     {
