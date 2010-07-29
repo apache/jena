@@ -19,6 +19,7 @@ import static org.openjena.riot.system.RiotChars.valHexChar ;
 import java.io.IOException ;
 import java.util.NoSuchElementException ;
 
+import org.openjena.atlas.AtlasException ;
 import org.openjena.atlas.io.IO ;
 import org.openjena.atlas.io.PeekInputStream ;
 import org.openjena.atlas.io.StreamUTF8 ;
@@ -77,21 +78,29 @@ public final class TokenizerBytes implements Tokenizer
             return false ;
         if ( token != null )
             return true ;
-        skip() ;
-        if (inputStream.eof())
+        
+        try {
+            skip() ;
+            if (inputStream.eof())
+            {
+                //close() ;
+                finished = true ;
+                return false ;
+            }
+            token = parseToken() ;
+            if ( token == null )
+            {
+                //close() ;
+                finished = true ;
+                return false ;
+            }
+            return true ;
+        } catch (AtlasException ex)
         {
-            //close() ;
-            finished = true ;
-            return false ;
+            if ( ex.getCause().getClass() == java.nio.charset.MalformedInputException.class )
+                throw new RiotParseException("Bad character encoding", inputStream.getLineNum(), inputStream.getColNum()) ;
+            throw new RiotParseException("Bad input stream", inputStream.getLineNum(), inputStream.getColNum()) ;
         }
-        token = parseToken() ;
-        if ( token == null )
-        {
-            //close() ;
-            finished = true ;
-            return false ;
-        }
-        return true ;
     }
     
     //@Override

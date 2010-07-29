@@ -17,7 +17,6 @@ import org.openjena.riot.ErrorHandlerTestLib.ErrorHandlerEx ;
 import org.openjena.riot.ErrorHandlerTestLib.ExFatal ;
 import org.openjena.riot.system.RiotLib ;
 import org.openjena.riot.tokens.Tokenizer ;
-import org.openjena.riot.tokens.TokenizerFactory ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
@@ -84,7 +83,7 @@ public class TestLangNQuads extends TestLangNTuples
     private static void parse(Sink<Quad> sink, String... strings ) 
     {
         String string = StrUtils.strjoin("\n", strings) ;
-        Tokenizer tokenizer = TokenizerFactory.makeTokenizerString(string) ;
+        Tokenizer tokenizer = tokenizer(string) ;
         LangRIOT parser = RiotReader.createParserNQuads(tokenizer, sink) ;
         parser.getProfile().setHandler(new ErrorHandlerEx()) ;
         parser.parse() ;
@@ -95,7 +94,7 @@ public class TestLangNQuads extends TestLangNTuples
     protected void parseCheck(String... strings)
     {
         String string = StrUtils.strjoin("\n", strings) ;
-        Tokenizer tokenizer = TokenizerFactory.makeTokenizerString(string) ;
+        Tokenizer tokenizer = tokenizer(string) ;
         Sink<Quad> sink = new SinkNull<Quad>() ;
         LangRIOT parser = RiotReader.createParserNQuads(tokenizer, sink) ;
         parser.setProfile(RiotLib.profile(null, false, true, new ErrorHandlerEx())) ;

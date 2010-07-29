@@ -8,9 +8,12 @@
 package org.openjena.riot.tokens ;
 
 
+import java.io.ByteArrayInputStream ;
+
 import org.junit.Test ;
 import org.openjena.atlas.io.PeekReader ;
 import org.openjena.atlas.junit.BaseTest ;
+import org.openjena.atlas.lib.StrUtils ;
 import org.openjena.riot.RiotParseException ;
 
 
@@ -1103,7 +1106,7 @@ public class TestTokenizer extends BaseTest
     // Multiple terms
 
     @Test
-    public void token_50()
+    public void token_multiple()
     {
         Tokenizer tokenizer = tokenizer("<x><y>") ;
         assertTrue(tokenizer.hasNext()) ;
@@ -1118,6 +1121,39 @@ public class TestTokenizer extends BaseTest
         assertEquals(TokenType.IRI, token2.getType()) ;
         assertEquals("y", token2.getImage()) ;
 
+        assertFalse(tokenizer.hasNext()) ;
+    }
+    
+    @Test
+    public void tokenizer_charset_1()
+    {
+        String string = "'abc'" ;
+        byte b[] = StrUtils.asUTF8bytes(string) ;
+        ByteArrayInputStream in = new ByteArrayInputStream(b) ;
+        Tokenizer tokenizer = TokenizerFactory.makeTokenizerASCII(in) ;
+        Token t = tokenizer.next() ;
+        assertFalse(tokenizer.hasNext()) ;
+    }
+
+    @Test (expected=RiotParseException.class)
+    public void tokenizer_charset_2()
+    {
+        String string = "'abcdé'" ;
+        byte b[] = StrUtils.asUTF8bytes(string) ;
+        ByteArrayInputStream in = new ByteArrayInputStream(b) ;
+        Tokenizer tokenizer = TokenizerFactory.makeTokenizerASCII(in) ;
+        Token t = tokenizer.next() ;
+        assertFalse(tokenizer.hasNext()) ;
+    }
+
+    @Test (expected=RiotParseException.class)
+    public void tokenizer_charset_3()
+    {
+        String string = "<http://example/abcdé>" ;
+        byte b[] = StrUtils.asUTF8bytes(string) ;
+        ByteArrayInputStream in = new ByteArrayInputStream(b) ;
+        Tokenizer tokenizer = TokenizerFactory.makeTokenizerASCII(in) ;
+        Token t = tokenizer.next() ;
         assertFalse(tokenizer.hasNext()) ;
     }
 

@@ -82,7 +82,7 @@ public abstract class JenaReaderRIOT implements RDFReader
     /** Turn an InputStream into a Tokenizer, default behaviour is UTF-8. */   
     protected Tokenizer makeTokenizer(InputStream in)
     {
-        return TokenizerFactory.makeTokenizer(in) ;
+        return TokenizerFactory.makeTokenizerUTF8(in) ;
     }
     
     /** Turn a Reader into a PeekReader, default behaviour is an UTF-8 Peekreader. */   

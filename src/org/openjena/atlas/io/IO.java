@@ -79,6 +79,18 @@ public class IO
         return new InputStreamReader(in, charset) ;
     }
 
+    /** Create a reader that uses UTF-8 encoding */ 
+    static public Reader asUTF8(InputStream in)
+    {
+        return new InputStreamReader(in, utf8.newDecoder());
+    }
+    
+    /** Create a reader that uses ASCII encoding */ 
+    static public Reader asASCII(InputStream in)
+    {
+        return new InputStreamReader(in, ascii.newDecoder());
+    }
+
     public static void close(InputStream in)
     {
         try { in.close(); } catch (IOException ex) { exception(ex) ; }

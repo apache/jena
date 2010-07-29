@@ -130,7 +130,7 @@ public class RiotReader
     /** Create a parser for a triples language */  
     public static LangRIOT createParserTriples(InputStream input, Lang lang, String baseIRI, Sink<Triple> sink)
     {
-        Tokenizer tokenizer = TokenizerFactory.makeTokenizer(input) ;
+        Tokenizer tokenizer = TokenizerFactory.makeTokenizerUTF8(input) ;
         return createParserTriples(tokenizer, lang, baseIRI ,sink) ;
     }
     
@@ -156,7 +156,7 @@ public class RiotReader
     /** Create a parser for a quads language */  
     public static LangRIOT createParserQuads(InputStream input, Lang lang, String baseIRI, Sink<Quad> sink)
     {
-        Tokenizer tokenizer = TokenizerFactory.makeTokenizer(input) ;
+        Tokenizer tokenizer = TokenizerFactory.makeTokenizerUTF8(input) ;
         return createParserQuads(tokenizer, lang, baseIRI ,sink) ;
     }
     
@@ -184,7 +184,7 @@ public class RiotReader
     /** Create a parser for Turtle, with default behaviour */
     public static LangTurtle createParserTurtle(InputStream input, String baseIRI, Sink<Triple> sink)
     {
-        Tokenizer tokenizer = TokenizerFactory.makeTokenizer(input) ;
+        Tokenizer tokenizer = TokenizerFactory.makeTokenizerUTF8(input) ;
         return createParserTurtle(tokenizer, baseIRI, sink) ;
     }
     
@@ -205,14 +205,14 @@ public class RiotReader
 //    }
 
     
-    /** Create a parser for Trig, with default behaviour */
+    /** Create a parser for TriG, with default behaviour */
     public static LangTriG createParserTriG(InputStream input, String baseIRI, Sink<Quad> sink)
     {
-        Tokenizer tokenizer = TokenizerFactory.makeTokenizer(input) ;
+        Tokenizer tokenizer = TokenizerFactory.makeTokenizerUTF8(input) ;
         return createParserTriG(tokenizer, baseIRI, sink) ;
     }
     
-    /** Create a parser for Trig, with default behaviour */
+    /** Create a parser for TriG, with default behaviour */
     public static LangTriG createParserTriG(Tokenizer tokenizer, String baseIRI, Sink<Quad> sink)
     {
         if ( baseIRI == null )
@@ -224,7 +224,7 @@ public class RiotReader
     /** Create a parser for N-Triples, with default behaviour */
     public static LangNTriples createParserNTriples(InputStream input, Sink<Triple> sink)
     {
-        Tokenizer tokenizer = TokenizerFactory.makeTokenizer(input) ;
+        Tokenizer tokenizer = TokenizerFactory.makeTokenizerASCII(input) ;
         return createParserNTriples(tokenizer, sink) ;
     }
     
@@ -238,7 +238,7 @@ public class RiotReader
     /** Create a parser for NQuads, with default behaviour */
     public static LangNQuads createParserNQuads(InputStream input, Sink<Quad> sink)
     {
-        Tokenizer tokenizer = TokenizerFactory.makeTokenizer(input) ;
+        Tokenizer tokenizer = TokenizerFactory.makeTokenizerASCII(input) ;
         return createParserNQuads(tokenizer, sink) ;
     }
     

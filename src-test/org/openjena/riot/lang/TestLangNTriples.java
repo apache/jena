@@ -12,13 +12,13 @@ import java.io.StringReader ;
 import org.junit.Test ;
 import org.openjena.atlas.lib.SinkCounting ;
 import org.openjena.atlas.lib.StrUtils ;
+import org.openjena.riot.RiotException ;
 import org.openjena.riot.RiotReader ;
 import org.openjena.riot.ErrorHandlerTestLib.ErrorHandlerEx ;
 import org.openjena.riot.ErrorHandlerTestLib.ExFatal ;
 import org.openjena.riot.system.JenaReaderNTriples2 ;
 import org.openjena.riot.system.RiotLib ;
 import org.openjena.riot.tokens.Tokenizer ;
-import org.openjena.riot.tokens.TokenizerFactory ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Triple ;
@@ -55,11 +55,11 @@ public class TestLangNTriples extends TestLangNTuples
     @Test
     public void nt_model_1()
     {
-        Model m1 = parseToModel("<x> <p> \"abc\". ") ;
+        Model m1 = parseToModel("<x> <p> \"abc-\\u00E9\". ") ;
         assertEquals(1, m1.size()) ;
-        Model m2 = parseToModel("<x> <p> \"abc\". ") ;
+        Model m2 = parseToModel("<x> <p> \"abc-\\u00E9\". ") ;
         assertTrue(m1.isIsomorphicWith(m2)) ;
-        Graph g1 = SSE.parseGraph("(graph (triple <x> <p> \"abc\"))") ;
+        Graph g1 = SSE.parseGraph("(graph (triple <x> <p> \"abc-é\"))") ;
         assertTrue(g1.isIsomorphicWith(m1.getGraph())) ;
     }
 
@@ -75,11 +75,17 @@ public class TestLangNTriples extends TestLangNTuples
         parseCount("@base <http://example/> . <x> <p> <s> .") ; 
     }
 
+    @Test(expected=RiotException.class) 
+    public void nt_only_5()
+    {
+        parseCount("<x> <p> \"é\" .") ; 
+    }
+    
     @Override
     protected long parseCount(String... strings)
     {
         String string = StrUtils.strjoin("\n", strings) ;
-        Tokenizer tokenizer = TokenizerFactory.makeTokenizerString(string) ;
+        Tokenizer tokenizer = tokenizer(string) ;
         SinkCounting<Triple> sink = new SinkCounting<Triple>() ;
         LangNTriples x = RiotReader.createParserNTriples(tokenizer, sink) ;
         x.getProfile().setHandler(new ErrorHandlerEx()) ;
@@ -91,7 +97,7 @@ public class TestLangNTriples extends TestLangNTuples
     protected void parseCheck(String... strings)
     {
         String string = StrUtils.strjoin("\n", strings) ;
-        Tokenizer tokenizer = TokenizerFactory.makeTokenizerString(string) ;
+        Tokenizer tokenizer = tokenizer(string) ;
         SinkCounting<Triple> sink = new SinkCounting<Triple>() ;
         LangNTriples x = RiotReader.createParserNTriples(tokenizer, sink) ;
         x.setProfile(RiotLib.profile(null, false, true, new ErrorHandlerEx())) ;

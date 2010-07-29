@@ -18,7 +18,6 @@ import java.io.Reader ;
 import org.openjena.atlas.AtlasException ;
 
 import com.hp.hpl.jena.shared.JenaException ;
-import com.hp.hpl.jena.util.FileUtils ;
 
 /** Parsing-centric reader.
  *  This class is not thread safe.
@@ -77,13 +76,14 @@ public final class PeekReader extends Reader
         //return new PeekReader(new CharStreamBasic(new BufferedReader(r, bufferSize))) ;
     }
 
+    /** Make PeekReader where the input is UTF8 */ 
     public static PeekReader makeUTF8(InputStream in) 
     {
         // This is the best route to make a PeekReader because it avoid
         // chances of wrong charset for a Reader say.
         if ( true )
         {
-            Reader r = FileUtils.asUTF8(in) ;
+            Reader r = IO.asUTF8(in) ;
             // This adds reader-level buffering
             return make(r) ;
         }
@@ -93,6 +93,16 @@ public final class PeekReader extends Reader
         CharStream r = new StreamUTF8(in2) ;
         return new PeekReader(r) ;
     }
+    
+    /** Make PeekReader where the input is ASCII */ 
+    public static PeekReader makeASCII(InputStream in) 
+    {
+//      InputStreamBuffered in2 = new InputStreamBuffered(in) ;
+//      CharStream r = new StreamASCII(in2) ;
+        Reader r = IO.asASCII(in) ;
+        return make(r) ;
+    }
+    
     
     public static PeekReader make(CharStream r) 
     {

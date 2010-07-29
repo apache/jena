@@ -305,7 +305,7 @@ public abstract class CmdLangParse extends CmdGeneral
     
     protected Tokenizer makeTokenizer(InputStream in)
     {
-        Tokenizer tokenizer = TokenizerFactory.makeTokenizer(in) ;
+        Tokenizer tokenizer = TokenizerFactory.makeTokenizerUTF8(in) ;
         return tokenizer ;
     }
     

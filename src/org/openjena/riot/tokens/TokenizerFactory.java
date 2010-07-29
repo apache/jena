@@ -6,11 +6,13 @@
 
 package org.openjena.riot.tokens;
 
+import java.io.ByteArrayInputStream ;
 import java.io.InputStream ;
 import java.io.Reader ;
 
 import org.openjena.atlas.io.PeekInputStream ;
 import org.openjena.atlas.io.PeekReader ;
+import org.openjena.atlas.lib.StrUtils ;
 
 
 public class TokenizerFactory
@@ -23,7 +25,7 @@ public class TokenizerFactory
         return tokenizer ;
     }
     
-    public static Tokenizer makeTokenizer(InputStream in)
+    public static Tokenizer makeTokenizerUTF8(InputStream in)
     {
         if ( false )
         {
@@ -41,6 +43,20 @@ public class TokenizerFactory
         return tokenizer ;
     }
 
+    public static Tokenizer makeTokenizerASCII(InputStream in)
+    {
+        PeekReader peekReader = PeekReader.makeASCII(in) ;
+        Tokenizer tokenizer = new TokenizerText(peekReader) ;
+        return tokenizer ;
+    }
+    
+    public static Tokenizer makeTokenizerASCII(String string)
+    {
+        byte b[] = StrUtils.asUTF8bytes(string) ;
+        ByteArrayInputStream in = new ByteArrayInputStream(b) ;
+        return makeTokenizerASCII(in) ;
+    }
+    
     public static Tokenizer makeTokenizerString(String str)
     {
         PeekReader peekReader = PeekReader.readString(str) ;

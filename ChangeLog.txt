@@ -3,6 +3,7 @@ ChangeLog for ARQ
 
 ==== ARQ 2.8.6
 
++ Bug fix: N-Triples, and N-Quads now expect ASCII input as per specs.  
 + Bug fix: Property functions in FILTER NOT EXISTS
 
 ==== ARQ 2.8.5

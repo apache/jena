@@ -7,11 +7,17 @@
 
 package org.openjena.riot.lang;
 
+import java.io.ByteArrayInputStream ;
+
 import org.junit.Test ;
 import org.openjena.atlas.junit.BaseTest ;
+import org.openjena.atlas.lib.StrUtils ;
+import org.openjena.riot.RiotException ;
 import org.openjena.riot.ErrorHandlerTestLib.ExError ;
 import org.openjena.riot.ErrorHandlerTestLib.ExFatal ;
 import org.openjena.riot.ErrorHandlerTestLib.ExWarning ;
+import org.openjena.riot.tokens.Tokenizer ;
+import org.openjena.riot.tokens.TokenizerFactory ;
 
 /** Test of syntax by a tuples parser (does not include node validitiy checking) */ 
 
@@ -118,6 +124,31 @@ abstract public class TestLangNTuples extends BaseTest
 
     @Test  (expected=ExWarning.class)
     public void tuple_bad_23()       { parseCheck("<http://example/x> <http://example/p> \"9000\"^^<http://www.w3.org/2001/XMLSchema#byte> .") ; } 
+    
+    // ASCII vs UTF-8
+    @Test
+    public void tuple_charset_1()
+    {
+        // E9 is e-acute
+        parseCheck("<http://example/x\\u00E9> <http://example/p> <http://example/s> .") ; 
+    }
+    
+    @Test(expected=RiotException.class) 
+    public void tuple_charset_2()
+    {
+        parseCheck("<http://example/é> <http://example/p> \"é\" .") ; 
+    }
+    
+    static protected Tokenizer tokenizer(String string)
+    {
+        //Tokenizer tokenizer = TokenizerFactory.makeTokenizerString(string) ;
+        // ASCII
+        byte b[] = StrUtils.asUTF8bytes(string) ;
+        ByteArrayInputStream in = new ByteArrayInputStream(b) ;
+        Tokenizer tokenizer = TokenizerFactory.makeTokenizerASCII(in) ;
+        return tokenizer ;
+    }
+    
     
     protected abstract long parseCount(String... strings) ;
     
