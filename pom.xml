@@ -63,7 +63,7 @@
        <groupId>com.hp.hpl.jena</groupId>
        <artifactId>iri</artifactId>
        <classifier>sources</classifier>
-       <scope>optional</scope>
+       <scope>provided</scope>
        <version>0.8</version>
      </dependency>
 
