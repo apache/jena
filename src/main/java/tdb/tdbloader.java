@@ -121,8 +121,6 @@ public class tdbloader extends CmdTDB
         loadNamedGraph(urls) ;
     }
     
-    // TODO set checking on for NT
-    
     void loadDefaultGraph(List<String> urls)
     {
         GraphTDB graph = getGraph() ;

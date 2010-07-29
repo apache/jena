@@ -141,8 +141,9 @@ public class BulkLoader
         dest.start() ;
         for ( String url : urls )
         {
+            loadLogger.info("Load: "+url+" -- "+Utils.nowAsString()) ;
             RiotReader.parseQuads(url, dest) ;
-        }            
+        }
         dest.finish() ;
     }
 
