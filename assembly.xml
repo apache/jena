@@ -52,6 +52,9 @@
 
     <fileSet>
       <directory>bin</directory>
+    </fileSet>
+
+    <fileSet>
       <directory>bin2</directory>
     </fileSet>
 
