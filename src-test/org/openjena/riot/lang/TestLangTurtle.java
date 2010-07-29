@@ -16,12 +16,12 @@ import org.openjena.atlas.lib.Sink ;
 import org.openjena.atlas.lib.StrUtils ;
 import org.openjena.riot.ErrorHandler ;
 import org.openjena.riot.ErrorHandlerLib ;
-import org.openjena.riot.JenaReaderTurtle2 ;
 import org.openjena.riot.RiotLoader ;
 import org.openjena.riot.RiotReader ;
 import org.openjena.riot.ErrorHandlerTestLib.ErrorHandlerEx ;
 import org.openjena.riot.ErrorHandlerTestLib.ExFatal ;
 import org.openjena.riot.ErrorHandlerTestLib.ExWarning ;
+import org.openjena.riot.system.JenaReaderTurtle2 ;
 import org.openjena.riot.tokens.Tokenizer ;
 import org.openjena.riot.tokens.TokenizerFactory ;
 

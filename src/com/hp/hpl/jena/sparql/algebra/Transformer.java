@@ -23,7 +23,7 @@ import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.expr.ExprList ;
 import com.hp.hpl.jena.sparql.expr.ExprTransformer ;
 import com.hp.hpl.jena.sparql.expr.aggregate.Aggregator ;
-import com.hp.hpl.jena.sparql.util.ALog ;
+import org.openjena.atlas.logging.Log ;
 
 public class Transformer
 {
@@ -85,7 +85,7 @@ public class Transformer
     {
         if ( op == null )
         {
-            ALog.warn(this, "Attempt to transform a null Op - ignored") ;
+            Log.warn(this, "Attempt to transform a null Op - ignored") ;
             return op ;
         }
         return applyTransformation(transformApply, op, beforeVisitor, afterVisitor) ;
@@ -130,7 +130,7 @@ public class Transformer
         final Op result()
         { 
             if ( stack.size() != 1 )
-                ALog.warn(this, "Stack is not aligned") ;
+                Log.warn(this, "Stack is not aligned") ;
             return pop() ; 
         }
     

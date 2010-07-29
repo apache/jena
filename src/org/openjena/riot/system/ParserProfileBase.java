@@ -4,8 +4,10 @@
  * [See end of file]
  */
 
-package org.openjena.riot;
+package org.openjena.riot.system;
 
+import org.openjena.riot.ErrorHandler ;
+import org.openjena.riot.RiotException ;
 import org.openjena.riot.lang.LabelToNode ;
 import org.openjena.riot.tokens.Token ;
 

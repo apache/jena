@@ -12,9 +12,9 @@ import java.io.Reader ;
 
 import junit.framework.TestCase ;
 import org.openjena.atlas.io.PeekReader ;
-import org.openjena.riot.JenaReaderNTriples2 ;
-import org.openjena.riot.JenaReaderTurtle2 ;
 import org.openjena.riot.RiotParseException ;
+import org.openjena.riot.system.JenaReaderNTriples2 ;
+import org.openjena.riot.system.JenaReaderTurtle2 ;
 
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;

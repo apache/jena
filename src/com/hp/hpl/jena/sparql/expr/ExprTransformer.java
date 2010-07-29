@@ -13,7 +13,7 @@ import java.util.Stack ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.Transformer ;
 import com.hp.hpl.jena.sparql.lang.rdql.ExprRDQL ;
-import com.hp.hpl.jena.sparql.util.ALog ;
+import org.openjena.atlas.logging.Log ;
 
 public class ExprTransformer
 {
@@ -67,7 +67,7 @@ public class ExprTransformer
         final Expr result()
         { 
             if ( stack.size() != 1 )
-                ALog.warn(this, "Stack is not aligned") ;
+                Log.warn(this, "Stack is not aligned") ;
             return stack.peek() ; 
         }
 

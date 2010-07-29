@@ -1,36 +1,41 @@
 /*
  * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
-package org.openjena.riot;
+package org.openjena.riot.system;
 
-import java.io.Writer ;
-import java.util.Iterator ;
+import org.openjena.atlas.lib.Sink ;
+import org.openjena.riot.RiotLoader ;
+import org.openjena.riot.RiotReader ;
+import org.openjena.riot.lang.LangRIOT ;
+import org.openjena.riot.tokens.Tokenizer ;
 
-import org.openjena.riot.out.OutputLangUtils ;
-
-import com.hp.hpl.jena.graph.Graph ;
-import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.rdf.model.Model ;
 
-public class JenaWriterNTriples2 extends JenaWriterBase
+/** Jena reader for RIOT N-Triples */
+public class JenaReaderNTriples2 extends JenaReaderRIOT
 {
     @Override
-    protected void write(Graph graph, Writer out, String base)
+    protected void readWorker(Model model, Tokenizer tokenizer, String base)
     {
-        Iterator<Triple> iter = graph.find(Node.ANY, Node.ANY, Node.ANY) ;
-        for ( ; iter.hasNext() ; )
-        {
-            Triple triple = iter.next() ;
-            OutputLangUtils.output(out, triple, null) ;
+        Sink<Triple> sink = RiotLoader.graphSink(model.getGraph()) ;
+        try {
+            LangRIOT parser = RiotReader.createParserNTriples(tokenizer, sink) ;
+            parser.parse() ;
+        } finally {
+            sink.close();
+            tokenizer.close();
         }
     }
 }
 
 /*
  * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

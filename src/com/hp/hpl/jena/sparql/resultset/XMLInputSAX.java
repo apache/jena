@@ -28,7 +28,7 @@ import com.hp.hpl.jena.sparql.engine.ResultSetStream ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper ;
-import com.hp.hpl.jena.sparql.util.ALog ;
+import org.openjena.atlas.logging.Log ;
 import com.hp.hpl.jena.sparql.util.FmtUtils ;
 import com.hp.hpl.jena.sparql.util.LabelToNodeMap ;
 import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
@@ -283,12 +283,12 @@ class XMLInputSAX extends SPARQLResult
             
             if ( varName == null )
             {
-                ALog.warn(this, "No variable name in scope: "+cxtMsg) ;
+                Log.warn(this, "No variable name in scope: "+cxtMsg) ;
                 return false ;
             }
             if ( !variables.contains(varName) )
             {
-                ALog.warn(this, "Variable name '"+varName+"'not declared: "+cxtMsg) ;
+                Log.warn(this, "Variable name '"+varName+"'not declared: "+cxtMsg) ;
                 return false ;
             }
             return true ;

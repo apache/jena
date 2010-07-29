@@ -12,14 +12,14 @@ import org.openjena.atlas.io.IndentedWriter ;
 import arq.cmd.CmdUtils ;
 import arq.cmd.TerminationException ;
 
-import com.hp.hpl.jena.sparql.util.ALog ;
+import org.openjena.atlas.logging.Log ;
 
 // Added usage + some common flags
 // This is the usual starting point for any sub 
 
 public abstract class CmdGeneral extends CmdArgModule implements CallbackHelp//, VersionCallback
 {
-    static { ALog.setLog4j() ; CmdUtils.setN3Params() ; }
+    static { Log.setLog4j() ; CmdUtils.setN3Params() ; }
 
     protected ModGeneral modGeneral = new ModGeneral(this) ;
     protected ModVersion modVersion = new ModVersion(true) ;

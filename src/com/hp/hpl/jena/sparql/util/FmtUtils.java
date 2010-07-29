@@ -8,6 +8,7 @@ package com.hp.hpl.jena.sparql.util;
 import java.net.MalformedURLException ;
 
 import org.openjena.atlas.io.IndentedWriter ;
+import org.openjena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Node_Literal ;
@@ -322,7 +323,7 @@ public class FmtUtils
         if ( n.equals(Node.ANY) )
             return "ANY" ;
 
-        ALog.warn(FmtUtils.class, "Failed to turn a node into a string: "+n) ;
+        Log.warn(FmtUtils.class, "Failed to turn a node into a string: "+n) ;
         return n.toString() ;
     }
 

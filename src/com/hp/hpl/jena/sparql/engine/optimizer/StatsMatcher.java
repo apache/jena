@@ -28,7 +28,7 @@ import com.hp.hpl.jena.sparql.sse.Item ;
 import com.hp.hpl.jena.sparql.sse.ItemException ;
 import com.hp.hpl.jena.sparql.sse.ItemList ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
-import com.hp.hpl.jena.sparql.util.ALog ;
+import org.openjena.atlas.logging.Log ;
 
 /** Stats format:<pre>(stats
  *    (meta ...)
@@ -78,7 +78,7 @@ public final class StatsMatcher
             Item stats = SSE.readFile(filename) ;
             if ( stats.isNil() )
             {
-                ALog.warn(this, "Empty stats file: "+filename) ;
+                Log.warn(this, "Empty stats file: "+filename) ;
                 return ;
             }
             if ( !stats.isTagged(STATS) )

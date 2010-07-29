@@ -9,7 +9,7 @@ package org.openjena.riot.lang;
 import static org.openjena.riot.tokens.TokenType.DOT ;
 import org.openjena.atlas.lib.Sink ;
 import org.openjena.riot.Lang ;
-import org.openjena.riot.ParserProfile ;
+import org.openjena.riot.system.ParserProfile ;
 import org.openjena.riot.tokens.Tokenizer ;
 
 import com.hp.hpl.jena.graph.Node ;

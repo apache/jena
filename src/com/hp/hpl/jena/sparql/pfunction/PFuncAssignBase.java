@@ -11,7 +11,7 @@ import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
-import com.hp.hpl.jena.sparql.util.ALog ;
+import org.openjena.atlas.logging.Log ;
 import com.hp.hpl.jena.sparql.util.IterLib ;
 
 abstract
@@ -23,7 +23,7 @@ class PFuncAssignBase extends PFuncSimple
         try {
             if ( subject.isVariable() )
             {
-                ALog.warn(this, "Variable found: expected a value: "+subject) ;
+                Log.warn(this, "Variable found: expected a value: "+subject) ;
                 return IterLib.noResults(execCxt) ;
             }
             
@@ -40,7 +40,7 @@ class PFuncAssignBase extends PFuncSimple
             return IterLib.noResults(execCxt) ;
         }  catch (Exception ex)
         { 
-            ALog.warn(this, "Exception: "+ex.getMessage(), ex);
+            Log.warn(this, "Exception: "+ex.getMessage(), ex);
             return null ;
         }
     }

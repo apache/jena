@@ -12,7 +12,7 @@ import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.OpVisitor ;
 import com.hp.hpl.jena.sparql.algebra.op.* ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
-import com.hp.hpl.jena.sparql.util.ALog ;
+import org.openjena.atlas.logging.Log ;
 
 /**  Class to provide type-safe execution dispatch using the visitor support of Op */ 
 
@@ -33,7 +33,7 @@ class ExecutionDispatch implements OpVisitor
         op.visit(this) ;
         int y = stack.size() ;
         if ( x != y )
-            ALog.warn(this, "Possible stack misalignment") ;
+            Log.warn(this, "Possible stack misalignment") ;
         QueryIterator qIter = pop() ;
         return qIter ;
     }
@@ -253,7 +253,7 @@ class ExecutionDispatch implements OpVisitor
     private QueryIterator pop()
     { 
         if ( stack.size() == 0 )
-            ALog.warn(this, "Warning: pop: empty stack") ;
+            Log.warn(this, "Warning: pop: empty stack") ;
         return stack.pop() ;
     }
 }

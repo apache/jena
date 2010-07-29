@@ -10,7 +10,7 @@ package org.openjena.riot.lang;
 import java.util.Iterator ;
 
 import org.openjena.atlas.lib.Sink ;
-import org.openjena.riot.ParserProfile ;
+import org.openjena.riot.system.ParserProfile ;
 import org.openjena.riot.tokens.Token ;
 import org.openjena.riot.tokens.TokenType ;
 import org.openjena.riot.tokens.Tokenizer ;

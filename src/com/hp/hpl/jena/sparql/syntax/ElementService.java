@@ -7,7 +7,7 @@
 package com.hp.hpl.jena.sparql.syntax;
 
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.sparql.util.ALog ;
+import org.openjena.atlas.logging.Log ;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
 
 /** A SERVICE pattern - access a remote SPARQL service.
@@ -29,7 +29,7 @@ public class ElementService extends Element
     public ElementService(Node n, Element el)
     {
         if ( ! n.isURI() && ! n.isVariable() )
-            ALog.fatal(this, "Must be a URI (or variable which will be bound) for a service endpoint") ;
+            Log.fatal(this, "Must be a URI (or variable which will be bound) for a service endpoint") ;
         this.serviceNode = n ;
         this.element = el ;
     }

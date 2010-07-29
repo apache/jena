@@ -6,7 +6,7 @@
 
 package arq.cmdline;
 
-import org.openjena.riot.IRIResolver ;
+import org.openjena.riot.system.IRIResolver ;
 import arq.cmd.CmdException ;
 
 import com.hp.hpl.jena.iri.IRI ;

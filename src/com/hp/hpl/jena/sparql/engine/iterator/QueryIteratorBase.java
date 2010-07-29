@@ -12,7 +12,7 @@ import com.hp.hpl.jena.query.QueryException ;
 import com.hp.hpl.jena.query.QueryFatalException ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
-import com.hp.hpl.jena.sparql.util.ALog ;
+import org.openjena.atlas.logging.Log ;
 import com.hp.hpl.jena.sparql.util.PrintSerializableBase ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 
@@ -73,7 +73,7 @@ public abstract class QueryIteratorBase
             return r ;
         } catch (QueryFatalException ex)
         { 
-            ALog.fatal(this, "Fatal exception: "+ex.getMessage() ) ;
+            Log.fatal(this, "Fatal exception: "+ex.getMessage() ) ;
             abort() ;       // Abort this iterator.
             throw ex ;      // And pass on up the exception.
         }
@@ -101,7 +101,7 @@ public abstract class QueryIteratorBase
             return obj ;
         } catch (QueryFatalException ex)
         { 
-            ALog.fatal(this, "QueryFatalException", ex) ; 
+            Log.fatal(this, "QueryFatalException", ex) ; 
             abort() ;
             throw ex ; 
         }
@@ -110,7 +110,7 @@ public abstract class QueryIteratorBase
     
     public final void remove()
     {
-        ALog.warn(this, "Call to QueryIterator.remove() : "+Utils.className(this)+".remove") ;
+        Log.warn(this, "Call to QueryIterator.remove() : "+Utils.className(this)+".remove") ;
         throw new UnsupportedOperationException(Utils.className(this)+".remove") ;
     }
     
@@ -120,7 +120,7 @@ public abstract class QueryIteratorBase
             return ;
         try { closeIterator() ; }
         catch (QueryException ex)
-        { ALog.warn(this, "QueryException in close()", ex) ; } 
+        { Log.warn(this, "QueryException in close()", ex) ; } 
         finished = true ;
     }
     

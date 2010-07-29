@@ -13,7 +13,7 @@ import org.openjena.atlas.io.IndentedWriter ;
 
 import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.query.Syntax ;
-import com.hp.hpl.jena.sparql.util.ALog ;
+import org.openjena.atlas.logging.Log ;
 import com.hp.hpl.jena.sparql.util.NodeToLabelMapBNode ;
 
 
@@ -127,7 +127,7 @@ public class Serializer
 //            return ;
 //        }
         
-        ALog.warn(Serializer.class, "Unknown syntax: "+outSyntax) ;
+        Log.warn(Serializer.class, "Unknown syntax: "+outSyntax) ;
     }
      
     static public void serializeARQ(Query query, IndentedWriter writer)

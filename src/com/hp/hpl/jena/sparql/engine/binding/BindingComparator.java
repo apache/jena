@@ -21,7 +21,7 @@ import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.expr.VariableNotBoundException ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
 import com.hp.hpl.jena.sparql.function.FunctionEnvBase ;
-import com.hp.hpl.jena.sparql.util.ALog ;
+import org.openjena.atlas.logging.Log ;
 import com.hp.hpl.jena.sparql.util.NodeUtils ;
 
 public class BindingComparator implements java.util.Comparator<Binding>
@@ -59,12 +59,12 @@ public class BindingComparator implements java.util.Comparator<Binding>
             try { nv1 = sc.expression.eval(bind1, env) ; }
             catch (VariableNotBoundException ex) {}
             catch (ExprEvalException ex)
-            { ALog.warn(this, ex.getMessage()) ; }
+            { Log.warn(this, ex.getMessage()) ; }
             
             try { nv2 = sc.expression.eval(bind2, env) ; }
             catch (VariableNotBoundException ex) {}
             catch (ExprEvalException ex)
-            { ALog.warn(this, ex.getMessage()) ; }
+            { Log.warn(this, ex.getMessage()) ; }
             
             Node n1 = NodeValue.toNode(nv1) ;
             Node n2 = NodeValue.toNode(nv2) ;

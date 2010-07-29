@@ -31,7 +31,7 @@ import com.hp.hpl.jena.sparql.engine.ResultSetStream ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper ;
 import com.hp.hpl.jena.sparql.resultset.ResultSetRewindable ;
-import com.hp.hpl.jena.sparql.util.ALog ;
+import org.openjena.atlas.logging.Log ;
 import com.hp.hpl.jena.sparql.util.DatasetUtils ;
 import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
 import com.hp.hpl.jena.sparql.vocabulary.ResultSetGraphVocab ;
@@ -111,7 +111,7 @@ public class QueryTest extends EarlTestCase
                 // Only warn if there are results to test
                 // Syntax tests may have FROM etc and a manifest data file. 
                 if ( testItem.getResultFile() != null )
-                    ALog.warn(this, testItem.getName()+" : query data source and also in test file") ; 
+                    Log.warn(this, testItem.getName()+" : query data source and also in test file") ; 
             }
             
             // In test file?

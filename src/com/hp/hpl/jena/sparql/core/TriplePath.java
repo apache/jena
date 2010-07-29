@@ -10,7 +10,7 @@ import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.sparql.path.P_Link ;
 import com.hp.hpl.jena.sparql.path.Path ;
-import com.hp.hpl.jena.sparql.util.ALog ;
+import org.openjena.atlas.logging.Log ;
 
 /** Like a triple except it can be a path or a triple.  
  * The triple can have a variable predicate.  
@@ -61,7 +61,7 @@ public final class TriplePath
         this.object = triple.getObject() ;
         this.triple = triple ; 
         if ( triple.getPredicate() == null )
-            ALog.warn(this, "Triple predicate is null") ;
+            Log.warn(this, "Triple predicate is null") ;
     }
 
     public Node getSubject()    { return subject ; }

@@ -15,7 +15,7 @@ import com.hp.hpl.jena.query.QueryException ;
 import com.hp.hpl.jena.query.QueryParseException ;
 import com.hp.hpl.jena.shared.JenaException ;
 import com.hp.hpl.jena.sparql.lang.sparql_11.SPARQLParser11 ;
-import com.hp.hpl.jena.sparql.util.ALog ;
+import org.openjena.atlas.logging.Log ;
 
 public class TestSPARQLUpdateSyntax
 {
@@ -118,7 +118,7 @@ public class TestSPARQLUpdateSyntax
         }
         catch (Throwable th)
         {
-            ALog.fatal(TestSPARQLUpdateSyntax.class, "Unexpected throwable: ",th) ;
+            Log.fatal(TestSPARQLUpdateSyntax.class, "Unexpected throwable: ",th) ;
             throw new QueryException(th.getMessage(), th) ;
         }
     }

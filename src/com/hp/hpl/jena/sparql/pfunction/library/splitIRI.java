@@ -17,7 +17,7 @@ import com.hp.hpl.jena.sparql.engine.binding.BindingMap ;
 import com.hp.hpl.jena.sparql.pfunction.PropFuncArg ;
 import com.hp.hpl.jena.sparql.pfunction.PropFuncArgType ;
 import com.hp.hpl.jena.sparql.pfunction.PropertyFunctionEval ;
-import com.hp.hpl.jena.sparql.util.ALog ;
+import org.openjena.atlas.logging.Log ;
 import com.hp.hpl.jena.sparql.util.IterLib ;
 import com.hp.hpl.jena.sparql.util.NodeUtils ;
 import com.hp.hpl.jena.sparql.util.Utils ;
@@ -68,7 +68,7 @@ public class splitIRI extends PropertyFunctionEval //PropertyFunctionBase
                 return subjectIsVariable(argSubject.getArg(), argObject, execCxt) ;
         } catch (QueryException ex)
         {
-            ALog.warn(this, "Unexpected problems in splitIRI: "+ex.getMessage()) ;
+            Log.warn(this, "Unexpected problems in splitIRI: "+ex.getMessage()) ;
             return null ;
         }
     }
@@ -123,7 +123,7 @@ public class splitIRI extends PropertyFunctionEval //PropertyFunctionBase
 
     private QueryIterator subjectIsVariable(Node arg, PropFuncArg argObject, ExecutionContext execCxt)
     {
-        ALog.warn(this, "Subject to property function splitURI is not a bound nor a constant.") ;
+        Log.warn(this, "Subject to property function splitURI is not a bound nor a constant.") ;
         return IterLib.noResults(execCxt) ;
     }
 }

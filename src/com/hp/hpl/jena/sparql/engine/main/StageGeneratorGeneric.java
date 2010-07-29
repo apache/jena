@@ -26,7 +26,7 @@ import com.hp.hpl.jena.sparql.engine.optimizer.reorder.ReorderLib ;
 import com.hp.hpl.jena.sparql.engine.optimizer.reorder.ReorderTransformation ;
 import com.hp.hpl.jena.sparql.engine.optimizer.reorder.ReorderTransformationBase ;
 import com.hp.hpl.jena.sparql.mgt.Explain ;
-import com.hp.hpl.jena.sparql.util.ALog ;
+import org.openjena.atlas.logging.Log ;
 import com.hp.hpl.jena.sparql.util.Symbol ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 
@@ -42,7 +42,7 @@ public class StageGeneratorGeneric implements StageGenerator
                                  ExecutionContext execCxt)
     {
         if ( input == null )
-            ALog.fatal(this, "Null input to "+Utils.classShortName(this.getClass())) ;
+            Log.fatal(this, "Null input to "+Utils.classShortName(this.getClass())) ;
 
         Graph graph = execCxt.getActiveGraph() ; 
 

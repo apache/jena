@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package org.openjena.riot;
+package org.openjena.riot.system;
 
 import java.util.Map ;
 import java.util.Map.Entry ;

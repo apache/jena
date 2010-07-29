@@ -5,11 +5,12 @@
  * [See end of file]
  */
 
-package org.openjena.riot;
+package org.openjena.riot.system;
 
 import org.openjena.atlas.lib.Cache ;
 import org.openjena.atlas.lib.CacheFactory ;
 import org.openjena.atlas.lib.cache.Getter ;
+import org.openjena.riot.RiotException ;
 
 import com.hp.hpl.jena.iri.IRI ;
 import com.hp.hpl.jena.iri.IRIException ;

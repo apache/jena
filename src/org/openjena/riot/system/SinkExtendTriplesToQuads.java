@@ -4,14 +4,14 @@
  * [See end of file]
  */
 
-package org.openjena.riot;
+package org.openjena.riot.system;
 
 import org.openjena.atlas.lib.Sink ;
 
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 
-class SinkExtendTriplesToQuads implements Sink<Triple>
+public class SinkExtendTriplesToQuads implements Sink<Triple>
 {
     private Sink<Quad> sinkQuad ;
 

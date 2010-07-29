@@ -7,7 +7,7 @@
 package com.hp.hpl.jena.sparql.expr.aggregate;
 
 import com.hp.hpl.jena.sparql.expr.Expr ;
-import com.hp.hpl.jena.sparql.util.ALog ;
+import org.openjena.atlas.logging.Log ;
 
 public class AggregatorFactory
 {
@@ -54,7 +54,7 @@ public class AggregatorFactory
     
     private static Aggregator err(String label)
     {
-        ALog.fatal(AggregatorFactory.class, "Not implemented: "+label) ;
+        Log.fatal(AggregatorFactory.class, "Not implemented: "+label) ;
         return null ;
     }
 }

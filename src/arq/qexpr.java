@@ -29,7 +29,7 @@ import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
 import com.hp.hpl.jena.sparql.sse.WriterSSE ;
-import com.hp.hpl.jena.sparql.util.ALog ;
+import org.openjena.atlas.logging.Log ;
 import com.hp.hpl.jena.sparql.util.ExprUtils ;
 import com.hp.hpl.jena.sparql.util.FmtUtils ;
 import com.hp.hpl.jena.sparql.util.NodeFactory ;
@@ -42,7 +42,7 @@ import com.hp.hpl.jena.sparql.util.NodeFactory ;
 public class qexpr
 {
     // TODO Convert to extends CmdArgModule 
-    static { ALog.setLog4j() ; CmdUtils.setN3Params() ; }
+    static { Log.setLog4j() ; CmdUtils.setN3Params() ; }
 
     public static void main (String... argv)
     {

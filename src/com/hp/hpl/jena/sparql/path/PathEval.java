@@ -27,7 +27,6 @@ import com.hp.hpl.jena.rdf.model.NodeIterator ;
 import com.hp.hpl.jena.rdf.model.RDFNode ;
 import com.hp.hpl.jena.rdf.model.impl.NodeIteratorImpl ;
 import com.hp.hpl.jena.sparql.ARQException ;
-import com.hp.hpl.jena.sparql.util.ALog ;
 import com.hp.hpl.jena.sparql.util.ModelUtils ;
 
 public class PathEval
@@ -66,9 +65,9 @@ public class PathEval
     static public Iterator<Node> eval(Graph graph, Node node, Path path)
     { 
         if ( node == null  )
-            ALog.fatal(PathEval.class, "PathEval.eval applied to a null node") ;
+            Log.fatal(PathEval.class, "PathEval.eval applied to a null node") ;
         if ( node.isVariable() )
-            ALog.warn(PathEval.class, "PathEval.eval applied to a variable: "+node) ;
+            Log.warn(PathEval.class, "PathEval.eval applied to a variable: "+node) ;
         return eval(graph, node, path, true) ;
     }
     

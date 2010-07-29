@@ -15,7 +15,7 @@ import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.expr.ExprVar ;
 import com.hp.hpl.jena.sparql.serializer.FmtExpr ;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
-import com.hp.hpl.jena.sparql.util.ALog ;
+import org.openjena.atlas.logging.Log ;
 import com.hp.hpl.jena.sparql.util.ExprUtils ;
 import com.hp.hpl.jena.sparql.util.PrintSerializableBase ;
 import com.hp.hpl.jena.sparql.util.Utils ;
@@ -38,7 +38,7 @@ public class SortCondition extends PrintSerializableBase
         direction = dir ;
         
         if ( dir != Query.ORDER_ASCENDING && dir != Query.ORDER_DESCENDING && dir != Query.ORDER_DEFAULT )
-            ALog.fatal(this, "Unknown sort direction") ;
+            Log.fatal(this, "Unknown sort direction") ;
     }
     
     public void format(FmtExpr fmt,

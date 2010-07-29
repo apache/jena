@@ -9,7 +9,7 @@ import java.util.NoSuchElementException ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
-import com.hp.hpl.jena.sparql.util.ALog ;
+import org.openjena.atlas.logging.Log ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 
 /** Repeatedly execute the subclass operation for each Binding in the input iterator. 
@@ -30,7 +30,7 @@ public abstract class QueryIterRepeatApply extends QueryIter1
         
         if ( input == null )
         {
-            ALog.fatal(this, "[QueryIterRepeatApply] Repeated application to null input iterator") ;
+            Log.fatal(this, "[QueryIterRepeatApply] Repeated application to null input iterator") ;
             return ;
         }
     }

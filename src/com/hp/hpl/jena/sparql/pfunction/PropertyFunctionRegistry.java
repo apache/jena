@@ -13,7 +13,7 @@ import java.util.Set ;
 
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.sparql.ARQConstants ;
-import com.hp.hpl.jena.sparql.util.ALog ;
+import org.openjena.atlas.logging.Log ;
 import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.sparql.util.MappedLoader ;
 import com.hp.hpl.jena.sparql.vocabulary.ListPFunction ;
@@ -80,7 +80,7 @@ public class PropertyFunctionRegistry
     { 
         if ( ! PropertyFunction.class.isAssignableFrom(extClass) )
         {
-            ALog.warn(this, "Class "+extClass.getName()+" is not an PropertyFunction" );
+            Log.warn(this, "Class "+extClass.getName()+" is not an PropertyFunction" );
             return ; 
         }
         

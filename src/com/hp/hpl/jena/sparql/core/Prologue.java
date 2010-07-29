@@ -9,7 +9,7 @@ package com.hp.hpl.jena.sparql.core;
 import com.hp.hpl.jena.n3.IRIResolver ;
 import com.hp.hpl.jena.shared.PrefixMapping ;
 import com.hp.hpl.jena.shared.impl.PrefixMappingImpl ;
-import com.hp.hpl.jena.sparql.util.ALog ;
+import org.openjena.atlas.logging.Log ;
 import com.hp.hpl.jena.sparql.util.PrefixMapping2 ;
 
 public class Prologue
@@ -132,7 +132,7 @@ public class Prologue
             prefixMap.setNsPrefix(prefix, expansion) ;
         } catch (PrefixMapping.IllegalPrefixException ex)
         {
-            ALog.warn(this, "Illegal prefix mapping(ignored): "+prefix+"=>"+expansion) ;
+            Log.warn(this, "Illegal prefix mapping(ignored): "+prefix+"=>"+expansion) ;
         }
     }   
 

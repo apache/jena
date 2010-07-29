@@ -41,7 +41,7 @@ import com.hp.hpl.jena.sparql.pfunction.PropertyFunctionRegistry ;
 import com.hp.hpl.jena.sparql.syntax.ElementFilter ;
 import com.hp.hpl.jena.sparql.syntax.ElementGroup ;
 import com.hp.hpl.jena.sparql.syntax.ElementTriplesBlock ;
-import com.hp.hpl.jena.sparql.util.ALog ;
+import org.openjena.atlas.logging.Log ;
 import com.hp.hpl.jena.sparql.util.NodeUtils ;
 import com.hp.hpl.jena.vocabulary.RDFS ;
 
@@ -100,7 +100,7 @@ public class labelSearch implements PropertyFunction
         String pattern = NodeUtils.stringLiteral(argObject.getArg()) ;
         if ( pattern == null )
         {
-            ALog.warn(this, "Pattern must be a plain literal or xsd:string: "+argObject.getArg()) ;
+            Log.warn(this, "Pattern must be a plain literal or xsd:string: "+argObject.getArg()) ;
             return new QueryIterNullIterator(execCxt) ;
         }
 

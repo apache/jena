@@ -16,7 +16,7 @@ import java.util.Properties ;
 import org.openjena.atlas.lib.SystemUtils ;
 
 import com.hp.hpl.jena.sparql.ARQException ;
-import com.hp.hpl.jena.sparql.util.ALog ;
+import org.openjena.atlas.logging.Log ;
 
 /** Simple wrapper for reading metadata, once, from a system resource.
  *  Note that in some environments, it's tricky to get a class loader.  
@@ -57,7 +57,7 @@ public class Metadata
 
             if ( classLoader == null )
             {
-                ALog.fatal(Metadata.class, "No classloader") ;
+                Log.fatal(Metadata.class, "No classloader") ;
                 return ;
             }
 
@@ -75,7 +75,7 @@ public class Metadata
         }
         catch (Throwable ex)
         {
-            ALog.fatal(Metadata.class, "Unexpected Thorwable", ex) ;
+            Log.fatal(Metadata.class, "Unexpected Thorwable", ex) ;
             return ;
         }
     }

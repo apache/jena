@@ -14,7 +14,7 @@ import com.hp.hpl.jena.graph.query.IndexValues ;
 import com.hp.hpl.jena.graph.query.Valuator ;
 import com.hp.hpl.jena.graph.query.VariableIndexes ;
 import com.hp.hpl.jena.sparql.core.Var ;
-import com.hp.hpl.jena.sparql.util.ALog ;
+import org.openjena.atlas.logging.Log ;
 
 public class Q_Var extends ExprNodeRDQL implements ExprRDQL
 {
@@ -46,7 +46,7 @@ public class Q_Var extends ExprNodeRDQL implements ExprRDQL
         com.hp.hpl.jena.graph.Node v = (Node)env.get(index) ;
         if ( v == null )
         {
-            ALog.warn(this, "Unbound variable: "+varName) ;
+            Log.warn(this, "Unbound variable: "+varName) ;
             WorkingVar tmp = new WorkingVar() ;
             tmp.setString("unset: "+varName+"/"+index) ;
             return tmp ;

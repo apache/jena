@@ -27,7 +27,7 @@ import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
 import com.hp.hpl.jena.sparql.expr.ExprEvalTypeException ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
-import com.hp.hpl.jena.sparql.util.ALog ;
+import org.openjena.atlas.logging.Log ;
 import com.hp.hpl.jena.sparql.util.DateTimeStruct ;
 /**
  * Implementation of XQuery/XPath functions and operators.
@@ -150,7 +150,7 @@ public class XSDFuncOp
             return d1.divide(d2, DIVIDE_PRECISION, BigDecimal.ROUND_FLOOR) ;
         } catch (ArithmeticException ex)
         {
-            ALog.warn(XSDFuncOp.class, "ArithmeticException in decimal divide - attempting to treat as doubles") ;
+            Log.warn(XSDFuncOp.class, "ArithmeticException in decimal divide - attempting to treat as doubles") ;
             return new BigDecimal(d1.doubleValue()/d2.doubleValue()) ;
         }
     }

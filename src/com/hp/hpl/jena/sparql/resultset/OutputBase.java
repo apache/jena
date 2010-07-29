@@ -10,7 +10,7 @@ import java.io.ByteArrayOutputStream ;
 import java.io.UnsupportedEncodingException ;
 
 import com.hp.hpl.jena.query.ResultSet ;
-import com.hp.hpl.jena.sparql.util.ALog ;
+import org.openjena.atlas.logging.Log ;
 
 
 public abstract class OutputBase implements OutputFormatter
@@ -22,7 +22,7 @@ public abstract class OutputBase implements OutputFormatter
         try { return new String(arr.toByteArray(), "UTF-8") ; }
         catch (UnsupportedEncodingException e)
         {
-            ALog.warn(this, "UnsupportedEncodingException") ;
+            Log.warn(this, "UnsupportedEncodingException") ;
             return null ;
         }
     }
@@ -34,7 +34,7 @@ public abstract class OutputBase implements OutputFormatter
         try { return new String(arr.toByteArray(), "UTF-8") ; }
         catch (UnsupportedEncodingException e)
         {
-            ALog.warn(this, "UnsupportedEncodingException") ;
+            Log.warn(this, "UnsupportedEncodingException") ;
             return null ;
         }
     }

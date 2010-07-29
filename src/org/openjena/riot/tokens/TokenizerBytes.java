@@ -8,13 +8,13 @@
 package org.openjena.riot.tokens;
 
 import static org.openjena.atlas.lib.Chars.* ;
-import static org.openjena.riot.RiotChars.isA2Z ;
-import static org.openjena.riot.RiotChars.isA2ZN ;
-import static org.openjena.riot.RiotChars.isAlphaNumeric ;
-import static org.openjena.riot.RiotChars.isNewlineChar ;
-import static org.openjena.riot.RiotChars.isWhitespace ;
-import static org.openjena.riot.RiotChars.range ;
-import static org.openjena.riot.RiotChars.valHexChar ;
+import static org.openjena.riot.system.RiotChars.isA2Z ;
+import static org.openjena.riot.system.RiotChars.isA2ZN ;
+import static org.openjena.riot.system.RiotChars.isAlphaNumeric ;
+import static org.openjena.riot.system.RiotChars.isNewlineChar ;
+import static org.openjena.riot.system.RiotChars.isWhitespace ;
+import static org.openjena.riot.system.RiotChars.range ;
+import static org.openjena.riot.system.RiotChars.valHexChar ;
 
 import java.io.IOException ;
 import java.util.NoSuchElementException ;

@@ -13,7 +13,7 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
-import com.hp.hpl.jena.sparql.util.ALog ;
+import org.openjena.atlas.logging.Log ;
 
 public class AggCountDistinct extends AggregatorBase
 {
@@ -22,7 +22,7 @@ public class AggCountDistinct extends AggregatorBase
     public Aggregator copy(Expr expr)
     { 
         if ( expr != null )
-            ALog.warn(this, "Copying non-null expression for COUNT(DISTINCT *)") ;
+            Log.warn(this, "Copying non-null expression for COUNT(DISTINCT *)") ;
         return new AggCountDistinct() ; 
     }
     

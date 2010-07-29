@@ -1,47 +1,61 @@
 /*
- * (c) Copyright 2010 Talis Systems Ltd.
+ * (c) Copyright 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package org.openjena.riot;
+package org.openjena.riot.system;
 
-import org.openjena.riot.lang.LabelToNode ;
-import org.openjena.riot.tokens.Token ;
+import org.openjena.atlas.logging.Log ;
 
-import com.hp.hpl.jena.datatypes.RDFDatatype ;
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.iri.IRI ;
-import com.hp.hpl.jena.sparql.core.Quad ;
 
-public interface ParserProfile
+// UNUSED
+/** Extend a PrefixMap - never alters the partent PrefixMap */
+public class PrefixMap2 extends PrefixMap
 {
-//    public DatasetGraph createDatasetGraph(long line, long col) ;
-//    public Graph createGraph(long line, long col) ;
+    PrefixMap parent ;
+    PrefixMap local ;
     
-    public String resolveIRI(String uriStr, long line, long col) ;
-    public IRI makeIRI(String uriStr, long line, long col) ;
+    public PrefixMap2(PrefixMap parent)
+    {
+        this.parent = parent ;
+        this.local = new PrefixMap() ; 
+    }
     
-    public Triple createTriple(Node subject, Node predicate, Node object, long line, long col) ;
-    public Quad createQuad(Node graph, Node subject, Node predicate, Node object, long line, long col) ;    
-    public Node createURI(String uriStr, long line, long col) ;
-    public Node createTypedLiteral(String lexical, RDFDatatype datatype, long line, long col) ;
-    public Node createLangLiteral(String lexical, String langTag, long line, long col) ;
-    public Node createPlainLiteral(String lexical, long line, long col) ;
-    public Node createBlankNode(Node scope, String label, long line, long col) ;
+    /** Add a prefix, overwites any existing association */
+    @Override
+    public void add(String prefix, IRI iri)
+    { 
+        prefix = canonicalPrefix(prefix) ;
+        // Add to local always.
+        local.add(prefix, iri) ;
+    }
     
-    /** Make any node from a token as appropriate */
-    public Node create(Node currentGraph, Token token) ;
+    /** Add a prefix, overwites any existing association */
+    @Override
+    public void delete(String prefix)
+    { 
+        prefix = canonicalPrefix(prefix) ;
+        local.delete(prefix) ;
+        if ( parent._contains(prefix) )
+            Log.warn(this, "Attempt to delete a prefix in the parent" ) ;
+    }
     
-    public LabelToNode getLabelToNode() ;
-    public ErrorHandler getHandler() ;
-    public void setHandler(ErrorHandler handler) ;
-    public Prologue getPrologue() ;
+    /** Expand a prefix, return null if it can't be expanded */
+    @Override
+    public String expand(String prefix, String localName) 
+    { 
+        prefix = canonicalPrefix(prefix) ;
+        String x = local.expand(prefix, localName) ;
+        if ( x != null )
+            return x ;
+        return parent.expand(prefix, localName) ;
+    }
 }
 
 /*
- * (c) Copyright 2010 Talis Systems Ltd.
+ * (c) Copyright 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

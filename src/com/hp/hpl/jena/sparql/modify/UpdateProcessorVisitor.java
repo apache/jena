@@ -24,7 +24,7 @@ import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper ;
 import com.hp.hpl.jena.sparql.modify.op.* ;
 import com.hp.hpl.jena.sparql.syntax.Element ;
 import com.hp.hpl.jena.sparql.syntax.Template ;
-import com.hp.hpl.jena.sparql.util.ALog ;
+import org.openjena.atlas.logging.Log ;
 import com.hp.hpl.jena.sparql.util.FmtUtils ;
 import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
 import com.hp.hpl.jena.update.GraphStore ;
@@ -192,7 +192,7 @@ public class UpdateProcessorVisitor implements UpdateVisitor
             Triple triple = iter.next() ;
             if ( ! isGroundTriple(triple))
             {
-                ALog.warn(UpdateProcessorVisitor.class, "Unbound triple: "+FmtUtils.stringForTriple(triple)) ;
+                Log.warn(UpdateProcessorVisitor.class, "Unbound triple: "+FmtUtils.stringForTriple(triple)) ;
                 iter.remove() ;
             }
         }

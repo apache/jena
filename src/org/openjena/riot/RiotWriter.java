@@ -21,6 +21,7 @@ import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
 
+/** Output RDF in various formats (unfinished) */
 public class RiotWriter
 {
     // Work in progress

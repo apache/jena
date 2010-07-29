@@ -5,9 +5,10 @@
  * [See end of file]
  */
 
-package org.openjena.riot;
+package org.openjena.riot.system;
 
 import static org.openjena.riot.ErrorHandlerLib.errorHandlerStd ;
+import org.openjena.riot.ErrorHandler ;
 import org.openjena.riot.checker.CheckerBlankNodes ;
 import org.openjena.riot.checker.CheckerIRI ;
 import org.openjena.riot.checker.CheckerLiterals ;

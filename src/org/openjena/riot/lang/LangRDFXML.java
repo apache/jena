@@ -13,8 +13,8 @@ import org.openjena.atlas.io.IO ;
 import org.openjena.atlas.lib.Sink ;
 import org.openjena.riot.ErrorHandler ;
 import org.openjena.riot.Lang ;
-import org.openjena.riot.ParserProfile ;
 import org.openjena.riot.checker.CheckerLiterals ;
+import org.openjena.riot.system.ParserProfile ;
 import org.xml.sax.SAXException ;
 import org.xml.sax.SAXParseException ;
 

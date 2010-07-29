@@ -11,7 +11,7 @@ import java.io.OutputStream ;
 
 import org.junit.Test ;
 import org.openjena.atlas.junit.BaseTest ;
-import org.openjena.riot.JenaWriterNTriples2 ;
+import org.openjena.riot.system.JenaWriterNTriples2 ;
 
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.rdf.model.Model ;

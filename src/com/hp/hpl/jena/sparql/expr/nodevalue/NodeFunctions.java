@@ -15,7 +15,7 @@ import com.hp.hpl.jena.iri.Violation ;
 import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
 import com.hp.hpl.jena.sparql.expr.ExprTypeException ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
-import com.hp.hpl.jena.sparql.util.ALog ;
+import org.openjena.atlas.logging.Log ;
 import com.hp.hpl.jena.sparql.util.FmtUtils ;
 import com.hp.hpl.jena.vocabulary.XSD ;
 
@@ -297,7 +297,7 @@ public class NodeFunctions
                     Violation viol = iter.next() ;
                     msg = viol.getShortMessage() ;
                 }
-                ALog.warn(NodeFunctions.class, "Bad IRI: "+msg+": "+iri) ;
+                Log.warn(NodeFunctions.class, "Bad IRI: "+msg+": "+iri) ;
             }
             return NodeValue.makeNode(Node.createURI(iri.toString())) ;
         }

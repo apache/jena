@@ -33,7 +33,7 @@ import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.function.FunctionEnvBase ;
 import com.hp.hpl.jena.sparql.lang.sparql_11.SPARQLParser11 ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
-import com.hp.hpl.jena.sparql.util.ALog ;
+import org.openjena.atlas.logging.Log ;
 import com.hp.hpl.jena.sparql.util.ExprUtils ;
 import com.hp.hpl.jena.sparql.util.QueryExecUtils ;
 import com.hp.hpl.jena.sparql.util.Timer ;
@@ -50,7 +50,7 @@ public class RunARQ
         nextDivider = divider ;
     }
     
-    static { ALog.setLog4j() ; }
+    static { Log.setLog4j() ; }
     
     public static void runTest()
     {
@@ -227,7 +227,7 @@ public class RunARQ
         }
         catch (Throwable th)
         {
-            ALog.fatal(RunARQ.class, "Unexpected throwable: ",th) ;
+            Log.fatal(RunARQ.class, "Unexpected throwable: ",th) ;
             throw new QueryException(th.getMessage(), th) ;
         }
     }

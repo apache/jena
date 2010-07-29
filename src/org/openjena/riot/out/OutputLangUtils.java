@@ -11,8 +11,8 @@ import java.io.Writer ;
 import java.net.MalformedURLException ;
 
 import org.openjena.atlas.io.OutputUtils ;
-import org.openjena.riot.PrefixMap ;
-import org.openjena.riot.Prologue ;
+import org.openjena.riot.system.PrefixMap ;
+import org.openjena.riot.system.Prologue ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;

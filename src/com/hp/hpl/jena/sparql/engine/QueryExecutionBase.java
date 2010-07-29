@@ -38,7 +38,7 @@ import com.hp.hpl.jena.sparql.engine.binding.BindingRoot ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingUtils ;
 import com.hp.hpl.jena.sparql.syntax.ElementGroup ;
 import com.hp.hpl.jena.sparql.syntax.Template ;
-import com.hp.hpl.jena.sparql.util.ALog ;
+import org.openjena.atlas.logging.Log ;
 import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.sparql.util.DatasetUtils ;
 import com.hp.hpl.jena.sparql.util.ModelUtils ;
@@ -239,7 +239,7 @@ public class QueryExecutionBase implements QueryExecution
     {
         execInit() ;
         if ( queryIterator != null )
-            ALog.warn(this, "Query iterator has already been started") ;
+            Log.warn(this, "Query iterator has already been started") ;
         queryIterator = getPlan().iterator() ;
     }
     
@@ -283,7 +283,7 @@ public class QueryExecutionBase implements QueryExecution
 
         } catch (Exception ex)
         {
-            ALog.warn(this, "Exception in insertPrefixes: "+ex.getMessage(), ex) ;
+            Log.warn(this, "Exception in insertPrefixes: "+ex.getMessage(), ex) ;
         }
     }
 
@@ -307,7 +307,7 @@ public class QueryExecutionBase implements QueryExecution
             return dataset.asDatasetGraph() ;
         
         if ( ! query.hasDatasetDescription() ) 
-            //Query.ALog.warn(this, "No data for query (no URL, no model)");
+            //Query.Log.warn(this, "No data for query (no URL, no model)");
             throw new QueryExecException("No dataset description for query");
         
         String baseURI = query.getBaseURI() ;

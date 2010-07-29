@@ -13,7 +13,7 @@ import java.util.Set ;
 
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.sparql.ARQConstants ;
-import com.hp.hpl.jena.sparql.util.ALog ;
+import org.openjena.atlas.logging.Log ;
 import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.sparql.util.MappedLoader ;
 
@@ -78,7 +78,7 @@ public class FunctionRegistry //extends HashMap<String, Function>
     { 
         if ( ! Function.class.isAssignableFrom(funcClass) )
         {
-            ALog.warn(this, "Class "+funcClass.getName()+" is not a Function" );
+            Log.warn(this, "Class "+funcClass.getName()+" is not a Function" );
             return ; 
         }
         

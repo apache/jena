@@ -30,7 +30,7 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.expr.nodevalue.* ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
-import com.hp.hpl.jena.sparql.util.ALog ;
+import org.openjena.atlas.logging.Log ;
 import com.hp.hpl.jena.sparql.util.FmtUtils ;
 import com.hp.hpl.jena.sparql.util.NodeUtils ;
 import com.hp.hpl.jena.sparql.util.RefBoolean ;
@@ -232,7 +232,7 @@ public abstract class NodeValue extends ExprNode
         
         if ( langTag != null && datatype != null )
             // raise??
-            ALog.warn(NodeValue.class, "Both lang tag and datatype defined (lexcial form '"+lexicalForm+"')") ;
+            Log.warn(NodeValue.class, "Both lang tag and datatype defined (lexcial form '"+lexicalForm+"')") ;
         
         Node n = null ; 
         
@@ -854,7 +854,7 @@ public abstract class NodeValue extends ExprNode
     private static NodeValue nodeToNodeValue(Node node)
     {
         if ( node.isVariable() )
-            ALog.warn(NodeValue.class, "Variable passed to NodeValue.nodeToNodeValue") ;
+            Log.warn(NodeValue.class, "Variable passed to NodeValue.nodeToNodeValue") ;
 
         if ( ! node.isLiteral() )
             // Not a literal - no value to extract
@@ -871,7 +871,7 @@ public abstract class NodeValue extends ExprNode
             if ( node.getLiteralDatatypeURI() != null )
             {
                 if ( NodeValue.VerboseWarnings )
-                    ALog.warn(NodeValue.class, "Lang tag and datatype (datatype ignored)") ;
+                    Log.warn(NodeValue.class, "Lang tag and datatype (datatype ignored)") ;
             }
             return new NodeValueNode(node) ;
         }
@@ -887,7 +887,7 @@ public abstract class NodeValue extends ExprNode
             if ( NodeValue.VerboseWarnings )
             {
                 String tmp =  FmtUtils.stringForNode(node) ;
-                ALog.warn(NodeValue.class, "Datatype format exception: "+tmp) ;
+                Log.warn(NodeValue.class, "Datatype format exception: "+tmp) ;
             }
             // Invalid lexical form.
             return new NodeValueNode(node) ;

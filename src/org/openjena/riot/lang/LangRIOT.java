@@ -8,7 +8,7 @@
 package org.openjena.riot.lang;
 
 import org.openjena.riot.Lang ;
-import org.openjena.riot.ParserProfile ;
+import org.openjena.riot.system.ParserProfile ;
 
 public interface LangRIOT
 {

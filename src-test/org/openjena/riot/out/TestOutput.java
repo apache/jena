@@ -14,7 +14,7 @@ import java.io.Writer ;
 
 import org.junit.Test ;
 import org.openjena.atlas.junit.BaseTest ;
-import org.openjena.riot.Prologue ;
+import org.openjena.riot.system.Prologue ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.sse.SSE ;

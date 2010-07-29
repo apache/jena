@@ -32,7 +32,7 @@ import com.hp.hpl.jena.sparql.expr.aggregate.Aggregator ;
 import com.hp.hpl.jena.sparql.serializer.Serializer ;
 import com.hp.hpl.jena.sparql.syntax.Element ;
 import com.hp.hpl.jena.sparql.syntax.Template ;
-import com.hp.hpl.jena.sparql.util.ALog ;
+import org.openjena.atlas.logging.Log ;
 import com.hp.hpl.jena.sparql.util.FmtUtils ;
 
 /** The data structure for a query as presented externally.
@@ -498,7 +498,7 @@ public class Query extends Prologue implements Cloneable
         {
             // Consistentecy checking
             if ( ! agg.equalsAsExpr(expr.getAggregator()) )
-                ALog.warn(Query.class, "Internal inconsistency: Aggregator: "+agg) ;
+                Log.warn(Query.class, "Internal inconsistency: Aggregator: "+agg) ;
         }
         return expr ;
     }
@@ -549,7 +549,7 @@ public class Query extends Prologue implements Cloneable
         if ( getQueryPattern() == null )
         {
             if ( ! this.isDescribeType() )
-                ALog.warn(this, "setResultVars(): no query pattern") ;
+                Log.warn(this, "setResultVars(): no query pattern") ;
             return ;
         }
         

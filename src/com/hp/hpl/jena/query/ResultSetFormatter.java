@@ -21,7 +21,7 @@ import com.hp.hpl.jena.sparql.ARQNotImplemented ;
 import com.hp.hpl.jena.sparql.core.Prologue ;
 import com.hp.hpl.jena.sparql.resultset.* ;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
-import com.hp.hpl.jena.sparql.util.ALog ;
+import org.openjena.atlas.logging.Log ;
 import com.hp.hpl.jena.util.FileUtils ;
 
 /** ResultSetFormatter - Convenience ways to call the various output formatters.
@@ -144,7 +144,7 @@ public class ResultSetFormatter
         try { return new String(arr.toByteArray(), "UTF-8") ; }
         catch (UnsupportedEncodingException e)
         {
-            ALog.warn(ResultSetFormatter.class, "UnsupportedEncodingException") ;
+            Log.warn(ResultSetFormatter.class, "UnsupportedEncodingException") ;
             return null ;
         }
     }
@@ -164,7 +164,7 @@ public class ResultSetFormatter
         try { return new String(arr.toByteArray(), "UTF-8") ; }
         catch (UnsupportedEncodingException e)
         {
-            ALog.warn(ResultSetFormatter.class, "UnsupportedEncodingException") ;
+            Log.warn(ResultSetFormatter.class, "UnsupportedEncodingException") ;
             return null ;
         }
     }
@@ -306,7 +306,7 @@ public class ResultSetFormatter
             return ;
         }
         
-        ALog.warn(ResultSetFormatter.class, "Unknown ResultSetFormat: "+rFmt);
+        Log.warn(ResultSetFormatter.class, "Unknown ResultSetFormat: "+rFmt);
     }
     
     /** Write out an RDF model that encodes the result set

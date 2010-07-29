@@ -19,7 +19,7 @@ import org.openjena.atlas.lib.Sink ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
-import com.hp.hpl.jena.sparql.util.ALog ;
+import org.openjena.atlas.logging.Log ;
 
 
 /** A buffering writer, send output to a channel (WriteableByteChannel)
@@ -163,7 +163,7 @@ public final class BufferingWriter extends Writer
         }
         
         if ( bb.position() == 0 )
-            ALog.warn(BufferingWriter.class, "Sending zero bytes") ;
+            Log.warn(BufferingWriter.class, "Sending zero bytes") ;
         
         bb.flip() ;
         out.send(bb) ;

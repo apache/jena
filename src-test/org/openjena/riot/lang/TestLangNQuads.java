@@ -13,9 +13,9 @@ import org.openjena.atlas.lib.SinkNull ;
 import org.openjena.atlas.lib.StrUtils ;
 import org.openjena.riot.RiotLoader ;
 import org.openjena.riot.RiotReader ;
-import org.openjena.riot.RiotLib ;
 import org.openjena.riot.ErrorHandlerTestLib.ErrorHandlerEx ;
 import org.openjena.riot.ErrorHandlerTestLib.ExFatal ;
+import org.openjena.riot.system.RiotLib ;
 import org.openjena.riot.tokens.Tokenizer ;
 import org.openjena.riot.tokens.TokenizerFactory ;
 

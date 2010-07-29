@@ -11,6 +11,7 @@ import java.util.Iterator ;
 import java.util.List ;
 
 import org.openjena.atlas.iterator.Iter ;
+import org.openjena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.QueryExecException ;
@@ -33,7 +34,6 @@ import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.expr.ExprList ;
 import com.hp.hpl.jena.sparql.procedure.ProcEval ;
 import com.hp.hpl.jena.sparql.procedure.Procedure ;
-import com.hp.hpl.jena.sparql.util.ALog ;
 
 /**
  * Turn an Op expression into an execution of QueryIterators.
@@ -131,18 +131,17 @@ public class OpExecutor
         // Convert to BGP forms to execute in this graph-centric engine.
         if ( quadPattern.isDefaultGraph() && execCxt.getActiveGraph() == execCxt.getDataset().getDefaultGraph() )
         {
-            // Note we tested that the containgin graph was the dataset's default graph. 
+            // Note we tested that the containing graph was the dataset's default graph. 
             // Easy case.
             OpBGP opBGP = new OpBGP(quadPattern.getBasicPattern()) ;
             return execute(opBGP, input) ;  
         }
         if ( Quad.isQuadUnionGraph(quadPattern.getGraphNode()) )
-            ALog.warn(this, "Not implemented yet: quad/union default graph in general OpExecutor") ;
+            Log.warn(this, "Not implemented yet: quad/union default graph in general OpExecutor") ;
         
         // Not default graph - (graph .... )
         OpBGP opBGP = new OpBGP(quadPattern.getBasicPattern()) ;
         OpGraph op = new OpGraph(quadPattern.getGraphNode(), opBGP) ;
-        // This passes to the  
         return execute(op, input) ;
     }
 
@@ -298,13 +297,10 @@ public class OpExecutor
             return execute(subOp, cxt2) ;
         }
         
-//        if ( gn == Quad.unionGraph )
-//        {
-//            
-//        }
-        
-        /*
-        
+        if ( gn == Quad.unionGraph )
+        {}
+
+        /* Bad
         if ( gn == Quad.tripleInQuad ) {}
          */
 

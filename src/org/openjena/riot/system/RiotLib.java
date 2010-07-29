@@ -4,8 +4,12 @@
  * [See end of file]
  */
 
-package org.openjena.riot;
+package org.openjena.riot.system;
 
+import org.openjena.atlas.logging.Log ;
+import org.openjena.riot.ErrorHandler ;
+import org.openjena.riot.ErrorHandlerLib ;
+import org.openjena.riot.Lang ;
 import org.openjena.riot.tokens.Token ;
 import org.openjena.riot.tokens.Tokenizer ;
 import org.openjena.riot.tokens.TokenizerFactory ;
@@ -13,7 +17,7 @@ import org.openjena.riot.tokens.TokenizerFactory ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.ARQConstants ;
 
-/** Direct parsing of strings to node using RIOT */
+/** Misc RIOT code */
 public class RiotLib
 {
     static ParserProfile profile = profile(Lang.TURTLE, null, null) ;
@@ -29,6 +33,7 @@ public class RiotLib
         pmap.add("" ,    "http://example/") ;
     }
     
+    /** Parse a string to get one Node (the first token in the string) */ 
     public static Node parse(String string)
     {
         Tokenizer tokenizer = TokenizerFactory.makeTokenizerString(string) ;
@@ -36,6 +41,8 @@ public class RiotLib
             return null ;
         Token t = tokenizer.next();
         Node n = profile.create(null, t) ;
+        if ( tokenizer.hasNext() )
+            Log.warn(RiotLib.class, "String has more than one token in it: "+string) ;
         return n ;
     }
 

@@ -17,7 +17,7 @@ import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.sparql.core.BasicPattern ;
-import com.hp.hpl.jena.sparql.util.ALog ;
+import org.openjena.atlas.logging.Log ;
 import com.hp.hpl.jena.util.iterator.NiceIterator ;
 import com.hp.hpl.jena.vocabulary.RDF ;
 
@@ -95,7 +95,7 @@ public class GraphList
             return null ;
         Triple t = iter.next() ;
         if ( iter.hasNext() )
-            ALog.warn(GraphList.class, "Unusual list: two arcs with same property ("+arc+")") ;
+            Log.warn(GraphList.class, "Unusual list: two arcs with same property ("+arc+")") ;
         NiceIterator.close(iter) ;
         return t ;    
     }
@@ -337,7 +337,7 @@ public class GraphList
             return null ;
         Triple t = iter.next() ;
         if ( iter.hasNext() )
-            ALog.warn(GraphList.class, "Unusual list: two arcs with same property ("+arc+")") ;
+            Log.warn(GraphList.class, "Unusual list: two arcs with same property ("+arc+")") ;
         NiceIterator.close(iter) ;
         return t ;         
     }

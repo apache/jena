@@ -7,9 +7,9 @@
 package org.openjena.riot.lang;
 
 import org.junit.Test ;
-import org.openjena.riot.Checker ;
 import org.openjena.riot.ErrorHandler ;
 import org.openjena.riot.checker.CheckerIRI ;
+import org.openjena.riot.system.Checker ;
 
 import com.hp.hpl.jena.iri.IRI ;
 import com.hp.hpl.jena.iri.IRIFactory ;

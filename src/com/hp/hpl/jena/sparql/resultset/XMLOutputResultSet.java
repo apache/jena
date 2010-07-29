@@ -18,7 +18,7 @@ import com.hp.hpl.jena.query.ResultSet ;
 import com.hp.hpl.jena.rdf.model.Literal ;
 import com.hp.hpl.jena.rdf.model.RDFNode ;
 import com.hp.hpl.jena.rdf.model.Resource ;
-import com.hp.hpl.jena.sparql.util.ALog ;
+import org.openjena.atlas.logging.Log ;
 
 /** XML Output (ResultSet format)
  * 
@@ -158,7 +158,7 @@ public class XMLOutputResultSet
             return ;
         }
         
-        ALog.warn(this,"Unknown RDFNode type in result set: "+node.getClass()) ;
+        Log.warn(this,"Unknown RDFNode type in result set: "+node.getClass()) ;
     }
     
     void printLiteral(Literal literal)

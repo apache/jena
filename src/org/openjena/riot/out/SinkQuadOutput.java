@@ -14,7 +14,7 @@ import java.nio.charset.CharsetEncoder ;
 import org.openjena.atlas.io.BufferingWriter ;
 import org.openjena.atlas.lib.Chars ;
 import org.openjena.atlas.lib.Sink ;
-import org.openjena.riot.Prologue ;
+import org.openjena.riot.system.Prologue ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.core.Quad ;

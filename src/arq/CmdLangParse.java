@@ -24,6 +24,8 @@ import org.openjena.riot.lang.LangRDFXML ;
 import org.openjena.riot.lang.LangRIOT ;
 import org.openjena.riot.out.SinkQuadOutput ;
 import org.openjena.riot.out.SinkTripleOutput ;
+import org.openjena.riot.system.IRIResolver ;
+import org.openjena.riot.system.RiotLib ;
 import org.openjena.riot.tokens.Tokenizer ;
 import org.openjena.riot.tokens.TokenizerFactory ;
 import arq.cmd.CmdException ;

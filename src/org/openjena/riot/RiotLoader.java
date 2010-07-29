@@ -22,6 +22,12 @@ import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.lib.DatasetLib ;
 
+/** Convenience operations to read RDF into graphs and datasets, 
+ * optionally creating an in-memory object as container.
+ * Methods named "<code>load</code>" create containers, methods,
+ * called "<code>read</code>" take a container as argument.  
+ */
+
 public class RiotLoader
 {
 //    static private Loader loader = new Loader() ;
@@ -85,11 +91,11 @@ public class RiotLoader
     public static void read(InputStream input, DatasetGraph dataset, Lang language, String baseURI)
     {
         Sink<Quad> sink = RiotLoader.datasetSink(dataset) ;
-        read(input, language, baseURI, sink) ;
+        readQuads(input, language, baseURI, sink) ;
     }
     
     /** Parse an input stream and send the quads to the sink */ 
-    public static void read(InputStream input, Lang language, String baseURI, Sink<Quad> sink)
+    public static void readQuads(InputStream input, Lang language, String baseURI, Sink<Quad> sink)
     {
         if ( language == Lang.NQUADS )
         {
@@ -108,6 +114,24 @@ public class RiotLoader
         throw new RiotException("Language not supported for quads: "+language) ;
     }
 
+    /** Parse an input stream and send the triples to the sink */ 
+    public static void readTriples(InputStream input, Lang language, String baseURI, Sink<Triple> sink)
+    {
+        LangRIOT parser ;
+        switch (language)
+        { case NTRIPLES :
+            parser = RiotReader.createParserNTriples(input, sink) ;
+            break ;
+        case TURTLE:
+            parser = RiotReader.createParserTurtle(input, baseURI, sink) ;
+            break ;
+        default:
+            throw new RiotException("Language not supported for triples: "+language) ;
+        }
+        parser.parse() ;
+        sink.flush();
+        return ;
+    }
 
     // Better place?
     // DatasetLoader + "ModelLib" with model graph versions

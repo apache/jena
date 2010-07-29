@@ -16,7 +16,7 @@ import com.hp.hpl.jena.shared.JenaException ;
 import com.hp.hpl.jena.shared.PrefixMapping ;
 import com.hp.hpl.jena.sparql.core.Prologue ;
 import com.hp.hpl.jena.sparql.lang.arq.ARQParser ;
-import com.hp.hpl.jena.sparql.util.ALog ;
+import org.openjena.atlas.logging.Log ;
 
 public class PathParser
 {
@@ -55,7 +55,7 @@ public class PathParser
         }
         catch (Throwable th)
         {
-            ALog.warn(PathParser.class, "Unexpected throwable: ",th) ;
+            Log.warn(PathParser.class, "Unexpected throwable: ",th) ;
             throw new QueryException(th.getMessage(), th) ;
         }
     }

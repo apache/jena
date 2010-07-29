@@ -1,49 +1,48 @@
 /*
- * (c) Copyright 2009 Hewlett-Packard Development Company, LP
- * (c) Copyright 2010 Talis Systems Ltd
+ * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
-package org.openjena.riot;
+package org.openjena.riot.system;
 
-import java.util.Map ;
+import org.openjena.riot.ErrorHandler ;
+import org.openjena.riot.lang.LabelToNode ;
+import org.openjena.riot.tokens.Token ;
 
-import org.openjena.atlas.lib.Sink ;
-import org.openjena.riot.lang.LangTurtle ;
-import org.openjena.riot.tokens.Tokenizer ;
-
+import com.hp.hpl.jena.datatypes.RDFDatatype ;
+import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.iri.IRI ;
-import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.sparql.core.Quad ;
 
-
-/** Jena reader for RIOT Turtle */
-public class JenaReaderTurtle2 extends JenaReaderRIOT
+public interface ParserProfile
 {
-    public JenaReaderTurtle2() {}
+//    public DatasetGraph createDatasetGraph(long line, long col) ;
+//    public Graph createGraph(long line, long col) ;
     
-    @Override
-    protected void readWorker(Model model, Tokenizer tokenizer, String base)
-    {
-        Sink<Triple> sink = RiotLoader.graphSink(model.getGraph()) ;
-        try {
-            LangTurtle parser = RiotReader.createParserTurtle(tokenizer, base, sink) ;
-            parser.parse() ;
-            // Merge prefixes.
-            for ( Map.Entry<String,IRI> e : parser.getProfile().getPrologue().getPrefixMap().getMapping().entrySet() )
-                model.setNsPrefix(e.getKey(), e.getValue().toString()) ;
-        } finally 
-        {
-            sink.close() ;
-            tokenizer.close() ;
-        }
-    }
+    public String resolveIRI(String uriStr, long line, long col) ;
+    public IRI makeIRI(String uriStr, long line, long col) ;
+    
+    public Triple createTriple(Node subject, Node predicate, Node object, long line, long col) ;
+    public Quad createQuad(Node graph, Node subject, Node predicate, Node object, long line, long col) ;    
+    public Node createURI(String uriStr, long line, long col) ;
+    public Node createTypedLiteral(String lexical, RDFDatatype datatype, long line, long col) ;
+    public Node createLangLiteral(String lexical, String langTag, long line, long col) ;
+    public Node createPlainLiteral(String lexical, long line, long col) ;
+    public Node createBlankNode(Node scope, String label, long line, long col) ;
+    
+    /** Make any node from a token as appropriate */
+    public Node create(Node currentGraph, Token token) ;
+    
+    public LabelToNode getLabelToNode() ;
+    public ErrorHandler getHandler() ;
+    public void setHandler(ErrorHandler handler) ;
+    public Prologue getPrologue() ;
 }
 
 /*
- * (c) Copyright 2009 Hewlett-Packard Development Company, LP
- * (c) Copyright 2010 Talis Systems Ltd
+ * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

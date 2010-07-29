@@ -18,7 +18,7 @@ import com.hp.hpl.jena.sparql.ARQNotImplemented ;
 import com.hp.hpl.jena.sparql.lang.sparql_11.SPARQLParser11 ;
 import com.hp.hpl.jena.sparql.syntax.Element ;
 import com.hp.hpl.jena.sparql.syntax.Template ;
-import com.hp.hpl.jena.sparql.util.ALog ;
+import org.openjena.atlas.logging.Log ;
 
 
 public class ParserSPARQL11 extends Parser
@@ -108,7 +108,7 @@ public class ParserSPARQL11 extends Parser
         }
         catch (Throwable th)
         {
-            ALog.warn(ParserSPARQL11.class, "Unexpected throwable: ",th) ;
+            Log.warn(ParserSPARQL11.class, "Unexpected throwable: ",th) ;
             throw new QueryException(th.getMessage(), th) ;
         }
     }

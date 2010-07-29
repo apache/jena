@@ -9,7 +9,7 @@ package com.hp.hpl.jena.sparql.engine.optimizer.reorder;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.sparql.ARQException ;
 import com.hp.hpl.jena.sparql.core.BasicPattern ;
-import com.hp.hpl.jena.sparql.util.ALog ;
+import org.openjena.atlas.logging.Log ;
 
 public class ReorderProcIndexes implements ReorderProc
 {
@@ -29,7 +29,7 @@ public class ReorderProcIndexes implements ReorderProc
         if ( indexes.length != bgp.size() )
         {
             String str = String.format("Expected size = %d : actual basic pattern size = %d", indexes.length, bgp.size()) ;
-            ALog.fatal(this, str) ;
+            Log.fatal(this, str) ;
             throw new ARQException(str) ; 
         }        
         

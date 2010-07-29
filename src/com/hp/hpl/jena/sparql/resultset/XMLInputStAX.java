@@ -33,7 +33,7 @@ import com.hp.hpl.jena.sparql.core.ResultBinding ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap ;
-import com.hp.hpl.jena.sparql.util.ALog ;
+import org.openjena.atlas.logging.Log ;
 import com.hp.hpl.jena.sparql.util.LabelToNodeMap ;
 import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
 
@@ -203,7 +203,7 @@ class XMLInputStAX extends SPARQLResult
             
         } catch (XMLStreamException ex)
         {
-            ALog.warn(this ,"XMLStreamException: "+ex.getMessage(), ex) ;
+            Log.warn(this ,"XMLStreamException: "+ex.getMessage(), ex) ;
         }
     }
         
@@ -338,7 +338,7 @@ class XMLInputStAX extends SPARQLResult
             String s2 = "" ;
             if ( stopElementNames != null )
                 s2 = StrUtils.strjoin(", ",stopElementNames) ;
-            ALog.warn(this, "Failed to find start of stop of specified elements: "+s1+" :: "+s2) ; 
+            Log.warn(this, "Failed to find start of stop of specified elements: "+s1+" :: "+s2) ; 
         }
     }
     
@@ -502,13 +502,13 @@ class XMLInputStAX extends SPARQLResult
 
     private void staxError(String msg)
     {
-        ALog.warn(this, "StAX error: "+msg) ;
+        Log.warn(this, "StAX error: "+msg) ;
         throw new ResultSetException(msg) ;
     }
 
     private void staxError(String msg, Throwable th)
     {
-        ALog.warn(this, "StAX error: "+msg, th) ;
+        Log.warn(this, "StAX error: "+msg, th) ;
         throw new ResultSetException(msg, th) ;
     }
     }

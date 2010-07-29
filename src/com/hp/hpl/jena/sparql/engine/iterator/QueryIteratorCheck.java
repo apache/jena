@@ -13,7 +13,7 @@ import org.openjena.atlas.io.IndentedWriter ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
-import com.hp.hpl.jena.sparql.util.ALog ;
+import org.openjena.atlas.logging.Log ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 
 /** Query iterator that checks everything was closed correctly 
@@ -96,7 +96,7 @@ public class QueryIteratorCheck extends QueryIteratorWrapper
             if ( x.length() > 0 )
                 str = str+" : "+x ;
         }
-        ALog.warn(QueryIteratorCheck.class, str) ;
+        Log.warn(QueryIteratorCheck.class, str) ;
     }
 }
 /*

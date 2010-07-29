@@ -20,7 +20,7 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingRoot ;
 import com.hp.hpl.jena.sparql.engine.http.QueryEngineHTTP ;
 import com.hp.hpl.jena.sparql.syntax.Element ;
-import com.hp.hpl.jena.sparql.util.ALog ;
+import org.openjena.atlas.logging.Log ;
 import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.util.FileManager ;
 
@@ -537,7 +537,7 @@ public class QueryExecutionFactory
         QueryEngineFactory f = findFactory(query, dsg, context);
         if ( f == null )
         {
-            ALog.warn(QueryExecutionFactory.class, "Failed to find a QueryEngineFactory for query: "+query) ;
+            Log.warn(QueryExecutionFactory.class, "Failed to find a QueryEngineFactory for query: "+query) ;
             return null ;
         }
         return new QueryExecutionBase(query, dataset, context, f) ;

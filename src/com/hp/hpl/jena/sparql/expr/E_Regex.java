@@ -6,7 +6,7 @@
 package com.hp.hpl.jena.sparql.expr;
 
 import com.hp.hpl.jena.query.ARQ ;
-import com.hp.hpl.jena.sparql.util.ALog ;
+import org.openjena.atlas.logging.Log ;
 import com.hp.hpl.jena.sparql.util.Symbol ;
 
 //import java.util.regex.* ;
@@ -29,13 +29,13 @@ public class E_Regex extends ExprFunction3
         
         if ( regexImpl == null )
         {
-            ALog.warn(E_Regex.class, "Regex implementation some weird setting: default to Java") ;
+            Log.warn(E_Regex.class, "Regex implementation some weird setting: default to Java") ;
             regexImpl = ARQ.javaRegex;
         }
         if ( !regexImpl.equals(ARQ.javaRegex) &&
              !regexImpl.equals(ARQ.xercesRegex) )
         {
-            ALog.warn(E_Regex.class, "Regex implementation not recognized : default to Java") ;
+            Log.warn(E_Regex.class, "Regex implementation not recognized : default to Java") ;
             regexImpl = ARQ.javaRegex;
         }  
     }

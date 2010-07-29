@@ -17,7 +17,7 @@ import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingRoot ;
 import com.hp.hpl.jena.sparql.mgt.QueryEngineInfo ;
-import com.hp.hpl.jena.sparql.util.ALog ;
+import org.openjena.atlas.logging.Log ;
 import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.sparql.util.NodeFactory ;
 
@@ -60,7 +60,7 @@ public abstract class QueryEngineBase implements OpEval, Closeable
         
         if ( input == null )
         {
-            ALog.warn(this, "Null initial input") ;
+            Log.warn(this, "Null initial input") ;
             input = BindingRoot.create() ;
         }
         this.startBinding = input ;

@@ -65,7 +65,7 @@ public class VarExprList
                 return null ;
             return nv.asNode() ;
         } catch (ExprEvalException ex)
-        //{ ALog.warn(this, "Eval failure "+expr+": "+ex.getMessage()) ; }
+        //{ Log.warn(this, "Eval failure "+expr+": "+ex.getMessage()) ; }
         { }
         return null ;
     }

@@ -20,7 +20,7 @@ import com.hp.hpl.jena.rdf.model.Resource ;
 import com.hp.hpl.jena.sparql.lib.org.json.JSONArray ;
 import com.hp.hpl.jena.sparql.lib.org.json.JSONException ;
 import com.hp.hpl.jena.sparql.lib.org.json.JSONObject ;
-import com.hp.hpl.jena.sparql.util.ALog ;
+import org.openjena.atlas.logging.Log ;
 
 /**
  * JSON Output as a JSON object
@@ -125,7 +125,7 @@ public class JSONObjectResult implements ResultSetProcessor
         if (node instanceof Resource)
             return resourceAsJSON((Resource) node);
         
-        ALog.warn(this, "Unknown RDFNode type in result set: " + node.getClass());
+        Log.warn(this, "Unknown RDFNode type in result set: " + node.getClass());
         return jsonValue ;
     }
     

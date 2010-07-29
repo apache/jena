@@ -24,7 +24,7 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingUtils ;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
-import com.hp.hpl.jena.sparql.util.ALog ;
+import org.openjena.atlas.logging.Log ;
 import com.hp.hpl.jena.sparql.util.FmtUtils ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 import com.hp.hpl.jena.util.iterator.ClosableIterator ;
@@ -92,7 +92,7 @@ public class QueryIterBlockTriplesQH extends QueryIterRepeatApply
             BindingQueryPlan plan = qh.prepareBindings(graphQuery, projectionVars);
             graphIter = plan.executeBindings() ;
             if ( graphIter == null )
-                ALog.warn(this, "Graph Iterator is null") ;
+                Log.warn(this, "Graph Iterator is null") ;
         }
 
         @Override
@@ -146,7 +146,7 @@ public class QueryIterBlockTriplesQH extends QueryIterRepeatApply
     
     private static void compileConstraints(com.hp.hpl.jena.graph.query.Query graphQuery, List<?> constraints)
     {
-        ALog.warn(QueryIterBlockTriplesQH.class, "Call to compileConstraints for Jena Expressions") ;
+        Log.warn(QueryIterBlockTriplesQH.class, "Call to compileConstraints for Jena Expressions") ;
     }
     
     public static Var[] projectionVars(Set<Var> vars)

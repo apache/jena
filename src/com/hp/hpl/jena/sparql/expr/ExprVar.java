@@ -56,7 +56,7 @@ public class ExprVar extends ExprNode
         return eval(binding, null) ;
 //        catch (VariableNotBoundException ex)
 //        {
-//            ALog.warn(this, "Failed to eval bound variable (was bound earlier!)");
+//            Log.warn(this, "Failed to eval bound variable (was bound earlier!)");
 //            throw ex ;
 //        }
     }

@@ -6,6 +6,7 @@
 
 package org.openjena.riot;
 
+/** Retrive data from the web */
 public class WebReader
 {
 

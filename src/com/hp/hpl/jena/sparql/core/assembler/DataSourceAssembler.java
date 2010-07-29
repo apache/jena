@@ -17,7 +17,7 @@ import com.hp.hpl.jena.query.DatasetFactory ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.RDFNode ;
 import com.hp.hpl.jena.rdf.model.Resource ;
-import com.hp.hpl.jena.sparql.util.ALog ;
+import org.openjena.atlas.logging.Log ;
 import com.hp.hpl.jena.sparql.util.FmtUtils ;
 import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
 import com.hp.hpl.jena.sparql.util.graph.GraphUtils ;
@@ -62,7 +62,7 @@ public class DataSourceAssembler extends AssemblerBase implements Assembler
             {
                 g = GraphUtils.getResourceValue(r, DatasetAssemblerVocab.pGraphAlt) ;
                 if ( g != null )
-                    ALog.warn(this, "Use of old vocabulary: use :graph not :graphData") ;
+                    Log.warn(this, "Use of old vocabulary: use :graph not :graphData") ;
                 else
                     throw new DatasetAssemblerException(root, "no graph for: "+gName) ;
             }

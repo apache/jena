@@ -12,7 +12,7 @@ import org.openjena.atlas.lib.Cache ;
 import org.openjena.atlas.lib.CacheFactory ;
 import org.openjena.riot.ErrorHandler ;
 import org.openjena.riot.ErrorHandlerLib ;
-import org.openjena.riot.IRIResolver ;
+import org.openjena.riot.system.IRIResolver ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.iri.IRI ;

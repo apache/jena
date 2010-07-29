@@ -8,6 +8,8 @@
 package org.openjena.riot;
 
 import org.openjena.atlas.event.EventType ;
+import org.openjena.riot.system.JenaReaderNTriples2 ;
+import org.openjena.riot.system.JenaReaderTurtle2 ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 

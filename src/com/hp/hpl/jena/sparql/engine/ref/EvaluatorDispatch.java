@@ -17,7 +17,7 @@ import com.hp.hpl.jena.sparql.algebra.TableFactory ;
 import com.hp.hpl.jena.sparql.algebra.op.* ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.http.Service ;
-import com.hp.hpl.jena.sparql.util.ALog ;
+import org.openjena.atlas.logging.Log ;
 
 /**  Class to provide type-safe eval() dispatch using the visitor support of Op */
 
@@ -42,7 +42,7 @@ public class EvaluatorDispatch implements OpVisitor
     Table getResult()
     {
         if ( stack.size() != 1 )
-            ALog.warn(this, "Warning: getResult: stack size = "+stack.size()) ;
+            Log.warn(this, "Warning: getResult: stack size = "+stack.size()) ;
         
         Table table = pop() ;
         return table ;
@@ -267,7 +267,7 @@ public class EvaluatorDispatch implements OpVisitor
     protected Table pop()
     { 
         if ( stack.size() == 0 )
-            ALog.warn(this, "Warning: pop: empty stack") ;
+            Log.warn(this, "Warning: pop: empty stack") ;
         return stack.pop() ;
     }
 

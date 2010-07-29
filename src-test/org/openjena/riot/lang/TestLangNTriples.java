@@ -12,11 +12,11 @@ import java.io.StringReader ;
 import org.junit.Test ;
 import org.openjena.atlas.lib.SinkCounting ;
 import org.openjena.atlas.lib.StrUtils ;
-import org.openjena.riot.JenaReaderNTriples2 ;
 import org.openjena.riot.RiotReader ;
-import org.openjena.riot.RiotLib ;
 import org.openjena.riot.ErrorHandlerTestLib.ErrorHandlerEx ;
 import org.openjena.riot.ErrorHandlerTestLib.ExFatal ;
+import org.openjena.riot.system.JenaReaderNTriples2 ;
+import org.openjena.riot.system.RiotLib ;
 import org.openjena.riot.tokens.Tokenizer ;
 import org.openjena.riot.tokens.TokenizerFactory ;
 

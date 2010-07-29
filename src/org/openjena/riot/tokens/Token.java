@@ -32,9 +32,9 @@ import java.util.List ;
 import org.openjena.atlas.io.PeekReader ;
 import org.openjena.atlas.iterator.Iter ;
 import org.openjena.atlas.lib.Pair ;
-import org.openjena.riot.PrefixMap ;
-import org.openjena.riot.Prologue ;
 import org.openjena.riot.RiotException ;
+import org.openjena.riot.system.PrefixMap ;
+import org.openjena.riot.system.Prologue ;
 
 import com.hp.hpl.jena.datatypes.RDFDatatype ;
 import com.hp.hpl.jena.datatypes.TypeMapper ;

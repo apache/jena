@@ -78,12 +78,12 @@ public class NodeToLabelMap
 //    {
 //        if ( prefix == null )
 //        {
-//            ALog.fatal(this,"Prefix string is null") ;
+//            Log.fatal(this,"Prefix string is null") ;
 //            throw new ARQInternalErrorException("Prefix string is null") ;
 //        }
 //        if ( prefix.equals("") )
 //        {
-//            ALog.fatal(this,"Prefix string is the empty string") ;
+//            Log.fatal(this,"Prefix string is the empty string") ;
 //            throw new ARQInternalErrorException("Prefix string is the empty string") ;
 //        }
 //            

@@ -19,7 +19,7 @@ import com.hp.hpl.jena.shared.PropertyNotFoundException ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap ;
-import com.hp.hpl.jena.sparql.util.ALog ;
+import org.openjena.atlas.logging.Log ;
 import com.hp.hpl.jena.sparql.vocabulary.ResultSetGraphVocab ;
 import com.hp.hpl.jena.vocabulary.RDF ;
 
@@ -86,7 +86,7 @@ public class RDFInput extends ResultSetMem
         solnIter.close() ;
         if ( indexed > 0 && rows != indexed )
         {
-            ALog.warn(this, "Rows = "+rows+" but only "+indexed+" indexes" ) ;
+            Log.warn(this, "Rows = "+rows+" but only "+indexed+" indexes" ) ;
             return rows ;
         }
         return rows ;
@@ -104,7 +104,7 @@ public class RDFInput extends ResultSetMem
                 break ;
             Statement s = sIter.nextStatement() ;
             if ( sIter.hasNext() )
-                ALog.warn(this, "More than one solution: index = "+index) ;
+                Log.warn(this, "More than one solution: index = "+index) ;
             Resource soln = s.getSubject() ;
 
             Binding rb = buildBinding(soln) ;
@@ -112,7 +112,7 @@ public class RDFInput extends ResultSetMem
             sIter.close() ;
         }
         if ( rows.size() != count )
-            ALog.warn(this, "Found "+rows.size()+": expected "+count) ;
+            Log.warn(this, "Found "+rows.size()+": expected "+count) ;
     }
     
     private void buildRows(Resource root)
@@ -135,7 +135,7 @@ public class RDFInput extends ResultSetMem
             try {
                 int size = root.getRequiredProperty(ResultSetGraphVocab.size).getInt() ;
                 if ( size != count )
-                    ALog.warn(this, "Warning: Declared size = "+size+" : Count = "+count) ;
+                    Log.warn(this, "Warning: Declared size = "+size+" : Count = "+count) ;
             } catch (JenaException rdfEx) {}
         }
     }
@@ -156,7 +156,7 @@ public class RDFInput extends ResultSetMem
                 rb.add(Var.alloc(var), val.asNode()) ;
             } catch (PropertyNotFoundException ex)
             {
-                ALog.warn(this, "Failed to get value for ?"+var) ;
+                Log.warn(this, "Failed to get value for ?"+var) ;
             }
             
             // We include the value even if it is the marker term "rs:undefined"

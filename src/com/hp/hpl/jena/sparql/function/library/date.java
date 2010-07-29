@@ -10,7 +10,7 @@ import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.function.FunctionBase1 ;
-import com.hp.hpl.jena.sparql.util.ALog ;
+import org.openjena.atlas.logging.Log ;
 
 /** date(expression) => XSD dateTime 
  *  Attempt to convert an expression to an XSD dateTime.
@@ -26,7 +26,7 @@ public class date extends FunctionBase1
     {
         if ( ! v.isString() )
         {
-            ALog.warn(this, "date: argument not a string: "+v) ;
+            Log.warn(this, "date: argument not a string: "+v) ;
             throw new ExprEvalException("date: argument not a string: "+v) ;
         }
         
@@ -35,7 +35,7 @@ public class date extends FunctionBase1
         // Quite picky about format
         if ( ! lexicalForm.matches("\\d{4}-\\d{2}-\\d{2}") )
         {
-            ALog.warn(this, "date: argument not in date format: "+v) ;
+            Log.warn(this, "date: argument not in date format: "+v) ;
             throw new ExprEvalException("date: argument not in date format: "+v) ;
         }
         

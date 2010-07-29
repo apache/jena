@@ -22,7 +22,7 @@ import com.hp.hpl.jena.rdf.model.Literal ;
 import com.hp.hpl.jena.rdf.model.RDFNode ;
 import com.hp.hpl.jena.rdf.model.Resource ;
 import com.hp.hpl.jena.sparql.lib.org.json.JSONObject ;
-import com.hp.hpl.jena.sparql.util.ALog ;
+import org.openjena.atlas.logging.Log ;
 /**
  * A JSON writer for SPARQL Result Sets
  * 
@@ -157,7 +157,7 @@ public class JSONOutputResultSet implements ResultSetProcessor
         else if ( value.isResource() )
             printResource((Resource)value) ;
         else 
-            ALog.warn(this, "Unknown RDFNode type in result set: "+value.getClass()) ;
+            Log.warn(this, "Unknown RDFNode type in result set: "+value.getClass()) ;
         out.decIndent() ;
         
         if ( !multiLineValues ) out.print(" ") ; 

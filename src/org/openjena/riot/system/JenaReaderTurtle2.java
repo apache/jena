@@ -1,77 +1,51 @@
 /*
  * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Systems Ltd
  * All rights reserved.
  * [See end of file]
  */
 
-package org.openjena.riot;
+package org.openjena.riot.system;
 
-public class RiotChars
+import java.util.Map ;
+
+import org.openjena.atlas.lib.Sink ;
+import org.openjena.riot.RiotLoader ;
+import org.openjena.riot.RiotReader ;
+import org.openjena.riot.lang.LangTurtle ;
+import org.openjena.riot.tokens.Tokenizer ;
+
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.iri.IRI ;
+import com.hp.hpl.jena.rdf.model.Model ;
+
+
+/** Jena reader for RIOT Turtle */
+public class JenaReaderTurtle2 extends JenaReaderRIOT
 {
-    // ---- Character classes 
+    public JenaReaderTurtle2() {}
     
-    public static boolean isAlpha(int codepoint)
+    @Override
+    protected void readWorker(Model model, Tokenizer tokenizer, String base)
     {
-        return Character.isLetter(codepoint) ;
+        Sink<Triple> sink = RiotLoader.graphSink(model.getGraph()) ;
+        try {
+            LangTurtle parser = RiotReader.createParserTurtle(tokenizer, base, sink) ;
+            parser.parse() ;
+            // Merge prefixes.
+            for ( Map.Entry<String,IRI> e : parser.getProfile().getPrologue().getPrefixMap().getMapping().entrySet() )
+                model.setNsPrefix(e.getKey(), e.getValue().toString()) ;
+        } finally 
+        {
+            sink.close() ;
+            tokenizer.close() ;
+        }
     }
-    
-    public static boolean isAlphaNumeric(int codepoint)
-    {
-        return Character.isLetterOrDigit(codepoint) ;
-    }
-    
-    /** ASCII A-Z */
-    public static boolean isA2Z(int ch)
-    {
-        return range(ch, 'a', 'z') || range(ch, 'A', 'Z') ;
-    }
-
-    /** ASCII A-Z or 0-9 */
-    public static boolean isA2ZN(int ch)
-    {
-        return range(ch, 'a', 'z') || range(ch, 'A', 'Z') || range(ch, '0', '9') ;
-    }
-
-    /** ASCII 0-9 */
-    public static boolean isDigit(int ch)
-    {
-        return range(ch, '0', '9') ;
-    }
-    
-    public static boolean isWhitespace(int ch)
-    {
-        // ch = ch | 0xFF ;
-        return ch == ' ' || ch == '\t' || ch == '\r' || ch == '\n' || ch == '\f' ;    
-    }
-    
-    public static boolean isNewlineChar(int ch)
-    {
-        return ch == '\r' || ch == '\n' ;
-    }
-
-    public static int valHexChar(int ch)
-    {
-        if ( range(ch, '0', '9') )
-            return ch-'0' ;
-        if ( range(ch, 'a', 'f') )
-            return ch-'a'+10 ;
-        if ( range(ch, 'A', 'F') )
-            return ch-'A'+10 ;
-        return -1 ;
-    }
-
-    
-    public static boolean range(int ch, char a, char b)
-    {
-        return ( ch >= a && ch <= b ) ;
-    }
-
-
-
 }
 
 /*
  * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Systems Ltd
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

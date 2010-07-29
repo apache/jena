@@ -10,7 +10,7 @@ import java.io.OutputStream ;
 import java.util.Iterator ;
 
 import org.openjena.atlas.lib.Sink ;
-import org.openjena.riot.Prologue ;
+import org.openjena.riot.system.Prologue ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;

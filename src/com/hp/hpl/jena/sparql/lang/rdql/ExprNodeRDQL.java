@@ -30,7 +30,7 @@ import com.hp.hpl.jena.sparql.expr.ExprVisitor ;
 import com.hp.hpl.jena.sparql.expr.ExprWalker ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
-import com.hp.hpl.jena.sparql.util.ALog ;
+import org.openjena.atlas.logging.Log ;
 
 
 /** A node that is a RDQL constraint expression that can be evaluated to true or false */
@@ -227,7 +227,7 @@ abstract class ExprNodeRDQL
         }
         catch (Exception e)
         {
-            ALog.warn(this, "RDQL : general exception!", e) ;
+            Log.warn(this, "RDQL : general exception!", e) ;
             // Shouldn't happen
             return null ;
         }

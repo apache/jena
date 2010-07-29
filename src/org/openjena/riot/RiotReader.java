@@ -20,12 +20,16 @@ import org.openjena.riot.lang.LangRDFXML ;
 import org.openjena.riot.lang.LangRIOT ;
 import org.openjena.riot.lang.LangTriG ;
 import org.openjena.riot.lang.LangTurtle ;
+import org.openjena.riot.system.IRIResolver ;
+import org.openjena.riot.system.RiotLib ;
+import org.openjena.riot.system.SinkExtendTriplesToQuads ;
 import org.openjena.riot.tokens.Tokenizer ;
 import org.openjena.riot.tokens.TokenizerFactory ;
 
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 
+/** Parse input to a Sink (triples or quads as appropriate) */
 public class RiotReader
 {
     /** Parse a number of files, sending triples to a sink.

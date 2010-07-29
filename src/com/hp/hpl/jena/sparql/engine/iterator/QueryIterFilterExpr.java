@@ -14,7 +14,7 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.expr.ExprException ;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
-import com.hp.hpl.jena.sparql.util.ALog ;
+import org.openjena.atlas.logging.Log ;
 import com.hp.hpl.jena.sparql.util.ExprUtils ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 
@@ -47,7 +47,7 @@ public class QueryIterFilterExpr extends QueryIterProcessBinding
         }
         catch (Exception ex)
         {
-            ALog.warn(this, "General exception in "+expr, ex) ;
+            Log.warn(this, "General exception in "+expr, ex) ;
             return null ;
         }
     }

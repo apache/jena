@@ -14,7 +14,7 @@ import java.util.Map ;
 
 import arq.cmd.CmdException ;
 
-import com.hp.hpl.jena.sparql.util.ALog ;
+import org.openjena.atlas.logging.Log ;
 import com.hp.hpl.jena.util.FileManager ;
 
 
@@ -77,7 +77,7 @@ public class CmdLineArgs extends CommandLineBase
         {
             String name = iter.next();
             if ( argMap.containsKey(name))
-                ALog.warn(this, "Argument '"+name+"' already added") ; 
+                Log.warn(this, "Argument '"+name+"' already added") ; 
             argMap.put(name, arg) ;
         }
         return this ;

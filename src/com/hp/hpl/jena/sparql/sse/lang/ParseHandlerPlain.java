@@ -18,7 +18,7 @@ import com.hp.hpl.jena.sparql.sse.Item ;
 import com.hp.hpl.jena.sparql.sse.ItemList ;
 import com.hp.hpl.jena.sparql.sse.ItemLocation ;
 import com.hp.hpl.jena.sparql.sse.SSEParseException ;
-import com.hp.hpl.jena.sparql.util.ALog ;
+import org.openjena.atlas.logging.Log ;
 import com.hp.hpl.jena.sparql.util.LabelToNodeMap ;
 
 public class ParseHandlerPlain implements ParseHandler 
@@ -44,7 +44,7 @@ public class ParseHandlerPlain implements ParseHandler
     public void parseFinish()
     {
         if ( depth != 0 )
-            ALog.warn(this, "Stack error: depth ="+depth+" at end of parse run") ;
+            Log.warn(this, "Stack error: depth ="+depth+" at end of parse run") ;
         depth = -1 ;
     }
     

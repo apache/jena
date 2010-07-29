@@ -4,53 +4,28 @@
  * [See end of file]
  */
 
-package org.openjena.riot;
+package org.openjena.riot.system;
 
-import org.openjena.atlas.logging.Log ;
+import java.io.Writer ;
+import java.util.Iterator ;
 
-import com.hp.hpl.jena.iri.IRI ;
+import org.openjena.riot.out.OutputLangUtils ;
 
-// UNUSED
-/** Extend a PrefixMap - never alters the partent PrefixMap */
-public class PrefixMap2 extends PrefixMap
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.Triple ;
+
+public class JenaWriterNTriples2 extends JenaWriterBase
 {
-    PrefixMap parent ;
-    PrefixMap local ;
-    
-    public PrefixMap2(PrefixMap parent)
+    @Override
+    protected void write(Graph graph, Writer out, String base)
     {
-        this.parent = parent ;
-        this.local = new PrefixMap() ; 
-    }
-    
-    /** Add a prefix, overwites any existing association */
-    @Override
-    public void add(String prefix, IRI iri)
-    { 
-        prefix = canonicalPrefix(prefix) ;
-        // Add to local always.
-        local.add(prefix, iri) ;
-    }
-    
-    /** Add a prefix, overwites any existing association */
-    @Override
-    public void delete(String prefix)
-    { 
-        prefix = canonicalPrefix(prefix) ;
-        local.delete(prefix) ;
-        if ( parent._contains(prefix) )
-            Log.warn(this, "Attempt to delete a prefix in the parent" ) ;
-    }
-    
-    /** Expand a prefix, return null if it can't be expanded */
-    @Override
-    public String expand(String prefix, String localName) 
-    { 
-        prefix = canonicalPrefix(prefix) ;
-        String x = local.expand(prefix, localName) ;
-        if ( x != null )
-            return x ;
-        return parent.expand(prefix, localName) ;
+        Iterator<Triple> iter = graph.find(Node.ANY, Node.ANY, Node.ANY) ;
+        for ( ; iter.hasNext() ; )
+        {
+            Triple triple = iter.next() ;
+            OutputLangUtils.output(out, triple, null) ;
+        }
     }
 }
 

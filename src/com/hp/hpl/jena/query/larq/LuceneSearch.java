@@ -29,7 +29,7 @@ import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.pfunction.PropFuncArg ;
 import com.hp.hpl.jena.sparql.pfunction.PropFuncArgType ;
 import com.hp.hpl.jena.sparql.pfunction.PropertyFunctionEval ;
-import com.hp.hpl.jena.sparql.util.ALog ;
+import org.openjena.atlas.logging.Log ;
 import com.hp.hpl.jena.sparql.util.IterLib ;
 import com.hp.hpl.jena.sparql.util.NodeFactory ;
 import com.hp.hpl.jena.util.iterator.Map1 ;
@@ -68,7 +68,7 @@ public abstract class LuceneSearch extends PropertyFunctionEval
     		return execEvaluatedProtected(binding, argSubject, predicate,  argObject,  execCxt) ;
     	} catch (RuntimeException ex)
     	{
-    		ALog.fatal(this, "Exception from Lucene search", ex) ;
+    		Log.fatal(this, "Exception from Lucene search", ex) ;
     		throw ex ;
     	}
     }
@@ -149,7 +149,7 @@ public abstract class LuceneSearch extends PropertyFunctionEval
         
         if ( qs == null )
         {
-            ALog.warn(this, "Not a string (it was a moment ago!): "+searchString) ;
+            Log.warn(this, "Not a string (it was a moment ago!): "+searchString) ;
             return new QueryIterNullIterator(execCxt) ;
         }
         
@@ -171,19 +171,19 @@ public abstract class LuceneSearch extends PropertyFunctionEval
     {
         if ( !searchString.isLiteral() )
         {
-            ALog.warn(LuceneSearch.class, "Not a string: "+searchString) ;
+            Log.warn(LuceneSearch.class, "Not a string: "+searchString) ;
             return false ;
         }
 
         if ( searchString.getLiteralDatatypeURI() != null )
         {
-            ALog.warn(LuceneSearch.class, "Not a plain string: "+searchString) ;
+            Log.warn(LuceneSearch.class, "Not a plain string: "+searchString) ;
             return false ;
         }
 
         if ( searchString.getLiteralLanguage() != null && ! searchString.getLiteralLanguage().equals("") )
         {
-            ALog.warn(LuceneSearch.class, "Not a plain string (has lang tag): "+searchString) ;
+            Log.warn(LuceneSearch.class, "Not a plain string (has lang tag): "+searchString) ;
             return false ;
         }
         return true ;

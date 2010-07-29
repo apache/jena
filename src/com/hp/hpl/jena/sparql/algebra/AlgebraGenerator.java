@@ -32,7 +32,7 @@ import com.hp.hpl.jena.sparql.path.PathLib ;
 import com.hp.hpl.jena.sparql.sse.Item ;
 import com.hp.hpl.jena.sparql.sse.ItemList ;
 import com.hp.hpl.jena.sparql.syntax.* ;
-import com.hp.hpl.jena.sparql.util.ALog ;
+import org.openjena.atlas.logging.Log ;
 import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 
@@ -472,7 +472,7 @@ public class AlgebraGenerator
         ExtBuilder builder = OpExtRegistry.builder("fetch") ;
         if ( builder == null )
         {
-            ALog.warn(this, "Attempt to use OpFetch - need to enable first with a call to OpFetch.enable()") ; 
+            Log.warn(this, "Attempt to use OpFetch - need to enable first with a call to OpFetch.enable()") ; 
             return OpLabel.create("fetch/"+serviceNode, OpTable.unit()) ;
         }
         Item item = Item.createNode(elt.getFetchNode()) ;
@@ -523,7 +523,7 @@ public class AlgebraGenerator
             // Don't project for QueryResultStar so initial bindings show
             // through in SELECT *
             if ( projectVars.size() == 0 && query.isSelectType() )
-                ALog.warn(this,"No project variables") ;
+                Log.warn(this,"No project variables") ;
             // Separate assignments and variable projection.
             for ( Var v : query.getProject().getVars() )
             {

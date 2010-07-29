@@ -13,7 +13,7 @@ import org.openjena.atlas.iterator.IteratorConcat ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
 import com.hp.hpl.jena.sparql.core.Var ;
-import com.hp.hpl.jena.sparql.util.ALog ;
+import org.openjena.atlas.logging.Log ;
 import com.hp.hpl.jena.sparql.util.FmtUtils ;
 
 /** Machinary encapsulating a mapping from a name to a value.
@@ -57,7 +57,7 @@ abstract public class BindingBase implements Binding
     { 
         if ( node == null )
         {
-            ALog.warn(this, "Binding.add: null value - ignored") ;
+            Log.warn(this, "Binding.add: null value - ignored") ;
             return ;
         }
         checkAdd(var, node) ;

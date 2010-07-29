@@ -6,6 +6,8 @@
 
 package com.hp.hpl.jena.sparql.util;
 
+import org.openjena.atlas.logging.Log ;
+
 import com.hp.hpl.jena.sparql.ARQConstants ;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
 
@@ -35,13 +37,13 @@ public class Loader
             classObj = Class.forName(className);
         } catch (ClassNotFoundException ex)
         {
-            ALog.warn(Loader.class, "Class not found: "+className);
+            Log.warn(Loader.class, "Class not found: "+className);
             return null ;
         }
         
         if ( requiredClass != null && ! requiredClass.isAssignableFrom(classObj) )
         {
-            ALog.warn(Loader.class, "Class '"+className+"' found but not a "+Utils.classShortName(requiredClass)) ;
+            Log.warn(Loader.class, "Class '"+className+"' found but not a "+Utils.classShortName(requiredClass)) ;
             return null ;
         }
         return classObj ;
@@ -59,7 +61,7 @@ public class Loader
         } catch (Exception ex)
         {
             String className = uri.substring(ARQConstants.javaClassURIScheme.length()) ;
-            ALog.warn(Loader.class, "Exception during instantiation '"+className+"': "+ex.getMessage()) ;
+            Log.warn(Loader.class, "Exception during instantiation '"+className+"': "+ex.getMessage()) ;
             return null ;
         }
         return module ;

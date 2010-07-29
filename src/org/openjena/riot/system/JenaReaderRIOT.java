@@ -3,7 +3,7 @@
  * [See end of file]
  */
 
-package org.openjena.riot;
+package org.openjena.riot.system;
 
 import java.io.FileReader ;
 import java.io.InputStream ;
