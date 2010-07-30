@@ -54,11 +54,10 @@ public class ResultSetUtils
      * Extracts a List filled with the binding of selectElement variable for each
      * query solution as RDFNodes (Resources or Literals).
      * Exhausts the result set.  Create a rewindable one to use multiple times. 
-     * @see{com.hp.hpl.jena.query.ResultSetFactory}   
      * Suggested by James Howison  
+     * @see com.hp.hpl.jena.query.ResultSetFactory   
      */
-    public static List<RDFNode> resultSetToList(ResultSet rs,
-                                       String selectElement)
+    public static List<RDFNode> resultSetToList(ResultSet rs, String selectElement)
     {
         List<RDFNode> items = new ArrayList<RDFNode>() ;
         while (rs.hasNext())
@@ -75,7 +74,7 @@ public class ResultSetUtils
      * Extracts a List filled with the binding of selectElement variable for each
      * query solution, turned into a string (URIs or lexical forms).  
      * Exhausts the result set.  Create a rewindable one to use multiple times. 
-     * @see{com.hp.hpl.jena.query.ResultSetFactory}   
+     * @see com.hp.hpl.jena.query.ResultSetFactory
      *   
      */
     public static List<String> resultSetToStringList(ResultSet rs,
