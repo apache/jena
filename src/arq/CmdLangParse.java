@@ -20,6 +20,7 @@ import org.openjena.atlas.lib.SinkCounting ;
 import org.openjena.atlas.lib.SinkNull ;
 import org.openjena.atlas.lib.StrUtils ;
 import org.openjena.riot.* ;
+import org.openjena.riot.inf.InferenceExpanderRDFS ;
 import org.openjena.riot.lang.LangRDFXML ;
 import org.openjena.riot.lang.LangRIOT ;
 import org.openjena.riot.out.SinkQuadOutput ;
@@ -244,7 +245,12 @@ public abstract class CmdLangParse extends CmdGeneral
             Sink <Triple> s = SinkNull.create() ;
             if ( ! modLangParse.toBitBucket() )
                 s = new SinkTripleOutput(System.out) ;
+            
+            if ( modLangParse.getRDFSVocab() != null )
+                s = new InferenceExpanderRDFS(s, modLangParse.getRDFSVocab()) ;
+            
             SinkCounting<Triple> sink2 = new SinkCounting<Triple>(s) ;
+            
             if ( lang.equals(Lang.RDFXML) )
                 // Adapter round ARP RDF/XML reader.
                 parser = LangRDFXML.create(in, baseURI, filename, errHandler, sink2) ;
@@ -258,6 +264,9 @@ public abstract class CmdLangParse extends CmdGeneral
             if ( ! modLangParse.toBitBucket() )
                 s = new SinkQuadOutput(System.out) ;
             SinkCounting<Quad> sink2 = new SinkCounting<Quad>(s) ;
+            
+            
+            
             parser = RiotReader.createParserQuads(in, lang, baseURI, sink2) ;
             sink = sink2 ;
         }

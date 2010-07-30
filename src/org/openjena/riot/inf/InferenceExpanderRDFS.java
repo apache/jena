@@ -39,6 +39,9 @@ import com.hp.hpl.jena.vocabulary.RDF ;
  */
 public class InferenceExpanderRDFS implements Sink<Triple>
 {
+    // Abstract, not a Sink.
+    //   prrtected abstract derive(Node s, Node p , Node o)
+    
     // Calculates hierarchies (subclass, subproperty) from a model.
     // Assumes that model has no metavocabulary (use an inferencer on the model first if necessary).
     
@@ -112,9 +115,7 @@ public class InferenceExpanderRDFS implements Sink<Triple>
 
         // domain() and range() also go through subClass processing. 
         domain(s,p,o) ;
-        // Beware of literal subjects.
         range(s,p,o) ;
-        
     }
 
     /*
@@ -123,7 +124,6 @@ public class InferenceExpanderRDFS implements Sink<Triple>
      */
     final private void subClass(Node s, Node p, Node o)
     {
-        // Does not output (s,p,o) itself.
         if ( p.equals(rdfType) )
         {
             List<Node> x = transClasses.get(o) ;

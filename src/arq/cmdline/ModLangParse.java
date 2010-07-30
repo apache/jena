@@ -10,11 +10,13 @@ import org.openjena.riot.system.IRIResolver ;
 import arq.cmd.CmdException ;
 
 import com.hp.hpl.jena.iri.IRI ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.util.FileManager ;
 
 public class ModLangParse implements ArgModuleGeneral
 {
     private ArgDecl argCheck    = new ArgDecl(ArgDecl.HasValue, "check") ;
-    private ArgDecl argNoCheck    = new ArgDecl(ArgDecl.NoValue, "nocheck") ;
+    private ArgDecl argNoCheck  = new ArgDecl(ArgDecl.NoValue, "nocheck") ;
     private ArgDecl argSink     = new ArgDecl(ArgDecl.NoValue, "sink", "null") ;
 
     private ArgDecl argStrict   = new ArgDecl(ArgDecl.NoValue, "strict") ;
@@ -25,15 +27,19 @@ public class ModLangParse implements ArgModuleGeneral
     private ArgDecl argStop     = new ArgDecl(ArgDecl.NoValue, "stopOnError", "stoponerror", "stop") ;
     
     private ArgDecl argBase     = new ArgDecl(ArgDecl.HasValue, "base") ;
+    
+    private ArgDecl argRDFS     = new ArgDecl(ArgDecl.HasValue, "rdfs") ;
 
-    private  String baseIRI         = null ;
-    private boolean explicitCheck   = false ;
-    private boolean explicitNoCheck = false ;
-    private boolean skipOnBadTerm   = false ;
-    private boolean stopOnBadTerm   = false ;
-    private boolean bitbucket       = false ; 
-    private boolean strict          = false ;
-    private boolean validate        = false ;
+    private  String rdfsVocabFilename   = null ;
+    private  Model  rdfsVocab           = null ;
+    private  String baseIRI             = null ;
+    private boolean explicitCheck       = false ;
+    private boolean explicitNoCheck     = false ;
+    private boolean skipOnBadTerm       = false ;
+    private boolean stopOnBadTerm       = false ;
+    private boolean bitbucket           = false ; 
+    private boolean strict              = false ;
+    private boolean validate            = false ;
     
     public void registerWith(CmdGeneral cmdLine)
     {
@@ -43,6 +49,7 @@ public class ModLangParse implements ArgModuleGeneral
         cmdLine.add(argCheck,   "--check=boolean",  "Addition checking of RDF terms (default: off for N-triples, N-Quads, on for Turtle and TriG)") ;
         cmdLine.add(argStrict,  "--strict",         "Run with in strict mode") ;
         cmdLine.add(argValidate,"--validate",       "Same as --sink --check=true --strict") ;
+        cmdLine.add(argRDFS,    "--rdfs=file",      "Apply some RDFS inference using the vocabulary in the file") ;  
 //        cmdLine.add(argNoCheck, "--nocheck",        "Turn off checking of RDF terms") ;
 //        cmdLine.add(argSkip,    "--skip",           "Skip (do not output) triples failing the RDF term tests") ;
 //        cmdLine.add(argNoSkip,  "--noSkip",         "Include triples failing the RDF term tests (not recommended)") ;
@@ -59,7 +66,6 @@ public class ModLangParse implements ArgModuleGeneral
             bitbucket = true ;
         }
         
-
         if ( cmdLine.contains(argNoCheck) )
             explicitNoCheck = false ;
         
@@ -93,6 +99,12 @@ public class ModLangParse implements ArgModuleGeneral
         
         if ( cmdLine.contains(argSink) )
             bitbucket = true ;
+        
+        if ( cmdLine.contains(argRDFS) )
+        {
+            rdfsVocabFilename = cmdLine.getArg(argRDFS).getValue() ;
+            rdfsVocab = FileManager.get().loadModel(rdfsVocabFilename) ;
+        }
     }
 
     public boolean explicitChecking()
@@ -135,6 +147,7 @@ public class ModLangParse implements ArgModuleGeneral
         return baseIRI ;
     }
 
+    public Model getRDFSVocab()     { return rdfsVocab ; } 
 }
 
 /*

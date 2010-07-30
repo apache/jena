@@ -11,8 +11,7 @@ public class DevARQ
     // Inference pipeline
     //   CmdLineParse.parseRIOT
     //   Factory to create a sink from a sink.
-    
-    //  TDB+Inference
+    // TDB+Inference
     //   TDB/BulkLoader.loadTriples$ (loadQuads$)
     //     to add a inference sink wrapper.
     
@@ -37,7 +36,7 @@ public class DevARQ
     //   TestUnionGraph
     // ** Enable in TS_Algebra.
   
-    // Comparsion (ORDER BY) costs
+    // Comparison (ORDER BY) costs
     // Holger's slow datatype example.
     
     // PropertyPaths
