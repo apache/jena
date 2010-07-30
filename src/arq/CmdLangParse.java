@@ -19,8 +19,14 @@ import org.openjena.atlas.lib.Sink ;
 import org.openjena.atlas.lib.SinkCounting ;
 import org.openjena.atlas.lib.SinkNull ;
 import org.openjena.atlas.lib.StrUtils ;
-import org.openjena.riot.* ;
-import org.openjena.riot.inf.InferenceExpanderRDFS ;
+import org.openjena.riot.ErrorHandler ;
+import org.openjena.riot.ErrorHandlerLib ;
+import org.openjena.riot.Lang ;
+import org.openjena.riot.RiotException ;
+import org.openjena.riot.RiotReader ;
+import org.openjena.riot.SysRIOT ;
+import org.openjena.riot.inf.InfFactory ;
+import org.openjena.riot.inf.InferenceSetupRDFS ;
 import org.openjena.riot.lang.LangRDFXML ;
 import org.openjena.riot.lang.LangRIOT ;
 import org.openjena.riot.out.SinkQuadOutput ;
@@ -45,8 +51,9 @@ public abstract class CmdLangParse extends CmdGeneral
     // We are not a TDB command but still set the logging.
     //static { CmdTDB.setLogging() ; }
     // Module.
-    protected ModTime modTime                 = new ModTime() ;
-    protected ModLangParse modLangParse       = new ModLangParse() ;
+    protected ModTime modTime                   = new ModTime() ;
+    protected ModLangParse modLangParse         = new ModLangParse() ;
+    protected InferenceSetupRDFS setup          = null ; 
     
     interface LangHandler {
         String getItemsName() ;
@@ -150,6 +157,9 @@ public abstract class CmdLangParse extends CmdGeneral
             SysRIOT.StrictXSDLexicialForms = true ;
         }
         
+        if ( modLangParse.getRDFSVocab() != null )
+            setup =  new InferenceSetupRDFS(modLangParse.getRDFSVocab()) ;
+        
         try {
             if ( super.getPositional().isEmpty() )
                 parseFile("-") ;
@@ -245,9 +255,8 @@ public abstract class CmdLangParse extends CmdGeneral
             Sink <Triple> s = SinkNull.create() ;
             if ( ! modLangParse.toBitBucket() )
                 s = new SinkTripleOutput(System.out) ;
-            
-            if ( modLangParse.getRDFSVocab() != null )
-                s = new InferenceExpanderRDFS(s, modLangParse.getRDFSVocab()) ;
+            if ( setup != null )
+                s = InfFactory.infTriples(s, setup) ;
             
             SinkCounting<Triple> sink2 = new SinkCounting<Triple>(s) ;
             
@@ -263,10 +272,10 @@ public abstract class CmdLangParse extends CmdGeneral
             Sink <Quad> s = SinkNull.create() ;
             if ( ! modLangParse.toBitBucket() )
                 s = new SinkQuadOutput(System.out) ;
+            if ( setup != null )
+                s = InfFactory.infQuads(s, setup) ;
+            
             SinkCounting<Quad> sink2 = new SinkCounting<Quad>(s) ;
-            
-            
-            
             parser = RiotReader.createParserQuads(in, lang, baseURI, sink2) ;
             sink = sink2 ;
         }

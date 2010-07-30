@@ -6,24 +6,9 @@
 
 package org.openjena.riot.inf;
 
-import java.util.ArrayList ;
-import java.util.HashMap ;
 import java.util.List ;
-import java.util.Map ;
-
-import org.openjena.atlas.lib.Sink ;
-import org.openjena.atlas.lib.StrUtils ;
 
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.query.Query ;
-import com.hp.hpl.jena.query.QueryExecution ;
-import com.hp.hpl.jena.query.QueryExecutionFactory ;
-import com.hp.hpl.jena.query.QueryFactory ;
-import com.hp.hpl.jena.query.QuerySolution ;
-import com.hp.hpl.jena.query.ResultSet ;
-import com.hp.hpl.jena.query.Syntax ;
-import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.vocabulary.RDF ;
 
 
@@ -35,15 +20,20 @@ import com.hp.hpl.jena.vocabulary.RDF ;
  *  <li>rdfs:subPropertyOf (transitive)</li>
  *  <li>rdfs:domain</li>
  *  <li>rdfs:range</li>
- *  </ul>  
+ *  </ul>
+ *  
+ *  Usage: call process(Node, Node, Node), outptus to derive(Node, Node, Node).
  */
-public class InferenceExpanderRDFS implements Sink<Triple>
+
+
+public abstract class InferenceProcessorRDFS implements Processor
 {
-    // Abstract, not a Sink.
-    //   prrtected abstract derive(Node s, Node p , Node o)
-    
     // Calculates hierarchies (subclass, subproperty) from a model.
     // Assumes that model has no metavocabulary (use an inferencer on the model first if necessary).
+    
+    // Todo:
+    //   rdfs:member
+    //   list:member ???
     
     // Todo:
     //   rdfs:member
@@ -53,63 +43,18 @@ public class InferenceExpanderRDFS implements Sink<Triple>
     
     // Expanded hierarchy:
     // If C < C1 < C2 then C2 is in the list for C 
-    private final Sink<Triple> output ;
-    private final Map<Node, List<Node>> transClasses ;
-    private final Map<Node, List<Node>> transProperties;
-    private final Map<Node, List<Node>> domainList ;
-    private final Map<Node, List<Node>> rangeList ;  
+
     
     static final Node rdfType = RDF.type.asNode() ;
+    private final InferenceSetupRDFS state ;
     
-    public InferenceExpanderRDFS(Sink<Triple> output, Model vocab)
+    public InferenceProcessorRDFS(InferenceSetupRDFS state)
     {
-        this.output     = output ;
-        transClasses    = new HashMap<Node, List<Node>>() ;
-        transProperties = new HashMap<Node, List<Node>>() ;
-        domainList      = new HashMap<Node, List<Node>>() ;
-        rangeList       = new HashMap<Node, List<Node>>() ;
-        
-        // Find classes - uses property paths
-        exec("SELECT ?x ?y { ?x rdfs:subClassOf+ ?y }", vocab, transClasses) ;
-        
-        // Find properties
-        exec("SELECT ?x ?y { ?x rdfs:subPropertyOf+ ?y }", vocab, transProperties) ;
-        
-        // Find domain
-        exec("SELECT ?x ?y { ?x rdfs:domain ?y }", vocab, domainList) ;
-        
-        // Find range
-        exec("SELECT ?x ?y { ?x rdfs:range ?y }", vocab, rangeList) ;
+        this.state = state ;
     }
-    
-    private static void exec(String qs, Model model, Map<Node, List<Node>> multimap)
-    {
-        String preamble = StrUtils.strjoinNL("PREFIX  rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>",
-                                             "PREFIX  rdfs:   <http://www.w3.org/2000/01/rdf-schema#>",
-                                             "PREFIX  xsd:    <http://www.w3.org/2001/XMLSchema#>",
-                                             "PREFIX  owl:    <http://www.w3.org/2002/07/owl#>",
-                                             "PREFIX skos:    <http://www.w3.org/2004/02/skos/core#>") ;
-        Query query = QueryFactory.create(preamble+"\n"+qs, Syntax.syntaxARQ) ;
-        QueryExecution qexec = QueryExecutionFactory.create(query, model) ;
-        ResultSet rs = qexec.execSelect() ;
-        for ( ; rs.hasNext() ; )
-        {
-            QuerySolution soln= rs.next() ;
-            Node x = soln.get("x").asNode() ;
-            Node y = soln.get("y").asNode() ;
-            if ( ! multimap.containsKey(x) )
-                multimap.put(x, new ArrayList<Node>()) ;
-            multimap.get(x).add(y) ;
-        }
-    }
-    
-    public void send(Triple triple)
-    {
-        output.send(triple) ;
-        Node s = triple.getSubject() ;
-        Node p = triple.getPredicate() ;
-        Node o = triple.getObject() ;
 
+    public void process(Node s, Node p, Node o)
+    {
         subClass(s,p,o) ;
         subProperty(s,p,o) ;
 
@@ -117,6 +62,8 @@ public class InferenceExpanderRDFS implements Sink<Triple>
         domain(s,p,o) ;
         range(s,p,o) ;
     }
+
+    public abstract void derive(Node s, Node p, Node o) ;
 
     /*
      * [rdfs8:  (?a rdfs:subClassOf ?b), (?b rdfs:subClassOf ?c) -> (?a rdfs:subClassOf ?c)] 
@@ -126,10 +73,10 @@ public class InferenceExpanderRDFS implements Sink<Triple>
     {
         if ( p.equals(rdfType) )
         {
-            List<Node> x = transClasses.get(o) ;
+            List<Node> x = state.transClasses.get(o) ;
             if ( x != null )
                 for ( Node c : x )
-                    output.send(new Triple(s,p,c)) ;
+                    derive(s,p,c) ;
         }
     }
 
@@ -141,11 +88,11 @@ public class InferenceExpanderRDFS implements Sink<Triple>
      */
     private void subProperty(Node s, Node p, Node o)
     {
-        List<Node> x = transProperties.get(p) ;
+        List<Node> x = state.transProperties.get(p) ;
         if ( x != null )
         {
             for ( Node p2 : x )
-                output.send(new Triple(s,p2,o)) ;
+                derive(s, p2, o) ;
         }
     }
 
@@ -155,12 +102,12 @@ public class InferenceExpanderRDFS implements Sink<Triple>
      */
     final private void domain(Node s, Node p, Node o)
     {
-        List<Node> x = domainList.get(p) ;
+        List<Node> x = state.domainList.get(p) ;
         if ( x != null )
         {
             for ( Node c : x )
             {
-                output.send(new Triple(s,rdfType,c)) ;
+                derive(s, rdfType, c) ;
                 subClass(s, rdfType, c) ;
             }
         }
@@ -176,23 +123,16 @@ public class InferenceExpanderRDFS implements Sink<Triple>
         if ( o.isLiteral() )
             return ;
         // Range
-        List<Node> x = rangeList.get(p) ;
+        List<Node> x = state.rangeList.get(p) ;
         if ( x != null )
         {
             for ( Node c : x )
             {
-                output.send(new Triple(o,rdfType,c)) ;
+                derive(o, rdfType, c) ;
                 subClass(o, rdfType, c) ;
             }
         }
     }
-
-    public void flush()
-    { output.flush(); }
-
-    public void close()
-    { output.close(); }
-    
 }
 /*
  * (c) Copyright 2010 Talis Systems Ltd.

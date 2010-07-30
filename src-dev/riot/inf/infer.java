@@ -9,7 +9,8 @@ package riot.inf;
 import org.openjena.atlas.io.IO ;
 import org.openjena.atlas.lib.Sink ;
 import org.openjena.riot.RiotReader ;
-import org.openjena.riot.inf.InferenceExpanderRDFS ;
+import org.openjena.riot.inf.InferenceProcessorTriples ;
+import org.openjena.riot.inf.InferenceSetupRDFS ;
 import org.openjena.riot.lang.LangRIOT ;
 import org.openjena.riot.out.SinkTripleOutput ;
 import arq.cmd.CmdException ;
@@ -111,7 +112,8 @@ public class infer extends CmdGeneral
     protected void exec()
     {
         Sink<Triple> sink = new SinkTripleOutput(System.out) ;
-        sink = new InferenceExpanderRDFS(sink, vocab) ;
+        InferenceSetupRDFS setup = new InferenceSetupRDFS(vocab) ;
+        sink = new InferenceProcessorTriples(sink, setup) ;
         LangRIOT parser = RiotReader.createParserNTriples(System.in, sink) ;
         parser.parse() ;
         IO.flush(System.out); 
