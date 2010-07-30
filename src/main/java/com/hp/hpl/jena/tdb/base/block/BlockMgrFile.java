@@ -15,11 +15,11 @@ import java.nio.channels.FileChannel;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.openjena.atlas.lib.FileOps ;
+import org.openjena.atlas.logging.Log ;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-import com.hp.hpl.jena.sparql.util.ALog;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 /** Abstract class for block managers over a file */
@@ -143,7 +143,7 @@ public abstract class BlockMgrFile extends BlockMgrBase
     protected final void checkIfClosed() 
     { 
         if ( isClosed() ) 
-            ALog.fatal(this, "Block manager has been closed") ;
+            Log.fatal(this, "Block manager has been closed") ;
     }
     
     protected abstract void _close() ; 

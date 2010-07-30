@@ -6,10 +6,11 @@
 
 package com.hp.hpl.jena.tdb.solver.reorder;
 
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.sparql.core.BasicPattern;
-import com.hp.hpl.jena.sparql.util.ALog;
-import com.hp.hpl.jena.tdb.TDBException;
+import org.openjena.atlas.logging.Log ;
+
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.sparql.core.BasicPattern ;
+import com.hp.hpl.jena.tdb.TDBException ;
 
 public class ReorderProcIndexes implements ReorderProc
 {
@@ -29,7 +30,7 @@ public class ReorderProcIndexes implements ReorderProc
         if ( indexes.length != bgp.size() )
         {
             String str = String.format("Expected size = %d : actual basic pattern size = %d", indexes.length, bgp.size()) ;
-            ALog.fatal(this, str) ;
+            Log.fatal(this, str) ;
             throw new TDBException(str) ; 
         }        
         

@@ -7,9 +7,9 @@
 package com.hp.hpl.jena.tdb.index.bplustree;
 
 import static com.hp.hpl.jena.tdb.sys.SystemTDB.SizeOfPointer;
+import org.openjena.atlas.logging.Log ;
 import org.slf4j.Logger;
 
-import com.hp.hpl.jena.sparql.util.ALog;
 import com.hp.hpl.jena.tdb.TDBException;
 import com.hp.hpl.jena.tdb.base.file.MetaFile;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
@@ -123,7 +123,7 @@ public class BPlusTreeParams
             return new BPlusTreeParams(pOrder, pKeyLen, pRecLen) ;
         } catch (NumberFormatException ex)
         {
-            ALog.fatal(BPlusTreeParams.class, "Badly formed metadata for B+Tree") ;
+            Log.fatal(BPlusTreeParams.class, "Badly formed metadata for B+Tree") ;
             throw new TDBException("Failed to read metadata") ;
         }
     }

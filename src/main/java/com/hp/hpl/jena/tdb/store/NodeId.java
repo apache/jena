@@ -11,6 +11,7 @@ import java.nio.ByteBuffer;
 
 import org.openjena.atlas.lib.BitsLong ;
 import org.openjena.atlas.lib.Bytes ;
+import org.openjena.atlas.logging.Log ;
 
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
@@ -18,7 +19,6 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.impl.LiteralLabel;
 
 import com.hp.hpl.jena.sparql.core.NodeConst;
-import com.hp.hpl.jena.sparql.util.ALog;
 
 import com.hp.hpl.jena.tdb.TDBException;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
@@ -161,7 +161,7 @@ public class NodeId
     {
         if ( node == null )
         {
-            ALog.warn(NodeId.class, "Null node: "+node) ;
+            Log.warn(NodeId.class, "Null node: "+node) ;
             return null ;
         }
         

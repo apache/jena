@@ -12,10 +12,10 @@ import org.openjena.atlas.lib.Cache ;
 import org.openjena.atlas.lib.CacheFactory ;
 import org.openjena.atlas.lib.CacheSet ;
 import org.openjena.atlas.lib.Pair ;
+import org.openjena.atlas.logging.Log ;
 
 
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.sparql.util.ALog ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
 
 /** Cache wrapper around a NodeTable.  Assumes all access goes through this wrapper */
@@ -148,7 +148,7 @@ public class NodeTableCache implements NodeTable
         
         if ( id == NodeId.NodeIdAny )
         {
-            ALog.warn(this, "Attempt to cache NodeIdAny - ignored") ;
+            Log.warn(this, "Attempt to cache NodeIdAny - ignored") ;
             return ;
         }
         

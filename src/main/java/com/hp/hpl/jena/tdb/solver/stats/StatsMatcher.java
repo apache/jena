@@ -16,6 +16,7 @@ import java.util.Map ;
 
 import org.openjena.atlas.io.IndentedWriter ;
 import org.openjena.atlas.lib.NotImplemented ;
+import org.openjena.atlas.logging.Log ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
@@ -27,7 +28,6 @@ import com.hp.hpl.jena.sparql.sse.Item ;
 import com.hp.hpl.jena.sparql.sse.ItemException ;
 import com.hp.hpl.jena.sparql.sse.ItemList ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
-import com.hp.hpl.jena.sparql.util.ALog ;
 import com.hp.hpl.jena.sparql.util.PrintUtils ;
 import com.hp.hpl.jena.sparql.util.Printable ;
 import com.hp.hpl.jena.tdb.TDBException ;
@@ -119,7 +119,7 @@ public final class StatsMatcher
             Item stats = SSE.readFile(filename) ;
             if ( stats.isNil() )
             {
-                ALog.warn(this, "Empty stats file: "+filename) ;
+                Log.warn(this, "Empty stats file: "+filename) ;
                 return ;
             }
             if ( !stats.isTagged(STATS) )

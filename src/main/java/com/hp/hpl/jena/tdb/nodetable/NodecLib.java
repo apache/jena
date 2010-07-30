@@ -7,13 +7,13 @@
 package com.hp.hpl.jena.tdb.nodetable;
 
 import org.openjena.atlas.lib.StrUtils ;
+import org.openjena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.rdf.model.AnonId ;
 import com.hp.hpl.jena.shared.PrefixMapping ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.sparql.sse.SSEParseException ;
-import com.hp.hpl.jena.sparql.util.ALog ;
 import com.hp.hpl.jena.tdb.lib.NodeFmtLib ;
 import com.hp.hpl.jena.tdb.lib.NodeLib ;
 
@@ -73,7 +73,7 @@ public class NodecLib
             return n ;
         } catch (SSEParseException ex)
         {
-            ALog.fatal(NodeLib.class, "decode: Failed to parse: "+s) ;
+            Log.fatal(NodeLib.class, "decode: Failed to parse: "+s) ;
             throw ex ;
         }
     }
