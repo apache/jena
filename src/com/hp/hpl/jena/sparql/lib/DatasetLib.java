@@ -20,7 +20,6 @@ import com.hp.hpl.jena.sparql.sse.writers.WriterGraph ;
 public class DatasetLib
 {
     /** Write, in SSE format (a debugging format).
-     * @see{riot.Dump} for output in N-quads and other formats.  
      */
     public static void dump(DatasetGraph dataset)
     {
