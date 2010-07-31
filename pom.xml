@@ -61,7 +61,7 @@
       <groupId>com.hp.hpl.jena</groupId>
       <artifactId>jena</artifactId>
       <classifier>sources</classifier>
-      <scope>optional</scope>
+      <scope>provided</scope>
       <version>${ver.jena}</version>
     </dependency>
 
@@ -69,7 +69,7 @@
       <groupId>com.hp.hpl.jena</groupId>
       <artifactId>jena</artifactId>
       <classifier>test-sources</classifier>
-      <scope>optional</scope>
+      <scope>provided</scope>
       <type>test-jar</type>
       <version>${ver.jena}</version>
     </dependency>
@@ -93,7 +93,7 @@
       <groupId>com.hp.hpl.jena</groupId>
       <artifactId>arq</artifactId>
       <classifier>sources</classifier>
-      <scope>optional</scope>
+      <scope>provided</scope>
       <version>${ver.arq}</version>
     </dependency>
 
@@ -101,7 +101,7 @@
       <groupId>com.hp.hpl.jena</groupId>
       <artifactId>arq</artifactId>
       <classifier>test-sources</classifier>
-      <scope>optional</scope>
+      <scope>provided</scope>
       <version>${ver.arq}</version>
     </dependency>
 
@@ -117,7 +117,7 @@
       <artifactId>iri</artifactId>
       <version>0.8</version>
       <classifier>sources</classifier>
-      <scope>optional</scope>
+      <scope>provided</scope>
     </dependency>
 
     <!-- -->
@@ -349,6 +349,8 @@ build.time.txt=${build.time.txt}
           <overWriteSnapshots>false</overWriteSnapshots>
           <overWriteIfNewer>true</overWriteIfNewer>
         </configuration>
+	<!-- attach to "validate", "initialize" or "generate-sources" -->
+
       </plugin>
 
        <plugin>

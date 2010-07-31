@@ -22,7 +22,7 @@ public class Tokens
     public static void main(String...args)
     {
         InputStream in = IO.openFile(args[0]) ;
-        Tokenizer tokenize = TokenizerFactory.makeTokenizer(in) ;
+        Tokenizer tokenize = TokenizerFactory.makeTokenizerUTF8(in) ;
         Timer timer = new Timer() ;
         long count = 0 ; 
         timer.startTimer() ;

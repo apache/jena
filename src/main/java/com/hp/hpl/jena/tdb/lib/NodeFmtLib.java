@@ -7,9 +7,9 @@
 package com.hp.hpl.jena.tdb.lib;
 
 import org.openjena.atlas.lib.Chars ;
-import org.openjena.riot.PrefixMap ;
-import org.openjena.riot.Prologue ;
-import org.openjena.riot.RiotChars ;
+import org.openjena.riot.system.PrefixMap ;
+import org.openjena.riot.system.Prologue ;
+import org.openjena.riot.system.RiotChars ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Node_Literal ;

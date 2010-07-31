@@ -28,7 +28,7 @@ import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
-import com.hp.hpl.jena.sparql.engine.binding.Binding1 ;
+import com.hp.hpl.jena.sparql.engine.binding.BindingFactory ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap ;
 import com.hp.hpl.jena.tdb.TDBException ;
 import com.hp.hpl.jena.tdb.lib.NodeLib ;
@@ -230,7 +230,7 @@ public class SolverLib
         Transform<Node, Binding> bindGraphName = new Transform<Node, Binding>(){
             public Binding convert(Node node)
             {
-                return new Binding1(null, var, node) ;
+                return BindingFactory.binding(var, node) ;
             }
         } ;
         

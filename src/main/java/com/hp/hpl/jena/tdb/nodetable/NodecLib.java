@@ -40,7 +40,7 @@ public class NodecLib
         {
             // Pesky spaces
             //throw new TDBException("Space found in URI: "+node) ;
-            String x = StrUtils.encode(node.getURI(), '_', invalidIRIChars) ;
+            String x = StrUtils.encodeHex(node.getURI(), '_', invalidIRIChars) ;
             if ( x != node.getURI() )
                 node = Node.createURI(x) ; 
         }
@@ -61,7 +61,7 @@ public class NodecLib
         if ( s.startsWith("<") )
         {
             s = s.substring(1,s.length()-1) ;
-            s = StrUtils.decode(s, MarkerChar) ;
+            s = StrUtils.decodeHex(s, MarkerChar) ;
             return Node.createURI(s) ;
         }
         

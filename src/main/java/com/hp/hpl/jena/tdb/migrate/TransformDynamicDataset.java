@@ -21,7 +21,7 @@ import com.hp.hpl.jena.sparql.core.BasicPattern ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
-import com.hp.hpl.jena.sparql.engine.binding.Binding1 ;
+import com.hp.hpl.jena.sparql.engine.binding.BindingFactory ;
 import com.hp.hpl.jena.sparql.engine.main.QC ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
 
@@ -98,7 +98,7 @@ public class TransformDynamicDataset extends TransformCopy
             Op union = null ;
             for ( Node n : namedGraphs )
             {
-                Binding b = new Binding1(null, v, n) ;
+                Binding b = BindingFactory.binding(v, n) ;
                 Op x2 = QC.substitute(opQuadPattern, b) ;
                 Op op = OpAssign.assign(x2, v, NodeValue.makeNode(n)) ;
                 union = OpUnion.create(union, op) ;
@@ -149,7 +149,7 @@ public class TransformDynamicDataset extends TransformCopy
             Var v = Var.alloc(gn) ;
             for ( Node n : namedGraphs )
             {
-                Binding b = new Binding1(null, v, n) ;
+                Binding b = BindingFactory.binding(v, n) ;
                 t.addBinding(b) ;
             }
             return OpTable.create(t) ; 

@@ -113,7 +113,7 @@ public class DumpIndex
     public static void reload(InputStream in, Index index)
     {
         RecordFactory f = index.getRecordFactory() ;
-        Tokenizer tokenizer = TokenizerFactory.makeTokenizer(in) ;
+        Tokenizer tokenizer = TokenizerFactory.makeTokenizerUTF8(in) ;
         // Read name
         // Read sizes 
         // How do we tell whether it's "key" or "key,value"?

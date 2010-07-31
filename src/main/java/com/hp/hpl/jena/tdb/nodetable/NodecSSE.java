@@ -57,7 +57,7 @@ public class NodecSSE implements Nodec
         if ( node.isURI() ) 
         {
             // Pesky spaces etc
-            String x = StrUtils.encode(node.getURI(), MarkerChar, invalidIRIChars) ;
+            String x = StrUtils.encodeHex(node.getURI(), MarkerChar, invalidIRIChars) ;
             if ( x != node.getURI() )
                 node = Node.createURI(x) ; 
         }
@@ -94,7 +94,7 @@ public class NodecSSE implements Nodec
         if ( str.startsWith("<") )
         {
             str = str.substring(1,str.length()-1) ;
-            str = StrUtils.decode(str, MarkerChar) ;
+            str = StrUtils.decodeHex(str, MarkerChar) ;
             return Node.createURI(str) ;
         }
         // -- Old - expensive.
