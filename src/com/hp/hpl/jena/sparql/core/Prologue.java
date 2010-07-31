@@ -12,6 +12,7 @@ import com.hp.hpl.jena.shared.impl.PrefixMappingImpl ;
 import org.openjena.atlas.logging.Log ;
 import com.hp.hpl.jena.sparql.util.PrefixMapping2 ;
 
+//** Prologues - combines with PrefixMapping (the RIOT Prologue uses PrefixMap) */
 public class Prologue
 {
     protected boolean seenBaseURI = false ;     // Implicit or set.

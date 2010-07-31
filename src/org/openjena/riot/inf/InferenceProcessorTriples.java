@@ -11,7 +11,7 @@ import org.openjena.atlas.lib.Sink ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 
-public class InferenceProcessorTriples implements Sink<Triple>
+class InferenceProcessorTriples implements Sink<Triple>
 {
     private final Sink<Triple> output ;
     private final InferenceSetupRDFS rdfsSetup ;

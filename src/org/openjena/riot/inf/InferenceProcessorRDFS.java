@@ -26,7 +26,7 @@ import com.hp.hpl.jena.vocabulary.RDF ;
  */
 
 
-public abstract class InferenceProcessorRDFS implements Processor
+abstract class InferenceProcessorRDFS implements Processor
 {
     // Calculates hierarchies (subclass, subproperty) from a model.
     // Assumes that model has no metavocabulary (use an inferencer on the model first if necessary).

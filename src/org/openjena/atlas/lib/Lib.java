@@ -12,12 +12,6 @@ public class Lib
 {
     private Lib() {}
     
-    /** Encode an index (the insertion point) when not found */
-    public static final int encodeIndex(int i) { return -(i+1) ; } 
-
-    /** Decode an index returning the insertion point when not found */
-    public static final int decodeIndex(int i) { return -(i+1) ; } 
-    
     public static final <T> boolean equals(T obj1, T obj2)
     {
         if ( obj1 == null )

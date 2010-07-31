@@ -11,7 +11,7 @@ import org.openjena.atlas.lib.Sink ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 
-public class InferenceProcessorQuads implements Sink<Quad>
+class InferenceProcessorQuads implements Sink<Quad>
 {
     private final Sink<Quad> output ;
     private final InferenceSetupRDFS rdfsSetup ;

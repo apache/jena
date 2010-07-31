@@ -9,8 +9,6 @@ package dev;
 public class DevARQ
 {
     // Inference pipeline
-    //   CmdLineParse.parseRIOT
-    //   Factory to create a sink from a sink.
     // TDB+Inference
     //   TDB/BulkLoader.loadTriples$ (loadQuads$)
     //     to add a inference sink wrapper.
