@@ -31,7 +31,6 @@ import org.openjena.riot.lang.LangRDFXML ;
 import org.openjena.riot.lang.LangRIOT ;
 import org.openjena.riot.out.SinkQuadOutput ;
 import org.openjena.riot.out.SinkTripleOutput ;
-import org.openjena.riot.system.IRIResolver ;
 import org.openjena.riot.system.RiotLib ;
 import org.openjena.riot.tokens.Tokenizer ;
 import org.openjena.riot.tokens.TokenizerFactory ;
@@ -42,6 +41,7 @@ import arq.cmdline.ModTime ;
 
 import com.hp.hpl.jena.Jena ;
 import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.n3.IRIResolver ;
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 
@@ -201,7 +201,7 @@ public abstract class CmdLangParse extends CmdGeneral
         if ( baseURI == null )
             baseURI = defaultBaseURI ;
         // Make absolute
-        baseURI = IRIResolver.resolveGlobalToString(baseURI) ;
+        baseURI = IRIResolver.resolveGlobal(baseURI) ;
         parseRIOT(baseURI, filename, in) ;
     }
     
