@@ -8,7 +8,10 @@ package dev;
 
 public class DevARQ
 {
-    // Path: P_Mod to distinguish {2} and {2,2} 
+
+    // Transform: paths for new operators. e.g. {2}
+    //   {N,} to be {N} UNION {0,N}
+    
     // Tests for negated property sets
     
     // Inference pipeline

@@ -80,6 +80,7 @@ public class Tags
     public static final String tagPathZeroOrMore    = "path*" ;
     public static final String tagPathOneOrMore     = "path+" ;
     public static final String tagPathZeroOrOne     = "path?" ;
+    public static final String tagPathFixedLength   = "pathN" ;
     
     public static final String tagPathReverse   = "reverse" ;
     public static final String tagPathRev       = "rev" ;

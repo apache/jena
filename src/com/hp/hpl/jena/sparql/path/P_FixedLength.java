@@ -1,5 +1,4 @@
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
  * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
@@ -7,29 +6,39 @@
 
 package com.hp.hpl.jena.sparql.path;
 
-import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
 
-public class PathFactory
+public class P_FixedLength extends P_Path1 
 {
-    public static final long UNSET = P_Mod.UNSET ;
-    
-    public static Path pathLink(Node property)          { return new P_Link(property) ; }
+    private final long count ;
+    public P_FixedLength(Path p, long count)
+    {
+        super(p) ;
+        this.count = count ;
+    }
 
-    public static Path pathInverse(Path path)           { return new P_Inverse(path) ; }
-    public static Path pathMod(Path path, long min, long max)   { return new P_Mod(path, min, max) ; }
-    public static Path pathFixedLength(Path path, long count)   { return new P_FixedLength(path, count) ; }
-    
+    @Override
+    public boolean equalTo(Path path2, NodeIsomorphismMap isoMap)
+    {
+        if ( ! ( path2 instanceof P_FixedLength ) ) return false ;
+        P_FixedLength other = (P_FixedLength)path2 ;
+        return other.count == count && getSubPath().equalTo(other.getSubPath(), isoMap)  ;
+    }
 
-    public static Path pathAlt(Path path1, Path path2)  { return new P_Alt(path1, path2) ; }
-    public static Path pathSeq(Path path1, Path path2)  { return new P_Seq(path1, path2) ; }
+    public long getCount() { return count ; }
     
-    public static Path pathZeroOrMore(Path path)        { return new P_ZeroOrMore(path) ; }
-    public static Path pathZeroOrOne(Path path)         { return new P_ZeroOrOne(path) ; }
-    public static Path pathOneOrMore(Path path)         { return new P_OneOrMore(path) ; }
+    @Override
+    public int hashCode()
+    {
+        return hashFixedLength ^ (int)count ^ getSubPath().hashCode() ;
+    }
+
+    public void visit(PathVisitor visitor)
+    { visitor.visit(this) ; }
+
 }
 
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
  * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  *

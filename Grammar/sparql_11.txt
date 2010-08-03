@@ -372,7 +372,7 @@ NON-TERMINALS
 // Weakest outermost
 	Path	:=	PathAlternative
 	PathAlternative	:=	PathSequence ( <VBAR> PathSequence )*
-	PathSequence	:=	PathEltOrInverse ( <SLASH> PathEltOrInverse | <CARAT> PathElt )*
+	PathSequence	:=	PathEltOrInverse ( <SLASH> PathEltOrInverse )*
 // Path unit element, no inverse
 	PathElt	:=	PathPrimary ( PathMod )?
 // Path unit element, including inverse.

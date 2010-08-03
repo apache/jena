@@ -46,7 +46,6 @@ public class PathWriter
 
     static class PathWriterWorker implements PathVisitor
     {
-
         private IndentedWriter out ;
         private Prologue prologue ;
         private static boolean alwaysInnerParens = true ;
@@ -209,6 +208,23 @@ public class PathWriter
 //                    out.print(Long.toString(pathMod.getMax())) ;
 //                out.print("}") ;
 //            }
+            if ( needParens )
+                out.print(")") ;
+        }
+
+        public void visit(P_FixedLength pFixedLength)
+        {
+            if ( needParens )
+                out.print("(") ;
+            if ( alwaysInnerParens )
+                out.print("(") ;
+            pFixedLength.getSubPath().visit(this) ;
+            if ( alwaysInnerParens )
+                out.print(")") ;
+
+            out.print("{") ;
+            out.print(Long.toString(pFixedLength.getCount())) ;
+            out.print("}") ;
             if ( needParens )
                 out.print(")") ;
         }

@@ -3,10 +3,11 @@ prefix :        <http://example/>
 
 SELECT *
 {
-    :x :p* :y .
-    :x :p? :y .
-    :x :p+ :y .
-    :x :p{2,} :y .
-    :x :p{,2} :y .
-    :x :p{2} :y .
-}
+
+#    :a :p* ?z .
+    :a :p{3} ?z . 
+#    :a :p{3,} ?z . 
+#    ?z :p* ?z .
+#    ?z :p+ ?z .
+#    :a (:p/:p)* ?z .
+} ORDER BY ?z

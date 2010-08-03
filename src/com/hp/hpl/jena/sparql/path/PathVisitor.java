@@ -10,14 +10,18 @@ public interface PathVisitor
 {
     public void visit(P_Link pathNode) ;
     public void visit(P_ReverseLink pathNode) ;
+    
     public void visit(P_NegPropSet pathNotOneOf) ;
-    public void visit(P_Alt pathAlt) ;
-    public void visit(P_Seq pathSeq) ;
+
+    public void visit(P_Inverse inversePath) ;
     public void visit(P_Mod pathMod) ;
+    public void visit(P_FixedLength pFixedLength) ;
     public void visit(P_ZeroOrOne path) ;
     public void visit(P_ZeroOrMore path) ;
     public void visit(P_OneOrMore path) ;
-    public void visit(P_Inverse inversePath) ;
+
+    public void visit(P_Alt pathAlt) ;
+    public void visit(P_Seq pathSeq) ;
 }
 
 /*

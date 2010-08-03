@@ -69,6 +69,8 @@ public class TestPath
     
     // ----
     
+    // ----
+    
     @Test public void parsePath_01()           { parse(":p") ; }
     @Test public void parsePath_02()           { parse("(:p)") ; }
     @Test public void parsePath_03()           { parse("^:p") ; }
@@ -80,18 +82,19 @@ public class TestPath
     @Test public void parsePath_11()           { parse(":p|:q") ; }
     @Test public void parsePath_12()           { parse(":p{1}") ; }
     @Test public void parsePath_13()           { parse(":p{1,}") ; }
-    @Test public void parsePath_14()           { parse(":p{1,2}") ; }
+    @Test public void parsePath_14()           { parse(":p{,1}") ; }
+    @Test public void parsePath_15()           { parse(":p{1,2}") ; }
     
-    @Test public void parsePath_15()           { parse(":p^:q") ; }
-    @Test public void parsePath_16()           { parse("^:p^:q") ; }
-    @Test public void parsePath_17()           { parse("^:p/:q") ; }
-    @Test public void parsePath_18()           { parse("^(:p/:q)") ; }
-    @Test public void parsePath_19()           { parse("^(:p^:q)") ; }
-    @Test public void parsePath_20()           { parse(":p^(:q/:r)") ; }
+    @Test public void parsePath_20()           { parse(":p^:q") ; }
+    @Test public void parsePath_21()           { parse("^:p^:q") ; }
+    @Test public void parsePath_22()           { parse("^:p/:q") ; }
+    @Test public void parsePath_23()           { parse("^(:p/:q)") ; }
+    @Test public void parsePath_24()           { parse("^(:p^:q)") ; }
+    @Test public void parsePath_25()           { parse(":p^(:q/:r)") ; }
 
-    @Test public void parsePath_21()           { parse("!(:q|:r)") ; }
-    @Test public void parsePath_22()           { parse(":p/!:q/:r") ; }
-    @Test public void parsePath_23()           { parse("!:q/:r") ; }
+    @Test public void parsePath_30()           { parse("!(:q|:r)") ; }
+    @Test public void parsePath_31()           { parse(":p/!:q/:r") ; }
+    @Test public void parsePath_32()           { parse("!:q/:r") ; }
     
     @Test public void parsePathErr_01()        { parse("", false) ; }
     @Test public void parsePathErr_02()        { parse("()", false) ; }

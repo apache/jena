@@ -95,6 +95,23 @@ public class PathCompiler
             return ;
         }
 
+        if ( path instanceof P_FixedLength )
+        {
+            P_FixedLength pFixed = (P_FixedLength)path ;
+            long N = pFixed.getCount() ;
+            Node stepStart = startNode ;
+
+            for ( long i = 0 ; i < N-1 ; i++ )
+            {
+                Node v = varAlloc.allocVar() ;
+                reduce(x, varAlloc, stepStart, pFixed.getSubPath(), v) ;
+                stepStart = v ;
+            }
+            reduce(x, varAlloc, stepStart, pFixed.getSubPath(), endNode) ;
+            return ;
+        }
+
+        
         if ( path instanceof P_Mod )
         {
             P_Mod pMod = (P_Mod)path ;

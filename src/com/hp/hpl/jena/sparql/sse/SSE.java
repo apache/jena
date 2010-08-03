@@ -33,10 +33,12 @@ import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.Prologue ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
+import com.hp.hpl.jena.sparql.path.Path ;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
 import com.hp.hpl.jena.sparql.sse.builders.BuilderExpr ;
 import com.hp.hpl.jena.sparql.sse.builders.BuilderGraph ;
 import com.hp.hpl.jena.sparql.sse.builders.BuilderOp ;
+import com.hp.hpl.jena.sparql.sse.builders.BuilderPath ;
 import com.hp.hpl.jena.sparql.sse.builders.BuilderTable ;
 import com.hp.hpl.jena.sparql.sse.lang.ParseHandler ;
 import com.hp.hpl.jena.sparql.sse.lang.ParseHandlerPlain ;
@@ -102,16 +104,29 @@ public class SSE
     }
 
     /** Parse a string to obtain a Triple */
-    public static Triple parseTriple(String s) { return parseTriple(s, null) ; }
+    public static Triple parseTriple(String str) { return parseTriple(str, null) ; }
     
     /** Parse a string to obtain a Triple */
-    public static Triple parseTriple(String s, PrefixMapping pmap)
+    public static Triple parseTriple(String str, PrefixMapping pmap)
     {
-        Item item = parse(s, pmap) ;
+        Item item = parse(str, pmap) ;
         if ( !item.isList() )
-            throw new ARQException("Not a list: "+s) ; 
+            throw new ARQException("Not a list: "+str) ; 
         return BuilderGraph.buildTriple(item.getList()) ;
     }
+    
+    /** Parse a string to obtain a path */
+    public static Path parsePath(String str) { return parsePath(str, null) ; }
+    
+    /** Parse a string to obtain a path */
+    public static Path parsePath(String str, PrefixMapping pmap)
+    {
+        Item item = parse(str, pmap) ;
+        if ( !item.isList() )
+            throw new ARQException("Not a list: "+str) ; 
+        return BuilderPath.buildPath(item) ;
+    }
+    
     
     /** Parse a string to obtain a SPARQL expression  */
     public static Expr parseExpr(String s) { return parseExpr(s, null) ; }

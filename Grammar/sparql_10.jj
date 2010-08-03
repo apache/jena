@@ -52,8 +52,6 @@ import com.hp.hpl.jena.sparql.path.* ;
 
 public class SPARQLParser10 extends SPARQLParser10Base
 {
-    private static long UNSET = P_Mod.UNSET ;
-    private static long INF = P_Mod.INF ;
     boolean allowAggregatesInExpressions = false ;
 }
 PARSER_END(SPARQLParser10)

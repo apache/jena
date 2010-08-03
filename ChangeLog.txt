@@ -3,6 +3,8 @@ ChangeLog for ARQ
 
 ==== ARQ 2.8.6
 
++ Property path evaluation now aligns with SPARQL 1.1 
+	cardinaity of results for arbitary length paths may change.   
 + Bug fix: N-Triples, and N-Quads now expect ASCII input as per specs.  
 + Bug fix: Property functions in FILTER NOT EXISTS
 

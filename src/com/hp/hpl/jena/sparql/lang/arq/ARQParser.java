@@ -17,7 +17,6 @@ import com.hp.hpl.jena.sparql.expr.aggregate.* ;
 import com.hp.hpl.jena.sparql.modify.op.* ;
 
 public class ARQParser extends ARQParserBase implements ARQParserConstants {
-    private static long UNSET = P_Mod.UNSET ;
     boolean allowAggregatesInExpressions = false ;
 
 // Common top for single entry point.
@@ -2413,7 +2412,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
       }
       jj_consume_token(VBAR);
       p2 = PathSequence();
-        p1 = new P_Alt(p1, p2) ;
+        p1 = PathFactory.pathAlt(p1, p2) ;
     }
      {if (true) return p1 ;}
     throw new Error("Missing return statement in function");
@@ -2437,12 +2436,12 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
       case SLASH:
         jj_consume_token(SLASH);
         p2 = PathEltOrInverse();
-        p1 = new P_Seq(p1, p2) ;
+        p1 = PathFactory.pathSeq(p1, p2) ;
         break;
       case CARAT:
         jj_consume_token(CARAT);
         p2 = PathElt();
-        p1 = new P_Seq(p1, new P_Inverse(p2)) ;
+        p1 = PathFactory.pathSeq(p1, new P_Inverse(p2)) ;
         break;
       default:
         jj_la1[92] = jj_gen;
@@ -2488,7 +2487,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     case CARAT:
       jj_consume_token(CARAT);
       p = PathElt();
-       p = new P_Inverse(p) ;
+       p = PathFactory.pathInverse(p) ;
       break;
     default:
       jj_la1[94] = jj_gen;
@@ -2500,19 +2499,19 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
   }
 
   final public Path PathMod(Path p) throws ParseException {
-                         long i1 = UNSET ; long i2 = UNSET ;
+                         long i1 ; long i2 ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case STAR:
       jj_consume_token(STAR);
-              {if (true) return PathFactory.modZeroOrMore(p) ;}
+              {if (true) return PathFactory.pathZeroOrMore(p) ;}
       break;
     case QMARK:
       jj_consume_token(QMARK);
-               {if (true) return PathFactory.modZeroOrOne(p) ;}
+               {if (true) return PathFactory.pathZeroOrOne(p) ;}
       break;
     case PLUS:
       jj_consume_token(PLUS);
-              {if (true) return PathFactory.modOneOrMore(p) ;}
+              {if (true) return PathFactory.pathOneOrMore(p) ;}
       break;
     case LBRACE:
       jj_consume_token(LBRACE);
@@ -2526,13 +2525,13 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
           switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
           case RBRACE:
             jj_consume_token(RBRACE);
-                {if (true) return new P_Mod(p, i1, UNSET) ;}
+                {if (true) return PathFactory.pathMod(p, i1, PathFactory.UNSET) ;}
             break;
           case INTEGER:
             // case {N,M}
                           i2 = Integer();
             jj_consume_token(RBRACE);
-                {if (true) return new P_Mod(p, i1, i2) ;}
+                {if (true) return PathFactory.pathMod(p, i1, i2) ;}
             break;
           default:
             jj_la1[95] = jj_gen;
@@ -2542,7 +2541,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
           break;
         case RBRACE:
           jj_consume_token(RBRACE);
-                       {if (true) return new P_Mod(p, i1) ;}
+                       {if (true) return PathFactory.pathFixedLength(p, i1) ;}
           break;
         default:
           jj_la1[96] = jj_gen;
@@ -2554,7 +2553,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
         jj_consume_token(COMMA);
         i2 = Integer();
         jj_consume_token(RBRACE);
-             {if (true) return new P_Mod(p, UNSET, i2) ;}
+             {if (true) return PathFactory.pathMod(p, PathFactory.UNSET, i2) ;}
         break;
       default:
         jj_la1[97] = jj_gen;
@@ -2577,11 +2576,11 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     case PNAME_NS:
     case PNAME_LN:
       str = IRIref();
-       n = createNode(str) ; p = new P_Link(n) ;
+       n = createNode(str) ; p = PathFactory.pathLink(n) ;
       break;
     case KW_A:
       jj_consume_token(KW_A);
-       p = new P_Link(nRDFtype) ;
+       p = PathFactory.pathLink(nRDFtype) ;
       break;
     case BANG:
       jj_consume_token(BANG);
@@ -4110,13 +4109,18 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
+  private boolean jj_3R_89() {
+    if (jj_scan_token(PNAME_NS)) return true;
+    return false;
+  }
+
   private boolean jj_3R_47() {
     if (jj_3R_49()) return true;
     return false;
   }
 
-  private boolean jj_3R_89() {
-    if (jj_scan_token(PNAME_NS)) return true;
+  private boolean jj_3R_88() {
+    if (jj_scan_token(PNAME_LN)) return true;
     return false;
   }
 
@@ -4135,11 +4139,6 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
-  private boolean jj_3R_88() {
-    if (jj_scan_token(PNAME_LN)) return true;
-    return false;
-  }
-
   private boolean jj_3R_80() {
     Token xsp;
     xsp = jj_scanpos;
@@ -4150,14 +4149,14 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
-  private boolean jj_3_2() {
-    if (jj_scan_token(DOT)) return true;
-    if (jj_3R_38()) return true;
+  private boolean jj_3R_70() {
+    if (jj_3R_80()) return true;
     return false;
   }
 
-  private boolean jj_3R_70() {
-    if (jj_3R_80()) return true;
+  private boolean jj_3_2() {
+    if (jj_scan_token(DOT)) return true;
+    if (jj_3R_38()) return true;
     return false;
   }
 
@@ -4342,14 +4341,14 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
-  private boolean jj_3_1() {
-    if (jj_3R_37()) return true;
-    return false;
-  }
-
   private boolean jj_3R_41() {
     if (jj_scan_token(MIN)) return true;
     if (jj_scan_token(LPAREN)) return true;
+    return false;
+  }
+
+  private boolean jj_3_1() {
+    if (jj_3R_37()) return true;
     return false;
   }
 

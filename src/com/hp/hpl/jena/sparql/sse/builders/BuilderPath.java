@@ -51,6 +51,7 @@ public class BuilderPath
         dispatch.put(Tags.tagPathAlt, buildAlt) ;
         dispatch.put(Tags.tagPathMod, buildMod) ;
         
+        dispatch.put(Tags.tagPathFixedLength, buildFixedLength) ;
         dispatch.put(Tags.tagPathZeroOrMore, buildZeroOrMore) ;
         dispatch.put(Tags.tagPathZeroOrOne, buildZeroOrOne) ;
         dispatch.put(Tags.tagPathOneOrMore, buildOneOrMore) ;
@@ -167,6 +168,17 @@ public class BuilderPath
         if ( "_".equals(item.getSymbol()) ) return P_Mod.UNSET ;
         return BuilderNode.buildInt(item) ;
     }
+
+    final protected Build buildFixedLength = new Build()
+    {
+        public Path make(ItemList list)
+        {
+            BuilderLib.checkLength(3, 3, list, "path fixed repeat: wanted 2 arguments") ;
+            long count = modInt(list.get(1)) ;
+            Path path  = build(list, 2) ;
+            return new P_FixedLength(path, count) ;
+        }
+    } ;
 
     final protected Build buildZeroOrMore = new Build()
     {

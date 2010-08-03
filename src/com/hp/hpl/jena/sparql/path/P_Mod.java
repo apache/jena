@@ -8,19 +8,15 @@ package com.hp.hpl.jena.sparql.path;
 
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
 
+/** Path element of the form {,N} {N,} {N,M}  but not {N} */ 
 public class P_Mod extends P_Path1
 {
-    public static long INF = -2 ;
-    public static long UNSET = -1 ;
+    public static final long UNSET    = -1 ;
+    public static final long INF      = -2 ;
     
-    private long min ;
-    private long max ;
+    private final long min ;
+    private final long max ;
 
-    public P_Mod(Path path, long val)
-    {
-        this(path, val, val) ;
-    }
-    
     public P_Mod(Path path, long min, long max)
     {
         super(path) ;
@@ -56,10 +52,9 @@ public class P_Mod extends P_Path1
         return other.min == min && other.max == max && getSubPath().equalTo(other.getSubPath(), isoMap)  ;
     }
 
-    
     public boolean isFixedLength()
     {
-        return min == max && min > 0 ; 
+        return max == min && min >= 0 ;  
     }
     
     public long getFixedLength()

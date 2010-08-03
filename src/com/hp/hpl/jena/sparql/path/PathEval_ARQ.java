@@ -5,11 +5,9 @@
  * [See end of file]
  */
 
-package dev;
+package com.hp.hpl.jena.sparql.path;
 
-import java.util.ArrayList ;
 import java.util.Collection ;
-import java.util.HashSet ;
 import java.util.Iterator ;
 import java.util.LinkedHashSet ;
 import java.util.List ;
@@ -30,17 +28,15 @@ import com.hp.hpl.jena.rdf.model.NodeIterator ;
 import com.hp.hpl.jena.rdf.model.RDFNode ;
 import com.hp.hpl.jena.rdf.model.impl.NodeIteratorImpl ;
 import com.hp.hpl.jena.sparql.ARQException ;
-import com.hp.hpl.jena.sparql.core.Var ;
-import com.hp.hpl.jena.sparql.engine.binding.Binding ;
-import com.hp.hpl.jena.sparql.engine.binding.BindingFactory ;
-import com.hp.hpl.jena.sparql.expr.nodevalue.NodeFunctions ;
-import com.hp.hpl.jena.sparql.path.* ;
 import com.hp.hpl.jena.sparql.util.ModelUtils ;
-import com.hp.hpl.jena.util.iterator.SingletonIterator ;
 
-public class PathEval2_X
+/** The original path evaluator from ARQ
+ *  Differs from SPARQL 1.1 in some cases (cardinality of *,+) 
+ */
+
+public class PathEval_ARQ
 {
-    static private Logger log = LoggerFactory.getLogger(PathEval2_X.class) ; 
+    static private Logger log = LoggerFactory.getLogger(PathEval_ARQ.class) ; 
     
     // Graph to Model.
     static NodeIterator convertGraphNodeToRDFNode(final Model model, Iterator<Node> iter)
@@ -64,47 +60,36 @@ public class PathEval2_X
     
     static public NodeIterator walkBackwards(final Model model, RDFNode rdfNode, Path path)
     {
-        Iterator<Node> iter = evalReverse(model.getGraph(), rdfNode.asNode(), path) ;
+        Iterator<Node> iter = evalInverse(model.getGraph(), rdfNode.asNode(), path) ;
         return convertGraphNodeToRDFNode(model, iter) ;
     }
     
-    /* From here, calcuates paths gives a fixed starting point 
-     * (subject, if forward, object if reverse).    
-     */
-
+    // LinkedHashSet for predictable order - remove later??
     
-    /** Evaluate a path in the forward direction from a specific node in the graph (not a variable) */
+    /** Evaluate a path in the forward direction */ 
     static public Iterator<Node> eval(Graph graph, Node node, Path path)
     { 
         if ( node == null  )
-            Log.fatal(PathEval2_X.class, "PathEval.eval applied to a null node") ;
+            Log.fatal(PathEval_ARQ.class, "PathEval.eval applied to a null node") ;
         if ( node.isVariable() )
-            Log.warn(PathEval2_X.class, "PathEval.eval applied to a variable: "+node) ;
+            Log.warn(PathEval_ARQ.class, "PathEval.eval applied to a variable: "+node) ;
         return eval(graph, node, path, true) ;
     }
     
-    /** Evaluate a path starting at the end of the path, from a specific node in the graph (not a variable) */ 
-    static public Iterator<Node> evalReverse(Graph g, Node node, Path path) 
-    { 
-        if ( node == null  )
-            Log.fatal(PathEval2_X.class, "PathEval.evalReverse applied to a null node") ;
-        if ( node.isVariable() )
-            Log.warn(PathEval2_X.class, "PathEval.evalReverse applied to a variable: "+node) ;
-        return eval(g, node, path, false) ; 
-    }
+    /** Evaluate a path starting at the end of the path */ 
+    static public Iterator<Node> evalInverse(Graph g, Node node, Path path) 
+    { return eval(g, node, path, false) ; }
 
     static private Iterator<Node> eval(Graph graph, Node node, Path path, boolean forward)
     {
-        //Set<Node> acc = new LinkedHashSet<Node>() ;
-        Collection<Node> acc = new ArrayList<Node>() ;
+        Set<Node> acc = new LinkedHashSet<Node>() ;
         eval(graph, node, path, forward, acc);
         return acc.iterator() ;
     }
     
     static private Iterator<Node> eval(Graph graph, Iterator<Node> input, Path path, boolean forward) 
     {
-        //Set<Node> acc = new LinkedHashSet<Node>() ;
-        Collection<Node> acc = new ArrayList<Node>() ; 
+        Set<Node> acc = new LinkedHashSet<Node>() ;
         
         for ( ; input.hasNext() ; )
         {
@@ -114,117 +99,14 @@ public class PathEval2_X
         return acc.iterator() ;
     }
     
-    /** The recursive step, calculate nodes reached by the path */
+    // ---- Worker ??
     static private void eval(Graph graph, Node node, Path p, boolean forward, Collection<Node> acc)
     {
         PathEvaluator evaluator = new PathEvaluator(graph, node, acc, forward) ;
         p.visit(evaluator) ;
     }
-    
     // ----
-    // Calculate ?x path{0} ?y 
-    private static Iterator<Binding> evalZeroLengthPath(Node s, Path path, Node o)
-    {
-        /* OLD
-         * zeropath(?x (path){0} ?y, G) = { μ | μ(?x->iri) and μ(?y->iri) for all IRIs
-         *    which are subject or objects of a triple in G }
-         *
-         * zeropath(iri (path){0} ?z) = { μ | μ(?z->iri) }
-         * 
-         * zeropath(iri1 (path){0} iri2) matches if iri1 = iri2.             
-         */
-
-        if ( fixed(s) && fixed(o) )
-        {
-            if ( NodeFunctions.sameTerm(s, o) ) 
-                return Iter.singleton(BindingFactory.binding()) ;
-            else
-                return Iter.nullIter() ;
-        }
-        
-        if ( fixed(s) && var(o) )
-            return Iter.singleton(BindingFactory.binding(Var.alloc(o), s)) ;
-        
-        if ( var(s) && fixed(o) )
-            return Iter.singleton(BindingFactory.binding(Var.alloc(s), o)) ;
-        
-        // Var s, var o
-        Iterator<Node> iter = null ; // allNodes(graph) ;
-        
-        // XXX Wrap/stream
-        List<Binding> r = new ArrayList<Binding>() ;
-        
-        
-        if ( s.equals(o) )
-        {   
-            Var v = Var.alloc(s) ; 
-            for ( ; iter.hasNext() ; )
-            {
-                Node n = iter.next() ;
-                r.add(BindingFactory.binding(v, n)) ;
-            }
-        }
-        else
-        {
-            // Different var
-            Var v1 = Var.alloc(s) ;
-            Var v2 = Var.alloc(o) ;
-            for ( ; iter.hasNext() ; )
-            {
-                Node n = iter.next() ;
-                Binding b = BindingFactory.create() ;
-                b.add(v1, n) ;
-                b.add(v2, n) ;
-                r.add(b) ;
-            }
-        }
-        return r.iterator() ;
-    }
     
-    private static boolean fixed(Node node)
-    {
-        return ! Var.isVar(node) ;
-    }
-    
-    private static boolean var(Node node)
-    {
-        return Var.isVar(node) ;
-    }
-
-    // Calculate <X> path+ ?y 
-    private static void evalArbitraryLengthPath(Collection<Node> acc, Graph graph, Node s, Path path)
-    {
-        // Fixed start node.
-        /*
-         * // Instead - return a  set of nodes. 
-         * eval(x:RDFTerm, path, Y, S) =
-         *     S := S + {x}
-         *     endNodes = evalPath({z} path ?V)
-         *     for each v in endNodes
-         *        R := R + {(Y, v)} if Y is a variable
-         *        fi
-         *     end
-         *     S := S \ {x}
-         *   result is R
-         */
-        
-        Set<Node> visited = new HashSet<Node>() ;
-        Iterator<Node> r = evalFixedStartArbitraryLengthPath(graph, s, path, visited) ;
-    }
-    
-    
-    private static Iterator<Node> evalFixedStartArbitraryLengthPath(Graph graph, Node s, Path path, Set<Node> visited)
-    {
-        boolean b = visited.contains(s) ;
-        if ( !b )
-            visited.add(s) ;
-        Iterator<Node> acc2 = eval(graph, s, path, true) ;
-        if ( !b )
-            visited.remove(s) ;
-        return acc2 ;
-    }
-
-
     private static class PathEvaluator implements PathVisitor
     {
 
@@ -251,9 +133,6 @@ public class PathEval2_X
         //@Override
         public void visit(P_ReverseLink pathNode)
         {
-            System.err.println("P_ReverseLink") ;
-            // Part of negated property sets.
-            // This is not a reverse path (see P_Inverse)
             forwardMode = ! forwardMode ;
             Iterator<Node> nodes = doOne(pathNode.getNode()) ;
             forwardMode = ! forwardMode ;
@@ -355,18 +234,36 @@ public class PathEval2_X
         }
         
         //@Override
+        public void visit(P_FixedLength pFixedLength)
+        {
+            // P_Mod(path, count, count)
+            // One step.
+            Iterator<Node> iter = eval(graph, node, pFixedLength.getSubPath(), forwardMode) ;
+            long count2 = dec(pFixedLength.getCount()) ;
+            P_FixedLength nextPath = new P_FixedLength(pFixedLength.getSubPath(), count2) ;
+            for ( ; iter.hasNext() ; )
+            {
+                Node n2 = iter.next() ;
+                Iterator<Node> iter2 = eval(graph, n2, nextPath, forwardMode) ;
+                fill(iter2) ;
+            }
+        }
+
+        //@Override
         public void visit(P_ZeroOrOne path)
-        { doZeroOrMore(path.getSubPath()) ; }
+        { 
+            doZero(path.getSubPath()) ;
+            doOne(path.getSubPath()) ;
+        }
 
         //@Override
         public void visit(P_ZeroOrMore path)
-        { doOneOrMore(path.getSubPath()) ; }
+        { doZeroOrMore(path.getSubPath()) ; }
 
         //@Override
         public void visit(P_OneOrMore path)
         { 
-            doZero(path.getSubPath()) ;
-            doOne(path.getSubPath()) ;
+            doOneOrMore(path.getSubPath()) ;
         }
 
         private void doZero(Path path)
@@ -521,45 +418,35 @@ public class PathEval2_X
 
         private void doOneOrMore(Path path)
         {
+            // Do one, then do zero or more for each result.
+            Iterator<Node> iter1 = eval(graph, node, path, forwardMode) ;  // ORDER
+            // Do zero or more.
             Set<Node> visited = new LinkedHashSet<Node>() ;
-            doOneOrMore(node, path, visited) ;
-//            // Do one, then do zero or more for each result.
-//            Iterator<Node> iter1 = eval(graph, node, path, forwardMode) ;  // ORDER
-//            // Do zero or more.
-//            Set<Node> visited = new LinkedHashSet<Node>() ;
-//            for ( ; iter1.hasNext() ; )
-//            {
-//                Node n1 = iter1.next();
-//                //closure(graph, n1, path, visited, forwardMode) ;
-//                
-//            }
-//            output.addAll(visited) ;
-        }
-
-        private void doOneOrMore(Node node, Path path, Set<Node> visited)
-        {
-            if ( visited.contains(node) ) return ;
-            
-            visited.add(node) ;
-            // Do one step.
-            Iterator<Node> iter1 = eval(graph, node, path, forwardMode) ;
-            
-            // For each step, add to results and recurse.
             for ( ; iter1.hasNext() ; )
             {
                 Node n1 = iter1.next();
-                output.add(n1) ;
-                doOneOrMore(n1, path, visited) ;
+                closure(graph, n1, path, visited, forwardMode) ;
             }
-            visited.remove(node) ;
-            
+            output.addAll(visited) ;
         }
-        
+
         private void doZeroOrMore(Path path)
         {
-            // XXX Args??
-            doZero(path) ;
-            doOneOrMore(path) ;
+            Set<Node> visited = new LinkedHashSet<Node>() ;
+            closure(graph, node, path, visited, forwardMode) ;
+            output.addAll(visited) ;
+        }
+
+        private static void closure(Graph graph, Node node, Path path, Collection<Node> visited, boolean forward)
+        {
+            if ( visited.contains(node) ) return ;
+            visited.add(node) ;
+            Iterator<Node> iter = eval(graph, node, path, forward) ;
+            for ( ; iter.hasNext() ; )
+            {
+                Node n2 = iter.next() ;
+                closure(graph, n2, path, visited, forward) ;
+            }
         }
     }
 }
@@ -567,7 +454,6 @@ public class PathEval2_X
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
  * (c) Copyright 2010 Epimorphics Ltd.
- * 
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

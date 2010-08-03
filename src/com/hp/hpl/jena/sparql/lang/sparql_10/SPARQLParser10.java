@@ -10,7 +10,6 @@ import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.expr.* ;
-import com.hp.hpl.jena.sparql.path.P_Mod ;
 import com.hp.hpl.jena.sparql.path.Path ;
 import com.hp.hpl.jena.sparql.syntax.* ;
 
@@ -21,8 +20,6 @@ import com.hp.hpl.jena.sparql.syntax.* ;
 
 
 public class SPARQLParser10 extends SPARQLParser10Base implements SPARQLParser10Constants {
-    private static long UNSET = P_Mod.UNSET ;
-    private static long INF = P_Mod.INF ;
     boolean allowAggregatesInExpressions = false ;
 
   final public void QueryUnit() throws ParseException {

@@ -39,7 +39,6 @@ import com.hp.hpl.jena.sparql.modify.op.* ;
 
 public class ARQParser extends ARQParserBase
 {
-    private static long UNSET = P_Mod.UNSET ;
     boolean allowAggregatesInExpressions = false ;
 }
 PARSER_END(ARQParser)
@@ -958,7 +957,7 @@ Path PathAlternative() : { Path p1 , p2 ; }
    p1 = PathSequence()
    (
       <VBAR> p2 = PathSequence()
-      { p1 = new P_Alt(p1, p2) ; }
+      { p1 = PathFactory.pathAlt(p1, p2) ; }
    )*
    { return p1 ; }
 }
@@ -967,9 +966,12 @@ Path PathSequence() : { Path p1 , p2 ; }
 {
     p1 = PathEltOrInverse()
     ( <SLASH> p2 = PathEltOrInverse()
-      { p1 = new P_Seq(p1, p2) ; }
+      { p1 = PathFactory.pathSeq(p1, p2) ; }
+
+    // :p^:q -- Not in SPARQL 1.1
     | <CARAT> p2 = PathElt()
-      { p1 = new P_Seq(p1, new P_Inverse(p2)) ; }
+      { p1 = PathFactory.pathSeq(p1, new P_Inverse(p2)) ; }
+
     )*
    { return p1; }
 }
@@ -988,38 +990,37 @@ Path PathEltOrInverse() : { String str ; Node n ; Path p ; }
    ( p = PathElt()
    | <CARAT>
      p = PathElt()
-     { p = new P_Inverse(p) ; }
+     { p = PathFactory.pathInverse(p) ; }
    )
    { return p ; }
 }
 
-Path PathMod(Path p) : { long i1 = UNSET ; long i2 = UNSET ; }
+Path PathMod(Path p) : { long i1 ; long i2 ; }
 {
-   ( <STAR> { return PathFactory.modZeroOrMore(p) ; }
-   | <QMARK> { return PathFactory.modZeroOrOne(p) ; }
-   | <PLUS> { return PathFactory.modOneOrMore(p) ; }
+   ( <STAR> { return PathFactory.pathZeroOrMore(p) ; }
+   | <QMARK> { return PathFactory.pathZeroOrOne(p) ; }
+   | <PLUS> { return PathFactory.pathOneOrMore(p) ; }
    | <LBRACE>
        ( // {N} {N,M} {N,}
           i1 = Integer()
           ( <COMMA>
             ( // case {N,}
               <RBRACE>
-              { return new P_Mod(p, i1, UNSET) ; }
+              { return PathFactory.pathMod(p, i1, PathFactory.UNSET) ; }
             | // case {N,M}
               i2 = Integer() <RBRACE> // case {N,M}
-              { return new P_Mod(p, i1, i2) ; }
+              { return PathFactory.pathMod(p, i1, i2) ; }
             )
           |
             <RBRACE> // {N}
-                     { return new P_Mod(p, i1) ; }
+                     { return PathFactory.pathFixedLength(p, i1) ; }
           )
        | // {,N}
          <COMMA>
          i2 = Integer()
          <RBRACE>
-           { return new P_Mod(p, UNSET, i2) ; }
+           { return PathFactory.pathMod(p, PathFactory.UNSET, i2) ; }
        )
-    //   { return new P_Mod(p, i1, i2) ; } 
    )
 }
 
@@ -1027,9 +1028,9 @@ Path PathPrimary() : { String str ; Path p ; Node n ; }
 {
   (
     str = IRIref()
-     { n = createNode(str) ; p = new P_Link(n) ; }
+     { n = createNode(str) ; p = PathFactory.pathLink(n) ; }
   | <KW_A>
-     { p = new P_Link(nRDFtype) ; }
+     { p = PathFactory.pathLink(nRDFtype) ; }
   | <BANG> p = PathNegatedPropertySet()
   | <LPAREN> p = Path() <RPAREN>
   )

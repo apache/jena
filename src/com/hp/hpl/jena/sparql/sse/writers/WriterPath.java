@@ -182,14 +182,7 @@ public class WriterPath
             out.print(modInt(pathMod.getMin())) ;
             out.print(" ") ;
             out.print(modInt(pathMod.getMax())) ;
-
-            if ( oneLiner(pathMod.getSubPath()) )
-                out.print(" ") ;
-            else
-                nl(out) ;
-            out.incIndent() ;
-            output(pathMod.getSubPath()) ;
-            out.decIndent() ;
+            writeOneLiner(pathMod.getSubPath()) ;
             out.print(")") ;
         }
 
@@ -197,8 +190,18 @@ public class WriterPath
         {
             if ( value == P_Mod.INF ) return "*" ;
             if ( value == P_Mod.UNSET ) return "_" ;
-        
             return Long.toString(value) ;
+        }
+
+        public void visit(P_FixedLength path)
+        {
+            out.print("(") ;
+            out.print(Tags.tagPathFixedLength) ;
+            out.print(" ") ;
+            
+            out.print(modInt(path.getCount())) ;
+            writeOneLiner(path.getSubPath()) ;
+            out.print(")") ;
         }
 
         public void visit(P_ZeroOrOne path)
@@ -216,18 +219,23 @@ public class WriterPath
             writeStarPlusQuery(Tags.tagPathOneOrMore, path.getSubPath()) ;
         }
         
+        private void writeOneLiner(Path path)
+        {
+            if ( oneLiner(path) )
+                out.print(" ") ;
+            else
+                nl(out) ;
+            out.incIndent() ;
+            output(path) ;
+            out.decIndent() ;
+        }
+        
         private void writeStarPlusQuery(String tag, Path subPath)
         {
             out.print("(") ;
             out.print(tag) ;
             out.print(" ") ;
-            if ( oneLiner(subPath) )
-                out.print(" ") ;
-            else
-                nl(out) ;
-            out.incIndent() ;
-            output(subPath) ;
-            out.decIndent() ;
+            writeOneLiner(subPath) ;
             out.print(")") ;
         }
 
