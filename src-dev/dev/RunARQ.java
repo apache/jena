@@ -70,12 +70,7 @@ public class RunARQ
     
     public static void main(String[] argv) throws Exception
     {
-        Model m = FileManager.get().loadModel("data-path-1.tt") ;
-        Path path = SSE.parsePath("(path* :p)") ;
-        Node n = Node.createURI("http://example/a") ;
-        PathEval.eval(m.getGraph(), n, path) ;
-        
-        qparse("--query=Q.arq") ; System.exit(0) ;
+        arq.query.main("--query=Q.arq", "--data=D.ttl") ; System.exit(0) ;
         
         
         /*
@@ -255,22 +250,6 @@ public class RunARQ
         arq.qtest.main(a1) ;
         System.exit(0 ) ; 
   
-    }
-
-    private static void execQuery(String datafile, String queryfile)
-    {
-        //ARQ.getContext().set(ARQ.enableExecutionTimeLogging, true) ; 
-
-        //QueryEngineMain.register() ;
-        String a[] = new String[]{
-            //"-v",
-            //"--engine=ref", 
-            "--data="+datafile,
-            "-query="+queryfile , 
-        } ;
-        
-        arq.sparql.main(a) ;
-        //System.exit(0) ;
     }
 
     private static void execQueryCode(String datafile, String queryfile)

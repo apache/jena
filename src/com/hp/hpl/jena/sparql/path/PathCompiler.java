@@ -99,16 +99,20 @@ public class PathCompiler
         {
             P_FixedLength pFixed = (P_FixedLength)path ;
             long N = pFixed.getCount() ;
-            Node stepStart = startNode ;
-
-            for ( long i = 0 ; i < N-1 ; i++ )
+            if ( N > 0 )
             {
-                Node v = varAlloc.allocVar() ;
-                reduce(x, varAlloc, stepStart, pFixed.getSubPath(), v) ;
-                stepStart = v ;
+                // Don't do {0}
+                Node stepStart = startNode ;
+    
+                for ( long i = 0 ; i < N-1 ; i++ )
+                {
+                    Node v = varAlloc.allocVar() ;
+                    reduce(x, varAlloc, stepStart, pFixed.getSubPath(), v) ;
+                    stepStart = v ;
+                }
+                reduce(x, varAlloc, stepStart, pFixed.getSubPath(), endNode) ;
+                return ;
             }
-            reduce(x, varAlloc, stepStart, pFixed.getSubPath(), endNode) ;
-            return ;
         }
 
         
@@ -118,16 +122,19 @@ public class PathCompiler
             if ( pMod.isFixedLength() && pMod.getFixedLength() > 0 )
             {
                 long N = pMod.getFixedLength() ;
-                Node stepStart = startNode ;
-
-                for ( long i = 0 ; i < N-1 ; i++ )
+                if ( N > 0 )
                 {
-                    Node v = varAlloc.allocVar() ;
-                    reduce(x, varAlloc, stepStart, pMod.getSubPath(), v) ;
-                    stepStart = v ;
+                    Node stepStart = startNode ;
+
+                    for ( long i = 0 ; i < N-1 ; i++ )
+                    {
+                        Node v = varAlloc.allocVar() ;
+                        reduce(x, varAlloc, stepStart, pMod.getSubPath(), v) ;
+                        stepStart = v ;
+                    }
+                    reduce(x, varAlloc, stepStart, pMod.getSubPath(), endNode) ;
+                    return ;
                 }
-                reduce(x, varAlloc, stepStart, pMod.getSubPath(), endNode) ;
-                return ;
             }
             // Not fixed - drop through, including zero length paths.
         }
