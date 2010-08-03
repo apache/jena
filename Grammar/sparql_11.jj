@@ -40,7 +40,6 @@ import com.hp.hpl.jena.sparql.modify.op.* ;
 public class SPARQLParser11 extends SPARQLParser11Base
 {
     private static long UNSET = P_Mod.UNSET ;
-    private static long INF = P_Mod.INF ;
     boolean allowAggregatesInExpressions = false ;
 }
 PARSER_END(SPARQLParser11)
@@ -435,7 +434,7 @@ void Quads() : { TripleCollector acc = new TemplateGroup() ; }
 // @@ Java broken
 void QuadsNotTriples(TripleCollector acc) : {Node n ; }
 {
-    <GRAPH> n = VarOrIRIref() <LBRACE> TriplesTemplate(n, acc) <RBRACE>
+    <GRAPH> n = VarOrIRIref() <LBRACE> (TriplesTemplate(n, acc))? <RBRACE>
 }
 
 void TriplesTemplate(Node g, TripleCollector acc) : { }
@@ -891,22 +890,29 @@ Path PathEltOrInverse() : { String str ; Node n ; Path p ; }
 
 Path PathMod(Path p) : { long i1 = UNSET ; long i2 = UNSET ; }
 {
-   ( <STAR> { return PathFactory.modZeroOrMode(p) ; }
+   ( <STAR> { return PathFactory.modZeroOrMore(p) ; }
    | <QMARK> { return PathFactory.modZeroOrOne(p) ; }
    | <PLUS> { return PathFactory.modOneOrMore(p) ; }
    | <LBRACE>
        ( // {N} {N,M} {N,}
-            i1 = Integer()
-            ( <COMMA>
-              ( <RBRACE> // case {N,}
-                    { return new P_Mod(p, i1, INF) ; }
-              | i2 = Integer() <RBRACE> // case {N,M}
-                    { return new P_Mod(p, i1, i2) ; }
-              )
-            |
-              <RBRACE> // {N}
-                     { return new P_Mod(p, i1) ; }
+          i1 = Integer()
+          ( <COMMA>
+            ( // case {N,}
+              <RBRACE>
+              { return new P_Mod(p, i1, UNSET) ; }
+            | // case {N,M}
+              i2 = Integer() <RBRACE> // case {N,M}
+              { return new P_Mod(p, i1, i2) ; }
             )
+          |
+            <RBRACE> // {N}
+                     { return new P_Mod(p, i1) ; }
+          )
+       | // {,N}
+         <COMMA>
+         i2 = Integer()
+         <RBRACE>
+           { return new P_Mod(p, UNSET, i2) ; }
        )
     //   { return new P_Mod(p, i1, i2) ; } 
    )

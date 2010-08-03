@@ -8,9 +8,9 @@ package com.hp.hpl.jena.sparql.path;
 
 public class PathFactory
 {
-    public static Path modZeroOrMode(Path p)    { return new P_Mod(p, 0, P_Mod.INF) ; }
-    public static Path modZeroOrOne(Path p)     { return new P_Mod(p, 0, 1) ; }
-    public static Path modOneOrMore(Path p)     { return new P_Mod(p, 1, P_Mod.INF) ; }
+    public static Path modZeroOrMore(Path p)    { return new P_ZeroOrMore(p) ; }
+    public static Path modZeroOrOne(Path p)     { return new P_ZeroOrOne(p) ; }
+    public static Path modOneOrMore(Path p)     { return new P_OneOrMore(p) ; }
 }
 
 /*

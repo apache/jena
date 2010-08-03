@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -126,7 +127,7 @@ public class PathLib
         
         if ( Var.isVar(s) )
         {
-            // Var subject, concreate object - do backwards.
+            // Var subject, concrete object - do backwards.
             iter = PathEval.evalInverse(graph, o, path) ;
             endNode = s ;
         } 
@@ -190,8 +191,6 @@ public class PathLib
         return qIterCat ;
     }
 
- 
-
     public static TriplePath substitute(TriplePath triplePath, Binding binding)
     {
         if ( triplePath.isTriple() )
@@ -201,13 +200,11 @@ public class PathLib
         Node o = Var.lookup(binding, triplePath.getObject()) ;
         return new TriplePath(s, triplePath.getPath(), o) ;
     }
-    
-    
-    
 }
 
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

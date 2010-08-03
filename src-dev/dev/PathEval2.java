@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -26,12 +27,13 @@ import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.NodeIterator ;
 import com.hp.hpl.jena.rdf.model.RDFNode ;
 import com.hp.hpl.jena.rdf.model.impl.NodeIteratorImpl ;
-import com.hp.hpl.jena.sparql.ARQException ;
 import com.hp.hpl.jena.sparql.path.* ;
 import com.hp.hpl.jena.sparql.util.ModelUtils ;
 
 public class PathEval2
 {
+    // Path evaluation - new semantics.
+    
     static private Logger log = LoggerFactory.getLogger(PathEval2.class) ; 
     
     // Graph to Model.
@@ -138,17 +140,11 @@ public class PathEval2
         //@Override
         public void visit(P_NegPropSet pathNotOneOf)
         {
-            if ( pathNotOneOf.getBwdNodes().size() > 0 )
-                Log.warn(this, "Only forward negated property sets implemented") ;
-            
-            // X !(:a|:b|^:c|^:d) Y = { X !(:a|:b) Y } UNION { Y !(:c|:d) X } 
-            
-            List<Node> props = pathNotOneOf.getFwdNodes() ;
-            if ( props.size() == 0 )
-                throw new ARQException("Bad path element: Negative property set found with no elements") ;
-            //Iterator<Node> nodes = doOneExclude(pathNotOneOf.getFwdNodes(), pathNotOneOf.getBwdNodes()) ;
-            Iterator<Node> nodes = doOneExclude(pathNotOneOf.getFwdNodes()) ;
-            fill(nodes) ;
+            // X !(:a|:b|^:c|^:d) Y = { X !(:a|:b) Y } UNION { Y !(:c|:d) X }
+            Iterator<Node> nodes1 = doOneExcludeForwards(pathNotOneOf.getFwdNodes()) ;
+            Iterator<Node> nodes2 = doOneExcludeBackwards(pathNotOneOf.getBwdNodes()) ;
+            fill(nodes1) ;
+            fill(nodes2) ;
         }
         
         //@Override
@@ -218,6 +214,7 @@ public class PathEval2
 //            iter = x.iterator() ;
             
             // Moved on one step - now go and do it again on a new path
+            //  Need to do the visited thing?  No.  Exact {N,M}
             
             for ( ; iter.hasNext() ; )
             {
@@ -228,6 +225,35 @@ public class PathEval2
             // If no matches, will not call eval and we drop out.
         }
         
+        //@Override
+        public void visit(P_ZeroOrOne path)
+        { 
+            doZero(path.getSubPath()) ;
+            doOne(path.getSubPath()) ;
+        }
+
+        //@Override
+        public void visit(P_ZeroOrMore path)
+        { doZeroOrMore(path.getSubPath()) ; }
+
+        //@Override
+        public void visit(P_OneOrMore path)
+        { 
+            doOneOrMore(path.getSubPath()) ;
+        }
+
+        private void doZero(Path path)
+        {
+            // Ignores path.
+            output.add(node) ;
+        }
+
+        private void doOne(Path path)
+        {
+            Iterator<Node> iter = eval(graph, node, path, forwardMode) ;
+            fill(iter) ;
+        }
+
         private void fill(Iterator<Node> iter)
         {
             for ( ; iter.hasNext() ; )
@@ -280,67 +306,27 @@ public class PathEval2
             }
         }
         
-        private final Iterator<Node> doOneExclude(List<Node> excludedNodes)
+        private final Iterator<Node> doOneExcludeForwards(List<Node> excludedNodes)
         {
-            // Forward mode only
             Iter<Triple> iter1 = forwardLinks(node, excludedNodes) ;
-
-            if ( false )
-            {
-                System.out.println("Node: "+node) ;
-                List<Triple> x = iter1.toList() ;
-                for ( Triple _t : x )
-                    System.out.println("    "+_t) ;
-                iter1 = Iter.iter(x) ;
-            }
-
             Iter<Node> r1 = iter1.map(selectObject) ;
             return r1 ;
         }
         
-//        private final Iterator<Node> doOneExclude(List<Node> fwdNodes, List<Node> bwdNodes)
-//        {
-////            if ( forwardMode )
-////            { }
-////            else
-////            {}
-//            
-//            // FORWARD MODE
-//            Iter<Triple> iter1 = forwardLinks(node, fwdNodes) ;
-//
-//            if ( false )
-//            {
-//                System.out.println("Node: "+node) ;
-//                List<Triple> x = iter1.toList() ;
-//                for ( Triple _t : x )
-//                    System.out.println("    "+_t) ;
-//                iter1 = Iter.iter(x) ;
-//            }
-//
-//            Iter<Node> r1 = iter1.map(selectObject) ; 
-//            
-//            if ( bwdNodes.size() == 0 )
-//                return r1 ;
-//            
-//            if ( true )
-//            {
-//                if ( bwdNodes.size() > 0 )
-//                    throw new ARQNotImplemented() ;
-//            }
-//            
-//            Iter<Triple> iter2 = backwardLinks(node, bwdNodes) ;
-//            Iter<Node> r2 = iter1.map(selectSubject) ;
-//            
-//            return Iter.concat(r1, r2) ;
-//        }
-    
-        private boolean testConnected(Node x, Node z, List<Node> excludeProperties)
+        private final Iterator<Node> doOneExcludeBackwards(List<Node> excludedNodes)
         {
-            Iter<Triple> iter1 = Iter.iter(graph.find(x, Node.ANY, z)) ;
-            if ( excludeProperties != null )
-                iter1 = iter1.filter(new FilterExclude(excludeProperties)) ;
-            return iter1.hasNext() ;
+            Iter<Triple> iter1 = backwardLinks(node, excludedNodes) ;
+            Iter<Node> r1 = iter1.map(selectSubject) ;
+            return r1 ;
         }
+        
+//        private boolean testConnected(Node x, Node z, List<Node> excludeProperties)
+//        {
+//            Iter<Triple> iter1 = Iter.iter(graph.find(x, Node.ANY, z)) ;
+//            if ( excludeProperties != null )
+//                iter1 = iter1.filter(new FilterExclude(excludeProperties)) ;
+//            return iter1.hasNext() ;
+//        }
 
         private Iter<Triple> between(Node x, Node z)
         {
@@ -368,41 +354,40 @@ public class PathEval2
 
         private void doOneOrMore(Path path)
         {
-            // Do one, then do zero or more for each result.
-            Iterator<Node> iter1 = eval(graph, node, path, forwardMode) ;  // ORDER
-            // Do zero or more.
             Set<Node> visited = new LinkedHashSet<Node>() ;
+            doOneOrMore(node, path, visited) ;
+        }
+
+        private void doOneOrMore(Node node, Path path, Set<Node> visited)
+        {
+            if ( visited.contains(node) ) return ;
+            
+            visited.add(node) ;
+            // Do one step.
+            Iterator<Node> iter1 = eval(graph, node, path, forwardMode) ;
+            
+            // For each step, add to results and recurse.
             for ( ; iter1.hasNext() ; )
             {
                 Node n1 = iter1.next();
-                closure(graph, n1, path, visited, forwardMode) ;
+                output.add(n1) ;
+                doOneOrMore(n1, path, visited) ;
             }
-            output.addAll(visited) ;
+            visited.remove(node) ;
+            
         }
-
+        
         private void doZeroOrMore(Path path)
         {
-            Set<Node> visited = new LinkedHashSet<Node>() ;
-            closure(graph, node, path, visited, forwardMode) ;
-            output.addAll(visited) ;
-        }
-
-        private static void closure(Graph graph, Node node, Path path, Collection<Node> visited, boolean forward)
-        {
-            if ( visited.contains(node) ) return ;
-            visited.add(node) ;
-            Iterator<Node> iter = eval(graph, node, path, forward) ;
-            for ( ; iter.hasNext() ; )
-            {
-                Node n2 = iter.next() ;
-                closure(graph, n2, path, visited, forward) ;
-            }
+            doZero(path) ;
+            doOneOrMore(path) ;
         }
     }
 }
 
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

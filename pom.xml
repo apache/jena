@@ -61,7 +61,6 @@
       <groupId>com.hp.hpl.jena</groupId>
       <artifactId>jena</artifactId>
       <classifier>sources</classifier>
-      <!--<scope>optional</scope>-->
       <scope>provided</scope>
       <version>${ver.jena}</version>
     </dependency>
@@ -70,7 +69,6 @@
       <groupId>com.hp.hpl.jena</groupId>
       <artifactId>jena</artifactId>
       <classifier>test-sources</classifier>
-      <!--<scope>optional</scope>-->
       <scope>provided</scope>
       <type>test-jar</type>
       <version>${ver.jena}</version>
@@ -135,7 +133,7 @@
       <groupId>log4j</groupId>
       <artifactId>log4j</artifactId>
       <version>1.2.14</version>
-      <optional>true</optional>
+      <!--<optional>true</optional>-->
       <exclusions>
 	<exclusion>
 	  <groupId>javax.jms</groupId>

@@ -1,10 +1,12 @@
-PREFIX :	<http://example/>
-PREFIX  rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX  list:   <http://jena.hpl.hp.com/ARQ/list#>
+prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
+prefix :        <http://example/> 
 
 SELECT *
-WHERE
-{ 
-    ?x :elements ?list .
-    FILTER EXISTS { ?list list:member 1 }
+{
+    :x :p* :y .
+    :x :p? :y .
+    :x :p+ :y .
+    :x :p{2,} :y .
+    :x :p{,2} :y .
+    :x :p{2} :y .
 }

@@ -8,6 +8,9 @@ package dev;
 
 public class DevARQ
 {
+    // Path: P_Mod to distinguish {2} and {2,2} 
+    // Tests for negated property sets
+    
     // Inference pipeline
     // TDB+Inference
     //   TDB/BulkLoader.loadTriples$ (loadQuads$)
@@ -23,7 +26,7 @@ public class DevARQ
     // ** (graph <unionGraph> BGP) rewrites the BGP but leaves the (graph <union> ...) wrapper.
     //  ==> (graph <unionGraph> (distinct (graph ?_ bgp)))
     // More runtime processing and less transformation?
-    // Or just strip <graph <union> ...) on the way past.
+    // Or just strip (graph <union> ...) on the way past.
     
     // OpExecutor for BGP over union graph.
     // OpExecutor.execute(OpQuadPattern, )

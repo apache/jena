@@ -1,28 +1,44 @@
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
 package com.hp.hpl.jena.sparql.path;
 
-public abstract class P_Path1 extends PathBase
+import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
+
+public class P_OneOrMore extends P_Path1
 {
-    private Path path ;
+    // Not strictly - it's the same as {1,} - but useful as it directly
+    // reflects the syntax so preserving {1,} and +
     
-    protected P_Path1(Path p)
+    public P_OneOrMore(Path path)
     {
-        this.path = p ;
+        super(path) ;
     }
-    
-    public Path getSubPath()
+
+    @Override
+    public boolean equalTo(Path path2, NodeIsomorphismMap isoMap)
     {
-        return path ;
+        if ( ! ( path2 instanceof P_OneOrMore ) ) return false ;
+        P_OneOrMore other = (P_OneOrMore)path2 ;
+        return getSubPath().equalTo(other.getSubPath(), isoMap)  ;
     }
+
+    @Override
+    public int hashCode()
+    {
+        return hashOneOrMore ^ getSubPath().hashCode() ;
+    }
+
+    //@Override
+    public void visit(PathVisitor visitor)
+    { visitor.visit(this) ; }
 }
 
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -13,6 +13,9 @@ public class BindingFactory
 {
     public static final Binding noParent = null ; 
     
+    public static Binding binding() { return binding(noParent) ; }
+    public static Binding binding(Binding parent) { return new Binding0(parent)  ; }
+    
     public static Binding binding(Var var, Node node) { return binding(noParent, var, node) ; }
     
     public static Binding binding(Binding parent, Var var, Node node)
@@ -21,6 +24,9 @@ public class BindingFactory
             return new Binding0(parent) ;
         return new Binding1(parent, var, node) ;
     }
+    
+    public static Binding create() { return binding(noParent) ; }
+    public static Binding create(Binding parent) { return new BindingMap(parent)  ; }
 }
 
 /*

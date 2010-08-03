@@ -50,6 +50,11 @@ public class BuilderPath
         dispatch.put(Tags.tagPathSeq, buildSeq) ;
         dispatch.put(Tags.tagPathAlt, buildAlt) ;
         dispatch.put(Tags.tagPathMod, buildMod) ;
+        
+        dispatch.put(Tags.tagPathZeroOrMore, buildZeroOrMore) ;
+        dispatch.put(Tags.tagPathZeroOrOne, buildZeroOrOne) ;
+        dispatch.put(Tags.tagPathOneOrMore, buildOneOrMore) ;
+        
         dispatch.put(Tags.tagPathReverse, buildReverse) ;
         dispatch.put(Tags.tagPathRev, buildRev) ;
         dispatch.put(Tags.pathNotOneOf, buildNotOneOf) ;
@@ -159,10 +164,39 @@ public class BuilderPath
 
     static long modInt(Item item)
     {
-        if ( "*".equals(item.getSymbol()) ) return P_Mod.INF ;
-        //if ( "****".equals(item.getSymbol()) ) return P_Mod.UNSET ;
+        if ( "_".equals(item.getSymbol()) ) return P_Mod.UNSET ;
         return BuilderNode.buildInt(item) ;
     }
+
+    final protected Build buildZeroOrMore = new Build()
+    {
+        public Path make(ItemList list)
+        {
+            BuilderLib.checkLength(2, 2, list, "path ZeroOrMore: wanted 1 argument") ;
+            Path path  = build(list, 1) ;
+            return new P_ZeroOrMore(path) ;
+        }
+    } ;
+    
+    final protected Build buildZeroOrOne = new Build()
+    {
+        public Path make(ItemList list)
+        {
+            BuilderLib.checkLength(2, 2, list, "path ZeroOrOne: wanted 1 argument") ;
+            Path path  = build(list, 1) ;
+            return new P_ZeroOrOne(path) ;
+        }
+    } ;
+    
+    final protected Build buildOneOrMore = new Build()
+    {
+        public Path make(ItemList list)
+        {
+            BuilderLib.checkLength(2, 2, list, "path OneOrMore: wanted 1 argument") ;
+            Path path  = build(list, 1) ;
+            return new P_OneOrMore(path) ;
+        }
+    } ;
     
     final protected Build buildReverse = new Build()
     {

@@ -196,9 +196,39 @@ public class WriterPath
         private static String modInt(long value)
         {
             if ( value == P_Mod.INF ) return "*" ;
-            //if ( value == P_Mod.UNSET ) return " ;
-
+            if ( value == P_Mod.UNSET ) return "_" ;
+        
             return Long.toString(value) ;
+        }
+
+        public void visit(P_ZeroOrOne path)
+        { 
+            writeStarPlusQuery(Tags.tagPathZeroOrOne, path.getSubPath()) ;
+        }
+
+        public void visit(P_ZeroOrMore path)
+        { 
+            writeStarPlusQuery(Tags.tagPathZeroOrMore, path.getSubPath()) ;
+        }
+
+        public void visit(P_OneOrMore path)
+        { 
+            writeStarPlusQuery(Tags.tagPathOneOrMore, path.getSubPath()) ;
+        }
+        
+        private void writeStarPlusQuery(String tag, Path subPath)
+        {
+            out.print("(") ;
+            out.print(tag) ;
+            out.print(" ") ;
+            if ( oneLiner(subPath) )
+                out.print(" ") ;
+            else
+                nl(out) ;
+            out.incIndent() ;
+            output(subPath) ;
+            out.decIndent() ;
+            out.print(")") ;
         }
 
         public void visit(P_Inverse reversePath)

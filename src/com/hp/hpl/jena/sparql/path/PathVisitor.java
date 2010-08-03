@@ -14,6 +14,9 @@ public interface PathVisitor
     public void visit(P_Alt pathAlt) ;
     public void visit(P_Seq pathSeq) ;
     public void visit(P_Mod pathMod) ;
+    public void visit(P_ZeroOrOne path) ;
+    public void visit(P_ZeroOrMore path) ;
+    public void visit(P_OneOrMore path) ;
     public void visit(P_Inverse inversePath) ;
 }
 

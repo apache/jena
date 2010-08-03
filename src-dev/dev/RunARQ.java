@@ -13,9 +13,9 @@ import java.io.Reader ;
 import java.io.StringReader ;
 import java.util.Iterator ;
 
+import org.openjena.atlas.logging.Log ;
 import org.openjena.riot.ErrorHandlerLib ;
 import org.openjena.riot.checker.CheckerIRI ;
-import riot.inf.infer ;
 
 import com.hp.hpl.jena.iri.IRI ;
 import com.hp.hpl.jena.iri.IRIFactory ;
@@ -23,20 +23,21 @@ import com.hp.hpl.jena.iri.Violation ;
 import com.hp.hpl.jena.query.* ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.shared.JenaException ;
+import com.hp.hpl.jena.sparql.algebra.Algebra ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.Transform ;
-import com.hp.hpl.jena.sparql.algebra.Transformer ;
 import com.hp.hpl.jena.sparql.algebra.opt.TransformPropertyFunction ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.function.FunctionEnvBase ;
+import com.hp.hpl.jena.sparql.lang.ParserSPARQL11Update ;
 import com.hp.hpl.jena.sparql.lang.sparql_11.SPARQLParser11 ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
-import org.openjena.atlas.logging.Log ;
 import com.hp.hpl.jena.sparql.util.ExprUtils ;
 import com.hp.hpl.jena.sparql.util.QueryExecUtils ;
 import com.hp.hpl.jena.sparql.util.Timer ;
+import com.hp.hpl.jena.update.UpdateRequest ;
 import com.hp.hpl.jena.util.FileManager ;
 
 public class RunARQ
@@ -66,6 +67,30 @@ public class RunARQ
     
     public static void main(String[] argv) throws Exception
     {
+        qparse("--query=Q.arq") ; System.exit(0) ;
+        
+        
+        /*
+         * urn:x-arq:DefaultGraphNode -- generated
+         * urn:x-arq:DefaultGraph -- explicit
+         * urn:x-arq:UnionGraph
+         */
+        Op op = SSE.parseOp(strjoinNL("(prefix ((: <http://example/>))",
+                                      "(graph <g>",
+                                      "  (graph <urn:x-arq:UnionGraph>",
+                                      "    (graph <g1>",
+                                      "     (bgp (?s ?p ?o))))",
+                                      ")",
+                                      ")"
+        )) ;
+
+        Op op2 = Algebra.unionDefaultGraph(op) ;
+        divider() ;
+        System.out.println(op) ;
+        divider() ;
+        System.out.println(op2) ;
+        System.exit(0) ;
+        
         //ReportSlowDatatype.main() ;
         //unionTransform() ;
         //streamInference() ;
@@ -79,97 +104,10 @@ public class RunARQ
         Transform t = new TransformPropertyFunction(ARQ.getContext()) ;
 
         divider() ;
-//        Query query = QueryFactory.create(strjoinNL("PREFIX list: <http://jena.hpl.hp.com/ARQ/list#>",
-//                                                    "PREFIX  apf:     <http://jena.hpl.hp.com/ARQ/property#>",
-//                                                    "PREFIX  rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>", 
-//                                                    "SELECT *",
-//                                                    "{",
-//                                                    "   ?s1 list:member ?o1 .",
-//                                                    "   FILTER NOT EXISTS { ?s apf:splitIRI (?ns ?ln) }",
-//                                                    "}"), Syntax.syntaxSPARQL_11) ;
-//
-//        Query query = QueryFactory.create(strjoinNL("PREFIX list: <http://jena.hpl.hp.com/ARQ/list#>",
-//                                                    "PREFIX  apf:     <http://jena.hpl.hp.com/ARQ/property#>",
-//                                                    "PREFIX  rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>", 
-//                                                    "SELECT *",
-//                                                    "{",
-//                                                    "   ?s ?p ?o",
-//                                                    "   LET(?x := NOT EXISTS { ?list list:member ?x })" ,
-//                                                    "}"), Syntax.syntaxARQ) ;
-//
-//        Query query = QueryFactory.create(strjoinNL("PREFIX list: <http://jena.hpl.hp.com/ARQ/list#>",
-//                                                    "PREFIX  apf:     <http://jena.hpl.hp.com/ARQ/property#>",
-//                                                    "PREFIX  rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>", 
-//                                                    "SELECT *",
-//                                                    "{",
-//                                                    "   ?s ?p ?o",
-//                                                    "} GROUP BY NOT EXISTS { ?s list:member ?x }"), Syntax.syntaxARQ) ;
-//
-//        Query query = QueryFactory.create(strjoinNL("PREFIX list: <http://jena.hpl.hp.com/ARQ/list#>",
-//                                                    "PREFIX  apf:     <http://jena.hpl.hp.com/ARQ/property#>",
-//                                                    "PREFIX  rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>", 
-//                                                    "SELECT *",
-//                                                    "{",
-//                                                    "   ?s ?p ?o",
-//                                                    "} ORDER BY NOT EXISTS { ?s list:member ?x }"), Syntax.syntaxARQ) ;
-//
-//        Op op = Algebra.compile(query) ;
 
-        Op op = SSE.parseOp(strjoinNL("(prefix ((list: <http://jena.hpl.hp.com/ARQ/list#>))",
-                                      "  (join",
-                                      "     (bgp (?x ?y ?z))",
-                                      "     (filter (&& (notexists (bgp (?s list:member ?o)))",
-                                      "                 (< 1 2))",
-                                      "        (bgp (?s1 list:member ?o1)))",
-        "   ))")) ;
-        //System.out.println(op) ;
-
-        // Move this to Optimize.apply.
-        //Transform t2 = new TransformApplyInsideExprFunctionOp(t) ;
-        Transform t2 = t ;
-        // Better is to apply it all in one go.
-
-        if ( t2 != t )
-        {
-            divider() ;
-            Op op2 = Transformer.transform(t, op) ;
-            System.out.println(op2) ;
-        }
-        divider() ;
-        Op op3 = Transformer.transform(t2, op) ;
-        System.out.println(op3) ;
-        //            Query q2 = OpAsQuery.asQuery(op3) ;
-        //            q2.getPrefixMapping().setNsPrefixes(query.getPrefixMapping()) ;
-        //            System.out.println(q2) ;
         System.exit(0) ;
     }
     
-    public static void streamInference()
-    {
-        Model m = FileManager.get().loadModel("V.ttl") ;
-
-        infer.main("--rdfs=V.ttl") ;
-        
-//        SinkCounting<Triple> outputSink = new SinkCounting<Triple>(new SinkPrint<Triple>()) ;
-//        
-//        SinkCounting<Triple> inputSink1 = new SinkCounting<Triple>(new InferenceExpanderRDFS(outputSink, m)) ;
-//        // Add gaps between parser triples. 
-//        Sink<Triple> inputSink2 = new SinkInsertText<Triple>(inputSink1, "--\n") ;
-//        
-//        Sink<Triple> inputSink = inputSink2 ;
-//        
-//        InputStream input = IO.openFile("D.ttl") ;
-//        
-//        LangRIOT parser = RiotReader.createParserTurtle(input, "http://base/", inputSink) ;
-//        parser.parse() ;
-//        inputSink.flush() ;
-//
-//        System.out.println() ;
-//        System.out.printf("Input  =  %d\n", inputSink1.getCount()) ;
-//        System.out.printf("Total  =  %d\n", outputSink.getCount()) ;
-    }
-
-          
     private static void processIRI(String iriStr)
     {
         IRI iri = IRIFactory.iriImplementation().create(iriStr) ;
@@ -281,6 +219,16 @@ public class RunARQ
         arq.qparse.main(a) ;
         System.exit(0) ;
     }
+    
+    private static void parseUpdate()
+    {
+        String str = "INSERT DATA { GRAPH <G> { } }" ;
+        ParserSPARQL11Update p = new ParserSPARQL11Update() ;
+        UpdateRequest update = new UpdateRequest() ;
+        p.parse(update, str) ;
+        System.out.println("DONE") ;
+        System.exit(0) ;
+    } 
     
     private static void runUpdate()
     {

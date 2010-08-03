@@ -18,6 +18,9 @@ public abstract class PathBase implements Path
     protected static final int hashNegPropClass = 0x194 ;
     protected static final int hashLink         = 0x195 ;
     protected static final int hashRevLink      = 0x196 ;
+    protected static final int hashZeroOrMore   = 0x197 ;
+    protected static final int hashOneOrMore    = 0x198 ;
+    protected static final int hashZeroOrOne    = 0x199 ;
     
     @Override
     public abstract int hashCode() ;

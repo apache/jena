@@ -76,6 +76,11 @@ public class Tags
     public static final String tagPathSeq       = "seq" ;
     public static final String tagPathAlt       = "alt" ;
     public static final String tagPathMod       = "mod" ;
+    
+    public static final String tagPathZeroOrMore    = "path*" ;
+    public static final String tagPathOneOrMore     = "path+" ;
+    public static final String tagPathZeroOrOne     = "path?" ;
+    
     public static final String tagPathReverse   = "reverse" ;
     public static final String tagPathRev       = "rev" ;
     public static final String pathNotOneOf     = "notoneof" ;

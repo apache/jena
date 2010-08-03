@@ -6,6 +6,8 @@
 
 package com.hp.hpl.jena.sparql.path;
 
+import static com.hp.hpl.jena.sparql.path.P_Mod.UNSET ;
+
 import java.util.List ;
 
 import org.openjena.atlas.io.IndentedLineBuffer ;
@@ -182,26 +184,56 @@ public class PathWriter
             pathMod.getSubPath().visit(this) ;
             if ( alwaysInnerParens )
                 out.print(")") ;
-            
-            
-            if ( pathMod.isZeroOrMore() )
-                out.print("*") ;
-            else if ( pathMod.isOneOrMore() )
-                out.print("+") ;
-            else if ( pathMod.isZeroOrOne() )
-                out.print("?") ;
-            else
-            {
-                out.print("{") ;
+
+            out.print("{") ;
+            if ( pathMod.getMin() != UNSET )
                 out.print(Long.toString(pathMod.getMin())) ;
-                out.print(",") ;
+            out.print(",") ;
+            if ( pathMod.getMax() != UNSET )
                 out.print(Long.toString(pathMod.getMax())) ;
-                out.print("}") ;
-            }
+            out.print("}") ;
+            
+//            if ( pathMod.isZeroOrMore() )
+//                out.print("*") ;
+//            else if ( pathMod.isOneOrMore() )
+//                out.print("+") ;
+//            else if ( pathMod.isZeroOrOne() )
+//                out.print("?") ;
+//            else
+//            {
+//                out.print("{") ;
+//                if ( pathMod.getMin() != UNSET )
+//                    out.print(Long.toString(pathMod.getMin())) ;
+//                out.print(",") ;
+//                if ( pathMod.getMax() != UNSET )
+//                    out.print(Long.toString(pathMod.getMax())) ;
+//                out.print("}") ;
+//            }
             if ( needParens )
                 out.print(")") ;
         }
 
+        public void visit(P_ZeroOrOne path)
+        { printPathMod("?", path.getSubPath()) ; }
+
+        public void visit(P_ZeroOrMore path)
+        { printPathMod("*", path.getSubPath()) ; }
+
+        public void visit(P_OneOrMore path)
+        { printPathMod("+", path.getSubPath()) ; }
+
+        private void printPathMod(String mod, Path path)
+        {
+            if ( needParens )
+                out.print("(") ;
+            if ( alwaysInnerParens )
+                out.print("(") ;
+            path.visit(this) ;
+            if ( alwaysInnerParens )
+                out.print(")") ;
+            out.print(mod) ;
+        }
+        
         // Need to consider binary ^
         public void visit(P_Inverse inversePath)
         {

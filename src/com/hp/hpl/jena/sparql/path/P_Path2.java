@@ -13,7 +13,7 @@ public abstract class P_Path2 extends PathBase
     private Path path1 ;
     private Path path2 ;
     
-    public P_Path2(Path p1, Path p2)
+    protected P_Path2(Path p1, Path p2)
     {
         this.path1 = p1 ;
         this.path2 = p2 ;
