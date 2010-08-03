@@ -9,12 +9,12 @@ package tdb;
 import java.util.List ;
 
 import org.openjena.riot.Lang ;
-
 import tdb.cmdline.CmdTDB ;
 import tdb.cmdline.ModModel ;
 import arq.cmdline.ArgDecl ;
 
 import com.hp.hpl.jena.query.ARQ ;
+import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.TDBLoader ;
 import com.hp.hpl.jena.tdb.store.GraphTDB ;
@@ -28,6 +28,9 @@ public class tdbloader extends CmdTDB
     private static final ArgDecl argStats            = new ArgDecl(ArgDecl.NoValue, "stats") ;
     
     private static final ModModel modRDFS            = new ModModel("rdfs") ;
+    
+    private  String rdfsVocabFilename   = null ;
+    private  Model  rdfsVocab           = null ;
     
     private boolean showProgress = true ;
 //    private boolean doInParallel = false ;
@@ -45,9 +48,9 @@ public class tdbloader extends CmdTDB
         super(argv) ;
         
 //        super.add(argParallel, "--parallel", "Do rebuilding of secondary indexes in a parallel") ;
-        super.add(argIncremental, "--incremental", "Do an incremental load (keep indexes during data load)") ;
-        super.add(argStats, "--stats", "Generate statistics while loading (new graph only)") ;
-        //super.addModule(modRDFS) ;
+        super.add(argIncremental, "--incremental",  "Do an incremental load (keep indexes during data load)") ;
+        super.add(argStats, "--stats",              "Generate statistics while loading (new graph only)") ;
+        addModule(modRDFS) ;
     }
 
     @Override
@@ -81,6 +84,11 @@ public class tdbloader extends CmdTDB
         List<String> urls = getPositional() ;
         if ( urls.size() == 0 )
             urls.add("-") ;
+        
+        if ( modRDFS.getModel() != null )
+        {
+            
+        }
         
         boolean allTriples = true ;
         for ( String url : urls )
@@ -120,6 +128,8 @@ public class tdbloader extends CmdTDB
         
         loadNamedGraph(urls) ;
     }
+    
+    // RDFS
     
     void loadDefaultGraph(List<String> urls)
     {
