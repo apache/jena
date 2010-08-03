@@ -17,7 +17,6 @@ import org.openjena.atlas.logging.Log ;
 import org.openjena.riot.ErrorHandlerLib ;
 import org.openjena.riot.checker.CheckerIRI ;
 
-import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.iri.IRI ;
 import com.hp.hpl.jena.iri.IRIFactory ;
 import com.hp.hpl.jena.iri.Violation ;
@@ -34,8 +33,6 @@ import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.function.FunctionEnvBase ;
 import com.hp.hpl.jena.sparql.lang.ParserSPARQL11Update ;
 import com.hp.hpl.jena.sparql.lang.sparql_11.SPARQLParser11 ;
-import com.hp.hpl.jena.sparql.path.Path ;
-import com.hp.hpl.jena.sparql.path.PathEval ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.sparql.util.ExprUtils ;
 import com.hp.hpl.jena.sparql.util.QueryExecUtils ;

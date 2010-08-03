@@ -7,19 +7,9 @@
 package dev;
 
 import java.util.Collection ;
-import java.util.Iterator ;
-import java.util.LinkedHashSet ;
-import java.util.Set ;
 
-import org.openjena.atlas.iterator.Iter ;
-import org.openjena.atlas.iterator.Transform ;
-
-import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.sparql.ARQNotImplemented ;
-import com.hp.hpl.jena.sparql.engine.QueryIterator ;
-import com.hp.hpl.jena.sparql.path.* ;
+import com.hp.hpl.jena.sparql.path.Path ;
 
 public class PPEval2
 {
