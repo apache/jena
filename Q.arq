@@ -3,11 +3,18 @@ prefix :        <http://example/>
 
 SELECT *
 {
+   ?x :p{0} ?y .
+}
 
-#    :a :p* ?z .
-    :a :p{3} ?z . 
-#    :a :p{3,} ?z . 
-#    ?z :p* ?z .
-#    ?z :p+ ?z .
-#    :a (:p/:p)* ?z .
-} ORDER BY ?z
+## Also include:
+## Simple data
+## {?x :notInGraph ?y }
+
+
+## #    :a :p* ?z .
+##     :a :p{3} ?z . 
+## #    :a :p{3,} ?z . 
+## #    ?z :p* ?z .
+## #    ?z :p+ ?z .
+## #    :a (:p/:p)* ?z .
+## } ORDER BY ?z
