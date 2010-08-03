@@ -40,10 +40,9 @@ class GeneratorVisitorMySQL extends GenerateSQLVisitor
     @Override
     protected void genLimitOffset(SqlSelectBlock sqlSelectBlock)
     {
-        
         if ( sqlSelectBlock.getLength() >= 0 || sqlSelectBlock.getStart() >= 0 )
         {
-            // MySQL synatx issue - need LIMIT even if only OFFSET
+            // MySQL syntax issue - need LIMIT even if only OFFSET
             long length = sqlSelectBlock.getLength() ;
             if ( length < 0 )
             {
