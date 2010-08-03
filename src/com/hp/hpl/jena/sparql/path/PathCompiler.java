@@ -114,7 +114,6 @@ public class PathCompiler
                 return ;
             }
         }
-
         
         if ( path instanceof P_Mod )
         {
