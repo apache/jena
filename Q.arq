@@ -3,8 +3,12 @@ prefix :        <http://example/>
 
 SELECT *
 {
-   ?x :p{0} ?y .
+#    ?x !(:p) ?y .
+    ?x !(^a|a) ?y .
+#   ?x :p{0} ?y .
 }
+
+
 
 ## Also include:
 ## Simple data
