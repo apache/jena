@@ -18,7 +18,7 @@ import org.junit.runners.Suite;
     com.hp.hpl.jena.tdb.TC_TDB.class
 } )
 
-public class TDB_AllTests
+public class TDBTestSuite
 { }
 
 /*
