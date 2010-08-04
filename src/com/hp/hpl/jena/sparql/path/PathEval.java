@@ -145,10 +145,16 @@ public class PathEval
         public void visit(P_NegPropSet pathNotOneOf)
         {
             // X !(:a|:b|^:c|^:d) Y = { X !(:a|:b) Y } UNION { Y !(:c|:d) X }
-            Iterator<Node> nodes1 = doOneExcludeForwards(pathNotOneOf.getFwdNodes()) ;
-            Iterator<Node> nodes2 = doOneExcludeBackwards(pathNotOneOf.getBwdNodes()) ;
-            fill(nodes1) ;
-            fill(nodes2) ;
+            if ( pathNotOneOf.getFwdNodes().size() > 0 )
+            {
+                Iterator<Node> nodes1 = doOneExcludeForwards(pathNotOneOf.getFwdNodes()) ;
+                fill(nodes1) ;
+            }
+            if ( pathNotOneOf.getBwdNodes().size() > 0 )
+            {
+                Iterator<Node> nodes2 = doOneExcludeBackwards(pathNotOneOf.getBwdNodes()) ;
+                fill(nodes2) ;
+            }
         }
         
         //@Override

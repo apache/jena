@@ -944,13 +944,6 @@ Path PathNegatedPropertySet() : { P_Path0 p ; P_NegPropSet pNegSet ; }
     )?
      <RPAREN>
   )
-
-// //If () required
-//   <LPAREN> 
-//     ( p = PathOneInPropertySet() { pNegSet.add(p) ; }
-//       (<VBAR> p = PathOneInPropertySet() { pNegSet.add(p) ; }) *
-//     )? 
-//   <RPAREN>
   { return pNegSet ; }
 }
 
@@ -959,7 +952,10 @@ P_Path0 PathOneInPropertySet() : { String str ; Node n ; }
   ( str = IRIref() { n = createNode(str) ; return new P_Link(n) ; }
   | <KW_A> { return new P_Link(nRDFtype) ; }
   // This is the !(^:property) form.
-  | <CARAT> str = IRIref() { n = createNode(str) ; return new P_ReverseLink(n) ; }
+  | <CARAT>
+    ( str = IRIref() { n = createNode(str) ; return new P_ReverseLink(n) ; }
+    | <KW_A> { return new P_ReverseLink(nRDFtype) ; }
+    )
   )
 }
 

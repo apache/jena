@@ -1,8 +1,9 @@
 @prefix : <http://example/> .
 
-:a :p :b .
-:b :p :z .
-:a :p :c .
-:c :p :z .
+# For use with negated property sets
 
-:z :p :X .
+:a :p :b .
+:a :q :b .
+
+:a :p :c .
+

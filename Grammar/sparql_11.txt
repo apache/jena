@@ -380,7 +380,7 @@ NON-TERMINALS
 	PathMod	:=	( <STAR> | <QMARK> | <PLUS> | <LBRACE> ( Integer ( <COMMA> ( <RBRACE> | Integer <RBRACE> ) | <RBRACE> ) | <COMMA> Integer <RBRACE> ) )
 	PathPrimary	:=	( IRIref | <KW_A> | <BANG> PathNegatedPropertySet | <LPAREN> Path <RPAREN> )
 	PathNegatedPropertySet	:=	( PathOneInPropertySet | <LPAREN> ( PathOneInPropertySet ( <VBAR> PathOneInPropertySet )* )? <RPAREN> )
-	PathOneInPropertySet	:=	( IRIref | <KW_A> | <CARAT> IRIref )
+	PathOneInPropertySet	:=	( IRIref | <KW_A> | <CARAT> ( IRIref | <KW_A> ) )
 	Integer	:=	<INTEGER>
 // -------- Triple expansions
 
