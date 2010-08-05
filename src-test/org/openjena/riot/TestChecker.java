@@ -43,7 +43,19 @@ public class TestChecker
 
     @Test(expected=ErrorHandlerTestLib.ExError.class)
     public void checker04() { check("<x>") ; }
+
+    // CheckerIRI specifically does not complain about these sorts of illegal URNs
+    // although they are wrong (URNs must be "urn:2+chars:1+chars")
     
+    @Test //(expected=ErrorHandlerTestLib.ExWarning.class)
+    public void checker05() { check("<urn:abc>") ; }
+
+    @Test //(expected=ErrorHandlerTestLib.ExWarning.class)
+    public void checker06() { check("<urn:abc:>") ; }
+    
+    @Test
+    public void checker07() { check("<urn:abc:y>") ; }
+
     @Test (expected=ErrorHandlerTestLib.ExWarning.class) 
     public void checker10() { check("''^^xsd:dateTime") ; }
 

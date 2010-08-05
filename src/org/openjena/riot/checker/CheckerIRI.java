@@ -144,8 +144,12 @@ public class CheckerIRI implements NodeChecker
                 boolean isError = v.isError() ;
                 
                 // Ignore these.
-                if ( code == Violation.LOWERCASE_PREFERRED ||
-                    code == Violation.PERCENT_ENCODING_SHOULD_BE_UPPERCASE )
+                if ( code == Violation.LOWERCASE_PREFERRED 
+                    ||
+                    code == Violation.PERCENT_ENCODING_SHOULD_BE_UPPERCASE 
+                    ||
+                    code == Violation.SCHEME_PATTERN_MATCH_FAILED 
+                    )
                     continue ;
 
                 // Anything we want to reprioritise?
