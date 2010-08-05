@@ -8,7 +8,8 @@ package dev;
 
 public class DevARQ
 {
-
+	// Optimise FILTER(?x=?y) assuming ?x and ?y must be bound.
+	
     // Transform: paths for new operators. e.g. {2}
     //   {N,} to be {N} UNION {0,N}
     
