@@ -8,6 +8,8 @@ package dev;
 
 public class DevARQ
 {
+    // Path tests: WorkSpace/PropertyPathTests/
+
 	// Optimise FILTER(?x=?y) assuming ?x and ?y must be bound.
 	
     // Transform: paths for new operators. e.g. {2}
