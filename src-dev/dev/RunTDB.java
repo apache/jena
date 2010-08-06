@@ -59,7 +59,10 @@ public class RunTDB
         tdb.tdbloader.main("--loc=DB", "D.rdf") ;
         System.exit(0) ;
         
-        tdb.tdbquery.main("--set=tdb:logExec=true", "--query=Q.rq") ; System.exit(0) ;
+        tdb.tdbquery.main("--set=tdb:logExec=true", 
+                          "--set=tdb:unionDefaultGraph=true", 
+                          "--query=Q.rq") ;
+        System.exit(0) ;
     }
     
     static void tupleFilter()

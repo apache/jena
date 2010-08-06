@@ -1,6 +1,2 @@
-# <x> <p> ["1"] .
-
-#<http://example/bad[uri> <http://example/p> "1" .
-#<x> <p> ["1"] .
-<x> <p> "2" .
+<http://example/x> <http://example/p>  "2010-08-05T11:12:42.949-04:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
 
