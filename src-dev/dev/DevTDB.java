@@ -4,7 +4,7 @@ package dev ;
 public class DevTDB
 {
     // Check writing to union graph is handled appropriately.
-
+    
     // BPT rewriters
     
     // kill -9 ism's
