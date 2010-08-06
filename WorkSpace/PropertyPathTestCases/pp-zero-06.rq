@@ -1,0 +1,6 @@
+PREFIX :	<http://example/>
+
+SELECT (count(*) AS ?count)
+{
+  :a :p{0} :b
+}

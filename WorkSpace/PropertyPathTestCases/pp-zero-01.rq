@@ -1,0 +1,6 @@
+PREFIX :	<http://example/>
+
+SELECT * 
+{
+  :a :p{0} ?x   
+}
