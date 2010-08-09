@@ -19,6 +19,16 @@
         :pp-zero-08
         :pp-zero-09
         :pp-zero-10
+
+        :pp-all-01
+        :pp-all-02
+        :pp-all-03
+        :pp-all-04
+##         :pp-all-05
+##         :pp-all-06
+##         :pp-all-07
+##         :pp-all-08
+
     ) .
 
 :pp-zero-01  rdf:type mf:QueryEvaluationTest ;
@@ -110,3 +120,77 @@
           qt:data   <data-path-simple.ttl> ] ;
     mf:result  <pp-zero-10.srx>
     .
+
+:pp-all-01  rdf:type mf:QueryEvaluationTest ;
+    dawgt:approval dawgt:NotClassified ; 
+    mf:name    "Path * , fixed subject" ;
+    mf:action
+        [ qt:query  <pp-all-01.rq> ;
+          qt:data   <data-path-1.ttl> ] ;
+    mf:result  <pp-all-01.srx>
+    .
+
+:pp-all-02  rdf:type mf:QueryEvaluationTest ;
+    dawgt:approval dawgt:NotClassified ; 
+    mf:name    "Path * , fixed object" ;
+    mf:action
+        [ qt:query  <pp-all-02.rq> ;
+          qt:data   <data-path-1.ttl> ] ;
+    mf:result  <pp-all-02.srx>
+    .
+
+:pp-all-03  rdf:type mf:QueryEvaluationTest ;
+    dawgt:approval dawgt:NotClassified ; 
+    mf:name    "Path * , fixed subject and object" ;
+    mf:action
+        [ qt:query  <pp-all-03.rq> ;
+          qt:data   <data-path-1.ttl> ] ;
+    mf:result  <pp-all-03.srx>
+    .
+
+:pp-all-04  rdf:type mf:QueryEvaluationTest ;
+    dawgt:approval dawgt:NotClassified ; 
+    mf:name    "Path * , two variables " ;
+    mf:action
+        [ qt:query  <pp-all-04.rq> ;
+          qt:data   <data-path-1.ttl> ] ;
+    mf:result  <pp-all-04.srx>
+    .
+
+:pp-all-05  rdf:type mf:QueryEvaluationTest ;
+    dawgt:approval dawgt:NotClassified ; 
+    mf:name    "Path + , fixed subject" ;
+    mf:action
+        [ qt:query  <pp-all-06.rq> ;
+          qt:data   <data-path-1.ttl> ] ;
+    mf:result  <pp-all-06.srx>
+    .
+
+:pp-all-06  rdf:type mf:QueryEvaluationTest ;
+    dawgt:approval dawgt:NotClassified ; 
+    mf:name    "Path + , fixed object" ;
+    mf:action
+        [ qt:query  <pp-all-06.rq> ;
+          qt:data   <data-path-1.ttl> ] ;
+    mf:result  <pp-all-06.srx>
+    .
+
+:pp-all-07  rdf:type mf:QueryEvaluationTest ;
+    dawgt:approval dawgt:NotClassified ; 
+    mf:name    "Path + , fixed subject and object" ;
+    mf:action
+        [ qt:query  <pp-all-07.rq> ;
+          qt:data   <data-path-1.ttl> ] ;
+    mf:result  <pp-all-07.srx>
+    .
+
+:pp-all-08  rdf:type mf:QueryEvaluationTest ;
+    dawgt:approval dawgt:NotClassified ; 
+    mf:name    "Path + , two variables " ;
+    mf:action
+        [ qt:query  <pp-all-08.rq> ;
+          qt:data   <data-path-1.ttl> ] ;
+    mf:result  <pp-all-08.srx>
+    .
+
+
