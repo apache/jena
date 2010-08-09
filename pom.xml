@@ -282,7 +282,6 @@ build.time.txt=${build.time.txt}
         <artifactId>maven-dependency-plugin</artifactId>
 	<configuration>
 	  <overWriteReleases>false</overWriteReleases>
-	  <overWriteSnapshots>true</overWriteSnapshots>
 	  <overWriteIfNewer>true</overWriteIfNewer>
 	</configuration>
       </plugin>
