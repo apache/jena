@@ -42,7 +42,6 @@
 
   <dependencies>
 
-    <!-- Jena with sources -->
     <dependency>
       <groupId>com.hp.hpl.jena</groupId>
       <artifactId>jena</artifactId>
@@ -57,24 +56,6 @@
       <scope>test</scope>
     </dependency>
 
-  <dependency>
-      <groupId>com.hp.hpl.jena</groupId>
-      <artifactId>jena</artifactId>
-      <classifier>sources</classifier>
-      <scope>provided</scope>
-      <version>${ver.jena}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>com.hp.hpl.jena</groupId>
-      <artifactId>jena</artifactId>
-      <classifier>test-sources</classifier>
-      <scope>provided</scope>
-      <type>test-jar</type>
-      <version>${ver.jena}</version>
-    </dependency>
-
-    <!-- Brings in sources -->
     <dependency>
       <groupId>com.hp.hpl.jena</groupId>
       <artifactId>iri</artifactId>
@@ -94,10 +75,6 @@
     </dependency>
 
     <dependency>
-      <!-- ARQ includes code that parses DAWG/SPARQL test manifests
-	   and produces JUnit test suites.  Old style JUnit3 invokation
-	   is needed.
-      -->
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>4.5</version>
@@ -108,12 +85,6 @@
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
       <version>1.5.8</version>
-    </dependency>
-
-    <dependency>
-      <groupId>xerces</groupId>
-      <artifactId>xercesImpl</artifactId>
-      <version>2.7.1</version>
     </dependency>
 
     <!-- Choose your logging provider 
@@ -344,12 +315,12 @@ build.time.txt=${build.time.txt}
 	<groupId>org.apache.maven.plugins</groupId>
 	<artifactId>maven-dependency-plugin</artifactId>
 	<configuration>
-	  <outputDirectory>lib</outputDirectory>
 	  <overWriteReleases>false</overWriteReleases>
-	  <overWriteSnapshots>false</overWriteSnapshots>
+	  <overWriteSnapshots>true</overWriteSnapshots>
 	  <overWriteIfNewer>true</overWriteIfNewer>
 	</configuration>
       </plugin>
+
       <plugin>
 	<groupId>org.apache.maven.plugins</groupId>
 	<artifactId>maven-eclipse-plugin</artifactId>
