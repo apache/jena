@@ -42,39 +42,6 @@
 
   <dependencies>
 
-    <!-- Jena with sources -->
-    <dependency>
-      <groupId>com.hp.hpl.jena</groupId>
-      <artifactId>jena</artifactId>
-      <version>${ver.jena}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>com.hp.hpl.jena</groupId>
-      <artifactId>jena</artifactId>
-      <type>test-jar</type>
-      <version>${ver.jena}</version>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>com.hp.hpl.jena</groupId>
-      <artifactId>jena</artifactId>
-      <classifier>sources</classifier>
-      <scope>provided</scope>
-      <version>${ver.jena}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>com.hp.hpl.jena</groupId>
-      <artifactId>jena</artifactId>
-      <classifier>test-sources</classifier>
-      <scope>provided</scope>
-      <type>test-jar</type>
-      <version>${ver.jena}</version>
-    </dependency>
-
-    <!-- ARQ with sources -->
     <dependency>
       <groupId>com.hp.hpl.jena</groupId>
       <artifactId>arq</artifactId>
@@ -91,36 +58,9 @@
 
     <dependency>
       <groupId>com.hp.hpl.jena</groupId>
-      <artifactId>arq</artifactId>
-      <classifier>sources</classifier>
-      <scope>provided</scope>
-      <version>${ver.arq}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>com.hp.hpl.jena</groupId>
-      <artifactId>arq</artifactId>
-      <classifier>test-sources</classifier>
-      <scope>provided</scope>
-      <version>${ver.arq}</version>
-    </dependency>
-
-    <!-- IRI with sources -->
-    <dependency>
-      <groupId>com.hp.hpl.jena</groupId>
       <artifactId>iri</artifactId>
       <version>0.8</version>
     </dependency>
-
-    <dependency>
-      <groupId>com.hp.hpl.jena</groupId>
-      <artifactId>iri</artifactId>
-      <version>0.8</version>
-      <classifier>sources</classifier>
-      <scope>provided</scope>
-    </dependency>
-
-    <!-- -->
 
     <dependency>
       <groupId>junit</groupId>
@@ -340,17 +280,11 @@ build.time.txt=${build.time.txt}
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
-	<version>2.1</version>
-        <configuration>
-	  <!--<classifier>sources</classifier>-->
-	  <includeClassifiers>sources</includeClassifiers>
-          <outputDirectory>lib</outputDirectory>
-          <overWriteReleases>false</overWriteReleases>
-          <overWriteSnapshots>false</overWriteSnapshots>
-          <overWriteIfNewer>true</overWriteIfNewer>
-        </configuration>
-	<!-- attach to "validate", "initialize" or "generate-sources" -->
-
+	<configuration>
+	  <overWriteReleases>false</overWriteReleases>
+	  <overWriteSnapshots>true</overWriteSnapshots>
+	  <overWriteIfNewer>true</overWriteIfNewer>
+	</configuration>
       </plugin>
 
        <plugin>
@@ -412,11 +346,12 @@ build.time.txt=${build.time.txt}
           <targetJdk>1.5</targetJdk>
         </configuration>
       </plugin>
-      -->
+
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>findbugs-maven-plugin</artifactId>
       </plugin>
+      -->
     </plugins>
   </reporting>
 
