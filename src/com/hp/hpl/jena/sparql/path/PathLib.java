@@ -33,7 +33,6 @@ import com.hp.hpl.jena.sparql.engine.iterator.QueryIterYieldN ;
 import com.hp.hpl.jena.sparql.pfunction.PropertyFunction ;
 import com.hp.hpl.jena.sparql.pfunction.PropertyFunctionFactory ;
 import com.hp.hpl.jena.sparql.pfunction.PropertyFunctionRegistry ;
-import com.hp.hpl.jena.sparql.util.IterLib ;
 import com.hp.hpl.jena.sparql.util.graph.GraphUtils ;
 
 public class PathLib
