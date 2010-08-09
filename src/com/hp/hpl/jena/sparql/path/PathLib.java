@@ -29,6 +29,7 @@ import com.hp.hpl.jena.sparql.engine.binding.BindingFactory ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingUtils ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterConcat ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper ;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIterYieldN ;
 import com.hp.hpl.jena.sparql.pfunction.PropertyFunction ;
 import com.hp.hpl.jena.sparql.pfunction.PropertyFunctionFactory ;
 import com.hp.hpl.jena.sparql.pfunction.PropertyFunctionRegistry ;
@@ -164,13 +165,17 @@ public class PathLib
                                               ExecutionContext execCxt)
     {
         Iterator<Node> iter = PathEval.eval(graph, subject, path) ;
+        // Now count the number of matches.
+        
+        int count = 0 ;
         for ( ; iter.hasNext() ; )
         {
             Node n = iter.next() ;
             if ( n.sameValueAs(object) )
-                return IterLib.result(binding, execCxt) ;        
+                count++ ;
         }
-        return IterLib.noResults(execCxt) ;
+        
+        return new QueryIterYieldN(count, binding) ;
     }
 
     // Brute force evaluation of a TriplePath where neither subject nor object are bound 

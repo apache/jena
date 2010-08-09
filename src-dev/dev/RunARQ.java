@@ -67,7 +67,9 @@ public class RunARQ
     
     public static void main(String[] argv) throws Exception
     {
-        arq.query.main("--query=Q.arq", "--data=D.ttl") ; System.exit(0) ;
+        String DIR = "WorkSpace/PropertyPathTestCases" ;
+        
+        arq.arq.main("-v", "--query="+DIR+"/pp-all-03.rq", "--data="+DIR+"/data-path-1.ttl") ; System.exit(0) ;
         
         
         /*

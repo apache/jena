@@ -6,6 +6,11 @@
   <results>
     <result>
       <binding name="x">
+        <uri>http://example/a</uri>
+      </binding>
+    </result>
+    <result>
+      <binding name="x">
         <uri>http://example/c</uri>
       </binding>
     </result>

@@ -6,11 +6,6 @@
   <results>
     <result>
       <binding name="node">
-        <uri>http://example/z</uri>
-      </binding>
-    </result>
-    <result>
-      <binding name="node">
         <uri>http://example/y</uri>
       </binding>
     </result>
