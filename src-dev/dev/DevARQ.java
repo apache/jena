@@ -2,6 +2,11 @@ package dev;
 
 public class DevARQ
 {
+    // Build and sources.
+    // Remove sources.
+    // Manual mvn_update
+    // POM and Eclipse setup. 
+    
     // Path tests: WorkSpace/PropertyPathTests/
 
 	// Optimise FILTER(?x=?y) assuming ?x and ?y must be bound.
