@@ -1,0 +1,4 @@
+#!/bin/bash
+
+source "$TDBROOT/bin/tdb_init"
+exec /usr/lib/jvm/jdk1.5.0_22/bin/java $JVM_ARGS $SOCKS -cp "$TDB_CP" "tdb.$TDB_CMD" "$@"

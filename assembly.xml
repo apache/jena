@@ -29,10 +29,8 @@
         <include>README*</include>
         <include>ChangeLog.txt</include>
         <include>pom.xml</include>
-        <include>assembly.xml</include>
       </includes>
     </fileSet>
-
     
     <!-- More for the lib/ -->
     <fileSet>
