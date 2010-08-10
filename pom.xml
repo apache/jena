@@ -305,8 +305,8 @@ build.time.txt=${build.time.txt}
 	<executions>
 	  <execution>
 	    <id>create-assembly</id>
-	    <!-- Better after package because of javadoc, source and test-jar-->
-	    <phase>verify</phase>
+	    <!-- Must be last plugin attached to "package" -->
+	    <phase>package</phase>
 	    <goals>
 	      <goal>single</goal>
 	    </goals>

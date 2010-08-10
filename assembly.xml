@@ -26,8 +26,6 @@
         <include>README*</include>
         <include>ChangeLog.txt</include>
         <include>pom.xml</include>
-        <include>assembly.xml</include>
-        <include>assembly-testing.xml</include>
       </includes>
     </fileSet>
 
@@ -96,10 +94,6 @@
 
     <fileSet>
       <directory>etc</directory>
-    </fileSet>
-
-    <fileSet>
-      <directory>Vocabularies</directory>
     </fileSet>
 
   </fileSets>
