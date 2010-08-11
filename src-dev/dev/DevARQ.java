@@ -8,6 +8,7 @@ public class DevARQ
     //   c.h.h.j.s.modify.op => renaming: Update => ModOp, U_*
     //      UpdateSubmission extends Update11 = Update
     
+    // c.h.h.j.s.modify_submission.op
     // SPARQL 1.1: c.h.h.j.s.modify.op => Update*
     
     // Less compatible: (try for the two independent systems).
