@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package dev.newupdate;
+package dev.update_rest;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;

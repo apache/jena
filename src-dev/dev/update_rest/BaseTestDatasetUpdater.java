@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package dev.newupdate;
+package dev.update_rest;
 
 import org.junit.Assert ;
 import org.junit.Test ;

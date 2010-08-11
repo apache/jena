@@ -4,24 +4,33 @@
  * [See end of file]
  */
 
-package dev.newupdate;
+package dev.update_rest;
 
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.Node ;
 
-public class TestDatasetUpdaterMem extends BaseTestDatasetUpdater
+public interface DatasetUpdater
 {
-    @Override
-    protected DatasetUpdater getDatasetUpdater(DatasetGraph dsg)
-    {
-        return new DatasetUpdaterBasic(dsg) ;
-    }
+    // Get graph
+    public Graph doGet() ; 
+    public Graph doGet(Node graphName) ;
+    
+    // Replace/create graph
+    public void doPut(Graph data) ;
+    public void doPut(Node graphName, Graph data) ;
 
-    @Override
-    protected DatasetGraph getEmptyDatasetGraph()
-    {
-        return DatasetGraphFactory.createMem() ;
-    }
+    // Remove graph
+    public void doDelete() ;
+    public void doDelete(Node graphName) ;
+
+    // Update graph
+    public void doPost(Graph data) ;
+    public void doPost(Node graphName, Graph data) ;
+
+    // Update graph
+    public void doPatch(Graph data) ;
+    public void doPatch(Node graphName, Graph data) ;
+
 }
 
 /*

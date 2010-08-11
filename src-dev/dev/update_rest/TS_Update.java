@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package dev.newupdate;
+package dev.update_rest;
 
 import org.junit.runner.RunWith ;
 import org.junit.runners.Suite ;
