@@ -13,7 +13,6 @@ package com.hp.hpl.jena.sparql.lang.sparql_11 ;
 
 
 
-
 /** Token Manager. */
 public class SPARQLParser11TokenManager implements SPARQLParser11Constants
 {

@@ -64,7 +64,9 @@ import com.hp.hpl.jena.sparql.syntax.* ;
 import com.hp.hpl.jena.sparql.expr.* ;
 import com.hp.hpl.jena.sparql.path.* ;
 import com.hp.hpl.jena.sparql.expr.aggregate.* ;
+#ifdef  UPDATE_SUBMISSION
 import com.hp.hpl.jena.sparql.modify.op.* ;
+#endif
 
 public class CLASS extends PARSERBASE
 {
@@ -532,7 +534,7 @@ Element UpdatePattern() : { Element el ; }
 
 // SPARQL 1.1 Update
 #ifdef UPDATE_SPARQL_11
-void Update1() : { /*Update up = null ;*/ }
+void Update1() : { /* Update up = null ; */ }
 {
   ( Load()
   | Clear()

@@ -12,7 +12,6 @@ import com.hp.hpl.jena.sparql.syntax.* ;
 import com.hp.hpl.jena.sparql.expr.* ;
 import com.hp.hpl.jena.sparql.path.* ;
 import com.hp.hpl.jena.sparql.expr.aggregate.* ;
-import com.hp.hpl.jena.sparql.modify.op.* ;
 public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11Constants {
     boolean allowAggregatesInExpressions = false ;
 

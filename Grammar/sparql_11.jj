@@ -30,7 +30,6 @@ import com.hp.hpl.jena.sparql.syntax.* ;
 import com.hp.hpl.jena.sparql.expr.* ;
 import com.hp.hpl.jena.sparql.path.* ;
 import com.hp.hpl.jena.sparql.expr.aggregate.* ;
-import com.hp.hpl.jena.sparql.modify.op.* ;
 public class SPARQLParser11 extends SPARQLParser11Base
 {
     boolean allowAggregatesInExpressions = false ;
@@ -291,7 +290,7 @@ void Update() : { }
     ( Update1() )+
 }
 // SPARQL 1.1 Update
-void Update1() : { /*Update up = null ;*/ }
+void Update1() : { /* Update up = null ; */ }
 {
   ( Load()
   | Clear()
