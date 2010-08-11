@@ -3,8 +3,8 @@
 <!-- The ARQ distibution -->
 
 <assembly xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.1"
-	  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	  xsi:schemaLocation="xmlns=http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.1 http://maven.apache.org/xsd/assembly-1.1.1.xsd">
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="xmlns=http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.1 http://maven.apache.org/xsd/assembly-1.1.1.xsd">
   <baseDirectory>${project.name}-${project.version}</baseDirectory>
   <formats>
     <!--
@@ -82,7 +82,7 @@
         <exclude>template.html</exclude>
         <exclude>**/_*/**</exclude>
         <exclude>**/desktop.ini</exclude>
-	<!-- javadoc done separately below -->
+        <!-- javadoc done separately below -->
         <exclude>javadoc/**</exclude>
       </excludes>
     </fileSet>
