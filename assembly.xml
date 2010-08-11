@@ -1,6 +1,8 @@
-<!-- The distibution -->
+<?xml version="1.0" encoding="UTF-8"?>
 
-<assembly>
+<assembly xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.1"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="xmlns=http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.1 http://maven.apache.org/xsd/assembly-1.1.1.xsd">
   <baseDirectory>${project.name}-${project.version}</baseDirectory>
   <formats>
     <!--
@@ -16,8 +18,8 @@
       <scope>test</scope>
       <outputDirectory>lib</outputDirectory>
       <excludes>
-	<exclude>*-sources.jar</exclude>
-	<exclude>*-javadoc.jar</exclude>
+        <exclude>*-sources.jar</exclude>
+        <exclude>*-javadoc.jar</exclude>
       </excludes>
     </dependencySet>
   </dependencySets>
@@ -75,7 +77,7 @@
         <exclude>template.html</exclude>
         <exclude>**/_*/**</exclude>
         <exclude>**/desktop.ini</exclude>
-	<!-- javadoc done separately below -->
+        <!-- javadoc done separately below -->
         <exclude>javadoc/**</exclude>
       </excludes>
     </fileSet>
