@@ -6,7 +6,7 @@
 
 package dev.update2.syntax;
 
-public class UpdateDeleteWhere extends Update
+public class UpdateDeleteWhere extends Update11
 {
     private final QuadPattern pattern ;
 

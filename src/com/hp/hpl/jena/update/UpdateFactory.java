@@ -17,7 +17,7 @@ import com.hp.hpl.jena.sparql.engine.binding.BindingUtils ;
 import com.hp.hpl.jena.sparql.lang.ParserARQUpdate ;
 import com.hp.hpl.jena.sparql.modify.UpdateProcessorFactory ;
 import com.hp.hpl.jena.sparql.modify.UpdateProcessorRegistry ;
-import com.hp.hpl.jena.sparql.modify.op.Update ;
+import com.hp.hpl.jena.sparql.modify.op.UpdateSubmission ;
 
 public class UpdateFactory
 {
@@ -75,7 +75,7 @@ public class UpdateFactory
      * @param graphStore
      * @return UpdateProcessor or null
      */
-    public static UpdateProcessor create(Update update, GraphStore graphStore)
+    public static UpdateProcessor create(UpdateSubmission update, GraphStore graphStore)
     {
         return create(update, graphStore, (Binding)null) ;
     }
@@ -86,7 +86,7 @@ public class UpdateFactory
      * @param initialSolution
      * @return UpdateProcessor or null
      */
-    public static UpdateProcessor create(Update update, GraphStore graphStore, QuerySolution initialSolution)
+    public static UpdateProcessor create(UpdateSubmission update, GraphStore graphStore, QuerySolution initialSolution)
     {        
         Binding b = null ;
         if ( initialSolution != null )
@@ -100,7 +100,7 @@ public class UpdateFactory
      * @param initialBinding
      * @return UpdateProcessor or null
      */
-    public static UpdateProcessor create(Update update, GraphStore graphStore, Binding initialBinding)
+    public static UpdateProcessor create(UpdateSubmission update, GraphStore graphStore, Binding initialBinding)
     {        
         return create(new UpdateRequest(update), graphStore, initialBinding) ;
     }

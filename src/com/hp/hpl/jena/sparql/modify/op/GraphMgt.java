@@ -9,7 +9,7 @@ package com.hp.hpl.jena.sparql.modify.op;
 import com.hp.hpl.jena.graph.Node ;
 
 
-public abstract class GraphMgt extends Update
+public abstract class GraphMgt extends UpdateSubmission
 {
     private Node iri = null ;         // Null means default graph.  Which is illegal for management ops.
     boolean silent = false ; 

@@ -2,7 +2,17 @@ package dev;
 
 public class DevARQ
 {
-    // SPARQL parsing
+    // SPARQL update parsing
+    // Check that IRIs are checked.
+    // Submission:
+    //   c.h.h.j.s.modify.op => renaming: Update => ModOp, U_*
+    //      UpdateSubmission < Update11 = Update
+    // SPARQL 1.1: c.h.h.j.s.modify.op => Update*
+    
+    // Less compatible:
+    // Old syntax => New AST and two writers.
+    //  Semantics are new only (if any differences)
+    
     // Interface for addDefaultGraphIRI, addNamedGraphIRI and reso FROM and USING
     
     // Path tests: WorkSpace/PropertyPathTests/

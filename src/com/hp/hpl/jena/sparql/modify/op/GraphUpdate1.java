@@ -11,7 +11,7 @@ import com.hp.hpl.jena.graph.Node ;
 
 /** Operations that depends on a single IRI */ 
 
-public abstract class GraphUpdate1 extends Update
+public abstract class GraphUpdate1 extends UpdateSubmission
 {
     private Node graphName = null ;
     protected GraphUpdate1() { }

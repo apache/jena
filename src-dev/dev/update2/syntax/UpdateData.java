@@ -6,7 +6,7 @@
 
 package dev.update2.syntax;
 
-public abstract class UpdateData extends Update
+public abstract class UpdateData extends Update11
 {
     protected final QuadData quadData = new QuadData() ;
     

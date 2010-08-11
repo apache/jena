@@ -1103,7 +1103,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
   }
 
   final public void Update1() throws ParseException {
-                   Update up = null ; GraphMgt mgt ;
+                   UpdateSubmission up = null ; GraphMgt mgt ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case MODIFY:
       up = Modify();
@@ -1169,8 +1169,8 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     throw new Error("Missing return statement in function");
   }
 
-  final public Update Delete() throws ParseException {
-                    Update up ;
+  final public UpdateSubmission Delete() throws ParseException {
+                              UpdateSubmission up ;
     jj_consume_token(DELETE);
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case DATA:
@@ -1192,7 +1192,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     throw new Error("Missing return statement in function");
   }
 
-  final public Update DeleteData() throws ParseException {
+  final public UpdateSubmission DeleteData() throws ParseException {
   UpdateDeleteData update = new UpdateDeleteData() ;
   String iri ; Template template ;
   Token t ;
@@ -1229,7 +1229,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     throw new Error("Missing return statement in function");
   }
 
-  final public Update DeleteTemplate() throws ParseException {
+  final public UpdateSubmission DeleteTemplate() throws ParseException {
   UpdateDelete up = new UpdateDelete() ; String iri ; Template template ; Element el ;
     label_17:
     while (true) {
@@ -1270,8 +1270,8 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     throw new Error("Missing return statement in function");
   }
 
-  final public Update Insert() throws ParseException {
-                    Update up ;
+  final public UpdateSubmission Insert() throws ParseException {
+                              UpdateSubmission up ;
     jj_consume_token(INSERT);
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case DATA:
@@ -1293,7 +1293,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     throw new Error("Missing return statement in function");
   }
 
-  final public Update InsertData() throws ParseException {
+  final public UpdateSubmission InsertData() throws ParseException {
   UpdateInsertData update = new UpdateInsertData() ;
   String iri ; Template template ;
   Token t ;

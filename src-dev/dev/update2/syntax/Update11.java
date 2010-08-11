@@ -6,9 +6,8 @@
 
 package dev.update2.syntax;
 
-public abstract class Update
+public abstract class Update11
 {
-
     public abstract void visit(UpdateVisitor visitor) ; 
 }
 

@@ -893,7 +893,6 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
 
 // SPARQL 1.1 Update
   final public void Update1() throws ParseException {
-                   Update up = null ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case LOAD:
       Load();

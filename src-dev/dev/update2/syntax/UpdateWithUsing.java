@@ -9,7 +9,7 @@ package dev.update2.syntax;
 import java.util.ArrayList ;
 import java.util.List ;
 
-public abstract class UpdateWithUsing extends Update
+public abstract class UpdateWithUsing extends Update11
 {
     private String withIRI = null ;
     private List<String> using = new ArrayList<String>() ;

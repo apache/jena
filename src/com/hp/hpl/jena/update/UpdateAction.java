@@ -12,7 +12,7 @@ import com.hp.hpl.jena.query.QuerySolution ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingUtils ;
-import com.hp.hpl.jena.sparql.modify.op.Update ;
+import com.hp.hpl.jena.sparql.modify.op.UpdateSubmission ;
 
 /** A class of convenience forms for executing SPARQL/Update operations */
 
@@ -256,7 +256,7 @@ public class UpdateAction
      * @param update
      * @param model
      */
-    public static void execute(Update update, Model model)
+    public static void execute(UpdateSubmission update, Model model)
     { 
         execute(update, model, null) ; 
     }
@@ -265,7 +265,7 @@ public class UpdateAction
      * @param update
      * @param dataset
      */
-    public static void execute(Update update, Dataset dataset)
+    public static void execute(UpdateSubmission update, Dataset dataset)
     {
         execute(update, dataset, null) ; 
     }
@@ -274,7 +274,7 @@ public class UpdateAction
      * @param update
      * @param graph
      */
-    public static void execute(Update update, Graph graph)
+    public static void execute(UpdateSubmission update, Graph graph)
     {
         execute(update, GraphStoreFactory.create(graph), null) ; 
     }
@@ -283,7 +283,7 @@ public class UpdateAction
      * @param update
      * @param graphStore
      */
-    public static void execute(Update update, GraphStore graphStore)
+    public static void execute(UpdateSubmission update, GraphStore graphStore)
     {
         execute(update, graphStore, null) ;
     }
@@ -293,7 +293,7 @@ public class UpdateAction
      * @param model
      * @param initialBinding Presets for variables.
      */
-    public static void execute(Update update, Model model, QuerySolution initialBinding)
+    public static void execute(UpdateSubmission update, Model model, QuerySolution initialBinding)
     {
         execute(update, GraphStoreFactory.create(model), BindingUtils.asBinding(initialBinding)) ; 
     }
@@ -303,7 +303,7 @@ public class UpdateAction
      * @param dataset
      * @param initialBinding Presets for variables.
      */
-    public static void execute(Update update, Dataset dataset, QuerySolution initialBinding)
+    public static void execute(UpdateSubmission update, Dataset dataset, QuerySolution initialBinding)
     {
         execute(update, GraphStoreFactory.create(dataset), BindingUtils.asBinding(initialBinding)) ; 
     }
@@ -313,7 +313,7 @@ public class UpdateAction
      * @param graph
      * @param binding Presets for variables.
      */
-    public static void execute(Update update, Graph graph, Binding binding)
+    public static void execute(UpdateSubmission update, Graph graph, Binding binding)
     {
         execute(update, GraphStoreFactory.create(graph), binding) ; 
     }
@@ -323,7 +323,7 @@ public class UpdateAction
      * @param graphStore
      * @param binding Presets for variables.
      */
-    public static void execute(Update update, GraphStore graphStore, Binding binding)
+    public static void execute(UpdateSubmission update, GraphStore graphStore, Binding binding)
     {
         UpdateProcessor uProc = UpdateFactory.create(update, graphStore, binding) ;
         uProc.execute() ;

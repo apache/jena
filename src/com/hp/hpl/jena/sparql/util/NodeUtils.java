@@ -13,6 +13,7 @@ import org.openjena.atlas.lib.StrUtils ;
 import com.hp.hpl.jena.datatypes.RDFDatatype ;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.iri.IRI ;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
@@ -28,6 +29,9 @@ import com.hp.hpl.jena.util.iterator.WrappedIterator ;
 
 public class NodeUtils
 {
+    public static Node asNode(IRI iri)  { return Node.createURI(iri.toString()) ; }
+    public static Node asNode(String iri)  { return Node.createURI(iri) ; }
+    
     public static boolean isStringLiteral(Node literal)
     {
         if ( ! literal.isLiteral() )

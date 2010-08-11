@@ -11,7 +11,7 @@ import org.junit.Test ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.AlreadyExists ;
 import com.hp.hpl.jena.sparql.DoesNotExist ;
-import com.hp.hpl.jena.sparql.modify.op.Update ;
+import com.hp.hpl.jena.sparql.modify.op.UpdateSubmission ;
 import com.hp.hpl.jena.sparql.modify.op.UpdateCreate ;
 import com.hp.hpl.jena.sparql.modify.op.UpdateDrop ;
 import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
@@ -27,7 +27,7 @@ public abstract class TestUpdateGraphMgt extends TestUpdateBase
     @Test public void testCreateDrop1()
     {
         GraphStore gStore = GraphStoreFactory.create() ;
-        Update u = new UpdateCreate(graphIRI) ;
+        UpdateSubmission u = new UpdateCreate(graphIRI) ;
         UpdateAction.execute(u, gStore) ;
         assertTrue(gStore.containsGraph(graphIRI)) ;
         assertTrue(graphEmpty(gStore.getGraph(graphIRI))) ;
@@ -51,7 +51,7 @@ public abstract class TestUpdateGraphMgt extends TestUpdateBase
     @Test public void testCreateDrop2()
     {
         GraphStore gStore = GraphStoreFactory.create() ;
-        Update u = new UpdateCreate(graphIRI) ;
+        UpdateSubmission u = new UpdateCreate(graphIRI) ;
         UpdateAction.execute(u, gStore) ;
         
         u = new UpdateCreate(graphIRI, true) ;

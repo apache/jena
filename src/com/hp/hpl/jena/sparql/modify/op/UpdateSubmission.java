@@ -16,7 +16,7 @@ import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
 import com.hp.hpl.jena.sparql.util.PrintSerializable ;
 import com.hp.hpl.jena.sparql.util.PrintUtils ;
 
-public abstract class Update implements PrintSerializable
+public abstract class UpdateSubmission implements PrintSerializable
 {
     public abstract void visit(UpdateVisitor visitor) ; 
     

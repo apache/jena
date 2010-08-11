@@ -11,7 +11,7 @@ import org.openjena.atlas.io.IndentedWriter ;
 import com.hp.hpl.jena.sparql.modify.UpdateVisitor ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 
-public abstract class UpdateExt extends Update
+public abstract class UpdateExt extends UpdateSubmission
 {
     @Override
     public void visit(UpdateVisitor visitor)

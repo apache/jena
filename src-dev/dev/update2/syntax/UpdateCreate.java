@@ -6,12 +6,17 @@
 
 package dev.update2.syntax;
 
-public class UpdateCreate extends Update
+
+public class UpdateCreate extends Update11
 {
     protected final String iri ;
     protected final boolean silent ;
     
-    protected UpdateCreate(String iri, boolean silent)       { this.iri = iri ; this.silent = silent ; }
+    protected UpdateCreate(String iri, boolean silent)
+    { 
+        this.iri = iri ; 
+        this.silent = silent ;
+    }
     
     public boolean isSilent() { return silent ; }
     

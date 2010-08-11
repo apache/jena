@@ -385,7 +385,7 @@ void Update() : { }
 }
 
 #ifdef UPDATE_SUBMISSION
-void Update1() : { Update up = null ; GraphMgt mgt ; }
+void Update1() : { UpdateSubmission up = null ; GraphMgt mgt ; }
 {
   (  up = Modify() | up = Insert() | up = Delete() | 
      up = Load() | up = Clear() |  up = Create() | up = Drop() )
@@ -403,14 +403,14 @@ UpdateModify Modify() :
     { return up ; }
 }
 
-Update Delete() : { Update up ; }
+UpdateSubmission Delete() : { UpdateSubmission up ; }
 {
   <DELETE> 
   ( up = DeleteData() | up = DeleteTemplate() )
     { return up ; }
 }
 
-Update DeleteData() : 
+UpdateSubmission DeleteData() : 
 { UpdateDeleteData update = new UpdateDeleteData() ; 
   String iri ; Template template ;
   Token t ; }
@@ -425,7 +425,7 @@ Update DeleteData() :
     }
 }
 
-Update DeleteTemplate() : 
+UpdateSubmission DeleteTemplate() : 
 { UpdateDelete up = new UpdateDelete() ; String iri ; Template template ; Element el ;  }
 {
   ((<FROM>)? iri = IRIref() { up.addGraphName(iri) ; } )*
@@ -434,14 +434,14 @@ Update DeleteTemplate() :
     { return up ; }
 }
 
-Update Insert() : { Update up ; }
+UpdateSubmission Insert() : { UpdateSubmission up ; }
 {
   <INSERT> 
   ( up = InsertData() | up = InsertTemplate() )
     { return up ; }
 }
 
-Update InsertData() :
+UpdateSubmission InsertData() :
 { UpdateInsertData update = new UpdateInsertData() ;
   String iri ; Template template ;
   Token t ; }
@@ -532,7 +532,7 @@ Element UpdatePattern() : { Element el ; }
 
 // SPARQL 1.1 Update
 #ifdef UPDATE_SPARQL_11
-void Update1() : { Update up = null ; }
+void Update1() : { /*Update up = null ;*/ }
 {
   ( Load()
   | Clear()

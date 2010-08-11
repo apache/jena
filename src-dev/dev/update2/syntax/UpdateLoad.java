@@ -6,7 +6,7 @@
 
 package dev.update2.syntax;
 
-public class UpdateLoad extends Update
+public class UpdateLoad extends Update11
 {
     private final String source ;
     private final String dest ;

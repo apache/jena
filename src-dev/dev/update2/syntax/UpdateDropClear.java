@@ -6,16 +6,21 @@
 
 package dev.update2.syntax;
 
-import static dev.update2.syntax.Target.* ; 
+import static dev.update2.syntax.Target.ALL ;
+import static dev.update2.syntax.Target.DEFAULT ;
+import static dev.update2.syntax.Target.NAMED ;
 
-public abstract class UpdateDropClear extends Update 
+public abstract class UpdateDropClear extends Update11 
 {
     protected final String iri ;
     protected final Target target ;
     protected final boolean silent ;
     
-    protected UpdateDropClear(String iri, boolean silent)       { this.iri = iri ; this.target = null ; this.silent = silent ; }
-    protected UpdateDropClear(Target target, boolean silent)    { this.target = target ; this.iri = null ; this.silent = silent ; }
+    protected UpdateDropClear(String iri, boolean silent)
+    { this.iri = iri ; this.target = null ; this.silent = silent ; }
+    
+    protected UpdateDropClear(Target target, boolean silent)
+    { this.target = target ; this.iri = null ; this.silent = silent ; }
     
     public boolean isSilent() { return silent ; }
     

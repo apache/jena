@@ -13,7 +13,7 @@ import java.util.List ;
 import org.openjena.atlas.io.IndentedWriter ;
 
 import com.hp.hpl.jena.sparql.core.Prologue ;
-import com.hp.hpl.jena.sparql.modify.op.Update ;
+import com.hp.hpl.jena.sparql.modify.op.UpdateSubmission ;
 import com.hp.hpl.jena.sparql.serializer.PrologueSerializer ;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
 import com.hp.hpl.jena.sparql.util.PrintUtils ;
@@ -23,12 +23,12 @@ import com.hp.hpl.jena.sparql.util.Printable ;
 public class UpdateRequest extends Prologue
     implements Printable//, Iterable<Update>
 {
-    private List<Update> requests = new ArrayList<Update>() ;
+    private List<UpdateSubmission> requests = new ArrayList<UpdateSubmission>() ;
     public UpdateRequest() { super() ; }
-    public UpdateRequest(Update graphUpdate) { super() ; requests.add(graphUpdate) ; }
+    public UpdateRequest(UpdateSubmission graphUpdate) { super() ; requests.add(graphUpdate) ; }
     
-    public void addUpdate(Update update) { requests.add(update) ; }
-    public List<Update> getUpdates() { return requests ; }
+    public void addUpdate(UpdateSubmission update) { requests.add(update) ; }
+    public List<UpdateSubmission> getUpdates() { return requests ; }
 
     @Override
     public String toString()
@@ -42,9 +42,9 @@ public class UpdateRequest extends Prologue
         boolean first = true ;
         out.println() ;
         
-        for ( Iterator<Update> iter = requests.iterator() ; iter.hasNext(); )
+        for ( Iterator<UpdateSubmission> iter = requests.iterator() ; iter.hasNext(); )
         {
-            Update update = iter.next() ;
+            UpdateSubmission update = iter.next() ;
 
             if ( ! first )
                 out.println("    # ----------------") ;
@@ -56,7 +56,7 @@ public class UpdateRequest extends Prologue
         }
     }
     
-    public Iterator<Update> iterator()
+    public Iterator<UpdateSubmission> iterator()
     {
         return requests.iterator() ;
     }
