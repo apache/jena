@@ -1374,8 +1374,8 @@ TOKEN [IGNORE_CASE] :
 TOKEN [IGNORE_CASE] :
 {
   < INSERT: "insert">
-| < INSERT_DATA: "insert"(<WS>)* <DATA> >
 | < DELETE: "delete" >
+| < INSERT_DATA: "insert"(<WS>)* <DATA> >
 | < DELETE_DATA: "delete"(<WS>)* <DATA> >
 | < DELETE_WHERE: "delete"(<WS>)* <WHERE> >
 | < #DATA: "data" >

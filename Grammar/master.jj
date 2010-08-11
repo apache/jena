@@ -1933,14 +1933,14 @@ TOKEN [IGNORE_CASE] :
 TOKEN [IGNORE_CASE] :
 {
   < INSERT:       "insert">
-| < INSERT_DATA:  "insert"(<WS>)* <DATA> >
 | < DELETE:       "delete" >
+#ifdef UPDATE_SPARQL_11
+| < INSERT_DATA:  "insert"(<WS>)* <DATA> >
 | < DELETE_DATA:  "delete"(<WS>)* <DATA> >
 | < DELETE_WHERE: "delete"(<WS>)* <WHERE> >
-#ifdef ARQ
-| < DATA:	      "data" >
-#else
 | < #DATA:	      "data" >
+#else
+| < DATA:	      "data" >
 #endif
 
 #ifdef UPDATE_SUBMISSION

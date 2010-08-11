@@ -172,9 +172,9 @@ public interface SPARQLParser11Constants {
   /** RegularExpression Id. */
   int INSERT = 83;
   /** RegularExpression Id. */
-  int INSERT_DATA = 84;
+  int DELETE = 84;
   /** RegularExpression Id. */
-  int DELETE = 85;
+  int INSERT_DATA = 85;
   /** RegularExpression Id. */
   int DELETE_DATA = 86;
   /** RegularExpression Id. */
@@ -407,8 +407,8 @@ public interface SPARQLParser11Constants {
     "\"true\"",
     "\"false\"",
     "\"insert\"",
-    "<INSERT_DATA>",
     "\"delete\"",
+    "<INSERT_DATA>",
     "<DELETE_DATA>",
     "<DELETE_WHERE>",
     "\"data\"",
