@@ -131,19 +131,20 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-source-plugin</artifactId>
+	<version>2.1.2</version><!-- Need for *no-fork : remove when maven catches up -->
         <executions> 
           <execution>
             <id>attach-sources</id>
             <phase>package</phase>
             <goals>
-	      <goal>jar</goal><!-- jar-no-fork does not seem to work -->
+	      <goal>jar-no-fork</goal>
             </goals>
           </execution>
           <execution>
             <id>attach-sources-test</id>
             <phase>package</phase>
             <goals>
-              <goal>test-jar</goal>
+              <goal>test-jar-no-fork</goal>
             </goals>
           </execution>
         </executions>
@@ -263,10 +264,10 @@
         <executions>
           <execution>
 	    <id>create-assembly</id>
-	    <!-- Must be last in pahse "package" (else use "verify") -->
+	    <!-- Must be last in phase "package" (else use "verify") -->
 	    <phase>package</phase>
 	    <goals>
-	      <goal>attached</goal>
+	      <goal>single</goal>
 	    </goals>
           </execution>
         </executions>
