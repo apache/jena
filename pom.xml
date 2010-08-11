@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <project xmlns="http://maven.apache.org/POM/4.0.0" 
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
@@ -108,9 +109,9 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
-	  <debug>true</debug>
-	  <debuglevel>source,lines,vars</debuglevel>
-	  <optimize>true</optimize>
+          <debug>true</debug>
+          <debuglevel>source,lines,vars</debuglevel>
+          <optimize>true</optimize>
           <source>1.5</source>
           <target>1.5</target>
           <encoding>UTF-8</encoding>
@@ -131,7 +132,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-source-plugin</artifactId>
-	<version>2.1.2</version><!-- Need for *no-fork : remove when maven catches up -->
+        <version>2.1.2</version> <!-- Need for *no-fork : remove when maven catches up -->
         <executions> 
           <execution>
             <id>attach-sources</id>
@@ -200,6 +201,21 @@
           <overWriteReleases>false</overWriteReleases>
           <overWriteSnapshots>true</overWriteSnapshots>
         </configuration>
+        <executions>
+          <execution>
+            <id>copy-source-dependencies-for-assembly</id>
+            <phase>package</phase>
+            <goals>
+              <goal>copy-dependencies</goal>
+            </goals>
+            <configuration>
+              <classifier>sources</classifier>
+              <failOnMissingClassifierArtifact>false</failOnMissingClassifierArtifact>
+              <includeScope>runtime</includeScope>
+              <outputDirectory>${project.build.directory}/dependency-sources</outputDirectory>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
       
       <plugin>
@@ -214,7 +230,7 @@
                   <format property="build-time.xsd" pattern="yyyy-MM-dd'T'HH:mm:ssZ"/>
                   <format property="build-time.txt" pattern="yyyy-MM-dd HH:mm z"/>
                 </tstamp>
-		<echo message="version=${project.version}"/>
+                <echo message="version=${project.version}"/>
                 <echo message="build.time=${build-time.txt}"/>
                 <copy file="src/main/resources/jena-properties.xml" toFile="${project.basedir}/target/classes/com/hp/hpl/jena/jena-properties.xml" overwrite="true">
                   <filterset>
@@ -263,12 +279,12 @@
         </configuration>
         <executions>
           <execution>
-	    <id>create-assembly</id>
-	    <!-- Must be last in phase "package" (else use "verify") -->
-	    <phase>package</phase>
-	    <goals>
-	      <goal>single</goal>
-	    </goals>
+            <id>create-assembly</id>
+            <!-- Must be last in phase "package" (else use "verify") -->
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
           </execution>
         </executions>
       </plugin>
