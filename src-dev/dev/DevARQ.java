@@ -2,10 +2,8 @@ package dev;
 
 public class DevARQ
 {
-    // Build and sources.
-    // Remove sources.
-    // Manual mvn_update
-    // POM and Eclipse setup. 
+    // SPARQL parsing
+    // Interface for addDefaultGraphIRI, addNamedGraphIRI and reso FROM and USING
     
     // Path tests: WorkSpace/PropertyPathTests/
 

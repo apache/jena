@@ -9,9 +9,7 @@ package com.hp.hpl.jena.sparql.modify.op;
 
 import com.hp.hpl.jena.graph.Node ;
 
-/**
- * @author Andy Seaborne
- */ 
+/** Operations that depends on a single IRI */ 
 
 public abstract class GraphUpdate1 extends Update
 {

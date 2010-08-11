@@ -5,7 +5,6 @@
  * (c) Copyright 2010 Talis Systems Ltd
  * All rights reserved.
  */
-
 package com.hp.hpl.jena.sparql.lang.sparql_11 ;
 
 /**
@@ -134,4 +133,4 @@ public class Token implements java.io.Serializable {
   }
 
 }
-/* JavaCC - OriginalChecksum=5ff813e63e3f9cca256676d0d9f1fa98 (do not edit this line) */
+/* JavaCC - OriginalChecksum=028399b98969387e55d6e02d351775e7 (do not edit this line) */

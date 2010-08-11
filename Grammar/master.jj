@@ -534,48 +534,23 @@ Element UpdatePattern() : { Element el ; }
 #ifdef UPDATE_SPARQL_11
 void Update1() : { Update up = null ; }
 {
-  ( Modify()
-  | Load()
+  ( Load()
   | Clear()
   | Drop()
   | Create()
+  | InsertData()
+  | DeleteData()
+  | DeleteWhere()
+  | Modify()
   )
   (<SEMICOLON>) ?
 }
 
-void Modify() : { }
-{
-  ( <WITH> IRIref() )?
-  ( Insert() 
-  | Delete()
-  )
-}
-
-void Insert() : { }
-{
-   <INSERT>
-   ( <DATA> QuadData()
-   | QuadTemplate() 
-     <WHERE>
-     GroupGraphPattern()
-   )
-}
-
-void Delete() : { }
-{
-   <DELETE>
-   ( <DATA> QuadData()
-   | <WHERE> QuadTemplate() 
-   | QuadTemplate() 
-     (<INSERT> QuadTemplate())?
-     <WHERE>
-     GroupGraphPattern()
-   )
-}
-
 void Load() : {}
 {
-    <LOAD> ( IRIref() )+
+    // Should be +?
+    //    <LOAD> ( IRIref() )+
+    <LOAD> (IRIref())?
     // @@
     (<INTO> GraphRef() )? 
 }
@@ -595,6 +570,50 @@ void Create() : {}
    <CREATE> (<SILENT>)?  GraphRef()
 }
 
+void InsertData() : { }
+{
+   <INSERT_DATA> QuadData()
+}
+
+void DeleteData() : { }
+{
+   <DELETE_DATA> QuadData()
+}
+
+void DeleteWhere() : { }
+{
+   <DELETE_WHERE> QuadPattern()
+}
+
+
+void Modify() : { }
+{
+  ( <WITH> IRIref() )?
+  ( Delete() (Insert())?
+  | Insert()
+  )
+  (UsingClause())*
+  <WHERE>
+  GroupGraphPattern()
+}
+
+void Delete() : { }
+{
+   <DELETE> QuadPattern()
+}
+
+void Insert() : { }
+{
+   <INSERT> QuadPattern()
+}
+
+void UsingClause() : { String iri ; }
+{
+   <USING> 
+   (iri = SourceSelector() | <NAMED> iri = SourceSelector() )
+}
+
+
 void GraphRef() : {}
 {
     <GRAPH> IRIref()
@@ -605,7 +624,7 @@ void GraphRefAll() : {}
    ( GraphRef() | <DFT> | <NAMED> | <ALL>)
 }
 
-void QuadTemplate() : { }
+void QuadPattern() : { }
 {
     <LBRACE>
     Quads()
@@ -622,7 +641,6 @@ void Quads() : { TripleCollector acc = new TemplateGroup() ; }
    )*
 }
 
-// @@ Java broken
 void QuadsNotTriples(TripleCollector acc) : {Node n ; }
 {
     <GRAPH> n = VarOrIRIref() <LBRACE> (TriplesTemplate(n, acc))? <RBRACE>
@@ -630,13 +648,11 @@ void QuadsNotTriples(TripleCollector acc) : {Node n ; }
 
 void TriplesTemplate(Node g, TripleCollector acc) : { }
 {    
-    // @@ BROKEN for quads
     TriplesSameSubject(acc)
     (<DOT> (TriplesTemplate(g, acc))?)?
 }
 
-//Ground data
-// @@
+//Ground data : As QuadPattern but don't allow variables.
 void QuadData() : { }
 {
     <LBRACE>
@@ -1915,13 +1931,20 @@ TOKEN [IGNORE_CASE] :
 TOKEN [IGNORE_CASE] :
 {
   < INSERT:       "insert">
+| < INSERT_DATA:  "insert"(<WS>)* <DATA> >
 | < DELETE:       "delete" >
+| < DELETE_DATA:  "delete"(<WS>)* <DATA> >
+| < DELETE_WHERE: "delete"(<WS>)* <WHERE> >
+#ifdef ARQ
+| < DATA:	      "data" >
+#else
+| < #DATA:	      "data" >
+#endif
 
 #ifdef UPDATE_SUBMISSION
 |  < MODIFY:      "modify">
 #endif
 
-| < DATA:         "data">
 | < LOAD:         "load" >
 | < CLEAR:        "clear" >
 | < CREATE:       "create" >
@@ -1929,8 +1952,10 @@ TOKEN [IGNORE_CASE] :
 | < DROP:         "drop" >
 | < INTO:         "into" >
 | < DFT:          "default" >
+//| < NAMED:        "named" >
 | < ALL:          "all" >
 | < WITH:         "with" >
+| < USING:        "using" >
 
 
 //| < BEGIN:       "begin" >
