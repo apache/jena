@@ -6,12 +6,14 @@ public class DevARQ
     // Check that IRIs are checked.
     // Submission:
     //   c.h.h.j.s.modify.op => renaming: Update => ModOp, U_*
-    //      UpdateSubmission < Update11 = Update
+    //      UpdateSubmission extends Update11 = Update
+    
     // SPARQL 1.1: c.h.h.j.s.modify.op => Update*
     
-    // Less compatible:
+    // Less compatible: (try for the two independent systems).
     // Old syntax => New AST and two writers.
-    //  Semantics are new only (if any differences)
+    //     Hard case : DELETE FROM, INSERT INTO, MODIFY [ <uri> ]*
+    //   Semantics are new only (if any differences)
     
     // Interface for addDefaultGraphIRI, addNamedGraphIRI and reso FROM and USING
     
