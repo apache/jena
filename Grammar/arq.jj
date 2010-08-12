@@ -2,6 +2,7 @@
 // Author:  Andy Seaborne andy.seaborne@talis.com
 // (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
 // (c) Copyright 2010 Talis Systems Ltd.
+// (c) Copyright 2010 Epimorphics Ltd.
 // All rights reserved.
 // See end of file for details.
 //
@@ -30,7 +31,7 @@ import com.hp.hpl.jena.sparql.syntax.* ;
 import com.hp.hpl.jena.sparql.expr.* ;
 import com.hp.hpl.jena.sparql.path.* ;
 import com.hp.hpl.jena.sparql.expr.aggregate.* ;
-import com.hp.hpl.jena.sparql.modify.op.* ;
+import com.hp.hpl.jena.sparql.modify.submission.* ;
 public class ARQParser extends ARQParserBase
 {
     boolean allowAggregatesInExpressions = false ;
@@ -302,7 +303,9 @@ void UpdateUnit() : {}
 }
 void Update() : { }
 {
+    { startUpdateRequest() ; }
     ( Update1() )+
+    { finishUpdateRequest() ; }
 }
 void Update1() : { UpdateSubmission up = null ; GraphMgt mgt ; }
 {

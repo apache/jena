@@ -6,11 +6,31 @@
 
 package com.hp.hpl.jena.sparql.modify.request;
 
-public enum Target
+import static com.hp.hpl.jena.sparql.modify.request.Target.Decl.* ;
+
+public class Target
 {
-    DEFAULT ,
-    NAMED,
-    ALL
+    static enum Decl { DEFAULT$, NAMED$, ALL$, IRI$} ;
+    
+    public static final Target DEFAULT = new Target(DEFAULT$) ;
+    public static final Target NAMED = new Target(NAMED$) ;
+    public static final Target ALL = new Target(ALL$) ;
+    
+    private final Decl decl ;
+    private final String iri ;
+    
+    private Target(Decl decl)   { this.iri = null ; this.decl = decl ; } 
+    private Target(String iri)  { this.iri = iri ; this.decl = Decl.IRI$ ; }
+    
+    static public Target create(String iri)
+    { return new Target(iri) ; }
+    
+    public boolean isDefault()  { return decl == DEFAULT$ ; }
+    public boolean isAll()      { return decl == ALL$ ; }
+    public boolean isAllNamed() { return decl == NAMED$ ; }
+    public boolean isOneGraph() { return decl == IRI$ ; }
+    
+    public String getGraphIRI() { return iri ; }
 }
 
 /*

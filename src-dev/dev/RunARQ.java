@@ -13,6 +13,7 @@ import java.io.Reader ;
 import java.io.StringReader ;
 import java.util.Iterator ;
 
+import org.openjena.atlas.lib.StrUtils ;
 import org.openjena.atlas.logging.Log ;
 import org.openjena.riot.ErrorHandlerLib ;
 import org.openjena.riot.checker.CheckerIRI ;
@@ -27,6 +28,7 @@ import com.hp.hpl.jena.sparql.algebra.Algebra ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.Transform ;
 import com.hp.hpl.jena.sparql.algebra.opt.TransformPropertyFunction ;
+import com.hp.hpl.jena.sparql.core.Prologue ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
@@ -67,6 +69,8 @@ public class RunARQ
     
     public static void main(String[] argv) throws Exception
     {
+        sparql11update() ; System.exit(0) ; 
+        
         String DIR = "WorkSpace/PropertyPathTestCases" ;
         
         arq.arq.main("-v", "--query="+DIR+"/pp-all-03.rq", "--data="+DIR+"/data-path-1.ttl") ; System.exit(0) ;
@@ -128,21 +132,59 @@ public class RunARQ
     
     private static void sparql11update()
     {
-        sparql11update_1("LOAD <foo> INTO <blah>") ;
+//        sparql11update_1("LOAD <foo> INTO GRAPH <blah>") ;
+//        sparql11update_1("DROP ALL") ;
+//        sparql11update_1("DROP NAMED") ;
+//        sparql11update_1("CLEAR DEFAULT") ;
+//        
+//        sparql11update_1("DELETE WHERE { ?s ?p ?o }") ;
+//        sparql11update_1("DELETE DATA { <s> <p> <o> }") ;
+        
+        sparql11update_1("PREFIX : <http://example>",
+                         "WITH :g",
+                         "DELETE { ?s ?p ?o }",
+                         "INSERT { ?s ?p ?o }",
+                         "USING <g>",
+                         "USING NAMED :gn",
+                         "WHERE",
+                         "{ ?s ?p ?o }"
+                         ) ;
+        sparql11update_1("PREFIX : <http://example>",
+                         "WITH :g",
+                         "DELETE { ?s ?p ?o }",
+                         //"INSERT { ?s ?p ?o }",
+                         "USING <g>",
+                         "USING NAMED :gn",
+                         "WHERE",
+                         "{ ?s ?p ?o }"
+                         ) ;
+        sparql11update_1("PREFIX : <http://example>",
+                         //"WITH :g",
+                         //"DELETE { ?s ?p ?o }",
+                         "INSERT { ?s ?p ?o }",
+                         //"USING <g>",
+                         //"USING NAMED :gn",
+                         "WHERE",
+                         "{ ?s ?p ?o }"
+                         ) ;
+       
+        
         System.out.println("DONE") ;
         
     }
     
-    private static void sparql11update_1(String str)
+    private static void sparql11update_1(String... str)
     {
+        String str$ = StrUtils.strjoinNL(str) ; 
+        System.out.print("** ") ;
         System.out.println(str);
-        Reader r = new StringReader(str) ;
+        Reader r = new StringReader(str$) ;
         SPARQLParser11 parser = null ;
         try {
             parser = new SPARQLParser11(r) ;
-            parser.setUpdateRequest(null) ;
+            //parser.setUpdateRequest(null) ;
+            parser.setPrologue(new Prologue()) ;
             parser.UpdateUnit() ;
-            System.out.println();
             //validateParsedUpdate(update) ;
         }
         catch (com.hp.hpl.jena.sparql.lang.sparql_11.ParseException ex)

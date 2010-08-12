@@ -31,6 +31,7 @@
 // Author:  Andy Seaborne andy.seaborne@talis.com
 // (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
 // (c) Copyright 2010 Talis Systems Ltd.
+// (c) Copyright 2010 Epimorphics Ltd.
 // All rights reserved.
 // See end of file for details.
 //
@@ -65,7 +66,10 @@ import com.hp.hpl.jena.sparql.expr.* ;
 import com.hp.hpl.jena.sparql.path.* ;
 import com.hp.hpl.jena.sparql.expr.aggregate.* ;
 #ifdef  UPDATE_SUBMISSION
-import com.hp.hpl.jena.sparql.modify.op.* ;
+import com.hp.hpl.jena.sparql.modify.submission.* ;
+#endif
+#ifdef  UPDATE_SPARQL_11
+import com.hp.hpl.jena.sparql.modify.request.* ;
 #endif
 
 public class CLASS extends PARSERBASE
@@ -383,7 +387,9 @@ void UpdateUnit() : {}
 
 void Update() : { }
 {
+    { startUpdateRequest() ; }
     ( Update1() )+
+    { finishUpdateRequest() ; }
 }
 
 #ifdef UPDATE_SUBMISSION
@@ -534,61 +540,74 @@ Element UpdatePattern() : { Element el ; }
 
 // SPARQL 1.1 Update
 #ifdef UPDATE_SPARQL_11
-void Update1() : { /* Update up = null ; */ }
+void Update1() : { Update up ; }
 {
-  ( Load()
-  | Clear()
-  | Drop()
-  | Create()
-  | InsertData()
-  | DeleteData()
-  | DeleteWhere()
-  | Modify()
+  { startUpdateOperation() ; }
+  ( up = Load()
+  | up = Clear()
+  | up = Drop()
+  | up = Create()
+  | up = InsertData()
+  | up = DeleteData()
+  | up = DeleteWhere()
+  | up = Modify()
   )
   (<SEMICOLON>) ?
+  {
+    emitUpdate(up) ;
+    finishUpdateOperation() ;
+  }
 }
 
-void Load() : {}
+Update Load() : { String url ; String dest = null ; }
 {
     // Should be +?
     //    <LOAD> ( IRIref() )+
-    <LOAD> (IRIref())?
+    <LOAD> url = IRIref()
     // @@
-    (<INTO> GraphRef() )? 
+    (<INTO> dest = GraphRef() )? 
+    { return new UpdateLoad(url, dest) ; }
+    
 }
 
-void Clear() : {}
+Update Clear() : { boolean silent = false ; Target target ; }
 {
-   <CLEAR> (<SILENT>)? GraphRefAll()
+   <CLEAR> (<SILENT> { silent = true ; })? target = GraphRefAll()
+   { return new UpdateClear(target, silent) ; }
 }
 
-void Drop() : {}
+Update Drop() : { boolean silent = false ; Target target ; }
 {
-   <DROP> (<SILENT>)? GraphRefAll()
+   <DROP> (<SILENT> { silent = true ; })? target = GraphRefAll()
+   { return new UpdateClear(target, silent) ; }
 }
 
-void Create() : {}
+Update Create() : { String iri ; boolean silent = false ; }
 {
-   <CREATE> (<SILENT>)?  GraphRef()
+   <CREATE> (<SILENT> { silent=true ; } )? iri = GraphRef()
+   { return new UpdateCreate(iri, silent) ; } 
 }
 
-void InsertData() : { }
+Update InsertData() : { }
 {
    <INSERT_DATA> QuadData()
+   { return null ; }
 }
 
-void DeleteData() : { }
+Update DeleteData() : { }
 {
    <DELETE_DATA> QuadData()
+   { return null ; }
 }
 
-void DeleteWhere() : { }
+Update DeleteWhere() : { }
 {
    <DELETE_WHERE> QuadPattern()
+   { return null ; }
 }
 
 
-void Modify() : { }
+Update Modify() : { }
 {
   ( <WITH> IRIref() )?
   ( Delete() (Insert())?
@@ -597,16 +616,19 @@ void Modify() : { }
   (UsingClause())*
   <WHERE>
   GroupGraphPattern()
+   { return null ; }
 }
 
-void Delete() : { }
+Update Delete() : { }
 {
    <DELETE> QuadPattern()
+   { return null ; }
 }
 
-void Insert() : { }
+Update Insert() : { }
 {
    <INSERT> QuadPattern()
+   { return null ; }
 }
 
 void UsingClause() : { String iri ; }
@@ -616,14 +638,20 @@ void UsingClause() : { String iri ; }
 }
 
 
-void GraphRef() : {}
+String GraphRef() : { String iri ; }
 {
-    <GRAPH> IRIref()
+    <GRAPH> iri = IRIref()
+    { return iri ; }
 }
 
-void GraphRefAll() : {}
+Target GraphRefAll() : { String iri ; }
 {
-   ( GraphRef() | <DFT> | <NAMED> | <ALL>)
+   ( iri = GraphRef() 
+     { return Target.create(iri) ; }
+   | <DFT>    { return Target.DEFAULT ; }
+   | <NAMED>  { return Target.NAMED ; } 
+   | <ALL>    { return Target.ALL ; } 
+   )
 }
 
 void QuadPattern() : { }

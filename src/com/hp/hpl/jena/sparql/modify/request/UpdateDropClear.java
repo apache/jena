@@ -6,30 +6,25 @@
 
 package com.hp.hpl.jena.sparql.modify.request;
 
-import static com.hp.hpl.jena.sparql.modify.request.Target.ALL ;
-import static com.hp.hpl.jena.sparql.modify.request.Target.DEFAULT ;
-import static com.hp.hpl.jena.sparql.modify.request.Target.NAMED ;
-
-public abstract class UpdateDropClear extends Update11 
+public abstract class UpdateDropClear extends Update 
 {
-    protected final String iri ;
     protected final Target target ;
     protected final boolean silent ;
     
     protected UpdateDropClear(String iri, boolean silent)
-    { this.iri = iri ; this.target = null ; this.silent = silent ; }
+    { this(Target.create(iri), silent) ; }
     
     protected UpdateDropClear(Target target, boolean silent)
-    { this.target = target ; this.iri = null ; this.silent = silent ; }
+    { this.target = target ; this.silent = silent ; }
     
     public boolean isSilent() { return silent ; }
     
-    public boolean isDefault()  { return DEFAULT.equals(target) ; }
-    public boolean isAll()      { return ALL.equals(target) ; }
-    public boolean isAllNamed() { return NAMED.equals(target) ; }
-    public boolean isOneGraph() { return iri != null ; }
+    public boolean isDefault()  { return target.isDefault() ; }
+    public boolean isAll()      { return target.isAll() ; }
+    public boolean isAllNamed() { return target.isAllNamed() ; }
+    public boolean isOneGraph() { return target.isOneGraph() ; }
     
-    public String getGraphIRI() { return iri ; }
+    public String getGraphIRI() { return target.getGraphIRI() ; }
 }
 
 /*

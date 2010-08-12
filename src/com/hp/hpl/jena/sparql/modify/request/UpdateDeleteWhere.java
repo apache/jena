@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.sparql.modify.request;
 
-public class UpdateDeleteWhere extends Update11
+public class UpdateDeleteWhere extends Update
 {
     private final QuadPattern pattern ;
 

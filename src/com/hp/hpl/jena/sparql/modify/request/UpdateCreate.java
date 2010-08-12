@@ -7,12 +7,12 @@
 package com.hp.hpl.jena.sparql.modify.request;
 
 
-public class UpdateCreate extends Update11
+public class UpdateCreate extends Update
 {
     protected final String iri ;
     protected final boolean silent ;
     
-    protected UpdateCreate(String iri, boolean silent)
+    public UpdateCreate(String iri, boolean silent)
     { 
         this.iri = iri ; 
         this.silent = silent ;

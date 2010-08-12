@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.sparql.modify.request;
 
-public class UpdateLoad extends Update11
+public class UpdateLoad extends Update
 {
     private final String source ;
     private final String dest ;

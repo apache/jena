@@ -9,7 +9,7 @@ package com.hp.hpl.jena.sparql.modify.request;
 import java.util.ArrayList ;
 import java.util.List ;
 
-public abstract class UpdateWithUsing extends Update11
+public abstract class UpdateWithUsing extends Update
 {
     private String withIRI = null ;
     private List<String> using = new ArrayList<String>() ;

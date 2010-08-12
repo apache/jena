@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.sparql.modify.request;
 
-public abstract class UpdateData extends Update11
+public abstract class UpdateData extends Update
 {
     protected final QuadData quadData = new QuadData() ;
     

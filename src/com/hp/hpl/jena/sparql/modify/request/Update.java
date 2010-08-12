@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.sparql.modify.request;
 
-public abstract class Update11
+public abstract class Update
 {
     public abstract void visit(UpdateVisitor visitor) ; 
 }

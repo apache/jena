@@ -249,7 +249,7 @@ NON-TERMINALS
 	Update	:=	( Update1 )+
 // SPARQL 1.1 Update
 	Update1	:=	( Load | Clear | Drop | Create | InsertData | DeleteData | DeleteWhere | Modify ) ( <SEMICOLON> )?
-	Load	:=	<LOAD> ( IRIref )? ( <INTO> GraphRef )?
+	Load	:=	<LOAD> IRIref ( <INTO> GraphRef )?
 	Clear	:=	<CLEAR> ( <SILENT> )? GraphRefAll
 	Drop	:=	<DROP> ( <SILENT> )? GraphRefAll
 	Create	:=	<CREATE> ( <SILENT> )? GraphRef

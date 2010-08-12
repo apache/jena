@@ -10,6 +10,7 @@ package com.hp.hpl.jena.sparql.lang;
 import java.util.Stack ;
 
 import com.hp.hpl.jena.query.Query ;
+import com.hp.hpl.jena.sparql.modify.request.Update ;
 import com.hp.hpl.jena.update.UpdateRequest ;
 
 public class ParserQueryBase extends ParserBase 
@@ -35,8 +36,17 @@ public class ParserQueryBase extends ParserBase
         // And create a query because we may have nested selects.
         this.query = new Query () ;
     }
+
+    protected void startUpdateOperation() { System.out.println("Start update operation") ; }
+    protected void finishUpdateOperation() { System.out.println("Finish update operation") ; }
     
+    protected void startUpdateRequest() { System.out.println("Start update request") ; }
+    protected void finishUpdateRequest() { System.out.println("Finish update request") ; }
+    
+    // SPARQL/Update (Submission)
     protected UpdateRequest getRequest() { return request ; }
+    
+    protected void emitUpdate(Update update) { System.out.println("Emit update: "+update) ; }
     
     protected void startSubSelect()
     {
