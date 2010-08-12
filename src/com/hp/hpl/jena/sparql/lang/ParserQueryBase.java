@@ -37,11 +37,18 @@ public class ParserQueryBase extends ParserBase
         this.query = new Query () ;
     }
 
+    // Move down to SPARQL 1.1 or rename as ParserBase
     protected void startUpdateOperation() { System.out.println("Start update operation") ; }
     protected void finishUpdateOperation() { System.out.println("Finish update operation") ; }
     
     protected void startUpdateRequest() { System.out.println("Start update request") ; }
     protected void finishUpdateRequest() { System.out.println("Finish update request") ; }
+    
+    protected void startDataInsert() { System.out.println("Start INSERT DATA") ; }
+    protected void finishDataInsert() { System.out.println("Finish INSERT DATA") ; }
+    
+    protected void startDataDelete() { System.out.println("Start DELETE DATA") ; }
+    protected void finishDataDelete() { System.out.println("Finish DELETE DATA") ; }
     
     // SPARQL/Update (Submission)
     protected UpdateRequest getRequest() { return request ; }

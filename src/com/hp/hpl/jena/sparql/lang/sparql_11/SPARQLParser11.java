@@ -1010,22 +1010,29 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
   }
 
   final public Update InsertData() throws ParseException {
+                        QuadDataAcc qd ;
+     startDataInsert() ;
     jj_consume_token(INSERT_DATA);
-    QuadData();
-     {if (true) return null ;}
+    qd = QuadData();
+     finishDataInsert() ;
+     {if (true) return new UpdateDataInsert(qd) ;}
     throw new Error("Missing return statement in function");
   }
 
   final public Update DeleteData() throws ParseException {
+                        QuadDataAcc qd ;
+     startDataDelete() ;
     jj_consume_token(DELETE_DATA);
-    QuadData();
-     {if (true) return null ;}
+    qd = QuadData();
+     finishDataDelete() ;
+     {if (true) return new UpdateDataDelete(qd) ;}
     throw new Error("Missing return statement in function");
   }
 
   final public Update DeleteWhere() throws ParseException {
+                         QuadPatternAcc qp ;
     jj_consume_token(DELETE_WHERE);
-    QuadPattern();
+    qp = QuadPattern();
      {if (true) return null ;}
     throw new Error("Missing return statement in function");
   }
@@ -1079,15 +1086,17 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
   }
 
   final public Update Delete() throws ParseException {
+                    QuadPatternAcc qp ;
     jj_consume_token(DELETE);
-    QuadPattern();
+    qp = QuadPattern();
      {if (true) return null ;}
     throw new Error("Missing return statement in function");
   }
 
   final public Update Insert() throws ParseException {
+                    QuadPatternAcc qp ;
     jj_consume_token(INSERT);
-    QuadPattern();
+    qp = QuadPattern();
      {if (true) return null ;}
     throw new Error("Missing return statement in function");
   }
@@ -1147,10 +1156,13 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
     throw new Error("Missing return statement in function");
   }
 
-  final public void QuadPattern() throws ParseException {
+  final public QuadPatternAcc QuadPattern() throws ParseException {
+                                 QuadPatternAcc qp = new QuadPatternAcc() ;
     jj_consume_token(LBRACE);
     Quads();
     jj_consume_token(RBRACE);
+      {if (true) return qp ;}
+    throw new Error("Missing return statement in function");
   }
 
   final public void Quads() throws ParseException {
@@ -1326,10 +1338,13 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
   }
 
 //Ground data : As QuadPattern but don't allow variables.
-  final public void QuadData() throws ParseException {
+  final public QuadDataAcc QuadData() throws ParseException {
+                           QuadDataAcc qd = new QuadDataAcc();
     jj_consume_token(LBRACE);
     Quads();
     jj_consume_token(RBRACE);
+      {if (true) return qd ;}
+    throw new Error("Missing return statement in function");
   }
 
 // UPDATE_SPARQL_11

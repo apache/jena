@@ -10,12 +10,12 @@ import com.hp.hpl.jena.sparql.syntax.Element ;
 
 public class UpdateInsert extends UpdateWithUsing
 {
-    private final QuadPattern insertPattern ;
+    private final QuadPatternAcc insertPattern ;
     private Element wherePattern ;
     
     public UpdateInsert() 
     { 
-        this.insertPattern = new QuadPattern() ;
+        this.insertPattern = new QuadPatternAcc() ;
         this.wherePattern = null ;
     }
     
@@ -24,7 +24,7 @@ public class UpdateInsert extends UpdateWithUsing
         this.wherePattern = element ; 
     }
     
-    public QuadPattern getInsertPattern()
+    public QuadPatternAcc getInsertPattern()
     {
         return insertPattern ;
     }

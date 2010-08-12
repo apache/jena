@@ -10,12 +10,12 @@ import com.hp.hpl.jena.sparql.syntax.Element ;
 
 public class UpdateDelete extends UpdateWithUsing
 {
-    private final QuadPattern deletePattern ;
+    private final QuadPatternAcc deletePattern ;
     private Element wherePattern ;
     
     public UpdateDelete() 
     { 
-        this.deletePattern = new QuadPattern() ;
+        this.deletePattern = new QuadPatternAcc() ;
         this.wherePattern = null ;
     }
     
@@ -25,7 +25,7 @@ public class UpdateDelete extends UpdateWithUsing
     }
     
     
-    public QuadPattern getDeletePattern()
+    public QuadPatternAcc getDeletePattern()
     {
         return deletePattern ;
     }

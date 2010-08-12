@@ -336,19 +336,27 @@ Update Create() : { String iri ; boolean silent = false ; }
    <CREATE> (<SILENT> { silent=true ; } )? iri = GraphRef()
    { return new UpdateCreate(iri, silent) ; }
 }
-Update InsertData() : { }
+Update InsertData() : { QuadDataAcc qd ; }
 {
-   <INSERT_DATA> QuadData()
-   { return null ; }
+   { startDataInsert() ; }
+   <INSERT_DATA> qd = QuadData()
+   {
+     finishDataInsert() ;
+     return new UpdateDataInsert(qd) ;
+   }
 }
-Update DeleteData() : { }
+Update DeleteData() : { QuadData qd ; }
 {
-   <DELETE_DATA> QuadData()
-   { return null ; }
+   { startDataDelete() ; }
+   <DELETE_DATA> qd = QuadData()
+   {
+     finishDataDelete() ;
+     return new UpdateDataDelete(qd) ;
+   }
 }
-Update DeleteWhere() : { }
+Update DeleteWhere() : { QuadPatternAcc qp ; }
 {
-   <DELETE_WHERE> QuadPattern()
+   <DELETE_WHERE> qp = QuadPattern()
    { return null ; }
 }
 Update Modify() : { }
@@ -362,14 +370,14 @@ Update Modify() : { }
   GroupGraphPattern()
    { return null ; }
 }
-Update Delete() : { }
+Update Delete() : { QuadPatternAcc qp ; }
 {
-   <DELETE> QuadPattern()
+   <DELETE> qp = QuadPattern()
    { return null ; }
 }
-Update Insert() : { }
+Update Insert() : { QuadPatternAcc qp ; }
 {
-   <INSERT> QuadPattern()
+   <INSERT> qp = QuadPattern()
    { return null ; }
 }
 void UsingClause() : { String iri ; }
@@ -391,11 +399,12 @@ Target GraphRefAll() : { String iri ; }
    | <ALL> { return Target.ALL ; }
    )
 }
-void QuadPattern() : { }
+QuadPatternAcc QuadPattern() : { QuadPatternAcc qp = new QuadPatternAcc() ; }
 {
     <LBRACE>
     Quads()
     <RBRACE>
+    { return qp ; }
 }
 void Quads() : { TripleCollector acc = new TemplateGroup() ; }
 {
@@ -416,11 +425,12 @@ void TriplesTemplate(Node g, TripleCollector acc) : { }
     (<DOT> (TriplesTemplate(g, acc))?)?
 }
 //Ground data : As QuadPattern but don't allow variables.
-void QuadData() : { }
+QuadDataAcc QuadData() : { QuadDataAcc qd = new QuadDataAcc(); }
 {
     <LBRACE>
     Quads()
     <RBRACE>
+    { return qd ; }
 }
 // UPDATE_SPARQL_11
 // UPDATE

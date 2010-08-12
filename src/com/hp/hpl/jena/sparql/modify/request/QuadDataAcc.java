@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.sparql.modify.request;
 
-public class QuadPattern
+public class QuadDataAcc
 {
 
 }

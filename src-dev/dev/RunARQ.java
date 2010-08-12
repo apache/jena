@@ -44,7 +44,7 @@ import com.hp.hpl.jena.util.FileManager ;
 
 public class RunARQ
 {
-    static String divider = "----------" ;
+    static String divider = "----------------------------------------" ;
     static String nextDivider = null ;
     static void divider()
     {
@@ -176,8 +176,8 @@ public class RunARQ
     private static void sparql11update_1(String... str)
     {
         String str$ = StrUtils.strjoinNL(str) ; 
-        System.out.print("** ") ;
-        System.out.println(str);
+        divider() ;
+        System.out.println(str$);
         Reader r = new StringReader(str$) ;
         SPARQLParser11 parser = null ;
         try {

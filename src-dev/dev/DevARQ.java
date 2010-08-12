@@ -4,23 +4,10 @@ public class DevARQ
 {
     // SPARQL update parsing
     // Check that IRIs are checked.
-    // Update:
-    //   Put syntax elements in syntax package?
-    // Submission:
-    //   c.h.h.j.s.modify.op => renaming: Update => ModOp, U_*
-    //      UpdateSubmission extends Update11 = Update
     
-    // Aggregates to rturn iterators.
+    // Aggregates to return iterators.
     
-    // c.h.h.j.s.modify_submission.op
-    // SPARQL 1.1: c.h.h.j.s.modify.op => Update*
-    
-    // Less compatible: (try for the two independent systems).
-    // Old syntax => New AST and two writers.
-    //     Hard case : DELETE FROM, INSERT INTO, MODIFY [ <uri> ]*
-    //   Semantics are new only (if any differences)
-    
-    // Interface for addDefaultGraphIRI, addNamedGraphIRI and reso FROM and USING
+    // Interface for addDefaultGraphIRI, addNamedGraphIRI and reuse FROM and USING
     
     // Path tests: WorkSpace/PropertyPathTests/
 
