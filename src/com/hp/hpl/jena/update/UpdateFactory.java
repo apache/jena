@@ -17,7 +17,7 @@ import com.hp.hpl.jena.sparql.engine.binding.BindingUtils ;
 import com.hp.hpl.jena.sparql.lang.ParserARQUpdate ;
 import com.hp.hpl.jena.sparql.modify.UpdateProcessorFactory ;
 import com.hp.hpl.jena.sparql.modify.UpdateProcessorRegistry ;
-import com.hp.hpl.jena.sparql.modify.op.UpdateSubmission ;
+import com.hp.hpl.jena.sparql.modify.submission.UpdateSubmission ;
 
 public class UpdateFactory
 {

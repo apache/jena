@@ -1,43 +1,33 @@
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package arq.examples.update;
+package com.hp.hpl.jena.sparql.modify.submission;
 
-import com.hp.hpl.jena.sparql.modify.submission.UpdateLoad ;
-import com.hp.hpl.jena.sparql.sse.SSE ;
-import com.hp.hpl.jena.update.GraphStore ;
-import com.hp.hpl.jena.update.GraphStoreFactory ;
-import com.hp.hpl.jena.update.UpdateAction ;
+import java.util.ArrayList ;
+import java.util.List ;
 
-/** Simple example of SPARQL/Update */ 
-public class Update1
+import com.hp.hpl.jena.graph.Node ;
+
+/**
+ * @author Andy Seaborne
+ */ 
+
+public abstract class GraphUpdateN extends UpdateSubmission
 {
-    public static void main(String []args)
-    {
-        // Create an empty GraphStore (has an empty default graph and no named graphs) 
-        GraphStore graphStore = GraphStoreFactory.create() ;
-        
-        // Read a graph into it.
-        UpdateLoad load = new UpdateLoad("etc/update-data.ttl") ;
-        UpdateAction.execute(load, graphStore) ;
-
-        // Same as:
-        //UpdateProcessor uProc = UpdateFactory.create(load, graphStore) ;
-        // Execute a single operation.
-        //uProc.execute() ;
-        
-        // Print it out (format is SSE <http://jena.hpl.hp.com/wiki/SSE>)
-        // used to represent a dataset
-        SSE.write(graphStore) ;
-    }
+    protected List<Node> graphNodes = new ArrayList<Node>() ; //Empty means default graph.
+    
+    public boolean hasGraphNames() { return ! graphNodes.isEmpty() ; } 
+    public void addGraphName(Node node) { graphNodes.add(node) ; }
+    public void addGraphName(String uri) { graphNodes.add(Node.createURI(uri)) ; }
+    public List<Node> getGraphNames() { return graphNodes ; }
 }
 
 
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

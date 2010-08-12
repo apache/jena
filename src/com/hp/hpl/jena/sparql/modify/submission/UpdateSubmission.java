@@ -1,43 +1,45 @@
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package arq.examples.update;
+package com.hp.hpl.jena.sparql.modify.submission;
 
-import com.hp.hpl.jena.sparql.modify.submission.UpdateLoad ;
-import com.hp.hpl.jena.sparql.sse.SSE ;
-import com.hp.hpl.jena.update.GraphStore ;
-import com.hp.hpl.jena.update.GraphStoreFactory ;
-import com.hp.hpl.jena.update.UpdateAction ;
 
-/** Simple example of SPARQL/Update */ 
-public class Update1
+import org.openjena.atlas.io.IndentedWriter ;
+
+import com.hp.hpl.jena.shared.PrefixMapping ;
+import com.hp.hpl.jena.sparql.modify.UpdateSerializer ;
+import com.hp.hpl.jena.sparql.modify.UpdateVisitor ;
+import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
+import com.hp.hpl.jena.sparql.util.PrintSerializable ;
+import com.hp.hpl.jena.sparql.util.PrintUtils ;
+
+public abstract class UpdateSubmission implements PrintSerializable
 {
-    public static void main(String []args)
+    public abstract void visit(UpdateVisitor visitor) ; 
+    
+    public final void output(IndentedWriter out, SerializationContext sCxt)
     {
-        // Create an empty GraphStore (has an empty default graph and no named graphs) 
-        GraphStore graphStore = GraphStoreFactory.create() ;
-        
-        // Read a graph into it.
-        UpdateLoad load = new UpdateLoad("etc/update-data.ttl") ;
-        UpdateAction.execute(load, graphStore) ;
-
-        // Same as:
-        //UpdateProcessor uProc = UpdateFactory.create(load, graphStore) ;
-        // Execute a single operation.
-        //uProc.execute() ;
-        
-        // Print it out (format is SSE <http://jena.hpl.hp.com/wiki/SSE>)
-        // used to represent a dataset
-        SSE.write(graphStore) ;
+        visit(new UpdateSerializer(out, sCxt)) ;
     }
+
+    public void output(IndentedWriter out)
+    {
+        System.err.println("Update.output") ;
+    }
+
+    public String toString(PrefixMapping pmap)
+    {  return PrintUtils.toString(this, pmap) ; } 
+    
+    @Override
+    public String toString()
+    { return PrintUtils.toString(this) ; }
 }
 
-
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

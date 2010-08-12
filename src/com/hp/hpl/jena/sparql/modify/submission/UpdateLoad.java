@@ -1,43 +1,37 @@
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package arq.examples.update;
+package com.hp.hpl.jena.sparql.modify.submission;
 
-import com.hp.hpl.jena.sparql.modify.submission.UpdateLoad ;
-import com.hp.hpl.jena.sparql.sse.SSE ;
-import com.hp.hpl.jena.update.GraphStore ;
-import com.hp.hpl.jena.update.GraphStoreFactory ;
-import com.hp.hpl.jena.update.UpdateAction ;
+import java.util.ArrayList ;
+import java.util.List ;
 
-/** Simple example of SPARQL/Update */ 
-public class Update1
+import com.hp.hpl.jena.sparql.modify.UpdateVisitor ;
+
+public class UpdateLoad extends GraphUpdate1
 {
-    public static void main(String []args)
-    {
-        // Create an empty GraphStore (has an empty default graph and no named graphs) 
-        GraphStore graphStore = GraphStoreFactory.create() ;
-        
-        // Read a graph into it.
-        UpdateLoad load = new UpdateLoad("etc/update-data.ttl") ;
-        UpdateAction.execute(load, graphStore) ;
+    List<String> loadData = new ArrayList<String>() ;
+    
+    public UpdateLoad() { super() ; }
+    /** Load the default graph with the contents of web resource iri */
+    public UpdateLoad(String iri) { super() ; addLoadIRI(iri) ; }
+    /** Load the contents of web resource iri into graph graphName */
+    public UpdateLoad(String iri, String graphName) { super(graphName) ; addLoadIRI(iri) ; }
+    
+    public void addLoadIRI(String iri) { loadData.add(iri) ; }
+ 
+    @Override
+    public void visit(UpdateVisitor visitor) { visitor.visit(this) ; }
 
-        // Same as:
-        //UpdateProcessor uProc = UpdateFactory.create(load, graphStore) ;
-        // Execute a single operation.
-        //uProc.execute() ;
-        
-        // Print it out (format is SSE <http://jena.hpl.hp.com/wiki/SSE>)
-        // used to represent a dataset
-        SSE.write(graphStore) ;
-    }
+    public List<String> getLoadIRIs()
+    { return loadData ; }
 }
 
-
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

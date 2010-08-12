@@ -13,7 +13,7 @@ import java.util.List ;
 import org.openjena.atlas.io.IndentedWriter ;
 
 import com.hp.hpl.jena.sparql.core.Prologue ;
-import com.hp.hpl.jena.sparql.modify.op.UpdateSubmission ;
+import com.hp.hpl.jena.sparql.modify.submission.UpdateSubmission ;
 import com.hp.hpl.jena.sparql.serializer.PrologueSerializer ;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
 import com.hp.hpl.jena.sparql.util.PrintUtils ;

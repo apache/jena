@@ -1,43 +1,36 @@
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package arq.examples.update;
+package com.hp.hpl.jena.sparql.modify.submission;
 
-import com.hp.hpl.jena.sparql.modify.submission.UpdateLoad ;
-import com.hp.hpl.jena.sparql.sse.SSE ;
-import com.hp.hpl.jena.update.GraphStore ;
-import com.hp.hpl.jena.update.GraphStoreFactory ;
-import com.hp.hpl.jena.update.UpdateAction ;
+import com.hp.hpl.jena.graph.Node ;
 
-/** Simple example of SPARQL/Update */ 
-public class Update1
+
+public abstract class GraphMgt extends UpdateSubmission
 {
-    public static void main(String []args)
-    {
-        // Create an empty GraphStore (has an empty default graph and no named graphs) 
-        GraphStore graphStore = GraphStoreFactory.create() ;
-        
-        // Read a graph into it.
-        UpdateLoad load = new UpdateLoad("etc/update-data.ttl") ;
-        UpdateAction.execute(load, graphStore) ;
+    private Node iri = null ;         // Null means default graph.  Which is illegal for management ops.
+    boolean silent = false ; 
+    
+    protected GraphMgt(Node iri, boolean silent) { this.iri = iri ; this.silent = silent ; }
 
-        // Same as:
-        //UpdateProcessor uProc = UpdateFactory.create(load, graphStore) ;
-        // Execute a single operation.
-        //uProc.execute() ;
-        
-        // Print it out (format is SSE <http://jena.hpl.hp.com/wiki/SSE>)
-        // used to represent a dataset
-        SSE.write(graphStore) ;
-    }
+    protected void setIRI(Node iri) { this.iri = iri ; }
+//    protected void setURI(String uri) { this.iri = uri ; }
+    
+    public Node getIRI() { return iri ; }  
+    public Node getURI() { return iri ; }
+    
+    protected void setSilent(boolean silent)
+    { this.silent = silent ; }
+
+    public boolean isSilent()
+    { return silent ; }
 }
 
-
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

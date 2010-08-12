@@ -1,43 +1,31 @@
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package arq.examples.update;
+package com.hp.hpl.jena.sparql.modify.submission;
 
-import com.hp.hpl.jena.sparql.modify.submission.UpdateLoad ;
-import com.hp.hpl.jena.sparql.sse.SSE ;
-import com.hp.hpl.jena.update.GraphStore ;
-import com.hp.hpl.jena.update.GraphStoreFactory ;
-import com.hp.hpl.jena.update.UpdateAction ;
+import com.hp.hpl.jena.query.QueryFactory ;
+import com.hp.hpl.jena.sparql.syntax.Element ;
 
-/** Simple example of SPARQL/Update */ 
-public class Update1
+/**
+ * @author Andy Seaborne
+ */ 
+
+public abstract class UpdatePattern extends GraphUpdateN
 {
-    public static void main(String []args)
-    {
-        // Create an empty GraphStore (has an empty default graph and no named graphs) 
-        GraphStore graphStore = GraphStoreFactory.create() ;
-        
-        // Read a graph into it.
-        UpdateLoad load = new UpdateLoad("etc/update-data.ttl") ;
-        UpdateAction.execute(load, graphStore) ;
-
-        // Same as:
-        //UpdateProcessor uProc = UpdateFactory.create(load, graphStore) ;
-        // Execute a single operation.
-        //uProc.execute() ;
-        
-        // Print it out (format is SSE <http://jena.hpl.hp.com/wiki/SSE>)
-        // used to represent a dataset
-        SSE.write(graphStore) ;
-    }
+    private Element pattern = null ;
+    public Element getElement() { return pattern ; }
+    public void setPattern(Element pattern) { this.pattern = pattern ; }
+    
+    /** Parse the string into an Element.  Must include the surrounding {} in the string */  
+    public void setPattern(String pattern) { this.pattern = QueryFactory.createElement(pattern) ; }
 }
 
 
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

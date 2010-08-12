@@ -4,6 +4,8 @@ public class DevARQ
 {
     // SPARQL update parsing
     // Check that IRIs are checked.
+    // Update:
+    //   Put syntax elements in syntax package?
     // Submission:
     //   c.h.h.j.s.modify.op => renaming: Update => ModOp, U_*
     //      UpdateSubmission extends Update11 = Update

@@ -4,37 +4,20 @@
  * [See end of file]
  */
 
-package arq.examples.update;
+package com.hp.hpl.jena.sparql.modify.submission;
 
-import com.hp.hpl.jena.sparql.modify.submission.UpdateLoad ;
-import com.hp.hpl.jena.sparql.sse.SSE ;
-import com.hp.hpl.jena.update.GraphStore ;
-import com.hp.hpl.jena.update.GraphStoreFactory ;
-import com.hp.hpl.jena.update.UpdateAction ;
+import com.hp.hpl.jena.graph.Graph ;
 
-/** Simple example of SPARQL/Update */ 
-public class Update1
+
+public abstract class UpdateData extends GraphUpdateN
 {
-    public static void main(String []args)
-    {
-        // Create an empty GraphStore (has an empty default graph and no named graphs) 
-        GraphStore graphStore = GraphStoreFactory.create() ;
-        
-        // Read a graph into it.
-        UpdateLoad load = new UpdateLoad("etc/update-data.ttl") ;
-        UpdateAction.execute(load, graphStore) ;
-
-        // Same as:
-        //UpdateProcessor uProc = UpdateFactory.create(load, graphStore) ;
-        // Execute a single operation.
-        //uProc.execute() ;
-        
-        // Print it out (format is SSE <http://jena.hpl.hp.com/wiki/SSE>)
-        // used to represent a dataset
-        SSE.write(graphStore) ;
-    }
+    Graph data = null ;
+    public void setData(Graph data)
+    { this.data = data ; }
+    
+    public Graph getData()
+    { return data ; }
 }
-
 
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP

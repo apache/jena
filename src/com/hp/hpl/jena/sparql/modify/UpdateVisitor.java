@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.sparql.modify;
 
-import com.hp.hpl.jena.sparql.modify.op.* ;
+import com.hp.hpl.jena.sparql.modify.submission.* ;
 
 public interface UpdateVisitor
 {

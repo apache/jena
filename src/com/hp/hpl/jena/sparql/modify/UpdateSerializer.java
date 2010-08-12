@@ -14,7 +14,7 @@ import org.openjena.atlas.io.IndentedWriter ;
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.sparql.modify.op.* ;
+import com.hp.hpl.jena.sparql.modify.submission.* ;
 import com.hp.hpl.jena.sparql.serializer.FmtTemplate ;
 import com.hp.hpl.jena.sparql.serializer.FormatterElement ;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext ;

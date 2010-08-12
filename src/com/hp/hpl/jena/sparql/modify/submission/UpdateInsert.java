@@ -1,43 +1,49 @@
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package arq.examples.update;
+package com.hp.hpl.jena.sparql.modify.submission;
 
-import com.hp.hpl.jena.sparql.modify.submission.UpdateLoad ;
-import com.hp.hpl.jena.sparql.sse.SSE ;
-import com.hp.hpl.jena.update.GraphStore ;
-import com.hp.hpl.jena.update.GraphStoreFactory ;
-import com.hp.hpl.jena.update.UpdateAction ;
 
-/** Simple example of SPARQL/Update */ 
-public class Update1
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.sparql.modify.UpdateVisitor ;
+import com.hp.hpl.jena.sparql.syntax.Template ;
+import com.hp.hpl.jena.sparql.syntax.TemplateTriple ;
+
+public class UpdateInsert extends UpdateModifyBase
 {
-    public static void main(String []args)
-    {
-        // Create an empty GraphStore (has an empty default graph and no named graphs) 
-        GraphStore graphStore = GraphStoreFactory.create() ;
-        
-        // Read a graph into it.
-        UpdateLoad load = new UpdateLoad("etc/update-data.ttl") ;
-        UpdateAction.execute(load, graphStore) ;
+    public UpdateInsert()
+    { super() ; }
 
-        // Same as:
-        //UpdateProcessor uProc = UpdateFactory.create(load, graphStore) ;
-        // Execute a single operation.
-        //uProc.execute() ;
-        
-        // Print it out (format is SSE <http://jena.hpl.hp.com/wiki/SSE>)
-        // used to represent a dataset
-        SSE.write(graphStore) ;
-    }
+    public UpdateInsert(Triple triple)
+    { super() ; setInsertTemplate(new TemplateTriple(triple)) ; }
+    
+    public UpdateInsert(Graph graph)
+    { super() ; setInsertTemplate(new TemplateGraph(graph)) ; }
+
+    public UpdateInsert(Model model)
+    { super() ; setInsertTemplate(new TemplateGraph(model.getGraph())) ; }
+    
+    public void setInsertTemplate(Template template)
+    { setInsertTemplateBase(template) ; }
+
+    /** Parse the string into a template - string must include the surrounding {} */
+    public void setInsertTemplate(String template)
+    { setInsertTemplateBase(template) ; }
+    
+    public Template getInsertTemplate()
+    { return getInsertTemplateBase() ; }
+    
+    @Override
+    public void visit(UpdateVisitor visitor) { visitor.visit(this) ; }
 }
 
-
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

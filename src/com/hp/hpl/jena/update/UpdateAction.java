@@ -12,7 +12,7 @@ import com.hp.hpl.jena.query.QuerySolution ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingUtils ;
-import com.hp.hpl.jena.sparql.modify.op.UpdateSubmission ;
+import com.hp.hpl.jena.sparql.modify.submission.UpdateSubmission ;
 
 /** A class of convenience forms for executing SPARQL/Update operations */
 

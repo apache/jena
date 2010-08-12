@@ -6,8 +6,8 @@
 
 package arq.examples.update;
 
-import com.hp.hpl.jena.sparql.modify.op.UpdateCreate ;
-import com.hp.hpl.jena.sparql.modify.op.UpdateLoad ;
+import com.hp.hpl.jena.sparql.modify.submission.UpdateCreate ;
+import com.hp.hpl.jena.sparql.modify.submission.UpdateLoad ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.update.GraphStore ;
 import com.hp.hpl.jena.update.GraphStoreFactory ;

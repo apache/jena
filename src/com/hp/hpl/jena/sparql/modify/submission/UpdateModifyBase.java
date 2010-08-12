@@ -1,43 +1,56 @@
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package arq.examples.update;
+package com.hp.hpl.jena.sparql.modify.submission;
 
-import com.hp.hpl.jena.sparql.modify.submission.UpdateLoad ;
-import com.hp.hpl.jena.sparql.sse.SSE ;
-import com.hp.hpl.jena.update.GraphStore ;
-import com.hp.hpl.jena.update.GraphStoreFactory ;
-import com.hp.hpl.jena.update.UpdateAction ;
+import com.hp.hpl.jena.query.QueryFactory ;
+import com.hp.hpl.jena.sparql.syntax.Template ;
 
-/** Simple example of SPARQL/Update */ 
-public class Update1
+public abstract class UpdateModifyBase extends UpdatePattern
 {
-    public static void main(String []args)
+    private Template deletes = null ; 
+    private Template inserts = null ;
+    
+    protected UpdateModifyBase() {}
+    
+    protected UpdateModifyBase(Template inserts, Template deletes)
     {
-        // Create an empty GraphStore (has an empty default graph and no named graphs) 
-        GraphStore graphStore = GraphStoreFactory.create() ;
-        
-        // Read a graph into it.
-        UpdateLoad load = new UpdateLoad("etc/update-data.ttl") ;
-        UpdateAction.execute(load, graphStore) ;
-
-        // Same as:
-        //UpdateProcessor uProc = UpdateFactory.create(load, graphStore) ;
-        // Execute a single operation.
-        //uProc.execute() ;
-        
-        // Print it out (format is SSE <http://jena.hpl.hp.com/wiki/SSE>)
-        // used to represent a dataset
-        SSE.write(graphStore) ;
+        this.inserts = inserts ;
+        this.deletes = deletes ;
     }
+
+    protected void setDeleteTemplateBase(Template template)
+    { this.deletes = template ; }
+    
+    protected void setInsertTemplateBase(Template template)
+    { this.inserts = template ; }
+
+    /** Parse the string into a template - string must include the surrounding {} */
+    protected void setDeleteTemplateBase(String template)
+    { this.deletes = QueryFactory.createTemplate(template) ; }
+    
+    /** Parse the string into a template - string must include the surrounding {} */
+    protected void setInsertTemplateBase(String template)
+    { this.inserts = QueryFactory.createTemplate(template) ; }
+
+    protected Template getDeleteTemplateBase()
+    { return deletes ; }
+    
+    protected Template getInsertTemplateBase()
+    { return inserts ; }
+
+    public Template getDeletes()
+    { return deletes ; }
+
+    public Template getInserts()
+    { return inserts ; }
 }
 
-
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

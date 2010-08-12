@@ -1,43 +1,46 @@
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package arq.examples.update;
+package com.hp.hpl.jena.sparql.modify.submission;
 
-import com.hp.hpl.jena.sparql.modify.submission.UpdateLoad ;
-import com.hp.hpl.jena.sparql.sse.SSE ;
-import com.hp.hpl.jena.update.GraphStore ;
-import com.hp.hpl.jena.update.GraphStoreFactory ;
-import com.hp.hpl.jena.update.UpdateAction ;
 
-/** Simple example of SPARQL/Update */ 
-public class Update1
+import com.hp.hpl.jena.sparql.modify.UpdateVisitor ;
+import com.hp.hpl.jena.sparql.syntax.Template ;
+
+public class UpdateModify extends UpdateModifyBase
 {
-    public static void main(String []args)
-    {
-        // Create an empty GraphStore (has an empty default graph and no named graphs) 
-        GraphStore graphStore = GraphStoreFactory.create() ;
-        
-        // Read a graph into it.
-        UpdateLoad load = new UpdateLoad("etc/update-data.ttl") ;
-        UpdateAction.execute(load, graphStore) ;
+    public UpdateModify()
+    { }
+    
+    public void setDeleteTemplate(Template template)
+    { setDeleteTemplateBase(template) ; }
+    
+    public void setInsertTemplate(Template template)
+    { setInsertTemplateBase(template) ; }
+    
+    /** Parse the string into a template - string must include the surrounding {} */
+    public void setInsertTemplate(String template)
+    { setInsertTemplateBase(template) ; }
 
-        // Same as:
-        //UpdateProcessor uProc = UpdateFactory.create(load, graphStore) ;
-        // Execute a single operation.
-        //uProc.execute() ;
-        
-        // Print it out (format is SSE <http://jena.hpl.hp.com/wiki/SSE>)
-        // used to represent a dataset
-        SSE.write(graphStore) ;
-    }
+    /** Parse the string into a template - string must include the surrounding {} */
+    public void setDeleteTemplate(String template)
+    { setDeleteTemplateBase(template) ; }
+    
+    public Template getDeleteTemplate()
+    { return getDeleteTemplateBase() ; }
+    
+    public Template getInsertTemplate()
+    { return getInsertTemplateBase() ; }
+
+    @Override
+    public void visit(UpdateVisitor visitor) { visitor.visit(this) ; }
 }
 
-
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
