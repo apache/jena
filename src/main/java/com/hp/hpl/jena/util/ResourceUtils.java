@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            05-Jun-2003
  * Filename           $RCSfile: ResourceUtils.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-10-06 13:04:43 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2010-08-16 17:03:22 $
+ *               by   $Author: der $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -25,9 +25,27 @@ package com.hp.hpl.jena.util;
 
 // Imports
 ///////////////
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 
-import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.rdf.model.Property;
+import com.hp.hpl.jena.rdf.model.RDFNode;
+import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.rdf.model.Statement;
+import com.hp.hpl.jena.rdf.model.StmtIterator;
+import com.hp.hpl.jena.reasoner.InfGraph;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+import com.hp.hpl.jena.util.iterator.Filter;
 
 
 
@@ -39,7 +57,7 @@ import com.hp.hpl.jena.rdf.model.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:ian_dickinson@users.sourceforge.net" >email</a>)
- * @version CVS $Id: ResourceUtils.java,v 1.2 2009-10-06 13:04:43 ian_dickinson Exp $
+ * @version CVS $Id: ResourceUtils.java,v 1.3 2010-08-16 17:03:22 der Exp $
  */
 public class ResourceUtils {
 
@@ -189,36 +207,77 @@ public class ResourceUtils {
      * be renamed, nor will occurrences of <code>res</code> in other models.
      * </p>
      * @param old An existing resource in a given model
-     * @param uri A new URI for resource old, or null to rename old to a bNode
+     * @param uri A new URI for resource old, or <code>null</code> to rename old to a bNode
      * @return A new resource that occupies the same position in the graph as old, but which
      * has the new given URI.
      */
-    public static Resource renameResource( Resource old, String uri ) {
-        Model m = old.getModel();
-        List<Statement> stmts = new ArrayList<Statement>();
-
-        // list the statements that mention old as a subject
-        for (Iterator<Statement> i = old.listProperties();  i.hasNext(); stmts.add( i.next() ) ) {}
-
-        // list the statements that mention old an an object
-        for (Iterator<Statement> i = m.listStatements( null, null, old );  i.hasNext();  stmts.add( i.next() ) ) {}
-
-        // create a new resource to replace old
-        Resource res = (uri == null) ? m.createResource() : m.createResource( uri );
-
-        // now move the statements to refer to res instead of old
-        for (Iterator<Statement> i = stmts.iterator(); i.hasNext(); ) {
-            Statement s = i.next();
-
-            s.remove();
-
-            Resource subj = s.getSubject().equals( old ) ? res : s.getSubject();
-            RDFNode obj = s.getObject().equals( old ) ? res : s.getObject();
-
-            m.add( subj, s.getPredicate(), obj );
-        }
-
-        return res;
+    public static Resource renameResource(final Resource old, final String uri) {
+       	 // Let's work directly with the Graph. Faster if old is attached to a InfModel (~2 times).
+       	 // Otherwise, we would create more or less many fine grained removals and additions of
+       	 // statements on model which may cause to refresh the backing reasoner frequently, thus,
+       	 // introducing a lot of update work. With this implementation this happens at most once.
+       	 // It could be solved without the need to work directly with the graph if we had a bulk
+       	 // update feature over Model/InfModel/OntModel.
+       	 // Some tests have shown that even if there is just one triple involving the resource
+       	 // to be renamed and the model has a reasonable size (~10000 triples) then it is still
+       	 // faster (~30%) -- including the final rebind() -- than working at the level of model.
+       	 final Node resAsNode = old.asNode();
+       	 final Model model = old.getModel();
+       	 final Graph graph = model.getGraph(), rawGraph;
+       	 if (graph instanceof InfGraph) 
+       	     rawGraph = ((InfGraph) graph).getRawGraph();
+       	 else 
+       	     rawGraph = graph;
+    
+       	 final Set<Triple> reflexiveTriples = new HashSet<Triple>();
+    
+       	 // list the statements that mention old as a subject
+       	 ExtendedIterator<Triple> i = rawGraph.find(resAsNode, null, null);
+    
+       	 // List the statements that mention old as an object and filter reflexive triples.
+       	 // Latter ones are found twice in each find method, thus, we need to make sure to
+       	 // keep only one.
+       	 i = i.andThen(rawGraph.find(null, null, resAsNode)).filterKeep(new Filter<Triple>() {
+       		 @Override public boolean accept(final Triple o) {
+       			 if (o.getSubject().equals(o.getObject())) {
+       				 reflexiveTriples.add(o);
+       				 return false;
+       			 }
+       			 return true;
+       		 }
+       	 });
+    
+       	 // create a new resource node to replace old
+       	 final Resource newRes = model.createResource(uri);
+       	 final Node newResAsNode = newRes.asNode();
+    
+       	 Triple t;
+       	 Node subj, obj;
+       	 while (i.hasNext())
+       	 {
+       		 t = i.next();
+    
+       		 // first, create a new triple to refer to newRes instead of old
+       		 subj = (t.getSubject().equals(resAsNode))? newResAsNode : t.getSubject();
+       		 obj = (t.getObject().equals(resAsNode))? newResAsNode : t.getObject();
+       		 rawGraph.add(Triple.create(subj, t.getPredicate(), obj));
+    
+       		 // second, remove existing triple
+       		 i.remove();
+       	 }
+    
+       	 // finally, move reflexive triples (if any) <-- cannot do this in former loop as it
+       	 // causes ConcurrentModificationException
+       	 for (final Triple rt : reflexiveTriples)
+       	 {
+       		 rawGraph.delete(rt);
+       		 rawGraph.add(Triple.create(newResAsNode, rt.getPredicate(), newResAsNode));
+       	 }
+    
+       	 // Did we work in the back of the InfGraph? If so, we need to rebind raw data (more or less expensive)!
+       	 if (rawGraph != graph) ((InfGraph) graph).rebind();
+    
+       	 return newRes;
     }
 
 
