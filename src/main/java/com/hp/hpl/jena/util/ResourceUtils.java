@@ -7,15 +7,19 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            05-Jun-2003
  * Filename           $RCSfile: ResourceUtils.java,v $
- * Revision           $Revision: 1.3 $
+ * Revision           $Revision: 1.4 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2010-08-16 17:03:22 $
+ * Last modified on   $Date: 2010-08-18 16:06:04 $
  *               by   $Author: der $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010, Epimorphics Ltd
+ * (c) Copyright 2010, Thorsten Möller
+ *     Incorporates tracked patch #3046428 from Thorsten Möller <Thorsten.Moeller@unibas.ch>
  * (see footer for full conditions)
  *****************************************************************************/
+
 
 // Package
 ///////////////
@@ -57,7 +61,7 @@ import com.hp.hpl.jena.util.iterator.Filter;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:ian_dickinson@users.sourceforge.net" >email</a>)
- * @version CVS $Id: ResourceUtils.java,v 1.3 2010-08-16 17:03:22 der Exp $
+ * @version CVS $Id: ResourceUtils.java,v 1.4 2010-08-18 16:06:04 der Exp $
  */
 public class ResourceUtils {
 
@@ -336,6 +340,8 @@ public class ResourceUtils {
 
 /*
     (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+    (c) Copyright 2010, Epimorphics Ltd
+    (c) Copyright 2010, Thorsten Möller <Thorsten.Moeller@unibas.ch>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
