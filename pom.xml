@@ -35,72 +35,35 @@
   </properties>
 
   <dependencies>
-    <!-- Jena with sources -->
     <dependency>
       <groupId>com.hp.hpl.jena</groupId>
       <artifactId>jena</artifactId>
       <version>${ver.jena}</version>
     </dependency>
 
+    <!-- Need the tests as well -->
     <dependency>
       <groupId>com.hp.hpl.jena</groupId>
       <artifactId>jena</artifactId>
-      <type>test-jar</type>
+      <classifier>tests</classifier>
       <version>${ver.jena}</version>
       <scope>test</scope>
     </dependency>
 
-    <!--
-    <dependency>
-      <groupId>com.hp.hpl.jena</groupId>
-      <artifactId>jena</artifactId>
-      <classifier>sources</classifier>
-      <scope>optional</scope>
-      <version>${ver.jena}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>com.hp.hpl.jena</groupId>
-      <artifactId>jena</artifactId>
-      <classifier>test-sources</classifier>
-      <scope>optional</scope>
-      <type>test-jar</type>
-      <version>${ver.jena}</version>
-    </dependency>
-    -->
-
-    <!-- ARQ with sources -->
     <dependency>
       <groupId>com.hp.hpl.jena</groupId>
       <artifactId>arq</artifactId>
       <version>${ver.arq}</version>
     </dependency>
 
+    <!-- Need the tests as well -->
     <dependency>
       <groupId>com.hp.hpl.jena</groupId>
       <artifactId>arq</artifactId>
       <version>${ver.arq}</version>
-      <type>test-jar</type>
+      <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
-
-    <!--
-    <dependency>
-      <groupId>com.hp.hpl.jena</groupId>
-      <artifactId>arq</artifactId>
-      <classifier>sources</classifier>
-      <scope>optional</scope>
-      <version>${ver.arq}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>com.hp.hpl.jena</groupId>
-      <artifactId>arq</artifactId>
-      <classifier>test-sources</classifier>
-      <scope>optional</scope>
-      <version>${ver.arq}</version>
-    </dependency>
-    -->
 
     <dependency>
       <groupId>junit</groupId>
