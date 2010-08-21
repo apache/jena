@@ -55,7 +55,8 @@
       <groupId>com.hp.hpl.jena</groupId>
       <artifactId>arq</artifactId>
       <version>${ver.arq}</version>
-      <type>test-jar</type>
+      <classifier>tests</classifier>
+      <!--<type>test-jar</type>-->
       <scope>test</scope>
     </dependency>
 

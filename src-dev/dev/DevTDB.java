@@ -3,6 +3,11 @@ package dev ;
 
 public class DevTDB
 {
+    // == Misc
+    //  Tidy up wiki (esp "Use from java" - use datasets, show loader use)
+    //   TDBLoader from a dataset (or is this RIOT?)
+    //  TDBLoader javadoc - class info as well.
+    
     // Check writing to union graph is handled appropriately.
     
     // BPT rewriters
@@ -16,9 +21,6 @@ public class DevTDB
     // Loader stats numbers of quads+triples
     
     // Configuring for union graph in assembler/location
-    
-    // Experimental Merge engine.
-    
     
     // =====
     // Enable FILTER assignment for strings (and numbers?) via dataset context setting?
