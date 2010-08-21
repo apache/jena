@@ -5,6 +5,7 @@ public class DevARQ
     // SPARQL update parsing
     // Check that IRIs are checked.
     
+    // Property path test cases
     // Aggregates to return iterators.
     
     // Interface for addDefaultGraphIRI, addNamedGraphIRI and reuse FROM and USING

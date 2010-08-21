@@ -11,7 +11,9 @@ import static org.openjena.atlas.lib.StrUtils.strjoinNL ;
 
 import java.io.Reader ;
 import java.io.StringReader ;
+import java.util.HashSet ;
 import java.util.Iterator ;
+import java.util.Set ;
 
 import org.openjena.atlas.lib.StrUtils ;
 import org.openjena.atlas.logging.Log ;
@@ -29,6 +31,9 @@ import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.Transform ;
 import com.hp.hpl.jena.sparql.algebra.opt.TransformPropertyFunction ;
 import com.hp.hpl.jena.sparql.core.Prologue ;
+import com.hp.hpl.jena.sparql.core.Var ;
+import com.hp.hpl.jena.sparql.engine.RenamerVars ;
+import com.hp.hpl.jena.sparql.engine.main.VarRename ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
@@ -69,6 +74,21 @@ public class RunARQ
     
     public static void main(String[] argv) throws Exception
     {
+        {
+            Query q = QueryFactory.read("Q.arq") ;
+            Op op = Algebra.compile(q) ;
+            divider() ;
+            System.out.println(op) ;
+
+            Set<Var> fixed = new HashSet<Var>() ;
+            fixed.add(Var.alloc("y")) ;
+            RenamerVars vrn = new RenamerVars(fixed) ;
+            op = VarRename.rename(op, vrn) ;
+            divider() ;
+            System.out.println(op) ;
+            System.exit(0) ;
+        }
+        
         sparql11update() ; System.exit(0) ; 
         
         String DIR = "WorkSpace/PropertyPathTestCases" ;

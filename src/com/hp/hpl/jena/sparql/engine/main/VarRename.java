@@ -153,8 +153,9 @@ public class VarRename
         
         @Override public Op transform(OpProject opProject, Op subOp)
         { 
-            throw new ARQNotImplemented() ;
-            //return null ;
+            List<Var> x = opProject.getVars() ;
+            List<Var> x2 = rename(x) ;
+            return new OpProject(subOp, x2) ; 
         }
         
         @Override public Op transform(OpAssign opAssign, Op subOp)
@@ -269,6 +270,19 @@ public class VarRename
             return varExprList2 ;
         }
 
+        private List<Var> rename(List<Var> varList)
+        {
+            List<Var> varList2 = new ArrayList<Var>(varList.size()) ; 
+            for ( Var v : varList )
+            {
+                Var v2 = (Var)renamer.rename(v) ;
+                varList2.add(v2) ;
+            }
+            return varList2 ;
+        }
+
+
+        
         private ExprList rename(ExprList exprList)
         {
               ExprList exprList2 = new ExprList() ;
