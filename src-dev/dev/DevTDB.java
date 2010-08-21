@@ -14,10 +14,6 @@ public class DevTDB
     
     // kill -9 ism's
     
-    // Build:
-    //  assembly.xml ship source files for ARQ and Jena (ditto ARQ, and javadoc).
-    //  Use,locate resources maven style.
-    
     // Loader stats numbers of quads+triples
     
     // Configuring for union graph in assembler/location
@@ -44,7 +40,6 @@ public class DevTDB
     // owl:inverseOf, owl:SymmetricProperty, owl:TransitiveProperty
     // rdfs:subClassOf (aux table).
     // rdfs:subPropertyOf (aux table).
-    
     
     // Stats and datasets
     //   tdbstats
