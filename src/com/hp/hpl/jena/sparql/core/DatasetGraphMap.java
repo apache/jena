@@ -33,7 +33,7 @@ public class DatasetGraphMap extends DatasetGraphCollection
         for ( Iterator<Node> names = dsg.listGraphNodes() ; names.hasNext() ; )
         {
             Node gn = names.next() ;
-            dsg.addGraph(gn, dsg.getGraph(gn)) ;
+            this.addGraph(gn, dsg.getGraph(gn)) ;
         }
     }
 

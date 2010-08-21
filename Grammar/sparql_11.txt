@@ -3,6 +3,7 @@ DOCUMENT START
 TOKENS
 // ------------------------------------------
 // Tokens
+
 // Comments and whitespace
 <DEFAULT> SKIP : {
 " "
@@ -244,6 +245,8 @@ NON-TERMINALS
 		|	BooleanLiteral
 		|	<UNDEF>
 // ---- SPARQL/Update (submission)
+
+
 // Update only entry point
 	UpdateUnit	:=	Prologue Update <EOF>
 	Update	:=	( Update1 )+
@@ -269,12 +272,16 @@ NON-TERMINALS
 //Ground data : As QuadPattern but don't allow variables.
 	QuadData	:=	<LBRACE> Quads <RBRACE>
 // UPDATE_SPARQL_11
+
 // UPDATE
+
+
 // ---- General Graph Pattern 
 	GroupGraphPattern	:=	<LBRACE> ( SubSelect | GroupGraphPatternSub ) <RBRACE>
 	GroupGraphPatternSub	:=	( TriplesBlock )? ( GraphPatternNotTriples ( <DOT> )? ( TriplesBlock )? )*
 // -- TriplesBlock
 // Two versions - for SPARQL 1.0 and SPARQL 1.1 (with paths)
+
 // #ifdef SPARQL_10
 // Element TriplesBlock(ElementTriplesBlock acc) : { }
 // {
@@ -300,8 +307,12 @@ NON-TERMINALS
 //     el = GroupGraphPattern()
 //     { return new ElementUnion(el) ; }
 // }
+
+
 // SPARQL 1.0: {pattern} UNION {pattern} UNION {pattern} ... :: 
 // SPARQL 1.1 may introduce: { pattern UNION pattern UNION ... }
+
+
 // G (union G)* can be a single group pattern
 // or a group pattern as part of an union.
 	GroupOrUnionGraphPattern	:=	GroupGraphPattern ( <UNION> GroupGraphPattern )*
@@ -324,6 +335,7 @@ NON-TERMINALS
 //   )?
 //   { return args ; }
 // }
+
 // // Single expression aggregate argument
 // Expr ExprAggArg() : { Expr expr = null ; boolean distinct = false ; Token t ; }
 // {
@@ -361,6 +373,7 @@ NON-TERMINALS
 	VerbPath	:=	Path
 	VerbSimple	:=	Var
 // End paths stuff.
+
 // -------- Paths
 // Weakest outermost
 	Path	:=	PathAlternative
@@ -376,6 +389,7 @@ NON-TERMINALS
 	PathOneInPropertySet	:=	( IRIref | <KW_A> | <CARAT> ( IRIref | <KW_A> ) )
 	Integer	:=	<INTEGER>
 // -------- Triple expansions
+
 // Anything that can stand in a node slot and which is
 // a number of triples
 	TriplesNode	:=	Collection

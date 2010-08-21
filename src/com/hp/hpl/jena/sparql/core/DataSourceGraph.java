@@ -6,7 +6,10 @@
 
 package com.hp.hpl.jena.sparql.core ;
 
+/**
+ *  * @deprecated Use DatasetGraph
 
+ */
 @Deprecated
 public interface DataSourceGraph extends DatasetGraph 
 { }

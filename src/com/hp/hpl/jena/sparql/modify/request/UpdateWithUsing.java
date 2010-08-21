@@ -21,7 +21,7 @@ public abstract class UpdateWithUsing extends Update
     public void addUsingNamed(String iri)   { usingNamed.add(iri) ; }
     
     public List<String> getUsing()          { return using ; }
-    public List<String> getUsingNamed()          { return usingNamed ; }
+    public List<String> getUsingNamed()     { return usingNamed ; }
     
     public String getWithIRI()              { return withIRI ; }
     public void setWithIRI(String withIRI)  { this.withIRI = withIRI ; } 

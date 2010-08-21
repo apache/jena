@@ -10,7 +10,7 @@ public class UpdateDeleteWhere extends Update
 {
     private final QuadPatternAcc pattern ;
 
-    public UpdateDeleteWhere() { this.pattern = new QuadPatternAcc() ; }
+    public UpdateDeleteWhere(QuadPatternAcc pattern) { this.pattern = pattern ; }
     
     public QuadPatternAcc getPattern() { return pattern ; }
     

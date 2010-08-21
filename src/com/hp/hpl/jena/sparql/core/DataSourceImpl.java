@@ -76,7 +76,6 @@ public class DataSourceImpl implements DataSource
 
     public Lock getLock() { return dsg.getLock() ; }
 
-    @Deprecated
     public DatasetGraph asDatasetGraph() { return dsg ; }
 
     public Model getNamedModel(String uri)

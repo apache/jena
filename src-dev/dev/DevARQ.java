@@ -3,6 +3,7 @@ package dev;
 public class DevARQ
 {
     // SPARQL update parsing
+    //   QuadData, QuadTemplate to do
     // Check that IRIs are checked.
     
     // Property path test cases

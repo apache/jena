@@ -6,8 +6,6 @@
 
 package com.hp.hpl.jena.sparql.algebra.op;
 
-import java.util.List ;
-
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
@@ -61,12 +59,12 @@ public class OpQuadPattern extends Op0
         return quads ;
     } 
     
-    @Deprecated
-    public List<Quad> getQuads()
-    {
-        initQuads() ;
-        return quads.getList() ;
-    }
+//    @Deprecated
+//    public List<Quad> getQuads()
+//    {
+//        initQuads() ;
+//        return quads.getList() ;
+//    }
     
     public Node getGraphNode()              { return graphNode ; } 
     public BasicPattern getBasicPattern()   { return triples ; }

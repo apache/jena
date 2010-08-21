@@ -4,7 +4,9 @@
  * (c) Copyright 2010 Talis Systems Ltd
  * All rights reserved.
  */
+
 package com.hp.hpl.jena.sparql.lang.sparql_11 ;
+
 import com.hp.hpl.jena.graph.* ;
 import com.hp.hpl.jena.query.* ;
 import com.hp.hpl.jena.sparql.core.Var ;
@@ -12,7 +14,13 @@ import com.hp.hpl.jena.sparql.syntax.* ;
 import com.hp.hpl.jena.sparql.expr.* ;
 import com.hp.hpl.jena.sparql.path.* ;
 import com.hp.hpl.jena.sparql.expr.aggregate.* ;
+
+
+
+
 import com.hp.hpl.jena.sparql.modify.request.* ;
+
+
 public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11Constants {
     boolean allowAggregatesInExpressions = false ;
 
@@ -860,6 +868,8 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
   }
 
 // ---- SPARQL/Update (submission)
+
+
 // Update only entry point
   final public void UpdateUnit() throws ParseException {
     Prologue();
@@ -1010,38 +1020,41 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
   }
 
   final public Update InsertData() throws ParseException {
-                        QuadDataAcc qd ;
-     startDataInsert() ;
+                        QuadDataAcc qd = new QuadDataAcc() ;
+    startDataInsert() ;
     jj_consume_token(INSERT_DATA);
-    qd = QuadData();
-     finishDataInsert() ;
-     {if (true) return new UpdateDataInsert(qd) ;}
+    QuadData(qd);
+    finishDataInsert() ;
+    {if (true) return new UpdateDataInsert(qd) ;}
     throw new Error("Missing return statement in function");
   }
 
   final public Update DeleteData() throws ParseException {
-                        QuadDataAcc qd ;
-     startDataDelete() ;
+                        QuadDataAcc qd = new QuadDataAcc() ;
+    startDataDelete() ;
     jj_consume_token(DELETE_DATA);
-    qd = QuadData();
-     finishDataDelete() ;
-     {if (true) return new UpdateDataDelete(qd) ;}
+    QuadData(qd);
+    finishDataDelete() ;
+    {if (true) return new UpdateDataDelete(qd) ;}
     throw new Error("Missing return statement in function");
   }
 
   final public Update DeleteWhere() throws ParseException {
-                         QuadPatternAcc qp ;
+                         QuadPatternAcc qp = new QuadPatternAcc() ;
     jj_consume_token(DELETE_WHERE);
-    qp = QuadPattern();
-     {if (true) return null ;}
+    QuadPattern(qp);
+    {if (true) return new UpdateDeleteWhere(qp) ;}
     throw new Error("Missing return statement in function");
   }
 
   final public Update Modify() throws ParseException {
+                    Element el ; String iri = null ;
+                    UpdateModify up = new UpdateModify() ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case WITH:
       jj_consume_token(WITH);
-      IRIref();
+      iri = IRIref();
+                            up.setWithIRI(iri) ;
       break;
     default:
       jj_la1[45] = jj_gen;
@@ -1049,10 +1062,10 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
     }
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case DELETE:
-      Delete();
+      Delete(up.getDeletePattern());
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case INSERT:
-        Insert();
+        Insert(up.getInsertPattern());
         break;
       default:
         jj_la1[46] = jj_gen;
@@ -1060,7 +1073,7 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
       }
       break;
     case INSERT:
-      Insert();
+      Insert(up.getInsertPattern());
       break;
     default:
       jj_la1[47] = jj_gen;
@@ -1077,42 +1090,39 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
         jj_la1[48] = jj_gen;
         break label_15;
       }
-      UsingClause();
+      UsingClause(up);
     }
     jj_consume_token(WHERE);
-    GroupGraphPattern();
-     {if (true) return null ;}
+    el = GroupGraphPattern();
+    up.setElement(el) ;
+    {if (true) return up ;}
     throw new Error("Missing return statement in function");
   }
 
-  final public Update Delete() throws ParseException {
-                    QuadPatternAcc qp ;
+  final public void Delete(QuadPatternAcc qp) throws ParseException {
     jj_consume_token(DELETE);
-    qp = QuadPattern();
-     {if (true) return null ;}
-    throw new Error("Missing return statement in function");
+    QuadPattern(qp);
   }
 
-  final public Update Insert() throws ParseException {
-                    QuadPatternAcc qp ;
+  final public void Insert(QuadPatternAcc qp) throws ParseException {
     jj_consume_token(INSERT);
-    qp = QuadPattern();
-     {if (true) return null ;}
-    throw new Error("Missing return statement in function");
+    QuadPattern(qp);
   }
 
-  final public void UsingClause() throws ParseException {
-                       String iri ;
+  final public void UsingClause(UpdateWithUsing update) throws ParseException {
+                                             String iri ;
     jj_consume_token(USING);
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case IRIref:
     case PNAME_NS:
     case PNAME_LN:
       iri = SourceSelector();
+      update.addUsing(iri) ;
       break;
     case NAMED:
       jj_consume_token(NAMED);
       iri = SourceSelector();
+      update.addUsingNamed(iri) ;
       break;
     default:
       jj_la1[49] = jj_gen;
@@ -1156,13 +1166,10 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
     throw new Error("Missing return statement in function");
   }
 
-  final public QuadPatternAcc QuadPattern() throws ParseException {
-                                 QuadPatternAcc qp = new QuadPatternAcc() ;
+  final public void QuadPattern(QuadPatternAcc qp) throws ParseException {
     jj_consume_token(LBRACE);
     Quads();
     jj_consume_token(RBRACE);
-      {if (true) return qp ;}
-    throw new Error("Missing return statement in function");
   }
 
   final public void Quads() throws ParseException {
@@ -1338,17 +1345,17 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
   }
 
 //Ground data : As QuadPattern but don't allow variables.
-  final public QuadDataAcc QuadData() throws ParseException {
-                           QuadDataAcc qd = new QuadDataAcc();
+  final public void QuadData(QuadDataAcc qd) throws ParseException {
     jj_consume_token(LBRACE);
     Quads();
     jj_consume_token(RBRACE);
-      {if (true) return qd ;}
-    throw new Error("Missing return statement in function");
   }
 
 // UPDATE_SPARQL_11
+
 // UPDATE
+
+
 // ---- General Graph Pattern 
   final public Element GroupGraphPattern() throws ParseException {
                                 Element el = null ; Token t ;
@@ -1476,6 +1483,7 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
 
 // -- TriplesBlock
 // Two versions - for SPARQL 1.0 and SPARQL 1.1 (with paths)
+
 // #ifdef SPARQL_10
 // Element TriplesBlock(ElementTriplesBlock acc) : { }
 // {
@@ -1611,8 +1619,12 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
 //     el = GroupGraphPattern()
 //     { return new ElementUnion(el) ; }
 // }
+
+
 // SPARQL 1.0: {pattern} UNION {pattern} UNION {pattern} ... :: 
 // SPARQL 1.1 may introduce: { pattern UNION pattern UNION ... }
+
+
 // G (union G)* can be a single group pattern
 // or a group pattern as part of an union.
   final public Element GroupOrUnionGraphPattern() throws ParseException {
@@ -1762,6 +1774,7 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
 //   )?
 //   { return args ; }
 // }
+
 // // Single expression aggregate argument
 // Expr ExprAggArg() : { Expr expr = null ; boolean distinct = false ; Token t ; }
 // {
@@ -2188,6 +2201,7 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
   }
 
 // End paths stuff.
+
 // -------- Paths
 // Weakest outermost
   final public Path Path() throws ParseException {
@@ -2486,6 +2500,7 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
   }
 
 // -------- Triple expansions
+
 // Anything that can stand in a node slot and which is
 // a number of triples
   final public Node TriplesNode(TripleCollector acc) throws ParseException {

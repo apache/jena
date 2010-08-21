@@ -113,15 +113,15 @@ public class Context
         return x.toString() ;
     }
 
-    @Deprecated
-    public void setAll(Context other)
-    {
-        if ( other != null )
-        {
-            context.putAll(other.context) ;
-            callbacks.addAll(other.callbacks) ;
-        }
-    }
+//    @Deprecated
+//    public void setAll(Context other)
+//    {
+//        if ( other != null )
+//        {
+//            context.putAll(other.context) ;
+//            callbacks.addAll(other.callbacks) ;
+//        }
+//    }
     
     public void putAll(Context other)
     {

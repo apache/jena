@@ -5,6 +5,7 @@
  * (c) Copyright 2010 Talis Systems Ltd
  * All rights reserved.
  */
+
 package com.hp.hpl.jena.sparql.lang.sparql_11 ;
 
 /** Token Manager Error. */
@@ -149,4 +150,4 @@ public class TokenMgrError extends Error
     this(LexicalError(EOFSeen, lexState, errorLine, errorColumn, errorAfter, curChar), reason);
   }
 }
-/* JavaCC - OriginalChecksum=7a56a2b34b982747a6cba860bfb27e4d (do not edit this line) */
+/* JavaCC - OriginalChecksum=08564ffdc7e0cfe7685344721498343f (do not edit this line) */

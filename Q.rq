@@ -1,7 +1,4 @@
-SELECT  *
-WHERE
-  { 
-    ?s ?p true
-    FILTER (!regex(?v, "^yes$"))
-    FILTER regex(?v, "^yes$", "i")
-  }
+PREFIX  rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
+SELECT *
+FROM <http://xmlns.com/foaf/spec/index.rdf>
+{ ?s rdf:type rdf:Property }

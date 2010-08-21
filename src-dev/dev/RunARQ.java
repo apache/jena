@@ -74,6 +74,7 @@ public class RunARQ
     
     public static void main(String[] argv) throws Exception
     {
+        if ( false )
         {
             Query q = QueryFactory.read("Q.arq") ;
             Op op = Algebra.compile(q) ;

@@ -166,8 +166,8 @@ public class ARQ
     public static final Symbol optFilterPlacement = ARQConstants.allocSymbol("optFilterPlacement") ;
     
     @Deprecated
-    /** Use optFilterPlacement */
-    public static final Symbol filterPlacement = ARQConstants.allocSymbol("optFilterPlacement") ;
+    /** @deprecated Use optFilterPlacement */
+    public static final Symbol filterPlacement = optFilterPlacement ;
     
     /** 
      *  Context key controlling whether the standard optimizer applies

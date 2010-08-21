@@ -588,63 +588,65 @@ Update Create() : { String iri ; boolean silent = false ; }
    { return new UpdateCreate(iri, silent) ; } 
 }
 
-Update InsertData() : { QuadDataAcc qd ; }
+Update InsertData() : { QuadDataAcc qd = new QuadDataAcc() ; }
 {
-   { startDataInsert() ; }
-   <INSERT_DATA> qd = QuadData()
-   {
-     finishDataInsert() ;
-     return new UpdateDataInsert(qd) ; 
-   }
-   
+  { startDataInsert() ; }
+  <INSERT_DATA> QuadData(qd)
+  {
+    finishDataInsert() ;
+    return new UpdateDataInsert(qd) ; 
+  }
 }
 
-Update DeleteData() : { QuadData qd ; }
+Update DeleteData() : { QuadDataAcc qd = new QuadDataAcc() ; }
 {
-   { startDataDelete() ; }
-   <DELETE_DATA> qd = QuadData()
-   { 
-     finishDataDelete() ;
-     return new UpdateDataDelete(qd) ;
-   }
-
+  { startDataDelete() ; }
+  <DELETE_DATA> QuadData(qd)
+  { 
+    finishDataDelete() ;
+    return new UpdateDataDelete(qd) ;
+  }
 }
 
-Update DeleteWhere() : { QuadPatternAcc qp ; }
+Update DeleteWhere() : { QuadPatternAcc qp = new QuadPatternAcc() ; }
 {
-   <DELETE_WHERE> qp = QuadPattern()
-   { return null ; }
+  <DELETE_WHERE> QuadPattern(qp)
+  { return new UpdateDeleteWhere(qp) ; }
 }
 
 
-Update Modify() : { }
+Update Modify() : { Element el ; String iri = null ; 
+                    UpdateModify up = new UpdateModify() ; }
 {
-  ( <WITH> IRIref() )?
-  ( Delete() (Insert())?
-  | Insert()
+  ( <WITH> iri = IRIref() { up.setWithIRI(iri) ; } )?
+  ( Delete(up.getDeletePattern()) ( Insert(up.getInsertPattern()) )?
+  | Insert(up.getInsertPattern())
   )
-  (UsingClause())*
+  (UsingClause(up))*
   <WHERE>
-  GroupGraphPattern()
-   { return null ; }
+  el = GroupGraphPattern()
+  { up.setElement(el) ; }    
+  { return up ; }
 }
 
-Update Delete() : { QuadPatternAcc qp ; }
+void Delete(QuadPatternAcc qp) : { }
 {
-   <DELETE> qp = QuadPattern()
-   { return null ; }
+   <DELETE> QuadPattern(qp)
 }
 
-Update Insert() : { QuadPatternAcc qp ; }
+void Insert(QuadPatternAcc qp) : { }
 {
-   <INSERT> qp = QuadPattern()
-   { return null ; }
+   <INSERT> QuadPattern(qp)
 }
 
-void UsingClause() : { String iri ; }
+void UsingClause(UpdateWithUsing update) : { String iri ; }
 {
-   <USING> 
-   (iri = SourceSelector() | <NAMED> iri = SourceSelector() )
+  <USING> 
+  ( iri = SourceSelector() 
+    { update.addUsing(iri) ; }
+  | <NAMED> iri = SourceSelector()
+    { update.addUsingNamed(iri) ; }
+  )
 }
 
 
@@ -664,12 +666,11 @@ Target GraphRefAll() : { String iri ; }
    )
 }
 
-QuadPatternAcc QuadPattern() : { QuadPatternAcc qp = new QuadPatternAcc() ; }
+void QuadPattern(QuadPatternAcc qp) : { }
 {
     <LBRACE>
     Quads()
     <RBRACE>
-    { return qp ; }
 }
 
 void Quads() : { TripleCollector acc = new TemplateGroup() ; }
@@ -694,12 +695,11 @@ void TriplesTemplate(Node g, TripleCollector acc) : { }
 }
 
 //Ground data : As QuadPattern but don't allow variables.
-QuadDataAcc QuadData() : { QuadDataAcc qd = new QuadDataAcc(); }
+void QuadData(QuadDataAcc qd) : { }
 {
     <LBRACE>
     Quads()
     <RBRACE>
-    { return qd ; }
 }
 
 // UPDATE_SPARQL_11
