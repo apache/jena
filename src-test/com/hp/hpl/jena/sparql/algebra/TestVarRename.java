@@ -41,6 +41,11 @@ public class TestVarRename extends BaseTest
                                            "(assign ((?/x (+ ?/a ?//b))) (table unit))",
                                            "/a") ; }
     
+    @Test public void rename_09() { rename("(project (?s ?p) (bgp (?s ?p ?o)))",  
+                                           "(project (?s ?/p) (bgp (?s ?/p ?/o)))",
+                                           "s") ; }
+    
+    
     private static void rename(String string, String string2, String... varNames)
     {
         Set<Var> s = new HashSet<Var>() ;
