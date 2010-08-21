@@ -7,7 +7,6 @@ public class DevTDB
     //    Tidy up wiki (esp "Use from java" - use datasets, show loader use)
     //    TDBLoader from a dataset (or is this RIOT? or a general "Loader"?)
     //    TDBLoader javadoc - class info as well.
-    //    sec-exampels to use dataset not model.
     
     // Check writing to union graph is handled appropriately.
     
