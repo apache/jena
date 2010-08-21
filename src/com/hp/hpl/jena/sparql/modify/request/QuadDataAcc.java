@@ -6,7 +6,8 @@
 
 package com.hp.hpl.jena.sparql.modify.request;
 
-public class QuadDataAcc
+/** Accumulate quads (excluding allowing variables) during parsing. */
+public class QuadDataAcc extends QuadPatternAcc
 {
 
 }
