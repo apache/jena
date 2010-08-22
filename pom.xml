@@ -262,7 +262,6 @@ build.time.txt=${build.time.txt}
 	<groupId>org.apache.maven.plugins</groupId>
 	<artifactId>maven-dependency-plugin</artifactId>
 	<configuration>
-	  <outputDirectory>lib</outputDirectory>
 	  <overWriteReleases>false</overWriteReleases>
           <overWriteSnapshots>false</overWriteSnapshots>
 	  <overWriteIfNewer>true</overWriteIfNewer>
