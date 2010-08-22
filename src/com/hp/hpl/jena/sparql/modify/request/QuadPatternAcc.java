@@ -6,10 +6,65 @@
 
 package com.hp.hpl.jena.sparql.modify.request;
 
+import java.util.Iterator ;
+
+import org.openjena.atlas.lib.Pair ;
+
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.sparql.ARQException ;
+import com.hp.hpl.jena.sparql.core.BasicPattern ;
+import com.hp.hpl.jena.sparql.core.TriplePath ;
+import com.hp.hpl.jena.sparql.syntax.TripleCollector ;
+
 /** Accumulate quads (including allowing variables) during parsing. */
 public class QuadPatternAcc
 {
+    // A lists of Pairs: Node and Triple connector
+    private Node currentNode ;
+    private TripleCollector currentTripleCollector ;
+    
+    public QuadPatternAcc()
+    {
+        currentNode = null ;
+        currentTripleCollector = new TripleAcc() ;
+    }
+    
+    public void addTriple(Triple t) { currentTripleCollector.addTriple(t) ; }
+    
+    
+    private static class X extends Pair<Node, TripleCollector> {
 
+        public X(Node a, TripleCollector b)
+        {
+            super(a, b) ;
+        }}
+    
+    private static class TripleAcc implements TripleCollector {
+        private BasicPattern pattern = new BasicPattern() ; 
+
+        public TripleAcc()
+        {  }
+
+        public boolean isEmpty() { return pattern.isEmpty() ; }
+        
+        public void addTriple(Triple t)
+        { pattern.add(t) ; }
+        
+        public int mark() { return pattern.size() ; }
+        
+        public void addTriple(int index, Triple t)
+        { pattern.add(index, t) ; }
+        
+        public void addTriplePath(TriplePath path)
+        { throw new ARQException("Triples-only collector") ; }
+
+        public void addTriplePath(int index, TriplePath path)
+        { throw new ARQException("Triples-only collector") ; }
+        
+        public BasicPattern getPattern() { return pattern ; }
+        public Iterator<Triple> patternElts() { return pattern.iterator(); }
+    }
 }
 
 /*
