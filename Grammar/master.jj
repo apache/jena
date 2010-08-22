@@ -673,6 +673,14 @@ void QuadPattern(QuadPatternAcc qp) : { }
     <RBRACE>
 }
 
+//Ground data : As QuadPattern but don't allow variables.
+void QuadData(QuadDataAcc qd) : { }
+{
+    <LBRACE>
+    Quads()
+    <RBRACE>
+}
+
 void Quads() : { TripleCollector acc = new TemplateGroup() ; }
 {
    (TriplesTemplate(null, acc))?
@@ -692,14 +700,6 @@ void TriplesTemplate(Node g, TripleCollector acc) : { }
 {    
     TriplesSameSubject(acc)
     (<DOT> (TriplesTemplate(g, acc))?)?
-}
-
-//Ground data : As QuadPattern but don't allow variables.
-void QuadData(QuadDataAcc qd) : { }
-{
-    <LBRACE>
-    Quads()
-    <RBRACE>
 }
 
 // UPDATE_SPARQL_11
