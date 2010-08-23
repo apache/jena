@@ -1,9 +1,4 @@
 @prefix  : <http://example/> .
-@prefix  dt: <http://example/dt#> .
 
-:a :p "foo"^^dt:dt .
-:b :p "foo"^^:dt .
-:c :p "foo"^^<http://example/dt> .
-## _:a :p "foo"^^ .
-## _:a :p 123 .
+:s :p :o .
 

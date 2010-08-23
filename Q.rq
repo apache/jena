@@ -3,8 +3,7 @@ PREFIX apf: <http://jena.hpl.hp.com/ARQ/property#>
 
 SELECT *
 {
-   ?x apf:splitIRI (?ns ?ln) .
+   <http://example/ns#foo> apf:splitIRI (?ns ?ln) .
    ?s ?p ?o
 }
-
 
