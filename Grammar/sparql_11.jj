@@ -329,7 +329,7 @@ Update Clear() : { boolean silent = false ; Target target ; }
 Update Drop() : { boolean silent = false ; Target target ; }
 {
    <DROP> (<SILENT> { silent = true ; })? target = GraphRefAll()
-   { return new UpdateClear(target, silent) ; }
+   { return new UpdateDrop(target, silent) ; }
 }
 Update Create() : { String iri ; boolean silent = false ; }
 {

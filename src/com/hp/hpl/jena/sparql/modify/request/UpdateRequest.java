@@ -6,28 +6,20 @@
 
 package com.hp.hpl.jena.sparql.modify.request;
 
-import com.hp.hpl.jena.graph.Node ;
+import java.util.ArrayList ;
+import java.util.Collections ;
+import java.util.List ;
 
-public abstract class UpdateDropClear extends Update 
+
+public class UpdateRequest
 {
-    protected final Target target ;
-    protected final boolean silent ;
+    private List<Update> operations = new ArrayList<Update>() ;
+
+    public UpdateRequest() {}
     
-    protected UpdateDropClear(String iri, boolean silent)
-    { this(Target.create(iri), silent) ; }
-    
-    protected UpdateDropClear(Target target, boolean silent)
-    { this.target = target ; this.silent = silent ; }
-    
-    public boolean isSilent() { return silent ; }
-    
-    public boolean isDefault()  { return target.isDefault() ; }
-    public boolean isAll()      { return target.isAll() ; }
-    public boolean isAllNamed() { return target.isAllNamed() ; }
-    public boolean isOneGraph() { return target.isOneGraph() ; }
-    
-    public String getGraphIRI() { return target.getGraphIRI() ; }
-    public Node getGraph()      { return Node.createURI(target.getGraphIRI()) ; }
+    public void add(Update update) { operations.add(update) ; } 
+
+    public List<Update> getOperations() { return Collections.unmodifiableList(operations) ; }
 }
 
 /*

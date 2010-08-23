@@ -988,7 +988,7 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
       ;
     }
     target = GraphRefAll();
-     {if (true) return new UpdateClear(target, silent) ;}
+     {if (true) return new UpdateDrop(target, silent) ;}
     throw new Error("Missing return statement in function");
   }
 

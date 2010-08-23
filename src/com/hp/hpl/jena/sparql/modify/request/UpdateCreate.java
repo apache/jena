@@ -6,6 +6,8 @@
 
 package com.hp.hpl.jena.sparql.modify.request;
 
+import com.hp.hpl.jena.graph.Node ;
+
 
 public class UpdateCreate extends Update
 {
@@ -21,6 +23,8 @@ public class UpdateCreate extends Update
     public boolean isSilent() { return silent ; }
     
     public String getGraphIRI() { return iri ; }
+    public Node getGraph()      { return Node.createURI(iri) ; }
+
 
     @Override
     public void visit(UpdateVisitor visitor)

@@ -9,8 +9,12 @@ package com.hp.hpl.jena.sparql.lang;
 
 import java.util.Stack ;
 
+import org.openjena.atlas.io.IndentedWriter ;
+
 import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.sparql.modify.request.Update ;
+import com.hp.hpl.jena.sparql.modify.request.UpdateWriter ;
+import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
 import com.hp.hpl.jena.update.UpdateRequest ;
 
 public class ParserQueryBase extends ParserBase 
@@ -53,7 +57,15 @@ public class ParserQueryBase extends ParserBase
     // SPARQL/Update (Submission)
     protected UpdateRequest getRequest() { return request ; }
     
-    protected void emitUpdate(Update update) { System.out.println("Emit update: "+update) ; }
+    protected void emitUpdate(Update update)
+    { 
+        // TEMP
+        System.out.println("---- Emit update: "+update) ;
+        SerializationContext sCxt = new SerializationContext() ;
+        UpdateWriter.output(update, IndentedWriter.stdout, sCxt) ;
+        IndentedWriter.stdout.flush();
+        System.out.println("----") ;
+    }
     
     protected void startSubSelect()
     {
