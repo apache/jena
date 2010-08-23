@@ -6,6 +6,8 @@ public class DevARQ
     //   QuadData, QuadTemplate to do
     // Check that IRIs are checked.
     
+    // Scope checking for groups.
+    
     // Property path test cases
     // Aggregates to return iterators.
     

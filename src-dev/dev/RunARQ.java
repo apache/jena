@@ -188,6 +188,12 @@ public class RunARQ
                          "WHERE",
                          "{ ?s ?p ?o }"
                          ) ;
+        sparql11update_1("PREFIX : <http://example>",
+                         //"WITH :g",
+                         //"DELETE { ?s ?p ?o }",
+                         "INSERT DATA { <s> <p> <o> }",
+                         "INSERT DATA { <s> <p> <o> GRAPH <g> { <s> <p> <o> }}"
+                         ) ;
        
         
         System.out.println("DONE") ;

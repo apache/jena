@@ -6,10 +6,20 @@
 
 package com.hp.hpl.jena.sparql.modify.request;
 
-/** Accumulate quads (excluding allowing variables) during parsing. */
-public class QuadDataAcc extends QuadPatternAcc
-{
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.query.QueryParseException ;
+import com.hp.hpl.jena.sparql.core.Var ;
 
+/** Accumulate quads (excluding allowing variables) during parsing. */
+public class QuadDataAcc extends QuadsAcc
+{
+    @Override
+    public void addTriple(Triple t)
+    { 
+        if ( Var.isVar(t.getSubject()) || Var.isVar(t.getPredicate()) || Var.isVar(t.getObject())) 
+            throw new QueryParseException("Variables not permitted in data quad", -1, -1) ;   
+        super.addTriple(t) ;
+    }
 }
 
 /*

@@ -28,7 +28,7 @@
 #define UPDATE
 #endif
 
-// Author:  Andy Seaborne andy.seaborne@talis.com
+// Author:  Andy Seaborne andy.seaborne@epimorphics.com
 // (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
 // (c) Copyright 2010 Talis Systems Ltd.
 // (c) Copyright 2010 Epimorphics Ltd.
@@ -608,7 +608,7 @@ Update DeleteData() : { QuadDataAcc qd = new QuadDataAcc() ; }
   }
 }
 
-Update DeleteWhere() : { QuadPatternAcc qp = new QuadPatternAcc() ; }
+Update DeleteWhere() : { QuadsAcc qp = new QuadsAcc() ; }
 {
   <DELETE_WHERE> QuadPattern(qp)
   { return new UpdateDeleteWhere(qp) ; }
@@ -629,12 +629,12 @@ Update Modify() : { Element el ; String iri = null ;
   { return up ; }
 }
 
-void Delete(QuadPatternAcc qp) : { }
+void Delete(QuadsAcc qp) : { }
 {
    <DELETE> QuadPattern(qp)
 }
 
-void Insert(QuadPatternAcc qp) : { }
+void Insert(QuadsAcc qp) : { }
 {
    <INSERT> QuadPattern(qp)
 }
@@ -666,40 +666,46 @@ Target GraphRefAll() : { String iri ; }
    )
 }
 
-void QuadPattern(QuadPatternAcc qp) : { }
+void QuadPattern(QuadsAcc acc) : { }
 {
     <LBRACE>
-    Quads()
+    Quads(acc)
     <RBRACE>
 }
 
 //Ground data : As QuadPattern but don't allow variables.
-void QuadData(QuadDataAcc qd) : { }
+void QuadData(QuadDataAcc acc) : { }
 {
     <LBRACE>
-    Quads()
+    Quads(acc)
     <RBRACE>
 }
 
-void Quads() : { TripleCollector acc = new TemplateGroup() ; }
+void Quads(QuadsAcc acc) : { }
 {
-   (TriplesTemplate(null, acc))?
+   (TriplesTemplate(acc))?
    (
      QuadsNotTriples(acc)
      (<DOT>)?
-     (TriplesTemplate(null, acc))?
+     (TriplesTemplate(acc))?
    )*
 }
 
-void QuadsNotTriples(TripleCollector acc) : {Node n ; }
+void QuadsNotTriples(QuadsAcc acc) : {Node n ; Node prev = acc.getGraph() ; }
 {
-    <GRAPH> n = VarOrIRIref() <LBRACE> (TriplesTemplate(n, acc))? <RBRACE>
+    <GRAPH> n = VarOrIRIref()
+    { acc.setGraph(n) ; }
+    <LBRACE> 
+    (TriplesTemplate(acc))?
+    <RBRACE>
+    { acc.setGraph(prev) ; }
+    
 }
 
-void TriplesTemplate(Node g, TripleCollector acc) : { }
+void TriplesTemplate(QuadsAcc acc) : { }
 {    
     TriplesSameSubject(acc)
-    (<DOT> (TriplesTemplate(g, acc))?)?
+    (<DOT> (TriplesTemplate(acc))?)?
 }
 
 // UPDATE_SPARQL_11

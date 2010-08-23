@@ -5,7 +5,6 @@
  * (c) Copyright 2010 Talis Systems Ltd
  * All rights reserved.
  */
-
 package com.hp.hpl.jena.sparql.lang.sparql_11 ;
 
 /**
@@ -190,4 +189,4 @@ public class ParseException extends Exception {
    }
 
 }
-/* JavaCC - OriginalChecksum=693ffa4b36c0adf5c8026c78902ecd7c (do not edit this line) */
+/* JavaCC - OriginalChecksum=adf570929ceb0d81328b53d2f75f0b3d (do not edit this line) */

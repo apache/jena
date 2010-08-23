@@ -4,7 +4,6 @@
  * (c) Copyright 2010 Talis Systems Ltd
  * All rights reserved.
  */
-
 package com.hp.hpl.jena.sparql.lang.sparql_11 ;
 
 

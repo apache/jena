@@ -8,11 +8,11 @@ package com.hp.hpl.jena.sparql.modify.request;
 
 public class UpdateDeleteWhere extends Update
 {
-    private final QuadPatternAcc pattern ;
+    private final QuadsAcc pattern ;
 
-    public UpdateDeleteWhere(QuadPatternAcc pattern) { this.pattern = pattern ; }
+    public UpdateDeleteWhere(QuadsAcc pattern) { this.pattern = pattern ; }
     
-    public QuadPatternAcc getPattern() { return pattern ; }
+    public QuadsAcc getPattern() { return pattern ; }
     
     @Override
     public void visit(UpdateVisitor visitor)

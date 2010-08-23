@@ -5,7 +5,6 @@
  * (c) Copyright 2010 Talis Systems Ltd
  * All rights reserved.
  */
-
 package com.hp.hpl.jena.sparql.lang.arq ;
 
 /**
@@ -620,4 +619,4 @@ class JavaCharStream
   }
 
 }
-/* JavaCC - OriginalChecksum=5f81f125582eec77fac8741f77ae2b56 (do not edit this line) */
+/* JavaCC - OriginalChecksum=fb82f6514edd6d03fcbb843d5a3a5379 (do not edit this line) */

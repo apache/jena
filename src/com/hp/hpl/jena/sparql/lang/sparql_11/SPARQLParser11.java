@@ -4,9 +4,7 @@
  * (c) Copyright 2010 Talis Systems Ltd
  * All rights reserved.
  */
-
 package com.hp.hpl.jena.sparql.lang.sparql_11 ;
-
 import com.hp.hpl.jena.graph.* ;
 import com.hp.hpl.jena.query.* ;
 import com.hp.hpl.jena.sparql.core.Var ;
@@ -14,13 +12,7 @@ import com.hp.hpl.jena.sparql.syntax.* ;
 import com.hp.hpl.jena.sparql.expr.* ;
 import com.hp.hpl.jena.sparql.path.* ;
 import com.hp.hpl.jena.sparql.expr.aggregate.* ;
-
-
-
-
 import com.hp.hpl.jena.sparql.modify.request.* ;
-
-
 public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11Constants {
     boolean allowAggregatesInExpressions = false ;
 
@@ -868,8 +860,6 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
   }
 
 // ---- SPARQL/Update (submission)
-
-
 // Update only entry point
   final public void UpdateUnit() throws ParseException {
     Prologue();
@@ -1040,7 +1030,7 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
   }
 
   final public Update DeleteWhere() throws ParseException {
-                         QuadPatternAcc qp = new QuadPatternAcc() ;
+                         QuadsAcc qp = new QuadsAcc() ;
     jj_consume_token(DELETE_WHERE);
     QuadPattern(qp);
     {if (true) return new UpdateDeleteWhere(qp) ;}
@@ -1099,12 +1089,12 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
     throw new Error("Missing return statement in function");
   }
 
-  final public void Delete(QuadPatternAcc qp) throws ParseException {
+  final public void Delete(QuadsAcc qp) throws ParseException {
     jj_consume_token(DELETE);
     QuadPattern(qp);
   }
 
-  final public void Insert(QuadPatternAcc qp) throws ParseException {
+  final public void Insert(QuadsAcc qp) throws ParseException {
     jj_consume_token(INSERT);
     QuadPattern(qp);
   }
@@ -1166,14 +1156,20 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
     throw new Error("Missing return statement in function");
   }
 
-  final public void QuadPattern(QuadPatternAcc qp) throws ParseException {
+  final public void QuadPattern(QuadsAcc acc) throws ParseException {
     jj_consume_token(LBRACE);
-    Quads();
+    Quads(acc);
     jj_consume_token(RBRACE);
   }
 
-  final public void Quads() throws ParseException {
-                 TripleCollector acc = new TemplateGroup() ;
+//Ground data : As QuadPattern but don't allow variables.
+  final public void QuadData(QuadDataAcc acc) throws ParseException {
+    jj_consume_token(LBRACE);
+    Quads(acc);
+    jj_consume_token(RBRACE);
+  }
+
+  final public void Quads(QuadsAcc acc) throws ParseException {
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case IRIref:
     case PNAME_NS:
@@ -1200,7 +1196,7 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
     case NIL:
     case LBRACKET:
     case ANON:
-      TriplesTemplate(null, acc);
+      TriplesTemplate(acc);
       break;
     default:
       jj_la1[51] = jj_gen;
@@ -1251,7 +1247,7 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
       case NIL:
       case LBRACKET:
       case ANON:
-        TriplesTemplate(null, acc);
+        TriplesTemplate(acc);
         break;
       default:
         jj_la1[54] = jj_gen;
@@ -1260,10 +1256,11 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
     }
   }
 
-  final public void QuadsNotTriples(TripleCollector acc) throws ParseException {
-                                             Node n ;
+  final public void QuadsNotTriples(QuadsAcc acc) throws ParseException {
+                                      Node n ; Node prev = acc.getGraph() ;
     jj_consume_token(GRAPH);
     n = VarOrIRIref();
+      acc.setGraph(n) ;
     jj_consume_token(LBRACE);
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case IRIref:
@@ -1291,16 +1288,17 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
     case NIL:
     case LBRACKET:
     case ANON:
-      TriplesTemplate(n, acc);
+      TriplesTemplate(acc);
       break;
     default:
       jj_la1[55] = jj_gen;
       ;
     }
     jj_consume_token(RBRACE);
+      acc.setGraph(prev) ;
   }
 
-  final public void TriplesTemplate(Node g, TripleCollector acc) throws ParseException {
+  final public void TriplesTemplate(QuadsAcc acc) throws ParseException {
     TriplesSameSubject(acc);
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case DOT:
@@ -1331,7 +1329,7 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
       case NIL:
       case LBRACKET:
       case ANON:
-        TriplesTemplate(g, acc);
+        TriplesTemplate(acc);
         break;
       default:
         jj_la1[56] = jj_gen;
@@ -1344,18 +1342,8 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
     }
   }
 
-//Ground data : As QuadPattern but don't allow variables.
-  final public void QuadData(QuadDataAcc qd) throws ParseException {
-    jj_consume_token(LBRACE);
-    Quads();
-    jj_consume_token(RBRACE);
-  }
-
 // UPDATE_SPARQL_11
-
 // UPDATE
-
-
 // ---- General Graph Pattern 
   final public Element GroupGraphPattern() throws ParseException {
                                 Element el = null ; Token t ;
@@ -1483,7 +1471,6 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
 
 // -- TriplesBlock
 // Two versions - for SPARQL 1.0 and SPARQL 1.1 (with paths)
-
 // #ifdef SPARQL_10
 // Element TriplesBlock(ElementTriplesBlock acc) : { }
 // {
@@ -1619,12 +1606,8 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
 //     el = GroupGraphPattern()
 //     { return new ElementUnion(el) ; }
 // }
-
-
 // SPARQL 1.0: {pattern} UNION {pattern} UNION {pattern} ... :: 
 // SPARQL 1.1 may introduce: { pattern UNION pattern UNION ... }
-
-
 // G (union G)* can be a single group pattern
 // or a group pattern as part of an union.
   final public Element GroupOrUnionGraphPattern() throws ParseException {
@@ -1774,7 +1757,6 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
 //   )?
 //   { return args ; }
 // }
-
 // // Single expression aggregate argument
 // Expr ExprAggArg() : { Expr expr = null ; boolean distinct = false ; Token t ; }
 // {
@@ -2201,7 +2183,6 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
   }
 
 // End paths stuff.
-
 // -------- Paths
 // Weakest outermost
   final public Path Path() throws ParseException {
@@ -2500,7 +2481,6 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
   }
 
 // -------- Triple expansions
-
 // Anything that can stand in a node slot and which is
 // a number of triples
   final public Node TriplesNode(TripleCollector acc) throws ParseException {

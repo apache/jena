@@ -15,8 +15,8 @@ public class Quad
 {
     // Create QuadNames? GraphNames?
     
-    /** Name of the default graph as used in quad form of algebra 
-     * (not for access the default graph by name - use Quad.defaultGraphIRI)
+    /** Name of the default graph as used in quad form of algebra. 
+     *  Not for access to the default graph by name - use Quad.defaultGraphIRI.
      */ 
     public static final Node defaultGraphNodeGenerated     =  Node.createURI("urn:x-arq:DefaultGraphNode") ;
     
@@ -26,7 +26,10 @@ public class Quad
     /** Name of the default for explict use in GRAPH */
     public static final Node defaultGraphIRI        =  Node.createURI("urn:x-arq:DefaultGraph") ;
 
-    /** Name of the non-graph when a quad is really a triple -- the default graph when parsing N-Quads or TriG for example */
+    /** Name of the non-graph when a quad is really a triple - also parsing of triples formats 
+     *  (and the default graph when parsing N-Quads or TriG) 
+     *  Not for access to the default graph by name - use Quad.defaultGraphIRI.
+     */
     public static final Node tripleInQuad           =  null ;
     
     /** Name of the merge of all named graphs (use this for the graph of all named graphs) */
