@@ -1,7 +1,10 @@
-# Same query as above but going via the authorList predicate
-# Times out for me
-select ?book where {
-?book <http://purl.org/ontology/bibo/authorList> ?list .
-?list <http://www.w3.org/1999/02/22-rdf-syntax-ns#li> <http://openlibrary.org/a/OL25712A> .
-} limit 10
+PREFIX : <http://example/>
+PREFIX apf: <http://jena.hpl.hp.com/ARQ/property#>
+
+SELECT *
+{
+   ?x apf:splitIRI (?ns ?ln) .
+   ?s ?p ?o
+}
+
 

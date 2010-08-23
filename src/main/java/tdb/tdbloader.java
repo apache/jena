@@ -24,7 +24,7 @@ public class tdbloader extends CmdTDB
 //    private static final ArgDecl argGraphDeafult = new ArgDecl(ArgDecl.NoValue, "default") ;
     
 //    private static final ArgDecl argParallel         = new ArgDecl(ArgDecl.NoValue, "parallel") ;
-    private static final ArgDecl argIncremental      = new ArgDecl(ArgDecl.NoValue, "incr", "incremental") ;
+//    private static final ArgDecl argIncremental      = new ArgDecl(ArgDecl.NoValue, "incr", "incremental") ;
     private static final ArgDecl argStats            = new ArgDecl(ArgDecl.NoValue, "stats") ;
     
     private static final ModModel modRDFS            = new ModModel("rdfs") ;
@@ -48,7 +48,7 @@ public class tdbloader extends CmdTDB
         super(argv) ;
         
 //        super.add(argParallel, "--parallel", "Do rebuilding of secondary indexes in a parallel") ;
-        super.add(argIncremental, "--incremental",  "Do an incremental load (keep indexes during data load)") ;
+//        super.add(argIncremental, "--incremental",  "Do an incremental load (keep indexes during data load)") ;
         super.add(argStats, "--stats",              "Generate statistics while loading (new graph only)") ;
         addModule(modRDFS) ;
     }
@@ -58,7 +58,7 @@ public class tdbloader extends CmdTDB
     {
         super.processModulesAndArgs() ;
 //        doInParallel = super.contains(argParallel) ;
-        doIncremental = super.contains(argIncremental) ;
+//        doIncremental = super.contains(argIncremental) ;
         generateStats = super.contains(argStats) ;
     }
     
