@@ -10,8 +10,10 @@ import java.util.ArrayList ;
 import java.util.Collections ;
 import java.util.List ;
 
+import com.hp.hpl.jena.sparql.core.Prologue ;
 
-public class UpdateRequest
+
+public class UpdateRequest extends Prologue
 {
     private List<Update> operations = new ArrayList<Update>() ;
 

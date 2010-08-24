@@ -47,7 +47,7 @@ public class QuadsAcc implements TripleCollector
     
     public Node getGraph()    { return graphNode ; }
     
-    public List<Quad> getQuads(Node n)
+    public List<Quad> getQuads()
     {
         return quads ;
     }

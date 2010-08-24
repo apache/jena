@@ -6,11 +6,17 @@
 
 package com.hp.hpl.jena.sparql.modify.request;
 
+import java.util.List ;
+
+import com.hp.hpl.jena.sparql.core.Quad ;
+
 public abstract class UpdateData extends Update
 {
     protected final QuadDataAcc quadData = new QuadDataAcc() ;
     
     public UpdateData() {}
+    
+    public List<Quad> getQuads() { return quadData.getQuads() ; }
 }
 
 /*

@@ -287,13 +287,13 @@ void UpdateUnit() : {}
     Update()
     <EOF>
 }
+// SPARQL 1.1 Update
 void Update() : { }
 {
     { startUpdateRequest() ; }
     ( Update1() )+
     { finishUpdateRequest() ; }
 }
-// SPARQL 1.1 Update
 void Update1() : { Update up ; }
 {
   { startUpdateOperation() ; }
@@ -363,8 +363,8 @@ Update Modify() : { Element el ; String iri = null ;
                     UpdateModify up = new UpdateModify() ; }
 {
   ( <WITH> iri = IRIref() { up.setWithIRI(iri) ; } )?
-  ( Delete(up.getDeletePattern()) ( Insert(up.getInsertPattern()) )?
-  | Insert(up.getInsertPattern())
+  ( Delete(up.getDeleteAcc()) ( Insert(up.getInsertAcc()) )?
+  | Insert(up.getInsertAcc())
   )
   (UsingClause(up))*
   <WHERE>

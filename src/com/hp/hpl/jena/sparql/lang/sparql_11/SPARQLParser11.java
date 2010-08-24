@@ -867,6 +867,7 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
     jj_consume_token(0);
   }
 
+// SPARQL 1.1 Update
   final public void Update() throws ParseException {
       startUpdateRequest() ;
     label_14:
@@ -893,7 +894,6 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
       finishUpdateRequest() ;
   }
 
-// SPARQL 1.1 Update
   final public void Update1() throws ParseException {
                    Update up ;
     startUpdateOperation() ;
@@ -1052,10 +1052,10 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
     }
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case DELETE:
-      Delete(up.getDeletePattern());
+      Delete(up.getDeleteAcc());
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case INSERT:
-        Insert(up.getInsertPattern());
+        Insert(up.getInsertAcc());
         break;
       default:
         jj_la1[46] = jj_gen;
@@ -1063,7 +1063,7 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
       }
       break;
     case INSERT:
-      Insert(up.getInsertPattern());
+      Insert(up.getInsertAcc());
       break;
     default:
       jj_la1[47] = jj_gen;

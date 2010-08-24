@@ -385,6 +385,7 @@ void UpdateUnit() : {}
     <EOF>
 }
 
+#ifdef UPDATE_SUBMISSION
 void Update() : { }
 {
     { startUpdateRequest() ; }
@@ -392,7 +393,6 @@ void Update() : { }
     { finishUpdateRequest() ; }
 }
 
-#ifdef UPDATE_SUBMISSION
 void Update1() : { UpdateSubmission up = null ; GraphMgt mgt ; }
 {
   (  up = Modify() | up = Insert() | up = Delete() | 
@@ -540,6 +540,13 @@ Element UpdatePattern() : { Element el ; }
 
 // SPARQL 1.1 Update
 #ifdef UPDATE_SPARQL_11
+void Update() : { }
+{
+    { startUpdateRequest() ; }
+    ( Update1() )+
+    { finishUpdateRequest() ; }
+}
+
 void Update1() : { Update up ; }
 {
   { startUpdateOperation() ; }
@@ -619,8 +626,8 @@ Update Modify() : { Element el ; String iri = null ;
                     UpdateModify up = new UpdateModify() ; }
 {
   ( <WITH> iri = IRIref() { up.setWithIRI(iri) ; } )?
-  ( Delete(up.getDeletePattern()) ( Insert(up.getInsertPattern()) )?
-  | Insert(up.getInsertPattern())
+  ( Delete(up.getDeleteAcc()) ( Insert(up.getInsertAcc()) )?
+  | Insert(up.getInsertAcc())
   )
   (UsingClause(up))*
   <WHERE>

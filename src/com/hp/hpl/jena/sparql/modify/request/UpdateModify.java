@@ -6,6 +6,9 @@
 
 package com.hp.hpl.jena.sparql.modify.request;
 
+import java.util.List ;
+
+import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.syntax.Element ;
 
 public class UpdateModify extends UpdateWithUsing
@@ -26,15 +29,26 @@ public class UpdateModify extends UpdateWithUsing
         this.wherePattern = element ; 
     }
     
-    public QuadsAcc getDeletePattern()
+    public QuadsAcc getDeleteAcc()
     {
         return deletePattern ;
     }
 
-    public QuadsAcc getInsertPattern()
+    public QuadsAcc getInsertAcc()
     {
         return insertPattern ;
     }
+
+    public List<Quad> getDeleteQuads()
+    {
+        return deletePattern.getQuads() ;
+    }
+
+    public List<Quad> getInsertQuads()
+    {
+        return insertPattern.getQuads() ;
+    }
+
 
     public Element getWherePattern()
     {

@@ -12,7 +12,7 @@ public class UpdateDataInsert extends UpdateData
 
     @Override
     public void visit(UpdateVisitor visitor)
-    {}
+    { visitor.visit(this) ; }
 }
 
 /*

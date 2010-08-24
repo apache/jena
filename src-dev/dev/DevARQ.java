@@ -22,6 +22,8 @@ public class DevARQ
     
     // Tests for negated property sets
     
+    // Scalar and column expressions
+    
     // Inference pipeline
     // TDB+Inference
     //   TDB/BulkLoader.loadTriples$ (loadQuads$)

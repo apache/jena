@@ -6,17 +6,31 @@
 
 package com.hp.hpl.jena.sparql.modify.request;
 
+import java.util.List ;
+
 import org.openjena.atlas.io.IndentedWriter ;
 
 import com.hp.hpl.jena.sparql.ARQException ;
+import com.hp.hpl.jena.sparql.core.Prologue ;
+import com.hp.hpl.jena.sparql.core.Quad ;
+import com.hp.hpl.jena.sparql.serializer.FormatterElement ;
+import com.hp.hpl.jena.sparql.serializer.PrologueSerializer ;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
+import com.hp.hpl.jena.sparql.syntax.Element ;
 import com.hp.hpl.jena.sparql.util.FmtUtils ;
 
 public class UpdateWriter
 {
+    public static void output(UpdateRequest request, IndentedWriter out)
+    {
+        output(request, out, null) ;
+    }
+    
     public static void output(UpdateRequest request, IndentedWriter out, SerializationContext sCxt)
     {
-        prologue() ;
+        if ( sCxt == null )
+            sCxt = new SerializationContext(request) ;
+        prologue(out, sCxt.getPrologue()) ;
         out.println() ;
         for ( Update update : request.getOperations() )
         {
@@ -26,7 +40,9 @@ public class UpdateWriter
     
     public static void output(Update update, IndentedWriter out, SerializationContext sCxt)
     {
-        prologue() ;
+        if ( sCxt == null )
+            sCxt = new SerializationContext() ;
+        prologue(out, sCxt.getPrologue()) ;
         outputUpdate(update, out, sCxt) ;
     }
     
@@ -37,12 +53,15 @@ public class UpdateWriter
         update.visit(writer) ; 
     }
 
-    private static void prologue()
-    {}
+    private static void prologue(IndentedWriter out, Prologue prologue)
+    {
+        PrologueSerializer.output(out, prologue) ;
+    }
 
 
     private static class Writer implements UpdateVisitor
     {
+        private static final int BLOCK_INDENT = 2 ;
         private final IndentedWriter out ;
         private final SerializationContext sCxt ;
 
@@ -69,7 +88,7 @@ public class UpdateWriter
             }
             else
             {
-                out.print("UpdateDropClearBROKEN") ;
+                out.print("UpdateDropClear BROKEN") ;
                 throw new ARQException("Malformed UpdateDrop") ;
             }
             out.println() ;
@@ -95,19 +114,116 @@ public class UpdateWriter
 
         public void visit(UpdateLoad update)
         {
+            out.print("LOAD") ;
+            out.print(" ") ;
+            String $ = update.getSource() ;
+            out.print("<") ;
+            out.print($) ;
+            out.print(">") ;
+            if ( update.getDest() != null )
+            {
+                out.print(" INTO GRAPH ") ;
+                outputStringAsURI(update.getDest()) ;
+            }
+            out.println();
         }
 
+        private void outputStringAsURI(String uriStr)
+        {
+            String x = FmtUtils.stringForURI(uriStr, sCxt) ;
+            out.print(x) ;
+        }
+        
         public void visit(UpdateDataInsert update)
-        {}
+        {
+            out.println("INSERT DATA {") ;
+            outputQuads(update.getQuads()) ;
+            out.println("}") ;
+        }
 
         public void visit(UpdateDataDelete update)
-        {}
+        {
+            out.println("DELETE DATA {") ;
+            outputQuads(update.getQuads()) ;
+            out.println("}") ;
+        }
 
+        // Prettier later.
+        // XXX TODO GRAPH
+        private void outputQuads(List<Quad> quads)
+        {
+            out.incIndent(BLOCK_INDENT) ;
+            out.println("--QUADS--") ;
+            for ( Quad q : quads )
+                outputQuad(q) ;
+            out.decIndent(BLOCK_INDENT) ;
+        }
+        
+        private void outputQuad(Quad quad)
+        {
+            String qs = FmtUtils.stringForQuad(quad, sCxt.getPrefixMapping()) ;
+            out.println(qs) ;
+        }
+        
         public void visit(UpdateDeleteWhere update)
-        {}
+        {
+            out.println("DELETE WHERE {") ;
+            outputQuads(update.getQuads()) ;
+            out.println("}") ;
+        }
 
         public void visit(UpdateModify update)
-        {}
+        {
+            if ( update.getWithIRI() != null )
+            {
+                out.print("WITH ") ;
+                outputStringAsURI(update.getWithIRI()) ;
+                out.println() ;
+            }
+            
+            for ( String x : update.getUsing() )
+            {
+                out.print("USING ") ;
+                outputStringAsURI(x) ;
+                out.println() ;
+            }
+            
+            for ( String x : update.getUsingNamed() )
+            {
+                out.print("USING NAMED ") ;
+                outputStringAsURI(x) ;
+                out.println() ;
+            }
+             
+            List<Quad> deleteQuads = update.getDeleteQuads() ;
+            if ( deleteQuads.size() > 0 )
+            {
+                out.println("DELETE {") ;
+                outputQuads(deleteQuads) ;
+                out.println("}") ;
+            }
+            
+            List<Quad> insertQuads = update.getInsertQuads() ;
+            if ( insertQuads.size() > 0 )
+            {
+                out.println("INSERT {") ;
+                outputQuads(insertQuads) ;
+                out.println("}") ;
+            }
+            
+            Element el = update.getWherePattern() ;
+            if ( el != null )
+            {
+                out.print("WHERE") ;
+                out.incIndent(BLOCK_INDENT) ;
+                out.newline() ;
+                FormatterElement fmtElement = new FormatterElement(out, sCxt) ;
+                fmtElement.visitAsGroup(el) ;
+                //el.visit(fmtElement) ;
+                out.decIndent(BLOCK_INDENT) ;
+                out.newline() ;
+            }
+        }
         
     }
     

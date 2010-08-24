@@ -246,8 +246,8 @@ NON-TERMINALS
 // ---- SPARQL/Update (submission)
 // Update only entry point
 	UpdateUnit	:=	Prologue Update <EOF>
-	Update	:=	( Update1 )+
 // SPARQL 1.1 Update
+	Update	:=	( Update1 )+
 	Update1	:=	( Load | Clear | Drop | Create | InsertData | DeleteData | DeleteWhere | Modify ) ( <SEMICOLON> )?
 	Load	:=	<LOAD> IRIref ( <INTO> GraphRef )?
 	Clear	:=	<CLEAR> ( <SILENT> )? GraphRefAll

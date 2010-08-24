@@ -6,17 +6,21 @@
 
 package com.hp.hpl.jena.sparql.modify.request;
 
+import java.util.List ;
+
+import com.hp.hpl.jena.sparql.core.Quad ;
+
 public class UpdateDeleteWhere extends Update
 {
     private final QuadsAcc pattern ;
 
     public UpdateDeleteWhere(QuadsAcc pattern) { this.pattern = pattern ; }
     
-    public QuadsAcc getPattern() { return pattern ; }
+    public List<Quad> getQuads() { return pattern.getQuads() ; }
     
     @Override
     public void visit(UpdateVisitor visitor)
-    {}
+    { visitor.visit(this) ; }
 }
 
 /*
