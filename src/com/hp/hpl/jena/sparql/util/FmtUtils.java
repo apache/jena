@@ -74,21 +74,39 @@ public class FmtUtils
     // Formatting various items
     public static String stringForQuad(Quad quad)
     {
-        return
-            stringForNode(quad.getGraph())+" "+
-            stringForNode(quad.getSubject())+" "+
-            stringForNode(quad.getPredicate())+" "+
-            stringForNode(quad.getObject()) ;
+        StringBuilder sb = new StringBuilder() ;
+        
+        if ( quad.getGraph() != null )
+        {
+            sb.append(stringForNode(quad.getGraph())) ;
+            sb.append(" ") ;
+        }
+        
+        sb.append(stringForNode(quad.getSubject())) ;
+        sb.append(" ") ;
+        sb.append(stringForNode(quad.getPredicate())) ;
+        sb.append(" ") ;
+        sb.append(stringForNode(quad.getObject())) ;
+        return sb.toString() ;
     }
     
     
     public static String stringForQuad(Quad quad, PrefixMapping prefixMap)
     {
-        return
-            stringForNode(quad.getGraph(), prefixMap)+" "+
-            stringForNode(quad.getSubject(), prefixMap)+" "+
-            stringForNode(quad.getPredicate(), prefixMap)+" "+
-            stringForNode(quad.getObject(), prefixMap) ;
+        StringBuilder sb = new StringBuilder() ;
+        
+        if ( quad.getGraph() != null )
+        {
+            sb.append(stringForNode(quad.getGraph(), prefixMap)) ;
+            sb.append(" ") ;
+        }
+        
+        sb.append(stringForNode(quad.getSubject(), prefixMap)) ;
+        sb.append(" ") ;
+        sb.append(stringForNode(quad.getPredicate(), prefixMap)) ;
+        sb.append(" ") ;
+        sb.append(stringForNode(quad.getObject(), prefixMap)) ;
+        return sb.toString() ;
     }
     
     // To a Writer?

@@ -8,7 +8,7 @@ package com.hp.hpl.jena.sparql.modify.request;
 
 public class UpdateDataInsert extends UpdateData
 {
-    public UpdateDataInsert(QuadDataAcc qd) {}
+    public UpdateDataInsert(QuadDataAcc qd) { super(qd) ; }
 
     @Override
     public void visit(UpdateVisitor visitor)

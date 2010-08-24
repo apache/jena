@@ -153,46 +153,46 @@ public class RunARQ
     
     private static void sparql11update()
     {
-        sparql11update_1("LOAD  <foo>  INTO  GRAPH  <blah>") ;
-        sparql11update_1("LOAD  <foo>") ;
-        sparql11update_1("DROP  ALL") ;
-        sparql11update_1("DROP  NAMED") ;
-        sparql11update_1("CLEAR  DEFAULT") ;
-        
-        sparql11update_1("DELETE WHERE { ?s ?p ?o }") ;
-        sparql11update_1("DELETE DATA { <s> <p> <o> }") ;
-        
-        sparql11update_1("PREFIX : <http://example>",
-                         "WITH :g",
-                         "DELETE { ?s ?p ?o }",
-                         "INSERT { ?s ?p ?o }",
-                         "USING <g>",
-                         "USING NAMED :gn",
-                         "WHERE",
-                         "{ ?s ?p ?o }"
-                         ) ;
-        sparql11update_1("PREFIX : <http://example>",
-                         "WITH :g",
-                         "DELETE { ?s ?p ?o }",
-                         //"INSERT { ?s ?p ?o }",
-                         "USING <g>",
-                         "USING NAMED :gn",
-                         "WHERE",
-                         "{ ?s ?p ?o }"
-                         ) ;
+//        sparql11update_1("LOAD  <foo>  INTO  GRAPH  <blah>") ;
+//        sparql11update_1("LOAD  <foo>") ;
+//        sparql11update_1("DROP  ALL") ;
+//        sparql11update_1("DROP  NAMED") ;
+//        sparql11update_1("CLEAR  DEFAULT") ;
+//        
+//        sparql11update_1("DELETE WHERE { ?s ?p ?o }") ;
+//        sparql11update_1("DELETE DATA { <s> <p> <o> }") ;
+//        
+//        sparql11update_1("PREFIX : <http://example>",
+//                         "WITH :g",
+//                         "DELETE { ?s ?p ?o }",
+//                         "INSERT { ?s ?p ?o }",
+//                         "USING <g>",
+//                         "USING NAMED :gn",
+//                         "WHERE",
+//                         "{ ?s ?p ?o }"
+//                         ) ;
+//        sparql11update_1("PREFIX : <http://example>",
+//                         "WITH :g",
+//                         "DELETE { ?s ?p ?o }",
+//                         //"INSERT { ?s ?p ?o }",
+//                         "USING <g>",
+//                         "USING NAMED :gn",
+//                         "WHERE",
+//                         "{ ?s ?p ?o }"
+//                         ) ;
+//        sparql11update_1("PREFIX : <http://example>",
+//                         //"WITH :g",
+//                         //"DELETE { ?s ?p ?o }",
+//                         "INSERT { ?s ?p ?o }",
+//                         //"USING <g>",
+//                         //"USING NAMED :gn",
+//                         "WHERE",
+//                         "{ ?s ?p ?o }"
+//                         ) ;
         sparql11update_1("PREFIX : <http://example>",
                          //"WITH :g",
                          //"DELETE { ?s ?p ?o }",
-                         "INSERT { ?s ?p ?o }",
-                         //"USING <g>",
-                         //"USING NAMED :gn",
-                         "WHERE",
-                         "{ ?s ?p ?o }"
-                         ) ;
-        sparql11update_1("PREFIX : <http://example>",
-                         //"WITH :g",
-                         //"DELETE { ?s ?p ?o }",
-                         "INSERT DATA { <s> <p> <o> }",
+                         "INSERT DATA { <s> <p> <o> } ;",
                          "INSERT DATA { <s> <p> <o> GRAPH <g> { <s> <p> <o> }}"
                          ) ;
        
@@ -205,12 +205,13 @@ public class RunARQ
     {
         String str$ = StrUtils.strjoinNL(str) ; 
         divider() ;
+        System.out.println("----Input:") ;
         System.out.println(str$);
         Reader r = new StringReader(str$) ;
         SPARQLParser11 parser = null ;
         try {
             parser = new SPARQLParser11(r) ;
-            //parser.setUpdateRequest(null) ;
+            //parser.setUpdateRequest() ;
             parser.setPrologue(new Prologue()) ;
             parser.UpdateUnit() ;
             //validateParsedUpdate(update) ;

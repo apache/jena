@@ -12,9 +12,9 @@ import com.hp.hpl.jena.sparql.core.Quad ;
 
 public abstract class UpdateData extends Update
 {
-    protected final QuadDataAcc quadData = new QuadDataAcc() ;
+    protected QuadDataAcc quadData ;
     
-    public UpdateData() {}
+    public UpdateData(QuadDataAcc quadData) { this.quadData = quadData ; } 
     
     public List<Quad> getQuads() { return quadData.getQuads() ; }
 }

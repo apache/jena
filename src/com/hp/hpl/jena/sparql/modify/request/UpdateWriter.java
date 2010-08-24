@@ -10,6 +10,7 @@ import java.util.List ;
 
 import org.openjena.atlas.io.IndentedWriter ;
 
+import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.ARQException ;
 import com.hp.hpl.jena.sparql.core.Prologue ;
 import com.hp.hpl.jena.sparql.core.Quad ;
@@ -154,16 +155,42 @@ public class UpdateWriter
         {
             out.incIndent(BLOCK_INDENT) ;
             out.println("--QUADS--") ;
+            Node g = Quad.tripleInQuad ;
             for ( Quad q : quads )
+            {
                 outputQuad(q) ;
+            }
             out.decIndent(BLOCK_INDENT) ;
         }
         
         private void outputQuad(Quad quad)
         {
             String qs = FmtUtils.stringForQuad(quad, sCxt.getPrefixMapping()) ;
-            out.println(qs) ;
+            
+            if ( quad.getGraph() != null )
+            {
+                String g = FmtUtils.stringForNode(quad.getGraph(), sCxt) ;
+                out.print(g) ;
+                out.print(" ") ;    
+            }
+            outputTripleOfQuad(quad) ;
+            out.println(" .") ;
         }
+
+        private void outputTripleOfQuad(Quad quad)
+        {
+            String s = FmtUtils.stringForNode(quad.getSubject(), sCxt) ;
+            String p = FmtUtils.stringForNode(quad.getPredicate(), sCxt) ;
+            String o = FmtUtils.stringForNode(quad.getObject(), sCxt) ;
+            
+            out.print(s) ;
+            out.print(" ") ;
+            out.print(p) ;
+            out.print(" ") ;
+            out.print(o) ;
+        }
+        
+
         
         public void visit(UpdateDeleteWhere update)
         {

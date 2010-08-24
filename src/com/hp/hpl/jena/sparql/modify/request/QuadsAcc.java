@@ -32,6 +32,7 @@ public class QuadsAcc implements TripleCollector
 //        quads.add(new Quad(graphNode, t)) ;
 //    }
 
+    //@Override
     public void addTriple(Triple t)
     { 
         quads.add(new Quad(graphNode, t)) ;
