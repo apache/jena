@@ -3,8 +3,6 @@ package dev ;
 
 public class DevTDB
 {
-    // Pass through of unused variables (e.g. PF)
-    
     // == Misc
     //    Tidy up wiki (esp "Use from java" - use datasets, show loader use)
     //    TDBLoader from a dataset (or is this RIOT? or a general "Loader"?)
