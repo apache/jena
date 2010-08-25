@@ -7,6 +7,7 @@
 package com.hp.hpl.jena.sparql.modify.request;
 
 import java.util.ArrayList ;
+import java.util.Collections ;
 import java.util.List ;
 
 import com.hp.hpl.jena.graph.Node ;
@@ -22,21 +23,12 @@ public class QuadsAcc implements TripleCollector
     
     private Node graphNode = Quad.tripleInQuad ; //Quad.defaultGraphNodeGenerated ;
     private List<Quad> quads = new ArrayList<Quad>() ;
+    private List<Quad> quadsView = Collections.unmodifiableList(quads) ;
     
     public QuadsAcc()     {}
     
-//    public void addTriple(Triple t) { addTriple(t, -1, -1) ; }
-//    
-//    public void addTriple(Triple t, int line, int col)
-//    { 
-//        quads.add(new Quad(graphNode, t)) ;
-//    }
-
-    //@Override
-    public void addTriple(Triple t)
-    { 
-        quads.add(new Quad(graphNode, t)) ;
-    }
+    protected void check(Triple triple)
+    {}
 
     
     public void setGraph(Node n) 
@@ -50,12 +42,20 @@ public class QuadsAcc implements TripleCollector
     
     public List<Quad> getQuads()
     {
-        return quads ;
+        return quadsView ;
     }
 
-    public void addTriple(int index, Triple t)
+    //@Override
+    public void addTriple(Triple triple)
     {
-        quads.add(index, new Quad(graphNode, t)) ;
+        check(triple) ;
+        quads.add(new Quad(graphNode, triple)) ;
+    }
+
+    public void addTriple(int index, Triple triple)
+    {
+        check(triple) ;
+        quads.add(index, new Quad(graphNode, triple)) ;
     }
 
     public void addTriplePath(TriplePath tPath)

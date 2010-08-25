@@ -16,6 +16,7 @@ import com.hp.hpl.jena.sparql.core.Prologue ;
 public class UpdateRequest extends Prologue
 {
     private List<Update> operations = new ArrayList<Update>() ;
+    private List<Update> operationsView = Collections.unmodifiableList(operations) ;
 
     public UpdateRequest() {}
     public UpdateRequest(Update update)
@@ -26,7 +27,7 @@ public class UpdateRequest extends Prologue
     
     public void add(Update update) { operations.add(update) ; } 
 
-    public List<Update> getOperations() { return Collections.unmodifiableList(operations) ; }
+    public List<Update> getOperations() { return operationsView ; }
 }
 
 /*

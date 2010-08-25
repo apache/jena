@@ -251,7 +251,7 @@ public class UpdateWriter
             {
                 //out.ensureStartOfLine() ;
                 out.print("WITH ") ;
-                outputStringAsURI(update.getWithIRI()) ;
+                output(update.getWithIRI()) ;
             }
             
             List<Quad> deleteQuads = update.getDeleteQuads() ;
@@ -272,18 +272,18 @@ public class UpdateWriter
                 out.print("}") ;
             }
             
-            for ( String x : update.getUsing() )
+            for ( Node x : update.getUsing() )
             {
                 out.ensureStartOfLine() ;
                 out.print("USING ") ;
-                outputStringAsURI(x) ;
+                output(x) ;
             }
             
-            for ( String x : update.getUsingNamed() )
+            for ( Node x : update.getUsingNamed() )
             {
                 out.ensureStartOfLine() ;
                 out.print("USING NAMED ") ;
-                outputStringAsURI(x) ;
+                output(x) ;
             }
              
             Element el = update.getWherePattern() ;

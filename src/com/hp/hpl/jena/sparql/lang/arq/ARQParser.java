@@ -1386,8 +1386,8 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     jj_consume_token(LOAD);
     label_20:
     while (true) {
-      iri = IRIref();
-                              up.addLoadIRI(iri) ;
+      iri = SourceSelector();
+                                      up.addLoadIRI(iri) ;
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case IRIref:
       case PNAME_NS:

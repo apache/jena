@@ -81,8 +81,8 @@ public class RunARQ
     
     public static void main(String[] argv) throws Exception
     {
-        arq.qtest.main("testing/ARQ/Syntax/Syntax-SPARQL-Update/manifest.ttl") ;
-        System.exit(0) ; 
+//        arq.qtest.main("testing/ARQ/Syntax/Syntax-SPARQL-Update/manifest.ttl") ;
+//        System.exit(0) ; 
         
         if ( false )
         {
@@ -170,12 +170,13 @@ public class RunARQ
         sparql11update_1("CLEAR  DEFAULT") ;
         
         sparql11update_1("DELETE WHERE { ?s ?p ?o }") ;
-        sparql11update_1("DELETE DATA { <s> <p> <o> }") ;
+        sparql11update_1("DELETE DATA { <?s> <p> <o> }") ;
         
-        sparql11update_1("PREFIX : <http://example>",
+        sparql11update_1("BASE <base:> ",
+                         "PREFIX : <http://example/>",
                          "WITH :g",
-                         "DELETE { ?s ?p ?o }",
-                         "INSERT { ?s ?p ?o }",
+                         "DELETE { <s> ?p ?o }",
+                         "INSERT { ?s ?p <#o> }",
                          "USING <g>",
                          "USING NAMED :gn",
                          "WHERE",
@@ -207,7 +208,7 @@ public class RunARQ
                          ) ;
        
         
-        System.out.println("DONE") ;
+        System.out.println("# DONE") ;
         
     }
     
@@ -225,6 +226,7 @@ public class RunARQ
         
         System.out.println("----Output:") ;
         SerializationContext sCxt = new SerializationContext(update) ;
+        //SerializationContext sCxt = new SerializationContext() ;
         UpdateWriter.output(update, IndentedWriter.stdout, sCxt) ;
         IndentedWriter.stdout.flush();
         

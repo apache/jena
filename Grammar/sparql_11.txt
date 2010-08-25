@@ -256,10 +256,10 @@ NON-TERMINALS
 	InsertData	:=	<INSERT_DATA> QuadData
 	DeleteData	:=	<DELETE_DATA> QuadData
 	DeleteWhere	:=	<DELETE_WHERE> QuadPattern
-	Modify	:=	( <WITH> IRIref )? ( Delete ( Insert )? | Insert ) ( UsingClause )* <WHERE> GroupGraphPattern
-	Delete	:=	<DELETE> QuadPattern
-	Insert	:=	<INSERT> QuadPattern
-	UsingClause	:=	<USING> ( SourceSelector | <NAMED> SourceSelector )
+	Modify	:=	( <WITH> IRIref )? ( DeleteClause ( InsertClause )? | InsertClause ) ( UsingClause )* <WHERE> GroupGraphPattern
+	DeleteClause	:=	<DELETE> QuadPattern
+	InsertClause	:=	<INSERT> QuadPattern
+	UsingClause	:=	<USING> ( IRIref | <NAMED> IRIref )
 	GraphRef	:=	<GRAPH> IRIref
 	GraphRefAll	:=	( GraphRef | <DFT> | <NAMED> | <ALL> )
 	QuadPattern	:=	<LBRACE> Quads <RBRACE>

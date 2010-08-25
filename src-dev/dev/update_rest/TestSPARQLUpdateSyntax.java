@@ -22,8 +22,8 @@ import org.openjena.atlas.logging.Log ;
 public class TestSPARQLUpdateSyntax
 {
     @Test public void update_0() { parse("") ; }
-    @Test public void load_1() { parse("LOAD <foo> INTO <blah>") ; }
-    @Test public void load_2() { parse("LOAD <foo1> <foo2> INTO <blah>") ; }
+    @Test public void load_1() { parse("LOAD <foo> INTO GRAPH <blah>") ; }
+    //@Test public void load_2() { parse("LOAD <foo1> <foo2> INTO GRAPH <blah>") ; }
 
     // ??
     @Test public void load_3() { parse("LOAD <foo> INTO DEFAULT") ; }

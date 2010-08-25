@@ -14,11 +14,10 @@ import com.hp.hpl.jena.sparql.core.Var ;
 public class QuadDataAcc extends QuadsAcc
 {
     @Override
-    public void addTriple(Triple t)
-    { 
+    protected void check(Triple t)
+    {
         if ( Var.isVar(t.getSubject()) || Var.isVar(t.getPredicate()) || Var.isVar(t.getObject())) 
             throw new QueryParseException("Variables not permitted in data quad", -1, -1) ;   
-        super.addTriple(t) ;
     }
 }
 

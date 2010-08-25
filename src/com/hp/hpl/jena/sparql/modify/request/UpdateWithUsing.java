@@ -7,24 +7,30 @@
 package com.hp.hpl.jena.sparql.modify.request;
 
 import java.util.ArrayList ;
+import java.util.Collections ;
 import java.util.List ;
+
+import com.hp.hpl.jena.graph.Node ;
 
 public abstract class UpdateWithUsing extends Update
 {
-    private String withIRI = null ;
-    private List<String> using = new ArrayList<String>() ;
-    private List<String> usingNamed = new ArrayList<String>() ;
+    private Node withIRI = null ;
+    private List<Node> using = new ArrayList<Node>() ;
+    private List<Node> usingNamed = new ArrayList<Node>() ;
+
+    private List<Node> usingView = Collections.unmodifiableList(using) ;
+    private List<Node> usingNamedView = Collections.unmodifiableList(usingNamed) ;
     
     public UpdateWithUsing() {}
 
-    public void addUsing(String iri)        { using.add(iri) ; }
-    public void addUsingNamed(String iri)   { usingNamed.add(iri) ; }
+    public void addUsing(Node node)         { using.add(node) ; }
+    public void addUsingNamed(Node node)    { usingNamed.add(node) ; }
     
-    public List<String> getUsing()          { return using ; }
-    public List<String> getUsingNamed()     { return usingNamed ; }
+    public List<Node> getUsing()            { return usingView ; }
+    public List<Node> getUsingNamed()       { return usingNamedView ; }
     
-    public String getWithIRI()              { return withIRI ; }
-    public void setWithIRI(String withIRI)  { this.withIRI = withIRI ; } 
+    public Node getWithIRI()                { return withIRI ; }
+    public void setWithIRI(Node node)       { this.withIRI = node ; } 
 }
 
 /*

@@ -2,6 +2,7 @@ package dev;
 
 public class DevARQ
 {
+    // ?? Setting base when parsing SPARQL update files.
     // rename QueryParseException or sort out an UpdateException
     // and a geneal name check.
     

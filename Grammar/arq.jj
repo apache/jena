@@ -385,7 +385,7 @@ String GraphIRI() : { String iri ; }
 }
 UpdateLoad Load() : { UpdateLoad up = new UpdateLoad() ; String iri ;}
 {
-    <LOAD> ( iri = IRIref() { up.addLoadIRI(iri) ; } )+
+    <LOAD> ( iri = SourceSelector() { up.addLoadIRI(iri) ; } )+
     (<INTO> iri = IRIref() { up.setGraphName(iri) ; } )?
     { return up ; }
 }

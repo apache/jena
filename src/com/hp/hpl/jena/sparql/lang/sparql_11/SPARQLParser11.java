@@ -1038,13 +1038,13 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
   }
 
   final public Update Modify() throws ParseException {
-                    Element el ; String iri = null ;
+                    Element el ; String iri = null ; Node n ;
                     UpdateModify up = new UpdateModify() ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case WITH:
       jj_consume_token(WITH);
       iri = IRIref();
-                            up.setWithIRI(iri) ;
+                            n = createNode(iri) ; up.setWithIRI(n) ;
       break;
     default:
       jj_la1[45] = jj_gen;
@@ -1052,10 +1052,10 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
     }
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case DELETE:
-      Delete(up.getDeleteAcc());
+      DeleteClause(up.getDeleteAcc());
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case INSERT:
-        Insert(up.getInsertAcc());
+        InsertClause(up.getInsertAcc());
         break;
       default:
         jj_la1[46] = jj_gen;
@@ -1063,7 +1063,7 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
       }
       break;
     case INSERT:
-      Insert(up.getInsertAcc());
+      InsertClause(up.getInsertAcc());
       break;
     default:
       jj_la1[47] = jj_gen;
@@ -1089,30 +1089,30 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
     throw new Error("Missing return statement in function");
   }
 
-  final public void Delete(QuadsAcc qp) throws ParseException {
+  final public void DeleteClause(QuadsAcc qp) throws ParseException {
     jj_consume_token(DELETE);
     QuadPattern(qp);
   }
 
-  final public void Insert(QuadsAcc qp) throws ParseException {
+  final public void InsertClause(QuadsAcc qp) throws ParseException {
     jj_consume_token(INSERT);
     QuadPattern(qp);
   }
 
   final public void UsingClause(UpdateWithUsing update) throws ParseException {
-                                             String iri ;
+                                             String iri ; Node n ;
     jj_consume_token(USING);
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case IRIref:
     case PNAME_NS:
     case PNAME_LN:
-      iri = SourceSelector();
-      update.addUsing(iri) ;
+      iri = IRIref();
+      n = createNode(iri) ; update.addUsing(n) ;
       break;
     case NAMED:
       jj_consume_token(NAMED);
-      iri = SourceSelector();
-      update.addUsingNamed(iri) ;
+      iri = IRIref();
+      n = createNode(iri) ; update.addUsingNamed(n) ;
       break;
     default:
       jj_la1[49] = jj_gen;

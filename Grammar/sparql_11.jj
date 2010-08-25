@@ -359,12 +359,12 @@ Update DeleteWhere() : { QuadsAcc qp = new QuadsAcc() ; }
   <DELETE_WHERE> QuadPattern(qp)
   { return new UpdateDeleteWhere(qp) ; }
 }
-Update Modify() : { Element el ; String iri = null ;
+Update Modify() : { Element el ; String iri = null ; Node n ;
                     UpdateModify up = new UpdateModify() ; }
 {
-  ( <WITH> iri = IRIref() { up.setWithIRI(iri) ; } )?
-  ( Delete(up.getDeleteAcc()) ( Insert(up.getInsertAcc()) )?
-  | Insert(up.getInsertAcc())
+  ( <WITH> iri = IRIref() { n = createNode(iri) ; up.setWithIRI(n) ; } )?
+  ( DeleteClause(up.getDeleteAcc()) ( InsertClause(up.getInsertAcc()) )?
+  | InsertClause(up.getInsertAcc())
   )
   (UsingClause(up))*
   <WHERE>
@@ -372,21 +372,21 @@ Update Modify() : { Element el ; String iri = null ;
   { up.setElement(el) ; }
   { return up ; }
 }
-void Delete(QuadsAcc qp) : { }
+void DeleteClause(QuadsAcc qp) : { }
 {
    <DELETE> QuadPattern(qp)
 }
-void Insert(QuadsAcc qp) : { }
+void InsertClause(QuadsAcc qp) : { }
 {
    <INSERT> QuadPattern(qp)
 }
-void UsingClause(UpdateWithUsing update) : { String iri ; }
+void UsingClause(UpdateWithUsing update) : { String iri ; Node n ; }
 {
   <USING>
-  ( iri = SourceSelector()
-    { update.addUsing(iri) ; }
-  | <NAMED> iri = SourceSelector()
-    { update.addUsingNamed(iri) ; }
+  ( iri = IRIref()
+    { n = createNode(iri) ; update.addUsing(n) ; }
+  | <NAMED> iri = IRIref()
+    { n = createNode(iri) ; update.addUsingNamed(n) ; }
   )
 }
 String GraphRef() : { String iri ; }
