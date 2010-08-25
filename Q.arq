@@ -1,19 +1,6 @@
 PREFIX : <http://people.example/>
-SELECT ?y ?name
+
+SELECT ?p (count(?o) AS ?c)
 WHERE
-{
-  {
-    SELECT ?y ?name
-    WHERE
-    {
-      {
-        SELECT ?y ?name
-        WHERE 
-        {
-          :alice :knows ?y .
-          ?y :name ?name .
-        }
-      }
-    }
-  }
-}
+{ ?s ?p ?o
+} GROUP BY ?s
