@@ -12,6 +12,7 @@ import org.junit.Test ;
 
 import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.query.QueryFactory ;
+import com.hp.hpl.jena.query.Syntax ;
 import com.hp.hpl.jena.shared.PrefixMapping ;
 import com.hp.hpl.jena.shared.impl.PrefixMappingImpl ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
@@ -206,14 +207,24 @@ public class TestSerialization extends TestCase
         testOpToSyntax("(leftjoin (bgp (triple ?s ?p ?o)) (bgp (triple ?a ?b ?c)) (> ?z 5))",
                        "SELECT * { ?s ?p ?o OPTIONAL { ?a ?b ?c FILTER(?z > 5) }}") ;
     }
-
     
     private void testOpToSyntax(String opStr, String queryString)
     {
         Op op = SSE.parseOp(opStr) ;
         Query queryConverted = OpAsQuery.asQuery(op) ;
         
-        Query queryExpected = QueryFactory.create(queryString) ;
+        Query queryExpected = QueryFactory.create(queryString, queryConverted.getSyntax()) ;
+        
+//        if ( ! queryExpected.equals(queryConverted) )
+//        {
+//            System.err.println("Query Expected: "+queryExpected.getSyntax()) ;
+//            System.err.println(queryExpected) ;
+//            
+//            System.err.println("Query Converted: "+queryConverted.getSyntax()) ;
+//            System.err.println(queryConverted) ;
+//            System.err.println() ;
+//        }
+        
         assertEquals(queryExpected, queryConverted) ;
     }
 
@@ -221,10 +232,10 @@ public class TestSerialization extends TestCase
     {
         Query q1 = null ;
         Query q2 = null ;
-        try { q1 = QueryFactory.create(qs1) ; }
+        try { q1 = QueryFactory.create(qs1, Syntax.syntaxSPARQL) ; }
         catch (Exception ex) { fail("Building query 1") ; }
         
-        try { q2 = QueryFactory.create(qs2) ; }
+        try { q2 = QueryFactory.create(qs2, Syntax.syntaxSPARQL) ; }
         catch (Exception ex) { fail("Building query 2") ; }
 
         boolean b = false ;

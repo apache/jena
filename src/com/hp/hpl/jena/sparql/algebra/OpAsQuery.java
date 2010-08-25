@@ -15,6 +15,8 @@ import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.query.QueryFactory ;
 import com.hp.hpl.jena.query.SortCondition ;
+import com.hp.hpl.jena.query.Syntax ;
+import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
 import com.hp.hpl.jena.sparql.ARQNotImplemented ;
 import com.hp.hpl.jena.sparql.algebra.op.* ;
 import com.hp.hpl.jena.sparql.core.BasicPattern ;
@@ -37,8 +39,8 @@ public class OpAsQuery
         Converter v = new Converter(query) ;
         //OpWalker.walk(op, v) ;
         op.visit(v) ;
-        
-        query.setQueryPattern(v.currentGroup) ;
+        ElementGroup eg = v.currentGroup ;
+        query.setQueryPattern(eg) ;
         query.setQuerySelectType() ;
         
         query.setResultVars() ; 
@@ -143,14 +145,32 @@ public class OpAsQuery
             throw new ARQNotImplemented("OpDisjunction") ;
         }
 
-        private ElementTriplesBlock process(BasicPattern pattern)
+        private Element process(BasicPattern pattern)
         {
-            ElementTriplesBlock e = new ElementTriplesBlock() ;
-            for (Triple t : pattern)
-                // Leave bNode variables as they are
-                // Query serialization will deal with them. 
-                e.addTriple(t) ;
-            return e ;
+            // The different SPARQL versions use different internal structures for BGPs.
+            if ( query.getSyntax() == Syntax.syntaxSPARQL_10 )
+            {
+                ElementTriplesBlock e = new ElementTriplesBlock() ;
+                for (Triple t : pattern)
+                    // Leave bNode variables as they are
+                    // Query serialization will deal with them. 
+                    e.addTriple(t) ;
+                return e ;
+            }
+            
+            if ( query.getSyntax() == Syntax.syntaxSPARQL_11 ||
+                 query.getSyntax() == Syntax.syntaxARQ )
+            {
+                ElementPathBlock e = new ElementPathBlock() ;
+                for (Triple t : pattern)
+                    // Leave bNode variables as they are
+                    // Query serialization will deal with them. 
+                    e.addTriple(t) ;
+                return e ;
+            }
+            
+            throw new ARQInternalErrorException("Unrecognized syntax: "+query.getSyntax()) ;
+            
         }
         
         private ElementTriplesBlock process(Triple triple)

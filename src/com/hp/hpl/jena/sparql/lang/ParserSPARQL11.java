@@ -9,16 +9,16 @@ package com.hp.hpl.jena.sparql.lang;
 import java.io.Reader ;
 import java.io.StringReader ;
 
+import org.openjena.atlas.logging.Log ;
+
 import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.query.QueryException ;
 import com.hp.hpl.jena.query.QueryParseException ;
 import com.hp.hpl.jena.query.Syntax ;
 import com.hp.hpl.jena.shared.JenaException ;
-import com.hp.hpl.jena.sparql.ARQNotImplemented ;
 import com.hp.hpl.jena.sparql.lang.sparql_11.SPARQLParser11 ;
 import com.hp.hpl.jena.sparql.syntax.Element ;
 import com.hp.hpl.jena.sparql.syntax.Template ;
-import org.openjena.atlas.logging.Log ;
 
 
 public class ParserSPARQL11 extends Parser
@@ -28,10 +28,6 @@ public class ParserSPARQL11 extends Parser
     @Override
     public Query parse(final Query query, String queryString)
     {
-        
-        if ( false )
-            throw new ARQNotImplemented("SPARQL 1.1 grammar is not yet stable") ;
-        
         query.setSyntax(Syntax.syntaxSPARQL_11) ;
 
         Action action = new Action() {

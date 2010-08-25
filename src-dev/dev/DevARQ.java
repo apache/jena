@@ -3,6 +3,9 @@ package dev;
 public class DevARQ
 {
     // Aggregare using ?.0 is not equal to variable ?.0 which is what the op builder recreates. 
+    // OpAsQuery : ElementsTriplesBlock vs ElementPathBlock.
+    
+    // Printing of SPARQL 1.1 BGPs.
     
     // rename QueryParseException or sort out an UpdateException
     // and a geneal name check.

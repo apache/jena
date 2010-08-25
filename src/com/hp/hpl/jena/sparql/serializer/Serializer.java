@@ -54,7 +54,7 @@ public class Serializer
     {
         Syntax s = query.getSyntax() ;
         if ( s == null )
-            s = Syntax.syntaxSPARQL ;
+            s = Syntax.defaultSyntax ;
         serialize(query, buff, s) ;
     }
     
@@ -79,7 +79,7 @@ public class Serializer
     {
         Syntax s = query.getSyntax() ;
         if ( s == null )
-            s = Syntax.syntaxSPARQL ;
+            s = Syntax.defaultSyntax ;
         serialize(query, writer, s) ;
     }
     
@@ -97,7 +97,7 @@ public class Serializer
     static private void _serialize(Query query, IndentedWriter writer, Syntax outSyntax)
     {
         if ( outSyntax == null )
-            outSyntax = Syntax.syntaxSPARQL ;
+            outSyntax = Syntax.defaultSyntax ;
         
         if ( outSyntax.equals(Syntax.syntaxARQ) )
         {
