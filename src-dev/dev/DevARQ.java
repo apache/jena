@@ -2,8 +2,10 @@ package dev;
 
 public class DevARQ
 {
-    // Aggregare using ?.0 is not equal to variable ?.0 which is what the op builder recreates. 
-    // OpAsQuery : ElementsTriplesBlock vs ElementPathBlock.
+    // Aggregare using ?.0 is not equal to variable ?.0 which is what the op builder recreates.
+    // Problem is the generation of the filter for HAVING.
+    // Use the variable, not the whole E_Agg.
+    // Restrict E_Agg to the (group)
     
     // Printing of SPARQL 1.1 BGPs.
     
