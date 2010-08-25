@@ -2,6 +2,10 @@ package dev;
 
 public class DevARQ
 {
+    // NodeToLabelMapBNode
+    //   Efficiently issues?
+    //   Concurrency issues?
+    
     // SPARQL update parsing
     //   QuadData, QuadTemplate to do
     // Check that IRIs are checked.
