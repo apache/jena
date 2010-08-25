@@ -74,7 +74,6 @@ public class QueryTestSuiteFactory extends TestFactoryManifest
 
         // Frankly this all needs rewriting.
         // It can use SPARQL now :-)
-        // NB Temporary syntax reset for 1.1 tests.
         
         if ( item.getTestType() != null )
         {
@@ -82,42 +81,24 @@ public class QueryTestSuiteFactory extends TestFactoryManifest
             if ( item.getTestType().equals(TestManifest.PositiveSyntaxTest) )
                 test = new SyntaxTest(testName, results, item) ;
             if ( item.getTestType().equals(TestManifest_11.PositiveSyntaxTest11) )
-            {
-                // SPARQL 1.1 - reset syntax
-                item = TestItem.create(entry, defaultTestType, Syntax.syntaxSPARQL_11, DataFormat.langXML) ;
                 test = new SyntaxTest(testName, results, item) ;
-            }
             if ( item.getTestType().equals(TestManifestX.PositiveSyntaxTestARQ) )
-            {
-                item = TestItem.create(entry, defaultTestType, Syntax.syntaxARQ, DataFormat.langXML) ;
                 test = new SyntaxTest(testName, results, item) ;
-            }
 
             // == Bad
             if ( item.getTestType().equals(TestManifest.NegativeSyntaxTest) )
                 test = new SyntaxTest(testName, results, item, false) ;
             if ( item.getTestType().equals(TestManifest_11.NegativeSyntaxTest11) )
-            {
-                item = TestItem.create(entry, defaultTestType, Syntax.syntaxSPARQL_11, DataFormat.langXML) ;
                 test = new SyntaxTest(testName, results, item, false) ;
-            }
             if ( item.getTestType().equals(TestManifestX.NegativeSyntaxTestARQ) )
-            {
-                item = TestItem.create(entry, defaultTestType, Syntax.syntaxARQ, DataFormat.langXML) ;
                 test = new SyntaxTest(testName, results, item, false) ;
-            }
             
             // ---- Update tests
             if ( item.getTestType().equals(TestManifest_11.PositiveUpdateSyntaxTest11) )
-            {
-                item = TestItem.create(entry, defaultTestType, Syntax.syntaxSPARQL_11, DataFormat.langXML) ;
                 test = new SyntaxUpdateTest(testName, results, item, true) ;
-            }
             if ( item.getTestType().equals(TestManifest_11.NegativeUpdateSyntaxTest11) )
-            {
-                item = TestItem.create(entry, defaultTestType, Syntax.syntaxSPARQL_11, DataFormat.langXML) ;
                 test = new SyntaxUpdateTest(testName, results, item, false) ;
-            }
+
             // ----
             
             if ( item.getTestType().equals(TestManifestX.TestSerialization) )

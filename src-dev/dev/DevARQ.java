@@ -2,26 +2,18 @@ package dev;
 
 public class DevARQ
 {
-    // ?? Setting base when parsing SPARQL update files.
+    // Aggregare using ?.0 is not equal to variable ?.0 which is what the op builder recreates. 
+    
     // rename QueryParseException or sort out an UpdateException
     // and a geneal name check.
     
     // Check for out-of-scope group vars.
     
     // NodeToLabelMapBNode
-    //   Efficiently issues?
     //   Concurrency issues?
-    
-    // SPARQL update parsing
-    //   QuadData, QuadTemplate to do
-    // Check that IRIs are checked.
-    
-    // Scope checking for groups.
     
     // Property path test cases
     // Aggregates to return iterators.
-    
-    // Interface for addDefaultGraphIRI, addNamedGraphIRI and reuse FROM and USING
     
     // Path tests: WorkSpace/PropertyPathTests/
 
@@ -29,8 +21,6 @@ public class DevARQ
 	
     // Transform: paths for new operators. e.g. {2}
     //   {N,} to be {N} UNION {0,N}
-    
-    // Tests for negated property sets
     
     // Scalar and column expressions
     

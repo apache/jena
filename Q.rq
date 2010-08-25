@@ -1,4 +1,7 @@
-PREFIX  rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
-SELECT *
-FROM <http://xmlns.com/foaf/spec/index.rdf>
-{ ?s rdf:type rdf:Property }
+PREFIX : <http://people.example/>
+
+SELECT * # ?p (1+2 AS ?x) (count(?o) AS ?c)
+WHERE
+{ ?s ?p ?o
+} #GROUP BY ?s
+HAVING (count(?o) > 45)

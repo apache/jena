@@ -12,4 +12,7 @@
         <Syntax-SPARQL3/manifest.ttl>
         <Syntax-SPARQL4/manifest.ttl>   ## SPARQL 1.1
         <Syntax-ARQ/manifest.ttl>
+
+        ## SPARQL 1.1 Update
+        <Syntax-SPARQL-Update/manifest.ttl>
     ) .

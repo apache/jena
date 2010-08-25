@@ -81,6 +81,8 @@ public class RunARQ
     
     public static void main(String[] argv) throws Exception
     {
+        qparse("--query=Q.rq") ; System.exit(0) ; 
+        
 //        arq.qtest.main("testing/ARQ/Syntax/Syntax-SPARQL-Update/manifest.ttl") ;
 //        System.exit(0) ; 
         

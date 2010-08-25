@@ -1,9 +1,0 @@
-prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
-prefix :        <http://example/> 
-
-SELECT ?x (SAMPLE(?y) AS ?sample)
-{
-    ?x :member ?m .
-    ?y :member ?m .
-}
-GROUP BY ?x

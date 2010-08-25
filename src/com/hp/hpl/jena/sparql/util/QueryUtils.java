@@ -42,7 +42,13 @@ public class QueryUtils
             if ( op.hashCode() != op2.hashCode() )
                 throw new QueryCheckException("reparsed algebra expression hashCode does not equal algebra from query") ;
             if ( ! op.equals(op2) )
+            {
+                System.err.println("***********") ;
+                System.err.println(op) ;
+                System.err.println(op2) ;
+                System.err.println("***********") ;
                 throw new QueryCheckException("reparsed algebra expression does not equal query algebra") ;
+            }
         } catch (SSEParseException ex)
         { 
             System.err.println(str);
