@@ -2,6 +2,8 @@ package dev;
 
 public class DevARQ
 {
+    // rename QueryParseException or sort out an UpdateException
+    
     // NodeToLabelMapBNode
     //   Efficiently issues?
     //   Concurrency issues?

@@ -20,6 +20,8 @@ import com.hp.hpl.jena.sparql.lang.sparql_11.SPARQLParser11 ;
 import com.hp.hpl.jena.sparql.modify.request.UpdateRequest ;
 
 import org.openjena.atlas.logging.Log ;
+
+import com.hp.hpl.jena.update.UpdateException ;
 import com.hp.hpl.jena.util.FileUtils ;
 
 
@@ -41,7 +43,7 @@ public class ParserSPARQL11Update
     public UpdateRequest parse(UpdateRequest update, Reader r)
     {
         if ( r instanceof FileReader )
-            LoggerFactory.getLogger(this.getClass()).warn("FileReader passed to ParserSPARQLUpdate.parse - use a FileInputStream") ;
+            LoggerFactory.getLogger(this.getClass()).warn("FileReader passed to ParserSPARQL11Update.parse - use a FileInputStream") ;
         return _parse(update, r) ;
     }
     
@@ -68,7 +70,7 @@ public class ParserSPARQL11Update
             int line = parser.token.endLine ;
             throw new QueryParseException(tErr.getMessage(), line, col) ; }
 
-        catch (QueryException ex) { throw ex ; }
+        catch (UpdateException ex) { throw ex ; }
         catch (JenaException ex)  { throw new QueryException(ex.getMessage(), ex) ; }
         catch (Error err)
         {

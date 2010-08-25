@@ -4,6 +4,7 @@
 SPARQL10="sparql10"
 SPARQL11="sparql11"
 ARQ="arq"
+SPARQL11U="sparql11update"
 
 source syn-func.sh
 

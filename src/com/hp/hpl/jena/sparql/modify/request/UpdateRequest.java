@@ -18,6 +18,11 @@ public class UpdateRequest extends Prologue
     private List<Update> operations = new ArrayList<Update>() ;
 
     public UpdateRequest() {}
+    public UpdateRequest(Update update)
+    {
+        this() ;
+        add(update) ;
+    }
     
     public void add(Update update) { operations.add(update) ; } 
 

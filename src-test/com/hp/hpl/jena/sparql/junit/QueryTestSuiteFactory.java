@@ -74,6 +74,8 @@ public class QueryTestSuiteFactory extends TestFactoryManifest
 
         // Frankly this all needs rewriting.
         // It can use SPARQL now :-)
+        // NB Temporary syntax reset for 1.1 tests.
+        
         if ( item.getTestType() != null )
         {
             // == Good syntax
@@ -105,8 +107,18 @@ public class QueryTestSuiteFactory extends TestFactoryManifest
                 test = new SyntaxTest(testName, results, item, false) ;
             }
             
+            // ---- Update tests
+            if ( item.getTestType().equals(TestManifest_11.PositiveUpdateSyntaxTest11) )
+            {
+                item = TestItem.create(entry, defaultTestType, Syntax.syntaxSPARQL_11, DataFormat.langXML) ;
+                test = new SyntaxUpdateTest(testName, results, item, true) ;
+            }
+            if ( item.getTestType().equals(TestManifest_11.NegativeUpdateSyntaxTest11) )
+            {
+                item = TestItem.create(entry, defaultTestType, Syntax.syntaxSPARQL_11, DataFormat.langXML) ;
+                test = new SyntaxUpdateTest(testName, results, item, false) ;
+            }
             // ----
-            
             
             if ( item.getTestType().equals(TestManifestX.TestSerialization) )
                 test = new TestSerialization(testName, results, item) ;

@@ -3,12 +3,20 @@
 # Functions in support of syntax tests
 # Source this file.
 
+# Query
 declare -a GOOD_S10
 declare -a GOOD_S11
 declare -a GOOD_ARQ
 declare -a BAD_S10
 declare -a BAD_S11
 declare -a BAD_ARQ
+
+# Update
+declare -a GOOD_U11
+declare -a BAD_U11
+declare -a GOOD_ARQU
+declare -a BAD_ARQU
+
 
 function fname
 {
@@ -30,9 +38,11 @@ function testGood
     local FN="$2"
     local I
     case "$LANG" in
-	($SPARQL10) I=${#GOOD_S10[*]} ; GOOD_S10[$I]=$FN ;;
-	($SPARQL11) I=${#GOOD_S11[*]} ; GOOD_S11[$I]=$FN ;;
-	($ARQ)      I=${#GOOD_ARQ[*]} ; GOOD_ARQ[$I]=$FN ;;
+	($SPARQL10)   I=${#GOOD_S10[*]} ; GOOD_S10[$I]=$FN ;;
+	($SPARQL11)   I=${#GOOD_S11[*]} ; GOOD_S11[$I]=$FN ;;
+	($SPARQL11U)  I=${#GOOD_U11[*]} ; GOOD_U11[$I]=$FN ;;
+	($ARQ)        I=${#GOOD_ARQ[*]} ; GOOD_ARQ[$I]=$FN ;;
+	($ARQU)       I=${#GOOD_ARQU[*]} ; GOOD_ARQU[$I]=$FN ;;
 	    *)      echo "Unrecognized: $*" ;;
     esac
 
@@ -50,9 +60,11 @@ function testBad
     local FN="$2"
     local I
     case "$LANG" in
-	($SPARQL10) I=${#BAD_S10[*]} ; BAD_S10[$I]=$FN ;;
-	($SPARQL11) I=${#BAD_S11[*]} ; BAD_S11[$I]=$FN ;;
-	($ARQ)      I=${#BAD_ARQ[*]} ; BAD_ARQ[$I]=$FN ;;
+	($SPARQL10)  I=${#BAD_S10[*]} ; BAD_S10[$I]=$FN ;;
+	($SPARQL11)  I=${#BAD_S11[*]} ; BAD_S11[$I]=$FN ;;
+	($SPARQL11U) I=${#BAD_U11[*]} ; BAD_U11[$I]=$FN ;;
+	($ARQ)       I=${#BAD_ARQ[*]} ; BAD_ARQ[$I]=$FN ;;
+	($ARQU)      I=${#BAD_ARQU[*]} ; BAD_ARQU[$I]=$FN ;;
 	    *)      echo "Unrecognized: $*" ;;
     esac
 
@@ -130,6 +142,28 @@ EOF
     for f in "${BAD_ARQ[@]}"
     do
       output "$f" "mfx:NegativeSyntaxTestARQ"
+      done
+
+    # SPARQL 1.1 Update
+    for f in "${GOOD_U11[@]}"
+    do
+      output "$f" "mf:PositiveUpdateSyntaxTest11"
+      done
+
+    for f in "${BAD_U11[@]}"
+    do
+      output "$f" "mf:NegativeUpdateSyntaxTest11"
+      done
+
+    # ARQ 1.1 Update
+    for f in "${GOOD_ARQU[@]}"
+    do
+      output "$f" "mf:PositiveUpdateSyntaxTestARQ"
+      done
+
+    for f in "${BAD_ARQ11[@]}"
+    do
+      output "$f" "mf:NegativeUpdateSyntaxTestARQ"
       done
 
 ## Trailer

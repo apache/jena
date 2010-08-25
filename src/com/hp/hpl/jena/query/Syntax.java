@@ -30,10 +30,6 @@ public class Syntax extends Symbol
     public static final Syntax syntaxRDQL
                 = new Syntax("http://jena.hpl.hp.com/2003/07/query/RDQL") ;
 
-//    /** SPARQL in XML */
-//    public static final Syntax syntaxSPARQL_X
-//                = new Syntax("http://jena.hpl.hp.com/2003/07/query/SPARQL-X") ;
-
     public static final Syntax syntaxAlgebra
                 = new Syntax("http://jena.hpl.hp.com/2003/07/query/SPARQL_Algebra") ;
     
@@ -42,7 +38,6 @@ public class Syntax extends Symbol
         querySyntaxNames.put("sparql",      Syntax.syntaxSPARQL) ;
         querySyntaxNames.put("sparql_10",   Syntax.syntaxSPARQL_10) ;
         querySyntaxNames.put("sparql_11",   Syntax.syntaxSPARQL_11) ;
-//        querySyntaxNames.put("sparql-x",    Syntax.syntaxSPARQL_X) ;
         querySyntaxNames.put("arq",         Syntax.syntaxARQ) ;
         querySyntaxNames.put("rdql",        Syntax.syntaxRDQL) ;
         querySyntaxNames.put("alg",         Syntax.syntaxAlgebra) ;
@@ -71,8 +66,7 @@ public class Syntax extends Symbol
         if ( sym.equals(syntaxSPARQL) )      return syntaxSPARQL ;
         if ( sym.equals(syntaxSPARQL_10) )   return syntaxSPARQL_10 ;
         if ( sym.equals(syntaxSPARQL_11) )   return syntaxSPARQL_11 ;
-//        if ( sym.equals(syntaxSPARQL_X) )    return syntaxSPARQL_X ;
-        if ( sym.equals(syntaxAlgebra) )    return syntaxAlgebra ;
+        if ( sym.equals(syntaxAlgebra) )     return syntaxAlgebra ;
         return null ;
     }
     
