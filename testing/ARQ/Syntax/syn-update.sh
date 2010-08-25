@@ -235,3 +235,7 @@ DELETE DATA {
   }
 }
 EOF
+
+N=$((N+1)) ; testBad $SPARQL11U $(fname "syntax-update-bad-" $N) <<EOF
+INSERT WHERE { ?s ?p ?o }
+EOF

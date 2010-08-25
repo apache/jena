@@ -12,9 +12,8 @@ import org.junit.runners.Suite.SuiteClasses ;
 
 @RunWith(Suite.class)
 @SuiteClasses( 
-   {  TestSPARQLUpdateSyntax.class
-   , TestDatasetUpdaterMem.class
-})
+   {  TestDatasetUpdaterMem.class
+   })
 public class TS_Update
 {
 
