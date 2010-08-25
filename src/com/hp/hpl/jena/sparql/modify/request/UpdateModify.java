@@ -57,7 +57,7 @@ public class UpdateModify extends UpdateWithUsing
 
     @Override
     public void visit(UpdateVisitor visitor)
-    {}
+    { visitor.visit(this) ; }
 }
 
 /*

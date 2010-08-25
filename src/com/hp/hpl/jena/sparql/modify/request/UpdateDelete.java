@@ -13,7 +13,7 @@ public class UpdateDelete extends UpdateWithUsing
     private final QuadsAcc deletePattern ;
     private Element wherePattern ;
     
-    public UpdateDelete() 
+    private UpdateDelete() 
     { 
         this.deletePattern = new QuadsAcc() ;
         this.wherePattern = null ;

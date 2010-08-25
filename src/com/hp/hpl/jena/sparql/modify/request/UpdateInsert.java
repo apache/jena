@@ -13,7 +13,7 @@ public class UpdateInsert extends UpdateWithUsing
     private final QuadsAcc insertPattern ;
     private Element wherePattern ;
     
-    public UpdateInsert() 
+    private UpdateInsert() 
     { 
         this.insertPattern = new QuadsAcc() ;
         this.wherePattern = null ;

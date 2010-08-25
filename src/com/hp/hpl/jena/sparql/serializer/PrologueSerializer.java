@@ -22,24 +22,6 @@ public class PrologueSerializer
         printPrefixes(prologue, out) ;
     }
     
-//  public String toString()
-//  { return PrintUtils.toString(this) ; }
-//  
-//  public String toString(PrefixMapping pmap)
-//  {
-//      IndentedLineBuffer buff = new IndentedLineBuffer() ;
-//      IndentedWriter out = buff.getIndentedWriter() ;
-//      this.output(out) ;
-//      return buff.toString() ;
-//  }
-//
-//  public void output(IndentedWriter out)
-//  {
-//      printBase(out) ;
-//      printPrefixes(out) ;
-//  }
-//  
-    
     private static void printBase(Prologue prologue, IndentedWriter out)
     {
         if ( prologue.getBaseURI() != null && prologue.explicitlySetBaseURI() )

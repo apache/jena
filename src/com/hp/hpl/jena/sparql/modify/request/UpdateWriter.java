@@ -32,11 +32,15 @@ public class UpdateWriter
         if ( sCxt == null )
             sCxt = new SerializationContext(request) ;
         prologue(out, sCxt.getPrologue()) ;
-        out.println() ;
+        boolean addSeparator = (request.getOperations().size() > 1) ;
         for ( Update update : request.getOperations() )
         {
             outputUpdate(update, out, sCxt) ;
+            if ( addSeparator )
+                out.println(" ;") ;
         }
+        out.ensureStartOfLine() ;
+        out.flush() ;
     }
     
     public static void output(Update update, IndentedWriter out, SerializationContext sCxt)
@@ -45,6 +49,7 @@ public class UpdateWriter
             sCxt = new SerializationContext() ;
         prologue(out, sCxt.getPrologue()) ;
         outputUpdate(update, out, sCxt) ;
+        out.flush() ;
     }
     
     
@@ -56,10 +61,15 @@ public class UpdateWriter
 
     private static void prologue(IndentedWriter out, Prologue prologue)
     {
+        int row1 = out.getRow() ;
         PrologueSerializer.output(out, prologue) ;
+        int row2 = out.getRow() ;
+        if ( row1 != row2 )
+            out.newline() ;
     }
 
 
+    // newline policy - don't add until needed.
     private static class Writer implements UpdateVisitor
     {
         private static final int BLOCK_INDENT = 2 ;
@@ -74,6 +84,7 @@ public class UpdateWriter
 
         private void visitDropClear(String name, UpdateDropClear update)
         {
+            out.ensureStartOfLine() ;
             out.print(name) ;
             out.print(" ") ;
             if ( update.isSilent() )
@@ -92,7 +103,6 @@ public class UpdateWriter
                 out.print("UpdateDropClear BROKEN") ;
                 throw new ARQException("Malformed UpdateDrop") ;
             }
-            out.println() ;
         }
     
         public void visit(UpdateDrop update)
@@ -103,6 +113,7 @@ public class UpdateWriter
 
         public void visit(UpdateCreate update)
         {
+            out.ensureStartOfLine() ;
             out.print("CREATE") ;
             out.print(" ") ;
             if ( update.isSilent() )
@@ -110,11 +121,11 @@ public class UpdateWriter
             
             String s = FmtUtils.stringForNode(update.getGraph(), sCxt) ;
             out.print(s) ;
-            out.println() ;
         }
 
         public void visit(UpdateLoad update)
         {
+            out.ensureStartOfLine() ;
             out.print("LOAD") ;
             out.print(" ") ;
             String $ = update.getSource() ;
@@ -126,7 +137,6 @@ public class UpdateWriter
                 out.print(" INTO GRAPH ") ;
                 outputStringAsURI(update.getDest()) ;
             }
-            out.println();
         }
 
         private void outputStringAsURI(String uriStr)
@@ -137,16 +147,18 @@ public class UpdateWriter
         
         public void visit(UpdateDataInsert update)
         {
+            out.ensureStartOfLine() ;
             out.println("INSERT DATA {") ;
             outputQuads(update.getQuads()) ;
-            out.println("}") ;
+            out.print("}") ;
         }
 
         public void visit(UpdateDataDelete update)
         {
+            out.ensureStartOfLine() ;
             out.println("DELETE DATA {") ;
             outputQuads(update.getQuads()) ;
-            out.println("}") ;
+            out.print("}") ;
         }
 
         // Prettier later.
@@ -228,53 +240,58 @@ public class UpdateWriter
         
         public void visit(UpdateDeleteWhere update)
         {
+            out.ensureStartOfLine() ;
             out.println("DELETE WHERE {") ;
             outputQuads(update.getQuads()) ;
-            out.println("}") ;
+            out.print("}") ;
         }
 
         public void visit(UpdateModify update)
         {
+            out.ensureStartOfLine() ;
             if ( update.getWithIRI() != null )
             {
+                //out.ensureStartOfLine() ;
                 out.print("WITH ") ;
                 outputStringAsURI(update.getWithIRI()) ;
-                out.println() ;
             }
             
-            for ( String x : update.getUsing() )
-            {
-                out.print("USING ") ;
-                outputStringAsURI(x) ;
-                out.println() ;
-            }
-            
-            for ( String x : update.getUsingNamed() )
-            {
-                out.print("USING NAMED ") ;
-                outputStringAsURI(x) ;
-                out.println() ;
-            }
-             
             List<Quad> deleteQuads = update.getDeleteQuads() ;
             if ( deleteQuads.size() > 0 )
             {
+                out.ensureStartOfLine() ;
                 out.println("DELETE {") ;
                 outputQuads(deleteQuads) ;
-                out.println("}") ;
+                out.print("}") ;
             }
             
             List<Quad> insertQuads = update.getInsertQuads() ;
             if ( insertQuads.size() > 0 )
             {
+                out.ensureStartOfLine() ;
                 out.println("INSERT {") ;
                 outputQuads(insertQuads) ;
-                out.println("}") ;
+                out.print("}") ;
             }
             
+            for ( String x : update.getUsing() )
+            {
+                out.ensureStartOfLine() ;
+                out.print("USING ") ;
+                outputStringAsURI(x) ;
+            }
+            
+            for ( String x : update.getUsingNamed() )
+            {
+                out.ensureStartOfLine() ;
+                out.print("USING NAMED ") ;
+                outputStringAsURI(x) ;
+            }
+             
             Element el = update.getWherePattern() ;
             if ( el != null )
             {
+                out.ensureStartOfLine() ;
                 out.print("WHERE") ;
                 out.incIndent(BLOCK_INDENT) ;
                 out.newline() ;
@@ -282,7 +299,6 @@ public class UpdateWriter
                 fmtElement.visitAsGroup(el) ;
                 //el.visit(fmtElement) ;
                 out.decIndent(BLOCK_INDENT) ;
-                out.newline() ;
             }
         }
         

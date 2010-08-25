@@ -15,6 +15,7 @@ import java.util.HashSet ;
 import java.util.Iterator ;
 import java.util.Set ;
 
+import org.openjena.atlas.io.IndentedLineBuffer ;
 import org.openjena.atlas.io.IndentedWriter ;
 import org.openjena.atlas.lib.StrUtils ;
 import org.openjena.atlas.logging.Log ;
@@ -159,42 +160,42 @@ public class RunARQ
     
     private static void sparql11update()
     {
-//        sparql11update_1("LOAD  <foo>  INTO  GRAPH  <blah>") ;
-//        sparql11update_1("LOAD  <foo>") ;
-//        sparql11update_1("DROP  ALL") ;
-//        sparql11update_1("DROP  NAMED") ;
-//        sparql11update_1("CLEAR  DEFAULT") ;
-//        
-//        sparql11update_1("DELETE WHERE { ?s ?p ?o }") ;
-//        sparql11update_1("DELETE DATA { <s> <p> <o> }") ;
-//        
-//        sparql11update_1("PREFIX : <http://example>",
-//                         "WITH :g",
-//                         "DELETE { ?s ?p ?o }",
-//                         "INSERT { ?s ?p ?o }",
-//                         "USING <g>",
-//                         "USING NAMED :gn",
-//                         "WHERE",
-//                         "{ ?s ?p ?o }"
-//                         ) ;
-//        sparql11update_1("PREFIX : <http://example>",
-//                         "WITH :g",
-//                         "DELETE { ?s ?p ?o }",
-//                         //"INSERT { ?s ?p ?o }",
-//                         "USING <g>",
-//                         "USING NAMED :gn",
-//                         "WHERE",
-//                         "{ ?s ?p ?o }"
-//                         ) ;
-//        sparql11update_1("PREFIX : <http://example>",
-//                         //"WITH :g",
-//                         //"DELETE { ?s ?p ?o }",
-//                         "INSERT { ?s ?p ?o }",
-//                         //"USING <g>",
-//                         //"USING NAMED :gn",
-//                         "WHERE",
-//                         "{ ?s ?p ?o }"
-//                         ) ;
+        sparql11update_1("LOAD  <foo>  INTO  GRAPH  <blah>") ;
+        sparql11update_1("LOAD  <foo>") ;
+        sparql11update_1("DROP  ALL") ;
+        sparql11update_1("DROP  NAMED") ;
+        sparql11update_1("CLEAR  DEFAULT") ;
+        
+        sparql11update_1("DELETE WHERE { ?s ?p ?o }") ;
+        sparql11update_1("DELETE DATA { <s> <p> <o> }") ;
+        
+        sparql11update_1("PREFIX : <http://example>",
+                         "WITH :g",
+                         "DELETE { ?s ?p ?o }",
+                         "INSERT { ?s ?p ?o }",
+                         "USING <g>",
+                         "USING NAMED :gn",
+                         "WHERE",
+                         "{ ?s ?p ?o }"
+                         ) ;
+        sparql11update_1("PREFIX : <http://example>",
+                         "WITH :g",
+                         "DELETE { ?s ?p ?o }",
+                         //"INSERT { ?s ?p ?o }",
+                         "USING <g>",
+                         "USING NAMED :gn",
+                         "WHERE",
+                         "{ ?s ?p ?o }"
+                         ) ;
+        sparql11update_1("PREFIX : <http://example>",
+                         //"WITH :g",
+                         //"DELETE { ?s ?p ?o }",
+                         "INSERT { ?s ?p ?o }",
+                         //"USING <g>",
+                         //"USING NAMED :gn",
+                         "WHERE",
+                         "{ ?s ?p ?o }"
+                         ) ;
         sparql11update_1("PREFIX : <http://example>",
                          //"WITH :g",
                          //"DELETE { ?s ?p ?o }",
@@ -214,49 +215,26 @@ public class RunARQ
         System.out.println("----Input:") ;
         System.out.println(str$);
         Reader r = new StringReader(str$) ;
+        
         ParserSPARQL11Update p = new ParserSPARQL11Update() ;
         UpdateRequest update = new UpdateRequest() ;
         p.parse(update, str$) ;
+        
         System.out.println("----Output:") ;
         SerializationContext sCxt = new SerializationContext(update) ;
         UpdateWriter.output(update, IndentedWriter.stdout, sCxt) ;
         IndentedWriter.stdout.flush();
-        divider() ;
         
+        IndentedLineBuffer buff = new IndentedLineBuffer() ;
+        UpdateWriter.output(update, buff, sCxt) ;
         
-//        SPARQLParser11 parser = null ;
-//        try {
-//            parser = new SPARQLParser11(r) ;
-//            //parser.setUpdateRequest() ;
-//            parser.setPrologue(new Prologue()) ;
-//            parser.UpdateUnit() ;
-//            //validateParsedUpdate(update) ;
-//        }
-//        catch (com.hp.hpl.jena.sparql.lang.sparql_11.ParseException ex)
-//        { 
-//            throw new QueryParseException(ex.getMessage(),
-//                                          ex.currentToken.beginLine,
-//                                          ex.currentToken.beginColumn
-//            ) ; }
-//        catch (com.hp.hpl.jena.sparql.lang.sparql_11.TokenMgrError tErr)
-//        {
-//            // Last valid token : not the same as token error message - but this should not happen
-//            int col = parser.token.endColumn ;
-//            int line = parser.token.endLine ;
-//            throw new QueryParseException(tErr.getMessage(), line, col) ; }
-//
-//        catch (QueryException ex) { throw ex ; }
-//        catch (JenaException ex)  { throw new QueryException(ex.getMessage(), ex) ; }
-//        catch (Error err)
-//        {
-//            // The token stream can throw errors.
-//            throw new QueryParseException(err.getMessage(), err, -1, -1) ;
-//        }
-//        catch (Throwable th)
-//        {
-//            Log.fatal(RunARQ.class, "Unexpected throwable: ",th) ;
-//            throw new QueryException(th.getMessage(), th) ;
-//        }
+
+        { // reparse
+        String str2 = buff.asString() ;
+        ParserSPARQL11Update p2 = new ParserSPARQL11Update() ;
+        UpdateRequest update2 = new UpdateRequest() ;
+        p2.parse(update2, str2) ;
+        }
     }
     
     private static void execTimed(Query query, Model model)
