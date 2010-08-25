@@ -3,6 +3,9 @@ package dev;
 public class DevARQ
 {
     // rename QueryParseException or sort out an UpdateException
+    // and a geneal name check.
+    
+    // Check for out-of-scope group vars.
     
     // NodeToLabelMapBNode
     //   Efficiently issues?

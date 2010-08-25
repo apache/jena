@@ -7,10 +7,10 @@
 
 package com.hp.hpl.jena.sparql.modify.request;
 
-import java.io.FileInputStream ;
-import java.io.FileNotFoundException ;
 import java.io.InputStream ;
 import java.io.Reader ;
+
+import org.openjena.atlas.io.IO ;
 
 import com.hp.hpl.jena.query.QuerySolution ;
 import com.hp.hpl.jena.sparql.ARQNotImplemented ;
@@ -42,13 +42,11 @@ public class UpdateFactory
         if ( fileName.equals("-") )
             in = System.in ;
         else
-            try
-            {
-                in = new FileInputStream(fileName) ;
-            } catch (FileNotFoundException ex)
-            {
+        {
+            in = IO.openFile(fileName) ;
+            if ( in == null )
                 throw new UpdateException("File not found: "+fileName) ;
-            }
+        }
         return read(in) ;
     }
     
