@@ -1,8 +1,16 @@
-PREFIX  foaf:   <http://xmlns.com/foaf/0.1/>
 PREFIX : <http://example/>
+PREFIX apf: <http://jena.hpl.hp.com/ARQ/property#>
 
 SELECT *
-WHERE { 
-   LET(?x := :xyz)
-   OPTIONAL { ?x1 :q ?z }.
-   }
+{
+  {  
+    LET (?row := 1 )
+    <http://example/ns#foo> apf:splitIRI (?ns1 ?ln1) .
+    ?s1 ?p1 ?ln1 
+  } UNION { 
+    LET (?row := 2 )
+    <http://example/ns#foo> apf:splitIRI (?ns2 ?ln2) .
+    ?s2 ?p2 ?o2
+  }
+}
+

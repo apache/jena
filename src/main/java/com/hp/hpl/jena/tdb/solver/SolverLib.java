@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -107,7 +108,6 @@ public class SolverLib
         // Convert from a QueryIterator (Bindings of Var/Node) to BindingNodeId
         NodeTable nodeTable = nodeTupleTable.getNodeTable() ;
         
-        
         Iterator<BindingNodeId> chain = Iter.map(input, SolverLib.convFromBinding(nodeTable)) ;
         
         for ( Triple triple : triples )
@@ -204,10 +204,12 @@ public class SolverLib
                         // Can occur with BindingProject
                         continue ;
                     
-                    // Rely on the node table cache. 
+                    // Rely on the node table cache for efficency - we will likely be
+                    // repeatedly looking up the same node in different bindings.
                     NodeId id = nodeTable.getNodeIdForNode(n) ;
-                    if ( ! NodeId.doesNotExist(id) )
-                        b.put(v, id) ;
+                    // Even put in "does not exist" for a node now known not to be in the DB.
+                    // Removed at TDB 0.8.7: if ( ! NodeId.doesNotExist(id) )
+                    b.put(v, id) ;
                 }
                 return b ;
             }
@@ -269,6 +271,7 @@ public class SolverLib
 
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
