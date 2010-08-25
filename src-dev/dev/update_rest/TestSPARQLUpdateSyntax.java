@@ -15,6 +15,8 @@ import com.hp.hpl.jena.query.QueryException ;
 import com.hp.hpl.jena.query.QueryParseException ;
 import com.hp.hpl.jena.shared.JenaException ;
 import com.hp.hpl.jena.sparql.lang.sparql_11.SPARQLParser11 ;
+import com.hp.hpl.jena.sparql.modify.request.UpdateRequest ;
+
 import org.openjena.atlas.logging.Log ;
 
 public class TestSPARQLUpdateSyntax
@@ -86,15 +88,16 @@ public class TestSPARQLUpdateSyntax
     {
         //System.out.println(str);
         Reader r = new StringReader(str) ;
+        UpdateRequest request = new UpdateRequest() ;
         SPARQLParser11 parser = null ;
         try {
             parser = new SPARQLParser11(r) ;
-            parser.setUpdateRequest(null) ;
+            parser.setUpdateRequest(request) ;
             parser.UpdateUnit() ;
-            //System.out.println();
-            //validateParsedUpdate(update) ;
-            System.out.println(str);
-            System.out.println();
+//            //System.out.println();
+//            validateParsedUpdate(request) ;
+//            System.out.println(str);
+//            System.updateout.println();
         }
         catch (com.hp.hpl.jena.sparql.lang.sparql_11.ParseException ex)
         { 

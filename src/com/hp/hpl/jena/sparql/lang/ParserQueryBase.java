@@ -9,12 +9,8 @@ package com.hp.hpl.jena.sparql.lang;
 
 import java.util.Stack ;
 
-import org.openjena.atlas.io.IndentedWriter ;
-
 import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.sparql.modify.request.Update ;
-import com.hp.hpl.jena.sparql.modify.request.UpdateWriter ;
-import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
 import com.hp.hpl.jena.update.UpdateRequest ;
 
 public class ParserQueryBase extends ParserBase 
@@ -29,18 +25,31 @@ public class ParserQueryBase extends ParserBase
     }
 
     public Query getQuery() { return query ; }
-    
-    // The ARQ parser is both query and update languages.
-    private UpdateRequest request = null ;
 
+    // The ARQ parser is both query and update languages.
+
+    // ---- SPARQL/Update (Submission)
+    private UpdateRequest requestSubmission = null ;
+
+    protected UpdateRequest getUpdateRequestSubmission() { return requestSubmission ; }
     public void setUpdateRequest(UpdateRequest request)
     {
         setPrologue(request) ;
-        this.request = request ;
+        this.requestSubmission = request ;
         // And create a query because we may have nested selects.
         this.query = new Query () ;
     }
 
+    // SPARQL Update (W3C RECommendation)
+    private com.hp.hpl.jena.sparql.modify.request.UpdateRequest request = null ;
+
+    protected com.hp.hpl.jena.sparql.modify.request.UpdateRequest getUpdate() { return request ; }
+    public void setUpdateRequest(com.hp.hpl.jena.sparql.modify.request.UpdateRequest request)
+    { 
+        this.request = request ;
+        setPrologue(request) ;
+    }
+    
     // Move down to SPARQL 1.1 or rename as ParserBase
     protected void startUpdateOperation() {}// { System.out.println("Start update operation") ; }
     protected void finishUpdateOperation() {}// { System.out.println("Finish update operation") ; }
@@ -54,16 +63,9 @@ public class ParserQueryBase extends ParserBase
     protected void startDataDelete() {}// { System.out.println("Start DELETE DATA") ; }
     protected void finishDataDelete() {}// { System.out.println("Finish DELETE DATA") ; }
     
-    // SPARQL/Update (Submission)
-    protected UpdateRequest getRequest() { return request ; }
-    
     protected void emitUpdate(Update update)
-    { 
-        // TEMP
-        IndentedWriter.stdout.println("---- Emit update") ;
-        SerializationContext sCxt = new SerializationContext() ;
-        UpdateWriter.output(update, IndentedWriter.stdout, sCxt) ;
-        IndentedWriter.stdout.flush();
+    {
+        request.add(update) ;
     }
     
     protected void startSubSelect()

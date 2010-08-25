@@ -154,15 +154,49 @@ public class UpdateWriter
         private void outputQuads(List<Quad> quads)
         {
             out.incIndent(BLOCK_INDENT) ;
-            out.println("--QUADS--") ;
             Node g = Quad.tripleInQuad ;
+            boolean inBlock = false ;
             for ( Quad q : quads )
             {
-                outputQuad(q) ;
+                if ( q.getGraph() != g )
+                {
+                    if ( inBlock )
+                    {
+                        out.decIndent(BLOCK_INDENT) ;
+                        out.println("}") ;
+                        inBlock = false ;
+                    }
+                    g = q.getGraph() ;
+                    if ( g != Quad.tripleInQuad )
+                    {
+                        out.incIndent(BLOCK_INDENT) ;
+                        out.print("GRAPH ") ;
+                        output(g) ;
+                        out.println(" {") ;
+                        inBlock = true ;
+                    }
+                    
+                }
+                    
+                outputTripleOfQuad(q) ;
+                out.println(" .") ;
+            }
+            
+            if ( inBlock )
+            {
+                out.decIndent(BLOCK_INDENT) ;
+                out.println("}") ;
+                inBlock = false ;
             }
             out.decIndent(BLOCK_INDENT) ;
         }
         
+        private void output(Node node)
+        { 
+            String $ = FmtUtils.stringForNode(node, sCxt) ;
+            out.print($) ;
+        }
+
         private void outputQuad(Quad quad)
         {
             String qs = FmtUtils.stringForQuad(quad, sCxt.getPrefixMapping()) ;

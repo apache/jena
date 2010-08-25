@@ -17,8 +17,9 @@ import com.hp.hpl.jena.query.QueryException ;
 import com.hp.hpl.jena.query.QueryParseException ;
 import com.hp.hpl.jena.shared.JenaException ;
 import com.hp.hpl.jena.sparql.lang.sparql_11.SPARQLParser11 ;
+import com.hp.hpl.jena.sparql.modify.request.UpdateRequest ;
+
 import org.openjena.atlas.logging.Log ;
-import com.hp.hpl.jena.update.UpdateRequest ;
 import com.hp.hpl.jena.util.FileUtils ;
 
 
