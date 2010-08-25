@@ -311,7 +311,7 @@ void Update1() : { UpdateSubmission up = null ; GraphMgt mgt ; }
 {
   ( up = Modify() | up = Insert() | up = Delete() |
      up = Load() | up = Clear() | up = Create() | up = Drop() )
-    { getRequest().addUpdate(up) ; }
+    { getUpdateRequestSubmission().addUpdate(up) ; }
 }
 UpdateModify Modify() :
 { UpdateModify up = new UpdateModify() ; String iri ; Template template ; Element el ; }

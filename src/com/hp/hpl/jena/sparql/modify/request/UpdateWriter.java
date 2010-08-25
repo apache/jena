@@ -162,7 +162,6 @@ public class UpdateWriter
         }
 
         // Prettier later.
-        // XXX TODO GRAPH
         private void outputQuads(List<Quad> quads)
         {
             out.incIndent(BLOCK_INDENT) ;
@@ -187,7 +186,6 @@ public class UpdateWriter
                         out.println(" {") ;
                         inBlock = true ;
                     }
-                    
                 }
                     
                 outputTripleOfQuad(q) ;

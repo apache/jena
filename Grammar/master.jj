@@ -397,7 +397,7 @@ void Update1() : { UpdateSubmission up = null ; GraphMgt mgt ; }
 {
   (  up = Modify() | up = Insert() | up = Delete() | 
      up = Load() | up = Clear() |  up = Create() | up = Drop() )
-    { getRequest().addUpdate(up) ; }
+    { getUpdateRequestSubmission().addUpdate(up) ; }
 }
 
 UpdateModify Modify() : 
