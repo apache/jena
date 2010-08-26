@@ -36,12 +36,17 @@ import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.sparql.algebra.Algebra ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.Transform ;
+import com.hp.hpl.jena.sparql.algebra.op.OpFilter ;
 import com.hp.hpl.jena.sparql.algebra.opt.TransformPropertyFunction ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.RenamerVars ;
 import com.hp.hpl.jena.sparql.engine.main.VarRename ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
+import com.hp.hpl.jena.sparql.expr.ExprAggregator ;
 import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
+import com.hp.hpl.jena.sparql.expr.ExprList ;
+import com.hp.hpl.jena.sparql.expr.ExprTransformCopy ;
+import com.hp.hpl.jena.sparql.expr.ExprTransformer ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.function.FunctionEnvBase ;
 import com.hp.hpl.jena.sparql.lang.ParserSPARQL11Update ;
@@ -79,12 +84,30 @@ public class RunARQ
 
     // ----
     
+    /** Replace aggregate expressiomns by their variable used to bind the caculated value */ 
+    static class ExprTransformNoAgg extends ExprTransformCopy
+    {
+        @Override
+        public Expr transform(ExprAggregator eAgg)       
+        { return eAgg.getAggVar()  ; }
+    }
+    
     public static void main(String[] argv) throws Exception
     {
 //        qparse("--print=query", "--print=op", "PREFIX : <http://example/> SELECT count(*) { ?x :p ?p .}") ; System.exit(0) ; 
 //        qparse("--print=query", "--print=op", "SELECT (count(*)) { }") ; System.exit(0) ; 
-        qparse("--query=Q.rq", "--print=query", "--print=op") ; System.exit(0) ; 
+        //qparse("--query=Q.rq", "--print=query", "--print=op") ; System.exit(0) ;
         
+        {
+            Query q = QueryFactory.read("Q.rq") ;
+            Op op = Algebra.compile(q) ;
+            OpFilter f = (OpFilter)op ;
+            ExprList e1 =  f.getExprs() ;
+            System.out.println(e1) ;
+            ExprList e2 = ExprTransformer.transform(new ExprTransformNoAgg(), e1) ;
+            System.out.println(e2) ;
+            System.exit(0) ;
+        }
 //        arq.qtest.main("testing/ARQ/Syntax/Syntax-SPARQL-Update/manifest.ttl") ;
 //        System.exit(0) ; 
         
