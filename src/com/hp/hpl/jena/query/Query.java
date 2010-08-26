@@ -472,15 +472,15 @@ public class Query extends Prologue implements Cloneable
     // Unlike SELECT expressions, here the expression itself (E_Aggregator) knows its variable
     // Commonality?
     
-    //private List<E_Aggregator> aggregators = new ArrayList<E_Aggregator>() ;
-    private Map<Var, ExprAggregator> aggregators_ = new HashMap<Var, ExprAggregator>() ;
+    private List<ExprAggregator> aggregators = new ArrayList<ExprAggregator>() ;
+    // Using a LinkedhashMap does seem to give strong enugh hashCode equality. 
+    private Map<Var, ExprAggregator> aggregatorsMap = new HashMap<Var, ExprAggregator>() ;
     
     // Note any E_Aggregator created for reuse.
     private Map<String, Var> aggregatorsAllocated = new HashMap<String, Var>() ; 
     
-    public boolean hasAggregators() { return aggregators_.size() != 0  ; }
-    //public List<E_Aggregator> getAggregators() { return aggregators ; }//ExprVar list?
-    public Map<Var, ExprAggregator> getAggregators() { return aggregators_ ; }//ExprVar list?
+    public boolean hasAggregators() { return aggregators.size() != 0  ; }
+    public List<ExprAggregator> getAggregators() { return aggregators ; }
     
     public Expr allocAggregate(Aggregator agg)
     {
@@ -491,7 +491,7 @@ public class Query extends Prologue implements Cloneable
         Var v = aggregatorsAllocated.get(key); 
         if ( v != null )
         {
-            ExprAggregator eAgg = aggregators_.get(v) ; 
+            ExprAggregator eAgg = aggregatorsMap.get(v) ; 
             if ( ! agg.equals(eAgg.getAggregator()) )
                 Log.warn(Query.class, "Internal inconsistency: Aggregator: "+agg) ;
             return eAgg ;
@@ -500,7 +500,8 @@ public class Query extends Prologue implements Cloneable
         v = allocInternVar() ;
         ExprAggregator aggExpr = new ExprAggregator(v, agg) ;
         aggregatorsAllocated.put(key, v) ;
-        aggregators_.put(v, aggExpr) ;
+        aggregatorsMap.put(v, aggExpr) ;
+        aggregators.add(aggExpr) ;
         return aggExpr ;
         
 //        E_Aggregator expr = aggregatorsAllocated.get(key); 

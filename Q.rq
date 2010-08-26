@@ -1,7 +1,9 @@
 PREFIX : <http://people.example/>
 
-SELECT * # ?p (1+2 AS ?x) (count(?o) AS ?c)
+SELECT (count(?o) AS ?c)
 WHERE
 { ?s ?p ?o
-} #GROUP BY ?s
+} 
+GROUP BY ?s
+#HAVING (?c > 45)
 HAVING (count(?o) > 45)

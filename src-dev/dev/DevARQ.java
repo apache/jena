@@ -7,8 +7,9 @@ public class DevARQ
     // Use the variable, not the whole E_Agg.
     // Restrict E_Agg to the (group)
     
-    // 1 - Never let ExprAgg out of group.  AlgebraGeneration => use variable.
-    // 2 - 
+    // 1 - Never let ExprAgg out of group.  
+    //  AlgebraGenerator => use variable.
+    // 2 - AlgebraGenerator - code like (project)
     
     // Printing of SPARQL 1.1 BGPs.
     
