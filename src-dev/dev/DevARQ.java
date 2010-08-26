@@ -2,11 +2,11 @@ package dev;
 
 public class DevARQ
 {
-    // Update request execution.
-    // Update migration.
+    // No org.json.
+    
+    // UpdateProcess and UpdateEngine
     // UpdateDelete, UpdateInsert -> Subclass UpdateModify otherwise not needed.
     
-    // Update execution ; UpdateEngine
     // Transition: SUBMISSION
     // --------
     // INSERT/DELETE DATA [INTO? <uri>] {} => INSERT/DELETE DATA { GRAPH <uri> {}}

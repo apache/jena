@@ -19,6 +19,7 @@ public abstract class UpdateDropClear extends Update
     protected UpdateDropClear(Target target, boolean silent)
     { this.target = target ; this.silent = silent ; }
     
+    public Target getTarget() { return target ; }
     public boolean isSilent() { return silent ; }
     
     public boolean isDefault()  { return target.isDefault() ; }

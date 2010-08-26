@@ -36,6 +36,16 @@ public class Target
     public boolean isOneGraph() { return decl == IRI$ ; }
     
     public Node getGraph()      { return graphIRI ; }
+    
+    
+    @Override
+    public String toString()
+    {
+        if ( decl != null )
+            return decl.toString() ; 
+        else 
+            return graphIRI.toString() ;
+    }
 }
 
 /*

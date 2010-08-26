@@ -7,6 +7,7 @@
 package com.hp.hpl.jena.sparql.modify.request;
 
 import java.util.ArrayList ;
+import java.util.Iterator ;
 import java.util.List ;
 
 import com.hp.hpl.jena.graph.Graph ;
@@ -14,6 +15,7 @@ import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.QueryExecutionFactory ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
+import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.engine.Plan ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
@@ -22,9 +24,13 @@ import com.hp.hpl.jena.sparql.engine.binding.BindingRoot ;
 import com.hp.hpl.jena.sparql.modify.GraphStoreAction ;
 import com.hp.hpl.jena.sparql.modify.GraphStoreUtils ;
 import com.hp.hpl.jena.sparql.syntax.Element ;
+import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
 import com.hp.hpl.jena.update.GraphStore ;
+import com.hp.hpl.jena.update.UpdateException ;
 import com.hp.hpl.jena.util.FileManager ;
 
+// For in-memory graphs ONLY
+// Functional first, rather than efficient.
 public class UpdateEngine implements UpdateVisitor
 {
     private GraphStore graphStore ;
@@ -40,23 +46,70 @@ public class UpdateEngine implements UpdateVisitor
     // finishOperation
     
     public void visit(UpdateDrop update)
-    {}
+    { execDropClear(update, false) ; }
 
     public void visit(UpdateClear update)
-    {}
+    { execDropClear(update, true) ; }
+
+    private void execDropClear(UpdateDropClear update, boolean isClear)
+    {
+        //update.isSilent() ;
+        
+        if ( update.isAll() )
+        {
+            execDropClear(update, null, false) ;    // Always clear.
+            execDropClearAllNamed(update, isClear) ;
+        }
+        else if ( update.isAllNamed() )
+            execDropClearAllNamed(update, isClear) ;
+        else if ( update.isDefault() )
+            execDropClear(update, null, isClear) ;
+        else if ( update.isOneGraph() )
+            execDropClear(update, update.getGraph(), isClear) ;
+        else
+            throw new ARQInternalErrorException("Target is undefined: "+update.getTarget()) ;
+    }
+
+    private void execDropClear(UpdateDropClear update, Node g, boolean isClear)
+    {
+        if ( isClear )
+            graph(g).getBulkUpdateHandler().removeAll() ;
+        else
+            // Drop.
+            graphStore.removeGraph(g) ;
+    }
+
+    private void execDropClearAllNamed(UpdateDropClear update, boolean isClear)
+    {
+        Iterator<Node> iter = graphStore.listGraphNodes() ;
+        for ( ; iter.hasNext() ; )
+        {
+            Node gn = iter.next() ;
+            execDropClear(update, gn, isClear) ;
+        }
+    }
 
     public void visit(UpdateCreate update)
-    {}
+    {
+        
+        Node g = update.getGraph() ;
+        if ( g == null )
+            return ;
+        if ( graphStore.containsGraph(g) )
+        {
+            if ( ! update.isSilent() )
+                error("Graph store already contains graph : "+g) ;
+            return ;
+        }
+        // In-memory specific 
+        graphStore.addGraph(g, GraphFactory.createDefaultGraph()) ;
+    }
 
     public void visit(UpdateLoad update)
     {
         String source = update.getSource() ;
         Node dest = update.getDest() ;
-        Graph g ;
-        if ( dest == null )
-            g = graphStore.getDefaultGraph() ;
-        else
-            g = graphStore.getGraph(dest) ;
+        Graph g = graph(dest) ;
         Model model = ModelFactory.createModelForGraph(g) ;
         FileManager.get().readModel(model, source) ;
     }
@@ -74,7 +127,12 @@ public class UpdateEngine implements UpdateVisitor
     }
 
     public void visit(UpdateDeleteWhere update)
-    {}
+    {
+        // Convert quads to a pattern.
+        Element el = null ;
+        final List<Binding> bindings = evalBindings(el) ;
+        // XXX
+    }
 
     public void visit(UpdateModify update)
     {
@@ -110,6 +168,19 @@ public class UpdateEngine implements UpdateVisitor
                 bindings.add(BindingRoot.create()) ;
         }
         return bindings ;
+    }
+    
+    private Graph graph(Node gn)
+    {
+        if ( gn == null )
+            return graphStore.getDefaultGraph() ;
+        else
+            return graphStore.getGraph(gn) ;
+    }
+
+    private void error(String msg)
+    {
+        throw new UpdateException(msg) ;
     }
 
 }
