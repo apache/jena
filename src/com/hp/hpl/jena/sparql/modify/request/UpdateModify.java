@@ -49,7 +49,6 @@ public class UpdateModify extends UpdateWithUsing
         return insertPattern.getQuads() ;
     }
 
-
     public Element getWherePattern()
     {
         return wherePattern ;

@@ -942,7 +942,7 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
   }
 
   final public Update Load() throws ParseException {
-                  String url ; String dest = null ;
+                  String url ; Node dest = null ;
     jj_consume_token(LOAD);
     url = IRIref();
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -993,7 +993,7 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
   }
 
   final public Update Create() throws ParseException {
-                    String iri ; boolean silent = false ;
+                    Node iri ; boolean silent = false ;
     jj_consume_token(CREATE);
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case SILENT:
@@ -1121,16 +1121,16 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
     }
   }
 
-  final public String GraphRef() throws ParseException {
-                      String iri ;
+  final public Node GraphRef() throws ParseException {
+                    String iri ;
     jj_consume_token(GRAPH);
     iri = IRIref();
-      {if (true) return iri ;}
+      {if (true) return createNode(iri) ;}
     throw new Error("Missing return statement in function");
   }
 
   final public Target GraphRefAll() throws ParseException {
-                         String iri ;
+                         Node iri ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case GRAPH:
       iri = GraphRef();

@@ -11,19 +11,18 @@ import com.hp.hpl.jena.graph.Node ;
 
 public class UpdateCreate extends Update
 {
-    protected final String iri ;
+    protected final Node graphRef ;
     protected final boolean silent ;
     
-    public UpdateCreate(String iri, boolean silent)
+    public UpdateCreate(Node iri, boolean silent)
     { 
-        this.iri = iri ; 
+        this.graphRef = iri ; 
         this.silent = silent ;
     }
     
-    public boolean isSilent() { return silent ; }
+    public boolean isSilent()   { return silent ; }
     
-    public String getGraphIRI() { return iri ; }
-    public Node getGraph()      { return Node.createURI(iri) ; }
+    public Node getGraph()      { return graphRef ; }
 
 
     @Override

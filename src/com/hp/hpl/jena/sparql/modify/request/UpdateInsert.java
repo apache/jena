@@ -8,6 +8,7 @@ package com.hp.hpl.jena.sparql.modify.request;
 
 import com.hp.hpl.jena.sparql.syntax.Element ;
 
+//NOT IN USE
 public class UpdateInsert extends UpdateWithUsing
 {
     private final QuadsAcc insertPattern ;

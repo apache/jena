@@ -82,13 +82,12 @@ public class RunARQ
 
     public static void main(String[] argv) throws Exception
     {
-//        qparse("--print=query", "--print=op", "PREFIX : <http://example/> SELECT count(*) { ?x :p ?p .}") ; System.exit(0) ; 
-//        qparse("--print=query", "--print=op", "SELECT (count(*)) { }") ; System.exit(0) ; 
-        qparse("--query=Q.rq", "--print=query", "--print=op") ; System.exit(0) ;
-        
-//        arq.qtest.main("testing/ARQ/Syntax/Syntax-SPARQL-Update/manifest.ttl") ;
-//        System.exit(0) ; 
-        
+        //qparse("--query=Q.rq", "--print=query", "--print=op") ; System.exit(0) ;
+        sparql11update() ; System.exit(0) ; 
+
+        String DIR = "WorkSpace/PropertyPathTestCases" ;
+        arq.arq.main("-v", "--query="+DIR+"/pp-all-03.rq", "--data="+DIR+"/data-path-1.ttl") ; System.exit(0) ;
+
         if ( false )
         {
             Query q = QueryFactory.read("Q.arq") ;
@@ -104,13 +103,6 @@ public class RunARQ
             System.out.println(op) ;
             System.exit(0) ;
         }
-        
-        sparql11update() ; System.exit(0) ; 
-        
-        String DIR = "WorkSpace/PropertyPathTestCases" ;
-        
-        arq.arq.main("-v", "--query="+DIR+"/pp-all-03.rq", "--data="+DIR+"/data-path-1.ttl") ; System.exit(0) ;
-        
         
         /*
          * urn:x-arq:DefaultGraphNode -- generated
@@ -169,48 +161,53 @@ public class RunARQ
     private static void sparql11update()
     {
         sparql11update_1("LOAD  <foo>  INTO  GRAPH  <blah>") ;
+        sparql11update_1("BASE <http://example/> PREFIX : <http://prefix/> LOAD  <foo>  INTO  GRAPH  :local") ;
+        
         sparql11update_1("LOAD  <foo>") ;
-        sparql11update_1("DROP  ALL") ;
-        sparql11update_1("DROP  NAMED") ;
-        sparql11update_1("CLEAR  DEFAULT") ;
-        
-        sparql11update_1("DELETE WHERE { ?s ?p ?o }") ;
-        sparql11update_1("DELETE DATA { <?s> <p> <o> }") ;
-        
-        sparql11update_1("BASE <base:> ",
-                         "PREFIX : <http://example/>",
-                         "WITH :g",
-                         "DELETE { <s> ?p ?o }",
-                         "INSERT { ?s ?p <#o> }",
-                         "USING <g>",
-                         "USING NAMED :gn",
-                         "WHERE",
-                         "{ ?s ?p ?o }"
-                         ) ;
-        sparql11update_1("PREFIX : <http://example>",
-                         "WITH :g",
-                         "DELETE { ?s ?p ?o }",
-                         //"INSERT { ?s ?p ?o }",
-                         "USING <g>",
-                         "USING NAMED :gn",
-                         "WHERE",
-                         "{ ?s ?p ?o }"
-                         ) ;
-        sparql11update_1("PREFIX : <http://example>",
-                         //"WITH :g",
-                         //"DELETE { ?s ?p ?o }",
-                         "INSERT { ?s ?p ?o }",
-                         //"USING <g>",
-                         //"USING NAMED :gn",
-                         "WHERE",
-                         "{ ?s ?p ?o }"
-                         ) ;
-        sparql11update_1("PREFIX : <http://example>",
-                         //"WITH :g",
-                         //"DELETE { ?s ?p ?o }",
-                         "INSERT DATA { <s> <p> <o> } ;",
-                         "INSERT DATA { <s> <p> <o> GRAPH <g> { <s> <p> <o> }}"
-                         ) ;
+        sparql11update_1("BASE <http://example/> LOAD  <foo> INTO GRAPH <local>") ;
+        sparql11update_1("BASE <http://example/> CLEAR GRAPH <foo>") ;
+        sparql11update_1("BASE <http://example/> DROP GRAPH <foo>") ;
+//        sparql11update_1("DROP  ALL") ;
+//        sparql11update_1("DROP  NAMED") ;
+//        sparql11update_1("CLEAR  DEFAULT") ;
+//        
+//        sparql11update_1("DELETE WHERE { ?s ?p ?o }") ;
+//        sparql11update_1("DELETE DATA { <?s> <p> <o> }") ;
+//        
+//        sparql11update_1("BASE <base:> ",
+//                         "PREFIX : <http://example/>",
+//                         "WITH :g",
+//                         "DELETE { <s> ?p ?o }",
+//                         "INSERT { ?s ?p <#o> }",
+//                         "USING <g>",
+//                         "USING NAMED :gn",
+//                         "WHERE",
+//                         "{ ?s ?p ?o }"
+//                         ) ;
+//        sparql11update_1("PREFIX : <http://example>",
+//                         "WITH :g",
+//                         "DELETE { ?s ?p ?o }",
+//                         //"INSERT { ?s ?p ?o }",
+//                         "USING <g>",
+//                         "USING NAMED :gn",
+//                         "WHERE",
+//                         "{ ?s ?p ?o }"
+//                         ) ;
+//        sparql11update_1("PREFIX : <http://example>",
+//                         //"WITH :g",
+//                         //"DELETE { ?s ?p ?o }",
+//                         "INSERT { ?s ?p ?o }",
+//                         //"USING <g>",
+//                         //"USING NAMED :gn",
+//                         "WHERE",
+//                         "{ ?s ?p ?o }"
+//                         ) ;
+//        sparql11update_1("PREFIX : <http://example>",
+//                         //"WITH :g",
+//                         //"DELETE { ?s ?p ?o }",
+//                         "INSERT DATA { <s> <p> <o> } ;",
+//                         "INSERT DATA { <s> <p> <o> GRAPH <g> { <s> <p> <o> }}"
+//                         ) ;
        
         
         System.out.println("# DONE") ;

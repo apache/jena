@@ -8,6 +8,7 @@ package com.hp.hpl.jena.sparql.modify.request;
 
 import com.hp.hpl.jena.sparql.syntax.Element ;
 
+// NOT IN USE
 public class UpdateDelete extends UpdateWithUsing
 {
     private final QuadsAcc deletePattern ;

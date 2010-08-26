@@ -9,7 +9,12 @@ package com.hp.hpl.jena.sparql.modify.request;
 import java.util.ArrayList ;
 import java.util.List ;
 
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.QueryExecutionFactory ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.ModelFactory ;
+import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.engine.Plan ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
@@ -18,6 +23,7 @@ import com.hp.hpl.jena.sparql.modify.GraphStoreAction ;
 import com.hp.hpl.jena.sparql.modify.GraphStoreUtils ;
 import com.hp.hpl.jena.sparql.syntax.Element ;
 import com.hp.hpl.jena.update.GraphStore ;
+import com.hp.hpl.jena.util.FileManager ;
 
 public class UpdateEngine implements UpdateVisitor
 {
@@ -30,6 +36,9 @@ public class UpdateEngine implements UpdateVisitor
         this.initialBinding = initialBinding ;
     }
 
+    // startOperation
+    // finishOperation
+    
     public void visit(UpdateDrop update)
     {}
 
@@ -40,13 +49,29 @@ public class UpdateEngine implements UpdateVisitor
     {}
 
     public void visit(UpdateLoad update)
-    {}
+    {
+        String source = update.getSource() ;
+        Node dest = update.getDest() ;
+        Graph g ;
+        if ( dest == null )
+            g = graphStore.getDefaultGraph() ;
+        else
+            g = graphStore.getGraph(dest) ;
+        Model model = ModelFactory.createModelForGraph(g) ;
+        FileManager.get().readModel(model, source) ;
+    }
 
     public void visit(UpdateDataInsert update)
-    {}
+    {
+        for ( Quad quad : update.getQuads() )
+            graphStore.add(quad) ;
+    }
 
     public void visit(UpdateDataDelete update)
-    {}
+    {
+        for ( Quad quad : update.getQuads() )
+            graphStore.delete(quad) ;
+    }
 
     public void visit(UpdateDeleteWhere update)
     {}
@@ -54,6 +79,7 @@ public class UpdateEngine implements UpdateVisitor
     public void visit(UpdateModify update)
     {
         final List<Binding> bindings = evalBindings(update.getWherePattern()) ;
+        // XXX
 //        GraphStoreUtils.action(graphStore, update.getGraphNames(), 
 //                               new GraphStoreAction() { public void exec(Graph graph) { execDeletes(modify, graph, bindings) ; }}) ;
 //        GraphStoreUtils.action(graphStore, update.getGraphNames(), 

@@ -135,7 +135,7 @@ public class UpdateWriter
             if ( update.getDest() != null )
             {
                 out.print(" INTO GRAPH ") ;
-                outputStringAsURI(update.getDest()) ;
+                output(update.getDest()) ;
             }
         }
 

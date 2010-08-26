@@ -544,7 +544,7 @@ void Update1() : { Update up ; }
   }
 }
 
-Update Load() : { String url ; String dest = null ; }
+Update Load() : { String url ; Node dest = null ; }
 {
     // Should be +?
     //    <LOAD> ( IRIref() )+
@@ -567,7 +567,7 @@ Update Drop() : { boolean silent = false ; Target target ; }
    { return new UpdateDrop(target, silent) ; }
 }
 
-Update Create() : { String iri ; boolean silent = false ; }
+Update Create() : { Node iri ; boolean silent = false ; }
 {
    <CREATE> (<SILENT> { silent=true ; } )? iri = GraphRef()
    { return new UpdateCreate(iri, silent) ; } 
@@ -634,13 +634,13 @@ void UsingClause(UpdateWithUsing update) : { String iri ; Node n ; }
   )
 }
 
-String GraphRef() : { String iri ; }
+Node GraphRef() : { String iri ; }
 {
     <GRAPH> iri = IRIref()
-    { return iri ; }
+    { return createNode(iri) ; }
 }
 
-Target GraphRefAll() : { String iri ; }
+Target GraphRefAll() : { Node iri ; }
 {
    ( iri = GraphRef() 
      { return Target.create(iri) ; }

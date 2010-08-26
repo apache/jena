@@ -8,6 +8,8 @@ package com.hp.hpl.jena.sparql.modify.request;
 
 import static com.hp.hpl.jena.sparql.modify.request.Target.Decl.* ;
 
+import com.hp.hpl.jena.graph.Node ;
+
 public class Target
 {
     static enum Decl { DEFAULT$, NAMED$, ALL$, IRI$} ;
@@ -15,22 +17,25 @@ public class Target
     public static final Target DEFAULT = new Target(DEFAULT$) ;
     public static final Target NAMED = new Target(NAMED$) ;
     public static final Target ALL = new Target(ALL$) ;
+
+    public static Target create(String iri)
+    { return new Target(Node.createURI(iri)) ; }
+
+    public static Target create(Node graphName)
+    { return new Target(graphName) ; }
     
     private final Decl decl ;
-    private final String iri ;
+    private final Node graphIRI ;
     
-    private Target(Decl decl)   { this.iri = null ; this.decl = decl ; } 
-    private Target(String iri)  { this.iri = iri ; this.decl = Decl.IRI$ ; }
-    
-    static public Target create(String iri)
-    { return new Target(iri) ; }
+    private Target(Decl decl)   { this.graphIRI = null ; this.decl = decl ; } 
+    private Target(Node iri)    { this.graphIRI = iri ; this.decl = Decl.IRI$ ; }
     
     public boolean isDefault()  { return decl == DEFAULT$ ; }
     public boolean isAll()      { return decl == ALL$ ; }
     public boolean isAllNamed() { return decl == NAMED$ ; }
     public boolean isOneGraph() { return decl == IRI$ ; }
     
-    public String getGraphIRI() { return iri ; }
+    public Node getGraph()      { return graphIRI ; }
 }
 
 /*

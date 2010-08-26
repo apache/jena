@@ -6,19 +6,21 @@
 
 package com.hp.hpl.jena.sparql.modify.request;
 
+import com.hp.hpl.jena.graph.Node ;
+
 public class UpdateLoad extends Update
 {
     private final String source ;
-    private final String dest ;
+    private final Node dest ;
 
-    public UpdateLoad(String source, String dest)
+    public UpdateLoad(String source, Node dest)
     {
         this.source = source ;
         this.dest = dest ;
     }
 
     public String getSource()   { return source ; }
-    public String getDest()     { return dest ; }
+    public Node getDest()     { return dest ; }
 
     @Override
     public void visit(UpdateVisitor visitor)
