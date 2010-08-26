@@ -12,6 +12,7 @@ import org.openjena.atlas.io.IndentedWriter ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.op.OpBGP ;
 import com.hp.hpl.jena.sparql.core.BasicPattern ;
+import com.hp.hpl.jena.sparql.expr.ExprAggregator ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.expr.ExprFunction ;
 import com.hp.hpl.jena.sparql.expr.ExprFunctionOp ;
@@ -172,6 +173,11 @@ public class WriterExpr
         public void visit(ExprVar nv)
         {
             out.print(nv.toPrefixString()) ;
+        }
+
+        public void visit(ExprAggregator eAgg)
+        { 
+            out.print(eAgg.getAggregator().toPrefixString()) ;
         }
 
         public void finishVisit() { out.flush() ; }

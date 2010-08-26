@@ -9,58 +9,63 @@
 package com.hp.hpl.jena.sparql.expr.aggregate;
 
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.sparql.core.NodeConst ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
+import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
-import org.openjena.atlas.logging.Log ;
 
-public class AggCount extends AggregatorBase
+abstract class AggMaxBase extends AggregatorBase
 {
-    // ---- COUNT(*)
+    // ---- MAX(expr) and MAX(DISTINCT expr)
+    protected final Expr expr ;
 
-    public AggCount() { }
-    public Aggregator copy(Expr expr)
-    { 
-        if ( expr != null )
-            Log.warn(this, "Copying non-null expression for COUNT(*)") ;
-        return new AggCount() ; }
+    public AggMaxBase(Expr expr) { this.expr = expr ; } 
 
-    public Expr getExpr()       { return null ; }
-    
     @Override
-    protected Accumulator createAccumulator()
+    protected final Accumulator createAccumulator()
     { 
-        return new AggCount.AccCount();
+        return new AccMax() ;
     }
 
-    @Override
-    public String toString()        { return "count(*)" ; }
-    @Override
-    public String toPrefixString()  { return "(count)" ; }
+    public final Expr getExpr() { return expr ; }
 
+    /* null is SQL-like. */ 
     @Override
-    public Node getValueEmpty()     { return NodeConst.nodeZero ; } 
-    
-    @Override
-    public int hashCode()   { return HC_AggCount ; }
+    public final Node getValueEmpty()     { return null ; } 
 
-    @Override
-    public boolean equals(Object other)
+    // ---- Accumulator
+    private class AccMax implements Accumulator
     {
-        if ( this == other ) return true ;
-        if ( ! ( other instanceof AggCount ) ) return false ;
-        return true ;
-    }
+        // Non-empty case but still can be nothing because the expression may be undefined.
+        private NodeValue maxSoFar = null ;
 
-    static class AccCount implements Accumulator
-    {
-        private long count = 0 ;
-        public AccCount()   { }
+        public AccMax() {}
+
+        static final boolean DEBUG = false ;
+
         public void accumulate(Binding binding, FunctionEnv functionEnv)
-        { count++ ; }
-        public NodeValue getValue()             { return NodeValue.makeInteger(count) ; }
+        { 
+            try {
+                NodeValue nv = expr.eval(binding, functionEnv) ;
+                if ( maxSoFar == null )
+                {
+                    maxSoFar = nv ;
+                    if ( DEBUG ) System.out.println("max: init : "+nv) ;
+                    return ;
+                }
+
+                int x = NodeValue.compareAlways(maxSoFar, nv) ;
+                if ( x < 0 )
+                    maxSoFar = nv ;
+
+                if ( DEBUG ) System.out.println("max: "+nv+" ==> "+maxSoFar) ;
+
+            } catch (ExprEvalException ex)
+            {}
+        }
+        public NodeValue getValue()
+        { return maxSoFar ; }
     }
 }
 

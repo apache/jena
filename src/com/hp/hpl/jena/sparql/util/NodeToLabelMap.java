@@ -44,7 +44,8 @@ public class NodeToLabelMap
         return mapNode(n) ;
     }
 
-    protected String mapNode(Node n)
+    // synchronized because this may be used from a static via FmtUtils
+    protected synchronized String mapNode(Node n)
     {
         String s = bNodeStrings.get(n) ;
         if ( s != null )

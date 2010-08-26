@@ -38,15 +38,20 @@ public class ExprVar extends ExprNode
     @Override
     public NodeValue eval(Binding binding, FunctionEnv env)
     {
-        if ( binding == null )
-            throw new VariableNotBoundException("Not bound: (no binding): "+varNode) ;
-        Node v = binding.get(varNode) ;
-        if ( v == null )
-            throw new VariableNotBoundException("Not bound: variable "+varNode) ;
-        // Wrap as a NodeValue.
-        return NodeValue.makeNode(v) ;
+        return eval(varNode, binding, env) ;
     }
 
+    static NodeValue eval(Var v, Binding binding, FunctionEnv env)
+    {
+        if ( binding == null )
+            throw new VariableNotBoundException("Not bound: (no binding): "+v) ;
+        Node nv = binding.get(v) ;
+        if ( nv == null )
+            throw new VariableNotBoundException("Not bound: variable "+v) ;
+        // Wrap as a NodeValue.
+        return NodeValue.makeNode(nv) ;
+    }
+    
     @Override
     public Expr copySubstitute(Binding binding, boolean foldConstants)
     {
@@ -112,8 +117,9 @@ public class ExprVar extends ExprNode
     // As an expression (aggregators override this).
     public String asSparqlExpr()    { return  varNode.toString() ; }
 
-//    // ??? Just use format?
-//    public String toString()        { return varNode.toString() ; }
+    // ??? Just use format?
+    @Override
+    public String toString()        { return varNode.toString() ; }
 }
 
 /*

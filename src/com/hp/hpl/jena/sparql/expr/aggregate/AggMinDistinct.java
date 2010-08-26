@@ -1,6 +1,7 @@
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (c) Copyright 2010 Talis Systems Ltd.
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -11,13 +12,10 @@ import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.sse.writers.WriterExpr ;
 import com.hp.hpl.jena.sparql.util.ExprUtils ;
 
-public class AggMinDistinct extends AggMin
+public class AggMinDistinct extends AggMinBase
 {
     // ---- MIN(DISTINCT expr)
-    // Same as MIN(expr) but remembers the syntax
-    
     public AggMinDistinct(Expr expr) { super(expr) ; }
-    @Override
     public Aggregator copy(Expr expr) { return new AggMinDistinct(expr) ; }
 
     @Override
@@ -26,17 +24,23 @@ public class AggMinDistinct extends AggMin
     public String toPrefixString() { return "(min distinct "+WriterExpr.asString(getExpr())+")" ; }
 
     @Override
-    public boolean equalsAsExpr(Aggregator other)
+    public int hashCode()   { return HC_AggMinDistinct ^ expr.hashCode() ; }
+    
+   @Override
+    public boolean equals(Object other)
     {
+       if ( this == other ) return true ; 
         if ( ! ( other instanceof AggMinDistinct ) )
             return false ;
-        return super.equalsAsExpr(other) ;
+        AggMinDistinct agg = (AggMinDistinct)other ;
+        return expr.equals(agg.expr) ;
     } 
 }
 
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (c) Copyright 2010 Talis Systems Ltd.
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

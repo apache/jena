@@ -21,7 +21,7 @@ import com.hp.hpl.jena.sparql.core.PathBlock ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.core.VarExprList ;
 import com.hp.hpl.jena.sparql.engine.main.VarRename ;
-import com.hp.hpl.jena.sparql.expr.E_Aggregator ;
+import com.hp.hpl.jena.sparql.expr.ExprAggregator ;
 import com.hp.hpl.jena.sparql.expr.E_Exists ;
 import com.hp.hpl.jena.sparql.expr.E_LogicalNot ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
@@ -510,7 +510,9 @@ public class AlgebraGenerator
         if ( query.hasGroupBy() || query.getAggregators().size() > 0 )
         {
             // When there is no GroupBy but there are some aggregates, it's a group of no variables.
-            op = new OpGroup(op, query.getGroupBy(), query.getAggregators()) ;
+            // HACK
+            List<ExprAggregator> list = new ArrayList<ExprAggregator>(query.getAggregators().values()) ;
+            op = new OpGroup(op, query.getGroupBy(), list) ;
             // Modified exprs.
         }
         
@@ -532,10 +534,10 @@ public class AlgebraGenerator
                 {
                     // If an aggregator, then the project expression
                     // is the variable of the aggregator, not the aggregation function. 
-                    if ( e instanceof E_Aggregator )
+                    if ( e instanceof ExprAggregator )
                     {
                         // Force the expression to be the variable.
-                        ExprVar actualVar = new ExprVar(((E_Aggregator)e).asVar()) ;
+                        ExprVar actualVar = ((ExprAggregator)e).getAggVar() ; //new ExprVar(((E_Aggregator)e).asVar()) ;
                         e = actualVar ;
                     }
                     exprs.add(v, e) ;
@@ -546,7 +548,7 @@ public class AlgebraGenerator
         }
 
         
-        // ---- Assignments from SELECT and other places (TBD) (so available to ORDER and HAVING)
+        // ---- Assignments from SELECT and other places (so available to ORDER and HAVING)
         if ( ! exprs.isEmpty() )
             // Potential rewrites based of assign introducing aliases.
             op = OpAssign.assign(op, exprs) ;

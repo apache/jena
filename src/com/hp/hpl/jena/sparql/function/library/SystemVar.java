@@ -16,11 +16,7 @@ import com.hp.hpl.jena.sparql.function.FunctionBase0 ;
 import com.hp.hpl.jena.sparql.util.Symbol ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 
-/** Function that returns the value of a system variable.
- *   
- * 
- * @author Andy Seaborne
- */
+/** Function that returns the value of a system variable. */
 
 public class SystemVar extends FunctionBase0
 {

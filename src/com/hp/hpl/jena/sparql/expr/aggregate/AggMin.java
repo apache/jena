@@ -1,27 +1,21 @@
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (c) Copyright 2010 Talis Systems Ltd.
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
 package com.hp.hpl.jena.sparql.expr.aggregate;
 
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
-import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
-import com.hp.hpl.jena.sparql.expr.NodeValue ;
-import com.hp.hpl.jena.sparql.function.FunctionEnv ;
 import com.hp.hpl.jena.sparql.sse.writers.WriterExpr ;
 import com.hp.hpl.jena.sparql.util.ExprUtils ;
 
-public class AggMin extends AggregatorBase
+public class AggMin extends AggMinBase
 {
     // ---- MIN(?var)
-    protected final Expr expr ;
-
-    public AggMin(Expr expr) { this.expr = expr ; } 
+    public AggMin(Expr expr) { super(expr) ; } 
     public Aggregator copy(Expr expr) { return new AggMin(expr) ; }
 
     @Override
@@ -30,64 +24,23 @@ public class AggMin extends AggregatorBase
     public String toPrefixString() { return "(min "+WriterExpr.asString(expr)+")" ; }
 
     @Override
-    protected Accumulator createAccumulator()
-    { 
-        return new AccMin() ;
-    }
-
-    public Expr getExpr() { return expr ; }
-
-    public boolean equalsAsExpr(Aggregator other)
+    public int hashCode()   { return HC_AggMin ^ expr.hashCode() ; }
+    
+    @Override
+    public boolean equals(Object other)
     {
+        if ( this == other ) return true ; 
         if ( ! ( other instanceof AggMin ) )
             return false ;
         AggMin agg = (AggMin)other ;
-        return agg.getExpr().equals(getExpr()) ;
-    } 
-
-    /* null is SQL-like. */ 
-    @Override
-    public Node getValueEmpty()     { return null ; } 
-
-    // ---- Accumulator
-    class AccMin implements Accumulator
-    {
-        // Non-empty case but still can be nothing because the expression may be undefined.
-        private NodeValue minSoFar = null ;
-
-        public AccMin() {}
-
-        static final boolean DEBUG = false ;
-
-        public void accumulate(Binding binding, FunctionEnv functionEnv)
-        { 
-            try {
-                NodeValue nv = expr.eval(binding, functionEnv) ;
-                if ( minSoFar == null )
-                {
-                    minSoFar = nv ;
-                    if ( DEBUG ) System.out.println("min: init : "+nv) ;
-                    return ;
-                }
-
-                int x = NodeValue.compareAlways(minSoFar, nv) ;
-                if ( x > 0 )
-                    minSoFar = nv ;
-
-                if ( DEBUG ) System.out.println("min: "+nv+" ==> "+minSoFar) ;
-
-
-            } catch (ExprEvalException ex)
-            {}
-        }
-        public NodeValue getValue()
-        { return minSoFar ; }
+        return expr.equals(agg.expr) ;
     }
 }
 
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (c) Copyright 2010 Talis Systems Ltd.
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

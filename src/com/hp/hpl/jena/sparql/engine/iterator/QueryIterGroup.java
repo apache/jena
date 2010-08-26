@@ -19,13 +19,13 @@ import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingKey ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap ;
-import com.hp.hpl.jena.sparql.expr.E_Aggregator ;
+import com.hp.hpl.jena.sparql.expr.ExprAggregator ;
 
 public class QueryIterGroup extends QueryIterPlainWrapper
 {
     public QueryIterGroup(QueryIterator qIter, 
                           VarExprList groupVars,
-                          List<E_Aggregator> aggregators,
+                          List<ExprAggregator> aggregators,
                           ExecutionContext execCxt)
     {
         super(null, execCxt) ;
@@ -39,7 +39,7 @@ public class QueryIterGroup extends QueryIterPlainWrapper
     // Phase 2 : Go over the group bindings and assign the value of each aggregation.
     
     private static Iterator<Binding> calc(QueryIterator iter, 
-                                          VarExprList groupVars, List<E_Aggregator> aggregators,
+                                          VarExprList groupVars, List<ExprAggregator> aggregators,
                                           ExecutionContext execCxt)
     {
         // Phase 1 : assign bindings to buckets by key and pump through the aggregrators.
@@ -57,9 +57,9 @@ public class QueryIterGroup extends QueryIterPlainWrapper
             // Assumes an aggregator is a per-execution mutable thingy
             if ( aggregators != null )
             {
-                for ( Iterator<E_Aggregator> aggIter = aggregators.iterator() ; aggIter.hasNext() ; )
+                for ( Iterator<ExprAggregator> aggIter = aggregators.iterator() ; aggIter.hasNext() ; )
                 {
-                    E_Aggregator agg = aggIter.next();
+                    ExprAggregator agg = aggIter.next();
                     agg.getAggregator().accumulate(key, b, execCxt) ;
                 }
             }
@@ -79,10 +79,10 @@ public class QueryIterGroup extends QueryIterPlainWrapper
             
             if ( aggregators != null )
             {
-                for ( Iterator<E_Aggregator> aggIter = aggregators.iterator() ; aggIter.hasNext() ; )
+                for ( Iterator<ExprAggregator> aggIter = aggregators.iterator() ; aggIter.hasNext() ; )
                 {
-                    E_Aggregator agg = aggIter.next();
-                    Var v = agg.asVar() ;
+                    ExprAggregator agg = aggIter.next();
+                    Var v = agg.getVar() ;
                     Node value = agg.getAggregator().getValueEmpty() ;
                     if ( value != null )
                     {
@@ -111,10 +111,10 @@ public class QueryIterGroup extends QueryIterPlainWrapper
                 // Maybe null
                 Binding binding = buckets.get(key) ; // == key.getBinding() ;
                 
-                for ( Iterator<E_Aggregator> aggIter = aggregators.iterator() ; aggIter.hasNext() ; )
+                for ( Iterator<ExprAggregator> aggIter = aggregators.iterator() ; aggIter.hasNext() ; )
                 {
-                    E_Aggregator agg = aggIter.next();
-                    Var v = agg.asVar() ;
+                    ExprAggregator agg = aggIter.next();
+                    Var v = agg.getVar() ;
                     Node value =  agg.getAggregator().getValue(key) ;
                     if ( value != null )
                         // Extend with the aggregations.

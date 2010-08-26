@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2010 Talis Systems Ltd.
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -36,17 +37,21 @@ public class AggSample extends AggregatorBase
 
     public Expr getExpr() { return expr ; }
 
-    public boolean equalsAsExpr(Aggregator other)
+    /* null is SQL-like. */ 
+    @Override
+    public Node getValueEmpty()     { return null ; } 
+
+    @Override
+    public int hashCode()   { return HC_AggSample ^ expr.hashCode() ; }
+    @Override
+    public boolean equals(Object other)
     {
+        if ( this == other ) return true ; 
         if ( ! ( other instanceof AggSample ) )
             return false ;
         AggSample agg = (AggSample)other ;
         return agg.getExpr().equals(getExpr()) ;
     } 
-
-    /* null is SQL-like. */ 
-    @Override
-    public Node getValueEmpty()     { return null ; } 
 
     // ---- Accumulator
     class AccSample implements Accumulator
@@ -77,6 +82,7 @@ public class AggSample extends AggregatorBase
 
 /*
  * (c) Copyright 2010 Talis Systems Ltd.
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

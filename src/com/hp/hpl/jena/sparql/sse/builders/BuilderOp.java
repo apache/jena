@@ -25,7 +25,7 @@ import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.core.TriplePath ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.core.VarExprList ;
-import com.hp.hpl.jena.sparql.expr.E_Aggregator ;
+import com.hp.hpl.jena.sparql.expr.ExprAggregator ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.expr.ExprList ;
 import com.hp.hpl.jena.sparql.pfunction.PropFuncArg ;
@@ -485,7 +485,7 @@ public class BuilderOp
             BuilderLib.checkLength(3, 4, list,  "Group") ;
             // GroupBy
             VarExprList vars = BuilderExpr.buildNamedExprList(list.get(1).getList()) ;
-            List<E_Aggregator> aggregators = new ArrayList<E_Aggregator>() ;
+            List<ExprAggregator> aggregators = new ArrayList<ExprAggregator>() ;
             
             if ( list.size() == 4 )
             {
@@ -497,9 +497,9 @@ public class BuilderOp
                 // Bind aggregation to variable
                 for (  Entry<Var, Expr> entry : y.getExprs().entrySet() )
                 {
-                    if ( ! ( entry.getValue() instanceof E_Aggregator ) )
+                    if ( ! ( entry.getValue() instanceof ExprAggregator ) )
                         BuilderLib.broken(list, "Not a aggregate expression: "+entry.getValue()) ;
-                    E_Aggregator eAgg = (E_Aggregator)entry.getValue() ;
+                    ExprAggregator eAgg = (ExprAggregator)entry.getValue() ;
                     eAgg.setVar(entry.getKey()) ;
                     aggregators.add(eAgg) ;    
                 }
@@ -550,7 +550,7 @@ public class BuilderOp
         }
         Expr expr = BuilderExpr.buildExpr(item) ;
         if ( expr.isVariable() )
-            return  new SortCondition(expr.getExprVar().asVar(), direction) ;
+            return new SortCondition(expr.getExprVar().asVar(), direction) ;
         else
             return new SortCondition(expr, direction) ;
     }

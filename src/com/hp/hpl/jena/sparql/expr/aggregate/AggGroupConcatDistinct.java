@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2010 Talis Systems Ltd.
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -78,18 +79,22 @@ public class AggGroupConcatDistinct extends AggregatorBase
     public Expr getExpr() { return expr ; }
     protected final String getSeparator() { return separator ; }
 
-    public boolean equalsAsExpr(Aggregator other)
+    /* null is SQL-like. */ 
+    @Override
+    public Node getValueEmpty()     { return null ; } 
+
+    @Override
+    public int hashCode()   { return HC_AggCountVar ^ expr.hashCode() ; }
+    
+    @Override
+    public boolean equals(Object other)
     {
         if ( ! ( other instanceof AggGroupConcatDistinct ) )
             return false ;
         AggGroupConcatDistinct agg = (AggGroupConcatDistinct)other ;
         return Utils.equal(agg.getSeparator(),getSeparator()) && agg.getExpr().equals(getExpr()) ;
-    } 
-
-    /* null is SQL-like. */ 
-    @Override
-    public Node getValueEmpty()     { return null ; } 
-
+    }
+    
     // ---- Accumulator
     class AccGroupConcatDistinct extends AccumulatorDistinctExpr
     {
@@ -114,6 +119,7 @@ public class AggGroupConcatDistinct extends AggregatorBase
 
 /*
  * (c) Copyright 2010 Talis Systems Ltd.
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

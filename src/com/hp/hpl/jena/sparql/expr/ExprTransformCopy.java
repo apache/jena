@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2010 Talis Systems Ltd.
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -19,6 +20,9 @@ public class ExprTransformCopy implements ExprTransform
     public ExprTransformCopy()                          { this(COPY_ONLY_ON_CHANGE) ; }
     public ExprTransformCopy(boolean alwaysDuplicate)   { this.alwaysCopy = alwaysDuplicate ; }
     
+    public Expr transform(ExprFunction0 func)                   
+    { return xform(func) ; }
+
     public Expr transform(ExprFunction1 func, Expr expr1)                   
     { return xform(func, expr1) ; }
     
@@ -39,7 +43,17 @@ public class ExprTransformCopy implements ExprTransform
     
     public Expr transform(ExprVar exprVar)       
     { return xform(exprVar) ; }
-    
+
+    public Expr transform(ExprAggregator eAgg)       
+    { return xform(eAgg) ; }
+
+    private Expr xform(ExprFunction0 func)
+    {
+        if ( !alwaysCopy )
+            return func ;
+        return func.copy() ;
+    }
+
     private Expr xform(ExprFunction1 func, Expr expr1)
     {
         if ( !alwaysCopy && expr1 == func.getArg() )
@@ -108,10 +122,20 @@ public class ExprTransformCopy implements ExprTransform
     {
         return exprVar ;
     }
+    
+    private Expr xform(ExprAggregator eAgg)
+    {
+        if ( ! alwaysCopy )
+            return eAgg ;
+        
+        return eAgg.copy(eAgg.getVar()) ;
+    }
+
 }
 
 /*
  * (c) Copyright 2010 Talis Systems Ltd.
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

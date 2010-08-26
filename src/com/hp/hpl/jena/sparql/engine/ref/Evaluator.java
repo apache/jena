@@ -17,7 +17,7 @@ import com.hp.hpl.jena.sparql.core.TriplePath ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.core.VarExprList ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
-import com.hp.hpl.jena.sparql.expr.E_Aggregator ;
+import com.hp.hpl.jena.sparql.expr.ExprAggregator ;
 import com.hp.hpl.jena.sparql.expr.ExprList ;
 import com.hp.hpl.jena.sparql.pfunction.PropFuncArg ;
 
@@ -46,7 +46,7 @@ public interface Evaluator
     public Table list(Table table) ;
     
     public Table order(Table table, List<SortCondition> conditions) ;
-    public Table groupBy(Table table, VarExprList groupVars, List<E_Aggregator> aggregators) ;
+    public Table groupBy(Table table, VarExprList groupVars, List<ExprAggregator> aggregators) ;
     public Table project(Table table, List<Var> projectVars) ; 
     public Table distinct(Table table) ;
     public Table reduced(Table table) ;

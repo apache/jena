@@ -1715,9 +1715,8 @@ Expr Aggregate() : { Aggregator agg = null ; String sep = null ;
             throwParseException("Aggregate expression not legal at this point",
                                  t.beginLine, t.beginColumn) ;
    }
-   { if ( agg != null )
-        expr = getQuery().allocAggregate(agg) ;
-     return expr ; }
+   { Expr exprAgg = getQuery().allocAggregate(agg) ;
+     return exprAgg ; }
 }
 
 // See also FunctionCall.

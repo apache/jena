@@ -1,6 +1,7 @@
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (c) Copyright 2010 Talis Systems Ltd.
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -39,15 +40,18 @@ public class AggSumDistinct  extends AggregatorBase
 
     public Expr getExpr() { return expr ; }
 
-    public boolean equalsAsExpr(Aggregator other)
+    @Override
+    public int hashCode()   { return HC_AggSumDistinct ^ expr.hashCode() ; }
+    @Override
+    public boolean equals(Object other)
     {
+        if ( this == other ) return true ; 
         if ( ! ( other instanceof AggSumDistinct ) )
             return false ;
         AggSumDistinct agg = (AggSumDistinct)other ;
         return agg.getExpr().equals(getExpr()) ;
     } 
-
-
+ 
     /* null is SQL-like.  NodeValue.nodeIntZERO is F&O like */ 
     @Override
     public Node getValueEmpty()     { return NodeValue.toNode(noValuesToSum) ; } 
@@ -83,6 +87,7 @@ public class AggSumDistinct  extends AggregatorBase
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (c) Copyright 2010 Talis Systems Ltd.
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

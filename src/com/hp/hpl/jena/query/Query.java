@@ -25,7 +25,7 @@ import com.hp.hpl.jena.sparql.core.QueryHashCode ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.core.VarAlloc ;
 import com.hp.hpl.jena.sparql.core.VarExprList ;
-import com.hp.hpl.jena.sparql.expr.E_Aggregator ;
+import com.hp.hpl.jena.sparql.expr.ExprAggregator ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.expr.ExprVar ;
 import com.hp.hpl.jena.sparql.expr.aggregate.Aggregator ;
@@ -472,35 +472,54 @@ public class Query extends Prologue implements Cloneable
     // Unlike SELECT expressions, here the expression itself (E_Aggregator) knows its variable
     // Commonality?
     
-    private List<E_Aggregator> aggregators = new ArrayList<E_Aggregator>() ;
+    //private List<E_Aggregator> aggregators = new ArrayList<E_Aggregator>() ;
+    private Map<Var, ExprAggregator> aggregators_ = new HashMap<Var, ExprAggregator>() ;
+    
     // Note any E_Aggregator created for reuse.
-    private Map<String, E_Aggregator> aggregatorsAllocated = new HashMap<String, E_Aggregator>() ; 
+    private Map<String, Var> aggregatorsAllocated = new HashMap<String, Var>() ; 
     
-    public boolean hasAggregators() { return aggregators.size() != 0  ; }
-    public List<E_Aggregator> getAggregators() { return aggregators ; }
+    public boolean hasAggregators() { return aggregators_.size() != 0  ; }
+    //public List<E_Aggregator> getAggregators() { return aggregators ; }//ExprVar list?
+    public Map<Var, ExprAggregator> getAggregators() { return aggregators_ ; }//ExprVar list?
     
-    public E_Aggregator allocAggregate(Aggregator agg)
+    public Expr allocAggregate(Aggregator agg)
     {
         // We need to track the aggregators in case one aggregator is used twice, e.g. in HAVING and in SELECT expression
         // (is is that much harm to do twice?  Yes, if distinct.)
         String key = agg.key() ;
-        E_Aggregator expr = aggregatorsAllocated.get(key); 
         
-        if ( expr == null )
+        Var v = aggregatorsAllocated.get(key); 
+        if ( v != null )
         {
-            // Not see before.  Build the expression. 
-            Var v = allocInternVar() ;
-            expr = new E_Aggregator(v, agg) ;
-            aggregatorsAllocated.put(key, expr) ;
-            aggregators.add(expr) ;
-        }
-        else
-        {
-            // Consistentecy checking
-            if ( ! agg.equalsAsExpr(expr.getAggregator()) )
+            ExprAggregator eAgg = aggregators_.get(v) ; 
+            if ( ! agg.equals(eAgg.getAggregator()) )
                 Log.warn(Query.class, "Internal inconsistency: Aggregator: "+agg) ;
+            return eAgg ;
         }
-        return expr ;
+        // Allocate.
+        v = allocInternVar() ;
+        ExprAggregator aggExpr = new ExprAggregator(v, agg) ;
+        aggregatorsAllocated.put(key, v) ;
+        aggregators_.put(v, aggExpr) ;
+        return aggExpr ;
+        
+//        E_Aggregator expr = aggregatorsAllocated.get(key); 
+//        
+//        if ( expr == null )
+//        {
+//            // Not see before.  Build the expression. 
+//            Var v = allocInternVar() ;
+//            expr = new E_Aggregator(v, agg) ;
+//            aggregatorsAllocated.put(key, expr) ;
+//            aggregators.add(expr) ;
+//        }
+//        else
+//        {
+//            // Consistentecy checking
+//            if ( ! agg.equalsAsExpr(expr.getAggregator()) )
+//                Log.warn(Query.class, "Internal inconsistency: Aggregator: "+agg) ;
+//        }
+//        return expr ;
     }
     
     // ---- CONSTRUCT 

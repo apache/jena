@@ -10,13 +10,15 @@ import com.hp.hpl.jena.sparql.algebra.Op ;
 
 public interface ExprTransform
 {
+    public Expr transform(ExprFunction0 func) ;
     public Expr transform(ExprFunction1 func, Expr expr1) ;
     public Expr transform(ExprFunction2 func, Expr expr1, Expr expr2) ;
     public Expr transform(ExprFunction3 func, Expr expr1, Expr expr2, Expr expr3) ;
     public Expr transform(ExprFunctionN func, ExprList args) ;
     public Expr transform(ExprFunctionOp funcOp, ExprList args, Op opArg) ;
     public Expr transform(NodeValue nv) ;
-    public Expr transform(ExprVar nv) ;        // AKA ExprFunction0
+    public Expr transform(ExprVar nv) ;
+    public Expr transform(ExprAggregator eAgg) ;
 }
 
 /*

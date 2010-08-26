@@ -78,18 +78,17 @@ public class ExprTransformer
         public void finishVisit()   {}
 
         
+        public void visit(ExprFunction0 func)
+        {
+            Expr e = func.apply(transform) ;
+            stack.push(e) ;
+        }
+        
         public void visit(ExprFunction1 func)
         {
             Expr e = stack.pop() ;
             Expr e2 = func.apply(transform, e) ;
             stack.push(e2) ;
-            
-//            for ( int i = 0 ; i < func.numArgs() ; i++ )
-//            {
-//                Expr expr = stack.pop() ;
-//            }
-//            new ExprFunction()
-//            stack.push(expr2) ;
         }
 
         public void visit(ExprFunction2 func)
@@ -160,6 +159,13 @@ public class ExprTransformer
             Expr e = var.apply(transform) ;
             stack.push(e) ;
         }
+        
+        public void visit(ExprAggregator eAgg)
+        {
+            Expr e = eAgg.apply(transform) ;
+            stack.push(e) ;
+        }
+
         
     }
 }

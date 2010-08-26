@@ -6,83 +6,117 @@
 
 package com.hp.hpl.jena.sparql.expr;
 
-import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.Renamer ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.expr.aggregate.Aggregator ;
+import com.hp.hpl.jena.sparql.function.FunctionEnv ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 
-/** Group aggregation functions calculate a value during grouping and
- *  place it in the output binding.  This class is relationship of 
+/** Group aggregation functions calculated a value during grouping and
+ *  placed in the output binding.  This class is relationship of 
  *  an aggregation expression and that variable.  Evaluation returns
  *  the variable's bound value. 
  */
 
-public class E_Aggregator extends ExprVar
+public class ExprAggregator extends ExprNode
 {
     protected Aggregator aggregator ;
+    protected Var var ;
+    protected ExprVar exprVar = null ;
     
-    public E_Aggregator(String name, Aggregator agg)    { super(name) ; aggregator = agg ; }
-    public E_Aggregator(Node n, Aggregator agg)         { super(n) ; aggregator = agg ; }
-    public E_Aggregator(Var v, Aggregator agg)          { super(v) ; aggregator = agg ; }
+    public ExprAggregator(Var v, Aggregator agg)          { _setVar(v) ; aggregator = agg ; }
+    public Var getVar()                                 { return var ; }
     
-    public void setVar(Var var)
-    { 
-        if ( super.varNode != null )
-            throw new ARQInternalErrorException(Utils.className(this)+": Attempt to set variable to "+var+" when already set as "+super.varNode) ;
-        super.varNode = var ;
+    public void setVar(Var v)
+    {
+        if (this.var != null) 
+            throw new ARQInternalErrorException(Utils.className(this)+ ": Attempt to set variable to " + v + " when already set as " + this.var) ;
+        if (v == null) 
+            throw new ARQInternalErrorException(Utils.className(this)+ ": Attempt to set variable to null") ;
+        _setVar(v) ;
     }
-    
+
+    private void _setVar(Var v)
+    {
+        this.var = v ;
+        this.exprVar = new ExprVar(var) ;
+    }
+
     public Aggregator getAggregator()   { return aggregator ; }
     
     @Override
-    public int hashCode() { return super.hashCode() ; }
+    public int hashCode()
+    { 
+        int x = aggregator.hashCode() ;
+        if ( var != null )
+            x ^= var.hashCode() ;
+        return x ;
+    }
     
     @Override
-    public boolean equals(Object other)
+    public boolean equals(Object other) 
     {
         if ( this == other ) return true ;
-        if ( ! super.equals(other) ) return false ;
-        if ( ! ( other instanceof E_Aggregator ) )
+        if ( ! ( other instanceof ExprAggregator ) )
             return false ;
-        E_Aggregator agg = (E_Aggregator)other ;
-        return aggregator.equalsAsExpr(agg.aggregator) ;
+        ExprAggregator agg = (ExprAggregator)other ;
+        return aggregator.equals(agg.aggregator) ;
     }
 
-    // As an expression suitable for outputting the calculation. 
+    // Ensure no confusion - in an old design, an ExprAggregator was a subclass of ExprVar. 
     @Override
+    public ExprVar getExprVar()
+    { throw new ARQInternalErrorException() ; }
+    
+    @Override
+    public Var asVar()
+    { throw new ARQInternalErrorException() ; }
+    
+    public ExprVar getAggVar() { return exprVar ; }
+    
+    // As an expression suitable for outputting the calculation. 
+    //@Override
     public String asSparqlExpr()        
     { return aggregator.toString() ; }
     
     @Override
-    public E_Aggregator copySubstitute(Binding binding, boolean foldConstants)
+    public ExprAggregator copySubstitute(Binding binding, boolean foldConstants)
     {
-        Var v = varNode ;
+        Var v = var ;
         Aggregator agg = aggregator ;
-        return new E_Aggregator(v, agg) ;
+        return new ExprAggregator(v, agg) ;
     }
     
-    @Override
-    public E_Aggregator copyNodeTransform(Renamer renamer)
+    //@Override
+    public ExprAggregator copyNodeTransform(Renamer renamer)
     {
-        Var v = (Var)renamer.rename(varNode) ;
+        Var v = (Var)renamer.rename(var) ;
         Aggregator agg = aggregator.copyRename(renamer) ;
-        return new E_Aggregator(v, agg) ;
+        return new ExprAggregator(v, agg) ;
     }
     
     // DEBUGGING
     @Override
     public String toString()
-    // Don't call super.toString - that will call asSparqlExpr()!
-    // varNode can be null temporarily as a structure is built.
     { return "(AGG "+
-                (varNode==null?"<>":"?"+super.varNode.getVarName())+
+                (var==null?"<>":"?"+var.getVarName())+
                 " "+aggregator.toString()+")"; }
     
+    public Expr copy(Var v)  { return new ExprAggregator(v, aggregator.copy(aggregator.getExpr())) ; }
+    
     @Override
-    public Expr copy(Var v)  { return new E_Aggregator(v, aggregator.copy(aggregator.getExpr())) ; }
+    public NodeValue eval(Binding binding, FunctionEnv env)
+    {
+       return ExprVar.eval(var, binding, env) ;
+    }
+    
+    public Expr apply(ExprTransform transform)  { return transform.transform(this) ; }
+    
+    public void visit(ExprVisitor visitor)
+    { visitor.visit(this) ; }
+    
 }
 
 /*

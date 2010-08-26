@@ -1,27 +1,21 @@
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (c) Copyright 2010 Talis Systems Ltd.
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
 package com.hp.hpl.jena.sparql.expr.aggregate;
 
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
-import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
-import com.hp.hpl.jena.sparql.expr.NodeValue ;
-import com.hp.hpl.jena.sparql.function.FunctionEnv ;
 import com.hp.hpl.jena.sparql.sse.writers.WriterExpr ;
 import com.hp.hpl.jena.sparql.util.ExprUtils ;
 
-public class AggMax extends AggregatorBase
+public class AggMax extends AggMaxBase
 {
     // ---- MAX(expr)
-    protected final Expr expr ;
-
-    public AggMax(Expr expr) { this.expr = expr ; } 
+    public AggMax(Expr expr) { super(expr) ; } 
     public Aggregator copy(Expr expr) { return new AggMax(expr) ; }
 
     @Override
@@ -30,63 +24,23 @@ public class AggMax extends AggregatorBase
     public String toPrefixString() { return "(max "+WriterExpr.asString(expr)+")" ; }
 
     @Override
-    protected Accumulator createAccumulator()
-    { 
-        return new AccMax() ;
-    }
-
-   public Expr getExpr() { return expr ; }
-
-    public boolean equalsAsExpr(Aggregator other)
+    public int hashCode()   { return HC_AggMax ^ expr.hashCode() ; }
+    
+    @Override
+    public boolean equals(Object other)
     {
+        if ( this == other ) return true ; 
         if ( ! ( other instanceof AggMax ) )
             return false ;
         AggMax agg = (AggMax)other ;
-        return agg.getExpr().equals(getExpr()) ;
-    } 
-
-    /* null is SQL-like. */ 
-    @Override
-    public Node getValueEmpty()     { return null ; } 
-
-    // ---- Accumulator
-    class AccMax implements Accumulator
-    {
-        // Non-empty case but still can be nothing because the expression may be undefined.
-        private NodeValue maxSoFar = null ;
-
-        public AccMax() {}
-
-        static final boolean DEBUG = false ;
-
-        public void accumulate(Binding binding, FunctionEnv functionEnv)
-        { 
-            try {
-                NodeValue nv = expr.eval(binding, functionEnv) ;
-                if ( maxSoFar == null )
-                {
-                    maxSoFar = nv ;
-                    if ( DEBUG ) System.out.println("max: init : "+nv) ;
-                    return ;
-                }
-
-                int x = NodeValue.compareAlways(maxSoFar, nv) ;
-                if ( x < 0 )
-                    maxSoFar = nv ;
-
-                if ( DEBUG ) System.out.println("max: "+nv+" ==> "+maxSoFar) ;
-
-            } catch (ExprEvalException ex)
-            {}
-        }
-        public NodeValue getValue()
-        { return maxSoFar ; }
+        return expr.equals(agg.expr) ;
     }
 }
 
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (c) Copyright 2010 Talis Systems Ltd.
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

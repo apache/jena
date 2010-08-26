@@ -71,6 +71,17 @@ public class FmtExpr
 
         public void startVisit() { }
 
+        public void visit(ExprFunction0 expr)
+        {
+            if ( expr.getOpName() == null )
+            {
+                printInFunctionForm(expr) ;
+                return ;
+            }
+            out.print("()") ;
+        }
+
+        
         public void visit(ExprFunction1 expr)
         {
             if ( expr.getOpName() == null )
@@ -187,10 +198,14 @@ public class FmtExpr
             }
         }
 
+        public void visit(ExprAggregator eAgg)
+        {
+            out.print(eAgg.asSparqlExpr()) ;
+        }
+        
+        
         public void finishVisit() { out.flush() ; }
     }
-
-
 }
 /*
  * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP

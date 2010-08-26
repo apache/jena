@@ -1,6 +1,7 @@
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (c) Copyright 2010 Talis Systems Ltd.
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -42,18 +43,23 @@ public class AggAvg extends AggregatorBase
 
     public final Expr getExpr() { return expr ; }
 
-    public boolean equalsAsExpr(Aggregator other)
-    {
-        if ( ! ( other instanceof AggAvg ) )
-            return false ;
-        AggAvg agg = (AggAvg)other ;
-        return agg.getExpr().equals(getExpr()) ;
-    } 
-
     /* null is SQL-like.  NodeValue.nodeIntZERO is F&O like */ 
     @Override
     public Node getValueEmpty()     { return NodeValue.toNode(noValuesToAvg) ; } 
+    
+    @Override
+    public int hashCode()   { return HC_AggAvg ^ expr.hashCode() ; }
 
+    @Override
+    public boolean equals(Object other)
+    {
+        if ( this == other ) return true ;
+        if ( ! ( other instanceof AggAvg ) ) return false ;
+        AggAvg a = (AggAvg)other ;
+        return expr.equals(a.expr) ;
+    }
+
+    
     // ---- Accumulator
     class AccAvg implements Accumulator
     {
@@ -97,6 +103,7 @@ public class AggAvg extends AggregatorBase
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (c) Copyright 2010 Talis Systems Ltd.
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

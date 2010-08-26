@@ -27,7 +27,7 @@ import com.hp.hpl.jena.sparql.engine.ResultSetStream ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.iterator.* ;
 import com.hp.hpl.jena.sparql.engine.main.QC ;
-import com.hp.hpl.jena.sparql.expr.E_Aggregator ;
+import com.hp.hpl.jena.sparql.expr.ExprAggregator ;
 import com.hp.hpl.jena.sparql.expr.ExprList ;
 import com.hp.hpl.jena.sparql.pfunction.PropFuncArg ;
 import com.hp.hpl.jena.sparql.procedure.ProcEval ;
@@ -181,7 +181,7 @@ public class EvaluatorSimple implements Evaluator
         return new TableN(qIter) ;
     }
 
-    public Table groupBy(Table table, VarExprList groupVars, List<E_Aggregator> aggregators)
+    public Table groupBy(Table table, VarExprList groupVars, List<ExprAggregator> aggregators)
     {
         QueryIterator qIter = table.iterator(getExecContext()) ;
         qIter = new QueryIterGroup(qIter, groupVars, aggregators, getExecContext()) ;

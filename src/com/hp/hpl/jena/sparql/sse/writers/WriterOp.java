@@ -29,7 +29,7 @@ import com.hp.hpl.jena.sparql.core.QuadPattern ;
 import com.hp.hpl.jena.sparql.core.TriplePath ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.core.VarExprList ;
-import com.hp.hpl.jena.sparql.expr.E_Aggregator ;
+import com.hp.hpl.jena.sparql.expr.ExprAggregator ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.expr.ExprList ;
 import com.hp.hpl.jena.sparql.pfunction.PropFuncArg ;
@@ -376,13 +376,13 @@ public class WriterOp
                 start() ;
                 out.incIndent() ;
                 boolean first = true ;
-                for ( Iterator<E_Aggregator> iter = opGroup.getAggregators().iterator() ; iter.hasNext() ; )
+                for ( Iterator<ExprAggregator> iter = opGroup.getAggregators().iterator() ; iter.hasNext() ; )
                 {
-                    E_Aggregator agg = iter.next();
+                    ExprAggregator agg = iter.next();
                     if ( ! first )
                         out.print(" ") ;
                     first = false ;
-                    Var v = agg.asVar() ;
+                    Var v = agg.getVar() ;
                     String str = agg.getAggregator().toPrefixString() ;
                     start() ;
                     out.print(v) ;

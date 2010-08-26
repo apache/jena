@@ -1,6 +1,7 @@
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (c) Copyright 2010 Talis Systems Ltd.
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -42,11 +43,16 @@ public class AggCountDistinct extends AggregatorBase
     @Override
     public Node getValueEmpty()     { return NodeConst.nodeZero ; }
 
-    public boolean equalsAsExpr(Aggregator other)
+    @Override
+    public int hashCode()   { return HC_AggCountDistinct ; }
+
+    @Override
+    public boolean equals(Object other)
     {
-        // Stateless as expression
-        return ( other instanceof AggCountDistinct ) ;
-    } 
+        if ( this == other ) return true ;
+        if ( ! ( other instanceof AggCountDistinct ) ) return false ;
+        return true ;
+    }
 
     static class AccCountDistinct extends AccumulatorDistinctAll
     {
@@ -64,6 +70,7 @@ public class AggCountDistinct extends AggregatorBase
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (c) Copyright 2010 Talis Systems Ltd.
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

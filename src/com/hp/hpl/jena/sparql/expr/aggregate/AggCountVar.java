@@ -1,6 +1,7 @@
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (c) Copyright 2010 Talis Systems Ltd.
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -35,7 +36,11 @@ public class AggCountVar extends AggregatorBase
 
     public Expr getExpr() { return expr ; }
 
-    public boolean equalsAsExpr(Aggregator other)
+    @Override
+    public int hashCode()   { return HC_AggCountVar ^ expr.hashCode() ; }
+    
+    @Override
+    public boolean equals(Object other)
     {
         if ( ! ( other instanceof AggCountVar ) )
             return false ;
@@ -67,6 +72,7 @@ public class AggCountVar extends AggregatorBase
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (c) Copyright 2010 Talis Systems Ltd.
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -40,13 +40,13 @@ public class QueryUtils
         try {
             Op op2 = SSE.parseOp(str) ;
             if ( op.hashCode() != op2.hashCode() )
+            {
+                dump(op, op2) ;
                 throw new QueryCheckException("reparsed algebra expression hashCode does not equal algebra from query") ;
+            }
             if ( ! op.equals(op2) )
             {
-                System.err.println("***********") ;
-                System.err.println(op) ;
-                System.err.println(op2) ;
-                System.err.println("***********") ;
+                dump(op, op2) ;
                 throw new QueryCheckException("reparsed algebra expression does not equal query algebra") ;
             }
         } catch (SSEParseException ex)
@@ -59,6 +59,14 @@ public class QueryUtils
             System.err.println(str);
             throw ex ; 
         }
+    }
+    
+    private static void dump(Op op, Op op2)
+    {
+        System.err.println("***********") ;
+        System.err.println(op) ;
+        System.err.println(op2) ;
+        System.err.println("***********") ;   
     }
     
     public static void checkParse(Query query)

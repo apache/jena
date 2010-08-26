@@ -26,7 +26,7 @@ import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.core.VarExprList ;
 import com.hp.hpl.jena.sparql.engine.Renamer ;
 import com.hp.hpl.jena.sparql.engine.RenamerVars ;
-import com.hp.hpl.jena.sparql.expr.E_Aggregator ;
+import com.hp.hpl.jena.sparql.expr.ExprAggregator ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.expr.ExprList ;
 
@@ -172,8 +172,8 @@ public class VarRename
             // Rename the vars in the expression as well.
             // .e.g max(?y) ==> max(?/y)  
             // These need renaming as well.
-            List<E_Aggregator> aggregators = new ArrayList<E_Aggregator>() ;
-            for ( E_Aggregator agg : opGroup.getAggregators() )
+            List<ExprAggregator> aggregators = new ArrayList<ExprAggregator>() ;
+            for ( ExprAggregator agg : opGroup.getAggregators() )
                 aggregators.add(agg.copyNodeTransform(renamer)) ;
 
             //if ( true )throw new ARQNotImplemented() ;

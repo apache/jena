@@ -748,7 +748,7 @@ public class BuilderExpr
                 Expr expr = BuilderExpr.buildExpr(x.get(0)) ;
                 agg = AggregatorFactory.createCountExpr(distinct, expr) ;
             }
-            return new E_Aggregator((Var)null, agg) ; 
+            return new ExprAggregator((Var)null, agg) ; 
         }
     };
     
@@ -758,7 +758,7 @@ public class BuilderExpr
         public Expr make(boolean distinct, Expr expr)
         {
             Aggregator agg = AggregatorFactory.createSum(distinct, expr) ;
-            return new E_Aggregator((Var)null, agg) ; 
+            return new ExprAggregator((Var)null, agg) ; 
         }
     };
     
@@ -768,7 +768,7 @@ public class BuilderExpr
         public Expr make(boolean distinct, Expr expr)
         {
             Aggregator agg = AggregatorFactory.createMin(distinct, expr) ;
-            return new E_Aggregator((Var)null, agg) ; 
+            return new ExprAggregator((Var)null, agg) ; 
         }
     };
     
@@ -778,7 +778,7 @@ public class BuilderExpr
         public Expr make(boolean distinct, Expr expr)
         {
             Aggregator agg = AggregatorFactory.createMax(distinct, expr) ;
-            return new E_Aggregator((Var)null, agg) ; 
+            return new ExprAggregator((Var)null, agg) ; 
         }
     };
 
@@ -788,7 +788,7 @@ public class BuilderExpr
         public Expr make(boolean distinct, Expr expr)
         {
             Aggregator agg = AggregatorFactory.createAvg(distinct, expr) ;
-            return new E_Aggregator((Var)null, agg) ; 
+            return new ExprAggregator((Var)null, agg) ; 
         }
     };
 
@@ -798,7 +798,7 @@ public class BuilderExpr
         public Expr make(boolean distinct, Expr expr)
         {
             Aggregator agg = AggregatorFactory.createSample(distinct, expr) ;
-            return new E_Aggregator((Var)null, agg) ; 
+            return new ExprAggregator((Var)null, agg) ; 
         }
     };
     
@@ -829,7 +829,7 @@ public class BuilderExpr
             
             Expr expr = buildExpr(x.get(0)) ;
             Aggregator agg = AggregatorFactory.createGroupConcat(distinct, expr, separator) ;
-            return new E_Aggregator((Var)null, agg) ; 
+            return new ExprAggregator((Var)null, agg) ; 
         }
     };
 

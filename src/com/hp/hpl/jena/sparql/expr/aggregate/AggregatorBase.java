@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2010 Talis Systems Ltd.
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -78,10 +79,42 @@ public abstract class AggregatorBase implements Aggregator
     public abstract String toString() ;
 
     public abstract String toPrefixString() ;
+    
+    @Override
+    public abstract int hashCode() ;
+
+    @Override
+    public abstract boolean equals(Object other) ;
+    
+    protected static final int HC_AggAvg                    =  0x170 ;
+    protected static final int HC_AggAvgDistinct            =  0x171 ;
+
+    protected static final int HC_AggCount                  =  0x172 ;
+    protected static final int HC_AggCountDistinct          =  0x173 ;
+
+    protected static final int HC_AggCountVar               =  0x174 ;
+    protected static final int HC_AggCountVarDistinct       =  0x175 ;
+
+    protected static final int HC_AggMin                    =  0x176 ;
+    protected static final int HC_AggMinDistinct            =  0x177 ;
+    
+    protected static final int HC_AggMax                    =  0x178 ;
+    protected static final int HC_AggMaxDistinct            =  0x179 ;
+
+    protected static final int HC_AggSample                 =  0x17A ;
+    protected static final int HC_AggSampleDistinct         =  0x17B ;
+    
+    protected static final int HC_AggSum                    =  0x17C ;
+    protected static final int HC_AggSumDistinct            =  0x17D ;
+    
+    protected static final int HC_AggGroupConcat            =  0x17E ;
+    protected static final int HC_AggGroupConcatDistinct    =  0x17F ;
+    
 }
 
 /*
  * (c) Copyright 2010 Talis Systems Ltd.
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

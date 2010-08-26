@@ -1,6 +1,7 @@
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (c) Copyright 2010 Talis Information Ltd
+ * (c) Copyright 2010 Epimorphics Ltd
  * All rights reserved.
  * [See end of file]
  */
@@ -31,17 +32,20 @@ public interface Aggregator
     public String toPrefixString()  ;
     // Key to identify an aggregator as syntax for duplicate use in a query.
     public String key() ;           
-    public boolean equalsAsExpr(Aggregator other) ;
     
     /** Get the expression - may be null (e.g COUNT(*)) ; */ 
     public Expr getExpr() ;
     public Aggregator copy(Expr expr) ;
     public Aggregator copyRename(Renamer renamer) ;
+    
+    public int hashCode() ;
+    public boolean equals(Object other) ;
 }
 
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (c) Copyright 2010 Talis Information Ltd
+ * (c) Copyright 2010 Epimorphics Ltd
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

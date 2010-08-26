@@ -18,7 +18,7 @@ import com.hp.hpl.jena.sparql.algebra.op.* ;
 import com.hp.hpl.jena.sparql.algebra.opt.ExprTransformApplyTransform ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.core.VarExprList ;
-import com.hp.hpl.jena.sparql.expr.E_Aggregator ;
+import com.hp.hpl.jena.sparql.expr.ExprAggregator ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.expr.ExprList ;
 import com.hp.hpl.jena.sparql.expr.ExprTransformer ;
@@ -214,39 +214,41 @@ public class Transformer
         public void visit(OpGroup opGroup)
         {
             boolean changed = false ;
+
             VarExprList varExpr = opGroup.getGroupVars() ;
             VarExprList varExpr2 = process(varExpr) ;
-            OpGroup opGroup2 = opGroup ;
-            List<E_Aggregator> aggs = opGroup.getAggregators() ;
-            List<E_Aggregator> aggs2 = aggs ;
-            
             if ( varExpr != varExpr2 )
                 changed = true ;
             
-            //And the aggregators...
             
-            aggs2 = new ArrayList<E_Aggregator>() ;
-            for ( E_Aggregator agg : aggs )
+            List<ExprAggregator> aggs = opGroup.getAggregators() ;
+            List<ExprAggregator> aggs2 = aggs ;
+            
+            //And the aggregators...
+            aggs2 = new ArrayList<ExprAggregator>() ;
+            for ( ExprAggregator agg : aggs )
             {
-                Aggregator a = agg.getAggregator() ;
-                Expr eVar = agg.getExprVar() ;
+                Aggregator aggregator = agg.getAggregator() ;
+                Var v = agg.getVar() ;
+                
+                // Variable associated with the aggregate
+                Expr eVar = agg.getAggVar() ;   // Not .getExprVar()
                 Expr eVar2 = ExprTransformer.transform(exprTransform, eVar) ;
                 if ( eVar != eVar2 )
                     changed = true ;
 
-                // Need to copy with changes of variable?
-                Var var = agg.asVar() ;
-                //Get the Aggregator expression:
-                Expr e = a.getExpr() ;
+                // The Aggregator expression
+                Expr e = aggregator.getExpr() ;
                 Expr e2 = e ;
                 if ( e != null )    // Null means "no relevant expression" e.g. COUNT(*)
                     ExprTransformer.transform(exprTransform, e) ;
                 if ( e != e2 )
                     changed = true ;
-                Aggregator a2 = a.copy(e2) ;
-                aggs2.add(new E_Aggregator(var, a2)) ;
+                Aggregator a2 = aggregator.copy(e2) ;
+                aggs2.add(new ExprAggregator(eVar2.asVar(), a2)) ;
             }
 
+            OpGroup opGroup2 = opGroup ;
             if ( changed )
                 opGroup2 = new OpGroup(opGroup.getSubOp(), varExpr2, aggs2) ;
             visit1(opGroup2) ;

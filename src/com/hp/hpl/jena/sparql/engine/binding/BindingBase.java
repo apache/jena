@@ -189,6 +189,8 @@ abstract public class BindingBase implements Binding
     {
         if ( ! CHECKING )
             return ;
+        if ( var == null )
+            throw new ARQInternalErrorException("check("+var+", "+node+"): null var" ) ;
         if ( node == null )
             throw new ARQInternalErrorException("check("+var+", "+node+"): null node value" ) ;
         if ( UNIQUE_NAMES_CHECK && contains(var) )

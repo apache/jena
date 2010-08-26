@@ -81,7 +81,9 @@ public class RunARQ
     
     public static void main(String[] argv) throws Exception
     {
-        qparse("--query=Q.rq") ; System.exit(0) ; 
+//        qparse("--print=query", "--print=op", "PREFIX : <http://example/> SELECT count(*) { ?x :p ?p .}") ; System.exit(0) ; 
+//        qparse("--print=query", "--print=op", "SELECT (count(*)) { }") ; System.exit(0) ; 
+        qparse("--query=Q.rq", "--print=query", "--print=op") ; System.exit(0) ; 
         
 //        arq.qtest.main("testing/ARQ/Syntax/Syntax-SPARQL-Update/manifest.ttl") ;
 //        System.exit(0) ; 

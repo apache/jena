@@ -1,6 +1,7 @@
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (c) Copyright 2010 Talis Systems Ltd.
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -11,12 +12,10 @@ import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.sse.writers.WriterExpr ;
 import com.hp.hpl.jena.sparql.util.ExprUtils ;
 
-public class AggMaxDistinct extends AggMax
+public class AggMaxDistinct extends AggMaxBase
 {
-    // ---- MAX(expr)
-    // Same as MAX(expr) but remembers the syntax
+    // ---- MAX( DISTINCT expr)
     public AggMaxDistinct(Expr expr) { super(expr) ; } 
-    @Override
     public Aggregator copy(Expr expr) { return new AggMaxDistinct(expr) ; }
 
     @Override
@@ -25,16 +24,24 @@ public class AggMaxDistinct extends AggMax
     public String toPrefixString() { return "(max distinct "+WriterExpr.asString(getExpr())+")" ; }
 
     @Override
-    public boolean equalsAsExpr(Aggregator other)
+    public int hashCode()   { return HC_AggMaxDistinct ^ expr.hashCode() ; }
+    
+    @Override
+    public boolean equals(Object other)
     {
+        if ( this == other ) return true ; 
         if ( ! ( other instanceof AggMaxDistinct ) )
             return false ;
-        return super.equalsAsExpr(other) ;
-    } 
+        AggMaxDistinct agg = (AggMaxDistinct)other ;
+        return expr.equals(agg.expr) ;
+    }
+
 }
 
 /*
+ * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (c) Copyright 2010 Talis Systems Ltd.
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

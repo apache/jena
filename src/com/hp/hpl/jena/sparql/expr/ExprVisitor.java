@@ -12,13 +12,15 @@ public interface ExprVisitor
     void startVisit() ;
     
     //void visit(ExprFunction func) ;
+    void visit(ExprFunction0 func) ;
     void visit(ExprFunction1 func) ;
     void visit(ExprFunction2 func) ;
     void visit(ExprFunction3 func) ;
     void visit(ExprFunctionN func) ;
     void visit(ExprFunctionOp funcOp) ;
     void visit(NodeValue nv) ;
-    void visit(ExprVar nv) ;        // AKA ExprFunction0
+    void visit(ExprVar nv) ;
+    void visit(ExprAggregator eAgg) ;
 
     void finishVisit() ;
 }

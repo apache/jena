@@ -1,6 +1,7 @@
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (c) Copyright 2010 Talis Systems Ltd.
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -39,17 +40,21 @@ public class AggSum  extends AggregatorBase
 
     public Expr getExpr() { return expr ; }
 
-    public boolean equalsAsExpr(Aggregator other)
+    /* null is SQL-like.  NodeValue.nodeIntZERO is F&O like */ 
+    @Override
+    public Node getValueEmpty()     { return NodeValue.toNode(noValuesToSum) ; } 
+
+    @Override
+    public int hashCode()   { return HC_AggSum ^ expr.hashCode() ; }
+    @Override
+    public boolean equals(Object other)
     {
+        if ( this == other ) return true ; 
         if ( ! ( other instanceof AggSum ) )
             return false ;
         AggSum agg = (AggSum)other ;
         return agg.getExpr().equals(getExpr()) ;
     } 
-
-    /* null is SQL-like.  NodeValue.nodeIntZERO is F&O like */ 
-    @Override
-    public Node getValueEmpty()     { return NodeValue.toNode(noValuesToSum) ; } 
 
     // ---- Accumulator
     class AccSum implements Accumulator
@@ -81,6 +86,7 @@ public class AggSum  extends AggregatorBase
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (c) Copyright 2010 Talis Systems Ltd.
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

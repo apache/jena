@@ -9,58 +9,64 @@
 package com.hp.hpl.jena.sparql.expr.aggregate;
 
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.sparql.core.NodeConst ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
+import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
-import org.openjena.atlas.logging.Log ;
 
-public class AggCount extends AggregatorBase
+abstract class AggMinBase extends AggregatorBase
 {
-    // ---- COUNT(*)
+    // ---- MIN(expr) and MIN(DISTINCT expr)
+    protected final Expr expr ;
 
-    public AggCount() { }
-    public Aggregator copy(Expr expr)
-    { 
-        if ( expr != null )
-            Log.warn(this, "Copying non-null expression for COUNT(*)") ;
-        return new AggCount() ; }
+    public AggMinBase(Expr expr) { this.expr = expr ; } 
 
-    public Expr getExpr()       { return null ; }
-    
     @Override
-    protected Accumulator createAccumulator()
+    protected final Accumulator createAccumulator()
     { 
-        return new AggCount.AccCount();
+        return new AccMin() ;
     }
 
-    @Override
-    public String toString()        { return "count(*)" ; }
-    @Override
-    public String toPrefixString()  { return "(count)" ; }
+    public final Expr getExpr() { return expr ; }
 
+    /* null is SQL-like. */ 
     @Override
-    public Node getValueEmpty()     { return NodeConst.nodeZero ; } 
-    
-    @Override
-    public int hashCode()   { return HC_AggCount ; }
+    public final Node getValueEmpty()     { return null ; } 
 
-    @Override
-    public boolean equals(Object other)
+    // ---- Accumulator
+    class AccMin implements Accumulator
     {
-        if ( this == other ) return true ;
-        if ( ! ( other instanceof AggCount ) ) return false ;
-        return true ;
-    }
+        // Non-empty case but still can be nothing because the expression may be undefined.
+        private NodeValue minSoFar = null ;
 
-    static class AccCount implements Accumulator
-    {
-        private long count = 0 ;
-        public AccCount()   { }
+        public AccMin() {}
+
+        static final boolean DEBUG = false ;
+
         public void accumulate(Binding binding, FunctionEnv functionEnv)
-        { count++ ; }
-        public NodeValue getValue()             { return NodeValue.makeInteger(count) ; }
+        { 
+            try {
+                NodeValue nv = expr.eval(binding, functionEnv) ;
+                if ( minSoFar == null )
+                {
+                    minSoFar = nv ;
+                    if ( DEBUG ) System.out.println("min: init : "+nv) ;
+                    return ;
+                }
+
+                int x = NodeValue.compareAlways(minSoFar, nv) ;
+                if ( x > 0 )
+                    minSoFar = nv ;
+
+                if ( DEBUG ) System.out.println("min: "+nv+" ==> "+minSoFar) ;
+
+
+            } catch (ExprEvalException ex)
+            {}
+        }
+        public NodeValue getValue()
+        { return minSoFar ; }
     }
 }
 

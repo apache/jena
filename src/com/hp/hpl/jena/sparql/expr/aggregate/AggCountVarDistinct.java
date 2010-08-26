@@ -1,6 +1,7 @@
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (c) Copyright 2010 Talis Systems Ltd.
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -35,16 +36,20 @@ public class AggCountVarDistinct extends AggregatorBase
 
     public Expr getExpr() { return expr ; }
 
-    public boolean equalsAsExpr(Aggregator other)
+    @Override
+    public Node getValueEmpty()     { return NodeConst.nodeZero ; } 
+
+    @Override
+    public int hashCode()   { return HC_AggCountVar ^ expr.hashCode() ; }
+    
+    @Override
+    public boolean equals(Object other)
     {
         if ( ! ( other instanceof AggCountVarDistinct ) )
             return false ;
         AggCountVarDistinct agg = (AggCountVarDistinct)other ;
         return agg.getExpr().equals(getExpr()) ;
-    } 
-
-    @Override
-    public Node getValueEmpty()     { return NodeConst.nodeZero ; } 
+    }
 
     // ---- Accumulator
     class AccCountVarDistinct extends AccumulatorDistinctExpr
@@ -69,6 +74,7 @@ public class AggCountVarDistinct extends AggregatorBase
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (c) Copyright 2010 Talis Systems Ltd.
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
