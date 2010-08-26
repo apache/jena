@@ -2,17 +2,6 @@ package dev;
 
 public class DevARQ
 {
-    // Aggregate equality on printing round-trip.
-    // Problem is the generation of the filter for HAVING.
-    //   Use the variable, not the whole E_Agg.
-    //   Restrict E_Agg to the (group)
-    
-    // 1 - Never let ExprAgg out of group.  
-    //  AlgebraGenerator => use variable.  ExprTransform.
-    // 2 - AlgebraGenerator - code like (project)
-    
-    // Printing of SPARQL 1.1 BGPs.
-    
     // rename QueryParseException or sort out an UpdateException
     // and a geneal name check.
     
