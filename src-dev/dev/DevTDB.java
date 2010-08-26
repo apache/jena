@@ -8,7 +8,11 @@ public class DevTDB
     //    TDBLoader from a dataset (or is this RIOT? or a general "Loader"?)
     //    TDBLoader javadoc - class info as well.
     
-    // Inference.
+    // Inference pipeline
+    // TDB+Inference
+    //   TDB/BulkLoader.loadTriples$ (loadQuads$)
+    //     to add a inference sink wrapper.
+    
     
     // Check writing to union graph is handled appropriately.
     
