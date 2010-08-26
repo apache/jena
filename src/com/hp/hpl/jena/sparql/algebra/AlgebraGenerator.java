@@ -510,9 +510,7 @@ public class AlgebraGenerator
         if ( query.hasGroupBy() || query.getAggregators().size() > 0 )
         {
             // When there is no GroupBy but there are some aggregates, it's a group of no variables.
-            // HACK
-            List<ExprAggregator> list = new ArrayList<ExprAggregator>(query.getAggregators().values()) ;
-            op = new OpGroup(op, query.getGroupBy(), list) ;
+            op = new OpGroup(op, query.getGroupBy(), query.getAggregators()) ;
             // Modified exprs.
         }
         
