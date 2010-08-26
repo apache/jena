@@ -4,7 +4,7 @@ public class DevARQ
 {
     // No org.json.
     
-    // UpdateProcess and UpdateEngine
+    // UpdateProcessors and UpdateEngine
     // UpdateDelete, UpdateInsert -> Subclass UpdateModify otherwise not needed.
     
     // Transition: SUBMISSION
@@ -24,7 +24,7 @@ public class DevARQ
     // --------
     
     // rename QueryParseException or sort out an UpdateException
-    // and a geneal name check.
+    // and a general name check.
     
     // Check for out-of-scope group vars.
     

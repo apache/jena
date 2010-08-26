@@ -71,12 +71,18 @@ public class RunARQ
     {
         String dir = "/home/afs/W3C/SPARQL-docs/tests/data-sparql11/negation/" ;
         dir = "testing/ARQ/PropertyFunctions/" ;
-        String queryFile = "--query="+dir+"list-8.rq" ;
-        String dataFile = "--data="+dir+"data-1.ttl" ;
-        arq.sparql.main(/*"--engine=ref",*/ "--syntax=sparql_11", dataFile, queryFile) ;
-        System.exit(0) ; 
+        runTest(dir, "data-1.ttl", "list-8.rq") ;
     }
 
+    public static void runTest(String dir, String dataFile, String queryFile)
+    {
+        if ( ! dir.endsWith("/") )
+            dir = dir + "/" ;
+        String queryArg = "--query="+dir+queryFile ;
+        String dataArg = "--data="+dir+dataFile ;
+        arq.sparql.main(/*"--engine=ref",*/ dataArg, queryArg) ;
+    }
+    
     // ----
     
 
@@ -86,7 +92,7 @@ public class RunARQ
         sparql11update() ; System.exit(0) ; 
 
         String DIR = "WorkSpace/PropertyPathTestCases" ;
-        arq.arq.main("-v", "--query="+DIR+"/pp-all-03.rq", "--data="+DIR+"/data-path-1.ttl") ; System.exit(0) ;
+        runTest(DIR, "data-path-1.ttl", "pp-all-03.rq") ; System.exit(0) ;
 
         if ( false )
         {
@@ -123,22 +129,6 @@ public class RunARQ
         System.out.println(op) ;
         divider() ;
         System.out.println(op2) ;
-        System.exit(0) ;
-        
-        //ReportSlowDatatype.main() ;
-        //unionTransform() ;
-        //streamInference() ;
-        
-        //new TransformFilterPlacement()
-        arq.sparql.main("--data=D1.ttl", "--query=Q.arq", "--engine=ref") ;
-        arq.sparql.main("--data=D1.ttl", "--query=Q.arq"/*, "--engine=ref"*/) ; System.exit(0) ;
-        
-        // DELETE
-        
-        Transform t = new TransformPropertyFunction(ARQ.getContext()) ;
-
-        divider() ;
-
         System.exit(0) ;
     }
     

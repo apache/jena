@@ -540,7 +540,7 @@ public class AlgebraGenerator
         
         // ---- GROUP BY
         
-        if ( query.hasGroupBy() || query.getAggregators().size() > 0 )
+        if ( query.hasGroupBy() )
         {
             // When there is no GroupBy but there are some aggregates, it's a group of no variables.
             op = new OpGroup(op, query.getGroupBy(), query.getAggregators()) ;

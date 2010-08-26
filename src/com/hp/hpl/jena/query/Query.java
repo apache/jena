@@ -420,7 +420,7 @@ public class Query extends Prologue implements Cloneable
     protected VarExprList groupVars = new VarExprList() ;
     protected List<Expr> havingExprs = new ArrayList<Expr>() ;  // Expressions : Make an ExprList?
     
-    public boolean hasGroupBy()     { return ! groupVars.isEmpty() ; }
+    public boolean hasGroupBy()     { return ! groupVars.isEmpty() || getAggregators().size() > 0 ; }
     public boolean hasHaving()      { return havingExprs != null && havingExprs.size() > 0 ; }
     
     public VarExprList getGroupBy()      { return groupVars ; }
