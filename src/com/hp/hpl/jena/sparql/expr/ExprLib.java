@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -11,6 +12,26 @@ import com.hp.hpl.jena.sparql.core.Var ;
 
 public class ExprLib
 {
+    /** transform an expression that may involve aggregates into one that just uses the variable for the aggregate */  
+
+    public static Expr replaceAggregateByVariable(Expr expr)
+    {
+        return ExprTransformer.transform(replaceAgg, expr) ;
+    }
+
+    /** transform expressions that may involve aggregates into one that just uses the variable for the aggregate */  
+    public static ExprList replaceAggregateByVariable(ExprList exprs)
+    {
+        return ExprTransformer.transform(replaceAgg, exprs) ;
+    }
+    
+    private static ExprTransform replaceAgg = new ExprTransformCopy()
+    {
+        @Override
+        public Expr transform(ExprAggregator eAgg)       
+        { return eAgg.getAggVar()  ; }
+    } ;
+    
     /** Decide whether an expression is safe for using a a graph substitution.
      * Need to be careful about value-like tests when the graph is not 
      * matched in a value fashion.
@@ -87,6 +108,7 @@ public class ExprLib
 
 /*
  * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

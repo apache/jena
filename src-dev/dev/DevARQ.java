@@ -4,8 +4,8 @@ public class DevARQ
 {
     // Aggregate equality on printing round-trip.
     // Problem is the generation of the filter for HAVING.
-    // Use the variable, not the whole E_Agg.
-    // Restrict E_Agg to the (group)
+    //   Use the variable, not the whole E_Agg.
+    //   Restrict E_Agg to the (group)
     
     // 1 - Never let ExprAgg out of group.  
     //  AlgebraGenerator => use variable.  ExprTransform.
