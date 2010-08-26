@@ -5,11 +5,11 @@ public class DevARQ
     // Update request execution.
     // Update migration.
     // uparse : Submission
+    // UpdateDelete, UpdateInsert -> Subclass UpdateModify otherwise not needed.
     
-    // Update execution.
+    // Update execution ; UpdateEngine
     // Transition: SUBMISSION
     // --------
-   
     // INSERT/DELETE DATA [INTO? <uri>] {} => INSERT/DELETE DATA { GRAPH <uri> {}}
 
     // INSERT INTO? <uri> {} (WHERE {})? => WITH <uri> INSERT {} WHERE {}  
@@ -17,7 +17,7 @@ public class DevARQ
     
     // MODIFY [<uri>*] D{} I{} W{} => WITH* D{} I{} W{}
     
-    // LOAD <url> (INTO <uri>)? ==> LOAD (DEFAULT | INTO GRAPH <uri>)
+    // LOAD <url> (INTO <uri>)? ==> LOAD <url> (INTO GRAPH <uri>)
 
     // CLEAR / CREATE / DROP 
     //    GRAPH <uri> no change
