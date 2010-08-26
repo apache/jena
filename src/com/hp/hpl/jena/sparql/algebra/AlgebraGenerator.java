@@ -550,6 +550,7 @@ public class AlgebraGenerator
         // Now do assignments from expressions 
         // Must be after "group by" has introduced it's variables.
         
+        // Look for assignments in SELECT expressions.
         if ( ! projectVars.isEmpty() && ! query.isQueryResultStar())
         {
             // Don't project for QueryResultStar so initial bindings show
@@ -569,7 +570,6 @@ public class AlgebraGenerator
                 vars.add(v) ;
             }
         }
-
         
         // ---- Assignments from SELECT and other places (so available to ORDER and HAVING)
         if ( ! exprs.isEmpty() )

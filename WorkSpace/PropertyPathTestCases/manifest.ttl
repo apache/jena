@@ -30,13 +30,13 @@
         :pp-all-07
         :pp-all-08
 
-        :pp-seq-??
-        :pp-alt-??
-        :pp-mod-{N}
-        :pp-mod-{N,M}
-        :pp-mod-{,N}
-        :pp-mod-{N,}
-        :pp-compound-?? # e.g. (:p/:p)*
+##         :pp-seq-??
+##         :pp-alt-??
+##         :pp-mod-{N}
+##         :pp-mod-{N,M}
+##         :pp-mod-{,N}
+##         :pp-mod-{N,}
+##         :pp-compound-?? # e.g. (:p/:p)*
 
     ) .
 
@@ -202,3 +202,4 @@
           qt:data   <data-path-1.ttl> ] ;
     mf:result  <pp-all-08.srx>
     .
+

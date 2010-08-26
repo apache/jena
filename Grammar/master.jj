@@ -513,28 +513,6 @@ Element UpdatePattern() : { Element el ; }
    (<WHERE>) el = GroupGraphPattern() { return el ; }
 }
 
-// void Transaction() : {}
-// {
-//     TransBegin() | TransCommit() | TransAbort()
-// }
-// 
-// void TransBegin() : {}
-// {
-//     <BEGIN> (IRIref())?
-//     { System.out.println("++ Begin") ; }
-// }
-// 
-// void TransCommit() : {}
-// {
-//     <COMMIT> (IRIref())?
-//     { System.out.println("++ Commit") ; }
-// }
-// 
-// void TransAbort() : {}
-// {
-//     <ABORT> (IRIref())?
-//     { System.out.println("++ Abort") ; }
-// }
 // End UPDATE_SUBMISSION
 #endif
 

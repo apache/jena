@@ -413,28 +413,6 @@ Element UpdatePattern() : { Element el ; }
 {
    (<WHERE>) el = GroupGraphPattern() { return el ; }
 }
-// void Transaction() : {}
-// {
-//     TransBegin() | TransCommit() | TransAbort()
-// }
-// 
-// void TransBegin() : {}
-// {
-//     <BEGIN> (IRIref())?
-//     { System.out.println("++ Begin") ; }
-// }
-// 
-// void TransCommit() : {}
-// {
-//     <COMMIT> (IRIref())?
-//     { System.out.println("++ Commit") ; }
-// }
-// 
-// void TransAbort() : {}
-// {
-//     <ABORT> (IRIref())?
-//     { System.out.println("++ Abort") ; }
-// }
 // End UPDATE_SUBMISSION
 // SPARQL 1.1 Update
 // UPDATE
@@ -1254,9 +1232,8 @@ Expr Aggregate() : { Aggregator agg = null ; String sep = null ;
             throwParseException("Aggregate expression not legal at this point",
                                  t.beginLine, t.beginColumn) ;
    }
-   { if ( agg != null )
-        expr = getQuery().allocAggregate(agg) ;
-     return expr ; }
+   { Expr exprAgg = getQuery().allocAggregate(agg) ;
+     return exprAgg ; }
 }
 // See also FunctionCall.
 // The case of "q:name()" or "q:agg()" or just "q:name"

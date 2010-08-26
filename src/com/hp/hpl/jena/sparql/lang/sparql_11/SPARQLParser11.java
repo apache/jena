@@ -3575,9 +3575,8 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
      if ( ! allowAggregatesInExpressions )
             throwParseException("Aggregate expression not legal at this point",
                                  t.beginLine, t.beginColumn) ;
-     if ( agg != null )
-        expr = getQuery().allocAggregate(agg) ;
-     {if (true) return expr ;}
+     Expr exprAgg = getQuery().allocAggregate(agg) ;
+     {if (true) return exprAgg ;}
     throw new Error("Missing return statement in function");
   }
 

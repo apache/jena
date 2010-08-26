@@ -2,6 +2,28 @@ package dev;
 
 public class DevARQ
 {
+    // Update request execution.
+    // Update migration.
+    // uparse : Submission
+    
+    // Update execution.
+    // Transition: SUBMISSION
+    // --------
+   
+    // INSERT/DELETE DATA [INTO? <uri>] {} => INSERT/DELETE DATA { GRAPH <uri> {}}
+
+    // INSERT INTO? <uri> {} (WHERE {})? => WITH <uri> INSERT {} WHERE {}  
+    // DELETE FROM? <uri> {} (WHERE {})? => WITH <uri> DELETE {} WHERE {}  
+    
+    // MODIFY [<uri>*] D{} I{} W{} => WITH* D{} I{} W{}
+    
+    // LOAD <url> (INTO <uri>)? ==> LOAD (DEFAULT | INTO GRAPH <uri>)
+
+    // CLEAR / CREATE / DROP 
+    //    GRAPH <uri> no change
+    //    empty => DEFAULT
+    // --------
+    
     // rename QueryParseException or sort out an UpdateException
     // and a geneal name check.
     
