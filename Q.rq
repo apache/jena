@@ -1,6 +1,6 @@
 PREFIX : <http://people.example/>
 
-SELECT * # (count(?o) AS ?c)
+SELECT (1+count(?o) AS ?c)
 WHERE
 { ?s ?p ?o
 } 

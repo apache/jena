@@ -10,29 +10,62 @@ import java.util.ArrayList ;
 import java.util.Iterator ;
 import java.util.List ;
 
+import org.openjena.atlas.logging.Log ;
+
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
-import com.hp.hpl.jena.sparql.algebra.op.* ;
+import com.hp.hpl.jena.sparql.algebra.op.OpAssign ;
+import com.hp.hpl.jena.sparql.algebra.op.OpBGP ;
+import com.hp.hpl.jena.sparql.algebra.op.OpDistinct ;
+import com.hp.hpl.jena.sparql.algebra.op.OpFilter ;
+import com.hp.hpl.jena.sparql.algebra.op.OpGraph ;
+import com.hp.hpl.jena.sparql.algebra.op.OpGroup ;
+import com.hp.hpl.jena.sparql.algebra.op.OpJoin ;
+import com.hp.hpl.jena.sparql.algebra.op.OpLabel ;
+import com.hp.hpl.jena.sparql.algebra.op.OpLeftJoin ;
+import com.hp.hpl.jena.sparql.algebra.op.OpList ;
+import com.hp.hpl.jena.sparql.algebra.op.OpMinus ;
+import com.hp.hpl.jena.sparql.algebra.op.OpNull ;
+import com.hp.hpl.jena.sparql.algebra.op.OpOrder ;
+import com.hp.hpl.jena.sparql.algebra.op.OpProject ;
+import com.hp.hpl.jena.sparql.algebra.op.OpReduced ;
+import com.hp.hpl.jena.sparql.algebra.op.OpSequence ;
+import com.hp.hpl.jena.sparql.algebra.op.OpService ;
+import com.hp.hpl.jena.sparql.algebra.op.OpSlice ;
+import com.hp.hpl.jena.sparql.algebra.op.OpTable ;
+import com.hp.hpl.jena.sparql.algebra.op.OpUnion ;
 import com.hp.hpl.jena.sparql.algebra.opt.TransformSimplify ;
 import com.hp.hpl.jena.sparql.core.BasicPattern ;
 import com.hp.hpl.jena.sparql.core.PathBlock ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.core.VarExprList ;
 import com.hp.hpl.jena.sparql.engine.main.VarRename ;
-import com.hp.hpl.jena.sparql.expr.ExprAggregator ;
 import com.hp.hpl.jena.sparql.expr.E_Exists ;
 import com.hp.hpl.jena.sparql.expr.E_LogicalNot ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
+import com.hp.hpl.jena.sparql.expr.ExprLib ;
 import com.hp.hpl.jena.sparql.expr.ExprList ;
-import com.hp.hpl.jena.sparql.expr.ExprVar ;
 import com.hp.hpl.jena.sparql.path.PathCompiler ;
 import com.hp.hpl.jena.sparql.path.PathLib ;
 import com.hp.hpl.jena.sparql.sse.Item ;
 import com.hp.hpl.jena.sparql.sse.ItemList ;
-import com.hp.hpl.jena.sparql.syntax.* ;
-import org.openjena.atlas.logging.Log ;
+import com.hp.hpl.jena.sparql.syntax.Element ;
+import com.hp.hpl.jena.sparql.syntax.ElementAssign ;
+import com.hp.hpl.jena.sparql.syntax.ElementExists ;
+import com.hp.hpl.jena.sparql.syntax.ElementFetch ;
+import com.hp.hpl.jena.sparql.syntax.ElementFilter ;
+import com.hp.hpl.jena.sparql.syntax.ElementGroup ;
+import com.hp.hpl.jena.sparql.syntax.ElementMinus ;
+import com.hp.hpl.jena.sparql.syntax.ElementNamedGraph ;
+import com.hp.hpl.jena.sparql.syntax.ElementNotExists ;
+import com.hp.hpl.jena.sparql.syntax.ElementOptional ;
+import com.hp.hpl.jena.sparql.syntax.ElementPathBlock ;
+import com.hp.hpl.jena.sparql.syntax.ElementService ;
+import com.hp.hpl.jena.sparql.syntax.ElementSubQuery ;
+import com.hp.hpl.jena.sparql.syntax.ElementTriplesBlock ;
+import com.hp.hpl.jena.sparql.syntax.ElementUnion ;
 import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 
@@ -495,8 +528,8 @@ public class AlgebraGenerator
         // Preparation: sort SELECT clause into assignments and projects.
         VarExprList projectVars = query.getProject() ;
         
-        VarExprList exprs = new VarExprList() ;
-        List<Var> vars = new ArrayList<Var>() ;
+        VarExprList exprs = new VarExprList() ;     // Assignments to be done.
+        List<Var> vars = new ArrayList<Var>() ;     // projection variables
         
         Op op = pattern ;
         
@@ -511,12 +544,11 @@ public class AlgebraGenerator
         {
             // When there is no GroupBy but there are some aggregates, it's a group of no variables.
             op = new OpGroup(op, query.getGroupBy(), query.getAggregators()) ;
-            // Modified exprs.
         }
         
-        //---- Assignments from SELECT and other places (TBD) (so available to ORDER and HAVING)
+        //---- Assignments from SELECT and other places (so available to ORDER and HAVING)
         // Now do assignments from expressions 
-        // Must be after "group by" has introduces it's variables.
+        // Must be after "group by" has introduced it's variables.
         
         if ( ! projectVars.isEmpty() && ! query.isQueryResultStar())
         {
@@ -530,15 +562,8 @@ public class AlgebraGenerator
                 Expr e = query.getProject().getExpr(v) ;
                 if ( e != null )
                 {
-                    // If an aggregator, then the project expression
-                    // is the variable of the aggregator, not the aggregation function. 
-                    if ( e instanceof ExprAggregator )
-                    {
-                        // Force the expression to be the variable.
-                        ExprVar actualVar = ((ExprAggregator)e).getAggVar() ; //new ExprVar(((E_Aggregator)e).asVar()) ;
-                        e = actualVar ;
-                    }
-                    exprs.add(v, e) ;
+                    Expr e2 = ExprLib.replaceAggregateByVariable(e) ;
+                    exprs.add(v, e2) ;
                 }
                 // Include in project
                 vars.add(v) ;
@@ -555,7 +580,11 @@ public class AlgebraGenerator
         if ( query.hasHaving() )
         {
             for (Expr expr : query.getHavingExprs())
-                op = OpFilter.filter(expr , op) ;    
+            {
+                // HAVING expression to refer to the aggregate via the variable.
+                Expr expr2 = ExprLib.replaceAggregateByVariable(expr) ; 
+                op = OpFilter.filter(expr2 , op) ;
+            }
         }
         
         // ---- ORDER BY
@@ -563,7 +592,6 @@ public class AlgebraGenerator
             op = new OpOrder(op, query.getOrderBy()) ;
         
         // ---- PROJECT
-        
         // No projection => initial variables are exposed.
         // Needed for CONSTRUCT and initial bindings + SELECT *
         
