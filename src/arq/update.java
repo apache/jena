@@ -68,6 +68,7 @@ public class update extends CmdUpdate
         for ( Iterator<String> iter = super.getPositional().iterator() ; iter.hasNext() ; )
         {
             String requestString = iter.next();
+            requestString = indirect(requestString) ;
             execOne(requestString, graphStore) ;
         }
         

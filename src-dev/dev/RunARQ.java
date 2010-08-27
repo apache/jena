@@ -89,7 +89,7 @@ public class RunARQ
 
     public static void main(String[] argv) throws Exception
     {
-        arq.uparse.main("--file=testing/Update/update-1.rup") ; System.exit(0) ;
+        arq.uparse.main("--file=update.ru") ; System.exit(0) ;
 //        com.hp.hpl.jena.update.UpdateRequest upreq =
 //            com.hp.hpl.jena.update.UpdateFactory.read("testing/Update/data-1.rup") ;
 //        System.out.println(upreq) ;

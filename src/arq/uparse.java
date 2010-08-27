@@ -55,9 +55,11 @@ public class uparse extends CmdARQ
             if ( x != null )
                 execOne(x) ; 
         }
+        
         for ( Iterator<String> iter = super.positionals.listIterator() ; iter.hasNext() ; )
         {
             String x = iter.next();
+            x =  indirect(x) ;
             execOne(x) ; 
         }
 
@@ -79,7 +81,8 @@ public class uparse extends CmdARQ
     private void execOne(String updateString)
     {
         UpdateRequest req = UpdateFactory.create(updateString) ;
-        System.out.println(req) ;
+        //req.output(IndentedWriter.stderr) ;
+        System.out.print(req) ;
     }
     
     static final String divider = "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -" ;

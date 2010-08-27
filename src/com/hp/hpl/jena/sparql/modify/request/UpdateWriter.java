@@ -36,11 +36,19 @@ public class UpdateWriter
             sCxt = new SerializationContext(request) ;
         prologue(out, sCxt.getPrologue()) ;
         boolean addSeparator = (request.getOperations().size() > 1) ;
+        boolean first = true ;
+        
         for ( Update update : request.getOperations() )
         {
+            out.ensureStartOfLine() ;
+            if ( ! first )
+                out.println() ;
+            first = false ;
             outputUpdate(update, out, sCxt) ;
             if ( addSeparator )
-                out.println(" ;") ;
+            {
+                out.print(" ;") ;
+            }
         }
         out.ensureStartOfLine() ;
         out.flush() ;
@@ -52,6 +60,7 @@ public class UpdateWriter
             sCxt = new SerializationContext() ;
         prologue(out, sCxt.getPrologue()) ;
         outputUpdate(update, out, sCxt) ;
+        out.ensureStartOfLine() ;
         out.flush() ;
     }
     
@@ -60,7 +69,8 @@ public class UpdateWriter
     {
         if ( update instanceof UpdateSubmission )
         {
-            out.println(update) ;
+            out.print(update) ;
+            out.ensureStartOfLine() ;
             return ;
         }
         
@@ -189,10 +199,10 @@ public class UpdateWriter
                     g = q.getGraph() ;
                     if ( g != Quad.tripleInQuad )
                     {
-                        out.incIndent(BLOCK_INDENT) ;
                         out.print("GRAPH ") ;
                         output(g) ;
                         out.println(" {") ;
+                        out.incIndent(BLOCK_INDENT) ;
                         inBlock = true ;
                     }
                 }
