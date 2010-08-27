@@ -12,7 +12,8 @@ public class DevTDB
     // TDB+Inference
     //   TDB/BulkLoader.loadTriples$ (loadQuads$)
     //     to add a inference sink wrapper.
-    
+ 
+    // Use reorder stuff from ARQ.
     
     // Check writing to union graph is handled appropriately.
     
