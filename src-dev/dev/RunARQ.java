@@ -42,6 +42,8 @@ import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.function.FunctionEnvBase ;
 import com.hp.hpl.jena.sparql.lang.ParserSPARQL11Update ;
+import com.hp.hpl.jena.sparql.modify.GraphStoreBasic ;
+import com.hp.hpl.jena.sparql.modify.request.UpdateEngine ;
 import com.hp.hpl.jena.sparql.modify.request.UpdateRequest ;
 import com.hp.hpl.jena.sparql.modify.request.UpdateWriter ;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
@@ -49,6 +51,7 @@ import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.sparql.util.ExprUtils ;
 import com.hp.hpl.jena.sparql.util.QueryExecUtils ;
 import com.hp.hpl.jena.sparql.util.Timer ;
+import com.hp.hpl.jena.update.GraphStore ;
 import com.hp.hpl.jena.util.FileManager ;
 
 public class RunARQ
@@ -147,13 +150,27 @@ public class RunARQ
     
     private static void sparql11update()
     {
-        sparql11update_1("LOAD  <foo>  INTO  GRAPH  <blah>") ;
-        sparql11update_1("BASE <http://example/> PREFIX : <http://prefix/> LOAD  <foo>  INTO  GRAPH  :local") ;
+        GraphStore graphStore = new GraphStoreBasic() ;
+        sparql11update_operation(graphStore, "BASE <base:/>",
+                                 "CREATE GRAPH <g>",
+                                 "INSERT DATA { <x> <y> <z> GRAPH <g> { <s> <p> <o1>, <o2> }}",
+                                 //"DELETE WHERE { <x> <y> ?z GRAPH <g> { ?s ?p ?o }}",
+                                 
+                                 "INSERT { ?s ?p ?o } WHERE { GRAPH <g> { ?s ?p ?o FILTER (?o = <o2> )}}",
+                                 
+                                 //"DROP DEFAULT" ,
+                                 //"CLEAR DEFAULT",
+                                 //"CLEAR ALL",
+                                 
+                                 "") ;
         
-        sparql11update_1("LOAD  <foo>") ;
-        sparql11update_1("BASE <http://example/> LOAD  <foo> INTO GRAPH <local>") ;
-        sparql11update_1("BASE <http://example/> CLEAR GRAPH <foo>") ;
-        sparql11update_1("BASE <http://example/> DROP GRAPH <foo>") ;
+//        sparql11update_1("LOAD  <foo>  INTO  GRAPH  <blah>") ;
+//        sparql11update_1("BASE <http://example/> PREFIX : <http://prefix/> LOAD  <foo>  INTO  GRAPH  :local") ;
+//        
+//        sparql11update_1("LOAD  <foo>") ;
+//        sparql11update_1("BASE <http://example/> LOAD  <foo> INTO GRAPH <local>") ;
+//        sparql11update_1("BASE <http://example/> CLEAR GRAPH <foo>") ;
+//        sparql11update_1("BASE <http://example/> DROP GRAPH <foo>") ;
 //        sparql11update_1("DROP  ALL") ;
 //        sparql11update_1("DROP  NAMED") ;
 //        sparql11update_1("CLEAR  DEFAULT") ;
@@ -201,18 +218,25 @@ public class RunARQ
         
     }
     
+    private static void sparql11update_operation(GraphStore graphStore, String... str)
+    {
+        String str$ = StrUtils.strjoinNL(str) ; 
+        divider() ;
+        System.out.println("----Input:") ;
+        System.out.println(str$);
+        UpdateRequest update = parseUpdate(str$);
+        
+        UpdateEngine.exec(graphStore, update) ;
+        SSE.write(graphStore) ;
+    }
+
     private static void sparql11update_1(String... str)
     {
         String str$ = StrUtils.strjoinNL(str) ; 
         divider() ;
         System.out.println("----Input:") ;
         System.out.println(str$);
-        Reader r = new StringReader(str$) ;
-        
-        ParserSPARQL11Update p = new ParserSPARQL11Update() ;
-        UpdateRequest update = new UpdateRequest() ;
-        p.parse(update, str$) ;
-        
+        UpdateRequest update = parseUpdate(str$); 
         System.out.println("----Output:") ;
         SerializationContext sCxt = new SerializationContext(update) ;
         //SerializationContext sCxt = new SerializationContext() ;
@@ -221,14 +245,28 @@ public class RunARQ
         
         IndentedLineBuffer buff = new IndentedLineBuffer() ;
         UpdateWriter.output(update, buff, sCxt) ;
-        
+        { // reparse
+            String str2 = buff.asString() ;
+            ParserSPARQL11Update p2 = new ParserSPARQL11Update() ;
+            UpdateRequest update2 = new UpdateRequest() ;
+            p2.parse(update2, str2) ;
+        }
 
         { // reparse
-        String str2 = buff.asString() ;
-        ParserSPARQL11Update p2 = new ParserSPARQL11Update() ;
-        UpdateRequest update2 = new UpdateRequest() ;
-        p2.parse(update2, str2) ;
+            String str2 = buff.asString() ;
+            ParserSPARQL11Update p2 = new ParserSPARQL11Update() ;
+            UpdateRequest update2 = new UpdateRequest() ;
+            p2.parse(update2, str2) ;
         }
+    }
+    
+    private static UpdateRequest parseUpdate(String str)
+    {
+        Reader r = new StringReader(str) ;
+        ParserSPARQL11Update p = new ParserSPARQL11Update() ;
+        UpdateRequest update = new UpdateRequest() ;
+        p.parse(update, str) ;
+        return update ;
     }
     
     private static void execTimed(Query query, Model model)

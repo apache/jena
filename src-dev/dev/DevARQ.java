@@ -6,6 +6,10 @@ public class DevARQ
     
     // UpdateProcessors and UpdateEngine
     // UpdateDelete, UpdateInsert -> Subclass UpdateModify otherwise not needed.
+    // Wrapper version of GraphStore.
+    //   Should INSERT DATA { GRAPH {} } auto create?
+    //   Insert into explicitly named default graph should be made to work.
+    
     
     // Transition: SUBMISSION
     // --------

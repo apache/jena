@@ -103,18 +103,18 @@ public class WriterGraph
             return ;
         }
         
-        out.println() ;
-        out.incIndent() ;
+//        out.println() ;
+//        out.incIndent() ;
         boolean first = true ; 
         for ( ; iter.hasNext() ; )
         {
-            if ( ! first )
+//            if ( ! first )
                 out.println();
             first = false ;
             Triple triple = iter.next();
             WriterNode.output(out, triple, naming) ;
         }
-        out.decIndent() ;
+//        out.decIndent() ;
         if ( ! first ) out.println();
         WriterLib.finish(out, Tags.tagGraph) ;
     }

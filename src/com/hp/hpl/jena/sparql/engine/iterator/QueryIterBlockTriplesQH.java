@@ -17,6 +17,7 @@ import com.hp.hpl.jena.graph.query.BindingQueryPlan ;
 import com.hp.hpl.jena.graph.query.Domain ;
 import com.hp.hpl.jena.graph.query.QueryHandler ;
 import com.hp.hpl.jena.sparql.core.BasicPattern ;
+import com.hp.hpl.jena.sparql.core.Substitute ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
@@ -130,7 +131,8 @@ public class QueryIterBlockTriplesQH extends QueryIterRepeatApply
         for (Iterator<Triple>iter = pattern.listIterator(); iter.hasNext();)
         {
             Triple t = iter.next();
-            t = BindingUtils.substituteIntoTriple(t, presets) ;
+            //t = BindingUtils.substituteIntoTriple(t, presets) ;
+            t = Substitute.substitute(t, presets) ;
             if ( vars != null )
             {
                 if ( t.getSubject().isVariable() )

@@ -26,7 +26,6 @@ import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingFactory ;
-import com.hp.hpl.jena.sparql.engine.binding.BindingUtils ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterConcat ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterYieldN ;
@@ -193,16 +192,6 @@ public class PathLib
             qIterCat.add(qIter) ;
         }
         return qIterCat ;
-    }
-
-    public static TriplePath substitute(TriplePath triplePath, Binding binding)
-    {
-        if ( triplePath.isTriple() )
-            return new TriplePath(BindingUtils.substituteIntoTriple(triplePath.asTriple(), binding)) ;
-  
-        Node s = Var.lookup(binding, triplePath.getSubject()) ;
-        Node o = Var.lookup(binding, triplePath.getObject()) ;
-        return new TriplePath(s, triplePath.getPath(), o) ;
     }
 }
 

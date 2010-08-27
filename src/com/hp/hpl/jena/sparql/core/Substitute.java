@@ -70,6 +70,43 @@ public class Substitute
         return t ;
     }
 
+    public static TriplePath substitute(TriplePath triplePath, Binding binding)
+    {
+        if ( triplePath.isTriple() )
+            return new TriplePath(Substitute.substitute(triplePath.asTriple(), binding)) ;
+  
+        Node s = triplePath.getSubject() ;
+        Node o = triplePath.getObject() ;
+        Node s1 = substitute(s, binding) ;
+        Node o1 = substitute(o, binding) ;
+        
+        TriplePath tp = triplePath ;
+        if ( s1 != s || o1 != o )
+            tp = new TriplePath(s1, triplePath.getPath(), o1) ;
+        return tp ;
+    }
+    
+    public static Quad substitute(Quad quad, Binding binding)
+    {
+        if ( isNotNeeded(binding) ) return quad ;
+        
+        Node g = quad.getGraph() ;
+        Node s = quad.getSubject() ;
+        Node p = quad.getPredicate() ;
+        Node o = quad.getObject() ;
+        
+        Node g1 = substitute(g, binding) ;
+        Node s1 = substitute(s, binding) ;
+        Node p1 = substitute(p, binding) ;
+        Node o1 = substitute(o, binding) ;
+
+        Quad q = quad ;
+        if ( s1 != s || p1 != p || o1 != o || g1 != g )
+            q = new Quad(g1, s1, p1, o1) ;
+        return q ;
+    }
+
+
     public static Node substitute(Node n, Binding b)
     {
         return Var.lookup(b, n) ;
@@ -145,7 +182,7 @@ public class Substitute
         @Override
         public Op transform(OpPath opPath)
         {
-            return new OpPath(PathLib.substitute(opPath.getTriplePath(), binding)) ;
+            return new OpPath(substitute(opPath.getTriplePath(), binding)) ;
         }
 
         @Override

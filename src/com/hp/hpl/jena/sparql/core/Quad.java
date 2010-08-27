@@ -69,7 +69,12 @@ public class Quad
         return triple ;
     }
     
-    /** Test whether this is a quad for the default graph */
+    public boolean isConcrete()
+    {
+        return subject.isConcrete() && predicate.isConcrete() && object.isConcrete() && graph.isConcrete() ;
+    }
+    
+    /** Test whether this is a quad for the default graph (not the default graphs by explicit name) */
     public static boolean isQuadDefaultGraphNode(Node node)
     {
         // The node used by the quad generator for the default graph 

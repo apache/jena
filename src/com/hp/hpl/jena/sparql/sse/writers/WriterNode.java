@@ -25,9 +25,9 @@ public class WriterNode
     
     public static void output(IndentedWriter out, Triple triple, SerializationContext naming)
     {
-        WriterLib.start(out, Tags.tagTriple, NoNL) ;
+        WriterLib.startOneLine(out, Tags.tagTriple) ;
         outputPlain(out, triple, naming) ;
-        WriterLib.finish(out, Tags.tagTriple) ;
+        WriterLib.finishOneLine(out, Tags.tagTriple) ;
     }
     
     public static void outputPlain(IndentedWriter out, Triple triple, SerializationContext naming)
@@ -42,9 +42,9 @@ public class WriterNode
     
     public static void output(IndentedWriter out, Quad qp, SerializationContext naming)
     {
-        WriterLib.start(out, Tags.tagQuad, NoNL) ;
+        WriterLib.startOneLine(out, Tags.tagQuad) ;
         outputPlain(out, qp, naming) ;
-        WriterLib.finish(out, Tags.tagQuad) ;
+        WriterLib.finishOneLine(out, Tags.tagQuad) ;
     }
     
     public static void outputPlain(IndentedWriter out, Quad qp, SerializationContext naming)

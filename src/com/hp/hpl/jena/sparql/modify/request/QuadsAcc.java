@@ -21,7 +21,7 @@ public class QuadsAcc implements TripleCollector
 {
     // A lists of Pairs: Node and Triple connector
     
-    private Node graphNode = Quad.tripleInQuad ; //Quad.defaultGraphNodeGenerated ;
+    private Node graphNode = Quad.defaultGraphNodeGenerated ;
     private List<Quad> quads = new ArrayList<Quad>() ;
     private List<Quad> quadsView = Collections.unmodifiableList(quads) ;
     

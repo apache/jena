@@ -11,8 +11,8 @@ import java.util.Map ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.sparql.core.Substitute ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
-import com.hp.hpl.jena.sparql.engine.binding.BindingUtils ;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 
@@ -56,7 +56,8 @@ public class TemplateTriple extends Template
             o = newBlank(o, bNodeMap) ;
 
         Triple t = new Triple(s, p, o) ; 
-        Triple t2 = BindingUtils.substituteIntoTriple(t, b) ;
+        //Triple t2 = BindingUtils.substituteIntoTriple(t, b) ;
+        Triple t2 = Substitute.substitute(t, b) ;
         acc.add(t2) ;
     }
     

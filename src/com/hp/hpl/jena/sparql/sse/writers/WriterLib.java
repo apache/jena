@@ -19,14 +19,28 @@ public class WriterLib
     public static final int NoSP = -2 ;
     
     // ---- Support
-    
+
     // -- Normal markers
+    
+    /** Start a tagged item - all one line - usual bracketting */
+    public static void startOneLine(IndentedWriter out, String tag)
+    {
+        _start(out, Tags.LPAREN) ;
+        out.print(tag) ;
+        out.print(" ") ;
+    }
+    
+    /** Finish a tagged item - all one line - usual bracketting */
+    public static void finishOneLine(IndentedWriter out, String tag)
+    {
+        _finish(out, Tags.RPAREN) ;
+    }
     
     /** Start a tagged item - usual bracketting */
     public static void start(IndentedWriter out, String tag, int linePolicy)
     { _start(out, tag, linePolicy, Tags.LPAREN) ; }
-    
-    /** Finish a taggeditem - usual bracketting */
+
+    /** Finish a tagged item - usual bracketting */
     public static void finish(IndentedWriter out, String tag)
     { _finish(out, tag, Tags.RPAREN) ; }
 
@@ -70,7 +84,7 @@ public class WriterLib
             case NoSP:  break ;
             case UNDEF: throw new ARQInternalErrorException("Explicit tag not no line policy") ;
         }
-        out.incIndent() ;
+        out.incIndent() ; 
     }
     
     private static void _finish(IndentedWriter out, String tag, String finishMarker)

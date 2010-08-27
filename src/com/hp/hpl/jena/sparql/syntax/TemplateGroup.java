@@ -45,7 +45,6 @@ public class TemplateGroup extends Template implements TripleCollector
 
     public void addTriplePath(int index, TriplePath path)
     { throw new ARQException("Triples-only collector") ; }
-    
 
     public List<Template> getTemplates() { return templates ; }
     public Iterator<Template> templates() { return templates.iterator() ; }

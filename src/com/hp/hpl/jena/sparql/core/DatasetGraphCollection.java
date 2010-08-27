@@ -69,7 +69,7 @@ public abstract class DatasetGraphCollection extends DatasetGraphBaseFind
 
     protected Graph fetchGraph(Node gn)
     {
-        if ( Quad.isDefaultGraph(gn))
+        if ( Quad.isDefaultGraph(gn) )
             return getDefaultGraph() ;
         else
             return getGraph(gn) ;
