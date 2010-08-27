@@ -1,3 +1,20 @@
+
+    // --------
+    // [done] INSERT/DELETE DATA [INTO? or FROM? <uri>] {} => INSERT/DELETE DATA { GRAPH <uri> {}}
+
+    // [done] INSERT INTO? <uri> {} (WHERE {})? => INSERT { GRAPH <uri> {} } WHERE {}  
+    // [done] DELETE FROM? <uri> {} (WHERE {})? => DELETE { GRAPH <uri> {} } WHERE {}  
+    
+    // [done] MODIFY [<uri>*] D{} I{} W{} => WITH* D{} I{} W{}
+    
+    // [done] LOAD <url> (INTO <uri>)? ==> LOAD <url> (INTO GRAPH <uri>)
+
+    // [done] CLEAR / CREATE / DROP 
+    //    GRAPH <uri> no change
+    //    empty => DEFAULT
+    // --------
+
+    
 #ifdef UPDATE_SUBMISSION
 void Update() : { }
 {

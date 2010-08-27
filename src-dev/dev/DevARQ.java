@@ -3,7 +3,8 @@ package dev;
 public class DevARQ
 {
     // No org.json.
-    
+
+    // ---- SPARQL Update
     // Wrapper version of GraphStore.
     //   Should INSERT DATA { GRAPH {} } auto create?
     //   Insert into explicitly named default graph should be made to work.
@@ -22,25 +23,10 @@ public class DevARQ
     // Transition: SUBMISSION
     // restrictions : only one graph for MODIFY <g>
 
-    
-    // --------
-    // [done] INSERT/DELETE DATA [INTO? or FROM? <uri>] {} => INSERT/DELETE DATA { GRAPH <uri> {}}
-
-    // [done] INSERT INTO? <uri> {} (WHERE {})? => INSERT { GRAPH <uri> {} } WHERE {}  
-    // [done] DELETE FROM? <uri> {} (WHERE {})? => DELETE { GRAPH <uri> {} } WHERE {}  
-    
-    // [done] MODIFY [<uri>*] D{} I{} W{} => WITH* D{} I{} W{}
-    
-    // [done] LOAD <url> (INTO <uri>)? ==> LOAD <url> (INTO GRAPH <uri>)
-
-    // [done] CLEAR / CREATE / DROP 
-    //    GRAPH <uri> no change
-    //    empty => DEFAULT
-    // --------
-    
     // rename QueryParseException or sort out an UpdateException
     // and a general name check.
     
+    // ---- SPARQL Query
     // Check for out-of-scope group vars.
     
     // Property path test cases
