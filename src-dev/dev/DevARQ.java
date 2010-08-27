@@ -6,13 +6,14 @@ public class DevARQ
 
     // ---- SPARQL Update
     // NL and then ; -> blank line.
+    // Error handling and exception catching.  UpdateParseException : LanguageParseException 
+    // Naming.
     
     // UpdateParseRegistry
     //   ARQ -> submission
     //   SPARQL_11 -> transition : 
     
-    // Update parsing via input stream.
-    // transitition:
+    // **** Transitition:
     // DELETE FROM <> { data } ==> DELETE DATA or add WHERE {}
     // INSERT INTO <> { data } ==> INSERT DATA or add WHERE {}
     //   Use of initial bindings 
@@ -23,11 +24,6 @@ public class DevARQ
     //   Should INSERT DATA { GRAPH {} } auto create?
     //   Insert into explicitly named default graph should be made to work.
     //   Swap to 1.1 update engine.
-    
-    // UpdateSubmission to subclass from Update [done]
-    // UpdateFactory to make "Update" public visibile an dswicth on UpdateSubmission/no UpdateSubmission 
-    // Maybe tweak new engine to eval UpdateSubmission specially.
-    // Error handling and exception catching.
     
     // Label checking: can't use same bNode label in tenplate and pattern
     // for DELETE/INSERT

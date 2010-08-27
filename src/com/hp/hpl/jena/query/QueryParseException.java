@@ -11,7 +11,6 @@ package com.hp.hpl.jena.query;
  * @author		Andy Seaborne
  */
 
-
 public class QueryParseException extends QueryException
 {
     private int line ;
