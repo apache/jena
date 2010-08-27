@@ -9,15 +9,13 @@ package com.hp.hpl.jena.update;
 import java.io.FileInputStream ;
 import java.io.FileNotFoundException ;
 import java.io.InputStream ;
-import java.io.Reader ;
 
 import com.hp.hpl.jena.query.QuerySolution ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingUtils ;
-import com.hp.hpl.jena.sparql.lang.ParserARQUpdate ;
+import com.hp.hpl.jena.sparql.lang.ParserSPARQL11Update ;
 import com.hp.hpl.jena.sparql.modify.UpdateProcessorFactory ;
 import com.hp.hpl.jena.sparql.modify.UpdateProcessorRegistry ;
-import com.hp.hpl.jena.sparql.modify.submission.UpdateSubmission ;
 
 public class UpdateFactory
 {
@@ -27,7 +25,8 @@ public class UpdateFactory
     /** Create an UpdateRequest by parsing the given string */
     public static UpdateRequest create(String str)
     { 
-        ParserARQUpdate p = new ParserARQUpdate() ;
+        ParserSPARQL11Update p = new ParserSPARQL11Update() ;
+        //ParserARQUpdate p = new ParserARQUpdate() ;
         UpdateRequest update = new UpdateRequest() ;
         p.parse(update, str) ;
         return update ;
@@ -53,29 +52,29 @@ public class UpdateFactory
     /** Create an UpdateRequest by reading it from an InputStream (note that conversion to UTF-8 will be applied automatically) */
     public static UpdateRequest read(InputStream in)
     {
-        //ParserSPARQLUpdate p = new ParserSPARQLUpdate() ;
-        ParserARQUpdate p = new ParserARQUpdate() ;
+        ParserSPARQL11Update p = new ParserSPARQL11Update() ;
+        //ParserARQUpdate p = new ParserARQUpdate() ;
         UpdateRequest update = new UpdateRequest() ;
         p.parse(update, in) ;
         return update ;
     }
 
-    /** Create an UpdateRequest by reading it from a Reader */
-    private static UpdateRequest read(Reader in)
-    {
-        //ParserSPARQLUpdate p = new ParserSPARQLUpdate() ;
-        ParserARQUpdate p = new ParserARQUpdate() ;
-        UpdateRequest update = new UpdateRequest() ;
-        p.parse(update, in) ;
-        return update ;
-    }
+//    /** Create an UpdateRequest by reading it from a Reader */
+//    private static UpdateRequest read(Reader in)
+//    {
+//        ParserSPARQL11Update p = new ParserSPARQL11Update() ;
+//        //ParserARQUpdate p = new ParserARQUpdate() ;
+//        UpdateRequest update = new UpdateRequest() ;
+//        p.parse(update, in) ;
+//        return update ;
+//    }
 
     /** Create a UpdateProcessor appropriate to the GraphStore, or null if no available factory to make an UpdateProcessor 
      * @param update
      * @param graphStore
      * @return UpdateProcessor or null
      */
-    public static UpdateProcessor create(UpdateSubmission update, GraphStore graphStore)
+    public static UpdateProcessor create(Update update, GraphStore graphStore)
     {
         return create(update, graphStore, (Binding)null) ;
     }
@@ -86,7 +85,7 @@ public class UpdateFactory
      * @param initialSolution
      * @return UpdateProcessor or null
      */
-    public static UpdateProcessor create(UpdateSubmission update, GraphStore graphStore, QuerySolution initialSolution)
+    public static UpdateProcessor create(Update update, GraphStore graphStore, QuerySolution initialSolution)
     {        
         Binding b = null ;
         if ( initialSolution != null )
@@ -100,7 +99,7 @@ public class UpdateFactory
      * @param initialBinding
      * @return UpdateProcessor or null
      */
-    public static UpdateProcessor create(UpdateSubmission update, GraphStore graphStore, Binding initialBinding)
+    public static UpdateProcessor create(Update update, GraphStore graphStore, Binding initialBinding)
     {        
         return create(new UpdateRequest(update), graphStore, initialBinding) ;
     }

@@ -18,8 +18,10 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingUtils ;
 import com.hp.hpl.jena.sparql.lang.ParserSPARQL11Update ;
 import com.hp.hpl.jena.update.GraphStore ;
+import com.hp.hpl.jena.update.Update ;
 import com.hp.hpl.jena.update.UpdateException ;
 import com.hp.hpl.jena.update.UpdateProcessor ;
+import com.hp.hpl.jena.update.UpdateRequest ;
 
 public class UpdateFactory
 {

@@ -58,7 +58,7 @@ public class ParserBase
     protected final Node nRDFobject     = RDF.Nodes.object ;
     
     // ----
-    protected boolean inConstructTemplate = false ;
+    private boolean bNodesAreVariables = true ;
     
     // label => bNode for construct templates patterns
     final LabelToNodeMap bNodeLabels = LabelToNodeMap.createBNodeMap() ;
@@ -85,11 +85,17 @@ public class ParserBase
     
     protected void setInConstructTemplate(boolean b)
     {
-        inConstructTemplate = b ;
-        if ( inConstructTemplate )
-            activeLabelMap = bNodeLabels ;
-        else 
+        setBNodesAreVariables(!b) ;
+    }
+    
+    protected boolean getBNodesAreVariables()   { return bNodesAreVariables ; }
+    protected void setBNodesAreVariables(boolean bNodesAreVariables)
+    {
+        this.bNodesAreVariables = bNodesAreVariables ;
+        if ( bNodesAreVariables )
             activeLabelMap = anonVarLabels ;
+        else 
+            activeLabelMap = bNodeLabels  ;
     }
     
     protected Element compressGroupOfOneGroup(ElementGroup elg)

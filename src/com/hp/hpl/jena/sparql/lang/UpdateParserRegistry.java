@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -11,48 +12,35 @@ import java.util.Map ;
 
 import com.hp.hpl.jena.query.Syntax ;
 
-/** original code - contribution from Olaf Hartig */
-
-
-public class ParserRegistry
+public class UpdateParserRegistry
 {
     // the map contains the registered factories hashed by the syntaxes
-    Map<Syntax, ParserFactory> factories = new HashMap<Syntax, ParserFactory>() ;
+    Map<Syntax, UpdateParserFactory> factories = new HashMap<Syntax, UpdateParserFactory>() ;
     
     // Singleton
-    static ParserRegistry registry = null ;
-    static synchronized public ParserRegistry get()
+    static UpdateParserRegistry registry = null ;
+    static synchronized public UpdateParserRegistry get()
     {
         if ( registry == null )
             init() ;
         return registry;
     }
     
-    private ParserRegistry() { }
+    private UpdateParserRegistry() { }
     
     private static synchronized void init()
     {
-        ParserRegistry reg = new ParserRegistry() ;
-        
-        reg.add(Syntax.syntaxSPARQL_10, 
-                new ParserFactory() {
-            public boolean accept( Syntax syntax ) { return Syntax.syntaxSPARQL_10.equals(syntax) ; } 
-            public Parser create( Syntax syntax ) { return new ParserSPARQL10() ; } }) ;
+        UpdateParserRegistry reg = new UpdateParserRegistry() ;
         
         reg.add(Syntax.syntaxSPARQL_11, 
-                new ParserFactory() {
+                new UpdateParserFactory() {
             public boolean accept( Syntax syntax ) { return Syntax.syntaxSPARQL_11.equals(syntax) ; } 
-            public Parser create( Syntax syntax ) { return new ParserSPARQL11() ; } }) ;
+            public UpdateParser create( Syntax syntax ) { return new ParserSPARQL11Update() ; } }) ;
    
         reg.add(Syntax.syntaxARQ, 
-                new ParserFactory() {
+                new UpdateParserFactory() {
             public boolean accept(Syntax syntax ) { return Syntax.syntaxARQ.equals(syntax) ; } 
-            public Parser create ( Syntax syntax ) { return new ParserARQ() ; } }) ;
-
-        reg.add(Syntax.syntaxRDQL, 
-                new ParserFactory() {
-            public boolean accept ( Syntax syntax ) { return Syntax.syntaxRDQL.equals(syntax) ; } 
-            public Parser create ( Syntax syntax ) { return new ParserRDQL() ; } }) ;
+            public UpdateParser create ( Syntax syntax ) { return new ParserARQUpdate() ; } }) ;
         
         // Defend against concurrent start up (even if not synchronised).
         // Protects against, not fixes, the problem.
@@ -65,7 +53,7 @@ public class ParserRegistry
      * @return a parser factory or null if none accept the request
      */
     
-    public static ParserFactory findFactory(Syntax syntax)
+    public static UpdateParserFactory findFactory(Syntax syntax)
     { return get().getFactory(syntax) ; }
     
     /** Return a suitable parser for the given syntax
@@ -74,7 +62,7 @@ public class ParserRegistry
      * @return a parser or null if none accept the request
      */
     
-    public static Parser parser(Syntax syntax)
+    public static UpdateParser parser(Syntax syntax)
     { return get().createParser(syntax) ; }
     
     /** Return a suitable parser factory for the given syntax
@@ -83,7 +71,7 @@ public class ParserRegistry
      * @return a parser factory or null if none accept the request
      */
     
-    public ParserFactory getFactory(Syntax syntax)
+    public UpdateParserFactory getFactory(Syntax syntax)
     { return factories.get(syntax) ; }
     
     /** Return a suitable parser for the given syntax
@@ -92,9 +80,9 @@ public class ParserRegistry
      * @return a parser or null if none accept the request
      */
     
-    public Parser createParser(Syntax syntax)
+    public UpdateParser createParser(Syntax syntax)
     {
-        ParserFactory f = getFactory(syntax) ;
+        UpdateParserFactory f = getFactory(syntax) ;
         return ( f != null ) ? f.create(syntax) : null ;
     }
     
@@ -102,14 +90,14 @@ public class ParserRegistry
      *  If another factory is registered for the syntax it is replaced by the
      *  given one.
      */
-    public static void addFactory(Syntax syntax, ParserFactory f)
+    public static void addFactory(Syntax syntax, UpdateParserFactory f)
     { get().add(syntax, f) ; }
     
     /** Register the given parser factory for the specified syntax.
      *  If another factory is registered for the syntax it is replaced by the
      *  given one.
      */
-    public void add(Syntax syntax, ParserFactory f)
+    public void add(Syntax syntax, UpdateParserFactory f)
     {
         if ( ! f.accept(syntax) )
             throw new IllegalArgumentException( "The given parser factory does not accept the specified syntax." );
@@ -136,6 +124,7 @@ public class ParserRegistry
 
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

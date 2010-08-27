@@ -1131,7 +1131,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
       jj_consume_token(-1);
       throw new ParseException();
     }
-      getUpdateRequestSubmission().addUpdate(up) ;
+      getUpdateRequest().addUpdate(up) ;
   }
 
   final public UpdateModify Modify() throws ParseException {

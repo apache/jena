@@ -11,35 +11,34 @@ import java.io.InputStream ;
 import java.io.Reader ;
 import java.io.StringReader ;
 
+import org.openjena.atlas.logging.Log ;
 import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.query.QueryException ;
 import com.hp.hpl.jena.query.QueryParseException ;
 import com.hp.hpl.jena.shared.JenaException ;
 import com.hp.hpl.jena.sparql.lang.sparql_11.SPARQLParser11 ;
-import com.hp.hpl.jena.sparql.modify.request.UpdateRequest ;
-
-import org.openjena.atlas.logging.Log ;
-
 import com.hp.hpl.jena.update.UpdateException ;
+import com.hp.hpl.jena.update.UpdateRequest ;
 import com.hp.hpl.jena.util.FileUtils ;
 
 
-public class ParserSPARQL11Update
+public class ParserSPARQL11Update extends UpdateParser
 {
+    @Override
     public UpdateRequest parse(UpdateRequest update, String queryString)
     {
         Reader r = new StringReader(queryString) ;
         return _parse(update, r) ;
     }
     
+    @Override
     public UpdateRequest parse(UpdateRequest update, InputStream in)
     {
         Reader r = FileUtils.asBufferedUTF8(in) ;
         return _parse(update, r) ;
     }
 
-    /** Use with care - Reader must be UTF-8 */ 
     public UpdateRequest parse(UpdateRequest update, Reader r)
     {
         if ( r instanceof FileReader )

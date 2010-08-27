@@ -20,7 +20,7 @@ import com.hp.hpl.jena.util.FileUtils ;
 
 public class uparse extends CmdARQ
 {
-    ArgDecl fileArg = new ArgDecl(ArgDecl.HasValue, "--file", "--update") ;
+    ArgDecl fileArg = new ArgDecl(ArgDecl.HasValue, "file", "update") ;
     List<String> requestFiles = null ;
     
     public static void main (String... argv)
@@ -71,7 +71,7 @@ public class uparse extends CmdARQ
             return FileUtils.readWholeFileAsUTF8(filename) ;
         } catch (IOException ex)
         {
-            System.err.println("Not such file: "+filename) ;
+            System.err.println("No such file: "+filename) ;
             return null ;
         }
     }

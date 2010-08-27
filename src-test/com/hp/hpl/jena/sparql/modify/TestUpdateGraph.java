@@ -327,10 +327,9 @@ public abstract class TestUpdateGraph extends TestUpdateBase
     
     @Test public void testUpdateInitialBinding4()
     {
-        // Empty pattern
         GraphStore gStore = getEmptyGraphStore() ;
         defaultGraphData(gStore, graph1) ;
-        String update = "DELETE  { ?x <http://example/p> 2007 } INSERT { ?x <http://example/p> 1999 }" ;
+        String update = "DELETE WHERE { ?x <http://example/p> 2007 } INSERT { ?x <http://example/p> 1999 } WHERE {}" ;
         UpdateRequest req = UpdateFactory.create(update) ;
         
         Binding b = BindingFactory.binding(Var.alloc("x"), s) ;

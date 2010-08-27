@@ -69,6 +69,7 @@ import com.hp.hpl.jena.sparql.expr.* ;
 import com.hp.hpl.jena.sparql.path.* ;
 import com.hp.hpl.jena.sparql.expr.aggregate.* ;
 #ifdef  UPDATE
+import com.hp.hpl.jena.update.* ;
 import com.hp.hpl.jena.sparql.modify.request.* ;
 #endif
 #ifdef UPDATE_SUBMISSION
@@ -647,7 +648,7 @@ void Update1() : { UpdateSubmission up = null ; GraphMgt mgt ; }
 {
   (  up = Modify() | up = Insert() | up = Delete() | 
      up = Load() | up = Clear() |  up = Create() | up = Drop() )
-    { getUpdateRequestSubmission().addUpdate(up) ; }
+    { getUpdateRequest().addUpdate(up) ; }
 }
 
 UpdateModify Modify() : 

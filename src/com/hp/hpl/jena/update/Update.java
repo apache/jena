@@ -4,30 +4,37 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.modify.request;
+package com.hp.hpl.jena.update;
 
-import java.util.ArrayList ;
-import java.util.Collections ;
-import java.util.List ;
+import org.openjena.atlas.io.IndentedWriter ;
 
-import com.hp.hpl.jena.sparql.core.Prologue ;
+import com.hp.hpl.jena.shared.PrefixMapping ;
+import com.hp.hpl.jena.sparql.modify.request.UpdateVisitor ;
+import com.hp.hpl.jena.sparql.modify.request.UpdateWriter ;
+import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
+import com.hp.hpl.jena.sparql.util.PrintSerializable ;
+import com.hp.hpl.jena.sparql.util.PrintUtils ;
 
-
-public class UpdateRequest extends Prologue
+public abstract class Update implements PrintSerializable
 {
-    private List<Update> operations = new ArrayList<Update>() ;
-    private List<Update> operationsView = Collections.unmodifiableList(operations) ;
-
-    public UpdateRequest() {}
-    public UpdateRequest(Update update)
-    {
-        this() ;
-        add(update) ;
-    }
+    public abstract void visit(UpdateVisitor visitor) ; 
     
-    public void add(Update update) { operations.add(update) ; } 
+    public void output(IndentedWriter out, SerializationContext sCxt)
+    {
+        UpdateWriter.output(this, out, sCxt) ;
+    }
 
-    public List<Update> getOperations() { return operationsView ; }
+    public void output(IndentedWriter out)
+    {
+        UpdateWriter.output(this, out, null) ;
+    }
+
+    public String toString(PrefixMapping pmap)
+    { return PrintUtils.toString(this, pmap) ; } 
+    
+    @Override
+    public String toString()
+    { return PrintUtils.toString(this) ; }
 }
 
 /*

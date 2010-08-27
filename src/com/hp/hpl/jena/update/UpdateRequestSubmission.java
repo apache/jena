@@ -4,40 +4,61 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.modify.submission;
+package com.hp.hpl.jena.update;
 
+import java.util.ArrayList ;
+import java.util.Iterator ;
+import java.util.List ;
 
 import org.openjena.atlas.io.IndentedWriter ;
 
-import com.hp.hpl.jena.sparql.ARQNotImplemented ;
-import com.hp.hpl.jena.sparql.modify.request.UpdateVisitor ;
+import com.hp.hpl.jena.sparql.core.Prologue ;
+import com.hp.hpl.jena.sparql.modify.submission.UpdateSubmission ;
+import com.hp.hpl.jena.sparql.serializer.PrologueSerializer ;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
-import com.hp.hpl.jena.update.Update ;
+import com.hp.hpl.jena.sparql.util.PrintUtils ;
+import com.hp.hpl.jena.sparql.util.Printable ;
 
-/** Compatibility class for SPARQL/Update submission */ 
-public abstract class UpdateSubmission extends Update //implements PrintSerializable
+/** A single request which may consist of several updates, to be performed in the order added to the request */
+public class UpdateRequestSubmission extends Prologue
+    implements Printable//, Iterable<Update>
 {
-    // Wrong visitor!
-    @Override
-    public void visit(UpdateVisitor visitor)
-    {
-        throw new ARQNotImplemented("Wrong visitor for UpdateSubmission") ;
-    }
+    private List<UpdateSubmission> requests = new ArrayList<UpdateSubmission>() ;
+    public UpdateRequestSubmission() { super() ; }
+    public UpdateRequestSubmission(UpdateSubmission graphUpdate) { super() ; requests.add(graphUpdate) ; }
     
-    // Submission visitor.
-    public abstract void visit(UpdateVisitorSubmission visitor) ; 
-    
+    public void addUpdate(UpdateSubmission update) { requests.add(update) ; }
+    public List<UpdateSubmission> getUpdates() { return requests ; }
+
     @Override
-    public void output(IndentedWriter out, SerializationContext sCxt)
-    {
-        // Write old style.
-        visit(new UpdateSerializer(out, sCxt)) ;
-    }
-    
-    @Override
+    public String toString()
+    { return PrintUtils.toString(this) ; } 
+
+    //@Override
     public void output(IndentedWriter out)
+    {  
+        PrologueSerializer.output(out, this) ;
+        SerializationContext sCxt = new SerializationContext(this) ;
+        boolean first = true ;
+        out.println() ;
+        
+        for ( Iterator<UpdateSubmission> iter = requests.iterator() ; iter.hasNext(); )
+        {
+            UpdateSubmission update = iter.next() ;
+
+            if ( ! first )
+                out.println("    # ----------------") ;
+            else
+                first = false ;
+            update.output(out, sCxt) ;
+            out.ensureStartOfLine() ;
+            //out.println();
+        }
+    }
+    
+    public Iterator<UpdateSubmission> iterator()
     {
-        output(out, new SerializationContext() ) ;
+        return requests.iterator() ;
     }
 }
 

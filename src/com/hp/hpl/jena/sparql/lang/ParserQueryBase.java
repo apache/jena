@@ -10,7 +10,7 @@ package com.hp.hpl.jena.sparql.lang;
 import java.util.Stack ;
 
 import com.hp.hpl.jena.query.Query ;
-import com.hp.hpl.jena.sparql.modify.request.Update ;
+import com.hp.hpl.jena.update.Update ;
 import com.hp.hpl.jena.update.UpdateRequest ;
 
 public class ParserQueryBase extends ParserBase 
@@ -28,44 +28,60 @@ public class ParserQueryBase extends ParserBase
 
     // The ARQ parser is both query and update languages.
 
-    // ---- SPARQL/Update (Submission)
-    private UpdateRequest requestSubmission = null ;
-
-    protected UpdateRequest getUpdateRequestSubmission() { return requestSubmission ; }
-    public void setUpdateRequest(UpdateRequest request)
-    {
-        setPrologue(request) ;
-        this.requestSubmission = request ;
-        // And create a query because we may have nested selects.
-        this.query = new Query () ;
-    }
+//    // ---- SPARQL/Update (Submission)
+//    private UpdateRequest requestSubmission = null ;
+//
+//    protected UpdateRequest getUpdateRequestSubmission() { return requestSubmission ; }
+//    public void setUpdateRequest(UpdateRequest request)
+//    {
+//        setPrologue(request) ;
+//        this.requestSubmission = request ;
+//        // And create a query because we may have nested selects.
+//        this.query = new Query () ;
+//    }
 
     // SPARQL Update (W3C RECommendation)
-    private com.hp.hpl.jena.sparql.modify.request.UpdateRequest request = null ;
+    private UpdateRequest request = null ;
 
-    protected com.hp.hpl.jena.sparql.modify.request.UpdateRequest getUpdate() { return request ; }
-    public void setUpdateRequest(com.hp.hpl.jena.sparql.modify.request.UpdateRequest request)
+    protected UpdateRequest getUpdateRequest() { return request ; }
+    public void setUpdateRequest(UpdateRequest request)
     { 
         this.request = request ;
         setPrologue(request) ;
     }
     
     // Move down to SPARQL 1.1 or rename as ParserBase
-    protected void startUpdateOperation() {}// { System.out.println("Start update operation") ; }
-    protected void finishUpdateOperation() {}// { System.out.println("Finish update operation") ; }
+    protected void startUpdateOperation() {}
+    protected void finishUpdateOperation() {}
     
-    protected void startUpdateRequest() {}// { System.out.println("Start update request") ; }
-    protected void finishUpdateRequest() {}// { System.out.println("Finish update request") ; }
+    protected void startUpdateRequest() {}
+    protected void finishUpdateRequest() {}
     
-    protected void startDataInsert() {}// { System.out.println("Start INSERT DATA") ; }
-    protected void finishDataInsert() {}// { System.out.println("Finish INSERT DATA") ; }
+    private boolean b ;
+    protected void startDataInsert() 
+    {
+        b = getBNodesAreVariables() ;
+        setBNodesAreVariables(false) ;
+    } 
+    protected void finishDataInsert()
+    {
+        setBNodesAreVariables(b) ;
+    }
     
-    protected void startDataDelete() {}// { System.out.println("Start DELETE DATA") ; }
-    protected void finishDataDelete() {}// { System.out.println("Finish DELETE DATA") ; }
+    protected void startDataDelete()
+    {
+        b = getBNodesAreVariables() ;
+        setBNodesAreVariables(false) ;
+    } 
+    
+    protected void finishDataDelete()
+    {
+        setBNodesAreVariables(b) ;
+    }
     
     protected void emitUpdate(Update update)
     {
-        request.add(update) ;
+        request.addUpdate(update) ;
     }
     
     protected void startSubSelect()

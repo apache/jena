@@ -6,33 +6,41 @@
 
 package com.hp.hpl.jena.sparql.modify.request;
 
-import org.openjena.atlas.io.IndentedWriter ;
+import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.modify.GraphStoreBasic ;
+import com.hp.hpl.jena.sparql.modify.UpdateProcessorFactory ;
+import com.hp.hpl.jena.update.GraphStore ;
+import com.hp.hpl.jena.update.UpdateProcessor ;
+import com.hp.hpl.jena.update.UpdateRequest ;
 
-import com.hp.hpl.jena.shared.PrefixMapping ;
-import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
-import com.hp.hpl.jena.sparql.util.PrintSerializable ;
-import com.hp.hpl.jena.sparql.util.PrintUtils ;
-
-public abstract class Update implements PrintSerializable
+public class UpdateProcessorMain implements UpdateProcessor
 {
-    public abstract void visit(UpdateVisitor visitor) ; 
-    
-    public void output(IndentedWriter out, SerializationContext sCxt)
+    private UpdateEngine engine ;
+
+    private UpdateProcessorMain(GraphStore graphStore, UpdateRequest request, Binding inputBinding)
     {
-        UpdateWriter.output(this, out, sCxt) ;
+        this.engine = new UpdateEngine(graphStore, request, inputBinding) ;
+    }
+    
+    public void execute()
+    {
+        engine.execute() ;
     }
 
-    public void output(IndentedWriter out)
-    {
-        UpdateWriter.output(this, out, null) ;
+    public static UpdateProcessorFactory getFactory() { 
+        return new UpdateProcessorFactory()
+        {
+            public boolean accept(UpdateRequest request, GraphStore graphStore)
+            {
+                return (graphStore instanceof GraphStoreBasic) ;
+            }
+        
+            public UpdateProcessor create(UpdateRequest request, GraphStore graphStore, Binding inputBinding)
+            {
+                return new UpdateProcessorMain(graphStore, request, inputBinding) ;
+            }
+        } ;
     }
-
-    public String toString(PrefixMapping pmap)
-    { return PrintUtils.toString(this, pmap) ; } 
-    
-    @Override
-    public String toString()
-    { return PrintUtils.toString(this) ; }
 }
 
 /*

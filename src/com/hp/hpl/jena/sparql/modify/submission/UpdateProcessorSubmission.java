@@ -13,15 +13,18 @@ import com.hp.hpl.jena.sparql.modify.UpdateProcessorFactory ;
 import com.hp.hpl.jena.update.GraphStore ;
 import com.hp.hpl.jena.update.UpdateProcessor ;
 import com.hp.hpl.jena.update.UpdateRequest ;
+import com.hp.hpl.jena.update.UpdateRequestSubmission ;
 
 /** General purpose UpdateProcessor for GraphStore objects (SPARQL/Update) */
+// NO LONGER USED.
+// WILL BE DELETED
 public class UpdateProcessorSubmission implements UpdateProcessor
 {
     private GraphStore graphStore ;
-    private UpdateRequest request ;
+    private UpdateRequestSubmission request ;
     private Binding inputBinding ;
 
-    private UpdateProcessorSubmission(GraphStore graphStore, UpdateRequest request, Binding inputBinding)
+    public UpdateProcessorSubmission(GraphStore graphStore, UpdateRequestSubmission request, Binding inputBinding)
     {
         this.graphStore = graphStore ;
         this.request = request ;
@@ -36,18 +39,29 @@ public class UpdateProcessorSubmission implements UpdateProcessor
             update.visit(v) ;
         graphStore.finishRequest() ;
     }
+    
+    public void execute(UpdateSubmission update)
+    {
+        UpdateVisitorSubmission v = new UpdateProcessorSubmissionVisitor(graphStore, inputBinding) ;
+        update.visit(v) ;
+    }
 
     public static UpdateProcessorFactory getFactory() { 
         return new UpdateProcessorFactory()
         {
             public boolean accept(UpdateRequest request, GraphStore graphStore)
             {
-                return (graphStore instanceof GraphStoreBasic) ;
+                return false &&  (graphStore instanceof GraphStoreBasic) ;
             }
         
-            public UpdateProcessor create(UpdateRequest request, GraphStore graphStore, Binding inputBinding)
+            public UpdateProcessor create(UpdateRequestSubmission request, GraphStore graphStore, Binding inputBinding)
             {
                 return new UpdateProcessorSubmission(graphStore, request, inputBinding) ;
+            }
+
+            public UpdateProcessor create(UpdateRequest request, GraphStore graphStore, Binding inputBinding)
+            {
+                return null ;
             }
         } ;
     }

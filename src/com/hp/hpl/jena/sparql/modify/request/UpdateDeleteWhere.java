@@ -9,6 +9,7 @@ package com.hp.hpl.jena.sparql.modify.request;
 import java.util.List ;
 
 import com.hp.hpl.jena.sparql.core.Quad ;
+import com.hp.hpl.jena.update.Update ;
 
 public class UpdateDeleteWhere extends Update
 {

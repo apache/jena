@@ -1,28 +1,25 @@
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.modify;
+package com.hp.hpl.jena.sparql.lang;
 
-import com.hp.hpl.jena.sparql.engine.binding.Binding ;
-import com.hp.hpl.jena.update.GraphStore ;
-import com.hp.hpl.jena.update.UpdateProcessor ;
-import com.hp.hpl.jena.update.UpdateRequest ;
+import com.hp.hpl.jena.query.Syntax ;
 
-/** Interface for factories that accept and process SPARQL update requests */
-public interface UpdateProcessorFactory
+public interface UpdateParserFactory
 {
-    /** Answer whether this factory can produce an UpdateProcessor for the UpdateRequest and GraphStore */
-    public boolean accept(UpdateRequest request, GraphStore graphStore) ;
+    /** Return true if this factory can create a parser for the given syntax */
+    public boolean accept ( Syntax syntax );
     
-    /** Create the request - having returned true to accept, should not fail */  
-    public UpdateProcessor create(UpdateRequest request, GraphStore graphStore, Binding inputBinding) ;
+    /** Return a parser for the given syntax */
+    public UpdateParser create ( Syntax syntax );
 }
 
+
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

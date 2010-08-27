@@ -14,17 +14,20 @@ import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.ARQException ;
 import com.hp.hpl.jena.sparql.core.Prologue ;
 import com.hp.hpl.jena.sparql.core.Quad ;
+import com.hp.hpl.jena.sparql.modify.submission.UpdateSubmission ;
 import com.hp.hpl.jena.sparql.serializer.FormatterElement ;
 import com.hp.hpl.jena.sparql.serializer.PrologueSerializer ;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
 import com.hp.hpl.jena.sparql.syntax.Element ;
 import com.hp.hpl.jena.sparql.util.FmtUtils ;
+import com.hp.hpl.jena.update.Update ;
+import com.hp.hpl.jena.update.UpdateRequest ;
 
 public class UpdateWriter
 {
     public static void output(UpdateRequest request, IndentedWriter out)
     {
-        output(request, out, null) ;
+        output(request, out, new SerializationContext(request)) ;
     }
     
     public static void output(UpdateRequest request, IndentedWriter out, SerializationContext sCxt)
@@ -55,6 +58,12 @@ public class UpdateWriter
     
     private static void outputUpdate(Update update, IndentedWriter out, SerializationContext sCxt)
     {
+        if ( update instanceof UpdateSubmission )
+        {
+            out.println(update) ;
+            return ;
+        }
+        
         Writer writer = new Writer(out, sCxt) ;
         update.visit(writer) ; 
     }
@@ -287,21 +296,21 @@ public class UpdateWriter
             }
              
             Element el = update.getWherePattern() ;
+            out.ensureStartOfLine() ;
+            out.print("WHERE") ;
+            out.incIndent(BLOCK_INDENT) ;
+            out.newline() ;
+
             if ( el != null )
             {
-                out.ensureStartOfLine() ;
-                out.print("WHERE") ;
-                out.incIndent(BLOCK_INDENT) ;
-                out.newline() ;
                 FormatterElement fmtElement = new FormatterElement(out, sCxt) ;
                 fmtElement.visitAsGroup(el) ;
-                //el.visit(fmtElement) ;
-                out.decIndent(BLOCK_INDENT) ;
             }
+            else
+                out.print("{}") ;
+            out.decIndent(BLOCK_INDENT) ;
         }
-        
     }
-    
 }
 
 /*

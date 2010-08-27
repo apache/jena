@@ -5,6 +5,20 @@ public class DevARQ
     // No org.json.
 
     // ---- SPARQL Update
+    // NL and then ; -> blank line.
+    
+    // UpdateParseRegistry
+    //   ARQ -> submission
+    //   SPARQL_11 -> transition : 
+    
+    // Update parsing via input stream.
+    // transitition:
+    // DELETE FROM <> { data } ==> DELETE DATA or add WHERE {}
+    // INSERT INTO <> { data } ==> INSERT DATA or add WHERE {}
+    //   Use of initial bindings 
+    
+    // INSERT DATA { :r :p _:a . _:a :q :v } => No variables in data (!!!)
+    
     // Wrapper version of GraphStore.
     //   Should INSERT DATA { GRAPH {} } auto create?
     //   Insert into explicitly named default graph should be made to work.

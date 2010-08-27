@@ -11,6 +11,7 @@ import java.util.Collections ;
 import java.util.List ;
 
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.update.Update ;
 
 public abstract class UpdateWithUsing extends Update
 {

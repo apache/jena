@@ -21,15 +21,16 @@ import org.openjena.atlas.logging.Log ;
 import com.hp.hpl.jena.update.UpdateRequest ;
 import com.hp.hpl.jena.util.FileUtils ;
 
-// The W3C Submission.
-public class ParserARQUpdate
+public class ParserARQUpdate extends UpdateParser
 {
+    @Override
     public UpdateRequest parse(UpdateRequest update, String queryString)
     {
         Reader r = new StringReader(queryString) ;
         return _parse(update, r) ;
     }
     
+    @Override
     public UpdateRequest parse(UpdateRequest update, InputStream in)
     {
         Reader r = FileUtils.asBufferedUTF8(in) ;

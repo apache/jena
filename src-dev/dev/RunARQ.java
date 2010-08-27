@@ -44,7 +44,6 @@ import com.hp.hpl.jena.sparql.function.FunctionEnvBase ;
 import com.hp.hpl.jena.sparql.lang.ParserSPARQL11Update ;
 import com.hp.hpl.jena.sparql.modify.GraphStoreBasic ;
 import com.hp.hpl.jena.sparql.modify.request.UpdateEngine ;
-import com.hp.hpl.jena.sparql.modify.request.UpdateRequest ;
 import com.hp.hpl.jena.sparql.modify.request.UpdateWriter ;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
@@ -52,6 +51,7 @@ import com.hp.hpl.jena.sparql.util.ExprUtils ;
 import com.hp.hpl.jena.sparql.util.QueryExecUtils ;
 import com.hp.hpl.jena.sparql.util.Timer ;
 import com.hp.hpl.jena.update.GraphStore ;
+import com.hp.hpl.jena.update.UpdateRequest ;
 
 import com.hp.hpl.jena.util.FileManager ;
 
@@ -89,6 +89,7 @@ public class RunARQ
 
     public static void main(String[] argv) throws Exception
     {
+        arq.uparse.main("--file=testing/Update/update-1.rup") ; System.exit(0) ;
 //        com.hp.hpl.jena.update.UpdateRequest upreq =
 //            com.hp.hpl.jena.update.UpdateFactory.read("testing/Update/data-1.rup") ;
 //        System.out.println(upreq) ;

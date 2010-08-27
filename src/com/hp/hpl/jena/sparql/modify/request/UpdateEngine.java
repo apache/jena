@@ -30,6 +30,8 @@ import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingRoot ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper ;
+import com.hp.hpl.jena.sparql.modify.submission.UpdateProcessorSubmission ;
+import com.hp.hpl.jena.sparql.modify.submission.UpdateSubmission ;
 import com.hp.hpl.jena.sparql.syntax.Element ;
 import com.hp.hpl.jena.sparql.syntax.ElementGroup ;
 import com.hp.hpl.jena.sparql.syntax.ElementNamedGraph ;
@@ -37,7 +39,9 @@ import com.hp.hpl.jena.sparql.syntax.ElementTriplesBlock ;
 import com.hp.hpl.jena.sparql.util.FmtUtils ;
 import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
 import com.hp.hpl.jena.update.GraphStore ;
+import com.hp.hpl.jena.update.Update ;
 import com.hp.hpl.jena.update.UpdateException ;
+import com.hp.hpl.jena.update.UpdateRequest ;
 import com.hp.hpl.jena.util.FileManager ;
 
 // For in-memory graphs ONLY
@@ -47,20 +51,40 @@ public class UpdateEngine implements UpdateVisitor
     // TEMP
     public static void exec(GraphStore graphStore, UpdateRequest request)
     {
-        UpdateEngine engine = new UpdateEngine(graphStore, null) ;
-        for ( Update up : request.getOperations() )
-            up.visit(engine) ;
+        UpdateEngine engine = new UpdateEngine(graphStore, request, null) ;
+        engine.execute() ;
     }
     
-    private GraphStore graphStore ;
-    private Binding initialBinding ;
+    private final GraphStore graphStore ;
+    private final Binding initialBinding ;
+    private final UpdateRequest request ;
 
-    public UpdateEngine(GraphStore graphStore, Binding initialBinding)
+    public UpdateEngine(GraphStore graphStore, UpdateRequest request, Binding initialBinding)
     {
         this.graphStore = graphStore ;
         this.initialBinding = initialBinding ;
+        this.request = request ;
     }
 
+    public void execute()
+    {
+        graphStore.startRequest() ;
+        for ( Update up : request.getOperations() )
+        {
+            if ( up instanceof UpdateSubmission )
+            {
+                // If old style, go there.
+                UpdateSubmission ups =  (UpdateSubmission)up ;
+                UpdateProcessorSubmission p = 
+                    new UpdateProcessorSubmission(graphStore, null, initialBinding) ;
+                p.execute((UpdateSubmission)up) ;
+                continue ;
+            }
+            up.visit(this) ;
+        }
+        graphStore.finishRequest() ;
+    }
+    
     // startOperation
     // finishOperation
     

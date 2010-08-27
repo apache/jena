@@ -7,6 +7,7 @@
 package com.hp.hpl.jena.sparql.modify.request;
 
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.update.Update ;
 
 
 public class UpdateCreate extends Update

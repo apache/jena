@@ -219,13 +219,13 @@ public class Log
         ) ;   
         
     
-    public static void setJavLogging()
+    public static void setJavaLogging()
     {
-        setJavLogging("logging.properties") ;
+        setJavaLogging("logging.properties") ;
     }
     
     
-    public static void setJavLogging(String file)
+    public static void setJavaLogging(String file)
     {
         try
         {
@@ -234,7 +234,7 @@ public class Log
         } catch (Exception ex) { throw new AtlasException(ex) ; } 
     }
     
-    static void setJavLoggingDft()
+    static void setJavaLoggingDft()
     {
         try
         {

@@ -1,28 +1,48 @@
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.modify;
+package com.hp.hpl.jena.sparql.lang;
 
-import com.hp.hpl.jena.sparql.engine.binding.Binding ;
-import com.hp.hpl.jena.update.GraphStore ;
-import com.hp.hpl.jena.update.UpdateProcessor ;
+import java.io.InputStream ;
+
+import com.hp.hpl.jena.query.Query ;
+import com.hp.hpl.jena.query.QueryParseException ;
+import com.hp.hpl.jena.query.Syntax ;
 import com.hp.hpl.jena.update.UpdateRequest ;
 
-/** Interface for factories that accept and process SPARQL update requests */
-public interface UpdateProcessorFactory
+/** This class provides the root of lower level access to all the parsers.
+ *  Each subclass hides the details of the per-language exception handlers and other
+ *  javacc details to provide a methods that deal with setting up Query objects
+ *  and using QueryException exceptions for problems.    
+ */
+
+public abstract class UpdateParser
 {
-    /** Answer whether this factory can produce an UpdateProcessor for the UpdateRequest and GraphStore */
-    public boolean accept(UpdateRequest request, GraphStore graphStore) ;
+    public abstract UpdateRequest parse(UpdateRequest request, String queryString) throws QueryParseException ;
+    public abstract UpdateRequest parse(UpdateRequest request, InputStream input) throws QueryParseException ;
+
     
-    /** Create the request - having returned true to accept, should not fail */  
-    public UpdateProcessor create(UpdateRequest request, GraphStore graphStore, Binding inputBinding) ;
+    public static boolean canParse(Syntax syntaxURI)
+    {
+        return ParserRegistry.get().containsFactory(syntaxURI) ;
+    }
+    
+    public static UpdateParser createParser(Syntax syntaxURI)
+    {
+        return UpdateParserRegistry.get().createParser(syntaxURI) ;
+    }
+
+    // Do any testing of queries after the construction of the parse tree.
+    protected void validateParsedQuery(Query query)
+    {
+    }
 }
 
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
