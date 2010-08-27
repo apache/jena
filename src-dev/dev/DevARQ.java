@@ -12,6 +12,7 @@ public class DevARQ
     // UpdateSubmission to subclass from Update [done]
     // UpdateFactory to make "Update" public visibile an dswicth on UpdateSubmission/no UpdateSubmission 
     // Maybe tweak new engine to eval UpdateSubmission specially.
+    // Error handling and exception catching.
     
     // Label checking: can't use same bNode label in tenplate and pattern
     // for DELETE/INSERT
