@@ -7,14 +7,13 @@
 package com.hp.hpl.jena.sparql.modify.submission;
 
 
-import com.hp.hpl.jena.sparql.modify.UpdateVisitor ;
 
 public class UpdateClear extends GraphUpdate1
 {
     public UpdateClear() { super(); }
 
     @Override
-    public void visit(UpdateVisitor visitor) { visitor.visit(this) ; }
+    public void visit(UpdateVisitorSubmission visitor) { visitor.visit(this) ; }
 }
 
 /*

@@ -7,7 +7,6 @@
 package com.hp.hpl.jena.sparql.modify.submission;
 
 
-import com.hp.hpl.jena.sparql.modify.UpdateVisitor ;
 import com.hp.hpl.jena.sparql.syntax.Template ;
 
 public class UpdateModify extends UpdateModifyBase
@@ -36,7 +35,7 @@ public class UpdateModify extends UpdateModifyBase
     { return getInsertTemplateBase() ; }
 
     @Override
-    public void visit(UpdateVisitor visitor) { visitor.visit(this) ; }
+    public void visit(UpdateVisitorSubmission visitor) { visitor.visit(this) ; }
 }
 
 /*

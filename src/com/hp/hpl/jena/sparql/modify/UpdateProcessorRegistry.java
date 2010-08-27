@@ -10,6 +10,7 @@ import java.util.ArrayList ;
 import java.util.Iterator ;
 import java.util.List ;
 
+import com.hp.hpl.jena.sparql.modify.submission.UpdateProcessorSubmission ;
 import com.hp.hpl.jena.update.GraphStore ;
 import com.hp.hpl.jena.update.UpdateRequest ;
 
@@ -32,7 +33,7 @@ public class UpdateProcessorRegistry
     private static synchronized void init()
     {
         registry = new UpdateProcessorRegistry() ;
-        registry.add(UpdateProcessorMain.getFactory()) ;
+        registry.add(UpdateProcessorSubmission.getFactory()) ;
     }
     
     /** Locate a suitable factory for this query and dataset from the default registry

@@ -7,10 +7,21 @@ public class DevARQ
     // Wrapper version of GraphStore.
     //   Should INSERT DATA { GRAPH {} } auto create?
     //   Insert into explicitly named default graph should be made to work.
+    //   Swap to 1.1 update engine.
+    
+    // UpdateSubmission to subclass from Update [done]
+    // UpdateFactory to make "Update" public visibile an dswicth on UpdateSubmission/no UpdateSubmission 
+    // Maybe tweak new engine to eval UpdateSubmission specially.
+    
+    // Label checking: can't use same bNode label in tenplate and pattern
+    // for DELETE/INSERT
+    
+    // DELETE WHERE : turn bNodes into alloc variables.  See UpdateEngine.convertBNodesToVariables 
     
     // Transition: SUBMISSION
     // restrictions : only one graph for MODIFY <g>
-    // Hack: ARQ always on for UPDATE until SPARQL 1.1 engine is main engine.
+
+    
     // --------
     // [done] INSERT/DELETE DATA [INTO? or FROM? <uri>] {} => INSERT/DELETE DATA { GRAPH <uri> {}}
 

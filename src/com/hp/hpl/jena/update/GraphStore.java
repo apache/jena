@@ -25,7 +25,6 @@ public interface GraphStore extends DatasetGraph
     public void finishRequest() ;
     
 //    public void sync() ;
-//
 //    public void close() ;
 }
 

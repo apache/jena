@@ -8,7 +8,6 @@ package com.hp.hpl.jena.sparql.modify.submission;
 
 
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.sparql.modify.UpdateVisitor ;
 
 
 
@@ -21,7 +20,7 @@ public class UpdateDrop extends GraphMgt
     public UpdateDrop(String iri) { this(iri, false) ; }
     
     @Override
-    public void visit(UpdateVisitor visitor) { visitor.visit(this) ; }
+    public void visit(UpdateVisitorSubmission visitor) { visitor.visit(this) ; }
 }
 
 /*

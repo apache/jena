@@ -9,7 +9,6 @@ package com.hp.hpl.jena.sparql.modify.submission;
 import java.util.ArrayList ;
 import java.util.List ;
 
-import com.hp.hpl.jena.sparql.modify.UpdateVisitor ;
 
 public class UpdateLoad extends GraphUpdate1
 {
@@ -24,7 +23,7 @@ public class UpdateLoad extends GraphUpdate1
     public void addLoadIRI(String iri) { loadData.add(iri) ; }
  
     @Override
-    public void visit(UpdateVisitor visitor) { visitor.visit(this) ; }
+    public void visit(UpdateVisitorSubmission visitor) { visitor.visit(this) ; }
 
     public List<String> getLoadIRIs()
     { return loadData ; }

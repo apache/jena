@@ -10,7 +10,6 @@ package com.hp.hpl.jena.sparql.modify.submission;
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.sparql.modify.UpdateVisitor ;
 import com.hp.hpl.jena.sparql.syntax.Template ;
 import com.hp.hpl.jena.sparql.syntax.TemplateTriple ;
 
@@ -38,7 +37,7 @@ public class UpdateDelete extends UpdateModifyBase
     { return getDeleteTemplateBase() ; }
     
     @Override
-    public void visit(UpdateVisitor visitor) { visitor.visit(this) ; }
+    public void visit(UpdateVisitorSubmission visitor) { visitor.visit(this) ; }
 }
 
 /*

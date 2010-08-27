@@ -325,9 +325,14 @@ public class UpdateAction
      */
     public static void execute(UpdateSubmission update, GraphStore graphStore, Binding binding)
     {
+        execute$(update, graphStore, binding) ;
+    }
+    
+    private static void execute$(UpdateSubmission update, GraphStore graphStore, Binding binding)
+    {
         UpdateProcessor uProc = UpdateFactory.create(update, graphStore, binding) ;
         uProc.execute() ;
-    }
+    }  
 
 }
 

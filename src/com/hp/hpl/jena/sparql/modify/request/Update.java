@@ -6,9 +6,33 @@
 
 package com.hp.hpl.jena.sparql.modify.request;
 
-public abstract class Update
+import org.openjena.atlas.io.IndentedWriter ;
+
+import com.hp.hpl.jena.shared.PrefixMapping ;
+import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
+import com.hp.hpl.jena.sparql.util.PrintSerializable ;
+import com.hp.hpl.jena.sparql.util.PrintUtils ;
+
+public abstract class Update implements PrintSerializable
 {
     public abstract void visit(UpdateVisitor visitor) ; 
+    
+    public void output(IndentedWriter out, SerializationContext sCxt)
+    {
+        UpdateWriter.output(this, out, sCxt) ;
+    }
+
+    public void output(IndentedWriter out)
+    {
+        UpdateWriter.output(this, out, null) ;
+    }
+
+    public String toString(PrefixMapping pmap)
+    { return PrintUtils.toString(this, pmap) ; } 
+    
+    @Override
+    public String toString()
+    { return PrintUtils.toString(this) ; }
 }
 
 /*

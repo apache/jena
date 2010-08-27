@@ -1,25 +1,27 @@
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.modify;
+package com.hp.hpl.jena.sparql.modify.submission;
 
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
-import com.hp.hpl.jena.sparql.modify.submission.UpdateSubmission ;
+import com.hp.hpl.jena.sparql.modify.GraphStoreBasic ;
+import com.hp.hpl.jena.sparql.modify.UpdateProcessorFactory ;
 import com.hp.hpl.jena.update.GraphStore ;
 import com.hp.hpl.jena.update.UpdateProcessor ;
 import com.hp.hpl.jena.update.UpdateRequest ;
 
-/** General purpose UpdateProcessor for GraphStore objects */
-public class UpdateProcessorMain implements UpdateProcessor
+/** General purpose UpdateProcessor for GraphStore objects (SPARQL/Update) */
+public class UpdateProcessorSubmission implements UpdateProcessor
 {
     private GraphStore graphStore ;
     private UpdateRequest request ;
     private Binding inputBinding ;
 
-    private UpdateProcessorMain(GraphStore graphStore, UpdateRequest request, Binding inputBinding)
+    private UpdateProcessorSubmission(GraphStore graphStore, UpdateRequest request, Binding inputBinding)
     {
         this.graphStore = graphStore ;
         this.request = request ;
@@ -29,7 +31,7 @@ public class UpdateProcessorMain implements UpdateProcessor
     public void execute()
     {
         graphStore.startRequest() ;
-        UpdateVisitor v = new UpdateProcessorVisitor(graphStore, inputBinding) ;
+        UpdateVisitorSubmission v = new UpdateProcessorSubmissionVisitor(graphStore, inputBinding) ;
         for ( UpdateSubmission update : request.getUpdates() )
             update.visit(v) ;
         graphStore.finishRequest() ;
@@ -45,7 +47,7 @@ public class UpdateProcessorMain implements UpdateProcessor
         
             public UpdateProcessor create(UpdateRequest request, GraphStore graphStore, Binding inputBinding)
             {
-                return new UpdateProcessorMain(graphStore, request, inputBinding) ;
+                return new UpdateProcessorSubmission(graphStore, request, inputBinding) ;
             }
         } ;
     }
@@ -53,6 +55,7 @@ public class UpdateProcessorMain implements UpdateProcessor
 
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

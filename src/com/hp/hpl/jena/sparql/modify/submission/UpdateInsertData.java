@@ -6,12 +6,11 @@
 
 package com.hp.hpl.jena.sparql.modify.submission;
 
-import com.hp.hpl.jena.sparql.modify.UpdateVisitor ;
 
 public class UpdateInsertData extends UpdateData
 {
     @Override
-    public void visit(UpdateVisitor visitor)
+    public void visit(UpdateVisitorSubmission visitor)
     {
         visitor.visit(this) ;
     }

@@ -9,33 +9,35 @@ package com.hp.hpl.jena.sparql.modify.submission;
 
 import org.openjena.atlas.io.IndentedWriter ;
 
-import com.hp.hpl.jena.shared.PrefixMapping ;
-import com.hp.hpl.jena.sparql.modify.UpdateSerializer ;
-import com.hp.hpl.jena.sparql.modify.UpdateVisitor ;
+import com.hp.hpl.jena.sparql.ARQNotImplemented ;
+import com.hp.hpl.jena.sparql.modify.request.Update ;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
-import com.hp.hpl.jena.sparql.util.PrintSerializable ;
-import com.hp.hpl.jena.sparql.util.PrintUtils ;
 
-public abstract class UpdateSubmission implements PrintSerializable
+/** Compatibility class for SPARQL/Update submission */ 
+public abstract class UpdateSubmission extends Update //implements PrintSerializable
 {
-    public abstract void visit(UpdateVisitor visitor) ; 
+    // Wrong visitor!
+    @Override
+    public void visit(com.hp.hpl.jena.sparql.modify.request.UpdateVisitor visitor)
+    {
+        throw new ARQNotImplemented("Wrong visitor for UpdateSubmission") ;
+    }
     
-    public final void output(IndentedWriter out, SerializationContext sCxt)
-    {
-        visit(new UpdateSerializer(out, sCxt)) ;
-    }
-
-    public void output(IndentedWriter out)
-    {
-        System.err.println("Update.output") ;
-    }
-
-    public String toString(PrefixMapping pmap)
-    {  return PrintUtils.toString(this, pmap) ; } 
+    // Submission visitor.
+    public abstract void visit(UpdateVisitorSubmission visitor) ; 
     
     @Override
-    public String toString()
-    { return PrintUtils.toString(this) ; }
+    public void output(IndentedWriter out, SerializationContext sCxt)
+    {
+        // Write old style.
+        visit(new UpdateSerializer(out, sCxt)) ;
+    }
+    
+    @Override
+    public void output(IndentedWriter out)
+    {
+        output(out, new SerializationContext() ) ;
+    }
 }
 
 /*

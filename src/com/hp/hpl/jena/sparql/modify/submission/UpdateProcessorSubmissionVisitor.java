@@ -1,12 +1,22 @@
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.modify;
+package com.hp.hpl.jena.sparql.modify.submission;
 
-import java.util.* ;
+import java.util.ArrayList ;
+import java.util.Collection ;
+import java.util.HashMap ;
+import java.util.HashSet ;
+import java.util.Iterator ;
+import java.util.List ;
+import java.util.Map ;
+import java.util.Set ;
+
+import org.openjena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
@@ -21,23 +31,23 @@ import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingRoot ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper ;
-import com.hp.hpl.jena.sparql.modify.submission.* ;
+import com.hp.hpl.jena.sparql.modify.GraphStoreAction ;
+import com.hp.hpl.jena.sparql.modify.GraphStoreUtils ;
 import com.hp.hpl.jena.sparql.syntax.Element ;
 import com.hp.hpl.jena.sparql.syntax.Template ;
-import org.openjena.atlas.logging.Log ;
 import com.hp.hpl.jena.sparql.util.FmtUtils ;
 import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
 import com.hp.hpl.jena.update.GraphStore ;
 import com.hp.hpl.jena.util.FileManager ;
 
-/** A general processor for executing SPARQL/Updates on GraphStoreBasic objects*/ 
-public class UpdateProcessorVisitor implements UpdateVisitor
+/** A general processor for executing SPARQL/Updates on GraphStoreBasic objects */ 
+public class UpdateProcessorSubmissionVisitor implements UpdateVisitorSubmission
 {
 
     private GraphStore graphStore ;
     private Binding initialBinding ;
 
-    public UpdateProcessorVisitor(GraphStore graphStore, Binding initialBinding)
+    public UpdateProcessorSubmissionVisitor(GraphStore graphStore, Binding initialBinding)
     {
         this.graphStore = graphStore ;
         this.initialBinding = initialBinding ;
@@ -192,7 +202,7 @@ public class UpdateProcessorVisitor implements UpdateVisitor
             Triple triple = iter.next() ;
             if ( ! isGroundTriple(triple))
             {
-                Log.warn(UpdateProcessorVisitor.class, "Unbound triple: "+FmtUtils.stringForTriple(triple)) ;
+                Log.warn(UpdateProcessorSubmissionVisitor.class, "Unbound triple: "+FmtUtils.stringForTriple(triple)) ;
                 iter.remove() ;
             }
         }
@@ -216,6 +226,7 @@ public class UpdateProcessorVisitor implements UpdateVisitor
 
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

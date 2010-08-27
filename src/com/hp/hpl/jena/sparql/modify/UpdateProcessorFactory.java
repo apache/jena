@@ -11,15 +11,13 @@ import com.hp.hpl.jena.update.GraphStore ;
 import com.hp.hpl.jena.update.UpdateProcessor ;
 import com.hp.hpl.jena.update.UpdateRequest ;
 
-/** Interface for factories that accept and make requests for some class of GraphStores. */
-
+/** Interface for factories that accept and process SPARQL update requests */
 public interface UpdateProcessorFactory
 {
     /** Answer whether this factory can produce an UpdateProcessor for the UpdateRequest and GraphStore */
     public boolean accept(UpdateRequest request, GraphStore graphStore) ;
     /** Create the request - having returned true to accept, should not fail */  
     public UpdateProcessor create(UpdateRequest request, GraphStore graphStore, Binding inputBinding) ;
-
 }
 
 /*

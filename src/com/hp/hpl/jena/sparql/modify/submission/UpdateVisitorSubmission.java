@@ -4,11 +4,10 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.modify;
+package com.hp.hpl.jena.sparql.modify.submission;
 
-import com.hp.hpl.jena.sparql.modify.submission.* ;
 
-public interface UpdateVisitor
+public interface UpdateVisitorSubmission
 {
     public void visit(UpdateModify modify) ;
 

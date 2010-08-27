@@ -147,10 +147,21 @@ public class UpdateEngine implements UpdateVisitor
 
     public void visit(UpdateDeleteWhere update)
     {
+        List<Quad> quads = update.getQuads() ;
+        
+        // Convert bNodes to named variables first.
+        quads = convertBNodesToVariables(quads) ;
+        
         // Convert quads to a pattern.
         Element el = elementFromQuads(update.getQuads()) ;
         List<Binding> bindings = evalBindings(el) ;
-        execDelete(update.getQuads(), bindings) ;
+        execDelete(quads, bindings) ;
+    }
+
+    private List<Quad> convertBNodesToVariables(List<Quad> quads)
+    {
+        // XXX
+        return quads ;
     }
 
     // XXX Better???

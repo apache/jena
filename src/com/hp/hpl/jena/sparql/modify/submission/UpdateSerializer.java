@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.modify;
+package com.hp.hpl.jena.sparql.modify.submission;
 
 
 import java.util.Iterator ;
@@ -14,14 +14,13 @@ import org.openjena.atlas.io.IndentedWriter ;
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.sparql.modify.submission.* ;
 import com.hp.hpl.jena.sparql.serializer.FmtTemplate ;
 import com.hp.hpl.jena.sparql.serializer.FormatterElement ;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
 import com.hp.hpl.jena.sparql.syntax.Template ;
 import com.hp.hpl.jena.sparql.util.FmtUtils ;
 
-public class UpdateSerializer implements UpdateVisitor
+public class UpdateSerializer implements UpdateVisitorSubmission
 {
     // Newline policy: assume multiline output and finish each section with an NL 
     
