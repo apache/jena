@@ -56,7 +56,6 @@ public class TemplateTriple extends Template
             o = newBlank(o, bNodeMap) ;
 
         Triple t = new Triple(s, p, o) ; 
-        //Triple t2 = BindingUtils.substituteIntoTriple(t, b) ;
         Triple t2 = Substitute.substitute(t, b) ;
         acc.add(t2) ;
     }

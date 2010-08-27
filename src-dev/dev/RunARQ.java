@@ -52,6 +52,7 @@ import com.hp.hpl.jena.sparql.util.ExprUtils ;
 import com.hp.hpl.jena.sparql.util.QueryExecUtils ;
 import com.hp.hpl.jena.sparql.util.Timer ;
 import com.hp.hpl.jena.update.GraphStore ;
+
 import com.hp.hpl.jena.util.FileManager ;
 
 public class RunARQ
@@ -88,6 +89,12 @@ public class RunARQ
 
     public static void main(String[] argv) throws Exception
     {
+//        com.hp.hpl.jena.update.UpdateRequest upreq =
+//            com.hp.hpl.jena.update.UpdateFactory.read("testing/Update/data-1.rup") ;
+//        System.out.println(upreq) ;
+//        System.exit(0) ; 
+        
+        
         //qparse("--query=Q.rq", "--print=query", "--print=op") ; System.exit(0) ;
         sparql11update() ; System.exit(0) ; 
 
@@ -151,18 +158,29 @@ public class RunARQ
     private static void sparql11update()
     {
         GraphStore graphStore = new GraphStoreBasic() ;
+//        sparql11update_operation(graphStore, "BASE <base:/>",
+//                                 "CREATE GRAPH <g>",
+//                                 "INSERT DATA { <x> <y> <z> GRAPH <g> { <s> <p> <o1>, <o2> }}",
+//                                 //"DELETE WHERE { <x> <y> ?z GRAPH <g> { ?s ?p ?o }}",
+//                                 
+//                                 "INSERT { ?s ?p ?o } WHERE { GRAPH <g> { ?s ?p ?o FILTER (?o = <o2> )}}",
+//                                 //"DROP DEFAULT" ,
+//                                 //"CLEAR DEFAULT",
+//                                 //"CLEAR ALL",
+//                                 "") ;
+
         sparql11update_operation(graphStore, "BASE <base:/>",
                                  "CREATE GRAPH <g>",
-                                 "INSERT DATA { <x> <y> <z> GRAPH <g> { <s> <p> <o1>, <o2> }}",
+                                 "INSERT DATA { <x> <y> <z> }",
                                  //"DELETE WHERE { <x> <y> ?z GRAPH <g> { ?s ?p ?o }}",
                                  
-                                 "INSERT { ?s ?p ?o } WHERE { GRAPH <g> { ?s ?p ?o FILTER (?o = <o2> )}}",
-                                 
+                                 "INSERT INTO <g> { ?s ?p ?o } WHERE { ?s ?p ?o }",
                                  //"DROP DEFAULT" ,
                                  //"CLEAR DEFAULT",
                                  //"CLEAR ALL",
-                                 
                                  "") ;
+
+                
         
 //        sparql11update_1("LOAD  <foo>  INTO  GRAPH  <blah>") ;
 //        sparql11update_1("BASE <http://example/> PREFIX : <http://prefix/> LOAD  <foo>  INTO  GRAPH  :local") ;

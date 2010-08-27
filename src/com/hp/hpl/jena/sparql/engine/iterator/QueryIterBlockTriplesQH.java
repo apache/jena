@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimoprhics Ltd.
  * [See end of file]
  */
 
@@ -10,6 +11,7 @@ import java.util.List ;
 import java.util.Set ;
 
 import org.openjena.atlas.io.IndentedWriter ;
+import org.openjena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
@@ -23,9 +25,7 @@ import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap ;
-import com.hp.hpl.jena.sparql.engine.binding.BindingUtils ;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
-import org.openjena.atlas.logging.Log ;
 import com.hp.hpl.jena.sparql.util.FmtUtils ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 import com.hp.hpl.jena.util.iterator.ClosableIterator ;
@@ -131,7 +131,6 @@ public class QueryIterBlockTriplesQH extends QueryIterRepeatApply
         for (Iterator<Triple>iter = pattern.listIterator(); iter.hasNext();)
         {
             Triple t = iter.next();
-            //t = BindingUtils.substituteIntoTriple(t, presets) ;
             t = Substitute.substitute(t, presets) ;
             if ( vars != null )
             {
@@ -196,8 +195,9 @@ public class QueryIterBlockTriplesQH extends QueryIterRepeatApply
 }
 
 /*
- *  (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
- *  All rights reserved.
+ * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimoprhics Ltd.
+ * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions

@@ -4,25 +4,24 @@ public class DevARQ
 {
     // No org.json.
     
-    // UpdateProcessors and UpdateEngine
-    // UpdateDelete, UpdateInsert -> Subclass UpdateModify otherwise not needed.
     // Wrapper version of GraphStore.
     //   Should INSERT DATA { GRAPH {} } auto create?
     //   Insert into explicitly named default graph should be made to work.
     
-    
     // Transition: SUBMISSION
+    // restrictions : only one graph for MODIFY <g>
+    // Hack: ARQ always on for UPDATE until SPARQL 1.1 engine is main engine.
     // --------
-    // INSERT/DELETE DATA [INTO? <uri>] {} => INSERT/DELETE DATA { GRAPH <uri> {}}
+    // [done] INSERT/DELETE DATA [INTO? or FROM? <uri>] {} => INSERT/DELETE DATA { GRAPH <uri> {}}
 
-    // INSERT INTO? <uri> {} (WHERE {})? => WITH <uri> INSERT {} WHERE {}  
-    // DELETE FROM? <uri> {} (WHERE {})? => WITH <uri> DELETE {} WHERE {}  
+    // [done] INSERT INTO? <uri> {} (WHERE {})? => INSERT { GRAPH <uri> {} } WHERE {}  
+    // [done] DELETE FROM? <uri> {} (WHERE {})? => DELETE { GRAPH <uri> {} } WHERE {}  
     
-    // MODIFY [<uri>*] D{} I{} W{} => WITH* D{} I{} W{}
+    // [done] MODIFY [<uri>*] D{} I{} W{} => WITH* D{} I{} W{}
     
-    // LOAD <url> (INTO <uri>)? ==> LOAD <url> (INTO GRAPH <uri>)
+    // [done] LOAD <url> (INTO <uri>)? ==> LOAD <url> (INTO GRAPH <uri>)
 
-    // CLEAR / CREATE / DROP 
+    // [done] CLEAR / CREATE / DROP 
     //    GRAPH <uri> no change
     //    empty => DEFAULT
     // --------

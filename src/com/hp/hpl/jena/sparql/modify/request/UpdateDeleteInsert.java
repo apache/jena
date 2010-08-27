@@ -6,38 +6,10 @@
 
 package com.hp.hpl.jena.sparql.modify.request;
 
-import com.hp.hpl.jena.sparql.syntax.Element ;
 
-//NOT IN USE
-public class UpdateInsert extends UpdateWithUsing
+/** Convenience class - renames UpdateModify so it follows the SPARQL Update spec. */
+public class UpdateDeleteInsert extends UpdateModify
 {
-    private final QuadsAcc insertPattern ;
-    private Element wherePattern ;
-    
-    private UpdateInsert() 
-    { 
-        this.insertPattern = new QuadsAcc() ;
-        this.wherePattern = null ;
-    }
-    
-    public void setElement(Element element)
-    {
-        this.wherePattern = element ; 
-    }
-    
-    public QuadsAcc getInsertPattern()
-    {
-        return insertPattern ;
-    }
-
-    public Element getWherePattern()
-    {
-        return wherePattern ;
-    }
-
-    @Override
-    public void visit(UpdateVisitor visitor)
-    {}
 }
 
 /*

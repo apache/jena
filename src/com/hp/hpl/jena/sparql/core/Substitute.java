@@ -19,7 +19,6 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingFactory ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.expr.ExprList ;
-import com.hp.hpl.jena.sparql.path.PathLib ;
 import com.hp.hpl.jena.sparql.pfunction.PropFuncArg ;
 
 public class Substitute

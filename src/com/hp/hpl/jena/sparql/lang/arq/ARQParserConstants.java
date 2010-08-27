@@ -176,11 +176,11 @@ public interface ARQParserConstants {
   /** RegularExpression Id. */
   int FALSE = 85;
   /** RegularExpression Id. */
-  int INSERT = 86;
+  int DATA = 86;
   /** RegularExpression Id. */
-  int DELETE = 87;
+  int INSERT = 87;
   /** RegularExpression Id. */
-  int DATA = 88;
+  int DELETE = 88;
   /** RegularExpression Id. */
   int MODIFY = 89;
   /** RegularExpression Id. */
@@ -413,9 +413,9 @@ public interface ARQParserConstants {
     "\"sameTerm\"",
     "\"true\"",
     "\"false\"",
+    "\"data\"",
     "\"insert\"",
     "\"delete\"",
-    "\"data\"",
     "\"modify\"",
     "\"load\"",
     "\"clear\"",

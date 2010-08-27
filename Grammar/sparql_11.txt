@@ -111,12 +111,13 @@ TOKENS
 
 // SPARQL/Update parts.
 <DEFAULT> TOKEN [IGNORE_CASE] : {
-<INSERT: "insert">
+<#DATA: "data">
+| <INSERT: "insert">
 | <DELETE: "delete">
-| <INSERT_DATA: "insert" (<WS>)* <DATA>>
-| <DELETE_DATA: "delete" (<WS>)* <DATA>>
-| <DELETE_WHERE: "delete" (<WS>)* <WHERE>>
-| <#DATA: "data">
+| <INSERT_DATA: <INSERT> (<WS>)* <DATA>>
+| <DELETE_DATA: <DELETE> (<WS>)* <DATA>>
+| <DELETE_WHERE: <DELETE> (<WS>)* <WHERE>>
+| <MODIFY: "modify">
 | <LOAD: "load">
 | <CLEAR: "clear">
 | <CREATE: "create">
@@ -243,33 +244,33 @@ NON-TERMINALS
 		|	NumericLiteral
 		|	BooleanLiteral
 		|	<UNDEF>
-// ---- SPARQL/Update (submission)
+// SPARQL Update + transitional extensions for SPARQL/Update (the W3C submission)
 // Update only entry point
 	UpdateUnit	:=	Prologue Update <EOF>
-// SPARQL 1.1 Update
 	Update	:=	( Update1 )+
-	Update1	:=	( Load | Clear | Drop | Create | InsertData | DeleteData | DeleteWhere | Modify ) ( <SEMICOLON> )?
-	Load	:=	<LOAD> IRIref ( <INTO> GraphRef )?
+	Update1	:=	( Load | Clear | Drop | Create | InsertData | DeleteData | DeleteWhere | Modify | ModifyOld ) ( <SEMICOLON> )?
+	Load	:=	<LOAD> IRIref ( <INTO> ( <GRAPH> )? IRIref )?
 	Clear	:=	<CLEAR> ( <SILENT> )? GraphRefAll
 	Drop	:=	<DROP> ( <SILENT> )? GraphRefAll
 	Create	:=	<CREATE> ( <SILENT> )? GraphRef
-	InsertData	:=	<INSERT_DATA> QuadData
-	DeleteData	:=	<DELETE_DATA> QuadData
+	InsertData	:=	<INSERT_DATA> OptionalIntoTarget QuadPattern
+	DeleteData	:=	<DELETE_DATA> OptionalFromTarget QuadData
 	DeleteWhere	:=	<DELETE_WHERE> QuadPattern
 	Modify	:=	( <WITH> IRIref )? ( DeleteClause ( InsertClause )? | InsertClause ) ( UsingClause )* <WHERE> GroupGraphPattern
-	DeleteClause	:=	<DELETE> QuadPattern
-	InsertClause	:=	<INSERT> QuadPattern
+	ModifyOld	:=	<MODIFY> ( IRIref )? ( DeleteClause )? ( InsertClause )? <WHERE> GroupGraphPattern
+	DeleteClause	:=	<DELETE> OptionalFromTarget QuadPattern
+	InsertClause	:=	<INSERT> OptionalIntoTarget QuadPattern
+	OptionalIntoTarget	:=	( ( <INTO> )? IRIref )?
+	OptionalFromTarget	:=	( ( <FROM> )? IRIref )?
 	UsingClause	:=	<USING> ( IRIref | <NAMED> IRIref )
 	GraphRef	:=	<GRAPH> IRIref
-	GraphRefAll	:=	( GraphRef | <DFT> | <NAMED> | <ALL> )
+	GraphRefAll	:=	( GraphRef | <DFT> | <NAMED> | <ALL> )?
 	QuadPattern	:=	<LBRACE> Quads <RBRACE>
 //Ground data : As QuadPattern but don't allow variables.
 	QuadData	:=	<LBRACE> Quads <RBRACE>
 	Quads	:=	( TriplesTemplate )? ( QuadsNotTriples ( <DOT> )? ( TriplesTemplate )? )*
 	QuadsNotTriples	:=	<GRAPH> VarOrIRIref <LBRACE> ( TriplesTemplate )? <RBRACE>
 	TriplesTemplate	:=	TriplesSameSubject ( <DOT> ( TriplesTemplate )? )?
-// UPDATE_SPARQL_11
-// UPDATE
 // ---- General Graph Pattern 
 	GroupGraphPattern	:=	<LBRACE> ( SubSelect | GroupGraphPatternSub ) <RBRACE>
 	GroupGraphPatternSub	:=	( TriplesBlock )? ( GraphPatternNotTriples ( <DOT> )? ( TriplesBlock )? )*

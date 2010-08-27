@@ -1,5 +1,7 @@
 // ARQ/SPARQL 1.1 Grammar - native syntax for the query engine
-// Author:  Andy Seaborne andy.seaborne@epimorphics.com
+// ARQ_UPDATE : extensions to SPARQL 1.1 Update cover SPARQL/Update (W3C Submission)
+// UPDATE_SUBMISSION : the submission gramamr only.
+// Author:  Andy Seaborne <andy.seaborne@epimorphics.com>
 // (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
 // (c) Copyright 2010 Talis Systems Ltd.
 // (c) Copyright 2010 Epimorphics Ltd.
@@ -293,8 +295,6 @@ Node BindingValue() : { Node n ; String iri ; }
 | n = BooleanLiteral() { return n ; }
 | <UNDEF> { return null ; }
 }
-// ---- SPARQL/Update (submission)
-// Update only entry point
 void UpdateUnit() : {}
 {
     Prologue()
@@ -413,9 +413,29 @@ Element UpdatePattern() : { Element el ; }
 {
    (<WHERE>) el = GroupGraphPattern() { return el ; }
 }
+// void Transaction() : {}
+// {
+//     TransBegin() | TransCommit() | TransAbort()
+// }
+// 
+// void TransBegin() : {}
+// {
+//     <BEGIN> (IRIref())?
+//     { System.out.println("++ Begin") ; }
+// }
+// 
+// void TransCommit() : {}
+// {
+//     <COMMIT> (IRIref())?
+//     { System.out.println("++ Commit") ; }
+// }
+// 
+// void TransAbort() : {}
+// {
+//     <ABORT> (IRIref())?
+//     { System.out.println("++ Abort") ; }
+// }
 // End UPDATE_SUBMISSION
-// SPARQL 1.1 Update
-// UPDATE
 // ---- General Graph Pattern 
 Element GroupGraphPattern() : { Element el = null ; Token t ; }
 {
@@ -1149,7 +1169,7 @@ Expr BuiltInCall() : { Expr expr ; Expr expr1 = null ; Expr expr2 = null ;
     { return new E_StrLang(expr1, expr2) ; }
   | <STRDT> <LPAREN> expr1 = Expression() <COMMA> expr2 = Expression() <RPAREN>
     { return new E_StrDatatype(expr1, expr2) ; }
-  // Alos allowed ?func(?a1,?a2,...)
+  // Also allowed ?func(?a1,?a2,...)
   | <CALL> a = ExpressionList()
     { return new E_Call(a) ; }
   | <SAME_TERM> <LPAREN> expr1 = Expression() <COMMA> expr2 = Expression() <RPAREN>
@@ -1451,9 +1471,9 @@ TOKEN [IGNORE_CASE] :
 // SPARQL/Update parts.
 TOKEN [IGNORE_CASE] :
 {
-  < INSERT: "insert">
+  < DATA: "data" >
+| < INSERT: "insert">
 | < DELETE: "delete" >
-| < DATA: "data" >
 | < MODIFY: "modify">
 | < LOAD: "load" >
 | < CLEAR: "clear" >

@@ -1,5 +1,7 @@
 // ARQ/SPARQL 1.1 Grammar - native syntax for the query engine
-// Author:  Andy Seaborne andy.seaborne@epimorphics.com
+// ARQ_UPDATE : extensions to SPARQL 1.1 Update cover SPARQL/Update (W3C Submission)
+// UPDATE_SUBMISSION : the submission gramamr only.
+// Author:  Andy Seaborne <andy.seaborne@epimorphics.com>
 // (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
 // (c) Copyright 2010 Talis Systems Ltd.
 // (c) Copyright 2010 Epimorphics Ltd.
@@ -279,7 +281,7 @@ Node BindingValue() : { Node n ; String iri ; }
 | n = BooleanLiteral() { return n ; }
 | <UNDEF> { return null ; }
 }
-// ---- SPARQL/Update (submission)
+// SPARQL Update + transitional extensions for SPARQL/Update (the W3C submission)
 // Update only entry point
 void UpdateUnit() : {}
 {
@@ -287,7 +289,6 @@ void UpdateUnit() : {}
     Update()
     <EOF>
 }
-// SPARQL 1.1 Update
 void Update() : { }
 {
     { startUpdateRequest() ; }
@@ -305,6 +306,7 @@ void Update1() : { Update up ; }
   | up = DeleteData()
   | up = DeleteWhere()
   | up = Modify()
+  | up = ModifyOld()
   )
   (<SEMICOLON>) ?
   {
@@ -317,8 +319,8 @@ Update Load() : { String url ; Node dest = null ; }
     // Should be +?
     //    <LOAD> ( IRIref() )+
     <LOAD> url = IRIref()
-    // @@
-    (<INTO> dest = GraphRef() )?
+    { String iri ; }
+    (<INTO> (<GRAPH>)? iri = IRIref() { dest = createNode(iri) ; })?
     { return new UpdateLoad(url, dest) ; }
 }
 Update Clear() : { boolean silent = false ; Target target ; }
@@ -339,7 +341,9 @@ Update Create() : { Node iri ; boolean silent = false ; }
 Update InsertData() : { QuadDataAcc qd = new QuadDataAcc() ; }
 {
   { startDataInsert() ; }
-  <INSERT_DATA> QuadData(qd)
+   <INSERT_DATA>
+   OptionalIntoTarget(qd)
+   QuadPattern(qd)
   {
     finishDataInsert() ;
     return new UpdateDataInsert(qd) ;
@@ -348,7 +352,9 @@ Update InsertData() : { QuadDataAcc qd = new QuadDataAcc() ; }
 Update DeleteData() : { QuadDataAcc qd = new QuadDataAcc() ; }
 {
   { startDataDelete() ; }
-  <DELETE_DATA> QuadData(qd)
+   <DELETE_DATA>
+   OptionalFromTarget(qd)
+   QuadData(qd)
   {
     finishDataDelete() ;
     return new UpdateDataDelete(qd) ;
@@ -359,26 +365,54 @@ Update DeleteWhere() : { QuadsAcc qp = new QuadsAcc() ; }
   <DELETE_WHERE> QuadPattern(qp)
   { return new UpdateDeleteWhere(qp) ; }
 }
-Update Modify() : { Element el ; String iri = null ; Node n ;
+Update Modify() : { Element el ; String iri = null ;
                     UpdateModify up = new UpdateModify() ; }
 {
-  ( <WITH> iri = IRIref() { n = createNode(iri) ; up.setWithIRI(n) ; } )?
+  ( <WITH> iri = IRIref() { Node n = createNode(iri) ; up.setWithIRI(n) ; } )?
   ( DeleteClause(up.getDeleteAcc()) ( InsertClause(up.getInsertAcc()) )?
   | InsertClause(up.getInsertAcc())
   )
   (UsingClause(up))*
   <WHERE>
-  el = GroupGraphPattern()
-  { up.setElement(el) ; }
+  el = GroupGraphPattern() { up.setElement(el) ; }
   { return up ; }
+}
+Update ModifyOld() :
+       { UpdateModify up = new UpdateModify() ; String iri ; Template template ; Element el ; }
+{
+    <MODIFY>
+    ( iri = IRIref() { Node n = createNode(iri) ; up.setWithIRI(n) ; } )?
+    (DeleteClause(up.getDeleteAcc()))?
+    (InsertClause(up.getDeleteAcc()))?
+    <WHERE>
+    el = GroupGraphPattern() { up.setElement(el) ; }
+    { return up ; }
 }
 void DeleteClause(QuadsAcc qp) : { }
 {
-   <DELETE> QuadPattern(qp)
+   <DELETE>
+   OptionalFromTarget(qp)
+   QuadPattern(qp)
 }
 void InsertClause(QuadsAcc qp) : { }
 {
-   <INSERT> QuadPattern(qp)
+   <INSERT>
+   OptionalIntoTarget(qp)
+   QuadPattern(qp)
+}
+void OptionalIntoTarget(QuadsAcc qp) : { String iri ; }
+{
+  ( (<INTO>)?
+     iri = IRIref()
+     { Node gn = createNode(iri) ; qp.setGraph(gn) ; }
+   )?
+}
+void OptionalFromTarget(QuadsAcc qp) : { String iri ; }
+{
+  ( (<FROM>)?
+     iri = IRIref()
+     { Node gn = createNode(iri) ; qp.setGraph(gn) ; }
+   )?
 }
 void UsingClause(UpdateWithUsing update) : { String iri ; Node n ; }
 {
@@ -402,6 +436,8 @@ Target GraphRefAll() : { Node iri ; }
    | <NAMED> { return Target.NAMED ; }
    | <ALL> { return Target.ALL ; }
    )
+   ?
+   { return Target.DEFAULT ; }
 }
 void QuadPattern(QuadsAcc acc) : { }
 {
@@ -439,8 +475,6 @@ void TriplesTemplate(QuadsAcc acc) : { }
     TriplesSameSubject(acc)
     (<DOT> (TriplesTemplate(acc))?)?
 }
-// UPDATE_SPARQL_11
-// UPDATE
 // ---- General Graph Pattern 
 Element GroupGraphPattern() : { Element el = null ; Token t ; }
 {
@@ -1414,12 +1448,13 @@ TOKEN [IGNORE_CASE] :
 // SPARQL/Update parts.
 TOKEN [IGNORE_CASE] :
 {
-  < INSERT: "insert">
+  < #DATA: "data" >
+| < INSERT: "insert">
 | < DELETE: "delete" >
-| < INSERT_DATA: "insert"(<WS>)* <DATA> >
-| < DELETE_DATA: "delete"(<WS>)* <DATA> >
-| < DELETE_WHERE: "delete"(<WS>)* <WHERE> >
-| < #DATA: "data" >
+| < INSERT_DATA: <INSERT> (<WS>)* <DATA> >
+| < DELETE_DATA: <DELETE> (<WS>)* <DATA> >
+| < DELETE_WHERE: <DELETE> (<WS>)* <WHERE> >
+| < MODIFY: "modify">
 | < LOAD: "load" >
 | < CLEAR: "clear" >
 | < CREATE: "create" >
