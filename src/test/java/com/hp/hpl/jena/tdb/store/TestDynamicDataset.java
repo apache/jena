@@ -72,7 +72,7 @@ public class TestDynamicDataset extends BaseTest
     
     @Test public void dynamic01()    { testCount("SELECT * {?s ?p ?o}", 3) ; }
     
-    @Test public void dynamic02()   { testCount("SELECT ?g { GRAPH ?g {} }", 5) ; }
+    @Test public void dynamic02()    { testCount("SELECT ?g { GRAPH ?g {} }", 5) ; }
     
     @Test public void dynamic03()    { testCount("SELECT * FROM <graph:1> {?s <uri:p> ?o}", 1) ; }
 
