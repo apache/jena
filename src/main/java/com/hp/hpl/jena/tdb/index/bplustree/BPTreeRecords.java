@@ -8,7 +8,7 @@ package com.hp.hpl.jena.tdb.index.bplustree;
 
 import static com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams.CheckingNode;
 import static java.lang.String.format;
-import static org.openjena.atlas.lib.Lib.decodeIndex ;
+import static org.openjena.atlas.lib.Alg.decodeIndex ;
 
 import java.nio.ByteBuffer;
 

@@ -6,16 +6,16 @@
 
 package com.hp.hpl.jena.tdb.modify;
 
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.modify.UpdateProcessorFactory;
-import com.hp.hpl.jena.sparql.modify.UpdateProcessorRegistry;
-import com.hp.hpl.jena.sparql.modify.UpdateProcessorVisitor;
-import com.hp.hpl.jena.sparql.modify.UpdateVisitor;
-import com.hp.hpl.jena.sparql.modify.op.Update;
-import com.hp.hpl.jena.tdb.store.DatasetGraphTDB;
-import com.hp.hpl.jena.update.GraphStore;
-import com.hp.hpl.jena.update.UpdateProcessor;
-import com.hp.hpl.jena.update.UpdateRequest;
+import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.modify.UpdateProcessorFactory ;
+import com.hp.hpl.jena.sparql.modify.UpdateProcessorRegistry ;
+import com.hp.hpl.jena.sparql.modify.UpdateProcessorVisitor ;
+import com.hp.hpl.jena.sparql.modify.UpdateVisitor ;
+import com.hp.hpl.jena.sparql.modify.op.Update ;
+import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
+import com.hp.hpl.jena.update.GraphStore ;
+import com.hp.hpl.jena.update.UpdateProcessor ;
+import com.hp.hpl.jena.update.UpdateRequest ;
 
 public class UpdateProcessorTDB implements UpdateProcessor
 {
