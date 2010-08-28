@@ -9,8 +9,6 @@ package dev;
 
 import static org.openjena.atlas.lib.StrUtils.strjoinNL ;
 
-import java.io.Reader ;
-import java.io.StringReader ;
 import java.util.HashSet ;
 import java.util.Iterator ;
 import java.util.Set ;
@@ -43,7 +41,6 @@ import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.function.FunctionEnvBase ;
 import com.hp.hpl.jena.sparql.lang.ParserSPARQL11Update ;
 import com.hp.hpl.jena.sparql.modify.GraphStoreBasic ;
-import com.hp.hpl.jena.sparql.modify.request.UpdateEngine ;
 import com.hp.hpl.jena.sparql.modify.request.UpdateWriter ;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
@@ -51,8 +48,9 @@ import com.hp.hpl.jena.sparql.util.ExprUtils ;
 import com.hp.hpl.jena.sparql.util.QueryExecUtils ;
 import com.hp.hpl.jena.sparql.util.Timer ;
 import com.hp.hpl.jena.update.GraphStore ;
+import com.hp.hpl.jena.update.UpdateAction ;
+import com.hp.hpl.jena.update.UpdateFactory ;
 import com.hp.hpl.jena.update.UpdateRequest ;
-
 import com.hp.hpl.jena.util.FileManager ;
 
 public class RunARQ
@@ -89,13 +87,7 @@ public class RunARQ
 
     public static void main(String[] argv) throws Exception
     {
-        arq.uparse.main("--file=update.ru") ; System.exit(0) ;
-//        com.hp.hpl.jena.update.UpdateRequest upreq =
-//            com.hp.hpl.jena.update.UpdateFactory.read("testing/Update/data-1.rup") ;
-//        System.out.println(upreq) ;
-//        System.exit(0) ; 
-        
-        
+//        arq.uparse.main("--file=update.ru") ; System.exit(0) ;
         //qparse("--query=Q.rq", "--print=query", "--print=op") ; System.exit(0) ;
         sparql11update() ; System.exit(0) ; 
 
@@ -176,6 +168,9 @@ public class RunARQ
                                  //"DELETE WHERE { <x> <y> ?z GRAPH <g> { ?s ?p ?o }}",
                                  
                                  "INSERT INTO <g> { ?s ?p ?o } WHERE { ?s ?p ?o }",
+                                 
+                                 "CREATE GRAPH <g2>",
+                                 "INSERT { GRAPH <g2> { ?s ?p 1914 } } WHERE { ?s ?p ?o }",
                                  //"DROP DEFAULT" ,
                                  //"CLEAR DEFAULT",
                                  //"CLEAR ALL",
@@ -243,9 +238,9 @@ public class RunARQ
         divider() ;
         System.out.println("----Input:") ;
         System.out.println(str$);
-        UpdateRequest update = parseUpdate(str$);
         
-        UpdateEngine.exec(graphStore, update) ;
+        UpdateRequest update = parseUpdate(str$);
+        UpdateAction.execute(update, graphStore) ;
         SSE.write(graphStore) ;
     }
 
@@ -281,11 +276,12 @@ public class RunARQ
     
     private static UpdateRequest parseUpdate(String str)
     {
-        Reader r = new StringReader(str) ;
-        ParserSPARQL11Update p = new ParserSPARQL11Update() ;
-        UpdateRequest update = new UpdateRequest() ;
-        p.parse(update, str) ;
-        return update ;
+        return UpdateFactory.create(str) ;
+//        Reader r = new StringReader(str) ;
+//        ParserSPARQL11Update p = new ParserSPARQL11Update() ;
+//        UpdateRequest update = new UpdateRequest() ;
+//        p.parse(update, str) ;
+//        return update ;
     }
     
     private static void execTimed(Query query, Model model)

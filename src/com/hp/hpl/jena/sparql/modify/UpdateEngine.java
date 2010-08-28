@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.modify.request;
+package com.hp.hpl.jena.sparql.modify;
 
 import java.util.ArrayList ;
 import java.util.Collection ;
@@ -30,6 +30,16 @@ import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingRoot ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper ;
+import com.hp.hpl.jena.sparql.modify.request.UpdateClear ;
+import com.hp.hpl.jena.sparql.modify.request.UpdateCreate ;
+import com.hp.hpl.jena.sparql.modify.request.UpdateDataDelete ;
+import com.hp.hpl.jena.sparql.modify.request.UpdateDataInsert ;
+import com.hp.hpl.jena.sparql.modify.request.UpdateDeleteWhere ;
+import com.hp.hpl.jena.sparql.modify.request.UpdateDrop ;
+import com.hp.hpl.jena.sparql.modify.request.UpdateDropClear ;
+import com.hp.hpl.jena.sparql.modify.request.UpdateLoad ;
+import com.hp.hpl.jena.sparql.modify.request.UpdateModify ;
+import com.hp.hpl.jena.sparql.modify.request.UpdateVisitor ;
 import com.hp.hpl.jena.sparql.modify.submission.UpdateProcessorSubmission ;
 import com.hp.hpl.jena.sparql.modify.submission.UpdateSubmission ;
 import com.hp.hpl.jena.sparql.syntax.Element ;

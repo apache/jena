@@ -10,7 +10,6 @@ import java.util.ArrayList ;
 import java.util.Iterator ;
 import java.util.List ;
 
-import com.hp.hpl.jena.sparql.modify.request.UpdateProcessorMain ;
 import com.hp.hpl.jena.update.GraphStore ;
 import com.hp.hpl.jena.update.UpdateRequest ;
 

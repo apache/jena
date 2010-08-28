@@ -12,7 +12,7 @@ import junit.framework.TestCase ;
 import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.query.QueryFactory ;
 import com.hp.hpl.jena.sparql.ARQException ;
-import com.hp.hpl.jena.sparql.modify.request.UpdateFactory ;
+import com.hp.hpl.jena.update.UpdateFactory ;
 import com.hp.hpl.jena.update.UpdateRequest ;
 
 

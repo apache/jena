@@ -4,11 +4,9 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.modify.request;
+package com.hp.hpl.jena.sparql.modify;
 
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
-import com.hp.hpl.jena.sparql.modify.GraphStoreBasic ;
-import com.hp.hpl.jena.sparql.modify.UpdateProcessorFactory ;
 import com.hp.hpl.jena.update.GraphStore ;
 import com.hp.hpl.jena.update.UpdateProcessor ;
 import com.hp.hpl.jena.update.UpdateRequest ;
@@ -27,20 +25,20 @@ public class UpdateProcessorMain implements UpdateProcessor
         engine.execute() ;
     }
 
-    public static UpdateProcessorFactory getFactory() { 
-        return new UpdateProcessorFactory()
+    private static UpdateProcessorFactory factory = new UpdateProcessorFactory()
+    {
+        public boolean accept(UpdateRequest request, GraphStore graphStore)
         {
-            public boolean accept(UpdateRequest request, GraphStore graphStore)
-            {
-                return (graphStore instanceof GraphStoreBasic) ;
-            }
+            return (graphStore instanceof GraphStoreBasic) ;
+        }
         
-            public UpdateProcessor create(UpdateRequest request, GraphStore graphStore, Binding inputBinding)
-            {
-                return new UpdateProcessorMain(graphStore, request, inputBinding) ;
-            }
-        } ;
-    }
+        public UpdateProcessor create(UpdateRequest request, GraphStore graphStore, Binding inputBinding)
+        {
+            return new UpdateProcessorMain(graphStore, request, inputBinding) ;
+        }
+    } ;
+
+    public static UpdateProcessorFactory getFactory() { return factory ; }
 }
 
 /*
