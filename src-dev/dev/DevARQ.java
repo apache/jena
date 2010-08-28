@@ -5,7 +5,8 @@ public class DevARQ
     // No org.json.
 
     // ---- SPARQL Update
-    // NL and then ; -> blank line.
+    // BNode to variable in DW
+    // DW{1 quad} => speial case
     // Error handling and exception catching.  UpdateParseException : LanguageParseException 
     // Naming.
     
@@ -13,28 +14,15 @@ public class DevARQ
     //   ARQ -> submission
     //   SPARQL_11 -> transition : 
     
-    // **** Transitition:
-    // DELETE FROM <> { data } ==> DELETE DATA or add WHERE {}
-    // INSERT INTO <> { data } ==> INSERT DATA or add WHERE {}
-    //   Use of initial bindings 
-    
-    // INSERT DATA { :r :p _:a . _:a :q :v } => No variables in data (!!!)
-    
-    // Wrapper version of GraphStore.
+    // Wrapper version of GraphStore?
     //   Should INSERT DATA { GRAPH {} } auto create?
     //   Insert into explicitly named default graph should be made to work.
     //   Swap to 1.1 update engine.
     
-    // Label checking: can't use same bNode label in tenplate and pattern
+    // Label checking: can't use same bNode label in template and pattern
     // for DELETE/INSERT
     
     // DELETE WHERE : turn bNodes into alloc variables.  See UpdateEngine.convertBNodesToVariables 
-    
-    // Transition: SUBMISSION
-    // restrictions : only one graph for MODIFY <g>
-
-    // rename QueryParseException or sort out an UpdateException
-    // and a general name check.
     
     // ---- SPARQL Query
     // Check for out-of-scope group vars.

@@ -12,8 +12,10 @@
 #error Please define only one of ARQ and SPARQL_11
 #endif
 
-// ARQ_UPDATE : extensions to SPARQL 1.1 Update cover SPARQL/Update (W3C Submission)
-// UPDATE_SUBMISSION : the submission gramamr only.
+// UPDATE : SPARQL 1.1. Update
+// ARQ_UPDATE : extensions to SPARQL 1.1 Update to cover SPARQL/Update (W3C Submission)
+// UPDATE_SUBMISSION : the submission grammar only.
+// 
 
 #ifdef SPARQL_11
 #define PACKAGE     lang.sparql_11
@@ -28,7 +30,10 @@
 #define CLASS       ARQParser
 #define PARSERBASE  ARQParserBase
 #define UPDATE_SUBMISSION
-#define ARQ_UP
+#endif
+
+#if defined(UPDATE) && defined(UPDATE_SUBMISSION)
+#error Please define only one of UPDATE and UPDATE_SUBMISSION
 #endif
 
 // Author:  Andy Seaborne <andy.seaborne@epimorphics.com>
@@ -636,7 +641,6 @@ void UpdateUnit() : {}
     <EOF>
 }
 
-#ifdef UPDATE_SUBMISSION
 void Update() : { }
 {
     { startUpdateRequest() ; }
@@ -787,8 +791,6 @@ Element UpdatePattern() : { Element el ; }
 //     { System.out.println("++ Abort") ; }
 // }
 // End UPDATE_SUBMISSION
-#endif
-
 #endif
 
 // ---- General Graph Pattern 
