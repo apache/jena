@@ -6,10 +6,11 @@
 
 package com.hp.hpl.jena.sparql.expr;
 
+import org.openjena.atlas.lib.Lib ;
+
 import com.hp.hpl.jena.sparql.engine.Renamer ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
-import com.hp.hpl.jena.sparql.util.Utils ;
 
 
 /** A function of two arguments */
@@ -50,8 +51,8 @@ public abstract class ExprFunction2 extends ExprFunction
     public int hashCode()
     {
         return getFunctionSymbol().hashCode() ^
-                Utils.hashCodeObject(expr1) ^
-                Utils.hashCodeObject(expr2) ;
+                Lib.hashCodeObject(expr1) ^
+                Lib.hashCodeObject(expr2) ;
     }
 
     @Override

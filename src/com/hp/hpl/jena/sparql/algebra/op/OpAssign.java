@@ -6,6 +6,8 @@
 
 package com.hp.hpl.jena.sparql.algebra.op;
 
+import org.openjena.atlas.lib.Lib ;
+
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.OpVisitor ;
 import com.hp.hpl.jena.sparql.algebra.Transform ;
@@ -14,7 +16,6 @@ import com.hp.hpl.jena.sparql.core.VarExprList ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.sse.Tags ;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
-import com.hp.hpl.jena.sparql.util.Utils ;
 
 public class OpAssign extends Op1
 {
@@ -116,7 +117,7 @@ public class OpAssign extends Op1
             return false ;
         OpAssign assign = (OpAssign)other ;
         
-        if ( ! Utils.equal(assignments, assign.assignments) )
+        if ( ! Lib.equal(assignments, assign.assignments) )
             return false ;
         return getSubOp().equalTo(assign.getSubOp(), labelMap) ;
     }

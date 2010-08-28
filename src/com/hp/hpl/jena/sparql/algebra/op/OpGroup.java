@@ -8,6 +8,8 @@ package com.hp.hpl.jena.sparql.algebra.op;
 
 import java.util.List ;
 
+import org.openjena.atlas.lib.Lib ;
+
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.OpVisitor ;
 import com.hp.hpl.jena.sparql.algebra.Transform ;
@@ -15,7 +17,6 @@ import com.hp.hpl.jena.sparql.core.VarExprList ;
 import com.hp.hpl.jena.sparql.expr.ExprAggregator ;
 import com.hp.hpl.jena.sparql.sse.Tags ;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
-import com.hp.hpl.jena.sparql.util.Utils ;
 
 public class OpGroup extends OpModifier
 {
@@ -57,9 +58,9 @@ public class OpGroup extends OpModifier
     {
         if ( ! (other instanceof OpGroup) ) return false ;
         OpGroup opGroup = (OpGroup)other ;
-        if ( ! Utils.equal(groupVars, opGroup.groupVars) ) 
+        if ( ! Lib.equal(groupVars, opGroup.groupVars) ) 
             return false ;
-        if ( ! Utils.equal(aggregators, opGroup.aggregators) )
+        if ( ! Lib.equal(aggregators, opGroup.aggregators) )
             return false ;
             
         return getSubOp().equalTo(opGroup.getSubOp(), labelMap) ;

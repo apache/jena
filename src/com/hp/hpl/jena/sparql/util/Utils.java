@@ -12,7 +12,6 @@ import java.text.SimpleDateFormat ;
 import java.util.Calendar ;
 import java.util.Date ;
 import java.util.GregorianCalendar ;
-import java.util.List ;
 import java.util.TimeZone ;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDateTime ;
@@ -136,37 +135,37 @@ public class Utils
         return sign+tzH_str+":"+tzM_str ;
     }
     
-    /** Compare two object-things for quality - allow null to be equal to null */
-    
-    public static boolean equal(Object obj1, Object obj2)
-    {
-        // Don't call this equals because static import does nto work very well with it (looks like local object.equals)
-        if ( obj1 == obj2) return true ;
-        if ( obj1 == null )
-            return obj2 == null ;
-        // obj1 != null
-        if ( obj2 == null )
-            return false ;
-        return obj1.equals(obj2) ;
-    }
-    
-    /** Do two lists have the same elements? */ 
-    public static <T> boolean equalsListAsSet(List<T> list1, List<T> list2)
-    {
-        return list1.containsAll(list2) && list2.containsAll(list1) ;
-    }
-    
-    
-    /** HashCode - allow nulls */
-    public static int hashCodeObject(Object obj) { return hashCodeObject(obj, -4) ; }
-    
-    /** HashCode - allow nulls */
-    public static int hashCodeObject(Object obj, int nullHashCode)
-    {
-        if ( obj == null )
-            return nullHashCode ; 
-        return obj.hashCode() ;
-    }
+//    /** Compare two object-things for quality - allow null to be equal to null */
+//    
+//    public static boolean equal(Object obj1, Object obj2)
+//    {
+//        // Don't call this equals because static import does nto work very well with it (looks like local object.equals)
+//        if ( obj1 == obj2) return true ;
+//        if ( obj1 == null )
+//            return obj2 == null ;
+//        // obj1 != null
+//        if ( obj2 == null )
+//            return false ;
+//        return obj1.equals(obj2) ;
+//    }
+//    
+//    /** Do two lists have the same elements? */ 
+//    public static <T> boolean equalsListAsSet(List<T> list1, List<T> list2)
+//    {
+//        return list1.containsAll(list2) && list2.containsAll(list1) ;
+//    }
+//    
+//    
+//    /** HashCode - allow nulls */
+//    public static int hashCodeObject(Object obj) { return hashCodeObject(obj, -4) ; }
+//    
+//    /** HashCode - allow nulls */
+//    public static int hashCodeObject(Object obj, int nullHashCode)
+//    {
+//        if ( obj == null )
+//            return nullHashCode ; 
+//        return obj.hashCode() ;
+//    }
 
     // Java 1.4 .toString == Java 1.5 .toPlainString
     // Java 1.5 .toString => different to .toString 1.4

@@ -7,6 +7,7 @@
 
 package com.hp.hpl.jena.sparql.expr.aggregate;
 
+import org.openjena.atlas.lib.Lib ;
 import org.openjena.atlas.lib.StrUtils ;
 
 import com.hp.hpl.jena.graph.Node ;
@@ -17,7 +18,6 @@ import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
 import com.hp.hpl.jena.sparql.sse.writers.WriterExpr ;
 import com.hp.hpl.jena.sparql.util.ExprUtils ;
-import com.hp.hpl.jena.sparql.util.Utils ;
 
 public class AggGroupConcat extends AggregatorBase
 {
@@ -94,7 +94,7 @@ public class AggGroupConcat extends AggregatorBase
         if ( ! ( other instanceof AggGroupConcat ) )
             return false ;
         AggGroupConcat agg = (AggGroupConcat)other ;
-        return Utils.equal(agg.getSeparator(),getSeparator()) && agg.getExpr().equals(getExpr()) ;
+        return Lib.equal(agg.getSeparator(),getSeparator()) && agg.getExpr().equals(getExpr()) ;
     }
 
     // ---- Accumulator

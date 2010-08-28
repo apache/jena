@@ -9,13 +9,14 @@ package com.hp.hpl.jena.sparql.algebra.op;
 import java.util.ArrayList ;
 import java.util.List ;
 
+import org.openjena.atlas.lib.Lib ;
+
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.OpVisitor ;
 import com.hp.hpl.jena.sparql.algebra.Transform ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.sse.Tags ;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
-import com.hp.hpl.jena.sparql.util.Utils ;
 
 public class OpProject extends OpModifier
 {
@@ -49,7 +50,7 @@ public class OpProject extends OpModifier
     {
         if ( ! (other instanceof OpProject) ) return false ;
         OpProject opProject = (OpProject)other ;
-        if ( ! Utils.equal(vars, opProject.vars ) )
+        if ( ! Lib.equal(vars, opProject.vars ) )
             return false ;
         return getSubOp().equalTo(opProject.getSubOp(), labelMap) ;
     }

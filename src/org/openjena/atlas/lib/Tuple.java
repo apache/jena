@@ -135,7 +135,7 @@ public final class Tuple<T> implements Iterable<T>
         {
             Object obj1 = tuple[i] ;
             Object obj2 = x.tuple[i] ;
-            if ( ! Lib.equals(obj1, obj2) )
+            if ( ! Lib.equal(obj1, obj2) )
                 return false ;
         }
         return true ; 

@@ -22,11 +22,16 @@ import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.query.QueryExecutionFactory ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
+import com.hp.hpl.jena.sparql.ARQConstants ;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.core.Substitute ;
+import com.hp.hpl.jena.sparql.core.Var ;
+import com.hp.hpl.jena.sparql.core.VarAlloc ;
 import com.hp.hpl.jena.sparql.engine.Plan ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
+import com.hp.hpl.jena.sparql.engine.Renamer ;
+import com.hp.hpl.jena.sparql.engine.RenamerLib ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingRoot ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper ;
@@ -58,13 +63,6 @@ import com.hp.hpl.jena.util.FileManager ;
 // Functional first, rather than efficient.
 public class UpdateEngine implements UpdateVisitor
 {
-    // TEMP
-    public static void exec(GraphStore graphStore, UpdateRequest request)
-    {
-        UpdateEngine engine = new UpdateEngine(graphStore, request, null) ;
-        engine.execute() ;
-    }
-    
     private final GraphStore graphStore ;
     private final Binding initialBinding ;
     private final UpdateRequest request ;
@@ -84,10 +82,7 @@ public class UpdateEngine implements UpdateVisitor
             if ( up instanceof UpdateSubmission )
             {
                 // If old style, go there.
-                UpdateSubmission ups =  (UpdateSubmission)up ;
-                UpdateProcessorSubmission p = 
-                    new UpdateProcessorSubmission(graphStore, null, initialBinding) ;
-                p.execute((UpdateSubmission)up) ;
+                executeUpdateSubmission((UpdateSubmission)up) ;
                 continue ;
             }
             up.visit(this) ;
@@ -95,8 +90,12 @@ public class UpdateEngine implements UpdateVisitor
         graphStore.finishRequest() ;
     }
     
-    // startOperation
-    // finishOperation
+    public void executeUpdateSubmission(UpdateSubmission ups)
+    {
+        UpdateProcessorSubmission p = 
+            new UpdateProcessorSubmission(graphStore, null, initialBinding) ;
+        p.execute(ups) ;
+    }
     
     public void visit(UpdateDrop update)
     { execDropClear(update, false) ; }
@@ -192,12 +191,38 @@ public class UpdateEngine implements UpdateVisitor
         execDelete(quads, bindings) ;
     }
 
-    private List<Quad> convertBNodesToVariables(List<Quad> quads)
+    private static class ConvertBNodesToVariables implements Renamer
     {
-        // XXX
-        return quads ;
-    }
+        private VarAlloc varAlloc = new VarAlloc(ARQConstants.allocVarBNodeToVar) ;
+        private Map<Node, Var> mapping ;
 
+        public ConvertBNodesToVariables()
+        {
+            this.mapping = new HashMap<Node, Var>();
+        }
+
+        public Node rename(Node node)
+        {
+            if ( ! node.isBlank() )
+                return node ;
+            Node node2 = mapping.get(node) ;
+            if ( node2 == null )
+            {
+                Var v = varAlloc.allocVar() ;
+                mapping.put(node, v) ;
+                node2 = v ;
+            }
+            return node2 ;
+        }
+        
+    } ;
+    
+    private static List<Quad> convertBNodesToVariables(List<Quad> quads)
+    {
+        Renamer bnodesToVariables = new ConvertBNodesToVariables() ;
+        return RenamerLib.renameQuads(bnodesToVariables, quads) ;
+    }
+    
     // XXX Better???
     private Element elementFromQuads(List<Quad> quads)
     {

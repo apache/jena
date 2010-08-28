@@ -6,10 +6,11 @@
 
 package com.hp.hpl.jena.sparql.core ;
 
+import org.openjena.atlas.lib.Lib ;
+
 import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.query.QueryVisitor ;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
-import com.hp.hpl.jena.sparql.util.Utils ;
 
 // Two queries comparison 
 
@@ -95,9 +96,9 @@ public class QueryCompare implements QueryVisitor
 
     public void visitDatasetDecl(Query query1)
     {
-        boolean b1 = Utils.equalsListAsSet(query1.getGraphURIs(), query2.getGraphURIs()) ;
+        boolean b1 = Lib.equalsListAsSet(query1.getGraphURIs(), query2.getGraphURIs()) ;
         check("Default graph URIs", b1 ) ;
-        boolean b2 = Utils.equalsListAsSet(query1.getNamedGraphURIs(), query2.getNamedGraphURIs()) ; 
+        boolean b2 = Lib.equalsListAsSet(query1.getNamedGraphURIs(), query2.getNamedGraphURIs()) ; 
         check("Named graph URIs", b2 ) ;
     }
 
@@ -146,7 +147,7 @@ public class QueryCompare implements QueryVisitor
     
     private void check(String msg, Object obj1, Object obj2)
     {
-        check(msg, Utils.equal(obj1,obj2)) ;
+        check(msg, Lib.equal(obj1,obj2)) ;
     }
     
     private void check(String msg, boolean b)

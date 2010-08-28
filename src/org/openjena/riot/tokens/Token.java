@@ -6,7 +6,6 @@
 
 package org.openjena.riot.tokens;
 
-import static com.hp.hpl.jena.sparql.util.Utils.equal ;
 import static org.openjena.atlas.lib.Chars.CH_COMMA ;
 import static org.openjena.atlas.lib.Chars.CH_DOT ;
 import static org.openjena.atlas.lib.Chars.CH_LBRACE ;
@@ -16,6 +15,8 @@ import static org.openjena.atlas.lib.Chars.CH_RBRACE ;
 import static org.openjena.atlas.lib.Chars.CH_RBRACKET ;
 import static org.openjena.atlas.lib.Chars.CH_RPAREN ;
 import static org.openjena.atlas.lib.Chars.CH_SEMICOLON ;
+import static org.openjena.atlas.lib.Lib.equal ;
+import static org.openjena.atlas.lib.Lib.hashCodeObject ;
 import static org.openjena.riot.tokens.TokenType.BNODE ;
 import static org.openjena.riot.tokens.TokenType.DECIMAL ;
 import static org.openjena.riot.tokens.TokenType.DOUBLE ;
@@ -42,7 +43,6 @@ import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.rdf.model.AnonId ;
 import com.hp.hpl.jena.sparql.util.FmtUtils ;
-import com.hp.hpl.jena.sparql.util.Utils ;
 import com.hp.hpl.jena.vocabulary.XSD ;
 
 public final class Token
@@ -371,10 +371,10 @@ public final class Token
     @Override
     public int hashCode()
     {
-        return Utils.hashCodeObject(tokenType) ^
-                Utils.hashCodeObject(tokenImage) ^
-                Utils.hashCodeObject(tokenImage2) ^
-                Utils.hashCodeObject(cntrlCode) ;
+        return hashCodeObject(tokenType) ^
+                hashCodeObject(tokenImage) ^
+                hashCodeObject(tokenImage2) ^
+                hashCodeObject(cntrlCode) ;
     }
     
     @Override

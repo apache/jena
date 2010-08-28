@@ -6,8 +6,7 @@
 
 package com.hp.hpl.jena.sparql.core;
 
-import static com.hp.hpl.jena.sparql.util.Utils.equal ;
-
+import static org.openjena.atlas.lib.Lib.equal ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 

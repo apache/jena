@@ -6,9 +6,9 @@
 
 package com.hp.hpl.jena.update;
 
-import java.io.FileInputStream ;
-import java.io.FileNotFoundException ;
 import java.io.InputStream ;
+
+import org.openjena.atlas.io.IO ;
 
 import com.hp.hpl.jena.query.QuerySolution ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
@@ -39,13 +39,11 @@ public class UpdateFactory
         if ( fileName.equals("-") )
             in = System.in ;
         else
-            try
-            {
-                in = new FileInputStream(fileName) ;
-            } catch (FileNotFoundException ex)
-            {
-                throw new UpdateException("File not found: "+fileName) ;
-            }
+        {
+            in = IO.openFile(fileName) ;
+            if ( in == null )
+                throw new UpdateException("File could not be opened: "+fileName) ;
+        }
         return read(in) ;
     }
     

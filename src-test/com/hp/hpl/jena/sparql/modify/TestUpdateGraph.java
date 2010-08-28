@@ -338,7 +338,6 @@ public abstract class TestUpdateGraph extends TestUpdateBase
         assertTrue(gStore.getDefaultGraph().contains(s, p, NodeFactory.parseNode("1999"))) ;
     }
     
-    
     private static Graph data1()
     {
         Graph graph = Factory.createDefaultGraph() ;
@@ -352,9 +351,6 @@ public abstract class TestUpdateGraph extends TestUpdateBase
         graph.add(triple2) ;
         return graph ; 
     }
-
- 
-  
 }
 
 /*

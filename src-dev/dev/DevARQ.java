@@ -3,6 +3,7 @@ package dev;
 public class DevARQ
 {
     // No org.json.
+    // Rename "Renamer" as "NodeConversion" implements Transform<Node, Node>
 
     // ---- SPARQL Update
     // BNode to variable in DW

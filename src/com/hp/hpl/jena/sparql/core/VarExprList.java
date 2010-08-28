@@ -12,6 +12,8 @@ import java.util.Iterator ;
 import java.util.List ;
 import java.util.Map ;
 
+import org.openjena.atlas.lib.Lib ;
+
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
@@ -19,7 +21,6 @@ import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
-import com.hp.hpl.jena.sparql.util.Utils ;
 
 public class VarExprList
 {
@@ -113,7 +114,7 @@ public class VarExprList
         if ( ! ( other instanceof VarExprList ) )
             return false ;
         VarExprList x = (VarExprList)other ;
-        return Utils.equal(vars, x.vars) &&  Utils.equal(exprs, x.exprs) ;
+        return Lib.equal(vars, x.vars) && Lib.equal(exprs, x.exprs) ;
     }
     
     @Override

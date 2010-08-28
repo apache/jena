@@ -11,8 +11,7 @@ import java.util.Iterator ;
 import org.openjena.atlas.iterator.SingletonIterator ;
 import org.openjena.atlas.lib.ActionKeyValue ;
 import org.openjena.atlas.lib.Cache ;
-
-import com.hp.hpl.jena.sparql.util.Utils ;
+import org.openjena.atlas.lib.Lib ;
 
 
 
@@ -71,7 +70,7 @@ public class Cache1<K, V> implements Cache<K,V>
     //@Override
     public V put(K key, V thing)
     {
-        if ( Utils.equal(cacheKey, key) && Utils.equal(cacheValue, thing) )
+        if ( Lib.equal(cacheKey, key) && Lib.equal(cacheValue, thing) )
             // No change.
             return cacheValue ;
 

@@ -7,6 +7,8 @@
 package com.hp.hpl.jena.query;
 
 import org.openjena.atlas.io.IndentedWriter ;
+import org.openjena.atlas.lib.Lib ;
+import org.openjena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.core.Var ;
@@ -15,10 +17,8 @@ import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.expr.ExprVar ;
 import com.hp.hpl.jena.sparql.serializer.FmtExpr ;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
-import org.openjena.atlas.logging.Log ;
 import com.hp.hpl.jena.sparql.util.ExprUtils ;
 import com.hp.hpl.jena.sparql.util.PrintSerializableBase ;
-import com.hp.hpl.jena.sparql.util.Utils ;
 
 
 public class SortCondition extends PrintSerializableBase
@@ -113,7 +113,7 @@ public class SortCondition extends PrintSerializableBase
         if ( sc.getDirection() != this.getDirection() )
             return false ;
         
-        if ( ! Utils.equal(this.getExpression(), sc.getExpression()) )
+        if ( ! Lib.equal(this.getExpression(), sc.getExpression()) )
             return false ;
         
 //        if ( ! Utils.eq(this.getVariable(), sc.getVariable()) )

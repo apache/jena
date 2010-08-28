@@ -6,13 +6,15 @@
 
 package org.openjena.atlas.lib;
 
+import java.util.List ;
+
 import org.openjena.atlas.logging.Log ;
 
 public class Lib
 {
     private Lib() {}
     
-    public static final <T> boolean equals(T obj1, T obj2)
+    public static final <T> boolean equal(T obj1, T obj2)
     {
         if ( obj1 == null )
             return obj2 == null ;
@@ -33,6 +35,12 @@ public class Lib
         return tmp ;
     }
     
+    /** Do two lists have the same elements? */ 
+    public static <T> boolean equalsListAsSet(List<T> list1, List<T> list2)
+    {
+        return list1.containsAll(list2) && list2.containsAll(list1) ;
+    }
+
     /** HashCode - allow nulls */
     public static final int hashCodeObject(Object obj) { return hashCodeObject(obj, -4) ; }
     

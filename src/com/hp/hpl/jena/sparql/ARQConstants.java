@@ -138,6 +138,9 @@ public class ARQConstants
     // Secondary marker for globally allocated variables. 
     private static final String globalVar =     "." ;
     
+    /** Marker for variables replacing blank nodes in SPARQL Update patterns */
+    public static final String allocVarBNodeToVar =  "~" ;
+
     // Spare primary marker.
     //private static final String executionVar =  "@" ;
     

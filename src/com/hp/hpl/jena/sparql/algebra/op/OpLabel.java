@@ -6,12 +6,13 @@
 
 package com.hp.hpl.jena.sparql.algebra.op;
 
+import org.openjena.atlas.lib.Lib ;
+
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.OpVisitor ;
 import com.hp.hpl.jena.sparql.algebra.Transform ;
 import com.hp.hpl.jena.sparql.sse.Tags ;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
-import com.hp.hpl.jena.sparql.util.Utils ;
 
 /** Do-nothing class that means that tags/labels/comments can be left in the algebra tree.
  * If serialized, toString called on the object, reparsing yields a string.
@@ -44,18 +45,18 @@ public class OpLabel extends Op1
         if ( ! ( other instanceof OpLabel) )
             return false ;
         OpLabel opLabel = (OpLabel)other ;
-        if ( ! Utils.equal(object, opLabel.object) )
+        if ( ! Lib.equal(object, opLabel.object) )
             return false ;
         
-        return Utils.equal(getSubOp(), opLabel.getSubOp()) ;
+        return Lib.equal(getSubOp(), opLabel.getSubOp()) ;
     }
 
     @Override
     public int hashCode()
     {
         int x = HashLabel ;
-        x ^= Utils.hashCodeObject(object, 0) ;
-        x ^= Utils.hashCodeObject(getSubOp(), 0) ;
+        x ^= Lib.hashCodeObject(object, 0) ;
+        x ^= Lib.hashCodeObject(getSubOp(), 0) ;
         return x ;
     }
 

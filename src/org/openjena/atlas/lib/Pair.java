@@ -40,7 +40,7 @@ public class Pair<A, B>
         
         if( ! ( other instanceof Pair<?,?> ) ) return false ;
         Pair<?,?> p2 = (Pair<?,?>)other ;
-        return  Lib.equals(car(), p2.car()) && Lib.equals(cdr(), p2.cdr()) ;
+        return  Lib.equal(car(), p2.car()) && Lib.equal(cdr(), p2.cdr()) ;
     }
     
     @Override 

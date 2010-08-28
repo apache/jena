@@ -6,6 +6,7 @@
 
 package org.openjena.riot.lang;
 
+import org.openjena.atlas.lib.Lib ;
 import org.openjena.atlas.lib.Sink ;
 import org.openjena.atlas.lib.Sync ;
 
@@ -13,7 +14,6 @@ import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.Quad ;
-import com.hp.hpl.jena.sparql.util.Utils ;
 
 /** @see SinkTriplesToGraph */ 
 public class SinkQuadsToDataset implements Sink<Quad>
@@ -30,7 +30,7 @@ public class SinkQuadsToDataset implements Sink<Quad>
     
     public void send(Quad quad)
     {
-        if ( graph == null || ! Utils.equal(quad.getGraph(), graphNode) )
+        if ( graph == null || ! Lib.equal(quad.getGraph(), graphNode) )
         {
             // graph == null ==> Uninitialized
             // not equals ==> different graph to last time.
