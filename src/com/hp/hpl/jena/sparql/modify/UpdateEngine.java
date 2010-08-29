@@ -230,10 +230,17 @@ public class UpdateEngine implements UpdateVisitor
 
     public void visit(UpdateModify update)
     {
-        update.getUsing() ;
-        update.getUsingNamed() ;
-        update.getWithIRI() ;
-
+        if ( update.getWithIRI() != null )
+        {
+            Log.fatal(this, "Attempt to use WITH - not fully implemented") ;
+            throw new UpdateException("Attempt to use WITH - not fully implemented") ;
+            // Need to set the target graph for exec*
+            // Do by rewriting the quads after bindings.
+        }
+        
+        if ( update.getUsing().size() > 0 || update.getUsingNamed().size() > 0 )
+            Log.warn(this, "Graph selection from the dataset not yet supported") ;
+        
         final List<Binding> bindings = evalBindings(update.getWherePattern()) ;
         
         execDelete(update.getDeleteQuads(), bindings) ;
@@ -255,7 +262,6 @@ public class UpdateEngine implements UpdateVisitor
             Collection<Triple> triples = acc.get(gn) ;
             graph(gn).getBulkUpdateHandler().delete(triples.iterator()) ;
         }
-        //graph.getBulkUpdateHandler().delete(acc.iterator()) ;
     }
 
     private MultiMap<Node, Triple> calcTriples(List<Quad> quads, List<Binding> bindings)

@@ -20,6 +20,7 @@ import org.openjena.atlas.logging.Log ;
 import org.openjena.riot.ErrorHandlerLib ;
 import org.openjena.riot.checker.CheckerIRI ;
 
+import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.iri.IRI ;
 import com.hp.hpl.jena.iri.IRIFactory ;
 import com.hp.hpl.jena.iri.Violation ;
@@ -32,7 +33,10 @@ import com.hp.hpl.jena.query.ResultSetFormatter ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.sparql.algebra.Algebra ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
+import com.hp.hpl.jena.sparql.core.NodeConst ;
+import com.hp.hpl.jena.sparql.core.NodeTransform ;
 import com.hp.hpl.jena.sparql.core.NodeTransformLib ;
+import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.RenamerVars ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
@@ -89,8 +93,28 @@ public class RunARQ
     {
 //        arq.uparse.main("--file=update.ru") ; System.exit(0) ;
         //qparse("--query=Q.rq", "--print=query", "--print=op") ; System.exit(0) ;
-        sparql11update() ; System.exit(0) ; 
+        //sparql11update() ; System.exit(0) ; 
+        
+        
+        NodeTransform nt = new NodeTransform() {
+            public Node convert(Node node)
+            {
+                if ( node == Quad.defaultGraphNodeGenerated )
+                    return NodeConst.nodeTwo ;
+                return node ;
+            }
+        };
 
+        {
+        Quad q = SSE.parseQuad("(_ <s> <p> <o>)") ;
+        Quad q2 = NodeTransformLib.transform(nt, q) ;
+        SSE.write(q) ;
+        System.out.print( "=> ") ;
+        SSE.write(q2) ;
+        System.out.println() ;
+        System.exit(0) ;
+        }
+        
         String DIR = "WorkSpace/PropertyPathTestCases" ;
         runTest(DIR, "data-path-1.ttl", "pp-all-03.rq") ; System.exit(0) ;
 

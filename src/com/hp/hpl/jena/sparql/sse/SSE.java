@@ -394,6 +394,20 @@ public class SSE
         out.flush() ;
     }
     
+    public static void write(Quad quad) { write(IndentedWriter.stdout, quad) ; IndentedWriter.stdout.flush() ; }
+    public static void write(OutputStream out, Quad quad)
+    { 
+        IndentedWriter iOut = new IndentedWriter(out) ;
+        write(iOut, quad) ;
+        iOut.flush();
+    }
+    public static void write(IndentedWriter out, Quad quad)                         
+    { 
+        WriterNode.output(out, quad, sCxt(defaultDefaultPrefixMapWrite)) ; 
+        out.flush() ;
+    }
+
+    
     public static void write(Node node) { write(IndentedWriter.stdout, node) ; IndentedWriter.stdout.flush() ; }
     public static void write(OutputStream out, Node node)
     { 
