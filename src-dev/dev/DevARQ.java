@@ -5,6 +5,12 @@ public class DevARQ
     // No org.json.
     // Rename "Renamer" as "NodeConversion" implements Transform<Node, Node>
 
+    // Converters
+    // Canonicalise literals
+    // rdf:PlainLiteral
+    // URI->URI rewrite
+    
+    
     // ---- SPARQL Update
     // BNode to variable in DW
     // DW{1 quad} => speial case
