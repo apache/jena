@@ -9,7 +9,7 @@
 package com.hp.hpl.jena.sparql.expr.aggregate;
 
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.sparql.engine.Renamer ;
+import com.hp.hpl.jena.sparql.core.NodeTransform ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingKey ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
@@ -36,7 +36,7 @@ public interface Aggregator
     /** Get the expression - may be null (e.g COUNT(*)) ; */ 
     public Expr getExpr() ;
     public Aggregator copy(Expr expr) ;
-    public Aggregator copyRename(Renamer renamer) ;
+    public Aggregator copyTransform(NodeTransform transform) ;
     
     public int hashCode() ;
     public boolean equals(Object other) ;

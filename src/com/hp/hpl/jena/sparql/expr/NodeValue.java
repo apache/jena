@@ -24,8 +24,8 @@ import com.hp.hpl.jena.graph.impl.LiteralLabel ;
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
 import com.hp.hpl.jena.sparql.core.NodeConst ;
+import com.hp.hpl.jena.sparql.core.NodeTransform ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
-import com.hp.hpl.jena.sparql.engine.Renamer ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.expr.nodevalue.* ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
@@ -357,11 +357,11 @@ public abstract class NodeValue extends ExprNode
         return makeNode(n) ;
     }
     
-    //@Override
-    public Expr copyNodeTransform(Renamer renamer)
+    @Override
+    public Expr applyNodeTransform(NodeTransform transform)
     { 
         Node n = asNode() ;
-        n = renamer.rename(n) ;
+        n = transform.convert(n) ;
         return makeNode(n) ;
     }
 

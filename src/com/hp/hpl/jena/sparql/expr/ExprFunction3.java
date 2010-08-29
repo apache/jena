@@ -8,7 +8,7 @@ package com.hp.hpl.jena.sparql.expr;
 
 import org.openjena.atlas.lib.Lib ;
 
-import com.hp.hpl.jena.sparql.engine.Renamer ;
+import com.hp.hpl.jena.sparql.core.NodeTransform ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
 
@@ -102,12 +102,12 @@ public abstract class ExprFunction3 extends ExprFunction
     }
     
 
-    //@Override
-    final public Expr copyNodeTransform(Renamer renamer)
+    @Override
+    final public Expr applyNodeTransform(NodeTransform transform)
     {
-        Expr e1 = (expr1 == null ? null : expr1.copyNodeTransform(renamer)) ;
-        Expr e2 = (expr2 == null ? null : expr2.copyNodeTransform(renamer)) ;
-        Expr e3 = (expr3 == null ? null : expr3.copyNodeTransform(renamer)) ;
+        Expr e1 = (expr1 == null ? null : expr1.applyNodeTransform(transform)) ;
+        Expr e2 = (expr2 == null ? null : expr2.applyNodeTransform(transform)) ;
+        Expr e3 = (expr3 == null ? null : expr3.applyNodeTransform(transform)) ;
         return copy(e1, e2, e3) ;
     }
 

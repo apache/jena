@@ -10,8 +10,8 @@ import org.openjena.atlas.io.IndentedWriter ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
+import com.hp.hpl.jena.sparql.core.NodeTransform ;
 import com.hp.hpl.jena.sparql.core.Var ;
-import com.hp.hpl.jena.sparql.engine.Renamer ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
 
@@ -66,12 +66,13 @@ public class ExprVar extends ExprNode
 //        }
     }
     
-    //@Override
-    public Expr copyNodeTransform(Renamer renamer)
+    @Override
+    public Expr applyNodeTransform(NodeTransform transform)
     {
-        Var v = varNode ;  
-        v = (Var)renamer.rename(varNode) ;
-        return new ExprVar(v) ;
+        Node node = transform.convert(varNode) ;
+        if ( Var.isVar(node))
+            return new ExprVar(Var.alloc(node)) ;
+        return NodeValue.makeNode(node) ;
     }
     
     public Expr copy(Var v)  { return new ExprVar(v) ; }

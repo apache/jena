@@ -36,7 +36,6 @@ public class FmtUtils
 {
     // Consider withdrawing non-serialzation context forms of this.
     // Or a temporary SerialzationContext does not abbreviate bNodes.
-    // Rename as PresentationUtils (!!)
     static final String indentPrefix = "  " ;
     public static boolean multiLineExpr = false ;
     public static boolean printOpName = true ;

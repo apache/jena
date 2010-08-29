@@ -9,11 +9,11 @@ package com.hp.hpl.jena.sparql.expr;
 
 import com.hp.hpl.jena.sparql.algebra.Algebra ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
+import com.hp.hpl.jena.sparql.core.NodeTransform ;
+import com.hp.hpl.jena.sparql.core.NodeTransformLib ;
 import com.hp.hpl.jena.sparql.core.Substitute ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
-import com.hp.hpl.jena.sparql.engine.Renamer ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
-import com.hp.hpl.jena.sparql.engine.main.VarRename ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
 import com.hp.hpl.jena.sparql.syntax.Element ;
 
@@ -45,10 +45,10 @@ public class E_NotExists extends ExprFunctionOp
         return new E_NotExists(getElement(), op2) ;
     }
 
-    //@Override
-    public Expr copyNodeTransform(Renamer renamer)
+    @Override
+    public Expr applyNodeTransform(NodeTransform nodeTransform)
     {
-        Op op2 = VarRename.rename(getGraphPattern(), renamer) ;
+        Op op2 = NodeTransformLib.transform(nodeTransform, getGraphPattern()) ;
         return new E_Exists(getElement(), op2) ;
     }
     

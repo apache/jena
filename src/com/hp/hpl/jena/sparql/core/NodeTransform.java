@@ -4,13 +4,16 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.engine;
+package com.hp.hpl.jena.sparql.core;
+
+import org.openjena.atlas.iterator.Transform ;
 
 import com.hp.hpl.jena.graph.Node ;
 
-public interface Renamer
+/** Convert nodes to nodes - Vars may need to be translated into Vars. */
+public interface NodeTransform extends Transform<Node, Node>
 {
-    public Node rename(Node node) ;
+    public Node convert(Node node) ;
 }
 
 /*

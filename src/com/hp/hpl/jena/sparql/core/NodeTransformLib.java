@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.engine;
+package com.hp.hpl.jena.sparql.core;
 
 import java.util.ArrayList ;
 import java.util.List ;
@@ -13,24 +13,30 @@ import static org.openjena.atlas.lib.Lib.equal ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.sparql.core.BasicPattern ;
-import com.hp.hpl.jena.sparql.core.Quad ;
-import com.hp.hpl.jena.sparql.core.QuadPattern ;
-import com.hp.hpl.jena.sparql.core.Var ;
-import com.hp.hpl.jena.sparql.core.VarExprList ;
+import com.hp.hpl.jena.sparql.algebra.Op ;
+import com.hp.hpl.jena.sparql.algebra.Transform ;
+import com.hp.hpl.jena.sparql.algebra.Transformer ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.expr.ExprList ;
 
-public class RenamerLib
+public class NodeTransformLib
 {
+    /** Do a node->node conversion of an Op - return original BGP for "no change" */
+    public static Op transform(NodeTransform nodeTransform, Op op)
+    {
+        Transform opTransform = new NodeTransformOp(nodeTransform) ; 
+        return Transformer.transform(opTransform, op) ;
+    }
+
+    
     /** Do a node->node conversion of a BGP - return original BGP for "no change" */
-    public static BasicPattern rename(Renamer renamer, BasicPattern pattern)  
+    public static BasicPattern transform(NodeTransform nodeTransform, BasicPattern pattern)  
     {
         BasicPattern bgp2 = new BasicPattern() ;
         boolean changed = false ;
         for ( Triple triple : pattern )
         {
-            Triple t2 = rename(renamer, triple) ;
+            Triple t2 = transform(nodeTransform, triple) ;
             bgp2.add(t2) ;
             if ( t2 != triple )
                 changed = true ;
@@ -41,13 +47,13 @@ public class RenamerLib
     }
 
     /** Do a node->node conversion of a QuadPattern - return original QuadPattern for "no change" */
-    public static QuadPattern rename(Renamer renamer, QuadPattern pattern)  
+    public static QuadPattern transform(NodeTransform nodeTransform, QuadPattern pattern)  
     {
         QuadPattern qp2 = new QuadPattern() ;
         boolean changed = false ;
         for ( Quad quad : pattern )
         {
-            Quad q2 = rename(renamer, quad) ;
+            Quad q2 = transform(nodeTransform, quad) ;
             qp2.add(q2) ;
             if ( q2 != quad )
                 changed = true ;
@@ -58,18 +64,18 @@ public class RenamerLib
     }
 
     /** Do a node->node conversion of a Triple - return original Triple for "no change" */
-    public static Triple rename(Renamer renamer, Triple triple)  
+    public static Triple transform(NodeTransform nodeTransform, Triple triple)  
     {
         boolean change = false ;
         Node s = triple.getSubject() ;
         Node p = triple.getPredicate() ;
         Node o = triple.getObject() ;
         
-        Node s1 = renamer.rename(s) ;
+        Node s1 = nodeTransform.convert(s) ;
         if ( s1 != s ) { change = true ; s = s1 ; }
-        Node p1 = renamer.rename(p) ;
+        Node p1 = nodeTransform.convert(p) ;
         if ( p1 != p ) { change = true ; p = p1 ; }
-        Node o1 = renamer.rename(o) ;
+        Node o1 = nodeTransform.convert(o) ;
         if ( o1 != o ) { change = true ; o = o1 ; }
     
         if ( ! change )
@@ -78,7 +84,7 @@ public class RenamerLib
     }
 
     /** Do a node->node conversion of a Quad - return original Quad for "no change" */
-    public static Quad rename(Renamer renamer, Quad quad)  
+    public static Quad transform(NodeTransform nodeTransform, Quad quad)  
     {
         boolean change = false ;
         Node s = quad.getSubject() ;
@@ -86,13 +92,13 @@ public class RenamerLib
         Node o = quad.getObject() ;
         Node g = quad.getGraph() ;
         
-        Node g1 = renamer.rename(g) ;
+        Node g1 = nodeTransform.convert(g) ;
         if ( g1 != g ) { change = true ; g = g1 ; }
-        Node s1 = renamer.rename(s) ;
+        Node s1 = nodeTransform.convert(s) ;
         if ( s1 != s ) { change = true ; s = s1 ; }
-        Node p1 = renamer.rename(p) ;
+        Node p1 = nodeTransform.convert(p) ;
         if ( p1 != p ) { change = true ; p = p1 ; }
-        Node o1 = renamer.rename(o) ;
+        Node o1 = nodeTransform.convert(o) ;
         if ( o1 != o ) { change = true ; o = o1 ; }
     
         if ( ! change )
@@ -101,13 +107,13 @@ public class RenamerLib
     }
 
     /** Do a node->node conversion of a List&lt;Quad&gt; - return original List&lt;Quad&gt; for "no change" */
-    public static List<Quad> renameQuads(Renamer renamer, List<Quad> quads)
+    public static List<Quad> transformQuads(NodeTransform nodeTransform, List<Quad> quads)
     {
         List<Quad> x = new ArrayList<Quad>() ;
         boolean changed = false ; 
         for ( Quad q : quads )
         {
-            Quad q2 = RenamerLib.rename(renamer, q) ;
+            Quad q2 = NodeTransformLib.transform(nodeTransform, q) ;
             if ( q != q2 )
                 changed = true ;
             x.add(q2) ;
@@ -118,15 +124,15 @@ public class RenamerLib
     }
 
     /** Do a node->node conversion of a VarExprList - return original VarExprList for "no change" */
-    public static VarExprList rename(Renamer renamer, VarExprList varExprList)
+    public static VarExprList transform(NodeTransform nodeTransform, VarExprList varExprList)
     {
         VarExprList varExprList2 = new VarExprList() ;
         boolean changed = false ;
         for ( Var v : varExprList.getVars() )
         {
             Expr expr = varExprList.getExpr(v) ;
-            Var v2 = (Var)renamer.rename(v) ;
-            Expr expr2 = ( expr != null ) ? rename(renamer, expr) : null ;
+            Var v2 = (Var)nodeTransform.convert(v) ;
+            Expr expr2 = ( expr != null ) ? transform(nodeTransform, expr) : null ;
             
             if ( ! equal(v, v2) || ! equal(expr, expr2) )
                 changed = true ;
@@ -137,13 +143,13 @@ public class RenamerLib
         return varExprList2 ;
     }
 
-    public static List<Var> renameVars(Renamer renamer, List<Var> varList)
+    public static List<Var> transformVars(NodeTransform nodeTransform, List<Var> varList)
     {
         List<Var> varList2 = new ArrayList<Var>(varList.size()) ; 
         boolean changed = false ;
         for ( Var v : varList )
         {
-            Var v2 = (Var)renamer.rename(v) ;
+            Var v2 = (Var)nodeTransform.convert(v) ;
             varList2.add(v2) ;
             if ( !equal(v, v2) )
                 changed = true ;
@@ -153,13 +159,13 @@ public class RenamerLib
         return varList2 ;
     }
 
-    public static ExprList rename(Renamer renamer, ExprList exprList)
+    public static ExprList transform(NodeTransform nodeTransform, ExprList exprList)
     {
           ExprList exprList2 = new ExprList() ;
           boolean changed = false ;
           for(Expr expr : exprList)
           {
-              Expr expr2 = rename(renamer, expr) ;
+              Expr expr2 = transform(nodeTransform, expr) ;
               if ( expr != expr2 )
                   changed = true ;
               exprList2.add(expr2) ;
@@ -168,9 +174,9 @@ public class RenamerLib
           return exprList2 ;
     }
 
-    public static Expr rename(Renamer renamer, Expr expr)
+    public static Expr transform(NodeTransform nodeTransform, Expr expr)
     {
-        return expr.copyNodeTransform(renamer) ;
+        return expr.applyNodeTransform(nodeTransform) ;
     }
 
 }

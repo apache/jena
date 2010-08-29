@@ -8,7 +8,7 @@ package com.hp.hpl.jena.sparql.expr;
 
 import java.util.List ;
 
-import com.hp.hpl.jena.sparql.engine.Renamer ;
+import com.hp.hpl.jena.sparql.core.NodeTransform ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 
 /** A function in the expression hierarchy.
@@ -54,14 +54,14 @@ public abstract class ExprFunctionN extends ExprFunction
         return copy(newArgs) ;
     }
 
-    //@Override
-    public Expr copyNodeTransform(Renamer renamer)
+    @Override
+    public Expr applyNodeTransform(NodeTransform transform)
     {
         ExprList newArgs = new ExprList() ;
         for ( int i = 1 ; i <= numArgs() ; i++ )
         {
             Expr e = getArg(i) ;
-            e = e.copyNodeTransform(renamer) ;
+            e = e.applyNodeTransform(transform) ;
             newArgs.add(e) ;
         }
         return copy(newArgs) ;

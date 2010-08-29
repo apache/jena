@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
  * (c) Copyright 2010 Talis Systems Ltd.
  * [See end of file]
  */
@@ -54,56 +55,12 @@ public class E_Conditional extends ExprFunction3
     {
         throw new ARQInternalErrorException() ;
     }
-
-//    @Override
-//    public Expr getArg(int i)
-//    {
-//        i = i-1 ;
-//        if ( i == 0 ) return condition ;
-//        if ( i == 1 ) return thenExpr ;
-//        if ( i == 2 ) return elseExpr ;
-//        return null ;
-//    }
-//
-//    @Override
-//    public int numArgs()
-//    {
-//        return 3 ;
-//    }
-//
-//    @Override
-//    public Expr copySubstitute(Binding binding, boolean foldConstants)
-//    {
-//        Expr e1 = condition.copySubstitute(binding, foldConstants) ;
-//        Expr e2 = thenExpr.copySubstitute(binding, foldConstants) ;
-//        Expr e3 = elseExpr.copySubstitute(binding, foldConstants) ;
-//        return new E_Conditional(e1, e2, e3) ;
-//    }
-//
-//    @Override
-//    public Expr copyNodeTransform(Renamer renamer)
-//    {
-//        Expr e1 = condition.copyNodeTransform(renamer) ;
-//        Expr e2 = thenExpr.copyNodeTransform(renamer) ;
-//        Expr e3 = elseExpr.copyNodeTransform(renamer) ;
-//        return new E_Conditional(e1, e2, e3) ;
-//    }
-//
-//    /** Special form evaluation (don't eval the arguments first) */
-//    @Override
-//    public NodeValue eval(Binding binding, FunctionEnv env)
-//    {
-//        NodeValue nv = condition.eval(binding, env) ;
-//        if ( condition.isSatisfied(binding, env) )
-//            return thenExpr.eval(binding, env) ;
-//        else
-//            return elseExpr.eval(binding, env) ;
-//    }
 }
 
 /*
  * (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (c) Copyright 2010 Talis Systems Ltd.
+ * (c) Copyright 2010 Epimorphics Ltd.
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -11,9 +11,10 @@ import java.util.HashMap ;
 import java.util.Map ;
 
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.sparql.core.NodeTransform ;
 import com.hp.hpl.jena.sparql.core.Var ;
 
-public class RenamerVars implements Renamer
+public class RenamerVars implements NodeTransform
 {
     private final Map<Var, Var> aliases = new HashMap<Var, Var>() ;
     private final Collection<Var> constants ;
@@ -22,7 +23,7 @@ public class RenamerVars implements Renamer
         this.constants = constants ;
     }
     
-    public final Node rename(Node node)
+    public final Node convert(Node node)
     {
         if ( ! Var.isVar(node) ) return node ;
         if ( constants.contains(node ) ) return node ;
@@ -40,8 +41,8 @@ public class RenamerVars implements Renamer
         aliases.put(var, var2) ;
         return var2 ; 
     }
-    
 }
+
 /*
  * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.

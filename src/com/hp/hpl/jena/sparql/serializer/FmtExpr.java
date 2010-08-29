@@ -19,7 +19,6 @@ import com.hp.hpl.jena.sparql.syntax.Element ;
 public class FmtExpr
 {
     static final int INDENT = 2 ;
-    // Rename as ExprWriter, move to expr.
     
     FmtExprARQVisitor visitor ; 
 

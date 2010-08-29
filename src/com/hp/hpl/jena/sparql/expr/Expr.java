@@ -8,8 +8,8 @@ package com.hp.hpl.jena.sparql.expr;
 import java.util.Collection ;
 import java.util.Set ;
 
+import com.hp.hpl.jena.sparql.core.NodeTransform ;
 import com.hp.hpl.jena.sparql.core.Var ;
-import com.hp.hpl.jena.sparql.engine.Renamer ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
 
@@ -59,7 +59,7 @@ public interface Expr
     /**
      * Rewrite, applying a node->node transformation
      */
-    public Expr copyNodeTransform(Renamer renamer) ;
+    public Expr applyNodeTransform(NodeTransform transform) ;
 
 //    /** Transform. */
 //    public Expr apply(ExprTransform transform) ;

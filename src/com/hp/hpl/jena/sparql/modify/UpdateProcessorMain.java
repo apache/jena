@@ -15,7 +15,7 @@ public class UpdateProcessorMain implements UpdateProcessor
 {
     private UpdateEngine engine ;
 
-    private UpdateProcessorMain(GraphStore graphStore, UpdateRequest request, Binding inputBinding)
+    public UpdateProcessorMain(GraphStore graphStore, UpdateRequest request, Binding inputBinding)
     {
         this.engine = new UpdateEngine(graphStore, request, inputBinding) ;
     }

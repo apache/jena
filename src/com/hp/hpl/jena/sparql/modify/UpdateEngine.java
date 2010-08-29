@@ -22,16 +22,13 @@ import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.query.QueryExecutionFactory ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
-import com.hp.hpl.jena.sparql.ARQConstants ;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
+import com.hp.hpl.jena.sparql.core.NodeTransform ;
+import com.hp.hpl.jena.sparql.core.NodeTransformLib ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.core.Substitute ;
-import com.hp.hpl.jena.sparql.core.Var ;
-import com.hp.hpl.jena.sparql.core.VarAlloc ;
 import com.hp.hpl.jena.sparql.engine.Plan ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
-import com.hp.hpl.jena.sparql.engine.Renamer ;
-import com.hp.hpl.jena.sparql.engine.RenamerLib ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingRoot ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper ;
@@ -184,6 +181,13 @@ public class UpdateEngine implements UpdateVisitor
         
         // Convert bNodes to named variables first.
         quads = convertBNodesToVariables(quads) ;
+
+//        if ( quads.size() == 0 )
+//        {
+//            Quad q = quads.get(0) ;
+//            // Do special.
+//        }
+            
         
         // Convert quads to a pattern.
         Element el = elementFromQuads(update.getQuads()) ;
@@ -191,44 +195,17 @@ public class UpdateEngine implements UpdateVisitor
         execDelete(quads, bindings) ;
     }
 
-    private static class ConvertBNodesToVariables implements Renamer
-    {
-        private VarAlloc varAlloc = new VarAlloc(ARQConstants.allocVarBNodeToVar) ;
-        private Map<Node, Var> mapping ;
-
-        public ConvertBNodesToVariables()
-        {
-            this.mapping = new HashMap<Node, Var>();
-        }
-
-        public Node rename(Node node)
-        {
-            if ( ! node.isBlank() )
-                return node ;
-            Node node2 = mapping.get(node) ;
-            if ( node2 == null )
-            {
-                Var v = varAlloc.allocVar() ;
-                mapping.put(node, v) ;
-                node2 = v ;
-            }
-            return node2 ;
-        }
-        
-    } ;
-    
     private static List<Quad> convertBNodesToVariables(List<Quad> quads)
     {
-        Renamer bnodesToVariables = new ConvertBNodesToVariables() ;
-        return RenamerLib.renameQuads(bnodesToVariables, quads) ;
+        NodeTransform bnodesToVariables = new NodeTransformBNodesToVariables() ;
+        return NodeTransformLib.transformQuads(bnodesToVariables, quads) ;
     }
     
-    // XXX Better???
     private Element elementFromQuads(List<Quad> quads)
     {
         ElementGroup el = new ElementGroup() ;
         ElementTriplesBlock x = new ElementTriplesBlock() ;
-        // Maybe empty.
+        // Maybe empty??
         el.addElement(x) ;
         Node g = Quad.defaultGraphNodeGenerated ;
         
@@ -253,6 +230,10 @@ public class UpdateEngine implements UpdateVisitor
 
     public void visit(UpdateModify update)
     {
+        update.getUsing() ;
+        update.getUsingNamed() ;
+        update.getWithIRI() ;
+
         final List<Binding> bindings = evalBindings(update.getWherePattern()) ;
         
         execDelete(update.getDeleteQuads(), bindings) ;
@@ -272,7 +253,6 @@ public class UpdateEngine implements UpdateVisitor
         for ( Node gn : acc.keys() )
         {
             Collection<Triple> triples = acc.get(gn) ;
-            
             graph(gn).getBulkUpdateHandler().delete(triples.iterator()) ;
         }
         //graph.getBulkUpdateHandler().delete(acc.iterator()) ;

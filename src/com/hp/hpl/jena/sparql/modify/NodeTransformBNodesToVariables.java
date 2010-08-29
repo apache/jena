@@ -4,47 +4,40 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.expr;
+package com.hp.hpl.jena.sparql.modify;
 
+import java.util.HashMap ;
+import java.util.Map ;
+
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.sparql.ARQConstants ;
 import com.hp.hpl.jena.sparql.core.NodeTransform ;
-import com.hp.hpl.jena.sparql.function.FunctionEnv ;
+import com.hp.hpl.jena.sparql.core.Var ;
+import com.hp.hpl.jena.sparql.core.VarAlloc ;
 
-/** An expression that is constant (does not depend on evaluating a sub expression).
- */
-
-public abstract class ExprFunction0 extends ExprFunction
+class NodeTransformBNodesToVariables implements NodeTransform
 {
-    protected ExprFunction0(String fName) { this(fName, null) ; }
-    
-    protected ExprFunction0(String fName, String opSign)
+    private VarAlloc varAlloc = new VarAlloc(ARQConstants.allocVarBNodeToVar) ;
+    private Map<Node, Var> mapping ;
+
+    public NodeTransformBNodesToVariables()
     {
-        super(fName, opSign) ;
+        this.mapping = new HashMap<Node, Var>();
     }
 
-    @Override
-    public Expr getArg(int i)       { return null ; }
-    
-    @Override
-    public int hashCode()           { return getFunctionSymbol().hashCode() ; }
-
-    @Override
-    public int numArgs()            { return 0 ; }
-    
-    // ---- Evaluation
-   
-    public abstract NodeValue eval(FunctionEnv env)  ;
-    
-    @Override
-    final public Expr applyNodeTransform(NodeTransform transform)
+    public Node convert(Node node)
     {
-        // Nothing to transform. 
-        return copy() ;
+        if ( ! node.isBlank() )
+            return node ;
+        Node node2 = mapping.get(node) ;
+        if ( node2 == null )
+        {
+            Var v = varAlloc.allocVar() ;
+            mapping.put(node, v) ;
+            node2 = v ;
+        }
+        return node2 ;
     }
-    
-    public abstract Expr copy() ;
-    
-    public void visit(ExprVisitor visitor) { visitor.visit(this) ; }
-    public Expr apply(ExprTransform transform) { return transform.transform(this) ; }
 }
 
 /*

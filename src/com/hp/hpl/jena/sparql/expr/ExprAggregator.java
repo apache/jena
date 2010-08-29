@@ -6,9 +6,12 @@
 
 package com.hp.hpl.jena.sparql.expr;
 
+import org.openjena.atlas.logging.Log ;
+
+import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
+import com.hp.hpl.jena.sparql.core.NodeTransform ;
 import com.hp.hpl.jena.sparql.core.Var ;
-import com.hp.hpl.jena.sparql.engine.Renamer ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.expr.aggregate.Aggregator ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
@@ -89,12 +92,20 @@ public class ExprAggregator extends ExprNode
         return new ExprAggregator(v, agg) ;
     }
     
-    //@Override
-    public ExprAggregator copyNodeTransform(Renamer renamer)
+    @Override
+    public ExprAggregator applyNodeTransform(NodeTransform transform)
     {
-        Var v = (Var)renamer.rename(var) ;
-        Aggregator agg = aggregator.copyRename(renamer) ;
-        return new ExprAggregator(v, agg) ;
+        // Can't rewrite this to a non-variable.
+        Node node = transform.convert(var) ;
+        if ( ! Var.isVar(node) )
+        {
+            Log.warn(this, "Attempt to convert an aggregation variable to a non-variable: ignored") ;
+            node = var ;
+        }
+        
+        Var v = (Var)node ;
+        Aggregator agg = aggregator.copyTransform(transform) ;
+        return new ExprAggregator(Var.alloc(node), agg) ;
     }
     
     // DEBUGGING

@@ -25,13 +25,13 @@ public class TransformCopy implements Transform
 
     public Op transform(OpTable opTable)                            { return xform(opTable) ; }
     public Op transform(OpBGP opBGP)                                { return xform(opBGP) ; }
+    public Op transform(OpQuadPattern opQuadPattern)                { return xform(opQuadPattern) ; }
     public Op transform(OpTriple opTriple)                          { return xform(opTriple) ; }
     public Op transform(OpPath opPath)                              { return xform(opPath) ; }
 
     public Op transform(OpProcedure opProc, Op subOp)               { return xform(opProc, subOp) ; }
     public Op transform(OpPropFunc opPropFunc, Op subOp)            { return xform(opPropFunc, subOp) ; }
     public Op transform(OpDatasetNames opDatasetNames)              { return xform(opDatasetNames) ; }
-    public Op transform(OpQuadPattern opQuadPattern)                { return xform(opQuadPattern) ; }
 
     public Op transform(OpFilter opFilter, Op subOp)                { return xform(opFilter, subOp) ; }
     public Op transform(OpGraph opGraph, Op subOp)                  { return xform(opGraph, subOp) ; }

@@ -2,8 +2,9 @@ package dev;
 
 public class DevARQ
 {
-    // No org.json.
-    // Rename "Renamer" as "NodeConversion" implements Transform<Node, Node>
+    // De org.json.
+    
+    // mvn tests (4042) and Eclipse tests (3270) differ in size. 
     
     // Library: Var->Var, bNode->var, Converters
     
@@ -11,6 +12,9 @@ public class DevARQ
     // Canonicalise literals
     // rdf:PlainLiteral
     // URI->URI rewrite
+    
+    // Expr.copySubstitute : not used?
+    // Replace with a ExprTransform?
 
     // ---- SPARQL Update
 

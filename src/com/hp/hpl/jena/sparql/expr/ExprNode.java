@@ -9,6 +9,7 @@ import java.util.Collection ;
 import java.util.Set ;
 
 import com.hp.hpl.jena.sparql.algebra.Op ;
+import com.hp.hpl.jena.sparql.core.NodeTransform ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp ;
@@ -70,6 +71,9 @@ public abstract class ExprNode implements Expr
     
     public abstract Expr copySubstitute(Binding binding, boolean foldConstants) ;
     
+    public abstract Expr applyNodeTransform(NodeTransform transform) ;
+
+        
     // ---- Default implementations
     public boolean isVariable()        { return false ; }
     public String getVarName()         { return null ; } //throw new ExprException("Expr.getVarName called on non-variable") ; }
