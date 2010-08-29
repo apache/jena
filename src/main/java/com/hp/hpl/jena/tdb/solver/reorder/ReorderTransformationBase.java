@@ -7,7 +7,7 @@
 package com.hp.hpl.jena.tdb.solver.reorder;
 
 import static com.hp.hpl.jena.tdb.TDB.logExec;
-import static com.hp.hpl.jena.tdb.lib.Lib.printAbbrev;
+import static com.hp.hpl.jena.tdb.lib.Lib2.printAbbrev;
 import static org.openjena.atlas.iterator.Iter.map ;
 import static org.openjena.atlas.iterator.Iter.toList ;
 

@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
 import org.openjena.atlas.iterator.Iter ;
 
 
-public class Lib
+public class Lib2
 {
     private static Pattern p = Pattern.compile("http:[^ \n]*[#/]([^/ \n]*)") ;
     /** Abbreviate, crudely, URI in strings, leaving only their last component. */ 

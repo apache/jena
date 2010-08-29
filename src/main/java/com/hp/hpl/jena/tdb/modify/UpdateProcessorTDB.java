@@ -8,38 +8,21 @@ package com.hp.hpl.jena.tdb.modify;
 
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.modify.UpdateProcessorFactory ;
+import com.hp.hpl.jena.sparql.modify.UpdateProcessorMain ;
 import com.hp.hpl.jena.sparql.modify.UpdateProcessorRegistry ;
-import com.hp.hpl.jena.sparql.modify.UpdateProcessorVisitor ;
-import com.hp.hpl.jena.sparql.modify.UpdateVisitor ;
-import com.hp.hpl.jena.sparql.modify.op.Update ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.update.GraphStore ;
 import com.hp.hpl.jena.update.UpdateProcessor ;
 import com.hp.hpl.jena.update.UpdateRequest ;
 
-public class UpdateProcessorTDB implements UpdateProcessor
+public class UpdateProcessorTDB extends UpdateProcessorMain
 {
-    DatasetGraphTDB graphStore ;
-    UpdateRequest request ;
-    Binding inputBinding ;
-    
     public UpdateProcessorTDB(DatasetGraphTDB graphStore, UpdateRequest request, Binding inputBinding)
-    {
-        // UpdateProcessor should be extendable.
-        this.graphStore = graphStore ;
-        this.request = request ;
-        this.inputBinding = inputBinding ;
-    }
+    { super(graphStore, request, inputBinding) ; }
     
-    //@Override
+    @Override
     public void execute()
-    {
-        graphStore.startRequest() ;
-        UpdateVisitor v = new UpdateProcessorVisitor(graphStore, inputBinding) ;
-        for ( Update update : request.getUpdates() )
-            update.visit(v) ;
-        graphStore.finishRequest() ;
-    }
+    { super.execute() ; }
 
     // ---- Factory
     public static UpdateProcessorFactory getFactory() { 

@@ -7,7 +7,7 @@
 
 package com.hp.hpl.jena.tdb.solver;
 
-import static com.hp.hpl.jena.tdb.lib.Lib.printAbbrev ;
+import static com.hp.hpl.jena.tdb.lib.Lib2.printAbbrev ;
 
 import java.util.Collection ;
 import java.util.HashSet ;

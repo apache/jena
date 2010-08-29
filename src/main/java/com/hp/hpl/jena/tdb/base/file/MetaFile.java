@@ -18,13 +18,13 @@ import java.util.SortedSet ;
 import java.util.TreeSet ;
 
 import org.openjena.atlas.lib.Closeable ;
+import org.openjena.atlas.lib.Lib ;
 import org.openjena.atlas.lib.PropertiesSorted ;
 import org.openjena.atlas.lib.PropertyUtils ;
 import org.openjena.atlas.lib.Sync ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
-import com.hp.hpl.jena.sparql.util.Utils ;
 import com.hp.hpl.jena.tdb.TDBException ;
 import com.hp.hpl.jena.tdb.sys.Names ;
 
@@ -153,7 +153,7 @@ public class MetaFile implements Sync, Closeable
     /** Test whether a property has a value.  Null tests equal to not present. */
     public boolean propertyEquals(String key, String value)
     {
-        return Utils.equal(getProperty(key), value) ;
+        return Lib.equal(getProperty(key), value) ;
     }
 
     /** Set property if not already set. */
@@ -194,7 +194,7 @@ public class MetaFile implements Sync, Closeable
     {
         String value = getProperty(key) ;
         
-        if ( ! Utils.equal(value, value) )
+        if ( ! Lib.equal(value, value) )
             inconsistent(key, value, expected) ;
     }
 
