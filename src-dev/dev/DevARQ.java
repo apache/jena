@@ -4,7 +4,8 @@ public class DevARQ
 {
     // No org.json.
     // Rename "Renamer" as "NodeConversion" implements Transform<Node, Node>
-
+    // Library: Var->Var, bNode->var, Converters
+    
     // Converters
     // Canonicalise literals
     // rdf:PlainLiteral
@@ -12,8 +13,7 @@ public class DevARQ
     
     
     // ---- SPARQL Update
-    // BNode to variable in DW
-    // DW{1 quad} => speial case
+    // WITH and USING/USING NAMED
     // Error handling and exception catching.  UpdateParseException : LanguageParseException 
     // Naming.
     
