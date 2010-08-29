@@ -4,15 +4,16 @@ public class DevARQ
 {
     // No org.json.
     // Rename "Renamer" as "NodeConversion" implements Transform<Node, Node>
+    
     // Library: Var->Var, bNode->var, Converters
     
     // Converters
     // Canonicalise literals
     // rdf:PlainLiteral
     // URI->URI rewrite
-    
-    
+
     // ---- SPARQL Update
+
     // WITH and USING/USING NAMED
     // Error handling and exception catching.  UpdateParseException : LanguageParseException 
     // Naming.
@@ -29,10 +30,11 @@ public class DevARQ
     // Label checking: can't use same bNode label in template and pattern
     // for DELETE/INSERT
     
-    // DELETE WHERE : turn bNodes into alloc variables.  See UpdateEngine.convertBNodesToVariables 
-    
     // ---- SPARQL Query
     // Check for out-of-scope group vars.
+    // ElementSubQuery takes a Query argument so called after all sub-parsing 
+    // -> check then or check via visitor later.
+    // :: visitor - other checks can be done.
     
     // Property path test cases
     // Aggregates to return iterators.
