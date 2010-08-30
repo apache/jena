@@ -46,6 +46,24 @@ public class JsonArray extends JsonValue implements List<JsonValue>
     }
 
     //@Override
+    public boolean add(String e)
+    {
+        return array.add(new JsonString(e)) ;
+    }
+
+    //@Override
+    public boolean add(long val)
+    {
+        return array.add(JsonNumber.value(val)) ;
+    }
+
+    //@Override
+    public boolean add(boolean b)
+    {
+        return array.add(new JsonBoolean(b)) ;
+    }
+
+    //@Override
     public void add(int index, JsonValue element)
     { array.add(index, element) ; } 
 

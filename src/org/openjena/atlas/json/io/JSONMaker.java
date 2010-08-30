@@ -84,7 +84,7 @@ public class JSONMaker implements JSONHandler
     //@Override
     public void keyPair()
     {
-        keys.push(value.getString().value()) ;
+        keys.push(value.getAsString().value()) ;
     }
 
     //@Override

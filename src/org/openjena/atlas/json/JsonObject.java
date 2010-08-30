@@ -43,20 +43,30 @@ public class JsonObject extends JsonValue //implements Map<String, JsonValue>
     { map.clear() ; }
     
     //@Override
-    public boolean containsKey(Object key)
+    public boolean hasKey(Object key)
     {
         return map.containsKey(key) ;
     }
+    
+//    //@Override
+//    public boolean containsValue(Object value)
+//    {
+//        return map.containsValue(value) ;
+//    }
+    
     //@Override
-    public boolean containsValue(Object value)
+    public Set<String> keys()
     {
-        return map.containsValue(value) ;
+        return map.keySet() ;
     }
+
+    
     //@Override
     public Set<Entry<String, JsonValue>> entrySet()
     {
         return map.entrySet() ;
     }
+    
     //@Override
     public JsonValue get(String key)
     {
@@ -77,6 +87,27 @@ public class JsonObject extends JsonValue //implements Map<String, JsonValue>
     {
         return map.put(key, value) ;
     }
+    
+    //@Override
+    public JsonValue put(String key, String value)
+    {
+        return map.put(key, new JsonString(value)) ;
+    }
+
+    //@Override
+    public JsonValue put(String key, long value)
+    {
+        return map.put(key, JsonNumber.value(value)) ;
+    }
+
+    //@Override
+    public JsonValue put(String key, boolean b)
+    {
+        return map.put(key, new JsonBoolean(b)) ;
+    }
+
+    
+    
     //@Override
     public void putAll(Map< ? extends String, ? extends JsonValue> m)
     {

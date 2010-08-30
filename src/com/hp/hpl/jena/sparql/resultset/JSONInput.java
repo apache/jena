@@ -1,19 +1,37 @@
 /*
  * (c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
 package com.hp.hpl.jena.sparql.resultset;
 
-import static com.hp.hpl.jena.sparql.resultset.JSONResults.* ;
+import static com.hp.hpl.jena.sparql.resultset.JSONResults.dfBNode ;
+import static com.hp.hpl.jena.sparql.resultset.JSONResults.dfBindings ;
+import static com.hp.hpl.jena.sparql.resultset.JSONResults.dfBoolean ;
+import static com.hp.hpl.jena.sparql.resultset.JSONResults.dfDatatype ;
+import static com.hp.hpl.jena.sparql.resultset.JSONResults.dfHead ;
+import static com.hp.hpl.jena.sparql.resultset.JSONResults.dfLang ;
+import static com.hp.hpl.jena.sparql.resultset.JSONResults.dfLink ;
+import static com.hp.hpl.jena.sparql.resultset.JSONResults.dfLiteral ;
+import static com.hp.hpl.jena.sparql.resultset.JSONResults.dfResults ;
+import static com.hp.hpl.jena.sparql.resultset.JSONResults.dfType ;
+import static com.hp.hpl.jena.sparql.resultset.JSONResults.dfTypedLiteral ;
+import static com.hp.hpl.jena.sparql.resultset.JSONResults.dfURI ;
+import static com.hp.hpl.jena.sparql.resultset.JSONResults.dfValue ;
+import static com.hp.hpl.jena.sparql.resultset.JSONResults.dfVars ;
 
-import java.io.IOException ;
 import java.io.InputStream ;
 import java.util.ArrayList ;
-import java.util.Iterator ;
 import java.util.List ;
 import java.util.NoSuchElementException ;
+
+import org.openjena.atlas.json.JSON ;
+import org.openjena.atlas.json.JsonArray ;
+import org.openjena.atlas.json.JsonException ;
+import org.openjena.atlas.json.JsonObject ;
+import org.openjena.atlas.json.JsonValue ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.ARQ ;
@@ -25,18 +43,14 @@ import com.hp.hpl.jena.sparql.core.ResultBinding ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap ;
-import com.hp.hpl.jena.sparql.lib.org.json.JSONArray ;
-import com.hp.hpl.jena.sparql.lib.org.json.JSONException ;
-import com.hp.hpl.jena.sparql.lib.org.json.JSONObject ;
 import com.hp.hpl.jena.sparql.util.LabelToNodeMap ;
 import com.hp.hpl.jena.sparql.util.NodeFactory ;
 import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
-import com.hp.hpl.jena.util.FileUtils ;
 
 /**
  * Code that reads a JSON Result Set and builds the ARQ structure for the same.
  * Originally from Elias Torres &lt;<a href="mailto:elias@torrez.us">elias@torrez.us</a>&gt;
- * 
+ * Updated to not use org.json code : Andy Seaborne (2010)
  */
 public class JSONInput extends SPARQLResult
 {
@@ -49,7 +63,7 @@ public class JSONInput extends SPARQLResult
     {
         if ( model == null )
             model = GraphFactory.makeJenaDefaultModel() ;
-        JSONObject obj = toJSON(in) ;
+        JsonObject obj = toJSON(in) ;
         JSONResultSet r = new JSONResultSet(obj, model) ;
         if ( r.isResultSet() )
             set(r) ;
@@ -86,15 +100,14 @@ public class JSONInput extends SPARQLResult
         return new JSONInput(in, model) ;
     }
 
-    private static JSONObject toJSON(InputStream in)
+    private static JsonObject toJSON(InputStream in)
     {
         try { 
-            String s = FileUtils.readWholeFileAsUTF8(in);
-            JSONObject json = new JSONObject(s);
+            JsonObject json = JSON.parse(in) ;
             return json;
         }
-        catch (JSONException e) { throw new ResultSetException(e.getMessage(), e); }
-        catch (IOException e) { throw new ResultSetException(e.getMessage(), e); }
+        catch (JsonException e)
+        { throw new ResultSetException(e.getMessage(), e); }
     }
     
     public static class JSONResultSet implements ResultSet
@@ -121,14 +134,13 @@ public class JSONInput extends SPARQLResult
         // boolean
         boolean askResult = false;
 
-        // JSON
-        JSONObject json = null;
+        JsonObject json = null;
         
-        JSONResultSet(JSONObject json) {
+        JSONResultSet(JsonObject json) {
             this(json, null) ;
         }
 
-        JSONResultSet(JSONObject json, Model model) {
+        JSONResultSet(JsonObject json, Model model) {
             this.json = json;
             this.model = model;
             init();
@@ -151,12 +163,12 @@ public class JSONInput extends SPARQLResult
 
             // Next should be a <result>, <boolean> element or </results>
             // Need to decide what sort of thing we are reading.
-            if (json.has(dfResults)) {
+            if (json.hasKey(dfResults)) {
                 isResultSet = true;
                 processResults();
             }
 
-            if (json.has(dfBoolean)) {
+            if (json.hasKey(dfBoolean)) {
                 isResultSet = false;
                 processBoolean();
             }
@@ -216,35 +228,34 @@ public class JSONInput extends SPARQLResult
 
         // -------- Boolean stuff
 
-        private void processBoolean() {
+        private void processBoolean()
+        {
             try {
-                askResult = json.getBoolean(dfBoolean);
-            } catch (JSONException e) {
-                throw new ResultSetException("Unknown boolean value.");
+                askResult = json.get(dfBoolean).getAsBoolean().value();
+            } catch (JsonException e) {
+                throw new ResultSetException(e.getMessage(), e) ;
             }
         }
 
         private void processHead() {
             try {
                 // We don't have to a head because we could have boolean results
-                if (!json.has(dfHead))
+                if (!json.hasKey(dfHead))
                     return;
 
                 // Get the "head" object
-                JSONObject head = json.getJSONObject(dfHead);
+                JsonObject head = json.get(dfHead).getAsObject();
 
-                if (head.has(dfVars)) {
-                    JSONArray vars = head.getJSONArray(dfVars);
-
-                    for (int i = 0; i < vars.length(); i++) {
-                        variables.add(vars.getString(i));
-                    }
+                if (head.hasKey(dfVars)) {
+                    JsonArray vars = head.get(dfVars).getAsArray();
+                    for (int i = 0; i < vars.size(); i++)
+                        variables.add(vars.get(i).getAsString().value()) ;
                 }
 
-                if (head.has(dfLink)) {
+                if (head.hasKey(dfLink)) {
                     // We're being lazy for now.
                 }
-            } catch (JSONException e) {
+            } catch (JsonException e) {
                 throw new ResultSetException(e.getMessage(), e) ;
             }
         }
@@ -252,45 +263,46 @@ public class JSONInput extends SPARQLResult
         // -------- Result Set
 
         private void processResults() {
-//            try {
-//                JSONObject results = json.getJSONObject(dfResults) ;
-//                ordered = results.getBoolean(dfOrdered) ;
+            try {
+                JsonObject results = json.get(dfResults).getAsObject() ;
+//                ordered = results.getAsBoolean(dfOrdered) ;
 //                distinct = results.getBoolean(dfDistinct) ;
-//            } catch (JSONException e) {
-//                throw new ResultSetException(e.getMessage(), e) ;
-//            }
+            } catch (JsonException e) {
+                throw new ResultSetException(e.getMessage(), e) ;
+            }
         }
 
         private Binding getOneSolution() {        
             try {
                                 
-                JSONObject jresults = json.getJSONObject(dfResults) ;
-                JSONArray jbindings = jresults.getJSONArray(dfBindings) ;
+                JsonObject jresults = json.get(dfResults).getAsObject() ;
+                JsonArray jbindings = jresults.get(dfBindings).getAsArray() ;
                 
-                if (row < 0 || row >= jbindings.length())
+                if (row < 0 || row >= jbindings.size())
                     return null;
                 
                 Binding binding = new BindingMap() ;
-                JSONObject jsolution = jbindings.getJSONObject(row) ;
+                JsonObject jsolution = jbindings.get(row).getAsObject() ;
                 
-                for ( Iterator<String> it = jsolution.keys(); it.hasNext() ; ) 
+                for ( String varName : jsolution.keys() )  
                 {
-                    String varName = it.next() ;
-                    JSONObject jbinding = jsolution.getJSONObject(varName) ;
+                    JsonObject jbinding = jsolution.get(varName).getAsObject() ;
                     
-                    if ( !jbinding.has(dfType) )
+                    if ( !jbinding.hasKey(dfType) )
                         throw new ResultSetException("Binding is missing 'type'.") ;
                     
-                    if ( jbinding.getString(dfType).equals(dfURI) )
+                    String type = jbinding.get(dfType).getAsString().getAsString().value() ;
+                    
+                    if ( type.equals(dfURI) )
                     {
-                         String uri = jbinding.getString(dfValue) ;
+                         String uri = jbinding.get(dfValue).getAsString().value() ;
                          Node node = Node.createURI(uri) ;
                          binding.add(Var.alloc(varName), node) ;   
                     }
                     
-                    if ( jbinding.getString(dfType).equals(dfBNode) )
+                    if ( type.equals(dfBNode) )
                     {
-                        String label = jbinding.getString(dfValue) ;
+                        String label = jbinding.get(dfValue).getAsString().value() ;
                         Node node = null ;
                         if ( inputGraphLabels )
                             node = Node.createAnon(new AnonId(label)) ;
@@ -299,12 +311,19 @@ public class JSONInput extends SPARQLResult
                         binding.add(Var.alloc(varName), node) ;
                     }
                     
-                    if ( jbinding.getString(dfType).equals(dfLiteral) ||
-                            jbinding.getString(dfType).equals(dfTypedLiteral) )
+                    if ( type.equals(dfLiteral) || type.equals(dfTypedLiteral) )
                     {
-                        String lex = jbinding.getString(dfValue) ;
-                        String lang = jbinding.optString(dfLang) ;
-                        String dtype = jbinding.optString(dfDatatype) ;
+                        String lex = jbinding.get(dfValue).getAsString().value() ;
+                        String lang = null ;
+                        String dtype = null ;
+                        
+                        JsonValue x1 = jbinding.get(dfLang) ;
+                        if ( x1 != null )
+                            lang = jbinding.get(dfLang).getAsString().value() ;
+                        
+                        JsonValue x2 = jbinding.get(dfDatatype) ;
+                        if ( x2 != null )
+                            dtype = jbinding.get(dfDatatype).getAsString().value() ;
                         Node n = NodeFactory.createLiteralNode(lex, lang, dtype) ;
                         binding.add(Var.alloc(varName), n) ;
                     }
@@ -312,7 +331,7 @@ public class JSONInput extends SPARQLResult
                 
                 return binding ;
                 
-            } catch( JSONException e) {
+            } catch( JsonException e) {
                 throw new ResultSetException(e.getMessage(), e) ;
             }
         }
@@ -322,6 +341,7 @@ public class JSONInput extends SPARQLResult
 
 /*
  * (c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

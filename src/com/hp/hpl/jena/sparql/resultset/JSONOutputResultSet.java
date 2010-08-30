@@ -14,6 +14,7 @@ import java.util.Iterator ;
 import java.util.Map ;
 
 import org.openjena.atlas.io.IndentedWriter ;
+import org.openjena.atlas.json.io.JSWriter ;
 
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.query.QuerySolution ;
@@ -21,7 +22,6 @@ import com.hp.hpl.jena.query.ResultSet ;
 import com.hp.hpl.jena.rdf.model.Literal ;
 import com.hp.hpl.jena.rdf.model.RDFNode ;
 import com.hp.hpl.jena.rdf.model.Resource ;
-import com.hp.hpl.jena.sparql.lib.org.json.JSONObject ;
 import org.openjena.atlas.logging.Log ;
 /**
  * A JSON writer for SPARQL Result Sets
@@ -35,6 +35,7 @@ import org.openjena.atlas.logging.Log ;
 
 public class JSONOutputResultSet implements ResultSetProcessor
 {
+    // XXX JSONOutputResultSet - Could improve the streaming - minor. 
     static boolean multiLineValues = false ;
     static boolean multiLineVarNames = false ;
     
@@ -234,7 +235,7 @@ public class JSONOutputResultSet implements ResultSetProcessor
     
     private static String quote(String string)
     {
-        return JSONObject.quote(string) ;
+        return JSWriter.outputQuotedString(string) ;
     }
     
     // Quote a name (known to be JSON-safe)

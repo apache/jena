@@ -16,23 +16,23 @@ public abstract class JsonValue implements Printable
     // Called a "Value" in the JSON spec 
     // Called Element in gson.
     
-    public boolean isObject()       { return false ; }
-    public JsonObject getAsObject() { return null ; }
+    public boolean isObject()           { return false ; }
+    public JsonObject getAsObject()     { throw new JsonException("Not a JSON object") ; }
     
-    public boolean isArray()        { return this instanceof JsonArray ; }
-    public JsonArray getAsArray()   { return null ; }
+    public boolean isArray()            { return this instanceof JsonArray ; }
+    public JsonArray getAsArray()       { throw new JsonException("Not a JSON array") ; }
     
-    public boolean isPrimitive()    { return isString() || isNumber() || isBoolean() || isNull() ; }
-    public boolean isNull()         { return false ; }
+    public boolean isPrimitive()        { return isString() || isNumber() || isBoolean() || isNull() ; }
+    public boolean isNull()             { throw new JsonException("Not a JSON Null") ; }
 
-    public boolean isNumber()       { return false ; }
-    public JsonNumber getNumber()   { return null ; }
+    public boolean isNumber()           { return false ; }
+    public JsonNumber getNumber()       { throw new JsonException("Not a JSON number") ; }
     
-    public boolean isString()       { return false ; }
-    public JsonString getString()   { return null ; }
+    public boolean isString()           { return false ; }
+    public JsonString getAsString()     { throw new JsonException("Not a JSON string") ; }
     
-    public boolean isBoolean()      { return false ; }
-    public JsonBoolean getBoolean() { return null ; }
+    public boolean isBoolean()          { return false ; }
+    public JsonBoolean getAsBoolean()   { throw new JsonException("Not a JSON boolean") ; }
     
     @Override public abstract int hashCode() ;
     @Override public abstract boolean equals(Object other) ;

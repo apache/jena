@@ -664,6 +664,7 @@ public class TokenizerJSON implements Tokenizer
             case 'r':   return CR ;
             case 't':   return '\t' ;
             case '"':   return '"' ;
+            case '/':   return '/' ;    // JSON requires / escapes.
             case '\'':  return '\'' ;
             case '\\':  return '\\' ;
             case 'u':   return readUnicode4Escape();

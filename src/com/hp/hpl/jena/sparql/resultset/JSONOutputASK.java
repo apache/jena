@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -12,44 +13,47 @@ import static com.hp.hpl.jena.sparql.resultset.JSONResults.dfHead ;
 
 import java.io.OutputStream ;
 
-import com.hp.hpl.jena.sparql.lib.org.json.JSONObject ;
-import com.hp.hpl.jena.sparql.lib.org.json.JSONStringer ;
+import org.openjena.atlas.io.IO ;
+import org.openjena.atlas.json.io.JSWriter ;
 
 /** JSON Output (ASK format)
  * 
  * @author Elias Torres (<a href="mailto:elias@torrez.us">elias@torrez.us</a>)
+ * Rewritten to remove use of org.json: Andy Seaborne (2010)
  */
 
 
 public class JSONOutputASK
 {
-    OutputStream outStream ;
+    private OutputStream outStream ;
     
-    JSONStringer json;
-
     public JSONOutputASK(OutputStream outStream) {
         this.outStream = outStream;
-        this.json = new JSONStringer();
+        
     }
-    
+
     public void exec(boolean result)
     {
-        try {
-            json.object() ;
-            json.key(dfHead).value(new JSONObject()) ;
-            json.key(dfBoolean).value(result);
-            json.endObject() ;
-            outStream.write(json.toString().getBytes());
-            outStream.write("\n".getBytes()) ;
-            outStream.flush() ;
-        } catch(Exception e) {
-            throw new ResultSetException(e.getMessage(), e);
-        }
+        JSWriter out = new JSWriter(outStream) ;
+        
+        out.startOutput() ;
+        
+        out.startObject() ;
+        out.key(dfHead) ;
+        out.startObject() ;
+        out.finishObject() ;
+        out.pair(dfBoolean, result) ;
+        out.finishObject() ;
+        
+        out.finishOutput() ;
+
+        IO.flush(outStream) ;
     }
 }
 
 /*
  * (c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

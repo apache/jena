@@ -12,6 +12,8 @@ import com.hp.hpl.jena.query.ResultSet ;
 
 public class JSONOutput extends OutputBase
 {
+    public JSONOutput() {}
+    
     public void format(OutputStream out, ResultSet resultSet)
     {
         // Use direct string output - more control
@@ -19,17 +21,6 @@ public class JSONOutput extends OutputBase
         JSONOutputResultSet jsonOut =  new JSONOutputResultSet(out) ;
         ResultSetApply a = new ResultSetApply(resultSet, jsonOut) ;
         a.apply() ;
-        
-//        // Do it by building an in-memory JSON object structure
-//        JSONObject json = JSONObjectResult.resultSet(resultSet) ;
-//        try {
-//            PrintWriter w = FileUtils.asPrintWriterUTF8(out) ;
-//            String s = json.toString(2) ;
-//            w.print(s) ;
-//            if ( ! s.endsWith("\n") )
-//                w.println() ;
-//            w.flush() ;
-//        } catch (Exception ex) { throw new ResultSetException(ex.getMessage(), ex) ; } 
     }
 
     public void format(OutputStream out, boolean booleanResult)
@@ -37,8 +28,6 @@ public class JSONOutput extends OutputBase
         JSONOutputASK jsonOut = new JSONOutputASK(out) ;
         jsonOut.exec(booleanResult) ;
     }
-    
-
 }
 
 /*

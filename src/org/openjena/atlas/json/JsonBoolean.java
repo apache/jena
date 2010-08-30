@@ -16,7 +16,7 @@ public class JsonBoolean extends JsonPrimitive
     @Override
     public boolean isBoolean()      { return true ; }
     @Override
-    public JsonBoolean getBoolean() { return this ; }
+    public JsonBoolean getAsBoolean() { return this ; }
 
     public boolean value()          { return bool ; }
     

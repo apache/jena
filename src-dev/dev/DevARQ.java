@@ -84,6 +84,9 @@ public class DevARQ
     // NT & ASCII
     // StringUTF8
     // RiotLoader
+    
+    // JSON - systemative convenience operations on numbers
+    // JSON.parse - check that it uses a Peekreader over a RIOT parser. 
 
     // Filename in log messages
     // Or log at start.

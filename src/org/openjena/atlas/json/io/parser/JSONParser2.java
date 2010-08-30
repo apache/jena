@@ -1,11 +1,13 @@
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) 2010 Epimorohics Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
 package org.openjena.atlas.json.io.parser;
 
+import java.io.InputStream ;
 import java.io.Reader ;
 
 import org.openjena.atlas.io.PeekReader ;
@@ -16,6 +18,18 @@ import org.openjena.atlas.json.io.parserjavacc.JSONPrinter ;
 
 public class JSONParser2
 {    
+    /** Parse from an input stream to get a Json object */ 
+    public static void parse(InputStream input)
+    { parse(input, new JSONPrinter()) ; }
+
+    /** Parse to get a Json object */ 
+    public static void parse(InputStream input, JSONHandler handler)
+    {
+        PeekReader r = PeekReader.makeUTF8(input) ;
+        TokenizerJSON t = new TokenizerJSON(r) ;
+        parse(t, handler) ;
+    }
+
     /** Parse from a reader to get a Json object */ 
     public static void parse(Reader reader)
     { parse(reader, new JSONPrinter()) ; }
@@ -25,6 +39,11 @@ public class JSONParser2
     {
         PeekReader r = PeekReader.make(reader) ;
         TokenizerJSON t = new TokenizerJSON(r) ;
+        parse(t, handler) ;
+    }
+    
+    private static void parse(TokenizerJSON t, JSONHandler handler)
+    {
         JSONPP p = new JSONPP(t , handler) ;
         p.parse() ;
     }
@@ -33,11 +52,28 @@ public class JSONParser2
     public static void parseAny(Reader reader)
     { parseAny(reader, new JSONPrinter()) ; }
 
-    /** Parse to get a Json object */ 
+    /** Parse to get a Json primitive */ 
     public static void parseAny(Reader reader, JSONHandler handler)
     {
         PeekReader r = PeekReader.make(reader) ;
         TokenizerJSON t = new TokenizerJSON(r) ;
+        parseAny(t, handler) ;
+    }
+        
+    /** Parse from a reader to get an Json value */ 
+    public static void parseAny(InputStream input)
+    { parseAny(input, new JSONPrinter()) ; }
+
+    /** Parse to get a Json primitive */ 
+    public static void parseAny(InputStream input, JSONHandler handler)
+    {
+        PeekReader r = PeekReader.makeUTF8(input) ;
+        TokenizerJSON t = new TokenizerJSON(r) ;
+        parseAny(t, handler) ;
+    }
+        
+    private static void parseAny(TokenizerJSON t, JSONHandler handler)
+    {
         JSONPP p = new JSONPP(t , handler) ;
         p.parseAny() ;
     }
@@ -46,6 +82,7 @@ public class JSONParser2
 
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) 2010 Epimorohics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

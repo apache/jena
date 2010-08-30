@@ -4,7 +4,8 @@ ChangeLog for ARQ
 ==== ARQ 2.8.7
 
 + Default query language is now SPARQL 1.1
-+ Bug fix: compound expressions involving aggregates in SELECT clause 
++ Bug fix: compound expressions involving aggregates in SELECT clause
++ remove use of code from org.json to clarify legal position. 
 
 ==== ARQ 2.8.6
 

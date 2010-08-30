@@ -8,6 +8,7 @@ package org.openjena.atlas.json;
 
 import java.io.FileInputStream ;
 import java.io.FileNotFoundException ;
+import java.io.InputStream ;
 import java.io.OutputStream ;
 import java.io.Reader ;
 import java.io.StringReader ;
@@ -19,31 +20,44 @@ import org.openjena.atlas.json.io.JsonWriter ;
 import org.openjena.atlas.json.io.parser.JSONParser2 ;
 import org.openjena.atlas.json.io.parserjavacc.JSONParserJavaCC ;
 
-import com.hp.hpl.jena.util.FileUtils ;
-
 /** A class that is the front door to the JSON subsystem */
 public class JSON
 {
     /** Parse a complete JSON object */ 
-    public static JsonValue parse(String string)
+    public static JsonObject parse(InputStream input)
     {
-        return parse(new StringReader(string)) ;
+        JSONMaker maker = new JSONMaker(); 
+        _parse(input, maker) ;
+        return (JsonObject)maker.jsonValue() ;
     }
     
+    /** Parse a complete JSON object */ 
+    public static JsonObject parse(String string)
+    {
+        return _parse(new StringReader(string)) ;
+    }
+
+    /** Parse any JSON value, not just an object, from an input stream */ 
+    public static JsonValue parseAny(InputStream input)
+    {
+        JSONMaker maker = new JSONMaker(); 
+        _parseAny(input, maker) ;
+        return maker.jsonValue() ;
+    }
+
     /** Parse any JSON value, not just an object, from a file */ 
     public static JsonValue parseAny(String string)
     {
-        return parseAny(new StringReader(string)) ;
+        return _parseAny(new StringReader(string)) ;
     }
 
     /** Read a JSON object from a file */ 
-    public static JsonValue read(String filename)
+    public static JsonObject read(String filename)
     {
         try
         {
-            Reader f = FileUtils.asUTF8(new FileInputStream(filename)) ;
-            PeekReader r = PeekReader.make(f) ;
-            return parse(r) ;
+            PeekReader r = PeekReader.makeUTF8(new FileInputStream(filename)) ;
+            return _parse(r) ;
         } catch (FileNotFoundException ex)
         {
             throw new RuntimeException("File not found: "+filename) ;
@@ -55,29 +69,31 @@ public class JSON
     {
         try
         {
-            Reader f = FileUtils.asUTF8(new FileInputStream(filename)) ;
-            PeekReader r = PeekReader.make(f) ;
-            return parseAny(r) ;
+            PeekReader r = PeekReader.makeUTF8(new FileInputStream(filename)) ;
+            return _parseAny(r) ;
         } catch (FileNotFoundException ex)
         {
             throw new RuntimeException("File not found: "+filename) ;
         }
     }
+    
+    // Hide the reader versions - not encouraged due to charset problems. 
 
-    private static JsonValue parse(Reader r)
+    private static JsonObject _parse(Reader r)
     {
         JSONMaker maker = new JSONMaker(); 
         _parse(r, maker) ;
-        return maker.jsonValue() ;
+        return (JsonObject)maker.jsonValue() ;
     }
     
-    private static JsonValue parseAny(Reader r)
+    private static JsonValue _parseAny(Reader r)
     {
         JSONMaker maker = new JSONMaker(); 
         _parseAny(r, maker) ;
         return maker.jsonValue() ;
     }
     
+    // PARSER CHOICES
     // Switch on parser choice.
     private static final boolean useJavaCC = false ; 
 
@@ -96,7 +112,23 @@ public class JSON
         else
             JSONParser2.parseAny(r, maker) ;
     }
-    
+
+    private static void _parse(InputStream r, JSONMaker maker)
+    {
+        if ( useJavaCC )
+            JSONParserJavaCC.parse(r, maker) ;
+        else
+            JSONParser2.parse(r, maker) ;
+    }
+
+    private static void _parseAny(InputStream r, JSONMaker maker)
+    {
+        if ( useJavaCC )
+            JSONParserJavaCC.parseAny(r, maker) ;
+        else
+            JSONParser2.parseAny(r, maker) ;
+    }
+
     /** Write out a JSON value - pass a JSON Object to get legal exchangeable JSON */
     public static void write(OutputStream output, JsonValue jValue)
     {

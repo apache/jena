@@ -6,6 +6,7 @@
 
 package org.openjena.atlas.json.io.parserjavacc;
 
+import java.io.InputStream ;
 import java.io.Reader ;
 
 import org.openjena.atlas.json.JsonParseException ;
@@ -18,14 +19,22 @@ import com.hp.hpl.jena.n3.turtle.parser.TokenMgrError ;
 
 public class JSONParserJavaCC
 {    
-    /** Parse from a reader to get a Json object */ 
-    public static void parse(Reader reader)
-    { parse(reader, new JSONPrinter()) ; }
-    
+    /** Parse to get a Json object */ 
+    public static void parse(InputStream input, JSONHandler handler)
+    {
+        JSON_Parser p = new JSON_Parser(input) ;
+        parse(p, handler) ;
+    }
+
     /** Parse to get a Json object */ 
     public static void parse(Reader reader, JSONHandler handler)
     {
         JSON_Parser p = new JSON_Parser(reader) ;
+        parse(p, handler) ;
+    }
+    
+    private static void parse(JSON_Parser p, JSONHandler handler)
+    {
         p.setHandler(handler) ;
         try
         {
@@ -46,14 +55,22 @@ public class JSONParserJavaCC
         }
     }
 
-    /** Parse from a reader to get an Json value */ 
-    public static void parseAny(Reader reader)
-    { parseAny(reader, new JSONPrinter()) ; }
+    /** Parse to get a Json object */ 
+    public static void parseAny(InputStream input, JSONHandler handler)
+    { 
+        JSON_Parser p = new JSON_Parser(input) ;
+        parseAny(p, handler) ;
+    }
 
     /** Parse to get a Json object */ 
     public static void parseAny(Reader reader, JSONHandler handler)
     {
         JSON_Parser p = new JSON_Parser(reader) ;
+        parseAny(p, handler) ;
+    }
+        
+    private static void parseAny(JSON_Parser p, JSONHandler handler)
+    {
         p.setHandler(handler) ;
         try
         {

@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -11,41 +12,44 @@ import static com.hp.hpl.jena.sparql.resultset.JSONResults.* ;
 import java.util.HashMap ;
 import java.util.Map ;
 
+import org.openjena.atlas.json.JsonArray ;
+import org.openjena.atlas.json.JsonException ;
+import org.openjena.atlas.json.JsonNull ;
+import org.openjena.atlas.json.JsonObject ;
+import org.openjena.atlas.logging.Log ;
+
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.query.QuerySolution ;
 import com.hp.hpl.jena.query.ResultSet ;
 import com.hp.hpl.jena.rdf.model.Literal ;
 import com.hp.hpl.jena.rdf.model.RDFNode ;
 import com.hp.hpl.jena.rdf.model.Resource ;
-import com.hp.hpl.jena.sparql.lib.org.json.JSONArray ;
-import com.hp.hpl.jena.sparql.lib.org.json.JSONException ;
-import com.hp.hpl.jena.sparql.lib.org.json.JSONObject ;
-import org.openjena.atlas.logging.Log ;
 
 /**
  * JSON Output as a JSON object
  * (Converted from a JSONStringer output writer by Elias Torres (<a href="mailto:elias@torrez.us">elias@torrez.us</a>)
-
+ * Upgraded to 
  * @author Andy Seaborne 
  */
 
 public class JSONObjectResult implements ResultSetProcessor
 {
+    // UNUSED
     static boolean outputExplicitUnbound = false;
 
     boolean outputGraphBNodeLabels = ARQ.isTrue(ARQ.outputGraphBNodeLabels);
     int bNodeCounter = 0;
     Map<Resource, String> bNodeMap = new HashMap<Resource, String>();
     
-    JSONObject json ;
-    JSONArray solutions ;
-    JSONObject currentSolution ;
+    JsonObject json ;
+    JsonArray solutions ;
+    JsonObject currentSolution ;
 
-    static JSONObject booleanResult(boolean result)
+    static JsonObject booleanResult(boolean result)
     {
         try {
-            JSONObject json = new JSONObject() ;
-            json.put(dfHead, new JSONObject()) ;
+            JsonObject json = new JsonObject() ;
+            json.put(dfHead, new JsonObject()) ;
             json.put(dfBoolean, result);
             return json ;
         } catch(Exception ex) {
@@ -53,7 +57,7 @@ public class JSONObjectResult implements ResultSetProcessor
         }
     }
     
-    static JSONObject resultSet(ResultSet resultSet)
+    static JsonObject resultSet(ResultSet resultSet)
     {
         JSONObjectResult xOut =  new JSONObjectResult() ;
         ResultSetApply a = new ResultSetApply(resultSet, xOut) ;
@@ -66,24 +70,25 @@ public class JSONObjectResult implements ResultSetProcessor
 
     public void start(ResultSet rs)
     {
-        json = new JSONObject() ;
+        json = new JsonObject() ;
         try {
             // ---- Header
-            JSONObject head = new JSONObject() ;
-            json.put(dfHead, head) ;
+            JsonObject head = new JsonObject() ;
             
-            JSONArray vars = new JSONArray() ;
+            json.put(dfHead, head) ;
+            JsonArray vars = new JsonArray() ;
             for (String string : rs.getResultVars())
-                vars.put(string) ;
+                vars.add(string) ;
+                
             head.put(dfVars, vars) ;
             // ---- results
-            JSONObject results = new JSONObject() ;
+            JsonObject results = new JsonObject() ;
             json.put(dfResults, results) ;
             //results.put(dfOrdered, rs.isOrdered()) ;
             //results.put(dfDistinct,rs.isDistinct());
-            solutions = new JSONArray() ;
+            solutions = new JsonArray() ;
             results.put(dfBindings, solutions) ;
-        } catch (JSONException ex) {
+        } catch (JsonException ex) {
             throw new ResultSetException(ex.getMessage(), ex);
         }
     }
@@ -92,8 +97,8 @@ public class JSONObjectResult implements ResultSetProcessor
     
     public void start(QuerySolution qs)
     {
-        currentSolution = new JSONObject() ;
-        solutions.put(currentSolution) ;
+        currentSolution = new JsonObject() ;
+        solutions.add(currentSolution) ;
     }
 
     public void finish(QuerySolution qs) { currentSolution = null ; }
@@ -103,19 +108,19 @@ public class JSONObjectResult implements ResultSetProcessor
         if (node == null && !outputExplicitUnbound)
             return;
         try {
-            JSONObject val = valueAsJSON(node) ;
+            JsonObject val = valueAsJSON(node) ;
             currentSolution.put(varName, val) ;
-        } catch (JSONException ex) { throw new ResultSetException(ex.getMessage(), ex); }
+        } catch (JsonException ex) { throw new ResultSetException(ex.getMessage(), ex); }
     }
     
-    private JSONObject valueAsJSON(RDFNode node) throws JSONException
+    private JsonObject valueAsJSON(RDFNode node)
     {
-        JSONObject jsonValue = new JSONObject() ;
+        JsonObject jsonValue = new JsonObject() ;
         if (node == null)
         {
             // Unbound
             jsonValue.put(dfType, dfUnbound);
-            jsonValue.put(dfValue, JSONObject.NULL) ;
+            jsonValue.put(dfValue, JsonNull.instance) ;
             return jsonValue ;
         }
         
@@ -129,9 +134,9 @@ public class JSONObjectResult implements ResultSetProcessor
         return jsonValue ;
     }
     
-    private JSONObject resourceAsJSON(Resource resource) throws JSONException
+    private JsonObject resourceAsJSON(Resource resource)
     {
-        JSONObject jsonValue = new JSONObject() ;
+        JsonObject jsonValue = new JsonObject() ;
         
         if (resource.isAnon())
         {
@@ -153,9 +158,9 @@ public class JSONObjectResult implements ResultSetProcessor
         return jsonValue ;
     }
     
-    private JSONObject literalAsJSON(Literal literal) throws JSONException
+    private JsonObject literalAsJSON(Literal literal)
     {
-        JSONObject jsonValue = new JSONObject() ;
+        JsonObject jsonValue = new JsonObject() ;
         String datatype = literal.getDatatypeURI();
         String lang = literal.getLanguage();
 
@@ -176,6 +181,7 @@ public class JSONObjectResult implements ResultSetProcessor
 
 /*
  * (c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
