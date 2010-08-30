@@ -82,12 +82,17 @@ public class TDBFactory
 
     /** Create or connect to a TDB-backed dataset */ 
     public static Dataset createDataset(Location location)
-    { return new DatasetImpl(createDatasetGraph(location)) ; }
+    { return createDataset(createDatasetGraph(location)) ; }
 
     /** Create or connect to a TDB dataset backed by an in-memory block manager. For testing.*/ 
     public static Dataset createDataset()
-    { return new DatasetImpl(createDatasetGraph()) ; }
+    { return createDataset(createDatasetGraph()) ; }
 
+    /** Create a dataset around a DatasetGraphTDB */ 
+    public static Dataset createDataset(DatasetGraphTDB datasetGraph)
+    { return new DatasetImpl(datasetGraph) ; }
+    
+    
     /** Create a graph, at the given location */
     public static Graph createGraph(Location loc)       { return TDBMaker._createGraph(loc) ; }
 

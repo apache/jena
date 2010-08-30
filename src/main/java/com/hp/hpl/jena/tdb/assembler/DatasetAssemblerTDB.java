@@ -22,6 +22,7 @@ import com.hp.hpl.jena.sparql.core.assembler.DatasetAssembler;
 import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.TDBFactory;
 import com.hp.hpl.jena.tdb.base.file.Location;
+import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 
 public class DatasetAssemblerTDB extends DatasetAssembler
 {
@@ -41,7 +42,19 @@ public class DatasetAssemblerTDB extends DatasetAssembler
 
         String dir = getStringValue(root, pLocation) ;
         Location loc = new Location(dir) ;
-        return TDBFactory.createDataset(loc) ;
+        DatasetGraphTDB dsg = TDBFactory.createDatasetGraph(loc) ;
+        
+        /*
+        <r> rdf:type tdb:DatasetTDB ;
+            tdb:location "dir" ;
+            //arq:set [ arq:contextSymbol "xyz" ; arq:contextValue 123 ] ;  <-- in ARQ dataset assembler stuff.
+            //arq:set ( <uri> 123 ) ;
+            tdb:unionGraph true ; # or "true"
+        */
+        // Features enabled.
+        //dsg.getContext().set(TDB.symUnionDefaultGraph, true) ;
+        
+        return TDBFactory.createDataset(dsg) ; 
     }
     
 }
