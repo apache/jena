@@ -3,12 +3,7 @@ package dev;
 
 public class DevARQ
 {
-    // ** Next; multiple update languages.
-
-    // ** Bug: ReportCopySubstituteNoContext
-    // Expr.copySubstitute has no context (drop constant folding?)
-    // Substitute$OpSubstituteWorker.transform/OpFilter passes foldConstants=true : line 2004
-    // also transform/OpAssign line 211
+    // ** Next: multiple update languages.
     
     // mvn tests (4042) and Eclipse tests (3270) differ in size. 
     
