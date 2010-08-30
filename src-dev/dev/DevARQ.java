@@ -2,8 +2,6 @@ package dev;
 
 public class DevARQ
 {
-    // De org.json.
-    
     // mvn tests (4042) and Eclipse tests (3270) differ in size. 
     
     // Library: Var->Var, bNode->var, Converters

@@ -11,4 +11,4 @@ INSERT DATA
 
 #WITH :graph2
 INSERT { ?s ?p ?o }
-WHERE { GRAPH :graph1 { :s :p :o } }
+WHERE { GRAPH :graph1 { ?s ?p ?o } }
