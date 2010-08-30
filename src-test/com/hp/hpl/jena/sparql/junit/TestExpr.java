@@ -116,7 +116,7 @@ public abstract class TestExpr extends TestCase
             return ;
         
         try { 
-            FunctionEnv env = new FunctionEnvBase(context, null, null) ; 
+            FunctionEnv env = new FunctionEnvBase(context) ; 
             NodeValue v = expr.eval(binding, env) ;
             checkValue(expr, v) ;
         }

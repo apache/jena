@@ -52,8 +52,10 @@ public interface Expr
     /** Deep copy with substitution */
     public Expr copySubstitute(Binding binding) ;
 
-    /** Deep copy with substitution, possibly collapsing constant sub-expressions 
-     */
+//    /** Deep copy with substitution, possibly collapsing constant sub-expressions */
+// Issues: 
+// 1/ folding constants should be separated out (static optimization)
+// 2/     
     public Expr copySubstitute(Binding binding, boolean foldConstants) ;
 
     /**

@@ -13,7 +13,6 @@ import java.util.Iterator ;
 import java.util.List ;
 import java.util.Set ;
 
-import com.hp.hpl.jena.sparql.core.NodeTransform ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
@@ -60,8 +59,8 @@ public class ExprList implements Iterable<Expr>
             expr.varsMentioned(acc) ;
     }
     
-    public ExprList copySubstitute(Binding binding) { return copySubstitute(binding, true, null) ; }
-    public ExprList copySubstitute(Binding binding, boolean foldConstants, NodeTransform transform)
+    public ExprList copySubstitute(Binding binding) { return copySubstitute(binding, true) ; }
+    public ExprList copySubstitute(Binding binding, boolean foldConstants)
     {
         ExprList x = new ExprList() ;
         for ( Iterator<Expr> iter = expressions.iterator() ; iter.hasNext() ; )

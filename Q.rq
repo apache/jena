@@ -1,7 +1,8 @@
 PREFIX : <http://people.example/>
 
-SELECT *
+SELECT (count(*) AS ?X)
 WHERE
 { ?s ?p ?o
 } 
 GROUP BY (?a+?b as ?c)
+HAVING (?X > 45)

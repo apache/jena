@@ -1,15 +1,19 @@
 package dev;
 
+
 public class DevARQ
 {
+    // ** Next; multiple update languages.
+
+    // ** Bug: ReportCopySubstituteNoContext
+    // Expr.copySubstitute has no context (drop constant folding?)
+    // Substitute$OpSubstituteWorker.transform/OpFilter passes foldConstants=true : line 2004
+    // also transform/OpAssign line 211
+    
     // mvn tests (4042) and Eclipse tests (3270) differ in size. 
     
-    // Library: Var->Var, bNode->var, Converters
-    
-    // Converters
-    // Canonicalise literals
-    // rdf:PlainLiteral
-    // URI->URI rewrite
+    // Library: Var->Var (VarRename), bNode->var (UpdateEngine), Converters
+    // See NodeConverters
     
     // Expr.copySubstitute : not used?
     // Replace with a ExprTransform?

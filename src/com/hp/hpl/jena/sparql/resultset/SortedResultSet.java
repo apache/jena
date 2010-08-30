@@ -41,8 +41,10 @@ public class SortedResultSet implements ResultSet
     List<String> resultVars = null ;
     Model model ;
     
+    // Caution: this does not have the ful context available so soem conditions 
     public SortedResultSet(ResultSet rs, List<SortCondition> conditions)
     {
+        // Caution: this does not have the ful context available so some conditions may get upset. 
         this(rs, new BindingComparator(conditions)) ;
     }
     

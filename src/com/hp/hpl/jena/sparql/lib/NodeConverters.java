@@ -4,31 +4,38 @@
  * [See end of file]
  */
 
-package reports;
+package com.hp.hpl.jena.sparql.lib;
 
-import com.hp.hpl.jena.query.Query ;
-import com.hp.hpl.jena.query.QueryExecution ;
-import com.hp.hpl.jena.query.QueryExecutionFactory ;
-import com.hp.hpl.jena.query.QueryFactory ;
-import com.hp.hpl.jena.query.QuerySolutionMap ;
-import com.hp.hpl.jena.query.Syntax ;
-import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.rdf.model.ModelFactory ;
-import com.hp.hpl.jena.vocabulary.OWL ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.sparql.core.NodeTransform ;
 
-public class ReportNullContext
+/** A collection of transformes on Nodes */
+public class NodeConverters
 {
-    public static void main(String ...argv)
+    public static NodeTransform canonicaliseNumber = null ;
+    
+    public static NodeTransform plainLiteralToRDF = null ;
+    
+    public static NodeTransform rewriteIRI(String pattern, String substitution) 
     {
-        Query query = QueryFactory.create("ASK WHERE { FILTER IRI(\"http://aldi.de\") }", Syntax.syntaxARQ);
-        Model model = ModelFactory.createDefaultModel();
-        QueryExecution qexec = QueryExecutionFactory.create(query, model);
-        QuerySolutionMap bindings = new QuerySolutionMap();
-        bindings.add("this", OWL.Thing);
-        qexec.setInitialBinding(bindings);
-        qexec.execAsk();
+        return  new RewriteURI(pattern, substitution) ;
     }
+    
+    private static class RewriteURI implements NodeTransform
+    {
+        RewriteURI(String pattern, String subsitition)
+        {
+            
+        }
 
+        public Node convert(Node node)
+        {
+            if ( ! node.isURI() ) return node ;
+
+            String iri = node.getURI() ;
+            return null ;
+        }
+    }
 }
 
 /*

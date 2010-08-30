@@ -201,7 +201,7 @@ public class Substitute
         @Override
         public Op transform(OpFilter filter, Op op)
         {
-            ExprList exprs = filter.getExprs().copySubstitute(binding, true, null) ;
+            ExprList exprs = filter.getExprs().copySubstitute(binding, true) ;
             if ( exprs == filter.getExprs() )
                 return filter ;
             return OpFilter.filter(exprs, op) ; 
