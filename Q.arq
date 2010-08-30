@@ -1,0 +1,3 @@
+SELECT * {
+    FILTER (IRI("http://aldi.com.au")) .
+}

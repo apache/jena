@@ -6,7 +6,9 @@ CREATE SILENT GRAPH :graph1 ;
 
 INSERT DATA
 { 
-  GRAPH :graph1
-  { :s :p :o 
-  }
+  GRAPH :graph1 { :s :p :o }
 }
+
+#WITH :graph2
+INSERT { ?s ?p ?o }
+WHERE { GRAPH :graph1 { :s :p :o } }
