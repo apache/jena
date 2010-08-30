@@ -59,7 +59,7 @@ public class ExprList implements Iterable<Expr>
             expr.varsMentioned(acc) ;
     }
     
-    public ExprList copySubstitute(Binding binding) { return copySubstitute(binding, true) ; }
+    public ExprList copySubstitute(Binding binding) { return copySubstitute(binding, false) ; }
     public ExprList copySubstitute(Binding binding, boolean foldConstants)
     {
         ExprList x = new ExprList() ;

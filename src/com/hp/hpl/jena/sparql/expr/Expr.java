@@ -55,7 +55,7 @@ public interface Expr
 //    /** Deep copy with substitution, possibly collapsing constant sub-expressions */
 // Issues: 
 // 1/ folding constants should be separated out (static optimization)
-// 2/     
+// 2/ Danger of some functions not evaluating if the FunctionEnv is not available.
     public Expr copySubstitute(Binding binding, boolean foldConstants) ;
 
     /**

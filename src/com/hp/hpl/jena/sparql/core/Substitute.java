@@ -201,7 +201,7 @@ public class Substitute
         @Override
         public Op transform(OpFilter filter, Op op)
         {
-            ExprList exprs = filter.getExprs().copySubstitute(binding, true) ;
+            ExprList exprs = filter.getExprs().copySubstitute(binding) ;
             if ( exprs == filter.getExprs() )
                 return filter ;
             return OpFilter.filter(exprs, op) ; 
@@ -219,7 +219,7 @@ public class Substitute
 //                    // logical assignment will test value.  
 //                    continue ;
                 Expr expr = opAssign.getVarExprList().getExpr(v) ;
-                expr = expr.copySubstitute(binding, true) ;
+                expr = expr.copySubstitute(binding) ;
                 varExprList2.add(v, expr) ;
             }
             

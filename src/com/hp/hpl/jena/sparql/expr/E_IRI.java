@@ -29,10 +29,13 @@ public class E_IRI extends ExprFunction1
     @Override
     public NodeValue eval(NodeValue v, FunctionEnv env)
     { 
-        Query query = (Query)env.getContext().get(ARQConstants.sysCurrentQuery) ;
         String baseIRI = null ;
-        if ( query != null )
-            baseIRI = query.getBaseURI() ;
+        if ( env.getContext() != null )
+        {
+            Query query = (Query)env.getContext().get(ARQConstants.sysCurrentQuery) ;
+            if ( query != null )
+                baseIRI = query.getBaseURI() ;
+        }
         return NodeFunctions.iri(v, baseIRI) ;
     }
     
