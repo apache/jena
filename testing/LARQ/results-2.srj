@@ -15,7 +15,7 @@
         "lit": { "type": "literal" , "value": "Document 2" } ,
         "doc": { "type": "uri" , "value": "http://example/doc2" } ,
         "p": { "type": "uri" , "value": "http://purl.org/dc/elements/1.1/title" }
-      } ,
+      }
     ]
   }
 }
