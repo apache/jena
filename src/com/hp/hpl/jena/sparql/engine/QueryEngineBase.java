@@ -35,7 +35,6 @@ public abstract class QueryEngineBase implements OpEval, Closeable
     
     protected QueryEngineBase(Query query,
                               DatasetGraph dataset, 
-                              //AlgebraGenerator gen,
                               Binding input,
                               Context context)
     {
@@ -43,7 +42,7 @@ public abstract class QueryEngineBase implements OpEval, Closeable
         this.context.put(ARQConstants.sysCurrentQuery, query) ;
         // Build the Op.
         query.setResultVars() ;
-        // Unoptimized.
+        // Unoptimized so far.
         setOp(createOp(query)) ;
     }
     
@@ -66,7 +65,7 @@ public abstract class QueryEngineBase implements OpEval, Closeable
         this.startBinding = input ;
     }
     
-    // Put any per-query execution global configuration state here.
+    // Put any per-dataset execution global configuration state here.
     private static Context setupContext(Context context, DatasetGraph dataset)
     {
         if ( context == null )      // Copy of global context to protect against chnage.

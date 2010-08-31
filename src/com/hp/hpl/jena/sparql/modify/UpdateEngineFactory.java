@@ -7,18 +7,18 @@
 package com.hp.hpl.jena.sparql.modify;
 
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.update.GraphStore ;
-import com.hp.hpl.jena.update.UpdateProcessor ;
 import com.hp.hpl.jena.update.UpdateRequest ;
 
 /** Interface for factories that accept and process SPARQL update requests */
-public interface UpdateProcessorFactory
+public interface UpdateEngineFactory
 {
-    /** Answer whether this factory can produce an UpdateProcessor for the UpdateRequest and GraphStore */
-    public boolean accept(UpdateRequest request, GraphStore graphStore) ;
+    /** Answer whether this factory can produce an UpdateEngine for the UpdateRequest and GraphStore */
+    public boolean accept(UpdateRequest request, GraphStore graphStore, Context context) ;
     
     /** Create the request - having returned true to accept, should not fail */  
-    public UpdateProcessor create(UpdateRequest request, GraphStore graphStore, Binding inputBinding) ;
+    public UpdateEngine create(UpdateRequest request, GraphStore graphStore, Binding inputBinding, Context context) ;
 }
 
 /*

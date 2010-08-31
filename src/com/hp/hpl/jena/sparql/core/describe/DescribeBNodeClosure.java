@@ -33,7 +33,8 @@ public class DescribeBNodeClosure implements DescribeHandler
         this.dataset = (Dataset)cxt.get(ARQConstants.sysCurrentDataset) ;
     }
 
-    private static Query query = QueryFactory.create("SELECT ?g { GRAPH ?g { ?s ?p ?o } }") ; 
+    // DISTINCT - we only need each ?g once. 
+    private static Query query = QueryFactory.create("SELECT DISTINCT ?g { GRAPH ?g { ?s ?p ?o } }") ; 
     
     // Check all named graphs
     public void describe(Resource r)

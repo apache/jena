@@ -6,39 +6,59 @@
 
 package com.hp.hpl.jena.sparql.modify;
 
+import org.openjena.atlas.logging.Log ;
+
+import com.hp.hpl.jena.query.ARQ ;
+import com.hp.hpl.jena.sparql.ARQConstants ;
+import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.engine.binding.BindingRoot ;
+import com.hp.hpl.jena.sparql.util.Context ;
+import com.hp.hpl.jena.sparql.util.NodeFactory ;
 import com.hp.hpl.jena.update.GraphStore ;
-import com.hp.hpl.jena.update.UpdateProcessor ;
 import com.hp.hpl.jena.update.UpdateRequest ;
 
-public class UpdateProcessorMain implements UpdateProcessor
+public abstract class UpdateEngineBase
 {
-    private UpdateEngine engine ;
+    protected final GraphStore graphStore ;
+    protected final Context context ;
+    protected final Binding startBinding ;
+    protected UpdateRequest request ;
 
-    public UpdateProcessorMain(GraphStore graphStore, UpdateRequest request, Binding inputBinding)
+    public UpdateEngineBase(GraphStore graphStore, 
+                            UpdateRequest request,
+                            Binding input,
+                            Context context)
     {
-        this.engine = new UpdateEngine(graphStore, request, inputBinding) ;
+        this.graphStore = graphStore ;
+        this.request = request ;
+        this.context = setupContext(context, graphStore) ;
+        
+        if ( input == null )
+        {
+            Log.warn(this, "Null initial input") ;
+            input = BindingRoot.create() ;
+        }
+        this.startBinding = input ;
+        this.context.put(ARQConstants.sysCurrentUpdateRequest, request) ;
     }
     
-    public void execute()
+    public abstract void execute() ;
+    
+    // Put any 
+    private static Context setupContext(Context context, DatasetGraph dataset)
     {
-        engine.execute() ;
-    }
+        // To many copies?
+        if ( context == null )      // Copy of global context to protect against chnage.
+            context = ARQ.getContext() ;
+        context = context.copy() ;
 
-    private static UpdateProcessorFactory factory = new UpdateProcessorFactory()
-    {
-        public boolean accept(UpdateRequest request, GraphStore graphStore)
-        {
-            return (graphStore instanceof GraphStoreBasic) ;
-        }
+        if ( dataset.getContext() != null )
+            context.putAll(dataset.getContext()) ;
         
-        public UpdateProcessor create(UpdateRequest request, GraphStore graphStore, Binding inputBinding)
-        {
-            return new UpdateProcessorMain(graphStore, request, inputBinding) ;
-        }
-    } ;
-
-    public static UpdateProcessorFactory getFactory() { return factory ; }
+        context.set(ARQConstants.sysCurrentTime, NodeFactory.nowAsDateTime()) ;
+        return context ; 
+    }
 }
 
 /*

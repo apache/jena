@@ -530,7 +530,7 @@ public class QueryExecutionFactory
     {
         query.validate() ;
         if ( context == null )
-            context = ARQ.getContext().copy();
+            context = ARQ.getContext().copy();  // .copy probably not necessary but safe. 
         DatasetGraph dsg = null ;
         if ( dataset != null )
             dsg = dataset.asDatasetGraph() ;

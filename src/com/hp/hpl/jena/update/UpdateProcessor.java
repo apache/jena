@@ -6,10 +6,36 @@
 
 package com.hp.hpl.jena.update;
 
+import com.hp.hpl.jena.query.QuerySolution ;
+
 /** An instance of a execution of an UpdateRequest */ 
 public interface UpdateProcessor
 {
-    /** Execute an operation. */
+//    /** Set the FileManger that might be used to load files.
+//     *  May not be supported by all QueryExecution implementations.  
+//     */
+//    public void setFileManager(FileManager fm) ;
+    
+    /** Set the initial association of variables and values.
+     * May not be supported by all UpdateProcessor implementations.
+     * @param binding
+     */
+    public void setInitialBinding(QuerySolution binding) ;
+
+//    /** Set a table of initial associations of variables and values.
+//     * May not be supported by all QueryExecution implementations.
+//     * @param binding
+//     */
+//    public void setInitialBindings(ResultSet table) ;
+    
+    /**
+     * The dataset against which the query will execute.
+     * May be null, implying it is expected that the query itself
+     * has a dataset description. 
+     */
+    public GraphStore getGraphStore() ;
+    
+    /** Execute */
     public void execute() ;
 }
 

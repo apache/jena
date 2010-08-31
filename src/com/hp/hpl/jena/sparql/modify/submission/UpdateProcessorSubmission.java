@@ -7,18 +7,14 @@
 
 package com.hp.hpl.jena.sparql.modify.submission;
 
+import com.hp.hpl.jena.query.QuerySolution ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
-import com.hp.hpl.jena.sparql.modify.GraphStoreBasic ;
-import com.hp.hpl.jena.sparql.modify.UpdateProcessorFactory ;
+import com.hp.hpl.jena.sparql.engine.binding.BindingMap ;
+import com.hp.hpl.jena.sparql.engine.binding.BindingUtils ;
 import com.hp.hpl.jena.update.GraphStore ;
-import com.hp.hpl.jena.update.UpdateProcessor ;
-import com.hp.hpl.jena.update.UpdateRequest ;
 import com.hp.hpl.jena.update.UpdateRequestSubmission ;
-
-/** General purpose UpdateProcessor for GraphStore objects (SPARQL/Update) */
-// NO LONGER USED.
-// WILL BE DELETED
-public class UpdateProcessorSubmission implements UpdateProcessor
+/** Process UpdateRequestSubmission */
+public class UpdateProcessorSubmission
 {
     private GraphStore graphStore ;
     private UpdateRequestSubmission request ;
@@ -46,24 +42,15 @@ public class UpdateProcessorSubmission implements UpdateProcessor
         update.visit(v) ;
     }
 
-    public static UpdateProcessorFactory getFactory() { 
-        return new UpdateProcessorFactory()
-        {
-            public boolean accept(UpdateRequest request, GraphStore graphStore)
-            {
-                return false &&  (graphStore instanceof GraphStoreBasic) ;
-            }
-        
-            public UpdateProcessor create(UpdateRequestSubmission request, GraphStore graphStore, Binding inputBinding)
-            {
-                return new UpdateProcessorSubmission(graphStore, request, inputBinding) ;
-            }
+    public GraphStore getGraphStore()
+    {
+        return graphStore ;
+    }
 
-            public UpdateProcessor create(UpdateRequest request, GraphStore graphStore, Binding inputBinding)
-            {
-                return null ;
-            }
-        } ;
+    public void setInitialBinding(QuerySolution binding)
+    { 
+        inputBinding = new BindingMap() ;
+        BindingUtils.addToBinding(inputBinding, binding) ;
     }
 }
 

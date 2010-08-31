@@ -6,68 +6,71 @@
 
 package com.hp.hpl.jena.sparql.modify;
 
-
-
+import com.hp.hpl.jena.query.ARQ ;
+import com.hp.hpl.jena.query.QuerySolution ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
-import com.hp.hpl.jena.sparql.modify.submission.UpdateProcessorSubmission ;
-import com.hp.hpl.jena.sparql.modify.submission.UpdateSubmission ;
+import com.hp.hpl.jena.sparql.engine.binding.BindingMap ;
+import com.hp.hpl.jena.sparql.engine.binding.BindingUtils ;
 import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.update.GraphStore ;
-import com.hp.hpl.jena.update.Update ;
+import com.hp.hpl.jena.update.UpdateProcessor ;
 import com.hp.hpl.jena.update.UpdateRequest ;
 
-// For any DatasetGraph.
-// Functional first, rather than efficient.
-
-// -->UpdateEngineMain.
-
-public class UpdateEngine extends UpdateEngineBase 
+/** Class to hold the general state of a update request execution.
+ * See query ExecutionContext
+ */
+// may need to split into environment and execute(). 
+public class UpdateProcessorBase implements UpdateProcessor
 {
-    public UpdateEngine(GraphStore graphStore, UpdateRequest request, Binding initialBinding, Context context)
+    protected Binding initialBinding = new BindingMap() ;
+    protected final UpdateRequest request ;
+    protected final GraphStore graphStore ;
+    protected final UpdateEngineFactory factory ;
+    protected final Context context ;
+
+    public UpdateProcessorBase(UpdateRequest request, 
+                               GraphStore graphStore, 
+                               Context context, 
+                               UpdateEngineFactory factory)
     {
-        super(graphStore, request, initialBinding, context) ;
+        this.request = request ;
+        this.graphStore = graphStore ;
+        if ( context == null )
+            context = ARQ.getContext() ;
+        
+        this.context = context ;
+        this.factory = factory ;
     }
 
-    @Override
+    //@Override
     public void execute()
     {
-        graphStore.startRequest() ;
-        UpdateEngineWorker worker = new UpdateEngineWorker(graphStore, startBinding) ;
-        for ( Update up : request.getOperations() )
-        {
-            if ( up instanceof UpdateSubmission )
-            {
-                // If old style, go there.
-                executeUpdateSubmission((UpdateSubmission)up) ;
-                continue ;
-            }
-            up.visit(worker) ;
-        }
-        graphStore.finishRequest() ;
+        UpdateEngine proc = factory.create(request, graphStore, initialBinding, context) ;
+        proc.execute() ;
     }
-    
-    public void executeUpdateSubmission(UpdateSubmission ups)
+
+    //@Override
+    public GraphStore getGraphStore()
     {
-        UpdateProcessorSubmission p = 
-            new UpdateProcessorSubmission(graphStore, null, super.startBinding) ;
-        p.execute(ups) ;
+        return graphStore ;
     }
-    
-    private static UpdateEngineFactory factory = new UpdateEngineFactory()
+
+    //@Override
+    public void setInitialBinding(QuerySolution binding)
     {
-        public boolean accept(UpdateRequest request, GraphStore graphStore, Context context)
-        {
-            return (graphStore instanceof GraphStoreBasic) ;
-        }
+        BindingUtils.addToBinding(initialBinding, binding) ;
+    }
 
-        public UpdateEngine create(UpdateRequest request, GraphStore graphStore, Binding inputBinding, Context context)
-        {
-            return new UpdateEngine(graphStore, request, inputBinding, context) ;
-        }
-    } ;
+    public void setInitialBinding(Binding binding)
+    {
+        initialBinding.addAll(binding) ;
+    }
 
-
-    public static UpdateEngineFactory getFactory() { return factory ; }
+    //@Override
+    public Context getContext()
+    {
+        return context ;
+    }
 }
 
 /*

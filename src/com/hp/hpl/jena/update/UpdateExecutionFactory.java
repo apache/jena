@@ -6,11 +6,14 @@
 
 package com.hp.hpl.jena.update;
 
+import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.query.QuerySolution ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingUtils ;
-import com.hp.hpl.jena.sparql.modify.UpdateProcessorFactory ;
-import com.hp.hpl.jena.sparql.modify.UpdateProcessorRegistry ;
+import com.hp.hpl.jena.sparql.modify.UpdateEngineFactory ;
+import com.hp.hpl.jena.sparql.modify.UpdateEngineRegistry ;
+import com.hp.hpl.jena.sparql.modify.UpdateProcessorBase ;
+import com.hp.hpl.jena.sparql.util.Context ;
 
 public class UpdateExecutionFactory
 {
@@ -33,10 +36,7 @@ public class UpdateExecutionFactory
      */
     public static UpdateProcessor create(Update update, GraphStore graphStore, QuerySolution initialSolution)
     {        
-        Binding b = null ;
-        if ( initialSolution != null )
-            b = BindingUtils.asBinding(initialSolution) ;
-        return create(update, graphStore, b) ;
+        return create(new UpdateRequest(update), graphStore, initialSolution) ;
     }
 
     /** Create a UpdateProcessor appropriate to the GraphStore, or null if no available factory to make an UpdateProcessor 
@@ -67,13 +67,10 @@ public class UpdateExecutionFactory
      * @return UpdateProcessor or null
      */
     public static UpdateProcessor create(UpdateRequest updateRequest, GraphStore graphStore, QuerySolution initialSolution)
-    {        
-        Binding b = null ;
-        if ( initialSolution != null )
-            b = BindingUtils.asBinding(initialSolution) ;
-        return create(updateRequest, graphStore, b) ;
+    {
+        return create(updateRequest, graphStore, BindingUtils.asBinding(initialSolution)) ;
     }
-
+    
     /** Create a UpdateProcessor appropriate to the GraphStore, or null if no available factory to make an UpdateProcessor 
      * @param updateRequest
      * @param graphStore
@@ -82,13 +79,23 @@ public class UpdateExecutionFactory
      */
     public static UpdateProcessor create(UpdateRequest updateRequest, GraphStore graphStore, Binding initialBinding)
     {        
-        UpdateProcessorFactory f = UpdateProcessorRegistry.get().find(updateRequest, graphStore) ;
-        if ( f == null )
-            return null ;
-        UpdateProcessor uProc = f.create(updateRequest, graphStore, initialBinding) ;
-        return uProc ;
+        return make(updateRequest, graphStore, initialBinding, null) ;
     }
 
+    private static UpdateProcessor make(UpdateRequest updateRequest, GraphStore graphStore, Binding initialBinding, Context context)
+    {
+        if ( context == null )
+            context = ARQ.getContext().copy();
+        
+        UpdateEngineFactory f = UpdateEngineRegistry.get().find(updateRequest, graphStore, ARQ.getContext()) ;
+        if ( f == null )
+            return null ;
+        
+        UpdateProcessorBase uProc = new UpdateProcessorBase(updateRequest, graphStore, ARQ.getContext(), f) ;
+        if ( initialBinding != null )
+            uProc.setInitialBinding(initialBinding) ;
+        return uProc ;
+    }
 }
 
 /*

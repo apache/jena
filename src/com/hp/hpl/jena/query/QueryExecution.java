@@ -35,7 +35,7 @@ public interface QueryExecution
 //    public void setInitialBindings(ResultSet table) ;
     
     /**
-     * The dataset agisnt which the query will execute.
+     * The dataset against which the query will execute.
      * May be null, implying it is expected that the query itself
      * has a dataset description. 
      */

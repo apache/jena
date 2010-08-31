@@ -27,7 +27,6 @@ public class GraphStoreBasic extends DatasetGraphMap implements GraphStore
     {
         super(graph) ;
     }
-
     
     public Dataset toDataset()
     {
@@ -36,6 +35,7 @@ public class GraphStoreBasic extends DatasetGraphMap implements GraphStore
 
     public void startRequest()
     { GraphStoreUtils.sendToAll(this, GraphStoreEvents.RequestStartEvent) ; }
+
     public void finishRequest()
     { GraphStoreUtils.sendToAll(this, GraphStoreEvents.RequestFinishEvent) ; }
     

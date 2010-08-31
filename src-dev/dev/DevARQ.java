@@ -3,11 +3,9 @@ package dev;
 
 public class DevARQ
 {
-    // ** Next: WITH/USING
-    // WITH appies to whole block, inc. WHERE
-    //   USING overrides WITH
-    // ** Inference wiring (TDB first?)
-    // ** Dataset.addInference?
+    // ** Next: multiple update languages.
+    // Strictisms:
+    //   Unnecessary scoping checks on variables.
     
     // mvn tests (4042) and Eclipse tests (3270) differ in size. 
     
@@ -22,6 +20,8 @@ public class DevARQ
     // WITH and USING/USING NAMED
     // Error handling and exception catching.  UpdateParseException : LanguageParseException 
     // Naming.
+    // QueryParseException
+    // QuerySolution (
     
     // UpdateParseRegistry
     //   ARQ -> submission
@@ -43,6 +43,8 @@ public class DevARQ
     
     // Property path test cases
     // Aggregates to return iterators.
+    
+    // Syntax for lists: ACCESS(?list, ?index, ?member)
     
     // ---- Property paths
     // Path tests: WorkSpace/PropertyPathTests/

@@ -10,29 +10,30 @@ import java.util.ArrayList ;
 import java.util.Iterator ;
 import java.util.List ;
 
+import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.update.GraphStore ;
 import com.hp.hpl.jena.update.UpdateRequest ;
 
-public class UpdateProcessorRegistry
+public class UpdateEngineRegistry
 {
-    List<UpdateProcessorFactory> factories = new ArrayList<UpdateProcessorFactory>() ;
+    List<UpdateEngineFactory> factories = new ArrayList<UpdateEngineFactory>() ;
     static { init() ; }
     
     // Singleton
-    static UpdateProcessorRegistry registry = null ;
-    static public UpdateProcessorRegistry get()
+    static UpdateEngineRegistry registry = null ;
+    static public UpdateEngineRegistry get()
     { 
         if ( registry == null )
             init() ;
         return registry;
     }
     
-    private UpdateProcessorRegistry() { }
+    private UpdateEngineRegistry() { }
     
     private static synchronized void init()
     {
-        registry = new UpdateProcessorRegistry() ;
-        registry.add(UpdateProcessorMain.getFactory()) ;
+        registry = new UpdateEngineRegistry() ;
+        registry.add(UpdateEngine.getFactory()) ;
     }
     
     /** Locate a suitable factory for this query and dataset from the default registry
@@ -42,8 +43,8 @@ public class UpdateProcessorRegistry
      * @return A QueryExecutionFactory or null if none accept the request
      */
     
-    public static UpdateProcessorFactory findFactory(UpdateRequest request, GraphStore graphStore)
-    { return get().find(request, graphStore) ; }
+    public static UpdateEngineFactory findFactory(UpdateRequest request, GraphStore graphStore, Context context)
+    { return get().find(request, graphStore, context) ; }
     
     /** Locate a suitable factory for this query and dataset
      * 
@@ -52,41 +53,41 @@ public class UpdateProcessorRegistry
      * @return A UpdateProcessorFactroy or null if none accept the request
      */
     
-    public UpdateProcessorFactory find(UpdateRequest request, GraphStore graphStore)
+    public UpdateEngineFactory find(UpdateRequest request, GraphStore graphStore, Context context)
     {
-        for ( Iterator<UpdateProcessorFactory> iter = factories.listIterator() ; iter.hasNext() ; )
+        for ( Iterator<UpdateEngineFactory> iter = factories.listIterator() ; iter.hasNext() ; )
         {
-            UpdateProcessorFactory f = iter.next() ;
-            if ( f.accept(request, graphStore) )
+            UpdateEngineFactory f = iter.next() ;
+            if ( f.accept(request, graphStore, context) )
                 return f ;
         }
         return null ;
     }
     
     /** Add a QueryExecutionFactory to the default registry */
-    public static void addFactory(UpdateProcessorFactory f) { get().add(f) ; }
+    public static void addFactory(UpdateEngineFactory f) { get().add(f) ; }
     
     /** Add a QueryExecutionFactory */
-    public void add(UpdateProcessorFactory f)
+    public void add(UpdateEngineFactory f)
     {
         // Add to low end so that newer factories are tried first
         factories.add(0, f) ; 
     }
     
     /** Remove a QueryExecutionFactory */
-    public static void removeFactory(UpdateProcessorFactory f)  { get().remove(f) ; }
+    public static void removeFactory(UpdateEngineFactory f)  { get().remove(f) ; }
     
     /** Remove a QueryExecutionFactory */
-    public void remove(UpdateProcessorFactory f)  { factories.remove(f) ; }
+    public void remove(UpdateEngineFactory f)  { factories.remove(f) ; }
     
     /** Allow <b>careful</b> manipulation of the factories list */
-    public List<UpdateProcessorFactory> factories() { return factories ; }
+    public List<UpdateEngineFactory> factories() { return factories ; }
 
     /** Check whether a query engine factory is already registered in teh default registry*/
-    public static boolean containsFactory(UpdateProcessorFactory f) { return get().contains(f) ; }
+    public static boolean containsFactory(UpdateEngineFactory f) { return get().contains(f) ; }
 
     /** Check whether a query engine factory is already registered */
-    public boolean contains(UpdateProcessorFactory f) { return factories.contains(f) ; }
+    public boolean contains(UpdateEngineFactory f) { return factories.contains(f) ; }
 
 }
 
