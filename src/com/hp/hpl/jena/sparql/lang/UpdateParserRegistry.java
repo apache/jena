@@ -42,8 +42,6 @@ public class UpdateParserRegistry
             public boolean accept(Syntax syntax ) { return Syntax.syntaxARQ.equals(syntax) ; } 
             public UpdateParser create ( Syntax syntax ) { return new ParserARQUpdate() ; } }) ;
         
-        // Defend against concurrent start up (even if not synchronised).
-        // Protects against, not fixes, the problem.
         registry = reg ;
     }
     

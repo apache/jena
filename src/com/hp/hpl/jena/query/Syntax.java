@@ -27,6 +27,12 @@ public class Syntax extends Symbol
      */
     public static Syntax defaultSyntax = Syntax.syntaxSPARQL_11 ;
     
+    /** The name of the default update language for update parsing.
+     *  The default update language syntax must be capable of accepting
+     *  any SPARQL query but may also accept extensions. 
+     */
+    public static Syntax defaultUpdateSyntax = Syntax.syntaxSPARQL_11 ;
+    
     /** The syntax currently that is standardized, published, SPARQL - the "default SPARQL" */ 
     public static final Syntax syntaxSPARQL = syntaxSPARQL_11 ;
 

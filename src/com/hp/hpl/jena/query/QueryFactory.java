@@ -74,10 +74,16 @@ public class QueryFactory
        
    }
    
-    /**
-     * Make a query - no parsing done  
+   /**
+    * Make a query - no parsing done  
+    */
+   static public Query create() { return new Query() ; }
+
+   
+   /**
+     * Make a query - no parsing done - old name: {@link #create()} preferred. 
      */
-    static public Query make() { return new Query() ; }
+    static public Query make() { return create() ; }
 
     /**
      * Make a query from another one by deep copy (a clone).

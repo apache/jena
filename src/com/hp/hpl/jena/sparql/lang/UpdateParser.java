@@ -24,10 +24,9 @@ public abstract class UpdateParser
     public abstract UpdateRequest parse(UpdateRequest request, String queryString) throws QueryParseException ;
     public abstract UpdateRequest parse(UpdateRequest request, InputStream input) throws QueryParseException ;
 
-    
     public static boolean canParse(Syntax syntaxURI)
     {
-        return ParserRegistry.get().containsFactory(syntaxURI) ;
+        return UpdateParserRegistry.get().containsFactory(syntaxURI) ;
     }
     
     public static UpdateParser createParser(Syntax syntaxURI)

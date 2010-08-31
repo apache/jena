@@ -16,6 +16,7 @@ import arq.cmdline.CmdUpdate ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 import com.hp.hpl.jena.update.GraphStore ;
+import com.hp.hpl.jena.update.UpdateExecutionFactory ;
 import com.hp.hpl.jena.update.UpdateFactory ;
 import com.hp.hpl.jena.update.UpdateRequest ;
 
@@ -80,13 +81,13 @@ public class update extends CmdUpdate
     private void execOneFile(String filename, GraphStore store)
     {
         UpdateRequest req = UpdateFactory.read(filename) ;
-        UpdateFactory.create(req, store).execute() ;
+        UpdateExecutionFactory.create(req, store).execute() ;
     }
     
     private void execOne(String requestString, GraphStore store)
     {
         UpdateRequest req = UpdateFactory.create(requestString) ;
-        UpdateFactory.create(req, store).execute() ;
+        UpdateExecutionFactory.create(req, store).execute() ;
     }
 }
 

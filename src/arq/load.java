@@ -21,7 +21,7 @@ import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 import com.hp.hpl.jena.sparql.util.graph.GraphLoadMonitor ;
 import com.hp.hpl.jena.update.GraphStore ;
-import com.hp.hpl.jena.update.UpdateFactory ;
+import com.hp.hpl.jena.update.UpdateExecutionFactory ;
 
 public class load extends CmdUpdate
 {
@@ -88,7 +88,7 @@ public class load extends CmdUpdate
         }
         
         
-        UpdateFactory.create(loadReq, graphStore).execute() ;
+        UpdateExecutionFactory.create(loadReq, graphStore).execute() ;
         
         if ( dump )
         {

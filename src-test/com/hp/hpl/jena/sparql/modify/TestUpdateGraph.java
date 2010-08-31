@@ -30,6 +30,7 @@ import com.hp.hpl.jena.sparql.util.NodeFactory ;
 import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
 import com.hp.hpl.jena.update.GraphStore ;
 import com.hp.hpl.jena.update.UpdateAction ;
+import com.hp.hpl.jena.update.UpdateExecutionFactory ;
 import com.hp.hpl.jena.update.UpdateFactory ;
 import com.hp.hpl.jena.update.UpdateProcessor ;
 import com.hp.hpl.jena.update.UpdateRequest ;
@@ -54,7 +55,7 @@ public abstract class TestUpdateGraph extends TestUpdateBase
 		defaultGraphData(gStore, graph1) ;
         UpdateInsertData insert = new UpdateInsertData() ;
         insert.setData(data2()) ;
-        UpdateProcessor uProc = UpdateFactory.create(insert, gStore) ;
+        UpdateProcessor uProc = UpdateExecutionFactory.create(insert, gStore) ;
         uProc.execute(); 
         
         assertFalse(graphEmpty(gStore.getDefaultGraph())) ;
@@ -68,7 +69,7 @@ public abstract class TestUpdateGraph extends TestUpdateBase
         defaultGraphData(gStore, graph1) ;
         UpdateDeleteData delete = new UpdateDeleteData() ;
         delete.setData(data2()) ;
-        UpdateProcessor uProc = UpdateFactory.create(delete, gStore) ;
+        UpdateProcessor uProc = UpdateExecutionFactory.create(delete, gStore) ;
         uProc.execute(); 
         
         assertFalse(graphEmpty(gStore.getDefaultGraph())) ;
@@ -82,7 +83,7 @@ public abstract class TestUpdateGraph extends TestUpdateBase
         defaultGraphData(gStore, graph1) ;
         UpdateDeleteData delete = new UpdateDeleteData() ;
         delete.setData(data1()) ;
-        UpdateProcessor uProc = UpdateFactory.create(delete, gStore) ;
+        UpdateProcessor uProc = UpdateExecutionFactory.create(delete, gStore) ;
         uProc.execute(); 
         
         assertTrue(graphEmpty(gStore.getDefaultGraph())) ;

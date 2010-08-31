@@ -3,9 +3,11 @@ ChangeLog for ARQ
 
 ==== ARQ 2.8.7
 
-+ Complete implementatio of SPARQL 1.1 Update 
-  Works with all storage systems. Room for some optimization (is theer always?)
++ Complete implementation of SPARQL 1.1 Update 
+  Works with all storage systems. Room for some optimization (isn't there always?)
 + Default query language is now SPARQL 1.1
++ Synatx extensions for submission "SPARQL Update" 
++ Expand update API 
 + Bug fix: compound expressions involving aggregates in SELECT clause
 + Remove use of code from org.json to clarify legal position. 
 

@@ -3,7 +3,11 @@ package dev;
 
 public class DevARQ
 {
-    // ** Next: multiple update languages.
+    // ** Next: WITH/USING
+    // WITH appies to whole block, inc. WHERE
+    //   USING overrides WITH
+    // ** Inference wiring (TDB first?)
+    // ** Dataset.addInference?
     
     // mvn tests (4042) and Eclipse tests (3270) differ in size. 
     

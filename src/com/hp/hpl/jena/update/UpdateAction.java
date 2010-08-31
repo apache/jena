@@ -249,7 +249,7 @@ public class UpdateAction
      */
     public static void execute(UpdateRequest request, GraphStore graphStore, Binding binding)
     {
-        UpdateProcessor uProc = UpdateFactory.create(request, graphStore, binding) ;
+        UpdateProcessor uProc = UpdateExecutionFactory.create(request, graphStore, binding) ;
         uProc.execute() ;
     }
     /** Execute a single SPARQL/Update operation.
@@ -330,7 +330,7 @@ public class UpdateAction
     
     private static void execute$(UpdateSubmission update, GraphStore graphStore, Binding binding)
     {
-        UpdateProcessor uProc = UpdateFactory.create(update, graphStore, binding) ;
+        UpdateProcessor uProc = UpdateExecutionFactory.create(update, graphStore, binding) ;
         uProc.execute() ;
     }  
 
