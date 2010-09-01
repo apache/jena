@@ -57,10 +57,10 @@ public class UpdateFactory
      * @param baseURI   The base URI for resolving relative URIs. 
      * @param syntax    The update language syntax 
      */
-    public static UpdateRequest create(String str, String baseURI, Syntax syntax)
+    public static UpdateRequest create(String string, String baseURI, Syntax syntax)
     {
         UpdateRequest request = new UpdateRequest() ;
-        make(request, str, baseURI, syntax) ;
+        make(request, string, baseURI, syntax) ;
         return request ;
     }
     
