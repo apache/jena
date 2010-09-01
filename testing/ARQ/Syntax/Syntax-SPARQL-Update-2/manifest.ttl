@@ -10,6 +10,6 @@
     ( 
       [  mf:name    "syntax-update-other-01" ;
          rdf:type   mf:PositiveUpdateSyntaxTest11 ;
-         mf:action  <large-request.ru> ; 
+         mf:action  <large-request-01.ru> ; 
       ]
     ) .
