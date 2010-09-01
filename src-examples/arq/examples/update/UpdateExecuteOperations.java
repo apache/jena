@@ -32,7 +32,6 @@ public class UpdateExecuteOperations
         ex3(graphStore) ;
     }
     
-    
     public static void ex1(GraphStore graphStore)
     {
         // Execute one operation.

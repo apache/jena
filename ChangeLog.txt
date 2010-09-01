@@ -3,20 +3,28 @@ ChangeLog for ARQ
 
 ==== ARQ 2.8.7
 
-+ Complete implementation of SPARQL 1.1 Update 
-  Works with all storage systems. Room for some optimization (isn't there always?)
-+ Default query language is now SPARQL 1.1
-+ Syntax extensions for submission "SPARQL Update"
-+ Expand update API to support mnultiple languages
++ Complete implementation of SPARQL 1.1 Query and Update (as per current draft) 
+  Default query and updates languages are now SPARQL 1.1
+
++ Syntax extensions for W3C submission "SPARQL Update"
+  http://seaborne.blogspot.com/2010/08/migrating-from-sparql-update-submission.html
+
++ Expand update API to support multiple languages
+  See src-examples/arq.update.* for examples of API.
+
 + UpdateException now used for errors during update execution (potetially visible change)   
+
 + Bug fix: compound expressions involving aggregates in SELECT clause
+
 + Remove use of code from org.json to clarify legal position. 
 
 ==== ARQ 2.8.6
 
 + Property path evaluation now aligns with SPARQL 1.1 
 	cardinaity of results for arbitary length paths may change.   
+
 + Bug fix: N-Triples, and N-Quads now expect ASCII input as per specs.  
+
 + Bug fix: Property functions in FILTER NOT EXISTS
 
 ==== ARQ 2.8.5
