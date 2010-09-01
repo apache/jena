@@ -12,13 +12,15 @@ import com.hp.hpl.jena.query.QuerySolution ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingUtils ;
-import com.hp.hpl.jena.sparql.modify.submission.UpdateSubmission ;
 
-/** A class of convenience forms for executing SPARQL/Update operations */
+/** A class of forms for executing SPARQL Update operations. 
+ * parse* means the update request is in a string;
+ * read* means read the contents of a file.    
+ */
 
 public class UpdateAction
 {
-    /** Read a file containing SPARQL/Update operations, and execute the operations.
+    /** Read a file containing SPARQL Update operations, and execute the operations.
      * @param filename
      * @param model
      */
@@ -27,7 +29,7 @@ public class UpdateAction
         readExecute(filename, model, null) ; 
     }
     
-    /** Read a file containing SPARQL/Update operations, and execute the operations.
+    /** Read a file containing SPARQL Update operations, and execute the operations.
      * @param filename
      * @param dataset
      */
@@ -36,7 +38,7 @@ public class UpdateAction
         readExecute(filename, dataset, null) ; 
     }
 
-    /** Read a file containing SPARQL/Update operations, and execute the operations.
+    /** Read a file containing SPARQL Update operations, and execute the operations.
      * @param filename
      * @param graph
      */
@@ -45,7 +47,7 @@ public class UpdateAction
         readExecute(filename, GraphStoreFactory.create(graph), null) ; 
     }
 
-    /** Read a file containing SPARQL/Update operations, and execute the operations.
+    /** Read a file containing SPARQL Update operations, and execute the operations.
      * @param filename
      * @param graphStore
      */
@@ -55,7 +57,7 @@ public class UpdateAction
     }
 
 
-    /** Read a file containing SPARQL/Update operations, and execute the operations.
+    /** Read a file containing SPARQL Update operations, and execute the operations.
      * @param filename
      * @param model
      * @param initialBinding Presets for variables.
@@ -65,17 +67,17 @@ public class UpdateAction
         readExecute(filename, GraphStoreFactory.create(model), BindingUtils.asBinding(initialBinding)) ; 
     }
     
-    /** Read a file containing SPARQL/Update operations, and execute the operations.
+    /** Read a file containing SPARQL Update operations, and execute the operations.
      * @param filename
      * @param dataset
      * @param initialBinding Presets for variables.
      */
     public static void readExecute(String filename, Dataset dataset, QuerySolution initialBinding)
     {
-        readExecute(filename, GraphStoreFactory.create(dataset), BindingUtils.asBinding(initialBinding)) ; 
+        readExecute(filename, GraphStoreFactory.create(dataset), BindingUtils.asBinding(initialBinding)) ;
     }
 
-    /** Read a file containing SPARQL/Update operations, and execute the operations.
+    /** Read a file containing SPARQL Update operations, and execute the operations.
      * @param filename
      * @param graph
      * @param binding Presets for variables.
@@ -85,7 +87,7 @@ public class UpdateAction
         readExecute(filename, GraphStoreFactory.create(graph), binding) ; 
     }
 
-    /** Read a file containing SPARQL/Update operations, and execute the operations.
+    /** Read a file containing SPARQL Update operations, and execute the operations.
      * @param filename
      * @param graphStore
      * @param binding Presets for variables.
@@ -96,7 +98,7 @@ public class UpdateAction
         execute(req, graphStore, binding) ;
     }
     
-    /** Parse a string containing SPARQL/Update operations, and execute the operations.
+    /** Parse a string containing SPARQL Update operations, and execute the operations.
      * @param updateString
      * @param model
      */
@@ -105,7 +107,7 @@ public class UpdateAction
         parseExecute(updateString, model, null) ; 
     }
     
-    /** Parse a string containing SPARQL/Update operations, and execute the operations.
+    /** Parse a string containing SPARQL Update operations, and execute the operations.
      * @param updateString
      * @param dataset
      */
@@ -114,7 +116,7 @@ public class UpdateAction
         parseExecute(updateString, dataset, null) ; 
     }
 
-    /** Parse a string containing SPARQL/Update operations, and execute the operations.
+    /** Parse a string containing SPARQL Update operations, and execute the operations.
      * @param updateString
      * @param graph
      */
@@ -123,7 +125,7 @@ public class UpdateAction
         parseExecute(updateString, GraphStoreFactory.create(graph), null) ; 
     }
 
-    /** Parse a string containing SPARQL/Update operations, and execute the operations.
+    /** Parse a string containing SPARQL Update operations, and execute the operations.
      * @param updateString
      * @param graphStore
      */
@@ -132,20 +134,17 @@ public class UpdateAction
         parseExecute(updateString, graphStore, null) ;
     }
 
-    /** Parse a string containing SPARQL/Update operations, and execute the operations.
+    /** Parse a string containing SPARQL Update operations, and execute the operations.
      * @param updateString
      * @param model
      * @param initialBinding Presets for variables.
      */
     public static void parseExecute(String updateString, Model model, QuerySolution initialBinding)
     {
-        if ( initialBinding == null )
-            parseExecute(updateString, GraphStoreFactory.create(model), null) ;
-        else
-            parseExecute(updateString, GraphStoreFactory.create(model), BindingUtils.asBinding(initialBinding)) ; 
+        parseExecute(updateString, GraphStoreFactory.create(model), BindingUtils.asBinding(initialBinding)) ; 
     }
     
-    /** Parse a string containing SPARQL/Update operations, and execute the operations.
+    /** Parse a string containing SPARQL Update operations, and execute the operations.
      * @param updateString
      * @param dataset
      * @param initialBinding Presets for variables.
@@ -155,7 +154,7 @@ public class UpdateAction
         parseExecute(updateString, GraphStoreFactory.create(dataset), BindingUtils.asBinding(initialBinding)) ; 
     }
 
-    /** Parse a string containing SPARQL/Update operations, and execute the operations.
+    /** Parse a string containing SPARQL Update operations, and execute the operations.
      * @param updateString
      * @param graph
      * @param binding Presets for variables.
@@ -165,7 +164,7 @@ public class UpdateAction
         parseExecute(updateString, GraphStoreFactory.create(graph), binding) ; 
     }
 
-    /** Parse a string containing SPARQL/Update operations, and execute the operations.
+    /** Parse a string containing SPARQL Update operations, and execute the operations.
      * @param updateString
      * @param graphStore
      * @param binding Presets for variables.
@@ -176,7 +175,7 @@ public class UpdateAction
         execute(req, graphStore, binding) ;
     }
     
-    /** Execute SPARQL/Update operations.
+    /** Execute SPARQL Update operations.
      * @param request
      * @param model
      */
@@ -185,7 +184,7 @@ public class UpdateAction
         execute(request, model, null) ; 
     }
     
-    /** Execute SPARQL/Update operations.
+    /** Execute SPARQL Update operations.
      * @param request
      * @param dataset
      */
@@ -194,7 +193,7 @@ public class UpdateAction
         execute(request, dataset, null) ; 
     }
 
-    /** Execute SPARQL/Update operations.
+    /** Execute SPARQL Update operations.
      * @param request
      * @param graph
      */
@@ -203,7 +202,7 @@ public class UpdateAction
         execute(request, GraphStoreFactory.create(graph), null) ; 
     }
 
-    /** Execute SPARQL/Update operations.
+    /** Execute SPARQL Update operations.
      * @param request
      * @param graphStore
      */
@@ -212,7 +211,7 @@ public class UpdateAction
         execute(request, graphStore, null) ;
     }
 
-    /** Execute SPARQL/Update operations.
+    /** Execute SPARQL Update operations.
      * @param request
      * @param model
      * @param initialBinding Presets for variables.
@@ -222,7 +221,7 @@ public class UpdateAction
         execute(request, GraphStoreFactory.create(model), BindingUtils.asBinding(initialBinding)) ; 
     }
     
-    /** Execute SPARQL/Update operations.
+    /** Execute SPARQL Update operations.
      * @param request
      * @param dataset
      * @param initialBinding Presets for variables.
@@ -232,7 +231,7 @@ public class UpdateAction
         execute(request, GraphStoreFactory.create(dataset), BindingUtils.asBinding(initialBinding)) ; 
     }
 
-    /** Execute SPARQL/Update operations.
+    /** Execute SPARQL Update operations.
      * @param request
      * @param graph
      * @param binding Presets for variables.
@@ -242,96 +241,104 @@ public class UpdateAction
         execute(request, GraphStoreFactory.create(graph), binding) ; 
     }
 
-    /** Execute SPARQL/Update operations.
+    /** Execute SPARQL Update operations.
      * @param request
      * @param graphStore
      * @param binding Presets for variables.
      */
     public static void execute(UpdateRequest request, GraphStore graphStore, Binding binding)
     {
+        execute$(request, graphStore, binding) ;
+    }
+    
+    // Everything comes through here.
+    private static void execute$(UpdateRequest request, GraphStore graphStore, Binding binding)
+    {
         UpdateProcessor uProc = UpdateExecutionFactory.create(request, graphStore, binding) ;
         uProc.execute() ;
     }
-    /** Execute a single SPARQL/Update operation.
+    
+    /** Execute a single SPARQL Update operation.
      * @param update
      * @param model
      */
-    public static void execute(UpdateSubmission update, Model model)
+    public static void execute(Update update, Model model)
     { 
         execute(update, model, null) ; 
     }
     
-    /** Execute a single SPARQL/Update operation.
+    /** Execute a single SPARQL Update operation.
      * @param update
      * @param dataset
      */
-    public static void execute(UpdateSubmission update, Dataset dataset)
+    public static void execute(Update update, Dataset dataset)
     {
         execute(update, dataset, null) ; 
     }
 
-    /** Execute a single SPARQL/Update operation.
+    /** Execute a single SPARQL Update operation.
      * @param update
      * @param graph
      */
-    public static void execute(UpdateSubmission update, Graph graph)
+    public static void execute(Update update, Graph graph)
     {
         execute(update, GraphStoreFactory.create(graph), null) ; 
     }
 
-    /** Execute a single SPARQL/Update operation.
+    /** Execute a single SPARQL Update operation.
      * @param update
      * @param graphStore
      */
-    public static void execute(UpdateSubmission update, GraphStore graphStore)
+    public static void execute(Update update, GraphStore graphStore)
     {
         execute(update, graphStore, null) ;
     }
 
-    /** Execute a single SPARQL/Update operation.
+    /** Execute a single SPARQL Update operation.
      * @param update
      * @param model
      * @param initialBinding Presets for variables.
      */
-    public static void execute(UpdateSubmission update, Model model, QuerySolution initialBinding)
+    public static void execute(Update update, Model model, QuerySolution initialBinding)
     {
         execute(update, GraphStoreFactory.create(model), BindingUtils.asBinding(initialBinding)) ; 
     }
     
-    /** Execute a single SPARQL/Update operation.
+    /** Execute a single SPARQL Update operation.
      * @param update
      * @param dataset
      * @param initialBinding Presets for variables.
      */
-    public static void execute(UpdateSubmission update, Dataset dataset, QuerySolution initialBinding)
+    public static void execute(Update update, Dataset dataset, QuerySolution initialBinding)
     {
         execute(update, GraphStoreFactory.create(dataset), BindingUtils.asBinding(initialBinding)) ; 
     }
 
-    /** Execute a single SPARQL/Update operation.
+    /** Execute a single SPARQL Update operation.
      * @param update
      * @param graph
      * @param binding Presets for variables.
      */
-    public static void execute(UpdateSubmission update, Graph graph, Binding binding)
+    public static void execute(Update update, Graph graph, Binding binding)
     {
         execute(update, GraphStoreFactory.create(graph), binding) ; 
     }
 
-    /** Execute a single SPARQL/Update operation.
+    /** Execute a single SPARQL Update operation.
      * @param update
      * @param graphStore
      * @param binding Presets for variables.
      */
-    public static void execute(UpdateSubmission update, GraphStore graphStore, Binding binding)
+    public static void execute(Update update, GraphStore graphStore, Binding binding)
     {
         execute$(update, graphStore, binding) ;
     }
     
-    private static void execute$(UpdateSubmission update, GraphStore graphStore, Binding binding)
+    private static void execute$(Update update, GraphStore graphStore, Binding binding)
     {
-        UpdateProcessor uProc = UpdateExecutionFactory.create(update, graphStore, binding) ;
-        uProc.execute() ;
+        UpdateRequest request = new UpdateRequest() ;
+        request.addUpdate(update) ;
+        execute$(request, graphStore, binding) ;
     }  
 
 }

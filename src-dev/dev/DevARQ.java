@@ -4,6 +4,20 @@ package dev;
 public class DevARQ
 {
     // ** Next: multiple update languages.
+    // Update src-examples for update.
+    //  using UpdateFactory and UpdateAction
+    //   Convert all tests to SPARQL 1.1 Update 
+    //  TestUpdateGraphMgt, TestUpdateGraph
+    // QueryEngine -> interface of .execute
+    // QueryEngine -> QueryEngineMain.
+    
+    
+    // **** Fixes/bugs
+    // execDropClear - does not check if exists
+    // Exceptions change to UpdateException, not AlreadyExistsException
+    //   Check other submission exceptions
+    // Can't print a drop operation.
+    
     // Strictisms:
     //   Unnecessary scoping checks on variables.
     

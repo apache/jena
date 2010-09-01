@@ -15,6 +15,21 @@ public class UpdateCreate extends Update
     protected final Node graphRef ;
     protected final boolean silent ;
     
+    public UpdateCreate(String s)
+    {
+        this(Node.createURI(s), false) ;
+    }
+    
+    public UpdateCreate(String s, boolean silent)
+    {
+        this(Node.createURI(s), silent) ;
+    }
+    
+    public UpdateCreate(Node iri)
+    {
+        this(iri, false) ;
+    }
+    
     public UpdateCreate(Node iri, boolean silent)
     { 
         this.graphRef = iri ; 

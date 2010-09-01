@@ -73,8 +73,6 @@ class UpdateEngineWorker implements UpdateVisitor
 
     private void execDropClear(UpdateDropClear update, boolean isClear)
     {
-        //update.isSilent() ;
-        
         if ( update.isAll() )
         {
             execDropClear(update, null, true) ;    // Always clear.
@@ -92,6 +90,9 @@ class UpdateEngineWorker implements UpdateVisitor
 
     private void execDropClear(UpdateDropClear update, Node g, boolean isClear)
     {
+        if ( ! graphStore.containsGraph(g) && ! update.isSilent())
+            error("No such graph; "+g) ;
+        
         if ( isClear )
             graph(g).getBulkUpdateHandler().removeAll() ;
         else

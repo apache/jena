@@ -6,11 +6,18 @@
 
 package com.hp.hpl.jena.sparql.modify.request;
 
+import com.hp.hpl.jena.graph.Node ;
+
 public class UpdateDrop extends UpdateDropClear 
 {
     public UpdateDrop(String iri, boolean silent)       { super(iri, silent) ; }
     public UpdateDrop(Target target, boolean silent)    { super(target, silent) ; }
+    public UpdateDrop(Node target, boolean silent)      { super(target, silent) ; }
     
+    public UpdateDrop(String iri)                       { super(iri, false) ; }
+    public UpdateDrop(Target target)                    { super(target, false) ; }
+    public UpdateDrop(Node target)                      { super(target, false) ; }
+
     @Override
     public void visit(UpdateVisitor visitor)
     { visitor.visit(this) ; }

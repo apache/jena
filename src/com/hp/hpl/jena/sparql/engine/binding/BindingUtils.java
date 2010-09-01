@@ -35,6 +35,8 @@ public class BindingUtils
     
     public static Binding asBinding(QuerySolution qSolution)
     {
+        if ( qSolution == null )
+            return null ;
         Binding binding = new BindingMap(null) ;
         addToBinding(binding, qSolution) ;
         return binding ;

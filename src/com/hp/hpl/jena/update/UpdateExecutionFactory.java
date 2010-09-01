@@ -15,6 +15,7 @@ import com.hp.hpl.jena.sparql.modify.UpdateEngineRegistry ;
 import com.hp.hpl.jena.sparql.modify.UpdateProcessorBase ;
 import com.hp.hpl.jena.sparql.util.Context ;
 
+/** Create UpdateProcessors (one-time executions of a SPARQL Update request) */
 public class UpdateExecutionFactory
 {
 
@@ -82,6 +83,7 @@ public class UpdateExecutionFactory
         return make(updateRequest, graphStore, initialBinding, null) ;
     }
 
+    // Everything comes through here
     private static UpdateProcessor make(UpdateRequest updateRequest, GraphStore graphStore, Binding initialBinding, Context context)
     {
         if ( context == null )

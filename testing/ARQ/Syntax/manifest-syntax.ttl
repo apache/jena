@@ -15,4 +15,5 @@
 
         ## SPARQL 1.1 Update
         <Syntax-SPARQL-Update/manifest.ttl>
+        <Syntax-SPARQL-Update-2/manifest.ttl>
     ) .

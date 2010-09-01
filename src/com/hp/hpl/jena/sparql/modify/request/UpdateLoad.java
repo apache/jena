@@ -13,6 +13,12 @@ public class UpdateLoad extends Update
 {
     private final String source ;
     private final Node dest ;
+    
+
+    public UpdateLoad(String source, String dest)
+    {
+        this(source, Node.createURI(dest)) ;
+    }
 
     public UpdateLoad(String source, Node dest)
     {

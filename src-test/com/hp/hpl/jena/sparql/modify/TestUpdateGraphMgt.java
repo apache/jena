@@ -9,16 +9,14 @@ package com.hp.hpl.jena.sparql.modify;
 import org.junit.Test ;
 
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.sparql.AlreadyExists ;
-import com.hp.hpl.jena.sparql.DoesNotExist ;
-import com.hp.hpl.jena.sparql.modify.submission.UpdateCreate ;
-import com.hp.hpl.jena.sparql.modify.submission.UpdateDrop ;
-import com.hp.hpl.jena.sparql.modify.submission.UpdateSubmission ;
+import com.hp.hpl.jena.sparql.modify.request.UpdateCreate ;
+import com.hp.hpl.jena.sparql.modify.request.UpdateDrop ;
 import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
 import com.hp.hpl.jena.update.GraphStore ;
 import com.hp.hpl.jena.update.GraphStoreFactory ;
+import com.hp.hpl.jena.update.Update ;
 import com.hp.hpl.jena.update.UpdateAction ;
-
+import com.hp.hpl.jena.update.UpdateException ;
 
 public abstract class TestUpdateGraphMgt extends TestUpdateBase
 {
@@ -27,31 +25,34 @@ public abstract class TestUpdateGraphMgt extends TestUpdateBase
     @Test public void testCreateDrop1()
     {
         GraphStore gStore = GraphStoreFactory.create() ;
-        UpdateSubmission u = new UpdateCreate(graphIRI) ;
+        Update u = new UpdateCreate(graphIRI) ;
         UpdateAction.execute(u, gStore) ;
         assertTrue(gStore.containsGraph(graphIRI)) ;
         assertTrue(graphEmpty(gStore.getGraph(graphIRI))) ;
 
+        // try again - should fail (already exists)
         try {
             UpdateAction.execute(u, gStore) ;
             fail() ;
-        } catch (AlreadyExists ex) {}
-        
+        } catch (UpdateException ex) {}
+
+        // Drop it.
         u = new UpdateDrop(graphIRI) ;
         UpdateAction.execute(u, gStore) ;
         assertFalse(gStore.containsGraph(graphIRI)) ;
         
+        // Drop it again. - should fail
         try {
             UpdateAction.execute(u, gStore) ;
             fail() ;
-        } catch (DoesNotExist ex) {}
+        } catch (UpdateException ex) {}
         
     }
 
     @Test public void testCreateDrop2()
     {
         GraphStore gStore = GraphStoreFactory.create() ;
-        UpdateSubmission u = new UpdateCreate(graphIRI) ;
+        Update u = new UpdateCreate(graphIRI) ;
         UpdateAction.execute(u, gStore) ;
         
         u = new UpdateCreate(graphIRI, true) ;

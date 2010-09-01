@@ -20,6 +20,9 @@ public abstract class UpdateDropClear extends Update
     protected UpdateDropClear(Target target, boolean silent)
     { this.target = target ; this.silent = silent ; }
     
+    protected UpdateDropClear(Node target, boolean silent)
+    { this(Target.create(target), silent) ; }
+
     public Target getTarget() { return target ; }
     public boolean isSilent() { return silent ; }
     
