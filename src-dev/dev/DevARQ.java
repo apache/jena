@@ -4,8 +4,8 @@ package dev;
 public class DevARQ
 {
     // **Next
-    // Update src-examples for update.
-    //   using UpdateFactory and UpdateAction
+    // Error handling and exception catching.  UpdateParseException : LanguageParseException 
+    // Naming. QueryParseException, QuerySolution
     
     // Strictisms:
     //   Unnecessary scoping checks on variables.
@@ -21,11 +21,9 @@ public class DevARQ
     // ---- SPARQL Update
 
     // USING/USING NAMED
-    // Error handling and exception catching.  UpdateParseException : LanguageParseException 
-    // Naming. QueryParseException, QuerySolution
     
-    //   Should INSERT DATA { GRAPH {} } auto create?
-    //   Insert into explicitly named default graph should be made to work.
+    // Should INSERT DATA { GRAPH {} } auto create?
+    // Check: Inserting into explicitly named default graph should be made to work.
     
     // Label checking: can't use same bNode label in template and pattern
     // for DELETE/INSERT.
