@@ -1,37 +1,72 @@
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
 package arq.examples.update;
 
+import org.openjena.atlas.lib.StrUtils ;
+
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.update.GraphStore ;
 import com.hp.hpl.jena.update.GraphStoreFactory ;
 import com.hp.hpl.jena.update.UpdateAction ;
+import com.hp.hpl.jena.update.UpdateFactory ;
+import com.hp.hpl.jena.update.UpdateRequest ;
 
-/** Simple example of SPARQL/Update : read a update script from a file */ 
-public class Update3
+/** Build an update request up out of indvidiual Updates specified as strings.
+ *  See UpdatePorgrammatic for another way to build up a request. 
+ *  These two approaches can be mixed.
+ */
+
+public class UpdateExecuteOperations
 {
     public static void main(String []args)
     {
         // Create an empty GraphStore (has an empty default graph and no named graphs) 
         GraphStore graphStore = GraphStoreFactory.create() ;
+        ex1(graphStore) ;
+        ex2(graphStore) ;
+        ex3(graphStore) ;
+    }
+    
+    
+    public static void ex1(GraphStore graphStore)
+    {
+        // Execute one operation.
+        UpdateAction.parseExecute("LOAD <file:etc/update-data.ttl>", graphStore) ;
+    }
+    
+    public static void ex2(GraphStore graphStore)
+    {
+        // Execute a series of operations at once.
+        // See ex3 for a better way to build up a request 
+        String cmd = StrUtils.strjoinNL("DROP ALL",
+                                        "CREATE GRAPH <http://example/g2>",
+                                        "LOAD <file:etc/update-data.ttl> INTO <http://example/g2>") ;
+
+        UpdateAction.parseExecute(cmd, graphStore) ;
+    }
+    
+    public static void ex3(GraphStore graphStore)
+    {
+        // Build up the request then execute it.
+        // This is the preferred way for complex sequences of operations. 
+        UpdateRequest request = UpdateFactory.create() ;
+        UpdateFactory.parse(request, "DROP ALL") ;
+        UpdateFactory.parse(request, "CREATE GRAPH <http://example/g2>") ;
+        UpdateFactory.parse(request, "LOAD <file:etc/update-data.ttl> INTO <http://example/g2>") ;
+        UpdateAction.execute(request, graphStore) ;
         
-        // Read an update script
-        UpdateAction.readExecute("update.ru", graphStore) ;
-        
-        // Print it out (format is SSE <http://jena.hpl.hp.com/wiki/SSE>)
-        // used to represent a dataset.
-        // Note the empty default, unnamed graph
+        // Print it out (debug format :: SSE <http://jena.hpl.hp.com/wiki/SSE>)
         SSE.write(graphStore) ;
     }
 }
 
 
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

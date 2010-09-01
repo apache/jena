@@ -72,6 +72,30 @@ public class UpdateFactory
         parser.parse(request, input) ;
     }
     
+    /* Parse operations and add to an UpdateRequest */ 
+    public static void parse(UpdateRequest request, String updateString)
+    {
+        make(request, updateString, null, defaultUpdateSyntax) ;
+    }
+    
+    /* Parse operations and add to an UpdateRequest */ 
+    public static void parse(UpdateRequest request, String updateString, Syntax syntax)
+    {
+        make(request, updateString, null, syntax) ;
+    }
+    
+    /* Parse operations and add to an UpdateRequest */ 
+    public static void parse(UpdateRequest request, String updateString, String baseURI)
+    {
+        make(request, updateString, baseURI, defaultUpdateSyntax) ;
+    }
+    
+    /* Parse operations and add to an UpdateRequest */ 
+    public static void parse(UpdateRequest request, String updateString, String baseURI, Syntax syntax)
+    {
+        make(request, updateString, baseURI, syntax) ;
+    }
+    
     /** Append update operations to a request */
     private static UpdateParser setupParser(UpdateRequest request, String baseURI, Syntax syntax)
     {

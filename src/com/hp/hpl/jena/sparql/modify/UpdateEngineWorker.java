@@ -9,7 +9,6 @@ package com.hp.hpl.jena.sparql.modify;
 import java.util.ArrayList ;
 import java.util.Collection ;
 import java.util.HashMap ;
-import java.util.Iterator ;
 import java.util.List ;
 import java.util.Map ;
 
@@ -92,7 +91,7 @@ class UpdateEngineWorker implements UpdateVisitor
 
     private void execDropClear(UpdateDropClear update, Node g, boolean isClear)
     {
-        if ( ! graphStore.containsGraph(g) && ! update.isSilent())
+        if ( g != null && ! graphStore.containsGraph(g) && ! update.isSilent())
             error("No such graph; "+g) ;
         
         if ( isClear )
@@ -104,12 +103,11 @@ class UpdateEngineWorker implements UpdateVisitor
 
     private void execDropClearAllNamed(UpdateDropClear update, boolean isClear)
     {
-        Iterator<Node> iter = graphStore.listGraphNodes() ;
-        for ( ; iter.hasNext() ; )
-        {
-            Node gn = iter.next() ;
+        // Avoid ConcurrentModificationException
+        List<Node> list = Iter.toList(graphStore.listGraphNodes()) ;
+        
+        for ( Node gn : list )
             execDropClear(update, gn, isClear) ;
-        }
     }
 
     public void visit(UpdateCreate update)

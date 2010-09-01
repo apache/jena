@@ -1,43 +1,49 @@
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
 package arq.examples.update;
 
-import com.hp.hpl.jena.sparql.modify.submission.UpdateLoad ;
+import com.hp.hpl.jena.sparql.modify.request.Target ;
+import com.hp.hpl.jena.sparql.modify.request.UpdateCreate ;
+import com.hp.hpl.jena.sparql.modify.request.UpdateDrop ;
+import com.hp.hpl.jena.sparql.modify.request.UpdateLoad ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.update.GraphStore ;
 import com.hp.hpl.jena.update.GraphStoreFactory ;
 import com.hp.hpl.jena.update.UpdateAction ;
+import com.hp.hpl.jena.update.UpdateFactory ;
+import com.hp.hpl.jena.update.UpdateRequest ;
 
-/** Simple example of SPARQL/Update */ 
-public class Update1
+/** Build an update request up out of indvidiual Update objects, not by parsing.
+ *  This is quite low-level.
+ *  See UpdateExecuteOperations for ways to build the request up from strings. 
+ *  These two approaches can be mixed.
+ */
+
+public class UpdateProgrammatic
 {
     public static void main(String []args)
     {
-        // Create an empty GraphStore (has an empty default graph and no named graphs) 
         GraphStore graphStore = GraphStoreFactory.create() ;
         
-        // Read a graph into it.
-        UpdateLoad load = new UpdateLoad("etc/update-data.ttl") ;
-        UpdateAction.execute(load, graphStore) ;
-
-        // Same as:
-        //UpdateProcessor uProc = UpdateFactory.create(load, graphStore) ;
-        // Execute a single operation.
-        //uProc.execute() ;
+        UpdateRequest request = UpdateFactory.create() ;
+        
+        request.addUpdate(new UpdateDrop(Target.ALL)) ;
+        request.addUpdate(new UpdateCreate("http://example/g2")) ;
+        request.addUpdate(new UpdateLoad("file:etc/update-data.ttl", "http://example/g2")) ;
+        UpdateAction.execute(request, graphStore) ;
         
         // Print it out (format is SSE <http://jena.hpl.hp.com/wiki/SSE>)
-        // used to represent a dataset
         SSE.write(graphStore) ;
     }
 }
 
 
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

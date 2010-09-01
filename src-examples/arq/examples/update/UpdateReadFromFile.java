@@ -1,55 +1,44 @@
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
 package arq.examples.update;
 
-import com.hp.hpl.jena.sparql.modify.request.UpdateCreate ;
-import com.hp.hpl.jena.sparql.modify.request.UpdateLoad ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.update.GraphStore ;
 import com.hp.hpl.jena.update.GraphStoreFactory ;
 import com.hp.hpl.jena.update.UpdateAction ;
+import com.hp.hpl.jena.update.UpdateFactory ;
 import com.hp.hpl.jena.update.UpdateRequest ;
 
-/** Simple example of SPARQL/Update */ 
-public class Update2
+/** Simple example of SPARQL/Update : read a update script from a file */ 
+public class UpdateReadFromFile
 {
     public static void main(String []args)
     {
-        final String graphName = "http://example/namedGraph" ;
-        
         // Create an empty GraphStore (has an empty default graph and no named graphs) 
         GraphStore graphStore = GraphStoreFactory.create() ;
         
-        // A sequence of operations
-        UpdateRequest req = new UpdateRequest() ;
+        // ---- Read and update script
+        UpdateAction.readExecute("update.ru", graphStore) ;
         
-        // Create a named graph
-        UpdateCreate c = new UpdateCreate(graphName) ;
-
-        // Load a file into a named graph - NB order of arguments (both strings).
-        UpdateLoad load = new UpdateLoad("etc/update-data.ttl", graphName) ;
+        // ---- Reset.
+        UpdateAction.parseExecute("DROP ALL", graphStore) ;
         
-        // Add the two operations and execute the request
-        req.addUpdate(c) ;
-        req.addUpdate(load) ;
-
-        // Execute 
-        UpdateAction.execute(req, graphStore) ;
+        // ---- Do the same as the first part but in two steps - parse, then execute.
+        UpdateRequest request = UpdateFactory.read("update.ru") ;
+        UpdateAction.execute(request, graphStore) ;
         
-        // Print it out (format is SSE <http://jena.hpl.hp.com/wiki/SSE>)
-        // used to represent a dataset.
-        // Note the empty default, unnamed graph
         SSE.write(graphStore) ;
+        
     }
 }
 
 
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
