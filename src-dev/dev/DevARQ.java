@@ -3,6 +3,8 @@ package dev;
 
 public class DevARQ
 {
+    // Check docuemntation for Update API.
+    
     // **Next
     // Error handling and exception catching.  UpdateParseException : LanguageParseException 
     // Naming. QueryParseException, QuerySolution
@@ -15,15 +17,13 @@ public class DevARQ
     // Library: Var->Var (VarRename), bNode->var (UpdateEngine), Converters
     // See NodeConverters
     
-    // Expr.copySubstitute : not used?
-    // Replace with a ExprTransform?
-
     // ---- SPARQL Update
 
     // USING/USING NAMED
     
     // Should INSERT DATA { GRAPH {} } auto create?
     // Check: Inserting into explicitly named default graph should be made to work.
+    // Implicit empty graph mode even for dataset of graphs.
     
     // Label checking: can't use same bNode label in template and pattern
     // for DELETE/INSERT.
