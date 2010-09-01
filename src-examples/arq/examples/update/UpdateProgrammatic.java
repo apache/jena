@@ -6,6 +6,8 @@
 
 package arq.examples.update;
 
+import org.openjena.riot.RiotWriter ;
+
 import com.hp.hpl.jena.sparql.modify.request.Target ;
 import com.hp.hpl.jena.sparql.modify.request.UpdateCreate ;
 import com.hp.hpl.jena.sparql.modify.request.UpdateDrop ;
@@ -36,8 +38,14 @@ public class UpdateProgrammatic
         request.addUpdate(new UpdateLoad("file:etc/update-data.ttl", "http://example/g2")) ;
         UpdateAction.execute(request, graphStore) ;
         
-        // Print it out (format is SSE <http://jena.hpl.hp.com/wiki/SSE>)
+        System.out.println("# Debug format");
         SSE.write(graphStore) ;
+        
+        System.out.println();
+        
+        System.out.println("# N-Quads: S P O G") ;
+        RiotWriter.writeNQuads(System.out, graphStore) ;
+
     }
 }
 

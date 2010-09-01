@@ -6,6 +6,8 @@
 
 package arq.examples.update;
 
+import org.openjena.riot.RiotWriter ;
+
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.update.GraphStore ;
 import com.hp.hpl.jena.update.GraphStoreFactory ;
@@ -13,7 +15,7 @@ import com.hp.hpl.jena.update.UpdateAction ;
 import com.hp.hpl.jena.update.UpdateFactory ;
 import com.hp.hpl.jena.update.UpdateRequest ;
 
-/** Simple example of SPARQL/Update : read a update script from a file */ 
+/** Simple example of SPARQL/Update : read a update script from a file and execute it */ 
 public class UpdateReadFromFile
 {
     public static void main(String []args)
@@ -21,18 +23,24 @@ public class UpdateReadFromFile
         // Create an empty GraphStore (has an empty default graph and no named graphs) 
         GraphStore graphStore = GraphStoreFactory.create() ;
         
-        // ---- Read and update script
+        // ---- Read and update script in one step.
         UpdateAction.readExecute("update.ru", graphStore) ;
         
         // ---- Reset.
         UpdateAction.parseExecute("DROP ALL", graphStore) ;
         
-        // ---- Do the same as the first part but in two steps - parse, then execute.
+        // ---- Read the update script, then execute, in separate two steps
         UpdateRequest request = UpdateFactory.read("update.ru") ;
         UpdateAction.execute(request, graphStore) ;
-        
+
+        // Write in debug format.
+        System.out.println("# Debug format");
         SSE.write(graphStore) ;
         
+        System.out.println();
+        
+        System.out.println("# N-Quads: S P O G") ;
+        RiotWriter.writeNQuads(System.out, graphStore) ;
     }
 }
 

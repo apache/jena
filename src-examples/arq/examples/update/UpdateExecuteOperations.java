@@ -7,6 +7,7 @@
 package arq.examples.update;
 
 import org.openjena.atlas.lib.StrUtils ;
+import org.openjena.riot.RiotWriter ;
 
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.update.GraphStore ;
@@ -59,8 +60,14 @@ public class UpdateExecuteOperations
         UpdateFactory.parse(request, "LOAD <file:etc/update-data.ttl> INTO <http://example/g2>") ;
         UpdateAction.execute(request, graphStore) ;
         
-        // Print it out (debug format :: SSE <http://jena.hpl.hp.com/wiki/SSE>)
+        System.out.println("# Debug format");
         SSE.write(graphStore) ;
+        
+        System.out.println();
+        
+        System.out.println("# N-Quads: S P O G") ;
+        RiotWriter.writeNQuads(System.out, graphStore) ;
+
     }
 }
 
