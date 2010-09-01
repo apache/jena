@@ -269,6 +269,11 @@ public class Iter<T> implements Iterable<T>, Iterator<T>
         return iter ;
     }
     
+    public static <T, R> List<R> map(List<? extends T> list, Transform<T, R> converter)
+    {
+        return toList(map(list.iterator(), converter)) ;
+    }
+    
     /** Apply an action to everything in stream, yielding a stream of the same items */ 
     public static <T> Iterator<T> operate(Iterable<? extends T> stream, Action<T> converter)
     { return operate(stream.iterator(), converter) ; }

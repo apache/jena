@@ -6,59 +6,68 @@
 
 package com.hp.hpl.jena.sparql.modify;
 
-import org.openjena.atlas.logging.Log ;
 
-import com.hp.hpl.jena.query.ARQ ;
-import com.hp.hpl.jena.sparql.ARQConstants ;
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
-import com.hp.hpl.jena.sparql.engine.binding.BindingRoot ;
+import com.hp.hpl.jena.sparql.modify.submission.UpdateProcessorSubmission ;
+import com.hp.hpl.jena.sparql.modify.submission.UpdateSubmission ;
 import com.hp.hpl.jena.sparql.util.Context ;
-import com.hp.hpl.jena.sparql.util.NodeFactory ;
 import com.hp.hpl.jena.update.GraphStore ;
+import com.hp.hpl.jena.update.Update ;
 import com.hp.hpl.jena.update.UpdateRequest ;
 
-public abstract class UpdateEngineBase implements UpdateEngine
+// For any DatasetGraph.
+// Functional first, rather than efficient.
+
+// -->UpdateEngineMain implement UpEng .execute
+
+public class UpdateEngineMain extends UpdateEngineBase 
 {
-    protected final GraphStore graphStore ;
-    protected final Context context ;
-    protected final Binding startBinding ;
-    protected UpdateRequest request ;
-
-    public UpdateEngineBase(GraphStore graphStore, 
-                            UpdateRequest request,
-                            Binding input,
-                            Context context)
+    public UpdateEngineMain(GraphStore graphStore, UpdateRequest request, Binding initialBinding, Context context)
     {
-        this.graphStore = graphStore ;
-        this.request = request ;
-        this.context = setupContext(context, graphStore) ;
-        
-        if ( input == null )
+        super(graphStore, request, initialBinding, context) ;
+    }
+
+    @Override
+    public void execute()
+    {
+        graphStore.startRequest() ;
+        UpdateEngineWorker worker = new UpdateEngineWorker(graphStore, startBinding) ;
+        for ( Update up : request.getOperations() )
         {
-            Log.warn(this, "Null initial input") ;
-            input = BindingRoot.create() ;
+            if ( up instanceof UpdateSubmission )
+            {
+                // If old style, go there.
+                executeUpdateSubmission((UpdateSubmission)up) ;
+                continue ;
+            }
+            up.visit(worker) ;
         }
-        this.startBinding = input ;
-        this.context.put(ARQConstants.sysCurrentUpdateRequest, request) ;
+        graphStore.finishRequest() ;
     }
     
-    public abstract void execute() ;
-    
-    // Put any 
-    private static Context setupContext(Context context, DatasetGraph dataset)
+    public void executeUpdateSubmission(UpdateSubmission ups)
     {
-        // To many copies?
-        if ( context == null )      // Copy of global context to protect against chnage.
-            context = ARQ.getContext() ;
-        context = context.copy() ;
-
-        if ( dataset.getContext() != null )
-            context.putAll(dataset.getContext()) ;
-        
-        context.set(ARQConstants.sysCurrentTime, NodeFactory.nowAsDateTime()) ;
-        return context ; 
+        UpdateProcessorSubmission p = 
+            new UpdateProcessorSubmission(graphStore, null, super.startBinding) ;
+        p.execute(ups) ;
     }
+    
+    private static UpdateEngineFactory factory = new UpdateEngineFactory()
+    {
+        public boolean accept(UpdateRequest request, GraphStore graphStore, Context context)
+        {
+            return (graphStore instanceof GraphStoreBasic) ;
+        }
+
+        public UpdateEngine create(UpdateRequest request, GraphStore graphStore, Binding inputBinding, Context context)
+        {
+            return new UpdateEngineMain(graphStore, request, inputBinding, context) ;
+        }
+    } ;
+
+
+    public static UpdateEngineFactory getFactory() { return factory ; }
 }
 
 /*

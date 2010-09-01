@@ -6,68 +6,9 @@
 
 package com.hp.hpl.jena.sparql.modify;
 
-
-
-import com.hp.hpl.jena.sparql.engine.binding.Binding ;
-import com.hp.hpl.jena.sparql.modify.submission.UpdateProcessorSubmission ;
-import com.hp.hpl.jena.sparql.modify.submission.UpdateSubmission ;
-import com.hp.hpl.jena.sparql.util.Context ;
-import com.hp.hpl.jena.update.GraphStore ;
-import com.hp.hpl.jena.update.Update ;
-import com.hp.hpl.jena.update.UpdateRequest ;
-
-// For any DatasetGraph.
-// Functional first, rather than efficient.
-
-// -->UpdateEngineMain.
-
-public class UpdateEngine extends UpdateEngineBase 
+public interface UpdateEngine  
 {
-    public UpdateEngine(GraphStore graphStore, UpdateRequest request, Binding initialBinding, Context context)
-    {
-        super(graphStore, request, initialBinding, context) ;
-    }
-
-    @Override
-    public void execute()
-    {
-        graphStore.startRequest() ;
-        UpdateEngineWorker worker = new UpdateEngineWorker(graphStore, startBinding) ;
-        for ( Update up : request.getOperations() )
-        {
-            if ( up instanceof UpdateSubmission )
-            {
-                // If old style, go there.
-                executeUpdateSubmission((UpdateSubmission)up) ;
-                continue ;
-            }
-            up.visit(worker) ;
-        }
-        graphStore.finishRequest() ;
-    }
-    
-    public void executeUpdateSubmission(UpdateSubmission ups)
-    {
-        UpdateProcessorSubmission p = 
-            new UpdateProcessorSubmission(graphStore, null, super.startBinding) ;
-        p.execute(ups) ;
-    }
-    
-    private static UpdateEngineFactory factory = new UpdateEngineFactory()
-    {
-        public boolean accept(UpdateRequest request, GraphStore graphStore, Context context)
-        {
-            return (graphStore instanceof GraphStoreBasic) ;
-        }
-
-        public UpdateEngine create(UpdateRequest request, GraphStore graphStore, Binding inputBinding, Context context)
-        {
-            return new UpdateEngine(graphStore, request, inputBinding, context) ;
-        }
-    } ;
-
-
-    public static UpdateEngineFactory getFactory() { return factory ; }
+    public void execute() ;
 }
 
 /*

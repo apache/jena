@@ -74,7 +74,7 @@ public class Quad
     }
     
     /** Test whether this is a quad for the default graph (not the default graphs by explicit name) */
-    public static boolean isQuadDefaultGraphNode(Node node)
+    public static boolean isQuadDefaultGraphGenerated(Node node)
     {
         // The node used by the quad generator for the default graph 
         // Not the named graph that refers to the default graph.
@@ -87,9 +87,13 @@ public class Quad
         return node.equals(defaultGraphNodeGenerated) || node.equals(defaultGraphIRI) ; 
     }
     
+    /** Default, concrete graph via generated URI (not explciitly named) */
+    public boolean isDefaultGraphGenerated()
+    { return isQuadDefaultGraphGenerated(getGraph()) ; }
+    
+    /** Default, concrete graph (either generated or explicitly named) */
     public boolean isDefaultGraph()
     {
-        /** Default, concrete graph (either generated or explicitly named) */
         return  isDefaultGraph(getGraph()) ;
     }
     

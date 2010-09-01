@@ -3,18 +3,9 @@ package dev;
 
 public class DevARQ
 {
-    // ** Next: multiple update languages.
+    // **Next
     // Update src-examples for update.
-    //  using UpdateFactory and UpdateAction
-    //   Convert all tests to SPARQL 1.1 Update 
-    //  TestUpdateGraphMgt, TestUpdateGraph
-    // QueryEngine -> interface of .execute
-    // QueryEngine -> QueryEngineMain.
-    
-    
-    // **** Fixes/bugs
-    // + Exceptions change to UpdateException, not AlreadyExistsException
-    //   Check other submission exceptions
+    //   using UpdateFactory and UpdateAction
     
     // Strictisms:
     //   Unnecessary scoping checks on variables.
@@ -29,23 +20,15 @@ public class DevARQ
 
     // ---- SPARQL Update
 
-    // WITH and USING/USING NAMED
+    // USING/USING NAMED
     // Error handling and exception catching.  UpdateParseException : LanguageParseException 
-    // Naming.
-    // QueryParseException
-    // QuerySolution (
+    // Naming. QueryParseException, QuerySolution
     
-    // UpdateParseRegistry
-    //   ARQ -> submission
-    //   SPARQL_11 -> transition : 
-    
-    // Wrapper version of GraphStore?
     //   Should INSERT DATA { GRAPH {} } auto create?
     //   Insert into explicitly named default graph should be made to work.
-    //   Swap to 1.1 update engine.
     
     // Label checking: can't use same bNode label in template and pattern
-    // for DELETE/INSERT
+    // for DELETE/INSERT.
     
     // ---- SPARQL Query
     // Check for out-of-scope group vars.

@@ -33,7 +33,7 @@ public class UpdateEngineRegistry
     private static synchronized void init()
     {
         registry = new UpdateEngineRegistry() ;
-        registry.add(UpdateEngine.getFactory()) ;
+        registry.add(UpdateEngineMain.getFactory()) ;
     }
     
     /** Locate a suitable factory for this query and dataset from the default registry

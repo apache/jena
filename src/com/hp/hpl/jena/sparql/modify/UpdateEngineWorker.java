@@ -13,6 +13,8 @@ import java.util.Iterator ;
 import java.util.List ;
 import java.util.Map ;
 
+import org.openjena.atlas.iterator.Iter ;
+import org.openjena.atlas.iterator.Transform ;
 import org.openjena.atlas.lib.MultiMap ;
 import org.openjena.atlas.logging.Log ;
 
@@ -150,21 +152,49 @@ class UpdateEngineWorker implements UpdateVisitor
     public void visit(UpdateDeleteWhere update)
     {
         List<Quad> quads = update.getQuads() ;
-        
         // Convert bNodes to named variables first.
         quads = convertBNodesToVariables(quads) ;
 
+        // Can we do somethign special if just one quad pattern?
 //        if ( quads.size() == 0 )
 //        {
 //            Quad q = quads.get(0) ;
 //            // Do special.
 //        }
-            
         
         // Convert quads to a pattern.
-        Element el = elementFromQuads(update.getQuads()) ;
-        List<Binding> bindings = evalBindings(el) ;
-        execDelete(quads, bindings) ;
+        Element el = elementFromQuads(quads) ;
+        List<Binding> bindings = evalBindings(el, null) ;
+        execDelete(quads, null, bindings) ;
+    }
+
+    public void visit(UpdateModify update)
+    {
+        //request.get
+        Node graph = update.getWithIRI() ;
+    
+    
+//        if ( graph != null )
+//        {
+//            Log.fatal(this, "Attempt to use WITH - not fully implemented") ;
+//            throw new UpdateException("Attempt to use WITH - not fully implemented") ;
+//            // Need to set the target graph for exec*
+//            // Do by rewriting the quads after bindings.
+//        }
+        
+        if ( update.getUsing().size() > 0 || update.getUsingNamed().size() > 0 )
+            Log.warn(this, "Graph selection from the dataset not yet supported") ;
+        
+        final List<Binding> bindings = evalBindings(update.getWherePattern(), graph) ;
+        
+        execDelete(update.getDeleteQuads(), graph, bindings) ;
+        execInsert(update.getInsertQuads(), graph, bindings) ;
+        
+        // XXX
+//        GraphStoreUtils.action(graphStore, update.getGraphNames(), 
+//                               new GraphStoreAction() { public void exec(Graph graph) { execDeletes(modify, graph, bindings) ; }}) ;
+//        GraphStoreUtils.action(graphStore, update.getGraphNames(), 
+//                               new GraphStoreAction() { public void exec(Graph graph) { execInserts(modify, graph, bindings) ; }}) ;
     }
 
     private static List<Quad> convertBNodesToVariables(List<Quad> quads)
@@ -200,43 +230,47 @@ class UpdateEngineWorker implements UpdateVisitor
         return el ;
     }
 
-    public void visit(UpdateModify update)
+    private MultiMap<Node, Triple> execBase(List<Quad> quads, final Node dftGraph, List<Binding> bindings)
     {
-        //request.get
-        
-        if ( update.getWithIRI() != null )
+        if ( quads == null || quads.isEmpty() ) return null ; 
+        // The default graph has been set to something else.
+        if ( dftGraph != null )
         {
-            Log.fatal(this, "Attempt to use WITH - not fully implemented") ;
-            throw new UpdateException("Attempt to use WITH - not fully implemented") ;
-            // Need to set the target graph for exec*
-            // Do by rewriting the quads after bindings.
+            Transform<Quad, Quad> nt = new Transform<Quad, Quad>() {
+                public Quad convert(Quad quad)
+                {
+                    if ( ! quad.isDefaultGraph() ) return quad ;
+                    return new Quad(dftGraph, quad.getSubject(), quad.getPredicate(), quad.getObject()) ;
+                }
+            };
+            quads = Iter.map(quads, nt) ;
         }
         
-        if ( update.getUsing().size() > 0 || update.getUsingNamed().size() > 0 )
-            Log.warn(this, "Graph selection from the dataset not yet supported") ;
-        
-        // applies to WHERE as well.
-        
-        final List<Binding> bindings = evalBindings(update.getWherePattern()) ;
-        
-        execDelete(update.getDeleteQuads(), bindings) ;
-        execInsert(update.getInsertQuads(), bindings) ;
-        
-        // XXX
-//        GraphStoreUtils.action(graphStore, update.getGraphNames(), 
-//                               new GraphStoreAction() { public void exec(Graph graph) { execDeletes(modify, graph, bindings) ; }}) ;
-//        GraphStoreUtils.action(graphStore, update.getGraphNames(), 
-//                               new GraphStoreAction() { public void exec(Graph graph) { execInserts(modify, graph, bindings) ; }}) ;
+        MultiMap<Node, Triple> acc = calcTriples(quads, bindings) ;
+        return acc ;
     }
     
-    private void execDelete(List<Quad> quads, List<Binding> bindings)
+    private void execDelete(List<Quad> quads, Node dftGraph, List<Binding> bindings)
     {
-        if ( quads == null || quads.isEmpty() ) return ; 
-        MultiMap<Node, Triple> acc = calcTriples(quads, bindings) ;
+        MultiMap<Node, Triple> acc = execBase(quads, dftGraph, bindings) ;
+        if ( acc == null ) return ; 
+        
         for ( Node gn : acc.keys() )
         {
             Collection<Triple> triples = acc.get(gn) ;
             graph(gn).getBulkUpdateHandler().delete(triples.iterator()) ;
+        }
+    }
+
+    private void execInsert(List<Quad> quads, Node dftGraph, List<Binding> bindings)
+    {
+        MultiMap<Node, Triple> acc = execBase(quads, dftGraph, bindings) ;
+        if ( acc == null ) return ; 
+        
+        for ( Node gn : acc.keys() )
+        {
+            Collection<Triple> triples = acc.get(gn) ;
+            graph(gn).getBulkUpdateHandler().add(triples.iterator()) ;
         }
     }
 
@@ -246,17 +280,6 @@ class UpdateEngineWorker implements UpdateVisitor
         return subst(quads, qIter) ;
     }
 
-    private void execInsert(List<Quad> quads, List<Binding> bindings)
-    {
-        if ( quads == null  || quads.isEmpty() ) return ; 
-        MultiMap<Node, Triple> acc = calcTriples(quads, bindings) ;
-        for ( Node gn : acc.keys() )
-        {
-            Collection<Triple> triples = acc.get(gn) ;
-            graph(gn).getBulkUpdateHandler().add(triples.iterator()) ;
-        }
-    }
-    
     protected static MultiMap<Node, Triple> subst(List<Quad> quads, QueryIterator qIter)
     {
         MultiMap<Node, Triple> acc = MultiMap.createMapList() ;
@@ -325,7 +348,7 @@ class UpdateEngineWorker implements UpdateVisitor
         return bNodeMap.get(n) ;
     }
     
-    protected List<Binding> evalBindings(Element pattern)
+    protected List<Binding> evalBindings(Element pattern, Node dftGraph)
     {
         List<Binding> bindings = new ArrayList<Binding>() ;
         
