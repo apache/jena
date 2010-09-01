@@ -8,6 +8,8 @@ public class DevTDB
     //    TDBLoader from a dataset (or is this RIOT? or a general "Loader"?)
     //    TDBLoader javadoc - class info as well.
     
+    // Update the SPARQL Update tests.
+    
     // Dft model bug
     // TDB assembler & union graph
     // Update
