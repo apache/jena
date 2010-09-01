@@ -95,11 +95,13 @@ public class RunARQ
     {
         
         Update up = new UpdateDrop("") ;
-        UpdateRequest x = new UpdateRequest(up) ;
+        UpdateRequest x = new UpdateRequest() ;
+        x.addUpdate(up) ;
+        //x.addUpdate(up) ;
         divider() ;
         System.out.println(up.toString()) ;
         divider() ;
-        System.out.println(x.toString()) ;
+        System.out.print(x.toString()) ;
         divider() ;
         System.exit(0) ;
         

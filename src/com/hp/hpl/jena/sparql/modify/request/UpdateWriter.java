@@ -46,11 +46,11 @@ public class UpdateWriter
             first = false ;
             outputUpdate(update, out, sCxt) ;
             if ( addSeparator )
-            {
                 out.print(" ;") ;
-            }
         }
-        //out.ensureStartOfLine() ;
+        
+        // Update requests always end in newline. 
+        out.ensureStartOfLine() ;
         out.flush() ;
     }
     
@@ -60,6 +60,7 @@ public class UpdateWriter
             sCxt = new SerializationContext() ;
         prologue(out, sCxt.getPrologue()) ;
         outputUpdate(update, out, sCxt) ;
+        // Update operations do not end in newline. 
         out.flush() ;
     }
     
