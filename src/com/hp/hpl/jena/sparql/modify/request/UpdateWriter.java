@@ -50,7 +50,7 @@ public class UpdateWriter
                 out.print(" ;") ;
             }
         }
-        out.ensureStartOfLine() ;
+        //out.ensureStartOfLine() ;
         out.flush() ;
     }
     
@@ -60,7 +60,6 @@ public class UpdateWriter
             sCxt = new SerializationContext() ;
         prologue(out, sCxt.getPrologue()) ;
         outputUpdate(update, out, sCxt) ;
-        out.ensureStartOfLine() ;
         out.flush() ;
     }
     
@@ -70,7 +69,7 @@ public class UpdateWriter
         if ( update instanceof UpdateSubmission )
         {
             out.print(update) ;
-            out.ensureStartOfLine() ;
+            //out.ensureStartOfLine() ;
             return ;
         }
         

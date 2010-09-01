@@ -34,6 +34,9 @@ public class PrologueSerializer
 
     public static void printPrefixes(Prologue prologue, IndentedWriter out)
     {
+        if ( prologue.getPrefixMapping() == null )
+            return ;
+        
         Map<String, String> pmap = null ;
 
         if ( prologue.getPrefixMapping() instanceof PrefixMapping2 )

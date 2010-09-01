@@ -45,6 +45,7 @@ import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.function.FunctionEnvBase ;
 import com.hp.hpl.jena.sparql.lang.ParserSPARQL11Update ;
 import com.hp.hpl.jena.sparql.modify.GraphStoreBasic ;
+import com.hp.hpl.jena.sparql.modify.request.UpdateDrop ;
 import com.hp.hpl.jena.sparql.modify.request.UpdateWriter ;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
@@ -52,6 +53,7 @@ import com.hp.hpl.jena.sparql.util.ExprUtils ;
 import com.hp.hpl.jena.sparql.util.QueryExecUtils ;
 import com.hp.hpl.jena.sparql.util.Timer ;
 import com.hp.hpl.jena.update.GraphStore ;
+import com.hp.hpl.jena.update.Update ;
 import com.hp.hpl.jena.update.UpdateAction ;
 import com.hp.hpl.jena.update.UpdateFactory ;
 import com.hp.hpl.jena.update.UpdateRequest ;
@@ -91,6 +93,16 @@ public class RunARQ
 
     public static void main(String[] argv) throws Exception
     {
+        
+        Update up = new UpdateDrop("") ;
+        UpdateRequest x = new UpdateRequest(up) ;
+        divider() ;
+        System.out.println(up.toString()) ;
+        divider() ;
+        System.out.println(x.toString()) ;
+        divider() ;
+        System.exit(0) ;
+        
 //        arq.uparse.main("--file=update.ru") ; System.exit(0) ;
         //qparse("--query=Q.rq", "--print=query", "--print=op") ; System.exit(0) ;
         //sparql11update() ; System.exit(0) ; 

@@ -13,10 +13,8 @@ public class DevARQ
     
     
     // **** Fixes/bugs
-    // execDropClear - does not check if exists
-    // Exceptions change to UpdateException, not AlreadyExistsException
+    // + Exceptions change to UpdateException, not AlreadyExistsException
     //   Check other submission exceptions
-    // Can't print a drop operation.
     
     // Strictisms:
     //   Unnecessary scoping checks on variables.
