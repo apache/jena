@@ -1,8 +1,11 @@
 PREFIX : <http://people.example/>
 
-SELECT (count(*) AS ?X)
+SELECT *
 WHERE
 { ?s ?p ?o
 } 
-GROUP BY (?a+?b as ?c)
-HAVING (?X > 45)
+BINDINGS ?x ?y ?z
+{
+( 1 2 3 )
+( 4 5 6 )
+}

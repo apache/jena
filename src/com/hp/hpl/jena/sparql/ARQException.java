@@ -13,12 +13,10 @@ import com.hp.hpl.jena.shared.JenaException ;
 
 public class ARQException extends JenaException
 {
-    public ARQException(Throwable cause) { super(cause) ; }
-    public ARQException() { super() ; }
-    public ARQException (String msg) { super(msg) ; }
-    public ARQException (String msg, Throwable cause) { super(msg, cause) ; }
-
-    private static final long serialVersionUID = 1L; // Unused
+    public ARQException(String msg, Throwable cause)    { super(msg, cause) ; }
+    public ARQException(String msg)                     { super(msg) ; }
+    public ARQException(Throwable cause)                { super(cause) ; }
+    public ARQException()                               { super() ; }
 }
 
 /*

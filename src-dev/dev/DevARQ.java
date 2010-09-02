@@ -4,10 +4,13 @@ package dev;
 public class DevARQ
 {
     // Fix SEMI rule in Update grammar.
+    // ARQ -> Modified SPARQL 1.1, not submission.
     
     // **Next
-    // Error handling and exception catching.  UpdateParseException : LanguageParseException 
-    // Naming. QueryParseException, QuerySolution
+    // Error handling and exception catching.  LanguageParseException 
+    // (old name QueryParseException : superclass) 
+    // QuerySolution
+    
     
     // BINDINGS
     

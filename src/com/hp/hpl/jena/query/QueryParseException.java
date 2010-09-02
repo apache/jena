@@ -7,8 +7,6 @@ package com.hp.hpl.jena.query;
 
 /** QueryParseException is root exception for all (intentional) exceptions
  *  from the various parsers where the error is to do with the syntax of a query.
- *  
- * @author		Andy Seaborne
  */
 
 public class QueryParseException extends QueryException

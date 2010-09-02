@@ -1,18 +1,24 @@
 /*
  * (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
- * (c) Copyright 2010 Talis Systems Ltd
+ * (c) Copyright 2010 Talis Systems Ltd.
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
 package com.hp.hpl.jena.sparql.lang;
 
+import java.util.ArrayList ;
+import java.util.List ;
 import java.util.Stack ;
 
+import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.Query ;
+import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.update.Update ;
 import com.hp.hpl.jena.update.UpdateRequest ;
 
+/** Class that has all the parse event operations and other query/update specific things */  
 public class ParserQueryBase extends ParserBase 
 {
     private Stack<Query> stack = new Stack<Query>() ;
@@ -100,11 +106,38 @@ public class ParserQueryBase extends ParserBase
         query = stack.pop();
         return subQuery ;
     }
+    
+    private List<Var> variables = null ;
+    private List<List<Node>> values = null ;
+    
+    protected void startBinding()               
+    { 
+        variables = new ArrayList<Var>() ;
+        values = new ArrayList<List<Node>>() ;
+    }
+    
+    protected void emitBindingVariable(Var v)   { variables.add(v) ; }
+    
+    protected void startBindingValueRow()       { values.add(new ArrayList<Node>()) ; }
+    
+    protected void emitBindingValue(Node n)     { values.get(values.size()-1).add(n) ; }
+
+    protected void finishBindingValueRow()      
+    {
+        // check row.
+    }
+    
+    protected void finishBinding()
+    {
+        // check
+        //getQuery().addBindings() ;
+    }
 }
 
 /*
  * (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
- * (c) Copyright 2010 Talis Systems Ltd
+ * (c) Copyright 2010 Talis Systems Ltd.
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

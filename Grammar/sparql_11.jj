@@ -266,14 +266,19 @@ void BindingsClause() : { Var v ; Node n ; }
 {
   (
     // @@ Zero allowed?
-    <BINDINGS> ( v = Var() )+
+    <BINDINGS>
+    { startBinding() ; }
+    ( v = Var() { emitBindingVariable(v) ; }) *
     <LBRACE>
       (
+        { startBindingValueRow() ; }
         <LPAREN>
-            (n = BindingValue())+
+            (n = BindingValue() { emitBindingValue(n) ; }) *
         <RPAREN>
+        { finishBindingValueRow() ; }
       )*
     <RBRACE>
+    { finishBinding() ; }
   )?
 }
 Node BindingValue() : { Node n ; String iri ; }
