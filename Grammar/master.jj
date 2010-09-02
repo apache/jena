@@ -1040,39 +1040,6 @@ ExprList ArgList() : { Expr expr ; boolean distinct = false ;
     { return args ; }
 }
 
-
-// ExprList Params() : { Expr expr ;  ExprList args = new ExprList() ; Token t = null ; }
-// { 
-//   // "; name=expr ..."
-//   t = <SEMICOLON>
-//   {
-//     if ( ! allowAggregatesInExpressions )
-//           throwParseException("Aggregate expression not legal at this point",
-//                                t.beginLine, t.beginColumn) ;
-//   }
-//   (
-//     expr = Expression() { args.add(expr) ; } 
-//     (<COMMA> expr = Expression() { args.add(expr) ; } )*
-//   )?
-//   { return args ; }
-// }
-
-// // Single expression aggregate argument
-// Expr ExprAggArg() : { Expr expr = null ; boolean distinct = false ; Token t ; }
-// {
-//   <LPAREN>
-//   ( t = <DISTINCT> { distinct = true ; }
-//     {
-//      if ( ! allowAggregatesInExpressions )
-//           throwParseException("Aggregate expression not legal at this point",
-//                               t.beginLine, t.beginColumn) ;
-//      }
-//   )?
-//   expr = Expression()
-//   <RPAREN> 
-//   { return expr ; }
-// }
-
 ExprList ExpressionList() : { Expr expr = null ; ExprList args = new ExprList() ;}
 {
   (
@@ -1085,7 +1052,6 @@ ExprList ExpressionList() : { Expr expr = null ; ExprList args = new ExprList() 
   )
   { return args ; }
 }
-
 
 // -------- Construct patterns
 

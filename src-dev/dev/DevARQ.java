@@ -3,7 +3,8 @@ package dev;
 
 public class DevARQ
 {
-    // Check docuemntation for Update API.
+    // Check documentation for Update API.
+    // Fixe SEMI rule in Update grammar.
     
     // **Next
     // Error handling and exception catching.  UpdateParseException : LanguageParseException 

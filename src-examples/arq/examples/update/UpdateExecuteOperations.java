@@ -41,11 +41,15 @@ public class UpdateExecuteOperations
     public static void ex2(GraphStore graphStore)
     {
         // Execute a series of operations at once.
-        // See ex3 for a better way to build up a request 
-        String cmd = StrUtils.strjoinNL("DROP ALL",
-                                        "CREATE GRAPH <http://example/g2>",
-                                        "LOAD <file:etc/update-data.ttl> INTO <http://example/g2>") ;
-
+        // See ex3 for a better way to build up a request
+        // For maximum portability, multiple operations should be separated by a ";".
+        // The "\n" imporves readability and parser error messages.
+        String cmd = StrUtils.strjoin(" ;\n",
+                                      "DROP ALL",
+                                      "CREATE GRAPH <http://example/g2>",
+                                      "LOAD <file:etc/update-data.ttl> INTO <http://example/g2>") ;
+        // check string created
+        System.out.println(cmd) ;
         UpdateAction.parseExecute(cmd, graphStore) ;
     }
     
