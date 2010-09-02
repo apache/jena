@@ -7,40 +7,42 @@
 package com.hp.hpl.jena.tdb.modify;
 
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
-import com.hp.hpl.jena.sparql.modify.UpdateProcessorFactory ;
-import com.hp.hpl.jena.sparql.modify.UpdateProcessorMain ;
-import com.hp.hpl.jena.sparql.modify.UpdateProcessorRegistry ;
+import com.hp.hpl.jena.sparql.modify.UpdateEngine ;
+import com.hp.hpl.jena.sparql.modify.UpdateEngineFactory ;
+import com.hp.hpl.jena.sparql.modify.UpdateEngineMain ;
+import com.hp.hpl.jena.sparql.modify.UpdateEngineRegistry ;
+import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.update.GraphStore ;
-import com.hp.hpl.jena.update.UpdateProcessor ;
 import com.hp.hpl.jena.update.UpdateRequest ;
 
-public class UpdateProcessorTDB extends UpdateProcessorMain
+public class UpdateEngineTDB extends UpdateEngineMain
 {
-    public UpdateProcessorTDB(DatasetGraphTDB graphStore, UpdateRequest request, Binding inputBinding)
-    { super(graphStore, request, inputBinding) ; }
+    public UpdateEngineTDB(DatasetGraphTDB graphStore, UpdateRequest request, Binding inputBinding, Context context)
+    { super(graphStore, request, inputBinding, context) ; }
     
     @Override
     public void execute()
     { super.execute() ; }
 
     // ---- Factory
-    public static UpdateProcessorFactory getFactory() { 
-        return new UpdateProcessorFactory()
+    public static UpdateEngineFactory getFactory() { 
+        return new UpdateEngineFactory()
         {
-            public boolean accept(UpdateRequest request, GraphStore graphStore)
+            public boolean accept(UpdateRequest request, GraphStore graphStore, Context context)
             {
                 return (graphStore instanceof DatasetGraphTDB) ;
             }
         
-            public UpdateProcessor create(UpdateRequest request, GraphStore graphStore, Binding inputBinding)
+            public UpdateEngine create(UpdateRequest request, GraphStore graphStore, Binding inputBinding, Context context)
             {
-                return new UpdateProcessorTDB((DatasetGraphTDB)graphStore, request, inputBinding) ;
+                return new UpdateEngineTDB((DatasetGraphTDB)graphStore, request, inputBinding, context) ;
             }
+
         } ;
     }
 
-    public static void register() { UpdateProcessorRegistry.get().add(getFactory()) ; }
+    public static void register() { UpdateEngineRegistry.get().add(getFactory()) ; }
 }
 
 /*

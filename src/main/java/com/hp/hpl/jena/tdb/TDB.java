@@ -29,7 +29,7 @@ import com.hp.hpl.jena.sparql.mgt.SystemInfo ;
 import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.sparql.util.Symbol ;
 import com.hp.hpl.jena.tdb.assembler.AssemblerTDB ;
-import com.hp.hpl.jena.tdb.modify.UpdateProcessorTDB ;
+import com.hp.hpl.jena.tdb.modify.UpdateEngineTDB ;
 import com.hp.hpl.jena.tdb.solver.Explain ;
 import com.hp.hpl.jena.tdb.solver.OpExecutorTDB ;
 import com.hp.hpl.jena.tdb.solver.QueryEngineTDB ;
@@ -200,7 +200,7 @@ public class TDB
         AssemblerUtils.init() ;
         AssemblerTDB.init();
         QueryEngineTDB.register() ;
-        UpdateProcessorTDB.register() ;
+        UpdateEngineTDB.register() ;
 
         wireIntoExecution() ;
         

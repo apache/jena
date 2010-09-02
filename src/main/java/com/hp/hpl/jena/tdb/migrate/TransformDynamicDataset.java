@@ -75,8 +75,8 @@ public class TransformDynamicDataset extends TransformCopy
     {
         Node gn = opQuadPattern.getGraphNode() ;
 
-        if ( Quad.isQuadDefaultGraphNode(gn) )  
-            // Quad pattern directed at the default graph. 
+        if ( Quad.isQuadDefaultGraphGenerated(gn) )  
+            // Quad pattern directed at the default graph (not by explicit name). 
             return patternOver(defaultGraphs, opQuadPattern.getBasicPattern()) ;
 
         if ( gn.equals(Quad.defaultGraphIRI) )
