@@ -3,15 +3,15 @@ package dev;
 
 public class DevARQ
 {
-    // Check documentation for Update API.
-    // Fixe SEMI rule in Update grammar.
+    // Fix SEMI rule in Update grammar.
     
     // **Next
     // Error handling and exception catching.  UpdateParseException : LanguageParseException 
     // Naming. QueryParseException, QuerySolution
     
     // Strictisms:
-    //   Unnecessary scoping checks on variables.
+    //   scoping checks on variables.
+    //   SELECT * rules
     
     // mvn tests (4042) and Eclipse tests (3270) differ in size. 
     
