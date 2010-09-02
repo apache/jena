@@ -1943,36 +1943,6 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     throw new Error("Missing return statement in function");
   }
 
-// ExprList Params() : { Expr expr ;  ExprList args = new ExprList() ; Token t = null ; }
-// { 
-//   // "; name=expr ..."
-//   t = <SEMICOLON>
-//   {
-//     if ( ! allowAggregatesInExpressions )
-//           throwParseException("Aggregate expression not legal at this point",
-//                                t.beginLine, t.beginColumn) ;
-//   }
-//   (
-//     expr = Expression() { args.add(expr) ; } 
-//     (<COMMA> expr = Expression() { args.add(expr) ; } )*
-//   )?
-//   { return args ; }
-// }
-// // Single expression aggregate argument
-// Expr ExprAggArg() : { Expr expr = null ; boolean distinct = false ; Token t ; }
-// {
-//   <LPAREN>
-//   ( t = <DISTINCT> { distinct = true ; }
-//     {
-//      if ( ! allowAggregatesInExpressions )
-//           throwParseException("Aggregate expression not legal at this point",
-//                               t.beginLine, t.beginColumn) ;
-//      }
-//   )?
-//   expr = Expression()
-//   <RPAREN> 
-//   { return expr ; }
-// }
   final public ExprList ExpressionList() throws ParseException {
                               Expr expr = null ; ExprList args = new ExprList() ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -4083,6 +4053,121 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     finally { jj_save(1, xla); }
   }
 
+  private boolean jj_3R_89() {
+    if (jj_scan_token(PNAME_NS)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_50() {
+    if (jj_3R_54()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_88() {
+    if (jj_scan_token(PNAME_LN)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_48() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_50()) {
+    jj_scanpos = xsp;
+    if (jj_3R_51()) return true;
+    }
+    return false;
+  }
+
+  private boolean jj_3R_80() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_88()) {
+    jj_scanpos = xsp;
+    if (jj_3R_89()) return true;
+    }
+    return false;
+  }
+
+  private boolean jj_3R_70() {
+    if (jj_3R_80()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_64() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_69()) {
+    jj_scanpos = xsp;
+    if (jj_3R_70()) return true;
+    }
+    return false;
+  }
+
+  private boolean jj_3R_69() {
+    if (jj_3R_79()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_84() {
+    if (jj_scan_token(STRING_LITERAL_LONG2)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_45() {
+    if (jj_scan_token(GROUP_CONCAT)) return true;
+    if (jj_scan_token(LPAREN)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_83() {
+    if (jj_scan_token(STRING_LITERAL_LONG1)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_82() {
+    if (jj_scan_token(STRING_LITERAL2)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_44() {
+    if (jj_scan_token(SAMPLE)) return true;
+    if (jj_scan_token(LPAREN)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_81() {
+    if (jj_scan_token(STRING_LITERAL1)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_43() {
+    if (jj_scan_token(AVG)) return true;
+    if (jj_scan_token(LPAREN)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_71() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_81()) {
+    jj_scanpos = xsp;
+    if (jj_3R_82()) {
+    jj_scanpos = xsp;
+    if (jj_3R_83()) {
+    jj_scanpos = xsp;
+    if (jj_3R_84()) return true;
+    }
+    }
+    }
+    return false;
+  }
+
+  private boolean jj_3R_42() {
+    if (jj_scan_token(MAX)) return true;
+    if (jj_scan_token(LPAREN)) return true;
+    return false;
+  }
+
   private boolean jj_3R_41() {
     if (jj_scan_token(MIN)) return true;
     if (jj_scan_token(LPAREN)) return true;
@@ -4319,6 +4404,11 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
+  private boolean jj_3_1() {
+    if (jj_3R_37()) return true;
+    return false;
+  }
+
   private boolean jj_3R_63() {
     if (jj_scan_token(NIL)) return true;
     return false;
@@ -4408,126 +4498,6 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     jj_scanpos = xsp;
     if (jj_3R_78()) return true;
     }
-    return false;
-  }
-
-  private boolean jj_3R_89() {
-    if (jj_scan_token(PNAME_NS)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_50() {
-    if (jj_3R_54()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_88() {
-    if (jj_scan_token(PNAME_LN)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_48() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_50()) {
-    jj_scanpos = xsp;
-    if (jj_3R_51()) return true;
-    }
-    return false;
-  }
-
-  private boolean jj_3R_80() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_88()) {
-    jj_scanpos = xsp;
-    if (jj_3R_89()) return true;
-    }
-    return false;
-  }
-
-  private boolean jj_3_1() {
-    if (jj_3R_37()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_70() {
-    if (jj_3R_80()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_64() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_69()) {
-    jj_scanpos = xsp;
-    if (jj_3R_70()) return true;
-    }
-    return false;
-  }
-
-  private boolean jj_3R_69() {
-    if (jj_3R_79()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_84() {
-    if (jj_scan_token(STRING_LITERAL_LONG2)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_45() {
-    if (jj_scan_token(GROUP_CONCAT)) return true;
-    if (jj_scan_token(LPAREN)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_83() {
-    if (jj_scan_token(STRING_LITERAL_LONG1)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_82() {
-    if (jj_scan_token(STRING_LITERAL2)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_44() {
-    if (jj_scan_token(SAMPLE)) return true;
-    if (jj_scan_token(LPAREN)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_81() {
-    if (jj_scan_token(STRING_LITERAL1)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_43() {
-    if (jj_scan_token(AVG)) return true;
-    if (jj_scan_token(LPAREN)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_71() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_81()) {
-    jj_scanpos = xsp;
-    if (jj_3R_82()) {
-    jj_scanpos = xsp;
-    if (jj_3R_83()) {
-    jj_scanpos = xsp;
-    if (jj_3R_84()) return true;
-    }
-    }
-    }
-    return false;
-  }
-
-  private boolean jj_3R_42() {
-    if (jj_scan_token(MAX)) return true;
-    if (jj_scan_token(LPAREN)) return true;
     return false;
   }
 

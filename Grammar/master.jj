@@ -30,6 +30,8 @@
 #define CLASS       ARQParser
 #define PARSERBASE  ARQParserBase
 #define UPDATE_SUBMISSION
+//#define UPDATE
+//#define ARQ_UPDATE
 #endif
 
 #if defined(UPDATE) && defined(UPDATE_SUBMISSION)
@@ -393,12 +395,21 @@ void UpdateUnit() : {}
     <EOF>
 }
 
+#ifdef ARQ_UPDATE
+// Optional SEMICOLON
 void Update() : { }
 {
     { startUpdateRequest() ; }
-    ( Update1() )+
+    ( Update1() (<SEMICOLON>)?)+
     { finishUpdateRequest() ; }
 }
+#else
+// Struct SPARQL 1.1 : mandator separator, optional terminator.
+void Update() : { }
+{
+   Update1() ( <SEMICOLON> (Update())?)?
+}
+#endif
 
 void Update1() : { Update up ; }
 {
@@ -415,7 +426,6 @@ void Update1() : { Update up ; }
   | up = ModifyOld()
 #endif
   )
-  (<SEMICOLON>) ?
   {
     emitUpdate(up) ;
     finishUpdateOperation() ;

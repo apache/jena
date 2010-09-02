@@ -247,8 +247,9 @@ NON-TERMINALS
 // SPARQL Update + transitional extensions for SPARQL/Update (the W3C submission)
 // Update only entry point
 	UpdateUnit	:=	Prologue Update <EOF>
-	Update	:=	( Update1 )+
-	Update1	:=	( Load | Clear | Drop | Create | InsertData | DeleteData | DeleteWhere | Modify | ModifyOld ) ( <SEMICOLON> )?
+// Optional SEMICOLON
+	Update	:=	( Update1 ( <SEMICOLON> )? )+
+	Update1	:=	( Load | Clear | Drop | Create | InsertData | DeleteData | DeleteWhere | Modify | ModifyOld )
 	Load	:=	<LOAD> IRIref ( <INTO> ( <GRAPH> )? IRIref )?
 	Clear	:=	<CLEAR> ( <SILENT> )? GraphRefAll
 	Drop	:=	<DROP> ( <SILENT> )? GraphRefAll
@@ -310,36 +311,6 @@ NON-TERMINALS
 	Constraint	:=	( BrackettedExpression | BuiltInCall | FunctionCall )
 	FunctionCall	:=	IRIref ArgList
 	ArgList	:=	( <NIL> | <LPAREN> ( <DISTINCT> )? Expression ( <COMMA> Expression )* <RPAREN> )
-// ExprList Params() : { Expr expr ;  ExprList args = new ExprList() ; Token t = null ; }
-// { 
-//   // "; name=expr ..."
-//   t = <SEMICOLON>
-//   {
-//     if ( ! allowAggregatesInExpressions )
-//           throwParseException("Aggregate expression not legal at this point",
-//                                t.beginLine, t.beginColumn) ;
-//   }
-//   (
-//     expr = Expression() { args.add(expr) ; } 
-//     (<COMMA> expr = Expression() { args.add(expr) ; } )*
-//   )?
-//   { return args ; }
-// }
-// // Single expression aggregate argument
-// Expr ExprAggArg() : { Expr expr = null ; boolean distinct = false ; Token t ; }
-// {
-//   <LPAREN>
-//   ( t = <DISTINCT> { distinct = true ; }
-//     {
-//      if ( ! allowAggregatesInExpressions )
-//           throwParseException("Aggregate expression not legal at this point",
-//                               t.beginLine, t.beginColumn) ;
-//      }
-//   )?
-//   expr = Expression()
-//   <RPAREN> 
-//   { return expr ; }
-// }
 	ExpressionList	:=	( <NIL> | <LPAREN> Expression ( <COMMA> Expression )* <RPAREN> )
 // -------- Construct patterns
 	ConstructTemplate	:=	<LBRACE> ( ConstructTriples )? <RBRACE>

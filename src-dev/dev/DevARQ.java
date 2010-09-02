@@ -9,6 +9,8 @@ public class DevARQ
     // Error handling and exception catching.  UpdateParseException : LanguageParseException 
     // Naming. QueryParseException, QuerySolution
     
+    // BINDINGS
+    
     // Strictisms:
     //   scoping checks on variables.
     //   SELECT * rules
