@@ -3,12 +3,12 @@ package dev;
 
 public class DevARQ
 {
+    // **Next
     // Fix SEMI rule in Update grammar.
     // ARQ -> Modified SPARQL 1.1, not submission.
-    
     // *.ru -- *.aru
+    // Language from extension
     
-    // **Next
     // Error handling and exception catching.  LanguageParseException 
     // (old name QueryParseException : superclass) 
     // QuerySolution
