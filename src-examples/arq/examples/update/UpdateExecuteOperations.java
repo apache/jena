@@ -58,9 +58,13 @@ public class UpdateExecuteOperations
         // Build up the request then execute it.
         // This is the preferred way for complex sequences of operations. 
         UpdateRequest request = UpdateFactory.create() ;
-        UpdateFactory.parse(request, "DROP ALL") ;
-        UpdateFactory.parse(request, "CREATE GRAPH <http://example/g2>") ;
+        request.add("DROP ALL")
+               .add("CREATE GRAPH <http://example/g2>") ;
+        // Different style.
+        // Equivalent to request.add("...")
         UpdateFactory.parse(request, "LOAD <file:etc/update-data.ttl> INTO <http://example/g2>") ;
+        
+        // And perform the operations.
         UpdateAction.execute(request, graphStore) ;
         
         System.out.println("# Debug format");
