@@ -27,10 +27,18 @@ public class UpdateRequest extends Prologue implements Printable//, Iterable<Upd
     public UpdateRequest(Update update)
     {
         this() ;
-        addUpdate(update) ;
+        add(update) ;
     }
-    
-    public void addUpdate(Update update) { operations.add(update) ; } 
+
+    /** @Deprecated Use {#add(Update) */
+    public void addUpdate(Update update) { add(update) ; } 
+
+    public UpdateRequest add(Update update) { operations.add(update) ; return this ; } 
+    public UpdateRequest add(String string)
+    { 
+        UpdateFactory.parse(this, string) ;
+        return this ;
+    }
 
     public List<Update> getOperations() { return operationsView ; }
     
