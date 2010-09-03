@@ -12,15 +12,11 @@ public class DevTDB
     // TDB assembler & union graph
     // Update
     
-    // ReorderLib from ARQ : same now?
-    
     // Inference pipeline
     // TDB+Inference
     //   TDB/BulkLoader.loadTriples$ (loadQuads$)
     //     to add a inference sink wrapper.
  
-    // Use reorder stuff from ARQ.
-    
     // Check writing to union graph is handled appropriately.
     
     // BPT rewriters
@@ -30,6 +26,8 @@ public class DevTDB
     // Loader stats numbers of quads+triples
     
     // Configuring for union graph in assembler/location
+    
+    // retire: GraphStoreUtils.action
     
     // =====
     // Enable FILTER assignment for strings (and numbers?) via dataset context setting?
