@@ -290,12 +290,12 @@ public abstract class TestUpdateGraph extends TestUpdateBase
         template.addTriple(triple1) ;
         template.addTriple(triple2) ;
         ins.setInsertTemplate(template) ;
-        req.addUpdate(ins) ;
+        req.add(ins) ;
 
         UpdateDelete delete = new UpdateDelete() ;
         delete.setPattern("{ ?s <http://example/p> ?o } ") ;
         delete.setDeleteTemplate("{ ?s <http://example/p> ?o}") ;
-        req.addUpdate(delete) ;
+        req.add(delete) ;
         
         Binding b = BindingFactory.binding(null, v, n) ;
         UpdateAction.execute(req, gStore, b) ;

@@ -51,6 +51,10 @@ public class DevARQ
     // Transform: paths for new operators. e.g. {2}
     //   {N,} to be {N} UNION {0,N}
     
+    // ---- Core
+    // Memory DatasetGraph to support Quad.unionGrapg, defaultGraph and defaultGraphGenerated
+    //   Reenable tests in TestGraphMem
+    
     // ---- Expr
     // Scalar and column expressions
     

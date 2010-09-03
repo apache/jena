@@ -90,7 +90,7 @@ public class ParserQueryBase extends ParserBase
     
     protected void emitUpdate(Update update)
     {
-        request.addUpdate(update) ;
+        request.add(update) ;
     }
     
     protected void startSubSelect(int line, int col)

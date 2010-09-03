@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -337,7 +338,7 @@ public class UpdateAction
     private static void execute$(Update update, GraphStore graphStore, Binding binding)
     {
         UpdateRequest request = new UpdateRequest() ;
-        request.addUpdate(update) ;
+        request.add(update) ;
         execute$(request, graphStore, binding) ;
     }  
 
@@ -345,6 +346,7 @@ public class UpdateAction
 
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

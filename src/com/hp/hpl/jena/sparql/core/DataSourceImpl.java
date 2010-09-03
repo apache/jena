@@ -51,10 +51,10 @@ public class DataSourceImpl implements DataSource
 //        this.dsg = otherDSG ;
 //    }
     
-    public DataSourceImpl(DatasetGraph dSetGraph)
+    public DataSourceImpl(DatasetGraph datasetGraph)
     { 
         // Clone structure.
-        dsg = new DatasetGraphMap(dSetGraph) ;
+        dsg = new DatasetGraphMap(datasetGraph) ;
     }
     
     public DataSourceImpl(Model model)

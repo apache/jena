@@ -19,9 +19,11 @@ import com.hp.hpl.jena.sparql.engine.main.QueryEngineMain ;
 import com.hp.hpl.jena.sparql.engine.ref.QueryEngineRef ;
 import com.hp.hpl.jena.sparql.expr.E_Function ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
+import com.hp.hpl.jena.sparql.graph.TS_Graph ;
 import com.hp.hpl.jena.sparql.junit.QueryTestSuiteFactory ;
 import com.hp.hpl.jena.sparql.larq.TS_LARQ ;
 import com.hp.hpl.jena.sparql.modify.TS_Update ;
+import com.hp.hpl.jena.sparql.solver.TS_Solver ;
 import com.hp.hpl.jena.sparql.syntax.TS_SSE ;
 import com.hp.hpl.jena.sparql.syntax.TS_Serialization ;
 import com.hp.hpl.jena.sparql.syntax.TS_Syntax ;
@@ -94,6 +96,10 @@ public class ARQTestSuite extends TestSuite
         ts.addTest(TS_Update.suite()) ;
         
         ts.addTest(TS_SSE.suite()) ;
+        
+        ts.addTest(new JUnit4TestAdapter(TS_Graph.class)) ;
+
+        ts.addTest(new JUnit4TestAdapter(TS_Solver.class)) ;
         
         return ts ;
     }

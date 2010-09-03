@@ -13,6 +13,7 @@ import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.Resource ;
 import com.hp.hpl.jena.sparql.ARQException ;
 import com.hp.hpl.jena.sparql.core.DataSourceImpl ;
+import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.assembler.DataSourceAssembler ;
 import com.hp.hpl.jena.sparql.util.DatasetUtils ;
 import com.hp.hpl.jena.sparql.util.graph.GraphUtils ;
@@ -40,13 +41,19 @@ public class DatasetFactory
     public static DataSource create(Model model)
     { return new DataSourceImpl(model) ; }
 
-    /** Create a dataset with the given model as the default graph
+    /** Create a dataset
      * @param dataset
      * @return DataSource (Updateable Dataset) 
      */ 
     public static DataSource create(Dataset dataset)
     { return new DataSourceImpl(dataset) ; }
 
+    /** Wrap a datsetgraph to make a mutable dataset
+     * @param dataset DatasetGraph
+     * @return DataSource (Updateable Dataset) 
+     */ 
+    public static DataSource create(DatasetGraph dataset)
+    { return new DataSourceImpl(dataset) ; }
     
     /** Create a dataset based on a list of URIs : these are merged into the default graph of teh dataset.
      * 

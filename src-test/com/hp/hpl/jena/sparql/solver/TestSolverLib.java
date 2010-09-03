@@ -1,57 +1,58 @@
 /*
- * (c) Copyright 2010 Epimorphics Ltd.
+ * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package arq.examples.update;
+package com.hp.hpl.jena.sparql.solver;
 
-import org.openjena.riot.RiotWriter ;
+import org.openjena.atlas.lib.StrUtils ;
 
-import com.hp.hpl.jena.sparql.modify.request.Target ;
-import com.hp.hpl.jena.sparql.modify.request.UpdateCreate ;
-import com.hp.hpl.jena.sparql.modify.request.UpdateDrop ;
-import com.hp.hpl.jena.sparql.modify.request.UpdateLoad ;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.sparql.core.BasicPattern ;
+import com.hp.hpl.jena.sparql.engine.optimizer.StatsMatcher ;
+import com.hp.hpl.jena.sparql.sse.Item ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
-import com.hp.hpl.jena.update.GraphStore ;
-import com.hp.hpl.jena.update.GraphStoreFactory ;
-import com.hp.hpl.jena.update.UpdateAction ;
-import com.hp.hpl.jena.update.UpdateFactory ;
-import com.hp.hpl.jena.update.UpdateRequest ;
 
-/** Build an update request up out of indvidiual Update objects, not by parsing.
- *  This is quite low-level.
- *  See UpdateExecuteOperations for ways to build the request up from strings. 
- *  These two approaches can be mixed.
- */
-
-public class UpdateProgrammatic
+public class TestSolverLib
 {
-    public static void main(String []args)
+    public static BasicPattern bgp(String str)
     {
-        GraphStore graphStore = GraphStoreFactory.create() ;
-        
-        UpdateRequest request = UpdateFactory.create() ;
-        
-        request.add(new UpdateDrop(Target.ALL)) ;
-        request.add(new UpdateCreate("http://example/g2")) ;
-        request.add(new UpdateLoad("file:etc/update-data.ttl", "http://example/g2")) ;
-        UpdateAction.execute(request, graphStore) ;
-        
-        System.out.println("# Debug format");
-        SSE.write(graphStore) ;
-        
-        System.out.println();
-        
-        System.out.println("# N-Quads: S P O G") ;
-        RiotWriter.writeNQuads(System.out, graphStore) ;
-
+        String s1 = "(prefix ((: <http://example/>)) " ;
+        String s2 = ")" ;
+        return SSE.parseBGP(s1+str+s2) ;
     }
+    
+//    private static StatsMatcher matcher(String str)
+//    {
+//        String s1 = "(prefix ((: <http://example/>))\n(stats " ;
+//        String s2 = "))" ;
+//        Item item = SSE.parse(s1+str+s2) ;
+//        return new StatsMatcher(item) ; 
+//    }
+//    
+    public static StatsMatcher matcher(String... str)
+    {
+        String s1 = "(prefix ((: <http://example/>))\n(stats " ;
+        String s2 = "))" ;
+        
+        String x = StrUtils.strjoinNL(str) ;
+        
+        Item item = SSE.parse(s1+x+s2) ;
+        return new StatsMatcher(item) ; 
+    }
+
+    public static Triple triple(String str)
+    {
+        String s1 = "(prefix ((: <http://example/>)) " ;
+        String s2 = ")" ;
+        return SSE.parseTriple(s1+str+s2) ;
+    }
+
 }
 
-
 /*
- * (c) Copyright 2010 Epimorphics Ltd.
+ * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

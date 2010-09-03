@@ -1131,7 +1131,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
       jj_consume_token(-1);
       throw new ParseException();
     }
-      getUpdateRequest().addUpdate(up) ;
+      emitUpdate(up) ;
   }
 
   final public UpdateModify Modify() throws ParseException {
@@ -4389,11 +4389,6 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
-  private boolean jj_3_1() {
-    if (jj_3R_37()) return true;
-    return false;
-  }
-
   private boolean jj_3R_59() {
     if (jj_3R_65()) return true;
     return false;
@@ -4401,6 +4396,11 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
 
   private boolean jj_3R_79() {
     if (jj_scan_token(IRIref)) return true;
+    return false;
+  }
+
+  private boolean jj_3_1() {
+    if (jj_3R_37()) return true;
     return false;
   }
 
