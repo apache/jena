@@ -5,6 +5,7 @@ public class DevARQ
 {
     // **Next
     // Fix SEMI rule in Update grammar.
+    // Prologue between any operations.
     // ARQ -> Modified SPARQL 1.1, not submission.
     // *.ru -- *.aru
     // Language from extension
