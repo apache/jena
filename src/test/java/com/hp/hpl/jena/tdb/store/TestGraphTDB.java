@@ -12,9 +12,9 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 
 import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.sparql.graph.AbstractTestGraph2 ;
 import com.hp.hpl.jena.tdb.ConfigTest;
 import com.hp.hpl.jena.tdb.base.file.Location;
-import com.hp.hpl.jena.tdb.junit.AbstractTestGraph2;
 import com.hp.hpl.jena.tdb.junit.GraphLocation;
 
 /** Programmatic tests on persistent graph */

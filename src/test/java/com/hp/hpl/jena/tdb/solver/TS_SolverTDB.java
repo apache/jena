@@ -4,25 +4,19 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.solver.reorder;
+package com.hp.hpl.jena.tdb.solver;
 
-import com.hp.hpl.jena.tdb.solver.stats.StatsMatcher;
+import org.junit.runner.RunWith ;
+import org.junit.runners.Suite ;
 
-public final class ReorderWeighted extends ReorderTransformationBase
-{
-    private StatsMatcher stats ;
-    
-    public ReorderWeighted(StatsMatcher stats)
-    {
-        this.stats = stats ;
-    }
-    
-    @Override
-    protected double weight(PatternTriple pTriple)
-    {
-        return stats.match(pTriple) ;
-    }
-}
+@RunWith(Suite.class)
+@Suite.SuiteClasses( {
+    TestSolverTDB.class     // Tests the TDB connectivity
+})
+
+public class TS_SolverTDB
+{}
+
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.

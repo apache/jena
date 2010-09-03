@@ -9,9 +9,9 @@ package com.hp.hpl.jena.tdb.store;
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
+import com.hp.hpl.jena.sparql.graph.AbstractTestGraph2 ;
 import com.hp.hpl.jena.sparql.sse.SSE;
 import com.hp.hpl.jena.tdb.TDBFactory;
-import com.hp.hpl.jena.tdb.junit.AbstractTestGraph2;
 
 /** Programmatic tests on persistent graph */
 public class TestGraphNamedTDB extends AbstractTestGraph2

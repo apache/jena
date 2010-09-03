@@ -26,9 +26,9 @@ import com.hp.hpl.jena.sparql.core.DatasetGraphCaching ;
 import com.hp.hpl.jena.sparql.core.DatasetImpl ;
 import com.hp.hpl.jena.sparql.core.DatasetPrefixStorage ;
 import com.hp.hpl.jena.sparql.core.Quad ;
+import com.hp.hpl.jena.sparql.engine.optimizer.reorder.ReorderTransformation ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.lib.NodeLib ;
-import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation ;
 import com.hp.hpl.jena.tdb.sys.TDBMaker ;
 import com.hp.hpl.jena.update.GraphStore ;
 

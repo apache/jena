@@ -7,7 +7,7 @@
 package com.hp.hpl.jena.tdb.graph.basics;
 
 import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.tdb.junit.AbstractTestGraph2;
+import com.hp.hpl.jena.sparql.graph.AbstractTestGraph2 ;
 
 /** Based on the new graph tests in AbstractTestGraph2 */
 public class TestGraphBTreeMemNew extends AbstractTestGraph2

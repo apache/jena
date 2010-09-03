@@ -6,29 +6,29 @@
 
 package dev.opt;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.ArrayList ;
+import java.util.HashSet ;
+import java.util.List ;
+import java.util.Map ;
+import java.util.Set ;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.algebra.TransformCopy;
-import com.hp.hpl.jena.sparql.algebra.Transformer;
-import com.hp.hpl.jena.sparql.algebra.op.OpBGP;
-import com.hp.hpl.jena.sparql.algebra.op.OpFilter;
-import com.hp.hpl.jena.sparql.algebra.op.OpSequence;
-import com.hp.hpl.jena.sparql.algebra.opt.TransformFilterPlacement;
-import com.hp.hpl.jena.sparql.core.BasicPattern;
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.expr.ExprList;
-import com.hp.hpl.jena.sparql.sse.Item;
-import com.hp.hpl.jena.tdb.solver.reorder.PatternElements;
-import com.hp.hpl.jena.tdb.solver.reorder.PatternTriple;
-import com.hp.hpl.jena.tdb.solver.reorder.ReorderProc;
-import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
-import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformationBase;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.sparql.algebra.Op ;
+import com.hp.hpl.jena.sparql.algebra.TransformCopy ;
+import com.hp.hpl.jena.sparql.algebra.Transformer ;
+import com.hp.hpl.jena.sparql.algebra.op.OpBGP ;
+import com.hp.hpl.jena.sparql.algebra.op.OpFilter ;
+import com.hp.hpl.jena.sparql.algebra.op.OpSequence ;
+import com.hp.hpl.jena.sparql.algebra.opt.TransformFilterPlacement ;
+import com.hp.hpl.jena.sparql.core.BasicPattern ;
+import com.hp.hpl.jena.sparql.core.Var ;
+import com.hp.hpl.jena.sparql.engine.optimizer.reorder.PatternElements ;
+import com.hp.hpl.jena.sparql.engine.optimizer.reorder.PatternTriple ;
+import com.hp.hpl.jena.sparql.engine.optimizer.reorder.ReorderProc ;
+import com.hp.hpl.jena.sparql.engine.optimizer.reorder.ReorderTransformation ;
+import com.hp.hpl.jena.sparql.engine.optimizer.reorder.ReorderTransformationBase ;
+import com.hp.hpl.jena.sparql.expr.ExprList ;
+import com.hp.hpl.jena.sparql.sse.Item ;
 
 // Work in progress
 public class Reorganise

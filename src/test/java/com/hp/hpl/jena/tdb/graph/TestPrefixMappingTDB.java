@@ -13,6 +13,7 @@ import org.openjena.atlas.lib.FileOps ;
 
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.shared.PrefixMapping;
+import com.hp.hpl.jena.sparql.graph.AbstractTestPrefixMapping2 ;
 
 import com.hp.hpl.jena.tdb.ConfigTest;
 import com.hp.hpl.jena.tdb.TDB;
@@ -21,7 +22,7 @@ import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.store.DatasetPrefixesTDB;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
-public class TestPrefixMappingTDB extends TestPrefixMapping2
+public class TestPrefixMappingTDB extends AbstractTestPrefixMapping2
 {
     static DatasetPrefixesTDB last = null ;
     

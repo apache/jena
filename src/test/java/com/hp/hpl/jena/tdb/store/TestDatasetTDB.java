@@ -19,7 +19,7 @@ import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.TDBFactory;
 import com.hp.hpl.jena.util.FileManager;
 
-/** Tests of datasets, prefixes, special URIs etc (see also {@link com.hp.hpl.jena.tdb.graph.TestGraphs} */
+/** Tests of datasets, prefixes, special URIs etc (see also {@link com.hp.hpl.jena.sparql.graph.GraphsTests} */
 public class TestDatasetTDB extends BaseTest
 {
     

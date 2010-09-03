@@ -6,22 +6,20 @@
 
 package com.hp.hpl.jena.tdb;
 
-
-
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.query.Dataset;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.sparql.core.DatasetImpl;
-import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils;
-import com.hp.hpl.jena.tdb.assembler.VocabTDB;
-import com.hp.hpl.jena.tdb.base.file.Location;
-import com.hp.hpl.jena.tdb.solver.reorder.ReorderLib ;
-import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation ;
-import com.hp.hpl.jena.tdb.store.DatasetGraphTDB;
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.query.Dataset ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.ModelFactory ;
+import com.hp.hpl.jena.sparql.core.DatasetImpl ;
+import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils ;
+import com.hp.hpl.jena.sparql.engine.optimizer.reorder.ReorderLib ;
+import com.hp.hpl.jena.sparql.engine.optimizer.reorder.ReorderTransformation ;
+import com.hp.hpl.jena.tdb.assembler.VocabTDB ;
+import com.hp.hpl.jena.tdb.base.file.Location ;
+import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
-import com.hp.hpl.jena.tdb.sys.TDBMaker;
+import com.hp.hpl.jena.tdb.sys.TDBMaker ;
 
 /** Public factory for creating objects (graphs, datasest) associated with TDB */
 public class TDBFactory

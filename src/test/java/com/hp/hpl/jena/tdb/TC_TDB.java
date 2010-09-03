@@ -14,14 +14,14 @@ import org.junit.BeforeClass ;
 import org.junit.runner.RunWith ;
 import org.junit.runners.Suite ;
 
+import com.hp.hpl.jena.sparql.engine.optimizer.reorder.ReorderLib ;
 import com.hp.hpl.jena.tdb.assembler.TS_TDBAssembler ;
 import com.hp.hpl.jena.tdb.base.TC_Base ;
 import com.hp.hpl.jena.tdb.graph.TS_Graph ;
 import com.hp.hpl.jena.tdb.index.TS_Index ;
 import com.hp.hpl.jena.tdb.lib.TS_LibTDB ;
 import com.hp.hpl.jena.tdb.nodetable.TS_NodeTable ;
-import com.hp.hpl.jena.tdb.solver.TS_Solver ;
-import com.hp.hpl.jena.tdb.solver.reorder.ReorderLib ;
+import com.hp.hpl.jena.tdb.solver.TS_SolverTDB ;
 import com.hp.hpl.jena.tdb.store.TS_Store ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 import com.hp.hpl.jena.tdb.sys.TS_Sys ;
@@ -38,7 +38,7 @@ import com.hp.hpl.jena.tdb.sys.TS_Sys ;
     , TS_NodeTable.class
     , TS_Index.class
     , TS_Store.class        // The main storage implementation.  Slow tests.
-    , TS_Solver.class
+    , TS_SolverTDB.class
     , TS_Sys.class
     , TS_Graph.class
     , TS_Factory.class

@@ -19,6 +19,8 @@ import org.openjena.atlas.lib.ColumnMap ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
+import com.hp.hpl.jena.sparql.engine.optimizer.reorder.ReorderLib ;
+import com.hp.hpl.jena.sparql.engine.optimizer.reorder.ReorderTransformation ;
 import com.hp.hpl.jena.sparql.sse.SSEParseException ;
 import com.hp.hpl.jena.tdb.base.file.FileSet ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
@@ -29,8 +31,6 @@ import com.hp.hpl.jena.tdb.index.TupleIndex ;
 import com.hp.hpl.jena.tdb.index.TupleIndexRecord ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTableFactory ;
-import com.hp.hpl.jena.tdb.solver.reorder.ReorderLib ;
-import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.store.DatasetPrefixesTDB ;
 import com.hp.hpl.jena.tdb.store.GraphTriplesTDB ;

@@ -13,7 +13,6 @@ import org.apache.log4j.Logger ;
 import org.junit.Test ;
 import org.openjena.atlas.junit.BaseTest ;
 
-
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.query.Dataset ;
@@ -27,12 +26,12 @@ import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.sparql.algebra.Algebra ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.Transformer ;
+import com.hp.hpl.jena.sparql.engine.optimizer.reorder.ReorderLib ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.TDBFactory ;
 import com.hp.hpl.jena.tdb.migrate.TransformDynamicDataset ;
 import com.hp.hpl.jena.tdb.solver.SolverLib ;
-import com.hp.hpl.jena.tdb.solver.reorder.ReorderLib ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 public class TestDynamicDataset extends BaseTest

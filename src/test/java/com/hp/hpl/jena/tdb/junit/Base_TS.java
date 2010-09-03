@@ -11,24 +11,29 @@ import org.apache.log4j.Logger ;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 
-import com.hp.hpl.jena.tdb.solver.reorder.ReorderLib ;
+import com.hp.hpl.jena.sparql.engine.optimizer.reorder.ReorderLib ;
+import com.hp.hpl.jena.sparql.engine.optimizer.reorder.ReorderTransformation ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 public class Base_TS
 {
- static Level level = null ;
+    static Level level = null ;
+    static ReorderTransformation rt = null ;
     
     @BeforeClass static public void beforeClass()   
     {
+        rt = SystemTDB.defaultOptimizer ;
         level = Logger.getLogger("com.hp.hpl.jena.tdb.info").getLevel() ;
         Logger.getLogger("com.hp.hpl.jena.tdb.info").setLevel(Level.FATAL) ;
         SystemTDB.defaultOptimizer = ReorderLib.identity() ;
+        rt = SystemTDB.defaultOptimizer ;
     }
     
     @AfterClass static public void afterClass()
     {
         if ( level != null )
             Logger.getLogger("com.hp.hpl.jena.tdb.info").setLevel(level) ;
+        SystemTDB.defaultOptimizer = rt ;
     }
 }
 

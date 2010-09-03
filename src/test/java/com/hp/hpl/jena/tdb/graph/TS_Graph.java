@@ -14,7 +14,7 @@ import org.junit.runners.Suite ;
     TestReifier2.class
     , TestPrefixMappingTDB.class
     , TestBulkUpdateTDB.class
-    , TestGraphs.class
+    , TestGraphsTDB.class
     , TestDatasetGraphTDB.class
 })
 public class TS_Graph

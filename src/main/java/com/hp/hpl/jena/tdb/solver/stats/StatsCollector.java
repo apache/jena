@@ -28,6 +28,7 @@ import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.graph.TripleMatch;
 import com.hp.hpl.jena.graph.impl.GraphBase;
 
+import com.hp.hpl.jena.sparql.engine.optimizer.StatsMatcher ;
 import com.hp.hpl.jena.sparql.sse.Item;
 import com.hp.hpl.jena.sparql.sse.ItemList;
 import com.hp.hpl.jena.sparql.util.NodeFactory;

@@ -17,13 +17,13 @@ import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.query.ARQ ;
+import com.hp.hpl.jena.sparql.engine.optimizer.reorder.ReorderTransformation ;
 import com.hp.hpl.jena.sparql.util.Symbol ;
 import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.TDBException ;
 import com.hp.hpl.jena.tdb.base.block.FileMode ;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
 import com.hp.hpl.jena.tdb.index.IndexType ;
-import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
 
 public class SystemTDB

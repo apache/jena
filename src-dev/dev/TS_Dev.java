@@ -13,7 +13,7 @@ import org.junit.runner.RunWith ;
 import org.junit.runners.Suite ;
 import org.openjena.atlas.junit.BaseTest ;
 
-import com.hp.hpl.jena.tdb.solver.reorder.ReorderLib ;
+import com.hp.hpl.jena.sparql.engine.optimizer.reorder.ReorderLib ;
 import com.hp.hpl.jena.tdb.store.TS_Store ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 

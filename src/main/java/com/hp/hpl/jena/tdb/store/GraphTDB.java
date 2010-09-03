@@ -14,9 +14,9 @@ import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.shared.Lock ;
+import com.hp.hpl.jena.sparql.engine.optimizer.reorder.Reorderable ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable ;
-import com.hp.hpl.jena.tdb.solver.reorder.Reorderable ;
 import com.hp.hpl.jena.tdb.sys.Session ;
 
 public interface GraphTDB extends Graph, Closeable, Sync, Reorderable, Session
