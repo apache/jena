@@ -4,13 +4,9 @@ package dev;
 public class DevARQ
 {
     // **Next
-    // Language naming: is query different from update in naming?
-    // Or does context means we don't usefully need separte symbols.
-    // User effect? None?
-    
     // Error handling and exception catching.  LanguageParseException 
     // (old name QueryParseException : superclass) 
-    // QuerySolution
+    //  "QuerySolution"
     
     // BINDINGS
     //   Execution.
@@ -26,9 +22,8 @@ public class DevARQ
     
     // ---- SPARQL Update
 
-    // USING/USING NAMED
+    // Should INSERT DATA { GRAPH <g> { :s :p :o } } auto create? Yes.
     
-    // Should INSERT DATA { GRAPH {} } auto create?
     // Check: Inserting into explicitly named default graph should be made to work.
     // Implicit empty graph mode even for dataset of graphs.
     

@@ -20,6 +20,7 @@ import org.openjena.atlas.logging.Log ;
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.query.QueryExecutionFactory ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
@@ -112,7 +113,6 @@ class UpdateEngineWorker implements UpdateVisitor
 
     public void visit(UpdateCreate update)
     {
-        
         Node g = update.getGraph() ;
         if ( g == null )
             return ;
@@ -152,49 +152,38 @@ class UpdateEngineWorker implements UpdateVisitor
         List<Quad> quads = update.getQuads() ;
         // Convert bNodes to named variables first.
         quads = convertBNodesToVariables(quads) ;
-
-        // Can we do somethign special if just one quad pattern?
-//        if ( quads.size() == 0 )
-//        {
-//            Quad q = quads.get(0) ;
-//            // Do special.
-//        }
-        
         // Convert quads to a pattern.
         Element el = elementFromQuads(quads) ;
         List<Binding> bindings = evalBindings(el, null) ;
         execDelete(quads, null, bindings) ;
     }
-
+    
     public void visit(UpdateModify update)
     {
-        //request.get
         Node graph = update.getWithIRI() ;
-    
-    
-//        if ( graph != null )
-//        {
-//            Log.fatal(this, "Attempt to use WITH - not fully implemented") ;
-//            throw new UpdateException("Attempt to use WITH - not fully implemented") ;
-//            // Need to set the target graph for exec*
-//            // Do by rewriting the quads after bindings.
-//        }
+        Query query = elementToQuery(update.getWherePattern()) ;
         
-        if ( update.getUsing().size() > 0 || update.getUsingNamed().size() > 0 )
-            Log.warn(this, "Graph selection from the dataset not yet supported") ;
+        // USING/USING NAMED
+        processUsing(update, query) ;
         
-        final List<Binding> bindings = evalBindings(update.getWherePattern(), graph) ;
+        final List<Binding> bindings = evalBindings(query, graph) ;
         
         execDelete(update.getDeleteQuads(), graph, bindings) ;
         execInsert(update.getInsertQuads(), graph, bindings) ;
-        
-        // XXX
-//        GraphStoreUtils.action(graphStore, update.getGraphNames(), 
-//                               new GraphStoreAction() { public void exec(Graph graph) { execDeletes(modify, graph, bindings) ; }}) ;
-//        GraphStoreUtils.action(graphStore, update.getGraphNames(), 
-//                               new GraphStoreAction() { public void exec(Graph graph) { execInserts(modify, graph, bindings) ; }}) ;
     }
 
+    // Indirection for subsystems to support USING/USING NAMED.
+    protected void processUsing(UpdateModify update, Query query)
+    {
+        if ( update.getUsing().size() > 0 || update.getUsingNamed().size() > 0 )
+            Log.warn(this, "Graph selection from the dataset not supported - ignored") ;
+        return ;
+//        for ( Node n : update.getUsing() )
+//            query.addGraphURI(n.getURI()) ;
+//        for ( Node n : update.getUsingNamed() )
+//            query.addNamedGraphURI(n.getURI()) ;
+    }
+    
     private static List<Quad> convertBNodesToVariables(List<Quad> quads)
     {
         NodeTransform bnodesToVariables = new NodeTransformBNodesToVariables() ;
@@ -346,13 +335,30 @@ class UpdateEngineWorker implements UpdateVisitor
         return bNodeMap.get(n) ;
     }
     
+    private Query elementToQuery(Element pattern)
+    {
+        if ( pattern == null )
+            return null ;
+        Query query = new Query() ;
+        query.setQueryPattern(pattern) ;
+        query.setQuerySelectType() ;
+        query.setQueryResultStar(true) ;
+        query.setResultVars() ;
+        return query ;
+    }
+    
     protected List<Binding> evalBindings(Element pattern, Node dftGraph)
+    {
+        return evalBindings(elementToQuery(pattern), dftGraph) ;
+    }
+    
+    protected List<Binding> evalBindings(Query query, Node dftGraph)
     {
         List<Binding> bindings = new ArrayList<Binding>() ;
         
-        if ( pattern != null )
+        if ( query != null )
         {
-            Plan plan = QueryExecutionFactory.createPlan(pattern, graphStore, initialBinding) ;
+            Plan plan = QueryExecutionFactory.createPlan(query, graphStore, initialBinding) ;
             QueryIterator qIter = plan.iterator() ;
 
             for( ; qIter.hasNext() ; )
