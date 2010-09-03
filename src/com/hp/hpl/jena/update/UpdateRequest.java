@@ -30,7 +30,8 @@ public class UpdateRequest extends Prologue implements Printable//, Iterable<Upd
         add(update) ;
     }
 
-    /** @Deprecated Use {#add(Update) */
+    /** @deprecated Use {#add(Update) */
+    @Deprecated
     public void addUpdate(Update update) { add(update) ; } 
 
     public UpdateRequest add(Update update) { operations.add(update) ; return this ; } 

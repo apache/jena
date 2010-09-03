@@ -4,10 +4,6 @@ package dev;
 public class DevARQ
 {
     // **Next
-    // Prologue between any operations.
-    // Checking during  parse/print cycle c.f. qparse.
-    //  Udate check utilities.
-    
     // Language naming: is query different from update in naming?
     // Or does context means we don't usefully need separte symbols.
     // User effect? None?
@@ -17,7 +13,7 @@ public class DevARQ
     // QuerySolution
     
     // BINDINGS
-    //  Values as Map<Var,Node> or Binding?
+    //   Execution.
     
     // Strictisms:
     //   scoping checks on variables.
