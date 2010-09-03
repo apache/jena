@@ -6,6 +6,7 @@ public class DevARQ
     // **Next
     // Prologue between any operations.
     // Check parse/print cycle.
+    // Redef prefix is broken
     // Default graph printing and WITH
     //   See update.ru
     
