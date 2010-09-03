@@ -117,7 +117,6 @@ TOKENS
 | <INSERT_DATA: <INSERT> (<WS>)* <DATA>>
 | <DELETE_DATA: <DELETE> (<WS>)* <DATA>>
 | <DELETE_WHERE: <DELETE> (<WS>)* <WHERE>>
-| <MODIFY: "modify">
 | <LOAD: "load">
 | <CLEAR: "clear">
 | <CREATE: "create">
@@ -238,7 +237,7 @@ NON-TERMINALS
 	LimitOffsetClauses	:=	( LimitClause ( OffsetClause )? | OffsetClause ( LimitClause )? )
 	LimitClause	:=	<LIMIT> <INTEGER>
 	OffsetClause	:=	<OFFSET> <INTEGER>
-	BindingsClause	:=	( <BINDINGS> ( Var )* <LBRACE> ( <LPAREN> ( BindingValue )* <RPAREN> )* <RBRACE> )?
+	BindingsClause	:=	( <BINDINGS> ( Var )* <LBRACE> ( <LPAREN> ( BindingValue )+ <RPAREN> | <NIL> )* <RBRACE> )?
 	BindingValue	:=	IRIref
 		|	RDFLiteral
 		|	NumericLiteral
@@ -247,25 +246,22 @@ NON-TERMINALS
 // SPARQL Update + transitional extensions for SPARQL/Update (the W3C submission)
 // Update only entry point
 	UpdateUnit	:=	Prologue Update <EOF>
-// Optional SEMICOLON
-	Update	:=	( Update1 ( <SEMICOLON> )? )+
-	Update1	:=	( Load | Clear | Drop | Create | InsertData | DeleteData | DeleteWhere | Modify | ModifyOld )
-	Load	:=	<LOAD> IRIref ( <INTO> ( <GRAPH> )? IRIref )?
+// Struct SPARQL 1.1 : mandator separator, optional terminator.
+	Update	:=	Update1 ( <SEMICOLON> ( Update )? )?
+	Update1	:=	( Load | Clear | Drop | Create | InsertData | DeleteData | DeleteWhere | Modify )
+	Load	:=	<LOAD> IRIref ( <INTO> GraphRef )?
 	Clear	:=	<CLEAR> ( <SILENT> )? GraphRefAll
 	Drop	:=	<DROP> ( <SILENT> )? GraphRefAll
 	Create	:=	<CREATE> ( <SILENT> )? GraphRef
-	InsertData	:=	<INSERT_DATA> OptionalIntoTarget QuadPattern
-	DeleteData	:=	<DELETE_DATA> OptionalFromTarget QuadData
+	InsertData	:=	<INSERT_DATA> QuadData
+	DeleteData	:=	<DELETE_DATA> QuadData
 	DeleteWhere	:=	<DELETE_WHERE> QuadPattern
 	Modify	:=	( <WITH> IRIref )? ( DeleteClause ( InsertClause )? | InsertClause ) ( UsingClause )* <WHERE> GroupGraphPattern
-	ModifyOld	:=	<MODIFY> ( IRIref )? ( DeleteClause )? ( InsertClause )? <WHERE> GroupGraphPattern
-	DeleteClause	:=	<DELETE> OptionalFromTarget QuadPattern
-	InsertClause	:=	<INSERT> OptionalIntoTarget QuadPattern
-	OptionalIntoTarget	:=	( ( <INTO> )? IRIref )?
-	OptionalFromTarget	:=	( ( <FROM> )? IRIref )?
+	DeleteClause	:=	<DELETE> QuadPattern
+	InsertClause	:=	<INSERT> QuadPattern
 	UsingClause	:=	<USING> ( IRIref | <NAMED> IRIref )
 	GraphRef	:=	<GRAPH> IRIref
-	GraphRefAll	:=	( GraphRef | <DFT> | <NAMED> | <ALL> )?
+	GraphRefAll	:=	( GraphRef | <DFT> | <NAMED> | <ALL> )
 	QuadPattern	:=	<LBRACE> Quads <RBRACE>
 //Ground data : As QuadPattern but don't allow variables.
 	QuadData	:=	<LBRACE> Quads <RBRACE>

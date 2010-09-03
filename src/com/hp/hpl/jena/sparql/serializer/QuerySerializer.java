@@ -225,6 +225,41 @@ public class QuerySerializer implements QueryVisitor
         }
     }
     
+    public void visitBindings(Query query)
+    {
+        if ( query.hasBindings() )
+        {
+            out.print("BINDINGS") ;
+            for ( Var v : query.getBindingVariables() )
+            {
+                out.print(" ") ;
+                out.print(v) ;
+            }
+            out.println();
+            
+            out.print("{") ;
+            out.incIndent() ;
+            out.println() ;
+            for ( List<Node> valueRow : query.getBindingValues() )
+            {
+                // A value may be null for UNDEF
+                out.print("(") ;
+                for ( Node v : valueRow )
+                {
+                    out.print(" ") ;
+                    if ( v == null )
+                        out.print("UNDEF") ;
+                    else
+                        out.print(FmtUtils.stringForNode(v, query)) ;
+                }
+                out.println(" )") ;
+            }
+            out.decIndent() ;
+            out.print("}") ;
+            out.println() ;
+        }
+    }
+
     public void finishVisit(Query query)
     {
         out.flush() ;

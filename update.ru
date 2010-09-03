@@ -5,7 +5,7 @@ PREFIX rdfs:  	<http://www.w3.org/2000/01/rdf-schema#>
 CREATE SILENT GRAPH :graph1 ;
 CREATE SILENT GRAPH :graph2 ;
 
-INSERT DATA { GRAPH :graph1 { :s :p :o } }
+INSERT DATA { GRAPH :graph1 { :s :p :o } } ;
 
 WITH :graph2
 INSERT { ?s ?p ?o }

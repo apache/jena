@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -102,6 +103,15 @@ public class QueryHashCode
             x ^= query.getOffset() ;
         }
 
+        public void visitBindings(Query query)
+        {
+            if ( query.hasBindings() )
+            {
+                x ^= query.getBindingVariables().hashCode() ;
+                x ^= query.getBindingValues().hashCode() ;
+            }
+        }
+
         public void finishVisit(Query query)
         {}
 
@@ -111,6 +121,7 @@ public class QueryHashCode
 
 /*
  * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

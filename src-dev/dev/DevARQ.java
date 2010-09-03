@@ -14,8 +14,8 @@ public class DevARQ
     // (old name QueryParseException : superclass) 
     // QuerySolution
     
-    
     // BINDINGS
+    //  Values as Map<Var,Node> or ?
     
     // Strictisms:
     //   scoping checks on variables.

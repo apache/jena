@@ -181,11 +181,19 @@ SELECT * { } BINDINGS ?x ?y { }
 EOF
 
 N=$((N+1)) ; testGood $SPARQL11 $(fname "syntax-bindings-" $N) <<EOF
-SELECT * { } BINDINGS ?x ?y { (1 2) }
+SELECT * { } BINDINGS { }
 EOF
 
 N=$((N+1)) ; testGood $SPARQL11 $(fname "syntax-bindings-" $N) <<EOF
-SELECT * { } BINDINGS ?x ?y { (1 2) (3) }
+SELECT * { } BINDINGS { () }
+EOF
+
+N=$((N+1)) ; testGood $SPARQL11 $(fname "syntax-bindings-" $N) <<EOF
+SELECT * { } BINDINGS { }
+EOF
+
+N=$((N+1)) ; testGood $SPARQL11 $(fname "syntax-bindings-" $N) <<EOF
+SELECT * { } BINDINGS ?x ?y { (1 2) }
 EOF
 
 ## == Bad
@@ -209,4 +217,8 @@ EOF
 
 N=$((N+1)) ; testBad $SPARQL11 $(fname "syn-bad-" $N) <<EOF
 SELECT * { ?s ?p ?o UNION ?s ?p ?o  }
+EOF
+
+N=$((N+1)) ; testBad $SPARQL11 $(fname "syntax-bindings-" $N) <<EOF
+SELECT * { } BINDINGS ?x ?y { (1 2) (3) }
 EOF

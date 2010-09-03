@@ -16,6 +16,7 @@ import java.util.Set ;
 
 import org.openjena.atlas.io.IndentedLineBuffer ;
 import org.openjena.atlas.io.IndentedWriter ;
+import org.openjena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.ARQConstants ;
@@ -25,14 +26,13 @@ import com.hp.hpl.jena.sparql.core.QueryHashCode ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.core.VarAlloc ;
 import com.hp.hpl.jena.sparql.core.VarExprList ;
-import com.hp.hpl.jena.sparql.expr.ExprAggregator ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
+import com.hp.hpl.jena.sparql.expr.ExprAggregator ;
 import com.hp.hpl.jena.sparql.expr.ExprVar ;
 import com.hp.hpl.jena.sparql.expr.aggregate.Aggregator ;
 import com.hp.hpl.jena.sparql.serializer.Serializer ;
 import com.hp.hpl.jena.sparql.syntax.Element ;
 import com.hp.hpl.jena.sparql.syntax.Template ;
-import org.openjena.atlas.logging.Log ;
 import com.hp.hpl.jena.sparql.util.FmtUtils ;
 
 /** The data structure for a query as presented externally.
@@ -63,28 +63,32 @@ public class Query extends Prologue implements Cloneable
     // If no model is provided explicitly, the query engine will load
     // a model from the URL.  Never a list of zero items.
     
-    List<String> graphURIs = new ArrayList<String>() ;
-    List<String> namedGraphURIs = new ArrayList<String>() ;
+    private List<String> graphURIs = new ArrayList<String>() ;
+    private List<String> namedGraphURIs = new ArrayList<String>() ;
     
     // The WHERE clause
-    Element queryPattern = null ;
+    private Element queryPattern = null ;
     
     // Query syntax
-    Syntax syntax = Syntax.syntaxSPARQL ; // Default
+    private Syntax syntax = Syntax.syntaxSPARQL ; // Default
     
     // LIMIT/OFFSET
     public static final long  NOLIMIT = Long.MIN_VALUE ;
-    long resultLimit   = NOLIMIT ;
-    long resultOffset  = NOLIMIT ;
+    private long resultLimit   = NOLIMIT ;
+    private long resultOffset  = NOLIMIT ;
     
     // ORDER BY
-    List<SortCondition> orderBy       = null ;
+    private List<SortCondition> orderBy       = null ;
     public static final int ORDER_ASCENDING           = 1 ; 
     public static final int ORDER_DESCENDING          = -1 ;
     public static final int ORDER_DEFAULT             = -2 ;    // Not explicitly given. 
     public static final int ORDER_UNKNOW              = -3 ; 
 
-    boolean strictQuery = true ;
+    // BINDINGS
+    protected List<Var> bindingVariables = null ;
+    protected List<List<Node>> bindingValues = null ;
+    
+    protected boolean strictQuery = true ;
     
     // SELECT * / CONSTRUCT * or DESCRIBE * seen
     protected boolean queryResultStar        = false ;
@@ -503,24 +507,31 @@ public class Query extends Prologue implements Cloneable
         aggregatorsMap.put(v, aggExpr) ;
         aggregators.add(aggExpr) ;
         return aggExpr ;
-        
-//        E_Aggregator expr = aggregatorsAllocated.get(key); 
-//        
-//        if ( expr == null )
-//        {
-//            // Not see before.  Build the expression. 
-//            Var v = allocInternVar() ;
-//            expr = new E_Aggregator(v, agg) ;
-//            aggregatorsAllocated.put(key, expr) ;
-//            aggregators.add(expr) ;
-//        }
-//        else
-//        {
-//            // Consistentecy checking
-//            if ( ! agg.equalsAsExpr(expr.getAggregator()) )
-//                Log.warn(Query.class, "Internal inconsistency: Aggregator: "+agg) ;
-//        }
-//        return expr ;
+    }
+    
+    // ---- BINDINGS
+    
+    /** Does the query have any bindings? */
+    public boolean hasBindings()                { return bindingVariables != null ; }
+    
+    /** Binding variables */
+    public List<Var> getBindingVariables()      { return bindingVariables ; }
+    
+    
+    /** Binding values - null for a Node means undef */ 
+    public List<List<Node>> getBindingValues()  { return bindingValues ; }
+    
+    public void setBindings(List<Var> variables, List<List<Node>> values)
+    {
+        // Check.
+        int N = variables.size() ;
+        for ( List<Node> vList : values )
+        {
+            if ( vList.size() != N )
+                throw new QueryBuildException("Mismatch in sizes between variables and values") ;
+        }
+        bindingVariables = variables ;
+        bindingValues = values ;
     }
     
     // ---- CONSTRUCT 
@@ -645,6 +656,7 @@ public class Query extends Prologue implements Cloneable
         visitor.visitOrderBy(this) ;
         visitor.visitOffset(this) ;
         visitor.visitLimit(this) ;
+        visitor.visitBindings(this) ;
         visitor.finishVisit(this) ;
     }
 

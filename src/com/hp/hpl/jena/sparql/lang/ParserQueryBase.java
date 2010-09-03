@@ -14,6 +14,7 @@ import java.util.Stack ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.Query ;
+import com.hp.hpl.jena.query.QueryParseException ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.update.Update ;
 import com.hp.hpl.jena.update.UpdateRequest ;
@@ -64,23 +65,23 @@ public class ParserQueryBase extends ParserBase
     protected void finishUpdateRequest() {}
     
     private boolean b ;
-    protected void startDataInsert() 
+    protected void startDataInsert(int line, int col) 
     {
         b = getBNodesAreVariables() ;
         setBNodesAreVariables(false) ;
     } 
-    protected void finishDataInsert()
+    protected void finishDataInsert(int line, int col)
     {
         setBNodesAreVariables(b) ;
     }
     
-    protected void startDataDelete()
+    protected void startDataDelete(int line, int col)
     {
         b = getBNodesAreVariables() ;
         setBNodesAreVariables(false) ;
     } 
     
-    protected void finishDataDelete()
+    protected void finishDataDelete(int line, int col)
     {
         setBNodesAreVariables(b) ;
     }
@@ -90,7 +91,7 @@ public class ParserQueryBase extends ParserBase
         request.addUpdate(update) ;
     }
     
-    protected void startSubSelect()
+    protected void startSubSelect(int line, int col)
     {
         // Query is null in an update.
         stack.push(query) ;
@@ -110,27 +111,34 @@ public class ParserQueryBase extends ParserBase
     private List<Var> variables = null ;
     private List<List<Node>> values = null ;
     
-    protected void startBinding()               
+    protected void startBinding(int line, int col)               
     { 
         variables = new ArrayList<Var>() ;
         values = new ArrayList<List<Node>>() ;
     }
     
-    protected void emitBindingVariable(Var v)   { variables.add(v) ; }
+    private List<Node> currentValueRow()                            { return values.get(values.size()-1) ; }
     
-    protected void startBindingValueRow()       { values.add(new ArrayList<Node>()) ; }
+    protected void emitBindingVariable(Var v, int line, int col)    { variables.add(v) ; }
     
-    protected void emitBindingValue(Node n)     { values.get(values.size()-1).add(n) ; }
+    protected void startBindingValueRow(int line, int col)          { values.add(new ArrayList<Node>()) ; }
+    
+    protected void emitBindingValue(Node n, int line, int col)      { currentValueRow().add(n) ; }
 
-    protected void finishBindingValueRow()      
+    protected void finishBindingValueRow(int line, int col)      
     {
-        // check row.
+        if ( variables.size() != currentValueRow().size() )
+        {
+            String msg = String.format("Mismatch: %d variables but %d values",variables.size(), currentValueRow().size()) ;
+            msg = QueryParseException.formatMessage(msg, line, col) ;
+            throw new QueryParseException(msg, line , col) ;
+        }
+        
     }
     
-    protected void finishBinding()
+    protected void finishBinding(int line, int col)
     {
-        // check
-        //getQuery().addBindings() ;
+        getQuery().setBindings(variables, values) ;
     }
 }
 

@@ -38,6 +38,10 @@ public class Lib
     /** Do two lists have the same elements? */ 
     public static <T> boolean equalsListAsSet(List<T> list1, List<T> list2)
     {
+        if ( list1 == null && list2 == null )
+            return true ;
+        if ( list1 == null ) return false ;
+        if ( list2 == null ) return false ;
         return list1.containsAll(list2) && list2.containsAll(list1) ;
     }
 

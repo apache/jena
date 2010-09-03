@@ -22,7 +22,6 @@
 #define CLASS       SPARQLParser11
 #define PARSERBASE  SPARQLParser11Base
 #define UPDATE
-#define ARQ_UPDATE
 #endif
 
 #ifdef ARQ
@@ -361,23 +360,29 @@ void OffsetClause() : { Token t ; }
     { getQuery().setOffset(integerValue(t.image)) ; }
 }
 
-void BindingsClause() : { Var v ; Node n ; }
+void BindingsClause() : { Var v ; Node n ; Token t ; }
 {
   (
     // @@ Zero allowed?
-    <BINDINGS> 
-    { startBinding() ; }
-    ( v = Var() { emitBindingVariable(v) ; }) *
-    <LBRACE>
-      ( 
-        { startBindingValueRow() ; }
-        <LPAREN> 
-            (n = BindingValue() { emitBindingValue(n) ; }) *
-        <RPAREN> 
-        { finishBindingValueRow() ; }
-      )*
-    <RBRACE>
-    { finishBinding() ; }
+    t = <BINDINGS> 
+    { startBinding(t.beginLine, t.beginColumn) ; }
+    ( v = Var() { emitBindingVariable(v, t.beginLine, t.beginColumn) ; }) *
+
+    t = <LBRACE>
+    (
+      t = <LPAREN> 
+        { startBindingValueRow(t.beginLine, t.beginColumn) ; }
+      (n = BindingValue() { emitBindingValue(n, t.beginLine, t.beginColumn) ; }) +
+      t = <RPAREN> 
+        { finishBindingValueRow(t.beginLine, t.beginColumn) ; }
+    |
+      t = <NIL>
+      { startBindingValueRow(t.beginLine, t.beginColumn) ; }
+      { finishBindingValueRow(t.beginLine, t.beginColumn) ; }
+    )*
+
+    t = <RBRACE>
+    { finishBinding(t.beginLine, t.beginColumn) ; }
   )?
 }
 
@@ -469,34 +474,34 @@ Update Create() : { Node iri ; boolean silent = false ; }
    { return new UpdateCreate(iri, silent) ; } 
 }
 
-Update InsertData() : { QuadDataAcc qd = new QuadDataAcc() ; }
+Update InsertData() : { QuadDataAcc qd = new QuadDataAcc() ; Token t ; }
 {
-  { startDataInsert() ; }
+  t =  <INSERT_DATA>
+  { startDataInsert(t.beginLine, t.beginColumn) ; }
 #ifndef ARQ_UPDATE
-  <INSERT_DATA> QuadData(qd)
+   QuadData(qd)
 #else
-   <INSERT_DATA>
    OptionalIntoTarget(qd)
    QuadPattern(qd)
 #endif
   {
-    finishDataInsert() ;
+    finishDataInsert(t.beginLine, t.beginColumn) ;
     return new UpdateDataInsert(qd) ; 
   }
 }
 
-Update DeleteData() : { QuadDataAcc qd = new QuadDataAcc() ; }
+Update DeleteData() : { QuadDataAcc qd = new QuadDataAcc() ; Token t ; }
 {
-  { startDataDelete() ; }
+  t = <DELETE_DATA>
+  { startDataDelete(t.beginLine, t.beginColumn) ; }
 #ifndef ARQ_UPDATE
-  <DELETE_DATA> QuadData(qd)
+  QuadData(qd)
 #else
-   <DELETE_DATA>
-   OptionalFromTarget(qd)
-   QuadData(qd)
+  OptionalFromTarget(qd)
+  QuadData(qd)
 #endif
   { 
-    finishDataDelete() ;
+    finishDataDelete(t.beginLine, t.beginColumn) ;
     return new UpdateDataDelete(qd) ;
   }
 }
@@ -814,7 +819,7 @@ Element GroupGraphPattern() : { Element el = null ; Token t ; }
 {
   t = <LBRACE>
   ( 
-    { startSubSelect() ; }
+    { startSubSelect(t.beginLine, t.beginColumn) ; }
     SubSelect()
     { 
       Query q = endSubSelect(t.beginLine, t.beginColumn) ;
@@ -1604,7 +1609,7 @@ Expr PrimaryExpression() : { Expr expr ; Node gn ; }
   | expr = IRIrefOrFunction()  { return expr ; }
 
 // NOT  | gn = VarOrTerm()           { return asExpr(gn) ; }
-// Because of IRIrefOrFunction vs <NIL> and blank nodes
+// Because of IRIrefOrFunction 
   | gn = RDFLiteral()      { return asExpr(gn) ; }
   | gn = NumericLiteral()  { return asExpr(gn) ; }
   | gn = BooleanLiteral()  { return asExpr(gn) ; }
@@ -2125,6 +2130,9 @@ TOKEN :
   < LPAREN:    "(" >
 | < RPAREN:    ")" >
 
+// All the stuff for NUIL is needed just to make a 
+// single list "() ." as a triple pattern illegal.
+// It leads to a lot of extra work.
 | <NIL: <LPAREN> (<WS>|<SINGLE_LINE_COMMENT>)* <RPAREN> >
 
 | < LBRACE:    "{" >
