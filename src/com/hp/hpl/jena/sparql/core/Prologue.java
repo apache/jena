@@ -9,6 +9,8 @@ package com.hp.hpl.jena.sparql.core;
 import com.hp.hpl.jena.n3.IRIResolver ;
 import com.hp.hpl.jena.shared.PrefixMapping ;
 import com.hp.hpl.jena.shared.impl.PrefixMappingImpl ;
+
+import org.openjena.atlas.lib.Lib ;
 import org.openjena.atlas.logging.Log ;
 import com.hp.hpl.jena.sparql.util.PrefixMapping2 ;
 
@@ -130,6 +132,14 @@ public class Prologue
     public void setPrefix(String prefix, String expansion)
     {
         try {
+            // Removal may involve regeneration of the reverse mapping
+            // so only do if needed.   
+            String oldExpansion = prefixMap.getNsPrefixURI(prefix) ;
+            if ( Lib.equal(oldExpansion, expansion) )
+                return ;
+            if ( oldExpansion != null )
+                prefixMap.removeNsPrefix(prefix) ;
+            
             prefixMap.setNsPrefix(prefix, expansion) ;
         } catch (PrefixMapping.IllegalPrefixException ex)
         {

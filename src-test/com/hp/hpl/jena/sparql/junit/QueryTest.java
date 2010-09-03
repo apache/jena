@@ -162,6 +162,7 @@ public class QueryTest extends EarlTestCase
             catch (QueryException qEx)
             {
                 query = null ;
+                qEx.printStackTrace(System.err) ;
                 fail("Parse failure: "+qEx.getMessage()) ;
                 throw qEx ;
             }

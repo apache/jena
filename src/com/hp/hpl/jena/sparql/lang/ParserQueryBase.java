@@ -16,6 +16,8 @@ import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.query.QueryParseException ;
 import com.hp.hpl.jena.sparql.core.Var ;
+import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.engine.binding.BindingMap ;
 import com.hp.hpl.jena.update.Update ;
 import com.hp.hpl.jena.update.UpdateRequest ;
 
@@ -109,21 +111,38 @@ public class ParserQueryBase extends ParserBase
     }
     
     private List<Var> variables = null ;
-    private List<List<Node>> values = null ;
+    private List<Binding> values = null ;
+    private int currentColumn = -1 ;
     
     protected void startBinding(int line, int col)               
     { 
         variables = new ArrayList<Var>() ;
-        values = new ArrayList<List<Node>>() ;
+        values = new ArrayList<Binding>() ;
     }
     
-    private List<Node> currentValueRow()                            { return values.get(values.size()-1) ; }
+    private Binding currentValueRow()                            { return values.get(values.size()-1) ; }
     
     protected void emitBindingVariable(Var v, int line, int col)    { variables.add(v) ; }
     
-    protected void startBindingValueRow(int line, int col)          { values.add(new ArrayList<Node>()) ; }
+    protected void startBindingValueRow(int line, int col)
+    { 
+        values.add(new BindingMap()) ;
+        currentColumn = -1 ;
+    }
     
-    protected void emitBindingValue(Node n, int line, int col)      { currentValueRow().add(n) ; }
+    protected void emitBindingValue(Node n, int line, int col)      
+    { 
+        currentColumn++ ;
+        
+        if ( currentColumn >= variables.size() )
+            // Exception will be thrown later when we have the complete row count.
+            return ;
+        
+        Var v = variables.get(currentColumn) ;
+        if ( n != null )
+            currentValueRow().add(v, n) ;
+        
+    }
 
     protected void finishBindingValueRow(int line, int col)      
     {

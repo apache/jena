@@ -1,5 +1,9 @@
 @prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix :        <http://example/> .
+@prefix :        <http://example/fred/> .
 
-:a :p "A"@en, "B"@en, "Z"@en  .
-:a :q "a"@en, "b"@en, "c"@en  .
+:a :p <http://example/a123> .
+:a :p <http://example/fred/a123> .
+
+## :a :p "A"@en, "B"@en, "Z"@en  .
+## :a :q "a"@en, "b"@en, "c"@en  .

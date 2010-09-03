@@ -26,6 +26,7 @@ import com.hp.hpl.jena.sparql.core.QueryHashCode ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.core.VarAlloc ;
 import com.hp.hpl.jena.sparql.core.VarExprList ;
+import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.expr.ExprAggregator ;
 import com.hp.hpl.jena.sparql.expr.ExprVar ;
@@ -86,7 +87,7 @@ public class Query extends Prologue implements Cloneable
 
     // BINDINGS
     protected List<Var> bindingVariables = null ;
-    protected List<List<Node>> bindingValues = null ;
+    protected List<Binding> bindingValues = null ;
     
     protected boolean strictQuery = true ;
     
@@ -519,15 +520,15 @@ public class Query extends Prologue implements Cloneable
     
     
     /** Binding values - null for a Node means undef */ 
-    public List<List<Node>> getBindingValues()  { return bindingValues ; }
+    public List<Binding> getBindingValues()  { return bindingValues ; }
     
-    public void setBindings(List<Var> variables, List<List<Node>> values)
+    public void setBindings(List<Var> variables, List<Binding> values)
     {
         // Check.
         int N = variables.size() ;
-        for ( List<Node> vList : values )
+        for ( Binding valueRow : values )
         {
-            if ( vList.size() != N )
+            if ( valueRow.size() != N )
                 throw new QueryBuildException("Mismatch in sizes between variables and values") ;
         }
         bindingVariables = variables ;
@@ -540,7 +541,6 @@ public class Query extends Prologue implements Cloneable
     public Template getConstructTemplate() 
     { 
         return constructTemplate ;
-    
     }
     
     /** Set triple patterns for a construct query */ 

@@ -18,6 +18,7 @@ import com.hp.hpl.jena.query.SortCondition ;
 import com.hp.hpl.jena.sparql.core.Prologue ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.core.VarExprList ;
+import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.syntax.Element ;
 import com.hp.hpl.jena.sparql.syntax.Template ;
@@ -240,17 +241,18 @@ public class QuerySerializer implements QueryVisitor
             out.print("{") ;
             out.incIndent() ;
             out.println() ;
-            for ( List<Node> valueRow : query.getBindingValues() )
+            for ( Binding valueRow : query.getBindingValues() )
             {
                 // A value may be null for UNDEF
                 out.print("(") ;
-                for ( Node v : valueRow )
+                for ( Var var : query.getBindingVariables() )
                 {
                     out.print(" ") ;
-                    if ( v == null )
+                    Node value = valueRow.get(var) ; 
+                    if ( value == null )
                         out.print("UNDEF") ;
                     else
-                        out.print(FmtUtils.stringForNode(v, query)) ;
+                        out.print(FmtUtils.stringForNode(value, query)) ;
                 }
                 out.println(" )") ;
             }

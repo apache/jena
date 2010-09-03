@@ -91,6 +91,9 @@ public class RunARQ
 
     public static void main(String[] argv) throws Exception
     {
+        UpdateRequest request = UpdateFactory.read("update.ru") ;
+        System.exit(0) ;
+        
         qparse("@Q.rq") ;
         System.exit(0) ;
         

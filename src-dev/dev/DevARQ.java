@@ -5,10 +5,8 @@ public class DevARQ
 {
     // **Next
     // Prologue between any operations.
-    // Check parse/print cycle.
-    // Redef prefix is broken
-    // Default graph printing and WITH
-    //   See update.ru
+    // Checking during  parse/print cycle c.f. qparse.
+    //  Udate check utilities.
     
     // Language naming: is query different from update in naming?
     // Or does context means we don't usefully need separte symbols.
@@ -19,7 +17,7 @@ public class DevARQ
     // QuerySolution
     
     // BINDINGS
-    //  Values as Map<Var,Node> or ?
+    //  Values as Map<Var,Node> or Binding?
     
     // Strictisms:
     //   scoping checks on variables.
