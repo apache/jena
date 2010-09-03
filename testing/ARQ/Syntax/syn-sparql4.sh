@@ -123,7 +123,7 @@ SELECT * { ?s ?p ?o FILTER NOT EXISTS{?s ?p ?o} }
 EOF
 
 N=$((N+1)) ; testGood $SPARQL11 $(fname "syntax-not-exists-" $N) <<EOF
-SELECT * { ?s ?p ?o FILTER(NOT EXISTS{?s ?p ?o}) }
+SELECT * { ?s ?p ?o FILTER(true && NOT EXISTS{?s ?p ?o}) }
 EOF
 
 N=0
@@ -135,8 +135,8 @@ N=$((N+1)) ; testGood $SPARQL11 $(fname "syntax-exists-" $N) <<EOF
 SELECT * { ?s ?p ?o FILTER EXISTS{?s ?p ?o} }
 EOF
 
-N=$((N+1)) ; testGood $SPARQL11 $(fname "syntax-not-exists-" $N) <<EOF
-SELECT * { ?s ?p ?o FILTER(NOT EXISTS{?s ?p ?o}) }
+N=$((N+1)) ; testGood $SPARQL11 $(fname "syntax-exists-" $N) <<EOF
+SELECT * { ?s ?p ?o FILTER(! EXISTS{?s ?p ?o}) }
 EOF
 
 ## ---- Negation: MINUS
@@ -161,16 +161,6 @@ EOF
 N=$((N+1)) ; testGood $SPARQL11 $(fname "syntax-oneof-" $N) <<EOF
 SELECT * { ?s ?p ?o FILTER(?o IN(1,<x>)) }
 EOF
-
-## ## ---- UNION without left {}  May not make SPARQL 1.1
-## N=0
-## N=$((N+1)) ; testGood $SPARQL11 $(fname "syntax-union11-" $N) <<EOF
-## SELECT * { ?s ?p ?o UNION { ?s ?p ?o } }
-## EOF
-## 
-## N=$((N+1)) ; testGood $SPARQL11 $(fname "syntax-union11-" $N) <<EOF
-## SELECT * { ?s1 ?p1 ?o1 . ?s ?p ?o UNION { ?s ?p ?o } }
-## EOF
 
 ## ---- SERVICE
 

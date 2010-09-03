@@ -131,7 +131,7 @@ public class PrintUtils
 
     public static void printQuery(IndentedWriter out, Query query)
     {
-        printQuery(out, query, Syntax.defaultSyntax) ;
+        printQuery(out, query, Syntax.defaultQuerySyntax) ;
     }
 
     public static void printQuery(IndentedWriter out, Query query, Syntax syntax)

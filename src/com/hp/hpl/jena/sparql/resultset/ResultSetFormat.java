@@ -30,22 +30,22 @@ public class ResultSetFormat extends Symbol
     public static final ResultSetFormat syntaxTSV          = new ResultSetFormat("RS_TSV") ;
 
     // Common names to symbol (used by arq.rset)
-    protected static TranslationTable syntaxNames = new TranslationTable(true) ;
+    protected static TranslationTable<ResultSetFormat> syntaxNames = new TranslationTable<ResultSetFormat>(true) ;
     static {
-        syntaxNames.put("srx",     ResultSetFormat.syntaxXML) ;
-        syntaxNames.put("xml",     ResultSetFormat.syntaxXML) ;
-        syntaxNames.put("rdf",     ResultSetFormat.syntaxRDF_XML) ; 
-        syntaxNames.put("rdf/n3",  ResultSetFormat.syntaxRDF_N3) ;
-        syntaxNames.put("rdf/xml", ResultSetFormat.syntaxRDF_XML) ;
-        syntaxNames.put("n3",      ResultSetFormat.syntaxRDF_N3) ;
-        syntaxNames.put("ttl",     ResultSetFormat.syntaxRDF_TURTLE) ;
-        syntaxNames.put("turtle",  ResultSetFormat.syntaxRDF_TURTLE) ;
-        syntaxNames.put("text",    ResultSetFormat.syntaxText) ;
-        syntaxNames.put("json",    ResultSetFormat.syntaxJSON) ;
-        syntaxNames.put("yaml",    ResultSetFormat.syntaxJSON) ;    // The JSON format is a subset of YAML
-        syntaxNames.put("sse",     ResultSetFormat.syntaxSSE) ;
-        syntaxNames.put("csv",     ResultSetFormat.syntaxCSV) ;
-        syntaxNames.put("tsv",     ResultSetFormat.syntaxTSV) ;
+        syntaxNames.put("srx",     syntaxXML) ;
+        syntaxNames.put("xml",     syntaxXML) ;
+        syntaxNames.put("rdf",     syntaxRDF_XML) ; 
+        syntaxNames.put("rdf/n3",  syntaxRDF_N3) ;
+        syntaxNames.put("rdf/xml", syntaxRDF_XML) ;
+        syntaxNames.put("n3",      syntaxRDF_N3) ;
+        syntaxNames.put("ttl",     syntaxRDF_TURTLE) ;
+        syntaxNames.put("turtle",  syntaxRDF_TURTLE) ;
+        syntaxNames.put("text",    syntaxText) ;
+        syntaxNames.put("json",    syntaxJSON) ;
+        syntaxNames.put("yaml",    syntaxJSON) ;    // The JSON format is a subset of YAML
+        syntaxNames.put("sse",     syntaxSSE) ;
+        syntaxNames.put("csv",     syntaxCSV) ;
+        syntaxNames.put("tsv",     syntaxTSV) ;
     }
 
     protected ResultSetFormat(String symbol) { super(symbol) ; }
@@ -54,7 +54,7 @@ public class ResultSetFormat extends Symbol
     
     public static ResultSetFormat guessSyntax(String url) 
     {
-        return guessSyntax(url, ResultSetFormat.syntaxXML) ;
+        return guessSyntax(url, syntaxXML) ;
     }
     
     public boolean isCompatibleWith(ResultSetFormat other)
@@ -71,35 +71,35 @@ public class ResultSetFormat extends Symbol
     {
         // -- XML
         if ( url.endsWith(".srx") )
-            return ResultSetFormat.syntaxXML ;
+            return syntaxXML ;
         if ( url.endsWith(".xml") )
-            return ResultSetFormat.syntaxXML ;
+            return syntaxXML ;
         
         // -- Some kind of RDF
         if ( url.endsWith(".rdf") )
-            return ResultSetFormat.syntaxRDF_XML ;
+            return syntaxRDF_XML ;
         if ( url.endsWith(".n3") )
-            return ResultSetFormat.syntaxRDF_N3 ;
+            return syntaxRDF_N3 ;
         if ( url.endsWith(".ttl") )
-            return ResultSetFormat.syntaxRDF_N3 ;
+            return syntaxRDF_N3 ;
         
         // -- JSON
         if ( url.endsWith(".srj") )
-            return ResultSetFormat.syntaxJSON ;
+            return syntaxJSON ;
         if ( url.endsWith(".json") )
-            return ResultSetFormat.syntaxJSON ;
+            return syntaxJSON ;
         if ( url.endsWith(".yml") )
-            return ResultSetFormat.syntaxJSON ;
+            return syntaxJSON ;
         
-        // -- SSE : http://jena.hpl.hp.com/wiki/SSE
+        // -- SSE : http://openjena.org/wiki/SSE
         if ( url.endsWith(".sse") )
-            return ResultSetFormat.syntaxSSE ;
+            return syntaxSSE ;
 
         // Likelyto be something completely different!
         if ( url.endsWith(".csv") )
-            return ResultSetFormat.syntaxCSV ;
+            return syntaxCSV ;
         if ( url.endsWith(".tsv") )
-            return ResultSetFormat.syntaxTSV ;
+            return syntaxTSV ;
         
         return defaultFormat ;
     }
@@ -113,7 +113,7 @@ public class ResultSetFormat extends Symbol
  
     public static ResultSetFormat lookup(String s)
     {
-        return (ResultSetFormat)syntaxNames.lookup(s) ;
+        return syntaxNames.lookup(s) ;
     }
 
 }

@@ -17,9 +17,6 @@ import com.hp.hpl.jena.util.FileManager ;
 
 public class QueryFactory
 {
-
-    // ---- static methods for making a query
-    
     /** Create a SPARQL query from the given string.
      *
      * @param queryString      The query string
@@ -28,7 +25,7 @@ public class QueryFactory
     
     static public Query create(String queryString)
     {
-        return create(queryString, Syntax.defaultSyntax) ;
+        return create(queryString, Syntax.defaultQuerySyntax) ;
     }
 
     /** Create a query from the given string with the 
@@ -53,7 +50,7 @@ public class QueryFactory
     static public Query create(String queryString, String baseURI)
     {
         Query query = new Query() ;
-        parse(query, queryString, baseURI, Syntax.defaultSyntax) ;
+        parse(query, queryString, baseURI, Syntax.defaultQuerySyntax) ;
         return query ;
         
     }
@@ -203,7 +200,7 @@ public class QueryFactory
         if ( baseURI == null )
             baseURI = url ;
         if ( langURI == null )
-            langURI = Syntax.guessQueryFileSyntax(url) ;
+            langURI = Syntax.guessFileSyntax(url) ;
         
         return create(qStr, baseURI, langURI) ;
     }

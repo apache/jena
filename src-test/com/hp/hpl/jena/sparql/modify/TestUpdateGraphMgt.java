@@ -71,7 +71,7 @@ public abstract class TestUpdateGraphMgt extends TestUpdateBase
     @Test public void testCreateDrop3()
     {
         GraphStore gStore = GraphStoreFactory.create() ;
-        script(gStore, "create-1.rup") ;
+        script(gStore, "create-1.ru") ;
         assertTrue(gStore.containsGraph(graphIRI)) ;
         assertTrue(graphEmpty(gStore.getGraph(graphIRI))) ;
     }
@@ -80,7 +80,7 @@ public abstract class TestUpdateGraphMgt extends TestUpdateBase
     {
         GraphStore gStore = GraphStoreFactory.create() ;
         gStore.addGraph(graphIRI, GraphFactory.createDefaultGraph()) ;
-        script(gStore, "drop-1.rup") ;
+        script(gStore, "drop-1.ru") ;
         assertFalse(gStore.containsGraph(graphIRI)) ;
     }
 }

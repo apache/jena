@@ -3,6 +3,11 @@ ChangeLog for ARQ
 
 ==== ARQ 2.8.7
 
+** Update is now two languages: 
+     strict SPARQL 1.1 Update (the default)
+     enhanced language (ARQ query extensions, compatibility extensions for previous update language)
+   Set Syntx.syntaxARQ_Update to access the extensions. 
+
 + Complete implementation of SPARQL 1.1 Query and Update (as per current draft) 
   Default query and updates languages are now SPARQL 1.1
 

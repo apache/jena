@@ -4,11 +4,11 @@ package dev;
 public class DevARQ
 {
     // **Next
-    // Fix SEMI rule in Update grammar.
     // Prologue between any operations.
-    // ARQ -> Modified SPARQL 1.1, not submission.
-    // *.ru -- *.aru
-    // Language from extension
+    
+    // Language naming: is query different from update in naming?
+    // Or does context means we don't usefully need separte symbols.
+    // User effect? None?
     
     // Error handling and exception catching.  LanguageParseException 
     // (old name QueryParseException : superclass) 

@@ -136,10 +136,6 @@
          rdf:type   mf:PositiveUpdateSyntaxTest11 ;
          mf:action  <syntax-update-32.ru> ; 
       ]
-      [  mf:name    "syntax-update-33.ru" ;
-         rdf:type   mf:PositiveUpdateSyntaxTest11 ;
-         mf:action  <syntax-update-33.ru> ; 
-      ]
       [  mf:name    "syntax-update-bad-01.ru" ;
          rdf:type   mf:NegativeUpdateSyntaxTest11 ;
          mf:action  <syntax-update-bad-01.ru> ; 
@@ -171,5 +167,9 @@
       [  mf:name    "syntax-update-bad-08.ru" ;
          rdf:type   mf:NegativeUpdateSyntaxTest11 ;
          mf:action  <syntax-update-bad-08.ru> ; 
+      ]
+      [  mf:name    "syntax-update-bad-09.ru" ;
+         rdf:type   mf:NegativeUpdateSyntaxTest11 ;
+         mf:action  <syntax-update-bad-09.ru> ; 
       ]
     ) .

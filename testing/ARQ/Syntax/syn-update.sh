@@ -192,11 +192,6 @@ EOF
 
 # Compound
 N=$((N+1)) ; testGood $SPARQL11U $(fname "syntax-update-" $N) <<EOF
-CREATE GRAPH <g>
-LOAD <remote> INTO GRAPH <g>
-EOF
-
-N=$((N+1)) ; testGood $SPARQL11U $(fname "syntax-update-" $N) <<EOF
 CREATE GRAPH <g> ;
 LOAD <remote> INTO GRAPH <g> ;
 EOF
@@ -239,3 +234,10 @@ EOF
 N=$((N+1)) ; testBad $SPARQL11U $(fname "syntax-update-bad-" $N) <<EOF
 INSERT WHERE { ?s ?p ?o }
 EOF
+
+# No separator
+N=$((N+1)) ; testBad $SPARQL11U $(fname "syntax-update-bad-" $N) <<EOF
+CREATE GRAPH <g>
+LOAD <remote> INTO GRAPH <g>
+EOF
+

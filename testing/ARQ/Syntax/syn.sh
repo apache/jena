@@ -46,3 +46,12 @@ source syn-func.sh
     createManifest "Syntax-ARQ"
 )
 
+# SPARQL Update
+(
+    cd Syntax-SPARQL-Update
+    clean 
+    source ../syn-update.sh 
+    createManifest "Syntax SPARQL Update"
+)
+
+# Syntax-SPARQL-Update-2 is handwritten scripts.

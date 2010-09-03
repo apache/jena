@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
  * [See end of file]
  */
 
@@ -94,12 +95,7 @@ public class TestItem
         queryFile = _getQueryFile() ;
         queryFileSyntax = _getSyntax(entry.getModel(), queryFile, defaultQuerySyntax) ;
         if ( queryFileSyntax == null && queryFile != null )
-        {
-            queryFileSyntax = Syntax.guessQueryFileSyntax(queryFile) ;
-            if ( queryFileSyntax == Syntax.syntaxSPARQL_10 )
-                // Upgrade :-)
-                queryFileSyntax = Syntax.syntaxSPARQL_11 ;
-        }
+            queryFileSyntax = Syntax.guessFileSyntax(queryFile) ;
         buildLuceneIndex = _getTextIndex() ;
     }
         
@@ -115,9 +111,8 @@ public class TestItem
         namedGraphURIs =  new ArrayList<String>() ;
         resultFile = _resultFile ;
         comment = "" ;
-        queryFileSyntax = Syntax.guessQueryFileSyntax(_queryFile) ;
+        queryFileSyntax = Syntax.guessFileSyntax(_queryFile) ;
     }
-             
     
     public Resource getResource() { return testResource ; }
     public Resource getAction()   { return _getAction() ; }
@@ -299,9 +294,9 @@ public class TestItem
     }
 }
 
-
 /*
- *  (c) Copyright 2004, 2005  Hewlett-Packard Development Company, LP
+ * (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

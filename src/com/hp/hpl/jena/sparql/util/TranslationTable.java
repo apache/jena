@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -11,13 +12,11 @@ import java.util.Iterator ;
 import java.util.Map ;
 
 /** Maps string to string for use with convenience names.
- * 
- * @author Andy Seaborne
  */
 
-public class TranslationTable
+public class TranslationTable<X extends Symbol>
 {
-    Map<String, Symbol> map = new HashMap<String, Symbol>() ;
+    Map<String, X> map = new HashMap<String, X>() ;
     boolean ignoreCase = false ;
     
     /** Create a translation table which respects case */
@@ -27,14 +26,14 @@ public class TranslationTable
     /** Create a translation table - say whether to ignore case or not */ 
     public TranslationTable(boolean ignoreCase) { this.ignoreCase = ignoreCase ; } 
     
-    public Symbol lookup(String name)
+    public X lookup(String name)
     {
         if ( name == null )
             return null ;
 
-        for ( Iterator<Map.Entry<String, Symbol>> iter = map.entrySet().iterator() ; iter.hasNext() ; )
+        for ( Iterator<Map.Entry<String, X>> iter = map.entrySet().iterator() ; iter.hasNext() ; )
         {
-            Map.Entry<String, Symbol> entry = iter.next() ;
+            Map.Entry<String, X> entry = iter.next() ;
             String k = entry.getKey() ;
             if ( ignoreCase )
             {                
@@ -50,17 +49,18 @@ public class TranslationTable
         return null ;
     }
     
-    public void put(String k, Symbol v)
+    public void put(String k, X v)
     {
         map.put(k, v) ;
     }
     
     public Iterator<String> keys() { return map.keySet().iterator() ; }
-    public Iterator<Symbol> values() { return map.values().iterator() ; }
+    public Iterator<X> values() { return map.values().iterator() ; }
 }
 
 /*
  * (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -13,50 +13,74 @@ import com.hp.hpl.jena.sparql.util.TranslationTable ;
 
 public class Syntax extends Symbol
 {
-    /** The syntax that the working group has defined */
+    /** The syntax that the DAWG working group defined */
     public static final Syntax syntaxSPARQL_10
                 = new Syntax("http://jena.hpl.hp.com/2003/07/query/SPARQL_10") ;
 
-    /** The syntax that the working group has defined */
+    /** The syntax that the SPARQL working group has defined */
     public static final Syntax syntaxSPARQL_11
                 = new Syntax("http://jena.hpl.hp.com/2003/07/query/SPARQL_11") ;
+    
+    /** The update syntax that the SPARQL working group has defined */
+    private static final Syntax syntaxSPARQL_11_Update
+                = syntaxSPARQL_11 ;
+                //= new Syntax("http://jena.hpl.hp.com/2003/07/update/SPARQL_11") ;
+
+    /** The system default syntax */ 
+    public static Syntax defaultSyntax = syntaxSPARQL_11 ;
     
     /** The name of the default query language for query parsing.
      *  The default query language syntax must be capable of accepting
      *  any SPARQL query but may also accept extensions. 
      */
-    public static Syntax defaultSyntax = Syntax.syntaxSPARQL_11 ;
+    public static Syntax defaultQuerySyntax = syntaxSPARQL_11 ;
     
     /** The name of the default update language for update parsing.
      *  The default update language syntax must be capable of accepting
      *  any SPARQL query but may also accept extensions. 
      */
-    public static Syntax defaultUpdateSyntax = Syntax.syntaxSPARQL_11 ;
+    public static Syntax defaultUpdateSyntax = syntaxSPARQL_11_Update ;
     
-    /** The syntax currently that is standardized, published, SPARQL - the "default SPARQL" */ 
+    /** The query syntax currently that is standardized, published, SPARQL - the "default SPARQL Query" */ 
     public static final Syntax syntaxSPARQL = syntaxSPARQL_11 ;
 
+    /** The update syntax currently that is standardized, published, SPARQL - the "default SPARQL Update" */ 
+    private static final Syntax syntaxSPARQL_Update = syntaxSPARQL_11_Update ;
+
+    /** The query syntax for extended SPARQL */ 
     public static final Syntax syntaxARQ
                 = new Syntax("http://jena.hpl.hp.com/2003/07/query/ARQ") ;
 
+    /** The update syntax for SPARQL Update, with extensions to help migrate the update language in the W3C submission */  
+    public static final Syntax syntaxARQ_Update
+                = syntaxARQ ;
+                //= new Syntax("http://jena.hpl.hp.com/2003/07/update/ARQ") ;
+    
     public static final Syntax syntaxRDQL
                 = new Syntax("http://jena.hpl.hp.com/2003/07/query/RDQL") ;
 
     public static final Syntax syntaxAlgebra
                 = new Syntax("http://jena.hpl.hp.com/2003/07/query/SPARQL_Algebra") ;
     
-    public static TranslationTable querySyntaxNames = new TranslationTable(true) ;
+    public static TranslationTable<Syntax> querySyntaxNames = new TranslationTable<Syntax>(true) ;
     static {
-        querySyntaxNames.put("sparql",      Syntax.syntaxSPARQL) ;
-        querySyntaxNames.put("sparql_10",   Syntax.syntaxSPARQL_10) ;
-        querySyntaxNames.put("sparql_11",   Syntax.syntaxSPARQL_11) ;
-        querySyntaxNames.put("arq",         Syntax.syntaxARQ) ;
-        querySyntaxNames.put("rdql",        Syntax.syntaxRDQL) ;
-        querySyntaxNames.put("alg",         Syntax.syntaxAlgebra) ;
-        querySyntaxNames.put("op",          Syntax.syntaxAlgebra) ;
+        querySyntaxNames.put("sparql",      syntaxSPARQL) ;
+        querySyntaxNames.put("sparql_10",   syntaxSPARQL_10) ;
+        querySyntaxNames.put("sparql_11",   syntaxSPARQL_11) ;
+        querySyntaxNames.put("arq",         syntaxARQ) ;
+        querySyntaxNames.put("rdql",        syntaxRDQL) ;
+        querySyntaxNames.put("alg",         syntaxAlgebra) ;
+        querySyntaxNames.put("op",          syntaxAlgebra) ;
     }
 
-	protected Syntax(String s) { super(s) ; }
+    public static TranslationTable<Syntax> updateSyntaxNames = new TranslationTable<Syntax>(true) ;
+    static {
+        querySyntaxNames.put("sparql",      syntaxSPARQL_Update) ;
+        querySyntaxNames.put("sparql_11",   syntaxSPARQL_11_Update) ;
+        querySyntaxNames.put("arq",         syntaxARQ) ;
+    }
+
+    protected Syntax(String s) { super(s) ; }
 	protected Syntax(Syntax s) { super(s) ; }
     
     public static Syntax make(String uri)
@@ -77,31 +101,65 @@ public class Syntax extends Symbol
     }
     
     
-    public static Syntax guessQueryFileSyntax(String url) 
+    public static Syntax guessFileSyntax(String url) 
     {
-        return guessQueryFileSyntax(url, Syntax.syntaxSPARQL) ;
+        return guessFileSyntax(url, syntaxSPARQL) ;
     }
-    
-    public static Syntax guessQueryFileSyntax(String url, Syntax defaultSyntax)
+
+    /** Gues the synatx (query and update) based on filename */
+    public static Syntax guessFileSyntax(String url, Syntax defaultSyntax)
     {
-        if ( url.endsWith(".arq") )
-            return Syntax.syntaxARQ ;
-        if ( url.endsWith(".rq") )
-            return Syntax.syntaxSPARQL ;
-//        if ( url.endsWith(".rqx") )
-//            return Syntax.syntaxSPARQL_X ;
-        if ( url.endsWith(".rdql") )
-            return Syntax.syntaxRDQL ;
-        if ( url.endsWith(".sse") )
-            return Syntax.syntaxAlgebra ;
+        if ( url.endsWith(".arq") )     return syntaxARQ ;
+        if ( url.endsWith(".rq") )      return syntaxSPARQL ;
+
+        if ( url.endsWith(".aru") )     return syntaxARQ_Update ;
+        if ( url.endsWith(".ru") )      return syntaxSPARQL_Update ;
+        
+        if ( url.endsWith(".rdql") )    return syntaxRDQL ;
+        if ( url.endsWith(".sse") )     return syntaxAlgebra ;
         
         // Default
         return defaultSyntax ;
     }
     
+    /** Guess the query syntax based on file name */
+    public static Syntax guessQueryFileSyntax(String url) 
+    {
+        return guessFileSyntax(url, defaultQuerySyntax) ;
+    }
+    
+
+    /** Guess the query syntax based on file name */
+    public static Syntax guessQueryFileSyntax(String url, Syntax defaultSyntax)
+    {
+        if ( url.endsWith(".arq") )     return syntaxARQ ;
+        if ( url.endsWith(".rq") )      return syntaxSPARQL ;
+
+        if ( url.endsWith(".rdql") )    return syntaxRDQL ;
+        if ( url.endsWith(".sse") )     return syntaxAlgebra ;
+        return defaultSyntax ;
+    }
+
+    /** Guess the update syntax based on file name */
+    public static Syntax guessUpdateFileSyntax(String url)
+    {
+        return guessUpdateFileSyntax(url, defaultUpdateSyntax) ;
+    }
+
+    
+    /** Guess the update syntax based on file name */
+    public static Syntax guessUpdateFileSyntax(String url, Syntax defaultSyntax)
+    {
+        if ( url.endsWith(".aru") )     return syntaxARQ_Update ;
+        if ( url.endsWith(".ru") )      return syntaxSPARQL_Update ;
+        if ( url.endsWith(".sse") )     return syntaxAlgebra ;
+        return defaultSyntax ;
+    }
+    
+    
     public static Syntax lookup(String s)
     {
-        return (Syntax)querySyntaxNames.lookup(s) ;
+        return querySyntaxNames.lookup(s) ;
     }
 }
 

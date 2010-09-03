@@ -1,2 +1,2 @@
-CREATE GRAPH <g>
-LOAD <remote> INTO GRAPH <g>
+CREATE GRAPH <g> ;
+LOAD <remote> INTO GRAPH <g> ;
