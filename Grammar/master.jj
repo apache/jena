@@ -88,23 +88,22 @@ public class CLASS extends PARSERBASE
 }
 PARSER_END(CLASS)
 
-// Common top for single entry point.
-void Top(): {}
-{
-    Prologue()
-    ( Query() | Update() )
-    <EOF>
-}
+// // Common top for single entry point.
+// void Top(): {}
+// {
+//     ( Query() | Update() )
+//     <EOF>
+// }
 
 // Query only entry point
 void QueryUnit(): { }
 {
-  Prologue()    
   Query() <EOF>
 }
 
 void Query() : { }
-{
+{    
+  Prologue()
   ( SelectQuery() | ConstructQuery() | DescribeQuery() | AskQuery() )
 }
 
@@ -400,7 +399,6 @@ Node BindingValue() : { Node n ; String iri ; }
 // Update only entry point
 void UpdateUnit() : {}
 {
-    Prologue()
     Update()
     <EOF>
 }
@@ -410,13 +408,15 @@ void UpdateUnit() : {}
 void Update() : { }
 {
     { startUpdateRequest() ; }
+    Prologue()
     ( Update1() (<SEMICOLON>)?)+
     { finishUpdateRequest() ; }
 }
 #else
 // Struct SPARQL 1.1 : mandator separator, optional terminator.
 void Update() : { }
-{
+{  
+   Prologue()
    Update1() ( <SEMICOLON> (Update())?)?
 }
 #endif

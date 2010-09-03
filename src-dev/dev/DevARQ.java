@@ -5,6 +5,9 @@ public class DevARQ
 {
     // **Next
     // Prologue between any operations.
+    // Check parse/print cycle.
+    // Default graph printing and WITH
+    //   See update.ru
     
     // Language naming: is query different from update in naming?
     // Or does context means we don't usefully need separte symbols.

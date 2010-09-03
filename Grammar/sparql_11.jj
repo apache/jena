@@ -42,21 +42,20 @@ public class SPARQLParser11 extends SPARQLParser11Base
     boolean allowAggregatesInExpressions = false ;
 }
 PARSER_END(SPARQLParser11)
-// Common top for single entry point.
-void Top(): {}
-{
-    Prologue()
-    ( Query() | Update() )
-    <EOF>
-}
+// // Common top for single entry point.
+// void Top(): {}
+// {
+//     ( Query() | Update() )
+//     <EOF>
+// }
 // Query only entry point
 void QueryUnit(): { }
 {
-  Prologue()
   Query() <EOF>
 }
 void Query() : { }
 {
+  Prologue()
   ( SelectQuery() | ConstructQuery() | DescribeQuery() | AskQuery() )
 }
 void Prologue() : {}
@@ -297,13 +296,13 @@ Node BindingValue() : { Node n ; String iri ; }
 // Update only entry point
 void UpdateUnit() : {}
 {
-    Prologue()
     Update()
     <EOF>
 }
 // Struct SPARQL 1.1 : mandator separator, optional terminator.
 void Update() : { }
 {
+   Prologue()
    Update1() ( <SEMICOLON> (Update())?)?
 }
 void Update1() : { Update up ; }

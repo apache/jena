@@ -123,7 +123,7 @@ do
       sparql10|sparql_10.jj)
     
 ##           # The parser that is exactly the working group grammar.
-##           dos2unix < "$GRAMMAR" | cpp -P -C -DSPARQL -DSPARQL_10 | unix2dos > sparql_10.jj
+##           cat "$GRAMMAR" | cpp -P -C -DSPARQL -DSPARQL_10 > sparql_10.jj
 ##           grammar sparql_10.jj sparql_10 SPARQLParser10
 ##           ;;
           # SPARQL 1.0 - use a static copy.
@@ -132,12 +132,12 @@ do
 
       sparql11|sparql_11.jj)
           # The parser that is exactly the working group grammar.
-          dos2unix < "$GRAMMAR" | cpp -P -C -DSPARQL -DSPARQL_11 | unix2dos > sparql_11.jj
+          cat "$GRAMMAR" | cpp -P -C -DSPARQL -DSPARQL_11 > sparql_11.jj
           grammar sparql_11.jj sparql_11 SPARQLParser11
           ;;
 
       arq|arq.jj)
-          dos2unix < "$GRAMMAR" | cpp -P -C -DARQ | unix2dos > arq.jj
+          cat "$GRAMMAR" | cpp -P -C -DARQ > arq.jj
           grammar arq.jj arq ARQParser
           ;;
 

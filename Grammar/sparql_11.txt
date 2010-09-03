@@ -206,11 +206,15 @@ TOKENS
 }
 
 NON-TERMINALS
-// Common top for single entry point.
-	Top	:=	Prologue ( Query | Update ) <EOF>
+// // Common top for single entry point.
+// void Top(): {}
+// {
+//     ( Query() | Update() )
+//     <EOF>
+// }
 // Query only entry point
-	QueryUnit	:=	Prologue Query <EOF>
-	Query	:=	( SelectQuery | ConstructQuery | DescribeQuery | AskQuery )
+	QueryUnit	:=	Query <EOF>
+	Query	:=	Prologue ( SelectQuery | ConstructQuery | DescribeQuery | AskQuery )
 	Prologue	:=	( BaseDecl )? ( PrefixDecl )*
 	BaseDecl	:=	<BASE> IRI_REF
 	PrefixDecl	:=	<PREFIX> <PNAME_NS> IRI_REF
@@ -245,9 +249,9 @@ NON-TERMINALS
 		|	<UNDEF>
 // SPARQL Update + transitional extensions for SPARQL/Update (the W3C submission)
 // Update only entry point
-	UpdateUnit	:=	Prologue Update <EOF>
+	UpdateUnit	:=	Update <EOF>
 // Struct SPARQL 1.1 : mandator separator, optional terminator.
-	Update	:=	Update1 ( <SEMICOLON> ( Update )? )?
+	Update	:=	Prologue Update1 ( <SEMICOLON> ( Update )? )?
 	Update1	:=	( Load | Clear | Drop | Create | InsertData | DeleteData | DeleteWhere | Modify )
 	Load	:=	<LOAD> IRIref ( <INTO> GraphRef )?
 	Clear	:=	<CLEAR> ( <SILENT> )? GraphRefAll

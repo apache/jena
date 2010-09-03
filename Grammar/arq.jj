@@ -43,21 +43,20 @@ public class ARQParser extends ARQParserBase
     boolean allowAggregatesInExpressions = false ;
 }
 PARSER_END(ARQParser)
-// Common top for single entry point.
-void Top(): {}
-{
-    Prologue()
-    ( Query() | Update() )
-    <EOF>
-}
+// // Common top for single entry point.
+// void Top(): {}
+// {
+//     ( Query() | Update() )
+//     <EOF>
+// }
 // Query only entry point
 void QueryUnit(): { }
 {
-  Prologue()
   Query() <EOF>
 }
 void Query() : { }
 {
+  Prologue()
   ( SelectQuery() | ConstructQuery() | DescribeQuery() | AskQuery() )
 }
 void Prologue() : {}

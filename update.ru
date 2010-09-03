@@ -9,4 +9,7 @@ INSERT DATA { GRAPH :graph1 { :s :p :o } } ;
 
 WITH :graph2
 INSERT { ?s ?p ?o }
-WHERE { GRAPH :graph1 { ?s ?p ?o } }
+WHERE { GRAPH :graph1 { ?s ?p ?o } } ;
+
+PREFIX :        <http://example/theother>
+INSERT DATA { GRAPH :graph1 { :s :p :o } } ;
