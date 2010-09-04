@@ -72,7 +72,6 @@ public class GraphNamedTDB extends GraphTDBBase
         boolean changed ;
         if ( isDefaultGraph(graphNode) )
             changed = dataset.getTripleTable().add(t) ;
-            //throw new TDBException("Attempt to add a triple to the default graph via its named form");
         else 
             changed = dataset.getQuadTable().add(graphNode, t) ;
         
@@ -90,7 +89,6 @@ public class GraphNamedTDB extends GraphTDBBase
         boolean changed ;
         if ( isDefaultGraph(graphNode) )
             changed = dataset.getTripleTable().delete(t) ;
-            //throw new TDBException("Attempt to delete a triple from the default graph via its named form"); 
         else 
             changed = dataset.getQuadTable().delete(graphNode, t) ;
         return changed ; 

@@ -6,7 +6,6 @@
 
 package com.hp.hpl.jena.tdb.store;
 
-
 import static com.hp.hpl.jena.sparql.core.Quad.isQuadUnionGraph ;
 
 import java.util.ConcurrentModificationException ;

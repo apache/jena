@@ -6,6 +6,7 @@
 
  <#dataset> rdf:type      tdb:DatasetTDB ;
      tdb:location "DB" ;
+     tdb:unionGraph true ;
      .
 
 ## <#dataset> rdf:type      ja:RDFDataset ;

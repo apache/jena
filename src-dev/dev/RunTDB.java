@@ -1,6 +1,7 @@
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
- * (c) Copyright 2010 Talis System Ltd
+ * (c) Copyright 2010 Talis Systems Ltd
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -21,6 +22,7 @@ import com.hp.hpl.jena.query.ResultSetFormatter ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.Property ;
 import com.hp.hpl.jena.rdf.model.Resource ;
+import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.TDBFactory ;
@@ -53,14 +55,22 @@ public class RunTDB
         Model ng1 = ds.getNamedModel("http://example/ng1") ;
         Model ng2 = ds.getNamedModel("http://example/ng2") ;
         
+        Model ug = ds.getNamedModel(Quad.unionGraph.getURI()) ;
+        Model ndft1 = ds.getNamedModel(Quad.defaultGraphIRI.getURI()) ;
+        Model ndft2 = ds.getNamedModel(Quad.defaultGraphNodeGenerated.getURI()) ;
+        
         Resource r = model.createResource("http://example/") ; 
         Property p = model.createProperty("http://example/prop") ;
         
-        model.add(r, p, "default") ;
-        ng1.add(r, p, "ng1-a") ;
-        ng1.add(r, p, "ng1-b") ;
-        ng2.add(r, p, "ng2-a") ;
+//        model.add(r, p, "default") ;
+//        ng1.add(r, p, "ng1-a") ;
+//        ng1.add(r, p, "ng1-b") ;
+//        ng2.add(r, p, "ng2-a") ;
 
+        //ug.add(r, p, "union") ;
+        ndft1.add(r, p, "ndft1") ;
+        ndft2.add(r, p, "ndft2") ;
+        
         SSE.write(ds) ;
         //SSE.write(model.getGraph()) ;
         System.out.println();
@@ -120,7 +130,8 @@ public class RunTDB
 
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
- * (c) Copyright 2010 Talis System Ltd
+ * (c) Copyright 2010 Talis Systems Ltd
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
