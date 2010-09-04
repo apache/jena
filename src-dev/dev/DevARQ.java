@@ -4,13 +4,11 @@ package dev ;
 public class DevARQ
 {
     // **Next
+    // ** Auto create quads (optional) - feature of the dataset.
     // Error handling and exception catching. LanguageParseException
     // (old name QueryParseException : superclass)
     // "QuerySolution"
 
-    // Auto create quads (optional)
-    // feature of the dataset. 
-    
     // BINDINGS
     //   Execution.
 

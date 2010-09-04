@@ -68,11 +68,12 @@ public abstract class QueryEngineBase implements OpEval, Closeable
     // Put any per-dataset execution global configuration state here.
     private static Context setupContext(Context context, DatasetGraph dataset)
     {
-        if ( context == null )      // Copy of global context to protect against chnage.
-            context = ARQ.getContext() ;
+        if ( context == null )
+            context = ARQ.getContext() ;    // Already copied?
         context = context.copy() ;
 
         if ( dataset.getContext() != null )
+            // Copy per-dataset settings.
             context.putAll(dataset.getContext()) ;
         
         context.set(ARQConstants.sysCurrentTime, NodeFactory.nowAsDateTime()) ;

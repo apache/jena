@@ -20,6 +20,7 @@ import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.query.Dataset ;
+import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.shared.NotFoundException ;
 import com.hp.hpl.jena.shared.PrefixMapping ;
 import com.hp.hpl.jena.shared.impl.PrefixMappingImpl ;
@@ -333,8 +334,7 @@ public class SSE
 
     public static void write(Graph graph)
     { 
-        WriterGraph.output(IndentedWriter.stdout, graph, 
-                           new SerializationContext(graph.getPrefixMapping())) ;
+        write(IndentedWriter.stdout, graph) ; 
         IndentedWriter.stdout.flush() ;
     }
     public static void write(OutputStream out, Graph graph)
@@ -348,8 +348,25 @@ public class SSE
     { 
         WriterGraph.output(out, graph, 
                            new SerializationContext(graph.getPrefixMapping())) ;
+        out.ensureStartOfLine() ;
     }
 
+    public static void write(Model model)
+    { 
+        write(IndentedWriter.stdout, model) ; 
+        IndentedWriter.stdout.flush() ;
+    }
+    public static void write(OutputStream out, Model model)
+    { 
+        IndentedWriter iOut = new IndentedWriter(out) ;
+        write(iOut, model) ;
+        iOut.flush();
+    }
+        
+    public static void write(IndentedWriter out, Model model)
+    { 
+        WriterGraph.output(out, model.getGraph(), new SerializationContext(model)) ;
+    }
     
     
     
