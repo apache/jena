@@ -24,15 +24,17 @@ public class VocabTDB
     public static final Resource tDatasetTDB        = Vocab.type(NS, "DatasetTDB") ;
     public static final Resource tGraphTDB          = Vocab.type(NS, "GraphTDB") ;
     public static final Resource tGraphBDB          = Vocab.type(NS, "GraphBDB") ;
-    public static final Resource tTupleIndex        = Vocab.type(NS, "TupleIndex") ;
+//    public static final Resource tTupleIndex        = Vocab.type(NS, "TupleIndex") ;
     public static final Resource tNodeTable         = Vocab.type(NS, "NodeTable") ;
 
     public static final Property pLocation          = Vocab.property(NS, "location") ;
+    public static final Property pUnionGraph        = Vocab.property(NS, "unionGraph") ;
     
     public static final Property pIndex             = Vocab.property(NS, "index") ;
     public static final Property pGraphName1        = Vocab.property(NS, "graphName") ;
     public static final Property pGraphName2        = Vocab.property(NS, "namedGraph") ;
     public static final Property pDataset           = Vocab.property(NS, "dataset") ;
+    
     public static final Property pNodes             = Vocab.property(NS, "nodes") ;
 
     // Indexes

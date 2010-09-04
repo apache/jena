@@ -15,6 +15,12 @@ import org.openjena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.Dataset ;
+import com.hp.hpl.jena.query.QueryExecution ;
+import com.hp.hpl.jena.query.QueryExecutionFactory ;
+import com.hp.hpl.jena.query.ResultSetFormatter ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.Property ;
+import com.hp.hpl.jena.rdf.model.Resource ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.TDBFactory ;
@@ -37,22 +43,34 @@ public class RunTDB
 
     public static void main(String[] args) throws IOException
     {
-        String dir = "IBM-2010-07-14" ;
-        
-        TDB.getContext().set(TDB.symLogExec,true) ;
-
-        
-        tdb.tdbquery.main("--loc="+dir+"/DB", "--query="+dir+"/Q2.rq" ) ;
-        System.exit(0) ;
+//        tdb.tdbquery.main("--tdb=tdb.ttl", "SELECT * { ?s ?p ?o}") ;
+//        System.exit(0) ;
         
         Dataset ds = TDBFactory.createDataset() ;
-        DatasetGraphTDB dsg = (DatasetGraphTDB)(ds.asDatasetGraph()) ;
+//        DatasetGraphTDB dsg = (DatasetGraphTDB)(ds.asDatasetGraph()) ;
+//        ds.asDatasetGraph().getContext().setTrue(TDB.symUnionDefaultGraph) ;
+        Model model = ds.getDefaultModel() ;
+        Model ng1 = ds.getNamedModel("http://example/ng1") ;
+        Model ng2 = ds.getNamedModel("http://example/ng2") ;
         
-        Node gn = Node.createURI("http://example/graph1") ;
+        Resource r = model.createResource("http://example/") ; 
+        Property p = model.createProperty("http://example/prop") ;
         
-        dsg.deleteAny(gn, null, null, null) ;
+        model.add(r, p, "default") ;
+        ng1.add(r, p, "ng1-a") ;
+        ng1.add(r, p, "ng1-b") ;
+        ng2.add(r, p, "ng2-a") ;
+
+        SSE.write(ds) ;
+        //SSE.write(model.getGraph()) ;
+        System.out.println();
         
-        SSE.write(dsg) ;
+        QueryExecution qExec = QueryExecutionFactory.create("SELECT ?o { ?s ?p ?o}", ds) ;
+        ResultSetFormatter.out(qExec.execSelect()) ;
+        qExec.close() ;
+        
+        
+        
         System.exit(0) ;
         
         

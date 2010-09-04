@@ -6,22 +6,23 @@
 
 package com.hp.hpl.jena.tdb.assembler;
 
-import static com.hp.hpl.jena.sparql.util.graph.GraphUtils.exactlyOneProperty;
-import static com.hp.hpl.jena.sparql.util.graph.GraphUtils.getStringValue;
-import static com.hp.hpl.jena.tdb.assembler.VocabTDB.pLocation;
+import static com.hp.hpl.jena.sparql.util.graph.GraphUtils.exactlyOneProperty ;
+import static com.hp.hpl.jena.sparql.util.graph.GraphUtils.getStringValue ;
+import static com.hp.hpl.jena.tdb.assembler.VocabTDB.pLocation ;
+import static com.hp.hpl.jena.tdb.assembler.VocabTDB.pUnionGraph ;
+import org.openjena.atlas.logging.Log ;
 
-import com.hp.hpl.jena.query.Dataset;
-import com.hp.hpl.jena.rdf.model.Resource;
-
-import com.hp.hpl.jena.assembler.Assembler;
-import com.hp.hpl.jena.assembler.Mode;
-import com.hp.hpl.jena.assembler.exceptions.AssemblerException;
-
-import com.hp.hpl.jena.sparql.core.assembler.DatasetAssembler;
-
-import com.hp.hpl.jena.tdb.TDB;
-import com.hp.hpl.jena.tdb.TDBFactory;
-import com.hp.hpl.jena.tdb.base.file.Location;
+import com.hp.hpl.jena.assembler.Assembler ;
+import com.hp.hpl.jena.assembler.Mode ;
+import com.hp.hpl.jena.assembler.exceptions.AssemblerException ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.query.Dataset ;
+import com.hp.hpl.jena.rdf.model.Resource ;
+import com.hp.hpl.jena.sparql.core.NodeConst ;
+import com.hp.hpl.jena.sparql.core.assembler.DatasetAssembler ;
+import com.hp.hpl.jena.tdb.TDB ;
+import com.hp.hpl.jena.tdb.TDBFactory ;
+import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 
 public class DatasetAssemblerTDB extends DatasetAssembler
@@ -44,6 +45,19 @@ public class DatasetAssemblerTDB extends DatasetAssembler
         Location loc = new Location(dir) ;
         DatasetGraphTDB dsg = TDBFactory.createDatasetGraph(loc) ;
         
+        if ( root.hasProperty(pUnionGraph) )
+        {
+            Node b = root.getProperty(pUnionGraph).getObject().asNode() ;
+             
+            if ( b.equals(NodeConst.nodeTrue) )
+                dsg.getContext().set(TDB.symUnionDefaultGraph, true) ;
+            else if ( b.equals(NodeConst.nodeFalse) )
+                dsg.getContext().set(TDB.symUnionDefaultGraph, false) ;
+            else
+                Log.warn(DatasetAssemblerTDB.class,
+                         "Failed to recognize value for union graph setting (ignored): "+b) ;
+        }
+        
         /*
         <r> rdf:type tdb:DatasetTDB ;
             tdb:location "dir" ;
@@ -51,8 +65,6 @@ public class DatasetAssemblerTDB extends DatasetAssembler
             //arq:set ( <uri> 123 ) ;
             tdb:unionGraph true ; # or "true"
         */
-        // Features enabled.
-        //dsg.getContext().set(TDB.symUnionDefaultGraph, true) ;
         
         return TDBFactory.createDataset(dsg) ; 
     }

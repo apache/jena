@@ -3,6 +3,9 @@ package dev ;
 
 public class DevTDB
 {
+    //** Union graph in assembler.
+    // Document
+    
     // == Misc
     //    Tidy up wiki (esp "Use from java" - use datasets, show loader use)
     //    TDBLoader from a dataset (or is this RIOT? or a general "Loader"?)
