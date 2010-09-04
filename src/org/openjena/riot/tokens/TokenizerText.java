@@ -108,8 +108,6 @@ public final class TokenizerText implements Tokenizer
         catch (IOException ex) { IO.exception(ex) ; }
     }
 
-
-    
     // ---- Machinary
     
     private void skip()
@@ -305,9 +303,12 @@ public final class TokenizerText implements Tokenizer
             case CH_UNDERSCORE: reader.readChar() ; token.setType(TokenType.UNDERSCORE) ; token.setImage("_") ; return token ;
             case CH_LT:         reader.readChar() ; token.setType(TokenType.LT) ; token.setImage("<") ; return token ;
             case CH_GT:         reader.readChar() ; token.setType(TokenType.GT) ; token.setImage(">") ; return token ;
-            // TODO : Multi character symbols 
-            // GE, LE
-            // Single character symbols for * / + -
+            
+            
+            // TODO : Multi character symbols
+            // Two character tokens && || GE, LE
+            // Single character symbols for * /
+            // +/- may start numbers.
 
 //            case CH_PLUS:
 //            case CH_MINUS:

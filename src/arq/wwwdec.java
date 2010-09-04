@@ -19,6 +19,9 @@ public class wwwdec
         {
             String y = StrUtils.decodeHex(x, '%') ;
             System.out.println(y) ;
+            
+//            String s2 = URLDecoder.decode(x, "utf-8") ;
+//            System.out.println(s2) ;   
         }
     }
 }

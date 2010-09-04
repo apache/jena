@@ -42,6 +42,10 @@ public class wwwenc
             // Not URLEncoder which does www-form-encoding.
             String y = StrUtils.encodeHex(x, '%', reserved) ;
             System.out.println(y) ;
+            
+//            String s2 = URLEncoder.encode(s, "utf-8") ;
+//            System.out.println(s2) ;
+
         }
     }
 }
