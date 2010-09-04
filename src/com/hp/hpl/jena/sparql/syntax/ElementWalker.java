@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -10,8 +11,8 @@ package com.hp.hpl.jena.sparql.syntax;
 
 /** An element visitor that walks the graph pattern tree, applying a visitor
  *  at each Element traversed.
- *  Only walks one levele of the query (not subqueries -- sub SELECT, (NOT)EXISTS
- *  these wil need to cakll down themselves if it is meaningful for the visitor.  
+ *  Only walks one level of the query (not subqueries -- sub SELECT, (NOT)EXISTS
+ *  these wil need to call down themselves if it is meaningful for the visitor.  
  *  Bottom-up walk - apply to subelements before applying to current element.
  * @author Andy Seaborne
  */
@@ -50,7 +51,6 @@ public class ElementWalker
         {
             proc.visit(el) ;
         }
-        
 
         public void visit(ElementAssign el)
         {
@@ -106,6 +106,7 @@ public class ElementWalker
         }
 
         // EXISTs, NOT EXISTs are really subqueries so don't automatically walk down them.
+        // NB They also occur in FILTERs via expressions.
         
         public void visit(ElementExists el)
         {
@@ -130,6 +131,10 @@ public class ElementWalker
         
         public void visit(ElementSubQuery el)
         {
+            // Only walk this level.
+//            Element el2 = el.getQuery().getQueryPattern() ;
+//            if ( el2 != null )
+//                el2.visit(this) ;
             proc.visit(el) ;
         }
 
@@ -142,6 +147,7 @@ public class ElementWalker
 
 /*
  * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

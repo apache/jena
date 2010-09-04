@@ -14,7 +14,7 @@ public enum TokenType
     BNODE,
     //BOOLEAN,
     // One kind of string?
-    STRING,         // Tokne created programmatically and superclass of ...
+    STRING,         // Token created programmatically and superclass of ...
     STRING1, STRING2,
     LONG_STRING1, LONG_STRING2,
     
@@ -22,20 +22,26 @@ public enum TokenType
     INTEGER, DECIMAL, DOUBLE,
     
     // Not RDF
-    KEYWORD, CNTRL, VAR, HEX,
+    KEYWORD, VAR, HEX,
+    CNTRL,          // Starts * 
     
     // Syntax
     // COLON is only visible if prefix names are not being processed.
     DOT, COMMA, SEMICOLON, COLON, DIRECTIVE,
     // LT, GT, LE, GE are only visible if IRI processing is not enabled.
-    // TODO Fix this.
     LT, GT, LE, GE,
+    LOGICAL_AND, LOGICAL_OR,    // && and ||
+    VBAR, AMPHERSAND,
+    
     // In RDF, UNDERSCORE is only visible if BNode processing is not enabled.
     UNDERSCORE, 
     LBRACE, RBRACE,     // {} 
     LPAREN, RPAREN,     // ()
     LBRACKET, RBRACKET, // []
-    EQUALS, PLUS, MINUS, STAR, SLASH, RSLASH,
+    // = == + - * / \
+    EQUALS, EQUIVALENT, PLUS, MINUS, STAR, SLASH, RSLASH,
+    // Whitespace, any comment, (one line comment, multiline comment)
+    WS, COMMENT, COMMENT1, COMMENT2,
     EOF
 }
 

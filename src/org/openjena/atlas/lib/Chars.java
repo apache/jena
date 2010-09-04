@@ -84,7 +84,6 @@ public class Chars
     /** undefined character (exact maning depends on use) - not a Unicode codepoint */
     public static final int UNSET           =  -2 ;
     
-    
     public static final char NL              = '\n' ;
     public static final char CR              = '\r' ;
     
@@ -110,6 +109,7 @@ public class Chars
     public static final char CH_COMMA        = ',' ;
     public static final char CH_SEMICOLON    = ';' ;
     public static final char CH_COLON        = ':' ;
+    public static final char CH_AMPHERSAND   = '&' ;
     public static final char CH_AT           = '@' ;
     public static final char CH_QMARK        = '?' ;
     public static final char CH_HASH         = '#' ;
@@ -145,6 +145,7 @@ public class Chars
     public static final byte B_SEMICOLON     = ';' ;
     public static final byte B_COLON         = ':' ;
     public static final byte B_AT            = '@' ;
+    public static final byte B_AMPHERSAND    = '&' ;
     public static final byte B_QMARK         = '?' ;
     public static final byte B_HASH          = '#' ;
     public static final byte B_PLUS          = '+' ;

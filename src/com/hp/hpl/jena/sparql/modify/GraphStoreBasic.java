@@ -9,6 +9,7 @@ package com.hp.hpl.jena.sparql.modify;
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.sparql.core.DataSourceImpl ;
+import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphMap ;
 import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
 import com.hp.hpl.jena.update.GraphStore ;
@@ -22,7 +23,13 @@ public class GraphStoreBasic extends DatasetGraphMap implements GraphStore
     { 
         super(ds.asDatasetGraph()) ;
     }
+
+    public GraphStoreBasic(DatasetGraph dsg)
+    { 
+        super(dsg) ;
+    }
     
+
     public GraphStoreBasic(Graph graph)
     {
         super(graph) ;

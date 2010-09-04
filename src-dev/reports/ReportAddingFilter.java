@@ -68,7 +68,7 @@ public class ReportAddingFilter {
 
     private void addElement(Query query) throws ParseException {
 
-        // DEfine date format
+        // Define date format
         SimpleDateFormat format = new SimpleDateFormat(DATETIME_FORMAT);
         // Create a date object
         Date date = format.parse(DATETIME_INPUT);

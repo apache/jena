@@ -33,6 +33,8 @@ import com.hp.hpl.jena.query.ResultSetFormatter ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.sparql.algebra.Algebra ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
+import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
 import com.hp.hpl.jena.sparql.core.NodeConst ;
 import com.hp.hpl.jena.sparql.core.NodeTransform ;
 import com.hp.hpl.jena.sparql.core.NodeTransformLib ;
@@ -52,6 +54,7 @@ import com.hp.hpl.jena.sparql.util.ExprUtils ;
 import com.hp.hpl.jena.sparql.util.QueryExecUtils ;
 import com.hp.hpl.jena.sparql.util.Timer ;
 import com.hp.hpl.jena.update.GraphStore ;
+import com.hp.hpl.jena.update.GraphStoreFactory ;
 import com.hp.hpl.jena.update.UpdateAction ;
 import com.hp.hpl.jena.update.UpdateFactory ;
 import com.hp.hpl.jena.update.UpdateRequest ;
@@ -91,7 +94,12 @@ public class RunARQ
 
     public static void main(String[] argv) throws Exception
     {
-        UpdateRequest request = UpdateFactory.read("update.ru") ;
+        
+        UpdateRequest request = UpdateFactory.create("INSERT DATA { GRAPH <G> { <s> <p> <o> }}") ;
+        DatasetGraph dsg = DatasetGraphFactory.createMem() ;
+        GraphStore gs = GraphStoreFactory.create(dsg) ;
+        UpdateAction.execute(request, gs) ;
+        SSE.write(gs) ;
         System.exit(0) ;
         
         qparse("@Q.rq") ;

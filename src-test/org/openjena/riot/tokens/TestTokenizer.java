@@ -1,6 +1,7 @@
 /*
  * (c) Copyright 2009 Hewlett-Packard Development Company, LP
- * (c) Copyright 2010 Talis Systems Limited
+ * (c) Copyright 2010 Talis Systems Ltd.
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -26,6 +27,15 @@ public class TestTokenizer extends BaseTest
         return tokenizer ;
     }
 
+    private static Token token(String string)
+    {
+        Tokenizer tokenizer = tokenizer(string) ;
+        assertTrue(tokenizer.hasNext()) ;
+        Token token = tokenizer.next() ;
+        assertFalse(tokenizer.hasNext()) ;
+        return token ;
+    }
+    
     @Test
     public void tokenUnit_iri1()
     {
@@ -68,27 +78,21 @@ public class TestTokenizer extends BaseTest
     @Test
     public void tokenUnit_str1()
     {
-        Tokenizer tokenizer = tokenizer("   'abc'   ") ;
-        assertTrue(tokenizer.hasNext()) ;
-        Token token = tokenizer.next() ;
+        Token token = token("   'abc'   ") ;
         assertNotNull(token) ;
         assertEquals(TokenType.STRING1, token.getType()) ;
         assertEquals("abc", token.getImage()) ;
         assertNull(token.getImage2()) ;
-        assertFalse(tokenizer.hasNext()) ;
     }
 
     @Test
     public void tokenUnit_str2()
     {
-        Tokenizer tokenizer = tokenizer("''") ;
-        assertTrue(tokenizer.hasNext()) ;
-        Token token = tokenizer.next() ;
+        Token token = token("''") ;
         assertNotNull(token) ;
         assertEquals(TokenType.STRING1, token.getType()) ;
         assertEquals("", token.getImage()) ;
         assertNull(token.getImage2()) ;
-        assertFalse(tokenizer.hasNext()) ;
     }
 
     @Test
@@ -1124,12 +1128,18 @@ public class TestTokenizer extends BaseTest
         assertFalse(tokenizer.hasNext()) ;
     }
     
+    // These tests converts some java characters to UTF-8 and read back as ASCII. 
+    
+    private static ByteArrayInputStream bytes(String string)
+    {
+        byte b[] = StrUtils.asUTF8bytes(string) ;
+        return new ByteArrayInputStream(b) ;
+    }
+    
     @Test
     public void tokenizer_charset_1()
     {
-        String string = "'abc'" ;
-        byte b[] = StrUtils.asUTF8bytes(string) ;
-        ByteArrayInputStream in = new ByteArrayInputStream(b) ;
+        ByteArrayInputStream in = bytes("'abc'") ;
         Tokenizer tokenizer = TokenizerFactory.makeTokenizerASCII(in) ;
         Token t = tokenizer.next() ;
         assertFalse(tokenizer.hasNext()) ;
@@ -1138,9 +1148,7 @@ public class TestTokenizer extends BaseTest
     @Test (expected=RiotParseException.class)
     public void tokenizer_charset_2()
     {
-        String string = "'abcdé'" ;
-        byte b[] = StrUtils.asUTF8bytes(string) ;
-        ByteArrayInputStream in = new ByteArrayInputStream(b) ;
+        ByteArrayInputStream in = bytes("'abcdé'") ;
         Tokenizer tokenizer = TokenizerFactory.makeTokenizerASCII(in) ;
         Token t = tokenizer.next() ;
         assertFalse(tokenizer.hasNext()) ;
@@ -1149,19 +1157,41 @@ public class TestTokenizer extends BaseTest
     @Test (expected=RiotParseException.class)
     public void tokenizer_charset_3()
     {
-        String string = "<http://example/abcdé>" ;
-        byte b[] = StrUtils.asUTF8bytes(string) ;
-        ByteArrayInputStream in = new ByteArrayInputStream(b) ;
+        ByteArrayInputStream in = bytes("<http://example/abcdé>") ;
         Tokenizer tokenizer = TokenizerFactory.makeTokenizerASCII(in) ;
         Token t = tokenizer.next() ;
         assertFalse(tokenizer.hasNext()) ;
     }
 
+    // First symbol from the stream.
+    private static void testSymbol(String string, TokenType expected)
+    {
+        Tokenizer tokenizer = tokenizer(string) ;
+        assertTrue(tokenizer.hasNext()) ;
+        Token token = tokenizer.next() ;
+        assertEquals(expected, token.getType()) ;
+    }
+    
+    //-- Symbols
+    // CNTRL
+//     @Test public void tokenizer_symbol_01()            { testSymbol("*", TokenType.STAR) ; }
+//    @Test public void tokenizer_symbol_02()            { testSymbol("+", TokenType.PLUS) ; }
+//    @Test public void tokenizer_symbol_03()            { testSymbol("-", TokenType.MINUS) ; }
+//    @Test public void tokenizer_symbol_04()            { testSymbol("<", TokenType.LT) ; }
+    @Test public void tokenizer_symbol_05()            { testSymbol(">", TokenType.GT) ; }
+    @Test public void tokenizer_symbol_06()            { testSymbol("=", TokenType.EQUALS) ; }
+//    @Test public void tokenizer_symbol_07()            { testSymbol(">=", TokenType.LE) ; }
+//    @Test public void tokenizer_symbol_08()            { testSymbol("<=", TokenType.GE) ; }
+//    @Test public void tokenizer_symbol_09()            { testSymbol("&&", TokenType.LOGICAL_AND) ; }
+//    @Test public void tokenizer_symbol_10()            { testSymbol("||", TokenType.LOGICAL_OR) ; }
+//    @Test public void tokenizer_symbol_11()            { testSymbol("&  &", TokenType.AMPHERSAND) ; }
+//    @Test public void tokenizer_symbol_12()            { testSymbol("| |", TokenType.VBAR) ; }
 }
 
 /*
  * (c) Copyright 2009 Hewlett-Packard Development Company, LP 
- * (c) Copyright 2010 Talis Systems Limited
+ * (c) Copyright 2010 Talis Systems Ltd.
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without

@@ -17,7 +17,7 @@ import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
 
 /** 
- * Readonly DatasetGraph of a single graph. 
+ * Readonly DatasetGraph of a single graph as default graph. 
  */
 public class DatasetGraphOne extends DatasetGraphBaseFind
 {
@@ -56,7 +56,6 @@ public class DatasetGraphOne extends DatasetGraphBaseFind
         else
             throw new UnsupportedOperationException("DatasetGraphOne.add/named graph") ;
     }      
-      
     
     @Override
     public void delete(Quad quad)

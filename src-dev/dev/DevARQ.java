@@ -8,8 +8,11 @@ public class DevARQ
     // (old name QueryParseException : superclass)
     // "QuerySolution"
 
+    // Auto create quads (optional)
+    // feature of the dataset. 
+    
     // BINDINGS
-    // Execution.
+    //   Execution.
 
     // Strictisms:
     // scoping checks on variables.
@@ -40,7 +43,7 @@ public class DevARQ
     // Property path test cases
     // Aggregates to return iterators.
 
-    // Syntax for lists: ACCESS(?list, ?index, ?member)
+    // Syntax for lists: LIST(?list, ?index, ?member)
 
     // ---- Property paths
     // Path tests: WorkSpace/PropertyPathTests/
@@ -48,7 +51,7 @@ public class DevARQ
     // {N,} to be {N} UNION {0,N}
 
     // ---- Core
-    // Memory DatasetGraph to support Quad.unionGrapg, defaultGraph and
+    // Memory DatasetGraph to support Quad.unionGraph, defaultGraph and
     // defaultGraphGenerated
     // Reenable tests in TestGraphMem
 

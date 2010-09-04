@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -10,6 +11,7 @@ import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.sparql.core.DataSourceImpl ;
+import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.DatasetImpl ;
 import com.hp.hpl.jena.sparql.modify.GraphStoreBasic ;
 
@@ -47,12 +49,24 @@ public class GraphStoreFactory
             return new GraphStoreBasic(dataset) ; 
         throw new UpdateException("Can't create a GraphStore for dataset: "+dataset) ;
     }
+    
+    /** Create a GraphStore from a dataset (graph-level) so that updates apply to the graphs in the dataset.
+     *  @param datasetGraph
+     *  @throws UpdateException
+     */
+    public static GraphStore create(DatasetGraph datasetGraph)
+    { 
+        if ( datasetGraph instanceof GraphStore )
+            return (GraphStore)(datasetGraph) ;
+        return new GraphStoreBasic(datasetGraph) ; 
+    }
 }
 
  
 
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -288,22 +288,22 @@ public final class TokenizerText implements Tokenizer
                 token.setType(TokenType.DOT) ;
                 return token ;
             
-            case CH_SEMICOLON:  reader.readChar() ; token.setType(TokenType.SEMICOLON) ; token.setImage(";") ; return token ;
-            case CH_COMMA:      reader.readChar() ; token.setType(TokenType.COMMA) ;     token.setImage(",") ; return token ;
-            case CH_LBRACE:     reader.readChar() ; token.setType(TokenType.LBRACE) ;    token.setImage("{") ; return token ;
-            case CH_RBRACE:     reader.readChar() ; token.setType(TokenType.RBRACE) ;    token.setImage("}") ; return token ;
-            case CH_LPAREN:     reader.readChar() ; token.setType(TokenType.LPAREN) ;    token.setImage("(") ; return token ;
-            case CH_RPAREN:     reader.readChar() ; token.setType(TokenType.RPAREN) ;    token.setImage(")") ; return token ;
-            case CH_LBRACKET:   reader.readChar() ; token.setType(TokenType.LBRACKET) ;  token.setImage("[") ; return token ;
-            case CH_RBRACKET:   reader.readChar() ; token.setType(TokenType.RBRACKET) ;  token.setImage("]") ; return token ;
-            case CH_EQUALS:     reader.readChar() ; token.setType(TokenType.EQUALS) ;    token.setImage("=") ; return token ;
+            case CH_SEMICOLON:  reader.readChar() ; token.setType(TokenType.SEMICOLON) ; token.setImage(CH_SEMICOLON) ; return token ;
+            case CH_COMMA:      reader.readChar() ; token.setType(TokenType.COMMA) ;     token.setImage(CH_COMMA) ; return token ;
+            case CH_LBRACE:     reader.readChar() ; token.setType(TokenType.LBRACE) ;    token.setImage(CH_LBRACE) ; return token ;
+            case CH_RBRACE:     reader.readChar() ; token.setType(TokenType.RBRACE) ;    token.setImage(CH_RBRACE) ; return token ;
+            case CH_LPAREN:     reader.readChar() ; token.setType(TokenType.LPAREN) ;    token.setImage(CH_LPAREN) ; return token ;
+            case CH_RPAREN:     reader.readChar() ; token.setType(TokenType.RPAREN) ;    token.setImage(CH_RPAREN) ; return token ;
+            case CH_LBRACKET:   reader.readChar() ; token.setType(TokenType.LBRACKET) ;  token.setImage(CH_LBRACKET) ; return token ;
+            case CH_RBRACKET:   reader.readChar() ; token.setType(TokenType.RBRACKET) ;  token.setImage(CH_RBRACKET) ; return token ;
+            case CH_EQUALS:     reader.readChar() ; token.setType(TokenType.EQUALS) ;    token.setImage(CH_EQUALS) ; return token ;
 
             // Specials (if processing off) -- FIX ME
             //case CH_COLON:      reader.readChar() ; token.setType(TokenType.COLON) ; return token ;
-            case CH_UNDERSCORE: reader.readChar() ; token.setType(TokenType.UNDERSCORE) ; token.setImage("_") ; return token ;
-            case CH_LT:         reader.readChar() ; token.setType(TokenType.LT) ; token.setImage("<") ; return token ;
-            case CH_GT:         reader.readChar() ; token.setType(TokenType.GT) ; token.setImage(">") ; return token ;
-            
+            case CH_UNDERSCORE: reader.readChar() ; token.setType(TokenType.UNDERSCORE) ; token.setImage(CH_UNDERSCORE) ; return token ;
+            case CH_LT:         reader.readChar() ; token.setType(TokenType.LT) ; token.setImage(CH_LT) ; return token ;
+            case CH_GT:         reader.readChar() ; token.setType(TokenType.GT) ; token.setImage(CH_GT) ; return token ;
+            case CH_STAR:       reader.readChar() ; token.setType(TokenType.STAR) ; token.setImage(CH_STAR) ; return token ;
             
             // TODO : Multi character symbols
             // Two character tokens && || GE, LE
