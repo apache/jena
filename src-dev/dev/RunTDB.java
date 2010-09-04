@@ -67,7 +67,7 @@ public class RunTDB
 //        ng1.add(r, p, "ng1-b") ;
 //        ng2.add(r, p, "ng2-a") ;
 
-        //ug.add(r, p, "union") ;
+        //ug.add(r, p, "union") ;   //Thous shalt not ...
         ndft1.add(r, p, "ndft1") ;
         ndft2.add(r, p, "ndft2") ;
         

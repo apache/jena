@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -86,12 +87,11 @@ public class GraphNamedTDB extends GraphTDBBase
     { 
         if ( isQuadUnionGraph(graphNode) )
             throw new TDBException("Can't delete triple from the RDF merge of all named graphs") ;
-        boolean changed ;
+        
         if ( isDefaultGraph(graphNode) )
-            changed = dataset.getTripleTable().delete(t) ;
-        else 
-            changed = dataset.getQuadTable().delete(graphNode, t) ;
-        return changed ; 
+            return dataset.getTripleTable().delete(t) ;
+
+        return dataset.getQuadTable().delete(graphNode, t) ;
     }
     
     @Override
@@ -165,6 +165,7 @@ public class GraphNamedTDB extends GraphTDBBase
 
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
