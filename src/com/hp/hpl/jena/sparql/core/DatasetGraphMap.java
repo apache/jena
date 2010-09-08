@@ -14,6 +14,7 @@ import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
 
 /** Implementation of a DatasetGraph as an extensible set of graphs.
+ *  Subclasses need to manage any implicit grap creation.
  */
 public class DatasetGraphMap extends DatasetGraphCollection
 {
@@ -27,6 +28,12 @@ public class DatasetGraphMap extends DatasetGraphCollection
     public DatasetGraphMap(Graph defaultGraph)
     { this.defaultGraph = defaultGraph ; }
     
+    /** Create a new DatasetGraph that initially shares the graphs of the
+     * givem DatasetGraph.  Adding/removing graphs will only affect this
+     * object, not the argument DatasetGraph but changed to shared
+     * graphs are seenby both objects.
+     */
+     
     public DatasetGraphMap(DatasetGraph dsg)
     {
         this(dsg.getDefaultGraph()) ;
@@ -52,8 +59,22 @@ public class DatasetGraphMap extends DatasetGraphCollection
     @Override
     public Graph getGraph(Node graphNode)
     {
-        return graphs.get(graphNode) ;
+        // Is this DatasetGraphMaker?
+        Graph g = graphs.get(graphNode) ;
+        if ( g == null )
+        {
+            g = getGraphCreate() ;
+            if ( g != null )
+                graphs.put(graphNode, g) ;
+        }
+        return g ;
     }
+
+    /** Called from getGraph when a nonexistent graph is asked for.
+     * Return null for "nothing created as a graph"
+     */
+    protected Graph getGraphCreate() { return null ; }
+    
 
     @Override
     public void addGraph(Node graphName, Graph graph)

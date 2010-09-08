@@ -1,12 +1,12 @@
 /*
  * (c) Copyright 2009 Hewlett-Packard Development Company, LP
- * (c) Copyright 2010 Talis Information Ltd.
+ * (c) Copyright 2010 Talis Systems Ltd.
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
 package com.hp.hpl.jena.sparql.core;
-
 
 import java.util.Iterator ;
 
@@ -17,11 +17,12 @@ import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
 
 /** 
- * Readonly DatasetGraph of a single graph as default graph. 
+ * DatasetGraph of a single graph as default graph. 
+ * Fixed as one graph (the default) - can not add named graphs.
  */
 public class DatasetGraphOne extends DatasetGraphBaseFind
 {
-    private Graph graph ;
+    private final Graph graph ;
     
     DatasetGraphOne(Graph graph) { this.graph = graph ; }
     
@@ -134,7 +135,8 @@ public class DatasetGraphOne extends DatasetGraphBaseFind
 
 /*
  * (c) Copyright 2009 Hewlett-Packard Development Company, LP
- * (c) Copyright 2010 Talis Information Ltd.
+ * (c) Copyright 2010 Talis Systems Ltd.
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

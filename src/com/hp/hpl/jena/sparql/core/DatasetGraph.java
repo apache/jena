@@ -1,6 +1,7 @@
 /*
  * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (c) Copyright 2010 Talis Systems Ltd.
+ * (c) Copyright 2010 Epimorphics Ltd.
  * 
  * All rights reserved.
  * [See end of file]
@@ -15,15 +16,20 @@ import org.openjena.atlas.lib.Closeable ;
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.TripleMatch ;
+import com.hp.hpl.jena.query.DataSource ;
+import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.shared.Lock ;
 import com.hp.hpl.jena.sparql.util.Context ;
 
-/** DatasetGraph
- * Whether a dataset contains a graph if there are no triples is not defined;
- * see the specifc implementation.
- * Some datasets are "open" - they have all graphs even if no triples,
- * Some datasets are "closed" - fixed set of graphs 
- * */
+/** DatasetGraph: The graph representation of an RDF Dataset. See {@link Dataset}
+ * for the Model level, read-only view (fixed set of models - the models
+ * themselves are still mutable) of an RDF dataset and {@link DataSource} for an
+ * mutabe RDF Datset Whether a dataset contains a graph if there are no triples
+ * is not defined; see the specifc implementation. Some datasets are "open" -
+ * they have all graphs even if no triples, Some datasets are "closed" - fixed
+ * set of graphs
+ */
+
 public interface DatasetGraph extends Closeable
 {
     // ---- Graph container view
@@ -108,6 +114,7 @@ public interface DatasetGraph extends Closeable
 /*
  * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (c) Copyright 2010 Talis Systems Ltd.
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

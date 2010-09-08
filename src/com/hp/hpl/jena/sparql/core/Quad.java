@@ -148,6 +148,7 @@ public class Quad
 
     private static boolean matches(Node thisNode, Node otherNode)
     {
+        // otheNode may be Node.ANY, and this works out.
         return otherNode.matches(thisNode) ;
     }
 

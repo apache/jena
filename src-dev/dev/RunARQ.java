@@ -94,10 +94,17 @@ public class RunARQ
 
     public static void main(String[] argv) throws Exception
     {
+        if ( false ) {
+            DatasetGraph dsg = DatasetGraphFactory.createMem() ;
+            dsg.add(SSE.parseQuad("<g> <s> <p> <o>)")) ;
+            SSE.write(dsg) ;
+            System.exit(0) ;
+        }
+
         
         UpdateRequest request = UpdateFactory.create("INSERT DATA { GRAPH <G> { <s> <p> <o> }}") ;
-        DatasetGraph dsg = DatasetGraphFactory.createMem() ;
-        GraphStore gs = GraphStoreFactory.create(dsg) ;
+        //DatasetGraph dsg = DatasetGraphFactory.createMem() ;
+        GraphStore gs = GraphStoreFactory.create() ;
         UpdateAction.execute(request, gs) ;
         SSE.write(gs) ;
         System.exit(0) ;

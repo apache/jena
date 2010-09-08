@@ -20,6 +20,7 @@ import com.hp.hpl.jena.graph.Node ;
  * defaultGraph/named graphs.
  * @see DatasetGraphTriplesQuads
  * @see DatasetGraphCollection
+ * @see DatasetGraphOne
  * 
  */
 abstract public class DatasetGraphBaseFind extends DatasetGraphBase 

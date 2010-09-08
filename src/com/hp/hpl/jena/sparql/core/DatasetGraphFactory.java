@@ -13,7 +13,7 @@ public class DatasetGraphFactory
 {
     /** Create a DatasetGraph based on an existing one;
      *  this is a structre copy of the dataset struture 
-     *  but graph are shared 
+     *  but graphs are shared 
      */ 
     public static DatasetGraph create(DatasetGraph dsg) { return new DatasetGraphMap(dsg) ; }
     

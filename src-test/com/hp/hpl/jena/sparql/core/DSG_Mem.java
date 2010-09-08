@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2010 Talis Systems Ltd.
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -23,10 +24,8 @@ import com.hp.hpl.jena.util.iterator.WrappedIterator ;
 /** Very simple, non-scalable DatasetGraph implementation of a triples+quads
  * style for testing the upper levels of the class hierarchy.
  */
-public class DSG_Mem extends DatasetGraphCaching // extends DatasetGraphTriplesQuads
+public class DSG_Mem extends DatasetGraphCaching
 {
-    // Abstract better as triples + quads interface?
-    // List graph npodes
     List<Triple> triples = new ArrayList<Triple>() ;
     List<Quad> quads = new ArrayList<Quad>() ;
 
@@ -58,6 +57,7 @@ public class DSG_Mem extends DatasetGraphCaching // extends DatasetGraphTriplesQ
         List<Quad> results = new ArrayList<Quad>() ;
         for ( Triple t : triples )
             if ( matches(t, s, p, o) )
+                // ?? Quad.defaultGraphNodeGenerated
                 results.add(new Quad(Quad.tripleInQuad, t)) ;
         return results.iterator() ;
     }
@@ -218,6 +218,7 @@ public class DSG_Mem extends DatasetGraphCaching // extends DatasetGraphTriplesQ
 
 /*
  * (c) Copyright 2010 Talis Systems Ltd.
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
