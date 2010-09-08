@@ -46,7 +46,6 @@ import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.function.FunctionEnvBase ;
 import com.hp.hpl.jena.sparql.lang.ParserSPARQL11Update ;
-import com.hp.hpl.jena.sparql.modify.GraphStoreBasic ;
 import com.hp.hpl.jena.sparql.modify.request.UpdateWriter ;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
@@ -94,17 +93,10 @@ public class RunARQ
 
     public static void main(String[] argv) throws Exception
     {
-        if ( false ) {
-            DatasetGraph dsg = DatasetGraphFactory.createMem() ;
-            dsg.add(SSE.parseQuad("<g> <s> <p> <o>)")) ;
-            SSE.write(dsg) ;
-            System.exit(0) ;
-        }
-
         
         UpdateRequest request = UpdateFactory.create("INSERT DATA { GRAPH <G> { <s> <p> <o> }}") ;
-        //DatasetGraph dsg = DatasetGraphFactory.createMem() ;
-        GraphStore gs = GraphStoreFactory.create() ;
+        DatasetGraph dsg = DatasetGraphFactory.createMem() ;
+        GraphStore gs = GraphStoreFactory.create(dsg) ;
         UpdateAction.execute(request, gs) ;
         SSE.write(gs) ;
         System.exit(0) ;
@@ -195,7 +187,7 @@ public class RunARQ
     
     private static void sparql11update()
     {
-        GraphStore graphStore = new GraphStoreBasic() ;
+        GraphStore graphStore = GraphStoreFactory.create() ;
 //        sparql11update_operation(graphStore, "BASE <base:/>",
 //                                 "CREATE GRAPH <g>",
 //                                 "INSERT DATA { <x> <y> <z> GRAPH <g> { <s> <p> <o1>, <o2> }}",
