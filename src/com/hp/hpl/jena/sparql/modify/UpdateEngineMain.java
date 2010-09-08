@@ -16,11 +16,6 @@ import com.hp.hpl.jena.update.GraphStore ;
 import com.hp.hpl.jena.update.Update ;
 import com.hp.hpl.jena.update.UpdateRequest ;
 
-// For any DatasetGraph.
-// Functional first, rather than efficient.
-
-// -->UpdateEngineMain implement UpEng .execute
-
 public class UpdateEngineMain extends UpdateEngineBase 
 {
     public UpdateEngineMain(GraphStore graphStore, UpdateRequest request, Binding initialBinding, Context context)

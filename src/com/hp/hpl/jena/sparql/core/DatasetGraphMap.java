@@ -57,9 +57,8 @@ public class DatasetGraphMap extends DatasetGraphCollection
     }
 
     @Override
-    public Graph getGraph(Node graphNode)
+    public final Graph getGraph(Node graphNode)
     {
-        // Is this DatasetGraphMaker?
         Graph g = graphs.get(graphNode) ;
         if ( g == null )
         {

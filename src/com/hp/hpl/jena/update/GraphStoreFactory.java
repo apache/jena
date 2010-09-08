@@ -12,6 +12,7 @@ import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.sparql.core.DataSourceImpl ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
 import com.hp.hpl.jena.sparql.core.DatasetImpl ;
 import com.hp.hpl.jena.sparql.modify.GraphStoreBasic ;
 
@@ -20,19 +21,19 @@ import com.hp.hpl.jena.sparql.modify.GraphStoreBasic ;
 public class GraphStoreFactory
 {
     /** Create an empty GraphStore with an empty default graph (in-memory) */
-    public static GraphStore create() { return new GraphStoreBasic() ; }
+    public static GraphStore create() { return new GraphStoreBasic(DatasetGraphFactory.createMem()) ; }
     
     /** Create a GraphStore from a Model
      * @param model
      * @return GraphStore
      */
-    public static GraphStore create(Model model) { return new GraphStoreBasic(model.getGraph()) ; }
+    public static GraphStore create(Model model) { return create(model.getGraph()) ; }
 
     /** Create a GraphStore from a Graph
      * @param graph
      * @return GraphStore
      */
-    public static GraphStore create(Graph graph) { return new GraphStoreBasic(graph) ; }
+    public static GraphStore create(Graph graph) { return new GraphStoreBasic(DatasetGraphFactory.create(graph)) ; }
 
     /** Create a GraphStore from a dataset so that updates apply to the graphs in the dataset.
      *  Throws UpdateException (an ARQException) if the GraphStore can not be created.

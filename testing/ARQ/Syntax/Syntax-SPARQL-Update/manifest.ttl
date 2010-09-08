@@ -172,4 +172,12 @@
          rdf:type   mf:NegativeUpdateSyntaxTest11 ;
          mf:action  <syntax-update-bad-09.ru> ; 
       ]
+      [  mf:name    "syntax-update-bad-10.ru" ;
+         rdf:type   mf:NegativeUpdateSyntaxTest11 ;
+         mf:action  <syntax-update-bad-10.ru> ; 
+      ]
+      [  mf:name    "syntax-update-bad-11.ru" ;
+         rdf:type   mf:NegativeUpdateSyntaxTest11 ;
+         mf:action  <syntax-update-bad-11.ru> ; 
+      ]
     ) .

@@ -4,7 +4,11 @@ package dev ;
 public class DevARQ
 {
     // **Next
-    // ** Auto create quads (optional) - feature of the dataset.
+    // ** Sort out GraphStore.
+    // ?? remove
+    // ?/ merely a DSG container?
+    //   ?? c.f. UpdateExecution so no need for GS?
+    
     // Error handling and exception catching. LanguageParseException
     // (old name QueryParseException : superclass)
     // "QuerySolution"

@@ -40,20 +40,26 @@ public class DatasetGraphMaker extends DatasetGraphMap
     @Override
     public boolean containsGraph(Node graphNode)
     {
-        return true ;
+        //return true ;
+        return super.containsGraph(graphNode) ;
     }
 
     @Override
-    public Graph getGraph(Node graphNode)
+//    public Graph getGraph(Node graphNode)
+//    {
+//        Graph g = super.getGraph(graphNode) ;
+//        if ( g == null )
+//        {
+//            g = graphMaker.create() ;
+//            if ( g != null )
+//                super.addGraph(graphNode, g) ;
+//        }
+//        return g ;
+//    }
+    
+    protected Graph getGraphCreate()
     {
-        Graph g = super.getGraph(graphNode) ;
-        if ( g == null )
-        {
-            g = graphMaker.create() ;
-            if ( g != null )
-                super.addGraph(graphNode, g) ;
-        }
-        return g ;
+        return graphMaker.create() ;
     }
 }
 

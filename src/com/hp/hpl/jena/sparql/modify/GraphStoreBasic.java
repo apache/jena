@@ -10,15 +10,11 @@ import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.sparql.core.DataSourceImpl ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.sparql.core.DatasetGraphMap ;
-import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
+import com.hp.hpl.jena.sparql.core.DatasetGraphWrapper ;
 import com.hp.hpl.jena.update.GraphStore ;
 
-public class GraphStoreBasic extends DatasetGraphMap implements GraphStore
+public class GraphStoreBasic extends DatasetGraphWrapper implements GraphStore
 {
-    public GraphStoreBasic()
-    { super(GraphFactory.createDefaultGraph()) ; }
-    
     public GraphStoreBasic(Dataset ds)
     { 
         super(ds.asDatasetGraph()) ;
@@ -28,16 +24,10 @@ public class GraphStoreBasic extends DatasetGraphMap implements GraphStore
     { 
         super(dsg) ;
     }
-    
 
-    public GraphStoreBasic(Graph graph)
-    {
-        super(graph) ;
-    }
-    
     public Dataset toDataset()
     {
-        return new DataSourceImpl(this) ;
+        return new DataSourceImpl(getWrapped()) ;
     }
 
     public void startRequest()

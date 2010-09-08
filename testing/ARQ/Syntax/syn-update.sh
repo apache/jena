@@ -241,3 +241,17 @@ CREATE GRAPH <g>
 LOAD <remote> INTO GRAPH <g>
 EOF
 
+# Too many separators
+N=$((N+1)) ; testBad $SPARQL11U $(fname "syntax-update-bad-" $N) <<EOF
+CREATE GRAPH <g>
+;;
+LOAD <remote> INTO GRAPH <g>
+EOF
+
+# Too many separators
+N=$((N+1)) ; testBad $SPARQL11U $(fname "syntax-update-bad-" $N) <<EOF
+CREATE GRAPH <g>
+;
+LOAD <remote> INTO GRAPH <g>
+;;
+EOF
