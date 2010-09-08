@@ -6,8 +6,10 @@ public class DevARQ
     // **Next
     // ** Sort out GraphStore.
     // ?? remove
-    // ?/ merely a DSG container?
+    // ?? merely a DSG container?
     //   ?? c.f. UpdateExecution so no need for GS?
+    
+    // ??UpdateProcessor -- UpdateExecution
     
     // Error handling and exception catching. LanguageParseException
     // (old name QueryParseException : superclass)
@@ -42,6 +44,8 @@ public class DevARQ
     // -> check then or check via visitor later.
     // :: visitor - other checks can be done.
 
+    // count(distrinct ...) to have a smaller foot print.  hashing? order tracking?
+    
     // Property path test cases
     // Aggregates to return iterators.
 
