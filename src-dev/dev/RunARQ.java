@@ -20,6 +20,8 @@ import org.openjena.atlas.logging.Log ;
 import org.openjena.riot.ErrorHandlerLib ;
 import org.openjena.riot.checker.CheckerIRI ;
 
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
+import com.hp.hpl.jena.datatypes.xsd.XSDDuration ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.iri.IRI ;
 import com.hp.hpl.jena.iri.IRIFactory ;
@@ -91,8 +93,22 @@ public class RunARQ
     // ----
     
 
+    public static void testXSDDurationBug() {
+        Node d1 = Node.createLiteral("PT110S", null, XSDDatatype.XSDduration);
+        Node d2 = Node.createLiteral("PT1M50S", null, XSDDatatype.XSDduration);
+        System.out.println(d1.getLiteral().isWellFormed());
+        System.out.println(d2.getLiteral().isWellFormed());
+        XSDDuration dur1 = (XSDDuration) d1.getLiteralValue();
+        XSDDuration dur2 = (XSDDuration) d2.getLiteralValue();
+        int cmp = dur1.compare(dur2);
+        System.out.println("Compare = " + cmp);
+    }
+
+    
     public static void main(String[] argv) throws Exception
     {
+        testXSDDurationBug() ; System.exit(0) ;
+        
         
         UpdateRequest request = UpdateFactory.create("INSERT DATA { GRAPH <G> { <s> <p> <o> }}") ;
         DatasetGraph dsg = DatasetGraphFactory.createMem() ;
