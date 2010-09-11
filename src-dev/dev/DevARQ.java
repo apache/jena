@@ -3,7 +3,6 @@ package dev ;
 
 public class DevARQ
 {
-	// Check poms and <organsiation>
     // **Next
     // ** Sort out GraphStore.
     // ?? remove
