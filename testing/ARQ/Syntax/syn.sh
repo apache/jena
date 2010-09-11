@@ -8,6 +8,8 @@ SPARQL11U="sparql11update"
 
 source syn-func.sh
 
+# Todo: geneate URIs, not bnodes, for tests.
+
 # DAWG core set,in 3 parts
 (
     cd Syntax-SPARQL   

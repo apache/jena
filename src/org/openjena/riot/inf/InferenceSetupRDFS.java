@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2010 Talis Systems Ltd.
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -69,6 +70,7 @@ public class InferenceSetupRDFS
 
 /*
  * (c) Copyright 2010 Talis Systems Ltd.
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

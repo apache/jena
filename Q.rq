@@ -1,13 +1,18 @@
-PREFIX : <http://people.example/>
+    SELECT * { ?s ?p ?o } 
+    BINDINGS ?s { ( <http://example/s1> ) ( <http://example/s2> ) }
 
-SELECT *
-WHERE
-{ ?s ?p ?o
-} 
-BINDINGS ?x ?y ?z
-{
-( 
-:abc
- 2 3 )
-( 4 5 6 )
-}
+## PREFIX : <http://people.example/>
+## 
+## SELECT *
+## WHERE
+## {
+##  ?s ?p ?o
+## } 
+## 
+## ## BINDINGS ?x ?y ?z
+## ## {
+## ## ( 
+## ## :abc
+## ##  2 3 )
+## ## ( 4 5 6 )
+## ## }

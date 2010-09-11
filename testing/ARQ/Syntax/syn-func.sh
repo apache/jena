@@ -84,6 +84,7 @@ function output
     local TYPE="$2"
     shift
     shift
+    # ToDo: URIs, not bnodes.
     cat >> manifest.ttl <<EOF
       [  mf:name    "$FN" ;
          rdf:type   $TYPE ;
