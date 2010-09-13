@@ -10,6 +10,8 @@ public class DevSDB
 {
     // Check named models for union graph work.
     
+    // Drop suport for SQL server 2000 - use nvarchar(max) not ntext  
+    
     // Scope and Join bug.
     // Need to clear constant calculation across left and right in a join.
     // Temporary fix applied (TransformSDB.transform(OpJoin) does not combine SQL)
