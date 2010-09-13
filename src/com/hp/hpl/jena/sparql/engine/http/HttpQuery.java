@@ -178,6 +178,9 @@ public class HttpQuery extends Params
         {
             httpConnection = (HttpURLConnection) target.openConnection();
             httpConnection.setRequestProperty("Accept", contentTypeResult) ;
+            
+            int x = httpConnection.getReadTimeout() ;
+            
             // By default, following 3xx redirects is true
             //conn.setFollowRedirects(true) ;
             basicAuthentication(httpConnection) ;
@@ -288,17 +291,12 @@ public class HttpQuery extends Params
             // 5xx: Server Error 
             
             if ( 300 <= responseCode && responseCode < 400 )
-            {
-                
                 throw new QueryExceptionHTTP(responseCode, responseMessage) ;
-            }
             
             // Other 400 and 500 - errors 
             
             if ( responseCode >= 400 )
-            {
                 throw new QueryExceptionHTTP(responseCode, responseMessage) ;
-            }
   
             // Request suceeded
             InputStream in = httpConnection.getInputStream() ;

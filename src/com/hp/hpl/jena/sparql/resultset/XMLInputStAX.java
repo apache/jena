@@ -219,6 +219,7 @@ class XMLInputStAX extends SPARQLResult
                 binding = getOneSolution() ;
         } catch (XMLStreamException ex)
         {
+            ex.printStackTrace(System.err) ;
             staxError("XMLStreamException: "+ex.getMessage(), ex) ;
         }
         row++ ;

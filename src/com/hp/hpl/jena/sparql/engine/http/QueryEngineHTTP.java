@@ -6,11 +6,13 @@
 
 package com.hp.hpl.jena.sparql.engine.http;
 
+import java.io.ByteArrayInputStream ;
 import java.io.InputStream ;
 import java.util.ArrayList ;
 import java.util.Iterator ;
 import java.util.List ;
 
+import org.openjena.atlas.io.IO ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
@@ -129,6 +131,15 @@ public class QueryEngineHTTP implements QueryExecution
         // TODO Allow other content types.
         httpQuery.setAccept(HttpParams.contentTypeResultsXML) ;
         InputStream in = httpQuery.exec() ;
+        
+        if ( false )
+        {
+            byte b[] = IO.readWholeFile(in) ;
+            String str = new String(b) ;
+            System.out.println(str) ;
+            in = new ByteArrayInputStream(b) ; 
+        }
+        
         ResultSet rs = ResultSetFactory.fromXML(in) ;
         retainedConnection = in; // This will be closed on close()
         return rs ;

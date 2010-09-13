@@ -1,17 +1,21 @@
 /*
- * (c) Copyright 2009 Talis Systems Ltd
+ * (c) Copyright 2009 Talis Systems Ltd.
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
 package org.openjena.atlas.io;
 
+import java.io.BufferedReader ;
+import java.io.ByteArrayOutputStream ;
 import java.io.FileInputStream ;
 import java.io.IOException ;
 import java.io.InputStream ;
 import java.io.InputStreamReader ;
 import java.io.OutputStream ;
 import java.io.Reader ;
+import java.io.StringWriter ;
 import java.io.Writer ;
 import java.nio.charset.Charset ;
 import java.util.zip.GZIPInputStream ;
@@ -121,10 +125,82 @@ public class IO
     
     public static void flush(Writer out)
     { try { out.flush(); } catch (IOException ex) { exception(ex) ; } }
+
+    
+    
+    public static byte[] readWholeFile(InputStream in) 
+    {
+        try {
+            ByteArrayOutputStream out = new ByteArrayOutputStream() ;
+            byte buff[] = new byte[1024];
+            while (true)
+            {
+                int l = in.read(buff);
+                if (l <= 0)
+                    break;
+                out.write(buff, 0, l);
+            }
+            in.close();
+            out.close();
+            return out.toByteArray() ;
+        } catch (IOException  ex)
+        {
+            exception(ex) ;
+            return null ;
+        }
+    }
+    
+    /** Read a whole file as UTF-8
+     * @param filename
+     * @return String
+     * @throws IOException
+     */
+    
+    public static String readWholeFileAsUTF8(String filename) throws IOException {
+        InputStream in = new FileInputStream(filename) ;
+        return readWholeFileAsUTF8(in) ;
+    }
+
+    /** Read a whole stream as UTF-8
+     * 
+     * @param in    InputStream to be read
+     * @return      String
+     * @throws IOException
+     */
+    public static String readWholeFileAsUTF8(InputStream in) throws IOException
+    {
+        Reader r = new BufferedReader(asUTF8(in),1024) ;
+        return readWholeFileAsUTF8(r) ;
+    }
+    
+    /** Read a whole file as UTF-8
+     * 
+     * @param r
+     * @return String The whole file
+     * @throws IOException
+     */
+    
+    // Private worker as we are trying to force UTF-8. 
+    private static String readWholeFileAsUTF8(Reader r) throws IOException
+    {
+        StringWriter sw = new StringWriter(1024);
+        char buff[] = new char[1024];
+        while (r.ready()) {
+            int l = r.read(buff);
+            if (l <= 0)
+                break;
+            sw.write(buff, 0, l);
+        }
+        r.close();
+        sw.close();
+        return sw.toString();  
+    }
+
 }
 
 /*
- * (c) Copyright 2009 Talis Systems Ltd
+ * (c) Copyright 2009 Talis Systems Ltd.
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
