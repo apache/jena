@@ -1,5 +1,5 @@
 #!/bin/bash
-# SPARQL Update (Recommednation) syntax examples
+# SPARQL Update (Recommendation) syntax examples
 
 function fname
 {
