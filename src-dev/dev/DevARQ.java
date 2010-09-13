@@ -3,6 +3,9 @@ package dev ;
 
 public class DevARQ
 {
+    // RIOT: cmd line : bad parse -> ???
+    // ReportRemoteVirtuoso: StAX does not parse - times out too early? 
+    
     // **Next
     // ** Sort out GraphStore.
     // ?? remove
@@ -27,6 +30,8 @@ public class DevARQ
     // Library: Var->Var (VarRename), bNode->var (UpdateEngine), Converters
     // See NodeConverters
 
+    // JSON - write compact
+    
     // ---- SPARQL Update
 
     // Should INSERT DATA { GRAPH <g> { :s :p :o } } auto create? Yes.
