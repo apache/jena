@@ -20,34 +20,18 @@ public class ResultSetCompare
 {
     interface EqualityTest { boolean equal(Node n1, Node n2) ; }
     
-    // This is term comparision.
-    static EqualityTest sameTerm = new EqualityTest() {
-        public boolean equal(Node n1, Node n2)
-        {
-            return NodeFunctions.sameTerm(n1, n2) ;
-        }} ; 
-        
-    // This is value comparison
-    static EqualityTest sameValue = new EqualityTest() {
-        public boolean equal(Node n1, Node n2)
-        {
-            NodeValue nv1 = NodeValue.makeNode(n1) ;
-            NodeValue nv2 = NodeValue.makeNode(n2) ;
-            return NodeValue.sameAs(nv1, nv2) ;
-        }} ;  
-    
     static public boolean equal(Binding b1, Binding b2, EqualityTest test)
     {
         if ( b1.size() != b2.size() )
             return false ; 
         
-        if ( ! contains(b1, b2, test) ) return false ;
+        if ( ! containedIn(b1, b2, test) ) return false ;
         //if ( ! contains(b2, b1, test) ) return false ;
         return true ;
     }
 
     // Is b1 contained in b2?  For every (var,value) in b1, is it in b2? 
-    private static boolean contains(Binding b1, Binding b2, EqualityTest test)
+    private static boolean containedIn(Binding b1, Binding b2, EqualityTest test)
     {
         // There are about 100 ways to do this! 
         Iterator<Var> iter1 =  b1.vars() ;
@@ -66,7 +50,21 @@ public class ResultSetCompare
     
     
     
-    
+    // This is term comparison.
+    static EqualityTest sameTerm = new EqualityTest() {
+        public boolean equal(Node n1, Node n2)
+        {
+            return NodeFunctions.sameTerm(n1, n2) ;
+        }} ; 
+        
+    // This is value comparison
+    static EqualityTest sameValue = new EqualityTest() {
+        public boolean equal(Node n1, Node n2)
+        {
+            NodeValue nv1 = NodeValue.makeNode(n1) ;
+            NodeValue nv2 = NodeValue.makeNode(n2) ;
+            return NodeValue.sameAs(nv1, nv2) ;
+        }} ;  
 }
 
 /*
