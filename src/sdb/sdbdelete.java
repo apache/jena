@@ -16,7 +16,7 @@ import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.store.StoreBaseHSQL;
 import com.hp.hpl.jena.sparql.util.Utils;
  
- /** Load data files into an SDB model in a database.
+ /** Delete a model in an SDB database.
   * 
   *  <p>
   *  Usage:<pre>
