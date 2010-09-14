@@ -24,7 +24,6 @@ import com.hp.hpl.jena.vocabulary.XSD ;
  */
 public class NodeFunctions
 {
-    // More shoudl mode here.
     private static final NodeValue xsdString = NodeValue.makeNode(XSD.xstring.asNode()) ;
     
     // -------- sameTerm
@@ -52,23 +51,7 @@ public class NodeFunctions
         }
         return false ;
     }
-//    
-//    private static boolean sameTermLiterals(Node n1, Node n2)
-//    {
-//        // But language tags are case insensitive.
-//        String lang1 =  n1.getLiteralLanguage() ;
-//        String lang2 =  n2.getLiteralLanguage() ;
-//        
-//        if ( ! lang1.equals("") && lang1.equalsIgnoreCase(lang2) )
-//        {
-//            // Two language tags, equal by case insensitivity.
-//            return n1.getLiteralLexicalForm().equals(n2.getLiteralLexicalForm()) ;
-//            if ( b )
-//                return true ;
-//        }
-//        return false ; 
-//    }
-        
+
     // -------- RDFterm-equals
     
     public static NodeValue rdfTermEquals(NodeValue nv1, NodeValue nv2)
@@ -259,23 +242,34 @@ public class NodeFunctions
     private static final IRIFactory iriFactory = IRIFactory.iriImplementation() ;
     public  static boolean warningsForIRIs = false ;
     
+    // -------- IRI
     public static NodeValue iri(NodeValue nv, String baseIRI)
     {
         if ( nv.isIRI() )
             return nv ;
+        Node n2 = iri(nv.asNode(), baseIRI) ;
+        return NodeValue.makeNode(n2) ;
+    }
+    
+    public static Node iri(Node nv, String baseIRI)
+    {
+        if ( nv.isURI() )
+            return nv ;
         
-        if ( nv.asNode().isBlank() )
+        if ( nv.isBlank() )
         {
-            // Don't ask, just don't ask.
-            String x = nv.asNode().getBlankNodeLabel() ;
-            Node n = Node.createURI("_:"+x) ;
-            return NodeValue.makeNode(n) ;
+            // Skolemization of blank nodes to IRIs : Don't ask, just don't ask.
+            String x = nv.getBlankNodeLabel() ;
+            return Node.createURI("_:"+x) ;
         }
         
-        if ( nv.isString() )
+        if ( nv.isLiteral() && 
+             nv.getLiteralDatatype() == null && 
+             nv.getLiteralLanguage().equals("") )
         {
+            // Plain literal
             IRI iri = null ;
-            String iriStr = nv.getString() ;
+            String iriStr = nv.getLiteralLexicalForm() ;
             
             // Level of checking?
             if ( baseIRI != null )
@@ -287,7 +281,7 @@ public class NodeFunctions
                 iri = iriFactory.create(iriStr);
             
             if ( ! iri.isAbsolute() )
-                throw new ExprEvalException("Relative IRI string: "+nv.getString()) ;
+                throw new ExprEvalException("Relative IRI string: "+iriStr) ;
             if ( warningsForIRIs && iri.hasViolation(false) )
             {
                 String msg = "unknown violation from IRI library" ; 
@@ -299,11 +293,11 @@ public class NodeFunctions
                 }
                 Log.warn(NodeFunctions.class, "Bad IRI: "+msg+": "+iri) ;
             }
-            return NodeValue.makeNode(Node.createURI(iri.toString())) ;
+            return Node.createURI(iri.toString()) ;
         }
         throw new ExprEvalException("Can't make an IRI from "+nv) ;
     }
-    
+
     public static NodeValue strDatatype(NodeValue v1, NodeValue v2)
     {
         if ( ! v1.isString() ) throw new ExprEvalException("Not a string (arg 1): "+v1) ;

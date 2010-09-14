@@ -46,6 +46,7 @@ import com.hp.hpl.jena.sparql.engine.RenamerVars ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
+import com.hp.hpl.jena.sparql.expr.nodevalue.NodeFunctions ;
 import com.hp.hpl.jena.sparql.function.FunctionEnvBase ;
 import com.hp.hpl.jena.sparql.lang.ParserSPARQL11Update ;
 import com.hp.hpl.jena.sparql.modify.request.UpdateWriter ;
@@ -106,6 +107,13 @@ public class RunARQ
     
     public static void main(String[] argv) throws Exception
     {
+        Node n1 = SSE.parseNode("'abc'@en") ;
+        Node n2 = SSE.parseNode("'abc'@EN") ;
+
+        System.out.println(n1.equals(n2)) ;
+        System.out.println(NodeFunctions.sameTerm(n1, n2)) ;
+        System.exit(0) ;
+        
         testXSDDurationBug() ; System.exit(0) ;
         
         UpdateRequest request = UpdateFactory.create("INSERT DATA { GRAPH <G> { <s> <p> <o> }}") ;

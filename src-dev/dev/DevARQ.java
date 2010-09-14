@@ -3,7 +3,7 @@ package dev ;
 
 public class DevARQ
 {
-    // Result set comparison, not by graph isomorphism and to include value based testing.
+    // Result set comparison, not by graph isomorphism, and to include value based testing.
     
     // RIOT: cmd line : bad parse -> ???
     // ReportRemoteVirtuoso: StAX does not parse - times out too early? 
@@ -24,8 +24,8 @@ public class DevARQ
     //   Execution.
 
     // Strictisms:
-    // scoping checks on variables.
-    // SELECT * rules
+    //   scoping checks on variables.
+    //   SELECT * rules
 
     // mvn tests (4042) and Eclipse tests (3270) differ in size.
 
