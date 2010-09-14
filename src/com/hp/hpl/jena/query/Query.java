@@ -322,8 +322,6 @@ public class Query extends Prologue implements Cloneable
     // ---- SELECT
 
     protected VarExprList projectVars = new VarExprList() ;
-//    protected Map resultExprs = new HashMap() ;
-//    protected List resultVars = new ArrayList() ;
 
     /** Return a list of the variables requested (SELECT) */
     public List<String> getResultVars()

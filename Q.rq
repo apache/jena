@@ -1,5 +1,8 @@
-    SELECT * { ?s ?p ?o } 
-    BINDINGS ?s { ( <http://example/s1> ) ( <http://example/s2> ) }
+SELECT * { ?s ?p ?o MINUS { ?s ?p ?o1 } }
+
+
+
+## BINDINGS ?s { ( <http://example/s1> ) ( <http://example/s2> ) }
 
 ## PREFIX : <http://people.example/>
 ## 

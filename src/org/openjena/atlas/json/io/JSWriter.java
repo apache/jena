@@ -101,7 +101,6 @@ public class JSWriter
     
     public void finishArray()
     {
-
 //        out.decIndent() ;
         out.print(" ]") ;       // Leave on same line.
         finishCompound() ;
@@ -232,13 +231,10 @@ public class JSWriter
         out.print(quoteChar) ;
     }
     
-    
-
-    
     private void startCompound()    { stack.push(new Ref<Boolean>(true)) ; }
     private void finishCompound()   { stack.pop(); }
-    private boolean isFirst()   { return stack.peek().getValue() ; }
-    private void setNotFirst()  { stack.peek().setValue(false) ; }
+    private boolean isFirst()       { return stack.peek().getValue() ; }
+    private void setNotFirst()      { stack.peek().setValue(false) ; }
     
     // Can only write a value in some context.
     private void value(String x) { out.print("\"") ; out.print(x) ; out.print("\"") ; }

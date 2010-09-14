@@ -103,12 +103,10 @@ public class RunARQ
         int cmp = dur1.compare(dur2);
         System.out.println("Compare = " + cmp);
     }
-
     
     public static void main(String[] argv) throws Exception
     {
         testXSDDurationBug() ; System.exit(0) ;
-        
         
         UpdateRequest request = UpdateFactory.create("INSERT DATA { GRAPH <G> { <s> <p> <o> }}") ;
         DatasetGraph dsg = DatasetGraphFactory.createMem() ;

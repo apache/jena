@@ -3,6 +3,8 @@ package dev ;
 
 public class DevARQ
 {
+    // Result set comparison, not by graph isomorphism and to include value based testing.
+    
     // RIOT: cmd line : bad parse -> ???
     // ReportRemoteVirtuoso: StAX does not parse - times out too early? 
     

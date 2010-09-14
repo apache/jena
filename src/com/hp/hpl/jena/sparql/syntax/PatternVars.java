@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -75,14 +76,10 @@ public class PatternVars
         }
         
         // Variables here are non-binding.
-        @Override
-        public void visit(ElementExists el)
-        { }
-        
-        @Override
-        public void visit(ElementNotExists el)
-        { }
-        
+        //@Override public void visit(ElementExists el)       { }
+        //@Override public void visit(ElementNotExists el)    { }
+        //@Override public void visit(ElementMinus el)        { }
+
 //      public void visit(ElementFilter el)
 //      {
 //      el.getExpr().varsMentioned(acc);
@@ -107,11 +104,19 @@ public class PatternVars
         {
             acc.add(el.getVar()) ;
         }
+        
+//        @Override
+//        public void visit(ElementService el)
+//        {
+//            // Although if this isn't defined elsewhere the query won't work.
+//            VarUtils.addVar(acc, el.getServiceNode()) ;
+//        }
     }
 }
 
 /*
  * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
