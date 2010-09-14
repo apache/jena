@@ -217,7 +217,7 @@ public class QueryTest extends EarlTestCase
         {
             // Unfortunately, we turned the result set into a model. 
             // Turn into a ResultSet-uniqueify-turn back into a model.
-            // Excessive copying.  Only for small results in teh DAWG test suite.
+            // Excessive copying.  Only for small results in the DAWG test suite.
             ResultSetRewindable x = ResultSetFactory.makeRewindable(resultsModel) ;
             x = unique(x) ;
             results = unique(results) ;
