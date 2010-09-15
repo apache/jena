@@ -16,7 +16,7 @@ import com.hp.hpl.jena.query.ResultSet ;
 import com.hp.hpl.jena.rdf.model.RDFNode ;
 import com.hp.hpl.jena.sparql.util.ResultSetUtils ;
 
-/** RSCompare - comparision of result sets
+/** RSCompare - comparison of result sets
  * 
  * @author Andy Seaborne
  */

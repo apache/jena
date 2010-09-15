@@ -14,7 +14,7 @@ import org.openjena.riot.TC_Riot ;
 
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.sparql.algebra.TC_Algebra ;
-import com.hp.hpl.jena.sparql.api.TestAPI ;
+import com.hp.hpl.jena.sparql.api.TS_API ;
 import com.hp.hpl.jena.sparql.engine.main.QueryEngineMain ;
 import com.hp.hpl.jena.sparql.engine.ref.QueryEngineRef ;
 import com.hp.hpl.jena.sparql.expr.E_Function ;
@@ -38,6 +38,8 @@ public class ARQTestSuite extends TestSuite
     
     static public TestSuite suite()
     {
+        // See also TS_General.
+        
         TestSuite ts = new ARQTestSuite() ;
         
         // No warnings (e.g. bad lexical forms).
@@ -66,7 +68,7 @@ public class ARQTestSuite extends TestSuite
 
         // Algebra
         ts.addTest(new JUnit4TestAdapter(TC_Algebra.class)) ;
-        
+
         // Syntax
         ts.addTest(TS_Syntax.suite()) ;
         // Serialization
@@ -90,7 +92,7 @@ public class ARQTestSuite extends TestSuite
         ts.addTest(TS_RDQL.suite()) ;
       
         // API
-        ts.addTest(TestAPI.suite()) ;
+        ts.addTest(new JUnit4TestAdapter(TS_API.class)) ;
         
         // SPARQL/Update
         ts.addTest(TS_Update.suite()) ;

@@ -6,36 +6,26 @@
 
 package com.hp.hpl.jena.sparql.api;
 
-import junit.framework.JUnit4TestAdapter ;
 import junit.framework.TestCase ;
 import org.junit.Test ;
 
-import com.hp.hpl.jena.query.* ;
+import com.hp.hpl.jena.query.Query ;
+import com.hp.hpl.jena.query.QueryExecution ;
+import com.hp.hpl.jena.query.QueryExecutionFactory ;
+import com.hp.hpl.jena.query.QueryFactory ;
+import com.hp.hpl.jena.query.QuerySolution ;
+import com.hp.hpl.jena.query.QuerySolutionMap ;
+import com.hp.hpl.jena.query.ResultSet ;
+import com.hp.hpl.jena.query.ResultSetFormatter ;
+import com.hp.hpl.jena.query.Syntax ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.Property ;
 import com.hp.hpl.jena.rdf.model.Resource ;
 import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
 import com.hp.hpl.jena.vocabulary.OWL ;
 
-/** com.hp.hpl.jena.query.test.TestMisc
- * 
- * @author Andy Seaborne
- */
-
 public class TestAPI extends TestCase
 {
-    public static junit.framework.Test suite()
-    {
-        return new JUnit4TestAdapter(TestAPI.class) ;
-    }
-    
-//    public static TestSuite suite()
-//    {
-//        TestSuite ts = new TestSuite(TestAPI.class) ;
-//        ts.setName("TestMisc") ;
-//        return ts ;
-//    }
-    
     private static final String ns = "http://example/ns#" ;
     
     static Model m = GraphFactory.makeJenaDefaultModel() ;

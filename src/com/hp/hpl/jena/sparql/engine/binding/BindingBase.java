@@ -13,6 +13,8 @@ import org.openjena.atlas.iterator.IteratorConcat ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
 import com.hp.hpl.jena.sparql.core.Var ;
+
+import org.openjena.atlas.lib.Lib ;
 import org.openjena.atlas.logging.Log ;
 import com.hp.hpl.jena.sparql.util.FmtUtils ;
 
@@ -242,14 +244,7 @@ abstract public class BindingBase implements Binding
             Var var = iter1.next() ; 
             Node node1 = bind1.get(var) ;
             Node node2 = bind2.get(var) ;
-            
-            if ( node1 == null && node2 == null )
-                continue ;
-            if (node1 == null )
-                return false ;      // node2 not null
-            if (node2 == null )
-                return false ;      // node1 not null
-            if ( !node1.equals(node2) )
+            if ( ! Lib.equal(node1, node2) )
                 return false ;
         }
         
