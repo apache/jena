@@ -6,6 +6,8 @@
 
 package dev;
 
+import java.math.BigDecimal ;
+import java.math.BigInteger ;
 import java.util.HashMap ;
 import java.util.Map ;
 
@@ -26,18 +28,34 @@ public class SinkLiteral extends SinkWrapper<Triple>
     }
 
     @Override
-    public void send(Triple item)
+    public void send(Triple triple)
     {
-        super.send(item) ;
+        Node s = triple.getSubject() ;
+        Node p = triple.getPredicate() ;
+        Node o = triple.getObject() ;
+        
+        Node s1 = s ;
+        Node p1 = p ;
+        Node o1 = o ;
+        if ( o1.isLiteral() )
+            o1 = canonical(o1) ;
+        
+        if ( s != s1 || p != p1 || o != o1 )
+            triple = new Triple(s1, p1, o1) ;
+        
+        super.send(triple) ;
     }
     
-    interface DatatypeHandler { Node handle(Node node, RDFDatatype datatype) ; }
+    interface DatatypeHandler { Node handle(Node node, String lexicalForm, RDFDatatype datatype) ; }
     static Map<RDFDatatype, DatatypeHandler> dispatch = new HashMap<RDFDatatype, DatatypeHandler>() ;
+
+    // MUST be after the handler definitions as these assign to statics, so it's code lexcial order.
+    // or use static class to force touching that, initializing and then getting the values. 
     static {
-        dispatch.put(XSDDatatype.XSDinteger, null) ;
+        dispatch.put(XSDDatatype.XSDinteger, NormalizeValue.dtInteger) ;
+        dispatch.put(XSDDatatype.XSDdecimal, NormalizeValue.dtDecimal) ;
     }
-    
-    
+
     private static Node canonical(Node node)
     {
         RDFDatatype dt = node.getLiteralDatatype() ;
@@ -52,17 +70,55 @@ public class SinkLiteral extends SinkWrapper<Triple>
         
         // Dispatch on type
         // Type promotion.
+
         
         DatatypeHandler handler = dispatch.get(dt) ;
-        Node n2 = handler.handle(node, dt) ;
+        Node n2 = handler.handle(node, node.getLiteralLexicalForm(), dt) ;
         if ( n2 == null )
             return node ;
         
         return n2 ;
     }
     
-    
-    
+    static class NormalizeValue
+    {
+        // Auxillary class of datatype handers, placed here to static initialization ordering
+        // does not cause bugs.  If all statics in SinkLiteral, then 
+        // assignment to static has to happen before dispatch table is built but that
+        // makes the code messy.
+        
+        static DatatypeHandler dtInteger = new DatatypeHandler() {
+            public Node handle(Node node, String lexicalForm, RDFDatatype datatype)
+            {
+                // If valid and one char, it must be legal.
+                // If valid, and two chars and not leading 0, it must be valid.
+                String lex2 ;
+                if ( lexicalForm.length() > 8 )
+                    // Maybe large than an int so do carefully.
+                    lex2 = new BigInteger(lexicalForm).toString() ;
+                else
+                {
+                    // Avoid object churn.
+                    int x = Integer.parseInt(lexicalForm) ;
+                    lex2 = Integer.toString(x) ;
+                }
+                if ( lex2.equals(lexicalForm) )
+                    return node ;
+                return Node.createLiteral(lex2, null, datatype) ;
+            }
+        } ;
+        
+        static DatatypeHandler dtDecimal = new DatatypeHandler() {
+            public Node handle(Node node, String lexicalForm, RDFDatatype datatype)
+            {
+                // Removes the scale induced zeros by rescaling and then using plain form.
+                String lex2 = new BigDecimal(lexicalForm).stripTrailingZeros().toPlainString() ;
+                if ( lex2.equals(lexicalForm) )
+                    return node ;
+                return Node.createLiteral(lex2, null, datatype) ;
+            }
+        } ;
+    }
 }
 
 /*

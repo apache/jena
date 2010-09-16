@@ -44,13 +44,13 @@ public class QueryTest extends EarlTestCase
     private static int testCounter = 1 ;
     private static boolean printModelsOnFailure = false ;
     // -- Items from construction
-    int testNumber = testCounter++ ;
-    TestItem testItem ;
-    FileManager queryFileManager ;
-    boolean isRDQLtest = false ;
-    boolean resetNeeded = false ;
+    private int testNumber = testCounter++ ;
+    private TestItem testItem ;
+    private FileManager queryFileManager ;
+    private boolean isRDQLtest = false ;
+    private boolean resetNeeded = false ;
     
-    Model resultsModel = null ;     // Maybe null if no testing of results
+    private Model resultsModel = null ;     // Maybe null if no testing of results
     
     // If supplied with a model, the test will load that model with data from the source
     // If no model is supplied one is created or attached (e.g. a database)

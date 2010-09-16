@@ -30,6 +30,8 @@ public class ResultSetCompare
     //   RSCompare
     //   ResultSetUtils <- this is the switch for isomorphism.
     // Are these used by the query testing code?  CHECK
+    // TestItem has getResultModel->Model.
+    // The issue will be some results are models for a reason.
     // See TestResultSet/TestResultSetFormat/...
     
     interface EqualityTest { boolean equal(Node n1, Node n2) ; }

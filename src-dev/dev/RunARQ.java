@@ -9,6 +9,7 @@ package dev;
 
 import static org.openjena.atlas.lib.StrUtils.strjoinNL ;
 
+import java.math.BigDecimal ;
 import java.util.HashSet ;
 import java.util.Iterator ;
 import java.util.Set ;
@@ -46,7 +47,6 @@ import com.hp.hpl.jena.sparql.engine.RenamerVars ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
-import com.hp.hpl.jena.sparql.expr.nodevalue.NodeFunctions ;
 import com.hp.hpl.jena.sparql.function.FunctionEnvBase ;
 import com.hp.hpl.jena.sparql.lang.ParserSPARQL11Update ;
 import com.hp.hpl.jena.sparql.modify.request.UpdateWriter ;
@@ -107,11 +107,18 @@ public class RunARQ
     
     public static void main(String[] argv) throws Exception
     {
-        Node n1 = SSE.parseNode("'abc'@en") ;
-        Node n2 = SSE.parseNode("'abc'@EN") ;
-
-        System.out.println(n1.equals(n2)) ;
-        System.out.println(NodeFunctions.sameTerm(n1, n2)) ;
+        String[] strings = { "2.3" , "2.30000", "002", "-002.30", "2000000.00000", "2e3", "0.00003000" } ;
+        for ( String s : strings )
+        {
+            System.out.println(s+" => ") ;
+            BigDecimal dec = new BigDecimal(s) ;
+            System.out.println("  toString:       "+dec.toString()) ;
+            System.out.println("  toPlainString:  "+dec.toPlainString()) ;
+            dec = dec.stripTrailingZeros() ;
+            System.out.println("  toString:       "+dec.toString()) ;
+            System.out.println("  toPlainString:  "+dec.toPlainString()) ;
+            
+        }
         System.exit(0) ;
         
         testXSDDurationBug() ; System.exit(0) ;
