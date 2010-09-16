@@ -52,8 +52,38 @@ public class SinkLiteral extends SinkWrapper<Triple>
     // MUST be after the handler definitions as these assign to statics, so it's code lexcial order.
     // or use static class to force touching that, initializing and then getting the values. 
     static {
-        dispatch.put(XSDDatatype.XSDinteger, NormalizeValue.dtInteger) ;
-        dispatch.put(XSDDatatype.XSDdecimal, NormalizeValue.dtDecimal) ;
+        dispatch.put(XSDDatatype.XSDinteger,        NormalizeValue.dtInteger) ;
+        dispatch.put(XSDDatatype.XSDdecimal,        NormalizeValue.dtDecimal) ;
+        
+        // Subtypes.
+        dispatch.put(XSDDatatype.XSDint,            NormalizeValue.dtInteger) ;        
+        dispatch.put(XSDDatatype.XSDlong,           NormalizeValue.dtInteger) ;
+        dispatch.put(XSDDatatype.XSDshort,          NormalizeValue.dtInteger) ;
+        dispatch.put(XSDDatatype.XSDbyte,           NormalizeValue.dtInteger) ;
+        
+        dispatch.put(XSDDatatype.XSDunsignedInt,    NormalizeValue.dtInteger) ;
+        dispatch.put(XSDDatatype.XSDunsignedLong,   NormalizeValue.dtInteger) ;
+        dispatch.put(XSDDatatype.XSDunsignedShort,  NormalizeValue.dtInteger) ;
+        dispatch.put(XSDDatatype.XSDunsignedByte,   NormalizeValue.dtInteger) ;
+        
+        dispatch.put(XSDDatatype.XSDnonPositiveInteger,     NormalizeValue.dtInteger) ;
+        dispatch.put(XSDDatatype.XSDnonNegativeInteger,     NormalizeValue.dtInteger) ;
+        dispatch.put(XSDDatatype.XSDpositiveInteger,        NormalizeValue.dtInteger) ;
+        dispatch.put(XSDDatatype.XSDnegativeInteger,        NormalizeValue.dtInteger) ;
+           
+
+        dispatch.put(XSDDatatype.XSDfloat,      null) ;
+        dispatch.put(XSDDatatype.XSDdouble,     null) ;
+        dispatch.put(XSDDatatype.XSDdateTime,   null) ; 
+        dispatch.put(XSDDatatype.XSDdate,       null) ;
+        dispatch.put(XSDDatatype.XSDtime,       null) ;
+        dispatch.put(XSDDatatype.XSDgYear,      null) ;
+        dispatch.put(XSDDatatype.XSDgYearMonth, null) ;
+        dispatch.put(XSDDatatype.XSDgMonth,     null) ;
+        dispatch.put(XSDDatatype.XSDgMonthDay,  null) ;
+        dispatch.put(XSDDatatype.XSDgDay,       null) ;
+        dispatch.put(XSDDatatype.XSDduration,   null) ;
+        dispatch.put(XSDDatatype.XSDboolean,    null) ;
     }
 
     private static Node canonical(Node node)
@@ -73,6 +103,9 @@ public class SinkLiteral extends SinkWrapper<Triple>
 
         
         DatatypeHandler handler = dispatch.get(dt) ;
+        if ( handler == null )
+            return node ;
+        
         Node n2 = handler.handle(node, node.getLiteralLexicalForm(), dt) ;
         if ( n2 == null )
             return node ;
