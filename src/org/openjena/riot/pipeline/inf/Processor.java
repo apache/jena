@@ -4,37 +4,13 @@
  * [See end of file]
  */
 
-package org.openjena.riot.inf;
+package org.openjena.riot.pipeline.inf;
 
-import org.openjena.atlas.lib.Sink ;
+import com.hp.hpl.jena.graph.Node ;
 
-import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.sparql.core.Quad ;
-
-public class InfFactory
+public interface Processor
 {
-    public static Sink<Triple> infTriples(Sink<Triple> sink, Model vocab)
-    {
-        InferenceSetupRDFS setup =  new InferenceSetupRDFS(vocab) ;
-        return new InferenceProcessorTriples(sink, setup) ; 
-    }
-    
-    public static Sink<Quad> infQuads(Sink<Quad> sink, Model vocab)
-    {
-        InferenceSetupRDFS setup =  new InferenceSetupRDFS(vocab) ;
-        return new InferenceProcessorQuads(sink, setup) ; 
-    }
-
-    public static Sink<Triple> infTriples(Sink<Triple> sink, InferenceSetupRDFS setup)
-    {
-        return new InferenceProcessorTriples(sink, setup) ; 
-    }
-    
-    public static Sink<Quad> infQuads(Sink<Quad> sink, InferenceSetupRDFS setup)
-    {
-        return new InferenceProcessorQuads(sink, setup) ; 
-    }
+    void process(Node s, Node p , Node o) ;
 }
 
 /*

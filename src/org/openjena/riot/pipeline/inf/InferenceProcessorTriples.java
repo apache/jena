@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package org.openjena.riot.inf;
+package org.openjena.riot.pipeline.inf;
 
 import org.openjena.atlas.lib.Sink ;
 

@@ -15,8 +15,6 @@ public class DevARQ
     // ?? merely a DSG container?
     //   ?? c.f. UpdateExecution so no need for GS?
     
-    // ??UpdateProcessor -- UpdateExecution
-    
     // Error handling and exception catching. LanguageParseException
     // (old name QueryParseException : superclass)
     // "QuerySolution"
@@ -46,6 +44,8 @@ public class DevARQ
     // Label checking: can't use same bNode label in template and pattern
     // for DELETE/INSERT.
 
+    // *** Pipeline: number canonicalization : Sink
+    
     // ---- SPARQL Query
     // Check for out-of-scope group vars.
     // ElementSubQuery takes a Query argument so called after all sub-parsing

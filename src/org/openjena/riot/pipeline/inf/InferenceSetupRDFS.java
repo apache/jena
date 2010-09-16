@@ -5,7 +5,7 @@
  * [See end of file]
  */
 
-package org.openjena.riot.inf;
+package org.openjena.riot.pipeline.inf;
 
 import java.util.ArrayList ;
 import java.util.HashMap ;
