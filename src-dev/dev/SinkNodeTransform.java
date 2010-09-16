@@ -20,6 +20,7 @@ import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.sparql.core.NodeTransform ;
 
+/** Apply a node transform to each node in a triple */ 
 public class SinkNodeTransform extends SinkWrapper<Triple>
 {
 
@@ -27,6 +28,13 @@ public class SinkNodeTransform extends SinkWrapper<Triple>
     private final NodeTransform predTransform ;
     private final NodeTransform objTransform ;
 
+    /** Apply the nodeTransform to each of S, P and O */
+    public SinkNodeTransform(Sink<Triple> sink, NodeTransform nodeTransform)
+    {
+        this(sink, nodeTransform, nodeTransform, nodeTransform) ;
+    }
+    
+    /** Apply the respective nodeTransform to the slot in the triple */
     public SinkNodeTransform(Sink<Triple> sink, NodeTransform subjTransform, NodeTransform predTransform, NodeTransform objTransform)
     {
         super(sink) ;
