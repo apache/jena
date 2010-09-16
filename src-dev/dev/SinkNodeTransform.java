@@ -18,13 +18,22 @@ import com.hp.hpl.jena.datatypes.RDFDatatype ;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.sparql.core.NodeTransform ;
 
-public class SinkLiteral extends SinkWrapper<Triple>
+public class SinkNodeTransform extends SinkWrapper<Triple>
 {
 
-    public SinkLiteral(Sink<Triple> sink)
+    private final NodeTransform subjTransform ;
+    private final NodeTransform predTransform ;
+    private final NodeTransform objTransform ;
+
+    public SinkNodeTransform(Sink<Triple> sink, NodeTransform subjTransform, NodeTransform predTransform, NodeTransform objTransform)
     {
         super(sink) ;
+        this.subjTransform = subjTransform ;
+        this.predTransform = predTransform ;
+        this.objTransform = objTransform ;
+        
     }
 
     @Override
@@ -34,18 +43,52 @@ public class SinkLiteral extends SinkWrapper<Triple>
         Node p = triple.getPredicate() ;
         Node o = triple.getObject() ;
         
-        Node s1 = s ;
-        Node p1 = p ;
-        Node o1 = o ;
-        if ( o1.isLiteral() )
-            o1 = canonical(o1) ;
-        
+        Node s1 = apply(subjTransform, s) ;
+        Node p1 = apply(predTransform, p) ;
+        Node o1 = apply(objTransform, o) ;
+
         if ( s != s1 || p != p1 || o != o1 )
             triple = new Triple(s1, p1, o1) ;
         
         super.send(triple) ;
     }
     
+    private Node apply(NodeTransform nodeTransform, Node node)
+    {
+        if ( nodeTransform == null ) return node ;
+        return nodeTransform.convert(node) ;
+    }
+}
+
+class CanonicalLiteral implements NodeTransform    
+{
+    public Node convert(Node node)
+    {
+        RDFDatatype dt = node.getLiteralDatatype() ;
+        if ( dt == null )
+        {
+            // Language?
+            return node ;
+        }
+
+        // Valid?  Yes - assumes checking has been done.
+        // May integrate later
+        
+        // Dispatch on type
+        // Type promotion.
+
+        
+        DatatypeHandler handler = dispatch.get(dt) ;
+        if ( handler == null )
+            return node ;
+        
+        Node n2 = handler.handle(node, node.getLiteralLexicalForm(), dt) ;
+        if ( n2 == null )
+            return node ;
+        
+        return n2 ;
+    }
+
     interface DatatypeHandler { Node handle(Node node, String lexicalForm, RDFDatatype datatype) ; }
     static Map<RDFDatatype, DatatypeHandler> dispatch = new HashMap<RDFDatatype, DatatypeHandler>() ;
 
@@ -86,34 +129,7 @@ public class SinkLiteral extends SinkWrapper<Triple>
         dispatch.put(XSDDatatype.XSDboolean,    null) ;
     }
 
-    private static Node canonical(Node node)
-    {
-        RDFDatatype dt = node.getLiteralDatatype() ;
-        if ( dt == null )
-        {
-            // Language?
-            return node ;
-        }
-
-        // Valid?  Yes - assumes checking has been done.
-        // May integrate later
-        
-        // Dispatch on type
-        // Type promotion.
-
-        
-        DatatypeHandler handler = dispatch.get(dt) ;
-        if ( handler == null )
-            return node ;
-        
-        Node n2 = handler.handle(node, node.getLiteralLexicalForm(), dt) ;
-        if ( n2 == null )
-            return node ;
-        
-        return n2 ;
-    }
-    
-    static class NormalizeValue
+   static class NormalizeValue
     {
         // Auxillary class of datatype handers, placed here to static initialization ordering
         // does not cause bugs.  If all statics in SinkLiteral, then 
