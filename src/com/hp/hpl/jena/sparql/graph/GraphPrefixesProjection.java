@@ -4,13 +4,14 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.core;
+package com.hp.hpl.jena.sparql.graph;
 
 import java.util.Map;
 import java.util.Map.Entry;
 
 import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
+import com.hp.hpl.jena.sparql.core.DatasetPrefixStorage ;
 
 /** View of a dataset's prefixes for a particular graph */
 

@@ -10,12 +10,12 @@ import java.util.Collection ;
 import java.util.Set ;
 
 import com.hp.hpl.jena.sparql.algebra.Op ;
-import com.hp.hpl.jena.sparql.core.NodeTransform ;
-import com.hp.hpl.jena.sparql.core.NodeTransformLib ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.RenamerVars ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.expr.ExprList ;
+import com.hp.hpl.jena.sparql.graph.NodeTransform ;
+import com.hp.hpl.jena.sparql.graph.NodeTransformLib ;
 
 public class VarRename
 {

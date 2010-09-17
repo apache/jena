@@ -4,47 +4,14 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.expr;
+package org.openjena.riot.pipeline.normalize;
 
-import com.hp.hpl.jena.sparql.function.FunctionEnv ;
-import com.hp.hpl.jena.sparql.graph.NodeTransform ;
+import com.hp.hpl.jena.datatypes.RDFDatatype ;
+import com.hp.hpl.jena.graph.Node ;
 
-/** An expression that is constant (does not depend on evaluating a sub expression).
- */
-
-public abstract class ExprFunction0 extends ExprFunction
+interface DatatypeHandler
 {
-    protected ExprFunction0(String fName) { this(fName, null) ; }
-    
-    protected ExprFunction0(String fName, String opSign)
-    {
-        super(fName, opSign) ;
-    }
-
-    @Override
-    public Expr getArg(int i)       { return null ; }
-    
-    @Override
-    public int hashCode()           { return getFunctionSymbol().hashCode() ; }
-
-    @Override
-    public int numArgs()            { return 0 ; }
-    
-    // ---- Evaluation
-   
-    public abstract NodeValue eval(FunctionEnv env)  ;
-    
-    @Override
-    final public Expr applyNodeTransform(NodeTransform transform)
-    {
-        // Nothing to transform. 
-        return copy() ;
-    }
-    
-    public abstract Expr copy() ;
-    
-    public void visit(ExprVisitor visitor) { visitor.visit(this) ; }
-    public Expr apply(ExprTransform transform) { return transform.transform(this) ; }
+    Node handle(Node node, String lexicalForm, RDFDatatype datatype) ;
 }
 
 /*

@@ -8,8 +8,8 @@ package com.hp.hpl.jena.sparql.expr;
 
 import java.util.List ;
 
-import com.hp.hpl.jena.sparql.core.NodeTransform ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.graph.NodeTransform ;
 
 /** A function in the expression hierarchy.
  *  Everything that is evaluable (i.e. not NodeValue, NodeVar) is a function.

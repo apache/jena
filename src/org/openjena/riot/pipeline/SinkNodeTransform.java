@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package dev;
+package org.openjena.riot.pipeline;
 
 import java.math.BigDecimal ;
 import java.math.BigInteger ;
@@ -23,6 +23,7 @@ import com.hp.hpl.jena.sparql.graph.NodeTransform ;
 /** Apply a node transform to each node in a triple */ 
 public class SinkNodeTransform extends SinkWrapper<Triple>
 {
+
     private final NodeTransform subjTransform ;
     private final NodeTransform predTransform ;
     private final NodeTransform objTransform ;

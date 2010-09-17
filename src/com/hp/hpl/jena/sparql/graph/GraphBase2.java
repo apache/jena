@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.core;
+package com.hp.hpl.jena.sparql.graph;
 
 import com.hp.hpl.jena.graph.* ;
 import com.hp.hpl.jena.graph.impl.AllCapabilities ;
@@ -19,6 +19,7 @@ import com.hp.hpl.jena.shared.AddDeniedException ;
 import com.hp.hpl.jena.shared.ClosedException ;
 import com.hp.hpl.jena.shared.DeleteDeniedException ;
 import com.hp.hpl.jena.shared.PrefixMapping ;
+import com.hp.hpl.jena.sparql.core.Reifier2 ;
 import com.hp.hpl.jena.util.iterator.ClosableIterator ;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
 

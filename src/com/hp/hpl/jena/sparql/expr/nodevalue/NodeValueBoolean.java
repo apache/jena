@@ -6,8 +6,8 @@
 package com.hp.hpl.jena.sparql.expr.nodevalue;
 
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.sparql.core.NodeConst ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
+import com.hp.hpl.jena.sparql.graph.NodeConst ;
 
 
 public class NodeValueBoolean extends NodeValue

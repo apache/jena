@@ -4,48 +4,24 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.expr;
+package org.openjena.riot.pipeline.normalize;
 
-import com.hp.hpl.jena.sparql.function.FunctionEnv ;
-import com.hp.hpl.jena.sparql.graph.NodeTransform ;
 
-/** An expression that is constant (does not depend on evaluating a sub expression).
- */
+import org.openjena.atlas.lib.Sink ;
+import org.openjena.riot.pipeline.SinkNodeTransform ;
 
-public abstract class ExprFunction0 extends ExprFunction
+import com.hp.hpl.jena.graph.Triple ;
+
+/** Apply a node transform to each node in a triple */ 
+public class SinkNormalize extends SinkNodeTransform
 {
-    protected ExprFunction0(String fName) { this(fName, null) ; }
-    
-    protected ExprFunction0(String fName, String opSign)
+    /** Apply the nodeTransform to each of S, P and O */
+    public SinkNormalize(Sink<Triple> sink)
     {
-        super(fName, opSign) ;
+        super(sink, null, null, new CanonicalizeLiteral()) ; 
     }
-
-    @Override
-    public Expr getArg(int i)       { return null ; }
-    
-    @Override
-    public int hashCode()           { return getFunctionSymbol().hashCode() ; }
-
-    @Override
-    public int numArgs()            { return 0 ; }
-    
-    // ---- Evaluation
-   
-    public abstract NodeValue eval(FunctionEnv env)  ;
-    
-    @Override
-    final public Expr applyNodeTransform(NodeTransform transform)
-    {
-        // Nothing to transform. 
-        return copy() ;
-    }
-    
-    public abstract Expr copy() ;
-    
-    public void visit(ExprVisitor visitor) { visitor.visit(this) ; }
-    public Expr apply(ExprTransform transform) { return transform.transform(this) ; }
 }
+
 
 /*
  * (c) Copyright 2010 Epimorphics Ltd.

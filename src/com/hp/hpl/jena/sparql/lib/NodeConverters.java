@@ -7,7 +7,7 @@
 package com.hp.hpl.jena.sparql.lib;
 
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.sparql.core.NodeTransform ;
+import com.hp.hpl.jena.sparql.graph.NodeTransform ;
 
 /** A collection of transformes on Nodes */
 public class NodeConverters

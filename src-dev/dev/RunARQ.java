@@ -9,7 +9,6 @@ package dev;
 
 import static org.openjena.atlas.lib.StrUtils.strjoinNL ;
 
-import java.math.BigDecimal ;
 import java.util.HashSet ;
 import java.util.Iterator ;
 import java.util.Set ;
@@ -20,6 +19,7 @@ import org.openjena.atlas.lib.StrUtils ;
 import org.openjena.atlas.logging.Log ;
 import org.openjena.riot.ErrorHandlerLib ;
 import org.openjena.riot.checker.CheckerIRI ;
+import org.openjena.riot.pipeline.normalize.CanonicalizeLiteral ;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.datatypes.xsd.XSDDuration ;
@@ -38,9 +38,6 @@ import com.hp.hpl.jena.sparql.algebra.Algebra ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
-import com.hp.hpl.jena.sparql.core.NodeConst ;
-import com.hp.hpl.jena.sparql.core.NodeTransform ;
-import com.hp.hpl.jena.sparql.core.NodeTransformLib ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.RenamerVars ;
@@ -48,6 +45,9 @@ import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.function.FunctionEnvBase ;
+import com.hp.hpl.jena.sparql.graph.NodeConst ;
+import com.hp.hpl.jena.sparql.graph.NodeTransform ;
+import com.hp.hpl.jena.sparql.graph.NodeTransformLib ;
 import com.hp.hpl.jena.sparql.lang.ParserSPARQL11Update ;
 import com.hp.hpl.jena.sparql.modify.request.UpdateWriter ;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
@@ -107,18 +107,21 @@ public class RunARQ
     
     public static void main(String[] argv) throws Exception
     {
-        String[] strings = { "2.3" , "2.30000", "002", "-002.30", "2000000.00000", "2e3", "0.00003000" } ;
+        NodeTransform ntLitCanon = new CanonicalizeLiteral() ;
+        // To do :
+        //   double and floats.
+        //   decimals and X.0
+        String[] strings = { "123", "0123", "0123.00900" , "-0089", "-0089.0" , "1e5", "+001.5e6", "'fred'"} ;
         for ( String s : strings )
         {
-            System.out.println(s+" => ") ;
-            BigDecimal dec = new BigDecimal(s) ;
-            System.out.println("  toString:       "+dec.toString()) ;
-            System.out.println("  toPlainString:  "+dec.toPlainString()) ;
-            dec = dec.stripTrailingZeros() ;
-            System.out.println("  toString:       "+dec.toString()) ;
-            System.out.println("  toPlainString:  "+dec.toPlainString()) ;
-            
+            Node n = SSE.parseNode(s) ;
+            Node n2 = ntLitCanon.convert(n) ;
+            System.out.println(n+" => "+n2) ;
         }
+        
+        
+        
+        
         System.exit(0) ;
         
         testXSDDurationBug() ; System.exit(0) ;

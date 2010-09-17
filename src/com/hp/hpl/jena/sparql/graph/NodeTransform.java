@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.core;
+package com.hp.hpl.jena.sparql.graph;
 
 import org.openjena.atlas.iterator.Transform ;
 

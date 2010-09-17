@@ -11,8 +11,8 @@ import java.util.HashMap ;
 import java.util.Map ;
 
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.sparql.core.NodeTransform ;
 import com.hp.hpl.jena.sparql.core.Var ;
+import com.hp.hpl.jena.sparql.graph.NodeTransform ;
 
 public class RenamerVars implements NodeTransform
 {

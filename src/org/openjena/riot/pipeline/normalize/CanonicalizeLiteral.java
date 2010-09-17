@@ -4,70 +4,18 @@
  * [See end of file]
  */
 
-package dev;
+package org.openjena.riot.pipeline.normalize;
 
-import java.math.BigDecimal ;
-import java.math.BigInteger ;
 import java.util.HashMap ;
 import java.util.Map ;
 
-import org.openjena.atlas.lib.Sink ;
-import org.openjena.atlas.lib.SinkWrapper ;
 
 import com.hp.hpl.jena.datatypes.RDFDatatype ;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.sparql.graph.NodeTransform ;
 
-/** Apply a node transform to each node in a triple */ 
-public class SinkNodeTransform extends SinkWrapper<Triple>
-{
-    private final NodeTransform subjTransform ;
-    private final NodeTransform predTransform ;
-    private final NodeTransform objTransform ;
-
-    /** Apply the nodeTransform to each of S, P and O */
-    public SinkNodeTransform(Sink<Triple> sink, NodeTransform nodeTransform)
-    {
-        this(sink, nodeTransform, nodeTransform, nodeTransform) ;
-    }
-    
-    /** Apply the respective nodeTransform to the slot in the triple */
-    public SinkNodeTransform(Sink<Triple> sink, NodeTransform subjTransform, NodeTransform predTransform, NodeTransform objTransform)
-    {
-        super(sink) ;
-        this.subjTransform = subjTransform ;
-        this.predTransform = predTransform ;
-        this.objTransform = objTransform ;
-        
-    }
-
-    @Override
-    public void send(Triple triple)
-    {
-        Node s = triple.getSubject() ;
-        Node p = triple.getPredicate() ;
-        Node o = triple.getObject() ;
-        
-        Node s1 = apply(subjTransform, s) ;
-        Node p1 = apply(predTransform, p) ;
-        Node o1 = apply(objTransform, o) ;
-
-        if ( s != s1 || p != p1 || o != o1 )
-            triple = new Triple(s1, p1, o1) ;
-        
-        super.send(triple) ;
-    }
-    
-    private Node apply(NodeTransform nodeTransform, Node node)
-    {
-        if ( nodeTransform == null ) return node ;
-        return nodeTransform.convert(node) ;
-    }
-}
-
-class CanonicalLiteral implements NodeTransform    
+public class CanonicalizeLiteral implements NodeTransform    
 {
     public Node convert(Node node)
     {
@@ -80,23 +28,22 @@ class CanonicalLiteral implements NodeTransform
 
         // Valid?  Yes - assumes checking has been done.
         // May integrate later
-        
+
         // Dispatch on type
         // Type promotion.
 
-        
+
         DatatypeHandler handler = dispatch.get(dt) ;
         if ( handler == null )
             return node ;
-        
+
         Node n2 = handler.handle(node, node.getLiteralLexicalForm(), dt) ;
         if ( n2 == null )
             return node ;
-        
+
         return n2 ;
     }
 
-    interface DatatypeHandler { Node handle(Node node, String lexicalForm, RDFDatatype datatype) ; }
     static Map<RDFDatatype, DatatypeHandler> dispatch = new HashMap<RDFDatatype, DatatypeHandler>() ;
 
     // MUST be after the handler definitions as these assign to statics, so it's code lexcial order.
@@ -104,23 +51,23 @@ class CanonicalLiteral implements NodeTransform
     static {
         dispatch.put(XSDDatatype.XSDinteger,        NormalizeValue.dtInteger) ;
         dispatch.put(XSDDatatype.XSDdecimal,        NormalizeValue.dtDecimal) ;
-        
+
         // Subtypes.
         dispatch.put(XSDDatatype.XSDint,            NormalizeValue.dtInteger) ;        
         dispatch.put(XSDDatatype.XSDlong,           NormalizeValue.dtInteger) ;
         dispatch.put(XSDDatatype.XSDshort,          NormalizeValue.dtInteger) ;
         dispatch.put(XSDDatatype.XSDbyte,           NormalizeValue.dtInteger) ;
-        
+
         dispatch.put(XSDDatatype.XSDunsignedInt,    NormalizeValue.dtInteger) ;
         dispatch.put(XSDDatatype.XSDunsignedLong,   NormalizeValue.dtInteger) ;
         dispatch.put(XSDDatatype.XSDunsignedShort,  NormalizeValue.dtInteger) ;
         dispatch.put(XSDDatatype.XSDunsignedByte,   NormalizeValue.dtInteger) ;
-        
+
         dispatch.put(XSDDatatype.XSDnonPositiveInteger,     NormalizeValue.dtInteger) ;
         dispatch.put(XSDDatatype.XSDnonNegativeInteger,     NormalizeValue.dtInteger) ;
         dispatch.put(XSDDatatype.XSDpositiveInteger,        NormalizeValue.dtInteger) ;
         dispatch.put(XSDDatatype.XSDnegativeInteger,        NormalizeValue.dtInteger) ;
-           
+
 
         dispatch.put(XSDDatatype.XSDfloat,      null) ;
         dispatch.put(XSDDatatype.XSDdouble,     null) ;
@@ -135,48 +82,7 @@ class CanonicalLiteral implements NodeTransform
         dispatch.put(XSDDatatype.XSDduration,   null) ;
         dispatch.put(XSDDatatype.XSDboolean,    null) ;
     }
-
-   static class NormalizeValue
-    {
-        // Auxillary class of datatype handers, placed here to static initialization ordering
-        // does not cause bugs.  If all statics in SinkLiteral, then 
-        // assignment to static has to happen before dispatch table is built but that
-        // makes the code messy.
-        
-        static DatatypeHandler dtInteger = new DatatypeHandler() {
-            public Node handle(Node node, String lexicalForm, RDFDatatype datatype)
-            {
-                // If valid and one char, it must be legal.
-                // If valid, and two chars and not leading 0, it must be valid.
-                String lex2 ;
-                if ( lexicalForm.length() > 8 )
-                    // Maybe large than an int so do carefully.
-                    lex2 = new BigInteger(lexicalForm).toString() ;
-                else
-                {
-                    // Avoid object churn.
-                    int x = Integer.parseInt(lexicalForm) ;
-                    lex2 = Integer.toString(x) ;
-                }
-                if ( lex2.equals(lexicalForm) )
-                    return node ;
-                return Node.createLiteral(lex2, null, datatype) ;
-            }
-        } ;
-        
-        static DatatypeHandler dtDecimal = new DatatypeHandler() {
-            public Node handle(Node node, String lexicalForm, RDFDatatype datatype)
-            {
-                // Removes the scale induced zeros by rescaling and then using plain form.
-                String lex2 = new BigDecimal(lexicalForm).stripTrailingZeros().toPlainString() ;
-                if ( lex2.equals(lexicalForm) )
-                    return node ;
-                return Node.createLiteral(lex2, null, datatype) ;
-            }
-        } ;
-    }
 }
-
 /*
  * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.

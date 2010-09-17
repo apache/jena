@@ -8,10 +8,10 @@ package com.hp.hpl.jena.sparql.expr;
 
 import org.openjena.atlas.lib.Lib ;
 
-import com.hp.hpl.jena.sparql.core.NodeTransform ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
 import com.hp.hpl.jena.sparql.function.FunctionEnvBase ;
+import com.hp.hpl.jena.sparql.graph.NodeTransform ;
 
 /** A function that has a single argument */
  

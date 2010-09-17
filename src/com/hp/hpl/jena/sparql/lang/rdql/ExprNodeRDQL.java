@@ -18,7 +18,6 @@ import com.hp.hpl.jena.graph.query.Valuator ;
 import com.hp.hpl.jena.graph.query.VariableIndexes ;
 import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
-import com.hp.hpl.jena.sparql.core.NodeTransform ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingIndex ;
@@ -30,6 +29,8 @@ import com.hp.hpl.jena.sparql.expr.ExprVisitor ;
 import com.hp.hpl.jena.sparql.expr.ExprWalker ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
+import com.hp.hpl.jena.sparql.graph.NodeTransform ;
+
 import org.openjena.atlas.logging.Log ;
 
 

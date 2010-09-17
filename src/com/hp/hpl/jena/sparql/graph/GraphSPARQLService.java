@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package dev.graph;
+package com.hp.hpl.jena.sparql.graph;
 
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;

@@ -9,9 +9,9 @@ package com.hp.hpl.jena.sparql.engine.optimizer.reorder;
 import static com.hp.hpl.jena.sparql.engine.optimizer.reorder.PatternElements.TERM ;
 import static com.hp.hpl.jena.sparql.engine.optimizer.reorder.PatternElements.VAR ;
 
-import com.hp.hpl.jena.sparql.core.NodeConst ;
 import com.hp.hpl.jena.sparql.engine.optimizer.Pattern ;
 import com.hp.hpl.jena.sparql.engine.optimizer.StatsMatcher ;
+import com.hp.hpl.jena.sparql.graph.NodeConst ;
 import com.hp.hpl.jena.sparql.sse.Item ;
 
 public class ReorderFixed extends ReorderTransformationBase
