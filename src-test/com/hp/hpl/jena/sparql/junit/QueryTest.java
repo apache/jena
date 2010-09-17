@@ -225,8 +225,9 @@ public class QueryTest extends EarlTestCase
                 if ( rs == null )
                     System.err.println("** "+getName()+": bad result set") ;
                 ResultSetRewindable resultsExpected = ResultSetFactory.makeRewindable(rs) ;
-                if ( ! query.isReduced() )
+                if ( query.isReduced() )
                 {
+                    // Reduced - best we can do is do DISTINCT
                     resultsExpected = unique(resultsExpected) ;
                     resultsActual = unique(resultsActual) ;
                 }
@@ -271,6 +272,7 @@ public class QueryTest extends EarlTestCase
         // VERY crude.  Utilises the fact that bindings have value equality.
         List<Binding> x = new ArrayList<Binding>() ;
         Set<Binding> seen = new HashSet<Binding>() ;
+        
         for ( ; results.hasNext() ; )
         {
             Binding b = results.nextBinding() ;
