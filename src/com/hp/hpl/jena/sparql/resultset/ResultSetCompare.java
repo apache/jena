@@ -243,7 +243,7 @@ public class ResultSetCompare
             if ( n1.isLiteral() && n2.isLiteral() )
                 return literalTest.equal(n1, n2) ;
             
-            if ( n1.isBlank() && n1.isBlank() )
+            if ( n1.isBlank() && n2.isBlank() )
             {
                 Node x = mapping.get(n1) ;
                 if ( x == null )

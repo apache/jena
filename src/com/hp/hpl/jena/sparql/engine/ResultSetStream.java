@@ -32,9 +32,6 @@ public class ResultSetStream implements ResultSet
     private int rowNumber ;
     private Model model ;
     
-    private boolean ordered = false ; 
-    private boolean distinct = false ;
-    
     public ResultSetStream(List<String> resultVars, Model m, QueryIterator iter)
     {
         queryExecutionIter = iter ;

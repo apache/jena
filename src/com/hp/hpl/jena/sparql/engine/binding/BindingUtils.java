@@ -46,11 +46,24 @@ public class BindingUtils
     {
         if ( qSolution == null )
             return ;
+        
+        
+        
         for ( Iterator<String> iter = qSolution.varNames() ; iter.hasNext() ; )
         {
             String n = iter.next() ;
+            
+            
             RDFNode x = qSolution.get(n) ;
+            //XXX
+            if ( Var.isBlankNodeVarName(n) )
+                continue ;
+            try {
             binding.add(Var.alloc(n), x.asNode()) ;
+            } catch (Exception ex)
+            {
+                System.err.println("!!!") ;
+            }
         }
     }
     

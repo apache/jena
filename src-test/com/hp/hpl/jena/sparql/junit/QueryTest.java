@@ -45,17 +45,12 @@ import com.hp.hpl.jena.vocabulary.RDF ;
 public class QueryTest extends EarlTestCase
 {
     private static int testCounter = 1 ;
-    private static boolean printModelsOnFailure = false ;
-    // -- Items from construction
     private int testNumber = testCounter++ ;
     private TestItem testItem ;
     private FileManager queryFileManager ;
     private boolean isRDQLtest = false ;
     private boolean resetNeeded = false ;
     
-    //private Model resultsModel = null ;     // Maybe null if no testing of results
-    
-    private Model resultsAsModel = null ;     // Maybe null if no testing of results
     private SPARQLResult results = null ;    // Maybe null if no testing of results
     
     // If supplied with a model, the test will load that model with data from the source
@@ -93,11 +88,7 @@ public class QueryTest extends EarlTestCase
         CheckerLiterals.WarnOnBadLiterals = false ;
 
         // Sort out results.
-        // Try to read as a model, and failing that, try for a SPARQLResults.
-        // Need because some result sets are RDF models (retain ordering).
-
-        resultsAsModel = testItem.getResultModel() ;
-        results =  testItem.getResultSet() ;
+        results =  testItem.getResults() ;
     }
     
     @Override
@@ -224,38 +215,43 @@ public class QueryTest extends EarlTestCase
         // If ordered, we have to test by trunign into models because only the model form
         // enforces orderuing (it has RFD triples to encode the order).
 
-        if ( results != null && resultsAsModel != null )
-            System.err.println(super.getName()+": Warning: both result set and result model") ;
-        
         if ( results != null )
         {
-            // XXX Renable and check.
-            //System.err.println("** "+getName()+": Result set direct testing") ;
-            ResultSet rs = this.results.getResultSet() ;
-            if ( rs == null )
-                System.err.println("** "+getName()+": bad result set") ;
-            ResultSetRewindable resultsExpected = ResultSetFactory.makeRewindable(rs) ;
+            if ( results.isResultSet() )
+            {
+                // XXX Re-enable and check.
+                //System.err.println("** "+getName()+": Result set direct testing") ;
+                ResultSet rs = this.results.getResultSet() ;
+                if ( rs == null )
+                    System.err.println("** "+getName()+": bad result set") ;
+                ResultSetRewindable resultsExpected = ResultSetFactory.makeRewindable(rs) ;
+                if ( ! query.isReduced() )
+                {
+                    resultsExpected = unique(resultsExpected) ;
+                    resultsActual = unique(resultsActual) ;
+                }
 
-            boolean b ;
-            if ( query.isOrdered() )
-                b = RSCompare.sameOrdered(resultsExpected, resultsActual) ;
+                boolean b ;
+                if ( query.isOrdered() )
+                    b = RSCompare.sameOrdered(resultsExpected, resultsActual) ;
+                else
+                    b = RSCompare.same(resultsExpected, resultsActual) ;
+                if ( ! b)
+                    printFailedResultSetTest(query, resultsExpected, resultsActual) ;
+                assertTrue("Results do not match: "+testItem.getName(), b) ;
+            }
+            else if ( results.isModel() )
+            {
+                Model resultsAsModel = results.getModel() ;
+                //System.err.println(getName()+": Result set model testing") ;
+                ResultSetRewindable x = ResultSetFactory.makeRewindable(resultsAsModel) ;
+                x = unique(x) ;
+                resultsActual = unique(resultsActual) ;
+                checkResults(query, resultsActual, ResultSetFormatter.toModel(x)) ;
+            }
             else
-                b = RSCompare.same(resultsExpected, resultsActual) ;
-            if ( ! b)
-                printFailedResultSetTest(query, resultsExpected, resultsActual) ;
-            assertTrue("Results do not match: "+testItem.getName(), b) ;
+                fail("Wrong result type for SELECT query") ;
         }
-        
-        // None of these left?
-        if ( resultsAsModel != null )
-        {
-            //System.err.println(getName()+": Result set model testing") ;
-            ResultSetRewindable x = ResultSetFactory.makeRewindable(resultsAsModel) ;
-            x = unique(x) ;
-            resultsActual = unique(resultsActual) ;
-            checkResults(query, resultsActual, ResultSetFormatter.toModel(x)) ;
-        }
-        
 //        if ( ! query.isReduced() )
 //            checkResults(query, results, resultsModel) ;
 //        else
@@ -275,19 +271,18 @@ public class QueryTest extends EarlTestCase
         // VERY crude.  Utilises the fact that bindings have value equality.
         List<Binding> x = new ArrayList<Binding>() ;
         Set<Binding> seen = new HashSet<Binding>() ;
-        seen.addAll(x) ;
-//        for ( ; results.hasNext() ; )
-//        {
-//            Binding b = results.nextBinding() ;
-//            if ( seen.contains(b) )
-//                continue ;
-//            seen.add(b) ;
-//            x.add(b) ;
-//        }
+        for ( ; results.hasNext() ; )
+        {
+            Binding b = results.nextBinding() ;
+            if ( seen.contains(b) )
+                continue ;
+            seen.add(b) ;
+            x.add(b) ;
+        }
         QueryIterator qIter = new QueryIterPlainWrapper(x.iterator()) ;
         ResultSet rs = new ResultSetStream(results.getResultVars(), ModelFactory.createDefaultModel(), qIter) ;
         return ResultSetFactory.makeRewindable(rs) ;
-    }
+    } 
 
     private void checkResults(Query query, ResultSetRewindable results, Model resultsModel)
     {
@@ -347,18 +342,28 @@ public class QueryTest extends EarlTestCase
     {
         // Do the query!
         Model resultsActual = qe.execConstruct() ;
-        
-        if ( resultsAsModel != null )
+        compareGraphResults(resultsActual, query) ;
+    }
+   
+   
+   private void compareGraphResults(Model resultsActual, Query query)
+   {
+        if ( results != null )
         {
             try {
-                if ( ! resultsAsModel.isIsomorphicWith(resultsActual) )
+                if ( ! results.isGraph() )
+                    fail("Expected results are not a graph: "+testItem.getName()) ;
+                    
+                Model resultsExpected = results.getModel() ;
+                if ( ! resultsExpected.isIsomorphicWith(resultsActual) )
                 {
-                    printFailedModelTest(query, resultsActual, resultsAsModel) ;
+                    printFailedModelTest(query, resultsExpected, resultsActual) ;
                     fail("Results do not match: "+testItem.getName()) ;
                 }
             } catch (Exception ex)
             {
-                fail("Exception in result testing (construct): "+ex) ;
+                String typeName = (query.isConstructType()?"construct":"describe") ;
+                fail("Exception in result testing ("+typeName+"): "+ex) ;
             }
         }
     }
@@ -366,46 +371,40 @@ public class QueryTest extends EarlTestCase
     void runTestDescribe(Query query, QueryExecution qe) throws Exception
     {
         Model resultsActual = qe.execDescribe() ;
-        
-        if ( resultsAsModel != null )
-        {
-            try {
-                if ( ! resultsAsModel.isIsomorphicWith(resultsActual) )
-                {
-                    printFailedModelTest(query, resultsActual, resultsAsModel) ;
-                    fail("Results do not match: "+testItem.getName()) ;
-                }
-            } catch (Exception ex)
-            {
-                fail("Exception in result testing (describe): "+ex) ;
-            }
-        }
+        compareGraphResults(resultsActual, query) ;
     }
     
     void runTestAsk(Query query, QueryExecution qe) throws Exception
     {
         boolean result = qe.execAsk() ;
-        
-        if ( resultsAsModel != null )
+        if ( results != null )
         {
-            StmtIterator sIter = resultsAsModel.listStatements(null, RDF.type, ResultSetGraphVocab.ResultSet) ;
-            if ( !sIter.hasNext() )
-                throw new QueryTestException("Can't find the ASK result") ;
-            Statement s = sIter.nextStatement() ;
-            if ( sIter.hasNext() )
-                throw new QueryTestException("Too many result sets in ASK result") ;
-            Resource r = s.getSubject() ;
-            Property p = resultsAsModel.createProperty(ResultSetGraphVocab.getURI()+"boolean") ;
-            
-            boolean x = r.getRequiredProperty(p).getBoolean() ;
-            if ( x != result )
-                assertEquals("ASK test results do not match", x,result);
-        }
-        
+            if ( results.isBoolean() )
+            {
+                boolean b = results.getBooleanResult() ;
+                assertEquals("ASK test results do not match", b, result) ;
+            }
+            else
+            {
+                Model resultsAsModel = results.getModel() ;
+                StmtIterator sIter = results.getModel().listStatements(null, RDF.type, ResultSetGraphVocab.ResultSet) ;
+                if ( !sIter.hasNext() )
+                    throw new QueryTestException("Can't find the ASK result") ;
+                Statement s = sIter.nextStatement() ;
+                if ( sIter.hasNext() )
+                    throw new QueryTestException("Too many result sets in ASK result") ;
+                Resource r = s.getSubject() ;
+                Property p = resultsAsModel.createProperty(ResultSetGraphVocab.getURI()+"boolean") ;
+
+                boolean x = r.getRequiredProperty(p).getBoolean() ;
+                if ( x != result )
+                    assertEquals("ASK test results do not match", x,result);
+            }
+        }        
         return ;
     }
     
-    void printFailedResultSetTest(Query query, ResultSetRewindable qrActual, ResultSetRewindable qrExpected)
+    void printFailedResultSetTest(Query query, ResultSetRewindable qrExpected, ResultSetRewindable qrActual)
    {
        PrintStream out = System.out ;
        out.println() ;
@@ -416,13 +415,6 @@ public class QueryTest extends EarlTestCase
        qrActual.reset() ;
        ResultSetFormatter.out(out, qrActual, query.getPrefixMapping()) ;
        qrActual.reset() ;
-       
-       if ( printModelsOnFailure )
-       {
-           out.println("-----------------------------------------") ;
-           resultSetToModel(qrActual).write(out, "N3") ;
-           qrActual.reset() ;
-       }
        out.flush() ;
 
        
@@ -431,27 +423,18 @@ public class QueryTest extends EarlTestCase
        ResultSetFormatter.out(out, qrExpected, query.getPrefixMapping()) ;
        qrExpected.reset() ;
        
-       if ( printModelsOnFailure )
-       {
-           out.println("---------------------------------------") ;
-           resultSetToModel(qrExpected).write(out, "N3") ;
-           qrExpected.reset() ;
-       }
        out.println() ;
        out.flush() ;
    }
 
-    void printFailedModelTest(Query query, Model results, Model expected)
+    void printFailedModelTest(Query query, Model expected, Model results)
     {
         PrintWriter out = FileUtils.asPrintWriterUTF8(System.out) ;
         out.println("=======================================") ;
         out.println("Failure: "+description()) ;
-        if ( printModelsOnFailure )
-        {
-            results.write(out, "N3") ;
-            out.println("---------------------------------------") ;
-            expected.write(out, "N3") ;
-        }
+        results.write(out, "TTL") ;
+        out.println("---------------------------------------") ;
+        expected.write(out, "TTL") ;
         out.println() ;
     }
     

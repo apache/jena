@@ -18,10 +18,10 @@ import com.hp.hpl.jena.rdf.model.Statement ;
 import com.hp.hpl.jena.sparql.core.DataFormat ;
 import com.hp.hpl.jena.sparql.resultset.ResultSetFormat ;
 import com.hp.hpl.jena.sparql.resultset.SPARQLResult ;
-import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
 import com.hp.hpl.jena.sparql.vocabulary.TestManifest ;
 import com.hp.hpl.jena.sparql.vocabulary.TestManifestX ;
 import com.hp.hpl.jena.sparql.vocabulary.VocabTestQuery ;
+import com.hp.hpl.jena.util.FileManager ;
 import com.hp.hpl.jena.util.iterator.ClosableIterator ;
 import com.hp.hpl.jena.util.junit.TestUtils ;
 import com.hp.hpl.jena.vocabulary.RDF ;
@@ -101,9 +101,9 @@ public class TestItem
     }
         
     private TestItem(String _name,
-             String _queryFile,
-             String _dataFile,
-             String _resultFile)
+                     String _queryFile, 
+                     String _dataFile,
+                     String _resultFile)
     {
         name = _name ;
         queryFile = _queryFile ;
@@ -126,39 +126,45 @@ public class TestItem
 
     public String getResultFile() { return resultFile ; }
     
-    /** Load a model that is the results - need not be a result set */ 
-    public Model getResultModel()
-    {
-        if ( resultFile == null )
-            return null ;
-        Model model = GraphFactory.makeJenaDefaultModel() ;
-        
-        ResultSetFormat format = ResultSetFormat.guessSyntax(resultFile) ;
-        
-        if ( ! format.isRDFGraphSyntax() )
-            return null ;
-        
-        // Like ResultSetFactory.loadAsModel(filename) except we have control of the model type.
-        try { 
-            ResultSetFactory.loadAsModel(model, resultFile) ;
-        } catch (RuntimeException ex)
-        {
-            System.err.println("Failed to read results: "+resultFile) ;
-            ex.printStackTrace(System.err) ;
-        }
-        return model ; 
-    }
+//    /** Load a model that is the results - need not be a result set */ 
+//    public Model getResultModel()
+//    {
+//        if ( resultFile == null )
+//            return null ;
+//        Model model = GraphFactory.makeJenaDefaultModel() ;
+//        
+//        ResultSetFormat format = ResultSetFormat.guessSyntax(resultFile) ;
+//        
+//        if ( ! format.isRDFGraphSyntax() )
+//            return null ;
+//        
+//        // Like ResultSetFactory.loadAsModel(filename) except we have control of the model type.
+//        try { 
+//            ResultSetFactory.loadAsModel(model, resultFile) ;
+//        } catch (RuntimeException ex)
+//        {
+//            System.err.println("Failed to read results: "+resultFile) ;
+//            ex.printStackTrace(System.err) ;
+//        }
+//        return model ; 
+//    }
     
-    /** Load results as a Result */ 
-    public SPARQLResult getResultSet()
+    /** Load results as a SPARQLResult.  If the results are a model, 
+     * no conversion to a result set is attempted here.  
+     */
+    public SPARQLResult getResults()
     {
         if ( resultFile == null )
             return null ;
         ResultSetFormat format = ResultSetFormat.guessSyntax(resultFile) ;
         
         if ( format.isRDFGraphSyntax() )
-            return null ;
-
+        {
+            Model m = FileManager.get().loadModel(resultFile) ;
+            return new SPARQLResult(m) ;
+        }
+            
+        // Attempt to handle as a resulset or boolean result.s 
         SPARQLResult x = ResultSetFactory.result(resultFile) ;
         return x ;
     }

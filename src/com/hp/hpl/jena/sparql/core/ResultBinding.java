@@ -42,21 +42,16 @@ public class ResultBinding extends QuerySolutionBase
 //    }
     
     @Override
-    public RDFNode _get(String varName)
+    protected RDFNode _get(String varName)
     {
-        Node n = getNode(varName) ;
+        Node n = binding.get(Var.alloc(varName)) ;
         if ( n == null )
             return null;
         return ModelUtils.convertGraphNodeToRDFNode(n, model) ;
     }
     
-    private Node getNode(String varName)
-    {
-        return binding.get(Var.alloc(varName)) ;
-    }
-
     @Override
-    public boolean _contains(String varName)
+    protected boolean _contains(String varName)
     {
         return binding.contains(Var.alloc(varName)) ;
     }

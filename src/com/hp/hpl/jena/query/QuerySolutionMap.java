@@ -30,10 +30,10 @@ public class QuerySolutionMap extends QuerySolutionBase
     { map.put(Var.canonical(name), node) ; }
     
     @Override
-    protected RDFNode _get(String varName)          { return map.get(Var.canonical(varName)) ; } 
+    protected RDFNode _get(String varName)          { return map.get(varName) ; } 
 
     @Override
-    protected boolean _contains(String varName)     { return map.containsKey(Var.canonical(varName)) ; } 
+    protected boolean _contains(String varName)     { return map.containsKey(varName) ; } 
 
     @Override
     public Iterator<String> varNames()                   { return map.keySet().iterator() ; }

@@ -113,39 +113,15 @@ public class RunARQ
         System.out.println("Compare = " + cmp);
     }
     
-    //---------------
-
-    private static void test_RS_fmt(ResultSet rs, ResultSetFormat fmt)
-    {
-        ResultSetRewindable rs1 = ResultSetFactory.makeRewindable(rs) ;
-        ByteArrayOutputStream arr = new ByteArrayOutputStream() ;
-        ResultSetFormatter.output(arr, rs1, fmt) ;
-        byte bytes[] = arr.toByteArray() ;
-        rs1.reset() ;
-        ByteArrayInputStream ins = new ByteArrayInputStream(bytes) ;
-        ResultSetRewindable rs2 = ResultSetFactory.makeRewindable(ResultSetFactory.load(ins, fmt)) ;
-
-        // Ordered? Unordered?
-        //boolean b = RSCompare.sameOrdered(rs1, rs2) ;
-        boolean b = RSCompare.sameUnordered(rs1, rs2) ;
-        if ( !b )
-        {
-            System.out.println(new String(bytes)) ;
-            rs1.reset() ;
-            rs2.reset() ;
-            ResultSetFormatter.out(rs1) ;
-            ResultSetFormatter.out(rs2) ;
-        }
-        else
-            System.out.println("Same") ;
-        
-    }
-    // ------------
-    
+   
     public static void main(String[] argv) throws Exception
     {
-        ResultSet rs = ResultSetFactory.load("testing/ResultSet/output.srx") ;
-        test_RS_fmt(rs, ResultSetFormat.syntaxJSON) ;
+        runQTest() ;
+        
+        Query query = QueryFactory.create("PREFIX : <http://example/> SELECT * {:x :p _:b0 . FILTER(true) }") ;
+       // query.setResultVars() ;
+        System.out.println(query.getResultVars()) ;
+        
         System.exit(0) ;
         
         NodeTransform ntLitCanon = CanonicalizeLiteral.get();
@@ -463,10 +439,16 @@ public class RunARQ
     
     private static void runQTest()
     {
-        String DIR = "testing/ARQ/DAWG-Final/" ;
-        String []a1 = { "--strict", "--data="+DIR+"data.ttl",
-            "--query="+DIR+"assign-01.arq",
-            "--result="+DIR+"assign-01.srx"} ;
+        String DIR = "testing/ARQ/Distinct/" ;
+        
+//        mf:action
+//        [ qt:query  <no-distinct-1.rq> ;
+//          qt:data   <data-node.ttl> ] ;
+//mf:result  <no-distinct-node.srx> .
+        
+        String []a1 = { "--strict", "--data="+DIR+"data-node.ttl",
+            "--query="+DIR+"no-distinct-1.rq",
+            "--result="+DIR+"no-distinct-node.srx"} ;
 
         arq.qtest.main(a1) ;
         System.exit(0 ) ; 
