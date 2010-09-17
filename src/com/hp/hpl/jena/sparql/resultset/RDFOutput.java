@@ -98,6 +98,7 @@ public class RDFOutput
             }
         }
         //results.addProperty(ResultSetVocab.size, count) ;
+        addPrefixes(model) ;
         return results ;
     }
     
@@ -107,15 +108,18 @@ public class RDFOutput
     {
         Model m = GraphFactory.makeJenaDefaultModel() ;
         asRDF(m, result) ;
-        if ( m.getNsPrefixURI("rs") == null )
-            m.setNsPrefix("rs", ResultSetGraphVocab.getURI() ) ;
-        if ( m.getNsPrefixURI("rdf") == null )
-            m.setNsPrefix("rdf", RDF.getURI() ) ;
-        if ( m.getNsPrefixURI("xsd") == null )
-            m.setNsPrefix("xsd", XSDDatatype.XSD+"#") ;
-
+        addPrefixes(m) ;
         return m ;
+    }
 
+    private void addPrefixes(Model model)
+    {
+        if ( model.getNsPrefixURI("rs") == null )
+            model.setNsPrefix("rs", ResultSetGraphVocab.getURI() ) ;
+        if ( model.getNsPrefixURI("rdf") == null )
+            model.setNsPrefix("rdf", RDF.getURI() ) ;
+        if ( model.getNsPrefixURI("xsd") == null )
+            model.setNsPrefix("xsd", XSDDatatype.XSD+"#") ;
     }
     
     public Resource asRDF(Model model, boolean result)

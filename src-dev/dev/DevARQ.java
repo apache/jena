@@ -3,6 +3,8 @@ package dev ;
 
 public class DevARQ
 {
+    // Canonicalization
+    
     // Result set comparison, not by graph isomorphism, and to include value based testing.
     // ResultSetCompare
     

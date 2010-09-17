@@ -4,21 +4,59 @@
  * [See end of file]
  */
 
-package org.openjena.riot.pipeline.normalize;
-
+package org.openjena.riot.pipeline;
 
 import org.openjena.atlas.lib.Sink ;
-import org.openjena.riot.pipeline.SinkTripleNodeTransform ;
+import org.openjena.atlas.lib.SinkWrapper ;
 
+import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.sparql.graph.NodeTransform ;
 
 /** Apply a node transform to each node in a triple */ 
-public class SinkNormalize extends SinkTripleNodeTransform
+public class SinkTripleNodeTransform extends SinkWrapper<Triple>
 {
+    private final NodeTransform subjTransform ;
+    private final NodeTransform predTransform ;
+    private final NodeTransform objTransform ;
+
     /** Apply the nodeTransform to each of S, P and O */
-    public SinkNormalize(Sink<Triple> sink)
+    public SinkTripleNodeTransform(Sink<Triple> sink, NodeTransform nodeTransform)
     {
-        super(sink, null, null, CanonicalizeLiteral.get()) ; 
+        this(sink, nodeTransform, nodeTransform, nodeTransform) ;
+    }
+    
+    /** Apply the respective nodeTransform to the slot in the triple */
+    public SinkTripleNodeTransform(Sink<Triple> sink, NodeTransform subjTransform, NodeTransform predTransform, NodeTransform objTransform)
+    {
+        super(sink) ;
+        this.subjTransform = subjTransform ;
+        this.predTransform = predTransform ;
+        this.objTransform = objTransform ;
+        
+    }
+
+    @Override
+    public void send(Triple triple)
+    {
+        Node s = triple.getSubject() ;
+        Node p = triple.getPredicate() ;
+        Node o = triple.getObject() ;
+        
+        Node s1 = apply(subjTransform, s) ;
+        Node p1 = apply(predTransform, p) ;
+        Node o1 = apply(objTransform, o) ;
+
+        if ( s != s1 || p != p1 || o != o1 )
+            triple = new Triple(s1, p1, o1) ;
+        
+        super.send(triple) ;
+    }
+    
+    private static Node apply(NodeTransform nodeTransform, Node node)
+    {
+        if ( nodeTransform == null ) return node ;
+        return nodeTransform.convert(node) ;
     }
 }
 

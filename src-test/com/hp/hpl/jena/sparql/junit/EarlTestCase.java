@@ -18,20 +18,20 @@ import com.hp.hpl.jena.update.UpdateRequest ;
 
 public abstract class EarlTestCase extends TestCase
 {
-    protected EarlReport results = null ;
+    protected EarlReport report = null ;
     protected String testURI = null ;
     private boolean resultRecorded = false ;
     
     protected EarlTestCase(String name, String testURI, EarlReport earl)
     { 
         super(name) ;
-        this.results = earl ;
+        this.report = earl ;
         this.testURI = testURI ;
     }
     
     public void setEARL(EarlReport earl)
     {
-        this.results = earl ;
+        this.report = earl ;
     }
     
     protected Query queryFromString(String qStr)
@@ -89,29 +89,29 @@ public abstract class EarlTestCase extends TestCase
     protected void success()
     {
         note() ;
-        if ( results == null ) return ;
-        results.success(testURI) ;
+        if ( report == null ) return ;
+        report.success(testURI) ;
     }
 
     protected void failure()
     {
         note() ;
-        if ( results == null ) return ;
-        results.failure(testURI) ;
+        if ( report == null ) return ;
+        report.failure(testURI) ;
     }
 
     protected void notApplicable()
     {
         note() ;
-        if ( results == null ) return ;
-        results.notApplicable(testURI) ;
+        if ( report == null ) return ;
+        report.notApplicable(testURI) ;
     }
     
     protected void notTested()
     {
         resultRecorded = true ;
-        if ( results == null ) return ;
-        results.notTested(testURI) ;
+        if ( report == null ) return ;
+        report.notTested(testURI) ;
     }
     
     private void note()

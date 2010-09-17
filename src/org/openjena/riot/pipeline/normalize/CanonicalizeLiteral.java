@@ -17,6 +17,13 @@ import com.hp.hpl.jena.sparql.graph.NodeTransform ;
 
 public class CanonicalizeLiteral implements NodeTransform    
 {
+    private static final CanonicalizeLiteral singleton = new CanonicalizeLiteral(); 
+
+    public static CanonicalizeLiteral get() { return singleton ; }
+
+    
+    private CanonicalizeLiteral() {}
+    
     public Node convert(Node node)
     {
         RDFDatatype dt = node.getLiteralDatatype() ;

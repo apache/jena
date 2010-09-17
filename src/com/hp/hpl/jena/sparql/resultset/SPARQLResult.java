@@ -15,13 +15,20 @@ import com.hp.hpl.jena.rdf.model.Model ;
  * This class can hold a ResultSet, a boolean or a Model.
  */
 
-public abstract class SPARQLResult
+public class SPARQLResult
 {
     private boolean hasBeenSet = false ;
     
     private ResultSet resultSet = null ;
     private Boolean booleanResult = null ;
     private Model model = null ;
+    
+    // Delayed choice of result type.
+    protected SPARQLResult() {}
+    
+    public SPARQLResult(Model model)            { set(model) ; }
+    public SPARQLResult(ResultSet resultSet)    { set(resultSet) ;}
+    public SPARQLResult(boolean booleanResult)  { set(booleanResult) ; }
     
     public boolean isResultSet()
     {

@@ -44,8 +44,14 @@ class NormalizeValue
     static DatatypeHandler dtDecimal = new DatatypeHandler() {
         public Node handle(Node node, String lexicalForm, RDFDatatype datatype)
         {
-            // Removes the scale induced zeros by rescaling and then using plain form.
-            String lex2 = new BigDecimal(lexicalForm).stripTrailingZeros().toPlainString() ;
+            BigDecimal bd = new BigDecimal(lexicalForm).stripTrailingZeros() ;
+            String lex2 = bd.toPlainString() ;
+            
+            // Ensure there is a "."
+            //if ( bd.scale() <= 0 )
+            if ( lex2.indexOf('.') == -1 )
+                // Must contain .0
+                lex2 = lex2+".0" ;
             if ( lex2.equals(lexicalForm) )
                 return node ;
             return Node.createLiteral(lex2, null, datatype) ;

@@ -4,14 +4,13 @@
  * [See end of file]
  */
 
-package dev;
+package com.hp.hpl.jena.sparql.resultset;
 
 import java.util.Collection ;
 import java.util.HashMap ;
 import java.util.Iterator ;
-import java.util.Set ;
+import java.util.List ;
 
-import org.junit.Test ;
 import org.openjena.atlas.iterator.Iter ;
 import org.openjena.atlas.iterator.Transform ;
 
@@ -21,18 +20,78 @@ import com.hp.hpl.jena.query.ResultSet ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingUtils ;
+import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.expr.nodevalue.NodeFunctions ;
 
 public class ResultSetCompare
 {
     // See
-    //   RSCompare
-    //   ResultSetUtils <- this is the switch for isomorphism.
-    // Are these used by the query testing code?  CHECK
+    //   RSCompare -> Merge rename to ResultSetCompare
+
     // TestItem has getResultModel->Model.
     // The issue will be some results are models for a reason.
-    // See TestResultSet/TestResultSetFormat/...
+    // Add tests based on value to TestResultSet.
+    
+    /** compare two result sets for equivalence.  Equivalance means:
+     * A row rs1 has one matching row in rs2, and vice versa.
+     * A row is only matched once.
+     * Rows match if they have the same variables with the same values, 
+     * bNodes must map to a consistent other bNodes.  Value comparisons of nodes.   
+     * 
+     * Destructive - rs1 and rs2 are both read, possibly to exhaustion. 
+     */
+    
+    
+    public static boolean equalsByValue(ResultSet rs1, ResultSet rs2)
+    {
+        return equivalent(convert(rs1), convert(rs2), new BNodeIso(sameValue)) ;
+    }
+
+
+    /** compare two result sets for equivalence.  Equivalance means:
+     * A row rs1 has one matching row in rs2, and vice versa.
+     * A row is only matched once.
+     * Rows match if they have the same variables with the same values, 
+     * bNodes must map to a consistent other bNodes.  
+     * Term comparisons of nodes.   
+     * 
+     * Destructive - rs1 and rs2 are both read, possibly to exhaustion. 
+     */
+
+    public static boolean equalsByTerm(ResultSet rs1, ResultSet rs2)
+    {
+        return equivalent(convert(rs1), convert(rs2), new BNodeIso(sameTerm)) ;
+    }
+
+    
+    /** compare two result sets for equivalence.  Equivalance means:
+     * Each row in rs1 matchs the same index row in rs2.
+     * Rows match if they have the same variables with the same values, 
+     * bNodes must map to a consistent other bNodes.  
+     * Value comparisons of nodes.   
+     * 
+     * Destructive - rs1 and rs2 are both read, possibly to exhaustion. 
+     */
+
+    public static boolean equalsByValueAndOrder(ResultSet rs1, ResultSet rs2)
+    {
+        return equivalentByOrder(convert(rs1) , convert(rs2), new BNodeIso(sameValue)) ;
+    }
+
+    /** compare two result sets for equivalence.  Equivalance means:
+     * Each row in rs1 matchs the same index row in rs2.
+     * Rows match if they have the same variables with the same values, 
+     * bNodes must map to a consistent other bNodes.  
+     * RDF term comparisons of nodes.   
+     * 
+     * Destructive - rs1 and rs2 are both read, possibly to exhaustion. 
+     */
+    public static boolean equalsByTermAndOrder(ResultSet rs1, ResultSet rs2)
+    {
+        return equivalentByOrder(convert(rs1) , convert(rs2), new BNodeIso(sameTerm)) ;
+    }
+
     
     interface EqualityTest { boolean equal(Node n1, Node n2) ; }
     
@@ -59,6 +118,9 @@ public class ResultSetCompare
         {
             Node n1 = bind1.get(v) ;
             Node n2 = bind2.get(v) ;
+            if ( n2 == null )
+                // v bound in bind1 and not in bind2.
+                return false ;
             if ( ! test.equal(n1, n2) )
                 return false ;
         }
@@ -67,25 +129,24 @@ public class ResultSetCompare
     
     // Backtracking with bNode assignment.
     
-    /** compare two result sets for equivalence.  Equivalance means:
-     * A row rs1 has one matching row in rs2, and vice versa.
-     * A row is only matched once.
-     * Rows match if they have the same variables with the same values, 
-     * bNodes must map to a consistent other bNodes.  Value comparisions of nodes.   
-     * 
-     * Destructive - rs1 and rs2 are both read, possibly to exhaustion. 
-     */
-    static boolean equivalent(ResultSet rs1, ResultSet rs2)
+//    static boolean equivalentByValuex(ResultSet rs1, ResultSet rs2)
+//    {
+//        return equivalent(convert(rs1), convert(rs2), sameValue) ;
+//    }
+//    
+    static private List<Binding> convert(ResultSet rs)
     {
-        
-        Set<Binding> rows1 = Iter.iter(rs1).map(qs2b).toSet() ;
-        Set<Binding> rows2 = Iter.iter(rs2).map(qs2b).toSet() ;
-        return equivalent(rows1, rows2) ;
+        return Iter.iter(rs).map(qs2b).toList() ;
     }
     
-    static boolean equivalent(Collection<Binding> rows1, Collection<Binding> rows2)
+    
+//    static boolean equivalentByTerm(ResultSet rs1, ResultSet rs2)
+//    {
+//        return equivalent(convert(rs1), convert(rs2), sameTerm) ;
+//    }
+    
+    static boolean equivalent(Collection<Binding> rows1, Collection<Binding> rows2, EqualityTest match)
     {
-        EqualityTest match = new BNodeIso(sameValue) ;
         if ( rows1.size() != rows2.size() )
             return false ;
         for ( Binding row1 : rows1 )
@@ -101,6 +162,7 @@ public class ResultSetCompare
                 }
             }
             
+
             if ( matched == null ) return false ;
             // Remove matching.
             rows2.remove(matched) ;
@@ -108,6 +170,23 @@ public class ResultSetCompare
         return true ;
     }
     
+    static boolean equivalentByOrder(List<Binding> rows1, List<Binding> rows2, EqualityTest match)
+    {
+        if ( rows1.size() != rows2.size() )
+             return false ;
+        
+        Iterator<Binding> iter1 = rows1.iterator() ;
+        Iterator<Binding> iter2 = rows2.iterator() ;
+        
+        while ( iter1.hasNext() )
+        {
+            Binding row1 = iter1.next() ;
+            Binding row2 = iter2.next() ;
+            if ( !equal(row1, row2, match) )
+                return false ;
+        }
+        return true ;
+    }
     
     private static Transform<QuerySolution, Binding> qs2b = new Transform<QuerySolution, Binding> () {
 
@@ -131,7 +210,13 @@ public class ResultSetCompare
         {
             NodeValue nv1 = NodeValue.makeNode(n1) ;
             NodeValue nv2 = NodeValue.makeNode(n2) ;
-            return NodeValue.sameAs(nv1, nv2) ;
+            try {
+                return NodeValue.sameAs(nv1, nv2) ;
+            } catch(ExprEvalException ex)
+            {
+                // Incomparible as values - must be different for our purposes.
+                return false ; 
+            }
         }
     } ;
         
@@ -172,13 +257,6 @@ public class ResultSetCompare
             
             return false ;
         }
-    }
-    
-    
-    
-    @Test public void resultSetCompare01()
-    {
-        
     }
 }
 

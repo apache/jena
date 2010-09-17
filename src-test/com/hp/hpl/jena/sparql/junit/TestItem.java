@@ -10,13 +10,14 @@ package com.hp.hpl.jena.sparql.junit;
 import java.util.ArrayList ;
 import java.util.List ;
 
-import com.hp.hpl.jena.query.ResultSet ;
 import com.hp.hpl.jena.query.ResultSetFactory ;
 import com.hp.hpl.jena.query.Syntax ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.Resource ;
 import com.hp.hpl.jena.rdf.model.Statement ;
 import com.hp.hpl.jena.sparql.core.DataFormat ;
+import com.hp.hpl.jena.sparql.resultset.ResultSetFormat ;
+import com.hp.hpl.jena.sparql.resultset.SPARQLResult ;
 import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
 import com.hp.hpl.jena.sparql.vocabulary.TestManifest ;
 import com.hp.hpl.jena.sparql.vocabulary.TestManifestX ;
@@ -131,6 +132,12 @@ public class TestItem
         if ( resultFile == null )
             return null ;
         Model model = GraphFactory.makeJenaDefaultModel() ;
+        
+        ResultSetFormat format = ResultSetFormat.guessSyntax(resultFile) ;
+        
+        if ( ! format.isRDFGraphSyntax() )
+            return null ;
+        
         // Like ResultSetFactory.loadAsModel(filename) except we have control of the model type.
         try { 
             ResultSetFactory.loadAsModel(model, resultFile) ;
@@ -142,13 +149,18 @@ public class TestItem
         return model ; 
     }
     
-    /** Load results as a ResultSet */ 
-    public ResultSet getResultSet()
+    /** Load results as a Result */ 
+    public SPARQLResult getResultSet()
     {
         if ( resultFile == null )
             return null ;
-        ResultSet rs = ResultSetFactory.load(resultFile) ;
-        return rs ;
+        ResultSetFormat format = ResultSetFormat.guessSyntax(resultFile) ;
+        
+        if ( format.isRDFGraphSyntax() )
+            return null ;
+
+        SPARQLResult x = ResultSetFactory.result(resultFile) ;
+        return x ;
     }
 
     public String getName() { return name ; }

@@ -9,7 +9,6 @@ package com.hp.hpl.jena.sparql.resultset;
 
 import java.io.ByteArrayInputStream ;
 import java.io.ByteArrayOutputStream ;
-import java.io.InputStream ;
 import java.util.ArrayList ;
 import java.util.List ;
 
@@ -28,11 +27,6 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterSingleton ;
-import com.hp.hpl.jena.sparql.resultset.RSCompare ;
-import com.hp.hpl.jena.sparql.resultset.ResultSetFormat ;
-import com.hp.hpl.jena.sparql.resultset.ResultSetMem ;
-import com.hp.hpl.jena.sparql.resultset.ResultSetRewindable ;
-import com.hp.hpl.jena.util.FileManager ;
 
 public class TestResultSet extends TestCase
 {
@@ -118,38 +112,60 @@ public class TestResultSet extends TestCase
         ResultSetFormatter.outputAsJSON(arr, rs1) ;
         rs1.reset() ;
         ByteArrayInputStream ins = new ByteArrayInputStream(arr.toByteArray()) ;
-        ResultSet rs2 = ResultSetFactory.fromJSON(ins) ;
+        ResultSet rs2 = ResultSetFactory.fromJSON(ins) ;    // Test using the DAWG examples
         assertTrue(RSCompare.same(rs1, rs2)) ;
     }
     
-    // Test using the DAWG examples
+    // Into some format.
     
     @Test public void test_RS_7()
     {
-        InputStream in = FileManager.get().open("testing/ResultSet/output.srx") ;
-        ResultSetRewindable rs1 =  ResultSetFactory.makeRewindable(ResultSetFactory.fromXML(in)) ;
-        
-        ByteArrayOutputStream arr = new ByteArrayOutputStream() ;
-        ResultSetFormatter.output(arr, rs1, ResultSetFormat.syntaxRDF_XML) ;
-        rs1.reset() ;
-        ByteArrayInputStream ins = new ByteArrayInputStream(arr.toByteArray()) ;
-        ResultSet rs2 = ResultSetFactory.load(ins, ResultSetFormat.syntaxRDF_XML) ;
-        assertTrue(RSCompare.same(rs1, rs2)) ;
+        ResultSet rs = ResultSetFactory.load("testing/ResultSet/output.srx") ;
+        test_RS_fmt(rs, ResultSetFormat.syntaxXML, true) ;
     }
     
     @Test public void test_RS_8()
     {
-        InputStream in = FileManager.get().open("testing/ResultSet/output.srx") ;
-        ResultSetRewindable rs1 =  ResultSetFactory.makeRewindable(ResultSetFactory.fromXML(in)) ;
-        
-        ByteArrayOutputStream arr = new ByteArrayOutputStream() ;
-        ResultSetFormatter.output(arr, rs1, ResultSetFormat.syntaxJSON) ;
-        rs1.reset() ;
-        ByteArrayInputStream ins = new ByteArrayInputStream(arr.toByteArray()) ;
-        ResultSet rs2 = ResultSetFactory.load(ins, ResultSetFormat.syntaxJSON) ;
-        assertTrue(RSCompare.same(rs1, rs2)) ;
+        ResultSet rs = ResultSetFactory.load("testing/ResultSet/output.srx") ;
+        test_RS_fmt(rs, ResultSetFormat.syntaxJSON, true) ;
     }
     
+    @Test public void test_RS_9()
+    {
+        ResultSet rs = ResultSetFactory.load("testing/ResultSet/output.srx") ;
+        test_RS_fmt(rs, ResultSetFormat.syntaxRDF_XML, false) ;
+    }
+
+    private void test_RS_fmt(ResultSet rs, ResultSetFormat fmt, boolean ordered)
+    {
+        ResultSetRewindable rs1 = ResultSetFactory.makeRewindable(rs) ;
+        ByteArrayOutputStream arr = new ByteArrayOutputStream() ;
+        ResultSetFormatter.output(arr, rs1, fmt) ;
+        byte bytes[] = arr.toByteArray() ;
+        rs1.reset() ;
+        ByteArrayInputStream ins = new ByteArrayInputStream(bytes) ;
+        ResultSetRewindable rs2 = ResultSetFactory.makeRewindable(ResultSetFactory.load(ins, fmt)) ;
+
+        // Ordered? Unordered?
+        boolean b = RSCompare.same(rs1, rs2) ;
+        if ( ordered )
+        {
+            rs1.reset() ;
+            rs2.reset() ;
+            b = b & RSCompare.sameOrdered(rs1, rs2) ;
+        }
+        
+        if ( !b )
+        {
+            System.out.println(new String(bytes)) ;
+            rs1.reset() ;
+            rs2.reset() ;
+            ResultSetFormatter.out(rs1) ;
+            ResultSetFormatter.out(rs2) ;
+        }
+
+        assertTrue(b) ;
+    }
     // Test comparison 
     @Test public void test_RS_cmp_1()
     {

@@ -138,7 +138,6 @@ public class ResultSetFactory
      * @param filenameOrURI
      * @return Model 
      */
-    
     public static Model loadAsModel(Model model, String filenameOrURI)
     {
         return loadAsModel(model, filenameOrURI, null) ; 
@@ -207,13 +206,70 @@ public class ResultSetFactory
             return model ;
         }
         
-        if ( format.isCompatibleWith(ResultSetFormat.syntaxRDF_XML) )
+        if ( format.isRDFGraphSyntax() )
             return FileManager.get().readModel(model, filenameOrURI) ;
         
         Log.fatal(ResultSet.class, "Unknown result set syntax: "+format) ;
         return null ;
     }
 
+    /** 
+     * Read in any kind of result kind (result set, boolean, graph)
+     * Guess the syntax based on filename/URL extension. 
+     */
+    public static SPARQLResult result(String filenameOrURI)
+    {
+        return result(filenameOrURI, null) ;
+    }
+
+    /** 
+     * Read in any kind of result kind (result set, boolean, graph)
+     */
+    
+    public static SPARQLResult result(String filenameOrURI, ResultSetFormat format)
+    {
+        if ( format == null )
+            format = ResultSetFormat.guessSyntax(filenameOrURI) ;
+        
+        if ( format == null )
+        {
+            Log.warn(ResultSet.class, "Null format - defaulting to XML") ;
+            format = ResultSetFormat.syntaxXML ;
+        }
+        
+        if ( format.equals(ResultSetFormat.syntaxText) )
+        {
+            Log.fatal(ResultSet.class, "Can't read a text result set") ;
+            throw new ResultSetException("Can't read a text result set") ;
+        }
+        
+        if ( format.equals(ResultSetFormat.syntaxXML) || format.equals(ResultSetFormat.syntaxJSON))
+        {
+            InputStream in = null ;
+            try { 
+                in = FileManager.get().open(filenameOrURI) ;
+                if ( in == null )
+                    throw new NotFoundException(filenameOrURI) ;
+            }
+            catch (NotFoundException ex) { throw new NotFoundException("File not found: "+filenameOrURI) ; }
+            
+            SPARQLResult x = null ;
+            
+            if ( format.equals(ResultSetFormat.syntaxJSON) )
+                return JSONInput.make(in, GraphFactory.makeDefaultModel()) ;
+            else
+                return XMLInput.make(in, GraphFactory.makeDefaultModel()) ;
+        }
+        
+        if ( format.isRDFGraphSyntax() )
+        {
+            Model model = FileManager.get().loadModel(filenameOrURI) ;
+            return new SPARQLResult(model) ;
+        }
+
+        Log.fatal(ResultSet.class, "Unknown result set syntax: "+format) ;
+        return null ;
+    }
     
     /** Read XML which is the format of the SPARQL result set format.
      * 

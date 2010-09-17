@@ -1,28 +1,21 @@
 /*
  * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
 package com.hp.hpl.jena.sparql.resultset;
 
-import java.util.HashMap ;
-import java.util.Iterator ;
-import java.util.Map ;
-
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.query.QuerySolution ;
 import com.hp.hpl.jena.query.ResultSet ;
-import com.hp.hpl.jena.rdf.model.RDFNode ;
-import com.hp.hpl.jena.sparql.util.ResultSetUtils ;
 
 /** RSCompare - comparison of result sets
- * 
- * @author Andy Seaborne
  */
 
 public class RSCompare
 {
+    // See ResultSetCompare - and merge.
+    
     /** Compare two result sets.  If they are both ordered, do an
      *  order sensitive comparison;  if they are both unordered, do
      *  an order insensitive comparison.  If one is order, one not, they
@@ -37,7 +30,8 @@ public class RSCompare
      */
     public static boolean same(ResultSet rs1, ResultSet rs2)
     {
-        return sameUnordered(rs1, rs2) ;
+        //return sameUnordered(rs1, rs2) ;
+        return ResultSetCompare.equalsByValue(rs1, rs2) ;
     }
     
     /** Compare two result sets, ignoring whether they are ordered or not.
@@ -50,7 +44,7 @@ public class RSCompare
      */
     public static boolean sameUnordered(ResultSet rs1, ResultSet rs2)
     {
-        return ResultSetUtils.equals(rs1, rs2) ;
+        return ResultSetCompare.equalsByValue(rs1, rs2) ;
 //        Model model1 = ResultSetFormatter.toModel(rs1) ; 
 //        Model model2 = ResultSetFormatter.toModel(rs2) ;
 //        
@@ -61,79 +55,83 @@ public class RSCompare
     /** Compare two result sets, taking order of rows into account.
      *  Note, this consumes the result set and so is best used with rewindable
      *  result sets or copies of result sets.
-     * 
+     *         ResultSetCompare.equalsByValueAndOrder(rs1, rs2) ;
+
      * @param rs1 ResultSet
      * @param rs2 ResultSet
      * @return true if they are equivalent
      */
     public static boolean sameOrdered(ResultSet rs1, ResultSet rs2)
     {
-        Map<Node, Node> bNodeMap = new HashMap<Node, Node>() ; 
+        return ResultSetCompare.equalsByValueAndOrder(rs1, rs2) ;
         
-        for ( ; rs1.hasNext() ; )
-        {
-            if ( ! rs2.hasNext() )
-                return false ;
-            
-            QuerySolution qs1 = rs1.nextSolution() ;
-            QuerySolution qs2 = rs2.nextSolution() ;
-            
-            if ( ! sameQuerySolution(bNodeMap, qs1, qs2) )
-                return false ;
-        }
-        
-        if ( rs2.hasNext() )
-            return false ;
-        
-        return true ;
+//        Map<Node, Node> bNodeMap = new HashMap<Node, Node>() ; 
+//        
+//        for ( ; rs1.hasNext() ; )
+//        {
+//            if ( ! rs2.hasNext() )
+//                return false ;
+//            
+//            QuerySolution qs1 = rs1.nextSolution() ;
+//            QuerySolution qs2 = rs2.nextSolution() ;
+//            
+//            if ( ! sameQuerySolution(bNodeMap, qs1, qs2) )
+//                return false ;
+//        }
+//        
+//        if ( rs2.hasNext() )
+//            return false ;
+//        
+//        return true ;
     }
     
-    private static boolean sameQuerySolution(Map<Node, Node> bNodeMap, QuerySolution qs1, QuerySolution qs2)
-    {
-        Iterator<String> names1 = qs1.varNames() ;
-        Iterator<String> names2 = qs2.varNames() ;
-        
-        for ( ; names1.hasNext() ; ) 
-        {
-            // This is simple counting
-            if ( !names2.hasNext() ) return false ;
-            names2.next() ;
-            
-            String vn = names1.next() ;
-            RDFNode rn1 = qs1.get(vn) ;
-            RDFNode rn2 = qs2.get(vn) ;
-            if ( rn2 == null )
-                return false ;
-            
-            Node n1 = rn1.asNode() ;
-            Node n2 = rn2.asNode() ;
-            
-            if ( n1.equals(n2) )
-                return true ;
-            if ( !n1.isBlank() || !n2.isBlank() )
-                return false ;
-            // Both blank.
-            if ( ! bNodeMap.containsKey(n1) )
-            {
-                // Create a mapping
-                bNodeMap.put(n1,n2) ;
-                continue ;
-            }
-                
-            if ( ! bNodeMap.get(n1).equals(n2) )
-                return false ;
-        }
-        
-        // Did we count down the whole of names2? 
-        if ( names2.hasNext() )
-            return false ;
-        
-        return true ;
-    }
+//    private static boolean sameQuerySolution(Map<Node, Node> bNodeMap, QuerySolution qs1, QuerySolution qs2)
+//    {
+//        Iterator<String> names1 = qs1.varNames() ;
+//        Iterator<String> names2 = qs2.varNames() ;
+//        
+//        for ( ; names1.hasNext() ; ) 
+//        {
+//            // This is simple counting
+//            if ( !names2.hasNext() ) return false ;
+//            names2.next() ;
+//            
+//            String vn = names1.next() ;
+//            RDFNode rn1 = qs1.get(vn) ;
+//            RDFNode rn2 = qs2.get(vn) ;
+//            if ( rn2 == null )
+//                return false ;
+//            
+//            Node n1 = rn1.asNode() ;
+//            Node n2 = rn2.asNode() ;
+//            
+//            if ( n1.equals(n2) )
+//                return true ;
+//            if ( !n1.isBlank() || !n2.isBlank() )
+//                return false ;
+//            // Both blank.
+//            if ( ! bNodeMap.containsKey(n1) )
+//            {
+//                // Create a mapping
+//                bNodeMap.put(n1,n2) ;
+//                continue ;
+//            }
+//                
+//            if ( ! bNodeMap.get(n1).equals(n2) )
+//                return false ;
+//        }
+//        
+//        // Did we count down the whole of names2? 
+//        if ( names2.hasNext() )
+//            return false ;
+//        
+//        return true ;
+//    }
 }
 
 /*
  * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

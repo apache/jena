@@ -198,6 +198,8 @@ public class Query extends Prologue implements Cloneable
     
     public boolean hasOrderBy()        { return orderBy != null && orderBy.size() > 0 ; }
     
+    public boolean isOrdered()         { return hasOrderBy() ; }
+
     public void addOrderBy(SortCondition condition)
     {
         if ( orderBy == null )

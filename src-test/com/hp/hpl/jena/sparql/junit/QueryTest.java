@@ -30,7 +30,10 @@ import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.ResultSetStream ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper ;
+import com.hp.hpl.jena.sparql.resultset.RSCompare ;
 import com.hp.hpl.jena.sparql.resultset.ResultSetRewindable ;
+import com.hp.hpl.jena.sparql.resultset.SPARQLResult ;
+
 import org.openjena.atlas.logging.Log ;
 import com.hp.hpl.jena.sparql.util.DatasetUtils ;
 import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
@@ -50,7 +53,10 @@ public class QueryTest extends EarlTestCase
     private boolean isRDQLtest = false ;
     private boolean resetNeeded = false ;
     
-    private Model resultsModel = null ;     // Maybe null if no testing of results
+    //private Model resultsModel = null ;     // Maybe null if no testing of results
+    
+    private Model resultsAsModel = null ;     // Maybe null if no testing of results
+    private SPARQLResult results = null ;    // Maybe null if no testing of results
     
     // If supplied with a model, the test will load that model with data from the source
     // If no model is supplied one is created or attached (e.g. a database)
@@ -86,10 +92,12 @@ public class QueryTest extends EarlTestCase
         oldWarningFlag = CheckerLiterals.WarnOnBadLiterals ;
         CheckerLiterals.WarnOnBadLiterals = false ;
 
-        // Sort out data.
-        // Not here - done during test execution because it needs to look in the query for source URIs
-        resultsModel = testItem.getResultModel() ;
+        // Sort out results.
+        // Try to read as a model, and failing that, try for a SPARQLResults.
+        // Need because some result sets are RDF models (retain ordering).
 
+        resultsAsModel = testItem.getResultModel() ;
+        results =  testItem.getResultSet() ;
     }
     
     @Override
@@ -206,23 +214,60 @@ public class QueryTest extends EarlTestCase
     void runTestSelect(Query query, QueryExecution qe) throws Exception
     {
         // Do the query!
-        ResultSet resultsActual = qe.execSelect() ;
+        ResultSetRewindable resultsActual = ResultSetFactory.makeRewindable(qe.execSelect()) ;
+        
         
         // Turn into a resettable version
-        ResultSetRewindable results = ResultSetFactory.makeRewindable(resultsActual) ;
+        //ResultSetRewindable results = ResultSetFactory.makeRewindable(resultsActual) ;
         qe.close() ;
-        if ( ! query.isReduced() )
-            checkResults(query, results, resultsModel) ;
-        else
+        
+        // If ordered, we have to test by trunign into models because only the model form
+        // enforces orderuing (it has RFD triples to encode the order).
+
+        if ( results != null && resultsAsModel != null )
+            System.err.println(super.getName()+": Warning: both result set and result model") ;
+        
+        if ( results != null )
         {
-            // Unfortunately, we turned the result set into a model. 
-            // Turn into a ResultSet-uniqueify-turn back into a model.
-            // Excessive copying.  Only for small results in the DAWG test suite.
-            ResultSetRewindable x = ResultSetFactory.makeRewindable(resultsModel) ;
-            x = unique(x) ;
-            results = unique(results) ;
-            checkResults(query, results, ResultSetFormatter.toModel(x)) ;
+            // XXX Renable and check.
+            //System.err.println("** "+getName()+": Result set direct testing") ;
+            ResultSet rs = this.results.getResultSet() ;
+            if ( rs == null )
+                System.err.println("** "+getName()+": bad result set") ;
+            ResultSetRewindable resultsExpected = ResultSetFactory.makeRewindable(rs) ;
+
+            boolean b ;
+            if ( query.isOrdered() )
+                b = RSCompare.sameOrdered(resultsExpected, resultsActual) ;
+            else
+                b = RSCompare.same(resultsExpected, resultsActual) ;
+            if ( ! b)
+                printFailedResultSetTest(query, resultsExpected, resultsActual) ;
+            assertTrue("Results do not match: "+testItem.getName(), b) ;
         }
+        
+        // None of these left?
+        if ( resultsAsModel != null )
+        {
+            //System.err.println(getName()+": Result set model testing") ;
+            ResultSetRewindable x = ResultSetFactory.makeRewindable(resultsAsModel) ;
+            x = unique(x) ;
+            resultsActual = unique(resultsActual) ;
+            checkResults(query, resultsActual, ResultSetFormatter.toModel(x)) ;
+        }
+        
+//        if ( ! query.isReduced() )
+//            checkResults(query, results, resultsModel) ;
+//        else
+//        {
+//            // Unfortunately, we turned the result set into a model. 
+//            // Turn into a ResultSet-uniqueify-turn back into a model.
+//            // Excessive copying.  Only for small results in the DAWG test suite.
+//            ResultSetRewindable x = ResultSetFactory.makeRewindable(resultsModel) ;
+//            x = unique(x) ;
+//            results = unique(results) ;
+//            checkResults(query, results, ResultSetFormatter.toModel(x)) ;
+//        }
     }
     
     private static ResultSetRewindable unique(ResultSetRewindable results)
@@ -230,14 +275,15 @@ public class QueryTest extends EarlTestCase
         // VERY crude.  Utilises the fact that bindings have value equality.
         List<Binding> x = new ArrayList<Binding>() ;
         Set<Binding> seen = new HashSet<Binding>() ;
-        for ( ; results.hasNext() ; )
-        {
-            Binding b = results.nextBinding() ;
-            if ( seen.contains(b) )
-                continue ;
-            seen.add(b) ;
-            x.add(b) ;
-        }
+        seen.addAll(x) ;
+//        for ( ; results.hasNext() ; )
+//        {
+//            Binding b = results.nextBinding() ;
+//            if ( seen.contains(b) )
+//                continue ;
+//            seen.add(b) ;
+//            x.add(b) ;
+//        }
         QueryIterator qIter = new QueryIterPlainWrapper(x.iterator()) ;
         ResultSet rs = new ResultSetStream(results.getResultVars(), ModelFactory.createDefaultModel(), qIter) ;
         return ResultSetFactory.makeRewindable(rs) ;
@@ -302,12 +348,12 @@ public class QueryTest extends EarlTestCase
         // Do the query!
         Model resultsActual = qe.execConstruct() ;
         
-        if ( resultsModel != null )
+        if ( resultsAsModel != null )
         {
             try {
-                if ( ! resultsModel.isIsomorphicWith(resultsActual) )
+                if ( ! resultsAsModel.isIsomorphicWith(resultsActual) )
                 {
-                    printFailedModelTest(query, resultsActual, resultsModel) ;
+                    printFailedModelTest(query, resultsActual, resultsAsModel) ;
                     fail("Results do not match: "+testItem.getName()) ;
                 }
             } catch (Exception ex)
@@ -321,12 +367,12 @@ public class QueryTest extends EarlTestCase
     {
         Model resultsActual = qe.execDescribe() ;
         
-        if ( resultsModel != null )
+        if ( resultsAsModel != null )
         {
             try {
-                if ( ! resultsModel.isIsomorphicWith(resultsActual) )
+                if ( ! resultsAsModel.isIsomorphicWith(resultsActual) )
                 {
-                    printFailedModelTest(query, resultsActual, resultsModel) ;
+                    printFailedModelTest(query, resultsActual, resultsAsModel) ;
                     fail("Results do not match: "+testItem.getName()) ;
                 }
             } catch (Exception ex)
@@ -340,16 +386,16 @@ public class QueryTest extends EarlTestCase
     {
         boolean result = qe.execAsk() ;
         
-        if ( resultsModel != null )
+        if ( resultsAsModel != null )
         {
-            StmtIterator sIter = resultsModel.listStatements(null, RDF.type, ResultSetGraphVocab.ResultSet) ;
+            StmtIterator sIter = resultsAsModel.listStatements(null, RDF.type, ResultSetGraphVocab.ResultSet) ;
             if ( !sIter.hasNext() )
                 throw new QueryTestException("Can't find the ASK result") ;
             Statement s = sIter.nextStatement() ;
             if ( sIter.hasNext() )
                 throw new QueryTestException("Too many result sets in ASK result") ;
             Resource r = s.getSubject() ;
-            Property p = resultsModel.createProperty(ResultSetGraphVocab.getURI()+"boolean") ;
+            Property p = resultsAsModel.createProperty(ResultSetGraphVocab.getURI()+"boolean") ;
             
             boolean x = r.getRequiredProperty(p).getBoolean() ;
             if ( x != result )
@@ -359,38 +405,37 @@ public class QueryTest extends EarlTestCase
         return ;
     }
     
-    void printFailedResultSetTest(Query query, ResultSetRewindable qr1,
-                                   ResultSetRewindable qr2)
+    void printFailedResultSetTest(Query query, ResultSetRewindable qrActual, ResultSetRewindable qrExpected)
    {
        PrintStream out = System.out ;
        out.println() ;
        out.println("=======================================") ;
        out.println("Failure: "+description()) ;
        
-       out.println("Got: "+qr1.size()+" --------------------------------") ;
-       qr1.reset() ;
-       ResultSetFormatter.out(out, qr1, query.getPrefixMapping()) ;
-       qr1.reset() ;
+       out.println("Got: "+qrActual.size()+" --------------------------------") ;
+       qrActual.reset() ;
+       ResultSetFormatter.out(out, qrActual, query.getPrefixMapping()) ;
+       qrActual.reset() ;
        
        if ( printModelsOnFailure )
        {
            out.println("-----------------------------------------") ;
-           resultSetToModel(qr1).write(out, "N3") ;
-           qr1.reset() ;
+           resultSetToModel(qrActual).write(out, "N3") ;
+           qrActual.reset() ;
        }
        out.flush() ;
 
        
-       out.println("Expected: "+qr2.size()+" -----------------------------") ;
-       qr2.reset() ;
-       ResultSetFormatter.out(out, qr2, query.getPrefixMapping()) ;
-       qr2.reset() ;
+       out.println("Expected: "+qrExpected.size()+" -----------------------------") ;
+       qrExpected.reset() ;
+       ResultSetFormatter.out(out, qrExpected, query.getPrefixMapping()) ;
+       qrExpected.reset() ;
        
        if ( printModelsOnFailure )
        {
            out.println("---------------------------------------") ;
-           resultSetToModel(qr2).write(out, "N3") ;
-           qr2.reset() ;
+           resultSetToModel(qrExpected).write(out, "N3") ;
+           qrExpected.reset() ;
        }
        out.println() ;
        out.flush() ;

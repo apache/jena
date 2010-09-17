@@ -9,10 +9,13 @@ package dev;
 
 import static org.openjena.atlas.lib.StrUtils.strjoinNL ;
 
+import java.io.ByteArrayInputStream ;
+import java.io.ByteArrayOutputStream ;
 import java.util.HashSet ;
 import java.util.Iterator ;
 import java.util.Set ;
 
+import org.junit.Test ;
 import org.openjena.atlas.io.IndentedLineBuffer ;
 import org.openjena.atlas.io.IndentedWriter ;
 import org.openjena.atlas.lib.StrUtils ;
@@ -32,6 +35,8 @@ import com.hp.hpl.jena.query.QueryExecution ;
 import com.hp.hpl.jena.query.QueryExecutionFactory ;
 import com.hp.hpl.jena.query.QueryFactory ;
 import com.hp.hpl.jena.query.QuerySolutionMap ;
+import com.hp.hpl.jena.query.ResultSet ;
+import com.hp.hpl.jena.query.ResultSetFactory ;
 import com.hp.hpl.jena.query.ResultSetFormatter ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.sparql.algebra.Algebra ;
@@ -50,6 +55,9 @@ import com.hp.hpl.jena.sparql.graph.NodeTransform ;
 import com.hp.hpl.jena.sparql.graph.NodeTransformLib ;
 import com.hp.hpl.jena.sparql.lang.ParserSPARQL11Update ;
 import com.hp.hpl.jena.sparql.modify.request.UpdateWriter ;
+import com.hp.hpl.jena.sparql.resultset.RSCompare ;
+import com.hp.hpl.jena.sparql.resultset.ResultSetFormat ;
+import com.hp.hpl.jena.sparql.resultset.ResultSetRewindable ;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.sparql.util.ExprUtils ;
@@ -105,9 +113,42 @@ public class RunARQ
         System.out.println("Compare = " + cmp);
     }
     
+    //---------------
+
+    private static void test_RS_fmt(ResultSet rs, ResultSetFormat fmt)
+    {
+        ResultSetRewindable rs1 = ResultSetFactory.makeRewindable(rs) ;
+        ByteArrayOutputStream arr = new ByteArrayOutputStream() ;
+        ResultSetFormatter.output(arr, rs1, fmt) ;
+        byte bytes[] = arr.toByteArray() ;
+        rs1.reset() ;
+        ByteArrayInputStream ins = new ByteArrayInputStream(bytes) ;
+        ResultSetRewindable rs2 = ResultSetFactory.makeRewindable(ResultSetFactory.load(ins, fmt)) ;
+
+        // Ordered? Unordered?
+        //boolean b = RSCompare.sameOrdered(rs1, rs2) ;
+        boolean b = RSCompare.sameUnordered(rs1, rs2) ;
+        if ( !b )
+        {
+            System.out.println(new String(bytes)) ;
+            rs1.reset() ;
+            rs2.reset() ;
+            ResultSetFormatter.out(rs1) ;
+            ResultSetFormatter.out(rs2) ;
+        }
+        else
+            System.out.println("Same") ;
+        
+    }
+    // ------------
+    
     public static void main(String[] argv) throws Exception
     {
-        NodeTransform ntLitCanon = new CanonicalizeLiteral() ;
+        ResultSet rs = ResultSetFactory.load("testing/ResultSet/output.srx") ;
+        test_RS_fmt(rs, ResultSetFormat.syntaxJSON) ;
+        System.exit(0) ;
+        
+        NodeTransform ntLitCanon = CanonicalizeLiteral.get();
         // To do :
         //   double and floats.
         //   decimals and X.0

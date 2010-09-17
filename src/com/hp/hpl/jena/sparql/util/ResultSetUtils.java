@@ -9,47 +9,15 @@ package com.hp.hpl.jena.sparql.util;
 import java.util.ArrayList ;
 import java.util.List ;
 
-import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.query.QuerySolution ;
 import com.hp.hpl.jena.query.ResultSet ;
-import com.hp.hpl.jena.query.ResultSetFormatter ;
 import com.hp.hpl.jena.rdf.model.Literal ;
-import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.RDFNode ;
 import com.hp.hpl.jena.rdf.model.Resource ;
 import com.hp.hpl.jena.sparql.ARQException ;
-import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
-import com.hp.hpl.jena.sparql.vocabulary.ResultSetGraphVocab ;
-import com.hp.hpl.jena.vocabulary.RDF ;
 
 public class ResultSetUtils
 {
-    public static boolean equals(ResultSet rs1, ResultSet rs2)
-    {
-        if ( rs1 == rs2 ) return true ;
-        Model model2 = resultSetToModel(rs2) ;
-        return equals(rs1, model2) ;
-    }
-
-    static private boolean equals(ResultSet rs1, Model model2)
-    {
-        Model model1 = resultSetToModel(rs1) ;
-        return model1.isIsomorphicWith(model2) ;
-    }
-
-    private static Model resultSetToModel(ResultSet rs)
-    {
-        Model m = GraphFactory.makeDefaultModel() ;
-        ResultSetFormatter.asRDF(m, rs) ;
-        if ( m.getNsPrefixURI("rs") == null )
-            m.setNsPrefix("rs", ResultSetGraphVocab.getURI() ) ;
-        if ( m.getNsPrefixURI("rdf") == null )
-            m.setNsPrefix("rdf", RDF.getURI() ) ;
-        if ( m.getNsPrefixURI("xsd") == null )
-            m.setNsPrefix("xsd", XSDDatatype.XSD+"#") ;
-        return m ;
-    }
-    
     /**
      * Extracts a List filled with the binding of selectElement variable for each
      * query solution as RDFNodes (Resources or Literals).

@@ -57,15 +57,29 @@ public class ResultSetFormat extends Symbol
         return guessSyntax(url, syntaxXML) ;
     }
     
-    public boolean isCompatibleWith(ResultSetFormat other)
+//    public boolean isCompatibleWith(ResultSetFormat other)
+//    {
+//        if ( equals(other) )
+//            return true ;
+//        if ( other.equals(syntaxRDF_XML) &&
+//             ( equals(syntaxRDF_N3) || equals(syntaxRDF_TURTLE) || equals(syntaxRDF_NT) ) )
+//             return true ;
+//        return false ;
+//    }
+
+    public boolean isRDFGraphSyntax()
     {
-        if ( equals(other) )
-            return true ;
-        if ( other.equals(syntaxRDF_XML) &&
-             ( equals(syntaxRDF_N3) || equals(syntaxRDF_TURTLE) || equals(syntaxRDF_NT) ) )
-             return true ;
+        return isRDFGraphSyntax(this) ;
+    }
+    
+    public static boolean isRDFGraphSyntax(ResultSetFormat fmt)
+    {
+        if ( syntaxRDF_N3.equals(fmt) ) return true ;
+        if ( syntaxRDF_TURTLE.equals(fmt) ) return true ;
+        if ( syntaxRDF_XML.equals(fmt) ) return true ;
         return false ;
     }
+    
     
     public static ResultSetFormat guessSyntax(String url, ResultSetFormat defaultFormat)
     {
@@ -81,7 +95,7 @@ public class ResultSetFormat extends Symbol
         if ( url.endsWith(".n3") )
             return syntaxRDF_N3 ;
         if ( url.endsWith(".ttl") )
-            return syntaxRDF_N3 ;
+            return syntaxRDF_TURTLE ;
         
         // -- JSON
         if ( url.endsWith(".srj") )
