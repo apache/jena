@@ -6,22 +6,19 @@
 
 package com.hp.hpl.jena.tdb.store;
 
-import java.math.BigDecimal;
-import java.nio.ByteBuffer;
+import java.math.BigDecimal ;
+import java.nio.ByteBuffer ;
 
 import org.openjena.atlas.lib.BitsLong ;
 import org.openjena.atlas.lib.Bytes ;
 import org.openjena.atlas.logging.Log ;
 
-
-import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.impl.LiteralLabel;
-
-import com.hp.hpl.jena.sparql.core.NodeConst;
-
-import com.hp.hpl.jena.tdb.TDBException;
-import com.hp.hpl.jena.tdb.sys.SystemTDB;
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.impl.LiteralLabel ;
+import com.hp.hpl.jena.sparql.graph.NodeConst ;
+import com.hp.hpl.jena.tdb.TDBException ;
+import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 final
 public class NodeId

@@ -7,24 +7,24 @@
 
 package com.hp.hpl.jena.tdb.store;
 
-import static com.hp.hpl.jena.sparql.core.Quad.isDefaultGraph;
-import static com.hp.hpl.jena.sparql.core.Quad.isQuadUnionGraph;
+import static com.hp.hpl.jena.sparql.core.Quad.isDefaultGraph ;
+import static com.hp.hpl.jena.sparql.core.Quad.isQuadUnionGraph ;
 
-import java.util.Iterator;
+import java.util.Iterator ;
 
 import org.openjena.atlas.lib.Tuple ;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.graph.TripleMatch;
-import com.hp.hpl.jena.shared.PrefixMapping;
-import com.hp.hpl.jena.sparql.core.Quad;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.graph.TripleMatch ;
+import com.hp.hpl.jena.shared.PrefixMapping ;
+import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.util.Utils ;
-import com.hp.hpl.jena.tdb.TDBException;
+import com.hp.hpl.jena.tdb.TDBException ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable ;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
 
 /** A graph implementation that projects a graph from a quad table */
 public class GraphNamedTDB extends GraphTDBBase

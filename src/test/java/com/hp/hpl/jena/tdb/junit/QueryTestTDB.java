@@ -21,8 +21,9 @@ import com.hp.hpl.jena.sparql.engine.ref.QueryEngineRef;
 import com.hp.hpl.jena.sparql.junit.EarlReport;
 import com.hp.hpl.jena.sparql.junit.EarlTestCase;
 import com.hp.hpl.jena.sparql.junit.TestItem;
-import com.hp.hpl.jena.sparql.resultset.RSCompare;
+import com.hp.hpl.jena.sparql.resultset.ResultSetCompare ;
 import com.hp.hpl.jena.sparql.resultset.ResultSetRewindable;
+import com.hp.hpl.jena.sparql.resultset.SPARQLResult ;
 
 import com.hp.hpl.jena.query.*;
 
@@ -42,7 +43,7 @@ public class QueryTestTDB extends EarlTestCase
     final List<String> defaultGraphURIs ;
     final List<String> namedGraphURIs ;
     final String queryFile ; 
-    final ResultSet resultSet ;
+    final SPARQLResult results ;
     
     final private DatasetGraphMakerTDB factory ;
  
@@ -55,7 +56,7 @@ public class QueryTestTDB extends EarlTestCase
     {
         this(testName, report, item.getURI(), 
              item.getDefaultGraphURIs(), item.getNamedGraphURIs(), 
-             item.getResultSet(), item.getQueryFile(),
+             item.getResults(), item.getQueryFile(),
              factory) ;
     }
     
@@ -63,7 +64,7 @@ public class QueryTestTDB extends EarlTestCase
                         String uri,
                         List<String> dftGraphs,
                         List<String> namedGraphs,
-                        ResultSet rs,
+                        SPARQLResult rs,
                         String queryFile,
                         DatasetGraphMakerTDB factory)
     {
@@ -71,7 +72,7 @@ public class QueryTestTDB extends EarlTestCase
         this.defaultGraphURIs = dftGraphs ;
         this.namedGraphURIs = namedGraphs ;
         this.queryFile = queryFile ;
-        this.resultSet = rs ;
+        this.results = rs ;
         this.factory = factory ;
     }
     
@@ -127,9 +128,9 @@ public class QueryTestTDB extends EarlTestCase
         
         ResultSetRewindable rs1 = null ;
         String expectedLabel = "" ;
-        if ( resultSet != null )
+        if ( results != null )
         {
-            rs1 = ResultSetFactory.makeRewindable(resultSet) ;
+            rs1 = ResultSetFactory.makeRewindable(results.getResultSet()) ;
             expectedLabel = "Results file" ;
         }
         else
@@ -149,7 +150,7 @@ public class QueryTestTDB extends EarlTestCase
         ResultSetRewindable rs2 = ResultSetFactory.makeRewindable(rs) ;
         
         // See if the same.
-        boolean b = RSCompare.same(rs1, rs2) ;
+        boolean b = ResultSetCompare.equalsByValue(rs1, rs2) ;
         if ( !b )
         {
             rs1.reset() ;

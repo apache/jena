@@ -7,37 +7,37 @@
 package com.hp.hpl.jena.tdb.solver;
 
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.ArrayList ;
+import java.util.Iterator ;
+import java.util.List ;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.BeforeClass ;
+import org.junit.Test ;
 import org.openjena.atlas.iterator.Iter ;
 import org.openjena.atlas.junit.BaseTest ;
 import org.openjena.atlas.lib.StrUtils ;
 
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.query.ResultSet;
-import com.hp.hpl.jena.query.ResultSetFactory;
-import com.hp.hpl.jena.query.ResultSetFormatter;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.shared.PrefixMapping;
-import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
-import com.hp.hpl.jena.sparql.algebra.Algebra;
-import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.algebra.OpVars;
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.engine.QueryIterator;
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.resultset.ResultSetRewindable;
-import com.hp.hpl.jena.sparql.sse.SSE;
-import com.hp.hpl.jena.sparql.util.ResultSetUtils;
-import com.hp.hpl.jena.tdb.TDBFactory;
-import com.hp.hpl.jena.util.FileManager;
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.query.ResultSet ;
+import com.hp.hpl.jena.query.ResultSetFactory ;
+import com.hp.hpl.jena.query.ResultSetFormatter ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.ModelFactory ;
+import com.hp.hpl.jena.shared.PrefixMapping ;
+import com.hp.hpl.jena.shared.impl.PrefixMappingImpl ;
+import com.hp.hpl.jena.sparql.algebra.Algebra ;
+import com.hp.hpl.jena.sparql.algebra.Op ;
+import com.hp.hpl.jena.sparql.algebra.OpVars ;
+import com.hp.hpl.jena.sparql.core.Var ;
+import com.hp.hpl.jena.sparql.engine.QueryIterator ;
+import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.resultset.ResultSetCompare ;
+import com.hp.hpl.jena.sparql.resultset.ResultSetRewindable ;
+import com.hp.hpl.jena.sparql.sse.SSE ;
+import com.hp.hpl.jena.tdb.TDBFactory ;
+import com.hp.hpl.jena.util.FileManager ;
 
 public class TestSolverTDB extends BaseTest
 {
@@ -120,7 +120,7 @@ public class TestSolverTDB extends BaseTest
     {
         ResultSetRewindable rsw1 = ResultSetFactory.makeRewindable(rs1) ;
         ResultSetRewindable rsw2 = ResultSetFactory.makeRewindable(rs2) ;
-        boolean b = ResultSetUtils.equals(rsw1, rsw2) ;
+        boolean b = ResultSetCompare.equalsByValue(rsw1, rsw2) ;
         if ( b != result)
         {
             System.out.println("Different: ") ;

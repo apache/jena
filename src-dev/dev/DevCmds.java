@@ -16,6 +16,7 @@ import org.openjena.atlas.junit.TextListener2 ;
 
 import com.hp.hpl.jena.query.* ;
 import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.sparql.resultset.SPARQLResult ;
 import com.hp.hpl.jena.tdb.TC_TDB ;
 import com.hp.hpl.jena.tdb.junit.QueryTestTDB ;
 import com.hp.hpl.jena.tdb.sys.TDBMaker ;
@@ -55,7 +56,7 @@ public class DevCmds
         String queryFile = dir+"merge-"+testNum+".rq" ;
         ResultSet rs = ResultSetFactory.load(dir+"merge-"+testNum+"-results.srx") ;
         
-        TestCase t = new QueryTestTDB("Test", null, "uri", dftGraphs, namedGraphs, rs, queryFile, TDBMaker.memFactory) ;
+        TestCase t = new QueryTestTDB("Test", null, "uri", dftGraphs, namedGraphs, new SPARQLResult(rs), queryFile, TDBMaker.memFactory) ;
         JUnitCore runner = new org.junit.runner.JUnitCore() ;
         runner.addListener(new TextListener2(System.out)) ;
         
