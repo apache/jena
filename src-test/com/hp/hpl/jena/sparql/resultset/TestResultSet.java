@@ -88,8 +88,17 @@ public class TestResultSet extends TestCase
         ResultSetRewindable rs1 = makeRewindable("x", Node.createURI("tag:local")) ;
         Model model = ResultSetFormatter.toModel(rs1) ;
         rs1.reset() ;
-        ResultSet rs2 = ResultSetFactory.fromRDF(model) ;
-        assertTrue(ResultSetCompare.equalsByTerm(rs1, rs2)) ;
+        ResultSetRewindable rs2 = ResultSetFactory.makeRewindable(ResultSetFactory.fromRDF(model)) ;
+        boolean b = ResultSetCompare.equalsByTerm(rs1, rs2) ;
+        if ( ! b )
+        {
+            rs1.reset() ;
+            rs2.reset() ;
+            ResultSetFormatter.out(rs1) ;
+            ResultSetFormatter.out(rs2) ;
+        }
+        
+        assertTrue(b) ;
     }
     
     // JSON

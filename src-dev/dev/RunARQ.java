@@ -32,7 +32,10 @@ import com.hp.hpl.jena.query.QueryExecution ;
 import com.hp.hpl.jena.query.QueryExecutionFactory ;
 import com.hp.hpl.jena.query.QueryFactory ;
 import com.hp.hpl.jena.query.QuerySolutionMap ;
+import com.hp.hpl.jena.query.ResultSet ;
+import com.hp.hpl.jena.query.ResultSetFactory ;
 import com.hp.hpl.jena.query.ResultSetFormatter ;
+import com.hp.hpl.jena.query.ResultSetRewindable ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.sparql.algebra.Algebra ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
@@ -50,8 +53,10 @@ import com.hp.hpl.jena.sparql.graph.NodeTransform ;
 import com.hp.hpl.jena.sparql.graph.NodeTransformLib ;
 import com.hp.hpl.jena.sparql.lang.ParserSPARQL11Update ;
 import com.hp.hpl.jena.sparql.modify.request.UpdateWriter ;
+import com.hp.hpl.jena.sparql.resultset.ResultSetCompare ;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
+import com.hp.hpl.jena.sparql.sse.builders.BuilderResultSet ;
 import com.hp.hpl.jena.sparql.util.ExprUtils ;
 import com.hp.hpl.jena.sparql.util.QueryExecUtils ;
 import com.hp.hpl.jena.sparql.util.Timer ;
@@ -86,9 +91,65 @@ public class RunARQ
         System.out.println("Compare = " + cmp);
     }
     
+    /*
+     * 
+---------------
+| x    | y    |
+===============
+| _:b0 | _:b1 |
+| _:b2 | _:b3 |
+| _:b1 | _:b0 |
+---------------
+Expected: 3 -----------------------------
+---------------
+| y    | x    |
+===============
+| _:b0 | _:b1 |
+| _:b2 | _:b3 |
+| _:b3 | _:b2 |
+---------------
+or
+---------------
+| x    | y    |
+===============
+| _:b1 | _:b0 |
+| _:b3 | _:b2 |
+| _:b2 | _:b3 |
+---------------
+
+     */
+    
+    // nasty result set.
+    // These are the same but the first row of rs2$ throws in a wrong mapping of b0/c1
+    // Right mapping is:
+    // b0->c3, b1->c2, b2->c1, b3->c0
+    // Currently we get:
+    // b0->c1, b1->c0, b2->c3, b3->c2, then last row fails.
+    
+    static String[] rs1$ = {
+        "(resultset (?x ?y)",
+        "   (row (?x _:b0) (?y _:b1))",
+        "   (row (?x _:b2) (?y _:b3))",
+        "   (row (?x _:b1) (?y _:b0))",
+        ")"} ;
+    static String[] rs2$ = {
+        "(resultset (?x ?y)",
+        "   (row (?x _:c1) (?y _:c0))",
+        "   (row (?x _:c3) (?y _:c2))",
+        "   (row (?x _:c2) (?y _:c3))",
+        ")"} ;
+    
+    
+    static ResultSetRewindable rs1 = ResultSetFactory.makeRewindable(BuilderResultSet.build(SSE.parseItem(StrUtils.strjoinNL(rs1$)))) ;
+    static ResultSetRewindable rs2 = ResultSetFactory.makeRewindable(BuilderResultSet.build(SSE.parseItem(StrUtils.strjoinNL(rs2$)))) ;
+    
    
     public static void main(String[] argv) throws Exception
     {
+        ResultSetFormatter.out(rs1) ;
+        ResultSetFormatter.out(rs2) ;
+        System.out.println(ResultSetCompare.equalsByValue(rs1, rs2)) ;
+        System.exit(0) ;
         //runQTest("/home/afs/W3C/SPARQL-docs/tests/data-sparql11/aggregates", "manifest.ttl") ; System.exit(0) ;
         
         NodeValue nv1 = NodeValue.makeNode(SSE.parseNode("2.0e-1")) ;

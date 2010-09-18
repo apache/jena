@@ -29,9 +29,11 @@ public class DevARQ
     // mvn tests (4042) and Eclipse tests (3270) differ in size.
 
     // Library: Var->Var (VarRename), bNode->var (UpdateEngine), Converters
-    // See NodeConverters
+    // See NodeConverters, canonicalization -- riot.pipeline
 
     // JSON - write compact
+    
+    // result set isomorphism.
     
     // ---- SPARQL Update
 

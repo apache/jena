@@ -355,7 +355,7 @@ public class ResultSetFactory
     }
     
     /** Turn an existing result set into a rewindable one.
-     *  May take a copy - uses up the resul set passed in.
+     *  May take a copy - uses up the result set passed in.
      * @param resultSet
      * @return ResultSetRewindable
      */

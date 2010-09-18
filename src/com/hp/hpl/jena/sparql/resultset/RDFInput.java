@@ -56,7 +56,10 @@ public class RDFInput extends ResultSetMem
     {
         buildVariables(root) ;
         int count = buildPreprocess(root) ;
-        buildRows(root) ;
+        if ( root.getModel().contains(null, ResultSetGraphVocab.index, (RDFNode)null) )
+            buildRowsOrdered(root, count) ;
+        else
+            buildRows(root) ;
     }
         
     private void buildVariables(Resource root)

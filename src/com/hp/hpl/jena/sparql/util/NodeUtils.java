@@ -6,7 +6,6 @@
 
 package com.hp.hpl.jena.sparql.util;
 
-import java.util.HashMap ;
 import java.util.Iterator ;
 
 import org.openjena.atlas.lib.StrUtils ;
@@ -32,45 +31,6 @@ import com.hp.hpl.jena.util.iterator.WrappedIterator ;
 public class NodeUtils
 {
     public interface EqualityTest { boolean equal(Node n1, Node n2) ; }
-
-    public static class BNodeIso implements EqualityTest
-    {
-        private HashMap<Node, Node> mapping ;
-        private EqualityTest literalTest ;
-    
-        public BNodeIso(EqualityTest literalTest)
-        { 
-            this.mapping = new HashMap<Node, Node>() ;
-            this.literalTest = literalTest ;
-        }
-    
-        public boolean equal(Node n1, Node n2)
-        {
-            if ( n1 == null && n2 == null ) return true ;
-            if ( n1 == null ) return false ;
-            if ( n2 == null ) return false ;
-            
-            if ( n1.isURI() && n2.isURI() )
-                return n1.equals(n2) ;
-            
-            if ( n1.isLiteral() && n2.isLiteral() )
-                return literalTest.equal(n1, n2) ;
-            
-            if ( n1.isBlank() && n2.isBlank() )
-            {
-                Node x = mapping.get(n1) ;
-                if ( x == null )
-                {
-                    // Not present: map n1 to n2.
-                    mapping.put(n1, n2) ;
-                    return true ;
-                }
-                return x.equals(n2) ;
-            }
-            
-            return false ;
-        }
-    }
 
     public static Node asNode(IRI iri)  { return Node.createURI(iri.toString()) ; }
     public static Node asNode(String iri)  { return Node.createURI(iri) ; }

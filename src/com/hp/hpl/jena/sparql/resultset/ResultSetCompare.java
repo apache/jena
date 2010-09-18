@@ -7,6 +7,7 @@
 package com.hp.hpl.jena.sparql.resultset;
 
 import java.util.Collection ;
+import java.util.HashMap ;
 import java.util.Iterator ;
 import java.util.List ;
 
@@ -16,10 +17,13 @@ import org.openjena.atlas.iterator.Transform ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.QuerySolution ;
 import com.hp.hpl.jena.query.ResultSet ;
+import com.hp.hpl.jena.query.ResultSetFormatter ;
+import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingUtils ;
 import com.hp.hpl.jena.sparql.util.NodeUtils ;
+import com.hp.hpl.jena.sparql.util.NodeUtils.EqualityTest ;
 
 public class ResultSetCompare
 {
@@ -37,7 +41,12 @@ public class ResultSetCompare
     
     public static boolean equalsByValue(ResultSet rs1, ResultSet rs2)
     {
-        return equivalent(convert(rs1), convert(rs2), new NodeUtils.BNodeIso(NodeUtils.sameValue)) ;
+        //return equivalent(convert(rs1), convert(rs2), new BNodeIso(NodeUtils.sameValue)) ;
+        // Add the isomprohism test
+        // Imperfect - need by-value and isomorphism - but this covers test suite needs. 
+        
+        return equivalent(convert(rs1), convert(rs2), new BNodeIso(NodeUtils.sameValue)) || isomorphic(rs1, rs2) ;
+        
     }
 
 
@@ -56,7 +65,7 @@ public class ResultSetCompare
 
     public static boolean equalsByTerm(ResultSet rs1, ResultSet rs2)
     {
-        return equivalent(convert(rs1), convert(rs2), new NodeUtils.BNodeIso(NodeUtils.sameTerm)) ;
+        return equivalent(convert(rs1), convert(rs2), new BNodeIso(NodeUtils.sameTerm)) ;
     }
 
     
@@ -74,7 +83,7 @@ public class ResultSetCompare
 
     public static boolean equalsByValueAndOrder(ResultSet rs1, ResultSet rs2)
     {
-        return equivalentByOrder(convert(rs1) , convert(rs2), new NodeUtils.BNodeIso(NodeUtils.sameValue)) ;
+        return equivalentByOrder(convert(rs1) , convert(rs2), new BNodeIso(NodeUtils.sameValue)) ;
     }
 
     /** compare two result sets for equivalence.  Equivalance means:
@@ -90,9 +99,19 @@ public class ResultSetCompare
      */
     public static boolean equalsByTermAndOrder(ResultSet rs1, ResultSet rs2)
     {
-        return equivalentByOrder(convert(rs1) , convert(rs2), new NodeUtils.BNodeIso(NodeUtils.sameTerm)) ;
+        return equivalentByOrder(convert(rs1) , convert(rs2), new BNodeIso(NodeUtils.sameTerm)) ;
     }
 
+    /** Compare two result sets for bNode isomorphism equivalence.
+     * Only does RDF term comparison.
+     */ 
+    public static boolean isomorphic(ResultSet rs1, ResultSet rs2)
+    {
+        Model m1 = ResultSetFormatter.toModel(rs1) ;
+        Model m2 = ResultSetFormatter.toModel(rs2) ;
+        return m1.isIsomorphicWith(m2) ;
+    }
+    
     /** Compare two bindings, use the node equality test provided */
     static public boolean equal(Binding bind1, Binding bind2, NodeUtils.EqualityTest test)
     {
@@ -122,7 +141,7 @@ public class ResultSetCompare
 //        return equivalent(convert(rs1), convert(rs2), sameTerm) ;
 //    }
     
-    static private boolean equivalent(Collection<Binding> rows1, Collection<Binding> rows2, NodeUtils.EqualityTest match)
+    static private boolean equivalent(Collection<Binding> rows1, Collection<Binding> rows2, EqualityTest match)
     {
         if ( rows1.size() != rows2.size() )
             return false ;
@@ -132,13 +151,14 @@ public class ResultSetCompare
             Binding matched = null ;
             for ( Binding row2 : rows2 )
             {
+                // NEED BACKTRACKING
+                
                 if ( equal(row1, row2, match))
                 {
                     matched = row2 ;
                     break ;
                 }
             }
-            
 
             if ( matched == null ) return false ;
             // Remove matching.
@@ -147,7 +167,7 @@ public class ResultSetCompare
         return true ;
     }
     
-    static private boolean equivalentByOrder(List<Binding> rows1, List<Binding> rows2, NodeUtils.EqualityTest match)
+    static private boolean equivalentByOrder(List<Binding> rows1, List<Binding> rows2, EqualityTest match)
     {
         if ( rows1.size() != rows2.size() )
              return false ;
@@ -157,6 +177,8 @@ public class ResultSetCompare
         
         while ( iter1.hasNext() )
         {
+            // Does not need backtracking because rows must
+            // align and so must variables in a row.  
             Binding row1 = iter1.next() ;
             Binding row2 = iter2.next() ;
             if ( !equal(row1, row2, match) )
@@ -167,7 +189,7 @@ public class ResultSetCompare
     
     // Is bind1 contained in bind22?  For every (var,value) in bind1, is it in bind2?
     // Maybe more in bind2.
-    private static boolean containedIn(Binding bind1, Binding bind2, NodeUtils.EqualityTest test)
+    private static boolean containedIn(Binding bind1, Binding bind2, EqualityTest test)
     {
         // There are about 100 ways to do this! 
         Iterator<Var> iter1 =  bind1.vars() ;
@@ -192,6 +214,46 @@ public class ResultSetCompare
             return BindingUtils.asBinding(item) ;
         }
     } ;
+    
+    public static class BNodeIso implements EqualityTest
+    {
+        private HashMap<Node, Node> mapping ;
+        private EqualityTest literalTest ;
+    
+        public BNodeIso(EqualityTest literalTest)
+        { 
+            this.mapping = new HashMap<Node, Node>() ;
+            this.literalTest = literalTest ;
+        }
+    
+        public boolean equal(Node n1, Node n2)
+        {
+            if ( n1 == null && n2 == null ) return true ;
+            if ( n1 == null ) return false ;
+            if ( n2 == null ) return false ;
+            
+            if ( n1.isURI() && n2.isURI() )
+                return n1.equals(n2) ;
+            
+            if ( n1.isLiteral() && n2.isLiteral() )
+                return literalTest.equal(n1, n2) ;
+            
+            if ( n1.isBlank() && n2.isBlank() )
+            {
+                Node x = mapping.get(n1) ;
+                if ( x == null )
+                {
+                    // Not present: map n1 to n2.
+                    mapping.put(n1, n2) ;
+                    return true ;
+                }
+                return x.equals(n2) ;
+            }
+            
+            return false ;
+        }
+    }
+
 }
 
 /*

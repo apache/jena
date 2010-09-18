@@ -18,7 +18,6 @@ import java.util.Set ;
 import org.openjena.atlas.logging.Log ;
 import org.openjena.riot.checker.CheckerLiterals ;
 
-import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.query.Query ;
@@ -32,6 +31,7 @@ import com.hp.hpl.jena.query.Syntax ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.rdf.model.Property ;
+import com.hp.hpl.jena.rdf.model.RDFNode ;
 import com.hp.hpl.jena.rdf.model.Resource ;
 import com.hp.hpl.jena.rdf.model.Statement ;
 import com.hp.hpl.jena.rdf.model.StmtIterator ;
@@ -44,7 +44,6 @@ import com.hp.hpl.jena.sparql.resultset.ResultSetCompare ;
 import com.hp.hpl.jena.sparql.resultset.ResultSetRewindable ;
 import com.hp.hpl.jena.sparql.resultset.SPARQLResult ;
 import com.hp.hpl.jena.sparql.util.DatasetUtils ;
-import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
 import com.hp.hpl.jena.sparql.vocabulary.ResultSetGraphVocab ;
 import com.hp.hpl.jena.util.FileManager ;
 import com.hp.hpl.jena.util.FileUtils ;
@@ -220,62 +219,85 @@ public class QueryTest extends EarlTestCase
         //ResultSetRewindable results = ResultSetFactory.makeRewindable(resultsActual) ;
         qe.close() ;
         
-        // If ordered, we have to test by trunign into models because only the model form
-        // enforces orderuing (it has RFD triples to encode the order).
-
-        if ( results != null )
+        if ( results == null )
+            return ;
+        
+        if ( true )
         {
+            // Assumes resultSetCompare can cope with full isomorphism possibilities.
+            ResultSetRewindable resultsExpected ;
             if ( results.isResultSet() )
-            {
-                //System.err.println("** "+getName()+": Result set direct testing") ;
-                ResultSet rs = this.results.getResultSet() ;
-                if ( rs == null )
-                    System.err.println("** "+getName()+": bad result set") ;
-                ResultSetRewindable resultsExpected = ResultSetFactory.makeRewindable(rs) ;
-                if ( query.isReduced() )
-                {
-                    // Reduced - best we can do is do DISTINCT
-                    resultsExpected = unique(resultsExpected) ;
-                    resultsActual = unique(resultsActual) ;
-                }
-                
-                boolean b ;
-                if ( query.isOrdered() )
-                    b = ResultSetCompare.equalsByValueAndOrder(resultsExpected, resultsActual) ;
-                else
-                    b = ResultSetCompare.equalsByValue(resultsExpected, resultsActual) ;
-                if ( ! b)
-                {
-                    printFailedResultSetTest(query, resultsExpected, resultsActual) ;
-                    resultsExpected.reset() ;
-                    resultsActual.reset() ;
-                    ResultSetCompare.equalsByValue(resultsExpected, resultsActual) ;
-                }
-                assertTrue("Results do not match: "+testItem.getName(), b) ;
-            }
+                resultsExpected = ResultSetFactory.makeRewindable(results.getResultSet()) ;
             else if ( results.isModel() )
-            {
-                // A lot of early tests were written using RDF-encoded result sets. 
-                // Choosing to do model->result set is delayed.
-                // The results might have been for CONSTRUCT/DESCRIBE
-                Model resultsExpected = results.getModel() ;
-                
-                if ( query.isReduced() )
-                {
-                    // Reduced - best we can do is do DISTINCT
-                    ResultSetRewindable x = ResultSetFactory.makeRewindable(resultsExpected) ;    
-                    resultsExpected = ResultSetFormatter.toModel(unique(x)) ;
-                    resultsActual = unique(resultsActual) ;
-                }
-                
-                //System.err.println(getName()+": Result set model testing") ;
-                checkResults(query, resultsActual, resultsExpected) ;
-            }
+                resultsExpected = ResultSetFactory.makeRewindable(results.getModel()) ;
             else
+            {
                 fail("Wrong result type for SELECT query") ;
+                resultsExpected = null ; // Keep the compiler happy
+            }
+            
+            if ( query.isReduced() )
+            {
+                // Reduced - best we can do is DISTINCT
+                resultsExpected = unique(resultsExpected) ;
+                resultsActual = unique(resultsActual) ;
+            }
+
+            boolean b = resultSetEquivalent(query, resultsExpected, resultsActual) ;
+            if ( ! b )
+                printFailedResultSetTest(query, resultsExpected, resultsActual) ;
+            assertTrue("Results do not match: "+testItem.getName(), b) ;
+            
+            return ;
         }
+        
+        // TEMPOPRARY
+        // Later (when result set compare can cope with full bNode isomorphism)
+        // always convert a result set model to a result set and test. 
+        if ( results.isResultSet() )
+        {
+            ResultSetRewindable resultsExpected = ResultSetFactory.makeRewindable(results.getResultSet()) ;
+            if ( query.isReduced() )
+            {
+                // Reduced - best we can do is DISTINCT
+                resultsExpected = unique(resultsExpected) ;
+                resultsActual = unique(resultsActual) ;
+            }
+
+            boolean b = resultSetEquivalent(query, resultsExpected, resultsActual) ;
+            if ( ! b )
+                printFailedResultSetTest(query, resultsExpected, resultsActual) ;
+            assertTrue("Results do not match: "+testItem.getName(), b) ;
+        }
+        else if ( results.isModel() )
+        {
+            // TEMPORARY
+            // A lot of early tests were written using RDF-encoded result sets. 
+            // Choosing to do model->result set is delayed.
+            // The results might have been for CONSTRUCT/DESCRIBE
+            
+            // What's more the this can cope with isomorphism of bNodes. 
+            
+            Model resultsExpected = results.getModel() ;
+                
+            if ( query.isReduced() )
+            {
+                // Reduced - best we can do is DISTINCT
+                ResultSetRewindable x = ResultSetFactory.makeRewindable(resultsExpected) ;    
+                resultsExpected = ResultSetFormatter.toModel(unique(x)) ;
+                resultsActual = unique(resultsActual) ;
+            }
+                
+            //System.err.println(getName()+": Result set model testing") ;
+            boolean b = checkResultsByModel(query, resultsExpected, resultsActual) ;
+            if ( ! b )
+                printFailedResultSetTest(query, ResultSetFactory.makeRewindable(resultsExpected), resultsActual) ;
+            assertTrue("Results do not match: "+testItem.getName(), b) ;
+        }
+        else
+            fail("Wrong result type for SELECT query") ;
     }
-    
+
     private static ResultSetRewindable unique(ResultSetRewindable results)
     {
         // VERY crude.  Utilises the fact that bindings have value equality.
@@ -295,59 +317,47 @@ public class QueryTest extends EarlTestCase
         return ResultSetFactory.makeRewindable(rs) ;
     } 
 
-    private void checkResults(Query query, ResultSetRewindable results, Model resultsModel)
+    public static boolean resultSetEquivalent(Query query, ResultSetRewindable resultsExpected, ResultSetRewindable resultsActual)
     {
-        if ( resultsModel == null )
-            return ;
-        try {
-            ResultSetRewindable qr1 = ResultSetFactory.makeRewindable(results) ;
-            ResultSetRewindable qr2 = ResultSetFactory.makeRewindable(resultsModel) ;
-            boolean b = resultSetEquivalent(query, qr1, qr2)  ; 
-            if ( ! b)
-                printFailedResultSetTest(query, qr1, qr2) ;
-            assertTrue("Results do not match: "+testItem.getName(), b) ;
-        } catch (Exception ex)
-        {
-            fail("Exception in result testing: "+ex) ;
-        }
+        if ( query.isOrdered() )
+            return ResultSetCompare.equalsByValueAndOrder(resultsExpected, resultsActual) ;
+        else
+            return ResultSetCompare.equalsByValue(resultsExpected, resultsActual) ;
     }
     
-    private static Model resultSetToModel(ResultSet rs)
+    // TEMPORARY
+    private boolean checkResultsByModel(Query query, Model expectedModel, ResultSetRewindable results)
     {
-        Model m = GraphFactory.makeDefaultModel() ;
-        ResultSetFormatter.asRDF(m, rs) ;
-        if ( m.getNsPrefixURI("rs") == null )
-            m.setNsPrefix("rs", ResultSetGraphVocab.getURI() ) ;
-        if ( m.getNsPrefixURI("rdf") == null )
-            m.setNsPrefix("rdf", RDF.getURI() ) ;
-        if ( m.getNsPrefixURI("xsd") == null )
-            m.setNsPrefix("xsd", XSDDatatype.XSD+"#") ;
-        return m ;
+        // Fudge - can't cope with ordered results properly.  The output writer for ResultSets does nto add rs:index.
         
+        results.reset() ;
+        Model actualModel = ResultSetFormatter.toModel(results) ;
+        // Tidy the models.
+        // Very regretable.
+        
+        expectedModel.removeAll(null, RDF.type,  ResultSetGraphVocab.ResultSet) ;
+        expectedModel.removeAll(null, RDF.type,  ResultSetGraphVocab.ResultSolution) ;
+        expectedModel.removeAll(null, RDF.type,  ResultSetGraphVocab.ResultBinding) ;
+        expectedModel.removeAll(null, ResultSetGraphVocab.size,  (RDFNode)null) ;
+        expectedModel.removeAll(null, ResultSetGraphVocab.index,  (RDFNode)null) ;
+
+        actualModel.removeAll(null, RDF.type,  ResultSetGraphVocab.ResultSet) ;
+        actualModel.removeAll(null, RDF.type,  ResultSetGraphVocab.ResultSolution) ;
+        actualModel.removeAll(null, RDF.type,  ResultSetGraphVocab.ResultBinding) ;
+        actualModel.removeAll(null, ResultSetGraphVocab.size,  (RDFNode)null) ;
+        actualModel.removeAll(null, ResultSetGraphVocab.index,  (RDFNode)null) ;
+        
+        boolean b =  expectedModel.isIsomorphicWith(actualModel) ;
+        if ( !b )
+        {
+            System.out.println("---- Expected") ;
+            expectedModel.write(System.out, "TTL") ;
+            System.out.println("---- Actual") ;
+            actualModel.write(System.out, "TTL") ;
+            System.out.println("----");
+        }
+        return b ;
     }
-    
-    /** Are two result sets the same (isomorphic)?
-    *
-    * @param rs1
-    * @param rs2
-    * @return boolean
-    */
-
-   static public boolean resultSetEquivalent(Query query,
-       ResultSet rs1, ResultSet rs2)
-   {
-       Model model2 = resultSetToModel(rs2) ;
-       return resultSetEquivalent(query, rs1, model2) ;
-   }
-
-   static public boolean resultSetEquivalent(Query query,
-                                             ResultSet rs1,
-                                             Model model2)
-   {
-       Model model1 = resultSetToModel(rs1) ;
-       return model1.isIsomorphicWith(model2) ;
-   }
-   
 
    void runTestConstruct(Query query, QueryExecution qe) throws Exception
     {
@@ -355,7 +365,6 @@ public class QueryTest extends EarlTestCase
         Model resultsActual = qe.execConstruct() ;
         compareGraphResults(resultsActual, query) ;
     }
-   
    
    private void compareGraphResults(Model resultsActual, Query query)
    {

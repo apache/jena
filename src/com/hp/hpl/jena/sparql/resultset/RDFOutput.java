@@ -22,7 +22,8 @@ import com.hp.hpl.jena.vocabulary.RDF ;
 
 public class RDFOutput
 {
-    boolean reportAllVars = false ;
+    private boolean reportAllVars = false ;
+    private boolean includeTypeProperties = false ;
     
     public RDFOutput() { }
     
@@ -54,6 +55,7 @@ public class RDFOutput
     public Resource asRDF(Model model, ResultSet resultSet)
     {
         Resource results = model.createResource() ;
+        // This always goes in.
         results.addProperty(RDF.type, ResultSetGraphVocab.ResultSet) ;
         
         for (String vName : resultSet.getResultVars() )
@@ -65,7 +67,11 @@ public class RDFOutput
             count++ ;
             QuerySolution rBind = resultSet.nextSolution() ;
             Resource thisSolution = model.createResource() ;
+            if ( includeTypeProperties )
+                thisSolution.addProperty(RDF.type, ResultSetGraphVocab.ResultSolution) ;
             results.addProperty(ResultSetGraphVocab.solution, thisSolution) ;
+            if ( false )
+                results.addLiteral(ResultSetGraphVocab.index, count) ;
 
             Iterator<String> iter = getAllVars() ?
                                     rBind.varNames() :
@@ -91,13 +97,14 @@ public class RDFOutput
 //                    // Encode the result set with an explicit "not defined" 
 //                    n = ResultSetVocab.undefined ;
 //                }
-                    
+                if ( includeTypeProperties )
+                    thisBinding.addProperty(RDF.type, ResultSetGraphVocab.ResultBinding) ;
                 thisBinding.addProperty(ResultSetGraphVocab.variable, rVar) ;
                 thisBinding.addProperty(ResultSetGraphVocab.value, n) ;
                 thisSolution.addProperty(ResultSetGraphVocab.binding, thisBinding) ;
             }
         }
-        //results.addProperty(ResultSetVocab.size, count) ;
+        results.addProperty(ResultSetGraphVocab.size, model.createTypedLiteral(count)) ;
         addPrefixes(model) ;
         return results ;
     }

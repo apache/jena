@@ -13,8 +13,8 @@ import java.io.StringWriter ;
  *  It can also insert line numbers at the beginning of lines.
  * 
  *  <Insert rant about StringBuffer being final here>
- *  Also, Java 1.5, StringBuilding is fatser than StringBuffer (not sync'ed)
- *  so could switch to that (exxept we are really using a StringWriter)  
+ *  Also, Java 1.5, StringBuilding is faster than StringBuffer (not sync'ed)
+ *  so could switch to that (except we are really using a StringWriter)  
  * 
  * @author Andy Seaborne
  */
