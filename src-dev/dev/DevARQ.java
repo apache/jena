@@ -15,6 +15,11 @@ public class DevARQ
     // ?? merely a DSG container?
     //   ?? c.f. UpdateExecution so no need for GS?
     
+    // ** INSERT DATA { GRAPH <g> { :s :p :o } } auto create
+    
+    // ** Update documentation
+    // No need for CREATE SILENT, DROP SILENT
+    
     // Error handling and exception catching. LanguageParseException
     // (old name QueryParseException : superclass)
     // "QuerySolution"
@@ -36,8 +41,6 @@ public class DevARQ
     // result set isomorphism.
     
     // ---- SPARQL Update
-
-    // Should INSERT DATA { GRAPH <g> { :s :p :o } } auto create? Yes.
 
     // Check: Inserting into explicitly named default graph should be made to
     // work.

@@ -52,7 +52,6 @@ import com.hp.hpl.jena.sparql.graph.NodeTransform ;
 import com.hp.hpl.jena.sparql.graph.NodeTransformLib ;
 import com.hp.hpl.jena.sparql.lang.ParserSPARQL11Update ;
 import com.hp.hpl.jena.sparql.modify.request.UpdateWriter ;
-import com.hp.hpl.jena.sparql.resultset.ResultSetCompare ;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.sparql.sse.builders.BuilderResultSet ;
@@ -145,45 +144,28 @@ or
    
     public static void main(String[] argv) throws Exception
     {
-        ResultSetFormatter.out(rs1) ;
-        ResultSetFormatter.out(rs2) ;
-        System.out.println(ResultSetCompare.equalsByValue(rs1, rs2)) ;
-        System.exit(0) ;
-        //runQTest("/home/afs/W3C/SPARQL-docs/tests/data-sparql11/aggregates", "manifest.ttl") ; System.exit(0) ;
-        
-        NodeValue nv1 = NodeValue.makeNode(SSE.parseNode("2.0e-1")) ;
-        NodeValue nv2 = NodeValue.makeDecimal("2.2") ;
-
-        double d1 = nv1.getDouble() ;
-        double d2 = nv2.getDouble() ;
-        System.out.println(d1) ;
-        System.out.println(d2) ;
-        System.out.println(d1+d2) ;
-        System.exit(0) ;
-        
-        
-        NodeTransform ntLitCanon = CanonicalizeLiteral.get();
-        // To do :
-        //   double and floats.
-        //   decimals and X.0
-        String[] strings = { "123", "0123", "0123.00900" , "-0089", "-0089.0" , "1e5", "+001.5e6", "'fred'"} ;
-        for ( String s : strings )
+        if ( false )
         {
-            Node n = SSE.parseNode(s) ;
-            Node n2 = ntLitCanon.convert(n) ;
-            System.out.println(n+" => "+n2) ;
+            NodeTransform ntLitCanon = CanonicalizeLiteral.get();
+            // To do :
+            //   double and floats.
+            //   decimals and X.0
+            String[] strings = { "123", "0123", "0123.00900" , "-0089", "-0089.0" , "1e5", "+001.5e6", "'fred'"} ;
+            for ( String s : strings )
+            {
+                Node n = SSE.parseNode(s) ;
+                Node n2 = ntLitCanon.convert(n) ;
+                System.out.println(n+" => "+n2) ;
+            }
+            System.exit(0) ;
         }
-        
-        
-        
-        
-        System.exit(0) ;
         
         testXSDDurationBug() ; System.exit(0) ;
         
         UpdateRequest request = UpdateFactory.create("INSERT DATA { GRAPH <G> { <s> <p> <o> }}") ;
         DatasetGraph dsg = DatasetGraphFactory.createMem() ;
         GraphStore gs = GraphStoreFactory.create(dsg) ;
+        // Why does this auto-insert?
         UpdateAction.execute(request, gs) ;
         SSE.write(gs) ;
         System.exit(0) ;
