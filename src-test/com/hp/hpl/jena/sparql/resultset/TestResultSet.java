@@ -14,11 +14,13 @@ import java.util.List ;
 
 import junit.framework.TestCase ;
 import org.junit.Test ;
+import org.openjena.atlas.lib.StrUtils ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.ResultSet ;
 import com.hp.hpl.jena.query.ResultSetFactory ;
 import com.hp.hpl.jena.query.ResultSetFormatter ;
+import com.hp.hpl.jena.query.ResultSetRewindable ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
@@ -28,6 +30,7 @@ import com.hp.hpl.jena.sparql.engine.binding.BindingMap ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterSingleton ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
+import com.hp.hpl.jena.sparql.sse.builders.BuilderResultSet ;
 
 public class TestResultSet extends TestCase
 {
@@ -201,8 +204,6 @@ public class TestResultSet extends TestCase
         assertFalse(ResultSetCompare.equalsByTerm(rs1, rs2)) ;
     }
 
-
-    
     @Test public void test_RS_cmp_4()
     {
         ResultSet rs1 = make("x", Node.createURI("tag:local")) ;
@@ -242,7 +243,61 @@ public class TestResultSet extends TestCase
         assertTrue(ResultSetCompare.equalsByValue(rs1, rs2)) ;
     }
     
+    // ---- Isomorphism.
     
+    /* This is from the DAWG test suite.
+     * Result set 1: 
+     *   ---------------
+     *   | x    | y    |
+     *   ===============
+     *   | _:b0 | _:b1 |
+     *   | _:b2 | _:b3 |
+     *   | _:b1 | _:b0 |
+     *   ---------------
+     * Result set 2: 
+     *   ---------------
+     *   | x    | y    |
+     *   ===============
+     *   | _:b1 | _:b0 |
+     *   | _:b3 | _:b2 |
+     *   | _:b2 | _:b3 |
+     *   ---------------
+     */
+    
+    // nasty result set.
+    // These are the same but the first row of rs2$ throws in a wrong mapping of b0/c1
+
+    // Right mapping is:
+    // b0->c3, b1->c2, b2->c1, b3->c0
+    // Currently we get, workign simply top to bottom, no backtracking:
+    // b0->c1, b1->c0, b2->c3, b3->c2, then last row fails as _:b1 is mapped to c0, b0 to c1 not (c2, c3) 
+    
+    private static String[] rs1$ = {
+        "(resultset (?x ?y)",
+        "   (row (?x _:b0) (?y _:b1))",
+        "   (row (?x _:b2) (?y _:b3))",
+        "   (row (?x _:b1) (?y _:b0))",
+        ")"} ;
+    private static String[] rs2$ = {
+        "(resultset (?x ?y)",
+        "   (row (?x _:c1) (?y _:c0))",
+        "   (row (?x _:c3) (?y _:c2))",
+        "   (row (?x _:c2) (?y _:c3))",
+        ")"} ;
+   
+    @Test public void test_RS_iso_1()       { isotest(rs1$, rs2$) ; }
+    
+    private void isotest(String[] rs1$2, String[] rs2$2)
+    {
+        ResultSetRewindable rs1 = ResultSetFactory.makeRewindable(BuilderResultSet.build(SSE.parseItem(StrUtils.strjoinNL(rs1$)))) ;
+        ResultSetRewindable rs2 = ResultSetFactory.makeRewindable(BuilderResultSet.build(SSE.parseItem(StrUtils.strjoinNL(rs2$)))) ;
+        assertTrue(ResultSetCompare.isomorphic(rs1, rs2)) ;
+        rs1.reset() ;
+        rs2.reset() ;   
+        assertTrue(ResultSetCompare.equalsByTerm(rs1, rs2)) ;
+        assertTrue(ResultSetCompare.equalsByValue(rs1, rs2)) ;
+    }
+
     // -------- Support functions
     
     private ResultSet make(String var, Node val)

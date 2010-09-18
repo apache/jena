@@ -17,6 +17,7 @@ import org.openjena.atlas.iterator.Transform ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.QuerySolution ;
 import com.hp.hpl.jena.query.ResultSet ;
+import com.hp.hpl.jena.query.ResultSetFactory ;
 import com.hp.hpl.jena.query.ResultSetFormatter ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.sparql.core.Var ;
@@ -27,6 +28,54 @@ import com.hp.hpl.jena.sparql.util.NodeUtils.EqualityTest ;
 
 public class ResultSetCompare
 {
+    // ----
+    
+    /* This is from the DAWG test suite.
+     * Result set 1: 
+     *   ---------------
+     *   | x    | y    |
+     *   ===============
+     *   | _:b0 | _:b1 |
+     *   | _:b2 | _:b3 |
+     *   | _:b1 | _:b0 |
+     *   ---------------
+     * Result set 2: 
+     *   ---------------
+     *   | x    | y    |
+     *   ===============
+     *   | _:b1 | _:b0 |
+     *   | _:b3 | _:b2 |
+     *   | _:b2 | _:b3 |
+     *   ---------------
+     */
+    
+    private static String[] rs1$ = {
+        "(resultset (?x ?y)",
+        "   (row (?x _:b0) (?y _:b1))",
+        "   (row (?x _:b2) (?y _:b3))",
+        "   (row (?x _:b1) (?y _:b0))",
+        ")"} ;
+    private static String[] rs2$ = {
+        "(resultset (?x ?y)",
+        "   (row (?x _:c1) (?y _:c0))",
+        "   (row (?x _:c3) (?y _:c2))",
+        "   (row (?x _:c2) (?y _:c3))",
+        ")"} ;
+   
+    // nasty result set.
+    // These are the same but the first row of rs2$ throws in a wrong mapping of b0/c1
+
+    // Right mapping is:
+    // b0->c3, b1->c2, b2->c1, b3->c0
+    // Currently we get, workign simply top to bottom, no backtracking:
+    // b0->c1, b1->c0, b2->c3, b3->c2, then last row fails as _:b1 is mapped to c0, b0 to c1 not (c2, c3) 
+    
+    // ----
+    
+    // Limiations:
+    // This code does not do compare/isomorphism combined with value testing.
+    // It drops to graph isomorphism, which is term based.
+    
     /** Compare two result sets for equivalence.  Equivalance means:
      * A row rs1 has one matching row in rs2, and vice versa.
      * A row is only matched once.
@@ -42,11 +91,18 @@ public class ResultSetCompare
     public static boolean equalsByValue(ResultSet rs1, ResultSet rs2)
     {
         //return equivalent(convert(rs1), convert(rs2), new BNodeIso(NodeUtils.sameValue)) ;
+        
         // Add the isomprohism test
         // Imperfect - need by-value and isomorphism - but this covers test suite needs. 
+
+        ResultSetRewindable rs1a = ResultSetFactory.makeRewindable(rs1) ;
+        ResultSetRewindable rs2a = ResultSetFactory.makeRewindable(rs2) ;
         
-        return equivalent(convert(rs1), convert(rs2), new BNodeIso(NodeUtils.sameValue)) || isomorphic(rs1, rs2) ;
-        
+        if ( equivalent(convert(rs1a), convert(rs2a), new BNodeIso(NodeUtils.sameValue)) )
+            return true ;
+        rs1a.reset() ;    
+        rs2a.reset() ;
+        return isomorphic(rs1, rs2) ;
     }
 
 
@@ -65,7 +121,17 @@ public class ResultSetCompare
 
     public static boolean equalsByTerm(ResultSet rs1, ResultSet rs2)
     {
-        return equivalent(convert(rs1), convert(rs2), new BNodeIso(NodeUtils.sameTerm)) ;
+        //return equivalent(convert(rs1), convert(rs2), new BNodeIso(NodeUtils.sameTerm)) ;
+        ResultSetRewindable rs1a = ResultSetFactory.makeRewindable(rs1) ;
+        ResultSetRewindable rs2a = ResultSetFactory.makeRewindable(rs2) ;
+        
+        if ( equivalent(convert(rs1a), convert(rs2a), new BNodeIso(NodeUtils.sameTerm)) )
+            return true ;
+        rs1a.reset() ;    
+        rs2a.reset() ;
+        return isomorphic(rs1, rs2) ;
+
+        
     }
 
     
