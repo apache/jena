@@ -6,6 +6,7 @@
 
 package com.hp.hpl.jena.sparql.util;
 
+import java.util.HashMap ;
 import java.util.Iterator ;
 
 import org.openjena.atlas.lib.StrUtils ;
@@ -16,19 +17,61 @@ import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.iri.IRI ;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
+import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
+import com.hp.hpl.jena.sparql.expr.NodeValue ;
+import com.hp.hpl.jena.sparql.expr.nodevalue.NodeFunctions ;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
 import com.hp.hpl.jena.util.iterator.MapFilter ;
 import com.hp.hpl.jena.util.iterator.MapFilterIterator ;
 import com.hp.hpl.jena.util.iterator.WrappedIterator ;
 
 
-/** Node utilities. 
- * @author Andy Seaborne
- */ 
+/** Node utilities */ 
 
 
 public class NodeUtils
 {
+    public interface EqualityTest { boolean equal(Node n1, Node n2) ; }
+
+    public static class BNodeIso implements EqualityTest
+    {
+        private HashMap<Node, Node> mapping ;
+        private EqualityTest literalTest ;
+    
+        public BNodeIso(EqualityTest literalTest)
+        { 
+            this.mapping = new HashMap<Node, Node>() ;
+            this.literalTest = literalTest ;
+        }
+    
+        public boolean equal(Node n1, Node n2)
+        {
+            if ( n1 == null && n2 == null ) return true ;
+            if ( n1 == null ) return false ;
+            if ( n2 == null ) return false ;
+            
+            if ( n1.isURI() && n2.isURI() )
+                return n1.equals(n2) ;
+            
+            if ( n1.isLiteral() && n2.isLiteral() )
+                return literalTest.equal(n1, n2) ;
+            
+            if ( n1.isBlank() && n2.isBlank() )
+            {
+                Node x = mapping.get(n1) ;
+                if ( x == null )
+                {
+                    // Not present: map n1 to n2.
+                    mapping.put(n1, n2) ;
+                    return true ;
+                }
+                return x.equals(n2) ;
+            }
+            
+            return false ;
+        }
+    }
+
     public static Node asNode(IRI iri)  { return Node.createURI(iri.toString()) ; }
     public static Node asNode(String iri)  { return Node.createURI(iri) ; }
     
@@ -221,6 +264,29 @@ public class NodeUtils
         return  node.getLiteralDatatypeURI() == null && 
                 node.getLiteralLanguage().equals("") ; 
     }
+
+    // This is term comparison.
+    public static EqualityTest sameTerm = new EqualityTest() {
+        public boolean equal(Node n1, Node n2)
+        {
+            return NodeFunctions.sameTerm(n1, n2) ;
+        }
+    } ;
+    // This is value comparison
+    public static EqualityTest sameValue = new EqualityTest() {
+        public boolean equal(Node n1, Node n2)
+        {
+            NodeValue nv1 = NodeValue.makeNode(n1) ;
+            NodeValue nv2 = NodeValue.makeNode(n2) ;
+            try {
+                return NodeValue.sameAs(nv1, nv2) ;
+            } catch(ExprEvalException ex)
+            {
+                // Incomparible as values - must be different for our purposes.
+                return false ; 
+            }
+        }
+    } ;
 }
 
 /*

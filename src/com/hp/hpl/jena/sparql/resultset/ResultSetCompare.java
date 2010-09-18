@@ -7,7 +7,6 @@
 package com.hp.hpl.jena.sparql.resultset;
 
 import java.util.Collection ;
-import java.util.HashMap ;
 import java.util.Iterator ;
 import java.util.List ;
 
@@ -20,32 +19,25 @@ import com.hp.hpl.jena.query.ResultSet ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingUtils ;
-import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
-import com.hp.hpl.jena.sparql.expr.NodeValue ;
-import com.hp.hpl.jena.sparql.expr.nodevalue.NodeFunctions ;
+import com.hp.hpl.jena.sparql.util.NodeUtils ;
 
 public class ResultSetCompare
 {
-    // See
-    //   RSCompare -> Merge rename to ResultSetCompare
-
-    // TestItem has getResultModel->Model.
-    // The issue will be some results are models for a reason.
-    // Add tests based on value to TestResultSet.
-    
-    /** compare two result sets for equivalence.  Equivalance means:
+    /** Compare two result sets for equivalence.  Equivalance means:
      * A row rs1 has one matching row in rs2, and vice versa.
      * A row is only matched once.
-     * Rows match if they have the same variables with the same values, 
+     * Rows match if they have the same variables with the same values. 
      * bNodes must map to a consistent other bNodes.  Value comparisons of nodes.   
      * 
      * Destructive - rs1 and rs2 are both read, possibly to exhaustion. 
+     * @param rs1 
+     * @param rs2
+     * @return true if they are equivalent
      */
-    
     
     public static boolean equalsByValue(ResultSet rs1, ResultSet rs2)
     {
-        return equivalent(convert(rs1), convert(rs2), new BNodeIso(sameValue)) ;
+        return equivalent(convert(rs1), convert(rs2), new NodeUtils.BNodeIso(NodeUtils.sameValue)) ;
     }
 
 
@@ -57,11 +49,14 @@ public class ResultSetCompare
      * Term comparisons of nodes.   
      * 
      * Destructive - rs1 and rs2 are both read, possibly to exhaustion. 
+     * @param rs1 
+     * @param rs2
+     * @return true if they are equivalent
      */
 
     public static boolean equalsByTerm(ResultSet rs1, ResultSet rs2)
     {
-        return equivalent(convert(rs1), convert(rs2), new BNodeIso(sameTerm)) ;
+        return equivalent(convert(rs1), convert(rs2), new NodeUtils.BNodeIso(NodeUtils.sameTerm)) ;
     }
 
     
@@ -72,11 +67,14 @@ public class ResultSetCompare
      * Value comparisons of nodes.   
      * 
      * Destructive - rs1 and rs2 are both read, possibly to exhaustion. 
+     * @param rs1 
+     * @param rs2
+     * @return true if they are equivalent
      */
 
     public static boolean equalsByValueAndOrder(ResultSet rs1, ResultSet rs2)
     {
-        return equivalentByOrder(convert(rs1) , convert(rs2), new BNodeIso(sameValue)) ;
+        return equivalentByOrder(convert(rs1) , convert(rs2), new NodeUtils.BNodeIso(NodeUtils.sameValue)) ;
     }
 
     /** compare two result sets for equivalence.  Equivalance means:
@@ -86,16 +84,17 @@ public class ResultSetCompare
      * RDF term comparisons of nodes.   
      * 
      * Destructive - rs1 and rs2 are both read, possibly to exhaustion. 
+     * @param rs1 
+     * @param rs2
+     * @return true if they are equivalent
      */
     public static boolean equalsByTermAndOrder(ResultSet rs1, ResultSet rs2)
     {
-        return equivalentByOrder(convert(rs1) , convert(rs2), new BNodeIso(sameTerm)) ;
+        return equivalentByOrder(convert(rs1) , convert(rs2), new NodeUtils.BNodeIso(NodeUtils.sameTerm)) ;
     }
 
-    
-    interface EqualityTest { boolean equal(Node n1, Node n2) ; }
-    
-    static public boolean equal(Binding bind1, Binding bind2, EqualityTest test)
+    /** Compare two bindings, use the node equality test provided */
+    static public boolean equal(Binding bind1, Binding bind2, NodeUtils.EqualityTest test)
     {
         if ( bind1 == bind2 ) return true ;
 
@@ -107,29 +106,7 @@ public class ResultSetCompare
         return true ;
     }
 
-    // Is bind1 contained in bind22?  For every (var,value) in bind1, is it in bind2?
-    // Maybe more in bind2.
-    private static boolean containedIn(Binding bind1, Binding bind2, EqualityTest test)
-    {
-        // There are about 100 ways to do this! 
-        Iterator<Var> iter1 =  bind1.vars() ;
-        
-        for ( Var v : Iter.iter(iter1) )
-        {
-            Node n1 = bind1.get(v) ;
-            Node n2 = bind2.get(v) ;
-            if ( n2 == null )
-                // v bound in bind1 and not in bind2.
-                return false ;
-            if ( ! test.equal(n1, n2) )
-                return false ;
-        }
-        return true ;
-    }
-    
-    // Backtracking with bNode assignment.
-    
-//    static boolean equivalentByValuex(ResultSet rs1, ResultSet rs2)
+    //    static boolean equivalentByValuex(ResultSet rs1, ResultSet rs2)
 //    {
 //        return equivalent(convert(rs1), convert(rs2), sameValue) ;
 //    }
@@ -145,7 +122,7 @@ public class ResultSetCompare
 //        return equivalent(convert(rs1), convert(rs2), sameTerm) ;
 //    }
     
-    static boolean equivalent(Collection<Binding> rows1, Collection<Binding> rows2, EqualityTest match)
+    static private boolean equivalent(Collection<Binding> rows1, Collection<Binding> rows2, NodeUtils.EqualityTest match)
     {
         if ( rows1.size() != rows2.size() )
             return false ;
@@ -170,7 +147,7 @@ public class ResultSetCompare
         return true ;
     }
     
-    static boolean equivalentByOrder(List<Binding> rows1, List<Binding> rows2, EqualityTest match)
+    static private boolean equivalentByOrder(List<Binding> rows1, List<Binding> rows2, NodeUtils.EqualityTest match)
     {
         if ( rows1.size() != rows2.size() )
              return false ;
@@ -188,6 +165,26 @@ public class ResultSetCompare
         return true ;
     }
     
+    // Is bind1 contained in bind22?  For every (var,value) in bind1, is it in bind2?
+    // Maybe more in bind2.
+    private static boolean containedIn(Binding bind1, Binding bind2, NodeUtils.EqualityTest test)
+    {
+        // There are about 100 ways to do this! 
+        Iterator<Var> iter1 =  bind1.vars() ;
+        
+        for ( Var v : Iter.iter(iter1) )
+        {
+            Node n1 = bind1.get(v) ;
+            Node n2 = bind2.get(v) ;
+            if ( n2 == null )
+                // v bound in bind1 and not in bind2.
+                return false ;
+            if ( ! test.equal(n1, n2) )
+                return false ;
+        }
+        return true ;
+    }
+
     private static Transform<QuerySolution, Binding> qs2b = new Transform<QuerySolution, Binding> () {
 
         public Binding convert(QuerySolution item)
@@ -195,69 +192,6 @@ public class ResultSetCompare
             return BindingUtils.asBinding(item) ;
         }
     } ;
-    
-    // This is term comparison.
-    private static EqualityTest sameTerm = new EqualityTest() {
-        public boolean equal(Node n1, Node n2)
-        {
-            return NodeFunctions.sameTerm(n1, n2) ;
-        }
-    } ; 
-        
-    // This is value comparison
-    private static EqualityTest sameValue = new EqualityTest() {
-        public boolean equal(Node n1, Node n2)
-        {
-            NodeValue nv1 = NodeValue.makeNode(n1) ;
-            NodeValue nv2 = NodeValue.makeNode(n2) ;
-            try {
-                return NodeValue.sameAs(nv1, nv2) ;
-            } catch(ExprEvalException ex)
-            {
-                // Incomparible as values - must be different for our purposes.
-                return false ; 
-            }
-        }
-    } ;
-        
-    private static class BNodeIso implements EqualityTest
-    {
-        private HashMap<Node, Node> mapping ;
-        private EqualityTest literalTest ;
-
-        BNodeIso(EqualityTest literalTest)
-        { 
-            this.mapping = new HashMap<Node, Node>() ;
-            this.literalTest = literalTest ;
-        }
-
-        public boolean equal(Node n1, Node n2)
-        {
-            if ( n1 == null && n2 == null ) return true ;
-            if ( n1 == null ) return false ;
-            if ( n2 == null ) return false ;
-            
-            if ( n1.isURI() && n2.isURI() )
-                return n1.equals(n2) ;
-            
-            if ( n1.isLiteral() && n2.isLiteral() )
-                return literalTest.equal(n1, n2) ;
-            
-            if ( n1.isBlank() && n2.isBlank() )
-            {
-                Node x = mapping.get(n1) ;
-                if ( x == null )
-                {
-                    // Not present: map n1 to n2.
-                    mapping.put(n1, n2) ;
-                    return true ;
-                }
-                return x.equals(n2) ;
-            }
-            
-            return false ;
-        }
-    }
 }
 
 /*

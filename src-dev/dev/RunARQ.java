@@ -9,13 +9,10 @@ package dev;
 
 import static org.openjena.atlas.lib.StrUtils.strjoinNL ;
 
-import java.io.ByteArrayInputStream ;
-import java.io.ByteArrayOutputStream ;
 import java.util.HashSet ;
 import java.util.Iterator ;
 import java.util.Set ;
 
-import org.junit.Test ;
 import org.openjena.atlas.io.IndentedLineBuffer ;
 import org.openjena.atlas.io.IndentedWriter ;
 import org.openjena.atlas.lib.StrUtils ;
@@ -35,8 +32,6 @@ import com.hp.hpl.jena.query.QueryExecution ;
 import com.hp.hpl.jena.query.QueryExecutionFactory ;
 import com.hp.hpl.jena.query.QueryFactory ;
 import com.hp.hpl.jena.query.QuerySolutionMap ;
-import com.hp.hpl.jena.query.ResultSet ;
-import com.hp.hpl.jena.query.ResultSetFactory ;
 import com.hp.hpl.jena.query.ResultSetFormatter ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.sparql.algebra.Algebra ;
@@ -55,9 +50,6 @@ import com.hp.hpl.jena.sparql.graph.NodeTransform ;
 import com.hp.hpl.jena.sparql.graph.NodeTransformLib ;
 import com.hp.hpl.jena.sparql.lang.ParserSPARQL11Update ;
 import com.hp.hpl.jena.sparql.modify.request.UpdateWriter ;
-import com.hp.hpl.jena.sparql.resultset.RSCompare ;
-import com.hp.hpl.jena.sparql.resultset.ResultSetFormat ;
-import com.hp.hpl.jena.sparql.resultset.ResultSetRewindable ;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.sparql.util.ExprUtils ;
@@ -83,25 +75,6 @@ public class RunARQ
     
     static { Log.setLog4j() ; }
     
-    public static void runTest()
-    {
-        String dir = "/home/afs/W3C/SPARQL-docs/tests/data-sparql11/negation/" ;
-        dir = "testing/ARQ/PropertyFunctions/" ;
-        runTest(dir, "data-1.ttl", "list-8.rq") ;
-    }
-
-    public static void runTest(String dir, String dataFile, String queryFile)
-    {
-        if ( ! dir.endsWith("/") )
-            dir = dir + "/" ;
-        String queryArg = "--query="+dir+queryFile ;
-        String dataArg = "--data="+dir+dataFile ;
-        arq.sparql.main(/*"--engine=ref",*/ dataArg, queryArg) ;
-    }
-    
-    // ----
-    
-
     public static void testXSDDurationBug() {
         Node d1 = Node.createLiteral("PT110S", null, XSDDatatype.XSDduration);
         Node d2 = Node.createLiteral("PT1M50S", null, XSDDatatype.XSDduration);
@@ -116,13 +89,18 @@ public class RunARQ
    
     public static void main(String[] argv) throws Exception
     {
-        runQTest() ;
+        //runQTest("/home/afs/W3C/SPARQL-docs/tests/data-sparql11/aggregates", "manifest.ttl") ; System.exit(0) ;
         
-        Query query = QueryFactory.create("PREFIX : <http://example/> SELECT * {:x :p _:b0 . FILTER(true) }") ;
-       // query.setResultVars() ;
-        System.out.println(query.getResultVars()) ;
-        
+        NodeValue nv1 = NodeValue.makeNode(SSE.parseNode("2.0e-1")) ;
+        NodeValue nv2 = NodeValue.makeDecimal("2.2") ;
+
+        double d1 = nv1.getDouble() ;
+        double d2 = nv2.getDouble() ;
+        System.out.println(d1) ;
+        System.out.println(d2) ;
+        System.out.println(d1+d2) ;
         System.exit(0) ;
+        
         
         NodeTransform ntLitCanon = CanonicalizeLiteral.get();
         // To do :
@@ -218,6 +196,22 @@ public class RunARQ
         System.exit(0) ;
     }
     
+    public static void runTest()
+    {
+        String dir = "/home/afs/W3C/SPARQL-docs/tests/data-sparql11/negation/" ;
+        dir = "testing/ARQ/PropertyFunctions/" ;
+        runTest(dir, "data-1.ttl", "list-8.rq") ;
+    }
+
+    public static void runTest(String dir, String dataFile, String queryFile)
+    {
+        if ( ! dir.endsWith("/") )
+            dir = dir + "/" ;
+        String queryArg = "--query="+dir+queryFile ;
+        String dataArg = "--data="+dir+dataFile ;
+        arq.sparql.main(/*"--engine=ref",*/ dataArg, queryArg) ;
+    }
+
     private static void processIRI(String iriStr)
     {
         IRI iri = IRIFactory.iriImplementation().create(iriStr) ;
@@ -420,36 +414,11 @@ public class RunARQ
         System.exit(0) ;
     }
     
-    private static void parseUpdate()
+    private static void runQTest(String dir, String manifest)
     {
-        String str = "INSERT DATA { GRAPH <G> { } }" ;
-        ParserSPARQL11Update p = new ParserSPARQL11Update() ;
-        UpdateRequest update = new UpdateRequest() ;
-        p.parse(update, str) ;
-        System.out.println("DONE") ;
-        System.exit(0) ;
-    } 
-    
-    private static void runUpdate()
-    {
-        String a[] = {"--desc=dataset.ttl", "--update=update.ru", "--dump"} ;
-        arq.update.main(a) ;
-        System.exit(0) ;
-    }
-    
-    private static void runQTest()
-    {
-        String DIR = "testing/ARQ/Distinct/" ;
-        
-//        mf:action
-//        [ qt:query  <no-distinct-1.rq> ;
-//          qt:data   <data-node.ttl> ] ;
-//mf:result  <no-distinct-node.srx> .
-        
-        String []a1 = { "--strict", "--data="+DIR+"data-node.ttl",
-            "--query="+DIR+"no-distinct-1.rq",
-            "--result="+DIR+"no-distinct-node.srx"} ;
-
+        if ( ! dir.endsWith("/") )
+            dir = dir + "/" ;
+        String []a1 = { "--strict", dir+manifest } ;
         arq.qtest.main(a1) ;
         System.exit(0 ) ; 
   

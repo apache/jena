@@ -15,10 +15,20 @@ import java.util.Iterator ;
 import java.util.List ;
 import java.util.Set ;
 
+import org.openjena.atlas.logging.Log ;
 import org.openjena.riot.checker.CheckerLiterals ;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
-import com.hp.hpl.jena.query.* ;
+import com.hp.hpl.jena.query.ARQ ;
+import com.hp.hpl.jena.query.Dataset ;
+import com.hp.hpl.jena.query.Query ;
+import com.hp.hpl.jena.query.QueryException ;
+import com.hp.hpl.jena.query.QueryExecution ;
+import com.hp.hpl.jena.query.QueryExecutionFactory ;
+import com.hp.hpl.jena.query.ResultSet ;
+import com.hp.hpl.jena.query.ResultSetFactory ;
+import com.hp.hpl.jena.query.ResultSetFormatter ;
+import com.hp.hpl.jena.query.Syntax ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.rdf.model.Property ;
@@ -30,11 +40,9 @@ import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.ResultSetStream ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper ;
-import com.hp.hpl.jena.sparql.resultset.RSCompare ;
+import com.hp.hpl.jena.sparql.resultset.ResultSetCompare ;
 import com.hp.hpl.jena.sparql.resultset.ResultSetRewindable ;
 import com.hp.hpl.jena.sparql.resultset.SPARQLResult ;
-
-import org.openjena.atlas.logging.Log ;
 import com.hp.hpl.jena.sparql.util.DatasetUtils ;
 import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
 import com.hp.hpl.jena.sparql.vocabulary.ResultSetGraphVocab ;
@@ -219,7 +227,6 @@ public class QueryTest extends EarlTestCase
         {
             if ( results.isResultSet() )
             {
-                // XXX Re-enable and check.
                 //System.err.println("** "+getName()+": Result set direct testing") ;
                 ResultSet rs = this.results.getResultSet() ;
                 if ( rs == null )
@@ -231,40 +238,42 @@ public class QueryTest extends EarlTestCase
                     resultsExpected = unique(resultsExpected) ;
                     resultsActual = unique(resultsActual) ;
                 }
-
+                
                 boolean b ;
                 if ( query.isOrdered() )
-                    b = RSCompare.sameOrdered(resultsExpected, resultsActual) ;
+                    b = ResultSetCompare.equalsByValueAndOrder(resultsExpected, resultsActual) ;
                 else
-                    b = RSCompare.same(resultsExpected, resultsActual) ;
+                    b = ResultSetCompare.equalsByValue(resultsExpected, resultsActual) ;
                 if ( ! b)
+                {
                     printFailedResultSetTest(query, resultsExpected, resultsActual) ;
+                    resultsExpected.reset() ;
+                    resultsActual.reset() ;
+                    ResultSetCompare.equalsByValue(resultsExpected, resultsActual) ;
+                }
                 assertTrue("Results do not match: "+testItem.getName(), b) ;
             }
             else if ( results.isModel() )
             {
-                Model resultsAsModel = results.getModel() ;
+                // A lot of early tests were written using RDF-encoded result sets. 
+                // Choosing to do model->result set is delayed.
+                // The results might have been for CONSTRUCT/DESCRIBE
+                Model resultsExpected = results.getModel() ;
+                
+                if ( query.isReduced() )
+                {
+                    // Reduced - best we can do is do DISTINCT
+                    ResultSetRewindable x = ResultSetFactory.makeRewindable(resultsExpected) ;    
+                    resultsExpected = ResultSetFormatter.toModel(unique(x)) ;
+                    resultsActual = unique(resultsActual) ;
+                }
+                
                 //System.err.println(getName()+": Result set model testing") ;
-                ResultSetRewindable x = ResultSetFactory.makeRewindable(resultsAsModel) ;
-                x = unique(x) ;
-                resultsActual = unique(resultsActual) ;
-                checkResults(query, resultsActual, ResultSetFormatter.toModel(x)) ;
+                checkResults(query, resultsActual, resultsExpected) ;
             }
             else
                 fail("Wrong result type for SELECT query") ;
         }
-//        if ( ! query.isReduced() )
-//            checkResults(query, results, resultsModel) ;
-//        else
-//        {
-//            // Unfortunately, we turned the result set into a model. 
-//            // Turn into a ResultSet-uniqueify-turn back into a model.
-//            // Excessive copying.  Only for small results in the DAWG test suite.
-//            ResultSetRewindable x = ResultSetFactory.makeRewindable(resultsModel) ;
-//            x = unique(x) ;
-//            results = unique(results) ;
-//            checkResults(query, results, ResultSetFormatter.toModel(x)) ;
-//        }
     }
     
     private static ResultSetRewindable unique(ResultSetRewindable results)

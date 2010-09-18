@@ -27,11 +27,11 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterSingleton ;
+import com.hp.hpl.jena.sparql.sse.SSE ;
 
 public class TestResultSet extends TestCase
 {
-    
-    // Test reading and writing 
+    // Test reading, writing and comparison
     @Test public void test_RS_1()
     {
         ResultSetRewindable rs1 = new ResultSetMem() ;
@@ -40,7 +40,7 @@ public class TestResultSet extends TestCase
         rs1.reset() ;
         ByteArrayInputStream ins = new ByteArrayInputStream(arr.toByteArray()) ;
         ResultSet rs2 = ResultSetFactory.fromXML(ins) ;
-        assertTrue(RSCompare.same(rs1, rs2)) ;
+        assertTrue(ResultSetCompare.equalsByTerm(rs1, rs2)) ;
     }
     
     @Test public void test_RS_1_str()
@@ -49,7 +49,7 @@ public class TestResultSet extends TestCase
         String x = ResultSetFormatter.asXMLString(rs1) ;
         rs1.reset() ;
         ResultSet rs2 = ResultSetFactory.fromXML(x) ;
-        assertTrue(RSCompare.same(rs1, rs2)) ;
+        assertTrue(ResultSetCompare.equalsByTerm(rs1, rs2)) ;
     }
 
     @Test public void test_RS_2()
@@ -60,7 +60,7 @@ public class TestResultSet extends TestCase
         rs1.reset() ;
         ByteArrayInputStream ins = new ByteArrayInputStream(arr.toByteArray()) ;
         ResultSet rs2 = ResultSetFactory.fromXML(ins) ;
-        assertTrue(RSCompare.same(rs1, rs2)) ;
+        assertTrue(ResultSetCompare.equalsByTerm(rs1, rs2)) ;
     }
     
     @Test public void test_RS_2_str()
@@ -69,7 +69,7 @@ public class TestResultSet extends TestCase
         String x = ResultSetFormatter.asXMLString(rs1) ;
         rs1.reset() ;
         ResultSet rs2 = ResultSetFactory.fromXML(x) ;
-        assertTrue(RSCompare.same(rs1, rs2)) ;
+        assertTrue(ResultSetCompare.equalsByTerm(rs1, rs2)) ;
     }
 
     // RDF
@@ -80,7 +80,7 @@ public class TestResultSet extends TestCase
         Model model = ResultSetFormatter.toModel(rs1) ;
         rs1.reset() ;
         ResultSet rs2 = ResultSetFactory.fromRDF(model) ;
-        assertTrue(RSCompare.same(rs1, rs2)) ;
+        assertTrue(ResultSetCompare.equalsByTerm(rs1, rs2)) ;
     }
     
     @Test public void test_RS_4()
@@ -89,7 +89,7 @@ public class TestResultSet extends TestCase
         Model model = ResultSetFormatter.toModel(rs1) ;
         rs1.reset() ;
         ResultSet rs2 = ResultSetFactory.fromRDF(model) ;
-        assertTrue(RSCompare.same(rs1, rs2)) ;
+        assertTrue(ResultSetCompare.equalsByTerm(rs1, rs2)) ;
     }
     
     // JSON
@@ -102,7 +102,7 @@ public class TestResultSet extends TestCase
         rs1.reset() ;
         ByteArrayInputStream ins = new ByteArrayInputStream(arr.toByteArray()) ;
         ResultSet rs2 = ResultSetFactory.fromJSON(ins) ;
-        assertTrue(RSCompare.same(rs1, rs2)) ;
+        assertTrue(ResultSetCompare.equalsByTerm(rs1, rs2)) ;
     }
     
     @Test public void test_RS_6()
@@ -113,7 +113,7 @@ public class TestResultSet extends TestCase
         rs1.reset() ;
         ByteArrayInputStream ins = new ByteArrayInputStream(arr.toByteArray()) ;
         ResultSet rs2 = ResultSetFactory.fromJSON(ins) ;    // Test using the DAWG examples
-        assertTrue(RSCompare.same(rs1, rs2)) ;
+        assertTrue(ResultSetCompare.equalsByTerm(rs1, rs2)) ;
     }
     
     // Into some format.
@@ -147,12 +147,12 @@ public class TestResultSet extends TestCase
         ResultSetRewindable rs2 = ResultSetFactory.makeRewindable(ResultSetFactory.load(ins, fmt)) ;
 
         // Ordered? Unordered?
-        boolean b = RSCompare.same(rs1, rs2) ;
+        boolean b = ResultSetCompare.equalsByTerm(rs1, rs2) ;
         if ( ordered )
         {
             rs1.reset() ;
             rs2.reset() ;
-            b = b & RSCompare.sameOrdered(rs1, rs2) ;
+            b = b & ResultSetCompare.equalsByTerm(rs1, rs2) ;
         }
         
         if ( !b )
@@ -171,17 +171,17 @@ public class TestResultSet extends TestCase
     {
         ResultSetRewindable rs1 = new ResultSetMem() ;
         ResultSetRewindable rs2 = new ResultSetMem() ;
-        assertTrue(RSCompare.sameOrdered(rs1, rs2)) ;
+        assertTrue(ResultSetCompare.equalsByTerm(rs1, rs2)) ;
         rs1.reset() ;
         rs2.reset() ;
-        assertTrue(RSCompare.sameUnordered(rs1, rs2)) ;
+        assertTrue(ResultSetCompare.equalsByTerm(rs1, rs2)) ;
     }
     
     @Test public void test_RS_cmp_2()
     {
         ResultSet rs1 = make("x", Node.createURI("tag:local")) ;
         ResultSet rs2 = new ResultSetMem() ;
-        assertFalse(RSCompare.sameOrdered(rs1, rs2)) ;
+        assertFalse(ResultSetCompare.equalsByTerm(rs1, rs2)) ;
 
     }
 
@@ -189,7 +189,7 @@ public class TestResultSet extends TestCase
     {
         ResultSet rs1 = make("x", Node.createURI("tag:local")) ;
         ResultSet rs2 = new ResultSetMem() ;
-        assertFalse(RSCompare.sameUnordered(rs1, rs2)) ;
+        assertFalse(ResultSetCompare.equalsByTerm(rs1, rs2)) ;
     }
 
 
@@ -198,8 +198,8 @@ public class TestResultSet extends TestCase
     {
         ResultSet rs1 = make("x", Node.createURI("tag:local")) ;
         ResultSet rs2 = make("x", Node.createURI("tag:local")) ;
-        assertTrue(RSCompare.sameOrdered(rs1, rs2)) ;
-        assertTrue(RSCompare.sameUnordered(rs1, rs2)) ;
+        assertTrue(ResultSetCompare.equalsByTerm(rs1, rs2)) ;
+        assertTrue(ResultSetCompare.equalsByTerm(rs1, rs2)) ;
     }
 
     @Test public void test_RS_cmp_5()
@@ -207,10 +207,10 @@ public class TestResultSet extends TestCase
         // Same variable, different values
         ResultSetRewindable rs1 = makeRewindable("x", Node.createURI("tag:local:1")) ;
         ResultSetRewindable rs2 = makeRewindable("x", Node.createURI("tag:local:2")) ;
-        assertFalse(RSCompare.sameOrdered(rs1, rs2)) ;
+        assertFalse(ResultSetCompare.equalsByTerm(rs1, rs2)) ;
         rs1.reset() ;
         rs2.reset() ;
-        assertFalse(RSCompare.sameUnordered(rs1, rs2)) ;
+        assertFalse(ResultSetCompare.equalsByTerm(rs1, rs2)) ;
     }
 
     @Test public void test_RS_cmp_6()
@@ -218,12 +218,20 @@ public class TestResultSet extends TestCase
         // Different variable, same values
         ResultSetRewindable rs1 = makeRewindable("x", Node.createURI("tag:local")) ;
         ResultSetRewindable rs2 = makeRewindable("y", Node.createURI("tag:local")) ;
-        assertFalse(RSCompare.sameOrdered(rs1, rs2)) ;
+        assertFalse(ResultSetCompare.equalsByTermAndOrder(rs1, rs2)) ;
         rs1.reset() ;
         rs2.reset() ;
-        assertFalse(RSCompare.sameUnordered(rs1, rs2)) ;
+        assertFalse(ResultSetCompare.equalsByTerm(rs1, rs2)) ;
     }
     
+    // Value based 
+    @Test public void test_RS_cmp_value_1()
+    {
+        ResultSetRewindable rs1 = makeRewindable("x", SSE.parseNode("123")) ;
+        ResultSetRewindable rs2 = makeRewindable("x", SSE.parseNode("0123")) ;
+        assertFalse(ResultSetCompare.equalsByTerm(rs1, rs2)) ;
+        assertTrue(ResultSetCompare.equalsByValue(rs1, rs2)) ;
+    }
     
     
     // -------- Support functions
