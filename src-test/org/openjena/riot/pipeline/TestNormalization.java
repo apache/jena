@@ -17,17 +17,17 @@ public class TestNormalization extends BaseTest
 {
     // ToDo doubles, lang tags
     
-    @Test public void normalize_int_01()    { normalize("23", "23") ; }
-    @Test public void normalize_int_02()    { normalize("023", "23") ; }
-    @Test public void normalize_int_03()    { normalize("+23", "23") ; }
-    @Test public void normalize_int_04()    { normalize("+023", "23") ; }
-    @Test public void normalize_int_05()    { normalize("-23", "-23") ; }
-    @Test public void normalize_int_06()    { normalize("-0230", "-230") ; }
-    @Test public void normalize_int_07()    { normalize("0", "0") ; }
-    @Test public void normalize_int_08()    { normalize("00", "0") ; }
-    @Test public void normalize_int_09()    { normalize("+00", "0") ; }
-    @Test public void normalize_int_10()    { normalize("-0", "0") ; }
-    @Test public void normalize_int_11()    { normalize("-000", "0") ; }
+    @Test public void normalize_int_01()        { normalize("23", "23") ; }
+    @Test public void normalize_int_02()        { normalize("023", "23") ; }
+    @Test public void normalize_int_03()        { normalize("+23", "23") ; }
+    @Test public void normalize_int_04()        { normalize("+023", "23") ; }
+    @Test public void normalize_int_05()        { normalize("-23", "-23") ; }
+    @Test public void normalize_int_06()        { normalize("-0230", "-230") ; }
+    @Test public void normalize_int_07()        { normalize("0", "0") ; }
+    @Test public void normalize_int_08()        { normalize("00", "0") ; }
+    @Test public void normalize_int_09()        { normalize("+00", "0") ; }
+    @Test public void normalize_int_10()        { normalize("-0", "0") ; }
+    @Test public void normalize_int_11()        { normalize("-000", "0") ; }
     
     @Test public void normalize_decimal_01()    { normalize("0.0", "0.0") ; }
     @Test public void normalize_decimal_02()    { normalize("'0'^^xsd:decimal", "0.0") ; }
@@ -45,13 +45,20 @@ public class TestNormalization extends BaseTest
     @Test public void normalize_decimal_12()    { normalize("+1.0001", "1.0001") ; }
     @Test public void normalize_decimal_13()    { normalize("-1.000100", "-1.0001") ; }
     @Test public void normalize_decimal_14()    { normalize("'-1'^^xsd:decimal", "-1.0") ; }
-    @Test public void normalize_decimal_15()    { normalize("0^^xsd:decimal", "0.0") ; }
+    @Test public void normalize_decimal_15()    { normalize("'0'^^xsd:decimal", "0.0") ; }
     
-    @Test public void normalize_double_01()    { normalize("1e0", "1.0e0") ; }
-    @Test public void normalize_double_02()    { normalize("0e0", "0.0e0") ; }
-    @Test public void normalize_double_03()    { normalize("00e0", "0.0e0") ; }
-    @Test public void normalize_double_04()    { normalize("0e00", "0.0e0") ; }
-    @Test public void normalize_double_05()    { normalize("10e0", "10.0e0") ; }
+    // Check - what about exponent normalization?
+    @Test public void normalize_double_01()     { normalize("1e0", "1.0E0") ; }
+    @Test public void normalize_double_02()     { normalize("0e0", "0.0E0") ; }
+    @Test public void normalize_double_03()     { normalize("00e0", "0.0E0") ; }
+    @Test public void normalize_double_04()     { normalize("0e00", "0.0E0") ; }
+    @Test public void normalize_double_05()     { normalize("10e0", "10E0") ; }
+
+    @Test public void normalize_double_10()     { normalize("'-1e+0'^^xsd:double", "-1.0E0") ; }
+    @Test public void normalize_double_11()     { normalize("'+0e01'^^xsd:double", "0.0E0") ; }
+    @Test public void normalize_double_12()     { normalize("1e+03", "1.0E3") ; }
+    @Test public void normalize_double_13()     { normalize("+1.e4", "10E3") ; }
+    @Test public void normalize_double_14()     { normalize("+12345.678912345678e+9", "12.345678912345678E12") ; }
     
     private static void normalize(String input, String expected)
     {

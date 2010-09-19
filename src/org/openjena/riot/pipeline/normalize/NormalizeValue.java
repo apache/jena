@@ -8,6 +8,8 @@ package org.openjena.riot.pipeline.normalize;
 
 import java.math.BigDecimal ;
 import java.math.BigInteger ;
+import java.text.DecimalFormat ;
+import java.text.NumberFormat ;
 
 import com.hp.hpl.jena.datatypes.RDFDatatype ;
 import com.hp.hpl.jena.graph.Node ;
@@ -21,7 +23,6 @@ class NormalizeValue
 
     // See Normalizevalue2 for "faster" versions (less parsing overhead). 
     
-    static DatatypeHandler dtFloat = null ;
     static DatatypeHandler dtBoolean = null ;
     static DatatypeHandler dtDatetime = null ;
 
@@ -75,19 +76,29 @@ class NormalizeValue
         }
     } ;
     
+    static private NumberFormat fmtDouble = new DecimalFormat("##0.0#################E0") ;
+    
     static DatatypeHandler dtDouble = new DatatypeHandler() {
         public Node handle(Node node, String lexicalForm, RDFDatatype datatype)
         {
             double d = Double.parseDouble(lexicalForm) ;
-            String lex2 = Double.toString(d) ;
-            if ( lex2.indexOf('e') == -1 )
-                lex2 = lex2+"e0" ;
+            String lex2 = fmtDouble.format(d) ;
             if ( lex2.equals(lexicalForm) )
                 return node ;
             return Node.createLiteral(lex2, null, datatype) ;
         }
     } ;
-
+    
+    static DatatypeHandler dtFloat = new DatatypeHandler() {
+        public Node handle(Node node, String lexicalForm, RDFDatatype datatype)
+        {
+            float f = Float.parseFloat(lexicalForm) ;
+            String lex2 = fmtDouble.format(f) ;
+            if ( lex2.equals(lexicalForm) )
+                return node ;
+            return Node.createLiteral(lex2, null, datatype) ;
+        }
+    } ;
 }
 
 /*
