@@ -17,9 +17,7 @@ public class DevARQ
     // ** Sort out GraphStore.
     // ?? remove
     // ?? merely a DSG container?
-    //   ?? c.f. UpdateExecution so no need for GS?
-    
-    // ** INSERT DATA { GRAPH <g> { :s :p :o } } auto create
+    //   ?? c.f. UpdateExecution so no need for GS? UpdateProcessor vs UpdateExecution
     
     // ** Update documentation
     // No need for CREATE SILENT, DROP SILENT

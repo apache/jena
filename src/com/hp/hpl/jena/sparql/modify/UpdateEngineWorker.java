@@ -60,6 +60,8 @@ class UpdateEngineWorker implements UpdateVisitor
     private final GraphStore graphStore ;
     
     private final Binding initialBinding ;
+    
+    private final boolean alwaysSilent = true ;
 
     UpdateEngineWorker(GraphStore graphStore, Binding initialBinding)
     {
@@ -92,13 +94,16 @@ class UpdateEngineWorker implements UpdateVisitor
 
     private void execDropClear(UpdateDropClear update, Node g, boolean isClear)
     {
-        if ( g != null && ! graphStore.containsGraph(g) && ! update.isSilent())
-            error("No such graph; "+g) ;
+        
+        if ( ! alwaysSilent )
+        {
+            if ( g != null && ! graphStore.containsGraph(g) && ! update.isSilent())
+                error("No such graph: "+g) ;
+        }
         
         if ( isClear )
             graph(g).getBulkUpdateHandler().removeAll() ;
         else
-            // Drop.
             graphStore.removeGraph(g) ;
     }
 
@@ -118,7 +123,7 @@ class UpdateEngineWorker implements UpdateVisitor
             return ;
         if ( graphStore.containsGraph(g) )
         {
-            if ( ! update.isSilent() )
+            if ( ! alwaysSilent && ! update.isSilent() )
                 error("Graph store already contains graph : "+g) ;
             return ;
         }
