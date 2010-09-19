@@ -30,22 +30,31 @@ public abstract class TestUpdateGraphMgt extends TestUpdateBase
         assertTrue(gStore.containsGraph(graphIRI)) ;
         assertTrue(graphEmpty(gStore.getGraph(graphIRI))) ;
 
-        // try again - should fail (already exists)
-        try {
-            UpdateAction.execute(u, gStore) ;
-            fail() ;
-        } catch (UpdateException ex) {}
-
+        // With "auto SILENT" then these aren't errors.
+        boolean silentMode = true ;
+        
+        if ( ! silentMode )
+        {
+            // try again - should fail (already exists)
+            try {
+                UpdateAction.execute(u, gStore) ;
+                fail() ;
+            } catch (UpdateException ex) {}
+        }
+        
         // Drop it.
         u = new UpdateDrop(graphIRI) ;
         UpdateAction.execute(u, gStore) ;
         assertFalse(gStore.containsGraph(graphIRI)) ;
         
-        // Drop it again. - should fail
-        try {
-            UpdateAction.execute(u, gStore) ;
-            fail() ;
-        } catch (UpdateException ex) {}
+        if ( ! silentMode )
+        {
+            // Drop it again. - should fail
+            try {
+                UpdateAction.execute(u, gStore) ;
+                fail() ;
+            } catch (UpdateException ex) {}
+        }
         
     }
 

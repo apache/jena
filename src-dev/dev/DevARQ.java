@@ -15,6 +15,7 @@ public class DevARQ
     
     // **Next
     // ** Sort out GraphStore.
+    // ??setSilentMode - reason to keep?
     // ?? remove
     // ?? merely a DSG container?
     //   ?? c.f. UpdateExecution so no need for GS? UpdateProcessor vs UpdateExecution
