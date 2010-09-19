@@ -9,53 +9,24 @@ package org.openjena.riot.pipeline.normalize;
 import java.math.BigDecimal ;
 import java.math.BigInteger ;
 
-import org.openjena.atlas.lib.Chars ;
-
-
 import com.hp.hpl.jena.datatypes.RDFDatatype ;
 import com.hp.hpl.jena.graph.Node ;
 
 class NormalizeValue
 {
-    // Auxillary class of datatype handers, placed here to static initialization ordering
-    // does not cause bugs.  If all statics in SinkLiteral, then 
-    // assignment to static has to happen before dispatch table is built but that
-    // makes the code messy.
+    // Auxillary class of datatype handers, placed here to avoid static initialization
+    // ordering problems (if in CanonicalizeLiteral, all this low-level machinary would
+    // need to be in the file before the external API, which I consider bad style).  It
+    // is a source of obscure bugs.
 
-    // faster - directly check for correct forms : leading zeros, signs.
-    // Place into char[], zap with -1 if unwanted, recollect
+    // See Normalizevalue2 for "faster" versions (less parsing overhead). 
     
-    // --- Unfinished
-    
-    static char NonChar = (char)0 ;
-    
-    private static void stripLeadingPlus(char[] chars)
-    {
-        if ( chars[0] == Chars.CH_PLUS )
-            chars[0] = NonChar ;
-    }
-    
-    // Works on decimals and integers
-    private static void stripLeadingZeros(char[] chars)
-    {
-        int idx = 0 ;
-        if ( chars[0] == Chars.CH_MINUS || chars[0] == NonChar )
-            idx = 1 ;
-        // BUT not all zeros.
-        while( idx < chars.length && chars[idx] == '0' )
-        {
-            chars[idx] = NonChar ;
-            idx ++ ;
-        }
-        // All leading zeros - put one back.
-        // what about "-.1"?
-        if ( idx == chars.length || chars[idx] == '.' )
-            chars[idx-1] = '0' ;
-        
-    }
-    private static void stripTrailingZeros(char[] chars) {} 
+    static DatatypeHandler dtFloat = null ;
+    static DatatypeHandler dtBoolean = null ;
+    static DatatypeHandler dtDatetime = null ;
 
-    // --- Working versions 
+    // DateTimeStruct
+    // Years may be 4 or more chars
     
     static DatatypeHandler dtInteger = new DatatypeHandler() {
         public Node handle(Node node, String lexicalForm, RDFDatatype datatype)
@@ -103,6 +74,20 @@ class NormalizeValue
             return Node.createLiteral(lex2, null, datatype) ;
         }
     } ;
+    
+    static DatatypeHandler dtDouble = new DatatypeHandler() {
+        public Node handle(Node node, String lexicalForm, RDFDatatype datatype)
+        {
+            double d = Double.parseDouble(lexicalForm) ;
+            String lex2 = Double.toString(d) ;
+            if ( lex2.indexOf('e') == -1 )
+                lex2 = lex2+"e0" ;
+            if ( lex2.equals(lexicalForm) )
+                return node ;
+            return Node.createLiteral(lex2, null, datatype) ;
+        }
+    } ;
+
 }
 
 /*

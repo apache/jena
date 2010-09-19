@@ -76,18 +76,21 @@ public class CanonicalizeLiteral implements NodeTransform
         dispatch.put(XSDDatatype.XSDnegativeInteger,        NormalizeValue.dtInteger) ;
 
 
-        dispatch.put(XSDDatatype.XSDfloat,      null) ;
-        dispatch.put(XSDDatatype.XSDdouble,     null) ;
-        dispatch.put(XSDDatatype.XSDdateTime,   null) ; 
-        dispatch.put(XSDDatatype.XSDdate,       null) ;
-        dispatch.put(XSDDatatype.XSDtime,       null) ;
-        dispatch.put(XSDDatatype.XSDgYear,      null) ;
-        dispatch.put(XSDDatatype.XSDgYearMonth, null) ;
-        dispatch.put(XSDDatatype.XSDgMonth,     null) ;
-        dispatch.put(XSDDatatype.XSDgMonthDay,  null) ;
-        dispatch.put(XSDDatatype.XSDgDay,       null) ;
+        dispatch.put(XSDDatatype.XSDfloat,      NormalizeValue.dtFloat ) ;
+        dispatch.put(XSDDatatype.XSDdouble,     NormalizeValue.dtDouble ) ;
+
+        dispatch.put(XSDDatatype.XSDdateTime,   null) ;     // Fractional seconds.
+        // These are fixed format 
+        // (?? 4 digit year)
+//        dispatch.put(XSDDatatype.XSDdate,       null) ;
+//        dispatch.put(XSDDatatype.XSDtime,       null) ;
+//        dispatch.put(XSDDatatype.XSDgYear,      null) ;
+//        dispatch.put(XSDDatatype.XSDgYearMonth, null) ;
+//        dispatch.put(XSDDatatype.XSDgMonth,     null) ;
+//        dispatch.put(XSDDatatype.XSDgMonthDay,  null) ;
+//        dispatch.put(XSDDatatype.XSDgDay,       null) ;
         dispatch.put(XSDDatatype.XSDduration,   null) ;
-        dispatch.put(XSDDatatype.XSDboolean,    null) ;
+        dispatch.put(XSDDatatype.XSDboolean,    NormalizeValue.dtBoolean) ;
     }
 }
 /*

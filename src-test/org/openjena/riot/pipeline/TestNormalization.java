@@ -44,9 +44,15 @@ public class TestNormalization extends BaseTest
     @Test public void normalize_decimal_11()    { normalize("+1.0", "1.0") ; }
     @Test public void normalize_decimal_12()    { normalize("+1.0001", "1.0001") ; }
     @Test public void normalize_decimal_13()    { normalize("-1.000100", "-1.0001") ; }
-//    @Test public void normalize_decimal_14()    { normalize("-1.0", "-1.0") ; }
-//    @Test public void normalize_decimal_15()    { normalize("-1.0", "-1.0") ; }
-
+    @Test public void normalize_decimal_14()    { normalize("'-1'^^xsd:decimal", "-1.0") ; }
+    @Test public void normalize_decimal_15()    { normalize("0^^xsd:decimal", "0.0") ; }
+    
+    @Test public void normalize_double_01()    { normalize("1e0", "1.0e0") ; }
+    @Test public void normalize_double_02()    { normalize("0e0", "0.0e0") ; }
+    @Test public void normalize_double_03()    { normalize("00e0", "0.0e0") ; }
+    @Test public void normalize_double_04()    { normalize("0e00", "0.0e0") ; }
+    @Test public void normalize_double_05()    { normalize("10e0", "10.0e0") ; }
+    
     private static void normalize(String input, String expected)
     {
         Node n1 = SSE.parseNode(input) ;

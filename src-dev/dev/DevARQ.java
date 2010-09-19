@@ -3,11 +3,15 @@ package dev ;
 
 public class DevARQ
 {
-    // Canonicalization
+    // Canonicalization: 
+    //   faster forms
+    //   double, float, date*
     // RIOT (etc) closing InputStream
+    // Bad character encoding - exception but line/col = 1/1
     
     // RIOT: cmd line : bad parse -> ???
     // ReportRemoteVirtuoso: StAX does not parse - times out too early? 
+    // XSDDuration
     
     // **Next
     // ** Sort out GraphStore.
