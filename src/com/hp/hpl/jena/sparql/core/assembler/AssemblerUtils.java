@@ -10,6 +10,7 @@ package com.hp.hpl.jena.sparql.core.assembler;
 import com.hp.hpl.jena.assembler.Assembler ;
 import com.hp.hpl.jena.assembler.JA ;
 import com.hp.hpl.jena.assembler.assemblers.AssemblerGroup ;
+import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.Resource ;
 import com.hp.hpl.jena.rdf.model.ResourceFactory ;
@@ -32,7 +33,7 @@ public class AssemblerUtils
     
     private static boolean initialized = false ; 
     
-    static { init() ; } 
+    static { ARQ.init(); init() ; } 
     
     static public void init()
     {
