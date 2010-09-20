@@ -76,13 +76,28 @@ class NormalizeValue
         }
     } ;
     
-    static private NumberFormat fmtDouble = new DecimalFormat("##0.0#################E0") ;
+    static private NumberFormat fmtFloatingPoint = new DecimalFormat("0.0#################E0") ;
+    
+    /* http://www.w3.org/TR/xmlschema-2/#double-canonical-representation */
+    /*
+     * The canonical representation for double is defined by prohibiting certain
+     * options from the Lexical representation (§3.2.5.1). Specifically, the
+     * exponent must be indicated by "E". Leading zeroes and the preceding
+     * optional "+" sign are prohibited in the exponent. If the exponent is
+     * zero, it must be indicated by "E0". For the mantissa, the preceding
+     * optional "+" sign is prohibited and the decimal point is required.
+     * Leading and trailing zeroes are prohibited subject to the following:
+     * number representations must be normalized such that there is a single
+     * digit which is non-zero to the left of the decimal point and at least a
+     * single digit to the right of the decimal point unless the value being
+     * represented is zero. The canonical representation for zero is 0.0E0.
+     */
     
     static DatatypeHandler dtDouble = new DatatypeHandler() {
         public Node handle(Node node, String lexicalForm, RDFDatatype datatype)
         {
             double d = Double.parseDouble(lexicalForm) ;
-            String lex2 = fmtDouble.format(d) ;
+            String lex2 = fmtFloatingPoint.format(d) ;
             if ( lex2.equals(lexicalForm) )
                 return node ;
             return Node.createLiteral(lex2, null, datatype) ;
@@ -93,7 +108,7 @@ class NormalizeValue
         public Node handle(Node node, String lexicalForm, RDFDatatype datatype)
         {
             float f = Float.parseFloat(lexicalForm) ;
-            String lex2 = fmtDouble.format(f) ;
+            String lex2 = fmtFloatingPoint.format(f) ;
             if ( lex2.equals(lexicalForm) )
                 return node ;
             return Node.createLiteral(lex2, null, datatype) ;

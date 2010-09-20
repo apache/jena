@@ -52,13 +52,16 @@ public class TestNormalization extends BaseTest
     @Test public void normalize_double_02()     { normalize("0e0", "0.0E0") ; }
     @Test public void normalize_double_03()     { normalize("00e0", "0.0E0") ; }
     @Test public void normalize_double_04()     { normalize("0e00", "0.0E0") ; }
-    @Test public void normalize_double_05()     { normalize("10e0", "10E0") ; }
+    @Test public void normalize_double_05()     { normalize("10e0", "1.0E1") ; }
 
     @Test public void normalize_double_10()     { normalize("'-1e+0'^^xsd:double", "-1.0E0") ; }
     @Test public void normalize_double_11()     { normalize("'+0e01'^^xsd:double", "0.0E0") ; }
-    @Test public void normalize_double_12()     { normalize("1e+03", "1.0E3") ; }
-    @Test public void normalize_double_13()     { normalize("+1.e4", "10E3") ; }
-    @Test public void normalize_double_14()     { normalize("+12345.678912345678e+9", "12.345678912345678E12") ; }
+    @Test public void normalize_double_12()     { normalize("'1000'^^xsd:double", "1.0E3") ; }
+    @Test public void normalize_double_13()     { normalize("+1.e4", "1.0E4") ; }
+    @Test public void normalize_double_14()     { normalize("+12345.6789e+9", "1.23456789E13") ; }
+    @Test public void normalize_double_15()     { normalize("-12345.6789e+9", "-1.23456789E13") ; }
+    @Test public void normalize_double_16()     { normalize("+12345.6789e-9", "1.23456789E-5") ; }
+    @Test public void normalize_double_17()     { normalize("-12345.6789e-9", "-1.23456789E-5") ; }
     
     private static void normalize(String input, String expected)
     {
