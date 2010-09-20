@@ -11,7 +11,6 @@ package com.hp.hpl.jena.sparql.expr.aggregate;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
-import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
 
@@ -25,45 +24,45 @@ abstract class AggMaxBase extends AggregatorBase
     @Override
     protected final Accumulator createAccumulator()
     { 
-        return new AccMax() ;
+        return new AccMax(expr) ;
     }
 
     public final Expr getExpr() { return expr ; }
 
-    /* null is SQL-like. */ 
     @Override
     public final Node getValueEmpty()     { return null ; } 
 
     // ---- Accumulator
-    private class AccMax implements Accumulator
+    private static class AccMax extends AccumulatorExpr
     {
         // Non-empty case but still can be nothing because the expression may be undefined.
         private NodeValue maxSoFar = null ;
 
-        public AccMax() {}
+        public AccMax(Expr expr) { super(expr) ; }
 
         static final boolean DEBUG = false ;
 
-        public void accumulate(Binding binding, FunctionEnv functionEnv)
+        @Override
+        public void accumulate(NodeValue nv, Binding binding, FunctionEnv functionEnv)
         { 
-            try {
-                NodeValue nv = expr.eval(binding, functionEnv) ;
-                if ( maxSoFar == null )
-                {
-                    maxSoFar = nv ;
-                    if ( DEBUG ) System.out.println("max: init : "+nv) ;
-                    return ;
-                }
+            if ( maxSoFar == null )
+            {
+                maxSoFar = nv ;
+                if ( DEBUG ) System.out.println("max: init : "+nv) ;
+                return ;
+            }
 
-                int x = NodeValue.compareAlways(maxSoFar, nv) ;
-                if ( x < 0 )
-                    maxSoFar = nv ;
+            int x = NodeValue.compareAlways(maxSoFar, nv) ;
+            if ( x < 0 )
+                maxSoFar = nv ;
 
-                if ( DEBUG ) System.out.println("max: "+nv+" ==> "+maxSoFar) ;
-
-            } catch (ExprEvalException ex)
-            {}
+            if ( DEBUG ) System.out.println("max: "+nv+" ==> "+maxSoFar) ;
         }
+
+        @Override
+        protected void accumulateError(Binding binding, FunctionEnv functionEnv)
+        {}
+
         public NodeValue getValue()
         { return maxSoFar ; }
     }

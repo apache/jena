@@ -10,7 +10,6 @@ package com.hp.hpl.jena.sparql.expr.aggregate;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
-import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
 import com.hp.hpl.jena.sparql.sse.writers.WriterExpr ;
@@ -32,12 +31,11 @@ public class AggSample extends AggregatorBase
     @Override
     protected Accumulator createAccumulator()
     { 
-        return new AccSample() ;
+        return new AccSample(expr) ;
     }
 
     public Expr getExpr() { return expr ; }
 
-    /* null is SQL-like. */ 
     @Override
     public Node getValueEmpty()     { return null ; } 
 
@@ -54,26 +52,26 @@ public class AggSample extends AggregatorBase
     } 
 
     // ---- Accumulator
-    class AccSample implements Accumulator
+    private static class AccSample extends AccumulatorExpr
     {
         // Sample: first evaluation of the expression that is not an error.
         private NodeValue sampleSoFar = null ;
 
-        public AccSample() {}
+        public AccSample(Expr expr) { super(expr) ; }
 
-        public void accumulate(Binding binding, FunctionEnv functionEnv)
+        @Override
+        public void accumulate(NodeValue nv , Binding binding, FunctionEnv functionEnv)
         { 
-            try {
-                NodeValue nv = expr.eval(binding, functionEnv) ;
-                if ( sampleSoFar == null )
-                {
-                    sampleSoFar = nv ;
-                    return ;
-                }
-
-            } catch (ExprEvalException ex)
-            {}
+            if ( sampleSoFar == null )
+            {
+                sampleSoFar = nv ;
+                return ;
+            }
         }
+
+        @Override
+        protected void accumulateError(Binding binding, FunctionEnv functionEnv)
+        {}
         
         public NodeValue getValue()
         { return sampleSoFar ; }

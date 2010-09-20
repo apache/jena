@@ -144,6 +144,9 @@ or
    
     public static void main(String[] argv) throws Exception
     {
+        arq.sparql.main("--data=D.ttl", "-query=Q.rq") ;
+        System.exit(0) ;
+        
         if ( false )
         {
             NodeTransform ntLitCanon = CanonicalizeLiteral.get();

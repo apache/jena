@@ -10,7 +10,6 @@ package com.hp.hpl.jena.sparql.expr.aggregate;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
-import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
 import com.hp.hpl.jena.sparql.sse.writers.WriterExpr ;
@@ -32,7 +31,7 @@ public class AggSampleDistinct extends AggregatorBase
     @Override
     protected Accumulator createAccumulator()
     { 
-        return new AccSampleDistict() ;
+        return new AccSampleDistict(expr) ;
     }
 
     public Expr getExpr() { return expr ; }
@@ -53,23 +52,25 @@ public class AggSampleDistinct extends AggregatorBase
     public Node getValueEmpty()     { return null ; } 
 
     // ---- Accumulator
-    class AccSampleDistict implements Accumulator
+    private static class AccSampleDistict extends AccumulatorExpr
     {
+        // NOT AccumulatorDistinctExpr - avoid "distinct" overheads. 
         // Sample: first evaluation of the expression that is not an error.
         // For sample, DISTINCT is a no-op - this code is picks the last element. 
         private NodeValue sampleSoFar = null ;
 
-        public AccSampleDistict() {}
+        public AccSampleDistict(Expr expr) { super(expr)  ; }
 
-        public void accumulate(Binding binding, FunctionEnv functionEnv)
-        { 
-            try {
-                NodeValue nv = expr.eval(binding, functionEnv) ;
-                sampleSoFar = nv ;
-
-            } catch (ExprEvalException ex)
-            {}
+        @Override
+        public void accumulate(NodeValue nv, Binding binding, FunctionEnv functionEnv)
+        {
+            // Last value seen.
+            sampleSoFar = nv ;
         }
+
+        @Override
+        protected void accumulateError(Binding binding, FunctionEnv functionEnv)
+        {}
         
         public NodeValue getValue()
         { return sampleSoFar ; }

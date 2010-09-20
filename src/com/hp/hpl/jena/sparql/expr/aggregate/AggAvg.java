@@ -9,9 +9,9 @@
 package com.hp.hpl.jena.sparql.expr.aggregate;
 
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
-import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
@@ -38,12 +38,11 @@ public class AggAvg extends AggregatorBase
     @Override
     protected Accumulator createAccumulator()
     { 
-        return new AccAvg() ;
+        return new AccAvg(expr) ;
     }
 
     public final Expr getExpr() { return expr ; }
 
-    /* null is SQL-like.  NodeValue.nodeIntZERO is F&O like */ 
     @Override
     public Node getValueEmpty()     { return NodeValue.toNode(noValuesToAvg) ; } 
     
@@ -61,7 +60,7 @@ public class AggAvg extends AggregatorBase
 
     
     // ---- Accumulator
-    class AccAvg implements Accumulator
+    private static class AccAvg extends AccumulatorExpr
     {
         // Non-empty case but still can be nothing because the expression may be undefined.
         private NodeValue total = noValuesToAvg ;
@@ -69,28 +68,31 @@ public class AggAvg extends AggregatorBase
         
         static final boolean DEBUG = false ;
         
-        public AccAvg() {}
+        public AccAvg(Expr expr) { super(expr) ; }
 
-        public void accumulate(Binding binding, FunctionEnv functionEnv)
+        @Override
+        protected void accumulate(NodeValue nv, Binding binding, FunctionEnv functionEnv)
         { 
-            try {
-                NodeValue nv = expr.eval(binding, functionEnv) ;
-                
-                if ( DEBUG ) System.out.println("avg: "+nv) ;
-                
-                if ( nv.isNumber() )
-                {
-                    count++ ;
-                    if ( total == noValuesToAvg )
-                        total = nv ;
-                    else
-                        total = XSDFuncOp.add(nv, total) ;
-                }
-                if ( DEBUG ) System.out.println("avg: ("+total+","+count+")") ;
+            if ( DEBUG ) System.out.println("avg: "+nv) ;
 
-            } catch (ExprEvalException ex)
-            {}
+            if ( nv.isNumber() )
+            {
+                count++ ;
+                if ( total == noValuesToAvg )
+                    total = nv ;
+                else
+                    total = XSDFuncOp.add(nv, total) ;
+            }
+            else
+                ARQ.logEval.warn("Evaluation error: avg() on "+nv) ;
+            
+            if ( DEBUG ) System.out.println("avg: ("+total+","+count+")") ;
         }
+        
+        @Override
+        protected void accumulateError(Binding binding, FunctionEnv functionEnv)
+        {}
+
         public NodeValue getValue()
         {
             if ( count == 0 ) return noValuesToAvg ;

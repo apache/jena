@@ -11,7 +11,6 @@ package com.hp.hpl.jena.sparql.expr.aggregate;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
-import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
 
@@ -25,46 +24,45 @@ abstract class AggMinBase extends AggregatorBase
     @Override
     protected final Accumulator createAccumulator()
     { 
-        return new AccMin() ;
+        return new AccMin(expr) ;
     }
 
     public final Expr getExpr() { return expr ; }
 
-    /* null is SQL-like. */ 
     @Override
     public final Node getValueEmpty()     { return null ; } 
 
     // ---- Accumulator
-    class AccMin implements Accumulator
+    private static class AccMin extends AccumulatorExpr
     {
         // Non-empty case but still can be nothing because the expression may be undefined.
         private NodeValue minSoFar = null ;
 
-        public AccMin() {}
+        public AccMin(Expr expr) { super(expr) ; }
 
         static final boolean DEBUG = false ;
 
-        public void accumulate(Binding binding, FunctionEnv functionEnv)
+        @Override
+        public void accumulate(NodeValue nv, Binding binding, FunctionEnv functionEnv)
         { 
-            try {
-                NodeValue nv = expr.eval(binding, functionEnv) ;
-                if ( minSoFar == null )
-                {
-                    minSoFar = nv ;
-                    if ( DEBUG ) System.out.println("min: init : "+nv) ;
-                    return ;
-                }
+            if ( minSoFar == null )
+            {
+                minSoFar = nv ;
+                if ( DEBUG ) System.out.println("min: init : "+nv) ;
+                return ;
+            }
 
-                int x = NodeValue.compareAlways(minSoFar, nv) ;
-                if ( x > 0 )
-                    minSoFar = nv ;
+            int x = NodeValue.compareAlways(minSoFar, nv) ;
+            if ( x > 0 )
+                minSoFar = nv ;
 
-                if ( DEBUG ) System.out.println("min: "+nv+" ==> "+minSoFar) ;
-
-
-            } catch (ExprEvalException ex)
-            {}
+            if ( DEBUG ) System.out.println("min: "+nv+" ==> "+minSoFar) ;
         }
+        
+        @Override
+        protected void accumulateError(Binding binding, FunctionEnv functionEnv)
+        {}
+
         public NodeValue getValue()
         { return minSoFar ; }
     }

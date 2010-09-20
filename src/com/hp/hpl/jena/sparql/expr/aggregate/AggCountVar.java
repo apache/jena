@@ -31,7 +31,7 @@ public class AggCountVar extends AggregatorBase
     @Override
     protected Accumulator createAccumulator()
     { 
-        return new AccCountVar() ;
+        return new AccCountVar(expr) ;
     }
 
     public Expr getExpr() { return expr ; }
@@ -52,10 +52,10 @@ public class AggCountVar extends AggregatorBase
     public Node getValueEmpty()     { return NodeConst.nodeZero ; } 
 
     // ---- Accumulator
-    private class AccCountVar extends AccumulatorExpr
+    private static class AccCountVar extends AccumulatorExpr
     {
         private long count = 0 ;
-        public AccCountVar()   { super(expr) ; }
+        public AccCountVar(Expr expr)   { super(expr) ; }
 
         @Override
         public void accumulate(NodeValue nv, Binding binding, FunctionEnv functionEnv)

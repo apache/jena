@@ -9,9 +9,9 @@
 package com.hp.hpl.jena.sparql.expr.aggregate;
 
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
-import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
@@ -35,12 +35,11 @@ public class AggSum  extends AggregatorBase
     @Override
     protected Accumulator createAccumulator()
     { 
-        return new AccSum() ;
+        return new AccSum(expr) ;
     }
 
     public Expr getExpr() { return expr ; }
 
-    /* null is SQL-like.  NodeValue.nodeIntZERO is F&O like */ 
     @Override
     public Node getValueEmpty()     { return NodeValue.toNode(noValuesToSum) ; } 
 
@@ -57,27 +56,31 @@ public class AggSum  extends AggregatorBase
     } 
 
     // ---- Accumulator
-    class AccSum implements Accumulator
+    private static class AccSum extends AccumulatorExpr
     {
         // Non-empty case but still can be nothing because the expression may be undefined.
         private NodeValue total = null ;
 
-        public AccSum() {}
+        public AccSum(Expr expr) { super(expr) ; }
 
-        public void accumulate(Binding binding, FunctionEnv functionEnv)
-        { 
-            try {
-                NodeValue nv = expr.eval(binding, functionEnv) ;
-                if ( nv.isNumber() )
-                {
-                    if ( total == null )
-                        total = nv ;
-                    else
-                        total = XSDFuncOp.add(nv, total) ;
-                }
-            } catch (ExprEvalException ex)
-            {}
+        @Override
+        protected void accumulate(NodeValue nv, Binding binding, FunctionEnv functionEnv)
+        {
+            if ( nv.isNumber() )
+            {
+                if ( total == null )
+                    total = nv ;
+                else
+                    total = XSDFuncOp.add(nv, total) ;
+            }
+            else
+                ARQ.logEval.warn("Evaluation error: sum() on "+nv) ;
         }
+
+        @Override
+        protected void accumulateError(Binding binding, FunctionEnv functionEnv)
+        {}
+
         public NodeValue getValue()
         { return total ; }
     }

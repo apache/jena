@@ -1,9 +1,14 @@
-@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-@prefix :        <http://example/> .
-@prefix :        <http://example/fred/> .
+@prefix ex: <http://example.org/> .
 
-:a :p <http://example/a123> .
-:a :p <http://example/fred/a123> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
 
-## :a :p "A"@en, "B"@en, "Z"@en  .
-## :a :q "a"@en, "b"@en, "c"@en  .
+ex:alice a foaf:Person; foaf:name "Alice Wonderland";
+           foaf:nick "Alice", "The real Alice".
+
+ex:bob a foaf:Person;
+       foaf:name "Robert Doe", "Robert Charles Doe", "Robert C. Doe";
+       foaf:nick "Bob","Bobby","RobC","BobDoe".
+
+ex:charles a foaf:Person;
+       foaf:name "Charles Charles";
+       foaf:nick "Charlie" .

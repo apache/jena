@@ -15,6 +15,7 @@ import com.hp.hpl.jena.sparql.function.FunctionEnv ;
 /** Accumulator that only passes down the first unique binding */
 abstract class AccumulatorDistinctAll implements Accumulator
 {
+    // COUNT(DISTINCT *)
     private final Set<Binding> rows = new HashSet<Binding>() ;
     
     final public void accumulate(Binding binding, FunctionEnv functionEnv)

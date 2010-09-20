@@ -19,6 +19,7 @@ public class NodeConst
     public static final Node nodeOne        = Node.createLiteral("1", null,  XSDDatatype.XSDinteger) ;
     public static final Node nodeTwo        = Node.createLiteral("2", null,  XSDDatatype.XSDinteger) ;
     public static final Node nodeMinusOne   = Node.createLiteral("-1", null,  XSDDatatype.XSDinteger) ;
+    public static final Node emptyString    = Node.createLiteral("") ;
     
     public static final Node nodeRDFType    = RDF.Nodes.type ;
     public static final Node nodeFirst      = RDF.Nodes.first ;

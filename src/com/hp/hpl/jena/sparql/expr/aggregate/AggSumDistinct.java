@@ -8,6 +8,8 @@
 
 package com.hp.hpl.jena.sparql.expr.aggregate;
 
+import org.openjena.atlas.logging.Log ;
+
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
@@ -52,7 +54,6 @@ public class AggSumDistinct  extends AggregatorBase
         return agg.getExpr().equals(getExpr()) ;
     } 
  
-    /* null is SQL-like.  NodeValue.nodeIntZERO is F&O like */ 
     @Override
     public Node getValueEmpty()     { return NodeValue.toNode(noValuesToSum) ; } 
 
@@ -74,7 +75,10 @@ public class AggSumDistinct  extends AggregatorBase
                 else
                     total = XSDFuncOp.add(nv, total) ;
             }
+            else
+                Log.warn(this, "evaluation error: sum() on "+nv) ;
         }
+        
         public NodeValue getValue()
         { return total ; }
 

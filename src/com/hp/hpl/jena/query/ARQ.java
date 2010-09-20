@@ -7,6 +7,8 @@
 package com.hp.hpl.jena.query;
 
 import org.openjena.riot.SysRIOT ;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.assembler.assemblers.AssemblerGroup ;
 import com.hp.hpl.jena.sparql.ARQConstants ;
@@ -27,6 +29,8 @@ import com.hp.hpl.jena.sparql.util.Symbol ;
 
 public class ARQ
 {
+    public static final Logger logEval = LoggerFactory.getLogger("ARQ") ;
+    
     /** IRI for ARQ */  
     public static final String arqIRI = "http://jena.hpl.hp.com/#arq" ;
 

@@ -13,6 +13,8 @@ public class DevARQ
     // ReportRemoteVirtuoso: StAX does not parse - times out too early? 
     // XSDDuration
     
+    // Evaluation logger for errors and warnings.
+    
     // **Next
     // ** Sort out GraphStore.
     // ??setSilentMode - reason to keep?

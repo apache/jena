@@ -13,9 +13,9 @@ import org.openjena.atlas.lib.StrUtils ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
-import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
+import com.hp.hpl.jena.sparql.graph.NodeConst ;
 import com.hp.hpl.jena.sparql.sse.writers.WriterExpr ;
 import com.hp.hpl.jena.sparql.util.ExprUtils ;
 
@@ -75,15 +75,14 @@ public class AggGroupConcat extends AggregatorBase
     @Override
     protected Accumulator createAccumulator()
     { 
-        return new AccGroupConcat() ;
+        return new AccGroupConcat(expr, separator) ;
     }
 
     public Expr getExpr() { return expr ; }
     protected final String getSeparator() { return separator ; }
 
-    /* null is SQL-like. */ 
     @Override
-    public Node getValueEmpty()     { return null ; } 
+    public Node getValueEmpty() { return NodeConst.emptyString ; } 
     
     @Override
     public int hashCode()   { return HC_AggCountVar ^ expr.hashCode() ; }
@@ -98,28 +97,31 @@ public class AggGroupConcat extends AggregatorBase
     }
 
     // ---- Accumulator
-    class AccGroupConcat implements Accumulator
+    private static class AccGroupConcat extends AccumulatorExpr
     {
         private StringBuilder stringSoFar = null ;
+        private final String separator ;
 
-        public AccGroupConcat() {}
+        public AccGroupConcat(Expr expr, String sep)
+        { super(expr) ; this.separator = sep ; }
 
-        public void accumulate(Binding binding, FunctionEnv functionEnv)
+        @Override
+        protected void accumulate(NodeValue nv, Binding binding, FunctionEnv functionEnv)
         { 
-            try {
-                NodeValue nv = expr.eval(binding, functionEnv) ;
-                String str = nv.asString() ;
-                if ( stringSoFar == null )
-                {
-                    stringSoFar = new StringBuilder(str) ;
-                    return ;
-                }
-                stringSoFar.append(separator) ;
-                stringSoFar.append(str) ;
-            } catch (ExprEvalException ex)
-            {}
+            String str = nv.asString() ;
+            if ( stringSoFar == null )
+            {
+                stringSoFar = new StringBuilder(str) ;
+                return ;
+            }
+            stringSoFar.append(separator) ;
+            stringSoFar.append(str) ;
         }
         
+        @Override
+        protected void accumulateError(Binding binding, FunctionEnv functionEnv)
+        {}
+
         public NodeValue getValue()
         { return NodeValue.makeString(stringSoFar.toString()) ; }
     }

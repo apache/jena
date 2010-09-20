@@ -40,7 +40,6 @@ public class AggAvgDistinct extends AggregatorBase
 
     public final Expr getExpr() { return expr ; }
 
-    /* null is SQL-like.  NodeValue.nodeIntZERO is F&O like */ 
     @Override
     public Node getValueEmpty()     { return NodeValue.toNode(noValuesToAvg) ; } 
 

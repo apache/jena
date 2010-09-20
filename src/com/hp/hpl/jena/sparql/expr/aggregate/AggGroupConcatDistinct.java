@@ -73,13 +73,12 @@ public class AggGroupConcatDistinct extends AggregatorBase
     @Override
     protected Accumulator createAccumulator()
     { 
-        return new AccGroupConcatDistinct(expr) ;
+        return new AccGroupConcatDistinct(expr, separator) ;
     }
 
     public Expr getExpr() { return expr ; }
     protected final String getSeparator() { return separator ; }
 
-    /* null is SQL-like. */ 
     @Override
     public Node getValueEmpty()     { return null ; } 
 
@@ -96,16 +95,25 @@ public class AggGroupConcatDistinct extends AggregatorBase
     }
     
     // ---- Accumulator
-    class AccGroupConcatDistinct extends AccumulatorDistinctExpr
+    static class AccGroupConcatDistinct extends AccumulatorDistinctExpr
     {
-        // Sample: first evaluation of the expression that is not an error.
-        private NodeValue sampleSoFar = null ;
+        private StringBuilder stringSoFar = null ;
+        private final String separator ;
 
-        public AccGroupConcatDistinct(Expr expr) { super(expr) ; }
+        public AccGroupConcatDistinct(Expr expr, String sep)
+        { super(expr) ; this.separator = sep ; }
 
         @Override
         public void accumulateDistinct(NodeValue nv, Binding binding, FunctionEnv functionEnv)
-        { 
+        {
+            String str = nv.asString() ;
+            if ( stringSoFar == null )
+            {
+                stringSoFar = new StringBuilder(str) ;
+                return ;
+            }
+            stringSoFar.append(separator) ;
+            stringSoFar.append(str) ;
         }
 
         @Override
@@ -113,7 +121,7 @@ public class AggGroupConcatDistinct extends AggregatorBase
         {}
         
         public NodeValue getValue()
-        { return sampleSoFar ; }
+        { return NodeValue.makeString(stringSoFar.toString()) ; }
     }
 }
 
