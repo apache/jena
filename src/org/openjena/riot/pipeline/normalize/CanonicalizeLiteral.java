@@ -9,6 +9,8 @@ package org.openjena.riot.pipeline.normalize;
 import java.util.HashMap ;
 import java.util.Map ;
 
+import org.openjena.riot.LangTag ;
+
 
 import com.hp.hpl.jena.datatypes.RDFDatatype ;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
@@ -27,31 +29,37 @@ public class CanonicalizeLiteral implements NodeTransform
     public Node convert(Node node)
     {
         RDFDatatype dt = node.getLiteralDatatype() ;
+        Node n2 ;
         if ( dt == null )
         {
-            // Language?
-            return node ;
+            if ( node.getLiteralLanguage().equals("") )
+                return node ;
+            n2 = canonicalLangtag(node, node.getLiteralLexicalForm(), node.getLiteralLanguage()) ; 
         }
-
-        // Valid?  Yes - assumes checking has been done.
-        // May integrate later
-
-        // Dispatch on type
-        // Type promotion.
-
-
-        DatatypeHandler handler = dispatch.get(dt) ;
-        if ( handler == null )
-            return node ;
-
-        Node n2 = handler.handle(node, node.getLiteralLexicalForm(), dt) ;
+        else
+        {
+            // Valid?  Yes - assumes checking has been done.
+            // May integrate later
+            DatatypeHandler handler = dispatch.get(dt) ;
+            if ( handler == null )
+                return node ;
+    
+            n2 = handler.handle(node, node.getLiteralLexicalForm(), dt) ;
+        }
         if ( n2 == null )
             return node ;
-
         return n2 ;
     }
-
-    static Map<RDFDatatype, DatatypeHandler> dispatch = new HashMap<RDFDatatype, DatatypeHandler>() ;
+    
+    private static Node canonicalLangtag(Node node, String lexicalForm, String langTag)
+    {
+        String langTag2 = LangTag.canonical(langTag) ;
+        if ( langTag2.equals(langTag) )
+            return null ;
+        return Node.createLiteral(lexicalForm, langTag2, null) ;
+    }
+    
+    private final static Map<RDFDatatype, DatatypeHandler> dispatch = new HashMap<RDFDatatype, DatatypeHandler>() ;
 
     // MUST be after the handler definitions as these assign to statics, so it's code lexcial order.
     // or use static class to force touching that, initializing and then getting the values. 

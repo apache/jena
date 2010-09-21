@@ -81,6 +81,13 @@ public class TestNormalization extends BaseTest
     @Test public void normalize_boolean_02()    { normalize("'false'^^xsd:boolean", "'false'^^xsd:boolean") ; }
     @Test public void normalize_boolean_03()    { normalize("'1'^^xsd:boolean",     "'true'^^xsd:boolean") ; }
     @Test public void normalize_boolean_04()    { normalize("'0'^^xsd:boolean",     "'false'^^xsd:boolean") ; }
+    
+    @Test public void normalize_lang_01()       { normalizeLang("''", "''") ; }
+    @Test public void normalize_lang_02()       { normalizeLang("'abc'", "'abc'") ; }
+    @Test public void normalize_lang_03()       { normalizeLang("'abc'@EN", "'abc'@en") ; }
+    @Test public void normalize_lang_04()       { normalizeLang("'abc'@EN-UK", "'abc'@en-UK") ; }
+    @Test public void normalize_lang_05()       { normalizeLang("'abc'@EN", "'abc'@EN", false) ; }
+    @Test public void normalize_lang_06()       { normalizeLang("'abc'@EN-UK", "'abc'@en-uk", false) ; }
 
     private static void normalize(String input, String expected)
     {
@@ -92,7 +99,28 @@ public class TestNormalization extends BaseTest
         assertEquals("Invalid canonicalization (lex)", n3.getLiteralLexicalForm(), n2.getLiteralLexicalForm()) ;
         assertEquals("Invalid canonicalization (node)", n3, n2) ;
     }
+
+    private static void normalizeLang(String input, String expected)
+    { normalizeLang(input, expected, true) ; }
     
+    private static void normalizeLang(String input, String expected, boolean correct)
+    {
+        Node n1 = SSE.parseNode(input) ;
+        Node n2 = CanonicalizeLiteral.get().convert(n1) ;
+        Node n3 = SSE.parseNode(expected) ;
+        if ( correct )
+        {
+            assertEquals("Invalid canonicalization (lang)", n3.getLiteralLanguage(), n2.getLiteralLanguage()) ;
+            assertEquals("Invalid canonicalization (node)", n3, n2) ;
+        }
+        else
+        {
+            assertNotEquals("Invalid canonicalization (lang)", n3.getLiteralLanguage(), n2.getLiteralLanguage()) ;
+            assertNotEquals("Invalid canonicalization (node)", n3, n2) ;
+        }
+    }
+    
+
     private static void normalizeDT(String input, String expected)
     {
         normalize("'"+input+"'^^xsd:dateTime",

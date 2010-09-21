@@ -35,7 +35,6 @@ public class SinkQuadNodeTransform extends SinkWrapper<Quad>
         this.subjTransform = subjTransform ;
         this.predTransform = predTransform ;
         this.objTransform = objTransform ;
-        
     }
 
     @Override

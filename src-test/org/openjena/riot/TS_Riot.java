@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -12,6 +13,7 @@ import org.junit.runner.RunWith ;
 import org.junit.runners.Suite ;
 import org.openjena.riot.lang.* ;
 import org.openjena.riot.out.TestOutputNTriples ;
+import org.openjena.riot.pipeline.TestNormalization ;
 import org.openjena.riot.tokens.TestTokenForNode ;
 import org.openjena.riot.tokens.TestTokenizer ;
 
@@ -41,6 +43,8 @@ import org.openjena.riot.tokens.TestTokenizer ;
     , TestParserFactory.class
 
     , TestOutputNTriples.class
+    , TestLangTag.class
+    , TestNormalization.class
 })
 
 public class TS_Riot
@@ -59,6 +63,7 @@ public class TS_Riot
 
 /*
  * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
