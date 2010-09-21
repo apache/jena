@@ -15,6 +15,9 @@ import java.util.Set ;
 
 import org.openjena.atlas.io.IndentedLineBuffer ;
 import org.openjena.atlas.io.IndentedWriter ;
+import org.openjena.atlas.json.JSON ;
+import org.openjena.atlas.json.JsonObject ;
+import org.openjena.atlas.json.JsonValue ;
 import org.openjena.atlas.lib.StrUtils ;
 import org.openjena.atlas.logging.Log ;
 import org.openjena.riot.ErrorHandlerLib ;
@@ -144,6 +147,14 @@ or
    
     public static void main(String[] argv) throws Exception
     {
+        JsonValue obj = JSON.readAny("D.json") ;
+        IndentedWriter out = new IndentedWriter(System.out) ; 
+        out.setFlatMode(true) ;
+        JSON.write(out, obj) ;
+        out.flush() ;
+        System.exit(0) ;
+        
+        
         arq.sparql.main("--data=D.ttl", "-query=Q.rq") ;
         System.exit(0) ;
         

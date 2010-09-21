@@ -11,7 +11,6 @@ import java.io.IOException ;
 import java.io.OutputStream ;
 import java.io.Writer ;
 
-import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
 import com.hp.hpl.jena.util.FileUtils ;
 
 /** A writer that records what the current indentation level is, and
@@ -28,7 +27,7 @@ public class IndentedWriter
     /** Stderr wrapped in an IndentedWriter - no line numbers */
     public static final IndentedWriter stderr = new IndentedWriter(System.err) ;
     
-    // Note cases:
+    // Note cases:if (!flatMode) 
     // 1/ incIndent - decIndent with no output should not cause any padding
     // 2/ newline() then no text, then finish should not cause a line number.
     
@@ -46,27 +45,30 @@ public class IndentedWriter
     
     protected boolean flatMode = false ;
     
-    public IndentedWriter() { this(System.out, false) ; }
+    private IndentedWriter() { this(System.out, false) ; }
     
-    // Temp: Adaption from old world to new -
-    protected IndentedWriter(IndentedWriter other)
-    { 
-        out = other.out ;
-        lineNumbers = other.lineNumbers ;
-        if ( other.column != column || other.row != row )
-            throw new ARQInternalErrorException("Can only clone am unstarted IndentedWriter") ;
-        
-    }
-    
+//    // Temp: Adaption from old world to new -
+//    protected IndentedWriter(IndentedWriter other)
+//    { 
+//        out = other.out ;
+//        lineNumbers = other.lineNumbers ;
+//        if ( other.column != column || other.row != row )
+//            throw new ARQInternalErrorException("Can only clone am unstarted IndentedWriter") ;
+//        
+//    }
+    /** Construct a UTF8 IndentedWriter around an OutputStream */
     public IndentedWriter(OutputStream outStream) { this(outStream, false) ; }
     
+    /** Construct a UTF8 IndentedWriter around an OutputStream */
     public IndentedWriter(OutputStream outStream, boolean withLineNumbers)
     {
         this(FileUtils.asPrintWriterUTF8(outStream), withLineNumbers) ;
     }
     
+    /** Using Writers is discouraged */
     protected IndentedWriter(Writer writer) { this(writer, false) ; }
     
+    /** Using Writers is discouraged */
     protected IndentedWriter(Writer writer, boolean withLineNumbers)
     {
         out = writer ;
@@ -246,8 +248,8 @@ public class IndentedWriter
     }
     
     /** Flat mode - print without NL, for a more compact representation - depends on caller */  
-    public boolean inFlatMode() { return flatMode ; }
-    public void setFlatMode(boolean flatMode) { this.flatMode = flatMode ; }
+    public boolean inFlatMode()                 { return flatMode ; }
+    public void setFlatMode(boolean flatMode)   { this.flatMode = flatMode ; }
     
     public char getPadChar()                { return padChar ; }
     public void setPadChar(char ch)         { this.padChar  = ch ; }
@@ -257,14 +259,13 @@ public class IndentedWriter
     public void incIndent()      { incIndent(unitIndent) ; }
     public void incIndent(int x)
     {
-        if (!flatMode) 
-            currentIndent += x ;
+        currentIndent += x ;
     }
 
     public void decIndent() { decIndent(unitIndent) ; }
     public void decIndent(int x) 
     {
-        if (!flatMode) currentIndent -= x ;
+        currentIndent -= x ;
     }
     
     public void setUnitIndent(int x) { unitIndent = x ; }

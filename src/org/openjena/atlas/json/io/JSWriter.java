@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -34,13 +35,24 @@ public class JSWriter
     public void startOutput() {}
     public void finishOutput() { out.flush(); } 
     
+    // These apply in nested and flat modes (the difference is controlled by the IndentedWriter
+    
+    private static String ArrayStart        = "[ " ;
+    private static String ArrayFinish       = " ]" ;
+    private static String ArraySep          = ", " ; 
+
+    private static String ObjectStart       = "{ " ;
+    private static String ObjectFinish      = "}" ;
+    private static String ObjectSep         = " ," ;
+    private static String ObjectPairSep     = " : " ;
+    
     // Remember whether we are in the first element of a compound (object or array). 
     Stack<Ref<Boolean>> stack = new Stack<Ref<Boolean>>() ;
     
     public void startObject()
     {
         startCompound() ;
-        out.print("{ ") ;
+        out.print(ObjectStart) ;
         out.incIndent() ;
     }
     
@@ -48,11 +60,11 @@ public class JSWriter
     {
         out.decIndent() ;
         if ( isFirst() )
-            out.print("}") ;
+            out.print(ObjectFinish) ;
         else
         {
             out.ensureStartOfLine() ;
-            out.println("}") ;
+            out.println(ObjectFinish) ;
         }
         finishCompound() ;
     }
@@ -65,9 +77,9 @@ public class JSWriter
             setNotFirst() ;
         }
         else
-            out.println(" ,") ;
+            out.println(ObjectSep) ;
         value(key) ;
-        out.print(" : ") ;
+        out.print(ObjectPairSep) ;
         // Ready to start the pair value.
     }
     
@@ -91,43 +103,42 @@ public class JSWriter
         value(val) ;
     }
 
-
     public void startArray()
     {
         startCompound() ;
-        out.print("[ ") ;
+        out.print(ArrayStart) ;
         // Messy with objects out.incIndent() ;
     }
-    
+     
     public void finishArray()
     {
 //        out.decIndent() ;
-        out.print(" ]") ;       // Leave on same line.
+        out.print(ArrayFinish) ;       // Leave on same line.
         finishCompound() ;
     }
 
     public void arrayElement(String str)
     {
-        arrayElementprocess() ;
+        arrayElementProcess() ;
         value(str) ;
     }
 
-    private void arrayElementprocess()
+    private void arrayElementProcess()
     {
         if ( isFirst() )
             setNotFirst() ;
         else
-            out.print(", ") ;
+            out.print(ArraySep) ;
     }
     
     public void arrayElement(boolean b)
     {
-        arrayElementprocess() ;
+        arrayElementProcess() ;
         value(b) ;
     }
     public void arrayElement(long integer)
     {
-        arrayElementprocess() ;
+        arrayElementProcess() ;
         value(integer) ;
     }
     
@@ -138,13 +149,13 @@ public class JSWriter
         return b.asString() ;
     }
     
-    static private boolean writeJavaScript = false ;
+    private static boolean writeJavaScript = false ;
     
     /* \"  \\ \/ \b \f \n \r \t
      * control characters (def?) 
-     * \ u four-hex-digits (if
-     *  you don't know why the comment writes "\ u", 
-     *  and not without space then ... */
+     * \ u four-hex-digits 
+     * (if you don't know why the comment writes "\ u", 
+     *  and not without space then ... ) */
     public static void outputQuotedString(IndentedWriter out, String string)
     { 
         final boolean allowBareWords = writeJavaScript ;
@@ -192,7 +203,7 @@ public class JSWriter
             switch (ch)
             {
                 case '"':   esc(out, '"') ; break ;
-                case '\'':   esc(out, '\'') ; break ;
+                case '\'':  esc(out, '\'') ; break ;
                 case '\\':  esc(out, '\\') ; break ;
                 case '/':
                     // Avoid </ which confuses if it's in HTML (this is from json.org)
@@ -211,7 +222,7 @@ public class JSWriter
                     //Character.isISOControl(ch) ; //00-1F, 7F-9F
                     // This is more than Character.isISOControl
                     
-                    if (ch < ' ' || 
+                    if ( ch < ' ' || 
                         (ch >= '\u007F' && ch <= '\u009F') ||
                         (ch >= '\u2000' && ch < '\u2100'))
                     {
@@ -294,12 +305,11 @@ public class JSWriter
         out.print(charHex) ; 
         return BitsInt.clear(x, 4*i, 4*i+4) ;
     }
-    
-
 }
 
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

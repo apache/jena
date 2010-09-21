@@ -23,6 +23,9 @@ import org.openjena.atlas.json.JsonVisitor ;
 
 public class JsonWriter implements JsonVisitor
 {
+    // Use JSWriter????!!!! Multiline control is tricky then.
+    // Or is it?  Because we know the length of things
+    
     IndentedWriter out ;
     
     public JsonWriter() { this(IndentedWriter.stdout) ; }
@@ -32,10 +35,22 @@ public class JsonWriter implements JsonVisitor
     public void startOutput()   {  }
     public void finishOutput()  {  out.flush()  ; }
     
+    private static String ArrayStart        = "[ " ;
+    private static String ArrayFinish       = " ]" ;
+    private static String ArraySep          = "," ; 
+
+    private static String ObjectStart       = "{ " ;
+    private static String ObjectFinish      = "} " ;
+    private static String ObjectSep         = " ," ;
+    private static String ObjectPairSep     = " : " ;
+    
+    // Make "unnecessary" space
+    private static String SPC               = " " ;
+    
     //@Override
     public void visit(JsonObject jsonObject)
     { 
-        out.print("{ ") ;
+        out.print(ObjectStart) ;
         out.incIndent() ;
         boolean first = true ; 
         boolean multiLine = false ;
@@ -48,13 +63,13 @@ public class JsonWriter implements JsonVisitor
         {
             if ( ! first )
             {
-                out.print(",") ;
+                out.print(ObjectSep) ;
                 out.println() ;
                 multiLine = true ; 
             }
             first =  false ;
             JSWriter.outputQuotedString(out, k) ;
-            out.print(" : ") ;
+            out.print(ObjectPairSep) ;
             out.incIndent() ;
             jsonObject.get(k).visit(this) ;
             out.decIndent() ;
@@ -63,8 +78,8 @@ public class JsonWriter implements JsonVisitor
         if ( multiLine )
             out.ensureStartOfLine() ;
         else
-            out.print(" ") ;
-        out.print("} ") ;
+            out.print(SPC) ;
+        out.print(ObjectFinish) ;
         
     }
 
@@ -75,7 +90,7 @@ public class JsonWriter implements JsonVisitor
         if ( multiLine )
             out.ensureStartOfLine() ;
 
-        out.print("[ ") ;
+        out.print(ArrayStart) ;
         out.incIndent() ;
         boolean first = true ; 
 
@@ -83,7 +98,7 @@ public class JsonWriter implements JsonVisitor
         {
             if ( ! first )
             {
-                out.print(",") ;
+                out.print(ArraySep) ;
                 out.println() ;
                 multiLine = true ; 
             }
@@ -93,9 +108,9 @@ public class JsonWriter implements JsonVisitor
         out.decIndent() ;
         if ( multiLine )
             out.ensureStartOfLine() ;
-        else
-            out.print(" ") ;
-        out.print("] ") ;
+//        else
+//            out.print(SPC) ;
+        out.print(ArrayFinish) ;
     }
 
     //@Override
