@@ -16,7 +16,6 @@ import java.util.Set ;
 import org.openjena.atlas.io.IndentedLineBuffer ;
 import org.openjena.atlas.io.IndentedWriter ;
 import org.openjena.atlas.json.JSON ;
-import org.openjena.atlas.json.JsonObject ;
 import org.openjena.atlas.json.JsonValue ;
 import org.openjena.atlas.lib.StrUtils ;
 import org.openjena.atlas.logging.Log ;
@@ -144,12 +143,13 @@ or
     static ResultSetRewindable rs1 = ResultSetFactory.makeRewindable(BuilderResultSet.build(SSE.parseItem(StrUtils.strjoinNL(rs1$)))) ;
     static ResultSetRewindable rs2 = ResultSetFactory.makeRewindable(BuilderResultSet.build(SSE.parseItem(StrUtils.strjoinNL(rs2$)))) ;
     
-   
     public static void main(String[] argv) throws Exception
     {
+        // ** Double space for end of object, end of object. 
         JsonValue obj = JSON.readAny("D.json") ;
         IndentedWriter out = new IndentedWriter(System.out) ; 
         out.setFlatMode(true) ;
+        //out.setEndOfLineMarker("$") ;
         JSON.write(out, obj) ;
         out.flush() ;
         System.exit(0) ;

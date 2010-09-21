@@ -1,4 +1,4 @@
-#!/bin/perl
+#!/usr/bin/perl
 # Grammar into HTML
 # Read in sparql.txt and the tokens.txt file
 

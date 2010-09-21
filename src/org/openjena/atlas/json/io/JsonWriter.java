@@ -40,7 +40,7 @@ public class JsonWriter implements JsonVisitor
     private static String ArraySep          = "," ; 
 
     private static String ObjectStart       = "{ " ;
-    private static String ObjectFinish      = "} " ;
+    private static String ObjectFinish      = "}" ;
     private static String ObjectSep         = " ," ;
     private static String ObjectPairSep     = " : " ;
     

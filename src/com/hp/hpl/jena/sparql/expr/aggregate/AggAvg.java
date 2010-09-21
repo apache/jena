@@ -9,7 +9,7 @@
 package com.hp.hpl.jena.sparql.expr.aggregate;
 
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.query.ARQ ;
+import com.hp.hpl.jena.sparql.SystemARQ ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
@@ -84,7 +84,7 @@ public class AggAvg extends AggregatorBase
                     total = XSDFuncOp.add(nv, total) ;
             }
             else
-                ARQ.logEval.warn("Evaluation error: avg() on "+nv) ;
+                SystemARQ.warn("Evaluation error: avg() on "+nv) ;
             
             if ( DEBUG ) System.out.println("avg: ("+total+","+count+")") ;
         }

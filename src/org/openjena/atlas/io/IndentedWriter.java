@@ -41,6 +41,7 @@ public class IndentedWriter
     protected boolean lineNumbers = false ;
     protected boolean startingNewLine = true ;
     private char padChar = ' ' ;
+    private String endOfLineMarker = null ;     // Null mean none.
     private String padString = null ;
     
     protected boolean flatMode = false ;
@@ -148,7 +149,9 @@ public class IndentedWriter
     public void newline()
     {
         lineStart() ; 
-        
+
+        if ( endOfLineMarker != null )
+            print(endOfLineMarker) ;
         if ( ! flatMode )
             write('\n') ;
         startingNewLine = true ;
@@ -246,6 +249,11 @@ public class IndentedWriter
     {
         this.lineNumbers = lineNumbers ;
     }
+    
+    public String getEndOfLineMarker()              { return endOfLineMarker ; }
+    
+    /** Set the marker included at end of line - set to null for "none".  Usually used for debugging. */ 
+    public void setEndOfLineMarker(String marker)   { endOfLineMarker = marker ; }
     
     /** Flat mode - print without NL, for a more compact representation - depends on caller */  
     public boolean inFlatMode()                 { return flatMode ; }

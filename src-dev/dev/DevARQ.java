@@ -13,7 +13,7 @@ public class DevARQ
     // ReportRemoteVirtuoso: StAX does not parse - times out too early? 
     // XSDDuration
     
-    // Evaluation logger for errors and warnings.
+    // Evaluation logger for errors and warnings.  SystemARQ.warn() for application-level warnings.
     
     // **Next
     // ** Sort out GraphStore.

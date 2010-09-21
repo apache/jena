@@ -5,13 +5,13 @@
 
 package com.hp.hpl.jena.sparql.expr;
 
+import com.hp.hpl.jena.sparql.SystemARQ ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.function.Function ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
 import com.hp.hpl.jena.sparql.function.FunctionFactory ;
 import com.hp.hpl.jena.sparql.function.FunctionRegistry ;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
-import org.openjena.atlas.logging.Log ;
 import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.sparql.util.FmtUtils ;
 
@@ -58,7 +58,7 @@ public class E_Function extends ExprFunctionN
         catch (ExprException ex)
         {
             if ( WarnOnUnknownFunction )
-                Log.warn(this, "URI <"+functionIRI+"> has no registered function factory") ;
+                SystemARQ.warn("URI <"+functionIRI+"> has no registered function factory") ;
         }
     }
     
