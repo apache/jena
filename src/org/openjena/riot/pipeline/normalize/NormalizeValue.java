@@ -12,7 +12,10 @@ import java.text.DecimalFormat ;
 import java.text.NumberFormat ;
 
 import com.hp.hpl.jena.datatypes.RDFDatatype ;
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.sparql.graph.NodeConst ;
+import com.hp.hpl.jena.sparql.util.DateTimeStruct ;
 
 class NormalizeValue
 {
@@ -23,12 +26,49 @@ class NormalizeValue
 
     // See Normalizevalue2 for "faster" versions (less parsing overhead). 
     
-    static DatatypeHandler dtBoolean = null ;
-    static DatatypeHandler dtDatetime = null ;
-
-    // DateTimeStruct
-    // Years may be 4 or more chars
+    static DatatypeHandler dtBoolean = new DatatypeHandler() {
+        public Node handle(Node node, String lexicalForm, RDFDatatype datatype)
+        {
+            if ( lexicalForm.equals("1") ) return NodeConst.nodeTrue ;
+            if ( lexicalForm.equals("0") ) return NodeConst.nodeFalse ;
+            return node ;
+        }
+    } ;
     
+    static DatatypeHandler dtAnyDateTime = new DatatypeHandler() {
+        public Node handle(Node node, String lexicalForm, RDFDatatype datatype)
+        {
+            // Fast test: 
+            if ( lexicalForm.indexOf('.') < 0 )
+                // No fractional seconds.
+                return node ;
+            
+            // The only variablity for a valid date/dateTime/g* type is:
+            //   Second part can have fractional seconds '.' s+ (if present) represents the fractional seconds;
+            DateTimeStruct dts = DateTimeStruct.parseDateTime(lexicalForm) ;
+            int idx = dts.second.indexOf('.') ;
+            int i = dts.second.length()-1 ;
+            for ( ; i > idx ; i-- )
+            {
+                if ( dts.second.charAt(i) != '0' )
+                    break ;
+            }
+            if ( i == dts.second.length() )
+                return node ;
+            
+            if ( i == idx )
+                // All trailings zeros, drop the '. as well.
+                dts.second = dts.second.substring(0, idx) ;    
+            else
+                dts.second = dts.second.substring(0, i+1) ;
+            
+            String lex2 = dts.toString() ;
+            return Node.createLiteral(lex2, null, datatype) ;
+        }
+    } ;
+    
+    static DatatypeHandler dtDateTime = dtAnyDateTime ;
+
     static DatatypeHandler dtInteger = new DatatypeHandler() {
         public Node handle(Node node, String lexicalForm, RDFDatatype datatype)
         {
@@ -53,9 +93,11 @@ class NormalizeValue
                 int x = Integer.parseInt(lex2) ;
                 lex2 = Integer.toString(x) ;
             }
-            if ( lex2.equals(lexicalForm) )
+            
+            // If it's a subtype of integer, then output a new node of datatype integer.
+            if ( datatype.equals(XSDDatatype.XSDinteger) && lex2.equals(lexicalForm) )
                 return node ;
-            return Node.createLiteral(lex2, null, datatype) ;
+            return Node.createLiteral(lex2, null, XSDDatatype.XSDinteger) ;
         }
     } ;
 

@@ -15,7 +15,7 @@ import com.hp.hpl.jena.sparql.sse.SSE ;
 
 public class TestNormalization extends BaseTest
 {
-    // ToDo doubles, lang tags
+    // TODO lang tags
     
     @Test public void normalize_int_01()        { normalize("23", "23") ; }
     @Test public void normalize_int_02()        { normalize("023", "23") ; }
@@ -28,6 +28,14 @@ public class TestNormalization extends BaseTest
     @Test public void normalize_int_09()        { normalize("+00", "0") ; }
     @Test public void normalize_int_10()        { normalize("-0", "0") ; }
     @Test public void normalize_int_11()        { normalize("-000", "0") ; }
+    
+    // Subtypes of integer
+    @Test public void normalize_int_20()        { normalize("'-000'^^xsd:int", "0") ; }
+    @Test public void normalize_int_21()        { normalize("'0'^^xsd:int", "0") ; }
+    @Test public void normalize_int_22()        { normalize("'1'^^xsd:long", "1") ; }
+    @Test public void normalize_int_23()        { normalize("'100'^^xsd:unsignedInt", "100") ; }
+    @Test public void normalize_int_24()        { normalize("'-100'^^xsd:nonPositiveInteger", "-100") ; }
+    @Test public void normalize_int_25()        { normalize("'+100'^^xsd:positiveInteger", "100") ; }
     
     @Test public void normalize_decimal_01()    { normalize("0.0", "0.0") ; }
     @Test public void normalize_decimal_02()    { normalize("'0'^^xsd:decimal", "0.0") ; }
@@ -63,13 +71,34 @@ public class TestNormalization extends BaseTest
     @Test public void normalize_double_16()     { normalize("+12345.6789e-9", "1.23456789E-5") ; }
     @Test public void normalize_double_17()     { normalize("-12345.6789e-9", "-1.23456789E-5") ; }
     
+    @Test public void normalize_datetime_01()   { normalizeDT("1984-01-01T07:07:07",    "1984-01-01T07:07:07") ; }
+    @Test public void normalize_datetime_02()   { normalizeDT("1984-01-01T07:07:07.0",  "1984-01-01T07:07:07") ; }
+    @Test public void normalize_datetime_03()   { normalizeDT("1984-01-01T07:07:07.00", "1984-01-01T07:07:07") ; }
+    @Test public void normalize_datetime_04()   { normalizeDT("1984-01-01T07:07:07.01", "1984-01-01T07:07:07.01") ; }
+    @Test public void normalize_datetime_05()   { normalizeDT("1984-01-01T07:07:07.010","1984-01-01T07:07:07.01") ; }
+    
+    @Test public void normalize_boolean_01()    { normalize("'true'^^xsd:boolean",  "'true'^^xsd:boolean") ; }
+    @Test public void normalize_boolean_02()    { normalize("'false'^^xsd:boolean", "'false'^^xsd:boolean") ; }
+    @Test public void normalize_boolean_03()    { normalize("'1'^^xsd:boolean",     "'true'^^xsd:boolean") ; }
+    @Test public void normalize_boolean_04()    { normalize("'0'^^xsd:boolean",     "'false'^^xsd:boolean") ; }
+
     private static void normalize(String input, String expected)
     {
         Node n1 = SSE.parseNode(input) ;
+        assertTrue("Invalid lexical form", n1.getLiteralDatatype().isValid(n1.getLiteralLexicalForm()));
+        
         Node n2 = CanonicalizeLiteral.get().convert(n1) ;
         Node n3 = SSE.parseNode(expected) ;
-        assertEquals(n3, n2) ;
+        assertEquals("Invalid canonicalization (lex)", n3.getLiteralLexicalForm(), n2.getLiteralLexicalForm()) ;
+        assertEquals("Invalid canonicalization (node)", n3, n2) ;
     }
+    
+    private static void normalizeDT(String input, String expected)
+    {
+        normalize("'"+input+"'^^xsd:dateTime",
+                  "'"+expected+"'^^xsd:dateTime") ;
+    }
+
 }
 
 /*

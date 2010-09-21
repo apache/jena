@@ -5,7 +5,8 @@ public class DevARQ
 {
     // Canonicalization: 
     //   faster forms
-    //   double, float, date*
+    //   lang tags
+
     // RIOT (etc) closing InputStream
     // Bad character encoding - exception but line/col = 1/1
     

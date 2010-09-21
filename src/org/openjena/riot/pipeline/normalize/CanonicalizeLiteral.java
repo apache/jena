@@ -56,19 +56,19 @@ public class CanonicalizeLiteral implements NodeTransform
     // MUST be after the handler definitions as these assign to statics, so it's code lexcial order.
     // or use static class to force touching that, initializing and then getting the values. 
     static {
-        dispatch.put(XSDDatatype.XSDinteger,        NormalizeValue.dtInteger) ;
-        dispatch.put(XSDDatatype.XSDdecimal,        NormalizeValue.dtDecimal) ;
+        dispatch.put(XSDDatatype.XSDinteger,                NormalizeValue.dtInteger) ;
+        dispatch.put(XSDDatatype.XSDdecimal,                NormalizeValue.dtDecimal) ;
 
-        // Subtypes.
-        dispatch.put(XSDDatatype.XSDint,            NormalizeValue.dtInteger) ;        
-        dispatch.put(XSDDatatype.XSDlong,           NormalizeValue.dtInteger) ;
-        dispatch.put(XSDDatatype.XSDshort,          NormalizeValue.dtInteger) ;
-        dispatch.put(XSDDatatype.XSDbyte,           NormalizeValue.dtInteger) ;
+        // Subtypes. Changes the datatype.
+        dispatch.put(XSDDatatype.XSDint,                    NormalizeValue.dtInteger) ;        
+        dispatch.put(XSDDatatype.XSDlong,                   NormalizeValue.dtInteger) ;
+        dispatch.put(XSDDatatype.XSDshort,                  NormalizeValue.dtInteger) ;
+        dispatch.put(XSDDatatype.XSDbyte,                   NormalizeValue.dtInteger) ;
 
-        dispatch.put(XSDDatatype.XSDunsignedInt,    NormalizeValue.dtInteger) ;
-        dispatch.put(XSDDatatype.XSDunsignedLong,   NormalizeValue.dtInteger) ;
-        dispatch.put(XSDDatatype.XSDunsignedShort,  NormalizeValue.dtInteger) ;
-        dispatch.put(XSDDatatype.XSDunsignedByte,   NormalizeValue.dtInteger) ;
+        dispatch.put(XSDDatatype.XSDunsignedInt,            NormalizeValue.dtInteger) ;
+        dispatch.put(XSDDatatype.XSDunsignedLong,           NormalizeValue.dtInteger) ;
+        dispatch.put(XSDDatatype.XSDunsignedShort,          NormalizeValue.dtInteger) ;
+        dispatch.put(XSDDatatype.XSDunsignedByte,           NormalizeValue.dtInteger) ;
 
         dispatch.put(XSDDatatype.XSDnonPositiveInteger,     NormalizeValue.dtInteger) ;
         dispatch.put(XSDDatatype.XSDnonNegativeInteger,     NormalizeValue.dtInteger) ;
@@ -79,9 +79,10 @@ public class CanonicalizeLiteral implements NodeTransform
         dispatch.put(XSDDatatype.XSDfloat,      NormalizeValue.dtFloat ) ;
         dispatch.put(XSDDatatype.XSDdouble,     NormalizeValue.dtDouble ) ;
 
-        dispatch.put(XSDDatatype.XSDdateTime,   null) ;     // Fractional seconds.
+        // Only fractional seconds part can vary for the same value. 
+        dispatch.put(XSDDatatype.XSDdateTime,   NormalizeValue.dtDateTime) ;
+        
         // These are fixed format 
-        // (?? 4 digit year)
 //        dispatch.put(XSDDatatype.XSDdate,       null) ;
 //        dispatch.put(XSDDatatype.XSDtime,       null) ;
 //        dispatch.put(XSDDatatype.XSDgYear,      null) ;
@@ -89,6 +90,7 @@ public class CanonicalizeLiteral implements NodeTransform
 //        dispatch.put(XSDDatatype.XSDgMonth,     null) ;
 //        dispatch.put(XSDDatatype.XSDgMonthDay,  null) ;
 //        dispatch.put(XSDDatatype.XSDgDay,       null) ;
+
         dispatch.put(XSDDatatype.XSDduration,   null) ;
         dispatch.put(XSDDatatype.XSDboolean,    NormalizeValue.dtBoolean) ;
     }
