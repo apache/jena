@@ -1,7 +1,4 @@
+PREFIX : <http://example/> 
 PREFIX foaf: <http://xmlns.com/foaf/0.1/> 
-SELECT ( SAMPLE(?N) as ?Name) 
-       ( GROUP_CONCAT(DISTINCT ?M; SEPARATOR = ",") AS ?Nicknames )
-WHERE { ?P a foaf:Person ; 
-           foaf:name ?N ;
-           foaf:nick ?M . }
-GROUP BY ?P  
+
+SELECT ?g { :x :p{0} :x }
