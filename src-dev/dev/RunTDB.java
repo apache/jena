@@ -45,7 +45,8 @@ public class RunTDB
 
     public static void main(String[] args) throws IOException
     {
-//        tdb.tdbquery.main("--tdb=tdb.ttl", "SELECT * { ?s ?p ?o}") ;
+        // Config union graph
+        tdb.tdbquery.main("--tdb=tdb.ttl", "SELECT * { ?s ?p ?o}") ;
 //        System.exit(0) ;
         
         Dataset ds = TDBFactory.createDataset() ;

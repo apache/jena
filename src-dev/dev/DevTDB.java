@@ -4,7 +4,7 @@ package dev ;
 public class DevTDB
 {
     //** Union graph in assembler.
-    // Document ; not for default model.
+    // Document ; not for default model; test [done?]
     
     // == Misc
     //    Tidy up wiki (esp "Use from java" - use datasets, show loader use)

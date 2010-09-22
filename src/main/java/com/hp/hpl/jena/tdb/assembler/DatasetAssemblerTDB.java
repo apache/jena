@@ -19,7 +19,7 @@ import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.rdf.model.Resource ;
 import com.hp.hpl.jena.sparql.core.assembler.DatasetAssembler ;
-import com.hp.hpl.jena.sparql.graph.NodeConst ;
+import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.TDBFactory ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
@@ -48,11 +48,9 @@ public class DatasetAssemblerTDB extends DatasetAssembler
         if ( root.hasProperty(pUnionGraph) )
         {
             Node b = root.getProperty(pUnionGraph).getObject().asNode() ;
-             
-            if ( b.equals(NodeConst.nodeTrue) )
-                dsg.getContext().set(TDB.symUnionDefaultGraph, true) ;
-            else if ( b.equals(NodeConst.nodeFalse) )
-                dsg.getContext().set(TDB.symUnionDefaultGraph, false) ;
+            NodeValue nv = NodeValue.makeNode(b) ;
+            if ( nv.isBoolean() )
+                dsg.getContext().set(TDB.symUnionDefaultGraph, nv.getBoolean()) ;
             else
                 Log.warn(DatasetAssemblerTDB.class,
                          "Failed to recognize value for union graph setting (ignored): "+b) ;
