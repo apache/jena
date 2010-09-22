@@ -8,7 +8,7 @@ package org.openjena.atlas.lib;
 
 
 
-public final class SinkNull<T> implements Sink<T>
+public class SinkNull<T> implements Sink<T>
 {
     public static <X> SinkNull<X> create() { return new SinkNull<X>() ; }
     

@@ -17,7 +17,7 @@ import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.iri.IRI ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 
-public class ParserProfileChecker extends ParserProfileBase implements ParserProfile 
+public class ParserProfileChecker extends ParserProfileBase //implements ParserProfile 
 {
     private boolean checkLiterals = true ;
     private boolean resolveURIs = true ;
