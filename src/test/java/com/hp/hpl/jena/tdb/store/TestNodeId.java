@@ -42,7 +42,7 @@ public class TestNodeId extends BaseTest
     { test("'3'^^xsd:int", SSE.parseNode("3")) ; }
 
     @Test public void nodeId_int_4()
-    { test("'3'", null) ; }
+    { test("'3'", (Node)null) ; }
 
     @Test public void nodeId_int_5()
     { test("-1",  SSE.parseNode("-1")) ; }
@@ -60,7 +60,7 @@ public class TestNodeId extends BaseTest
     { test("3.14", SSE.parseNode("3.14")) ; }
 
     @Test public void nodeId_decimal_2()
-    { test("123456789.123456789", null) ; }
+    { test("123456789.123456789", (Node)null) ; }
     
     // Just this once, directly create the Node.
     @Test public void nodeId_decimal_3()
@@ -69,36 +69,58 @@ public class TestNodeId extends BaseTest
     @Test public void nodeId_decimal_4()
     { test("-1.0",  SSE.parseNode("-1.0")) ; }
     
-    @Test public void nodeId_dateTime_1()
+    @Test public void nodeId_dateTime_01()
     { test("'2008-04-28T15:36:15+01:00'^^xsd:dateTime") ; }
 
-    @Test public void nodeId_dateTime_2()
+    @Test public void nodeId_dateTime_02()
     { test("'2008-04-28T15:36:15Z'^^xsd:dateTime") ; }
 
-    @Test public void nodeId_dateTime_3()
+    @Test public void nodeId_dateTime_03()
     { test("'2008-04-28T15:36:15+00:00'^^xsd:dateTime") ; }
 
-    @Test public void nodeId_dateTime_4()
+    @Test public void nodeId_dateTime_04()
     { test("'2008-04-28T15:36:15-05:00'^^xsd:dateTime") ; }
 
     // No timezone.
-    @Test public void nodeId_dateTime_5()
+    @Test public void nodeId_dateTime_05()
     { test("'2008-04-28T15:36:15'^^xsd:dateTime") ; }
 
     // Note the trailing zero - system does not preserve perfect lexical forms. 
-    @Test public void nodeId_dateTime_6()
-    { test("'2008-04-28T15:36:05.450'^^xsd:dateTime") ; }
+    @Test public void nodeId_dateTime_06()
+    { test("'2008-04-28T15:36:05.450'^^xsd:dateTime", "'2008-04-28T15:36:05.45'^^xsd:dateTime") ; }
 
     // Java bug: T24:00:00 not accepted by DatatypeFactory.newXMLGregorianCalendar(lex)
-//    @Test public void nodeId_dateTime_7()
+//    @Test public void nodeId_dateTime_07()
 //    { test("'2008-04-28T24:00:00'^^xsd:dateTime", SSE.parseNode("'2008-04-29T00:00:00'^^xsd:dateTime")) ; }
     
-    @Test public void nodeId_dateTime_8()
-    { test("'8008-04-28T15:36:05.450'^^xsd:dateTime", null) ; }
+    // Out of range.
+    @Test public void nodeId_dateTime_08()
+    { test("'8008-04-28T15:36:05.45'^^xsd:dateTime", (Node)null) ; }
 
-    @Test public void nodeId_dateTime_9()
+    @Test public void nodeId_dateTime_09()
     { test("'2008-04-28T15:36:05.001'^^xsd:dateTime") ; }
     
+    @Test public void nodeId_dateTime_10()
+    { test("'2008-04-28T15:36:05.01'^^xsd:dateTime") ; }
+
+    @Test public void nodeId_dateTime_11()
+    { test("'2008-04-28T15:36:05.1'^^xsd:dateTime") ; }
+
+    // Canonicalization test - fractional seconds.
+    @Test public void nodeId_dateTime_12()
+    { test("'2008-04-28T15:36:05.010'^^xsd:dateTime", "'2008-04-28T15:36:05.01'^^xsd:dateTime") ; }
+
+    @Test public void nodeId_dateTime_13()
+    { test("'2008-04-28T15:36:05.100'^^xsd:dateTime", "'2008-04-28T15:36:05.1'^^xsd:dateTime") ; }
+
+    // Out of range.
+    // But XMLGregorian calendar truncates.
+//    @Test public void nodeId_dateTime_14()
+//    { test("'2008-04-28T15:36:05.0001'^^xsd:dateTime") ; }
+//
+//    @Test public void nodeId_dateTime_15()
+//    { test("'2008-04-28T15:36:05.00010'^^xsd:dateTime", "'2008-04-28T15:36:05.0001'^^xsd:dateTime") ; }
+
     @Test public void nodeId_date_1()
     { test("'2008-04-28Z'^^xsd:date", SSE.parseNode("'2008-04-28Z'^^xsd:date")) ; }
 
@@ -112,7 +134,7 @@ public class TestNodeId extends BaseTest
     { test("'2008-04-28+02:00'^^xsd:date", SSE.parseNode("'2008-04-28+02:00'^^xsd:date")) ; }
 
     @Test public void nodeId_date_5()
-    { test("'8008-04-28'^^xsd:date", null) ; }
+    { test("'8008-04-28'^^xsd:date", (Node)null) ; }
 
     @Test public void nodeId_boolean_1()
     { test("'true'^^xsd:boolean", SSE.parseNode("'true'^^xsd:boolean")) ; }
@@ -128,22 +150,33 @@ public class TestNodeId extends BaseTest
 
     private void test(String x)
     {
-        test(x, SSE.parseNode(x)) ;
+        test(x, x) ;
     }
     
+    private void test(String x, String expected)
+    {
+        test(x, SSE.parseNode(expected)) ;
+    }
+
     private void test(String x, Node correct)
     {
         Node n = SSE.parseNode(x) ;
         NodeId nodeId = NodeId.inline(n) ;
-        
         if ( correct == null )
         {
             assertNull(nodeId) ;
             return ;
         }
+
         Node n2 = NodeId.extract(nodeId) ;
         assertNotNull(n2) ;
-        assertEquals(correct, n2) ;
+        
+        String s = "("+correct.getLiteralLexicalForm()+","+n2.getLiteralLexicalForm()+")" ;
+        
+        assertTrue("Not same value: "+s, correct.sameValueAs(n2)) ;
+        
+        // Term equality.
+        assertEquals("Not same term", correct, n2) ;
     }
 }
 

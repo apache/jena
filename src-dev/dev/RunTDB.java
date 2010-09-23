@@ -8,8 +8,6 @@
 
 package dev;
 
-import java.io.IOException ;
-
 import org.openjena.atlas.iterator.Filter ;
 import org.openjena.atlas.lib.Tuple ;
 import org.openjena.atlas.logging.Log ;
@@ -43,8 +41,19 @@ public class RunTDB
         nextDivider = divider ;
     }
 
-    public static void main(String[] args) throws IOException
+    public static void main(String[] args) throws Exception
     {
+     
+        Node n = SSE.parseNode("'2010-09-23T02:02:02'^^xsd:dateTime") ;
+        System.out.println(n) ;
+        
+        NodeId x = NodeId.inline(n) ;
+        System.out.println(x) ;
+        Node n2 = NodeId.extract(x) ;
+        
+        System.out.println(n2) ;
+        System.exit(0) ;
+        
         // Config union graph
         tdb.tdbquery.main("--tdb=tdb.ttl", "SELECT * { ?s ?p ?o}") ;
 //        System.exit(0) ;

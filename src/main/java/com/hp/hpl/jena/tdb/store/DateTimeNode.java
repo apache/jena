@@ -7,6 +7,8 @@
 
 package com.hp.hpl.jena.tdb.store;
 
+import java.math.BigDecimal ;
+
 import javax.xml.datatype.DatatypeConfigurationException ;
 import javax.xml.datatype.DatatypeConstants ;
 import javax.xml.datatype.DatatypeFactory ;
@@ -108,24 +110,36 @@ public class DateTimeNode
 
     // From string.  Assumed legal.
     // Returns -1 for unpackable.
+    
     public static long packDateTime(String lex)
+    { 
+        try { return packDateTime$(lex) ; }
+        catch (Exception ex) { return -1 ; }
+    }
+    
+    private static long packDateTime$(String lex)
     {
         long v = 0 ;
-        
         // Whitespace facet processing.
+        lex = lex.trim() ;
         
         boolean containsZ = (lex.indexOf('Z') > 0 ) ;
+        
         // Bug in Java 1.6 (build 5 at least)
         // T24:00:00 not accepted.
         // See also TestNodeId.nodeId_date_time_7
         
-        XMLGregorianCalendar xcal = null ;
+        XMLGregorianCalendar xcal = datatypeFactory.newXMLGregorianCalendar(lex) ; ;
         
-        try {
-            // Play very safe.
-            // This does not accept whitespace even if legal in XSD.
-            xcal = datatypeFactory.newXMLGregorianCalendar(lex.trim()) ;
-        } catch (Exception ex) { return -1 ; } 
+        if ( xcal.getFractionalSecond() != null )
+        { 
+            BigDecimal fs = xcal.getFractionalSecond() ;
+            // Were there sub-millisecond resolution fractional seconds?
+            // This isn't perfect but it needs a very long fractional part to break it,
+            // less than observable quantum of time.
+            if ( fs.doubleValue() != xcal.getMillisecond()/1000.0 )
+                return -1 ;
+        }
         
         int y = xcal.getYear() ;
         
@@ -192,17 +206,24 @@ public class DateTimeNode
             NumberUtils.formatInt(sb, minutes, 2) ;
             sb.append(':') ;
             NumberUtils.formatInt(sb, sec, 2) ;
+
+            // Formatting needed : int->any
+            if ( fractionSec != 0 )
+            {
+                sb.append(".") ;
+                // TODO Do better
+                if ( fractionSec%100 == 0 )
+                    NumberUtils.formatInt(sb, fractionSec/100, 1) ;
+                else if ( fractionSec%10 == 0 )
+                    NumberUtils.formatInt(sb, fractionSec/10, 2) ;
+                else
+                    NumberUtils.formatInt(sb, fractionSec, 3) ;
+                
+            }
         }
-        
-        // Formatting needed : int->any
-        if ( isDateTime && fractionSec != 0 )
-        {
-            sb.append(".") ;
-            NumberUtils.formatInt(sb, fractionSec, 3) ;
-        }
-          
         // tz in 15min units
-            
+        
+
         if ( tz == TZ_Z )
         {
             sb.append("Z") ;
@@ -223,48 +244,6 @@ public class DateTimeNode
         NumberUtils.formatInt(sb, tzM, 2) ;
         return sb.toString();
     }
-    
-    private static String unpack_OLD(long v, boolean isDateTime)
-    {
-        // YYYY:MM:DD => 13 bits year, 4 bits month, 5 bits day => 22 bits
-        int years = (int)BitsLong.unpack(v, YEAR, YEAR+YEAR_LEN) ;
-        int months = (int)BitsLong.unpack(v, MONTH, MONTH+MONTH_LEN) ;
-        int days = (int)BitsLong.unpack(v, DAY, DAY+DAY_LEN) ;
-        
-        int hours = (int)BitsLong.unpack(v, HOUR, HOUR+HOUR_LEN) ;
-        int minutes = (int)BitsLong.unpack(v, MINUTES, MINUTES+MINUTES_LEN) ; 
-        int milliSeconds = (int)BitsLong.unpack(v, MILLI, MILLI+MILLI_LEN) ;
-        int sec = milliSeconds / 1000 ;
-        int fractionSec = milliSeconds % 1000 ;
-        
-        // Or XMLGregorianCalendar.toXMLFormat()
-        
-        String lex = 
-            isDateTime ?
-            String.format("%04d-%02d-%02dT%02d:%02d:%02d", years, months, days, hours, minutes, sec) :
-            String.format("%04d-%02d-%02d", years, months, days) ;
-        if ( isDateTime && fractionSec != 0 )
-            lex = String.format("%s.%d", lex, fractionSec) ;
-            
-            
-        // tz in 15min units
-            
-        int tz = (int)BitsLong.unpack(v, TZ, TZ+TZ_LEN);
-        if ( tz == TZ_Z )
-            return lex+"Z" ; 
-        if ( tz == TZ_NONE )
-            return lex ; 
-            
-        // Sign extend.
-        if ( BitsLong.isSet(v, TZ+TZ_LEN-1) )
-            tz = BitsInt.set(tz, TZ_LEN, 32) ;
-        
-        int tzH = tz/4 ;
-        int tzM = (tz%4)*15 ;
-        return String.format("%s%+03d:%02d", lex, tzH, tzM) ;
-    }
-
-
 }
 
 /*
