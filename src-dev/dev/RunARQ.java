@@ -145,19 +145,19 @@ or
     
     public static void main(String[] argv) throws Exception
     {
-        String[] x = { 
-            "1984-01-01T00:00:00",
-            "1984-01-01T00:00:00.0",
-            "1984-01-01T00:00:00.10",
-        } ;
-        for ( String s : x )
-        {
-            System.out.println(s) ;
-            System.out.println(XSDDatatype.XSDdateTime.isValid(s)) ;
-        }
-            
-            
-        System.exit(0) ;
+//        String[] x = { 
+//            "1984-01-01T00:00:00",
+//            "1984-01-01T00:00:00.0",
+//            "1984-01-01T00:00:00.10",
+//        } ;
+//        for ( String s : x )
+//        {
+//            System.out.println(s) ;
+//            System.out.println(XSDDatatype.XSDdateTime.isValid(s)) ;
+//        }
+//            
+//            
+//        System.exit(0) ;
         
         // ** Double space for end of object, end of object. 
         JsonValue obj = JSON.readAny("D.json") ;

@@ -3,7 +3,8 @@ package dev ;
 
 public class DevARQ
 {
-    // Fix URIs. () [] SPC
+    // Canonicalization: Fix URIs. () [] SPC
+    // DateTime: TDB uses .###
     
     // RIOT (etc) closing InputStream
     // Bad character encoding - exception but line/col = 1/1

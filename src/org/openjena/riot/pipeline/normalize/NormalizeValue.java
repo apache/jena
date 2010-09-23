@@ -11,9 +11,14 @@ import java.math.BigInteger ;
 import java.text.DecimalFormat ;
 import java.text.NumberFormat ;
 
+import javax.xml.datatype.DatatypeConfigurationException ;
+import javax.xml.datatype.DatatypeFactory ;
+import javax.xml.datatype.XMLGregorianCalendar ;
+
 import com.hp.hpl.jena.datatypes.RDFDatatype ;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.sparql.ARQException ;
 import com.hp.hpl.jena.sparql.graph.NodeConst ;
 import com.hp.hpl.jena.sparql.util.DateTimeStruct ;
 
@@ -35,6 +40,15 @@ class NormalizeValue
         }
     } ;
     
+    private static DatatypeFactory datatypeFactory = null ;
+    static
+    { 
+        try 
+        { datatypeFactory = DatatypeFactory.newInstance() ; }
+        catch (DatatypeConfigurationException ex)
+        { throw new ARQException("NormalizeValue", ex) ; }
+    }
+    
     static DatatypeHandler dtAnyDateTime = new DatatypeHandler() {
         public Node handle(Node node, String lexicalForm, RDFDatatype datatype)
         {
@@ -43,10 +57,28 @@ class NormalizeValue
                 // No fractional seconds.
                 return node ;
             
+            // Could use XMLGregorianCalendar but still need to canonicalize fractional seconds.
+            // Record for history. 
+            if ( false )
+            {
+                XMLGregorianCalendar xcal = datatypeFactory.newXMLGregorianCalendar(lexicalForm) ;
+                if ( xcal.getFractionalSecond() != null )
+                {
+                    if ( xcal.getFractionalSecond().compareTo(BigDecimal.ZERO) == 0 )
+                        xcal.setFractionalSecond(null) ;
+                    else
+                        // stripTrailingZeros does the right thing on fractional values. 
+                        xcal.setFractionalSecond(xcal.getFractionalSecond().stripTrailingZeros()) ;
+                }
+                String lex2 = xcal.toXMLFormat() ;
+                if ( lex2.equals(lexicalForm) )
+                    return node ;
+                return Node.createLiteral(lex2, null, datatype) ;
+            }
             // The only variablity for a valid date/dateTime/g* type is:
             //   Second part can have fractional seconds '.' s+ (if present) represents the fractional seconds;
             DateTimeStruct dts = DateTimeStruct.parseDateTime(lexicalForm) ;
-            int idx = dts.second.indexOf('.') ;
+            int idx = dts.second.indexOf('.') ;     // We have already tested for the existence of '.'
             int i = dts.second.length()-1 ;
             for ( ; i > idx ; i-- )
             {
@@ -57,12 +89,15 @@ class NormalizeValue
                 return node ;
             
             if ( i == idx )
-                // All trailings zeros, drop the '. as well.
+                // All trailings zeros, drop the '.' as well.
                 dts.second = dts.second.substring(0, idx) ;    
             else
                 dts.second = dts.second.substring(0, i+1) ;
             
             String lex2 = dts.toString() ;
+            // Can't happen.  We munged dts.second. 
+//            if ( lex2.equals(lexicalForm) )
+//                return node ;
             return Node.createLiteral(lex2, null, datatype) ;
         }
     } ;

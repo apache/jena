@@ -129,7 +129,7 @@ public class ErrorHandlerLib
         }
     }
     
-    /** An error handler that logs messages only for errors and warnings */ 
+    /** An error handler that logs messages for errors and warnings and attempt to carry on */ 
     private static class ErrorHandlerWarning extends ErrorLogger implements ErrorHandler
     {
         public ErrorHandlerWarning(Logger log)

@@ -8,8 +8,9 @@
 package org.openjena.atlas.json.io;
 
 
-import static org.openjena.atlas.lib.Chars.CH_QUOTE1 ;
 import static org.openjena.atlas.lib.Chars.CH_QUOTE2 ;
+import static org.openjena.atlas.lib.Chars.CH_QUOTE1 ;
+import static org.openjena.atlas.lib.Chars.CH_ZERO ;
 
 import java.io.OutputStream ;
 import java.util.Stack ;
@@ -200,10 +201,13 @@ public class JSWriter
                 continue ;
             }
             
+           
+            
             switch (ch)
             {
-                case '"':   esc(out, '"') ; break ;
-                case '\'':  esc(out, '\'') ; break ;
+                // Done in default. Only \" is legal JSON.
+                //case '"':   esc(out, '"') ; break ;
+                //case '\'':  esc(out, '\'') ; break ;
                 case '\\':  esc(out, '\\') ; break ;
                 case '/':
                     // Avoid </ which confuses if it's in HTML (this is from json.org)
@@ -218,6 +222,8 @@ public class JSWriter
                 case '\r':  esc(out, 'r') ; break ;
                 case '\t':  esc(out, 't') ; break ;
                 default:
+                    
+                    if ( ch == quoteChar ) { esc(out, '"') ; break ; }
                     
                     //Character.isISOControl(ch) ; //00-1F, 7F-9F
                     // This is more than Character.isISOControl
@@ -239,7 +245,8 @@ public class JSWriter
                     break ;
             }
         }
-        out.print(quoteChar) ;
+        if ( quoteChar != CH_ZERO )
+            out.print(quoteChar) ;
     }
     
     private void startCompound()    { stack.push(new Ref<Boolean>(true)) ; }
