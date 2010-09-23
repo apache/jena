@@ -21,7 +21,7 @@ import com.hp.hpl.jena.iri.IRIFactory ;
 import com.hp.hpl.jena.iri.IRIRelativize ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 
-/** Utilites for formatter output (N-Triples and Turtle formats) */
+/** Utilites for formatter output */
 public class OutputLangUtils
 {
     // Make an object so it can have per-instance flags
