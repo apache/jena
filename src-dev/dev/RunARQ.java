@@ -9,8 +9,10 @@ package dev;
 
 import static org.openjena.atlas.lib.StrUtils.strjoinNL ;
 
+import java.util.ArrayList ;
 import java.util.HashSet ;
 import java.util.Iterator ;
+import java.util.List ;
 import java.util.Set ;
 
 import org.openjena.atlas.io.IndentedLineBuffer ;
@@ -34,9 +36,7 @@ import com.hp.hpl.jena.query.QueryExecution ;
 import com.hp.hpl.jena.query.QueryExecutionFactory ;
 import com.hp.hpl.jena.query.QueryFactory ;
 import com.hp.hpl.jena.query.QuerySolutionMap ;
-import com.hp.hpl.jena.query.ResultSetFactory ;
 import com.hp.hpl.jena.query.ResultSetFormatter ;
-import com.hp.hpl.jena.query.ResultSetRewindable ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.sparql.algebra.Algebra ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
@@ -45,6 +45,7 @@ import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.RenamerVars ;
+import com.hp.hpl.jena.sparql.engine.main.VarRename ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
@@ -56,7 +57,6 @@ import com.hp.hpl.jena.sparql.lang.ParserSPARQL11Update ;
 import com.hp.hpl.jena.sparql.modify.request.UpdateWriter ;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
-import com.hp.hpl.jena.sparql.sse.builders.BuilderResultSet ;
 import com.hp.hpl.jena.sparql.util.ExprUtils ;
 import com.hp.hpl.jena.sparql.util.QueryExecUtils ;
 import com.hp.hpl.jena.sparql.util.Timer ;
@@ -91,60 +91,50 @@ public class RunARQ
         System.out.println("Compare = " + cmp);
     }
     
-    /*
-     * 
----------------
-| x    | y    |
-===============
-| _:b0 | _:b1 |
-| _:b2 | _:b3 |
-| _:b1 | _:b0 |
----------------
-Expected: 3 -----------------------------
----------------
-| y    | x    |
-===============
-| _:b0 | _:b1 |
-| _:b2 | _:b3 |
-| _:b3 | _:b2 |
----------------
-or
----------------
-| x    | y    |
-===============
-| _:b1 | _:b0 |
-| _:b3 | _:b2 |
-| _:b2 | _:b3 |
----------------
-
-     */
-    
-    // nasty result set.
-    // These are the same but the first row of rs2$ throws in a wrong mapping of b0/c1
-    // Right mapping is:
-    // b0->c3, b1->c2, b2->c1, b3->c0
-    // Currently we get:
-    // b0->c1, b1->c0, b2->c3, b3->c2, then last row fails.
-    
-    static String[] rs1$ = {
-        "(resultset (?x ?y)",
-        "   (row (?x _:b0) (?y _:b1))",
-        "   (row (?x _:b2) (?y _:b3))",
-        "   (row (?x _:b1) (?y _:b0))",
-        ")"} ;
-    static String[] rs2$ = {
-        "(resultset (?x ?y)",
-        "   (row (?x _:c1) (?y _:c0))",
-        "   (row (?x _:c3) (?y _:c2))",
-        "   (row (?x _:c2) (?y _:c3))",
-        ")"} ;
-    
-    
-    static ResultSetRewindable rs1 = ResultSetFactory.makeRewindable(BuilderResultSet.build(SSE.parseItem(StrUtils.strjoinNL(rs1$)))) ;
-    static ResultSetRewindable rs2 = ResultSetFactory.makeRewindable(BuilderResultSet.build(SSE.parseItem(StrUtils.strjoinNL(rs2$)))) ;
-    
     public static void main(String[] argv) throws Exception
     {
+        if ( false )
+        {
+            String qs = StrUtils.strjoinNL("SELECT DISTINCT ?s",
+                                           "{ SERVICE <http://dbpedia.org/sparql>",
+                                           "    { SELECT ?s { ?s <http://xmlns.com/foaf/0.1/knows> ?o . } limit 10 }",
+            "}") ;
+            Query query = QueryFactory.create(qs) ;
+            Op op = Algebra.compile(query) ;
+            divider() ;
+            System.out.println(op) ;
+            Op op2 = Algebra.optimize(op) ;
+            divider() ;
+            System.out.println(op2) ;
+        }
+        
+        {
+            String qs = StrUtils.strjoinNL("SELECT ?s { ?s <http://xmlns.com/foaf/0.1/knows> ?o . } limit 10 ") ;
+            Query query = QueryFactory.create(qs) ;
+            Op op = Algebra.compile(query) ;
+//            divider() ;
+//            System.out.println(op) ;
+            Op op2 = Algebra.optimize(op) ;
+            divider() ;
+            System.out.println(op2) ;
+            divider() ;
+            
+            List<Var> vars = new ArrayList<Var>() ;
+            vars.add(Var.alloc("s")) ;
+            
+            //AlgebraGenerator.Line 605
+            Op op3 = VarRename.rename(op, vars) ;
+            
+            // Better - find all vars, find safe prefix, use that.
+            
+            
+            System.out.println(op3) ;
+            divider() ;
+            
+        
+        }
+        
+        System.exit(0) ;
 //        String[] x = { 
 //            "1984-01-01T00:00:00",
 //            "1984-01-01T00:00:00.0",
@@ -298,6 +288,20 @@ or
         System.exit(0) ;
     }
     
+    public static void analyseQuery(String ...queryString)
+    {
+        String qs = StrUtils.strjoinNL(queryString) ;
+        Query query = QueryFactory.create(qs) ;
+        Op op = Algebra.compile(query) ;
+        divider() ;
+        System.out.println(op) ;
+        Op op2 = Algebra.optimize(op) ;
+        divider() ;
+        System.out.println(op2) ;
+        divider() ;
+    }
+
+    
     private static void sparql11update()
     {
         GraphStore graphStore = GraphStoreFactory.create() ;
@@ -389,7 +393,8 @@ or
         System.out.println("----Input:") ;
         System.out.println(str$);
         
-        UpdateRequest update = parseUpdate(str$);
+        UpdateRequest update = UpdateFactory.create(str$) ;
+
         UpdateAction.execute(update, graphStore) ;
         SSE.write(graphStore) ;
     }
@@ -400,7 +405,7 @@ or
         divider() ;
         System.out.println("----Input:") ;
         System.out.println(str$);
-        UpdateRequest update = parseUpdate(str$); 
+        UpdateRequest update = UpdateFactory.create(str$) ; 
         System.out.println("----Output:") ;
         SerializationContext sCxt = new SerializationContext(update) ;
         //SerializationContext sCxt = new SerializationContext() ;
@@ -422,16 +427,6 @@ or
             UpdateRequest update2 = new UpdateRequest() ;
             p2.parse(update2, str2) ;
         }
-    }
-    
-    private static UpdateRequest parseUpdate(String str)
-    {
-        return UpdateFactory.create(str) ;
-//        Reader r = new StringReader(str) ;
-//        ParserSPARQL11Update p = new ParserSPARQL11Update() ;
-//        UpdateRequest update = new UpdateRequest() ;
-//        p.parse(update, str) ;
-//        return update ;
     }
     
     private static void execTimed(Query query, Model model)

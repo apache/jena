@@ -3,6 +3,8 @@ package dev ;
 
 public class DevARQ
 {
+    // VarRename, OpVars, VarFinder and VarLib -- sort out!
+    
     // Canonicalization: Fix URIs. () [] SPC
     // DateTime: TDB uses .###
     

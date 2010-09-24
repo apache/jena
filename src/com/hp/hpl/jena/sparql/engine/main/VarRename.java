@@ -19,7 +19,7 @@ import com.hp.hpl.jena.sparql.graph.NodeTransformLib ;
 
 public class VarRename
 {
-    // See also OpVar, VarFiner and VarLib - needs to be pulled together really.
+    // See also OpVar, VarFinder and VarLib - needs to be pulled together really.
     // Also need to renaming support for renames where only a
     // certain set are mapped (for (assign (?x ?.0)))
     
