@@ -3,7 +3,10 @@ package dev ;
 
 public class DevARQ
 {
-    // VarRename, OpVars, VarFinder and VarLib -- sort out!
+    // VarRename, OpVars, VarFinder and VarUtils -- sort out!
+    //   Rename into SERVICE broken - an bNodes in OpAsQuery need reversing.
+    //   Could stop at SERVICE or in substitute, do a mask for projection. 
+    //   That would need a top down TransformCopy application.
     
     // Canonicalization: Fix URIs. () [] SPC
     // DateTime: TDB uses .###

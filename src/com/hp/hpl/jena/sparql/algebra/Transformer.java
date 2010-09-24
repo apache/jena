@@ -25,11 +25,12 @@ import com.hp.hpl.jena.sparql.expr.ExprTransformer ;
 import com.hp.hpl.jena.sparql.expr.aggregate.Aggregator ;
 import org.openjena.atlas.logging.Log ;
 
+/** A botton-top application of a transformation of SPARQl algebra */  
 public class Transformer
 {
     private static Transformer singleton = new Transformer();
     
-    // TopQuadrant extend Transformer foruse in their SPARQL debugger.
+    // TopQuadrant extend Transformer for use in their SPARQL debugger.
     /** Get the current transformer */
     public static Transformer get() { return singleton; }
     
@@ -117,8 +118,6 @@ public class Transformer
             // Including nulls
             stack.push(op) ;
         }
-        
-        
         
         public ApplyTransformVisitor(Transform transform)
         { 

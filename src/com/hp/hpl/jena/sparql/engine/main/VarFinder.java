@@ -38,6 +38,8 @@ public class VarFinder
         return VarUsageVisitor.apply(op).filterMentions ;
     }
 
+    // See also VarUtils.
+    
     private static void vars(Set<Var> vars, Triple triple)
     {
         slot(vars, triple.getSubject()) ;

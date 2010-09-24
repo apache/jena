@@ -9,10 +9,8 @@ package dev;
 
 import static org.openjena.atlas.lib.StrUtils.strjoinNL ;
 
-import java.util.ArrayList ;
 import java.util.HashSet ;
 import java.util.Iterator ;
-import java.util.List ;
 import java.util.Set ;
 
 import org.openjena.atlas.io.IndentedLineBuffer ;
@@ -40,6 +38,10 @@ import com.hp.hpl.jena.query.ResultSetFormatter ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.sparql.algebra.Algebra ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
+import com.hp.hpl.jena.sparql.algebra.OpVars ;
+import com.hp.hpl.jena.sparql.algebra.op.OpModifier ;
+import com.hp.hpl.jena.sparql.algebra.op.OpProject ;
+import com.hp.hpl.jena.sparql.algebra.op.OpSlice ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
 import com.hp.hpl.jena.sparql.core.Quad ;
@@ -93,11 +95,13 @@ public class RunARQ
     
     public static void main(String[] argv) throws Exception
     {
-        if ( false )
+        if ( true )
         {
             String qs = StrUtils.strjoinNL("SELECT DISTINCT ?s",
                                            "{ SERVICE <http://dbpedia.org/sparql>",
-                                           "    { SELECT ?s { ?s <http://xmlns.com/foaf/0.1/knows> ?o . } limit 10 }",
+                                           "    { SELECT ?s { ?s ?p [] . } limit 10 }",
+                                           "  SERVICE <http://dbpedia.org/sparql>",
+                                               "    { SELECT ?s { ?s ?p [] . } limit 10 }",
             "}") ;
             Query query = QueryFactory.create(qs) ;
             Op op = Algebra.compile(query) ;
@@ -106,21 +110,53 @@ public class RunARQ
             Op op2 = Algebra.optimize(op) ;
             divider() ;
             System.out.println(op2) ;
+            System.exit(0) ;
         }
         
         {
-            String qs = StrUtils.strjoinNL("SELECT ?s { ?s <http://xmlns.com/foaf/0.1/knows> ?o . } limit 10 ") ;
+            String qs = StrUtils.strjoinNL("SELECT ?s { ?s ?p ?o . OPTIONAL { [] ?p ?__o } } ORDER BY ?_o limit 10 ") ;
             Query query = QueryFactory.create(qs) ;
             Op op = Algebra.compile(query) ;
-//            divider() ;
-//            System.out.println(op) ;
-            Op op2 = Algebra.optimize(op) ;
-            divider() ;
-            System.out.println(op2) ;
+            System.out.println(op) ;
             divider() ;
             
-            List<Var> vars = new ArrayList<Var>() ;
-            vars.add(Var.alloc("s")) ;
+//            List<Var> vars = new ArrayList<VWalkerVisitorSkipMinusar>() ;
+//            vars.add(Var.alloc("s")) ;
+            Set<Var> vars = OpVars.allVars(op) ;  
+            System.out.println("Visable vars: "+vars) ;
+            
+            // Get to real work.
+            // Includes order
+            Op opSub = op ;
+            while( opSub instanceof OpProject || opSub instanceof OpSlice )
+                opSub = ((OpModifier)opSub).getSubOp() ;
+            
+            Set<Var> allVars = OpVars.allVars(opSub) ;      // Need : OpVars.allMentionedVars - ignores project
+            System.out.println(allVars) ;
+            
+            String[] prefixes = { "_", "__", "_X", "/"} ;
+            String prefix = "_" ;
+            
+            while(true)
+            {
+                String attempt = prefix ;
+//            for ( String p : prefixes )
+//            {
+//                prefix = p ;
+                for ( Var v : allVars )
+                {
+                    if ( v.getName().startsWith(prefix) )
+                    {
+                        attempt = null ;
+                        break ;
+                    }
+                }
+                if ( attempt != null )
+                    break ;
+                // Try again.
+                prefix = prefix+"A_" ; 
+            }
+            System.out.println("Safe prefix : "+prefix) ;
             
             //AlgebraGenerator.Line 605
             Op op3 = VarRename.rename(op, vars) ;
