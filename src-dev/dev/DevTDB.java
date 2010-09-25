@@ -3,9 +3,7 @@ package dev ;
 
 public class DevTDB
 {
-    // DateTimeNode.unpack : not fixed 3 digit fractional seconds.
-    // less than miliseconds is getting lost.
-    // use DateTimeStruct for parsing, not XMLGregorianCalendar.
+    // --explain.
     
     //** Union graph in assembler.
     // Document ; not for default model; test [done?]

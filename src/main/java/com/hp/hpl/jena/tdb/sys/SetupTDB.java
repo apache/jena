@@ -8,7 +8,6 @@
 
 package com.hp.hpl.jena.tdb.sys ;
 
-import static com.hp.hpl.jena.tdb.TDB.logExec ;
 import static com.hp.hpl.jena.tdb.TDB.logInfo ;
 import static com.hp.hpl.jena.tdb.sys.SystemTDB.BlockReadCacheSize ;
 import static com.hp.hpl.jena.tdb.sys.SystemTDB.BlockWriteCacheSize ;
@@ -29,6 +28,7 @@ import org.openjena.atlas.lib.PropertyUtils ;
 import org.openjena.atlas.lib.StrUtils ;
 import org.slf4j.Logger ;
 
+import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.sparql.core.DatasetPrefixStorage ;
 import com.hp.hpl.jena.sparql.engine.optimizer.reorder.ReorderLib ;
 import com.hp.hpl.jena.sparql.engine.optimizer.reorder.ReorderTransformation ;
@@ -752,7 +752,7 @@ public class SetupTDB
             reorder = SystemTDB.defaultOptimizer ;
         
         if ( reorder == null && warnAboutOptimizer )
-            logExec.warn("No BGP optimizer") ;
+            ARQ.getExecLogger().warn("No BGP optimizer") ;
         
         return reorder ; 
     }

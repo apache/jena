@@ -30,11 +30,9 @@ import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.sparql.util.Symbol ;
 import com.hp.hpl.jena.tdb.assembler.AssemblerTDB ;
 import com.hp.hpl.jena.tdb.modify.UpdateEngineTDB ;
-import com.hp.hpl.jena.tdb.solver.Explain ;
 import com.hp.hpl.jena.tdb.solver.OpExecutorTDB ;
 import com.hp.hpl.jena.tdb.solver.QueryEngineTDB ;
 import com.hp.hpl.jena.tdb.solver.StageGeneratorDirectTDB ;
-import com.hp.hpl.jena.tdb.solver.Explain.InfoLevel ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.sys.EnvTDB ;
 import com.hp.hpl.jena.tdb.sys.SetupTDB ;
@@ -59,57 +57,16 @@ public class TDB
     /** Logger for loading information */
     public static final Logger logLoader = LoggerFactory.getLogger(logLoaderName) ;
     
-    /** Logger for execution information */
-    public static final String logExecName = "com.hp.hpl.jena.tdb.exec" ;
-    /** Logger for execution information */
-    public static final Logger logExec = LoggerFactory.getLogger(logExecName) ;
+//    /** Logger for execution information */
+//    public static final String logExecName = "com.hp.hpl.jena.tdb.exec" ;
+//    /** Logger for execution information */
+//    public static final Logger logExec = LoggerFactory.getLogger(logExecName) ;
     
     public final static String namespace = "http://jena.hpl.hp.com/2008/tdb#" ;
 
     /** Symbol to use the union of named graphs as the default graph of a query */ 
     public static final Symbol symUnionDefaultGraph          = SystemTDB.allocSymbol("unionDefaultGraph") ;
     
-    /** Symbol to enable logging of execution.  Must also set log4j, or other logging system,
-     * for logger "com.hp.hpl.jena.tdb.exec"
-     * e.g. log4j.properties -- log4j.logger.com.hp.hpl.jena.tdb.exec=INFO
-     */
-    public static final Symbol symLogExec           = SystemTDB.allocSymbol("logExec") ;
-
-    /** Set or unset execution logging - logging is to logger "com.hp.hpl.jena.tdb.exec" at level INFO.
-     * An appropriate logging configuration is also required.
-     * @deprecated Use setExecutionLogging(Explain.InfoLevel)}
-     */
-    @Deprecated
-    public static void setExecutionLogging(boolean state)
-    {
-        if ( ! state )
-        {
-            TDB.getContext().unset(TDB.symLogExec) ;
-            return ;
-        }
-        
-        TDB.getContext().set(TDB.symLogExec, state) ;
-        if ( ! logExec.isInfoEnabled() )
-            log.warn("Attempt to enable execution logging but the logger is not logging at level info") ;
-    }
-    
-    /** Set execution logging - logging is to logger "com.hp.hpl.jena.tdb.exec" at level INFO.
-     * An appropriate logging configuration is also required.
-     */
-    public static void setExecutionLogging(Explain.InfoLevel infoLevel)
-    {
-        if ( InfoLevel.NONE.equals(infoLevel) )
-        {
-            TDB.getContext().unset(TDB.symLogExec) ;
-            return ;
-        }
-        
-        TDB.getContext().set(TDB.symLogExec, infoLevel) ;
-        if ( ! logExec.isInfoEnabled() )
-            log.warn("Attempt to enable execution logging but the logger is not logging at level info") ;
-    }
-    
-
     public static Context getContext()     { return ARQ.getContext() ; }  
     
     // Called on assembler loading.

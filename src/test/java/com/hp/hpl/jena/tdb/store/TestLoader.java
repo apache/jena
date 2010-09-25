@@ -19,6 +19,7 @@ import org.openjena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.TDBFactory ;
@@ -32,8 +33,8 @@ public class TestLoader extends BaseTest
     private static final Node p = Node.createURI("p") ;
     private static final Node o = Node.createURI("o") ;
     
-    @BeforeClass static public void beforeClass()   { Log.disable(TDB.logExecName) ; Log.disable(TDB.logLoaderName) ; }
-    @AfterClass  static public void afterClass()    { Log.enable(TDB.logExecName) ; Log.disable(TDB.logLoaderName) ; }
+    @BeforeClass static public void beforeClass()   { Log.disable(ARQ.logExecName) ; Log.disable(TDB.logLoaderName) ; }
+    @AfterClass  static public void afterClass()    { Log.enable(ARQ.logExecName) ; Log.enable(TDB.logLoaderName) ; }
     
     @Test public void load_dataset_01()
     {

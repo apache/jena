@@ -43,7 +43,6 @@ public class RunTDB
 
     public static void main(String[] args) throws Exception
     {
-     
         Node n = SSE.parseNode("'2010-09-23T02:02:02'^^xsd:dateTime") ;
         System.out.println(n) ;
         

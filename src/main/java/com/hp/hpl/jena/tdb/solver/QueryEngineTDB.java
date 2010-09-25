@@ -77,8 +77,6 @@ public class QueryEngineTDB extends QueryEngineMain
         
         // Record it.
         setOp(op) ;
-        
-        Explain.explain("ALGEBRA", op, context) ;
         return op ;
     }
 
@@ -117,7 +115,6 @@ public class QueryEngineTDB extends QueryEngineMain
         {
             DatasetGraphTDB dataset = (DatasetGraphTDB)ds ;
             dynamicDatasetQE(query, context) ;
-            Explain.explain("QUERY", query, context) ;
             QueryEngineTDB engine = new QueryEngineTDB(query, dataset, input, context) ;
             return engine.getPlan() ;
         }
@@ -127,7 +124,6 @@ public class QueryEngineTDB extends QueryEngineMain
 
         public Plan create(Op op, DatasetGraph dataset, Binding binding, Context context)
         {
-            //Explain.explain("QUERY", query, context) ;
             QueryEngineTDB engine = new QueryEngineTDB(op, (DatasetGraphTDB)dataset, binding, context) ;
             return engine.getPlan() ;
         }
