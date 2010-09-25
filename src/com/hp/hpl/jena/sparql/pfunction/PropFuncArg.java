@@ -19,7 +19,6 @@ import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
 import com.hp.hpl.jena.sparql.util.ExprUtils ;
 import com.hp.hpl.jena.sparql.util.FmtUtils ;
 import com.hp.hpl.jena.sparql.util.PrintSerializableBase ;
-import com.hp.hpl.jena.sparql.util.PrintUtils ;
 
 /** Class representing an argument (subject or object position) of a property function.
  *  Such an argument can be a graph node (variable, IRI, literal).
@@ -105,19 +104,21 @@ public class PropFuncArg extends PrintSerializableBase
     }
 
     
-    public void output(IndentedWriter out, final SerializationContext sCxt)
+    public void output(final IndentedWriter out, final SerializationContext sCxt)
     {
         if ( argList == null && arg == null )
             out.print("<<null>>") ;
         if ( argList != null )
         {
             out.print("(") ;
-            PrintUtils.printList(out, argList, " ",
-                                 new PrintUtils.Fmt(){
-                                    public String fmt(Object thing)
-                                    {
-                                        return FmtUtils.stringForNode((Node)thing, sCxt) ;
-                                    }}) ;
+            boolean first = true ;
+            for ( Node n : argList )
+            {
+                if ( ! first ) out.print(" ") ;
+                String str = FmtUtils.stringForNode(n, sCxt) ;
+                out.print(str) ;
+                first = false ;
+            }
             out.print(")") ;
         }
         if ( arg != null )

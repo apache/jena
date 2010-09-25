@@ -7,13 +7,14 @@
 package com.hp.hpl.jena.update;
 
 import org.openjena.atlas.io.IndentedWriter ;
+import org.openjena.atlas.io.PrintUtils ;
 
 import com.hp.hpl.jena.shared.PrefixMapping ;
 import com.hp.hpl.jena.sparql.modify.request.UpdateVisitor ;
 import com.hp.hpl.jena.sparql.modify.request.UpdateWriter ;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
 import com.hp.hpl.jena.sparql.util.PrintSerializable ;
-import com.hp.hpl.jena.sparql.util.PrintUtils ;
+import com.hp.hpl.jena.sparql.util.QueryOutputUtils ;
 
 public abstract class Update implements PrintSerializable
 {
@@ -30,7 +31,7 @@ public abstract class Update implements PrintSerializable
     }
 
     public String toString(PrefixMapping pmap)
-    { return PrintUtils.toString(this, pmap) ; } 
+    { return QueryOutputUtils.toString(this, pmap) ; } 
     
     @Override
     public String toString()

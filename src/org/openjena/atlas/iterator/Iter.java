@@ -107,6 +107,7 @@ public class Iter<T> implements Iterable<T>, Iterator<T>
     }
 
     // map without the results - do immediately.
+    // Also, apply with call in between?
     
     public static <T> void apply(Iterable<? extends T> stream, Action<T> action)
     { apply(stream.iterator(), action) ; }
@@ -300,11 +301,13 @@ public class Iter<T> implements Iterable<T>, Iterator<T>
         return iter ;
     }
 
+    /** Print an iterator as it gets used - this adds a printing wrapper */
     public static <T> Iterator<T> print(final Iterator<? extends T> stream)
     {
         return Iter.print(System.out, stream) ;
     }
 
+    /** Print an iterator as it gets used - this adds a printing wrapper */
     public static <T> Iterator<T> print(final PrintStream out, final Iterator<? extends T> stream)
     {
         Action<T> action = new Action<T>(){

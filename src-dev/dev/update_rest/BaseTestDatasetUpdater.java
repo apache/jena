@@ -1,7 +1,8 @@
 /*
  * (c) Copyright 2010 Talis Information Ltd.
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
- * [See end of file]
+ * [See end of file] 
  */
 
 package dev.update_rest;
@@ -13,6 +14,7 @@ import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
+import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
 
 public abstract class BaseTestDatasetUpdater extends Assert
 {
@@ -29,6 +31,11 @@ public abstract class BaseTestDatasetUpdater extends Assert
         DatasetUpdater updater = getDatasetUpdater(dsg) ;
         Graph graph = updater.doGet() ;
         assertNotNull(graph) ;
+        assertTrue(graph.isEmpty()) ;
+        graph = updater.doGet(n1) ;
+        
+        // Always gets, even if not there
+        //assertNull(graph) ;
     }
     
     @Test public void get_02()
@@ -37,6 +44,7 @@ public abstract class BaseTestDatasetUpdater extends Assert
         DatasetUpdater updater = getDatasetUpdater(dsg) ;
         Graph graph = updater.doGet(n1) ;
         assertNotNull(graph) ;
+        assertTrue(graph.isEmpty()) ;
     }
     
     @Test public void put_01()
@@ -67,10 +75,94 @@ public abstract class BaseTestDatasetUpdater extends Assert
         
     }
 
+    @Test public void post_01()
+    {
+        DatasetGraph dsg = getEmptyDatasetGraph() ;
+        DatasetUpdater updater = getDatasetUpdater(dsg) ;
+        
+        updater.doPost(graph1) ;
+        updater.doPost(graph2) ;
+        Graph graph = updater.doGet() ;
+        
+        Graph graph3 = GraphFactory.createDefaultGraph() ;
+        graph3.getBulkUpdateHandler().add(graph1) ;
+        graph3.getBulkUpdateHandler().add(graph2) ;
+        assertTrue(graph.isIsomorphicWith(graph3)) ;
+        assertFalse(graph.isIsomorphicWith(graph1)) ;
+        assertFalse(graph.isIsomorphicWith(graph2)) ;
+    }
+    
+    @Test public void post_02()
+    {
+        DatasetGraph dsg = getEmptyDatasetGraph() ;
+        DatasetUpdater updater = getDatasetUpdater(dsg) ;
+        updater.doPost(n1, graph1) ;
+        updater.doPost(n1, graph2) ;
+        Graph graph = updater.doGet(n1) ;
+        Graph graph3 = GraphFactory.createDefaultGraph() ;
+        graph3.getBulkUpdateHandler().add(graph1) ;
+        graph3.getBulkUpdateHandler().add(graph2) ;
+        assertTrue(graph.isIsomorphicWith(graph3)) ;
+        assertFalse(graph.isIsomorphicWith(graph1)) ;
+        assertFalse(graph.isIsomorphicWith(graph2)) ;
+        
+        graph = updater.doGet() ;
+        assertFalse(graph.isIsomorphicWith(graph3)) ;
+    }
+
+    // Default graph
+    @Test public void delete_01()
+    {
+        DatasetGraph dsg = getEmptyDatasetGraph() ;
+        DatasetUpdater updater = getDatasetUpdater(dsg) ;
+        updater.doDelete() ;
+        Graph graph = updater.doGet() ;
+        assertTrue(graph.isEmpty()) ;
+        
+        updater.doPut(graph1) ;
+        graph = updater.doGet() ;
+        assertFalse(graph.isEmpty()) ;
+        
+        updater.doDelete() ;
+        graph = updater.doGet() ;
+        assertTrue(graph.isEmpty()) ;
+    }
+    
+    // Named graph, no side effects.
+    @Test public void delete_02() 
+    {
+        DatasetGraph dsg = getEmptyDatasetGraph() ;
+        DatasetUpdater updater = getDatasetUpdater(dsg) ;
+        updater.doDelete(n1) ;
+        Graph graph = updater.doGet(n1) ;
+        assertTrue(graph.isEmpty()) ;
+
+        updater.doPut(graph2) ;
+        updater.doPut(n1, graph1) ;
+        
+        updater.doDelete() ;
+        graph = updater.doGet() ;
+        assertTrue(graph.isEmpty()) ;
+        updater.doPut(graph2) ;
+
+        graph = updater.doGet(n1) ;
+        assertFalse(graph.isEmpty()) ;
+        
+        updater.doDelete(n1) ;
+        graph = updater.doGet(n1) ;
+        assertTrue(graph.isEmpty()) ;
+        graph = updater.doGet() ;
+        assertFalse(graph.isEmpty()) ;
+    }
+
+//    @Test public void compound_01() {}
+//    @Test public void compound_02() {}
 }
 
 /*
  * (c) Copyright 2010 Talis Information Ltd.
+ * (c) Copyright 2010 Epimorphics Ltd.
+ * 
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

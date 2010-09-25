@@ -16,6 +16,7 @@ import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingRoot ;
+import com.hp.hpl.jena.sparql.mgt.Explain ;
 import com.hp.hpl.jena.sparql.mgt.QueryEngineInfo ;
 import org.openjena.atlas.logging.Log ;
 import com.hp.hpl.jena.sparql.util.Context ;
@@ -30,6 +31,7 @@ public abstract class QueryEngineBase implements OpEval, Closeable
     protected Context context ;
     private Binding startBinding ;
     
+    private Query query = null ;
     private Op queryOp = null ;
     private Plan plan = null ;
     
@@ -39,6 +41,7 @@ public abstract class QueryEngineBase implements OpEval, Closeable
                               Context context)
     {
         this(dataset, input, context) ;
+        this.query = query ;
         this.context.put(ARQConstants.sysCurrentQuery, query) ;
         // Build the Op.
         query.setResultVars() ;
@@ -49,6 +52,7 @@ public abstract class QueryEngineBase implements OpEval, Closeable
     protected QueryEngineBase(Op op, DatasetGraph dataset, Binding input, Context context)
     {
         this(dataset, input, context) ;
+        query = null ;
         setOp(op) ;
     }
     
@@ -123,6 +127,9 @@ public abstract class QueryEngineBase implements OpEval, Closeable
     final
     public QueryIterator evaluate(Op op, DatasetGraph dsg, Binding binding, Context context)
     {
+        if ( query != null ) 
+            Explain.explain("QUERY", query, context) ;
+        Explain.explain("ALGEBRA", op, context) ;
         queryEngineInfo.incQueryCount() ;
         queryEngineInfo.setLastQueryExecAt() ;
         //queryEngineInfo.setLastQueryExecTime(-1) ;

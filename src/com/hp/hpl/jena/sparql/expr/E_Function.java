@@ -5,7 +5,7 @@
 
 package com.hp.hpl.jena.sparql.expr;
 
-import com.hp.hpl.jena.sparql.SystemARQ ;
+import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.function.Function ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
@@ -58,7 +58,7 @@ public class E_Function extends ExprFunctionN
         catch (ExprException ex)
         {
             if ( WarnOnUnknownFunction )
-                SystemARQ.warn("URI <"+functionIRI+"> has no registered function factory") ;
+                ARQ.getExecLogger().warn("URI <"+functionIRI+"> has no registered function factory") ;
         }
     }
     

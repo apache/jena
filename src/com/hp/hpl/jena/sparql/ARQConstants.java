@@ -141,6 +141,9 @@ public class ARQConstants
     /** Marker for variables replacing blank nodes in SPARQL Update patterns */
     public static final String allocVarBNodeToVar =  "~" ;
 
+    /** Marker for variables renamed to make variabes hidden by scope have globally unique names */
+    public static final String allocVarScopeHiding =  "/" ;
+
     // Spare primary marker.
     //private static final String executionVar =  "@" ;
     

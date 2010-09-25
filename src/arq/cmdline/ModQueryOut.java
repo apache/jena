@@ -11,7 +11,7 @@ import org.openjena.atlas.io.IndentedWriter ;
 
 import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.query.Syntax ;
-import com.hp.hpl.jena.sparql.util.PrintUtils ;
+import com.hp.hpl.jena.sparql.util.QueryOutputUtils ;
 
 public class ModQueryOut implements ArgModuleGeneral
 {
@@ -52,19 +52,19 @@ public class ModQueryOut implements ArgModuleGeneral
     { output(out(), query) ; }
     
     public void output(IndentedWriter out, Query query)
-    { PrintUtils.printQuery(out, query, outputSyntax) ; }
+    { QueryOutputUtils.printQuery(out, query, outputSyntax) ; }
     
     public void outputOp(Query query, boolean printOptimized)
     { outputOp(out(), query, printOptimized) ; }
 
     public void outputOp(IndentedWriter out, Query query, boolean printOptimized)
-    { PrintUtils.printOp(out, query, printOptimized) ; }
+    { QueryOutputUtils.printOp(out, query, printOptimized) ; }
     
     public void outputQuad(Query query, boolean printOptimized)
     { outputQuad(out(), query, printOptimized) ; }
     
     public void outputQuad(IndentedWriter out, Query query, boolean printOptimized)
-    { PrintUtils.printQuad(out, query, printOptimized) ; }
+    { QueryOutputUtils.printQuad(out, query, printOptimized) ; }
     
     private IndentedWriter out()
     {

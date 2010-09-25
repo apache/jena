@@ -95,7 +95,6 @@ public class StageGeneratorGeneric implements StageGenerator
         return execution.execute(pattern, input, execCxt) ; 
     }
     
-    
     // ---- Execution policies
     private static StageGenerator executeQueryHandler = new StageGenerator() {
         //@Override

@@ -129,7 +129,7 @@ public class TextOutput extends OutputBase
         if ( resultSet.getResultVars().size() == 0 )
         {
             pw.println("==== No variables ====") ;
-            return ;
+            //return ;
         }
 
         ResultSetRewindable resultSetRewindable = new ResultSetMem(resultSet) ;

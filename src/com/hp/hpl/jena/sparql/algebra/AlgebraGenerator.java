@@ -41,7 +41,7 @@ import com.hp.hpl.jena.sparql.core.BasicPattern ;
 import com.hp.hpl.jena.sparql.core.PathBlock ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.core.VarExprList ;
-import com.hp.hpl.jena.sparql.engine.main.VarRename ;
+import com.hp.hpl.jena.sparql.engine.VarRename ;
 import com.hp.hpl.jena.sparql.expr.E_Exists ;
 import com.hp.hpl.jena.sparql.expr.E_LogicalNot ;
 import com.hp.hpl.jena.sparql.expr.Expr ;

@@ -26,7 +26,7 @@ import com.hp.hpl.jena.shared.JenaException ;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
 import com.hp.hpl.jena.sparql.core.QueryCheckException ;
 import com.hp.hpl.jena.sparql.resultset.ResultSetException ;
-import com.hp.hpl.jena.sparql.util.PrintUtils ;
+import com.hp.hpl.jena.sparql.util.QueryOutputUtils ;
 import com.hp.hpl.jena.sparql.util.QueryUtils ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 
@@ -148,7 +148,7 @@ public class qparse extends CmdARQ
                 divider() ;
                 // This forces internal query initialization - must be after QueryUtils.checkQuery
                 QueryExecution qExec = QueryExecutionFactory.create(query, DatasetFactory.create()) ;
-                PrintUtils.printPlan(query, qExec) ; 
+                QueryOutputUtils.printPlan(query, qExec) ; 
             }
         }
         catch (ARQInternalErrorException intEx)

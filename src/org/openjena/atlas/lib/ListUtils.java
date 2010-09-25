@@ -1,19 +1,21 @@
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
 package org.openjena.atlas.lib;
 
-
 import java.util.ArrayList ;
 import java.util.List ;
 
+import org.openjena.atlas.io.IndentedWriter ;
+import org.openjena.atlas.iterator.Action ;
 import org.openjena.atlas.iterator.FilterUnique ;
 import org.openjena.atlas.iterator.Iter ;
 
-
+/*8 Various things for lists */
 public class ListUtils
 {
     private ListUtils() {}
@@ -79,10 +81,29 @@ public class ListUtils
         return buff.toString() ;
     }
 
+    public static <T> void print(IndentedWriter out, List<T> list)
+    { 
+        print(out, list, " ") ;
+    }
+    
+    public static <T> void print(final IndentedWriter out, List<T> list, final String sep)
+    {
+        Action<T> output = new Action<T>() {
+            boolean first = true ;
+            public void apply(T item)
+            {
+                if ( ! first ) out.print(sep) ;
+                out.print(item) ;
+                first = false ;
+            }
+        } ;
+        Iter.apply(list, output) ;
+    }
 }
 
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

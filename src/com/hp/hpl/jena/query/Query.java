@@ -16,6 +16,7 @@ import java.util.Set ;
 
 import org.openjena.atlas.io.IndentedLineBuffer ;
 import org.openjena.atlas.io.IndentedWriter ;
+import org.openjena.atlas.io.Printable ;
 import org.openjena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.graph.Node ;
@@ -50,7 +51,7 @@ import com.hp.hpl.jena.sparql.util.FmtUtils ;
  * @author		Andy Seaborne
  */
 
-public class Query extends Prologue implements Cloneable
+public class Query extends Prologue implements Cloneable, Printable
 {
     static { ARQ.init() ; /* Ensure everything has started properly */ }
     
@@ -735,6 +736,11 @@ public class Query extends Prologue implements Cloneable
     
 //    public static boolean sameAs(Query query1, Query query2)
 //    { return query1.sameAs(query2) ; }  
+
+    public void output(IndentedWriter out)
+    {
+        serialize(out) ;
+    }
 
     /** Convert the query to a string */
     

@@ -18,9 +18,12 @@ public class RenamerVars implements NodeTransform
 {
     private final Map<Var, Var> aliases = new HashMap<Var, Var>() ;
     private final Collection<Var> constants ;
-    public RenamerVars(Collection<Var> constants)
+    private String varPrefix ;
+    
+    public RenamerVars(Collection<Var> constants, String varPrefix)
     {
         this.constants = constants ;
+        this.varPrefix = varPrefix ;
     }
     
     public final Node convert(Node node)
@@ -37,7 +40,7 @@ public class RenamerVars implements NodeTransform
         // if renaming is bottom up. 
         // Really safe - use the global allocator.
         //var2 = allocator.allocVar() ;
-        var2 = Var.alloc("/"+var.getVarName()) ;
+        var2 = Var.alloc(varPrefix+var.getVarName()) ;
         aliases.put(var, var2) ;
         return var2 ; 
     }

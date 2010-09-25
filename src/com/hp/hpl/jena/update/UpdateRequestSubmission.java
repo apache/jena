@@ -11,13 +11,13 @@ import java.util.Iterator ;
 import java.util.List ;
 
 import org.openjena.atlas.io.IndentedWriter ;
+import org.openjena.atlas.io.PrintUtils ;
+import org.openjena.atlas.io.Printable ;
 
 import com.hp.hpl.jena.sparql.core.Prologue ;
 import com.hp.hpl.jena.sparql.modify.submission.UpdateSubmission ;
 import com.hp.hpl.jena.sparql.serializer.PrologueSerializer ;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
-import com.hp.hpl.jena.sparql.util.PrintUtils ;
-import com.hp.hpl.jena.sparql.util.Printable ;
 
 /** A single request which may consist of several updates, to be performed in the order added to the request */
 public class UpdateRequestSubmission extends Prologue

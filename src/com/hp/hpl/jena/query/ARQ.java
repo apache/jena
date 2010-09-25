@@ -18,7 +18,9 @@ import com.hp.hpl.jena.sparql.engine.main.StageBuilder ;
 import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp ;
 import com.hp.hpl.jena.sparql.lib.Metadata ;
 import com.hp.hpl.jena.sparql.mgt.ARQMgt ;
+import com.hp.hpl.jena.sparql.mgt.Explain ;
 import com.hp.hpl.jena.sparql.mgt.SystemInfo ;
+import com.hp.hpl.jena.sparql.mgt.Explain.InfoLevel ;
 import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.sparql.util.Symbol ;
 
@@ -29,8 +31,47 @@ import com.hp.hpl.jena.sparql.util.Symbol ;
 
 public class ARQ
 {
-    public static final Logger logEval = LoggerFactory.getLogger("ARQ") ;
+    /** Name of the execution logger */
+    public static final String logExecName = "com.hp.hpl.jena.arq.exec" ;
     
+    /** Name of the information logger */
+    public static final String logInfoName = "com.hp.hpl.jena.arq.info" ;
+    
+    private static final Logger logExec = LoggerFactory.getLogger(logExecName) ;
+    /** The execution logger */
+    public static Logger getExecLogger() { return logExec ; }
+    
+    private static final Logger logInfo = LoggerFactory.getLogger(logInfoName) ;
+    /** The information logger */
+    public static Logger getInfoLogger() { return logInfo ; }
+    
+    /** Symbol to enable logging of execution.  
+     * Must also set log4j, or other logging system,
+     * for logger "com.hp.hpl.jena.sparql.exec"
+     * e.g. log4j.properties -- log4j.logger.com.hp.hpl.jena.sparql.exec=INFO
+     * See the <a href="http://openjena.org/ARQ/Logging">ARQ Logging Documentation</a>.
+     */
+    public static final Symbol symLogExec           = ARQConstants.allocSymbol("logExec") ;
+    
+    /** Get the currentl global execution logging setting */  
+    public static Explain.InfoLevel getExecutionLogging() { return (Explain.InfoLevel)ARQ.getContext().get(ARQ.symLogExec) ; }
+    
+    /** Set execution logging - logging is to logger "com.hp.hpl.jena.arq.exec" at level INFO.
+     * An appropriate logging configuration is also required.
+     */
+    public static void setExecutionLogging(Explain.InfoLevel infoLevel)
+    {
+        if ( InfoLevel.NONE.equals(infoLevel) )
+        {
+            ARQ.getContext().unset(ARQ.symLogExec) ;
+            return ;
+        }
+        
+        ARQ.getContext().set(ARQ.symLogExec, infoLevel) ;
+        if ( ! getExecLogger().isInfoEnabled() )
+            getExecLogger().warn("Attempt to enable execution logging but the logger '"+logExecName+"' is not logging at level INFO") ;
+    }
+
     /** IRI for ARQ */  
     public static final String arqIRI = "http://jena.hpl.hp.com/#arq" ;
 

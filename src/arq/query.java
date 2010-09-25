@@ -9,8 +9,16 @@ package arq;
 import org.openjena.atlas.io.IndentedWriter ;
 import arq.cmd.CmdException ;
 import arq.cmd.TerminationException ;
-import arq.cmdline.* ;
+import arq.cmdline.ArgDecl ;
+import arq.cmdline.CmdARQ ;
+import arq.cmdline.ModDataset ;
+import arq.cmdline.ModDatasetAssembler ;
+import arq.cmdline.ModEngine ;
+import arq.cmdline.ModQueryIn ;
+import arq.cmdline.ModResultsOut ;
+import arq.cmdline.ModTime ;
 
+import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.query.QueryException ;
@@ -18,6 +26,7 @@ import com.hp.hpl.jena.query.QueryExecution ;
 import com.hp.hpl.jena.query.QueryExecutionFactory ;
 import com.hp.hpl.jena.shared.JenaException ;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
+import com.hp.hpl.jena.sparql.mgt.Explain ;
 import com.hp.hpl.jena.sparql.resultset.ResultSetException ;
 import com.hp.hpl.jena.sparql.util.QueryExecUtils ;
 import com.hp.hpl.jena.sparql.util.Utils ;
@@ -25,6 +34,8 @@ import com.hp.hpl.jena.sparql.util.Utils ;
 public class query extends CmdARQ
 {
     private ArgDecl argRepeat = new ArgDecl(ArgDecl.HasValue, "repeat") ;
+    private ArgDecl argExplain = new ArgDecl(ArgDecl.NoValue, "explain") ;
+
     protected int repeatCount = 1 ; 
     
     protected ModTime       modTime =     new ModTime() ;
@@ -32,6 +43,8 @@ public class query extends CmdARQ
     protected ModDataset    modDataset =  null ;
     protected ModResultsOut modResults =  new ModResultsOut() ;
     protected ModEngine     modEngine =   new ModEngine() ;
+    
+
     
     public static void main (String... argv)
     {
@@ -48,6 +61,7 @@ public class query extends CmdARQ
         super.addModule(modEngine) ;
         super.addModule(modTime) ;
         super.add(argRepeat) ;
+        super.add(argExplain) ;
     }
 
     @Override
@@ -55,12 +69,16 @@ public class query extends CmdARQ
     {
         super.processModulesAndArgs() ;
         if ( contains(argRepeat) )
-            try {
-                repeatCount = Integer.parseInt(getValue(argRepeat)) ;
-            } catch (NumberFormatException ex)
-            {
-                throw new CmdException("Can't parse "+getValue(argRepeat)+" as an integer", ex) ;
-            }
+        {
+            try { repeatCount = Integer.parseInt(getValue(argRepeat)) ; }
+            catch (NumberFormatException ex)
+            { throw new CmdException("Can't parse "+getValue(argRepeat)+" as an integer", ex) ; }
+        }
+        if ( isVerbose() )
+            ARQ.getContext().setTrue(ARQ.symLogExec) ;
+        
+        if ( hasArg(argExplain) )
+            ARQ.setExecutionLogging(Explain.InfoLevel.ALL) ;
     }
     
     protected ModDataset setModDataset()

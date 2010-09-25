@@ -36,6 +36,7 @@ import com.hp.hpl.jena.query.QueryFactory ;
 import com.hp.hpl.jena.query.QuerySolutionMap ;
 import com.hp.hpl.jena.query.ResultSetFormatter ;
 import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.sparql.ARQConstants ;
 import com.hp.hpl.jena.sparql.algebra.Algebra ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.OpVars ;
@@ -47,7 +48,7 @@ import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.RenamerVars ;
-import com.hp.hpl.jena.sparql.engine.main.VarRename ;
+import com.hp.hpl.jena.sparql.engine.VarRename ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
@@ -95,6 +96,8 @@ public class RunARQ
     
     public static void main(String[] argv) throws Exception
     {
+        arq.sparql.main("--explain", "--data=D.ttl", "--query=Q.rq") ; System.exit(0) ;
+        
         if ( true )
         {
             String qs = StrUtils.strjoinNL("SELECT DISTINCT ?s",
@@ -263,7 +266,7 @@ public class RunARQ
 
             Set<Var> fixed = new HashSet<Var>() ;
             fixed.add(Var.alloc("y")) ;
-            RenamerVars vrn = new RenamerVars(fixed) ;
+            RenamerVars vrn = new RenamerVars(fixed, ARQConstants.allocVarScopeHiding) ;
             op = NodeTransformLib.transform(vrn, op) ;
             divider() ;
             System.out.println(op) ;

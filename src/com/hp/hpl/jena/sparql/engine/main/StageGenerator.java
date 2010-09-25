@@ -15,7 +15,7 @@ import com.hp.hpl.jena.sparql.engine.QueryIterator ;
  *  execution to be found and called by the StageBuilder.
  *  
  *  The StageGenerator is called repeated for a basic graph pattern
- *  with each possible bindinging unsed to instantiate variables
+ *  with each possible bindings unsed to instantiate variables
  *  where possible.  
  *  
  *  Each call of a stage generator returns a QueryIterator

@@ -4,14 +4,14 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.engine.main;
+package com.hp.hpl.jena.sparql.engine;
 
 import java.util.Collection ;
 import java.util.Set ;
 
+import com.hp.hpl.jena.sparql.ARQConstants ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.core.Var ;
-import com.hp.hpl.jena.sparql.engine.RenamerVars ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.expr.ExprList ;
 import com.hp.hpl.jena.sparql.graph.NodeTransform ;
@@ -23,16 +23,18 @@ public class VarRename
     // Also need to renaming support for renames where only a
     // certain set are mapped (for (assign (?x ?.0)))
     
+    private static final String prefix = ARQConstants.allocVarScopeHiding ;
+    
     /** Rename all variables in a pattern, EXCEPT for those named as constant */ 
     public static Op rename(Op op, Collection<Var> constants)
     {
-        return NodeTransformLib.transform(new RenamerVars(constants), op) ;
+        return NodeTransformLib.transform(new RenamerVars(constants, prefix), op) ;
     }
 
     /** Rename all variables in an expression, EXCEPT for those named as constant */ 
     public static ExprList rename(ExprList exprList, Set<Var> constants)
     {
-        NodeTransform renamer = new RenamerVars(constants) ;
+        NodeTransform renamer = new RenamerVars(constants, prefix) ;
         return NodeTransformLib.transform(renamer, exprList) ;
     }
         
@@ -59,7 +61,7 @@ public class VarRename
 
     public static Expr rename(Expr expr, Set<Var> constants)
     {
-        NodeTransform renamer = new RenamerVars(constants) ;
+        NodeTransform renamer = new RenamerVars(constants, prefix) ;
         return NodeTransformLib.transform(renamer, expr) ;
     }
     

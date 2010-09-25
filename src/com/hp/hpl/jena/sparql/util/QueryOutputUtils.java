@@ -6,11 +6,6 @@
 
 package com.hp.hpl.jena.sparql.util;
 
-import java.io.PrintStream ;
-import java.util.Collection ;
-import java.util.Iterator ;
-import java.util.List ;
-
 import org.openjena.atlas.io.IndentedLineBuffer ;
 import org.openjena.atlas.io.IndentedWriter ;
 
@@ -28,16 +23,8 @@ import com.hp.hpl.jena.sparql.engine.binding.BindingRoot ;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
 import com.hp.hpl.jena.sparql.sse.WriterSSE ;
 
-public class PrintUtils
+public class QueryOutputUtils
 {
-    // ---- Printable
-    public static String toString(Printable f)
-    { 
-        IndentedLineBuffer buff = new IndentedLineBuffer() ;
-        f.output(buff) ;
-        return buff.toString() ;
-    }
-    
     // ---- PrintSerializable
     public static String toString(PrintSerializable item, PrefixMapping pmap)
     {
@@ -50,6 +37,7 @@ public class PrintUtils
     public static String toString(PrintSerializable item)
     { return toString(item, null) ; }
     
+    /** Normally overridden for better information */ 
     public static void output(PrintSerializable item, IndentedWriter out)
     { 
 //        SerializationContext sCxt = new SerializationContext() ;
@@ -59,56 +47,9 @@ public class PrintUtils
         out.print(Plan.finishMarker) ;
     }
     
-    // ----
-    public static interface Fmt { String fmt(Object thing) ; }
-    
-    private static Fmt itemFmt = new Fmt(){
-        public String fmt(Object thing)
-        {
-            if ( thing == null ) return "<null>" ;
-            return thing.toString() ;
-        }} ;
-    
-    // Prints a collection (a List usually).  
+
+    // ModQueryOut
         
-    public static <T> void printList(IndentedWriter out, Collection<T> list, 
-                                 String sep, Fmt itemFmt)
-    {
-        String sep$ = "" ; 
-        for ( Iterator<T> iter = list.iterator() ; iter.hasNext() ; )
-        {
-            out.print(sep$) ;
-            sep$ = sep ;
-            T obj = iter.next() ;
-            out.print(itemFmt.fmt(obj)) ;
-        }
-    }
-
-    public static <T> void printList(IndentedWriter out, Collection<T> list, String sep)
-    { printList(out, list, sep, itemFmt) ; }
-
-    public static <T> void printList(IndentedWriter out, Collection<T> list)
-    { printList(out, list, " ") ; }
-
-    public static <T> void printList(PrintStream out, Collection<T> list, 
-                                 String sep, Fmt itemFmt)
-    {
-        String sep$ = "" ; 
-        for ( Iterator<T> iter = list.iterator() ; iter.hasNext() ; )
-        {
-            out.print(sep$) ;
-            sep$ = sep ;
-            T obj = iter.next() ;
-            out.print(itemFmt.fmt(obj)) ;
-        }
-    }
-
-    public static <T> void printList(PrintStream out, List<T> list, String sep)
-    { printList(out, list, sep, itemFmt) ; }
-
-    public static <T> void printList(PrintStream out, List<T> list)
-    { printList(out, list, " ") ; }
-
     public static void printPlan(Query query, QueryExecution qe)
     {
         QueryEngineFactory f = QueryEngineRegistry.findFactory(query, qe.getDataset().asDatasetGraph(), ARQ.getContext()) ;

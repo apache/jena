@@ -7,21 +7,14 @@
 package com.hp.hpl.jena.sparql.util;
 
 import org.openjena.atlas.io.IndentedWriter ;
+import org.openjena.atlas.io.PrintUtils ;
 
 import com.hp.hpl.jena.shared.PrefixMapping ;
 
-/** Simple implementation of PrintSerializable.  Subclasses should override
- * output(IndentedWriter, SerializationContext) or output(IndentedWriter).
- * @author Andy Seaborne
- */
-
 public abstract class PrintSerializableBase implements PrintSerializable
 {
-//    public void output(IndentedWriter out, SerializationContext sCxt)
-//    { output(out) ; }
-
     public String toString(PrefixMapping pmap)
-    { return PrintUtils.toString(this, pmap) ; }
+    { return QueryOutputUtils.toString(this, pmap) ; }
 
     // final stops it being overridden and missing the output() route.
     @Override
@@ -29,7 +22,7 @@ public abstract class PrintSerializableBase implements PrintSerializable
     { return PrintUtils.toString(this) ; }
     
     public void output(IndentedWriter out)
-    { PrintUtils.output(this, out) ; }
+    { QueryOutputUtils.output(this, out) ; }
 }
 
 /*

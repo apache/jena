@@ -3,6 +3,10 @@ package dev ;
 
 public class DevARQ
 {
+    // == No variables == need tidying.
+    // Explain TDB: -> ARQ
+    // Deprecate StageGenerator.
+    
     // VarRename, OpVars, VarFinder and VarUtils -- sort out!
     //   Rename into SERVICE broken - an bNodes in OpAsQuery need reversing.
     //   Could stop at SERVICE or in substitute, do a mask for projection. 

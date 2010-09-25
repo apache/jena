@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -9,6 +10,7 @@ package com.hp.hpl.jena.sparql.engine.iterator;
 import java.util.List ;
 
 import org.openjena.atlas.io.IndentedWriter ;
+import org.openjena.atlas.lib.ListUtils ;
 
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
@@ -16,7 +18,6 @@ import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingProject ;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
-import com.hp.hpl.jena.sparql.util.PrintUtils ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 
 
@@ -42,7 +43,7 @@ public class QueryIterProject extends QueryIterConvert
     {
         out.print(Utils.className(this)) ;
         out.print(" ") ;
-        PrintUtils.printList(out, projectionVars) ;
+        ListUtils.print(out, projectionVars) ;
     }
     
     static
@@ -64,6 +65,7 @@ public class QueryIterProject extends QueryIterConvert
 
 /*
  * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

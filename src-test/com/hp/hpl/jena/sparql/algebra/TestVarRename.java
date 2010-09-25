@@ -14,7 +14,7 @@ import org.junit.Test ;
 import org.openjena.atlas.junit.BaseTest ;
 
 import com.hp.hpl.jena.sparql.core.Var ;
-import com.hp.hpl.jena.sparql.engine.main.VarRename ;
+import com.hp.hpl.jena.sparql.engine.VarRename ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 
 public class TestVarRename extends BaseTest
