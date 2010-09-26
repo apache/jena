@@ -28,6 +28,12 @@ public class Service
             throw new QueryExecException("Service URI not bound: "+op.getService()) ; 
         
         Query query ;
+        
+        // ???
+        //op = VarRename.reverseRename(op, true) ;
+        
+        
+        // does not cope with substitution?
         // XXX Needs more testing
 //        if ( op.getServiceElement() != null )
 //        {
