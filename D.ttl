@@ -1,14 +1,11 @@
-@prefix ex: <http://example.org/> .
+@prefix : <http://example/> .
 
-@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+:s :p :o .
 
-ex:alice a foaf:Person; foaf:name "Alice Wonderland";
-           foaf:nick "Alice", "The real Alice".
 
-ex:bob a foaf:Person;
-       foaf:name "Robert Doe", "Robert Charles Doe", "Robert C. Doe";
-       foaf:nick "Bob","Bobby","RobC","BobDoe".
-
-ex:charles a foaf:Person;
-       foaf:name "Charles Charles";
-       foaf:nick "Charlie" .
+## :a :p :b .
+## :b :p :z .
+## :a :p :c .
+## :c :p :z .
+## :c :p :c .
+## #:z :p :X .

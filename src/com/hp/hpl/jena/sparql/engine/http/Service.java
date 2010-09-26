@@ -16,12 +16,13 @@ import com.hp.hpl.jena.sparql.algebra.OpAsQuery ;
 import com.hp.hpl.jena.sparql.algebra.op.OpService ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIteratorResultSet ;
+import com.hp.hpl.jena.sparql.util.Context ;
 
 /** Execution of OpService */
 
 public class Service
 {
-    public static QueryIterator exec(OpService op)
+    public static QueryIterator exec(OpService op, Context context)
     {
         if ( ! op.getService().isURI() )
             throw new QueryExecException("Service URI not bound: "+op.getService()) ; 

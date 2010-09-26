@@ -19,48 +19,72 @@ import com.hp.hpl.jena.sparql.sse.SSE ;
 
 public class TestVarRename extends BaseTest
 {
-
     public static junit.framework.Test suite()
     {
         return new JUnit4TestAdapter(TestVarRename.class) ;
     }
 
-    @Test public void rename_01() { rename("(bgp (<s> <p> <o>))", "(bgp (<s> <p> <o>))") ; }
-    @Test public void rename_02() { rename("(bgp (<s> ?p <o>))", "(bgp (<s> ?/p <o>))") ; }
-    @Test public void rename_03() { rename("(bgp (?s ?p <o>))", "(bgp (?s ?/p <o>))", "s") ; }
-    @Test public void rename_04() { rename("(filter (+ ?s ?x) (bgp (?s ?p <o>)))", "(filter (+ ?s ?/x) (bgp (?s ?/p <o>)))", "s") ; }
+    @Test public void rename_01() { rename("(bgp (<s> <p> <o>))", "(bgp (<s> <p> <o>))", true) ; }
+    @Test public void rename_02() { rename("(bgp (<s> ?p <o>))", "(bgp (<s> ?/p <o>))", true) ; }
+    @Test public void rename_03() { rename("(bgp (?s ?p <o>))", "(bgp (?s ?/p <o>))", true, "s") ; }
+    @Test public void rename_04() { rename("(filter (+ ?s ?x) (bgp (?s ?p <o>)))", "(filter (+ ?s ?/x) (bgp (?s ?/p <o>)))", true, "s") ; }
 
     @Test public void rename_05() { rename("(group ((?.1 (str ?x))) ((?.0 (count))) (bgp (triple ?x :p ?v)))",
-                                           "(group ((?/.1 (str ?x))) ((?/.0 (count))) (bgp (triple ?x :p ?/v)))", "x" ) ; }
+                                           "(group ((?/.1 (str ?x))) ((?/.0 (count))) (bgp (triple ?x :p ?/v)))",
+                                           true, "x" ) ; }
     
     @Test public void rename_06() { rename("(group ((?.1 (str ?x))) ((?.0 (max ?v))) (bgp (triple ?x :p ?v)))",
-                                           "(group ((?/.1 (str ?x))) ((?/.0 (max ?/v))) (bgp (triple ?x :p ?/v)))", "x" ) ; }
+                                           "(group ((?/.1 (str ?x))) ((?/.0 (max ?/v))) (bgp (triple ?x :p ?/v)))",
+                                           true, "x" ) ; }
 
     @Test public void rename_07() { rename("(assign ((?x (+ ?/a ?/b))) (table unit))", 
-                                           "(assign ((?/x (+ ?//a ?//b))) (table unit))") ; }
+                                           "(assign ((?/x (+ ?//a ?//b))) (table unit))",
+                                           true) ; }
     @Test public void rename_08() { rename("(assign ((?x (+ ?/a ?/b))) (table unit))", 
                                            "(assign ((?/x (+ ?/a ?//b))) (table unit))",
-                                           "/a") ; }
+                                           false, "/a") ; }
     
     @Test public void rename_09() { rename("(project (?s ?p) (bgp (?s ?p ?o)))",  
                                            "(project (?s ?/p) (bgp (?s ?/p ?/o)))",
+                                           true,
                                            "s") ; }
+
+    @Test public void rename_99() { reverse("(project (?s ?/p) (bgp (?s ?/p ?/o)))",
+                                            "(project (?s ?p) (bgp (?s ?p ?o)))", true ) ; }  
+
+    @Test public void rename_98() { reverse("(assign ((?/x (+ ?//a ?///b))) (table unit))",
+                                            "(assign ((?x (+ ?a ?b))) (table unit))", 
+                                            true ) ; }  
     
-    
-    private static void rename(String string, String string2, String... varNames)
+    private static void reverse(String string, String string2, boolean repeatedly)
+    {
+        Op opOrig = SSE.parseOp(string) ;
+        Op opExpected = SSE.parseOp(string2) ;
+        Op opActual = VarRename.reverseRename(opOrig, repeatedly) ;
+        assertEquals(opExpected, opActual) ;
+    }
+
+    private static void rename(String string, String string2, boolean reversable, String... varNames)
     {
         Set<Var> s = new HashSet<Var>() ;
         for ( String vn : varNames )
             s.add(Var.alloc(vn)) ;
-        rename(string,string2, s) ;
+        rename(string, string2, reversable, s) ;
     }
 
-    private static void rename(String string, String string2,  Set<Var> constant)
+    private static void rename(String string, String string2, boolean reversable,  Set<Var> constant)
     {
-        Op op = SSE.parseOp(string) ;
-        Op op2 = SSE.parseOp(string2) ;
-        Op op3 = VarRename.rename(op, constant) ;
-        assertEquals(op2, op3) ;
+        Op opOrig = SSE.parseOp(string) ;
+        Op opExpected = SSE.parseOp(string2) ;
+        Op opActual = VarRename.rename(opOrig, constant) ;
+        assertEquals(opExpected, opActual) ;
+        
+        if ( reversable )
+        {
+            // Undo.
+            Op opRebuilt = VarRename.reverseRename(opActual, false) ;
+            assertEquals(opOrig, opRebuilt) ;
+        }
     }
 }
 

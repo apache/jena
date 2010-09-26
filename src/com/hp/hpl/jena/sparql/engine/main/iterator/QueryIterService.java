@@ -33,7 +33,7 @@ public class QueryIterService extends QueryIterRepeatApply
     protected QueryIterator nextStage(Binding outerBinding)
     {
         Op op = QC.substitute(opService, outerBinding) ;
-        QueryIterator qIter = Service.exec((OpService)op) ;
+        QueryIterator qIter = Service.exec((OpService)op, getExecContext().getContext()) ;
         // Need to put the outerBinding as parent to every binding of the service call.
         // There should be no variables in common because of the OpSubstitute.substitute 
         QueryIterator qIter2 = new QueryIterCommonParent(qIter, outerBinding, getExecContext()) ;

@@ -9,6 +9,7 @@ package com.hp.hpl.jena.sparql.engine.ref;
 import java.util.Iterator ;
 import java.util.Stack ;
 
+import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.query.QueryExecException ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.OpVisitor ;
@@ -175,7 +176,7 @@ public class EvaluatorDispatch implements OpVisitor
 
     public void visit(OpService opService)
     {
-        QueryIterator qIter = Service.exec(opService) ;
+        QueryIterator qIter = Service.exec(opService, ARQ.getContext()) ;
         Table table = TableFactory.create(qIter) ;
         push(table) ;
     }

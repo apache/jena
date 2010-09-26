@@ -18,7 +18,7 @@ public class RenamerVars implements NodeTransform
 {
     private final Map<Var, Var> aliases = new HashMap<Var, Var>() ;
     private final Collection<Var> constants ;
-    private String varPrefix ;
+    private final String varPrefix ;
     
     public RenamerVars(Collection<Var> constants, String varPrefix)
     {

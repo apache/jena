@@ -4,13 +4,15 @@ package dev ;
 public class DevARQ
 {
     // == No variables == need tidying.
-    // Explain TDB: -> ARQ
-    // Deprecate StageGenerator.
+    // OpService -> Service.exec -> HttpQuery <-- Explain here.
     
     // VarRename, OpVars, VarFinder and VarUtils -- sort out!
-    //   Rename into SERVICE broken - an bNodes in OpAsQuery need reversing.
-    //   Could stop at SERVICE or in substitute, do a mask for projection. 
-    //   That would need a top down TransformCopy application.
+    //
+    //   Rename for scoping into SERVICE broken.
+    //     two cses subquery->SERVICE and SERVICE->Subquery
+    //   
+    //   OpSubstitute could work on original and renamed version. 
+    //   Or reverse the renaming **
     
     // Canonicalization: Fix URIs. () [] SPC
     // DateTime: TDB uses .###
@@ -22,7 +24,7 @@ public class DevARQ
     // ReportRemoteVirtuoso: StAX does not parse - times out too early? 
     // XSDDuration
     
-    // Evaluation logger for errors and warnings.  SystemARQ.warn() for application-level warnings.
+    // SystemARQ.warn() for application-level warnings.
     
     // **Next
     // ** Sort out GraphStore.

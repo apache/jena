@@ -65,7 +65,14 @@ public class VarRename
         return NodeTransformLib.transform(renamer, expr) ;
     }
     
-
+    /** Undo the effect of the rename operation, once or repeatedly.
+     * This assumes the op was renamed by VarRename.rename */
+    public static Op reverseRename(Op op, boolean repeatedly)
+    {
+        NodeTransform renamer = new UnrenameVars(prefix, repeatedly) ;
+        return NodeTransformLib.transform(renamer, op) ;
+    }
+    
 }
 
 /*
