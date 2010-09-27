@@ -89,6 +89,9 @@ public class QueryIterGroup extends QueryIterPlainWrapper
                         binding.add(v, value) ;
                         valueExists = true ;
                     }
+                    else
+                        // One row of nothing.
+                        valueExists = true ;
                 }
             }
             

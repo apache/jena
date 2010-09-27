@@ -21,6 +21,7 @@ import org.openjena.atlas.lib.Base64 ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
+import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.shared.JenaException ;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
 import com.hp.hpl.jena.sparql.util.Convert ;
@@ -155,14 +156,13 @@ public class HttpQuery extends Params
             throw jEx ;
         }
     }
-     
 
     private InputStream execGet() throws QueryExceptionHTTP
     {
         URL target = null ;
         String qs = getQueryString() ;
         
-        //System.out.println(qs) ;
+        ARQ.getHttpRequestLogger().trace(qs) ;
         
         try {
             if ( count() == 0 )
@@ -214,6 +214,8 @@ public class HttpQuery extends Params
         { throw new QueryExceptionHTTP(0, "Malformed URL: " + malEx); }
         log.trace("POST "+target.toExternalForm()) ;
         
+        ARQ.getHttpRequestLogger().trace(target.toExternalForm()) ;
+
         try
         {
             httpConnection = (HttpURLConnection) target.openConnection();
@@ -236,6 +238,7 @@ public class HttpQuery extends Params
                 String x = p.getValue() ;
                 x = Convert.encWWWForm(x) ;
                 out.write(x.getBytes()) ;
+                ARQ.getHttpRequestLogger().trace("Param: "+x) ;
             }
             out.flush() ;
             httpConnection.connect() ;

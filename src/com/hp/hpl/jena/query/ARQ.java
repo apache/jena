@@ -37,14 +37,22 @@ public class ARQ
     /** Name of the information logger */
     public static final String logInfoName = "com.hp.hpl.jena.arq.info" ;
     
+    /** Name of the logger for remote HTTP requests */
+    public static final String logHttpRequestName = "com.hp.hpl.jena.arq.service" ;
+    
     private static final Logger logExec = LoggerFactory.getLogger(logExecName) ;
+    private static final Logger logInfo = LoggerFactory.getLogger(logInfoName) ;
+    private static final Logger logHttpRequest = LoggerFactory.getLogger(logHttpRequestName) ;
+
     /** The execution logger */
     public static Logger getExecLogger() { return logExec ; }
     
-    private static final Logger logInfo = LoggerFactory.getLogger(logInfoName) ;
     /** The information logger */
     public static Logger getInfoLogger() { return logInfo ; }
     
+    /** The HTTP Request logger */
+    public static Logger getHttpRequestLogger() { return logHttpRequest ; }
+
     /** Symbol to enable logging of execution.  
      * Must also set log4j, or other logging system,
      * for logger "com.hp.hpl.jena.sparql.exec"

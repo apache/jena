@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -12,10 +13,13 @@ import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.query.QueryExecException ;
 import com.hp.hpl.jena.query.ResultSet ;
 import com.hp.hpl.jena.query.ResultSetFactory ;
+import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.OpAsQuery ;
 import com.hp.hpl.jena.sparql.algebra.op.OpService ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
+import com.hp.hpl.jena.sparql.engine.VarRename ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIteratorResultSet ;
+import com.hp.hpl.jena.sparql.mgt.Explain ;
 import com.hp.hpl.jena.sparql.util.Context ;
 
 /** Execution of OpService */
@@ -27,24 +31,30 @@ public class Service
         if ( ! op.getService().isURI() )
             throw new QueryExecException("Service URI not bound: "+op.getService()) ; 
         
+        
+        // This relies on the observation that the query was originally correct,
+        // so reversing the scope renaming is safe (it merely restores the algebra expression).
+        // Any variables that reappear should be internal ones that were hidden by renaming
+        // in teh first place.
+        // Any substitution is also safe because it replaced variables by values. 
+        Op opRemote = VarRename.reverseRename(op.getSubOp(), true) ;
+
+        //Explain.explain("HTTP", opRemote, context) ;
+        
         Query query ;
-        
-        // ???
-        //op = VarRename.reverseRename(op, true) ;
-        
-        
-        // does not cope with substitution?
-        // XXX Needs more testing
 //        if ( op.getServiceElement() != null )
 //        {
+// does not cope with substitution?
 //            query = QueryFactory.make() ;
 //            query.setQueryPattern(op.getServiceElement().getElement()) ;
 //            query.setQuerySelectType() ;
 //            query.setQueryResultStar(true) ;
 //        }
 //        else
-            query = OpAsQuery.asQuery(op.getSubOp()) ;
+            query = OpAsQuery.asQuery(opRemote) ;
         
+            
+        Explain.explain("HTTP", query, context) ;            
         HttpQuery httpQuery = new HttpQuery(op.getService().getURI()) ;
         httpQuery.addParam(HttpParams.pQuery, query.toString() );
         httpQuery.setAccept(HttpParams.contentTypeResultsXML) ;
@@ -56,6 +66,7 @@ public class Service
 
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

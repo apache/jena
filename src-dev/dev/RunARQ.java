@@ -29,13 +29,18 @@ import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.iri.IRI ;
 import com.hp.hpl.jena.iri.IRIFactory ;
 import com.hp.hpl.jena.iri.Violation ;
+import com.hp.hpl.jena.query.ARQ ;
+import com.hp.hpl.jena.query.Dataset ;
+import com.hp.hpl.jena.query.DatasetFactory ;
 import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.query.QueryExecution ;
 import com.hp.hpl.jena.query.QueryExecutionFactory ;
 import com.hp.hpl.jena.query.QueryFactory ;
 import com.hp.hpl.jena.query.QuerySolutionMap ;
+import com.hp.hpl.jena.query.ResultSet ;
 import com.hp.hpl.jena.query.ResultSetFormatter ;
 import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.sparql.ARQConstants ;
 import com.hp.hpl.jena.sparql.algebra.Algebra ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
@@ -43,6 +48,7 @@ import com.hp.hpl.jena.sparql.algebra.OpVars ;
 import com.hp.hpl.jena.sparql.algebra.op.OpModifier ;
 import com.hp.hpl.jena.sparql.algebra.op.OpProject ;
 import com.hp.hpl.jena.sparql.algebra.op.OpSlice ;
+import com.hp.hpl.jena.sparql.core.DataSourceImpl ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
 import com.hp.hpl.jena.sparql.core.Quad ;
@@ -57,6 +63,7 @@ import com.hp.hpl.jena.sparql.graph.NodeConst ;
 import com.hp.hpl.jena.sparql.graph.NodeTransform ;
 import com.hp.hpl.jena.sparql.graph.NodeTransformLib ;
 import com.hp.hpl.jena.sparql.lang.ParserSPARQL11Update ;
+import com.hp.hpl.jena.sparql.mgt.Explain.InfoLevel ;
 import com.hp.hpl.jena.sparql.modify.request.UpdateWriter ;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
@@ -96,10 +103,33 @@ public class RunARQ
     
     public static void main(String[] argv) throws Exception
     {
-        arq.sparql.main("--explain", "--data=D.ttl", "--query=Q.rq") ; System.exit(0) ;
+        //arq.sparql.main("--explain", "--data=D.ttl", "--query=Q.rq") ; System.exit(0) ;
+       
+        
+        Dataset ds2 = DatasetFactory.create() ;
+        ds2 = new DataSourceImpl(ds2.asDatasetGraph()) 
+        { 
+            @Override
+            public Model getNamedModel(String uri)
+            { 
+                Model m = super.getNamedModel(uri) ;
+                if ( m == null )
+                {
+                    m = ModelFactory.createDefaultModel() ;
+                    super.addNamedModel(uri, m) ;
+                }
+                return m ;
+            }
+        } ;
+        
+        
+        System.out.println(ds2.getNamedModel("http://example/foo")) ;
+        System.exit(0) ;
+       
         
         if ( true )
         {
+            ARQ.setExecutionLogging(InfoLevel.ALL) ;
             String qs = StrUtils.strjoinNL("SELECT DISTINCT ?s",
                                            "{ SERVICE <http://dbpedia.org/sparql>",
                                            "    { SELECT ?s { ?s ?p [] . } limit 10 }",
@@ -107,12 +137,19 @@ public class RunARQ
                                                "    { SELECT ?s { ?s ?p [] . } limit 10 }",
             "}") ;
             Query query = QueryFactory.create(qs) ;
-            Op op = Algebra.compile(query) ;
-            divider() ;
-            System.out.println(op) ;
-            Op op2 = Algebra.optimize(op) ;
-            divider() ;
-            System.out.println(op2) ;
+//            Op op = Algebra.compile(query) ;
+//            divider() ;
+//            System.out.println(op) ;
+//            Op op2 = Algebra.optimize(op) ;
+//            divider() ;
+//            System.out.println(op2) ;
+            
+            Dataset ds = DatasetFactory.create() ;
+            QueryExecution qExec = QueryExecutionFactory.create(query, ds) ;
+            ResultSet rs = qExec.execSelect() ;
+            ResultSetFormatter.out(rs) ;
+            qExec.close() ;
+            
             System.exit(0) ;
         }
         

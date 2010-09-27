@@ -39,6 +39,11 @@ import com.hp.hpl.jena.sparql.util.Context ;
 
 public class Explain
 {
+    /** Control whether messages include multiple line output.
+     *  In multiple line output, subsequent lines start with a space to help log file parsing. 
+     */
+    public static boolean MultiLineMode = true ;
+    
     /* The logging system provided levels: TRACE < DEBUG < INFO < WARN < ERROR < FATAL
      * Explain logging is always at logging level INFO.
      * Per query: SYSTEM > EXEC (Query) > DETAIL (Algebra) > DEBUG (every BGP)
@@ -99,9 +104,12 @@ Document:
     {
         if ( explaining(InfoLevel.INFO, logExec, context) )
         {
-            // One line?
+            // One line or indented multiline format
             IndentedLineBuffer iBuff = new IndentedLineBuffer() ;
-            //iBuff.getIndentedWriter().setFlatMode(true) ;
+            if ( true )
+                iBuff.incIndent() ;
+            else
+                iBuff.setFlatMode(true) ;
             query.serialize(iBuff) ;
             String x = iBuff.asString() ;
             _explain(logExec, message, x, true) ;
@@ -119,9 +127,11 @@ Document:
     {
         if ( explaining(InfoLevel.FINE, logExec, context) )
         {
-         // One line?
             IndentedLineBuffer iBuff = new IndentedLineBuffer() ;
-            //iBuff.getIndentedWriter().setFlatMode(true) ;
+            if ( true )
+                iBuff.incIndent() ;
+            else
+                iBuff.setFlatMode(true) ;
             op.output(iBuff) ;
             String x = iBuff.asString() ;
             _explain(logExec, message, x, true) ;
@@ -145,18 +155,39 @@ Document:
     {
         if ( explaining(InfoLevel.ALL, logExec,context) )
         {
-            String str = formatQuads(quads) ;
+            IndentedLineBuffer iBuff = new IndentedLineBuffer() ;
+            if ( true )
+                iBuff.incIndent() ;
+            else
+                iBuff.setFlatMode(true) ;
+            formatQuads(iBuff, quads) ;
+            iBuff.flush() ;
+            String str = iBuff.toString() ;
             _explain(logExec, message, str, false) ;
         }
     }
+    
+//    public static void explainHTTP(String message, String request, Context context)
+//    {
+//        if ( explaining(InfoLevel.ALL, logExec,context) )
+//        {
+//            IndentedLineBuffer iBuff = new IndentedLineBuffer() ;
+//            if ( true )
+//                iBuff.incIndent() ;
+//            else
+//                iBuff.setFlatMode(true) ;
+//            ???
+//            iBuff.flush() ;
+//            String str = iBuff.toString() ;
+//            _explain(logExec, message, str, false) ;
+//        }
+//    }
 
     // TEMP : quad list that looks right.
     // Remove when QuadPatterns roll through from ARQ.
     
-    private static String formatQuads(QuadPattern quads)
+    private static void formatQuads(IndentedLineBuffer out, QuadPattern quads)
     {
-        IndentedLineBuffer out = new IndentedLineBuffer() ;
-
         SerializationContext sCxt = SSE.sCxt((SSE.defaultPrefixMapWrite)) ;
 
         boolean first = true ;
@@ -166,8 +197,6 @@ Document:
                 out.print(" ") ;
             else
                 first = false ;
-            // Adds (triple ...)
-            // SSE.write(buff.getIndentedWriter(), t) ;
             out.print("(") ;
             WriterNode.output(out, qp.getGraph(), sCxt) ;
             out.print(" ") ;
@@ -178,13 +207,12 @@ Document:
             WriterNode.output(out, qp.getObject(), sCxt) ;
             out.print(")") ;
         }
-        out.flush();
-        return out.toString() ;
     }    
     // ----
     
     private static void _explain(Logger logger, String reason, String explanation, boolean newlineAlways)
     {
+        // "explanation" should already be indented with some whitespace 
         while ( explanation.endsWith("\n") || explanation.endsWith("\r") )
             explanation = StrUtils.chop(explanation) ;
         if ( newlineAlways || explanation.contains("\n") )

@@ -27,8 +27,6 @@ import com.hp.hpl.jena.util.FileUtils ;
  *  to pass over the results again, turning them into output.
  *  </p>
  * @see com.hp.hpl.jena.query.ResultSetFormatter for convenience ways to call this formatter
- * 
- * @author   Andy Seaborne
  */
 
 public class TextOutput extends OutputBase

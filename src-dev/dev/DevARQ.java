@@ -3,19 +3,9 @@ package dev ;
 
 public class DevARQ
 {
-    // == No variables == need tidying.
-    // OpService -> Service.exec -> HttpQuery <-- Explain here.
-    
     // VarRename, OpVars, VarFinder and VarUtils -- sort out!
-    //
-    //   Rename for scoping into SERVICE broken.
-    //     two cses subquery->SERVICE and SERVICE->Subquery
-    //   
-    //   OpSubstitute could work on original and renamed version. 
-    //   Or reverse the renaming **
     
     // Canonicalization: Fix URIs. () [] SPC
-    // DateTime: TDB uses .###
     
     // RIOT (etc) closing InputStream
     // Bad character encoding - exception but line/col = 1/1
@@ -24,10 +14,9 @@ public class DevARQ
     // ReportRemoteVirtuoso: StAX does not parse - times out too early? 
     // XSDDuration
     
-    // SystemARQ.warn() for application-level warnings.
-    
     // **Next
     // ** Sort out GraphStore.
+    //    Just a carrier for getDatasetGraph/start/end update?
     // ??setSilentMode - reason to keep?
     // ?? remove
     // ?? merely a DSG container?
