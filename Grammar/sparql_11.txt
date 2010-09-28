@@ -103,6 +103,7 @@ TOKENS
 | <IS_IRI: "isIRI">
 | <IS_BLANK: "isBlank">
 | <IS_LITERAL: "isLiteral">
+| <IS_NUMERIC: "isNumeric">
 | <REGEX: "regex">
 | <SAME_TERM: "sameTerm">
 | <TRUE: "true">
@@ -400,6 +401,7 @@ NON-TERMINALS
 		|	<IS_URI> <LPAREN> Expression <RPAREN>
 		|	<IS_BLANK> <LPAREN> Expression <RPAREN>
 		|	<IS_LITERAL> <LPAREN> Expression <RPAREN>
+		|	<IS_NUMERIC> <LPAREN> Expression <RPAREN>
 		|	RegexExpression
 		|	ExistsFunc
 		|	NotExistsFunc

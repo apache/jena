@@ -1165,6 +1165,8 @@ Expr BuiltInCall() : { Expr expr ; Expr expr1 = null ; Expr expr2 = null ;
     { return new E_IsBlank(expr) ; }
   | <IS_LITERAL> <LPAREN> expr = Expression() <RPAREN>
     { return new E_IsLiteral(expr) ; }
+  | <IS_NUMERIC> <LPAREN> expr = Expression() <RPAREN>
+    { return new E_IsNumeric(expr) ; }
   | // Regular expression matcher
     expr = RegexExpression() { return expr ; }
   | expr = ExistsFunc() { return expr ; }
@@ -1446,6 +1448,7 @@ TOKEN [IGNORE_CASE] :
 | < IS_IRI: "isIRI" >
 | < IS_BLANK: "isBlank" >
 | < IS_LITERAL: "isLiteral" >
+| < IS_NUMERIC: "isNumeric" >
 | < REGEX: "regex" >
 | < SAME_TERM: "sameTerm" >
 | < TRUE: "true" >

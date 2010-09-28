@@ -114,6 +114,7 @@
 [<IS_URI>]     ::= 'isURI'
 [<IS_BLANK>]   ::= 'isBLANK'
 [<IS_LITERAL>] ::= 'isLITERAL'
+[<IS_NUMERIC>] ::= 'isNUMERIC'
 [<SAME_TERM>]  ::= 'sameTerm'
 [<REGEX>]      ::= 'REGEX'
 [<TRUE>]       ::= 'true'

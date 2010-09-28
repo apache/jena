@@ -80,63 +80,17 @@ abstract public class DatasetGraphBase implements DatasetGraph
     }
     
     //@Override
-    public Iterator<Quad> find(Quad quad)
-    { return find(quad.getGraph(), quad.getSubject(), quad.getPredicate(), quad.getObject()) ; }
+    public Iterator<Quad> find()
+    { return find(Node.ANY, Node.ANY, Node.ANY, Node.ANY) ; }
+
     
-//    /** Implementation of find based on spltting into triples (default graph) and quads (named graph) */
-//    //@Override
-//    public Iterator<Quad> find(Node g, Node s, Node p , Node o)
-//    {
-//        if ( ! isWildcard(g) )
-//        {
-//            if ( Quad.isDefaultGraph(g))
-//                return findInDftGraph(s,p,o) ;
-//            Iterator<Quad> qIter = findInNamedGraphs(g, s, p, o) ;
-//            if ( qIter == null )
-//                return Iter.nullIterator() ;
-//            return qIter ;
-//        }
-//        
-//        return findAny(s, p, o) ;
-//    }
-//    
-//    public Iterator<Quad> findAny(Node s, Node p , Node o) 
-//    {
-//        // Pass g in for symmetry and to "pass" to findInNamedGraphs
-//        // Default graph
-//        Iterator<Quad> iter1 = findInDftGraph(s, p, o) ;
-//        Iterator<Quad> iter2 = findInNamedGraphs(Node.ANY, s, p, o) ;
-//        
-//        if ( iter1 ==null && iter2 == null )
-//            return Iter.nullIterator() ;
-//        if ( iter1 == null )
-//            return iter2 ;
-//        if ( iter2 == null )
-//            return iter1 ;
-//        return Iter.append(iter1, iter2) ;
-//    }
-//
-//    protected abstract Iterator<Quad> findInDftGraph(Node s, Node p , Node o) ;
-//    protected abstract Iterator<Quad> findInNamedGraphs(Node g, Node s, Node p , Node o) ;
-//
-//    protected static Iterator<Quad> triples2quadsDftGraph(Iterator<Triple> iter)
-//    {
-//        return triples2quads(Quad.tripleInQuad, iter) ;
-//    }
-//    
-//    protected static Iter<Quad> triples2quads(final Node graphNode, Iterator<Triple> iter)
-//    {
-//        Transform<Triple, Quad> transformNamedGraph = new Transform<Triple, Quad> () {
-//            public Quad convert(Triple triple)
-//            {
-//                return new Quad(graphNode, triple) ;
-//            }
-//        } ;
-//            
-//        return Iter.iter(iter).map(transformNamedGraph) ;
-//    }
-
-
+    //@Override
+    public Iterator<Quad> find(Quad quad)
+    { 
+        if ( quad == null )
+            return find() ;
+        return find(quad.getGraph(), quad.getSubject(), quad.getPredicate(), quad.getObject()) ; }
+    
     //@Override
     public boolean contains(Quad quad) { return contains(quad.getGraph(), quad.getSubject(), quad.getPredicate(), quad.getObject()) ; }
 

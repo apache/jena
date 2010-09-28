@@ -68,6 +68,10 @@ public class DatasetGraphWrapper implements DatasetGraph
     { return dsg.isEmpty() ; }
     
     //@Override
+    public Iterator<Quad> find()
+    { return dsg.find() ; }
+
+    //@Override
     public Iterator<Quad> find(Quad quad)
     { return dsg.find(quad) ; }
 

@@ -60,42 +60,6 @@ abstract public class DatasetGraphBaseFind extends DatasetGraphBase
     protected abstract Iterator<Quad> findInDftGraph(Node s, Node p , Node o) ;
     protected abstract Iterator<Quad> findInSpecificNamedGraph(Node g, Node s, Node p , Node o) ;
     protected abstract Iterator<Quad> findInAnyNamedGraphs(Node s, Node p , Node o) ;
-
-//    @Override
-//    public Iterator<Quad> findAny(Node s, Node p , Node o)
-//    {
-//        // Wildcard for g
-//        // Default graph
-//        Iterator<Quad> iter = findInDftGraph(s, p, o) ;
-//
-//        Iterator<Node> gnames = listGraphNodes() ;
-//        // Named graphs
-//        for ( ; gnames.hasNext() ; )  
-//        {
-//            Node gn = gnames.next();
-//            Iterator<Quad> qIter = findInSpecificNamedGraphs(gn, s, p, o) ;
-//            if ( qIter != null )
-//                iter = Iter.append(iter, qIter) ;
-//        }
-//        return iter ;
-//    }
-
-//    protected static Iterator<Quad> triples2quadsDftGraph(Iterator<Triple> iter)
-//    {
-//        return triples2quads(Quad.tripleInQuad, iter) ;
-//    }
-//    
-//    protected static Iter<Quad> triples2quads(final Node graphNode, Iterator<Triple> iter)
-//    {
-//        Transform<Triple, Quad> transformNamedGraph = new Transform<Triple, Quad> () {
-//            public Quad convert(Triple triple)
-//            {
-//                return new Quad(graphNode, triple) ;
-//            }
-//        } ;
-//            
-//        return Iter.iter(iter).map(transformNamedGraph) ;
-//    }
 }
 
 /*

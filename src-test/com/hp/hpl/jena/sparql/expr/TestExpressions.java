@@ -9,6 +9,8 @@ package com.hp.hpl.jena.sparql.expr;
 import static org.junit.Assert.assertEquals ;
 import static org.junit.Assert.assertTrue ;
 import junit.framework.JUnit4TestAdapter ;
+import org.junit.AfterClass ;
+import org.junit.BeforeClass ;
 import org.junit.Test ;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
@@ -34,6 +36,15 @@ public class TestExpressions
     public static junit.framework.Test suite() {
         return new JUnit4TestAdapter(TestExpressions.class);
       }
+    
+    static boolean flagVerboseWarning ;
+    @BeforeClass static public void beforeClass() {  
+        flagVerboseWarning = NodeValue.VerboseWarnings ;
+        NodeValue.VerboseWarnings = false ;
+    }
+    
+    @AfterClass static public void afterClass() { NodeValue.VerboseWarnings = flagVerboseWarning ; }
+    
     
     @Test public void testVar_1() { testVar("?x", "x") ; }
     @Test public void testVar_2() { testVar("$x", "x") ; }
@@ -152,6 +163,14 @@ public class TestExpressions
     @Test public void testBoolean_65() { testBoolean(time3+" > "+time2, true) ; }
     @Test public void testBoolean_66() { testBoolean(time4+" < "+time2, true) ; }
     @Test public void testBoolean_67() { testBoolean(time4+" > "+time2, false) ; }
+    
+    @Test public void testBoolean_68() { testBoolean("isNumeric(12)", true) ; }
+    @Test public void testBoolean_69() { testBoolean("isNumeric('12')", false) ; }
+    @Test public void testBoolean_70() { testBoolean("isNumeric('12'^^<"+XSDDatatype.XSDbyte.getURI()+">)", true) ; }
+    @Test public void testBoolean_71() { testBoolean("isNumeric('1200'^^<"+XSDDatatype.XSDbyte.getURI()+">)", false) ; }
+    
+    @Test(expected=ExprEvalException.class)
+    public void testBoolean_72()       { testBoolean("isNumeric(?x)", true) ; } 
     
     @Test public void testDuration_01() { testBoolean(duration1+" = "+duration1, true) ; }
     @Test public void testDuration_02() { testBoolean(duration1+" < "+duration2, true) ; }
@@ -302,20 +321,28 @@ public class TestExpressions
     @Test public void testBoolean_144() { testBoolean("bound(?b)", true, env) ; }
     @Test public void testBoolean_145() { testBoolean("bound(?x)", true, env) ; }
     @Test public void testBoolean_146() { testBoolean("bound(?y)", false, env) ; }
-    @Test public void testString_18() { testString("str(<urn:x>)", "urn:x") ; }
-    @Test public void testString_19() { testString("str('')", "") ; }
-    @Test public void testString_20() { testString("str(15)", "15") ; }
-    @Test public void testString_21() { testString("str('15.20'^^<"+XSDDatatype.XSDdouble.getURI()+">)", "15.20") ; }
-    @Test public void testString_22() { testString("str('lex'^^<x:unknown>)", "lex") ; }
+    @Test public void testString_18()   { testString("str(<urn:x>)", "urn:x") ; }
+    @Test public void testString_19()   { testString("str('')", "") ; }
+    @Test public void testString_20()   { testString("str(15)", "15") ; }
+    @Test public void testString_21()   { testString("str('15.20'^^<"+XSDDatatype.XSDdouble.getURI()+">)", "15.20") ; }
+    @Test public void testString_22()   { testString("str('lex'^^<x:unknown>)", "lex") ; }
     @Test public void testBoolean_147() { testBoolean("sameTerm(1, 1)", true, env) ; }
     @Test public void testBoolean_148() { testBoolean("sameTerm(1, 1.0)", false, env) ; }
-    @Test public void testNumeric_30() { testNumeric("<"+xsd+"integer>('3')", 3) ; }
-    @Test public void testNumeric_31() { testNumeric("<"+xsd+"byte>('3')", 3) ; }
-    @Test public void testNumeric_32() { testNumeric("<"+xsd+"int>('3')", 3) ; }
+    @Test public void testNumeric_30()  { testNumeric("<"+xsd+"integer>('3')", 3) ; }
+    @Test public void testNumeric_31()  { testNumeric("<"+xsd+"byte>('3')", 3) ; }
+    @Test public void testNumeric_32()  { testNumeric("<"+xsd+"int>('3')", 3) ; }
     @Test public void testBoolean_149() { testBoolean("<"+xsd+"double>('3') = 3", true) ; }
     @Test public void testBoolean_150() { testBoolean("<"+xsd+"float>('3') = 3", true) ; }
     @Test public void testBoolean_151() { testBoolean("<"+xsd+"double>('3') = <"+xsd+"float>('3')", true) ; }
     @Test public void testBoolean_152() { testBoolean("<"+xsd+"double>(str('3')) = 3", true) ; }
+    
+    @Test public void testString_23()   { testString("'a'+'b'", "ab") ; }
+    @Test(expected=ExprEvalException.class)
+    public void testString_24()         { testString("'a'+12") ; }
+    public void testString_25()         { testString("12+'a'") ; }
+    public void testString_26()         { testString("<uri>+'a'") ; }
+
+
 
     static String duration1 = "'P1Y1M1DT1H1M1S"+"'^^<"+XSDDatatype.XSDduration.getURI()+">";
     static String duration2 = "'P2Y1M1DT1H1M1S"+"'^^<"+XSDDatatype.XSDduration.getURI()+">";
