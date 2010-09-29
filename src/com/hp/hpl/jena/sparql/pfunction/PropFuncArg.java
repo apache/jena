@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -12,6 +13,8 @@ import java.util.List ;
 import org.openjena.atlas.io.IndentedWriter ;
 
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.sparql.core.Substitute ;
+import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.expr.ExprList ;
 import com.hp.hpl.jena.sparql.graph.NodeConst ;
@@ -125,37 +128,23 @@ public class PropFuncArg extends PrintSerializableBase
             out.print(FmtUtils.stringForNode(arg)) ;
     }
     
-//    /** Create a new PropFuncArg by replacing any variables by their values given in the binding.
-//     *  If there is no binding, keep the variable.
-//     *  
-//     * @param binding
-//     * @return A PropFuncArg with any varibales substituted by values in the binding
-//     */  
-//    
-//    public PropFuncArg evalIfExists(Binding binding)
-//    {
-//        if ( isNode() )
-//            return new PropFuncArg(evalIfExistsOneArg(binding, arg)) ;
-//        List<Node> newArgList = new ArrayList<Node>() ;
-//        for ( Iterator<Node> iter = argList.iterator() ; iter.hasNext() ; )
-//        {
-//            Node n = iter.next();
-//            newArgList.add(evalIfExistsOneArg(binding, n)) ;
-//        }
-//        return new PropFuncArg(newArgList) ;
-//    }
-//    
-//    private static Node evalIfExistsOneArg(Binding binding, Node n)
-//    {
-//        if ( ! n.isVariable() )
-//            return n ;
-//        Node r = binding.get(Var.alloc(n)) ; 
-//        return ( r != null ) ? r : n ; 
-//    }
+    /** Create a new PropFuncArg by replacing any variables by their values given in the binding.
+     *  If there is no binding, keep the variable.
+     *  
+     * @param binding
+     * @return A PropFuncArg with any varibales substituted by values in the binding
+     * @deprecated Use {@link Substitute#substitute(PropFuncArg, Binding)}
+     */  
+    @Deprecated
+    public PropFuncArg evalIfExists(Binding binding)
+    {
+        return Substitute.substitute(this, binding) ;
+    }
 }
 
 /*
  * (c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

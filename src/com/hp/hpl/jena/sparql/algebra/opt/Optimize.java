@@ -127,6 +127,11 @@ public class Optimize implements Rewrite
             op = apply("Delabel", new TransformRemoveLabels(), op) ;
         }
 
+        // Remove "group of one" join 
+        // e..g CONSTRUCT {} WHERE { SELECT ... } 
+        
+        //op = TransformTopLevelSelect.simplify(op) ;
+        
         // Prepare expressions.
         OpWalker.walk(op, new OpVisitorExprPrepare(context)) ;
         

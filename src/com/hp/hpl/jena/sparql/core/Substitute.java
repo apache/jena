@@ -113,6 +113,8 @@ public class Substitute
     
     public static PropFuncArg substitute(PropFuncArg propFuncArg, Binding binding)
     {
+        if ( isNotNeeded(binding) ) return propFuncArg ;
+        
         if ( propFuncArg.isNode() )
             return new PropFuncArg(substitute(propFuncArg.getArg(), binding)) ;
         
@@ -121,6 +123,20 @@ public class Substitute
             newArgList.add(substitute(n, binding)) ;
         return new PropFuncArg(newArgList) ;
     }
+    
+    public static Expr substitute(Expr expr, Binding binding)
+    {
+        if ( isNotNeeded(binding) ) return expr ;
+        return expr.copySubstitute(binding) ;  
+    }
+    
+    public static ExprList substitute(ExprList exprList, Binding binding)
+    {
+        if ( isNotNeeded(binding) ) return exprList ;
+        return exprList.copySubstitute(binding) ;  
+    }
+    
+    
 
     private static boolean isNotNeeded(Binding b)
     {

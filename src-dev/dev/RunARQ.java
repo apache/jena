@@ -103,6 +103,8 @@ public class RunARQ
     
     public static void main(String[] argv) throws Exception
     {
+        arq.qparse.main("--print=op", "--query=Q.rq") ; System.exit(0) ;
+        
         //arq.sparql.main("--explain", "--data=D.ttl", "--query=Q.rq") ; System.exit(0) ;
        
         

@@ -525,6 +525,17 @@ public class AlgebraGenerator
     /** Compile query modifiers */
     public Op compileModifiers(Query query, Op pattern)
     {
+         /* The modifier order in algebra is:
+          * 
+          * Limit/Offset
+          *   Distinct/reduce
+          *     project
+          *       OrderBy
+          *         having
+          *           select expressions
+          *             group
+          */
+        
         // Preparation: sort SELECT clause into assignments and projects.
         VarExprList projectVars = query.getProject() ;
         
@@ -597,8 +608,11 @@ public class AlgebraGenerator
         
         if ( vars.size() > 0 )
         {
+            // No need to rename if there is no projection.
+            // if ( query.isQueryResultStar() )
+            
             // Hide inner variables.
-            if ( subQueryDepth > 0 )
+            if ( subQueryDepth > 0 && query.isQueryResultStar() )
             {
                 // In the ref engine, this is not necessary but 
                 // we don't know yet which engine will be used.

@@ -32,9 +32,6 @@ public class OpSlice extends OpModifier
         return null ;
     }
 
-//    public Op apply(Transform transform, Op subOp)
-//    { return transform.transform(this, subOp) ; }
-
     public String getName()                 { return Tags.tagSlice ; }
     public void visit(OpVisitor opVisitor)  { opVisitor.visit(this) ; }
     @Override

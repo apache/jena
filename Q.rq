@@ -1,4 +1,4 @@
 prefix : <http://example/> 
 
-SELECT * 
-{ ?s ?p ?o }
+CONSTRUCT { ?s ?p ?o }
+{ SELECT ?o ?x { ?s ?p ?o } LIMIT 10 }

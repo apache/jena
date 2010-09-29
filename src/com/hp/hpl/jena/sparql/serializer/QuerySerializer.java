@@ -88,12 +88,12 @@ public class QuerySerializer implements QueryVisitor
     public void visitConstructResultForm(Query query)
     {
         out.print("CONSTRUCT ") ;
-        if ( query.isQueryResultStar() )
-        {
-            out.print("*") ;
-            out.newline() ;
-        }
-        else
+//        if ( query.isQueryResultStar() )
+//        {
+//            out.print("*") ;
+//            out.newline() ;
+//        }
+//        else
         {
             out.incIndent(BLOCK_INDENT) ;
             out.newline() ;

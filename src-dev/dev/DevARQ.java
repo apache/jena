@@ -3,12 +3,23 @@ package dev ;
 
 public class DevARQ
 {
+    // ****
+    // CONSTRUCT {} { SELECT ... } -- no need to play rename games.
+    // CONSTRUCT now uses QueryResultStar - could strips as pattern is turned in to algebra.
+    // 1/ Need to do variable hidding AFTER algebra generation. Hiding only happens on (project)
+    // so find (slice? reduce/distinct project...)
+    //  or check down modifiers to see if there is a project
+    //    If yes AND more han one down, then rename
+    // 2/ Revert code in compileModifiers
+    // Partial TransformCopy but topdown so as to count (project)s
+    
     // VarRename, OpVars, VarFinder and VarUtils -- sort out!
     
     // Canonicalization: Fix URIs. () [] SPC
     
     // RIOT (etc) closing InputStream
     // Bad character encoding - exception but line/col = 1/1
+    // Filename in messages.
     
     // RIOT: cmd line : bad parse -> ???
     // ReportRemoteVirtuoso: StAX does not parse - times out too early? 
@@ -41,8 +52,6 @@ public class DevARQ
     // Library: Var->Var (VarRename), bNode->var (UpdateEngine), Converters
     // See NodeConverters, canonicalization -- riot.pipeline
 
-    // JSON - write compact
-    
     // result set isomorphism.
     
     // ---- SPARQL Update

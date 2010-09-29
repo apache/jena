@@ -53,8 +53,6 @@ public class splitIRI extends PropertyFunctionEval //PropertyFunctionBase
     public QueryIterator execEvaluated(Binding binding, PropFuncArg argSubject, Node predicate, PropFuncArg argObject, ExecutionContext execCxt)
     {
         try {
-//            argSubject = argSubject.evalIfExists(binding) ;
-//            argObject = argObject.evalIfExists(binding) ;
             // Subject bound to something other a URI. 
             if ( argSubject.getArg().isLiteral() || argSubject.getArg().isBlank() )
                 // Only split IRIs
