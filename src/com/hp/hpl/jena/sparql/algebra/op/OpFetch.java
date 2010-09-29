@@ -11,7 +11,7 @@ import org.openjena.atlas.io.IndentedWriter ;
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.sparql.algebra.ExtBuilder ;
+import com.hp.hpl.jena.sparql.algebra.OpExtBuilder ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.OpExtRegistry ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
@@ -37,9 +37,13 @@ public class OpFetch extends OpExt
         if ( enabled ) return ;
         enabled = true ;
         
-        OpExtRegistry.register(new ExtBuilder() {
-            public OpExt make(ItemList argList) { return new OpFetch(argList.get(0).getNode()) ; }
-            public String getTagName()           { return TagFetch ; }
+        OpExtRegistry.register(new OpExtBuilder() {
+            
+            public OpExt make(ItemList argList)
+            { return new OpFetch(argList.get(0).getNode()) ; }
+            
+            public String getTagName()
+            { return TagFetch ; }
         }) ;
     }
     // ----------------

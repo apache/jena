@@ -19,12 +19,12 @@ import com.hp.hpl.jena.sparql.sse.builders.BuilderOp ;
 public class OpExtRegistry
 {
     // Known extensions.
-    static Map<String, ExtBuilder> extensions = new HashMap<String, ExtBuilder>() ;
+    static Map<String, OpExtBuilder> extensions = new HashMap<String, OpExtBuilder>() ;
     
     // Wire in (ext NAME ...) form
     static { BuilderOp.add(Tags.tagExt, new BuildExtExt()) ; }
     
-    public static void register(ExtBuilder builder)
+    public static void register(OpExtBuilder builder)
     {
         extensions.put(builder.getTagName(), builder) ;
 
@@ -39,8 +39,15 @@ public class OpExtRegistry
         extensions.remove(subtag) ;
     }
     
-    public static ExtBuilder builder(String tag) { return extensions.get(tag) ; }
+    public static OpExtBuilder builder(String tag) { return extensions.get(tag) ; }
 
+    public static Op buildExt(String tag, ItemList args)
+    {
+        OpExtBuilder b = builder(tag) ;
+        OpExt ext = b.make(args) ;  // Arguments 2 onwards
+        return ext ;
+    }
+    
     // (ext NAME ...) form
     static public class BuildExtExt implements BuilderOp.Build 
     { 
@@ -48,22 +55,19 @@ public class OpExtRegistry
         {
             // 0 is the "ext"
             String subtag = list.get(1).getSymbol() ;
-            ExtBuilder b = builder(subtag) ;
             list = list.sublist(2) ;
-            OpExt ext = b.make(list) ;  // Arguments 2 onwards
-            return ext ;
+            return buildExt(subtag, list) ; 
         }
     }
     
+    // (NAME ...) form
     static public class BuildExt2 implements BuilderOp.Build 
     { 
         public Op make(ItemList list)
         {
             String subtag = list.get(0).getSymbol() ;
-            ExtBuilder b = builder(subtag) ;
             list = list.sublist(1) ;
-            OpExt ext = b.make(list) ;  // Argument 1 onwards
-            return ext ;
+            return buildExt(subtag, list) ; 
         }
     }
     

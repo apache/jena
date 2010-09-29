@@ -8,7 +8,7 @@ package com.hp.hpl.jena.sparql.algebra;
 
 import com.hp.hpl.jena.sparql.algebra.op.* ;
 
-/** A vistor helper that maps all visits to a few general ones */ 
+/** A visitor helper that maps all visits to a few general ones */ 
 public abstract class OpVisitorByType implements OpVisitor
 {
     protected abstract void visitN(OpN op) ;
@@ -20,6 +20,9 @@ public abstract class OpVisitorByType implements OpVisitor
     protected abstract void visit0(Op0 op) ;    
     
     protected abstract void visitExt(OpExt op) ;    
+
+    protected void visitModifer(OpModifier opMod)
+    { visit1(opMod) ; }
 
     public void visit(OpBGP opBGP)
     { visit0(opBGP) ; }
@@ -91,25 +94,25 @@ public abstract class OpVisitorByType implements OpVisitor
     { visit1(opAssign) ; }
 
     public void visit(OpList opList)
-    { visit1(opList) ; }
+    { visitModifer(opList) ; }
 
     public void visit(OpOrder opOrder)
-    { visit1(opOrder) ; }
+    { visitModifer(opOrder) ; }
 
     public void visit(OpProject opProject)
-    { visit1(opProject) ; }
+    { visitModifer(opProject) ; }
 
     public void visit(OpReduced opReduced)
-    { visit1(opReduced) ; }
+    { visitModifer(opReduced) ; }
 
     public void visit(OpDistinct opDistinct)
-    { visit1(opDistinct) ; }
+    { visitModifer(opDistinct) ; }
 
     public void visit(OpSlice opSlice)
-    { visit1(opSlice) ; }
+    { visitModifer(opSlice) ; }
 
     public void visit(OpGroup opGroup)
-    { visit1(opGroup) ; }
+    { visitModifer(opGroup) ; }
 }
 
 /*

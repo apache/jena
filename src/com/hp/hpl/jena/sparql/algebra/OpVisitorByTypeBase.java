@@ -1,32 +1,38 @@
 /*
- * (c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.algebra.op;
+package com.hp.hpl.jena.sparql.algebra;
 
-import com.hp.hpl.jena.sparql.algebra.Op ;
+import com.hp.hpl.jena.sparql.algebra.op.* ;
 
-/** Mark solution modifiers */
-
-public abstract class OpModifier extends Op1
+public class OpVisitorByTypeBase extends OpVisitorByType
 {
-    public static Op removeModifiers(Op op)
-    {
-        while( op instanceof OpModifier )
-            op = ((OpModifier)op).getSubOp() ;
-        return op ;
-    }
+    @Override
+    protected void visitN(OpN op) {}
+
+    @Override
+    protected void visit2(Op2 op) {}
     
-    public OpModifier(Op subOp)
-    {
-        super(subOp) ;
-    }
+    @Override
+    protected void visit1(Op1 op) {}
+    
+    @Override
+    protected void visit0(Op0 op) {}   
+    
+    @Override
+    protected void visitExt(OpExt op) {}    
+
+    @Override
+    protected void visitModifer(OpModifier opMod) 
+    { visit1(opMod) ; }
+
 }
 
 /*
- * (c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

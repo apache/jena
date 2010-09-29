@@ -502,7 +502,7 @@ public class AlgebraGenerator
         Node serviceNode = elt.getFetchNode() ;
         
         // Probe to see if enabled.
-        ExtBuilder builder = OpExtRegistry.builder("fetch") ;
+        OpExtBuilder builder = OpExtRegistry.builder("fetch") ;
         if ( builder == null )
         {
             Log.warn(this, "Attempt to use OpFetch - need to enable first with a call to OpFetch.enable()") ; 
@@ -611,8 +611,12 @@ public class AlgebraGenerator
             // No need to rename if there is no projection.
             // if ( query.isQueryResultStar() )
             
+            int x = subQueryDepth ;
+            if ( query.isQueryResultStar() )
+                x-- ;
+            
             // Hide inner variables.
-            if ( subQueryDepth > 0 && query.isQueryResultStar() )
+            if ( x > 0 )
             {
                 // In the ref engine, this is not necessary but 
                 // we don't know yet which engine will be used.

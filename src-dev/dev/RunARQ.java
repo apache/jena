@@ -101,8 +101,82 @@ public class RunARQ
         System.out.println("Compare = " + cmp);
     }
     
+    public static void rename2()
+    {
+        String queryString1 = StrUtils.strjoinNL(
+        "PREFIX : <http://example/>",
+        "SELECT ?x { ?s ?p ?o . { SELECT ?v { ?x ?y ?v {SELECT ?w { ?a ?y ?w }}} LIMIT 50 } }"   
+        ) ;
+        
+        String queryString2 = StrUtils.strjoinNL(
+        "PREFIX : <http://example/>",
+        "SELECT ?x { ?s ?p ?o . { SELECT ?v { ?x ?y ?v {SELECT * { ?a ?y ?w }}} LIMIT 50 } }"   
+        ) ;
+        
+        String queryString3 = StrUtils.strjoinNL(
+        "PREFIX : <http://example/>",
+        "SELECT ?x { ?s ?p ?o . { SELECT * { ?x ?y ?v {SELECT ?w { ?a ?y ?w }}} LIMIT 50 } }"   
+        ) ;
+        
+        String queryString4 = StrUtils.strjoinNL(
+        "PREFIX : <http://example/>",
+        "SELECT * { ?s ?p ?o . { SELECT ?v { ?x ?y ?v {SELECT ?w { ?a ?y ?w }}} LIMIT 50 } }"   
+        ) ;
+        
+        String queryString5 = StrUtils.strjoinNL(
+        "PREFIX : <http://example/>",
+        "SELECT ?v { ?s ?p ?o . { SELECT ?v { ?x ?y ?v {SELECT ?w { ?a ?y ?w }}} LIMIT 50 } }"   
+        ) ;
+        
+        
+        String queryString6 = StrUtils.strjoinNL(
+        "PREFIX : <http://example/>",
+        "SELECT ?w { ?s ?p ?o . { SELECT ?w { ?x ?y ?v {SELECT ?w { ?a ?y ?w }}} } } LIMIT 50 "   
+        ) ;
+                                                 
+        rename2(queryString1) ;
+        rename2(queryString2) ;
+        rename2(queryString3) ;
+        rename2(queryString4) ;
+        rename2(queryString5) ;
+        rename2(queryString6) ;
+        
+        System.exit(0) ;
+    }
+    
+    public static void rename2(String queryString)
+    {
+        Query query = QueryFactory.create(queryString) ;
+        divider() ;
+        System.out.println(query) ;
+        
+        Op op = Algebra.compile(query) ;
+        divider() ;
+        System.out.println(op) ;
+        
+        op = VarRename.reverseRename(op, true) ;
+        divider() ;
+        System.out.println(op) ;
+
+        op = TransformScopeRename.transform(op) ; 
+        divider() ;
+        System.out.println(op) ;
+//
+//        divider() ;
+//        System.out.println(op) ;
+//
+//        divider() ;
+//        System.out.println(op) ;
+//
+//        divider() ;
+//        System.out.println(op) ;
+
+    
+    }
+    
     public static void main(String[] argv) throws Exception
     {
+        rename2() ;
         arq.qparse.main("--print=op", "--query=Q.rq") ; System.exit(0) ;
         
         //arq.sparql.main("--explain", "--data=D.ttl", "--query=Q.rq") ; System.exit(0) ;

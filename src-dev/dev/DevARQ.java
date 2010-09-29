@@ -11,7 +11,7 @@ public class DevARQ
     //  or check down modifiers to see if there is a project
     //    If yes AND more han one down, then rename
     // 2/ Revert code in compileModifiers
-    // Partial TransformCopy but topdown so as to count (project)s
+    // 
     
     // VarRename, OpVars, VarFinder and VarUtils -- sort out!
     

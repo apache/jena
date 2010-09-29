@@ -73,7 +73,7 @@ public class Transformer
         }
     }
     
-    // To allow subclassing this class.  we use the singleton pattern 
+    // To allow subclassing this class, we use a singleton pattern 
     // and theses protected methods.
     protected Op transformation(Transform transform, Op op, OpVisitor beforeVisitor, OpVisitor afterVisitor)
     {
@@ -127,7 +127,7 @@ public class Transformer
         }
         
         final Op result()
-        { 
+        {
             if ( stack.size() != 1 )
                 Log.warn(this, "Stack is not aligned") ;
             return pop() ; 
