@@ -137,7 +137,9 @@ void ConstructQuery() : { Template t ; }
   <CONSTRUCT>
     { getQuery().setQueryConstructType() ; }
   t = ConstructTemplate()
-    { getQuery().setQueryResultStar(false) ;
+  // QueryResultStart => expose all variables.
+  // Not to be confused with the (non-feature) CONSTRUCT *
+    { getQuery().setQueryResultStar(true) ;
       getQuery().setConstructTemplate(t) ; }
   ( DatasetClause() )*
   WhereClause()

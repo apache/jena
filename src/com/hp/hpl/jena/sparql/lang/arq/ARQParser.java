@@ -413,7 +413,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     jj_consume_token(CONSTRUCT);
       getQuery().setQueryConstructType() ;
     t = ConstructTemplate();
-      getQuery().setQueryResultStar(false) ;
+      getQuery().setQueryResultStar(true) ;
       getQuery().setConstructTemplate(t) ;
     label_4:
     while (true) {
@@ -4074,21 +4074,6 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     finally { jj_save(1, xla); }
   }
 
-  private boolean jj_3R_64() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_69()) {
-    jj_scanpos = xsp;
-    if (jj_3R_70()) return true;
-    }
-    return false;
-  }
-
-  private boolean jj_3R_69() {
-    if (jj_3R_79()) return true;
-    return false;
-  }
-
   private boolean jj_3R_84() {
     if (jj_scan_token(STRING_LITERAL_LONG2)) return true;
     return false;
@@ -4415,11 +4400,6 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
-  private boolean jj_3_1() {
-    if (jj_3R_37()) return true;
-    return false;
-  }
-
   private boolean jj_3R_55() {
     Token xsp;
     xsp = jj_scanpos;
@@ -4449,6 +4429,11 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
 
   private boolean jj_3R_78() {
     if (jj_scan_token(ANON)) return true;
+    return false;
+  }
+
+  private boolean jj_3_1() {
+    if (jj_3R_37()) return true;
     return false;
   }
 
@@ -4519,6 +4504,21 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
 
   private boolean jj_3R_70() {
     if (jj_3R_80()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_64() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_69()) {
+    jj_scanpos = xsp;
+    if (jj_3R_70()) return true;
+    }
+    return false;
+  }
+
+  private boolean jj_3R_69() {
+    if (jj_3R_79()) return true;
     return false;
   }
 
