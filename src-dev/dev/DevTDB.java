@@ -4,6 +4,8 @@ package dev ;
 public class DevTDB
 {
     // --explain.
+    // http://openjena.org/wiki/TDB/Configuration
+    // http://openjena.org/wiki/TDB/Optimizer
     
     //** Union graph in assembler.
     // Document ; not for default model; test [done?]

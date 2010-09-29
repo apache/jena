@@ -8,11 +8,8 @@
 
 package dev;
 
-import org.openjena.atlas.iterator.Filter ;
-import org.openjena.atlas.lib.Tuple ;
 import org.openjena.atlas.logging.Log ;
 
-import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.query.QueryExecution ;
 import com.hp.hpl.jena.query.QueryExecutionFactory ;
@@ -22,12 +19,7 @@ import com.hp.hpl.jena.rdf.model.Property ;
 import com.hp.hpl.jena.rdf.model.Resource ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
-import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.TDBFactory ;
-import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
-import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
-import com.hp.hpl.jena.tdb.store.NodeId ;
-import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 public class RunTDB
 {
@@ -43,20 +35,11 @@ public class RunTDB
 
     public static void main(String[] args) throws Exception
     {
-        Node n = SSE.parseNode("'2010-09-23T02:02:02'^^xsd:dateTime") ;
-        System.out.println(n) ;
-        
-        NodeId x = NodeId.inline(n) ;
-        System.out.println(x) ;
-        Node n2 = NodeId.extract(x) ;
-        
-        System.out.println(n2) ;
-        System.exit(0) ;
-        
         // Config union graph
         tdb.tdbquery.main("--tdb=tdb.ttl", "SELECT * { ?s ?p ?o}") ;
 //        System.exit(0) ;
-        
+
+        // Working on API models ..
         Dataset ds = TDBFactory.createDataset() ;
 //        DatasetGraphTDB dsg = (DatasetGraphTDB)(ds.asDatasetGraph()) ;
 //        ds.asDatasetGraph().getContext().setTrue(TDB.symUnionDefaultGraph) ;
@@ -88,12 +71,6 @@ public class RunTDB
         ResultSetFormatter.out(qExec.execSelect()) ;
         qExec.close() ;
         
-        
-        
-        System.exit(0) ;
-        
-        
-        tdb.tdbloader.main("--loc=DB", "D.rdf") ;
         System.exit(0) ;
         
         tdb.tdbquery.main("--set=tdb:logExec=true", 
@@ -101,40 +78,7 @@ public class RunTDB
                           "--query=Q.rq") ;
         System.exit(0) ;
     }
-    
-    static void tupleFilter()
-    {
-        Dataset ds = TDBFactory.createDataset("DB") ;
-        DatasetGraphTDB dsg = (DatasetGraphTDB)(ds.asDatasetGraph()) ;
-
-        final NodeTable nodeTable = dsg.getQuadTable().getNodeTupleTable().getNodeTable() ;
-        final NodeId target = nodeTable.getNodeIdForNode(Node.createURI("http://example/graph2")) ;
-
-        System.out.println("Filter: "+target) ;
-        
-        Filter<Tuple<NodeId>> filter = new Filter<Tuple<NodeId>>() {
-            public boolean accept(Tuple<NodeId> item)
-            {
-                // Reverse the lookup as a demo
-                Node n = nodeTable.getNodeForNodeId(target) ;
-                //System.err.println(item) ;
-                if ( item.size() == 4 && item.get(0).equals(target) )
-                {
-                    System.out.println("Reject: "+item) ;
-                    return false ;
-                }
-                System.out.println("Accept: "+item) ;
-                return true ;
-            } } ;
-            
-            
-        TDB.getContext().set(SystemTDB.symTupleFilter, filter) ;
-
-        String qs = "SELECT * { { ?s ?p ?o } UNION { GRAPH ?g { ?s ?p ?o } }}" ;
-        //String qs = "SELECT * { GRAPH ?g { ?s ?p ?o } }" ;
-        
-        DevCmds.tdbquery("--tdb=tdb.ttl", qs) ;
-    }
+   
 }
 
 /*
