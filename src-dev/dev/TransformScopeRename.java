@@ -33,16 +33,17 @@ public class TransformScopeRename
 
     static class TransformScopeRename$
     {
-        private static boolean outerMostOpProject = false ;
+        private boolean outerMostOpProject = false ;
+        private int projectRenameDepth = 0 ;
         private int projectCount = 0 ;
-        private int modifierCount = 0 ;
+        
         private Op op ;
 
-        public TransformScopeRename$(Op op1)
+        public TransformScopeRename$(Op op)
         {
-            op = op1 ;
+            this.op = op ;
             {
-                Op op2 = op1 ;
+                Op op2 = op ;
                 while( op2 instanceof OpModifier )
                 {
                     // If already true ...
@@ -51,13 +52,17 @@ public class TransformScopeRename
                         outerMostOpProject = true ;
                         break ;
                     }
-                    op2 = ((OpModifier)op).getSubOp() ;
+                    op2 = ((OpModifier)op2).getSubOp() ;
                 }
             }
+            // Set the project counter: renaming begins when this hits one.
+            // Set 2 to there is a project in the top-most OpModifers.
+            // This does not cause a rename so start renaming at depth .
+            // otherwise rename from depth 1.
             if ( outerMostOpProject )
-                projectCount = -1 ;
+                projectRenameDepth = 2 ;
             else
-                projectCount = 0 ;
+                projectRenameDepth = 1;
         }
         
         public Op work()
@@ -69,28 +74,14 @@ public class TransformScopeRename
         private class BeforeWalk extends OpVisitorByTypeBase
         {
             @Override
-            protected void visitModifer(OpModifier opMod)
-            { 
-                modifierCount++ ; 
-            }
-
-            @Override            // If this is an out
-
             public void visit(OpProject opProject)
             {
                 projectCount++ ;
             }
         }
-        // If this is an out
 
         private class AfterWalk extends OpVisitorByTypeBase
         {
-            @Override
-            protected void visitModifer(OpModifier opMod)
-            { 
-                --modifierCount ; 
-            }
-
             @Override
             public void visit(OpProject opProject)
             {
@@ -105,7 +96,7 @@ public class TransformScopeRename
             { 
                 // Need to find the right project
                 // We already stripped outer modifier. 
-                if ( projectCount >= 1 )
+                if ( projectCount >= projectRenameDepth )
                     // Inner ones already done.
                     subOp = VarRename.rename(subOp, opProject.getVars()) ;
                 return super.transform(opProject, subOp) ;

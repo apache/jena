@@ -140,38 +140,50 @@ public class RunARQ
         rename2(queryString4) ;
         rename2(queryString5) ;
         rename2(queryString6) ;
-        
+        System.out.println("DONE") ;
         System.exit(0) ;
     }
     
     public static void rename2(String queryString)
     {
+        boolean verbose = false ;
+        
+        
         Query query = QueryFactory.create(queryString) ;
-        divider() ;
-        System.out.println(query) ;
-        
+        if ( verbose )
+        {
+            divider() ;
+            System.out.println(query) ;
+        }        
         Op op = Algebra.compile(query) ;
-        divider() ;
-        System.out.println(op) ;
-        
+        Op opCorrect = op ; 
+        if ( verbose )
+        {
+            divider() ;System.out.println(query) ;
+            System.out.println(op) ;
+        }
         op = VarRename.reverseRename(op, true) ;
-        divider() ;
-        System.out.println(op) ;
+        if ( verbose )
+        {
+            divider() ;
+            System.out.println(op) ;
+        }
 
-        op = TransformScopeRename.transform(op) ; 
-        divider() ;
-        System.out.println(op) ;
-//
-//        divider() ;
-//        System.out.println(op) ;
-//
-//        divider() ;
-//        System.out.println(op) ;
-//
-//        divider() ;
-//        System.out.println(op) ;
-
-    
+        Op op2 = TransformScopeRename.transform(op) ; 
+        if ( verbose )
+        {
+            divider() ;
+            System.out.println(op2) ;
+        }
+        
+        if ( ! opCorrect.equals(op2) )
+        {
+            System.out.println("** Different") ;
+            divider() ;
+            System.out.println(query) ;
+            System.out.println(opCorrect) ;
+            System.out.println(op2) ;
+        }
     }
     
     public static void main(String[] argv) throws Exception

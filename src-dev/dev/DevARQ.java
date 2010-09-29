@@ -5,11 +5,10 @@ public class DevARQ
 {
     // ****
     // CONSTRUCT {} { SELECT ... } -- no need to play rename games.
-    // CONSTRUCT now uses QueryResultStar - could strips as pattern is turned in to algebra.
-    // 1/ Need to do variable hidding AFTER algebra generation. Hiding only happens on (project)
-    // so find (slice? reduce/distinct project...)
-    //  or check down modifiers to see if there is a project
-    //    If yes AND more han one down, then rename
+    // CONSTRUCT now uses QueryResultsStar - could strips as pattern is turned in to algebra.
+    
+    // 1/ Transform step: TransformScopeRename
+    //    To do: optimize -> no subproject -> no work.
     // 2/ Revert code in compileModifiers
     // 
     
