@@ -72,6 +72,10 @@ public class DatasetGraphTDB extends DatasetGraphCaching
     public QuadTable getQuadTable()         { return quadTable ; }
     public TripleTable getTripleTable()     { return tripleTable ; } 
     
+//    private Lock lock = new MRSWLite() ;
+//    @Override 
+//    public Lock getLock()                   { return lock ; }
+    
     @Override
     protected Iterator<Quad> findInDftGraph(Node s, Node p, Node o)
     {
