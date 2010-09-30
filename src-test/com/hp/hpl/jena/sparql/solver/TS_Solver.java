@@ -13,7 +13,7 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
-    TestReorder.class,      // Reorder engine
+    TestReorder.class      // Reorder engine
 })
 
 public class TS_Solver
