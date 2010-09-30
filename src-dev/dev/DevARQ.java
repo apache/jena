@@ -4,7 +4,6 @@ package dev ;
 public class DevARQ
 {
     // http://www.openjena.org/wiki/ARQ/Concurrency
-
     
     // FILTER-like assignment - end-of-group
     
@@ -20,7 +19,14 @@ public class DevARQ
     // 1/ Transform step: TransformScopeRename
     //    To do: optimize -> no subproject -> no work.
     // 2/ Revert code in compileModifiers
-    // 
+    
+    // Respect Content-Length?
+    // ReportRemoteVirtuoso
+    
+    // add qparse to wiki/ARQ
+    
+    // Multiple occurrences of same variable in a result set causes an exception.
+    //   rset problem.
     
     // VarRename, OpVars, VarFinder and VarUtils -- sort out!
     
