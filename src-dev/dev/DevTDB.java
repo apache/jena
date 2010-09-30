@@ -3,6 +3,11 @@ package dev ;
 
 public class DevTDB
 {
+    //
+    // http://openjena.org/wiki/TDB/JavaAPI#Concurrency
+    // http://www.openjena.org/wiki/TDB/Concurrency
+    // and ref to ARQ.
+    
     // --explain.
     // http://openjena.org/wiki/TDB/Configuration
     // http://openjena.org/wiki/TDB/Optimizer
