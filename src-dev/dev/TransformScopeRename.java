@@ -15,8 +15,9 @@ import com.hp.hpl.jena.sparql.algebra.op.OpProject ;
 import com.hp.hpl.jena.sparql.engine.VarRename ;
 
 /** Rename variables so that names can be treated globally.
- *  (project) and (group) can hide variables, but we onl yneed to account for
- *  OpProject because group is never executed linearly. 
+ *  (project) and (group) can hide variables, but we only
+ *  need to account for OpProject because group is never
+ *  executed linearly. 
  */
 
 public class TransformScopeRename

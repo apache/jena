@@ -3,6 +3,9 @@ package dev ;
 
 public class DevARQ
 {
+    // http://www.openjena.org/wiki/ARQ/Concurrency
+
+    
     // FILTER-like assignment - end-of-group
     
     // Warnings logger.
