@@ -188,6 +188,8 @@ public class RunARQ
     
     public static void main(String[] argv) throws Exception
     {
+        arq.rset.main("--set=arq:useSAX=true", "R-dup.srj") ; System.exit(0) ;
+        
         rename2() ;
         arq.qparse.main("--print=op", "--query=Q.rq") ; System.exit(0) ;
         

@@ -17,7 +17,7 @@ import org.openjena.atlas.io.IndentedWriter ;
 import org.openjena.atlas.io.PeekReader ;
 import org.openjena.atlas.json.io.JSONMaker ;
 import org.openjena.atlas.json.io.JsonWriter ;
-import org.openjena.atlas.json.io.parser.JSONParser2 ;
+import org.openjena.atlas.json.io.parser.JSONParser ;
 import org.openjena.atlas.json.io.parserjavacc.JSONParserJavaCC ;
 
 /** A class that is the front door to the JSON subsystem */
@@ -102,7 +102,7 @@ public class JSON
         if ( useJavaCC )
             JSONParserJavaCC.parse(r, maker) ;
         else
-            JSONParser2.parse(r, maker) ;
+            JSONParser.parse(r, maker) ;
     }
 
     private static void _parseAny(Reader r, JSONMaker maker)
@@ -110,7 +110,7 @@ public class JSON
         if ( useJavaCC )
             JSONParserJavaCC.parseAny(r, maker) ;
         else
-            JSONParser2.parseAny(r, maker) ;
+            JSONParser.parseAny(r, maker) ;
     }
 
     private static void _parse(InputStream r, JSONMaker maker)
@@ -118,7 +118,7 @@ public class JSON
         if ( useJavaCC )
             JSONParserJavaCC.parse(r, maker) ;
         else
-            JSONParser2.parse(r, maker) ;
+            JSONParser.parse(r, maker) ;
     }
 
     private static void _parseAny(InputStream r, JSONMaker maker)
@@ -126,7 +126,7 @@ public class JSON
         if ( useJavaCC )
             JSONParserJavaCC.parseAny(r, maker) ;
         else
-            JSONParser2.parseAny(r, maker) ;
+            JSONParser.parseAny(r, maker) ;
     }
 
     /** Write out a JSON value - pass a JSON Object to get legal exchangeable JSON */

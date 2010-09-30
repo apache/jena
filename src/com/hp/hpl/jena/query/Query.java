@@ -378,8 +378,16 @@ public class Query extends Prologue implements Cloneable, Printable
     // Add raw name.
     private void _addResultVar(String varName)
     {
-        projectVars.add(Var.alloc(varName)) ;
+        Var v = Var.alloc(varName) ;
+        _addVar(projectVars, v) ;
         resultVarsSet = true ;
+    }
+    
+    private static void _addVar(VarExprList varExprList, Var v)
+    {
+        if ( varExprList.contains(v) && ! ARQ.allowDuplicateSelectColumns )
+            return ; 
+        varExprList.add(v) ;
     }
     
     public void addResultVar(Node v, Expr expr)
@@ -436,12 +444,12 @@ public class Query extends Prologue implements Cloneable, Printable
     public void addGroupBy(String varName)
     {
         varName = Var.canonical(varName) ;
-        groupVars.add(Var.alloc(varName)) ;
+        addGroupBy(Var.alloc(varName)) ;
     }
 
     public void addGroupBy(Node v)
     {
-        groupVars.add(Var.alloc(v)) ;
+        _addVar(groupVars, Var.alloc(v)) ;
     }
 
     public void addGroupBy(Expr expr) { addGroupBy(null, expr) ; }

@@ -444,7 +444,7 @@ class XMLInputStAX extends SPARQLResult
                             node = Node.createAnon(new AnonId(label)) ;
                         else
                             node = bNodes.asNode(label) ;
-                        binding.add(Var.alloc(varName), node) ;
+                        addBinding(binding, Var.alloc(varName), node) ;
                         break ;
                     }
                     
@@ -469,7 +469,7 @@ class XMLInputStAX extends SPARQLResult
                         Node n = Node.createLiteral(text,  langTag, dType) ;
                         if ( varName == null )
                             throw new ResultSetException("No name for variable") ;
-                        binding.add(Var.alloc(varName), n) ;
+                        addBinding(binding, Var.alloc(varName), n) ;
                         break ;
                     }
                     
@@ -482,7 +482,7 @@ class XMLInputStAX extends SPARQLResult
                     {
                         String uri = parser.getElementText() ;
                         Node node = Node.createURI(uri) ;
-                        binding.add(Var.alloc(varName), node) ;
+                        addBinding(binding, Var.alloc(varName), node) ;
                         break ;
                     }
                     break ;

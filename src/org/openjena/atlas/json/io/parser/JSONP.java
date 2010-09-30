@@ -19,12 +19,13 @@ import org.openjena.atlas.json.io.JSONHandler ;
  *   Use of ', """ and ''' for strings
  *   Bare words for strings in maps (JSON objects)
  *   Hex numbers
+ * Objects with duplicate keys are a warning (keeps last)
  */
-public class JSONPP extends ParserBase
+public class JSONP extends ParserBase
 {
     private JSONHandler maker ;
 
-    public JSONPP(TokenizerJSON tokens, JSONHandler maker)
+    public JSONP(TokenizerJSON tokens, JSONHandler maker)
     {
         super(tokens) ;
         // Disable prefixnames, enable COLON

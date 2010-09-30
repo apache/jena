@@ -1,6 +1,6 @@
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
- * (c) 2010 Epimorohics Ltd.
+ * (c) Copyright 2010 Epimorohics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -14,9 +14,8 @@ import org.openjena.atlas.io.PeekReader ;
 import org.openjena.atlas.json.io.JSONHandler ;
 import org.openjena.atlas.json.io.parserjavacc.JSONPrinter ;
 
-
-
-public class JSONParser2
+/** JSON parser */
+public class JSONParser
 {    
     /** Parse from an input stream to get a Json object */ 
     public static void parse(InputStream input)
@@ -44,7 +43,7 @@ public class JSONParser2
     
     private static void parse(TokenizerJSON t, JSONHandler handler)
     {
-        JSONPP p = new JSONPP(t , handler) ;
+        JSONP p = new JSONP(t , handler) ;
         p.parse() ;
     }
 
@@ -74,7 +73,7 @@ public class JSONParser2
         
     private static void parseAny(TokenizerJSON t, JSONHandler handler)
     {
-        JSONPP p = new JSONPP(t , handler) ;
+        JSONP p = new JSONP(t , handler) ;
         p.parseAny() ;
     }
 
@@ -82,7 +81,7 @@ public class JSONParser2
 
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
- * (c) 2010 Epimorohics Ltd.
+ * (c) Copyright 2010 Epimorohics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

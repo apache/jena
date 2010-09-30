@@ -306,7 +306,7 @@ class XMLInputSAX extends SPARQLResult
             String uri = buff.toString() ;
             Node n = Node.createURI(uri) ;
             if ( checkVarName("URI: "+uri) )
-                binding.add(Var.alloc(varName), n) ;
+                addBinding(binding, Var.alloc(varName), n) ;
         }
         
         private void startElementLiteral(String ns, String localName, String name, Attributes attrs)
@@ -331,7 +331,7 @@ class XMLInputSAX extends SPARQLResult
             
             Node n = Node.createLiteral(lexicalForm.toString(),  langTag, dType) ;
             if ( checkVarName("Literal: "+FmtUtils.stringForNode(n)) )
-                binding.add(Var.alloc(varName), n) ;
+                addBinding(binding, Var.alloc(varName), n) ;
             
             // Finished value - clear intermediates (the wonders of event based processing)
             this.datatype = null ;
@@ -368,7 +368,7 @@ class XMLInputSAX extends SPARQLResult
             String bnodeId = buff.toString() ;
             Node node = bNodes.asNode(bnodeId) ;
             if ( checkVarName("BNode: "+bnodeId) )
-                binding.add(Var.alloc(varName), node) ;
+                addBinding(binding, Var.alloc(varName), node) ;
         }
         
         

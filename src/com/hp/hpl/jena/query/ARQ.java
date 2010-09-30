@@ -166,6 +166,12 @@ public class ARQ
      * before giving the ResultSet to the calling application.
      */
     public static final Symbol useSAX = ARQConstants.allocSymbol("useSAX") ;
+    
+    /** 
+     * Indicate whether duplicate select and groupby variables are allowed. 
+     * If false, duplicates are silently supressed; it's not an error.  
+     */
+    public static final boolean allowDuplicateSelectColumns = false ;
 
     /**
      * Determine which regular expression system to use.

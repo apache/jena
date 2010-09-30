@@ -5,6 +5,11 @@ public class DevARQ
 {
     // FILTER-like assignment - end-of-group
     
+    // Warnings logger.
+    
+    // JSON parser - warning on redef of a key.
+    // XMLInputSAX and XMLInputStAX : adding same thing twice. 
+    
     // ****
     // CONSTRUCT {} { SELECT ... } -- no need to play rename games.
     // CONSTRUCT now uses QueryResultsStar - could strips as pattern is turned in to algebra.

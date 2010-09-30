@@ -297,7 +297,7 @@ public class JSONInput extends SPARQLResult
                     {
                          String uri = jbinding.get(dfValue).getAsString().value() ;
                          Node node = Node.createURI(uri) ;
-                         binding.add(Var.alloc(varName), node) ;   
+                         addBinding(binding, Var.alloc(varName), node) ;   
                     }
                     
                     if ( type.equals(dfBNode) )
@@ -308,7 +308,7 @@ public class JSONInput extends SPARQLResult
                             node = Node.createAnon(new AnonId(label)) ;
                         else
                             node = bNodes.asNode(label) ;
-                        binding.add(Var.alloc(varName), node) ;
+                        addBinding(binding, Var.alloc(varName), node) ;
                     }
                     
                     if ( type.equals(dfLiteral) || type.equals(dfTypedLiteral) )
@@ -325,7 +325,7 @@ public class JSONInput extends SPARQLResult
                         if ( x2 != null )
                             dtype = jbinding.get(dfDatatype).getAsString().value() ;
                         Node n = NodeFactory.createLiteralNode(lex, lang, dtype) ;
-                        binding.add(Var.alloc(varName), n) ;
+                        addBinding(binding, Var.alloc(varName), n) ;
                     }
                 }
                 

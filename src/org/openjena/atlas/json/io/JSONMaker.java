@@ -15,6 +15,8 @@ import org.openjena.atlas.json.JsonNumber ;
 import org.openjena.atlas.json.JsonObject ;
 import org.openjena.atlas.json.JsonString ;
 import org.openjena.atlas.json.JsonValue ;
+import org.openjena.atlas.lib.InternalErrorException ;
+import org.openjena.atlas.logging.Log ;
 
 
 /** Build a JSON structure */
@@ -28,6 +30,7 @@ public class JSONMaker implements JSONHandler
     private Stack<JsonArray> arrays = new Stack<JsonArray>(); 
     private Stack<JsonObject> objects = new Stack<JsonObject>();
 
+    // The depth of this stack is the object depth.
     private Stack<String> keys = new Stack<String>();
 
     public JsonValue jsonValue()
@@ -90,8 +93,14 @@ public class JSONMaker implements JSONHandler
     //@Override
     public void finishPair()
     {
+        if ( value == null )
+            throw new InternalErrorException("null for 'value' (bad finishPair() allignment)") ;
+        
         String k = keys.pop();
-        objects.peek().put(k, value) ;
+        JsonObject obj = objects.peek() ;
+        if ( obj.hasKey(k) )
+            Log.warn("JSON", "Duplicate key '"+k+"' for object") ;
+        obj.put(k, value) ;
         value = null ;
     }
 

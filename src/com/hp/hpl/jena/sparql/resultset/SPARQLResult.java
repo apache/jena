@@ -1,16 +1,21 @@
 /*
  * (c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
 package com.hp.hpl.jena.sparql.resultset;
 
+import org.openjena.atlas.logging.Log ;
+
+import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.ResultSet ;
 import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.sparql.core.Var ;
+import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 
 /**
- * 
  * The class "ResultSet" is reserved for the SELECT result format.
  * This class can hold a ResultSet, a boolean or a Model.
  */
@@ -97,10 +102,27 @@ public class SPARQLResult
     
     protected void set(Boolean r)
     { booleanResult  = r ;  hasBeenSet = true ; }
+    
+    static protected void addBinding(Binding binding, Var var, Node value)
+    {
+        Node n = binding.get(var) ;
+        if ( n != null )
+        {
+            // Same - silently skip.
+            if ( n.equals(value) )
+                return ;
+            Log.warn(SPARQLResult.class, 
+                     String.format("Multiple occurences of a binding for variable '%s' with different values - ignored", var.getName())) ;
+            return ;
+        }
+        binding.add(var, value) ;
+    }
+    
 }
 
 /*
  * (c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -14,6 +14,8 @@ import com.hp.hpl.jena.sparql.mgt.SystemInfo ;
 
 public class SystemARQ
 {
+    
+    
     private static List<SystemInfo> versions = new ArrayList<SystemInfo>() ;
     public static void registerSubSystem(SystemInfo systemInfo)
     {

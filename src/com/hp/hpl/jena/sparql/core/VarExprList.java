@@ -73,7 +73,13 @@ public class VarExprList
     
     public void add(Var var)
     {
-        if ( ! vars.contains(var) )
+        // Checking here controls whether duplicate variables are allowed.
+        // Duplicates with expressions are not allowed (add(Var, Expr))
+        // See ARQ.allowDuplicateSelectColumns
+
+        // Every should work either way round if this is enabled.
+        // Checking is done in Query for adding result vars, and group vars.
+        // if ( vars.contains(var) )
             vars.add(var) ;
     }
 
