@@ -66,6 +66,13 @@ public class TDB
 
     /** Symbol to use the union of named graphs as the default graph of a query */ 
     public static final Symbol symUnionDefaultGraph          = SystemTDB.allocSymbol("unionDefaultGraph") ;
+
+    /** Symbol to enable logging of execution.
+     * @deprecated Use ARQ.symLogExec
+     */
+    @Deprecated
+    public static final Symbol symLogExec                    = ARQ.symLogExec ;
+
     
     public static Context getContext()     { return ARQ.getContext() ; }  
     

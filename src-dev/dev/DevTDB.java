@@ -6,6 +6,7 @@ public class DevTDB
     // --explain.
     // http://openjena.org/wiki/TDB/Configuration
     // http://openjena.org/wiki/TDB/Optimizer
+    // Update: http://openjena.org/wiki/TDB/Optimizer#Investigating_what_is_going_on
     
     //** Union graph in assembler.
     // Document ; not for default model; test [done?]
