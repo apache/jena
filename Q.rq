@@ -1,4 +1,10 @@
 prefix : <http://example/> 
 
-SELECT (2*?o AS ?A)  (3*?o AS ?A)
-{ ?s ?p ?o }
+SELECT ?X (SAMPLE(?v) AS ?S)
+{
+  ?s :p ?v .
+  OPTIONAL 
+  { ?s :q ?w }
+} 
+#GROUP BY (COALESCE(?w, 1812) AS ?X)
+GROUP BY (?w AS ?X)
