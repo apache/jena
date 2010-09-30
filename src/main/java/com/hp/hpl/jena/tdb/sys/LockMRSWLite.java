@@ -18,9 +18,11 @@ import com.hp.hpl.jena.shared.Lock ;
  */
 public class LockMRSWLite implements Lock
 {
-    ReadWriteLock mrswLock = new ReentrantReadWriteLock() ;
-    // >0 for red lock, -1 for write lock.
-    int count = 0 ;
+    public LockMRSWLite() {}
+    
+    private ReadWriteLock mrswLock = new ReentrantReadWriteLock() ;
+    // >0 for read lock, -1 for write lock.
+    private int count = 0 ;
     
     public synchronized void enterCriticalSection(boolean readLockRequested)
     {
@@ -42,8 +44,10 @@ public class LockMRSWLite implements Lock
 
     public synchronized void leaveCriticalSection()
     {
+        //mrswLock.readLock().tryLock() ;
+        
         if ( count == 0 )
-            throw new JenaException("Base lock release - don't appear to be in a critical section") ;
+            throw new JenaException("Bad lock release - don't appear to be in a critical section") ;
         
         if ( count < 0 )
         {
