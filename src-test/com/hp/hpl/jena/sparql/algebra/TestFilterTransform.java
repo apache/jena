@@ -13,10 +13,10 @@ import org.openjena.atlas.lib.StrUtils ;
 
 import com.hp.hpl.jena.sparql.algebra.op.OpBGP ;
 import com.hp.hpl.jena.sparql.algebra.op.OpFilter ;
-import com.hp.hpl.jena.sparql.algebra.opt.TransformExpandOneOf ;
-import com.hp.hpl.jena.sparql.algebra.opt.TransformFilterDisjunction ;
-import com.hp.hpl.jena.sparql.algebra.opt.TransformFilterEquality ;
-import com.hp.hpl.jena.sparql.algebra.opt.TransformFilterPlacement ;
+import com.hp.hpl.jena.sparql.algebra.optimize.TransformExpandOneOf ;
+import com.hp.hpl.jena.sparql.algebra.optimize.TransformFilterDisjunction ;
+import com.hp.hpl.jena.sparql.algebra.optimize.TransformFilterEquality ;
+import com.hp.hpl.jena.sparql.algebra.optimize.TransformFilterPlacement ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 
 public class TestFilterTransform

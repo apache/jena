@@ -15,7 +15,7 @@ import java.util.Stack ;
 import com.hp.hpl.jena.query.SortCondition ;
 import com.hp.hpl.jena.sparql.algebra.OpWalker.WalkerVisitor ;
 import com.hp.hpl.jena.sparql.algebra.op.* ;
-import com.hp.hpl.jena.sparql.algebra.opt.ExprTransformApplyTransform ;
+import com.hp.hpl.jena.sparql.algebra.optimize.ExprTransformApplyTransform ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.core.VarExprList ;
 import com.hp.hpl.jena.sparql.expr.ExprAggregator ;

@@ -4,42 +4,54 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.algebra.opt;
+package com.hp.hpl.jena.sparql.algebra.optimize;
 
+import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
+import com.hp.hpl.jena.sparql.algebra.PropertyFunctionGenerator ;
 import com.hp.hpl.jena.sparql.algebra.TransformCopy ;
-import com.hp.hpl.jena.sparql.algebra.op.OpFilter ;
-import com.hp.hpl.jena.sparql.expr.ExprList ;
+import com.hp.hpl.jena.sparql.algebra.op.OpBGP ;
+import com.hp.hpl.jena.sparql.algebra.op.OpTriple ;
+import com.hp.hpl.jena.sparql.util.Context ;
 
-/* Improvements to filters that do not change the rest of the tree 
- * (so, for example, not filter replacement or equality/assignment
- *  which both do change the sub op of the filter).  
- * 
- * Filter placment and equality/assignment interact.
- * Maybe need one place for all filter-related stuff, in which case this is becomes a library of code,
- * hence the statics for the real work. 
- */
-
-/** Redo FILTER (A&&B) as FILTER(A) FILTER(B) (as an expr list).
- *    via multiple elements of the exprList of the OpFilter.
- *    This allows them to be placed independently.
- */
-
-public class TransformFilterConjunction extends TransformCopy
+/** Rewrite to replace a property function property with the call to the property function implementation */
+public class TransformPropertyFunction extends TransformCopy
 {
-    public TransformFilterConjunction() {}
+    private final Context context ;
+
+    public TransformPropertyFunction(Context context)
+    {
+        this.context = context ;   
+    }
     
     @Override
-    public Op transform(OpFilter opFilter, Op subOp)
+    public Op transform(OpTriple opTriple)
     {
-        ExprList exprList = opFilter.getExprs() ;
-        exprList = ExprList.splitConjunction(exprList) ;
-        // Do not use -- OpFilter.filter(exprList, subOp) -- it compresses (filter (..) (filter ))
-        return OpFilter.filterDirect(exprList, subOp) ;
-    }
+        boolean doingMagicProperties = context.isTrue(ARQ.enablePropertyFunctions) ;
+        if ( ! doingMagicProperties )
+            return opTriple ;
+        
+        Op x =  transform(opTriple.asBGP()) ;
+        if ( ! ( x instanceof OpBGP ) )
+            return x ;
 
-}
+        if ( opTriple.equivalent((OpBGP)x) )
+            return opTriple ;
+        return x ;
+        
+    }
     
+    @Override
+    public Op transform(OpBGP opBGP)
+    {
+        boolean doingMagicProperties = context.isTrue(ARQ.enablePropertyFunctions) ;
+        if ( ! doingMagicProperties )
+            return opBGP ;
+        
+        return PropertyFunctionGenerator.buildPropertyFunctions(opBGP, context) ;
+    }
+}
+
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.

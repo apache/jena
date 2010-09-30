@@ -1,20 +1,27 @@
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.algebra.opt;
+package com.hp.hpl.jena.sparql.algebra.optimize;
 
 import com.hp.hpl.jena.sparql.algebra.Op ;
+import com.hp.hpl.jena.sparql.algebra.TransformCopy ;
+import com.hp.hpl.jena.sparql.algebra.op.OpLabel ;
 
-public interface Rewrite
+public class TransformRemoveLabels extends TransformCopy
 {
-    public Op rewrite(Op op) ;
+    // Strip labels
+    @Override
+    public Op transform(OpLabel opLabel, Op subOp)
+    {
+        return subOp ;
+    }
 }
 
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

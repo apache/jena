@@ -4,42 +4,42 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.algebra.opt;
+package com.hp.hpl.jena.sparql.algebra.optimize;
 
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.TransformCopy ;
-import com.hp.hpl.jena.sparql.algebra.op.OpPath ;
-import com.hp.hpl.jena.sparql.core.PathBlock ;
-import com.hp.hpl.jena.sparql.path.PathCompiler ;
-import com.hp.hpl.jena.sparql.path.PathLib ;
+import com.hp.hpl.jena.sparql.algebra.op.OpFilter ;
+import com.hp.hpl.jena.sparql.expr.ExprList ;
 
-public class TransformPathFlattern extends TransformCopy
+/* Improvements to filters that do not change the rest of the tree 
+ * (so, for example, not filter replacement or equality/assignment
+ *  which both do change the sub op of the filter).  
+ * 
+ * Filter placment and equality/assignment interact.
+ * Maybe need one place for all filter-related stuff, in which case this is becomes a library of code,
+ * hence the statics for the real work. 
+ */
+
+/** Redo FILTER (A&&B) as FILTER(A) FILTER(B) (as an expr list).
+ *    via multiple elements of the exprList of the OpFilter.
+ *    This allows them to be placed independently.
+ */
+
+public class TransformFilterConjunction extends TransformCopy
 {
-    // This also turns off path flattening in the algebra generator.
-    // Note that the algebra generator always truns paths of exactly one predicate to triples.
-    
-//    public static boolean enabled = true ;
-    
-    // Need previous BGP for merging?  Do as a separate pass (sequence, BGP collapse) 
-    private PathCompiler pathCompiler ;
-
-    public TransformPathFlattern() { this(new PathCompiler()) ; }
-    
-    public TransformPathFlattern(PathCompiler pathCompiler)
-    {
-        this.pathCompiler = pathCompiler ;
-    }
+    public TransformFilterConjunction() {}
     
     @Override
-    public Op transform(OpPath opPath)
+    public Op transform(OpFilter opFilter, Op subOp)
     {
-        // Flatten down to triples where possible.
-        PathBlock pattern = pathCompiler.reduce(opPath.getTriplePath()) ;
-        // Any generated paths of exactly one to triple; convert to Op.
-        return PathLib.pathToTriples(pattern) ;
+        ExprList exprList = opFilter.getExprs() ;
+        exprList = ExprList.splitConjunction(exprList) ;
+        // Do not use -- OpFilter.filter(exprList, subOp) -- it compresses (filter (..) (filter ))
+        return OpFilter.filterDirect(exprList, subOp) ;
     }
-}
 
+}
+    
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.

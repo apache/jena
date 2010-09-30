@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.algebra.opt;
+package com.hp.hpl.jena.sparql.algebra.optimize;
 
 import java.util.Set ;
 

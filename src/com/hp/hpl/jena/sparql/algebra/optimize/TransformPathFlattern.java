@@ -1,27 +1,47 @@
 /*
- * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.algebra.opt;
+package com.hp.hpl.jena.sparql.algebra.optimize;
 
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.TransformCopy ;
-import com.hp.hpl.jena.sparql.algebra.op.OpLabel ;
+import com.hp.hpl.jena.sparql.algebra.op.OpPath ;
+import com.hp.hpl.jena.sparql.core.PathBlock ;
+import com.hp.hpl.jena.sparql.path.PathCompiler ;
+import com.hp.hpl.jena.sparql.path.PathLib ;
 
-public class TransformRemoveLabels extends TransformCopy
+public class TransformPathFlattern extends TransformCopy
 {
-    // Strip labels
-    @Override
-    public Op transform(OpLabel opLabel, Op subOp)
+    // This also turns off path flattening in the algebra generator.
+    // Note that the algebra generator always truns paths of exactly one predicate to triples.
+    
+//    public static boolean enabled = true ;
+    
+    // Need previous BGP for merging?  Do as a separate pass (sequence, BGP collapse) 
+    private PathCompiler pathCompiler ;
+
+    public TransformPathFlattern() { this(new PathCompiler()) ; }
+    
+    public TransformPathFlattern(PathCompiler pathCompiler)
     {
-        return subOp ;
+        this.pathCompiler = pathCompiler ;
+    }
+    
+    @Override
+    public Op transform(OpPath opPath)
+    {
+        // Flatten down to triples where possible.
+        PathBlock pattern = pathCompiler.reduce(opPath.getTriplePath()) ;
+        // Any generated paths of exactly one to triple; convert to Op.
+        return PathLib.pathToTriples(pattern) ;
     }
 }
 
 /*
- * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

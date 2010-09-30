@@ -4,52 +4,13 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.algebra.opt;
+package com.hp.hpl.jena.sparql.algebra.optimize;
 
-import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
-import com.hp.hpl.jena.sparql.algebra.PropertyFunctionGenerator ;
-import com.hp.hpl.jena.sparql.algebra.TransformCopy ;
-import com.hp.hpl.jena.sparql.algebra.op.OpBGP ;
-import com.hp.hpl.jena.sparql.algebra.op.OpTriple ;
-import com.hp.hpl.jena.sparql.util.Context ;
 
-/** Rewrite to replace a property function property with the call to the property function implementation */
-public class TransformPropertyFunction extends TransformCopy
+public interface Rewrite
 {
-    private final Context context ;
-
-    public TransformPropertyFunction(Context context)
-    {
-        this.context = context ;   
-    }
-    
-    @Override
-    public Op transform(OpTriple opTriple)
-    {
-        boolean doingMagicProperties = context.isTrue(ARQ.enablePropertyFunctions) ;
-        if ( ! doingMagicProperties )
-            return opTriple ;
-        
-        Op x =  transform(opTriple.asBGP()) ;
-        if ( ! ( x instanceof OpBGP ) )
-            return x ;
-
-        if ( opTriple.equivalent((OpBGP)x) )
-            return opTriple ;
-        return x ;
-        
-    }
-    
-    @Override
-    public Op transform(OpBGP opBGP)
-    {
-        boolean doingMagicProperties = context.isTrue(ARQ.enablePropertyFunctions) ;
-        if ( ! doingMagicProperties )
-            return opBGP ;
-        
-        return PropertyFunctionGenerator.buildPropertyFunctions(opBGP, context) ;
-    }
+    public Op rewrite(Op op) ;
 }
 
 /*

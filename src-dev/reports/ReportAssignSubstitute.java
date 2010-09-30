@@ -14,7 +14,7 @@ import com.hp.hpl.jena.query.QueryFactory ;
 import com.hp.hpl.jena.query.Syntax ;
 import com.hp.hpl.jena.sparql.algebra.Algebra ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
-import com.hp.hpl.jena.sparql.algebra.opt.Optimize ;
+import com.hp.hpl.jena.sparql.algebra.optimize.Optimize ;
 import com.hp.hpl.jena.sparql.core.Substitute ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.sse.SSE ;

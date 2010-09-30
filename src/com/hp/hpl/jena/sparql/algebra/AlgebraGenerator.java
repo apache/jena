@@ -36,7 +36,7 @@ import com.hp.hpl.jena.sparql.algebra.op.OpService ;
 import com.hp.hpl.jena.sparql.algebra.op.OpSlice ;
 import com.hp.hpl.jena.sparql.algebra.op.OpTable ;
 import com.hp.hpl.jena.sparql.algebra.op.OpUnion ;
-import com.hp.hpl.jena.sparql.algebra.opt.TransformSimplify ;
+import com.hp.hpl.jena.sparql.algebra.optimize.TransformSimplify ;
 import com.hp.hpl.jena.sparql.core.BasicPattern ;
 import com.hp.hpl.jena.sparql.core.PathBlock ;
 import com.hp.hpl.jena.sparql.core.Var ;
