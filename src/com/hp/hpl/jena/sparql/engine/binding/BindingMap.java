@@ -27,7 +27,9 @@ public class BindingMap extends BindingBase
     // Bindings are often small.  Is this overkill? 
     Map<Var, Node> map = new HashMap<Var, Node>() ;
     
+    /** Using BindingFcatory.create is better */
     public BindingMap(Binding parent) { super(parent) ; }
+    /** Using BindingFcatory.create is better */
     public BindingMap() { super(BindingRoot.create()) ; } // null?
 
     /** Add a (name,value) */

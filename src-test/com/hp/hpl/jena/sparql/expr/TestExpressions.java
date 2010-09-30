@@ -20,7 +20,7 @@ import com.hp.hpl.jena.query.QueryFactory ;
 import com.hp.hpl.jena.query.QueryParseException ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
-import com.hp.hpl.jena.sparql.engine.binding.Binding0 ;
+import com.hp.hpl.jena.sparql.engine.binding.BindingFactory ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap ;
 import com.hp.hpl.jena.sparql.function.FunctionEnvBase ;
 import com.hp.hpl.jena.sparql.util.ExprUtils ;
@@ -406,7 +406,7 @@ public class TestExpressions
     private static void testNumeric(String string, int i)
     {
         Expr expr = parse(string) ;
-        NodeValue v = expr.eval( new Binding0(), new FunctionEnvBase()) ;
+        NodeValue v = expr.eval( BindingFactory.binding() , new FunctionEnvBase()) ;
         assertTrue(v.isInteger()) ;
         assertEquals(i, v.getInteger().intValue()) ;
     }
@@ -414,7 +414,7 @@ public class TestExpressions
     private static void testNumeric(String string, double d)
     {
         Expr expr = parse(string) ;
-        NodeValue v = expr.eval( new Binding0(), new FunctionEnvBase()) ;
+        NodeValue v = expr.eval( BindingFactory.binding(), new FunctionEnvBase()) ;
         assertTrue(v.isDouble()) ;
         assertEquals(d, v.getDouble(),0) ;
     }
@@ -422,12 +422,12 @@ public class TestExpressions
     private static void testEval(String string)
     {
         Expr expr = parse(string) ;
-        NodeValue v = expr.eval( new Binding0(), new FunctionEnvBase()) ;
+        NodeValue v = expr.eval( BindingFactory.binding(), new FunctionEnvBase()) ;
     }
 
     private static void testBoolean(String string, boolean b)
     {
-        testBoolean(string, b, new Binding0()) ;
+        testBoolean(string, b, BindingFactory.binding()) ;
     }
 
     private static void testBoolean(String string, boolean b, Binding env)

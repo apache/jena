@@ -14,7 +14,7 @@ import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
-import com.hp.hpl.jena.sparql.engine.binding.Binding0 ;
+import com.hp.hpl.jena.sparql.engine.binding.BindingFactory ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterSingleton ;
 import com.hp.hpl.jena.sparql.expr.ExprList ;
 
@@ -28,7 +28,8 @@ public class TableUnit extends TableBase
     public QueryIterator iterator(ExecutionContext execCxt)
     {
         // BindingRoot?
-        return QueryIterSingleton.create(new Binding0(), execCxt) ;
+        Binding binding = BindingFactory.binding() ;
+        return QueryIterSingleton.create(binding, execCxt) ;
     }
 
     public QueryIterator matchRightLeft(Binding bindingLeft, boolean includeOnNoMatch,

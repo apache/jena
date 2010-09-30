@@ -17,8 +17,8 @@ import com.hp.hpl.jena.sparql.core.Var ;
 
 public class Binding0 extends BindingBase
 {
-    public Binding0() { super(null) ; }
-    public Binding0(Binding parent) { super(parent) ; }
+    /* package */ Binding0() { super(null) ; }
+    /* package */ Binding0(Binding parent) { super(parent) ; }
 
     @Override
     protected void add1(Var var, Node node)

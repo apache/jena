@@ -60,8 +60,7 @@ public final class Tuple<T> implements Iterable<T>
         return Iter.map(iter, sub) ;
     }
 
-    // May need to be Object[] (+ cast on access)
-    // to support 
+    // Alternative : Object[] (+ cast on access)
     final T[] tuple ;
     
     private Tuple(T...tuple)

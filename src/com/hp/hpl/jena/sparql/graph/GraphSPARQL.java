@@ -89,8 +89,9 @@ public class GraphSPARQL extends GraphBase implements Graph
     { 
     	if (capabilities == null)
             capabilities = new AllCapabilities()
-        	  { /*@Override*/ @Override
-            public boolean handlesLiteralTyping() { return false; } };
+        	  { @Override
+                public boolean handlesLiteralTyping() { return false; } 
+        	  };
         return capabilities;
     }
     

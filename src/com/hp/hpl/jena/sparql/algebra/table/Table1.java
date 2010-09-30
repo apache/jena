@@ -14,7 +14,6 @@ import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
-import com.hp.hpl.jena.sparql.engine.binding.Binding0 ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingFactory ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterNullIterator ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterSingleton ;
@@ -36,7 +35,8 @@ public class Table1 extends TableBase
     public QueryIterator iterator(ExecutionContext execCxt)
     {
         // Root binding?
-        QueryIterator qIter = QueryIterSingleton.create(new Binding0(), var, value, execCxt) ;
+        Binding binding = BindingFactory.binding(var, value) ;
+        QueryIterator qIter = QueryIterSingleton.create(binding, var, value, execCxt) ;
         return qIter ;
     }
 

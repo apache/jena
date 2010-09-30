@@ -13,11 +13,15 @@ public class BindingFactory
 {
     public static final Binding noParent = null ; 
     
+    /** Create a binding of no pairs */
     public static Binding binding() { return binding(noParent) ; }
+    
+    /** Create a binding of no pairs */
     public static Binding binding(Binding parent) { return new Binding0(parent)  ; }
     
     public static Binding binding(Var var, Node node) { return binding(noParent, var, node) ; }
     
+    /** Create a binding of one (var, value) pair */
     public static Binding binding(Binding parent, Var var, Node node)
     {
         if ( Var.isAnonVar(var) )
@@ -25,7 +29,7 @@ public class BindingFactory
         return new Binding1(parent, var, node) ;
     }
     
-    public static Binding create() { return binding(noParent) ; }
+    public static Binding create() { return create(noParent) ; }
     public static Binding create(Binding parent) { return new BindingMap(parent)  ; }
 }
 
