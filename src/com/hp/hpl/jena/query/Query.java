@@ -375,21 +375,6 @@ public class Query extends Prologue implements Cloneable, Printable
         _addResultVar(v.getName()) ;
     }
     
-    // Add raw name.
-    private void _addResultVar(String varName)
-    {
-        Var v = Var.alloc(varName) ;
-        _addVar(projectVars, v) ;
-        resultVarsSet = true ;
-    }
-    
-    private static void _addVar(VarExprList varExprList, Var v)
-    {
-        if ( varExprList.contains(v) && ! ARQ.allowDuplicateSelectColumns )
-            return ; 
-        varExprList.add(v) ;
-    }
-    
     public void addResultVar(Node v, Expr expr)
     {
         Var var = null ; 
@@ -401,13 +386,13 @@ public class Query extends Prologue implements Cloneable, Printable
                 throw new QueryException("Not a variable: "+v) ;
             var = Var.alloc(v) ;
         }
-        _addResultVar(var, expr) ;
+        _addVarExpr(projectVars, var, expr) ;
     }
     
     /** Add an to a SELECT query (a name will be created for it) */
     public void addResultVar(Expr expr)
     {
-        _addResultVar(allocInternVar(), expr) ;
+        _addVarExpr(projectVars, allocInternVar(), expr) ;
     }
 
     /** Add a named expression to a SELECT query */
@@ -421,16 +406,43 @@ public class Query extends Prologue implements Cloneable, Printable
             varName = Var.canonical(varName) ;
             var = Var.alloc(varName) ;
         }
-        _addResultVar(var, expr) ;
+        _addVarExpr(projectVars, var, expr) ;
     }
 
-    private void _addResultVar(Var var, Expr expr)
+    // Add raw name.
+    private void _addResultVar(String varName)
     {
-        projectVars.add(var, expr) ;
+        Var v = Var.alloc(varName) ;
+        _addVar(projectVars, v) ;
+        resultVarsSet = true ;
     }
-    
-    // GROUP/HAVING
-    
+
+    private static void _addVar(VarExprList varExprList, Var v)
+    {
+        if ( varExprList.contains(v) )
+        {
+            Expr expr = varExprList.getExpr(v) ;
+            if ( expr != null )
+                
+                // SELECT (?a+?b AS ?x) ?x
+                throw new QueryBuildException("Duplicate variable (had an expression) in result projection '"+v+"'") ;
+            // SELECT ?x ?x
+            if ( ! ARQ.allowDuplicateSelectColumns )
+                return ;
+            // else drop thorugh and have two variables of the same name.
+        }
+        varExprList.add(v) ;
+    }
+
+    private static void _addVarExpr(VarExprList varExprList, Var v, Expr expr)
+    {
+        if ( varExprList.contains(v) )
+            // SELECT ?x (?a+?b AS ?x)
+            // SELECT (2*?a AS ?x) (?a+?b AS ?x)
+            throw new QueryBuildException("Duplicate variable in result projection '"+v+"'") ;  
+        varExprList.add(v, expr) ;
+    }
+
     protected VarExprList groupVars = new VarExprList() ;
     protected List<Expr> havingExprs = new ArrayList<Expr>() ;  // Expressions : Make an ExprList?
     

@@ -32,7 +32,7 @@ public class TransformScopeRename
         return new TransformScopeRename$(op).work() ;
     }
 
-    static class TransformScopeRename$
+    private static class TransformScopeRename$
     {
         private boolean outerMostOpProject = false ;
         private int projectRenameDepth = 0 ;

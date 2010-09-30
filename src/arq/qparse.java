@@ -42,6 +42,7 @@ public class qparse extends CmdARQ
     ModEngine     modEngine  =    new ModEngine() ;
     protected final ArgDecl argDeclPrint  = new ArgDecl(ArgDecl.HasValue, "print") ;
     protected final ArgDecl argDeclOpt  = new ArgDecl(ArgDecl.NoValue, "opt", "optimize") ;
+    protected final ArgDecl argDeclExplain  = new ArgDecl(ArgDecl.NoValue, "explain") ;
     
     boolean printQuery = false ;
     boolean printOp = false ;
@@ -63,7 +64,8 @@ public class qparse extends CmdARQ
         super.addModule(modEngine) ;
         super.getUsage().startCategory(null) ;
         super.add(argDeclPrint, "--print", "Print in various forms [query, op, quad, plan]") ;
-        super.add(argDeclOpt, "--opt", "Print with algebra-level optimization") ; 
+        super.add(argDeclExplain, "--explain", "Print with algebra-level optimization") ;
+        super.add(argDeclOpt, "--opt", "[deprecated]") ; 
     }
     
     @Override
@@ -73,6 +75,11 @@ public class qparse extends CmdARQ
         
         if ( contains(argDeclOpt) )
             printOpt = true ;
+        if ( contains(argDeclExplain) )
+        {
+            printQuery = true ;
+            printOpt = true ;
+        }
 
         for ( Iterator<String> iter = getValues(argDeclPrint).iterator() ; iter.hasNext() ; )
         {

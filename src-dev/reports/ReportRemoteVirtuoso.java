@@ -48,7 +48,7 @@ public class ReportRemoteVirtuoso
     private static ResultSet remoteSelectQuery(String service, String querystring) {
         System.out.println(querystring);
         
-        if ( false )
+        if ( true )
             ARQ.getContext().setTrue(ARQ.useSAX) ;
         
         QueryExecution qexec = QueryExecutionFactory.sparqlService(service, querystring);

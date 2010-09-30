@@ -7,15 +7,6 @@ public class DevARQ
     
     // FILTER-like assignment - end-of-group
     
-    // Warnings logger.
-    
-    // JSON parser - warning on redef of a key.
-    // XMLInputSAX and XMLInputStAX : adding same thing twice. 
-    
-    // ****
-    // CONSTRUCT {} { SELECT ... } -- no need to play rename games.
-    // CONSTRUCT now uses QueryResultsStar - could strips as pattern is turned in to algebra.
-    
     // 1/ Transform step: TransformScopeRename
     //    To do: optimize -> no subproject -> no work.
     // 2/ Revert code in compileModifiers
@@ -23,10 +14,7 @@ public class DevARQ
     // Respect Content-Length?
     // ReportRemoteVirtuoso
     
-    // add qparse to wiki/ARQ
-    
-    // Multiple occurrences of same variable in a result set causes an exception.
-    //   rset problem.
+    // add qparse to wiki/ARQ/
     
     // VarRename, OpVars, VarFinder and VarUtils -- sort out!
     
@@ -145,7 +133,6 @@ public class DevARQ
     // RiotLoader
     // Tokenizer - mode for emit whitespace and comments, and tokens for all other specials (tricky: + and -)
 
-    // JSON - systemative convenience operations on numbers
     // JSON.parse - check that it uses a Peekreader over a RIOT parser.
 
     // Filename in log messages
@@ -181,5 +168,4 @@ public class DevARQ
     // Sort order tracking
 
     // NodeFactory == SSE => Merge
-
 }
