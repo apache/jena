@@ -23,16 +23,13 @@ import com.hp.hpl.jena.sparql.util.Utils ;
 
 /** Function that concatenates strings using a separator.
  *  This is not fn:string-join because 
- *  (1) that takes a sequnce as argument
+ *  (1) that takes a sequence as argument
  *  (2) the arguments are in a different order 
- * 
- * @author Andy Seaborne
  */
 
 
 public class strjoin extends FunctionBase
 {
-
     @Override
     public final NodeValue exec(List<NodeValue> args)
     {

@@ -21,7 +21,7 @@ import com.hp.hpl.jena.sparql.function.FunctionEnv ;
  * @author Andy Seaborne
  */
 
-public class matches implements Function
+public class FN_Matches implements Function
 {
     // Wrapper around an E_Regex. Maybe move actual regex to Function.regex.
     E_Regex regex = null;

@@ -8,19 +8,18 @@ package com.hp.hpl.jena.sparql.function.library;
 
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp ;
-import com.hp.hpl.jena.sparql.function.FunctionBase1 ;
+import com.hp.hpl.jena.sparql.function.FunctionBase2 ;
 
-/** Boolean Equivalent Value
- * 
- * @author Andy Seaborne
- */
+/** string contains - fn:contains */
 
-public class BEV extends FunctionBase1
+public class FN_StrContains extends FunctionBase2
 {
+    public FN_StrContains() { super() ; }
+
     @Override
-    public NodeValue exec(NodeValue x)
+    public NodeValue exec(NodeValue str, NodeValue match)
     {
-        return XSDFuncOp.booleanEffectiveValueAsNodeValue(x) ;
+        return XSDFuncOp.strContains(str, match) ;
     }
 }
 

@@ -1,13 +1,10 @@
 /*
- * (c) 2010 Talis Information Ltd
+ * (c) Copyright 2010 Talis Information Ltd
  * [See end of file]
  */
 
 package com.hp.hpl.jena.sparql.expr;
 
-import com.hp.hpl.jena.sparql.ARQNotImplemented ;
-import com.hp.hpl.jena.sparql.engine.binding.Binding ;
-import com.hp.hpl.jena.sparql.function.FunctionEnv ;
 
 public class E_FunctionDynamic extends E_Call
 {
@@ -29,17 +26,11 @@ public class E_FunctionDynamic extends E_Call
     }
     
     @Override
-    public NodeValue eval(Binding binding, FunctionEnv env)
-    {
-        throw new ARQNotImplemented() ;
-    }
-    
-    @Override
     protected Expr copy(ExprList newArgs)       { return new E_FunctionDynamic(newArgs) ; }
 }
 
 /*
- * (c) 2010 Talis Information Ltd
+ * (c) Copyright 2010 Talis Information Ltd
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

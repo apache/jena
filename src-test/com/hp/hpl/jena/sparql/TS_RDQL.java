@@ -22,9 +22,10 @@ public class TS_RDQL extends TestSuite
 
     public TS_RDQL()
     {
-        super("RDQL") ;
+        super(TS_RDQL.class.getName()) ;
         
         addTest(TS_ExprRDQL.suite()) ;
+        
         addTest(QueryTestSuiteFactory.make(controlFilenameRDQL)) ; 
     }
 }

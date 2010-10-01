@@ -8,7 +8,6 @@
 package com.hp.hpl.jena.sparql;
 
 
-import junit.framework.JUnit4TestAdapter ;
 import junit.framework.TestSuite ;
 
 import com.hp.hpl.jena.sparql.core.TestContext ;
@@ -16,12 +15,9 @@ import com.hp.hpl.jena.sparql.core.TestDatasetDataSource ;
 import com.hp.hpl.jena.sparql.core.TestDatasetGraphMem ;
 import com.hp.hpl.jena.sparql.core.TestDatasetGraphMemTriplesQuads ;
 import com.hp.hpl.jena.sparql.core.TestEsc ;
-import com.hp.hpl.jena.sparql.expr.TS_Expr ;
 import com.hp.hpl.jena.sparql.expr.TestExpressions ;
 import com.hp.hpl.jena.sparql.path.TestPath ;
-import com.hp.hpl.jena.sparql.resultset.TS_ResultSet ;
 import com.hp.hpl.jena.sparql.syntax.TestSerialization ;
-import com.hp.hpl.jena.sparql.util.TS_Util ;
 
 public class TS_General extends TestSuite
 {
@@ -31,20 +27,13 @@ public class TS_General extends TestSuite
 
     public TS_General()
     {
-        super(testSetName) ;
+        super(TS_General.class.getName()) ;
         // Need to check each is JUnit 4 compatible then remove all .suite and use @RunWith(Suite.class) @SuiteClasses
-        addTest(TS_Expr.suite()) ;
         addTest(TestExpressions.suite()) ;
-        
-        addTest(TS_Util.suite()) ;
-        
         addTest(TestPath.suite()) ;
         addTest(TestEsc.suite()) ;
-        addTest(new JUnit4TestAdapter(TS_ResultSet.class)) ;
         addTest(TestSerialization.suite()) ;
-        
         addTest(TestContext.suite()) ;
-        
         addTest(TestDatasetDataSource.suite()) ;
         addTest(TestDatasetGraphMem.suite()) ;
         addTest(TestDatasetGraphMemTriplesQuads.suite()) ;

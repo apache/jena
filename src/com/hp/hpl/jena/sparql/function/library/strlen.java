@@ -8,7 +8,7 @@ package com.hp.hpl.jena.sparql.function.library;
 
 /** string length - Java operations*/
 
-public class strlen extends strLength {}
+public class strlen extends FN_StrLength {}
 
 /*
  * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP

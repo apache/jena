@@ -39,7 +39,7 @@ public class QueryIterGroup extends QueryIterPlainWrapper
     // Phase 2 : Go over the group bindings and assign the value of each aggregation.
     
     private static Iterator<Binding> calc(QueryIterator iter, 
-                                          VarExprList groupVars, List<ExprAggregator> aggregators,
+                                          VarExprList groupVarExpr, List<ExprAggregator> aggregators,
                                           ExecutionContext execCxt)
     {
         // Phase 1 : assign bindings to buckets by key and pump through the aggregrators.
@@ -48,7 +48,7 @@ public class QueryIterGroup extends QueryIterPlainWrapper
         for ( ; iter.hasNext() ; )
         {
             Binding b = iter.nextBinding() ;
-            BindingKey key = genKey(groupVars, b, execCxt) ;
+            BindingKey key = genKey(groupVarExpr, b, execCxt) ;
             
             // Assumes key binding has value based .equals/.hashCode. 
             if ( ! buckets.containsKey(key) )
@@ -145,6 +145,7 @@ public class QueryIterGroup extends QueryIterPlainWrapper
         {
             Var var = iter.next() ;
             Node node = vars.get(var, binding, execCxt) ;
+            // Null returned for unbound and error.
             if ( node != null )
                 x.add(var, node) ;
         }

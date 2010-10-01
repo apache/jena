@@ -10,15 +10,18 @@ import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp ;
 import com.hp.hpl.jena.sparql.function.FunctionBase1 ;
 
-/** round(expression) */ 
+/** Boolean Equivalent Value
+ * 
+ * @author Andy Seaborne
+ */
 
-public class round  extends FunctionBase1
+public class FN_Not extends FunctionBase1
 {
-    public round() { super() ; }
-    
     @Override
-    public NodeValue exec(NodeValue v)
-    { return XSDFuncOp.round(v) ; }
+    public NodeValue exec(NodeValue x)
+    {
+        return XSDFuncOp.not(x) ;
+    }
 }
 
 /*

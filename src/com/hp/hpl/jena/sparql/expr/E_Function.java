@@ -5,7 +5,10 @@
 
 package com.hp.hpl.jena.sparql.expr;
 
+import java.util.List ;
+
 import com.hp.hpl.jena.query.ARQ ;
+import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.function.Function ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
@@ -40,7 +43,7 @@ public class E_Function extends ExprFunctionN
     public String getFunctionIRI() { return functionIRI ; }
     
     @Override
-    public NodeValue eval(Binding binding, FunctionEnv env)
+    public NodeValue evalSpecial(Binding binding, FunctionEnv env)
     {
         // Only needed because some tests call straight in.
         // Otherwise, the buildFunction() calls should have done everything
@@ -52,6 +55,14 @@ public class E_Function extends ExprFunctionN
         return r ;
     }
     
+    @Override
+    protected NodeValue eval(List<NodeValue> args)
+    {
+        // For functions, we delay argument evaluation to the "Function" heierarchy
+        // so applications can add their own functional forms.
+        throw new ARQInternalErrorException() ;
+    }
+
     public void buildFunction(Context cxt)
     {
         try { bindFunction(cxt) ; }

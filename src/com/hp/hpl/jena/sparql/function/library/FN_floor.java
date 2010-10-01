@@ -6,44 +6,20 @@
 
 package com.hp.hpl.jena.sparql.function.library;
 
-//import org.apache.commons.logging.*;
-
-import java.util.List ;
-
-import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
-import com.hp.hpl.jena.sparql.expr.ExprList ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
-import com.hp.hpl.jena.sparql.function.FunctionBase ;
-import com.hp.hpl.jena.sparql.util.Utils ;
+import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp ;
+import com.hp.hpl.jena.sparql.function.FunctionBase1 ;
 
-/** Function that concatenates arguments as strings.
- *  fn:concat
- * 
- * @author Andy Seaborne
- */
+/** floor(expression) */ 
 
-public class strConcat extends FunctionBase
+public class FN_floor extends FunctionBase1
 {
-
+    public FN_floor() { super() ; }
+    
     @Override
-    public final NodeValue exec(List<NodeValue> args)
-    {
-        if ( args == null )
-            // The contract on the function interface is that this should not happen.
-            throw new ARQInternalErrorException(Utils.className(this)+": Null args list") ;
-        
-        String result = "" ;
-        for ( NodeValue arg : args )
-        {
-            String x = arg.asString() ;
-            result = result+x ;
-        }
-        return NodeValue.makeString(result) ;
-    }
+    public NodeValue exec(NodeValue v)
+    { return XSDFuncOp.floor(v) ; }
 
-    @Override
-    public void checkBuild(String uri, ExprList args)
-    {}
 }
 
 /*

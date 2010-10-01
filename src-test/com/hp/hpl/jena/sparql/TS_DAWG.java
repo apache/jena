@@ -57,7 +57,7 @@ public class TS_DAWG extends TestSuite
 
     public TS_DAWG()
     {
-        super("DAWG") ;
+        super(TS_DAWG.class.getName()) ;
 
         // One test, dawg-optional-filter-005-simplified or dawg-optional-filter-005-not-simplified
         // must fail because it's the same query and data with different interpretations of the

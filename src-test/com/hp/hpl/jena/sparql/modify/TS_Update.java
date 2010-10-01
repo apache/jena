@@ -28,7 +28,7 @@ public class TS_Update extends TestSuite
     
     private TS_Update()
     {
-        super("ARQ/Update");
+        super(TS_Update.class.getName());
     }
 }
 

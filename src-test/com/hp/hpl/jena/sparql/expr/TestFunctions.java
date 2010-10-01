@@ -94,7 +94,7 @@ public class TestFunctions
     @Test public void exprBoolean9()    { test("fn:not(1)", FALSE) ; }
     @Test public void exprBoolean10()   { test("fn:not(0)", TRUE) ; }
     
-    @Test public void exprStrJoin()      { test("fn:string-join('a', 'b')", NodeValue.makeString("ab")) ; }
+    //@Test public void exprStrJoin()      { test("fn:string-join('a', 'b')", NodeValue.makeString("ab")) ; }
     
     @Test public void exprSameTerm1()     { test("sameTerm(1,1)",           TRUE) ; }
     @Test public void exprSameTerm2()     { test("sameTerm(1,1.0)",         FALSE) ; }

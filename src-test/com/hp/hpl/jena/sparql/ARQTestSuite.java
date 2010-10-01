@@ -19,14 +19,17 @@ import com.hp.hpl.jena.sparql.engine.main.QueryEngineMain ;
 import com.hp.hpl.jena.sparql.engine.ref.QueryEngineRef ;
 import com.hp.hpl.jena.sparql.expr.E_Function ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
+import com.hp.hpl.jena.sparql.expr.TS_Expr ;
 import com.hp.hpl.jena.sparql.graph.TS_Graph ;
 import com.hp.hpl.jena.sparql.junit.QueryTestSuiteFactory ;
 import com.hp.hpl.jena.sparql.larq.TS_LARQ ;
 import com.hp.hpl.jena.sparql.modify.TS_Update ;
+import com.hp.hpl.jena.sparql.resultset.TS_ResultSet ;
 import com.hp.hpl.jena.sparql.solver.TS_Solver ;
 import com.hp.hpl.jena.sparql.syntax.TS_SSE ;
 import com.hp.hpl.jena.sparql.syntax.TS_Serialization ;
 import com.hp.hpl.jena.sparql.syntax.TS_Syntax ;
+import com.hp.hpl.jena.sparql.util.TS_Util ;
 
 /**
  * All the ARQ tests 
@@ -47,8 +50,6 @@ public class ARQTestSuite extends TestSuite
 
         
         // ARQ dependencies
-        
-        // TODO Convert more: 
         ts.addTest(new JUnit4TestAdapter(TC_Atlas.class)) ;
         ts.addTest(new JUnit4TestAdapter(TC_Riot.class)) ;
         
@@ -65,6 +66,9 @@ public class ARQTestSuite extends TestSuite
         
         // Lower level
         ts.addTest(TS_General.suite() );
+        ts.addTest(TS_Expr.suite()) ;
+        ts.addTest(TS_Util.suite()) ;
+        ts.addTest(new JUnit4TestAdapter(TS_ResultSet.class)) ;
 
         // Algebra
         ts.addTest(new JUnit4TestAdapter(TC_Algebra.class)) ;
@@ -89,6 +93,7 @@ public class ARQTestSuite extends TestSuite
         ts.addTest(TS_DAWG.suite()) ;
       
         // The RDQL engine ported to ARQ
+        // Includes TS_ExprRDQL so TS_* runs twice. 166 tests
         ts.addTest(TS_RDQL.suite()) ;
       
         // API

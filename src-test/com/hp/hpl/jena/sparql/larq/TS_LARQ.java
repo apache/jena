@@ -20,7 +20,7 @@ public class TS_LARQ
 {
     static public TestSuite suite()
     {
-        TestSuite ts = new TestSuite("LARQ") ;
+        TestSuite ts = new TestSuite(TS_LARQ.class.getName()) ;
         ts.addTest(TestLARQ_Code.suite()) ;
         ts.addTest(TestLARQ_Script.suite()) ;
         return ts ;

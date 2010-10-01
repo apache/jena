@@ -6,49 +6,53 @@
 package com.hp.hpl.jena.sparql.expr;
 
 import java.util.IdentityHashMap ;
+import java.util.List ;
 
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.sparql.ARQNotImplemented ;
+import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
 import com.hp.hpl.jena.sparql.util.LabelToNodeMap ;
 import com.hp.hpl.jena.sparql.util.Symbol ;
 
-public class E_BNode extends ExprFunction1
+public class E_BNode extends ExprFunctionN
 {
     private static final String symbol = "bnode" ;
     
     private static final Symbol keyMap = Symbol.create("arq:internal:bNodeMappings") ;
 
-    public E_BNode() { super(null,symbol) ; }
+    public E_BNode() { this(null) ; }
     
     public E_BNode(Expr expr)
     {
-        // Maybe null.
-        super(expr, symbol) ;
+        // Expr maybe null for BNode()
+        super(symbol, expr) ;
     }
     
-    @Override
-    public NodeValue eval(NodeValue v) { throw new ARQNotImplemented() ; }
-    
+    // Not rally a special form but we need access to the binding
+    // to use a key.
     @Override
     public NodeValue evalSpecial(Binding binding, FunctionEnv env)
-    { 
+    {
+        Expr expr = null ;
+        if ( args.size() == 1 )
+            expr = getArg(1) ;
+
         if ( expr == null )
             return NodeValue.makeNode(Node.createAnon()) ;
-        
+
         NodeValue x = expr.eval(binding, env) ;
         if ( ! x.isString() )
             throw new ExprEvalException("Not a string: "+x) ;
 
         Integer key = System.identityHashCode(binding) ;
-        
+
         // IdentityHashMap
         // Normally bindings have structural equality (e.g. DISTINCT)
         // we want identify as OpAssign mutates a binding to add new pairs.
         @SuppressWarnings("unchecked")
         IdentityHashMap<Binding, LabelToNodeMap> mapping = (IdentityHashMap<Binding, LabelToNodeMap>)env.getContext().get(keyMap) ;
-        
+
         if ( mapping == null )
         {
             mapping = new IdentityHashMap<Binding, LabelToNodeMap>() ;
@@ -63,10 +67,20 @@ public class E_BNode extends ExprFunction1
 
         Node bnode = mapper.asNode(x.getString()) ;
         return NodeValue.makeNode(bnode) ; 
-    } 
+    }
     
     @Override
-    public Expr copy(Expr expr) { return new E_BNode(expr) ; } 
+    protected NodeValue eval(List<NodeValue> args)
+    { throw new ARQInternalErrorException() ; }
+
+    @Override
+    protected Expr copy(ExprList newArgs)
+    {
+        if ( newArgs.size() == 0 )
+            return new E_BNode() ;
+        else
+            return new E_BNode(newArgs.get(0)) ;
+    } 
 }
 
 /*

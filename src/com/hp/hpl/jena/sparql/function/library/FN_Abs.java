@@ -10,17 +10,15 @@ import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp ;
 import com.hp.hpl.jena.sparql.function.FunctionBase1 ;
 
-/** lowercase */
+/** abs(expression) */ 
 
-public class strLowerCase extends FunctionBase1
+public class FN_Abs extends FunctionBase1
 {
-    public strLowerCase() { super() ; }
+    public FN_Abs() { super() ; }
 
     @Override
-    public NodeValue exec(NodeValue str)
-    {
-        return XSDFuncOp.strLowerCase(str) ;
-    }
+    public NodeValue exec(NodeValue v)
+    { return XSDFuncOp.abs(v) ; }
 }
 
 /*

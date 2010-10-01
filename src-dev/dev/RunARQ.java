@@ -134,12 +134,18 @@ public class RunARQ
         "SELECT ?w { ?s ?p ?o . { SELECT ?w { ?x ?y ?v {SELECT ?w { ?a ?y ?w }}} } } LIMIT 50 "   
         ) ;
                                                  
+        String queryString7 = StrUtils.strjoinNL(
+                                                 "PREFIX : <http://example/>",
+                                                 "SELECT * { ?s ?p ?o . { SELECT ?w { ?x ?y ?v }}}"   
+                                                 ) ;
+
         rename2(queryString1) ;
         rename2(queryString2) ;
         rename2(queryString3) ;
         rename2(queryString4) ;
         rename2(queryString5) ;
         rename2(queryString6) ;
+        rename2(queryString7) ;
         System.out.println("DONE") ;
         System.exit(0) ;
     }
@@ -147,8 +153,6 @@ public class RunARQ
     public static void rename2(String queryString)
     {
         boolean verbose = false ;
-        
-        
         Query query = QueryFactory.create(queryString) ;
         if ( verbose )
         {
@@ -188,11 +192,11 @@ public class RunARQ
     
     public static void main(String[] argv) throws Exception
     {
+//      rename2() ;
+
 //        arq.rset.main("--set=arq:useSAX=true", "R-dup.srj") ; System.exit(0) ;
-//        rename2() ;
 //        arq.qparse.main("--print=op", "--query=Q.rq") ; System.exit(0) ;
-        
-        arq.sparql.main("--explain", "--data=D.ttl", "--query=Q.rq") ; System.exit(0) ;
+        arq.sparql.main(/*"--explain",*/ "--data=D.ttl", "--query=Q.rq") ; System.exit(0) ;
        
         
         Dataset ds2 = DatasetFactory.create() ;

@@ -12,8 +12,6 @@ import com.hp.hpl.jena.sparql.core.Var ;
 
 /** A binding helper that can be a key in a Set or Map.
  *  Changing the key binding while in such a structure is not supported.  
- * 
- * @author   Andy Seaborne
  */
 
 public class BindingKey

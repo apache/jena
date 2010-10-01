@@ -7,18 +7,19 @@
 package com.hp.hpl.jena.sparql.function.library;
 
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
+import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp ;
 import com.hp.hpl.jena.sparql.function.FunctionBase1 ;
 
-/** string length - F&O operation */
+/** uppercase */
 
-public class strLength extends FunctionBase1
+public class FN_StrUpperCase extends FunctionBase1
 {
-    public strLength() { super() ; }
+    public FN_StrUpperCase() { super() ; }
 
     @Override
-    public NodeValue exec(NodeValue v)
+    public NodeValue exec(NodeValue str)
     {
-        return NodeValue.makeInteger(v.getString().length()) ;
+        return XSDFuncOp.strUpperCase(str) ;
     }
 }
 

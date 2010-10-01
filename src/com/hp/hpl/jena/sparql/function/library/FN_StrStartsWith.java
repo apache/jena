@@ -10,16 +10,16 @@ import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp ;
 import com.hp.hpl.jena.sparql.function.FunctionBase2 ;
 
-/** string contains - fn:contains */
+/** fn:starts-with */
 
-public class strContains extends FunctionBase2
+public class FN_StrStartsWith extends FunctionBase2
 {
-    public strContains() { super() ; }
+    public FN_StrStartsWith() { super() ; }
 
     @Override
     public NodeValue exec(NodeValue str, NodeValue match)
     {
-        return XSDFuncOp.strContains(str, match) ;
+        return XSDFuncOp.strStartsWith(str, match) ;
     }
 }
 

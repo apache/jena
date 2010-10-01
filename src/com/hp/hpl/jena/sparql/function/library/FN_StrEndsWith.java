@@ -8,19 +8,18 @@ package com.hp.hpl.jena.sparql.function.library;
 
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp ;
-import com.hp.hpl.jena.sparql.function.FunctionBase1 ;
+import com.hp.hpl.jena.sparql.function.FunctionBase2 ;
 
-/** Boolean Equivalent Value
- * 
- * @author Andy Seaborne
- */
+/** fn:ends-with */
 
-public class not extends FunctionBase1
+public class FN_StrEndsWith extends FunctionBase2
 {
+    public FN_StrEndsWith() { super() ; }
+
     @Override
-    public NodeValue exec(NodeValue x)
+    public NodeValue exec(NodeValue str, NodeValue match)
     {
-        return XSDFuncOp.not(x) ;
+        return XSDFuncOp.strEndsWith(str, match) ;
     }
 }
 

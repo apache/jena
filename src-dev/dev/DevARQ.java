@@ -17,6 +17,7 @@ public class DevARQ
     // add qparse to wiki/ARQ/
     
     // VarRename, OpVars, VarFinder and VarUtils -- sort out!
+    // Any SELECT * + one in group => no need for rename? 
     
     // Canonicalization: Fix URIs. () [] SPC
     
@@ -35,6 +36,8 @@ public class DevARQ
     // ?? remove
     // ?? merely a DSG container?
     //   ?? c.f. UpdateExecution so no need for GS? UpdateProcessor vs UpdateExecution
+    
+    // --data to accept TriG and N-Quads
     
     // ** Update documentation
     // No need for CREATE SILENT, DROP SILENT

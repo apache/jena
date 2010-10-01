@@ -10,15 +10,15 @@ import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp ;
 import com.hp.hpl.jena.sparql.function.FunctionBase1 ;
 
-/** abs(expression) */ 
+/** ceiling(expression) */ 
 
-public class abs extends FunctionBase1
+public class FN_Ceiling extends FunctionBase1
 {
-    public abs() { super() ; }
-
+    public FN_Ceiling() { super() ; }
+    
     @Override
     public NodeValue exec(NodeValue v)
-    { return XSDFuncOp.abs(v) ; }
+    { return XSDFuncOp.ceiling(v) ; }
 }
 
 /*

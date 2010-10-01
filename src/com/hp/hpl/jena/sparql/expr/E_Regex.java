@@ -1,22 +1,20 @@
 /*
  * (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyrght 2010 Epimorphics Ltd.
  * [See end of file]
  */
 
 package com.hp.hpl.jena.sparql.expr;
 
+import java.util.List ;
+
 import com.hp.hpl.jena.query.ARQ ;
 import org.openjena.atlas.logging.Log ;
 import com.hp.hpl.jena.sparql.util.Symbol ;
 
-//import java.util.regex.* ;
+/** Indirect to the choosen regular expression implementation */
 
-/** Indirect to the choosen regular expression implementation. 
- * 
- * @author Andy Seaborne
- */
-
-public class E_Regex extends ExprFunction3
+public class E_Regex extends ExprFunctionN
 {
     private static Symbol regexImpl = null ;
     static
@@ -43,28 +41,17 @@ public class E_Regex extends ExprFunction3
     private static final String name = "regex" ;
     private RegexEngine regexEngine = null ;
     
-//    private final Expr expr ;
-//    private final Expr pattern ;
-//    private final Expr flags ;
-    
-    public E_Regex(Expr _expr, Expr _pattern, Expr _flags)
+    public E_Regex(Expr expr, Expr pattern, Expr flags)
     {
-        super(_expr, _pattern, _flags, name) ;
-//        // Better names.
-//        expr = _expr ;
-//        pattern = _pattern ;
-//        flags = _flags ;
-        init(_pattern, _flags) ;
+        super(name, expr, pattern, flags) ;
+        init(pattern, flags) ;
     }
 
     // Not used by parser
-    public E_Regex(Expr _expr, String _pattern, String _flags)
+    public E_Regex(Expr expr, String pattern, String flags)
     {
-        super(_expr, NodeValue.makeString(_pattern), NodeValue.makeString(_flags), name) ;
-//        expr = expr1 ;
-//        pattern = expr2 ;
-//        flags = expr3 ;
-        init(expr2, expr3) ;
+        super(name, expr, NodeValue.makeString(pattern), NodeValue.makeString(flags)) ;
+        init(getArg(2), getArg(3)) ;
     }
     
     private void init(Expr pattern, Expr flags)
@@ -75,18 +62,18 @@ public class E_Regex extends ExprFunction3
     
 
     @Override
-    public NodeValue eval(NodeValue v, NodeValue vPattern, NodeValue vFlags)
+    public NodeValue eval(List<NodeValue> args)
     {
+        NodeValue v = args.get(0) ;
+        NodeValue vPattern = args.get(1) ;
+        NodeValue vFlags = ( args.size() == 2 ? null : args.get(2) ) ;
+        
         if ( ! v.isString() )
             throw new ExprEvalException("REGEX: "+v+" is not a string") ;
 
         RegexEngine regex = regexEngine ;
         if ( regex == null  )
-        {
-//            NodeValue vPattern = pattern.eval(binding, env) ;
-//            NodeValue vFlags = (flags==null) ? null : flags.eval(binding, env) ;
             regex = makeRegexEngine(vPattern, vFlags) ;
-        }
         
         boolean b = regex.match(v.getString()) ;
         
@@ -111,33 +98,28 @@ public class E_Regex extends ExprFunction3
         return new RegexJava(pattern, flags) ;
     }
     
-    @Override
-    public int numArgs()
-    {
-        if ( expr3 != null )
-            return 3 ;
-        return 2 ;
-    }
-
-    /** @return Returns the expr of the regex */
-    public final Expr getRegexExpr() { return expr1 ; }
-
-    /** @return Returns the pattern. */
-    public final Expr getPattern()  { return expr2 ; }
-
-    /** @return Returns the flags. */
-    public final Expr getFlags() { return expr3 ; }
+//    /** @return Returns the expr of the regex */
+//    public final Expr getRegexExpr() { return expr1 ; }
+//
+//    /** @return Returns the pattern. */
+//    public final Expr getPattern()  { return expr2 ; }
+//
+//    /** @return Returns the flags. */
+//    public final Expr getFlags() { return expr3 ; }
 
     @Override
-    public Expr copy(Expr arg1, Expr arg2, Expr arg3)
+    protected Expr copy(ExprList newArgs)
     {
-        return new E_Regex(arg1, arg2, arg3) ;
+        if ( newArgs.size() == 2 )
+            return new E_Regex(newArgs.get(0), newArgs.get(1), null) ; 
+        return new E_Regex(newArgs.get(0), newArgs.get(1), newArgs.get(2)) ;   
     }
 }
 
 /*
- *  (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
- *  All rights reserved.
+ * (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyrght 2010 Epimorphics Ltd.
+ * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions

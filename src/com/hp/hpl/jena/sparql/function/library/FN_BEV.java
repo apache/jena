@@ -10,16 +10,18 @@ import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp ;
 import com.hp.hpl.jena.sparql.function.FunctionBase1 ;
 
-/** floor(expression) */ 
+/** Boolean Equivalent Value
+ * 
+ * @author Andy Seaborne
+ */
 
-public class floor extends FunctionBase1
+public class FN_BEV extends FunctionBase1
 {
-    public floor() { super() ; }
-    
     @Override
-    public NodeValue exec(NodeValue v)
-    { return XSDFuncOp.floor(v) ; }
-
+    public NodeValue exec(NodeValue x)
+    {
+        return XSDFuncOp.booleanEffectiveValueAsNodeValue(x) ;
+    }
 }
 
 /*

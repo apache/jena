@@ -6,21 +6,48 @@
 
 package com.hp.hpl.jena.sparql.function.library;
 
+import java.util.List ;
+
+import com.hp.hpl.jena.query.QueryBuildException ;
+import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
+import com.hp.hpl.jena.sparql.expr.ExprList ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp ;
-import com.hp.hpl.jena.sparql.function.FunctionBase1 ;
+import com.hp.hpl.jena.sparql.function.FunctionBase ;
+import com.hp.hpl.jena.sparql.util.Utils ;
 
-/** uppercase */
+/** substring(string, start[, length]) - F&O style*/
 
-public class strUpperCase extends FunctionBase1
+public class FN_StrSubstring extends FunctionBase
 {
-    public strUpperCase() { super() ; }
+    public FN_StrSubstring() { super() ; }
 
     @Override
-    public NodeValue exec(NodeValue str)
+    public void checkBuild(String uri, ExprList args)
     {
-        return XSDFuncOp.strUpperCase(str) ;
+        if ( args.size() != 2 && args.size() != 3 )
+            throw new QueryBuildException("Function '"+Utils.className(this)+"' takes two or three arguments") ;
     }
+    @Override
+    public NodeValue exec(List<NodeValue> args)
+    {
+        if ( args.size() > 3 )
+            throw new ExprEvalException("substring: Wrong number of arguments: "+
+                                        args.size()+" : [wanted 2 or 3]") ;
+        
+        NodeValue v1 = args.get(0) ;
+        NodeValue v2 = args.get(1) ;
+        NodeValue v3 = null ;
+        
+        if ( args.size() == 3 )
+        {
+            v3 = args.get(2) ;
+            return XSDFuncOp.substring(v1, v2, v3) ;
+        }
+        
+        return XSDFuncOp.substring(v1, v2) ;
+    }
+        
 }
 
 /*

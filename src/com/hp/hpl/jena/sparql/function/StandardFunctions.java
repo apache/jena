@@ -62,26 +62,26 @@ public class StandardFunctions
 
         //TODO op:numeric-greater-than etc.
         
-        add(registry, xfn+"boolean", BEV.class) ;
-        add(registry, xfn+"not",     not.class) ;
+        add(registry, xfn+"boolean",        FN_BEV.class) ;
+        add(registry, xfn+"not",            FN_Not.class) ;
 
-        add(registry, xfn+"matches",       matches.class) ;
-        add(registry, xfn+"string-length", strLength.class) ;
-        add(registry, xfn+"string-join",   strConcat.class) ;   // Misnamed.
-        add(registry, xfn+"concat",        strConcat.class) ;
-        add(registry, xfn+"substring",     strSubstring.class) ;
-        add(registry, xfn+"starts-with",   strStartsWith.class) ;
+        add(registry, xfn+"matches",        FN_Matches.class) ;
+        add(registry, xfn+"string-length",  FN_StrLength.class) ;
+        //add(registry, xfn+"string-join",   FN_StrJoin.class) ;    // Works fn:string-join works on a sequence.
+        add(registry, xfn+"concat",         FN_StrConcat.class) ;
+        add(registry, xfn+"substring",      FN_StrSubstring.class) ;
+        add(registry, xfn+"starts-with",    FN_StrStartsWith.class) ;
         
-        add(registry, xfn+"lower-case",   strLowerCase.class) ;
-        add(registry, xfn+"upper-case",   strUpperCase.class) ;
+        add(registry, xfn+"lower-case",     FN_StrLowerCase.class) ;
+        add(registry, xfn+"upper-case",     FN_StrUpperCase.class) ;
         
-        add(registry, xfn+"contains",      strContains.class) ;
-        add(registry, xfn+"ends-with",     strEndsWith.class) ;
+        add(registry, xfn+"contains",       FN_StrContains.class) ;
+        add(registry, xfn+"ends-with",      FN_StrEndsWith.class) ;
         
-        add(registry, xfn+"abs", abs.class) ;
-        add(registry, xfn+"ceiling", ceiling.class) ;
-        add(registry, xfn+"floor", floor.class) ;
-        add(registry, xfn+"round", round.class) ;
+        add(registry, xfn+"abs",            FN_Abs.class) ;
+        add(registry, xfn+"ceiling",        FN_Ceiling.class) ;
+        add(registry, xfn+"floor",          FN_floor.class) ;
+        add(registry, xfn+"round",          FN_Round.class) ;
         
         // fn:compare/2 and /3 and provide collation argument
         //    Locale locale = new Locale(String language, String country)

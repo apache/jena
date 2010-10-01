@@ -7,6 +7,7 @@
 package com.hp.hpl.jena.sparql.expr;
 
 import java.util.ArrayList ;
+import java.util.EmptyStackException ;
 import java.util.List ;
 import java.util.Stack ;
 
@@ -81,40 +82,38 @@ public class ExprTransformer
         public void visit(ExprFunction0 func)
         {
             Expr e = func.apply(transform) ;
-            stack.push(e) ;
+            push(stack, e) ;
         }
         
         public void visit(ExprFunction1 func)
         {
-            Expr e = stack.pop() ;
-            Expr e2 = func.apply(transform, e) ;
-            stack.push(e2) ;
+            Expr e1 = pop(stack) ;
+            Expr e = func.apply(transform, e1) ;
+            push(stack, e) ;
         }
 
         public void visit(ExprFunction2 func)
         {
-            Expr right = stack.pop() ;
-            Expr left = stack.pop() ;
-            Expr e = func.apply(transform, left, right) ;
-            stack.push(e) ;
+            Expr e2 = pop(stack) ;
+            Expr e1 = pop(stack) ;
+            Expr e = func.apply(transform, e1, e2) ;
+            push(stack, e) ;
         }
 
         public void visit(ExprFunction3 func)
         {
-            Expr e3 = stack.pop() ;
-            Expr e2 = stack.pop() ;
-            Expr e1 = stack.pop() ;
-            if ( e3 == NodeValue.nvNothing )
-                e3 = null ;
+            Expr e3 = pop(stack) ;
+            Expr e2 = pop(stack) ;
+            Expr e1 = pop(stack) ;
             Expr e = func.apply(transform, e1, e2, e3) ;
-            stack.push(e) ;
+            push(stack, e) ;
         }
 
         public void visit(ExprFunctionN func)
         {
             ExprList x = process(func.getArgs()) ;
             Expr e = func.apply(transform, x) ;
-            stack.push(e) ;
+            push(stack, e) ;
         }
         
         private ExprList process(List<Expr> exprList)
@@ -123,7 +122,7 @@ public class ExprTransformer
             List<Expr> x = new ArrayList<Expr>(N) ;
             for ( int i = 0 ; i < N ; i++ )
             {
-                Expr e2 = stack.pop() ;
+                Expr e2 = pop(stack) ;
                 // Add in reverse.
                 x.add(0, e2) ;
             }
@@ -143,31 +142,49 @@ public class ExprTransformer
             }
             
             Expr e = funcOp.apply(transform, x, op) ;
-            stack.push(e) ;
+            push(stack, e) ;
 
         }
 
         public void visit(NodeValue nv)
         {
             Expr e = nv.apply(transform) ;
-            stack.push(e) ;
-            
+            push(stack, e) ;
         }
 
         public void visit(ExprVar var)
         {
             Expr e = var.apply(transform) ;
-            stack.push(e) ;
+            push(stack, e) ;
         }
         
         public void visit(ExprAggregator eAgg)
         {
             Expr e = eAgg.apply(transform) ;
-            stack.push(e) ;
+            push(stack, e) ;
         }
-
         
+        private static void push(Stack<Expr> stack, Expr value)
+        {
+            stack.push(value) ;
+        }
+        
+        private static Expr pop(Stack<Expr> stack)
+        {
+            try {
+            Expr e = stack.pop();
+            if ( e == NodeValue.nvNothing )
+                e = null ;
+            return e ;
+            } catch ( EmptyStackException ex)
+            {
+                System.err.println("Empty stack") ;
+                return null ;
+            }
+        }
     }
+    
+    
 }
 
 /*

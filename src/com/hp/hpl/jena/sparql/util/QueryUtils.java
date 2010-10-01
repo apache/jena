@@ -41,6 +41,8 @@ public class QueryUtils
             Op op2 = SSE.parseOp(str) ;
             if ( op.hashCode() != op2.hashCode() )
             {
+                op.hashCode() ;
+                op2.hashCode() ;
                 dump(op, op2) ;
                 throw new QueryCheckException("reparsed algebra expression hashCode does not equal algebra from query") ;
             }

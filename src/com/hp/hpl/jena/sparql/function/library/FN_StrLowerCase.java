@@ -10,15 +10,17 @@ import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp ;
 import com.hp.hpl.jena.sparql.function.FunctionBase1 ;
 
-/** ceiling(expression) */ 
+/** lowercase */
 
-public class ceiling extends FunctionBase1
+public class FN_StrLowerCase extends FunctionBase1
 {
-    public ceiling() { super() ; }
-    
+    public FN_StrLowerCase() { super() ; }
+
     @Override
-    public NodeValue exec(NodeValue v)
-    { return XSDFuncOp.ceiling(v) ; }
+    public NodeValue exec(NodeValue str)
+    {
+        return XSDFuncOp.strLowerCase(str) ;
+    }
 }
 
 /*

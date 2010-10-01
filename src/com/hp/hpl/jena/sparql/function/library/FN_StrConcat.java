@@ -6,48 +6,44 @@
 
 package com.hp.hpl.jena.sparql.function.library;
 
+//import org.apache.commons.logging.*;
+
 import java.util.List ;
 
-import com.hp.hpl.jena.query.QueryBuildException ;
-import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
+import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
 import com.hp.hpl.jena.sparql.expr.ExprList ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
-import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp ;
 import com.hp.hpl.jena.sparql.function.FunctionBase ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 
-/** substring(string, start[, length]) - F&O style*/
+/** Function that concatenates arguments as strings.
+ *  fn:concat
+ * 
+ * @author Andy Seaborne
+ */
 
-public class strSubstring extends FunctionBase
+public class FN_StrConcat extends FunctionBase
 {
-    public strSubstring() { super() ; }
+
+    @Override
+    public final NodeValue exec(List<NodeValue> args)
+    {
+        if ( args == null )
+            // The contract on the function interface is that this should not happen.
+            throw new ARQInternalErrorException(Utils.className(this)+": Null args list") ;
+        
+        String result = "" ;
+        for ( NodeValue arg : args )
+        {
+            String x = arg.asString() ;
+            result = result+x ;
+        }
+        return NodeValue.makeString(result) ;
+    }
 
     @Override
     public void checkBuild(String uri, ExprList args)
-    {
-        if ( args.size() != 2 && args.size() != 3 )
-            throw new QueryBuildException("Function '"+Utils.className(this)+"' takes two or three arguments") ;
-    }
-    @Override
-    public NodeValue exec(List<NodeValue> args)
-    {
-        if ( args.size() > 3 )
-            throw new ExprEvalException("substring: Wrong number of arguments: "+
-                                        args.size()+" : [wanted 2 or 3]") ;
-        
-        NodeValue v1 = args.get(0) ;
-        NodeValue v2 = args.get(1) ;
-        NodeValue v3 = null ;
-        
-        if ( args.size() == 3 )
-        {
-            v3 = args.get(2) ;
-            return XSDFuncOp.substring(v1, v2, v3) ;
-        }
-        
-        return XSDFuncOp.substring(v1, v2) ;
-    }
-        
+    {}
 }
 
 /*

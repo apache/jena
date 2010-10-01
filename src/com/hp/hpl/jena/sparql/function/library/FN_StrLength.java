@@ -7,19 +7,18 @@
 package com.hp.hpl.jena.sparql.function.library;
 
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
-import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp ;
-import com.hp.hpl.jena.sparql.function.FunctionBase2 ;
+import com.hp.hpl.jena.sparql.function.FunctionBase1 ;
 
-/** fn:starts-with */
+/** string length - F&O operation */
 
-public class strStartsWith extends FunctionBase2
+public class FN_StrLength extends FunctionBase1
 {
-    public strStartsWith() { super() ; }
+    public FN_StrLength() { super() ; }
 
     @Override
-    public NodeValue exec(NodeValue str, NodeValue match)
+    public NodeValue exec(NodeValue v)
     {
-        return XSDFuncOp.strStartsWith(str, match) ;
+        return NodeValue.makeInteger(v.getString().length()) ;
     }
 }
 

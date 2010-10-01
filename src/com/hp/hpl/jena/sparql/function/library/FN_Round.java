@@ -8,19 +8,17 @@ package com.hp.hpl.jena.sparql.function.library;
 
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp ;
-import com.hp.hpl.jena.sparql.function.FunctionBase2 ;
+import com.hp.hpl.jena.sparql.function.FunctionBase1 ;
 
-/** fn:ends-with */
+/** round(expression) */ 
 
-public class strEndsWith extends FunctionBase2
+public class FN_Round  extends FunctionBase1
 {
-    public strEndsWith() { super() ; }
-
+    public FN_Round() { super() ; }
+    
     @Override
-    public NodeValue exec(NodeValue str, NodeValue match)
-    {
-        return XSDFuncOp.strEndsWith(str, match) ;
-    }
+    public NodeValue exec(NodeValue v)
+    { return XSDFuncOp.round(v) ; }
 }
 
 /*

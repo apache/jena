@@ -99,7 +99,8 @@ public class AggGroupConcat extends AggregatorBase
     // ---- Accumulator
     private static class AccGroupConcat extends AccumulatorExpr
     {
-        private StringBuilder stringSoFar = null ;
+        private StringBuilder stringSoFar = new StringBuilder() ;
+        private boolean first = true ;
         private final String separator ;
 
         public AccGroupConcat(Expr expr, String sep)
@@ -109,13 +110,10 @@ public class AggGroupConcat extends AggregatorBase
         protected void accumulate(NodeValue nv, Binding binding, FunctionEnv functionEnv)
         { 
             String str = nv.asString() ;
-            if ( stringSoFar == null )
-            {
-                stringSoFar = new StringBuilder(str) ;
-                return ;
-            }
-            stringSoFar.append(separator) ;
+            if ( ! first )
+                stringSoFar.append(separator) ;
             stringSoFar.append(str) ;
+            first = false ;
         }
         
         @Override

@@ -5,6 +5,8 @@
 
 package com.hp.hpl.jena.sparql.expr;
 
+import java.util.List ;
+
 import com.hp.hpl.jena.sparql.ARQNotImplemented ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
@@ -24,13 +26,21 @@ public class E_Call extends ExprFunctionN
     }
 
     @Override
-    public NodeValue eval(Binding binding, FunctionEnv env)
+    public NodeValue evalSpecial(Binding binding, FunctionEnv env)
     {
         throw new ARQNotImplemented() ;
     }
     
     @Override
+    protected NodeValue eval(List<NodeValue> args)
+    {
+        throw new ARQNotImplemented() ;
+    }
+     
+    
+    @Override
     protected Expr copy(ExprList newArgs)       { return new E_Call(newArgs) ; }
+
 }
 
 /*

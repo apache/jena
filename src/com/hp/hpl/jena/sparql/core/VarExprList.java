@@ -85,6 +85,12 @@ public class VarExprList
 
     public void add(Var var, Expr expr)
     {
+        if ( expr == null )
+        {
+            add(var) ;
+            return ;
+        }
+
         if ( var == null )
             throw new ARQInternalErrorException("Attempt to add a named expression with a null variable") ;
         if ( exprs.containsKey(var) )
@@ -110,8 +116,8 @@ public class VarExprList
     public int hashCode()
     { 
         int x = vars.hashCode() ^ exprs.hashCode() ;
-        
-        return vars.hashCode() ^ exprs.hashCode() ; }
+        return x ;
+    }
     
     @Override
     public boolean equals(Object other)

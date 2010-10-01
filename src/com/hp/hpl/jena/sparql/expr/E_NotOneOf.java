@@ -6,6 +6,9 @@
 
 package com.hp.hpl.jena.sparql.expr;
 
+import java.util.List ;
+
+import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
 
@@ -21,11 +24,15 @@ public class E_NotOneOf extends E_OneOfBase
     }
 
     @Override
-    public NodeValue eval(Binding binding, FunctionEnv env)
+    public NodeValue evalSpecial(Binding binding, FunctionEnv env)
     {
         boolean b = super.evalNotOneOf(binding, env) ;
         return NodeValue.booleanReturn(b) ;
     }
+    
+    @Override
+    protected NodeValue eval(List<NodeValue> args)
+    { throw new ARQInternalErrorException() ; }
 
     @Override
     protected Expr copy(ExprList newArgs)

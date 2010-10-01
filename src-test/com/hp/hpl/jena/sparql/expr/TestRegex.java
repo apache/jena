@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyrght 2010 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -11,6 +12,7 @@ import junit.framework.TestCase ;
 import org.junit.Test ;
 
 import com.hp.hpl.jena.query.ARQ ;
+import com.hp.hpl.jena.sparql.engine.binding.BindingFactory ;
 
 /** com.hp.hpl.jena.query.test.TestMisc
  * 
@@ -49,7 +51,7 @@ public class TestRegex extends TestCase
         Expr s = NodeValue.makeString(value) ;
         
         E_Regex r = new E_Regex(s, pattern, flags) ;
-        NodeValue nv = r.eval(null, null) ;
+        NodeValue nv = r.eval(BindingFactory.binding(), null) ;
         boolean b = nv.getBoolean() ;
         if ( b != expected )
             fail(fmtTest(value, pattern, flags)+" ==> "+b+" expected "+expected) ;
@@ -68,6 +70,7 @@ public class TestRegex extends TestCase
 
 /*
  * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyrght 2010 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -22,6 +22,7 @@ import com.hp.hpl.jena.datatypes.xsd.XSDDuration ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.impl.LiteralLabel ;
 import com.hp.hpl.jena.query.ARQ ;
+import com.hp.hpl.jena.rdf.model.AnonId ;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
@@ -109,7 +110,8 @@ public abstract class NodeValue extends ExprNode
     public static final NodeValue nvONE  = NodeValue.makeNode(NodeConst.nodeOne) ;
     
     // Use "==" for equality.
-    public static final NodeValue nvNothing  = NodeValue.makeNode(Node.createURI("node value nothing")) ;
+    private static final String strForUnNode = "node value nothing" ;
+    public static final NodeValue nvNothing = NodeValue.makeNode(Node.createAnon(new AnonId("node value nothing"))) ;
     
     // Use NodeValue.toNode(NodeValue) 
 //    public static Node asNode(NodeValue nv)

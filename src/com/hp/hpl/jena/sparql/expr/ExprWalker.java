@@ -5,8 +5,6 @@
  */
 
 package com.hp.hpl.jena.sparql.expr;
-
-
 // Walk the expression tree, bottom up.
 // NOT FINISHED
 public class ExprWalker //implements ExprVisitor 
@@ -47,29 +45,31 @@ public class ExprWalker //implements ExprVisitor
             for ( int i = 1 ; i <= func.numArgs() ; i++ )
             {
                 Expr expr = func.getArg(i) ;
-                if ( expr == null )
-                    break ; 
-                expr.visit(this) ;
+              if ( expr == null )
+                  // Put a dummy in, e.g. to keep the transform stack aligned.
+                  NodeValue.nvNothing.visit(this) ;
+              else
+                  expr.visit(this) ;
             }
             if ( !topDown )
                 func.visit(visitor) ;
         }
         
-        @Override
-        public void visit(ExprFunction3 func)
-        {
-            if ( topDown )
-                func.visit(visitor) ; 
-            // These are 2 or 3 args.  Put a dummy in. 
-            func.getArg1().visit(this) ;
-            func.getArg2().visit(this) ;
-            if ( func.getArg3() == null )
-                NodeValue.nvNothing.visit(this) ;
-            else
-                func.getArg3().visit(this) ;
-            if ( !topDown )
-                func.visit(visitor) ;
-        }
+//        @Override
+//        public void visit(ExprFunction3 func)
+//        {
+//            if ( topDown )
+//                func.visit(visitor) ; 
+//            // These are 2 or 3 args.  Put a dummy in. 
+//            func.getArg1().visit(this) ;
+//            func.getArg2().visit(this) ;
+//            if ( func.getArg3() == null )
+//                NodeValue.nvNothing.visit(this) ;
+//            else
+//                func.getArg3().visit(this) ;
+//            if ( !topDown )
+//                func.visit(visitor) ;
+//        }
         
         public void visit(ExprFunctionOp funcOp)
         { funcOp.visit(visitor) ; }
