@@ -9,23 +9,30 @@ package org.openjena.riot;
 import static org.openjena.riot.SysRIOT.fmtMessage ;
 import org.slf4j.Logger ;
 
-public class ErrorHandlerLib
+public class ErrorHandlerFactory
 {
     static public final Logger stdLogger = SysRIOT.getLogger() ;
     static public final Logger noLogger = null ;
     
-    static public ErrorHandler errorHandlerStd          = new ErrorHandlerStd(stdLogger) ;
-    static public ErrorHandler errorHandlerStrict       = new ErrorHandlerStrict(stdLogger) ;
-    static public ErrorHandler errorHandlerWarn         = new ErrorHandlerWarning(stdLogger) ;
-    static public ErrorHandler errorHandlerNoLogging    = new ErrorHandlerSimple() ;
+    static public ErrorHandler errorHandlerStd          = errorHandlerStd(stdLogger) ;
+    static public ErrorHandler errorHandlerStrict       = errorHandlerStrict(stdLogger) ;
+    static public ErrorHandler errorHandlerWarn         = errorHandlerWarning(stdLogger) ;
+    static public ErrorHandler errorHandlerNoLogging    = errorHandlerSimple() ;
     
     static public void setTestLogging(boolean visible)
     {
+        // Reset
         if ( visible )
             errorHandlerStd = new ErrorHandlerStd(stdLogger) ;
         else
             errorHandlerStd = new ErrorHandlerSimple() ;
     }
+    
+    
+    public static ErrorHandler errorHandlerStrict(Logger log)   { return new ErrorHandlerStrict(log) ; }
+    public static ErrorHandler errorHandlerStd(Logger log)      { return new ErrorHandlerStd(log) ; }
+    public static ErrorHandler errorHandlerWarning(Logger log)  { return new ErrorHandlerWarning(log) ; }
+    public static ErrorHandler errorHandlerSimple()             { return new ErrorHandlerSimple() ; }
     
     /** Messages to a logger. This is not an ErrorHandler */ 
     private static class ErrorLogger

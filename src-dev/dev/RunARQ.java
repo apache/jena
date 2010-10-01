@@ -19,7 +19,7 @@ import org.openjena.atlas.json.JSON ;
 import org.openjena.atlas.json.JsonValue ;
 import org.openjena.atlas.lib.StrUtils ;
 import org.openjena.atlas.logging.Log ;
-import org.openjena.riot.ErrorHandlerLib ;
+import org.openjena.riot.ErrorHandlerFactory ;
 import org.openjena.riot.checker.CheckerIRI ;
 import org.openjena.riot.pipeline.normalize.CanonicalizeLiteral ;
 
@@ -453,7 +453,7 @@ public class RunARQ
             System.out.println(vIter.next()) ;
         }
         System.out.println(iriStr + " ==> "+iri) ;
-        CheckerIRI.iriViolations(iri, ErrorHandlerLib.errorHandlerWarn) ;
+        CheckerIRI.iriViolations(iri, ErrorHandlerFactory.errorHandlerWarn) ;
         System.exit(0) ;
     }
     

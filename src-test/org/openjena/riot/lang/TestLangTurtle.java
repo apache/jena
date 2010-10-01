@@ -15,7 +15,7 @@ import org.openjena.atlas.junit.BaseTest ;
 import org.openjena.atlas.lib.Sink ;
 import org.openjena.atlas.lib.StrUtils ;
 import org.openjena.riot.ErrorHandler ;
-import org.openjena.riot.ErrorHandlerLib ;
+import org.openjena.riot.ErrorHandlerFactory ;
 import org.openjena.riot.RiotLoader ;
 import org.openjena.riot.RiotReader ;
 import org.openjena.riot.ErrorHandlerTestLib.ErrorHandlerEx ;
@@ -78,11 +78,11 @@ public class TestLangTurtle extends BaseTest
     
     private void readProtected(RDFReader reader, Model m, Reader r, String base)
     {
-        ErrorHandler errHandler = ErrorHandlerLib.errorHandlerStd ;
-        ErrorHandlerLib.errorHandlerStd = ErrorHandlerLib.errorHandlerNoLogging ;
+        ErrorHandler errHandler = ErrorHandlerFactory.errorHandlerStd ;
+        ErrorHandlerFactory.errorHandlerStd = ErrorHandlerFactory.errorHandlerNoLogging ;
         try {
             reader.read(m, r, base) ;
-        } finally { ErrorHandlerLib.errorHandlerStd = errHandler ; }
+        } finally { ErrorHandlerFactory.errorHandlerStd = errHandler ; }
     }
     
     // Call parser directly.

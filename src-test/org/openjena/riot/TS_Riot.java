@@ -51,12 +51,12 @@ public class TS_Riot
 {
     @BeforeClass public static void beforeClass()
     { 
-        ErrorHandlerLib.setTestLogging(false) ;
+        ErrorHandlerFactory.setTestLogging(false) ;
     }
 
     @AfterClass public static void afterClass()
     { 
-        ErrorHandlerLib.setTestLogging(true) ;
+        ErrorHandlerFactory.setTestLogging(true) ;
     }
 
 }

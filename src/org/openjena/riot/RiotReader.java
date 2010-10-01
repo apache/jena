@@ -62,7 +62,7 @@ public class RiotReader
         if ( lang == RDFXML )
         {
             // Fudge to make the bulk loader process RDF/XML files.
-            LangRDFXML.create(in, base, filename, ErrorHandlerLib.errorHandlerStd, sink).parse() ;
+            LangRDFXML.create(in, base, filename, ErrorHandlerFactory.errorHandlerStd, sink).parse() ;
             IO.close(in) ;
             return ;
         }

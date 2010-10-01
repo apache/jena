@@ -7,7 +7,7 @@
 
 package org.openjena.riot.system;
 
-import static org.openjena.riot.ErrorHandlerLib.errorHandlerStd ;
+import static org.openjena.riot.ErrorHandlerFactory.errorHandlerStd ;
 import org.openjena.riot.ErrorHandler ;
 import org.openjena.riot.checker.CheckerBlankNodes ;
 import org.openjena.riot.checker.CheckerIRI ;

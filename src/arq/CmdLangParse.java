@@ -20,7 +20,7 @@ import org.openjena.atlas.lib.SinkCounting ;
 import org.openjena.atlas.lib.SinkNull ;
 import org.openjena.atlas.lib.StrUtils ;
 import org.openjena.riot.ErrorHandler ;
-import org.openjena.riot.ErrorHandlerLib ;
+import org.openjena.riot.ErrorHandlerFactory ;
 import org.openjena.riot.Lang ;
 import org.openjena.riot.RiotException ;
 import org.openjena.riot.RiotReader ;
@@ -217,10 +217,10 @@ public abstract class CmdLangParse extends CmdGeneral
         if ( checking )
         {
             if ( modLangParse.stopOnBadTerm() )
-                errHandler = ErrorHandlerLib.errorHandlerStd  ;
+                errHandler = ErrorHandlerFactory.errorHandlerStd  ;
             else
                 // Try to go on if possible.  This is the default behaviour.
-                errHandler = ErrorHandlerLib.errorHandlerWarn ;
+                errHandler = ErrorHandlerFactory.errorHandlerWarn ;
         }
         
         if ( modLangParse.skipOnBadTerm() )

@@ -8,7 +8,7 @@ package org.openjena.riot.system;
 
 import org.openjena.atlas.logging.Log ;
 import org.openjena.riot.ErrorHandler ;
-import org.openjena.riot.ErrorHandlerLib ;
+import org.openjena.riot.ErrorHandlerFactory ;
 import org.openjena.riot.Lang ;
 import org.openjena.riot.tokens.Token ;
 import org.openjena.riot.tokens.Tokenizer ;
@@ -48,7 +48,7 @@ public class RiotLib
 
     public static ParserProfile profile(Lang lang, String baseIRI)
     {
-        return profile(lang, baseIRI, ErrorHandlerLib.errorHandlerStd) ;
+        return profile(lang, baseIRI, ErrorHandlerFactory.errorHandlerStd) ;
     }
 
     public static ParserProfile profile(Lang lang, String baseIRI, ErrorHandler handler)

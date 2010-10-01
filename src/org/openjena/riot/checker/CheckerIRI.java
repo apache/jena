@@ -11,7 +11,7 @@ import java.util.Iterator ;
 import org.openjena.atlas.lib.Cache ;
 import org.openjena.atlas.lib.CacheFactory ;
 import org.openjena.riot.ErrorHandler ;
-import org.openjena.riot.ErrorHandlerLib ;
+import org.openjena.riot.ErrorHandlerFactory ;
 import org.openjena.riot.system.IRIResolver ;
 
 import com.hp.hpl.jena.graph.Node ;
@@ -28,7 +28,7 @@ public class CheckerIRI implements NodeChecker
 
     public CheckerIRI()
     {
-        this(ErrorHandlerLib.errorHandlerStd, IRIResolver.iriFactory) ;
+        this(ErrorHandlerFactory.errorHandlerStd, IRIResolver.iriFactory) ;
     }
     
     public CheckerIRI(ErrorHandler handler, IRIFactory iriFactory)

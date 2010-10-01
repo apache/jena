@@ -9,7 +9,7 @@ package com.hp.hpl.jena.sparql;
 import junit.framework.JUnit4TestAdapter ;
 import junit.framework.TestSuite ;
 import org.openjena.atlas.TC_Atlas ;
-import org.openjena.riot.ErrorHandlerLib ;
+import org.openjena.riot.ErrorHandlerFactory ;
 import org.openjena.riot.TC_Riot ;
 
 import com.hp.hpl.jena.query.ARQ ;
@@ -46,7 +46,7 @@ public class ARQTestSuite extends TestSuite
         TestSuite ts = new ARQTestSuite() ;
         
         // No warnings (e.g. bad lexical forms).
-        ErrorHandlerLib.setTestLogging(false) ;
+        ErrorHandlerFactory.setTestLogging(false) ;
 
         
         // ARQ dependencies
