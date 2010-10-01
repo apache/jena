@@ -19,7 +19,7 @@ import com.hp.hpl.jena.sparql.algebra.Transformer ;
 import com.hp.hpl.jena.sparql.algebra.op.OpBGP ;
 import com.hp.hpl.jena.sparql.algebra.op.OpFilter ;
 import com.hp.hpl.jena.sparql.algebra.op.OpSequence ;
-import com.hp.hpl.jena.sparql.algebra.opt.TransformFilterPlacement ;
+import com.hp.hpl.jena.sparql.algebra.optimize.TransformFilterPlacement ;
 import com.hp.hpl.jena.sparql.core.BasicPattern ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.optimizer.reorder.PatternElements ;
