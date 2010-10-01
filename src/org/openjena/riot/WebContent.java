@@ -15,7 +15,7 @@ public class WebContent
     public static final String contentTypeN3Alt1          = "application/n3" ;
     public static final String contentTypeN3Alt2          = "text/n3" ;
 
-    public static final String contentTypeTurtle1         = "application/turtle" ;      // Swapped in Joseki. 
+    public static final String contentTypeTurtle1         = "application/turtle" ; 
     public static final String contentTypeTurtle2         = "text/turtle" ; 
     public static final String contentTypeTurtle3         = "application/x-turtle" ;
     
@@ -56,7 +56,6 @@ public class WebContent
 
     public static final String langNQuads           = "NQUADS" ;
     public static final String langTriG             = "TRIG" ;
-
     
     /** Java name for UTF-8 encoding */
     public static final String encodingUTF8         = "utf-8" ;

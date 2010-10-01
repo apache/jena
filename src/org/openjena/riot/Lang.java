@@ -54,7 +54,6 @@ public enum Lang
         this.altNames = altNames ;
     }
     
-    
     public String getName() { return name ; }
     
     public boolean isTriples() { return isTriples ; }
