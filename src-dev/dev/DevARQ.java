@@ -5,19 +5,6 @@ public class DevARQ
 {
     // http://www.openjena.org/wiki/ARQ/Concurrency
     
-    /* Log.setLog4j() ; BEFORE ANYTHING ESLE
-     * log4j.rootLogger=INFO, stdout
-
-log4j.appender.stdout=org.apache.log4j.ConsoleAppender
-log4j.appender.stdout.layout=org.apache.log4j.PatternLayout
-log4j.appender.stdout.layout.ConversionPattern=%d{HH:mm:ss} %-5p %-25c{1} :: %m%n
-
-# Execution logging
-log4j.logger.com.hp.hpl.jena.arq.info=INFO
-log4j.logger.com.hp.hpl.jena.arq.exec=INFO
-
-     */
-    
     // FILTER-like assignment - end-of-group
     
     // (Better) respect Content-Length?
