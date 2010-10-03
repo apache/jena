@@ -20,11 +20,7 @@ log4j.logger.com.hp.hpl.jena.arq.exec=INFO
     
     // FILTER-like assignment - end-of-group
     
-    // 1/ Transform step: TransformScopeRename
-    //    To do: optimize -> no subproject -> no work.
-    // 2/ Revert code in compileModifiers
-    
-    // Respect Content-Length?
+    // (Better) respect Content-Length?
     // ReportRemoteVirtuoso
     
     // add qparse to wiki/ARQ/

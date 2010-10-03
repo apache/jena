@@ -41,7 +41,6 @@ import com.hp.hpl.jena.sparql.core.BasicPattern ;
 import com.hp.hpl.jena.sparql.core.PathBlock ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.core.VarExprList ;
-import com.hp.hpl.jena.sparql.engine.VarRename ;
 import com.hp.hpl.jena.sparql.expr.E_Exists ;
 import com.hp.hpl.jena.sparql.expr.E_LogicalNot ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
@@ -607,23 +606,7 @@ public class AlgebraGenerator
         // Needed for CONSTRUCT and initial bindings + SELECT *
         
         if ( vars.size() > 0 )
-        {
-            // No need to rename if there is no projection.
-            // if ( query.isQueryResultStar() )
-            
-            int x = subQueryDepth ;
-            if ( query.isQueryResultStar() )
-                x-- ;
-            
-            // Hide inner variables.
-            if ( x > 0 )
-            {
-                // In the ref engine, this is not necessary but 
-                // we don't know yet which engine will be used.
-                op = VarRename.rename(op, vars) ;
-            }   
             op = new OpProject(op, vars) ;
-        }
         
         // ---- DISTINCT
         if ( query.isDistinct() )

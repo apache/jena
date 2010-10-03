@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.algebra;
+package com.hp.hpl.jena.sparql.algebra.optimize;
 
 import java.util.HashSet ;
 import java.util.Set ;
@@ -13,6 +13,7 @@ import junit.framework.JUnit4TestAdapter ;
 import org.junit.Test ;
 import org.openjena.atlas.junit.BaseTest ;
 
+import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.VarRename ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
@@ -49,12 +50,12 @@ public class TestVarRename extends BaseTest
                                            true,
                                            "s") ; }
 
-    @Test public void rename_99() { reverse("(project (?s ?/p) (bgp (?s ?/p ?/o)))",
-                                            "(project (?s ?p) (bgp (?s ?p ?o)))", true ) ; }  
+    @Test public void rename_reverse_01() { reverse("(project (?s ?/p) (bgp (?s ?/p ?/o)))",
+                                                    "(project (?s ?p) (bgp (?s ?p ?o)))", true ) ; }  
 
-    @Test public void rename_98() { reverse("(assign ((?/x (+ ?//a ?///b))) (table unit))",
-                                            "(assign ((?x (+ ?a ?b))) (table unit))", 
-                                            true ) ; }  
+    @Test public void rename_reverse_02() { reverse("(assign ((?/x (+ ?//a ?///b))) (table unit))",
+                                                    "(assign ((?x (+ ?a ?b))) (table unit))", 
+                                                    true ) ; }  
     
     private static void reverse(String string, String string2, boolean repeatedly)
     {
