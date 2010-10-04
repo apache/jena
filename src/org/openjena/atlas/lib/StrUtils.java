@@ -116,7 +116,18 @@ public class StrUtils //extends StringUtils
         if ( x == null ) return "<null>" ;
         return x.toString() ;
     }
-
+    
+    /** Split but also trim whiespace. */
+    public static String[] split(String s, String splitStr)
+    {
+        String[] x = s.split(splitStr) ;
+        for ( int i = 0 ; i < x.length ; i++ )
+        {
+            x[i] = x[i].trim() ;
+        }
+        return x ;
+    }
+    
     /** Does one string contain another string?
      * @param str1
      * @param str2

@@ -31,6 +31,7 @@ public class ContentNeg
 {
     // Work-in-progress
     // TODO RDFa, GRDDL
+    // See ConNeg elsewjere.
     
     static { Log.setLog4j() ; }
     

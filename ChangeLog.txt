@@ -1,7 +1,7 @@
 ChangeLog for ARQ
 =================
 
-==== ARQ 2.8.7
+==== ARQ 2.8.6
 
 ** Update is now two languages: 
      strict SPARQL 1.1 Update (the default)
@@ -23,8 +23,6 @@ ChangeLog for ARQ
 
 + Remove use of code from org.json to clarify legal position. 
 
-==== ARQ 2.8.6
-
 + Property path evaluation now aligns with SPARQL 1.1 
 	cardinaity of results for arbitary length paths may change.   
 
@@ -39,7 +37,7 @@ ChangeLog for ARQ
   New command line tools:
     arq.riot (parse based on file ext), arq.ntriple, arq.nquads, arq.turtle, arq.trig
     Parse files to N-Triples/N-Quads.
-    By default, checking turned on for N-triples and N_quads when used at command line.  
+    By default, checking turned on for N-triples and N_quads when useNd at command line.  
 
 + Import all of atlas and riot subsystems from TDB
   These will become submodules of ARQ sometime.
