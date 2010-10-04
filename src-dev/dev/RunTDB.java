@@ -36,7 +36,7 @@ public class RunTDB
     public static void main(String[] args) throws Exception
     {
         // Config union graph
-        tdb.tdbquery.main("--tdb=tdb.ttl", "SELECT * { ?s ?p ?o}") ;
+        //tdb.tdbquery.main("--tdb=tdb.ttl", "SELECT * { ?s ?p ?o}") ;
 //        System.exit(0) ;
 
         // Working on API models ..
@@ -44,6 +44,11 @@ public class RunTDB
 //        DatasetGraphTDB dsg = (DatasetGraphTDB)(ds.asDatasetGraph()) ;
 //        ds.asDatasetGraph().getContext().setTrue(TDB.symUnionDefaultGraph) ;
         Model model = ds.getDefaultModel() ;
+        
+        ds.getDefaultModel().getNsPrefixURI("") ;
+        System.out.println("DONE") ;
+        System.exit(0) ;
+        
         Model ng1 = ds.getNamedModel("http://example/ng1") ;
         Model ng2 = ds.getNamedModel("http://example/ng2") ;
         
