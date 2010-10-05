@@ -67,7 +67,6 @@ public class RiotReader
             return ;
         }
         
-        
         parseTriples(in, lang, base, sink) ;
         IO.close(in) ;
     }
@@ -130,6 +129,8 @@ public class RiotReader
     /** Create a parser for a triples language */  
     public static LangRIOT createParserTriples(InputStream input, Lang lang, String baseIRI, Sink<Triple> sink)
     {
+        if ( lang == RDFXML )
+            return LangRDFXML.create(input, baseIRI, baseIRI, ErrorHandlerFactory.errorHandlerStd, sink) ;
         Tokenizer tokenizer = TokenizerFactory.makeTokenizerUTF8(input) ;
         return createParserTriples(tokenizer, lang, baseIRI ,sink) ;
     }
