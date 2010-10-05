@@ -15,6 +15,7 @@ import org.openjena.riot.ErrorHandler ;
 import org.openjena.riot.Lang ;
 import org.openjena.riot.checker.CheckerLiterals ;
 import org.openjena.riot.system.ParserProfile ;
+import org.openjena.riot.system.RiotLib ;
 import org.xml.sax.SAXException ;
 import org.xml.sax.SAXParseException ;
 
@@ -43,15 +44,15 @@ public class LangRDFXML implements LangRIOT
     private String xmlBase ;
     private String filename ;
     private Sink<Triple> sink ;
-    private ErrorHandler errorHandler ;
+    private ParserProfile profile ;             // Warning - we don't use all of this.
     
     public ParserProfile getProfile()
     {
-        return null ;
+        return profile ;
     }
 
     public void setProfile(ParserProfile profile)
-    { errorHandler = profile.getHandler() ; }
+    { this.profile = profile ; }
 
     public static LangRDFXML create(InputStream in, String xmlBase, String filename, ErrorHandler errorHandler, Sink<Triple> sink)
     {
@@ -69,7 +70,7 @@ public class LangRDFXML implements LangRIOT
         this.xmlBase = xmlBase ;
         this.filename = filename ;
         this.sink = sink ;
-        this.errorHandler = errorHandler ;
+        this.profile = RiotLib.profile(getLang(), xmlBase, errorHandler) ;
     }
     
     //@Override
@@ -80,7 +81,7 @@ public class LangRDFXML implements LangRIOT
     {   
         // Hacked out of ARP because of all the "private" methods
         count = 0 ;
-        HandlerSink rslt = new HandlerSink(sink, errorHandler) ;
+        HandlerSink rslt = new HandlerSink(sink, getProfile().getHandler()) ;
         arp.getHandlers().setStatementHandler(rslt);
         arp.getHandlers().setErrorHandler(rslt) ;
         arp.getHandlers().setNamespaceHandler(rslt) ;
@@ -88,11 +89,11 @@ public class LangRDFXML implements LangRIOT
         try {
             arp.load(input, xmlBase);
         } catch (IOException e) {
-            errorHandler.error(filename + ": " + ParseException.formatMessage(e), -1 , -1) ;
+            getProfile().getHandler().error(filename + ": " + ParseException.formatMessage(e), -1 , -1) ;
         } catch (SAXParseException e) {
             // already reported.
         } catch (SAXException sax) {
-            errorHandler.error(filename + ": " + ParseException.formatMessage(sax), -1 , -1) ;
+            getProfile().getHandler().error(filename + ": " + ParseException.formatMessage(sax), -1 , -1) ;
         }
         sink.flush() ;
     }
