@@ -10,7 +10,7 @@ import java.util.Iterator ;
 
 import arq.cmdline.ArgDecl ;
 import arq.cmdline.CmdLARQ ;
-import arq.cmdline.ModDatasetAssembler ;
+import arq.cmdline.ModDatasetGeneralAssembler ;
 import arq.cmdline.ModLARQindex ;
 
 import com.hp.hpl.jena.query.Dataset ;
@@ -22,7 +22,7 @@ import com.hp.hpl.jena.rdf.model.StmtIterator ;
 
 public class larqbuilder extends CmdLARQ
 {
-    ModDatasetAssembler modDataset = new ModDatasetAssembler() ;
+    ModDatasetGeneralAssembler modDataset = new ModDatasetGeneralAssembler() ;
     ModLARQindex modIndex = new ModLARQindex() ;
     
     ArgDecl argNodes = new ArgDecl(ArgDecl.NoValue, "nodes", "subjects")  ;

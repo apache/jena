@@ -8,7 +8,6 @@ package arq.cmdline;
 
 import arq.cmd.CmdException ;
 
-import com.hp.hpl.jena.query.DataSource ;
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.shared.JenaException ;
 import com.hp.hpl.jena.shared.NotFoundException ;
@@ -16,15 +15,17 @@ import com.hp.hpl.jena.sparql.ARQException ;
 import com.hp.hpl.jena.sparql.core.assembler.DatasetAssemblerVocab ;
 
 /** Add assembler to a general dataset description */
-public class ModDatasetAssembler extends ModDatasetGeneral
+public class ModDatasetAssembler extends ModDataset
 {
-    ModAssembler modAssembler = new ModAssembler() ;
+    private ModAssembler modAssembler = new ModAssembler() ;
+    
+    public ModDatasetAssembler() {}
     
     @Override
     public Dataset createDataset()
     {
         if ( modAssembler.getAssemblerFile() == null )
-            return super.createDataset() ;
+            return null ;
         
         try {
             dataset = (Dataset)modAssembler.create(DatasetAssemblerVocab.tDataset) ;
@@ -39,24 +40,18 @@ public class ModDatasetAssembler extends ModDatasetGeneral
         { throw ex ; }
         catch (Exception ex)
         { throw new CmdException("Error creating dataset", ex) ; }
-
-        if ( dataset instanceof DataSource )
-            super.addGraphs((DataSource)dataset) ;
         return dataset ;
+        
     }
 
-    @Override
     public void registerWith(CmdGeneral cmdLine)
     {
         modAssembler.registerWith(cmdLine) ;
-        super.registerWith(cmdLine) ;
     }
 
-    @Override
     public void processArgs(CmdArgModule cmdLine)
     {
         modAssembler.processArgs(cmdLine) ;
-        super.processArgs(cmdLine) ;
     }
 
 }

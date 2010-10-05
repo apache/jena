@@ -12,7 +12,7 @@ import arq.cmd.TerminationException ;
 import arq.cmdline.ArgDecl ;
 import arq.cmdline.CmdARQ ;
 import arq.cmdline.ModDataset ;
-import arq.cmdline.ModDatasetAssembler ;
+import arq.cmdline.ModDatasetGeneralAssembler ;
 import arq.cmdline.ModEngine ;
 import arq.cmdline.ModQueryIn ;
 import arq.cmdline.ModResultsOut ;
@@ -83,7 +83,7 @@ public class query extends CmdARQ
     
     protected ModDataset setModDataset()
     {
-        return new ModDatasetAssembler() ;
+        return new ModDatasetGeneralAssembler() ;
     }
     
     @Override

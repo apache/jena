@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
@@ -8,28 +8,40 @@ package arq.cmdline;
 
 import com.hp.hpl.jena.query.Dataset ;
 
-public abstract class ModDataset extends ModBase
+/** Add assembler to a general dataset description */
+public class ModDatasetGeneralAssembler extends ModDatasetGeneral
 {
-    protected boolean createAttempted = false ;
-    protected Dataset dataset = null ;
+    public ModDatasetGeneralAssembler() {}
     
-    public ModDataset() {}
+    private ModDatasetAssembler modAssembler = new ModDatasetAssembler() ;
     
-    final
-    public Dataset getDataset()
+    @Override
+    public Dataset createDataset()
     {
-        if ( ! createAttempted )
-            dataset = createDataset() ;
-        createAttempted = true ;
-        // Can still be null (nothing on command line set the datset - hope the query does something).
-        return dataset ;
+        Dataset ds = modAssembler.createDataset() ;
+        if ( ds == null )
+            ds = super.createDataset() ;
+        return ds ;
     }
-    
-    public abstract Dataset createDataset() ; 
+
+    @Override
+    public void registerWith(CmdGeneral cmdLine)
+    {
+        modAssembler.registerWith(cmdLine) ;
+        super.registerWith(cmdLine) ;
+    }
+
+    @Override
+    public void processArgs(CmdArgModule cmdLine)
+    {
+        modAssembler.processArgs(cmdLine) ;
+        super.processArgs(cmdLine) ;
+    }
+
 }
 
 /*
- * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
