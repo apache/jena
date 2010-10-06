@@ -27,8 +27,7 @@ public class ErrorHandlerFactory
         else
             errorHandlerStd = new ErrorHandlerSimple() ;
     }
-    
-    
+
     public static ErrorHandler errorHandlerStrict(Logger log)   { return new ErrorHandlerStrict(log) ; }
     public static ErrorHandler errorHandlerStd(Logger log)      { return new ErrorHandlerStd(log) ; }
     public static ErrorHandler errorHandlerWarning(Logger log)  { return new ErrorHandlerWarning(log) ; }
