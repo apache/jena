@@ -31,9 +31,9 @@ public class AggAvg extends AggregatorBase
     private static final NodeValue noValuesToAvg = NodeValue.nvZERO ; // null 
 
     @Override
-    public String toString() { return "sum("+ExprUtils.fmtSPARQL(expr)+")" ; }
+    public String toString() { return "avg("+ExprUtils.fmtSPARQL(expr)+")" ; }
     @Override
-    public String toPrefixString() { return "(sum "+WriterExpr.asString(expr)+")" ; }
+    public String toPrefixString() { return "(avg "+WriterExpr.asString(expr)+")" ; }
 
     @Override
     protected Accumulator createAccumulator()
