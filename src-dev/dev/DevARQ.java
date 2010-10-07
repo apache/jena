@@ -4,6 +4,7 @@ package dev ;
 public class DevARQ
 {
     // http://www.openjena.org/wiki/ARQ/Concurrency
+    // LIMIT subquery.
     
     // FILTER-like assignment - end-of-group
     
