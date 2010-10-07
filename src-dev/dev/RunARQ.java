@@ -104,6 +104,7 @@ public class RunARQ
     
     public static void main(String[] argv) throws Exception
     {
+        
 //      rename2() ;
 
 //        arq.rset.main("--set=arq:useSAX=true", "R-dup.srj") ; System.exit(0) ;
@@ -350,7 +351,7 @@ public class RunARQ
     {
         IRI iri = IRIFactory.iriImplementation().create(iriStr) ;
         System.out.println(iri) ;
-        System.out.println(iri.isRelative()) ;
+        System.out.println("Relative: "+iri.isRelative()) ;
 
         Iterator<Violation> vIter = iri.violations(true) ;
         for ( ; vIter.hasNext() ; )
