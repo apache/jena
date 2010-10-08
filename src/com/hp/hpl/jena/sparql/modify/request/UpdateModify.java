@@ -15,6 +15,8 @@ public class UpdateModify extends UpdateWithUsing
 {
     private final QuadsAcc deletePattern ;
     private final QuadsAcc insertPattern ;
+    private boolean hasInsert = false ;
+    private boolean hasDelete = false ;
     private Element wherePattern ;
     
     public UpdateModify() 
@@ -49,6 +51,30 @@ public class UpdateModify extends UpdateWithUsing
         return insertPattern.getQuads() ;
     }
 
+    /** Explicit flag to indicate a INSERT clause was seen, even if it had no quads */  
+    public void setHasInsertClause(boolean flag)
+    {
+        hasInsert = flag ;
+    }
+    
+    /** Explicit flag to indicate a DELETE clause was seen, even if it had no quads */  
+    public void setHasDeleteClause(boolean flag)
+    {
+        hasDelete = flag ;
+    }
+
+    public boolean hasInsertClause()
+    {
+        if ( hasInsert ) return true ;
+        return insertPattern.getQuads().size() > 0 ;
+    }
+    
+    public boolean hasDeleteClause()
+    {
+        if ( hasDelete) return true ;
+        return deletePattern.getQuads().size() > 0 ;
+    }
+    
     public Element getWherePattern()
     {
         return wherePattern ;

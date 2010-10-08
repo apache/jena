@@ -518,8 +518,8 @@ Update Modify() : { Element el ; String iri = null ;
                     UpdateModify up = new UpdateModify() ; }
 {
   ( <WITH> iri = IRIref() { Node n = createNode(iri) ; up.setWithIRI(n) ; } )?
-  ( DeleteClause(up.getDeleteAcc()) ( InsertClause(up.getInsertAcc()) )?
-  | InsertClause(up.getInsertAcc())
+  ( DeleteClause(up) ( InsertClause(up) )?
+  | InsertClause(up)
   )
   (UsingClause(up))*
   <WHERE>
@@ -533,15 +533,15 @@ Update ModifyOld() :
 {
     <MODIFY>
     ( iri = IRIref() { Node n = createNode(iri) ; up.setWithIRI(n) ; } )?
-    (DeleteClause(up.getDeleteAcc()))?
-    (InsertClause(up.getDeleteAcc()))?
+    (DeleteClause(up))?
+    (InsertClause(up))?
     <WHERE>
     el = GroupGraphPattern() { up.setElement(el) ; }    
     { return up ; }
 }
 #endif
 
-void DeleteClause(QuadsAcc qp) : { }
+void DeleteClause(UpdateModify up) : { QuadsAcc qp = up.getInsertAcc() ; }
 {
 #ifndef ARQ_UPDATE
    <DELETE> QuadPattern(qp)
@@ -550,9 +550,10 @@ void DeleteClause(QuadsAcc qp) : { }
    OptionalFromTarget(qp)
    QuadPattern(qp)
 #endif
+   { up.setHasDeleteClause(true) ; }
 }
 
-void InsertClause(QuadsAcc qp) : { }
+void InsertClause(UpdateModify up) : { QuadsAcc qp = up.getInsertAcc() ; }
 {
 #ifndef ARQ_UPDATE
    <INSERT> QuadPattern(qp)
@@ -561,6 +562,7 @@ void InsertClause(QuadsAcc qp) : { }
    OptionalIntoTarget(qp)
    QuadPattern(qp)
 #endif
+   { up.setHasInsertClause(true) ; }
 }
 
 #ifdef ARQ_UPDATE

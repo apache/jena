@@ -376,21 +376,23 @@ Update Modify() : { Element el ; String iri = null ;
                     UpdateModify up = new UpdateModify() ; }
 {
   ( <WITH> iri = IRIref() { Node n = createNode(iri) ; up.setWithIRI(n) ; } )?
-  ( DeleteClause(up.getDeleteAcc()) ( InsertClause(up.getInsertAcc()) )?
-  | InsertClause(up.getInsertAcc())
+  ( DeleteClause(up) ( InsertClause(up) )?
+  | InsertClause(up)
   )
   (UsingClause(up))*
   <WHERE>
   el = GroupGraphPattern() { up.setElement(el) ; }
   { return up ; }
 }
-void DeleteClause(QuadsAcc qp) : { }
+void DeleteClause(UpdateModify up) : { QuadsAcc qp = up.getInsertAcc() ; }
 {
    <DELETE> QuadPattern(qp)
+   { up.setHasDeleteClause(true) ; }
 }
-void InsertClause(QuadsAcc qp) : { }
+void InsertClause(UpdateModify up) : { QuadsAcc qp = up.getInsertAcc() ; }
 {
    <INSERT> QuadPattern(qp)
+   { up.setHasInsertClause(true) ; }
 }
 void UsingClause(UpdateWithUsing update) : { String iri ; Node n ; }
 {

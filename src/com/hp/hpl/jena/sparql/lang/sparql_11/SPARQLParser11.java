@@ -1053,10 +1053,10 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
     }
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case DELETE:
-      DeleteClause(up.getDeleteAcc());
+      DeleteClause(up);
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case INSERT:
-        InsertClause(up.getInsertAcc());
+        InsertClause(up);
         break;
       default:
         jj_la1[46] = jj_gen;
@@ -1064,7 +1064,7 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
       }
       break;
     case INSERT:
-      InsertClause(up.getInsertAcc());
+      InsertClause(up);
       break;
     default:
       jj_la1[47] = jj_gen;
@@ -1090,14 +1090,18 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
     throw new Error("Missing return statement in function");
   }
 
-  final public void DeleteClause(QuadsAcc qp) throws ParseException {
+  final public void DeleteClause(UpdateModify up) throws ParseException {
+                                       QuadsAcc qp = up.getInsertAcc() ;
     jj_consume_token(DELETE);
     QuadPattern(qp);
+     up.setHasDeleteClause(true) ;
   }
 
-  final public void InsertClause(QuadsAcc qp) throws ParseException {
+  final public void InsertClause(UpdateModify up) throws ParseException {
+                                       QuadsAcc qp = up.getInsertAcc() ;
     jj_consume_token(INSERT);
     QuadPattern(qp);
+     up.setHasInsertClause(true) ;
   }
 
   final public void UsingClause(UpdateWithUsing update) throws ParseException {

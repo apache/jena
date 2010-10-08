@@ -167,21 +167,32 @@ public class UpdateWriter
         public void visit(UpdateDataInsert update)
         {
             out.ensureStartOfLine() ;
-            out.println("INSERT DATA {") ;
-            outputQuads(update.getQuads()) ;
-            out.print("}") ;
+            out.print("INSERT DATA ") ;
+            outputQuadsBraced(update.getQuads()) ;
         }
 
         public void visit(UpdateDataDelete update)
         {
             out.ensureStartOfLine() ;
-            out.println("DELETE DATA {") ;
-            outputQuads(update.getQuads()) ;
-            out.print("}") ;
+            out.print("DELETE DATA ") ;
+            outputQuadsBraced(update.getQuads()) ;
         }
 
         // Prettier later.
-        private void outputQuads(List<Quad> quads)
+        
+        private void outputQuadsBraced(List<Quad> quads)
+        {
+            if ( quads.size() == 0 )
+            {
+                out.print("{ }") ;
+                return ;
+            }
+            out.println("{") ;
+            outputQuads_(quads) ;
+            out.print("}") ;
+        }
+        
+        private void outputQuads_(List<Quad> quads)
         {
             out.incIndent(BLOCK_INDENT) ;
             Node g = Quad.tripleInQuad ;
@@ -258,9 +269,8 @@ public class UpdateWriter
         public void visit(UpdateDeleteWhere update)
         {
             out.ensureStartOfLine() ;
-            out.println("DELETE WHERE {") ;
-            outputQuads(update.getQuads()) ;
-            out.print("}") ;
+            out.println("DELETE WHERE ") ;
+            outputQuadsBraced(update.getQuads()) ;
         }
 
         public void visit(UpdateModify update)
@@ -273,22 +283,29 @@ public class UpdateWriter
                 output(update.getWithIRI()) ;
             }
             
-            List<Quad> deleteQuads = update.getDeleteQuads() ;
-            if ( deleteQuads.size() > 0 )
+            
+            if ( update.hasDeleteClause() )
             {
+                List<Quad> deleteQuads = update.getDeleteQuads() ;
                 out.ensureStartOfLine() ;
-                out.println("DELETE {") ;
-                outputQuads(deleteQuads) ;
-                out.print("}") ;
+                out.print("DELETE ") ;
+                outputQuadsBraced(deleteQuads) ;
             }
             
-            List<Quad> insertQuads = update.getInsertQuads() ;
-            if ( insertQuads.size() > 0 )
+            
+            if ( update.hasInsertClause() )
             {
+                List<Quad> insertQuads = update.getInsertQuads() ;
                 out.ensureStartOfLine() ;
-                out.println("INSERT {") ;
-                outputQuads(insertQuads) ;
-                out.print("}") ;
+                out.print("INSERT ") ;
+                outputQuadsBraced(insertQuads) ;
+            }
+            
+            if ( ! update.hasInsertClause() && ! update.hasDeleteClause() )
+            {
+                // Fake a clause to make it legal syntax.
+                out.ensureStartOfLine() ;
+                out.println("INSERT { }") ;
             }
             
             for ( Node x : update.getUsing() )
