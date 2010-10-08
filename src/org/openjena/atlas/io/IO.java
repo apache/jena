@@ -126,13 +126,13 @@ public class IO
     public static void flush(Writer out)
     { try { out.flush(); } catch (IOException ex) { exception(ex) ; } }
 
-    
+    private static final int BUFFER_SIZE = 8*1024 ; 
     
     public static byte[] readWholeFile(InputStream in) 
     {
         try {
-            ByteArrayOutputStream out = new ByteArrayOutputStream() ;
-            byte buff[] = new byte[1024];
+            ByteArrayOutputStream out = new ByteArrayOutputStream(BUFFER_SIZE) ;
+            byte buff[] = new byte[BUFFER_SIZE];
             while (true)
             {
                 int l = in.read(buff);
@@ -140,7 +140,6 @@ public class IO
                     break;
                 out.write(buff, 0, l);
             }
-            in.close();
             out.close();
             return out.toByteArray() ;
         } catch (IOException  ex)
@@ -183,15 +182,15 @@ public class IO
     // Private worker as we are trying to force UTF-8. 
     private static String readWholeFileAsUTF8(Reader r) throws IOException
     {
-        StringWriter sw = new StringWriter(1024);
-        char buff[] = new char[1024];
-        while (r.ready()) {
+        StringWriter sw = new StringWriter(BUFFER_SIZE);
+        char buff[] = new char[BUFFER_SIZE];
+       for (;;)
+       {
             int l = r.read(buff);
-            if (l <= 0)
+            if (l < 0)
                 break;
             sw.write(buff, 0, l);
         }
-        r.close();
         sw.close();
         return sw.toString();  
     }

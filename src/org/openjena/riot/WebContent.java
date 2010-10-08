@@ -44,6 +44,9 @@ public class WebContent
     public static final String contentSPARQLUpdate        = "application/sparql-update" ;
     public static final String charsetUTF8                = "utf-8" ;
     
+    public static final String contentTypeTextCSV         = "text/csv" ;
+    public static final String contentTypeTextTSV         = "text/tab-separated-values" ;
+    
     // Names used in Jena for the parsers
     // See also Lang enum
     public static final String langRDFXML           = "RDF/XML" ;
