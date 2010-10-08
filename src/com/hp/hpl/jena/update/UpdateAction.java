@@ -11,6 +11,7 @@ import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.query.QuerySolution ;
 import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingUtils ;
 
@@ -35,6 +36,15 @@ public class UpdateAction
      * @param dataset
      */
     public static void readExecute(String filename, Dataset dataset)
+    {
+        readExecute(filename, dataset, null) ; 
+    }
+
+    /** Read a file containing SPARQL Update operations, and execute the operations.
+     * @param filename
+     * @param dataset
+     */
+    public static void readExecute(String filename, DatasetGraph dataset)
     {
         readExecute(filename, dataset, null) ; 
     }
@@ -80,6 +90,17 @@ public class UpdateAction
 
     /** Read a file containing SPARQL Update operations, and execute the operations.
      * @param filename
+     * @param dataset
+     * @param initialBinding Presets for variables.
+     */
+    public static void readExecute(String filename, DatasetGraph dataset, Binding initialBinding)
+    {
+        readExecute(filename, GraphStoreFactory.create(dataset), initialBinding) ;
+    }
+
+
+    /** Read a file containing SPARQL Update operations, and execute the operations.
+     * @param filename
      * @param graph
      * @param binding Presets for variables.
      */
@@ -113,6 +134,15 @@ public class UpdateAction
      * @param dataset
      */
     public static void parseExecute(String updateString, Dataset dataset)
+    {
+        parseExecute(updateString, dataset, null) ; 
+    }
+
+    /** Parse a string containing SPARQL Update operations, and execute the operations.
+     * @param updateString
+     * @param dataset
+     */
+    public static void parseExecute(String updateString, DatasetGraph dataset)
     {
         parseExecute(updateString, dataset, null) ; 
     }
@@ -157,6 +187,17 @@ public class UpdateAction
 
     /** Parse a string containing SPARQL Update operations, and execute the operations.
      * @param updateString
+     * @param dataset
+     * @param initialBinding Presets for variables.
+     */
+    public static void parseExecute(String updateString, DatasetGraph dataset, Binding initialBinding)
+    {
+        parseExecute(updateString, GraphStoreFactory.create(dataset), initialBinding) ; 
+    }
+
+
+    /** Parse a string containing SPARQL Update operations, and execute the operations.
+     * @param updateString
      * @param graph
      * @param binding Presets for variables.
      */
@@ -190,6 +231,15 @@ public class UpdateAction
      * @param dataset
      */
     public static void execute(UpdateRequest request, Dataset dataset)
+    {
+        execute(request, dataset, null) ; 
+    }
+
+    /** Execute SPARQL Update operations.
+     * @param request
+     * @param dataset
+     */
+    public static void execute(UpdateRequest request, DatasetGraph dataset)
     {
         execute(request, dataset, null) ; 
     }
@@ -230,6 +280,16 @@ public class UpdateAction
     public static void execute(UpdateRequest request, Dataset dataset, QuerySolution initialBinding)
     {
         execute(request, GraphStoreFactory.create(dataset), BindingUtils.asBinding(initialBinding)) ; 
+    }
+
+    /** Execute SPARQL Update operations.
+     * @param request
+     * @param dataset
+     * @param initialBinding Presets for variables.
+     */
+    public static void execute(UpdateRequest request, DatasetGraph dataset, Binding initialBinding)
+    {
+        execute(request, GraphStoreFactory.create(dataset), initialBinding) ; 
     }
 
     /** Execute SPARQL Update operations.
@@ -279,6 +339,15 @@ public class UpdateAction
 
     /** Execute a single SPARQL Update operation.
      * @param update
+     * @param dataset
+     */
+    public static void execute(Update update, DatasetGraph dataset)
+    {
+        execute(update, dataset, null) ; 
+    }
+
+    /** Execute a single SPARQL Update operation.
+     * @param update
      * @param graph
      */
     public static void execute(Update update, Graph graph)
@@ -313,6 +382,16 @@ public class UpdateAction
     public static void execute(Update update, Dataset dataset, QuerySolution initialBinding)
     {
         execute(update, GraphStoreFactory.create(dataset), BindingUtils.asBinding(initialBinding)) ; 
+    }
+
+    /** Execute a single SPARQL Update operation.
+     * @param update
+     * @param dataset
+     * @param initialBinding Presets for variables.
+     */
+    public static void execute(Update update, DatasetGraph dataset, Binding initialBinding)
+    {
+        execute(update, GraphStoreFactory.create(dataset), initialBinding) ; 
     }
 
     /** Execute a single SPARQL Update operation.

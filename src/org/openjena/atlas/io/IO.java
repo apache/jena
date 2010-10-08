@@ -184,8 +184,8 @@ public class IO
     {
         StringWriter sw = new StringWriter(BUFFER_SIZE);
         char buff[] = new char[BUFFER_SIZE];
-       for (;;)
-       {
+        for (;;)
+        {
             int l = r.read(buff);
             if (l < 0)
                 break;
