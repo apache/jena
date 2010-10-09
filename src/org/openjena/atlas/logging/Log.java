@@ -173,6 +173,42 @@ public class Log
         org.apache.log4j.LogManager.getLogger(logger).setLevel(org.apache.log4j.Level.OFF) ;
         java.util.logging.Logger.getLogger(logger.getName()).setLevel(java.util.logging.Level.OFF) ;
     }
+
+    /** Set to warning level. 
+     *  Works for Log4j and Java logging as the logging provider to Apache common logging or slf4j.
+     */
+    static public void setWarn(String logger)
+    {
+        org.apache.log4j.LogManager.getLogger(logger).setLevel(org.apache.log4j.Level.WARN) ;
+        java.util.logging.Logger.getLogger(logger).setLevel(java.util.logging.Level.WARNING) ;
+    }
+    
+    /** Set to warning level. 
+     *  Works for Log4j and Java logging as the logging provider to Apache common logging or slf4j.
+     */
+    static public void setWarn(Class<?> logger)
+    {
+        org.apache.log4j.LogManager.getLogger(logger).setLevel(org.apache.log4j.Level.WARN) ;
+        java.util.logging.Logger.getLogger(logger.getName()).setLevel(java.util.logging.Level.WARNING) ;
+    }
+    
+    /**  Set to infomation level.
+     *  Works for Log4j and Java logging as the logging provider to Apache common logging or slf4j.
+     */
+    static public void setInfo(String logger)
+    {
+        org.apache.log4j.LogManager.getLogger(logger).setLevel(org.apache.log4j.Level.INFO) ;
+        java.util.logging.Logger.getLogger(logger).setLevel(java.util.logging.Level.INFO) ;
+    }
+
+    /**  Set to infomation level.
+     *  Works for Log4j and Java logging as the logging provider to Apache common logging or slf4j.
+     */
+    static public void setInfo(Class<?> logger)
+    {
+        org.apache.log4j.LogManager.getLogger(logger).setLevel(org.apache.log4j.Level.INFO) ;
+        java.util.logging.Logger.getLogger(logger.getName()).setLevel(java.util.logging.Level.INFO) ;
+    }
     
     /** Set log4j - try to find a file "log4j.properties" if nothing already set.  Return true if we think Log4J is not initialized. */
     public static boolean setLog4j()

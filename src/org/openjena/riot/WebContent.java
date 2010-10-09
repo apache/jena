@@ -11,41 +11,43 @@ public class WebContent
 {
     // Names for things.
     
-    public static final String contentTypeN3              = "text/rdf+n3" ;
-    public static final String contentTypeN3Alt1          = "application/n3" ;
-    public static final String contentTypeN3Alt2          = "text/n3" ;
+    public static final String contentTypeN3                = "text/rdf+n3" ;
+    public static final String contentTypeN3Alt1            = "application/n3" ;
+    public static final String contentTypeN3Alt2            = "text/n3" ;
 
-    public static final String contentTypeTurtle1         = "application/turtle" ; 
-    public static final String contentTypeTurtle2         = "text/turtle" ; 
-    public static final String contentTypeTurtle3         = "application/x-turtle" ;
+    public static final String contentTypeTurtle1           = "application/turtle" ; 
+    public static final String contentTypeTurtle2           = "text/turtle" ; 
+    public static final String contentTypeTurtle3           = "application/x-turtle" ;
     
-    public static final String contentTypeRDFXML          = "application/rdf+xml" ;
+    public static final String contentTypeRDFXML            = "application/rdf+xml" ;
     
-    public static final String contentTypeTextPlain       = "text/plain" ;
     // MIME type for N-triple is text/plain (!!!)
-    public static final String contentTypeNTriples        = contentTypeTextPlain ;
-    public static final String contentTypeNTriplesAlt     = "application/n-triples" ;
+    public static final String contentTypeTextPlain         = "text/plain" ;
+    public static final String contentTypeNTriples          = contentTypeTextPlain ;
+    public static final String contentTypeNTriplesAlt       = "application/n-triples" ;
     
-    public static final String contentTypeXML             = "application/xml" ;
+    public static final String contentTypeXML               = "application/xml" ;
     
-    public static final String contentTypeResultsXML      = "application/sparql-results+xml" ;
-    public static final String contentTypeResultsJSON     = "application/sparql-results+json" ;
+    public static final String contentTypeResultsXML        = "application/sparql-results+xml" ;
+    public static final String contentTypeResultsJSON       = "application/sparql-results+json" ;
 
-    public static final String contentTypeTriG            = "application/x-trig" ;
-    public static final String contentTypeNQuads          = "text/x-nquads" ;
+    public static final String contentTypeTriG              = "application/x-trig" ;
+    public static final String contentTypeNQuads            = "text/x-nquads" ;
 
     // There is no MIME type for a SPARQL query.
     // Either it is a GET or it is a "x-www-form-urlencoded"
     
     //public static final String contentSPARQL_X            = "application/x-sparql-query" ;
-    public static final String contentSPARQLUpdate_X      = "application/x-sparql-update" ;
+    public static final String contentSPARQLUpdate_X        = "application/x-sparql-update" ;
 
-    //public static final String contentSPARQL              = "application/sparql-query" ;
-    public static final String contentSPARQLUpdate        = "application/sparql-update" ;
-    public static final String charsetUTF8                = "utf-8" ;
+    public static final String contentTypeSPARQLQuery       = "application/sparql-query" ;          // Unofficial
+    public static final String contentSPARQLUpdate          = "application/sparql-update" ;
+    public static final String contentTypeForm              = "application/x-www-form-urlencoded" ;
+    public static final String contentTypeTextCSV           = "text/csv" ;
+    public static final String contentTypeTextTSV           = "text/tab-separated-values" ;
     
-    public static final String contentTypeTextCSV         = "text/csv" ;
-    public static final String contentTypeTextTSV         = "text/tab-separated-values" ;
+    
+    public static final String charsetUTF8                  = "utf-8" ;
     
     // Names used in Jena for the parsers
     // See also Lang enum
