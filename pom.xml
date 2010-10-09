@@ -1,0 +1,331 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.openjena</groupId>
+  <artifactId>fuseki</artifactId>
+  <packaging>jar</packaging>
+  <name>Fuseki</name>
+  <version>4.0.0-SNAPSHOT</version>
+  <description/>
+  <url>http://openjena.org/</url>
+
+  <organization>
+    <name>The Jena Project</name>
+    <url>http://www.openjena.org/</url>
+  </organization>
+
+  <licenses>
+    <license>
+      <name>BSD-style license</name>
+      <url>http://www.openjena.org/license.html</url>
+    </license>
+  </licenses>
+
+  <scm>
+    <connection>scm:svn:https://jena.svn.sourceforge.net/svnroot/jena/Fuseki/</connection>
+    <url>http://jena.svn.sourceforge.net/viewvc/jena/Fuseki/</url>
+  </scm>
+
+  <properties>
+    <this.root>${project.artifactId}-${project.version}</this.root>
+    <ver.jena>2.6.3</ver.jena>
+    <ver.arq>2.8.6-SNAPSHOT</ver.arq>
+    <ver.tdb>0.8.8-SNAPSHOT</ver.tdb>
+    <ver.sdb>1.3.2</ver.sdb>
+    <ver.jetty>7.1.6.v20100715</ver.jetty>
+    <ver.httpclient>4.0.3</ver.httpclient>
+
+  </properties>
+
+  <dependencies>
+
+    <dependency>
+      <groupId>com.hp.hpl.jena</groupId>
+      <artifactId>arq</artifactId>
+      <version>${ver.arq}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.hp.hpl.jena</groupId>
+      <artifactId>arq</artifactId>
+      <version>${ver.arq}</version>
+      <classifier>tests</classifier>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.hp.hpl.jena</groupId>
+      <artifactId>jena</artifactId>
+      <version>${ver.jena}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.hp.hpl.jena</groupId>
+      <artifactId>jena</artifactId>
+      <classifier>tests</classifier>
+      <version>${ver.jena}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.hp.hpl.jena</groupId>
+      <artifactId>tdb</artifactId>
+      <version>${ver.tdb}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.hp.hpl.jena</groupId>
+      <artifactId>sdb</artifactId>
+      <version>${ver.sdb}</version>
+      <scope>optional</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.8.2</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.httpcomponents</groupId>
+      <artifactId>httpclient</artifactId>
+      <version>${ver.httpclient}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-server</artifactId>
+      <version>${ver.jetty}</version>
+    </dependency>    
+
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-servlet</artifactId>
+      <version>${ver.jetty}</version>
+    </dependency>    
+
+    <!--
+      <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-webapp</artifactId>
+      <version>${ver.jetty}</version>
+      </dependency>    
+    -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>1.5.8</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-log4j12</artifactId>
+      <version>1.5.8</version>
+    </dependency>
+
+    <!-- Needed because the Fuseki test suite resets logging levels -->
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+      <version>1.2.14</version>
+      <exclusions>
+        <exclusion>
+          <groupId>javax.jms</groupId>
+          <artifactId>jms</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.sun.jdmk</groupId>
+          <artifactId>jmxtools</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.sun.jmx</groupId>
+          <artifactId>jmxri</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>javax.mail</groupId>
+          <artifactId>mail</artifactId>
+        </exclusion>
+      </exclusions> 
+    </dependency>
+  </dependencies>
+
+  <build>
+    <resources>
+      <resource>
+        <targetPath>org/fuseki</targetPath>
+        <filtering>true</filtering>
+        <directory>resources</directory>
+      </resource>
+    </resources>
+    <filters>
+      <filter>${project.basedir}/target/filter.properties</filter>
+    </filters>
+    
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.6</source>
+          <target>1.6</target>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <executions> 
+          <execution>
+            <id>attach-sources</id>
+            <phase>package</phase>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <includes>
+            <include>**/TS_*.java</include>
+          </includes>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <configuration>
+          <overWriteReleases>false</overWriteReleases>
+          <overWriteIfNewer>true</overWriteIfNewer>
+        </configuration>
+      </plugin>
+      
+
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <configuration>
+	  <id>standalone-server</id>
+          <archive>
+            <manifest>
+              <mainClass>org.openjena.fuseki.FusekiCmd</mainClass>
+            </manifest>
+          </archive>
+	  <descriptors>
+	    <descriptor>assembly-server.xml</descriptor>
+	  </descriptors>
+	  <!-- 
+	    This works as well, but generates a "NOTE" message
+	  <finalName>fuseki-${project.version}-server</finalName>
+	  <descriptorRefs>
+	    <descriptorRef>jar-with-dependencies</descriptorRef>
+	  </descriptorRefs>
+	  <appendAssemblyId>false</appendAssemblyId>
+	  -->
+        </configuration>
+	<executions>
+          <execution>
+            <id>create-standalone-server</id>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <configuration>
+          <encoding>UTF-8</encoding>
+        </configuration>
+      </plugin>
+
+      <!-- Fix to use resources -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>ant-generate-resources</id>
+            <phase>generate-resources</phase>
+            <configuration>
+              <tasks>
+                <mkdir dir="${project.basedir}/target"/>
+                <tstamp>
+                  <format property="build.time.xsd"  pattern="yyyy-MM-dd'T'HH:mm:ssZ"/>
+                  <format property="build.time.txt"  pattern="yyyy-MM-dd HH:mm Z"/>
+                </tstamp>
+                <echo file="${project.basedir}/target/filter.properties">
+                  #begin
+                  build.time.xsd=${build.time.xsd}
+                  build.time.txt=${build.time.txt}
+                  #end 
+                </echo>
+                <echo message="Version = ${project.version}"/>
+                <echo message="build.time=${build.time.txt}"/>
+              </tasks>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      
+    </plugins>
+
+  </build>
+  
+  <repositories>
+    <!-- jena-repo is mirrored to Maven central repository -->
+
+    <repository>
+      <id>repo-jena</id>
+      <name>Jena Maven - Repository</name>
+      <layout>default</layout>
+      <url>http://openjena.org/repo</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+
+    <!-- jena-repo-dev is where SNAPSHOTs are published -->  
+    <repository>
+      <id>repo-jena-dev</id>
+      <name>Jena Maven - Development Repository</name>
+      <layout>default</layout>
+      <url>http://openjena.org/repo-dev</url>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
+
+  <distributionManagement>
+    <downloadUrl>http://openjena.org/repo-dev</downloadUrl>
+    <repository>
+      <id>jena-repo</id>
+      <name>Jena repo</name>
+
+      <!--<url>sftp://openjena.org/var/repo</url>-->
+      <url>sftp://openjena.org/var/repo-dev</url>
+
+      <layout>default</layout>
+    </repository> 
+    <snapshotRepository>
+      <id>jena-repo-dev</id>
+      <name>Jena development repo</name>
+
+      <url>sftp://openjena.org/var/repo-dev</url>
+
+      <layout>default</layout>
+    </snapshotRepository>
+  </distributionManagement>
+
+</project>

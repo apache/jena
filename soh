@@ -1,0 +1,460 @@
+#!/usr/bin/env ruby
+# -*- coding: utf-8 -*-
+
+# SPARQL HTTP Update, client.
+
+require 'optparse'
+require 'net/http'
+require 'fileutils'
+require 'uri'
+require 'cgi'
+require 'pp'
+
+# ToDo
+#  Allow a choice of media type for GET
+#   --accept "content-type"
+#   --header "Add:this"
+#   --user, --password
+#  Basic authentication: request.basic_auth("username", "password")
+#  Follow redirects => 301:  puts response["location"] # All headers are lowercase?
+
+# cmd_sparql_query cmdline args
+# cmd_sparql_update cmdline args
+
+# @ to mean
+#  query - read file
+#  update - set request_body_stream
+# Long queries -> go to POST.
+
+SOH_NAME="SOH"
+SOH_VERSION="0.0.0"
+
+# What about direct naming?
+
+# Names
+$mtTurtle           = 'application/turtle'
+$mtRDF              = 'application/rdf+xml'
+$mtText             = 'text/plain'
+$mtNQuads           = 'text/n-quads'
+$mtTriG             = 'application/trig'
+$mtSparqlResultsX   = 'application/sparql-results+xml'
+$mtSparqlResultsJ   = 'application/sparql-results+json'
+$mtSparqlUpdate     = 'application/sparql-update'
+$mtWWWForm          = 'application/x-www-form-urlencoded'
+# $mtSparqlQuery      = "application/sparql-query" ;
+
+# Global media type table.
+$fileMediaTypes = {}
+$fileMediaTypes['ttl']   = $mtTurtle
+$fileMediaTypes['n3']    = 'text/rdf+n3application/rdf+n3'
+$fileMediaTypes['nt']    = $mtText
+$fileMediaTypes['rdf']   = $mtRDF
+$fileMediaTypes['owl']   = $mtRDF
+$fileMediaTypes['nq']    = $mtNQuads
+$fileMediaTypes['trig']  = $mtTriG
+
+# Global charset : no entry means "don't set"
+$charsetUTF8      = 'utf-8'
+$charset = {}
+$charset[$mtTurtle]   = 'utf-8'
+$charset[$mtText]     = 'ascii'
+$charset[$mtTriG]     = 'utf-8'
+$charset[$mtNQuads]   = 'ascii'
+
+# Headers
+
+$hContentType         = 'Content-Type'
+# $hContentEncoding     = 'Content-Encoding'
+$hContentLength       = 'Content-Length'
+# $hContentLocation     = 'Content-Location'
+# $hContentRange        = 'Content-Range'
+
+$hAccept              = 'Accept'
+$hAcceptCharset       = 'Accept-Charset'
+$hAcceptEncoding      = 'Accept-Encoding'
+$hAcceptRanges        = 'Accept-Ranges' 
+
+$headers = { "User-Agent" => "#{SOH_NAME}/Fuseki #{SOH_VERSION}"}
+$print_http = false
+
+# Default for GET
+# $accept_rdf="#{$mtTurtle},#{$mtRDF};q=0.8"
+$accept_rdf="#{$mtRDF},#{$mtTurtle};q=0.9"
+# For SPARQL query
+$accept_results="#{$mtSparqlResultsJ},#{$mtSparqlResultsX};q=0.9,#{$accept_rdf}"
+# The media type usually forces the charset.
+$accept_charset=nil
+
+
+
+## -------- SPARQL HTTP Update
+
+$usageSOH="[get|post|put|delete] datasetURI graph [file]"
+
+def GET(dataset, graph)
+  print "GET #{dataset} #{graph}\n" if $verbose
+  requestURI = target(dataset, graph)
+  headers = {}
+  headers.merge!($headers)
+  headers[$hAccept] = $accept_rdf
+  headers[$hAcceptCharset] = $accept_charset unless $accept_charset.nil?
+  get_worker(requestURI, headers)
+end
+
+def get_worker(requestURI, headers)
+  uri = URI.parse(requestURI)
+  request = Net::HTTP::Get.new(uri.request_uri)
+  request.initialize_http_header(headers)
+  print_http_request(uri, request)
+  response_print_body(uri, request)
+end
+
+def PUT(dataset, graph, file)
+  print "PUT #{dataset} #{graph} #{file}\n" if $verbose
+  send_body(dataset, graph, file, Net::HTTP::Put)
+end
+
+def POST(dataset, graph, file)
+  print "POST #{dataset} #{graph} #{file}\n" if $verbose
+  send_body(dataset, graph, file, Net::HTTP::Post)
+end
+
+def DELETE(dataset, graph)
+  print "DELETE #{dataset} #{graph}\n" if $verbose
+  requestURI = target(dataset, graph)
+  uri = URI.parse(requestURI)
+  request = Net::HTTP::Delete.new(uri.request_uri)
+  headers = {}
+  headers.merge!($headers)
+  request.initialize_http_header(headers)
+  print_http_request(uri, request)
+  response_no_body(uri, request)
+end
+
+def uri_escape(string)
+  CGI.escape(string)
+end
+
+def target(dataset, graph)
+  return dataset+"?default" if graph == "default"
+  return dataset+"?graph="+uri_escape(graph)
+end
+
+def send_body(dataset, graph, file, method)
+  mt = content_type(file)
+  headers = {}
+  headers.merge!($headers)
+  headers[$hContentType] = mt
+  headers[$hContentLength] = File.size(file).to_s
+  ## p headers
+
+  requestURI = target(dataset, graph)
+  uri = URI.parse(requestURI)
+  
+  request = method.new(uri.request_uri)
+  request.initialize_http_header(headers)
+  print_http_request(uri, request)
+  request.body_stream = File.open(file)
+  response_no_body(uri, request)
+end
+
+def response_no_body(uri, request)
+  http = Net::HTTP.new(uri.host, uri.port)
+  # check we can connect.
+  begin http.start
+  rescue Exception => e  
+    # puts e.message  
+    #puts e.backtrace.inspect  
+    warn_exit "Failed to connect: #{uri.host}:#{uri.port}: #{e.message}", 3
+  end
+  response = http.request(request)
+  print_http_response(response)
+  # NO BODY IN RESPONSE
+end
+
+def response_print_body(uri, request)
+  http = Net::HTTP.new(uri.host, uri.port)
+  # check we can connect.
+  begin http.start
+  rescue => e  
+    #puts e.backtrace.inspect  
+    #print e.class
+    warn_exit "Failed to connect: #{uri.host}:#{uri.port}: #{e.message}", 3
+  end
+
+  # Add a blank line if headers were output.
+  print "\n" if $http_print ;
+
+  begin
+    response = http.request(request) { |res| 
+      print_http_response(res)
+      #puts res.code
+      res.read_body do |segment|
+        print segment
+      end
+    }
+    case response
+    when Net::HTTPSuccess, Net::HTTPRedirection
+      # OK
+    when Net::HTTPNotFound
+      warn_exit "404 Not found: #{uri}", 9
+      #print response.body
+    else
+      warn_exit "#{response.code}: #{uri}", 9
+      # Unreachable
+      response.error!
+    end
+  rescue EOFError => e
+    warn_exit "IO Error: "+e.message, 3
+  end
+end
+
+def print_http_request(uri, request)
+  return unless $print_http
+  #print "Request\n"
+  print request.method," ",uri, "\n"
+  print_headers("  ",request)
+end
+
+def print_http_response(response)
+  return unless $print_http
+  #print "Response\n"
+  print response.code, " ", response.message, "\n"
+  print_headers("  ",response)
+end
+
+def print_headers(marker, headers)
+  headers.each do |k,v| 
+    k = k.split('-').map{|w| w.capitalize}.join('-')+':'
+    printf "%s%-20s %s\n",marker,k,v
+  end
+end
+
+def content_type(file)
+  file =~ /\.([^.]*)$/
+  ext = $1
+  mt = $fileMediaTypes[ext]
+  cs = $charset[mt]
+  mt = mt+';charset='+cs if ! cs.nil?
+  return mt
+end
+
+def charset(content_type)
+  return $charset[content_type]
+end
+
+def warn_exit(msg, rc)
+    warn msg
+    exit rc ;
+end
+
+def parseURI(uri_string)
+  begin
+    return URI.parse(uri_string).to_s
+  rescue URI::InvalidURIError => err
+    warn_exit "Bad URI: <#{uri_string}>", 2
+  end
+end
+
+## ---- Command
+
+def cmd_soh(command=nil)
+  ## Command line
+  options = {}
+  optparse = OptionParser.new do|opts|
+    # Set a banner, displayed at the top
+    # of the help screen.
+    opts.banner = "Usage: #{$0} [get|put|delete|post] dataset graph [file]"
+    # Define the options, and what they do
+    
+    options[:verbose] = false
+    opts.on( '-v', '--verbose', 'Verbose' ) do
+      options[:verbose] = true
+    end
+    
+    options[:version] = false
+    opts.on( '--version', 'Print version and exit' ) do
+      print "#{SOH_NAME} #{SOH_VERSION}\n"
+      exit
+    end
+    
+    # This displays the help screen, all programs are
+    # assumed to have this option.
+    opts.on( '-h', '--help', 'Display this screen and exit' ) do
+      puts opts
+      exit
+    end
+  end
+
+  # Parse the command-line. Remember there are two forms
+  # of the parse method. The 'parse' method simply parses
+  # ARGV, while the 'parse!' method parses ARGV and removes
+  # any options found there, as well as any parameters for
+  # the options. What's left is arguments.
+  optparse.parse!
+
+  $verbose = options[:verbose]
+  $print_http = $verbose
+
+  if command.nil?
+    if ARGV.size == 0
+      warn "No command given: expected one of get, put, post, delete"
+      exit 1
+    end
+    cmdPrint=ARGV.shift
+    command=cmdPrint.upcase
+  else
+    cmdPrint=command
+  end
+
+  case command
+  when "GET", "DELETE"
+    requiredFile=false
+  when "PUT", "POST"
+    requiredFile=true
+  else
+    warn_exit "Unknown command: #{cmdPrint}", 2
+  end
+
+  if requiredFile 
+  then
+    if ARGV.size != 3
+      warn_exit "Required: dataset URI, graph URI and file", 1 
+    end
+  else
+    if ARGV.size != 2
+      warn_exit "Required: dataset URI and graph URI", 1 
+    end
+  end
+
+  dataset=parseURI(ARGV.shift)
+  # Relative URI?
+  graph=parseURI(ARGV.shift)
+  file=""
+  if requiredFile
+  then
+    file = ARGV.shift if requiredFile
+    if ! File.exist?(file)
+      warn_exit "No such file: "+file, 3
+    end
+    if File.directory?(file)
+      warn_exit "File is a directory: "+file, 3
+    end
+  end
+
+  case command
+  when "GET"
+    GET(dataset, graph)
+  when "PUT"
+    PUT(dataset, graph, file)
+  when "DELETE"
+    DELETE(dataset, graph)
+  when "POST"
+    POST(dataset, graph, file)
+  else
+    warn_exit "Internal error: Unknown command: #{cmd}", 2
+  end
+  exit 0
+end
+
+## --------
+def string_or_file(arg)
+  return arg if ! arg.match(/^@/)
+  a=(arg[1..-1])
+  open(a, 'rb'){|f| f.read}
+end
+
+## -------- SPARQL query
+
+$usageQuery="sparql_query [-v] service [query | @file]"
+
+def SPARQL_query(service, query, args2={})
+  query=string_or_file(query)
+  args = { "query" => query }
+  args.merge!(args2)
+  qs=args.collect { |k,v| "#{k}=#{uri_escape(v)}" }.join('&')
+  action="#{service}?#{qs}"
+  headers={}
+  headers.merge!($headers)
+  headers[$hAccept]=$accept_results
+  get_worker(action, headers)
+end
+
+def cmd_sparql_query
+##   $verbose = true
+##   $print_http = true
+  service = ARGV.shift 
+  query = ARGV.shift 
+  print "SPARQL #{service}\n" if $verbose
+  args={}
+  #args={"output"=>"text"}
+  SPARQL_query(service, query, args)
+  exit(0)
+end
+
+## -------- SPARQL Update
+
+$usageUpdate="sparql_update [-v] service [update | @file]"
+
+# Update sent as a WWW form.
+def SPARQL_update_by_form(service, update, args2={})
+  update = string_or_file(update)
+  args = {}
+  args.merge!(args2)
+  headers={}
+  headers.merge!($headers)
+  update="request="+update
+  headers[$hContentType] = $mtWWWForm
+  headers[$hContentLength] = update.length.to_s
+  uri = URI.parse(service)
+  request = Net::HTTP::Post.new(uri.request_uri)
+  request.initialize_http_header(headers)
+  request.body = update
+  print_http_request(uri, request)
+  response_no_body(uri, request)
+end
+
+def SPARQL_update(service, update, args2={})
+  # Reads in the file :-(
+  update = string_or_file(update)
+  args = {}
+  args.merge!(args2)
+  headers={}
+  headers.merge!($headers)
+  headers[$hContentType] = $mtSparqlUpdate
+  uri = URI.parse(service)
+  request = Net::HTTP::Post.new(uri.request_uri)
+  request.initialize_http_header(headers)
+  request.body = update
+  print_http_request(uri, request)
+  response_no_body(uri, request)
+end
+
+def cmd_sparql_update
+##   $verbose = true
+##   $print_http = true
+  service = ARGV.shift 
+  update = ARGV.shift 
+  print "SPARQL-Update #{service}\n" if $verbose
+  args={}
+  SPARQL_update(service, update, args)
+  exit(0)
+end
+
+## -------
+
+cmd = File.basename($0)
+
+case cmd
+when "s-http", "sparql_http", "soh"
+  cmd_soh
+when "s-get", "s-put", "s-delete", "s-post"
+  cmd2 = cmd.sub(/^s-/, '').upcase
+  cmd_soh cmd2
+when "s-query", "sparql_query"
+  cmd_sparql_query
+when "s-update", "sparql_update"
+  cmd_sparql_update
+else 
+  warn_exit "Unknown: "+$0, 1
+end

@@ -1,0 +1,17 @@
+Checkup from SVN
+
+To get the dependent jars:
+   mvn dependency:resolve dependency:sources
+which will use the .classpath from SVN.
+It assumes you have M2_REPO set correctly.
+
+To rebuild the .classpath file:
+  mvn eclipse:eclipse \
+      -DdownloadSources=true \
+      -DdownloadJavadoc=false \
+      -DbuildOutputDirectory=classes
+
+then put back the src-dev source folder (code that is used for development
+but is not part of the artifact itself e.g. current work items, bug
+reports, ....). This sets the IDE output to "classes/" (this keep maven
+builds separate from code development).
