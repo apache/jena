@@ -9,7 +9,7 @@ package org.openjena.fuseki.client;
 import com.hp.hpl.jena.rdf.model.Model ;
 
 
-public interface DatasetUpdater
+public interface DatasetUpdater //extends DatasetUpdater
 {
     /** Get the default model of a Dataset */
     public Model getModel() ; 
