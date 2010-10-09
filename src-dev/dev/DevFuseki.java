@@ -20,10 +20,11 @@ public class DevFuseki
     //   Protocol
     
     // Not release:
-    // File upload.
-    // read-only server.
-    // execute non-dataset servlet. 
-    // dev.http - other updaters. => HttpMangement
+    //   File upload.
+    //   read-only server.
+    //   execute non-dataset servlet.
+    //   HTML forms and simple wrappers.
+    // dev.http - other updaters. DatasetUpdater => HttpDataset
     
     // SPARQL: Update -> Should it be 204 (and no page)?
     
@@ -32,14 +33,11 @@ public class DevFuseki
     //   request validation
     //   Testing, testing, testing.
 
-    //** shu : arguments for query and update.
-    // Naming: s_*?
-    
     // Migrate:
     //  UpdateRemote
     //  (QueryRemote)
-    //  ??DatasetUpdater
-    // DatasetUpdaterFactory
+    //  ??DatasetUpdater=>HttpDataset
+    // HttpDatasetFactory
     
     // Clean up SPARQL Query results code.
     
@@ -59,6 +57,7 @@ public class DevFuseki
     
     // Tests: TestContentNegotiation pass but more needed.
     // Clean up FusekiLib.
+    // Clean up Httpnames, DEF, WebContent.
     
     // Java DatasetUpdater:  don't serialise to byte[] and then send. 
     

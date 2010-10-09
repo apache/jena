@@ -161,7 +161,6 @@ public abstract class BaseTestDatasetUpdater extends Assert
 }
 
 /*
- * (c) Copyright 2010 Talis Information Ltd.
  * (c) Copyright 2010 Epimorphics Ltd.
  * 
  * All rights reserved.
