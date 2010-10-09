@@ -23,6 +23,7 @@ public class DevFuseki
     // File upload.
     // read-only server.
     // execute non-dataset servlet. 
+    // dev.http - other updaters. => HttpMangement
     
     // SPARQL: Update -> Should it be 204 (and no page)?
     
