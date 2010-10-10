@@ -6,10 +6,10 @@
 
 package org.openjena.fuseki;
 
-import org.openjena.fuseki.rest.DatasetGraphUpdater ;
-import org.openjena.fuseki.rest.DatasetGraphUpdaterBasic ;
-import org.openjena.fuseki.rest.DatasetGraphUpdaterHTTP ;
-import org.openjena.fuseki.rest.DS_UpdaterAdapter ;
+import org.openjena.fuseki.http.DS_UpdaterAdapter ;
+import org.openjena.fuseki.http.DatasetGraphUpdater ;
+import org.openjena.fuseki.http.DatasetGraphUpdaterBasic ;
+import org.openjena.fuseki.http.DatasetGraphUpdaterHTTP ;
 
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
