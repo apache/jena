@@ -31,8 +31,10 @@ public class WebContent
     public static final String contentTypeResultsXML        = "application/sparql-results+xml" ;
     public static final String contentTypeResultsJSON       = "application/sparql-results+json" ;
 
-    public static final String contentTypeTriG              = "application/x-trig" ;
-    public static final String contentTypeNQuads            = "text/x-nquads" ;
+    public static final String contentTypeTriG              = "application/trig" ;
+    public static final String contentTypeNQuads            = "text/nquads" ;
+    public static final String contentTypeTriGAlt           = "application/x-trig" ;
+    public static final String contentTypeNQuadsAlt         = "text/x-nquads" ;
 
     // There is no MIME type for a SPARQL query.
     // Either it is a GET or it is a "x-www-form-urlencoded"
