@@ -106,7 +106,7 @@ public class SPARQL_Query extends SPARQL_ServletBase
     }
     
     // All the params we support
-    private static String[] params_ = {  paramQuery, paramDefaultGraphURI, paramNamedGraphURI, 
+    private static String[] params_ = { paramQuery, paramDefaultGraphURI, paramNamedGraphURI, 
                                         paramQueryRef,
                                         paramStyleSheet,
                                         paramAccept,
