@@ -10,11 +10,14 @@ package dev;
 
 public class DevFuseki
 {
-    // ** DatsetUpdaterFactory
     // ** TestDatasetUpdater on graph / general.
+    // ** TestProtocol (HTTP update, query, update)
+    // HEAD 
     // OPTIONS
     // ** --accept, --output
     // 200 and 204: successPage ==> success.
+    
+    // SPARQL_REST -> target creates a graph by side effect.
     
     // POST: 201, 200, 204
     // PUT: 201 Created or 200/204
