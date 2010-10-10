@@ -17,26 +17,11 @@ public class DevFuseki
     // ** --accept, --output
     // 200 and 204: successPage ==> success.
     
-    // SPARQL_REST -> target creates a graph by side effect.
-    
-    // POST: 201, 200, 204
+    // POST: 201, 200, 204 No Content
     // PUT: 201 Created or 200/204
     // DELETE : 200/204
     // GET
     // HEAD: 204 or 404
-    // 201 Created
-    // 202 Accepted
-    // 204 No Content / 205 Reset Content
-    
-    // 301 Moved Permanently
-    // 302 Found
-    // 303 See Other
-    // 304 Not Modified
-    // 307 Temporary Redirect
-    
-    // HEAD
-    // Drop DatasetUpdater - it's a DataSource?
-    
     
     // Tasks:
     // EA-Release
@@ -45,12 +30,11 @@ public class DevFuseki
     
     // Code examples
     
-    // dev.http
-    //   Other DatasetUpdaters
-    //   DatasetUpdaters
-    
     // Tests:
-    //   Protocol
+    //   DatasetGraphUpdater (renamed!) inc status codes.
+    //     return a compound object?
+    //   Protocol, inc status codes.
+    //   SPARQL Query servlet / SPARQL Update servlet
     
     // Not release:
     //   File upload.
@@ -62,22 +46,9 @@ public class DevFuseki
     // SOH
     // query by POST
     
-    // SPARQL: Update -> Should it be 204 (and no page)?
-    
-    // ****
-    // SPARQL Query servlet / SPARQL Update servlet
-    //   Testing, testing, testing.
-
-    // Migrate:
-    //  UpdateRemote
-    //  (QueryRemote)
-    //  ??DatasetUpdater=>HttpDataset
-    // HttpDatasetFactory
-    
     // Clean up SPARQL Query results code.
-    
-    // Check basename resolution for "graph="
-    // http://en.wikipedia.org/wiki/List_of_HTTP_header_fields
+
+    // HTTP:
     // gzip and inflate.   
     
     // LastModified headers. 
