@@ -30,6 +30,7 @@ import org.apache.http.params.HttpParams ;
 import org.apache.http.params.HttpProtocolParams ;
 import org.apache.http.protocol.HTTP ;
 import org.openjena.atlas.io.IO ;
+import org.openjena.atlas.lib.NotImplemented ;
 import org.openjena.atlas.lib.Sink ;
 import org.openjena.fuseki.Fuseki ;
 import org.openjena.fuseki.FusekiException ;
@@ -76,6 +77,14 @@ public class DatasetGraphUpdaterHTTP implements DatasetGraphUpdater
         return exec(url, null, httpGet, true) ;
     }
     
+    @Override
+    public boolean httpHead()
+    { throw new NotImplemented("yet") ; }
+
+    @Override
+    public boolean httpHead(Node graphName)
+    { throw new NotImplemented("yet") ; }
+
     @Override
     public void httpPut(Graph data)                   { doPut(targetDefault(), data) ; }
 

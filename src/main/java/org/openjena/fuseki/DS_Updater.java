@@ -6,41 +6,30 @@
 
 package org.openjena.fuseki;
 
-import org.openjena.fuseki.rest.DatasetGraphUpdater ;
-import org.openjena.fuseki.rest.DatasetGraphUpdaterBasic ;
-import org.openjena.fuseki.rest.DatasetGraphUpdaterHTTP ;
-import org.openjena.fuseki.rest.DS_UpdaterAdapter ;
+import com.hp.hpl.jena.rdf.model.Model ;
 
-import com.hp.hpl.jena.query.Dataset ;
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-
-public class DatasetUpdaterFactory
+// This is a "DataSource"?
+public interface DS_Updater
 {
-    public static DS_Updater createHTTP(String serviceURI)
-    {
-        return adapt(new DatasetGraphUpdaterHTTP(serviceURI)) ;
-    }
+    /** Get the default model of a Dataset */
+    public Model getModel() ; 
+    /** Get a named model of a Dataset */
+    public Model getModel(String graphUri) ;
 
-    public static DS_Updater create(DatasetGraph dataset)
-    {
-        return adapt(new DatasetGraphUpdaterBasic(dataset)) ;
-    }
-    
-    public static DS_Updater create(Dataset dataset)
-    {
-        return adapt(new DatasetGraphUpdaterBasic(dataset.asDatasetGraph())) ;
-    }
+    /** Put (replace) the default model of a Dataset */
+    public void putModel(Model data) ;
+    /** Put (create/replace) a named model of a Dataset */
+    public void putModel(String graphUri, Model data) ;
 
-    public static DatasetGraphUpdater make(DatasetGraph dataset)
-    {
-        return new DatasetGraphUpdaterBasic(dataset) ;
-    }
-    
-    private static DS_Updater adapt(DatasetGraphUpdater dgu)
-    {
-        return new DS_UpdaterAdapter(dgu) ;
-    }
-    
+    /** Delete (which means clear) the default model of a Dataset */
+    public void deleteDefault() ;
+    /** Delete a named model of a Dataset */
+    public void deleteModel(String graphUri) ;
+
+    /** Add statements to the default model of a Dataset */
+    public void add(Model data) ;
+    /** Add statements to a named model of a Dataset */
+    public void add(String graphUri, Model data) ;
 }
 
 /*
