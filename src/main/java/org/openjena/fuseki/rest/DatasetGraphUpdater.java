@@ -11,9 +11,11 @@ import com.hp.hpl.jena.graph.Node ;
 
 public interface DatasetGraphUpdater
 {
-    // Get graph
     public Graph httpGet() ; 
     public Graph httpGet(Node graphName) ;
+    
+    public boolean httpHead() ; 
+    public boolean httpHead(Node graphName) ;
     
     // Replace/create graph
     public void httpPut(Graph data) ;

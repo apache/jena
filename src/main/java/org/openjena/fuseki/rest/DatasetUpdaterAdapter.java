@@ -6,7 +6,7 @@
 
 package org.openjena.fuseki.rest;
 
-import org.openjena.fuseki.DatasetUpdater ;
+import org.openjena.fuseki.DS_Updater ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
@@ -14,7 +14,7 @@ import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
 
 /** Adapter between Dataset/Model level and DatasetGraph/Graph level */ 
-public class DatasetUpdaterAdapter implements DatasetUpdater
+public class DatasetUpdaterAdapter implements DS_Updater
 {
     private final DatasetGraphUpdater updater ;
 

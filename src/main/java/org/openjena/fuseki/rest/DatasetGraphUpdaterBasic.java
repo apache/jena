@@ -25,11 +25,17 @@ public class DatasetGraphUpdaterBasic implements DatasetGraphUpdater
     }
     
     @Override
-    public Graph httpGet()                    { return dataset.getDefaultGraph() ; }
+    public Graph httpGet()                      { return dataset.getDefaultGraph() ; }
     
     @Override
-    public Graph httpGet(Node graphName)      { return dataset.getGraph(graphName) ; }
-    
+    public Graph httpGet(Node graphName)        { return dataset.getGraph(graphName) ; }
+
+    @Override
+    public boolean httpHead()                   { return true ; }
+
+    @Override
+    public boolean httpHead(Node graphName)     { return dataset.containsGraph(graphName) ; }
+
     @Override
     public void httpPut(Graph data) 
     {  
