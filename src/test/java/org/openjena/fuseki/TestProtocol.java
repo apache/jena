@@ -19,14 +19,14 @@ public class TestProtocol extends BaseServerTest
     {
         serverReset() ;
         // Load some data.
-        DatasetUpdater du = DatasetUpdaterFactory.createHTTP(serviceREST) ;
+        DS_Updater du = DatasetUpdaterFactory.createHTTP(serviceREST) ;
         du.putModel(graph1) ;
         du.putModel(gn1, graph2) ;
     }
     
     @AfterClass public static void afterClass()
     {
-        DatasetUpdater du = DatasetUpdaterFactory.createHTTP(serviceREST) ;
+        DS_Updater du = DatasetUpdaterFactory.createHTTP(serviceREST) ;
         du.deleteDefault() ;
     }
     

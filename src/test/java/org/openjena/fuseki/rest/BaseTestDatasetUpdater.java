@@ -9,7 +9,7 @@ package org.openjena.fuseki.rest;
 
 import org.junit.Assert ;
 import org.junit.Test ;
-import org.openjena.fuseki.client.DatasetGraphUpdater ;
+import org.openjena.fuseki.rest.DatasetGraphUpdater ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;

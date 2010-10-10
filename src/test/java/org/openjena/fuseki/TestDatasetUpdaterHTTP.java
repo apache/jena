@@ -55,35 +55,35 @@ public class TestDatasetUpdaterHTTP extends BaseServerTest
     @Test(expected=FusekiRequestException.class)
     public void test_404_1()
     {
-        DatasetUpdater du = DatasetUpdaterFactory.createHTTP(datasetURI_not_1) ;
+        DS_Updater du = DatasetUpdaterFactory.createHTTP(datasetURI_not_1) ;
         Model graph = du.getModel(gn99) ;
     }
     
     @Test(expected=FusekiRequestException.class)
     public void test_404_2()
     {
-        DatasetUpdater du = DatasetUpdaterFactory.createHTTP(datasetURI_not_2) ;
+        DS_Updater du = DatasetUpdaterFactory.createHTTP(datasetURI_not_2) ;
         Model graph = du.getModel(gn99) ;
     }
 
     @Test public void test_404_3()
     {
         // All graphs "exist"
-        DatasetUpdater du = DatasetUpdaterFactory.createHTTP(serviceREST) ;
+        DS_Updater du = DatasetUpdaterFactory.createHTTP(serviceREST) ;
         Model graph = du.getModel(gn99) ;
         assertTrue(graph.isEmpty()) ;
     }
     
     
     
-    static DatasetUpdater create()
+    static DS_Updater create()
     {
         return DatasetUpdaterFactory.createHTTP(serviceREST) ;
     }
     
     @Test public void get_01()
     {
-        DatasetUpdater du = create() ;
+        DS_Updater du = create() ;
         Model graph = du.getModel() ;
         assertTrue(graph.isEmpty()) ;
     }
@@ -91,26 +91,26 @@ public class TestDatasetUpdaterHTTP extends BaseServerTest
     @Test public void get_02()
     {
         // All graphs exist.
-        DatasetUpdater du = create() ;
+        DS_Updater du = create() ;
         Model graph = du.getModel(gn1) ;
         assertTrue(graph.isEmpty()) ;
     }
 
     @Test public void delete_01()
     {
-        DatasetUpdater du = create() ;
+        DS_Updater du = create() ;
         du.deleteDefault() ;
     }
 
     @Test public void delete_02()
     {
-        DatasetUpdater du = create() ;
+        DS_Updater du = create() ;
         du.deleteModel(gn1) ;
     }
 
     @Test public void put_01()
     {
-        DatasetUpdater du = create() ;
+        DS_Updater du = create() ;
         du.putModel(graph1) ;
         Model graph = du.getModel() ;
         assertTrue(graph.isIsomorphicWith(graph1)) ;
@@ -122,7 +122,7 @@ public class TestDatasetUpdaterHTTP extends BaseServerTest
     
     @Test public void put_02()
     {
-        DatasetUpdater du = create() ;
+        DS_Updater du = create() ;
         du.putModel(gn1, graph1) ;
         Model graph = du.getModel() ;
         assertTrue(graph.isEmpty()) ;
@@ -136,7 +136,7 @@ public class TestDatasetUpdaterHTTP extends BaseServerTest
 
     @Test public void put_03()
     {
-        DatasetUpdater du = create() ;
+        DS_Updater du = create() ;
         du.putModel(graph1) ;
         du.putModel(graph2) ;  // PUT overwrites
         Model graph = du.getModel() ;
@@ -150,7 +150,7 @@ public class TestDatasetUpdaterHTTP extends BaseServerTest
 
     @Test public void post_01()
     {
-        DatasetUpdater du = create() ;
+        DS_Updater du = create() ;
         du.putModel(graph1) ;
         du.add(graph2) ;  // POST appends
         Model graph = du.getModel() ;
@@ -170,7 +170,7 @@ public class TestDatasetUpdaterHTTP extends BaseServerTest
 
     @Test public void post_02()
     {
-        DatasetUpdater du = create() ;
+        DS_Updater du = create() ;
         du.add(graph1) ;
         du.add(graph2) ;
         Model graph = du.getModel() ;
@@ -190,7 +190,7 @@ public class TestDatasetUpdaterHTTP extends BaseServerTest
     
     @Test public void clearup_1()
     {
-        DatasetUpdater du = create() ;
+        DS_Updater du = create() ;
         du.deleteDefault() ;
         du.deleteModel(gn1) ;
         du.deleteModel(gn2) ;

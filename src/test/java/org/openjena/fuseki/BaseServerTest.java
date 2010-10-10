@@ -11,7 +11,7 @@ import org.junit.BeforeClass ;
 import org.openjena.atlas.junit.BaseTest ;
 import org.openjena.atlas.logging.Log ;
 import org.openjena.fuseki.Fuseki ;
-import org.openjena.fuseki.client.UpdateRemote ;
+import org.openjena.fuseki.rest.UpdateRemote ;
 import org.openjena.fuseki.server.SPARQLServer ;
 
 import com.hp.hpl.jena.rdf.model.Model ;

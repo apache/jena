@@ -7,7 +7,7 @@
 package org.openjena.fuseki.rest;
 
 import org.openjena.fuseki.DatasetUpdaterFactory ;
-import org.openjena.fuseki.client.DatasetGraphUpdater ;
+import org.openjena.fuseki.rest.DatasetGraphUpdater ;
 
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
