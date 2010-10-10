@@ -60,8 +60,14 @@ public class UpdateRemote
             HttpResponse response = httpclient.execute(httpPost) ;
             int responseCode = response.getStatusLine().getStatusCode() ;
             String responseMessage = response.getStatusLine().getReasonPhrase() ;
-            if ( responseCode != HttpStatus.OK_200 )
-                throw new UpdateException(responseCode+" "+responseMessage) ;
+            
+            if ( responseCode == HttpStatus.NO_CONTENT_204 )
+                return ;
+            if ( responseCode == HttpStatus.OK_200 )
+                // But what was the content?
+                // TODO read body 
+                return ; 
+            throw new UpdateException(responseCode+" "+responseMessage) ;
         } catch (IOException ex)
         {
             throw new UpdateException(ex) ;

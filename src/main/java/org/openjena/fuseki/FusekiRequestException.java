@@ -9,17 +9,29 @@ package org.openjena.fuseki;
 
 public class FusekiRequestException extends FusekiException
 {
-    private final int code ;
+    private final int statusCode ;
+    private final String responseMessage ;
     public FusekiRequestException(int code, String msg)
     {
         super(msg) ;
-        this.code = code ;
+        this.statusCode = code ;
+        responseMessage = msg ;
     }
     
+    public int getStatusCode()
+    {
+        return statusCode ;
+    }
+
+    public String getResponseMessage()
+    {
+        return responseMessage ;
+    }
+
     @Override
     public String toString()
     {
-        return "HTTP: "+code+" "+getMessage() ;
+        return "HTTP: "+statusCode+" "+getMessage() ;
     }
 }
 

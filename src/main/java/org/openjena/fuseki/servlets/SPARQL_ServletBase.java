@@ -147,6 +147,13 @@ public abstract class SPARQL_ServletBase extends HttpServlet
     }
 
     protected abstract String mapRequestToDataset(String uri) ;
+    
+    protected String mapRequestToDataset(String uri, String tail)
+    {
+        if ( uri.endsWith(tail) )
+            return uri.substring(0, uri.length()-tail.length()) ;
+        return null ;
+    }
 
     protected abstract void perform(long id, DatasetGraph dsg, HttpServletRequest request, HttpServletResponse response) ;
 
@@ -164,6 +171,51 @@ public abstract class SPARQL_ServletBase extends HttpServlet
         return sb.toString() ;
     }
 
+    protected static void successNoContent(HttpAction action)
+    {
+        success(action, HttpServletResponse.SC_NO_CONTENT);
+    }
+
+    protected static void successCreated(HttpAction action)
+    {
+        success(action, HttpServletResponse.SC_CREATED);
+    }
+    
+    // When 404 is no big deal e.g. HEAD
+    protected static void successNotFound(HttpAction action) 
+    {
+        success(action, HttpServletResponse.SC_NOT_FOUND) ;
+    }
+
+    //
+    protected static void success(HttpAction action, int httpStatusCode)
+    {
+        action.response.setStatus(httpStatusCode);
+    }
+    
+    protected static void successPage(HttpAction action, String message)
+    {
+        try {
+            action.response.setContentType("text/html");
+            action.response.setStatus(HttpServletResponse.SC_OK);
+            PrintWriter out = action.response.getWriter() ;
+            out.println("<html>") ;
+            out.println("<head>") ;
+            out.println("</head>") ;
+            out.println("<body>") ;
+            out.println("<h1>Success</h1>");
+            if ( message != null )
+            {
+                out.println("<p>") ;
+                out.println(message) ;
+                out.println("</p>") ;
+            }
+            out.println("</body>") ;
+            out.println("</html>") ;
+            out.flush() ;
+        } catch (IOException ex) { errorOccurred(ex) ; }
+    }
+
     protected static void errorBadRequest(String string)
     {
         error(HttpServletResponse.SC_BAD_REQUEST, string) ;
@@ -174,6 +226,10 @@ public abstract class SPARQL_ServletBase extends HttpServlet
         error(HttpServletResponse.SC_NOT_FOUND, string) ;
     }
 
+    protected static void errorNotImplemented()
+    {
+        error(HttpServletResponse.SC_NOT_IMPLEMENTED) ;
+    }
 
     protected static void error(int statusCode)
     {
@@ -201,23 +257,6 @@ public abstract class SPARQL_ServletBase extends HttpServlet
         throw new SPARQL_REST.UpdateErrorException(ex, message, HttpServletResponse.SC_INTERNAL_SERVER_ERROR) ;
     }
     
-    protected static void successPage(HttpAction action)
-    {
-        try {
-        action.response.setContentType("text/html");
-        action.response.setStatus(HttpServletResponse.SC_OK);
-        PrintWriter out = action.response.getWriter() ;
-        out.println("<html>") ;
-        out.println("<head>") ;
-        out.println("</head>") ;
-        out.println("<body>") ;
-        out.println("<h1>Success</h1>");
-        out.println("</body>") ;
-        out.println("</html>") ;
-        out.flush() ;
-        } catch (IOException ex) { errorOccurred(ex) ; }
-    }
-
     protected static void sync(DatasetGraph dsg)
     {
         TDB.sync(dsg) ;

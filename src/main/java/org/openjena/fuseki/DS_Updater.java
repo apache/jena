@@ -16,6 +16,12 @@ public interface DS_Updater
     /** Get a named model of a Dataset */
     public Model getModel(String graphUri) ;
 
+//    /** Does the Dataset contain a default graph? */
+//    public boolean containsDefault() ;
+
+    /** Does the Dataset contain a named graph? */
+    public boolean containsModel(String graphURI) ;
+    
     /** Put (replace) the default model of a Dataset */
     public void putModel(Model data) ;
     /** Put (create/replace) a named model of a Dataset */

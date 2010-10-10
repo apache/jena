@@ -8,9 +8,10 @@ package org.openjena.fuseki.servlets;
 
 import static java.lang.String.format ;
 import static org.openjena.fuseki.Fuseki.serverlog ;
-import static org.openjena.fuseki.HttpNames.HEADER_LASTMOD ;
+import static org.openjena.fuseki.HttpNames.* ;
 import static org.openjena.fuseki.HttpNames.METHOD_DELETE ;
 import static org.openjena.fuseki.HttpNames.METHOD_GET ;
+import static org.openjena.fuseki.HttpNames.METHOD_HEAD ;
 import static org.openjena.fuseki.HttpNames.METHOD_POST ;
 import static org.openjena.fuseki.HttpNames.METHOD_PUT ;
 
@@ -80,77 +81,6 @@ public class SPARQL_REST extends SPARQL_ServletBase
     {
         doCommon(request, response) ;
     }
-//        // Allocate a number for this request.
-//        long id = requestIdAlloc.incrementAndGet() ;
-//        String uri = request.getRequestURI() ;
-//        
-//        String url = SPARQL_Servlet.wholeRequestURL(request) ;
-//        String method = request.getMethod() ;
-//        setCommonHeaders(response) ;
-//        
-//        serverlog.info(format("[%d] %s %s", id, method, url)) ; 
-//        
-//        if ( verbose_debug )
-//        {
-//            @SuppressWarnings("unchecked")
-//            Enumeration<String> en = (Enumeration<String>)request.getHeaderNames() ;
-//            for ( ; en.hasMoreElements() ; )
-//            {
-//                String h = en.nextElement() ;
-//                @SuppressWarnings("unchecked")
-//                Enumeration<String> vals = (Enumeration<String>)request.getHeaders(h) ;
-//                if ( ! vals.hasMoreElements() )
-//                    serverlog.info(format("[%d]   ",id, h)) ;
-//                else
-//                {
-//                    for ( ; vals.hasMoreElements() ; )
-//                        serverlog.info(format("[%d]   %-20s %s", id, h, vals.nextElement())) ;
-//                }
-//            }
-//        }
-//        
-////        Target target = targetGraph(request) ;
-////        String targetName = (target.name!=null ? target.name : "default graph") ; 
-////        String method = request.getMethod() ;
-////        System.out.flush();
-////        log.info(method+" -> "+targetName) ;
-//        
-//        try {
-//            DatasetGraph dsg = DatasetRegistry.get().get(uri) ;
-//            if ( dsg == null )
-//            {
-//                errorNotFound("No dataset for URI: "+uri) ;
-//                return ;
-//            }
-//            
-//            validate(request) ;
-//            HttpActionREST action = new HttpActionREST(id, dsg, request, response, verbose_debug) ;
-//            dispatch(action) ;
-//            //if ( false ) super.service(request, response) ;
-//            serverlog.info(String.format("[%d] 200 Success", id)) ;
-//        } catch (UpdateErrorException ex)
-//        {
-//            if ( ex.exception != null )
-//                ex.exception.printStackTrace(System.err) ;
-//            
-//            if ( ex.message != null )
-//            {
-//                response.sendError(ex.rc, ex.message) ;
-//                serverlog.info(format("[%d] RC = %d : %s",id, ex.rc, ex.message)) ;
-//            }
-//            else
-//            {
-//                response.sendError(ex.rc) ;
-//                serverlog.info(format("[%d] RC = %d : %s",id, ex.rc)) ;
-//            }
-//        }
-//        catch (Exception ex)
-//        {   // This should not happen.
-//            ex.printStackTrace(System.err) ;
-//            serverlog.info(format("[%d] RC = %d : %s", id, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, ex.getMessage())) ;
-//            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, ex.getMessage()) ;
-//        }
-//    }
     
     private void maybeSetLastModified(HttpServletResponse resp, long lastModified)
     {
@@ -178,27 +108,32 @@ public class SPARQL_REST extends SPARQL_ServletBase
         
         if (method.equals(METHOD_GET))
             doGet(action);
+        else if (method.equals(METHOD_HEAD))
+            doHead(action);
         else if (method.equals(METHOD_POST))
             doPost(action);
-//        else if (method.equals(METHOD_PATCH))
-//            doPatch(action) ;
+        else if (method.equals(METHOD_PATCH))
+            //doPatch(action) ;
+            errorNotImplemented() ;
+        else if (method.equals(METHOD_OPTIONS))
+            //doOptions(action) ;
+            errorNotImplemented() ;
+        else if (method.equals(METHOD_TRACE))
+            //doTrace(action) ;
+            errorNotImplemented() ;
         else if (method.equals(METHOD_PUT))
             doPut(action) ;   
         else if (method.equals(METHOD_DELETE))
             doDelete(action) ;
         else
-            error(HttpServletResponse.SC_NOT_IMPLEMENTED, "Method not implemented");
+            errorNotImplemented() ;
     }
         
-    
     @Override
     protected String mapRequestToDataset(String uri)
     {
-        // TODO Constant
-        String tail = "/data" ;
-        if ( uri.endsWith(tail) )
-            return uri.substring(0, uri.length()-tail.length()) ;
-        return uri ; 
+        String uri2 = mapRequestToDataset(uri, HttpNames.ServiceData) ;
+        return (uri2 != null) ? uri2 : uri ; 
     }
 
     protected void doGet(HttpActionREST action)
@@ -237,6 +172,15 @@ public class SPARQL_REST extends SPARQL_ServletBase
         } catch (IOException ex) { errorOccurred(ex) ; }
     }
     
+    protected void doHead(HttpActionREST action)
+    {
+        boolean exists = (action.target.graph != null) ; 
+        if ( exists )
+            SPARQL_ServletBase.successNoContent(action) ;
+        else
+            SPARQL_ServletBase.successNotFound(action) ;
+    }
+
     protected void doDelete(HttpActionREST action)
     {
         action.lock.enterCriticalSection(Lock.WRITE) ;
@@ -244,11 +188,12 @@ public class SPARQL_REST extends SPARQL_ServletBase
             deleteGraph(action) ;
             SPARQL_ServletBase.sync(action.dsg) ;
         } finally { action.lock.leaveCriticalSection() ; }
-        SPARQL_ServletBase.successPage(action) ;
+        SPARQL_ServletBase.successNoContent(action) ;
     }
 
     protected void doPut(HttpActionREST action)
     {
+        boolean existedBefore = (action.target.graph != null) ; 
         DatasetGraph body = parseBody(action) ;
         action.lock.enterCriticalSection(Lock.WRITE) ;
         try {
@@ -257,18 +202,26 @@ public class SPARQL_REST extends SPARQL_ServletBase
             addDataInto(body.getDefaultGraph(), action.target.graph) ;
             SPARQL_ServletBase.sync(action.dsg) ;
         } finally { action.lock.leaveCriticalSection() ; }
-        SPARQL_ServletBase.successPage(action) ;
+        // Differentiate: 201 Created or 204 No Content 
+        if ( existedBefore )
+            SPARQL_ServletBase.successNoContent(action) ;
+        else
+            SPARQL_ServletBase.successCreated(action) ;
     }
 
     protected void doPost(HttpActionREST action)
     {
+        boolean existedBefore = (action.target.graph != null) ; 
         DatasetGraph body = parseBody(action) ;
         action.lock.enterCriticalSection(Lock.WRITE) ;
         try {
             addDataInto(body.getDefaultGraph(), action.target.graph) ;
             SPARQL_ServletBase.sync(action.dsg) ;
         } finally { action.lock.leaveCriticalSection() ; }
-        SPARQL_ServletBase.successPage(action) ;
+        if ( existedBefore )
+            SPARQL_ServletBase.successNoContent(action) ;
+        else
+            SPARQL_ServletBase.successCreated(action) ;
     }
 
     @Override

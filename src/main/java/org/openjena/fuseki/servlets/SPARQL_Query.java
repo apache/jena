@@ -105,23 +105,6 @@ public class SPARQL_Query extends SPARQL_ServletBase
         return uri ; 
     }
     
-    protected String mapRequestToDataset(String uri, String tail)
-    {
-        if ( uri.endsWith(tail) )
-            return uri.substring(0, uri.length()-tail.length()) ;
-        return null ;
-    }
-
-    
-    /*
-     *                 @SuppressWarnings("unchecked")
-                Enumeration<String> en = request.getParameterNames() ;
-                if ( en.hasMoreElements() )
-                    errorBadRequest("No request parameters allowed") ;
-                return ;
-
-     */
-    
     // All the params we support
     private static String[] params_ = {  paramQuery, paramDefaultGraphURI, paramNamedGraphURI, 
                                         paramQueryRef,

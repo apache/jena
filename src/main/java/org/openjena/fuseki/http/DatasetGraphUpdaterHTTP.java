@@ -19,6 +19,7 @@ import org.apache.http.client.HttpClient ;
 import org.apache.http.client.methods.HttpDelete ;
 import org.apache.http.client.methods.HttpEntityEnclosingRequestBase ;
 import org.apache.http.client.methods.HttpGet ;
+import org.apache.http.client.methods.HttpHead ;
 import org.apache.http.client.methods.HttpPost ;
 import org.apache.http.client.methods.HttpPut ;
 import org.apache.http.client.methods.HttpUriRequest ;
@@ -29,9 +30,11 @@ import org.apache.http.params.HttpConnectionParams ;
 import org.apache.http.params.HttpParams ;
 import org.apache.http.params.HttpProtocolParams ;
 import org.apache.http.protocol.HTTP ;
+import org.eclipse.jetty.http.HttpStatus ;
 import org.openjena.atlas.io.IO ;
 import org.openjena.atlas.lib.NotImplemented ;
 import org.openjena.atlas.lib.Sink ;
+import org.openjena.atlas.logging.Log ;
 import org.openjena.fuseki.Fuseki ;
 import org.openjena.fuseki.FusekiException ;
 import org.openjena.fuseki.FusekiLib ;
@@ -79,11 +82,29 @@ public class DatasetGraphUpdaterHTTP implements DatasetGraphUpdater
     
     @Override
     public boolean httpHead()
-    { throw new NotImplemented("yet") ; }
-
+    {
+        return doHead(targetDefault()) ;
+    }
+    
     @Override
     public boolean httpHead(Node graphName)
-    { throw new NotImplemented("yet") ; }
+    {
+        return doHead(target(graphName.getURI())) ;
+    }
+
+    private boolean doHead(String url)
+    {
+        HttpUriRequest httpHead = new HttpHead(url) ;
+        try {
+            exec(url, null, httpHead, false) ;
+            return true ;
+        } catch (FusekiRequestException ex)
+        {
+            if ( ex.getStatusCode() == HttpStatus.NOT_FOUND_404 )
+                return false ;
+            throw ex ;
+        }
+    }
 
     @Override
     public void httpPut(Graph data)                   { doPut(targetDefault(), data) ; }
@@ -193,6 +214,15 @@ public class DatasetGraphUpdaterHTTP implements DatasetGraphUpdater
 
             if (responseCode >= 400) throw new FusekiRequestException(responseCode, responseMessage) ;
 
+            if ( responseCode == HttpStatus.NO_CONTENT_204) return null ;
+            if ( responseCode == HttpStatus.CREATED_201 ) return null ;
+            
+            if ( responseCode != HttpStatus.OK_200 )
+            {
+                Log.warn(this, "Unexpected status code") ;
+                throw new FusekiRequestException(responseCode, responseMessage) ;
+            }
+                
             // Tidy. See ConNeg / MediaType.
             String x = getHeader(response, HttpNames.hContentType) ;
             String y[] = x.split(";") ;

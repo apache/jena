@@ -36,6 +36,12 @@ public class DS_UpdaterAdapter implements DS_Updater
         return ModelFactory.createModelForGraph(g) ;
     }
 
+    @Override
+    public boolean containsModel(String graphUri)
+    {
+        return updater.httpHead(Node.createURI(graphUri)) ;
+    }
+
     /** Put (replace) the default model of a Dataset */
     @Override
     public void putModel(Model data)

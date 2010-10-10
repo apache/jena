@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServletResponse ;
 import org.openjena.atlas.io.IO ;
 import org.openjena.atlas.lib.Bytes ;
 import org.openjena.fuseki.DEF ;
+import org.openjena.fuseki.HttpNames ;
 import org.openjena.riot.WebContent ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
@@ -78,11 +79,8 @@ public class SPARQL_Update extends SPARQL_ServletBase
     @Override
     protected String mapRequestToDataset(String uri)
     {
-        // TODO Constants
-        String tail = "/update" ;
-        if ( uri.endsWith(tail) )
-            return uri.substring(0, uri.length()-tail.length()) ;
-        return uri ; 
+        String uri2 = mapRequestToDataset(uri, HttpNames.ServiceUpdate) ;
+        return (uri2 != null) ? uri2 : uri ; 
     }
 
     @Override
@@ -181,7 +179,7 @@ public class SPARQL_Update extends SPARQL_ServletBase
             UpdateAction.execute(updateRequest, graphStore) ;
     //        UpdateProcessor proc = UpdateExecutionFactory.create(req, graphStore) ;
     //        proc.execute() ;
-            successPage(action) ;
+            successNoContent(action) ;
         }
         catch ( UpdateException ex) { errorBadRequest(ex.getMessage()) ; }
         finally {  action.lock.leaveCriticalSection() ; }
