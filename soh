@@ -261,7 +261,7 @@ end
 def cmd_soh(command=nil)
   ## Command line
   options = {}
-  optparse = OptionParser.new do|opts|
+  optparse = OptionParserend.new do |opts|
     # Set a banner, displayed at the top
     # of the help screen.
     opts.banner = "Usage: #{$0} [get|put|delete|post] dataset graph [file]"
@@ -286,12 +286,11 @@ def cmd_soh(command=nil)
     end
   end
 
-  # Parse the command-line. Remember there are two forms
-  # of the parse method. The 'parse' method simply parses
-  # ARGV, while the 'parse!' method parses ARGV and removes
-  # any options found there, as well as any parameters for
-  # the options. What's left is arguments.
-  optparse.parse!
+  begin optparse.parse!    
+  rescue OptionParser::InvalidArgument => e
+    warn e
+    exit
+  end
 
   $verbose = options[:verbose]
   $print_http = $verbose
@@ -366,10 +365,11 @@ end
 
 ## -------- SPARQL query
 
-$usageQuery="sparql_query [-v] service [query | @file]"
-
-def SPARQL_query(service, query, args2={})
-  query=string_or_file(query)
+def SPARQL_query(service, query, query_file, args2={})
+  # Temp: read file into string.
+  if ! query_file.nil?
+    query = open(query_file, 'rb'){|f| f.read}
+  end
   args = { "query" => query }
   args.merge!(args2)
   qs=args.collect { |k,v| "#{k}=#{uri_escape(v)}" }.join('&')
@@ -380,21 +380,83 @@ def SPARQL_query(service, query, args2={})
   get_worker(action, headers)
 end
 
+# Usage: -v --help --file= --query=
 def cmd_sparql_query
-##   $verbose = true
-##   $print_http = true
-  service = ARGV.shift 
-  query = ARGV.shift 
-  print "SPARQL #{service}\n" if $verbose
+  options={}
+  optparse = OptionParser.new do |opts|
+    opts.banner = "Usage: #{$0} [--query QUERY] [--service URI] 'query' | @file"
+     opts.on('--service=URI', '--server=URI', 'SPARQL endpoint') do |uri|
+      options[:service]=uri
+    end
+    opts.on('--query=FILE','--file=FILE', 'Take query from a file') do |file|
+      options[:file]=file
+    end
+    opts.on('--output=TYPE', [:json,:xml,:text,:csv,:tsv],
+            'Set the output argument') do |type|
+      options[:output]=type
+    end
+     opts.on('--accept=TYPE', [:json,:xml,:text,:csv,:tsv], 
+            'Set the accept header type') do |type|
+      options[:accept]=type
+    end
+    options[:verbose] = false
+    opts.on( '-v', '--verbose', 'Verbose' ) do
+      options[:verbose] = true
+    end
+    opts.on( '--version', 'Print version and exit' ) do
+      print "#{SOH_NAME} #{SOH_VERSION}\n"
+      exit
+    end 
+    opts.on( '-h', '--help', 'Display this screen and exit' ) do
+      puts opts
+      exit
+    end
+  end
+
+  begin optparse.parse!    
+  rescue OptionParser::InvalidArgument, OptionParser::InvalidOption => e
+    warn e
+    exit 1
+  end
+
+  $verbose = options[:verbose]
+  $print_http = $verbose
+
+  service = options[:service]
+  warn_exit 'No service specified.  Required --service=URI',1 if service.nil?
+
+  # Query
+  query=nil
+  query_file=options[:file]
+  if query_file.nil? && ARGV.size == 0
+  then
+    warn_exit 'No query specified.',1 if service.nil?
+    end
+  if query_file.nil?
+    query = ARGV.shift
+    if query.match(/^@/)
+      query_file = query[1..-1]
+      query = nil
+    end
+  end
+
+  # --output ==> output= (non-standard)
   args={}
+  case options[:output]
+  when :text
+    args['output'] = 'text'
+  end
+
+  # --accept
+  # options[:accept]
+
+  print "SPARQL #{service}\n" if $verbose
   #args={"output"=>"text"}
-  SPARQL_query(service, query, args)
+  SPARQL_query(service, query, query_file, args)
   exit(0)
 end
 
 ## -------- SPARQL Update
-
-$usageUpdate="sparql_update [-v] service [update | @file]"
 
 # Update sent as a WWW form.
 def SPARQL_update_by_form(service, update, args2={})
@@ -431,10 +493,57 @@ def SPARQL_update(service, update, args2={})
 end
 
 def cmd_sparql_update
-##   $verbose = true
-##   $print_http = true
-  service = ARGV.shift 
-  update = ARGV.shift 
+  # Share with cmd_sparql_query
+  options={}
+  optparse = OptionParser.new do |opts|
+    opts.banner = "Usage: #{$0} [--file REQUEST] [--service URI] 'request' | @file"
+    opts.on('--service=URI', '--server=URI', 'SPARQL endpoint') do |uri|
+      options[:service]=uri
+    end
+    opts.on('--file=FILE', 'Take update from a file') do |file|
+      options[:file]=file
+    end
+    options[:verbose] = false
+    opts.on( '-v', '--verbose', 'Verbose' ) do
+      options[:verbose] = true
+    end
+    opts.on( '--version', 'Print version and exit' ) do
+      print "#{SOH_NAME} #{SOH_VERSION}\n"
+      exit
+    end 
+    opts.on( '-h', '--help', 'Display this screen and exit' ) do
+      puts opts
+      exit
+    end
+  end
+
+  begin optparse.parse!    
+  rescue OptionParser::InvalidArgument => e
+    warn e
+    exit
+  end
+
+  $verbose = options[:verbose]
+  $print_http = $verbose
+
+  service = options[:service]
+  warn_exit 'No service specified. Required --service=URI',1   if service.nil?
+  
+  update=nil
+  update_file=options[:file]
+
+  if update_file.nil? && ARGV.size == 0
+  then
+    warn_exit 'No update specified.',1 if service.nil?
+    end
+  if update_file.nil?
+    update = ARGV.shift
+    if update.match(/^@/)
+      update_file = update[1..-1]
+      update = nil
+    end
+  end
+
   print "SPARQL-Update #{service}\n" if $verbose
   args={}
   SPARQL_update(service, update, args)

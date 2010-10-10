@@ -12,8 +12,26 @@ public class DevFuseki
 {
     // ** DatsetUpdaterFactory
     // ** TestDatasetUpdater on graph / general.
+    // OPTIONS
     // ** --accept, --output
+    // 200 and 204: successPage ==> success.
     
+    // POST: 201, 200, 204
+    // PUT: 201 Created or 200/204
+    // DELETE : 200/204
+    // GET
+    // HEAD: 204 or 404
+    // 201 Created
+    // 202 Accepted
+    // 204 No Content / 205 Reset Content
+    
+    // 301 Moved Permanently
+    // 302 Found
+    // 303 See Other
+    // 304 Not Modified
+    // 307 Temporary Redirect
+    
+    // HEAD
     // Drop DatasetUpdater - it's a DataSource?
     
     
