@@ -36,13 +36,13 @@ public class DEF
 
     // New to WebContent - remove when update happens.
     
-    public static final String contentTypeTriG              = "application/trig" ;
-    public static final String contentTypeNQuads            = "text/nquads" ;
-    public static final String contentTypeTriGAlt           = "application/x-trig" ;
-    public static final String contentTypeNQuadsAlt         = "text/x-nquads" ;
-    
-    public static final String contentTypeSPARQLQuery       = "application/sparql-query" ;          // Unofficial
-    public static final String contentTypeForm              = "application/x-www-form-urlencoded" ;
+//    public static final String contentTypeTriG              = "application/trig" ;
+//    public static final String contentTypeNQuads            = "text/nquads" ;
+//    public static final String contentTypeTriGAlt           = "application/x-trig" ;
+//    public static final String contentTypeNQuadsAlt         = "text/x-nquads" ;
+//    
+//    public static final String contentTypeSPARQLQuery       = "application/sparql-query" ;          // Unofficial
+//    public static final String contentTypeForm              = "application/x-www-form-urlencoded" ;
 }
 
 /*

@@ -174,8 +174,7 @@ public class SPARQL_REST extends SPARQL_ServletBase
     
     protected void doHead(HttpActionREST action)
     {
-        boolean exists = (action.target.graph != null) ; 
-        if ( exists )
+        if ( action.target.alreadyExisted )
             SPARQL_ServletBase.successNoContent(action) ;
         else
             SPARQL_ServletBase.successNotFound(action) ;
@@ -360,24 +359,20 @@ public class SPARQL_REST extends SPARQL_ServletBase
         if ( !dftGraph && uri == null )
             SPARQL_ServletBase.errorBadRequest("Neither default graph nor named graph specificed") ;
         
-        Node gn ;
-        String absUri ;
-        Graph g ;
+        if ( dftGraph )
+        {
+            Graph g = dsg.getDefaultGraph() ;
+            return Target.createDefault(g) ;
+        }
         
-        if ( uri != null )
-        {
-            String base = SPARQL_ServletBase.wholeRequestURL(request) ;
-            absUri = IRIResolver.resolveString(uri, base) ;
-            gn = Node.createURI(absUri) ;
-            g = dsg.getGraph(gn) ;
-        }
-        else
-        {
-            absUri = null ;
-            gn = null ;
-            g = dsg.getDefaultGraph() ;
-        }
-        return new Target(dftGraph, g, absUri, gn) ;
+        // Named graph
+        String base = SPARQL_ServletBase.wholeRequestURL(request) ;
+        String absUri = IRIResolver.resolveString(uri, base) ;
+        Node gn = Node.createURI(absUri) ;
+        boolean alreadyExists = dsg.containsGraph(gn) ; 
+        // Don't touch the graph - it may be autocreated. 
+        Graph g = dsg.getGraph(gn) ;
+        return Target.createNamed(g, alreadyExists, absUri, gn) ;
     }
     
     private static String getOneOnly(HttpServletRequest request, String name)
@@ -396,23 +391,26 @@ public class SPARQL_REST extends SPARQL_ServletBase
     private static class Target
     {
         final boolean isDefault ;
+        final boolean alreadyExisted ;
         final Graph graph ;
         final String name ;
         final Node graphName ;
-        Target(Graph graph, String name, Node graphName)
+        
+        static Target createNamed(Graph graph, boolean alreadyExisted, String name, Node graphName)
         {
-            this(false, graph, name, graphName) ;
+            return new Target(false, graph, alreadyExisted, name, graphName) ;
         }
 
-        Target(Graph graph)
+        static Target createDefault(Graph graph)
         {
-            this(true, graph, null, null) ;
+            return new Target(true, graph, true, null, null) ;
         }
 
         //private Target(boolean isDefault, Graph graph, String name, Node graphName)
-        private Target(boolean isDefault, Graph graph, String name, Node graphName)
+        private Target(boolean isDefault, Graph graph, boolean alreadyExisted, String name, Node graphName)
         {
             this.isDefault = isDefault ;
+            this.alreadyExisted = alreadyExisted ;
             this.graph = graph ;
             this.name  = name ;
             this.graphName = graphName ;

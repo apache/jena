@@ -28,9 +28,9 @@ import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
 import org.openjena.atlas.io.IndentedLineBuffer ;
-import org.openjena.fuseki.DEF ;
 import org.openjena.fuseki.HttpNames ;
 import org.openjena.fuseki.migrate.WebIO ;
+import org.openjena.riot.WebContent ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
@@ -121,10 +121,10 @@ public class SPARQL_Query extends SPARQL_ServletBase
         if ( incoming != null )
         {
         
-            if ( DEF.contentTypeSPARQLQuery.equals(incoming) )
+            if ( WebContent.contentTypeSPARQLQuery.equals(incoming) )
                 error(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE, "Unofficial DEF.contentTypeSPARQLQuery not supported") ;
                 
-            if ( ! DEF.contentTypeForm.equals(incoming) )
+            if ( ! WebContent.contentTypeForm.equals(incoming) )
                 error(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE, "Unsupported: "+incoming) ;
         }
         

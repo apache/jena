@@ -8,7 +8,7 @@ package org.openjena.fuseki.servlets;
 
 import static java.lang.String.format ;
 import static org.openjena.fuseki.Fuseki.serverlog ;
-import static org.openjena.fuseki.HttpNames.* ;
+import static org.openjena.fuseki.HttpNames.paramRequest ;
 
 import java.io.IOException ;
 import java.io.InputStream ;
@@ -20,7 +20,6 @@ import javax.servlet.http.HttpServletResponse ;
 
 import org.openjena.atlas.io.IO ;
 import org.openjena.atlas.lib.Bytes ;
-import org.openjena.fuseki.DEF ;
 import org.openjena.fuseki.HttpNames ;
 import org.openjena.riot.WebContent ;
 import org.slf4j.Logger ;
@@ -92,7 +91,7 @@ public class SPARQL_Update extends SPARQL_ServletBase
         String incoming = request.getContentType() ;
         if ( WebContent.contentSPARQLUpdate.equals(incoming) )
         { executeBody(action) ; return ; }
-        if ( DEF.contentTypeForm.equals(incoming) )
+        if ( WebContent.contentTypeForm.equals(incoming) )
         { executeForm(action) ;  return ; }
     }
 
@@ -112,7 +111,7 @@ public class SPARQL_Update extends SPARQL_ServletBase
             return ;
         }
         
-        if ( DEF.contentTypeForm.equals(incoming) )
+        if ( WebContent.contentTypeForm.equals(incoming) )
         {
             @SuppressWarnings("unchecked")
             Enumeration<String> en = request.getParameterNames() ;
@@ -129,7 +128,7 @@ public class SPARQL_Update extends SPARQL_ServletBase
             return ;
         }
         
-        error(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE, "Must be "+WebContent.contentSPARQLUpdate+" or "+DEF.contentTypeForm) ;
+        error(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE, "Must be "+WebContent.contentSPARQLUpdate+" or "+WebContent.contentTypeForm) ;
     }
 
     private void executeBody(HttpActionUpdate action)
