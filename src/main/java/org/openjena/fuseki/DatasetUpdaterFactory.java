@@ -6,27 +6,27 @@
 
 package org.openjena.fuseki;
 
-import org.openjena.fuseki.client.DatasetGraphUpdater ;
-import org.openjena.fuseki.client.DatasetGraphUpdaterBasic ;
-import org.openjena.fuseki.client.DatasetGraphUpdaterHTTP ;
-import org.openjena.fuseki.client.DatasetUpdaterAdapter ;
+import org.openjena.fuseki.rest.DatasetGraphUpdater ;
+import org.openjena.fuseki.rest.DatasetGraphUpdaterBasic ;
+import org.openjena.fuseki.rest.DatasetGraphUpdaterHTTP ;
+import org.openjena.fuseki.rest.DatasetUpdaterAdapter ;
 
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 
 public class DatasetUpdaterFactory
 {
-    public static DatasetUpdater createHTTP(String serviceURI)
+    public static DS_Updater createHTTP(String serviceURI)
     {
         return adapt(new DatasetGraphUpdaterHTTP(serviceURI)) ;
     }
 
-    public static DatasetUpdater create(DatasetGraph dataset)
+    public static DS_Updater create(DatasetGraph dataset)
     {
         return adapt(new DatasetGraphUpdaterBasic(dataset)) ;
     }
     
-    public static DatasetUpdater create(Dataset dataset)
+    public static DS_Updater create(Dataset dataset)
     {
         return adapt(new DatasetGraphUpdaterBasic(dataset.asDatasetGraph())) ;
     }
@@ -36,7 +36,7 @@ public class DatasetUpdaterFactory
         return new DatasetGraphUpdaterBasic(dataset) ;
     }
     
-    private static DatasetUpdater adapt(DatasetGraphUpdater dgu)
+    private static DS_Updater adapt(DatasetGraphUpdater dgu)
     {
         return new DatasetUpdaterAdapter(dgu) ;
     }
