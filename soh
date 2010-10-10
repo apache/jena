@@ -274,7 +274,7 @@ end
 def cmd_soh(command=nil)
   ## Command line
   options = {}
-  optparse = OptionParserend.new do |opts|
+  optparse = OptionParser.new do |opts|
     # Set a banner, displayed at the top
     # of the help screen.
     opts.banner = "Usage: #{$0} [get|put|delete|post] dataset graph [file]"

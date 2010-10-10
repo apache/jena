@@ -1,0 +1,3 @@
+#!/bin/bash
+
+exec java -jar target/fuseki-*-server.jar "$@"

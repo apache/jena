@@ -3,5 +3,6 @@
 SOH=soh
 for s in s-head s-get s-put s-post s-delete s-query s-update
 do
+    rm $s
     ln -s "$SOH" $s
 done
