@@ -8,14 +8,14 @@ package org.openjena.fuseki;
 
 import org.junit.runner.RunWith ;
 import org.junit.runners.Suite ;
-import org.openjena.fuseki.rest.TestDatasetUpdaterMem ;
+import org.openjena.fuseki.http.TestDatasetUpdaterMem ;
 
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
     TestContentNegotiation.class
     , TestDatasetUpdaterMem.class
-    , TestDatasetUpdaterHTTP.class
+    , TestDatasetHTTP.class
     , TestUpdate.class
     , TestQuery.class
 })

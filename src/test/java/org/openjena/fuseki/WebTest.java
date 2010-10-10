@@ -19,12 +19,18 @@ import org.openjena.atlas.io.IO ;
 
 public class WebTest
 {
-    static void exec_get(String url, int expectedResponseCode)
+    
+    public static void exec_get(String url, int expectedResponseCode)
     {
-        HttpUriRequest httpGet = new HttpGet(url) ;
+        HttpUriRequest httpRequest = new HttpGet(url) ;
+        exec(httpRequest, expectedResponseCode) ;
+    }
+    
+    public static void exec(HttpUriRequest httpRequest, int expectedResponseCode)
+    {
         HttpClient httpclient = new DefaultHttpClient() ;
         try {
-            HttpResponse response = httpclient.execute(httpGet) ;
+            HttpResponse response = httpclient.execute(httpRequest) ;
             int responseCode = response.getStatusLine().getStatusCode() ;
             String responseMessage = response.getStatusLine().getReasonPhrase() ;
             

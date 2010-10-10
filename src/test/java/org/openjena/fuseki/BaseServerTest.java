@@ -11,7 +11,7 @@ import org.junit.BeforeClass ;
 import org.openjena.atlas.junit.BaseTest ;
 import org.openjena.atlas.logging.Log ;
 import org.openjena.fuseki.Fuseki ;
-import org.openjena.fuseki.rest.UpdateRemote ;
+import org.openjena.fuseki.http.UpdateRemote ;
 import org.openjena.fuseki.server.SPARQLServer ;
 
 import com.hp.hpl.jena.rdf.model.Model ;
@@ -41,8 +41,6 @@ public class BaseServerTest extends BaseTest
     
     private static int referenceCount = 0 ;
     private static SPARQLServer server = null ; 
-    
-    // Due to ordering issues, you must call these from your own @BeforeClass
     
     @BeforeClass static public void setupServer()
     { 

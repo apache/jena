@@ -13,20 +13,17 @@ import org.junit.Test ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
 
-public class TestDatasetUpdaterHTTP extends BaseServerTest 
+public class TestDatasetHTTP extends BaseServerTest 
 {
     static final String datasetURI_not_1    = "http://localhost:"+port+"/junk" ;
     static final String datasetURI_not_2    = serviceREST+"/not" ;
     static final String datasetURI_not_3    = "http://localhost:"+port+datasetPath+"/not/data" ;
     
     @BeforeClass public static void beforeClass()
-    {
-        
-    }
+    { }
     
     @AfterClass public static void afterClass()
-    {
-    }
+    { }
 
     @Test public void test_ds_1()
     {
@@ -74,8 +71,6 @@ public class TestDatasetUpdaterHTTP extends BaseServerTest
         assertTrue(graph.isEmpty()) ;
     }
     
-    
-    
     static DS_Updater create()
     {
         return DatasetUpdaterFactory.createHTTP(serviceREST) ;
@@ -95,6 +90,32 @@ public class TestDatasetUpdaterHTTP extends BaseServerTest
         Model graph = du.getModel(gn1) ;
         assertTrue(graph.isEmpty()) ;
     }
+
+//    @Test public void head_01()
+//    {
+//        DS_Updater du = create() ;
+//        Model graph = du.getModel() ;
+//        assertTrue(graph.isEmpty()) ;
+//    }
+    
+    @Test public void head_02()
+    {
+        // All graphs exist.
+        DS_Updater du = create() ;
+        boolean b = du.containsModel(gn1) ;
+        assertFalse("Blank remote dataset as a named graph", b) ;
+    }
+
+    // More HEAD checking below
+    
+//    @Test public void head_02()
+//    {
+//        // All graphs exist.
+//        DS_Updater du = create() ;
+//        boolean b = du.containsModel(gn1) ;
+//        assertFalse(b) ;
+//    }
+
 
     @Test public void delete_01()
     {
@@ -124,6 +145,11 @@ public class TestDatasetUpdaterHTTP extends BaseServerTest
     {
         DS_Updater du = create() ;
         du.putModel(gn1, graph1) ;
+        boolean exists = du.containsModel(gn1) ;
+        assertTrue(exists) ;
+        exists = du.containsModel(gn2) ;
+        assertFalse("Expected gn2 not to exist", exists) ;
+        
         Model graph = du.getModel() ;
         assertTrue(graph.isEmpty()) ;
         graph = du.getModel(gn1) ;
