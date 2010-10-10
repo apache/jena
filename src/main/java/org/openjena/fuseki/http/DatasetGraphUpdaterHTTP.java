@@ -32,7 +32,6 @@ import org.apache.http.params.HttpProtocolParams ;
 import org.apache.http.protocol.HTTP ;
 import org.eclipse.jetty.http.HttpStatus ;
 import org.openjena.atlas.io.IO ;
-import org.openjena.atlas.lib.NotImplemented ;
 import org.openjena.atlas.lib.Sink ;
 import org.openjena.atlas.logging.Log ;
 import org.openjena.fuseki.Fuseki ;

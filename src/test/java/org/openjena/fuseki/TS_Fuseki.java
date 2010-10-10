@@ -16,6 +16,7 @@ import org.openjena.fuseki.http.TestDatasetUpdaterMem ;
     TestContentNegotiation.class
     , TestDatasetUpdaterMem.class
     , TestDatasetHTTP.class
+    , TestProtocol.class
     , TestUpdate.class
     , TestQuery.class
 })
