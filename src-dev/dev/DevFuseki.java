@@ -10,12 +10,24 @@ package dev;
 
 public class DevFuseki
 {
+    // ** DatsetUpdaterFactory
+    // ** TestDatasetUpdater on graph / general.
+    // ** --accept, --output
+    
+    // Drop DatasetUpdater - it's a DataSource?
+    
+    
     // Tasks:
     // EA-Release
-    //   Mass rename and reset.
-    //   Basic documentation
-    //   shu defaults
-
+    //   SOH defaults
+    // ARQ SNAPSHOT build and sort out DEF
+    
+    // Code examples
+    
+    // dev.http
+    //   Other DatasetUpdaters
+    //   DatasetUpdaters
+    
     // Tests:
     //   Protocol
     
@@ -26,11 +38,13 @@ public class DevFuseki
     //   HTML forms and simple wrappers.
     // dev.http - other updaters. DatasetUpdater => HttpDataset
     
+    // SOH
+    // query by POST
+    
     // SPARQL: Update -> Should it be 204 (and no page)?
     
     // ****
     // SPARQL Query servlet / SPARQL Update servlet
-    //   request validation
     //   Testing, testing, testing.
 
     // Migrate:

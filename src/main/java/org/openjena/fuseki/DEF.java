@@ -22,12 +22,11 @@ public class DEF
     public static MediaType charsetUTF8         = new MediaType(WebContent.charsetUTF8) ;
     
     public static MediaType acceptRSXML         = new MediaType(WebContent.contentTypeResultsXML) ;
-    
 
     public static MediaType[] rdfOffer$         = { acceptRDFXML, acceptTurtle1, acceptTurtle2, acceptTurtle3, acceptNTriples } ;
     public static AcceptList  rdfOffer          = new AcceptList(rdfOffer$) ;
-    public static MediaType[] quadsOffer$       = { acceptTriG, acceptNQuads } ;
-    public static AcceptList  quadsOffer        = new AcceptList(quadsOffer$) ;
+//    public static MediaType[] quadsOffer$       = { acceptTriG, acceptNQuads } ;
+//    public static AcceptList  quadsOffer        = new AcceptList(quadsOffer$) ;
     public static AcceptList  charsetOffer      = new AcceptList(charsetUTF8) ;
     public static AcceptList  rsOffer           = new AcceptList(WebContent.contentTypeResultsXML, WebContent.contentTypeResultsJSON) ;
 
@@ -36,6 +35,11 @@ public class DEF
     public static final String contentTypeTextTSV         = "text/tab-separated-values" ;
 
     // New to WebContent - remove when update happens.
+    
+    public static final String contentTypeTriG              = "application/trig" ;
+    public static final String contentTypeNQuads            = "text/nquads" ;
+    public static final String contentTypeTriGAlt           = "application/x-trig" ;
+    public static final String contentTypeNQuadsAlt         = "text/x-nquads" ;
     
     public static final String contentTypeSPARQLQuery       = "application/sparql-query" ;          // Unofficial
     public static final String contentTypeForm              = "application/x-www-form-urlencoded" ;

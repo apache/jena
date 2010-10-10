@@ -9,8 +9,6 @@ package org.openjena.fuseki;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
-import org.openjena.fuseki.client.DatasetUpdater ;
-import org.openjena.fuseki.client.DatasetUpdaterHTTP ;
 
 import com.hp.hpl.jena.query.QueryExecution ;
 import com.hp.hpl.jena.query.QueryExecutionFactory ;
@@ -42,14 +40,14 @@ public class TestQuery extends BaseServerTest
     {
         serverReset() ;
         // Load some data.
-        DatasetUpdater du = new DatasetUpdaterHTTP(serviceREST) ;
+        DatasetUpdater du = DatasetUpdaterFactory.createHTTP(serviceREST) ;
         du.putModel(graph1) ;
         du.putModel(gn1, graph2) ;
     }
     
     @AfterClass public static void afterClass()
     {
-        DatasetUpdater du = new DatasetUpdaterHTTP(serviceREST) ;
+        DatasetUpdater du = DatasetUpdaterFactory.createHTTP(serviceREST) ;
         du.deleteDefault() ;
     }
     

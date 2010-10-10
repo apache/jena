@@ -29,9 +29,9 @@ import org.apache.http.params.HttpConnectionParams ;
 import org.apache.http.params.HttpParams ;
 import org.apache.http.params.HttpProtocolParams ;
 import org.apache.http.protocol.HTTP ;
-import org.apache.http.util.VersionInfo ;
 import org.openjena.atlas.io.IO ;
 import org.openjena.atlas.lib.Sink ;
+import org.openjena.fuseki.Fuseki ;
 import org.openjena.fuseki.FusekiException ;
 import org.openjena.fuseki.FusekiLib ;
 import org.openjena.fuseki.FusekiRequestException ;
@@ -64,8 +64,10 @@ public class DatasetGraphUpdaterHTTP implements DatasetGraphUpdater
         this.remote = remote ;
     }
     
+    @Override
     public Graph httpGet()                            { return doGet(targetDefault()) ; }
 
+    @Override
     public Graph httpGet(Node graphName)              { return doGet(target(graphName.getURI())) ; }
     
     private Graph doGet(String url)
@@ -74,8 +76,10 @@ public class DatasetGraphUpdaterHTTP implements DatasetGraphUpdater
         return exec(url, null, httpGet, true) ;
     }
     
+    @Override
     public void httpPut(Graph data)                   { doPut(targetDefault(), data) ; }
 
+    @Override
     public void httpPut(Node graphName, Graph data)   { doPut(target(graphName.getURI()), data) ; }
 
     private void doPut(String url, Graph data)
@@ -84,8 +88,10 @@ public class DatasetGraphUpdaterHTTP implements DatasetGraphUpdater
         exec(url, data, httpPut, false) ;
     }
     
+    @Override
     public void httpDelete()                          { doDelete(targetDefault()) ; }
 
+    @Override
     public void httpDelete(Node graphName)            { doDelete(target(graphName.getURI())) ; }
 
     private void doDelete(String url)
@@ -94,8 +100,10 @@ public class DatasetGraphUpdaterHTTP implements DatasetGraphUpdater
         exec(url, null, httpDelete, false) ;
     }
     
+    @Override
     public void httpPost(Graph data)                  { doPost(targetDefault(), data) ; }
 
+    @Override
     public void httpPost(Node graphName, Graph data)  { doPost(target(graphName.getURI()), data) ; }
 
     private void doPost(String url, Graph data)
@@ -104,8 +112,10 @@ public class DatasetGraphUpdaterHTTP implements DatasetGraphUpdater
         exec(url, data, httpPost, false) ;
     }
 
+    @Override
     public void httpPatch(Graph data)                 { throw new UnsupportedOperationException() ; }
 
+    @Override
     public void httpPatch(Node graphName, Graph data) { throw new UnsupportedOperationException() ; }
 
     private String targetDefault()
@@ -129,12 +139,7 @@ public class DatasetGraphUpdaterHTTP implements DatasetGraphUpdater
         HttpProtocolParams.setUseExpectContinue(httpParams,     true);
         HttpConnectionParams.setTcpNoDelay(httpParams,          true);
         HttpConnectionParams.setSocketBufferSize(httpParams,    32*1024);
-
-        // determine the release version from packaged version info
-        final VersionInfo vi = VersionInfo.loadVersionInfo("org.apache.http.client", DatasetGraphUpdaterHTTP.class.getClassLoader());
-        final String release = (vi != null) ? vi.getRelease() : VersionInfo.UNAVAILABLE;
-        HttpProtocolParams.setUserAgent(httpParams,             "Apache-HttpClient/" + release + " (java 1.5)");
-
+        HttpProtocolParams.setUserAgent(httpParams,             Fuseki.NAME+"/"+Fuseki.VERSION);
         return httpParams;
     }
     

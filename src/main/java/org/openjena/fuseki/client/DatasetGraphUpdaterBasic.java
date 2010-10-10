@@ -5,9 +5,8 @@
  * [See end of file]
  */
 
-package dev.http;
+package org.openjena.fuseki.client;
 
-import org.openjena.fuseki.client.DatasetUpdater ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
@@ -16,29 +15,29 @@ import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 /** 
  * General implementation of operations for the SPARQL HTTP Update protocol 
  */
-public class DatasetUpdaterBasic //implements DatasetUpdater
+public class DatasetGraphUpdaterBasic implements DatasetGraphUpdater
 {
     private DatasetGraph dataset ;
     
-    public DatasetUpdaterBasic(DatasetGraph dataset)
+    public DatasetGraphUpdaterBasic(DatasetGraph dataset)
     {
         this.dataset = dataset ;
     }
     
-    //@Override
-    public Graph doGet()                    { return dataset.getDefaultGraph() ; }
+    @Override
+    public Graph httpGet()                    { return dataset.getDefaultGraph() ; }
     
-    //@Override
-    public Graph doGet(Node graphName)      { return dataset.getGraph(graphName) ; }
+    @Override
+    public Graph httpGet(Node graphName)      { return dataset.getGraph(graphName) ; }
     
-    //@Override
-    public void doPut(Graph data) 
+    @Override
+    public void httpPut(Graph data) 
     {  
         putGraph(dataset.getDefaultGraph(), data) ;
     }
     
-    //@Override
-    public void doPut(Node graphName, Graph data)
+    @Override
+    public void httpPut(Node graphName, Graph data)
     {
         Graph ng = dataset.getGraph(graphName) ;
         if ( ng == null )
@@ -47,14 +46,14 @@ public class DatasetUpdaterBasic //implements DatasetUpdater
             putGraph(ng, data) ;
     }
 
-    //@Override
-    public void doDelete()
+    @Override
+    public void httpDelete()
     {
         clearGraph(dataset.getDefaultGraph()) ;
     }
     
-    //@Override
-    public void doDelete(Node graphName)
+    @Override
+    public void httpDelete(Node graphName)
     {
         Graph ng = dataset.getGraph(graphName) ;
         if ( ng == null )
@@ -63,14 +62,14 @@ public class DatasetUpdaterBasic //implements DatasetUpdater
         //clearGraph(ng) ;
     }
 
-    //@Override
-    public void doPost(Graph data)
+    @Override
+    public void httpPost(Graph data)
     {
         mergeGraph(dataset.getDefaultGraph(), data) ;
     }
     
-    //@Override
-    public void doPost(Node graphName, Graph data)
+    @Override
+    public void httpPost(Node graphName, Graph data)
     {
         Graph ng = dataset.getGraph(graphName) ;
         if ( ng == null )
@@ -81,11 +80,11 @@ public class DatasetUpdaterBasic //implements DatasetUpdater
         mergeGraph(ng, data) ;
     }
 
-    //@Override
-    public void doPatch(Graph data) {  doPost(data) ; }
+    @Override
+    public void httpPatch(Graph data) {  httpPost(data) ; }
     
-    //@Override
-    public void doPatch(Node graphName, Graph data) {  doPost(graphName, data) ;}
+    @Override
+    public void httpPatch(Node graphName, Graph data) {  httpPost(graphName, data) ;}
 
     private void putGraph(Graph destGraph, Graph data)
     {

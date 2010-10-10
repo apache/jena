@@ -4,71 +4,32 @@
  * [See end of file]
  */
 
-package org.openjena.fuseki.client;
+package org.openjena.fuseki;
 
-import com.hp.hpl.jena.graph.Graph ;
-import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.rdf.model.ModelFactory ;
 
-
-public class DatasetUpdaterBase implements DatasetUpdater
+// This is a "DataSource"?
+public interface DatasetUpdater
 {
-    private final DatasetGraphUpdater updater ;
-
-    public DatasetUpdaterBase(String remote) { this.updater = new DatasetGraphUpdaterHTTP(remote) ; }
-    
-    public DatasetUpdaterBase(DatasetGraphUpdater updater) { this.updater = updater ; }
-    
     /** Get the default model of a Dataset */
-    public Model getModel()
-    {
-        Graph g = updater.httpGet() ;
-        return ModelFactory.createModelForGraph(g) ;
-    }
-
+    public Model getModel() ; 
     /** Get a named model of a Dataset */
-    public Model getModel(String graphUri)
-    {
-        Graph g = updater.httpGet(Node.createURI(graphUri)) ;
-        return ModelFactory.createModelForGraph(g) ;
-    }
+    public Model getModel(String graphUri) ;
 
     /** Put (replace) the default model of a Dataset */
-    public void putModel(Model data)
-    {
-        updater.httpPut(data.getGraph()) ;
-    }
-
+    public void putModel(Model data) ;
     /** Put (create/replace) a named model of a Dataset */
-    public void putModel(String graphUri, Model data)
-    {
-        updater.httpPut(Node.createURI(graphUri), data.getGraph()) ;
-    }
+    public void putModel(String graphUri, Model data) ;
 
     /** Delete (which means clear) the default model of a Dataset */
-    public void deleteDefault()
-    {
-        updater.httpDelete() ;
-    }
-
+    public void deleteDefault() ;
     /** Delete a named model of a Dataset */
-    public void deleteModel(String graphUri)
-    {
-        updater.httpDelete(Node.createURI(graphUri)) ;
-    }
+    public void deleteModel(String graphUri) ;
 
     /** Add statements to the default model of a Dataset */
-    public void add(Model data)
-    {
-        updater.httpPost(data.getGraph()) ;   
-    }
-    
+    public void add(Model data) ;
     /** Add statements to a named model of a Dataset */
-    public void add(String graphUri, Model data)
-    {
-        updater.httpPost(Node.createURI(graphUri), data.getGraph()) ;
-    }
+    public void add(String graphUri, Model data) ;
 }
 
 /*

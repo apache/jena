@@ -9,9 +9,6 @@ package org.openjena.fuseki;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
-import org.openjena.fuseki.FusekiRequestException ;
-import org.openjena.fuseki.client.DatasetUpdater ;
-import org.openjena.fuseki.client.DatasetUpdaterHTTP ;
 
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
@@ -58,21 +55,21 @@ public class TestDatasetUpdaterHTTP extends BaseServerTest
     @Test(expected=FusekiRequestException.class)
     public void test_404_1()
     {
-        DatasetUpdater du = new DatasetUpdaterHTTP(datasetURI_not_1) ;
+        DatasetUpdater du = DatasetUpdaterFactory.createHTTP(datasetURI_not_1) ;
         Model graph = du.getModel(gn99) ;
     }
     
     @Test(expected=FusekiRequestException.class)
     public void test_404_2()
     {
-        DatasetUpdater du = new DatasetUpdaterHTTP(datasetURI_not_2) ;
+        DatasetUpdater du = DatasetUpdaterFactory.createHTTP(datasetURI_not_2) ;
         Model graph = du.getModel(gn99) ;
     }
 
     @Test public void test_404_3()
     {
         // All graphs "exist"
-        DatasetUpdater du = new DatasetUpdaterHTTP(serviceREST) ;
+        DatasetUpdater du = DatasetUpdaterFactory.createHTTP(serviceREST) ;
         Model graph = du.getModel(gn99) ;
         assertTrue(graph.isEmpty()) ;
     }
@@ -81,7 +78,7 @@ public class TestDatasetUpdaterHTTP extends BaseServerTest
     
     static DatasetUpdater create()
     {
-        return new DatasetUpdaterHTTP(serviceREST) ;
+        return DatasetUpdaterFactory.createHTTP(serviceREST) ;
     }
     
     @Test public void get_01()

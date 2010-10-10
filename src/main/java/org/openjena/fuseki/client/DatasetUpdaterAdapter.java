@@ -6,30 +6,77 @@
 
 package org.openjena.fuseki.client;
 
+import org.openjena.fuseki.DatasetUpdater ;
+
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.ModelFactory ;
 
-
-public interface DatasetUpdater
+/** Adapter between Dataset/Model level and DatasetGraph/Graph level */ 
+public class DatasetUpdaterAdapter implements DatasetUpdater
 {
+    private final DatasetGraphUpdater updater ;
+
+    public DatasetUpdaterAdapter(DatasetGraphUpdater updater) { this.updater = updater ; }
+    
     /** Get the default model of a Dataset */
-    public Model getModel() ; 
+    @Override
+    public Model getModel()
+    {
+        Graph g = updater.httpGet() ;
+        return ModelFactory.createModelForGraph(g) ;
+    }
+
     /** Get a named model of a Dataset */
-    public Model getModel(String graphUri) ;
+    @Override
+    public Model getModel(String graphUri)
+    {
+        Graph g = updater.httpGet(Node.createURI(graphUri)) ;
+        return ModelFactory.createModelForGraph(g) ;
+    }
 
     /** Put (replace) the default model of a Dataset */
-    public void putModel(Model data) ;
+    @Override
+    public void putModel(Model data)
+    {
+        updater.httpPut(data.getGraph()) ;
+    }
+
     /** Put (create/replace) a named model of a Dataset */
-    public void putModel(String graphUri, Model data) ;
+    @Override
+    public void putModel(String graphUri, Model data)
+    {
+        updater.httpPut(Node.createURI(graphUri), data.getGraph()) ;
+    }
 
     /** Delete (which means clear) the default model of a Dataset */
-    public void deleteDefault() ;
+    @Override
+    public void deleteDefault()
+    {
+        updater.httpDelete() ;
+    }
+
     /** Delete a named model of a Dataset */
-    public void deleteModel(String graphUri) ;
+    @Override
+    public void deleteModel(String graphUri)
+    {
+        updater.httpDelete(Node.createURI(graphUri)) ;
+    }
 
     /** Add statements to the default model of a Dataset */
-    public void add(Model data) ;
+    @Override
+    public void add(Model data)
+    {
+        updater.httpPost(data.getGraph()) ;   
+    }
+    
     /** Add statements to a named model of a Dataset */
-    public void add(String graphUri, Model data) ;
+    @Override
+    public void add(String graphUri, Model data)
+    {
+        updater.httpPost(Node.createURI(graphUri), data.getGraph()) ;
+    }
 }
 
 /*

@@ -4,26 +4,27 @@
  * [See end of file]
  */
 
-package dev.http;
+package org.openjena.fuseki.rest;
 
-import org.openjena.fuseki.client.DatasetUpdater ;
+import org.openjena.fuseki.DatasetUpdaterFactory ;
+import org.openjena.fuseki.client.DatasetGraphUpdater ;
 
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
 
-public class TestDatasetUpdaterMem //extends BaseTestDatasetUpdater
+public class TestDatasetUpdaterMem extends BaseTestDatasetUpdater
 {
-//    @Override
-//    protected DatasetUpdater getDatasetUpdater(DatasetGraph dsg)
-//    {
-//        return new DatasetUpdaterBasic(dsg) ;
-//    }
-//
-//    @Override
-//    protected DatasetGraph getEmptyDatasetGraph()
-//    {
-//        return DatasetGraphFactory.createMem() ;
-//    }
+    @Override
+    protected DatasetGraphUpdater getDatasetUpdater(DatasetGraph dsg)
+    {
+        return DatasetUpdaterFactory.make(dsg) ;
+    }
+
+    @Override
+    protected DatasetGraph getEmptyDatasetGraph()
+    {
+        return DatasetGraphFactory.createMem() ;
+    }
 }
 
 /*

@@ -4,12 +4,43 @@
  * [See end of file]
  */
 
-package org.openjena.fuseki.client;
+package org.openjena.fuseki;
 
-public class DatasetUpdaterHTTP extends DatasetUpdaterBase
+import org.openjena.fuseki.client.DatasetGraphUpdater ;
+import org.openjena.fuseki.client.DatasetGraphUpdaterBasic ;
+import org.openjena.fuseki.client.DatasetGraphUpdaterHTTP ;
+import org.openjena.fuseki.client.DatasetUpdaterAdapter ;
+
+import com.hp.hpl.jena.query.Dataset ;
+import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+
+public class DatasetUpdaterFactory
 {
-    public DatasetUpdaterHTTP(String remote)
-    { super(new DatasetGraphUpdaterHTTP(remote)) ; }
+    public static DatasetUpdater createHTTP(String serviceURI)
+    {
+        return adapt(new DatasetGraphUpdaterHTTP(serviceURI)) ;
+    }
+
+    public static DatasetUpdater create(DatasetGraph dataset)
+    {
+        return adapt(new DatasetGraphUpdaterBasic(dataset)) ;
+    }
+    
+    public static DatasetUpdater create(Dataset dataset)
+    {
+        return adapt(new DatasetGraphUpdaterBasic(dataset.asDatasetGraph())) ;
+    }
+
+    public static DatasetGraphUpdater make(DatasetGraph dataset)
+    {
+        return new DatasetGraphUpdaterBasic(dataset) ;
+    }
+    
+    private static DatasetUpdater adapt(DatasetGraphUpdater dgu)
+    {
+        return new DatasetUpdaterAdapter(dgu) ;
+    }
+    
 }
 
 /*
