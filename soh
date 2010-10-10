@@ -109,6 +109,19 @@ def get_worker(requestURI, headers)
   response_print_body(uri, request)
 end
 
+def HEAD(dataset, graph)
+  print "HEAD #{dataset} #{graph}\n" if $verbose
+  requestURI = target(dataset, graph)
+  headers = {}
+  headers.merge!($headers)
+  headers[$hAccept] = $accept_rdf
+  headers[$hAcceptCharset] = $accept_charset unless $accept_charset.nil?
+  request = Net::HTTP::Head.new(uri.request_uri)
+  request.initialize_http_header(headers)
+  print_http_request(uri, request)
+  response_no_body(uri, request)
+end
+
 def PUT(dataset, graph, file)
   print "PUT #{dataset} #{graph} #{file}\n" if $verbose
   send_body(dataset, graph, file, Net::HTTP::Put)
@@ -557,7 +570,7 @@ cmd = File.basename($0)
 case cmd
 when "s-http", "sparql_http", "soh"
   cmd_soh
-when "s-get", "s-put", "s-delete", "s-post"
+when "s-get", "s-head", "s-put", "s-delete", "s-post"
   cmd2 = cmd.sub(/^s-/, '').upcase
   cmd_soh cmd2
 when "s-query", "sparql_query"
