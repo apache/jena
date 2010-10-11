@@ -57,7 +57,6 @@ public class TestDatasetHTTP extends BaseServerTest
         // Not the right service.
         DS_Updater du = DatasetUpdaterFactory.createHTTP(datasetURI_not_1) ;
         Model graph = du.getModel(gn99) ;
-        fail("Expected excepton") ;
     }
 
     @Test(expected=FusekiNotFoundException.class)
@@ -67,13 +66,13 @@ public class TestDatasetHTTP extends BaseServerTest
         Model graph = du.getModel(gn99) ;
     }
 
-    @Test(expected=FusekiNotFoundException.class)
+    @Test
     public void test_404_3()
     {
         // All graphs "exist"
         DS_Updater du = DatasetUpdaterFactory.createHTTP(serviceREST) ;
         Model graph = du.getModel(gn99) ;
-        assertTrue(graph.isEmpty()) ;
+        assertNull(graph) ;
     }
 
     @Test public void head_01()

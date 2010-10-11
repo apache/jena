@@ -10,6 +10,9 @@ package dev;
 
 public class DevFuseki
 {
+    // Sort of DS_Updater => DS_Accessor
+    // can't tell wrong service from right service, no graph 
+    
     // ** TestDatasetUpdater on graph / general.
     // ** TestProtocol (HTTP update, query, update)
     
