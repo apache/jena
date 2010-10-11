@@ -30,7 +30,7 @@ public class WebIO
             int responseCode = response.getStatusLine().getStatusCode() ;
             String responseMessage = response.getStatusLine().getReasonPhrase() ;
             if ( 200 != responseCode )
-                throw new FusekiRequestException(responseCode, responseMessage) ;    
+                throw FusekiRequestException.create(responseCode, responseMessage) ;    
             HttpEntity entity = response.getEntity() ;
             InputStream instream = entity.getContent() ;
             String string = IO.readWholeFileAsUTF8(instream) ;

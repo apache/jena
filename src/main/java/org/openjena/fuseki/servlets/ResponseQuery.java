@@ -259,12 +259,12 @@ public class ResponseQuery
             return ;
         }
         
-        if ( serializationType.equals(DEF.contentTypeTextCSV) || 
-            serializationType.equals(DEF.contentTypeTextTSV) )
+        if ( serializationType.equals(WebContent.contentTypeTextCSV) || 
+            serializationType.equals(WebContent.contentTypeTextTSV) )
         {
             try {
                 OutputContent output ;
-                if ( serializationType.equals(DEF.contentTypeTextCSV) )
+                if ( serializationType.equals(WebContent.contentTypeTextCSV) )
                 {
                     output = new OutputContent(){
                         public void output(ServletOutputStream out)
@@ -439,9 +439,9 @@ public class ResponseQuery
         if ( str.equalsIgnoreCase(contentOutputText) )
             return WebContent.contentTypeTextPlain ;
         if ( str.equalsIgnoreCase(contentOutputCSV) )
-            return DEF.contentTypeTextCSV ;
+            return WebContent.contentTypeTextCSV ;
         if ( str.equalsIgnoreCase(contentOutputCSV) )
-            return DEF.contentTypeTextTSV ;
+            return WebContent.contentTypeTextTSV ;
         return str ;
     }
     

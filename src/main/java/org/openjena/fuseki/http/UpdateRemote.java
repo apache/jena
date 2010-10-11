@@ -10,13 +10,13 @@ import java.io.ByteArrayOutputStream ;
 import java.io.IOException ;
 
 import org.apache.http.HttpResponse ;
+import org.apache.http.HttpStatus ;
 import org.apache.http.client.HttpClient ;
 import org.apache.http.client.methods.HttpPost ;
 import org.apache.http.entity.AbstractHttpEntity ;
 import org.apache.http.entity.ByteArrayEntity ;
 import org.apache.http.impl.client.DefaultHttpClient ;
 import org.apache.http.protocol.HTTP ;
-import org.eclipse.jetty.http.HttpStatus ;
 import org.openjena.atlas.io.IndentedWriter ;
 import org.openjena.riot.WebContent ;
 
@@ -61,9 +61,9 @@ public class UpdateRemote
             int responseCode = response.getStatusLine().getStatusCode() ;
             String responseMessage = response.getStatusLine().getReasonPhrase() ;
             
-            if ( responseCode == HttpStatus.NO_CONTENT_204 )
+            if ( responseCode == HttpStatus.SC_NO_CONTENT )
                 return ;
-            if ( responseCode == HttpStatus.OK_200 )
+            if ( responseCode == HttpStatus.SC_OK )
                 // But what was the content?
                 // TODO read body 
                 return ; 

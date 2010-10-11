@@ -30,19 +30,7 @@ public class DEF
     public static AcceptList  charsetOffer      = new AcceptList(charsetUTF8) ;
     public static AcceptList  rsOffer           = new AcceptList(WebContent.contentTypeResultsXML, WebContent.contentTypeResultsJSON) ;
 
-    // In WebContent - remove when update happens.
-    public static final String contentTypeTextCSV         = "text/csv" ;
-    public static final String contentTypeTextTSV         = "text/tab-separated-values" ;
-
     // New to WebContent - remove when update happens.
-    
-//    public static final String contentTypeTriG              = "application/trig" ;
-//    public static final String contentTypeNQuads            = "text/nquads" ;
-//    public static final String contentTypeTriGAlt           = "application/x-trig" ;
-//    public static final String contentTypeNQuadsAlt         = "text/x-nquads" ;
-//    
-//    public static final String contentTypeSPARQLQuery       = "application/sparql-query" ;          // Unofficial
-//    public static final String contentTypeForm              = "application/x-www-form-urlencoded" ;
 }
 
 /*

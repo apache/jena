@@ -12,21 +12,15 @@ public class DevFuseki
 {
     // ** TestDatasetUpdater on graph / general.
     // ** TestProtocol (HTTP update, query, update)
-    // HEAD 
-    // OPTIONS
-    // ** --accept, --output
-    // 200 and 204: successPage ==> success.
     
-    // POST: 201, 200, 204 No Content
-    // PUT: 201 Created or 200/204
-    // DELETE : 200/204
-    // GET
-    // HEAD: 204 or 404
+    // Own HttpStatus : from Jetty + string name
+    
+    // Delay graph creation until needed, not on touch by target
+    // HEAD to do conneg.
     
     // Tasks:
     // EA-Release
     //   SOH defaults
-    // ARQ SNAPSHOT build and sort out DEF
     
     // Code examples
     
@@ -39,12 +33,13 @@ public class DevFuseki
     // Not release:
     //   File upload.
     //   read-only server.
-    //   execute non-dataset servlet.
-    //   HTML forms and simple wrappers.
-    // dev.http - other updaters. DatasetUpdater => HttpDataset
+    //   execute SPARQL non-dataset servlet.
+    //   Static pages
+    //   DataSourceHTTP
+    //   query by POST
     
-    // SOH
-    // query by POST
+    // Basic authentication
+    //   --user --password
     
     // Clean up SPARQL Query results code.
 
@@ -66,11 +61,6 @@ public class DevFuseki
     // Clean up Httpnames, DEF, WebContent.
     
     // Java DatasetUpdater:  don't serialise to byte[] and then send. 
-    
-    // Separate out the GET+dispatch as readonly servlet.
-    
-    // Basic authentication
-    //   --user --password
 }
 
 /*

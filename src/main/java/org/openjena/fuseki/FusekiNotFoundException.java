@@ -8,40 +8,9 @@ package org.openjena.fuseki;
 
 import org.apache.http.HttpStatus ;
 
-
-public class FusekiRequestException extends FusekiException
+public class FusekiNotFoundException extends FusekiRequestException
 {
-    public static FusekiRequestException create(int code, String msg)
-    {
-        if ( code == HttpStatus.SC_NOT_FOUND )
-            return new FusekiNotFoundException(msg) ;
-        return new FusekiRequestException(code, msg) ;
-    }
-    
-    private final int statusCode ;
-    private final String responseMessage ;
-    protected FusekiRequestException(int code, String msg)
-    {
-        super(msg) ;
-        this.statusCode = code ;
-        responseMessage = msg ;
-    }
-    
-    public int getStatusCode()
-    {
-        return statusCode ;
-    }
-
-    public String getResponseMessage()
-    {
-        return responseMessage ;
-    }
-
-    @Override
-    public String toString()
-    {
-        return "HTTP: "+statusCode+" "+getMessage() ;
-    }
+    public FusekiNotFoundException(String msg)    { super(HttpStatus.SC_NOT_FOUND, msg) ; }
 }
 
 /*

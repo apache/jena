@@ -165,7 +165,7 @@ public class SPARQL_REST extends SPARQL_ServletBase
             try {
                 // If we want to set the Content-Length, we need to buffer.
                 RDFWriter writer = FusekiLib.chooseWriter(stream) ;
-                Model model = ModelFactory.createModelForGraph(action.target.graph) ;
+                Model model = ModelFactory.createModelForGraph(action.target.graph()) ;
                 writer.write(model, action.response.getOutputStream(), null) ;
                 action.response.setStatus(HttpServletResponse.SC_OK);
             } finally { action.lock.leaveCriticalSection() ; }
@@ -175,7 +175,7 @@ public class SPARQL_REST extends SPARQL_ServletBase
     protected void doHead(HttpActionREST action)
     {
         if ( action.target.alreadyExisted )
-            SPARQL_ServletBase.successNoContent(action) ;
+            SPARQL_ServletBase.success(action) ;
         else
             SPARQL_ServletBase.successNotFound(action) ;
     }
@@ -192,13 +192,13 @@ public class SPARQL_REST extends SPARQL_ServletBase
 
     protected void doPut(HttpActionREST action)
     {
-        boolean existedBefore = (action.target.graph != null) ; 
+        boolean existedBefore = action.target.alreadyExisted ; 
         DatasetGraph body = parseBody(action) ;
         action.lock.enterCriticalSection(Lock.WRITE) ;
         try {
             clearGraph(action.target) ;
             //deleteGraph(target) ;   // Opps. Deletes the target!
-            addDataInto(body.getDefaultGraph(), action.target.graph) ;
+            addDataInto(body.getDefaultGraph(), action.target) ;
             SPARQL_ServletBase.sync(action.dsg) ;
         } finally { action.lock.leaveCriticalSection() ; }
         // Differentiate: 201 Created or 204 No Content 
@@ -210,11 +210,11 @@ public class SPARQL_REST extends SPARQL_ServletBase
 
     protected void doPost(HttpActionREST action)
     {
-        boolean existedBefore = (action.target.graph != null) ; 
+        boolean existedBefore = action.target.alreadyExisted ; 
         DatasetGraph body = parseBody(action) ;
         action.lock.enterCriticalSection(Lock.WRITE) ;
         try {
-            addDataInto(body.getDefaultGraph(), action.target.graph) ;
+            addDataInto(body.getDefaultGraph(), action.target) ;
             SPARQL_ServletBase.sync(action.dsg) ;
         } finally { action.lock.leaveCriticalSection() ; }
         if ( existedBefore )
@@ -251,19 +251,21 @@ public class SPARQL_REST extends SPARQL_ServletBase
     private void deleteGraph(HttpActionREST action)
     {
         if ( action.target.isDefault )
-            action.target.graph.getBulkUpdateHandler().removeAll() ;
+            action.target.graph().getBulkUpdateHandler().removeAll() ;
         else
             action.dsg.removeGraph(action.target.graphName) ;
     }
 
     private void clearGraph(Target target)
     {
-        target.graph.getBulkUpdateHandler().removeAll() ;
+        if ( target.isGraphSet() )
+            target.graph().getBulkUpdateHandler().removeAll() ;
     }
 
-    private void addDataInto(Graph data, Graph dest)
-    {
-        dest.getBulkUpdateHandler().add(data) ;
+    private void addDataInto(Graph data, Target dest)
+    {   
+        Graph g = dest.graph() ;
+        g.getBulkUpdateHandler().add(data) ;
     }
 
     private DatasetGraph parseBody(HttpActionREST action)
@@ -360,19 +362,14 @@ public class SPARQL_REST extends SPARQL_ServletBase
             SPARQL_ServletBase.errorBadRequest("Neither default graph nor named graph specificed") ;
         
         if ( dftGraph )
-        {
-            Graph g = dsg.getDefaultGraph() ;
-            return Target.createDefault(g) ;
-        }
+            return Target.createDefault(dsg) ;
         
         // Named graph
         String base = SPARQL_ServletBase.wholeRequestURL(request) ;
         String absUri = IRIResolver.resolveString(uri, base) ;
         Node gn = Node.createURI(absUri) ;
-        boolean alreadyExists = dsg.containsGraph(gn) ; 
-        // Don't touch the graph - it may be autocreated. 
-        Graph g = dsg.getGraph(gn) ;
-        return Target.createNamed(g, alreadyExists, absUri, gn) ;
+        boolean alreadyExists = dsg.containsGraph(gn) ;
+        return Target.createNamed(dsg, alreadyExists, absUri, gn) ;
     }
     
     private static String getOneOnly(HttpServletRequest request, String name)
@@ -388,35 +385,38 @@ public class SPARQL_REST extends SPARQL_ServletBase
     }
     
     // struct for target
-    private static class Target
+    private static final class Target
     {
         final boolean isDefault ;
         final boolean alreadyExisted ;
-        final Graph graph ;
+        final DatasetGraph dsg ;
+        // May be null, then  
+        private Graph _graph ;
         final String name ;
         final Node graphName ;
         
-        static Target createNamed(Graph graph, boolean alreadyExisted, String name, Node graphName)
+        static Target createNamed(DatasetGraph dsg, boolean alreadyExisted, String name, Node graphName)
         {
-            return new Target(false, graph, alreadyExisted, name, graphName) ;
+            return new Target(false, dsg, alreadyExisted, name, graphName) ;
         }
 
-        static Target createDefault(Graph graph)
+        static Target createDefault(DatasetGraph dsg)
         {
-            return new Target(true, graph, true, null, null) ;
+            return new Target(true, dsg, true, null, null) ;
         }
 
         //private Target(boolean isDefault, Graph graph, String name, Node graphName)
-        private Target(boolean isDefault, Graph graph, boolean alreadyExisted, String name, Node graphName)
+        private Target(boolean isDefault, DatasetGraph dsg, boolean alreadyExisted, String name, Node graphName)
         {
             this.isDefault = isDefault ;
             this.alreadyExisted = alreadyExisted ;
-            this.graph = graph ;
+            this.dsg = dsg ;
+            this._graph = null ;
             this.name  = name ;
             this.graphName = graphName ;
 
-            if ( graph == null )
-                throw new IllegalArgumentException("Inconsistent: no graph") ;
+//            if ( graph == null )
+//                throw new IllegalArgumentException("Inconsistent: no graph") ;
 
             if ( isDefault )
             {
@@ -430,6 +430,23 @@ public class SPARQL_REST extends SPARQL_ServletBase
             }                
         }
 
+        public Graph graph()
+        {
+            if ( isGraphSet() )
+            {
+                if ( isDefault ) 
+                    _graph = dsg.getDefaultGraph() ;
+                else
+                    _graph = dsg.getGraph(graphName) ;
+            }
+            return _graph ;
+        }
+        
+        public boolean isGraphSet()
+        {
+            return _graph == null ;
+        }
+        
         public String toString()
         {
             if ( isDefault ) return "default" ;

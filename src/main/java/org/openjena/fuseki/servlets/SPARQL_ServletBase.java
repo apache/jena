@@ -175,6 +175,11 @@ public abstract class SPARQL_ServletBase extends HttpServlet
     {
         success(action, HttpServletResponse.SC_NO_CONTENT);
     }
+    
+    protected static void success(HttpAction action)
+    {
+        success(action, HttpServletResponse.SC_OK);
+    }
 
     protected static void successCreated(HttpAction action)
     {

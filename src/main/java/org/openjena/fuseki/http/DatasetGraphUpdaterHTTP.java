@@ -14,6 +14,7 @@ import java.io.InputStream ;
 import org.apache.http.Header ;
 import org.apache.http.HttpEntity ;
 import org.apache.http.HttpResponse ;
+import org.apache.http.HttpStatus ;
 import org.apache.http.HttpVersion ;
 import org.apache.http.client.HttpClient ;
 import org.apache.http.client.methods.HttpDelete ;
@@ -30,13 +31,13 @@ import org.apache.http.params.HttpConnectionParams ;
 import org.apache.http.params.HttpParams ;
 import org.apache.http.params.HttpProtocolParams ;
 import org.apache.http.protocol.HTTP ;
-import org.eclipse.jetty.http.HttpStatus ;
 import org.openjena.atlas.io.IO ;
 import org.openjena.atlas.lib.Sink ;
 import org.openjena.atlas.logging.Log ;
 import org.openjena.fuseki.Fuseki ;
 import org.openjena.fuseki.FusekiException ;
 import org.openjena.fuseki.FusekiLib ;
+import org.openjena.fuseki.FusekiNotFoundException ;
 import org.openjena.fuseki.FusekiRequestException ;
 import org.openjena.fuseki.HttpNames ;
 import org.openjena.fuseki.conneg.TypedStream ;
@@ -71,12 +72,17 @@ public class DatasetGraphUpdaterHTTP implements DatasetGraphUpdater
     public Graph httpGet()                            { return doGet(targetDefault()) ; }
 
     @Override
-    public Graph httpGet(Node graphName)              { return doGet(target(graphName.getURI())) ; }
+    public Graph httpGet(Node graphName)              { return doGet(target(graphName)) ; }
     
     private Graph doGet(String url)
     {
         HttpUriRequest httpGet = new HttpGet(url) ;
-        return exec(url, null, httpGet, true) ;
+        try {
+            return exec(url, null, httpGet, true) ;
+        } catch (FusekiNotFoundException ex)
+        {
+            return null ;  
+        }
     }
     
     @Override
@@ -88,7 +94,7 @@ public class DatasetGraphUpdaterHTTP implements DatasetGraphUpdater
     @Override
     public boolean httpHead(Node graphName)
     {
-        return doHead(target(graphName.getURI())) ;
+        return doHead(target(graphName)) ;
     }
 
     private boolean doHead(String url)
@@ -99,7 +105,7 @@ public class DatasetGraphUpdaterHTTP implements DatasetGraphUpdater
             return true ;
         } catch (FusekiRequestException ex)
         {
-            if ( ex.getStatusCode() == HttpStatus.NOT_FOUND_404 )
+            if ( ex.getStatusCode() == HttpStatus.SC_NOT_FOUND )
                 return false ;
             throw ex ;
         }
@@ -109,7 +115,7 @@ public class DatasetGraphUpdaterHTTP implements DatasetGraphUpdater
     public void httpPut(Graph data)                   { doPut(targetDefault(), data) ; }
 
     @Override
-    public void httpPut(Node graphName, Graph data)   { doPut(target(graphName.getURI()), data) ; }
+    public void httpPut(Node graphName, Graph data)   { doPut(target(graphName), data) ; }
 
     private void doPut(String url, Graph data)
     {
@@ -121,7 +127,7 @@ public class DatasetGraphUpdaterHTTP implements DatasetGraphUpdater
     public void httpDelete()                          { doDelete(targetDefault()) ; }
 
     @Override
-    public void httpDelete(Node graphName)            { doDelete(target(graphName.getURI())) ; }
+    public void httpDelete(Node graphName)            { doDelete(target(graphName)) ; }
 
     private void doDelete(String url)
     {
@@ -133,7 +139,7 @@ public class DatasetGraphUpdaterHTTP implements DatasetGraphUpdater
     public void httpPost(Graph data)                  { doPost(targetDefault(), data) ; }
 
     @Override
-    public void httpPost(Node graphName, Graph data)  { doPost(target(graphName.getURI()), data) ; }
+    public void httpPost(Node graphName, Graph data)  { doPost(target(graphName), data) ; }
 
     private void doPost(String url, Graph data)
     {
@@ -152,9 +158,11 @@ public class DatasetGraphUpdaterHTTP implements DatasetGraphUpdater
         return remote+"?"+paramDefault+"=" ;
     }
 
-    private String target(String name)
+    private String target(Node name)
     {
-        return remote+"?"+paramGraph+"="+name ;
+        if ( ! name.isURI() )
+            throw new FusekiException("Not a URI: "+name) ;
+        return remote+"?"+paramGraph+"="+name.getURI() ;
     }
 
     static private HttpParams httpParams = createHttpParams() ;
@@ -207,21 +215,37 @@ public class DatasetGraphUpdaterHTTP implements DatasetGraphUpdater
             int responseCode = response.getStatusLine().getStatusCode() ;
             String responseMessage = response.getStatusLine().getReasonPhrase() ;
 
-            if (300 <= responseCode && responseCode < 400) throw new FusekiRequestException(responseCode, responseMessage) ;
+            if (300 <= responseCode && responseCode < 400) throw FusekiRequestException.create(responseCode, responseMessage) ;
 
             // Other 400 and 500 - errors
 
-            if (responseCode >= 400) throw new FusekiRequestException(responseCode, responseMessage) ;
+            if (responseCode >= 400) throw FusekiRequestException.create(responseCode, responseMessage) ;
 
-            if ( responseCode == HttpStatus.NO_CONTENT_204) return null ;
-            if ( responseCode == HttpStatus.CREATED_201 ) return null ;
+            if ( responseCode == HttpStatus.SC_NO_CONTENT) return null ;
+            if ( responseCode == HttpStatus.SC_CREATED ) return null ;
             
-            if ( responseCode != HttpStatus.OK_200 )
+            if ( responseCode != HttpStatus.SC_OK )
             {
                 Log.warn(this, "Unexpected status code") ;
-                throw new FusekiRequestException(responseCode, responseMessage) ;
+                throw FusekiRequestException.create(responseCode, responseMessage) ;
             }
+            
+            // Still may not have a body.
+            String ct = getHeader(response, HttpNames.hContentType) ;
+            if ( ct == null )
+            {
+                HttpEntity entity = response.getEntity() ;
                 
+                if (entity != null)
+                {
+                    InputStream instream = entity.getContent() ;
+                    // Read to completion?
+                    instream.close() ;
+                }
+                return null ;
+            }
+            
+            //if ( ct != null )
             // Tidy. See ConNeg / MediaType.
             String x = getHeader(response, HttpNames.hContentType) ;
             String y[] = x.split(";") ;

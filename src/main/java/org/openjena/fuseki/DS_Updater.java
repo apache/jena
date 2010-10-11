@@ -8,7 +8,7 @@ package org.openjena.fuseki;
 
 import com.hp.hpl.jena.rdf.model.Model ;
 
-// This is a "DataSource"?
+// Accessor to a datset a a collection of graps.
 public interface DS_Updater
 {
     /** Get the default model of a Dataset */
@@ -31,6 +31,9 @@ public interface DS_Updater
     public void deleteDefault() ;
     /** Delete a named model of a Dataset */
     public void deleteModel(String graphUri) ;
+
+//    /** Clear the default graph, delete all the named models */
+//    public void reset() ;
 
     /** Add statements to the default model of a Dataset */
     public void add(Model data) ;

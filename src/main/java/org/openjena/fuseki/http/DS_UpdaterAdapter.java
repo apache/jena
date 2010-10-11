@@ -33,6 +33,8 @@ public class DS_UpdaterAdapter implements DS_Updater
     public Model getModel(String graphUri)
     {
         Graph g = updater.httpGet(Node.createURI(graphUri)) ;
+        if ( g == null )
+            return null ;
         return ModelFactory.createModelForGraph(g) ;
     }
 

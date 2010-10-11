@@ -15,6 +15,8 @@ import com.hp.hpl.jena.rdf.model.ModelFactory ;
 
 public class TestDatasetHTTP extends BaseServerTest 
 {
+    //Model level testing.
+    
     static final String datasetURI_not_1    = "http://localhost:"+port+"/junk" ;
     static final String datasetURI_not_2    = serviceREST+"/not" ;
     static final String datasetURI_not_3    = "http://localhost:"+port+datasetPath+"/not/data" ;
@@ -49,33 +51,53 @@ public class TestDatasetHTTP extends BaseServerTest
         WebTest.exec_get(datasetURI_not_2, 404) ;
     }
 
-    @Test(expected=FusekiRequestException.class)
+    @Test(expected=FusekiNotFoundException.class)
     public void test_404_1()
     {
+        // Not the right service.
         DS_Updater du = DatasetUpdaterFactory.createHTTP(datasetURI_not_1) ;
         Model graph = du.getModel(gn99) ;
+        fail("Expected excepton") ;
     }
-    
-    @Test(expected=FusekiRequestException.class)
+
+    @Test(expected=FusekiNotFoundException.class)
     public void test_404_2()
     {
         DS_Updater du = DatasetUpdaterFactory.createHTTP(datasetURI_not_2) ;
         Model graph = du.getModel(gn99) ;
     }
 
-    @Test public void test_404_3()
+    @Test(expected=FusekiNotFoundException.class)
+    public void test_404_3()
     {
         // All graphs "exist"
         DS_Updater du = DatasetUpdaterFactory.createHTTP(serviceREST) ;
         Model graph = du.getModel(gn99) ;
         assertTrue(graph.isEmpty()) ;
     }
-    
-    static DS_Updater create()
+
+    @Test public void head_01()
     {
-        return DatasetUpdaterFactory.createHTTP(serviceREST) ;
+        DS_Updater du = create() ;
+        boolean b = du.containsModel(gn1) ;
+        assertFalse("Blank remote dataset as a named graph", b) ;
     }
-    
+
+    @Test public void head_02()
+    {
+        DS_Updater du = create() ;
+        du.putModel(gn1, graph1) ;
+        boolean exists = du.containsModel(gn1) ;
+        assertTrue(exists) ;
+        exists = du.containsModel(gn2) ;
+        assertFalse("Expected gn2 not to exist (1)", exists) ;
+
+        exists = du.containsModel(gn2) ;
+        assertFalse("Expected gn2 not to exist (2)", exists) ;
+        // Clearup
+        du.deleteModel(gn1) ;
+    }
+
     @Test public void get_01()
     {
         DS_Updater du = create() ;
@@ -85,37 +107,10 @@ public class TestDatasetHTTP extends BaseServerTest
     
     @Test public void get_02()
     {
-        // All graphs exist.
         DS_Updater du = create() ;
         Model graph = du.getModel(gn1) ;
-        assertTrue(graph.isEmpty()) ;
+        assertNull(graph) ;
     }
-
-//    @Test public void head_01()
-//    {
-//        DS_Updater du = create() ;
-//        Model graph = du.getModel() ;
-//        assertTrue(graph.isEmpty()) ;
-//    }
-    
-    @Test public void head_02()
-    {
-        // All graphs exist.
-        DS_Updater du = create() ;
-        boolean b = du.containsModel(gn1) ;
-        assertFalse("Blank remote dataset as a named graph", b) ;
-    }
-
-    // More HEAD checking below
-    
-//    @Test public void head_02()
-//    {
-//        // All graphs exist.
-//        DS_Updater du = create() ;
-//        boolean b = du.containsModel(gn1) ;
-//        assertFalse(b) ;
-//    }
-
 
     @Test public void delete_01()
     {
@@ -127,6 +122,8 @@ public class TestDatasetHTTP extends BaseServerTest
     {
         DS_Updater du = create() ;
         du.deleteModel(gn1) ;
+        boolean exists = du.containsModel(gn1) ;
+        assertFalse("Expected gn1 not to exist", exists) ;
     }
 
     @Test public void put_01()
@@ -156,8 +153,11 @@ public class TestDatasetHTTP extends BaseServerTest
         assertTrue(graph.isIsomorphicWith(graph1)) ;
         
         du.deleteModel(gn1) ;
+        exists = du.containsModel(gn1) ;
+        assertFalse("Expected gn1 not to exist", exists) ;
+        
         graph = du.getModel(gn1) ;
-        assertTrue(graph.isEmpty()) ;
+        assertNull(graph) ;
     }
 
     @Test public void put_03()
@@ -221,6 +221,11 @@ public class TestDatasetHTTP extends BaseServerTest
         du.deleteModel(gn1) ;
         du.deleteModel(gn2) ;
         du.deleteModel(gn99) ;
+    }
+
+    static DS_Updater create()
+    {
+        return DatasetUpdaterFactory.createHTTP(serviceREST) ;
     }
 }
 

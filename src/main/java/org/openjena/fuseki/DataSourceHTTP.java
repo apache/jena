@@ -6,42 +6,78 @@
 
 package org.openjena.fuseki;
 
-import org.apache.http.HttpStatus ;
+import java.util.Iterator ;
 
+import com.hp.hpl.jena.query.DataSource ;
+import com.hp.hpl.jena.query.LabelExistsException ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.shared.Lock ;
+import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 
-public class FusekiRequestException extends FusekiException
+public class DataSourceHTTP implements DataSource
 {
-    public static FusekiRequestException create(int code, String msg)
-    {
-        if ( code == HttpStatus.SC_NOT_FOUND )
-            return new FusekiNotFoundException(msg) ;
-        return new FusekiRequestException(code, msg) ;
-    }
-    
-    private final int statusCode ;
-    private final String responseMessage ;
-    protected FusekiRequestException(int code, String msg)
-    {
-        super(msg) ;
-        this.statusCode = code ;
-        responseMessage = msg ;
-    }
-    
-    public int getStatusCode()
-    {
-        return statusCode ;
-    }
 
-    public String getResponseMessage()
+    @Override
+    public DatasetGraph asDatasetGraph()
     {
-        return responseMessage ;
+        return null ;
     }
 
     @Override
-    public String toString()
+    public Lock getLock()
     {
-        return "HTTP: "+statusCode+" "+getMessage() ;
+        return null ;
     }
+
+    @Override
+    public Model getDefaultModel()
+    {
+        return null ;
+    }
+
+    @Override
+    public Model getNamedModel(String uri)
+    {
+        return null ;
+    }
+
+    @Override
+    public boolean containsNamedModel(String uri)
+    {
+        return false ;
+    }
+
+    @Override
+    public void setDefaultModel(Model model)
+    {
+        // PUT to default model.
+    }
+
+
+    @Override
+    public void addNamedModel(String uri, Model model) throws LabelExistsException
+    {}
+
+    @Override
+    public void replaceNamedModel(String uri, Model model)
+    {
+        // PUT
+    }
+
+    @Override
+    public void removeNamedModel(String uri)
+    {}
+
+    @Override
+    public Iterator<String> listNames()
+    {
+        return null ;
+    }
+
+    @Override
+    public void close()
+    {}
+
 }
 
 /*

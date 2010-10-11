@@ -6,7 +6,7 @@
 
 package dev;
 
-import org.openjena.fuseki.FusekiCmd ;
+import org.openjena.fuseki.server.FusekiCmd ;
 
 public class RunFuseki
 {
