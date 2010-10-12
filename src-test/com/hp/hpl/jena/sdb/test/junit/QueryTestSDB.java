@@ -160,7 +160,9 @@ public class QueryTestSDB extends EarlTestCase
         
         // ---- First, get the expected results by executing in-memory or from a results file.
         
-        ResultSet rs = item.getResults().getResultSet() ;
+        ResultSet rs = null ;
+        if ( item.getResults() != null )
+            rs = item.getResults().getResultSet() ;
         ResultSetRewindable rs1 = null ;
         String expectedLabel = "" ;
         if ( rs != null )
