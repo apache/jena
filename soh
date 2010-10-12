@@ -72,10 +72,11 @@ $headers = { "User-Agent" => "#{SOH_NAME}/Fuseki #{SOH_VERSION}"}
 $print_http = false
 
 # Default for GET
-# $accept_rdf="#{$mtTurtle},#{$mtRDF};q=0.8"
-$accept_rdf="#{$mtRDF},#{$mtTurtle};q=0.9"
+# At least allow anythign (and hope!)
+# $accept_rdf="#{$mtTurtle},#{$mtRDF};q=0.8,*/*"
+$accept_rdf="#{$mtRDF} , #{$mtTurtle};q=0.9 , */*;q=0.1"
 # For SPARQL query
-$accept_results="#{$mtSparqlResultsJ},#{$mtSparqlResultsX};q=0.9,#{$accept_rdf}"
+$accept_results="#{$mtSparqlResultsJ} , #{$mtSparqlResultsX};q=0.9 , #{$accept_rdf} , */*;q=0.1"
 # The media type usually forces the charset.
 $accept_charset=nil
 
@@ -110,6 +111,7 @@ def HEAD(dataset, graph)
   headers.merge!($headers)
   headers[$hAccept] = $accept_rdf
   headers[$hAcceptCharset] = $accept_charset unless $accept_charset.nil?
+  uri = URI.parse(requestURI)
   request = Net::HTTP::Head.new(uri.request_uri)
   request.initialize_http_header(headers)
   print_http_request(uri, request)
@@ -176,6 +178,17 @@ def response_no_body(uri, request)
   end
   response = http.request(request)
   print_http_response(response)
+  case response
+  when Net::HTTPSuccess, Net::HTTPRedirection
+    # OK
+  when Net::HTTPNotFound
+    warn_exit "404 Not found: #{uri}", 9
+    #print response.body
+  else
+    warn_exit "#{response.code} #{response.message}: #{uri}", 9
+    # Unreachable
+      response.error!
+  end
   # NO BODY IN RESPONSE
 end
 
@@ -404,7 +417,7 @@ def cmd_sparql_query
             'Set the output argument') do |type|
       options[:output]=type
     end
-     opts.on('--accept=TYPE', [:json,:xml,:text,:csv,:tsv], 
+    opts.on('--accept=TYPE', [:json,:xml,:text,:csv,:tsv], 
             'Set the accept header type') do |type|
       options[:accept]=type
     end
@@ -452,8 +465,12 @@ def cmd_sparql_query
   # --output ==> output= (non-standard)
   args={}
   case options[:output]
-  when :text
-    args['output'] = 'text'
+  when  "json","xml","text","csv","tsv"
+    args['output'] = options[:output]
+  when :json,:xml,:text,:csv,:tsv
+    args['output'] = options[:output].to_s
+  else
+    warn_exit "Unrecognized output type: "+options[:output],2
   end
 
   # --accept

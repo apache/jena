@@ -87,6 +87,11 @@ public class SPARQL_Query extends SPARQL_ServletBase
     @Override
     protected void requestNoQueryString(HttpServletRequest request, HttpServletResponse response)
     {
+        if ( ! "GET".equals(request.getMethod().toUpperCase()) )
+        {
+            errorNotImplemented() ;
+            return ;
+        }
         log.warn("Service Description / SPARQL Query") ;
         errorNotFound("Service Description") ;
     }

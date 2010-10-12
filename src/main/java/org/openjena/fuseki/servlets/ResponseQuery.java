@@ -129,6 +129,8 @@ public class ResponseQuery
         // Requested output type by the web form or &output= in the request.
         // Overrides content negotiation. 
         String outputField = paramOutput(request) ;    // Expands short names
+        if ( outputField != null )
+            mimeType = outputField ;
         
         String serializationType = mimeType ;           // Chosoe the serializer based on this.
         String contentType = mimeType ;                 // Set the HTTP respose header to this.

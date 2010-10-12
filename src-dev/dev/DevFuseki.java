@@ -10,17 +10,22 @@ package dev;
 
 public class DevFuseki
 {
+    // Environment variable for target.
     // No error:
     // s-update --service http://localhost:3030/dataset/query --file UP.ru 
-    
+    //   http://dbtune.org/classical/sparql/
     // Sort of DS_Updater => DS_Accessor
     // can't tell wrong service from right service, no graph 
+    
+    // --text to query
+    
+    // HEAD to do conneg.
+    
     
     // ** TestDatasetUpdater on graph / general.
     // ** TestProtocol (HTTP update, query, update)
     
     // Delay graph creation until needed, not on touch by target
-    // HEAD to do conneg.
     
     // Tasks:
     // EA-Release
