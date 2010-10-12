@@ -46,7 +46,7 @@ public class MediaRange extends MediaType
         }
     }
 
-    public MediaRange(String type, String subtype)
+    protected MediaRange(String type, String subtype)
     {  
         super(type, subtype) ;  
         set_q() ;

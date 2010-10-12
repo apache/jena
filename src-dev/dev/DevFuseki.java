@@ -16,8 +16,6 @@ public class DevFuseki
     // ** TestDatasetUpdater on graph / general.
     // ** TestProtocol (HTTP update, query, update)
     
-    // Own HttpStatus : from Jetty + string name
-    
     // Delay graph creation until needed, not on touch by target
     // HEAD to do conneg.
     
@@ -26,6 +24,8 @@ public class DevFuseki
     //   SOH defaults
     
     // Code examples
+    
+    // DatasetAccessor : check existence of endpoint. 
     
     // Tests:
     //   DatasetGraphUpdater (renamed!) inc status codes.
@@ -44,6 +44,7 @@ public class DevFuseki
     // Basic authentication
     //   --user --password
     
+    // Check SPARQL_REST for access to dataset to ensure there's a lock even before target created.
     // Clean up SPARQL Query results code.
 
     // HTTP:

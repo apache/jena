@@ -6,78 +6,39 @@
 
 package org.openjena.fuseki;
 
-import java.util.Iterator ;
-
-import com.hp.hpl.jena.query.DataSource ;
-import com.hp.hpl.jena.query.LabelExistsException ;
 import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.shared.Lock ;
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 
-public class DataSourceHTTP implements DataSource
+// Accessor to a datset a a collection of graps.
+public interface DatasetAccessor
 {
+    /** Get the default model of a Dataset */
+    public Model getModel() ; 
+    /** Get a named model of a Dataset */
+    public Model getModel(String graphUri) ;
 
-    @Override
-    public DatasetGraph asDatasetGraph()
-    {
-        return null ;
-    }
+//    /** Does the Dataset contain a default graph? */
+//    public boolean containsDefault() ;
 
-    @Override
-    public Lock getLock()
-    {
-        return null ;
-    }
+    /** Does the Dataset contain a named graph? */
+    public boolean containsModel(String graphURI) ;
+    
+    /** Put (replace) the default model of a Dataset */
+    public void putModel(Model data) ;
+    /** Put (create/replace) a named model of a Dataset */
+    public void putModel(String graphUri, Model data) ;
 
-    @Override
-    public Model getDefaultModel()
-    {
-        return null ;
-    }
+    /** Delete (which means clear) the default model of a Dataset */
+    public void deleteDefault() ;
+    /** Delete a named model of a Dataset */
+    public void deleteModel(String graphUri) ;
 
-    @Override
-    public Model getNamedModel(String uri)
-    {
-        return null ;
-    }
+//    /** Clear the default graph, delete all the named models */
+//    public void reset() ;
 
-    @Override
-    public boolean containsNamedModel(String uri)
-    {
-        return false ;
-    }
-
-    @Override
-    public void setDefaultModel(Model model)
-    {
-        // PUT to default model.
-    }
-
-
-    @Override
-    public void addNamedModel(String uri, Model model) throws LabelExistsException
-    {}
-
-    @Override
-    public void replaceNamedModel(String uri, Model model)
-    {
-        // PUT
-    }
-
-    @Override
-    public void removeNamedModel(String uri)
-    {}
-
-    @Override
-    public Iterator<String> listNames()
-    {
-        return null ;
-    }
-
-    @Override
-    public void close()
-    {}
-
+    /** Add statements to the default model of a Dataset */
+    public void add(Model data) ;
+    /** Add statements to a named model of a Dataset */
+    public void add(String graphUri, Model data) ;
 }
 
 /*

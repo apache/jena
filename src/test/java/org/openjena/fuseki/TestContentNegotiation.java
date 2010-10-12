@@ -102,7 +102,7 @@ public class TestContentNegotiation extends BaseTest
             return ;
         }
         assertNotNull("Match is null: expected "+q(result), matchItem) ;
-        assertEquals("Match different", result, matchItem.getMediaType()) ;
+        assertEquals("Match different", result, matchItem.getContentType()) ;
     }
     
     private String q(Object obj)

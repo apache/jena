@@ -14,7 +14,6 @@ import java.io.InputStream ;
 import org.apache.http.Header ;
 import org.apache.http.HttpEntity ;
 import org.apache.http.HttpResponse ;
-import org.apache.http.HttpStatus ;
 import org.apache.http.HttpVersion ;
 import org.apache.http.client.HttpClient ;
 import org.apache.http.client.methods.HttpDelete ;
@@ -40,7 +39,8 @@ import org.openjena.fuseki.FusekiLib ;
 import org.openjena.fuseki.FusekiNotFoundException ;
 import org.openjena.fuseki.FusekiRequestException ;
 import org.openjena.fuseki.HttpNames ;
-import org.openjena.fuseki.conneg.TypedStream ;
+import org.openjena.fuseki.conneg.TypedInputStream ;
+import org.openjena.fuseki.migrate.UnmodifiableGraph ;
 import org.openjena.riot.Lang ;
 import org.openjena.riot.RiotReader ;
 import org.openjena.riot.WebContent ;
@@ -105,7 +105,7 @@ public class DatasetGraphUpdaterHTTP implements DatasetGraphUpdater
             return true ;
         } catch (FusekiRequestException ex)
         {
-            if ( ex.getStatusCode() == HttpStatus.SC_NOT_FOUND )
+            if ( ex.getStatusCode() == HttpSC.NOT_FOUND_404 )
                 return false ;
             throw ex ;
         }
@@ -188,16 +188,16 @@ public class DatasetGraphUpdaterHTTP implements DatasetGraphUpdater
         return h.getValue() ;
     }
 
-    private Graph exec(String targetStr, Graph graph, HttpUriRequest httpRequest, boolean processBody)
+    private Graph exec(String targetStr, Graph graphToSend, HttpUriRequest httpRequest, boolean processBody)
     {
         HttpClient httpclient = new DefaultHttpClient(httpParams) ;
         
-        if ( graph != null )
+        if ( graphToSend != null )
         {
             // ??? httpRequest isa Post
             // Impedence mismatch - is there a better way?
             ByteArrayOutputStream out = new ByteArrayOutputStream() ;
-            Model model = ModelFactory.createModelForGraph(graph) ;
+            Model model = ModelFactory.createModelForGraph(graphToSend) ;
             model.write(out, "RDF/XML") ;
             byte[] bytes = out.toByteArray() ;
             ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray()) ;
@@ -207,30 +207,33 @@ public class DatasetGraphUpdaterHTTP implements DatasetGraphUpdater
             HttpEntity entity = reqEntity ;
             ((HttpEntityEnclosingRequestBase)httpRequest).setEntity(entity) ;
         }
-        TypedStream ts = null ;
+        TypedInputStream ts = null ;
         // httpclient.getParams().setXXX
         try {
             HttpResponse response = httpclient.execute(httpRequest) ;
 
             int responseCode = response.getStatusLine().getStatusCode() ;
             String responseMessage = response.getStatusLine().getReasonPhrase() ;
-
-            if (300 <= responseCode && responseCode < 400) throw FusekiRequestException.create(responseCode, responseMessage) ;
+            
+            if ( HttpSC.isRedirection(responseCode) )
+                // Not implemented yet.
+                throw FusekiRequestException.create(responseCode, responseMessage) ;
 
             // Other 400 and 500 - errors
 
-            if (responseCode >= 400) throw FusekiRequestException.create(responseCode, responseMessage) ;
+            if ( HttpSC.isClientError(responseCode) || HttpSC.isServerError(responseCode) )
+                throw FusekiRequestException.create(responseCode, responseMessage) ;
 
-            if ( responseCode == HttpStatus.SC_NO_CONTENT) return null ;
-            if ( responseCode == HttpStatus.SC_CREATED ) return null ;
+            if ( responseCode == HttpSC.NO_CONTENT_204) return null ;
+            if ( responseCode == HttpSC.CREATED_201 ) return null ;
             
-            if ( responseCode != HttpStatus.SC_OK )
+            if ( responseCode != HttpSC.OK_200 )
             {
                 Log.warn(this, "Unexpected status code") ;
                 throw FusekiRequestException.create(responseCode, responseMessage) ;
             }
             
-            // Still may not have a body.
+            // May not have a body.
             String ct = getHeader(response, HttpNames.hContentType) ;
             if ( ct == null )
             {
@@ -245,7 +248,6 @@ public class DatasetGraphUpdaterHTTP implements DatasetGraphUpdater
                 return null ;
             }
             
-            //if ( ct != null )
             // Tidy. See ConNeg / MediaType.
             String x = getHeader(response, HttpNames.hContentType) ;
             String y[] = x.split(";") ;
@@ -264,13 +266,14 @@ public class DatasetGraphUpdaterHTTP implements DatasetGraphUpdater
                 InputStream instream = entity.getContent() ;
 //                String mimeType = ConNeg.chooseContentType(request, rdfOffer, ConNeg.acceptRDFXML).getAcceptType() ;
 //                String charset = ConNeg.chooseCharset(request, charsetOffer, ConNeg.charsetUTF8).getAcceptType() ;
-                ts = new TypedStream(instream, contentType, charset) ;
+                ts = new TypedInputStream(instream, contentType, charset) ;
             }
-            Graph graph2 = null ;
+            Graph graph = GraphFactory.createGraphMem() ;
             if ( processBody )
-                graph2 = readGraph(ts, null) ;
+                readGraph(graph, ts, null) ;
             if ( ts != null )
-                ts.getInput().close() ;
+                ts.close() ;
+            Graph graph2 = new UnmodifiableGraph(graph) ;
             return graph2 ;
         } catch (IOException ex)
         {
@@ -279,24 +282,26 @@ public class DatasetGraphUpdaterHTTP implements DatasetGraphUpdater
         }
     }
 
-    private Graph readGraph(TypedStream ts, String base)
+    private void readGraph(Graph graph, TypedInputStream ts, String base)
     {
-        if ( ts == null )
-            return null ;
+        // DRY - code in SPARQL_REST.parseBody
+        
+        // Yes - we ignore the charset.
+        // Either it's XML and so the XML parser deals with it, or the 
+        // language determines the charset and the parsers offer InputStreams.   
+       
         Lang lang = FusekiLib.langFromContentType(ts.getMediaType()) ;
         if ( lang == null )
             throw new FusekiException("Unknown lang for "+ts.getMediaType()) ;
-        Graph graph = GraphFactory.createGraphMem() ;
         Sink<Triple> sink = new SinkTriplesToGraph(graph) ;
         LangRIOT parser ;
         
         if ( lang.equals(Lang.RDFXML) )
-            parser = LangRDFXML.create(ts.getInput(), base, base, null, sink) ;
+            parser = LangRDFXML.create(ts, base, base, null, sink) ;
         else
-            parser = RiotReader.createParserTriples(ts.getInput(), lang, base, sink) ;
+            parser = RiotReader.createParserTriples(ts, lang, base, sink) ;
         parser.parse() ;
-        IO.close(ts.getInput()) ;
-        return graph ;
+        IO.close(ts) ;
     }    
 }
 

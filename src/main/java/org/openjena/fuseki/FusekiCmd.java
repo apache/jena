@@ -4,8 +4,9 @@
  * [See end of file]
  */
 
-package org.openjena.fuseki.server;
+package org.openjena.fuseki;
 
+import org.openjena.fuseki.server.SPARQLServer ;
 import arq.cmd.CmdException ;
 import arq.cmdline.ArgDecl ;
 import arq.cmdline.CmdGeneral ;

@@ -11,19 +11,20 @@ import java.util.LinkedHashMap ;
 import java.util.Map ;
 
 import static org.openjena.atlas.lib.Lib.* ;
+import org.openjena.fuseki.HttpNames ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
 /** A structure to represent a <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec3.html#sec3.7">media type</a>.
  * Se also the <a href="http://httpd.apache.org/docs/current/content-negotiation.html">Apache httpd documentation</a>.
- *  
- *  */
+ */
 public class MediaType
 {
     private static Logger log = LoggerFactory.getLogger(MediaType.class) ; 
 
     private String type = null ;
     private String subType = null ;
+    private String charset = null ;
     // Keys in insertion order.
     private Map<String, String> params = new LinkedHashMap<String, String>() ;
    
@@ -40,12 +41,20 @@ public class MediaType
         parseOneEntry(string) ;
     }
     
-    public MediaType(String type, String subType)
+    /** Create a media type from type and subType */
+    protected MediaType(String type, String subType)
     {
         this.type = type ;
         this.subType = subType ;
     }
 
+    public static MediaType create(String contentType, String charset)
+    {
+        MediaType mediaType = new MediaType(contentType) ;
+        mediaType.setParameter(HttpNames.charset, charset) ;
+        return mediaType ;
+    }
+    
     private void parseOneEntry(String s)
     {
         String[] x = ConNeg.split(s, ";") ;
@@ -137,17 +146,19 @@ public class MediaType
     public String getParameter(String name)             { return params.get(name) ; }
     public void setParameter(String name, String value) { params.put(name, value) ; }
     
-    public String getSubType()                      { return subType ; }
-    public void setSubType(String subType)          { this.subType = subType ; }
-    public String getType()                         { return type ; }
-    public void setType(String type)                { this.type = type; }
-    
-    public String getMediaType()
+    public String getContentType()
     {
         if ( subType == null )
             return type ;
         return type+"/"+subType ;
     }
+    
+    public String getCharset()              { return getParameter(HttpNames.charset) ; }
+
+    public String getSubType()              { return subType ; }
+    public void setSubType(String subType)  { this.subType = subType ; }
+    public String getType()                 { return type ; }
+    public void setType(String type)        { this.type = type; }
 }
 
 /*

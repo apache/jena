@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServletResponse ;
 import org.openjena.atlas.io.IO ;
 import org.openjena.atlas.lib.Bytes ;
 import org.openjena.fuseki.HttpNames ;
+import org.openjena.fuseki.http.HttpSC ;
 import org.openjena.riot.WebContent ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
@@ -56,7 +57,7 @@ public class SPARQL_Update extends SPARQL_ServletBase
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException
     {
-        response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Attempt to perform SPARQL update by GET.  Use POST") ;
+        response.sendError(HttpSC.BAD_REQUEST_400, "Attempt to perform SPARQL update by GET.  Use POST") ;
     }
     
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -128,7 +129,7 @@ public class SPARQL_Update extends SPARQL_ServletBase
             return ;
         }
         
-        error(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE, "Must be "+WebContent.contentSPARQLUpdate+" or "+WebContent.contentTypeForm) ;
+        error(HttpSC.UNSUPPORTED_MEDIA_TYPE_415, "Must be "+WebContent.contentSPARQLUpdate+" or "+WebContent.contentTypeForm) ;
     }
 
     private void executeBody(HttpActionUpdate action)
@@ -157,7 +158,7 @@ public class SPARQL_Update extends SPARQL_ServletBase
 
     private void executeForm(HttpActionUpdate action)
     {
-        error(HttpServletResponse.SC_NOT_IMPLEMENTED, "SPARQL Update: POST of HTML form not supported yet") ;
+        //error(HttpSC.NOT_IMPLEMENTED_501, "SPARQL Update: POST of HTML form not supported yet") ;
         String requestStr = action.request.getParameter(paramRequest) ;
         if ( action.verbose )
             serverlog.info(format("[%d] Form update = %s", action.id, formatForLog(requestStr))) ;

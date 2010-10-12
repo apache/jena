@@ -10,11 +10,9 @@ import java.util.HashMap ;
 import java.util.Map ;
 
 import javax.servlet.http.HttpServletRequest ;
-import javax.servlet.http.HttpServletResponse ;
 
 import org.openjena.atlas.lib.MultiMap ;
 import org.openjena.fuseki.conneg.ContentType ;
-import org.openjena.fuseki.conneg.TypedStream ;
 import org.openjena.riot.Lang ;
 import org.openjena.riot.RiotException ;
 import org.openjena.riot.WebContent ;
@@ -82,13 +80,10 @@ public class FusekiLib
     }
 
     
-    // ---- To riot.Webreader // RIOT writers
-    public static RDFWriter chooseWriter(TypedStream stream)
+    public static RDFWriter chooseWriter(Lang lang)        
     {
-        Lang lang = FusekiLib.langFromContentType(stream.getMediaType()) ;
         if ( lang == null )
             lang = Lang.RDFXML ;
-        
         switch (lang)
         {
             case N3 :
@@ -145,54 +140,6 @@ public class FusekiLib
             sbuff.append("?").append(tmp);
         }
         return sbuff.toString() ;
-    }
-
-    public static String httpResponseCode(int responseCode)
-    {
-        switch (responseCode)
-        {
-        case HttpServletResponse.SC_CONTINUE: return "SC_CONTINUE" ;
-        case HttpServletResponse.SC_SWITCHING_PROTOCOLS: return "SC_SWITCHING_PROTOCOLS" ;
-        case HttpServletResponse.SC_OK: return "SC_OK" ;
-        case HttpServletResponse.SC_CREATED: return "SC_CREATED" ;
-        case HttpServletResponse.SC_ACCEPTED: return "SC_ACCEPTED" ;
-        case HttpServletResponse.SC_NON_AUTHORITATIVE_INFORMATION: return "SC_NON_AUTHORITATIVE_INFORMATION" ;
-        case HttpServletResponse.SC_NO_CONTENT: return "SC_NO_CONTENT" ;
-        case HttpServletResponse.SC_RESET_CONTENT: return "SC_RESET_CONTENT" ;
-        case HttpServletResponse.SC_PARTIAL_CONTENT: return "SC_PARTIAL_CONTENT" ;
-        case HttpServletResponse.SC_MULTIPLE_CHOICES: return "SC_MULTIPLE_CHOICES" ;
-        case HttpServletResponse.SC_MOVED_PERMANENTLY: return "SC_MOVED_PERMANENTLY" ;
-        case HttpServletResponse.SC_MOVED_TEMPORARILY: return "SC_MOVED_TEMPORARILY" ;
-        case HttpServletResponse.SC_SEE_OTHER: return "SC_SEE_OTHER" ;
-        case HttpServletResponse.SC_NOT_MODIFIED: return "SC_NOT_MODIFIED" ;
-        case HttpServletResponse.SC_USE_PROXY: return "SC_USE_PROXY" ;
-        case HttpServletResponse.SC_TEMPORARY_REDIRECT: return "SC_TEMPORARY_REDIRECT" ;
-        case HttpServletResponse.SC_BAD_REQUEST: return "SC_BAD_REQUEST" ;
-        case HttpServletResponse.SC_UNAUTHORIZED: return "SC_UNAUTHORIZED" ;
-        case HttpServletResponse.SC_PAYMENT_REQUIRED: return "SC_PAYMENT_REQUIRED" ;
-        case HttpServletResponse.SC_FORBIDDEN: return "SC_FORBIDDEN" ;
-        case HttpServletResponse.SC_NOT_FOUND: return "SC_NOT_FOUND" ;
-        case HttpServletResponse.SC_METHOD_NOT_ALLOWED: return "SC_METHOD_NOT_ALLOWED" ;
-        case HttpServletResponse.SC_NOT_ACCEPTABLE: return "SC_NOT_ACCEPTABLE" ;
-        case HttpServletResponse.SC_PROXY_AUTHENTICATION_REQUIRED: return "SC_PROXY_AUTHENTICATION_REQUIRED" ;
-        case HttpServletResponse.SC_REQUEST_TIMEOUT: return "SC_REQUEST_TIMEOUT" ;
-        case HttpServletResponse.SC_CONFLICT: return "SC_CONFLICT" ;
-        case HttpServletResponse.SC_GONE: return "SC_GONE" ;
-        case HttpServletResponse.SC_LENGTH_REQUIRED: return "SC_LENGTH_REQUIRED" ;
-        case HttpServletResponse.SC_PRECONDITION_FAILED: return "SC_PRECONDITION_FAILED" ;
-        case HttpServletResponse.SC_REQUEST_ENTITY_TOO_LARGE: return "SC_REQUEST_ENTITY_TOO_LARGE" ;
-        case HttpServletResponse.SC_REQUEST_URI_TOO_LONG: return "SC_REQUEST_URI_TOO_LONG" ;
-        case HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE: return "SC_UNSUPPORTED_MEDIA_TYPE" ;
-        case HttpServletResponse.SC_REQUESTED_RANGE_NOT_SATISFIABLE: return "SC_REQUESTED_RANGE_NOT_SATISFIABLE" ;
-        case HttpServletResponse.SC_EXPECTATION_FAILED: return "SC_EXPECTATION_FAILED" ;
-        case HttpServletResponse.SC_INTERNAL_SERVER_ERROR: return "SC_INTERNAL_SERVER_ERROR" ;
-        case HttpServletResponse.SC_NOT_IMPLEMENTED: return "SC_NOT_IMPLEMENTED" ;
-        case HttpServletResponse.SC_BAD_GATEWAY: return "SC_BAD_GATEWAY" ;
-        case HttpServletResponse.SC_SERVICE_UNAVAILABLE: return "SC_SERVICE_UNAVAILABLE" ;
-        case HttpServletResponse.SC_GATEWAY_TIMEOUT: return "SC_GATEWAY_TIMEOUT" ;
-        case HttpServletResponse.SC_HTTP_VERSION_NOT_SUPPORTED: return "SC_HTTP_VERSION_NOT_SUPPORTED" ;
-        default: return "Unknown HTTP response code: "+responseCode ;
-        }        
     }
 
     /** Parse the query string - do not process the body even for a form */  

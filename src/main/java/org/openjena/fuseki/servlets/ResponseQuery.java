@@ -21,7 +21,9 @@ import org.openjena.fuseki.HttpNames ;
 import org.openjena.fuseki.conneg.AcceptList ;
 import org.openjena.fuseki.conneg.ConNeg ;
 import org.openjena.fuseki.conneg.MediaType ;
-import org.openjena.fuseki.conneg.TypedStream ;
+import org.openjena.fuseki.conneg.TypedInputStream ;
+import org.openjena.fuseki.http.HttpSC ;
+import org.openjena.riot.Lang ;
 import org.openjena.riot.WebContent ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
@@ -58,16 +60,17 @@ public class ResponseQuery
         // TODO Use MediaType throughout.
         MediaType i = ConNeg.chooseContentType(request, DEF.rdfOffer, DEF.acceptRDFXML) ;
         if ( i != null )
-            mimeType = i.getMediaType() ;
+            mimeType = i.getContentType() ;
         
         String writerMimeType = mimeType ;
         
         if ( mimeType == null )
             // LOG ME
-            SPARQL_ServletBase.error(HttpServletResponse.SC_NOT_ACCEPTABLE, "") ;
+            SPARQL_ServletBase.error(HttpSC.NOT_ACCEPTABLE_406, "") ;
         
-        TypedStream ts = new TypedStream(null, mimeType, WebContent.charsetUTF8) ;
-        RDFWriter rdfw = FusekiLib.chooseWriter(ts) ;
+        TypedInputStream ts = new TypedInputStream(null, mimeType, WebContent.charsetUTF8) ;
+        Lang lang = FusekiLib.langFromContentType(ts.getMediaType()) ; 
+        RDFWriter rdfw = FusekiLib.chooseWriter(lang) ;
              
         if ( rdfw instanceof RDFXMLWriterI )
         {
@@ -118,7 +121,7 @@ public class ResponseQuery
         String mimeType = null ; 
         MediaType i = ConNeg.chooseContentType(request, DEF.rsOffer, DEF.acceptRSXML) ;
         if ( i != null )
-            mimeType = i.getMediaType() ;
+            mimeType = i.getContentType() ;
         
         // TODO Stylesheet.
         
@@ -320,7 +323,7 @@ public class ResponseQuery
     {
         try {
             setHttpResponse(httpRequest, httpResponse, contentType, charset) ; 
-            httpResponse.setStatus(HttpServletResponse.SC_OK) ;
+            httpResponse.setStatus(HttpSC.OK_200) ;
             ServletOutputStream out = httpResponse.getOutputStream() ;
             proc.output(out) ;
             out.flush() ;

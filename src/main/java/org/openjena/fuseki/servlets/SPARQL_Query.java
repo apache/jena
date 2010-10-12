@@ -29,6 +29,7 @@ import javax.servlet.http.HttpServletResponse ;
 
 import org.openjena.atlas.io.IndentedLineBuffer ;
 import org.openjena.fuseki.HttpNames ;
+import org.openjena.fuseki.http.HttpSC ;
 import org.openjena.fuseki.migrate.WebIO ;
 import org.openjena.riot.WebContent ;
 import org.slf4j.Logger ;
@@ -63,6 +64,7 @@ public class SPARQL_Query extends SPARQL_ServletBase
     public SPARQL_Query(boolean verbose)
     { super(PlainRequestFlag.DIFFERENT, verbose) ; }
 
+    
     public SPARQL_Query()
     { this(false) ; }
 
@@ -122,10 +124,10 @@ public class SPARQL_Query extends SPARQL_ServletBase
         {
         
             if ( WebContent.contentTypeSPARQLQuery.equals(incoming) )
-                error(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE, "Unofficial DEF.contentTypeSPARQLQuery not supported") ;
+                error(HttpSC.UNSUPPORTED_MEDIA_TYPE_415, "Unofficial "+WebContent.contentTypeSPARQLQuery+" not supported") ;
                 
             if ( ! WebContent.contentTypeForm.equals(incoming) )
-                error(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE, "Unsupported: "+incoming) ;
+                error(HttpSC.UNSUPPORTED_MEDIA_TYPE_415, "Unsupported: "+incoming) ;
         }
         
         // GET/POST of a form at this point.

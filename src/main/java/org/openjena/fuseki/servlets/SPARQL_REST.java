@@ -8,12 +8,15 @@ package org.openjena.fuseki.servlets;
 
 import static java.lang.String.format ;
 import static org.openjena.fuseki.Fuseki.serverlog ;
-import static org.openjena.fuseki.HttpNames.* ;
+import static org.openjena.fuseki.HttpNames.HEADER_LASTMOD ;
 import static org.openjena.fuseki.HttpNames.METHOD_DELETE ;
 import static org.openjena.fuseki.HttpNames.METHOD_GET ;
 import static org.openjena.fuseki.HttpNames.METHOD_HEAD ;
+import static org.openjena.fuseki.HttpNames.METHOD_OPTIONS ;
+import static org.openjena.fuseki.HttpNames.METHOD_PATCH ;
 import static org.openjena.fuseki.HttpNames.METHOD_POST ;
 import static org.openjena.fuseki.HttpNames.METHOD_PUT ;
+import static org.openjena.fuseki.HttpNames.METHOD_TRACE ;
 
 import java.io.ByteArrayInputStream ;
 import java.io.IOException ;
@@ -31,7 +34,7 @@ import org.openjena.fuseki.HttpNames ;
 import org.openjena.fuseki.conneg.ConNeg ;
 import org.openjena.fuseki.conneg.ContentType ;
 import org.openjena.fuseki.conneg.MediaType ;
-import org.openjena.fuseki.conneg.TypedStream ;
+import org.openjena.fuseki.conneg.TypedOutputStream ;
 import org.openjena.riot.ErrorHandler ;
 import org.openjena.riot.ErrorHandlerFactory ;
 import org.openjena.riot.Lang ;
@@ -146,38 +149,37 @@ public class SPARQL_REST extends SPARQL_ServletBase
                     SPARQL_ServletBase.errorNotFound("No such graph: "+action.target.name) ;
             }
 
-            TypedStream stream = createTypedStream(action.request) ;
-            action.response.setContentType(stream.getMediaType());
-            action.response.setCharacterEncoding(stream.getCharset()) ;
-            //response.setContentLength(0) ;
+            MediaType mediaType = contentNegotationRDF(action) ; 
+            TypedOutputStream out = new TypedOutputStream(action.response.getOutputStream(), mediaType) ;
+            Lang lang = FusekiLib.langFromContentType(mediaType.getContentType()) ;
 
             if ( action.verbose )
             {
-                // Not DRY
-                Lang lang = FusekiLib.langFromContentType(stream.getMediaType()) ;
-                if ( lang == null )
-                    lang = Lang.RDFXML ;
                 serverlog.info(format("[%d]   Get: Content-Type=%s, Charset=%s => %s", 
-                                      action.id, stream.getMediaType(), stream.getCharset(), lang.getName())) ;
+                                      action.id, mediaType.getContentType(), mediaType.getCharset(), lang.getName())) ;
             }
 
             action.lock.enterCriticalSection(Lock.READ) ;
             try {
                 // If we want to set the Content-Length, we need to buffer.
-                RDFWriter writer = FusekiLib.chooseWriter(stream) ;
+                //response.setContentLength(??) ;
+                RDFWriter writer = FusekiLib.chooseWriter(lang) ;
                 Model model = ModelFactory.createModelForGraph(action.target.graph()) ;
                 writer.write(model, action.response.getOutputStream(), null) ;
-                action.response.setStatus(HttpServletResponse.SC_OK);
+                success(action) ;
             } finally { action.lock.leaveCriticalSection() ; }
         } catch (IOException ex) { errorOccurred(ex) ; }
     }
     
     protected void doHead(HttpActionREST action)
     {
-        if ( action.target.alreadyExisted )
-            SPARQL_ServletBase.success(action) ;
-        else
-            SPARQL_ServletBase.successNotFound(action) ;
+        if ( ! action.target.alreadyExisted )
+        {
+            successNotFound(action) ;
+            return ;
+        }
+        MediaType mediaType = contentNegotationRDF(action) ;
+        success(action) ;
     }
 
     protected void doDelete(HttpActionREST action)
@@ -229,21 +231,38 @@ public class SPARQL_REST extends SPARQL_ServletBase
         errorBadRequest("No query string") ;
     }
 
-    private TypedStream createTypedStream(HttpServletRequest request)
+//    private TypedStream createTypedStream(MediaType contentType)
+//    {
+//        MediaType contentType = contentNegotationRDF(request) ;
+//        String charset = null ;
+//        
+//        if ( ! DEF.acceptRDFXML.equals(contentType) )
+//            charset = ConNeg.chooseCharset(request, DEF.charsetOffer, DEF.charsetUTF8).getType() ;
+//        
+//        String contentTypeStr = contentType.getMediaType() ;
+//        try {
+//            TypedStream ts = new TypedStream(request.getInputStream(),
+//                                             contentTypeStr,
+//                                             charset) ;
+//            return ts ;
+//        } catch (IOException ex) { errorOccurred(ex) ; return null ; }
+//    }
+
+    private MediaType contentNegotationRDF(HttpActionREST action)
     {
-        MediaType contentType = ConNeg.chooseContentType(request, DEF.rdfOffer, DEF.acceptRDFXML) ;
-        String charset = null ;
-        
-        if ( ! DEF.acceptRDFXML.equals(contentType) )
-            charset = ConNeg.chooseCharset(request, DEF.charsetOffer, DEF.charsetUTF8).getType() ;
-        
-        String contentTypeStr = contentType.getMediaType() ;
-        try {
-            TypedStream ts = new TypedStream(request.getInputStream(),
-                                             contentTypeStr,
-                                             charset) ;
-            return ts ;
-        } catch (IOException ex) { errorOccurred(ex) ; return null ; }
+        MediaType mt = ConNeg.chooseContentType(action.request, DEF.rdfOffer, DEF.acceptRDFXML) ;
+        if ( mt == null )
+            return null ;
+        if ( mt.getContentType() != null )
+            action.response.setContentType(mt.getContentType());
+        if ( mt.getCharset() != null )
+        action.response.setCharacterEncoding(mt.getCharset()) ;
+        return mt ;
+    }
+    
+    private MediaType contentNegotationQuads(HttpServletRequest request)
+    {
+        return ConNeg.chooseContentType(request, DEF.quadsOffer, DEF.acceptTriG) ;
     }
 
     // Auxilliary functionality.
@@ -270,6 +289,7 @@ public class SPARQL_REST extends SPARQL_ServletBase
 
     private DatasetGraph parseBody(HttpActionREST action)
     {
+        // DRY - separate out conneg.
         // This is reader code as for client GET.
         // ---- ContentNeg / Webreader.
         String contentTypeHeader = action.request.getContentType() ;
@@ -368,8 +388,12 @@ public class SPARQL_REST extends SPARQL_ServletBase
         String base = SPARQL_ServletBase.wholeRequestURL(request) ;
         String absUri = IRIResolver.resolveString(uri, base) ;
         Node gn = Node.createURI(absUri) ;
-        boolean alreadyExists = dsg.containsGraph(gn) ;
-        return Target.createNamed(dsg, alreadyExists, absUri, gn) ;
+        boolean alreadyExists ;
+        dsg.getLock().enterCriticalSection(Lock.READ) ;
+        try {
+                alreadyExists = dsg.containsGraph(gn) ;
+            return Target.createNamed(dsg, alreadyExists, absUri, gn) ;
+        } finally { dsg.getLock().leaveCriticalSection() ; }
     }
     
     private static String getOneOnly(HttpServletRequest request, String name)

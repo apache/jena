@@ -17,8 +17,6 @@ import org.openjena.atlas.logging.Log ;
 public class AcceptList
 {
     private List<MediaRange> ranges ;
-    private List<MediaRange> sortedRanges = null ;
-    
     /** 
      * Create an empty list of accept items from the give strings.
      * @param acceptStrings
@@ -99,31 +97,39 @@ public class AcceptList
     /** Find and return a match for a MediaRange */
     public MediaRange match(MediaRange aItem)
     {
-        ensureSorted() ;
-        for ( MediaRange acceptItem : sortedRanges )
+        // Normally aItem is an offer - a concrete media type.
+//        ensureSorted() ;
+        // Search all, find best by specifivity, "q"(quality), and then first occurring if otherwise equal.
+        
+        MediaRange choice = null ;
+        
+        for ( MediaRange acceptItem : ranges )
         {
             if ( acceptItem.accepts(aItem) )
             {
-                // Return the more grounded term
-                // E.g. i = text/plain ; aItem = text/*
+                // Return the more grounde&& choice.q >= m.q )d term
+                // E.g. aItem = text/plain ; acceptItem = text/*
                 
                 if ( aItem.moreGroundedThan(acceptItem) )
                     acceptItem = new MediaRange(aItem) ;
-                return acceptItem ;
+                
+                if ( choice != null && choice.q >= acceptItem.q )
+                    continue ;
+                choice = acceptItem ;
             }
         }
-        return null ;
+        return choice ;
     }
  
-    private void ensureSorted()
-    {
-        // Need to record the position as well to 
-        if ( sortedRanges == null )
-        {
-            sortedRanges = new ArrayList<MediaRange>(ranges) ; 
-            Collections.sort(sortedRanges, comparator) ;
-        }
-    }
+//    private void ensureSorted()
+//    {
+//        // Need to record the position as well to 
+//        if ( sortedRanges == null )
+//        {
+//            sortedRanges = new ArrayList<MediaRange>(ranges) ; 
+//            Collections.sort(sortedRanges, comparator) ;
+//        }
+//    }
     /** Find the best thing in offer list with the proposal 
      *  "best" means highest q value, with left most being better for same q.
      * 
@@ -143,7 +149,7 @@ public class AcceptList
             {
                 if ( choice != null && choice.q >= m.q )
                     continue ; 
-                choice = m ;
+                choice = m ;        
             }
         }
         if ( choice == null )
@@ -151,12 +157,16 @@ public class AcceptList
         return new MediaType(choice);
     }
     
-    public MediaType first()
+    public MediaRange first()
     {
-        ensureSorted() ;
-        if ( sortedRanges.isEmpty() )
-            return null ;
-        return sortedRanges.get(0) ; 
+        MediaRange choice = null ;
+        for ( MediaRange acceptItem : ranges )
+        {
+            if ( choice != null && choice.q >= acceptItem.q )
+                continue ;
+            choice = acceptItem ;
+        }
+        return choice ;
     }
     
     private static List<MediaRange> stringToAcceptList(String s)

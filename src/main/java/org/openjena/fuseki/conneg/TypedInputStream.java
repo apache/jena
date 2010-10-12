@@ -4,52 +4,33 @@
  * [See end of file]
  */
 
-package org.openjena.fuseki;
+package org.openjena.fuseki.conneg;
 
-import org.junit.AfterClass ;
-import org.junit.BeforeClass ;
-import org.junit.Test ;
+import java.io.FilterInputStream ;
+import java.io.InputStream;
 
-import com.hp.hpl.jena.sparql.util.Convert ;
-
-// generally poke the server.
-public class TestProtocol extends BaseServerTest
-{
-    @BeforeClass public static void beforeClass()
+public class TypedInputStream extends FilterInputStream
+{ 
+    private MediaType mediaType = null ;
+    
+    public TypedInputStream(InputStream in)
+    { this(in, null) ; }
+    
+    public TypedInputStream(InputStream in, MediaType mediaType)
     {
-        serverReset() ;
-        // Load some data.
-        DatasetAccessor du = DatasetUpdaterFactory.createHTTP(serviceREST) ;
-        du.putModel(graph1) ;
-        du.putModel(gn1, graph2) ;
+        super(in) ;
+        this.mediaType = mediaType ;
     }
     
-    @AfterClass public static void afterClass()
+    public TypedInputStream(InputStream in, String mediaType, String charset)
     {
-        DatasetAccessor du = DatasetUpdaterFactory.createHTTP(serviceREST) ;
-        du.deleteDefault() ;
+        this(in) ;
+        this.mediaType = MediaType.create(mediaType, charset) ;
     }
     
-    static String query(String base, String queryString)
-    {
-        return base+"?query="+Convert.encWWWForm(queryString) ;
-    }
-    
-    @Test public void protocol_01()
-    {
-        // TODO
-        String url = null ;
-        String mimeType = null ; 
-        execGet(url, mimeType) ;
-    }
-
-    private void execGet(String url, String mimeType)
-    {}
-    
-    private void execPost(String url, String mimeType, String content)
-    {}
-
-}
+    public String getMediaType()                { return mediaType.getContentType() ; }
+    public String getCharset()                  { return mediaType.getCharset() ; }
+} 
 
 /*
  * (c) Copyright 2010 Epimorphics Ltd.

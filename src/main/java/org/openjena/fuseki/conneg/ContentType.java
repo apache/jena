@@ -6,6 +6,9 @@
 
 package org.openjena.fuseki.conneg;
 
+import org.openjena.fuseki.HttpNames ;
+
+/** Content Type - TEMPORARY */
 public class ContentType
 {
     // => MediaType and add a map.
@@ -15,6 +18,21 @@ public class ContentType
     {
         this.contentType = contentType ;
         this.charset = charset ;
+    }
+    
+    public ContentType(MediaType mediaType)
+    {
+        contentType = mediaType.getContentType() ;
+        charset = mediaType.getCharset() ;
+    }
+
+    @Override
+    public String toString()
+    {
+        String x = contentType ;
+        if ( charset != null )
+            x = x + ";" + HttpNames.charset + "=" + charset ;
+        return x ;
     }
 }
 /*

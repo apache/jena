@@ -6,14 +6,14 @@
 
 package org.openjena.fuseki;
 
-import org.apache.http.HttpStatus ;
+import org.openjena.fuseki.http.HttpSC ;
 
 
 public class FusekiRequestException extends FusekiException
 {
     public static FusekiRequestException create(int code, String msg)
     {
-        if ( code == HttpStatus.SC_NOT_FOUND )
+        if ( code == HttpSC.NOT_FOUND_404 )
             return new FusekiNotFoundException(msg) ;
         return new FusekiRequestException(code, msg) ;
     }

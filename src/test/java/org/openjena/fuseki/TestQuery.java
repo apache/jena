@@ -40,14 +40,14 @@ public class TestQuery extends BaseServerTest
     {
         serverReset() ;
         // Load some data.
-        DS_Updater du = DatasetUpdaterFactory.createHTTP(serviceREST) ;
+        DatasetAccessor du = DatasetUpdaterFactory.createHTTP(serviceREST) ;
         du.putModel(graph1) ;
         du.putModel(gn1, graph2) ;
     }
     
     @AfterClass public static void afterClass()
     {
-        DS_Updater du = DatasetUpdaterFactory.createHTTP(serviceREST) ;
+        DatasetAccessor du = DatasetUpdaterFactory.createHTTP(serviceREST) ;
         du.deleteDefault() ;
     }
     

@@ -4,26 +4,30 @@
  * [See end of file]
  */
 
-package org.openjena.fuseki.conneg;
+package org.openjena.fuseki.migrate;
 
-import java.io.InputStream;
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.graph.impl.SimpleBulkUpdateHandler ;
+import com.hp.hpl.jena.graph.impl.WrappedGraph ;
 
-public class TypedStream
-{ 
-    private InputStream input ;
-    private String mediaType = null ;
-    private String charset = null ;
+public class UnmodifiableGraph extends WrappedGraph
+{
+    public UnmodifiableGraph(Graph base)
+    {
+        super(base) ;
+        bud = new SimpleBulkUpdateHandler(this) ;
+    }
     
-    public TypedStream(InputStream in)
-    { this(in, null, null) ; }
+    /** Return base graph that this class protects.  Caveat emptor. */
+    public Graph unwrap()   { return super.base ; }
     
-    public TypedStream(InputStream in, String mediaType, String charset)
-    { input = in ; this.mediaType = mediaType ; this.charset = charset ; }
+    public void performAdd(Triple triple)
+    { throw new UnsupportedOperationException() ; }
     
-    public InputStream getInput()               { return input ; }
-    public String getMediaType()                { return mediaType ; }
-    public String getCharset()                  { return charset ; }
-} 
+    public void performDelete(Triple triple)
+    { throw new UnsupportedOperationException() ; }
+}
 
 /*
  * (c) Copyright 2010 Epimorphics Ltd.

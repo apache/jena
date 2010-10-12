@@ -23,12 +23,15 @@ public class DEF
     
     public static MediaType acceptRSXML         = new MediaType(WebContent.contentTypeResultsXML) ;
 
-    public static MediaType[] rdfOffer$         = { acceptRDFXML, acceptTurtle1, acceptTurtle2, acceptTurtle3, acceptNTriples } ;
-    public static AcceptList  rdfOffer          = new AcceptList(rdfOffer$) ;
-//    public static MediaType[] quadsOffer$       = { acceptTriG, acceptNQuads } ;
-//    public static AcceptList  quadsOffer        = new AcceptList(quadsOffer$) ;
-    public static AcceptList  charsetOffer      = new AcceptList(charsetUTF8) ;
-    public static AcceptList  rsOffer           = new AcceptList(WebContent.contentTypeResultsXML, WebContent.contentTypeResultsJSON) ;
+    public static AcceptList rdfOffer           = new AcceptList(acceptRDFXML, acceptTurtle1, acceptTurtle2, acceptTurtle3, acceptNTriples) ;
+    public static AcceptList quadsOffer         = new AcceptList(acceptTriG, acceptNQuads) ;
+    public static AcceptList charsetOffer       = new AcceptList(charsetUTF8) ;
+    
+    public static AcceptList rsOffer            = new AcceptList(WebContent.contentTypeResultsXML, 
+                                                                 WebContent.contentTypeResultsJSON,
+                                                                 WebContent.contentTypeTextCSV,
+                                                                 WebContent.contentTypeTextTSV,
+                                                                 WebContent.contentTypeTextPlain) ;
 
     // New to WebContent - remove when update happens.
 }

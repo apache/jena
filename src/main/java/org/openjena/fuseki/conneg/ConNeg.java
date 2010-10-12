@@ -63,14 +63,13 @@ public class ConNeg
     }
 
     public static MediaType chooseContentType(HttpServletRequest httpRequest,
-                                               AcceptList myPrefs,
-                                               MediaType defaultMediaType)
+                                              AcceptList myPrefs,
+                                              MediaType defaultMediaType)
     {
         String a = httpRequest.getHeader("Accept") ;
         if ( log.isDebugEnabled() )
             log.debug("Accept request: "+a) ;
         
-        // Bag Q
         MediaType item = choose(a, myPrefs, defaultMediaType) ;
     
         if ( log.isDebugEnabled() )

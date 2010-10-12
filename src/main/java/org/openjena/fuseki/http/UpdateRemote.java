@@ -10,7 +10,6 @@ import java.io.ByteArrayOutputStream ;
 import java.io.IOException ;
 
 import org.apache.http.HttpResponse ;
-import org.apache.http.HttpStatus ;
 import org.apache.http.client.HttpClient ;
 import org.apache.http.client.methods.HttpPost ;
 import org.apache.http.entity.AbstractHttpEntity ;
@@ -61,9 +60,9 @@ public class UpdateRemote
             int responseCode = response.getStatusLine().getStatusCode() ;
             String responseMessage = response.getStatusLine().getReasonPhrase() ;
             
-            if ( responseCode == HttpStatus.SC_NO_CONTENT )
+            if ( responseCode == HttpSC.NO_CONTENT_204 )
                 return ;
-            if ( responseCode == HttpStatus.SC_OK )
+            if ( responseCode == HttpSC.OK_200 )
                 // But what was the content?
                 // TODO read body 
                 return ; 

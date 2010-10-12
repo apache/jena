@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServletResponse ;
 
 import org.openjena.fuseki.Fuseki ;
 import org.openjena.fuseki.HttpNames ;
+import org.openjena.fuseki.http.HttpSC ;
 import org.openjena.fuseki.server.DatasetRegistry ;
 import org.openjena.fuseki.servlets.SPARQL_REST.UpdateErrorException ;
 
@@ -129,8 +130,8 @@ public abstract class SPARQL_ServletBase extends HttpServlet
         catch (Exception ex)
         {   // This should not happen.
             ex.printStackTrace(System.err) ;
-            serverlog.info(format("[%d] RC = %d : %s", id, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, ex.getMessage())) ;
-            responseSendError(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, ex.getMessage()) ;
+            serverlog.info(format("[%d] RC = %d : %s", id, HttpSC.INTERNAL_SERVER_ERROR_500, ex.getMessage())) ;
+            responseSendError(response, HttpSC.INTERNAL_SERVER_ERROR_500, ex.getMessage()) ;
         }
     }
 
@@ -173,23 +174,23 @@ public abstract class SPARQL_ServletBase extends HttpServlet
 
     protected static void successNoContent(HttpAction action)
     {
-        success(action, HttpServletResponse.SC_NO_CONTENT);
+        success(action, HttpSC.NO_CONTENT_204);
     }
     
     protected static void success(HttpAction action)
     {
-        success(action, HttpServletResponse.SC_OK);
+        success(action, HttpSC.OK_200);
     }
 
     protected static void successCreated(HttpAction action)
     {
-        success(action, HttpServletResponse.SC_CREATED);
+        success(action, HttpSC.CREATED_201);
     }
     
     // When 404 is no big deal e.g. HEAD
     protected static void successNotFound(HttpAction action) 
     {
-        success(action, HttpServletResponse.SC_NOT_FOUND) ;
+        success(action, HttpSC.NOT_FOUND_404) ;
     }
 
     //
@@ -202,7 +203,7 @@ public abstract class SPARQL_ServletBase extends HttpServlet
     {
         try {
             action.response.setContentType("text/html");
-            action.response.setStatus(HttpServletResponse.SC_OK);
+            action.response.setStatus(HttpSC.OK_200);
             PrintWriter out = action.response.getWriter() ;
             out.println("<html>") ;
             out.println("<head>") ;
@@ -223,17 +224,17 @@ public abstract class SPARQL_ServletBase extends HttpServlet
 
     protected static void errorBadRequest(String string)
     {
-        error(HttpServletResponse.SC_BAD_REQUEST, string) ;
+        error(HttpSC.BAD_REQUEST_400, string) ;
     }
 
     protected static void errorNotFound(String string)
     {
-        error(HttpServletResponse.SC_NOT_FOUND, string) ;
+        error(HttpSC.NOT_FOUND_404, string) ;
     }
 
     protected static void errorNotImplemented()
     {
-        error(HttpServletResponse.SC_NOT_IMPLEMENTED) ;
+        error(HttpSC.NOT_IMPLEMENTED_501) ;
     }
 
     protected static void error(int statusCode)
@@ -259,7 +260,7 @@ public abstract class SPARQL_ServletBase extends HttpServlet
 
     protected static void errorOccurred(String message, Throwable ex)
     {
-        throw new SPARQL_REST.UpdateErrorException(ex, message, HttpServletResponse.SC_INTERNAL_SERVER_ERROR) ;
+        throw new SPARQL_REST.UpdateErrorException(ex, message, HttpSC.INTERNAL_SERVER_ERROR_500) ;
     }
     
     protected static void sync(DatasetGraph dsg)

@@ -16,17 +16,17 @@ import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 
 public class DatasetUpdaterFactory
 {
-    public static DS_Updater createHTTP(String serviceURI)
+    public static DatasetAccessor createHTTP(String serviceURI)
     {
         return adapt(new DatasetGraphUpdaterHTTP(serviceURI)) ;
     }
 
-    public static DS_Updater create(DatasetGraph dataset)
+    public static DatasetAccessor create(DatasetGraph dataset)
     {
         return adapt(new DatasetGraphUpdaterBasic(dataset)) ;
     }
     
-    public static DS_Updater create(Dataset dataset)
+    public static DatasetAccessor create(Dataset dataset)
     {
         return adapt(new DatasetGraphUpdaterBasic(dataset.asDatasetGraph())) ;
     }
@@ -36,7 +36,7 @@ public class DatasetUpdaterFactory
         return new DatasetGraphUpdaterBasic(dataset) ;
     }
     
-    private static DS_Updater adapt(DatasetGraphUpdater dgu)
+    private static DatasetAccessor adapt(DatasetGraphUpdater dgu)
     {
         return new DS_UpdaterAdapter(dgu) ;
     }

@@ -51,40 +51,42 @@ public class TestDatasetHTTP extends BaseServerTest
         WebTest.exec_get(datasetURI_not_2, 404) ;
     }
 
-    @Test(expected=FusekiNotFoundException.class)
+    @Test //(expected=FusekiNotFoundException.class)
     public void test_404_1()
     {
         // Not the right service.
-        DS_Updater du = DatasetUpdaterFactory.createHTTP(datasetURI_not_1) ;
+        DatasetAccessor du = DatasetUpdaterFactory.createHTTP(datasetURI_not_1) ;
         Model graph = du.getModel(gn99) ;
+        assertNull(graph) ; 
     }
 
-    @Test(expected=FusekiNotFoundException.class)
+    @Test //(expected=FusekiNotFoundException.class)
     public void test_404_2()
     {
-        DS_Updater du = DatasetUpdaterFactory.createHTTP(datasetURI_not_2) ;
+        DatasetAccessor du = DatasetUpdaterFactory.createHTTP(datasetURI_not_2) ;
         Model graph = du.getModel(gn99) ;
+        assertNull(graph) ;
     }
 
     @Test
     public void test_404_3()
     {
-        // All graphs "exist"
-        DS_Updater du = DatasetUpdaterFactory.createHTTP(serviceREST) ;
+        // Right service, wrong graph
+        DatasetAccessor du = DatasetUpdaterFactory.createHTTP(serviceREST) ;
         Model graph = du.getModel(gn99) ;
         assertNull(graph) ;
     }
 
     @Test public void head_01()
     {
-        DS_Updater du = create() ;
+        DatasetAccessor du = create() ;
         boolean b = du.containsModel(gn1) ;
         assertFalse("Blank remote dataset as a named graph", b) ;
     }
 
     @Test public void head_02()
     {
-        DS_Updater du = create() ;
+        DatasetAccessor du = create() ;
         du.putModel(gn1, graph1) ;
         boolean exists = du.containsModel(gn1) ;
         assertTrue(exists) ;
@@ -99,27 +101,27 @@ public class TestDatasetHTTP extends BaseServerTest
 
     @Test public void get_01()
     {
-        DS_Updater du = create() ;
+        DatasetAccessor du = create() ;
         Model graph = du.getModel() ;
         assertTrue(graph.isEmpty()) ;
     }
     
     @Test public void get_02()
     {
-        DS_Updater du = create() ;
+        DatasetAccessor du = create() ;
         Model graph = du.getModel(gn1) ;
         assertNull(graph) ;
     }
 
     @Test public void delete_01()
     {
-        DS_Updater du = create() ;
+        DatasetAccessor du = create() ;
         du.deleteDefault() ;
     }
 
     @Test public void delete_02()
     {
-        DS_Updater du = create() ;
+        DatasetAccessor du = create() ;
         du.deleteModel(gn1) ;
         boolean exists = du.containsModel(gn1) ;
         assertFalse("Expected gn1 not to exist", exists) ;
@@ -127,7 +129,7 @@ public class TestDatasetHTTP extends BaseServerTest
 
     @Test public void put_01()
     {
-        DS_Updater du = create() ;
+        DatasetAccessor du = create() ;
         du.putModel(graph1) ;
         Model graph = du.getModel() ;
         assertTrue(graph.isIsomorphicWith(graph1)) ;
@@ -139,7 +141,7 @@ public class TestDatasetHTTP extends BaseServerTest
     
     @Test public void put_02()
     {
-        DS_Updater du = create() ;
+        DatasetAccessor du = create() ;
         du.putModel(gn1, graph1) ;
         boolean exists = du.containsModel(gn1) ;
         assertTrue(exists) ;
@@ -161,7 +163,7 @@ public class TestDatasetHTTP extends BaseServerTest
 
     @Test public void put_03()
     {
-        DS_Updater du = create() ;
+        DatasetAccessor du = create() ;
         du.putModel(graph1) ;
         du.putModel(graph2) ;  // PUT overwrites
         Model graph = du.getModel() ;
@@ -175,7 +177,7 @@ public class TestDatasetHTTP extends BaseServerTest
 
     @Test public void post_01()
     {
-        DS_Updater du = create() ;
+        DatasetAccessor du = create() ;
         du.putModel(graph1) ;
         du.add(graph2) ;  // POST appends
         Model graph = du.getModel() ;
@@ -195,7 +197,7 @@ public class TestDatasetHTTP extends BaseServerTest
 
     @Test public void post_02()
     {
-        DS_Updater du = create() ;
+        DatasetAccessor du = create() ;
         du.add(graph1) ;
         du.add(graph2) ;
         Model graph = du.getModel() ;
@@ -215,14 +217,14 @@ public class TestDatasetHTTP extends BaseServerTest
     
     @Test public void clearup_1()
     {
-        DS_Updater du = create() ;
+        DatasetAccessor du = create() ;
         du.deleteDefault() ;
         du.deleteModel(gn1) ;
         du.deleteModel(gn2) ;
         du.deleteModel(gn99) ;
     }
 
-    static DS_Updater create()
+    static DatasetAccessor create()
     {
         return DatasetUpdaterFactory.createHTTP(serviceREST) ;
     }

@@ -4,42 +4,33 @@
  * [See end of file]
  */
 
-package org.openjena.fuseki;
+package org.openjena.fuseki.conneg;
 
-import com.hp.hpl.jena.rdf.model.Model ;
+import java.io.FilterOutputStream ;
+import java.io.OutputStream ;
 
-// Accessor to a datset a a collection of graps.
-public interface DS_Updater
-{
-    /** Get the default model of a Dataset */
-    public Model getModel() ; 
-    /** Get a named model of a Dataset */
-    public Model getModel(String graphUri) ;
-
-//    /** Does the Dataset contain a default graph? */
-//    public boolean containsDefault() ;
-
-    /** Does the Dataset contain a named graph? */
-    public boolean containsModel(String graphURI) ;
+public class TypedOutputStream extends FilterOutputStream
+{ 
+    private MediaType mediaType = null ;
     
-    /** Put (replace) the default model of a Dataset */
-    public void putModel(Model data) ;
-    /** Put (create/replace) a named model of a Dataset */
-    public void putModel(String graphUri, Model data) ;
-
-    /** Delete (which means clear) the default model of a Dataset */
-    public void deleteDefault() ;
-    /** Delete a named model of a Dataset */
-    public void deleteModel(String graphUri) ;
-
-//    /** Clear the default graph, delete all the named models */
-//    public void reset() ;
-
-    /** Add statements to the default model of a Dataset */
-    public void add(Model data) ;
-    /** Add statements to a named model of a Dataset */
-    public void add(String graphUri, Model data) ;
-}
+    public TypedOutputStream(OutputStream out)
+    { this(out, null) ; }
+    
+    public TypedOutputStream(OutputStream out, MediaType mediaType)
+    {
+        super(out) ;
+        this.mediaType = mediaType ;
+    }
+    
+    public TypedOutputStream(OutputStream out, String mediaType, String charset)
+    {
+        this(out) ;
+        this.mediaType = MediaType.create(mediaType, charset) ;
+    }
+    
+    public String getMediaType()                { return mediaType.getContentType() ; }
+    public String getCharset()                  { return mediaType.getCharset() ; }
+} 
 
 /*
  * (c) Copyright 2010 Epimorphics Ltd.
