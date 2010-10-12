@@ -17,7 +17,7 @@ import org.openjena.atlas.logging.Log ;
 import org.openjena.fuseki.Fuseki ;
 import org.openjena.fuseki.HttpNames ;
 import org.openjena.fuseki.servlets.SPARQL_Query ;
-import org.openjena.fuseki.servlets.SPARQL_REST ;
+import org.openjena.fuseki.servlets.SPARQL_REST_RW ;
 import org.openjena.fuseki.servlets.SPARQL_Update ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
@@ -102,7 +102,7 @@ public class SPARQLServer
 
             ServletHolder sparqlQuery = new ServletHolder(new SPARQL_Query(verbose)) ;
             ServletHolder sparqlUpdate = new ServletHolder(new SPARQL_Update(verbose)) ;
-            ServletHolder sparqlHttp = new ServletHolder(new SPARQL_REST(verbose)) ;
+            ServletHolder sparqlHttp = new ServletHolder(new SPARQL_REST_RW(verbose)) ;
             
             // SPARQL services.
             context.addServlet(sparqlHttp, dsPath);

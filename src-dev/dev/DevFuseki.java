@@ -10,25 +10,11 @@ package dev;
 
 public class DevFuseki
 {
-    // Environment variable for target.
-    // No error:
-    // s-update --service http://localhost:3030/dataset/query --file UP.ru 
-    //   http://dbtune.org/classical/sparql/
-    // Sort of DS_Updater => DS_Accessor
-    // can't tell wrong service from right service, no graph 
+    // Environment variable for target (s-set but needs to shell built-in)
     
-    // --text to query
-    
-    // HEAD to do conneg.
-    
-    
-    // ** TestDatasetUpdater on graph / general.
     // ** TestProtocol (HTTP update, query, update)
     
-    // Delay graph creation until needed, not on touch by target
-    
     // Tasks:
-    // EA-Release
     //   SOH defaults
     
     // Code examples
@@ -36,17 +22,13 @@ public class DevFuseki
     // DatasetAccessor : check existence of endpoint. 
     
     // Tests:
-    //   DatasetGraphUpdater (renamed!) inc status codes.
-    //     return a compound object?
     //   Protocol, inc status codes.
     //   SPARQL Query servlet / SPARQL Update servlet
     
     // Not release:
     //   File upload.
-    //   read-only server.
     //   execute SPARQL non-dataset servlet.
     //   Static pages
-    //   DataSourceHTTP
     //   query by POST
     
     // Basic authentication
@@ -60,17 +42,7 @@ public class DevFuseki
     
     // LastModified headers. 
 
-    // ConNeg:
-    // $getAccept="#{$mtTurtle} , #{$mtRDF}"
-    // defaults to last, not first (actually hash order?).  No posn?
-    // Test for this?
-
-    // Use TypedStream and MediaType widely.
-    // Esp. SPARQL qQuery results  handling.
-    
     // Tests: TestContentNegotiation pass but more needed.
-    // Clean up FusekiLib.
-    // Clean up Httpnames, DEF, WebContent.
     
     // Java DatasetUpdater:  don't serialise to byte[] and then send. 
 }

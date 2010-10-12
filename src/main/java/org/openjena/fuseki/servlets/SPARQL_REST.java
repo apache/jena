@@ -34,7 +34,6 @@ import org.openjena.fuseki.HttpNames ;
 import org.openjena.fuseki.conneg.ConNeg ;
 import org.openjena.fuseki.conneg.ContentType ;
 import org.openjena.fuseki.conneg.MediaType ;
-import org.openjena.fuseki.conneg.TypedOutputStream ;
 import org.openjena.riot.ErrorHandler ;
 import org.openjena.riot.ErrorHandlerFactory ;
 import org.openjena.riot.Lang ;
@@ -50,20 +49,17 @@ import org.slf4j.LoggerFactory ;
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.rdf.model.ModelFactory ;
-import com.hp.hpl.jena.rdf.model.RDFWriter ;
 import com.hp.hpl.jena.shared.Lock ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
 import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
 import com.hp.hpl.jena.util.FileUtils ;
 
-public class SPARQL_REST extends SPARQL_ServletBase
+public abstract class SPARQL_REST extends SPARQL_ServletBase
 {
-    private static Logger classLog = LoggerFactory.getLogger(SPARQL_REST.class) ;
+    protected static Logger classLog = LoggerFactory.getLogger(SPARQL_REST.class) ;
     
-    private static ErrorHandler errorHandler = ErrorHandlerFactory.errorHandlerStd(serverlog) ;
+    protected static ErrorHandler errorHandler = ErrorHandlerFactory.errorHandlerStd(serverlog) ;
 
     class HttpActionREST extends HttpAction {
         final Target target ; 
@@ -99,7 +95,6 @@ public class SPARQL_REST extends SPARQL_ServletBase
         dispatch(action) ;
     }
 
-
     private void dispatch(HttpActionREST action)
     {
         HttpServletRequest req = action.request ;
@@ -132,97 +127,17 @@ public class SPARQL_REST extends SPARQL_ServletBase
             errorNotImplemented() ;
     }
         
+    protected abstract void doGet(HttpActionREST action) ;
+    protected abstract void doHead(HttpActionREST action) ;
+    protected abstract void doPost(HttpActionREST action) ;
+    protected abstract void doDelete(HttpActionREST action) ;
+    protected abstract void doPut(HttpActionREST action) ;
+
     @Override
     protected String mapRequestToDataset(String uri)
     {
         String uri2 = mapRequestToDataset(uri, HttpNames.ServiceData) ;
         return (uri2 != null) ? uri2 : uri ; 
-    }
-
-    protected void doGet(HttpActionREST action)
-    {
-        try {
-            // Creating target creates the graph in some datasets.
-            if ( ! action.target.isDefault )
-            {
-                if ( ! action.dsg.containsGraph(action.target.graphName) )
-                    SPARQL_ServletBase.errorNotFound("No such graph: "+action.target.name) ;
-            }
-
-            MediaType mediaType = contentNegotationRDF(action) ; 
-            TypedOutputStream out = new TypedOutputStream(action.response.getOutputStream(), mediaType) ;
-            Lang lang = FusekiLib.langFromContentType(mediaType.getContentType()) ;
-
-            if ( action.verbose )
-            {
-                serverlog.info(format("[%d]   Get: Content-Type=%s, Charset=%s => %s", 
-                                      action.id, mediaType.getContentType(), mediaType.getCharset(), lang.getName())) ;
-            }
-
-            action.lock.enterCriticalSection(Lock.READ) ;
-            try {
-                // If we want to set the Content-Length, we need to buffer.
-                //response.setContentLength(??) ;
-                RDFWriter writer = FusekiLib.chooseWriter(lang) ;
-                Model model = ModelFactory.createModelForGraph(action.target.graph()) ;
-                writer.write(model, action.response.getOutputStream(), null) ;
-                success(action) ;
-            } finally { action.lock.leaveCriticalSection() ; }
-        } catch (IOException ex) { errorOccurred(ex) ; }
-    }
-    
-    protected void doHead(HttpActionREST action)
-    {
-        if ( ! action.target.alreadyExisted )
-        {
-            successNotFound(action) ;
-            return ;
-        }
-        MediaType mediaType = contentNegotationRDF(action) ;
-        success(action) ;
-    }
-
-    protected void doDelete(HttpActionREST action)
-    {
-        action.lock.enterCriticalSection(Lock.WRITE) ;
-        try {
-            deleteGraph(action) ;
-            SPARQL_ServletBase.sync(action.dsg) ;
-        } finally { action.lock.leaveCriticalSection() ; }
-        SPARQL_ServletBase.successNoContent(action) ;
-    }
-
-    protected void doPut(HttpActionREST action)
-    {
-        boolean existedBefore = action.target.alreadyExisted ; 
-        DatasetGraph body = parseBody(action) ;
-        action.lock.enterCriticalSection(Lock.WRITE) ;
-        try {
-            clearGraph(action.target) ;
-            //deleteGraph(target) ;   // Opps. Deletes the target!
-            addDataInto(body.getDefaultGraph(), action.target) ;
-            SPARQL_ServletBase.sync(action.dsg) ;
-        } finally { action.lock.leaveCriticalSection() ; }
-        // Differentiate: 201 Created or 204 No Content 
-        if ( existedBefore )
-            SPARQL_ServletBase.successNoContent(action) ;
-        else
-            SPARQL_ServletBase.successCreated(action) ;
-    }
-
-    protected void doPost(HttpActionREST action)
-    {
-        boolean existedBefore = action.target.alreadyExisted ; 
-        DatasetGraph body = parseBody(action) ;
-        action.lock.enterCriticalSection(Lock.WRITE) ;
-        try {
-            addDataInto(body.getDefaultGraph(), action.target) ;
-            SPARQL_ServletBase.sync(action.dsg) ;
-        } finally { action.lock.leaveCriticalSection() ; }
-        if ( existedBefore )
-            SPARQL_ServletBase.successNoContent(action) ;
-        else
-            SPARQL_ServletBase.successCreated(action) ;
     }
 
     @Override
@@ -248,7 +163,7 @@ public class SPARQL_REST extends SPARQL_ServletBase
 //        } catch (IOException ex) { errorOccurred(ex) ; return null ; }
 //    }
 
-    private MediaType contentNegotationRDF(HttpActionREST action)
+    protected static MediaType contentNegotationRDF(HttpActionREST action)
     {
         MediaType mt = ConNeg.chooseContentType(action.request, DEF.rdfOffer, DEF.acceptRDFXML) ;
         if ( mt == null )
@@ -260,14 +175,14 @@ public class SPARQL_REST extends SPARQL_ServletBase
         return mt ;
     }
     
-    private MediaType contentNegotationQuads(HttpServletRequest request)
+    protected static MediaType contentNegotationQuads(HttpServletRequest request)
     {
         return ConNeg.chooseContentType(request, DEF.quadsOffer, DEF.acceptTriG) ;
     }
 
     // Auxilliary functionality.
     
-    private void deleteGraph(HttpActionREST action)
+    protected static void deleteGraph(HttpActionREST action)
     {
         if ( action.target.isDefault )
             action.target.graph().getBulkUpdateHandler().removeAll() ;
@@ -275,19 +190,19 @@ public class SPARQL_REST extends SPARQL_ServletBase
             action.dsg.removeGraph(action.target.graphName) ;
     }
 
-    private void clearGraph(Target target)
+    protected static void clearGraph(Target target)
     {
         if ( target.isGraphSet() )
             target.graph().getBulkUpdateHandler().removeAll() ;
     }
 
-    private void addDataInto(Graph data, Target dest)
+    protected static void addDataInto(Graph data, Target dest)
     {   
         Graph g = dest.graph() ;
         g.getBulkUpdateHandler().add(data) ;
     }
 
-    private DatasetGraph parseBody(HttpActionREST action)
+    protected static DatasetGraph parseBody(HttpActionREST action)
     {
         // DRY - separate out conneg.
         // This is reader code as for client GET.
@@ -359,7 +274,7 @@ public class SPARQL_REST extends SPARQL_ServletBase
         } catch (IOException ex) { errorOccurred(ex) ; return null ; }
     }
 
-    private static void validate(HttpServletRequest request)
+    protected static void validate(HttpServletRequest request)
     {
         @SuppressWarnings("unchecked")
         Enumeration<String> en = (Enumeration<String>)request.getParameterNames() ;
@@ -373,7 +288,7 @@ public class SPARQL_REST extends SPARQL_ServletBase
         }
     }
 
-    private static Target targetGraph(HttpServletRequest request, DatasetGraph dsg)
+    protected static Target targetGraph(HttpServletRequest request, DatasetGraph dsg)
     {
         boolean dftGraph = getOneOnly(request, HttpNames.paramGraphDefault) != null ;
         String uri = getOneOnly(request, HttpNames.paramGraph) ;
@@ -396,7 +311,7 @@ public class SPARQL_REST extends SPARQL_ServletBase
         } finally { dsg.getLock().leaveCriticalSection() ; }
     }
     
-    private static String getOneOnly(HttpServletRequest request, String name)
+    protected static String getOneOnly(HttpServletRequest request, String name)
     {
         String[] values = request.getParameterValues(name) ;
         if ( values == null )
@@ -409,7 +324,7 @@ public class SPARQL_REST extends SPARQL_ServletBase
     }
     
     // struct for target
-    private static final class Target
+    protected static final class Target
     {
         final boolean isDefault ;
         final boolean alreadyExisted ;
@@ -479,7 +394,7 @@ public class SPARQL_REST extends SPARQL_ServletBase
     }
 
     // struct for exception return. 
-    static class UpdateErrorException extends RuntimeException
+    protected static class UpdateErrorException extends RuntimeException
     {
         final Throwable exception ;
         final String message ;
