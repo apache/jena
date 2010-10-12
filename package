@@ -1,0 +1,16 @@
+#!/bin/bash
+
+# Temporary "build system"
+mvn clean package
+#D="$(date +'%Y-%m-%dT%H:%M:%S')"
+
+D="$(date +'%Y%m%d%H%M%S')"
+
+X=fuseki-$D-dev.zip
+
+# Breaks symbolic links
+zip -r target/"$X" \
+    target/fuseki-*-server.jar \
+    log4j.properties \
+    fuseki-server \
+    s-*
