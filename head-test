@@ -1,0 +1,3 @@
+#!/bin/bash
+
+lwp-request -U -m HEAD "$@"
