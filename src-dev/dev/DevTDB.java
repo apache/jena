@@ -39,6 +39,8 @@ public class DevTDB
     
     // retire: GraphStoreUtils.action
     
+    // Expose a tream interface to the bulk loader.
+    
     // =====
     // Enable FILTER assignment for strings (and numbers?) via dataset context setting?
     // Tuples
