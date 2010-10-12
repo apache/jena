@@ -320,7 +320,7 @@ def cmd_soh(command=nil)
   end
 
   case command
-  when "GET", "DELETE"
+  when "HEAD", "GET", "DELETE"
     requiredFile=false
   when "PUT", "POST"
     requiredFile=true
@@ -357,6 +357,8 @@ def cmd_soh(command=nil)
   case command
   when "GET"
     GET(dataset, graph)
+  when "HEAD"
+    HEAD(dataset, graph)
   when "PUT"
     PUT(dataset, graph, file)
   when "DELETE"

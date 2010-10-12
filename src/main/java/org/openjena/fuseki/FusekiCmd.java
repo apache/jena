@@ -44,10 +44,12 @@ public class FusekiCmd extends CmdGeneral
         add(argPort, "--port", "Port number") ;
     }
 
+    static String argUsage = "[--mem|--desc=AssemblerFile] [--port PORT] /DatasetPathName" ; 
+    
     @Override
     protected String getSummary()
     {
-        return getCommandName()+" [--mem|--desc=AssemblerFile] [--port PORT] DatasetPathName" ;
+        return getCommandName()+" "+argUsage ;
     }
 
     @Override
@@ -71,7 +73,7 @@ public class FusekiCmd extends CmdGeneral
         if ( ds != null )
             dsg = ds.asDatasetGraph() ;
         if ( dsg == null )
-            throw new CmdException("No dataset defined: [--mem|--desc=AssemblerFile]") ;
+            throw new CmdException("No dataset defined: "+argUsage) ;
         
         if ( getPositional().size() == 0 )
             throw new CmdException("No dataset path name given") ;

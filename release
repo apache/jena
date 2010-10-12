@@ -1,0 +1,6 @@
+#!/bin/bash
+
+# Temporary "build system"
+rm -rf target/*
+package
+scp target/fuseki-*-dev.zip openjena:public_html/Fuseki
