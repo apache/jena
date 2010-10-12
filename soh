@@ -18,12 +18,6 @@ require 'pp'
 #  Basic authentication: request.basic_auth("username", "password")
 #  Follow redirects => 301:  puts response["location"] # All headers are lowercase?
 
-# cmd_sparql_query cmdline args
-# cmd_sparql_update cmdline args
-
-# @ to mean
-#  query - read file
-#  update - set request_body_stream
 # Long queries -> go to POST.
 
 SOH_NAME="SOH"
@@ -475,7 +469,6 @@ end
 
 # Update sent as a WWW form.
 def SPARQL_update_by_form(service, update, args2={})
-  update = string_or_file(update)
   args = {}
   args.merge!(args2)
   headers={}
@@ -491,8 +484,14 @@ def SPARQL_update_by_form(service, update, args2={})
   response_no_body(uri, request)
 end
 
-def SPARQL_update(service, update, args2={})
+def SPARQL_update(service, update,  update_file, args2={})
   # Reads in the file :-(
+  if update.nil?
+  then
+    update = open(update_file, 'rb'){|f| f.read}
+  else
+    update = string_or_file(update)
+  end
   update = string_or_file(update)
   args = {}
   args.merge!(args2)
@@ -561,7 +560,7 @@ def cmd_sparql_update
 
   print "SPARQL-Update #{service}\n" if $verbose
   args={}
-  SPARQL_update(service, update, args)
+  SPARQL_update(service, update, update_file, args)
   exit(0)
 end
 

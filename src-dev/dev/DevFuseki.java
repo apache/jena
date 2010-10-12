@@ -10,6 +10,9 @@ package dev;
 
 public class DevFuseki
 {
+    // No error:
+    // s-update --service http://localhost:3030/dataset/query --file UP.ru 
+    
     // Sort of DS_Updater => DS_Accessor
     // can't tell wrong service from right service, no graph 
     
