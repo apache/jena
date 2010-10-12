@@ -115,7 +115,7 @@ public class PatternTable extends TableDesc
             
             SqlExprList conditions = new SqlExprList() ;
             
-            if ( ! Quad.isQuadDefaultGraphNode(graphNode) )
+            if ( ! Quad.isQuadDefaultGraphGenerated(graphNode) )
                 log.error("Not the default graph in SqlStagePTable.build") ;
             if ( false )
                 slotCompiler.processSlot(request, sqlTable, conditions, graphNode, subjColName) ;

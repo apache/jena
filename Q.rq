@@ -1,11 +1,3 @@
-PREFIX acm: <http://sample.com/ont/ACM#> 
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> 
+PREFIX test: <http://www.test.com/vocabulary/test/1.0/>
+SELECT DISTINCT ?r WHERE {?r a test:TestClass}
 
-SELECT DISTINCT ?s 
-where 
-{ GRAPH ?g {?s ?p ?o.
-   ?s acm:businessUnit ?businessUnit . 
-   }
-}
-LIMIT 10

@@ -20,9 +20,9 @@
 	<classpathentry kind="lib" path="lib/iri-0.8.jar" sourcepath="lib-src/iri-0.8-sources.jar"/>
 	<classpathentry kind="lib" path="lib/jena-2.6.3.jar" sourcepath="lib-src/jena-2.6.3-sources.jar"/>
 	<classpathentry kind="lib" path="lib/jena-2.6.3-tests.jar" sourcepath="lib-src/jena-2.6.3-test-sources.jar"/>
-	<classpathentry kind="lib" path="lib/arq-2.8.5.jar" sourcepath="lib-src/arq-2.8.5-sources.jar"/>
-	<classpathentry kind="lib" path="lib/arq-2.8.5-tests.jar" sourcepath="lib-src/arq-2.8.5-test-sources.jar"/>
 	<classpathentry kind="lib" path="lib/slf4j-api-1.5.8.jar"/>
 	<classpathentry kind="lib" path="lib/slf4j-log4j12-1.5.8.jar"/>
+	<classpathentry kind="lib" path="lib/arq-2.8.6-SNAPSHOT-tests.jar"/>
+	<classpathentry kind="lib" path="lib/arq-2.8.6-SNAPSHOT.jar" sourcepath="lib-src/arq-2.8.6-SNAPSHOT-sources.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>

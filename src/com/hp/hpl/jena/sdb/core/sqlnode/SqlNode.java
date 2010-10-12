@@ -6,11 +6,12 @@
 
 package com.hp.hpl.jena.sdb.core.sqlnode;
 
-import java.util.Set;
+import java.util.Set ;
 
-import com.hp.hpl.jena.sparql.util.Printable;
-import com.hp.hpl.jena.sdb.core.Annotations;
-import com.hp.hpl.jena.sdb.core.Scope;
+import org.openjena.atlas.io.Printable ;
+
+import com.hp.hpl.jena.sdb.core.Annotations ;
+import com.hp.hpl.jena.sdb.core.Scope ;
 
 public interface SqlNode extends Printable, Annotations
 {

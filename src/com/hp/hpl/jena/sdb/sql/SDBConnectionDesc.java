@@ -7,16 +7,15 @@
 package com.hp.hpl.jena.sdb.sql;
 
 
-import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.util.FileManager;
+import org.openjena.atlas.logging.Log ;
 
-import com.hp.hpl.jena.sparql.util.ALog;
-import com.hp.hpl.jena.sparql.util.graph.GraphUtils;
-
-import com.hp.hpl.jena.sdb.SDBException;
-import com.hp.hpl.jena.sdb.assembler.AssemblerVocab;
+import com.hp.hpl.jena.assembler.assemblers.AssemblerBase ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.Resource ;
+import com.hp.hpl.jena.sdb.SDBException ;
+import com.hp.hpl.jena.sdb.assembler.AssemblerVocab ;
+import com.hp.hpl.jena.sparql.util.graph.GraphUtils ;
+import com.hp.hpl.jena.util.FileManager ;
 
 public class SDBConnectionDesc
 {
@@ -121,7 +120,7 @@ public class SDBConnectionDesc
             poolSize = Integer.parseInt(str) ;
         } catch (NumberFormatException ex)
         {
-            ALog.warn(this, "Can't parse as integer: "+str) ;
+            Log.warn(this, "Can't parse as integer: "+str) ;
         }
     }
 

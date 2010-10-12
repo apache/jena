@@ -19,6 +19,7 @@ import java.util.Iterator ;
 
 import org.openjena.atlas.io.IndentedWriter ;
 import org.openjena.atlas.iterator.Iter ;
+import org.openjena.atlas.logging.Log ;
 import sdb.SDBCmd ;
 import arq.cmd.CmdUtils ;
 
@@ -46,7 +47,6 @@ import com.hp.hpl.jena.sdb.test.junit.SDBTestUtils ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.resultset.ResultsFormat ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
-import com.hp.hpl.jena.sparql.util.ALog ;
 import com.hp.hpl.jena.sparql.util.QueryExecUtils ;
 import com.hp.hpl.jena.update.GraphStore ;
 import com.hp.hpl.jena.update.UpdateAction ;
@@ -54,7 +54,7 @@ import com.hp.hpl.jena.util.FileManager ;
 
 public class RunSDB
 {
-    static { ALog.setLog4j() ; CmdUtils.setN3Params() ; }
+    static { Log.setLog4j() ; CmdUtils.setN3Params() ; }
     
     private static Store create(Model assem)
     {
@@ -301,7 +301,7 @@ public class RunSDB
     public static void runConf()
     {
         JDBC.loadDriverHSQL() ;
-        ALog.setLog4j() ;
+        Log.setLog4j() ;
         
         String hsql = "jdbc:hsqldb:mem:aname" ;
         //String hsql = "jdbc:hsqldb:file:tmp/db" ;

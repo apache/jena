@@ -6,71 +6,76 @@
 
 package com.hp.hpl.jena.sdb.modify;
 
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.sdb.SDBException;
-import com.hp.hpl.jena.sdb.SDBFactory;
-import com.hp.hpl.jena.sdb.store.DatasetStoreGraph;
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.modify.UpdateProcessorVisitor;
-import com.hp.hpl.jena.sparql.modify.op.UpdateClear;
-import com.hp.hpl.jena.sparql.modify.op.UpdateCreate;
-import com.hp.hpl.jena.sparql.modify.op.UpdateDrop;
-import com.hp.hpl.jena.sparql.modify.op.UpdateExt;
+public class UpdateProcessorVisitorSDB {}
 
-public class UpdateProcessorVisitorSDB extends UpdateProcessorVisitor
-{
-    DatasetStoreGraph graphStore ;
-    
-    UpdateProcessorVisitorSDB(DatasetStoreGraph graphStore, Binding inputBinding)
-    {
-        super(graphStore, inputBinding) ;
-        this.graphStore = graphStore ;
-    }
+// Old code for ARQ 2.8.5 and earlier.
 
-//    @Override public void visit(UpdateModify modify) {}
+//import com.hp.hpl.jena.graph.Graph;
+//import com.hp.hpl.jena.graph.Node;
+//import com.hp.hpl.jena.sdb.SDBException;
+//import com.hp.hpl.jena.sdb.SDBFactory;
+//import com.hp.hpl.jena.sdb.store.DatasetStoreGraph;
+//import com.hp.hpl.jena.sparql.engine.binding.Binding;
+//import com.hp.hpl.jena.sparql.modify.UpdateProcessorVisitor;
+//import com.hp.hpl.jena.sparql.modify.op.UpdateClear;
+//import com.hp.hpl.jena.sparql.modify.op.UpdateCreate;
+//import com.hp.hpl.jena.sparql.modify.op.UpdateDrop;
+//import com.hp.hpl.jena.sparql.modify.op.UpdateExt;
+//import com.hp.hpl.jena.sparql.modify.submission.UpdateProcessorSubmissionVisitor ;
 //
-//    @Override public void visit(UpdateDelete delete) {}
+//public class UpdateProcessorVisitorSDB extends UpdateProcessorSubmissionVisitor
+//{
+//    DatasetStoreGraph graphStore ;
+//    
+//    UpdateProcessorVisitorSDB(DatasetStoreGraph graphStore, Binding inputBinding)
+//    {
+//        super(graphStore, inputBinding) ;
+//        this.graphStore = graphStore ;
+//    }
 //
-//    @Override public void visit(UpdateInsert insert) {}
-// 
-//    @Override public void visit(UpdateInsertData arg) {}
+////    @Override public void visit(UpdateModify modify) {}
+////
+////    @Override public void visit(UpdateDelete delete) {}
+////
+////    @Override public void visit(UpdateInsert insert) {}
+//// 
+////    @Override public void visit(UpdateInsertData arg) {}
+////
+////    @Override public void visit(UpdateDeleteData arg) {}
+////
+////    @Override public void visit(UpdateLoad load) {}
 //
-//    @Override public void visit(UpdateDeleteData arg) {}
+//    @Override 
+//    public void visit(UpdateClear clear)
+//    {
+//        clearGraph(clear.getGraphName()) ;
+//    }
 //
-//    @Override public void visit(UpdateLoad load) {}
-
-    @Override 
-    public void visit(UpdateClear clear)
-    {
-        clearGraph(clear.getGraphName()) ;
-    }
-
-    @Override
-    public void visit(UpdateDrop drop)
-    { 
-        clearGraph(drop.getIRI()) ;
-    }
-
-    private void clearGraph(Node n)
-    {
-        Graph g ;
-        if (n != null )
-            g = SDBFactory.connectNamedGraph(graphStore.getStore(), n) ;
-        else
-            g = SDBFactory.connectDefaultGraph(graphStore.getStore()) ;
-        // Delete all triples.
-        g.getBulkUpdateHandler().removeAll() ;
-    }
-    
-    @Override
-    public void visit(UpdateCreate create)
-    { /* No-op in SDB (until a graph management module is written) */ }
-
-    @Override
-    public void visit(UpdateExt arg)
-    { throw new SDBException("UpdateExt - not supported for SDB") ; }
-}
+//    @Override
+//    public void visit(UpdateDrop drop)
+//    { 
+//        clearGraph(drop.getIRI()) ;
+//    }
+//
+//    private void clearGraph(Node n)
+//    {
+//        Graph g ;
+//        if (n != null )
+//            g = SDBFactory.connectNamedGraph(graphStore.getStore(), n) ;
+//        else
+//            g = SDBFactory.connectDefaultGraph(graphStore.getStore()) ;
+//        // Delete all triples.
+//        g.getBulkUpdateHandler().removeAll() ;
+//    }
+//    
+//    @Override
+//    public void visit(UpdateCreate create)
+//    { /* No-op in SDB (until a graph management module is written) */ }
+//
+//    @Override
+//    public void visit(UpdateExt arg)
+//    { throw new SDBException("UpdateExt - not supported for SDB") ; }
+//}
 
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP

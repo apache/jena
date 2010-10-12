@@ -11,15 +11,17 @@ import static org.openjena.atlas.iterator.Iter.apply ;
 import java.util.ArrayList ;
 import java.util.List ;
 
+import org.openjena.atlas.io.IndentedWriter ;
+import org.openjena.atlas.io.PrintUtils ;
+import org.openjena.atlas.iterator.Action ;
+
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.shared.PrefixMapping ;
 import com.hp.hpl.jena.sparql.algebra.op.OpQuadPattern ;
 import com.hp.hpl.jena.sparql.core.Quad ;
-import org.openjena.atlas.iterator.Action ;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
-import org.openjena.atlas.io.IndentedWriter ;
 import com.hp.hpl.jena.sparql.util.PrintSerializable ;
-import com.hp.hpl.jena.sparql.util.PrintUtils ;
+import com.hp.hpl.jena.sparql.util.QueryOutputUtils ;
 
 public class QuadBlock extends ArrayList<Quad> implements Iterable<Quad>, PrintSerializable
 {
@@ -167,10 +169,10 @@ public class QuadBlock extends ArrayList<Quad> implements Iterable<Quad>, PrintS
     }
 
     public String toString(PrefixMapping prefixMapping)
-    { return PrintUtils.toString(this, prefixMapping) ; }
+    { return QueryOutputUtils.toString(this, prefixMapping) ; }
 
     public void output(IndentedWriter out)
-    { PrintUtils.output(this, out) ; }
+    { QueryOutputUtils.output(this, out) ; }
 
 }
 

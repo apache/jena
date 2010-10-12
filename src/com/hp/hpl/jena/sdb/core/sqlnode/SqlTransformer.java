@@ -8,7 +8,8 @@ package com.hp.hpl.jena.sdb.core.sqlnode;
 
 import java.util.Stack;
 
-import com.hp.hpl.jena.sparql.util.ALog;
+import org.openjena.atlas.logging.Log ;
+
 
 public class SqlTransformer
 {
@@ -33,7 +34,7 @@ public class SqlTransformer
         public SqlNode result()
         {
             if ( stack.size() != 1 )
-                ALog.warn(this, "Stack is not aligned") ;
+                Log.warn(this, "Stack is not aligned") ;
             return stack.pop() ; 
         }
 

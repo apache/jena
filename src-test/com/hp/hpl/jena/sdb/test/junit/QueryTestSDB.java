@@ -6,28 +6,36 @@
 
 package com.hp.hpl.jena.sdb.test.junit;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.ArrayList ;
+import java.util.List ;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
 
-import com.hp.hpl.jena.query.*;
-import com.hp.hpl.jena.sdb.Store;
-import com.hp.hpl.jena.sdb.StoreDesc;
-import com.hp.hpl.jena.sdb.engine.QueryEngineSDB;
-import com.hp.hpl.jena.sdb.sql.SDBConnection;
-import com.hp.hpl.jena.sdb.store.DatasetStore;
-import com.hp.hpl.jena.sdb.util.StoreUtils;
-import com.hp.hpl.jena.shared.Command;
-import com.hp.hpl.jena.sparql.engine.QueryEngineFactory;
-import com.hp.hpl.jena.sparql.engine.QueryExecutionBase;
-import com.hp.hpl.jena.sparql.engine.ref.QueryEngineRef;
-import com.hp.hpl.jena.sparql.junit.EarlReport;
-import com.hp.hpl.jena.sparql.junit.EarlTestCase;
-import com.hp.hpl.jena.sparql.junit.TestItem;
-import com.hp.hpl.jena.sparql.resultset.RSCompare;
-import com.hp.hpl.jena.sparql.resultset.ResultSetRewindable;
+import com.hp.hpl.jena.query.ARQ ;
+import com.hp.hpl.jena.query.Dataset ;
+import com.hp.hpl.jena.query.DatasetFactory ;
+import com.hp.hpl.jena.query.Query ;
+import com.hp.hpl.jena.query.QueryExecution ;
+import com.hp.hpl.jena.query.QueryFactory ;
+import com.hp.hpl.jena.query.ResultSet ;
+import com.hp.hpl.jena.query.ResultSetFactory ;
+import com.hp.hpl.jena.query.ResultSetFormatter ;
+import com.hp.hpl.jena.sdb.Store ;
+import com.hp.hpl.jena.sdb.StoreDesc ;
+import com.hp.hpl.jena.sdb.engine.QueryEngineSDB ;
+import com.hp.hpl.jena.sdb.sql.SDBConnection ;
+import com.hp.hpl.jena.sdb.store.DatasetStore ;
+import com.hp.hpl.jena.sdb.util.StoreUtils ;
+import com.hp.hpl.jena.shared.Command ;
+import com.hp.hpl.jena.sparql.engine.QueryEngineFactory ;
+import com.hp.hpl.jena.sparql.engine.QueryExecutionBase ;
+import com.hp.hpl.jena.sparql.engine.ref.QueryEngineRef ;
+import com.hp.hpl.jena.sparql.junit.EarlReport ;
+import com.hp.hpl.jena.sparql.junit.EarlTestCase ;
+import com.hp.hpl.jena.sparql.junit.TestItem ;
+import com.hp.hpl.jena.sparql.resultset.ResultSetCompare ;
+import com.hp.hpl.jena.sparql.resultset.ResultSetRewindable ;
 
 public class QueryTestSDB extends EarlTestCase
 {
@@ -152,7 +160,7 @@ public class QueryTestSDB extends EarlTestCase
         
         // ---- First, get the expected results by executing in-memory or from a results file.
         
-        ResultSet rs = item.getResultSet() ;
+        ResultSet rs = item.getResults().getResultSet() ;
         ResultSetRewindable rs1 = null ;
         String expectedLabel = "" ;
         if ( rs != null )
@@ -180,7 +188,7 @@ public class QueryTestSDB extends EarlTestCase
             rs = qExec2.execSelect() ;
             
             ResultSetRewindable rs2 = ResultSetFactory.makeRewindable(rs) ;
-            boolean b = RSCompare.same(rs1, rs2) ;
+            boolean b = ResultSetCompare.equalsByTerm(rs1, rs2) ;
             if ( !b )
             {
                 rs1.reset() ;

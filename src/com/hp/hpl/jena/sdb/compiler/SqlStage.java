@@ -8,9 +8,8 @@ package com.hp.hpl.jena.sdb.compiler;
 
 import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
-import com.hp.hpl.jena.sparql.util.Printable;
 
-public interface SqlStage extends Printable
+public interface SqlStage extends org.openjena.atlas.io.Printable
 {
     public SqlNode build(SDBRequest request, SlotCompiler slotCompiler) ; 
 }

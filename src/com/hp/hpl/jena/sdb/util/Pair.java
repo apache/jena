@@ -6,9 +6,9 @@
 
 package com.hp.hpl.jena.sdb.util;
 
+import static org.openjena.atlas.lib.Lib.hashCodeObject ;
 import static org.openjena.atlas.lib.StrUtils.str ;
-import static com.hp.hpl.jena.sparql.util.Utils.hashCodeObject;
-import com.hp.hpl.jena.sparql.util.Utils ;
+import org.openjena.atlas.lib.Lib ;
 
 public class Pair<A, B>
 {
@@ -41,7 +41,7 @@ public class Pair<A, B>
         
         if( ! ( other instanceof Pair<?,?> ) ) return false ;
         Pair<?,?> p2 = (Pair<?,?>)other ;
-        return Utils.equal(car(), p2.car()) && Utils.equal(cdr(), p2.cdr()) ;
+        return Lib.equal(car(), p2.car()) && Lib.equal(cdr(), p2.cdr()) ;
     }
     
     @Override 

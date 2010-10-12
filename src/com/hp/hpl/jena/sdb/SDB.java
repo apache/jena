@@ -12,7 +12,6 @@ import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.sdb.assembler.AssemblerVocab ;
 import com.hp.hpl.jena.sdb.core.SDBConstants ;
 import com.hp.hpl.jena.sdb.engine.QueryEngineSDB ;
-import com.hp.hpl.jena.sdb.modify.UpdateProcessorSDB ;
 import com.hp.hpl.jena.sdb.util.DerbyUtils ;
 import com.hp.hpl.jena.shared.PrefixMapping ;
 import com.hp.hpl.jena.shared.impl.PrefixMappingImpl ;
@@ -91,8 +90,10 @@ public class SDB
         
         // Wire in the SDB query engine
         QueryEngineSDB.register() ;
-        // Wire in the SDB update engine 
-        UpdateProcessorSDB.register() ;
+        // Wire in the SDB update engine
+        // Not need - new Update system uses a generic update processor.
+        // May do better later.
+        //UpdateProcessorSDB.register() ;
         
         SDB.getContext().setIfUndef(useQuadRewrite,        false) ;
         SDB.getContext().setIfUndef(streamGraphAPI,        false) ;

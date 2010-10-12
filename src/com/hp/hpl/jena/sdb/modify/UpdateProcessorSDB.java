@@ -6,61 +6,65 @@
 
 package com.hp.hpl.jena.sdb.modify;
 
-import java.util.Iterator ;
+public class UpdateProcessorSDB {}
 
-import org.openjena.atlas.iterator.Iter ;
+// Old code for ARQ 2.8.5 and earlier.
 
-import com.hp.hpl.jena.sdb.store.DatasetStoreGraph ;
-import com.hp.hpl.jena.sparql.engine.binding.Binding ;
-import com.hp.hpl.jena.sparql.modify.UpdateProcessorFactory ;
-import com.hp.hpl.jena.sparql.modify.UpdateProcessorRegistry ;
-import com.hp.hpl.jena.sparql.modify.UpdateVisitor ;
-import com.hp.hpl.jena.sparql.modify.op.Update ;
-import com.hp.hpl.jena.update.GraphStore ;
-import com.hp.hpl.jena.update.UpdateProcessor ;
-import com.hp.hpl.jena.update.UpdateRequest ;
-
-public class UpdateProcessorSDB implements UpdateProcessor
-{
-    private UpdateRequest request ;
-    private Binding inputBinding ;
-    private DatasetStoreGraph graphStore ;
-
-    public UpdateProcessorSDB(DatasetStoreGraph graphStore, UpdateRequest request, Binding inputBinding)
-    {
-        this.graphStore = graphStore ;
-        this.request = request ;
-        this.inputBinding = inputBinding ;
-    }
-
-    public void execute()
-    {
-        UpdateVisitor v = new UpdateProcessorVisitorSDB(graphStore, inputBinding) ;
-        for ( Iterator<Update> iter = Iter.convert(request.getUpdates().iterator()) ; iter.hasNext(); )
-        {
-            Update update = iter.next() ;
-            update.visit(v) ;
-        }
-    }
-
-    // ---- Factory
-    public static UpdateProcessorFactory getFactory() { 
-        return new UpdateProcessorFactory()
-        {
-            public boolean accept(UpdateRequest request, GraphStore graphStore)
-            {
-                return (graphStore instanceof DatasetStoreGraph) ;
-            }
-        
-            public UpdateProcessor create(UpdateRequest request, GraphStore graphStore, Binding inputBinding)
-            {
-                return new UpdateProcessorSDB((DatasetStoreGraph)graphStore, request, inputBinding) ;
-            }
-        } ;
-    }
-
-    public static void register() { UpdateProcessorRegistry.get().add(getFactory()) ; }
-}
+//
+//import java.util.Iterator ;
+//
+//import org.openjena.atlas.iterator.Iter ;
+//
+//import com.hp.hpl.jena.sdb.store.DatasetStoreGraph ;
+//import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+//import com.hp.hpl.jena.sparql.modify.request.UpdateVisitor ;
+//import com.hp.hpl.jena.sparql.modify.submission.UpdateProcessorSubmissionVisitor ;
+//import com.hp.hpl.jena.update.GraphStore ;
+//import com.hp.hpl.jena.update.Update ;
+//import com.hp.hpl.jena.update.UpdateProcessor ;
+//import com.hp.hpl.jena.update.UpdateRequest ;
+//
+//public class UpdateProcessorSDB implements UpdateProcessor
+//{
+//    private UpdateRequest request ;
+//    private Binding inputBinding ;
+//    private DatasetStoreGraph graphStore ;
+//
+//    public UpdateProcessorSDB(DatasetStoreGraph graphStore, UpdateRequest request, Binding inputBinding)
+//    {
+//        this.graphStore = graphStore ;
+//        this.request = request ;
+//        this.inputBinding = inputBinding ;
+//    }
+//
+//    public void execute()
+//    {
+//        UpdateProcessorSubmissionVisitor v = new UpdateProcessorVisitorSDB(graphStore, inputBinding) ;
+//        for ( Iterator<Update> iter = Iter.convert(request.getUpdates().iterator()) ; iter.hasNext(); )
+//        {
+//            Update update = iter.next() ;
+//            update.visit(v) ;
+//        }
+//    }
+//
+//    // ---- Factory
+//    public static UpdateProcessorFactory getFactory() { 
+//        return new UpdateProcessorFactory()
+//        {
+//            public boolean accept(UpdateRequest request, GraphStore graphStore)
+//            {
+//                return (graphStore instanceof DatasetStoreGraph) ;
+//            }
+//        
+//            public UpdateProcessor create(UpdateRequest request, GraphStore graphStore, Binding inputBinding)
+//            {
+//                return new UpdateProcessorSDB((DatasetStoreGraph)graphStore, request, inputBinding) ;
+//            }
+//        } ;
+//    }
+//
+//    public static void register() { UpdateProcessorRegistry.get().add(getFactory()) ; }
+//}
 
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP

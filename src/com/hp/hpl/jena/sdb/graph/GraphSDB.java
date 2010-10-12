@@ -28,7 +28,6 @@ import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.op.OpQuadPattern;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
-import com.hp.hpl.jena.sparql.core.GraphBase2 ;
 import com.hp.hpl.jena.sparql.core.Quad;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.Plan;
@@ -36,6 +35,7 @@ import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingRoot;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper;
+import com.hp.hpl.jena.sparql.graph.GraphBase2 ;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 import com.hp.hpl.jena.util.iterator.NiceIterator;
 
@@ -97,7 +97,7 @@ public class GraphSDB extends GraphBase2 implements Graph
     { 
         try {
             String graphURI = null ;
-            if ( Quad.isQuadDefaultGraphNode(graphNode) )
+            if ( Quad.isQuadDefaultGraphGenerated(graphNode) )
                 graphURI = "" ;
             else if ( graphNode.isURI() )
                 graphURI = graphNode.getURI() ; 
@@ -268,7 +268,7 @@ public class GraphSDB extends GraphBase2 implements Graph
     {
     	if (inBulkUpdate == 0) store.getLoader().startBulkUpdate();
         
-        if ( Quad.isQuadDefaultGraphNode(graphNode) )
+        if ( Quad.isQuadDefaultGraphGenerated(graphNode) )
             store.getLoader().addTriple(triple) ;
         else
         {
@@ -283,7 +283,7 @@ public class GraphSDB extends GraphBase2 implements Graph
     public void performDelete( Triple triple ) 
     {
     	if (inBulkUpdate == 0) store.getLoader().startBulkUpdate();
-        if ( Quad.isQuadDefaultGraphNode(graphNode) )
+        if ( Quad.isQuadDefaultGraphGenerated(graphNode) )
             store.getLoader().deleteTriple(triple) ;
         else
         {
@@ -301,11 +301,11 @@ public class GraphSDB extends GraphBase2 implements Graph
     public TransactionHandler getTransactionHandler() { return store.getConnection().getTransactionHandler() ; }
     
     @Override
-    public int graphBaseSize() { return (int) (Quad.isQuadDefaultGraphNode(graphNode) ? store.getSize() : store.getSize(graphNode)); }
+    public int graphBaseSize() { return (int) (Quad.isQuadDefaultGraphGenerated(graphNode) ? store.getSize() : store.getSize(graphNode)); }
     
 	public void deleteAll() {
 		if (inBulkUpdate == 0) store.getLoader().startBulkUpdate();
-		if ( Quad.isQuadDefaultGraphNode(graphNode) )
+		if ( Quad.isQuadDefaultGraphGenerated(graphNode) )
 			store.getLoader().deleteAll();
 		else
 			((StoreLoaderPlus) store.getLoader()).deleteAll(graphNode);

@@ -6,34 +6,35 @@
 
 package sdb.examples;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.sql.Connection ;
+import java.sql.DriverManager ;
+import java.sql.SQLException ;
 
-import com.hp.hpl.jena.query.Dataset;
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryExecution;
-import com.hp.hpl.jena.query.QueryExecutionFactory;
-import com.hp.hpl.jena.query.QueryFactory;
-import com.hp.hpl.jena.query.ResultSet;
-import com.hp.hpl.jena.query.ResultSetFormatter;
-import com.hp.hpl.jena.sdb.SDBException;
-import com.hp.hpl.jena.sdb.Store;
-import com.hp.hpl.jena.sdb.StoreDesc;
-import com.hp.hpl.jena.sdb.shared.Access;
-import com.hp.hpl.jena.sdb.sql.JDBC;
-import com.hp.hpl.jena.sdb.sql.SDBConnection;
-import com.hp.hpl.jena.sdb.store.DatabaseType;
-import com.hp.hpl.jena.sdb.store.DatasetStore;
-import com.hp.hpl.jena.sdb.store.LayoutType;
-import com.hp.hpl.jena.sdb.store.StoreFactory;
-import com.hp.hpl.jena.sparql.util.ALog;
+import org.openjena.atlas.logging.Log ;
+
+import com.hp.hpl.jena.query.Dataset ;
+import com.hp.hpl.jena.query.Query ;
+import com.hp.hpl.jena.query.QueryExecution ;
+import com.hp.hpl.jena.query.QueryExecutionFactory ;
+import com.hp.hpl.jena.query.QueryFactory ;
+import com.hp.hpl.jena.query.ResultSet ;
+import com.hp.hpl.jena.query.ResultSetFormatter ;
+import com.hp.hpl.jena.sdb.SDBException ;
+import com.hp.hpl.jena.sdb.Store ;
+import com.hp.hpl.jena.sdb.StoreDesc ;
+import com.hp.hpl.jena.sdb.shared.Access ;
+import com.hp.hpl.jena.sdb.sql.JDBC ;
+import com.hp.hpl.jena.sdb.sql.SDBConnection ;
+import com.hp.hpl.jena.sdb.store.DatabaseType ;
+import com.hp.hpl.jena.sdb.store.DatasetStore ;
+import com.hp.hpl.jena.sdb.store.LayoutType ;
+import com.hp.hpl.jena.sdb.store.StoreFactory ;
 
 /** Managed JDBC connections : creat */ 
 
 public class ExJdbcConnection
 {
-    static { ALog.setLog4j() ; }
+    static { Log.setLog4j() ; }
     
     public static void main(String...argv)
     {

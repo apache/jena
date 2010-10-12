@@ -66,7 +66,7 @@ public class ExprMatcher
     }
 
     // Visit/walk the pattern
-    static class MatchVisitor implements ExprVisitor
+    static class MatchVisitor extends ExprVisitorFunction implements ExprVisitor
     {
         private Expr       target ;
         private MapAction  aMap ;
@@ -95,7 +95,8 @@ public class ExprMatcher
          * 4/ For each argument, match that as well.
          */
 
-        public void visit(ExprFunction patExpr)
+        @Override
+        public void visitExprFunction(ExprFunction patExpr)
         {
             String uri = patExpr.getFunctionIRI() ;
 
@@ -166,6 +167,9 @@ public class ExprMatcher
 
         public void visit(ExprFunctionOp funcOp)
         { throw new NoExprMatch("ExprFunctionOp") ; }
+
+        public void visit(ExprAggregator eAgg)
+        { throw new NoExprMatch("ExprAggregate") ; }
 
         public void finishVisit()
         {}
