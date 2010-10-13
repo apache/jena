@@ -52,7 +52,7 @@ public class UpdateEngineMain extends UpdateEngineBase
     {
         public boolean accept(UpdateRequest request, GraphStore graphStore, Context context)
         {
-            return (graphStore instanceof GraphStoreBasic) ;
+            return true ;
         }
 
         public UpdateEngine create(UpdateRequest request, GraphStore graphStore, Binding inputBinding, Context context)

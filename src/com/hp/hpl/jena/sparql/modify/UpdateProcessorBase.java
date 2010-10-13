@@ -17,9 +17,8 @@ import com.hp.hpl.jena.update.UpdateProcessor ;
 import com.hp.hpl.jena.update.UpdateRequest ;
 
 /** Class to hold the general state of a update request execution.
- * See query ExecutionContext
+ *  See query ExecutionContext
  */
-// may need to split into environment and execute(). 
 public class UpdateProcessorBase implements UpdateProcessor
 {
     protected Binding initialBinding = new BindingMap() ;

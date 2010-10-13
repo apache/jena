@@ -7,7 +7,6 @@
 package com.hp.hpl.jena.sparql.modify;
 
 import java.util.ArrayList ;
-import java.util.Iterator ;
 import java.util.List ;
 
 import com.hp.hpl.jena.sparql.util.Context ;
@@ -55,9 +54,8 @@ public class UpdateEngineRegistry
     
     public UpdateEngineFactory find(UpdateRequest request, GraphStore graphStore, Context context)
     {
-        for ( Iterator<UpdateEngineFactory> iter = factories.listIterator() ; iter.hasNext() ; )
+        for ( UpdateEngineFactory f : factories )
         {
-            UpdateEngineFactory f = iter.next() ;
             if ( f.accept(request, graphStore, context) )
                 return f ;
         }

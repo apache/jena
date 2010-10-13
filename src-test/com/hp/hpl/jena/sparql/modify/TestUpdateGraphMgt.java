@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -13,7 +14,6 @@ import com.hp.hpl.jena.sparql.modify.request.UpdateCreate ;
 import com.hp.hpl.jena.sparql.modify.request.UpdateDrop ;
 import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
 import com.hp.hpl.jena.update.GraphStore ;
-import com.hp.hpl.jena.update.GraphStoreFactory ;
 import com.hp.hpl.jena.update.Update ;
 import com.hp.hpl.jena.update.UpdateAction ;
 import com.hp.hpl.jena.update.UpdateException ;
@@ -24,7 +24,7 @@ public abstract class TestUpdateGraphMgt extends TestUpdateBase
     
     @Test public void testCreateDrop1()
     {
-        GraphStore gStore = GraphStoreFactory.create() ;
+        GraphStore gStore = getEmptyGraphStore() ;
         Update u = new UpdateCreate(graphIRI) ;
         UpdateAction.execute(u, gStore) ;
         assertTrue(gStore.containsGraph(graphIRI)) ;
@@ -60,7 +60,7 @@ public abstract class TestUpdateGraphMgt extends TestUpdateBase
 
     @Test public void testCreateDrop2()
     {
-        GraphStore gStore = GraphStoreFactory.create() ;
+        GraphStore gStore = getEmptyGraphStore() ;
         Update u = new UpdateCreate(graphIRI) ;
         UpdateAction.execute(u, gStore) ;
         
@@ -75,11 +75,12 @@ public abstract class TestUpdateGraphMgt extends TestUpdateBase
         assertFalse(gStore.containsGraph(graphIRI)) ;
         u = new UpdateDrop(graphIRI, true) ;
         UpdateAction.execute(u, gStore) ;
+
     }
     
     @Test public void testCreateDrop3()
     {
-        GraphStore gStore = GraphStoreFactory.create() ;
+        GraphStore gStore = getEmptyGraphStore() ;
         script(gStore, "create-1.ru") ;
         assertTrue(gStore.containsGraph(graphIRI)) ;
         assertTrue(graphEmpty(gStore.getGraph(graphIRI))) ;
@@ -87,7 +88,7 @@ public abstract class TestUpdateGraphMgt extends TestUpdateBase
 
     @Test public void testCreateDrop4()
     {
-        GraphStore gStore = GraphStoreFactory.create() ;
+        GraphStore gStore = getEmptyGraphStore() ;
         gStore.addGraph(graphIRI, GraphFactory.createDefaultGraph()) ;
         script(gStore, "drop-1.ru") ;
         assertFalse(gStore.containsGraph(graphIRI)) ;
@@ -96,6 +97,7 @@ public abstract class TestUpdateGraphMgt extends TestUpdateBase
 
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
