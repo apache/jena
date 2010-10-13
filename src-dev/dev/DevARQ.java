@@ -6,6 +6,9 @@ public class DevARQ
     // http://www.openjena.org/wiki/ARQ/Concurrency
     // LIMIT subquery.
     
+    // Change: 
+    //   http://openjena.org/ARQ/update.html
+    
     // FILTER-like assignment - end-of-group
     
     // (Better) respect Content-Length?
