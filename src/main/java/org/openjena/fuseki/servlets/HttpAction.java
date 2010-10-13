@@ -4,50 +4,32 @@
  * [See end of file]
  */
 
-package dev;
+package org.openjena.fuseki.servlets;
 
+import javax.servlet.http.HttpServletRequest ;
+import javax.servlet.http.HttpServletResponse ;
 
+import com.hp.hpl.jena.shared.Lock ;
+import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 
-public class DevFuseki
+class HttpAction
 {
-    
-    // SOH
-    //   Environment variable for target (s-set but needs to shell built-in)
-    //   defaults
-    //   --service naming seems inconsistent.
-    
-    // Java clients:
-    //   DatasetAccessor: don't serialise to byte[] and then send. 
-
-    // Code examples
-    
-    // Build system
-    
-    // Tests
-    //   TestProtocol (HTTP update, query, update), inc status codes.
-    //   SPARQL Query servlet / SPARQL Update servlet
-    //   TestContentNegotiation - is coveage enough?
-    
-    // HTTP:
-    //   gzip and inflate.   
-    //   LastModified headers. 
-    
-    // DatasetAccessor : check existence of endpoint. 
-    
-    // Not release:
-    //   File upload.
-    //   execute SPARQL non-dataset servlet. (To be finished: SPARQL_QueryGeneral)
-    //   Static pages
-    //   query by POST
-    
-    // Basic authentication
-    //   --user --password
-    
-    // Check SPARQL_REST for access to dataset to ensure there's a lock even before target created.
-    // Clean up SPARQL Query results code.
-
+    final long id ;
+    final DatasetGraph dsg ;
+    final Lock lock ;
+    final HttpServletRequest request;
+    final HttpServletResponse response ;
+    final boolean verbose ;
+    public HttpAction(long id, DatasetGraph dsg, HttpServletRequest request, HttpServletResponse response, boolean verbose)
+    {
+        this.id = id ;
+        this.dsg = dsg ;
+        this.lock = dsg.getLock() ;
+        this.request = request ;
+        this.response = response ;
+        this.verbose = verbose ;
+    }
 }
-
 /*
  * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.

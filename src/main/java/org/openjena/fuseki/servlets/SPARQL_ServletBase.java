@@ -22,9 +22,7 @@ import org.openjena.fuseki.Fuseki ;
 import org.openjena.fuseki.HttpNames ;
 import org.openjena.fuseki.http.HttpSC ;
 import org.openjena.fuseki.server.DatasetRegistry ;
-import org.openjena.fuseki.servlets.SPARQL_REST.UpdateErrorException ;
 
-import com.hp.hpl.jena.shared.Lock ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.tdb.TDB ;
 
@@ -42,25 +40,6 @@ public abstract class SPARQL_ServletBase extends HttpServlet
     {
         this.noQueryString = noQueryStringIsOK ;
         this.verbose_debug = verbose_debug ;
-    }
-    
-    protected static class HttpAction
-    {
-        final long id ;
-        final DatasetGraph dsg ;
-        final Lock lock ;
-        final HttpServletRequest request;
-        final HttpServletResponse response ;
-        final boolean verbose ;
-        public HttpAction(long id, DatasetGraph dsg, HttpServletRequest request, HttpServletResponse response, boolean verbose)
-        {
-            this.id = id ;
-            this.dsg = dsg ;
-            this.lock = dsg.getLock() ;
-            this.request = request ;
-            this.response = response ;
-            this.verbose = verbose ;
-        }
     }
     
     // Common framework for hanlding HTTP requests
@@ -111,7 +90,7 @@ public abstract class SPARQL_ServletBase extends HttpServlet
 
             perform(id, dsg, request, response) ;
             serverlog.info(String.format("[%d] 200 Success", id)) ;
-        } catch (UpdateErrorException ex)
+        } catch (ActionErrorException ex)
         {
             if ( ex.exception != null )
                 ex.exception.printStackTrace(System.err) ;
@@ -232,9 +211,9 @@ public abstract class SPARQL_ServletBase extends HttpServlet
         error(HttpSC.NOT_FOUND_404, string) ;
     }
 
-    protected static void errorNotImplemented()
+    protected static void errorNotImplemented(String msg)
     {
-        error(HttpSC.NOT_IMPLEMENTED_501) ;
+        error(HttpSC.NOT_IMPLEMENTED_501, msg) ;
     }
     
     protected static void errorMethodNotAllowed()
@@ -244,13 +223,13 @@ public abstract class SPARQL_ServletBase extends HttpServlet
 
     protected static void error(int statusCode)
     {
-        throw new SPARQL_REST.UpdateErrorException(null, null, statusCode) ;
+        throw new ActionErrorException(null, null, statusCode) ;
     }
     
 
     protected static void error(int statusCode, String string)
     {
-        throw new SPARQL_REST.UpdateErrorException(null, string, statusCode) ;
+        throw new ActionErrorException(null, string, statusCode) ;
     }
     
     protected static void errorOccurred(String message)
@@ -265,7 +244,7 @@ public abstract class SPARQL_ServletBase extends HttpServlet
 
     protected static void errorOccurred(String message, Throwable ex)
     {
-        throw new SPARQL_REST.UpdateErrorException(ex, message, HttpSC.INTERNAL_SERVER_ERROR_500) ;
+        throw new ActionErrorException(ex, message, HttpSC.INTERNAL_SERVER_ERROR_500) ;
     }
     
     protected static void sync(DatasetGraph dsg)

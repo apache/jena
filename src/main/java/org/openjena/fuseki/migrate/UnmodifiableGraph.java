@@ -22,9 +22,11 @@ public class UnmodifiableGraph extends WrappedGraph
     /** Return base graph that this class protects.  Caveat emptor. */
     public Graph unwrap()   { return super.base ; }
     
+    @Override
     public void performAdd(Triple triple)
     { throw new UnsupportedOperationException() ; }
     
+    @Override
     public void performDelete(Triple triple)
     { throw new UnsupportedOperationException() ; }
 }

@@ -8,20 +8,9 @@ package org.openjena.fuseki.servlets;
 
 import static java.lang.String.format ;
 import static org.openjena.fuseki.Fuseki.serverlog ;
-import static org.openjena.fuseki.HttpNames.paramAccept ;
-import static org.openjena.fuseki.HttpNames.paramCallback ;
-import static org.openjena.fuseki.HttpNames.paramDefaultGraphURI ;
-import static org.openjena.fuseki.HttpNames.paramForceAccept ;
-import static org.openjena.fuseki.HttpNames.paramNamedGraphURI ;
-import static org.openjena.fuseki.HttpNames.paramOutput1 ;
-import static org.openjena.fuseki.HttpNames.paramOutput2 ;
 import static org.openjena.fuseki.HttpNames.paramQuery ;
-import static org.openjena.fuseki.HttpNames.paramQueryRef ;
-import static org.openjena.fuseki.HttpNames.paramStyleSheet ;
 
-import java.util.Arrays ;
 import java.util.Enumeration ;
-import java.util.HashSet ;
 import java.util.Set ;
 
 import javax.servlet.http.HttpServletRequest ;
@@ -36,7 +25,6 @@ import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.query.Dataset ;
-import com.hp.hpl.jena.query.DatasetFactory ;
 import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.query.QueryException ;
 import com.hp.hpl.jena.query.QueryExecution ;
@@ -50,11 +38,11 @@ import com.hp.hpl.jena.shared.Lock ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.resultset.SPARQLResult ;
 
-public class SPARQL_Query extends SPARQL_ServletBase
+public abstract class SPARQL_Query extends SPARQL_ServletBase
 {
     private static Logger log = LoggerFactory.getLogger(SPARQL_Query.class) ;
     
-    private class HttpActionQuery extends HttpAction {
+    protected class HttpActionQuery extends HttpAction {
         public HttpActionQuery(long id, DatasetGraph dsg, HttpServletRequest request, HttpServletResponse response, boolean verbose)
         {
             super(id, dsg, request, response, verbose) ;
@@ -70,9 +58,11 @@ public class SPARQL_Query extends SPARQL_ServletBase
 
     // Choose REST verbs to support.
     
+    @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
     { doCommon(request, response) ; }
     
+    @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     { doCommon(request, response) ; }
     
@@ -89,7 +79,7 @@ public class SPARQL_Query extends SPARQL_ServletBase
     {
         if ( ! "GET".equals(request.getMethod().toUpperCase()) )
         {
-            errorNotImplemented() ;
+            errorNotImplemented("Non GET request") ;
             return ;
         }
         log.warn("Service Description / SPARQL Query") ;
@@ -112,17 +102,21 @@ public class SPARQL_Query extends SPARQL_ServletBase
         return uri ; 
     }
     
-    // All the params we support
-    private static String[] params_ = { paramQuery, paramDefaultGraphURI, paramNamedGraphURI, 
-                                        paramQueryRef,
-                                        paramStyleSheet,
-                                        paramAccept,
-                                        paramOutput1, paramOutput2, 
-                                        paramCallback, 
-                                        paramForceAccept } ;
-    private static Set<String> params = new HashSet<String>(Arrays.asList(params_)) ;
+//    // All the params we support
+//    private static String[] params_ = { paramQuery, paramDefaultGraphURI, paramNamedGraphURI, 
+//                                        paramQueryRef,
+//                                        paramStyleSheet,
+//                                        paramAccept,
+//                                        paramOutput1, paramOutput2, 
+//                                        paramCallback, 
+//                                        paramForceAccept } ;
+//    private static Set<String> params = new HashSet<String>(Arrays.asList(params_)) ;
+//    
+    /** Called to validate arguments */
+    protected abstract void validate(HttpServletRequest request) ;
     
-    private void validate(HttpServletRequest request)
+    /** Helper for validating request */
+    protected void validate(HttpServletRequest request, Set<String> params)
     {
         String incoming = request.getContentType() ;
         if ( incoming != null )
@@ -136,20 +130,21 @@ public class SPARQL_Query extends SPARQL_ServletBase
         }
         
         // GET/POST of a form at this point.
-        
-        
         String queryStr = request.getParameter(HttpNames.paramQuery) ;
         
         if ( queryStr == null )
             errorBadRequest("SPARQL Query: No query specificied (no 'query=' found)") ;
 
-        @SuppressWarnings("unchecked")
-        Enumeration<String> en = request.getParameterNames() ;
-        for ( ; en.hasMoreElements() ; )
+        if ( params != null )
         {
-            String name = en.nextElement() ;
-            if ( ! params.contains(name) )
-                errorBadRequest("SPARQL Query: Unrecognize request parameter: "+name) ;
+            @SuppressWarnings("unchecked")
+            Enumeration<String> en = request.getParameterNames() ;
+            for ( ; en.hasMoreElements() ; )
+            {
+                String name = en.nextElement() ;
+                if ( ! params.contains(name) )
+                    errorBadRequest("SPARQL Query: Unrecognize request parameter: "+name) ;
+            }
         }
     }
 
@@ -168,6 +163,8 @@ public class SPARQL_Query extends SPARQL_ServletBase
             errorBadRequest("Parse error: \n"+queryString +"\n\r" + ex.getMessage()) ;
         }
         
+        validateQuery(action, query) ;
+
         if ( query.hasDatasetDescription() )
             errorBadRequest("Query has FROM/FROM NAMED") ;
         
@@ -180,6 +177,9 @@ public class SPARQL_Query extends SPARQL_ServletBase
 
     }
 
+    /** Check the query - throw ActionErrorException or call super.error* */
+    protected abstract void validateQuery(HttpActionQuery action, Query query) ;
+
     protected QueryExecution createQueryExecution(Query query, Dataset dataset)
     {
         return QueryExecutionFactory.create(query, dataset) ;
@@ -187,7 +187,7 @@ public class SPARQL_Query extends SPARQL_ServletBase
 
     private SPARQLResult executeQuery(HttpActionQuery action, Query query, String queryStringLog)
     {
-        Dataset dataset = DatasetFactory.create(action.dsg) ;
+        Dataset dataset = decideDataset(action, query, queryStringLog) ; 
         QueryExecution qexec = createQueryExecution(query, dataset) ;
 
         // call back.
@@ -236,6 +236,12 @@ public class SPARQL_Query extends SPARQL_ServletBase
         errorBadRequest("Unknown query type - "+queryStringLog) ;
         return null ;
     }
+
+    protected abstract Dataset decideDataset(HttpActionQuery action, Query query, String queryStringLog) ;
+//    {
+//        return DatasetFactory.create(action.dsg) ;
+//    }
+
 
     protected void sendResults(HttpActionQuery action, SPARQLResult result)
     {

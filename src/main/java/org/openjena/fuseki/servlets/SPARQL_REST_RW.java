@@ -18,6 +18,7 @@ public class SPARQL_REST_RW extends SPARQL_REST_R
     public SPARQL_REST_RW()
     { this(false) ; }
 
+    @Override
     protected void doDelete(HttpActionREST action)
     {
         action.lock.enterCriticalSection(Lock.WRITE) ;
@@ -28,6 +29,7 @@ public class SPARQL_REST_RW extends SPARQL_REST_R
         SPARQL_ServletBase.successNoContent(action) ;
     }
 
+    @Override
     protected void doPut(HttpActionREST action)
     {
         boolean existedBefore = action.target.alreadyExisted ; 
@@ -46,6 +48,7 @@ public class SPARQL_REST_RW extends SPARQL_REST_R
             SPARQL_ServletBase.successCreated(action) ;
     }
 
+    @Override
     protected void doPost(HttpActionREST action)
     {
         boolean existedBefore = action.target.alreadyExisted ; 

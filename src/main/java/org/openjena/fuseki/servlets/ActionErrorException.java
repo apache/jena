@@ -4,50 +4,20 @@
  * [See end of file]
  */
 
-package dev;
+package org.openjena.fuseki.servlets;
 
-
-
-public class DevFuseki
+class ActionErrorException extends RuntimeException
 {
-    
-    // SOH
-    //   Environment variable for target (s-set but needs to shell built-in)
-    //   defaults
-    //   --service naming seems inconsistent.
-    
-    // Java clients:
-    //   DatasetAccessor: don't serialise to byte[] and then send. 
-
-    // Code examples
-    
-    // Build system
-    
-    // Tests
-    //   TestProtocol (HTTP update, query, update), inc status codes.
-    //   SPARQL Query servlet / SPARQL Update servlet
-    //   TestContentNegotiation - is coveage enough?
-    
-    // HTTP:
-    //   gzip and inflate.   
-    //   LastModified headers. 
-    
-    // DatasetAccessor : check existence of endpoint. 
-    
-    // Not release:
-    //   File upload.
-    //   execute SPARQL non-dataset servlet. (To be finished: SPARQL_QueryGeneral)
-    //   Static pages
-    //   query by POST
-    
-    // Basic authentication
-    //   --user --password
-    
-    // Check SPARQL_REST for access to dataset to ensure there's a lock even before target created.
-    // Clean up SPARQL Query results code.
-
+    final Throwable exception ;
+    final String message ;
+    final int rc ;
+    ActionErrorException(Throwable ex, String message, int rc)
+    {
+        this.exception = ex ;
+        this.message = message ;
+        this.rc = rc ;
+    }
 }
-
 /*
  * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.

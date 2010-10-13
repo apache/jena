@@ -30,6 +30,7 @@ public class SPARQL_REST_R extends SPARQL_REST
     public SPARQL_REST_R()
     { this(false) ; }
 
+    @Override
     protected void doGet(HttpActionREST action)
     {
         try {
@@ -62,6 +63,7 @@ public class SPARQL_REST_R extends SPARQL_REST
         } catch (IOException ex) { errorOccurred(ex) ; }
     }
     
+    @Override
     protected void doHead(HttpActionREST action)
     {
         if ( ! action.target.alreadyExisted )
@@ -73,12 +75,15 @@ public class SPARQL_REST_R extends SPARQL_REST
         success(action) ;
     }
 
+    @Override
     protected void doPost(HttpActionREST action)
     { errorMethodNotAllowed() ; }
 
+    @Override
     protected void doDelete(HttpActionREST action)
     { errorMethodNotAllowed() ; }
 
+    @Override
     protected void doPut(HttpActionREST action)
     { errorMethodNotAllowed() ; }
 }

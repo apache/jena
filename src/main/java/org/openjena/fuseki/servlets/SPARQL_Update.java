@@ -52,14 +52,14 @@ public class SPARQL_Update extends SPARQL_ServletBase
     public SPARQL_Update()
     { this(false) ; }
 
-    // Choose REST verbs to support.
-    
+    @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException
     {
         response.sendError(HttpSC.BAD_REQUEST_400, "Attempt to perform SPARQL update by GET.  Use POST") ;
     }
     
+    @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException
     {
@@ -69,8 +69,6 @@ public class SPARQL_Update extends SPARQL_ServletBase
     @Override
     protected void requestNoQueryString(HttpServletRequest request, HttpServletResponse response)
     {
-        // TODO IOException-less error
-        // TODO kill all exceptions.
         errorOccurred("Bad!") ;
         log.warn("Service Description / SPARQL Update") ;
         errorNotFound("Service Description") ;

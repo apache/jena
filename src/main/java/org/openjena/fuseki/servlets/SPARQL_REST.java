@@ -70,12 +70,84 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
         }
     }
     
+    // struct for target
+        protected static final class Target
+        {
+            final boolean isDefault ;
+            final boolean alreadyExisted ;
+            final DatasetGraph dsg ;
+            // May be null, then  
+            private Graph _graph ;
+            final String name ;
+            final Node graphName ;
+            
+            static Target createNamed(DatasetGraph dsg, boolean alreadyExisted, String name, Node graphName)
+            {
+                return new Target(false, dsg, alreadyExisted, name, graphName) ;
+            }
+    
+            static Target createDefault(DatasetGraph dsg)
+            {
+                return new Target(true, dsg, true, null, null) ;
+            }
+    
+            //private Target(boolean isDefault, Graph graph, String name, Node graphName)
+            private Target(boolean isDefault, DatasetGraph dsg, boolean alreadyExisted, String name, Node graphName)
+            {
+                this.isDefault = isDefault ;
+                this.alreadyExisted = alreadyExisted ;
+                this.dsg = dsg ;
+                this._graph = null ;
+                this.name  = name ;
+                this.graphName = graphName ;
+    
+    //            if ( graph == null )
+    //                throw new IllegalArgumentException("Inconsistent: no graph") ;
+    
+                if ( isDefault )
+                {
+                    if ( name != null || graphName != null )
+                        throw new IllegalArgumentException("Inconsistent: default and a graph name/node") ;       
+                }
+                else
+                {
+                    if ( name == null || graphName == null )
+                        throw new IllegalArgumentException("Inconsistent: not default and/or no graph name/node") ;
+                }                
+            }
+    
+            public Graph graph()
+            {
+                if ( isGraphSet() )
+                {
+                    if ( isDefault ) 
+                        _graph = dsg.getDefaultGraph() ;
+                    else
+                        _graph = dsg.getGraph(graphName) ;
+                }
+                return _graph ;
+            }
+            
+            public boolean isGraphSet()
+            {
+                return _graph == null ;
+            }
+            
+            @Override
+            public String toString()
+            {
+                if ( isDefault ) return "default" ;
+                return name ;
+            }
+        }
+
     public SPARQL_REST(boolean verbose)
     { super(PlainRequestFlag.DIFFERENT, verbose) ; }
 
     public SPARQL_REST()
     { this(false) ; }
 
+    @Override
     protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
         doCommon(request, response) ;
@@ -112,19 +184,19 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
             doPost(action);
         else if (method.equals(METHOD_PATCH))
             //doPatch(action) ;
-            errorNotImplemented() ;
+            errorNotImplemented("PATCH") ;
         else if (method.equals(METHOD_OPTIONS))
             //doOptions(action) ;
-            errorNotImplemented() ;
+            errorNotImplemented("OPTIONS") ;
         else if (method.equals(METHOD_TRACE))
             //doTrace(action) ;
-            errorNotImplemented() ;
+            errorNotImplemented("TRACE") ;
         else if (method.equals(METHOD_PUT))
             doPut(action) ;   
         else if (method.equals(METHOD_DELETE))
             doDelete(action) ;
         else
-            errorNotImplemented() ;
+            errorNotImplemented("Unknow method: "+method) ;
     }
         
     protected abstract void doGet(HttpActionREST action) ;
@@ -321,90 +393,6 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
         if ( values.length > 1 )
             SPARQL_ServletBase.errorBadRequest("Multiple occurrences of '"+name+"'") ;
         return values[0] ;
-    }
-    
-    // struct for target
-    protected static final class Target
-    {
-        final boolean isDefault ;
-        final boolean alreadyExisted ;
-        final DatasetGraph dsg ;
-        // May be null, then  
-        private Graph _graph ;
-        final String name ;
-        final Node graphName ;
-        
-        static Target createNamed(DatasetGraph dsg, boolean alreadyExisted, String name, Node graphName)
-        {
-            return new Target(false, dsg, alreadyExisted, name, graphName) ;
-        }
-
-        static Target createDefault(DatasetGraph dsg)
-        {
-            return new Target(true, dsg, true, null, null) ;
-        }
-
-        //private Target(boolean isDefault, Graph graph, String name, Node graphName)
-        private Target(boolean isDefault, DatasetGraph dsg, boolean alreadyExisted, String name, Node graphName)
-        {
-            this.isDefault = isDefault ;
-            this.alreadyExisted = alreadyExisted ;
-            this.dsg = dsg ;
-            this._graph = null ;
-            this.name  = name ;
-            this.graphName = graphName ;
-
-//            if ( graph == null )
-//                throw new IllegalArgumentException("Inconsistent: no graph") ;
-
-            if ( isDefault )
-            {
-                if ( name != null || graphName != null )
-                    throw new IllegalArgumentException("Inconsistent: default and a graph name/node") ;       
-            }
-            else
-            {
-                if ( name == null || graphName == null )
-                    throw new IllegalArgumentException("Inconsistent: not default and/or no graph name/node") ;
-            }                
-        }
-
-        public Graph graph()
-        {
-            if ( isGraphSet() )
-            {
-                if ( isDefault ) 
-                    _graph = dsg.getDefaultGraph() ;
-                else
-                    _graph = dsg.getGraph(graphName) ;
-            }
-            return _graph ;
-        }
-        
-        public boolean isGraphSet()
-        {
-            return _graph == null ;
-        }
-        
-        public String toString()
-        {
-            if ( isDefault ) return "default" ;
-            return name ;
-        }
-    }
-
-    // struct for exception return. 
-    protected static class UpdateErrorException extends RuntimeException
-    {
-        final Throwable exception ;
-        final String message ;
-        final int rc ;
-        UpdateErrorException(Throwable ex, String message, int rc)
-        {
-            this.exception = ex ;
-            this.message = message ;
-            this.rc = rc ;
-        }
     }
 }
 

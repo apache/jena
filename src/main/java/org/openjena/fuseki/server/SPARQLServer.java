@@ -16,7 +16,7 @@ import org.eclipse.jetty.servlet.ServletHolder ;
 import org.openjena.atlas.logging.Log ;
 import org.openjena.fuseki.Fuseki ;
 import org.openjena.fuseki.HttpNames ;
-import org.openjena.fuseki.servlets.SPARQL_Query ;
+import org.openjena.fuseki.servlets.SPARQL_QueryDataset ;
 import org.openjena.fuseki.servlets.SPARQL_REST_RW ;
 import org.openjena.fuseki.servlets.SPARQL_Update ;
 import org.slf4j.Logger ;
@@ -100,7 +100,7 @@ public class SPARQLServer
 //            context.addServlet(staticContent, "*.htm") ;
 //            context.addServlet(staticContent, "*.css") ;
 
-            ServletHolder sparqlQuery = new ServletHolder(new SPARQL_Query(verbose)) ;
+            ServletHolder sparqlQuery = new ServletHolder(new SPARQL_QueryDataset(verbose)) ;
             ServletHolder sparqlUpdate = new ServletHolder(new SPARQL_Update(verbose)) ;
             ServletHolder sparqlHttp = new ServletHolder(new SPARQL_REST_RW(verbose)) ;
             

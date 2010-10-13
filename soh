@@ -465,6 +465,7 @@ def cmd_sparql_query
   # --output ==> output= (non-standard)
   args={}
   case options[:output]
+  when nil
   when  "json","xml","text","csv","tsv"
     args['output'] = options[:output]
   when :json,:xml,:text,:csv,:tsv
