@@ -24,8 +24,8 @@ import org.openjena.atlas.logging.Log ;
 
 public class Metadata
 {
-    List<String> resources = new ArrayList<String>() ;
-    Properties properties = new Properties() ;
+    private List<String> resources = new ArrayList<String>() ;
+    private Properties properties = new Properties() ;
     
     public Metadata() { }
     
@@ -86,6 +86,16 @@ public class Metadata
     {
         if ( properties == null ) return defaultValue ;
         return properties.getProperty(name, defaultValue) ;
+    }
+
+    public List<String> getResources()
+    {
+        return resources ;
+    }
+
+    public Properties getProperties()
+    {
+        return properties ;
     }
 }
 
