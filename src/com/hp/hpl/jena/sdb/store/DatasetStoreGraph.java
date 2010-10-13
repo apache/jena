@@ -8,6 +8,8 @@ package com.hp.hpl.jena.sdb.store;
 
 import java.util.Iterator ;
 
+import org.openjena.atlas.lib.Closeable ;
+
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.Dataset ;
@@ -24,7 +26,7 @@ import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.update.GraphStore ;
 
 public class DatasetStoreGraph extends DatasetGraphCaching
-implements DatasetGraph, org.openjena.atlas.lib.Closeable, GraphStore 
+    implements DatasetGraph, Closeable, GraphStore 
 {
     final Store store ;
     Graph defaultGraph = null ;

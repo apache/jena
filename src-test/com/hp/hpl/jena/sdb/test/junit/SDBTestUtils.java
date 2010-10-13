@@ -9,12 +9,15 @@ package com.hp.hpl.jena.sdb.test.junit;
 import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.Store;
 import com.hp.hpl.jena.sdb.StoreDesc;
+import com.hp.hpl.jena.sdb.sql.JDBC ;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.store.DatabaseType;
 import com.hp.hpl.jena.sdb.store.LayoutType;
 
 public class SDBTestUtils
 {
+    static { JDBC.loadDriverHSQL() ; }
+
     /** Create an HSQLDB-backed in-memory store for testing. */
     public static Store createInMemoryStore()
     {
