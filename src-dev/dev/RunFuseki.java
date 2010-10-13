@@ -12,7 +12,7 @@ public class RunFuseki
 {
     public static void main(String[] args)
     {
-        FusekiCmd.main(
+        FusekiCmd.main( "--version",
                     //"-v", 
                     "--mem", "--port=3030", "/dataset") ;
     }

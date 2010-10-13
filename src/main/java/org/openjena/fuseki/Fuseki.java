@@ -6,16 +6,53 @@
 
 package org.openjena.fuseki;
 
+import org.openjena.riot.SysRIOT ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
+
+import com.hp.hpl.jena.sparql.SystemARQ ;
+import com.hp.hpl.jena.sparql.lib.Metadata ;
+import com.hp.hpl.jena.sparql.mgt.ARQMgt ;
+import com.hp.hpl.jena.sparql.mgt.SystemInfo ;
 
 public class Fuseki
 {
     // External log : operations, etc.
-    public static Logger serverlog = LoggerFactory.getLogger("org.openjena.fuseki.Fuseki") ;
+    static public String PATH = "org.openjena.fuseki" ;
+    static public String FusekiIRI = "http://openjena.org/Fuseki" ;
+    
+    //static private String metadataDevLocation = "org/openjena/fuseki/fuseki-properties-dev.xml" ;
+    static private String metadataLocation = "org/openjena/fuseki/fuseki-properties.xml" ;
+    static private Metadata metadata = initMetadata() ;
+    private static Metadata initMetadata()
+    {
+        Metadata m = new Metadata() ;
+        //m.addMetadata(metadataDevLocation) ;
+        m.addMetadata(metadataLocation) ;
+        return m ;
+    }
+    
     static public String NAME = "Fuseki" ;
-    static public String VERSION = "0.0.0-SNAPSHOT" ;
+    static public String VERSION = metadata.get(PATH+".version", "development") ;
+    static public String BUILD_DATE = metadata.get(PATH+".build.datetime", "unknown") ; // call Date if unavailable.
     public static String serverHttpName     = NAME+" ("+VERSION+")" ;    
+    
+    public static Logger serverlog = LoggerFactory.getLogger(PATH+".Fuseki") ;
+    
+    private static boolean initialized = false ;
+    public static void init()
+    {
+        if ( initialized )
+            return ;
+        initialized = true ;
+        SystemInfo sysInfo = new SystemInfo(FusekiIRI, VERSION, BUILD_DATE) ;
+        ARQMgt.register(PATH+".system:type=SystemInfo", sysInfo) ;
+        SystemARQ.registerSubSystem(sysInfo) ;
+        SysRIOT.init() ;
+    }
+  
+    // Force a call to init.
+    static { init() ; }
 }
 
 /*

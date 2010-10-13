@@ -9,14 +9,15 @@ package org.openjena.fuseki;
 import org.openjena.fuseki.server.SPARQLServer ;
 import arq.cmd.CmdException ;
 import arq.cmdline.ArgDecl ;
-import arq.cmdline.CmdGeneral ;
+import arq.cmdline.CmdARQ ;
 import arq.cmdline.ModDatasetAssembler ;
 
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
+import com.hp.hpl.jena.tdb.TDB ;
 
-public class FusekiCmd extends CmdGeneral
+public class FusekiCmd extends CmdARQ
 {
     private static ArgDecl argMem       = new ArgDecl(ArgDecl.NoValue, "mem") ;
     private static ArgDecl argMemTDB    = new ArgDecl(ArgDecl.NoValue, "memtdb", "memTDB") ;
@@ -28,6 +29,7 @@ public class FusekiCmd extends CmdGeneral
 
     static public void main(String...argv)
     {
+        Fuseki.init() ;
         new FusekiCmd(argv).mainRun() ;
     }
     
@@ -42,6 +44,8 @@ public class FusekiCmd extends CmdGeneral
         add(argMem, "--mem", "Create an in-memory, non-persistent dataset for the server") ;
         add(argMemTDB, "--memTDB", "Create an in-memory, non-persistent dataset using TDB (testing only)") ;
         add(argPort, "--port", "Port number") ;
+        super.modVersion.addClass(TDB.class) ;
+        super.modVersion.addClass(Fuseki.class) ;
     }
 
     static String argUsage = "[--mem|--desc=AssemblerFile] [--port PORT] /DatasetPathName" ; 

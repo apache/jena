@@ -153,9 +153,11 @@
   <build>
     <resources>
       <resource>
-        <targetPath>org/fuseki</targetPath>
+	<!--
+        <targetPath>org/openjena/fuseki</targetPath>
+	-->
         <filtering>true</filtering>
-        <directory>resources</directory>
+        <directory>src/main/resources</directory>
       </resource>
     </resources>
     <filters>
@@ -163,6 +165,40 @@
     </filters>
     
     <plugins>
+      <!-- This produce a java properties file 'filter.properties' with timestanps in
+	   For use with fileritng resources.
+      -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>ant-generate-resources</id>
+            <phase>generate-resources</phase>
+            <configuration>
+              <tasks>
+                <mkdir dir="${project.basedir}/target"/>
+                <tstamp>
+                  <format property="build.time.xsd"  pattern="yyyy-MM-dd'T'HH:mm:ssZ"/>
+                  <format property="build.time.txt"  pattern="yyyy-MM-dd HH:mm Z"/>
+                </tstamp>
+                <echo file="${project.basedir}/target/filter.properties">
+                  #begin
+                  build.time.xsd=${build.time.xsd}
+                  build.time.txt=${build.time.txt}
+                  #end
+                </echo>
+                <echo message="Version = ${project.version}"/>
+                <echo message="build.time=${build.time.txt}"/>
+              </tasks>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
@@ -204,7 +240,6 @@
           <overWriteIfNewer>true</overWriteIfNewer>
         </configuration>
       </plugin>
-      
 
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
@@ -246,38 +281,6 @@
         </configuration>
       </plugin>
 
-      <!-- Fix to use resources -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-antrun-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>ant-generate-resources</id>
-            <phase>generate-resources</phase>
-            <configuration>
-              <tasks>
-                <mkdir dir="${project.basedir}/target"/>
-                <tstamp>
-                  <format property="build.time.xsd"  pattern="yyyy-MM-dd'T'HH:mm:ssZ"/>
-                  <format property="build.time.txt"  pattern="yyyy-MM-dd HH:mm Z"/>
-                </tstamp>
-                <echo file="${project.basedir}/target/filter.properties">
-                  #begin
-                  build.time.xsd=${build.time.xsd}
-                  build.time.txt=${build.time.txt}
-                  #end 
-                </echo>
-                <echo message="Version = ${project.version}"/>
-                <echo message="build.time=${build.time.txt}"/>
-              </tasks>
-            </configuration>
-            <goals>
-              <goal>run</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-      
     </plugins>
 
   </build>
