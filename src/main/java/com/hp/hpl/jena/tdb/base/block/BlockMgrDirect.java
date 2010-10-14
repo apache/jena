@@ -125,7 +125,10 @@ public class BlockMgrDirect extends BlockMgrFile
 
     @Override
     protected void _close()
-    {}
+    {
+        force() ;
+        super.force() ;
+    }
 }
 
 /*

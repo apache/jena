@@ -28,6 +28,11 @@ public class DevTDB
     //   TDB/BulkLoader.loadTriples$ (loadQuads$)
     //     to add a inference sink wrapper.
  
+    // TDBFcatory and Dataset.close().
+    //   Can we check .close has done everythingm, flushes and all.
+    //   Reference counting? 
+    //   Document better
+    
     // Check writing to union graph is handled appropriately.
     
     // BPT rewriters

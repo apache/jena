@@ -224,7 +224,7 @@ public class BlockMgrMapped extends BlockMgrFile
     }
 
     @Override
-    public void _close()
+    protected void _close()
     {
         force() ;
         // There is no unmap operation for MappedByteBuffers.
