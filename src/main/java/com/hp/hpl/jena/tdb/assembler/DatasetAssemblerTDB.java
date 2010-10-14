@@ -9,7 +9,7 @@ package com.hp.hpl.jena.tdb.assembler;
 import static com.hp.hpl.jena.sparql.util.graph.GraphUtils.exactlyOneProperty ;
 import static com.hp.hpl.jena.sparql.util.graph.GraphUtils.getStringValue ;
 import static com.hp.hpl.jena.tdb.assembler.VocabTDB.pLocation ;
-import static com.hp.hpl.jena.tdb.assembler.VocabTDB.pUnionGraph ;
+import static com.hp.hpl.jena.tdb.assembler.VocabTDB.* ;
 import org.openjena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.assembler.Assembler ;
@@ -45,9 +45,9 @@ public class DatasetAssemblerTDB extends DatasetAssembler
         Location loc = new Location(dir) ;
         DatasetGraphTDB dsg = TDBFactory.createDatasetGraph(loc) ;
         
-        if ( root.hasProperty(pUnionGraph) )
+        if ( root.hasProperty(pUnionDefaultGraph) )
         {
-            Node b = root.getProperty(pUnionGraph).getObject().asNode() ;
+            Node b = root.getProperty(pUnionDefaultGraph).getObject().asNode() ;
             NodeValue nv = NodeValue.makeNode(b) ;
             if ( nv.isBoolean() )
                 dsg.getContext().set(TDB.symUnionDefaultGraph, nv.getBoolean()) ;

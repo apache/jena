@@ -7,6 +7,7 @@ public class DevTDB
     // http://openjena.org/wiki/TDB/JavaAPI#Concurrency
     // http://www.openjena.org/wiki/TDB/Concurrency
     // and ref to ARQ.
+    // http://openjena.org/wiki/TDB/Assembler to document unionDefaultGraph
     
     // --explain.
     // http://openjena.org/wiki/TDB/Configuration

@@ -28,7 +28,7 @@ public class VocabTDB
     public static final Resource tNodeTable         = Vocab.type(NS, "NodeTable") ;
 
     public static final Property pLocation          = Vocab.property(NS, "location") ;
-    public static final Property pUnionGraph        = Vocab.property(NS, "unionGraph") ;
+    public static final Property pUnionDefaultGraph = Vocab.property(NS, "unionDefaultGraph") ;
     
     public static final Property pIndex             = Vocab.property(NS, "index") ;
     public static final Property pGraphName1        = Vocab.property(NS, "graphName") ;
