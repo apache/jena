@@ -430,6 +430,10 @@ public class Iter<T> implements Iterable<T>, Iterator<T>
     
     public static <T> Iter<T> iter(Iter<T> iter)
     { return iter ; }
+
+    // May not do what you expect. iter(int[]) is iter of one object (an int[])
+//    public static <T> Iter<T> iter(T...objects)
+//    { return Iter.iter(Arrays.asList(objects)) ; }
     
     public static <T> Iter<T> iter(Collection<T> collection)
     {

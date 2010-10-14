@@ -6,7 +6,6 @@
 
 package org.openjena.atlas.test;
 
-
 public class RepeatExecution
 {
     public static void repeatExecutions(ExecGenerator execGenerator, int iterations, boolean showProgress)

@@ -11,24 +11,10 @@ import static org.openjena.atlas.lib.RandomLib.random ;
 import java.util.Arrays ;
 
 
-/** Support for testing BTrees */
+/** Support for testing B+Trees/BTrees.  May be  generally useful*/
 
 public class Gen
 {
-    public static String strings(int[] keys)
-    {
-        StringBuilder sb = new StringBuilder() ;
-        boolean first = true ;
-        for ( int k : keys)
-        {
-            if ( ! first )
-                sb.append(", ") ;
-            first = false ;
-            sb.append(k) ;
-        }
-        return sb.toString() ;
-    }
-
     static boolean DIFFERENT = false ;
     /** Generate a random sequence between low (inclusive) and high (exclusive) */ 
     public static int[] rand(int numRand, int low, int high)
@@ -66,6 +52,7 @@ public class Gen
     /** Sort-of jumble a sequence */
     public static int[] permute(int[] x, int num)
     {
+        // Collections.shuffle.
         int[] x2 = new int[x.length] ;
         System.arraycopy(x, 0, x2, 0, x.length) ;
         
@@ -77,6 +64,7 @@ public class Gen
             x2[a] = x2[b] ;
             x2[b] = t ;
         }
+        // Checking.
         for ( int k : x )
         {
             boolean found = false ;
@@ -90,6 +78,20 @@ public class Gen
                 System.err.printf("Corrupted permute: [%s] [%s]\n", strings(x) , strings(x2)) ;
         }
         return x2 ;
+    }
+    
+    private static String strings(int[] keys)
+    {
+        StringBuilder sb = new StringBuilder() ;
+        boolean first = true ;
+        for ( int k : keys)
+        {
+            if ( ! first )
+                sb.append(", ") ;
+            first = false ;
+            sb.append(k) ;
+        }
+        return sb.toString() ;
     }
  }
 
