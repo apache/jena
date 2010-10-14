@@ -10,6 +10,7 @@ import org.openjena.riot.SysRIOT ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
+import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.sparql.SystemARQ ;
 import com.hp.hpl.jena.sparql.lib.Metadata ;
 import com.hp.hpl.jena.sparql.mgt.ARQMgt ;
@@ -45,6 +46,7 @@ public class Fuseki
         if ( initialized )
             return ;
         initialized = true ;
+        ARQ.init() ;
         SystemInfo sysInfo = new SystemInfo(FusekiIRI, VERSION, BUILD_DATE) ;
         ARQMgt.register(PATH+".system:type=SystemInfo", sysInfo) ;
         SystemARQ.registerSubSystem(sysInfo) ;

@@ -12,6 +12,7 @@ import static org.openjena.fuseki.Fuseki.serverlog ;
 import java.io.IOException ;
 import java.io.PrintWriter ;
 import java.util.Enumeration ;
+import java.util.Map ;
 import java.util.concurrent.atomic.AtomicLong ;
 
 import javax.servlet.http.HttpServlet ;
@@ -47,7 +48,60 @@ public abstract class SPARQL_ServletBase extends HttpServlet
     //throws ServletException, IOException
     {
         long id = requestIdAlloc.incrementAndGet() ;
+        printRequest(id, request) ;
+        
+        HttpServletResponseTracker responseTracked = new HttpServletResponseTracker(response) ;
+        response = responseTracked ;
+        
         String uri = request.getRequestURI() ;
+        setCommonHeaders(response) ;
+        
+        try {
+            if ( request.getQueryString() == null && noQueryString == PlainRequestFlag.DIFFERENT )
+            {
+                requestNoQueryString(request, response) ;
+                return ;
+            }
+
+            uri = mapRequestToDataset(uri) ;
+            DatasetGraph dsg = DatasetRegistry.get().get(uri) ;
+            if ( dsg == null )
+            {
+                errorNotFound("No dataset for URI: "+uri) ;
+                return ;
+            }
+
+            perform(id, dsg, request, response) ;
+            //serverlog.info(String.format("[%d] 200 Success", id)) ;
+        } catch (ActionErrorException ex)
+        {
+            if ( ex.exception != null )
+                ex.exception.printStackTrace(System.err) ;
+
+            if ( ex.message != null )
+            {
+                responseSendError(response, ex.rc, ex.message) ;
+                //serverlog.info(format("[%d] RC = %d : %s",id, ex.rc, ex.message)) ;
+            }
+            else
+            {
+                responseSendError(response, ex.rc) ;
+                //serverlog.info(format("[%d] RC = %d : %s",id, ex.rc)) ;
+            }
+        }
+        catch (Exception ex)
+        {   // This should not happen.
+            ex.printStackTrace(System.err) ;
+            responseSendError(response, HttpSC.INTERNAL_SERVER_ERROR_500, ex.getMessage()) ;
+            //serverlog.info(format("[%d] RC = %d : %s", id, HttpSC.INTERNAL_SERVER_ERROR_500, ex.getMessage())) ;
+        }
+        
+        printResponse(id, responseTracked) ;
+        
+    }
+
+    private void printRequest(long id, HttpServletRequest request)
+    {
         String url = wholeRequestURL(request) ;
         String method = request.getMethod() ;
 
@@ -71,49 +125,28 @@ public abstract class SPARQL_ServletBase extends HttpServlet
             }
         }
 
-        setCommonHeaders(response) ;
-        
-        try {
-            if ( request.getQueryString() == null && noQueryString == PlainRequestFlag.DIFFERENT )
-            {
-                requestNoQueryString(request, response) ;
-                return ;
-            }
 
-            uri = mapRequestToDataset(uri) ;
-            DatasetGraph dsg = DatasetRegistry.get().get(uri) ;
-            if ( dsg == null )
-            {
-                errorNotFound("No dataset for URI: "+uri) ;
-                return ;
-            }
-
-            perform(id, dsg, request, response) ;
-            serverlog.info(String.format("[%d] 200 Success", id)) ;
-        } catch (ActionErrorException ex)
-        {
-            if ( ex.exception != null )
-                ex.exception.printStackTrace(System.err) ;
-
-            if ( ex.message != null )
-            {
-                responseSendError(response, ex.rc, ex.message) ;
-                serverlog.info(format("[%d] RC = %d : %s",id, ex.rc, ex.message)) ;
-            }
-            else
-            {
-                responseSendError(response, ex.rc) ;
-                serverlog.info(format("[%d] RC = %d : %s",id, ex.rc)) ;
-            }
-        }
-        catch (Exception ex)
-        {   // This should not happen.
-            ex.printStackTrace(System.err) ;
-            serverlog.info(format("[%d] RC = %d : %s", id, HttpSC.INTERNAL_SERVER_ERROR_500, ex.getMessage())) ;
-            responseSendError(response, HttpSC.INTERNAL_SERVER_ERROR_500, ex.getMessage()) ;
-        }
     }
 
+    
+    private void printResponse(long id, HttpServletResponseTracker response)
+    {
+        if ( verbose_debug )
+        {
+            if ( response.contentType != null )
+                serverlog.info(format("[%d]   %-20s %s", id, HttpNames.hContentType, response.contentType)) ;
+            if ( response.contentLength != -1 )
+                serverlog.info(format("[%d]   %-20s %d", id, HttpNames.hContentLengh, response.contentLength)) ;
+            for ( Map.Entry<String, String> e: response.headers.entrySet() )
+                serverlog.info(format("[%d]   %-20s %s", id, e.getKey(), e.getValue())) ;
+        }
+        
+        if ( response.message == null )
+            serverlog.info(String.format("[%d] %d %s", id, response.statusCode, HttpSC.getMessage(response.statusCode))) ;
+        else
+            serverlog.info(String.format("[%d] %d %s", id, response.statusCode, response.message)) ;
+    }
+    
     private void responseSendError(HttpServletResponse response, int statusCode, String message)
     {
         try { response.sendError(statusCode, message) ; }
@@ -264,8 +297,6 @@ public abstract class SPARQL_ServletBase extends HttpServlet
     {
         httpResponse.setHeader(HttpNames.hServer, Fuseki.serverHttpName) ;
     }
-    
-
 }
 
 /*

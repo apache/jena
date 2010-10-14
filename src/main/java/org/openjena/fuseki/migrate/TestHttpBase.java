@@ -4,49 +4,25 @@
  * [See end of file]
  */
 
-package dev;
+package org.openjena.fuseki.migrate;
 
+import org.apache.http.client.methods.HttpGet ;
+import org.apache.http.client.methods.HttpUriRequest ;
 
-
-public class DevFuseki
+public class TestHttpBase
 {
-    
-    // SOH
-    //   Environment variable for target (s-set but needs to shell built-in)
-    //   defaults
-    //   --service naming seems inconsistent.
-    
-    // Java clients:
-    //   DatasetAccessor: don't serialise to byte[] and then send. 
+    protected String testGet(String url, int... expectedStatusCodes)
+    {
+        HttpUriRequest request = new HttpGet(url) ;
+        
+        
+        return null ;
+    }
 
-    // Code examples
-    
-    // Replacve sendError with setStatus code + own plain text.
-    
-    // Build system
-    
-    // Tests
-    //   TestProtocol (HTTP update, query, update), inc status codes.
-    //   SPARQL Query servlet / SPARQL Update servlet
-    //   TestContentNegotiation - is coveage enough?
-    
-    // HTTP:
-    //   gzip and inflate.   
-    //   LastModified headers. 
-    
-    // DatasetAccessor : check existence of endpoint. 
-    
-    // Not release:
-    //   File upload.
-    //   execute SPARQL non-dataset servlet. (To be finished: SPARQL_QueryGeneral)
-    //   Static pages
-    //   query by POST
-    
-    // Basic authentication
-    //   --user --password
-    
-    // Check SPARQL_REST for access to dataset to ensure there's a lock even before target created.
-    // Clean up SPARQL Query results code.
+    protected String testHttpRequest(HttpUriRequest request, int... expectedStatusCodes)
+    {
+        return null ;
+    }
 
 }
 

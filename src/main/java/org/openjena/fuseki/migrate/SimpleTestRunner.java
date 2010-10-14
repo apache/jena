@@ -4,50 +4,44 @@
  * [See end of file]
  */
 
-package dev;
+package org.openjena.fuseki.migrate;
 
+import java.util.ArrayList ;
+import java.util.List ;
 
+import org.junit.runner.Description ;
+import org.junit.runner.JUnitCore ;
+import org.junit.runner.Result ;
+import org.junit.runner.notification.Failure ;
+import org.openjena.fuseki.TestDatasetHTTP ;
 
-public class DevFuseki
+public class SimpleTestRunner
 {
-    
-    // SOH
-    //   Environment variable for target (s-set but needs to shell built-in)
-    //   defaults
-    //   --service naming seems inconsistent.
-    
-    // Java clients:
-    //   DatasetAccessor: don't serialise to byte[] and then send. 
+    public static void main(String...argv)
+    {
+        //org.junit.runner.JUnitCore.
+        JUnitCore core = new JUnitCore() ;
 
-    // Code examples
-    
-    // Replacve sendError with setStatus code + own plain text.
-    
-    // Build system
-    
-    // Tests
-    //   TestProtocol (HTTP update, query, update), inc status codes.
-    //   SPARQL Query servlet / SPARQL Update servlet
-    //   TestContentNegotiation - is coveage enough?
-    
-    // HTTP:
-    //   gzip and inflate.   
-    //   LastModified headers. 
-    
-    // DatasetAccessor : check existence of endpoint. 
-    
-    // Not release:
-    //   File upload.
-    //   execute SPARQL non-dataset servlet. (To be finished: SPARQL_QueryGeneral)
-    //   Static pages
-    //   query by POST
-    
-    // Basic authentication
-    //   --user --password
-    
-    // Check SPARQL_REST for access to dataset to ensure there's a lock even before target created.
-    // Clean up SPARQL Query results code.
-
+        argv = new String[] {TestDatasetHTTP.class.getName()} ;
+        
+        List<Class<?>> classes= new ArrayList<Class<?>>();
+        
+        
+        List<Failure> missingClasses= new ArrayList<Failure>();
+        for (String each : argv)
+            try {
+                classes.add(Class.forName(each));
+            } catch (ClassNotFoundException e) {
+                System.out.println("Could not find class: " + each);
+                Description description= Description.createSuiteDescription(each);
+                Failure failure= new Failure(description, e);
+                missingClasses.add(failure);
+            }
+        
+        core.addListener(new TextListenerOneLine(System.out)) ;
+        Result result = core.run(classes.toArray(new Class<?>[0])) ;
+        System.exit(result.wasSuccessful() ? 0 : 1);
+    }
 }
 
 /*

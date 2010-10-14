@@ -12,6 +12,7 @@ import arq.cmdline.ArgDecl ;
 import arq.cmdline.CmdARQ ;
 import arq.cmdline.ModDatasetAssembler ;
 
+import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
@@ -29,6 +30,8 @@ public class FusekiCmd extends CmdARQ
 
     static public void main(String...argv)
     {
+        // Just to make sure ...
+        ARQ.init();
         Fuseki.init() ;
         new FusekiCmd(argv).mainRun() ;
     }

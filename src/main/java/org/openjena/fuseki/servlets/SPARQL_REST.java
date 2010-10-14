@@ -291,10 +291,10 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
         if ( action.verbose )
         {
             if ( len >= 0 )
-                serverlog.info(format("[%d]    Body: len=%d, Content-Type=%s, Charset=%s => %s", 
+                serverlog.info(format("[%d]   Body: Content-Length=%d, Content-Type=%s, Charset=%s => %s", 
                                       action.id, len, ct.contentType, ct.charset, lang.getName())) ;
             else
-                serverlog.info(format("[%d]    Body: Content-Type=%s, Charset=%s => %s", 
+                serverlog.info(format("[%d]   Body: Content-Type=%s, Charset=%s => %s", 
                                       action.id, ct.contentType, ct.charset, lang.getName())) ;
         }
         
