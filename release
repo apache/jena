@@ -3,4 +3,7 @@
 # Temporary "build system"
 rm -rf target/*
 package
+
+## T=public_html/Fuseki/*-dev.zip
+## ssh openjena '[ -e $T ] && mv -f $T public_html/Fuseki/Old'
 scp target/fuseki-*-dev.zip openjena:public_html/Fuseki
