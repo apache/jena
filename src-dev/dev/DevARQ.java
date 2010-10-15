@@ -5,11 +5,9 @@ public class DevARQ
 {
     // http://www.openjena.org/wiki/ARQ/Concurrency
     // LIMIT subquery.
+    // Check for SELECT syntax errors by scope.
     
-    // Change: 
-    //   http://openjena.org/ARQ/update.html
-    
-    // FILTER-like assignment - end-of-group
+    // BIND: end-of-group
     
     // (Better) respect Content-Length?
     // ReportRemoteVirtuoso
