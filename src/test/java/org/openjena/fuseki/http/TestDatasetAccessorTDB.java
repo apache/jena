@@ -1,42 +1,28 @@
 /*
- * (c) Copyright 2010 Talis Information Ltd.
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
 package org.openjena.fuseki.http;
 
-import com.hp.hpl.jena.graph.Graph ;
-import com.hp.hpl.jena.graph.Node ;
+import org.openjena.fuseki.DatasetAccessorFactory ;
 
-public interface DatasetGraphUpdater
+import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import com.hp.hpl.jena.tdb.TDBFactory ;
+
+public class TestDatasetAccessorTDB extends BaseTestDatasetAccessor
 {
-    public Graph httpGet() ; 
-    public Graph httpGet(Node graphName) ;
-    
-    public boolean httpHead() ; 
-    public boolean httpHead(Node graphName) ;
-    
-    // Replace/create graph
-    public void httpPut(Graph data) ;
-    public void httpPut(Node graphName, Graph data) ;
-
-    // Remove graph
-    public void httpDelete() ;
-    public void httpDelete(Node graphName) ;
-
-    // Update graph
-    public void httpPost(Graph data) ;
-    public void httpPost(Node graphName, Graph data) ;
-
-    // Update graph
-    public void httpPatch(Graph data) ;
-    public void httpPatch(Node graphName, Graph data) ;
-
+    @Override
+    protected DatasetGraphAccessor getDatasetUpdater()
+    {
+        DatasetGraph dsg = TDBFactory.createDatasetGraph() ;
+        return DatasetAccessorFactory.make(dsg) ;
+    }
 }
 
 /*
- * (c) Copyright 2010 Talis Information Ltd.
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

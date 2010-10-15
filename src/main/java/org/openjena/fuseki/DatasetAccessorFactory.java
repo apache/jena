@@ -6,39 +6,39 @@
 
 package org.openjena.fuseki;
 
-import org.openjena.fuseki.http.DatasetAdapterImpl ;
-import org.openjena.fuseki.http.DatasetGraphUpdater ;
-import org.openjena.fuseki.http.DatasetGraphUpdaterBasic ;
-import org.openjena.fuseki.http.DatasetGraphUpdaterHTTP ;
+import org.openjena.fuseki.http.DatasetAdapter ;
+import org.openjena.fuseki.http.DatasetGraphAccessor ;
+import org.openjena.fuseki.http.DatasetGraphAccessorBasic ;
+import org.openjena.fuseki.http.DatasetGraphAccessorHTTP ;
 
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 
-public class DatasetUpdaterFactory
+public class DatasetAccessorFactory
 {
     public static DatasetAccessor createHTTP(String serviceURI)
     {
-        return adapt(new DatasetGraphUpdaterHTTP(serviceURI)) ;
+        return adapt(new DatasetGraphAccessorHTTP(serviceURI)) ;
     }
 
     public static DatasetAccessor create(DatasetGraph dataset)
     {
-        return adapt(new DatasetGraphUpdaterBasic(dataset)) ;
+        return adapt(new DatasetGraphAccessorBasic(dataset)) ;
     }
     
     public static DatasetAccessor create(Dataset dataset)
     {
-        return adapt(new DatasetGraphUpdaterBasic(dataset.asDatasetGraph())) ;
+        return adapt(new DatasetGraphAccessorBasic(dataset.asDatasetGraph())) ;
     }
 
-    public static DatasetGraphUpdater make(DatasetGraph dataset)
+    public static DatasetGraphAccessor make(DatasetGraph dataset)
     {
-        return new DatasetGraphUpdaterBasic(dataset) ;
+        return new DatasetGraphAccessorBasic(dataset) ;
     }
     
-    private static DatasetAccessor adapt(DatasetGraphUpdater dgu)
+    private static DatasetAccessor adapt(DatasetGraphAccessor dgu)
     {
-        return new DatasetAdapterImpl(dgu) ;
+        return new DatasetAdapter(dgu) ;
     }
     
 }

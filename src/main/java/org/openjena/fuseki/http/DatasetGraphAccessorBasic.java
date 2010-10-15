@@ -1,5 +1,4 @@
 /*
- * (c) Copyright 2010 Talis Information Ltd.
  * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
@@ -13,13 +12,14 @@ import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 
 /** 
- * General implementation of operations for the SPARQL HTTP Update protocol 
+ * General implementation of operations for the SPARQL HTTP Update protocol
+ * over a DatasetGraph.
  */
-public class DatasetGraphUpdaterBasic implements DatasetGraphUpdater
+public class DatasetGraphAccessorBasic implements DatasetGraphAccessor
 {
     private DatasetGraph dataset ;
     
-    public DatasetGraphUpdaterBasic(DatasetGraph dataset)
+    public DatasetGraphAccessorBasic(DatasetGraph dataset)
     {
         this.dataset = dataset ;
     }
@@ -112,7 +112,6 @@ public class DatasetGraphUpdaterBasic implements DatasetGraphUpdater
 }
 
 /*
- * (c) Copyright 2010 Talis Information Ltd.
  * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  *

@@ -1,34 +1,29 @@
 /*
- * (c) Copyright 2010 Talis Information Ltd.
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
 package org.openjena.fuseki.http;
 
-import org.openjena.fuseki.DatasetUpdaterFactory ;
-import org.openjena.fuseki.http.DatasetGraphUpdater ;
+import org.openjena.fuseki.DatasetAccessorFactory ;
+import org.openjena.fuseki.http.DatasetGraphAccessor ;
 
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
 
-public class TestDatasetUpdaterMem extends BaseTestDatasetUpdater
+public class TestDatasetAccessorMem extends BaseTestDatasetAccessor
 {
     @Override
-    protected DatasetGraphUpdater getDatasetUpdater(DatasetGraph dsg)
+    protected DatasetGraphAccessor getDatasetUpdater()
     {
-        return DatasetUpdaterFactory.make(dsg) ;
-    }
-
-    @Override
-    protected DatasetGraph getEmptyDatasetGraph()
-    {
-        return DatasetGraphFactory.createMem() ;
+        DatasetGraph dsg = DatasetGraphFactory.createMem() ;
+        return DatasetAccessorFactory.make(dsg) ;
     }
 }
 
 /*
- * (c) Copyright 2010 Talis Information Ltd.
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

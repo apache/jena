@@ -8,7 +8,7 @@ package org.openjena.fuseki;
 
 import com.hp.hpl.jena.rdf.model.Model ;
 
-/** Accessor to a datset a collection of graphs. */
+/** Accessor to a dataset a collection of graphs. */
 public interface DatasetAccessor
 {
     /** Get the default model of a Dataset */

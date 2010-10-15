@@ -55,7 +55,7 @@ public class TestDatasetHTTP extends BaseServerTest
     public void test_404_1()
     {
         // Not the right service.
-        DatasetAccessor du = DatasetUpdaterFactory.createHTTP(datasetURI_not_1) ;
+        DatasetAccessor du = DatasetAccessorFactory.createHTTP(datasetURI_not_1) ;
         Model graph = du.getModel(gn99) ;
         assertNull(graph) ; 
     }
@@ -63,7 +63,7 @@ public class TestDatasetHTTP extends BaseServerTest
     @Test //(expected=FusekiNotFoundException.class)
     public void test_404_2()
     {
-        DatasetAccessor du = DatasetUpdaterFactory.createHTTP(datasetURI_not_2) ;
+        DatasetAccessor du = DatasetAccessorFactory.createHTTP(datasetURI_not_2) ;
         Model graph = du.getModel(gn99) ;
         assertNull(graph) ;
     }
@@ -72,7 +72,7 @@ public class TestDatasetHTTP extends BaseServerTest
     public void test_404_3()
     {
         // Right service, wrong graph
-        DatasetAccessor du = DatasetUpdaterFactory.createHTTP(serviceREST) ;
+        DatasetAccessor du = DatasetAccessorFactory.createHTTP(serviceREST) ;
         Model graph = du.getModel(gn99) ;
         assertNull(graph) ;
     }
@@ -226,7 +226,8 @@ public class TestDatasetHTTP extends BaseServerTest
 
     static DatasetAccessor create()
     {
-        return DatasetUpdaterFactory.createHTTP(serviceREST) ;
+        BaseServerTest.serverReset() ;
+        return DatasetAccessorFactory.createHTTP(serviceREST) ;
     }
 }
 

@@ -9,77 +9,73 @@ package org.openjena.fuseki.http;
 
 import org.junit.Assert ;
 import org.junit.Test ;
-import org.openjena.fuseki.http.DatasetGraphUpdater ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
 
-public abstract class BaseTestDatasetUpdater extends Assert
+public abstract class BaseTestDatasetAccessor extends Assert
 {
-    protected abstract DatasetGraph getEmptyDatasetGraph() ;
-    protected abstract DatasetGraphUpdater getDatasetUpdater(DatasetGraph dsg) ;
+    // return a DatasetGraphAccessor backed by an empty dataset
+    protected abstract DatasetGraphAccessor getDatasetUpdater() ;
     
-    protected static final Node n1 = SSE.parseNode("<example>") ;
-    protected static final Graph graph1 = SSE.parseGraph("(graph (<x> <p> 1))") ;
-    protected static final Graph graph2 = SSE.parseGraph("(graph (<x> <p> 2))") ;
+    protected static final Node n1 = SSE.parseNode("<http://example/n1>") ;
+    protected static final Graph graph1 = SSE.parseGraph("(base <http://example/> (graph (<x> <p> 1)))") ;
+    protected static final Graph graph2 = SSE.parseGraph("(base <http://example/> (graph (<x> <p> 2)))") ;
+    
+    private static void assertNullOrEmpty(Graph graph)
+    {
+        if ( graph == null ) return ; 
+        assertTrue(graph.isEmpty()) ;
+    }
     
     @Test public void get_01()
     {
-        DatasetGraph dsg = getEmptyDatasetGraph() ;
-        DatasetGraphUpdater updater = getDatasetUpdater(dsg) ;
+
+        DatasetGraphAccessor updater = getDatasetUpdater() ;
         Graph graph = updater.httpGet() ;
-        assertNotNull(graph) ;
-        assertTrue(graph.isEmpty()) ;
-        graph = updater.httpGet(n1) ;
-        
-        // Always gets, even if not there
-        //assertNull(graph) ;
+        assertNullOrEmpty(graph) ;
+        Graph graph2 = updater.httpGet(n1) ;
     }
     
     @Test public void get_02()
     {
-        DatasetGraph dsg = getEmptyDatasetGraph() ;
-        DatasetGraphUpdater updater = getDatasetUpdater(dsg) ;
+        DatasetGraphAccessor updater = getDatasetUpdater() ;
         Graph graph = updater.httpGet(n1) ;
-        assertNotNull(graph) ;
-        assertTrue(graph.isEmpty()) ;
+        assertNullOrEmpty(graph) ;
     }
     
     @Test public void put_01()
     {
-        DatasetGraph dsg = getEmptyDatasetGraph() ;
-        DatasetGraphUpdater updater = getDatasetUpdater(dsg) ;
+        DatasetGraphAccessor updater = getDatasetUpdater() ;
         updater.httpPut(graph1) ;
         
         Graph graph = updater.httpGet() ;
-        assertNotNull(graph) ;
+        assertNotNull("Graph is null", graph) ;
         assertTrue(graph.isIsomorphicWith(graph1)) ;
     }
 
     
     @Test public void put_02()
     {
-        DatasetGraph dsg = getEmptyDatasetGraph() ;
-        DatasetGraphUpdater updater = getDatasetUpdater(dsg) ;
+
+        DatasetGraphAccessor updater = getDatasetUpdater() ;
         updater.httpPut(n1, graph1) ;
         
         Graph graph = updater.httpGet() ;
-        assertNotNull(graph) ;
-        assertTrue(graph.isEmpty()) ;
+        assertNullOrEmpty(graph) ;
         
         graph = updater.httpGet(n1) ;
-        assertNotNull(graph) ;
+        assertNotNull("Graph is null", graph) ;
         assertTrue(graph.isIsomorphicWith(graph1)) ;
         
     }
 
     @Test public void post_01()
     {
-        DatasetGraph dsg = getEmptyDatasetGraph() ;
-        DatasetGraphUpdater updater = getDatasetUpdater(dsg) ;
+
+        DatasetGraphAccessor updater = getDatasetUpdater() ;
         
         updater.httpPost(graph1) ;
         updater.httpPost(graph2) ;
@@ -95,8 +91,8 @@ public abstract class BaseTestDatasetUpdater extends Assert
     
     @Test public void post_02()
     {
-        DatasetGraph dsg = getEmptyDatasetGraph() ;
-        DatasetGraphUpdater updater = getDatasetUpdater(dsg) ;
+
+        DatasetGraphAccessor updater = getDatasetUpdater() ;
         updater.httpPost(n1, graph1) ;
         updater.httpPost(n1, graph2) ;
         Graph graph = updater.httpGet(n1) ;
@@ -114,8 +110,8 @@ public abstract class BaseTestDatasetUpdater extends Assert
     // Default graph
     @Test public void delete_01()
     {
-        DatasetGraph dsg = getEmptyDatasetGraph() ;
-        DatasetGraphUpdater updater = getDatasetUpdater(dsg) ;
+
+        DatasetGraphAccessor updater = getDatasetUpdater() ;
         updater.httpDelete() ;
         Graph graph = updater.httpGet() ;
         assertTrue(graph.isEmpty()) ;
@@ -132,11 +128,11 @@ public abstract class BaseTestDatasetUpdater extends Assert
     // Named graph, no side effects.
     @Test public void delete_02() 
     {
-        DatasetGraph dsg = getEmptyDatasetGraph() ;
-        DatasetGraphUpdater updater = getDatasetUpdater(dsg) ;
+
+        DatasetGraphAccessor updater = getDatasetUpdater() ;
         updater.httpDelete(n1) ;
         Graph graph = updater.httpGet(n1) ;
-        assertTrue(graph.isEmpty()) ;
+        assertNullOrEmpty(graph) ;
 
         updater.httpPut(graph2) ;
         updater.httpPut(n1, graph1) ;
@@ -151,7 +147,7 @@ public abstract class BaseTestDatasetUpdater extends Assert
         
         updater.httpDelete(n1) ;
         graph = updater.httpGet(n1) ;
-        assertTrue(graph.isEmpty()) ;
+        assertNullOrEmpty(graph) ;
         graph = updater.httpGet() ;
         assertFalse(graph.isEmpty()) ;
     }

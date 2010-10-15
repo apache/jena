@@ -8,13 +8,17 @@ package org.openjena.fuseki;
 
 import org.junit.runner.RunWith ;
 import org.junit.runners.Suite ;
-import org.openjena.fuseki.http.TestDatasetUpdaterMem ;
+import org.openjena.fuseki.http.TestDatasetAccessorHTTP ;
+import org.openjena.fuseki.http.TestDatasetAccessorMem ;
+import org.openjena.fuseki.http.TestDatasetAccessorTDB ;
 
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
     TestContentNegotiation.class
-    , TestDatasetUpdaterMem.class
+    , TestDatasetAccessorMem.class
+    , TestDatasetAccessorTDB.class
+    , TestDatasetAccessorHTTP.class
     , TestDatasetHTTP.class
     , TestProtocol.class
     , TestUpdate.class

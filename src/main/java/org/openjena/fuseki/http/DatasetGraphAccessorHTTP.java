@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 Talis Information Ltd.
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -55,7 +55,7 @@ import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
 
-public class DatasetGraphUpdaterHTTP implements DatasetGraphUpdater
+public class DatasetGraphAccessorHTTP implements DatasetGraphAccessor
 {
     private final String remote ;
     // Library
@@ -63,7 +63,7 @@ public class DatasetGraphUpdaterHTTP implements DatasetGraphUpdater
     static final String paramDefault = "default" ; 
 
     /** Create a DatasetUpdater for the remote URL */
-    public DatasetGraphUpdaterHTTP(String remote)
+    public DatasetGraphAccessorHTTP(String remote)
     {
         this.remote = remote ;
     }
@@ -306,7 +306,7 @@ public class DatasetGraphUpdaterHTTP implements DatasetGraphUpdater
 }
 
 /*
- * (c) Copyright 2010 Talis Information Ltd.
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

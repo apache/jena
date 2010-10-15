@@ -6,8 +6,6 @@
 
 package dev;
 
-
-
 public class DevFuseki
 {
     // SOH
@@ -18,10 +16,11 @@ public class DevFuseki
     
     // Java clients:
     //   DatasetAccessor: don't serialise to byte[] and then send. 
+    //   DatasetAccessor : check existence of endpoint. 
 
     // Code examples
     
-    // Replacve sendError with setStatus code + own plain text.
+    // Replace sendError with setStatus code + own plain text.
     
     // Build system
     
@@ -34,20 +33,16 @@ public class DevFuseki
     //   gzip and inflate.   
     //   LastModified headers. 
     
-    // DatasetAccessor : check existence of endpoint. 
     
     // Not release:
     //   File upload.
-    //   execute SPARQL non-dataset servlet. (To be finished: SPARQL_QueryGeneral)
     //   Static pages
     //   query by POST
     
     // Basic authentication
     //   --user --password
-    
-    // Check SPARQL_REST for access to dataset to ensure there's a lock even before target created.
-    // Clean up SPARQL Query results code.
 
+    // Clean up SPARQL Query results code.
 }
 
 /*

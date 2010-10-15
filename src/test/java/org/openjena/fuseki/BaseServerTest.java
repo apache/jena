@@ -24,11 +24,11 @@ public class BaseServerTest extends BaseTest
     // Abstraction that runs one server.
     // Inherit from this class to add starting/stopping a server.  
     
-    protected static final int port             = 3535 ;
-    protected static final String datasetPath   = "/dataset" ;
-    protected static final String serviceUpdate = "http://localhost:"+port+datasetPath+"/update" ; 
-    protected static final String serviceQuery  = "http://localhost:"+port+datasetPath+"/query" ; 
-    protected static final String serviceREST   = "http://localhost:"+port+datasetPath+"/data" ;
+    public static final int port             = 3535 ;
+    public static final String datasetPath   = "/dataset" ;
+    public static final String serviceUpdate = "http://localhost:"+port+datasetPath+"/update" ; 
+    public static final String serviceQuery  = "http://localhost:"+port+datasetPath+"/query" ; 
+    public static final String serviceREST   = "http://localhost:"+port+datasetPath+"/data" ;
     
     protected static final String gn1       = "http://graph/1" ;
     protected static final String gn2       = "http://graph/2" ;
@@ -41,6 +41,10 @@ public class BaseServerTest extends BaseTest
     
     private static int referenceCount = 0 ;
     private static SPARQLServer server = null ; 
+    
+    // If not inheriting from this class, call:
+    //@BeforeClass public static void beforeClass() { BaseServerTest.setupServer() ; }
+    //@AfterClass public static void afterClass() { BaseServerTest.clearupServer() ; }
     
     @BeforeClass static public void setupServer()
     { 
@@ -74,7 +78,7 @@ public class BaseServerTest extends BaseTest
         Log.logLevel("org.eclipse.jetty", org.apache.log4j.Level.INFO, java.util.logging.Level.INFO) ;
     }
     
-    protected static void serverReset()
+    public static void serverReset()
     {
         UpdateRemote.executeClear(serviceUpdate) ;
     }
