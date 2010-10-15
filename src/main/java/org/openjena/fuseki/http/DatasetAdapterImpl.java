@@ -14,11 +14,11 @@ import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
 
 /** Adapter between Dataset/Model level and DatasetGraph/Graph level */ 
-public class DS_UpdaterAdapter implements DatasetAccessor
+public class DatasetAdapterImpl implements DatasetAccessor
 {
     private final DatasetGraphUpdater updater ;
 
-    public DS_UpdaterAdapter(DatasetGraphUpdater updater) { this.updater = updater ; }
+    public DatasetAdapterImpl(DatasetGraphUpdater updater) { this.updater = updater ; }
     
     /** Get the default model of a Dataset */
     @Override

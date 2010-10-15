@@ -6,7 +6,7 @@
 
 package org.openjena.fuseki;
 
-import org.openjena.fuseki.http.DS_UpdaterAdapter ;
+import org.openjena.fuseki.http.DatasetAdapterImpl ;
 import org.openjena.fuseki.http.DatasetGraphUpdater ;
 import org.openjena.fuseki.http.DatasetGraphUpdaterBasic ;
 import org.openjena.fuseki.http.DatasetGraphUpdaterHTTP ;
@@ -38,7 +38,7 @@ public class DatasetUpdaterFactory
     
     private static DatasetAccessor adapt(DatasetGraphUpdater dgu)
     {
-        return new DS_UpdaterAdapter(dgu) ;
+        return new DatasetAdapterImpl(dgu) ;
     }
     
 }

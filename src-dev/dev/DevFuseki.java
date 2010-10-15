@@ -10,11 +10,11 @@ package dev;
 
 public class DevFuseki
 {
-    
     // SOH
     //   Environment variable for target (s-set but needs to shell built-in)
     //   defaults
     //   --service naming seems inconsistent.
+    // Testing project?
     
     // Java clients:
     //   DatasetAccessor: don't serialise to byte[] and then send. 

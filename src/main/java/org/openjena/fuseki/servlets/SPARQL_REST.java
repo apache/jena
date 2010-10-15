@@ -349,7 +349,7 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
     protected static void validate(HttpServletRequest request)
     {
         @SuppressWarnings("unchecked")
-        Enumeration<String> en = (Enumeration<String>)request.getParameterNames() ;
+        Enumeration<String> en = request.getParameterNames() ;
         for ( ; en.hasMoreElements() ; )
         {
             String h = en.nextElement() ;

@@ -8,11 +8,12 @@ package org.openjena.fuseki;
 
 import com.hp.hpl.jena.rdf.model.Model ;
 
-// Accessor to a datset a a collection of graps.
+/** Accessor to a datset a collection of graphs. */
 public interface DatasetAccessor
 {
     /** Get the default model of a Dataset */
     public Model getModel() ; 
+    
     /** Get a named model of a Dataset */
     public Model getModel(String graphUri) ;
 
@@ -24,11 +25,13 @@ public interface DatasetAccessor
     
     /** Put (replace) the default model of a Dataset */
     public void putModel(Model data) ;
+    
     /** Put (create/replace) a named model of a Dataset */
     public void putModel(String graphUri, Model data) ;
 
     /** Delete (which means clear) the default model of a Dataset */
     public void deleteDefault() ;
+    
     /** Delete a named model of a Dataset */
     public void deleteModel(String graphUri) ;
 

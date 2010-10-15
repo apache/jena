@@ -169,15 +169,15 @@ public class DatasetGraphUpdaterHTTP implements DatasetGraphUpdater
     
     static private HttpParams createHttpParams()
     {
-        HttpParams httpParams = new BasicHttpParams() ;
+        HttpParams httpParams$ = new BasicHttpParams() ;
         // See DefaultHttpClient.createHttpParams
-        HttpProtocolParams.setVersion(httpParams,               HttpVersion.HTTP_1_1);
-        HttpProtocolParams.setContentCharset(httpParams,        HTTP.DEFAULT_CONTENT_CHARSET);
-        HttpProtocolParams.setUseExpectContinue(httpParams,     true);
-        HttpConnectionParams.setTcpNoDelay(httpParams,          true);
-        HttpConnectionParams.setSocketBufferSize(httpParams,    32*1024);
-        HttpProtocolParams.setUserAgent(httpParams,             Fuseki.NAME+"/"+Fuseki.VERSION);
-        return httpParams;
+        HttpProtocolParams.setVersion(httpParams$,               HttpVersion.HTTP_1_1);
+        HttpProtocolParams.setContentCharset(httpParams$,        HTTP.DEFAULT_CONTENT_CHARSET);
+        HttpProtocolParams.setUseExpectContinue(httpParams$,     true);
+        HttpConnectionParams.setTcpNoDelay(httpParams$,          true);
+        HttpConnectionParams.setSocketBufferSize(httpParams$,    32*1024);
+        HttpProtocolParams.setUserAgent(httpParams$,             Fuseki.NAME+"/"+Fuseki.VERSION);
+        return httpParams$;
     }
     
     private static String getHeader(HttpResponse response, String headerName)

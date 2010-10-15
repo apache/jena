@@ -109,12 +109,12 @@ public abstract class SPARQL_ServletBase extends HttpServlet
         if ( verbose_debug )
         {
             @SuppressWarnings("unchecked")
-            Enumeration<String> en = (Enumeration<String>)request.getHeaderNames() ;
+            Enumeration<String> en = request.getHeaderNames() ;
             for ( ; en.hasMoreElements() ; )
             {
                 String h = en.nextElement() ;
                 @SuppressWarnings("unchecked")
-                Enumeration<String> vals = (Enumeration<String>)request.getHeaders(h) ;
+                Enumeration<String> vals = request.getHeaders(h) ;
                 if ( ! vals.hasMoreElements() )
                     serverlog.info(format("[%d]   ",id, h)) ;
                 else

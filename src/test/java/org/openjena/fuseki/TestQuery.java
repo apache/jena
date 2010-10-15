@@ -14,8 +14,6 @@ import com.hp.hpl.jena.query.QueryExecution ;
 import com.hp.hpl.jena.query.QueryExecutionFactory ;
 import com.hp.hpl.jena.query.ResultSet ;
 import com.hp.hpl.jena.query.ResultSetFormatter ;
-import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.sparql.resultset.ResultSetCompare ;
 import com.hp.hpl.jena.sparql.sse.Item ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
@@ -23,12 +21,6 @@ import com.hp.hpl.jena.sparql.sse.builders.BuilderResultSet ;
 
 public class TestQuery extends BaseServerTest 
 {
-    protected static final String gn1       = "http://graph/1" ;
-    protected static final Model graph1     = 
-        ModelFactory.createModelForGraph(SSE.parseGraph("(base <http://example/> (graph (<x> <p> 1)))")) ;
-    protected static final Model graph2     = 
-        ModelFactory.createModelForGraph(SSE.parseGraph("(base <http://example/> (graph (<x> <p> 2)))")) ;
-    
     protected static ResultSet rs1 = null ; 
     static {
         Item item = SSE.parseItem("(resultset (?s ?p ?o) (row (?s <x>)(?p <p>)(?o 1)))") ;
