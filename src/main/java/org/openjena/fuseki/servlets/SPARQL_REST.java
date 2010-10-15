@@ -285,8 +285,10 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
         
         Lang lang = FusekiLib.langFromContentType(ct.contentType) ;
         if ( lang == null )
+        {
             SPARQL_ServletBase.errorBadRequest("Unknown: "+contentTypeHeader) ;
-            //errorOccurred
+            return null ;
+        }
 
         if ( action.verbose )
         {

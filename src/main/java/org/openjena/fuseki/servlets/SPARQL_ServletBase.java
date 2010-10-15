@@ -35,7 +35,7 @@ public abstract class SPARQL_ServletBase extends HttpServlet
 
     // Flag for whether a request (no query string) is handled as a regault operation or
     // routed to special handler.
-    protected enum PlainRequestFlag { REGULAR, DIFFERENT } ;
+    protected enum PlainRequestFlag { REGULAR, DIFFERENT }
     
     protected SPARQL_ServletBase(PlainRequestFlag noQueryStringIsOK, boolean verbose_debug)
     {

@@ -13,4 +13,5 @@ zip -r target/"$X" \
     target/fuseki-*-server.jar \
     log4j.properties \
     fuseki-server \
+    tdb.ttl \
     s-*
