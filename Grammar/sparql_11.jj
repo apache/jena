@@ -301,11 +301,13 @@ void UpdateUnit() : {}
     Update()
     <EOF>
 }
-// Struct SPARQL 1.1 : mandator separator, optional terminator.
+// Strict SPARQL 1.1 : mandatory separator, optional terminator.
 void Update() : { }
 {
+   { startUpdateRequest() ; }
    Prologue()
    Update1() ( <SEMICOLON> (Update())?)?
+   { finishUpdateRequest() ; }
 }
 void Update1() : { Update up ; }
 {

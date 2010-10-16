@@ -9,6 +9,7 @@ package com.hp.hpl.jena.sparql.modify.request;
 import static com.hp.hpl.jena.sparql.modify.request.Target.Decl.* ;
 
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.sparql.util.FmtUtils ;
 
 public class Target
 {
@@ -41,10 +42,10 @@ public class Target
     @Override
     public String toString()
     {
-        if ( decl != null )
-            return decl.toString() ; 
-        else 
-            return graphIRI.toString() ;
+        if ( isOneGraph() )
+            return decl.toString()+" "+FmtUtils.stringForNode(graphIRI) ;
+        else    
+            return decl.toString() ;
     }
 }
 

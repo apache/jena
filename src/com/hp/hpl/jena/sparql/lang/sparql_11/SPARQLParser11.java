@@ -870,8 +870,9 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
     jj_consume_token(0);
   }
 
-// Struct SPARQL 1.1 : mandator separator, optional terminator.
+// Strict SPARQL 1.1 : mandatory separator, optional terminator.
   final public void Update() throws ParseException {
+     startUpdateRequest() ;
     Prologue();
     Update1();
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -901,6 +902,7 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
       jj_la1[39] = jj_gen;
       ;
     }
+     finishUpdateRequest() ;
   }
 
   final public void Update1() throws ParseException {

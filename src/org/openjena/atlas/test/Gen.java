@@ -80,7 +80,7 @@ public class Gen
         return x2 ;
     }
     
-    private static String strings(int[] keys)
+    public static String strings(int[] keys)
     {
         StringBuilder sb = new StringBuilder() ;
         boolean first = true ;

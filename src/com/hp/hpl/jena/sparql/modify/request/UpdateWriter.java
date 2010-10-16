@@ -114,6 +114,7 @@ public class UpdateWriter
             else if ( update.isDefault() )      { out.print("DEFAULT") ; }
             else if ( update.isOneGraph() )
             { 
+                out.print("GRAPH ") ;
                 String s = FmtUtils.stringForNode(update.getGraph(), sCxt) ;
                 out.print(s) ;
             }
