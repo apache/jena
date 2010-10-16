@@ -27,20 +27,21 @@ public class TestQuery extends BaseServerTest
         rs1 = BuilderResultSet.build(item) ;
     }
     
-    
+    // DRY - test protocol?
     @BeforeClass public static void beforeClass()
     {
-        serverReset() ;
-        // Load some data.
+        ServerTest.allocServer() ;
+        ServerTest.resetServer() ;
         DatasetAccessor du = DatasetAccessorFactory.createHTTP(serviceREST) ;
-        du.putModel(graph1) ;
-        du.putModel(gn1, graph2) ;
+        du.putModel(model1) ;
+        du.putModel(gn1, model2) ;
     }
     
     @AfterClass public static void afterClass()
     {
         DatasetAccessor du = DatasetAccessorFactory.createHTTP(serviceREST) ;
         du.deleteDefault() ;
+        ServerTest.freeServer() ;
     }
     
     @Test public void query_01()

@@ -13,7 +13,7 @@ import org.junit.runner.Description ;
 import org.junit.runner.JUnitCore ;
 import org.junit.runner.Result ;
 import org.junit.runner.notification.Failure ;
-import org.openjena.fuseki.TestDatasetHTTP ;
+import org.openjena.fuseki.http.TestDatasetAccessorHTTP ;
 
 public class SimpleTestRunner
 {
@@ -22,7 +22,7 @@ public class SimpleTestRunner
         //org.junit.runner.JUnitCore.
         JUnitCore core = new JUnitCore() ;
 
-        argv = new String[] {TestDatasetHTTP.class.getName()} ;
+        argv = new String[] {TestDatasetAccessorHTTP.class.getName()} ;
         
         List<Class<?>> classes= new ArrayList<Class<?>>();
         

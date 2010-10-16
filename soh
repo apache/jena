@@ -73,10 +73,14 @@ $print_http = false
 
 # Default for GET
 # At least allow anythign (and hope!)
-# $accept_rdf="#{$mtTurtle},#{$mtRDF};q=0.8,*/*"
-$accept_rdf="#{$mtRDF} , #{$mtTurtle};q=0.9 , */*;q=0.1"
+$accept_rdf="#{$mtRDF} , #{$mtTurtle};q=0.9"
 # For SPARQL query
-$accept_results="#{$mtSparqlResultsJ} , #{$mtSparqlResultsX};q=0.9 , #{$accept_rdf} , */*;q=0.1"
+$accept_results="#{$mtSparqlResultsJ} , #{$mtSparqlResultsX};q=0.9 , #{$accept_rdf}"
+
+# Accept any imn case of trouble.
+$accept_rdf="#{$accept_rdf} , */*;q=0.1"
+$accept_results="#{$accept_results} , */*;q=0.1" 
+
 # The media type usually forces the charset.
 $accept_charset=nil
 
@@ -387,11 +391,20 @@ end
 
 ## -------- SPARQL query
 
+## By GET
+
 def SPARQL_query(service, query, query_file, args2={})
-  # Temp: read file into string.
-  if ! query_file.nil?
+   if ! query_file.nil?
     query = open(query_file, 'rb'){|f| f.read}
   end
+  if query.length >= 2*1024 
+    SPARQL_query_POST(service, query, args2)
+  else
+    SPARQL_query_GET(service, query, args2)
+  end
+end
+
+def SPARQL_query_GET(service, query, args2)
   args = { "query" => query }
   args.merge!(args2)
   qs=args.collect { |k,v| "#{k}=#{uri_escape(v)}" }.join('&')
@@ -400,6 +413,30 @@ def SPARQL_query(service, query, query_file, args2={})
   headers.merge!($headers)
   headers[$hAccept]=$accept_results
   get_worker(action, headers)
+end
+
+## By POST
+
+def SPARQL_query_POST(service, query, args2)
+  # DRY - body/no body for each of request and response.
+  post_params={ "query" => query }
+  post_params.merge!(args2)
+  uri = URI.parse(service)
+  headers={}
+  headers.merge!($headers)
+  headers[$hAccept]=$accept_results
+  execute_post_form_body(uri, headers, post_params)
+end
+
+def execute_post_form_body(uri, headers, post_params)
+  request = Net::HTTP::Post.new(uri.request_uri)
+  qs=post_params.collect { |k,v| "#{k}=#{uri_escape(v)}" }.join('&')
+  headers[$hContentType] = $mtWWWForm
+  headers[$hContentLength] = qs.length.to_s
+  request.initialize_http_header(headers)
+  request.body = qs
+  print_http_request(uri, request)
+  response_print_body(uri, request)
 end
 
 # Usage: -v --help --file= --query=
@@ -491,26 +528,24 @@ def SPARQL_update_by_form(service, update, args2={})
   args.merge!(args2)
   headers={}
   headers.merge!($headers)
-  update="request="+update
+  # args? encode?
+  body="request="+update
   headers[$hContentType] = $mtWWWForm
-  headers[$hContentLength] = update.length.to_s
+  headers[$hContentLength] = body.length.to_s
   uri = URI.parse(service)
+  execute_post_form(uri, headers, body)
+end
+
+# DRY - query form.
+def execute_post_form(uri, headers, body)
   request = Net::HTTP::Post.new(uri.request_uri)
   request.initialize_http_header(headers)
-  request.body = update
+  request.body = body
   print_http_request(uri, request)
   response_no_body(uri, request)
 end
 
-def SPARQL_update(service, update,  update_file, args2={})
-  # Reads in the file :-(
-  if update.nil?
-  then
-    update = open(update_file, 'rb'){|f| f.read}
-  else
-    update = string_or_file(update)
-  end
-  update = string_or_file(update)
+def SPARQL_update(service, update, args2={})
   args = {}
   args.merge!(args2)
   headers={}
@@ -524,7 +559,7 @@ def SPARQL_update(service, update,  update_file, args2={})
   response_no_body(uri, request)
 end
 
-def cmd_sparql_update
+def cmd_sparql_update(by_raw_post=true)
   # Share with cmd_sparql_query
   options={}
   optparse = OptionParser.new do |opts|
@@ -554,7 +589,7 @@ def cmd_sparql_update
     warn e
     exit
   end
-
+  
   $verbose = options[:verbose]
   $print_http = $verbose
 
@@ -575,10 +610,23 @@ def cmd_sparql_update
       update = nil
     end
   end
-
+  
   print "SPARQL-Update #{service}\n" if $verbose
   args={}
-  SPARQL_update(service, update, update_file, args)
+
+  # Reads in the file :-(
+  if update.nil?
+  then
+    update = open(update_file, 'rb'){|f| f.read}
+  else
+    update = string_or_file(update)
+  end
+
+  if by_raw_post
+    SPARQL_update(service, update, args)
+  else
+    SPARQL_update_by_form(service, update, args)
+  end
   exit(0)
 end
 
@@ -587,15 +635,17 @@ end
 cmd = File.basename($0)
 
 case cmd
-when "s-http", "sparql_http", "soh"
+when "s-http", "sparql-http", "soh"
   cmd_soh
 when "s-get", "s-head", "s-put", "s-delete", "s-post"
   cmd2 = cmd.sub(/^s-/, '').upcase
   cmd_soh cmd2
-when "s-query", "sparql_query"
+when "s-query", "sparql-query"
   cmd_sparql_query
-when "s-update", "sparql_update"
-  cmd_sparql_update
+when "s-update", "sparql-update"
+  cmd_sparql_update true
+when "s-update-form", "sparql-update-form"
+  cmd_sparql_update false
 else 
   warn_exit "Unknown: "+$0, 1
 end

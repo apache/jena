@@ -213,9 +213,10 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
     }
 
     @Override
-    protected void requestNoQueryString(HttpServletRequest request, HttpServletResponse response)
+    protected boolean requestNoQueryString(HttpServletRequest request, HttpServletResponse response)
     {
         errorBadRequest("No query string") ;
+        return false ;
     }
 
 //    private TypedStream createTypedStream(MediaType contentType)

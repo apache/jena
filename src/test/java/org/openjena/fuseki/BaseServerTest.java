@@ -6,17 +6,12 @@
 
 package org.openjena.fuseki;
 
-import org.junit.AfterClass ;
-import org.junit.BeforeClass ;
 import org.openjena.atlas.junit.BaseTest ;
-import org.openjena.atlas.logging.Log ;
-import org.openjena.fuseki.Fuseki ;
-import org.openjena.fuseki.http.UpdateRemote ;
-import org.openjena.fuseki.server.SPARQLServer ;
 
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
-import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 
 public class BaseServerTest extends BaseTest
@@ -24,65 +19,24 @@ public class BaseServerTest extends BaseTest
     // Abstraction that runs one server.
     // Inherit from this class to add starting/stopping a server.  
     
-    public static final int port             = 3535 ;
     public static final String datasetPath   = "/dataset" ;
-    public static final String serviceUpdate = "http://localhost:"+port+datasetPath+"/update" ; 
-    public static final String serviceQuery  = "http://localhost:"+port+datasetPath+"/query" ; 
-    public static final String serviceREST   = "http://localhost:"+port+datasetPath+"/data" ;
+    public static final String serviceUpdate = "http://localhost:"+ServerTest.port+datasetPath+"/update" ; 
+    public static final String serviceQuery  = "http://localhost:"+ServerTest.port+datasetPath+"/query" ; 
+    public static final String serviceREST   = "http://localhost:"+ServerTest.port+datasetPath+"/data" ;
     
     protected static final String gn1       = "http://graph/1" ;
     protected static final String gn2       = "http://graph/2" ;
     protected static final String gn99      = "http://graph/99" ;
-    protected static final Model graph1 = 
-        ModelFactory.createModelForGraph(SSE.parseGraph("(base <http://example/> (graph (<x> <p> 1)))")) ;
-    protected static final Model graph2 = 
-        ModelFactory.createModelForGraph(SSE.parseGraph("(base <http://example/> (graph (<x> <p> 2)))")) ;
-
     
-    private static int referenceCount = 0 ;
-    private static SPARQLServer server = null ; 
+    protected static final Node n1          = Node.createURI("http://graph/1") ;
+    protected static final Node n2          = Node.createURI("http://graph/2") ;
+    protected static final Node n99         = Node.createURI("http://graph/99") ;
     
-    // If not inheriting from this class, call:
-    //@BeforeClass public static void beforeClass() { BaseServerTest.setupServer() ; }
-    //@AfterClass public static void afterClass() { BaseServerTest.clearupServer() ; }
+    protected static final Graph graph1     = SSE.parseGraph("(base <http://example/> (graph (<x> <p> 1)))") ;
+    protected static final Graph graph2     = SSE.parseGraph("(base <http://example/> (graph (<x> <p> 2)))") ;
     
-    @BeforeClass static public void setupServer()
-    { 
-        if ( referenceCount == 0 )
-            serverStart() ;
-        referenceCount ++ ;
-    }
-    
-    @AfterClass static public void clearupServer() 
-    { 
-        referenceCount -- ;
-        if ( referenceCount == 0 )
-            serverStop() ;
-    }
-    
-    protected static void serverStart()
-    {
-        Log.logLevel(SPARQLServer.log.getName(), org.apache.log4j.Level.WARN, java.util.logging.Level.WARNING) ;
-        Log.logLevel(Fuseki.serverlog.getName(), org.apache.log4j.Level.WARN, java.util.logging.Level.WARNING) ;
-        Log.logLevel("org.eclipse.jetty", org.apache.log4j.Level.WARN, java.util.logging.Level.WARNING) ;
-        server = new SPARQLServer(DatasetGraphFactory.createMem(), datasetPath, port) ;
-        server.start() ;
-        
-    }
-    
-    protected static void serverStop()
-    {
-        server.stop() ;
-        Log.logLevel(SPARQLServer.log.getName(), org.apache.log4j.Level.INFO, java.util.logging.Level.INFO) ;
-        Log.logLevel(Fuseki.serverlog.getName(), org.apache.log4j.Level.INFO, java.util.logging.Level.INFO) ;
-        Log.logLevel("org.eclipse.jetty", org.apache.log4j.Level.INFO, java.util.logging.Level.INFO) ;
-    }
-    
-    public static void serverReset()
-    {
-        UpdateRemote.executeClear(serviceUpdate) ;
-    }
-    
+    protected static final Model model1     = ModelFactory.createModelForGraph(graph1) ;
+    protected static final Model model2     = ModelFactory.createModelForGraph(graph2) ;
 }
 
 /*

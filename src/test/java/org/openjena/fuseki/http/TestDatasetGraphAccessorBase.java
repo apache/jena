@@ -7,22 +7,16 @@
 
 package org.openjena.fuseki.http;
 
-import org.junit.Assert ;
 import org.junit.Test ;
+import org.openjena.fuseki.BaseServerTest ;
 
 import com.hp.hpl.jena.graph.Graph ;
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
 
-public abstract class BaseTestDatasetAccessor extends Assert
+public abstract class TestDatasetGraphAccessorBase extends BaseServerTest
 {
     // return a DatasetGraphAccessor backed by an empty dataset
     protected abstract DatasetGraphAccessor getDatasetUpdater() ;
-    
-    protected static final Node n1 = SSE.parseNode("<http://example/n1>") ;
-    protected static final Graph graph1 = SSE.parseGraph("(base <http://example/> (graph (<x> <p> 1)))") ;
-    protected static final Graph graph2 = SSE.parseGraph("(base <http://example/> (graph (<x> <p> 2)))") ;
     
     private static void assertNullOrEmpty(Graph graph)
     {

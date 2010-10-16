@@ -75,15 +75,19 @@ public abstract class SPARQL_Query extends SPARQL_ServletBase
     }
 
     @Override
-    protected void requestNoQueryString(HttpServletRequest request, HttpServletResponse response)
+    protected boolean requestNoQueryString(HttpServletRequest request, HttpServletResponse response)
     {
-        if ( ! "GET".equals(request.getMethod().toUpperCase()) )
+        if ( HttpNames.METHOD_POST.equals(request.getMethod().toUpperCase()) )
+            return true ;
+        
+        if ( ! HttpNames.METHOD_GET.equals(request.getMethod().toUpperCase()) )
         {
-            errorNotImplemented("Non GET request") ;
-            return ;
+            errorNotImplemented("Not a GET or POST request") ;
+            return false ;
         }
         log.warn("Service Description / SPARQL Query") ;
         errorNotFound("Service Description") ;
+        return false ;
     }
 
     // (1) Param to constructor.
@@ -222,14 +226,14 @@ public abstract class SPARQL_Query extends SPARQL_ServletBase
         if ( query.isDescribeType() )
         {
             Model model = qexec.execDescribe() ;
-            serverlog.info("[%d] OK/describe: "+queryStringLog) ;
+            serverlog.info(format("[%d] OK/describe",action.id)) ;
             return new SPARQLResult(model) ;
         }
 
         if ( query.isAskType() )
         {
             boolean b = qexec.execAsk() ;
-            serverlog.info("[%d] OK/ask: "+queryStringLog) ;
+            serverlog.info(format("[%d] OK/ask",action.id)) ;
             return new SPARQLResult(b) ;
         }
 

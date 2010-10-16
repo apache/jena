@@ -17,17 +17,19 @@ public class TestProtocol extends BaseServerTest
 {
     @BeforeClass public static void beforeClass()
     {
-        serverReset() ;
+        ServerTest.allocServer() ;
+        ServerTest.resetServer() ;
         // Load some data.
         DatasetAccessor du = DatasetAccessorFactory.createHTTP(serviceREST) ;
-        du.putModel(graph1) ;
-        du.putModel(gn1, graph2) ;
+        du.putModel(model1) ;
+        du.putModel(gn1, model2) ;
     }
     
     @AfterClass public static void afterClass()
     {
         DatasetAccessor du = DatasetAccessorFactory.createHTTP(serviceREST) ;
         du.deleteDefault() ;
+        ServerTest.freeServer() ;
     }
     
     static String query(String base, String queryString)

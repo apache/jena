@@ -4,7 +4,7 @@
 mvn clean package
 #D="$(date +'%Y-%m-%dT%H:%M:%S')"
 
-D="$(date +'%Y%m%d%H%M%S')"
+D="$(date +'%Y%m%d.%H%M%S')"
 
 X=fuseki-$D-dev.zip
 

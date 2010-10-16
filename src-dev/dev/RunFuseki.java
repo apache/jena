@@ -13,7 +13,7 @@ public class RunFuseki
     public static void main(String[] args)
     {
         FusekiCmd.main(
-                    //"-v", 
+                    "-v", 
                     "--mem", "--port=3030", "/dataset") ;
     }
 

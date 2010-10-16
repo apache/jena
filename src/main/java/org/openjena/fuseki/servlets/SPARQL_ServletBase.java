@@ -59,8 +59,9 @@ public abstract class SPARQL_ServletBase extends HttpServlet
         try {
             if ( request.getQueryString() == null && noQueryString == PlainRequestFlag.DIFFERENT )
             {
-                requestNoQueryString(request, response) ;
-                return ;
+                boolean requestContinue = requestNoQueryString(request, response) ;
+                if ( ! requestContinue ) 
+                    return ;
             }
 
             uri = mapRequestToDataset(uri) ;
@@ -170,7 +171,12 @@ public abstract class SPARQL_ServletBase extends HttpServlet
 
     protected abstract void perform(long id, DatasetGraph dsg, HttpServletRequest request, HttpServletResponse response) ;
 
-    protected abstract void requestNoQueryString(HttpServletRequest request, HttpServletResponse response) ;
+    /** Request had no query string.
+     *  Either: (1) handle the request in this opeation - throw an error or send response
+     *  and return "false" (don't continue) 
+     *  Or: (2) return true for continue.
+     */
+    protected abstract boolean requestNoQueryString(HttpServletRequest request, HttpServletResponse response) ;
     
     protected static String wholeRequestURL(HttpServletRequest request)
     {

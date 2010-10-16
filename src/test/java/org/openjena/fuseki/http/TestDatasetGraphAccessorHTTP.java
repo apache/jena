@@ -6,19 +6,25 @@
 
 package org.openjena.fuseki.http;
 
-import org.openjena.fuseki.DatasetAccessorFactory ;
-import org.openjena.fuseki.http.DatasetGraphAccessor ;
+import org.junit.AfterClass ;
+import org.junit.Before ;
+import org.junit.BeforeClass ;
+import org.openjena.fuseki.BaseServerTest ;
+import org.openjena.fuseki.ServerTest ;
 
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
-
-public class TestDatasetAccessorMem extends BaseTestDatasetAccessor
+public class TestDatasetGraphAccessorHTTP extends TestDatasetGraphAccessorBase
 {
+    
+    
+    @BeforeClass public static void beforeClass() { ServerTest.allocServer() ; }
+    @AfterClass public static void afterClass() { ServerTest.freeServer() ; }
+    @Before public void before() { ServerTest.resetServer() ; }
+
+    
     @Override
     protected DatasetGraphAccessor getDatasetUpdater()
     {
-        DatasetGraph dsg = DatasetGraphFactory.createMem() ;
-        return DatasetAccessorFactory.make(dsg) ;
+        return new DatasetGraphAccessorHTTP(BaseServerTest.serviceREST) ;
     }
 }
 

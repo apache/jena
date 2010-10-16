@@ -67,11 +67,12 @@ public class SPARQL_Update extends SPARQL_ServletBase
     }
 
     @Override
-    protected void requestNoQueryString(HttpServletRequest request, HttpServletResponse response)
+    protected boolean requestNoQueryString(HttpServletRequest request, HttpServletResponse response)
     {
+        if ( HttpNames.METHOD_POST.equals(request.getMethod().toUpperCase()) )
+            return true ;
         errorOccurred("Bad!") ;
-        log.warn("Service Description / SPARQL Update") ;
-        errorNotFound("Service Description") ;
+        return false ;
     }
 
     @Override
@@ -112,11 +113,11 @@ public class SPARQL_Update extends SPARQL_ServletBase
         
         if ( WebContent.contentTypeForm.equals(incoming) )
         {
-            @SuppressWarnings("unchecked")
-            Enumeration<String> en = request.getParameterNames() ;
-            String requestStr = request.getHeader(paramRequest) ;
+            String requestStr = request.getParameter(paramRequest) ;
             if ( requestStr == null )
                 errorBadRequest("SPARQL Update: No request= in HTML form") ;
+            @SuppressWarnings("unchecked")
+            Enumeration<String> en = request.getParameterNames() ;
             for ( ; en.hasMoreElements() ; )
             {
                 String name = en.nextElement() ;

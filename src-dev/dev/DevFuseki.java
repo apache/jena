@@ -9,6 +9,8 @@ package dev;
 public class DevFuseki
 {
     // SOH
+    //  Refactor into body/no_body send // body/no_body receive
+    
     //   Environment variable for target (s-set but needs to shell built-in)
     //   defaults
     //   --service naming seems inconsistent.

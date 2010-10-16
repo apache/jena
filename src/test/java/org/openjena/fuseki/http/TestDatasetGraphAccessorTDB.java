@@ -11,7 +11,7 @@ import org.openjena.fuseki.DatasetAccessorFactory ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.tdb.TDBFactory ;
 
-public class TestDatasetAccessorTDB extends BaseTestDatasetAccessor
+public class TestDatasetGraphAccessorTDB extends TestDatasetGraphAccessorBase
 {
     @Override
     protected DatasetGraphAccessor getDatasetUpdater()
