@@ -11,7 +11,7 @@ public class DevFuseki
     // SOH
     //  Refactor into body/no_body send // body/no_body receive
     
-    //   Environment variable for target (s-set but needs to shell built-in)
+    // Environment variable for target (s-set but needs to shell built-in)
     //   defaults
     //   --service naming seems inconsistent.
     // Testing project?
@@ -21,9 +21,7 @@ public class DevFuseki
     //   DatasetAccessor : check existence of endpoint. 
 
     // Code examples
-    
-    // Replace sendError with setStatus code + own plain text.
-    
+
     // Build system
     
     // Tests
@@ -34,12 +32,9 @@ public class DevFuseki
     // HTTP:
     //   gzip and inflate.   
     //   LastModified headers. 
-    
-    
-    // Not release:
-    //   File upload.
-    //   Static pages
-    //   query by POST
+
+    // File upload.
+    // Static pages
     
     // Basic authentication
     //   --user --password
