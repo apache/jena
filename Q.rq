@@ -1,9 +1,1 @@
-PREFIX : <http://example/>
-PREFIX apf: <http://jena.hpl.hp.com/ARQ/property#>
-
-SELECT *
-{
-   <http://example/ns#foo> apf:splitIRI (?ns ?ln) .
-   ?s ?p ?o
-}
-
+select (count(*) AS ?count) { graph ?g { ?s ?p ?o } }
