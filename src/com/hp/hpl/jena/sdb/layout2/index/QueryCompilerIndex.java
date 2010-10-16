@@ -1,18 +1,18 @@
 /*
- * (c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
 package com.hp.hpl.jena.sdb.layout2.index;
 
-import com.hp.hpl.jena.sdb.compiler.QuadBlockCompiler;
-import com.hp.hpl.jena.sdb.compiler.QueryCompilerMain;
-import com.hp.hpl.jena.sdb.core.SDBRequest;
-import com.hp.hpl.jena.sdb.layout2.QuadBlockCompiler2;
+import com.hp.hpl.jena.sdb.compiler.QuadBlockCompiler ;
+import com.hp.hpl.jena.sdb.core.SDBRequest ;
+import com.hp.hpl.jena.sdb.layout2.QuadBlockCompiler2 ;
+import com.hp.hpl.jena.sdb.layout2.QueryCompiler2 ;
 
 
-public class QueryCompilerIndex extends QueryCompilerMain 
+public class QueryCompilerIndex extends QueryCompiler2 
 {
     public QueryCompilerIndex(SDBRequest request)
     { 
@@ -25,7 +25,7 @@ public class QueryCompilerIndex extends QueryCompilerMain
 }
 
 /*
- * (c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

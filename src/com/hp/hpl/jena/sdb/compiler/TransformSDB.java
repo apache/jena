@@ -1,17 +1,21 @@
 /*
  * (c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
 package com.hp.hpl.jena.sdb.compiler;
 
-import static org.openjena.atlas.iterator.Iter.* ;
-import static  org.openjena.atlas.lib.SetUtils.intersection ;
+import static org.openjena.atlas.iterator.Iter.filter ;
+import static org.openjena.atlas.iterator.Iter.map ;
+import static org.openjena.atlas.iterator.Iter.toSet ;
+import static org.openjena.atlas.lib.SetUtils.intersection ;
 
 import java.util.List ;
 import java.util.Set ;
 
+import org.openjena.atlas.iterator.Iter ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
@@ -24,35 +28,39 @@ import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode ;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlSelectBlock ;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlTable ;
 import com.hp.hpl.jena.sdb.layout2.TableDescQuads ;
-import com.hp.hpl.jena.sdb.layout2.expr.RegexCompiler ;
 import com.hp.hpl.jena.sdb.shared.SDBInternalError ;
 import com.hp.hpl.jena.sdb.store.SQLBridge ;
 import com.hp.hpl.jena.sdb.store.SQLBridgeFactory ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.TransformCopy ;
-import com.hp.hpl.jena.sparql.algebra.op.* ;
+import com.hp.hpl.jena.sparql.algebra.op.OpBGP ;
+import com.hp.hpl.jena.sparql.algebra.op.OpDatasetNames ;
+import com.hp.hpl.jena.sparql.algebra.op.OpDistinct ;
+import com.hp.hpl.jena.sparql.algebra.op.OpFilter ;
+import com.hp.hpl.jena.sparql.algebra.op.OpJoin ;
+import com.hp.hpl.jena.sparql.algebra.op.OpLeftJoin ;
+import com.hp.hpl.jena.sparql.algebra.op.OpProject ;
+import com.hp.hpl.jena.sparql.algebra.op.OpQuadPattern ;
+import com.hp.hpl.jena.sparql.algebra.op.OpService ;
+import com.hp.hpl.jena.sparql.algebra.op.OpSlice ;
+import com.hp.hpl.jena.sparql.algebra.op.OpTable ;
 import com.hp.hpl.jena.sparql.core.Var ;
-import com.hp.hpl.jena.sparql.expr.Expr ;
-import com.hp.hpl.jena.sparql.expr.ExprList ;
-import  org.openjena.atlas.iterator.Iter ;
 
 public class TransformSDB extends TransformCopy
 {
     private static Logger log = LoggerFactory.getLogger(TransformSDB.class) ;
     private SDBRequest request ;
     private QuadBlockCompiler quadBlockCompiler ;
-    //private boolean doLeftJoin = true ;
     
     public TransformSDB(SDBRequest request, QuadBlockCompiler quadBlockCompiler) 
     {
         this.request = request ;
         this.quadBlockCompiler = quadBlockCompiler ;
-        //this.genTableAlias = request.generator(AliasesSql.SelectBlock) ;
     }
     
     @Override
     public Op transform(OpBGP opBGP)
-    { return opBGP ; } //Ignore - untransformed BGPs can occur :: throw new SDBInternalError("OpBGP should not appear") ; }
+    { return opBGP ; }
 
     @Override
     public Op transform(OpQuadPattern quadPattern)
@@ -76,7 +84,7 @@ public class TransformSDB extends TransformCopy
         SqlNode sqlRight = ((OpSQL)right).getSqlNode() ;
         
         // This is wrong.  If right is more than single triple pattern,
-        // the generated SQL wil attemp to use NodeTable lookups from the
+        // the generated SQL wil attempt to use NodeTable lookups from the
         // LHS but they are out of scope.
         
         return new OpSQL(SqlBuilder.innerJoin(request, sqlLeft, sqlRight), opJoin, request) ;
@@ -141,9 +149,9 @@ public class TransformSDB extends TransformCopy
     @Override
     public Op transform(OpFilter opFilter, Op op)
     {
-//        SDBConstraint constraint = transformFilter(opFilter) ;
-//        if ( constraint != null )
-//            log.info("recognized: "+opFilter.getExprs()) ;
+        // Can't really do much here because we are working in node id space, and the lexicial forms etc
+        // of nodes aren't available until the bridge is added.
+        // See QueryCompilerMain.
         return super.transform(opFilter, op) ;
     }
     
@@ -175,10 +183,8 @@ public class TransformSDB extends TransformCopy
     { 
         if ( ! SDB_QC.isOpSQL(subOp) )
             return super.transform(opDistinct, subOp) ;
-        //request.getStore().supportsDistinct() ; 
-        
         // Derby does not support DISTINCT on CLOBS
-        if ( ! request.DistinctOnCLOB )
+        if ( ! request.DistinctTranslation )
             return super.transform(opDistinct, subOp) ;
         
         OpSQL opSubSQL = (OpSQL)subOp ;
@@ -227,28 +233,29 @@ public class TransformSDB extends TransformCopy
         return opSQL ;
     }
     
-    @Override
-    public Op transform(OpSlice opSlice, Op subOp)
-    {
-        if ( ! request.LimitOffsetTranslation )
-            return super.transform(opSlice, subOp) ;
-
-        // Not a slice of SQL
-        if ( ! SDB_QC.isOpSQL(subOp) )
-            return super.transform(opSlice, subOp) ;
-        
-        // Two cases are currently handled:
-        // (slice (project (sql expression)))
-        // (slice (sql expression))
-
-        if ( isProject(opSlice.getSubOp()) )
-            // This should not happen because the pre-transform done in QueryEngineMain
-            // rewrites the case into the equivalent (project (slice ...))
-            return transformSliceProject(opSlice, (OpSQL)subOp, ((OpSQL)subOp).getSqlNode()) ;
-
-        // (slice (sql expression))
-        return transformSlice(opSlice, ((OpSQL)subOp).getSqlNode()) ;
-    }
+    // Now done in QueryCompilerMain at a later stage.
+//    @Override
+//    public Op transform(OpSlice opSlice, Op subOp)
+//    {
+//        if ( ! request.LimitOffsetTranslation )
+//            return super.transform(opSlice, subOp) ;
+//
+//        // Not a slice of SQL
+//        if ( ! SDB_QC.isOpSQL(subOp) )
+//            return super.transform(opSlice, subOp) ;
+//        
+//        // Two cases are currently handled:
+//        // (slice (project (sql expression)))
+//        // (slice (sql expression))
+//
+//        if ( isProject(opSlice.getSubOp()) )
+//            // This should not happen because the pre-transform done in QueryEngineMain
+//            // rewrites the case into the equivalent (project (slice ...))
+//            return transformSliceProject(opSlice, (OpSQL)subOp, ((OpSQL)subOp).getSqlNode()) ;
+//
+//        // (slice (sql expression))
+//        return transformSlice(opSlice, ((OpSQL)subOp).getSqlNode()) ;
+//    }
         
     private Op transformSlice(OpSlice opSlice, SqlNode sqlSubOp)
     {
@@ -266,32 +273,32 @@ public class TransformSDB extends TransformCopy
         return x ;
     }
 
-    // ----
-    
-    private boolean translateConstraints = true ;
-    
-    private SDBConstraint transformFilter(OpFilter opFilter)
-    {
-        if ( ! translateConstraints )
-            return null ;
-        
-        ExprList exprs = opFilter.getExprs() ;
-        List<Expr> x = exprs.getList() ;
-        for ( Expr  expr : x )
-        {
-            ConditionCompiler cc = new RegexCompiler() ;
-            SDBConstraint psc = cc.recognize(expr) ;
-            if ( psc != null )
-                return psc ; 
-        }
-        return null ;
-    }
-
-    private Set<Var> getVarsInFilter(Expr expr)
-    {
-        Set<Var> vars = expr.getVarsMentioned() ;
-        return vars ;
-    }
+//    // ----
+//    
+//    private boolean translateConstraints = true ;
+//    
+//    private SDBConstraint transformFilter(OpFilter opFilter)
+//    {
+//        if ( ! translateConstraints )
+//            return null ;
+//        
+//        ExprList exprs = opFilter.getExprs() ;
+//        List<Expr> x = exprs.getList() ;
+//        for ( Expr  expr : x )
+//        {
+//            ConditionCompiler cc = new RegexCompiler() ;
+//            SDBConstraint psc = cc.recognize(expr) ;
+//            if ( psc != null )
+//                return psc ; 
+//        }
+//        return null ;
+//    }
+//
+//    private Set<Var> getVarsInFilter(Expr expr)
+//    {
+//        Set<Var> vars = expr.getVarsMentioned() ;
+//        return vars ;
+//    }
     
     @Override
     public Op transform(OpDatasetNames opDatasetNames)
@@ -314,35 +321,12 @@ public class TransformSDB extends TransformCopy
         // Will have the value left join added later. 
         return new OpSQL(sqlNodeQ, opDatasetNames, request) ;
     }
-    
-    // ---- Misc
-    // Will migrate to ARQ.OpLib
-    
-    public static Op sub(Op1 op) { return op==null ? null : op.getSubOp() ; }
-    
-    public static boolean isProject(Op op) { return op instanceof OpProject ; } 
-    public static OpProject asProject(Op op)
-    {  return isProject(op) ? (OpProject)op : null ; }
-
-    public static boolean isDistinct(Op op) { return op instanceof OpDistinct ; } 
-    public static OpDistinct asDistinct(Op op)
-    {  return isDistinct(op) ? (OpDistinct)op : null ; }
-
-    public static boolean isReduced(Op op) { return op instanceof OpReduced ; } 
-    public static OpReduced asReduced(Op op)
-    {  return isReduced(op) ? (OpReduced)op : null ; }
-
-    public static boolean isOrder(Op op) { return op instanceof OpOrder ; } 
-    public static OpOrder asOrder(Op op)
-    {  return isOrder(op) ? (OpOrder)op : null ; }
-
-    public static boolean isSlice(Op op) { return op instanceof OpSlice ; } 
-    public static OpSlice asSlice(Op op)
-    {  return isSlice(op) ? (OpSlice)op : null ; }
 }
 
 /*
  * (c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
+ * 
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

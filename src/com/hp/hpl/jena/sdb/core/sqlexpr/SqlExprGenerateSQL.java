@@ -1,12 +1,14 @@
 /*
  * (c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
 package com.hp.hpl.jena.sdb.core.sqlexpr;
 
-import org.openjena.atlas.io.IndentedWriter;
+import org.openjena.atlas.io.IndentedWriter ;
+
 import com.hp.hpl.jena.sdb.sql.SQLUtils;
 import com.hp.hpl.jena.sdb.util.RegexUtils;
 
@@ -86,6 +88,24 @@ OR  left    logical disjunction
         printExpr(expr.getRight()) ;
     }
 
+    public void visit(S_Like pattern)
+    {
+        if ( pattern.isCaseInsensitive() )
+        {
+            out.print("lower(") ;
+            pattern.getExpr().visit(this) ;
+            out.print(") LIKE ") ;
+            out.print(SQLUtils.quoteStr(pattern.getPattern().toLowerCase())) ;
+        }
+        else
+        {
+            pattern.getExpr().visit(this) ;
+            out.print(" LIKE ") ;
+            out.print(SQLUtils.quoteStr(pattern.getPattern())) ;
+        }
+        return ;
+    }
+    
     public String RegexOperator = "REGEXP" ; 
     
     public void visit(S_Regex regex)
@@ -105,7 +125,7 @@ OR  left    logical disjunction
         
         // MySQL :: LIKE // LIKE BINARY
         out.print(" ") ; out.print(RegexOperator) ; out.print(" ") ;
-        if ( regex.flags != null && ! regex.flags.equals("i") )
+        if ( regex.getFlags() != null && ! regex.getFlags().equals("i") )
             out.print("BINARY ") ;
         out.print(SQLUtils.quoteStr(regex.getPattern())) ;
     }
@@ -125,6 +145,7 @@ OR  left    logical disjunction
 
 /*
  * (c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

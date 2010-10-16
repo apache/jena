@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -35,7 +36,7 @@ public class SDBRequest extends StoreHolder
     
     public boolean LeftJoinTranslation = true ;     // Does the DB support general join expressions? 
     public boolean LimitOffsetTranslation = true ;  // Does the DB grok the Limit/Offset SQL?
-    public boolean DistinctOnCLOB = true ;          // Is ths DB able to do DISTINCT on CLOBs? 
+    public boolean DistinctTranslation = true ;     // Some DBs can't do DISTINCt on CLOBS.
     
     private Context context ;
 
@@ -87,6 +88,7 @@ public class SDBRequest extends StoreHolder
 
 /*
  * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

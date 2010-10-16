@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -53,7 +54,7 @@ public class SDBCompile
         }
         
         if ( StoreUtils.isDerby(store) )
-            request.DistinctOnCLOB = false ;
+            request.DistinctTranslation = false ;
         
         if ( StoreUtils.isPostgreSQL(store) )
             request.LimitOffsetTranslation = true ;
@@ -62,13 +63,13 @@ public class SDBCompile
             request.LimitOffsetTranslation = true ;
         
         if ( StoreUtils.isSQLServer(store) )
-            request.DistinctOnCLOB = false ;
+            request.DistinctTranslation = false ;
         
         if ( StoreUtils.isOracle(store) )
-            request.DistinctOnCLOB = false ;
+            request.DistinctTranslation = false ;
         
         if ( StoreUtils.isDB2(store) )
-            request.DistinctOnCLOB = false ;
+            request.DistinctTranslation = false ;
         
         QueryCompiler queryCompiler = store.getQueryCompilerFactory().createQueryCompiler(request) ;
         Op op2 = queryCompiler.compile(op) ;
@@ -80,6 +81,7 @@ public class SDBCompile
 
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

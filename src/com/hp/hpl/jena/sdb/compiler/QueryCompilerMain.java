@@ -1,25 +1,39 @@
 /*
- * (c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2006, 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
 package com.hp.hpl.jena.sdb.compiler;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import static com.hp.hpl.jena.sdb.compiler.OpLibSDB.asProject ;
+import static com.hp.hpl.jena.sdb.compiler.OpLibSDB.sub ;
 
-import com.hp.hpl.jena.sparql.algebra.*;
-import com.hp.hpl.jena.sparql.algebra.op.OpExt;
-import com.hp.hpl.jena.sparql.algebra.op.OpModifier;
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sdb.SDB;
-import com.hp.hpl.jena.sdb.compiler.rewrite.QuadBlockRewriteCompiler;
-import com.hp.hpl.jena.sdb.core.SDBRequest;
-import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
-import com.hp.hpl.jena.sdb.store.SQLBridge;
-import com.hp.hpl.jena.sdb.store.SQLBridgeFactory;
+import java.util.ArrayList ;
+import java.util.Collection ;
+import java.util.List ;
+
+import com.hp.hpl.jena.sdb.SDB ;
+import com.hp.hpl.jena.sdb.compiler.rewrite.QuadBlockRewriteCompiler ;
+import com.hp.hpl.jena.sdb.core.SDBRequest ;
+import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode ;
+import com.hp.hpl.jena.sdb.core.sqlnode.SqlSelectBlock ;
+import com.hp.hpl.jena.sdb.store.SQLBridge ;
+import com.hp.hpl.jena.sdb.store.SQLBridgeFactory ;
+import com.hp.hpl.jena.sparql.algebra.Op ;
+import com.hp.hpl.jena.sparql.algebra.OpVars ;
+import com.hp.hpl.jena.sparql.algebra.OpVisitorBase ;
+import com.hp.hpl.jena.sparql.algebra.OpWalker ;
+import com.hp.hpl.jena.sparql.algebra.Transform ;
+import com.hp.hpl.jena.sparql.algebra.TransformCopy ;
+import com.hp.hpl.jena.sparql.algebra.Transformer ;
+import com.hp.hpl.jena.sparql.algebra.op.OpDistinct ;
+import com.hp.hpl.jena.sparql.algebra.op.OpExt ;
+import com.hp.hpl.jena.sparql.algebra.op.OpModifier ;
+import com.hp.hpl.jena.sparql.algebra.op.OpProject ;
+import com.hp.hpl.jena.sparql.algebra.op.OpSlice ;
+import com.hp.hpl.jena.sparql.core.Var ;
 
 public abstract class QueryCompilerMain implements QueryCompiler 
 {
@@ -30,24 +44,18 @@ public abstract class QueryCompilerMain implements QueryCompiler
         this.request = request ;
     }
     
-    public Op compile(Op op)
+    public Op compile(final Op op)
     {
         QuadBlockCompiler quadCompiler = createQuadBlockCompiler() ;
         if ( request.getContext().isTrue(SDB.useQuadRewrite) )
             quadCompiler = new QuadBlockRewriteCompiler(request, quadCompiler) ;
         
-        // Pre-transform:
-        // (slice (project...)) ==> (project (slice ...))
-        // and only this (no intermediate nodes)
-        
-        if ( request.LimitOffsetTranslation )
-        {
-            Transform preTransform = new TransformSliceProject() ;
-            op = Transformer.transform(preTransform, op) ;
-        }
+        // XXX Turn off Limit/Offset processing - do later so as to enable filter processing.
+        boolean b = request.LimitOffsetTranslation ;
+        request.LimitOffsetTranslation = false ;
         
         Transform t = new TransformSDB(request, quadCompiler) ;
-        Op op2 = Transformer.transformSkipService(t, op) ;
+        Op op2 = Transformer.transform(t, op) ;
         
         // Modifiers: the structure is:
         //    slice
@@ -64,12 +72,31 @@ public abstract class QueryCompilerMain implements QueryCompiler
         boolean patternIsOneSQLStatement = SDB_QC.isOpSQL(patternOp) ;
             
         // Find all OpSQL nodes and put a bridge round them.
-        // Some will have been done, some won't (e.g. ORDER BY)
-        
         OpWalker.walk(op2, new SqlNodesFinisher(patternIsOneSQLStatement)) ;
-        return op2 ;
+
+        request.LimitOffsetTranslation = b ;
+        
+        // At this point, we have converted what we can into OpSQL.
+        // Some changes can still be made now w have the whole SQL expression.
+        
+        Op op3 = postProcessSQL(op2) ;
+        
+        return op3 ;
     }
 
+    protected abstract Op postProcessSQL(Op op) ;
+    
+    /*
+        // This rewrite can be done in all layouts but for layout2, it needs to be
+        // done after other chnages so QueryCompiler2 overrides this method
+        // and does things in the right order.
+        
+        // (slice (distinct ....))
+        op = rewriteDistinct(op, request) ;
+        op = rewriteLimitOffset(op, request) ;
+        return op ;
+     */
+    
     public abstract QuadBlockCompiler createQuadBlockCompiler() ;
     
     public ConditionCompiler getConditionCompiler()
@@ -77,7 +104,7 @@ public abstract class QueryCompilerMain implements QueryCompiler
         return null ;
     }
     
-    // Find variables that need to be returned. 
+    // Add the "bridge" that gets the lecical forms etc for the projected, or all, variables. 
     private class SqlNodesFinisher extends OpVisitorBase
     {
         private boolean justProjectVars ;
@@ -94,11 +121,7 @@ public abstract class QueryCompilerMain implements QueryCompiler
             }
             
             OpSQL opSQL = (OpSQL)op ;
-            if ( opSQL.getBridge() != null )
-                // Already done
-                return ;
 
-            // XYZ
             List<Var> projectVars = null ;
                         
             if ( justProjectVars && request.getQuery() != null )
@@ -112,18 +135,130 @@ public abstract class QueryCompilerMain implements QueryCompiler
             }
                     
             SqlNode sqlNode = opSQL.getSqlNode() ;
+            
             SQLBridgeFactory f = request.getStore().getSQLBridgeFactory() ;
+            
             SQLBridge bridge = f.create(request, sqlNode, projectVars) ;
             bridge.build();
             sqlNode = bridge.getSqlNode() ;
+            
             opSQL.setBridge(bridge) ;
             opSQL.resetSqlNode(sqlNode) ;
         }
     }
+    
+    
+    // -- Library of possible operations that can be applied to all layouts.
+    
+    protected static Op rewriteLimitOffset(Op op, SDBRequest request)
+    {
+        Transform t = new LimitOffsetOptimizer(request) ;
+        return Transformer.transform(t, op) ;
+    }
+
+    
+    private static class LimitOffsetOptimizer extends TransformCopy
+    {
+        private final SDBRequest request ;
+
+        public LimitOffsetOptimizer(SDBRequest request)
+        {
+            this.request = request ;
+        }
+        
+        // From TransformSDB
+        
+        @Override
+        public Op transform(OpSlice opSlice, Op subOp)
+        {
+            if ( ! request.LimitOffsetTranslation )
+                return super.transform(opSlice, subOp) ;
+            
+            // Two cases are currently handled:
+            // (slice (sql expression))
+            // (slice (project ... (sql expression)))
+            
+            boolean canHandle = false ;
+            
+            // Relies on the fact that isOpSQL(null) is false.
+            if (  SDB_QC.isOpSQL(subOp) )
+                canHandle = true ;
+            else if ( SDB_QC.isOpSQL(sub(asProject(subOp))) )
+            {
+                return transformSliceProject(opSlice, (OpProject)subOp) ;
+            }
+
+            // Simple slice
+            if ( ! SDB_QC.isOpSQL(subOp) )
+                return super.transform(opSlice, subOp) ;
+
+            return transformSlice(opSlice, ((OpSQL)subOp).getSqlNode()) ;
+        }
+
+        private Op transformSlice(OpSlice opSlice, SqlNode sqlSubOp)
+        {
+            // (slice X)
+            SqlNode n = SqlSelectBlock.slice(request, sqlSubOp, opSlice.getStart(), opSlice.getLength()) ;
+            Op x = new OpSQL(n, opSlice, request) ;
+            return x ;
+        }
+
+        public Op transformSliceProject(OpSlice opSlice, OpProject opProject)
+        {
+            // (slice (project X))
+            Op subOp = opProject.getSubOp() ;
+
+            if ( ! SDB_QC.isOpSQL(subOp) )
+                // Can't cope - just pass the slice to the general superclass. 
+                return super.transform(opSlice, opProject) ;
+
+            SqlNode sqlSubOp = ((OpSQL)subOp).getSqlNode() ;
+            List<Var> pv = opProject.getVars() ;
+            // Do as (slice X)
+            SqlNode n = SqlSelectBlock.slice(request, sqlSubOp, opSlice.getStart(), opSlice.getLength()) ;
+            // Put back project - as an OpProject to leave for the bridge.
+            Op x = new OpSQL(n, opProject, request) ;
+            return new OpProject(x, pv) ;
+        }
+        
+    }
+    
+    protected static Op rewriteDistinct(Op op, SDBRequest request)
+    {
+        Transform t = new DistinctOptimizer(request) ;
+        return Transformer.transform(t, op) ;
+    }
+    
+    private static class DistinctOptimizer extends TransformCopy
+    {
+        private final SDBRequest request ;
+
+        public DistinctOptimizer(SDBRequest request)
+        {
+            this.request = request ;
+        }
+
+        @Override
+        public Op transform(OpDistinct opDistinct, Op subOp)
+        { 
+            if ( ! request.DistinctTranslation )
+                return super.transform(opDistinct, subOp) ;
+            
+            if ( ! SDB_QC.isOpSQL(subOp) )
+                return super.transform(opDistinct, subOp) ;
+            SqlNode sqlSubOp = ((OpSQL)subOp).getSqlNode() ;
+            SqlNode n = SqlSelectBlock.distinct(request, sqlSubOp) ;
+            return new OpSQL(n, opDistinct, request) ; 
+        }
+
+    }
+
+
 }
 
 /*
- * (c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2006, 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

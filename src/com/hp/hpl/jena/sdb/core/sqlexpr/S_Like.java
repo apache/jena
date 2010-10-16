@@ -1,38 +1,48 @@
 /*
- * (c) Copyright 2006, 2007, 2008 Hewlett-Packard Development Company, LP
- * (c) Copyright 2010 Epimorphics Ltd.
+ * (c) Copyright 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd. 
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.test.misc;
+package com.hp.hpl.jena.sdb.core.sqlexpr;
 
-import static org.junit.Assert.assertEquals;
-import org.junit.Test;
 
-import com.hp.hpl.jena.sdb.util.RegexUtils;
 
-public class TestRegex
+public class S_Like extends SqlExprBase
 {
-    @Test public void like_00() { testRegexLike("foo",      "%foo%") ; }
-    @Test public void like_01() { testRegexLike("^foo",     "foo%") ; }
-    @Test public void like_02() { testRegexLike("^foo$",    "foo") ; }
-    @Test public void like_03() { testRegexLike("foo$",     "%foo") ; }
+    private final SqlExpr expr ;
+    private final String pattern ;
+    private final boolean caseInsensitive ;
     
-    @Test public void like_04() { testRegexLike("^fo?o$",   null) ; }
-    @Test public void like_05() { testRegexLike("fo.o",     null) ; }
-    
-    private void testRegexLike(String regexPattern, String likePattern)
+    public S_Like(SqlExpr expr, String pattern, boolean caseInsensitive)
     {
-        String p = RegexUtils.regexToLike(regexPattern) ;
-        if ( p == null && likePattern == null ) return ;
-        assertEquals(likePattern ,p) ;
+        this.expr = expr ;
+        this.pattern = pattern ;
+        this.caseInsensitive = caseInsensitive ;
     }
+    
+    public SqlExpr getExpr()
+    {
+        return expr ;
+    }
+
+    public String getPattern()
+    {
+        return pattern ;
+    }
+    
+    public boolean isCaseInsensitive()
+    {
+        return caseInsensitive ;
+    }
+    
+    public void visit(SqlExprVisitor visitor) { visitor.visit(this) ; }
 }
 
 /*
- * (c) Copyright 2006, 2007, 2008 Hewlett-Packard Development Company, LP
- * (c) Copyright 2010 Epimorphics Ltd.
+ * (c) Copyright 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd. 
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

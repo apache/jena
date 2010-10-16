@@ -67,6 +67,12 @@ public class RunSDB
     
     public static void main(String ... argv) throws SQLException
     {
+        sdb.sdbprint.main("--sdb=Store/sdb-pgsql.ttl", 
+                         //"--sdb=Store/sdb-mssql-express.ttl",
+                         "--print=op",
+                         "--print=sql",
+                         "--file=Q.rq") ;
+        System.exit(0) ;
         sdb.sdbprint.main("--sdb=sdb.ttl", "--print=op", "@Q.arq") ;
         System.exit(0) ;
         

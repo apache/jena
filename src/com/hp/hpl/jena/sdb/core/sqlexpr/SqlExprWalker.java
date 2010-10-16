@@ -1,6 +1,7 @@
 /*
  * (c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
- * All rights reserved.
+ * (c) Copyright 2010 Epimorphics Ltd.
+ *  * All rights reserved.
  * [See end of file]
  */
 
@@ -42,6 +43,12 @@ public class SqlExprWalker
             expr.visit(visitor) ;
         }
     
+        public void visit(S_Like like)         
+        {
+            like.getExpr().visit(this) ;
+            like.visit(visitor) ;
+        }
+        
         public void visit(S_Regex regex)
         {
             regex.getExpr().visit(this) ;
@@ -52,6 +59,7 @@ public class SqlExprWalker
 
 /*
  * (c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

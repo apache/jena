@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd. 
  * All rights reserved.
  * [See end of file]
  */
@@ -11,6 +12,7 @@ import com.hp.hpl.jena.sdb.compiler.QuadBlockCompilerMain;
 import com.hp.hpl.jena.sdb.compiler.QueryCompilerMain;
 import com.hp.hpl.jena.sdb.compiler.SlotCompiler;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
+import com.hp.hpl.jena.sparql.algebra.Op ;
 
 public class QueryCompiler1 extends QueryCompilerMain 
 {
@@ -28,10 +30,20 @@ public class QueryCompiler1 extends QueryCompilerMain
         SlotCompiler sComp = new SlotCompiler1(request, codec) ;
         return new QuadBlockCompilerMain(request, sComp) ; 
     }
+
+    @Override
+    protected Op postProcessSQL(Op op)
+    {
+        // (slice (distinct ....))
+        op = rewriteDistinct(op, request) ;
+        op = rewriteLimitOffset(op, request) ;
+        return op ;
+    }
 }
 
 /*
  * (c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd. 
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

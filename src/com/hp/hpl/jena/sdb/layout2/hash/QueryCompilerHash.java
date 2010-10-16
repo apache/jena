@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
@@ -7,11 +7,11 @@
 package com.hp.hpl.jena.sdb.layout2.hash;
 
 import com.hp.hpl.jena.sdb.compiler.QuadBlockCompiler;
-import com.hp.hpl.jena.sdb.compiler.QueryCompilerMain;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.layout2.QuadBlockCompiler2;
+import com.hp.hpl.jena.sdb.layout2.QueryCompiler2 ;
 
-public class QueryCompilerHash extends QueryCompilerMain 
+public class QueryCompilerHash extends QueryCompiler2
 {
     public QueryCompilerHash(SDBRequest request)
     { 
@@ -26,7 +26,7 @@ public class QueryCompilerHash extends QueryCompilerMain
 }
 
 /*
- * (c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
