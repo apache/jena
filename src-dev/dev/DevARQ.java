@@ -12,7 +12,7 @@ public class DevARQ
     // (Better) respect Content-Length?
     // ReportRemoteVirtuoso
     
-    // add qparse to wiki/ARQ/
+    // add qparse,uparse to wiki/ARQ/
     
     // VarRename, OpVars, VarFinder and VarUtils -- sort out!
     // Any SELECT * + one in group => no need for rename? 
@@ -22,6 +22,7 @@ public class DevARQ
     // RIOT (etc) closing InputStream
     // Bad character encoding - exception but line/col = 1/1
     // Filename in messages.
+    // Errors after file name! Print file name once if error.
     
     // RIOT: cmd line : bad parse -> ???
     // ReportRemoteVirtuoso: StAX does not parse - times out too early? 
