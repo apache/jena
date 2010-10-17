@@ -27,8 +27,7 @@ public class TestProtocol extends BaseServerTest
     
     @AfterClass public static void afterClass()
     {
-        DatasetAccessor du = DatasetAccessorFactory.createHTTP(serviceREST) ;
-        du.deleteDefault() ;
+        ServerTest.resetServer() ;
         ServerTest.freeServer() ;
     }
     

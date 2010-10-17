@@ -17,14 +17,17 @@ public class DEF
     public static MediaType acceptTurtle2       = new MediaType(WebContent.contentTypeTurtle2) ;
     public static MediaType acceptTurtle3       = new MediaType(WebContent.contentTypeTurtle3) ;
     public static MediaType acceptNTriples      = new MediaType(WebContent.contentTypeNTriples) ;
-    public static MediaType acceptTriG          = new MediaType(WebContent.contentTypeNTriples) ;
-    public static MediaType acceptNQuads        = new MediaType(WebContent.contentTypeNTriples) ;
+    public static MediaType acceptNTriplesAlt   = new MediaType(WebContent.contentTypeNTriplesAlt) ;
+    public static MediaType acceptTriG          = new MediaType(WebContent.contentTypeTriG) ;
+    public static MediaType acceptTriGAlt       = new MediaType(WebContent.contentTypeTriGAlt) ;
+    public static MediaType acceptNQuads        = new MediaType(WebContent.contentTypeNQuads) ;
+    public static MediaType acceptNQuadsAlt     = new MediaType(WebContent.contentTypeNQuadsAlt) ;
     public static MediaType charsetUTF8         = new MediaType(WebContent.charsetUTF8) ;
     
     public static MediaType acceptRSXML         = new MediaType(WebContent.contentTypeResultsXML) ;
 
-    public static AcceptList rdfOffer           = new AcceptList(acceptRDFXML, acceptTurtle1, acceptTurtle2, acceptTurtle3, acceptNTriples) ;
-    public static AcceptList quadsOffer         = new AcceptList(acceptTriG, acceptNQuads) ;
+    public static AcceptList rdfOffer           = new AcceptList(acceptRDFXML, acceptTurtle1, acceptTurtle2, acceptTurtle3, acceptNTriples, acceptNTriplesAlt) ;
+    public static AcceptList quadsOffer         = new AcceptList(acceptTriG, acceptTriGAlt, acceptNQuads, acceptNQuadsAlt) ;
     public static AcceptList charsetOffer       = new AcceptList(charsetUTF8) ;
     
     public static AcceptList rsOffer            = new AcceptList(WebContent.contentTypeResultsXML, 

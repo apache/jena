@@ -92,10 +92,6 @@ public class ResponseQuery
         }
         
         // Managed to write it locally
-        
-        System.err.println("SET HEADERS") ;
-        // Set headers
-        
         try {
             rdfw.write(model, response.getOutputStream(), null) ;
             response.getOutputStream().flush() ;

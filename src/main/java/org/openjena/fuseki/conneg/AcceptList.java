@@ -140,7 +140,8 @@ public class AcceptList
     
     static public MediaType match(AcceptList proposalList, AcceptList offerList)
     {
-        MediaRange choice = null ;
+        MediaRange choice = null ;  // From offerlist
+        //MediaRange choice2 = null ; // From proposal (q value and text/*)
         
         for ( MediaRange offer : offerList.entries() )
         {
@@ -149,7 +150,7 @@ public class AcceptList
             {
                 if ( choice != null && choice.q >= m.q )
                     continue ; 
-                choice = m ;        
+                choice = m ;  
             }
         }
         if ( choice == null )

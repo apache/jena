@@ -65,13 +65,74 @@ public class TestContentNegotiation extends BaseTest
     @Test public void qualNeg3()
     {
         testMatch(
-                "application/n3,application/rdf+xml;q=0.5",
+                "application/rdf+xml;q=0.5 , application/n3",
                 "application/n3,application/rdf+xml" , 
                 "application/n3") ;
     }
     
+    @Test public void qualNeg4()
+    {
+        testMatch(
+                "application/rdf+xml;q=0.5 , application/n3",
+                "application/rdf+xml , application/n3" , 
+                "application/n3") ;
+    }
 
-    // Worker. New way.
+    // SPARQL: result set
+    @Test public void qualNeg5()
+    {
+        testMatch(
+                "application/sparql-results+json , application/sparql-results+xml;q=0.9 , application/rdf+xml , application/turtle;q=0.9 , */*;q=0.1",
+                "application/sparql-results+xml, application/sparql-results+json, text/csv , text/tab-separated-values, text/plain",
+                "application/sparql-results+json") ;
+    }
+    
+    // SPARQL: result set
+    @Test public void qualNeg5a()
+    {
+        testMatch(
+                "application/sparql-results+json , application/sparql-results+xml;q=0.9 , application/rdf+xml , application/turtle;q=0.9 , */*;q=0.1",
+                "application/sparql-results+json, application/sparql-results+xml, text/csv , text/tab-separated-values, text/plain",
+                "application/sparql-results+json") ;
+    }
+    
+    // SPARQL: RDF
+    @Test public void qualNeg6()
+    {
+        testMatch(
+                "application/sparql-results+json , application/sparql-results+xml;q=0.9 , application/rdf+xml , application/turtle;q=0.9 , */*;q=0.1",
+                "application/rdf+xml , application/turtle , application/x-turtle ,  text/turtle , text/plain  application/n-triples",
+                "application/rdf+xml") ;
+    }
+    
+    // HTTP: RDF
+    @Test public void qualNeg7()
+    {
+        testMatch(
+                "application/rdf+xml , application/turtle;q=0.9 , */*;q=0.1",
+                "application/rdf+xml , application/turtle , application/x-turtle ,  text/turtle , text/plain  application/n-triples",
+                "application/rdf+xml") ;
+    }
+    
+    // HTTP: RDF
+    @Test public void qualNeg8()
+    {
+        testMatch(
+                "application/turtle;q=0.9 , application/rdf+xml , */*;q=0.1",
+                "application/rdf+xml , application/turtle , application/x-turtle ,  text/turtle , text/plain  application/n-triples",
+                "application/rdf+xml") ;
+    }
+    
+    // TODO Standard headers from clients of RDf and for SPARQL results
+    
+    // RDF:
+    //  Accept: application/rdf+xml , application/turtle;q=0.9 , */*;q=0.1
+    //  Offer: application/rdf+xml , application/turtle , application/x-turtle ,  text/turtle , text/plain  application/n-triples
+    
+    // SPARQL:
+    //  Accept: application/sparql-results+json , application/sparql-results+xml;q=0.9 , application/rdf+xml , application/turtle;q=0.9 , */*;q=0.1
+    //  Offer:  application/sparql-results+xml, application/sparql-results+json, text/csv , text/tab-separated-values, text/plain
+    
     private void testMatch(String header, String offer, String result)
     {
         AcceptList list1 = new AcceptList(header) ;
@@ -86,23 +147,6 @@ public class TestContentNegotiation extends BaseTest
         }
         assertNotNull("Match is null: expected "+q(result), matchItem) ;
         assertEquals("Match different", result, matchItem.toHeaderString()) ;
-    }
-    
-    // Worker.  Does request 'header' match server 'offer' with 'result'?
-    private void testMatch1(String header, String offer, String result)
-    {
-        AcceptList list1 = new AcceptList(header) ;
-        AcceptList list2 = new AcceptList(offer) ;
-        MediaType matchItem = AcceptList.match(list1, list2) ;
-
-        if ( result == null )
-        {
-            assertNull("Match not null: from "+q(header)+" :: "+q(offer),
-                       matchItem) ;
-            return ;
-        }
-        assertNotNull("Match is null: expected "+q(result), matchItem) ;
-        assertEquals("Match different", result, matchItem.getContentType()) ;
     }
     
     private String q(Object obj)
