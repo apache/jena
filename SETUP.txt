@@ -1,11 +1,18 @@
-Checkup from SVN
+== Checkup from SVN:
+  svn co https://jena.svn.sourceforge.net/svnroot/jena/Fuseki/trunk Fuseki
+
+== After checking out from SVN:
 
 To get the dependent jars:
+
    mvn dependency:resolve dependency:sources
-which will use the .classpath from SVN.
+
+which will get the jars/sources used in the .classpath from SVN.
 It assumes you have M2_REPO set correctly.
 
-To rebuild the .classpath file:
+== Rebuild the classpath
+
+This should not be necessary as a .classpath is checked into SVN but:
   mvn eclipse:eclipse \
       -DdownloadSources=true \
       -DdownloadJavadoc=false \
@@ -15,3 +22,12 @@ then put back the src-dev source folder (code that is used for development
 but is not part of the artifact itself e.g. current work items, bug
 reports, ....). This sets the IDE output to "classes/" (this keep maven
 builds separate from code development).
+
+== Fix svn
+
+If you find problems with missing classes after SVN update or checkout, it
+might be because of clien t problems between versions. Try:
+
+svn update --set-depth infinity
+
+and see if that fixes it.

@@ -16,6 +16,10 @@ public class DevFuseki
     //   --service naming seems inconsistent.
     // Testing project?
     
+    // Locking => transaction support (via default model?)
+    //   ?? Dataset and connections
+    //   ?? Part of subclassing for specific backing storage 
+    
     // Java clients:
     //   DatasetAccessor: don't serialise to byte[] and then send. 
     //   DatasetAccessor : check existence of endpoint. 
