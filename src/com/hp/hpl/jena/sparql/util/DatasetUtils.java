@@ -49,7 +49,7 @@ public class DatasetUtils
     public static Dataset createDataset(List<String> uriList, List<String> namedSourceList,
                                         FileManager fileManager, String baseURI)
     {
-        DataSource ds = new DataSourceImpl() ;
+        DataSource ds = DataSourceImpl.createMem() ;
         addInGraphs(ds, uriList, namedSourceList, fileManager, baseURI) ;
         return ds ;
     }

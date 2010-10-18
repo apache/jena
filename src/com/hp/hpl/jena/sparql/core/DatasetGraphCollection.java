@@ -21,6 +21,9 @@ public abstract class DatasetGraphCollection extends DatasetGraphBaseFind
     public void add(Quad quad)
     {
         Graph g = fetchGraph(quad.getGraph()) ;
+        if ( g == null )
+            System.err.println("null graph") ;
+        
         g.add(quad.asTriple()) ;
     }
 

@@ -12,20 +12,23 @@ import java.util.List ;
 import org.openjena.atlas.iterator.Iter ;
 import org.openjena.riot.checker.CheckerLiterals ;
 
-import com.hp.hpl.jena.query.ARQ ;
+import com.hp.hpl.jena.query.DataSource ;
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.Property ;
 import com.hp.hpl.jena.rdf.model.Resource ;
 import com.hp.hpl.jena.rdf.model.Statement ;
-import com.hp.hpl.jena.sparql.util.DatasetUtils ;
+import com.hp.hpl.jena.sparql.core.DataSourceImpl ;
+import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
 import com.hp.hpl.jena.sparql.vocabulary.TestManifestUpdate_11 ;
-import com.hp.hpl.jena.sparql.vocabulary.VocabTestQuery ;
 import com.hp.hpl.jena.update.UpdateAction ;
 import com.hp.hpl.jena.update.UpdateFactory ;
 import com.hp.hpl.jena.update.UpdateRequest ;
+import com.hp.hpl.jena.util.FileManager ;
 import com.hp.hpl.jena.util.iterator.ClosableIterator ;
 import com.hp.hpl.jena.util.junit.TestUtils ;
+import com.hp.hpl.jena.vocabulary.RDFS ;
 
 
 public class UpdateTest extends EarlTestCase
@@ -34,11 +37,6 @@ public class UpdateTest extends EarlTestCase
     private Resource result ;
     
     private String updateFile ;
-    private List<String> inputData1 ;
-    private List<String> inputData2 ; 
-    private List<String> outputData1 ;
-    private List<String> outputData2 ;
-    
     private Dataset input ;
     private Dataset output ;
 
@@ -57,14 +55,7 @@ public class UpdateTest extends EarlTestCase
 
          */
         
-        // NG parsing is wrong.
-        
         updateFile = action.getProperty(TestManifestUpdate_11.request).getResource().getURI() ;
-        inputData1 = getAll(action, TestManifestUpdate_11.data) ;
-        inputData2 = getAll(action, TestManifestUpdate_11.graphData) ; 
-        
-        outputData1 = getAll(result, TestManifestUpdate_11.data) ;
-        outputData2 = getAll(result, TestManifestUpdate_11.graphData) ;
     }
     
     private boolean oldWarningFlag  ;
@@ -75,8 +66,8 @@ public class UpdateTest extends EarlTestCase
         // Turn parser warnings off for the test data. 
         oldWarningFlag = CheckerLiterals.WarnOnBadLiterals ;
         //CheckerLiterals.WarnOnBadLiterals = false ;
-        input = DatasetUtils.createDataset(inputData1, inputData2, null, null) ;
-        output = DatasetUtils.createDataset(inputData1, inputData2, null, null) ;
+        input = getDataset(action) ;
+        output = getDataset(result) ;
     }
     
     @Override
@@ -93,6 +84,7 @@ public class UpdateTest extends EarlTestCase
     @Override
     protected void runTestForReal() throws Throwable
     {
+        try {
         UpdateRequest request = UpdateFactory.read(updateFile) ;
         UpdateAction.execute(request, input) ;
         boolean b = datasetSame(input, output, false) ;
@@ -108,6 +100,11 @@ public class UpdateTest extends EarlTestCase
         }
         
         assertTrue("Datasets are different", b) ;
+        } catch (RuntimeException ex)
+        {
+            ex.printStackTrace(System.err) ;
+            throw ex ;
+        }
     }
     
     
@@ -148,6 +145,45 @@ public class UpdateTest extends EarlTestCase
         return true ;
     }
 
+    static Dataset getDataset(Resource r)
+    {
+        //DataSource ds = DatasetFactory.create() ;
+        DatasetGraph dsg = DatasetGraphFactory.createMem() ;
+        // Growing. dataset.
+        DataSource ds = DataSourceImpl.wrap(dsg) ;
+        
+        
+        List<String> dftData = getAll(r,  TestManifestUpdate_11.data) ;
+        for ( String x : dftData )
+            FileManager.get().readModel(ds.getDefaultModel(), x) ;
+        
+        ClosableIterator<Statement> cIter =  r.listProperties(TestManifestUpdate_11.graphData) ;
+        for ( ; cIter.hasNext() ; )
+        {
+            // An graphData entry can be a URI or a [ ut:data ... ; rdfs:label "foo" ] ;
+            Statement stmt = cIter.next() ;
+            Resource gn = stmt.getResource() ;
+            if ( gn.isAnon() )
+            {
+                if ( ! gn.hasProperty(TestManifestUpdate_11.data) )
+                    System.err.println("No data for graphData") ;
+                
+                String fn = gn.getProperty(TestManifestUpdate_11.data).getResource().getURI() ;
+                String name = gn.getProperty(RDFS.label).getString() ;
+                Model m = FileManager.get().loadModel(fn) ;
+                ds.addNamedModel(name, m) ;
+            }
+            else
+            {
+                String x = gn.getURI() ;
+                Model m = FileManager.get().loadModel(x) ;
+                ds.addNamedModel(x, m) ;
+            }
+        }
+        cIter.close() ;
+        return ds ;
+    }
+
     static List<String> getAll(Resource r, Property p)
     {
         List<String> l = new ArrayList<String>() ;
@@ -155,13 +191,12 @@ public class UpdateTest extends EarlTestCase
         for ( ; cIter.hasNext() ; )
         {
             Statement stmt = cIter.next() ;
-            String df = stmt.getResource().getURI() ;
+            String df = stmt.getObject().asResource().getURI() ;
             l.add(df) ;
         }
         cIter.close() ;
         return l ;
     }
-
     
     
 }

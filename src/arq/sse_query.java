@@ -11,12 +11,19 @@ package arq;
 import org.openjena.atlas.io.IndentedWriter ;
 import arq.cmd.CmdException ;
 import arq.cmd.TerminationException ;
-import arq.cmdline.* ;
+import arq.cmdline.ArgDecl ;
+import arq.cmdline.CmdARQ ;
+import arq.cmdline.ModAlgebra ;
+import arq.cmdline.ModDataset ;
+import arq.cmdline.ModDatasetGeneralAssembler ;
+import arq.cmdline.ModEngine ;
+import arq.cmdline.ModResultsOut ;
+import arq.cmdline.ModTime ;
 
 import com.hp.hpl.jena.query.Dataset ;
+import com.hp.hpl.jena.query.DatasetFactory ;
 import com.hp.hpl.jena.sparql.algebra.Algebra ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
-import com.hp.hpl.jena.sparql.core.DataSourceImpl ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.engine.Plan ;
 import com.hp.hpl.jena.sparql.engine.PlanOp ;
@@ -105,7 +112,7 @@ public class sse_query extends CmdARQ
         Dataset dataset = modDataset.getDataset() ;
         // Check there is a dataset.
         if ( dataset == null )
-            dataset = new DataSourceImpl();
+            dataset = DatasetFactory.create() ;
 
         modTime.startTimer() ;
         DatasetGraph dsg = dataset.asDatasetGraph() ;

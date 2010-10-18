@@ -39,27 +39,46 @@ public class DataSourceImpl implements DataSource
     protected DatasetGraph dsg = null ;
     private Map<Graph, Model> cache = new HashMap<Graph, Model>() ;      
 
-    public DataSourceImpl()
-    {
-        // This may not be a defaultJena model - during testing, 
-        // we use a graph that is not value-awar for xsd:String vs plain literals.
-        this(ModelFactory.createModelForGraph(GraphFactory.createDefaultGraph())) ;
-    }
-
+    private DataSourceImpl()
+    {}
+    
+    
 //    public DataSourceImpl(DataSourceGraph otherDSG)
 //    {
 //        this.dsg = otherDSG ;
 //    }
     
-    public DataSourceImpl(DatasetGraph datasetGraph)
-    { 
-        // Clone structure.
-        dsg = new DatasetGraphMap(datasetGraph) ;
+    
+    public static DataSource createMem()
+    {
+        // This may not be a defaultJena model - during testing, 
+        // we use a graph that is not value-awar for xsd:String vs plain literals.
+ 
+        return new DataSourceImpl(ModelFactory.createModelForGraph(GraphFactory.createDefaultGraph())) ;
     }
+    
+    public static DataSource wrap(DatasetGraph datasetGraph)
+    {
+        DataSourceImpl ds = new DataSourceImpl() ;
+        ds.dsg = datasetGraph ; 
+        return ds ;
+    }
+    public static DataSource cloneStructure(DatasetGraph datasetGraph)
+    { 
+        DataSourceImpl ds = new DataSourceImpl() ;
+        ds.dsg = new DatasetGraphMap(datasetGraph) ;
+        return ds ;
+    }
+    
+//    public DataSourceImpl(DatasetGraph datasetGraph)
+//    { 
+//        dsg = new DatasetGraphMap(datasetGraph) ;
+//    }
     
     public DataSourceImpl(Model model)
     {
         addToCache(model) ;
+        // TODO Is this right? this sort of DatasetGraph can't auto-add graphs.
         this.dsg = DatasetGraphFactory.create(model.getGraph()) ;
     }
 

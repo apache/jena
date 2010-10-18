@@ -14,7 +14,6 @@ import java.util.Iterator ;
 import java.util.Set ;
 
 import junit.framework.TestSuite ;
-
 import org.openjena.atlas.io.IndentedLineBuffer ;
 import org.openjena.atlas.io.IndentedWriter ;
 import org.openjena.atlas.json.JSON ;
@@ -42,7 +41,6 @@ import com.hp.hpl.jena.query.QuerySolutionMap ;
 import com.hp.hpl.jena.query.ResultSet ;
 import com.hp.hpl.jena.query.ResultSetFormatter ;
 import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.sparql.ARQConstants ;
 import com.hp.hpl.jena.sparql.algebra.Algebra ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
@@ -50,7 +48,6 @@ import com.hp.hpl.jena.sparql.algebra.OpVars ;
 import com.hp.hpl.jena.sparql.algebra.op.OpModifier ;
 import com.hp.hpl.jena.sparql.algebra.op.OpProject ;
 import com.hp.hpl.jena.sparql.algebra.op.OpSlice ;
-import com.hp.hpl.jena.sparql.core.DataSourceImpl ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
 import com.hp.hpl.jena.sparql.core.Quad ;
@@ -105,11 +102,9 @@ public class RunARQ
         System.out.println("Compare = " + cmp);
     }
     
-    
     public static void main(String[] argv) throws Exception
     {
-        
-        TestSuite ts = ScriptTestSuiteFactory.make("/home/afs/W3C/SPARQL-docs/tests/data-sparql11/basic-update/manifest.ttl") ;
+        TestSuite ts = ScriptTestSuiteFactory.make("tmp/manifest.ttl") ;
         SimpleTestRunner.runAndReport(ts) ;
         System.exit(0) ;
         
@@ -120,24 +115,6 @@ public class RunARQ
         arq.sparql.main(/*"--explain",*/ "--data=D.ttl", "--query=Q.rq") ; System.exit(0) ;
        
         
-        Dataset ds2 = DatasetFactory.create() ;
-        ds2 = new DataSourceImpl(ds2.asDatasetGraph()) 
-        { 
-            @Override
-            public Model getNamedModel(String uri)
-            { 
-                Model m = super.getNamedModel(uri) ;
-                if ( m == null )
-                {
-                    m = ModelFactory.createDefaultModel() ;
-                    super.addNamedModel(uri, m) ;
-                }
-                return m ;
-            }
-        } ;
-        
-        
-        System.out.println(ds2.getNamedModel("http://example/foo")) ;
         System.exit(0) ;
        
         

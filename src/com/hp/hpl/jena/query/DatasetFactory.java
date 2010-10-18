@@ -32,7 +32,7 @@ public class DatasetFactory
      */
     
     public static DataSource create()
-    { return new DataSourceImpl() ; }
+    { return DataSourceImpl.createMem() ; }
 
     /** Create a dataset with the given model as the default graph
      * @param model
@@ -48,12 +48,12 @@ public class DatasetFactory
     public static DataSource create(Dataset dataset)
     { return new DataSourceImpl(dataset) ; }
 
-    /** Wrap a datsetgraph to make a mutable dataset
+    /** Wrap a datasetgraph to make a mutable dataset
      * @param dataset DatasetGraph
      * @return DataSource (Updateable Dataset) 
      */ 
     public static DataSource create(DatasetGraph dataset)
-    { return new DataSourceImpl(dataset) ; }
+    { return DataSourceImpl.wrap(dataset) ; }
     
     /** Create a dataset based on a list of URIs : these are merged into the default graph of teh dataset.
      * 
