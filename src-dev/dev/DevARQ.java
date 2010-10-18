@@ -4,10 +4,9 @@ package dev ;
 public class DevARQ
 {
     // DataSource ds = DatasetFactory.create() ; is a non-graph adding DataSource
-    // change.  Always make growing? 
+    // change.  Always make growing? What about mixed types?
     
     // Rework QueryTestSuiteFactory => ScriptTestSuiteFactory
-    // INSERT DATA { :s :p :o } ==>  GRAPH <urn:x-arq:DefaultGraphNode> { :s :p :o } == Quad.defaultGraphNodeGenerated
     
     // http://www.openjena.org/wiki/ARQ/Concurrency
     // LIMIT subquery.
