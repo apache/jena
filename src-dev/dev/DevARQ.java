@@ -6,7 +6,7 @@ public class DevARQ
     // DataSource ds = DatasetFactory.create() ; is a non-graph adding DataSource
     // change.  Always make growing? What about mixed types?
     
-    // Rework QueryTestSuiteFactory => ScriptTestSuiteFactory
+    // **** Rework QueryTestSuiteFactory => ScriptTestSuiteFactory
     
     // http://www.openjena.org/wiki/ARQ/Concurrency
     // LIMIT subquery.
