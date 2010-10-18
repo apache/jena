@@ -11,6 +11,8 @@ public class DevFuseki
     // SOH
     //  Refactor into body/no_body send // body/no_body receive
     
+    // **** Clean up SPARQL Query results code.
+
     // Environment variable for target (s-set but needs to shell built-in)
     //   defaults
     //   --service naming seems inconsistent.
@@ -43,7 +45,6 @@ public class DevFuseki
     // Basic authentication
     //   --user --password
 
-    // Clean up SPARQL Query results code.
 }
 
 /*
