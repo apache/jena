@@ -77,12 +77,13 @@ public class ScriptTestSuiteFactory extends TestFactoryManifest
         
         //TestItem only works for query - bodged for Update.
 
-        Resource testType = entry.getProperty(RDF.type).getResource() ;
-        if ( testType == null )
-            testType= defaultTestType ;
+        
+        Resource testType = defaultTestType ;
+        if ( entry.hasProperty(RDF.type) )
+            testType = entry.getProperty(RDF.type).getResource() ;
         
         TestItem item = null ;
-        if ( testType != null && ! testType.equals(TestManifestUpdate_11.UpdateEvaluationTest))
+        if ( testType == null || ! testType.equals(TestManifestUpdate_11.UpdateEvaluationTest))
         {
             // Bodge.
             item = TestItem.create(entry, defaultTestType, querySyntax, DataFormat.langXML) ;

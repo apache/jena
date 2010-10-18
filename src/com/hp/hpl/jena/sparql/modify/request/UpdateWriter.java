@@ -189,11 +189,11 @@ public class UpdateWriter
                 return ;
             }
             out.println("{") ;
-            outputQuads_(quads) ;
+            outputQuads(quads) ;
             out.print("}") ;
         }
         
-        private void outputQuads_(List<Quad> quads)
+        private void outputQuads(List<Quad> quads)
         {
             out.incIndent(BLOCK_INDENT) ;
             Node g = Quad.tripleInQuad ;
@@ -202,14 +202,21 @@ public class UpdateWriter
             {
                 if ( q.getGraph() != g )
                 {
+                    // New graph (default or named)
                     if ( inBlock )
                     {
+                        // In named - end it.
                         out.decIndent(BLOCK_INDENT) ;
                         out.println("}") ;
                         inBlock = false ;
                     }
+                    
                     g = q.getGraph() ;
-                    if ( g != Quad.tripleInQuad )
+                    
+                    // Start new block.
+                    // Two cases for no braces: 
+                    // Quad.tripleInQuad and Quad.defaultGraphNodeGenerated ;
+                    if ( ! q.isTriple() && ! q.isDefaultGraphGenerated() )
                     {
                         out.print("GRAPH ") ;
                         output(g) ;
