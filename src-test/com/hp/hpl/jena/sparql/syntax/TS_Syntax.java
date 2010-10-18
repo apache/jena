@@ -9,13 +9,13 @@ package com.hp.hpl.jena.sparql.syntax;
 import junit.framework.TestSuite ;
 
 import com.hp.hpl.jena.sparql.ARQTestSuite ;
-import com.hp.hpl.jena.sparql.junit.QueryTestSuiteFactory ;
+import com.hp.hpl.jena.sparql.junit.ScriptTestSuiteFactory ;
 
 public class TS_Syntax extends TestSuite
 {
     static public TestSuite suite()
     {
-        return QueryTestSuiteFactory.make(ARQTestSuite.testDirARQ+"/Syntax/manifest-syntax.ttl") ;
+        return ScriptTestSuiteFactory.make(ARQTestSuite.testDirARQ+"/Syntax/manifest-syntax.ttl") ;
     }
 }
 

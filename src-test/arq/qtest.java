@@ -24,7 +24,7 @@ import com.hp.hpl.jena.sparql.ARQTestSuite ;
 import com.hp.hpl.jena.sparql.expr.E_Function ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.junit.EarlReport ;
-import com.hp.hpl.jena.sparql.junit.QueryTestSuiteFactory ;
+import com.hp.hpl.jena.sparql.junit.ScriptTestSuiteFactory ;
 import com.hp.hpl.jena.sparql.junit.SimpleTestRunner ;
 import com.hp.hpl.jena.sparql.util.NodeFactory ;
 import com.hp.hpl.jena.sparql.util.Utils ;
@@ -121,7 +121,7 @@ public class qtest extends CmdARQ
             String data = getValue(dataDecl) ;
             String result = getValue(resultDecl) ;
             
-            suite = QueryTestSuiteFactory.make(query, data, result) ;
+            suite = ScriptTestSuiteFactory.make(query, data, result) ;
         }
         else if ( contains(allDecl) )
         {
@@ -176,7 +176,7 @@ public class qtest extends CmdARQ
     
     static void oneManifest(String testManifest)
     {
-        TestSuite suite = QueryTestSuiteFactory.make(testManifest) ;
+        TestSuite suite = ScriptTestSuiteFactory.make(testManifest) ;
 
         //junit.textui.TestRunner.run(suite) ;
         SimpleTestRunner.runAndReport(suite) ;
@@ -191,7 +191,7 @@ public class qtest extends CmdARQ
         
         // Include information later.
         EarlReport report = new EarlReport(name, version, homepage) ;
-        QueryTestSuiteFactory.results = report ;
+        ScriptTestSuiteFactory.results = report ;
         
         Model model = report.getModel() ;
         model.setNsPrefix("dawg", TestManifest.getURI()) ;
@@ -231,10 +231,10 @@ public class qtest extends CmdARQ
         release.addProperty(DOAP.created, today) ;
         release.addProperty(DOAP.name, releaseName) ;      // Again
         
-        TestSuite suite = QueryTestSuiteFactory.make(testManifest) ;
+        TestSuite suite = ScriptTestSuiteFactory.make(testManifest) ;
         SimpleTestRunner.runSilent(suite) ;
         
-        QueryTestSuiteFactory.results.getModel().write(System.out, "TTL") ;
+        ScriptTestSuiteFactory.results.getModel().write(System.out, "TTL") ;
         
     }
     

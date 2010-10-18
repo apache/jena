@@ -3,6 +3,9 @@ package dev ;
 
 public class DevARQ
 {
+    // Rework QueryTestSuiteFactory => ScriptTestSuiteFactory
+    // INSERT DATA { :s :p :o } ==>  GRAPH <urn:x-arq:DefaultGraphNode> { :s :p :o } == Quad.defaultGraphNodeGenerated
+    
     // http://www.openjena.org/wiki/ARQ/Concurrency
     // LIMIT subquery.
     // Check for SELECT syntax errors by scope.

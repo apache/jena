@@ -14,14 +14,16 @@ import com.hp.hpl.jena.query.Syntax ;
 import com.hp.hpl.jena.rdf.model.Resource ;
 import com.hp.hpl.jena.sparql.core.DataFormat ;
 import com.hp.hpl.jena.sparql.vocabulary.TestManifest ;
+import com.hp.hpl.jena.sparql.vocabulary.TestManifestUpdate_11 ;
 import com.hp.hpl.jena.sparql.vocabulary.TestManifestX ;
 import com.hp.hpl.jena.sparql.vocabulary.TestManifest_11 ;
 import com.hp.hpl.jena.util.FileManager ;
 import com.hp.hpl.jena.util.junit.TestFactoryManifest ;
 import com.hp.hpl.jena.util.junit.TestUtils ;
+import com.hp.hpl.jena.vocabulary.RDF ;
 
 
-public class QueryTestSuiteFactory extends TestFactoryManifest
+public class ScriptTestSuiteFactory extends TestFactoryManifest
 {
     private FileManager fileManager = FileManager.get() ;
     // Set (and retrieve) externally.
@@ -30,7 +32,7 @@ public class QueryTestSuiteFactory extends TestFactoryManifest
     /** Make a test suite from a manifest file */
     static public TestSuite make(String filename) 
     {
-        QueryTestSuiteFactory tFact = new QueryTestSuiteFactory() ;
+        ScriptTestSuiteFactory tFact = new ScriptTestSuiteFactory() ;
         return tFact.process(filename) ;
     }
 
@@ -48,6 +50,12 @@ public class QueryTestSuiteFactory extends TestFactoryManifest
     @Override
     public Test makeTest(Resource manifest, Resource entry, String testName, Resource action, Resource result)
     {
+        if ( action == null )
+        {
+            System.out.println("Null action: "+entry) ;
+            return null ;
+        }
+        
         // Defaults.
         Syntax querySyntax = TestQueryUtils.getQuerySyntax(manifest)  ;
         
@@ -67,57 +75,71 @@ public class QueryTestSuiteFactory extends TestFactoryManifest
         // action -> query specific query[+data]
         // results
         
-        // Better - parse, have setters.
-        TestItem item = TestItem.create(entry, defaultTestType, querySyntax, DataFormat.langXML) ;
+        //TestItem only works for query - bodged for Update.
+
+        Resource testType = entry.getProperty(RDF.type).getResource() ;
+        if ( testType == null )
+            testType= defaultTestType ;
         
+        TestItem item = null ;
+        if ( testType != null && ! testType.equals(TestManifestUpdate_11.UpdateEvaluationTest))
+        {
+            // Bodge.
+            item = TestItem.create(entry, defaultTestType, querySyntax, DataFormat.langXML) ;
+        }
+
         TestCase test = null ;
 
         // Frankly this all needs rewriting.
-        // It can use SPARQL now :-)
+        // Drop the idea of testItem.  pss entry/action/result to subclass.
+        // Library for paring entries.
         
-        if ( item.getTestType() != null )
+        if ( testType != null )
         {
             // == Good syntax
-            if ( item.getTestType().equals(TestManifest.PositiveSyntaxTest) )
+            if ( testType.equals(TestManifest.PositiveSyntaxTest) )
                 test = new SyntaxTest(testName, results, item) ;
-            if ( item.getTestType().equals(TestManifest_11.PositiveSyntaxTest11) )
+            if ( testType.equals(TestManifest_11.PositiveSyntaxTest11) )
                 test = new SyntaxTest(testName, results, item) ;
-            if ( item.getTestType().equals(TestManifestX.PositiveSyntaxTestARQ) )
+            if ( testType.equals(TestManifestX.PositiveSyntaxTestARQ) )
                 test = new SyntaxTest(testName, results, item) ;
 
             // == Bad
-            if ( item.getTestType().equals(TestManifest.NegativeSyntaxTest) )
+            if ( testType.equals(TestManifest.NegativeSyntaxTest) )
                 test = new SyntaxTest(testName, results, item, false) ;
-            if ( item.getTestType().equals(TestManifest_11.NegativeSyntaxTest11) )
+            if ( testType.equals(TestManifest_11.NegativeSyntaxTest11) )
                 test = new SyntaxTest(testName, results, item, false) ;
-            if ( item.getTestType().equals(TestManifestX.NegativeSyntaxTestARQ) )
+            if ( testType.equals(TestManifestX.NegativeSyntaxTestARQ) )
                 test = new SyntaxTest(testName, results, item, false) ;
             
             // ---- Update tests
-            if ( item.getTestType().equals(TestManifest_11.PositiveUpdateSyntaxTest11) )
+            if ( testType.equals(TestManifest_11.PositiveUpdateSyntaxTest11) )
                 test = new SyntaxUpdateTest(testName, results, item, true) ;
-            if ( item.getTestType().equals(TestManifest_11.NegativeUpdateSyntaxTest11) )
+            if ( testType.equals(TestManifest_11.NegativeUpdateSyntaxTest11) )
                 test = new SyntaxUpdateTest(testName, results, item, false) ;
+
+            if ( testType.equals(TestManifestUpdate_11.UpdateEvaluationTest) )
+                test = new UpdateTest(testName, results, entry, action, result) ;
 
             // ----
             
-            if ( item.getTestType().equals(TestManifestX.TestSerialization) )
+            if ( testType.equals(TestManifestX.TestSerialization) )
                 test = new TestSerialization(testName, results, item) ;
             
-            if ( item.getTestType().equals(TestManifest.QueryEvaluationTest)
-                || item.getTestType().equals(TestManifestX.TestQuery)
+            if ( testType.equals(TestManifest.QueryEvaluationTest)
+                || testType.equals(TestManifestX.TestQuery)
                 )
                 test = new QueryTest(testName, results, fileManager, item) ;
             
             // Reduced is funny.
-            if ( item.getTestType().equals(TestManifest.ReducedCardinalityTest) )
+            if ( testType.equals(TestManifest.ReducedCardinalityTest) )
                 test = new QueryTest(testName, results, fileManager, item) ;
             
-            if ( item.getTestType().equals(TestManifestX.TestSurpressed) )
+            if ( testType.equals(TestManifestX.TestSurpressed) )
                 test = new SurpressedTest(testName, results, item) ;
             
             if ( test == null )
-                System.err.println("Test type '"+item.getTestType()+"' not recognized") ;
+                System.err.println("Test type '"+testType+"' not recognized") ;
         }
         // Default 
         if ( test == null )

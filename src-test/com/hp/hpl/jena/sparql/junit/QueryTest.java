@@ -47,6 +47,7 @@ import com.hp.hpl.jena.sparql.util.DatasetUtils ;
 import com.hp.hpl.jena.sparql.vocabulary.ResultSetGraphVocab ;
 import com.hp.hpl.jena.util.FileManager ;
 import com.hp.hpl.jena.util.FileUtils ;
+import com.hp.hpl.jena.util.junit.TestUtils ;
 import com.hp.hpl.jena.vocabulary.RDF ;
 
 public class QueryTest extends EarlTestCase
@@ -65,19 +66,11 @@ public class QueryTest extends EarlTestCase
 
     public QueryTest(String testName, EarlReport earl, FileManager fm, TestItem t)
     {
-        super(fixName(testName), t.getURI(), earl) ;
+        super(TestUtils.safeName(testName), t.getURI(), earl) ;
         queryFileManager = fm ;
         testItem = t ;
         isRDQLtest = (testItem.getQueryFileSyntax().equals(Syntax.syntaxRDQL)) ;
     }
-    
-    private static String fixName(String s)
-    {
-        s = s.replace('(','[') ;
-        s = s.replace(')',']') ;
-        return s ;
-    }
-
     private boolean oldWarningFlag  ;
     
     @Override

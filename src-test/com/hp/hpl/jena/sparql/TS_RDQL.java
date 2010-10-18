@@ -9,7 +9,7 @@ package com.hp.hpl.jena.sparql;
 import junit.framework.TestSuite ;
 
 import com.hp.hpl.jena.sparql.expr.TS_ExprRDQL ;
-import com.hp.hpl.jena.sparql.junit.QueryTestSuiteFactory ;
+import com.hp.hpl.jena.sparql.junit.ScriptTestSuiteFactory ;
 
 /** Shh - tests of RDQL in ARQ */
 public class TS_RDQL extends TestSuite
@@ -26,7 +26,7 @@ public class TS_RDQL extends TestSuite
         
         addTest(TS_ExprRDQL.suite()) ;
         
-        addTest(QueryTestSuiteFactory.make(controlFilenameRDQL)) ; 
+        addTest(ScriptTestSuiteFactory.make(controlFilenameRDQL)) ; 
     }
 }
 

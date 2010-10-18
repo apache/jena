@@ -13,6 +13,8 @@ import java.util.HashSet ;
 import java.util.Iterator ;
 import java.util.Set ;
 
+import junit.framework.TestSuite ;
+
 import org.openjena.atlas.io.IndentedLineBuffer ;
 import org.openjena.atlas.io.IndentedWriter ;
 import org.openjena.atlas.json.JSON ;
@@ -62,6 +64,8 @@ import com.hp.hpl.jena.sparql.function.FunctionEnvBase ;
 import com.hp.hpl.jena.sparql.graph.NodeConst ;
 import com.hp.hpl.jena.sparql.graph.NodeTransform ;
 import com.hp.hpl.jena.sparql.graph.NodeTransformLib ;
+import com.hp.hpl.jena.sparql.junit.ScriptTestSuiteFactory ;
+import com.hp.hpl.jena.sparql.junit.SimpleTestRunner ;
 import com.hp.hpl.jena.sparql.lang.ParserSPARQL11Update ;
 import com.hp.hpl.jena.sparql.mgt.Explain.InfoLevel ;
 import com.hp.hpl.jena.sparql.modify.request.UpdateWriter ;
@@ -104,6 +108,10 @@ public class RunARQ
     
     public static void main(String[] argv) throws Exception
     {
+        
+        TestSuite ts = ScriptTestSuiteFactory.make("/home/afs/W3C/SPARQL-docs/tests/data-sparql11/basic-update/manifest.ttl") ;
+        SimpleTestRunner.runAndReport(ts) ;
+        System.exit(0) ;
         
 //      rename2() ;
 

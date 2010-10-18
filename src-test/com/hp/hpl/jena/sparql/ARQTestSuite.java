@@ -21,7 +21,7 @@ import com.hp.hpl.jena.sparql.expr.E_Function ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.expr.TS_Expr ;
 import com.hp.hpl.jena.sparql.graph.TS_Graph ;
-import com.hp.hpl.jena.sparql.junit.QueryTestSuiteFactory ;
+import com.hp.hpl.jena.sparql.junit.ScriptTestSuiteFactory ;
 import com.hp.hpl.jena.sparql.larq.TS_LARQ ;
 import com.hp.hpl.jena.sparql.modify.TS_Update ;
 import com.hp.hpl.jena.sparql.resultset.TS_ResultSet ;
@@ -79,7 +79,7 @@ public class ARQTestSuite extends TestSuite
         ts.addTest(TS_Serialization.suite()) ;
         
         // Scripted tests for SPARQL
-        ts.addTest(QueryTestSuiteFactory.make(testDirARQ+"/manifest-arq.ttl")) ;
+        ts.addTest(ScriptTestSuiteFactory.make(testDirARQ+"/manifest-arq.ttl")) ;
       
         // ARQ + Lucene
         ts.addTest(TS_LARQ.suite()) ;

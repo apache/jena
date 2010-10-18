@@ -12,7 +12,7 @@ import org.junit.BeforeClass ;
 
 import com.hp.hpl.jena.sparql.expr.E_Function ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
-import com.hp.hpl.jena.sparql.junit.QueryTestSuiteFactory ;
+import com.hp.hpl.jena.sparql.junit.ScriptTestSuiteFactory ;
 
 /** The test suite for all DAWG (the first SPARQL working group) approved tests. 
  *  Many are the same as or overlap with ARQ tests (because the ARQ ones were 
@@ -64,20 +64,20 @@ public class TS_DAWG extends TestSuite
         // spec.  ARQ implements dawg-optional-filter-005-not-simplified.
 
         TestSuite ts1 = new TestSuite("Approved") ;
-        ts1.addTest(QueryTestSuiteFactory.make(testDirWGApproved+"/manifest-evaluation.ttl")) ;
+        ts1.addTest(ScriptTestSuiteFactory.make(testDirWGApproved+"/manifest-evaluation.ttl")) ;
 
         // These merely duplicate ARQ's syntax tests because Andy wrote the DAWG syntax tests,
         // but they are quick so include the snapshot
         // Eclipse can get confused and may mark them as not run (but they have).
-        ts1.addTest(QueryTestSuiteFactory.make(testDirWGApproved+"/manifest-syntax.ttl")) ;
+        ts1.addTest(ScriptTestSuiteFactory.make(testDirWGApproved+"/manifest-syntax.ttl")) ;
         addTest(ts1) ;
 
         TestSuite ts3 = new TestSuite("Misc") ;
         // Others in DAWG-Final::
-        ts3.addTest(QueryTestSuiteFactory.make(testDirDAWG+"/Misc/manifest.n3")) ;
-        ts3.addTest(QueryTestSuiteFactory.make(testDirDAWG+"/Syntax/manifest.n3")) ;
-        ts3.addTest(QueryTestSuiteFactory.make(testDirDAWG+"/regex/manifest.n3")) ;
-        ts3.addTest(QueryTestSuiteFactory.make(testDirDAWG+"/examples/manifest.n3")) ;  // Value testing examples
+        ts3.addTest(ScriptTestSuiteFactory.make(testDirDAWG+"/Misc/manifest.n3")) ;
+        ts3.addTest(ScriptTestSuiteFactory.make(testDirDAWG+"/Syntax/manifest.n3")) ;
+        ts3.addTest(ScriptTestSuiteFactory.make(testDirDAWG+"/regex/manifest.n3")) ;
+        ts3.addTest(ScriptTestSuiteFactory.make(testDirDAWG+"/examples/manifest.n3")) ;  // Value testing examples
         //In DAWG-Final:: ts3.addTest(QueryTestSuiteFactory.make(testDirDAWG+"/i18n/manifest.ttl")) ;
         addTest(ts3) ;
     }

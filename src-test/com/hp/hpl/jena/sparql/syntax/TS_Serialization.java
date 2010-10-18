@@ -9,7 +9,7 @@ package com.hp.hpl.jena.sparql.syntax;
 import junit.framework.TestSuite ;
 
 import com.hp.hpl.jena.sparql.ARQTestSuite ;
-import com.hp.hpl.jena.sparql.junit.QueryTestSuiteFactory ;
+import com.hp.hpl.jena.sparql.junit.ScriptTestSuiteFactory ;
 
 
 public class TS_Serialization extends TestSuite
@@ -17,7 +17,7 @@ public class TS_Serialization extends TestSuite
     // See also TestSerialization for some low level tests (not scripted)
     static public TestSuite suite()
     {
-        return QueryTestSuiteFactory.make(ARQTestSuite.testDirARQ+"/Serialization/manifest.ttl") ;
+        return ScriptTestSuiteFactory.make(ARQTestSuite.testDirARQ+"/Serialization/manifest.ttl") ;
     }
 }
 

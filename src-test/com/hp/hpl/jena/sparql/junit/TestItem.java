@@ -54,15 +54,12 @@ public class TestItem
     private Syntax queryFileSyntax ;
     
     public static TestItem create(Resource entry, Resource defaultTestType,
-                             Syntax defaultQuerySyntax, DataFormat defaultDataSyntax)
+                                  Syntax defaultSyntax, DataFormat defaultDataSyntax)
     {
-        return new TestItem(entry, defaultTestType, defaultQuerySyntax, defaultDataSyntax) ;
+        return new TestItem(entry, defaultTestType, defaultSyntax, defaultDataSyntax) ;
     }
     
-    public static TestItem create(String _name,
-                                         String _queryFile,
-                                         String _dataFile,
-                                         String _resultFile)
+    public static TestItem create(String _name, String _queryFile, String _dataFile, String _resultFile)
     {
         return new TestItem(_name, _queryFile, _dataFile, _resultFile) ;
     }

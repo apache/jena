@@ -15,7 +15,7 @@ import com.hp.hpl.jena.sparql.engine.main.QueryEngineMain ;
 import com.hp.hpl.jena.sparql.engine.ref.QueryEngineRef ;
 import com.hp.hpl.jena.sparql.expr.E_Function ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
-import com.hp.hpl.jena.sparql.junit.QueryTestSuiteFactory ;
+import com.hp.hpl.jena.sparql.junit.ScriptTestSuiteFactory ;
 
 /** All tests - the main test suite and also the examples tests */
 public class AllTestsARQ extends TestSuite
@@ -47,7 +47,7 @@ public class AllTestsARQ extends TestSuite
          */
         
         // Scripted tests for ARQ examples.
-        ts.addTest(QueryTestSuiteFactory.make(ARQTestSuite.testDirARQ+"/Examples/manifest.ttl")) ;
+        ts.addTest(ScriptTestSuiteFactory.make(ARQTestSuite.testDirARQ+"/Examples/manifest.ttl")) ;
         ts.addTest(TestLARQExamples.suite()) ;
         return ts ;
     }

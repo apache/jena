@@ -12,7 +12,7 @@ import junit.framework.TestSuite ;
 import com.hp.hpl.jena.sparql.engine.ref.QueryEngineRef ;
 import com.hp.hpl.jena.sparql.expr.E_Function ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
-import com.hp.hpl.jena.sparql.junit.QueryTestSuiteFactory ;
+import com.hp.hpl.jena.sparql.junit.ScriptTestSuiteFactory ;
 
 
 /**
@@ -38,7 +38,7 @@ public class ARQTestRefEngine extends TestCase
     
     private static TestSuite suiteMaker()
     {
-        return QueryTestSuiteFactory.make("testing/ARQ/manifest-ref-arq.ttl") ;
+        return ScriptTestSuiteFactory.make("testing/ARQ/manifest-ref-arq.ttl") ;
     }
     
 }
