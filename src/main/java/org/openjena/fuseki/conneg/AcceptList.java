@@ -107,14 +107,22 @@ public class AcceptList
         {
             if ( acceptItem.accepts(aItem) )
             {
-                // Return the more grounde&& choice.q >= m.q )d term
+                // Return the more grounded term
                 // E.g. aItem = text/plain ; acceptItem = text/*
                 
-                if ( aItem.moreGroundedThan(acceptItem) )
-                    acceptItem = new MediaRange(aItem) ;
-                
-                if ( choice != null && choice.q >= acceptItem.q )
+                if ( choice != null && choice.get_q() >= acceptItem.get_q() )
                     continue ;
+                // Return the more grounded term
+                // E.g. aItem = text/plain ; acceptItem = text/*
+                // This looses any q
+                if ( aItem.moreGroundedThan(acceptItem) )
+                {
+                    // Clone.
+                    acceptItem = new MediaRange(acceptItem) ;
+                    // Copy type info 
+                    acceptItem.setType(aItem.getType()) ;
+                    acceptItem.setSubType(aItem.getSubType()) ;
+                }
                 choice = acceptItem ;
             }
         }
@@ -148,7 +156,7 @@ public class AcceptList
             MediaRange m = proposalList.match(offer) ;
             if ( m != null )
             {
-                if ( choice != null && choice.q >= m.q )
+                if ( choice != null && choice.get_q() >= m.get_q() )
                     continue ; 
                 choice = m ;  
             }
@@ -163,12 +171,15 @@ public class AcceptList
         MediaRange choice = null ;
         for ( MediaRange acceptItem : ranges )
         {
-            if ( choice != null && choice.q >= acceptItem.q )
+            if ( choice != null && choice.get_q() >= acceptItem.get_q() )
                 continue ;
             choice = acceptItem ;
         }
         return choice ;
     }
+    
+    @Override
+    public String toString() { return ranges.toString() ; }
     
     private static List<MediaRange> stringToAcceptList(String s)
     {
@@ -191,7 +202,7 @@ public class AcceptList
     {
         public int compare(MediaRange mType1, MediaRange mType2)
         {
-            int r = Double.compare(mType1.q, mType2.q) ;
+            int r = Double.compare(mType1.get_q(), mType2.get_q()) ;
             
             if ( r == 0 )
                 r = subCompare(mType1.getType(), mType2.getType()) ;

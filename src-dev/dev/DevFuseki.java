@@ -11,16 +11,6 @@ public class DevFuseki
     // SOH
     //  Refactor into body/no_body send // body/no_body receive
     
-    // Bug:
-    // AcceptList.match(proposalList[with q] and offer list[no q])
-    /*
-       testMatch(
-                "application/sparql-results+json , application/sparql-results+xml;q=0.9 , application/rdf+xml , application/turtle;q=0.9 , * /*;q=0.1",
-                "application/sparql-results+xml, application/sparql-results+json, text/csv , text/tab-separated-values, text/plain",
-                "application/sparql-results+json") ;
-        but is application/sparql-results+xml because search does not compare q values correctly after matching one item.
-    */
-    
     // Environment variable for target (s-set but needs to shell built-in)
     //   defaults
     //   --service naming seems inconsistent.

@@ -14,7 +14,7 @@ import org.openjena.atlas.logging.Log ;
 public class MediaRange extends MediaType
 {
     // We pretend all MediaRanges have a q.
-    double q = 1.0 ;
+    private double q = 1.0 ;
     
     public MediaRange(MediaRange other)
     {  
@@ -34,6 +34,18 @@ public class MediaRange extends MediaType
         set_q() ;
     }
     
+    public double get_q()
+    { 
+        return q ;
+    }
+    
+//    public void set_q(double q)
+//    { 
+//        this.q = q ;
+//        setParameter("q", Double.toString(q)) ;
+//    }
+    
+    // Set from parameters.
     private void set_q()
     {
         String qStr = getParameter("q") ;
