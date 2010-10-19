@@ -19,8 +19,7 @@ public class DevFuseki
     // Testing project?
     
     // Locking => transaction support (via default model?)
-    //   ?? Dataset and connections
-    //   ?? Part of subclassing for specific backing storage 
+    //   HttpAcion.beginRead() etc.
     
     // Java clients:
     //   DatasetAccessor: don't serialise to byte[] and then send. 
