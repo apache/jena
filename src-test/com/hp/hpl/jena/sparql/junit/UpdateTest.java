@@ -40,7 +40,17 @@ public class UpdateTest extends EarlTestCase
     private Dataset input ;
     private Dataset output ;
 
-    public UpdateTest(String testName, EarlReport earl, Resource entry, Resource action, Resource result)
+    public static UpdateTest create(String testName, EarlReport earl, Resource entry, Resource action, Resource result)
+    {
+        if ( ! action.hasProperty(TestManifestUpdate_11.request) )
+        {
+            System.err.println("No request in action: "+testName) ;
+            return null ;
+        }
+        return new UpdateTest(testName, earl, entry, action, result) ;
+        
+    }
+    private UpdateTest(String testName, EarlReport earl, Resource entry, Resource action, Resource result)
     {
         super(TestUtils.safeName(testName), entry.getURI(), earl) ;
         this.action = action ;

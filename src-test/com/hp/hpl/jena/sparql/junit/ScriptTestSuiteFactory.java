@@ -99,52 +99,50 @@ public class ScriptTestSuiteFactory extends TestFactoryManifest
         {
             // == Good syntax
             if ( testType.equals(TestManifest.PositiveSyntaxTest) )
-                test = new SyntaxTest(testName, results, item) ;
+                return new SyntaxTest(testName, results, item) ;
             if ( testType.equals(TestManifest_11.PositiveSyntaxTest11) )
-                test = new SyntaxTest(testName, results, item) ;
+                return new SyntaxTest(testName, results, item) ;
             if ( testType.equals(TestManifestX.PositiveSyntaxTestARQ) )
-                test = new SyntaxTest(testName, results, item) ;
+                return new SyntaxTest(testName, results, item) ;
 
             // == Bad
             if ( testType.equals(TestManifest.NegativeSyntaxTest) )
-                test = new SyntaxTest(testName, results, item, false) ;
+                return new SyntaxTest(testName, results, item, false) ;
             if ( testType.equals(TestManifest_11.NegativeSyntaxTest11) )
-                test = new SyntaxTest(testName, results, item, false) ;
+                return new SyntaxTest(testName, results, item, false) ;
             if ( testType.equals(TestManifestX.NegativeSyntaxTestARQ) )
-                test = new SyntaxTest(testName, results, item, false) ;
+                return new SyntaxTest(testName, results, item, false) ;
             
             // ---- Update tests
             if ( testType.equals(TestManifest_11.PositiveUpdateSyntaxTest11) )
-                test = new SyntaxUpdateTest(testName, results, item, true) ;
+                return new SyntaxUpdateTest(testName, results, item, true) ;
             if ( testType.equals(TestManifest_11.NegativeUpdateSyntaxTest11) )
-                test = new SyntaxUpdateTest(testName, results, item, false) ;
+                return new SyntaxUpdateTest(testName, results, item, false) ;
 
             if ( testType.equals(TestManifestUpdate_11.UpdateEvaluationTest) )
-                test = new UpdateTest(testName, results, entry, action, result) ;
+                return UpdateTest.create(testName, results, entry, action, result) ;
 
             // ----
             
             if ( testType.equals(TestManifestX.TestSerialization) )
-                test = new TestSerialization(testName, results, item) ;
+                return new TestSerialization(testName, results, item) ;
             
             if ( testType.equals(TestManifest.QueryEvaluationTest)
                 || testType.equals(TestManifestX.TestQuery)
                 )
-                test = new QueryTest(testName, results, fileManager, item) ;
+                return new QueryTest(testName, results, fileManager, item) ;
             
             // Reduced is funny.
             if ( testType.equals(TestManifest.ReducedCardinalityTest) )
-                test = new QueryTest(testName, results, fileManager, item) ;
+                return new QueryTest(testName, results, fileManager, item) ;
             
             if ( testType.equals(TestManifestX.TestSurpressed) )
-                test = new SurpressedTest(testName, results, item) ;
+                return new SurpressedTest(testName, results, item) ;
             
-            if ( test == null )
-                System.err.println("Test type '"+testType+"' not recognized") ;
+            System.err.println("Test type '"+testType+"' not recognized") ;
         }
         // Default 
-        if ( test == null )
-            test = new QueryTest(testName, results, fileManager, item) ;
+        test = new QueryTest(testName, results, fileManager, item) ;
         return test ;
     }
 }
