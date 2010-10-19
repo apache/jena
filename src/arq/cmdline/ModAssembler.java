@@ -17,7 +17,7 @@ import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils ;
 
 public class ModAssembler extends ModBase
 {
-    protected final ArgDecl assemblerDescDecl = new ArgDecl(ArgDecl.HasValue, "desc", "dataset") ;
+    public static final ArgDecl assemblerDescDecl = new ArgDecl(ArgDecl.HasValue, "desc", "dataset") ;
     private String assemblerFile = null ;
     Object thingDescribed = null ;
     

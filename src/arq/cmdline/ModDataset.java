@@ -21,7 +21,6 @@ public abstract class ModDataset extends ModBase
         if ( ! createAttempted )
             dataset = createDataset() ;
         createAttempted = true ;
-        // Can still be null (nothing on command line set the datset - hope the query does something).
         return dataset ;
     }
     
