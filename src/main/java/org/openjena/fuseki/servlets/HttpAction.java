@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse ;
 
 import com.hp.hpl.jena.shared.Lock ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import com.hp.hpl.jena.tdb.TDB ;
 
 class HttpAction
 {
@@ -34,7 +35,7 @@ class HttpAction
     public void endRead()       { leave(dsg, lock, Lock.READ) ; }
     
     public void beginWrite()    { enter(dsg, lock, Lock.WRITE) ; } 
-    public void endWrite()      { leave(dsg, lock, Lock.WRITE) ; }
+    public void endWrite()      { sync() ; leave(dsg, lock, Lock.WRITE) ; }
 
     private void enter(DatasetGraph dsg, Lock lock, boolean readLock)
     {
@@ -54,9 +55,12 @@ class HttpAction
         lock.leaveCriticalSection() ;
     }
     
-
-    
+    public void sync()
+    {
+        TDB.sync(dsg) ;
+    }
 }
+
 /*
  * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.

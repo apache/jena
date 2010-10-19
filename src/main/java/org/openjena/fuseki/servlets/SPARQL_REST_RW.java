@@ -23,7 +23,6 @@ public class SPARQL_REST_RW extends SPARQL_REST_R
         action.beginWrite() ;
         try {
             deleteGraph(action) ;
-            SPARQL_ServletBase.sync(action.dsg) ;
         } finally { action.endWrite() ; }
         SPARQL_ServletBase.successNoContent(action) ;
     }
@@ -38,7 +37,6 @@ public class SPARQL_REST_RW extends SPARQL_REST_R
             clearGraph(action.target) ;
             //deleteGraph(target) ;   // Opps. Deletes the target!
             addDataInto(body.getDefaultGraph(), action.target) ;
-            SPARQL_ServletBase.sync(action.dsg) ;
         } finally { action.endWrite() ; }
         // Differentiate: 201 Created or 204 No Content 
         if ( existedBefore )
@@ -55,7 +53,6 @@ public class SPARQL_REST_RW extends SPARQL_REST_R
         action.beginWrite() ;
         try {
             addDataInto(body.getDefaultGraph(), action.target) ;
-            SPARQL_ServletBase.sync(action.dsg) ;
         } finally { action.endWrite() ; }
         if ( existedBefore )
             SPARQL_ServletBase.successNoContent(action) ;

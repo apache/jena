@@ -25,7 +25,6 @@ import org.openjena.fuseki.http.HttpSC ;
 import org.openjena.fuseki.server.DatasetRegistry ;
 
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.tdb.TDB ;
 
 public abstract class SPARQL_ServletBase extends HttpServlet
 {
@@ -287,18 +286,12 @@ public abstract class SPARQL_ServletBase extends HttpServlet
         throw new ActionErrorException(ex, message, HttpSC.INTERNAL_SERVER_ERROR_500) ;
     }
     
-    protected static void sync(DatasetGraph dsg)
-    {
-        TDB.sync(dsg) ;
-    }
-    
     protected static String formatForLog(String string)
     {
         string = string.replace('\n', ' ') ;
         string = string.replace('\r', ' ') ;
         return string ; 
     }
-
 
     public static void setCommonHeaders(HttpServletResponse httpResponse)
     {
