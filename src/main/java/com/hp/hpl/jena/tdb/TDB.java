@@ -91,6 +91,8 @@ public class TDB
     public static void setOptimizerWarningFlag(boolean b)
     { SetupTDB.setOptimizerWarningFlag(b) ; }
     
+    // ** Call SystemARQ.sync 
+    
     /** Sync a TDB-backed Model. Do nothing if not TDB-backed. */
     public static void sync(Model model)
     {
@@ -127,7 +129,6 @@ public class TDB
             }
         }
     }
-
     
     /** Sync a TDB synchronizable object (model, graph, dataset). 
      *  If force is true, synchronize as much as possible (e.g. file metadata)
