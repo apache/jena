@@ -10,6 +10,7 @@ public class DevFuseki
 {
     // SOH
     //  Refactor into body/no_body send // body/no_body receive
+    //  s-get --accept line/shortname + s-query
     
     // **** Clean up SPARQL Query results code.
 
@@ -21,7 +22,8 @@ public class DevFuseki
     // Locking => transaction support (via default model?)
     //   HttpAction.beginRead() etc.
     
-    // fuseki-server : --file : load into memory.
+    // Document: 
+    //   fuseki-server : --file : load into memory.
     
     // Java clients:
     //   DatasetAccessor: don't serialise to byte[] and then send. 

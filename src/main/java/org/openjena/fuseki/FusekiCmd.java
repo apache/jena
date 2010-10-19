@@ -6,21 +6,32 @@
 
 package org.openjena.fuseki;
 
+import java.io.InputStream ;
+
+import org.openjena.atlas.io.IO ;
+import org.openjena.atlas.lib.Sink ;
 import org.openjena.fuseki.server.SPARQLServer ;
+import org.openjena.riot.Lang ;
+import org.openjena.riot.RiotLoader ;
+import org.openjena.riot.lang.SinkQuadsToDataset ;
+import org.openjena.riot.lang.SinkTriplesToGraph ;
 import arq.cmd.CmdException ;
 import arq.cmdline.ArgDecl ;
 import arq.cmdline.CmdARQ ;
 import arq.cmdline.ModDatasetAssembler ;
 
+import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
+import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.tdb.TDB ;
 
 public class FusekiCmd extends CmdARQ
 {
     private static ArgDecl argMem       = new ArgDecl(ArgDecl.NoValue, "mem") ;
+    private static ArgDecl argFile       = new ArgDecl(ArgDecl.HasValue, "file") ;
     private static ArgDecl argMemTDB    = new ArgDecl(ArgDecl.NoValue, "memtdb", "memTDB") ;
     private static ArgDecl argPort      = new ArgDecl(ArgDecl.HasValue, "port") ;
     
@@ -45,13 +56,14 @@ public class FusekiCmd extends CmdARQ
         super(argv) ;
         addModule(modDataset) ;
         add(argMem, "--mem", "Create an in-memory, non-persistent dataset for the server") ;
+        add(argFile, "--file=FILE", "Create an in-memory, non-persistent dataset for the server, initialised with the contents of the file") ;
         add(argMemTDB, "--memTDB", "Create an in-memory, non-persistent dataset using TDB (testing only)") ;
         add(argPort, "--port", "Port number") ;
         super.modVersion.addClass(TDB.class) ;
         super.modVersion.addClass(Fuseki.class) ;
     }
 
-    static String argUsage = "[--mem|--desc=AssemblerFile] [--port PORT] /DatasetPathName" ; 
+    static String argUsage = "[--mem|--desc=AssemblerFile|--file=FILE] [--port PORT] /DatasetPathName" ; 
     
     @Override
     protected String getSummary()
@@ -62,10 +74,34 @@ public class FusekiCmd extends CmdARQ
     @Override
     protected void processModulesAndArgs()
     {
-        if ( contains(argMem) )
+        //if ( contains(argMem) && contains(argFile) ) {} 
+        
+        if ( contains(argMem) || contains(argFile))
             dsg = DatasetGraphFactory.createMem() ;
+        if ( contains(argFile) )
+        {
+            // replace by RiotLoader after ARQ refresh.
+            String filename = getValue(argFile) ;
+            Lang language = Lang.guess(filename) ;
+            if ( language == null )
+                throw new CmdException("Can't guess language for file; "+filename) ;
+            InputStream input = IO.openFile(filename) ; 
+            
+            if ( language.isQuads() )
+            {
+                Sink<Quad> sink = new SinkQuadsToDataset(dsg) ;
+                RiotLoader.readQuads(input, language, filename, sink) ;
+            }
+            else
+            {
+                Sink<Triple> sink = new SinkTriplesToGraph(dsg.getDefaultGraph()) ;
+                RiotLoader.readTriples(input, language, filename, sink) ;
+            }
+        }
+        
         if ( contains(argMemTDB) )
             throw new CmdException(argMemTDB.getKeyName()+" not implemented") ;
+        
         if ( contains(argPort) )
         {
             String portStr = getValue(argPort) ;
@@ -86,9 +122,9 @@ public class FusekiCmd extends CmdARQ
             throw new CmdException("No dataset path name given") ;
         if ( getPositional().size() > 1  )
             throw new CmdException("Multiple dataset path names given") ;
-        datasetPath = getPositionalArg(0) ; 
-        if ( ! datasetPath.startsWith("/") )
-            throw new CmdException("Dataset path name must begin with a /") ;
+        datasetPath = getPositionalArg(0) ;
+        if ( datasetPath.length() > 0 && ! datasetPath.startsWith("/") )
+            throw new CmdException("Dataset path name must begin with a /: "+datasetPath) ;
     }
 
     @Override

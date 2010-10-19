@@ -14,7 +14,10 @@ public class RunFuseki
     {
         FusekiCmd.main(
                     "-v", 
-                    "--mem", "--port=3030", "/dataset") ;
+                    "--port=3030", 
+                    //"--mem", "/"
+                    "--file=D.nt", ""
+                    ) ;
     }
 
 }
