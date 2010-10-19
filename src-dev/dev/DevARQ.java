@@ -14,7 +14,7 @@ public class DevARQ
     // LIMIT subquery.
     // Check for SELECT syntax errors by scope.
     
-    // BIND: end-of-group
+    // BIND
     
     // (Better) respect Content-Length?
     // ReportRemoteVirtuoso

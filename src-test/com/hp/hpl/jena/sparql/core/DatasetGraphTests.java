@@ -11,6 +11,7 @@ import static org.junit.Assert.assertNotNull ;
 import static org.junit.Assert.assertTrue ;
 
 import java.util.Iterator ;
+import java.util.List ;
 import java.util.Set ;
 
 import org.junit.Test ;
@@ -168,6 +169,21 @@ public abstract class DatasetGraphTests
         dsg.addGraph(g, data) ;
         Quad quad = SSE.parseQuad("(quad <g> <s> <p> <o>)") ;
         assertTrue(dsg.contains(quad)) ;
+    }
+    
+    @Test public void find_01()
+    {
+        Node g1 = Node.createURI("g1") ;
+        DatasetGraph dsg = emptyDataset() ;
+        Quad quad1 = SSE.parseQuad("(quad <g1> <s1> <p1> <o1>)") ;
+        Quad quad2 = SSE.parseQuad("(quad <g2> <s2> <p2> <o2>)") ;
+        dsg.add(quad1) ;
+        dsg.add(quad2) ;
+        
+        List<Quad> quads = Iter.toList(dsg.find(g1, null, null, null)) ;
+        assertEquals(1, quads.size()) ;
+        Quad q = quads.get(0) ; 
+        assertEquals(quad1, q) ;
     }
     
     // ---- Dataset level tests
