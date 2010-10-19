@@ -75,6 +75,11 @@ public class SPARQLServer
     
     private void init(DatasetGraph dsg, String datasetPath, int port)
     {
+        if ( datasetPath.equals("/") )
+            datasetPath = "" ;
+        else if ( ! datasetPath.startsWith("/") )
+            datasetPath = "/"+datasetPath ;
+        
         // Server, with one NIO-based connector, large input buffer size (for long URLs).
         server = new Server();
         // Using "= new SelectChannelConnector() ;" on Darwin (OS/X) causes problems 

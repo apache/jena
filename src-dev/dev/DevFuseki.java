@@ -23,9 +23,6 @@ public class DevFuseki
     // Locking => transaction support (via default model?)
     //   HttpAction.beginRead() etc.
     
-    // Document: 
-    //   fuseki-server : --file : load into memory.
-    
     // Java clients:
     //   DatasetAccessor: don't serialise to byte[] and then send. 
     //   DatasetAccessor : check existence of endpoint. 

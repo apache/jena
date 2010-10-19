@@ -74,8 +74,19 @@ public class FusekiCmd extends CmdARQ
     @Override
     protected void processModulesAndArgs()
     {
-        //if ( contains(argMem) && contains(argFile) ) {} 
+        int x = 0 ;
         
+        ArgDecl assemblerDescDecl = new ArgDecl(ArgDecl.HasValue, "desc", "dataset") ;
+        if ( contains(argMem) ) x++ ; 
+        if ( contains(argFile) ) x++ ;
+        if ( contains(assemblerDescDecl) ) x++ ;
+        
+        if ( x > 1 )
+            throw new CmdException("Only one of --mem, --file and --desc") ;
+        
+        if ( x == 0 )
+            throw new CmdException("Required: one of --mem, --file and --desc") ;
+
         if ( contains(argMem) || contains(argFile))
             dsg = DatasetGraphFactory.createMem() ;
         if ( contains(argFile) )
