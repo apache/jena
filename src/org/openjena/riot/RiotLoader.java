@@ -80,20 +80,46 @@ public class RiotLoader
         return dsg ;
     }
 
-    /** Parse a file and send the quads to a dataset */ 
+    /** Parse a file into a dataset graph */ 
+    public static void read(String filename, DatasetGraph dataset)
+    {
+        Lang lang = Lang.guess(filename) ;
+        if ( lang == null )
+            throw new RiotException("Can't guess language for "+filename) ; 
+        InputStream input = IO.openFile(filename) ;
+        read(input, dataset, lang, filename) ;
+    }
+    
+    /** Parse a file to a dataset */ 
+    public static void read(String filename, DatasetGraph dataset, Lang lang)
+    {
+        read(filename, dataset, lang, filename) ;
+    }
+    
+    /** Parse a file to a dataset */ 
     public static void read(String filename, DatasetGraph dataset, Lang lang, String baseURI)
     {
         InputStream input = IO.openFile(filename) ;
-        read(input, dataset, lang, baseURI) ;
+        read(input, dataset, lang, filename) ;
     }
     
+
     /** Parse an input stream and send the quads to a dataset */ 
     public static void read(InputStream input, DatasetGraph dataset, Lang language, String baseURI)
     {
-        Sink<Quad> sink = RiotLoader.datasetSink(dataset) ;
-        readQuads(input, language, baseURI, sink) ;
+        if ( language.isQuads() )
+        {
+            Sink<Quad> sink = datasetSink(dataset) ;
+            readQuads(input, language, baseURI, sink) ;
+        }
+        else
+        {
+            Sink<Triple> sink = graphSink(dataset.getDefaultGraph()) ;
+            readTriples(input, language, baseURI, sink) ;
+        }
     }
     
+
     /** Parse an input stream and send the quads to the sink */ 
     public static void readQuads(InputStream input, Lang language, String baseURI, Sink<Quad> sink)
     {
