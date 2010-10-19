@@ -11,6 +11,7 @@ public class DevFuseki
     // SOH
     //  Refactor into body/no_body send // body/no_body receive
     //  s-get --accept line/shortname + s-query
+    // fuseki-server - check args better.
     
     // **** Clean up SPARQL Query results code.
 
