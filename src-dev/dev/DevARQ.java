@@ -3,8 +3,6 @@ package dev ;
 
 public class DevARQ
 {
-    // More tests for DSG find etc.
-    
     // DataSource ds = DatasetFactory.create() ; is a non-graph adding DataSource
     // change.  Always make growing? What about mixed types?
     

@@ -10,10 +10,67 @@ import java.util.ArrayList ;
 import java.util.Iterator ;
 import java.util.List ;
 
+import org.openjena.atlas.lib.Sync ;
+
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.query.Dataset ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.mgt.SystemInfo ;
 
 public class SystemARQ
 {
+    /** Sync a Model if it provides the underlying graph provides sync . Do nothing otherwise. */
+    public static void sync(Model model)
+    {
+        sync(model.getGraph()) ;
+    }
+    
+    /** Sync a if provided. Do nothing if not TDB-backed. */
+    public static void sync(Graph graph)
+    {
+        sync(graph, true) ;
+    }
+
+    /** Sync a Dataset, if underlying storage provides sync. */
+    public static void sync(Dataset dataset)
+    { 
+        sync(dataset.asDatasetGraph()) ;
+    }
+    
+    /** Sync a TDB-backed DatasetGraph. Do nothing if not TDB-backed. */
+    public static void sync(DatasetGraph dataset)
+    { 
+        if ( dataset instanceof Sync )
+        {
+            ((Sync)dataset).sync(true) ;
+            return ;
+        }
+        else
+        {
+            // Go through each graph.
+            Iterator<Node> iter = dataset.listGraphNodes() ;
+            for ( ; iter.hasNext() ; )
+            {
+                Node n = iter.next();
+                Graph g = dataset.getGraph(n) ;
+                sync(g, true) ;
+            }
+        }
+    }
+ 
+    
+    /** Sync an object if synchronizable (model, graph, dataset). 
+     *  If force is true, synchronize as much as possible (e.g. file metadata)
+     *  else make a reasonable attenpt at synchronization but does not gauarantee disk state. 
+     *  Do nothing otherwise 
+     */
+    private static void sync(Object object, boolean force)
+    {
+        if ( object instanceof Sync )
+            ((Sync)object).sync(force) ;
+    }
     
     
     private static List<SystemInfo> versions = new ArrayList<SystemInfo>() ;
