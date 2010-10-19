@@ -65,6 +65,7 @@ public abstract class SPARQL_ServletBase extends HttpServlet
             }
 
             uri = mapRequestToDataset(uri) ;
+            // Read only action.
             DatasetGraph dsg = DatasetRegistry.get().get(uri) ;
             if ( dsg == null )
             {
@@ -189,7 +190,7 @@ public abstract class SPARQL_ServletBase extends HttpServlet
         }
         return sb.toString() ;
     }
-
+    
     protected static void successNoContent(HttpAction action)
     {
         success(action, HttpSC.NO_CONTENT_204);

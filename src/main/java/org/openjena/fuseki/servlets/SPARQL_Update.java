@@ -26,10 +26,7 @@ import org.openjena.riot.WebContent ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
-import com.hp.hpl.jena.shared.Lock ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.update.GraphStore ;
-import com.hp.hpl.jena.update.GraphStoreFactory ;
 import com.hp.hpl.jena.update.UpdateAction ;
 import com.hp.hpl.jena.update.UpdateException ;
 import com.hp.hpl.jena.update.UpdateFactory ;
@@ -171,17 +168,14 @@ public class SPARQL_Update extends SPARQL_ServletBase
     
     private void execute(HttpActionUpdate action, UpdateRequest updateRequest)
     {
-        GraphStore graphStore = GraphStoreFactory.create(action.dsg) ;
+        //GraphStore graphStore = GraphStoreFactory.create(action.dsg) ;
+        action.beginWrite() ;
         try {
-            action.lock.enterCriticalSection(Lock.WRITE) ;
-            // On ARQ update, replace with .execute(req, dsg) ;
-            UpdateAction.execute(updateRequest, graphStore) ;
-    //        UpdateProcessor proc = UpdateExecutionFactory.create(req, graphStore) ;
-    //        proc.execute() ;
+            UpdateAction.execute(updateRequest, action.dsg) ;
             successNoContent(action) ;
         }
         catch ( UpdateException ex) { errorBadRequest(ex.getMessage()) ; }
-        finally {  action.lock.leaveCriticalSection() ; }
+        finally { action.endWrite() ; }
     }
 }
 

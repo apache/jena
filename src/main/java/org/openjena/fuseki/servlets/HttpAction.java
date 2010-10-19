@@ -29,6 +29,33 @@ class HttpAction
         this.response = response ;
         this.verbose = verbose ;
     }
+    
+    public void beginRead()     { enter(dsg, lock, Lock.READ) ; } 
+    public void endRead()       { leave(dsg, lock, Lock.READ) ; }
+    
+    public void beginWrite()    { enter(dsg, lock, Lock.WRITE) ; } 
+    public void endWrite()      { leave(dsg, lock, Lock.WRITE) ; }
+
+    private void enter(DatasetGraph dsg, Lock lock, boolean readLock)
+    {
+        if ( lock == null )
+            lock = dsg.getLock() ;
+        if ( lock == null )
+            return ;
+        lock.enterCriticalSection(readLock) ;
+    }
+    
+    private void leave(DatasetGraph dsg, Lock lock, boolean readLock)
+    {
+        if ( lock == null )
+            lock = dsg.getLock() ;
+        if ( lock == null )
+            return ;
+        lock.leaveCriticalSection() ;
+    }
+    
+
+    
 }
 /*
  * (c) Copyright 2010 Epimorphics Ltd.

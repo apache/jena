@@ -31,10 +31,8 @@ import com.hp.hpl.jena.query.QueryExecution ;
 import com.hp.hpl.jena.query.QueryExecutionFactory ;
 import com.hp.hpl.jena.query.QueryFactory ;
 import com.hp.hpl.jena.query.ResultSet ;
-import com.hp.hpl.jena.query.ResultSetFactory ;
 import com.hp.hpl.jena.query.Syntax ;
 import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.shared.Lock ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.resultset.SPARQLResult ;
 
@@ -172,12 +170,12 @@ public abstract class SPARQL_Query extends SPARQL_ServletBase
         if ( query.hasDatasetDescription() )
             errorBadRequest("Query has FROM/FROM NAMED") ;
         
-        // Assumes no streaming.
+        // Assumes finished whole thing by end of sendResult. 
+        action.beginRead() ;
         try {
-            action.lock.enterCriticalSection(Lock.READ) ;
             SPARQLResult result = executeQuery(action, query, queryStringLog) ;
             sendResults(action, result) ;
-        } finally { action.lock.leaveCriticalSection() ; }
+        } finally { action.endWrite() ; }
 
     }
 
@@ -194,24 +192,19 @@ public abstract class SPARQL_Query extends SPARQL_ServletBase
         Dataset dataset = decideDataset(action, query, queryStringLog) ; 
         QueryExecution qexec = createQueryExecution(query, dataset) ;
 
-        // call back.
-        
         if ( query.isSelectType() )
         {
-            // Force some query execute now.
             ResultSet rs = qexec.execSelect() ;
-
             
+            // Force some query execution now.
             // Do this to force the query to do something that should touch any underlying database,
             // and hence ensure the communications layer is working.  MySQL can time out after  
             // 8 hours of an idle connection
             rs.hasNext() ;
 
-            // TEMP until streaming sorted out.
-            rs = ResultSetFactory.copyResults(rs) ;
-            
-            // Old way - heavyweight
-            //rs = ResultSetFactory.copyResults(rs) ;
+//            // Not necessary if we are inside readlock under end of sending results. 
+//            rs = ResultSetFactory.copyResults(rs) ;
+
             serverlog.info(format("[%d] OK/select", action.id)) ;
             return new SPARQLResult(rs) ;
         }

@@ -6,7 +6,6 @@
 
 package org.openjena.fuseki.servlets;
 
-import com.hp.hpl.jena.shared.Lock ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 
 /** The WRITE operations added to the READ oeprations */
@@ -21,11 +20,11 @@ public class SPARQL_REST_RW extends SPARQL_REST_R
     @Override
     protected void doDelete(HttpActionREST action)
     {
-        action.lock.enterCriticalSection(Lock.WRITE) ;
+        action.beginWrite() ;
         try {
             deleteGraph(action) ;
             SPARQL_ServletBase.sync(action.dsg) ;
-        } finally { action.lock.leaveCriticalSection() ; }
+        } finally { action.endWrite() ; }
         SPARQL_ServletBase.successNoContent(action) ;
     }
 
@@ -34,13 +33,13 @@ public class SPARQL_REST_RW extends SPARQL_REST_R
     {
         boolean existedBefore = action.target.alreadyExisted ; 
         DatasetGraph body = parseBody(action) ;
-        action.lock.enterCriticalSection(Lock.WRITE) ;
+        action.beginWrite() ;
         try {
             clearGraph(action.target) ;
             //deleteGraph(target) ;   // Opps. Deletes the target!
             addDataInto(body.getDefaultGraph(), action.target) ;
             SPARQL_ServletBase.sync(action.dsg) ;
-        } finally { action.lock.leaveCriticalSection() ; }
+        } finally { action.endWrite() ; }
         // Differentiate: 201 Created or 204 No Content 
         if ( existedBefore )
             SPARQL_ServletBase.successNoContent(action) ;
@@ -53,11 +52,11 @@ public class SPARQL_REST_RW extends SPARQL_REST_R
     {
         boolean existedBefore = action.target.alreadyExisted ; 
         DatasetGraph body = parseBody(action) ;
-        action.lock.enterCriticalSection(Lock.WRITE) ;
+        action.beginWrite() ;
         try {
             addDataInto(body.getDefaultGraph(), action.target) ;
             SPARQL_ServletBase.sync(action.dsg) ;
-        } finally { action.lock.leaveCriticalSection() ; }
+        } finally { action.endWrite() ; }
         if ( existedBefore )
             SPARQL_ServletBase.successNoContent(action) ;
         else

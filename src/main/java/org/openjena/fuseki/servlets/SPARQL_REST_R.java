@@ -19,7 +19,6 @@ import org.openjena.riot.Lang ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.rdf.model.RDFWriter ;
-import com.hp.hpl.jena.shared.Lock ;
 
 /** Only the READ operations */
 public class SPARQL_REST_R extends SPARQL_REST
@@ -51,7 +50,7 @@ public class SPARQL_REST_R extends SPARQL_REST
                                       action.id, mediaType.getContentType(), mediaType.getCharset(), lang.getName())) ;
             }
 
-            action.lock.enterCriticalSection(Lock.READ) ;
+            action.beginRead() ;
             try {
                 // If we want to set the Content-Length, we need to buffer.
                 //response.setContentLength(??) ;
@@ -59,7 +58,7 @@ public class SPARQL_REST_R extends SPARQL_REST
                 Model model = ModelFactory.createModelForGraph(action.target.graph()) ;
                 writer.write(model, action.response.getOutputStream(), null) ;
                 success(action) ;
-            } finally { action.lock.leaveCriticalSection() ; }
+            } finally { action.endRead() ; }
         } catch (IOException ex) { errorOccurred(ex) ; }
     }
     
