@@ -123,9 +123,9 @@
 [<MODIFY>]       ::= 'MODIFY'
 [<INSERT>]       ::= 'INSERT'
 [<DELETE>]       ::= 'DELETE'
-[<DELETE_DATA>]  ::= 'DELETE' <WS*> 'DATA'
-[<DELETE_WHERE>] ::= 'DELETE' <WS*> 'WHERE'
-[<INSERT_DATA>]  ::= 'INSERT' <WS*> ',DATA'
+[<DELETE_DATA>]  ::= 'DELETE DATA'
+[<DELETE_WHERE>] ::= 'DELETE WHERE'
+[<INSERT_DATA>]  ::= 'INSERT DATA'
 
 [<DATA>]        ::= 'DATA'
 [<LOAD>]        ::= 'LOAD' 
