@@ -21,6 +21,7 @@ class HttpAction
     final HttpServletRequest request;
     final HttpServletResponse response ;
     final boolean verbose ;
+    
     public HttpAction(long id, DatasetGraph dsg, HttpServletRequest request, HttpServletResponse response, boolean verbose)
     {
         this.id = id ;

@@ -20,6 +20,9 @@ import org.openjena.fuseki.HttpNames ;
 import org.openjena.fuseki.servlets.SPARQL_QueryDataset ;
 import org.openjena.fuseki.servlets.SPARQL_REST_RW ;
 import org.openjena.fuseki.servlets.SPARQL_Update ;
+import org.openjena.fuseki.validation.DataValidator ;
+import org.openjena.fuseki.validation.QueryValidator ;
+import org.openjena.fuseki.validation.UpdateValidator ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
@@ -98,6 +101,8 @@ public class SPARQLServer
         
         String[] datasets = { datasetPath } ;
         
+        String validationRoot = "/validate" ;
+        
         for ( String dsPath : datasets )
         {
             ServletHolder sparqlQuery = new ServletHolder(new SPARQL_QueryDataset(verbose)) ;
@@ -111,6 +116,14 @@ public class SPARQLServer
             context.addServlet(sparqlQuery, dsPath+HttpNames.ServiceQueryAlt) ;      // Alternative name
             context.addServlet(sparqlUpdate, dsPath+HttpNames.ServiceUpdate) ;
             //context.addServlet(new ServletHolder(new DumpServlet()),"/dump");
+            
+            // Validators
+            ServletHolder validateQuery = new ServletHolder(new QueryValidator()) ;
+            ServletHolder validateUpdate = new ServletHolder(new UpdateValidator()) ;
+            ServletHolder validateData = new ServletHolder(new DataValidator()) ;    
+            context.addServlet(validateQuery, validationRoot+"/query") ;
+            context.addServlet(validateUpdate, validationRoot+"/update") ;
+            context.addServlet(validateData, validationRoot+"/data") ;
             
             // Finally, static content
             ServletHolder staticContent = new ServletHolder(new DefaultServlet()) ;
