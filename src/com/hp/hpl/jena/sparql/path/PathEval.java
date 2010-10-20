@@ -210,8 +210,6 @@ public class PathEval
             if ( pathMod.getMax() == 0 )
                 return ;
             
-            
-            
             // One step.
             Iterator<Node> iter = eval(graph, node, pathMod.getSubPath(), forwardMode) ;
 
@@ -267,7 +265,9 @@ public class PathEval
 
         //@Override
         public void visit(P_ZeroOrMore path)
-        { doZeroOrMore(path.getSubPath()) ; }
+        { 
+            doZeroOrMore(path.getSubPath()) ;
+        }
 
         //@Override
         public void visit(P_OneOrMore path)
