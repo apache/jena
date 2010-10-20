@@ -381,7 +381,7 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
         boolean alreadyExists ;
         dsg.getLock().enterCriticalSection(Lock.READ) ;
         try {
-                alreadyExists = dsg.containsGraph(gn) ;
+            alreadyExists = dsg.containsGraph(gn) ;
             return Target.createNamed(dsg, alreadyExists, absUri, gn) ;
         } finally { dsg.getLock().leaveCriticalSection() ; }
     }

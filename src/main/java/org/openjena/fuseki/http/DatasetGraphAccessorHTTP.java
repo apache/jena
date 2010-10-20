@@ -129,10 +129,13 @@ public class DatasetGraphAccessorHTTP implements DatasetGraphAccessor
     @Override
     public void httpDelete(Node graphName)            { doDelete(target(graphName)) ; }
 
-    private void doDelete(String url)
+    private boolean doDelete(String url)
     {
-        HttpUriRequest httpDelete = new HttpDelete(url) ;
-        exec(url, null, httpDelete, false) ;
+        try {
+            HttpUriRequest httpDelete = new HttpDelete(url) ;
+            exec(url, null, httpDelete, false) ;
+            return true ;
+        } catch (FusekiNotFoundException ex) { return false ; }
     }
     
     @Override

@@ -122,9 +122,8 @@ public abstract class TestDatasetGraphAccessorBase extends BaseServerTest
     // Named graph, no side effects.
     @Test public void delete_02() 
     {
-
         DatasetGraphAccessor updater = getDatasetUpdater() ;
-        updater.httpDelete(n1) ;
+        //updater.httpDelete(n1) ;
         Graph graph = updater.httpGet(n1) ;
         assertNullOrEmpty(graph) ;
 

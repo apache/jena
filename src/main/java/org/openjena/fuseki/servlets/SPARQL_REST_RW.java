@@ -29,6 +29,9 @@ public class SPARQL_REST_RW extends SPARQL_REST_R
     @Override
     protected void doDelete(HttpActionREST action)
     {
+        boolean existedBefore = action.target.alreadyExisted ; 
+        if ( ! existedBefore)
+            errorNotFound("No such graph: "+action.target.name) ;
         action.beginWrite() ;
         try {
             deleteGraph(action) ;
