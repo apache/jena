@@ -15,8 +15,6 @@ import javax.servlet.http.HttpServletResponse ;
 
 import org.openjena.atlas.io.IndentedLineBuffer ;
 import org.openjena.atlas.io.IndentedWriter ;
-import org.openjena.fuseki.server.SPARQLServer ;
-import org.slf4j.Logger ;
 
 import com.hp.hpl.jena.query.Syntax ;
 import com.hp.hpl.jena.sparql.ARQException ;
@@ -25,10 +23,9 @@ import com.hp.hpl.jena.update.UpdateRequest ;
 
 public class UpdateValidator extends ValidatorBase
 {
-    protected static Logger log = SPARQLServer.log ;
-    
     public UpdateValidator() 
     { }
+    
     static final String paramLineNumbers      = "linenumbers" ;
     static final String paramFormat           = "outputFormat" ;
     static final String paramUpdate            = "update" ;
@@ -36,7 +33,7 @@ public class UpdateValidator extends ValidatorBase
     //static final String paramSyntaxExtended   = "extendedSyntax" ;
     
     @Override
-    protected void validationRequest(HttpServletRequest httpRequest, HttpServletResponse httpResponse)
+    protected void execute(HttpServletRequest httpRequest, HttpServletResponse httpResponse)
     {
         try {
 //            if ( log.isInfoEnabled() )
@@ -192,7 +189,7 @@ public class UpdateValidator extends ValidatorBase
             
         } catch (Exception ex)
         {
-            log.warn("Exception in doGet",ex) ;
+            serviceLog.warn("Exception in doGet",ex) ;
         }
     }
 

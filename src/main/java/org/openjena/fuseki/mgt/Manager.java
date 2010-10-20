@@ -1,12 +1,13 @@
 /*
-  * (c) Copyright 2010 Epimorphics Ltd.
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
-package org.openjena.fuseki.validation;
+package org.openjena.fuseki.mgt;
 
 import java.io.IOException ;
+import java.util.Iterator ;
 
 import javax.servlet.ServletConfig ;
 import javax.servlet.ServletException ;
@@ -16,16 +17,19 @@ import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
 import org.openjena.fuseki.Fuseki ;
+import org.openjena.fuseki.http.HttpSC ;
+import org.openjena.fuseki.server.DatasetRegistry ;
 import org.slf4j.Logger ;
 
-public abstract class ValidatorBase extends HttpServlet 
+public class Manager extends HttpServlet 
 {
-    protected static Logger serviceLog = Fuseki.serverlog ;
-
+    private static Logger log = Fuseki.serverlog ;
+    
     public static final String cssFile          = "/fuseki.css" ;
     public static final String respService      = "X-Service" ;
 
-    
+    public Manager() {}
+
     @Override
     public void init() throws ServletException
     { super.init() ; }
@@ -33,11 +37,11 @@ public abstract class ValidatorBase extends HttpServlet
     @Override
     public void init(ServletConfig config) throws ServletException
     { super.init(config) ; }
-    
+
     @Override
     public void destroy()
     { }
-    
+
     @Override
     public void doGet(HttpServletRequest httpRequest, HttpServletResponse httpResponse)
     { execute(httpRequest, httpResponse) ; }
@@ -45,55 +49,46 @@ public abstract class ValidatorBase extends HttpServlet
     @Override
     public void doPost(HttpServletRequest httpRequest, HttpServletResponse httpResponse)
     { execute(httpRequest, httpResponse) ; }
-    
-    protected abstract void execute(HttpServletRequest httpRequest, HttpServletResponse httpResponse) ;
 
-    protected static void setHeaders(HttpServletResponse httpResponse)
+    protected void execute(HttpServletRequest httpRequest, HttpServletResponse httpResponse)
     {
-        httpResponse.setCharacterEncoding("UTF-8") ;
-        httpResponse.setContentType("text/html") ;
-        httpResponse.setHeader(respService, "Fuseki/ARQ SPARQL Query Validator: http://openjena.org/ARQ") ;
-    }
-    
-    protected static String htmlQuote(String str)
-    {
-        StringBuffer sBuff = new StringBuffer() ;
-        for ( int i = 0 ; i < str.length() ; i++ )
-        {
-            char ch = str.charAt(i) ;
-            switch (ch)
+        try {
+            // Headers
+            setHeaders(httpResponse) ;
+
+            ServletOutputStream outStream = httpResponse.getOutputStream() ;
+
+            outStream.println("<html>") ;
+
+            printHead(outStream, "Fuseki Server Manager") ;
+
+            outStream.println("<body>") ;
+            outStream.println("<h1>Fuseki Server Manager</h1>") ;
+            
+            outStream.println("<p>Registered datasets</p>") ;
+            outStream.println("<ul>") ;
+            Iterator<String> iter = DatasetRegistry.get().keys() ;
+            for ( ; iter.hasNext() ; )
             {
-                case '<': sBuff.append("&lt;") ; break ;
-                case '>': sBuff.append("&gt;") ; break ;
-                case '&': sBuff.append("&amp;") ; break ;
-                default: 
-                    // Work around Eclipe bug with StringBuffer.append(char)
-                    //try { sBuff.append(ch) ; } catch (Exception ex) {}
-                    sBuff.append(ch) ;
-                    break ;  
+                String name = iter.next() ;
+                outStream.print("<li>") ;
+                outStream.print(name) ;
+                outStream.println("</li>") ;
             }
+            outStream.println("</ul>") ;
+            
+            outStream.println("</body>") ;
+            outStream.println("</html>") ;
+        
+        } catch (Exception ex)
+        {
+            try {
+                httpResponse.sendError(HttpSC.INTERNAL_SERVER_ERROR_500) ;
+            } catch (Exception ex2) {}
+            
         }
-        return sBuff.toString() ; 
     }
 
-    protected static void startFixed(ServletOutputStream outStream) throws IOException
-    {
-        outStream.println("<pre class=\"box\">") ;
-    }
-
-    protected static void columns(String prefix, ServletOutputStream outStream) throws IOException
-    {
-        outStream.print(prefix) ;
-        outStream.println("         1         2         3         4         5         6         7") ;
-        outStream.print(prefix) ;
-        outStream.println("12345678901234567890123456789012345678901234567890123456789012345678901234567890") ;
-    }
-    
-    protected static void finishFixed(ServletOutputStream outStream) throws IOException
-    {
-        outStream.println("</pre>") ;
-    }
-    
     protected static void printHead(ServletOutputStream outStream, String title) throws IOException
     {
         outStream.println("<head>") ;
@@ -101,6 +96,13 @@ public abstract class ValidatorBase extends HttpServlet
         outStream.println(" <link rel=\"stylesheet\" type=\"text/css\" href=\""+cssFile+"\" />") ;
         //outStream.println() ;
         outStream.println("</head>") ;
+    }
+    
+    protected static void setHeaders(HttpServletResponse httpResponse)
+    {
+        httpResponse.setCharacterEncoding("UTF-8") ;
+        httpResponse.setContentType("text/html") ;
+        httpResponse.setHeader(respService, "Fuseki : http://openjena.org/wiki/Fuseki") ;
     }
 }
 

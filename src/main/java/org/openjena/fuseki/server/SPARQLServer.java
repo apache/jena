@@ -8,6 +8,10 @@ package org.openjena.fuseki.server;
 
 import static java.lang.String.format ;
 import static org.openjena.fuseki.Fuseki.serverlog ;
+
+import javax.servlet.http.HttpServlet ;
+
+import org.eclipse.jetty.http.MimeTypes ;
 import org.eclipse.jetty.server.Connector ;
 import org.eclipse.jetty.server.Server ;
 import org.eclipse.jetty.server.nio.BlockingChannelConnector ;
@@ -17,12 +21,14 @@ import org.eclipse.jetty.servlet.ServletHolder ;
 import org.openjena.atlas.logging.Log ;
 import org.openjena.fuseki.Fuseki ;
 import org.openjena.fuseki.HttpNames ;
+import org.openjena.fuseki.mgt.Manager ;
 import org.openjena.fuseki.servlets.SPARQL_QueryDataset ;
 import org.openjena.fuseki.servlets.SPARQL_REST_RW ;
 import org.openjena.fuseki.servlets.SPARQL_Update ;
 import org.openjena.fuseki.validation.DataValidator ;
 import org.openjena.fuseki.validation.QueryValidator ;
 import org.openjena.fuseki.validation.UpdateValidator ;
+import org.openjena.riot.WebContent ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
@@ -44,15 +50,17 @@ public class SPARQLServer
     public void start()
     {
         String now = Utils.nowAsString() ;
-        serverlog.info(format("%s %s", Fuseki.NAME, Fuseki.VERSION, now)) ;
+        serverlog.info(format("%s %s", Fuseki.NAME, Fuseki.VERSION)) ;
         String jettyVersion = org.eclipse.jetty.server.Server.getVersion() ;
-        serverlog.info("Jetty " + jettyVersion) ;
+        serverlog.info(format("Jetty %s",jettyVersion)) ;
         serverlog.info(format("Dataset = %s", datasetPath)) ;
         serverlog.info(format("Started %s on port %d", now, server.getConnectors()[0].getPort())) ;
 
         try { server.start() ; }
         catch (Exception ex)
         { log.error("SPARQLServer: Failed to start server: " + ex.getMessage(), ex) ; }
+        
+        ServletContextHandler context = (ServletContextHandler)server.getHandler() ;
     }
 
     public void stop()
@@ -94,43 +102,68 @@ public class SPARQLServer
         server.addConnector(connector) ;
 
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
-        context.setContextPath("/");
         server.setHandler(context);
+        
+        // Constants. Add RDF types.
+        MimeTypes mt = new MimeTypes() ; 
+        mt.addMimeMapping("rdf",    WebContent.contentTypeRDFXML+";charset=utf-8") ;
+        mt.addMimeMapping("ttl",    WebContent.contentTypeTurtle1+";charset=utf-8") ;
+        mt.addMimeMapping("nt",     WebContent.contentTypeNTriples+";charset=ascii") ;
+        mt.addMimeMapping("nq",     WebContent.contentTypeNQuads+";charset=ascii") ;
+        mt.addMimeMapping("trig",   WebContent.contentTypeTriG+";charset=utf-8") ;
+        context.setMimeTypes(mt) ;
 
-        DatasetRegistry.get().put(datasetPath, dsg) ;
         
         String[] datasets = { datasetPath } ;
+        DatasetRegistry.get().put(datasetPath, dsg) ;
         
         String validationRoot = "/validate" ;
-        
+        String managerName = "/manager" ;
+        boolean installValidators = true ;
+        boolean installManager = true ;
+
         for ( String dsPath : datasets )
         {
-            ServletHolder sparqlQuery = new ServletHolder(new SPARQL_QueryDataset(verbose)) ;
-            ServletHolder sparqlUpdate = new ServletHolder(new SPARQL_Update(verbose)) ;
-            ServletHolder sparqlHttp = new ServletHolder(new SPARQL_REST_RW(verbose)) ;
+            HttpServlet sparqlQuery = new SPARQL_QueryDataset(verbose) ;
+            HttpServlet sparqlUpdate = new SPARQL_Update(verbose) ;
+            HttpServlet sparqlHttp = new SPARQL_REST_RW(verbose) ;
             
             // SPARQL services.
-            context.addServlet(sparqlHttp, dsPath);
-            context.addServlet(sparqlHttp, dsPath+HttpNames.ServiceData) ;
-            context.addServlet(sparqlQuery, dsPath+HttpNames.ServiceQuery) ;
-            context.addServlet(sparqlQuery, dsPath+HttpNames.ServiceQueryAlt) ;      // Alternative name
-            context.addServlet(sparqlUpdate, dsPath+HttpNames.ServiceUpdate) ;
-            //context.addServlet(new ServletHolder(new DumpServlet()),"/dump");
-            
+            addServlet(context, sparqlHttp, dsPath);
+            addServlet(context, sparqlHttp, dsPath+HttpNames.ServiceData) ;
+            addServlet(context, sparqlQuery, dsPath+HttpNames.ServiceQuery) ;
+            addServlet(context, sparqlQuery, dsPath+HttpNames.ServiceQueryAlt) ;      // Alternative name
+            addServlet(context, sparqlUpdate, dsPath+HttpNames.ServiceUpdate) ;
+            //add(context, new DumpServlet(),"/dump");
+        }
+        
+        if ( installValidators )
+        {
             // Validators
-            ServletHolder validateQuery = new ServletHolder(new QueryValidator()) ;
-            ServletHolder validateUpdate = new ServletHolder(new UpdateValidator()) ;
-            ServletHolder validateData = new ServletHolder(new DataValidator()) ;    
-            context.addServlet(validateQuery, validationRoot+"/query") ;
-            context.addServlet(validateUpdate, validationRoot+"/update") ;
-            context.addServlet(validateData, validationRoot+"/data") ;
-            
+            HttpServlet validateQuery = new QueryValidator() ;
+            HttpServlet validateUpdate = new UpdateValidator() ;
+            HttpServlet validateData = new DataValidator() ;    
+            addServlet(context, validateQuery, validationRoot+"/query") ;
+            addServlet(context, validateUpdate, validationRoot+"/update") ;
+            addServlet(context, validateData, validationRoot+"/data") ;
+        }
+
+        if ( installManager )
+        {
+            // Manager
+            HttpServlet manager = new Manager() ;
+            addServlet(context, manager, managerName) ;
+        }
+        
+        if ( installManager || installValidators )
+        {
+            // Make file extensions works for RDF file types. 
             // Finally, static content
-            ServletHolder staticContent = new ServletHolder(new DefaultServlet()) ;
+            DefaultServlet staticServlet = new DefaultServlet() ;
+            ServletHolder staticContent = new ServletHolder(staticServlet) ;
             // Content location : isolate so as not to expose the current directory
             staticContent.setInitParameter("resourceBase", "pages") ;
-
-            context.addServlet(staticContent, "/") ;
+            addServlet(context, staticContent, "/") ;
         }
         
 //            // Add the webapp.
@@ -143,6 +176,18 @@ public class SPARQLServer
 //            context.setContextPath("/");
 //            context.setParentLoaderPriority(true);Exception ex)
     }
+    
+    private static void addServlet(ServletContextHandler context, HttpServlet servlet, String path)
+    {
+        ServletHolder holder = new ServletHolder(servlet) ;
+        addServlet(context, holder, path) ;
+    }
+    
+    private static void addServlet(ServletContextHandler context, ServletHolder holder, String path)
+    {
+        context.addServlet(holder, path) ;
+    }
+
 }
 
 

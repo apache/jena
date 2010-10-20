@@ -20,7 +20,6 @@ import javax.servlet.http.HttpServletResponse ;
 import org.openjena.atlas.io.IO ;
 import org.openjena.atlas.lib.Sink ;
 import org.openjena.atlas.lib.SinkWrapper ;
-import org.openjena.fuseki.server.SPARQLServer ;
 import org.openjena.riot.ErrorHandler ;
 import org.openjena.riot.Lang ;
 import org.openjena.riot.RiotException ;
@@ -28,7 +27,6 @@ import org.openjena.riot.RiotReader ;
 import org.openjena.riot.lang.LangRIOT ;
 import org.openjena.riot.tokens.Tokenizer ;
 import org.openjena.riot.tokens.TokenizerFactory ;
-import org.slf4j.Logger ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.core.Quad ;
@@ -37,8 +35,6 @@ import com.hp.hpl.jena.sparql.util.FmtUtils ;
 
 public class DataValidator extends ValidatorBase
 {
-    protected static Logger log = SPARQLServer.log ;
-
     public DataValidator() 
     { }
   
@@ -50,7 +46,7 @@ public class DataValidator extends ValidatorBase
     //static final String paramSyntaxExtended   = "extendedSyntax" ;
     
     @Override
-    protected void validationRequest(HttpServletRequest httpRequest, HttpServletResponse httpResponse)
+    protected void execute(HttpServletRequest httpRequest, HttpServletResponse httpResponse)
     {
         try {
 //            if ( log.isInfoEnabled() )
@@ -111,7 +107,7 @@ public class DataValidator extends ValidatorBase
             outStream.println("</html>") ;
         } catch (Exception ex)
         {
-            log.warn("Exception in validationRequest",ex) ;
+            serviceLog.warn("Exception in validationRequest",ex) ;
         }
     }
     
