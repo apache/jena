@@ -14,6 +14,10 @@ public class DevFuseki
     
     // **** Clean up SPARQL Query results code.
 
+    // Document
+    //   validators
+    //   manager
+    
     // Environment variable for target (s-set but needs to shell built-in)
     //   defaults
     //   --service naming seems inconsistent.
