@@ -29,6 +29,11 @@ public class DevFuseki
 
     // Validators
     // Common ServletClass.
+
+    // Content-Length: SHOULD
+    //   Transfer-Encoding: identity
+    // "chunked" encoding
+    // gzip
     
     // Code examples
 
