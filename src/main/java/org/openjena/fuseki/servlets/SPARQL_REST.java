@@ -186,8 +186,7 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
             //doPatch(action) ;
             errorNotImplemented("PATCH") ;
         else if (method.equals(METHOD_OPTIONS))
-            //doOptions(action) ;
-            errorNotImplemented("OPTIONS") ;
+            doOptions(action) ;
         else if (method.equals(METHOD_TRACE))
             //doTrace(action) ;
             errorNotImplemented("TRACE") ;
@@ -204,6 +203,7 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
     protected abstract void doPost(HttpActionREST action) ;
     protected abstract void doDelete(HttpActionREST action) ;
     protected abstract void doPut(HttpActionREST action) ;
+    protected abstract void doOptions(HttpActionREST action) ;
 
     @Override
     protected String mapRequestToDataset(String uri)

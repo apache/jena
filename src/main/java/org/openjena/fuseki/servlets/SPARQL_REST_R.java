@@ -12,6 +12,7 @@ import static org.openjena.fuseki.Fuseki.serverlog ;
 import java.io.IOException ;
 
 import org.openjena.fuseki.FusekiLib ;
+import org.openjena.fuseki.HttpNames ;
 import org.openjena.fuseki.conneg.MediaType ;
 import org.openjena.fuseki.conneg.TypedOutputStream ;
 import org.openjena.riot.Lang ;
@@ -62,6 +63,13 @@ public class SPARQL_REST_R extends SPARQL_REST
         } catch (IOException ex) { errorOccurred(ex) ; }
     }
     
+    @Override
+    protected void doOptions(HttpActionREST action)
+    {
+        action.response.setHeader(HttpNames.hAllow, "GET,HEAD,OPTIONS") ;
+        success(action) ;
+    }
+
     @Override
     protected void doHead(HttpActionREST action)
     {

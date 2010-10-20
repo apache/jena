@@ -1,3 +1,22 @@
 #!/bin/bash
 
-exec java -jar target/fuseki-*-server.jar "$@"
+JAR1="fuseki-*-server.jar"
+JAR2="target/fuseki-*-server.jar"
+JAR=""
+for J in "$JAR1" "$JAR2"
+do
+    echo "$J"
+    if [ -e "$J" ]
+    then
+	JAR="$J"
+	break
+    fi
+done
+
+if [ "$JAR" = "" ]
+then
+    echo "Can't find jarfile to run"
+    exit 1
+    fi
+
+exec java -jar "$JAR" "$@"

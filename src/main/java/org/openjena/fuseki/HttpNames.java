@@ -9,6 +9,7 @@ package org.openjena.fuseki;
 public class HttpNames
 {
     public static final String hAccept              = "Accept" ;
+    public static final String hAllow               = "Allow" ;
     public static final String hAcceptEncoding      = "Accept-Encoding" ;
     public static final String hAcceptCharset       = "Accept-Charset" ;
     public static final String hAcceptRanges        = "Accept-Ranges" ;

@@ -6,6 +6,8 @@
 
 package org.openjena.fuseki.servlets;
 
+import org.openjena.fuseki.HttpNames ;
+
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 
 /** The WRITE operations added to the READ oeprations */
@@ -17,6 +19,13 @@ public class SPARQL_REST_RW extends SPARQL_REST_R
     public SPARQL_REST_RW()
     { this(false) ; }
 
+    @Override
+    protected void doOptions(HttpActionREST action)
+    {
+        action.response.setHeader(HttpNames.hAllow, "GET,HEAD,OPTIONS,PUT,DELETE,POST");
+        success(action) ;
+    }
+    
     @Override
     protected void doDelete(HttpActionREST action)
     {

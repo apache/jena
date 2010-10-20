@@ -11,6 +11,7 @@ import static org.openjena.fuseki.Fuseki.serverlog ;
 import org.eclipse.jetty.server.Connector ;
 import org.eclipse.jetty.server.Server ;
 import org.eclipse.jetty.server.nio.BlockingChannelConnector ;
+import org.eclipse.jetty.servlet.DefaultServlet ;
 import org.eclipse.jetty.servlet.ServletContextHandler ;
 import org.eclipse.jetty.servlet.ServletHolder ;
 import org.openjena.atlas.logging.Log ;
@@ -99,12 +100,6 @@ public class SPARQLServer
         
         for ( String dsPath : datasets )
         {
-            // Does not work - why?
-//            ServletHolder staticContent = new ServletHolder(new DefaultServlet()) ;
-//            context.addServlet(staticContent, "*.html") ;
-//            context.addServlet(staticContent, "*.htm") ;
-//            context.addServlet(staticContent, "*.css") ;
-
             ServletHolder sparqlQuery = new ServletHolder(new SPARQL_QueryDataset(verbose)) ;
             ServletHolder sparqlUpdate = new ServletHolder(new SPARQL_Update(verbose)) ;
             ServletHolder sparqlHttp = new ServletHolder(new SPARQL_REST_RW(verbose)) ;
@@ -116,6 +111,13 @@ public class SPARQLServer
             context.addServlet(sparqlQuery, dsPath+HttpNames.ServiceQueryAlt) ;      // Alternative name
             context.addServlet(sparqlUpdate, dsPath+HttpNames.ServiceUpdate) ;
             //context.addServlet(new ServletHolder(new DumpServlet()),"/dump");
+            
+            // Finally, static content
+            ServletHolder staticContent = new ServletHolder(new DefaultServlet()) ;
+            // Content location : isolate so as not to expose the current directory
+            staticContent.setInitParameter("resourceBase", "pages") ;
+
+            context.addServlet(staticContent, "/") ;
         }
         
 //            // Add the webapp.

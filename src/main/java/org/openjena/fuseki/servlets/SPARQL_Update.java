@@ -62,6 +62,12 @@ public class SPARQL_Update extends SPARQL_ServletBase
     {
         doCommon(request, response) ;
     }
+    
+    @Override
+    protected void doOptions(HttpServletRequest request, HttpServletResponse response)
+    {
+        response.setHeader(HttpNames.hAllow, "OPTIONS,POST");
+    }
 
     @Override
     protected boolean requestNoQueryString(HttpServletRequest request, HttpServletResponse response)

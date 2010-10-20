@@ -63,6 +63,15 @@ public abstract class SPARQL_Query extends SPARQL_ServletBase
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     { doCommon(request, response) ; }
+
+    // HEAD
+    
+    @Override
+    protected void doOptions(HttpServletRequest request, HttpServletResponse response)
+    {
+        //response.setHeader(HttpNames.hAllow, "GET,HEAD,OPTIONS,POST");
+        response.setHeader(HttpNames.hAllow, "GET,OPTIONS,POST");
+    }
     
     @Override
     protected void perform(long id, DatasetGraph dsg, HttpServletRequest request, HttpServletResponse response)

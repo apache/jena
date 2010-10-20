@@ -18,75 +18,75 @@ import org.openjena.atlas.logging.Log ;
 /** Intercepting wrapper so we can track the response settings for logging purposes */
 
 public class HttpServletResponseTracker extends HttpServletResponseWrapper
+{
+    Map <String, String> headers = new HashMap<String, String>() ;
+    int statusCode = -1 ;
+    String message = null ;
+    int contentLength = -1 ;
+    String contentType = null ;
+
+    public HttpServletResponseTracker(HttpServletResponse response)
     {
-        Map <String, String> headers = new HashMap<String, String>() ;
-        int statusCode = -1 ;
-        String message = null ;
-        int contentLength = -1 ;
-        String contentType = null ;
-        
-        public HttpServletResponseTracker(HttpServletResponse response)
-        {
-            super(response) ;
-        }
+        super(response) ;
+    }
 
-      @Override
-      public void sendError(int sc, String msg) throws IOException
-      {
-          statusCode = sc ;
-          message = msg ;
-          super.sendError(sc, msg) ;
-      }
-      
-      @Override
-      public void sendError(int sc) throws IOException
-      {
-          statusCode = sc ;
-          message = null ;
-          super.sendError(sc) ;
-      }
-      
-      @Override
-      public void setHeader(String name, String value)
-      {
-          super.setHeader(name, value) ;
-      }
+    @Override
+    public void sendError(int sc, String msg) throws IOException
+    {
+        statusCode = sc ;
+        message = msg ;
+        super.sendError(sc, msg) ;
+    }
 
-      @Override
-      public void addHeader(String name, String value)
-      {
-          Log.warn(this, "Unexpected addHeader - not recorded in log") ;
-          super.addHeader(name, value) ;
-      }
-      @Override
-      public void setStatus(int sc) 
-      {
-          statusCode = sc ;
-          message = null ;
-          super.setStatus(sc) ;
-      }
-      
-      @Override
-      public void setStatus(int sc, String sm)
-      {
-          statusCode = sc ;
-          message = sm ;
-          super.setStatus(sc, sm) ;
-      }
-        
-      @Override
-      public void setContentLength(int len)
-      {
-          contentLength = len ;
-          super.setContentLength(len) ;
-      }
-      
-      @Override
-      public void setContentType(String type)
-      {
-          contentType = type ;
-          super.setContentType(type) ;
-      }
+    @Override
+    public void sendError(int sc) throws IOException
+    {
+        statusCode = sc ;
+        message = null ;
+        super.sendError(sc) ;
+    }
+
+    @Override
+    public void setHeader(String name, String value)
+    {
+        super.setHeader(name, value) ;
+    }
+
+    @Override
+    public void addHeader(String name, String value)
+    {
+        Log.warn(this, "Unexpected addHeader - not recorded in log") ;
+        super.addHeader(name, value) ;
+    }
+    @Override
+    public void setStatus(int sc) 
+    {
+        statusCode = sc ;
+        message = null ;
+        super.setStatus(sc) ;
+    }
+
+    @Override
+    public void setStatus(int sc, String sm)
+    {
+        statusCode = sc ;
+        message = sm ;
+        super.setStatus(sc, sm) ;
+    }
+
+    @Override
+    public void setContentLength(int len)
+    {
+        contentLength = len ;
+        super.setContentLength(len) ;
+    }
+
+    @Override
+    public void setContentType(String type)
+    {
+        contentType = type ;
+        super.setContentType(type) ;
+    }
       
       // From HttpServletResponse
 //      public void addCookie(Cookie cookie) {}
@@ -128,7 +128,8 @@ public class HttpServletResponseTracker extends HttpServletResponseWrapper
 //         public void resetBuffer() {}
 //         public void setLocale(Locale loc) {}
 //         public Locale getLocale() {}
-    }
+}
+
 /*
  * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.

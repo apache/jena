@@ -27,6 +27,9 @@ public class DevFuseki
     //   DatasetAccessor: don't serialise to byte[] and then send. 
     //   DatasetAccessor : check existence of endpoint. 
 
+    // Validators
+    // Common ServletClass.
+    
     // Code examples
 
     // Build system
@@ -40,6 +43,8 @@ public class DevFuseki
     //   gzip and inflate.   
     //   LastModified headers. 
 
+    // Query, Update : doHead
+    
     // File upload.
     // Static pages
     
