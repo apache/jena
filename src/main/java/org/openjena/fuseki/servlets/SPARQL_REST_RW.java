@@ -47,7 +47,6 @@ public class SPARQL_REST_RW extends SPARQL_REST_R
         action.beginWrite() ;
         try {
             clearGraph(action.target) ;
-            //deleteGraph(target) ;   // Opps. Deletes the target!
             addDataInto(body.getDefaultGraph(), action.target) ;
         } finally { action.endWrite() ; }
         // Differentiate: 201 Created or 204 No Content 

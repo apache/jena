@@ -37,6 +37,7 @@ import org.openjena.fuseki.conneg.MediaType ;
 import org.openjena.riot.ErrorHandler ;
 import org.openjena.riot.ErrorHandlerFactory ;
 import org.openjena.riot.Lang ;
+import org.openjena.riot.RiotException ;
 import org.openjena.riot.RiotReader ;
 import org.openjena.riot.lang.LangRDFXML ;
 import org.openjena.riot.lang.LangRIOT ;
@@ -287,7 +288,7 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
         Lang lang = FusekiLib.langFromContentType(ct.contentType) ;
         if ( lang == null )
         {
-            SPARQL_ServletBase.errorBadRequest("Unknown: "+contentTypeHeader) ;
+            errorBadRequest("Unknown: "+contentTypeHeader) ;
             return null ;
         }
 
@@ -343,8 +344,13 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
                 parser.getProfile().setHandler(errorHandler) ;
             }
 
-            parser.parse() ;
+            try {
+                parser.parse() ;
+            } catch (RiotException ex) { errorBadRequest("Parse error: "+ex.getMessage()) ; }
+            
             DatasetGraph dsgTmp = DatasetGraphFactory.create(graphTmp) ;
+            
+            
             return dsgTmp ;
         } catch (IOException ex) { errorOccurred(ex) ; return null ; }
     }
