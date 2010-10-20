@@ -29,7 +29,6 @@ import com.hp.hpl.jena.sparql.expr.E_Exists ;
 import com.hp.hpl.jena.sparql.expr.E_NotExists ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.graph.NodeConst ;
-import com.hp.hpl.jena.sparql.path.P_Link ;
 import com.hp.hpl.jena.sparql.path.Path ;
 import com.hp.hpl.jena.sparql.syntax.Element ;
 import com.hp.hpl.jena.sparql.syntax.ElementGroup ;
@@ -339,8 +338,6 @@ public class ParserBase
         acc.addTriple(index, new Triple(s, p, o)) ;
     }
     
-    // insert-with-path is used by both SPARQL and ARQ (extended SPARQL). 
-    
     protected void insert(TripleCollector acc, Node s, Node p, Path path, Node o)
     {
         if ( p == null )
@@ -357,13 +354,6 @@ public class ParserBase
             acc.addTriple(index, new Triple(s, p, o)) ;
     }
 
-    static Path fixPredicate(Node p)
-    {
-        if ( p.isURI() )
-            return new P_Link(p) ;
-        return null ;
-    }
-    
     protected Expr asExpr(Node n)
     {
         return ExprUtils.nodeToExpr(n) ;
@@ -375,7 +365,6 @@ public class ParserBase
         String lang = n.getLiteralLanguage() ;
         String dtURI = n.getLiteralDatatypeURI() ;
         n = createLiteral(lex, lang, dtURI) ;
-        
         return ExprUtils.nodeToExpr(n) ;
     }
 

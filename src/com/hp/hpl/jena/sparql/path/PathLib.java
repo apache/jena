@@ -39,7 +39,6 @@ public class PathLib
     /** Convert any paths of exactly one predicate to a triple pattern */ 
     public static Op pathToTriples(PathBlock pattern)
     {
-        //Step 2 : gather into OpBGP(BasicPatterns) or OpPath
         BasicPattern bp = null ;
         Op op = null ;
 

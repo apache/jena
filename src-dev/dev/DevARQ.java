@@ -14,10 +14,14 @@ public class DevARQ
     
     // BIND
     
+    // Property path rewrites as per spec (i.e. earlier than evaluation)
+    
     // (Better) respect Content-Length?
     // ReportRemoteVirtuoso
     
     // add qparse,uparse to wiki/ARQ/
+    
+    // TextOutput: right justify numbers.
     
     // VarRename, OpVars, VarFinder and VarUtils -- sort out!
     // Any SELECT * + one in group => no need for rename? 
@@ -32,6 +36,9 @@ public class DevARQ
     // RIOT: cmd line : bad parse -> ???
     // ReportRemoteVirtuoso: StAX does not parse - times out too early? 
     // XSDDuration
+    
+    // RIOT: WebReader
+    // Files are implicit web resources using file extension
     
     // **Next
     // ** Sort out GraphStore.
