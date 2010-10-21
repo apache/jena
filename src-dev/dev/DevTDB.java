@@ -33,6 +33,11 @@ public class DevTDB
     //   Reference counting? 
     //   Document better
     
+    // BPT internal consistency checks.
+    //   Level count added as block read in.
+    //   Leaf thread to check increasing keys.
+    
+    
     // Missing tests for DatasetGraphTDB?
     
     // Check writing to union graph is handled appropriately.
