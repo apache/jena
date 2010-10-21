@@ -913,6 +913,8 @@ Element GraphPatternNotTriples() : { Element el = null ; }
    el = ServiceGraphPattern()
  |
    el = Filter()
+ |
+   el = Bind()
 #ifdef ARQ
  |
    el = Assignment()
@@ -947,6 +949,17 @@ Element ServiceGraphPattern() : { Element el ; Node n ; }
   n = VarOrIRIref()
   el = GroupGraphPattern()
     { return new ElementService(n, el) ; }
+}
+
+Element Bind() : {  Var v ; Expr expr ; }
+{
+  <BIND>
+  <LPAREN>
+  expr = Expression()
+  <AS>
+  v = Var()
+  <RPAREN>
+  { return new ElementBind(v, expr) ; }
 }
 
 #ifdef ARQ
@@ -1989,6 +2002,8 @@ TOKEN [IGNORE_CASE] :
 |  < GRAPH:       "graph" >
 |  < OPTIONAL:    "optional" >
 |  < UNION:       "union" >
+|  < MINUS_P:     "minus" >
+|  < BIND:        "bind" >
 |  < SERVICE:     "service" >
 
 #ifdef ARQ
@@ -1998,7 +2013,6 @@ TOKEN [IGNORE_CASE] :
 |  < EXISTS:      "exists" >
 |  < NOT:         "not" >
 |  < NOTEXISTS:   "not" (<WS>)* "exists" >
-|  < MINUS_P:     "minus" >
 //|  < UNSAID:      "unsaid" >
 |  < AS:          "as" >
 |  < GROUP:       "group" >

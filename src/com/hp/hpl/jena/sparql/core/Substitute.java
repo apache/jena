@@ -226,26 +226,39 @@ public class Substitute
         @Override
         public Op transform(OpAssign opAssign, Op subOp)
         { 
-            // Order?
+            VarExprList varExprList2 = transformVarExprList(opAssign.getVarExprList()) ;
+            if ( varExprList2.isEmpty() )
+                return subOp ;
+            return OpAssign.assign(subOp, varExprList2) ;
+        }
+        
+        @Override
+        public Op transform(OpExtend opExtend, Op subOp)
+        { 
+            VarExprList varExprList2 = transformVarExprList(opExtend.getVarExprList()) ;
+            if ( varExprList2.isEmpty() )
+                return subOp ;
+            
+            return OpExtend.extend(subOp, varExprList2) ;
+        }
+        
+        private  VarExprList transformVarExprList(VarExprList varExprList)
+        {
             VarExprList varExprList2 = new VarExprList() ;
-            for ( Var v : opAssign.getVarExprList().getVars() )
+            for ( Var v : varExprList.getVars() )
             {
 //                if ( binding.contains(v))
 //                    // Already bound. No need to do anything because the 
 //                    // logical assignment will test value.  
 //                    continue ;
-                Expr expr = opAssign.getVarExprList().getExpr(v) ;
+                Expr expr = varExprList.getExpr(v) ;
                 expr = expr.copySubstitute(binding) ;
                 varExprList2.add(v, expr) ;
             }
-            
-            if ( varExprList2.isEmpty() )
-                return subOp ;
-            
-            return OpAssign.assign(subOp, varExprList2) ;
-            //return super.transform(opAssign, subOp) ;
+            return varExprList2 ;
         }
         
+
         // The expression?
         //public Op transform(OpLeftJoin opLeftJoin, Op left, Op right)   { return xform(opLeftJoin, left, right) ; }
         

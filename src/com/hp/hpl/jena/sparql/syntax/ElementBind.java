@@ -1,52 +1,64 @@
 /*
- * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
 package com.hp.hpl.jena.sparql.syntax;
 
-/** A ElementVisitor that does nothing.  It saves writing lots of
- * empty visits when only interested in a few element types.  
- */
+import com.hp.hpl.jena.sparql.core.Var ;
+import com.hp.hpl.jena.sparql.expr.Expr ;
+import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
 
-public class ElementVisitorBase implements ElementVisitor 
+public class ElementBind extends Element
 {
-    public void visit(ElementTriplesBlock el)   { }
+    private Var var ;
+    private Expr expr ;
 
-    public void visit(ElementFilter el)         { }
-    
-    public void visit(ElementAssign el)         { }
+    public ElementBind(Var v, Expr expr)
+    {
+        this.var = v ; 
+        this.expr = expr ;
+    }
 
-    public void visit(ElementBind el)           { }
+    public Var getVar()
+    {
+        return var ;
+    }
 
-    public void visit(ElementUnion el)          { }
+    public Expr getExpr()
+    {
+        return expr ;
+    }
 
-    public void visit(ElementDataset el)        { }
+    @Override
+    public boolean equalTo(Element el2, NodeIsomorphismMap isoMap)
+    {
+        if ( ! ( el2 instanceof ElementBind ) )
+            return false ;
+        ElementBind f2 = (ElementBind)el2 ;
+        if ( ! this.getVar().equals(f2.getVar() ))
+            return false ;
+        if ( ! this.getExpr().equals(f2.getExpr()) )
+            return false ;
+        return true ;
+    }
 
-    public void visit(ElementOptional el)       { }
+    @Override
+    public int hashCode()
+    {
+        return var.hashCode()^expr.hashCode();
+    }
 
-    public void visit(ElementGroup el)          { }
-
-    public void visit(ElementNamedGraph el)     { }
-
-    public void visit(ElementExists el)         { }
-    
-    public void visit(ElementNotExists el)      { }
-    
-    public void visit(ElementMinus el)          { }
-
-    public void visit(ElementService el)        { }
-    
-    public void visit(ElementFetch el)          { }
-
-    public void visit(ElementSubQuery el)       { }
-
-    public void visit(ElementPathBlock el)      { }
+    @Override
+    public void visit(ElementVisitor v)
+    {
+        v.visit(this) ;
+    }
 }
 
 /*
- * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

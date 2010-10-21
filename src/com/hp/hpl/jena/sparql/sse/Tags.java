@@ -68,6 +68,7 @@ public class Tags
     public static final String tagDistinct      = "distinct" ;
     public static final String tagReduced       = "reduced" ;
     public static final String tagAssign        = "assign" ;
+    public static final String tagExtend        = "extend" ;
     public static final String symAssign        = ":=" ;
     public static final String tagSlice         = "slice" ;
     

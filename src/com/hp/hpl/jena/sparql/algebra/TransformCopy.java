@@ -36,6 +36,9 @@ public class TransformCopy implements Transform
     public Op transform(OpFilter opFilter, Op subOp)                { return xform(opFilter, subOp) ; }
     public Op transform(OpGraph opGraph, Op subOp)                  { return xform(opGraph, subOp) ; }
     public Op transform(OpService opService, Op subOp)              { return xform(opService, subOp) ; }
+
+    public Op transform(OpAssign opAssign, Op subOp)                { return xform(opAssign, subOp) ; }
+    public Op transform(OpExtend opExtend, Op subOp)                { return xform(opExtend, subOp) ; }
     
     public Op transform(OpJoin opJoin, Op left, Op right)           { return xform(opJoin, left, right) ; }
     public Op transform(OpLeftJoin opLeftJoin, Op left, Op right)   { return xform(opLeftJoin, left, right) ; }
@@ -57,7 +60,6 @@ public class TransformCopy implements Transform
     public Op transform(OpProject opProject, Op subOp)              { return xform(opProject, subOp) ; }
     public Op transform(OpDistinct opDistinct, Op subOp)            { return xform(opDistinct, subOp) ; }
     public Op transform(OpReduced opReduced, Op subOp)              { return xform(opReduced, subOp) ; }
-    public Op transform(OpAssign opAssign, Op subOp)                { return xform(opAssign, subOp) ; }
     public Op transform(OpSlice opSlice, Op subOp)                  { return xform(opSlice, subOp) ; }
     public Op transform(OpGroup opGroup, Op subOp)            { return xform(opGroup, subOp) ; }
 

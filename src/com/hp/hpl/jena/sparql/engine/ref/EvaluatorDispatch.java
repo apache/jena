@@ -257,6 +257,13 @@ public class EvaluatorDispatch implements OpVisitor
         push(table) ;
     }
 
+    public void visit(OpExtend opExtend)
+    {
+        Table table = eval(opExtend.getSubOp()) ;
+        table = evaluator.extend(table, opExtend.getVarExprList()) ;
+        push(table) ;
+    }
+
     public void visit(OpGroup opGroup)
     {
         Table table = eval(opGroup.getSubOp()) ;

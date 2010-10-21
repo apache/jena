@@ -149,6 +149,13 @@ public class OpVars
         }
         
         @Override
+        public void visit(OpExtend opExtend)
+        {
+            acc.addAll(opExtend.getVarExprList().getVars()) ;
+            //opAssign.getSubOp().visit(this) ;
+        }
+        
+        @Override
         public void visit(OpPropFunc opPropFunc)
         {
             addvars(opPropFunc.getSubjectArgs()) ;

@@ -32,6 +32,9 @@ public interface Evaluator
     // Two forms that provide custom code evaluation
     public Table procedure(Table table, Node procId, ExprList args) ;
     public Table propertyFunction(Table table, Node procId, PropFuncArg subjArgs, PropFuncArg objArgs) ;
+
+    public Table assign(Table table, VarExprList exprs) ;
+    public Table extend(Table table, VarExprList exprs) ;
     
     public Table join(Table tableLeft, Table tableRight) ;
     public Table leftJoin(Table tableLeft, Table tableRight, ExprList expr) ;
@@ -51,7 +54,6 @@ public interface Evaluator
     public Table distinct(Table table) ;
     public Table reduced(Table table) ;
     public Table slice(Table table, long start, long length) ;
-    public Table assign(Table table, VarExprList exprs) ;
 }
 
 /*

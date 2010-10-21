@@ -17,6 +17,7 @@ import com.hp.hpl.jena.sparql.algebra.TransformCopy ;
 import com.hp.hpl.jena.sparql.algebra.op.OpAssign ;
 import com.hp.hpl.jena.sparql.algebra.op.OpBGP ;
 import com.hp.hpl.jena.sparql.algebra.op.OpDatasetNames ;
+import com.hp.hpl.jena.sparql.algebra.op.OpExtend ;
 import com.hp.hpl.jena.sparql.algebra.op.OpFilter ;
 import com.hp.hpl.jena.sparql.algebra.op.OpGraph ;
 import com.hp.hpl.jena.sparql.algebra.op.OpGroup ;
@@ -114,6 +115,13 @@ class NodeTransformOp extends TransformCopy
         VarExprList varExprList = opAssign.getVarExprList() ;
         VarExprList varExprList2 = NodeTransformLib.transform(transform, varExprList) ;
         return OpAssign.assign(subOp, varExprList2) ;
+    }
+    
+    @Override public Op transform(OpExtend opExtend, Op subOp)
+    { 
+        VarExprList varExprList = opExtend.getVarExprList() ;
+        VarExprList varExprList2 = NodeTransformLib.transform(transform, varExprList) ;
+        return OpExtend.extend(subOp, varExprList2) ;
     }
     
     @Override public Op transform(OpGroup opGroup, Op subOp)

@@ -49,6 +49,9 @@ public class RecursiveElementVisitor implements ElementVisitor
     public void startElement(ElementAssign el) {} 
     public void endElement  (ElementAssign el) {} 
 
+    public void startElement(ElementBind el) {} 
+    public void endElement  (ElementBind el) {} 
+
     public void startElement(ElementUnion el) {}
     public void endElement  (ElementUnion el) {}
     public void startSubElement(ElementUnion el, Element subElt) {}
@@ -120,6 +123,13 @@ public class RecursiveElementVisitor implements ElementVisitor
         startElement(el) ;
         endElement(el) ;
     }
+
+    public void visit(ElementBind el)
+    {
+        startElement(el) ;
+        endElement(el) ;
+    }
+    
     public final void visit(ElementUnion el)
     {
         startElement(el) ;

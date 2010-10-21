@@ -202,6 +202,14 @@ public class VarFinder
         }
         
         @Override
+        public void visit(OpExtend opExtend)
+        {
+            opExtend.getSubOp().visit(this) ;
+            List<Var> vars = opExtend.getVarExprList().getVars() ;
+            defines.addAll(vars) ;
+        }
+        
+        @Override
         public void visit(OpProject opProject)
         {
             List<Var> vars = opProject.getVars() ;

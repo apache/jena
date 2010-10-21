@@ -86,6 +86,7 @@ public class BuilderOp
         addBuild(Tags.tagDistinct,      buildDistinct) ;
         addBuild(Tags.tagReduced,       buildReduced) ;
         addBuild(Tags.tagAssign,        buildAssign) ;
+        addBuild(Tags.tagExtend,        buildExtend) ;
         addBuild(Tags.symAssign,        buildAssign) ;
         addBuild(Tags.tagSlice,         buildSlice) ;
 
@@ -596,6 +597,17 @@ public class BuilderOp
             VarExprList x = BuilderExpr.buildNamedExprOrExprList(list.get(1)) ; 
             Op sub = build(list, 2) ;
             return OpAssign.assign(sub, x) ;
+        }
+    } ;
+
+    final protected Build buildExtend = new Build()
+    {
+        public Op make(ItemList list)
+        {
+            BuilderLib.checkLength(3, list, "extend") ;
+            VarExprList x = BuilderExpr.buildNamedExprOrExprList(list.get(1)) ; 
+            Op sub = build(list, 2) ;
+            return OpExtend.extend(sub, x) ;
         }
     } ;
 

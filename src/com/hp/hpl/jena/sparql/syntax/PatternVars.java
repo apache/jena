@@ -105,6 +105,12 @@ public class PatternVars
             acc.add(el.getVar()) ;
         }
         
+        @Override
+        public void visit(ElementBind el)
+        {
+            acc.add(el.getVar()) ;
+        }
+        
 //        @Override
 //        public void visit(ElementService el)
 //        {

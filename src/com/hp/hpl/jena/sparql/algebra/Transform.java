@@ -28,6 +28,8 @@ public interface Transform
     public Op transform(OpProcedure opProcedure, Op subOp) ;
     public Op transform(OpPropFunc opPropFunc, Op subOp) ;
     public Op transform(OpLabel opLabel, Op subOp) ;
+    public Op transform(OpAssign opAssign, Op subOp) ;
+    public Op transform(OpExtend opExtend, Op subOp) ;
 
     // Op2
     public Op transform(OpJoin opJoin, Op left, Op right) ;
@@ -48,7 +50,6 @@ public interface Transform
     public Op transform(OpList opList, Op subOp) ;
     public Op transform(OpOrder opOrder, Op subOp) ;
     public Op transform(OpProject opProject, Op subOp) ;
-    public Op transform(OpAssign opAssign, Op subOp) ;
     public Op transform(OpDistinct opDistinct, Op subOp) ;
     public Op transform(OpReduced opReduced, Op subOp) ;
     public Op transform(OpSlice opSlice, Op subOp) ;

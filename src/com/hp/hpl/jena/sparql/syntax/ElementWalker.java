@@ -58,6 +58,12 @@ public class ElementWalker
         }
 
         
+        public void visit(ElementBind el)
+        {
+            proc.visit(el) ;
+        }
+
+        
         public void visit(ElementUnion el)
         {
             for ( Element e : el.getElements() )

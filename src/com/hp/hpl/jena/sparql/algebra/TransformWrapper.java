@@ -34,6 +34,9 @@ public class TransformWrapper implements Transform
     public Op transform(OpFilter opFilter, Op subOp)        { return transform.transform(opFilter, subOp) ; }
     public Op transform(OpGraph opGraph, Op subOp)          { return transform.transform(opGraph, subOp) ; } 
     public Op transform(OpService opService, Op subOp)      { return transform.transform(opService, subOp) ; } 
+
+    public Op transform(OpAssign opAssign, Op subOp)        { return transform.transform(opAssign, subOp) ; }
+    public Op transform(OpExtend opExtend, Op subOp)        { return transform.transform(opExtend, subOp) ; }
     
     public Op transform(OpJoin opJoin, Op left, Op right)           { return transform.transform(opJoin, left, right) ; }
     public Op transform(OpLeftJoin opLeftJoin, Op left, Op right)   { return transform.transform(opLeftJoin, left, right) ; }
@@ -55,8 +58,7 @@ public class TransformWrapper implements Transform
     public Op transform(OpDistinct opDistinct, Op subOp)    { return transform.transform(opDistinct, subOp) ; }
     public Op transform(OpReduced opReduced, Op subOp)      { return transform.transform(opReduced, subOp) ; }
     public Op transform(OpSlice opSlice, Op subOp)          { return transform.transform(opSlice, subOp) ; }
-    public Op transform(OpAssign opAssign, Op subOp)        { return transform.transform(opAssign, subOp) ; }
-    public Op transform(OpGroup opGroup, Op subOp)    { return transform.transform(opGroup, subOp) ; }
+    public Op transform(OpGroup opGroup, Op subOp)          { return transform.transform(opGroup, subOp) ; }
 }
 
 /*

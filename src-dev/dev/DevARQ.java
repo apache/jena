@@ -12,7 +12,12 @@ public class DevARQ
     // LIMIT subquery.
     // Check for SELECT syntax errors by scope.
     
-    // BIND
+    // BIND - OpAssign and OpExtend or OpExtend and LET is access to more complete features.
+ 
+    // Syntax restrictions:
+    //   GROUP
+    //   BIND
+    //   SelectExpressions
     
     // Property path rewrites as per spec (i.e. earlier than evaluation)
     

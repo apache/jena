@@ -439,6 +439,13 @@ public class OpExecutor
         return qIter ;
     }
 
+    protected QueryIterator execute(OpExtend opExtend, QueryIterator input)
+    {
+        QueryIterator qIter = executeOp(opExtend.getSubOp(), input) ;
+        qIter = new QueryIterAssign(qIter, opExtend.getVarExprList(), execCxt) ;
+        return qIter ;
+    }
+
     public static QueryIterator createRootQueryIterator(ExecutionContext execCxt)
     {
         return QueryIterRoot.create(execCxt) ;

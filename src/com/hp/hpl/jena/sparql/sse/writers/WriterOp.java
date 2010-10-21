@@ -478,6 +478,15 @@ public class WriterOp
             finish(opAssign) ;
         }
         
+        public void visit(OpExtend opExtend)
+        {
+            start(opExtend, NoNL) ;
+            writeNamedExprList(opExtend.getVarExprList()) ;
+            out.println();
+            printOp(opExtend.getSubOp()) ;
+            finish(opExtend) ;
+        }
+        
         public void visit(OpSlice opSlice)
         { 
             start(opSlice, NoNL) ;

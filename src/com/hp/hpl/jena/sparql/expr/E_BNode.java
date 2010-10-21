@@ -49,7 +49,7 @@ public class E_BNode extends ExprFunctionN
 
         // IdentityHashMap
         // Normally bindings have structural equality (e.g. DISTINCT)
-        // we want identify as OpAssign mutates a binding to add new pairs.
+        // we want identify as OpAssign/OpExtend mutates a binding to add new pairs.
         @SuppressWarnings("unchecked")
         IdentityHashMap<Binding, LabelToNodeMap> mapping = (IdentityHashMap<Binding, LabelToNodeMap>)env.getContext().get(keyMap) ;
 

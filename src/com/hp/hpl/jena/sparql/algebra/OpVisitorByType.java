@@ -93,6 +93,9 @@ public abstract class OpVisitorByType implements OpVisitor
     public void visit(OpAssign opAssign)
     { visit1(opAssign) ; }
 
+    public void visit(OpExtend opExtend)
+    { visit1(opExtend) ; }
+
     public void visit(OpList opList)
     { visitModifer(opList) ; }
 

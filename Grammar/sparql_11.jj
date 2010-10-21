@@ -539,6 +539,8 @@ Element GraphPatternNotTriples() : { Element el = null ; }
    el = ServiceGraphPattern()
  |
    el = Filter()
+ |
+   el = Bind()
  )
  { return el ; }
 }
@@ -558,6 +560,16 @@ Element ServiceGraphPattern() : { Element el ; Node n ; }
   n = VarOrIRIref()
   el = GroupGraphPattern()
     { return new ElementService(n, el) ; }
+}
+Element Bind() : { Var v ; Expr expr ; }
+{
+  <BIND>
+  <LPAREN>
+  expr = Expression()
+  <AS>
+  v = Var()
+  <RPAREN>
+  { return new ElementBind(v, expr) ; }
 }
 Element MinusGraphPattern() : { Element el ; }
 {
@@ -1352,11 +1364,12 @@ TOKEN [IGNORE_CASE] :
 | < GRAPH: "graph" >
 | < OPTIONAL: "optional" >
 | < UNION: "union" >
+| < MINUS_P: "minus" >
+| < BIND: "bind" >
 | < SERVICE: "service" >
 | < EXISTS: "exists" >
 | < NOT: "not" >
 | < NOTEXISTS: "not" (<WS>)* "exists" >
-| < MINUS_P: "minus" >
 //|  < UNSAID:      "unsaid" >
 | < AS: "as" >
 | < GROUP: "group" >

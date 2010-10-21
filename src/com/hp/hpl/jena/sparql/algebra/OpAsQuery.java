@@ -329,6 +329,18 @@ public class OpAsQuery
                 g.addElement(elt) ;
             }
         }
+
+        public void visit(OpExtend opExtend)
+        { 
+            for ( Var v : opExtend.getVarExprList().getVars() )
+            {
+                Element elt = new ElementBind(v, opExtend.getVarExprList().getExpr(v)) ;
+                ElementGroup g = currentGroup() ;
+                g.addElement(elt) ;
+            }
+        }
+
+        
         public void visit(OpList opList)
         { /* No action */ }
 

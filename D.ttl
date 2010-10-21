@@ -3,17 +3,8 @@
 @prefix pf:      <http://jena.hpl.hp.com/ARQ/property#> .
 @prefix fn:      <http://www.w3.org/2005/xpath-functions#> .
 @prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
-@prefix ex:      <http://example.org/> .
+@prefix :      <http://example.org/> .
 
-ex:v1 rdf:type ex:Object .
-ex:v1 ex:place "Athens".
-ex:v2 rdf:type ex:Object .
-ex:v2 ex:place "Athens", "Frankreich" .
-ex:v3 rdf:type ex:Object .
-ex:v3 ex:place "Athens", "Frankreich" .
-ex:v4 rdf:type ex:Object .
-ex:v4 ex:place "Athens", "Griechenland" .
-ex:v5 rdf:type ex:Object .
-ex:v5 ex:place "Athens", "Frankreich", "Griechenland" .
-ex:v6 rdf:type ex:Object .
-
+:s1 :p 1 .
+:s2 :p 2 .
+:s3 :p 3 .

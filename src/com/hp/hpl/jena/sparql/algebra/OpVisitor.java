@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -26,6 +27,8 @@ public interface OpVisitor
     public void visit(OpService opService) ;
     public void visit(OpDatasetNames dsNames) ;
     public void visit(OpLabel opLabel) ;
+    public void visit(OpAssign opAssign) ;
+    public void visit(OpExtend opExtend) ;
     
     // Op2
     public void visit(OpJoin opJoin) ;
@@ -49,13 +52,13 @@ public interface OpVisitor
     public void visit(OpReduced opReduced) ;
     public void visit(OpDistinct opDistinct) ;
     public void visit(OpSlice opSlice) ;
-    public void visit(OpAssign opAssign) ;
 
     public void visit(OpGroup opGroup) ;
 }
 
 /*
  * (c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

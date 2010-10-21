@@ -201,6 +201,16 @@ public class FormatterElement extends FormatterBase
         out.print(")") ;
     }
 
+    public void visit(ElementBind el)
+    {
+        out.print("BIND(") ;
+        FmtExpr v = new FmtExpr(out, context) ;
+        v.format(el.getExpr()) ;
+        out.print(" AS ") ;
+        out.print("?"+el.getVar().getVarName()) ;
+        out.print(")") ;
+    }
+
     public void visit(ElementUnion el)
     {
         if ( el.getElements().size() == 1 )

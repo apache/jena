@@ -5,8 +5,8 @@
 ## PREFIX xsd:     <http://www.w3.org/2001/XMLSchema#>
 PREFIX :      <http://example.org/>
 
-SELECT *
+SELECT ?z (?z+20 AS ?Z)
 {
    ?s ?p ?o
-   { SELECT * { ?s ?p1 ?o1 } LIMIT 1 }
+   FILTER(?o = <z>)
 }

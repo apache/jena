@@ -84,6 +84,7 @@
 [<NOTEXISTS>]  ::=    'NOT EXISTS'
 [<UNSAID>]     ::=    'UNSAID'
 [<LET>]        ::=    'LET'
+[<BIND>]       ::=    'BIND'
 
 [<FILTER>]     ::= 'FILTER'
 [<REGEXP>]     ::= 'REGEXP'

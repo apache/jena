@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -16,6 +17,7 @@ public interface ElementVisitor
     public void visit(ElementPathBlock el) ;
     public void visit(ElementFilter el) ;
     public void visit(ElementAssign el) ;
+    public void visit(ElementBind el) ;
     public void visit(ElementUnion el) ;
     public void visit(ElementOptional el) ;
     public void visit(ElementGroup el) ;
@@ -31,6 +33,7 @@ public interface ElementVisitor
 
 /*
  * (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

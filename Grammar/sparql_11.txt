@@ -65,11 +65,12 @@ TOKENS
 | <GRAPH: "graph">
 | <OPTIONAL: "optional">
 | <UNION: "union">
+| <MINUS_P: "minus">
+| <BIND: "bind">
 | <SERVICE: "service">
 | <EXISTS: "exists">
 | <NOT: "not">
 | <NOTEXISTS: "not" (<WS>)* "exists">
-| <MINUS_P: "minus">
 | <AS: "as">
 | <GROUP: "group">
 | <HAVING: "having">
@@ -291,11 +292,12 @@ NON-TERMINALS
 // #endif
 	TriplesBlock	:=	TriplesSameSubjectPath ( <DOT> ( TriplesBlock )? )?
 // -----
-	GraphPatternNotTriples	:=	( GroupOrUnionGraphPattern | OptionalGraphPattern | MinusGraphPattern | GraphGraphPattern | ServiceGraphPattern | Filter )
+	GraphPatternNotTriples	:=	( GroupOrUnionGraphPattern | OptionalGraphPattern | MinusGraphPattern | GraphGraphPattern | ServiceGraphPattern | Filter | Bind )
 // ---- Definitions of each pattern element
 	OptionalGraphPattern	:=	<OPTIONAL> GroupGraphPattern
 	GraphGraphPattern	:=	<GRAPH> VarOrIRIref GroupGraphPattern
 	ServiceGraphPattern	:=	<SERVICE> VarOrIRIref GroupGraphPattern
+	Bind	:=	<BIND> <LPAREN> Expression <AS> Var <RPAREN>
 	MinusGraphPattern	:=	<MINUS_P> GroupGraphPattern
 // Element UnionGraphPattern() : { Element el ; }
 // {

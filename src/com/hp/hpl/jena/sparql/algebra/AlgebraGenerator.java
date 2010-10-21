@@ -19,6 +19,7 @@ import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
 import com.hp.hpl.jena.sparql.algebra.op.OpAssign ;
 import com.hp.hpl.jena.sparql.algebra.op.OpBGP ;
 import com.hp.hpl.jena.sparql.algebra.op.OpDistinct ;
+import com.hp.hpl.jena.sparql.algebra.op.OpExtend ;
 import com.hp.hpl.jena.sparql.algebra.op.OpFilter ;
 import com.hp.hpl.jena.sparql.algebra.op.OpGraph ;
 import com.hp.hpl.jena.sparql.algebra.op.OpGroup ;
@@ -52,6 +53,7 @@ import com.hp.hpl.jena.sparql.sse.Item ;
 import com.hp.hpl.jena.sparql.sse.ItemList ;
 import com.hp.hpl.jena.sparql.syntax.Element ;
 import com.hp.hpl.jena.sparql.syntax.ElementAssign ;
+import com.hp.hpl.jena.sparql.syntax.ElementBind ;
 import com.hp.hpl.jena.sparql.syntax.ElementExists ;
 import com.hp.hpl.jena.sparql.syntax.ElementFetch ;
 import com.hp.hpl.jena.sparql.syntax.ElementFilter ;
@@ -370,6 +372,13 @@ public class AlgebraGenerator
             return subOp ;
         }
         
+        if ( elt instanceof ElementBind )
+        {
+            ElementBind bind = (ElementBind)elt ;
+            Op subOp = OpExtend.extend(current, bind.getVar(), bind.getExpr()) ;
+            return subOp ;
+        }
+        
         if ( elt instanceof ElementExists )
         {
             ElementExists elt2 = (ElementExists)elt ;
@@ -584,7 +593,7 @@ public class AlgebraGenerator
         // ---- Assignments from SELECT and other places (so available to ORDER and HAVING)
         if ( ! exprs.isEmpty() )
             // Potential rewrites based of assign introducing aliases.
-            op = OpAssign.assign(op, exprs) ;
+            op = OpExtend.extend(op, exprs) ;
 
         // ---- HAVING
         if ( query.hasHaving() )
