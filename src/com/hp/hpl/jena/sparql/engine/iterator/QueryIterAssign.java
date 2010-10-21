@@ -20,8 +20,12 @@ public class QueryIterAssign extends QueryIterProcessBinding
 {
     private VarExprList exprs ; 
     
-    public QueryIterAssign(QueryIterator input, VarExprList exprs, ExecutionContext qCxt)
+    public QueryIterAssign(QueryIterator input, VarExprList exprs, ExecutionContext qCxt, boolean mustBeNewVar)
     {
+        // mustBeNewVar : any variable introduced must not already exist.
+        // true => BIND
+        // false => LET 
+        // Syntax checking shoud have assured this.
         super(input, qCxt) ;
         this.exprs = exprs ;
         //super(input, new Extend(exprs, qCxt), qCxt) ;

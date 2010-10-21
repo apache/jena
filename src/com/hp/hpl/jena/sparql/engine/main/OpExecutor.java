@@ -435,14 +435,14 @@ public class OpExecutor
     {
         // Need prepare?
         QueryIterator qIter = executeOp(opAssign.getSubOp(), input) ;
-        qIter = new QueryIterAssign(qIter, opAssign.getVarExprList(), execCxt) ;
+        qIter = new QueryIterAssign(qIter, opAssign.getVarExprList(), execCxt, false) ;
         return qIter ;
     }
 
     protected QueryIterator execute(OpExtend opExtend, QueryIterator input)
     {
         QueryIterator qIter = executeOp(opExtend.getSubOp(), input) ;
-        qIter = new QueryIterAssign(qIter, opExtend.getVarExprList(), execCxt) ;
+        qIter = new QueryIterAssign(qIter, opExtend.getVarExprList(), execCxt, true) ;
         return qIter ;
     }
 
