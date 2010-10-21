@@ -9,6 +9,10 @@ public class DevFuseki
 {
     // SOH
     //   Refactor into body/no_body send // body/no_body receive
+    // All:
+    // -v --help --accept --user/--password ( or --auth user:pass) 
+    // Drop --service.
+    
     //   --accept line/shortname : s-get, s-query
     //   Basic authentication: --user --password
     
