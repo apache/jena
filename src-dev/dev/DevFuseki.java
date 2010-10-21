@@ -27,11 +27,14 @@ public class DevFuseki
     //   --service naming seems inconsistent.
     // Testing project?
     
+    // Plug-ins:
+    //   Dataset (query, Update), HttpInternalIF?
+    //   "Connection"
     // Locking => transaction support (via default model?)
     //   HttpAction.beginRead() etc.
     
     // Java clients:
-    //   DatasetAccessor: don't serialise to byte[] and then send. 
+    //   DatasetAccessor : don't serialise to byte[] and then send. 
     //   DatasetAccessor : check existence of endpoint. 
 
     // Content-Length: SHOULD
@@ -52,10 +55,5 @@ public class DevFuseki
     //   gzip and inflate.   
     //   LastModified headers. 
 
-    // Query, Update : doHead
-    
     // File upload.
-    // Static pages
-    
-
 }
