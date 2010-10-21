@@ -11,4 +11,4 @@ s-get "$URL/data" default
 
 s-query --service="$URL/query" 'SELECT * {?s ?p ?o}'
 
-kill $!
+kill $PID

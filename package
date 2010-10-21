@@ -7,6 +7,7 @@ mvn clean package
 D="$(date +'%Y%m%d.%H%M%S')"
 
 X=fuseki-$D-dev.zip
+Y=soh-$D-dev.zip
 
 # Breaks symbolic links
 zip -r target/"$X" \
@@ -15,5 +16,7 @@ zip -r target/"$X" \
     fuseki-server \
     tdb.ttl \
     s-* \
-    pages/*
+    pages/* \
+    books.ttl
 
+zip -r "target/$Y" s-*

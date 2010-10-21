@@ -15,8 +15,12 @@ public class DevFuseki
     // **** Clean up SPARQL Query results code.
 
     // Document
+    // Wiki reorg
     //   validators
     //   manager
+    
+    // Pages
+    //   Any endpoint, default to self.  Needs javascript.
     
     // Environment variable for target (s-set but needs to shell built-in)
     //   defaults

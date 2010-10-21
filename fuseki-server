@@ -3,9 +3,11 @@
 JAR1="fuseki-*-server.jar"
 JAR2="target/fuseki-*-server.jar"
 JAR=""
+
 for J in "$JAR1" "$JAR2"
 do
-    echo "$J"
+    # Expand
+    J="$(echo $J)"
     if [ -e "$J" ]
     then
 	JAR="$J"
