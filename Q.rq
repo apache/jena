@@ -1,33 +1,12 @@
-# SPARQL query to generate object counts for each combination of associated places
+## PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+## PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
+## PREFIX pf:      <http://jena.hpl.hp.com/ARQ/property#>
+## PREFIX fn:      <http://www.w3.org/2005/xpath-functions#>
+## PREFIX xsd:     <http://www.w3.org/2001/XMLSchema#>
+PREFIX :      <http://example.org/>
 
-PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX pf:      <http://jena.hpl.hp.com/ARQ/property#>
-PREFIX fn:      <http://www.w3.org/2005/xpath-functions#>
-PREFIX xsd:     <http://www.w3.org/2001/XMLSchema#>
-PREFIX ex:      <http://example.org/>
-
-SELECT ?bn ?pp ?p ?c WHERE
-  {
-    { SELECT ?s (GROUP_CONCAT(?p;SEPARATOR="::") as ?pp) WHERE
-      { ?s rdf:type ex:Object .
-        OPTIONAL { ?s ex:place ?p }
-      } GROUP BY ?s ORDER BY ?s
-    }
-    { SELECT ?pp (BNODE(?pp) AS ?bn) WHERE
-      { SELECT DISTINCT (GROUP_CONCAT(?p;SEPARATOR="::") as ?pp) WHERE
-        { ?s rdf:type ex:Object .
-          OPTIONAL { ?s ex:place ?p }
-        } GROUP BY ?s
-      }
-    }
-    { SELECT ?pp (COUNT(DISTINCT ?s) AS ?c) WHERE
-      { SELECT ?s (GROUP_CONCAT(?p;SEPARATOR="::") as ?pp) WHERE
-        { ?s rdf:type ex:Object .
-          OPTIONAL { ?s ex:place ?p }
-        } GROUP BY ?s
-      } GROUP BY ?pp
-    }
-    { ?s ex:place ?p }
-  }
-
+SELECT *
+{
+   ?s ?p ?o
+   { SELECT * { ?s ?p1 ?o1 } LIMIT 1 }
+}
