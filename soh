@@ -5,7 +5,6 @@
 
 require 'optparse'
 require 'net/http'
-require 'fileutils'
 require 'uri'
 require 'cgi'
 require 'pp'
@@ -565,7 +564,7 @@ def cmd_sparql_update(by_raw_post=true)
     opts.on('--service=URI', '--server=URI', 'SPARQL endpoint') do |uri|
       options[:service]=uri
     end
-    opts.on('--file=FILE', 'Take update from a file') do |file|
+    opts.on('--update=FILE', '--file=FILE', 'Take update from a file') do |file|
       options[:file]=file
     end
     options[:verbose] = false
