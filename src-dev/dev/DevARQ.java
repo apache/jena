@@ -28,6 +28,8 @@ public class DevARQ
     
     // TextOutput: right justify numbers.
     
+    // Event model for datasets?
+    
     // VarRename, OpVars, VarFinder and VarUtils -- sort out!
     // Any SELECT * + one in group => no need for rename? 
     
