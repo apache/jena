@@ -26,6 +26,7 @@ import org.openjena.riot.WebContent ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
+import com.hp.hpl.jena.query.QueryParseException ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.update.UpdateAction ;
 import com.hp.hpl.jena.update.UpdateException ;
@@ -144,6 +145,7 @@ public class SPARQL_Update extends SPARQL_ServletBase
         try {
             if ( action.verbose )
             {
+                // Content-Length.
                 //String requestStr = IO.readWholeFileAsUTF8(action.request.getInputStream()) ;
                 // (fixed)Bug in atlas.IO
                 byte[] b = IO.readWholeFile(input) ;
@@ -154,13 +156,14 @@ public class SPARQL_Update extends SPARQL_ServletBase
             }    
             else
                 req = UpdateFactory.read(input) ;
-        } catch (UpdateException ex) { errorBadRequest(ex.getMessage()) ; req = null ; }
+        } 
+        catch (UpdateException ex) { errorBadRequest(ex.getMessage()) ; req = null ; }
+        catch (QueryParseException ex) { errorBadRequest(ex.getMessage()) ; req = null ; }
         execute(action, req) ;
     }
 
     private void executeForm(HttpActionUpdate action)
     {
-        //error(HttpSC.NOT_IMPLEMENTED_501, "SPARQL Update: POST of HTML form not supported yet") ;
         String requestStr = action.request.getParameter(paramRequest) ;
         if ( action.verbose )
             serverlog.info(format("[%d] Form update = %s", action.id, formatForLog(requestStr))) ;
@@ -168,7 +171,9 @@ public class SPARQL_Update extends SPARQL_ServletBase
         UpdateRequest req ; 
         try {
             req = UpdateFactory.create(requestStr) ;
-        } catch (UpdateException ex) { errorBadRequest(ex.getMessage()) ; req = null ; }
+        }
+        catch (UpdateException ex) { errorBadRequest(ex.getMessage()) ; req = null ; }
+        catch (QueryParseException ex) { errorBadRequest(ex.getMessage()) ; req = null ; }
         execute(action, req) ;
     }
     
