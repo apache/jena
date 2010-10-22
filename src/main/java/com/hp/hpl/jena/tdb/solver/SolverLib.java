@@ -181,7 +181,7 @@ public class SolverLib
     }
     
     // Transform : Binding ==> BindingNodeId
-    private static Transform<Binding, BindingNodeId> convFromBinding(final NodeTable nodeTable)
+    public static Transform<Binding, BindingNodeId> convFromBinding(final NodeTable nodeTable)
     {
         return new Transform<Binding, BindingNodeId>()
         {

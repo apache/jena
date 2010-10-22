@@ -154,7 +154,7 @@ public class OpExecutorTDB extends OpExecutor
 
     /** Execute a BGP (and filters) on a TDB graph, which may be in default storage or it may be a named graph */ 
     private static QueryIterator executeBGP(GraphTDB graph, OpBGP opBGP, QueryIterator input, ExprList exprs, 
-                                         ExecutionContext execCxt)
+                                            ExecutionContext execCxt)
     {
         // Is it the real default graph (normal route or explicitly named)?
         if ( ! isDefaultGraphStorage(graph.getGraphNode()))
