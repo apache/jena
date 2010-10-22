@@ -1,10 +1,13 @@
 
 package dev ;
 
+
 public class DevARQ
 {
     // DataSource ds = DatasetFactory.create() ; is a non-graph adding DataSource
     // change.  Always make growing? What about mixed types?
+    
+    // QueryParseException for updates is confusing.
     
     // **** Rework QueryTestSuiteFactory => ScriptTestSuiteFactory
     
