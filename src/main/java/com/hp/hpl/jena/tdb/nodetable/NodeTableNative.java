@@ -77,23 +77,6 @@ public class NodeTableNative implements NodeTable
         
         Node n = readNodeByNodeId(id) ;
         return n ;
-//        
-//        // Inline?
-//        Node n = NodeId.extract(id) ;
-//        if ( n != null )
-//            return n ; 
-//        
-//        synchronized (this)
-//        {
-//            n = cacheLookup(id) ;   // Includes known to not exist
-//            if ( n != null )
-//                return n ; 
-//
-//            n = readNodeByNodeId(id) ;
-//            cacheUpdate(n, id) ;
-//            return n ;
-//            
-//        }
     }
 
     // ----------------
@@ -105,12 +88,7 @@ public class NodeTableNative implements NodeTable
         if ( node == Node.ANY )
             return NodeId.NodeIdAny ;
         
-        // Inline?
-        NodeId nodeId = NodeId.inline(node) ;
-        if ( nodeId != null )
-            return nodeId ;
-
-        nodeId = accessIndex(node, allocate) ;
+        NodeId nodeId = accessIndex(node, allocate) ;
         return nodeId ;
     }
     

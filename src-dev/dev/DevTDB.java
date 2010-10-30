@@ -5,6 +5,8 @@ package dev ;
 
 public class DevTDB
 {
+    // NodeTableNative call inlining code in _idForNode
+    
     // Backup, abort long running query.
     
     // 1M flush on secondaries (primary as well?)

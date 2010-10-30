@@ -8,14 +8,9 @@
 
 package dev;
 
-import java.util.Iterator ;
-import java.util.List ;
-
-import org.openjena.atlas.iterator.Iter ;
 import org.openjena.atlas.lib.FileOps ;
 import org.openjena.atlas.logging.Log ;
 
-import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.query.QueryExecution ;
 import com.hp.hpl.jena.query.QueryExecutionFactory ;
@@ -23,11 +18,10 @@ import com.hp.hpl.jena.query.ResultSetFormatter ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.Property ;
 import com.hp.hpl.jena.rdf.model.Resource ;
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
+import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.TDBFactory ;
-import com.hp.hpl.jena.update.UpdateAction ;
 
 public class RunTDB
 {
@@ -43,16 +37,13 @@ public class RunTDB
 
     public static void main(String[] args) throws Exception
     {
-        if ( false )
         {
-            Dataset ds = TDBFactory.createDataset() ;
-            UpdateAction.parseExecute("INSERT DATA { GRAPH <http://example/g> { <s> <p> <o> } }", ds) ;
-            Node gn = Node.createURI("http://example/gXXX") ;
-            DatasetGraph dsg = ds.asDatasetGraph() ;
-            Iterator<Quad> iter = dsg.find(gn, null, null, null) ;
-            List<Quad> list = Iter.toList(iter) ;
-            System.out.println(list) ;
-        System.exit(0) ;
+            //FileOps.clearDirectory("DB") ;
+            Dataset ds = TDBFactory.createDataset("DB") ;
+            boolean b = ds.containsNamedModel("http://example/") ;
+            TDB.sync(ds) ;
+            System.out.println(b) ;
+            System.exit(0) ;
         }
         
         

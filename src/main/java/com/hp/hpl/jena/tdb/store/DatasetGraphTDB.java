@@ -137,6 +137,8 @@ public class DatasetGraphTDB extends DatasetGraphCaching
     public boolean containsGraph(Node graphNode)
     {
         NodeId graphNodeId = quadTable.getNodeTupleTable().getNodeTable().getNodeIdForNode(graphNode) ;
+        if ( NodeId.doesNotExist(graphNodeId) )
+            return false ;
         Tuple<NodeId> pattern = Tuple.create(graphNodeId, null, null, null) ;
         Iterator<Tuple<NodeId>> x = quadTable.getNodeTupleTable().getTupleTable().find(pattern) ;
         boolean result = x.hasNext() ;
