@@ -4,8 +4,9 @@ package dev ;
 
 
 public class DevTDB
-
 {
+    // Backup, abort long running query.
+    
     // 1M flush on secondaries (primary as well?)
     //  LoaderNodeTupleTable.load() [primary]
     //  BuilderSecondaryIndexesSequential.createSecondaryIndexes[secondary]
