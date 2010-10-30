@@ -52,6 +52,9 @@
     rdfs:range   rdfs:Resource ;
     .
 
+:graph a rdf:Property .
+
+
 ## ---- Update results ----
 
 :success a :Result;

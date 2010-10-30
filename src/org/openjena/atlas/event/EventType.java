@@ -10,8 +10,6 @@ import com.hp.hpl.jena.sparql.util.Symbol ;
 
 public class EventType extends Symbol
 {
-    
-    
     public EventType(Class<?> cls, String label) { this(cls.getName()+"."+label) ; }
     public EventType(String label) { super(label) ; }
     

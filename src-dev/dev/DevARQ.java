@@ -4,8 +4,26 @@ package dev ;
 
 public class DevARQ
 {
+    // Sync to loose Sync(boolean)
+    // Dataset to acquire begin(read), commit(), abort()
+    //   or by connection
+    //   or dataset.getAnotherDatasetForTransations()
+    
+    // Event type -> list of parts vs regex filtering (?)
+    //   list of parts.
+    //   Naming: URIs use: subClassOf or skos:broader/narrower
+    //    or EventType is specialization of EventType.
+    //    Note issues on object type.
+    //    EventType<T> 
+    //   Convention on where constants go.
+    
     // DataSource ds = DatasetFactory.create() ; is a non-graph adding DataSource
     // change.  Always make growing? What about mixed types?
+    
+    // src-examples of OpExecutor+QueryEngine
+    
+    // DSG Notifying wrapper: new events 
+    // And link to update engine.
     
     // QueryParseException for updates is confusing.
     

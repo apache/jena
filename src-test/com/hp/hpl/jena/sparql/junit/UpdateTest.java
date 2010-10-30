@@ -170,15 +170,15 @@ public class UpdateTest extends EarlTestCase
         ClosableIterator<Statement> cIter =  r.listProperties(TestManifestUpdate_11.graphData) ;
         for ( ; cIter.hasNext() ; )
         {
-            // An graphData entry can be a URI or a [ ut:data ... ; rdfs:label "foo" ] ;
+            // An graphData entry can be a URI or a [ ut ... ; rdfs:label "foo" ] ;
             Statement stmt = cIter.next() ;
             Resource gn = stmt.getResource() ;
             if ( gn.isAnon() )
             {
-                if ( ! gn.hasProperty(TestManifestUpdate_11.data) )
+                if ( ! gn.hasProperty(TestManifestUpdate_11.graph) )
                     System.err.println("No data for graphData") ;
                 
-                String fn = gn.getProperty(TestManifestUpdate_11.data).getResource().getURI() ;
+                String fn = gn.getProperty(TestManifestUpdate_11.graph).getResource().getURI() ;
                 String name = gn.getProperty(RDFS.label).getString() ;
                 Model m = FileManager.get().loadModel(fn) ;
                 ds.addNamedModel(name, m) ;
