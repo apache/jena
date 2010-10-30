@@ -4,6 +4,10 @@ package dev ;
 
 public class DevARQ
 {
+    // ** For release:
+    // QueryParseException for updates is confusing.
+    
+    // ----
     // Sync to loose Sync(boolean)
     // Dataset to acquire begin(read), commit(), abort()
     //   or by connection
@@ -25,16 +29,9 @@ public class DevARQ
     // DSG Notifying wrapper: new events 
     // And link to update engine.
     
-    // QueryParseException for updates is confusing.
-    
     // **** Rework QueryTestSuiteFactory => ScriptTestSuiteFactory
     
     // http://www.openjena.org/wiki/ARQ/Concurrency
-    // LIMIT subquery.
-    // Check for SELECT syntax errors by scope.
-    
-    // BIND - OpAssign and OpExtend or OpExtend and LET is access to more complete features.
- 
     // Syntax restrictions:
     //   GROUP
     //   BIND
@@ -48,9 +45,7 @@ public class DevARQ
     // add qparse,uparse to wiki/ARQ/
     
     // TextOutput: right justify numbers.
-    
-    // Event model for datasets?
-    
+
     // VarRename, OpVars, VarFinder and VarUtils -- sort out!
     // Any SELECT * + one in group => no need for rename? 
     

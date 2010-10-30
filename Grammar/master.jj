@@ -543,7 +543,7 @@ Update ModifyOld() :
 }
 #endif
 
-void DeleteClause(UpdateModify up) : { QuadsAcc qp = up.getInsertAcc() ; }
+void DeleteClause(UpdateModify up) : { QuadsAcc qp = up.getDeleteAcc() ; }
 {
 #ifndef ARQ_UPDATE
    <DELETE> QuadPattern(qp)

@@ -386,7 +386,7 @@ Update Modify() : { Element el ; String iri = null ;
   el = GroupGraphPattern() { up.setElement(el) ; }
   { return up ; }
 }
-void DeleteClause(UpdateModify up) : { QuadsAcc qp = up.getInsertAcc() ; }
+void DeleteClause(UpdateModify up) : { QuadsAcc qp = up.getDeleteAcc() ; }
 {
    <DELETE> QuadPattern(qp)
    { up.setHasDeleteClause(true) ; }

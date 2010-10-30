@@ -1093,7 +1093,7 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
   }
 
   final public void DeleteClause(UpdateModify up) throws ParseException {
-                                       QuadsAcc qp = up.getInsertAcc() ;
+                                       QuadsAcc qp = up.getDeleteAcc() ;
     jj_consume_token(DELETE);
     QuadPattern(qp);
      up.setHasDeleteClause(true) ;

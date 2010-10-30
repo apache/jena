@@ -104,6 +104,17 @@ public class RunARQ
     
     public static void main(String[] argv) throws Exception
     {
+        {
+            String DIR = "/home/afs/W3C/SPARQL-docs/tests/data-sparql11/delete" ;
+            UpdateRequest request = UpdateFactory.read(DIR+"/delete-01.ru") ;
+
+            System.out.println(request) ;
+
+            Model m = FileManager.get().loadModel(DIR+"/delete-pre-01.ttl") ;
+            UpdateAction.execute(request, m) ;
+            System.exit(0) ;
+        }
+        
         TestSuite ts = ScriptTestSuiteFactory.make("tmp/manifest.ttl") ;
         SimpleTestRunner.runAndReport(ts) ;
         System.exit(0) ;

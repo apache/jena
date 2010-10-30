@@ -9,7 +9,6 @@
   <artifactId>arq</artifactId>
   <packaging>jar</packaging>
   <name>ARQ</name>
-  <!-- Next release: 2.9.0?? 3.0.0?? -->
   <version>2.8.6-SNAPSHOT</version>
 
   <description>ARQ is a SPARQL query engine for Jena</description>
