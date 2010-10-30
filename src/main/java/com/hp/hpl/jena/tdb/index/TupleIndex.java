@@ -35,7 +35,8 @@ public interface TupleIndex extends Sync, Closeable
     /** return an iterator of everything */
     public Iterator<Tuple<NodeId>> all() ;
     
-    /** Weight a pattern - specified in normal order (not index order) */
+    /** Weight a pattern - specified in normal order (not index order).
+     * Large numbers means better match. */
     public int weight(Tuple<NodeId> pattern) ;
 
     /** Length of tuple supported */

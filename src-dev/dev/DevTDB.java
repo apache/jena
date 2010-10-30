@@ -1,11 +1,30 @@
 package dev ;
 
 
+
+
 public class DevTDB
+
 {
-    //
+    // 1M flush on secondaries (primary as well?)
+    //  LoaderNodeTupleTable.load() [primary]
+    //  BuilderSecondaryIndexesSequential.createSecondaryIndexes[secondary]
+    //   ==> LoaderNodeTupleTable.copyIndex
+    
+    // Query timeout
+    
+    // Bug:??
+    // DSG.contains => DSG.getGraph 
+    // DSG.getGraph can create the node so is not a read-only operation.
+    //   Change to delay creating the NodeId until add/delete change
+    //   and otherwise is null/unknown.
+    
+    // Integrate TestDatasetConfig (any other union tests?)
+    // To ARQ for union rewrite tests as a base test.
+    
+    // Document: new events
     // http://openjena.org/wiki/TDB/JavaAPI#Concurrency
-    // http://www.openjena.org/wiki/TDB/Concurrency
+    // http://openjena.org/wiki/TDB/Concurrency
     // and ref to ARQ.
     // http://openjena.org/wiki/TDB/Assembler to document unionDefaultGraph
     
@@ -36,7 +55,6 @@ public class DevTDB
     // BPT internal consistency checks.
     //   Level count added as block read in.
     //   Leaf thread to check increasing keys.
-    
     
     // Missing tests for DatasetGraphTDB?
     

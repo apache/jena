@@ -106,9 +106,9 @@ public class LoaderNodeTupleTable implements Closeable, Sync
     public void load(Node... nodes)
     {
         try {
-        count++ ;
-        monitor.dataItem() ;
-        nodeTupleTable.addRow(nodes) ;
+            count++ ;
+            monitor.dataItem() ;
+            nodeTupleTable.addRow(nodes) ;
         } catch (RuntimeException ex)
         {
             System.err.println(Iter.asString(Arrays.asList(nodes))) ;
@@ -190,7 +190,7 @@ public class LoaderNodeTupleTable implements Closeable, Sync
     {
         monitor.startIndex(label) ;
         
-        for ( int counter = 0 ; srcIter.hasNext() ; counter++ )
+        for ( long counter = 0 ; srcIter.hasNext() ; counter++ )
         {
             Tuple<NodeId> tuple = srcIter.next();
             monitor.indexItem() ;
