@@ -7,6 +7,13 @@ package dev;
 
 public class DevFuseki
 {
+    // CORS: Access-Control-Allow-Origin: *
+    // http://esw.w3.org/CORS_Enabled
+    // Consider configuration.
+    
+    // ETags.
+
+    
     // SOH
     //   Refactor into body/no_body send // body/no_body receive
     // All:
