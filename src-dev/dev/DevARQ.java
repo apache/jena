@@ -6,6 +6,8 @@ public class DevARQ
 {
     // ** For release:
     // QueryParseException for updates is confusing.
+    // All QueryException  -> SparqlException
+    
     
     // ----
     // Sync to loose Sync(boolean)

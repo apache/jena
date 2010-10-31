@@ -28,12 +28,12 @@ public class PropertiesSorted extends Properties
     }
     
     
+    @SuppressWarnings({"unchecked", "rawtypes"})
     @Override
-    @SuppressWarnings("unchecked")
     public synchronized Enumeration<Object> keys()
     {
         // Old world - enumeration, untyped. But we know they are strings (Propetries hides non-strings in get) 
-        Enumeration keys = super.keys() ;
+        Enumeration<Object> keys = super.keys() ;
         List<String> keys2 = new ArrayList<String>(super.size()) ;
         
         for( ; keys.hasMoreElements() ; )
