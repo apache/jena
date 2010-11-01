@@ -5,14 +5,14 @@
 
 package sdb;
 
-import java.util.List;
+import java.util.List ;
 
-import sdb.cmd.CmdArgsDB;
-import arq.cmdline.ArgDecl;
+import sdb.cmd.CmdArgsDB ;
+import arq.cmdline.ArgDecl ;
 
-import com.hp.hpl.jena.sparql.util.Utils;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.sdb.store.StoreConfig;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.sdb.store.StoreConfig ;
+import com.hp.hpl.jena.sparql.util.Utils ;
 
  /** Write out the data from an SDB model.  Only works for small models
   * because of JDBC limitations in default configurations. 
@@ -61,9 +61,8 @@ public class sdbinfo extends CmdArgsDB
             cmdError("No positional arguments allowed", true) ;
     }
     
-    @SuppressWarnings("unchecked")
     @Override
-    protected void execCmd(List args)
+    protected void execCmd(List<String> args)
     {
         StoreConfig sConf = getStore().getConfiguration() ;
         if ( sConf == null )

@@ -61,9 +61,8 @@ public class sdbdump extends CmdArgsDB
             cmdError("No positional arguments allowed", true) ;
     }
     
-    @SuppressWarnings("unchecked")
     @Override
-    protected void execCmd(List args)
+    protected void execCmd(List<String> args)
     {
         // This is a streamable syntax.
         String syntax = "N-TRIPLES" ;
