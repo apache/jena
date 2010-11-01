@@ -1479,9 +1479,13 @@ TOKEN [IGNORE_CASE] :
 | < LOAD: "load" >
 | < CLEAR: "clear" >
 | < CREATE: "create" >
+| < ADD: "add" >
+| < MOVE: "move" >
+| < COPY: "copy" >
 | < SILENT: "silent" >
 | < DROP: "drop" >
 | < INTO: "into" >
+| < TO: "to" >
 | < DFT: "default" >
 //| < NAMED:        "named" >
 | < ALL: "all" >

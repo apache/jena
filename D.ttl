@@ -3,8 +3,12 @@
 @prefix pf:      <http://jena.hpl.hp.com/ARQ/property#> .
 @prefix fn:      <http://www.w3.org/2005/xpath-functions#> .
 @prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
-@prefix :      <http://example.org/> .
+@prefix ex:      <http://example.org/> .
 
-:s1 :p 1 .
-:s2 :p 2 .
-:s3 :p 3 .
+## :s1 :p 1 .
+## :s2 :p 2 .
+## :s3 :p 3 .
+
+ex:a1 a ex:A .
+ex:a2 a ex:A .
+ex:a2 a ex:B .

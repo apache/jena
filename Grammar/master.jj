@@ -431,6 +431,9 @@ void Update1() : { Update up ; }
   ( up = Load()
   | up = Clear()
   | up = Drop()
+  | up = Add()
+  | up = Move()
+  | up = Copy()
   | up = Create()
   | up = InsertData()
   | up = DeleteData()
@@ -476,6 +479,24 @@ Update Create() : { Node iri ; boolean silent = false ; }
 {
    <CREATE> (<SILENT> { silent=true ; } )? iri = GraphRef()
    { return new UpdateCreate(iri, silent) ; } 
+}
+
+Update Add() : { Target src ; Target dest ; }
+{
+  <ADD> src = GraphOrDefault() <TO> dest = GraphOrDefault()
+  { return null ; }
+}
+
+Update Move() : { Target src ; Target dest ; } 
+{
+  <MOVE> src = GraphOrDefault() <TO> dest = GraphOrDefault()
+  { return null ; }
+}
+
+Update Copy() : { Target src ; Target dest ; }
+{
+  <COPY> src = GraphOrDefault() <TO> dest = GraphOrDefault()
+  { return null ; }
 }
 
 Update InsertData() : { QuadDataAcc qd = new QuadDataAcc() ; Token t ; }
@@ -592,6 +613,14 @@ void UsingClause(UpdateWithUsing update) : { String iri ; Node n ; }
     { n = createNode(iri) ; update.addUsing(n) ; }
   | <NAMED> iri = IRIref()
     { n = createNode(iri) ; update.addUsingNamed(n) ; }
+  )
+}
+
+Target GraphOrDefault() : { String iri ; }
+{
+  ( <DFT> { return Target.DEFAULT ; }
+  |  iri = IRIref()
+     {  return Target.create(createNode(iri)) ; }
   )
 }
 
@@ -2091,9 +2120,13 @@ TOKEN [IGNORE_CASE] :
 | < LOAD:         "load" >
 | < CLEAR:        "clear" >
 | < CREATE:       "create" >
+| < ADD:          "add" >
+| < MOVE:         "move" >
+| < COPY:         "copy" >
 | < SILENT:       "silent" >
 | < DROP:         "drop" >
 | < INTO:         "into" >
+| < TO:           "to" >
 | < DFT:          "default" >
 //| < NAMED:        "named" >
 | < ALL:          "all" >

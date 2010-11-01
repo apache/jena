@@ -128,6 +128,10 @@
 [<DELETE_WHERE>] ::= 'DELETE WHERE'
 [<INSERT_DATA>]  ::= 'INSERT DATA'
 
+[<ADD>]         ::= 'ADD'
+[<MOVE>]        ::= 'MOVE'
+[<COPY>]        ::= 'COPY'
+
 [<DATA>]        ::= 'DATA'
 [<LOAD>]        ::= 'LOAD' 
 [<INTO>]        ::= 'INTO' 
@@ -137,6 +141,7 @@
 [<CREATE>]      ::= 'CREATE' 
 [<SILENT>]      ::= 'SILENT' 
 [<DROP>]        ::= 'DROP' 
+[<TO>]          ::= 'TO' 
 [<INTO>]        ::= 'INTO' 
 [<BEGIN>]       ::= 'BEGIN'
 [<COMMIT>]      ::= 'COMMIT'
