@@ -25,6 +25,8 @@ import com.hp.hpl.jena.query.QueryExecutionFactory ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
+import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import com.hp.hpl.jena.sparql.core.DatasetGraphWrapper ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.core.Substitute ;
 import com.hp.hpl.jena.sparql.engine.Plan ;
@@ -357,12 +359,35 @@ class UpdateEngineWorker implements UpdateVisitor
         return evalBindings(elementToQuery(pattern), dftGraph) ;
     }
     
+    static class DatasetGraphAltDefaultGraph extends DatasetGraphWrapper
+    {
+        private Graph dftGraph ;
+        
+        public DatasetGraphAltDefaultGraph(DatasetGraph dsg, Graph dftGraph)
+        { super(dsg) ; setDefaultGraph(dftGraph) ; }
+        
+        @Override
+        public Graph getDefaultGraph()
+        { return dftGraph; }
+
+        @Override
+        public void setDefaultGraph(Graph g)
+        { dftGraph = g ; }
+    }
+    
     protected List<Binding> evalBindings(Query query, Node dftGraph)
     {
         List<Binding> bindings = new ArrayList<Binding>() ;
         
         if ( query != null )
         {
+//            DatasetGraph dsg = graphStore ;
+//            if ( dftGraph != null ) ;
+//            {
+//                Graph g = dsg.getGraph(dftGraph) ;
+//                dsg = new DatasetGraphAltDefaultGraph(dsg, g) ;
+//            }
+//            
             Plan plan = QueryExecutionFactory.createPlan(query, graphStore, initialBinding) ;
             QueryIterator qIter = plan.iterator() ;
 

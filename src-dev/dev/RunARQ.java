@@ -13,6 +13,7 @@ import java.util.HashSet ;
 import java.util.Iterator ;
 import java.util.Set ;
 
+import jena.qtest ;
 import junit.framework.TestSuite ;
 import org.openjena.atlas.io.IndentedLineBuffer ;
 import org.openjena.atlas.io.IndentedWriter ;
@@ -104,14 +105,42 @@ public class RunARQ
     
     public static void main(String[] argv) throws Exception
     {
+//        // WITH processing.
+//        {
+//            // UpdateEngineWorker.visit(UpdateModify update)
+//            String X = "(dataset (graph) (graph <http://example.org/g2> (triple <http://example.org/a> <http://xmlns.com/foaf/0.1/knows> <http://example.org/b>)))" ;
+//            divider() ;
+//            DatasetGraph dsg = BuilderGraph.buildDataset(SSE.parse(X)) ;
+//            System.out.println(dsg) ;
+//            String Z = "WITH <http://example.org/g2> DELETE { <http://example.org/a> ?p ?o } WHERE { ?s ?p ?o }" ;
+//            UpdateRequest request = UpdateFactory.create(Z) ;
+//            divider() ;
+//            System.out.println(request) ;
+//            UpdateAction.execute(request, dsg) ;
+//            System.out.println(dsg) ;
+//            System.exit(0) ;
+//        }
         {
             String DIR = "/home/afs/W3C/SPARQL-docs/tests/data-sparql11/delete" ;
+            qtest.main(new String[] {DIR+"/manifest.ttl"}) ;
+            System.exit(0) ;
+            
             UpdateRequest request = UpdateFactory.read(DIR+"/delete-01.ru") ;
 
+            divider() ;
             System.out.println(request) ;
-
+            divider() ;
+            
             Model m = FileManager.get().loadModel(DIR+"/delete-pre-01.ttl") ;
+            m.write(System.out, "TTL") ;
             UpdateAction.execute(request, m) ;
+            divider() ;
+            System.out.println("# Result:") ;
+            m.write(System.out, "TTL") ;
+            divider() ;
+            System.out.println("# Expected:") ;
+            FileManager.get().loadModel(DIR+"/delete-post-01s.ttl").write(System.out, "TTL") ;
+            
             System.exit(0) ;
         }
         

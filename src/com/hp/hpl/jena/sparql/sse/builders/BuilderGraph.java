@@ -63,7 +63,7 @@ public class BuilderGraph
     
     public static Graph buildGraph(Graph graph, ItemList list)
     {
-        if ( list.get(0).isSymbol() )
+        if ( ! list.isEmpty() && list.get(0).isSymbol() )
         {
             if ( list.get(0).isSymbol(Tags.tagGraph) )
                 list = list.cdr();
@@ -119,7 +119,8 @@ public class BuilderGraph
             
             Node name = null ;
             ItemList graphContent = item.getList().cdr();
-            if ( graphContent.car().isNode() )
+
+            if ( !graphContent.isEmpty() && graphContent.car().isNode() )
             {
                 name = graphContent.car().getNode();
                 graphContent = graphContent.cdr() ;

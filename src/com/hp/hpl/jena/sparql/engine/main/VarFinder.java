@@ -169,6 +169,7 @@ public class VarFinder
             VarUsageVisitor leftUsage = VarUsageVisitor.apply(opUnion.getLeft()) ;
             VarUsageVisitor rightUsage = VarUsageVisitor.apply(opUnion.getRight()) ;
             
+            // defines = union(left.define, right.define) ??
             // Can be both definite and optional (different sides).
             defines.addAll(leftUsage.defines) ;
             optDefines.addAll(leftUsage.optDefines) ;
