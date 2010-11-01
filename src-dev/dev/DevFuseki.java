@@ -12,6 +12,8 @@ public class DevFuseki
     // Consider configuration.
     
     // ETags.
+    
+    // Authentication
 
     
     // SOH
