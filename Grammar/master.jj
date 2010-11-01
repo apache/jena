@@ -28,9 +28,9 @@
 #define PACKAGE     lang.arq
 #define CLASS       ARQParser
 #define PARSERBASE  ARQParserBase
-#define UPDATE_SUBMISSION
-//#define UPDATE
-//#define ARQ_UPDATE
+//#define UPDATE_SUBMISSION
+#define UPDATE
+#define ARQ_UPDATE
 #endif
 
 #if defined(UPDATE) && defined(UPDATE_SUBMISSION)
@@ -484,19 +484,19 @@ Update Create() : { Node iri ; boolean silent = false ; }
 Update Add() : { Target src ; Target dest ; }
 {
   <ADD> src = GraphOrDefault() <TO> dest = GraphOrDefault()
-  { return null ; }
+  { return new UpdateAdd(src, dest) ; }
 }
 
 Update Move() : { Target src ; Target dest ; } 
 {
   <MOVE> src = GraphOrDefault() <TO> dest = GraphOrDefault()
-  { return null ; }
+  { return new UpdateMove(src, dest) ; }
 }
 
 Update Copy() : { Target src ; Target dest ; }
 {
   <COPY> src = GraphOrDefault() <TO> dest = GraphOrDefault()
-  { return null ; }
+  { return new UpdateCopy(src, dest) ; }
 }
 
 Update InsertData() : { QuadDataAcc qd = new QuadDataAcc() ; Token t ; }

@@ -25,6 +25,7 @@ import com.hp.hpl.jena.query.QueryExecutionFactory ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
+import com.hp.hpl.jena.sparql.ARQNotImplemented ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphWrapper ;
 import com.hp.hpl.jena.sparql.core.Quad ;
@@ -36,7 +37,9 @@ import com.hp.hpl.jena.sparql.engine.binding.BindingRoot ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper ;
 import com.hp.hpl.jena.sparql.graph.NodeTransform ;
 import com.hp.hpl.jena.sparql.graph.NodeTransformLib ;
+import com.hp.hpl.jena.sparql.modify.request.UpdateAdd ;
 import com.hp.hpl.jena.sparql.modify.request.UpdateClear ;
+import com.hp.hpl.jena.sparql.modify.request.UpdateCopy ;
 import com.hp.hpl.jena.sparql.modify.request.UpdateCreate ;
 import com.hp.hpl.jena.sparql.modify.request.UpdateDataDelete ;
 import com.hp.hpl.jena.sparql.modify.request.UpdateDataInsert ;
@@ -45,6 +48,7 @@ import com.hp.hpl.jena.sparql.modify.request.UpdateDrop ;
 import com.hp.hpl.jena.sparql.modify.request.UpdateDropClear ;
 import com.hp.hpl.jena.sparql.modify.request.UpdateLoad ;
 import com.hp.hpl.jena.sparql.modify.request.UpdateModify ;
+import com.hp.hpl.jena.sparql.modify.request.UpdateMove ;
 import com.hp.hpl.jena.sparql.modify.request.UpdateVisitor ;
 import com.hp.hpl.jena.sparql.syntax.Element ;
 import com.hp.hpl.jena.sparql.syntax.ElementGroup ;
@@ -141,6 +145,15 @@ class UpdateEngineWorker implements UpdateVisitor
         Model model = ModelFactory.createModelForGraph(g) ;
         FileManager.get().readModel(model, source) ;
     }
+
+    public void visit(UpdateAdd update)
+    { throw new ARQNotImplemented() ; }
+
+    public void visit(UpdateCopy update)
+    { throw new ARQNotImplemented() ; }
+
+    public void visit(UpdateMove update)
+    { throw new ARQNotImplemented() ; }
 
     public void visit(UpdateDataInsert update)
     {

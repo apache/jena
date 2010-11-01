@@ -45,16 +45,11 @@ import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.sparql.ARQConstants ;
 import com.hp.hpl.jena.sparql.algebra.Algebra ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
-import com.hp.hpl.jena.sparql.algebra.OpVars ;
-import com.hp.hpl.jena.sparql.algebra.op.OpModifier ;
-import com.hp.hpl.jena.sparql.algebra.op.OpProject ;
-import com.hp.hpl.jena.sparql.algebra.op.OpSlice ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.RenamerVars ;
-import com.hp.hpl.jena.sparql.engine.VarRename ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
@@ -105,21 +100,8 @@ public class RunARQ
     
     public static void main(String[] argv) throws Exception
     {
-//        // WITH processing.
-//        {
-//            // UpdateEngineWorker.visit(UpdateModify update)
-//            String X = "(dataset (graph) (graph <http://example.org/g2> (triple <http://example.org/a> <http://xmlns.com/foaf/0.1/knows> <http://example.org/b>)))" ;
-//            divider() ;
-//            DatasetGraph dsg = BuilderGraph.buildDataset(SSE.parse(X)) ;
-//            System.out.println(dsg) ;
-//            String Z = "WITH <http://example.org/g2> DELETE { <http://example.org/a> ?p ?o } WHERE { ?s ?p ?o }" ;
-//            UpdateRequest request = UpdateFactory.create(Z) ;
-//            divider() ;
-//            System.out.println(request) ;
-//            UpdateAction.execute(request, dsg) ;
-//            System.out.println(dsg) ;
-//            System.exit(0) ;
-//        }
+        // testXSDDurationBug() ; System.exit(0) ;
+        
         {
             String DIR = "/home/afs/W3C/SPARQL-docs/tests/data-sparql11/delete" ;
             
@@ -178,62 +160,6 @@ public class RunARQ
             System.exit(0) ;
         }
         
-        {
-            String qs = StrUtils.strjoinNL("SELECT ?s { ?s ?p ?o . OPTIONAL { [] ?p ?__o } } ORDER BY ?_o limit 10 ") ;
-            Query query = QueryFactory.create(qs) ;
-            Op op = Algebra.compile(query) ;
-            System.out.println(op) ;
-            divider() ;
-            
-//            List<Var> vars = new ArrayList<VWalkerVisitorSkipMinusar>() ;
-//            vars.add(Var.alloc("s")) ;
-            Set<Var> vars = OpVars.allVars(op) ;  
-            System.out.println("Visable vars: "+vars) ;
-            
-            // Get to real work.
-            // Includes order
-            Op opSub = op ;
-            while( opSub instanceof OpProject || opSub instanceof OpSlice )
-                opSub = ((OpModifier)opSub).getSubOp() ;
-            
-            Set<Var> allVars = OpVars.allVars(opSub) ;      // Need : OpVars.allMentionedVars - ignores project
-            System.out.println(allVars) ;
-            
-            String[] prefixes = { "_", "__", "_X", "/"} ;
-            String prefix = "_" ;
-            
-            while(true)
-            {
-                String attempt = prefix ;
-//            for ( String p : prefixes )
-//            {
-//                prefix = p ;
-                for ( Var v : allVars )
-                {
-                    if ( v.getName().startsWith(prefix) )
-                    {
-                        attempt = null ;
-                        break ;
-                    }
-                }
-                if ( attempt != null )
-                    break ;
-                // Try again.
-                prefix = prefix+"A_" ; 
-            }
-            System.out.println("Safe prefix : "+prefix) ;
-            
-            //AlgebraGenerator.Line 605
-            Op op3 = VarRename.rename(op, vars) ;
-            
-            // Better - find all vars, find safe prefix, use that.
-            
-            
-            System.out.println(op3) ;
-            divider() ;
-            
-        
-        }
         
         System.exit(0) ;
 //        String[] x = { 
@@ -249,7 +175,8 @@ public class RunARQ
 //            
 //            
 //        System.exit(0) ;
-        
+
+        // JSON
         // ** Double space for end of object, end of object. 
         JsonValue obj = JSON.readAny("D.json") ;
         IndentedWriter out = new IndentedWriter(System.out) ; 
@@ -279,7 +206,6 @@ public class RunARQ
             System.exit(0) ;
         }
         
-        testXSDDurationBug() ; System.exit(0) ;
         
         UpdateRequest request = UpdateFactory.create("INSERT DATA { GRAPH <G> { <s> <p> <o> }}") ;
         DatasetGraph dsg = DatasetGraphFactory.createMem() ;

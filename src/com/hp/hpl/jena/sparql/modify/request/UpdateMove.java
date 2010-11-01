@@ -6,22 +6,14 @@
 
 package com.hp.hpl.jena.sparql.modify.request;
 
-public interface UpdateVisitor
+
+public class UpdateMove extends Update2
 {
-    public void visit(UpdateDrop update) ;
-    public void visit(UpdateClear update) ;
-    
-    public void visit(UpdateCreate update) ;
-    public void visit(UpdateLoad update) ;
-    
-    public void visit(UpdateAdd update) ;
-    public void visit(UpdateCopy update) ;
-    public void visit(UpdateMove update) ;
-    
-    public void visit(UpdateDataInsert update) ;
-    public void visit(UpdateDataDelete update) ;
-    public void visit(UpdateDeleteWhere update) ;
-    public void visit(UpdateModify update) ;
+    public UpdateMove(Target src, Target dest)  { super(src, dest) ; }
+
+    @Override
+    public void visit(UpdateVisitor visitor)
+    { visitor.visit(this) ; }
 }
 
 /*

@@ -1030,7 +1030,7 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
     src = GraphOrDefault();
     jj_consume_token(TO);
     dest = GraphOrDefault();
-    {if (true) return null ;}
+    {if (true) return new UpdateAdd(src, dest) ;}
     throw new Error("Missing return statement in function");
   }
 
@@ -1040,7 +1040,7 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
     src = GraphOrDefault();
     jj_consume_token(TO);
     dest = GraphOrDefault();
-    {if (true) return null ;}
+    {if (true) return new UpdateMove(src, dest) ;}
     throw new Error("Missing return statement in function");
   }
 
@@ -1050,7 +1050,7 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
     src = GraphOrDefault();
     jj_consume_token(TO);
     dest = GraphOrDefault();
-    {if (true) return null ;}
+    {if (true) return new UpdateCopy(src, dest) ;}
     throw new Error("Missing return statement in function");
   }
 

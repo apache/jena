@@ -1,5 +1,7 @@
 PREFIX :        <http://example/>
 
+ADD <g> TO <g1> ;
+
 DELETE {}
 INSERT {
 }

@@ -1,7 +1,4 @@
 PREFIX ex:      <http://example.org/> 
 
-SELECT ?x WHERE 
-{ { ?x a ex:A } 
-  FILTER NOT EXISTS 
-      { FILTER NOT EXISTS { ?x a ex:B } }
- }
+SELECT * WHERE 
+{ BIND(123 AS ?x) }

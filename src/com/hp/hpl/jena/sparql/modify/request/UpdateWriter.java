@@ -109,22 +109,28 @@ public class UpdateWriter
             if ( update.isSilent() )
                 out.print("SILENT ") ;
             
-            if ( update.isAll() )               { out.print("ALL") ; }
-            else if ( update.isAllNamed() )     { out.print("NAMED") ; }
-            else if ( update.isDefault() )      { out.print("DEFAULT") ; }
-            else if ( update.isOneGraph() )
+            printTarget(update.getTarget()) ;
+            
+        }
+    
+        private void printTarget(Target target)
+        {
+            if ( target.isAll() )               { out.print("ALL") ; }
+            else if ( target.isAllNamed() )     { out.print("NAMED") ; }
+            else if ( target.isDefault() )      { out.print("DEFAULT") ; }
+            else if ( target.isOneGraph() )
             { 
                 out.print("GRAPH ") ;
-                String s = FmtUtils.stringForNode(update.getGraph(), sCxt) ;
+                String s = FmtUtils.stringForNode(target.getGraph(), sCxt) ;
                 out.print(s) ;
             }
             else
             {
-                out.print("UpdateDropClear BROKEN") ;
-                throw new ARQException("Malformed UpdateDrop") ;
+                out.print("Target BROKEN") ;
+                throw new ARQException("Malformed Target") ;
             }
         }
-    
+
         public void visit(UpdateDrop update)
         { visitDropClear("DROP", update) ; }
 
@@ -165,6 +171,41 @@ public class UpdateWriter
             out.print(x) ;
         }
         
+        private void printTargetUpdate2(Target target)
+        {
+            if ( target.isDefault() )      { out.print("DEFAULT") ; }
+            else if ( target.isOneGraph() )
+            { 
+                //out.print("GRAPH ") ;
+                String s = FmtUtils.stringForNode(target.getGraph(), sCxt) ;
+                out.print(s) ;
+            }
+            else
+            {
+                out.print("Target BROKEN / Update2") ;
+                throw new ARQException("Malformed Target / Update2") ;
+            }
+        }
+        
+        private void printUpdate2(Update2 update, String name)
+        {
+            out.print(name) ;
+            out.print(" ") ;
+            printTargetUpdate2(update.getSrc()) ;
+            out.print(" TO ") ;
+            printTargetUpdate2(update.getDest()) ;
+        }
+        
+        
+        public void visit(UpdateAdd update)
+        { printUpdate2(update, "ADD") ; }
+
+        public void visit(UpdateCopy update)
+        { printUpdate2(update, "COPY") ; }
+
+        public void visit(UpdateMove update)
+        { printUpdate2(update, "MOVE") ; }
+
         public void visit(UpdateDataInsert update)
         {
             out.ensureStartOfLine() ;
