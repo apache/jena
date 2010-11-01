@@ -122,6 +122,7 @@ public class RunARQ
 //        }
         {
             String DIR = "/home/afs/W3C/SPARQL-docs/tests/data-sparql11/delete" ;
+            
             qtest.main(new String[] {DIR+"/manifest.ttl"}) ;
             System.exit(0) ;
             

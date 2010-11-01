@@ -381,14 +381,14 @@ class UpdateEngineWorker implements UpdateVisitor
         
         if ( query != null )
         {
-//            DatasetGraph dsg = graphStore ;
-//            if ( dftGraph != null ) ;
-//            {
-//                Graph g = dsg.getGraph(dftGraph) ;
-//                dsg = new DatasetGraphAltDefaultGraph(dsg, g) ;
-//            }
-//            
-            Plan plan = QueryExecutionFactory.createPlan(query, graphStore, initialBinding) ;
+            DatasetGraph dsg = graphStore ;
+            if ( dftGraph != null )
+            {
+                Graph g = dsg.getGraph(dftGraph) ;
+                dsg = new DatasetGraphAltDefaultGraph(dsg, g) ;
+            }
+            
+            Plan plan = QueryExecutionFactory.createPlan(query, dsg, initialBinding) ;
             QueryIterator qIter = plan.iterator() ;
 
             for( ; qIter.hasNext() ; )
