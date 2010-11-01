@@ -117,6 +117,7 @@ public class UpdateValidator extends ValidatorBase
                 outStream.println("<p>Input:</p>") ;
                 // Not Java's finest hour.
                 Content c = new Content(){
+                    @Override
                     public void print(IndentedWriter out)
                     { out.print(queryString) ; }
                 } ;
@@ -152,6 +153,7 @@ public class UpdateValidator extends ValidatorBase
             {
                 outStream.println("<p>Formatted, parsed update request:</p>") ;
                 Content c = new Content(){
+                    @Override
                     public void print(IndentedWriter out)
                     {
                         updateRequest.output(out) ;

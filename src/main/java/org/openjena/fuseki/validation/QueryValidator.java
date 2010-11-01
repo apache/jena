@@ -119,6 +119,7 @@ public class QueryValidator extends ValidatorBase
                 outStream.println("<p>Input:</p>") ;
                 // Not Java's finest hour.
                 Content c = new Content(){
+                    @Override
                     public void print(IndentedWriter out)
                     { out.print(queryString) ; }
                 } ;
@@ -154,6 +155,7 @@ public class QueryValidator extends ValidatorBase
             {
                 outStream.println("<p>Formatted, parsed query:</p>") ;
                 Content c = new Content(){
+                    @Override
                     public void print(IndentedWriter out)
                     { query.serialize(out) ; }
                 } ;
@@ -166,6 +168,7 @@ public class QueryValidator extends ValidatorBase
                 final Op op = Algebra.compile(query) ;   // No optimization
                 final SerializationContext sCxt = new SerializationContext(query) ;
                 Content c = new Content(){
+                    @Override
                     public void print(IndentedWriter out)
                     {  op.output(out, sCxt) ; }
                 } ;
@@ -178,6 +181,7 @@ public class QueryValidator extends ValidatorBase
                 final Op op = Algebra.toQuadForm(Algebra.compile(query)) ;
                 final SerializationContext sCxt = new SerializationContext(query) ;
                 Content c = new Content(){
+                    @Override
                     public void print(IndentedWriter out)
                     {  op.output(out, sCxt) ; }
                 } ;

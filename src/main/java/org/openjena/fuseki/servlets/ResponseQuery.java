@@ -186,6 +186,7 @@ public class ResponseQuery
             try {
                 output(contentType, null, new OutputContent()
                 {
+                    @Override
                     public void output(ServletOutputStream out)
                     {
                         if ( resultSet != null )
@@ -212,6 +213,7 @@ public class ResponseQuery
         {
             try {
                 jsonOutput(contentType, new OutputContent(){
+                    @Override
                     public void output(ServletOutputStream out)
                     {
                         if ( resultSet != null )
@@ -239,6 +241,7 @@ public class ResponseQuery
         {
             try {
                 textOutput(contentType, new OutputContent(){
+                    @Override
                     public void output(ServletOutputStream out)
                     {
                         if ( resultSet != null )
@@ -268,6 +271,7 @@ public class ResponseQuery
                 if ( serializationType.equals(WebContent.contentTypeTextCSV) )
                 {
                     output = new OutputContent(){
+                        @Override
                         public void output(ServletOutputStream out)
                         {
                             if ( resultSet != null )
@@ -280,6 +284,7 @@ public class ResponseQuery
                 else
                 {
                     output = new OutputContent(){
+                        @Override
                         public void output(ServletOutputStream out)
                         {
                             if ( resultSet != null )

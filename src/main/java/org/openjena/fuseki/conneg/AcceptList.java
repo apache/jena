@@ -200,6 +200,7 @@ public class AcceptList
     
     private static class MediaRangeCompare implements Comparator<MediaRange>
     {
+        @Override
         public int compare(MediaRange mType1, MediaRange mType2)
         {
             int r = Double.compare(mType1.get_q(), mType2.get_q()) ;
