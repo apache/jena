@@ -6,20 +6,31 @@
 
 package com.hp.hpl.jena.sparql.modify.request;
 
+import com.hp.hpl.jena.sparql.ARQException ;
 import com.hp.hpl.jena.update.Update ;
 
-abstract class Update2 extends Update
+abstract class UpdateBinaryOp extends Update
 {
     private Target src ;
     private Target dest ;
 
-    protected Update2(Target src, Target dest)
-    { this.src = src ; this.dest = dest ; }
+    protected UpdateBinaryOp(Target src, Target dest)
+    {
+        checkTarget(src) ;
+        checkTarget(dest) ;
+        this.src = src ; 
+        this.dest = dest ; 
+    }
+
+    private static void checkTarget(Target target)
+    {
+        if ( ! target.isDefault() && ! target.isOneNamedGraph() )
+            throw new ARQException("Illegal target: must identify a single graph: "+target) ; 
+    }
 
     public Target getSrc()      { return src ; }
 
     public Target getDest()     { return dest ; }
-
 }
 
 /*

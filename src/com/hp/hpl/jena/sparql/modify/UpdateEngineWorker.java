@@ -25,7 +25,6 @@ import com.hp.hpl.jena.query.QueryExecutionFactory ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
-import com.hp.hpl.jena.sparql.ARQNotImplemented ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphWrapper ;
 import com.hp.hpl.jena.sparql.core.Quad ;
@@ -37,6 +36,7 @@ import com.hp.hpl.jena.sparql.engine.binding.BindingRoot ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper ;
 import com.hp.hpl.jena.sparql.graph.NodeTransform ;
 import com.hp.hpl.jena.sparql.graph.NodeTransformLib ;
+import com.hp.hpl.jena.sparql.modify.request.Target ;
 import com.hp.hpl.jena.sparql.modify.request.UpdateAdd ;
 import com.hp.hpl.jena.sparql.modify.request.UpdateClear ;
 import com.hp.hpl.jena.sparql.modify.request.UpdateCopy ;
@@ -81,6 +81,7 @@ class UpdateEngineWorker implements UpdateVisitor
     public void visit(UpdateClear update)
     { execDropClear(update, true) ; }
 
+    // ReDo with gs* primitives
     private void execDropClear(UpdateDropClear update, boolean isClear)
     {
         if ( update.isAll() )
@@ -100,7 +101,6 @@ class UpdateEngineWorker implements UpdateVisitor
 
     private void execDropClear(UpdateDropClear update, Node g, boolean isClear)
     {
-        
         if ( ! alwaysSilent )
         {
             if ( g != null && ! graphStore.containsGraph(g) && ! update.isSilent())
@@ -108,7 +108,7 @@ class UpdateEngineWorker implements UpdateVisitor
         }
         
         if ( isClear )
-            graph(g).getBulkUpdateHandler().removeAll() ;
+            graph(graphStore, g).getBulkUpdateHandler().removeAll() ;
         else
             graphStore.removeGraph(g) ;
     }
@@ -141,20 +141,73 @@ class UpdateEngineWorker implements UpdateVisitor
     {
         String source = update.getSource() ;
         Node dest = update.getDest() ;
-        Graph g = graph(dest) ;
+        Graph g = graph(graphStore, dest) ;
         Model model = ModelFactory.createModelForGraph(g) ;
         FileManager.get().readModel(model, source) ;
     }
 
     public void visit(UpdateAdd update)
-    { throw new ARQNotImplemented() ; }
+    { 
+        gsCopyTriples(graphStore, update.getSrc(), update.getDest()) ;
+    }
 
     public void visit(UpdateCopy update)
-    { throw new ARQNotImplemented() ; }
+    { 
+        gsCopy(graphStore, update.getSrc(), update.getDest()) ;
+    }
 
     public void visit(UpdateMove update)
-    { throw new ARQNotImplemented() ; }
+    { 
+        gsCopy(graphStore, update.getSrc(), update.getDest()) ;
+        gsDrop(graphStore, update.getSrc(), true) ;
+    }
 
+    // ----
+    // Core operations
+    
+    private static void gsCopy(GraphStore gStore, Target src, Target dest)
+    {
+        gsClear(gStore, dest, true) ;
+        gsCopyTriples(gStore, src, dest) ;
+    }
+
+    private static void gsCopyTriples(GraphStore gStore, Target src, Target dest)
+    {
+        Graph gSrc = graph(gStore, src) ;
+        Graph gDest = graph(gStore, dest) ;
+        // Ugly! but avoids concurrency problems.
+        // TODO Revisit graph->graph triple copy.
+        List<Triple> list = Iter.toList(gSrc.find(null, null, null)) ;
+        gDest.getBulkUpdateHandler().add(list) ;
+    }
+
+    private static void gsClear(GraphStore gStore, Target target, boolean isSilent)
+    {
+        // No create.
+        Graph g = graph(gStore, target) ;
+        if ( target.isOneNamedGraph() )
+        {
+            if ( !gStore.containsGraph(target.getGraph()) )
+            {
+                if ( ! isSilent )
+                    error("No such graph: "+g) ;
+                return ;
+            }
+        }
+        
+        g.getBulkUpdateHandler().removeAll() ;
+    }
+
+    private static void gsDrop(GraphStore gStore, Target target, boolean isSilent)
+    {
+        if ( target.isDefault() )
+            gStore.getDefaultGraph().getBulkUpdateHandler().removeAll() ;
+        else
+            gStore.removeGraph(target.getGraph()) ;
+    }
+    
+    // ----
+    
     public void visit(UpdateDataInsert update)
     {
         for ( Quad quad : update.getQuads() )
@@ -265,7 +318,7 @@ class UpdateEngineWorker implements UpdateVisitor
         for ( Node gn : acc.keys() )
         {
             Collection<Triple> triples = acc.get(gn) ;
-            graph(gn).getBulkUpdateHandler().delete(triples.iterator()) ;
+            graph(graphStore, gn).getBulkUpdateHandler().delete(triples.iterator()) ;
         }
     }
 
@@ -277,7 +330,7 @@ class UpdateEngineWorker implements UpdateVisitor
         for ( Node gn : acc.keys() )
         {
             Collection<Triple> triples = acc.get(gn) ;
-            graph(gn).getBulkUpdateHandler().add(triples.iterator()) ;
+            graph(graphStore, gn).getBulkUpdateHandler().add(triples.iterator()) ;
         }
     }
 
@@ -421,7 +474,7 @@ class UpdateEngineWorker implements UpdateVisitor
         return bindings ;
     }
     
-    private Graph graph(Node gn)
+    private static Graph graph(GraphStore graphStore, Node gn)
     {
         if ( gn == null || gn == Quad.defaultGraphNodeGenerated )
             return graphStore.getDefaultGraph() ;
@@ -429,7 +482,17 @@ class UpdateEngineWorker implements UpdateVisitor
             return graphStore.getGraph(gn) ;
     }
 
-    private void error(String msg)
+    private static Graph graph(GraphStore graphStore, Target target)
+    {
+        if ( target.isDefault() )
+            return graphStore.getDefaultGraph() ;
+        if ( target.isOneNamedGraph() )
+            return graph(graphStore, target.getGraph()) ;
+        error("Target does not name one graph: "+target) ;
+        return null ;
+    }
+
+    private static void error(String msg)
     {
         throw new UpdateException(msg) ;
     }

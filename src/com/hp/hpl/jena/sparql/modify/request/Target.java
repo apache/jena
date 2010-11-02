@@ -28,21 +28,20 @@ public class Target
     private final Decl decl ;
     private final Node graphIRI ;
     
-    private Target(Decl decl)   { this.graphIRI = null ; this.decl = decl ; } 
-    private Target(Node iri)    { this.graphIRI = iri ; this.decl = Decl.IRI$ ; }
+    private Target(Decl decl)           { this.graphIRI = null ; this.decl = decl ; } 
+    private Target(Node iri)            { this.graphIRI = iri ; this.decl = Decl.IRI$ ; }
     
-    public boolean isDefault()  { return decl == DEFAULT$ ; }
-    public boolean isAll()      { return decl == ALL$ ; }
-    public boolean isAllNamed() { return decl == NAMED$ ; }
-    public boolean isOneGraph() { return decl == IRI$ ; }
+    public boolean isDefault()          { return decl == DEFAULT$ ; }
+    public boolean isAll()              { return decl == ALL$ ; }
+    public boolean isAllNamed()         { return decl == NAMED$ ; }
+    public boolean isOneNamedGraph()    { return decl == IRI$ ; }
     
-    public Node getGraph()      { return graphIRI ; }
-    
+    public Node getGraph()              { return graphIRI ; }
     
     @Override
     public String toString()
     {
-        if ( isOneGraph() )
+        if ( isOneNamedGraph() )
             return decl.toString()+" "+FmtUtils.stringForNode(graphIRI) ;
         else    
             return decl.toString() ;

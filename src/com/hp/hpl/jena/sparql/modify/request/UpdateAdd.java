@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.sparql.modify.request;
 
-public class UpdateAdd extends Update2
+public class UpdateAdd extends UpdateBinaryOp
 {
     public UpdateAdd(Target src, Target dest)  { super(src, dest) ; }
 

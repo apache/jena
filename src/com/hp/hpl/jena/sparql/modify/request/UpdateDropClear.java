@@ -29,7 +29,7 @@ public abstract class UpdateDropClear extends Update
     public boolean isDefault()  { return target.isDefault() ; }
     public boolean isAll()      { return target.isAll() ; }
     public boolean isAllNamed() { return target.isAllNamed() ; }
-    public boolean isOneGraph() { return target.isOneGraph() ; }
+    public boolean isOneGraph() { return target.isOneNamedGraph() ; }
     
     //public String getGraphIRI() { return target.getGraphIRI() ; }
     public Node getGraph()      { return target.getGraph() ; }

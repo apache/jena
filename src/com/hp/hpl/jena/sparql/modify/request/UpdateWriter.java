@@ -118,7 +118,7 @@ public class UpdateWriter
             if ( target.isAll() )               { out.print("ALL") ; }
             else if ( target.isAllNamed() )     { out.print("NAMED") ; }
             else if ( target.isDefault() )      { out.print("DEFAULT") ; }
-            else if ( target.isOneGraph() )
+            else if ( target.isOneNamedGraph() )
             { 
                 out.print("GRAPH ") ;
                 String s = FmtUtils.stringForNode(target.getGraph(), sCxt) ;
@@ -174,7 +174,7 @@ public class UpdateWriter
         private void printTargetUpdate2(Target target)
         {
             if ( target.isDefault() )      { out.print("DEFAULT") ; }
-            else if ( target.isOneGraph() )
+            else if ( target.isOneNamedGraph() )
             { 
                 //out.print("GRAPH ") ;
                 String s = FmtUtils.stringForNode(target.getGraph(), sCxt) ;
@@ -187,7 +187,7 @@ public class UpdateWriter
             }
         }
         
-        private void printUpdate2(Update2 update, String name)
+        private void printUpdate2(UpdateBinaryOp update, String name)
         {
             out.print(name) ;
             out.print(" ") ;

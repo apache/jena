@@ -100,6 +100,9 @@ public class RunARQ
     
     public static void main(String[] argv) throws Exception
     {
+        arq.update.main("--dump", "--file=update.ru") ;
+        System.exit(0) ;
+        
         // testXSDDurationBug() ; System.exit(0) ;
         
         {
