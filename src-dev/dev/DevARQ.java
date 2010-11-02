@@ -9,12 +9,10 @@ public class DevARQ
     // QueryParseException for updates is confusing.
     // All QueryException  -> SparqlException
     
-    
     // ----
     // VarFinder.VarUsageVisitor.visit(OpUnion)
     //    defines = union(left.define, right.define) ??
     //    maybe = union(left.define, right.define, left.maybe, right.maybe) \ defines
-
     
     // Sync to loose Sync(boolean)
     // Dataset to acquire begin(read), commit(), abort()

@@ -23,9 +23,12 @@ import org.openjena.atlas.AtlasException ;
 public final class StreamUTF8 extends Reader implements CharStream
 {
     // The standard Java way of doing this is via charset decoders.
-    // This class really just collects knowledge of how UTF-8 encoding works;
+    // One small disadvantage is that bad UTF-8 does not get flagged as to
+    // the byte position of the error.
+    
+    // This class collects knowledge of how UTF-8 encoding works;
     // the Java classes are usually faster compared to using this class and a
-    // with an InputStreamBuffered but the differenc is small.
+    // with an InputStreamBuffered but the difference is small.
     
     // The Java classes copy-convert a byte buffer into a char buffer.
     // Sometimes, for example in a parser, this isn't a convenient model
