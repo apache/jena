@@ -16,7 +16,9 @@ public class RunFuseki
                     "-v", 
                     "--port=3030", 
                     //"--mem", "/"
-                    "--file=D.nt", "/ds"
+                    //"--file=D.nt",
+                    "--desc=tdb2.ttl", 
+                    "/ds"
                     ) ;
     }
 
