@@ -8,15 +8,31 @@ package com.hp.hpl.jena.sparql.engine.main;
 
 import java.util.HashSet ;
 import java.util.List ;
+import java.util.Map ;
+import java.util.Map.Entry ;
 import java.util.Set ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.OpVisitorBase ;
-import com.hp.hpl.jena.sparql.algebra.op.* ;
+import com.hp.hpl.jena.sparql.algebra.op.OpAssign ;
+import com.hp.hpl.jena.sparql.algebra.op.OpBGP ;
+import com.hp.hpl.jena.sparql.algebra.op.OpExt ;
+import com.hp.hpl.jena.sparql.algebra.op.OpExtend ;
+import com.hp.hpl.jena.sparql.algebra.op.OpFilter ;
+import com.hp.hpl.jena.sparql.algebra.op.OpGraph ;
+import com.hp.hpl.jena.sparql.algebra.op.OpJoin ;
+import com.hp.hpl.jena.sparql.algebra.op.OpLeftJoin ;
+import com.hp.hpl.jena.sparql.algebra.op.OpNull ;
+import com.hp.hpl.jena.sparql.algebra.op.OpProject ;
+import com.hp.hpl.jena.sparql.algebra.op.OpQuadPattern ;
+import com.hp.hpl.jena.sparql.algebra.op.OpTable ;
+import com.hp.hpl.jena.sparql.algebra.op.OpUnion ;
 import com.hp.hpl.jena.sparql.core.BasicPattern ;
 import com.hp.hpl.jena.sparql.core.Var ;
+import com.hp.hpl.jena.sparql.core.VarExprList ;
+import com.hp.hpl.jena.sparql.expr.Expr ;
 
 public class VarFinder
 {
@@ -198,16 +214,24 @@ public class VarFinder
         public void visit(OpAssign opAssign)
         {
             opAssign.getSubOp().visit(this) ;
-            List<Var> vars = opAssign.getVarExprList().getVars() ;
-            defines.addAll(vars) ;
+            processVarExprList(opAssign.getVarExprList()) ;
         }
         
         @Override
         public void visit(OpExtend opExtend)
         {
             opExtend.getSubOp().visit(this) ;
-            List<Var> vars = opExtend.getVarExprList().getVars() ;
-            defines.addAll(vars) ;
+            processVarExprList(opExtend.getVarExprList()) ;
+        }
+        
+        private void processVarExprList(VarExprList varExprList)
+        {
+            Map<Var, Expr> map = varExprList.getExprs() ;
+            for ( Entry<Var, Expr> e : map.entrySet() )
+            {
+                defines.add(e.getKey()) ;
+                e.getValue().varsMentioned(filterMentions);
+            }
         }
         
         @Override

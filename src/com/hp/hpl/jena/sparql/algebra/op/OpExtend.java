@@ -57,7 +57,7 @@ public class OpExtend extends Op1
         return opAssign ;
     }
     
-    /** Make a OpAssign - guaranteed to return an OpExtend */
+    /** Make a OpExtend - guaranteed to return an OpExtend */
     public static OpExtend extendDirect(Op op, VarExprList exprs)
     {
         return new OpExtend(op, exprs) ;

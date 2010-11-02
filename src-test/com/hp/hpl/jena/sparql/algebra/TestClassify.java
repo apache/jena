@@ -91,7 +91,7 @@ public class TestClassify extends TestCase
 //    @Test public void testClassify_Join_30() 
 //    { classifyJ("{ ?x ?y ?z {SELECT * { ?s ?p ?o} } }", true) ; }
     
-    // Subselect with modifier is handled witout linearization
+    // Subselect with modifier is handled without linearization
     @Test public void testClassify_Join_31() 
     { classifyJ("{ ?x ?y ?z {SELECT ?s { ?s ?p ?o} } }", false) ; }
 
@@ -110,6 +110,18 @@ public class TestClassify extends TestCase
     // Use of a filter variable from the LHS but optional in RHS
     @Test public void testClassify_Join_35() 
     { classifyJ("{ GRAPH ?g { ?x ?y ?z } { OPTIONAL{?a ?b ?z} FILTER (?z) } }", false) ; }
+    
+    @Test public void testClassify_Join_40() 
+    { classifyJ("{ ?x ?y ?z { ?x ?y ?z } UNION { ?x1 ?y1 ?z1 }}", true) ; }
+
+    @Test public void testClassify_Join_41() 
+    { classifyJ("{ ?x ?y ?z { ?x1 ?y1 ?z1 BIND(?z+2 AS ?A) } UNION { ?x1 ?y1 ?z1 }}", false) ; }
+
+    @Test public void testClassify_Join_42() 
+    { classifyJ("{ ?x ?y ?z { BIND(?z+2 AS ?A) } UNION { BIND(?z+2 AS ?B) }}", false) ; }
+    
+    @Test public void testClassify_Join_43() 
+    { classifyJ("{ ?x ?y ?z { LET(?A := ?z+2) } UNION { }}", false) ; }
     
     private void classifyJ(String pattern, boolean expected)
     {

@@ -7,15 +7,9 @@
 
 package dev;
 
-import static org.openjena.atlas.lib.StrUtils.strjoinNL ;
-
-import java.util.HashSet ;
 import java.util.Iterator ;
-import java.util.Set ;
 
-import jena.qtest ;
 import junit.framework.TestSuite ;
-import org.openjena.atlas.io.IndentedLineBuffer ;
 import org.openjena.atlas.io.IndentedWriter ;
 import org.openjena.atlas.json.JSON ;
 import org.openjena.atlas.json.JsonValue ;
@@ -32,37 +26,28 @@ import com.hp.hpl.jena.iri.IRI ;
 import com.hp.hpl.jena.iri.IRIFactory ;
 import com.hp.hpl.jena.iri.Violation ;
 import com.hp.hpl.jena.query.ARQ ;
-import com.hp.hpl.jena.query.Dataset ;
-import com.hp.hpl.jena.query.DatasetFactory ;
 import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.query.QueryExecution ;
 import com.hp.hpl.jena.query.QueryExecutionFactory ;
 import com.hp.hpl.jena.query.QueryFactory ;
 import com.hp.hpl.jena.query.QuerySolutionMap ;
-import com.hp.hpl.jena.query.ResultSet ;
 import com.hp.hpl.jena.query.ResultSetFormatter ;
+import com.hp.hpl.jena.query.Syntax ;
 import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.sparql.ARQConstants ;
 import com.hp.hpl.jena.sparql.algebra.Algebra ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
+import com.hp.hpl.jena.sparql.algebra.optimize.Optimize ;
+import com.hp.hpl.jena.sparql.algebra.optimize.TransformJoinStrategy ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
-import com.hp.hpl.jena.sparql.core.Quad ;
-import com.hp.hpl.jena.sparql.core.Var ;
-import com.hp.hpl.jena.sparql.engine.RenamerVars ;
+import com.hp.hpl.jena.sparql.engine.main.VarFinder ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.function.FunctionEnvBase ;
-import com.hp.hpl.jena.sparql.graph.NodeConst ;
 import com.hp.hpl.jena.sparql.graph.NodeTransform ;
-import com.hp.hpl.jena.sparql.graph.NodeTransformLib ;
 import com.hp.hpl.jena.sparql.junit.ScriptTestSuiteFactory ;
 import com.hp.hpl.jena.sparql.junit.SimpleTestRunner ;
-import com.hp.hpl.jena.sparql.lang.ParserSPARQL11Update ;
-import com.hp.hpl.jena.sparql.mgt.Explain.InfoLevel ;
-import com.hp.hpl.jena.sparql.modify.request.UpdateWriter ;
-import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.sparql.util.ExprUtils ;
 import com.hp.hpl.jena.sparql.util.QueryExecUtils ;
@@ -100,19 +85,44 @@ public class RunARQ
     
     public static void main(String[] argv) throws Exception
     {
-        arq.update.main("--dump", "--file=update.ru") ;
+        // arq.sparql.main("--data=D.ttl", "-query=Q.rq") ;
+        // testXSDDurationBug() ; System.exit(0) ;
+ 
+        String qs = "SELECT * { ?s ?p ?o { BIND(?o+1 AS ?z) } UNION { BIND(?o+2 AS ?z) }}" ;
+        //String qs = "SELECT * { ?s ?p ?o { FILTER(?o+1) } UNION { FILTER(?o+2) }}" ;
+        //String qs = "SELECT * { ?s ?p ?o { LET(?z := ?o+1) } UNION { LET(?z := ?o+2) }}" ;
+        //String qs = "SELECT * { ?s ?p ?o { ?s ?p1 1 } UNION { ?s ?p1 2 }}" ;
+
+        //String qs = "SELECT * { { LET(?z := ?o+1) } UNION { LET(?z := ?o+2) }}" ;
+        
+        Query query = QueryFactory.create(qs, Syntax.syntaxARQ) ;
+        Op op = Algebra.compile(query) ;
+        System.out.print(op) ;
+        
+        VarFinder vf = new VarFinder(op) ;
+        System.out.println("fixed:  "+vf.getFixed()) ;
+        System.out.println("maybe:  "+vf.getOpt()) ;
+        System.out.println("filter: "+vf.getFilter()) ;
+//        System.exit(0) ;
+
+        op = Optimize.apply("Join strategy", new TransformJoinStrategy(ARQ.getContext()), op) ;
+        System.out.print(op) ;
         System.exit(0) ;
         
-        // testXSDDurationBug() ; System.exit(0) ;
+        Model model = FileManager.get().loadModel("D.ttl") ;
+        QueryExecution qExec = QueryExecutionFactory.create(query, model) ;
+        ResultSetFormatter.out(qExec.execSelect()) ;
         
+        //arq.update.main("--dump", "--file=update.ru") ;
+        System.exit(0) ;
+        
+        
+        String DIR = "/home/afs/W3C/SPARQL-docs/tests/data-sparql11/delete" ;
+        TestSuite ts = ScriptTestSuiteFactory.make(DIR+"/manifest.ttl") ;
+        SimpleTestRunner.runAndReport(ts) ;
+        System.exit(0) ;
         {
-            String DIR = "/home/afs/W3C/SPARQL-docs/tests/data-sparql11/delete" ;
-            
-            qtest.main(new String[] {DIR+"/manifest.ttl"}) ;
-            System.exit(0) ;
-            
             UpdateRequest request = UpdateFactory.read(DIR+"/delete-01.ru") ;
-
             divider() ;
             System.out.println(request) ;
             divider() ;
@@ -130,55 +140,6 @@ public class RunARQ
             System.exit(0) ;
         }
         
-        TestSuite ts = ScriptTestSuiteFactory.make("tmp/manifest.ttl") ;
-        SimpleTestRunner.runAndReport(ts) ;
-        System.exit(0) ;
-        
-//      rename2() ;
-
-//        arq.rset.main("--set=arq:useSAX=true", "R-dup.srj") ; System.exit(0) ;
-//        arq.qparse.main("--print=op", "--query=Q.rq") ; System.exit(0) ;
-        arq.sparql.main(/*"--explain",*/ "--data=D.ttl", "--query=Q.rq") ; System.exit(0) ;
-       
-        
-        System.exit(0) ;
-       
-        
-        if ( true )
-        {
-            ARQ.setExecutionLogging(InfoLevel.ALL) ;
-            String qs = StrUtils.strjoinNL("SELECT DISTINCT ?s",
-                                           "{ SERVICE <http://dbpedia.org/sparql>",
-                                           "    { SELECT ?s { ?s ?p [] . } limit 10 }",
-                                           "  SERVICE <http://dbpedia.org/sparql>",
-                                               "    { SELECT ?s { ?s ?p [] . } limit 10 }",
-            "}") ;
-            Query query = QueryFactory.create(qs) ;
-            Dataset ds = DatasetFactory.create() ;
-            QueryExecution qExec = QueryExecutionFactory.create(query, ds) ;
-            ResultSet rs = qExec.execSelect() ;
-            ResultSetFormatter.out(rs) ;
-            qExec.close() ;
-            
-            System.exit(0) ;
-        }
-        
-        
-        System.exit(0) ;
-//        String[] x = { 
-//            "1984-01-01T00:00:00",
-//            "1984-01-01T00:00:00.0",
-//            "1984-01-01T00:00:00.10",
-//        } ;
-//        for ( String s : x )
-//        {
-//            System.out.println(s) ;
-//            System.out.println(XSDDatatype.XSDdateTime.isValid(s)) ;
-//        }
-//            
-//            
-//        System.exit(0) ;
-
         // JSON
         // ** Double space for end of object, end of object. 
         JsonValue obj = JSON.readAny("D.json") ;
@@ -187,10 +148,6 @@ public class RunARQ
         //out.setEndOfLineMarker("$") ;
         JSON.write(out, obj) ;
         out.flush() ;
-        System.exit(0) ;
-        
-        
-        arq.sparql.main("--data=D.ttl", "-query=Q.rq") ;
         System.exit(0) ;
         
         if ( false )
@@ -213,76 +170,8 @@ public class RunARQ
         UpdateRequest request = UpdateFactory.create("INSERT DATA { GRAPH <G> { <s> <p> <o> }}") ;
         DatasetGraph dsg = DatasetGraphFactory.createMem() ;
         GraphStore gs = GraphStoreFactory.create(dsg) ;
-        // Why does this auto-insert?
         UpdateAction.execute(request, gs) ;
         SSE.write(gs) ;
-        System.exit(0) ;
-        
-        qparse("@Q.rq") ;
-        System.exit(0) ;
-        
-//        arq.uparse.main("--file=update.ru") ; System.exit(0) ;
-        //qparse("--query=Q.rq", "--print=query", "--print=op") ; System.exit(0) ;
-        //sparql11update() ; System.exit(0) ; 
-        
-        
-        NodeTransform nt = new NodeTransform() {
-            public Node convert(Node node)
-            {
-                if ( node == Quad.defaultGraphNodeGenerated )
-                    return NodeConst.nodeTwo ;
-                return node ;
-            }
-        };
-
-        {
-        Quad q = SSE.parseQuad("(_ <s> <p> <o>)") ;
-        Quad q2 = NodeTransformLib.transform(nt, q) ;
-        SSE.write(q) ;
-        System.out.print( "=> ") ;
-        SSE.write(q2) ;
-        System.out.println() ;
-        System.exit(0) ;
-        }
-        
-        String DIR = "WorkSpace/PropertyPathTestCases" ;
-        runTest(DIR, "data-path-1.ttl", "pp-all-03.rq") ; System.exit(0) ;
-
-        if ( false )
-        {
-            Query q = QueryFactory.read("Q.arq") ;
-            Op op = Algebra.compile(q) ;
-            divider() ;
-            System.out.println(op) ;
-
-            Set<Var> fixed = new HashSet<Var>() ;
-            fixed.add(Var.alloc("y")) ;
-            RenamerVars vrn = new RenamerVars(fixed, ARQConstants.allocVarScopeHiding) ;
-            op = NodeTransformLib.transform(vrn, op) ;
-            divider() ;
-            System.out.println(op) ;
-            System.exit(0) ;
-        }
-        
-        /*
-         * urn:x-arq:DefaultGraphNode -- generated
-         * urn:x-arq:DefaultGraph -- explicit
-         * urn:x-arq:UnionGraph
-         */
-        Op op = SSE.parseOp(strjoinNL("(prefix ((: <http://example/>))",
-                                      "(graph <g>",
-                                      "  (graph <urn:x-arq:UnionGraph>",
-                                      "    (graph <g1>",
-                                      "     (bgp (?s ?p ?o))))",
-                                      ")",
-                                      ")"
-        )) ;
-
-        Op op2 = Algebra.unionDefaultGraph(op) ;
-        divider() ;
-        System.out.println(op) ;
-        divider() ;
-        System.out.println(op2) ;
         System.exit(0) ;
     }
     
@@ -331,133 +220,6 @@ public class RunARQ
         divider() ;
     }
 
-    
-    private static void sparql11update()
-    {
-        GraphStore graphStore = GraphStoreFactory.create() ;
-//        sparql11update_operation(graphStore, "BASE <base:/>",
-//                                 "CREATE GRAPH <g>",
-//                                 "INSERT DATA { <x> <y> <z> GRAPH <g> { <s> <p> <o1>, <o2> }}",
-//                                 //"DELETE WHERE { <x> <y> ?z GRAPH <g> { ?s ?p ?o }}",
-//                                 
-//                                 "INSERT { ?s ?p ?o } WHERE { GRAPH <g> { ?s ?p ?o FILTER (?o = <o2> )}}",
-//                                 //"DROP DEFAULT" ,
-//                                 //"CLEAR DEFAULT",
-//                                 //"CLEAR ALL",
-//                                 "") ;
-
-        sparql11update_operation(graphStore, "BASE <base:/>",
-                                 "CREATE GRAPH <g>",
-                                 "INSERT DATA { <x> <y> <z> }",
-                                 //"DELETE WHERE { <x> <y> ?z GRAPH <g> { ?s ?p ?o }}",
-                                 
-                                 "INSERT INTO <g> { ?s ?p ?o } WHERE { ?s ?p ?o }",
-                                 
-                                 "CREATE GRAPH <g2>",
-                                 "INSERT { GRAPH <g2> { ?s ?p 1914 } } WHERE { ?s ?p ?o }",
-                                 //"DROP DEFAULT" ,
-                                 //"CLEAR DEFAULT",
-                                 //"CLEAR ALL",
-                                 "") ;
-
-                
-        
-//        sparql11update_1("LOAD  <foo>  INTO  GRAPH  <blah>") ;
-//        sparql11update_1("BASE <http://example/> PREFIX : <http://prefix/> LOAD  <foo>  INTO  GRAPH  :local") ;
-//        
-//        sparql11update_1("LOAD  <foo>") ;
-//        sparql11update_1("BASE <http://example/> LOAD  <foo> INTO GRAPH <local>") ;
-//        sparql11update_1("BASE <http://example/> CLEAR GRAPH <foo>") ;
-//        sparql11update_1("BASE <http://example/> DROP GRAPH <foo>") ;
-//        sparql11update_1("DROP  ALL") ;
-//        sparql11update_1("DROP  NAMED") ;
-//        sparql11update_1("CLEAR  DEFAULT") ;
-//        
-//        sparql11update_1("DELETE WHERE { ?s ?p ?o }") ;
-//        sparql11update_1("DELETE DATA { <?s> <p> <o> }") ;
-//        
-//        sparql11update_1("BASE <base:> ",
-//                         "PREFIX : <http://example/>",
-//                         "WITH :g",
-//                         "DELETE { <s> ?p ?o }",
-//                         "INSERT { ?s ?p <#o> }",
-//                         "USING <g>",
-//                         "USING NAMED :gn",
-//                         "WHERE",
-//                         "{ ?s ?p ?o }"
-//                         ) ;
-//        sparql11update_1("PREFIX : <http://example>",
-//                         "WITH :g",
-//                         "DELETE { ?s ?p ?o }",
-//                         //"INSERT { ?s ?p ?o }",
-//                         "USING <g>",
-//                         "USING NAMED :gn",
-//                         "WHERE",
-//                         "{ ?s ?p ?o }"
-//                         ) ;
-//        sparql11update_1("PREFIX : <http://example>",
-//                         //"WITH :g",
-//                         //"DELETE { ?s ?p ?o }",
-//                         "INSERT { ?s ?p ?o }",
-//                         //"USING <g>",
-//                         //"USING NAMED :gn",
-//                         "WHERE",
-//                         "{ ?s ?p ?o }"
-//                         ) ;
-//        sparql11update_1("PREFIX : <http://example>",
-//                         //"WITH :g",
-//                         //"DELETE { ?s ?p ?o }",
-//                         "INSERT DATA { <s> <p> <o> } ;",
-//                         "INSERT DATA { <s> <p> <o> GRAPH <g> { <s> <p> <o> }}"
-//                         ) ;
-       
-        
-        System.out.println("# DONE") ;
-        
-    }
-    
-    private static void sparql11update_operation(GraphStore graphStore, String... str)
-    {
-        String str$ = StrUtils.strjoinNL(str) ; 
-        divider() ;
-        System.out.println("----Input:") ;
-        System.out.println(str$);
-        
-        UpdateRequest update = UpdateFactory.create(str$) ;
-
-        UpdateAction.execute(update, graphStore) ;
-        SSE.write(graphStore) ;
-    }
-
-    private static void sparql11update_1(String... str)
-    {
-        String str$ = StrUtils.strjoinNL(str) ; 
-        divider() ;
-        System.out.println("----Input:") ;
-        System.out.println(str$);
-        UpdateRequest update = UpdateFactory.create(str$) ; 
-        System.out.println("----Output:") ;
-        SerializationContext sCxt = new SerializationContext(update) ;
-        //SerializationContext sCxt = new SerializationContext() ;
-        UpdateWriter.output(update, IndentedWriter.stdout, sCxt) ;
-        IndentedWriter.stdout.flush();
-        
-        IndentedLineBuffer buff = new IndentedLineBuffer() ;
-        UpdateWriter.output(update, buff, sCxt) ;
-        { // reparse
-            String str2 = buff.asString() ;
-            ParserSPARQL11Update p2 = new ParserSPARQL11Update() ;
-            UpdateRequest update2 = new UpdateRequest() ;
-            p2.parse(update2, str2) ;
-        }
-
-        { // reparse
-            String str2 = buff.asString() ;
-            ParserSPARQL11Update p2 = new ParserSPARQL11Update() ;
-            UpdateRequest update2 = new UpdateRequest() ;
-            p2.parse(update2, str2) ;
-        }
-    }
     
     private static void execTimed(Query query, Model model)
     {

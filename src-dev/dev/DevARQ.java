@@ -16,6 +16,10 @@ public class DevARQ
                       ?s ?p ?o .
                       { BIND(?o+1 AS ?z) } UNION { BIND(?o+2 AS ?z) }
                     }
+      LHS of BIND needs to go into the read-not-write set.
+      Same for LET.
+      VarFinder.
+      
     */
     // ----
     // VarFinder.VarUsageVisitor.visit(OpUnion)
