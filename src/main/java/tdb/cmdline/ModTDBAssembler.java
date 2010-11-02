@@ -29,7 +29,7 @@ public class ModTDBAssembler extends ModAssembler
     public ModTDBAssembler()
     { 
         super() ;
-        super.assemblerDescDecl.addName("tdb") ;
+        ModAssembler.assemblerDescDecl.addName("tdb") ;
     }
     
     @Override

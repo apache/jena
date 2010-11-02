@@ -37,6 +37,11 @@ public class RunTDB
 
     public static void main(String[] args) throws Exception
     {
+        Dataset dsg = TDBFactory.createDataset() ; 
+        Model m = dsg.getNamedModel(Quad.unionGraph.getURI());
+        System.out.println(m) ;
+        System.exit(0) ;
+        
         {
             //FileOps.clearDirectory("DB") ;
             Dataset ds = TDBFactory.createDataset("DB") ;
