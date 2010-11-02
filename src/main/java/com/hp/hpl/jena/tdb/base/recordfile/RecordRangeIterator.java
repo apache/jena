@@ -11,6 +11,7 @@ import static org.openjena.atlas.lib.Alg.decodeIndex ;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+import com.hp.hpl.jena.tdb.base.StorageException ;
 import com.hp.hpl.jena.tdb.base.record.Record;
 
 final public
@@ -83,8 +84,13 @@ class RecordRangeIterator implements Iterator<Record>
                 return false ;
             }
             
-            // ** Sync
-            currentPage = pageMgr.get(link) ;
+            RecordBufferPage nextPage = pageMgr.get(link) ;
+            // Check currentPage -> nextPage is strictly increasing keys. 
+            Record r1 = currentPage.getRecordBuffer().getHigh() ;
+            Record r2 = nextPage.getRecordBuffer().getLow() ;
+            if ( Record.keyGE(r1, r2) )
+                throw new StorageException("RecordRangeIterator: records not strictly increasing: "+r1+" // "+r2) ;
+            currentPage = nextPage ;
             countBlocks++ ;
             currentIdx = 0 ;
         }
