@@ -69,6 +69,11 @@ public class SystemTDB
     public final static RecordFactory indexRecordTripleFactory = new RecordFactory(LenIndexTripleRecord, 0) ;
     public final static RecordFactory indexRecordQuadFactory = new RecordFactory(LenIndexQuadRecord, 0) ;
     public final static RecordFactory nodeRecordFactory = new RecordFactory(LenNodeHash, SizeOfNodeId) ;
+    
+    /** Unit of flushing the data when loading - data phase */
+    public final static long LoadFlushTickPrimary   = 10*1000*1000 ;
+    /** Unit of flushing the data when loading - index phase */
+    public final static long LoadFlushTickSecondary = 10*1000*1000 ;
 
     /** Root of TDB-defined parameter names */
     public static final String symbolNamespace      = "http://jena.hpl.hp.com/TDB#" ;

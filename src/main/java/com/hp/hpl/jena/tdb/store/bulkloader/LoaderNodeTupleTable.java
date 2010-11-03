@@ -22,6 +22,7 @@ import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.tdb.index.TupleIndex ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
+import static com.hp.hpl.jena.tdb.sys.SystemTDB.* ;
 
 /** 
  * Load into one NodeTupleTable (triples, quads, other) 
@@ -106,9 +107,20 @@ public class LoaderNodeTupleTable implements Closeable, Sync
     public void load(Node... nodes)
     {
         try {
-            count++ ;
+            count++ ;           // Not zero the first time.
             monitor.dataItem() ;
             nodeTupleTable.addRow(nodes) ;
+
+            // Flush every so often.
+            // Seems to improve performance:maybe because a bunch of blcoks are
+            // flushed together meaning better disk access pattern 
+            // Theory - unproven.
+            if ( LoadFlushTickPrimary > 0 &&  count % LoadFlushTickPrimary == 0 )
+            {
+                System.out.println("FLUSH - primary") ;
+                nodeTupleTable.sync() ;
+            }
+            
         } catch (RuntimeException ex)
         {
             System.err.println(Iter.asString(Arrays.asList(nodes))) ;
@@ -189,9 +201,10 @@ public class LoaderNodeTupleTable implements Closeable, Sync
     static void copyIndex(Iterator<Tuple<NodeId>> srcIter, TupleIndex[] destIndexes, String label, LoadMonitor monitor)
     {
         monitor.startIndex(label) ;
-        
-        for ( long counter = 0 ; srcIter.hasNext() ; counter++ )
+        long counter = 0 ;
+        for ( ; srcIter.hasNext() ; )
         {
+            counter++ ;
             Tuple<NodeId> tuple = srcIter.next();
             monitor.indexItem() ;
             for ( TupleIndex destIdx : destIndexes )
@@ -199,18 +212,34 @@ public class LoaderNodeTupleTable implements Closeable, Sync
                 if ( destIdx != null )
                     destIdx.add(tuple) ;
             }
+            
+            // Flush every so often.
+            // Seems to improve performance:maybe because a bunch of blcoks are
+            // flushed together meaning better disk access pattern 
+            // Theory - unproven.
+            if ( LoadFlushTickSecondary > 0 && counter % LoadFlushTickSecondary == 0 )
+            {
+                System.out.println("FLUSH - secondary") ;
+                sync(destIndexes ) ;
+            }
         }
 
-        for ( TupleIndex destIdx : destIndexes )
-        {
-            if ( destIdx != null )
-                destIdx.sync(true) ;
-        }
+        // And finally ...
+        if ( LoadFlushTickSecondary > 0 && counter % LoadFlushTickSecondary != 0 )
+            sync(destIndexes) ;
 
         monitor.finishIndex(label) ;
     }
 
 
+    static private void sync(TupleIndex[] indexes)
+    {
+        for ( TupleIndex idx : indexes )
+        {
+            if ( idx != null )
+                idx.sync(true) ;
+        }
+    }
 //    static void copyIndex(Iterator<Tuple<NodeId>> srcIter, TupleIndex[] destIndexes, String label, LoadMonitor monitor)
 //    {
 //        long quantum2 = 5*(BulkLoader.IndexTickPoint) ;
