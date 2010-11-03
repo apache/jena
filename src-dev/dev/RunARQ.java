@@ -25,22 +25,17 @@ import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.iri.IRI ;
 import com.hp.hpl.jena.iri.IRIFactory ;
 import com.hp.hpl.jena.iri.Violation ;
-import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.query.QueryExecution ;
 import com.hp.hpl.jena.query.QueryExecutionFactory ;
 import com.hp.hpl.jena.query.QueryFactory ;
 import com.hp.hpl.jena.query.QuerySolutionMap ;
 import com.hp.hpl.jena.query.ResultSetFormatter ;
-import com.hp.hpl.jena.query.Syntax ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.sparql.algebra.Algebra ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
-import com.hp.hpl.jena.sparql.algebra.optimize.Optimize ;
-import com.hp.hpl.jena.sparql.algebra.optimize.TransformJoinStrategy ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
-import com.hp.hpl.jena.sparql.engine.main.VarFinder ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
@@ -88,35 +83,6 @@ public class RunARQ
         // arq.sparql.main("--data=D.ttl", "-query=Q.rq") ;
         // testXSDDurationBug() ; System.exit(0) ;
  
-        String qs = "SELECT * { ?s ?p ?o { BIND(?o+1 AS ?z) } UNION { BIND(?o+2 AS ?z) }}" ;
-        //String qs = "SELECT * { ?s ?p ?o { FILTER(?o+1) } UNION { FILTER(?o+2) }}" ;
-        //String qs = "SELECT * { ?s ?p ?o { LET(?z := ?o+1) } UNION { LET(?z := ?o+2) }}" ;
-        //String qs = "SELECT * { ?s ?p ?o { ?s ?p1 1 } UNION { ?s ?p1 2 }}" ;
-
-        //String qs = "SELECT * { { LET(?z := ?o+1) } UNION { LET(?z := ?o+2) }}" ;
-        
-        Query query = QueryFactory.create(qs, Syntax.syntaxARQ) ;
-        Op op = Algebra.compile(query) ;
-        System.out.print(op) ;
-        
-        VarFinder vf = new VarFinder(op) ;
-        System.out.println("fixed:  "+vf.getFixed()) ;
-        System.out.println("maybe:  "+vf.getOpt()) ;
-        System.out.println("filter: "+vf.getFilter()) ;
-//        System.exit(0) ;
-
-        op = Optimize.apply("Join strategy", new TransformJoinStrategy(ARQ.getContext()), op) ;
-        System.out.print(op) ;
-        System.exit(0) ;
-        
-        Model model = FileManager.get().loadModel("D.ttl") ;
-        QueryExecution qExec = QueryExecutionFactory.create(query, model) ;
-        ResultSetFormatter.out(qExec.execSelect()) ;
-        
-        //arq.update.main("--dump", "--file=update.ru") ;
-        System.exit(0) ;
-        
-        
         String DIR = "/home/afs/W3C/SPARQL-docs/tests/data-sparql11/delete" ;
         TestSuite ts = ScriptTestSuiteFactory.make(DIR+"/manifest.ttl") ;
         SimpleTestRunner.runAndReport(ts) ;
@@ -140,16 +106,6 @@ public class RunARQ
             System.exit(0) ;
         }
         
-        // JSON
-        // ** Double space for end of object, end of object. 
-        JsonValue obj = JSON.readAny("D.json") ;
-        IndentedWriter out = new IndentedWriter(System.out) ; 
-        out.setFlatMode(true) ;
-        //out.setEndOfLineMarker("$") ;
-        JSON.write(out, obj) ;
-        out.flush() ;
-        System.exit(0) ;
-        
         if ( false )
         {
             NodeTransform ntLitCanon = CanonicalizeLiteral.get();
@@ -165,8 +121,10 @@ public class RunARQ
             }
             System.exit(0) ;
         }
-        
-        
+    }
+
+    public static void runUpdate()
+    {
         UpdateRequest request = UpdateFactory.create("INSERT DATA { GRAPH <G> { <s> <p> <o> }}") ;
         DatasetGraph dsg = DatasetGraphFactory.createMem() ;
         GraphStore gs = GraphStoreFactory.create(dsg) ;
@@ -191,6 +149,21 @@ public class RunARQ
         arq.sparql.main(/*"--engine=ref",*/ dataArg, queryArg) ;
     }
 
+    private static void json()
+    {
+        // JSON
+        // ** Double space for end of object, end of object. 
+        JsonValue obj = JSON.readAny("D.json") ;
+        IndentedWriter out = new IndentedWriter(System.out) ; 
+        out.setFlatMode(true) ;
+        //out.setEndOfLineMarker("$") ;
+        JSON.write(out, obj) ;
+        out.flush() ;
+        System.exit(0) ;
+        
+
+    }
+    
     private static void processIRI(String iriStr)
     {
         IRI iri = IRIFactory.iriImplementation().create(iriStr) ;
