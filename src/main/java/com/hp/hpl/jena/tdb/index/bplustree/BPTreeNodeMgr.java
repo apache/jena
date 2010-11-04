@@ -61,15 +61,6 @@ public final class BPTreeNodeMgr extends BPTreePageMgr
         return n ;
     }
     
-//    /** Allocate space for a leaf node. */
-//    public BPTreeLeaf createLeaf(int parent)
-//    {
-//        int id = btree.getRecordPageMgr().allocateId() ;
-//        RecordBufferPage page = btree.getRecordPageMgr().create(id) ;
-//        BPTreeLeaf leaf = new BPTreeLeaf(btree, page) ;
-//        return leaf ;
-//    }
-    
     /** Allocate space for a fresh node. */ 
     public BPTreeNode createNode(int parent)
     { 
@@ -83,7 +74,7 @@ public final class BPTreeNodeMgr extends BPTreePageMgr
         return n ;
     }
 
-    /** Fetch a block for the root. s*/
+    /** Fetch a block for the root. */
     public BPTreeNode getRoot(int id)
     {
         return get(id, BPlusTreeParams.RootParent) ;

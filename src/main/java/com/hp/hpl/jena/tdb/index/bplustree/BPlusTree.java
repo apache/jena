@@ -183,6 +183,7 @@ public class BPlusTree implements Iterable<Record>, RangeIndex, Session
     /** Set up according to the attached block storage for the B+Tree */
     void attach()
     {
+        // This fixes the root to being block 0
         if ( nodeManager.valid(0) )
         {
             // Existing BTree
