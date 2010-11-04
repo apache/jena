@@ -53,6 +53,7 @@ final public class BPTreeRecordsMgr extends BPTreePageMgr
     }
     
     public BlockMgr getBlockMgr() { return rBuffPageMgr.getBlockMgr() ; }
+    public RecordBufferPageMgr getRecordBufferPageMgr() { return rBuffPageMgr ; }
 
     public void dump()
     {
