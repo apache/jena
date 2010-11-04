@@ -26,7 +26,7 @@ builds separate from code development).
 == Fix svn
 
 If you find problems with missing classes after SVN update or checkout, it
-might be because of clien t problems between versions. Try:
+might be because of client problems between versions. Try:
 
 svn update --set-depth infinity
 
