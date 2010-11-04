@@ -18,7 +18,7 @@ import com.hp.hpl.jena.sparql.expr.ExprAggregator ;
 import com.hp.hpl.jena.sparql.sse.Tags ;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
 
-public class OpGroup extends OpModifier
+public class OpGroup extends Op1
 {
     private VarExprList groupVars ;
     private List<ExprAggregator> aggregators ;

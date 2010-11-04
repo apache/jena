@@ -115,7 +115,7 @@ public abstract class OpVisitorByType implements OpVisitor
     { visitModifer(opSlice) ; }
 
     public void visit(OpGroup opGroup)
-    { visitModifer(opGroup) ; }
+    { visit1(opGroup) ; }
 }
 
 /*

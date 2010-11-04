@@ -43,7 +43,7 @@ public class WebContent
     public static final String contentSPARQLUpdate_X        = "application/x-sparql-update" ;
 
     public static final String contentTypeSPARQLQuery       = "application/sparql-query" ;          // Unofficial
-    public static final String contentSPARQLUpdate          = "application/sparql-update" ;
+    public static final String contentTypeSPARQLUpdate      = "application/sparql-update" ;
     public static final String contentTypeForm              = "application/x-www-form-urlencoded" ;
     public static final String contentTypeTextCSV           = "text/csv" ;
     public static final String contentTypeTextTSV           = "text/tab-separated-values" ;
