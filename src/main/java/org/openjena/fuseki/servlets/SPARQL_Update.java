@@ -93,10 +93,17 @@ public class SPARQL_Update extends SPARQL_ServletBase
         HttpActionUpdate action = new HttpActionUpdate(id, dsg, request, response, verbose_debug) ;
         
         String incoming = request.getContentType() ;
-        if ( WebContent.contentSPARQLUpdate.equals(incoming) )
-        { executeBody(action) ; return ; }
-        if ( WebContent.contentTypeForm.equals(incoming) )
-        { executeForm(action) ;  return ; }
+        if (WebContent.contentSPARQLUpdate.equals(incoming))
+        {
+            executeBody(action) ;
+            return ;
+        }
+        if (WebContent.contentTypeForm.equals(incoming))
+        {
+            executeForm(action) ;
+            return ;
+        }
+        error(HttpSC.UNSUPPORTED_MEDIA_TYPE_415, "Bad content type: " + incoming) ;
     }
 
     private void validate(HttpServletRequest request)

@@ -10,12 +10,15 @@ import static java.lang.String.format ;
 import static org.openjena.fuseki.Fuseki.serverlog ;
 import static org.openjena.fuseki.HttpNames.paramQuery ;
 
+import java.io.IOException ;
+import java.io.InputStream ;
 import java.util.Enumeration ;
 import java.util.Set ;
 
 import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
+import org.openjena.atlas.io.IO ;
 import org.openjena.atlas.io.IndentedLineBuffer ;
 import org.openjena.fuseki.HttpNames ;
 import org.openjena.fuseki.http.HttpSC ;
@@ -78,7 +81,25 @@ public abstract class SPARQL_Query extends SPARQL_ServletBase
     {
         validate(request) ;
         HttpActionQuery action = new HttpActionQuery(id, dsg, request, response, verbose_debug) ;
-        execute(action) ;
+        if ( request.getMethod().equals(HttpNames.METHOD_GET) )
+        {
+            executeForm(action) ;
+            return ;
+        }
+        // POST
+        String incoming = request.getContentType() ;
+        if (WebContent.contentTypeSPARQLQuery.equals(incoming))
+        {
+            executeBody(action) ;
+            return ;
+        }
+        if (WebContent.contentTypeForm.equals(incoming))
+        {
+            executeForm(action) ;
+            return ;
+        }
+
+        error(HttpSC.UNSUPPORTED_MEDIA_TYPE_415, "Bad content type: "+incoming) ;
     }
 
     @Override
@@ -159,9 +180,26 @@ public abstract class SPARQL_Query extends SPARQL_ServletBase
         }
     }
 
-    private void execute(HttpActionQuery action)
+    private void executeForm(HttpActionQuery action)
     {
         String queryString = action.request.getParameter(paramQuery) ;
+        execute(queryString, action) ;
+    }
+
+    private void executeBody(HttpActionQuery action)
+    {
+        String queryString = null ;
+        try { 
+            InputStream input = action.request.getInputStream() ; 
+            queryString = IO.readWholeFileAsUTF8(input) ;
+        }
+        catch (IOException ex) { errorOccurred(ex) ; }
+        execute(queryString, action) ;
+    }
+
+    
+    private void execute(String queryString, HttpActionQuery action)
+    {
         String queryStringLog = formatForLog(queryString) ;
         serverlog.info(format("[%d] Query = %s", action.id, queryString));
         Query query = null ;
@@ -185,7 +223,6 @@ public abstract class SPARQL_Query extends SPARQL_ServletBase
             SPARQLResult result = executeQuery(action, query, queryStringLog) ;
             sendResults(action, result) ;
         } finally { action.endWrite() ; }
-
     }
 
     /** Check the query - throw ActionErrorException or call super.error* */
