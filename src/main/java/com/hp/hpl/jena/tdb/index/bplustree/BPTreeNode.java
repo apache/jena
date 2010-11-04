@@ -1165,14 +1165,6 @@ public final class BPTreeNode extends BPTreePage
         for ( int i = 0 ; i < count+1 ; i++ )
         {
             out.println();
-            
-            if ( i == this.getId() && !isLeaf )
-            {
-                // Oops
-                log.warn("Node points to itself: "+getId()) ;
-                break ;
-            }
-            
             BPTreePage page = get(i) ;
             page.output(out) ;
             
