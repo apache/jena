@@ -302,13 +302,13 @@ public class Iter<T> implements Iterable<T>, Iterator<T>
     }
 
     /** Print an iterator as it gets used - this adds a printing wrapper */
-    public static <T> Iterator<T> print(final Iterator<? extends T> stream)
+    public static <T> Iterator<T> printWrapper(final Iterator<? extends T> stream)
     {
-        return Iter.print(System.out, stream) ;
+        return Iter.printWrapper(System.out, stream) ;
     }
 
     /** Print an iterator as it gets used - this adds a printing wrapper */
-    public static <T> Iterator<T> print(final PrintStream out, final Iterator<? extends T> stream)
+    public static <T> Iterator<T> printWrapper(final PrintStream out, final Iterator<? extends T> stream)
     {
         Action<T> action = new Action<T>(){
             public void apply(T item)
