@@ -9,18 +9,6 @@ public class DevARQ
     // QueryParseException for updates is confusing.
     // All QueryException  -> SparqlException
     
-    // Bug:
-    /*
-    SELECT ?s ?p ?o ?z
-                    {
-                      ?s ?p ?o .
-                      { BIND(?o+1 AS ?z) } UNION { BIND(?o+2 AS ?z) }
-                    }
-      LHS of BIND needs to go into the read-not-write set.
-      Same for LET.
-      VarFinder.
-      
-    */
     // ----
     // VarFinder.VarUsageVisitor.visit(OpUnion)
     //    defines = union(left.define, right.define) ??
