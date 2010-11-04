@@ -24,6 +24,7 @@ import org.junit.runners.Suite ;
     , TestColumnMap.class
     , TestFileOps.class
     , TestStrUtils.class
+    , TestXMLLib.class
 } )
 
 public class TS_Lib
