@@ -319,12 +319,12 @@ public class Iter<T> implements Iterable<T>, Iterator<T>
     
     public static <T> Iterator<T> append(Iterable<T> iter1, Iterable<T> iter2)
     {
-        return Iterator2.create(iterator(iter1), iterator(iter2));
+        return IteratorCons.create(iterator(iter1), iterator(iter2));
     }
 
     // Could try for <? extends T> on each arg.
     public static <T> Iterator<T> append(Iterator<? extends T> iter1, Iterator<? extends T> iter2)
-    { return Iterator2.create(iter1, iter2); }
+    { return IteratorCons.create(iter1, iter2); }
 
     private static <T> Iterator<T> iterator(Iterable<T> iter) { return (iter==null) ? null : iter.iterator() ; }
     
@@ -531,7 +531,7 @@ public class Iter<T> implements Iterable<T>, Iterator<T>
 
     public Iter<T> append(Iterator<T> iter)
     {
-        return new Iter<T>(Iterator2.create(iterator, iter)) ;
+        return new Iter<T>(IteratorCons.create(iterator, iter)) ;
     }
 
     /** Count the iterator (this is destructive on the iterator) */ 
