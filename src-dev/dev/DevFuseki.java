@@ -7,6 +7,12 @@ package dev;
 
 public class DevFuseki
 {
+    // Assemblies:
+    //   one jar
+    //   SOH
+    //   Fuksei.zip
+    // File upload
+    
     // CORS: Access-Control-Allow-Origin: *
     // http://esw.w3.org/CORS_Enabled
     // Consider configuration.
