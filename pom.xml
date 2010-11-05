@@ -244,7 +244,6 @@
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
         <configuration>
-	  <id>standalone-server</id>
           <archive>
             <manifest>
               <mainClass>org.openjena.fuseki.FusekiCmd</mainClass>
@@ -252,6 +251,8 @@
           </archive>
 	  <descriptors>
 	    <descriptor>assembly-server.xml</descriptor>
+	    <descriptor>assembly-soh.xml</descriptor>
+	    <descriptor>assembly-dist.xml</descriptor>
 	  </descriptors>
 	  <!-- 
 	    This works as well, but generates a "NOTE" message
