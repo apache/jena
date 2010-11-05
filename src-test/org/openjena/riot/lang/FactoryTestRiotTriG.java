@@ -70,7 +70,7 @@ public class FactoryTestRiotTriG extends TestFactoryManifest
             }
 
             if ( r.equals(TestVocabRIOT.TestSurpressed ))
-                return new TestSupressed(testName, null) ;
+                return new UnitTestSupressed(testName, null) ;
 
             System.err.println("Unrecognized test : " + testName) ;
             return null ;

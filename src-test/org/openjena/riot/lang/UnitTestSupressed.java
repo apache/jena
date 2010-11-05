@@ -9,9 +9,9 @@ package org.openjena.riot.lang;
 import junit.framework.Test ;
 import junit.framework.TestResult ;
 
-public class TestSupressed implements Test
+public class UnitTestSupressed implements Test
 {
-    public TestSupressed(String testName, Object object)
+    public UnitTestSupressed(String testName, Object object)
     {}
 
     public int countTestCases()

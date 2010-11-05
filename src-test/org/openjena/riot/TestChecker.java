@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2010 Talis Systems Ltd.
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -15,6 +16,7 @@ import org.openjena.riot.system.Checker ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.shared.impl.JenaParameters ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
+import static  org.openjena.riot.ErrorHandlerTestLib.* ;
 
 public class TestChecker
 {
@@ -41,22 +43,22 @@ public class TestChecker
     @Test public void checker02() { check("''@en") ; }
     @Test public void checker03() { check("<http://example/x>") ; }
 
-    @Test(expected=ErrorHandlerTestLib.ExError.class)
+    @Test(expected=ExError.class)
     public void checker04() { check("<x>") ; }
 
     // CheckerIRI specifically does not complain about these sorts of illegal URNs
     // although they are wrong (URNs must be "urn:2+chars:1+chars")
     
-    @Test //(expected=ErrorHandlerTestLib.ExWarning.class)
+    @Test //(expected=ExWarning.class)
     public void checker05() { check("<urn:abc>") ; }
 
-    @Test //(expected=ErrorHandlerTestLib.ExWarning.class)
+    @Test //(expected=ExWarning.class)
     public void checker06() { check("<urn:abc:>") ; }
     
     @Test
     public void checker07() { check("<urn:abc:y>") ; }
 
-    @Test (expected=ErrorHandlerTestLib.ExWarning.class) 
+    @Test (expected=ExWarning.class) 
     public void checker10() { check("''^^xsd:dateTime") ; }
 
     // Whitespace facet processing.  
@@ -68,7 +70,7 @@ public class TestChecker
     @Test public void checker13() { check("' 123'^^xsd:integer") ; }
     
     // Internal white space - illegal
-    @Test (expected=ErrorHandlerTestLib.ExWarning.class) public void checker14() { check("'12 3'^^xsd:integer") ; }
+    @Test (expected=ExWarning.class) public void checker14() { check("'12 3'^^xsd:integer") ; }
     @Test public void checker15() { check("'\\n123'^^xsd:integer") ; }
 
     // Test all the data type hierarchies that whitespace foo affects.
@@ -79,19 +81,41 @@ public class TestChecker
 
     
     // Other bad lexical forms.
-    @Test(expected=ErrorHandlerTestLib.ExWarning.class) public void checker20() { check("'XYZ'^^xsd:integer") ; }
+    @Test(expected=ExWarning.class) public void checker20() { check("'XYZ'^^xsd:integer") ; }
     // Lang tag
-    @Test(expected=ErrorHandlerTestLib.ExWarning.class) public void checker21() { check("'XYZ'@abcdefghijklmn") ; }
+    @Test(expected=ExWarning.class) public void checker21() { check("'XYZ'@abcdefghijklmn") ; }
     
     
-    @Test(expected=ErrorHandlerTestLib.ExWarning.class) public void checker30() { check("<http://base/[]iri>") ; }
+    @Test(expected=ExWarning.class) public void checker30() { check("<http://base/[]iri>") ; }
     
     //Bad IRI
 
     
     //@Test public void checker12() { check("''@en") ; }
     
+    // XML Literals.
     
+    @Test
+    public void checker40() { check("\"<x></x>\"^^rdf:XMLLiteral") ; }
+
+    @Test(expected=ExWarning.class)
+    // Unmatched tag
+    public void checker41() { check("\"<x>\"^^rdf:XMLLiteral") ; }
+    
+    @Test(expected=ExWarning.class)
+    // Bad tagging.
+    public void checker42() { check("\"<x><y></x></y>\"^^rdf:XMLLiteral") ; }
+
+    @Test(expected=ExWarning.class)
+    // Not exclusive canonicalization
+    public void checker43() { check("\"<x/>\"^^rdf:XMLLiteral") ; }
+    
+    @Test
+    public void checker44() { check("'''<x xmlns=\"http://example/ns#\" attr=\"foo\"></x>'''^^rdf:XMLLiteral" ) ; }
+    
+    @Test(expected=ExWarning.class)
+    // Exclusive canonicalization requires namespace declaration before attributes
+    public void checker45() { check("'''<x attr=\"foo\" xmlns=\"http://example/ns#\"></x>'''^^rdf:XMLLiteral") ; }
     
 
     private static void check(String string)
@@ -104,6 +128,7 @@ public class TestChecker
 
 /*
  * (c) Copyright 2010 Talis Systems Ltd.
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

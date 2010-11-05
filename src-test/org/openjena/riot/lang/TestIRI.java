@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -8,6 +9,8 @@ package org.openjena.riot.lang;
 
 import org.junit.Test ;
 import org.openjena.riot.ErrorHandler ;
+import org.openjena.riot.ErrorHandlerTestLib ;
+import static org.openjena.riot.ErrorHandlerTestLib.* ;
 import org.openjena.riot.checker.CheckerIRI ;
 import org.openjena.riot.system.Checker ;
 
@@ -16,28 +19,14 @@ import com.hp.hpl.jena.iri.IRIFactory ;
 
 public class TestIRI
 {
-    private static class ExFatal extends RuntimeException {} ;
-    private static class ExError extends RuntimeException {} ;
-    private static class ExWarning extends RuntimeException {} ;
-    
-    static ErrorHandler handler = new ErrorHandler()
-    {
-        public void warning(String message, long line, long col)
-        { throw new ExWarning() ; }
-
-        public void error(String message, long line, long col)
-        { throw new ExError() ; }
-
-        public void fatal(String message, long line, long col)
-        { throw new ExFatal() ; }
-    } ;
-    static Checker checker = new Checker(handler) ;
+    static protected final ErrorHandler handler = new ErrorHandlerTestLib.ErrorHandlerEx() ;
+    static protected final Checker checker = new Checker(new ErrorHandlerTestLib.ErrorHandlerEx()) ;
     
     static IRIFactory factory = IRIFactory.iriImplementation() ;
     
     @Test public void iri1()  { test("http://example/") ; }
     
-    @Test(expected=ExError.class)
+    @Test(expected=ErrorHandlerTestLib.ExError.class)
     // No relative IRIs
     public void iri2()  { test("example") ; }
     
@@ -61,6 +50,7 @@ public class TestIRI
 
 /*
  * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

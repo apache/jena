@@ -195,7 +195,7 @@ public class TestTurtleTerms extends BaseTest
 	@Test public void turtle_111() { parse("a:subj a:prop 123.1E3 .") ; }
 	@Test public void turtle_112() { parse("a:subj a:prop 123.1E-3 .") ; }
 
-	        // Language tags
+	// Language tags
 	@Test public void turtle_113() { parse("a:subj a:prop 'text'@en .") ; }
 	// Illegal in Turtle.
 	//@Test public void turtle_114() { parse("a:subj a:prop 'text'^^a:lang@en .") ; }
