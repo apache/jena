@@ -8,7 +8,8 @@ package com.hp.hpl.jena.sparql.modify.request;
 
 public class UpdateAdd extends UpdateBinaryOp
 {
-    public UpdateAdd(Target src, Target dest)  { super(src, dest) ; }
+    public UpdateAdd(Target src, Target dest)                  { super(src, dest, true) ; }
+    public UpdateAdd(Target src, Target dest, boolean silent)  { super(src, dest, silent) ; }
 
     @Override
     public void visit(UpdateVisitor visitor)

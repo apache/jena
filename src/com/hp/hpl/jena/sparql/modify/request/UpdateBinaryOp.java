@@ -13,13 +13,15 @@ abstract class UpdateBinaryOp extends Update
 {
     private Target src ;
     private Target dest ;
+    private boolean silent ;
 
-    protected UpdateBinaryOp(Target src, Target dest)
+    protected UpdateBinaryOp(Target src, Target dest, boolean silent)
     {
         checkTarget(src) ;
         checkTarget(dest) ;
         this.src = src ; 
-        this.dest = dest ; 
+        this.dest = dest ;
+        this.silent = silent ;
     }
 
     private static void checkTarget(Target target)
@@ -31,6 +33,8 @@ abstract class UpdateBinaryOp extends Update
     public Target getSrc()      { return src ; }
 
     public Target getDest()     { return dest ; }
+    
+    public boolean getSilent()  { return silent ; }
 }
 
 /*

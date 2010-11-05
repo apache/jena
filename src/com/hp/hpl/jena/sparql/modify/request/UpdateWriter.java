@@ -190,6 +190,8 @@ public class UpdateWriter
         private void printUpdate2(UpdateBinaryOp update, String name)
         {
             out.print(name) ;
+            if ( update.getSilent() )
+                out.print(" SILENT") ;
             out.print(" ") ;
             printTargetUpdate2(update.getSrc()) ;
             out.print(" TO ") ;

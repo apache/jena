@@ -125,6 +125,7 @@ TOKENS
 | <ADD: "add">
 | <MOVE: "move">
 | <COPY: "copy">
+| <META: "meta">
 | <SILENT: "silent">
 | <DROP: "drop">
 | <INTO: "into">
@@ -257,15 +258,16 @@ NON-TERMINALS
 // Update only entry point
 	UpdateUnit	:=	Update <EOF>
 // Strict SPARQL 1.1 : mandatory separator, optional terminator.
-	Update	:=	Prologue Update1 ( <SEMICOLON> ( Update )? )?
-	Update1	:=	( Load | Clear | Drop | Add | Move | Copy | Create | InsertData | DeleteData | DeleteWhere | Modify )
+	Update	:=	Prologue ( Meta )* Update1 ( <SEMICOLON> ( Update )? )?
+	Update1	:=	( Load | Clear | Drop | Add | Move | Copy | Create | InsertData | DeleteData | DeleteWhere | Modify ) ( Meta )*
 	Load	:=	<LOAD> IRIref ( <INTO> GraphRef )?
 	Clear	:=	<CLEAR> ( <SILENT> )? GraphRefAll
 	Drop	:=	<DROP> ( <SILENT> )? GraphRefAll
 	Create	:=	<CREATE> ( <SILENT> )? GraphRef
-	Add	:=	<ADD> GraphOrDefault <TO> GraphOrDefault
-	Move	:=	<MOVE> GraphOrDefault <TO> GraphOrDefault
-	Copy	:=	<COPY> GraphOrDefault <TO> GraphOrDefault
+	Add	:=	<ADD> ( <SILENT> )? GraphOrDefault <TO> GraphOrDefault
+	Move	:=	<MOVE> ( <SILENT> )? GraphOrDefault <TO> GraphOrDefault
+	Copy	:=	<COPY> ( <SILENT> )? GraphOrDefault <TO> GraphOrDefault
+	Meta	:=	<META> QuadData
 	InsertData	:=	<INSERT_DATA> QuadData
 	DeleteData	:=	<DELETE_DATA> QuadData
 	DeleteWhere	:=	<DELETE_WHERE> QuadPattern
@@ -273,7 +275,7 @@ NON-TERMINALS
 	DeleteClause	:=	<DELETE> QuadPattern
 	InsertClause	:=	<INSERT> QuadPattern
 	UsingClause	:=	<USING> ( IRIref | <NAMED> IRIref )
-	GraphOrDefault	:=	( <DFT> | IRIref )
+	GraphOrDefault	:=	( <DFT> | ( <GRAPH> )? IRIref )
 	GraphRef	:=	<GRAPH> IRIref
 	GraphRefAll	:=	( GraphRef | <DFT> | <NAMED> | <ALL> )
 	QuadPattern	:=	<LBRACE> Quads <RBRACE>

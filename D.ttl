@@ -1,6 +1,9 @@
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix : <http://example.org/> .
 
-:s1 :p 1 .
-:s2 :p 2 .
-:s3 :p 3 .
-:s4 :p 4 .
+:s1 :p "<x></x>"^^rdf:XMLLiteral .
+:s2 :p "<x/>"^^rdf:XMLLiteral .
+:s3 :p '''<x xmlns="http://example/ns#" attr="foo"></x>'''^^rdf:XMLLiteral .
+:s4 :p '''<x attr="foo" xmlns="http://example/ns#"></x>'''^^rdf:XMLLiteral .

@@ -131,6 +131,7 @@
 [<ADD>]         ::= 'ADD'
 [<MOVE>]        ::= 'MOVE'
 [<COPY>]        ::= 'COPY'
+[<META>]        ::= 'META'
 
 [<DATA>]        ::= 'DATA'
 [<LOAD>]        ::= 'LOAD' 

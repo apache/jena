@@ -340,6 +340,7 @@ void Update1() : { Update up ; }
   | up = Modify()
   | up = ModifyOld()
   )
+  (Meta())*
   {
     emitUpdate(up) ;
     finishUpdateOperation() ;
@@ -369,20 +370,25 @@ Update Create() : { Node iri ; boolean silent = false ; }
    <CREATE> (<SILENT> { silent=true ; } )? iri = GraphRef()
    { return new UpdateCreate(iri, silent) ; }
 }
-Update Add() : { Target src ; Target dest ; }
+Update Add() : { Target src ; Target dest ; boolean silent = false ; }
 {
-  <ADD> src = GraphOrDefault() <TO> dest = GraphOrDefault()
-  { return new UpdateAdd(src, dest) ; }
+  <ADD> (<SILENT> { silent=true ; } )? src = GraphOrDefault() <TO> dest = GraphOrDefault()
+  { return new UpdateAdd(src, dest, silent) ; }
 }
-Update Move() : { Target src ; Target dest ; }
+Update Move() : { Target src ; Target dest ; boolean silent = false ; }
 {
-  <MOVE> src = GraphOrDefault() <TO> dest = GraphOrDefault()
-  { return new UpdateMove(src, dest) ; }
+  <MOVE> (<SILENT> { silent=true ; } )? src = GraphOrDefault() <TO> dest = GraphOrDefault()
+  { return new UpdateMove(src, dest, silent) ; }
 }
-Update Copy() : { Target src ; Target dest ; }
+Update Copy() : { Target src ; Target dest ; boolean silent = false ; }
 {
-  <COPY> src = GraphOrDefault() <TO> dest = GraphOrDefault()
-  { return new UpdateCopy(src, dest) ; }
+  <COPY> (<SILENT> { silent=true ; } )? src = GraphOrDefault() <TO> dest = GraphOrDefault()
+  { return new UpdateCopy(src, dest, silent) ; }
+}
+void Meta() : { QuadDataAcc qd = new QuadDataAcc() ; }
+{
+   <META>
+   QuadData(qd)
 }
 Update InsertData() : { QuadDataAcc qd = new QuadDataAcc() ; Token t ; }
 {
@@ -474,7 +480,8 @@ void UsingClause(UpdateWithUsing update) : { String iri ; Node n ; }
 Target GraphOrDefault() : { String iri ; }
 {
   ( <DFT> { return Target.DEFAULT ; }
-  | iri = IRIref()
+  | (<GRAPH>)?
+     iri = IRIref()
      { return Target.create(createNode(iri)) ; }
   )
 }
@@ -1564,6 +1571,7 @@ TOKEN [IGNORE_CASE] :
 | < ADD: "add" >
 | < MOVE: "move" >
 | < COPY: "copy" >
+| < META: "meta" >
 | < SILENT: "silent" >
 | < DROP: "drop" >
 | < INTO: "into" >

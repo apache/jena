@@ -9,7 +9,8 @@ package com.hp.hpl.jena.sparql.modify.request;
 
 public class UpdateMove extends UpdateBinaryOp
 {
-    public UpdateMove(Target src, Target dest)  { super(src, dest) ; }
+    public UpdateMove(Target src, Target dest)                  { super(src, dest, true) ; }
+    public UpdateMove(Target src, Target dest, boolean silent)  { super(src, dest, silent) ; }
 
     @Override
     public void visit(UpdateVisitor visitor)

@@ -206,139 +206,141 @@ public interface ARQParserConstants {
   /** RegularExpression Id. */
   int COPY = 100;
   /** RegularExpression Id. */
-  int SILENT = 101;
+  int META = 101;
   /** RegularExpression Id. */
-  int DROP = 102;
+  int SILENT = 102;
   /** RegularExpression Id. */
-  int INTO = 103;
+  int DROP = 103;
   /** RegularExpression Id. */
-  int TO = 104;
+  int INTO = 104;
   /** RegularExpression Id. */
-  int DFT = 105;
+  int TO = 105;
   /** RegularExpression Id. */
-  int ALL = 106;
+  int DFT = 106;
   /** RegularExpression Id. */
-  int WITH = 107;
+  int ALL = 107;
   /** RegularExpression Id. */
-  int USING = 108;
+  int WITH = 108;
   /** RegularExpression Id. */
-  int DIGITS = 109;
+  int USING = 109;
   /** RegularExpression Id. */
-  int INTEGER = 110;
+  int DIGITS = 110;
   /** RegularExpression Id. */
-  int DECIMAL = 111;
+  int INTEGER = 111;
   /** RegularExpression Id. */
-  int DOUBLE = 112;
+  int DECIMAL = 112;
   /** RegularExpression Id. */
-  int INTEGER_POSITIVE = 113;
+  int DOUBLE = 113;
   /** RegularExpression Id. */
-  int DECIMAL_POSITIVE = 114;
+  int INTEGER_POSITIVE = 114;
   /** RegularExpression Id. */
-  int DOUBLE_POSITIVE = 115;
+  int DECIMAL_POSITIVE = 115;
   /** RegularExpression Id. */
-  int INTEGER_NEGATIVE = 116;
+  int DOUBLE_POSITIVE = 116;
   /** RegularExpression Id. */
-  int DECIMAL_NEGATIVE = 117;
+  int INTEGER_NEGATIVE = 117;
   /** RegularExpression Id. */
-  int DOUBLE_NEGATIVE = 118;
+  int DECIMAL_NEGATIVE = 118;
   /** RegularExpression Id. */
-  int EXPONENT = 119;
+  int DOUBLE_NEGATIVE = 119;
   /** RegularExpression Id. */
-  int QUOTE_3D = 120;
+  int EXPONENT = 120;
   /** RegularExpression Id. */
-  int QUOTE_3S = 121;
+  int QUOTE_3D = 121;
   /** RegularExpression Id. */
-  int ECHAR = 122;
+  int QUOTE_3S = 122;
   /** RegularExpression Id. */
-  int STRING_LITERAL1 = 123;
+  int ECHAR = 123;
   /** RegularExpression Id. */
-  int STRING_LITERAL2 = 124;
+  int STRING_LITERAL1 = 124;
   /** RegularExpression Id. */
-  int STRING_LITERAL_LONG1 = 125;
+  int STRING_LITERAL2 = 125;
   /** RegularExpression Id. */
-  int STRING_LITERAL_LONG2 = 126;
+  int STRING_LITERAL_LONG1 = 126;
   /** RegularExpression Id. */
-  int LPAREN = 127;
+  int STRING_LITERAL_LONG2 = 127;
   /** RegularExpression Id. */
-  int RPAREN = 128;
+  int LPAREN = 128;
   /** RegularExpression Id. */
-  int NIL = 129;
+  int RPAREN = 129;
   /** RegularExpression Id. */
-  int LBRACE = 130;
+  int NIL = 130;
   /** RegularExpression Id. */
-  int RBRACE = 131;
+  int LBRACE = 131;
   /** RegularExpression Id. */
-  int LBRACKET = 132;
+  int RBRACE = 132;
   /** RegularExpression Id. */
-  int RBRACKET = 133;
+  int LBRACKET = 133;
   /** RegularExpression Id. */
-  int ANON = 134;
+  int RBRACKET = 134;
   /** RegularExpression Id. */
-  int SEMICOLON = 135;
+  int ANON = 135;
   /** RegularExpression Id. */
-  int COMMA = 136;
+  int SEMICOLON = 136;
   /** RegularExpression Id. */
-  int DOT = 137;
+  int COMMA = 137;
   /** RegularExpression Id. */
-  int EQ = 138;
+  int DOT = 138;
   /** RegularExpression Id. */
-  int NE = 139;
+  int EQ = 139;
   /** RegularExpression Id. */
-  int GT = 140;
+  int NE = 140;
   /** RegularExpression Id. */
-  int LT = 141;
+  int GT = 141;
   /** RegularExpression Id. */
-  int LE = 142;
+  int LT = 142;
   /** RegularExpression Id. */
-  int GE = 143;
+  int LE = 143;
   /** RegularExpression Id. */
-  int BANG = 144;
+  int GE = 144;
   /** RegularExpression Id. */
-  int TILDE = 145;
+  int BANG = 145;
   /** RegularExpression Id. */
-  int COLON = 146;
+  int TILDE = 146;
   /** RegularExpression Id. */
-  int SC_OR = 147;
+  int COLON = 147;
   /** RegularExpression Id. */
-  int SC_AND = 148;
+  int SC_OR = 148;
   /** RegularExpression Id. */
-  int PLUS = 149;
+  int SC_AND = 149;
   /** RegularExpression Id. */
-  int MINUS = 150;
+  int PLUS = 150;
   /** RegularExpression Id. */
-  int STAR = 151;
+  int MINUS = 151;
   /** RegularExpression Id. */
-  int SLASH = 152;
+  int STAR = 152;
   /** RegularExpression Id. */
-  int DATATYPE = 153;
+  int SLASH = 153;
   /** RegularExpression Id. */
-  int AT = 154;
+  int DATATYPE = 154;
   /** RegularExpression Id. */
-  int ASSIGN = 155;
+  int AT = 155;
   /** RegularExpression Id. */
-  int VBAR = 156;
+  int ASSIGN = 156;
   /** RegularExpression Id. */
-  int CARAT = 157;
+  int VBAR = 157;
   /** RegularExpression Id. */
-  int FPATH = 158;
+  int CARAT = 158;
   /** RegularExpression Id. */
-  int RPATH = 159;
+  int FPATH = 159;
   /** RegularExpression Id. */
-  int QMARK = 160;
+  int RPATH = 160;
   /** RegularExpression Id. */
-  int PN_CHARS_BASE = 161;
+  int QMARK = 161;
   /** RegularExpression Id. */
-  int PN_CHARS_U = 162;
+  int PN_CHARS_BASE = 162;
   /** RegularExpression Id. */
-  int PN_CHARS = 163;
+  int PN_CHARS_U = 163;
   /** RegularExpression Id. */
-  int PN_PREFIX = 164;
+  int PN_CHARS = 164;
   /** RegularExpression Id. */
-  int PN_LOCAL = 165;
+  int PN_PREFIX = 165;
   /** RegularExpression Id. */
-  int VARNAME = 166;
+  int PN_LOCAL = 166;
   /** RegularExpression Id. */
-  int UNKNOWN = 167;
+  int VARNAME = 167;
+  /** RegularExpression Id. */
+  int UNKNOWN = 168;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -446,6 +448,7 @@ public interface ARQParserConstants {
     "\"add\"",
     "\"move\"",
     "\"copy\"",
+    "\"meta\"",
     "\"silent\"",
     "\"drop\"",
     "\"into\"",
