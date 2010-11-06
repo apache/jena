@@ -59,7 +59,6 @@ abstract public class BPTreePage implements Page
      */
     abstract BPTreePage merge(BPTreePage right, Record splitKey) ;
     
-    
 //    /** Rebalance records/pointers across this page and page other. 
 //     *  Can assume other is the same type as 'this'
 //     *  Can assume that other is the immediate left or immediate right of this page; 

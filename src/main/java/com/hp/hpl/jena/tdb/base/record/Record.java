@@ -136,7 +136,7 @@ public class Record //implements Comparable<Record>
         return x > 0 ;
     }
     
-    /** Is (key, value) of record1 equl to (key,value) of record2 */
+    /** Is (key, value) of record1 equal to (key,value) of record2 */
     public static boolean equals(Record record1, Record record2)
     {
         int x = compareByKeyValue(record1, record2) ;
