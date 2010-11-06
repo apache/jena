@@ -13,7 +13,8 @@ import org.junit.runners.Suite ;
 @Suite.SuiteClasses( {
     TestIter.class,
     TestIterator.class,
-    TestIteratorArray.class
+    TestIteratorArray.class,
+    TestIteratorPushback.class
 } )
 
 public class TS_Iterator

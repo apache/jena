@@ -9,7 +9,7 @@ package org.openjena.atlas.iterator;
 import java.util.Iterator ;
 import java.util.NoSuchElementException ;
 
-/** Iterator2 : the concatenation of two iterators.
+/** IteratorCons : the concatenation of two iterators.
  * 
  * @author Andy Seaborne
  * @version $Id$

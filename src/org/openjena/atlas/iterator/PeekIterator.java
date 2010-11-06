@@ -12,7 +12,6 @@ import java.util.NoSuchElementException ;
 /** PeekIterator - is one slot ahead from the wrapped iterator */ 
 public class PeekIterator<T> implements Iterator<T>
 {
-
     private final Iterator<T> iter ;
     private boolean finished = false ;
     // Slot always full when iterator active.  Null is a a valid element.
