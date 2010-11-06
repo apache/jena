@@ -16,6 +16,7 @@ public class DevFuseki
     // CORS: Access-Control-Allow-Origin: *
     // http://esw.w3.org/CORS_Enabled
     // Consider configuration.
+    // http://hacks.mozilla.org/2009/07/cross-site-xmlhttprequest-with-cors/
     
     // ETags.
     
