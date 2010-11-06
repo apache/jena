@@ -295,6 +295,7 @@ public abstract class SPARQL_ServletBase extends HttpServlet
 
     public static void setCommonHeaders(HttpServletResponse httpResponse)
     {
+        httpResponse.setHeader(HttpNames.hAccessControlAllowOrigin, "*") ;
         httpResponse.setHeader(HttpNames.hServer, Fuseki.serverHttpName) ;
     }
 }

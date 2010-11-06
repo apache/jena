@@ -19,9 +19,12 @@ public class HttpNames
     public static final String hContentLocation     = "Content-Location" ;
     public static final String hContentRange        = "Content-Range" ;
     public static final String hContentType         = "Content-Type" ;
-    
     public static final String hServer              = "Server" ;
-
+    
+    // CORS: 
+    //   http://www.w3.org/TR/cors/  http://esw.w3.org/CORS_Enabled
+    public static final String hAccessControlAllowOrigin = "Access-Control-Allow-Origin" ;
+    
 
     public static final String paramGraph           = "graph" ;
     public static final String paramGraphDefault    = "default" ;
@@ -42,14 +45,14 @@ public class HttpNames
     public static final String charset              = "charset" ;
     
     
-    public static final String METHOD_DELETE    = "DELETE";
-    public static final String METHOD_HEAD      = "HEAD";
-    public static final String METHOD_GET       = "GET";
-    public static final String METHOD_OPTIONS   = "OPTIONS";
-    public static final String METHOD_PATCH     = "PATCH" ;
-    public static final String METHOD_POST      = "POST";
-    public static final String METHOD_PUT       = "PUT";
-    public static final String METHOD_TRACE     = "TRACE";
+    public static final String METHOD_DELETE        = "DELETE";
+    public static final String METHOD_HEAD          = "HEAD";
+    public static final String METHOD_GET           = "GET";
+    public static final String METHOD_OPTIONS       = "OPTIONS";
+    public static final String METHOD_PATCH         = "PATCH" ;
+    public static final String METHOD_POST          = "POST";
+    public static final String METHOD_PUT           = "PUT";
+    public static final String METHOD_TRACE         = "TRACE";
 
     public static final String HEADER_IFMODSINCE    = "If-Modified-Since";
     public static final String HEADER_LASTMOD       = "Last-Modified";
