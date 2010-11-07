@@ -2,6 +2,8 @@
 // Changes : put in ARQ/TDB library package
 // http://iharder.sourceforge.net/current/java/base64/
 // With thanks.
+// If IP problems, use Apache Commons Codec 
+// org.apache.commons.codec.binary.Base64 
 
 package org.openjena.atlas.lib;
 

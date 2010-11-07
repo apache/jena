@@ -3,6 +3,7 @@
 // (c) COPYRIGHT MIT and INRIA, 1996.
 
 //package org.w3c.tools.crypt ;
+// Or org.apache.commons.codec.digest.DigestUtils.md5
 
 // AFS - Want a standalone version
 package org.openjena.atlas.lib;
