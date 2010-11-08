@@ -37,6 +37,8 @@ public class DevARQ
     
     // **** Rework QueryTestSuiteFactory => ScriptTestSuiteFactory
     
+    // RAND(seed)
+    
     // http://www.openjena.org/wiki/ARQ/Concurrency
     // Syntax restrictions:
     //   GROUP

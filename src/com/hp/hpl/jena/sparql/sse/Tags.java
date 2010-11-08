@@ -117,6 +117,7 @@ public class Tags
     public static final String tagStr           = "str" ;
     public static final String tagStrLang       = "strlang" ;
     public static final String tagStrDatatype   = "strdt" ;
+    public static final String tagRand          = "rand" ;
     
     public static final String tagLang          = "lang" ;
     public static final String tagLangMatches   = "langmatches" ;

@@ -107,6 +107,7 @@ TOKENS
 | <IS_NUMERIC: "isNumeric">
 | <REGEX: "regex">
 | <SAME_TERM: "sameTerm">
+| <RAND: "rand">
 | <TRUE: "true">
 | <FALSE: "false">
 }
@@ -404,6 +405,7 @@ NON-TERMINALS
 		|	<IRI> <LPAREN> Expression <RPAREN>
 		|	<URI> <LPAREN> Expression <RPAREN>
 		|	<BNODE> ( <LPAREN> Expression <RPAREN> | <NIL> )
+		|	<RAND> ( <LPAREN> Expression <RPAREN> | <NIL> )
 		|	<COALESCE> ExpressionList
 		|	<IF> <LPAREN> Expression <COMMA> Expression <COMMA> Expression <RPAREN>
 		|	<STRLANG> <LPAREN> Expression <COMMA> Expression <RPAREN>

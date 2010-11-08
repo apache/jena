@@ -223,6 +223,7 @@ public class BuilderExpr
         dispatch.put(Tags.tagStrLang, buildStrLang) ;
         dispatch.put(Tags.tagStrDatatype, buildStrDatatype) ;
         dispatch.put(Tags.tagStr, buildStr) ;
+        dispatch.put(Tags.tagRand, buildRand) ;
         
         dispatch.put(Tags.tagLang, buildLang) ;
         dispatch.put(Tags.tagLangMatches, buildLangMatches) ;
@@ -503,6 +504,19 @@ public class BuilderExpr
             Expr ex1 = buildExpr(list.get(1)) ;
             Expr ex2 = buildExpr(list.get(2)) ;
             return new E_StrDatatype(ex1, ex2) ;
+        }
+    };
+    
+    final protected Build buildRand = new Build()
+    {
+        public Expr make(ItemList list)
+        {
+            BuilderLib.checkLength(1, 2, list, "rand: wanted 0 or 1 arguments: got: "+list.size()) ;
+            if ( list.size() == 1 )
+                return new E_Random() ;
+            
+            Expr expr = buildExpr(list.get(1)) ;
+            return new E_Random(expr) ;
         }
     };
     

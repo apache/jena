@@ -95,6 +95,7 @@
 [<COALESCE>]   ::= 'COALESCE'
 [<IF>]         ::= 'IF'
 [<STR>]        ::= 'STR'
+[<RAND>]       ::= 'RAND'
 [<URI>]        ::= 'URI'
 [<IRI>]        ::= 'IRI'
 [<BNODE>]      ::= 'BNODE'

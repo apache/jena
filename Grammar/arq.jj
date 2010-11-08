@@ -1236,11 +1236,16 @@ Expr BuiltInCall() : { Expr expr ; Expr expr1 = null ; Expr expr2 = null ;
   | <URI> <LPAREN> expr = Expression() <RPAREN>
     { return new E_URI(expr) ; }
   | <BNODE>
-    // @@ FIXME
     ( <LPAREN> expr1 = Expression() <RPAREN>
       { return new E_BNode(expr1) ; }
     |
       <NIL> { return new E_BNode() ; }
+    )
+  | <RAND>
+    ( <LPAREN> expr1 = Expression() <RPAREN>
+       { return new E_Random(expr1) ; }
+    |
+      <NIL> { return new E_Random() ; }
     )
   | <COALESCE> a = ExpressionList()
     { return new E_Coalesce(a) ; }
@@ -1552,6 +1557,7 @@ TOKEN [IGNORE_CASE] :
 | < IS_NUMERIC: "isNumeric" >
 | < REGEX: "regex" >
 | < SAME_TERM: "sameTerm" >
+| < RAND: "rand" >
 | < TRUE: "true" >
 | < FALSE: "false" >
 }

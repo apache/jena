@@ -3,7 +3,5 @@ PREFIX ex:      <http://example.org/>
 SELECT * WHERE 
 {
   ?s ?p ?o 
-  FILTER(true) 
-  # BIND(123 AS ?x)
-  OPTIONAL { ?x ?y ?z }
+  FILTER(rand(5) > 0.5)
 }

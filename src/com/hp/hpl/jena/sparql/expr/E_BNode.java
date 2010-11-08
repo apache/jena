@@ -15,7 +15,7 @@ import com.hp.hpl.jena.sparql.function.FunctionEnv ;
 import com.hp.hpl.jena.sparql.util.LabelToNodeMap ;
 import com.hp.hpl.jena.sparql.util.Symbol ;
 
-public class E_BNode extends ExprFunctionN
+public class E_BNode extends ExprFunctionN // 0 or one
 {
     private static final String symbol = "bnode" ;
     
@@ -29,8 +29,8 @@ public class E_BNode extends ExprFunctionN
         super(symbol, expr) ;
     }
     
-    // Not rally a special form but we need access to the binding
-    // to use a key.
+    // Not really a special form but we need access to 
+    // the binding to use a key.
     @Override
     public NodeValue evalSpecial(Binding binding, FunctionEnv env)
     {
