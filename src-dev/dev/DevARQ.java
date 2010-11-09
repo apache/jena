@@ -5,7 +5,7 @@ package dev ;
 
 public class DevARQ
 {
-    // ** For release:
+    // ** For release:0
     // QueryParseException for updates is confusing.
     // All QueryException  -> SparqlException
     
@@ -29,6 +29,8 @@ public class DevARQ
     
     // DataSource ds = DatasetFactory.create() ; is a non-graph adding DataSource
     // change.  Always make growing? What about mixed types?
+    
+    // Base 64 :: Apache commons codec.
     
     // src-examples of OpExecutor+QueryEngine
     
