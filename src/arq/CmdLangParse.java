@@ -158,7 +158,7 @@ public abstract class CmdLangParse extends CmdGeneral
         }
         
         if ( modLangParse.getRDFSVocab() != null )
-            setup =  new InferenceSetupRDFS(modLangParse.getRDFSVocab()) ;
+            setup = new InferenceSetupRDFS(modLangParse.getRDFSVocab()) ;
         
         try {
             if ( super.getPositional().isEmpty() )

@@ -27,7 +27,7 @@ public abstract class IRIResolver
     //static IRIFactory iriFactory = IRIFactory.iriImplementation();
     
     /** The IRI checker setup - more than usual Jena but not full IRI. */
-    public static IRIFactory iriFactory = new IRIFactory();
+    public static final IRIFactory iriFactory = new IRIFactory();
     private static boolean showExceptions = true;
     static {
         // IRIFactory.iriImplementation() ...
@@ -47,7 +47,6 @@ public abstract class IRIResolver
         iriFactory.setIsWarning(ViolationCodes.UNREGISTERED_IANA_SCHEME,false);
     }
 
-    
     /** Check an IRI string (does not resolve it) */
     public static boolean checkIRI(String iriStr)
     {
