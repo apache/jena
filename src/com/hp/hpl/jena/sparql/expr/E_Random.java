@@ -14,8 +14,6 @@ import com.hp.hpl.jena.sparql.ARQNotImplemented ;
 public class E_Random extends ExprFunctionN // 0 or one
 {
     private static final String symbol = "rand" ;
-
-    
     
     public E_Random() { this(null) ; }
     
