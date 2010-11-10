@@ -1,22 +1,45 @@
 /*
- * (c) Copyright 2010 Epimorphics Ltd.
+ * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
-package arq;
+package riotcmd;
 
-@Deprecated
-public class ntriples
+import org.openjena.riot.Lang ;
+
+import arq.CmdLangParse ;
+
+import com.hp.hpl.jena.sparql.util.Utils ;
+
+/** Run the Turtle parser - and produce N-triples */
+public class turtle extends CmdLangParse
 {
     public static void main(String... argv)
     {
-        riotcmd.ntriples.main(argv) ;
-    } 
+        new turtle(argv).mainRun() ;
+    }    
+    
+    protected turtle(String[] argv)
+    {
+        super(argv) ;
+    }
+
+    @Override
+    protected String getCommandName()
+    {
+        return Utils.classShortName(turtle.class) ;
+    }
+
+    @Override
+    protected Lang selectLang(String filename, Lang nquads) 
+    { return Lang.TURTLE ; }
 }
 
 /*
- * (c) Copyright 2010 Epimorphics Ltd.
+ * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -7,32 +7,14 @@
 
 package arq;
 
-import org.openjena.riot.Lang ;
 
-import com.hp.hpl.jena.sparql.util.Utils ;
-
-/** Run the N-Quads parser - and produce N-Quads */
-public class nquads extends CmdLangParse
+@Deprecated
+public class nquads
 {
     public static void main(String... argv)
     {
-        new nquads(argv).mainRun() ;
+        riotcmd.nquads.main(argv) ;
     }    
-    
-    protected nquads(String[] argv)
-    {
-        super(argv) ;
-    }
-
-    @Override
-    protected String getCommandName()
-    {
-        return Utils.classShortName(nquads.class) ;
-    }
-    
-    @Override
-    protected Lang selectLang(String filename, Lang nquads) 
-    { return Lang.NQUADS ; }
 }
 
 /*

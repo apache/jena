@@ -1,43 +1,22 @@
 /*
- * (c) Copyright 2009 Hewlett-Packard Development Company, LP
- * (c) Copyright 2010 Talis Systems Ltd.
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
 package arq;
 
-import org.openjena.riot.Lang ;
-
-import com.hp.hpl.jena.sparql.util.Utils ;
-
-/** Run the Turtle parser - and produce N-triples */
-public class turtle extends CmdLangParse
+@Deprecated
+public class turtle
 {
     public static void main(String... argv)
     {
-        new turtle(argv).mainRun() ;
-    }    
-    
-    protected turtle(String[] argv)
-    {
-        super(argv) ;
-    }
-
-    @Override
-    protected String getCommandName()
-    {
-        return Utils.classShortName(turtle.class) ;
-    }
-
-    @Override
-    protected Lang selectLang(String filename, Lang nquads) 
-    { return Lang.TURTLE ; }
+        riotcmd.turtle.main(argv) ;
+    } 
 }
 
 /*
- * (c) Copyright 2009 Hewlett-Packard Development Company, LP
- * (c) Copyright 2010 Talis Systems Ltd.
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

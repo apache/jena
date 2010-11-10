@@ -5,7 +5,7 @@
  * [See end of file]
  */
 
-package riot.inf;
+package riotcmd;
 
 import org.openjena.atlas.io.IO ;
 import org.openjena.atlas.lib.Sink ;

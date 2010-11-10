@@ -1,45 +1,24 @@
 /*
- * (c) Copyright 2010 Talis Systems Ltd.
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
 package arq;
 
-import org.openjena.riot.Lang ;
-
-import com.hp.hpl.jena.sparql.util.Utils ;
-
-/**
- * Guess the syntax from the filename. 
- */
-public class riot extends CmdLangParse
+/** @deprected Use riotcmd.riot */
+@Deprecated
+public class riot
 {
+    // Proxy for old name.
     public static void main(String... argv)
     {
-        new riot(argv).mainRun() ;
-    }        
-
-    protected riot(String[] argv)
-    {
-        super(argv) ;
-    }
-    
-    @Override
-    protected Lang selectLang(String filename, Lang nquads)
-    {
-        return Lang.guess(filename, Lang.NQUADS) ;
-    }
-
-    @Override
-    protected String getCommandName()
-    {
-        return Utils.classShortName(riot.class) ;
+        riotcmd.riot.main(argv) ;
     }
 }
 
 /*
- * (c) Copyright 2010 Talis Systems Ltd.
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
