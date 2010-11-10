@@ -36,6 +36,9 @@ import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
 
 public class SPARQL_Upload extends SPARQL_ServletBase 
 {
+    // RENAME
+    // Reserve : /system/ /fuseki/ /mgt/ /admin/
+    
     private class HttpActionUpload extends HttpAction {
         public HttpActionUpload(long id, DatasetGraph dsg, HttpServletRequest request, HttpServletResponse response, boolean verbose)
         {
@@ -51,6 +54,7 @@ public class SPARQL_Upload extends SPARQL_ServletBase
     @Override
     protected String mapRequestToDataset(String uri)
     {
+        // MgtServlet
         String uri2 = mapRequestToDataset(uri, HttpNames.ServiceUpload) ;
         if ( uri2 != null && ! "".equals(uri2) )
             return uri2 ;
