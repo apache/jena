@@ -22,6 +22,8 @@ public class Registry<T>
     public void remove(String key) { registry.remove(key) ; } 
     public Iterator<String> keys() { return registry.keySet().iterator() ; }
     
+    public int size() { return registry.size() ; }
+    public boolean isEmpty() { return registry.isEmpty() ; }
 }
 
 /*

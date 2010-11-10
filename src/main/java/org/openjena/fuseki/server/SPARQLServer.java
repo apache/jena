@@ -140,6 +140,9 @@ public class SPARQLServer
             //add(context, new DumpServlet(),"/dump");
         }
         
+        // Add generic services 
+        addServlet(context, new SPARQL_Upload(verbose), HttpNames.ServiceUpload) ;
+        
         if ( installValidators )
         {
             // Validators
