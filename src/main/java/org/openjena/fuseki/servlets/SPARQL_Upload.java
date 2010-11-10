@@ -85,7 +85,7 @@ public class SPARQL_Upload extends SPARQL_ServletBase
                 InputStream stream = item.openStream();
                 if (item.isFormField())
                 {
-                    /// TODO This will be the IRI.
+                    // TODO This will be the IRI.
                     String value = Streams.asString(stream) ;
                     //System.out.println("Form field " + fieldName + " with value " + Streams.asString(stream) + " detected.");
                 } else {
@@ -103,10 +103,8 @@ public class SPARQL_Upload extends SPARQL_ServletBase
                         LangRIOT parser = RiotReader.createParserTurtle(stream, null, sink) ;
                         parser.getProfile().setHandler(ErrorHandlerFactory.errorHandlerNoLogging) ;
                         parser.parse() ;
-                    } catch (Exception ex)
-                    {
-                        errorBadRequest(ex.getMessage()) ;
-                    }
+                    } catch (Exception ex) { errorBadRequest(ex.getMessage()) ; }
+                    
                     int x = graph.size() ;
                     // Only default graph.
                     // TODO named Destination
