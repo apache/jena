@@ -1,0 +1,6 @@
+PREFIX ex:      <http://example.org/> 
+
+SELECT (count(?x) AS ?c) WHERE 
+{
+  ?x ?p ?o 
+}
