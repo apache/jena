@@ -1694,7 +1694,7 @@ For instance, the "foo" tree would allow creation of scheme names of the form: "
     
     <violation>
       <name>SCHEME_PATTERN_MATCH_FAILED</name>
-      <description>The scheme specific syntax rules are violared.</description>
+      <description>The scheme specific syntax rules are violated.</description>
     </violation>
     
     <violation><name>QUERY_IN_LEGACY_SCHEME</name></violation>

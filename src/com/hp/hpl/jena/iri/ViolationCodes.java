@@ -5538,8 +5538,8 @@ This class is not part of the API.
             new ViolationCodeInfo(
                 SCHEME_PATTERN_MATCH_FAILED,
                 "SCHEME_PATTERN_MATCH_FAILED",
-                "The scheme specific syntax rules are violared.",
-                "<p>The scheme specific syntax rules are violared.</p>",
+                "The scheme specific syntax rules are violated.",
+                "<p>The scheme specific syntax rules are violated.</p>",
                 0,
                 new InSpec[]{
                   
