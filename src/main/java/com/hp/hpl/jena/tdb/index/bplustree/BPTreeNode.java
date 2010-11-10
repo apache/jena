@@ -118,7 +118,7 @@ public final class BPTreeNode extends BPTreePage
     }
     
     /** Get the page at slot idx - switch between B+Tree and records file*/ 
-    private BPTreePage get(int idx)
+    /*TEMP*/public BPTreePage get(int idx)
     {
         int subId = ptrs.get(idx) ;
         if ( isLeaf )

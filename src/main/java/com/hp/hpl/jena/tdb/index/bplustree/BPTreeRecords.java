@@ -43,7 +43,7 @@ public final class BPTreeRecords extends BPTreePage
     RecordBufferPage getRecordBufferPage()
     { return rBuffPage ; }
     
-    RecordBuffer getRecordBuffer()
+    /*TEMP*/ public RecordBuffer getRecordBuffer()
     { return rBuff ; }
 
     int getLink()
