@@ -137,6 +137,9 @@ public class SPARQLServer
             //add(context, new DumpServlet(),"/dump");
         }
         
+        // TEST
+        addServlet(context, new FileUpload(), "/upload") ;
+        
         if ( installValidators )
         {
             // Validators

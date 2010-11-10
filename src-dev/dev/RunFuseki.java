@@ -15,8 +15,8 @@ public class RunFuseki
         FusekiCmd.main(
                     "-v", 
                     "--port=3030", 
-                    "--mem", "/",
-                    "--file=D.nt",
+                    "--mem",
+                    //"--file=D.nt",
                     //"--desc=tdb2.ttl", 
                     "/ds"
                     ) ;
