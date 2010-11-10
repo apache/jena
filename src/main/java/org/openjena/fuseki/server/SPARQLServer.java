@@ -25,6 +25,7 @@ import org.openjena.fuseki.mgt.Manager ;
 import org.openjena.fuseki.servlets.SPARQL_QueryDataset ;
 import org.openjena.fuseki.servlets.SPARQL_REST_RW ;
 import org.openjena.fuseki.servlets.SPARQL_Update ;
+import org.openjena.fuseki.servlets.SPARQL_Upload ;
 import org.openjena.fuseki.validation.DataValidator ;
 import org.openjena.fuseki.validation.QueryValidator ;
 import org.openjena.fuseki.validation.UpdateValidator ;
@@ -127,6 +128,7 @@ public class SPARQLServer
             HttpServlet sparqlQuery = new SPARQL_QueryDataset(verbose) ;
             HttpServlet sparqlUpdate = new SPARQL_Update(verbose) ;
             HttpServlet sparqlHttp = new SPARQL_REST_RW(verbose) ;
+            HttpServlet sparqlUpload = new SPARQL_Upload(verbose) ;
             
             // SPARQL services.
             addServlet(context, sparqlHttp, dsPath);
@@ -134,11 +136,9 @@ public class SPARQLServer
             addServlet(context, sparqlQuery, dsPath+HttpNames.ServiceQuery) ;
             addServlet(context, sparqlQuery, dsPath+HttpNames.ServiceQueryAlt) ;      // Alternative name
             addServlet(context, sparqlUpdate, dsPath+HttpNames.ServiceUpdate) ;
+            addServlet(context, sparqlUpload, dsPath+HttpNames.ServiceUpload) ;
             //add(context, new DumpServlet(),"/dump");
         }
-        
-        // TEST
-        addServlet(context, new FileUpload(), "/upload") ;
         
         if ( installValidators )
         {

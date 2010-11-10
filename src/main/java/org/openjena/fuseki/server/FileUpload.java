@@ -17,8 +17,13 @@ import org.apache.commons.fileupload.FileItemIterator ;
 import org.apache.commons.fileupload.FileItemStream ;
 import org.apache.commons.fileupload.servlet.ServletFileUpload ;
 import org.apache.commons.fileupload.util.Streams ;
-import org.openjena.atlas.io.IO ;
+import org.openjena.atlas.lib.Sink ;
 import org.openjena.fuseki.http.HttpSC ;
+import org.openjena.riot.RiotReader ;
+import org.openjena.riot.lang.LangRIOT ;
+import org.openjena.riot.out.SinkTripleOutput ;
+
+import com.hp.hpl.jena.graph.Triple ;
 
 public class FileUpload extends HttpServlet
 {
@@ -51,10 +56,12 @@ public class FileUpload extends HttpServlet
                     System.out.println("File field " + name + " with file name "
                                        + item.getName() + " detected.");
                     // Process the input stream
-
-                    String x = IO.readWholeFileAsUTF8(stream) ;
                     response.setContentType("text/plain") ;
-                    response.getOutputStream().print(x) ;
+
+                    Sink<Triple> sink = new SinkTripleOutput(response.getOutputStream()) ;
+                    LangRIOT parser = RiotReader.createParserTurtle(stream, null, sink) ;
+                    parser.parse() ;
+                    
                     response.getOutputStream().println("----------------------") ;
                 }
             }

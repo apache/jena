@@ -61,6 +61,7 @@ public class HttpNames
     public static final String ServiceQueryAlt  = "/sparql" ;
     public static final String ServiceUpdate    = "/update" ;
     public static final String ServiceData      = "/data" ;
+    public static final String ServiceUpload    = "/upload" ;
 }
 
 /*
