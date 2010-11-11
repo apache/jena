@@ -49,7 +49,7 @@ public class UpdateRemote
         out.flush() ;
         byte[] bytes = b_out.toByteArray() ;
         AbstractHttpEntity reqEntity = new ByteArrayEntity(bytes) ;
-        reqEntity.setContentType(WebContent.contentSPARQLUpdate) ;
+        reqEntity.setContentType(WebContent.contentTypeSPARQLUpdate) ;
         reqEntity.setContentEncoding(HTTP.UTF_8) ;
         httpPost.setEntity(reqEntity) ;
         HttpClient httpclient = new DefaultHttpClient() ;

@@ -6,8 +6,8 @@
   <classpathentry kind="src" path="src-dev" />
 
   <classpathentry kind="var" path="M2_REPO/javax/servlet/servlet-api/2.5/servlet-api-2.5.jar" sourcepath="M2_REPO/javax/servlet/servlet-api/2.5/servlet-api-2.5-sources.jar"/>
-  <classpathentry kind="var" path="M2_REPO/com/hp/hpl/jena/arq/2.8.6-SNAPSHOT/arq-2.8.6-SNAPSHOT-tests.jar" sourcepath="M2_REPO/com/hp/hpl/jena/arq/2.8.6-SNAPSHOT/arq-2.8.6-SNAPSHOT-test-sources.jar"/>
-  <classpathentry kind="var" path="M2_REPO/com/hp/hpl/jena/arq/2.8.6-SNAPSHOT/arq-2.8.6-SNAPSHOT.jar" sourcepath="M2_REPO/com/hp/hpl/jena/arq/2.8.6-SNAPSHOT/arq-2.8.6-SNAPSHOT-sources.jar"/>
+  <classpathentry kind="var" path="M2_REPO/com/hp/hpl/jena/arq/2.8.6-RC-1/arq-2.8.6-RC-1.jar" sourcepath="M2_REPO/com/hp/hpl/jena/arq/2.8.6-RC-1/arq-2.8.6-RC-1-sources.jar"/>
+  <classpathentry kind="var" path="M2_REPO/com/hp/hpl/jena/arq/2.8.6-RC-1/arq-2.8.6-RC-1-tests.jar" sourcepath="M2_REPO/com/hp/hpl/jena/arq/2.8.6-RC-1/arq-2.8.6-RC-1-test-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/commons-codec/commons-codec/1.3/commons-codec-1.3.jar" sourcepath="M2_REPO/commons-codec/commons-codec/1.3/commons-codec-1.3-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/commons-logging/commons-logging/1.1.1/commons-logging-1.1.1.jar" sourcepath="M2_REPO/commons-logging/commons-logging/1.1.1/commons-logging-1.1.1-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/apache/httpcomponents/httpclient/4.0.3/httpclient-4.0.3.jar" sourcepath="M2_REPO/org/apache/httpcomponents/httpclient/4.0.3/httpclient-4.0.3-sources.jar"/>

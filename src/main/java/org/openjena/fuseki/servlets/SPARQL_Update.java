@@ -93,7 +93,7 @@ public class SPARQL_Update extends SPARQL_ServletBase
         HttpActionUpdate action = new HttpActionUpdate(id, dsg, request, response, verbose_debug) ;
         
         String incoming = request.getContentType() ;
-        if (WebContent.contentSPARQLUpdate.equals(incoming))
+        if (WebContent.contentTypeSPARQLUpdate.equals(incoming))
         {
             executeBody(action) ;
             return ;
@@ -109,7 +109,7 @@ public class SPARQL_Update extends SPARQL_ServletBase
     private void validate(HttpServletRequest request)
     {
         String incoming = request.getContentType() ;
-        if ( WebContent.contentSPARQLUpdate.equals(incoming) )
+        if ( WebContent.contentTypeSPARQLUpdate.equals(incoming) )
         {
             // For now, all query string stuff is not allowed.
             if ( request.getQueryString() != null )
@@ -139,7 +139,7 @@ public class SPARQL_Update extends SPARQL_ServletBase
             return ;
         }
         
-        error(HttpSC.UNSUPPORTED_MEDIA_TYPE_415, "Must be "+WebContent.contentSPARQLUpdate+" or "+WebContent.contentTypeForm) ;
+        error(HttpSC.UNSUPPORTED_MEDIA_TYPE_415, "Must be "+WebContent.contentTypeSPARQLUpdate+" or "+WebContent.contentTypeForm) ;
     }
 
     private void executeBody(HttpActionUpdate action)
