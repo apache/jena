@@ -36,7 +36,18 @@ public class RDFXMLParser extends XMLHandler {
 
     private String xmlEncoding = null;
 
-    private RDFXMLParser(SAXParser rdr) {
+    /**
+     * This is protected rather than private to allow subclassing,
+     * however, reimplementors should be aware that the default configuration
+     * via {@link #create()} includes functionality that is not simply
+     * included. The most important is to do with character encoding checking.
+     * A common user error is to not have correct XML encoding, or to open
+     * files with the wrong encodings on their reader. The {@link #setEncoding(String)}
+     * method does what it can to try and detect these user errors, and is worth the effort.
+     * Consider using {@link SAXParserWithEncodingCheck}
+     * @param rdr
+     */
+    protected RDFXMLParser(SAXParser rdr) {
         super();
         saxParser = rdr;
         try {
@@ -50,8 +61,14 @@ public class RDFXMLParser extends XMLHandler {
         return saxParser;
     }
 
-    static private class MySAXParser extends SAXParser {
-        MySAXParser(StandardParserConfiguration c) {
+    /**
+     * This works with an {@link RDFXMLParser} and catches and reports several
+     * common errors to do with character encoding.
+     * @author Jeremy Carroll
+     *
+     */
+    static protected class SAXParserWithEncodingCheck extends SAXParser {
+        protected SAXParserWithEncodingCheck(StandardParserConfiguration c) {
             super(c);
 //            try {
 //                setFeature("http://xml.org/sax/features/string-interning",
@@ -63,26 +80,44 @@ public class RDFXMLParser extends XMLHandler {
 //            }
         }
 
-        RDFXMLParser a;
+        private RDFXMLParser rdfXmlParser;
 
         @Override
         public void xmlDecl(String version, String encoding, String standalone,
                 Augmentations augs) {
             try {
-                a.setEncoding(encoding == null ? "UTF" : encoding);
+                getRdfXmlParser().setEncoding(encoding == null ? "UTF" : encoding);
             } catch (SAXParseException e) {
                 throw new WrappedException(e);
             }
             super.xmlDecl(version, encoding, standalone, augs);
 
         }
+
+		/**
+		 * This must be called as part of the initialization process.
+		 * @param rdfXmlParser the rdfXmlParser to set
+		 */
+		public void setRdfXmlParser(RDFXMLParser rdfXmlParser) {
+			this.rdfXmlParser = rdfXmlParser;
+		}
+
+		/**
+		 * @return the rdfXmlParser
+		 */
+		public RDFXMLParser getRdfXmlParser() {
+			if (rdfXmlParser == null) {
+				throw new IllegalStateException("setRdfXmlParser must be called as part of the initialization process");
+			}
+			return rdfXmlParser;
+		}
     }
 
     public static RDFXMLParser create() {
         StandardParserConfiguration c = new StandardParserConfiguration();
-        MySAXParser msp = new MySAXParser(c);
+        SAXParserWithEncodingCheck msp = new SAXParserWithEncodingCheck(c);
         RDFXMLParser a = new RDFXMLParser(msp);
-        msp.a = a;
+        msp.setRdfXmlParser(a);
         return a;
     }
 
@@ -135,7 +170,7 @@ public class RDFXMLParser extends XMLHandler {
         }
     }
 
-    void setEncoding(String original) throws SAXParseException {
+    protected void setEncoding(String original) throws SAXParseException {
 
         CharEncoding encodingInfo = CharEncoding.create(original);
         String e = encodingInfo.name();
