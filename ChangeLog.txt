@@ -17,14 +17,14 @@ ChangeLog for ARQ
 + Expand update API to support multiple languages
   See src-examples/arq.update.* for examples of API.
 
-+ UpdateException now used for errors during update execution (potetially visible change)   
++ UpdateException now used for errors during update execution (potentially visible change)   
 
 + Bug fix: compound expressions involving aggregates in SELECT clause
 
 + Remove use of code from org.json to clarify legal position. 
 
 + Property path evaluation now aligns with SPARQL 1.1 
-	cardinaity of results for arbitary length paths may change.   
+	cardinality of results for arbitary length paths may change.   
 
 + Bug fix: N-Triples, and N-Quads now expect ASCII input as per specs.  
 
