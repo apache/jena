@@ -454,6 +454,12 @@ public class Iter<T> implements Iterable<T>, Iterator<T>
         return new Iter<T>(iterable.iterator()) ;
     }
     
+    /** Materializae an iterator, that is, force it to run now - useful in debugging */ 
+    public static <T> Iterator<T> materialize(Iterator<T> iter)
+    {
+        return Iter.toList(iter).iterator() ;
+    }
+
     public static <T> Iter<T> concat(Iter<T> iter1, Iter<T>iter2)
     { 
         if ( iter1 == null )

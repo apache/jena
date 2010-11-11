@@ -1,7 +1,4 @@
-
 package dev ;
-
-
 
 public class DevARQ
 {
