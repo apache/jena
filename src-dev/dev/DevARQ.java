@@ -5,7 +5,7 @@ package dev ;
 
 public class DevARQ
 {
-    // ** For release:0
+    // ** For release:
     // QueryParseException for updates is confusing.
     // All QueryException  -> SparqlException
     
@@ -31,6 +31,8 @@ public class DevARQ
     // change.  Always make growing? What about mixed types?
     
     // Base 64 :: Apache commons codec.
+    
+    // DatasetGraph baceked by a directory of files.
     
     // src-examples of OpExecutor+QueryEngine
     
