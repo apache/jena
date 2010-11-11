@@ -206,7 +206,8 @@ public final class BPTreeNodeMgr extends BPTreePageMgr
         BPlusTreeParams params = bTree.getParams() ;
 
         int ptrBuffLen = params.MaxPtr * params.getPtrLength() ;
-        int recBuffLen = params.MaxRec * params.getRecordLength() ;
+        // Only store the key part of records in a B+Tree block.
+        int recBuffLen = params.MaxRec * params.getKeyLength() ;
 
         n.setId(-1) ;
         n.parent = -2 ;
