@@ -1,10 +1,13 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: LiteralLabelImpl.java,v 1.3 2009-08-08 11:25:31 andy_seaborne Exp $
+  $Id: LiteralLabelImpl.java,v 1.4 2010-11-12 16:02:08 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.datatypes.*;
 import com.hp.hpl.jena.datatypes.xsd.*;
@@ -20,9 +23,7 @@ import com.hp.hpl.jena.shared.impl.JenaParameters;
  */
 final /*public*/ class LiteralLabelImpl implements LiteralLabel {
 
-	//=======================================================================
-	// Variables
-
+	static private Logger log = LoggerFactory.getLogger( LiteralLabelImpl.class );
 
     /** 
 	 * The lexical form of the literal, may be null if the literal was 
@@ -85,7 +86,7 @@ final /*public*/ class LiteralLabelImpl implements LiteralLabel {
 
 	private void setLiteralLabel_1(String lex, String lang, RDFDatatype dtype)
         throws DatatypeFormatException {
-        lexicalForm = lex;
+        this.lexicalForm = lex;
         this.dtype = dtype;
         this.lang = (lang == null ? "" : lang);
         if (dtype == null) {
@@ -96,16 +97,6 @@ final /*public*/ class LiteralLabelImpl implements LiteralLabel {
         normalize();
     }
 	
-//	// NOT CALLED
-//	/**
-//	 * Build a plain literal label from its lexical form. 
-//	 * @param lex the lexical form of the literal
-//	 * @param lang the optional language tag, only relevant for plain literals
-//	 */
-//	LiteralLabelImpl(String lex, String lang) {
-//		this(lex, lang, null);
-//	}
-
 	/**
 	 * Build a typed literal label from its value form. If the value is a string we
      * assume this is inteded to be a lexical form after all.
@@ -124,11 +115,26 @@ final /*public*/ class LiteralLabelImpl implements LiteralLabel {
 	 * representation for this java class. No language tag is supplied.
 	 * @param value the literal value to encapsulate
 	 */
-	LiteralLabelImpl(Object value) {
-		//this(value, "", TypeMapper.getInstance().getTypeByValue(value));
-		setLiteralLabel_2(value, "", TypeMapper.getInstance().getTypeByValue(value));
+	LiteralLabelImpl( Object value ) {
+		RDFDatatype dt = TypeMapper.getInstance().getTypeByValue( value );
+		if (dt == null) {
+			setWithNewDatatypeForValueClass(value);
+		} else {
+			setLiteralLabel_2( value, "", dt );
+		}
 	}
 
+	private void setWithNewDatatypeForValueClass( Object value ) {
+		Class<?> c = value.getClass();
+		log.warn( "inventing a datatype for " + c );
+		RDFDatatype dt = new AdhocDatatype( c );
+		TypeMapper.getInstance().registerDatatype( dt );
+		this.lang = "";
+		this.dtype = dt;
+		this.value = value;		
+		this.lexicalForm = value.toString();
+	}
+	
 	private void setLiteralLabel_2(Object value, String language, RDFDatatype dtype) throws DatatypeFormatException
     {
         // Constructor extraction: Preparation for moving into Node_Literal.
