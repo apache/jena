@@ -40,7 +40,7 @@ public final class BPTreeNodeMgr extends BPTreePageMgr
     public int allocateId()           { return blockMgr.allocateId() ; }
     
     /** Allocate root node space. The root is a node with a Records block.*/ 
-    public BPTreeNode createRoot()
+    public BPTreeNode createEmptyBPT()
     { 
         // Create an empty records block.
         int recId = bpTree.getRecordsMgr().allocateId() ;

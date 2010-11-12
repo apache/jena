@@ -197,7 +197,7 @@ public class BPlusTree implements Iterable<Record>, RangeIndex, Session
         else
         {
             // Fresh BPlusTree
-            root = nodeManager.createRoot() ;
+            root = nodeManager.createEmptyBPT() ;
             rootIdx = root.getId() ;
             if ( rootIdx != 0 )
                 throw new InternalError() ;
