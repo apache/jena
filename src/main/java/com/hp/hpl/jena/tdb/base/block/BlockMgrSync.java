@@ -8,7 +8,7 @@ package com.hp.hpl.jena.tdb.base.block;
 
 import java.nio.ByteBuffer;
 
-/** Base class to support writing stacks of BlockMgrs */
+/** Add synchronized to a BlockMgr */
 
 public class BlockMgrSync implements BlockMgr
 {

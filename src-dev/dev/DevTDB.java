@@ -25,6 +25,8 @@ public class DevTDB
     // Integrate TestDatasetConfig (any other union tests?)
     // To ARQ for union rewrite tests as a base test.
     
+    // SystemTDb.open idnex read-only.
+    
     // Document: new events
     // http://openjena.org/wiki/TDB/JavaAPI#Concurrency
     // http://openjena.org/wiki/TDB/Concurrency
