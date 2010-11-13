@@ -7,6 +7,7 @@
 package org.openjena.atlas.iterator;
 
 import java.util.ArrayList ;
+import java.util.Arrays ;
 import java.util.List ;
 
 import org.junit.Test ;
@@ -89,6 +90,130 @@ public class TestIterator extends BaseTest
         assertEquals("b", peek.next()) ;
         assertFalse(peek.hasNext()) ;
     }
+    
+    @Test public void iterBuffer_01()
+    {
+        IteratorWithBuffer<String> iter = createBuffered(1, "a", "b", "c") ;
+        assertEquals(1, iter.currentSize()) ;
+        assertEquals("a", iter.peek(0)) ;
+        assertEquals(1, iter.currentSize()) ;
+        assertEquals("a", iter.next()) ;
+        assertEquals(1, iter.currentSize()) ;
+        assertEquals("b", iter.peek(0)) ;
+        assertEquals(1, iter.currentSize()) ;
+        assertEquals("b", iter.next()) ;
+        assertEquals(1, iter.currentSize()) ;
+        assertEquals("c", iter.peek(0)) ;
+        assertEquals(1, iter.currentSize()) ;
+        assertEquals("c", iter.next()) ;
+        assertEquals(0, iter.currentSize()) ;
+        assertEquals(null, iter.peek(0)) ;
+        assertEquals(0, iter.currentSize()) ;
+    }
+
+    @Test public void iterBuffer_02()
+    {
+        IteratorWithBuffer<String> iter = createBuffered(2, "a", "b", "c") ;
+        assertEquals(2, iter.currentSize()) ;
+        assertEquals("a", iter.peek(0)) ;
+        assertEquals("b", iter.peek(1)) ;
+        assertEquals("a", iter.next()) ;
+        
+        assertEquals("b", iter.peek(0)) ;
+        assertEquals("c", iter.peek(1)) ;
+        assertEquals("b", iter.next()) ;
+        
+        assertEquals("c", iter.peek(0)) ;
+        assertEquals(null, iter.peek(1)) ;
+        assertEquals("c", iter.next()) ;
+        assertEquals(null, iter.peek(0)) ;
+    }
+
+    @Test public void iterBuffer_03()
+    {
+        IteratorWithBuffer<String> iter = createBuffered(1) ;
+        assertEquals(null, iter.peek(0)) ;
+    }
+    
+    @Test(expected=IndexOutOfBoundsException.class)
+    public void iterBuffer_04()
+    {
+        IteratorWithBuffer<String> iter = createBuffered(0, "a") ;
+        assertEquals(null, iter.peek(0)) ;
+    }
+    
+    @Test public void iterBuffer_05()
+    {
+        IteratorWithBuffer<String> iter = createBuffered(2, "a") ;
+        assertEquals("a", iter.peek(0)) ;
+        assertEquals(null, iter.peek(1)) ;
+        assertEquals("a", iter.next()) ;
+    }
+
+    @Test public void iterHistory_01()
+    {
+        IteratorWithHistory<String> iter = createHistory(1, "a", "b", "c") ;
+        assertEquals(0, iter.currentSize()) ;
+        assertEquals(null, iter.getPrevious(0)) ;
+    }
+    
+    @Test public void iterHistory_02()
+    {
+        IteratorWithHistory<String> iter = createHistory(1, "a", "b", "c") ;
+        assertEquals("a", iter.next()) ;
+        assertEquals(1, iter.currentSize()) ;
+    }
+
+    @Test public void iterHistory_03()
+    {
+        IteratorWithHistory<String> iter = createHistory(2, "a", "b", "c") ;
+        assertEquals("a", iter.next()) ;
+        assertEquals("b", iter.next()) ;
+        assertEquals(2, iter.currentSize()) ;
+        assertEquals("b", iter.getPrevious(0)) ;
+        assertEquals("a", iter.getPrevious(1)) ;
+    }
+
+    @Test(expected=IndexOutOfBoundsException.class)
+    public void iterHistory_04()
+    {
+        IteratorWithHistory<String> iter = createHistory(2, "a", "b", "c") ;
+        iter.getPrevious(2) ;
+    }
+    
+    @Test
+    public void iterHistory_05()
+    {
+        IteratorWithHistory<String> iter = createHistory(2, "a", "b", "c") ;
+        assertEquals("a", iter.next()) ;
+        assertEquals("a", iter.getPrevious(0)) ;
+        assertEquals(1, iter.currentSize()) ;
+        
+        assertEquals("b", iter.next()) ;
+        assertEquals("b", iter.getPrevious(0)) ;
+        assertEquals("a", iter.getPrevious(1)) ;
+        assertEquals(2, iter.currentSize()) ;
+        
+        assertEquals("c", iter.next()) ;
+        assertEquals(2, iter.currentSize()) ;
+        assertEquals("c", iter.getPrevious(0)) ;
+        assertEquals("b", iter.getPrevious(1)) ;
+    }
+
+    private IteratorWithBuffer<String> createBuffered(int N, String... strings)
+    {
+        List<String> data = Arrays.asList(strings) ;
+        IteratorWithBuffer<String> iter = new IteratorWithBuffer<String>(data.iterator(), N) ;
+        return iter ;
+    }
+    
+    private IteratorWithHistory<String> createHistory(int N, String... strings)
+    {
+        List<String> data = Arrays.asList(strings) ;
+        IteratorWithHistory<String> iter = new IteratorWithHistory<String>(data.iterator(), N) ;
+        return iter ;
+    }
+
 }
 
 /*
