@@ -3,9 +3,6 @@
 @prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix : <http://example.org/> .
 
-<http://ko.wikipedia.org/wiki/(베를린)> :p 123 .
-<http://ko.dbpedia.org/property/최대강풍반경 (kma)> :p 123 .
-
 ## :s1 :p "<x></x>"^^rdf:XMLLiteral .
 ## :s2 :p "<x/>"^^rdf:XMLLiteral .
 ## :s3 :p '''<x xmlns="http://example/ns#" attr="foo"></x>'''^^rdf:XMLLiteral .
