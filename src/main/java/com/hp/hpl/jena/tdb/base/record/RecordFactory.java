@@ -16,6 +16,7 @@ public class RecordFactory
     private final int keyLength ;
     private final int valueLength ;
     private final int slotLen ;
+    private final boolean checking = false ;
 
     public RecordFactory(int keyLength, int valueLength)
     {
@@ -114,11 +115,13 @@ public class RecordFactory
     
     private final void check(Record record)
     {
+        if ( ! checking ) return ;
         check(record.getKey(), record.getValue()) ;
     }
     
     private final void checkKey(byte[] k)
     {
+        if ( ! checking ) return ;
         if ( k == null )
             throw new RecordException("Null key byte[]") ;
         if ( keyLength != k.length ) 
@@ -127,6 +130,7 @@ public class RecordFactory
     
     private final void check(byte[] k, byte[] v)
     {
+        if ( ! checking ) return ;
         checkKey(k) ;
         if ( valueLength <= 0 )
         {

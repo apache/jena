@@ -141,9 +141,9 @@ public class TDB
             ((Sync)object).sync(force) ;
     }
     
+    private static boolean initialized = false ;
     static { initialization1() ; }
     
-    private static boolean initialized = false ;
     private static synchronized void initialization1()
     {
         // Called at start.

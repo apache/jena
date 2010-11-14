@@ -20,6 +20,7 @@ import com.hp.hpl.jena.tdb.sys.SystemTDB;
  * @version $Id$
  */
 
+final
 public class Record //implements Comparable<Record>
 {
     /*
