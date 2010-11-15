@@ -27,10 +27,12 @@ import com.hp.hpl.jena.sparql.algebra.op.OpQuadPattern ;
 import com.hp.hpl.jena.sparql.algebra.op.OpTable ;
 import com.hp.hpl.jena.sparql.algebra.op.OpTriple ;
 import com.hp.hpl.jena.sparql.core.BasicPattern ;
+import com.hp.hpl.jena.sparql.core.TriplePath ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.core.VarExprList ;
 import com.hp.hpl.jena.sparql.expr.ExprAggregator ;
 import com.hp.hpl.jena.sparql.expr.ExprList ;
+import com.hp.hpl.jena.sparql.path.Path ;
 
 class NodeTransformOp extends TransformCopy
 {
@@ -64,7 +66,29 @@ class NodeTransformOp extends TransformCopy
     }
     
     @Override public Op transform(OpPath opPath)
-    { throw new ARQNotImplemented() ; }
+    { 
+        TriplePath tp = opPath.getTriplePath() ;
+        Node s = tp.getSubject() ;
+        Node s1 = transform.convert(s) ;
+        Node o = tp.getObject() ;
+        Node o1 = transform.convert(o) ;
+        
+        if ( s1 == s || o1 == o )
+            // No change.
+            return opPath ;
+        
+        Path path = tp.getPath() ;
+        TriplePath tp2 ;
+
+        if ( path != null )
+            tp2 = new TriplePath(s1, path, o1) ;
+        else
+        {
+            Triple t = new Triple(s1, tp.getPredicate(), o1) ;
+            tp2 = new TriplePath(t) ;
+        }
+        return new OpPath(tp2) ;
+    }
     
     @Override public Op transform(OpQuadPattern opQuadPattern)
     { 
@@ -134,8 +158,6 @@ class NodeTransformOp extends TransformCopy
         List<ExprAggregator> aggregators = new ArrayList<ExprAggregator>() ;
         for ( ExprAggregator agg : opGroup.getAggregators() )
             aggregators.add(agg.applyNodeTransform(transform)) ;
-
-        //if ( true )throw new ARQNotImplemented() ;
         return new OpGroup(subOp, groupVars, aggregators) ;
     }
 }

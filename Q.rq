@@ -1,7 +1,39 @@
-PREFIX ex:      <http://example.org/> 
+PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
+PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX :        <http://example.com/>
 
-SELECT * WHERE 
+SELECT ?x
 {
-  ?s ?p ?o 
-  not exists {?s ?p ?o }
+  { SELECT ?x {  ?x rdfs:subClassOf* :T } }
 }
+
+
+## SELECT DISTINCT ?c ?n ?SumV ?p
+## WHERE{
+##    ?n rdf:type :N .
+##    ?n :hasRes ?c.
+##    ?p1 rdfs:subClassOf* :PI.
+##    ?p rdf:type ?p1 .
+##    ?c :hasP ?p .
+##    { SELECT ( SUM(?v) as ?SumV) ?n ?c
+##      WHERE {
+##         ?n rdf:type :N.
+##         ?n :hasRes ?c.
+##         ?c :hasP ?p .
+##         ?c :hasD ?d. 
+##         ?d rdf:type :D .
+##         ?d :DV ?v.
+##            }
+##      GROUP BY (?n)
+##      HAVING (SUM(?v) > 30)
+##     }
+##     { SELECT ?n ?c
+##       WHERE {
+##           ?n rdf:type :N.
+##           ?n :hasRes ?c.
+##           ?p1 rdfs:subClassOf* :PI.
+##           ?p rdf:type ?p1 .
+##           ?c :hasP ?p .
+##           }
+##     }
+## }

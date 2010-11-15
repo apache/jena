@@ -6,6 +6,8 @@ public class DevARQ
     // QueryParseException for updates is confusing.
     // All QueryException  -> SparqlException
     
+    // Documentation -- Legacy StageGenerator (http://openjena.org/ARQ/arq-query-eval.html)
+    
     // ----
     // VarFinder.VarUsageVisitor.visit(OpUnion)
     //    defines = union(left.define, right.define) ??
