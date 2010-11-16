@@ -14,6 +14,8 @@ ChangeLog for ARQ
 + Syntax extensions for W3C submission "SPARQL Update"
   http://seaborne.blogspot.com/2010/08/migrating-from-sparql-update-submission.html
 
++ RIOT commands (ntrig, nquads, turtle, ntriples, infer) now in package 'riotcmd'
+
 + Expand update API to support multiple languages
   See src-examples/arq.update.* for examples of API.
 
