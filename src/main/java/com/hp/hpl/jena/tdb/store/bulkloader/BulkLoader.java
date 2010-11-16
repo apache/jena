@@ -36,7 +36,7 @@ public class BulkLoader
     public static long IndexTickPoint = 100*1000 ;
     
     /** Number of ticks per super tick */
-    public static int superTick = 2 ;
+    public static int superTick = 10 ;
     
     // Events.
     //private static String baseNameGeneral = "http://openjena.org/TDB/event#" ;

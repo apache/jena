@@ -20,7 +20,7 @@ public final class LoadMonitor
     /* Parameterize the load logging */
     private final Logger log ;
     private final DatasetGraph dataset ;
-    private final long superTick = 10 ;
+    private final long superTick = BulkLoader.superTick ;
     private final long dataTickPoint ;
     private final long indexTickPoint ;
     protected final Timer timer ;
