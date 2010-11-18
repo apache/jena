@@ -17,7 +17,8 @@ import com.hp.hpl.jena.tdb.base.block.BlockException ;
 import com.hp.hpl.jena.tdb.base.file.FileBase ;
 import com.hp.hpl.jena.tdb.base.file.FileException ;
 import com.hp.hpl.jena.tdb.lib.StringAbbrev ;
-import com.hp.hpl.jena.tdb.sys.SystemTDB ;
+import static com.hp.hpl.jena.tdb.sys.SystemTDB.SizeOfInt ;
+import static com.hp.hpl.jena.tdb.sys.SystemTDB.ObjectFileWriteCacheSize;
 
 /** Variable length ByteBuffer file on disk.  Read by id ; write is append-only */  
 
@@ -29,7 +30,7 @@ public class ObjectFileDiskDirect implements ObjectFile
     protected long filesize ;
     protected final FileBase file ;
     // Delayed write buffer
-    private ByteBuffer output = ByteBuffer.allocate(16*1024) ;
+    private ByteBuffer output = ByteBuffer.allocate(ObjectFileWriteCacheSize) ;
     private boolean inAllocWrite = true ;
     private ByteBuffer allocByteBuffer = null ;
 
@@ -41,7 +42,7 @@ public class ObjectFileDiskDirect implements ObjectFile
         } catch (IOException ex) { throw new BlockException("Failed to get filesize", ex) ; } 
     }
     
-    private ByteBuffer lengthBuffer = ByteBuffer.allocate(SystemTDB.SizeOfInt) ;
+    private ByteBuffer lengthBuffer = ByteBuffer.allocate(SizeOfInt) ;
     
     //@Override
     public long write(ByteBuffer bb)
@@ -70,7 +71,7 @@ public class ObjectFileDiskDirect implements ObjectFile
     public ByteBuffer allocWrite(int maxBytes)
     {
         // Include space for length.
-        int spaceRequired = maxBytes+SystemTDB.SizeOfInt ;
+        int spaceRequired = maxBytes + SizeOfInt ;
         // Find space.
         if ( spaceRequired > output.remaining() )
             flushOutputBuffer() ;
@@ -90,7 +91,7 @@ public class ObjectFileDiskDirect implements ObjectFile
         allocLocation = filesize+start ;
         
         // Slice it.
-        output.position(start+SystemTDB.SizeOfInt) ;
+        output.position(start + SizeOfInt) ;
         output.limit(start+spaceRequired) ;
         ByteBuffer bb = output.slice() ; 
 
@@ -139,15 +140,21 @@ public class ObjectFileDiskDirect implements ObjectFile
     //@Override
     public ByteBuffer read(long loc)
     {
+        if ( loc < 0 )
+            throw new IllegalArgumentException("ObjectFile.read: Bad read: "+loc) ;
+        
         // Maybe be in the write buffer
         if ( loc >= filesize )
         {
+            if ( loc > filesize+output.capacity() )
+                throw new IllegalArgumentException("ObjectFile.read: Bad read: "+loc) ;
+            
             int x = output.position() ;
             int y = output.limit() ;
             
             int offset = (int)(loc-filesize) ;
             int len = output.getInt(offset) ;
-            int posn = offset + SystemTDB.SizeOfInt ;
+            int posn = offset + SizeOfInt ;
             // Slice the data bytes,
             output.position(posn) ;
             output.limit(posn+len) ;

@@ -141,6 +141,8 @@ public class SystemTDB
     
     // ---- Cache sizes (within the JVM)
     
+    public static final int ObjectFileWriteCacheSize = 8*1024 ;
+    
     /** Size of Node to NodeId cache.
      *  Used to map from Node to NodeId spaces.
      *  Used for loading and for query preparation.
