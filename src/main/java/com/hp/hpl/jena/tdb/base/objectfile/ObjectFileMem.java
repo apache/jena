@@ -64,6 +64,16 @@ public class ObjectFileMem implements ObjectFile
         return buffers.size()-1 ; 
     }
 
+    public ByteBuffer allocWrite(int maxBytes)
+    {
+        return ByteBuffer.allocate(maxBytes) ;
+    }
+
+    public long completeWrite(ByteBuffer buffer)
+    {
+        return write(buffer) ;
+    }
+
     public Iterator<Pair<Long, ByteBuffer>> all()
     {
         int N = buffers.size() ;

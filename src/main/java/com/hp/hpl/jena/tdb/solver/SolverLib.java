@@ -126,7 +126,7 @@ public class SolverLib
         if ( false )
         {
             if ( chain.hasNext())
-                chain = Iter.print(chain) ;
+                chain = Iter.debug(chain) ;
             else
                 System.out.println("No results") ;
         }

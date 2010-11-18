@@ -18,6 +18,13 @@ import org.openjena.atlas.lib.Sync ;
 public interface ObjectFile extends Sync, Closeable
 {
     public static final String type = "object" ;
+    
+    /** Allocate space for a write - pass this buffer to completeWrite */ 
+    public ByteBuffer allocWrite(int maxBytes) ;
+    
+    /** Announce that a write is complete - return the accessor number */
+    public long completeWrite(ByteBuffer buffer) ;
+
     /** Write out the buffer - return the accessor number */ 
     public long write(ByteBuffer buffer) ;
 

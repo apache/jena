@@ -29,6 +29,8 @@ public class ObjectFileDiskDirect implements ObjectFile
      */
     protected long filesize ;
     protected final FileBase file ;
+    private boolean inAllocWrite = true ;
+    private ByteBuffer allocByteBuffer = null ;
 
     public ObjectFileDiskDirect(String filename)
     {
@@ -61,7 +63,24 @@ public class ObjectFileDiskDirect implements ObjectFile
         } catch (IOException ex)
         { throw new FileException("ObjectFile.write", ex) ; }
     }
-    
+
+    // NO BUFFERING VERSION
+    public ByteBuffer allocWrite(int maxBytes)
+    {
+        inAllocWrite = true ;
+        allocByteBuffer = ByteBuffer.allocate(maxBytes) ;
+        return allocByteBuffer ;
+    }
+
+    public long completeWrite(ByteBuffer buffer)
+    {
+        if ( ! inAllocWrite )
+            throw new FileException("Not in the process of an allocated write operation pair") ;
+        if ( allocByteBuffer != buffer )
+            throw new FileException("Wrong byte buffer in an allocated write operation pair") ;
+        return write(buffer) ;
+    }
+
     //@Override
     public ByteBuffer read(long loc)
     {

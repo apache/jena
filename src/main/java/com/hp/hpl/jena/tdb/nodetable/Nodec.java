@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -14,11 +15,8 @@ import com.hp.hpl.jena.shared.PrefixMapping;
 /** Encode/decode for Nodes into bytes */
 public interface Nodec
 {
-    /** Allocate a bytebuffer big enough for the node */ 
-    public ByteBuffer alloc(Node node) ;
-    
-    /** return an allocated ByteBuffer */
-    public void release(ByteBuffer bb) ;
+    /** Calucate the maximum number of bytes needed for a Node */   
+    public int maxSize(Node node) ;
     
     /** Encode the node into the byte buffer, starting at the given offset. 
      * The ByteBuffer will have position/limit around the space used on return, <b>without a length code<b>.
@@ -33,6 +31,7 @@ public interface Nodec
 
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

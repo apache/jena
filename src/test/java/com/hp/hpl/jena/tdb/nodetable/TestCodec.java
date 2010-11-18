@@ -88,16 +88,14 @@ public class TestCodec extends BaseTest
     
     private void test(Node n)
     {
-        ByteBuffer bb = nodec.alloc(n) ;
+        int maxSize = nodec.maxSize(n) ;
+        ByteBuffer bb = ByteBuffer.allocate(maxSize) ;
         int x = nodec.encode(n, bb, null) ;
-        
         int bbLen = bb.limit()-bb.position();
         assertEquals(bbLen, x) ;
         assertEquals(0, bb.position()) ;
         
         ByteBuffer bb2 = ByteBufferLib.duplicate(bb) ;
-        nodec.release(bb) ;
-        
         Node n2 = nodec.decode(bb2, null) ;
         assertEquals(n, n2) ;
     }

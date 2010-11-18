@@ -34,6 +34,24 @@ public class ObjectFileSink implements ObjectFile
     }
 
     //@Override
+    public long write(ByteBuffer str)
+    {
+        return ++id ;
+    }
+
+    //@Override
+    public ByteBuffer allocWrite(int maxBytes)
+    {
+        return ByteBuffer.allocate(maxBytes) ;
+    }
+
+    //@Override
+    public long completeWrite(ByteBuffer buffer)
+    {
+        return write(buffer) ;
+    }
+
+    //@Override
     public void sync()
     {}
     
@@ -41,12 +59,6 @@ public class ObjectFileSink implements ObjectFile
     public void sync(boolean force)
     {}
 
-    //@Override
-    public long write(ByteBuffer str)
-    {
-        return ++id ;
-    }
-    
     //@Override
     public void dump() {}
 

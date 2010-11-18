@@ -41,16 +41,11 @@ public class NodecSSE implements Nodec
     
     public NodecSSE() {}
     
-    //@Override
-    public ByteBuffer alloc(Node node)
+    public int maxSize(Node node)
     {
-        // No pool for the moment.
-        return ByteBuffer.allocate(maxLength(node)) ;
+        return maxLength(node) ;
     }
-    
-    public void release(ByteBuffer bb)
-    { }
-    
+
     //@Override
     public int encode(Node node, ByteBuffer bb, PrefixMapping pmap)
     {

@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -21,6 +22,12 @@ public class NodecBinary implements Nodec
     private static byte codeLiteralDT   = 5 ;
     
     //@Override
+    public int maxSize(Node node)
+    {
+        return 0 ;
+    }
+    
+    //@Override
     public int encode(Node node, ByteBuffer bb, PrefixMapping pmap)
     {
         return 0 ;
@@ -35,18 +42,11 @@ public class NodecBinary implements Nodec
     private void encode(String s, ByteBuffer bb, int idx)
     {
     }
-
-    public ByteBuffer alloc(Node node)
-    {
-        return null ;
-    }
-
-    public void release(ByteBuffer bb)
-    {}
 }
 
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

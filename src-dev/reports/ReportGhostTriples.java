@@ -141,7 +141,7 @@ public class ReportGhostTriples
                 System.out.println("YES") ;
             else
                 System.out.println("NO") ;
-            Iter.toList(Iter.print(iter)) ;
+            Iter.toList(Iter.debug(iter)) ;
         }
         
         Node subject = Node.createURI("http://clips.greenpeace.ch/clip/45e03cfb-f95f-4bbb-afd0-03159bfde64f") ;

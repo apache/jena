@@ -22,6 +22,7 @@ import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.TDBFactory ;
+import com.hp.hpl.jena.util.FileManager ;
 
 public class RunTDB
 {
@@ -37,7 +38,11 @@ public class RunTDB
 
     public static void main(String[] args) throws Exception
     {
-        Dataset dsg = TDBFactory.createDataset() ; 
+        Dataset dsg = TDBFactory.createDataset("DB") ;
+        FileManager.get().readModel(dsg.getDefaultModel(), "D.ttl") ;
+        dsg.getDefaultModel().write(System.out, "TTL") ;
+        System.exit(0) ;
+        
         Model m = dsg.getNamedModel(Quad.unionGraph.getURI());
         System.out.println(m) ;
         System.exit(0) ;
