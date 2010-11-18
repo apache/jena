@@ -35,7 +35,8 @@ public class DatasetStore extends DataSourceImpl
         return new DatasetStoreGraph(store, SDB.getContext().copy()) ;
     }
 
-    private DatasetStore() {}
+    // Do not call.
+    private DatasetStore() { super((Dataset)null) ; }
 }
 
 /*
