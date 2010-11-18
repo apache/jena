@@ -7,6 +7,8 @@
 package com.hp.hpl.jena.tdb.base.file;
 
 import static org.openjena.atlas.lib.FileOps.clearDirectory ;
+import org.junit.After ;
+import org.junit.Before ;
 import org.junit.Test;
 import org.openjena.atlas.junit.BaseTest ;
 
@@ -15,30 +17,97 @@ import com.hp.hpl.jena.tdb.base.objectfile.StringFile;
 
 public class TestStringFile extends BaseTest
 {
-    @Test public void object_file_1()
+    StringFile f = null ;
+    @Before public void setup()
     {
         String dir = ConfigTest.getTestingDir() ;
         clearDirectory(dir) ;
         Location loc = new Location(dir) ;
-        StringFile f = FileFactory.createStringFileDisk(loc.getPath("xyz", "node")) ;
-        String x1 = "孫子兵法" ;
-        String x2 = "abbbbbbc" ;
+        f = FileFactory.createStringFileDisk(loc.getPath("xyz", "node")) ;
+    }
+    
+    @After public void teardown() { f.close() ; f = null ; }
+    
+    @Test public void object_file_1()
+    {
+        String x1 = "abbbbbbc" ;
+        String x2 = "孫子兵法" ;
         
         long id1 = f.write(x1) ;
         long id2 = f.write(x2) ;
         
         assertNotEquals("Node Ids", id1, id2) ;
         
-        String y2 = f.read(id2) ;
-        assertEquals("x2",x2, y2) ;
-
-        String y1 = f.read(id1) ;
-        assertEquals("x1", x1, y1) ;
-        
-        String y1a = f.read(0) ;
-        assertEquals("x1a", x1, y1) ;
+        test(id2, x2) ;
+        test(id1, x1) ;
+        test(0, x1) ;
+//        String y2 = f.read(id2) ;
+//        assertEquals("x2",x2, y2) ;
+//
+//        String y1 = f.read(id1) ;
+//        assertEquals("x1", x1, y1) ;
+//        
+//        String y1a = f.read(0) ;
+//        assertEquals("x1a", x1, y1) ;
     }
     
+    @Test public void object_file_2()
+    {
+        String x1 = "abbbbbbc" ;
+        String x2 = "孫子兵法" ;
+        
+        long id1 = f.write(x1) ;
+        f.flush() ;
+        long id2 = f.write(x2) ;
+        // No flush.
+        
+        assertNotEquals("Node Ids", id1, id2) ;
+        
+        String z = f.read(id2) ;
+        
+        test(id2, x2) ;
+        test(id1, x1) ;
+        test(0, x1) ;
+    }
+    
+    @Test public void object_file_3()
+    {
+        String x1 = "abbbbbbc" ;
+        String x2 = "孫子兵法" ;
+        
+        long id1 = f.write(x1) ;
+        long id2 = f.write(x2) ;
+        f.flush() ;
+        
+        assertNotEquals("Node Ids", id1, id2) ;
+        
+        test(id2, x2) ;
+        test(id1, x1) ;
+        test(0, x1) ;
+    }
+
+    @Test public void object_file_4()
+    {
+        String x1 = "abbbbbbc" ;
+        String x2 = "孫子兵法" ;
+        
+        long id1 = f.write(x1) ;
+        f.flush() ;
+        long id2 = f.write(x2) ;
+        f.flush() ;
+        
+        assertNotEquals("Node Ids", id1, id2) ;
+        
+        test(id2, x2) ;
+        test(id1, x1) ;
+        test(0, x1) ;
+    }
+
+    private void test(long id, String x)
+    {
+        String y = f.read(id) ;
+        assertEquals(x, y) ;
+    }
 }
 
 /*

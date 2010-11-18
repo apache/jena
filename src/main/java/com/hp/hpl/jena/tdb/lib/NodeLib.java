@@ -53,10 +53,7 @@ public class NodeLib
     public static long encodeStore(Node node, ObjectFile file)
     {
         // Nodes can be writtern during reads.
-        // Make sure this operation is 
-//XXXXXXXXXXXXXXxxxx        
-        // Could use a pool of nodec each with one (large!) buffer.
-        // c.f. encoding strings.
+        // Make sure this operation is sync'ed. 
         int maxSize = nodec.maxSize(node) ;
         ByteBuffer bb = file.allocWrite(maxSize) ;
         int len = nodec.encode(node, bb, null) ;

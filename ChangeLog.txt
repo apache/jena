@@ -3,7 +3,11 @@ ChangeLog for TDB
 
 ==== 0.8.8
 
++ Incremental improvements to the bulk loader.
+
 ==== 0.8.7
+
++ Maintenace release
 
 ==== 0.8.6
 

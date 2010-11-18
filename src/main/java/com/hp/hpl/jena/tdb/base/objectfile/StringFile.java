@@ -9,6 +9,8 @@ package com.hp.hpl.jena.tdb.base.objectfile;
 import java.nio.ByteBuffer ;
 
 import org.openjena.atlas.lib.Bytes ;
+import org.openjena.atlas.lib.Closeable ;
+import org.openjena.atlas.lib.Sync ;
 
 
 import com.hp.hpl.jena.tdb.lib.StringAbbrev ;
@@ -17,7 +19,7 @@ import com.hp.hpl.jena.tdb.lib.StringAbbrev ;
  * Controls the UTF encoder/decoder and is not limited to 64K byte encoded forms.
  */
 
-public class StringFile
+public class StringFile implements Sync, Closeable
 {
     protected final ObjectFile file ;
     /*
@@ -35,10 +37,16 @@ public class StringFile
     public long write(String str)
     { 
         str = compress(str) ;
-        ByteBuffer bb = ByteBuffer.allocate(4*str.length()) ;   // Worst case
+        ByteBuffer bb = file.allocWrite(4*str.length()) ;
         int len = Bytes.toByteBuffer(str, bb) ;
         bb.flip() ;
-        return file.write(bb) ;
+        return file.completeWrite(bb) ;
+        
+        
+//        ByteBuffer bb = ByteBuffer.allocate(4*str.length()) ;   // Worst case
+//        int len = Bytes.toByteBuffer(str, bb) ;
+//        bb.flip() ;
+//        return file.write(bb) ;
     }
     
     //@Override
@@ -57,6 +65,12 @@ public class StringFile
     //@Override
     public void sync(boolean force)
     { file.sync(force) ; }
+    
+    //@Override
+    public void sync() { sync(true) ; }
+    
+    //@Override
+    public void flush() { sync(true) ; }
 
     public ObjectFile getByteBufferFile()
     {

@@ -13,7 +13,6 @@ import java.util.Iterator ;
 import org.openjena.atlas.lib.Bytes ;
 import org.openjena.atlas.lib.Pair ;
 
-
 import com.hp.hpl.jena.tdb.base.block.BlockException ;
 import com.hp.hpl.jena.tdb.base.file.FileBase ;
 import com.hp.hpl.jena.tdb.base.file.FileException ;
@@ -29,6 +28,8 @@ public class ObjectFileDiskDirect implements ObjectFile
      */
     protected long filesize ;
     protected final FileBase file ;
+    // Delayed write buffer
+    private ByteBuffer output = ByteBuffer.allocate(16*1024) ;
     private boolean inAllocWrite = true ;
     private ByteBuffer allocByteBuffer = null ;
 
@@ -64,26 +65,98 @@ public class ObjectFileDiskDirect implements ObjectFile
         { throw new FileException("ObjectFile.write", ex) ; }
     }
 
-    // NO BUFFERING VERSION
+    private long allocLocation = -1 ;
+    
     public ByteBuffer allocWrite(int maxBytes)
     {
+        // Include space for length.
+        int spaceRequired = maxBytes+SystemTDB.SizeOfInt ;
+        // Find space.
+        if ( spaceRequired > output.remaining() )
+            flushOutputBuffer() ;
+        
+        if ( spaceRequired > output.remaining() )
+        {
+            // Too big.
+            inAllocWrite = true ;
+            allocByteBuffer = ByteBuffer.allocate(spaceRequired) ;
+            return allocByteBuffer ;  
+        }
+        
+        // Will fit.
         inAllocWrite = true ;
-        allocByteBuffer = ByteBuffer.allocate(maxBytes) ;
-        return allocByteBuffer ;
+        int start = output.position() ;
+        // id (but don't tell the caller yet).
+        allocLocation = filesize+start ;
+        
+        // Slice it.
+        output.position(start+SystemTDB.SizeOfInt) ;
+        output.limit(start+spaceRequired) ;
+        ByteBuffer bb = output.slice() ; 
+
+        allocByteBuffer = bb ;
+        return bb ;
     }
 
+    // LENGTH
+    
     public long completeWrite(ByteBuffer buffer)
     {
         if ( ! inAllocWrite )
             throw new FileException("Not in the process of an allocated write operation pair") ;
         if ( allocByteBuffer != buffer )
             throw new FileException("Wrong byte buffer in an allocated write operation pair") ;
-        return write(buffer) ;
+
+        int actualLength = buffer.limit()-buffer.position() ;
+        // Insert object length
+        int idx = (int)(allocLocation-filesize) ;
+        output.putInt(idx, actualLength) ;
+        // And bytes to idx+actualLength+4 are used
+        inAllocWrite = false;
+        allocByteBuffer = null ;
+        int newLen = idx+actualLength+4 ;
+        output.position(newLen);
+        output.limit(output.capacity()) ;
+        return allocLocation ;
     }
+
+    private void flushOutputBuffer()
+    {
+        long location = filesize ;
+        try {
+            file.channel.position(location) ;
+            output.flip();
+            int x = file.channel.write(output) ;
+            filesize += x ;
+        } catch (IOException ex)
+        { throw new FileException("ObjectFile.flushOutputBuffer", ex) ; }
+        
+        output.position(0) ;
+        output.limit(output.capacity()) ;
+    }
+
 
     //@Override
     public ByteBuffer read(long loc)
     {
+        // Maybe be in the write buffer
+        if ( loc >= filesize )
+        {
+            int x = output.position() ;
+            int y = output.limit() ;
+            
+            int offset = (int)(loc-filesize) ;
+            int len = output.getInt(offset) ;
+            int posn = offset + SystemTDB.SizeOfInt ;
+            // Slice the data bytes,
+            output.position(posn) ;
+            output.limit(posn+len) ;
+            ByteBuffer bb = output.slice() ;
+            output.limit(y) ;
+            output.position(x) ;
+            return bb ; 
+        }
+        
         try {
             file.channel.position(loc) ;
             lengthBuffer.position(0) ;
@@ -152,10 +225,10 @@ public class ObjectFileDiskDirect implements ObjectFile
     { file.close() ; }
 
     //@Override
-    public void sync()                  { file.sync() ; }
+    public void sync()                  { flushOutputBuffer() ; file.sync() ; }
     
     //@Override
-    public void sync(boolean force)     { file.sync(force) ; }
+    public void sync(boolean force)     { flushOutputBuffer() ; file.sync(force) ; }
 
     // ---- Dump
     public void dump() { dump(handler) ; }
