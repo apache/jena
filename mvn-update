@@ -1,0 +1,3 @@
+#!/bin/bash
+
+mvn dependency:resolve dependency:sources
