@@ -39,7 +39,7 @@ public class DataSourceImpl implements DataSource
     protected DatasetGraph dsg = null ;
     private Map<Graph, Model> cache = new HashMap<Graph, Model>() ;      
 
-    private DataSourceImpl()
+    protected DataSourceImpl()
     {}
     
     
