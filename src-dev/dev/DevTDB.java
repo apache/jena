@@ -15,6 +15,7 @@ public class DevTDB
     //   ==> LoaderNodeTupleTable.copyIndex
     
     // Query timeout
+    // Prefixes to be set during bulk loading 1 & 2 
     
     // Bug:??
     // DSG.contains => DSG.getGraph 
