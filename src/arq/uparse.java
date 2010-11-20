@@ -13,6 +13,7 @@ import java.util.List ;
 import arq.cmdline.ArgDecl ;
 import arq.cmdline.CmdARQ ;
 
+import com.hp.hpl.jena.query.Syntax ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 import com.hp.hpl.jena.update.UpdateFactory ;
 import com.hp.hpl.jena.update.UpdateRequest ;
@@ -20,8 +21,10 @@ import com.hp.hpl.jena.util.FileUtils ;
 
 public class uparse extends CmdARQ
 {
-    ArgDecl fileArg = new ArgDecl(ArgDecl.HasValue, "file", "update") ;
+    protected static final ArgDecl fileArg = new ArgDecl(ArgDecl.HasValue, "file", "update") ;
+    protected static final ArgDecl syntaxArg = new ArgDecl(ArgDecl.HasValue, "syntax", "syn") ;
     List<String> requestFiles = null ;
+    Syntax syntax = Syntax.defaultUpdateSyntax ; 
     
     public static void main (String... argv)
     { new uparse(argv).mainRun() ; }
@@ -29,13 +32,16 @@ public class uparse extends CmdARQ
     protected uparse(String[] argv)
     {
         super(argv) ;
-        super.add(fileArg, "--file=FILE", "Update commands to parse") ;
+        super.add(fileArg, "--file=FILE",  "Update commands to parse") ;
+        super.add(syntaxArg, "--syntax=name", "Update syntax") ;
     }
 
     @Override
     protected void processModulesAndArgs()
     {
         requestFiles = getValues(fileArg) ;
+        if ( super.contains(syntaxArg) )
+            syntax = Syntax.lookup(super.getValue(syntaxArg)) ;
         super.processModulesAndArgs() ;
     }
     

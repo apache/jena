@@ -80,6 +80,8 @@ public class RunARQ
     
     public static void main(String[] argv) throws Exception
     {
+        UpdateFactory.read("update.ru") ; System.out.println("DONE" ) ; System.exit(0) ;
+        
         arq.qparse.main("-query=Q.rq") ; System.exit(0) ;
         
         // arq.sparql.main("--data=D.ttl", "-query=Q.rq") ;

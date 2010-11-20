@@ -26,27 +26,6 @@ public class Syntax extends Symbol
                 = syntaxSPARQL_11 ;
                 //= new Syntax("http://jena.hpl.hp.com/2003/07/update/SPARQL_11") ;
 
-    /** The system default syntax */ 
-    public static Syntax defaultSyntax = syntaxSPARQL_11 ;
-    
-    /** The name of the default query language for query parsing.
-     *  The default query language syntax must be capable of accepting
-     *  any SPARQL query but may also accept extensions. 
-     */
-    public static Syntax defaultQuerySyntax = syntaxSPARQL_11 ;
-    
-    /** The name of the default update language for update parsing.
-     *  The default update language syntax must be capable of accepting
-     *  any SPARQL query but may also accept extensions. 
-     */
-    public static Syntax defaultUpdateSyntax = syntaxSPARQL_11_Update ;
-    
-    /** The query syntax currently that is standardized, published, SPARQL - the "default SPARQL Query" */ 
-    public static final Syntax syntaxSPARQL = syntaxSPARQL_11 ;
-
-    /** The update syntax currently that is standardized, published, SPARQL - the "default SPARQL Update" */ 
-    private static final Syntax syntaxSPARQL_Update = syntaxSPARQL_11_Update ;
-
     /** The query syntax for extended SPARQL */ 
     public static final Syntax syntaxARQ
                 = new Syntax("http://jena.hpl.hp.com/2003/07/query/ARQ") ;
@@ -62,6 +41,27 @@ public class Syntax extends Symbol
     public static final Syntax syntaxAlgebra
                 = new Syntax("http://jena.hpl.hp.com/2003/07/query/SPARQL_Algebra") ;
     
+    /** The system default syntax */ 
+    public static Syntax defaultSyntax = syntaxSPARQL_11 ;
+    
+    /** The name of the default query language for query parsing.
+     *  The default query language syntax must be capable of accepting
+     *  any SPARQL query but may also accept extensions. 
+     */
+    public static Syntax defaultQuerySyntax = syntaxSPARQL_11 ;
+    
+    /** The name of the default update language for update parsing.
+     *  The default update language syntax must be capable of accepting
+     *  any SPARQL query but may also accept extensions. 
+     */
+    public static Syntax defaultUpdateSyntax = syntaxARQ_Update ; //syntaxSPARQL_11_Update ;
+    
+    /** The query syntax currently that is standardized, published, SPARQL - the "default SPARQL Query" */ 
+    public static final Syntax syntaxSPARQL = syntaxSPARQL_11 ;
+
+    /** The update syntax currently that is standardized, published, SPARQL - the "default SPARQL Update" */ 
+    private static final Syntax syntaxSPARQL_Update = syntaxSPARQL_11_Update ;
+
     public static TranslationTable<Syntax> querySyntaxNames = new TranslationTable<Syntax>(true) ;
     static {
         querySyntaxNames.put("sparql",      syntaxSPARQL) ;

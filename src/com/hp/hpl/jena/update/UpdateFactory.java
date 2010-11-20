@@ -99,8 +99,7 @@ public class UpdateFactory
     /** Append update operations to a request */
     private static UpdateParser setupParser(UpdateRequest request, String baseURI, Syntax syntax)
     {
-        // TEMP
-        if ( syntax != syntaxSPARQL_11 )
+        if ( syntax != syntaxSPARQL_11 && syntax != syntaxARQ ) 
             throw new UnsupportedOperationException("Unrecognized syntax for parsing update: "+syntax) ;
             
         UpdateParser parser = UpdateParser.createParser(syntax) ;
@@ -123,6 +122,18 @@ public class UpdateFactory
     /** Create an UpdateRequest by reading it from a file */
     public static UpdateRequest read(String fileName)
     { 
+        return read(fileName, null, defaultUpdateSyntax) ;
+    }
+    
+    /** Create an UpdateRequest by reading it from a file */
+    public static UpdateRequest read(String fileName, Syntax syntax)
+    {
+        return read(fileName, null, syntax) ;
+    }
+
+    /** Create an UpdateRequest by reading it from a file */
+    public static UpdateRequest read(String fileName, String baseURI, Syntax syntax)
+    { 
         InputStream in = null ;
         if ( fileName.equals("-") )
             in = System.in ;
@@ -132,7 +143,7 @@ public class UpdateFactory
             if ( in == null )
                 throw new UpdateException("File could not be opened: "+fileName) ;
         }
-        return read(in) ;
+        return read(in, baseURI, syntax) ;
     }
     
     /**  Create an UpdateRequest by parsing from a string.
