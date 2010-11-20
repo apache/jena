@@ -2,7 +2,7 @@ package dev ;
 
 public class DevARQ
 {
-    // ** For release:
+    // ** For release 2.9:
     // QueryParseException for updates is confusing.
     // All QueryException  -> SparqlException
     
