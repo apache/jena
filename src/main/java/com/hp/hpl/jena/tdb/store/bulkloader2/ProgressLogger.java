@@ -14,6 +14,7 @@ import com.hp.hpl.jena.sparql.util.Timer ;
 /** Progress monitor */
 public class ProgressLogger
 {
+    // DELEET when an ARQ update sweeps through.
     private final Logger log ;
     private final long tickPoint ;
     private final int superTick ;

@@ -5,6 +5,11 @@ package dev ;
 
 public class DevTDB
 {
+    // BulkLoader2
+    
+    // Extract a better set of factory operations, using the default names and sizes, 
+    // for internal structures liek B+Tress and NodeTable, and TupleIndexes.
+    
     // NodeTableNative call inlining code in _idForNode
     
     // Backup, abort long running query.
@@ -26,7 +31,7 @@ public class DevTDB
     // Integrate TestDatasetConfig (any other union tests?)
     // To ARQ for union rewrite tests as a base test.
     
-    // SystemTDb.open idnex read-only.
+    // SystemTDB.open index read-only.
     
     // Document: new events
     // http://openjena.org/wiki/TDB/JavaAPI#Concurrency
