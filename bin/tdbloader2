@@ -1,0 +1,122 @@
+#!/bin/bash
+
+# Exit on error.
+set -e
+
+# TODO
+
+function log { echo " $(date $DATE)" "$@" ; }
+
+TMP=$$
+#DATE="+%Y-%m-%dT%H:%M:%S%:z"
+DATE="+%H:%M:%S"
+CP="$(make_classpath $TDBROOT)"
+CP="$HOME/Projects/AFS/classes:$CP"
+USAGE="Usage: $(basename $0) --loc location datafile ..."
+PKG=com.hp.hpl.jena.tdb.store.bulkloader2
+
+if [ "$#" -lt 2 ] ; then echo "$USAGE" 1>&2 ; exit 1 ; fi
+
+## Process --loc. Yuk.
+ARG1="$1"
+shift
+if [ "$ARG1" = "-loc" -o  "$ARG1" = "--loc" ]
+then
+    LOC="$1"
+    shift
+else 
+    LOC="${ARG1/-*loc=/}"
+    if [ "$ARG1" = "$LOC" ] ; then echo $USAGE 1>&2 ; exit 1 ; fi
+fi
+
+if [ ! -d $LOC ] ; then echo "No such directory: $LOC" ; exit 1 ; fi
+
+FILES="$@"
+## Stdin?
+
+# ---- Start
+log "-- TDB Bulk Loader Start"
+# ---- Data loading phase
+log "Data phase"
+# Produce nodes file and triples/quads text file.
+
+DATA_TRIPLES="$LOC/data-triples.$TMP"
+DATA_QUADS="$LOC/data-quads.$TMP"
+
+java -cp "$CP" -server "$PKG".CmdNodeTableBuilder \
+    "--loc=$LOC" "--triples=$DATA_TRIPLES" "--quads=$DATA_QUADS" $FILES
+
+# ---- Index intermediates
+## All files are writtern S P O but in different sort orders.
+log "Index phase"
+# Sort to SPO etc
+## I1="SPO POS OSP"
+## I2="GSPO GPOS GOSP SPOG POSG OSPG"
+## I3="node2id prefixIdx prefix2id"
+
+function process_rows
+{
+    local KEYS="$1"
+    local DATA="$2"
+    local IDX=$3
+    local WORK="$LOC/$IDX-txt"
+
+    #[ ! -s "$DATA" ] && return 
+
+    sort $KEYS < "$DATA" > $WORK
+    log "Build $IDX"
+    rm -f "$LOC/$IDX.dat"
+    rm -f "$LOC/$IDX.idn"
+    java -cp "$CP" -server "$PKG".CmdIndexBuild "$LOC" "$IDX" "$WORK"
+    # Remove intermediary file.
+    rm "$WORK" 
+}
+
+#Better - sort, do index, delete intermediate file, repeat
+
+log "Index SPO"
+process_rows "-k1 -k2 -k3" "$DATA_TRIPLES" SPO
+
+log "Index POS"
+process_rows "-k2 -k3 -k1" "$DATA_TRIPLES" POS
+
+log "Index OSP"
+process_rows "-k3 -k1 -k2" "$DATA_TRIPLES" OSP
+
+log "Index GSPO"
+process_rows "-k1 -k2 -k3 -k4" "$DATA_QUADS" GSPO
+
+log "Index GPOS"
+process_rows "-k1 -k3 -k4 -k2" "$DATA_QUADS" GPOS
+
+log "Index GOSP"
+process_rows "-k1 -k4 -k2 -k3" "$DATA_QUADS" GOSP
+
+log "Index SPOG"
+process_rows "-k2 -k3 -k4 -k1" "$DATA_QUADS" SPOG
+
+log "Index POSG"
+process_rows "-k3 -k4 -k2 -k1" "$DATA_QUADS" POSG
+
+log "Index OSPG"
+process_rows "-k4 -k2 -k3 -k1" "$DATA_QUADS" OSPG
+
+log "Index phase end"
+
+## # ---- Index loading phase
+## 
+## for IDX in $I1
+## do
+##     log "Build index $IDX"
+##     ## The B+Tree builder creates a tree from no file files.
+##     rm -f "$LOC/$IDX.dat"
+##     rm -f "$LOC/$IDX.idn"
+##     java -cp "$CP" -server "$PKG".CmdIndexBuild "$LOC" "$IDX" "$LOC/$IDX-txt"
+##     done
+## 
+
+# ---- Clean up.
+
+# ---- End
+log "-- TDB Bulk Loader Finish"
+ 
