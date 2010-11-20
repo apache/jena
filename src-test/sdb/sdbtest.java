@@ -17,7 +17,7 @@ import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.sdb.SDB;
 import com.hp.hpl.jena.sdb.test.junit.QueryTestSDBFactory;
 import com.hp.hpl.jena.sparql.junit.EarlReport;
-import com.hp.hpl.jena.sparql.junit.ScriptTestSuiteFactory;
+import com.hp.hpl.jena.sparql.junit.QueryTestSuiteFactory;
 import com.hp.hpl.jena.sparql.junit.SimpleTestRunner;
 import com.hp.hpl.jena.sparql.util.Utils;
 import com.hp.hpl.jena.sparql.vocabulary.FOAF;
@@ -103,7 +103,7 @@ public class sdbtest extends CmdArgsDB
     {
         // Include information later.
         EarlReport report = new EarlReport("SDB", SDB.VERSION, "http://jena.sf.net/SDB") ;
-        ScriptTestSuiteFactory.results = report ;
+        QueryTestSuiteFactory.results = report ;
         
         Model model = report.getModel() ;
 
@@ -123,10 +123,10 @@ public class sdbtest extends CmdArgsDB
         Resource reporter = report.getReporter() ;
         reporter.addProperty(DC.creator, who) ;
         
-        TestSuite suite = ScriptTestSuiteFactory.make(testManifest) ;
+        TestSuite suite = QueryTestSuiteFactory.make(testManifest) ;
         SimpleTestRunner.runSilent(suite) ;
         
-        ScriptTestSuiteFactory.results.getModel().write(System.out, "TTL") ;
+        QueryTestSuiteFactory.results.getModel().write(System.out, "TTL") ;
         
     }
 }
