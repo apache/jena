@@ -11,6 +11,7 @@ import org.junit.runners.Suite;
 
 import com.hp.hpl.jena.tdb.index.bplustree.TestBPTreeRecords;
 import com.hp.hpl.jena.tdb.index.bplustree.TestBPlusTree;
+import com.hp.hpl.jena.tdb.index.bplustree.TestBPlusTreeRewriter ;
 import com.hp.hpl.jena.tdb.index.btree.TestBTree;
 import com.hp.hpl.jena.tdb.index.btree.TestBTreeLong;
 import com.hp.hpl.jena.tdb.index.ext.TestExtHash;
@@ -21,10 +22,12 @@ import com.hp.hpl.jena.tdb.index.ext.TestExtHash;
     
     TestBTree.class,
     TestBTreeLong.class,
+    
     TestBPlusTree.class,
     TestBPTreeRecords.class,
-    TestExtHash.class,
+    TestBPlusTreeRewriter.class,
     
+    TestExtHash.class,
     TestTupleIndexRecord.class,
     TestTupleTable.class
 } )

@@ -103,7 +103,7 @@ public class PtrBuffer extends BufferBase
         StringBuilder str = new StringBuilder() ;
         str.append(format("Len=%d Max=%d ", numSlot, maxSlot)) ;
         
-        for ( int i = 0 ; i < maxSlot ; i++ )
+        for ( int i = 0 ; i < numSlot ; i++ )
         {
             if ( i != 0 )
                 str.append(" ") ;
