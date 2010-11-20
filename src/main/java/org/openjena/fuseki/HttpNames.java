@@ -20,6 +20,8 @@ public class HttpNames
     public static final String hContentRange        = "Content-Range" ;
     public static final String hContentType         = "Content-Type" ;
     public static final String hServer              = "Server" ;
+    public static final String hLocation            = "Location" ; 
+
     
     // CORS: 
     //   http://www.w3.org/TR/cors/  http://esw.w3.org/CORS_Enabled

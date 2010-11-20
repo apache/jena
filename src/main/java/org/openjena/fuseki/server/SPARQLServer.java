@@ -21,6 +21,8 @@ import org.eclipse.jetty.servlet.ServletHolder ;
 import org.openjena.atlas.logging.Log ;
 import org.openjena.fuseki.Fuseki ;
 import org.openjena.fuseki.HttpNames ;
+import org.openjena.fuseki.mgt.ActionDataset ;
+import org.openjena.fuseki.mgt.PageDataset ;
 import org.openjena.fuseki.mgt.Manager ;
 import org.openjena.fuseki.servlets.SPARQL_QueryDataset ;
 import org.openjena.fuseki.servlets.SPARQL_REST_RW ;
@@ -159,6 +161,12 @@ public class SPARQLServer
             // Manager
             HttpServlet manager = new Manager() ;
             addServlet(context, manager, managerName) ;
+            
+            HttpServlet datasetChooser = new ActionDataset() ;
+            addServlet(context, datasetChooser, "/dataset") ;
+            
+            HttpServlet info = new PageDataset() ;
+            addServlet(context, info, "/info") ;
         }
         
         if ( installManager || installValidators )
