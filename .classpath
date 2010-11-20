@@ -18,7 +18,7 @@
 	<classpathentry kind="lib" path="lib/xercesImpl-2.7.1.jar"/>
 	<classpathentry kind="lib" path="lib/jena-2.6.3.jar" sourcepath="lib-src/jena-2.6.3-sources.jar"/>
 	<classpathentry kind="lib" path="lib/jena-2.6.3-tests.jar" sourcepath="lib-src/jena-2.6.3-test-sources.jar"/>
-	<classpathentry kind="lib" path="lib/arq-2.8.6-RC-1-tests.jar" sourcepath="lib/arq-2.8.6-RC-1-tests.jar"/>
-	<classpathentry kind="lib" path="lib/arq-2.8.6-RC-1.jar" sourcepath="lib-src/arq-2.8.6-RC-1-sources.jar"/>
+	<classpathentry kind="lib" path="lib/arq-2.8.6-tests.jar" sourcepath="lib/arq-2.8.6-tests.jar"/>
+	<classpathentry kind="lib" path="lib/arq-2.8.6.jar" sourcepath="lib-src/arq-2.8.6-sources.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>
