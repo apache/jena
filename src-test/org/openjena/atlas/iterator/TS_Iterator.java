@@ -11,10 +11,12 @@ import org.junit.runners.Suite ;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
-    TestIter.class,
-    TestIterator.class,
-    TestIteratorArray.class,
-    TestIteratorPushback.class
+    TestIter.class
+    , TestIteratorPeek.class
+    , TestIteratorArray.class
+    , TestIteratorPushback.class
+    , TestIteratorWithHistory.class
+    , TestIteratorWithBuffer.class
 } )
 
 public class TS_Iterator

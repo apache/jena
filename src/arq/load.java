@@ -25,8 +25,8 @@ import com.hp.hpl.jena.update.UpdateExecutionFactory ;
 
 public class load extends CmdUpdate
 {
-    ArgDecl graphNameArg = new ArgDecl(ArgDecl.HasValue, "--graph") ;
-    ArgDecl dumpArg = new ArgDecl(ArgDecl.NoValue, "--dump") ;       // Write the result to stdout.
+    static private final ArgDecl graphNameArg = new ArgDecl(ArgDecl.HasValue, "--graph") ;
+    static private final ArgDecl dumpArg = new ArgDecl(ArgDecl.NoValue, "--dump") ;
     
     String graphName = null ;
     List<String> loadFiles = null ;

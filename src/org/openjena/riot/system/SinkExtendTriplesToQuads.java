@@ -13,24 +13,23 @@ import com.hp.hpl.jena.sparql.core.Quad ;
 
 public class SinkExtendTriplesToQuads implements Sink<Triple>
 {
-    private Sink<Quad> sinkQuad ;
+    private final Sink<Quad> sinkQuad ;
 
     public SinkExtendTriplesToQuads(Sink<Quad> sinkQuad)
     {
         this.sinkQuad = sinkQuad ;
     }
-    public void flush()
-    {}
 
-    public void send(Triple item)
+    public void send(Triple triple)
     {
-        Quad quad = new Quad(Quad.tripleInQuad, item.getSubject(), item.getPredicate(), item.getObject() ) ;
+        Quad quad = new Quad(Quad.tripleInQuad, triple) ;
         sinkQuad.send(quad) ;
     }
-
-    public void close()
-    {}
     
+    //@Override
+    public void flush() { sinkQuad.flush(); }
+    //@Override
+    public void close() { sinkQuad.close(); }
 }
 /*
  * (c) Copyright 2010 Talis Systems Ltd.

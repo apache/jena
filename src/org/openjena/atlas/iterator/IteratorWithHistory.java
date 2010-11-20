@@ -91,10 +91,8 @@ public class IteratorWithHistory<T> implements Iterator<T>
         }
     }
     
-    
     /** Called, once, at the end */ 
     protected void endReached() { }
-
 }
 
 /*
