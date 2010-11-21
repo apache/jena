@@ -53,24 +53,23 @@ public class UpdateValidator extends ValidatorBase
                 return ;
             }
 
-            final String queryString = httpRequest.getParameter(paramUpdate).replaceAll("(\r|\n| )*$", "") ;
+            final String updateString = httpRequest.getParameter(paramUpdate).replaceAll("(\r|\n| )*$", "") ;
             
-            String querySyntax = httpRequest.getParameter(paramSyntax) ;
-            if ( querySyntax == null || querySyntax.equals("") )
-                querySyntax = "SPARQL" ;
+            String updateSyntax = httpRequest.getParameter(paramSyntax) ;
+            if ( updateSyntax == null || updateSyntax.equals("") )
+                updateSyntax = "SPARQL" ;
 
-            Syntax language = Syntax.lookup(querySyntax) ;
+            Syntax language = Syntax.lookup(updateSyntax) ;
             if ( language == null )
             {
-                httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "Unknown syntax: "+querySyntax) ;
+                httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "Unknown syntax: "+updateSyntax) ;
                 return ;
             }
             
             String lineNumbersArg = httpRequest.getParameter(paramLineNumbers) ; 
-
             String a[] = httpRequest.getParameterValues(paramFormat) ;
             
-            // Currentl default.
+            // Currently default.
             boolean outputSPARQL = true ;
             boolean outputPrefix = false ;
             boolean outputAlgebra = false ;
@@ -112,14 +111,14 @@ public class UpdateValidator extends ValidatorBase
             outStream.println("<body>") ;
             outStream.println("<h1>SPARQL Update Validator</h1>") ;
             
-            // Print query as received
+            // Print as received
             {
                 outStream.println("<p>Input:</p>") ;
                 // Not Java's finest hour.
                 Content c = new Content(){
                     @Override
                     public void print(IndentedWriter out)
-                    { out.print(queryString) ; }
+                    { out.print(updateString) ; }
                 } ;
                 output(outStream, c, lineNumbers) ;
             }
@@ -127,7 +126,7 @@ public class UpdateValidator extends ValidatorBase
             // Attempt to parse it.
             UpdateRequest request= null ;
             try {
-                request = UpdateFactory.create(queryString, "http://example/base/", language) ;
+                request = UpdateFactory.create(updateString, "http://example/base/", language) ;
             } catch (ARQException ex)
             {
                 // Over generous exception (should be QueryException)
@@ -162,31 +161,6 @@ public class UpdateValidator extends ValidatorBase
                 } ;
                 output(outStream, c, lineNumbers) ;
             }
-            
-//            if ( query != null && outputAlgebra )
-//            {
-//                outStream.println("<p>Algebra structure:</p>") ;
-//                final Op op = Algebra.compile(query) ;   // No optimization
-//                final SerializationContext sCxt = new SerializationContext(query) ;
-//                Content c = new Content(){
-//                    public void print(IndentedWriter out)
-//                    {  op.output(out, sCxt) ; }
-//                } ;
-//                output(outStream, c , lineNumbers) ;
-//            }
-//            
-//            if ( query != null && outputQuads )
-//            {
-//                outStream.println("<p>Quad structure:</p>") ;
-//                final Op op = Algebra.toQuadForm(Algebra.compile(query)) ;
-//                final SerializationContext sCxt = new SerializationContext(query) ;
-//                Content c = new Content(){
-//                    public void print(IndentedWriter out)
-//                    {  op.output(out, sCxt) ; }
-//                } ;
-//                output(outStream, c , lineNumbers) ;
-//            }
-            
             outStream.println("</html>") ;
             
         } catch (Exception ex)
