@@ -1,19 +1,51 @@
 /*
- * (c) Copyright 2010 Talis Systems Ltd.
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
 package org.openjena.riot;
 
-/** Retrive data from the web */
+import static org.openjena.riot.WebContent.* ;
+import java.util.HashMap ;
+import java.util.Map ;
+
+/** Retrieve data from the web */
 public class WebReader
 {
+    interface SinkTriplesFactory {} 
 
+    static Map<String, SinkTriplesFactory> readerTriplesMap = new HashMap<String, SinkTriplesFactory>() ;
+    static {
+        readerTriplesMap.put(contentTypeN3, null) ;
+        readerTriplesMap.put(contentTypeN3Alt1, null) ;
+        readerTriplesMap.put(contentTypeN3Alt2, null) ;
+
+        readerTriplesMap.put(contentTypeTurtle1, null) ;
+        readerTriplesMap.put(contentTypeTurtle2, null) ;
+        readerTriplesMap.put(contentTypeTurtle3, null) ;
+
+        readerTriplesMap.put(contentTypeRDFXML, null) ;
+    }
+
+    interface SinkQuadsFactory {} 
+
+    static Map<String, SinkQuadsFactory> readerQuadsMap = new HashMap<String, SinkQuadsFactory>() ;
+
+    static {
+        readerQuadsMap.put(contentTypeNTriples, null) ;
+        readerQuadsMap.put(contentTypeNTriplesAlt, null) ;
+
+        readerQuadsMap.put(contentTypeTriG, null) ;
+        readerQuadsMap.put(contentTypeTriGAlt, null) ;
+
+        readerQuadsMap.put(contentTypeNQuads, null) ;
+        readerQuadsMap.put(contentTypeNQuadsAlt, null) ;
+    }
 }
 
 /*
- * (c) Copyright 2010 Talis Systems Ltd.
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
