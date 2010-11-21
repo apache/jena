@@ -6,11 +6,15 @@
 
 package com.hp.hpl.jena.tdb.lib;
 
+import java.io.PrintStream ;
+import java.nio.ByteBuffer ;
 import java.util.Arrays ;
 import java.util.HashSet ;
 import java.util.Iterator ;
 import java.util.Set ;
 
+import org.openjena.atlas.io.IndentedWriter ;
+import org.openjena.atlas.lib.ByteBufferLib ;
 import org.openjena.atlas.lib.Pair ;
 import org.openjena.atlas.lib.Tuple ;
 
@@ -18,8 +22,10 @@ import arq.cmd.CmdException ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.Dataset ;
+import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
 import com.hp.hpl.jena.tdb.index.TupleIndex ;
 import com.hp.hpl.jena.tdb.index.TupleTable ;
+import com.hp.hpl.jena.tdb.index.bplustree.BPlusTree ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
@@ -116,6 +122,36 @@ public class DumpOps
             System.out.print("\n") ;
         }
     }
+    
+    public static void dumpBlockMgr(PrintStream out, BlockMgr blkMgr)
+    {
+        try {
+            for ( int id = 0 ; id < 9999999 ; id++)
+            {
+                if ( ! blkMgr.valid(id) ) break ;
+                ByteBuffer bb = blkMgr.get(id) ;
+                ByteBufferLib.print(out, bb) ;
+            }
+        } catch (Exception ex) { 
+            ex.printStackTrace() ;
+        }
+    }
+    
+    public static void dumpBPlusTree(PrintStream out, BPlusTree bpt)
+    {
+        IndentedWriter iw = new IndentedWriter(out) ;
+        bpt.dump(iw) ;
+    }
+    
+    
+    public static void dumpBPlusTreeBlocks(BPlusTree bpt)
+    {
+        System.out.println("Data blocks");
+        DumpOps.dumpBlockMgr(System.out, bpt.getRecordsMgr().getBlockMgr()) ;
+        System.out.println("Node blocks");
+        DumpOps.dumpBlockMgr(System.out, bpt.getRecordsMgr().getBlockMgr()) ;
+    }    
+
 
     public static void dumpNodeTupleTable(TupleTable tupleTable)
     {

@@ -49,14 +49,6 @@ class BPlusTreeToolsx
         }
     }
     
-    public static void blockDump(BPlusTree bpt)
-    {
-        System.out.println("Data blocks");
-        dump.DumpBlockMgr.dump(System.out, bpt.getRecordsMgr().getBlockMgr()) ;
-        System.out.println("Node blocks");
-        dump.DumpBlockMgr.dump(System.out, bpt.getRecordsMgr().getBlockMgr()) ;
-    }    
-    
     /** Scan/dump a file of RecordBuffers */
     public static void bpt_scan_record_buffer(String filename, boolean verbose)
     {

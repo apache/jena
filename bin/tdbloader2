@@ -61,8 +61,12 @@ function process_rows
     local IDX=$3
     local WORK="$LOC/$IDX-txt"
 
-    #[ ! -s "$DATA" ] && return 
+    if [ ! -s "$DATA" ]
+    then
+	return
+	fi
 
+    log "Index $IDX"
     sort $KEYS < "$DATA" > $WORK
     log "Build $IDX"
     rm -f "$LOC/$IDX.dat"
@@ -74,31 +78,22 @@ function process_rows
 
 #Better - sort, do index, delete intermediate file, repeat
 
-log "Index SPO"
 process_rows "-k1 -k2 -k3" "$DATA_TRIPLES" SPO
 
-log "Index POS"
 process_rows "-k2 -k3 -k1" "$DATA_TRIPLES" POS
 
-log "Index OSP"
 process_rows "-k3 -k1 -k2" "$DATA_TRIPLES" OSP
 
-log "Index GSPO"
 process_rows "-k1 -k2 -k3 -k4" "$DATA_QUADS" GSPO
 
-log "Index GPOS"
 process_rows "-k1 -k3 -k4 -k2" "$DATA_QUADS" GPOS
 
-log "Index GOSP"
 process_rows "-k1 -k4 -k2 -k3" "$DATA_QUADS" GOSP
 
-log "Index SPOG"
 process_rows "-k2 -k3 -k4 -k1" "$DATA_QUADS" SPOG
 
-log "Index POSG"
 process_rows "-k3 -k4 -k2 -k1" "$DATA_QUADS" POSG
 
-log "Index OSPG"
 process_rows "-k4 -k2 -k3 -k1" "$DATA_QUADS" OSPG
 
 log "Index phase end"
@@ -116,6 +111,8 @@ log "Index phase end"
 ## 
 
 # ---- Clean up.
+
+rm -f "$DATA_TRIPLES" "$DATA_QUADS" 
 
 # ---- End
 log "-- TDB Bulk Loader Finish"

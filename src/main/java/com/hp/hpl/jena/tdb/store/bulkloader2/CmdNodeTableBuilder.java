@@ -25,7 +25,6 @@ import org.openjena.riot.Lang ;
 import org.openjena.riot.RiotLoader ;
 import org.openjena.riot.system.SinkExtendTriplesToQuads ;
 import org.slf4j.Logger ;
-import org.slf4j.LoggerFactory ;
 import arq.cmd.CmdException ;
 import arq.cmdline.ArgDecl ;
 import arq.cmdline.CmdGeneral ;
@@ -33,6 +32,7 @@ import arq.cmdline.CmdGeneral ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.sparql.core.Quad ;
+import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable ;
@@ -45,7 +45,7 @@ import com.hp.hpl.jena.tdb.sys.SetupTDB ;
 public class CmdNodeTableBuilder extends CmdGeneral
 {
     static { Log.setLog4j() ; }
-    private static Logger cmdLog = LoggerFactory.getLogger(CmdNodeTableBuilder.class) ;
+    private static Logger cmdLog =TDB.logLoader ;
 
     private static ArgDecl argLocation = new ArgDecl(ArgDecl.HasValue, "loc", "location") ;
     private static ArgDecl argTriplesOut = new ArgDecl(ArgDecl.HasValue, "triples") ;
