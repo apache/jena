@@ -1,0 +1,20 @@
+{
+  "head": {
+    "vars": [ "lit" ]
+  } ,
+  "results": {
+    "distinct": false ,
+    "ordered": false ,
+    "bindings": [
+      {
+        "lit": { "type": "literal" , "value": "Document 1" }
+      } ,
+      {
+        "lit": { "type": "literal" , "value": "Document 2" }
+      } ,
+      {
+        "lit": { "type": "literal" , "value": "Label with the work document in it" }
+      }
+    ]
+  }
+}

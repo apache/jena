@@ -1,0 +1,13 @@
+<projectDescription>
+  <name>LARQ</name>
+  <comment>LARQ - Free Text Indexing for SPARQL</comment>
+  <projects/>
+  <buildSpec>
+    <buildCommand>
+      <name>org.eclipse.jdt.core.javabuilder</name>
+    </buildCommand>
+  </buildSpec>
+  <natures>
+    <nature>org.eclipse.jdt.core.javanature</nature>
+  </natures>
+</projectDescription>

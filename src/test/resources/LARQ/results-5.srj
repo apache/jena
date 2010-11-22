@@ -1,0 +1,15 @@
+{
+  "head": {
+    "vars": [ "lit" , "score" ]
+  } ,
+  "results": {
+    "distinct": false ,
+    "ordered": false ,
+    "bindings": [
+      {
+        "lit": { "type": "literal" , "value": "Document 1" } ,
+        "score": { "datatype": "http://www.w3.org/2001/XMLSchema#float" , "type": "typed-literal" , "value": "0.76446474" }
+      }
+    ]
+  }
+}

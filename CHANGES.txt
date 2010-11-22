@@ -1,0 +1,10 @@
+LARQ Change Log
+
+LARQ 0.1-SNAPSHOT
+
+ - Initial import from ARQ, minimal changes to point to the new location 
+   of test files. Lucene version is still 2.3.1.
+
+ - Added LARQException.
+ 
+ - Created larq.* package for command line tools.

@@ -1,0 +1,36 @@
+TODO
+
+ - Upgrade Lucene version to 2.9.3 and fix tests (if there are failures).
+
+ - Remove code using deprecated Lucene APIs and upgrade to Lucene 3.0.x.
+
+ - Investigate concurrency issues related to QueryParser not being thread
+   safe and consider constructing a new QueryParser per request.
+
+ - Decide how many results to return when the user does not specify it,
+   1000? More?
+
+ - Should we use the index to suppress duplicates instead of in-memory
+   data structures?
+
+ - How do we implement removals/unindex?
+    - We could use the Model to decide when there are no more triples with
+      a specified literal and therefore it's ok to remove it from Lucene.
+
+ - See how the new NRT capabilities of Lucene can be used from LARQ.
+
+ - Think about how ARQ could initialise LARQ checking in the classpath.
+   (LARQ depends on ARQ, therefore ARQ should not depend on LARQ to avoid
+   a cycle in our dependencies).
+
+ - Publish artifacts to the http://www.openjena.org/repo-dev/ and /repo/
+   repositories, can we use maven-release-plugin there?
+
+ - Review package names (currently c.h.h.j.sparql.larq and c.h.h.j.query.larq).
+   Should we move to c.h.h.j.larq.*?
+
+ - Check if https://github.com/castagna/LARQ is still necessary, if not
+   remove it and/or point at SVN on SourceForge.
+
+ - Add an assembly.xml to distribute LARQ, or we should avoid this and
+   just publish the jar and distribute it with ARQ.
