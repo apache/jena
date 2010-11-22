@@ -8,21 +8,27 @@
 
 package dev;
 
+import java.util.Iterator ;
+
 import org.openjena.atlas.lib.FileOps ;
 import org.openjena.atlas.logging.Log ;
 
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.query.QueryExecution ;
 import com.hp.hpl.jena.query.QueryExecutionFactory ;
 import com.hp.hpl.jena.query.ResultSetFormatter ;
 import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.rdf.model.Property ;
 import com.hp.hpl.jena.rdf.model.Resource ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.TDBFactory ;
-import com.hp.hpl.jena.util.FileManager ;
+import com.hp.hpl.jena.vocabulary.RDF ;
 
 public class RunTDB
 {
@@ -38,13 +44,68 @@ public class RunTDB
 
     public static void main(String[] args) throws Exception
     {
-        Dataset dsg = TDBFactory.createDataset("DB") ;
-        FileManager.get().readModel(dsg.getDefaultModel(), "D.ttl") ;
-        dsg.getDefaultModel().write(System.out, "TTL") ;
+        {
+        System.out.println("Creating database");
+        Dataset ds = TDBFactory.createDataset("DB") ;
+        Model model = ds.getDefaultModel() ;
+        Graph graph = ds.asDatasetGraph().getDefaultGraph() ;
+//        Graph graph = TDBFactory.createGraph("/Users/holger/Desktop/TDBTest");
+//        Model model = ModelFactory.createModelForGraph(graph);
+//        model.read("/home/afs/Desktop/lcsh_nt_20101014.nt");
+//        TDB.sync(graph);
+        System.out.println("Starting queries");
+        {
+            long startTime = System.currentTimeMillis();
+            long count = 0;
+            Iterator<Triple> it = graph.find(null, Node.createURI("http://www.w3.org/2004/02/skos/core#broader"), null);
+            while(it.hasNext()) {
+                count++;
+                it.next();
+            }
+            long endTime = System.currentTimeMillis();
+            System.out.println(" Duration1 " + (endTime - startTime) + " for " + count);
+        }
+
+        {
+            long startTime = System.currentTimeMillis();
+            long count = 0;
+            Iterator<Triple> it = graph.find(null, RDF.type.asNode(), Node.createURI("http://www.w3.org/2004/02/skos/core#Concept"));
+            while(it.hasNext()) {
+                count++;
+                it.next();
+            }
+            long endTime = System.currentTimeMillis();
+            System.out.println(" Duration2 " + (endTime - startTime) + " for " + count);
+        }
+        {
+            long startTime = System.currentTimeMillis();
+            long count = 0;
+            Iterator<Triple> it = graph.find(null, Node.createURI("http://www.w3.org/2004/02/skos/core#broader"), null);
+            while(it.hasNext()) {
+                count++;
+                it.next();
+            }
+            long endTime = System.currentTimeMillis();
+            System.out.println(" Duration1 " + (endTime - startTime) + " for " + count);
+        }
+
+        {
+            long startTime = System.currentTimeMillis();
+            long count = 0;
+            Iterator<Triple> it = graph.find(null, RDF.type.asNode(), Node.createURI("http://www.w3.org/2004/02/skos/core#Concept"));
+            while(it.hasNext()) {
+                count++;
+                it.next();
+            }
+            long endTime = System.currentTimeMillis();
+            System.out.println(" Duration2 " + (endTime - startTime) + " for " + count);
+        }
+        }
         System.exit(0) ;
+
         
-        Model m = dsg.getNamedModel(Quad.unionGraph.getURI());
-        System.out.println(m) ;
+        FileOps.clearDirectory("DB") ;
+        tdb.tdbloader.main("--loc=DB", "D.nt" ) ;
         System.exit(0) ;
         
         {

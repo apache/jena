@@ -81,6 +81,7 @@ public class ObjectFileDiskDirect implements ObjectFile
             // Too big.
             inAllocWrite = true ;
             allocByteBuffer = ByteBuffer.allocate(spaceRequired) ;
+            allocLocation = -1 ;
             return allocByteBuffer ;  
         }
         
@@ -99,8 +100,6 @@ public class ObjectFileDiskDirect implements ObjectFile
         return bb ;
     }
 
-    // LENGTH
-    
     public long completeWrite(ByteBuffer buffer)
     {
         if ( ! inAllocWrite )
@@ -108,6 +107,10 @@ public class ObjectFileDiskDirect implements ObjectFile
         if ( allocByteBuffer != buffer )
             throw new FileException("Wrong byte buffer in an allocated write operation pair") ;
 
+        if ( allocLocation == -1 )
+            // It was too big to use the buffering.
+            return write(buffer) ;
+        
         int actualLength = buffer.limit()-buffer.position() ;
         // Insert object length
         int idx = (int)(allocLocation-filesize) ;
