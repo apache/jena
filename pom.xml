@@ -117,6 +117,12 @@
       <version>${ver.jetty}</version>
     </dependency>    
 
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-jsp-2.1</artifactId>
+      <version>${ver.jetty}</version>
+    </dependency>    
+
     <!--
       <dependency>
       <groupId>org.eclipse.jetty</groupId>
