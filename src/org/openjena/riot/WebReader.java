@@ -42,6 +42,11 @@ public class WebReader
         readerQuadsMap.put(contentTypeNQuads, null) ;
         readerQuadsMap.put(contentTypeNQuadsAlt, null) ;
     }
+    
+    // open(Name) -> types stream.
+    //   files by ext
+    //   c.f FileManager
+    
 }
 
 /*

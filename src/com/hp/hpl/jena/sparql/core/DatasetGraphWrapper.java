@@ -80,6 +80,10 @@ public class DatasetGraphWrapper implements DatasetGraph
     { return dsg.find(g, s, p, o) ; }
 
     //@Override
+    public Iterator<Quad> findNG(Node g, Node s, Node p, Node o)
+    { return dsg.findNG(g, s, p, o) ; }
+
+    //@Override
     public boolean contains(Quad quad)
     { return dsg.contains(quad) ; }
 
@@ -98,7 +102,6 @@ public class DatasetGraphWrapper implements DatasetGraph
     //@Override
     public void close()
     { dsg.close() ; }
-
 }
 
 /*

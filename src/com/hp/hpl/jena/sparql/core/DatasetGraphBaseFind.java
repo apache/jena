@@ -25,10 +25,9 @@ import com.hp.hpl.jena.graph.Node ;
  */
 abstract public class DatasetGraphBaseFind extends DatasetGraphBase 
 {
-    // Better name?  DSGBase and make the other "Top"
     protected DatasetGraphBaseFind() {}
     
-    /** Implementation of find based on spltting into triples (default graph) and quads (named graph) */
+    /** Implementation of find based on splitting into triples (default graph) and quads (named graph) */
     //@Override
     public Iterator<Quad> find(Node g, Node s, Node p , Node o)
     {
@@ -43,6 +42,19 @@ abstract public class DatasetGraphBaseFind extends DatasetGraphBase
         }
 
         return findAny(s, p, o) ;
+    }
+    
+    //@Override
+    public Iterator<Quad> findNG(Node g, Node s, Node p , Node o)
+    {
+        Iterator<Quad> qIter ;
+        if ( ! isWildcard(g) )
+            qIter = findInSpecificNamedGraph(g, s, p, o) ;
+        else
+            qIter = findInAnyNamedGraphs(s, p, o) ;
+        if ( qIter == null )
+            return Iter.nullIterator() ;
+        return qIter ;
     }
 
     protected Iterator<Quad> findAny(Node s, Node p , Node o) 

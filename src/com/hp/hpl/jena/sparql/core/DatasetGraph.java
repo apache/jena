@@ -80,7 +80,7 @@ public interface DatasetGraph extends Closeable
     /** Iterate over all quads in the dataset graph */
     public Iterator<Quad> find() ;
     
-    /** Find matching quads in the datset - may include wildcards, Node.ANY or null
+    /** Find matching quads in the dataset - may include wildcards, Node.ANY or null
      * @see Graph#find(TripleMatch)
      */
     public Iterator<Quad> find(Quad quad) ;
@@ -90,6 +90,11 @@ public interface DatasetGraph extends Closeable
      */
     public Iterator<Quad> find(Node g, Node s, Node p , Node o) ;
     
+    /** Find matching quads in the dataset in named graphs only - may include wildcards, Node.ANY or null
+     * @see Graph#find(Node,Node,Node)
+     */
+    public Iterator<Quad> findNG(Node g, Node s, Node p , Node o) ;
+
     /** Test whether the dataset  (including default graph) contains a quad - may include wildcards, Node.ANY or null */
     public boolean contains(Node g, Node s, Node p , Node o) ;
 
