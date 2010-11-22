@@ -118,8 +118,8 @@ public class TestItem
     /** @return Returns the testType. */
     public Resource getTestType() { return testType ; }
     public String getQueryFile() { return queryFile ; }
-    public Syntax getQueryFileSyntax() { return queryFileSyntax ; }
-    public void setQueryFileSyntax(Syntax syntax) { queryFileSyntax = syntax ; }
+    public Syntax getFileSyntax() { return queryFileSyntax ; }
+    public void setFileSyntax(Syntax syntax) { queryFileSyntax = syntax ; }
 
     public String getResultFile() { return resultFile ; }
     

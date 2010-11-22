@@ -69,7 +69,7 @@ public class QueryTest extends EarlTestCase
         super(TestUtils.safeName(testName), t.getURI(), earl) ;
         queryFileManager = fm ;
         testItem = t ;
-        isRDQLtest = (testItem.getQueryFileSyntax().equals(Syntax.syntaxRDQL)) ;
+        isRDQLtest = (testItem.getFileSyntax().equals(Syntax.syntaxRDQL)) ;
     }
     private boolean oldWarningFlag  ;
     

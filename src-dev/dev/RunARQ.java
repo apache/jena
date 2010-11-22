@@ -31,6 +31,7 @@ import com.hp.hpl.jena.query.QueryExecutionFactory ;
 import com.hp.hpl.jena.query.QueryFactory ;
 import com.hp.hpl.jena.query.QuerySolutionMap ;
 import com.hp.hpl.jena.query.ResultSetFormatter ;
+import com.hp.hpl.jena.query.Syntax ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.sparql.algebra.Algebra ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
@@ -80,7 +81,10 @@ public class RunARQ
     
     public static void main(String[] argv) throws Exception
     {
-        UpdateFactory.read("update.ru") ; System.out.println("DONE" ) ; System.exit(0) ;
+        UpdateRequest req = 
+            UpdateFactory.read("testing/ARQ/Syntax/Syntax-SPARQL-Update/syntax-update-bad-09.ru", Syntax.syntaxSPARQL_11) ; 
+        System.out.println(req) ;
+        System.exit(0) ;
         
         arq.qparse.main("-query=Q.rq") ; System.exit(0) ;
         

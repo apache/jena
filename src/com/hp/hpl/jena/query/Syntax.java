@@ -21,19 +21,19 @@ public class Syntax extends Symbol
     public static final Syntax syntaxSPARQL_11
                 = new Syntax("http://jena.hpl.hp.com/2003/07/query/SPARQL_11") ;
     
-    /** The update syntax that the SPARQL working group has defined */
-    private static final Syntax syntaxSPARQL_11_Update
-                = syntaxSPARQL_11 ;
-                //= new Syntax("http://jena.hpl.hp.com/2003/07/update/SPARQL_11") ;
+//    /** The update syntax that the SPARQL working group has defined */
+//    private static final Syntax syntaxSPARQL_11_Update
+//                = syntaxSPARQL_11 ;
+//                //= new Syntax("http://jena.hpl.hp.com/2003/07/update/SPARQL_11") ;
 
     /** The query syntax for extended SPARQL */ 
     public static final Syntax syntaxARQ
                 = new Syntax("http://jena.hpl.hp.com/2003/07/query/ARQ") ;
 
-    /** The update syntax for SPARQL Update, with extensions to help migrate the update language in the W3C submission */  
-    public static final Syntax syntaxARQ_Update
-                = syntaxARQ ;
-                //= new Syntax("http://jena.hpl.hp.com/2003/07/update/ARQ") ;
+//    /** The update syntax for SPARQL Update, with extensions to help migrate the update language in the W3C submission */  
+//    private static final Syntax syntaxARQ_Update
+//                = syntaxARQ ;
+//                //= new Syntax("http://jena.hpl.hp.com/2003/07/update/ARQ") ;
     
     public static final Syntax syntaxRDQL
                 = new Syntax("http://jena.hpl.hp.com/2003/07/query/RDQL") ;
@@ -54,13 +54,13 @@ public class Syntax extends Symbol
      *  The default update language syntax must be capable of accepting
      *  any SPARQL query but may also accept extensions. 
      */
-    public static Syntax defaultUpdateSyntax = syntaxARQ_Update ; //syntaxSPARQL_11_Update ;
+    public static Syntax defaultUpdateSyntax = syntaxARQ ;
     
     /** The query syntax currently that is standardized, published, SPARQL - the "default SPARQL Query" */ 
     public static final Syntax syntaxSPARQL = syntaxSPARQL_11 ;
 
-    /** The update syntax currently that is standardized, published, SPARQL - the "default SPARQL Update" */ 
-    private static final Syntax syntaxSPARQL_Update = syntaxSPARQL_11_Update ;
+//    /** The update syntax currently that is standardized, published, SPARQL - the "default SPARQL Update" */ 
+//    private static final Syntax syntaxSPARQL_Update = syntaxSPARQL_11_Update ;
 
     public static TranslationTable<Syntax> querySyntaxNames = new TranslationTable<Syntax>(true) ;
     static {
@@ -75,8 +75,8 @@ public class Syntax extends Symbol
 
     public static TranslationTable<Syntax> updateSyntaxNames = new TranslationTable<Syntax>(true) ;
     static {
-        querySyntaxNames.put("sparql",      syntaxSPARQL_Update) ;
-        querySyntaxNames.put("sparql_11",   syntaxSPARQL_11_Update) ;
+        querySyntaxNames.put("sparql",      syntaxSPARQL) ;
+        querySyntaxNames.put("sparql_11",   syntaxSPARQL_11) ;
         querySyntaxNames.put("arq",         syntaxARQ) ;
     }
 
@@ -112,8 +112,8 @@ public class Syntax extends Symbol
         if ( url.endsWith(".arq") )     return syntaxARQ ;
         if ( url.endsWith(".rq") )      return syntaxSPARQL ;
 
-        if ( url.endsWith(".aru") )     return syntaxARQ_Update ;
-        if ( url.endsWith(".ru") )      return syntaxSPARQL_Update ;
+        if ( url.endsWith(".aru") )     return syntaxARQ ;
+        if ( url.endsWith(".ru") )      return syntaxSPARQL_11 ;
         
         if ( url.endsWith(".rdql") )    return syntaxRDQL ;
         if ( url.endsWith(".sse") )     return syntaxAlgebra ;
@@ -150,8 +150,8 @@ public class Syntax extends Symbol
     /** Guess the update syntax based on file name */
     public static Syntax guessUpdateFileSyntax(String url, Syntax defaultSyntax)
     {
-        if ( url.endsWith(".aru") )     return syntaxARQ_Update ;
-        if ( url.endsWith(".ru") )      return syntaxSPARQL_Update ;
+        if ( url.endsWith(".aru") )     return syntaxARQ ;
+        if ( url.endsWith(".ru") )      return syntaxSPARQL_11 ;
         if ( url.endsWith(".sse") )     return syntaxAlgebra ;
         return defaultSyntax ;
     }

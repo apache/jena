@@ -11,6 +11,7 @@ import junit.framework.TestCase ;
 
 import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.query.QueryFactory ;
+import com.hp.hpl.jena.query.Syntax ;
 import com.hp.hpl.jena.sparql.ARQException ;
 import com.hp.hpl.jena.update.UpdateFactory ;
 import com.hp.hpl.jena.update.UpdateRequest ;
@@ -48,7 +49,7 @@ public abstract class EarlTestCase extends TestCase
             return null ;
         }
         
-        Query query = QueryFactory.read(testItem.getQueryFile(), null, testItem.getQueryFileSyntax()) ;
+        Query query = QueryFactory.read(testItem.getQueryFile(), null, testItem.getFileSyntax()) ;
         return query ;
     }
 
@@ -64,8 +65,8 @@ public abstract class EarlTestCase extends TestCase
             fail("Query test file is null") ;
             return null ;
         }
-        
-        UpdateRequest request = UpdateFactory.read(testItem.getQueryFile()) ;
+
+        UpdateRequest request = UpdateFactory.read(testItem.getQueryFile(), Syntax.syntaxSPARQL_11) ;
         return request ;
     }
 

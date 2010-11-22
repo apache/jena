@@ -14,6 +14,7 @@ import org.openjena.riot.checker.CheckerLiterals ;
 
 import com.hp.hpl.jena.query.DataSource ;
 import com.hp.hpl.jena.query.Dataset ;
+import com.hp.hpl.jena.query.Syntax ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.Property ;
 import com.hp.hpl.jena.rdf.model.Resource ;
@@ -95,21 +96,21 @@ public class UpdateTest extends EarlTestCase
     protected void runTestForReal() throws Throwable
     {
         try {
-        UpdateRequest request = UpdateFactory.read(updateFile) ;
-        UpdateAction.execute(request, input) ;
-        boolean b = datasetSame(input, output, false) ;
-        if ( ! b )
-        {
-            
-            System.out.println("---- "+getName()) ;
-            System.out.println(input.asDatasetGraph()) ;
-            System.out.println("----------------------------------------") ;
-            System.out.println(output.asDatasetGraph()) ;
-            datasetSame(input, output, true) ;
-            System.out.println("----------------------------------------") ;
-        }
-        
-        assertTrue("Datasets are different", b) ;
+            UpdateRequest request = UpdateFactory.read(updateFile, Syntax.syntaxSPARQL_11) ;
+            UpdateAction.execute(request, input) ;
+            boolean b = datasetSame(input, output, false) ;
+            if ( ! b )
+            {
+
+                System.out.println("---- "+getName()) ;
+                System.out.println(input.asDatasetGraph()) ;
+                System.out.println("----------------------------------------") ;
+                System.out.println(output.asDatasetGraph()) ;
+                datasetSame(input, output, true) ;
+                System.out.println("----------------------------------------") ;
+            }
+
+            assertTrue("Datasets are different", b) ;
         } catch (RuntimeException ex)
         {
             ex.printStackTrace(System.err) ;
