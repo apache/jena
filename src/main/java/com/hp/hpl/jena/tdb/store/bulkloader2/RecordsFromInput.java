@@ -66,7 +66,7 @@ class RecordsFromInput implements Iterator<Record>
         Record record = recordFactory.create() ;
         for ( int i = 0 ; i < itemsPerRow ; i++ )
         {
-            long x = getLong(buffer, idx) ;
+            long x = Hex.getLong(buffer, idx) ;
             idx += 16 ;
             // Separator or end-of-line.
             idx++ ;     
@@ -105,32 +105,6 @@ class RecordsFromInput implements Iterator<Record>
     //@Override
     public void remove()
     { throw new UnsupportedOperationException() ; }
-    
-
-    private static long getLong(byte[] arr, int idx)
-    {
-        long x = 0 ;
-        for ( int i = 0 ; i < 16 ; i++ )
-        {
-            byte c = arr[idx] ;
-            int v = hexByteToInt(c) ;
-            x = x << 4 | v ;  
-            idx++ ; 
-        }
-        return x ;
-    }
-    
-    private static int hexByteToInt(int c)
-    {
-        if ( '0' <= c && c <= '9' )   
-            return c-'0' ;
-        else if ( 'A' <= c && c <= 'F' )
-            return c-'A'+10 ;
-        else if ( 'a' <= c && c <= 'f' )
-            return c-'a'+10 ;
-        else
-            throw new IllegalArgumentException("Bad index char : "+c) ;
-    }
 }
 /*
  * (c) Copyright 2010 Epimorphics Ltd.

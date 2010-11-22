@@ -9,7 +9,7 @@ package com.hp.hpl.jena.tdb.store.bulkloader2;
 import java.io.IOException ;
 import java.io.OutputStream ;
 
-import com.hp.hpl.jena.tdb.store.bulkloader2.CmdIndexDump.Hex ;
+import com.hp.hpl.jena.tdb.store.bulkloader2.Hex ;
 
 import org.openjena.atlas.AtlasException ;
 
@@ -46,8 +46,7 @@ public class WriteRows
         }
         else
             atStartOfRow = false;
-        Hex.formatUnsignedLongHex(b, idx, value, 16) ;
-        idx += 16 ;
+        idx += Hex.formatUnsignedLongHex(b, idx, value, 16) ;
     }
     
     public void endOfRow()
