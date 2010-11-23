@@ -18,6 +18,7 @@
         <input type="submit" value="Perform update" />
       </form>
     </div>
+     <%@ include file="trailer.inc" %>
   </body>
 </html>   
 

@@ -23,6 +23,7 @@ import org.slf4j.Logger ;
 
 public class Manager extends HttpServlet 
 {
+    // JUNK
     private static Logger log = Fuseki.serverlog ;
     
     public static final String cssFile          = "/fuseki.css" ;

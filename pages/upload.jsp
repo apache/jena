@@ -18,6 +18,6 @@
         <input type="submit" value="Send">
       </form>
     </div>
+    <%@ include file="trailer.inc" %>
   </body>
-</html>   
-
+</html>

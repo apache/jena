@@ -22,7 +22,6 @@ import org.openjena.atlas.logging.Log ;
 import org.openjena.fuseki.Fuseki ;
 import org.openjena.fuseki.HttpNames ;
 import org.openjena.fuseki.mgt.ActionDataset ;
-import org.openjena.fuseki.mgt.PageDataset ;
 import org.openjena.fuseki.mgt.Manager ;
 import org.openjena.fuseki.servlets.SPARQL_QueryDataset ;
 import org.openjena.fuseki.servlets.SPARQL_REST_RW ;
@@ -106,7 +105,6 @@ public class SPARQLServer
 
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
         server.setHandler(context);
-        
         // Constants. Add RDF types.
         MimeTypes mt = new MimeTypes() ; 
         mt.addMimeMapping("rdf",    WebContent.contentTypeRDFXML+";charset=utf-8") ;
@@ -157,6 +155,8 @@ public class SPARQLServer
 
         if ( installManager )
         {
+            server.setHandler(context);
+
             HttpServlet jspServlet = new org.apache.jasper.servlet.JspServlet() ;
             ServletHolder jspContent = new ServletHolder(jspServlet) ;
             //?? Need separate context for admin stuff??
@@ -169,9 +169,6 @@ public class SPARQLServer
             
             HttpServlet datasetChooser = new ActionDataset() ;
             addServlet(context, datasetChooser, "/dataset") ;
-            
-            HttpServlet info = new PageDataset() ;
-            addServlet(context, info, "/info") ;
         }
         
         if ( installManager || installValidators )

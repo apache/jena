@@ -29,6 +29,7 @@
 	    <input type="submit" value="Get Results" />
       </form>
     </div>
+    <%@ include file="trailer.inc" %>
   </body>
 </html>   
 

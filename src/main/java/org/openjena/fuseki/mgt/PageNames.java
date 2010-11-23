@@ -10,6 +10,7 @@ public class PageNames
 {
     static final String pageDataset = "dataset.html" ;
     static final String pageControlPanel = "control-panel.jsp" ;
+    static final String pageAfterLogin = "sparql.jsp" ;
 }
 
 /*
