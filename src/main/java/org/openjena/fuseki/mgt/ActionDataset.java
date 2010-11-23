@@ -45,7 +45,7 @@ public class ActionDataset extends HttpServlet
         if ( true )
         {
             // Redirect to GET page.
-            response.setHeader(HttpNames.hLocation, "info") ;
+            response.setHeader(HttpNames.hLocation, PageNames.pageControlPanel) ;
             response.setStatus(HttpSC.SEE_OTHER_303) ;
         }
         else

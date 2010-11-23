@@ -19,6 +19,7 @@ import org.openjena.fuseki.http.HttpSC ;
 
 public class PageDataset extends HttpServlet
 {
+    // DEPRECATE
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException
     {

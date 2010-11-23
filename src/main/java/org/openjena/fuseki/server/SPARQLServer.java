@@ -157,6 +157,12 @@ public class SPARQLServer
 
         if ( installManager )
         {
+            HttpServlet jspServlet = new org.apache.jasper.servlet.JspServlet() ;
+            ServletHolder jspContent = new ServletHolder(jspServlet) ;
+            //?? Need separate context for admin stuff??
+            context.setResourceBase("pages") ;
+            addServlet(context, jspContent, "*.jsp") ;
+            
             // Manager
             HttpServlet manager = new Manager() ;
             addServlet(context, manager, managerName) ;
@@ -175,6 +181,7 @@ public class SPARQLServer
             DefaultServlet staticServlet = new DefaultServlet() ;
             ServletHolder staticContent = new ServletHolder(staticServlet) ;
             // Content location : isolate so as not to expose the current directory
+            
             staticContent.setInitParameter("resourceBase", "pages") ;
             addServlet(context, staticContent, "/") ;
         }

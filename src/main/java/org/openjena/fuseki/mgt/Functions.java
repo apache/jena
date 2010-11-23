@@ -6,10 +6,30 @@
 
 package org.openjena.fuseki.mgt;
 
-public class PageNames
+import javax.servlet.http.HttpServletRequest ;
+import javax.servlet.http.HttpSession ;
+
+/** Avoid code in JSPs */
+public class Functions
 {
-    static final String pageDataset = "dataset.html" ;
-    static final String pageControlPanel = "control-panel.jsp" ;
+    /** Return the name of the current dataset */ 
+    public static String dataset(HttpServletRequest request, String dftValue)
+    {
+        String ds = dataset(request) ;
+        if ( ds == null )
+            return dftValue ;
+        return ds ;
+    }
+    
+    /** Return the name of the current dataset */ 
+    public static String dataset(HttpServletRequest request)
+    {
+        HttpSession session = request.getSession(false) ;
+        if ( session == null )
+            return "No session";
+        String ds = (String)session.getAttribute("dataset") ;
+        return ds ;
+    }
 }
 
 /*

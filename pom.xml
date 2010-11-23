@@ -33,7 +33,9 @@
     <ver.arq>2.8.6</ver.arq>
     <ver.tdb>0.8.8-SNAPSHOT</ver.tdb>
     <ver.sdb>1.3.2</ver.sdb>
-    <ver.jetty>7.1.6.v20100715</ver.jetty>
+    <!-- These go together -->
+    <ver.jetty>7.2.1.v20101111</ver.jetty>
+    <ver.servlet-jsp>2.1.v20100127</ver.servlet-jsp>
     <ver.httpclient>4.0.3</ver.httpclient>
     <ver.httpfileupload>1.2.2</ver.httpfileupload>
   </properties>
@@ -104,6 +106,12 @@
       <artifactId>commons-codec</artifactId>
       <version>1.4</version>
     </dependency>
+    
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-server</artifactId>
+      <version>${ver.jetty}</version>
+    </dependency>
 
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
@@ -126,15 +134,15 @@
     <dependency>
       <groupId>org.mortbay.jetty</groupId>
       <artifactId>jsp-2.1-glassfish</artifactId>
+      <version>${ver.servlet-jsp}</version>
     </dependency>
 
-    <!--
-      <dependency>
+    <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-webapp</artifactId>
       <version>${ver.jetty}</version>
-      </dependency>    
-    -->
+    </dependency>    
+
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
