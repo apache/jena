@@ -123,6 +123,11 @@
       <version>${ver.jetty}</version>
     </dependency>    
 
+    <dependency>
+      <groupId>org.mortbay.jetty</groupId>
+      <artifactId>jsp-2.1-glassfish</artifactId>
+    </dependency>
+
     <!--
       <dependency>
       <groupId>org.eclipse.jetty</groupId>

@@ -115,7 +115,6 @@ public class SPARQLServer
         mt.addMimeMapping("nq",     WebContent.contentTypeNQuads+";charset=ascii") ;
         mt.addMimeMapping("trig",   WebContent.contentTypeTriG+";charset=utf-8") ;
         context.setMimeTypes(mt) ;
-
         
         String[] datasets = { datasetPath } ;
         DatasetRegistry.get().put(datasetPath, dsg) ;
