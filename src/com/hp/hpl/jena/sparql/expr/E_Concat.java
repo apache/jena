@@ -1,48 +1,40 @@
 /*
- * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
- * All rights reserved.
+ * (c) Copyright 2010 Epimorphics Ltd.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.function.library;
-
-//import org.apache.commons.logging.*;
+package com.hp.hpl.jena.sparql.expr;
 
 import java.util.List ;
 
-import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
-import com.hp.hpl.jena.sparql.expr.ExprList ;
-import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp ;
-import com.hp.hpl.jena.sparql.function.FunctionBase ;
-import com.hp.hpl.jena.sparql.util.Utils ;
 
-/** Function that concatenates arguments as strings.
- *  fn:concat
- * 
- * @author Andy Seaborne
- */
+/** SPARQL CONCATs */
 
-public class FN_StrConcat extends FunctionBase
+public class E_Concat extends ExprFunctionN
 {
-
-    @Override
-    public final NodeValue exec(List<NodeValue> args)
+    private static final String name = "concat" ;
+    
+    public E_Concat(ExprList args)
     {
-        if ( args == null )
-            // The contract on the function interface is that this should not happen.
-            throw new ARQInternalErrorException(Utils.className(this)+": Null args list") ;
-        
-        return XSDFuncOp.strConcat(args) ;
+        super(name, args) ;
     }
 
     @Override
-    public void checkBuild(String uri, ExprList args)
-    {}
+    protected Expr copy(ExprList newArgs)
+    {
+        return new E_Concat(newArgs) ;
+    }
+
+    @Override
+    protected NodeValue eval(List<NodeValue> args)
+    { 
+        return XSDFuncOp.strConcat(args) ;
+    }
 }
 
 /*
- * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

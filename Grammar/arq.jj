@@ -1241,6 +1241,8 @@ Expr BuiltInCall() : { Expr expr ; Expr expr1 = null ; Expr expr2 = null ;
     |
       <NIL> { return new E_BNode() ; }
     )
+  | <CONCAT> a = ExpressionList()
+    { return new E_Concat(a) ; }
   | <RAND>
     ( <LPAREN> expr1 = Expression() <RPAREN>
        { return new E_Random(expr1) ; }
@@ -1544,6 +1546,7 @@ TOKEN [IGNORE_CASE] :
 | < URI: "uri" >
 | < CAST: "cast" >
 | < CALL: "call" >
+| < CONCAT: "concat" >
 | < STR: "str" >
 | < STRLANG: "strlang" >
 | < STRDT: "strdt" >

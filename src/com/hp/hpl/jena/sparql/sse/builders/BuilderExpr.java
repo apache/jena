@@ -231,6 +231,7 @@ public class BuilderExpr
         dispatch.put(Tags.tagDatatype, buildDatatype) ;
         dispatch.put(Tags.tagBound, buildBound) ;
         dispatch.put(Tags.tagCoalesce, buildCoalesce) ;
+        dispatch.put(Tags.tagConcat, buildConcat) ;
         dispatch.put(Tags.tagIf, buildConditional) ;
         dispatch.put(Tags.tagIRI, buildIsIRI) ;
         dispatch.put(Tags.tagURI, buildIsURI) ;
@@ -578,6 +579,15 @@ public class BuilderExpr
         {
             ExprList exprs = buildExprListUntagged(list, 1) ;
             return new E_Coalesce(exprs) ;
+        }
+    };
+
+    final protected Build buildConcat = new Build()
+    {
+        public Expr make(ItemList list)
+        {
+            ExprList exprs = buildExprListUntagged(list, 1) ;
+            return new E_Concat(exprs) ;
         }
     };
 

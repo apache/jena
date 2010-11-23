@@ -99,6 +99,7 @@
 [<URI>]        ::= 'URI'
 [<IRI>]        ::= 'IRI'
 [<BNODE>]      ::= 'BNODE'
+[<CONCAT>]     ::= 'CONCAT'
 [<LITERAL>]    ::= 'LITERAL'
 [<DTYPE>]      ::= 'DATATYPE'
 [<LANG>]       ::= 'LANG'

@@ -93,7 +93,7 @@ TOKENS
 | <BNODE: "bnode">
 | <IRI: "iri">
 | <URI: "uri">
-| <CAST: "cast">
+| <CONCAT: "concat">
 | <STR: "str">
 | <STRLANG: "strlang">
 | <STRDT: "strdt">
@@ -405,6 +405,7 @@ NON-TERMINALS
 		|	<IRI> <LPAREN> Expression <RPAREN>
 		|	<URI> <LPAREN> Expression <RPAREN>
 		|	<BNODE> ( <LPAREN> Expression <RPAREN> | <NIL> )
+		|	<CONCAT> ExpressionList
 		|	<RAND> ( <LPAREN> Expression <RPAREN> | <NIL> )
 		|	<COALESCE> ExpressionList
 		|	<IF> <LPAREN> Expression <COMMA> Expression <COMMA> Expression <RPAREN>

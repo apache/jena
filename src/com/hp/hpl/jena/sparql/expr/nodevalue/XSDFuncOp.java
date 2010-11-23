@@ -14,6 +14,7 @@ import static com.hp.hpl.jena.sparql.expr.nodevalue.NumericType.OP_INTEGER ;
 import java.math.BigDecimal ;
 import java.math.BigInteger ;
 import java.text.DecimalFormat ;
+import java.util.List ;
 
 import org.openjena.atlas.lib.StrUtils ;
 
@@ -429,6 +430,19 @@ public class XSDFuncOp
         strCheck(string) ;
         return NodeValue.makeString(string.getString().toUpperCase()) ;
     }
+    
+    public static NodeValue strConcat(List<NodeValue> args)
+    {
+        StringBuilder result = new StringBuilder() ;
+        for ( NodeValue arg : args )
+        {
+            //strCheck(arg) ;
+            String x = arg.asString() ;
+            result.append(x) ;
+        }
+        return NodeValue.makeString(result.toString()) ;
+    }
+    
 
     // .getString does this anyway.
 //    private static void strCheck(NodeValue str)

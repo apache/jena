@@ -142,7 +142,7 @@ public interface SPARQLParser11Constants {
   /** RegularExpression Id. */
   int URI = 68;
   /** RegularExpression Id. */
-  int CAST = 69;
+  int CONCAT = 69;
   /** RegularExpression Id. */
   int STR = 70;
   /** RegularExpression Id. */
@@ -408,7 +408,7 @@ public interface SPARQLParser11Constants {
     "\"bnode\"",
     "\"iri\"",
     "\"uri\"",
-    "\"cast\"",
+    "\"concat\"",
     "\"str\"",
     "\"strlang\"",
     "\"strdt\"",
