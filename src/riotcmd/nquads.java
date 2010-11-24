@@ -9,7 +9,6 @@ package riotcmd;
 
 import org.openjena.riot.Lang ;
 
-import arq.CmdLangParse ;
 
 import com.hp.hpl.jena.sparql.util.Utils ;
 

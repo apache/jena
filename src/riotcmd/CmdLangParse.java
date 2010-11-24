@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package arq;
+package riotcmd;
 
 import java.io.ByteArrayInputStream ;
 import java.io.IOException ;

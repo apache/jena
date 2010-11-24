@@ -3,6 +3,9 @@
 @prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix : <http://example.org/> .
 
+:s :p :o1 .
+:s :p :o2 .
+
 ## :s1 :p "<x></x>"^^rdf:XMLLiteral .
 ## :s2 :p "<x/>"^^rdf:XMLLiteral .
 ## :s3 :p '''<x xmlns="http://example/ns#" attr="foo"></x>'''^^rdf:XMLLiteral .

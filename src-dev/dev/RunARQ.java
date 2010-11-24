@@ -80,6 +80,7 @@ public class RunARQ
     
     public static void main(String[] argv) throws Exception
     {
+        riotcmd.ntriples.main("--validate", "D.nt")  ; System.exit(0) ;
         arq.update.main("--update=update.ru", "--dump") ;
         System.exit(0) ;
         
