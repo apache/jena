@@ -11,14 +11,11 @@ public class DevFuseki
     
     // 4. header and trailer to put "if logged in" around form.
     // 5. populate forms with prefixes
-    // 6. set dft base name for update/query.
-    // clear out pages
     
     // Assemblies:
     //   one jar
     //   SOH
-    //   Fuksei.zip
-    // File upload
+    //   Fukesi.zip
     
     // CORS: Access-Control-Allow-Origin: *
     // http://esw.w3.org/CORS_Enabled
@@ -28,7 +25,6 @@ public class DevFuseki
     // ETags.
     
     // Authentication
-
     
     // SOH
     //   Refactor into body/no_body send // body/no_body receive
