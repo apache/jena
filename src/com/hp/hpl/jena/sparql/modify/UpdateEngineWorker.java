@@ -29,6 +29,7 @@ import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphWrapper ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.core.Substitute ;
+import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.Plan ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
@@ -290,8 +291,12 @@ class UpdateEngineWorker implements UpdateVisitor
         return el ;
     }
 
-    private MultiMap<Node, Triple> execBase(List<Quad> quads, final Node dftGraph, List<Binding> bindings)
+    private MultiMap<Node, Triple> template(List<Quad> quads, final Node dftGraph, List<Binding> bindings)
     {
+        // ** BNode mapping.
+        
+        // Templating.
+        
         if ( quads == null || quads.isEmpty() ) return null ; 
         // The default graph has been set to something else.
         if ( dftGraph != null )
@@ -300,6 +305,7 @@ class UpdateEngineWorker implements UpdateVisitor
                 public Quad convert(Quad quad)
                 {
                     if ( ! quad.isDefaultGraph() ) return quad ;
+                    
                     return new Quad(dftGraph, quad.getSubject(), quad.getPredicate(), quad.getObject()) ;
                 }
             };
@@ -312,7 +318,7 @@ class UpdateEngineWorker implements UpdateVisitor
     
     private void execDelete(List<Quad> quads, Node dftGraph, List<Binding> bindings)
     {
-        MultiMap<Node, Triple> acc = execBase(quads, dftGraph, bindings) ;
+        MultiMap<Node, Triple> acc = template(quads, dftGraph, bindings) ;
         if ( acc == null ) return ; 
         
         for ( Node gn : acc.keys() )
@@ -324,7 +330,7 @@ class UpdateEngineWorker implements UpdateVisitor
 
     private void execInsert(List<Quad> quads, Node dftGraph, List<Binding> bindings)
     {
-        MultiMap<Node, Triple> acc = execBase(quads, dftGraph, bindings) ;
+        MultiMap<Node, Triple> acc = template(quads, dftGraph, bindings) ;
         if ( acc == null ) return ; 
         
         for ( Node gn : acc.keys() )
@@ -367,7 +373,7 @@ class UpdateEngineWorker implements UpdateVisitor
 
     // XXX Consolidate:
     //  TemplateTriple and this code into Substitute library
-    //  Blank processing into substitue library 
+    //  Blank node processing into substitue library 
     
     private static Quad subst(Quad quad, Binding b, Map<Node, Node> bNodeMap)
     {
@@ -381,16 +387,16 @@ class UpdateEngineWorker implements UpdateVisitor
         Node p1 = p ;
         Node o1 = o ;
         
-        if ( g1.isBlank() )
+        if ( g1.isBlank() || Var.isBlankNodeVar(g1) )
             g1 = newBlank(g1, bNodeMap) ;
         
-        if ( s1.isBlank() )
+        if ( s1.isBlank() || Var.isBlankNodeVar(s1) )
             s1 = newBlank(s1, bNodeMap) ;
 
-        if ( p1.isBlank() )
+        if ( p1.isBlank() || Var.isBlankNodeVar(p1) )
             p1 = newBlank(p1, bNodeMap) ;
 
-        if ( o1.isBlank() )
+        if ( o1.isBlank() || Var.isBlankNodeVar(o1) )
             o1 = newBlank(o1, bNodeMap) ;
 
         Quad q = quad ;
