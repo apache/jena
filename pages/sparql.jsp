@@ -50,7 +50,7 @@
     <p><b>File upload</b></p>
     <div class="moreindent">
       <form action="<%= ds %>/upload" enctype="multipart/form-data" method="post">
-        File to upload: <input type="file" name="DATA" size="40">
+        File: <input type="file" name="DATA" size="40"><br/>
         <input type="submit" value="Send">
       </form>
     </div>

@@ -166,7 +166,6 @@ public class DataValidator extends ValidatorBase
         // Language?
         LangRIOT parser = RiotReader.createParserQuads(tokenizer, language, null, sink) ;
         parser.getProfile().setHandler(errorHandler) ;
-        parser.getProfile().setHandler(errorHandler) ;
         return parser ;
     }
 
