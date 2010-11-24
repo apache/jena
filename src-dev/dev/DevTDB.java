@@ -5,7 +5,9 @@ public class DevTDB
     // ---- BulkLoader2
     // Smaller working files.
     // Stats while loading.
-    // Prefixes to be set during bulk loading 1 & 2 
+    // Tune sort --buffer-size=50%
+    // Prefixes to be set during bulk loading 1 & 2
+    // Interface to read/write longs.
     
     // Extract a better set of factory operations, using the default names and sizes, 
     // for internal structures like B+Tress and NodeTable, and TupleIndexes.
