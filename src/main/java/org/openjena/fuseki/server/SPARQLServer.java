@@ -22,7 +22,6 @@ import org.openjena.atlas.logging.Log ;
 import org.openjena.fuseki.Fuseki ;
 import org.openjena.fuseki.HttpNames ;
 import org.openjena.fuseki.mgt.ActionDataset ;
-import org.openjena.fuseki.mgt.Manager ;
 import org.openjena.fuseki.servlets.SPARQL_QueryDataset ;
 import org.openjena.fuseki.servlets.SPARQL_REST_RW ;
 import org.openjena.fuseki.servlets.SPARQL_Update ;
@@ -118,7 +117,6 @@ public class SPARQLServer
         DatasetRegistry.get().put(datasetPath, dsg) ;
         
         String validationRoot = "/validate" ;
-        String managerName = "/manager" ;
         boolean installValidators = true ;
         boolean installManager = true ;
 
@@ -162,11 +160,8 @@ public class SPARQLServer
             //?? Need separate context for admin stuff??
             context.setResourceBase("pages") ;
             addServlet(context, jspContent, "*.jsp") ;
-            
-            // Manager
-            HttpServlet manager = new Manager() ;
-            addServlet(context, manager, managerName) ;
-            
+
+            // Action when control panel selects a dataset.
             HttpServlet datasetChooser = new ActionDataset() ;
             addServlet(context, datasetChooser, "/dataset") ;
         }
