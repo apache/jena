@@ -25,6 +25,7 @@ import org.openjena.riot.Lang ;
 import org.openjena.riot.RiotException ;
 import org.openjena.riot.RiotReader ;
 import org.openjena.riot.lang.LangRIOT ;
+import org.openjena.riot.system.RiotLib ;
 import org.openjena.riot.tokens.Tokenizer ;
 import org.openjena.riot.tokens.TokenizerFactory ;
 
@@ -165,7 +166,8 @@ public class DataValidator extends ValidatorBase
         } ;
         // Language?
         LangRIOT parser = RiotReader.createParserQuads(tokenizer, language, null, sink) ;
-        parser.getProfile().setHandler(errorHandler) ;
+        // Don't resolve IRIs.  Do checking.
+        parser.setProfile(RiotLib.profile(null, false, true, errorHandler)) ;
         return parser ;
     }
 
