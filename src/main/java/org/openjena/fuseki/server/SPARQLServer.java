@@ -176,6 +176,8 @@ public class SPARQLServer
             // Make file extensions works for RDF file types. 
             // Finally, static content
             DefaultServlet staticServlet = new DefaultServlet() ;
+            String [] files = { "fuseki.html" } ;
+            context.setWelcomeFiles(files) ;
             ServletHolder staticContent = new ServletHolder(staticServlet) ;
             // Content location : isolate so as not to expose the current directory
             

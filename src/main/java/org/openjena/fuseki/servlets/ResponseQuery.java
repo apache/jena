@@ -45,14 +45,6 @@ public class ResponseQuery
     static AcceptList prefContentTypeResultSet     = DEF.rsOffer ; 
     static AcceptList prefContentTypeRDF           = DEF.rdfOffer ;
 
-//    static final String paramStyleSheet     = "stylesheet" ;
-//    static final String paramAccept         = "accept" ;
-//    static final String paramOutput1        = "output" ;        // See Yahoo! developer: http://developer.yahoo.net/common/json.html 
-//    static final String paramOutput2        = "format" ;        // Alternative name 
-//    static final String paramCallback       = "callback" ;
-//    static final String paramForceAccept    = "force-accept" ;  // Force the accept header at the last moment 
-//    static final String headerAccept        = "Accept" ;
-    
     public static void doResponseModel(Model model, HttpServletRequest request, HttpServletResponse response)
     {
         String mimeType = null ;        // Header request type 
@@ -73,12 +65,7 @@ public class ResponseQuery
         RDFWriter rdfw = FusekiLib.chooseWriter(lang) ;
              
         if ( rdfw instanceof RDFXMLWriterI )
-        {
             rdfw.setProperty("showXmlDeclaration", "true") ;
-//            if ( rdfw instanceof Abbreviated )
-//                // Workaround for the j.cook.up bug.
-//                rdfw.setProperty("blockRules", "propertyAttr") ;
-        }
         
         // TODO Allow a mode of write to buffer (memory, disk), write buffer later.
         // Time/space tradeoff.
@@ -196,14 +183,6 @@ public class ResponseQuery
                     }
                 }, request, response) ;
             }
-//            catch (IOException ioEx)
-//            {
-//                if ( isEOFexception(ioEx) )
-//                    log.warn("IOException[(SELECT/XML)] (ignored) "+ioEx, ioEx) ;
-//                else
-//                    log.debug("IOException[(SELECT/XML)] (ignored) "+ioEx, ioEx) ;
-//            }
-            // This catches things like NIO exceptions.
             catch (Exception ex) { log.debug("Exception [SELECT/XML]"+ex, ex) ; } 
             return ;
         }
@@ -223,14 +202,6 @@ public class ResponseQuery
                     }
                 }, request, response) ;
             }
-//            catch (IOException ioEx)
-//            {
-//                if ( isEOFexception(ioEx) )
-//
-//                    log.warn("IOException[SELECT/JSON] (ignored) "+ioEx, ioEx) ;
-//                else
-//                    log.debug("IOException [SELECT/JSON] (ignored) "+ioEx, ioEx) ;
-//            }
             // This catches things like NIO exceptions.
             catch (Exception ex) { log.debug("Exception [SELECT/JSON] "+ex, ex) ; } 
             return ;
@@ -429,7 +400,8 @@ public class ResponseQuery
     public static final String contentOutputXML           = "xml" ;
     public static final String contentOutputSPARQL        = "sparql" ;
     public static final String contentOutputText          = "text" ;
-    public static final String contentOutputCSV           = "text" ;
+    public static final String contentOutputCSV           = "csv" ;
+    public static final String contentOutputTSV           = "tsv" ;
     
     private static String expandShortName(String str)
     {
@@ -438,16 +410,22 @@ public class ResponseQuery
         // Some short names.
         if ( str.equalsIgnoreCase(contentOutputJSON) ) 
             return WebContent.contentTypeResultsJSON ;
+        
         if ( str.equalsIgnoreCase(contentOutputSPARQL) )
             return WebContent.contentTypeResultsXML ;
+        
         if ( str.equalsIgnoreCase(contentOutputXML) )
             return WebContent.contentTypeResultsXML ;
+        
         if ( str.equalsIgnoreCase(contentOutputText) )
             return WebContent.contentTypeTextPlain ;
+        
         if ( str.equalsIgnoreCase(contentOutputCSV) )
             return WebContent.contentTypeTextCSV ;
-        if ( str.equalsIgnoreCase(contentOutputCSV) )
+        
+        if ( str.equalsIgnoreCase(contentOutputTSV) )
             return WebContent.contentTypeTextTSV ;
+        
         return str ;
     }
     

@@ -8,19 +8,14 @@
   </head>
 
   <body>
-    <h1>Fuseki</h1>
-    <% String ds = Functions.dataset(request) ; %>
-     <ul>
-      <li> <a href="sparql.jsp">SPARQL</a></li>
-      <li> <a href="upload.jsp">File upload</a></li>
-    </ul>
-<!--
-    <p>Actions on dataset <i><%= ds %></i></p>
-    <ul>
-      <li> <a href="query.jsp">Query</a></li>
-      <li> <a href="update.jsp">Update</a></li>
-      <li> <a href="upload.jsp">File upload</a></li>
-    </ul>
--->
+    <h1>Fuseki Control Panel</h1>
+    <p>Choose dataset:</p>
+    <form action="dataset" method="post">
+      Dataset: <select name="dataset">
+        <%= Functions.datasetsAsSelectOptions(request) %>
+      <div>
+        <input type="submit" value="Send">
+      </div>
+    </form>
   </body>
 </html>

@@ -6,8 +6,12 @@
 
 package org.openjena.fuseki.mgt;
 
+import java.util.Iterator ;
+
 import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpSession ;
+
+import org.openjena.fuseki.server.DatasetRegistry ;
 
 /** Avoid code in JSPs */
 public class Functions
@@ -30,6 +34,34 @@ public class Functions
         String ds = (String)session.getAttribute("dataset") ;
         return ds ;
     }
+    
+    /** Return lists of datasets */ 
+    public static String datasetsAsSelectOptions(HttpServletRequest request)
+    {
+        StringBuilder buff = new StringBuilder() ;
+        
+        Iterator<String> iter = DatasetRegistry.get().keys() ;
+        for ( ; iter.hasNext() ; )
+        {
+            String name = iter.next() ;
+            buff.append("<option value=\""+name+"\">"+name+"</option>") ;
+        }
+        return buff.toString() ;
+    }
+    /** Return lists of datasets */ 
+    public static String datasetsAsLitItems(HttpServletRequest request)
+    {
+        StringBuilder buff = new StringBuilder() ;
+        
+        Iterator<String> iter = DatasetRegistry.get().keys() ;
+        for ( ; iter.hasNext() ; )
+        {
+            String name = iter.next() ;
+            buff.append("  <li>"+name+"</li>") ;
+        }
+        return buff.toString() ;
+    }
+    
 }
 
 /*

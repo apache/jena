@@ -7,6 +7,17 @@ package dev;
 
 public class DevFuseki
 {
+    // Feedback when SPARQL Update POST done
+    // MIME type csv via accept does not work.
+    
+    // 1. Single SPARQL page: query and update
+    // 2. login at http://localhost:3030/
+    // 3. manager servlet to go.
+    // 4. header and trailer to put "if logged in" around form.
+    // 5. populate forms with prefixes
+    // 6. set dft base name for update/query.
+    // clear out pages
+    
     // Assemblies:
     //   one jar
     //   SOH

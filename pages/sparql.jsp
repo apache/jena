@@ -18,13 +18,18 @@
       <form action="<%= ds%>/query" method="get">
         <textarea  style="background-color: #F0F0F0;" name="query" cols="70" rows="10"></textarea>
         <br/>
-        Output XML: <input type="radio" name="output" value="xml" checked/>
-	    with XSLT style sheet (leave blank for none): 
-	    <input name="stylesheet" size="25" value="/xml-to-html.xsl" /> <br/>
-	    JSON output: <input type="radio" name="output" value="json"/>
-	    Text output: <input type="radio" name="output" value="text"/>
-	    CSV output: <input type="radio" name="output" value="csv"/>
-	    TSV output: <input type="radio" name="output" value="tsv"/><br/>
+
+        Output: <select name="output">
+          <option value="xml">XML</option>
+          <option value="json">JSON</option>
+          <option value="text">Text</option>
+          <option value="csv">CSV</option>
+          <option value="tsv">TSV</option>
+        </select>
+        <br/>
+	    XSLT style sheet (blank for none): 
+        <input name="stylesheet" size="20" value="/xml-to-html.xsl" />
+        <br/>
         <input type="checkbox" name="force-accept" value="text/plain"/>
         Force the accept header to <tt>text/plain</tt> regardless 
 	    <br/>
