@@ -36,6 +36,7 @@ import com.hp.hpl.jena.update.UpdateRequest ;
 public class SPARQL_Update extends SPARQL_ServletBase
 {
     private static Logger log = LoggerFactory.getLogger(SPARQL_Update.class) ;
+    private static String updateParseBase = "http://example/base/" ;
     
     private class HttpActionUpdate extends HttpAction {
         public HttpActionUpdate(long id, DatasetGraph dsg, HttpServletRequest request, HttpServletResponse response, boolean verbose)
@@ -167,6 +168,7 @@ public class SPARQL_Update extends SPARQL_ServletBase
         catch (UpdateException ex) { errorBadRequest(ex.getMessage()) ; req = null ; }
         catch (QueryParseException ex) { errorBadRequest(ex.getMessage()) ; req = null ; }
         execute(action, req) ;
+        successNoContent(action) ;
     }
 
     private void executeForm(HttpActionUpdate action)
@@ -177,11 +179,18 @@ public class SPARQL_Update extends SPARQL_ServletBase
         
         UpdateRequest req ; 
         try {
-            req = UpdateFactory.create(requestStr) ;
+            // BROKEN - need ARQ update.
+            req = UpdateFactory.create(requestStr, updateParseBase) ;
+            // Results.  Hmm - hardwired.
+//            action.response.setContentType("text/plain");
+//            action.response.setStatus(HttpSC.OK_200) ;
+//            ServletOutputStream out = response.getOutputStream() ;
+//            out.print("Success") ;
         }
         catch (UpdateException ex) { errorBadRequest(ex.getMessage()) ; req = null ; }
         catch (QueryParseException ex) { errorBadRequest(ex.getMessage()) ; req = null ; }
         execute(action, req) ;
+        successPage(action,"Update succeeded") ;
     }
     
     private void execute(HttpActionUpdate action, UpdateRequest updateRequest)
@@ -190,7 +199,6 @@ public class SPARQL_Update extends SPARQL_ServletBase
         action.beginWrite() ;
         try {
             UpdateAction.execute(updateRequest, action.dsg) ;
-            successNoContent(action) ;
         }
         catch ( UpdateException ex) { errorBadRequest(ex.getMessage()) ; }
         finally { action.endWrite() ; }

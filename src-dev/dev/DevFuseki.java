@@ -11,15 +11,15 @@ public class DevFuseki
     
     // ParserFor - share between SPARQL_REST and SPARQL_Upload
     // Uploadto dataset (TriG, N-Quads)
-    
-    // 4. header and trailer to put "if logged in" around form.
-    // 5. populate forms with prefixes
-    // Upload to named graph
+   
+    // 5. populate forms with prefixes (later)
     
     // Assemblies:
     //   one jar
     //   SOH
     //   Fukesi.zip
+    
+    // ----
     
     // CORS: Access-Control-Allow-Origin: *
     // http://esw.w3.org/CORS_Enabled
