@@ -7,6 +7,9 @@ package dev;
 
 public class DevFuseki
 {
+    // Testing:
+    //   No file -> error.
+    
     // ParserFor - share between SPARQL_REST and SPARQL_Upload
     // UploadTo dataset (TriG, N-Quads)
    
