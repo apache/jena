@@ -6,7 +6,7 @@
   <artifactId>fuseki</artifactId>
   <packaging>jar</packaging>
   <name>Fuseki</name>
-  <version>0.0.0-SNAPSHOT</version>
+  <version>0.1.0-SNAPSHOT</version>
   <description/>
   <url>http://openjena.org/</url>
 
@@ -296,7 +296,7 @@
         </configuration>
 	<executions>
           <execution>
-            <id>create-standalone-server</id>
+            <id>create-assemblies</id>
             <phase>package</phase>
             <goals>
               <goal>single</goal>
