@@ -39,11 +39,9 @@ import org.openjena.riot.ErrorHandlerFactory ;
 import org.openjena.riot.Lang ;
 import org.openjena.riot.RiotException ;
 import org.openjena.riot.RiotReader ;
-import org.openjena.riot.lang.LangRDFXML ;
 import org.openjena.riot.lang.LangRIOT ;
 import org.openjena.riot.lang.SinkTriplesToGraph ;
 import org.openjena.riot.system.IRIResolver ;
-import org.openjena.riot.system.RiotLib ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
@@ -304,8 +302,8 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
         
         try {
             InputStream input = action.request.getInputStream() ;
-            String base =  SPARQL_ServletBase.wholeRequestURL(action.request) ;
-
+            String base = SPARQL_ServletBase.wholeRequestURL(action.request) ;
+            
             boolean buffering = false ;
             if ( buffering )
             {
@@ -325,36 +323,25 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
                     input = new ByteArrayInputStream(x.getBytes("UTF-8")) ; 
                 }
             }
-            Graph graphTmp = GraphFactory.createGraphMem() ;
-            Sink<Triple> sink = new SinkTriplesToGraph(graphTmp) ;
-            // Need ARQ upgrade
-            // LangRIOT parser = RiotReader.createParserTriples(input, lang, base, sink) ;
-            // parser.getProfile().setHandler(errorHandler) ;
-            LangRIOT parser ;
-
-            if ( lang.equals(Lang.RDFXML) )
-            {
-                String url = action.request.getRequestURL().toString() ;
-                parser = LangRDFXML.create(action.request.getInputStream(), url, url, errorHandler, sink) ;
-                parser.setProfile(RiotLib.profile(url, true, true, errorHandler)) ; 
-            }
-            else
-            {
-                parser = RiotReader.createParserTriples(input, lang, base, sink) ;
-                parser.getProfile().setHandler(errorHandler) ;
-            }
-
-            try {
-                parser.parse() ;
-            } catch (RiotException ex) { errorBadRequest("Parse error: "+ex.getMessage()) ; }
             
-            DatasetGraph dsgTmp = DatasetGraphFactory.create(graphTmp) ;
-            
-            
-            return dsgTmp ;
+            return parse(action, lang, base, input) ;
         } catch (IOException ex) { errorOccurred(ex) ; return null ; }
     }
 
+    private static DatasetGraph parse(HttpActionREST action, Lang lang, String base, InputStream input)
+    {
+        Graph graphTmp = GraphFactory.createGraphMem() ;
+        Sink<Triple> sink = new SinkTriplesToGraph(graphTmp) ;
+        LangRIOT parser = RiotReader.createParserTriples(input, lang, base, sink) ;
+        parser.getProfile().setHandler(errorHandler) ;
+        try {
+            parser.parse() ;
+        } catch (RiotException ex) { errorBadRequest("Parse error: "+ex.getMessage()) ; }
+        DatasetGraph dsgTmp = DatasetGraphFactory.create(graphTmp) ;
+        
+        return dsgTmp ;
+    }
+    
     protected static void validate(HttpServletRequest request)
     {
         @SuppressWarnings("unchecked")

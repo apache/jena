@@ -21,23 +21,30 @@ import org.apache.commons.fileupload.FileItemStream ;
 import org.apache.commons.fileupload.servlet.ServletFileUpload ;
 import org.apache.commons.fileupload.util.Streams ;
 import org.openjena.atlas.lib.Sink ;
+import org.openjena.fuseki.FusekiLib ;
 import org.openjena.fuseki.HttpNames ;
+import org.openjena.fuseki.conneg.ContentType ;
 import org.openjena.fuseki.http.HttpSC ;
 import org.openjena.fuseki.server.DatasetRegistry ;
+import org.openjena.riot.ErrorHandler ;
 import org.openjena.riot.ErrorHandlerFactory ;
+import org.openjena.riot.Lang ;
+import org.openjena.riot.RiotException ;
 import org.openjena.riot.RiotReader ;
 import org.openjena.riot.lang.LangRIOT ;
 import org.openjena.riot.lang.SinkTriplesToGraph ;
+import org.openjena.riot.system.IRIResolver ;
 
 import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.iri.IRI ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
 
 public class SPARQL_Upload extends SPARQL_ServletBase 
 {
-    // RENAME
-    // Reserve : /system/ /fuseki/ /mgt/ /admin/
+    private static ErrorHandler errorHandler = ErrorHandlerFactory.errorHandlerStd(serverlog) ;
     
     private class HttpActionUpload extends HttpAction {
         public HttpActionUpload(long id, DatasetGraph dsg, HttpServletRequest request, HttpServletResponse response, boolean verbose)
@@ -81,14 +88,26 @@ public class SPARQL_Upload extends SPARQL_ServletBase
     @Override
     protected void perform(long id, DatasetGraph dsg, HttpServletRequest request, HttpServletResponse response)
     {
+        // Only allows one file in the upload.
+        
         validate(request) ;
         HttpActionUpload action = new HttpActionUpload(id, dsg, request, response, verbose_debug) ;
         
         boolean isMultipart = ServletFileUpload.isMultipartContent(request);
         if ( ! isMultipart )
             error(HttpSC.BAD_REQUEST_400 , "Not a file upload") ;
+        
         ServletFileUpload upload = new ServletFileUpload();
+        // Locking only needed over the insert into dataset
         try {
+            String graphName = null ;
+            Graph graphTmp = GraphFactory.createGraphMem() ;
+            Node gn = null ;
+            String name = null ;  
+            ContentType ct = null ;
+            Lang lang = null ;
+            int tripleCount = 0 ;
+            
             FileItemIterator iter = upload.getItemIterator(request);
             while (iter.hasNext()) {
                 FileItemStream item = iter.next();
@@ -96,41 +115,71 @@ public class SPARQL_Upload extends SPARQL_ServletBase
                 InputStream stream = item.openStream();
                 if (item.isFormField())
                 {
-                    // TODO This will be the IRI.
+                    // Graph name.
                     String value = Streams.asString(stream) ;
+                    if ( fieldName.equals(HttpNames.paramNamedGraphURI) )
+                    {
+                        graphName = value ;
+                        if ( graphName != null && ! graphName.equals(HttpNames.valueDefault) )
+                        {
+                            IRI iri = IRIResolver.parseIRI(value) ;
+                            if ( iri.hasViolation(false) )
+                                errorBadRequest("Bad IRI: "+graphName) ;
+                            if ( iri.getScheme() == null )
+                                errorBadRequest("Bad IRI: no IRI scheme name: "+graphName) ;
+                            if ( iri.getRawHost() == null )
+                                errorBadRequest("Bad IRI: no host name: "+graphName) ;
+                            if ( iri.getRawPath() != null && iri.getRawPath().length() > 0 && iri.getRawPath().charAt(0) != '/' )
+                                errorBadRequest("Bad IRI: Pat does not start '/': "+graphName) ;
+                            gn = Node.createURI(graphName) ;
+                        }
+                    }
+                    // Add file type?
+                    else
+                        serverlog.info(format("[%d] Upload: Field="+fieldName+" - ignored")) ;
                     //System.out.println("Form field " + fieldName + " with value " + Streams.asString(stream) + " detected.");
                 } else {
 //                    System.out.println("File field " + fieldName + " with file name "
 //                                       + item.getName() + " detected.");
                     // Process the input stream
-                    String name = item.getName() ; 
-                    serverlog.info(format("[%d] Upload: Filename: %s", action.id, name)) ;
+                    name = item.getName() ; 
+                    String contentTypeHeader = item.getContentType() ;
+                    ct = FusekiLib.contentType(contentTypeHeader) ;
+                    lang = FusekiLib.langFromContentType(ct.contentType) ;
+                    if ( lang == null )
+                        lang = Lang.guess(name) ;
+                    String base = null ;
 
                     // We read into a in-memory graph, then (if successful) update the dataset.
-                    Graph graph = GraphFactory.createDefaultGraph() ;
-                    Sink<Triple> sink = new SinkTriplesToGraph(graph) ;
-                    // TODO Content-type.
+                    Sink<Triple> sink = new SinkTriplesToGraph(graphTmp) ;
+                    LangRIOT parser = RiotReader.createParserTriples(stream, lang, base, sink) ;
+                    parser.getProfile().setHandler(errorHandler) ;
                     try {
-                        LangRIOT parser = RiotReader.createParserTurtle(stream, null, sink) ;
-                        parser.getProfile().setHandler(ErrorHandlerFactory.errorHandlerNoLogging) ;
                         parser.parse() ;
-                    } catch (Exception ex) { errorBadRequest(ex.getMessage()) ; }
-                    
-                    int x = graph.size() ;
-                    // Only default graph.
-                    // TODO named Destination
-                    action.beginWrite() ;
-                    try {
-                        dsg.getDefaultGraph().getBulkUpdateHandler().add(graph) ;
-                    } finally { action.endWrite() ; }
-                    
-                    serverlog.info(format("[%d] Upload: %d triples", action.id, x)) ;
-                    
-                    response.setContentType("text/plain") ;
-                    response.getOutputStream().print("Triples = "+x) ;
-                    success(action) ;
+                    } catch (RiotException ex) { errorBadRequest("Parse error: "+ex.getMessage()) ; }
+                    tripleCount = graphTmp.size() ;
+                    //DatasetGraph dsgTmp = DatasetGraphFactory.create(graphTmp) ;
                 }
-            }
+            }    
+                
+                
+            if ( graphName == null )
+                graphName = "default" ;
+            serverlog.info(format("[%d] Upload: Filename: %s, Content-Type=%s, Charset=%s => (%s,%s,%d triple(s))", 
+                                      action.id, name,  ct.contentType, ct.charset, graphName, lang.getName(), tripleCount)) ;
+
+            // Delay updating until all form fields processed to get the graph name 
+            action.beginWrite() ;
+            try {
+                if ( graphName.equals(HttpNames.valueDefault) ) 
+                    dsg.getDefaultGraph().getBulkUpdateHandler().add(graphTmp) ;
+                else
+                    dsg.getGraph(gn).getBulkUpdateHandler().add(graphTmp) ;
+            } finally { action.endWrite() ; }
+                    
+            response.setContentType("text/plain") ;
+            response.getOutputStream().print("Triples = "+tripleCount) ;
+            success(action) ;
         }
         catch (ActionErrorException ex) { throw ex ; }
         catch (Exception ex)
