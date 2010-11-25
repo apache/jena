@@ -49,12 +49,12 @@ public final class BPTreeNode extends BPTreePage
     RecordBuffer records ;
     PtrBuffer ptrs ;
 
-    /* BTree => B+Tree
+    /* B+Tree
      * 
      * Two block managers : 
      *   one for Nodes (BPlusTreePages => BPlusTreeNode)
-     *   one for leaves (RecordBufferPages)
-     * The key held in the highest in the block  
+     *   one for Leaves (RecordBufferPages)
+     * The split key is the held in the highest in the block  
      * 
      * A "leaf" node is a leaf of the B+Tree part, and points to 
      * highest record in a RecordBuffer 
