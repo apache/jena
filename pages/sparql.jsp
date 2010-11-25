@@ -10,7 +10,9 @@
   </head>
   <body>
     <h1>Fuseki Query</h1>
-    <%@ include file="header.inc" %>
+    Dataset: <%= Functions.dataset(request, "No Session") %>
+    <hr/>
+
     <% String ds = Functions.dataset(request) ; %>
 
     <p><b>SPARQL Query</b></p>
@@ -51,11 +53,11 @@
     <div class="moreindent">
       <form action="<%= ds %>/upload" enctype="multipart/form-data" method="post">
         File: <input type="file" name="DATA" size="40"><br/>
+        Graph: <input name="graph" size="20" value="default"/><br/>
         <input type="submit" value="Send">
       </form>
     </div>
-
-    <%@ include file="trailer.inc" %>
-  </body>
+    <hr/>
+      </body>
 </html>   
 

@@ -117,7 +117,7 @@ public class SPARQL_Upload extends SPARQL_ServletBase
                 {
                     // Graph name.
                     String value = Streams.asString(stream) ;
-                    if ( fieldName.equals(HttpNames.paramNamedGraphURI) )
+                    if ( fieldName.equals(HttpNames.paramGraph) )
                     {
                         graphName = value ;
                         if ( graphName != null && ! graphName.equals(HttpNames.valueDefault) )

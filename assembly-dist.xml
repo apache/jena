@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- 
 The distribution.
-Assumes jar made and onjar has been assembled.
+Assumes jar made and onejar has been assembled.
 -->
 
 <assembly xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0"
@@ -16,15 +16,22 @@ Assumes jar made and onjar has been assembled.
 
   <fileSets>
     <fileSet>
+      <!-- Pull up to top level directory -->
+      <outputDirectory></outputDirectory>
+      <directory>${project.build.directory}</directory>
+      <includes>
+	<include>fuseki-*-server.jar</include>
+	<!-- <include>fuseki-*-SOH.zip</include> -->
+      </includes>
+    </fileSet>
+    <fileSet>
       <outputDirectory></outputDirectory>
       <includes>
-	<include>${project.build.directory}/fuseki-*-server.jar</include>
 	<include>log4j.properties</include>
 	<include>fuseki-server</include>
 	<include>tdb.ttl</include>
 	<include>s-*</include>
 	<include>pages/*</include>
-	<include>books.ttl</include>
       </includes>
     </fileSet>
   </fileSets>
