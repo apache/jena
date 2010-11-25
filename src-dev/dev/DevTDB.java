@@ -15,6 +15,7 @@ public class DevTDB
     //   Remove NodeTableFactory and have one per-technology setup/maker
     
     // Abort long running query.
+    // PrefixMapping = PrefixMap
     
     // ---- Documentation
     // http://openjena.org/wiki/TDB/JavaAPI#Concurrency
