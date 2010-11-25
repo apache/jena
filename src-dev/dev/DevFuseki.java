@@ -1,8 +1,3 @@
-/*
- * (c) Copyright 2010 Epimorphics Ltd.
- * All rights reserved.
- */
-
 package dev;
 
 public class DevFuseki
@@ -13,9 +8,19 @@ public class DevFuseki
     // ParserFor - share between SPARQL_REST and SPARQL_Upload
     // UploadTo dataset (TriG, N-Quads)
    
-    // 5. populate forms with prefixes (later)
+    // populate forms with prefixes (later)
+    
+    // Configuration file.
+    // [] :loadClass for java configuration.
+    // [ a tdb:DatasetTDB ; tdb:location "DB" ; tdb:defaultUnionGraph true ]
     
     // ----
+
+    // Tests
+    //   TestProtocol (HTTP update, query, update), inc status codes.
+    //   SPARQL Query servlet / SPARQL Update servlet
+    //   TestContentNegotiation - is coveage enough?
+    
     
     // CORS: Access-Control-Allow-Origin: *
     // http://esw.w3.org/CORS_Enabled
@@ -38,17 +43,8 @@ public class DevFuseki
     // **** Clean up SPARQL Query results code.
 
     // Document
-    // Wiki reorg
-    //   validators
-    //   manager
-    
-    // Pages
-    //   Any endpoint, default to self.  Needs javascript.
-    
     // Environment variable for target (s-set but needs to shell built-in)
-    //   defaults
-    //   --service naming seems inconsistent.
-    // Testing project?
+    // Argument names: --service naming seems inconsistent.
     
     // Plug-ins:
     //   Dataset (query, Update), HttpInternalIF?
@@ -66,17 +62,4 @@ public class DevFuseki
     // gzip
     
     // Code examples
-
-    // Build system
-    
-    // Tests
-    //   TestProtocol (HTTP update, query, update), inc status codes.
-    //   SPARQL Query servlet / SPARQL Update servlet
-    //   TestContentNegotiation - is coveage enough?
-    
-    // HTTP:
-    //   gzip and inflate.   
-    //   LastModified headers. 
-
-    // File upload.
 }
