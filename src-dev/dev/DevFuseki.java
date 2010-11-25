@@ -11,6 +11,7 @@ public class DevFuseki
     
     // 4. header and trailer to put "if logged in" around form.
     // 5. populate forms with prefixes
+    // Upload to named graph
     
     // Assemblies:
     //   one jar

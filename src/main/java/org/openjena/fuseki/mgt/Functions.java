@@ -11,7 +11,14 @@ import java.util.Iterator ;
 import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpSession ;
 
+import org.openjena.atlas.io.IndentedLineBuffer ;
 import org.openjena.fuseki.server.DatasetRegistry ;
+
+import com.hp.hpl.jena.shared.PrefixMapping ;
+import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import com.hp.hpl.jena.sparql.core.Prologue ;
+import com.hp.hpl.jena.sparql.serializer.PrologueSerializer ;
+import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 
 /** Avoid code in JSPs */
 public class Functions
@@ -49,7 +56,7 @@ public class Functions
         return buff.toString() ;
     }
     /** Return lists of datasets */ 
-    public static String datasetsAsLitItems(HttpServletRequest request)
+    public static String datasetsAsListItems(HttpServletRequest request)
     {
         StringBuilder buff = new StringBuilder() ;
         
@@ -61,6 +68,24 @@ public class Functions
         }
         return buff.toString() ;
     }
+
+    /** Return prefixes for the datasets, SPARQL syntax. */ 
+    public static String prefixes(HttpServletRequest request)
+    {
+        String dsName = dataset(request) ;
+        DatasetGraph dsg = DatasetRegistry.get().get(dsName) ;
+        if ( dsg instanceof DatasetGraphTDB )
+        {
+            PrefixMapping pmap = ((DatasetGraphTDB)dsg).getPrefixes().getPrefixMapping() ;
+            Prologue prologue = new Prologue(pmap) ;
+            IndentedLineBuffer buff = new IndentedLineBuffer() ;
+            PrologueSerializer.output(buff, prologue) ;
+            buff.append("\n") ;
+            return buff.asString() ;
+        }
+        return "" ;
+    }
+
     
 }
 
