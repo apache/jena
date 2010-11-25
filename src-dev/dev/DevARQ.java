@@ -6,6 +6,9 @@ public class DevARQ
     // QueryParseException for updates is confusing.
     //   All QueryException  -> SparqlException or LanguageParseException
     
+    // Prologure from RIOT
+    // PrefixMap from RIOT
+    
     // ---- Documentation
     // Legacy StageGenerator (http://openjena.org/ARQ/arq-query-eval.html)
     // src-examples of OpExecutor+QueryEngine

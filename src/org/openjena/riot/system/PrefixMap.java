@@ -16,7 +16,7 @@ import org.openjena.atlas.lib.Pair ;
 import com.hp.hpl.jena.iri.IRI ;
 import com.hp.hpl.jena.iri.IRIFactory ;
 
-/** Lightweight, prefixmapping for parsers.  No XML rules, no reverse lookup. */
+/** Lightweight, prefix mapping for parsers.  No XML rules, no reverse lookup. */
 public class PrefixMap
 {
     private final Map<String, IRI> prefixes = new HashMap<String, IRI>() ;
@@ -66,7 +66,7 @@ public class PrefixMap
         return prefixes.containsKey(prefix) ;
     }
     
-    /** Abbrevaite an IRI or retrn null */
+    /** Abbrevaite an IRI or return null */
     public String abbreviate(String uriStr)
     {
         for ( Entry<String, IRI> e : prefixes.entrySet())
