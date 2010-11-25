@@ -27,6 +27,7 @@ public class WebContent
     public static final String contentTypeNTriplesAlt       = "application/n-triples" ;
     
     public static final String contentTypeXML               = "application/xml" ;
+    public static final String contentTypeOctets            = "application/octet-stream" ;
     
     public static final String contentTypeResultsXML        = "application/sparql-results+xml" ;
     public static final String contentTypeResultsJSON       = "application/sparql-results+json" ;
