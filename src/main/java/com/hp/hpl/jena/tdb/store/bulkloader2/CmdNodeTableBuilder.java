@@ -101,7 +101,7 @@ public class CmdNodeTableBuilder extends CmdGeneral
         {
             Lang lang = Lang.guess(filename) ;
             if ( ! FileOps.exists(filename) )
-                throw new CmdException("File does not exist: filename") ;
+                throw new CmdException("File does not exist: "+filename) ;
         }
     }
     
