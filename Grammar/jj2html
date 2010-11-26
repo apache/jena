@@ -415,9 +415,9 @@ sub fixupRule
 
     if (  $head eq "BuiltInCall" )
     {
-	# Undo <br/> for BNODE
+	# Undo <br/> for BNODE, RAND
 	# <br/>| <a href="#rNIL">NIL</a> )
-	$body =~ s%\<br/\>\| *\<a href="#rNIL"\>NIL\</a\>%\| \<a href="#rNIL"\>NIL\</a\>% ;
+	$body =~ s%\<br/\>\| *\<a href="#rNIL"\>NIL\</a\>%\| \<a href="#rNIL"\>NIL\</a\>%g ;
     }
 
     if ( $head eq "RelationalExpression" ||
