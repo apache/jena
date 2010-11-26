@@ -43,7 +43,7 @@ public class ExProg1
         
         Query query = QueryFactory.make() ;
 
-        query.setQueryType(Query.QueryTypeSelect) ;
+        query.setQuerySelectType() ;
         
         // Build pattern
         

@@ -80,7 +80,7 @@ public class Q_Query extends SimpleNode
             // Select
             if ( jjtGetChild(i) instanceof Q_SelectClause ) 
             {
-                q.setQueryType(Query.QueryTypeSelect) ;
+                query.setQuerySelectType() ;
                 extractVarList(q, jjtGetChild(i)) ;
                 i++ ;
             }

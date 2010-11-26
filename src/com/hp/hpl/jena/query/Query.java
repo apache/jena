@@ -92,7 +92,7 @@ public class Query extends Prologue implements Cloneable, Printable
     
     protected boolean strictQuery = true ;
     
-    // SELECT * / CONSTRUCT * or DESCRIBE * seen
+    // SELECT * seen
     protected boolean queryResultStar        = false ;
     
     protected boolean distinct               = false ;
@@ -124,13 +124,13 @@ public class Query extends Prologue implements Cloneable, Printable
     //private VarAlloc varAnonAlloc = new VarAlloc(ARQConstants.allocVarAnonMarker) ;
     //public Var allocVarAnon() { return varAnonAlloc.allocVar() ; }
     
-    
+    @Deprecated
     public void setQueryType(int qType)         { queryType = qType ; }
     
-    public void setQuerySelectType()            { setQueryType(QueryTypeSelect) ; }
-    public void setQueryConstructType()         { setQueryType(QueryTypeConstruct) ; }
-    public void setQueryDescribeType()          { setQueryType(QueryTypeDescribe) ; }
-    public void setQueryAskType()               { setQueryType(QueryTypeAsk) ; }
+    public void setQuerySelectType()            { queryType = QueryTypeSelect ; }
+    public void setQueryConstructType()         { queryType = QueryTypeConstruct ; queryResultStar = true ; }
+    public void setQueryDescribeType()          { queryType = QueryTypeDescribe ; }
+    public void setQueryAskType()               { queryType = QueryTypeAsk ; }
     
     public int getQueryType()                   { return queryType ; }
     
@@ -238,11 +238,19 @@ public class Query extends Prologue implements Cloneable, Printable
      */ 
     public boolean isQueryResultStar() { return queryResultStar ; }
 
-    /**Set whether the query had SELECT/DESCRIBE/CONSTRUCT *
+    /** Set whether the query had SELECT/DESCRIBE *
+     * Strictly, this just means whether the projection is  
      * 
      * @param isQueryStar 
      */
-    public void setQueryResultStar(boolean isQueryStar) { queryResultStar = isQueryStar ; }
+    public void setQueryResultStar(boolean isQueryStar)
+    {
+//        if ( isConstructType() )
+//            throw new IllegalArgumentException("Query is a CONSTRUCT query") ;
+//        if ( isAskType() )
+//            throw new IllegalArgumentException("Query is an ASK query") ;
+        queryResultStar = isQueryStar ;
+    }
     
     public void setQueryPattern(Element elt)
     {

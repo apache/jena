@@ -45,7 +45,7 @@ public class ExProg2
         Model model = createModel() ;
         
         Query query = QueryFactory.make() ;
-        query.setQueryType(Query.QueryTypeSelect) ;
+        query.setQuerySelectType() ;
         
         // See also ExProg1
         

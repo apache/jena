@@ -122,11 +122,11 @@ do
   case "$G" in
       sparql10|sparql_10.jj)
     
+          # SPARQL 1.0 - use a static copy.
 ##           # The parser that is exactly the working group grammar.
 ##           cat "$GRAMMAR" | cpp -P -C -DSPARQL -DSPARQL_10 > sparql_10.jj
 ##           grammar sparql_10.jj sparql_10 SPARQLParser10
 ##           ;;
-          # SPARQL 1.0 - use a static copy.
           echo "SPARQL 1.0 - not rebuilt"
           ;;
 

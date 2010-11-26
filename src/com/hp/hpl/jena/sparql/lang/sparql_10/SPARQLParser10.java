@@ -6,12 +6,12 @@
 
 package com.hp.hpl.jena.sparql.lang.sparql_10 ;
 
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.query.Query ;
+import com.hp.hpl.jena.graph.* ;
+import com.hp.hpl.jena.query.* ;
 import com.hp.hpl.jena.sparql.core.Var ;
-import com.hp.hpl.jena.sparql.expr.* ;
-import com.hp.hpl.jena.sparql.path.Path ;
 import com.hp.hpl.jena.sparql.syntax.* ;
+import com.hp.hpl.jena.sparql.expr.* ;
+import com.hp.hpl.jena.sparql.path.* ;
 
 
 
@@ -176,7 +176,6 @@ public class SPARQLParser10 extends SPARQLParser10Base implements SPARQLParser10
     jj_consume_token(CONSTRUCT);
       getQuery().setQueryConstructType() ;
     t = ConstructTemplate();
-      getQuery().setQueryResultStar(false) ;
       getQuery().setConstructTemplate(t) ;
     label_4:
     while (true) {

@@ -422,7 +422,6 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     jj_consume_token(CONSTRUCT);
       getQuery().setQueryConstructType() ;
     t = ConstructTemplate();
-      getQuery().setQueryResultStar(true) ;
       getQuery().setConstructTemplate(t) ;
     label_4:
     while (true) {
@@ -4442,6 +4441,28 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     finally { jj_save(1, xla); }
   }
 
+  private boolean jj_3R_79() {
+    if (jj_scan_token(STRING_LITERAL2)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_41() {
+    if (jj_scan_token(SAMPLE)) return true;
+    if (jj_scan_token(LPAREN)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_78() {
+    if (jj_scan_token(STRING_LITERAL1)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_40() {
+    if (jj_scan_token(AVG)) return true;
+    if (jj_scan_token(LPAREN)) return true;
+    return false;
+  }
+
   private boolean jj_3R_68() {
     Token xsp;
     xsp = jj_scanpos;
@@ -4777,6 +4798,11 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
+  private boolean jj_3_1() {
+    if (jj_3R_34()) return true;
+    return false;
+  }
+
   private boolean jj_3R_48() {
     if (jj_3R_52()) return true;
     return false;
@@ -4794,11 +4820,6 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     jj_scanpos = xsp;
     if (jj_scan_token(13)) return true;
     }
-    return false;
-  }
-
-  private boolean jj_3_1() {
-    if (jj_3R_34()) return true;
     return false;
   }
 
@@ -4865,28 +4886,6 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
 
   private boolean jj_3R_80() {
     if (jj_scan_token(STRING_LITERAL_LONG1)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_79() {
-    if (jj_scan_token(STRING_LITERAL2)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_41() {
-    if (jj_scan_token(SAMPLE)) return true;
-    if (jj_scan_token(LPAREN)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_78() {
-    if (jj_scan_token(STRING_LITERAL1)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_40() {
-    if (jj_scan_token(AVG)) return true;
-    if (jj_scan_token(LPAREN)) return true;
     return false;
   }
 

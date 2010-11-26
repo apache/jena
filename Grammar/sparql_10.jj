@@ -126,8 +126,7 @@ void ConstructQuery() : { Template t ; }
   <CONSTRUCT>
     { getQuery().setQueryConstructType() ; }
   t = ConstructTemplate()
-    { getQuery().setQueryResultStar(false) ;
-      getQuery().setConstructTemplate(t) ; }
+    { getQuery().setConstructTemplate(t) ; }
   ( DatasetClause() )*
   WhereClause()
   SolutionModifier()

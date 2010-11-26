@@ -199,7 +199,6 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
     jj_consume_token(CONSTRUCT);
       getQuery().setQueryConstructType() ;
     t = ConstructTemplate();
-      getQuery().setQueryResultStar(true) ;
       getQuery().setConstructTemplate(t) ;
     label_4:
     while (true) {
