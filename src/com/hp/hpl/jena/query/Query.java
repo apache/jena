@@ -134,15 +134,15 @@ public class Query extends Prologue implements Cloneable, Printable
     
     public int getQueryType()                   { return queryType ; }
     
-    public boolean isSelectType()      { return queryType == QueryTypeSelect ; }
+    public boolean isSelectType()               { return queryType == QueryTypeSelect ; }
 
-    public boolean isConstructType()   { return queryType == QueryTypeConstruct ; }
+    public boolean isConstructType()            { return queryType == QueryTypeConstruct ; }
 
-    public boolean isDescribeType()    { return queryType == QueryTypeDescribe ; }
+    public boolean isDescribeType()             { return queryType == QueryTypeDescribe ; }
 
-    public boolean isAskType()         { return queryType == QueryTypeAsk ; }
+    public boolean isAskType()                  { return queryType == QueryTypeAsk ; }
 
-    public boolean isUnknownType()     { return queryType == QueryTypeUnknown ; }
+    public boolean isUnknownType()              { return queryType == QueryTypeUnknown ; }
 
     public void setStrict(boolean isStrict)
     { 
