@@ -9,13 +9,15 @@
 
   <body>
     <h1>Fuseki Control Panel</h1>
-    <p>Choose dataset:</p>
+
+    <div class="moreindent">
     <form action="dataset" method="post">
       Dataset: <select name="dataset">
         <%= Functions.datasetsAsSelectOptions(request) %>
       <div>
-        <input type="submit" value="Send">
+        <input type="submit" value="Select">
       </div>
     </form>
+    </div>
   </body>
 </html>
