@@ -3,8 +3,9 @@
 @prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix : <http://example.org/> .
 
-:s :p :o1 .
-:s :p :o2 .
+:s :p "2010-11-26"^^xsd:date .
+:s :p "2010-11-25"^^xsd:date .
+:s :p "2010-11-24"^^xsd:date .
 
 ## :s1 :p "<x></x>"^^rdf:XMLLiteral .
 ## :s2 :p "<x/>"^^rdf:XMLLiteral .

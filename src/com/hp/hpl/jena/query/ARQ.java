@@ -6,10 +6,11 @@
 
 package com.hp.hpl.jena.query;
 
-import org.openjena.riot.SysRIOT ;
+import org.openjena.riot.RIOT ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
+import com.hp.hpl.jena.Jena ;
 import com.hp.hpl.jena.assembler.assemblers.AssemblerGroup ;
 import com.hp.hpl.jena.sparql.ARQConstants ;
 import com.hp.hpl.jena.sparql.SystemARQ ;
@@ -19,8 +20,8 @@ import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp ;
 import com.hp.hpl.jena.sparql.lib.Metadata ;
 import com.hp.hpl.jena.sparql.mgt.ARQMgt ;
 import com.hp.hpl.jena.sparql.mgt.Explain ;
-import com.hp.hpl.jena.sparql.mgt.SystemInfo ;
 import com.hp.hpl.jena.sparql.mgt.Explain.InfoLevel ;
+import com.hp.hpl.jena.sparql.mgt.SystemInfo ;
 import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.sparql.util.Symbol ;
 
@@ -370,10 +371,16 @@ public class ARQ
         
         // This is the pattern for any subsystem to register. 
         String NS = ARQ.PATH ;
+        
         SystemInfo sysInfo = new SystemInfo(ARQ.arqIRI, ARQ.VERSION, ARQ.BUILD_DATE) ;
         ARQMgt.register(NS+".system:type=SystemInfo", sysInfo) ;
         SystemARQ.registerSubSystem(sysInfo) ;
-        SysRIOT.init() ;
+        
+        SystemInfo sysInfo2 = new SystemInfo("http://openjena.org/#jena", Jena.VERSION, Jena.BUILD_DATE) ;
+        ARQMgt.register(NS+".system:type=SystemInfo", sysInfo2) ;
+        SystemARQ.registerSubSystem(sysInfo2) ;
+        
+        RIOT.init() ;
     }
     
     // Force a call

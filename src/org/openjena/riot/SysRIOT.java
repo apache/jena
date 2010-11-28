@@ -45,14 +45,6 @@ public class SysRIOT
     static String jenaTurtleReader = "com.hp.hpl.jena.n3.turtle.TurtleReader" ; 
     static String jenaN3Reader = jenaTurtleReader ; 
     
-    static boolean initialized = false ;
-    public static synchronized void init()
-    {
-        if ( initialized ) return ;
-        initialized = true ;
-        wireIntoJena() ;
-    }
-    
     public static void wireIntoJena()
     {
         /* No getter (!!)
