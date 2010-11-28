@@ -62,7 +62,7 @@ public class BlockMgrCache extends BlockMgrSync
         ByteBuffer bb = writeCache.get(id) ;
         if ( bb == null )
         {
-            log.warn("Write cache: "+id+" expeling entry that isn't there") ;
+            log.warn("Write cache: "+id+" expelling entry that isn't there") ;
             return ;
         }
         log("Drop (write cache): %d", id) ;
