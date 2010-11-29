@@ -26,6 +26,8 @@ public class DevFuseki
     // http://esw.w3.org/CORS_Enabled
     // Consider configuration.
     // http://hacks.mozilla.org/2009/07/cross-site-xmlhttprequest-with-cors/
+    // http://download.eclipse.org/jetty/stable-7/apidocs/org/eclipse/jetty/servlets/CrossOriginFilter.html
+
     
     // ETags.
     
