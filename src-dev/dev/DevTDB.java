@@ -29,6 +29,8 @@ public class DevTDB
     // == Misc
     //    Tidy up wiki (esp "Use from java" - use datasets, show loader use)
     
+    // ** Partial ranges : S P ?o , ?o start, ?o finish 
+    
     // ** Advanced block work - free chain management.
 
     // =====
