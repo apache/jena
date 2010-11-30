@@ -93,7 +93,6 @@ TOKENS
 | <BNODE: "bnode">
 | <IRI: "iri">
 | <URI: "uri">
-| <CONCAT: "concat">
 | <STR: "str">
 | <STRLANG: "strlang">
 | <STRDT: "strdt">
@@ -107,7 +106,27 @@ TOKENS
 | <IS_NUMERIC: "isNumeric">
 | <REGEX: "regex">
 | <SAME_TERM: "sameTerm">
-| <RAND: "rand">
+| <RAND: "RAND">
+| <ABS: "ABS">
+| <CEIL: "CEIL">
+| <FLOOR: "FLOOR">
+| <ROUND: "ROUND">
+| <CONCAT: "CONCAT">
+| <SUBSTRING: "SUBSTRING">
+| <LENGTH: "LENGTH">
+| <UCASE: "UCASE">
+| <LCASE: "LCASE">
+| <ENCODE: "ENCODE">
+| <CONTAINS: "CONTAINS">
+| <STARTS: "STARTS">
+| <ENDS: "ENDS">
+| <YEAR: "YEAR">
+| <MONTH: "MONTH">
+| <DAY: "DAY">
+| <HOURS: "HOURS">
+| <MINUTES: "MINUTES">
+| <SECONDS: "SECONDS">
+| <TIMEZONE: "TIMEZONE">
 | <TRUE: "true">
 | <FALSE: "false">
 }
@@ -405,8 +424,27 @@ NON-TERMINALS
 		|	<IRI> <LPAREN> Expression <RPAREN>
 		|	<URI> <LPAREN> Expression <RPAREN>
 		|	<BNODE> ( <LPAREN> Expression <RPAREN> | <NIL> )
-		|	<CONCAT> ExpressionList
 		|	<RAND> ( <LPAREN> Expression <RPAREN> | <NIL> )
+		|	<ABS> <LPAREN> Expression <RPAREN>
+		|	<CEIL> <LPAREN> Expression <RPAREN>
+		|	<FLOOR> <LPAREN> Expression <RPAREN>
+		|	<ROUND> <LPAREN> Expression <RPAREN>
+		|	<CONCAT> ExpressionList
+		|	<SUBSTRING> SubstringExpression
+		|	<LENGTH> <LPAREN> Expression <RPAREN>
+		|	<UCASE> <LPAREN> Expression <RPAREN>
+		|	<LCASE> <LPAREN> Expression <RPAREN>
+		|	<ENCODE> <LPAREN> Expression <RPAREN>
+		|	<CONTAINS> <LPAREN> Expression <COMMA> Expression <RPAREN>
+		|	<STARTS> <LPAREN> Expression <COMMA> Expression <RPAREN>
+		|	<ENDS> <LPAREN> Expression <COMMA> Expression <RPAREN>
+		|	<YEAR> <LPAREN> Expression <RPAREN>
+		|	<MONTH> <LPAREN> Expression <RPAREN>
+		|	<DAY> <LPAREN> Expression <RPAREN>
+		|	<HOURS> <LPAREN> Expression <RPAREN>
+		|	<MINUTES> <LPAREN> Expression <RPAREN>
+		|	<SECONDS> <LPAREN> Expression <RPAREN>
+		|	<TIMEZONE> <LPAREN> Expression <RPAREN>
 		|	<COALESCE> ExpressionList
 		|	<IF> <LPAREN> Expression <COMMA> Expression <COMMA> Expression <RPAREN>
 		|	<STRLANG> <LPAREN> Expression <COMMA> Expression <RPAREN>
@@ -421,6 +459,7 @@ NON-TERMINALS
 		|	ExistsFunc
 		|	NotExistsFunc
 	RegexExpression	:=	<REGEX> <LPAREN> Expression <COMMA> Expression ( <COMMA> Expression )? <RPAREN>
+	SubstringExpression	:=	<REGEX> <LPAREN> Expression <COMMA> Expression ( <COMMA> Expression )? <RPAREN>
 	ExistsFunc	:=	<EXISTS> GroupGraphPattern
 	NotExistsFunc	:=	<NOTEXISTS> GroupGraphPattern
 	Aggregate	:=	( <COUNT> <LPAREN> ( <DISTINCT> )? ( <STAR> | Expression ) <RPAREN> | <SUM> <LPAREN> ( <DISTINCT> )? Expression <RPAREN> | <MIN> <LPAREN> ( <DISTINCT> )? Expression <RPAREN> | <MAX> <LPAREN> ( <DISTINCT> )? Expression <RPAREN> | <AVG> <LPAREN> ( <DISTINCT> )? Expression <RPAREN> | <SAMPLE> <LPAREN> ( <DISTINCT> )? Expression <RPAREN> | <GROUP_CONCAT> <LPAREN> ( <DISTINCT> )? Expression ( <SEMICOLON> <SEPARATOR> <EQ> String )? <RPAREN> )

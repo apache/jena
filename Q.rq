@@ -1,8 +1,15 @@
+PREFIX xsd:     <http://www.w3.org/2001/XMLSchema#>
 PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
 PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX fn:      <http://www.w3.org/2005/xpath-functions#>
+PREFIX foaf: 	 <http://xmlns.com/foaf/0.1/>
+PREFIX dc:      <http://purl.org/dc/elements/1.1/>
+PREFIX owl:     <http://www.w3.org/2002/07/owl#> 
+PREFIX apf:     <http://jena.hpl.hp.com/ARQ/property#>
 PREFIX :        <http://example.com/>
 
-SELECT (MAX(?o) AS ?min)
+SELECT (xsd:string(?o) AS ?Z)
 {
-    ?s ?p ?o
+  ?s ?p ?o .
+  FILTER(ends(?o, "foo"))
 }

@@ -224,6 +224,29 @@ public class BuilderExpr
         dispatch.put(Tags.tagStrDatatype, buildStrDatatype) ;
         dispatch.put(Tags.tagStr, buildStr) ;
         dispatch.put(Tags.tagRand, buildRand) ;
+
+        dispatch.put(Tags.tagYear, buildYear) ;
+        dispatch.put(Tags.tagMonth, buildMonth) ;
+        dispatch.put(Tags.tagDay, buildDay) ;
+        dispatch.put(Tags.tagHours, buildHours) ;
+        dispatch.put(Tags.tagMinutes, buildMinutes) ;
+        dispatch.put(Tags.tagSeconds, buildSeconds) ;
+        dispatch.put(Tags.tagTimezone, buildTimezone) ;
+
+        dispatch.put(Tags.tagStrlen, buildStrlen) ;
+        dispatch.put(Tags.tagSubstr, buildSubstr) ;
+        dispatch.put(Tags.tagStrUppercase, buildStrUppercase) ;
+        dispatch.put(Tags.tagStrLowercase, buildStrLowercase) ;
+        dispatch.put(Tags.tagStrEnds, buildStrEnds) ;
+        dispatch.put(Tags.tagStrStarts, buildStrStarts) ;
+        dispatch.put(Tags.tagStrContains, buildStrContains) ;
+        dispatch.put(Tags.tagStrEncode, buildStrEncode) ;
+        dispatch.put(Tags.tagConcat, buildConcat) ;
+                
+        dispatch.put(Tags.tagNumAbs, buildNumAbs) ;
+        dispatch.put(Tags.tagNumRound, buildNumRound) ;
+        dispatch.put(Tags.tagNumCeiling, buildNumCeiling) ;
+        dispatch.put(Tags.tagNumFloor, buildNumFloor) ;
         
         dispatch.put(Tags.tagLang, buildLang) ;
         dispatch.put(Tags.tagLangMatches, buildLangMatches) ;
@@ -521,6 +544,198 @@ public class BuilderExpr
         }
     };
     
+    final protected Build buildYear = new Build()
+    {
+        public Expr make(ItemList list)
+        {
+            BuilderLib.checkLength(2, list, "year: wanted 1 argument: got: "+list.size()) ;
+            Expr ex = buildExpr(list.get(1)) ;
+            return new E_DateTimeYear(ex) ; 
+        }
+    } ;
+    
+    final protected Build buildMonth = new Build()
+    {
+        public Expr make(ItemList list)
+        {
+            BuilderLib.checkLength(2, list, "month: wanted 1 argument: got: "+list.size()) ;
+            Expr ex = buildExpr(list.get(1)) ;
+            return new E_DateTimeMonth(ex) ; 
+        }
+    } ;
+
+    final protected Build buildDay = new Build()
+    {
+        public Expr make(ItemList list)
+        {
+            BuilderLib.checkLength(2, list, "day: wanted 1 argument: got: "+list.size()) ;
+            Expr ex = buildExpr(list.get(1)) ;
+            return new E_DateTimeDay(ex) ; 
+        }
+    } ;
+
+    final protected Build buildHours = new Build()
+    {
+        public Expr make(ItemList list)
+        {
+            BuilderLib.checkLength(2, list, "hours: wanted 1 argument: got: "+list.size()) ;
+            Expr ex = buildExpr(list.get(1)) ;
+            return new E_DateTimeHours(ex) ; 
+        }
+    } ;
+
+    final protected Build buildMinutes = new Build()
+    {
+        public Expr make(ItemList list)
+        {
+            BuilderLib.checkLength(2, list, "minutes: wanted 1 argument: got: "+list.size()) ;
+            Expr ex = buildExpr(list.get(1)) ;
+            return new E_DateTimeMinutes(ex) ; 
+        }
+    } ;
+
+    final protected Build buildSeconds = new Build()
+    {
+        public Expr make(ItemList list)
+        {
+            BuilderLib.checkLength(2, list, "seconds: wanted 1 argument: got: "+list.size()) ;
+            Expr ex = buildExpr(list.get(1)) ;
+            return new E_DateTimeSeconds(ex) ; 
+        }
+    } ;
+    
+    final protected Build buildTimezone = new Build()
+    {
+        public Expr make(ItemList list)
+        {
+            BuilderLib.checkLength(2, list, "timezone: wanted 1 argument: got: "+list.size()) ;
+            Expr ex = buildExpr(list.get(1)) ;
+            return new E_DateTimeTimezone(ex) ; 
+        }
+    } ;
+    
+    final protected Build buildStrlen = new Build()
+    {
+        public Expr make(ItemList list)
+        {
+            BuilderLib.checkLength(2, list, "strlen: wanted 1 argument: got: "+list.size()) ;
+            Expr ex = buildExpr(list.get(1)) ;
+            return new E_StrLength(ex) ; 
+        }
+    } ;
+    
+    final protected Build buildSubstr = new Build()
+    {
+        public Expr make(ItemList list)
+        {
+            BuilderLib.checkLength(2, list, "strsub: wanted 1 argument: got: "+list.size()) ;
+            Expr ex = buildExpr(list.get(1)) ;
+            return new E_StrLength(ex) ; 
+        }
+    } ;
+    
+    final protected Build buildStrUppercase = new Build()
+    {
+        public Expr make(ItemList list)
+        {
+            BuilderLib.checkLength(2, list, "ucase: wanted 1 argument: got: "+list.size()) ;
+            Expr ex = buildExpr(list.get(1)) ;
+            return new E_StrUpperCase(ex) ; 
+        }
+    } ;
+    
+    final protected Build buildStrLowercase = new Build()
+    {
+        public Expr make(ItemList list)
+        {
+            BuilderLib.checkLength(2, list, "lcase: wanted 1 argument: got: "+list.size()) ;
+            Expr ex = buildExpr(list.get(1)) ;
+            return new E_StrLowerCase(ex) ; 
+        }
+    } ;
+    
+    final protected Build buildStrEnds = new Build()
+    {
+        public Expr make(ItemList list)
+        {
+            BuilderLib.checkLength(3, list, "ends: wanted 2 arguments: got: "+list.size()) ;
+            Expr ex1 = buildExpr(list.get(1)) ;
+            Expr ex2 = buildExpr(list.get(2)) ;
+            return new E_StrEndsWith(ex1, ex2) ; 
+        }
+    } ;
+    
+    final protected Build buildStrStarts = new Build()
+    {
+        public Expr make(ItemList list)
+        {     
+            BuilderLib.checkLength(3, list, "starts: wanted 2 arguments: got: "+list.size()) ;
+            Expr ex1 = buildExpr(list.get(1)) ;
+            Expr ex2 = buildExpr(list.get(2)) ;
+            return new E_StrStartsWith(ex1, ex2) ; 
+        }
+    } ;
+    
+    final protected Build buildStrContains = new Build()
+    {
+        public Expr make(ItemList list)
+        {
+            BuilderLib.checkLength(3, list, "contains: wanted 2 arguments: got: "+list.size()) ;
+            Expr ex1 = buildExpr(list.get(1)) ;
+            Expr ex2 = buildExpr(list.get(2)) ;
+            return new E_StrContains(ex1, ex2) ; 
+        }
+    } ;
+    
+    final protected Build buildStrEncode = new Build()
+    {
+        public Expr make(ItemList list)
+        {
+            BuilderLib.checkLength(2, list, "encode: wanted 1 argument: got: "+list.size()) ;
+            Expr ex = buildExpr(list.get(1)) ;
+            return new E_StrEncode(ex) ; 
+        }
+    } ;
+    
+    final protected Build buildNumAbs = new Build()
+    {
+        public Expr make(ItemList list)
+        {
+            BuilderLib.checkLength(2, list, "abs: wanted 1 argument: got: "+list.size()) ;
+            Expr ex = buildExpr(list.get(1)) ;
+            return new E_NumAbs(ex) ; 
+        }
+    } ;
+    
+    final protected Build buildNumRound = new Build()
+    {
+        public Expr make(ItemList list)
+        {
+            BuilderLib.checkLength(2, list, "round: wanted 1 argument: got: "+list.size()) ;
+            Expr ex = buildExpr(list.get(1)) ;
+            return new E_NumRound(ex) ; 
+        }
+    } ;
+    
+    final protected Build buildNumCeiling = new Build()
+    {
+        public Expr make(ItemList list)
+        {
+            BuilderLib.checkLength(2, list, "ceiling: wanted 1 argument: got: "+list.size()) ;
+            Expr ex = buildExpr(list.get(1)) ;
+            return new E_NumCeiling(ex) ; 
+        }
+    } ;
+    
+    final protected Build buildNumFloor = new Build()
+    {
+        public Expr make(ItemList list)
+        {
+            BuilderLib.checkLength(2, list, "floor: wanted 1 argument: got: "+list.size()) ;
+            Expr ex = buildExpr(list.get(1)) ;
+            return new E_NumFloor(ex) ; }
+    } ;
+
     final protected Build buildLang = new Build()
     {
         public Expr make(ItemList list)
@@ -695,6 +910,8 @@ public class BuilderExpr
             return new E_URI(expr) ;
         }
     };
+    
+    
     
     final protected Build buildIn = new Build()
     {

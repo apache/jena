@@ -125,7 +125,6 @@ public class Tags
     public static final String tagDatatype      = "datatype" ;
     public static final String tagBound         = "bound" ;
     public static final String tagCoalesce      = "coalesce" ;
-    public static final String tagConcat        = "concat" ;
     public static final String tagIf            = "if" ;
     public static final String tagIRI           = "isIRI" ;
     public static final String tagURI           = "isURI" ;
@@ -134,6 +133,29 @@ public class Tags
     public static final String tagRegex         = "regex" ;
     public static final String tagExists        = "exists" ;
     public static final String tagNotExists     = "notexists" ;
+
+    public static final String tagYear          = "year" ;
+    public static final String tagMonth         = "month" ;
+    public static final String tagDay           = "day" ;
+    public static final String tagHours         = "hours" ;
+    public static final String tagMinutes       = "minutes" ;
+    public static final String tagSeconds       = "seconds" ;
+    public static final String tagTimezone      = "timezone" ;
+
+    public static final String tagStrlen        = "strlen" ;
+    public static final String tagSubstr        = "substr" ;
+    public static final String tagStrUppercase  = "ucase" ;
+    public static final String tagStrLowercase  = "lcase" ;
+    public static final String tagStrEnds       = "ends" ;
+    public static final String tagStrStarts     = "starts" ;
+    public static final String tagStrContains   = "contains" ;
+    public static final String tagStrEncode     = "encode" ;
+    public static final String tagConcat        = "concat" ;
+    
+    public static final String tagNumAbs        = "abs" ;
+    public static final String tagNumRound      = "round" ;
+    public static final String tagNumCeiling    = "ceil" ;
+    public static final String tagNumFloor      = "floor" ;
     
     public static final String tagBNode         = "bnode" ;
     public static final String tagIri           = "iri" ;
