@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -24,6 +25,7 @@ import com.hp.hpl.jena.datatypes.xsd.XSDDateTime ;
 import com.hp.hpl.jena.datatypes.xsd.XSDDuration ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
+import com.hp.hpl.jena.sparql.ARQNotImplemented ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
 import com.hp.hpl.jena.sparql.expr.ExprEvalTypeException ;
@@ -936,11 +938,60 @@ public class XSDFuncOp
     
         throw new ExprEvalTypeException("Can't case to <"+xsd.getURI()+">: "+nv) ;
     }
+    
+    public static NodeValue dtGetYear(NodeValue nv)
+    {
+        checkDT(nv) ;
+        throw new ARQNotImplemented() ;
+    }
+
+    public static NodeValue dtGetMonth(NodeValue nv)
+    {
+        checkDT(nv) ;
+        throw new ARQNotImplemented() ;
+    }
+
+    public static NodeValue dtGetDay(NodeValue nv)
+    {
+        checkDT(nv) ;
+        throw new ARQNotImplemented() ;
+    }
+
+    public static NodeValue dtGetHours(NodeValue nv)
+    {
+        checkDT(nv) ;
+        throw new ARQNotImplemented() ;
+    }
+
+    public static NodeValue dtGetMinutes(NodeValue nv)
+    {
+        checkDT(nv) ;
+        throw new ARQNotImplemented() ;
+    }
+
+    public static NodeValue dtGetSeconds(NodeValue nv)
+    {
+        checkDT(nv) ;
+        throw new ARQNotImplemented() ;
+    }
+
+    public static NodeValue dtGetTimezone(NodeValue nv)
+    {
+        checkDT(nv) ;
+        throw new ARQNotImplemented() ;
+    }
+
+    // Check it's datetime, date of some kind.
+    private static void checkDT(NodeValue nv)
+    {
+        
+    }
 
 }
 
 /*
  * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

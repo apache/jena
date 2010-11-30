@@ -9,7 +9,7 @@ public class DevARQ
     // Prologure from RIOT
     // PrefixMap from RIOT
     
-    // E_DateTime*
+    // XSDFuncOps.getDT*
     
     // ---- Documentation
     // Legacy StageGenerator (http://openjena.org/ARQ/arq-query-eval.html)

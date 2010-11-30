@@ -5,8 +5,7 @@
 
 package com.hp.hpl.jena.sparql.expr;
 
-import com.hp.hpl.jena.sparql.ARQNotImplemented ;
-import com.hp.hpl.jena.sparql.expr.nodevalue.NodeFunctions ;
+import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp ;
 import com.hp.hpl.jena.sparql.sse.Tags ;
 
 public class E_DateTimeDay extends ExprFunction1
@@ -19,7 +18,7 @@ public class E_DateTimeDay extends ExprFunction1
     }
     
     @Override
-    public NodeValue eval(NodeValue v) { throw new ARQNotImplemented() ; } // NodeFunctions.str(v) ; }
+    public NodeValue eval(NodeValue v) { return XSDFuncOp.dtGetDay(v) ; }
     
     @Override
     public Expr copy(Expr expr) { return new E_DateTimeDay(expr) ; } 
