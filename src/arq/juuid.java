@@ -3,13 +3,6 @@
  * [See end of file]
  */
 
-
-
-/**
- * @author   Andy Seaborne
- * @version  $Id: juuid.java,v 1.6 2009/01/16 17:23:57 andy_seaborne Exp $
- */
-
 package arq;
 
 import arq.cmdline.ArgDecl ;

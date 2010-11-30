@@ -11,9 +11,7 @@ import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 
 /** A collection of graphs that an update can be applied to.
  *  The collection is one unnamed graph and zero or more named graphs, like
- *  a SPARQL dataset.   
- * @author Andy Seaborne
- */
+ *  a SPARQL dataset. */
 public interface GraphStore extends DatasetGraph
 {
     /** Convert to a dataset (for query) */

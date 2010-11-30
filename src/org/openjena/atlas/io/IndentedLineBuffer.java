@@ -14,10 +14,7 @@ import java.io.StringWriter ;
  * 
  *  <Insert rant about StringBuffer being final here>
  *  Also, Java 1.5, StringBuilding is faster than StringBuffer (not sync'ed)
- *  so could switch to that (except we are really using a StringWriter)  
- * 
- * @author Andy Seaborne
- */
+ *  so could switch to that (except we are really using a StringWriter) */
 
 public class IndentedLineBuffer extends IndentedWriter
 {

@@ -16,9 +16,7 @@ import com.hp.hpl.jena.sparql.function.FunctionEnv ;
 import com.hp.hpl.jena.sparql.graph.NodeTransform ;
 
 /** An Aggregator is the processor for the whole result stream.
- *  BindingKeys identify which section of a group we're in. 
- * @author Andy Seaborne
- */ 
+ *  BindingKeys identify which section of a group we're in. */ 
 
 public interface Aggregator
 {

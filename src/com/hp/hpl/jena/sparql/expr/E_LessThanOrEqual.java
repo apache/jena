@@ -5,10 +5,6 @@
 
 package com.hp.hpl.jena.sparql.expr;
 
-/** 
- * @author Andy Seaborne
- */
-
 public class E_LessThanOrEqual extends ExprFunction2
 {
     private static final String printName = "le" ;

@@ -13,9 +13,7 @@ package com.hp.hpl.jena.sparql.syntax;
  *  at each Element traversed.
  *  Only walks one level of the query (not subqueries -- sub SELECT, (NOT)EXISTS
  *  these wil need to call down themselves if it is meaningful for the visitor.  
- *  Bottom-up walk - apply to subelements before applying to current element.
- * @author Andy Seaborne
- */
+ *  Bottom-up walk - apply to subelements before applying to current element. */
 
 public class ElementWalker 
 {

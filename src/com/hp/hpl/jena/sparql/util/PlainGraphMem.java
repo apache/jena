@@ -21,10 +21,7 @@ import com.hp.hpl.jena.util.iterator.Filter ;
  * for find(), that is, .equals(), not .sameValueAs(), and also compares
  * language tags canonically (as lowercase).
  * 
- * Suitable for small graph only (no indexing of s/p/o)
- * 
- * @author Andy Seaborne
- */
+ * Suitable for small graph only (no indexing of s/p/o) */
 
 public class PlainGraphMem extends SmallGraphMem
 {

@@ -14,10 +14,7 @@ import com.hp.hpl.jena.shared.impl.PrefixMappingImpl ;
 
 /** A prefix mapping based on global and local mappings.
  *  Updates go to the local (second) copy only.
- *  Lookup looks in the local copy before the global copy.
- * 
- * @author Andy Seaborne
- */
+ *  Lookup looks in the local copy before the global copy. */
 
 public class PrefixMapping2 implements PrefixMapping
 {

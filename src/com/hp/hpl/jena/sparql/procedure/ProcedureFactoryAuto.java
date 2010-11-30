@@ -8,10 +8,7 @@ package com.hp.hpl.jena.sparql.procedure;
 
 import com.hp.hpl.jena.query.QueryBuildException ;
 
-/** Extension factory that instantiates a class each time.
- * 
- * @author Andy Seaborne
- */ 
+/** Extension factory that instantiates a class each time. */ 
 
 class ProcedureFactoryAuto implements ProcedureFactory
 {

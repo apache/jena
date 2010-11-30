@@ -8,10 +8,7 @@ package com.hp.hpl.jena.sparql.engine.http;
 
 
 /**
- * Handle HTTP content type
- * 
- * @author Andy Seaborne
- */
+ * Handle HTTP content type */
 
 public class HttpContentType
 {

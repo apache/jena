@@ -16,10 +16,7 @@ import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.function.Function ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
 
-/** Function for XPath fn:matches
- * 
- * @author Andy Seaborne
- */
+/** Function for XPath fn:matches */
 
 public class FN_Matches implements Function
 {

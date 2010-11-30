@@ -3,9 +3,7 @@
  * [See end of file]
  */
  
-/** Hopefully, you won't see this!
- * @author   Andy Seaborne
- */
+/** Hopefully, you won't see this! */
 
 package com.hp.hpl.jena.sparql;
 

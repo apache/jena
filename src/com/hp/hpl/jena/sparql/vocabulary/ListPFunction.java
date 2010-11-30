@@ -1,7 +1,5 @@
 package com.hp.hpl.jena.sparql.vocabulary ;
 
-/* CVS $Id: ListPFunction.java,v 1.2 2007/01/15 09:33:57 andy_seaborne Exp $ */
- 
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.rdf.model.Property ;

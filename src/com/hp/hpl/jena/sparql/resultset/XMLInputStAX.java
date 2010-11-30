@@ -39,10 +39,7 @@ import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
 
 /** Code that reads an XML Results format and builds the ARQ structure for the same.
  *  Can read result set and boolean result forms.
- *  This is a streaming implementation.
- * 
- * @author Andy Seaborne
- */
+ *  This is a streaming implementation. */
 
 
 class XMLInputStAX extends SPARQLResult

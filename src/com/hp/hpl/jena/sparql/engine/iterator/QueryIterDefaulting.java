@@ -13,10 +13,7 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 
 /** An iterator that returns at least one element from another iterator
- *  or a default value (once) if the wrapped iterator returns nothing.
- * 
- * @author Andy Seaborne
- */ 
+ *  or a default value (once) if the wrapped iterator returns nothing. */ 
 
 public class QueryIterDefaulting extends QueryIter
 {

@@ -18,10 +18,7 @@ import com.hp.hpl.jena.sparql.util.Utils ;
 /** QueryIterator for a procedure.  Delays first touch until first call because
  *  first touch may cause work to be done.
  *  
- *  Assumes .build already called.
- *  
- * @author Andy Seaborne
- */
+ *  Assumes .build already called. */
 
 public class QueryIterProcedure extends QueryIter1
 {

@@ -17,10 +17,7 @@ import com.hp.hpl.jena.sparql.expr.ExprList ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.util.Context ;
 
-/** Interface to value-testing extensions to the expression evaluator.
- * 
- * @author Andy Seaborne
- */
+/** Interface to value-testing extensions to the expression evaluator. */
 
 public abstract class FunctionBase implements Function
 {

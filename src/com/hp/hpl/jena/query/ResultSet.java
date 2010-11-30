@@ -19,10 +19,7 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding ;
  * @see Query
  * @see QueryExecution
  * @see QuerySolution
- * @see ResultSet
- * 
- * @author   Andy Seaborne
- */
+ * @see ResultSet */
 
 public interface ResultSet extends Iterator<QuerySolution>
 {

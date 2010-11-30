@@ -11,9 +11,6 @@ package org.openjena.atlas.lib;
 
 /** Utilities for manipulating a bit pattern which held in a 64 bit long
  *  (java.util.BitSet does not allow getting the pattern as a long) 
- *  
- * @author Andy Seaborne
- * @version $Id: Bits.java,v 1.3 2007/01/02 11:51:49 andy_seaborne Exp $
  */ 
 public final class BitsLong
 {

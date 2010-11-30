@@ -26,10 +26,7 @@ package com.hp.hpl.jena.sparql.syntax;
  * part of the recursive walk.</p>   
  * 
  * <p>Usage: inherit from this class and implement  startElement/endElement as needed.
- * The ElementWalker is like implementing endElement.</p>
- *
- * @author Andy Seaborne
- */
+ * The ElementWalker is like implementing endElement.</p> */
 
 public class RecursiveElementVisitor implements ElementVisitor
 {

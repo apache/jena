@@ -9,9 +9,6 @@ import java.io.UnsupportedEncodingException ;
 import java.net.URLDecoder ;
 import java.net.URLEncoder ;
 
-/**
- * @author      Andy Seaborne
- */
 public class Convert
 {
     // UTF-8 is required in Java implementations

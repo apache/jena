@@ -13,10 +13,7 @@ import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.core.Var ;
 
 
-/** Special purpose binding for adding just one name/value slot. 
- * 
- * @author   Andy Seaborne
- */
+/** Special purpose binding for adding just one name/value slot. */
 
 
 public class Binding1 extends BindingBase

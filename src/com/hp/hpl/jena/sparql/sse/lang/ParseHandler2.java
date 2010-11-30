@@ -9,9 +9,7 @@ package com.hp.hpl.jena.sparql.sse.lang;
 import com.hp.hpl.jena.sparql.sse.Item ;
 
 /** Splitter for parser handlers.
- *  Calls both, first one first.
- * @author Andy Seaborne
- */
+ *  Calls both, first one first. */
 
 public class ParseHandler2 implements ParseHandler
 {

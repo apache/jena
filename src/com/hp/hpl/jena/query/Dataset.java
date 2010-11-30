@@ -14,10 +14,7 @@ import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 
 /** Query is over a Dataset, a collection of named graphs
  *  and a background graph (also called the default
- *  graph or unnamed graph). 
- * 
- * @author Andy Seaborne
- */
+ *  graph or unnamed graph). */
 
 public interface Dataset
 {

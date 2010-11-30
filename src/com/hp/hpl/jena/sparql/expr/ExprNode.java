@@ -19,10 +19,7 @@ import com.hp.hpl.jena.sparql.util.ExprUtils ;
 
 /** A node that is a constraint expression that can be evaluated
  * An Expr is already a Constraint - ExprNode is the base implementation
- * of all Expr classes that provides the Constraint machinary.
- * 
- * @author Andy Seaborne
- */
+ * of all Expr classes that provides the Constraint machinary. */
  
 public abstract class ExprNode implements Expr
 {

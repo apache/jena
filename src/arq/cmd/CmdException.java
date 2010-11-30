@@ -7,9 +7,7 @@
 package arq.cmd;
 
 /**
- * Indicate that something went wrong - while executing the command or processing the request.
- * @author Andy Seaborne
- */
+ * Indicate that something went wrong - while executing the command or processing the request. */
 
 public class CmdException extends RuntimeException
 {

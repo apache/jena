@@ -13,10 +13,7 @@ import com.hp.hpl.jena.rdf.model.Literal ;
 import com.hp.hpl.jena.rdf.model.RDFNode ;
 import com.hp.hpl.jena.rdf.model.Resource ;
 
-/** Implementation of QuerySolution that contains the canonicalization and casting code.
- * 
- * @author Andy Seaborne
- */ 
+/** Implementation of QuerySolution that contains the canonicalization and casting code. */ 
 
 public abstract class QuerySolutionBase implements QuerySolution
 {

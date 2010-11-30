@@ -34,10 +34,7 @@ import com.hp.hpl.jena.sparql.util.ExprUtils ;
 import com.hp.hpl.jena.sparql.util.FmtUtils ;
 import com.hp.hpl.jena.sparql.util.NodeFactory ;
 
-/** A program to execute expressions from the command line.
-  *
- * @author  Andy Seaborne
- */
+/** A program to execute expressions from the command line. */
 
 public class qexpr
 {

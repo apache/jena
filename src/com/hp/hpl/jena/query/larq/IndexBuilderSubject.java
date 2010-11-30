@@ -18,10 +18,7 @@ import com.hp.hpl.jena.sparql.ARQNotImplemented ;
 /** 
  * Class for indexing by subject (i.e. index is a literal and the 
  * index returns the subject).  Often the application can provide an
- * additional property to further restrict what gets indexed.
- *    
- * @author Andy Seaborne
- */
+ * additional property to further restrict what gets indexed. */
 
 public class IndexBuilderSubject extends IndexBuilderModel
 {

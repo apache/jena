@@ -9,10 +9,7 @@ package com.hp.hpl.jena.sparql.syntax;
 import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
 
-/** A constraint (Filter) in a query expression.
- * 
- * @author Andy Seaborne
- */
+/** A constraint (Filter) in a query expression. */
 
 public class ElementFilter extends Element
 {

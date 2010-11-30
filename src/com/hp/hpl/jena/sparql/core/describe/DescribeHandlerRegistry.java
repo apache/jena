@@ -14,10 +14,7 @@ import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.sparql.ARQConstants ;
 import com.hp.hpl.jena.sparql.util.Context ;
 
-/** Registry of DescribeHandlers.     
- * 
- * @author Andy Seaborne
- */
+/** Registry of DescribeHandlers. */
 
 public class DescribeHandlerRegistry
 {

@@ -15,10 +15,7 @@ import com.hp.hpl.jena.sparql.ARQConstants ;
 import com.hp.hpl.jena.sparql.core.VarAlloc ;
 
 
-/** Map from _:* form to bNodes
- * 
- * @author Andy Seaborne
- */
+/** Map from _:* form to bNodes */
 
 public class LabelToNodeMap
 {

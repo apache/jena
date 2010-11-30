@@ -19,9 +19,7 @@ import com.hp.hpl.jena.sparql.util.FmtUtils ;
 import com.hp.hpl.jena.sparql.util.IterLib ;
 
 /** Basic property function handler that calls the implementation 
- * subclass one binding at a time
- * @author Andy Seaborne
- */ 
+ * subclass one binding at a time */ 
 
 public abstract class PropertyFunctionBase implements PropertyFunction
 {

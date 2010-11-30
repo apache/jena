@@ -15,11 +15,7 @@ import java.util.regex.Pattern ;
  *  <li><a href="http://en.wikipedia.org/wiki/Roman_numbers">Wikipedia on Roman Numerals</a></li>
  *  <li><a href="http://www.therobs.com/uman/roman.shtml">Therobs Lex &amp; Yacc Example: Roman Numerals</a>
  *  which is were the idea of working right to left, instead of looking ahead, originated for me.</li>
- * </ul>
-
- * 
- * @author Andy Seaborne
- */
+ * </ul> */
 
 public class RomanNumeral
 {

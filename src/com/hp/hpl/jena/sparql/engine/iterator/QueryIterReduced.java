@@ -13,10 +13,6 @@ import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 
-/** 
- * @author Andy Seaborne
- */
-
 public class QueryIterReduced extends QueryIterDistinctReduced
 {
     List<Binding> window = new ArrayList<Binding>() ;

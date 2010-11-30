@@ -17,10 +17,7 @@ import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
  *  For each element in the input stream, 
  *  execute the expression (i.e. index-join it to the element
  *  in the input stream).  If it matches, return those results.
- *  If it does not, return the input stream element.
- *    
- * @author Andy Seaborne
- */
+ *  If it does not, return the input stream element. */
 public class OpConditional extends Op2 //OpN??
 {
     // Extends to OpN with a series of optionals.

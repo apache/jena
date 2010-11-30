@@ -30,10 +30,7 @@ import com.hp.hpl.jena.sparql.util.QueryOutputUtils ;
 import com.hp.hpl.jena.sparql.util.QueryUtils ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 
-/** A program to parse and print a query.
- *
- * @author  Andy Seaborne
- */
+/** A program to parse and print a query. */
 
 public class qparse extends CmdARQ
 {

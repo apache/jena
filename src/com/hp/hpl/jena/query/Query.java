@@ -46,10 +46,7 @@ import com.hp.hpl.jena.sparql.util.FmtUtils ;
  *
  * Once a query is built, it can be passed to the QueryFactory to produce a query execution engine.
  * @see QueryExecutionFactory
- * @see ResultSet
- * 
- * @author		Andy Seaborne
- */
+ * @see ResultSet */
 
 public class Query extends Prologue implements Cloneable, Printable
 {

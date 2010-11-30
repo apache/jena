@@ -15,10 +15,7 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingFactory ;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
 
-/** A singleton iterator 
- * 
- * @author Andy Seaborne
- */
+/** A singleton iterator */
 
 public class QueryIterSingleton extends QueryIterYieldN
 {

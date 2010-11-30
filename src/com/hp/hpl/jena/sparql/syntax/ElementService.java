@@ -10,10 +10,7 @@ import com.hp.hpl.jena.graph.Node ;
 import org.openjena.atlas.logging.Log ;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
 
-/** A SERVICE pattern - access a remote SPARQL service.
- * 
- * @author Andy Seaborne
- */
+/** A SERVICE pattern - access a remote SPARQL service. */
 
 public class ElementService extends Element
 {

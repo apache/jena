@@ -7,10 +7,6 @@
 package com.hp.hpl.jena.sparql.serializer;
 import com.hp.hpl.jena.sparql.syntax.TemplateVisitor ;
 
-/** 
- * @author Andy Seaborne
- */
-
 public interface FormatterTemplate extends TemplateVisitor 
 {
     static final int INDENT = 2 ;

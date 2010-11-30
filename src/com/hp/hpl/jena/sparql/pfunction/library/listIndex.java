@@ -26,9 +26,7 @@ import com.hp.hpl.jena.sparql.util.graph.GNode ;
 import com.hp.hpl.jena.sparql.util.graph.GraphList ;
 
 /** List membership with index : property function to access list using index  
- *  Usage: ?list :listIndex (?index ?member)
- * @author Andy Seaborne
- */
+ *  Usage: ?list :listIndex (?index ?member) */
 
 public class listIndex extends ListBaseList
 {

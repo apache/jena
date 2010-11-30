@@ -11,11 +11,6 @@ import java.util.List ;
 
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
 
-/** 
- * 
- * @author Andy Seaborne
- */
-
 public class ElementUnion extends Element
 {
     List<Element> elements = new ArrayList<Element>() ;

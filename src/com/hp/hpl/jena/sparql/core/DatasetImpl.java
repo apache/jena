@@ -21,10 +21,7 @@ import com.hp.hpl.jena.shared.Lock ;
 import com.hp.hpl.jena.sparql.ARQException ;
 import com.hp.hpl.jena.sparql.util.NodeUtils ;
 
-/** Wrapper around a DatasetGraph. See also DataSourceImpl.
- * 
- * @author Andy Seaborne
- */
+/** Wrapper around a DatasetGraph. See also DataSourceImpl. */
 
 public class DatasetImpl implements Dataset
 {

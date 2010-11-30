@@ -28,10 +28,7 @@ import org.openjena.atlas.logging.Log ;
  * 
  * Format: <a href="http://www.w3.org/2001/sw/DataAccess/json-sparql/">Serializing SPARQL Query Results in JSON</a> 
  * 
- * JSON: <a href="http://json.org">http://json.org/</a>
- * 
- * @author Andy Seaborne
- */
+ * JSON: <a href="http://json.org">http://json.org/</a> */
 
 public class JSONOutputResultSet implements ResultSetProcessor
 {

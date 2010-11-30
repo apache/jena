@@ -3,9 +3,7 @@
  * [See end of file]
  */
 
-/** Code to calculate the transitive-bNode closures
- * @author     Andy Seaborne
- */
+/** Code to calculate the transitive-bNode closures */
 
 package com.hp.hpl.jena.sparql.util;
 import java.util.ArrayList ;

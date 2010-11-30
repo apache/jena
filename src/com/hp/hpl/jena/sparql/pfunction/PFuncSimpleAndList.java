@@ -16,10 +16,7 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding ;
  *  <li>subject arguments is not a list</li>
  *  <li>object is a list</li>
  *  <li>call the implementation with one binding at a time</li>
- *  </ul> 
- * 
- * @author Andy Seaborne
- */
+ *  </ul> */
 
 public abstract
 class PFuncSimpleAndList extends PropertyFunctionEval

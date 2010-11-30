@@ -8,10 +8,6 @@ package com.hp.hpl.jena.sparql.expr;
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp ;
 
-/**
- * @author Andy Seaborne
- */ 
-
 public class E_Add extends ExprFunction2
 {
     private static final String printName = "add" ;

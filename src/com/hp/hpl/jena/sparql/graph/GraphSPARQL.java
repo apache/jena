@@ -35,9 +35,7 @@ import com.hp.hpl.jena.util.iterator.WrappedIterator ;
 
 /** This class provides the Jena Graph interface to a graph in a Dataset.
  *  It enables the full Jena API to be used with data only accessible
- *  via a Dataset.
- * @author Andy Seaborne
- */
+ *  via a Dataset. */
 
 public class GraphSPARQL extends GraphBase implements Graph
 {

@@ -15,10 +15,7 @@ import com.hp.hpl.jena.sparql.util.Context ;
 
 /** DescribeHandler that calculates the bNode closure.
  *  Takes all the statements of this resource, and for every object that is
- *  a bNode, it recursively includes its statements.
- * 
- * @author Andy Seaborne
- */
+ *  a bNode, it recursively includes its statements. */
 
 public class DescribeBNodeClosure implements DescribeHandler
 {

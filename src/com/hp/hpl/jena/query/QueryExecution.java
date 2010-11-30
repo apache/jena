@@ -9,10 +9,7 @@ import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.util.FileManager ;
 
-/** A interface for a single execution of a query.
- *
- * @author   Andy Seaborne
- */
+/** A interface for a single execution of a query. */
 
 
 public interface QueryExecution

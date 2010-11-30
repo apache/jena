@@ -15,10 +15,6 @@ import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.expr.nodevalue.NodeFunctions ;
 import com.hp.hpl.jena.vocabulary.XSD ;
 
-/**
- * @author Andy Seaborne
- */
-
 public class TestNodeFunctions extends TestCase
 {
     public static junit.framework.Test suite()

@@ -10,10 +10,7 @@ import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp ;
 import com.hp.hpl.jena.sparql.function.FunctionBase1 ;
 
-/** Boolean Equivalent Value
- * 
- * @author Andy Seaborne
- */
+/** Boolean Equivalent Value */
 
 public class FN_Not extends FunctionBase1
 {

@@ -15,10 +15,7 @@ import com.hp.hpl.jena.sparql.core.QuerySolutionBase ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.util.FmtUtils ;
 
-/** Implementation of QuerySolution that is backed by an in-memory map.
- * 
- * @author Andy Seaborne
- */ 
+/** Implementation of QuerySolution that is backed by an in-memory map. */ 
 
 public class QuerySolutionMap extends QuerySolutionBase
 {

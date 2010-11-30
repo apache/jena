@@ -28,9 +28,7 @@ import com.hp.hpl.jena.rdf.model.Resource ;
 /**
  * JSON Output as a JSON object
  * (Converted from a JSONStringer output writer by Elias Torres (<a href="mailto:elias@torrez.us">elias@torrez.us</a>)
- * Upgraded to 
- * @author Andy Seaborne 
- */
+ * Upgraded to */
 
 public class JSONObjectResult implements ResultSetProcessor
 {

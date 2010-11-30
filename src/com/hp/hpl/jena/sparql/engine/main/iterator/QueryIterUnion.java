@@ -23,9 +23,7 @@ import com.hp.hpl.jena.sparql.util.Utils ;
 
 
 /** Execute each sub stage against the input.
- *  Streamed SPARQL Union.
- * @author Andy Seaborne
- */
+ *  Streamed SPARQL Union. */
 
 public class QueryIterUnion extends QueryIterRepeatApply 
 {

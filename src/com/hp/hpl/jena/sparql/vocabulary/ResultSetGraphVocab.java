@@ -1,7 +1,5 @@
 package com.hp.hpl.jena.sparql.vocabulary ;
 
-/* CVS $Id: ResultSetGraphVocab.java,v 1.1 2006/06/10 19:00:50 andy_seaborne Exp $ */
- 
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.rdf.model.Property ;

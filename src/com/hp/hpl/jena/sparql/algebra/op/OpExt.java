@@ -17,9 +17,7 @@ import com.hp.hpl.jena.sparql.sse.Tags ;
 import com.hp.hpl.jena.sparql.sse.writers.WriterLib ;
 
 /** Marker for extension points
- *  Execution will be per-engine specific
- * @author Andy Seaborne
- */
+ *  Execution will be per-engine specific */
 public abstract class OpExt extends OpBase
 { 
     protected final String tag ;

@@ -9,10 +9,7 @@ package arq;
 import java.util.ArrayList ;
 import java.util.List ;
 
-/** A program to execute queries from the command line in ARQ mode.
-  *
- * @author  Andy Seaborne
- */
+/** A program to execute queries from the command line in ARQ mode. */
 
 public class rdql
 {

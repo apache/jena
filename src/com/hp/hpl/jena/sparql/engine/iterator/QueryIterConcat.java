@@ -20,10 +20,7 @@ import com.hp.hpl.jena.sparql.util.Utils ;
 
 
 /**
- * A query iterator that joins two or more iterators into a single iterator.
- * 
- * @author Andy Seaborne
- */ 
+ * A query iterator that joins two or more iterators into a single iterator. */ 
 
 public class QueryIterConcat extends QueryIter
 {

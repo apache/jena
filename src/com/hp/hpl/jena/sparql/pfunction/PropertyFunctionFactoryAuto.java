@@ -10,10 +10,7 @@ import com.hp.hpl.jena.query.QueryBuildException ;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 
-/** PropertyFunction factory that instantiates a class each time.
- * 
- * @author Andy Seaborne
- */ 
+/** PropertyFunction factory that instantiates a class each time. */ 
 
 class PropertyFunctionFactoryAuto implements PropertyFunctionFactory
 {

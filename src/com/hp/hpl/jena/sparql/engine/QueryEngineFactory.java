@@ -13,10 +13,7 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.util.Context ;
 
 /** Additional QueryEngineFactory's 
- * can be dynamically added to the registry.
- * 
- * @author Andy Seaborne
- */ 
+ * can be dynamically added to the registry. */ 
 public interface QueryEngineFactory
 {
     public boolean accept(Query query, DatasetGraph dataset, Context context) ;

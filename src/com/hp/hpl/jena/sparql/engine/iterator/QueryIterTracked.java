@@ -11,10 +11,7 @@ import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.util.iterator.NiceIterator ;
 
-/** Track a QueryIterator
- * 
- * @author Andy Seaborne
- */
+/** Track a QueryIterator */
 
 public class QueryIterTracked extends QueryIter
 {

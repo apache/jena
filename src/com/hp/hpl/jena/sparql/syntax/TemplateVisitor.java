@@ -6,11 +6,6 @@
 
 package com.hp.hpl.jena.sparql.syntax;
 
-/** 
- * 
- * @author Andy Seaborne
- */
-
 public interface TemplateVisitor
 {
     public void visit(TemplateTriple template) ;

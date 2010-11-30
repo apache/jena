@@ -11,9 +11,7 @@ import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
 
-/** IF(expr, expr, expr)
- * @author Andy Seaborne
- */ 
+/** IF(expr, expr, expr) */ 
 
 public class E_Conditional extends ExprFunction3
 {

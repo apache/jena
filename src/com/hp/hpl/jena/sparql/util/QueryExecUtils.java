@@ -30,10 +30,7 @@ import com.hp.hpl.jena.sparql.resultset.ResultSetApply ;
 import com.hp.hpl.jena.sparql.resultset.ResultsFormat ;
 import com.hp.hpl.jena.sparql.vocabulary.ResultSetGraphVocab ;
 
-/** Some utilities for query processing. 
- * 
- * @author Andy Seaborne
- */
+/** Some utilities for query processing. */
 public class QueryExecUtils
 {
     protected static PrefixMapping globalPrefixMap = new PrefixMappingImpl() ;

@@ -10,10 +10,7 @@ import java.util.Iterator ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.core.Var ;
 
-/** A binding that wraps another.
- * 
- * @author   Andy Seaborne
- */
+/** A binding that wraps another. */
 
 
 public class BindingWrapped implements Binding

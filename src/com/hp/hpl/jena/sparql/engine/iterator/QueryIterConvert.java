@@ -16,10 +16,7 @@ import com.hp.hpl.jena.sparql.util.Utils ;
 
 
 /** Iterator over another QueryIterator, applying a converter function
- *  to each object that is returned by .next()
- * 
- * @author Andy Seaborne
- */
+ *  to each object that is returned by .next() */
 
 public class QueryIterConvert extends QueryIter1
 {

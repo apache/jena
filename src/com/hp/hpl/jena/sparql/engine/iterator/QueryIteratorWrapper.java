@@ -13,10 +13,7 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 
-/** Wrap a QueryIterator so it can have some/all of it's methods intercepted. 
- * 
- * @author Andy Seaborne
- */
+/** Wrap a QueryIterator so it can have some/all of it's methods intercepted. */
 
 public class QueryIteratorWrapper extends QueryIteratorBase
 {

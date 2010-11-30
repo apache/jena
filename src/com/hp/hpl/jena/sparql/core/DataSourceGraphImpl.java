@@ -11,10 +11,7 @@ import com.hp.hpl.jena.graph.Graph ;
 
 /** 
  * Graph-level dataset that contains a preset (but alterable) set of graphs.
- * @deprecated Use DatasetGraphMap
- * 
- * @author Andy Seaborne
- */
+ * @deprecated Use DatasetGraphMap */
 @Deprecated 
 public class DataSourceGraphImpl extends DatasetGraphMap
 {

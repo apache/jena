@@ -10,10 +10,7 @@ import com.hp.hpl.jena.graph.Node ;
 
 
 /** A dynamically typed slot 
- * 
- * 
- * @author Andy Seaborne
- */
+ * */
 
 public interface RDQL_NodeValue extends PrintableRDQL
 {

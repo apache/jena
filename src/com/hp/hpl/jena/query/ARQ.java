@@ -26,8 +26,6 @@ import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.sparql.util.Symbol ;
 
 /** ARQ - miscellaneous settings
- * 
- * @author Andy Seaborne
  */
 
 public class ARQ

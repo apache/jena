@@ -13,10 +13,7 @@ import com.hp.hpl.jena.query.Syntax ;
 /** This class provides the root of lower level access to all the parsers.
  *  Each subclass hides the details of the per-language exception handlers and other
  *  javacc details to provide a methods that deal with setting up Query objects
- *  and using QueryException exceptions for problems.    
- * 
- * @author Andy Seaborne
- */
+ *  and using QueryException exceptions for problems. */
 
 public abstract class Parser
 {

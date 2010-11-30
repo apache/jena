@@ -11,10 +11,7 @@ import java.util.Map ;
 
 import com.hp.hpl.jena.graph.Node ;
 
-/** Map nodes to nodes.
- *  
- * @author Andy Seaborne
- */ 
+/** Map nodes to nodes. */ 
 
 public class NodeIsomorphismMap //extends HashMap
 {

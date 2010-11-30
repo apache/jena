@@ -10,10 +10,7 @@ import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.sparql.ARQConstants ;
 import com.hp.hpl.jena.sparql.function.library.* ;
 
-/** Standard function library.
- * 
- * @author Andy Seaborne
- */
+/** Standard function library. */
 
 public class StandardFunctions
 {

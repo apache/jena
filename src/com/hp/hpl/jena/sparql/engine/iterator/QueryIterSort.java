@@ -19,10 +19,7 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingComparator ;
 
 /** Sort a query iterator.  Uses an in-memory sort, so limiting the size of
- * iterators that can be handled.
- * 
- * @author Andy Seaborne
- */
+ * iterators that can be handled. */
 
 public class QueryIterSort
     extends QueryIterPlainWrapper

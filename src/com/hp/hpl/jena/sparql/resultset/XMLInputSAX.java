@@ -34,10 +34,7 @@ import com.hp.hpl.jena.sparql.util.LabelToNodeMap ;
 import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
 import com.hp.hpl.jena.vocabulary.RDF ;
 
-/** Code that reads an XML Result Set and builds the ARQ structure for the same.
- * 
- * @author Andy Seaborne
- */
+/** Code that reads an XML Result Set and builds the ARQ structure for the same. */
 
 
 class XMLInputSAX extends SPARQLResult

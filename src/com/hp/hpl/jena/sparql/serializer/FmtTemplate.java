@@ -17,10 +17,7 @@ import com.hp.hpl.jena.sparql.syntax.Template ;
 import com.hp.hpl.jena.sparql.syntax.TemplateGroup ;
 import com.hp.hpl.jena.sparql.syntax.TemplateTriple ;
 
-/** com.hp.hpl.jena.query.core.FormatterARQ
- * 
- * @author Andy Seaborne
- */
+/** com.hp.hpl.jena.query.core.FormatterARQ */
 
 public class FmtTemplate extends FormatterBase
     implements FormatterTemplate 

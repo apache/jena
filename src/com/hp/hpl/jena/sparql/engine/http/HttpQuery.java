@@ -32,10 +32,7 @@ import com.hp.hpl.jena.util.FileUtils ;
  *  There are higher level classes for doing a query and presenting
  *  the results in an API fashion. 
  * 
- *  If the query string is large, then HTTP POST is used.
-
- * @author  Andy Seaborne
- */
+ *  If the query string is large, then HTTP POST is used. */
 public class HttpQuery extends Params
 {
     static final Logger log = LoggerFactory.getLogger(HttpQuery.class.getName()) ;

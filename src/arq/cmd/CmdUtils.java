@@ -7,10 +7,7 @@
 package arq.cmd;
 
 
-/** Odds and ends
- * 
- * @author Andy Seaborne
- */
+/** Odds and ends */
 
 public class CmdUtils
 {

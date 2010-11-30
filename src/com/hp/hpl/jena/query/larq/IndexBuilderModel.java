@@ -22,10 +22,7 @@ import com.hp.hpl.jena.rdf.model.StmtIterator ;
  *  then the getIndex() called.
  *  To update the index once closed, the application should create a new index builder.
  *  Any index readers (e.g. IndexLARQ objects)
- *  need to be recreated and registered.  
- *        
- * @author Andy Seaborne
- */
+ *  need to be recreated and registered. */
 
 public abstract class IndexBuilderModel extends StatementListener
 {

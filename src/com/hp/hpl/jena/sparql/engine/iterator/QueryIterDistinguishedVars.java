@@ -12,9 +12,7 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingNamedVar ;
 
 /** Filter bindings for distinguished variables only 
- *  Currently unused.
- * @author Andy Seaborne
- */
+ *  Currently unused. */
 
 public class QueryIterDistinguishedVars extends QueryIterConvert
 {

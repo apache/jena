@@ -14,10 +14,7 @@ import com.hp.hpl.jena.sparql.util.Context ;
  *  DESCRIBE queries return RDF that describes the resource found, either
  *  from the query pattern or explicitly named in the DESCRIBE clause.
  *  For each resource, any handlers are called to builds the RDF model
- *  that is to be the result of the query.     
- * 
- * @author Andy Seaborne
- */
+ *  that is to be the result of the query. */
 
 public interface DescribeHandler
 {

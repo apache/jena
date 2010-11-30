@@ -20,9 +20,7 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
 
 /** A number of templates, grouped together.
- *  Kept as a list so printing maintains order.
- * @author Andy Seaborne
- */
+ *  Kept as a list so printing maintains order. */
 
 public class TemplateGroup extends Template implements TripleCollector
 {

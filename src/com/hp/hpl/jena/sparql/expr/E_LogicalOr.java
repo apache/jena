@@ -25,11 +25,6 @@ import com.hp.hpl.jena.sparql.function.FunctionEnv ;
     F       F   |   T       F       F
 */
 
-/**
- * @author Andy Seaborne
- */ 
-
-
 public class E_LogicalOr extends ExprFunction2
 {
     

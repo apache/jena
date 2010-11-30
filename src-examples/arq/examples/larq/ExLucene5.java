@@ -21,10 +21,7 @@ import com.hp.hpl.jena.rdf.model.ResourceFactory ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 
 /** Example code to index subjects by some external content.
- *  Pattern 3. 
- * 
- * @author Andy Seaborne
- */
+ *  Pattern 3. */
 
 public class ExLucene5
 {

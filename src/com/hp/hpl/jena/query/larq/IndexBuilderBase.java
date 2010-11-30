@@ -16,10 +16,7 @@ import org.apache.lucene.store.Directory ;
 import org.apache.lucene.store.FSDirectory ;
 import org.apache.lucene.store.RAMDirectory ;
 
-/** Root class for index creation.
- *  
- * @author Andy Seaborne
- */
+/** Root class for index creation. */
 
 public class IndexBuilderBase implements IndexBuilder 
 {

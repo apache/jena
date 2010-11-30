@@ -16,9 +16,7 @@ import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
 
 /** Do-nothing class that means that tags/labels/comments can be left in the algebra tree.
  * If serialized, toString called on the object, reparsing yields a string.
- *  Can have zero one one sub ops.
- * @author Andy Seaborne
- */
+ *  Can have zero one one sub ops. */
 
 public class OpLabel extends Op1
 {

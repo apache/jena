@@ -12,10 +12,7 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import org.openjena.atlas.logging.Log ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 
-/** Repeatedly execute the subclass operation for each Binding in the input iterator. 
- * 
- * @author     Andy Seaborne
- */
+/** Repeatedly execute the subclass operation for each Binding in the input iterator. */
  
 public abstract class QueryIterRepeatApply extends QueryIter1
 {

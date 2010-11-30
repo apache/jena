@@ -15,10 +15,7 @@ import com.hp.hpl.jena.util.FileUtils ;
 
 /** A writer that records what the current indentation level is, and
  *  uses that to insert a prefix at each line. 
- *  It can also insert line numbers at the beginning of lines.
- * 
- * @author Andy Seaborne
- */
+ *  It can also insert line numbers at the beginning of lines. */
 
 public class IndentedWriter
 {

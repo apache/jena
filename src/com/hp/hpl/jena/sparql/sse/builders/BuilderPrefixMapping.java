@@ -19,10 +19,7 @@ import com.hp.hpl.jena.sparql.sse.Tags ;
 /** Build a prefixmapping, tagged (prefixmap pairs) or (prefixmapping pairs)
  * each pair being a PrefixName, but must end : and an IRI.
  * 
- * Can also just a list of pairs.
- * 
- * @author Andy Seaborne
- */
+ * Can also just a list of pairs. */
 
 public class BuilderPrefixMapping
 {

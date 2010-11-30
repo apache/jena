@@ -14,9 +14,7 @@ import com.hp.hpl.jena.sparql.expr.ExprList ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 
-/** Support for a function of zero arguments. 
- * @author Andy Seaborne
- */
+/** Support for a function of zero arguments. */
 
 public abstract class FunctionBase0 extends FunctionBase
 {

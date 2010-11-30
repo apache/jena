@@ -22,10 +22,7 @@ import com.hp.hpl.jena.sparql.sse.ItemList ;
  *    (base IRI TERM) => TERM with IRIs resolved to absolute IRIs
  *  
  *  The DECL part can not itself have nested, independent forms
- *  unless a subclass (carefully) manages that. 
- *    
- * @author Andy Seaborne
- */
+ *  unless a subclass (carefully) manages that. */
 
 public abstract class ParseHandlerForm extends ParseHandlerPlain 
 {

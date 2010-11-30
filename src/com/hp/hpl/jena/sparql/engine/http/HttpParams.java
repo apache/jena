@@ -6,10 +6,7 @@
 
 package com.hp.hpl.jena.sparql.engine.http;
 
-/** Constants related to SPARQL over HTTP  
- * 
- * @author Andy Seaborne
- */
+/** Constants related to SPARQL over HTTP */
 
 public class HttpParams
 {

@@ -18,10 +18,7 @@ import com.hp.hpl.jena.sparql.util.FmtUtils ;
 import com.hp.hpl.jena.sparql.util.PrintSerializableBase ;
 
 /** Adapter between property functions and server procedures
- *  When called, this wrapper reconstructs the usual property function calling conventions.
- *  
- * @author Andy Seaborne
- */ 
+ *  When called, this wrapper reconstructs the usual property function calling conventions. */ 
 public class ProcedurePF extends PrintSerializableBase implements Procedure
 {
     private PropertyFunction propFunc ;

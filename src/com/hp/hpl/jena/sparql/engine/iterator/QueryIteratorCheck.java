@@ -16,10 +16,7 @@ import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
 import org.openjena.atlas.logging.Log ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 
-/** Query iterator that checks everything was closed correctly 
- * 
- * @author Andy Seaborne
- */
+/** Query iterator that checks everything was closed correctly */
 
 public class QueryIteratorCheck extends QueryIteratorWrapper
 {

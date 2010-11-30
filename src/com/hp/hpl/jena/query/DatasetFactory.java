@@ -19,10 +19,7 @@ import com.hp.hpl.jena.sparql.util.DatasetUtils ;
 import com.hp.hpl.jena.sparql.util.graph.GraphUtils ;
 import com.hp.hpl.jena.util.FileManager ;
 
-/** Make Datasets and DataSources in various ways   
- * 
- * @author Andy Seaborne
- */
+/** Make Datasets and DataSources in various ways */
 
 public class DatasetFactory
 {

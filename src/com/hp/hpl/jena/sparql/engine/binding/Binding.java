@@ -10,10 +10,7 @@ import java.util.Iterator ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.core.Var ;
 
-/** Interface encapsulating a mapping from a name to a value.
- * 
- * @author   Andy Seaborne
- */
+/** Interface encapsulating a mapping from a name to a value. */
 
 
 public interface Binding

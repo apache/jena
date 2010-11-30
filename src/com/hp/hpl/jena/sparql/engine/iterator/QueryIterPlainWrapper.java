@@ -17,10 +17,7 @@ import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 import com.hp.hpl.jena.util.iterator.NiceIterator ;
 
-/** Turn an normal java.util.Iterator (of Bindings) into a QueryIterator
- * 
- * @author Andy Seaborne
- */
+/** Turn an normal java.util.Iterator (of Bindings) into a QueryIterator */
 
 public class QueryIterPlainWrapper extends QueryIter
 {

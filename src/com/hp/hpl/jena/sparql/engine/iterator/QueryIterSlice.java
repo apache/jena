@@ -12,10 +12,7 @@ import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 
-/** Iterator until a limit is reached. 
- * 
- * @author Andy Seaborne
- */
+/** Iterator until a limit is reached. */
 
 public class QueryIterSlice extends QueryIter1
 {

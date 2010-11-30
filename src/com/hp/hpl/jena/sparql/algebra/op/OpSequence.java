@@ -16,10 +16,7 @@ import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
 
 /** A "sequence" is a join-like operation where it is know that the 
  * the output of one step can be fed into the input of the next 
- * (that is, no scoping issues arise). 
- * 
- * @author Andy Seaborne
- */
+ * (that is, no scoping issues arise). */
 
 public class OpSequence extends OpN
 {

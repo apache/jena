@@ -30,10 +30,7 @@ import com.hp.hpl.jena.vocabulary.RDFS ;
 
 /** Wrapper class for individual test items.
  *  Assumes it is a query test item, using both the manifest vocabulary and the
- *  test query vocabulary.
- *  
- *  @author      Andy Seaborne
- */
+ *  test query vocabulary. */
 public class TestItem
 {
     static int counter = 0 ;

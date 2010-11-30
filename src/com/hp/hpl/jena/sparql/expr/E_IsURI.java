@@ -7,10 +7,6 @@ package com.hp.hpl.jena.sparql.expr;
 
 import com.hp.hpl.jena.sparql.expr.nodevalue.NodeFunctions ;
 
-/** 
- * @author Andy Seaborne
- */
-
 public class E_IsURI extends E_IsIRI
 {
     // "isURI" is another name for "isIRI" -- we try to keep the parse name.

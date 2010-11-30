@@ -11,10 +11,6 @@ import junit.framework.TestCase ;
 import arq.cmdline.ArgDecl ;
 import arq.cmdline.CmdLineArgs ;
 
-/** 
- * @author Andy Seaborne
- */
-
 public class TestCmdLine extends TestCase
 {
     public void test_Simple1()

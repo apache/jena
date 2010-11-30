@@ -10,9 +10,6 @@ import java.util.Iterator ;
 import java.util.NoSuchElementException ;
 
 /** IteratorCons : the concatenation of two iterators.
- * 
- * @author Andy Seaborne
- * @version $Id$
  */
 
 public class IteratorCons<T> implements Iterator<T>, Iterable<T>

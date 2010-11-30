@@ -32,10 +32,7 @@ import org.openjena.atlas.logging.Log ;
 import com.hp.hpl.jena.sparql.util.DateTimeStruct ;
 /**
  * Implementation of XQuery/XPath functions and operators.
- * http://www.w3.org/TR/xpath-functions/
- * 
- * @author Andy Seaborne
- */
+ * http://www.w3.org/TR/xpath-functions/ */
 public class XSDFuncOp
 {
     private XSDFuncOp() {}

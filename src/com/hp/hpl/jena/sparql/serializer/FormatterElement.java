@@ -23,10 +23,6 @@ import com.hp.hpl.jena.sparql.path.PathWriter ;
 import com.hp.hpl.jena.sparql.syntax.* ;
 
 
-/**
- * @author Andy Seaborne
- */
-
 public class FormatterElement extends FormatterBase
     implements ElementVisitor
 {

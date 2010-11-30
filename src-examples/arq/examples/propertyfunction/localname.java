@@ -47,10 +47,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
  *  The two searching forms (subject unbound) are expensive.
 
  *  Anything not a URI (subject) or string (object) causes no match.
- * 
- * 
- * @author Andy Seaborne
- */ 
+ * */ 
 
 public class localname extends PFuncSimple
 {

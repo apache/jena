@@ -3,10 +3,6 @@
  * [See end of file]
  */
 
-/**
- * @author     Andy Seaborne
- */
- 
 package com.hp.hpl.jena.sparql.resultset;
 
 public interface ResultSetRewindable extends com.hp.hpl.jena.query.ResultSet

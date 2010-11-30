@@ -25,10 +25,7 @@ import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.util.FileManager ;
 
 
-/** Place to make QueryExecution objects from Query objects or a string.   
- *  
- * @author     Andy Seaborne
- */
+/** Place to make QueryExecution objects from Query objects or a string. */
  
 public class QueryExecutionFactory
 {

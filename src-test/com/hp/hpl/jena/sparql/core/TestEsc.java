@@ -13,10 +13,7 @@ import org.junit.Test ;
 import com.hp.hpl.jena.query.QueryParseException ;
 import com.hp.hpl.jena.sparql.lang.ParserBase ;
 
-/** com.hp.hpl.jena.query.test.TestMisc
- * 
- * @author Andy Seaborne
- */
+/** com.hp.hpl.jena.query.test.TestMisc */
 
 public class TestEsc extends TestCase
 {

@@ -10,10 +10,7 @@ import java.io.OutputStream ;
 
 import org.openjena.atlas.io.IndentedWriter ;
 
-/** XML Output (ASK format)
- * 
- * @author Andy Seaborne
- */
+/** XML Output (ASK format) */
 
 
 public class XMLOutputASK implements XMLResults

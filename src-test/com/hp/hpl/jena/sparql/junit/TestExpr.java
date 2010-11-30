@@ -24,10 +24,7 @@ import com.hp.hpl.jena.sparql.lang.arq.ARQParser ;
 import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.sparql.util.ExprUtils ;
 
-/** An expression test.
- * 
- * @author Andy Seaborne
- */
+/** An expression test. */
 
 public abstract class TestExpr extends TestCase
 {

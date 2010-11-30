@@ -22,10 +22,7 @@ import com.hp.hpl.jena.util.LocationMapper ;
 
 /** ModDataset: arguments to build a dataset - 
  * see also ModDatasetAssembler which extends ModDataset
- * with a description parameter.
- * 
- * @author Andy Seaborne
- */ 
+ * with a description parameter. */ 
 
 public class ModDatasetGeneral extends ModDataset
 {

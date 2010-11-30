@@ -13,10 +13,7 @@ import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 
 /** Basic property function handler that calls the implementation 
- * subclass one binding at a time after evaluating the arguments (if bound).
- * 
- * @author Andy Seaborne
- */ 
+ * subclass one binding at a time after evaluating the arguments (if bound). */ 
 
 public abstract class PropertyFunctionEval extends PropertyFunctionBase
 {

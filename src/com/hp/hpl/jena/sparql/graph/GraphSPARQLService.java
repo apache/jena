@@ -21,9 +21,7 @@ import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
 
 /** This class provides the Jena Graph interface to a remove SPARQL endpoint.
- *  Efficiency not guaranteed.
- * @author Andy Seaborne
- */
+ *  Efficiency not guaranteed. */
 
 public class GraphSPARQLService extends GraphBase implements Graph
 {

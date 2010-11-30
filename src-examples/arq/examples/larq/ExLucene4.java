@@ -19,10 +19,7 @@ import com.hp.hpl.jena.util.FileManager ;
 import com.hp.hpl.jena.vocabulary.DC ;
 
 /** Example code to load a model from a file, index subjects by DC title property, 
- * then execute a SPARQL query with a Lucene search in it.
- * 
- * @author Andy Seaborne
- */
+ * then execute a SPARQL query with a Lucene search in it. */
 
 public class ExLucene4
 {

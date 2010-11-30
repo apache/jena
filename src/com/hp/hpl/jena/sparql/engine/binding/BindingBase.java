@@ -18,10 +18,7 @@ import org.openjena.atlas.lib.Lib ;
 import org.openjena.atlas.logging.Log ;
 import com.hp.hpl.jena.sparql.util.FmtUtils ;
 
-/** Machinary encapsulating a mapping from a name to a value.
- * 
- * @author   Andy Seaborne
- */
+/** Machinary encapsulating a mapping from a name to a value. */
 
 
 abstract public class BindingBase implements Binding

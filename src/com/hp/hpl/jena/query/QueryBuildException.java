@@ -6,10 +6,7 @@
 package com.hp.hpl.jena.query;
 
 /** QueryBuildException is exception for all excpetions during query 
- *  execution construction.
- *  
- * @author		Andy Seaborne
- */
+ *  execution construction. */
 
 
 public class QueryBuildException extends QueryFatalException

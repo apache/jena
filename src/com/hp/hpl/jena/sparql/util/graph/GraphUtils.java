@@ -36,9 +36,7 @@ import com.hp.hpl.jena.sparql.util.TypeNotUniqueException ;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
 import com.hp.hpl.jena.vocabulary.RDF ;
 
-/** Graph utilities.  See also GraphFactory. 
- * @author Andy Seaborne
- */ 
+/** Graph utilities.  See also GraphFactory. */ 
 
 public class GraphUtils
 {

@@ -13,10 +13,7 @@ import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
 
 /**
- * This class provides the general machinary for iterators. 
- * 
- * @author Andy Seaborne
- */
+ * This class provides the general machinary for iterators. */
 public abstract class QueryIter extends QueryIteratorBase
 {
     // Volatile just to make it safe to concurrent updates

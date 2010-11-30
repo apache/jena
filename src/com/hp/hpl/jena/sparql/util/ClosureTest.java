@@ -4,9 +4,7 @@
  */
 
 /**
- * Test whether a 
- * @author     Andy Seaborne
- */
+ * Test whether a */
  
 package com.hp.hpl.jena.sparql.util;
 

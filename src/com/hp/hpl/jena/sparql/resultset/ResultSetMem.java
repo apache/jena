@@ -18,10 +18,7 @@ import com.hp.hpl.jena.sparql.util.Utils ;
 
 /** An in-memory result set.  
  * Also useful for writing input processors which
- * keep the result set in memory.
- *  
- * @author      Andy Seaborne
- */
+ * keep the result set in memory. */
 
 
 public class ResultSetMem implements com.hp.hpl.jena.query.ResultSetRewindable

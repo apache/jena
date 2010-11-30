@@ -21,9 +21,7 @@ import com.hp.hpl.jena.sparql.function.FunctionEnv ;
 /** Function that evaluates an expression - catches evaluation failures
  *  and returns false.
  *  Mainly used in extensions.
- *  Would be better if that were eval and this were "safe" or somesuch
- * @author Andy Seaborne
- */
+ *  Would be better if that were eval and this were "safe" or somesuch */
 
 public class eval implements Function
 {

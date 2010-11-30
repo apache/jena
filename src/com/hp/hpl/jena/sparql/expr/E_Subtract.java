@@ -7,9 +7,6 @@ package com.hp.hpl.jena.sparql.expr;
 
 import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp ;
 
-/** 
- */
-
 public class E_Subtract extends ExprFunction2
 {
     private static final String printName = "sub" ;

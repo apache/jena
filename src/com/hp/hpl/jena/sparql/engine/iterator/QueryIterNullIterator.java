@@ -15,10 +15,7 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 
-/** Closeable empty query iterator
- * 
- * @author Andy Seaborne
- */
+/** Closeable empty query iterator */
 
 public class QueryIterNullIterator extends QueryIter
 {

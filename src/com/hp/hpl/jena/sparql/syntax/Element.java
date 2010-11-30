@@ -13,10 +13,7 @@ import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.serializer.FormatterElement ;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
 
-/** Element - abstract class for all pattern elements 
- * 
- * @author Andy Seaborne
- */
+/** Element - abstract class for all pattern elements */
 
 public abstract class Element
 {

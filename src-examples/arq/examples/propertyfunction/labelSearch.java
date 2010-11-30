@@ -70,10 +70,7 @@ import com.hp.hpl.jena.vocabulary.RDFS ;
  *  </pre>
  *  
  *  by simply doing a regex but could be used to add access to some other form of
- *  indexing or external structure.
- *  
- * @author Andy Seaborne
- */ 
+ *  indexing or external structure. */ 
 
 public class labelSearch implements PropertyFunction
 {

@@ -11,10 +11,6 @@ import java.util.List ;
 
 import com.hp.hpl.jena.graph.Node ;
 
-/**
- * @author Andy Seaborne
- */ 
-
 public abstract class GraphUpdateN extends UpdateSubmission
 {
     protected List<Node> graphNodes = new ArrayList<Node>() ; //Empty means default graph.

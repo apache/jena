@@ -22,10 +22,7 @@ import org.openjena.atlas.logging.Log ;
 import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
 import com.hp.hpl.jena.util.FileManager ;
 
-/** ResultSetFactory - make result sets from places other than a query.
- * 
- * @author Andy Seaborne
- */
+/** ResultSetFactory - make result sets from places other than a query. */
 
 public class ResultSetFactory
 {

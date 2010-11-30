@@ -20,10 +20,7 @@ import com.hp.hpl.jena.rdf.model.RDFNode ;
 import com.hp.hpl.jena.rdf.model.Resource ;
 import org.openjena.atlas.logging.Log ;
 
-/** XML Output (ResultSet format)
- * 
- * @author Andy Seaborne
- */
+/** XML Output (ResultSet format) */
 
 
 public class XMLOutputResultSet

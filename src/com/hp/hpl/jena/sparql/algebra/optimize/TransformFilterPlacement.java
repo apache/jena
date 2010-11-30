@@ -28,10 +28,7 @@ import com.hp.hpl.jena.sparql.expr.ExprList ;
 import com.hp.hpl.jena.sparql.util.VarUtils ;
 
 /** Rewrite an algebra expression to put filters as close to their bound variables in a BGP.
- *  Works on (filter (BGP ...) )
- *  
- * @author Andy Seaborne
- */
+ *  Works on (filter (BGP ...) ) */
 
 public class TransformFilterPlacement extends TransformCopy
 {

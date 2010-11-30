@@ -18,10 +18,7 @@ import com.hp.hpl.jena.sparql.util.Utils ;
 
 
 /** A single triple template.
- *  bNodes are "magic" in that they are duplicated on substitution.  
- * 
- * @author Andy Seaborne
- */
+ *  bNodes are "magic" in that they are duplicated on substitution. */
 
 public class TemplateTriple extends Template
 {

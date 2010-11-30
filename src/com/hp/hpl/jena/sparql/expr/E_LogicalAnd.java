@@ -9,10 +9,6 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
 
-/**
- * @author Andy Seaborne
- */ 
-
 public class E_LogicalAnd extends ExprFunction2
 {
     // See logical OR

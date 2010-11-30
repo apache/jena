@@ -12,10 +12,7 @@ import com.hp.hpl.jena.sparql.core.Var ;
 
 /** A binding that is fixed - used in calculating DISTINCT result sets.
  *  .hashCode and .equals are overridden for content equality semantics (where
- *  "equality" means Node.equals, not Node.sameValueAs).
- * 
- * @author   Andy Seaborne
- */
+ *  "equality" means Node.equals, not Node.sameValueAs). */
 
 
 public class BindingFixed extends BindingWrapped

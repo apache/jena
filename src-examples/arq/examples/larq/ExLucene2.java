@@ -18,10 +18,7 @@ import com.hp.hpl.jena.sparql.util.Utils ;
 /** Example code to load a model from a file,
  * index all string literals,
  * then execute a SPARQL query with a Lucene search in it that
- * finds which documents have DC titles
- * 
- * @author Andy Seaborne
- */
+ * finds which documents have DC titles */
 
 public class ExLucene2
 {

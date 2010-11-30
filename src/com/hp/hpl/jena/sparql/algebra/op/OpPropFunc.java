@@ -15,10 +15,7 @@ import com.hp.hpl.jena.sparql.sse.Tags ;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
 
 /** Property functions (or any OpBGP replacement)
- *  Execution will be per-engine specific
- *  
- * @author Andy Seaborne
- */
+ *  Execution will be per-engine specific */
 public class OpPropFunc extends Op1
 {
     // c.f. OpProcedure which is similar except for the handling of arguments.

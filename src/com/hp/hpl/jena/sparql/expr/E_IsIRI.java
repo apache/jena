@@ -7,10 +7,6 @@ package com.hp.hpl.jena.sparql.expr;
 
 import com.hp.hpl.jena.sparql.expr.nodevalue.NodeFunctions ;
 
-/** 
- * @author Andy Seaborne
- */
-
 public class E_IsIRI extends ExprFunction1
 {
     private static final String symbol = "isIRI" ;

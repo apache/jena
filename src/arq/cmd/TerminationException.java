@@ -8,9 +8,7 @@ package arq.cmd;
 
 /** Exception used to indicate that the command should end now.
  *  Use instead of System.exit so that a wrapper can catch (else a command server
- *  wil exit wrongly). 
- * @author Andy Seaborne
- */
+ *  wil exit wrongly). */
 
 public class TerminationException extends CmdException
 {

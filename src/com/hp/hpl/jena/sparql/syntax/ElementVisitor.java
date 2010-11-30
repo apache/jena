@@ -7,10 +7,6 @@
 
 package com.hp.hpl.jena.sparql.syntax;
 
-/** 
- * @author Andy Seaborne
- */
-
 public interface ElementVisitor
 {
     public void visit(ElementTriplesBlock el) ;

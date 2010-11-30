@@ -13,10 +13,7 @@ import com.hp.hpl.jena.rdf.model.Resource ;
 
 
 /**
- * A single answer from a SELECT query.
- * 
- * @author Andy Seaborne
- */
+ * A single answer from a SELECT query. */
 
 public interface QuerySolution
 {

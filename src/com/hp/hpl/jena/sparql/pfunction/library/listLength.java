@@ -18,10 +18,7 @@ import com.hp.hpl.jena.sparql.util.NodeFactory ;
 import com.hp.hpl.jena.sparql.util.graph.GNode ;
 import com.hp.hpl.jena.sparql.util.graph.GraphList ;
 
-/** List length : property function to get the length of a list.
- * 
- * @author Andy Seaborne
- */ 
+/** List length : property function to get the length of a list. */ 
 
 public class listLength extends ListBase1
 {

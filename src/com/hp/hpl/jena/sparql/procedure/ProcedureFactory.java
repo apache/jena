@@ -7,10 +7,7 @@
 package com.hp.hpl.jena.sparql.procedure;
 
 
-/** Interface for procedure factories.
- * 
- * @author Andy Seaborne
- */ 
+/** Interface for procedure factories. */ 
 
 public interface ProcedureFactory
 {

@@ -17,10 +17,7 @@ import com.hp.hpl.jena.vocabulary.RDF ;
 import com.hp.hpl.jena.vocabulary.RDFS ;
 
 /**
- * Internal constants - configuration is in class ARQ
- * 
- * @author Andy Seaborne
- */
+ * Internal constants - configuration is in class ARQ */
 public class ARQConstants
 {
     /** The prefix of XQuery/Xpath functions and operator */

@@ -15,10 +15,7 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 
 /** A QueryIterator that surpresses items already seen. 
  * Like com.hp.hpl.jena.util.iterators.UniqueExtendedIterator
- * except this one works on QueryIterators (and hence ClosableIterators)  
- * 
- * @author Andy Seaborne
- */
+ * except this one works on QueryIterators (and hence ClosableIterators) */
 
 public class QueryIterDistinct extends QueryIterDistinctReduced
 {

@@ -16,10 +16,7 @@ import com.hp.hpl.jena.sparql.core.Var ;
 /** A mapping from a name to a value such that we can create a tree of levels
  *  with higher (earlier levels) being shared.
  *  Looking up a name is done by looking in the current level,
- *  then trying the parent is not found. 
- * 
- * @author   Andy Seaborne
- */
+ *  then trying the parent is not found. */
 
 
 public class BindingMap extends BindingBase

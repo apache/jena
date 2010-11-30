@@ -22,10 +22,7 @@ import com.hp.hpl.jena.sparql.util.graph.GNode ;
 import com.hp.hpl.jena.sparql.util.graph.GraphList ;
 
 
-/** List membership : property function implementation of list:member. 
- * 
- * @author Andy Seaborne
- */ 
+/** List membership : property function implementation of list:member. */ 
 
 public class listMember extends ListBase1
 {

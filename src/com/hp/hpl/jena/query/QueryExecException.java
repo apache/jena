@@ -6,10 +6,7 @@
 package com.hp.hpl.jena.query;
 
 /** QueryExecException indicates a condition encountered during
- *  query evaluation.
- *  
- * @author		Andy Seaborne
- */
+ *  query evaluation. */
 
 
 public class QueryExecException extends QueryException

@@ -7,10 +7,7 @@
 package com.hp.hpl.jena.sparql.pfunction;
 
 
-/** Interface for extension factories registered with the extension registry.
- * 
- * @author Andy Seaborne
- */ 
+/** Interface for extension factories registered with the extension registry. */ 
 
 public interface PropertyFunctionFactory
 {

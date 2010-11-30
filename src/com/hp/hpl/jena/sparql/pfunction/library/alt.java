@@ -9,9 +9,7 @@ package com.hp.hpl.jena.sparql.pfunction.library;
 import com.hp.hpl.jena.vocabulary.RDF ;
 
 
-/** Alt membership 
- * @author Andy Seaborne
- */ 
+/** Alt membership */ 
 
 public class alt extends container
 {

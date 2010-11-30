@@ -12,9 +12,7 @@ import java.util.List ;
 import java.util.Map ;
 
 /** The event system - the single, global event manager control the registration and delivery of events.
- *  An event is a label and an argument.  
- * @author Andy Seaborne
- */
+ *  An event is a label and an argument. */
 public class EventManager
 {
     

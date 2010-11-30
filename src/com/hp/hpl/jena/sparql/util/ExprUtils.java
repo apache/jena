@@ -40,9 +40,7 @@ import com.hp.hpl.jena.sparql.sse.SSEParseException ;
 import com.hp.hpl.jena.sparql.sse.builders.ExprBuildException ;
 
 
-/** Misc support for Expr
- * @author Andy Seaborne
- */
+/** Misc support for Expr */
 
 public class ExprUtils
 {

@@ -11,10 +11,6 @@ import java.util.regex.PatternSyntaxException ;
 
 import com.hp.hpl.jena.query.QueryParseException ;
 
-/** 
- * @author Andy Seaborne
- */
-
 public class RegexJava implements RegexEngine
 {
     Pattern regexPattern ;

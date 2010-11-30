@@ -242,9 +242,6 @@ public abstract class GraphBase2 implements GraphWithPerform
     public ExtendedIterator<Triple> forTestingOnly_graphBaseFind( TripleMatch tm )
     { return graphBaseFind( tm ); }
 
-    /**
-
-     */
     public final ExtendedIterator<Triple> find(Node s, Node p, Node o)
     {
         checkOpen() ;

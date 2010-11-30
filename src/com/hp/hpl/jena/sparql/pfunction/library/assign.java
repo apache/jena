@@ -18,10 +18,7 @@ import com.hp.hpl.jena.sparql.util.IterLib ;
 
 /** Assignment: does not change the value of an existing binding.
  *  Either the subject or object must be a constant or be a bound variable.
- *  If both are bound, it degenerates to a test of RDF term equality.
- *   
- * @author Andy Seaborne
- */
+ *  If both are bound, it degenerates to a test of RDF term equality. */
 
 public class assign extends PFuncSimple
 {

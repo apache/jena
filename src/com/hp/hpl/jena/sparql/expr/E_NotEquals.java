@@ -5,10 +5,6 @@
 
 package com.hp.hpl.jena.sparql.expr;
 
-/** 
- * @author Andy Seaborne
- */
-
 public class E_NotEquals extends ExprFunction2
 {
     private static final String printName = "ne" ;

@@ -18,10 +18,7 @@ import com.hp.hpl.jena.sparql.util.ModelUtils ;
 
 
 /** A mapping from variable name to an RDF value.
- *  A wrapper around the graph level Binding.
- * 
- * @author   Andy Seaborne
- */
+ *  A wrapper around the graph level Binding. */
 
 
 public class ResultBinding extends QuerySolutionBase

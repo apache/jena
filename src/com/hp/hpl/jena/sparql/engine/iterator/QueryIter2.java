@@ -15,10 +15,7 @@ import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 
 /**
- * This class makrs a QueryIter that takes one QueryIterator as input.
- * 
- * @author Andy Seaborne
- */
+ * This class makrs a QueryIter that takes one QueryIterator as input. */
 public abstract class QueryIter2 extends QueryIter
 {
     private QueryIterator leftInput ; 

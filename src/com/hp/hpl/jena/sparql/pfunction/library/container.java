@@ -31,10 +31,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
 import com.hp.hpl.jena.vocabulary.RDF ;
 
 /** container - super class of bag/alt/seq - rdfs:member
- * 
- * 
- * @author Andy Seaborne
- */ 
+ * */ 
 
 public class container extends PFuncSimple
 {

@@ -11,10 +11,7 @@ import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
 
 /** ElementDataset - an association of an RDF Dataset 
  * (graph level version) with a query pattern.
- * Unused in parser.
- * 
- * @author Andy Seaborne
- */
+ * Unused in parser. */
 
 public class ElementDataset extends Element
 {

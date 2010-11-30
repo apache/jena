@@ -15,10 +15,7 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 
-/** A query iterator that yields the same thing N times. 
- * 
- * @author Andy Seaborne
- */
+/** A query iterator that yields the same thing N times. */
 
 public class QueryIterYieldN extends QueryIter
 {

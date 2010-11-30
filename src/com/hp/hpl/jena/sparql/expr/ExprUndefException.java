@@ -6,10 +6,7 @@
 
 package com.hp.hpl.jena.sparql.expr;
 
-/** Exception for an undefined expression (including unbound variable)
- * 
- * @author Andy Seaborne
- */
+/** Exception for an undefined expression (including unbound variable) */
 
 public class ExprUndefException extends ExprEvalException
 {

@@ -9,10 +9,6 @@ package com.hp.hpl.jena.sparql.modify.submission;
 import com.hp.hpl.jena.query.QueryFactory ;
 import com.hp.hpl.jena.sparql.syntax.Element ;
 
-/**
- * @author Andy Seaborne
- */ 
-
 public abstract class UpdatePattern extends GraphUpdateN
 {
     private Element pattern = null ;

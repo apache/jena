@@ -3,9 +3,7 @@
  * [See end of file]
  */
 
-/** Specific exception for a type mismatch in the expression evaluation.
- * @author		Andy Seaborne
- */
+/** Specific exception for a type mismatch in the expression evaluation. */
 
 package com.hp.hpl.jena.sparql.lang.rdql;
 

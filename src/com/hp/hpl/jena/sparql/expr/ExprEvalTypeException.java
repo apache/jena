@@ -6,10 +6,7 @@
 
 package com.hp.hpl.jena.sparql.expr;
 
-/** Exception for a dynamic evaluation exception due to wrong type.
- * 
- * @author Andy Seaborne
- */
+/** Exception for a dynamic evaluation exception due to wrong type. */
 
 public class ExprEvalTypeException extends ExprEvalException
 {

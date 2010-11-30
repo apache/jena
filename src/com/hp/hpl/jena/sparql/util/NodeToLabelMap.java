@@ -11,10 +11,7 @@ import java.util.Map ;
 
 import com.hp.hpl.jena.graph.Node ;
 
-/** Map nodes to blank node representations.
- * 
- * @author Andy Seaborne
- */ 
+/** Map nodes to blank node representations. */ 
 public class NodeToLabelMap
 {
     // Could abstract again as a node -> label cache + cache miss handler.

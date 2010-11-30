@@ -15,10 +15,7 @@ import java.util.Set ;
 
 /** A class for setting and keeping named values.  Used to pass 
  *  implementation-specific parameters across general
- *  interfaces.
- *  
- *  @author  Andy Seaborne
- */  
+ *  interfaces. */  
 
 public class Context
 {

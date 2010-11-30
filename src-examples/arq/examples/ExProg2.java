@@ -31,10 +31,7 @@ import com.hp.hpl.jena.sparql.syntax.ElementGroup ;
 import com.hp.hpl.jena.vocabulary.DC ;
 
 /** Example : Build a query with a filter programmatically.
- *  Note: it is often better to build and execute an algebra expression.  See other examples.
- * 
- * @author Andy Seaborne
- */
+ *  Note: it is often better to build and execute an algebra expression.  See other examples. */
 
 public class ExProg2
 {

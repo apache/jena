@@ -15,10 +15,6 @@ import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.junit.ScriptTestSuiteFactory ;
 
 
-/**
- * @author Andy Seaborne
- */
-
 public class ARQTestRefEngine extends TestCase
 {
     public static TestSuite suite()

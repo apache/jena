@@ -8,10 +8,7 @@ package com.hp.hpl.jena.sparql.engine.http;
 import com.hp.hpl.jena.query.QueryException ;
 
 /** Exception class for all operations in the Joseki client library.
- *  Error codes are as HTTP statsus codes.
- * 
- * @author      Andy Seaborne
- */
+ *  Error codes are as HTTP statsus codes. */
 public class QueryExceptionHTTP extends QueryException
 {
     private static final long serialVersionUID = 99L;  // Serilizable.

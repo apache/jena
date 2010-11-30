@@ -18,9 +18,7 @@ import junit.framework.TestResult ;
 import junit.runner.BaseTestRunner ;
 
 
-/** Simple, text output, test runner
- * @author Andy Seaborne
- */
+/** Simple, text output, test runner */
 
 public class SimpleTestRunner extends BaseTestRunner
 {

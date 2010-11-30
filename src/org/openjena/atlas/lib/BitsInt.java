@@ -9,11 +9,7 @@ package org.openjena.atlas.lib;
 // NB shifting is "mod 32" -- <<32 is a no-op (not a clear).
 // http://mindprod.com/jgloss/masking.html
 
-/** Utilities for manipulating a bit pattern which held in a 32 bit int
- *  
- * @author Andy Seaborne
- * @version $Id: Bits.java,v 1.3 2007/01/02 11:51:49 andy_seaborne Exp $
- */ 
+/** Utilities for manipulating a bit pattern which held in a 32 bit int */ 
 public final class BitsInt
 {
     private BitsInt() {}

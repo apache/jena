@@ -7,10 +7,6 @@ package com.hp.hpl.jena.sparql.expr;
 
 import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp ;
 
-/** 
- * @author Andy Seaborne
- */
-
 public class E_LogicalNot extends ExprFunction1
 {
     // See logicalOR for truth table.

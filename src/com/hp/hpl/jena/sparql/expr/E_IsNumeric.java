@@ -6,10 +6,6 @@
 package com.hp.hpl.jena.sparql.expr;
 
 
-/** 
- * @author Andy Seaborne
- */
-
 public class E_IsNumeric extends ExprFunction1
 {
     private static final String symbol = "isNumeric" ;

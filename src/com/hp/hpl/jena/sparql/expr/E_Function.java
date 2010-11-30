@@ -18,9 +18,7 @@ import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
 import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.sparql.util.FmtUtils ;
 
-/** SPARQL filter function
- * @author Andy Seaborne
- */
+/** SPARQL filter function */
 
 public class E_Function extends ExprFunctionN
 {

@@ -12,9 +12,7 @@ import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
 
-/** SPARQL coalesce special form.
- * @author Andy Seaborne
- */
+/** SPARQL coalesce special form. */
 
 public class E_Coalesce extends ExprFunctionN
 {

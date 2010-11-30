@@ -5,10 +5,7 @@
 
 package com.hp.hpl.jena.sparql.engine.binding;
 
-/** Special purpose binding for the root of all bindings.
- * 
- * @author   Andy Seaborne
- */
+/** Special purpose binding for the root of all bindings. */
 
 
 public class BindingRoot extends Binding0

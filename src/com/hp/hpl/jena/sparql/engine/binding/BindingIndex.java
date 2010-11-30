@@ -17,10 +17,7 @@ import com.hp.hpl.jena.sparql.core.Var ;
 
 /** com.hp.hpl.jena.query.core.BindingIndex
  *  Convert between Bindings (the core main abstraction)
- *  and Jena's old style internal graph format. 
- * 
- * @author Andy Seaborne
- */
+ *  and Jena's old style internal graph format. */
 
 public class BindingIndex implements VariableIndexes, IndexValues
 {

@@ -14,10 +14,7 @@ import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 
-/** An iterator that applying a condition.
- * 
- * @author Andy Seaborne
- */
+/** An iterator that applying a condition. */
 
 public abstract class QueryIterProcessBinding extends QueryIter1
 {

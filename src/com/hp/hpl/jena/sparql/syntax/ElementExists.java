@@ -8,10 +8,7 @@ package com.hp.hpl.jena.sparql.syntax;
 
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
 
-/** The syntax element for "Exists" in a pattern.
- * 
- * @author Andy Seaborne
- */
+/** The syntax element for "Exists" in a pattern. */
 
 public class ElementExists extends Element1
 {

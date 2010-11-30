@@ -13,10 +13,7 @@ import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
 
 /** A number of graph query elements.
- *  Evaluation is a conjunction(AND) of the elements of the groups  
- * 
- * @author Andy Seaborne
- */
+ *  Evaluation is a conjunction(AND) of the elements of the groups */
 
 public class ElementGroup extends Element
 {

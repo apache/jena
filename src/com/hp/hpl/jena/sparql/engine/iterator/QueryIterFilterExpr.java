@@ -19,10 +19,7 @@ import com.hp.hpl.jena.sparql.util.ExprUtils ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 
 /** 
- *  Filter a stream of bindings by a constraint.  
- * 
- * @author Andy Seaborne
- */
+ *  Filter a stream of bindings by a constraint. */
 
 public class QueryIterFilterExpr extends QueryIterProcessBinding
 {

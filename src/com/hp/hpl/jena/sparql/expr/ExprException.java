@@ -7,10 +7,7 @@
 package com.hp.hpl.jena.sparql.expr;
 import com.hp.hpl.jena.query.QueryException ;
 
-/** The root of all expression exceptions
- * 
- * @author Andy Seaborne
- */
+/** The root of all expression exceptions */
 
 public class ExprException extends QueryException
 {

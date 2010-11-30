@@ -22,10 +22,7 @@ import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueInteger ;
 import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp ;
 
 
-/** com.hp.hpl.jena.query.test.TestNodeValue
- * 
- * @author Andy Seaborne
- */
+/** com.hp.hpl.jena.query.test.TestNodeValue */
 
 public class TestXSDFuncOp extends TestCase
 {

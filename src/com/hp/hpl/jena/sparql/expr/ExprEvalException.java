@@ -8,10 +8,7 @@ package com.hp.hpl.jena.sparql.expr;
 
 /** Exception for a dynamic evaluation exception.
  *  The current solution is likely to be rejected.
- *  See also QueryFatalException which aborts the whole query execution.
- * 
- * @author Andy Seaborne
- */
+ *  See also QueryFatalException which aborts the whole query execution. */
 
 public class ExprEvalException extends ExprException
 {

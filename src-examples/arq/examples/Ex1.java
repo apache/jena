@@ -24,10 +24,7 @@ import com.hp.hpl.jena.rdf.model.Resource ;
 import com.hp.hpl.jena.vocabulary.DC ;
 
 /** Example 1 : Execute a simple SELECT query on a model
- *  to find the DC titles contained in a model. 
- * 
- * @author Andy Seaborne
- */
+ *  to find the DC titles contained in a model. */
 
 public class Ex1
 {

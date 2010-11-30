@@ -13,10 +13,7 @@ import org.openjena.atlas.lib.Closeable ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.util.PrintSerializable ;
 
-/** Root of query iterators in ARQ.
- *
- * @author Andy Seaborne
- */
+/** Root of query iterators in ARQ. */
 
 public interface QueryIterator extends Closeable, Iterator<Binding>, PrintSerializable
 {

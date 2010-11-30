@@ -13,10 +13,7 @@ import com.hp.hpl.jena.sparql.core.PathBlock ;
 import com.hp.hpl.jena.sparql.core.TriplePath ;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
 
-/** A SPARQL BasicGraphPattern
- * 
- * @author Andy Seaborne
- */
+/** A SPARQL BasicGraphPattern */
 
 public class ElementPathBlock extends Element implements TripleCollector
 {

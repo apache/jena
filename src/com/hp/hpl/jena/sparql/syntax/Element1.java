@@ -7,10 +7,7 @@
 package com.hp.hpl.jena.sparql.syntax;
 
 
-/** Element1 - elements that have a single subElement. 
- * 
- * @author Andy Seaborne
- */
+/** Element1 - elements that have a single subElement. */
 
 public abstract class Element1 extends Element
 {

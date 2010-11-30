@@ -11,10 +11,7 @@ import com.hp.hpl.jena.rdf.model.Resource ;
 import com.hp.hpl.jena.sparql.vocabulary.TestManifestX ;
 import com.hp.hpl.jena.util.junit.TestUtils ;
 
-/** com.hp.hpl.jena.query.test.TestUtils
- * 
- * @author Andy Seaborne
- */
+/** com.hp.hpl.jena.query.test.TestUtils */
 
 public class TestQueryUtils
 {

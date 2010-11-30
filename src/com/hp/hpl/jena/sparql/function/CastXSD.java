@@ -10,10 +10,6 @@ import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
 
-/** 
- * @author Andy Seaborne
- */
-
 public class CastXSD implements FunctionFactory
 {
     protected final XSDDatatype castType ;

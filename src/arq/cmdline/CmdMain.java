@@ -19,10 +19,7 @@ import com.hp.hpl.jena.sparql.util.Utils ;
  *  which never returns and routes thing to System.exit.
  *  or call
  *     new YourCommand(args).mainMethod()
- *  which should not call System.exit anywhere
- *    
- * @author Andy Seaborne
- */
+ *  which should not call System.exit anywhere */
 
 public abstract class CmdMain extends CmdLineArgs
 {

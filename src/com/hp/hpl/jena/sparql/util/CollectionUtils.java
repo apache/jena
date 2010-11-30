@@ -14,10 +14,6 @@ import java.util.List ;
 import org.openjena.atlas.logging.Log ;
 
 
-/** 
- * @author Andy Seaborne
- */
-
 public class CollectionUtils
 {
     static public <T> void removeNulls(Collection<T> list)

@@ -10,10 +10,7 @@ import com.hp.hpl.jena.sparql.expr.NodeValue ;
 
 
 /** A NodeValue that isn't anything else - unrecognized literals, URIs and blank nodes.
- *  Unrecognized literals includes ones with a known type but wrong lexical form
- * 
- * @author Andy Seaborne
- */
+ *  Unrecognized literals includes ones with a known type but wrong lexical form */
 
 public class NodeValueNode extends NodeValue
 {

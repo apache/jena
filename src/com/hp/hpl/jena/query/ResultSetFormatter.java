@@ -25,10 +25,7 @@ import org.openjena.atlas.logging.Log ;
 import com.hp.hpl.jena.util.FileUtils ;
 
 /** ResultSetFormatter - Convenience ways to call the various output formatters.
- *  in various formats. 
- * 
- * @author   Andy Seaborne
- */
+ *  in various formats. */
 
 public class ResultSetFormatter
 {

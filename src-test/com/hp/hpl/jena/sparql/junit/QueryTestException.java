@@ -6,10 +6,7 @@
 package com.hp.hpl.jena.sparql.junit;
 
 /** QueryTestException is root exception for all (intentional) exceptions in tests setup,
- *  not a failure of the test itself (e.g. manifest problems)
- *  
- * @author		Andy Seaborne
- */
+ *  not a failure of the test itself (e.g. manifest problems) */
 
 
 public class QueryTestException extends RuntimeException

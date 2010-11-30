@@ -17,11 +17,6 @@ import org.openjena.atlas.logging.Log ;
 import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.sparql.util.MappedLoader ;
 
-/** 
- * 
- * @author Andy Seaborne
- */
-
 public class FunctionRegistry //extends HashMap<String, Function>
 {
     // Extract a Registry class and do casting and initialization here.

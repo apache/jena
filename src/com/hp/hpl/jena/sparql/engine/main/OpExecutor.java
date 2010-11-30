@@ -43,10 +43,7 @@ import com.hp.hpl.jena.sparql.procedure.Procedure ;
  * execution. During execution, when a substitution into an algebra expression
  * happens (in other words, a streaming operation, index-join-like), there is a
  * call into the executor each time so it does not just happen once before a
- * query starts.
- * 
- * @author Andy Seaborne
- */
+ * query starts. */
 
 public class OpExecutor
 {

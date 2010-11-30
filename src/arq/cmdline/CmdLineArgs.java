@@ -19,9 +19,7 @@ import com.hp.hpl.jena.util.FileManager ;
 
 
 /** Command line, using the common named/positional arguments paradigm
- *  (also called options/arguments).
- * @author Andy Seaborne
- */
+ *  (also called options/arguments). */
 public class CmdLineArgs extends CommandLineBase
 {
     public CmdLineArgs(String[] args)

@@ -20,10 +20,6 @@ import com.hp.hpl.jena.sparql.vocabulary.ListPFunction ;
 import com.hp.hpl.jena.vocabulary.RDFS ;
 
 
-/** 
- * @author Andy Seaborne
- */
-
 public class PropertyFunctionRegistry
 {
     static PropertyFunctionRegistry globalRegistry = null ;

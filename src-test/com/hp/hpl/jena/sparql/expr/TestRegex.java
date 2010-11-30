@@ -14,10 +14,7 @@ import org.junit.Test ;
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingFactory ;
 
-/** com.hp.hpl.jena.query.test.TestMisc
- * 
- * @author Andy Seaborne
- */
+/** com.hp.hpl.jena.query.test.TestMisc */
 
 public class TestRegex extends TestCase
 {

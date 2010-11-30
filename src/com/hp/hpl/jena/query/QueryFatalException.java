@@ -7,10 +7,7 @@ package com.hp.hpl.jena.query;
 
 /** QueryFatalException is such that the query aborts do to some 
  *  problem (this might be an internal error or something in the way the query
- *  builds or executes).   
- *  
- * @author		Andy Seaborne
- */
+ *  builds or executes). */
 
 
 public class QueryFatalException extends QueryException

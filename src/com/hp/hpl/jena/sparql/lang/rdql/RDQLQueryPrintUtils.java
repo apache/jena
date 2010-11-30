@@ -12,10 +12,6 @@ import org.openjena.atlas.io.IndentedWriter ;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.shared.PrefixMapping ;
 
-/**
- * @author   Andy Seaborne
- */
-
 public class RDQLQueryPrintUtils
 {
     static final String indentPrefix = "  " ;

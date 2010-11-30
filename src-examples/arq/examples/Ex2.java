@@ -24,10 +24,7 @@ import com.hp.hpl.jena.vocabulary.DC ;
 
 /** Example 2 : Execute a simple SELECT query on a model
  *  to find the DC titles contained in a model. 
- *  Show how to print results twice.
- * 
- * @author Andy Seaborne
- */
+ *  Show how to print results twice. */
 
 public class Ex2
 {

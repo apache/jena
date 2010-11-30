@@ -30,10 +30,7 @@ import com.hp.hpl.jena.util.iterator.Map1 ;
 import com.hp.hpl.jena.util.iterator.Map1Iterator ;
 
 
-/** ARQ wrapper for a Lucene index.
- * 
- * @author Andy Seaborne
- */
+/** ARQ wrapper for a Lucene index. */
 public class IndexLARQ
 {
     protected IndexReader reader = null ;

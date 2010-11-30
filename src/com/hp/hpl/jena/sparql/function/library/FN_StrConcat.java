@@ -18,10 +18,7 @@ import com.hp.hpl.jena.sparql.function.FunctionBase ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 
 /** Function that concatenates arguments as strings.
- *  fn:concat
- * 
- * @author Andy Seaborne
- */
+ *  fn:concat */
 
 public class FN_StrConcat extends FunctionBase
 {

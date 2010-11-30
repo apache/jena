@@ -12,10 +12,6 @@ import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.sparql.core.BasicPattern ;
 import com.hp.hpl.jena.sparql.util.FmtUtils ;
 
-/** 
- * @author Andy Seaborne
- */
-
 public abstract class FormatterBase
 {
     IndentedWriter out ;

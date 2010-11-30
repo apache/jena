@@ -21,10 +21,7 @@ import com.hp.hpl.jena.sparql.util.Utils ;
  * <ul>
  * <li>autoclose when the iterator runs out</li>
  * <li>ensuring query iterators only contain Bindings</li>
- * </ul>
- * 
- * @author Andy Seaborne
- */
+ * </ul> */
 
 public abstract class QueryIteratorBase 
     extends PrintSerializableBase
