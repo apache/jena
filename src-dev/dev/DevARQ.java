@@ -9,6 +9,8 @@ public class DevARQ
     // Prologure from RIOT
     // PrefixMap from RIOT
     
+    // E_DateTime*
+    
     // ---- Documentation
     // Legacy StageGenerator (http://openjena.org/ARQ/arq-query-eval.html)
     // src-examples of OpExecutor+QueryEngine
