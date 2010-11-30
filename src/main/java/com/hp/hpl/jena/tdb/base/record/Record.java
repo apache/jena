@@ -16,8 +16,6 @@ import org.openjena.atlas.lib.Bytes ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 /** A record is pair of key and value.  It may be all key, in which case value is null. 
- * @author Andy Seaborne
- * @version $Id$
  */
 
 final

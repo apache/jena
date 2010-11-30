@@ -54,8 +54,6 @@ import com.hp.hpl.jena.tdb.sys.Session ;
  *  Variations:
  *     + In this impl, splitRoot leaves the root node in place.
  *       The root is always the same block.
- *  
- *  @author	Andy Seaborne
  */
 
 public class BTree implements Iterable<Record>, RangeIndex, Session

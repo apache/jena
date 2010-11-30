@@ -22,7 +22,6 @@ import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 /** Index factory for extendible hash tables.
  *  Only an index, not a range index
- * @author Andy Seaborne
  */
 
 public class IndexFactoryExtHash implements IndexFactory

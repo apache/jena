@@ -14,8 +14,7 @@ import com.hp.hpl.jena.tdb.index.ext.ExtHash;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 /** Index factory for extendible hash tables in memory (for testing).
- *  Only an index, not a rnage index
- * @author Andy Seaborne
+ *  Only an index, not a range index
  */
 
 public class IndexFactoryExtHashMem implements IndexFactory

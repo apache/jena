@@ -46,8 +46,6 @@ import com.hp.hpl.jena.tdb.store.NodeId ;
  *  except for basic graph patterns and filtered basic graph patterns (currently).  
  * 
  * See also: StageGeneratorDirectTDB, a non-reordering 
- * 
- * @author Andy Seaborne
  */
 public class OpExecutorTDB extends OpExecutor
 {
