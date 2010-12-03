@@ -180,9 +180,9 @@ public interface SPARQLParser11Constants {
   /** RegularExpression Id. */
   int CONCAT = 87;
   /** RegularExpression Id. */
-  int SUBSTRING = 88;
+  int SUBSTR = 88;
   /** RegularExpression Id. */
-  int LENGTH = 89;
+  int STRLEN = 89;
   /** RegularExpression Id. */
   int UCASE = 90;
   /** RegularExpression Id. */
@@ -465,8 +465,8 @@ public interface SPARQLParser11Constants {
     "\"FLOOR\"",
     "\"ROUND\"",
     "\"CONCAT\"",
-    "\"SUBSTRING\"",
-    "\"LENGTH\"",
+    "\"SUBSTR\"",
+    "\"STRLEN\"",
     "\"UCASE\"",
     "\"LCASE\"",
     "\"ENCODE\"",

@@ -8,8 +8,6 @@ PREFIX owl:     <http://www.w3.org/2002/07/owl#>
 PREFIX apf:     <http://jena.hpl.hp.com/ARQ/property#>
 PREFIX :        <http://example.com/>
 
-SELECT (xsd:string(?o) AS ?Z)
+SELECT (NOW() AS ?x)
 {
-  ?s ?p ?o .
-  FILTER(ends(?o, "foo"))
 }

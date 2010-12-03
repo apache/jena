@@ -232,6 +232,9 @@ public class BuilderExpr
         dispatch.put(Tags.tagMinutes, buildMinutes) ;
         dispatch.put(Tags.tagSeconds, buildSeconds) ;
         dispatch.put(Tags.tagTimezone, buildTimezone) ;
+        
+        dispatch.put(Tags.tagNow, buildNow) ;
+        dispatch.put(Tags.tagVersion, buildVersion) ;
 
         dispatch.put(Tags.tagStrlen, buildStrlen) ;
         dispatch.put(Tags.tagSubstr, buildSubstr) ;
@@ -611,6 +614,24 @@ public class BuilderExpr
             BuilderLib.checkLength(2, list, "timezone: wanted 1 argument: got: "+list.size()) ;
             Expr ex = buildExpr(list.get(1)) ;
             return new E_DateTimeTimezone(ex) ; 
+        }
+    } ;
+    
+    final protected Build buildNow = new Build()
+    {
+        public Expr make(ItemList list)
+        {
+            BuilderLib.checkLength(1, list, "now: wanted 0 arguments: got: "+list.size()) ;
+            return new E_Now() ; 
+        }
+    } ;
+    
+    final protected Build buildVersion = new Build()
+    {
+        public Expr make(ItemList list)
+        {
+            BuilderLib.checkLength(1, list, "version: wanted 0 arguments: got: "+list.size()) ;
+            return new E_Version() ; 
         }
     } ;
     

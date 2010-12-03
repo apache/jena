@@ -112,8 +112,8 @@ TOKENS
 | <FLOOR: "FLOOR">
 | <ROUND: "ROUND">
 | <CONCAT: "CONCAT">
-| <SUBSTRING: "SUBSTRING">
-| <LENGTH: "LENGTH">
+| <SUBSTR: "SUBSTR">
+| <STRLEN: "STRLEN">
 | <UCASE: "UCASE">
 | <LCASE: "LCASE">
 | <ENCODE: "ENCODE">
@@ -430,8 +430,8 @@ NON-TERMINALS
 		|	<FLOOR> <LPAREN> Expression <RPAREN>
 		|	<ROUND> <LPAREN> Expression <RPAREN>
 		|	<CONCAT> ExpressionList
-		|	<SUBSTRING> SubstringExpression
-		|	<LENGTH> <LPAREN> Expression <RPAREN>
+		|	<SUBSTR> SubstringExpression
+		|	<STRLEN> <LPAREN> Expression <RPAREN>
 		|	<UCASE> <LPAREN> Expression <RPAREN>
 		|	<LCASE> <LPAREN> Expression <RPAREN>
 		|	<ENCODE> <LPAREN> Expression <RPAREN>

@@ -426,8 +426,8 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
       case FLOOR:
       case ROUND:
       case CONCAT:
-      case SUBSTRING:
-      case LENGTH:
+      case SUBSTR:
+      case STRLEN:
       case UCASE:
       case LCASE:
       case ENCODE:
@@ -481,8 +481,8 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
     case FLOOR:
     case ROUND:
     case CONCAT:
-    case SUBSTRING:
-    case LENGTH:
+    case SUBSTR:
+    case STRLEN:
     case UCASE:
     case LCASE:
     case ENCODE:
@@ -569,8 +569,8 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
       case FLOOR:
       case ROUND:
       case CONCAT:
-      case SUBSTRING:
-      case LENGTH:
+      case SUBSTR:
+      case STRLEN:
       case UCASE:
       case LCASE:
       case ENCODE:
@@ -642,8 +642,8 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
       case FLOOR:
       case ROUND:
       case CONCAT:
-      case SUBSTRING:
-      case LENGTH:
+      case SUBSTR:
+      case STRLEN:
       case UCASE:
       case LCASE:
       case ENCODE:
@@ -721,8 +721,8 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
     case FLOOR:
     case ROUND:
     case CONCAT:
-    case SUBSTRING:
-    case LENGTH:
+    case SUBSTR:
+    case STRLEN:
     case UCASE:
     case LCASE:
     case ENCODE:
@@ -768,8 +768,8 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
       case FLOOR:
       case ROUND:
       case CONCAT:
-      case SUBSTRING:
-      case LENGTH:
+      case SUBSTR:
+      case STRLEN:
       case UCASE:
       case LCASE:
       case ENCODE:
@@ -1953,8 +1953,8 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
     case FLOOR:
     case ROUND:
     case CONCAT:
-    case SUBSTRING:
-    case LENGTH:
+    case SUBSTR:
+    case STRLEN:
     case UCASE:
     case LCASE:
     case ENCODE:
@@ -3328,8 +3328,8 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
     case FLOOR:
     case ROUND:
     case CONCAT:
-    case SUBSTRING:
-    case LENGTH:
+    case SUBSTR:
+    case STRLEN:
     case UCASE:
     case LCASE:
     case ENCODE:
@@ -3404,8 +3404,8 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
     case FLOOR:
     case ROUND:
     case CONCAT:
-    case SUBSTRING:
-    case LENGTH:
+    case SUBSTR:
+    case STRLEN:
     case UCASE:
     case LCASE:
     case ENCODE:
@@ -3610,12 +3610,12 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
       a = ExpressionList();
                                     {if (true) return new E_Concat(a) ;}
       break;
-    case SUBSTRING:
-      jj_consume_token(SUBSTRING);
+    case SUBSTR:
+      jj_consume_token(SUBSTR);
       SubstringExpression();
       break;
-    case LENGTH:
-      jj_consume_token(LENGTH);
+    case STRLEN:
+      jj_consume_token(STRLEN);
       jj_consume_token(LPAREN);
       expr1 = Expression();
       jj_consume_token(RPAREN);
@@ -3936,8 +3936,8 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
       case FLOOR:
       case ROUND:
       case CONCAT:
-      case SUBSTRING:
-      case LENGTH:
+      case SUBSTR:
+      case STRLEN:
       case UCASE:
       case LCASE:
       case ENCODE:

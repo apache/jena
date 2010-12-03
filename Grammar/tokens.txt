@@ -129,6 +129,8 @@
 [<MINUTES>]     ::= 'MINUTES'
 [<SECONDS>]     ::= 'SECONDS'
 [<TIMEZONE>]    ::= 'TIMEZONE'
+[<NOW>]         ::= 'NOW'
+[<VERSION>]     ::= 'VERSION'
 
 [<DFT>]        ::= 'DEFAULT'
 [<ALL>]        ::= 'ALL'

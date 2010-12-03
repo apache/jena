@@ -1154,8 +1154,8 @@ Expr BuiltInCall() : { Expr expr ; Expr expr1 = null ; Expr expr2 = null ;
   | <FLOOR> <LPAREN> expr1 = Expression() <RPAREN> { return new E_NumFloor(expr1) ; }
   | <ROUND> <LPAREN> expr1 = Expression() <RPAREN> { return new E_NumRound(expr1) ; }
   | <CONCAT> a = ExpressionList() { return new E_Concat(a) ; }
-  | <SUBSTRING> SubstringExpression()
-  | <LENGTH> <LPAREN> expr1 = Expression() <RPAREN> { return new E_StrLength(expr1) ; }
+  | <SUBSTR> SubstringExpression()
+  | <STRLEN> <LPAREN> expr1 = Expression() <RPAREN> { return new E_StrLength(expr1) ; }
   | <UCASE> <LPAREN> expr1 = Expression() <RPAREN> { return new E_StrUpperCase(expr1) ; }
   | <LCASE> <LPAREN> expr1 = Expression() <RPAREN> { return new E_StrLowerCase(expr1) ; }
   | <ENCODE> <LPAREN> expr1 = Expression() <RPAREN> { return new E_StrEncode(expr1) ; }
@@ -1482,8 +1482,8 @@ TOKEN [IGNORE_CASE] :
 | < FLOOR: "FLOOR" >
 | < ROUND: "ROUND" >
 | < CONCAT: "CONCAT" >
-| < SUBSTRING: "SUBSTRING" >
-| < LENGTH: "LENGTH" >
+| < SUBSTR: "SUBSTR" >
+| < STRLEN: "STRLEN" >
 | < UCASE: "UCASE" >
 | < LCASE: "LCASE" >
 | < ENCODE: "ENCODE" >

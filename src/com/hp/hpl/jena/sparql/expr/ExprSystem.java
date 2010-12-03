@@ -6,58 +6,38 @@
 
 package com.hp.hpl.jena.sparql.expr;
 
-import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
-import com.hp.hpl.jena.sparql.graph.NodeTransform ;
+import com.hp.hpl.jena.sparql.util.Symbol ;
+import com.hp.hpl.jena.sparql.util.Utils ;
 
-/** An expression that is constant (does not depend on evaluating a sub expression).
- */
-
-public abstract class ExprFunction0 extends ExprFunction
+public abstract class ExprSystem extends ExprFunction0
 {
-    protected ExprFunction0(String fName) { this(fName, null) ; }
-    
-    protected ExprFunction0(String fName, String opSign)
+    private final Symbol systemSymbol ;
+
+    protected ExprSystem(String fName, Symbol systemSymbol)
     {
-        super(fName, opSign) ;
+        super(fName) ;
+        this.systemSymbol = systemSymbol ;
     }
 
     @Override
-    public Expr getArg(int i)       { return null ; }
-    
-    @Override
-    public int hashCode()           { return getFunctionSymbol().hashCode() ; }
-
-    @Override
-    public int numArgs()            { return 0 ; }
-    
-    // ---- Evaluation
-    
-    @Override
-    final public NodeValue eval(Binding binding, FunctionEnv env)
+    public NodeValue eval(FunctionEnv env)
     {
-        return eval(env) ;
+        Object obj = env.getContext().get(systemSymbol) ;
+        
+        if ( obj == null )
+            throw new ExprEvalException("null for system symbol: "+systemSymbol) ;
+        if ( ! ( obj instanceof Node ) )
+            throw new ExprEvalException("Not a Node: "+Utils.className(obj)) ;
+        
+        Node n = (Node)obj ;
+//        if ( n == null )
+//            throw new ExprEvalException("No value for system variable: "+systemSymbol) ;  
+        // NodeValue.makeNode could have a cache.
+        NodeValue nv = NodeValue.makeNode(n) ;
+        return nv ;
     }
-   
-    public abstract NodeValue eval(FunctionEnv env)  ;
-    
-    @Override
-    final public Expr applyNodeTransform(NodeTransform transform)
-    {
-        // Nothing to transform. 
-        return copy() ;
-    }
-    
-    public abstract Expr copy() ;
-    
-    @Override
-    final public Expr copySubstitute(Binding binding, boolean foldConstants)
-    {
-        return copy() ;
-    }
-    
-    public void visit(ExprVisitor visitor) { visitor.visit(this) ; }
-    public Expr apply(ExprTransform transform) { return transform.transform(this) ; }
 }
 
 /*

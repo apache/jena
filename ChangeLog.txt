@@ -3,6 +3,10 @@ ChangeLog for ARQ
 
 ==== ARQ 2.8.7
 
++ Added YEAR, MONTH, DAY, HOURS, MINUTES, SECONDS to SPARQL 1.1
+  TIMEZONE awaiting WG discussions.
++ Added NOW() and VERSION() to ARQ language.
+
 ==== ARQ 2.8.6
 
 ** Update is now two languages: 
