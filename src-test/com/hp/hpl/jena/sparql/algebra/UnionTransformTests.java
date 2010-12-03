@@ -61,8 +61,7 @@ public abstract class UnionTransformTests extends BaseTest
         List<Binding> results = exec("(graph <"+Quad.defaultGraphIRI+"> (bgp (<x2> ?p ?o)))") ;
         assertEquals(4, results.size()) ;
     }
-    
-
+ 
 //    @Test public void union_7()
 //    {
 //        List<Binding> results = exec("(graph <"+Quad.defaultGraphNodeGenerated+"> (bgp (<s2> ?p ?o)))") ;

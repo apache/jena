@@ -941,50 +941,87 @@ public class XSDFuncOp
     
     public static NodeValue dtGetYear(NodeValue nv)
     {
-        checkDT(nv) ;
-        throw new ARQNotImplemented() ;
+        if ( nv.isDate() || nv.isDateTime() || nv.isGYear() || nv.isGYearMonth() )
+        {        
+            XSDDateTime dt = nv.getDateTime() ;
+            int x = dt.getYears() ;
+            return NodeValue.makeInteger(x) ;
+        }
+        throw new ExprEvalException("Not a year datatype") ;
     }
 
     public static NodeValue dtGetMonth(NodeValue nv)
     {
-        checkDT(nv) ;
-        throw new ARQNotImplemented() ;
+        if ( nv.isDate() || nv.isDateTime() || nv.isGYearMonth() || nv.isGMonth() || nv.isGMonthDay() )
+        {        
+            XSDDateTime dt = nv.getDateTime() ;
+            int x = dt.getMonths() ;
+            return NodeValue.makeInteger(x) ;
+        }
+        throw new ExprEvalException("Not a month datatype") ;
     }
 
     public static NodeValue dtGetDay(NodeValue nv)
     {
-        checkDT(nv) ;
-        throw new ARQNotImplemented() ;
+        if ( nv.isDate() || nv.isDateTime() || nv.isGMonthDay() || nv.isGDay() )
+        {        
+            XSDDateTime dt = nv.getDateTime() ;
+            int x = dt.getDays() ;
+            return NodeValue.makeInteger(x) ;
+        }
+        throw new ExprEvalException("Not a day datatype") ;
     }
 
     public static NodeValue dtGetHours(NodeValue nv)
     {
-        checkDT(nv) ;
-        throw new ARQNotImplemented() ;
+        if ( nv.isDateTime() || nv.isTime() )
+        {        
+            XSDDateTime dt = nv.getDateTime() ;
+            int x = dt.getHours() ;
+            return NodeValue.makeInteger(x) ;
+        }
+        throw new ExprEvalException("Not a datatype with 'hours'") ;
     }
 
     public static NodeValue dtGetMinutes(NodeValue nv)
     {
-        checkDT(nv) ;
-        throw new ARQNotImplemented() ;
+        if ( nv.isDateTime() || nv.isTime() )
+        {        
+            XSDDateTime dt = nv.getDateTime() ;
+            int x = dt.getMinutes() ;
+            return NodeValue.makeInteger(x) ;
+        }
+        throw new ExprEvalException("Not a datatype with 'minutes'") ;
     }
 
     public static NodeValue dtGetSeconds(NodeValue nv)
     {
-        checkDT(nv) ;
-        throw new ARQNotImplemented() ;
+        if ( nv.isDateTime() || nv.isTime() )
+        {        
+            XSDDateTime dt = nv.getDateTime() ;
+            double x = dt.getSeconds() ;
+            return NodeValue.makeDecimal(x) ;
+        }
+        throw new ExprEvalException("Not a datatype with 'seconds'") ;
     }
 
     public static NodeValue dtGetTimezone(NodeValue nv)
     {
-        checkDT(nv) ;
-        throw new ARQNotImplemented() ;
+        if ( nv.hasDateTime() ) 
+        {        
+            XSDDateTime dt = nv.getDateTime() ;
+            double x = dt.getSeconds() ;
+            throw new ARQNotImplemented() ;
+            //return NodeValue.makeDecimal(x) ;
+        }
+        
+        throw new ExprEvalException("Not a datatype with a timezone") ;
     }
 
     // Check it's datetime, date of some kind.
     private static void checkDT(NodeValue nv)
     {
-        
+        nv.hasDateTime();
     }
 
 }

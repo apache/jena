@@ -9,7 +9,9 @@ public class DevARQ
     // Prologure from RIOT
     // PrefixMap from RIOT
     
-    // XSDFuncOps.getDT*
+    // XSDFuncOp.getDT*
+    
+    // UnionDefaultGraph
     
     // ---- Documentation
     // Legacy StageGenerator (http://openjena.org/ARQ/arq-query-eval.html)
@@ -17,6 +19,7 @@ public class DevARQ
     // http://www.openjena.org/wiki/ARQ/Concurrency
     // add qparse,uparse to wiki/ARQ/
     // Documentation for CSV etc.
+    // Supported types
 
     // DatasetGraph : connections
     

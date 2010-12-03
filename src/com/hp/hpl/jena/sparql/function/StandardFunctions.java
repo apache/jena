@@ -51,6 +51,7 @@ public class StandardFunctions
         // Specialzed casting rules
         addCastDT(registry, XSDDatatype.XSDdateTime) ;
         addCastDT(registry, XSDDatatype.XSDdate) ;
+        addCastDT(registry, XSDDatatype.XSDtime) ;
         addCastDT(registry, XSDDatatype.XSDgYear) ;
         addCastDT(registry, XSDDatatype.XSDgYearMonth) ;
         addCastDT(registry, XSDDatatype.XSDgMonth) ;
