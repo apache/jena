@@ -29,7 +29,8 @@ else
     if [ "$ARG1" = "$LOC" ] ; then echo $USAGE 1>&2 ; exit 1 ; fi
 fi
 
-if [ ! -d $LOC ] ; then echo "No such directory: $LOC" ; exit 1 ; fi
+if [ ! -e "$LOC" ] ; then mkdir "$LOC" ; fi
+if [ ! -d "$LOC" ] ; then echo "Not a directory: $LOC" ; exit 1 ; fi
 
 FILES="$@"
 ## Stdin?
