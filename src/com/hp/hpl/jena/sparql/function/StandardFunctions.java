@@ -48,7 +48,7 @@ public class StandardFunctions
 
         addCast(registry, XSDDatatype.XSDanyURI) ;
         
-        // Specialzed casting rules
+        // Specialized casting rules
         addCastDT(registry, XSDDatatype.XSDdateTime) ;
         addCastDT(registry, XSDDatatype.XSDdate) ;
         addCastDT(registry, XSDDatatype.XSDtime) ;
