@@ -3,4 +3,5 @@
 @prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix : <http://example.org/> .
 
-:s :p _:a .
+:a0 :p :a1 .
+:a0 :r :a1 .
