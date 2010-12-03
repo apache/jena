@@ -50,6 +50,8 @@ public class DevARQ
 
     // ---- Events.
     //  Hierarchy.
+
+    // Query abort - from a separate thread - set flag in iterator and check on every .hasNext call.  
     
     // ---- RIOT
     // closing InputStream
