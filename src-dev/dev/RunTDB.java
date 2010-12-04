@@ -45,8 +45,16 @@ public class RunTDB
     {
         {
         System.out.println("Creating database");
+        FileOps.clearDirectory("DB") ;
         Dataset ds = TDBFactory.createDataset("DB") ;
         Model model = ds.getDefaultModel() ;
+        model.read("file:main.rdf", "RDF/XML") ;
+        TDB.sync(ds) ;
+        System.out.println("DONE") ;
+        System.exit(0) ;
+        
+        
+        
         Graph graph = ds.asDatasetGraph().getDefaultGraph() ;
 //        Graph graph = TDBFactory.createGraph("/Users/holger/Desktop/TDBTest");
 //        Model model = ModelFactory.createModelForGraph(graph);
