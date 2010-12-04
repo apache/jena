@@ -6,7 +6,7 @@
 
 package arq;
 
-/** @deprected Use riotcmd.riot */
+/** @deprecated Use riotcmd.riot */
 @Deprecated
 public class riot
 {
