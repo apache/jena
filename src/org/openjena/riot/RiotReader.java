@@ -146,7 +146,7 @@ public class RiotReader
             case NTRIPLES :
                 return createParserNTriples(tokenizer, sink) ;
             case RDFXML :
-                throw new RiotException("Not linked in yet: "+lang) ;
+                throw new RiotException("Not possible - can't parse RDF/XML from a RIOT token stream") ;
             case NQUADS :
             case TRIG :
                 throw new RiotException("Not a triples language: "+lang) ;
@@ -154,9 +154,14 @@ public class RiotReader
         return null ;
     }
     
-    /** Create a parser for a quads language */  
+    /** Create a parser for a quads (or triples) language */  
     public static LangRIOT createParserQuads(InputStream input, Lang lang, String baseIRI, Sink<Quad> sink)
     {
+        if ( lang.isTriples() )
+        {
+            SinkExtendTriplesToQuads converter = new SinkExtendTriplesToQuads(sink) ;
+            return createParserTriples(input, lang, baseIRI, converter) ;
+        }
         Tokenizer tokenizer = TokenizerFactory.makeTokenizerUTF8(input) ;
         return createParserQuads(tokenizer, lang, baseIRI ,sink) ;
     }
@@ -173,7 +178,6 @@ public class RiotReader
                 // Add a triples to quads wrapper.
                 SinkExtendTriplesToQuads converter = new SinkExtendTriplesToQuads(sink) ;
                 return createParserTriples(tokenizer, lang, baseIRI, converter) ;
-                //throw new RiotException("Not a quads language: "+lang) ;
             case NQUADS :
                 return createParserNQuads(tokenizer, sink) ;
             case TRIG :
@@ -196,14 +200,14 @@ public class RiotReader
         return parser ;
     }
 
-//    /** Create a parser for RDF/XML */
-//    public static LangRDFXML createParserRDFXML(InputStream input, String baseIRI, Sink<Triple> sink)
-//    {
-//        if ( baseIRI == null )
-//            baseIRI = IRIResolver.chooseBaseURI().toString() ;
-//        LangRDFXML parser = new LangRDFXML(input, baseIRI, filename, new Checker(), sink) ;
-//        return parser ;
-//    }
+    /** Create a parser for RDF/XML */
+    public static LangRDFXML createParserRDFXML(InputStream input, String baseIRI, Sink<Triple> sink)
+    {
+        if ( baseIRI == null )
+            baseIRI = IRIResolver.chooseBaseURI().toString() ;
+        LangRDFXML parser = LangRDFXML.create(input, baseIRI, baseIRI, ErrorHandlerFactory.errorHandlerStd, sink) ;
+        return parser ;
+    }
 
     
     /** Create a parser for TriG, with default behaviour */

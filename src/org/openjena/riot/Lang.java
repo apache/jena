@@ -17,13 +17,13 @@ import com.hp.hpl.jena.util.FileUtils ;
 
 public enum Lang
 {
-    RDFXML("RDF/XML", true, langRDFXML, langRDFXMLAbbrev) ,
-    NTRIPLES("N-Triples", true, langNTriples, langNTriple) ,
-    N3("N3", true) ,
-    TURTLE("Turtle", true, langTTL) ,
-    
-    NQUADS("N-Quads", false, langNQuads) ,
-    TRIG("TriG", false) ,
+    RDFXML(     "RDF/XML",      true, langRDFXML, langRDFXMLAbbrev) ,
+    NTRIPLES(   "N-Triples",    true, langNTriples, langNTriple) ,
+    N3(         "N3",           true) ,
+    TURTLE(     "Turtle",       true, langTTL) ,
+   
+    NQUADS(     "N-Quads",      false, langNQuads) ,
+    TRIG(       "TriG",         false) ,
     //TUPLE("rdf-tuples", true, langNTuple)
     ;
     
