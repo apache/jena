@@ -26,7 +26,7 @@ public class ConNeg
     }
 
     /** Match a single media type against a header string */
-    public static String match_X(String headerString, String mediaRangeStr)
+    public static String match(String headerString, String mediaRangeStr)
     {
         AcceptList l = new AcceptList(headerString) ;
         MediaRange aItem = new MediaRange(mediaRangeStr) ;  // MediaType
