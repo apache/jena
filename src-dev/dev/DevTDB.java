@@ -2,6 +2,10 @@ package dev ;
 
 public class DevTDB
 {
+    // ** Release
+    // When ARQ rev, remove Hex.
+    // TDB shutdown hook.
+    
     // ---- BulkLoader2
     // Stats while loading.
     // Tune sort --buffer-size=50%

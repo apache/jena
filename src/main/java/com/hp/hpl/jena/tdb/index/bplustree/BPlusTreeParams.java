@@ -23,7 +23,7 @@ public class BPlusTreeParams
     // Global settings
     // 
     public static boolean CheckingTree = SystemTDB.Checking ;   // Check on exit of B+Tree modifiying operations
-    public static boolean CheckingNode = false ;                // Check within BtreeNode
+    public static boolean CheckingNode = false ;                // Check within BPTreeNode
 
     // Metadata
     //public static final String NS = BPlusTreeParams.class.getName() ;

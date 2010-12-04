@@ -9,9 +9,9 @@ package com.hp.hpl.jena.tdb.store.bulkloader2;
 import java.io.IOException ;
 import java.io.OutputStream ;
 
-import com.hp.hpl.jena.tdb.store.bulkloader2.Hex ;
-
 import org.openjena.atlas.AtlasException ;
+
+import com.hp.hpl.jena.tdb.migrate.Hex ;
 
 
 /** Buffered writer of rows of longs, in hex. */

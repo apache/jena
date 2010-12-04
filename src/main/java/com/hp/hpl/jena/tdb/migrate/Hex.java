@@ -4,27 +4,30 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.store.bulkloader2;
+package com.hp.hpl.jena.tdb.migrate;
 
 import org.openjena.atlas.AtlasException ;
 import org.openjena.atlas.lib.Bytes ;
 
 /** Working in hex ... */
+// MOVED TO ARQ/Atlas - delete on next release.
 public class Hex
 {
     // No checking, fixed width.
-    public static int formatUnsignedLongHex(byte[] b, int start, long x, int width)
+    public static int formatUnsignedLongHex(final byte[] b, final int start, final long value, final int width)
     {
         // Insert from low value end to high value end.
         int idx = start+width-1 ;
+        int w = width ;
+        long x = value ;
         
-        while ( width > 0 )
+        while ( w > 0 )
         {
             int d = (int)(x & 0xF) ;
-            x = x>>4 ;
+            x = x>>>4 ; // Unsigned shift.
             byte ch = Bytes.hexDigits[d] ; 
             b[idx] = ch ;
-            width-- ;
+            w-- ;
             idx-- ;
 
             if ( x == 0 )
@@ -34,11 +37,11 @@ public class Hex
         if ( x != 0 )
             throw new AtlasException("formatUnsignedLongHex: overflow") ;
 
-        while ( width > 0 )
+        while ( w > 0 )
         {
             b[idx] = '0' ;
             idx-- ;
-            width-- ;
+            w-- ;
         }
         return width ;
     }

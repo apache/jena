@@ -88,7 +88,7 @@ public class IndexTestLib
     
     public static void randTest(Index index, int maxValue, int numKeys)
     {
-        if ( numKeys >= 3000 )
+        if ( numKeys >= 5000 )
             System.err.printf("Warning: too many keys\n") ;
             
         int[] keys1 = rand(numKeys, 0, maxValue) ;
