@@ -10,7 +10,6 @@ package dev;
 
 import org.openjena.atlas.lib.FileOps ;
 import org.openjena.atlas.logging.Log ;
-import test.BPlusTreeRun ;
 
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.query.QueryExecution ;
@@ -23,7 +22,8 @@ import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.TDBFactory ;
-import com.hp.hpl.jena.tdb.store.bulkloader2.CmdNodeTableBuilder ;
+import com.hp.hpl.jena.tdb.TDBLoader ;
+import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 
 public class RunTDB
 {
@@ -39,27 +39,15 @@ public class RunTDB
 
     public static void main(String[] args) throws Exception
     {
-        BPlusTreeRun.main("test", "--bptree:check", "--bptree:checknode", "4", "1000", "10000") ;
-        System.exit(0) ;
-        
         if ( true )
         {
-            byte[] b = new byte[17] ;
-            
-//            int idx = Hex.formatUnsignedLongHex(b, 0, (long)0, 16) ;
-//            System.exit(0) ;
-            
-            
-            FileOps.clearDirectory("DB") ;
-            CmdNodeTableBuilder.main("--loc=DB", "--triples=X1", "--quads=X2", "/home/afs/Desktop/BWQ/default.ttl.gz") ;
+            Dataset ds = TDBFactory.createDataset() ;
+            TDBLoader.load((DatasetGraphTDB)(ds.asDatasetGraph()), "/home/afs/Desktop/main.nt") ;
+            TDB.sync(ds) ;
+            System.out.println("DONE") ;
             System.exit(0) ;
-        }
-        
-        if ( false )
-        {
-            System.out.println("Creating database");
-            FileOps.clearDirectory("DB") ;
-            Dataset ds = TDBFactory.createDataset("DB") ;
+            
+            
             Model model = ds.getDefaultModel() ;
             model.read("file:main.rdf", "RDF/XML") ;
             TDB.sync(ds) ;
