@@ -196,7 +196,7 @@ public interface ARQParserConstants {
   /** RegularExpression Id. */
   int LCASE = 95;
   /** RegularExpression Id. */
-  int ENCODE = 96;
+  int ENCODE_FOR_URI = 96;
   /** RegularExpression Id. */
   int CONTAINS = 97;
   /** RegularExpression Id. */
@@ -489,7 +489,7 @@ public interface ARQParserConstants {
     "\"STRLEN\"",
     "\"UCASE\"",
     "\"LCASE\"",
-    "\"ENCODE\"",
+    "\"ENCODE_FOR_URI\"",
     "\"CONTAINS\"",
     "\"STARTS\"",
     "\"ENDS\"",

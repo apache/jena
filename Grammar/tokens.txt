@@ -118,7 +118,7 @@
 [<STRLEN>]      ::= 'STRLEN'
 [<UCASE>]       ::= 'UCASE'
 [<LCASE>]       ::= 'LCASE'
-[<ENCODE>]      ::= 'ENCODE'
+[<ENCODE_FOR_URI>]      ::= 'ENCODE_FOR_URI'
 [<CONTAINS>]    ::= 'CONTAINS'
 [<STARTS>]      ::= 'STARTS'
 [<ENDS>]        ::= 'ENDS'

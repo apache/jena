@@ -6,8 +6,9 @@ PREFIX foaf: 	 <http://xmlns.com/foaf/0.1/>
 PREFIX dc:      <http://purl.org/dc/elements/1.1/>
 PREFIX owl:     <http://www.w3.org/2002/07/owl#> 
 PREFIX apf:     <http://jena.hpl.hp.com/ARQ/property#>
-PREFIX :        <http://example.com/>
+PREFIX ex:        <http://example.com/>
 
-SELECT (NOW() AS ?x)
-{
+SELECT DISTINCT ?o0 ?o1 WHERE {
+	OPTIONAL { ?s ex:p0 ?o0.}
+	OPTIONAL { ?s ex:p1 ?o1.}
 }

@@ -15,6 +15,7 @@ public class WebReader
 {
     interface SinkTriplesFactory {} 
 
+    /** Content type to sink factory for triples */ 
     static Map<String, SinkTriplesFactory> readerTriplesMap = new HashMap<String, SinkTriplesFactory>() ;
     static {
         readerTriplesMap.put(contentTypeN3, null) ;
@@ -30,6 +31,7 @@ public class WebReader
 
     interface SinkQuadsFactory {} 
 
+    /** Content type to sink factory for quads */ 
     static Map<String, SinkQuadsFactory> readerQuadsMap = new HashMap<String, SinkQuadsFactory>() ;
 
     static {
@@ -42,6 +44,10 @@ public class WebReader
         readerQuadsMap.put(contentTypeNQuads, null) ;
         readerQuadsMap.put(contentTypeNQuadsAlt, null) ;
     }
+
+    //public static content
+    
+    // Lang.guess 
     
     // open(Name) -> types stream.
     //   files by ext

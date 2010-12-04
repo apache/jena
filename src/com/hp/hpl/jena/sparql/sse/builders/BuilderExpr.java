@@ -243,7 +243,7 @@ public class BuilderExpr
         dispatch.put(Tags.tagStrEnds, buildStrEnds) ;
         dispatch.put(Tags.tagStrStarts, buildStrStarts) ;
         dispatch.put(Tags.tagStrContains, buildStrContains) ;
-        dispatch.put(Tags.tagStrEncode, buildStrEncode) ;
+        dispatch.put(Tags.tagStrEncodeForURI, buildStrEncode) ;
         dispatch.put(Tags.tagConcat, buildConcat) ;
                 
         dispatch.put(Tags.tagNumAbs, buildNumAbs) ;
@@ -714,7 +714,7 @@ public class BuilderExpr
         {
             BuilderLib.checkLength(2, list, "encode: wanted 1 argument: got: "+list.size()) ;
             Expr ex = buildExpr(list.get(1)) ;
-            return new E_StrEncode(ex) ; 
+            return new E_StrEncodeForURI(ex) ; 
         }
     } ;
     

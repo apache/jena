@@ -116,7 +116,7 @@ TOKENS
 | <STRLEN: "STRLEN">
 | <UCASE: "UCASE">
 | <LCASE: "LCASE">
-| <ENCODE: "ENCODE">
+| <ENCODE_FOR_URI: "ENCODE_FOR_URI">
 | <CONTAINS: "CONTAINS">
 | <STARTS: "STARTS">
 | <ENDS: "ENDS">
@@ -434,7 +434,7 @@ NON-TERMINALS
 		|	<STRLEN> <LPAREN> Expression <RPAREN>
 		|	<UCASE> <LPAREN> Expression <RPAREN>
 		|	<LCASE> <LPAREN> Expression <RPAREN>
-		|	<ENCODE> <LPAREN> Expression <RPAREN>
+		|	<ENCODE_FOR_URI> <LPAREN> Expression <RPAREN>
 		|	<CONTAINS> <LPAREN> Expression <COMMA> Expression <RPAREN>
 		|	<STARTS> <LPAREN> Expression <COMMA> Expression <RPAREN>
 		|	<ENDS> <LPAREN> Expression <COMMA> Expression <RPAREN>

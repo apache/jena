@@ -430,7 +430,7 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
       case STRLEN:
       case UCASE:
       case LCASE:
-      case ENCODE:
+      case ENCODE_FOR_URI:
       case CONTAINS:
       case STARTS:
       case ENDS:
@@ -485,7 +485,7 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
     case STRLEN:
     case UCASE:
     case LCASE:
-    case ENCODE:
+    case ENCODE_FOR_URI:
     case CONTAINS:
     case STARTS:
     case ENDS:
@@ -573,7 +573,7 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
       case STRLEN:
       case UCASE:
       case LCASE:
-      case ENCODE:
+      case ENCODE_FOR_URI:
       case CONTAINS:
       case STARTS:
       case ENDS:
@@ -646,7 +646,7 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
       case STRLEN:
       case UCASE:
       case LCASE:
-      case ENCODE:
+      case ENCODE_FOR_URI:
       case CONTAINS:
       case STARTS:
       case ENDS:
@@ -725,7 +725,7 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
     case STRLEN:
     case UCASE:
     case LCASE:
-    case ENCODE:
+    case ENCODE_FOR_URI:
     case CONTAINS:
     case STARTS:
     case ENDS:
@@ -772,7 +772,7 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
       case STRLEN:
       case UCASE:
       case LCASE:
-      case ENCODE:
+      case ENCODE_FOR_URI:
       case CONTAINS:
       case STARTS:
       case ENDS:
@@ -1957,7 +1957,7 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
     case STRLEN:
     case UCASE:
     case LCASE:
-    case ENCODE:
+    case ENCODE_FOR_URI:
     case CONTAINS:
     case STARTS:
     case ENDS:
@@ -3332,7 +3332,7 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
     case STRLEN:
     case UCASE:
     case LCASE:
-    case ENCODE:
+    case ENCODE_FOR_URI:
     case CONTAINS:
     case STARTS:
     case ENDS:
@@ -3408,7 +3408,7 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
     case STRLEN:
     case UCASE:
     case LCASE:
-    case ENCODE:
+    case ENCODE_FOR_URI:
     case CONTAINS:
     case STARTS:
     case ENDS:
@@ -3635,12 +3635,12 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
       jj_consume_token(RPAREN);
                                                      {if (true) return new E_StrLowerCase(expr1) ;}
       break;
-    case ENCODE:
-      jj_consume_token(ENCODE);
+    case ENCODE_FOR_URI:
+      jj_consume_token(ENCODE_FOR_URI);
       jj_consume_token(LPAREN);
       expr1 = Expression();
       jj_consume_token(RPAREN);
-                                                      {if (true) return new E_StrEncode(expr1) ;}
+                                                              {if (true) return new E_StrEncodeForURI(expr1) ;}
       break;
     case CONTAINS:
       jj_consume_token(CONTAINS);
@@ -3940,7 +3940,7 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
       case STRLEN:
       case UCASE:
       case LCASE:
-      case ENCODE:
+      case ENCODE_FOR_URI:
       case CONTAINS:
       case STARTS:
       case ENDS:

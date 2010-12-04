@@ -188,7 +188,7 @@ public interface SPARQLParser11Constants {
   /** RegularExpression Id. */
   int LCASE = 91;
   /** RegularExpression Id. */
-  int ENCODE = 92;
+  int ENCODE_FOR_URI = 92;
   /** RegularExpression Id. */
   int CONTAINS = 93;
   /** RegularExpression Id. */
@@ -469,7 +469,7 @@ public interface SPARQLParser11Constants {
     "\"STRLEN\"",
     "\"UCASE\"",
     "\"LCASE\"",
-    "\"ENCODE\"",
+    "\"ENCODE_FOR_URI\"",
     "\"CONTAINS\"",
     "\"STARTS\"",
     "\"ENDS\"",

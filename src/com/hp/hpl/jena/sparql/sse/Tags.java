@@ -152,7 +152,7 @@ public class Tags
     public static final String tagStrEnds       = "ends" ;
     public static final String tagStrStarts     = "starts" ;
     public static final String tagStrContains   = "contains" ;
-    public static final String tagStrEncode     = "encode" ;
+    public static final String tagStrEncodeForURI     = "encode_for_uri" ;
     public static final String tagConcat        = "concat" ;
     
     public static final String tagNumAbs        = "abs" ;

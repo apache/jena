@@ -8,11 +8,11 @@ package com.hp.hpl.jena.sparql.expr;
 import com.hp.hpl.jena.sparql.expr.nodevalue.NodeFunctions ;
 import com.hp.hpl.jena.sparql.sse.Tags ;
 
-public class E_StrEncode extends ExprFunction1
+public class E_StrEncodeForURI extends ExprFunction1
 {
-    private static final String symbol = Tags.tagStrEncode ;
+    private static final String symbol = Tags.tagStrEncodeForURI ;
 
-    public E_StrEncode(Expr expr)
+    public E_StrEncodeForURI(Expr expr)
     {
         super(expr, symbol) ;
     }
@@ -21,7 +21,7 @@ public class E_StrEncode extends ExprFunction1
     public NodeValue eval(NodeValue v) { return NodeFunctions.str(v) ; }
     
     @Override
-    public Expr copy(Expr expr) { return new E_StrEncode(expr) ; } 
+    public Expr copy(Expr expr) { return new E_StrEncodeForURI(expr) ; } 
 }
 
 /*
