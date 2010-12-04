@@ -16,6 +16,7 @@ import org.junit.runners.Suite ;
     , TestBitsLong.class
     , TestBitsInt.class
     , TestBytes.class
+    , TestHex.class
     , TestListUtils.class
     , TestSetUtils.class
     , TestCache.class
