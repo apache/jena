@@ -48,9 +48,9 @@ public class BPlusTreeRun extends RunnerRangeIndex
             case test:
                 showProgress = true ;
                 //BPlusTreeParams.checkAll() ;
-                //BPlusTreeParams.CheckingTree = true ;
+                BPlusTreeParams.CheckingTree = true ;
                 BPlusTreeParams.CheckingNode = true ;
-                //SystemTDB.NullOut = true ;
+                SystemTDB.NullOut = true ;
                 break ;
             case perf:  
                 showProgress = false ;
