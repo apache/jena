@@ -8,7 +8,10 @@
 
 package dev;
 
+import java.util.Iterator ;
+
 import org.openjena.atlas.lib.FileOps ;
+import org.openjena.atlas.lib.Tuple ;
 import org.openjena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.query.Dataset ;
@@ -23,7 +26,14 @@ import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.TDBFactory ;
 import com.hp.hpl.jena.tdb.TDBLoader ;
+import com.hp.hpl.jena.tdb.base.record.Record ;
+import com.hp.hpl.jena.tdb.index.TupleIndex ;
+import com.hp.hpl.jena.tdb.index.TupleIndexRecord ;
+import com.hp.hpl.jena.tdb.index.bplustree.BPlusTree ;
+import com.hp.hpl.jena.tdb.lib.DumpOps ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
+import com.hp.hpl.jena.tdb.store.NodeId ;
+import com.hp.hpl.jena.vocabulary.RDF ;
 
 public class RunTDB
 {
@@ -39,6 +49,34 @@ public class RunTDB
 
     public static void main(String[] args) throws Exception
     {
+        DatasetGraphTDB dsg = TDBFactory.createDatasetGraph("/home/afs/Desktop/BWQ/DB-0.8.6") ;
+        TupleIndex index = dsg.getTripleTable().getNodeTupleTable().getTupleTable().getIndex(1) ;
+        
+        TupleIndexRecord idxRec = (TupleIndexRecord)index ;
+        BPlusTree bpt = (BPlusTree)idxRec.getRangeIndex() ;
+        Record rec = bpt.minKey() ;
+
+        System.out.println(index.getLabel()) ;
+        
+        System.out.println("LOOKUP rdf:type") ; System.out.flush();
+        NodeId n = dsg.getTripleTable().getNodeTupleTable().getNodeTable().getNodeIdForNode(RDF.type.asNode()) ;
+        Tuple<NodeId> pattern = Tuple.create(null, n, null) ;
+        
+        System.out.println("Iterator") ; System.out.flush();
+        Iterator<Tuple<NodeId>> iter = index.find(pattern) ;// index.all() ;
+        
+        int count = 0 ;
+        for ( ; iter.hasNext() ; )
+        {
+            if ( count == 0 )
+            { System.out.println("Loop - 0") ; System.out.flush(); }
+            Tuple<NodeId> tuple = iter.next();
+            count++ ;
+            //System.out.println(tuple) ;
+        }
+        System.out.println("DONE") ;
+        System.exit(0) ;
+        
         if ( true )
         {
             Dataset ds = TDBFactory.createDataset() ;

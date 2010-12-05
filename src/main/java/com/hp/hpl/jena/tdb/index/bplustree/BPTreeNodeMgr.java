@@ -206,8 +206,14 @@ public final class BPTreeNodeMgr extends BPTreePageMgr
         BPlusTreeParams params = bTree.getParams() ;
 
         int ptrBuffLen = params.MaxPtr * params.getPtrLength() ;
-        // Only store the key part of records in a B+Tree block.
+        // Only store the key part of records in a B+Tree block
+        // OLD - Node table has real value part - what's going on? 
+        
         int recBuffLen = params.MaxRec * params.getKeyLength() ;
+        // TODO CHECK THIS
+        // Old - up to 0.8.7 - but is it right? And why does it make a difference?
+        // Loader2 is sensitive to this (????)
+        //int recBuffLen = params.MaxRec * params.getRecordLength() ;
 
         n.setId(-1) ;
         n.parent = -2 ;
