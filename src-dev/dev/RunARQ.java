@@ -7,7 +7,9 @@
 
 package dev;
 
+import java.util.ArrayList ;
 import java.util.Iterator ;
+import java.util.List ;
 
 import junit.framework.TestSuite ;
 import org.openjena.atlas.io.IndentedWriter ;
@@ -22,6 +24,7 @@ import org.openjena.riot.pipeline.normalize.CanonicalizeLiteral ;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.datatypes.xsd.XSDDuration ;
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.iri.IRI ;
 import com.hp.hpl.jena.iri.IRIFactory ;
 import com.hp.hpl.jena.iri.Violation ;
@@ -34,11 +37,24 @@ import com.hp.hpl.jena.query.ResultSetFormatter ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.sparql.algebra.Algebra ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
+import com.hp.hpl.jena.sparql.algebra.OpAsQuery ;
+import com.hp.hpl.jena.sparql.algebra.op.OpBGP ;
+import com.hp.hpl.jena.sparql.algebra.op.OpExtend ;
+import com.hp.hpl.jena.sparql.algebra.op.OpGraph ;
+import com.hp.hpl.jena.sparql.algebra.op.OpGroup ;
+import com.hp.hpl.jena.sparql.algebra.op.OpProject ;
+import com.hp.hpl.jena.sparql.core.BasicPattern ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
+import com.hp.hpl.jena.sparql.core.Var ;
+import com.hp.hpl.jena.sparql.core.VarExprList ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
+import com.hp.hpl.jena.sparql.expr.ExprAggregator ;
 import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
+import com.hp.hpl.jena.sparql.expr.ExprVar ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
+import com.hp.hpl.jena.sparql.expr.aggregate.AggCountVarDistinct ;
+import com.hp.hpl.jena.sparql.expr.aggregate.Aggregator ;
 import com.hp.hpl.jena.sparql.function.FunctionEnvBase ;
 import com.hp.hpl.jena.sparql.graph.NodeTransform ;
 import com.hp.hpl.jena.sparql.junit.ScriptTestSuiteFactory ;
@@ -80,6 +96,48 @@ public class RunARQ
     
     public static void main(String[] argv) throws Exception
     {
+        Var var_connected_instance = Var.alloc("connected_instance");
+        Var var_instance = Var.alloc("instance");
+        Var var_count_instances = Var.alloc("count_i");
+        Var var_property = Var.alloc("property");
+        Var var_class = Var.alloc("class");
+        Var var_type = Var.alloc("type");
+        Var var_graph = Var.alloc("g");
+
+        Var var_count_instances_alias = Var.alloc("count0_i");
+
+        BasicPattern pattern = new BasicPattern();
+        pattern.add(new Triple(var_instance, var_property, var_connected_instance));
+        pattern.add(new Triple(var_connected_instance, var_type, var_class));
+
+        Op operator = new OpBGP(pattern);
+        Op graph = new OpGraph(var_graph, operator);
+
+        List<Var> variables = new ArrayList<Var>();
+        variables.add(var_count_instances);
+        List<Var> extendOpvariables = new ArrayList<Var>();
+        extendOpvariables.add(var_count_instances);
+        extendOpvariables.add(var_count_instances_alias);
+        
+        VarExprList extendVarExprList = new VarExprList(extendOpvariables);
+
+        List<ExprAggregator> exprAggregatorList = new ArrayList<ExprAggregator>();
+
+        Expr exprVar = new ExprVar(var_connected_instance);
+        Aggregator aggVarCountDistinct  =  new AggCountVarDistinct(exprVar);
+
+        ExprAggregator exprCountAggregator = new      ExprAggregator(var_count_instances_alias, aggVarCountDistinct);
+        exprAggregatorList.add(exprCountAggregator);
+
+        List<Var> groupOpvariables = new ArrayList<Var>();
+        VarExprList groupVarExprList = new VarExprList(groupOpvariables);
+        Op opGroup = new OpGroup(graph, groupVarExprList, exprAggregatorList);
+        Op opExtend = OpExtend.extend(opGroup, extendVarExprList);
+        Op project = new OpProject(opExtend, variables);
+
+        System.out.println(project);
+        System.out.println(OpAsQuery.asQuery(project));
+        System.exit(0) ;
 
         riotcmd.riot.main("D.nt") ; System.exit(0) ;
         
