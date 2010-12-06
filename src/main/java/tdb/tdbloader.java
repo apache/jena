@@ -51,7 +51,8 @@ public class tdbloader extends CmdTDB
 //        super.add(argIncremental, "--incremental",  "Do an incremental load (keep indexes during data load)") ;
         super.add(argStats, "--stats",              "Generate statistics while loading (new graph only)") ;
         addModule(modRDFS) ;
-    }
+    }        
+
 
     @Override
     protected void processModulesAndArgs()

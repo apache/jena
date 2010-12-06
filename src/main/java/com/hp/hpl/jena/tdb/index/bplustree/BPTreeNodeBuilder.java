@@ -15,21 +15,24 @@ import org.openjena.atlas.lib.Pair;
 import com.hp.hpl.jena.tdb.base.buffer.PtrBuffer;
 import com.hp.hpl.jena.tdb.base.buffer.RecordBuffer;
 import com.hp.hpl.jena.tdb.base.record.Record;
+import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
 
 /** Take a stream of (block id,split record) pairs and generate B+Tree Nodes */ 
 class BPTreeNodeBuilder implements Iterator<Pair<Integer, Record>>
 {
     private Pair<Integer, Record> slot ;
     private Iterator<Pair<Integer, Record>> iter ;
-    private BPTreeNodeMgr mgr ;
+    private final BPTreeNodeMgr mgr ;
 
-    private boolean leafLayer ;
+    private final boolean leafLayer ;
+    private final RecordFactory recordFactory ;
     
-    BPTreeNodeBuilder(Iterator<Pair<Integer, Record>> iter, BPTreeNodeMgr mgr, boolean leafLayer)
+    BPTreeNodeBuilder(Iterator<Pair<Integer, Record>> iter, BPTreeNodeMgr mgr, boolean leafLayer, RecordFactory recordFactory)
     {
         this.iter = iter ;
         this.mgr = mgr ;
         this.leafLayer = leafLayer ;
+        this.recordFactory = recordFactory ;
     }
     
     //@Override
@@ -98,7 +101,12 @@ class BPTreeNodeBuilder implements Iterator<Pair<Integer, Record>>
                 return true ;
             }
 
-            recBuff.add(pair.cdr()) ;
+            
+            Record r = pair.cdr() ;
+            // [Issue: FREC]
+            // Writes the whole record, only need to write the key part.
+            // r = recordFactory.createKeyOnly(r) ;
+            recBuff.add(r) ;
             bptNode.setCount(bptNode.getCount()+1) ;
         }
         

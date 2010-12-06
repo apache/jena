@@ -209,11 +209,12 @@ public final class BPTreeNodeMgr extends BPTreePageMgr
         // Only store the key part of records in a B+Tree block
         // OLD - Node table has real value part - what's going on? 
         
-        int recBuffLen = params.MaxRec * params.getKeyLength() ;
-        // TODO CHECK THIS
-        // Old - up to 0.8.7 - but is it right? And why does it make a difference?
-        // Loader2 is sensitive to this (????)
-        //int recBuffLen = params.MaxRec * params.getRecordLength() ;
+        // [Issue:FREC]
+        // Allocate space for record, key and value, despite slight over allocation.
+        int recBuffLen = params.MaxRec * params.getRecordLength() ;
+        
+        // Should be: key space only.
+        // int recBuffLen = params.MaxRec * params.getKeyLength() ;
 
         n.setId(-1) ;
         n.parent = -2 ;

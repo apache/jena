@@ -447,7 +447,14 @@ public final class BPTreeNode extends BPTreePage
         
         // Key only.
         if ( splitKey.hasSeparateValue() )
+        {
+            // [Issue: FREC]
+            // This creates a empty (null-byte-initialized) value array.
             splitKey = params.getKeyFactory().create(splitKey.getKey()) ;
+
+            // Better: but an on-disk change. This is key only.
+            // splitKey = params.getKeyFactory().createKeyOnly(splitKey) ;
+        }        
         
         // Insert new node. "add" shuffle's up as well.
         records.add(idx, splitKey) ;

@@ -241,7 +241,7 @@ public class BPlusTreeRewriter
             System.out.println("---- Index level") ;
         }
         
-        Iterator<Pair<Integer, Record>> iter2 = new BPTreeNodeBuilder(iter, bpt.getNodeManager(), leafLayer) ;
+        Iterator<Pair<Integer, Record>> iter2 = new BPTreeNodeBuilder(iter, bpt.getNodeManager(), leafLayer, bpt.getRecordFactory()) ;
         
         if ( debug )
         {
