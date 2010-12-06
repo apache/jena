@@ -69,10 +69,32 @@ class BPTreeNodeBuilder implements Iterator<Pair<Integer, Record>>
 
         for ( ; iter.hasNext() ; )
         {
+            
+            int X = bptNode.getCount() ;
+            int X2 = bptNode.getMaxSize() ;
+            int P = ptrBuff.size() ;
+            int P2 = ptrBuff.maxSize() ;
+            int R = recBuff.size() ;
+            int R2 = recBuff.maxSize() ;
+            
+            System.out.printf("N: %d/%d : P %d/%d : R %d/%d\n", X, X2, P, P2, R, R2) ;
+            
             Pair<Integer, Record> pair = iter.next() ;
             if ( debug ) System.out.println("** Item: "+pair) ;
+            Record r = pair.cdr() ;
+            
+            // [Issue: FREC]
+            // The record buffer size is wrong.
+            // Writes the whole record, only need to write the key part.
+            // **** r = recordFactory.createKeyOnly(r) ;
+            
+            // [Issue: FREC]
+            // The record is key-only (which is correct) but until FREC fixed, we need key,value
+            r = recordFactory.create(r.getKey()) ;
+            // -- End FREC
+            
             // Always add - so ptrBuff is one ahead when we finish.
-            // Our impl always has one slot free (used as part of insert-split algorithm).
+            // There is always one more ptr than record in a B+Tree node.
             if ( ptrBuff.isFull() )
                 System.err.println("PtrBuffer is full") ;
             
@@ -101,15 +123,13 @@ class BPTreeNodeBuilder implements Iterator<Pair<Integer, Record>>
                 return true ;
             }
 
-            
-            Record r = pair.cdr() ;
-            // [Issue: FREC]
-            // Writes the whole record, only need to write the key part.
-            // r = recordFactory.createKeyOnly(r) ;
             recBuff.add(r) ;
             bptNode.setCount(bptNode.getCount()+1) ;
         }
         
+        
+        
+
         // If we get here, the input stream ran out before we finished a complete block.
         // Fix up block (remove the last record)
         Record r = recBuff.getHigh() ;
