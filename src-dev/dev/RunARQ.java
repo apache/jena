@@ -104,7 +104,7 @@ public class RunARQ
         Var var_type = Var.alloc("type");
         Var var_graph = Var.alloc("g");
 
-        Var var_count_instances_alias = Var.alloc("count0_i");
+        Expr var_count_instances_alias = new ExprVar("count0_i");
 
         BasicPattern pattern = new BasicPattern();
         pattern.add(new Triple(var_instance, var_property, var_connected_instance));
@@ -115,28 +115,27 @@ public class RunARQ
 
         List<Var> variables = new ArrayList<Var>();
         variables.add(var_count_instances);
-        List<Var> extendOpvariables = new ArrayList<Var>();
-        extendOpvariables.add(var_count_instances);
-        extendOpvariables.add(var_count_instances_alias);
-        
-        VarExprList extendVarExprList = new VarExprList(extendOpvariables);
+
+        VarExprList extendVarExprList = new VarExprList();
+        extendVarExprList.add(var_count_instances, var_count_instances_alias );
 
         List<ExprAggregator> exprAggregatorList = new ArrayList<ExprAggregator>();
 
         Expr exprVar = new ExprVar(var_connected_instance);
         Aggregator aggVarCountDistinct  =  new AggCountVarDistinct(exprVar);
 
-        ExprAggregator exprCountAggregator = new      ExprAggregator(var_count_instances_alias, aggVarCountDistinct);
+        ExprAggregator exprCountAggregator = new ExprAggregator(var_count_instances_alias.asVar(), aggVarCountDistinct);
         exprAggregatorList.add(exprCountAggregator);
 
-        List<Var> groupOpvariables = new ArrayList<Var>();
-        VarExprList groupVarExprList = new VarExprList(groupOpvariables);
+        List<Var> groupOpVariables = new ArrayList<Var>();
+        VarExprList groupVarExprList = new VarExprList(groupOpVariables);
         Op opGroup = new OpGroup(graph, groupVarExprList, exprAggregatorList);
         Op opExtend = OpExtend.extend(opGroup, extendVarExprList);
         Op project = new OpProject(opExtend, variables);
 
         System.out.println(project);
         System.out.println(OpAsQuery.asQuery(project));
+
         System.exit(0) ;
 
         riotcmd.riot.main("D.nt") ; System.exit(0) ;

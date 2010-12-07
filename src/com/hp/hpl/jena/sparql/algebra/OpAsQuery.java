@@ -322,6 +322,7 @@ public class OpAsQuery
 
         public void visit(OpAssign opAssign)
         { 
+            opAssign.getSubOp().visit(this) ;
             for ( Var v : opAssign.getVarExprList().getVars() )
             {
                 Element elt = new ElementAssign(v, opAssign.getVarExprList().getExpr(v)) ;
@@ -332,6 +333,7 @@ public class OpAsQuery
 
         public void visit(OpExtend opExtend)
         { 
+            opExtend.getSubOp().visit(this) ;
             for ( Var v : opExtend.getVarExprList().getVars() )
             {
                 Element elt = new ElementBind(v, opExtend.getVarExprList().getExpr(v)) ;
