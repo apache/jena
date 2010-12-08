@@ -103,8 +103,11 @@ class BPTreeNodeBuilder implements Iterator<Pair<Integer, Record>>
             ptrBuff.add(pair.car()) ;
 
             // [Issue: FREC]
-            if ( ptrBuff.isFull() )
+            // Either test shoudl work but due to the missetting of record buffer size
+            // testing recBuff does not work. 
             //if ( recBuff.isFull() )
+            // .... test ptrBuff
+            if ( ptrBuff.isFull() )
             {
                 // End of this block.
 
