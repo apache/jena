@@ -8,7 +8,7 @@ PREFIX owl:     <http://www.w3.org/2002/07/owl#>
 PREFIX apf:     <http://jena.hpl.hp.com/ARQ/property#>
 PREFIX ex:        <http://example.com/>
 
-SELECT DISTINCT ?o0 ?o1 WHERE {
-	OPTIONAL { ?s ex:p0 ?o0.}
-	OPTIONAL { ?s ex:p1 ?o1.}
+SELECT *
+{
+    FILTER(MD5(?x))
 }
