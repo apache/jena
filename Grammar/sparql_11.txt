@@ -127,6 +127,13 @@ TOKENS
 | <MINUTES: "MINUTES">
 | <SECONDS: "SECONDS">
 | <TIMEZONE: "TIMEZONE">
+| <NOW: "NOW">
+| <MD5: "MD5">
+| <SHA1: "SHA1">
+| <SHA224: "SHA224">
+| <SHA256: "SHA256">
+| <SHA384: "SHA384">
+| <SHA512: "SHA512">
 | <TRUE: "true">
 | <FALSE: "false">
 }
@@ -445,6 +452,13 @@ NON-TERMINALS
 		|	<MINUTES> <LPAREN> Expression <RPAREN>
 		|	<SECONDS> <LPAREN> Expression <RPAREN>
 		|	<TIMEZONE> <LPAREN> Expression <RPAREN>
+		|	<NOW> <NIL>
+		|	<MD5> <LPAREN> Expression <RPAREN>
+		|	<SHA1> <LPAREN> Expression <RPAREN>
+		|	<SHA224> <LPAREN> Expression <RPAREN>
+		|	<SHA256> <LPAREN> Expression <RPAREN>
+		|	<SHA384> <LPAREN> Expression <RPAREN>
+		|	<SHA512> <LPAREN> Expression <RPAREN>
 		|	<COALESCE> ExpressionList
 		|	<IF> <LPAREN> Expression <COMMA> Expression <COMMA> Expression <RPAREN>
 		|	<STRLANG> <LPAREN> Expression <COMMA> Expression <RPAREN>

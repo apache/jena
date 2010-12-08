@@ -87,15 +87,14 @@ public class Bytes
         return newByteArray ;
     }
     
-    final public static byte[] hexDigits = {
+    final public static byte[] hexDigitsUC = {
         '0' , '1' , '2' , '3' , '4' , '5' , '6' , '7' , '8' ,
-        '9' , 'A' , 'B' , 'C' , 'D' , 'E' , 'F' 
-//         , 'g' , 'h' ,
-//        'i' , 'j' , 'k' , 'l' , 'm' , 'n' ,
-//        'o' , 'p' , 'q' , 'r' , 's' , 't' ,
-//        'u' , 'v' , 'w' , 'x' , 'y' , 'z'
-        };
-    
+        '9' , 'A' , 'B' , 'C' , 'D' , 'E' , 'F' };
+
+    final public static byte[] hexDigitsLC = {
+        '0' , '1' , '2' , '3' , '4' , '5' , '6' , '7' , '8' ,
+        '9' , 'a' , 'b' , 'c' , 'd' , 'e' , 'f' };
+
     /** Get an int from a byte array (network order)
      * @param b Byte Array
      */
@@ -323,10 +322,20 @@ public class Bytes
     /** Return a hex string representing the bytes, zero padded to length of byte array. */
     public static String asHex(byte[] bytes)
     {
-        return asHex(bytes, 0, bytes.length) ; 
+        return asHexUC(bytes) ; 
+    }
+
+    public static String asHexUC(byte[] bytes)
+    {
+        return asHex(bytes, 0, bytes.length, Chars.hexDigitsUC) ; 
+    }
+
+    public static String asHexLC(byte[] bytes)
+    {
+        return asHex(bytes, 0, bytes.length, Chars.hexDigitsLC) ; 
     }
     
-    public static String asHex(byte[] bytes, int start, int finish)
+    public static String asHex(byte[] bytes, int start, int finish, char[] hexDigits)
     {
         StringBuilder sw = new StringBuilder() ;
         for ( int i = start ; i < finish ; i++ )
@@ -334,9 +343,9 @@ public class Bytes
             byte b = bytes[i] ;
             int hi = (b & 0xF0) >> 4 ;
             int lo = b & 0xF ;
-            if ( i != start ) sw.append(' ') ;
-            sw.append(Chars.hexDigits[hi]) ;
-            sw.append(Chars.hexDigits[lo]) ;
+            //if ( i != start ) sw.append(' ') ;
+            sw.append(hexDigits[hi]) ;
+            sw.append(hexDigits[lo]) ;
         }
         return sw.toString() ;
     }

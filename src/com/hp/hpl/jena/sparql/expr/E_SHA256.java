@@ -1,57 +1,27 @@
 /*
- * (c) Copyright 2009 Hewlett-Packard Development Company, LP
- * All rights reserved.
+ * (c) Copyright 2010 Epimorphics Ltd.
  * [See end of file]
  */
 
-package org.openjena.atlas.io;
+package com.hp.hpl.jena.sparql.expr;
 
-import java.io.IOException ;
-import java.io.Writer ;
+import com.hp.hpl.jena.sparql.sse.Tags ;
 
-import org.openjena.atlas.lib.BitsInt ;
-import org.openjena.atlas.lib.Chars ;
-
-
-public class OutputUtils
+public class E_SHA256 extends ExprDigest
 {
-    /** Print the number x in width hex chars.  x must fit */
-    public static void printHex(StringBuilder out, int x, int width)
-    {
-        for ( int i = width-1 ; i >= 0 ; i-- )
-            x = oneHex(out, x, i) ;
-    }
+    private static final String symbol = Tags.tagSHA256.toUpperCase() ;
 
-    /** Print one hex digit of the number */
-    public static int oneHex(StringBuilder out, int x, int i)
+    public E_SHA256(Expr expr)
     {
-        int y = BitsInt.unpack(x, 4*i, 4*i+4) ;
-        char charHex = Chars.hexDigitsUC[y] ;
-        out.append(charHex) ; 
-        return BitsInt.clear(x, 4*i, 4*i+4) ;
+        super(expr, symbol, "SHA-256") ;
     }
     
-    /** Print the number x in width hex chars.  x must fit */
-    public static void printHex(Writer out, int x, int width)
-    {
-        for ( int i = width-1 ; i >= 0 ; i-- )
-            x = oneHex(out, x, i) ;
-    }
-
-    /** Print one hex digit of the numer */
-    public static int oneHex(Writer out, int x, int i)
-    {
-        int y = BitsInt.unpack(x, 4*i, 4*i+4) ;
-        char charHex = Chars.hexDigitsUC[y] ;
-        try { out.write(charHex) ; } catch (IOException ex) {} 
-        return BitsInt.clear(x, 4*i, 4*i+4) ;
-    }
-
-    
+    @Override
+    public Expr copy(Expr expr) { return new E_SHA256(expr) ; } 
 }
 
 /*
- * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

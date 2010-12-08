@@ -235,6 +235,13 @@ public class BuilderExpr
         
         dispatch.put(Tags.tagNow, buildNow) ;
         dispatch.put(Tags.tagVersion, buildVersion) ;
+        
+        dispatch.put(Tags.tagMD5, buildMD5) ;
+        dispatch.put(Tags.tagSHA1, buildSHA1) ;
+        dispatch.put(Tags.tagSHA224, buildSHA224) ;
+        dispatch.put(Tags.tagSHA256, buildSHA256) ;
+        dispatch.put(Tags.tagSHA384, buildSHA384) ;
+        dispatch.put(Tags.tagSHA512, buildSHA512) ;
 
         dispatch.put(Tags.tagStrlen, buildStrlen) ;
         dispatch.put(Tags.tagSubstr, buildSubstr) ;
@@ -632,6 +639,66 @@ public class BuilderExpr
         {
             BuilderLib.checkLength(1, list, "version: wanted 0 arguments: got: "+list.size()) ;
             return new E_Version() ; 
+        }
+    } ;
+
+    final protected Build buildMD5 = new Build()
+    {
+        public Expr make(ItemList list)
+        {
+            BuilderLib.checkLength(2, list, "md5: wanted 1 argument: got: "+list.size()) ;
+            Expr ex = buildExpr(list.get(1)) ;
+            return new E_MD5(ex) ; 
+        }
+    } ;
+    
+    final protected Build buildSHA1 = new Build()
+    {
+        public Expr make(ItemList list)
+        {
+            BuilderLib.checkLength(2, list, "md5: wanted 1 argument: got: "+list.size()) ;
+            Expr ex = buildExpr(list.get(1)) ;
+            return new E_SHA1(ex) ; 
+        }
+    } ;
+    
+    final protected Build buildSHA224 = new Build()
+    {
+        public Expr make(ItemList list)
+        {
+            BuilderLib.checkLength(2, list, "md5: wanted 1 argument: got: "+list.size()) ;
+            Expr ex = buildExpr(list.get(1)) ;
+            return new E_SHA224(ex) ; 
+        }
+    } ;
+    
+    final protected Build buildSHA256 = new Build()
+    {
+        public Expr make(ItemList list)
+        {
+            BuilderLib.checkLength(2, list, "md5: wanted 1 argument: got: "+list.size()) ;
+            Expr ex = buildExpr(list.get(1)) ;
+            return new E_SHA256(ex) ; 
+        }
+    } ;
+    
+    final protected Build buildSHA384 = new Build()
+    {
+        public Expr make(ItemList list)
+        {
+            BuilderLib.checkLength(2, list, "md5: wanted 1 argument: got: "+list.size()) ;
+            Expr ex = buildExpr(list.get(1)) ;
+            return new E_SHA384(ex) ; 
+        }
+    } ;
+
+    final protected Build buildSHA512 = new Build()
+    {
+        public Expr make(ItemList list)
+        {
+            BuilderLib.checkLength(2, list, "md5: wanted 1 argument: got: "+list.size()) ;
+            Expr ex = buildExpr(list.get(1)) ;
+            return new E_SHA512(ex) ; 
         }
     } ;
     

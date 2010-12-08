@@ -96,6 +96,10 @@ public class RunARQ
     
     public static void main(String[] argv) throws Exception
     {
+        
+        arq.sparql.main("--data=D.ttl", "SELECT (MD5('foo') AS ?x) {}") ;
+        System.exit(0) ;
+        
         Var var_connected_instance = Var.alloc("connected_instance");
         Var var_instance = Var.alloc("instance");
         Var var_count_instances = Var.alloc("count_i");

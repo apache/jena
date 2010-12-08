@@ -318,7 +318,10 @@ public class OpAsQuery
         { throw new ARQNotImplemented("OpNull") ; }
 
         public void visit(OpLabel opLabel)
-        { /* No action */ }
+        {
+            if ( opLabel.hasSubOp() )
+                opLabel.getSubOp().visit(this) ;
+        }
 
         public void visit(OpAssign opAssign)
         { 

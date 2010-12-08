@@ -19,16 +19,21 @@ public class Chars
         '0' , '1' , '2' , '3' , '4' , '5' , '6' , '7' , '8' , '9'
     } ;
     
-    // So also Bytes.hexDigits to get bytes.
-    final public static char[] hexDigits = {
+    /** Hex digits : upper case **/ 
+    final public static char[] hexDigitsUC = {
         '0' , '1' , '2' , '3' , '4' , '5' , '6' , '7' , '8' ,
-        '9' , 'A' , 'B' , 'C' , 'D' , 'E' , 'F' 
+        '9' , 'A' , 'B' , 'C' , 'D' , 'E' , 'F' } ;
+
+    /** Hex digits : lower case **/ 
+    final public static char[] hexDigitsLC = {
+        '0' , '1' , '2' , '3' , '4' , '5' , '6' , '7' , '8' ,
+        '9' , 'a' , 'b' , 'c' , 'd' , 'e' , 'f' } ;
+
+    
 //         , 'g' , 'h' ,
 //        'i' , 'j' , 'k' , 'l' , 'm' , 'n' ,
 //        'o' , 'p' , 'q' , 'r' , 's' , 't' ,
 //        'u' , 'v' , 'w' , 'x' , 'y' , 'z'
-        };
-    
     /** Java name for UTF-8 encoding */
     private static final String encodingUTF8     = "utf-8" ;
     /** Java name for ASCII encoding */
@@ -42,8 +47,8 @@ public class Chars
     // placed in the pool - it's an infinite, reusing, growing pool.
     
     private static final int PoolSize = 2 ;
-    private static Pool<CharsetEncoder> encoders = new PoolSync<CharsetEncoder>() ;
-    private static Pool<CharsetDecoder> decoders = new PoolSync<CharsetDecoder>() ;
+    private static Pool<CharsetEncoder> encoders = PoolSync.create(new PoolBase<CharsetEncoder>()) ;
+    private static Pool<CharsetDecoder> decoders = PoolSync.create(new PoolBase<CharsetDecoder>()) ;
     
     static {
         // Fill the pool.
@@ -74,8 +79,8 @@ public class Chars
         buff.append(marker) ;
         int lo = ch & 0xF ;
         int hi = (ch >> 4) & 0xF ;
-        buff.append(Chars.hexDigits[hi]) ;                
-        buff.append(Chars.hexDigits[lo]) ;
+        buff.append(Chars.hexDigitsUC[hi]) ;                
+        buff.append(Chars.hexDigitsUC[lo]) ;
     }
     
     /** End of file - not a Unicode codepoint */

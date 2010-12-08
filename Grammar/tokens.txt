@@ -131,6 +131,12 @@
 [<TIMEZONE>]    ::= 'TIMEZONE'
 [<NOW>]         ::= 'NOW'
 [<VERSION>]     ::= 'VERSION'
+[<MD5>]         ::= 'MD5'
+[<SHA1>]        ::= 'SHA1'
+[<SHA244>]      ::= 'SHA244'
+[<SHA256>]      ::= 'SHA256'
+[<SHA384>]      ::= 'SHA384'
+[<SHA512>]      ::= 'SHA512'
 
 [<DFT>]        ::= 'DEFAULT'
 [<ALL>]        ::= 'ALL'

@@ -8,24 +8,36 @@ package org.openjena.atlas.lib;
 
 
 /** Synchronization wrapper for a pool */ 
-public class PoolSync<T> extends PoolBase<T>
+public class PoolSync<T> implements Pool<T>
 {
-    public PoolSync() { } 
+    private Pool<T> pool ;
+
+    public static <T> Pool<T> create(Pool<T> pool)
+    { 
+        if ( pool instanceof PoolSync<?>)
+        {
+            PoolSync<T> p = (PoolSync<T>)pool ;
+            return p ;
+        }
+        return new PoolSync<T>(pool) ; 
+    }
     
-    @Override
+    public PoolSync(Pool<T> pool) { this.pool = pool ; } 
+    
+    //@Override
     public final synchronized void put(T item)
     {
-        super.put(item) ;
+        pool.put(item) ;
     }
     
-    @Override
+    //@Override
     public final synchronized T get()              
     { 
-        return super.get();
+        return pool.get();
     }
     
-    @Override
-    public final synchronized boolean isEmpty()    { return super.isEmpty() ; } 
+    //@Override
+    public final synchronized boolean isEmpty()    { return pool.isEmpty() ; } 
 }
 
 /*

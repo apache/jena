@@ -18,6 +18,7 @@ import java.util.Stack ;
 import org.openjena.atlas.io.IndentedLineBuffer ;
 import org.openjena.atlas.io.IndentedWriter ;
 import org.openjena.atlas.lib.BitsInt ;
+import org.openjena.atlas.lib.Chars ;
 import org.openjena.atlas.lib.Ref ;
 
 
@@ -308,7 +309,7 @@ public class JSWriter
     private static int oneHex(IndentedWriter out, int x, int i)
     {
         int y = BitsInt.unpack(x, 4*i, 4*i+4) ;
-        char charHex = org.openjena.atlas.lib.Chars.hexDigits[y] ;
+        char charHex = Chars.hexDigitsUC[y] ;
         out.print(charHex) ; 
         return BitsInt.clear(x, 4*i, 4*i+4) ;
     }

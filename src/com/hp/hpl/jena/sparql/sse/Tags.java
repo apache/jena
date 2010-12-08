@@ -145,6 +145,13 @@ public class Tags
     public static final String tagNow           = "now" ;
     public static final String tagVersion       = "version" ;
 
+    public static final String tagMD5           = "md5" ;
+    public static final String tagSHA1          = "sha1" ;
+    public static final String tagSHA224        = "sha224" ;
+    public static final String tagSHA256        = "sha256" ;
+    public static final String tagSHA384        = "sha384" ;
+    public static final String tagSHA512        = "sha512" ;
+    
     public static final String tagStrlen        = "strlen" ;
     public static final String tagSubstr        = "substr" ;
     public static final String tagStrUppercase  = "ucase" ;
