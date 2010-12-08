@@ -149,6 +149,7 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
     @Override
     protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
+        // Direct all verbs to our common framework.
         doCommon(request, response) ;
     }
     
@@ -182,24 +183,24 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
         else if (method.equals(METHOD_POST))
             doPost(action);
         else if (method.equals(METHOD_PATCH))
-            //doPatch(action) ;
-            errorNotImplemented("PATCH") ;
+            doPatch(action) ;
         else if (method.equals(METHOD_OPTIONS))
             doOptions(action) ;
         else if (method.equals(METHOD_TRACE))
             //doTrace(action) ;
-            errorNotImplemented("TRACE") ;
+            errorMethodNotAllowed("TRACE") ;
         else if (method.equals(METHOD_PUT))
             doPut(action) ;   
         else if (method.equals(METHOD_DELETE))
             doDelete(action) ;
         else
-            errorNotImplemented("Unknow method: "+method) ;
+            errorNotImplemented("Unknown method: "+method) ;
     }
         
     protected abstract void doGet(HttpActionREST action) ;
     protected abstract void doHead(HttpActionREST action) ;
     protected abstract void doPost(HttpActionREST action) ;
+    protected abstract void doPatch(HttpActionREST action) ;
     protected abstract void doDelete(HttpActionREST action) ;
     protected abstract void doPut(HttpActionREST action) ;
     protected abstract void doOptions(HttpActionREST action) ;

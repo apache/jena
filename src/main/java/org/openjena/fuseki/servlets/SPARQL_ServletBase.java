@@ -15,6 +15,7 @@ import java.util.Enumeration ;
 import java.util.Map ;
 import java.util.concurrent.atomic.AtomicLong ;
 
+import javax.servlet.ServletException ;
 import javax.servlet.http.HttpServlet ;
 import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
@@ -42,7 +43,7 @@ public abstract class SPARQL_ServletBase extends HttpServlet
         this.verbose_debug = verbose_debug ;
     }
     
-    // Common framework for hanlding HTTP requests
+    // Common framework for handling HTTP requests
     protected void doCommon(HttpServletRequest request, HttpServletResponse response)
     //throws ServletException, IOException
     {
@@ -98,9 +99,16 @@ public abstract class SPARQL_ServletBase extends HttpServlet
         }
         
         printResponse(id, responseTracked) ;
-        
     }
 
+    //@Override
+    @SuppressWarnings("unused")
+    protected void doPatch(HttpServletRequest request, HttpServletResponse response)
+    throws ServletException, IOException
+    {
+        response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED, "HTTP PATCH not supported");
+    }
+    
     private void printRequest(long id, HttpServletRequest request)
     {
         String url = wholeRequestURL(request) ;
@@ -125,8 +133,6 @@ public abstract class SPARQL_ServletBase extends HttpServlet
                 }
             }
         }
-
-
     }
 
     
@@ -255,9 +261,9 @@ public abstract class SPARQL_ServletBase extends HttpServlet
         error(HttpSC.NOT_IMPLEMENTED_501, msg) ;
     }
     
-    protected static void errorMethodNotAllowed()
+    protected static void errorMethodNotAllowed(String msg)
     {
-        error(HttpSC.METHOD_NOT_ALLOWED_405) ;
+        error(HttpSC.METHOD_NOT_ALLOWED_405, msg) ;
     }
 
     protected static void error(int statusCode)

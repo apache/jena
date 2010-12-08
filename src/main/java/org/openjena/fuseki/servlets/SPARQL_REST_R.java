@@ -84,15 +84,19 @@ public class SPARQL_REST_R extends SPARQL_REST
 
     @Override
     protected void doPost(HttpActionREST action)
-    { errorMethodNotAllowed() ; }
+    { errorMethodNotAllowed("POST") ; }
 
     @Override
     protected void doDelete(HttpActionREST action)
-    { errorMethodNotAllowed() ; }
+    { errorMethodNotAllowed("DELETE") ; }
 
     @Override
     protected void doPut(HttpActionREST action)
-    { errorMethodNotAllowed() ; }
+    { errorMethodNotAllowed("PUT") ; }
+
+    @Override
+    protected void doPatch(HttpActionREST action)
+    { errorMethodNotAllowed("PATCH") ; }
 }
 
 /*

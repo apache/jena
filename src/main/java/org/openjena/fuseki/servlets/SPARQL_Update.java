@@ -179,13 +179,7 @@ public class SPARQL_Update extends SPARQL_ServletBase
         
         UpdateRequest req ; 
         try {
-            // BROKEN - need ARQ update.
             req = UpdateFactory.create(requestStr, updateParseBase) ;
-            // Results.  Hmm - hardwired.
-//            action.response.setContentType("text/plain");
-//            action.response.setStatus(HttpSC.OK_200) ;
-//            ServletOutputStream out = response.getOutputStream() ;
-//            out.print("Success") ;
         }
         catch (UpdateException ex) { errorBadRequest(ex.getMessage()) ; req = null ; }
         catch (QueryParseException ex) { errorBadRequest(ex.getMessage()) ; req = null ; }

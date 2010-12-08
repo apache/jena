@@ -5,6 +5,8 @@ public class DevFuseki
     // Testing:
     //   No file -> error.
     
+    // Error messages as text plain.
+    
     // ParserFor - share between SPARQL_REST and SPARQL_Upload
     // UploadTo dataset (TriG, N-Quads)
    
