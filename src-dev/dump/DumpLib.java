@@ -43,8 +43,8 @@ public class DumpLib
         {
             int hi = (0xFF & b) >> 4 ;
             int lo = b & 0xF ;
-            output[idx++] = Bytes.hexDigits[hi] ;
-            output[idx++] = Bytes.hexDigits[lo] ;
+            output[idx++] = Bytes.hexDigitsUC[hi] ;
+            output[idx++] = Bytes.hexDigitsUC[lo] ;
         }
         return idx ;
     }

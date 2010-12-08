@@ -10,6 +10,7 @@ import java.nio.ByteBuffer ;
 
 import org.openjena.atlas.lib.Bytes ;
 import org.openjena.atlas.lib.Pool ;
+import org.openjena.atlas.lib.PoolBase ;
 import org.openjena.atlas.lib.PoolSync ;
 import org.openjena.atlas.lib.StrUtils ;
 import org.openjena.riot.tokens.Tokenizer ;
@@ -33,7 +34,7 @@ public class NodecSSE implements Nodec
     
     static int poolBufferSize = 1000 ; 
     static int poolSize = 2 ;
-    static final private Pool<ByteBuffer> buffers = new PoolSync<ByteBuffer>() ;
+    static final private Pool<ByteBuffer> buffers = PoolSync.create(new PoolBase<ByteBuffer>()) ;
     static {
         for ( int i = 0 ; i < poolSize ; i++ )
             buffers.put(ByteBuffer.allocate(poolBufferSize)) ;

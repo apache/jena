@@ -25,7 +25,7 @@ public class Hex
         {
             int d = (int)(x & 0xF) ;
             x = x>>>4 ; // Unsigned shift.
-            byte ch = Bytes.hexDigits[d] ; 
+            byte ch = Bytes.hexDigitsUC[d] ; 
             b[idx] = ch ;
             w-- ;
             idx-- ;
