@@ -77,7 +77,8 @@ class BPTreeNodeBuilder implements Iterator<Pair<Integer, Record>>
             int R = recBuff.size() ;
             int R2 = recBuff.maxSize() ;
             
-            System.out.printf("N: %d/%d : P %d/%d : R %d/%d\n", X, X2, P, P2, R, R2) ;
+            // bptNode.getMaxSize() is drivel
+            //System.out.printf("N: %d/%d : P %d/%d : R %d/%d\n", X, X2, P, P2, R, R2) ;
             
             Pair<Integer, Record> pair = iter.next() ;
             if ( debug ) System.out.println("** Item: "+pair) ;
@@ -101,7 +102,9 @@ class BPTreeNodeBuilder implements Iterator<Pair<Integer, Record>>
             // Add pointer.
             ptrBuff.add(pair.car()) ;
 
-            if ( recBuff.isFull() )
+            // [Issue: FREC]
+            if ( ptrBuff.isFull() )
+            //if ( recBuff.isFull() )
             {
                 // End of this block.
 
