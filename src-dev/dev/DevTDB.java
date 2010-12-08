@@ -5,6 +5,9 @@ public class DevTDB
     // ** Release
     // When ARQ rev, remove Hex.
     // TDB shutdown hook.
+    // Logging and loader/loader2
+    // stats generation during loading 
+    
     
     // ---- BulkLoader2
     // Own log4j setup c.f. bin/tdbloader

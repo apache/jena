@@ -34,6 +34,7 @@ public class DumpLib
         return idx ;
     }
 
+    // Bytes.ashex
     private static int toByteBufferAsHex(byte[] input, int idx, byte[] output)
     {
         output[idx++] = '0' ;
