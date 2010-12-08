@@ -5,7 +5,10 @@
 
 package com.hp.hpl.jena.sparql.expr;
 
-import com.hp.hpl.jena.sparql.expr.nodevalue.NodeFunctions ;
+import org.openjena.atlas.lib.StrUtils ;
+
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
+import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.sse.Tags ;
 
 public class E_StrEncodeForURI extends ExprFunction1
@@ -18,7 +21,46 @@ public class E_StrEncodeForURI extends ExprFunction1
     }
     
     @Override
-    public NodeValue eval(NodeValue v) { return NodeFunctions.str(v) ; }
+    public NodeValue eval(NodeValue v)
+    { 
+        String str = plainString(v) ;
+        String encStr = StrUtils.encodeHex(str,'%', all) ;
+        return NodeValue.makeString(encStr) ;
+    }
+    
+    // Share with ExprDigest
+    static String plainString(NodeValue v)
+    {
+        Node n = v.asNode() ;
+        if ( n.getLiteralLanguage() != null && ! n.getLiteralLanguage().equals("") )
+            throw new ExprEvalException("Not allowed: RDF term with a language tag") ; 
+        if ( ! n.isLiteral() )
+            throw new ExprEvalException("Not a literal") ;
+        // Literal, no language tag.
+        if ( n.getLiteralDatatype() != null && ! XSDDatatype.XSDstring.equals(n.getLiteralDatatype()) )
+            throw new ExprEvalException("Not a simple literal nor an XSD string") ;
+        return n.getLiteralLexicalForm() ;
+    }
+    
+    // Put somewhere
+    static char reserved[] = 
+    {' ',
+     '!', '*', '"', '\'', '(', ')', ';', ':', '@', '&', 
+     '=', '+', '$', ',', '/', '?', '%', '#', '[', ']'} ;
+
+    char[] other = {'<', '>', '~', '.', '{', '}', '|', '\\', '-', '`', '_', '^'} ;     
+    
+    char[] all = {  ' ', '!', '*', '"', '\'', '(', ')', ';', ':', '@', '&', 
+                    '=', '+', '$', ',', '/', '?', '%', '#', '[', ']',
+                    '<', '>', '~', '.', '{', '}', '|', '\\', '-', '`', '_', '^' } ;
+        
+        /* The encodeURI() function is used to encode a URI.
+special except: , / ? : @ & = + $ #
+special + , / ? : @ & = + $ #
+ *
+ *
+ */
+        
     
     @Override
     public Expr copy(Expr expr) { return new E_StrEncodeForURI(expr) ; } 
