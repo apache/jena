@@ -28,7 +28,7 @@ public abstract class ExprDigest extends ExprFunction1
             digestCache = MessageDigest.getInstance(digestName) ;
         } catch (NoSuchAlgorithmException e)
         {
-            throw new ARQInternalErrorException("No such digest: "+digestName) ;
+            throw new ARQInternalErrorException("Digest not provided in this Java system: "+digestName) ;
         }
     }
 
