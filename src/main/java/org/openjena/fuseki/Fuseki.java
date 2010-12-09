@@ -6,7 +6,7 @@
 
 package org.openjena.fuseki;
 
-import org.openjena.riot.SysRIOT ;
+import org.openjena.riot.RIOT ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
@@ -50,7 +50,7 @@ public class Fuseki
         SystemInfo sysInfo = new SystemInfo(FusekiIRI, VERSION, BUILD_DATE) ;
         ARQMgt.register(PATH+".system:type=SystemInfo", sysInfo) ;
         SystemARQ.registerSubSystem(sysInfo) ;
-        SysRIOT.init() ;
+        RIOT.init() ;
     }
   
     // Force a call to init.
