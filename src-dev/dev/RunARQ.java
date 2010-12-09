@@ -7,9 +7,7 @@
 
 package dev;
 
-import java.util.ArrayList ;
 import java.util.Iterator ;
-import java.util.List ;
 
 import javax.xml.datatype.DatatypeFactory ;
 import javax.xml.datatype.Duration ;
@@ -25,13 +23,10 @@ import org.openjena.riot.ErrorHandlerFactory ;
 import org.openjena.riot.checker.CheckerIRI ;
 import org.openjena.riot.pipeline.normalize.CanonicalizeLiteral ;
 
-import com.hp.hpl.jena.datatypes.BaseDatatype ;
-import com.hp.hpl.jena.datatypes.RDFDatatype ;
+import com.hp.hpl.jena.datatypes.TypeMapper ;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.datatypes.xsd.XSDDuration ;
-import com.hp.hpl.jena.datatypes.xsd.impl.XSDDurationType ;
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.iri.IRI ;
 import com.hp.hpl.jena.iri.IRIFactory ;
 import com.hp.hpl.jena.iri.Violation ;
@@ -44,25 +39,11 @@ import com.hp.hpl.jena.query.ResultSetFormatter ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.sparql.algebra.Algebra ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
-import com.hp.hpl.jena.sparql.algebra.OpAsQuery ;
-import com.hp.hpl.jena.sparql.algebra.op.OpBGP ;
-import com.hp.hpl.jena.sparql.algebra.op.OpExtend ;
-import com.hp.hpl.jena.sparql.algebra.op.OpGraph ;
-import com.hp.hpl.jena.sparql.algebra.op.OpGroup ;
-import com.hp.hpl.jena.sparql.algebra.op.OpProject ;
-import com.hp.hpl.jena.sparql.core.BasicPattern ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
-import com.hp.hpl.jena.sparql.core.Var ;
-import com.hp.hpl.jena.sparql.core.VarExprList ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
-import com.hp.hpl.jena.sparql.expr.ExprAggregator ;
 import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
-import com.hp.hpl.jena.sparql.expr.ExprVar ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
-import com.hp.hpl.jena.sparql.expr.aggregate.AggCountVarDistinct ;
-import com.hp.hpl.jena.sparql.expr.aggregate.Aggregator ;
-import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueDuration ;
 import com.hp.hpl.jena.sparql.function.FunctionEnvBase ;
 import com.hp.hpl.jena.sparql.graph.NodeTransform ;
 import com.hp.hpl.jena.sparql.junit.ScriptTestSuiteFactory ;
@@ -104,7 +85,7 @@ public class RunARQ
     
     public static void main(String[] argv) throws Exception
     {
-        testXSDDurationBug() ; System.exit(0) ;
+        //testXSDDurationBug() ; System.exit(0) ;
         
         /*
 "P1Y2M"^^xsd:yearMonthDuration
@@ -115,36 +96,43 @@ public class RunARQ
          */
         
         Duration javaDuration = DatatypeFactory.newInstance().newDuration("-PT5H") ;
+        System.out.println(javaDuration) ;
+        javaDuration = DatatypeFactory.newInstance().newDuration("PT100M") ;
+        System.out.println(javaDuration) ;
+        System.out.println(javaDuration.getHours()) ; 
+        System.out.println(javaDuration.getMinutes()) ;
+        
         DurationDV durationDV = null ; 
 
-        RDFDatatype rdfDT_dayTime = new BaseDatatype("http://www.w3.org/2001/XMLSchema#dayTimeDuration") ;
-        RDFDatatype rdfDT_yearMonth = new BaseDatatype("http://www.w3.org/2001/XMLSchema#yearMonthDuration") ;
+//        RDFDatatype rdfDT_dayTime = new BaseDatatype("http://www.w3.org/2001/XMLSchema#dayTimeDuration") ;
+//        RDFDatatype rdfDT_yearMonth = new BaseDatatype("http://www.w3.org/2001/XMLSchema#yearMonthDuration") ;
         
         // Fake implementation of  dayTimeDuration, yearMonthDuration
         
+        TypeMapper.getInstance().registerDatatype(DT_DayTimeDuration.get()) ;
         
-        Node lit = Node.createLiteral("-PT5H", null, XSDDatatype.XSDduration) ; 
-        Node lit1 = Node.createLiteral("-PT60M", null, rdfDT_dayTime) ;
-        Node lit2 = Node.createLiteral("P1Y3M", null, rdfDT_yearMonth) ;
+        //Node lit = Node.createLiteral("-PT5H", null, XSDDatatype.XSDduration) ; 
+        Node lit1 = Node.createLiteral("-PT60M", null, DT_DayTimeDuration.get()) ;
+        Node lit2 = Node.createLiteral("-PT1H", null, DT_DayTimeDuration.get()) ;
+        //Node lit2 = Node.createLiteral("P1Y3M", null, rdfDT_yearMonth) ;
         
         Node nv = lit1 ;
         
-        if (  nv.getLiteralDatatype() == XSDDatatype.XSDduration ||
-              nv.getLiteralDatatype() == rdfDT_dayTime ||
-              nv.getLiteralDatatype() == rdfDT_yearMonth )
+        if (  nv.getLiteralDatatype() != null && nv.getLiteralDatatype() == DT_DayTimeDuration.get() )
         {
+            String lex = nv.getLiteralLexicalForm();
+            Object value ;
             
-            String lex = nv.getLiteralLexicalForm(); 
-            if ( XSDDatatype.XSDduration.isValid(lex) )
-            {
-                //XSDDuration duration = (XSDDuration)lit.getLiteral().getValue() ;
-                Object value = new XSDDurationType().parse(lex) ;
-                XSDDuration duration = (XSDDuration)value ;
-                System.out.println(duration) ;
-            }
+            if ( nv.getLiteral().isWellFormed() )
+                value = nv.getLiteral().getValue() ;
+            else
+                // Which will probably fail ...
+                value = DT_DayTimeDuration.get().parse(lex) ;
+            XSDDuration duration = (XSDDuration)value ;
+            System.out.println(duration) ;
             //return new NodeValueDuration(duration, node) ;
-            
         }
+        
         System.out.println("DONE") ;
         System.exit(0) ;
         

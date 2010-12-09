@@ -7,14 +7,68 @@
 package dev;
 
 import com.hp.hpl.jena.datatypes.BaseDatatype ;
+import com.hp.hpl.jena.datatypes.DatatypeFormatException ;
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
+import com.hp.hpl.jena.datatypes.xsd.XSDDuration ;
+import com.hp.hpl.jena.datatypes.xsd.impl.XSDDurationType ;
 
 public class DT_DayTimeDuration extends BaseDatatype
 {
+    // Avoid excessive reparsing.
+    
+    // Singleton
+    private static DT_DayTimeDuration datatype = new DT_DayTimeDuration() ; 
+    public static DT_DayTimeDuration get() { return datatype ; }
+    
+    private static XSDDurationType xsdDurationType= new XSDDurationType() ;
+    
+    private static final String URI = XSDDatatype.XSD+"#dayTimeDuration" ;
 
-    public DT_DayTimeDuration(String uri)
+    private DT_DayTimeDuration()
     {
-        super(uri) ;
+        super(URI) ;
     }
+    
+    @Override
+    public Class<?> getJavaClass() { return DT_DayTimeDuration.class ; }
+    
+    @Override
+    public String unparse(Object value)
+    {
+        return value.toString() ; 
+    }
+    
+    // The value space of an  xsd:dayTimeDuration is fractional seconds.
+    // But it is also a derived type of Duration, whch as a value space of 
+    //  a 6-dimensional dateTime vector.
+    
+    // -?P(nD)(T(nH)(nM)(nS))
+    
+    @Override
+    public Object parse(String lexicalForm) throws DatatypeFormatException
+    {
+        if ( ! XSDDatatype.XSDduration.isValid(lexicalForm) )
+            throw new DatatypeFormatException(lexicalForm, this, "Invalid xsd:dayTimeDuration") ;
+        
+        try {
+            Object value = xsdDurationType.parse(lexicalForm) ;
+            XSDDuration duration = (XSDDuration)value ;
+            if ( duration.getYears() != 0 || duration.getMonths() != 0 )
+                throw new DatatypeFormatException(lexicalForm, this, "Invalid xsd:dayTimeDuration") ;
+            return duration ;
+        } catch (Exception ex)
+        {
+            throw new DatatypeFormatException(lexicalForm, this, ex.getMessage()) ;
+        }
+    }
+
+//    public Object cannonicalise( Object value )
+//    {
+//        return value;
+//    }
+    
+    @Override
+    public String toString() { return "xsd:dayTimeDuration" ; }
 
 }
 
