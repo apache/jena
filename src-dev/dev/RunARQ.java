@@ -11,7 +11,11 @@ import java.util.ArrayList ;
 import java.util.Iterator ;
 import java.util.List ;
 
+import javax.xml.datatype.DatatypeFactory ;
+import javax.xml.datatype.Duration ;
+
 import junit.framework.TestSuite ;
+import org.apache.xerces.impl.dv.xs.DurationDV ;
 import org.openjena.atlas.io.IndentedWriter ;
 import org.openjena.atlas.json.JSON ;
 import org.openjena.atlas.json.JsonValue ;
@@ -21,8 +25,11 @@ import org.openjena.riot.ErrorHandlerFactory ;
 import org.openjena.riot.checker.CheckerIRI ;
 import org.openjena.riot.pipeline.normalize.CanonicalizeLiteral ;
 
+import com.hp.hpl.jena.datatypes.BaseDatatype ;
+import com.hp.hpl.jena.datatypes.RDFDatatype ;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.datatypes.xsd.XSDDuration ;
+import com.hp.hpl.jena.datatypes.xsd.impl.XSDDurationType ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.iri.IRI ;
@@ -55,6 +62,7 @@ import com.hp.hpl.jena.sparql.expr.ExprVar ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.expr.aggregate.AggCountVarDistinct ;
 import com.hp.hpl.jena.sparql.expr.aggregate.Aggregator ;
+import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueDuration ;
 import com.hp.hpl.jena.sparql.function.FunctionEnvBase ;
 import com.hp.hpl.jena.sparql.graph.NodeTransform ;
 import com.hp.hpl.jena.sparql.junit.ScriptTestSuiteFactory ;
@@ -96,52 +104,50 @@ public class RunARQ
     
     public static void main(String[] argv) throws Exception
     {
+        testXSDDurationBug() ; System.exit(0) ;
         
-        arq.sparql.main("--data=D.ttl", "SELECT (MD5('foo') AS ?x) {}") ;
+        /*
+"P1Y2M"^^xsd:yearMonthDuration
+-> value space is xs:integer month values
+
+"P1Y2M"^^xsd:dayTimeDuration
+-> value space is fractional second values.
+         */
+        
+        Duration javaDuration = DatatypeFactory.newInstance().newDuration("-PT5H") ;
+        DurationDV durationDV = null ; 
+
+        RDFDatatype rdfDT_dayTime = new BaseDatatype("http://www.w3.org/2001/XMLSchema#dayTimeDuration") ;
+        RDFDatatype rdfDT_yearMonth = new BaseDatatype("http://www.w3.org/2001/XMLSchema#yearMonthDuration") ;
+        
+        // Fake implementation of  dayTimeDuration, yearMonthDuration
+        
+        
+        Node lit = Node.createLiteral("-PT5H", null, XSDDatatype.XSDduration) ; 
+        Node lit1 = Node.createLiteral("-PT60M", null, rdfDT_dayTime) ;
+        Node lit2 = Node.createLiteral("P1Y3M", null, rdfDT_yearMonth) ;
+        
+        Node nv = lit1 ;
+        
+        if (  nv.getLiteralDatatype() == XSDDatatype.XSDduration ||
+              nv.getLiteralDatatype() == rdfDT_dayTime ||
+              nv.getLiteralDatatype() == rdfDT_yearMonth )
+        {
+            
+            String lex = nv.getLiteralLexicalForm(); 
+            if ( XSDDatatype.XSDduration.isValid(lex) )
+            {
+                //XSDDuration duration = (XSDDuration)lit.getLiteral().getValue() ;
+                Object value = new XSDDurationType().parse(lex) ;
+                XSDDuration duration = (XSDDuration)value ;
+                System.out.println(duration) ;
+            }
+            //return new NodeValueDuration(duration, node) ;
+            
+        }
+        System.out.println("DONE") ;
         System.exit(0) ;
         
-        Var var_connected_instance = Var.alloc("connected_instance");
-        Var var_instance = Var.alloc("instance");
-        Var var_count_instances = Var.alloc("count_i");
-        Var var_property = Var.alloc("property");
-        Var var_class = Var.alloc("class");
-        Var var_type = Var.alloc("type");
-        Var var_graph = Var.alloc("g");
-
-        Expr var_count_instances_alias = new ExprVar("count0_i");
-
-        BasicPattern pattern = new BasicPattern();
-        pattern.add(new Triple(var_instance, var_property, var_connected_instance));
-        pattern.add(new Triple(var_connected_instance, var_type, var_class));
-
-        Op operator = new OpBGP(pattern);
-        Op graph = new OpGraph(var_graph, operator);
-
-        List<Var> variables = new ArrayList<Var>();
-        variables.add(var_count_instances);
-
-        VarExprList extendVarExprList = new VarExprList();
-        extendVarExprList.add(var_count_instances, var_count_instances_alias );
-
-        List<ExprAggregator> exprAggregatorList = new ArrayList<ExprAggregator>();
-
-        Expr exprVar = new ExprVar(var_connected_instance);
-        Aggregator aggVarCountDistinct  =  new AggCountVarDistinct(exprVar);
-
-        ExprAggregator exprCountAggregator = new ExprAggregator(var_count_instances_alias.asVar(), aggVarCountDistinct);
-        exprAggregatorList.add(exprCountAggregator);
-
-        List<Var> groupOpVariables = new ArrayList<Var>();
-        VarExprList groupVarExprList = new VarExprList(groupOpVariables);
-        Op opGroup = new OpGroup(graph, groupVarExprList, exprAggregatorList);
-        Op opExtend = OpExtend.extend(opGroup, extendVarExprList);
-        Op project = new OpProject(opExtend, variables);
-
-        System.out.println(project);
-        System.out.println(OpAsQuery.asQuery(project));
-
-        System.exit(0) ;
-
         riotcmd.riot.main("D.nt") ; System.exit(0) ;
         
         arq.qparse.main("-query=Q.rq") ; System.exit(0) ;

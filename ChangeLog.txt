@@ -3,9 +3,12 @@ ChangeLog for ARQ
 
 ==== ARQ 2.8.7
 
-+ Added YEAR, MONTH, DAY, HOURS, MINUTES, SECONDS to SPARQL 1.1
-  TIMEZONE awaiting WG discussions.
-+ Added NOW() and VERSION() to ARQ language.
+
+SPARQL 1.1 Function library:
+ + Added MD5, SHA1, SHA224, SHA256 SHA384, SHA512 functions for SPARQL 1.1
+ + Added YEAR, MONTH, DAY, HOURS, MINUTES, SECONDS to SPARQL 1.1
+   TIMEZONE awaiting WG discussions.
+ + Added NOW() to SPARQL 1.1 - filter function like afn:now().
 
 ==== ARQ 2.8.6
 
