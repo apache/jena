@@ -3,8 +3,11 @@ package dev ;
 public class DevARQ
 {
     // ** For release 2.9:
+    
     // QueryParseException for updates is confusing.
     //   All QueryException  -> SparqlException or LanguageParseException
+    
+    // dayTimeDuration
     
     // Prologure from RIOT
     // PrefixMap from RIOT

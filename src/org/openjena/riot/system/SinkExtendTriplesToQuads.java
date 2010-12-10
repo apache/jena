@@ -11,6 +11,10 @@ import org.openjena.atlas.lib.Sink ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 
+/** Take a stream of triples and send down a Sink&lt;Quad>
+ *  The quad will have <code>Quad.tripleInQuad</code> in the G field.
+ *  @see Quad#tripleInQuad
+ */   
 public class SinkExtendTriplesToQuads implements Sink<Triple>
 {
     private final Sink<Quad> sinkQuad ;

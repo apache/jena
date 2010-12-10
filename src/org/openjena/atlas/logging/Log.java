@@ -279,6 +279,15 @@ public class Log
             
         } catch (Exception ex) { throw new AtlasException(ex) ; } 
     }
+    
+    /** Set for command line tools so that (e.g. log4j.properties) isn't assumed
+     * Avoids need for baked in log4j.properties which can be problematic
+     * if there are multiple ones. 
+     */
+    private static void setLoggingForCommandLine()
+    {
+            // See CmdTDB.setLogging.
+    }
 }
 
 /*

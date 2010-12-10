@@ -223,15 +223,19 @@
           <encoding>UTF-8</encoding>
           <windowtitle>${project.name} ${project.version}</windowtitle>
           <doctitle>${project.name} ${project.version}</doctitle>
-          <!-- include com.hp.hpl.jena.query,com.hp.hpl.jena.update,com.hp.hpl.jena.query.larq -->
-          <!-- Exclude the implementation -->
-          <excludePackageNames>arq</excludePackageNames>
-          <excludePackageNames>arq.*</excludePackageNames>
-          <excludePackageNames>com.hp.hpl.jena.sparql.*</excludePackageNames>
-          <excludePackageNames>org.openjena.atlas</excludePackageNames>
-          <excludePackageNames>org.openjena.atlas.*</excludePackageNames>
-          <excludePackageNames>org.openjena.riot</excludePackageNames>
-          <excludePackageNames>org.openjena.riot.*</excludePackageNames>
+	  <!-- Not Atlas or RIOT at the moment -->
+	  <excludePackageNames>org.openjena.*:arq:arq.*:riotcmd:riotcmd.*</excludePackageNames>
+	  <groups>
+	    <group>
+              <title>SPARQL Query and Update</title>
+              <packages>com.hp.hpl.jena.query:com.hp.hpl.jena.update</packages>
+            </group>
+            <group>
+              <title>LARQ -- Lucene Search for ARQ</title>
+              <packages>com.hp.hpl.jena.query.larq</packages>
+            </group>
+	    <!-- "Other packages" catches everything else unless excluded -->
+	  </groups>
           <bottom>Copyright &#169; 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
           Copyright &#169; 2010 Talis Systems Ltd.
           Copyright &#169; 2010 Epimorphics Ltd.
