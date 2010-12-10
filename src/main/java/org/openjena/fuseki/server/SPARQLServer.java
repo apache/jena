@@ -38,7 +38,6 @@ import com.hp.hpl.jena.sparql.util.Utils ;
 
 public class SPARQLServer
 {
-    // fuseki [--mem|--desc assembler.ttl] [--port PORT] 
     static { Log.setLog4j() ; }
     public static final Logger log = LoggerFactory.getLogger(SPARQLServer.class) ;
     private Server server = null ;
