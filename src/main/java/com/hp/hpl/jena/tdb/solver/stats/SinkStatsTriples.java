@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2010 Talis Systems Ltd.
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -17,18 +18,16 @@ public class SinkStatsTriples extends SinkStatsBase implements Sink<Triple>
     
     public void send(Triple triple)
     {
-        super.count(Quad.tripleInQuad, triple.getPredicate()) ;
+        super.count(Quad.tripleInQuad, 
+                    triple.getSubject(),
+                    triple.getPredicate(),
+                    triple.getObject() ) ;
     }
-
-    public void flush()
-    {}
-
-    public void close()
-    {}
 }
 
 /*
  * (c) Copyright 2010 Talis Systems Ltd.
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

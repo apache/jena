@@ -114,7 +114,7 @@ TIME2="$(date +%s)"
 
 # ---- Clean up.
 
-# rm -f "$DATA_TRIPLES" "$DATA_QUADS" 
+rm -f "$DATA_TRIPLES" "$DATA_QUADS" 
 
 # ---- End
 log "-- TDB Bulk Loader Finish"

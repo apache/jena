@@ -248,19 +248,16 @@ public class TDBLoader
 
     private static void loadDefaultGraph$(DatasetGraphTDB dataset, List<String> urls, boolean showProgress)
     {
-        //N-Triples
         BulkLoader.loadDefaultGraph(dataset, urls, showProgress) ;
     }
 
     private static void loadDefaultGraph$(DatasetGraphTDB dataset, InputStream input, boolean showProgress)
     {
-        //N-Triples
         BulkLoader.loadDefaultGraph(dataset, input, showProgress) ;
     }
 
     private static void loadNamedGraph$(DatasetGraphTDB dataset, Node graphName, List<String> urls, boolean showProgress)
     {
-        //N-Triples
         BulkLoader.loadNamedGraph(dataset, graphName, urls, showProgress) ;
     }
 

@@ -11,7 +11,6 @@ import java.util.List ;
 import org.openjena.riot.Lang ;
 import tdb.cmdline.CmdTDB ;
 import tdb.cmdline.ModModel ;
-import arq.cmdline.ArgDecl ;
 
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.rdf.model.Model ;
@@ -25,7 +24,6 @@ public class tdbloader extends CmdTDB
     
 //    private static final ArgDecl argParallel         = new ArgDecl(ArgDecl.NoValue, "parallel") ;
 //    private static final ArgDecl argIncremental      = new ArgDecl(ArgDecl.NoValue, "incr", "incremental") ;
-    private static final ArgDecl argStats            = new ArgDecl(ArgDecl.NoValue, "stats") ;
     
     private static final ModModel modRDFS            = new ModModel("rdfs") ;
     
@@ -35,7 +33,6 @@ public class tdbloader extends CmdTDB
     private boolean showProgress = true ;
 //    private boolean doInParallel = false ;
     private boolean doIncremental = false ;
-    private boolean generateStats = false ;
     
     static public void main(String... argv)
     { 
@@ -49,7 +46,7 @@ public class tdbloader extends CmdTDB
         
 //        super.add(argParallel, "--parallel", "Do rebuilding of secondary indexes in a parallel") ;
 //        super.add(argIncremental, "--incremental",  "Do an incremental load (keep indexes during data load)") ;
-        super.add(argStats, "--stats",              "Generate statistics while loading (new graph only)") ;
+//        super.add(argStats, "--stats",              "Generate statistics while loading (new graph only)") ;
         addModule(modRDFS) ;
     }        
 
@@ -60,7 +57,6 @@ public class tdbloader extends CmdTDB
         super.processModulesAndArgs() ;
 //        doInParallel = super.contains(argParallel) ;
 //        doIncremental = super.contains(argIncremental) ;
-        generateStats = super.contains(argStats) ;
     }
     
     @Override

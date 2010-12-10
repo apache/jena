@@ -11,9 +11,11 @@ import static com.hp.hpl.jena.sparql.util.Utils.nowAsString ;
 
 import java.io.FileNotFoundException ;
 import java.io.FileOutputStream ;
+import java.io.IOException ;
 import java.io.InputStream ;
 import java.io.OutputStream ;
 import java.util.List ;
+import java.util.Map ;
 
 import org.openjena.atlas.AtlasException ;
 import org.openjena.atlas.io.IO ;
@@ -25,6 +27,7 @@ import org.openjena.riot.Lang ;
 import org.openjena.riot.RiotLoader ;
 import org.openjena.riot.system.SinkExtendTriplesToQuads ;
 import org.slf4j.Logger ;
+import tdb.cmdline.CmdTDB ;
 import arq.cmd.CmdException ;
 import arq.cmdline.ArgDecl ;
 import arq.cmdline.CmdGeneral ;
@@ -32,13 +35,17 @@ import arq.cmdline.CmdGeneral ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.sparql.core.Quad ;
+import com.hp.hpl.jena.sparql.sse.Item ;
+import com.hp.hpl.jena.sparql.sse.ItemWriter ;
 import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable ;
+import com.hp.hpl.jena.tdb.solver.stats.StatsCollector ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
 import com.hp.hpl.jena.tdb.store.bulkloader.BulkLoader ;
+import com.hp.hpl.jena.tdb.sys.Names ;
 import com.hp.hpl.jena.tdb.sys.SetupTDB ;
 
 /** Build node table - write triples/quads as text file */
@@ -58,6 +65,7 @@ public class CmdNodeTableBuilder extends CmdGeneral
     
     public static void main(String...argv)
     {
+        CmdTDB.setLogging() ;
         SetupTDB.setOptimizerWarningFlag(false) ;
         new CmdNodeTableBuilder(argv).mainRun() ;
     }
@@ -127,8 +135,8 @@ public class CmdNodeTableBuilder extends CmdGeneral
             outputQuads = new FileOutputStream(dataFileQuads) ;
         }
         catch (FileNotFoundException e) { throw new AtlasException(e) ; }
-
-        Sink<Quad> sink = new NodeTableBuilder(dsg, monitor, outputTriples, outputQuads) ; 
+        
+        NodeTableBuilder sink = new NodeTableBuilder(dsg, monitor, outputTriples, outputQuads) ; 
         Sink<Triple> sink2 = new SinkExtendTriplesToQuads(sink) ;
         
         monitor.start() ;
@@ -144,6 +152,26 @@ public class CmdNodeTableBuilder extends CmdGeneral
         sink.close() ;
         IO.close(outputTriples) ;
         IO.close(outputQuads) ;
+        
+        // ---- Stats
+        
+        if ( ! location.isMem() )
+        {
+            // Write out the stats
+            try {
+                long statsTotal = sink.getCollector().getCount() ;
+                Map<NodeId, Integer> statsPredicates = sink.getCollector().getPredicateIds() ;
+
+                Item item = StatsCollector.statsOutput(dsg.getTripleTable().getNodeTupleTable().getNodeTable(),
+                                                       statsPredicates, statsTotal) ;
+                OutputStream statsOut = new FileOutputStream(location.getPath(Names.optStats)) ;
+                ItemWriter.write(statsOut, item) ;
+                statsOut.close() ;
+            } catch (IOException ex)
+            { Log.warn(this, "Problem when writing stats file", ex) ; }
+        }
+        
+        // ---- Monitor
         long time = monitor.finish() ;
 
         long total = monitor.getTicks() ;
@@ -160,6 +188,7 @@ public class CmdNodeTableBuilder extends CmdGeneral
         private WriteRows writerTriples ;
         private WriteRows writerQuads ;
         private ProgressLogger monitor ;
+        private StatsCollector stats ;
 
         NodeTableBuilder(DatasetGraphTDB dsg, ProgressLogger monitor, OutputStream outputTriples, OutputStream outputQuads)
         {
@@ -169,6 +198,7 @@ public class CmdNodeTableBuilder extends CmdGeneral
             this.nodeTable = ntt.getNodeTable() ;
             this.writerTriples = new WriteRows(outputTriples, 3, 20000) ; 
             this.writerQuads = new WriteRows(outputQuads, 4, 20000) ; 
+            this.stats = new StatsCollector() ;
         }
         
         //@Override
@@ -186,14 +216,19 @@ public class CmdNodeTableBuilder extends CmdGeneral
             NodeId pId = nodeTable.getAllocateNodeId(p) ;
             NodeId oId = nodeTable.getAllocateNodeId(o) ;
 
+            
+            
             if ( g != null )
             {
                 NodeId gId = nodeTable.getAllocateNodeId(g) ;
+                
+                
                 writerQuads.write(gId.getId()) ;
                 writerQuads.write(sId.getId()) ;
                 writerQuads.write(pId.getId()) ;
                 writerQuads.write(oId.getId()) ;
                 writerQuads.endOfRow() ;
+                stats.send(gId, sId, pId, oId) ;
             }
             else
             {
@@ -201,6 +236,7 @@ public class CmdNodeTableBuilder extends CmdGeneral
                 writerTriples.write(pId.getId()) ;
                 writerTriples.write(oId.getId()) ;
                 writerTriples.endOfRow() ;
+                stats.send(null, sId, pId, oId) ;
             }
             monitor.tick() ;
         }
@@ -216,6 +252,8 @@ public class CmdNodeTableBuilder extends CmdGeneral
         //@Override
         public void close()
         { flush() ; }
+        
+        public StatsCollector getCollector() { return stats ; }
     }
 
     @Override

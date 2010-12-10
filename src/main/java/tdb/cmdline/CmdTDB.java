@@ -11,8 +11,6 @@ import java.io.IOException ;
 import java.io.InputStream ;
 import java.util.Properties ;
 
-import org.apache.log4j.Level ;
-import org.apache.log4j.LogManager ;
 import org.apache.log4j.PropertyConfigurator ;
 import org.openjena.atlas.lib.StrUtils ;
 import org.openjena.riot.SysRIOT ;
@@ -30,6 +28,7 @@ import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.store.GraphTDB ;
+import com.hp.hpl.jena.tdb.sys.SetupTDB ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 public abstract class CmdTDB extends CmdARQ
@@ -103,8 +102,7 @@ public abstract class CmdTDB extends CmdARQ
         InputStream in = new ByteArrayInputStream(StrUtils.asUTF8bytes(log4Jsetup)) ;
         try { p.load(in) ; } catch (IOException ex) {}
         PropertyConfigurator.configure(p) ;
-
-        LogManager.getLogger(TDB.logInfoName).setLevel(Level.ERROR) ;
+        SetupTDB.setOptimizerWarningFlag(false) ;
         System.setProperty("log4j.configuration", "set") ;
     }
 

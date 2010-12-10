@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2010 Talis Systems Ltd.
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -11,7 +12,6 @@ import java.util.Map ;
 
 import org.openjena.atlas.lib.MapUtils ;
 
-
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.sse.Item ;
 
@@ -20,7 +20,9 @@ public class SinkStatsBase
     private Map<Node, Integer> predicates = new HashMap<Node, Integer>() ;
     private long count = 0 ;
 
-    public void count(Node graph, Node predicate)
+    public SinkStatsBase() {}
+    
+    public void count(Node graph, Node subject, Node predicate, Node object)
     {
         MapUtils.increment(predicates, predicate) ;
     }
@@ -30,10 +32,17 @@ public class SinkStatsBase
         count = predicates.keySet().size() ;
         return StatsCollector.format(predicates, count) ;
     }
+
+    public void close()
+    {}
+
+    public void flush()
+    {}
 }
 
 /*
  * (c) Copyright 2010 Talis Systems Ltd.
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

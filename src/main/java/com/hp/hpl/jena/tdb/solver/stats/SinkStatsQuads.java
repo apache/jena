@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2010 Talis Systems Ltd.
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -16,18 +17,16 @@ public class SinkStatsQuads extends SinkStatsBase implements Sink<Quad>
     
     public void send(Quad quad)
     {
-        super.count(quad.getGraph(), quad.getPredicate()) ;
+        super.count(quad.getGraph(),
+                    quad.getSubject(),
+                    quad.getPredicate(),
+                    quad.getObject() );
     }
-
-    public void flush()
-    {}
-
-    public void close()
-    {}
 }
 
 /*
  * (c) Copyright 2010 Talis Systems Ltd.
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

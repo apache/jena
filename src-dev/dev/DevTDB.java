@@ -5,12 +5,10 @@ public class DevTDB
     // ** Release
     // When ARQ rev, remove Hex.
     // TDB shutdown hook.
-    // Logging and loader/loader2
     // stats generation during loading 
     
     
     // ---- BulkLoader2
-    // Own log4j setup c.f. bin/tdbloader
     // Stats while loading.
     // Tune sort --buffer-size=50%
     // Prefixes to be set during bulk loading 1 & 2

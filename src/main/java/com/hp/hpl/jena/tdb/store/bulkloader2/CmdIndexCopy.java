@@ -15,6 +15,7 @@ import org.openjena.atlas.lib.Tuple ;
 import org.openjena.atlas.logging.Log ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
+import tdb.cmdline.CmdTDB ;
 
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.base.record.Record ;
@@ -35,6 +36,8 @@ public class CmdIndexCopy
     
     public static void main(String...argv)
     {
+        CmdTDB.setLogging() ;
+        
         // Ideas:
         // Copy to buffer, sort, write in sequential clumps.
         // Profile code for hotspots

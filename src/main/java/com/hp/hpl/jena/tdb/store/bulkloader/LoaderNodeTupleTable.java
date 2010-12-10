@@ -22,7 +22,6 @@ import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.tdb.index.TupleIndex ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
-import static com.hp.hpl.jena.tdb.sys.SystemTDB.* ;
 
 /** 
  * Load into one NodeTupleTable (triples, quads, other) 
@@ -111,15 +110,14 @@ public class LoaderNodeTupleTable implements Closeable, Sync
             monitor.dataItem() ;
             nodeTupleTable.addRow(nodes) ;
 
-            // Flush every so often.
-            // Seems to improve performance:maybe because a bunch of blcoks are
-            // flushed together meaning better disk access pattern 
-            // Theory - unproven.
-            if ( LoadFlushTickPrimary > 0 &&  count % LoadFlushTickPrimary == 0 )
-            {
-                System.out.println("FLUSH - primary") ;
-                nodeTupleTable.sync() ;
-            }
+//            // Flush every so often.
+//            // Seems to improve performance:maybe because a bunch of blcoks are
+//            // flushed together meaning better disk access pattern 
+//            if ( LoadFlushTickPrimary > 0 &&  count % LoadFlushTickPrimary == 0 )
+//            {
+//                System.out.println("FLUSH - primary") ;
+//                nodeTupleTable.sync() ;
+//            }
             
         } catch (RuntimeException ex)
         {
@@ -133,6 +131,8 @@ public class LoaderNodeTupleTable implements Closeable, Sync
      */
     public void loadDataFinish()
     {
+//      if ( LoadFlushTickPrimary > 0 &&  count % LoadFlushTickPrimary == 0 )
+//          nodeTupleTable.sync() ;
         monitor.finishDataPhase() ;
     }
     
@@ -213,20 +213,17 @@ public class LoaderNodeTupleTable implements Closeable, Sync
                     destIdx.add(tuple) ;
             }
             
-            // Flush every so often.
-            // Seems to improve performance:maybe because a bunch of blcoks are
-            // flushed together meaning better disk access pattern 
-            // Theory - unproven.
-            if ( LoadFlushTickSecondary > 0 && counter % LoadFlushTickSecondary == 0 )
-            {
-                System.out.println("FLUSH - secondary") ;
-                sync(destIndexes ) ;
-            }
+//            // Flush every so often.
+//            if ( LoadFlushTickSecondary > 0 && counter % LoadFlushTickSecondary == 0 )
+//            {
+//                System.out.println("FLUSH - secondary") ;
+//                sync(destIndexes ) ;
+//            }
         }
 
-        // And finally ...
-        if ( LoadFlushTickSecondary > 0 && counter % LoadFlushTickSecondary != 0 )
-            sync(destIndexes) ;
+//        // And finally ...
+//        if ( LoadFlushTickSecondary > 0 && counter % LoadFlushTickSecondary != 0 )
+//            sync(destIndexes) ;
 
         monitor.finishIndex(label) ;
     }

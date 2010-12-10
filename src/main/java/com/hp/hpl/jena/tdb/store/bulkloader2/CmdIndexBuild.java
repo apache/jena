@@ -14,6 +14,7 @@ import org.openjena.atlas.AtlasException ;
 import org.openjena.atlas.io.IO ;
 import org.openjena.atlas.lib.ColumnMap ;
 import org.openjena.atlas.logging.Log ;
+import tdb.cmdline.CmdTDB ;
 
 import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory ;
@@ -34,6 +35,7 @@ public class CmdIndexBuild
     
     public static void main(String...argv)
     {
+        CmdTDB.setLogging() ;
         // DATA IN S/P/O columns but sorted by index order.
         
         if ( argv.length != 3 )
