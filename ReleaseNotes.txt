@@ -1,6 +1,12 @@
 Release Notes
 =============
 
+==== Jena 2.6.5
+
+==== Jena 2.6.4
+
++ Maintenace release
+
 ==== Jena 2.6.3
 
 GraphBase:
