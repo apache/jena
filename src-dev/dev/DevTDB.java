@@ -7,6 +7,7 @@ public class DevTDB
     // TDB shutdown hook.
     // stats generation during loading 
     
+    // Check commands and use of --graph
     
     // ---- BulkLoader2
     // Stats while loading.

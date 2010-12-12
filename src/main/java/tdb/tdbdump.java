@@ -28,7 +28,7 @@ public class tdbdump extends CmdTDB
     @Override
     protected String getSummary()
     {
-        return null ;
+        return getCommandName()+" : Write N-Quads to stdout" ;
     }
 
     @Override
