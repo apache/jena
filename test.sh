@@ -21,7 +21,7 @@ do
   fi
 done
 
-echo "Classpath: $CP"
+## echo "Classpath: $CP"
 ## java  -cp "$CP" junit.textui.TestRunner com.hp.hpl.jena.query.test.ARQTestSuite
 
 java -version
