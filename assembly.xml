@@ -76,6 +76,7 @@
       <outputDirectory></outputDirectory>
       <includes>
         <include>jena-${project.version}-javadoc.jar</include>
+        <include>jena-${project.version}-sources.jar</include>
       </includes>
     </fileSet>
 
