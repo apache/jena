@@ -431,7 +431,7 @@ NON-TERMINALS
 		|	<IRI> <LPAREN> Expression <RPAREN>
 		|	<URI> <LPAREN> Expression <RPAREN>
 		|	<BNODE> ( <LPAREN> Expression <RPAREN> | <NIL> )
-		|	<RAND> ( <LPAREN> Expression <RPAREN> | <NIL> )
+		|	<RAND> <NIL>
 		|	<ABS> <LPAREN> Expression <RPAREN>
 		|	<CEIL> <LPAREN> Expression <RPAREN>
 		|	<FLOOR> <LPAREN> Expression <RPAREN>

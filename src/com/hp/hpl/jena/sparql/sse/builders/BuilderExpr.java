@@ -545,12 +545,8 @@ public class BuilderExpr
     {
         public Expr make(ItemList list)
         {
-            BuilderLib.checkLength(1, 2, list, "rand: wanted 0 or 1 arguments: got: "+list.size()) ;
-            if ( list.size() == 1 )
-                return new E_Random() ;
-            
-            Expr expr = buildExpr(list.get(1)) ;
-            return new E_Random(expr) ;
+            BuilderLib.checkLength(1, list, "rand: wanted 0 arguments: got: "+list.size()) ;
+            return new E_Random() ;
         }
     };
     

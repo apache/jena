@@ -5,50 +5,30 @@
 
 package com.hp.hpl.jena.sparql.expr;
 
-import java.util.List ;
-
 import org.openjena.atlas.lib.RandomLib ;
 
-import com.hp.hpl.jena.sparql.ARQNotImplemented ;
+import com.hp.hpl.jena.sparql.function.FunctionEnv ;
 
-public class E_Random extends ExprFunctionN // 0 or one
+public class E_Random extends ExprFunction0
 {
     private static final String symbol = "rand" ;
     
-    public E_Random() { this(null) ; }
-    
-    public E_Random(Expr expr)
+    public E_Random()
     {
-        super(symbol, expr) ;
+        super(symbol) ;
     }
     
-//    // Not really a special form but we need access to the env. 
-//    @Override
-//    public NodeValue evalSpecial(Binding binding, FunctionEnv env)
-//    {
-//    }
-    
     @Override
-    protected NodeValue eval(List<NodeValue> args)
+    public NodeValue eval(FunctionEnv env)
     { 
-        if ( args.size() == 1 )
-        {
-            throw new ARQNotImplemented("... yet") ;
-//            int x = args.get(0).hashCode() ;
-//            new Random()
-        }
-
         double d = RandomLib.random.nextDouble() ;
         return NodeValue.makeDouble(d) ;
     }
 
     @Override
-    protected Expr copy(ExprList newArgs)
+    public Expr copy()
     {
-        if ( newArgs.size() == 0 )
-            return new E_Random() ;
-        else
-            return new E_Random(newArgs.get(0)) ;
+        return new E_Random() ;
     } 
 }
 
