@@ -14,10 +14,10 @@ import java.util.NoSuchElementException ;
 import org.openjena.atlas.AtlasException ;
 import org.openjena.atlas.lib.Bytes ;
 import org.openjena.atlas.lib.ColumnMap ;
+import org.openjena.atlas.lib.Hex ;
 
 import com.hp.hpl.jena.tdb.base.record.Record ;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
-import com.hp.hpl.jena.tdb.migrate.Hex ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 class RecordsFromInput implements Iterator<Record> 

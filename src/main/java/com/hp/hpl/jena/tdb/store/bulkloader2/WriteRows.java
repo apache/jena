@@ -10,9 +10,7 @@ import java.io.IOException ;
 import java.io.OutputStream ;
 
 import org.openjena.atlas.AtlasException ;
-
-import com.hp.hpl.jena.tdb.migrate.Hex ;
-
+import org.openjena.atlas.lib.Hex ;
 
 /** Buffered writer of rows of longs, in hex. */
 public class WriteRows

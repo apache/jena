@@ -3,9 +3,7 @@ package dev ;
 public class DevTDB
 {
     // ** Release
-    // When ARQ rev, remove Hex.
     // TDB shutdown hook.
-    // stats generation during loading 
     
     // Check commands and use of --graph
     
