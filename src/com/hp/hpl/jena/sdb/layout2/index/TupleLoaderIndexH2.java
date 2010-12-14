@@ -29,9 +29,10 @@ public class TupleLoaderIndexH2 extends TupleLoaderIndexBase {
 	public String[] getCreateTempTable() {
 		return new String[] { "CREATE TEMPORARY TABLE" , "ON COMMIT DELETE ROWS" };
 	}
-	
+
+        // Contradicts above, but something is up with removal.	
 	@Override
-	public boolean clearsOnCommit() { return true; }
+	public boolean clearsOnCommit() { return false; }
 	
 	@Override
 	public String getNodeLoader() {
