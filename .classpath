@@ -1,3 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+
 <classpath>
   <classpathentry kind="output" path="classes"/>
   <classpathentry kind="src" path="src/main/java"/>
@@ -38,11 +40,7 @@
   <classpathentry kind="var" path="M2_REPO/org/slf4j/slf4j-api/1.5.8/slf4j-api-1.5.8.jar" sourcepath="M2_REPO/org/slf4j/slf4j-api/1.5.8/slf4j-api-1.5.8-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/slf4j/slf4j-log4j12/1.5.8/slf4j-log4j12-1.5.8.jar" sourcepath="M2_REPO/org/slf4j/slf4j-log4j12/1.5.8/slf4j-log4j12-1.5.8-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/stax/stax-api/1.0.1/stax-api-1.0.1.jar"/>
-  <classpathentry kind="var" path="M2_REPO/com/hp/hpl/jena/tdb/0.8.8-SNAPSHOT/tdb-0.8.8-SNAPSHOT.jar" sourcepath="M2_REPO/com/hp/hpl/jena/tdb/0.8.8-SNAPSHOT/tdb-0.8.8-SNAPSHOT-sources.jar">
-    <attributes>
-      <attribute value="jar:file:/home/afs/.m2/repo/com/hp/hpl/jena/tdb/0.8.8-SNAPSHOT/tdb-0.8.8-SNAPSHOT-javadoc.jar!/" name="javadoc_location"/>
-    </attributes>
-  </classpathentry>
+  <classpathentry kind="var" path="M2_REPO/com/hp/hpl/jena/tdb/0.8.8-RC-1/tdb-0.8.8-RC-1.jar" sourcepath="M2_REPO/com/hp/hpl/jena/tdb/0.8.8-RC-1/tdb-0.8.8-RC-1-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/codehaus/woodstox/wstx-asl/3.2.9/wstx-asl-3.2.9.jar" sourcepath="M2_REPO/org/codehaus/woodstox/wstx-asl/3.2.9/wstx-asl-3.2.9-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/xerces/xercesImpl/2.7.1/xercesImpl-2.7.1.jar"/>
   <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
