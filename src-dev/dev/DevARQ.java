@@ -7,6 +7,8 @@ public class DevARQ
     // QueryParseException for updates is confusing.
     //   All QueryException  -> SparqlException or LanguageParseException
     
+    // Upgrade Kucene (3.0.3 or 2.9.4)
+    
     // dayTimeDuration
     
     // Prologure from RIOT
