@@ -1,5 +1,8 @@
 /*
  * (c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Information Ltd
+ * (c) Copyright 2010 Epimorphics Ltd.
+ * 
  * All rights reserved.
  * [See end of file]
  */
@@ -236,7 +239,6 @@ public class AlgebraGenerator
             // Illegal SPARQL
             return groupElt.getElements() ;
         
-        
         List<Element> groupElts = new ArrayList<Element>() ;
         BasicPattern prev = null ;
         List<ElementFilter> filters = null ;
@@ -302,26 +304,31 @@ public class AlgebraGenerator
             }
             
             // Anything else.  End of BGP - put in any accumulated filters 
-            endBGP(groupElts, filters) ;
 
-            // Clear any BGP-related accumulators.
-            filters = null ;
+            //[Old:BGP-scoped filter]
+//            endBGP(groupElts, filters) ;
+//            // Clear any BGP-related accumulators.
+//            filters = null ;
+            
+            // Clear any BGP-related triple accumulators.
             prev = null ;
             prev2 = null ;
             
             // Add this element (not BGP/Filter related).
             groupElts.add(elt) ;
         }
-        //End of BGP - put in any accumulated filters 
-        endBGP(groupElts, filters) ;
-        return groupElts ;
-    }
-
-    private void endBGP(List<Element> groupElts, List<ElementFilter> filters)
-    {
+        //End of group - put in any accumulated filters
         if ( filters != null )
             groupElts.addAll(filters) ;
+        return groupElts ;
     }
+    
+// [Old:BGP-scoped filter]
+//    private void endBGP(List<Element> groupElts, List<ElementFilter> filters)
+//    {
+//        if ( filters != null )
+//            groupElts.addAll(filters) ;
+//    }
     
     private Op compileOneInGroup(Element elt, Op current)
     {
@@ -673,6 +680,8 @@ public class AlgebraGenerator
 
 /*
  * (c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Information Ltd
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

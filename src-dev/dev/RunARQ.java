@@ -83,8 +83,23 @@ public class RunARQ
         System.out.println("Compare = " + cmp);
     }
     
+    static void scope(String queryStr)
+    {
+        System.out.println("Check: "+queryStr) ;
+        Query query = QueryFactory.create(queryStr) ;
+        SyntaxVarScope.check(query) ;
+    }
+    
     public static void main(String[] argv) throws Exception
     {
+        scope("SELECT ?x { ?s ?p ?o }") ;
+        scope("SELECT (?o+1 AS ?x) { ?s ?p ?o }") ;
+        scope("SELECT (?o+1 AS ?o) { ?s ?p ?o }") ;
+        scope("SELECT (?o+1 AS ?x) { ?s ?p ?o } GROUP BY (?o+5 AS ?z)") ;
+        scope("SELECT (?o+1 AS ?x) { ?s ?p ?o } GROUP BY (?o+5 AS ?x)") ;
+        
+        System.exit(0) ;
+        
         //testXSDDurationBug() ; System.exit(0) ;
         
         /*

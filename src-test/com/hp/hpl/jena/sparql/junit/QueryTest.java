@@ -235,10 +235,9 @@ public class QueryTest extends EarlTestCase
                 resultsExpected = unique(resultsExpected) ;
                 resultsActual = unique(resultsActual) ;
             }
-
             boolean b = resultSetEquivalent(query, resultsExpected, resultsActual) ;
             if ( ! b )
-                printFailedResultSetTest(query, resultsExpected, resultsActual) ;
+                printFailedResultSetTest(query, qe, resultsExpected, resultsActual) ;
             assertTrue("Results do not match: "+testItem.getName(), b) ;
             
             return ;
@@ -259,7 +258,7 @@ public class QueryTest extends EarlTestCase
 
             boolean b = resultSetEquivalent(query, resultsExpected, resultsActual) ;
             if ( ! b )
-                printFailedResultSetTest(query, resultsExpected, resultsActual) ;
+                printFailedResultSetTest(query, qe, resultsExpected, resultsActual) ;
             assertTrue("Results do not match: "+testItem.getName(), b) ;
         }
         else if ( results.isModel() )
@@ -284,7 +283,7 @@ public class QueryTest extends EarlTestCase
             //System.err.println(getName()+": Result set model testing") ;
             boolean b = checkResultsByModel(query, resultsExpected, resultsActual) ;
             if ( ! b )
-                printFailedResultSetTest(query, ResultSetFactory.makeRewindable(resultsExpected), resultsActual) ;
+                printFailedResultSetTest(query, qe, ResultSetFactory.makeRewindable(resultsExpected), resultsActual) ;
             assertTrue("Results do not match: "+testItem.getName(), b) ;
         }
         else
@@ -417,13 +416,17 @@ public class QueryTest extends EarlTestCase
         return ;
     }
     
-    void printFailedResultSetTest(Query query, ResultSetRewindable qrExpected, ResultSetRewindable qrActual)
-   {
+    void printFailedResultSetTest(Query query, QueryExecution qe, ResultSetRewindable qrExpected, ResultSetRewindable qrActual)
+    {
        PrintStream out = System.out ;
        out.println() ;
        out.println("=======================================") ;
        out.println("Failure: "+description()) ;
-       
+       out.println("Query: \n"+query) ;
+//       if ( qe != null && qe.getDataset() != null )
+//       {
+//           out.println("Data: \n"+qe.getDataset().asDatasetGraph()) ;
+//       }
        out.println("Got: "+qrActual.size()+" --------------------------------") ;
        qrActual.reset() ;
        ResultSetFormatter.out(out, qrActual, query.getPrefixMapping()) ;

@@ -1,6 +1,12 @@
 ChangeLog for ARQ
 =================
 
+==== ARQ 2.8.8
+
++ Bug fix: FILTERs did not always get moved to the end of groups properly 
+           (sometimes only to end of BGPs). 
+           This effects some FILTER the LET combinations using the same variable.  
+
 ==== ARQ 2.8.7
 
 SPARQL 1.1 Function library:

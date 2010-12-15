@@ -6,15 +6,45 @@
 
 package dev;
 
-import com.hp.hpl.jena.sparql.algebra.TransformCopy ;
+import java.util.Iterator ;
+import java.util.Set ;
 
-/** Rewrite property paths as per the SPARQL spec 
- * except we are doing it (extended) algebra to algebra,
- * not syntax to algebra. 
- */
-public class TransformPropertyPathFlatten extends TransformCopy
+import com.hp.hpl.jena.query.Query ;
+import com.hp.hpl.jena.sparql.core.Var ;
+import com.hp.hpl.jena.sparql.core.VarExprList ;
+import com.hp.hpl.jena.sparql.expr.Expr ;
+import com.hp.hpl.jena.sparql.syntax.PatternVars ;
+
+/** Calculate in-scope variables from the AST */ 
+public class SyntaxVarScope
 {
-
+    
+    static void check(Query query)
+    {
+        VarExprList exprList = query.getProject() ;
+        Set<Var> vars = PatternVars.vars(query.getQueryPattern()) ;
+        // + Group by.
+        for ( Iterator<Var> iter = query.getGroupBy().getVars().iterator() ;
+            iter.hasNext(); )
+        {
+            Var v = iter.next();
+            if ( Var.isNamedVar(v) ) 
+            vars.add(v) ;
+        }
+        
+        for ( Iterator<Var> iter = exprList.getVars().iterator() ; iter.hasNext() ; )
+        {
+            // In scope?
+            Var v = iter.next();
+            Expr e = exprList.getExpr(v) ;
+            if ( vars.contains(v) ) 
+            {
+                System.out.println("Var already in-scope: "+v) ;
+                continue ;
+            }
+            vars.add(v) ;
+        }
+    }
 }
 
 /*
