@@ -48,6 +48,7 @@ import com.hp.hpl.jena.sparql.function.FunctionEnvBase ;
 import com.hp.hpl.jena.sparql.graph.NodeTransform ;
 import com.hp.hpl.jena.sparql.junit.ScriptTestSuiteFactory ;
 import com.hp.hpl.jena.sparql.junit.SimpleTestRunner ;
+import com.hp.hpl.jena.sparql.lang.SyntaxVarScope ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.sparql.util.ExprUtils ;
 import com.hp.hpl.jena.sparql.util.QueryExecUtils ;
@@ -85,9 +86,15 @@ public class RunARQ
     
     static void scope(String queryStr)
     {
+        try {
         System.out.println("Check: "+queryStr) ;
         Query query = QueryFactory.create(queryStr) ;
         SyntaxVarScope.check(query) ;
+        } catch (Exception ex)
+        {
+            System.out.flush();
+            System.err.println("Exception: "+ex.getMessage()) ;
+        }
     }
     
     public static void main(String[] argv) throws Exception
@@ -95,8 +102,18 @@ public class RunARQ
         scope("SELECT ?x { ?s ?p ?o }") ;
         scope("SELECT (?o+1 AS ?x) { ?s ?p ?o }") ;
         scope("SELECT (?o+1 AS ?o) { ?s ?p ?o }") ;
+        scope("SELECT (?o+1 AS ?x) (?o+1 AS ?x) { ?s ?p ?o }") ;
+
         scope("SELECT (?o+1 AS ?x) { ?s ?p ?o } GROUP BY (?o+5 AS ?z)") ;
         scope("SELECT (?o+1 AS ?x) { ?s ?p ?o } GROUP BY (?o+5 AS ?x)") ;
+        scope("SELECT (?o+1 AS ?x) { ?s ?p ?o MINUS { ?s ?p ?x} } ") ;
+        
+        scope("SELECT (?o+1 AS ?x) { { SELECT (123 AS ?x) {?s ?p ?o } } } ") ;
+
+        scope("SELECT (?o+1 AS ?o) { { SELECT (123 AS ?x) {?s ?p ?o } } } ") ;
+
+        scope("SELECT (?o+1 AS ?o) { { SELECT (123 AS ?x) {?s ?p ?o FILTER(?x > 57)} } } ") ;
+
         
         System.exit(0) ;
         

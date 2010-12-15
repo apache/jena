@@ -4,24 +4,51 @@
  * [See end of file]
  */
 
-package dev;
+package com.hp.hpl.jena.sparql.lang;
 
 import java.util.Iterator ;
 import java.util.Set ;
 
 import com.hp.hpl.jena.query.Query ;
+import com.hp.hpl.jena.query.QueryParseException ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.core.VarExprList ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
+import com.hp.hpl.jena.sparql.syntax.ElementSubQuery ;
+import com.hp.hpl.jena.sparql.syntax.ElementVisitor ;
+import com.hp.hpl.jena.sparql.syntax.ElementVisitorBase ;
 import com.hp.hpl.jena.sparql.syntax.PatternVars ;
 
 /** Calculate in-scope variables from the AST */ 
 public class SyntaxVarScope
 {
     
-    static void check(Query query)
+    private static ElementVisitor visitor = new ElementVisitorBase()
     {
+        @Override
+        public void visit(ElementSubQuery el)
+        {
+            checkOne(el.getQuery()) ;
+        }
+    } ;
+
+    
+    public static void check(Query query)
+    {
+        checkOne(query) ;
+        // And now check down the element for subqueries.
+        query.getQueryPattern().visit(visitor) ;
+    }
+    
+    // The check for one level of the query.
+    static void checkOne(Query query)
+    {
+        if ( query.getQueryPattern() == null )
+            // DESCRIBE may not have a pattern
+            return ;
+        
         VarExprList exprList = query.getProject() ;
+        
         Set<Var> vars = PatternVars.vars(query.getQueryPattern()) ;
         // + Group by.
         for ( Iterator<Var> iter = query.getGroupBy().getVars().iterator() ;
@@ -38,12 +65,25 @@ public class SyntaxVarScope
             Var v = iter.next();
             Expr e = exprList.getExpr(v) ;
             if ( vars.contains(v) ) 
-            {
-                System.out.println("Var already in-scope: "+v) ;
-                continue ;
-            }
+                throw new QueryParseException("Variable used when already in-scope: "+v+" in "+fmtExprList(exprList), -1 , -1) ;
             vars.add(v) ;
         }
+    }
+    
+    static String fmtExprList(VarExprList exprList)
+    {
+        StringBuilder sb = new StringBuilder() ;
+        boolean first = true ;
+        for ( Iterator<Var> iter = exprList.getVars().iterator() ; iter.hasNext() ; )
+        {
+            Var v = iter.next();
+            Expr e = exprList.getExpr(v) ;
+            if ( ! first )
+                sb.append(" ") ;
+            first = false ;
+            sb.append("(").append(e).append(" AS ").append(v).append(")") ;
+        }
+        return sb.toString() ;
     }
 }
 

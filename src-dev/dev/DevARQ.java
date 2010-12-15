@@ -17,6 +17,14 @@ public class DevARQ
     // XSDFuncOp.getDT*
     
     // UnionDefaultGraph
+    // Other std transforms.
+    
+    // ** Variable scope.
+    // Enable: Parser.validateParsedQuery
+    
+    //   Enable scope checks.
+    //     What about in subsqueries of update?
+    //   bNode label checks (UPDATE: can't use same bNode label in template and pattern for DELETE/INSERT.)
     
     // ---- Documentation
     // Legacy StageGenerator (http://openjena.org/ARQ/arq-query-eval.html)
@@ -34,7 +42,6 @@ public class DevARQ
     // ---- SPARQL 1.1
     // Variable scope.
     // Update: can't use same bNode label in template and pattern for DELETE/INSERT.
-    // RAND(seed)
     // BINDINGS execution
     // Aggregates to return iterators.
     
