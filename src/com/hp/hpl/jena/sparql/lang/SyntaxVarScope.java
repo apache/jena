@@ -14,6 +14,7 @@ import com.hp.hpl.jena.query.QueryParseException ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.core.VarExprList ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
+import com.hp.hpl.jena.sparql.syntax.ElementBind ;
 import com.hp.hpl.jena.sparql.syntax.ElementSubQuery ;
 import com.hp.hpl.jena.sparql.syntax.ElementVisitor ;
 import com.hp.hpl.jena.sparql.syntax.ElementVisitorBase ;
@@ -28,20 +29,28 @@ public class SyntaxVarScope
         @Override
         public void visit(ElementSubQuery el)
         {
-            checkOne(el.getQuery()) ;
+            checkSelectClause(el.getQuery()) ;
         }
     } ;
 
     
     public static void check(Query query)
     {
-        checkOne(query) ;
+        if ( query.getQueryPattern() == null )
+            // DESCRIBE may not have a pattern
+            return ;
+        checkSelectClause(query) ;
         // And now check down the element for subqueries.
         query.getQueryPattern().visit(visitor) ;
     }
     
+    static void checkBindClause(ElementBind el)
+    {
+        // ?????
+    }
+    
     // The check for one level of the query.
-    static void checkOne(Query query)
+    static void checkSelectClause(Query query)
     {
         if ( query.getQueryPattern() == null )
             // DESCRIBE may not have a pattern

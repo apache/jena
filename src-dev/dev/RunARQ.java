@@ -99,6 +99,9 @@ public class RunARQ
     
     public static void main(String[] argv) throws Exception
     {
+        // Make JUnit tests
+        // BIND cases.
+        
         scope("SELECT ?x { ?s ?p ?o }") ;
         scope("SELECT (?o+1 AS ?x) { ?s ?p ?o }") ;
         scope("SELECT (?o+1 AS ?o) { ?s ?p ?o }") ;
