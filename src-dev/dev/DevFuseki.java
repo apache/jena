@@ -23,23 +23,26 @@ public class DevFuseki
     //   SPARQL Query servlet / SPARQL Update servlet
     //   TestContentNegotiation - is coveage enough?
     
+    // ?? Slug header:
+    // http://bitworking.org/projects/atom/rfc5023.html#rfc.section.9.7
     
     // CORS: Access-Control-Allow-Origin: *
     // http://esw.w3.org/CORS_Enabled
     // Consider configuration.
     // http://hacks.mozilla.org/2009/07/cross-site-xmlhttprequest-with-cors/
     // http://download.eclipse.org/jetty/stable-7/apidocs/org/eclipse/jetty/servlets/CrossOriginFilter.html
-
     
     // ETags.
     
     // Authentication
     
     // SOH
-    //   Refactor into body/no_body send // body/no_body receive
+    //   Refactor into body/no_body send & body/no_body receive
     // All:
     // -v --help --accept --user/--password ( or --auth user:pass) 
     // Drop --service.
+    // Local config file - read to get service settings. 
+    
     
     //   --accept line/shortname : s-get, s-query
     //   Basic authentication: --user --password
