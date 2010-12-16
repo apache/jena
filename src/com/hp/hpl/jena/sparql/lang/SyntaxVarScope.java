@@ -23,13 +23,31 @@ import com.hp.hpl.jena.sparql.syntax.PatternVars ;
 /** Calculate in-scope variables from the AST */ 
 public class SyntaxVarScope
 {
-    
+    /*
+     * 1/ Combine finalization with findAndAddNamedVars/setResultVars
+     */
+    private static ElementVisitor visitor2 = new PatternVars.PatternVarsVisitor(null) //Set<Var> s)
+    {
+        // UNFINISHED
+        @Override
+        public void visit(ElementBind el)
+        {
+            acc.add(el.getVar()) ;
+        }
+    } ;
+
     private static ElementVisitor visitor = new ElementVisitorBase()
     {
         @Override
         public void visit(ElementSubQuery el)
         {
             checkSelectClause(el.getQuery()) ;
+        }
+        
+        @Override
+        public void visit(ElementBind el)
+        {
+            
         }
     } ;
 

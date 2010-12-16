@@ -46,10 +46,10 @@ public class PatternVars
         }
     }
 
-    static class PatternVarsVisitor extends ElementVisitorBase
+    public static class PatternVarsVisitor extends ElementVisitorBase
     {
-        private Set<Var> acc ;
-        private PatternVarsVisitor(Set<Var> s) { acc = s ; } 
+        protected Set<Var> acc ;
+        public PatternVarsVisitor(Set<Var> s) { acc = s ; } 
 
         @Override
         public void visit(ElementTriplesBlock el)
