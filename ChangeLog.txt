@@ -7,7 +7,7 @@ ChangeLog for TDB
 + New bulk loader (not Windows) "tdbloader2"
     Usage: tdbloader2 --loc DIR file1 file2 ...
     Works on Unix-like systems.   
-+ Incremental improvements to the Java bulk loader 
++ Incremental improvements to the pure Java bulk loader 
 
 ==== 0.8.7
 
