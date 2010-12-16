@@ -21,10 +21,10 @@ public class ElementWalker
     
     public static void walk(Element el, ElementVisitor visitor)
     {
-        walk(el, new Walker(visitor), visitor) ;
+        walk(el, new Walker(visitor)) ;
     }
 
-    public static void walk(Element el, Walker walker, ElementVisitor visitor)
+    public static void walk(Element el, Walker walker)
     {
         el.visit(walker) ;
     }

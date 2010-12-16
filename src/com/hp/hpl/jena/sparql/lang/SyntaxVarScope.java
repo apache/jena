@@ -6,98 +6,107 @@
 
 package com.hp.hpl.jena.sparql.lang;
 
+import java.util.Collection ;
 import java.util.Iterator ;
+import java.util.LinkedHashSet ;
 import java.util.Set ;
 
 import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.query.QueryParseException ;
+import com.hp.hpl.jena.query.Syntax ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.core.VarExprList ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.syntax.ElementBind ;
 import com.hp.hpl.jena.sparql.syntax.ElementSubQuery ;
-import com.hp.hpl.jena.sparql.syntax.ElementVisitor ;
-import com.hp.hpl.jena.sparql.syntax.ElementVisitorBase ;
 import com.hp.hpl.jena.sparql.syntax.PatternVars ;
+import com.hp.hpl.jena.sparql.syntax.PatternVarsVisitor ;
 
 /** Calculate in-scope variables from the AST */ 
 public class SyntaxVarScope
 {
     /*
+     * Check for non-group-keys vars
+     * Check for unused vars (warning?)
      * 1/ Combine finalization with findAndAddNamedVars/setResultVars
      */
-    private static ElementVisitor visitor2 = new PatternVars.PatternVarsVisitor(null) //Set<Var> s)
-    {
-        // UNFINISHED
-        @Override
-        public void visit(ElementBind el)
-        {
-            acc.add(el.getVar()) ;
-        }
-    } ;
 
-    private static ElementVisitor visitor = new ElementVisitorBase()
+    /** Accumulate pattern variables but include some checking as well */  
+    static class X extends PatternVarsVisitor
     {
-        @Override
-        public void visit(ElementSubQuery el)
+        public X(Set<Var> s)
         {
-            checkSelectClause(el.getQuery()) ;
+            super(s) ;
         }
         
         @Override
         public void visit(ElementBind el)
         {
+            Var var = el.getVar() ;
             
+            if ( acc.contains(var) ) 
+                throw new QueryParseException("Variable used when already in-scope: "+var+" in "+el, -1 , -1) ;
+            super.visit(el) ;
         }
-    } ;
-
+        
+        @Override
+        public void visit(ElementSubQuery el)
+        {
+            // Safety.
+            if ( el.getQuery().getQueryPattern() == null )
+                return ;
+            VarExprList exprList = el.getQuery().getProject() ;
+            checkVarExprList(acc, exprList) ;
+            super.visit(el) ;
+        }
+    }
+    
+    private static void check(Query query, Collection<Var> vars)
+    {
+        checkVarExprList(vars, query.getProject()) ;
+        // Legal in ARQ, not in SPARQL 1.1
+        if ( ! Syntax.syntaxARQ.equals(query.getSyntax()) )
+        {
+            if ( query.isQueryResultStar() && query.hasGroupBy() )
+                throw new QueryParseException("SELECT * not legal with GROUP BY", -1 , -1) ;
+        }
+    }
     
     public static void check(Query query)
     {
         if ( query.getQueryPattern() == null )
             // DESCRIBE may not have a pattern
             return ;
-        checkSelectClause(query) ;
         // And now check down the element for subqueries.
-        query.getQueryPattern().visit(visitor) ;
+        LinkedHashSet<Var> queryVars = new LinkedHashSet<Var>() ;
+        
+        X visitor = new X(queryVars) ;
+        PatternVars.vars(query.getQueryPattern(), visitor) ;
+        queryVars.addAll(query.getGroupBy().getVars()) ;
+        
+        check(query, queryVars) ;
     }
     
-    static void checkBindClause(ElementBind el)
+    private static void checkVarExprList(Collection<Var> vars, VarExprList exprList)
     {
-        // ?????
-    }
-    
-    // The check for one level of the query.
-    static void checkSelectClause(Query query)
-    {
-        if ( query.getQueryPattern() == null )
-            // DESCRIBE may not have a pattern
-            return ;
-        
-        VarExprList exprList = query.getProject() ;
-        
-        Set<Var> vars = PatternVars.vars(query.getQueryPattern()) ;
-        // + Group by.
-        for ( Iterator<Var> iter = query.getGroupBy().getVars().iterator() ;
-            iter.hasNext(); )
-        {
-            Var v = iter.next();
-            if ( Var.isNamedVar(v) ) 
-            vars.add(v) ;
-        }
+        Set<Var> vars2 = new LinkedHashSet<Var>() ;
         
         for ( Iterator<Var> iter = exprList.getVars().iterator() ; iter.hasNext() ; )
         {
             // In scope?
             Var v = iter.next();
             Expr e = exprList.getExpr(v) ;
-            if ( vars.contains(v) ) 
-                throw new QueryParseException("Variable used when already in-scope: "+v+" in "+fmtExprList(exprList), -1 , -1) ;
-            vars.add(v) ;
+            // If e is null, then ?v is a project variable.
+            if ( e != null )
+            {
+                if ( vars.contains(v) || vars2.contains(v) ) 
+                    throw new QueryParseException("Variable used when already in-scope: "+v+" in "+fmtExprList(exprList), -1 , -1) ;
+            }
+            vars2.add(v) ;
         }
     }
     
-    static String fmtExprList(VarExprList exprList)
+    private static String fmtExprList(VarExprList exprList)
     {
         StringBuilder sb = new StringBuilder() ;
         boolean first = true ;

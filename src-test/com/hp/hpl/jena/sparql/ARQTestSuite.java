@@ -22,6 +22,7 @@ import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.expr.TS_Expr ;
 import com.hp.hpl.jena.sparql.graph.TS_Graph ;
 import com.hp.hpl.jena.sparql.junit.ScriptTestSuiteFactory ;
+import com.hp.hpl.jena.sparql.lang.TS_Lang ;
 import com.hp.hpl.jena.sparql.larq.TS_LARQ ;
 import com.hp.hpl.jena.sparql.modify.TS_Update ;
 import com.hp.hpl.jena.sparql.resultset.TS_ResultSet ;
@@ -68,6 +69,7 @@ public class ARQTestSuite extends TestSuite
         ts.addTest(TS_General.suite() );
         ts.addTest(TS_Expr.suite()) ;
         ts.addTest(TS_Util.suite()) ;
+        ts.addTest(new JUnit4TestAdapter(TS_Lang.class)) ;
         ts.addTest(new JUnit4TestAdapter(TS_ResultSet.class)) ;
 
         // Algebra
@@ -104,8 +106,9 @@ public class ARQTestSuite extends TestSuite
         
         ts.addTest(TS_SSE.suite()) ;
         
-        ts.addTest(new JUnit4TestAdapter(TS_Graph.class)) ;
 
+        ts.addTest(new JUnit4TestAdapter(TS_Graph.class)) ;
+        ts.addTest(new JUnit4TestAdapter(TS_Lang.class)) ;
         ts.addTest(new JUnit4TestAdapter(TS_Solver.class)) ;
         
         return ts ;

@@ -1,6 +1,7 @@
 PREFIX ex:      <http://example.org/> 
 
-SELECT (count(?x) AS ?c) WHERE 
+SELECT * WHERE 
 {
-  ?x ?p ?o 
+  ?s ?p ?o
+  LET(?x :=?y)
 }

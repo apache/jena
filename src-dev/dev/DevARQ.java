@@ -4,6 +4,9 @@ public class DevARQ
 {
     // ** For release 2.9:
     
+    // check/sort out setResultVars.
+    // Validate updates
+    
     // QueryParseException for updates is confusing.
     //   All QueryException  -> SparqlException or LanguageParseException
     

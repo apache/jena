@@ -10,9 +10,9 @@ import java.util.ArrayList ;
 import java.util.Collection ;
 import java.util.HashMap ;
 import java.util.Iterator ;
+import java.util.LinkedHashSet ;
 import java.util.List ;
 import java.util.Map ;
-import java.util.Set ;
 
 import org.openjena.atlas.io.IndentedLineBuffer ;
 import org.openjena.atlas.io.IndentedWriter ;
@@ -34,6 +34,7 @@ import com.hp.hpl.jena.sparql.expr.ExprVar ;
 import com.hp.hpl.jena.sparql.expr.aggregate.Aggregator ;
 import com.hp.hpl.jena.sparql.serializer.Serializer ;
 import com.hp.hpl.jena.sparql.syntax.Element ;
+import com.hp.hpl.jena.sparql.syntax.PatternVars ;
 import com.hp.hpl.jena.sparql.syntax.Template ;
 import com.hp.hpl.jena.sparql.util.FmtUtils ;
 
@@ -646,7 +647,9 @@ public class Query extends Prologue implements Cloneable, Printable
             varIter = groupVars.getVars().iterator() ;
         else
         {
-            Set<Var> queryVars = this.getQueryPattern().varsMentioned() ;
+            // Binding variables -- in patterns, not in filters and not in EXISTS
+            LinkedHashSet<Var> queryVars = new LinkedHashSet<Var>() ;
+            PatternVars.vars(queryVars, this.getQueryPattern()) ;
             varIter = queryVars.iterator() ;
         }
         

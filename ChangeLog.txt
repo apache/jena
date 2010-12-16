@@ -1,7 +1,12 @@
 ChangeLog for ARQ
 =================
 
-==== ARQ 2.8.8
+==== ARQ 2.8.8 or 2.9.0
+
++ Add scope checking rules as required by SPARQL 1.1
+  Illeagl in SPARQL 1.1:
+     Reuse of variables in assignments is illegal
+     SELECT * {} GROUP BY (reamins legal in ARQ language)
 
 + Bug fix: FILTERs did not always get moved to the end of groups properly 
            (sometimes only to end of BGPs). 

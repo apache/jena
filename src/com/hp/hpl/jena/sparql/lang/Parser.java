@@ -33,7 +33,7 @@ public abstract class Parser
     // Do any testing of queries after the construction of the parse tree.
     protected void validateParsedQuery(Query query)
     {
-        //SyntaxVarScope.check(query) ;
+        SyntaxVarScope.check(query) ;
     }
 }
 

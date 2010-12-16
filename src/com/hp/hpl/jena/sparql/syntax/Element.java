@@ -17,6 +17,9 @@ import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
 
 public abstract class Element
 {
+    /** @deprecated Use {@link PatternVars#vars} */
+    @Deprecated
+    
     public Set<Var> varsMentioned()
     {
         // Binding variables -- in patterns, not in filters and not in EXISTS

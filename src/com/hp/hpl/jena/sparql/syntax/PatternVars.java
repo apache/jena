@@ -7,31 +7,34 @@
 
 package com.hp.hpl.jena.sparql.syntax;
 
-import java.util.Iterator ;
 import java.util.LinkedHashSet ;
 import java.util.Set ;
 
-import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.sparql.core.TriplePath ;
 import com.hp.hpl.jena.sparql.core.Var ;
-import com.hp.hpl.jena.sparql.core.VarExprList ;
-import com.hp.hpl.jena.sparql.util.VarUtils ;
 
+/** Get the variables potentially bound by an element.
+ *  All mentioned variables except those in MINUS and FILTER (and hence NOT EXISTS)
+ *  The work is done by PatternVarsVisitor.  
+ */
 public class PatternVars
 {
     public static Set<Var> vars(Element element) { return vars(new LinkedHashSet<Var>(), element) ; }
 
     public static Set<Var> vars(Set<Var> s, Element element)
     {
-        ElementVisitor v = new PatternVarsVisitor(s) ;
-        ElementWalker.Walker walker = new WalkerSkipMinus(v) ;
-        ElementWalker.walk(element, walker, v) ;
+        PatternVarsVisitor v = new PatternVarsVisitor(s) ;
+        vars(element, v) ;
         return s ;
     }
     
-    static class WalkerSkipMinus extends ElementWalker.Walker
+    public static void vars(Element element, PatternVarsVisitor visitor)
     {
-
+        ElementWalker.Walker walker = new WalkerSkipMinus(visitor) ;
+        ElementWalker.walk(element, walker) ;
+    }
+    
+    public static class WalkerSkipMinus extends ElementWalker.Walker
+    {
         protected WalkerSkipMinus(ElementVisitor visitor)
         {
             super(visitor) ;
@@ -44,79 +47,6 @@ public class PatternVars
 //                el.getMinusElement().visit(this) ;
             proc.visit(el) ;
         }
-    }
-
-    public static class PatternVarsVisitor extends ElementVisitorBase
-    {
-        protected Set<Var> acc ;
-        public PatternVarsVisitor(Set<Var> s) { acc = s ; } 
-
-        @Override
-        public void visit(ElementTriplesBlock el)
-        {
-            for (Iterator<Triple> iter = el.patternElts() ; iter.hasNext() ; )
-            {
-                Triple t = iter.next() ;
-                VarUtils.addVarsFromTriple(acc, t) ;
-            }
-        }
-
-        @Override
-        public void visit(ElementPathBlock el) 
-        {
-            for (Iterator<TriplePath> iter = el.patternElts() ; iter.hasNext() ; )
-            {
-                TriplePath tp = iter.next() ;
-                // If it's triple-izable, then use the triple. 
-                if ( tp.isTriple() )
-                    VarUtils.addVarsFromTriple(acc, tp.asTriple()) ;
-                else
-                    VarUtils.addVarsFromTriplePath(acc, tp) ;
-            }
-        }
-        
-        // Variables here are non-binding.
-        //@Override public void visit(ElementExists el)       { }
-        //@Override public void visit(ElementNotExists el)    { }
-        //@Override public void visit(ElementMinus el)        { }
-
-//      public void visit(ElementFilter el)
-//      {
-//      el.getExpr().varsMentioned(acc);
-//      }
-
-        @Override
-        public void visit(ElementNamedGraph el)
-        {
-            VarUtils.addVar(acc, el.getGraphNameNode()) ;
-        }
-        
-        @Override
-        public void visit(ElementSubQuery el)
-        {
-            el.getQuery().setResultVars() ;
-            VarExprList x = el.getQuery().getProject() ;
-            acc.addAll(x.getVars()) ;
-        }
-        
-        @Override
-        public void visit(ElementAssign el)
-        {
-            acc.add(el.getVar()) ;
-        }
-        
-        @Override
-        public void visit(ElementBind el)
-        {
-            acc.add(el.getVar()) ;
-        }
-        
-//        @Override
-//        public void visit(ElementService el)
-//        {
-//            // Although if this isn't defined elsewhere the query won't work.
-//            VarUtils.addVar(acc, el.getServiceNode()) ;
-//        }
     }
 }
 

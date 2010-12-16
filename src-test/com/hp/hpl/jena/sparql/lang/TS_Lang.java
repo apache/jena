@@ -4,19 +4,19 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.resultset;
+package com.hp.hpl.jena.sparql.lang;
 
 import org.junit.runner.RunWith ;
 import org.junit.runners.Suite ;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
-    TestResultSet.class
-    , TestResultSetFormat.class
-    //, TestResultSetCompare.class
+    TestVarScope.class
 })
-public class TS_ResultSet
+
+public class TS_Lang
 {
+
 }
 
 /*

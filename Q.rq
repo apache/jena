@@ -1,6 +1,44 @@
+PREFIX composite: <http://www.topbraid.org/2007/05/composite.owl#>
 PREFIX rdf:       <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX fn:        <http://www.w3.org/2005/xpath-functions#>
-PREFIX xsd:       <http://www.w3.org/2001/XMLSchema#>
-
+PREFIX gbx:       <http://www.bimtoolset.org/data/Byers-ori.owl#>
 SELECT *
-{ ?s1 ?p1 ?o1 FILTER(?o1 = 629) FILTER(?o2 = 157) FILTER(?o2+?o1 = 0) { ?s2 ?p2 ?o2 } }
+WHERE
+{
+   GRAPH <http://www.example.com/model>
+   {
+      ?subject a gbx:Surface;
+         gbx:id-Surface ?object;
+         gbx:surfaceType-Surface ?type;
+         composite:child [
+            rdf:type gbx:AdjacentSpaceId;
+            composite:index 1;
+            gbx:spaceIdRef-AdjacentSpaceId ?subObject;
+         ].
+      OPTIONAL {
+         ?subject composite:child [
+               rdf:type gbx:AdjacentSpaceId;
+               composite:index 2;
+               gbx:spaceIdRef-AdjacentSpaceId ?subObjectOptional;
+            ].
+         LET (?optional_subject   := ?subject).
+         LET (?optional_object    := ?object).
+         LET (?optional_subObject := ?subObject).
+         LET (?optional_subObjectOptional := ?subObjectOptional).
+      }
+      {
+         {
+            ?subject gbx:surfaceType-Surface ?type.
+            FILTER (regex(?type,"Wall", "i")).
+            LET (?union_subject   := ?subject).
+            LET (?union_object    := ?object).
+            LET (?union_subObject := ?subObject).
+         } UNION {
+            ?subject gbx:surfaceType-Surface ?type;
+            FILTER (regex(?type,"InteriorFloor", "i")).
+            LET (?union_subject   := ?subject).
+            LET (?union_object    := ?object).
+            LET (?union_subObject := ?subObject).
+         }
+      }
+   }
+}
