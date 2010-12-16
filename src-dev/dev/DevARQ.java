@@ -6,6 +6,7 @@ public class DevARQ
     
     // check/sort out setResultVars.
     // Validate updates
+    // ?? bNode label checks (UPDATE: can't use same bNode label in template and pattern for DELETE/INSERT.)
     
     // QueryParseException for updates is confusing.
     //   All QueryException  -> SparqlException or LanguageParseException
@@ -22,13 +23,6 @@ public class DevARQ
     // UnionDefaultGraph
     // Other std transforms.
     
-    // ** Variable scope.
-    // Enable: Parser.validateParsedQuery
-    
-    //   Enable scope checks.
-    //     What about in subsqueries of update?
-    //   bNode label checks (UPDATE: can't use same bNode label in template and pattern for DELETE/INSERT.)
-    
     // ---- Documentation
     // Legacy StageGenerator (http://openjena.org/ARQ/arq-query-eval.html)
     // src-examples of OpExecutor+QueryEngine
@@ -40,10 +34,9 @@ public class DevARQ
     // DatasetGraph : connections
     
     // Event type -> list of parts vs regex filtering (?)
-    // Base 64 :: Apache commons codec.
+    // Base 64, MD5, SHA :: Apache commons codec.
 
     // ---- SPARQL 1.1
-    // Variable scope.
     // Update: can't use same bNode label in template and pattern for DELETE/INSERT.
     // BINDINGS execution
     // Aggregates to return iterators.
