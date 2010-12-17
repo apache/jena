@@ -4,14 +4,14 @@ public class DevARQ
 {
     // ** For release 2.9:
     
-    // check/sort out setResultVars -> always do on validation?
+    // check/sort out setResultVars.
     // Validate updates
     // ?? bNode label checks (UPDATE: can't use same bNode label in template and pattern for DELETE/INSERT.)
     
     // QueryParseException for updates is confusing.
     //   All QueryException  -> SparqlException or LanguageParseException
     
-    // Upgrade to Lucene (3.0.3 or 2.9.4)
+    // Upgrade Lucene (3.0.3 or 2.9.4)
     
     // dayTimeDuration
     
@@ -20,8 +20,12 @@ public class DevARQ
     
     // XSDFuncOp.getDT*
     
-    // UnionDefaultGraph
-    // Other std transforms.
+    // Migrations/enable:
+    //   TransformUnionQuery
+    //   TransformDynamicDataset
+    //   TransformGraphRename
+    //   TransformPropertyPathFlatten
+    // Check testing from TDb all in ARQ then clean TDB testing/RIOT
     
     // ---- Documentation
     // Legacy StageGenerator (http://openjena.org/ARQ/arq-query-eval.html)
