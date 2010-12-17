@@ -4,14 +4,14 @@ public class DevARQ
 {
     // ** For release 2.9:
     
-    // check/sort out setResultVars.
+    // check/sort out setResultVars -> always do on validation?
     // Validate updates
     // ?? bNode label checks (UPDATE: can't use same bNode label in template and pattern for DELETE/INSERT.)
     
     // QueryParseException for updates is confusing.
     //   All QueryException  -> SparqlException or LanguageParseException
     
-    // Upgrade Kucene (3.0.3 or 2.9.4)
+    // Upgrade to Lucene (3.0.3 or 2.9.4)
     
     // dayTimeDuration
     

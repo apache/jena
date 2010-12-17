@@ -85,6 +85,9 @@ public class RunARQ
     
     public static void main(String[] argv) throws Exception
     {
+        arq.qparse.main("--print=op", "--print=opt", "--query=Q.rq") ;
+        System.exit(0) ;
+        
         //testXSDDurationBug() ; System.exit(0) ;
         
         /*

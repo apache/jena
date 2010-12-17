@@ -234,7 +234,6 @@ public class WriterPath
         {
             out.print("(") ;
             out.print(tag) ;
-            out.print(" ") ;
             writeOneLiner(subPath) ;
             out.print(")") ;
         }

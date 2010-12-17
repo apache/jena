@@ -204,28 +204,24 @@ public class AlgebraGenerator
     protected Op compileElementGroup(ElementGroup groupElt)
     {
         Op current = OpTable.unit() ;
-        ExprList exprList = new ExprList() ;
         
         // First: get all filters, merge adjacent BGPs. This includes BGP-FILTER-BGP
         // This is done in finalizeSyntax after which the new ElementGroup is in
         // the right order w.r.t. BGPs and filters. 
         // 
-        // This is a delay from parsing time is so a printed query
-        // keeps filters where the query writer put them.
+        // This is a delay from parsing time so a printed query
+        // keeps filters where the query author put them.
         
         List<Element> groupElts = finalizeSyntax(groupElt) ;
 
         // Second: compile the consolidated group elements.
+        // Asumes that filters moved to end.
         for (Iterator<Element> iter = groupElts.listIterator() ; iter.hasNext() ; )
         {
             Element elt = iter.next() ;
             current = compileOneInGroup(elt, current) ;
         }
             
-        // Third: Filters collected from the group. 
-        if ( ! exprList.isEmpty() )
-            current = OpFilter.filter(exprList, current) ;
-        
         return current ;
     }
 
@@ -344,9 +340,6 @@ public class AlgebraGenerator
         {
             ElementPathBlock epb = (ElementPathBlock)elt ;
             Op op = compilePathBlock(epb.getPattern()) ;
-            
-            // Not a join
-            
             return join(current, op) ;
         }
         
@@ -358,7 +351,6 @@ public class AlgebraGenerator
             return OpFilter.filter(f.getExpr(), current) ;
         }
     
-        // Optional: recurse
         if ( elt instanceof ElementOptional )
         {
             ElementOptional eltOpt = (ElementOptional)elt ;
@@ -375,15 +367,15 @@ public class AlgebraGenerator
         if ( elt instanceof ElementAssign )
         {
             ElementAssign assign = (ElementAssign)elt ;
-            Op subOp = OpAssign.assign(current, assign.getVar(), assign.getExpr()) ;
-            return subOp ;
+            Op op = OpAssign.assign(current, assign.getVar(), assign.getExpr()) ;
+            return op ;
         }
         
         if ( elt instanceof ElementBind )
         {
             ElementBind bind = (ElementBind)elt ;
-            Op subOp = OpExtend.extend(current, bind.getVar(), bind.getExpr()) ;
-            return subOp ;
+            Op op = OpExtend.extend(current, bind.getVar(), bind.getExpr()) ;
+            return op ;
         }
         
         if ( elt instanceof ElementExists )
@@ -407,16 +399,16 @@ public class AlgebraGenerator
             return op ;
         }
         
-        // SPARQL 1.1 UNION
-        if ( elt instanceof ElementUnion )
-        {
-            ElementUnion elt2 = (ElementUnion)elt ;
-            if ( elt2.getElements().size() == 1 )
-            {
-                Op op = compileElementUnion(current, elt2) ;
-                return op ;
-            }
-        }
+//        // SPARQL 1.1 UNION -- did no tmake SPARQL 
+//        if ( elt instanceof ElementUnion )
+//        {
+//            ElementUnion elt2 = (ElementUnion)elt ;
+//            if ( elt2.getElements().size() == 1 )
+//            {
+//                Op op = compileElementUnion(current, elt2) ;
+//                return op ;
+//            }
+//        }
         
         // All other elements: compile the element and then join on to the current group expression.
         if ( elt instanceof ElementGroup || 

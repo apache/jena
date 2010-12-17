@@ -48,7 +48,7 @@ public class ElementPathBlock extends Element implements TripleCollector
     public int hashCode()
     { 
         int calcHashCode = Element.HashBasicGraphPattern ;
-        calcHashCode ^=  pattern.hashCode() ; 
+        calcHashCode ^= pattern.hashCode() ; 
         return calcHashCode ;
     }
 
