@@ -294,7 +294,12 @@ public class XSDFuncOp
             case OP_INTEGER:
                 return v ;
             case OP_DECIMAL:
-                BigDecimal dec = v.getDecimal().setScale(0, BigDecimal.ROUND_DOWN ) ;
+                int sgn =  v.getDecimal().signum() ;
+                BigDecimal dec ;
+                if ( sgn < 0 )
+                    dec = v.getDecimal().setScale(0, BigDecimal.ROUND_HALF_DOWN) ;
+                else
+                    dec = v.getDecimal().setScale(0, BigDecimal.ROUND_HALF_UP) ;
                 return NodeValue.makeDecimal(dec) ;
             case OP_FLOAT:
                 return NodeValue.makeFloat( Math.round(v.getFloat()) ) ;
@@ -354,7 +359,15 @@ public class XSDFuncOp
         }
     }
     
-
+    public static NodeValue strlen(NodeValue nvString)
+    {
+            if ( ! nvString.isString() )
+                throw new ExprEvalException("Not a string: "+nvString) ;
+            String string = nvString.getString() ;
+            int len = string.length() ;
+            return NodeValue.makeInteger(len) ;
+    }
+    
     
     public static NodeValue substring(NodeValue v1, NodeValue v2)
     {

@@ -1,11 +1,11 @@
 /*
- * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics
  * [See end of file]
  */
 
 package com.hp.hpl.jena.sparql.expr;
 
-import com.hp.hpl.jena.sparql.expr.nodevalue.NodeFunctions ;
+import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp ;
 import com.hp.hpl.jena.sparql.sse.Tags ;
 
 public class E_StrLength extends ExprFunction1
@@ -18,15 +18,15 @@ public class E_StrLength extends ExprFunction1
     }
     
     @Override
-    public NodeValue eval(NodeValue v) { return NodeFunctions.str(v) ; }
+    public NodeValue eval(NodeValue v) { return XSDFuncOp.strlen(v) ; }
     
     @Override
     public Expr copy(Expr expr) { return new E_StrLength(expr) ; } 
 }
 
 /*
- *  (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
- *  All rights reserved.
+ * (c) Copyright 2010 Epimorphics
+ * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions

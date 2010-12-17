@@ -437,7 +437,7 @@ NON-TERMINALS
 		|	<FLOOR> <LPAREN> Expression <RPAREN>
 		|	<ROUND> <LPAREN> Expression <RPAREN>
 		|	<CONCAT> ExpressionList
-		|	<SUBSTR> SubstringExpression
+		|	SubstringExpression
 		|	<STRLEN> <LPAREN> Expression <RPAREN>
 		|	<UCASE> <LPAREN> Expression <RPAREN>
 		|	<LCASE> <LPAREN> Expression <RPAREN>
@@ -473,7 +473,7 @@ NON-TERMINALS
 		|	ExistsFunc
 		|	NotExistsFunc
 	RegexExpression	:=	<REGEX> <LPAREN> Expression <COMMA> Expression ( <COMMA> Expression )? <RPAREN>
-	SubstringExpression	:=	<REGEX> <LPAREN> Expression <COMMA> Expression ( <COMMA> Expression )? <RPAREN>
+	SubstringExpression	:=	<SUBSTR> <LPAREN> Expression <COMMA> Expression ( <COMMA> Expression )? <RPAREN>
 	ExistsFunc	:=	<EXISTS> GroupGraphPattern
 	NotExistsFunc	:=	<NOTEXISTS> GroupGraphPattern
 	Aggregate	:=	( <COUNT> <LPAREN> ( <DISTINCT> )? ( <STAR> | Expression ) <RPAREN> | <SUM> <LPAREN> ( <DISTINCT> )? Expression <RPAREN> | <MIN> <LPAREN> ( <DISTINCT> )? Expression <RPAREN> | <MAX> <LPAREN> ( <DISTINCT> )? Expression <RPAREN> | <AVG> <LPAREN> ( <DISTINCT> )? Expression <RPAREN> | <SAMPLE> <LPAREN> ( <DISTINCT> )? Expression <RPAREN> | <GROUP_CONCAT> <LPAREN> ( <DISTINCT> )? Expression ( <SEMICOLON> <SEPARATOR> <EQ> String )? <RPAREN> )

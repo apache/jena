@@ -3660,8 +3660,8 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
                                     {if (true) return new E_Concat(a) ;}
       break;
     case SUBSTR:
-      jj_consume_token(SUBSTR);
-      SubstringExpression();
+      expr = SubstringExpression();
+                                   {if (true) return expr ;}
       break;
     case STRLEN:
       jj_consume_token(STRLEN);
@@ -3936,7 +3936,7 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
 
   final public Expr SubstringExpression() throws ParseException {
   Expr expr1 ; Expr expr2 = null ; Expr expr3 = null ;
-    jj_consume_token(REGEX);
+    jj_consume_token(SUBSTR);
     jj_consume_token(LPAREN);
     expr1 = Expression();
     jj_consume_token(COMMA);
