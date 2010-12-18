@@ -2,6 +2,12 @@ package dev ;
 
 public class DevARQ
 {
+    // Btter?
+    // Token for BOM.
+    // Skip it in grammars.
+    // Currently, skip in PeekReader.makeUTF8(UInputStream)  
+    
+    
     // ** For release 2.9:
     
     // check/sort out setResultVars.
