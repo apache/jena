@@ -1163,7 +1163,22 @@ public class TestTokenizer extends BaseTest
         assertFalse(tokenizer.hasNext()) ;
     }
 
-    // First symbol from the stream.
+
+    @Test
+    public void tokenizer_BOM_1()
+    {
+        // BOM
+        ByteArrayInputStream in = bytes("\uFEFF'abc'") ;
+        Tokenizer tokenizer = TokenizerFactory.makeTokenizerUTF8(in) ;
+        assertTrue(tokenizer.hasNext()) ;
+        Token token = tokenizer.next() ;
+        assertNotNull(token) ;
+        assertEquals(TokenType.STRING1, token.getType()) ;
+        assertEquals("abc", token.getImage()) ;
+        assertFalse(tokenizer.hasNext()) ;
+    }
+    
+        // First symbol from the stream.
     private static void testSymbol(String string, TokenType expected)
     {
         Tokenizer tokenizer = tokenizer(string) ;

@@ -29,9 +29,9 @@ public class TokenizerFactory
     {
         if ( false )
         {
-            // Byte parser
-            // Might be faster.
-            // Slightly imperfect - better to convert to chars, then parse.
+            // Byte parser - historical.
+            // Might be faster. Slightly imperfect - better to convert to chars, then parse.
+            // No BOM handling.
             PeekInputStream pin = PeekInputStream.make(in) ;
             Tokenizer tokenizer = new TokenizerBytes(pin) ;
             return tokenizer ;
