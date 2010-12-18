@@ -16,6 +16,7 @@ import java.io.InputStream ;
 import java.io.Reader ;
 
 import org.openjena.atlas.AtlasException ;
+import org.openjena.atlas.lib.Chars ;
 
 import com.hp.hpl.jena.shared.JenaException ;
 
@@ -79,19 +80,28 @@ public final class PeekReader extends Reader
     /** Make PeekReader where the input is UTF8 */ 
     public static PeekReader makeUTF8(InputStream in) 
     {
-        // This is the best route to make a PeekReader because it avoid
+        // This is the best route to make a PeekReader because it avoids
         // chances of wrong charset for a Reader say.
+        PeekReader pr ;
         if ( true )
         {
             Reader r = IO.asUTF8(in) ;
             // This adds reader-level buffering
-            return make(r) ;
+            pr = make(r) ;
         }
-        
-        // This is a bit slower - reason unknown.
-        InputStreamBuffered in2 = new InputStreamBuffered(in) ;
-        CharStream r = new StreamUTF8(in2) ;
-        return new PeekReader(r) ;
+        else
+        {
+            // This is a bit slower - reason unknown.
+            InputStreamBuffered in2 = new InputStreamBuffered(in) ;
+            CharStream r = new StreamUTF8(in2) ;
+            pr = new PeekReader(r) ;
+        }
+        // Skip BOM.
+        int ch = pr.peekChar() ;
+        if ( ch == Chars.BOM )
+            // Skip BOM
+            pr.readChar() ;
+        return pr ;
     }
     
     /** Make PeekReader where the input is ASCII */ 

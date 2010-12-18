@@ -30,7 +30,7 @@ import org.openjena.riot.RiotParseException ;
 
 public final class TokenizerBytes implements Tokenizer
 {
-    // UNFINISHED: ASCII only.
+    // UNFINISHED
     // Almost certainly out of date.
     
     // This class works directly on bytes but can't handle some multi-byte

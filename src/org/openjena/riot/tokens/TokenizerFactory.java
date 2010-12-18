@@ -30,14 +30,14 @@ public class TokenizerFactory
         if ( false )
         {
             // Byte parser
-            // This is the fastest way but is less tested
-            // At most 10% faster, sometimes not at all.
+            // Might be faster.
+            // Slightly imperfect - better to convert to chars, then parse.
             PeekInputStream pin = PeekInputStream.make(in) ;
             Tokenizer tokenizer = new TokenizerBytes(pin) ;
             return tokenizer ;
         }
         
-        // Most tested way
+        // BOM will have been removed
         PeekReader peekReader = PeekReader.makeUTF8(in) ;
         Tokenizer tokenizer = new TokenizerText(peekReader) ;
         return tokenizer ;

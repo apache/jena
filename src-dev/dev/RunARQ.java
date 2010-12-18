@@ -85,6 +85,9 @@ public class RunARQ
     
     public static void main(String[] argv) throws Exception
     {
+        riotcmd.turtle.main("ttl-with-bom.ttl") ; System.exit(0) ;
+        
+        
         arq.qparse.main("--print=op", "--print=opt", "--query=Q.rq") ;
         System.exit(0) ;
         

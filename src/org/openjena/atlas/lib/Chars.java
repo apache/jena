@@ -34,6 +34,7 @@ public class Chars
 //        'i' , 'j' , 'k' , 'l' , 'm' , 'n' ,
 //        'o' , 'p' , 'q' , 'r' , 's' , 't' ,
 //        'u' , 'v' , 'w' , 'x' , 'y' , 'z'
+    
     /** Java name for UTF-8 encoding */
     private static final String encodingUTF8     = "utf-8" ;
     /** Java name for ASCII encoding */
@@ -85,8 +86,10 @@ public class Chars
     
     /** End of file - not a Unicode codepoint */
     public static final int EOF             = -1 ;
+    // BOM  : U+FEFF encoded in bytes as xEF,0xBB,0xBF
+    public static final char BOM            = 0xFEFF ;  
     
-    /** undefined character (exact maning depends on use) - not a Unicode codepoint */
+    /** undefined character (exact meaning depends on use) - not a Unicode codepoint */
     public static final int UNSET           =  -2 ;
     public static final char NL              = '\n' ;
     public static final char CR              = '\r' ;
