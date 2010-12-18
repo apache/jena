@@ -120,23 +120,25 @@ public interface TurtleParserConstants {
   /** RegularExpression Id. */
   int RSLASH = 57;
   /** RegularExpression Id. */
-  int DATATYPE = 58;
+  int BOM = 58;
   /** RegularExpression Id. */
-  int AT = 59;
+  int DATATYPE = 59;
   /** RegularExpression Id. */
-  int PN_CHARS_BASE = 60;
+  int AT = 60;
   /** RegularExpression Id. */
-  int PN_CHARS_U = 61;
+  int PN_CHARS_BASE = 61;
   /** RegularExpression Id. */
-  int PN_CHARS = 62;
+  int PN_CHARS_U = 62;
   /** RegularExpression Id. */
-  int PN_PREFIX = 63;
+  int PN_CHARS = 63;
   /** RegularExpression Id. */
-  int PN_LOCAL = 64;
+  int PN_PREFIX = 64;
   /** RegularExpression Id. */
-  int VARNAME = 65;
+  int PN_LOCAL = 65;
   /** RegularExpression Id. */
-  int UNKNOWN = 66;
+  int VARNAME = 66;
+  /** RegularExpression Id. */
+  int UNKNOWN = 67;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -201,6 +203,7 @@ public interface TurtleParserConstants {
     "\"*\"",
     "\"/\"",
     "\"\\\\\"",
+    "\"\\ufeff\"",
     "\"^^\"",
     "\"@\"",
     "<PN_CHARS_BASE>",

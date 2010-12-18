@@ -38,6 +38,7 @@ PARSER_END(TurtleParser)
 
 void parse() : {}
 {
+  (<BOM>)?
   (Statement())* <EOF>
 }
 
@@ -437,6 +438,7 @@ TOKEN :
 | < STAR:    "*" >
 | < SLASH:   "/" >
 | < RSLASH:   "\\" >
+| < BOM:     "\uFEFF">
 
 //| < AMP: "&" >
 //| < REM: "%" >

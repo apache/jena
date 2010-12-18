@@ -91,6 +91,7 @@ TOKENS
 | <STAR: "*">
 | <SLASH: "/">
 | <RSLASH: "\\">
+| <BOM: "\ufeff">
 | <DATATYPE: "^^">
 | <AT: "@">
 }
@@ -114,7 +115,7 @@ TOKENS
 
 NON-TERMINALS
 // --- Entry point
-	parse	:=	( Statement )* <EOF>
+	parse	:=	( <BOM> )? ( Statement )* <EOF>
 	Statement	:=	( Directive | TriplesSameSubject ) <DOT>
 	Directive	:=	<PREFIX> <PNAME_NS> IRI_REF
 		|	<BASE> IRI_REF

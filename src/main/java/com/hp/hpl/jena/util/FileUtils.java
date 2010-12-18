@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
  * [See end of file]
  */
 
@@ -53,8 +54,10 @@ public class FileUtils
 
     /** Create a buffered reader that uses UTF-8 encoding */ 
     
-    static public BufferedReader asBufferedUTF8(InputStream in) {
-        return new BufferedReader(asUTF8(in)) ;
+    static public BufferedReader asBufferedUTF8(InputStream in)
+    {
+        BufferedReader r = new BufferedReader(asUTF8(in)) ;
+        return r ;
     }
 
     /** Create a writer that uses UTF-8 encoding */ 
@@ -463,8 +466,9 @@ public class FileUtils
 }
 
 /*
- *  (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
- *  All rights reserved.
+ * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
+ * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
