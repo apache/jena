@@ -26,7 +26,7 @@ public class ParserSPARQL11 extends Parser
     private interface Action { void exec(SPARQLParser11 parser) throws Exception ; }
     
     @Override
-    public Query parse(final Query query, String queryString)
+    protected Query parse$(final Query query, String queryString)
     {
         query.setSyntax(Syntax.syntaxSPARQL_11) ;
 

@@ -6,27 +6,105 @@
 
 package org.openjena.riot;
 
-import static org.openjena.riot.WebContent.* ;
+import static org.openjena.riot.WebContent.contentTypeN3 ;
+import static org.openjena.riot.WebContent.contentTypeN3Alt1 ;
+import static org.openjena.riot.WebContent.contentTypeN3Alt2 ;
+import static org.openjena.riot.WebContent.contentTypeNQuads ;
+import static org.openjena.riot.WebContent.contentTypeNQuadsAlt ;
+import static org.openjena.riot.WebContent.contentTypeNTriples ;
+import static org.openjena.riot.WebContent.contentTypeNTriplesAlt ;
+import static org.openjena.riot.WebContent.contentTypeRDFXML ;
+import static org.openjena.riot.WebContent.contentTypeTriG ;
+import static org.openjena.riot.WebContent.contentTypeTriGAlt ;
+import static org.openjena.riot.WebContent.contentTypeTurtle1 ;
+import static org.openjena.riot.WebContent.contentTypeTurtle2 ;
+import static org.openjena.riot.WebContent.contentTypeTurtle3 ;
+
+import java.io.InputStream ;
 import java.util.HashMap ;
 import java.util.Map ;
+
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import com.hp.hpl.jena.util.FileManager ;
 
 /** Retrieve data from the web */
 public class WebReader
 {
-    interface SinkTriplesFactory {} 
+    // Other ops:
+    // read from StringWriter
+    // set the base.
+    
+    // Reuse FileManager and LocationMapper.
+    public static void readGraph(Graph graph, String uri)
+    {
+        Lang lang = Lang.guess(uri) ;
+        readGraph(graph, uri, lang) ;
+    }
+    
+    public static void readGraph(Graph graph, String uri, Lang lang)
+    {
+        // file:
+        
+        //FileManager.get().open(uri) ;
+        // Open URI -> TypedInputStream
+        InputStream inputStream = null ;
+        // Find ContentType.
+        String contentType = null ;
+        // Final decision.
+        
+        // Or Lang?
+        lang = chooseLang(contentType, lang) ;
+        
+        // Choose reader - include lang in decision.
+        
+        SinkTriplesFactory factory = readerTriplesMap.get(contentType.toLowerCase()) ;
+        Process<Triple> processor = factory.create(contentType) ;
+        processor.parse(inputStream) ;
+    }
 
+    
+    static private Lang chooseLang(String contentType, Lang lang)
+    {
+        return null ; //contentType ;
+    }
+    
+    public static void readDataset(DatasetGraph graph, String uri)
+    {
+        
+    }
+    
+    public static void readDataset(DatasetGraph graph, String uri, Lang lang)
+    {
+        
+    }
+    
+    // -----------------------
+    
+    static public void addReader(String contentType, SinkTriplesFactory implFactory) {}
+    
+    
+    // -----------------------
+
+    interface Process<T> { void parse(InputStream inputStream) ; }
+    // Name?
+    interface SinkTriplesFactory { Process<Triple> create(String contentType) ; } 
+
+    // No need for this - use content type to get lang.
+    
     /** Content type to sink factory for triples */ 
     static Map<String, SinkTriplesFactory> readerTriplesMap = new HashMap<String, SinkTriplesFactory>() ;
     static {
-        readerTriplesMap.put(contentTypeN3, null) ;
-        readerTriplesMap.put(contentTypeN3Alt1, null) ;
-        readerTriplesMap.put(contentTypeN3Alt2, null) ;
+        readerTriplesMap.put(contentTypeN3.toLowerCase(), null) ;
+        readerTriplesMap.put(contentTypeN3Alt1.toLowerCase(), null) ;
+        readerTriplesMap.put(contentTypeN3Alt2.toLowerCase(), null) ;
 
-        readerTriplesMap.put(contentTypeTurtle1, null) ;
-        readerTriplesMap.put(contentTypeTurtle2, null) ;
-        readerTriplesMap.put(contentTypeTurtle3, null) ;
+        readerTriplesMap.put(contentTypeTurtle1.toLowerCase(), null) ;
+        readerTriplesMap.put(contentTypeTurtle2.toLowerCase(), null) ;
+        readerTriplesMap.put(contentTypeTurtle3.toLowerCase(), null) ;
 
-        readerTriplesMap.put(contentTypeRDFXML, null) ;
+        readerTriplesMap.put(contentTypeRDFXML.toLowerCase(), null) ;
     }
 
     interface SinkQuadsFactory {} 
@@ -35,14 +113,14 @@ public class WebReader
     static Map<String, SinkQuadsFactory> readerQuadsMap = new HashMap<String, SinkQuadsFactory>() ;
 
     static {
-        readerQuadsMap.put(contentTypeNTriples, null) ;
-        readerQuadsMap.put(contentTypeNTriplesAlt, null) ;
+        readerQuadsMap.put(contentTypeNTriples.toLowerCase(), null) ;
+        readerQuadsMap.put(contentTypeNTriplesAlt.toLowerCase(), null) ;
 
-        readerQuadsMap.put(contentTypeTriG, null) ;
-        readerQuadsMap.put(contentTypeTriGAlt, null) ;
+        readerQuadsMap.put(contentTypeTriG.toLowerCase(), null) ;
+        readerQuadsMap.put(contentTypeTriGAlt.toLowerCase(), null) ;
 
-        readerQuadsMap.put(contentTypeNQuads, null) ;
-        readerQuadsMap.put(contentTypeNQuadsAlt, null) ;
+        readerQuadsMap.put(contentTypeNQuads.toLowerCase(), null) ;
+        readerQuadsMap.put(contentTypeNQuadsAlt.toLowerCase(), null) ;
     }
 
     //public static content

@@ -7,34 +7,32 @@
 package com.hp.hpl.jena.sparql.lang;
 
 import java.io.FileReader ;
-import java.io.InputStream ;
 import java.io.Reader ;
 import java.io.StringReader ;
 
+import org.openjena.atlas.io.PeekReader ;
+import org.openjena.atlas.logging.Log ;
 import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.query.QueryException ;
 import com.hp.hpl.jena.query.QueryParseException ;
 import com.hp.hpl.jena.shared.JenaException ;
 import com.hp.hpl.jena.sparql.lang.arq.ARQParser ;
-import org.openjena.atlas.logging.Log ;
 import com.hp.hpl.jena.update.UpdateRequest ;
-import com.hp.hpl.jena.util.FileUtils ;
 
 public class ParserARQUpdate extends UpdateParser
 {
     @Override
-    public UpdateRequest parse(UpdateRequest update, String queryString)
+    protected UpdateRequest parse$(UpdateRequest update, String queryString)
     {
         Reader r = new StringReader(queryString) ;
         return _parse(update, r) ;
     }
     
     @Override
-    public UpdateRequest parse(UpdateRequest update, InputStream in)
+    protected UpdateRequest parse$(UpdateRequest update, PeekReader pr)
     {
-        Reader r = FileUtils.asBufferedUTF8(in) ;
-        return _parse(update, r) ;
+        return _parse(update, pr) ;
     }
 
     /** Use with care - Reader must be UTF-8 */ 
@@ -52,7 +50,7 @@ public class ParserARQUpdate extends UpdateParser
             parser = new ARQParser(r) ;
             parser.setUpdateRequest(update) ;
             parser.UpdateUnit() ;
-            //validateParsedUpdate(update) ;
+            validateParsedUpdate(update) ;
             return update ;
         }
         catch (com.hp.hpl.jena.sparql.lang.arq.ParseException ex)

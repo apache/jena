@@ -25,7 +25,7 @@ public class ParserSPARQL10 extends Parser
     private interface Action { void exec(SPARQLParser10 parser) throws Exception ; }
     
     @Override
-    public Query parse(final Query query, String queryString)
+    protected Query parse$(final Query query, String queryString)
     {
         query.setSyntax(Syntax.syntaxSPARQL_10) ;
 

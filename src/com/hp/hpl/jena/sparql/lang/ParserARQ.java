@@ -25,7 +25,7 @@ public class ParserARQ extends Parser
     private interface Action { void exec(ARQParser parser) throws Exception ; }
     
     @Override
-    public Query parse(final Query query, String queryString)
+    protected Query parse$(final Query query, String queryString)
     {
         query.setSyntax(Syntax.syntaxARQ) ;
 

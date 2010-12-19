@@ -18,7 +18,16 @@ import com.hp.hpl.jena.query.Syntax ;
 
 public abstract class Parser
 {
-    public abstract Query parse(Query query, String queryString) throws QueryParseException ;
+    public final Query parse(Query query, String queryString) throws QueryParseException
+    {
+        // Sort out BOM
+        if ( queryString.startsWith("\uFEFF") )
+            queryString = queryString.substring(1) ;
+        return parse$(query, queryString) ;
+    }
+    
+    protected abstract Query parse$(Query query, String queryString) throws QueryParseException ;
+    
     
     public static boolean canParse(Syntax syntaxURI)
     {

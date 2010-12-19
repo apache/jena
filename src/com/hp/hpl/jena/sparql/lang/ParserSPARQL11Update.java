@@ -11,6 +11,7 @@ import java.io.InputStream ;
 import java.io.Reader ;
 import java.io.StringReader ;
 
+import org.openjena.atlas.io.PeekReader ;
 import org.openjena.atlas.logging.Log ;
 import org.slf4j.LoggerFactory ;
 
@@ -26,10 +27,16 @@ import com.hp.hpl.jena.util.FileUtils ;
 public class ParserSPARQL11Update extends UpdateParser
 {
     @Override
-    public UpdateRequest parse(UpdateRequest update, String queryString)
+    protected UpdateRequest parse$(UpdateRequest update, String updateString)
     {
-        Reader r = new StringReader(queryString) ;
+        Reader r = new StringReader(updateString) ;
         return _parse(update, r) ;
+    }
+    
+    @Override
+    protected UpdateRequest parse$(UpdateRequest update, PeekReader pr)
+    {
+        return _parse(update, pr) ;
     }
     
     @Override
@@ -53,7 +60,7 @@ public class ParserSPARQL11Update extends UpdateParser
             parser = new SPARQLParser11(r) ;
             parser.setUpdateRequest(update) ;
             parser.UpdateUnit() ;
-            //validateParsedUpdate(update) ;
+            validateParsedUpdate(update) ;
             return update ;
         }
         catch (com.hp.hpl.jena.sparql.lang.sparql_11.ParseException ex)
