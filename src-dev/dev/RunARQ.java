@@ -85,6 +85,15 @@ public class RunARQ
     
     public static void main(String[] argv) throws Exception
     {
+//        System.out.println("Ü") ;
+//        byte b[] = "Ü".getBytes("UTF-8") ;
+//        for ( int i = 0 ; i < b.length ; i++ ) System.out.printf("%02X ",b[i]) ;
+//        System.out.println() ;
+//        System.out.printf("%04X\n", (int)'Ü') ;
+//        System.exit(0) ;
+        
+        arq.qexpr.main("substr('bar'@en,2)") ; System.exit(0) ;
+        
         riotcmd.turtle.main("ttl-with-bom.ttl") ; System.exit(0) ;
         
         

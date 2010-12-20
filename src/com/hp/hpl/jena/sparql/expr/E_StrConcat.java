@@ -11,11 +11,11 @@ import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp ;
 
 /** SPARQL CONCATs */
 
-public class E_Concat extends ExprFunctionN
+public class E_StrConcat extends ExprFunctionN
 {
     private static final String name = "concat" ;
     
-    public E_Concat(ExprList args)
+    public E_StrConcat(ExprList args)
     {
         super(name, args) ;
     }
@@ -23,12 +23,13 @@ public class E_Concat extends ExprFunctionN
     @Override
     protected Expr copy(ExprList newArgs)
     {
-        return new E_Concat(newArgs) ;
+        return new E_StrConcat(newArgs) ;
     }
 
     @Override
     protected NodeValue eval(List<NodeValue> args)
     { 
+        // Actually a bit more complicated.
         return XSDFuncOp.strConcat(args) ;
     }
 }

@@ -328,8 +328,24 @@ public class XSDFuncOp
         }
     }
 
-    /** String operations */
+    // @@ To NodeFunctions.
+    /** String operations - se NodeFunctions beause we have to cope with 
+     * simple literals, literals with language and xsd;string 
+     */
 
+    private static Node checkAndGetString(String label, NodeValue nv)
+    {
+        Node n = nv.asNode() ;
+        if ( ! n.isLiteral() )
+            throw new ExprEvalException(label+": Not a literal: "+n) ;
+        RDFDatatype dt = n.getLiteralDatatype() ;
+        String lang = n.getLiteralLanguage() ;
+        
+        if ( dt != null && ! dt.equals(XSDDatatype.XSDstring) )
+            throw new ExprEvalException(label+": Not a string: "+n) ;
+        return n ;
+    }
+    
     public static NodeValue stringLength(NodeValue str)
     {
         return NodeValue.makeInteger(str.getString().length()) ;
@@ -376,8 +392,13 @@ public class XSDFuncOp
 
     public static NodeValue substring(NodeValue nvString, NodeValue nvStart, NodeValue nvLength)
     {
+        Node n = checkAndGetString("substring", nvString) ;
+        RDFDatatype dt = n.getLiteralDatatype() ;
+        String lang = n.getLiteralLanguage() ;
+        
+        // A string of some kind.
         try {
-            String string = nvString.getString() ;
+            String string = n.getLiteralLexicalForm() ;
             int start = intValueStr(nvStart) ;
             if ( start <= 0 )
                 start = 1 ;
@@ -392,8 +413,9 @@ public class XSDFuncOp
                 finish = string.length() ; // Java index must be within bounds.
             if ( finish < 0 )
                 finish = 0 ;
-            
-            return NodeValue.makeString(string.substring(start, finish)) ;
+            String lex2 = string.substring(start, finish) ;
+            Node n2 = Node.createLiteral(lex2, lang, dt) ;
+            return NodeValue.makeNode(n2) ;
         } catch (IndexOutOfBoundsException ex)
         {
             throw new ExprEvalException("IndexOutOfBounds", ex) ;

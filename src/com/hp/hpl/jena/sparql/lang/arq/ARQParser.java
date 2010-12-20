@@ -4147,7 +4147,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     case CONCAT:
       jj_consume_token(CONCAT);
       a = ExpressionList();
-                                    {if (true) return new E_Concat(a) ;}
+                                    {if (true) return new E_StrConcat(a) ;}
       break;
     case SUBSTR:
       expr = SubstringExpression();

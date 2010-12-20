@@ -3,6 +3,10 @@ package dev ;
 public class DevARQ
 {
     // ** For release 2.9:
+    // string operatons: details and tests.
+    // E_StrUCase, E_StrConcat, E_StrSubstring
+    // 
+    
     
     // check/sort out setResultVars.
     // Validate updates

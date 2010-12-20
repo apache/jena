@@ -886,7 +886,7 @@ public class BuilderExpr
         public Expr make(ItemList list)
         {
             ExprList exprs = buildExprListUntagged(list, 1) ;
-            return new E_Concat(exprs) ;
+            return new E_StrConcat(exprs) ;
         }
     };
 

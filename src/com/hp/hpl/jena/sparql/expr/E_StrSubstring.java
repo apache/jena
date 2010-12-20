@@ -25,6 +25,8 @@ public class E_StrSubstring extends ExprFunctionN
     { 
         if ( args.size() == 2 )
             return XSDFuncOp.substring(args.get(0), args.get(1)) ;
+        
+        //return NodeFunctions.substring(args.get(0), args.get(1), args.get(2)) ;
         return XSDFuncOp.substring(args.get(0), args.get(1), args.get(2)) ;
     }
 

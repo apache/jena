@@ -1243,7 +1243,7 @@ Expr BuiltInCall() : { Expr expr ; Expr expr1 = null ; Expr expr2 = null ;
   | <CEIL> <LPAREN> expr1 = Expression() <RPAREN> { return new E_NumCeiling(expr1) ; }
   | <FLOOR> <LPAREN> expr1 = Expression() <RPAREN> { return new E_NumFloor(expr1) ; }
   | <ROUND> <LPAREN> expr1 = Expression() <RPAREN> { return new E_NumRound(expr1) ; }
-  | <CONCAT> a = ExpressionList() { return new E_Concat(a) ; }
+  | <CONCAT> a = ExpressionList() { return new E_StrConcat(a) ; }
   | expr = SubstringExpression() { return expr ; }
   | <STRLEN> <LPAREN> expr1 = Expression() <RPAREN> { return new E_StrLength(expr1) ; }
   | <UCASE> <LPAREN> expr1 = Expression() <RPAREN> { return new E_StrUpperCase(expr1) ; }
