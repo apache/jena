@@ -17,7 +17,6 @@ import org.apache.lucene.index.IndexWriter.MaxFieldLength;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.store.RAMDirectory;
-import org.apache.lucene.util.Version;
 
 /** Root class for index creation. */
 
@@ -75,7 +74,7 @@ public class IndexBuilderBase implements IndexBuilder
     private void makeIndex()
     {
         try {
-            indexWriter = new IndexWriter(dir, new StandardAnalyzer(Version.LUCENE_29), MaxFieldLength.UNLIMITED) ;
+            indexWriter = new IndexWriter(dir, new StandardAnalyzer(LARQ.LUCENE_VERSION), MaxFieldLength.UNLIMITED) ;
         } catch (Exception ex)
         { throw new ARQLuceneException("IndexBuilderLARQ", ex) ; }
     }
@@ -84,10 +83,13 @@ public class IndexBuilderBase implements IndexBuilder
     
     protected IndexReader getIndexReader()
     {
-        // Always return a new reader.  Write may have changed.
         try {
             flushWriter() ;
-            return IndexReader.open(dir, true) ;
+            if ( indexWriter != null ) {
+                return indexWriter.getReader() ; // Let's use the Near Real Time (NRT) 
+            } else {
+            	return IndexReader.open(dir, true) ;
+            }
         } catch (Exception e) { throw new ARQLuceneException("getIndexReader", e) ; }
     }
     
@@ -120,8 +122,6 @@ public class IndexBuilderBase implements IndexBuilder
     
     public IndexLARQ getIndex()
     {
-    	// In Lucene, an index reader sees the index at a point in time.
-    	// This wil not see later updates.
         //ARQ 2.2 : no longer close the index.  closeForWriting() ;
         return new IndexLARQ(getIndexReader()) ;
     }

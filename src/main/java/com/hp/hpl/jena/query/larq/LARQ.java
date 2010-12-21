@@ -11,6 +11,7 @@ import java.io.Reader;
 
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
+import org.apache.lucene.util.Version;
 
 import com.hp.hpl.jena.datatypes.RDFDatatype;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
@@ -33,6 +34,8 @@ public class LARQ
     // The number of results returned by default
     public static final int NUM_RESULTS             = 1000 ; // should we increase this? -- PC
     
+    public static final Version LUCENE_VERSION      = Version.LUCENE_30 ;
+
     // The field that is the index
     public static final String fIndex               = "index" ;
     

@@ -22,7 +22,6 @@ import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.Searcher;
 import org.apache.lucene.search.TopDocs;
-import org.apache.lucene.util.Version;
 import org.openjena.atlas.iterator.IteratorTruncate;
 
 import com.hp.hpl.jena.graph.Node;
@@ -44,7 +43,7 @@ public class IndexLARQ
 
     public IndexLARQ(IndexReader r)
     { 
-        this(r, new StandardAnalyzer(Version.LUCENE_29)) ;
+        this(r, new StandardAnalyzer(LARQ.LUCENE_VERSION)) ;
     }
         
     public IndexLARQ(IndexReader r, Analyzer a)
@@ -186,7 +185,7 @@ public class IndexLARQ
         if ( luceneQueryParser != null )
             return luceneQueryParser ;
         // Creating a new parser makes this class thread safe for search()
-        return new QueryParser(Version.LUCENE_29, LARQ.fIndex, analyzer) ;
+        return new QueryParser(LARQ.LUCENE_VERSION, LARQ.fIndex, analyzer) ;
     }
 }
 

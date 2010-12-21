@@ -7,8 +7,6 @@
 package com.hp.hpl.jena.query.larq;
 
 import java.io.File;
-import java.util.HashSet;
-import java.util.Set;
 
 import org.apache.lucene.index.IndexWriter;
 
@@ -25,11 +23,6 @@ import com.hp.hpl.jena.sparql.ARQNotImplemented;
 
 public abstract class IndexBuilderLiteral extends IndexBuilderModel
 {
-    // Ensure literals ar eindex once only.
-    // Expensive to have use a Lucene reader (they see the state of the index when opened)
-    // to check so need to manange duplicates in this class.
-    private Set<Node> seen = new HashSet<Node>() ;
-    
     public IndexBuilderLiteral()
     { super() ; }
 
@@ -62,11 +55,11 @@ public abstract class IndexBuilderLiteral extends IndexBuilderModel
             if ( s.getObject().isLiteral() )
             {
                 Node node = s.getObject().asNode() ;
-                if ( ! seen.contains(node) )
+                
+                if ( ! super.index.getIndex().hasMatch(LARQ.fLex + ":\"" + node.getLiteralLexicalForm() + "\"" ))
                 {
                     if ( indexThisLiteral(s.getLiteral()))
                         index.index(node, node.getLiteralLexicalForm()) ;
-                    seen.add(node) ;
                 }
             }
         } catch (Exception e)
@@ -78,8 +71,8 @@ public abstract class IndexBuilderLiteral extends IndexBuilderModel
     public void closeWriter()
     { 
         super.closeWriter() ;
-        seen = null ;
     }
+
 }
 
 /*

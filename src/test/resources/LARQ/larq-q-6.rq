@@ -5,5 +5,5 @@ PREFIX dc:    <http://purl.org/dc/elements/1.1/>
 
 SELECT *
 {
-    (?lit ?score) pf:textMatch ('+document' 0.7)
+    (?lit ?score) pf:textMatch ('+document' 0.72)
 }
