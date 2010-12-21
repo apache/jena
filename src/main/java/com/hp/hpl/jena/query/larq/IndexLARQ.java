@@ -9,17 +9,19 @@
 package com.hp.hpl.jena.query.larq;
 
 
+import java.util.Arrays;
 import java.util.Iterator;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.queryParser.QueryParser;
-import org.apache.lucene.search.Hit;
-import org.apache.lucene.search.Hits;
+import org.apache.lucene.search.Filter;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
+import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.Searcher;
+import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.util.Version;
 import org.openjena.atlas.iterator.IteratorTruncate;
 
@@ -125,22 +127,20 @@ public class IndexLARQ
     public Iterator<HitLARQ> search(String queryString)
     {    
         try{
-            Searcher searcher = new IndexSearcher(reader);
+            final Searcher searcher = new IndexSearcher(reader);
             
             Query query = getLuceneQueryParser().parse(queryString) ;
             
-            Hits hits = searcher.search(query) ;
+            TopDocs topDocs = searcher.search(query, (Filter)null, LARQ.NUM_RESULTS ) ;
             
-            Map1<Hit,HitLARQ> converter = new Map1<Hit,HitLARQ>(){
-                public HitLARQ map1(Hit object)
+            Map1<ScoreDoc,HitLARQ> converter = new Map1<ScoreDoc,HitLARQ>(){
+                public HitLARQ map1(ScoreDoc object)
                 {
-                    return new HitLARQ(object) ;
+                    return new HitLARQ(searcher, object) ;
                 }} ;
-            @SuppressWarnings("unchecked")
-            Iterator<Hit> iterHits = hits.iterator() ;
-            Iterator<HitLARQ> iter = new Map1Iterator<Hit, HitLARQ>(converter, iterHits) ;
+            Iterator<ScoreDoc> iterScoreDoc = Arrays.asList(topDocs.scoreDocs).iterator() ;
+            Iterator<HitLARQ> iter = new Map1Iterator<ScoreDoc, HitLARQ>(converter, iterScoreDoc) ;
             return iter ;
-            
         } catch (Exception e)
         { throw new ARQLuceneException("search", e) ; }
     }

@@ -30,6 +30,9 @@ public class LARQ
 {
     public static void init()   {} 
     
+    // The number of results returned by default
+    public static final int NUM_RESULTS             = 1000 ; // should we increase this? -- PC
+    
     // The field that is the index
     public static final String fIndex               = "index" ;
     

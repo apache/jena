@@ -1,12 +1,14 @@
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
 package com.hp.hpl.jena.query.larq;
 
-import org.apache.lucene.search.Hit;
+import org.apache.lucene.search.ScoreDoc;
+import org.apache.lucene.search.Searcher;
 
 import com.hp.hpl.jena.graph.Node;
 
@@ -16,12 +18,12 @@ public class HitLARQ
     protected float score ;
     protected int docId ;
 
-    public HitLARQ(Hit hit)
+    public HitLARQ(Searcher searcher, ScoreDoc scoreDoc)
     {
         try {
-            node = LARQ.build(hit.getDocument()) ;
-            score = hit.getScore() ;
-            docId = hit.getId() ;
+            node = LARQ.build(searcher.doc(scoreDoc.doc)) ;
+            score = scoreDoc.score ;
+            docId = scoreDoc.doc ;
         }
         catch (Exception e)
         { throw new ARQLuceneException("node conversion error", e) ; }
@@ -45,6 +47,7 @@ public class HitLARQ
 
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
