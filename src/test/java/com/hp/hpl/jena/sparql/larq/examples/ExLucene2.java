@@ -19,8 +19,6 @@ import com.hp.hpl.jena.sparql.util.Utils;
  * index all string literals,
  * then execute a SPARQL query with a Lucene search in it that
  * finds which documents have DC titles
- * 
- * @author Andy Seaborne
  */
 
 public class ExLucene2

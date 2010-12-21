@@ -16,10 +16,7 @@ import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.Statement;
 
 /** Index literals which are plain strings, string with a language tag or 
- *  which have a datatype of XSD string.  
- * 
- * @author Andy Seaborne
- */
+ *  which have a datatype of XSD string. */
 public class IndexBuilderString extends IndexBuilderLiteral
 {
     private Property property = null ;

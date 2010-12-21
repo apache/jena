@@ -27,7 +27,8 @@ import com.hp.hpl.jena.sparql.util.Symbol;
 
 public class LARQ
 {
- 
+    public static void init()   {} 
+    
     // The field that is the index
     public static final String fIndex               = "index" ;
     

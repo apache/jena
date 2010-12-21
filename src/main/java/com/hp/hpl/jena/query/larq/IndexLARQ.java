@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -30,14 +31,12 @@ import com.hp.hpl.jena.util.iterator.Map1;
 import com.hp.hpl.jena.util.iterator.Map1Iterator;
 
 
-/** ARQ wrapper for a Lucene index.
- * 
- * @author Andy Seaborne
- */
+/** ARQ wrapper for a Lucene index. */
 public class IndexLARQ
 {
-    protected IndexReader reader = null ;
-    protected QueryParser luceneQueryParser = null ;
+    protected final IndexReader reader ;
+    protected final QueryParser luceneQueryParser ;
+    protected final Analyzer analyzer ;
 
     public IndexLARQ(IndexReader r)
     { 
@@ -46,12 +45,19 @@ public class IndexLARQ
         
     public IndexLARQ(IndexReader r, Analyzer a)
     { 
-        this(r, new QueryParser(LARQ.fIndex, a)) ;
+        //this(r, new QueryParser(LARQ.fIndex, a)) ;
+        reader = r ;
+        analyzer = a ;
+        luceneQueryParser = null ;
+        
     }
     
+    @Deprecated
+    /** Passing in a fixed QueryParser is not thread safe */
     public IndexLARQ(IndexReader r, QueryParser qp)
     { 
-        reader = r ; 
+        reader = r ;
+        analyzer = qp.getAnalyzer() ;
         luceneQueryParser = qp ;
     }
     
@@ -119,7 +125,7 @@ public class IndexLARQ
         try{
             Searcher searcher = new IndexSearcher(reader);
             
-            Query query = luceneQueryParser.parse(queryString) ;
+            Query query = getLuceneQueryParser().parse(queryString) ;
             
             Hits hits = searcher.search(query) ;
             
@@ -175,12 +181,17 @@ public class IndexLARQ
     /** Return the Lucene QueryParser for this LARQ index */ 
     public final QueryParser getLuceneQueryParser()
     {
-        return luceneQueryParser ;
+        if ( luceneQueryParser != null )
+            return luceneQueryParser ;
+        // Creating a new parser makes this class thread safe for search()
+        return new QueryParser(LARQ.fIndex, analyzer) ;
     }
 }
 
 /*
  * (c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
+ * 
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

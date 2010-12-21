@@ -22,8 +22,6 @@ import com.hp.hpl.jena.sparql.util.Utils;
 
 /** Example code to index subjects by some external content.
  *  Pattern 3. 
- * 
- * @author Andy Seaborne
  */
 
 public class ExLucene5
