@@ -340,6 +340,14 @@ public class Query extends Prologue implements Cloneable, Printable
         return Var.varNames(projectVars.getVars()) ;
     }
     
+    /** Return a list of the variables requested (SELECT) */
+    public List<Var> getProjectVars()
+    { 
+        // Ensure "SELECT *" processed
+        setResultVars() ;
+        return projectVars.getVars() ;
+    }
+    
     public VarExprList getProject()
     {
         return projectVars ;

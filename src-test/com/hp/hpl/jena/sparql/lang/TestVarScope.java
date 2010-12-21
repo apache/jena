@@ -33,7 +33,7 @@ public class TestVarScope extends BaseTest
     @Test(expected=QueryException.class)
     public void scope_05() { scope("SELECT (?o+1 AS ?x) (?o+1 AS ?x) { ?s ?p ?o }") ; }
 
-    @Test public void scope_06() { scope("SELECT (?o+1 AS ?x) { ?s ?p ?o } GROUP BY (?o+5 AS ?z)") ; }
+    @Test public void scope_06() { scope("SELECT (?z+1 AS ?x) { ?s ?p ?o } GROUP BY (?o+5 AS ?z)") ; }
         
     @Test(expected=QueryException.class)
     public void scope_07() { scope("SELECT (?o+1 AS ?x) { ?s ?p ?o } GROUP BY (?o+5 AS ?x)") ; }
@@ -46,8 +46,22 @@ public class TestVarScope extends BaseTest
     @Test public void scope_10() { scope("SELECT (?o+1 AS ?o) { { SELECT (123 AS ?x) {?s ?p ?o } } } ") ; }
     @Test public void scope_11() { scope("SELECT (?o+1 AS ?o) { { SELECT (123 AS ?x) {?s ?p ?o FILTER(?x > 57)} } } ") ; }
     
+    @Test public void scope_20() { scope("SELECT ?x { ?x ?p ?o } GROUP BY ?x") ; }
+    
+    @Test (expected=QueryException.class)
+    public void scope_21() { scope("SELECT ?o { ?x ?p ?o } GROUP BY ?x") ; }
+    
+    @Test public void scope_22() { scope("SELECT * { ?s ?p ?o OPTIONAL{?s ?p2 ?o2} BIND(?o2+5 AS ?z) }") ; }
+
+    // This is turned off.
 //    @Test(expected=QueryException.class)
-//    public void scope_12() { scope("SELECT ?o { ?s ?p ?o } GROUP BY ?s") ; }
+//    public void scope_23() { scope("SELECT * { ?s ?p ?o OPTIONAL{?s ?p2 ?o2} BIND(?HAH+5 AS ?z) }") ; }
+
+    @Test(expected=QueryException.class)
+    public void scope_24() { scope("SELECT * { ?s ?p ?o OPTIONAL{?s ?p2 ?o2} BIND(?o+5 AS ?o2) }") ; }
+
+    @Test(expected=QueryException.class)
+    public void scope_25() { scope("SELECT * { ?s ?p ?o OPTIONAL{?s ?p2 ?o2} BIND(5 AS ?o) }") ; }
 }
 
 /*

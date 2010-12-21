@@ -9,6 +9,7 @@ package com.hp.hpl.jena.sparql.lang;
 import java.util.Collection ;
 import java.util.Iterator ;
 import java.util.LinkedHashSet ;
+import java.util.List ;
 import java.util.Set ;
 
 import com.hp.hpl.jena.query.Query ;
@@ -32,9 +33,9 @@ public class SyntaxVarScope
      */
 
     /** Accumulate pattern variables but include some checking as well */  
-    static class X extends PatternVarsVisitor
+    static class PatternVarsVisitorChecker extends PatternVarsVisitor
     {
-        public X(Set<Var> s)
+        public PatternVarsVisitorChecker(Set<Var> s)
         {
             super(s) ;
         }
@@ -46,7 +47,7 @@ public class SyntaxVarScope
             
             if ( acc.contains(var) ) 
                 throw new QueryParseException("Variable used when already in-scope: "+var+" in "+el, -1 , -1) ;
-            super.visit(el) ;
+            checkAssignment(acc, el.getExpr(), var) ;
         }
         
         @Override
@@ -56,19 +57,8 @@ public class SyntaxVarScope
             if ( el.getQuery().getQueryPattern() == null )
                 return ;
             VarExprList exprList = el.getQuery().getProject() ;
-            checkVarExprList(acc, exprList) ;
+            checkExprListAssignment(acc, exprList) ;
             super.visit(el) ;
-        }
-    }
-    
-    private static void check(Query query, Collection<Var> vars)
-    {
-        checkVarExprList(vars, query.getProject()) ;
-        // Legal in ARQ, not in SPARQL 1.1
-        if ( ! Syntax.syntaxARQ.equals(query.getSyntax()) )
-        {
-            if ( query.isQueryResultStar() && query.hasGroupBy() )
-                throw new QueryParseException("SELECT * not legal with GROUP BY", -1 , -1) ;
         }
     }
     
@@ -80,29 +70,95 @@ public class SyntaxVarScope
         // And now check down the element for subqueries.
         LinkedHashSet<Var> queryVars = new LinkedHashSet<Var>() ;
         
-        X visitor = new X(queryVars) ;
+        PatternVarsVisitorChecker visitor = new PatternVarsVisitorChecker(queryVars) ;
         PatternVars.vars(query.getQueryPattern(), visitor) ;
         queryVars.addAll(query.getGroupBy().getVars()) ;
         
         check(query, queryVars) ;
     }
     
-    private static void checkVarExprList(Collection<Var> vars, VarExprList exprList)
+    private static void check(Query query, Collection<Var> vars)
     {
-        Set<Var> vars2 = new LinkedHashSet<Var>() ;
+        // Check any expressions are assigned to fresh variables.
+        checkExprListAssignment(vars, query.getProject()) ;
+        
+        // Check for SELECT * GROUP BY
+        // Legal in ARQ, not in SPARQL 1.1
+        if ( ! Syntax.syntaxARQ.equals(query.getSyntax()) )
+        {
+            if ( query.isQueryResultStar() && query.hasGroupBy() )
+                throw new QueryParseException("SELECT * not legal with GROUP BY", -1 , -1) ;
+        }
+        
+        // Check any variable in an expression is in scope (if GROUP BY) 
+        checkExprVarUse(query) ;
+        
+    }
+    
+    private static void checkExprListAssignment(Collection<Var> vars, VarExprList exprList)
+    {
+        Set<Var> vars2 = new LinkedHashSet<Var>(vars) ;
         
         for ( Iterator<Var> iter = exprList.getVars().iterator() ; iter.hasNext() ; )
         {
             // In scope?
             Var v = iter.next();
             Expr e = exprList.getExpr(v) ;
-            // If e is null, then ?v is a project variable.
-            if ( e != null )
-            {
-                if ( vars.contains(v) || vars2.contains(v) ) 
-                    throw new QueryParseException("Variable used when already in-scope: "+v+" in "+fmtExprList(exprList), -1 , -1) ;
-            }
+            checkAssignment(vars2, e, v) ;
             vars2.add(v) ;
+        }
+    }
+    
+    private static void checkExprVarUse(Query query)
+    {
+        if ( query.hasGroupBy() )
+        {
+            VarExprList groupKey = query.getGroupBy() ;
+            List<Var> groupVars = groupKey.getVars() ;
+            VarExprList exprList = query.getProject() ;
+            
+            for ( Iterator<Var> iter = exprList.getVars().iterator() ; iter.hasNext() ; )
+            {
+                // In scope?
+                Var v = iter.next();
+                Expr e = exprList.getExpr(v) ;
+                if ( e == null )
+                {
+                    if ( ! groupVars.contains(v) )
+                        throw new QueryParseException("Non-group key variable in SELECT: "+v, -1 , -1) ;
+                }
+                else
+                {
+                    Set<Var> eVars = e.getVarsMentioned() ;
+                    for ( Var v2 : eVars )
+                    {
+                        if ( ! groupVars.contains(v2) )
+                            throw new QueryParseException("Non-group key variable in SELECT: "+v2+" in expression "+e , -1 , -1) ;
+                    }
+                }
+            }
+        }
+    }
+    
+    private static void checkAssignment(Collection<Var> scope, Expr expr, Var var)
+    {
+        // Project SELECT ?x
+        if ( expr == null )
+            return ;
+        
+        // expr not null
+        if ( scope.contains(var) ) 
+            throw new QueryParseException("Variable used when already in-scope: "+var+" in "+fmtAssignment(expr, var), -1 , -1) ;
+
+        // test for impossible variables - bound() is a bit odd.
+        if ( false )
+        {
+            Set<Var> vars = expr.getVarsMentioned() ;
+            for ( Var v : vars )
+            {
+                if ( !scope.contains(v) )
+                    throw new QueryParseException("Variable used in expression is not in-scope: "+v+" in "+expr, -1 , -1) ;
+            }
         }
     }
     
@@ -120,6 +176,11 @@ public class SyntaxVarScope
             sb.append("(").append(e).append(" AS ").append(v).append(")") ;
         }
         return sb.toString() ;
+    }
+    
+    private static String fmtAssignment(Expr expr, Var var)
+    {
+        return "("+expr+" AS "+var+")" ;
     }
 }
 

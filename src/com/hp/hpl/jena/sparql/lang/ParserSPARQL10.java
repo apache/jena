@@ -69,7 +69,6 @@ public class ParserSPARQL10 extends Parser
         return query.getConstructTemplate() ;
     }
     
-    
     // All throwable handling.
     private static void perform(Query query, String string, Action action)
     {

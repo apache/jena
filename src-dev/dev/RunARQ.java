@@ -30,6 +30,7 @@ import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.iri.IRI ;
 import com.hp.hpl.jena.iri.IRIFactory ;
 import com.hp.hpl.jena.iri.Violation ;
+import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.query.QueryExecution ;
 import com.hp.hpl.jena.query.QueryExecutionFactory ;
@@ -37,19 +38,26 @@ import com.hp.hpl.jena.query.QueryFactory ;
 import com.hp.hpl.jena.query.QuerySolutionMap ;
 import com.hp.hpl.jena.query.ResultSetFormatter ;
 import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.shared.PrefixMapping ;
+import com.hp.hpl.jena.sparql.ARQConstants ;
+import com.hp.hpl.jena.sparql.ARQException ;
 import com.hp.hpl.jena.sparql.algebra.Algebra ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
+import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
+import com.hp.hpl.jena.sparql.function.FunctionEnv ;
 import com.hp.hpl.jena.sparql.function.FunctionEnvBase ;
 import com.hp.hpl.jena.sparql.graph.NodeTransform ;
 import com.hp.hpl.jena.sparql.junit.ScriptTestSuiteFactory ;
 import com.hp.hpl.jena.sparql.junit.SimpleTestRunner ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.sparql.util.ExprUtils ;
+import com.hp.hpl.jena.sparql.util.FmtUtils ;
+import com.hp.hpl.jena.sparql.util.NodeFactory ;
 import com.hp.hpl.jena.sparql.util.QueryExecUtils ;
 import com.hp.hpl.jena.sparql.util.Timer ;
 import com.hp.hpl.jena.update.GraphStore ;
@@ -82,18 +90,19 @@ public class RunARQ
         int cmp = dur1.compare(dur2);
         System.out.println("Compare = " + cmp);
     }
+
+    
     
     public static void main(String[] argv) throws Exception
     {
-//        System.out.println("Ü") ;
-//        byte b[] = "Ü".getBytes("UTF-8") ;
-//        for ( int i = 0 ; i < b.length ; i++ ) System.out.printf("%02X ",b[i]) ;
-//        System.out.println() ;
-//        System.out.printf("%04X\n", (int)'Ü') ;
-//        System.exit(0) ;
+        //arq.qparse.main("--query=Q.rq") ; System.exit(0) ;
+        //arq.qparse.main("SELECT (?z+1 AS ?x) { ?s ?p ?o } GROUP BY (?o+5 AS ?z)") ; 
+        arq.qparse.main("SELECT * { ?s ?p ?o OPTIONAL{?s ?p2 ?o2} BIND(?o2+5 AS ?z) }") ;
+        System.exit(0) ;
         
-        arq.qexpr.main("substr('bar'@en,2)") ; System.exit(0) ;
-        
+        qexpr("substr('bar'@en,2)") ;
+        System.exit(0) ;
+
         riotcmd.turtle.main("ttl-with-bom.ttl") ; System.exit(0) ;
         
         
@@ -287,6 +296,7 @@ public class RunARQ
         QueryExecUtils.executeQuery(query, qexec) ;
     }
     
+    
     public static NodeValue eval(String string)
     {
         try {
@@ -299,24 +309,27 @@ public class RunARQ
         }
     }
     
-    public static void evalPrint(String string)
+    public static void qexpr(String exprStr)
     {
-        System.out.print(string) ;
-        System.out.print(" ==> ") ;
         try {
-            Expr expr = ExprUtils.parse(string) ;
-            NodeValue nv = expr.eval(null, new FunctionEnvBase()) ;
-            System.out.println(nv) ;
-        } catch (ExprEvalException ex)
+            PrefixMapping pmap = PrefixMapping.Factory.create()  ;
+            pmap.setNsPrefixes(ARQConstants.getGlobalPrefixMap()) ;
+            pmap.setNsPrefix("", "http://example/") ;
+            pmap.setNsPrefix("ex", "http://example/ns#") ;
+
+            Expr expr = ExprUtils.parse(exprStr, pmap) ;
+            // Default action
+            ARQ.getContext().set(ARQConstants.sysCurrentTime, NodeFactory.nowAsDateTime()) ;
+            FunctionEnv env = new ExecutionContext(ARQ.getContext(), null, null, null) ; 
+            NodeValue r = expr.eval(null, env) ;
+            //System.out.println(r.asQuotedString()) ;
+            Node n = r.asNode() ;
+            String s = FmtUtils.stringForNode(n) ;
+            System.out.println(s) ;
+        } catch (ARQException ex)
         {
             System.out.println(" ** "+ex) ;
         }
-    }
-
-    private static void qparse(String  ... a)
-    {
-        arq.qparse.main(a) ;
-        System.exit(0) ;
     }
     
     private static void runQTest(String dir, String manifest)

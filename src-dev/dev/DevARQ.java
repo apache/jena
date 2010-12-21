@@ -5,10 +5,13 @@ public class DevARQ
     // ** For release 2.9:
     // string operatons: details and tests.
     // E_StrUCase, E_StrConcat, E_StrSubstring
-    // 
+    // tests for strings. strlen, substr, strucase, strlcase, contains, concat  
+    // STRLEN SUBSTR UCASE LCASE STARTS ENDS CONTAINS
     
     
     // check/sort out setResultVars.
+    // More SynatxVarScope tests
+    //   reuse of vars in GROUP BY exprlists.
     // Validate updates
     // ?? bNode label checks (UPDATE: can't use same bNode label in template and pattern for DELETE/INSERT.)
     

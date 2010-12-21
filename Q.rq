@@ -1,12 +1,21 @@
-PREFIX rdf:       <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX fn:        <http://www.w3.org/2005/xpath-functions#>
-PREFIX xsd:       <http://www.w3.org/2001/XMLSchema#>
-PREFIX :          <http://example/>
+PREFIX : <http://example.org/> 
 
-SELECT *
-{ 
-  ?x :p+ ?y .
-  ?x :p* ?y .
-  FILTER(?y > 10) 
-  ?x :p/(:q{2}) ?y .
-}
+SELECT ?person ?number
+WHERE {
+  ?person :has_number ?number .
+} 
+GROUP BY ?person
+HAVING (MAX(?number) < 10)
+
+## PREFIX rdf:       <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+## PREFIX fn:        <http://www.w3.org/2005/xpath-functions#>
+## PREFIX xsd:       <http://www.w3.org/2001/XMLSchema#>
+## PREFIX :          <http://example/>
+## 
+## SELECT *
+## { 
+##   ?x :p+ ?y .
+##   ?x :p* ?y .
+##   FILTER(?y > 10) 
+##   ?x :p/(:q{2}) ?y .
+## }

@@ -18,6 +18,7 @@ import java.text.DecimalFormat ;
 import java.util.List ;
 
 import org.openjena.atlas.lib.StrUtils ;
+import org.openjena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.datatypes.RDFDatatype ;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
@@ -30,7 +31,6 @@ import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
 import com.hp.hpl.jena.sparql.expr.ExprEvalTypeException ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
-import org.openjena.atlas.logging.Log ;
 import com.hp.hpl.jena.sparql.util.DateTimeStruct ;
 /**
  * Implementation of XQuery/XPath functions and operators.
@@ -346,11 +346,6 @@ public class XSDFuncOp
         return n ;
     }
     
-    public static NodeValue stringLength(NodeValue str)
-    {
-        return NodeValue.makeInteger(str.getString().length()) ;
-    }
-    
     // NB Java string start from zero and uses start/end
     // F&O strings start from one and uses start/length
 
@@ -377,13 +372,10 @@ public class XSDFuncOp
     
     public static NodeValue strlen(NodeValue nvString)
     {
-            if ( ! nvString.isString() )
-                throw new ExprEvalException("Not a string: "+nvString) ;
-            String string = nvString.getString() ;
-            int len = string.length() ;
-            return NodeValue.makeInteger(len) ;
+        Node n = checkAndGetString("strlen", nvString) ;
+        int len = n.getLiteralLexicalForm().length() ;
+        return NodeValue.makeInteger(len) ;
     }
-    
     
     public static NodeValue substring(NodeValue v1, NodeValue v2)
     {
@@ -434,39 +426,68 @@ public class XSDFuncOp
         throw new ExprEvalException("Not a number:"+nv) ;
     }
     
+    private static void check2(String label, NodeValue arg1, NodeValue arg2) 
+    {
+        Node n1 = checkAndGetString(label+"(arg 1)", arg1) ;
+        Node n2 = checkAndGetString(label+"(arg 2)", arg2) ;
+        String lang1 = n1.getLiteralLanguage() ;
+        String lang2 = n2.getLiteralLanguage() ;
+        if (lang1 == null ) lang1 = "" ;
+        if (lang2 == null ) lang2 = "" ;
+        
+        // Incompatible?
+        // arg1 simple or xsd:string, arg2 has a lang.
+        if ( lang1.equals("") && ! lang2.equals("") )
+            throw new ExprEvalException(label+": Incompatible: "+arg1+" and "+arg2) ;
+        // arg1 with lang, arg2 has a diferent lang.
+        if ( ! lang1.equals("") && ! lang1.equals(lang2) )  
+            throw new ExprEvalException(label+": Incompatible: "+arg1+" and "+arg2) ;
+    }
+    
     public static NodeValue strContains(NodeValue string, NodeValue match)
     {
-        strCheck(string, match) ;
-        boolean x = StrUtils.contains(string.getString(), match.getString()) ;
+        check2("contains", string, match) ;
+        String lex1 = string.asNode().getLiteralLexicalForm() ;
+        String lex2 = match.asNode().getLiteralLexicalForm() ;
+        boolean x = StrUtils.contains(lex1, lex2) ;
         return NodeValue.booleanReturn(x) ;
     }
     
     public static NodeValue strStartsWith(NodeValue string, NodeValue match)
     {
-        strCheck(string, match) ;
-        return NodeValue.booleanReturn(string.getString().startsWith(match.getString())) ;
+        check2("strStarts", string, match) ;
+        String lex1 = string.asNode().getLiteralLexicalForm() ;
+        String lex2 = match.asNode().getLiteralLexicalForm() ;
+        return NodeValue.booleanReturn(lex1.startsWith(lex2)) ;
     }
     
     public static NodeValue strEndsWith(NodeValue string, NodeValue match)
     {
-        strCheck(string, match) ;
-        return NodeValue.booleanReturn(string.getString().endsWith(match.getString())) ;
+        check2("strEnds", string, match) ;
+        String lex1 = string.asNode().getLiteralLexicalForm() ;
+        String lex2 = match.asNode().getLiteralLexicalForm() ;
+        return NodeValue.booleanReturn(lex1.endsWith(lex2)) ;
     }
 
     public static NodeValue strLowerCase(NodeValue string)
     {
-        strCheck(string) ;
-        return NodeValue.makeString(string.getString().toLowerCase()) ;
+        Node n = checkAndGetString("lcase", string) ;
+        String lex = n.getLiteralLexicalForm() ;
+        Node n2 = Node.createLiteral(lex.toLowerCase(), n.getLiteralLanguage(), n.getLiteralDatatype()) ; 
+        return NodeValue.makeNode(n2) ;
     }
 
     public static NodeValue strUpperCase(NodeValue string)
     {
-        strCheck(string) ;
-        return NodeValue.makeString(string.getString().toUpperCase()) ;
+        Node n = checkAndGetString("lcase", string) ;
+        String lex = n.getLiteralLexicalForm() ;
+        Node n2 = Node.createLiteral(lex.toUpperCase(), n.getLiteralLanguage(), n.getLiteralDatatype()) ; 
+        return NodeValue.makeNode(n2) ;
     }
     
     public static NodeValue strConcat(List<NodeValue> args)
     {
+        // TODO
         StringBuilder result = new StringBuilder() ;
         for ( NodeValue arg : args )
         {
@@ -475,28 +496,6 @@ public class XSDFuncOp
             result.append(x) ;
         }
         return NodeValue.makeString(result.toString()) ;
-    }
-    
-
-    // .getString does this anyway.
-//    private static void strCheck(NodeValue str)
-//    {
-//        if ( !str.isString() )
-//            throw new ExprEvalException("Not a string: "+str) ;
-//    }
-
-    private static void strCheck(NodeValue str)
-    {
-        if ( !str.isString() )
-            throw new ExprEvalException("Not a string: "+str) ;
-    }
-    
-    private static void strCheck(NodeValue str1, NodeValue str2)
-    {
-        if ( !str1.isString() )
-            throw new ExprEvalException("Not a string (first arg): "+str1) ;
-        if ( !str2.isString() )
-            throw new ExprEvalException("Not a string (second arg): "+str2) ;
     }
     
     public static NumericType classifyNumeric(String fName, NodeValue nv1, NodeValue nv2)
