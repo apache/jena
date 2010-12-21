@@ -34,7 +34,7 @@ public class LARQ
     // The number of results returned by default
     public static final int NUM_RESULTS             = 1000 ; // should we increase this? -- PC
     
-    public static final Version LUCENE_VERSION      = Version.LUCENE_30 ;
+    public static final Version LUCENE_VERSION      = Version.LUCENE_29 ;
 
     // The field that is the index
     public static final String fIndex               = "index" ;
