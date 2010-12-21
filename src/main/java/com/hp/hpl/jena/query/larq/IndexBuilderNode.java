@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -12,6 +13,7 @@ import java.io.Reader;
 
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexWriter;
+import org.apache.lucene.search.Query;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.rdf.model.RDFNode;
@@ -23,7 +25,8 @@ import com.hp.hpl.jena.rdf.model.RDFNode;
  *  
  *  To update the index once closed, the application should create a new index builder.
  *  Any index readers (e.g. IndexLARQ objects)
- *  need to be recreated and registered. */
+ *  need to be recreated and registered. 
+ */
 
 public class IndexBuilderNode extends IndexBuilderBase
 {
@@ -42,9 +45,10 @@ public class IndexBuilderNode extends IndexBuilderBase
     public void index(RDFNode rdfNode, String indexStr)
     {
         try {
+        	if ( LARQ.AVOID_DUPLICATES ) unindex(rdfNode, indexStr);
             Document doc = new Document() ;
             LARQ.store(doc, rdfNode.asNode()) ;
-            LARQ.index(doc, indexStr) ;
+            LARQ.index(doc, rdfNode.asNode(), indexStr) ;
             getIndexWriter().addDocument(doc) ;
         } catch (IOException ex)
         { throw new ARQLuceneException("index", ex) ; }
@@ -53,9 +57,10 @@ public class IndexBuilderNode extends IndexBuilderBase
     public void index(RDFNode rdfNode, Reader indexStream)
     {
         try {
+        	if ( LARQ.AVOID_DUPLICATES ) unindex(rdfNode, indexStream);
             Document doc = new Document() ;
             LARQ.store(doc, rdfNode.asNode()) ;
-            LARQ.index(doc, indexStream) ;
+            LARQ.index(doc, rdfNode.asNode(), indexStream) ;
             getIndexWriter().addDocument(doc) ;
         } catch (IOException ex)
         { throw new ARQLuceneException("index", ex) ; }
@@ -64,9 +69,10 @@ public class IndexBuilderNode extends IndexBuilderBase
     public void index(Node node, String indexStr)
     {
         try {
+        	if ( LARQ.AVOID_DUPLICATES ) unindex(node, indexStr);
             Document doc = new Document() ;
             LARQ.store(doc, node) ;
-            LARQ.index(doc, indexStr) ;
+            LARQ.index(doc, node, indexStr) ;
             getIndexWriter().addDocument(doc) ;
         } catch (IOException ex)
         { throw new ARQLuceneException("index", ex) ; }
@@ -75,17 +81,52 @@ public class IndexBuilderNode extends IndexBuilderBase
     public void index(Node node, Reader indexStream)
     {
         try {
+        	if ( LARQ.AVOID_DUPLICATES ) unindex(node, indexStream);
             Document doc = new Document() ;
             LARQ.store(doc, node) ;
-            LARQ.index(doc, indexStream) ;
+            LARQ.index(doc, node, indexStream) ;
             getIndexWriter().addDocument(doc) ;
         } catch (IOException ex)
         { throw new ARQLuceneException("index", ex) ; }
     }
+    
+    public void unindex(RDFNode rdfNode, String indexStr)
+    {
+        try {
+            Query query = LARQ.unindex(rdfNode.asNode(), indexStr);
+            getIndexWriter().deleteDocuments(query);
+        } catch (Exception ex)
+        { throw new ARQLuceneException("unindex", ex) ; } 
+    }
+    
+    public void unindex(Node node, String indexStr)
+    {
+        try {
+            Query query = LARQ.unindex(node, indexStr);
+            getIndexWriter().deleteDocuments(query);
+        } catch (Exception ex)
+        { throw new ARQLuceneException("unindex", ex) ; } 
+    }
+
+    public void unindex(RDFNode rdfNode, Reader inputStream)
+    {
+    	unindex(rdfNode.asNode(), inputStream) ;
+    }
+    
+    public void unindex(Node node, Reader inputStream)
+    {
+        try {
+            Query query = LARQ.unindex(node, inputStream);
+            getIndexWriter().deleteDocuments(query);
+        } catch (Exception ex)
+        { throw new ARQLuceneException("unindex", ex) ; } 
+    }
+    
 }
 
 /*
  * (c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

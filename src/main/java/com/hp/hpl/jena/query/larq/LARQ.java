@@ -7,10 +7,20 @@
 
 package com.hp.hpl.jena.query.larq;
 
+import java.io.IOException;
 import java.io.Reader;
+import java.io.UnsupportedEncodingException;
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
+import org.apache.lucene.index.Term;
+import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.Query;
+import org.apache.lucene.search.TermQuery;
+import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.util.Version;
 
 import com.hp.hpl.jena.datatypes.RDFDatatype;
@@ -35,9 +45,14 @@ public class LARQ
     public static final int NUM_RESULTS             = 1000 ; // should we increase this? -- PC
     
     public static final Version LUCENE_VERSION      = Version.LUCENE_29 ;
+    
+    public static final boolean AVOID_DUPLICATES    = true;
 
     // The field that is the index
     public static final String fIndex               = "index" ;
+
+    // This is used to unindex
+    public static final String fIndexHash           = "hash" ;
     
     // Object literals
     public static final String fLex                 = "lex" ;
@@ -69,25 +84,46 @@ public class LARQ
     public static void removeDefaultIndex(Context context)
     { context.unset(LARQ.indexKey) ; }
 
-    public static void index(Document doc, Node indexNode)
-    {
-        if ( ! indexNode.isLiteral() )
-            throw new ARQLuceneException("Not a literal: "+indexNode) ;
-        index(doc, indexNode.getLiteralLexicalForm()) ;
-    }        
+//    public static void index(Document doc, Node indexNode)
+//    {
+//        if ( ! indexNode.isLiteral() )
+//            throw new ARQLuceneException("Not a literal: "+indexNode) ;
+//        index(doc, indexNode.getLiteralLexicalForm()) ;
+//    }        
      
-    public static void index(Document doc, String indexContent)
+    public static void index(Document doc, Node node, String indexContent)
     {
-        Field indexField = new Field(LARQ.fIndex, indexContent,
-                                     Field.Store.NO, Field.Index.ANALYZED) ;
+        Field indexField = new Field(LARQ.fIndex, indexContent, Field.Store.NO, Field.Index.ANALYZED) ;
         doc.add(indexField) ;
+
+        Field indexHashField = new Field(LARQ.fIndexHash, hash(node, indexContent), Field.Store.NO, Field.Index.NOT_ANALYZED) ;
+        doc.add(indexHashField) ;
     }        
      
-    public static void index(Document doc, Reader indexContent)
+    public static void index(Document doc, Node node, Reader indexContent)
     {
         Field indexField = new Field(LARQ.fIndex, indexContent) ;
         doc.add(indexField) ;
-    }        
+
+        Field indexHashField = new Field(LARQ.fIndexHash, hash(node, indexContent), Field.Store.NO, Field.Index.NOT_ANALYZED) ;
+       	doc.add(indexHashField) ;
+    }
+
+	public static Query unindex(Node node, String indexStr)  
+	{
+		BooleanQuery query = new BooleanQuery();
+		query.add(new TermQuery(new Term(LARQ.fIndexHash, hash(node, indexStr))) , Occur.MUST);
+        
+		return query;
+	}
+
+	public static Query unindex(Node node, Reader indexContent) 
+	{
+		BooleanQuery query = new BooleanQuery();
+		query.add(new TermQuery(new Term(LARQ.fIndexHash, hash(node, indexContent))) , Occur.MUST);
+        
+		return query;
+	}
 
     public static void store(Document doc, Node node)
     {
@@ -175,6 +211,89 @@ public class LARQ
         String lang = doc.get(LARQ.fLang) ;
         return NodeFactory.createLiteralNode(lex, lang, datatype) ;
     }
+
+    private static String hash (String str) 
+    {
+        MessageDigest digest;
+        try {
+            digest = MessageDigest.getInstance("MD5");
+            digest.update(str.getBytes("UTF8"));
+            byte[] hash = digest.digest();
+            BigInteger bigInt = new BigInteger(hash);
+            return bigInt.toString();
+        } catch (NoSuchAlgorithmException e) {
+        	new ARQLuceneException("hash", e);
+        } catch (UnsupportedEncodingException e) {
+        	new ARQLuceneException("hash", e);
+        }
+
+        return null;
+    }
+    
+    private static String hash (Node node, String str) 
+    {
+        String lexForm = null ; 
+        String datatypeStr = "" ;
+        String langStr = "" ;
+        
+        if ( node.isURI() ) {
+        	lexForm = node.getURI() ;
+        } else if ( node.isLiteral() ) {
+        	lexForm = node.getLiteralLexicalForm() ;
+            datatypeStr = node.getLiteralDatatypeURI() ;
+            langStr = node.getLiteralLanguage() ;
+        } else if ( node.isBlank() ) {
+        	lexForm = node.getBlankNodeLabel() ;
+        } else {
+        	throw new ARQLuceneException("Unable to hash node:"+node) ;
+        }
+
+        return hash (lexForm + "|" + langStr + "|" + datatypeStr + "|" + str);
+    }
+    
+    private static String hash (Node node, Reader reader)
+    {
+        String lexForm = null ; 
+        String datatypeStr = "" ;
+        String langStr = "" ;
+        
+        if ( node.isURI() ) {
+        	lexForm = node.getURI() ;
+        } else if ( node.isLiteral() ) {
+        	lexForm = node.getLiteralLexicalForm() ;
+            datatypeStr = node.getLiteralDatatypeURI() ;
+            langStr = node.getLiteralLanguage() ;
+        } else if ( node.isBlank() ) {
+        	lexForm = node.getBlankNodeLabel() ;
+        } else {
+        	throw new ARQLuceneException("Unable to hash node:"+node) ;
+        }
+    	
+    	StringBuffer sb = new StringBuffer();
+		try {
+	        int charsRead;
+			do {
+		    	char[] buffer = new char[1024];
+		        int offset = 0;
+		        int length = buffer.length;
+		        charsRead = 0;
+				while (offset < buffer.length) {
+					charsRead = reader.read(buffer, offset, length);
+					if (charsRead == -1)
+						break;
+					offset += charsRead;
+					length -= charsRead;
+				}
+				sb.append(buffer);
+			} while (charsRead != -1);
+			reader.reset();
+		} catch (IOException e) {
+			new ARQLuceneException("hash", e);
+		}
+		
+		return hash (lexForm + "|" + langStr + "|" + datatypeStr + "|" + sb.toString());
+    }
+
 }
 
 /*

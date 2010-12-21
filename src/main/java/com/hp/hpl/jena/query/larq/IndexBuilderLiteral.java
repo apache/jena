@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -12,13 +13,14 @@ import org.apache.lucene.index.IndexWriter;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.rdf.model.Literal;
+import com.hp.hpl.jena.rdf.model.Property;
+import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.Statement;
-import com.hp.hpl.jena.sparql.ARQNotImplemented;
+import com.hp.hpl.jena.rdf.model.StmtIterator;
 
 /** 
  * Base class for indexing literals (i.e. index is a literal and the 
  * index returns the literal)
- *
  */
 
 public abstract class IndexBuilderLiteral extends IndexBuilderModel
@@ -43,7 +45,22 @@ public abstract class IndexBuilderLiteral extends IndexBuilderModel
 
     @Override
     public void unindexStatement(Statement s)
-    { throw new ARQNotImplemented("unindexStatement") ; }
+    { 
+        if ( ! indexThisStatement(s) )
+            return ;
+
+        if ( s.getObject().isLiteral() )
+        {
+        	// we use the Model as reference counting
+        	StmtIterator iter = s.getModel().listStatements((Resource)null, (Property)null, s.getObject());
+        	if ( ! iter.hasNext() ) {
+                Node node = s.getObject().asNode() ;
+                if ( indexThisLiteral(s.getLiteral())) {
+                	index.unindex(node, node.getLiteralLexicalForm()) ;
+                }
+        	}
+        }
+    }
     
     @Override
     public void indexStatement(Statement s)
@@ -72,11 +89,12 @@ public abstract class IndexBuilderLiteral extends IndexBuilderModel
     { 
         super.closeWriter() ;
     }
-
+    
 }
 
 /*
  * (c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
