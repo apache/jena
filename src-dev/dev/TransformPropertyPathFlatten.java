@@ -59,7 +59,6 @@ public class TransformPropertyPathFlatten extends TransformCopy
 
     static interface PathEval<T>
     {
-
         public T eval(P_Link pathNode) ;
         public T eval(P_ReverseLink pathNode) ;
         public T eval(P_NegPropSet pathNotOneOf) ;

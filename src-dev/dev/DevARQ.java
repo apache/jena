@@ -8,6 +8,7 @@ public class DevARQ
     // tests for strings. strlen, substr, strucase, strlcase, contains, concat  
     // STRLEN SUBSTR UCASE LCASE STARTS ENDS CONTAINS
     
+    // Path evaluation as per spec.
     
     // check/sort out setResultVars.
     // More SyntaxVarScope tests

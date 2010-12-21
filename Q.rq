@@ -1,21 +1,13 @@
-PREFIX : <http://example.org/> 
+PREFIX rdf:       <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX fn:        <http://www.w3.org/2005/xpath-functions#>
+PREFIX xsd:       <http://www.w3.org/2001/XMLSchema#>
+PREFIX :          <http://example.org/>
+PREFIX foaf: 	<http://xmlns.com/foaf/0.1/>
 
-SELECT ?person ?number
-WHERE {
-  ?person :has_number ?number .
-} 
-GROUP BY ?person
-HAVING (MAX(?number) < 10)
+SELECT *
+{ 
+  { { BIND ("0" as ?A) ?x foaf:knows{0} ?y . } UNION { BIND ("+" as ?A) ?x  foaf:knows+ ?y . } }
 
-## PREFIX rdf:       <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-## PREFIX fn:        <http://www.w3.org/2005/xpath-functions#>
-## PREFIX xsd:       <http://www.w3.org/2001/XMLSchema#>
-## PREFIX :          <http://example/>
-## 
-## SELECT *
-## { 
-##   ?x :p+ ?y .
 ##   ?x :p* ?y .
-##   FILTER(?y > 10) 
 ##   ?x :p/(:q{2}) ?y .
-## }
+}
