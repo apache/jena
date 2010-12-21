@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -58,11 +59,11 @@ public class TestLARQ_Script extends TestCase
     static void runTestScript(String queryFile, String dataFile, String resultsFile, IndexBuilderModel builder)
     {
         Query query = QueryFactory.read(root+queryFile) ;
-        IndexBuilderString larqBuilder = new IndexBuilderString() ;
         Model model = ModelFactory.createDefaultModel() ; 
         model.register(builder) ;    
         FileManager.get().readModel(model, root+dataFile) ;
         model.unregister(builder) ;
+        builder.closeWriter();
         
         IndexLARQ index = builder.getIndex() ;
         LARQ.setDefaultIndex(index) ;
@@ -114,6 +115,7 @@ public class TestLARQ_Script extends TestCase
 
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

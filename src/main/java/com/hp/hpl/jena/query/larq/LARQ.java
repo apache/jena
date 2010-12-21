@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -72,7 +73,7 @@ public class LARQ
     public static void index(Document doc, String indexContent)
     {
         Field indexField = new Field(LARQ.fIndex, indexContent,
-                                     Field.Store.NO, Field.Index.TOKENIZED) ;
+                                     Field.Store.NO, Field.Index.ANALYZED) ;
         doc.add(indexField) ;
     }        
      
@@ -122,7 +123,7 @@ public class LARQ
     private static void storeURI(Document doc, Node_URI node)
     { 
         String x = node.getURI() ;
-        Field f = new Field(LARQ.fIndex, x, Field.Store.NO, Field.Index.TOKENIZED) ;
+        Field f = new Field(LARQ.fIndex, x, Field.Store.NO, Field.Index.ANALYZED) ;
         doc.add(f) ;
         f = new Field(LARQ.fURI, x, Field.Store.YES, Field.Index.NO) ;
         doc.add(f) ;
@@ -131,7 +132,7 @@ public class LARQ
     private static void storeBNode(Document doc, Node_Blank node)
     { 
         String x = node.getBlankNodeLabel() ;
-        Field f = new Field(LARQ.fIndex, x, Field.Store.NO, Field.Index.TOKENIZED) ;
+        Field f = new Field(LARQ.fIndex, x, Field.Store.NO, Field.Index.ANALYZED) ;
         doc.add(f) ;
         f = new Field(LARQ.fBNodeID, x, Field.Store.YES, Field.Index.NO) ;
         doc.add(f) ;
@@ -172,6 +173,7 @@ public class LARQ
 
 /*
  * (c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

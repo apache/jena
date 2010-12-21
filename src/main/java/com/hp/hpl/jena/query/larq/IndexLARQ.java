@@ -1,6 +1,7 @@
 /*
  * (c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (c) Copyright 2010 Epimorphics Ltd.
+ * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -19,6 +20,7 @@ import org.apache.lucene.search.Hits;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Searcher;
+import org.apache.lucene.util.Version;
 import org.openjena.atlas.iterator.IteratorTruncate;
 
 import com.hp.hpl.jena.graph.Node;
@@ -40,7 +42,7 @@ public class IndexLARQ
 
     public IndexLARQ(IndexReader r)
     { 
-        this(r, new StandardAnalyzer()) ;
+        this(r, new StandardAnalyzer(Version.LUCENE_29)) ;
     }
         
     public IndexLARQ(IndexReader r, Analyzer a)
@@ -184,13 +186,14 @@ public class IndexLARQ
         if ( luceneQueryParser != null )
             return luceneQueryParser ;
         // Creating a new parser makes this class thread safe for search()
-        return new QueryParser(LARQ.fIndex, analyzer) ;
+        return new QueryParser(Version.LUCENE_29, LARQ.fIndex, analyzer) ;
     }
 }
 
 /*
  * (c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (c) Copyright 2010 Epimorphics Ltd.
+ * (c) Copyright 2010 Talis Systems Ltd.
  * 
  * All rights reserved.
  *

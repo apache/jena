@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2010 Talis Information Ltd
+ * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -16,9 +17,9 @@ import com.hp.hpl.jena.assembler.Assembler;
 import com.hp.hpl.jena.assembler.Mode;
 import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
 import com.hp.hpl.jena.assembler.exceptions.AssemblerException;
+import com.hp.hpl.jena.query.larq.ARQLuceneException;
 import com.hp.hpl.jena.query.larq.IndexLARQ;
 import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.sparql.ARQException;
 import com.hp.hpl.jena.sparql.util.graph.GraphUtils;
 
 public class AssemblerLARQ extends AssemblerBase implements Assembler
@@ -36,13 +37,13 @@ public class AssemblerLARQ extends AssemblerBase implements Assembler
                 throw new AssemblerException(root, "Required: exactly one index property" ) ;
 
             String index = GraphUtils.getAsStringValue(root, LARQAssemblerVocab.pIndex) ;
-            Directory dir = FSDirectory.getDirectory(new File(index));
-            IndexReader indexReader = IndexReader.open(dir) ;
+            Directory dir = FSDirectory.open(new File(index));
+            IndexReader indexReader = IndexReader.open(dir, false) ;
             IndexLARQ indexLARQ = new IndexLARQ(indexReader) ;
             return indexLARQ ;
         } catch (Exception ex)
         {
-            throw new ARQException("Failed to assemble Lucene index", ex) ;
+            throw new ARQLuceneException("Failed to assemble Lucene index", ex) ;
         }
     }
 }
@@ -51,6 +52,7 @@ public class AssemblerLARQ extends AssemblerBase implements Assembler
 
 /*
  * (c) Copyright 2010 Talis Information Ltd
+ * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -9,7 +10,6 @@ package com.hp.hpl.jena.query.larq;
 import java.io.File;
 
 import org.apache.lucene.index.IndexWriter;
-import org.apache.lucene.store.Directory;
 
 import com.hp.hpl.jena.rdf.listeners.StatementListener;
 import com.hp.hpl.jena.rdf.model.Statement;
@@ -26,8 +26,6 @@ import com.hp.hpl.jena.rdf.model.StmtIterator;
 
 public abstract class IndexBuilderModel extends StatementListener
 {
-    private Directory dir = null ;
-
     // Multiple inheritance would be nice .
     protected IndexBuilderNode index ;
     
@@ -88,6 +86,7 @@ public abstract class IndexBuilderModel extends StatementListener
 
 /*
  * (c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

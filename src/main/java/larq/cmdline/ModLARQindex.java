@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2010 Talis Information Ltd.
+ * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -11,7 +12,9 @@ import java.io.File;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
+import org.apache.lucene.index.IndexWriter.MaxFieldLength;
 import org.apache.lucene.store.FSDirectory;
+import org.apache.lucene.util.Version;
 
 import arq.cmd.CmdException;
 import arq.cmdline.ArgDecl;
@@ -19,8 +22,8 @@ import arq.cmdline.ArgModuleGeneral;
 import arq.cmdline.CmdArgModule;
 import arq.cmdline.CmdGeneral;
 
+import com.hp.hpl.jena.query.larq.ARQLuceneException;
 import com.hp.hpl.jena.query.larq.IndexLARQ;
-import com.hp.hpl.jena.query.larq.LARQException;
 
 public class ModLARQindex implements ArgModuleGeneral
 {
@@ -44,25 +47,26 @@ public class ModLARQindex implements ArgModuleGeneral
     public IndexLARQ getIndexLARQ()
     { 
         try {
-            FSDirectory dir = FSDirectory.getDirectory(luceneDir);
-            IndexReader indexReader = IndexReader.open(dir) ;
+            FSDirectory dir = FSDirectory.open(luceneDir);
+            IndexReader indexReader = IndexReader.open(dir, true) ;
             return new IndexLARQ(indexReader) ;
         } catch (Exception ex)
-        { throw new LARQException("LARQ", ex) ; }
+        { throw new ARQLuceneException("LARQ", ex) ; }
     }
     
     public IndexWriter getIndexWriter()
     {
         try {
-            FSDirectory dir = FSDirectory.getDirectory(luceneDir);
-            IndexWriter indexWriter = new IndexWriter(dir, new StandardAnalyzer()) ;
+            FSDirectory dir = FSDirectory.open(luceneDir);
+            IndexWriter indexWriter = new IndexWriter(dir, new StandardAnalyzer(Version.LUCENE_29), MaxFieldLength.UNLIMITED) ;
             return indexWriter ;
         } catch (Exception ex)
-        { throw new LARQException("LARQ", ex) ; }
+        { throw new ARQLuceneException("LARQ", ex) ; }
     }
 }
 /*
  * (c) Copyright 2010 Talis Information Ltd.
+ * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
