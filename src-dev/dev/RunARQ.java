@@ -96,8 +96,7 @@ public class RunARQ
     public static void main(String[] argv) throws Exception
     {
         //arq.qparse.main("--query=Q.rq") ; System.exit(0) ;
-        //arq.qparse.main("SELECT (?z+1 AS ?x) { ?s ?p ?o } GROUP BY (?o+5 AS ?z)") ; 
-        arq.qparse.main("SELECT * { ?s ?p ?o OPTIONAL{?s ?p2 ?o2} BIND(?o2+5 AS ?z) }") ;
+        arq.qparse.main("SELECT ?o { ?s ?p ?o } GROUP BY (?s+5 AS ?o)") ; 
         System.exit(0) ;
         
         qexpr("substr('bar'@en,2)") ;

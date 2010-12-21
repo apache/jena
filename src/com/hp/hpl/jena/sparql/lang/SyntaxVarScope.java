@@ -53,11 +53,7 @@ public class SyntaxVarScope
         @Override
         public void visit(ElementSubQuery el)
         {
-            // Safety.
-            if ( el.getQuery().getQueryPattern() == null )
-                return ;
-            VarExprList exprList = el.getQuery().getProject() ;
-            checkExprListAssignment(acc, exprList) ;
+            check(el.getQuery(), acc) ;
             super.visit(el) ;
         }
     }
@@ -92,6 +88,15 @@ public class SyntaxVarScope
         
         // Check any variable in an expression is in scope (if GROUP BY) 
         checkExprVarUse(query) ;
+        
+        // Check GROUP BY AS 
+        // ENABLE
+        if ( false && query.hasGroupBy() )
+        {
+            VarExprList exprList2 = query.getGroupBy() ;
+            checkExprListAssignment(vars, exprList2) ;
+        // CHECK 
+        }
         
     }
     

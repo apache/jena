@@ -10,8 +10,12 @@ public class DevARQ
     
     
     // check/sort out setResultVars.
-    // More SynatxVarScope tests
+    // More SyntaxVarScope tests
     //   reuse of vars in GROUP BY exprlists.
+    //   subqueries scope in TestVarScope
+    // Enable group checking in SyntaxVarScope 9causes test failures - fix tests).
+    
+    // TestVarScope
     // Validate updates
     // ?? bNode label checks (UPDATE: can't use same bNode label in template and pattern for DELETE/INSERT.)
     

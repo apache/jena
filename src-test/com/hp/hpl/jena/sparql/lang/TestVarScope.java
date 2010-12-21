@@ -62,6 +62,8 @@ public class TestVarScope extends BaseTest
 
     @Test(expected=QueryException.class)
     public void scope_25() { scope("SELECT * { ?s ?p ?o OPTIONAL{?s ?p2 ?o2} BIND(5 AS ?o) }") ; }
+    
+    // Subqueries
 }
 
 /*
