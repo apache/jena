@@ -6,7 +6,7 @@
   <artifactId>larq</artifactId>
   <packaging>jar</packaging>
   <name>LARQ</name>
-  <version>0.1.1-SNAPSHOT</version>
+  <version>0.1.2-SNAPSHOT</version>
 
   <description>LARQ - Free Text Indexing for SPARQL</description>
   <url>http://openjena.org/wiki/LARQ</url>
