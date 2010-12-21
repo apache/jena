@@ -5,6 +5,9 @@ public class DevFuseki
     // Testing:
     //   No file -> error.
     
+
+    // OPTIONS - no body => Content-length: 0 required 
+    
     // Error messages as text plain.
     
     // ParserFor - share between SPARQL_REST and SPARQL_Upload
