@@ -4,14 +4,8 @@
 @prefix : <http://example.org/> .
 @prefix foaf: 	<http://xmlns.com/foaf/0.1/> .
 
-## :a foaf:knows :b .
-## :b foaf:knows :c .
+:d foaf:knows :e .
+:e foaf:knows :f .
+:f foaf:knows :e .
 
 
-:Matteo :has_number 12 .
-:Matteo :has_number 3 .
-:Matteo :has_number 8 .
-
-:Lee :has_number 9 .
-:Lee :has_number 2 .
-:Lee :has_number 4 .
