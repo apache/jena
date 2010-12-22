@@ -2,28 +2,27 @@ package dev ;
 
 public class DevARQ
 {
-    // ** For release 2.9:
+    // >>>> Tasks
+    
     // string operatons: details and tests.
-    // E_StrUCase, E_StrConcat, E_StrSubstring
+    // TestNodeFunctions / TestXSDFuncOp
+    //   E_StrUCase, E_StrConcat, E_StrSubstring
     // tests for strings. strlen, substr, strucase, strlcase, contains, concat  
-    // STRLEN SUBSTR UCASE LCASE STARTS ENDS CONTAINS
     
     // Path evaluation as per spec.
     
     // check/sort out setResultVars.
-    // More SyntaxVarScope tests
-    //   reuse of vars in GROUP BY exprlists.
-    //   subqueries scope in TestVarScope
-    // Enable group checking in SyntaxVarScope 9causes test failures - fix tests).
-    
-    // TestVarScope
-    // Validate updates
+    // Enable group checking in SyntaxVarScope (causes test failures - fix tests).
+
     // ?? bNode label checks (UPDATE: can't use same bNode label in template and pattern for DELETE/INSERT.)
-    
+
+    // Pull up TransformDynamicDataset, TransformGraphRename from TDB.
+    // Better access to union query??? By transform., query context.
+
+    // <<<< Tasks
+
     // QueryParseException for updates is confusing.
     //   All QueryException  -> SparqlException or LanguageParseException
-    
-    // Upgrade Lucene (3.0.3 or 2.9.4)
     
     // dayTimeDuration
     
@@ -37,7 +36,6 @@ public class DevARQ
     //   TransformDynamicDataset
     //   TransformGraphRename
     //   TransformPropertyPathFlatten
-    // Check testing from TDb all in ARQ then clean TDB testing/RIOT
     
     // ---- Documentation
     // Legacy StageGenerator (http://openjena.org/ARQ/arq-query-eval.html)
