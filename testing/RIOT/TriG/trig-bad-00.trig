@@ -1,5 +1,0 @@
-@prefix : <http://example/> .
-{
-    # No trailing dot
-    :x :p "123" 
-}
