@@ -9,7 +9,7 @@ Documentation:
 ==== SDB v1.3.3
 
 + Upgraded to ARQ 2.8.6
-  Includes SPARQl 1.1 Update support.
+  Includes SPARQL 1.1 Update support.
 + Add processing of regex filters to SQL LIKE for substrings
   regex must not involve metacharcaters except ^ and $
   (anchored and unanchored, case sensitive and case insensitive)
