@@ -71,7 +71,7 @@ public class Location
         }
         
         // Prefer "/"
-        rootname = rootname.replace('\'', '/') ;
+        rootname = rootname.replace('\\', '/') ;
         File file = new File(rootname) ;
         
         if ( ! file.exists() )

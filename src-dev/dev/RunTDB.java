@@ -48,6 +48,10 @@ public class RunTDB
 
     public static void main(String[] args) throws Exception
     {
+        TDBFactory.createDataset("/home/afs/Projects/TDB/a'b/c") ;
+        System.out.println("DONE") ;
+        System.exit(0) ;
+        
         DatasetGraphTDB dsg = TDBFactory.createDatasetGraph("/home/afs/Desktop/BWQ/DB-0.8.6") ;
         TupleIndex index = dsg.getTripleTable().getNodeTupleTable().getTupleTable().getIndex(1) ;
         
