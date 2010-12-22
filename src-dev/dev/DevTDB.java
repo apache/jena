@@ -8,7 +8,6 @@ public class DevTDB
     // Check commands and use of --graph
     
     // ---- BulkLoader2
-    // Stats while loading.
     // Tune sort --buffer-size=50%
     // Prefixes to be set during bulk loading 1 & 2
     
