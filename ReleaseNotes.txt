@@ -3,6 +3,8 @@ Release Notes
 
 ==== Jena 2.6.5
 
++ Lucene version (used by ARQ) is now 2.9.3.
+
 ==== Jena 2.6.4
 
 + Maintenace release
