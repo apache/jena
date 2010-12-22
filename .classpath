@@ -8,8 +8,8 @@
 
   <classpathentry kind="var" path="M2_REPO/javax/servlet/servlet-api/2.5/servlet-api-2.5.jar" sourcepath="M2_REPO/javax/servlet/servlet-api/2.5/servlet-api-2.5-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/ant/ant/1.6.5/ant-1.6.5.jar" sourcepath="M2_REPO/ant/ant/1.6.5/ant-1.6.5-sources.jar"/>
-  <classpathentry kind="var" path="M2_REPO/com/hp/hpl/jena/arq/2.8.7-RC-2/arq-2.8.7-RC-2-tests.jar" sourcepath="M2_REPO/com/hp/hpl/jena/arq/2.8.7-RC-2/arq-2.8.7-RC-2-test-sources.jar"/>
-  <classpathentry kind="var" path="M2_REPO/com/hp/hpl/jena/arq/2.8.7-RC-2/arq-2.8.7-RC-2.jar" sourcepath="M2_REPO/com/hp/hpl/jena/arq/2.8.7-RC-2/arq-2.8.7-RC-2-sources.jar"/>
+  <classpathentry kind="var" path="M2_REPO/com/hp/hpl/jena/arq/2.8.7/arq-2.8.7-tests.jar" sourcepath="M2_REPO/com/hp/hpl/jena/arq/2.8.7/arq-2.8.7-test-sources.jar"/>
+  <classpathentry kind="var" path="M2_REPO/com/hp/hpl/jena/arq/2.8.7/arq-2.8.7.jar" sourcepath="M2_REPO/com/hp/hpl/jena/arq/2.8.7/arq-2.8.7-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/commons-codec/commons-codec/1.4/commons-codec-1.4.jar" sourcepath="M2_REPO/commons-codec/commons-codec/1.4/commons-codec-1.4-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/commons-fileupload/commons-fileupload/1.2.2/commons-fileupload-1.2.2.jar" sourcepath="M2_REPO/commons-fileupload/commons-fileupload/1.2.2/commons-fileupload-1.2.2-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/commons-logging/commons-logging/1.1.1/commons-logging-1.1.1.jar" sourcepath="M2_REPO/commons-logging/commons-logging/1.1.1/commons-logging-1.1.1-sources.jar"/>
@@ -19,8 +19,8 @@
   <classpathentry kind="var" path="M2_REPO/com/ibm/icu/icu4j/3.4.4/icu4j-3.4.4.jar" sourcepath="M2_REPO/com/ibm/icu/icu4j/3.4.4/icu4j-3.4.4-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/com/hp/hpl/jena/iri/0.8/iri-0.8.jar" sourcepath="M2_REPO/com/hp/hpl/jena/iri/0.8/iri-0.8-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/com/hp/hpl/jena/iri/0.8/iri-0.8-sources.jar"/>
-  <classpathentry kind="var" path="M2_REPO/com/hp/hpl/jena/jena/2.6.4-RC-1/jena-2.6.4-RC-1.jar" sourcepath="M2_REPO/com/hp/hpl/jena/jena/2.6.4-RC-1/jena-2.6.4-RC-1-sources.jar"/>
-  <classpathentry kind="var" path="M2_REPO/com/hp/hpl/jena/jena/2.6.4-RC-1/jena-2.6.4-RC-1-tests.jar" sourcepath="M2_REPO/com/hp/hpl/jena/jena/2.6.4-RC-1/jena-2.6.4-RC-1-test-sources.jar"/>
+  <classpathentry kind="var" path="M2_REPO/com/hp/hpl/jena/jena/2.6.4/jena-2.6.4.jar" sourcepath="M2_REPO/com/hp/hpl/jena/jena/2.6.4/jena-2.6.4-sources.jar"/>
+  <classpathentry kind="var" path="M2_REPO/com/hp/hpl/jena/jena/2.6.4/jena-2.6.4-tests.jar" sourcepath="M2_REPO/com/hp/hpl/jena/jena/2.6.4/jena-2.6.4-test-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/eclipse/jetty/jetty-continuation/7.2.1.v20101111/jetty-continuation-7.2.1.v20101111.jar" sourcepath="M2_REPO/org/eclipse/jetty/jetty-continuation/7.2.1.v20101111/jetty-continuation-7.2.1.v20101111-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/eclipse/jetty/jetty-http/7.2.1.v20101111/jetty-http-7.2.1.v20101111.jar" sourcepath="M2_REPO/org/eclipse/jetty/jetty-http/7.2.1.v20101111/jetty-http-7.2.1.v20101111-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/eclipse/jetty/jetty-io/7.2.1.v20101111/jetty-io-7.2.1.v20101111.jar" sourcepath="M2_REPO/org/eclipse/jetty/jetty-io/7.2.1.v20101111/jetty-io-7.2.1.v20101111-sources.jar"/>
@@ -40,7 +40,7 @@
   <classpathentry kind="var" path="M2_REPO/org/slf4j/slf4j-api/1.5.8/slf4j-api-1.5.8.jar" sourcepath="M2_REPO/org/slf4j/slf4j-api/1.5.8/slf4j-api-1.5.8-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/slf4j/slf4j-log4j12/1.5.8/slf4j-log4j12-1.5.8.jar" sourcepath="M2_REPO/org/slf4j/slf4j-log4j12/1.5.8/slf4j-log4j12-1.5.8-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/stax/stax-api/1.0.1/stax-api-1.0.1.jar"/>
-  <classpathentry kind="var" path="M2_REPO/com/hp/hpl/jena/tdb/0.8.8-RC-1/tdb-0.8.8-RC-1.jar" sourcepath="M2_REPO/com/hp/hpl/jena/tdb/0.8.8-RC-1/tdb-0.8.8-RC-1-sources.jar"/>
+  <classpathentry kind="var" path="M2_REPO/com/hp/hpl/jena/tdb/0.8.8/tdb-0.8.8.jar" sourcepath="M2_REPO/com/hp/hpl/jena/tdb/0.8.8/tdb-0.8.8-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/codehaus/woodstox/wstx-asl/3.2.9/wstx-asl-3.2.9.jar" sourcepath="M2_REPO/org/codehaus/woodstox/wstx-asl/3.2.9/wstx-asl-3.2.9-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/xerces/xercesImpl/2.7.1/xercesImpl-2.7.1.jar"/>
   <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
