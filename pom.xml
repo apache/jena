@@ -79,7 +79,7 @@
     <dependency>
       <groupId>org.apache.lucene</groupId>
       <artifactId>lucene-core</artifactId>
-      <version>2.3.1</version>
+      <version>2.9.3</version>
     </dependency>
 
     <!--
@@ -237,8 +237,8 @@
 	    <!-- "Other packages" catches everything else unless excluded -->
 	  </groups>
           <bottom>Copyright &#169; 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
-          Copyright &#169; 2010 Talis Systems Ltd.
-          Copyright &#169; 2010 Epimorphics Ltd.
+Copyright &#169; 2010 Talis Systems Ltd.
+Copyright &#169; 2010 Epimorphics Ltd.
           </bottom>
         </configuration>
       </plugin>

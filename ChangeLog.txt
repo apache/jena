@@ -3,6 +3,8 @@ ChangeLog for ARQ
 
 ==== ARQ 2.8.8 or 2.9.0
 
++ Upgrade Lucene to v 2.9.3
+  A separate LARQ module is under development - this will use Lucene 3.x.y 
 
 + Bug fix: RIOT: Cope with UTF-8 files with a BOM.
 
