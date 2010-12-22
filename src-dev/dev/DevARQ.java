@@ -17,7 +17,12 @@ public class DevARQ
     // ?? bNode label checks (UPDATE: can't use same bNode label in template and pattern for DELETE/INSERT.)
 
     // Pull up TransformDynamicDataset, TransformGraphRename from TDB.
-    // Better access to union query??? By transform., query context.
+    
+    
+    // Better access to union query??? 
+    // By transform, query context.
+    //  Version for tru=iples evaluation (TransformUnionQuery) and quads evaluation (A2 from TDB)
+    // Document - move from TDB
 
     // <<<< Tasks
 

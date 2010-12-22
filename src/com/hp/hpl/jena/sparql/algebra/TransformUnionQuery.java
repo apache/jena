@@ -17,7 +17,7 @@ import com.hp.hpl.jena.sparql.algebra.op.OpQuadPattern ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.core.Var ;
 
-
+/** Convert query in algrebra form so that the default graph of the query is teh union of named graphs */  
 public class TransformUnionQuery extends TransformCopy
 {
     public static Op transform(Op op)
@@ -80,7 +80,7 @@ public class TransformUnionQuery extends TransformCopy
     @Override
     public Op transform(OpGraph opGraph, Op x)
     {
-        // Remove any Quad.unionGraph - OpBGPs wil be rewritten.
+        // Remove any Quad.unionGraph - OpBGPs will be rewritten.
         return super.transform(opGraph, x) ;
     }
 
