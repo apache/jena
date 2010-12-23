@@ -5,28 +5,29 @@
  */
 
 package dev ;
-import java.util.concurrent.ExecutionException ;
-import java.util.concurrent.ExecutorService ;
-import java.util.concurrent.Executors ;
-import java.util.concurrent.Future ;
-import java.util.concurrent.TimeUnit ;
 
-import org.apache.log4j.Logger ;
-import org.apache.lucene.queryParser.ParseException ;
-import org.junit.Test ;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
-import com.hp.hpl.jena.query.Query ;
-import com.hp.hpl.jena.query.QueryExecution ;
-import com.hp.hpl.jena.query.QueryExecutionFactory ;
-import com.hp.hpl.jena.query.QueryFactory ;
-import com.hp.hpl.jena.query.QuerySolution ;
-import com.hp.hpl.jena.query.ResultSet ;
-import com.hp.hpl.jena.query.larq.IndexBuilderString ;
-import com.hp.hpl.jena.query.larq.IndexLARQ ;
-import com.hp.hpl.jena.query.larq.LARQ ;
-import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.rdf.model.ModelFactory ;
-import com.hp.hpl.jena.shared.Lock ;
+import org.apache.jena.larq.IndexBuilderString;
+import org.apache.jena.larq.IndexLARQ;
+import org.apache.jena.larq.LARQ;
+import org.apache.log4j.Logger;
+import org.apache.lucene.queryParser.ParseException;
+import org.junit.Test;
+
+import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.QueryExecution;
+import com.hp.hpl.jena.query.QueryExecutionFactory;
+import com.hp.hpl.jena.query.QueryFactory;
+import com.hp.hpl.jena.query.QuerySolution;
+import com.hp.hpl.jena.query.ResultSet;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.shared.Lock;
 
 public class Report_LARQ_Concurrent {
     
