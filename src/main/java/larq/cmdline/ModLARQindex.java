@@ -9,6 +9,9 @@ package larq.cmdline;
 
 import java.io.File;
 
+import org.apache.jena.larq.ARQLuceneException;
+import org.apache.jena.larq.IndexLARQ;
+import org.apache.jena.larq.LARQ;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
@@ -21,9 +24,6 @@ import arq.cmdline.ArgModuleGeneral;
 import arq.cmdline.CmdArgModule;
 import arq.cmdline.CmdGeneral;
 
-import com.hp.hpl.jena.query.larq.ARQLuceneException;
-import com.hp.hpl.jena.query.larq.IndexLARQ;
-import com.hp.hpl.jena.query.larq.LARQ;
 
 public class ModLARQindex implements ArgModuleGeneral
 {

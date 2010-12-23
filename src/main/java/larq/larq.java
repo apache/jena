@@ -8,11 +8,12 @@ package larq;
 
 import java.util.Iterator;
 
+import org.apache.jena.larq.HitLARQ;
+import org.apache.jena.larq.IndexLARQ;
+
 import larq.cmdline.CmdLARQ;
 import larq.cmdline.ModLARQindex;
 
-import com.hp.hpl.jena.query.larq.HitLARQ;
-import com.hp.hpl.jena.query.larq.IndexLARQ;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
 
 public class larq extends CmdLARQ
