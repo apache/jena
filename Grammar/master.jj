@@ -417,7 +417,9 @@ void Update() : { }
 {  
    { startUpdateRequest() ; }
    Prologue()
+#ifdef ARQ 
    (Meta())*
+#endif
    Update1() ( <SEMICOLON> (Update())?)?
    { finishUpdateRequest() ; }
 }
@@ -441,7 +443,9 @@ void Update1() : { Update up ; }
   | up = ModifyOld()
 #endif
   )
+#ifdef ARQ
   (Meta())*
+#endif
   {
     emitUpdate(up) ;
     finishUpdateOperation() ;
@@ -499,11 +503,13 @@ Update Copy() : { Target src ; Target dest ; boolean silent = false ; }
   { return new UpdateCopy(src, dest, silent) ; }
 }
 
+#ifdef ARQ
 void Meta() : { QuadDataAcc qd = new QuadDataAcc() ; }
 {
    <META> 
    QuadData(qd)
 }
+#endif
 
 Update InsertData() : { QuadDataAcc qd = new QuadDataAcc() ; Token t ; }
 {

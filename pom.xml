@@ -299,19 +299,27 @@ build.time.txt=${build.time.txt}
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-eclipse-plugin</artifactId>
+        <artifactId>maven-dependency-plugin</artifactId>
         <configuration>
-         <buildOutputDirectory>${project.build.directory}/classes</buildOutputDirectory>
-             <downloadSources>true</downloadSources>
-         <downloadJavadocs>false</downloadJavadocs>
+          <overWriteReleases>false</overWriteReleases>
+          <overWriteIfNewer>true</overWriteIfNewer>
         </configuration>
       </plugin>
 
       <plugin>
-        <!-- This must be the last plug-in atatched to the package phase 
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-eclipse-plugin</artifactId>
+        <configuration>
+          <buildOutputDirectory>${project.build.directory}/classes-eclipse</buildOutputDirectory>
+          <downloadSources>true</downloadSources>
+          <downloadJavadocs>false</downloadJavadocs>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <!-- This must be the last plug-in attached to the package phase 
              because it replies on the packaging of the jar to happen first.
         -->
-
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-assembly-plugin</artifactId>
         <configuration>
@@ -332,27 +340,7 @@ build.time.txt=${build.time.txt}
         </executions>
       </plugin>
 
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <configuration>
-          <overWriteReleases>false</overWriteReleases>
-          <overWriteIfNewer>true</overWriteIfNewer>
-        </configuration>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-eclipse-plugin</artifactId>
-        <configuration>
-          <buildOutputDirectory>${project.build.directory}/classes-eclipse</buildOutputDirectory>
-          <downloadSources>true</downloadSources>
-          <downloadJavadocs>false</downloadJavadocs>
-        </configuration>
-      </plugin>
-
     </plugins>
-
   </build>
 
   <reporting>

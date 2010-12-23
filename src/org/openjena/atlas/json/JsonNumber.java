@@ -48,7 +48,7 @@ public class JsonNumber extends JsonPrimitive
     @Override
     public boolean isNumber()           { return true ; }
     @Override
-    public JsonNumber getNumber()       { return this ; }
+    public JsonNumber getAsNumber()       { return this ; }
     
     public Number value()               { return this.number ; }
 

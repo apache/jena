@@ -303,7 +303,6 @@ void Update() : { }
 {
    { startUpdateRequest() ; }
    Prologue()
-   (Meta())*
    Update1() ( <SEMICOLON> (Update())?)?
    { finishUpdateRequest() ; }
 }
@@ -322,7 +321,6 @@ void Update1() : { Update up ; }
   | up = DeleteWhere()
   | up = Modify()
   )
-  (Meta())*
   {
     emitUpdate(up) ;
     finishUpdateOperation() ;
@@ -365,11 +363,6 @@ Update Copy() : { Target src ; Target dest ; boolean silent = false ; }
 {
   <COPY> (<SILENT> { silent=true ; } )? src = GraphOrDefault() <TO> dest = GraphOrDefault()
   { return new UpdateCopy(src, dest, silent) ; }
-}
-void Meta() : { QuadDataAcc qd = new QuadDataAcc() ; }
-{
-   <META>
-   QuadData(qd)
 }
 Update InsertData() : { QuadDataAcc qd = new QuadDataAcc() ; Token t ; }
 {

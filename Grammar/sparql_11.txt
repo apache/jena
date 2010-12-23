@@ -285,8 +285,8 @@ NON-TERMINALS
 // Update only entry point
 	UpdateUnit	:=	Update <EOF>
 // Strict SPARQL 1.1 : mandatory separator, optional terminator.
-	Update	:=	Prologue ( Meta )* Update1 ( <SEMICOLON> ( Update )? )?
-	Update1	:=	( Load | Clear | Drop | Add | Move | Copy | Create | InsertData | DeleteData | DeleteWhere | Modify ) ( Meta )*
+	Update	:=	Prologue Update1 ( <SEMICOLON> ( Update )? )?
+	Update1	:=	( Load | Clear | Drop | Add | Move | Copy | Create | InsertData | DeleteData | DeleteWhere | Modify )
 	Load	:=	<LOAD> IRIref ( <INTO> GraphRef )?
 	Clear	:=	<CLEAR> ( <SILENT> )? GraphRefAll
 	Drop	:=	<DROP> ( <SILENT> )? GraphRefAll
@@ -294,7 +294,6 @@ NON-TERMINALS
 	Add	:=	<ADD> ( <SILENT> )? GraphOrDefault <TO> GraphOrDefault
 	Move	:=	<MOVE> ( <SILENT> )? GraphOrDefault <TO> GraphOrDefault
 	Copy	:=	<COPY> ( <SILENT> )? GraphOrDefault <TO> GraphOrDefault
-	Meta	:=	<META> QuadData
 	InsertData	:=	<INSERT_DATA> QuadData
 	DeleteData	:=	<DELETE_DATA> QuadData
 	DeleteWhere	:=	<DELETE_WHERE> QuadPattern

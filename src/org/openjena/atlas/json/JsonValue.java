@@ -26,7 +26,7 @@ public abstract class JsonValue implements Printable
     public boolean isNull()             { throw new JsonException("Not a JSON Null") ; }
 
     public boolean isNumber()           { return false ; }
-    public JsonNumber getNumber()       { throw new JsonException("Not a JSON number") ; }
+    public JsonNumber getAsNumber()     { throw new JsonException("Not a JSON number") ; }
     
     public boolean isString()           { return false ; }
     public JsonString getAsString()     { throw new JsonException("Not a JSON string") ; }
@@ -56,10 +56,6 @@ public abstract class JsonValue implements Printable
         this.visit(w) ;
         w.finishOutput() ;
     }
-    
-//    public boolean isInteger()      { return false ; }
-//    public boolean isDecimal()      { return false ; }
-//    public boolean isDouble()       { return false ; }
 }
 
 /*
