@@ -23,7 +23,6 @@ import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.QueryExecutionFactory;
 import com.hp.hpl.jena.query.QueryFactory;
-import com.hp.hpl.jena.query.QuerySolution;
 import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
@@ -48,8 +47,7 @@ public class Report_LARQ_Concurrent {
 
         ExecutorService executorService = Executors.newCachedThreadPool();  
         
-        @SuppressWarnings("rawtypes")
-        Future[] future = new Future[numThreads];
+        Future<?>[] future = new Future<?>[numThreads];
         
         for (int t=0; t<numThreads; t++) {
             future[t]= executorService.submit(new R());
@@ -87,7 +85,7 @@ public class Report_LARQ_Concurrent {
                      QueryExecution qExec = QueryExecutionFactory.create(query, model) ;
                      ResultSet resultSet = qExec.execSelect();
                      while (resultSet.hasNext()) {
-                         QuerySolution soln = resultSet.next();
+                         resultSet.next();
                      }
                 } finally {
                     model.leaveCriticalSection();
