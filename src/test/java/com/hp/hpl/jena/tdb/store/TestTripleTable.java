@@ -15,7 +15,7 @@ import org.openjena.atlas.junit.BaseTest ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.sparql.sse.SSE ;
+import com.hp.hpl.jena.sparql.util.NodeFactory ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.sys.SetupTDB ;
 
@@ -55,12 +55,12 @@ public class TestTripleTable extends BaseTest
         assertFalse(iter.hasNext()) ;
     }
     
-    static Node n1 = SSE.parseNode("<http://example/n1>") ;
-    static Node n2 = SSE.parseNode("<http://example/n2>") ;
-    static Node n3 = SSE.parseNode("<http://example/n3>") ;
-    static Node n4 = SSE.parseNode("<http://example/n4>") ;
-    static Node n5 = SSE.parseNode("<http://example/n5>") ;
-    static Node n6 = SSE.parseNode("<http://example/n6>") ;
+    static Node n1 = NodeFactory.parseNode("<http://example/n1>") ;
+    static Node n2 = NodeFactory.parseNode("<http://example/n2>") ;
+    static Node n3 = NodeFactory.parseNode("<http://example/n3>") ;
+    static Node n4 = NodeFactory.parseNode("<http://example/n4>") ;
+    static Node n5 = NodeFactory.parseNode("<http://example/n5>") ;
+    static Node n6 = NodeFactory.parseNode("<http://example/n6>") ;
     
     
     

@@ -11,30 +11,30 @@ import org.junit.Test ;
 import org.openjena.atlas.junit.BaseTest ;
 
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.sparql.sse.SSE ;
+import com.hp.hpl.jena.sparql.util.NodeFactory ;
 
 public class TestNodeLib extends BaseTest
 {
     // Tests of TDBs NodeLib
     @Test public void hash1() 
     {
-        Node x1 = SSE.parseNode("<http://example/x>") ;
-        Node x2 = SSE.parseNode("<http://example/x>") ;
+        Node x1 = NodeFactory.parseNode("<http://example/x>") ;
+        Node x2 = NodeFactory.parseNode("<http://example/x>") ;
         assertEquals(hash(x1), hash(x2)) ;
     }
     
     @Test public void hash2() 
     {
-        Node x1 = SSE.parseNode("<http://example/x1>") ;
-        Node x2 = SSE.parseNode("<http://example/x2>") ;
+        Node x1 = NodeFactory.parseNode("<http://example/x1>") ;
+        Node x2 = NodeFactory.parseNode("<http://example/x2>") ;
         assertNotEquals(hash(x1), hash(x2)) ;
     }
     
     @Test public void hash3() 
     {
-        Node x1 = SSE.parseNode("<lex>") ;
-        Node x2 = SSE.parseNode("'lex'") ;
-        Node x3 = SSE.parseNode("_:lex") ;
+        Node x1 = NodeFactory.parseNode("<lex>") ;
+        Node x2 = NodeFactory.parseNode("'lex'") ;
+        Node x3 = NodeFactory.parseNode("_:lex") ;
         assertNotEquals(hash(x1), hash(x2)) ;
         assertNotEquals(hash(x2), hash(x3)) ;
         assertNotEquals(hash(x3), hash(x1)) ;
@@ -42,16 +42,16 @@ public class TestNodeLib extends BaseTest
     
     @Test public void hash4() 
     {
-        Node x1 = SSE.parseNode("123") ;
-        Node x2 = SSE.parseNode("'123'") ;
+        Node x1 = NodeFactory.parseNode("123") ;
+        Node x2 = NodeFactory.parseNode("'123'") ;
         assertNotEquals(hash(x1), hash(x2)) ;
     }
 
     @Test public void hash5() 
     {
-        Node x1 = SSE.parseNode("123") ;
-        Node x2 = SSE.parseNode("123.0") ;
-        Node x3 = SSE.parseNode("123e0") ;
+        Node x1 = NodeFactory.parseNode("123") ;
+        Node x2 = NodeFactory.parseNode("123.0") ;
+        Node x3 = NodeFactory.parseNode("123e0") ;
         assertNotEquals(hash(x1), hash(x2)) ;
         assertNotEquals(hash(x2), hash(x3)) ;
         assertNotEquals(hash(x3), hash(x1)) ;

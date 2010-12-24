@@ -94,7 +94,7 @@ public class NodecSSE implements Nodec
             return Node.createURI(str) ;
         }
         // -- Old - expensive.
-        // Node n = SSE.parseNode(str) ;
+        // Node n = NodeFactory.parseNode(str) ;
         
         Tokenizer tokenizer = TokenizerFactory.makeTokenizerString(str) ;
         Node n = tokenizer.next().asNode() ;

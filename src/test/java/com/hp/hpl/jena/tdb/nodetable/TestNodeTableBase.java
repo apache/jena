@@ -10,20 +10,19 @@ import org.junit.Test ;
 import org.openjena.atlas.junit.BaseTest ;
 
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.sparql.sse.SSE ;
-import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
+import com.hp.hpl.jena.sparql.util.NodeFactory ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
 
 public abstract class TestNodeTableBase extends BaseTest
 {
     protected abstract NodeTable createEmptyNodeTable() ;
     
-    static protected final Node n1 = SSE.parseNode("<http://example/x>") ;
-    static protected final Node n2 = SSE.parseNode("1") ;
+    static protected final Node n1 = NodeFactory.parseNode("<http://example/x>") ;
+    static protected final Node n2 = NodeFactory.parseNode("1") ;
     
     protected void testNode(String str)
     {
-        testNode(SSE.parseNode(str)) ;
+        testNode(NodeFactory.parseNode(str)) ;
     }
     
     protected void testNode(Node n)

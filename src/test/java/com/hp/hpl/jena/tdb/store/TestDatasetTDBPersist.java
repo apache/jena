@@ -24,6 +24,7 @@ import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
+import com.hp.hpl.jena.sparql.util.NodeFactory ;
 import com.hp.hpl.jena.tdb.ConfigTest ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.junit.GraphLocation ;
@@ -32,9 +33,9 @@ import com.hp.hpl.jena.tdb.sys.TDBMaker ;
 /** Testing persistence  */ 
 public class TestDatasetTDBPersist extends BaseTest
 {
-    static Node n0 = SSE.parseNode("<http://example/n0>") ; 
-    static Node n1 = SSE.parseNode("<http://example/n1>") ;
-    static Node n2 = SSE.parseNode("<http://example/n2>") ;
+    static Node n0 = NodeFactory.parseNode("<http://example/n0>") ; 
+    static Node n1 = NodeFactory.parseNode("<http://example/n1>") ;
+    static Node n2 = NodeFactory.parseNode("<http://example/n2>") ;
     
     static GraphLocation graphLocation = null ;
     
