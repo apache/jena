@@ -8,7 +8,6 @@
 	<classpathentry kind="lib" path="lib/icu4j-3.4.4.jar"/>
 	<classpathentry kind="lib" path="lib/iri-0.8.jar" sourcepath="lib-src/iri-0.8-sources.jar"/>
 	<classpathentry kind="lib" path="lib/junit-4.5.jar"/>
-	<classpathentry kind="lib" path="lib/lucene-core-2.9.3.jar"/>
 	<classpathentry kind="lib" path="lib/slf4j-api-1.5.8.jar"/>
 	<classpathentry kind="lib" path="lib/slf4j-log4j12-1.5.8.jar"/>
 	<classpathentry kind="lib" path="lib/log4j-1.2.14.jar"/>
@@ -17,5 +16,6 @@
 	<classpathentry kind="lib" path="lib/xercesImpl-2.7.1.jar"/>
 	<classpathentry kind="lib" path="lib/stax-api-1.0.1.jar"/>
 	<classpathentry kind="lib" path="lib/wstx-asl-3.2.9.jar"/>
+	<classpathentry kind="lib" path="lib/lucene-core-2.9.3.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>

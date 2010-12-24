@@ -190,8 +190,8 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     case LCASE:
     case ENCODE_FOR_URI:
     case CONTAINS:
-    case STARTS:
-    case ENDS:
+    case STRSTARTS:
+    case STRENDS:
     case YEAR:
     case MONTH:
     case DAY:
@@ -274,8 +274,8 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
         case LCASE:
         case ENCODE_FOR_URI:
         case CONTAINS:
-        case STARTS:
-        case ENDS:
+        case STRSTARTS:
+        case STRENDS:
         case YEAR:
         case MONTH:
         case DAY:
@@ -344,8 +344,8 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
             case LCASE:
             case ENCODE_FOR_URI:
             case CONTAINS:
-            case STARTS:
-            case ENDS:
+            case STRSTARTS:
+            case STRENDS:
             case YEAR:
             case MONTH:
             case DAY:
@@ -469,8 +469,8 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
         case LCASE:
         case ENCODE_FOR_URI:
         case CONTAINS:
-        case STARTS:
-        case ENDS:
+        case STRSTARTS:
+        case STRENDS:
         case YEAR:
         case MONTH:
         case DAY:
@@ -760,8 +760,8 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
       case LCASE:
       case ENCODE_FOR_URI:
       case CONTAINS:
-      case STARTS:
-      case ENDS:
+      case STRSTARTS:
+      case STRENDS:
       case YEAR:
       case MONTH:
       case DAY:
@@ -823,8 +823,8 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     case LCASE:
     case ENCODE_FOR_URI:
     case CONTAINS:
-    case STARTS:
-    case ENDS:
+    case STRSTARTS:
+    case STRENDS:
     case YEAR:
     case MONTH:
     case DAY:
@@ -919,8 +919,8 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
       case LCASE:
       case ENCODE_FOR_URI:
       case CONTAINS:
-      case STARTS:
-      case ENDS:
+      case STRSTARTS:
+      case STRENDS:
       case YEAR:
       case MONTH:
       case DAY:
@@ -1000,8 +1000,8 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
       case LCASE:
       case ENCODE_FOR_URI:
       case CONTAINS:
-      case STARTS:
-      case ENDS:
+      case STRSTARTS:
+      case STRENDS:
       case YEAR:
       case MONTH:
       case DAY:
@@ -1087,8 +1087,8 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     case LCASE:
     case ENCODE_FOR_URI:
     case CONTAINS:
-    case STARTS:
-    case ENDS:
+    case STRSTARTS:
+    case STRENDS:
     case YEAR:
     case MONTH:
     case DAY:
@@ -1142,8 +1142,8 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
       case LCASE:
       case ENCODE_FOR_URI:
       case CONTAINS:
-      case STARTS:
-      case ENDS:
+      case STRSTARTS:
+      case STRENDS:
       case YEAR:
       case MONTH:
       case DAY:
@@ -2489,8 +2489,8 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     case LCASE:
     case ENCODE_FOR_URI:
     case CONTAINS:
-    case STARTS:
-    case ENDS:
+    case STRSTARTS:
+    case STRENDS:
     case YEAR:
     case MONTH:
     case DAY:
@@ -3872,8 +3872,8 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     case LCASE:
     case ENCODE_FOR_URI:
     case CONTAINS:
-    case STARTS:
-    case ENDS:
+    case STRSTARTS:
+    case STRENDS:
     case YEAR:
     case MONTH:
     case DAY:
@@ -3956,8 +3956,8 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     case LCASE:
     case ENCODE_FOR_URI:
     case CONTAINS:
-    case STARTS:
-    case ENDS:
+    case STRSTARTS:
+    case STRENDS:
     case YEAR:
     case MONTH:
     case DAY:
@@ -4190,8 +4190,8 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
       jj_consume_token(RPAREN);
       {if (true) return new E_StrContains(expr1, expr2) ;}
       break;
-    case STARTS:
-      jj_consume_token(STARTS);
+    case STRSTARTS:
+      jj_consume_token(STRSTARTS);
       jj_consume_token(LPAREN);
       expr1 = Expression();
       jj_consume_token(COMMA);
@@ -4199,8 +4199,8 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
       jj_consume_token(RPAREN);
       {if (true) return new E_StrStartsWith(expr1, expr2) ;}
       break;
-    case ENDS:
-      jj_consume_token(ENDS);
+    case STRENDS:
+      jj_consume_token(STRENDS);
       jj_consume_token(LPAREN);
       expr1 = Expression();
       jj_consume_token(COMMA);
@@ -4534,8 +4534,8 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
       case LCASE:
       case ENCODE_FOR_URI:
       case CONTAINS:
-      case STARTS:
-      case ENDS:
+      case STRSTARTS:
+      case STRENDS:
       case YEAR:
       case MONTH:
       case DAY:

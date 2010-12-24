@@ -109,6 +109,12 @@ public abstract class NodeValue extends ExprNode
     public static final NodeValue nvZERO = NodeValue.makeNode(NodeConst.nodeZero) ;
     public static final NodeValue nvONE  = NodeValue.makeNode(NodeConst.nodeOne) ;
     
+    public static final NodeValue nvNaN     = NodeValue.makeNode("NaN", XSDDatatype.XSDdouble) ;
+    public static final NodeValue nvINF     = NodeValue.makeNode("INF", XSDDatatype.XSDdouble) ;
+    public static final NodeValue nvNegINF  = NodeValue.makeNode("-INF",XSDDatatype.XSDdouble) ;
+    
+    public static final NodeValue nvEmptyString  = NodeValue.makeString("") ;
+    
     // Use "==" for equality.
     private static final String strForUnNode = "node value nothing" ;
     public static final NodeValue nvNothing = NodeValue.makeNode(Node.createAnon(new AnonId("node value nothing"))) ;

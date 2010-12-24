@@ -347,7 +347,7 @@ public class TestSSE_Basic extends TestCase
     
     private void testNode(String str, Node result)
     {
-        Node node = SSE.parseNode(str, null) ;
+        Node node = NodeFactory.parseNode(str) ;
         assertEquals(result, node) ;
     }
 

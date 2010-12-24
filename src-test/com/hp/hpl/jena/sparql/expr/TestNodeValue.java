@@ -17,7 +17,7 @@ import org.junit.Test ;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp ;
-import com.hp.hpl.jena.sparql.sse.SSE ;
+import com.hp.hpl.jena.sparql.util.NodeFactory ;
 
 public class TestNodeValue extends TestCase
 {
@@ -384,7 +384,7 @@ public class TestNodeValue extends TestCase
     
     static NodeValue make(String str)
     {
-        Node n = SSE.parseNode(str) ;
+        Node n = NodeFactory.parseNode(str) ;
         NodeValue nv = NodeValue.makeNode(n) ;
         return nv ;
     }

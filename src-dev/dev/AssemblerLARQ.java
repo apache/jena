@@ -38,9 +38,9 @@ public class AssemblerLARQ extends AssemblerBase implements Assembler
             String index = GraphUtils.getAsStringValue(root, LARQAssemblerVocab.pIndex) ;
             
             
-            Directory dir = FSDirectory.open(new File(index)) ;
-            IndexReader indexReader = IndexReader.open(dir, false) ;
-            //IndexReader indexReader = IndexReader.open(index) ;
+//            Directory dir = FSDirectory.open(new File(index)) ;
+//            IndexReader indexReader = IndexReader.open(dir, false) ;
+            IndexReader indexReader = IndexReader.open(index) ;
             
             IndexLARQ indexLARQ = new IndexLARQ(indexReader) ;
             return indexLARQ ;

@@ -11,7 +11,7 @@ import org.openjena.atlas.junit.BaseTest ;
 import org.openjena.riot.pipeline.normalize.CanonicalizeLiteral ;
 
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.sparql.sse.SSE ;
+import com.hp.hpl.jena.sparql.util.NodeFactory ;
 
 public class TestNormalization extends BaseTest
 {
@@ -91,11 +91,11 @@ public class TestNormalization extends BaseTest
 
     private static void normalize(String input, String expected)
     {
-        Node n1 = SSE.parseNode(input) ;
+        Node n1 = NodeFactory.parseNode(input) ;
         assertTrue("Invalid lexical form", n1.getLiteralDatatype().isValid(n1.getLiteralLexicalForm()));
         
         Node n2 = CanonicalizeLiteral.get().convert(n1) ;
-        Node n3 = SSE.parseNode(expected) ;
+        Node n3 = NodeFactory.parseNode(expected) ;
         assertEquals("Invalid canonicalization (lex)", n3.getLiteralLexicalForm(), n2.getLiteralLexicalForm()) ;
         assertEquals("Invalid canonicalization (node)", n3, n2) ;
     }
@@ -105,9 +105,9 @@ public class TestNormalization extends BaseTest
     
     private static void normalizeLang(String input, String expected, boolean correct)
     {
-        Node n1 = SSE.parseNode(input) ;
+        Node n1 = NodeFactory.parseNode(input) ;
         Node n2 = CanonicalizeLiteral.get().convert(n1) ;
-        Node n3 = SSE.parseNode(expected) ;
+        Node n3 = NodeFactory.parseNode(expected) ;
         if ( correct )
         {
             assertEquals("Invalid canonicalization (lang)", n3.getLiteralLanguage(), n2.getLiteralLanguage()) ;

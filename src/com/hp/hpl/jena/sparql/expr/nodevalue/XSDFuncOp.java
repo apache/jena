@@ -331,6 +331,7 @@ public class XSDFuncOp
     // @@ To NodeFunctions.
     /** String operations - se NodeFunctions beause we have to cope with 
      * simple literals, literals with language and xsd;string 
+     * @param subLabel 
      */
 
     private static Node checkAndGetString(String label, NodeValue nv)
@@ -389,22 +390,49 @@ public class XSDFuncOp
         String lang = n.getLiteralLanguage() ;
         
         // A string of some kind.
+        
+        // XSD F&O: 
         try {
+            // NaN, float and double.
+            
             String string = n.getLiteralLexicalForm() ;
-            int start = intValueStr(nvStart) ;
+            int start = intValueStr(nvStart, string.length()+1) ;
+            int length ;
+            
+            if ( nvLength != null )
+                length = intValueStr(nvLength, 0) ;
+            else
+            {
+                length = string.length() ;
+                if ( start < 0 )
+                    length = length-start ; // Address to end of string.
+            }
+            
+           
+            int finish = start + length ;
+            
+            // Adjust for zero and negative rules for XSD.
+            // Calculate the finish, regardless of whether start is zero of negative ...
+
+            // Adjust to java - and ensure within the string.
+            // F&O strings are one-based ; convert to java, 0 based.
+            
+            // java needs indexes in-bounds.
             if ( start <= 0 )
                 start = 1 ;
-            start-- ; // F&O strings are one-based ; convert to java. 
-            
-            if ( nvLength == null )
-                return NodeValue.makeString(string.substring(start)) ;
-            
-            int length = intValueStr(nvLength) ;
-            int finish = start + length ;
+            start-- ; 
+            finish -- ;
             if ( finish > string.length() )
                 finish = string.length() ; // Java index must be within bounds.
+            if ( finish < start )
+                finish = start ;
+            
             if ( finish < 0 )
                 finish = 0 ;
+            
+            if ( string.length() == 0 )
+                return NodeValue.nvEmptyString ;
+            
             String lex2 = string.substring(start, finish) ;
             Node n2 = Node.createLiteral(lex2, lang, dt) ;
             return NodeValue.makeNode(n2) ;
@@ -414,33 +442,52 @@ public class XSDFuncOp
         }
     }
     
-    private static int intValueStr(NodeValue nv) 
+    private static int intValueStr(NodeValue nv, int valueNan) 
     {
         if ( nv.isInteger() ) return nv.getInteger().intValue() ;
         if ( nv.isDecimal() )
             // No decimal round in Java 1.4
             return (int)Math.round(nv.getDecimal().doubleValue()) ;
         
-        if ( nv.isFloat()   ) return Math.round(nv.getFloat()) ;
-        if ( nv.isDouble()  ) return (int)Math.round(nv.getDouble()) ;
+        if ( nv.isFloat() ) 
+        {
+            float f = nv.getFloat() ;
+            if ( Float.isNaN(f)) return valueNan ; 
+            return Math.round(f) ;
+        }
+        if ( nv.isDouble() )
+        {
+            double d = nv.getDouble() ;
+            if ( Double.isNaN(d)) return valueNan ; 
+            return (int)Math.round(d) ;
+        }
         throw new ExprEvalException("Not a number:"+nv) ;
     }
     
+    // Check for string operations with primary first arg and second second arg (e.g. CONTAINS)
     private static void check2(String label, NodeValue arg1, NodeValue arg2) 
     {
-        Node n1 = checkAndGetString(label+"(arg 1)", arg1) ;
-        Node n2 = checkAndGetString(label+"(arg 2)", arg2) ;
+        Node n1 = checkAndGetString(label, arg1) ;
+        Node n2 = checkAndGetString(label, arg2) ;
         String lang1 = n1.getLiteralLanguage() ;
         String lang2 = n2.getLiteralLanguage() ;
         if (lang1 == null ) lang1 = "" ;
         if (lang2 == null ) lang2 = "" ;
         
+        if ( n1.getLiteralDatatype() != null )
+        {
+            // n1 is an xsd string by checkAndGetString
+            if ( XSDDatatype.XSDstring.equals(n2.getLiteralDatatypeURI()) ) return ; 
+            if ( n2.getLiteralLanguage().equals("") ) return ;
+            throw new ExprEvalException(label+": Incompatible: "+arg1+" and "+arg2) ;
+        }
+        
         // Incompatible?
         // arg1 simple or xsd:string, arg2 has a lang.
         if ( lang1.equals("") && ! lang2.equals("") )
             throw new ExprEvalException(label+": Incompatible: "+arg1+" and "+arg2) ;
-        // arg1 with lang, arg2 has a diferent lang.
-        if ( ! lang1.equals("") && ! lang1.equals(lang2) )  
+        // arg1 with lang, arg2 has a different lang.
+        if ( ! lang1.equals("") && (!lang2.equals("") && ! lang1.equals(lang2) ) )  
             throw new ExprEvalException(label+": Incompatible: "+arg1+" and "+arg2) ;
     }
     
@@ -479,7 +526,7 @@ public class XSDFuncOp
 
     public static NodeValue strUpperCase(NodeValue string)
     {
-        Node n = checkAndGetString("lcase", string) ;
+        Node n = checkAndGetString("ucase", string) ;
         String lex = n.getLiteralLexicalForm() ;
         Node n2 = Node.createLiteral(lex.toUpperCase(), n.getLiteralLanguage(), n.getLiteralDatatype()) ; 
         return NodeValue.makeNode(n2) ;
@@ -975,68 +1022,105 @@ public class XSDFuncOp
     
     public static NodeValue dtGetYear(NodeValue nv)
     {
-        if ( nv.isDate() || nv.isDateTime() || nv.isGYear() || nv.isGYearMonth() )
-        {        
-            XSDDateTime dt = nv.getDateTime() ;
-            int x = dt.getYears() ;
-            return NodeValue.makeInteger(x) ;
-        }
-        throw new ExprEvalException("Not a year datatype") ;
+        String lex = nv.getNode().getLiteralLexicalForm() ;
+        DateTimeStruct dts ;
+        
+        if ( nv.isDateTime() )
+            dts = DateTimeStruct.parseDateTime(lex) ;
+        else if ( nv.isDate() ) 
+            dts = DateTimeStruct.parseDate(lex) ;
+        else if ( nv.isGYear() )
+            dts = DateTimeStruct.parseGYear(lex) ;
+        else if (nv.isGYearMonth() )
+            dts = DateTimeStruct.parseGYearMonth(lex) ;
+//        else if (nv.isGMonth() )
+//            dts = DateTimeStruct.parseGMonth(lex) ;
+//        else if (nv.isGMonthDay() )
+//            dts = DateTimeStruct.parseGMonthDay(lex) ;
+//        else if (nv.isGDay() )
+//            dts = DateTimeStruct.parseGDay(lex) ;
+
+        
+        else
+            throw new ExprEvalException("Not a year datatype") ;
+        return NodeValue.makeNode(dts.year, XSDDatatype.XSDinteger) ;
     }
 
     public static NodeValue dtGetMonth(NodeValue nv)
     {
-        if ( nv.isDate() || nv.isDateTime() || nv.isGYearMonth() || nv.isGMonth() || nv.isGMonthDay() )
-        {        
-            XSDDateTime dt = nv.getDateTime() ;
-            int x = dt.getMonths() ;
-            return NodeValue.makeInteger(x) ;
-        }
-        throw new ExprEvalException("Not a month datatype") ;
+        String lex = nv.getNode().getLiteralLexicalForm() ;
+        DateTimeStruct dts ;
+        
+        if ( nv.isDateTime() )
+            dts = DateTimeStruct.parseDateTime(lex) ;
+        else if ( nv.isDate() ) 
+            dts = DateTimeStruct.parseDate(lex) ;
+//        else if ( nv.isGYear() )
+//            dts = DateTimeStruct.parseGYear(lex) ;
+        else if (nv.isGYearMonth() )
+            dts = DateTimeStruct.parseGYearMonth(lex) ;
+        else if (nv.isGMonth() )
+            dts = DateTimeStruct.parseGMonth(lex) ;
+        else if (nv.isGMonthDay() )
+            dts = DateTimeStruct.parseGMonthDay(lex) ;
+//        else if (nv.isGDay() )
+//            dts = DateTimeStruct.parseGDay(lex) ;
+        else
+            throw new ExprEvalException("Not a month datatype") ;
+        return NodeValue.makeNode(dts.month, XSDDatatype.XSDinteger) ;
     }
 
     public static NodeValue dtGetDay(NodeValue nv)
     {
-        if ( nv.isDate() || nv.isDateTime() || nv.isGMonthDay() || nv.isGDay() )
-        {        
-            XSDDateTime dt = nv.getDateTime() ;
-            int x = dt.getDays() ;
-            return NodeValue.makeInteger(x) ;
-        }
-        throw new ExprEvalException("Not a day datatype") ;
+        String lex = nv.getNode().getLiteralLexicalForm() ;
+        DateTimeStruct dts ;
+        
+        if ( nv.isDateTime() )
+            dts = DateTimeStruct.parseDateTime(lex) ;
+        else if ( nv.isDate() ) 
+            dts = DateTimeStruct.parseDate(lex) ;
+//        else if ( nv.isGYear() )
+//            dts = DateTimeStruct.parseGYear(lex) ;
+//        else if (nv.isGYearMonth() )
+//            dts = DateTimeStruct.parseGYearMonth(lex) ;
+//        else if (nv.isGMonth() )
+//            dts = DateTimeStruct.parseGMonth(lex) ;
+        else if (nv.isGMonthDay() )
+            dts = DateTimeStruct.parseGMonthDay(lex) ;
+        else if (nv.isGDay() )
+            dts = DateTimeStruct.parseGDay(lex) ;
+        else
+            throw new ExprEvalException("Not a month datatype") ;
+        return NodeValue.makeNode(dts.day, XSDDatatype.XSDinteger) ;
     }
 
+    private static DateTimeStruct parseTime(NodeValue nv)
+    {
+        String lex = nv.getNode().getLiteralLexicalForm() ;
+        if ( nv.isDateTime() )
+            return DateTimeStruct.parseDateTime(lex) ;
+        else if ( nv.isTime() )
+            return DateTimeStruct.parseTime(lex) ;
+        else
+            throw new ExprEvalException("Not a datatype for time") ;    
+    }
+    
     public static NodeValue dtGetHours(NodeValue nv)
     {
-        if ( nv.isDateTime() || nv.isTime() )
-        {        
-            XSDDateTime dt = nv.getDateTime() ;
-            int x = dt.getHours() ;
-            return NodeValue.makeInteger(x) ;
-        }
-        throw new ExprEvalException("Not a datatype with 'hours'") ;
+        DateTimeStruct dts = parseTime(nv) ;
+        return NodeValue.makeNode(dts.hour, XSDDatatype.XSDinteger) ;
     }
 
     public static NodeValue dtGetMinutes(NodeValue nv)
     {
-        if ( nv.isDateTime() || nv.isTime() )
-        {        
-            XSDDateTime dt = nv.getDateTime() ;
-            int x = dt.getMinutes() ;
-            return NodeValue.makeInteger(x) ;
-        }
-        throw new ExprEvalException("Not a datatype with 'minutes'") ;
+        DateTimeStruct dts = parseTime(nv) ;
+        return NodeValue.makeNode(dts.minute, XSDDatatype.XSDinteger) ;
     }
 
     public static NodeValue dtGetSeconds(NodeValue nv)
     {
-        if ( nv.isDateTime() || nv.isTime() )
-        {        
-            XSDDateTime dt = nv.getDateTime() ;
-            double x = dt.getSeconds() ;
-            return NodeValue.makeDecimal(x) ;
-        }
-        throw new ExprEvalException("Not a datatype with 'seconds'") ;
+        DateTimeStruct dts = parseTime(nv) ;
+        return NodeValue.makeNode(dts.second, XSDDatatype.XSDdecimal) ;
     }
 
     public static NodeValue dtGetTimezone(NodeValue nv)

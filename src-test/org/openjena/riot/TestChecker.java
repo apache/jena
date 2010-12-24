@@ -11,12 +11,13 @@ package org.openjena.riot;
 import org.junit.After ;
 import org.junit.Before ;
 import org.junit.Test ;
+import org.openjena.riot.ErrorHandlerTestLib.ExError ;
+import org.openjena.riot.ErrorHandlerTestLib.ExWarning ;
 import org.openjena.riot.system.Checker ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.shared.impl.JenaParameters ;
-import com.hp.hpl.jena.sparql.sse.SSE ;
-import static  org.openjena.riot.ErrorHandlerTestLib.* ;
+import com.hp.hpl.jena.sparql.util.NodeFactory ;
 
 public class TestChecker
 {
@@ -120,7 +121,7 @@ public class TestChecker
 
     private static void check(String string)
     {
-        Node n = SSE.parseNode(string) ;
+        Node n = NodeFactory.parseNode(string) ;
         checker.check(n, -1, -1) ;
     }
     

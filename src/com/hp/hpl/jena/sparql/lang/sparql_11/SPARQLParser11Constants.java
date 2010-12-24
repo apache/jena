@@ -192,9 +192,9 @@ public interface SPARQLParser11Constants {
   /** RegularExpression Id. */
   int CONTAINS = 93;
   /** RegularExpression Id. */
-  int STARTS = 94;
+  int STRSTARTS = 94;
   /** RegularExpression Id. */
-  int ENDS = 95;
+  int STRENDS = 95;
   /** RegularExpression Id. */
   int YEAR = 96;
   /** RegularExpression Id. */
@@ -485,8 +485,8 @@ public interface SPARQLParser11Constants {
     "\"LCASE\"",
     "\"ENCODE_FOR_URI\"",
     "\"CONTAINS\"",
-    "\"STARTS\"",
-    "\"ENDS\"",
+    "\"strSTARTS\"",
+    "\"strENDS\"",
     "\"YEAR\"",
     "\"MONTH\"",
     "\"DAY\"",

@@ -156,8 +156,8 @@ public class Tags
     public static final String tagSubstr        = "substr" ;
     public static final String tagStrUppercase  = "ucase" ;
     public static final String tagStrLowercase  = "lcase" ;
-    public static final String tagStrEnds       = "ends" ;
-    public static final String tagStrStarts     = "starts" ;
+    public static final String tagStrEnds       = "strends" ;
+    public static final String tagStrStarts     = "strstarts" ;
     public static final String tagStrContains   = "contains" ;
     public static final String tagStrEncodeForURI     = "encode_for_uri" ;
     public static final String tagConcat        = "concat" ;

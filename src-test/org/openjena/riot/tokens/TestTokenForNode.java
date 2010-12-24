@@ -14,6 +14,7 @@ import org.openjena.riot.system.PrefixMap ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.rdf.model.AnonId ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
+import com.hp.hpl.jena.sparql.util.NodeFactory ;
 
 public class TestTokenForNode extends BaseTest 
 {
@@ -63,7 +64,7 @@ public class TestTokenForNode extends BaseTest
     private static void test(String nodeStr,
                              TokenType type, String image, String image2, Token subToken)
     {
-        Node n = SSE.parseNode(nodeStr) ;
+        Node n = NodeFactory.parseNode(nodeStr) ;
         test(n, type, image, image2, subToken) ;
     }
     

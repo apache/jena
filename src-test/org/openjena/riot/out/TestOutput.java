@@ -17,7 +17,7 @@ import org.openjena.atlas.junit.BaseTest ;
 import org.openjena.riot.system.Prologue ;
 
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.sparql.sse.SSE ;
+import com.hp.hpl.jena.sparql.util.NodeFactory ;
 
 public class TestOutput extends BaseTest
 {
@@ -75,7 +75,7 @@ public class TestOutput extends BaseTest
     
     private static String stringForNode(String nodeStr, Prologue prologue, String encoding)
     {
-        Node node = SSE.parseNode(nodeStr) ;
+        Node node = NodeFactory.parseNode(nodeStr) ;
         try
         {
             ByteArrayOutputStream bytes = new ByteArrayOutputStream() ;

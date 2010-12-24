@@ -31,6 +31,7 @@ import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterSingleton ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.sparql.sse.builders.BuilderResultSet ;
+import com.hp.hpl.jena.sparql.util.NodeFactory ;
 
 public class TestResultSet extends TestCase
 {
@@ -237,8 +238,8 @@ public class TestResultSet extends TestCase
     // Value based 
     @Test public void test_RS_cmp_value_1()
     {
-        ResultSetRewindable rs1 = makeRewindable("x", SSE.parseNode("123")) ;
-        ResultSetRewindable rs2 = makeRewindable("x", SSE.parseNode("0123")) ;
+        ResultSetRewindable rs1 = makeRewindable("x", NodeFactory.parseNode("123")) ;
+        ResultSetRewindable rs2 = makeRewindable("x", NodeFactory.parseNode("0123")) ;
         assertFalse(ResultSetCompare.equalsByTerm(rs1, rs2)) ;
         assertTrue(ResultSetCompare.equalsByValue(rs1, rs2)) ;
     }

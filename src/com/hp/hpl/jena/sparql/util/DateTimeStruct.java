@@ -67,9 +67,12 @@ public class DateTimeStruct
     public static DateTimeStruct parseDateTime(String str)
     { return _parseYMD(str, true, true, true) ; }
 
+    public static DateTimeStruct parseTime(String str)
+    { return _parseTime(str) ; } 
+    
     public static DateTimeStruct parseDate(String str)
     { return _parseYMD(str, true, true, false) ; } 
-    
+
     public static DateTimeStruct parseGYear(String str)
     { return _parseYMD(str, false, false, false) ; } 
 
@@ -126,37 +129,7 @@ public class DateTimeStruct
             // ---- 
             check(str, idx, 'T') ;
             idx += 1 ;
-
-            // ---- 
-            // Hour-minute-seconds
-            struct.hour = getDigits(2, str, idx) ;
-            idx += 2 ;
-            check(str, idx, ':') ;
-            idx += 1 ;
-
-            struct.minute = getDigits(2, str, idx) ;
-            idx += 2 ;
-            check(str, idx, ':') ;
-            idx += 1 ;
-
-            // seconds
-            struct.second = getDigits(2, str, idx) ;
-            idx += 2 ;
-            if ( idx < str.length() && str.charAt(idx) == '.' )
-            {
-                idx += 1 ;
-                int idx2 = idx ;
-                for ( ; idx2 < str.length() ; idx2++ )
-                {
-                    char ch = str.charAt(idx2) ;
-                    if ( ! Character.isDigit(ch) )
-                        break ;
-                }
-                if ( idx == idx2 )
-                    throw new DateTimeParseException("Bad time part") ;
-                struct.second = struct.second+'.'+str.substring(idx, idx2) ;
-                idx = idx2 ;
-            }
+            idx = _parseTime(struct, idx, str) ;
         }
         
         // Timezone
@@ -203,7 +176,50 @@ public class DateTimeStruct
         return struct ; 
     }
     
-    
+    private static DateTimeStruct _parseTime(String str)
+    {
+        DateTimeStruct struct = new DateTimeStruct() ;
+        int idx = 0 ;
+        idx = _parseTime(struct, 0, str) ;
+        idx = _parseTimezone(struct, str, idx) ;
+        idx = skipWhitespace(str, idx) ;
+        if ( idx != str.length() )
+            throw new DateTimeParseException("Trailing characters after date/time") ;
+        return struct ;
+    }        
+    private static int _parseTime(DateTimeStruct struct, int idx, String str)
+    {
+        // Hour-minute-seconds
+        struct.hour = getDigits(2, str, idx) ;
+        idx += 2 ;
+        check(str, idx, ':') ;
+        idx += 1 ;
+
+        struct.minute = getDigits(2, str, idx) ;
+        idx += 2 ;
+        check(str, idx, ':') ;
+        idx += 1 ;
+
+        // seconds
+        struct.second = getDigits(2, str, idx) ;
+        idx += 2 ;
+        if ( idx < str.length() && str.charAt(idx) == '.' )
+        {
+            idx += 1 ;
+            int idx2 = idx ;
+            for ( ; idx2 < str.length() ; idx2++ )
+            {
+                char ch = str.charAt(idx2) ;
+                if ( ! Character.isDigit(ch) )
+                    break ;
+            }
+            if ( idx == idx2 )
+                throw new DateTimeParseException("Bad time part") ;
+            struct.second = struct.second+'.'+str.substring(idx, idx2) ;
+            idx = idx2 ;
+        }
+        return idx ;
+    }
     
     private static int _parseTimezone(DateTimeStruct struct, String str, int idx)
     {

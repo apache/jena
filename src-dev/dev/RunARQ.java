@@ -95,7 +95,9 @@ public class RunARQ
     
     public static void main(String[] argv) throws Exception
     {
-        //arq.qparse.main("--query=Q.rq") ; System.exit(0) ;
+        String dir = "/home/afs/W3C/SPARQL-docs/tests/data-sparql11/functions" ;
+        
+        arq.sparql.main("--query", dir+"/hours-01.rq", "--data", dir+"/data.ttl") ; System.exit(0) ;
         arq.qparse.main("SELECT ?o { ?s ?p ?o } GROUP BY (?s+5 AS ?o)") ; 
         System.exit(0) ;
         

@@ -34,6 +34,7 @@ import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.Prologue ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
+import com.hp.hpl.jena.sparql.graph.NodeConst ;
 import com.hp.hpl.jena.sparql.path.Path ;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
 import com.hp.hpl.jena.sparql.sse.builders.BuilderExpr ;
@@ -279,6 +280,14 @@ public class SSE
     private static Node parseNode(Reader reader, PrefixMapping pmap)
     {
         Item item = parseTerm(reader, pmap) ;
+        if ( item.isSymbol() )
+        {
+            String str = item.getSymbol() ;
+            if ( "true".equalsIgnoreCase(str) ) return NodeConst.nodeTrue ;
+            if ( "false".equalsIgnoreCase(str) ) return NodeConst.nodeFalse ;
+            throw new SSEParseException("Not a node: "+item, item.getLine(), item.getColumn()) ;
+        }
+        
         if ( ! item.isNode() )
             throw new SSEParseException("Not a node: "+item, item.getLine(), item.getColumn()) ;
         return item.getNode() ;

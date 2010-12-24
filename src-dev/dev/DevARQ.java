@@ -20,7 +20,12 @@ public class DevARQ
     // ?? bNode label checks (UPDATE: can't use same bNode label in template and pattern for DELETE/INSERT.)
 
     // Pull up TransformDynamicDataset, TransformGraphRename from TDB.
-    
+    // ---- Union Transform
+    // Tests for unionTransformation
+    // TestUnionTransformTriples
+    // TestUnionTransformQuads
+    // TestUnionGraph
+    // ** Enable in TS_Algebra.
     
     // Better access to union query??? 
     // By transform, query context.
@@ -81,7 +86,11 @@ public class DevARQ
     // ---- Events.
     //  Hierarchy.
 
-    // Query abort - from a separate thread - set flag in iterator and check on every .hasNext call.  
+    // ---- "ARQ 3"
+    // Minor chnages that vbreak compatible in some way 
+    // -- Custom functions
+    //   E_Function intercepts at evalSpecial to maintain compatibility.
+    //   Should really change Function.eval to strict functions (eval'ed arguments and no binding).   
     
     // ---- RIOT
     // closing InputStream
@@ -89,13 +98,6 @@ public class DevARQ
     // Filename in messages.
     // Errors after file name! Print file name once if error.
     // Recovery parsing - scan to DOT?
-    
-    // ---- Union Transform
-    // Tests for unionTransformation
-    // TestUnionTransformTriples
-    // TestUnionTransformQuads
-    // TestUnionGraph
-    // ** Enable in TS_Algebra.
     
     // XSDDuration
 

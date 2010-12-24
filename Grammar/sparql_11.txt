@@ -118,8 +118,8 @@ TOKENS
 | <LCASE: "LCASE">
 | <ENCODE_FOR_URI: "ENCODE_FOR_URI">
 | <CONTAINS: "CONTAINS">
-| <STARTS: "STARTS">
-| <ENDS: "ENDS">
+| <STRSTARTS: "strSTARTS">
+| <STRENDS: "strENDS">
 | <YEAR: "YEAR">
 | <MONTH: "MONTH">
 | <DAY: "DAY">
@@ -442,8 +442,8 @@ NON-TERMINALS
 		|	<LCASE> <LPAREN> Expression <RPAREN>
 		|	<ENCODE_FOR_URI> <LPAREN> Expression <RPAREN>
 		|	<CONTAINS> <LPAREN> Expression <COMMA> Expression <RPAREN>
-		|	<STARTS> <LPAREN> Expression <COMMA> Expression <RPAREN>
-		|	<ENDS> <LPAREN> Expression <COMMA> Expression <RPAREN>
+		|	<STRSTARTS> <LPAREN> Expression <COMMA> Expression <RPAREN>
+		|	<STRENDS> <LPAREN> Expression <COMMA> Expression <RPAREN>
 		|	<YEAR> <LPAREN> Expression <RPAREN>
 		|	<MONTH> <LPAREN> Expression <RPAREN>
 		|	<DAY> <LPAREN> Expression <RPAREN>

@@ -27,7 +27,7 @@ public class E_Function extends ExprFunctionN
     private String functionIRI ;
     
     // Only set after a copySubstitute has been done by PlanFilter.
-    // at which point this isnatnce if not part of the query abstract syntax.  
+    // at which point this instance if not part of the query abstract syntax.  
     private Function function = null ;
     private boolean functionBound = false ;
 
@@ -39,6 +39,12 @@ public class E_Function extends ExprFunctionN
 
     @Override
     public String getFunctionIRI() { return functionIRI ; }
+    
+    // The Function subsystem takes over evaluation via SpecialForms.
+    // This is merely to allow "function" to behave as special forms
+    // (this is discouraged).
+    // Doing the function call in evalSpecial maintains the old 
+    // interface to functions.
     
     @Override
     public NodeValue evalSpecial(Binding binding, FunctionEnv env)
@@ -59,6 +65,7 @@ public class E_Function extends ExprFunctionN
         // For functions, we delay argument evaluation to the "Function" heierarchy
         // so applications can add their own functional forms.
         throw new ARQInternalErrorException() ;
+        
     }
 
     public void buildFunction(Context cxt)

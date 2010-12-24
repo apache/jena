@@ -29,7 +29,7 @@ public class TestFunctions
     @Test public void exprStrLen1() { test("fn:string-length('')", INT_ZERO) ; }
     @Test public void exprStrLen2() { test("fn:string-length('a')", INT_ONE) ; }
 
-    // F&O strings are one-based, ansd substring takes a length
+    // F&O strings are one-based, and substring takes a length
     @Test public void exprSubstring1() { test("fn:substring('',0)", NodeValue.makeString("")) ; }
     @Test public void exprSubstring2() { test("fn:substring('',1)", NodeValue.makeString("")) ; }
     @Test public void exprSubstring3() { test("fn:substring('',1,0)", NodeValue.makeString("")) ; }

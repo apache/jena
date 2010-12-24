@@ -200,9 +200,9 @@ public interface ARQParserConstants {
   /** RegularExpression Id. */
   int CONTAINS = 97;
   /** RegularExpression Id. */
-  int STARTS = 98;
+  int STRSTARTS = 98;
   /** RegularExpression Id. */
-  int ENDS = 99;
+  int STRENDS = 99;
   /** RegularExpression Id. */
   int YEAR = 100;
   /** RegularExpression Id. */
@@ -503,8 +503,8 @@ public interface ARQParserConstants {
     "\"LCASE\"",
     "\"ENCODE_FOR_URI\"",
     "\"CONTAINS\"",
-    "\"STARTS\"",
-    "\"ENDS\"",
+    "\"strSTARTS\"",
+    "\"strENDS\"",
     "\"YEAR\"",
     "\"MONTH\"",
     "\"DAY\"",
