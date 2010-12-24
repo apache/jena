@@ -407,15 +407,56 @@ public class TestFunctions2 extends BaseTest
     
     @Test(expected=ExprEvalException.class)
     public void md5_03()            { test("md5('abcd'@en)","'e2fc714c4727ee9395f324cd2e7f331f'") ; }
+    
     // SHA1
+    
+    @Test public void sha1_01()      { test("sha1('abcd')","'81fe8bfe87576c3ecb22426f8e57847382917acf'") ; }
+    
+    @Test(expected=ExprEvalException.class)
+    public void sha1_02()            { test("sha1('abcd'^^xsd:string)","'81fe8bfe87576c3ecb22426f8e57847382917acf'") ; }
+    
+    @Test(expected=ExprEvalException.class)
+    public void sha1_03()            { test("sha1('abcd'@en)","'81fe8bfe87576c3ecb22426f8e57847382917acf'") ; }
+
     // SHA224
+//    @Test public void sha224_01()      { test("sha224('abcd')","'e2fc714c4727ee9395f324cd2e7f331f'") ; }
+//    
+//    @Test(expected=ExprEvalException.class)
+//    public void sha224_02()            { test("sha224('abcd'^^xsd:string)","'e2fc714c4727ee9395f324cd2e7f331f'") ; }
+//    
+//    @Test(expected=ExprEvalException.class)
+//    public void sha224_03()            { test("sha224('abcd'@en)","'e2fc714c4727ee9395f324cd2e7f331f'") ; }
+
     // SHA256
+
+    @Test public void sha256_01()      { test("sha256('abcd')","'88d4266fd4e6338d13b845fcf289579d209c897823b9217da3e161936f031589'") ; }
+    
+    @Test(expected=ExprEvalException.class)
+    public void sha256_02()            { test("sha256('abcd'^^xsd:string)","'88d4266fd4e6338d13b845fcf289579d209c897823b9217da3e161936f031589'") ; }
+    
+    @Test(expected=ExprEvalException.class)
+    public void sha256_03()            { test("sha256('abcd'@en)","'88d4266fd4e6338d13b845fcf289579d209c897823b9217da3e161936f031589'") ; }
+    
     // SHA384
+    @Test public void sha384_01()      { test("sha384('abcd')","'1165b3406ff0b52a3d24721f785462ca2276c9f454a116c2b2ba20171a7905ea5a026682eb659c4d5f115c363aa3c79b'") ; }
+    
+    @Test(expected=ExprEvalException.class)
+    public void sha384_02()            { test("sha384('abcd'^^xsd:string)","'1165b3406ff0b52a3d24721f785462ca2276c9f454a116c2b2ba20171a7905ea5a026682eb659c4d5f115c363aa3c79b'") ; }
+    
+    @Test(expected=ExprEvalException.class)
+    public void sha384_03()            { test("sha384('abcd'@en)","'1165b3406ff0b52a3d24721f785462ca2276c9f454a116c2b2ba20171a7905ea5a026682eb659c4d5f115c363aa3c79b'") ; }
+
     // SHA512
+    @Test public void sha512_01()      { test("sha512('abcd')","'d8022f2060ad6efd297ab73dcc5355c9b214054b0d1776a136a669d26a7d3b14f73aa0d0ebff19ee333368f0164b6419a96da49e3e481753e7e96b716bdccb6f'") ; }
+    
+    @Test(expected=ExprEvalException.class)
+    public void sha512_02()            { test("sha512('abcd'^^xsd:string)","'d8022f2060ad6efd297ab73dcc5355c9b214054b0d1776a136a669d26a7d3b14f73aa0d0ebff19ee333368f0164b6419a96da49e3e481753e7e96b716bdccb6f'") ; }
+    
+    @Test(expected=ExprEvalException.class)
+    public void sha512_03()            { test("md5('abcd'@en)","'d8022f2060ad6efd297ab73dcc5355c9b214054b0d1776a136a669d26a7d3b14f73aa0d0ebff19ee333368f0164b6419a96da49e3e481753e7e96b716bdccb6f'") ; }
+    
     // COALESCE
     // IF
-    // STRLANG
-    // STRDT
 
     private static PrefixMapping pmap = ARQConstants.getGlobalPrefixMap() ;
     
