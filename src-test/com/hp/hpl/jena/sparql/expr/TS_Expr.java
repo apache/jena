@@ -16,9 +16,10 @@ import org.junit.runners.Suite.SuiteClasses ;
     TestNodeValue.class 
     , TestExpressions.class
     , TestExpressions2.class
-    , TestFunctions.class
     , TestNodeFunctions.class
     , TestExpressions2.class
+    , TestFunctions.class
+    , TestFunctions2.class
     , TestOrdering.class 
     , TestRegex.class
     , TestXSDFuncOp.class

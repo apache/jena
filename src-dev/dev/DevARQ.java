@@ -5,12 +5,6 @@ public class DevARQ
     // >>>> Tasks
     
     // Algebra.asUnionQuery .. to access the functionality
-    // 
-    
-    // string operatons: details and tests.
-    // TestNodeFunctions / TestXSDFuncOp
-    //   E_StrUCase, E_StrConcat, E_StrSubstring
-    // tests for strings. strlen, substr, strucase, strlcase, contains, concat  
     
     // Path evaluation as per spec.
     

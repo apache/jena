@@ -81,10 +81,10 @@ public abstract class ExprDigest extends ExprFunction1
     public NodeValue eval(NodeValue v)
     { 
         Node n = v.asNode() ;
+        if ( ! n.isLiteral() )
+            throw new ExprEvalException("Not a literal: "+v) ;
         if ( n.getLiteralLanguage() != null && ! n.getLiteralLanguage().equals("") )
             throw new ExprEvalException("Can't make a digest of an RDF term with a language tag") ; 
-        if ( ! n.isLiteral() )
-            throw new ExprEvalException("Not a literal") ;
         // Literal, no language tag.
         if ( n.getLiteralDatatype() != null && ! XSDDatatype.XSDstring.equals(n.getLiteralDatatype()) )
             throw new ExprEvalException("Not a simple literal nor an XSD string") ;

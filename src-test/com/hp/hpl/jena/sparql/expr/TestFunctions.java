@@ -22,7 +22,6 @@ public class TestFunctions
     private static final NodeValue INT_TWO  = NodeValue.makeInteger(2) ;
     private static final NodeValue TRUE     = NodeValue.TRUE ;
     private static final NodeValue FALSE    = NodeValue.FALSE ;
-
     
     @Test public void expr1() { test("1", NodeValue.makeInteger(1)) ; }
 
@@ -39,7 +38,7 @@ public class TestFunctions
     @Test public void exprSubstring6() { test("fn:substring('abc',2)", NodeValue.makeString("bc")) ; }
     @Test public void exprSubstring7() { test("fn:substring('a',1,1)", NodeValue.makeString("a")) ; }
     @Test public void exprSubstring8() { test("fn:substring('a',1,2)", NodeValue.makeString("a")) ; }
-    @Test public void exprSubstring9() { test("fn:substring('a',0)", NodeValue.makeString("a")) ; }
+    @Test public void exprSubstring9() { test("fn:substring('a',0)", NodeValue.makeString("")) ; }
     
     // Uses round()
     @Test public void exprSubstring10() { test("fn:substring('abc',1.6,1.33)", NodeValue.makeString("b")) ; }

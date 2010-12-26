@@ -16,6 +16,6 @@
 	<classpathentry kind="lib" path="lib/xercesImpl-2.7.1.jar"/>
 	<classpathentry kind="lib" path="lib/stax-api-1.0.1.jar"/>
 	<classpathentry kind="lib" path="lib/wstx-asl-3.2.9.jar"/>
-	<classpathentry kind="lib" path="lib/lucene-core-2.9.3.jar"/>
+	<classpathentry kind="lib" path="lib/lucene-core-2.3.1.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>

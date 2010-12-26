@@ -29,7 +29,6 @@ public class E_StrConcat extends ExprFunctionN
     @Override
     protected NodeValue eval(List<NodeValue> args)
     { 
-        // Actually a bit more complicated.
         return XSDFuncOp.strConcat(args) ;
     }
 }
