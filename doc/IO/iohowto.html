@@ -28,10 +28,9 @@ subsystem.
 <ul>
 <li><a href="#rdfxml">1.1 RDF/XML, RDF/XML-ABBREV</a>
 </li>
-<li><a href="#n3">1.2 N3</a>
-</li>
+<li><a href="#turtle">1.2 TURTLE</a></li>
 <li><a href="#ntriple">1.3 N-TRIPLE</a></li>
-<li><a href="#turtle">1.4 TURTLE</a></li>
+<li><a href="#n3">1.4 N3</a></li>
 </ul>
 <li><a href="#encoding">2. Character Encoding Issues</a>
 <ul>
@@ -47,7 +46,7 @@ subsystem.
 5.2 Interrupting ARP</a></li>
 </ul></li>
 <li><a href="#output">6. Advanced RDF/XML Output</a></li>
-<li><a href="#n3-output">7. Advanced N3 Output</a></li>
+<li><a href="#turtle-output">7. Advanced Turtle/N3 Output</a></li>
 <li><a href="#conformance">8. Conformance</a></li>
 <li><a href="#speed">9. Faster RDF/XML I/O</a></li>
 
@@ -120,7 +119,7 @@ interface. These are:
 <code>"RDF/XML-ABBREV"</code>,
 <code>"N-TRIPLE"</code>,
 <code>"N3"</code> and <code>"TURTLE"</code>.
-In addition, for N3 output the language can be specified as:
+In addition, for Turtle output the language can be specified as:
 <code>"N3-PP"</code>, <code>"N3-PLAIN"</code> 
 or <code>"N3-TRIPLE"</code>, which controls the style of N3 produced.
 </p>
@@ -170,7 +169,27 @@ without much regard to efficiency.
 <p>All the readers and writers for RDF/XML are
 configurable, see below,
 <a href="#input">input</a> and <a href="#output">output</a>.</p>
-<h3><a name="n3">1.2 N3</a></h3>
+
+<h3><a name="turtle">1.2 TURTLE</a></h3>
+
+<p>The N3 reader accepts any valid
+<a href="http://www.ilrt.bris.ac.uk/discovery/2004/01/turtle/">Turtle</a>. Note that the N3 and Turtle writers produce internationalized 
+qnames, with the character set from XML Namespaces (except for ':'), not 
+restricted to ASCII as is the definition of N3 and Turtle.</p>
+
+<p>
+The Turtle writer 
+  is the N3 writer <a href="#n3-output">configured</a> with: usePropertySymbols=false, 
+  useTripleQuotedStrings=false, useDoubles=false.
+</p>
+  
+<h3><a name="ntriple">1.3 N-TRIPLE</a></h3>
+<p>The N-TRIPLE readers and writers implement
+<a href=
+"http://www.w3.org/TR/rdf-testcases/#ntriples">RDF Core's
+N-Triples</a> language. They are not configurable.</p>
+
+<h3><a name="n3">1.4 N3</a></h3>
 <p>The N3 readers and writers implement
 <a href=
 "http://www.w3.org/2000/10/swap/Primer.html">Tim Berners-Lee's N3</a> language.
@@ -188,25 +207,7 @@ configurable, see below,
 property <code>com.hp.hpl.jena.n3.N3JenaWriter.writer</code>.</p>
 <p>If none of these produce N3 to your liking, it is possible
 to further <a href="#n3-output">customize</a> the output.</p>
-<h3><a name="ntriple">1.3 N-TRIPLE</a></h3>
-<p>The N-TRIPLE readers and writers implement
-<a href=
-"http://www.w3.org/TR/rdf-testcases/#ntriples">RDF Core's
-N-Triples</a> language. They are not configurable.</p>
 
-<h3><a name="turtle">1.4 TURTLE</a></h3>
-
-<p>The N3 reader accepts any valid
-<a href="http://www.ilrt.bris.ac.uk/discovery/2004/01/turtle/">Turtle</a>. Note that the N3 and Turtle writers produce internationalized 
-qnames, with the character set from XML Namespaces (except for ':'), not 
-restricted to ASCII as is the definition of N3 and Turtle.</p>
-
-<p>
-The Turtle writer 
-  is the N3 writer <a href="#n3-output">configured</a> with: usePropertySymbols=false, 
-  useTripleQuotedStrings=false, useDoubles=false.
-</p>
-  
 <h2><a name="encoding">2. Character Encoding Issues</a></h2>
 <p>
 The easiest way to not read or understand this section
