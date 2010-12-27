@@ -249,7 +249,7 @@ NON-TERMINALS
 // Query only entry point
 	QueryUnit	:=	Query <EOF>
 	Query	:=	Prologue ( SelectQuery | ConstructQuery | DescribeQuery | AskQuery )
-	Prologue	:=	( BaseDecl )? ( PrefixDecl )*
+	Prologue	:=	( BaseDecl | PrefixDecl )*
 	BaseDecl	:=	<BASE> IRI_REF
 	PrefixDecl	:=	<PREFIX> <PNAME_NS> IRI_REF
 // ---- Query type clauses

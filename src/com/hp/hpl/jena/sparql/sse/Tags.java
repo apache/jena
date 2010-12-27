@@ -141,6 +141,7 @@ public class Tags
     public static final String tagMinutes       = "minutes" ;
     public static final String tagSeconds       = "seconds" ;
     public static final String tagTimezone      = "timezone" ;
+    public static final String tagTZ            = "tz" ;
     
     public static final String tagNow           = "now" ;
     public static final String tagVersion       = "version" ;

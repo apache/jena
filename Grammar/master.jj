@@ -109,8 +109,7 @@ void Query() : { }
 
 void Prologue() : {}
 {
-  ( BaseDecl() ) ?
-  ( PrefixDecl() )*
+  ( BaseDecl() | PrefixDecl() )*
 }
 
 void BaseDecl() : { String iri ; }
@@ -1780,6 +1779,9 @@ Expr BuiltInCall() : { Expr expr ; Expr expr1 = null ; Expr expr2 = null ;
   | <SECONDS> <LPAREN> expr1 = Expression() <RPAREN> { return new E_DateTimeSeconds(expr1) ; }
     
   | <TIMEZONE> <LPAREN> expr1 = Expression() <RPAREN> { return new E_DateTimeTimezone(expr1) ; }
+#ifdef ARQ
+  | <TZ> <LPAREN> expr1 = Expression() <RPAREN> { return new E_DateTimeTZ(expr1) ; }
+#endif
   | <NOW> <NIL>   { return new E_Now() ; }
 
   | <MD5>         <LPAREN> expr1 = Expression() <RPAREN> { return new E_MD5(expr1) ; }
@@ -2217,6 +2219,9 @@ TOKEN [IGNORE_CASE] :
 |  < MINUTES:     "MINUTES" >
 |  < SECONDS:     "SECONDS" >
 |  < TIMEZONE:    "TIMEZONE" >
+#ifdef ARQ
+|  < TZ:          "TZ" >
+#endif
 |  < NOW:         "NOW" >
 
 #ifdef ARQ

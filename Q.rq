@@ -1,13 +1,12 @@
 PREFIX rdf:       <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX fn:        <http://www.w3.org/2005/xpath-functions#>
 PREFIX xsd:       <http://www.w3.org/2001/XMLSchema#>
-PREFIX :          <http://example.org/>
+PREFIX :          <http://example/>
 PREFIX foaf: 	<http://xmlns.com/foaf/0.1/>
+PREFIX owl:     <http://www.w3.org/2002/07/owl#>
 
 SELECT *
-{ 
-  { { BIND ("0" as ?A) ?x foaf:knows{0} ?y . } UNION { BIND ("+" as ?A) ?x  foaf:knows+ ?y . } }
-
-##   ?x :p* ?y .
-##   ?x :p/(:q{2}) ?y .
+{
+   ?s :p 123 .
+   ?s (owl:sameAs|^owl:sameAs)* ?x .
 }

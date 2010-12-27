@@ -1141,6 +1141,16 @@ public class XSDFuncOp
         return NodeValue.makeNode(dts.second, XSDDatatype.XSDdecimal) ;
     }
 
+    public static NodeValue dtGetTZ(NodeValue nv)
+    {
+        DateTimeStruct dts = parseAnyDT(nv) ;
+        if ( dts == null )
+            throw new ExprEvalException("Not a data/time value: "+nv) ;
+        if ( dts.timezone == null)
+            return NodeValue.nvEmptyString ;
+        return  NodeValue.makeString(dts.timezone) ;
+    }
+    
     public static NodeValue dtGetTimezone(NodeValue nv)
     {
         DateTimeStruct dts = parseAnyDT(nv) ;

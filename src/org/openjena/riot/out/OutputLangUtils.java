@@ -29,6 +29,8 @@ public class OutputLangUtils
     // Abbreviate numbers or not.
     // Avoids creating intermediate strings.
     
+    // == Class with two subclasses. Trutle policy and N-triples policy.
+    
     private static boolean asciiOnly = true ;
 
     static public void output(Writer out, Quad quad, Prologue prologue)
@@ -94,25 +96,10 @@ public class OutputLangUtils
         
         if ( node.isLiteral() )
         {
-            // TODO Do Turtle number abbreviates, controlled by a flag.
-            // So there are flags ==> make an object
-            print(out,'"') ;
-            outputEsc(out, node.getLiteralLexicalForm()) ;
-            print(out,'"') ;
-
-            if ( node.getLiteralLanguage() != null && node.getLiteralLanguage().length()>0)
-            {
-                print(out,'@') ;
-                print(out,node.getLiteralLanguage()) ;
-            }
-
-            if ( node.getLiteralDatatypeURI() != null )
-            {
-                print(out,"^^") ;
-                printIRI(out,node.getLiteralDatatypeURI(), prologue) ;
-            }
-            return ; 
+            printLiteral(out, node, prologue) ;
+            return ;
         }
+
         if ( node.isVariable() )
         {
             print(out,'?') ;
@@ -121,6 +108,29 @@ public class OutputLangUtils
         }
         System.err.println("Illegal node: "+node) ;
     }
+
+    // TODO Do Turtle number abbreviations, controlled by a flag.
+    // So there are flags ==> make an object
+    private static void printLiteral(Writer out, Node node, Prologue prologue)
+    {
+        print(out,'"') ;
+        outputEsc(out, node.getLiteralLexicalForm(), true) ;
+        print(out,'"') ;
+
+        if ( node.getLiteralLanguage() != null && node.getLiteralLanguage().length()>0)
+        {
+            print(out,'@') ;
+            print(out,node.getLiteralLanguage()) ;
+        }
+
+        if ( node.getLiteralDatatypeURI() != null )
+        {
+            print(out,"^^") ;
+            printIRI(out,node.getLiteralDatatypeURI(), prologue) ;
+        }
+        return ; 
+    }
+
     
     private static void printIRI(Writer out, String iriStr, Prologue prologue)
     {
@@ -149,7 +159,7 @@ public class OutputLangUtils
         print(out,"<") ;
         // IRIs can have non-ASCII characters.
         if ( asciiOnly )
-            outputEsc(out, iriStr) ;
+            outputEsc(out, iriStr, false) ;
         else
             print(out,iriStr) ;
         print(out,">") ;
@@ -224,24 +234,36 @@ public class OutputLangUtils
 //        }
 //    }
     
-    /** Output a string, using \t etc and  \ u escape mechanisms. */   
-    static public void outputEsc(Writer out, String s)
+    /** Output a string, using \t etc and  \ u escape mechanisms.
+     * @param out   Writer for output
+     * @param s     String to process
+     * @param useSlashEscapes   Whether to use \t etc (\\ is awlays possible).
+     *    
+     */
+    static public void outputEsc(Writer out, String s, boolean useSlashEscapes)
     {
         int len = s.length() ;
         for (int i = 0; i < len; i++) {
             char c = s.charAt(i);
             
-            // Escape escapes and quotes
-            if (c == '\\' || c == '"' ) 
+            // \\ Escape always possible.
+            if (c == '\\') 
             {
                 print(out,'\\') ;
                 print(out,c) ;
+                continue ;
             }
-            else if (c == '\n') print(out,"\\n");
-            else if (c == '\t') print(out,"\\t");
-            else if (c == '\r') print(out,"\\r");
-            else if (c == '\f') print(out,"\\f");
-            else if ( c >= 32 && c < 127 )
+            if ( useSlashEscapes )
+            {
+                if ( c == '"' ) print(out,"\\\"");
+                else if ( c == '\n') print(out,"\\n");
+                else if (c == '\t') print(out,"\\t");
+                else if (c == '\r') print(out,"\\r");
+                else if (c == '\f') print(out,"\\f");
+                continue ;
+            }
+            // Not \-style esacpe. 
+            if ( c >= 32 && c < 127 )
                 print(out,c);
             else if ( !asciiOnly )
                 print(out,c);

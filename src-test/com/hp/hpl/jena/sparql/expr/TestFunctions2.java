@@ -16,6 +16,8 @@ import com.hp.hpl.jena.sparql.function.FunctionEnvBase ;
 import com.hp.hpl.jena.sparql.util.ExprUtils ;
 import com.hp.hpl.jena.sparql.util.NodeFactory ;
 
+import org.junit.AfterClass ;
+import org.junit.BeforeClass ;
 import org.junit.Test ;
 import org.openjena.atlas.junit.BaseTest ;
 
@@ -25,10 +27,17 @@ public class TestFunctions2 extends BaseTest
     // Some overlap with TestFunctions except those are direct function calls and tehse are via SPARQl 1.1 syntax.
     // Better too many tests than too few.
     
+    static boolean warnOnBadLexicalForms = true ; 
     
-    // Flesh out with lang tag and xsd rules.
-    // substring
-    // strlen
+    @BeforeClass public static void beforeClass()
+    {
+        warnOnBadLexicalForms = NodeValue.VerboseWarnings ;
+        NodeValue.VerboseWarnings = false ;    
+    }
+    @AfterClass  public static void afterClass()
+    {
+        NodeValue.VerboseWarnings = warnOnBadLexicalForms ;
+    }
     
     
     // tests for strings. strlen, substr, strucase, strlcase, contains, concat
@@ -418,6 +427,24 @@ public class TestFunctions2 extends BaseTest
     
     @Test(expected=ExprEvalException.class)
     public void timezone_09()             { test("timezone('2010-12-24T16:24:35'^^xsd:dateTime)", "'PT0S'^^xsd:dayTimeDuration") ; }
+    @Test(expected=ExprEvalException.class)
+    public void timezone_10()             { test("timezone(2010)", "'PT0S'^^xsd:dayTimeDuration") ; }
+    @Test(expected=ExprEvalException.class)
+    public void timezone_11()             { test("timezone('2010-junk'^^xsd:gYear)", "'PT0S'^^xsd:dayTimeDuration") ; }
+    
+    // TZ
+    @Test public void tz_01()             { test("tz('2010-12-24T16:24:35.123Z'^^xsd:dateTime)", "'Z'") ; }
+    @Test public void tz_02()             { test("tz('2010-12-24T16:24:35.123-08:00'^^xsd:dateTime)", "'-08:00'") ; }
+    @Test public void tz_03()             { test("tz('2010-12-24T16:24:35.123+01:00'^^xsd:dateTime)", "'+01:00'") ; }
+    @Test public void tz_04()             { test("tz('2010-12-24T16:24:35.123-00:00'^^xsd:dateTime)", "'-00:00'") ; }
+    @Test public void tz_05()             { test("tz('2010-12-24T16:24:35.123+00:00'^^xsd:dateTime)", "'+00:00'") ; }
+    @Test public void tz_06()             { test("tz('2010-12-24T16:24:35.123'^^xsd:dateTime)", "''") ; }
+
+    @Test(expected=ExprEvalException.class)
+    public void tz_10()                   { test("tz(2010)", "''") ; }
+    @Test(expected=ExprEvalException.class)
+    public void tz_11()                   { test("tz('2010-junk'^^xsd:gYear)", "''") ; }
+
     // NOW
     //@Test public void now_01()        { test("now() > '2010-12-24T16:24:35.123-08:00'^^xsd:dateTime", "true") ; }
     

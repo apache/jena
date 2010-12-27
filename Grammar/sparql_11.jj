@@ -60,8 +60,7 @@ void Query() : { }
 }
 void Prologue() : {}
 {
-  ( BaseDecl() ) ?
-  ( PrefixDecl() )*
+  ( BaseDecl() | PrefixDecl() )*
 }
 void BaseDecl() : { String iri ; }
 {
