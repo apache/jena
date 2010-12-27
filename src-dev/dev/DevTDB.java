@@ -4,6 +4,10 @@ public class DevTDB
 {
     // ** Release
     // TDB shutdown hook.
+    // Check design abstracts Nodes properly 
+    //   Should allow swapping in Nodeid as hash: so NodeId -> Node is a lookup. 
+    // SetupTDB : abstract algorithm and pass in (Range)Index builders
+    // layers: database - TupleIndex/NodeTable - (Range)Index+seq store.
     
     // Check commands and use of --graph
     
