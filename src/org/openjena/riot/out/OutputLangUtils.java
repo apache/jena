@@ -224,7 +224,7 @@ public class OutputLangUtils
 //        }
 //    }
     
-    
+    /** Output a string, using \t etc and  \ u escape mechanisms. */   
     static public void outputEsc(Writer out, String s)
     {
         int len = s.length() ;

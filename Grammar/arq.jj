@@ -132,15 +132,25 @@ void SelectClause() : { Var v ; Expr expr ; Node n ; }
   )
   { allowAggregatesInExpressions = false ; }
 }
-void ConstructQuery() : { Template t ; }
+void ConstructQuery() : { Template t ; QuadsAcc acc = new QuadsAcc() ; }
 {
-  <CONSTRUCT>
-    { getQuery().setQueryConstructType() ; }
-  t = ConstructTemplate()
-    { getQuery().setConstructTemplate(t) ; }
-  ( DatasetClause() )*
-  WhereClause()
-  SolutionModifier()
+ <CONSTRUCT>
+ (
+   // Full form.
+      { getQuery().setQueryConstructType() ; }
+    t = ConstructTemplate()
+      { getQuery().setConstructTemplate(t) ; }
+    ( DatasetClause() )*
+    WhereClause()
+    SolutionModifier()
+ |
+   // templateless form.
+    <CONSTRUCT>
+    ( DatasetClause() )*
+    <WHERE>
+    (TriplesTemplate(acc))?
+    // Glue pattern to template.
+ )
 }
 void DescribeQuery() : { Node n ; }
 {

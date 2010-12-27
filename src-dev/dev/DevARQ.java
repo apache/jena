@@ -4,6 +4,9 @@ public class DevARQ
 {
     // >>>> Tasks
     
+    // OutputLangUtils
+    // Escaping for N-triples and escaping for Turtle is different  
+    
     // Algebra.asUnionQuery .. to access the functionality
     
     // Path evaluation as per spec.

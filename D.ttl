@@ -1,11 +1,25 @@
-@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
-@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix : <http://example.org/> .
-@prefix foaf: 	<http://xmlns.com/foaf/0.1/> .
+@prefix rex:     <http://www.basistech.com/ontologies/2010/6/rex.owl#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 
-:d foaf:knows :e .
-:e foaf:knows :f .
-:f foaf:knows :e .
+<uri:001f469cc17412da1ce53fa1f9b67481#18>
+      a       rex:Location ;
+      rex:hasEntityDetectionSource
+              "statistical" ;
+      rex:hasNormalizedText
+              "Asia" ;
+      rex:hasOriginalText "Asia" .
 
-
+## @prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+## @prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+## @prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+## @prefix : <http://example.org/> .
+## @prefix foaf: 	<http://xmlns.com/foaf/0.1/> .
+## 
+## :d foaf:knows :e .
+## :e foaf:knows :f .
+## :f foaf:knows :e .
+## 
+## 

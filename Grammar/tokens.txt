@@ -43,6 +43,7 @@
 [<SELECT>]     ::= 'SELECT'
 [<DESCRIBE>]   ::= 'DESCRIBE'
 [<CONSTRUCT>]  ::= 'CONSTRUCT'
+[<CONSTRUCT_WHERE>]  ::= 'CONSTRUCT_WHERE'
 [<ASK>]        ::= 'ASK'
 [<DISTINCT>]   ::= 'DISTINCT'
 [<REDUCED>]    ::= 'REDUCED'

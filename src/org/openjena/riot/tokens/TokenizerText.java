@@ -861,6 +861,7 @@ public final class TokenizerText implements Tokenizer
 
         switch (ch)
         {
+            case '\\':  return '\\' ;
             case 'u': return readUnicode4Escape(); 
             case 'U': return readUnicode8Escape(); 
             default:

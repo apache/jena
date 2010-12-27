@@ -195,9 +195,9 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
   }
 
   final public void ConstructQuery() throws ParseException {
-                          Template t ;
+                          Template t ; QuadsAcc acc = new QuadsAcc() ;
     jj_consume_token(CONSTRUCT);
-      getQuery().setQueryConstructType() ;
+       getQuery().setQueryConstructType() ;
     t = ConstructTemplate();
       getQuery().setConstructTemplate(t) ;
     label_4:

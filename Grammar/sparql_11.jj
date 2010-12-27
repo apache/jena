@@ -117,10 +117,10 @@ void SelectClause() : { Var v ; Expr expr ; Node n ; }
   )
   { allowAggregatesInExpressions = false ; }
 }
-void ConstructQuery() : { Template t ; }
+void ConstructQuery() : { Template t ; QuadsAcc acc = new QuadsAcc() ; }
 {
   <CONSTRUCT>
-    { getQuery().setQueryConstructType() ; }
+     { getQuery().setQueryConstructType() ; }
   t = ConstructTemplate()
     { getQuery().setConstructTemplate(t) ; }
   ( DatasetClause() )*

@@ -531,6 +531,20 @@ public class XSDFuncOp
         return NodeValue.makeNode(n2) ;
     }
     
+    // F&O fn;concat (implicit cast to strings).
+    public static NodeValue fnConcat(List<NodeValue> args)
+    {
+        StringBuilder sb = new StringBuilder() ;
+        
+        for ( NodeValue arg : args )
+        {
+            String x = arg.asString() ;
+            sb.append(x) ;
+        }
+        return NodeValue.makeString(sb.toString()) ;
+    }
+    
+    // SPARQL CONCAT
     public static NodeValue strConcat(List<NodeValue> args)
     {
         // Step 1 : Choose type.

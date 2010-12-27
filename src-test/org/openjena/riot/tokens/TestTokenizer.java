@@ -66,7 +66,7 @@ public class TestTokenizer extends BaseTest
     public void tokenUnit_iri3()
     {
         try {
-            Tokenizer tokenizer = tokenizer("   <abc\\>   123") ;
+            Tokenizer tokenizer = tokenizer("  <abc\\>   123") ;
         } catch (RiotParseException ex)
         {
             String x = ex.getMessage() ;
@@ -74,6 +74,16 @@ public class TestTokenizer extends BaseTest
         }
     }
     
+    @Test
+    public void tokenUnit_iri4()
+    {
+        // \\\\ is a double \\ in the data. 
+        Tokenizer tokenizer = tokenizer("   <abc\\\\def>   123") ;
+        Token token = tokenizer.next() ;
+        assertNotNull(token) ;
+        assertEquals(TokenType.IRI, token.getType()) ;
+        assertEquals("abc\\def", token.getImage()) ;
+    }
     
     @Test
     public void tokenUnit_str1()

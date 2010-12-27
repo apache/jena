@@ -30,7 +30,7 @@ public class FN_StrConcat extends FunctionBase
             // The contract on the function interface is that this should not happen.
             throw new ARQInternalErrorException(Utils.className(this)+": Null args list") ;
         
-        return XSDFuncOp.strConcat(args) ;
+        return XSDFuncOp.fnConcat(args) ;
     }
 
     @Override
