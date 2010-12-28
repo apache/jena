@@ -27,15 +27,18 @@ import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.tdb.TDB ;
+import com.hp.hpl.jena.tdb.TDBFactory ;
 
 public class FusekiCmd extends CmdARQ
 {
-    private static ArgDecl argMem       = new ArgDecl(ArgDecl.NoValue, "mem") ;
-    private static ArgDecl argFile       = new ArgDecl(ArgDecl.HasValue, "file") ;
-    private static ArgDecl argMemTDB    = new ArgDecl(ArgDecl.NoValue, "memtdb", "memTDB") ;
+    private static ArgDecl argMem       = new ArgDecl(ArgDecl.NoValue,  "mem") ;
+    private static ArgDecl argFile      = new ArgDecl(ArgDecl.HasValue, "file") ;
+    private static ArgDecl argMemTDB    = new ArgDecl(ArgDecl.NoValue,  "memtdb", "memTDB") ;
+    private static ArgDecl argTDB       = new ArgDecl(ArgDecl.HasValue, "loc", "location") ;
     private static ArgDecl argPort      = new ArgDecl(ArgDecl.HasValue, "port") ;
     
-    private static ModDatasetAssembler modDataset = new ModDatasetAssembler() ;
+    //private static ModLocation          modLocation =  new ModLocation() ;
+    private static ModDatasetAssembler  modDataset = new ModDatasetAssembler() ;
     
     // fuseki [--mem|--desc assembler.ttl] [--port PORT] **** /datasetURI
 
@@ -54,11 +57,13 @@ public class FusekiCmd extends CmdARQ
     public FusekiCmd(String...argv)
     {
         super(argv) ;
+        getUsage().startCategory("Fuseki") ;
         addModule(modDataset) ;
-        add(argMem, "--mem", "Create an in-memory, non-persistent dataset for the server") ;
-        add(argFile, "--file=FILE", "Create an in-memory, non-persistent dataset for the server, initialised with the contents of the file") ;
-        add(argMemTDB, "--memTDB", "Create an in-memory, non-persistent dataset using TDB (testing only)") ;
-        add(argPort, "--port", "Port number") ;
+        add(argMem,     "--mem",        "Create an in-memory, non-persistent dataset for the server") ;
+        add(argFile,    "--file=FILE",  "Create an in-memory, non-persistent dataset for the server, initialised with the contents of the file") ;
+        add(argTDB,     "--loc=DIR",    "use an existing TDB database (or create if does not exist)") ;
+        add(argMemTDB,  "--memTDB",     "Create an in-memory, non-persistent dataset using TDB (testing only)") ;
+        add(argPort,    "--port",       "Port number") ;
         super.modVersion.addClass(TDB.class) ;
         super.modVersion.addClass(Fuseki.class) ;
     }
@@ -80,19 +85,28 @@ public class FusekiCmd extends CmdARQ
         if ( contains(argMem) ) x++ ; 
         if ( contains(argFile) ) x++ ;
         if ( contains(assemblerDescDecl) ) x++ ;
+        if ( contains(argTDB) ) x++ ;
+        
+        TDB.setOptimizerWarningFlag(false) ;
         
         if ( x > 1 )
-            throw new CmdException("Only one of --mem, --file and --desc") ;
+            throw new CmdException("Only one of --mem, --file, --loc or --desc") ;
         
         if ( x == 0 )
-            throw new CmdException("Required: one of --mem, --file and --desc") ;
+            throw new CmdException("Required: one of --mem, --file, --loc or --desc") ;
 
-        if ( contains(argMem) || contains(argFile))
+        if ( contains(argMem) )
+        {
+            SPARQLServer.log.info("Dataset: in-memory") ;
             dsg = DatasetGraphFactory.createMem() ;
+        }
         if ( contains(argFile) )
         {
+            dsg = DatasetGraphFactory.createMem() ;
             // replace by RiotLoader after ARQ refresh.
             String filename = getValue(argFile) ;
+            SPARQLServer.log.info("Dataset: in-memory: load file: "+filename) ;
+
             Lang language = Lang.guess(filename) ;
             if ( language == null )
                 throw new CmdException("Can't guess language for file; "+filename) ;
@@ -111,7 +125,25 @@ public class FusekiCmd extends CmdARQ
         }
         
         if ( contains(argMemTDB) )
-            throw new CmdException(argMemTDB.getKeyName()+" not implemented") ;
+        {
+            SPARQLServer.log.info("TDB dataset: in-memory") ;
+            dsg = TDBFactory.createDatasetGraph() ;
+        }
+        if ( contains(argTDB) )
+        {
+            String dir = getValue(argTDB) ;
+            SPARQLServer.log.info("TDB dataset: directory="+dir) ;
+            dsg = TDBFactory.createDatasetGraph(dir) ;
+        }
+        
+        // Otherwise
+        if ( contains(assemblerDescDecl) )
+        {
+            SPARQLServer.log.info("Dataset from assembler") ;
+            Dataset ds = modDataset.createDataset() ;
+            if ( ds != null )
+                dsg = ds.asDatasetGraph() ;
+        }
         
         if ( contains(argPort) )
         {
@@ -123,9 +155,13 @@ public class FusekiCmd extends CmdARQ
                 throw new CmdException(argPort.getKeyName()+" : bad port number: "+portStr) ;
             }
         }
-        Dataset ds = modDataset.createDataset() ;
-        if ( ds != null )
-            dsg = ds.asDatasetGraph() ;
+        else
+        {
+            Dataset ds = modDataset.createDataset() ;
+            if ( ds != null )
+                dsg = ds.asDatasetGraph() ;
+        }
+            
         if ( dsg == null )
             throw new CmdException("No dataset defined: "+argUsage) ;
         
