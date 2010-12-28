@@ -6,11 +6,7 @@
 
 package dev;
 
-import java.io.File ;
-
 import org.apache.lucene.index.IndexReader ;
-import org.apache.lucene.store.Directory ;
-import org.apache.lucene.store.FSDirectory ;
 
 import com.hp.hpl.jena.assembler.Assembler ;
 import com.hp.hpl.jena.assembler.Mode ;

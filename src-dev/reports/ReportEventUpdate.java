@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package dev;
+package reports;
 
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.query.DatasetFactory ;

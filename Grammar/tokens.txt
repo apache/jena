@@ -130,6 +130,7 @@
 [<MINUTES>]     ::= 'MINUTES'
 [<SECONDS>]     ::= 'SECONDS'
 [<TIMEZONE>]    ::= 'TIMEZONE'
+[<TZ>]          ::= 'TZ'
 [<NOW>]         ::= 'NOW'
 [<VERSION>]     ::= 'VERSION'
 [<MD5>]         ::= 'MD5'
