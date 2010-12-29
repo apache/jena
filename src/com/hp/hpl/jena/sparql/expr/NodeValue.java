@@ -397,7 +397,7 @@ public abstract class NodeValue extends ExprNode
     {
         if ( node == null ) return false ;
         forceToNode() ;
-        return node.isURI() ;
+        return node.isBlank() ;
     }
     
     // ----------------------------------------------------------------

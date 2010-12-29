@@ -144,10 +144,12 @@ void ConstructQuery() : { Template t ; QuadsAcc acc = new QuadsAcc() ; }
     SolutionModifier()
  |
    // templateless form.
-    <CONSTRUCT>
     ( DatasetClause() )*
     <WHERE>
+    <LBRACE>
     (TriplesTemplate(acc))?
+    <RBRACE>
+    SolutionModifier()
     // Glue pattern to template.
  )
 }

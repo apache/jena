@@ -551,6 +551,7 @@ public class XSDFuncOp
         // One lang tag -> that lang tag
         String lang = null ;
         boolean xsdString = false ;
+        boolean simpleLiteral = false ;
         
         StringBuilder sb = new StringBuilder() ;
         
@@ -564,17 +565,27 @@ public class XSDFuncOp
                     throw new ExprEvalException("CONCAT: Mixed language tags: "+args) ;
                 lang = lang1 ;
             }
-            
-            if ( n.getLiteralDatatype() != null )
+            else if ( n.getLiteralDatatype() != null )
                 xsdString = true ;
+            else
+                simpleLiteral = true ;
+            
             sb.append(n.getLiteralLexicalForm()) ;
         }
         
         if ( lang != null )
             return NodeValue.makeNode(sb.toString(), lang, (String)null) ;
+        if ( simpleLiteral && xsdString )
+            return NodeValue.makeString(sb.toString()) ;
+        // All xsdString
         if ( xsdString )
             return NodeValue.makeNode(sb.toString(), XSDDatatype.XSDstring) ;
+        if ( simpleLiteral )
+            return NodeValue.makeString(sb.toString()) ;
+        
+        // No types - i.e. no arguments
         return NodeValue.makeString(sb.toString()) ;
+        
     }
     
     public static NumericType classifyNumeric(String fName, NodeValue nv1, NodeValue nv2)

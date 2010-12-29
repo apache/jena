@@ -245,7 +245,7 @@ public class NodeFunctions
     // -------- IRI
     public static NodeValue iri(NodeValue nv, String baseIRI)
     {
-        if ( nv.isIRI() )
+        if ( isIRI(nv.asNode()) )
             return nv ;
         Node n2 = iri(nv.asNode(), baseIRI) ;
         return NodeValue.makeNode(n2) ;
