@@ -15,6 +15,7 @@ import org.openjena.riot.Lang ;
 import org.openjena.riot.RiotLoader ;
 import org.openjena.riot.lang.SinkQuadsToDataset ;
 import org.openjena.riot.lang.SinkTriplesToGraph ;
+import org.slf4j.Logger ;
 import arq.cmd.CmdException ;
 import arq.cmdline.ArgDecl ;
 import arq.cmdline.CmdARQ ;
@@ -81,6 +82,8 @@ public class FusekiCmd extends CmdARQ
     {
         int x = 0 ;
         
+        Logger log = Fuseki.serverlog ; //SPARQLServer.log ;
+        
         ArgDecl assemblerDescDecl = new ArgDecl(ArgDecl.HasValue, "desc", "dataset") ;
         if ( contains(argMem) ) x++ ; 
         if ( contains(argFile) ) x++ ;
@@ -97,7 +100,7 @@ public class FusekiCmd extends CmdARQ
 
         if ( contains(argMem) )
         {
-            SPARQLServer.log.info("Dataset: in-memory") ;
+            log.info("Dataset: in-memory") ;
             dsg = DatasetGraphFactory.createMem() ;
         }
         if ( contains(argFile) )
@@ -105,7 +108,7 @@ public class FusekiCmd extends CmdARQ
             dsg = DatasetGraphFactory.createMem() ;
             // replace by RiotLoader after ARQ refresh.
             String filename = getValue(argFile) ;
-            SPARQLServer.log.info("Dataset: in-memory: load file: "+filename) ;
+            log.info("Dataset: in-memory: load file: "+filename) ;
 
             Lang language = Lang.guess(filename) ;
             if ( language == null )
@@ -126,20 +129,20 @@ public class FusekiCmd extends CmdARQ
         
         if ( contains(argMemTDB) )
         {
-            SPARQLServer.log.info("TDB dataset: in-memory") ;
+            log.info("TDB dataset: in-memory") ;
             dsg = TDBFactory.createDatasetGraph() ;
         }
         if ( contains(argTDB) )
         {
             String dir = getValue(argTDB) ;
-            SPARQLServer.log.info("TDB dataset: directory="+dir) ;
+            log.info("TDB dataset: directory="+dir) ;
             dsg = TDBFactory.createDatasetGraph(dir) ;
         }
         
         // Otherwise
         if ( contains(assemblerDescDecl) )
         {
-            SPARQLServer.log.info("Dataset from assembler") ;
+            log.info("Dataset from assembler") ;
             Dataset ds = modDataset.createDataset() ;
             if ( ds != null )
                 dsg = ds.asDatasetGraph() ;
