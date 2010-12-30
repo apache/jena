@@ -31,7 +31,7 @@ public interface NodeTable extends Sync, Closeable
     /** Look up node id and return the Node - return null if not found */
     public Node getNodeForNodeId(NodeId id) ;
     
-    /** Iterate over all nodes (not necessarily fast).  Doesa not icnldue inlined NodeIds */
+    /** Iterate over all nodes (not necessarily fast).  Does not include inlined NodeIds */
     public Iterator<Pair<NodeId, Node>> all() ;
 }
 
