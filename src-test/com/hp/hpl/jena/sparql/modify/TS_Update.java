@@ -21,8 +21,6 @@ public class TS_Update extends TestSuite
 //        ts.addTestSuite(TestUpdateGraphMem.class) ;
       ts.addTest(TestUpdateGraphMgtMem.suite()) ; 
       ts.addTest(TestUpdateGraphMem.suite()) ;
-        
-        
         return ts ;
     }
     

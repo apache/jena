@@ -98,7 +98,7 @@ public class QuerySerializer implements QueryVisitor
             out.incIndent(BLOCK_INDENT) ;
             out.newline() ;
             Template t = query.getConstructTemplate() ;
-            t.visit(fmtTemplate) ;
+            fmtTemplate.format(t) ;
             out.decIndent(BLOCK_INDENT) ;
         }
     }

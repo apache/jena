@@ -14,6 +14,8 @@
 
 // UPDATE : SPARQL 1.1. Update
 // ARQ_UPDATE : extensions to SPARQL 1.1 Update to cover SPARQL/Update (W3C Submission)
+// UPDATE_SUBMISSION : the submission grammar only.
+// 
 
 #ifdef SPARQL_11
 #define PACKAGE     lang.sparql_11
@@ -26,8 +28,13 @@
 #define PACKAGE     lang.arq
 #define CLASS       ARQParser
 #define PARSERBASE  ARQParserBase
+//#define UPDATE_SUBMISSION
 #define UPDATE
 #define ARQ_UPDATE
+#endif
+
+#if defined(UPDATE) && defined(UPDATE_SUBMISSION)
+#error Please define only one of UPDATE and UPDATE_SUBMISSION
 #endif
 
 // Author:  Andy Seaborne <andy.seaborne@epimorphics.com>
@@ -70,6 +77,9 @@ import com.hp.hpl.jena.sparql.expr.aggregate.* ;
 #ifdef  UPDATE
 import com.hp.hpl.jena.update.* ;
 import com.hp.hpl.jena.sparql.modify.request.* ;
+#endif
+#ifdef UPDATE_SUBMISSION
+import com.hp.hpl.jena.sparql.modify.submission.* ;
 #endif
 
 public class CLASS extends PARSERBASE
@@ -711,6 +721,167 @@ void TriplesTemplate(QuadsAcc acc) : { }
 }
 
 #endif // UPDATE
+
+#ifdef UPDATE_SUBMISSION
+void UpdateUnit() : {}
+{
+    Prologue()
+    Update()
+    <EOF>
+}
+
+void Update() : { }
+{
+    { startUpdateRequest() ; }
+    ( Update1() )+
+    { finishUpdateRequest() ; }
+}
+
+void Update1() : { UpdateSubmission up = null ; GraphMgt mgt ; }
+{
+  (  up = Modify() | up = Insert() | up = Delete() | 
+     up = Load() | up = Clear() |  up = Create() | up = Drop() )
+    { emitUpdate(up) ; }
+      // { getUpdateRequest().addg(up) ; }
+}
+
+UpdateModify Modify() : 
+{ UpdateModify up = new UpdateModify() ; String iri ; Template template ; Element el ; }
+{
+    <MODIFY>
+    ( iri = GraphIRI() { up.addGraphName(iri) ; } )*
+    <DELETE> template = ConstructTemplate() { up.setDeleteTemplate(template) ; }
+    <INSERT> template = ConstructTemplate() { up.setInsertTemplate(template) ; }
+    ( el = UpdatePattern() { up.setPattern(el) ; } )?
+    { return up ; }
+}
+
+UpdateSubmission Delete() : { UpdateSubmission up ; }
+{
+  <DELETE> 
+  ( up = DeleteData() | up = DeleteTemplate() )
+    { return up ; }
+}
+
+UpdateSubmission DeleteData() : 
+{ UpdateDeleteData update = new UpdateDeleteData() ; 
+  String iri ; Template template ;
+  Token t ; }
+{
+    t = <DATA>
+    ((<FROM>)? iri = IRIref() { update.addGraphName(iri) ; } )*
+   template = ConstructTemplate()
+   { Graph triples = convertTemplateToTriples(template,
+                                        t.beginLine, t.beginColumn) ;
+     update.setData(triples) ;
+     return update ;
+    }
+}
+
+UpdateSubmission DeleteTemplate() : 
+{ UpdateDelete up = new UpdateDelete() ; String iri ; Template template ; Element el ;  }
+{
+  ((<FROM>)? iri = IRIref() { up.addGraphName(iri) ; } )*
+  template = ConstructTemplate() { up.setDeleteTemplate(template) ; }
+    ( el = UpdatePattern() { up.setPattern(el) ; } )?
+    { return up ; }
+}
+
+UpdateSubmission Insert() : { UpdateSubmission up ; }
+{
+  <INSERT> 
+  ( up = InsertData() | up = InsertTemplate() )
+    { return up ; }
+}
+
+UpdateSubmission InsertData() :
+{ UpdateInsertData update = new UpdateInsertData() ;
+  String iri ; Template template ;
+  Token t ; }
+{
+   t = <DATA>
+   ((<INTO>)? iri = IRIref() { update.addGraphName(iri) ; } )*
+   template = ConstructTemplate()
+   { Graph triples = convertTemplateToTriples(template,
+                                        t.beginLine, t.beginColumn) ;
+     update.setData(triples) ;
+     return update ;
+    }
+}
+
+UpdatePattern InsertTemplate() :
+{ UpdateInsert up = new UpdateInsert() ; String iri ; Template template ; Element el ; }
+{
+  ((<INTO>)? iri = IRIref() { up.addGraphName(iri) ; } )*
+  template = ConstructTemplate() { up.setInsertTemplate(template) ; }
+    ( el = UpdatePattern() { up.setPattern(el) ; } )?
+    { return up ; }
+}
+
+String GraphIRI() : { String iri ; }
+{
+    <GRAPH> iri = IRIref() { return iri ; }
+}
+
+UpdateLoad Load() : { UpdateLoad up = new UpdateLoad() ; String iri ;}
+{
+    <LOAD> ( iri = SourceSelector() { up.addLoadIRI(iri) ; } )+
+    (<INTO> iri = IRIref() { up.setGraphName(iri) ; } )? 
+    { return up ; }
+}
+
+UpdateClear Clear() : { UpdateClear up = new UpdateClear(); String iri ; }
+{
+    <CLEAR>
+    ( iri = GraphIRI() { up.setGraphName(iri) ; } )?
+    { return up ; }
+}
+
+UpdateCreate Create() : { boolean silent = false ; String iri ; }
+{
+    <CREATE>
+    (<SILENT> { silent = true ; } )?
+    iri = GraphIRI()
+    { return new UpdateCreate( iri, silent); }
+}
+
+UpdateDrop Drop() : { boolean silent = false ; String iri ; }
+{
+    <DROP>
+    (<SILENT>{  silent = true ; } )?
+    iri = GraphIRI()
+    { return new UpdateDrop(iri, silent) ; }
+}
+
+Element UpdatePattern() : { Element el ; }
+{
+   (<WHERE>) el = GroupGraphPattern() { return el ; }
+}
+
+// void Transaction() : {}
+// {
+//     TransBegin() | TransCommit() | TransAbort()
+// }
+// 
+// void TransBegin() : {}
+// {
+//     <BEGIN> (IRIref())?
+//     { System.out.println("++ Begin") ; }
+// }
+// 
+// void TransCommit() : {}
+// {
+//     <COMMIT> (IRIref())?
+//     { System.out.println("++ Commit") ; }
+// }
+// 
+// void TransAbort() : {}
+// {
+//     <ABORT> (IRIref())?
+//     { System.out.println("++ Abort") ; }
+// }
+// End UPDATE_SUBMISSION
+#endif
 
 // ---- General Graph Pattern 
 
@@ -2070,20 +2241,29 @@ TOKEN [IGNORE_CASE] :
 |  < FALSE:       "false" >
 }
 
-#if defined(UPDATE)
+#if defined(UPDATE) || defined(UPDATE_SUBMISSION)
 // SPARQL/Update parts.
 
 TOKEN [IGNORE_CASE] :
 {
+#ifdef UPDATE_SUBMISSION
+  < DATA:	      "data" >
+#else
   < #DATA:	      "data" >
+#endif
 | < INSERT:       "insert">
 | < DELETE:       "delete" >
 
+#ifndef UPDATE_SUBMISSION
 | < INSERT_DATA:  <INSERT> (<WS>)* <DATA> >
 | < DELETE_DATA:  <DELETE> (<WS>)* <DATA> >
 | < DELETE_WHERE: <DELETE> (<WS>)* <WHERE> >
+#endif
 
 #ifdef ARQ_UPDATE
+| < MODIFY:      "modify">
+#endif
+#ifdef UPDATE_SUBMISSION
 | < MODIFY:      "modify">
 #endif
 | < LOAD:         "load" >

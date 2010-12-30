@@ -866,7 +866,7 @@ public class SPARQLParser10 extends SPARQLParser10Base implements SPARQLParser10
 // -------- Construct patterns
   final public Template ConstructTemplate() throws ParseException {
       setInConstructTemplate(true) ;
-      TemplateGroup g = new TemplateGroup() ;
+      Template g = new Template() ;
     jj_consume_token(LBRACE);
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case IRIref:
@@ -906,7 +906,7 @@ public class SPARQLParser10 extends SPARQLParser10Base implements SPARQLParser10
     throw new Error("Missing return statement in function");
   }
 
-  final public void ConstructTriples(TemplateGroup acc) throws ParseException {
+  final public void ConstructTriples(Template acc) throws ParseException {
     TriplesSameSubject(acc);
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case DOT:

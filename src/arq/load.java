@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -16,12 +17,13 @@ import arq.cmdline.CmdUpdate ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.sparql.modify.submission.UpdateLoad ;
+import com.hp.hpl.jena.sparql.modify.request.UpdateLoad ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 import com.hp.hpl.jena.sparql.util.graph.GraphLoadMonitor ;
 import com.hp.hpl.jena.update.GraphStore ;
 import com.hp.hpl.jena.update.UpdateExecutionFactory ;
+import com.hp.hpl.jena.update.UpdateRequest ;
 
 public class load extends CmdUpdate
 {
@@ -66,14 +68,12 @@ public class load extends CmdUpdate
         if ( loadFiles.size() == 0 )
             throw new CmdException("Nothing to do") ;
         
-        UpdateLoad loadReq = new UpdateLoad() ;
-        if ( graphName != null )
-            loadReq.setGraphName(graphName) ;
-        
+        UpdateRequest req = new UpdateRequest() ;
         for ( Iterator<String> iter = loadFiles.iterator() ; iter.hasNext() ; )
         {
             String filename = iter.next();
-            loadReq.addLoadIRI(filename) ;
+            UpdateLoad loadReq = new UpdateLoad(filename, graphName) ;
+            req.add(loadReq) ;
         }
         
         if ( true )
@@ -88,7 +88,7 @@ public class load extends CmdUpdate
         }
         
         
-        UpdateExecutionFactory.create(loadReq, graphStore).execute() ;
+        UpdateExecutionFactory.create(req, graphStore).execute() ;
         
         if ( dump )
         {
@@ -108,6 +108,7 @@ public class load extends CmdUpdate
 
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

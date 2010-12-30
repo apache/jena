@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -7,46 +8,102 @@
 package com.hp.hpl.jena.sparql.syntax;
 
 import java.util.Collection ;
+import java.util.List ;
 import java.util.Map ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.sparql.ARQException ;
+import com.hp.hpl.jena.sparql.core.Quad ;
+import com.hp.hpl.jena.sparql.core.TriplePath ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
-import com.hp.hpl.jena.sparql.serializer.FmtTemplate ;
+import com.hp.hpl.jena.sparql.modify.TemplateLib ;
+import com.hp.hpl.jena.sparql.modify.request.QuadsAcc ;
+import com.hp.hpl.jena.sparql.serializer.FormatterTemplate ;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
+import com.hp.hpl.jena.sparql.util.Utils ;
 
+/** Triples template. */
 
-/**
- * Templates : patterns in the CONSTRUCT clause */
-
-public abstract class Template
+public class Template implements TripleCollector
 {
-    public abstract void subst(Collection<Triple> acc, Map<Node, Node> bNodeMap, Binding b) ;
-    public abstract void visit(TemplateVisitor v) ;
-    
-    @Override
-    public abstract int hashCode() ;
-    
-    public abstract boolean equalIso(Object temp2, NodeIsomorphismMap labelMap) ;
-    
-    @Override
-    final public boolean equals(Object temp2)
-    { 
-        if ( this == temp2 ) return true ;
-        return equalIso(temp2, null) ;
-    }
-    
-    @Override
-    public String toString()
-    {
-        return FmtTemplate.asString(this) ;
-    }
-    
     static final int HashTemplateGroup     = 0xB1 ;
+    QuadsAcc quads = new QuadsAcc() ;
+
+    public void addTriple(Triple t) { quads.addTriple(t) ; }
+    public int mark() { return quads.mark() ; }
+    public void addTriple(int index, Triple t) { quads.addTriple(index, t) ; }
+    public void addTriplePath(TriplePath path)
+    { throw new ARQException("Triples-only collector") ; }
+
+    public void addTriplePath(int index, TriplePath path)
+    { throw new ARQException("Triples-only collector") ; }
+
+
+    public List<Quad> getTemplates() { return quads.getQuads() ; }
+    // -------------------------
+
+    public void subst(Collection<Triple> acc, Map<Node, Node> bNodeMap, Binding b)
+    {
+        for ( Quad q : quads.getQuads() )
+        {
+            Triple t = TemplateLib.subst(q.asTriple(), b, bNodeMap) ;
+            acc.add(t) ;
+        }
+    }
+
+    private int calcHashCode = -1 ;  
+    @Override
+    public int hashCode()
+    { 
+        // BNode invariant hashCode. 
+        int calcHashCode = Template.HashTemplateGroup ;
+        for ( Quad q : quads.getQuads() )
+            calcHashCode ^=  hash(q) ^ calcHashCode<<1 ; 
+        return calcHashCode ;
+    }
+    
+    private static int hash(Quad quad)
+    {
+        int hash = 0 ;
+        hash = hashNode(quad.getGraph())   ^ hash<<1 ;
+        hash = hashNode(quad.getSubject())   ^ hash<<1 ;
+        hash = hashNode(quad.getPredicate()) ^ hash<<1 ;
+        hash = hashNode(quad.getObject())    ^ hash<<1 ;
+        return hash ;
+    }
+
+    private static int hashNode(Node node)
+    {
+        if ( node.isBlank() ) return 59 ;
+        return node.hashCode() ;
+    }
+    
+    public boolean equalIso(Object temp2, NodeIsomorphismMap labelMap)
+    {
+        if ( ! ( temp2 instanceof Template) ) return false ;
+        Template tg2 = (Template)temp2 ;
+        List<Quad> qList1 = this.quads.getQuads() ;
+        List<Quad> qList2 = tg2.quads.getQuads() ;
+        if ( qList1.size() != qList2.size() ) return false ;
+        for ( int i = 0 ; i < qList1.size() ; i++ )
+        {
+            Quad q1 = qList1.get(i) ;
+            Quad q2 = qList2.get(i) ;
+            Utils.quadIso(q1, q2, labelMap) ;
+        }
+        return true ;
+    }
+    
+    public void format(FormatterTemplate fmtTemplate)
+    {
+        fmtTemplate.format(this) ;
+    }
 }
 
 /*
  * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

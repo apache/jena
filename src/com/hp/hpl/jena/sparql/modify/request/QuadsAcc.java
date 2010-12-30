@@ -27,13 +27,10 @@ public class QuadsAcc implements TripleCollector
     
     public QuadsAcc()     {}
     
-    protected void check(Triple triple)
-    {}
-
+    protected void check(Triple triple) {} 
+    protected void check(Quad quad) {} 
     
     public void setGraph(Node n) 
-//    { setGraph(n, -1, -1) ; }
-//    public void setGraph(Node n, int line, int col)
     { 
         graphNode = n ;
     }
@@ -43,6 +40,13 @@ public class QuadsAcc implements TripleCollector
     public List<Quad> getQuads()
     {
         return quadsView ;
+    }
+    
+    //@Override
+    public void addQuad(Quad quad)
+    {
+        check(quad) ;
+        quads.add(quad) ;
     }
 
     //@Override
@@ -69,39 +73,17 @@ public class QuadsAcc implements TripleCollector
         return quads.size() ;
     }
     
-    
-//    private static class Template extends Pair<Node, TripleAcc> {
-//
-//        public Template(Node a, TripleAcc b)
-//        {
-//            super(a, b) ;
-//        }}
-//    
-//    private static class TripleAcc implements TripleCollector {
-//        private BasicPattern pattern = new BasicPattern() ; 
-//
-//        public TripleAcc()
-//        {  }
-//
-//        public boolean isEmpty() { return pattern.isEmpty() ; }
-//        
-//        public void addTriple(Triple t)
-//        { pattern.add(t) ; }
-//        
-//        public int mark() { return pattern.size() ; }
-//        
-//        public void addTriple(int index, Triple t)
-//        { pattern.add(index, t) ; }
-//        
-//        public void addTriplePath(TriplePath path)
-//        { throw new ARQException("Triples-only collector") ; }
-//
-//        public void addTriplePath(int index, TriplePath path)
-//        { throw new ARQException("Triples-only collector") ; }
-//        
-//        public BasicPattern getPattern() { return pattern ; }
-//        public Iterator<Triple> patternElts() { return pattern.iterator(); }
-//    }
+    @Override
+    public int hashCode() { return quads.hashCode() ; }
+
+    @Override
+    public boolean equals(Object other)
+    {
+        if ( ! ( other instanceof QuadsAcc ) ) return false ;
+        QuadsAcc acc = (QuadsAcc)other ;
+        return quads.equals(acc.quads) ; 
+    }
+
 }
 
 /*

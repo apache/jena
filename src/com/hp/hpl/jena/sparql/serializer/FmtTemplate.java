@@ -1,27 +1,24 @@
 /*
  * (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimoprhics Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
 package com.hp.hpl.jena.sparql.serializer;
 
-import java.util.Iterator ;
-
 import org.openjena.atlas.io.IndentedLineBuffer ;
 import org.openjena.atlas.io.IndentedWriter ;
 
-import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.sparql.core.BasicPattern ;
+import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.syntax.Template ;
-import com.hp.hpl.jena.sparql.syntax.TemplateGroup ;
-import com.hp.hpl.jena.sparql.syntax.TemplateTriple ;
-
-/** com.hp.hpl.jena.query.core.FormatterARQ */
 
 public class FmtTemplate extends FormatterBase
     implements FormatterTemplate 
 {
+    static final int INDENT = 2 ;
+    
     public FmtTemplate(IndentedWriter out, SerializationContext context)
     {
         super(out, context) ;
@@ -31,7 +28,7 @@ public class FmtTemplate extends FormatterBase
     {
         FmtTemplate fmt = new FmtTemplate(out, cxt) ;
         fmt.startVisit() ;
-        template.visit(fmt) ;
+        fmt.format(template) ;
         fmt.finishVisit() ;
     }
     
@@ -43,7 +40,7 @@ public class FmtTemplate extends FormatterBase
         return b.toString() ;
     }
 
-    public void visit(TemplateGroup template)
+    public void format(Template template)
     {
         out.print("{") ;
         out.incIndent(INDENT) ;
@@ -52,43 +49,22 @@ public class FmtTemplate extends FormatterBase
         //boolean first = true ;
         BasicPattern acc = new BasicPattern() ;    // Accumulator of successive triples
         
-        for ( Iterator<Template> iter = template.templates() ; iter.hasNext() ; )
-        {
-            Template temp = iter.next() ;
-            if ( temp instanceof TemplateTriple )
-            {
-                Triple triple = ((TemplateTriple)temp).getTriple() ;
-                acc.add(triple) ;
-                continue ;
-            }
-            // Flush accumulator
-            if ( ! acc.isEmpty() )
-                formatTriples(acc) ;
-            acc = new BasicPattern() ;
-            temp.visit(this) ;
-            out.print(" .") ;
-            out.newline() ;
-            //first = false ;
-        }
+        for ( Quad q : template.getTemplates() )
+            acc.add(q.asTriple()) ; 
     
-        // Flush accumulator
-        if ( ! acc.isEmpty() )
-            formatTriples(acc) ;
+        formatTriples(acc) ;
         
         out.decIndent(INDENT) ;
         out.print("}") ;
         out.newline() ;
-    }
 
-    public void visit(TemplateTriple template)
-    {
-        formatTriple(template.getTriple()) ;
     }
 
 }
 
 /*
  * (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimoprhics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

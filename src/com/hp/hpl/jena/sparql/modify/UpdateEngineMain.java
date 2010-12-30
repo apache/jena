@@ -6,11 +6,7 @@
 
 package com.hp.hpl.jena.sparql.modify;
 
-
-
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
-import com.hp.hpl.jena.sparql.modify.submission.UpdateProcessorSubmission ;
-import com.hp.hpl.jena.sparql.modify.submission.UpdateSubmission ;
 import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.update.GraphStore ;
 import com.hp.hpl.jena.update.Update ;
@@ -29,23 +25,8 @@ public class UpdateEngineMain extends UpdateEngineBase
         graphStore.startRequest() ;
         UpdateEngineWorker worker = new UpdateEngineWorker(graphStore, startBinding) ;
         for ( Update up : request.getOperations() )
-        {
-            if ( up instanceof UpdateSubmission )
-            {
-                // If old style, go there.
-                executeUpdateSubmission((UpdateSubmission)up) ;
-                continue ;
-            }
             up.visit(worker) ;
-        }
         graphStore.finishRequest() ;
-    }
-    
-    public void executeUpdateSubmission(UpdateSubmission ups)
-    {
-        UpdateProcessorSubmission p = 
-            new UpdateProcessorSubmission(graphStore, null, super.startBinding) ;
-        p.execute(ups) ;
     }
     
     private static UpdateEngineFactory factory = new UpdateEngineFactory()
@@ -60,7 +41,6 @@ public class UpdateEngineMain extends UpdateEngineBase
             return new UpdateEngineMain(graphStore, request, inputBinding, context) ;
         }
     } ;
-
 
     public static UpdateEngineFactory getFactory() { return factory ; }
 }

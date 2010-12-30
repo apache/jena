@@ -6,15 +6,12 @@
 
 package com.hp.hpl.jena.sparql.lang;
 
-import java.util.ArrayList ;
 import java.util.HashSet ;
-import java.util.List ;
 import java.util.Set ;
 
 import com.hp.hpl.jena.datatypes.RDFDatatype ;
 import com.hp.hpl.jena.datatypes.TypeMapper ;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
-import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.n3.JenaURIException ;
@@ -32,11 +29,9 @@ import com.hp.hpl.jena.sparql.graph.NodeConst ;
 import com.hp.hpl.jena.sparql.path.Path ;
 import com.hp.hpl.jena.sparql.syntax.Element ;
 import com.hp.hpl.jena.sparql.syntax.ElementGroup ;
-import com.hp.hpl.jena.sparql.syntax.Template ;
 import com.hp.hpl.jena.sparql.syntax.TripleCollector ;
 import com.hp.hpl.jena.sparql.util.ExprUtils ;
 import com.hp.hpl.jena.sparql.util.LabelToNodeMap ;
-import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
 import com.hp.hpl.jena.vocabulary.RDF ;
 
 /** Base class for RDF related parsers */ 
@@ -369,19 +364,6 @@ public class ParserBase
     }
 
     // Utilities to remove escapes
-    
-    // Testing interface
-    
-    // SPARQL/Update 
-    protected Graph convertTemplateToTriples(Template template, int line, int col)
-    {
-        List<Triple> acc = new ArrayList<Triple>() ;
-        TriplesDataCollector collector = new TriplesDataCollector(acc, line, col) ;
-        template.visit(collector) ;
-        Graph g = GraphFactory.createPlainGraph() ;
-        g.getBulkUpdateHandler().add(acc) ;
-        return g ;
-    }
     
     public static String unescapeStr(String s)
     { return unescape(s, '\\', false, 1, 1) ; }

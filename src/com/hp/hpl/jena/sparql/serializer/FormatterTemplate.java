@@ -1,19 +1,24 @@
 /*
  * (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
 package com.hp.hpl.jena.sparql.serializer;
-import com.hp.hpl.jena.sparql.syntax.TemplateVisitor ;
 
-public interface FormatterTemplate extends TemplateVisitor 
+import com.hp.hpl.jena.sparql.syntax.Template ;
+
+public interface FormatterTemplate 
 {
     static final int INDENT = 2 ;
+
+    void format(Template template) ;
 }
 
 /*
  * (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

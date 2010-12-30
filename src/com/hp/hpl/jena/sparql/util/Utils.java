@@ -17,6 +17,7 @@ import java.util.TimeZone ;
 import com.hp.hpl.jena.datatypes.xsd.XSDDateTime ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.core.TriplePath ;
 import com.hp.hpl.jena.sparql.core.Var ;
 
@@ -217,6 +218,30 @@ public class Utils
         Node p2 = t2.getPredicate() ;
         Node o2 = t2.getObject() ;
         
+        if ( ! nodeIso(s1, s2, labelMap) )
+            return false ;
+        if ( ! nodeIso(p1, p2, labelMap) )
+            return false ;
+        if ( ! nodeIso(o1, o2, labelMap) )
+            return false ;
+
+        return true ;
+    }
+    
+    public static boolean quadIso(Quad t1, Quad t2, NodeIsomorphismMap labelMap)
+    {
+        Node g1 = t1.getGraph() ;
+        Node s1 = t1.getSubject() ;
+        Node p1 = t1.getPredicate() ;
+        Node o1 = t1.getObject() ;
+        
+        Node g2 = t2.getGraph() ;
+        Node s2 = t2.getSubject() ;
+        Node p2 = t2.getPredicate() ;
+        Node o2 = t2.getObject() ;
+        
+        if ( ! nodeIso(g1, g2, labelMap) )
+            return false ;
         if ( ! nodeIso(s1, s2, labelMap) )
             return false ;
         if ( ! nodeIso(p1, p2, labelMap) )

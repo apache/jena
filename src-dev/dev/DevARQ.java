@@ -3,9 +3,14 @@ package dev ;
 public class DevARQ
 {
     // >>>> Tasks
-    
+
     // OutputLangUtils
     // Escaping for N-triples and escaping for Turtle is different  
+    
+    // CONSTRUCT - share code with UpdateEngineWorker - 
+    //   pull out the common template substitution code => TemplateLib
+    //   TemplateGroup => QuadAcc => Template
+    //   Loose TemplateGroup and TemplateTriple ; just ElementTripleTemplate 
     
     // Algebra.asUnionQuery .. to access the functionality
     
@@ -31,6 +36,9 @@ public class DevARQ
 
     // <<<< Tasks
 
+    // ** Remove SPARQL/Update submission.
+    //   Simplify code!
+    
     // QueryParseException for updates is confusing.
     //   All QueryException  -> SparqlException or LanguageParseException
     

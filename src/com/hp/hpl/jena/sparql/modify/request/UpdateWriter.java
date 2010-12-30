@@ -14,7 +14,6 @@ import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.ARQException ;
 import com.hp.hpl.jena.sparql.core.Prologue ;
 import com.hp.hpl.jena.sparql.core.Quad ;
-import com.hp.hpl.jena.sparql.modify.submission.UpdateSubmission ;
 import com.hp.hpl.jena.sparql.serializer.FormatterElement ;
 import com.hp.hpl.jena.sparql.serializer.PrologueSerializer ;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
@@ -67,13 +66,6 @@ public class UpdateWriter
     
     private static void outputUpdate(Update update, IndentedWriter out, SerializationContext sCxt)
     {
-        if ( update instanceof UpdateSubmission )
-        {
-            out.print(update) ;
-            //out.ensureStartOfLine() ;
-            return ;
-        }
-        
         Writer writer = new Writer(out, sCxt) ;
         update.visit(writer) ; 
     }

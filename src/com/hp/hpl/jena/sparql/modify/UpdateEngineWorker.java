@@ -6,14 +6,13 @@
 
 package com.hp.hpl.jena.sparql.modify;
 
+import static com.hp.hpl.jena.sparql.modify.TemplateLib.template ;
+
 import java.util.ArrayList ;
 import java.util.Collection ;
-import java.util.HashMap ;
 import java.util.List ;
-import java.util.Map ;
 
 import org.openjena.atlas.iterator.Iter ;
-import org.openjena.atlas.iterator.Transform ;
 import org.openjena.atlas.lib.MultiMap ;
 import org.openjena.atlas.logging.Log ;
 
@@ -28,13 +27,10 @@ import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphWrapper ;
 import com.hp.hpl.jena.sparql.core.Quad ;
-import com.hp.hpl.jena.sparql.core.Substitute ;
-import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.Plan ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingRoot ;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper ;
 import com.hp.hpl.jena.sparql.graph.NodeTransform ;
 import com.hp.hpl.jena.sparql.graph.NodeTransformLib ;
 import com.hp.hpl.jena.sparql.modify.request.Target ;
@@ -55,7 +51,6 @@ import com.hp.hpl.jena.sparql.syntax.Element ;
 import com.hp.hpl.jena.sparql.syntax.ElementGroup ;
 import com.hp.hpl.jena.sparql.syntax.ElementNamedGraph ;
 import com.hp.hpl.jena.sparql.syntax.ElementTriplesBlock ;
-import com.hp.hpl.jena.sparql.util.FmtUtils ;
 import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
 import com.hp.hpl.jena.update.GraphStore ;
 import com.hp.hpl.jena.update.UpdateException ;
@@ -291,31 +286,6 @@ class UpdateEngineWorker implements UpdateVisitor
         return el ;
     }
 
-    private MultiMap<Node, Triple> template(List<Quad> quads, final Node dftGraph, List<Binding> bindings)
-    {
-        // ** BNode mapping.
-        
-        // Templating.
-        
-        if ( quads == null || quads.isEmpty() ) return null ; 
-        // The default graph has been set to something else.
-        if ( dftGraph != null )
-        {
-            Transform<Quad, Quad> nt = new Transform<Quad, Quad>() {
-                public Quad convert(Quad quad)
-                {
-                    if ( ! quad.isDefaultGraph() ) return quad ;
-                    
-                    return new Quad(dftGraph, quad.getSubject(), quad.getPredicate(), quad.getObject()) ;
-                }
-            };
-            quads = Iter.map(quads, nt) ;
-        }
-        
-        MultiMap<Node, Triple> acc = calcTriples(quads, bindings) ;
-        return acc ;
-    }
-    
     private void execDelete(List<Quad> quads, Node dftGraph, List<Binding> bindings)
     {
         MultiMap<Node, Triple> acc = template(quads, dftGraph, bindings) ;
@@ -340,80 +310,6 @@ class UpdateEngineWorker implements UpdateVisitor
         }
     }
 
-    private MultiMap<Node, Triple> calcTriples(List<Quad> quads, List<Binding> bindings)
-    {
-        QueryIterator qIter = new QueryIterPlainWrapper(bindings.iterator()) ;
-        return subst(quads, qIter) ;
-    }
-
-    protected static MultiMap<Node, Triple> subst(List<Quad> quads, QueryIterator qIter)
-    {
-        MultiMap<Node, Triple> acc = MultiMap.createMapList() ;
-
-        for ( ; qIter.hasNext() ; )
-        {
-            Map<Node, Node> bNodeMap = new HashMap<Node, Node>() ;
-            Binding b = qIter.nextBinding() ;
-            for ( Quad quad : quads )
-                subst(acc, quad, b, bNodeMap) ;
-        }
-        return acc ;
-    }
-    
-    private static void subst(MultiMap<Node, Triple> acc, Quad quad, Binding b, Map<Node, Node> bNodeMap)
-    {
-        Quad q = subst(quad, b, bNodeMap) ;
-        if ( ! q.isConcrete() )
-        {
-            Log.warn(UpdateEngine.class, "Unbound quad: "+FmtUtils.stringForQuad(quad)) ;
-            return ;
-        }
-        acc.put(q.getGraph(), q.asTriple()) ;
-    }
-
-    // XXX Consolidate:
-    //  TemplateTriple and this code into Substitute library
-    //  Blank node processing into substitue library 
-    
-    private static Quad subst(Quad quad, Binding b, Map<Node, Node> bNodeMap)
-    {
-        Node g = quad.getGraph() ;
-        Node s = quad.getSubject() ; 
-        Node p = quad.getPredicate() ;
-        Node o = quad.getObject() ;
-
-        Node g1 = g ;
-        Node s1 = s ; 
-        Node p1 = p ;
-        Node o1 = o ;
-        
-        if ( g1.isBlank() || Var.isBlankNodeVar(g1) )
-            g1 = newBlank(g1, bNodeMap) ;
-        
-        if ( s1.isBlank() || Var.isBlankNodeVar(s1) )
-            s1 = newBlank(s1, bNodeMap) ;
-
-        if ( p1.isBlank() || Var.isBlankNodeVar(p1) )
-            p1 = newBlank(p1, bNodeMap) ;
-
-        if ( o1.isBlank() || Var.isBlankNodeVar(o1) )
-            o1 = newBlank(o1, bNodeMap) ;
-
-        Quad q = quad ;
-        if ( s1 != s || p1 != p || o1 != o || g1 != g )
-            q = new Quad(g1, s1, p1, o1) ;
-        
-        Quad q2 = Substitute.substitute(q, b) ;
-        return q2 ;
-    }
-    
-    private static Node newBlank(Node n, Map<Node, Node> bNodeMap)
-    {
-        if ( ! bNodeMap.containsKey(n) ) 
-            bNodeMap.put(n, Node.createAnon() );
-        return bNodeMap.get(n) ;
-    }
-    
     private Query elementToQuery(Element pattern)
     {
         if ( pattern == null )

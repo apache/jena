@@ -1,3 +1,5 @@
+SPARQl/Update sumission - just the submission part.
+
 
     // --------
     // [done] INSERT/DELETE DATA [INTO? or FROM? <uri>] {} => INSERT/DELETE DATA { GRAPH <uri> {}}
