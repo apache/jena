@@ -1,4 +1,3 @@
 @prefix  : <http://example/> .
 
-:s :p :o .
-
+:s :p "hello\nworld" .

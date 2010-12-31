@@ -9,6 +9,8 @@ public class DevTDB
     // SetupTDB : abstract algorithm and pass in (Range)Index builders
     // layers: database - TupleIndex/NodeTable - (Range)Index+seq store.
     
+    // tdbloader(2): --lang=
+    
     // Check commands and use of --graph
     
     // ---- BulkLoader2

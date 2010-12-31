@@ -24,6 +24,9 @@ public class RunTDB
 
     public static void main(String[] args) throws Exception
     {
+        
+        tdb.tdbstats.main("--loc=DB", "--graph=urn:x-arq:UnionGraph") ; System.exit(0) ;
+        
         tdb.tdbquery.main("--set=tdb:logExec=true", 
                           "--set=tdb:unionDefaultGraph=true", 
                           "--query=Q.rq") ;

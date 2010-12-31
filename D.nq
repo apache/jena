@@ -1,9 +1,0 @@
-# Default graph
-
-<http://example/x> <http://example/p> <http://example/z> .
-<http://example/x> <http://example/p> "123" .
-<http://example/z> <http://example/q> <http://example/r> .
-<http://example/x1> <http://example/p> <http://example/z1> .
-
-# Named graphs
-<http://example/x> <http://example/p> "456" <http://example/graph1> .
