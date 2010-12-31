@@ -97,7 +97,7 @@ public class CmdNodeTableBuilder extends CmdGeneral
             dataFileQuads = location.getPath("quads", "tmp") ;
         
         if ( Lib.equal(dataFileTriples, dataFileQuads) )
-            throw new CmdException("Triples and Quads work files are the same") ;
+            cmdError("Triples and Quads work files are the same") ;
         
         datafiles  = super.getPositional() ;
         
@@ -107,9 +107,12 @@ public class CmdNodeTableBuilder extends CmdGeneral
 
         for( String filename : datafiles)
         {
-            Lang lang = Lang.guess(filename) ;
+            Lang lang = Lang.guess(filename, Lang.NQUADS) ;
+            if ( lang == null )
+                // Does not happen due to default above.
+                cmdError("File suffix not recognized: " +filename) ;
             if ( ! FileOps.exists(filename) )
-                throw new CmdException("File does not exist: "+filename) ;
+                cmdError("File does not exist: "+filename) ;
         }
     }
     
@@ -143,7 +146,7 @@ public class CmdNodeTableBuilder extends CmdGeneral
         for( String filename : datafiles)
         {
             InputStream in = IO.openFile(filename) ;
-            Lang lang = Lang.guess(filename) ;
+            Lang lang = Lang.guess(filename, Lang.NQUADS) ;
             if ( lang.isTriples() )
                 RiotLoader.readTriples(in, lang, null, sink2) ;
             else

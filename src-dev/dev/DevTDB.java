@@ -10,6 +10,7 @@ public class DevTDB
     // layers: database - TupleIndex/NodeTable - (Range)Index+seq store.
     
     // tdbloader(2): --lang=
+    // tdbloader shoudl default to n-quads, not n-triples.
     
     // Check commands and use of --graph
     

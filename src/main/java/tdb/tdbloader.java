@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -84,13 +85,13 @@ public class tdbloader extends CmdTDB
         
         if ( modRDFS.getModel() != null )
         {
-            
+            // TODO
         }
         
         boolean allTriples = true ;
         for ( String url : urls )
         {
-            Lang lang = Lang.guess(url) ;
+            Lang lang = Lang.guess(url, Lang.NQUADS) ;
             if ( lang != null && lang.isQuads() )
             {
                 allTriples = false ;
@@ -115,7 +116,10 @@ public class tdbloader extends CmdTDB
         {
             for ( String url : urls )
             {
-                Lang lang = Lang.guess(url) ;
+                Lang lang = Lang.guess(url, Lang.NQUADS) ;
+                if ( lang == null )
+                    // Does not happen due to default above.
+                    cmdError("File suffix not recognized: " +url) ;
                 if ( lang != null && ! lang.isTriples() )
                     cmdError("Can only load triples into a named model: "+url) ;
             }
@@ -151,6 +155,7 @@ public class tdbloader extends CmdTDB
 
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
