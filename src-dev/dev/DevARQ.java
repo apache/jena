@@ -5,7 +5,6 @@ public class DevARQ
     // >>>> Tasks
 
     // OutputLangUtils
-    // Escaping for N-triples and escaping for Turtle is different  
     
     // CONSTRUCT - share code with UpdateEngineWorker - 
     //   pull out the common template substitution code => TemplateLib
@@ -42,12 +41,8 @@ public class DevARQ
     // QueryParseException for updates is confusing.
     //   All QueryException  -> SparqlException or LanguageParseException
     
-    // dayTimeDuration
-    
     // Prologure from RIOT
     // PrefixMap from RIOT
-    
-    // XSDFuncOp.getDT*
     
     // Migrations/enable:
     //   TransformUnionQuery
