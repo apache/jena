@@ -865,8 +865,9 @@ public class SPARQLParser10 extends SPARQLParser10Base implements SPARQLParser10
 
 // -------- Construct patterns
   final public Template ConstructTemplate() throws ParseException {
+                                 TripleCollectorBGP acc = new TripleCollectorBGP();
+                                 Template t = new Template(acc.getBGP()) ;
       setInConstructTemplate(true) ;
-      Template g = new Template() ;
     jj_consume_token(LBRACE);
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case IRIref:
@@ -894,7 +895,7 @@ public class SPARQLParser10 extends SPARQLParser10Base implements SPARQLParser10
     case NIL:
     case LBRACKET:
     case ANON:
-      ConstructTriples(g);
+      ConstructTriples(acc);
       break;
     default:
       jj_la1[38] = jj_gen;
@@ -902,11 +903,11 @@ public class SPARQLParser10 extends SPARQLParser10Base implements SPARQLParser10
     }
     jj_consume_token(RBRACE);
       setInConstructTemplate(false) ;
-      {if (true) return g ;}
+      {if (true) return t ;}
     throw new Error("Missing return statement in function");
   }
 
-  final public void ConstructTriples(Template acc) throws ParseException {
+  final public void ConstructTriples(TripleCollector acc) throws ParseException {
     TriplesSameSubject(acc);
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case DOT:

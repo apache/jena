@@ -9,6 +9,7 @@ package com.hp.hpl.jena.sparql.syntax;
 import java.util.Iterator ;
 
 import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.sparql.core.BasicPattern ;
 import com.hp.hpl.jena.sparql.core.PathBlock ;
 import com.hp.hpl.jena.sparql.core.TriplePath ;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
@@ -21,6 +22,12 @@ public class ElementPathBlock extends Element implements TripleCollector
 
     public ElementPathBlock()
     {  }
+    
+    public ElementPathBlock(BasicPattern bgp)
+    {  
+        for ( Triple t : bgp.getList() )
+            addTriple(t) ;
+    }
 
     public boolean isEmpty() { return pattern.isEmpty() ; }
     

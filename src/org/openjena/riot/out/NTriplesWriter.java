@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -9,6 +10,7 @@ package org.openjena.riot.out;
 import java.io.OutputStream ;
 import java.util.Iterator ;
 
+import org.openjena.atlas.iterator.Iter ;
 import org.openjena.atlas.lib.Sink ;
 import org.openjena.riot.system.Prologue ;
 
@@ -21,29 +23,18 @@ public class NTriplesWriter
     public static void write(OutputStream out, Graph graph)
     {
         Prologue prologue = Prologue.create(null, null) ; // (null, graph.getPrefixMapping()) ;
+        // Write prologue.
         Sink<Triple> sink = new SinkTripleOutput(out, prologue) ;
-        graphToSink(graph, sink) ;
-    }
-    
-    private static void graphToSink(Graph graph, Sink<Triple> sink)
-    {
         Iterator<Triple> iter = graph.find(Node.ANY, Node.ANY, Node.ANY) ;
-        graphToSink(iter, sink) ;
+        Iter.sendToSink(iter, sink) ;
     }
     
-    private static void graphToSink(Iterator<Triple> iter, Sink<Triple> sink)
-    {
-        for ( ; iter.hasNext() ; )
-        {
-            Triple triple = iter.next() ;
-            sink.send(triple) ;
-        }
-        sink.close();
-    }
+   
 }
 
 /*
  * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

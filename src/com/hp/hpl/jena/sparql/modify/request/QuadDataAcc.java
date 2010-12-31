@@ -12,7 +12,7 @@ import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.core.Var ;
 
 /** Accumulate quads (excluding allowing variables) during parsing. */
-public class QuadDataAcc extends QuadsAcc
+public class QuadDataAcc extends QuadAcc
 {
     @Override
     protected void check(Triple t)

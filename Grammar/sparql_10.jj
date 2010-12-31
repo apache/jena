@@ -406,18 +406,18 @@ ExprList ParamList() : { Expr expr ; ExprList args = new ExprList() ; }
 
 // -------- Construct patterns
 
-Template ConstructTemplate() : { }
+Template ConstructTemplate() : { TripleCollectorBGP acc = new TripleCollectorBGP(); 
+                                 Template t = new Template(acc.getBGP()) ; }
 {
-    { setInConstructTemplate(true) ;
-      TemplateGroup g = new TemplateGroup() ; }
+    { setInConstructTemplate(true) ; }
   <LBRACE>
-    (ConstructTriples(g))?
+    (ConstructTriples(acc))?
   <RBRACE>
     { setInConstructTemplate(false) ;
-      return g ; }
+      return t ; }
 }
 
-void ConstructTriples(TemplateGroup acc) : { }
+void ConstructTriples(TripleCollector acc) : { }
 {
 
 // SPARQL - recursion - does not scale for SPARQL/Update

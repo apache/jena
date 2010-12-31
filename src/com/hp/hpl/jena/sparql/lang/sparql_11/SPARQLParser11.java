@@ -199,7 +199,8 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
   }
 
   final public void ConstructQuery() throws ParseException {
-                          Template t ; QuadsAcc acc = new QuadsAcc() ;
+                          Template t ;
+                          TripleCollectorBGP acc = new TripleCollectorBGP() ;
     jj_consume_token(CONSTRUCT);
        getQuery().setQueryConstructType() ;
     t = ConstructTemplate();
@@ -1273,7 +1274,7 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
   }
 
   final public Update DeleteWhere() throws ParseException {
-                         QuadsAcc qp = new QuadsAcc() ;
+                         QuadAcc qp = new QuadAcc() ;
     jj_consume_token(DELETE_WHERE);
     QuadPattern(qp);
     {if (true) return new UpdateDeleteWhere(qp) ;}
@@ -1333,14 +1334,14 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
   }
 
   final public void DeleteClause(UpdateModify up) throws ParseException {
-                                       QuadsAcc qp = up.getDeleteAcc() ;
+                                       QuadAcc qp = up.getDeleteAcc() ;
     jj_consume_token(DELETE);
     QuadPattern(qp);
      up.setHasDeleteClause(true) ;
   }
 
   final public void InsertClause(UpdateModify up) throws ParseException {
-                                       QuadsAcc qp = up.getInsertAcc() ;
+                                       QuadAcc qp = up.getInsertAcc() ;
     jj_consume_token(INSERT);
     QuadPattern(qp);
      up.setHasInsertClause(true) ;
@@ -1433,7 +1434,7 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
     throw new Error("Missing return statement in function");
   }
 
-  final public void QuadPattern(QuadsAcc acc) throws ParseException {
+  final public void QuadPattern(QuadAcc acc) throws ParseException {
     jj_consume_token(LBRACE);
     Quads(acc);
     jj_consume_token(RBRACE);
@@ -1446,7 +1447,7 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
     jj_consume_token(RBRACE);
   }
 
-  final public void Quads(QuadsAcc acc) throws ParseException {
+  final public void Quads(QuadAcc acc) throws ParseException {
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case IRIref:
     case PNAME_NS:
@@ -1533,8 +1534,8 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
     }
   }
 
-  final public void QuadsNotTriples(QuadsAcc acc) throws ParseException {
-                                      Node n ; Node prev = acc.getGraph() ;
+  final public void QuadsNotTriples(QuadAcc acc) throws ParseException {
+                                     Node n ; Node prev = acc.getGraph() ;
     jj_consume_token(GRAPH);
     n = VarOrIRIref();
       acc.setGraph(n) ;
@@ -1575,7 +1576,7 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
       acc.setGraph(prev) ;
   }
 
-  final public void TriplesTemplate(QuadsAcc acc) throws ParseException {
+  final public void TriplesTemplate(TripleCollector acc) throws ParseException {
     TriplesSameSubject(acc);
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case DOT:
@@ -2099,8 +2100,9 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
 
 // -------- Construct patterns
   final public Template ConstructTemplate() throws ParseException {
+                                 TripleCollectorBGP acc = new TripleCollectorBGP();
+                                 Template t = new Template(acc.getBGP()) ;
       setInConstructTemplate(true) ;
-      Template g = new Template() ;
     jj_consume_token(LBRACE);
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case IRIref:
@@ -2128,7 +2130,7 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
     case NIL:
     case LBRACKET:
     case ANON:
-      ConstructTriples(g);
+      ConstructTriples(acc);
       break;
     default:
       jj_la1[78] = jj_gen;
@@ -2136,11 +2138,11 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
     }
     jj_consume_token(RBRACE);
       setInConstructTemplate(false) ;
-      {if (true) return g ;}
+      {if (true) return t ;}
     throw new Error("Missing return statement in function");
   }
 
-  final public void ConstructTriples(Template acc) throws ParseException {
+  final public void ConstructTriples(TripleCollector acc) throws ParseException {
     TriplesSameSubject(acc);
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case DOT:

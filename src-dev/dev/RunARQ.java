@@ -1,6 +1,7 @@
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development  Company, LP
  * (c) Copyright 2010 Talis Systems Ltd
+ * (c) Copyright 2010 Epimorphics Ltd
  * All rights reserved.
  * [See end of file]
  */
@@ -95,22 +96,7 @@ public class RunARQ
     
     public static void main(String[] argv) throws Exception
     {
-        
-        qexpr("timezone('2010-12-26T13:45:26.56-05:00'^^xsd:dateTime)") ; System.exit(0) ;
-        
-        String dir = "/home/afs/W3C/SPARQL-docs/tests/data-sparql11/functions" ;
-        
-        arq.sparql.main("--query", dir+"/hours-01.rq", "--data", dir+"/data.ttl") ; System.exit(0) ;
-        arq.qparse.main("SELECT ?o { ?s ?p ?o } GROUP BY (?s+5 AS ?o)") ; 
-        System.exit(0) ;
-        
-        qexpr("substr('bar'@en,2)") ;
-        System.exit(0) ;
-
-        riotcmd.turtle.main("ttl-with-bom.ttl") ; System.exit(0) ;
-        
-        
-        arq.qparse.main("--print=op", "--print=opt", "--query=Q.rq") ;
+        arq.qparse.main("--print=op", "--print=query", "--query=Q.arq") ;
         System.exit(0) ;
         
         //testXSDDurationBug() ; System.exit(0) ;
@@ -373,6 +359,7 @@ public class RunARQ
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (c) Copyright 2010 Talis Systems Ltd
+ * (c) Copyright 2010 Epimorphics Ltd
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

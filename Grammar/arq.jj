@@ -128,12 +128,14 @@ void SelectClause() : { Var v ; Expr expr ; Node n ; }
   )
   { allowAggregatesInExpressions = false ; }
 }
-void ConstructQuery() : { Template t ; QuadsAcc acc = new QuadsAcc() ; }
+void ConstructQuery() : { Template t ;
+                          TripleCollectorBGP acc = new TripleCollectorBGP() ; }
 {
+ // ARQ - two forms.
  <CONSTRUCT>
+   { getQuery().setQueryConstructType() ; }
  (
-   // Full form.
-      { getQuery().setQueryConstructType() ; }
+    // Full form.
     t = ConstructTemplate()
       { getQuery().setConstructTemplate(t) ; }
     ( DatasetClause() )*
@@ -147,7 +149,15 @@ void ConstructQuery() : { Template t ; QuadsAcc acc = new QuadsAcc() ; }
     (TriplesTemplate(acc))?
     <RBRACE>
     SolutionModifier()
-    // Glue pattern to template.
+    {
+      t = new Template(acc.getBGP()) ;
+      getQuery().setConstructTemplate(t) ;
+      // Create a query in the same shape as the query created by writing out in full.
+      ElementPathBlock epb = new ElementPathBlock(acc.getBGP()) ;
+      ElementGroup elg = new ElementGroup() ;
+      elg.addElement(epb) ;
+      getQuery().setQueryPattern(elg) ;
+    }
  )
 }
 void DescribeQuery() : { Node n ; }
@@ -417,7 +427,7 @@ Update DeleteData() : { QuadDataAcc qd = new QuadDataAcc() ; Token t ; }
     return new UpdateDataDelete(qd) ;
   }
 }
-Update DeleteWhere() : { QuadsAcc qp = new QuadsAcc() ; }
+Update DeleteWhere() : { QuadAcc qp = new QuadAcc() ; }
 {
   <DELETE_WHERE> QuadPattern(qp)
   { return new UpdateDeleteWhere(qp) ; }
@@ -445,28 +455,28 @@ Update ModifyOld() :
     el = GroupGraphPattern() { up.setElement(el) ; }
     { return up ; }
 }
-void DeleteClause(UpdateModify up) : { QuadsAcc qp = up.getDeleteAcc() ; }
+void DeleteClause(UpdateModify up) : { QuadAcc qp = up.getDeleteAcc() ; }
 {
    <DELETE>
    OptionalFromTarget(qp)
    QuadPattern(qp)
    { up.setHasDeleteClause(true) ; }
 }
-void InsertClause(UpdateModify up) : { QuadsAcc qp = up.getInsertAcc() ; }
+void InsertClause(UpdateModify up) : { QuadAcc qp = up.getInsertAcc() ; }
 {
    <INSERT>
    OptionalIntoTarget(qp)
    QuadPattern(qp)
    { up.setHasInsertClause(true) ; }
 }
-void OptionalIntoTarget(QuadsAcc qp) : { String iri ; }
+void OptionalIntoTarget(QuadAcc qp) : { String iri ; }
 {
   ( (<INTO>)?
      iri = IRIref()
      { Node gn = createNode(iri) ; qp.setGraph(gn) ; }
    )?
 }
-void OptionalFromTarget(QuadsAcc qp) : { String iri ; }
+void OptionalFromTarget(QuadAcc qp) : { String iri ; }
 {
   ( (<FROM>)?
      iri = IRIref()
@@ -506,7 +516,7 @@ Target GraphRefAll() : { Node iri ; }
    ?
    { return Target.DEFAULT ; }
 }
-void QuadPattern(QuadsAcc acc) : { }
+void QuadPattern(QuadAcc acc) : { }
 {
     <LBRACE>
     Quads(acc)
@@ -519,7 +529,7 @@ void QuadData(QuadDataAcc acc) : { }
     Quads(acc)
     <RBRACE>
 }
-void Quads(QuadsAcc acc) : { }
+void Quads(QuadAcc acc) : { }
 {
    (TriplesTemplate(acc))?
    (
@@ -528,7 +538,7 @@ void Quads(QuadsAcc acc) : { }
      (TriplesTemplate(acc))?
    )*
 }
-void QuadsNotTriples(QuadsAcc acc) : {Node n ; Node prev = acc.getGraph() ; }
+void QuadsNotTriples(QuadAcc acc) : {Node n ; Node prev = acc.getGraph() ; }
 {
     <GRAPH> n = VarOrIRIref()
     { acc.setGraph(n) ; }
@@ -537,7 +547,7 @@ void QuadsNotTriples(QuadsAcc acc) : {Node n ; Node prev = acc.getGraph() ; }
     <RBRACE>
     { acc.setGraph(prev) ; }
 }
-void TriplesTemplate(QuadsAcc acc) : { }
+void TriplesTemplate(TripleCollector acc) : { }
 {
     TriplesSameSubject(acc)
     (<DOT> (TriplesTemplate(acc))?)?
@@ -778,17 +788,17 @@ ExprList ExpressionList() : { Expr expr = null ; ExprList args = new ExprList() 
   { return args ; }
 }
 // -------- Construct patterns
-Template ConstructTemplate() : { }
+Template ConstructTemplate() : { TripleCollectorBGP acc = new TripleCollectorBGP();
+                                 Template t = new Template(acc.getBGP()) ; }
 {
-    { setInConstructTemplate(true) ;
-      TemplateGroup g = new TemplateGroup() ; }
+    { setInConstructTemplate(true) ; }
   <LBRACE>
-    (ConstructTriples(g))?
+    (ConstructTriples(acc))?
   <RBRACE>
     { setInConstructTemplate(false) ;
-      return g ; }
+      return t ; }
 }
-void ConstructTriples(TemplateGroup acc) : { }
+void ConstructTriples(TripleCollector acc) : { }
 {
     // Rewrite for no recursion - grammar is not LL(1)
     TriplesSameSubject(acc)

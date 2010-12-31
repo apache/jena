@@ -127,7 +127,7 @@ do
 ##           cat "$GRAMMAR" | cpp -P -C -DSPARQL -DSPARQL_10 > sparql_10.jj
 ##           grammar sparql_10.jj sparql_10 SPARQLParser10
 ##           ;;
-          echo "SPARQL 1.0 - not rebuilt"
+         echo "SPARQL 1.0 - not rebuilt"
           ;;
 
       sparql11|sparql_11.jj)

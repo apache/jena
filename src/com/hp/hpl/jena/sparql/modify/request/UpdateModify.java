@@ -13,16 +13,16 @@ import com.hp.hpl.jena.sparql.syntax.Element ;
 
 public class UpdateModify extends UpdateWithUsing
 {
-    private final QuadsAcc deletePattern ;
-    private final QuadsAcc insertPattern ;
+    private final QuadAcc deletePattern ;
+    private final QuadAcc insertPattern ;
     private boolean hasInsert = false ;
     private boolean hasDelete = false ;
     private Element wherePattern ;
     
     public UpdateModify() 
     { 
-        this.deletePattern = new QuadsAcc() ;
-        this.insertPattern = new QuadsAcc() ;
+        this.deletePattern = new QuadAcc() ;
+        this.insertPattern = new QuadAcc() ;
         this.wherePattern = null ;
     }
     
@@ -31,12 +31,12 @@ public class UpdateModify extends UpdateWithUsing
         this.wherePattern = element ; 
     }
     
-    public QuadsAcc getDeleteAcc()
+    public QuadAcc getDeleteAcc()
     {
         return deletePattern ;
     }
 
-    public QuadsAcc getInsertAcc()
+    public QuadAcc getInsertAcc()
     {
         return insertPattern ;
     }

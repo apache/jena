@@ -1,0 +1,1180 @@
+<div class="grammarTable">
+  <table><tbody>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[1]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rQueryUnit" name="rQueryUnit">QueryUnit</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><a href="#rQuery">Query</a> <span class="token"></span></code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[2]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rQuery" name="rQuery">Query</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><a href="#rPrologue">Prologue</a><br/>( <a href="#rSelectQuery">SelectQuery</a> | <a href="#rConstructQuery">ConstructQuery</a> | <a href="#rDescribeQuery">DescribeQuery</a> | <a href="#rAskQuery">AskQuery</a> )</code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[3]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rPrologue" name="rPrologue">Prologue</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody">( <a href="#rBaseDecl">BaseDecl</a> | <a href="#rPrefixDecl">PrefixDecl</a> )*</code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[4]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rBaseDecl" name="rBaseDecl">BaseDecl</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><span class="token">'BASE'</span> <a href="#rIRI_REF">IRI_REF</a></code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[5]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rPrefixDecl" name="rPrefixDecl">PrefixDecl</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><span class="token">'PREFIX'</span> <a href="#rPNAME_NS">PNAME_NS</a> <a href="#rIRI_REF">IRI_REF</a></code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[6]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rSelectQuery" name="rSelectQuery">SelectQuery</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><a href="#rSelectClause">SelectClause</a> <a href="#rDatasetClause">DatasetClause</a>* <a href="#rWhereClause">WhereClause</a> <a href="#rSolutionModifier">SolutionModifier</a> <a href="#rBindingsClause">BindingsClause</a></code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[7]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rSubSelect" name="rSubSelect">SubSelect</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><a href="#rSelectClause">SelectClause</a> <a href="#rWhereClause">WhereClause</a> <a href="#rSolutionModifier">SolutionModifier</a></code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[8]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rSelectClause" name="rSelectClause">SelectClause</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><span class="token">'SELECT'</span> ( <span class="token">'DISTINCT'</span> | <span class="token">'REDUCED'</span> )? ( ( <a href="#rVar">Var</a> | ( <a href="#rAggregate">Aggregate</a> | <a href="#rBuiltInCall">BuiltInCall</a> | <a href="#rFunctionCall">FunctionCall</a> | <a href="#rRDFLiteral">RDFLiteral</a> | <a href="#rNumericLiteral">NumericLiteral</a> | <a href="#rBooleanLiteral">BooleanLiteral</a> ) | ( <span class="token">'('</span> <a href="#rExpression">Expression</a> ( <span class="token">'AS'</span> <a href="#rVar">Var</a> )? <span class="token">')'</span> ) )+ | <span class="token">'*'</span> )</code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[9]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rConstructQuery" name="rConstructQuery">ConstructQuery</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><span class="token">'CONSTRUCT'</span> ( <a href="#rConstructTemplate">ConstructTemplate</a> <a href="#rDatasetClause">DatasetClause</a>* <a href="#rWhereClause">WhereClause</a> <a href="#rSolutionModifier">SolutionModifier</a> | <a href="#rDatasetClause">DatasetClause</a>* <span class="token">'WHERE'</span> <span class="token">'{'</span> <a href="#rTriplesTemplate">TriplesTemplate</a>? <span class="token">'}'</span> <a href="#rSolutionModifier">SolutionModifier</a> )</code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[10]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rDescribeQuery" name="rDescribeQuery">DescribeQuery</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><span class="token">'DESCRIBE'</span> ( <a href="#rVarOrIRIref">VarOrIRIref</a>+ | <span class="token">'*'</span> ) <a href="#rDatasetClause">DatasetClause</a>* <a href="#rWhereClause">WhereClause</a>? <a href="#rSolutionModifier">SolutionModifier</a></code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[11]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rAskQuery" name="rAskQuery">AskQuery</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><span class="token">'ASK'</span> <a href="#rDatasetClause">DatasetClause</a>* <a href="#rWhereClause">WhereClause</a></code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[12]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rDatasetClause" name="rDatasetClause">DatasetClause</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><span class="token">'FROM'</span> ( <a href="#rDefaultGraphClause">DefaultGraphClause</a> | <a href="#rNamedGraphClause">NamedGraphClause</a> )</code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[13]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rDefaultGraphClause" name="rDefaultGraphClause">DefaultGraphClause</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><a href="#rSourceSelector">SourceSelector</a></code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[14]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rNamedGraphClause" name="rNamedGraphClause">NamedGraphClause</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><span class="token">'NAMED'</span> <a href="#rSourceSelector">SourceSelector</a></code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[15]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rSourceSelector" name="rSourceSelector">SourceSelector</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><a href="#rIRIref">IRIref</a></code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[16]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rWhereClause" name="rWhereClause">WhereClause</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><span class="token">'WHERE'</span>? <a href="#rGroupGraphPattern">GroupGraphPattern</a></code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[17]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rSolutionModifier" name="rSolutionModifier">SolutionModifier</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><a href="#rGroupClause">GroupClause</a>? <a href="#rHavingClause">HavingClause</a>? <a href="#rOrderClause">OrderClause</a>? <a href="#rLimitOffsetClauses">LimitOffsetClauses</a>?</code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[18]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rGroupClause" name="rGroupClause">GroupClause</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><span class="token">'GROUP'</span> <span class="token">'BY'</span> <a href="#rGroupCondition">GroupCondition</a>+</code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[19]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rGroupCondition" name="rGroupCondition">GroupCondition</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody">( <a href="#rBuiltInCall">BuiltInCall</a> | <a href="#rFunctionCall">FunctionCall</a> | <span class="token">'('</span> <a href="#rExpression">Expression</a> ( <span class="token">'AS'</span> <a href="#rVar">Var</a> )? <span class="token">')'</span> | <a href="#rVar">Var</a> )</code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[20]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rHavingClause" name="rHavingClause">HavingClause</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><span class="token">'HAVING'</span> <a href="#rHavingCondition">HavingCondition</a>+</code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[21]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rHavingCondition" name="rHavingCondition">HavingCondition</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><a href="#rConstraint">Constraint</a></code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[22]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rOrderClause" name="rOrderClause">OrderClause</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><span class="token">'ORDER'</span> <span class="token">'BY'</span> <a href="#rOrderCondition">OrderCondition</a>+</code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[23]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rOrderCondition" name="rOrderCondition">OrderCondition</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody">   ( ( <span class="token">'ASC'</span> | <span class="token">'DESC'</span> ) <a href="#rBrackettedExpression">BrackettedExpression</a> )<br/>| ( <a href="#rConstraint">Constraint</a> | <a href="#rVar">Var</a> ) </code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[24]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rLimitOffsetClauses" name="rLimitOffsetClauses">LimitOffsetClauses</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody">( <a href="#rLimitClause">LimitClause</a> <a href="#rOffsetClause">OffsetClause</a>? | <a href="#rOffsetClause">OffsetClause</a> <a href="#rLimitClause">LimitClause</a>? )</code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[25]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rLimitClause" name="rLimitClause">LimitClause</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><span class="token">'LIMIT'</span> <a href="#rINTEGER">INTEGER</a></code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[26]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rOffsetClause" name="rOffsetClause">OffsetClause</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><span class="token">'OFFSET'</span> <a href="#rINTEGER">INTEGER</a></code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[27]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rBindingsClause" name="rBindingsClause">BindingsClause</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody">( <span class="token">'BINDINGS'</span> <a href="#rVar">Var</a>* <span class="token">'{'</span> ( <span class="token">'('</span> <a href="#rBindingValue">BindingValue</a>+ <span class="token">')'</span> | <a href="#rNIL">NIL</a> )* <span class="token">'}'</span> )?</code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[28]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rBindingValue" name="rBindingValue">BindingValue</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><a href="#rIRIref">IRIref</a> |	<a href="#rRDFLiteral">RDFLiteral</a> |	<a href="#rNumericLiteral">NumericLiteral</a> |	<a href="#rBooleanLiteral">BooleanLiteral</a> |	<span class="token">'UNDEF'</span></code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[29]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rUpdateUnit" name="rUpdateUnit">UpdateUnit</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><a href="#rUpdate">Update</a> <span class="token"></span></code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[30]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rUpdate" name="rUpdate">Update</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><a href="#rPrologue">Prologue</a> ( <a href="#rUpdate1">Update1</a> <span class="token">';'</span>? )+</code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[31]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rUpdate1" name="rUpdate1">Update1</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody">( <a href="#rLoad">Load</a> | <a href="#rClear">Clear</a> | <a href="#rDrop">Drop</a> | <a href="#rAdd">Add</a> | <a href="#rMove">Move</a> | <a href="#rCopy">Copy</a> | <a href="#rCreate">Create</a> | <a href="#rInsertData">InsertData</a> | <a href="#rDeleteData">DeleteData</a> | <a href="#rDeleteWhere">DeleteWhere</a> | <a href="#rModify">Modify</a> | <a href="#rModifyOld">ModifyOld</a> ) <a href="#rMeta">Meta</a>*</code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[32]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rLoad" name="rLoad">Load</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><span class="token">'LOAD'</span> <a href="#rIRIref">IRIref</a> ( <span class="token">'INTO'</span> <span class="token">'GRAPH'</span>? <a href="#rIRIref">IRIref</a> )?</code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[33]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rClear" name="rClear">Clear</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><span class="token">'CLEAR'</span> <span class="token">'SILENT'</span>? <a href="#rGraphRefAll">GraphRefAll</a></code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[34]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rDrop" name="rDrop">Drop</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><span class="token">'DROP'</span> <span class="token">'SILENT'</span>? <a href="#rGraphRefAll">GraphRefAll</a></code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[35]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rCreate" name="rCreate">Create</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><span class="token">'CREATE'</span> <span class="token">'SILENT'</span>? <a href="#rGraphRef">GraphRef</a></code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[36]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rAdd" name="rAdd">Add</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><span class="token">'ADD'</span> <span class="token">'SILENT'</span>? <a href="#rGraphOrDefault">GraphOrDefault</a> <span class="token">'TO'</span> <a href="#rGraphOrDefault">GraphOrDefault</a></code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[37]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rMove" name="rMove">Move</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><span class="token">'MOVE'</span> <span class="token">'SILENT'</span>? <a href="#rGraphOrDefault">GraphOrDefault</a> <span class="token">'TO'</span> <a href="#rGraphOrDefault">GraphOrDefault</a></code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[38]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rCopy" name="rCopy">Copy</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><span class="token">'COPY'</span> <span class="token">'SILENT'</span>? <a href="#rGraphOrDefault">GraphOrDefault</a> <span class="token">'TO'</span> <a href="#rGraphOrDefault">GraphOrDefault</a></code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[39]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rMeta" name="rMeta">Meta</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><span class="token">'META'</span> <a href="#rQuadData">QuadData</a></code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[40]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rInsertData" name="rInsertData">InsertData</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><span class="token">'INSERT DATA'</span> <a href="#rOptionalIntoTarget">OptionalIntoTarget</a> <a href="#rQuadPattern">QuadPattern</a></code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[41]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rDeleteData" name="rDeleteData">DeleteData</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><span class="token">'DELETE DATA'</span> <a href="#rOptionalFromTarget">OptionalFromTarget</a> <a href="#rQuadData">QuadData</a></code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[42]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rDeleteWhere" name="rDeleteWhere">DeleteWhere</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><span class="token">'DELETE WHERE'</span> <a href="#rQuadPattern">QuadPattern</a></code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[43]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rModify" name="rModify">Modify</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody">( <span class="token">'WITH'</span> <a href="#rIRIref">IRIref</a> )? ( <a href="#rDeleteClause">DeleteClause</a> <a href="#rInsertClause">InsertClause</a>? | <a href="#rInsertClause">InsertClause</a> ) <a href="#rUsingClause">UsingClause</a>* <span class="token">'WHERE'</span> <a href="#rGroupGraphPattern">GroupGraphPattern</a></code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[44]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rModifyOld" name="rModifyOld">ModifyOld</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><span class="token">'MODIFY'</span> <a href="#rIRIref">IRIref</a>? <a href="#rDeleteClause">DeleteClause</a>? <a href="#rInsertClause">InsertClause</a>? <span class="token">'WHERE'</span> <a href="#rGroupGraphPattern">GroupGraphPattern</a></code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[45]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rDeleteClause" name="rDeleteClause">DeleteClause</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><span class="token">'DELETE'</span> <a href="#rOptionalFromTarget">OptionalFromTarget</a> <a href="#rQuadPattern">QuadPattern</a></code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[46]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rInsertClause" name="rInsertClause">InsertClause</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><span class="token">'INSERT'</span> <a href="#rOptionalIntoTarget">OptionalIntoTarget</a> <a href="#rQuadPattern">QuadPattern</a></code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[47]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rOptionalIntoTarget" name="rOptionalIntoTarget">OptionalIntoTarget</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody">( <span class="token">'INTO'</span>? <a href="#rIRIref">IRIref</a> )?</code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[48]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rOptionalFromTarget" name="rOptionalFromTarget">OptionalFromTarget</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody">( <span class="token">'FROM'</span>? <a href="#rIRIref">IRIref</a> )?</code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[49]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rUsingClause" name="rUsingClause">UsingClause</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><span class="token">'USING'</span> ( <a href="#rIRIref">IRIref</a> | <span class="token">'NAMED'</span> <a href="#rIRIref">IRIref</a> )</code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[50]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rGraphOrDefault" name="rGraphOrDefault">GraphOrDefault</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody">( <span class="token">'DEFAULT'</span> | <span class="token">'GRAPH'</span>? <a href="#rIRIref">IRIref</a> )</code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[51]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rGraphRef" name="rGraphRef">GraphRef</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><span class="token">'GRAPH'</span> <a href="#rIRIref">IRIref</a></code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[52]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rGraphRefAll" name="rGraphRefAll">GraphRefAll</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody">( <a href="#rGraphRef">GraphRef</a> | <span class="token">'DEFAULT'</span> | <span class="token">'NAMED'</span> | <span class="token">'ALL'</span> )?</code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[53]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rQuadPattern" name="rQuadPattern">QuadPattern</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><span class="token">'{'</span> <a href="#rQuads">Quads</a> <span class="token">'}'</span></code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[54]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rQuadData" name="rQuadData">QuadData</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><span class="token">'{'</span> <a href="#rQuads">Quads</a> <span class="token">'}'</span></code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[55]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rQuads" name="rQuads">Quads</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><a href="#rTriplesTemplate">TriplesTemplate</a>? ( <a href="#rQuadsNotTriples">QuadsNotTriples</a> <span class="token">'.'</span>? <a href="#rTriplesTemplate">TriplesTemplate</a>? )*</code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[56]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rQuadsNotTriples" name="rQuadsNotTriples">QuadsNotTriples</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><span class="token">'GRAPH'</span> <a href="#rVarOrIRIref">VarOrIRIref</a> <span class="token">'{'</span> <a href="#rTriplesTemplate">TriplesTemplate</a>? <span class="token">'}'</span></code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[57]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rTriplesTemplate" name="rTriplesTemplate">TriplesTemplate</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><a href="#rTriplesSameSubject">TriplesSameSubject</a> ( <span class="token">'.'</span> <a href="#rTriplesTemplate">TriplesTemplate</a>? )?</code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[58]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rGroupGraphPattern" name="rGroupGraphPattern">GroupGraphPattern</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><span class="token">'{'</span> ( <a href="#rSubSelect">SubSelect</a> | <a href="#rGroupGraphPatternSub">GroupGraphPatternSub</a> ) <span class="token">'}'</span></code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[59]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rGroupGraphPatternSub" name="rGroupGraphPatternSub">GroupGraphPatternSub</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><a href="#rTriplesBlock">TriplesBlock</a>? ( <a href="#rGraphPatternNotTriples">GraphPatternNotTriples</a> <span class="token">'.'</span>? <a href="#rTriplesBlock">TriplesBlock</a>? )*</code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[60]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rTriplesBlock" name="rTriplesBlock">TriplesBlock</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><a href="#rTriplesSameSubjectPath">TriplesSameSubjectPath</a> ( <span class="token">'.'</span> <a href="#rTriplesBlock">TriplesBlock</a>? )?</code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[61]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rGraphPatternNotTriples" name="rGraphPatternNotTriples">GraphPatternNotTriples</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><a href="#rGroupOrUnionGraphPattern">GroupOrUnionGraphPattern</a> | <a href="#rOptionalGraphPattern">OptionalGraphPattern</a> | <a href="#rMinusGraphPattern">MinusGraphPattern</a> | <a href="#rGraphGraphPattern">GraphGraphPattern</a> | <a href="#rServiceGraphPattern">ServiceGraphPattern</a> | <a href="#rFilter">Filter</a> | <a href="#rBind">Bind</a> | <a href="#rAssignment">Assignment</a> | <a href="#rFetchGraph">FetchGraph</a> | <a href="#rExistsElt">ExistsElt</a> | <a href="#rNotExistsElt">NotExistsElt</a></code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[62]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rOptionalGraphPattern" name="rOptionalGraphPattern">OptionalGraphPattern</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><span class="token">'OPTIONAL'</span> <a href="#rGroupGraphPattern">GroupGraphPattern</a></code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[63]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rGraphGraphPattern" name="rGraphGraphPattern">GraphGraphPattern</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><span class="token">'GRAPH'</span> <a href="#rVarOrIRIref">VarOrIRIref</a> <a href="#rGroupGraphPattern">GroupGraphPattern</a></code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[64]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rServiceGraphPattern" name="rServiceGraphPattern">ServiceGraphPattern</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><span class="token">'SERVICE'</span> <a href="#rVarOrIRIref">VarOrIRIref</a> <a href="#rGroupGraphPattern">GroupGraphPattern</a></code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[65]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rBind" name="rBind">Bind</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><span class="token">'BIND'</span> <span class="token">'('</span> <a href="#rExpression">Expression</a> <span class="token">'AS'</span> <a href="#rVar">Var</a> <span class="token">')'</span></code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[66]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rAssignment" name="rAssignment">Assignment</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><span class="token">'LET'</span> <span class="token">'('</span> <a href="#rVar">Var</a> <span class="token">':='</span> <a href="#rExpression">Expression</a> <span class="token">')'</span></code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[67]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rFetchGraph" name="rFetchGraph">FetchGraph</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><span class="token">'FETCH'</span> <a href="#rVarOrIRIref">VarOrIRIref</a></code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[68]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rExistsElt" name="rExistsElt">ExistsElt</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><span class="token">'EXISTS'</span> <a href="#rGroupGraphPattern">GroupGraphPattern</a></code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[69]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rNotExistsElt" name="rNotExistsElt">NotExistsElt</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><span class="token">'NOT EXISTS'</span> <a href="#rGroupGraphPattern">GroupGraphPattern</a></code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[70]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rMinusGraphPattern" name="rMinusGraphPattern">MinusGraphPattern</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><span class="token">'MINUS'</span> <a href="#rGroupGraphPattern">GroupGraphPattern</a></code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[71]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rGroupOrUnionGraphPattern" name="rGroupOrUnionGraphPattern">GroupOrUnionGraphPattern</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><a href="#rGroupGraphPattern">GroupGraphPattern</a> ( <span class="token">'UNION'</span> <a href="#rGroupGraphPattern">GroupGraphPattern</a> )*</code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[72]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rFilter" name="rFilter">Filter</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><span class="token">'FILTER'</span> <a href="#rConstraint">Constraint</a></code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[73]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rConstraint" name="rConstraint">Constraint</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><a href="#rBrackettedExpression">BrackettedExpression</a> | <a href="#rBuiltInCall">BuiltInCall</a> | <a href="#rFunctionCall">FunctionCall</a></code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[74]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rFunctionCall" name="rFunctionCall">FunctionCall</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><a href="#rIRIref">IRIref</a> <a href="#rArgList">ArgList</a></code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[75]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rArgList" name="rArgList">ArgList</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody">( <a href="#rNIL">NIL</a> | <span class="token">'('</span> <span class="token">'DISTINCT'</span>? <a href="#rExpression">Expression</a> ( <span class="token">','</span> <a href="#rExpression">Expression</a> )* <span class="token">')'</span> )</code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[76]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rExpressionList" name="rExpressionList">ExpressionList</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody">( <a href="#rNIL">NIL</a> | <span class="token">'('</span> <a href="#rExpression">Expression</a> ( <span class="token">','</span> <a href="#rExpression">Expression</a> )* <span class="token">')'</span> )</code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[77]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rConstructTemplate" name="rConstructTemplate">ConstructTemplate</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><span class="token">'{'</span> <a href="#rConstructTriples">ConstructTriples</a>? <span class="token">'}'</span></code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[78]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rConstructTriples" name="rConstructTriples">ConstructTriples</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><a href="#rTriplesSameSubject">TriplesSameSubject</a> ( <span class="token">'.'</span> <a href="#rTriplesSameSubject">TriplesSameSubject</a> )* <span class="token">'.'</span>?</code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[79]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rTriplesSameSubject" name="rTriplesSameSubject">TriplesSameSubject</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><a href="#rVarOrTerm">VarOrTerm</a> <a href="#rPropertyListNotEmpty">PropertyListNotEmpty</a> |	<a href="#rTriplesNode">TriplesNode</a> <a href="#rPropertyList">PropertyList</a></code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[80]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rPropertyListNotEmpty" name="rPropertyListNotEmpty">PropertyListNotEmpty</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><a href="#rVerb">Verb</a> <a href="#rObjectList">ObjectList</a> ( <span class="token">';'</span> ( <a href="#rVerb">Verb</a> <a href="#rObjectList">ObjectList</a> )? )*</code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[81]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rPropertyList" name="rPropertyList">PropertyList</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><a href="#rPropertyListNotEmpty">PropertyListNotEmpty</a>?</code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[82]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rObjectList" name="rObjectList">ObjectList</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><a href="#rObject">Object</a> ( <span class="token">','</span> <a href="#rObject">Object</a> )*</code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[83]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rObject" name="rObject">Object</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><a href="#rGraphNode">GraphNode</a></code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[84]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rVerb" name="rVerb">Verb</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><a href="#rVarOrIRIref">VarOrIRIref</a> | <span class="token">'a'</span></code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[85]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rTriplesSameSubjectPath" name="rTriplesSameSubjectPath">TriplesSameSubjectPath</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><a href="#rVarOrTerm">VarOrTerm</a> <a href="#rPropertyListNotEmptyPath">PropertyListNotEmptyPath</a> |	<a href="#rTriplesNode">TriplesNode</a> <a href="#rPropertyListPath">PropertyListPath</a></code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[86]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rPropertyListNotEmptyPath" name="rPropertyListNotEmptyPath">PropertyListNotEmptyPath</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody">( <a href="#rVerbPath">VerbPath</a> | <a href="#rVerbSimple">VerbSimple</a> ) <a href="#rObjectList">ObjectList</a> ( <span class="token">';'</span> ( ( <a href="#rVerbPath">VerbPath</a> | <a href="#rVerbSimple">VerbSimple</a> ) <a href="#rObjectList">ObjectList</a> )? )*</code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[87]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rPropertyListPath" name="rPropertyListPath">PropertyListPath</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><a href="#rPropertyListNotEmpty">PropertyListNotEmpty</a>?</code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[88]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rVerbPath" name="rVerbPath">VerbPath</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><a href="#rPath">Path</a></code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[89]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rVerbSimple" name="rVerbSimple">VerbSimple</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><a href="#rVar">Var</a></code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[90]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rPathUnit" name="rPathUnit">PathUnit</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><a href="#rPath">Path</a> <span class="token"></span></code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[91]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rPath" name="rPath">Path</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><a href="#rPathAlternative">PathAlternative</a></code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[92]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rPathAlternative" name="rPathAlternative">PathAlternative</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><a href="#rPathSequence">PathSequence</a> ( <span class="token">'|'</span> <a href="#rPathSequence">PathSequence</a> )*</code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[93]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rPathSequence" name="rPathSequence">PathSequence</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><a href="#rPathEltOrInverse">PathEltOrInverse</a> ( <span class="token">'/'</span> <a href="#rPathEltOrInverse">PathEltOrInverse</a> | <span class="token">'^'</span> <a href="#rPathElt">PathElt</a> )*</code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[94]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rPathElt" name="rPathElt">PathElt</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><a href="#rPathPrimary">PathPrimary</a> <a href="#rPathMod">PathMod</a>?</code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[95]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rPathEltOrInverse" name="rPathEltOrInverse">PathEltOrInverse</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><a href="#rPathElt">PathElt</a> | <span class="token">'^'</span> <a href="#rPathElt">PathElt</a></code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[96]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rPathMod" name="rPathMod">PathMod</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody">( <span class="token">'*'</span> | <span class="token">'?'</span> | <span class="token">'+'</span> | <span class="token">'{'</span> ( <a href="#rInteger">Integer</a> ( <span class="token">','</span> ( <span class="token">'}'</span> | <a href="#rInteger">Integer</a> <span class="token">'}'</span> ) | <span class="token">'}'</span> ) | <span class="token">','</span> <a href="#rInteger">Integer</a> <span class="token">'}'</span> ) )</code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[97]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rPathPrimary" name="rPathPrimary">PathPrimary</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody">( <a href="#rIRIref">IRIref</a> | <span class="token">'a'</span> | <span class="token">'!'</span> <a href="#rPathNegatedPropertySet">PathNegatedPropertySet</a> | <span class="token">'('</span> <a href="#rPath">Path</a> <span class="token">')'</span> )</code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[98]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rPathNegatedPropertySet" name="rPathNegatedPropertySet">PathNegatedPropertySet</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody">( <a href="#rPathOneInPropertySet">PathOneInPropertySet</a> | <span class="token">'('</span> ( <a href="#rPathOneInPropertySet">PathOneInPropertySet</a> ( <span class="token">'|'</span> <a href="#rPathOneInPropertySet">PathOneInPropertySet</a> )* )? <span class="token">')'</span> )</code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[99]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rPathOneInPropertySet" name="rPathOneInPropertySet">PathOneInPropertySet</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody">( <a href="#rIRIref">IRIref</a> | <span class="token">'a'</span> | <span class="token">'^'</span> ( <a href="#rIRIref">IRIref</a> | <span class="token">'a'</span> ) )</code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[100]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rInteger" name="rInteger">Integer</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><a href="#rINTEGER">INTEGER</a></code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[101]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rTriplesNode" name="rTriplesNode">TriplesNode</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><a href="#rCollection">Collection</a> |	<a href="#rBlankNodePropertyList">BlankNodePropertyList</a></code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[102]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rBlankNodePropertyList" name="rBlankNodePropertyList">BlankNodePropertyList</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><span class="token">'['</span> <a href="#rPropertyListNotEmpty">PropertyListNotEmpty</a> <span class="token">']'</span></code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[103]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rCollection" name="rCollection">Collection</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><span class="token">'('</span> <a href="#rGraphNode">GraphNode</a>+ <span class="token">')'</span></code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[104]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rGraphNode" name="rGraphNode">GraphNode</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><a href="#rVarOrTerm">VarOrTerm</a> |	<a href="#rTriplesNode">TriplesNode</a></code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[105]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rVarOrTerm" name="rVarOrTerm">VarOrTerm</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><a href="#rVar">Var</a> | <a href="#rGraphTerm">GraphTerm</a></code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[106]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rVarOrIRIref" name="rVarOrIRIref">VarOrIRIref</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><a href="#rVar">Var</a> | <a href="#rIRIref">IRIref</a></code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[107]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rVar" name="rVar">Var</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><a href="#rVAR1">VAR1</a> | <a href="#rVAR2">VAR2</a></code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[108]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rGraphTerm" name="rGraphTerm">GraphTerm</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><a href="#rIRIref">IRIref</a> |	<a href="#rRDFLiteral">RDFLiteral</a> |	<a href="#rNumericLiteral">NumericLiteral</a> |	<a href="#rBooleanLiteral">BooleanLiteral</a> |	<a href="#rBlankNode">BlankNode</a> |	<a href="#rNIL">NIL</a></code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[109]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rExpression" name="rExpression">Expression</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><a href="#rConditionalOrExpression">ConditionalOrExpression</a></code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[110]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rConditionalOrExpression" name="rConditionalOrExpression">ConditionalOrExpression</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><a href="#rConditionalAndExpression">ConditionalAndExpression</a> ( <span class="token">'||'</span> <a href="#rConditionalAndExpression">ConditionalAndExpression</a> )*</code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[111]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rConditionalAndExpression" name="rConditionalAndExpression">ConditionalAndExpression</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><a href="#rValueLogical">ValueLogical</a> ( <span class="token">'&amp;&amp;'</span> <a href="#rValueLogical">ValueLogical</a> )*</code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[112]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rValueLogical" name="rValueLogical">ValueLogical</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><a href="#rRelationalExpression">RelationalExpression</a></code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[113]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rRelationalExpression" name="rRelationalExpression">RelationalExpression</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><a href="#rNumericExpression">NumericExpression</a> ( <span class="token">'='</span> <a href="#rNumericExpression">NumericExpression</a> | <span class="token">'!='</span> <a href="#rNumericExpression">NumericExpression</a> | <span class="token">'&lt;'</span> <a href="#rNumericExpression">NumericExpression</a> | <span class="token">'&gt;'</span> <a href="#rNumericExpression">NumericExpression</a> | <span class="token">'&lt;='</span> <a href="#rNumericExpression">NumericExpression</a> | <span class="token">'&gt;='</span> <a href="#rNumericExpression">NumericExpression</a> | <span class="token">'IN'</span> <a href="#rExpressionList">ExpressionList</a> | <span class="token">'NOT IN'</span> <a href="#rExpressionList">ExpressionList</a> )?</code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[114]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rNumericExpression" name="rNumericExpression">NumericExpression</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><a href="#rAdditiveExpression">AdditiveExpression</a></code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[115]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rAdditiveExpression" name="rAdditiveExpression">AdditiveExpression</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><a href="#rMultiplicativeExpression">MultiplicativeExpression</a> ( <span class="token">'+'</span> <a href="#rMultiplicativeExpression">MultiplicativeExpression</a> | <span class="token">'-'</span> <a href="#rMultiplicativeExpression">MultiplicativeExpression</a> | ( <a href="#rNumericLiteralPositive">NumericLiteralPositive</a> | <a href="#rNumericLiteralNegative">NumericLiteralNegative</a> ) ( ( <span class="token">'*'</span> <a href="#rUnaryExpression">UnaryExpression</a> ) | ( <span class="token">'/'</span> <a href="#rUnaryExpression">UnaryExpression</a> ) )? )*</code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[116]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rMultiplicativeExpression" name="rMultiplicativeExpression">MultiplicativeExpression</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><a href="#rUnaryExpression">UnaryExpression</a> ( <span class="token">'*'</span> <a href="#rUnaryExpression">UnaryExpression</a> | <span class="token">'/'</span> <a href="#rUnaryExpression">UnaryExpression</a> )*</code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[117]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rUnaryExpression" name="rUnaryExpression">UnaryExpression</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody">&nbsp;&nbsp;<span class="token">'!'</span> <a href="#rPrimaryExpression">PrimaryExpression</a> <br/>|	<span class="token">'+'</span> <a href="#rPrimaryExpression">PrimaryExpression</a> <br/>|	<span class="token">'-'</span> <a href="#rPrimaryExpression">PrimaryExpression</a> <br/>|	<a href="#rPrimaryExpression">PrimaryExpression</a></code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[118]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rPrimaryExpression" name="rPrimaryExpression">PrimaryExpression</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><a href="#rBrackettedExpression">BrackettedExpression</a> | <a href="#rBuiltInCall">BuiltInCall</a> | <a href="#rIRIrefOrFunction">IRIrefOrFunction</a> | <a href="#rRDFLiteral">RDFLiteral</a> | <a href="#rNumericLiteral">NumericLiteral</a> | <a href="#rBooleanLiteral">BooleanLiteral</a> | <a href="#rVar">Var</a> | <a href="#rAggregate">Aggregate</a></code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[119]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rBrackettedExpression" name="rBrackettedExpression">BrackettedExpression</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><span class="token">'('</span> <a href="#rExpression">Expression</a> <span class="token">')'</span></code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[120]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rBuiltInCall" name="rBuiltInCall">BuiltInCall</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody">&nbsp;&nbsp;<span class="token">'STR'</span> <span class="token">'('</span> <a href="#rExpression">Expression</a> <span class="token">')'</span> <br/>|	<span class="token">'LANG'</span> <span class="token">'('</span> <a href="#rExpression">Expression</a> <span class="token">')'</span> <br/>|	<span class="token">'LANGMATCHES'</span> <span class="token">'('</span> <a href="#rExpression">Expression</a> <span class="token">','</span> <a href="#rExpression">Expression</a> <span class="token">')'</span> <br/>|	<span class="token">'DATATYPE'</span> <span class="token">'('</span> <a href="#rExpression">Expression</a> <span class="token">')'</span> <br/>|	<span class="token">'BOUND'</span> <span class="token">'('</span> <a href="#rVar">Var</a> <span class="token">')'</span> <br/>|	<span class="token">'IRI'</span> <span class="token">'('</span> <a href="#rExpression">Expression</a> <span class="token">')'</span> <br/>|	<span class="token">'URI'</span> <span class="token">'('</span> <a href="#rExpression">Expression</a> <span class="token">')'</span> <br/>|	<span class="token">'BNODE'</span> ( <span class="token">'('</span> <a href="#rExpression">Expression</a> <span class="token">')'</span> | <a href="#rNIL">NIL</a> ) <br/>|	<span class="token">'RAND'</span> <a href="#rNIL">NIL</a> <br/>|	<span class="token">'ABS'</span> <span class="token">'('</span> <a href="#rExpression">Expression</a> <span class="token">')'</span> <br/>|	<span class="token">'CEIL'</span> <span class="token">'('</span> <a href="#rExpression">Expression</a> <span class="token">')'</span> <br/>|	<span class="token">'FLOOR'</span> <span class="token">'('</span> <a href="#rExpression">Expression</a> <span class="token">')'</span> <br/>|	<span class="token">'ROUND'</span> <span class="token">'('</span> <a href="#rExpression">Expression</a> <span class="token">')'</span> <br/>|	<span class="token">'CONCAT'</span> <a href="#rExpressionList">ExpressionList</a> <br/>|	<a href="#rSubstringExpression">SubstringExpression</a> <br/>|	<span class="token">'STRLEN'</span> <span class="token">'('</span> <a href="#rExpression">Expression</a> <span class="token">')'</span> <br/>|	<span class="token">'UCASE'</span> <span class="token">'('</span> <a href="#rExpression">Expression</a> <span class="token">')'</span> <br/>|	<span class="token">'LCASE'</span> <span class="token">'('</span> <a href="#rExpression">Expression</a> <span class="token">')'</span> <br/>|	<span class="token">'ENCODE_FOR_URI'</span> <span class="token">'('</span> <a href="#rExpression">Expression</a> <span class="token">')'</span> <br/>|	<span class="token">'CONTAINS'</span> <span class="token">'('</span> <a href="#rExpression">Expression</a> <span class="token">','</span> <a href="#rExpression">Expression</a> <span class="token">')'</span> <br/>|	<span class="token">'STRSTARTS'</span> <span class="token">'('</span> <a href="#rExpression">Expression</a> <span class="token">','</span> <a href="#rExpression">Expression</a> <span class="token">')'</span> <br/>|	<span class="token">'STRENDS'</span> <span class="token">'('</span> <a href="#rExpression">Expression</a> <span class="token">','</span> <a href="#rExpression">Expression</a> <span class="token">')'</span> <br/>|	<span class="token">'YEAR'</span> <span class="token">'('</span> <a href="#rExpression">Expression</a> <span class="token">')'</span> <br/>|	<span class="token">'MONTH'</span> <span class="token">'('</span> <a href="#rExpression">Expression</a> <span class="token">')'</span> <br/>|	<span class="token">'DAY'</span> <span class="token">'('</span> <a href="#rExpression">Expression</a> <span class="token">')'</span> <br/>|	<span class="token">'HOURS'</span> <span class="token">'('</span> <a href="#rExpression">Expression</a> <span class="token">')'</span> <br/>|	<span class="token">'MINUTES'</span> <span class="token">'('</span> <a href="#rExpression">Expression</a> <span class="token">')'</span> <br/>|	<span class="token">'SECONDS'</span> <span class="token">'('</span> <a href="#rExpression">Expression</a> <span class="token">')'</span> <br/>|	<span class="token">'TIMEZONE'</span> <span class="token">'('</span> <a href="#rExpression">Expression</a> <span class="token">')'</span> <br/>|	<span class="token">'TZ'</span> <span class="token">'('</span> <a href="#rExpression">Expression</a> <span class="token">')'</span> <br/>|	<span class="token">'NOW'</span> <a href="#rNIL">NIL</a> <br/>|	<span class="token">'MD5'</span> <span class="token">'('</span> <a href="#rExpression">Expression</a> <span class="token">')'</span> <br/>|	<span class="token">'SHA1'</span> <span class="token">'('</span> <a href="#rExpression">Expression</a> <span class="token">')'</span> <br/>|	<span class="token">'SHA224'</span> <span class="token">'('</span> <a href="#rExpression">Expression</a> <span class="token">')'</span> <br/>|	<span class="token">'SHA256'</span> <span class="token">'('</span> <a href="#rExpression">Expression</a> <span class="token">')'</span> <br/>|	<span class="token">'SHA384'</span> <span class="token">'('</span> <a href="#rExpression">Expression</a> <span class="token">')'</span> <br/>|	<span class="token">'SHA512'</span> <span class="token">'('</span> <a href="#rExpression">Expression</a> <span class="token">')'</span> <br/>|	<span class="token">'COALESCE'</span> <a href="#rExpressionList">ExpressionList</a> <br/>|	<span class="token">'IF'</span> <span class="token">'('</span> <a href="#rExpression">Expression</a> <span class="token">','</span> <a href="#rExpression">Expression</a> <span class="token">','</span> <a href="#rExpression">Expression</a> <span class="token">')'</span> <br/>|	<span class="token">'STRLANG'</span> <span class="token">'('</span> <a href="#rExpression">Expression</a> <span class="token">','</span> <a href="#rExpression">Expression</a> <span class="token">')'</span> <br/>|	<span class="token">'STRDT'</span> <span class="token">'('</span> <a href="#rExpression">Expression</a> <span class="token">','</span> <a href="#rExpression">Expression</a> <span class="token">')'</span> <br/>|	CALL <a href="#rExpressionList">ExpressionList</a> <br/>|	<span class="token">'sameTerm'</span> <span class="token">'('</span> <a href="#rExpression">Expression</a> <span class="token">','</span> <a href="#rExpression">Expression</a> <span class="token">')'</span> <br/>|	<span class="token">'isIRI'</span> <span class="token">'('</span> <a href="#rExpression">Expression</a> <span class="token">')'</span> <br/>|	<span class="token">'isURI'</span> <span class="token">'('</span> <a href="#rExpression">Expression</a> <span class="token">')'</span> <br/>|	<span class="token">'isBLANK'</span> <span class="token">'('</span> <a href="#rExpression">Expression</a> <span class="token">')'</span> <br/>|	<span class="token">'isLITERAL'</span> <span class="token">'('</span> <a href="#rExpression">Expression</a> <span class="token">')'</span> <br/>|	<span class="token">'isNUMERIC'</span> <span class="token">'('</span> <a href="#rExpression">Expression</a> <span class="token">')'</span> <br/>|	<a href="#rRegexExpression">RegexExpression</a> <br/>|	<a href="#rExistsFunc">ExistsFunc</a> <br/>|	<a href="#rNotExistsFunc">NotExistsFunc</a></code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[121]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rRegexExpression" name="rRegexExpression">RegexExpression</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><span class="token">'REGEX'</span> <span class="token">'('</span> <a href="#rExpression">Expression</a> <span class="token">','</span> <a href="#rExpression">Expression</a> ( <span class="token">','</span> <a href="#rExpression">Expression</a> )? <span class="token">')'</span></code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[122]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rSubstringExpression" name="rSubstringExpression">SubstringExpression</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><span class="token">'SUBSTR'</span> <span class="token">'('</span> <a href="#rExpression">Expression</a> <span class="token">','</span> <a href="#rExpression">Expression</a> ( <span class="token">','</span> <a href="#rExpression">Expression</a> )? <span class="token">')'</span></code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[123]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rExistsFunc" name="rExistsFunc">ExistsFunc</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><span class="token">'EXISTS'</span> <a href="#rGroupGraphPattern">GroupGraphPattern</a></code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[124]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rNotExistsFunc" name="rNotExistsFunc">NotExistsFunc</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><span class="token">'NOT EXISTS'</span> <a href="#rGroupGraphPattern">GroupGraphPattern</a></code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[125]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rAggregate" name="rAggregate">Aggregate</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody">( <span class="token">'COUNT'</span> <span class="token">'('</span> <span class="token">'DISTINCT'</span>? ( <span class="token">'*'</span> | <a href="#rExpression">Expression</a> ) <span class="token">')'</span> | <span class="token">'SUM'</span> <span class="token">'('</span> <span class="token">'DISTINCT'</span>? <a href="#rExpression">Expression</a> <span class="token">')'</span> | <span class="token">'MIN'</span> <span class="token">'('</span> <span class="token">'DISTINCT'</span>? <a href="#rExpression">Expression</a> <span class="token">')'</span> | <span class="token">'MAX'</span> <span class="token">'('</span> <span class="token">'DISTINCT'</span>? <a href="#rExpression">Expression</a> <span class="token">')'</span> | <span class="token">'AVG'</span> <span class="token">'('</span> <span class="token">'DISTINCT'</span>? <a href="#rExpression">Expression</a> <span class="token">')'</span> | <span class="token">'SAMPLE'</span> <span class="token">'('</span> <span class="token">'DISTINCT'</span>? <a href="#rExpression">Expression</a> <span class="token">')'</span> | <span class="token">'GROUP_CONCAT'</span> <span class="token">'('</span> <span class="token">'DISTINCT'</span>? <a href="#rExpression">Expression</a> ( <span class="token">';'</span> <span class="token">'SEPARATOR'</span> <span class="token">'='</span> <a href="#rString">String</a> )? <span class="token">')'</span> )</code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[126]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rIRIrefOrFunction" name="rIRIrefOrFunction">IRIrefOrFunction</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><a href="#rIRIref">IRIref</a> <a href="#rArgList">ArgList</a>?</code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[127]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rVarOrFunction" name="rVarOrFunction">VarOrFunction</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><a href="#rVar">Var</a> <a href="#rExpressionList">ExpressionList</a>?</code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[128]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rRDFLiteral" name="rRDFLiteral">RDFLiteral</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><a href="#rString">String</a> ( <a href="#rLANGTAG">LANGTAG</a> | ( <span class="token">'^^'</span> <a href="#rIRIref">IRIref</a> ) )?</code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[129]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rNumericLiteral" name="rNumericLiteral">NumericLiteral</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><a href="#rNumericLiteralUnsigned">NumericLiteralUnsigned</a> | <a href="#rNumericLiteralPositive">NumericLiteralPositive</a> | <a href="#rNumericLiteralNegative">NumericLiteralNegative</a></code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[130]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rNumericLiteralUnsigned" name="rNumericLiteralUnsigned">NumericLiteralUnsigned</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><a href="#rINTEGER">INTEGER</a> |	<a href="#rDECIMAL">DECIMAL</a> |	<a href="#rDOUBLE">DOUBLE</a></code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[131]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rNumericLiteralPositive" name="rNumericLiteralPositive">NumericLiteralPositive</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><a href="#rINTEGER_POSITIVE">INTEGER_POSITIVE</a> |	<a href="#rDECIMAL_POSITIVE">DECIMAL_POSITIVE</a> |	<a href="#rDOUBLE_POSITIVE">DOUBLE_POSITIVE</a></code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[132]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rNumericLiteralNegative" name="rNumericLiteralNegative">NumericLiteralNegative</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><a href="#rINTEGER_NEGATIVE">INTEGER_NEGATIVE</a> |	<a href="#rDECIMAL_NEGATIVE">DECIMAL_NEGATIVE</a> |	<a href="#rDOUBLE_NEGATIVE">DOUBLE_NEGATIVE</a></code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[133]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rBooleanLiteral" name="rBooleanLiteral">BooleanLiteral</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><span class="token">'true'</span> |	<span class="token">'false'</span></code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[134]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rString" name="rString">String</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><a href="#rSTRING_LITERAL1">STRING_LITERAL1</a> | <a href="#rSTRING_LITERAL2">STRING_LITERAL2</a> | <a href="#rSTRING_LITERAL_LONG1">STRING_LITERAL_LONG1</a> | <a href="#rSTRING_LITERAL_LONG2">STRING_LITERAL_LONG2</a></code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[135]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rIRIref" name="rIRIref">IRIref</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><a href="#rIRI_REF">IRI_REF</a> |	<a href="#rPrefixedName">PrefixedName</a></code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[136]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rPrefixedName" name="rPrefixedName">PrefixedName</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><a href="#rPNAME_LN">PNAME_LN</a> | <a href="#rPNAME_NS">PNAME_NS</a></code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[137]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rBlankNode" name="rBlankNode">BlankNode</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><a href="#rBLANK_NODE_LABEL">BLANK_NODE_LABEL</a> |	<a href="#rANON">ANON</a></code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[138]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rIRI_REF" name="rIRI_REF">IRI_REF</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><span class="token">'&lt;' ([^&lt;&gt;"{}|^`\]-[#x00-#x20])* '&gt;'</span></code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[139]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rPNAME_NS" name="rPNAME_NS">PNAME_NS</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><a href="#rPN_PREFIX">PN_PREFIX</a>? ':'</code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[140]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rPNAME_LN" name="rPNAME_LN">PNAME_LN</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><a href="#rPNAME_NS">PNAME_NS</a> <a href="#rPN_LOCAL">PN_LOCAL</a></code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[141]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rBLANK_NODE_LABEL" name="rBLANK_NODE_LABEL">BLANK_NODE_LABEL</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody">'_:' <a href="#rPN_LOCAL">PN_LOCAL</a></code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[142]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rVAR1" name="rVAR1">VAR1</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody">'?' <a href="#rVARNAME">VARNAME</a></code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[143]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rVAR2" name="rVAR2">VAR2</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody">'$' <a href="#rVARNAME">VARNAME</a></code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[144]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rLANGTAG" name="rLANGTAG">LANGTAG</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody">'@' [a-zA-Z]+ ('-' [a-zA-Z0-9]+)*</code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[145]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rINTEGER" name="rINTEGER">INTEGER</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody">[0-9]+</code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[146]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rDECIMAL" name="rDECIMAL">DECIMAL</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody">[0-9]+ '.' [0-9]* | '.' [0-9]+</code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[147]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rDOUBLE" name="rDOUBLE">DOUBLE</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody">[0-9]+ '.' [0-9]* <a href="#rEXPONENT">EXPONENT</a> | '.' ([0-9])+ <a href="#rEXPONENT">EXPONENT</a> | ([0-9])+ <a href="#rEXPONENT">EXPONENT</a></code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[148]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rINTEGER_POSITIVE" name="rINTEGER_POSITIVE">INTEGER_POSITIVE</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><span class="token">'+'</span> <a href="#rINTEGER">INTEGER</a></code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[149]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rDECIMAL_POSITIVE" name="rDECIMAL_POSITIVE">DECIMAL_POSITIVE</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><span class="token">'+'</span> <a href="#rDECIMAL">DECIMAL</a></code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[150]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rDOUBLE_POSITIVE" name="rDOUBLE_POSITIVE">DOUBLE_POSITIVE</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><span class="token">'+'</span> <a href="#rDOUBLE">DOUBLE</a></code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[151]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rINTEGER_NEGATIVE" name="rINTEGER_NEGATIVE">INTEGER_NEGATIVE</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><span class="token">'-'</span> <a href="#rINTEGER">INTEGER</a></code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[152]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rDECIMAL_NEGATIVE" name="rDECIMAL_NEGATIVE">DECIMAL_NEGATIVE</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><span class="token">'-'</span> <a href="#rDECIMAL">DECIMAL</a></code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[153]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rDOUBLE_NEGATIVE" name="rDOUBLE_NEGATIVE">DOUBLE_NEGATIVE</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><span class="token">'-'</span> <a href="#rDOUBLE">DOUBLE</a></code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[154]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rEXPONENT" name="rEXPONENT">EXPONENT</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody">[eE] [+-]? [0-9]+</code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[155]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rSTRING_LITERAL1" name="rSTRING_LITERAL1">STRING_LITERAL1</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody">"'" ( ([^#x27#x5C#xA#xD]) | <a href="#rECHAR">ECHAR</a> )* "'"</code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[156]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rSTRING_LITERAL2" name="rSTRING_LITERAL2">STRING_LITERAL2</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody">'"' ( ([^#x22#x5C#xA#xD]) | <a href="#rECHAR">ECHAR</a> )* '"'</code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[157]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rSTRING_LITERAL_LONG1" name="rSTRING_LITERAL_LONG1">STRING_LITERAL_LONG1</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody">"'''" ( ( "'" | "''" )? ( [^'\] | <a href="#rECHAR">ECHAR</a> ) )* "'''"</code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[158]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rSTRING_LITERAL_LONG2" name="rSTRING_LITERAL_LONG2">STRING_LITERAL_LONG2</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody">'"""' ( ( '"' | '""' )? ( [^"\] | <a href="#rECHAR">ECHAR</a> ) )* '"""'</code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[159]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rECHAR" name="rECHAR">ECHAR</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody">'\' [tbnrf\"']</code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[160]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rNIL" name="rNIL">NIL</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody">'(' <a href="#rWS">WS</a>* ')'</code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[161]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rWS" name="rWS">WS</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody">#x20 | #x9 | #xD | #xA</code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[162]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rANON" name="rANON">ANON</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody">'['  <a href="#rWS">WS</a>* ']'</code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[163]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rPN_CHARS_BASE" name="rPN_CHARS_BASE">PN_CHARS_BASE</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody">[A-Z] | [a-z] | [#x00C0-#x00D6] | [#x00D8-#x00F6] | [#x00F8-#x02FF] | [#x0370-#x037D] | [#x037F-#x1FFF] | [#x200C-#x200D] | [#x2070-#x218F] | [#x2C00-#x2FEF] | [#x3001-#xD7FF] | [#xF900-#xFDCF] | [#xFDF0-#xFFFD] | [#x10000-#xEFFFF]</code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[164]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rPN_CHARS_U" name="rPN_CHARS_U">PN_CHARS_U</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><a href="#rPN_CHARS_BASE">PN_CHARS_BASE</a> | '_'</code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[165]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rVARNAME" name="rVARNAME">VARNAME</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody">( <a href="#rPN_CHARS_U">PN_CHARS_U</a>  | [0-9] ) ( <a href="#rPN_CHARS_U">PN_CHARS_U</a> | [0-9] | #x00B7 | [#x0300-#x036F] | [#x203F-#x2040] )*</code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[166]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rPN_CHARS" name="rPN_CHARS">PN_CHARS</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><a href="#rPN_CHARS_U">PN_CHARS_U</a> | '-' | [0-9] | #x00B7 | [#x0300-#x036F] | [#x203F-#x2040]</code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[167]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rPN_PREFIX" name="rPN_PREFIX">PN_PREFIX</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody"><a href="#rPN_CHARS_BASE">PN_CHARS_BASE</a> ((<a href="#rPN_CHARS">PN_CHARS</a>|'.')* <a href="#rPN_CHARS">PN_CHARS</a>)?</code></td>
+</tr>
+
+<tr valign="baseline">
+  <td><code class="gRuleLabel">[168]&nbsp;&nbsp;</code></td>
+  <td><code class="gRuleHead"><a id="rPN_LOCAL" name="rPN_LOCAL">PN_LOCAL</a></code></td>
+  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>
+  <td><code class="gRuleBody">( <a href="#rPN_CHARS_U">PN_CHARS_U</a> | [0-9] ) ((<a href="#rPN_CHARS">PN_CHARS</a>|'.')* <a href="#rPN_CHARS">PN_CHARS</a>)?</code></td>
+</tr>
+  </tbody></table>
+</div>

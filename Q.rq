@@ -1,10 +1,1 @@
-PREFIX rex:   <http://www.basistech.com/ontologies/2010/6/rex.owl#>
-PREFIX owl:   <http://www.w3.org/2002/07/owl#>
-PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX x-arq: <urn:x-arq:>
-
-SELECT *
-{
- ?entity (?pred | (?pred/owl:sameAs) | (owl:sameAs/?pred)) ?s .
- ?pred rdfs:subPropertyOf rex:relationship .
-}
+CONSTRUCT WHERE { ?s ?p ?o }

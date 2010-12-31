@@ -255,12 +255,11 @@ public class OutputLangUtils
             }
             if ( useSlashEscapes )
             {
-                if ( c == '"' ) print(out,"\\\"");
-                else if ( c == '\n') print(out,"\\n");
-                else if (c == '\t') print(out,"\\t");
-                else if (c == '\r') print(out,"\\r");
-                else if (c == '\f') print(out,"\\f");
-                continue ;
+                if ( c == '"' )         { print(out,"\\\""); continue ; }
+                else if ( c == '\n')    { print(out,"\\n");  continue ; }
+                else if (c == '\t')     { print(out,"\\t"); continue ; }
+                else if (c == '\r')     { print(out,"\\r"); continue ; }
+                else if (c == '\f')     { print(out,"\\f"); continue ; }
             }
             // Not \-style esacpe. 
             if ( c >= 32 && c < 127 )

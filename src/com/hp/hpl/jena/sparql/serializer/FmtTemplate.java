@@ -10,8 +10,6 @@ package com.hp.hpl.jena.sparql.serializer;
 import org.openjena.atlas.io.IndentedLineBuffer ;
 import org.openjena.atlas.io.IndentedWriter ;
 
-import com.hp.hpl.jena.sparql.core.BasicPattern ;
-import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.syntax.Template ;
 
 public class FmtTemplate extends FormatterBase
@@ -46,13 +44,7 @@ public class FmtTemplate extends FormatterBase
         out.incIndent(INDENT) ;
         out.pad() ;
     
-        //boolean first = true ;
-        BasicPattern acc = new BasicPattern() ;    // Accumulator of successive triples
-        
-        for ( Quad q : template.getTemplates() )
-            acc.add(q.asTriple()) ; 
-    
-        formatTriples(acc) ;
+        formatTriples(template.getBGP()) ;
         
         out.decIndent(INDENT) ;
         out.print("}") ;

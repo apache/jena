@@ -13,41 +13,44 @@ import java.util.Map ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.sparql.ARQException ;
-import com.hp.hpl.jena.sparql.core.Quad ;
-import com.hp.hpl.jena.sparql.core.TriplePath ;
+import com.hp.hpl.jena.sparql.core.BasicPattern ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.modify.TemplateLib ;
-import com.hp.hpl.jena.sparql.modify.request.QuadsAcc ;
 import com.hp.hpl.jena.sparql.serializer.FormatterTemplate ;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 
 /** Triples template. */
 
-public class Template implements TripleCollector
+public class Template 
 {
     static final int HashTemplateGroup     = 0xB1 ;
-    QuadsAcc quads = new QuadsAcc() ;
+    private final BasicPattern bgp ;
+    
+    public Template(BasicPattern bgp)
+    { 
+        this.bgp = bgp ;
+    }
 
-    public void addTriple(Triple t) { quads.addTriple(t) ; }
-    public int mark() { return quads.mark() ; }
-    public void addTriple(int index, Triple t) { quads.addTriple(index, t) ; }
-    public void addTriplePath(TriplePath path)
-    { throw new ARQException("Triples-only collector") ; }
+//    public void addTriple(Triple t) { quads.addTriple(t) ; }
+//    public int mark() { return quads.mark() ; }
+//    public void addTriple(int index, Triple t) { quads.addTriple(index, t) ; }
+//    public void addTriplePath(TriplePath path)
+//    { throw new ARQException("Triples-only collector") ; }
+//
+//    public void addTriplePath(int index, TriplePath path)
+//    { throw new ARQException("Triples-only collector") ; }
 
-    public void addTriplePath(int index, TriplePath path)
-    { throw new ARQException("Triples-only collector") ; }
 
-
-    public List<Quad> getTemplates() { return quads.getQuads() ; }
+    public BasicPattern getBGP()        { return bgp ; }
+    public List<Triple> getTriples()    { return bgp.getList() ; }
     // -------------------------
 
     public void subst(Collection<Triple> acc, Map<Node, Node> bNodeMap, Binding b)
     {
-        for ( Quad q : quads.getQuads() )
+        for ( Triple t : bgp.getList() )
         {
-            Triple t = TemplateLib.subst(q.asTriple(), b, bNodeMap) ;
+            t = TemplateLib.subst(t, b, bNodeMap) ;
             acc.add(t) ;
         }
     }
@@ -58,18 +61,17 @@ public class Template implements TripleCollector
     { 
         // BNode invariant hashCode. 
         int calcHashCode = Template.HashTemplateGroup ;
-        for ( Quad q : quads.getQuads() )
-            calcHashCode ^=  hash(q) ^ calcHashCode<<1 ; 
+        for ( Triple t : bgp.getList() )
+            calcHashCode ^=  hash(t) ^ calcHashCode<<1 ; 
         return calcHashCode ;
     }
     
-    private static int hash(Quad quad)
+    private static int hash(Triple triple)
     {
         int hash = 0 ;
-        hash = hashNode(quad.getGraph())   ^ hash<<1 ;
-        hash = hashNode(quad.getSubject())   ^ hash<<1 ;
-        hash = hashNode(quad.getPredicate()) ^ hash<<1 ;
-        hash = hashNode(quad.getObject())    ^ hash<<1 ;
+        hash = hashNode(triple.getSubject())   ^ hash<<1 ;
+        hash = hashNode(triple.getPredicate()) ^ hash<<1 ;
+        hash = hashNode(triple.getObject())    ^ hash<<1 ;
         return hash ;
     }
 
@@ -83,14 +85,15 @@ public class Template implements TripleCollector
     {
         if ( ! ( temp2 instanceof Template) ) return false ;
         Template tg2 = (Template)temp2 ;
-        List<Quad> qList1 = this.quads.getQuads() ;
-        List<Quad> qList2 = tg2.quads.getQuads() ;
-        if ( qList1.size() != qList2.size() ) return false ;
-        for ( int i = 0 ; i < qList1.size() ; i++ )
+        List<Triple> list1 = this.bgp.getList() ;
+        List<Triple> list2 = tg2.bgp.getList() ;
+        if ( list1.size() != list2.size() ) return false ;
+        
+        for ( int i = 0 ; i < list1.size() ; i++ )
         {
-            Quad q1 = qList1.get(i) ;
-            Quad q2 = qList2.get(i) ;
-            Utils.quadIso(q1, q2, labelMap) ;
+            Triple t1 = list1.get(i) ;
+            Triple t2 = list2.get(i) ;
+            Utils.tripleIso(t1, t2, labelMap) ;
         }
         return true ;
     }

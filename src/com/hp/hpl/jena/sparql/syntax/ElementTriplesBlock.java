@@ -14,14 +14,21 @@ import com.hp.hpl.jena.sparql.core.BasicPattern ;
 import com.hp.hpl.jena.sparql.core.TriplePath ;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
 
-/** A SPARQL BasicGraphPattern */
+/** The syntax eleemnt for a SPARQL BasicGraphPattern */
 
 public class ElementTriplesBlock extends Element implements TripleCollector
 {
-    private BasicPattern pattern = new BasicPattern() ; 
+    private final BasicPattern pattern ; 
 
     public ElementTriplesBlock()
-    {  }
+    { 
+        pattern = new BasicPattern() ; 
+    }
+    
+    public ElementTriplesBlock(BasicPattern bgp)
+    { 
+        pattern = bgp ;
+    }
 
     public boolean isEmpty() { return pattern.isEmpty() ; }
     

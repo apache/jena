@@ -17,7 +17,7 @@ import com.hp.hpl.jena.sparql.core.TriplePath ;
 import com.hp.hpl.jena.sparql.syntax.TripleCollector ;
 
 /** Accumulate quads (including allowing variables) during parsing. */
-public class QuadsAcc implements TripleCollector
+public class QuadAcc implements TripleCollector
 {
     // A lists of Pairs: Node and Triple connector
     
@@ -25,7 +25,7 @@ public class QuadsAcc implements TripleCollector
     private List<Quad> quads = new ArrayList<Quad>() ;
     private List<Quad> quadsView = Collections.unmodifiableList(quads) ;
     
-    public QuadsAcc()     {}
+    public QuadAcc()     {}
     
     protected void check(Triple triple) {} 
     protected void check(Quad quad) {} 
@@ -79,8 +79,8 @@ public class QuadsAcc implements TripleCollector
     @Override
     public boolean equals(Object other)
     {
-        if ( ! ( other instanceof QuadsAcc ) ) return false ;
-        QuadsAcc acc = (QuadsAcc)other ;
+        if ( ! ( other instanceof QuadAcc ) ) return false ;
+        QuadAcc acc = (QuadAcc)other ;
         return quads.equals(acc.quads) ; 
     }
 

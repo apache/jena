@@ -13,9 +13,9 @@ import com.hp.hpl.jena.update.Update ;
 
 public class UpdateDeleteWhere extends Update
 {
-    private final QuadsAcc pattern ;
+    private final QuadAcc pattern ;
 
-    public UpdateDeleteWhere(QuadsAcc pattern) { this.pattern = pattern ; }
+    public UpdateDeleteWhere(QuadAcc pattern) { this.pattern = pattern ; }
     
     public List<Quad> getQuads() { return pattern.getQuads() ; }
     

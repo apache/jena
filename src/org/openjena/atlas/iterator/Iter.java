@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -12,6 +13,7 @@ import java.util.* ;
 
 import org.openjena.atlas.lib.ActionKeyValue ;
 import org.openjena.atlas.lib.Closeable ;
+import org.openjena.atlas.lib.Sink ;
 
 
 
@@ -351,7 +353,7 @@ public class Iter<T> implements Iterable<T>, Iterator<T>
     @SuppressWarnings("unchecked")
     public static <T> Iterator<T> convert(Iterator<?> iterator) { return (Iterator<T>)iterator ; }
     
-    /** Count the iterable - many iterable objects have a .size() operation which shoudl be used in preference to this explicit counting operation  */ 
+    /** Count the iterable - many iterable objects have a .size() operation which should be used in preference to this explicit counting operation  */ 
     public static <T> long count(Iterable<T> iterator)
     {
         ActionCount<T> action = new ActionCount<T>() ;
@@ -417,6 +419,24 @@ public class Iter<T> implements Iterable<T>, Iterator<T>
         } ;
         return map(stream, x) ;
     }
+    
+    /** Send the elements of the iterator to a sink - consumes the iterator */ 
+    public static <T> void sendToSink(Iterator<T> iter, Sink<T> sink)
+    {
+        for ( ; iter.hasNext() ; )
+        {
+            T thing = iter.next() ;
+            sink.send(thing) ;
+        }
+        sink.close();
+    }
+    
+    /** Send the elements of the iterator to a sink - consumes the iterator */ 
+    public static <T> void sendToSink(Iterable<T> stream, Sink<T> sink)
+    { 
+        sendToSink(stream.iterator(), sink) ;
+    }
+
     //----
     // Iter class part
     // And ....
@@ -493,6 +513,12 @@ public class Iter<T> implements Iterable<T>, Iterator<T>
     {
         return toList(iterator) ;
     }
+    
+    public void sendToSink(Sink<T> sink)
+    {
+        sendToSink(iterator, sink) ;
+    }
+    
 
     public Iter<T> filter(Filter<T> filter)
     {
@@ -593,6 +619,7 @@ public class Iter<T> implements Iterable<T>, Iterator<T>
 
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -1,39 +1,41 @@
 /*
- * (c) Copyright 2009 Hewlett-Packard Development Company, LP
- * (c) Copyright 2010 Talis Information Ltd.
  * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
-package org.openjena.riot.out;
+package com.hp.hpl.jena.sparql.syntax;
 
-import java.io.OutputStream ;
-import java.util.Iterator ;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.sparql.ARQException ;
+import com.hp.hpl.jena.sparql.core.BasicPattern ;
+import com.hp.hpl.jena.sparql.core.TriplePath ;
 
-import org.openjena.atlas.iterator.Iter ;
-import org.openjena.atlas.lib.Sink ;
-import org.openjena.riot.system.Prologue ;
+/** A triples-only TripleCollector. */
 
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.sparql.core.Quad ;
-
-public class NQuadsWriter
+public class TripleCollectorBGP implements TripleCollector
 {
-    public static void write(OutputStream out, DatasetGraph dsg)
-    {
-        Prologue prologue = Prologue.create(null, null) ; // (null, graph.getPrefixMapping()) ;
-        // Write prologue.
-        Sink<Quad> sink = new SinkQuadOutput(out, prologue) ;
-        Iterator<Quad> iter = dsg.find(Node.ANY, Node.ANY, Node.ANY, Node.ANY) ;
-        Iter.sendToSink(iter, sink) ;
-    }
+    BasicPattern bgp = new BasicPattern() ;
+    
+    public TripleCollectorBGP() {}
+    
+    public BasicPattern getBGP() { return bgp ; }
+    
+    public void addTriple(Triple t) { bgp.add(t) ; }
+    
+    public int mark() { return bgp.size() ; }
+    
+    public void addTriple(int index, Triple t) { bgp.add(index, t) ; }
+    
+    public void addTriplePath(TriplePath path)
+    { throw new ARQException("Triples-only collector") ; }
+
+    public void addTriplePath(int index, TriplePath path)
+    { throw new ARQException("Triples-only collector") ; }
 }
 
 /*
- * (c) Copyright 2009 Hewlett-Packard Development Company, LP
- * (c) Copyright 2010 Talis Information Ltd.
+ * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  *

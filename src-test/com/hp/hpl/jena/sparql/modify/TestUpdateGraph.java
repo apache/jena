@@ -19,7 +19,7 @@ import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingFactory ;
 import com.hp.hpl.jena.sparql.modify.request.QuadDataAcc ;
-import com.hp.hpl.jena.sparql.modify.request.QuadsAcc ;
+import com.hp.hpl.jena.sparql.modify.request.QuadAcc ;
 import com.hp.hpl.jena.sparql.modify.request.UpdateDataDelete ;
 import com.hp.hpl.jena.sparql.modify.request.UpdateDataInsert ;
 import com.hp.hpl.jena.sparql.modify.request.UpdateDeleteWhere ;
@@ -135,7 +135,7 @@ public abstract class TestUpdateGraph extends TestUpdateBase
     @Test public void testDelete1()
     {
         GraphStore gStore = getEmptyGraphStore() ;
-        QuadsAcc acc = new QuadsAcc() ;
+        QuadAcc acc = new QuadAcc() ;
         UpdateDeleteWhere delete = new UpdateDeleteWhere(acc) ;
         UpdateAction.execute(delete, gStore) ;
         assertTrue(graphEmpty(gStore.getDefaultGraph())) ;
@@ -145,7 +145,7 @@ public abstract class TestUpdateGraph extends TestUpdateBase
     {
         GraphStore gStore = getEmptyGraphStore() ;
         defaultGraphData(gStore, graph1) ;
-        QuadsAcc acc = new QuadsAcc() ;
+        QuadAcc acc = new QuadAcc() ;
         UpdateDeleteWhere delete = new UpdateDeleteWhere(acc) ;
         acc.addTriple(SSE.parseTriple("(?s ?p ?o)")) ;
         UpdateAction.execute(delete, gStore) ;

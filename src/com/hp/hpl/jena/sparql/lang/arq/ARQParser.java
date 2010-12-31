@@ -530,12 +530,14 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
   }
 
   final public void ConstructQuery() throws ParseException {
-                          Template t ; QuadsAcc acc = new QuadsAcc() ;
+                          Template t ;
+                          TripleCollectorBGP acc = new TripleCollectorBGP() ;
     jj_consume_token(CONSTRUCT);
+     getQuery().setQueryConstructType() ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case LBRACE:
-        getQuery().setQueryConstructType() ;
-      t = ConstructTemplate();
+      // Full form.
+          t = ConstructTemplate();
         getQuery().setConstructTemplate(t) ;
       label_4:
       while (true) {
@@ -602,6 +604,13 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
       }
       jj_consume_token(RBRACE);
       SolutionModifier();
+      t = new Template(acc.getBGP()) ;
+      getQuery().setConstructTemplate(t) ;
+      // Create a query in the same shape as the query created by writing out in full.
+      ElementPathBlock epb = new ElementPathBlock(acc.getBGP()) ;
+      ElementGroup elg = new ElementGroup() ;
+      elg.addElement(epb) ;
+      getQuery().setQueryPattern(elg) ;
       break;
     default:
       jj_la1[14] = jj_gen;
@@ -1710,7 +1719,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
   }
 
   final public Update DeleteWhere() throws ParseException {
-                         QuadsAcc qp = new QuadsAcc() ;
+                         QuadAcc qp = new QuadAcc() ;
     jj_consume_token(DELETE_WHERE);
     QuadPattern(qp);
     {if (true) return new UpdateDeleteWhere(qp) ;}
@@ -1807,7 +1816,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
   }
 
   final public void DeleteClause(UpdateModify up) throws ParseException {
-                                       QuadsAcc qp = up.getDeleteAcc() ;
+                                       QuadAcc qp = up.getDeleteAcc() ;
     jj_consume_token(DELETE);
     OptionalFromTarget(qp);
     QuadPattern(qp);
@@ -1815,15 +1824,15 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
   }
 
   final public void InsertClause(UpdateModify up) throws ParseException {
-                                       QuadsAcc qp = up.getInsertAcc() ;
+                                       QuadAcc qp = up.getInsertAcc() ;
     jj_consume_token(INSERT);
     OptionalIntoTarget(qp);
     QuadPattern(qp);
      up.setHasInsertClause(true) ;
   }
 
-  final public void OptionalIntoTarget(QuadsAcc qp) throws ParseException {
-                                         String iri ;
+  final public void OptionalIntoTarget(QuadAcc qp) throws ParseException {
+                                        String iri ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case IRIref:
     case PNAME_NS:
@@ -1846,8 +1855,8 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     }
   }
 
-  final public void OptionalFromTarget(QuadsAcc qp) throws ParseException {
-                                         String iri ;
+  final public void OptionalFromTarget(QuadAcc qp) throws ParseException {
+                                        String iri ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case IRIref:
     case PNAME_NS:
@@ -1968,7 +1977,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     throw new Error("Missing return statement in function");
   }
 
-  final public void QuadPattern(QuadsAcc acc) throws ParseException {
+  final public void QuadPattern(QuadAcc acc) throws ParseException {
     jj_consume_token(LBRACE);
     Quads(acc);
     jj_consume_token(RBRACE);
@@ -1981,7 +1990,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     jj_consume_token(RBRACE);
   }
 
-  final public void Quads(QuadsAcc acc) throws ParseException {
+  final public void Quads(QuadAcc acc) throws ParseException {
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case IRIref:
     case PNAME_NS:
@@ -2068,8 +2077,8 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     }
   }
 
-  final public void QuadsNotTriples(QuadsAcc acc) throws ParseException {
-                                      Node n ; Node prev = acc.getGraph() ;
+  final public void QuadsNotTriples(QuadAcc acc) throws ParseException {
+                                     Node n ; Node prev = acc.getGraph() ;
     jj_consume_token(GRAPH);
     n = VarOrIRIref();
       acc.setGraph(n) ;
@@ -2110,7 +2119,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
       acc.setGraph(prev) ;
   }
 
-  final public void TriplesTemplate(QuadsAcc acc) throws ParseException {
+  final public void TriplesTemplate(TripleCollector acc) throws ParseException {
     TriplesSameSubject(acc);
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case DOT:
@@ -2688,8 +2697,9 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
 
 // -------- Construct patterns
   final public Template ConstructTemplate() throws ParseException {
+                                 TripleCollectorBGP acc = new TripleCollectorBGP();
+                                 Template t = new Template(acc.getBGP()) ;
       setInConstructTemplate(true) ;
-      Template g = new Template() ;
     jj_consume_token(LBRACE);
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case IRIref:
@@ -2717,7 +2727,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     case NIL:
     case LBRACKET:
     case ANON:
-      ConstructTriples(g);
+      ConstructTriples(acc);
       break;
     default:
       jj_la1[93] = jj_gen;
@@ -2725,11 +2735,11 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     }
     jj_consume_token(RBRACE);
       setInConstructTemplate(false) ;
-      {if (true) return g ;}
+      {if (true) return t ;}
     throw new Error("Missing return statement in function");
   }
 
-  final public void ConstructTriples(Template acc) throws ParseException {
+  final public void ConstructTriples(TripleCollector acc) throws ParseException {
     TriplesSameSubject(acc);
     label_23:
     while (true) {
@@ -5079,11 +5089,6 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     finally { jj_save(1, xla); }
   }
 
-  private boolean jj_3R_63() {
-    if (jj_3R_69()) return true;
-    return false;
-  }
-
   private boolean jj_3R_54() {
     if (jj_scan_token(LPAREN)) return true;
     return false;
@@ -5479,11 +5484,6 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
-  private boolean jj_3_1() {
-    if (jj_3R_35()) return true;
-    return false;
-  }
-
   private boolean jj_3R_48() {
     if (jj_3R_52()) return true;
     return false;
@@ -5524,6 +5524,16 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     if (jj_3R_72()) return true;
     }
     }
+    return false;
+  }
+
+  private boolean jj_3_1() {
+    if (jj_3R_35()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_63() {
+    if (jj_3R_69()) return true;
     return false;
   }
 

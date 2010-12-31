@@ -114,7 +114,8 @@ void SelectClause() : { Var v ; Expr expr ; Node n ; }
   )
   { allowAggregatesInExpressions = false ; }
 }
-void ConstructQuery() : { Template t ; QuadsAcc acc = new QuadsAcc() ; }
+void ConstructQuery() : { Template t ;
+                          TripleCollectorBGP acc = new TripleCollectorBGP() ; }
 {
   <CONSTRUCT>
      { getQuery().setQueryConstructType() ; }
@@ -381,7 +382,7 @@ Update DeleteData() : { QuadDataAcc qd = new QuadDataAcc() ; Token t ; }
     return new UpdateDataDelete(qd) ;
   }
 }
-Update DeleteWhere() : { QuadsAcc qp = new QuadsAcc() ; }
+Update DeleteWhere() : { QuadAcc qp = new QuadAcc() ; }
 {
   <DELETE_WHERE> QuadPattern(qp)
   { return new UpdateDeleteWhere(qp) ; }
@@ -398,12 +399,12 @@ Update Modify() : { Element el ; String iri = null ;
   el = GroupGraphPattern() { up.setElement(el) ; }
   { return up ; }
 }
-void DeleteClause(UpdateModify up) : { QuadsAcc qp = up.getDeleteAcc() ; }
+void DeleteClause(UpdateModify up) : { QuadAcc qp = up.getDeleteAcc() ; }
 {
    <DELETE> QuadPattern(qp)
    { up.setHasDeleteClause(true) ; }
 }
-void InsertClause(UpdateModify up) : { QuadsAcc qp = up.getInsertAcc() ; }
+void InsertClause(UpdateModify up) : { QuadAcc qp = up.getInsertAcc() ; }
 {
    <INSERT> QuadPattern(qp)
    { up.setHasInsertClause(true) ; }
@@ -439,7 +440,7 @@ Target GraphRefAll() : { Node iri ; }
    | <ALL> { return Target.ALL ; }
    )
 }
-void QuadPattern(QuadsAcc acc) : { }
+void QuadPattern(QuadAcc acc) : { }
 {
     <LBRACE>
     Quads(acc)
@@ -452,7 +453,7 @@ void QuadData(QuadDataAcc acc) : { }
     Quads(acc)
     <RBRACE>
 }
-void Quads(QuadsAcc acc) : { }
+void Quads(QuadAcc acc) : { }
 {
    (TriplesTemplate(acc))?
    (
@@ -461,7 +462,7 @@ void Quads(QuadsAcc acc) : { }
      (TriplesTemplate(acc))?
    )*
 }
-void QuadsNotTriples(QuadsAcc acc) : {Node n ; Node prev = acc.getGraph() ; }
+void QuadsNotTriples(QuadAcc acc) : {Node n ; Node prev = acc.getGraph() ; }
 {
     <GRAPH> n = VarOrIRIref()
     { acc.setGraph(n) ; }
@@ -470,7 +471,7 @@ void QuadsNotTriples(QuadsAcc acc) : {Node n ; Node prev = acc.getGraph() ; }
     <RBRACE>
     { acc.setGraph(prev) ; }
 }
-void TriplesTemplate(QuadsAcc acc) : { }
+void TriplesTemplate(TripleCollector acc) : { }
 {
     TriplesSameSubject(acc)
     (<DOT> (TriplesTemplate(acc))?)?
@@ -675,17 +676,17 @@ ExprList ExpressionList() : { Expr expr = null ; ExprList args = new ExprList() 
   { return args ; }
 }
 // -------- Construct patterns
-Template ConstructTemplate() : { }
+Template ConstructTemplate() : { TripleCollectorBGP acc = new TripleCollectorBGP();
+                                 Template t = new Template(acc.getBGP()) ; }
 {
-    { setInConstructTemplate(true) ;
-      TemplateGroup g = new TemplateGroup() ; }
+    { setInConstructTemplate(true) ; }
   <LBRACE>
-    (ConstructTriples(g))?
+    (ConstructTriples(acc))?
   <RBRACE>
     { setInConstructTemplate(false) ;
-      return g ; }
+      return t ; }
 }
-void ConstructTriples(TemplateGroup acc) : { }
+void ConstructTriples(TripleCollector acc) : { }
 {
 // SPARQL - recursion - does not scale for SPARQL/Update
     TriplesSameSubject(acc)
