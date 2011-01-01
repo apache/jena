@@ -27,7 +27,6 @@ public class IndexFactory
         RangeIndex rIndex = openBPT(location, indexName, readCacheSize, writeCacheSize, dftKeyLength, dftValueLength) ;
         TupleIndex tupleIndex = new TupleIndexRecord(primary.length(), new ColumnMap(primary, indexOrder), rIndex.getRecordFactory(), rIndex) ;
         return tupleIndex ;
-        
     }
 
     public static RangeIndex openBPT(Location location, String indexName, int readCacheSize, int writeCacheSize, int dftKeyLength, int dftValueLength)

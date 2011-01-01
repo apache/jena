@@ -33,7 +33,7 @@ if [ ! -d "$LOC" ] ; then echo "Not a directory: $LOC" ; exit 1 ; fi
 
 FILES="$@"
 ## Stdin?
-
+KEEPWORKFILES="${KEEPWORKFILES:-}"
 # ---- Start
 log "-- TDB Bulk Loader Start"
 TIME1="$(date +%s)"
@@ -75,7 +75,10 @@ function process_rows
     rm -f "$LOC/$IDX.idn"
     java -cp "$CP" -server "$PKG".CmdIndexBuild "$LOC" "$IDX" "$WORK"
     # Remove intermediary file.
-    rm "$WORK" 
+    if [ "$KEEPWORKFILES" != "yes" ] 
+    then
+	rm "$WORK" 
+    fi
 }
 
 #Better - sort, do index, delete intermediate file, repeat
@@ -114,7 +117,10 @@ TIME2="$(date +%s)"
 
 # ---- Clean up.
 
-rm -f "$DATA_TRIPLES" "$DATA_QUADS" 
+if [ "$KEEPWORKFILES" != "yes" ] 
+then
+    rm -f "$DATA_TRIPLES" "$DATA_QUADS" 
+fi
 
 # ---- End
 log "-- TDB Bulk Loader Finish"

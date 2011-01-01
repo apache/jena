@@ -2,21 +2,24 @@ package dev ;
 
 public class DevTDB
 {
+    // ** CHECK bnode ids without leading zeros in Jena?
+    
     // ** Release
     // TDB shutdown hook.
     // Check design abstracts Nodes properly 
-    //   Should allow swapping in Nodeid as hash: so NodeId -> Node is a lookup. 
+    //   Should allow swapping in Nodeid as hash: so NodeId -> Node is a lookup.
+    
     // SetupTDB : abstract algorithm and pass in (Range)Index builders
     // layers: database - TupleIndex/NodeTable - (Range)Index+seq store.
-    
-    // tdbloader(2): --lang=
-    // tdbloader shoudl default to n-quads, not n-triples.
-    
-    // Check commands and use of --graph
+    // See IndexFactory for bulkloader2
+    //    Versions with built-in defaults.
     
     // ---- BulkLoader2
     // Tune sort --buffer-size=50%
     // Prefixes to be set during bulk loading 1 & 2
+    
+    // BPT
+    //  .truncate : release all blocks and create a new (empty) tree. 
     
     // Extract a better set of factory operations, using the default names and sizes, 
     // for internal structures like B+Tress and NodeTable, and TupleIndexes.

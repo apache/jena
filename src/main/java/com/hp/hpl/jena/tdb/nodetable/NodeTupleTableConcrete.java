@@ -21,7 +21,7 @@ import com.hp.hpl.jena.tdb.lib.NodeLib ;
 import com.hp.hpl.jena.tdb.lib.TupleLib ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
 
-/** Group a tuple table and node table togethr to provide a real NodeTupleTable */ 
+/** Group a tuple table and node table together to provide a real NodeTupleTable */ 
 public class NodeTupleTableConcrete implements NodeTupleTable
 {
     protected final NodeTable nodeTable ;

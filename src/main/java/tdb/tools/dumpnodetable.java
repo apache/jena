@@ -1,10 +1,11 @@
 /*
  * (c) Copyright 2010 Talis Systems Ltd.
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
-package dump;
+package tdb.tools;
 
 import java.io.OutputStream ;
 import java.util.Iterator ;
@@ -13,8 +14,11 @@ import java.util.regex.Pattern ;
 
 import org.openjena.atlas.io.IndentedWriter ;
 import org.openjena.atlas.lib.Pair ;
+import org.openjena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.Node_Literal ;
+import com.hp.hpl.jena.sparql.util.FmtUtils ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
@@ -23,7 +27,7 @@ import com.hp.hpl.jena.tdb.sys.Names ;
 import com.hp.hpl.jena.tdb.sys.SetupTDB ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
-public class DumpNodeTable
+public class dumpnodetable
 {
     public static void main(String ... argv)
     {
@@ -45,7 +49,7 @@ public class DumpNodeTable
     
     private static void usage()
     {
-        System.err.println("Usage: "+Utils.className(pattern)+"location") ;
+        System.err.println("Usage: "+Utils.classShortName(dumpnodetable.class)+" location") ;
     }
 
     public static void dumpNodes(OutputStream w, String location)
@@ -76,18 +80,82 @@ public class DumpNodeTable
             Pair<NodeId, Node> pair = iter.next() ;
             iw.print(pair.car()) ;
             iw.print(" : ") ;
-            iw.print(pair.cdr()) ;
+            //iw.print(pair.cdr()) ;
+            Node n = pair.cdr() ;
+            String $ = stringForNode(n) ;
+            iw.print($) ;
             iw.println() ;
             count++ ;
         }
         iw.println() ;
         iw.printf("Total: "+count) ;
+        iw.println() ;
         iw.flush() ;
+    }
+    
+    private static String stringForNode(Node n)
+    {
+        if ( n == null )
+            return "<<null>>" ;
+        
+        if ( n.isBlank() )
+            return "_:"+n.getBlankNodeLabel() ;
+        
+        if ( n.isLiteral() )
+            return stringForLiteral((Node_Literal)n) ;
+
+        if ( n.isURI() )
+        {
+            String uri = n.getURI() ;
+            return stringForURI(uri) ;
+        }
+        
+        if ( n.isVariable() )
+            return "?"+n.getName() ;
+        
+        if ( n.equals(Node.ANY) )
+            return "ANY" ;
+
+        Log.warn(FmtUtils.class, "Failed to turn a node into a string: "+n) ;
+        return n.toString() ;
+    }
+    
+    public static String stringForURI(String uri)
+    {
+        return "<"+uri+">" ;
+    }
+    
+    public static String stringForLiteral(Node_Literal literal)
+    {
+        String datatype = literal.getLiteralDatatypeURI() ;
+        String lang = literal.getLiteralLanguage() ;
+        String s = literal.getLiteralLexicalForm() ;
+        
+        StringBuilder sbuff = new StringBuilder() ;
+        sbuff.append("\"") ;
+        FmtUtils.stringEsc(sbuff, s, true) ;
+        sbuff.append("\"") ;
+        
+        // Format the language tag 
+        if ( lang != null && lang.length()>0)
+        {
+            sbuff.append("@") ;
+            sbuff.append(lang) ;
+        }
+
+        if ( datatype != null )
+        {
+            sbuff.append("^^") ;
+            sbuff.append(stringForURI(datatype)) ;
+        }
+        
+        return sbuff.toString() ;
     }
 }
 
 /*
  * (c) Copyright 2010 Talis Systems Ltd.
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

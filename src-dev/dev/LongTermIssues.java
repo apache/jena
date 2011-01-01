@@ -17,4 +17,12 @@ public class LongTermIssues
      * Fix when a format change occurs. 
      */
     
+    /*
+     * Use 63 bit NodeId, 1 bit for inline/external
+     */
+
+    /* ?? 
+     * Bnodes are written without leading zeros 
+     */
 }
+
