@@ -74,6 +74,7 @@ public abstract class SPARQL_Query extends SPARQL_ServletBase
     {
         //response.setHeader(HttpNames.hAllow, "GET,HEAD,OPTIONS,POST");
         response.setHeader(HttpNames.hAllow, "GET,OPTIONS,POST");
+        response.setHeader(HttpNames.hContentLengh, "0") ;
     }
     
     @Override

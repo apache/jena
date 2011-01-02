@@ -67,6 +67,7 @@ public class SPARQL_REST_R extends SPARQL_REST
     protected void doOptions(HttpActionREST action)
     {
         action.response.setHeader(HttpNames.hAllow, "GET,HEAD,OPTIONS") ;
+        action.response.setHeader(HttpNames.hContentLengh, "0") ;
         success(action) ;
     }
 
