@@ -60,10 +60,27 @@ public class NodeLib
         long x = file.completeWrite(bb) ;
         return x ;
     }
-
+    
     public static Node fetchDecode(long id, ObjectFile file)
     {
         ByteBuffer bb = file.read(id) ;
+        return decode(bb) ;
+    }
+    
+    /** Encode a node - pref use encodeStore */
+    public static ByteBuffer encode(Node node)
+    {
+        int maxSize = nodec.maxSize(node) ;
+        ByteBuffer bb = ByteBuffer.allocate(maxSize) ;
+        int len = nodec.encode(node, bb, null) ;
+        bb.limit(len) ;
+        bb.position(0) ;
+        return bb ;
+    }
+    
+    /** Decode a node - pref use fetchDecode */
+    public static Node decode(ByteBuffer bb)
+    {
         bb.position(0) ;
         Node n = nodec.decode(bb, null) ;
         return n ;

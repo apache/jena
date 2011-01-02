@@ -21,8 +21,12 @@ public class LongTermIssues
      * Use 63 bit NodeId, 1 bit for inline/external
      */
 
-    /* ?? 
-     * Bnodes are written without leading zeros 
+    /*  
+     * BNodes are written without leading zeros.
+     */
+
+    /*  
+     * Binary node table.
      */
 }
 

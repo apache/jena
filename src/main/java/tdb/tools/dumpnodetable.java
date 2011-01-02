@@ -8,48 +8,55 @@
 package tdb.tools;
 
 import java.io.OutputStream ;
+import java.util.Arrays ;
 import java.util.Iterator ;
-import java.util.regex.Matcher ;
-import java.util.regex.Pattern ;
+import java.util.List ;
 
 import org.openjena.atlas.io.IndentedWriter ;
 import org.openjena.atlas.lib.Pair ;
 import org.openjena.atlas.logging.Log ;
+import tdb.cmdline.ModLocation ;
+import arq.cmdline.CmdGeneral ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Node_Literal ;
 import com.hp.hpl.jena.sparql.util.FmtUtils ;
 import com.hp.hpl.jena.sparql.util.Utils ;
+import com.hp.hpl.jena.tdb.TDBFactory ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
+import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
 import com.hp.hpl.jena.tdb.sys.Names ;
 import com.hp.hpl.jena.tdb.sys.SetupTDB ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
-public class dumpnodetable
+public class dumpnodetable extends CmdGeneral
 {
-    public static void main(String ... argv)
-    {
-        if (  argv.length == 0 || isHelp(argv) )
-            usage() ;
-        dumpNodes(System.out, argv[0]) ;
-    }
+    ModLocation modLocation = new ModLocation() ;
     
-    static Pattern pattern = Pattern.compile("/(-|--)(h|help)") ; 
-    
-    private static boolean isHelp(String[] argv)
-    {
-        if ( argv.length == 0 ) return false ;
-        Matcher m = pattern.matcher(argv[0]) ;
-        return m.matches() ;
+    static public void main(String... argv)
+    { 
+        Log.setLog4j() ;
+        new dumpnodetable(argv).mainRun() ;
     }
 
-     
-    
-    private static void usage()
+    @Override
+    protected void exec()
     {
-        System.err.println("Usage: "+Utils.classShortName(dumpnodetable.class)+" location") ;
+        List<String> tripleIndexes = Arrays.asList(Names.tripleIndexes) ;
+        List<String> quadIndexes = Arrays.asList(Names.quadIndexes) ;
+        Location loc = modLocation.getLocation() ;
+        
+        DatasetGraphTDB dsg = TDBFactory.createDatasetGraph(loc) ;
+        NodeTable nodeTable = dsg.getQuadTable().getNodeTupleTable().getNodeTable() ;
+        dump(System.out, nodeTable) ;
+    }
+    
+    protected dumpnodetable(String[] argv)
+    {
+        super(argv) ;
+        super.addModule(modLocation) ;
     }
 
     public static void dumpNodes(OutputStream w, String location)
@@ -70,7 +77,11 @@ public class dumpnodetable
         NodeTable nodeTable = SetupTDB.makeNodeTable(new Location(location), 
                                                      indexNode2Id, node2NodeIdCacheSize,
                                                      indexId2Node, nodeId2NodeCacheSize) ;
-        
+    }
+    
+    
+    public static void dump(OutputStream w, NodeTable nodeTable)
+    {
         // Better to hack the indexes?
         Iterator<Pair<NodeId, Node>> iter = nodeTable.all() ;
         long count = 0 ;
@@ -151,6 +162,28 @@ public class dumpnodetable
         
         return sbuff.toString() ;
     }
+
+    @Override
+    protected void processModulesAndArgs()
+    {
+        if ( modVersion.getVersionFlag() )
+            modVersion.printVersionAndExit() ;
+        if ( modLocation.getLocation() == null )
+            cmdError("Location required") ;
+    }
+
+    @Override
+    protected String getSummary()
+    {
+        return getCommandName()+" --loc=DIR IndexName" ;
+    }
+
+    @Override
+    protected String getCommandName()
+    {
+        return Utils.className(this) ;
+    }
+    
 }
 
 /*

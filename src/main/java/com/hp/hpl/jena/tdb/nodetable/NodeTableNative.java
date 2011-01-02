@@ -8,12 +8,12 @@ package com.hp.hpl.jena.tdb.nodetable;
 
 import static com.hp.hpl.jena.tdb.lib.NodeLib.setHash ;
 
+import java.nio.ByteBuffer ;
 import java.util.Iterator ;
 
 import org.openjena.atlas.iterator.Iter ;
 import org.openjena.atlas.iterator.Transform ;
 import org.openjena.atlas.lib.Pair ;
-
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.tdb.TDBException ;
@@ -177,7 +177,10 @@ public class NodeTableNative implements NodeTable
     }
 
     // Not synchronized
-    public Iterator<Pair<NodeId, Node>> all()
+    public Iterator<Pair<NodeId, Node>> all() { return all2() ; }
+    
+    private Iterator<Pair<NodeId, Node>> all1()
+    
     {
         // Could be quicker by hoping down the objects files.
         Iterator<Record> iter = nodeHashToId.iterator() ; ;
@@ -190,6 +193,22 @@ public class NodeTableNative implements NodeTable
                 return new Pair<NodeId, Node>(id, n) ;
             }};
         return Iter.map(iter, transform) ;
+    }
+
+    private Iterator<Pair<NodeId, Node>> all2()
+    {
+        Iterator<Pair<Long, ByteBuffer>> objs = objects.all() ; 
+        
+        Transform<Pair<Long, ByteBuffer>, Pair<NodeId, Node>> transform = new Transform<Pair<Long, ByteBuffer>, Pair<NodeId, Node>>() {
+            public Pair<NodeId, Node> convert(Pair<Long, ByteBuffer> item)
+            {
+                NodeId id = NodeId.create(item.car().longValue()) ;
+                ByteBuffer bb = item.cdr();
+                Node n = NodeLib.decode(bb) ;
+                return new Pair<NodeId, Node>(id, n) ;
+            }
+        };
+        return Iter.map(objs, transform) ;
     }
 
     //@Override

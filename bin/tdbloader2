@@ -3,7 +3,8 @@
 # Exit on error.
 set -e
 
-# TODO
+# Sort order is ASCII
+export LC_LOCALE="C"
 
 function log { echo " $(date $DATE)" "$@" ; }
 
@@ -83,23 +84,28 @@ function process_rows
 
 #Better - sort, do index, delete intermediate file, repeat
 
-process_rows "-k1 -k2 -k3" "$DATA_TRIPLES" SPO
+K1="-k 1,1"
+K2="-k 2,2"
+K3="-k 3,3"
+K4="-k 4,4"
 
-process_rows "-k2 -k3 -k1" "$DATA_TRIPLES" POS
+process_rows "$K1 $K2 $K3" "$DATA_TRIPLES" SPO
 
-process_rows "-k3 -k1 -k2" "$DATA_TRIPLES" OSP
+process_rows "$K2 $K3 $K1" "$DATA_TRIPLES" POS
 
-process_rows "-k1 -k2 -k3 -k4" "$DATA_QUADS" GSPO
+process_rows "$K3 $K1 $K2" "$DATA_TRIPLES" OSP
 
-process_rows "-k1 -k3 -k4 -k2" "$DATA_QUADS" GPOS
+process_rows "$K1 $K2 $K3 $K4" "$DATA_QUADS" GSPO
 
-process_rows "-k1 -k4 -k2 -k3" "$DATA_QUADS" GOSP
+process_rows "$K1 $K3 $K4 $K2" "$DATA_QUADS" GPOS
 
-process_rows "-k2 -k3 -k4 -k1" "$DATA_QUADS" SPOG
+process_rows "$K1 $K4 $K2 $K3" "$DATA_QUADS" GOSP
 
-process_rows "-k3 -k4 -k2 -k1" "$DATA_QUADS" POSG
+process_rows "$K2 $K3 $K4 $K1" "$DATA_QUADS" SPOG
 
-process_rows "-k4 -k2 -k3 -k1" "$DATA_QUADS" OSPG
+process_rows "$K3 $K4 $K2 $K1" "$DATA_QUADS" POSG
+
+process_rows "$K4 $K2 $K3 $K1" "$DATA_QUADS" OSPG
 
 log "Index phase end"
 TIME2="$(date +%s)"

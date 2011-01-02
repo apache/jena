@@ -6,6 +6,7 @@
 
 package tdb.tools;
 
+import java.io.PrintStream ;
 import java.util.Arrays ;
 import java.util.Iterator ;
 import java.util.List ;
@@ -93,7 +94,9 @@ public class dumpbpt extends CmdGeneral
                 primary = null ; 
             }
             
-            int keyLength = SystemTDB.SizeOfNodeId * indexName.length() ;
+            int keySubLen =  SystemTDB.SizeOfNodeId ;
+            int keyUnitLen = indexName.length() ;
+            int keyLength = keySubLen*keyUnitLen ;
             int valueLength = 0 ;
             
             
@@ -112,10 +115,13 @@ public class dumpbpt extends CmdGeneral
             {
                 System.out.println("---- Index contents") ;
                 Iterator<Record> iter = bpt.iterator() ;
+                if ( ! iter.hasNext() )
+                    System.out.println("<<Empty>>") ;
+                
                 for ( ; iter.hasNext() ; )
                 {
                     Record r = iter.next();
-                    System.out.println(r) ;
+                    printRecord("", System.out, r, keyUnitLen) ;
                 }
             }
             
@@ -133,8 +139,8 @@ public class dumpbpt extends CmdGeneral
                     if ( ! Record.keyLT(r1, r2) )
                     {
                         System.err.println("key error@ "+i) ;
-                        System.err.println("  "+r1) ;
-                        System.err.println("  "+r2) ;
+                        printRecord("  ", System.err, r1, keyUnitLen) ;
+                        printRecord("  ", System.err, r2, keyUnitLen) ;
                     }
                 }
                 r1 = r2 ;
@@ -148,6 +154,9 @@ public class dumpbpt extends CmdGeneral
                 {
                     System.out.println("---- Tuple contents") ;
                     Iterator<Tuple<NodeId>> iter2 = tupleIndex.all() ;
+                    if ( ! iter2.hasNext() )
+                        System.out.println("<<Empty>>") ;
+
                     for ( ; iter2.hasNext() ; )
                     {
                         Tuple<NodeId> row = iter2.next();
@@ -156,9 +165,30 @@ public class dumpbpt extends CmdGeneral
                 }
             }
         }
-        
     }
+    
+    private static void printRecord(String label, PrintStream out, Record r, int keyUnitLen)
+    {
+        //out.println(r) ;
 
+        int keySubLen = r.getKey().length/keyUnitLen ;
+        if ( label != null )
+            out.print(label) ;
+        for ( int i = 0 ; i < keyUnitLen ; i++ )
+        {   
+            if ( i != 0 )
+                out.print(" ") ;
+            
+            // Print in chunks
+            int k = i*keySubLen ;
+            for ( int j = k ; j < k+keySubLen ; j++ )
+                out.printf("%02x", r.getKey()[j]) ;
+            
+//            long x = Bytes.getLong(r.getKey(), i*SystemTDB.SizeOfNodeId) ;
+//            System.out.printf("%016x", x) ;
+        }
+        out.println() ;
+    }
 }
 
 /*
