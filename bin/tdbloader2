@@ -50,12 +50,8 @@ java -cp "$CP" -server "$PKG".CmdNodeTableBuilder \
     "--loc=$LOC" "--triples=$DATA_TRIPLES" "--quads=$DATA_QUADS" $FILES
 
 # ---- Index intermediates
-## All files are writtern S P O but in different sort orders.
+## All files are writtern S P O / G S P O columns per row but in different sort orders.
 log "Index phase"
-# Sort to SPO etc
-## I1="SPO POS OSP"
-## I2="GSPO GPOS GOSP SPOG POSG OSPG"
-## I3="node2id prefixIdx prefix2id"
 
 function process_rows
 {
@@ -82,8 +78,6 @@ function process_rows
     fi
 }
 
-#Better - sort, do index, delete intermediate file, repeat
-
 K1="-k 1,1"
 K2="-k 2,2"
 K3="-k 3,3"
@@ -109,17 +103,6 @@ process_rows "$K4 $K2 $K3 $K1" "$DATA_QUADS" OSPG
 
 log "Index phase end"
 TIME2="$(date +%s)"
-## # ---- Index loading phase
-## 
-## for IDX in $I1
-## do
-##     log "Build index $IDX"
-##     ## The B+Tree builder creates a tree from no file files.
-##     rm -f "$LOC/$IDX.dat"
-##     rm -f "$LOC/$IDX.idn"
-##     java -cp "$CP" -server "$PKG".CmdIndexBuild "$LOC" "$IDX" "$LOC/$IDX-txt"
-##     done
-## 
 
 # ---- Clean up.
 
@@ -132,4 +115,3 @@ fi
 log "-- TDB Bulk Loader Finish"
 ELAPSED=$(($TIME2-$TIME1))
 log "-- $ELAPSED seconds"
- 
