@@ -55,6 +55,12 @@ void Query() : { }
 {
   Prologue()
   ( SelectQuery() | ConstructQuery() | DescribeQuery() | AskQuery() )
+  BindingsClause()
+}
+void UpdateUnit() : {}
+{
+    Update()
+    <EOF>
 }
 void Prologue() : {}
 {
@@ -78,7 +84,6 @@ void SelectQuery() : { }
   ( DatasetClause() )*
   WhereClause()
   SolutionModifier()
-  BindingsClause()
 }
 void SubSelect() :{ }
 {
@@ -291,11 +296,6 @@ Node BindingValue() : { Node n ; String iri ; }
 }
 // SPARQL Update + transitional extensions for SPARQL/Update (the W3C submission)
 // Update only entry point
-void UpdateUnit() : {}
-{
-    Update()
-    <EOF>
-}
 // Strict SPARQL 1.1 : mandatory separator, optional terminator.
 void Update() : { }
 {
@@ -1224,7 +1224,7 @@ Expr ExistsFunc() : { Element el ; }
 }
 Expr NotExistsFunc() : { Element el ; }
 {
-   <NOTEXISTS>
+   <NOT> <EXISTS>
    el = GroupGraphPattern()
    { return createExprNotExists(el) ; }
 }
@@ -1433,7 +1433,7 @@ TOKEN [IGNORE_CASE] :
 | < SERVICE: "service" >
 | < EXISTS: "exists" >
 | < NOT: "not" >
-| < NOTEXISTS: "not" (<WS>)* "exists" >
+//|  < NOTEXISTS:   "not" (<WS>)* "exists" >
 //|  < UNSAID:      "unsaid" >
 | < AS: "as" >
 | < GROUP: "group" >
@@ -1453,7 +1453,7 @@ TOKEN [IGNORE_CASE] :
 | < BOUND: "bound" >
 | < COALESCE: "coalesce" >
 | < IN: "in" >
-| < NOT_IN: "not" (<WS>)* "in" >
+//|  < NOT_IN:      "not" (<WS>)* "in" >
 | < IF: "if" >
 | < BNODE: "bnode" >
 | < IRI: "iri" >

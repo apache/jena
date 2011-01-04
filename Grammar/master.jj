@@ -95,7 +95,17 @@ void Query() : { }
 {    
   Prologue()
   ( SelectQuery() | ConstructQuery() | DescribeQuery() | AskQuery() )
+  BindingsClause()
 }
+
+#ifdef UPDATE
+void UpdateUnit() : {}
+{
+    Update()
+    <EOF>
+}
+#endif
+
 
 void Prologue() : {}
 {
@@ -123,7 +133,6 @@ void SelectQuery() : { }
   ( DatasetClause() )*
   WhereClause()
   SolutionModifier()
-  BindingsClause()
 }
 
 void SubSelect() :{ }
@@ -197,6 +206,7 @@ void ConstructQuery() : { Template t ;
   SolutionModifier()
 #else
  // ARQ - two forms.
+ // Can tidy up
  <CONSTRUCT>
    { getQuery().setQueryConstructType() ; }
  (
@@ -417,11 +427,6 @@ Node BindingValue() : { Node n ; String iri ; }
 #ifdef UPDATE
 // SPARQL Update + transitional extensions for SPARQL/Update (the W3C submission)
 // Update only entry point
-void UpdateUnit() : {}
-{
-    Update()
-    <EOF>
-}
 
 #ifdef ARQ_UPDATE
 // Optional SEMICOLON
@@ -429,6 +434,9 @@ void Update() : { }
 {
    { startUpdateRequest() ; }
    Prologue()
+#ifdef ARQ 
+   (Meta())*
+#endif
    ( Update1() (<SEMICOLON>)?)+
    { finishUpdateRequest() ; }
 }

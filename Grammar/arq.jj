@@ -55,6 +55,12 @@ void Query() : { }
 {
   Prologue()
   ( SelectQuery() | ConstructQuery() | DescribeQuery() | AskQuery() )
+  BindingsClause()
+}
+void UpdateUnit() : {}
+{
+    Update()
+    <EOF>
 }
 void Prologue() : {}
 {
@@ -78,7 +84,6 @@ void SelectQuery() : { }
   ( DatasetClause() )*
   WhereClause()
   SolutionModifier()
-  BindingsClause()
 }
 void SubSelect() :{ }
 {
@@ -132,6 +137,7 @@ void ConstructQuery() : { Template t ;
                           TripleCollectorBGP acc = new TripleCollectorBGP() ; }
 {
  // ARQ - two forms.
+ // Can tidy up
  <CONSTRUCT>
    { getQuery().setQueryConstructType() ; }
  (
@@ -326,16 +332,12 @@ Node BindingValue() : { Node n ; String iri ; }
 }
 // SPARQL Update + transitional extensions for SPARQL/Update (the W3C submission)
 // Update only entry point
-void UpdateUnit() : {}
-{
-    Update()
-    <EOF>
-}
 // Optional SEMICOLON
 void Update() : { }
 {
    { startUpdateRequest() ; }
    Prologue()
+   (Meta())*
    ( Update1() (<SEMICOLON>)?)+
    { finishUpdateRequest() ; }
 }
@@ -1350,7 +1352,7 @@ Expr ExistsFunc() : { Element el ; }
 }
 Expr NotExistsFunc() : { Element el ; }
 {
-   <NOTEXISTS>
+   <NOT> <EXISTS>
    el = GroupGraphPattern()
    { return createExprNotExists(el) ; }
 }
@@ -1571,7 +1573,7 @@ TOKEN [IGNORE_CASE] :
 | < FETCH: "fetch" >
 | < EXISTS: "exists" >
 | < NOT: "not" >
-| < NOTEXISTS: "not" (<WS>)* "exists" >
+//|  < NOTEXISTS:   "not" (<WS>)* "exists" >
 //|  < UNSAID:      "unsaid" >
 | < AS: "as" >
 | < GROUP: "group" >
@@ -1591,7 +1593,7 @@ TOKEN [IGNORE_CASE] :
 | < BOUND: "bound" >
 | < COALESCE: "coalesce" >
 | < IN: "in" >
-| < NOT_IN: "not" (<WS>)* "in" >
+//|  < NOT_IN:      "not" (<WS>)* "in" >
 | < IF: "if" >
 | < BNODE: "bnode" >
 | < IRI: "iri" >

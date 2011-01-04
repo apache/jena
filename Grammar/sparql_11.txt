@@ -70,7 +70,6 @@ TOKENS
 | <SERVICE: "service">
 | <EXISTS: "exists">
 | <NOT: "not">
-| <NOTEXISTS: "not" (<WS>)* "exists">
 | <AS: "as">
 | <GROUP: "group">
 | <HAVING: "having">
@@ -88,7 +87,6 @@ TOKENS
 | <BOUND: "bound">
 | <COALESCE: "coalesce">
 | <IN: "in">
-| <NOT_IN: "not" (<WS>)* "in">
 | <IF: "if">
 | <BNODE: "bnode">
 | <IRI: "iri">
@@ -248,12 +246,13 @@ NON-TERMINALS
 // }
 // Query only entry point
 	QueryUnit	:=	Query <EOF>
-	Query	:=	Prologue ( SelectQuery | ConstructQuery | DescribeQuery | AskQuery )
+	Query	:=	Prologue ( SelectQuery | ConstructQuery | DescribeQuery | AskQuery ) BindingsClause
+	UpdateUnit	:=	Update <EOF>
 	Prologue	:=	( BaseDecl | PrefixDecl )*
 	BaseDecl	:=	<BASE> IRI_REF
 	PrefixDecl	:=	<PREFIX> <PNAME_NS> IRI_REF
 // ---- Query type clauses
-	SelectQuery	:=	SelectClause ( DatasetClause )* WhereClause SolutionModifier BindingsClause
+	SelectQuery	:=	SelectClause ( DatasetClause )* WhereClause SolutionModifier
 	SubSelect	:=	SelectClause WhereClause SolutionModifier
 	SelectClause	:=	<SELECT> ( <DISTINCT> | <REDUCED> )? ( ( Var | ( <LPAREN> Expression <AS> Var <RPAREN> ) )+ | <STAR> )
 	ConstructQuery	:=	<CONSTRUCT> ConstructTemplate ( DatasetClause )* WhereClause SolutionModifier
@@ -283,7 +282,6 @@ NON-TERMINALS
 		|	<UNDEF>
 // SPARQL Update + transitional extensions for SPARQL/Update (the W3C submission)
 // Update only entry point
-	UpdateUnit	:=	Update <EOF>
 // Strict SPARQL 1.1 : mandatory separator, optional terminator.
 	Update	:=	Prologue Update1 ( <SEMICOLON> ( Update )? )?
 	Update1	:=	( Load | Clear | Drop | Add | Move | Copy | Create | InsertData | DeleteData | DeleteWhere | Modify )
@@ -474,7 +472,7 @@ NON-TERMINALS
 	RegexExpression	:=	<REGEX> <LPAREN> Expression <COMMA> Expression ( <COMMA> Expression )? <RPAREN>
 	SubstringExpression	:=	<SUBSTR> <LPAREN> Expression <COMMA> Expression ( <COMMA> Expression )? <RPAREN>
 	ExistsFunc	:=	<EXISTS> GroupGraphPattern
-	NotExistsFunc	:=	<NOTEXISTS> GroupGraphPattern
+	NotExistsFunc	:=	<NOT> <EXISTS> GroupGraphPattern
 	Aggregate	:=	( <COUNT> <LPAREN> ( <DISTINCT> )? ( <STAR> | Expression ) <RPAREN> | <SUM> <LPAREN> ( <DISTINCT> )? Expression <RPAREN> | <MIN> <LPAREN> ( <DISTINCT> )? Expression <RPAREN> | <MAX> <LPAREN> ( <DISTINCT> )? Expression <RPAREN> | <AVG> <LPAREN> ( <DISTINCT> )? Expression <RPAREN> | <SAMPLE> <LPAREN> ( <DISTINCT> )? Expression <RPAREN> | <GROUP_CONCAT> <LPAREN> ( <DISTINCT> )? Expression ( <SEMICOLON> <SEPARATOR> <EQ> String )? <RPAREN> )
 // See also FunctionCall.
 // The case of "q:name()" or "q:agg()" or just "q:name"
