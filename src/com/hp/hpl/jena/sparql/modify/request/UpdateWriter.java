@@ -146,10 +146,11 @@ public class UpdateWriter
             out.ensureStartOfLine() ;
             out.print("LOAD") ;
             out.print(" ") ;
-            String $ = update.getSource() ;
-            out.print("<") ;
-            out.print($) ;
-            out.print(">") ;
+            if ( update.getSilent() )
+                out.print("SILENT ") ;
+            
+            outputStringAsURI(update.getSource()) ;
+            
             if ( update.getDest() != null )
             {
                 out.print(" INTO GRAPH ") ;

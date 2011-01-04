@@ -13,21 +13,34 @@ public class UpdateLoad extends Update
 {
     private final String source ;
     private final Node dest ;
+    private boolean silent ;
     
 
     public UpdateLoad(String source, String dest)
     {
-        this(source, Node.createURI(dest)) ;
+        this(source, Node.createURI(dest), false) ;
+    }
+    
+    public UpdateLoad(String source, String dest, boolean silent)
+    {
+        this(source, Node.createURI(dest), silent) ;
     }
 
     public UpdateLoad(String source, Node dest)
     {
-        this.source = source ;
-        this.dest = dest ;
+        this(source, dest, false) ;
     }
 
-    public String getSource()   { return source ; }
-    public Node getDest()     { return dest ; }
+    public UpdateLoad(String source, Node dest, boolean silent)
+    {
+        this.source = source ;
+        this.dest = dest ;
+        this.silent = silent ;
+    }
+
+    public String  getSource()      { return source ; }
+    public Node    getDest()        { return dest ; }
+    public boolean getSilent()      { return silent ; }
 
     @Override
     public void visit(UpdateVisitor visitor)

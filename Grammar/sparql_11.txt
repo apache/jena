@@ -287,7 +287,7 @@ NON-TERMINALS
 // Strict SPARQL 1.1 : mandatory separator, optional terminator.
 	Update	:=	Prologue Update1 ( <SEMICOLON> ( Update )? )?
 	Update1	:=	( Load | Clear | Drop | Add | Move | Copy | Create | InsertData | DeleteData | DeleteWhere | Modify )
-	Load	:=	<LOAD> IRIref ( <INTO> GraphRef )?
+	Load	:=	<LOAD> ( <SILENT> )? IRIref ( <INTO> GraphRef )?
 	Clear	:=	<CLEAR> ( <SILENT> )? GraphRefAll
 	Drop	:=	<DROP> ( <SILENT> )? GraphRefAll
 	Create	:=	<CREATE> ( <SILENT> )? GraphRef
@@ -412,7 +412,7 @@ NON-TERMINALS
 	ConditionalOrExpression	:=	ConditionalAndExpression ( <SC_OR> ConditionalAndExpression )*
 	ConditionalAndExpression	:=	ValueLogical ( <SC_AND> ValueLogical )*
 	ValueLogical	:=	RelationalExpression
-	RelationalExpression	:=	NumericExpression ( <EQ> NumericExpression | <NE> NumericExpression | <LT> NumericExpression | <GT> NumericExpression | <LE> NumericExpression | <GE> NumericExpression | <IN> ExpressionList | <NOT_IN> ExpressionList )?
+	RelationalExpression	:=	NumericExpression ( <EQ> NumericExpression | <NE> NumericExpression | <LT> NumericExpression | <GT> NumericExpression | <LE> NumericExpression | <GE> NumericExpression | <IN> ExpressionList | <NOT> <IN> ExpressionList )?
 	NumericExpression	:=	AdditiveExpression
 	AdditiveExpression	:=	MultiplicativeExpression ( <PLUS> MultiplicativeExpression | <MINUS> MultiplicativeExpression | ( NumericLiteralPositive | NumericLiteralNegative ) ( ( <STAR> UnaryExpression ) | ( <SLASH> UnaryExpression ) )? )*
 	MultiplicativeExpression	:=	UnaryExpression ( <STAR> UnaryExpression | <SLASH> UnaryExpression )*

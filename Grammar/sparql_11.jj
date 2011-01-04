@@ -324,13 +324,13 @@ void Update1() : { Update up ; }
     finishUpdateOperation() ;
   }
 }
-Update Load() : { String url ; Node dest = null ; }
+Update Load() : { String url ; Node dest = null ; boolean silent = true ; }
 {
     // Should be +?
     //    <LOAD> ( IRIref() )+
-    <LOAD> url = IRIref()
+    <LOAD> (<SILENT> { silent = true ; })? url = IRIref()
     (<INTO> dest = GraphRef() )?
-    { return new UpdateLoad(url, dest) ; }
+    { return new UpdateLoad(url, dest, silent) ; }
 }
 Update Clear() : { boolean silent = false ; Target target ; }
 {
@@ -1010,7 +1010,7 @@ Expr RelationalExpression() : { Expr expr1, expr2 ; ExprList a ; }
       { expr1 = new E_GreaterThanOrEqual(expr1, expr2) ; }
   | <IN> a = ExpressionList()
       { expr1 = new E_OneOf(expr1, a) ; }
-  | <NOT_IN> a = ExpressionList()
+  | <NOT> <IN> a = ExpressionList()
       { expr1 = new E_NotOneOf(expr1, a) ; }
   )?
     { return expr1 ; }

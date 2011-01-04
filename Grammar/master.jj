@@ -474,18 +474,18 @@ void Update1() : { Update up ; }
 
 }
 
-Update Load() : { String url ; Node dest = null ; }
+Update Load() : { String url ; Node dest = null ; boolean silent = true ; }
 {
     // Should be +?
     //    <LOAD> ( IRIref() )+
-    <LOAD> url = IRIref()
+    <LOAD>  (<SILENT> { silent = true ; })? url = IRIref()
 #ifndef ARQ_UPDATE
     (<INTO> dest = GraphRef() )?
 #else
     { String iri ; }
     (<INTO> (<GRAPH>)? iri = IRIref() { dest = createNode(iri) ; })?
 #endif
-    { return new UpdateLoad(url, dest) ; }
+    { return new UpdateLoad(url, dest, silent) ; }
 }
 
 Update Clear() : { boolean silent = false ; Target target ; }
@@ -894,7 +894,7 @@ Element ExistsElt() : { Element el ; }
 
 Element NotExistsElt() : { Element el ; }
 {
-    <NOTEXISTS>
+    <NOT> <EXISTS>
     el = GroupGraphPattern()
     { return new ElementNotExists(el) ; }
 }
@@ -1433,7 +1433,7 @@ Expr RelationalExpression() : { Expr expr1, expr2 ; ExprList a ; }
       { expr1 = new E_GreaterThanOrEqual(expr1, expr2) ; }
   | <IN> a = ExpressionList()
       { expr1 = new E_OneOf(expr1, a) ; }
-  | <NOT_IN> a = ExpressionList()
+  | <NOT> <IN> a = ExpressionList()
       { expr1 = new E_NotOneOf(expr1, a) ; }
   )?
     { return expr1 ; }
@@ -1722,7 +1722,7 @@ Expr ExistsFunc() : { Element el ; }
 
 Expr NotExistsFunc() : { Element el ; }
 {
-   <NOTEXISTS>
+   <NOT> <EXISTS>
    el = GroupGraphPattern()
    { return createExprNotExists(el) ; }
 }
@@ -1992,7 +1992,7 @@ TOKEN [IGNORE_CASE] :
 #endif
 |  < EXISTS:      "exists" >
 |  < NOT:         "not" >
-|  < NOTEXISTS:   "not" (<WS>)* "exists" >
+//|  < NOTEXISTS:   "not" (<WS>)* "exists" >
 //|  < UNSAID:      "unsaid" >
 |  < AS:          "as" >
 |  < GROUP:       "group" >
@@ -2014,7 +2014,7 @@ TOKEN [IGNORE_CASE] :
 |  < BOUND:       "bound" >
 |  < COALESCE:    "coalesce" >
 |  < IN:          "in" >
-|  < NOT_IN:      "not" (<WS>)* "in" >
+//|  < NOT_IN:      "not" (<WS>)* "in" >
 |  < IF:          "if" >
 |  < BNODE:       "bnode" >
 |  < IRI:         "iri" >

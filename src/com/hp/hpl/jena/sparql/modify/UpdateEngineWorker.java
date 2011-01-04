@@ -139,7 +139,13 @@ class UpdateEngineWorker implements UpdateVisitor
         Node dest = update.getDest() ;
         Graph g = graph(graphStore, dest) ;
         Model model = ModelFactory.createModelForGraph(g) ;
-        FileManager.get().readModel(model, source) ;
+        try {
+            FileManager.get().readModel(model, source) ;
+        } catch (RuntimeException ex)
+        {
+            if ( ! update.getSilent() )
+                throw ex ;
+        }
     }
 
     public void visit(UpdateAdd update)

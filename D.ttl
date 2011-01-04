@@ -5,11 +5,4 @@
 @prefix owl:     <http://www.w3.org/2002/07/owl#> .
 @prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 
-:x :p 123 .
-:y :p 123 .
-
-:x owl:sameAs :x1 .
-:x2 owl:sameAs :x .
-:x1 owl:sameAs :x3 .
-
-
+:x :aprop :y .

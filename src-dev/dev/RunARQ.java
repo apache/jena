@@ -40,6 +40,7 @@ import com.hp.hpl.jena.query.QuerySolutionMap ;
 import com.hp.hpl.jena.query.ResultSetFormatter ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.shared.PrefixMapping ;
+import com.hp.hpl.jena.shared.impl.PrefixMappingImpl ;
 import com.hp.hpl.jena.sparql.ARQConstants ;
 import com.hp.hpl.jena.sparql.ARQException ;
 import com.hp.hpl.jena.sparql.algebra.Algebra ;
@@ -55,6 +56,9 @@ import com.hp.hpl.jena.sparql.function.FunctionEnvBase ;
 import com.hp.hpl.jena.sparql.graph.NodeTransform ;
 import com.hp.hpl.jena.sparql.junit.ScriptTestSuiteFactory ;
 import com.hp.hpl.jena.sparql.junit.SimpleTestRunner ;
+import com.hp.hpl.jena.sparql.path.Path ;
+import com.hp.hpl.jena.sparql.path.PathLib ;
+import com.hp.hpl.jena.sparql.path.PathParser ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.sparql.util.ExprUtils ;
 import com.hp.hpl.jena.sparql.util.FmtUtils ;
@@ -96,6 +100,19 @@ public class RunARQ
     
     public static void main(String[] argv) throws Exception
     {
+        PrefixMapping pmap = new PrefixMappingImpl() ;
+        pmap.setNsPrefix("ex", "http://example/") ;
+        Path path =  PathParser.parse("ex:aprop", pmap) ;
+        PathLib.install("http://example/path", path) ;
+        
+        Query query = QueryFactory.create("PREFIX : <http://example/> SELECT * { ?x :path ?y } ") ;
+        Model model = FileManager.get().loadModel("D.ttl") ;
+        QueryExecution qexec = QueryExecutionFactory.create(query, model) ;
+
+        QueryExecUtils.executeQuery(query, qexec) ;
+        System.exit(0) ;
+        
+        
         arq.qparse.main("--print=op", "--print=query", "--query=Q.arq") ;
         System.exit(0) ;
         
