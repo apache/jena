@@ -69,6 +69,9 @@ import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 /*
  * Rework: layer
+ * 
+ * 
+ * 
  * database - TupleIndex/NodeTable - (Range)Index+seq store - block managers
  * 
  */

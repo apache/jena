@@ -13,6 +13,7 @@ public class DevTDB
     // layers: database - TupleIndex/NodeTable - (Range)Index+seq store.
     // See IndexFactory for bulkloader2
     //    Versions with built-in defaults.
+    // See DatasetGraphMakerTDB etc in sys.
     
     // ---- BulkLoader2
     // Tune sort --buffer-size=50%
