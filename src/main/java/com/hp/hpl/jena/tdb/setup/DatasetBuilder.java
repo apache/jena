@@ -6,8 +6,15 @@
 
 package com.hp.hpl.jena.tdb.setup;
 
+import java.util.Properties ;
+
+import com.hp.hpl.jena.sparql.core.DatasetPrefixStorage ;
+import com.hp.hpl.jena.sparql.engine.optimizer.reorder.ReorderTransformation ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
+import com.hp.hpl.jena.tdb.store.QuadTable ;
+import com.hp.hpl.jena.tdb.store.TripleTable ;
+import com.hp.hpl.jena.tdb.sys.SetupTDB ;
 
 /** This class is the process of building a dataset. 
  *  
@@ -18,14 +25,49 @@ public class DatasetBuilder
     {
         init(location) ;
         
+        TripleTable tripleTable = makeTripleTable(location) ; 
+        QuadTable quadTable = makeQuadTable(location) ;
+        DatasetPrefixStorage prefixes = makePrefixTable(location) ;
+        ReorderTransformation transform  = chooseReorderTransformation(location) ;
+        Properties config = null ; 
+        
+        new DatasetGraphTDB(tripleTable, quadTable, prefixes, transform, location, config) ;
+        
+        
+        
         return null ;
     }
 
+    
     protected void init(Location location)
     {
         
     }
+    
+    // ---- Dataset level
+    protected TripleTable makeTripleTable(Location location)
+    {    
+        return null ;
+    }
+    
+    protected QuadTable makeQuadTable(Location location)
+    {    
+        return null ;
+    }
+
+    protected DatasetPrefixStorage makePrefixTable(Location location)
+    {    
+        return null ;
+    }
+
+    
+    protected ReorderTransformation chooseReorderTransformation(Location location)
+    {    
+        return SetupTDB.chooseOptimizer(location) ;
+    }
 }
+
+
 
 /*
  * (c) Copyright 2011 Epimorphics Ltd.

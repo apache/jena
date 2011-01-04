@@ -12,12 +12,13 @@ public class DevTDB
     // SetupTDB : abstract algorithm and pass in (Range)Index builders
     // layers: database - TupleIndex/NodeTable - (Range)Index+seq store.
     // See IndexFactory for bulkloader2
+    //
     //    Versions with built-in defaults.
-    // See DatasetGraphMakerTDB etc in sys.
     
     // ---- BulkLoader2
     // Tune sort --buffer-size=50%
     // Prefixes to be set during bulk loading 1 & 2
+    // RIOT parser issue?
     
     // BPT
     //  .truncate : release all blocks and create a new (empty) tree. 
