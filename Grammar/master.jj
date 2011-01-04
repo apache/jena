@@ -1927,10 +1927,15 @@ String IRI_REF() : { Token t ; }
 
 SKIP : { " " | "\t" | "\n" | "\r" | "\f" }
 
-TOKEN: { <#WS: " " | "\t" | "\n" | "\r" | "\f"> }
-
 SPECIAL_TOKEN :
 { <SINGLE_LINE_COMMENT: "#" (~["\n","\r"])* ("\n"|"\r"|"\r\n")? > }
+
+TOKEN: { 
+  <#WS: " " | "\t" | "\n" | "\r" | "\f">
+|
+  // Whitespace or comment.
+  <#WSC: <WS> | <SINGLE_LINE_COMMENT> >
+}
 
 // Main tokens */
 
@@ -2000,7 +2005,6 @@ TOKEN [IGNORE_CASE] :
 #endif
 |  < EXISTS:      "exists" >
 |  < NOT:         "not" >
-//|  < NOTEXISTS:   "not" (<WS>)* "exists" >
 //|  < UNSAID:      "unsaid" >
 |  < AS:          "as" >
 |  < GROUP:       "group" >
@@ -2022,7 +2026,6 @@ TOKEN [IGNORE_CASE] :
 |  < BOUND:       "bound" >
 |  < COALESCE:    "coalesce" >
 |  < IN:          "in" >
-//|  < NOT_IN:      "not" (<WS>)* "in" >
 |  < IF:          "if" >
 |  < BNODE:       "bnode" >
 |  < IRI:         "iri" >
@@ -2097,9 +2100,9 @@ TOKEN [IGNORE_CASE] :
 | < INSERT:       "insert">
 | < DELETE:       "delete" >
 
-| < INSERT_DATA:  <INSERT> (<WS>)* <DATA> >
-| < DELETE_DATA:  <DELETE> (<WS>)* <DATA> >
-| < DELETE_WHERE: <DELETE> (<WS>)* <WHERE> >
+| < INSERT_DATA:  <INSERT> (<WSC>)* <DATA> >
+| < DELETE_DATA:  <DELETE> (<WSC>)* <DATA> >
+| < DELETE_WHERE: <DELETE> (<WSC>)* <WHERE> >
 
 #ifdef ARQ_UPDATE
 | < MODIFY:      "modify">

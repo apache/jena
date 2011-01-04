@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -136,38 +137,6 @@ public class Utils
         return sign+tzH_str+":"+tzM_str ;
     }
     
-//    /** Compare two object-things for quality - allow null to be equal to null */
-//    
-//    public static boolean equal(Object obj1, Object obj2)
-//    {
-//        // Don't call this equals because static import does nto work very well with it (looks like local object.equals)
-//        if ( obj1 == obj2) return true ;
-//        if ( obj1 == null )
-//            return obj2 == null ;
-//        // obj1 != null
-//        if ( obj2 == null )
-//            return false ;
-//        return obj1.equals(obj2) ;
-//    }
-//    
-//    /** Do two lists have the same elements? */ 
-//    public static <T> boolean equalsListAsSet(List<T> list1, List<T> list2)
-//    {
-//        return list1.containsAll(list2) && list2.containsAll(list1) ;
-//    }
-//    
-//    
-//    /** HashCode - allow nulls */
-//    public static int hashCodeObject(Object obj) { return hashCodeObject(obj, -4) ; }
-//    
-//    /** HashCode - allow nulls */
-//    public static int hashCodeObject(Object obj, int nullHashCode)
-//    {
-//        if ( obj == null )
-//            return nullHashCode ; 
-//        return obj.hashCode() ;
-//    }
-
     // Java 1.4 .toString == Java 1.5 .toPlainString
     // Java 1.5 .toString => different to .toString 1.4
     // Portable(?!) - round to scale 0 and get the toString
@@ -181,7 +150,15 @@ public class Utils
     
     static public String stringForm(double d)
     { 
-        // SPARQL form always has "e0"
+        if ( Double.isInfinite(d) )
+        {
+            if ( d < 0 ) return "-INF" ; 
+            return "INF" ;
+        }
+
+        if ( Double.isNaN(d) ) return "NaN" ;
+        
+        // Otherwise, SPARQL form always has "e0"
         String x = Double.toString(d) ;
         if ( (x.indexOf('e') != -1) || (x.indexOf('E') != -1) )
             return x ;
@@ -262,6 +239,7 @@ public class Utils
 
 /*
  * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

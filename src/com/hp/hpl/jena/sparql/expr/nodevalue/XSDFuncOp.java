@@ -122,7 +122,7 @@ public class XSDFuncOp
             }
             case OP_DECIMAL:
             {
-                if ( nv2.getDecimal().equals(BigDecimalZero) )
+                if ( nv2.getDecimal().compareTo(BigDecimalZero) == 0 )
                     throw new ExprEvalException("Divide by zero in decimal divide") ;
                 BigDecimal d1 = nv1.getDecimal() ;
                 BigDecimal d2 = nv2.getDecimal() ;

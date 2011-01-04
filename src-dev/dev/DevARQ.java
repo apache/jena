@@ -6,18 +6,10 @@ public class DevARQ
 
     // OutputLangUtils
     
-    // CONSTRUCT - share code with UpdateEngineWorker - 
-    //   pull out the common template substitution code => TemplateLib
-    //   TemplateGroup => QuadAcc => Template
-    //   Loose TemplateGroup and TemplateTriple ; just ElementTripleTemplate 
-    
     // Algebra.asUnionQuery .. to access the functionality
     
     // Path evaluation as per spec.
     
-    // check/sort out setResultVars.
-    // Enable group checking in SyntaxVarScope (causes test failures - fix tests).
-
     // ?? bNode label checks (UPDATE: can't use same bNode label in template and pattern for DELETE/INSERT.)
 
     // Pull up TransformDynamicDataset, TransformGraphRename from TDB.
@@ -35,9 +27,6 @@ public class DevARQ
 
     // <<<< Tasks
 
-    // ** Remove SPARQL/Update submission.
-    //   Simplify code!
-    
     // QueryParseException for updates is confusing.
     //   All QueryException  -> SparqlException or LanguageParseException
     
@@ -87,7 +76,7 @@ public class DevARQ
     //  Hierarchy.
 
     // ---- "ARQ 3"
-    // Minor chnages that vbreak compatible in some way 
+    // Minor changes that break compatible in some way 
     // -- Custom functions
     //   E_Function intercepts at evalSpecial to maintain compatibility.
     //   Should really change Function.eval to strict functions (eval'ed arguments and no binding).   
@@ -95,6 +84,7 @@ public class DevARQ
     // ---- RIOT
     // closing InputStream
     // Bad character encoding - exception but line/col = 1/1
+    //   Feed into the per-byte UTF-8 decoder?
     // Filename in messages.
     // Errors after file name! Print file name once if error.
     // Recovery parsing - scan to DOT?

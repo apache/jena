@@ -100,6 +100,8 @@ public class RunARQ
     
     public static void main(String[] argv) throws Exception
     {
+        arq.qexpr.main("1/0.0e0") ; System.exit(0) ;
+        
         PrefixMapping pmap = new PrefixMappingImpl() ;
         pmap.setNsPrefix("ex", "http://example/") ;
         Path path =  PathParser.parse("ex:aprop", pmap) ;

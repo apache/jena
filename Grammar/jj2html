@@ -413,6 +413,17 @@ sub fixupRule
 	$body = "&nbsp;&nbsp;".$body ;
     }
 
+     if ( $head eq "Aggregate" )
+     {
+	 # Strip outer ()
+	 $body =~ s/^\(\s*(.*)\s*\)$/$1/ ;	
+	 ## Be careful of nested | in COUNT
+ 	 $body =~ s%(\| \<span class="token")%\<br/\>$1%g ;
+ 	 $body =~ s/^\s+// ;
+ 	 $body = "&nbsp;&nbsp;".$body ;
+     }
+
+
     if (  $head eq "BuiltInCall" )
     {
 	# Undo <br/> for BNODE, RAND
@@ -456,6 +467,21 @@ sub fixupRule
     {
 	$body =~ s!\)\s*\|\s*\(!\)<br/>\| \(! ;
 	$body = "  ".$body ;
+    }
+
+    #Rules where an outer () is unnecessary.
+    if ( $head eq "GroupCondition" ||
+	 $head eq "LimitOffsetClauses" ||
+	 $head eq "GraphOrDefault" ||
+	 $head eq "ArgList" ||
+	 $head eq "ExpressionList" ||
+	 $head eq "PathPrimary" ||
+	 $head eq "PathMod" ||
+	 $head eq "PathPrimary" ||
+	 $head eq "PathNegatedPropertySet" || 
+	 $head eq "PathOneInPropertySet")
+    {
+	$body =~ s/^\(\s*(.*)\s*\)$/$1/ ;	
     }
     return $body ;
 }

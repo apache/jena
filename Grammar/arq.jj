@@ -1514,9 +1514,14 @@ String IRI_REF() : { Token t ; }
 // Tokens
 // Comments and whitespace
 SKIP : { " " | "\t" | "\n" | "\r" | "\f" }
-TOKEN: { <#WS: " " | "\t" | "\n" | "\r" | "\f"> }
 SPECIAL_TOKEN :
 { <SINGLE_LINE_COMMENT: "#" (~["\n","\r"])* ("\n"|"\r"|"\r\n")? > }
+TOKEN: {
+  <#WS: " " | "\t" | "\n" | "\r" | "\f">
+|
+  // Whitespace or comment.
+  <#WSC: <WS> | <SINGLE_LINE_COMMENT> >
+}
 // Main tokens */
 TOKEN:
 {
@@ -1573,7 +1578,6 @@ TOKEN [IGNORE_CASE] :
 | < FETCH: "fetch" >
 | < EXISTS: "exists" >
 | < NOT: "not" >
-//|  < NOTEXISTS:   "not" (<WS>)* "exists" >
 //|  < UNSAID:      "unsaid" >
 | < AS: "as" >
 | < GROUP: "group" >
@@ -1593,7 +1597,6 @@ TOKEN [IGNORE_CASE] :
 | < BOUND: "bound" >
 | < COALESCE: "coalesce" >
 | < IN: "in" >
-//|  < NOT_IN:      "not" (<WS>)* "in" >
 | < IF: "if" >
 | < BNODE: "bnode" >
 | < IRI: "iri" >
@@ -1652,9 +1655,9 @@ TOKEN [IGNORE_CASE] :
   < #DATA: "data" >
 | < INSERT: "insert">
 | < DELETE: "delete" >
-| < INSERT_DATA: <INSERT> (<WS>)* <DATA> >
-| < DELETE_DATA: <DELETE> (<WS>)* <DATA> >
-| < DELETE_WHERE: <DELETE> (<WS>)* <WHERE> >
+| < INSERT_DATA: <INSERT> (<WSC>)* <DATA> >
+| < DELETE_DATA: <DELETE> (<WSC>)* <DATA> >
+| < DELETE_WHERE: <DELETE> (<WSC>)* <WHERE> >
 | < MODIFY: "modify">
 | < LOAD: "load" >
 | < CLEAR: "clear" >

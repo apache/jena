@@ -12,12 +12,13 @@ TOKENS
 | "\f"
 }
 
-<DEFAULT> TOKEN : {
-<#WS: " " | "\t" | "\n" | "\r" | "\f">
-}
-
 <DEFAULT> SPECIAL : {
 <SINGLE_LINE_COMMENT: "#" (~["\n","\r"])* ("\n" | "\r" | "\r\n")?>
+}
+
+<DEFAULT> TOKEN : {
+<#WS: " " | "\t" | "\n" | "\r" | "\f">
+| <#WSC: <WS> | <SINGLE_LINE_COMMENT>>
 }
 
 // Main tokens */
@@ -141,9 +142,9 @@ TOKENS
 <#DATA: "data">
 | <INSERT: "insert">
 | <DELETE: "delete">
-| <INSERT_DATA: <INSERT> (<WS>)* <DATA>>
-| <DELETE_DATA: <DELETE> (<WS>)* <DATA>>
-| <DELETE_WHERE: <DELETE> (<WS>)* <WHERE>>
+| <INSERT_DATA: <INSERT> (<WSC>)* <DATA>>
+| <DELETE_DATA: <DELETE> (<WSC>)* <DATA>>
+| <DELETE_WHERE: <DELETE> (<WSC>)* <WHERE>>
 | <LOAD: "load">
 | <CLEAR: "clear">
 | <CREATE: "create">
