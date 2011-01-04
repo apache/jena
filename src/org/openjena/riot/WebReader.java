@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 Epimorphics Ltd.
+ * (c) Copyright 2010, 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -24,18 +24,19 @@ import java.io.InputStream ;
 import java.util.HashMap ;
 import java.util.Map ;
 
+import org.openjena.atlas.lib.Sink ;
+import org.openjena.atlas.web.TypedInputStream ;
+
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.util.FileManager ;
+import com.hp.hpl.jena.sparql.core.Quad ;
 
 /** Retrieve data from the web */
 public class WebReader
 {
-    // Other ops:
-    // read from StringWriter
-    // set the base.
-    
+    /* where file are "on the web" */
+
     // Reuse FileManager and LocationMapper.
     public static void readGraph(Graph graph, String uri)
     {
@@ -45,96 +46,86 @@ public class WebReader
     
     public static void readGraph(Graph graph, String uri, Lang lang)
     {
-        // file:
-        
-        //FileManager.get().open(uri) ;
-        // Open URI -> TypedInputStream
-        InputStream inputStream = null ;
-        // Find ContentType.
-        String contentType = null ;
-        // Final decision.
-        
-        // Or Lang?
+        TypedInputStream typedInput = open(uri, lang) ;
+        String contentType = typedInput.getMediaType() ;
         lang = chooseLang(contentType, lang) ;
+
+        if ( lang == null )
+            throw new RiotException("Can't determine the syntax of <"+uri+"> (media type="+typedInput.getMediaType()+")") ;
         
-        // Choose reader - include lang in decision.
-        
-        SinkTriplesFactory factory = readerTriplesMap.get(contentType.toLowerCase()) ;
-        Process<Triple> processor = factory.create(contentType) ;
-        processor.parse(inputStream) ;
+        Sink<Triple> sink = RiotLoader.graphSink(graph) ;
+        RiotLoader.readTriples(typedInput, lang, uri, sink) ;
     }
 
     
     static private Lang chooseLang(String contentType, Lang lang)
     {
-        return null ; //contentType ;
+        contentType = contentType.toLowerCase() ;
+        return contentTypeToLang.get(contentType) ;
     }
     
-    public static void readDataset(DatasetGraph graph, String uri)
+    public static void readDataset(DatasetGraph dataset, String uri)
     {
-        
+        Lang lang = Lang.guess(uri) ;
+        readDataset(dataset, uri, lang) ;
     }
     
-    public static void readDataset(DatasetGraph graph, String uri, Lang lang)
+    public static void readDataset(DatasetGraph dataset, String uri, Lang lang)
     {
-        
-    }
-    
-    // -----------------------
-    
-    static public void addReader(String contentType, SinkTriplesFactory implFactory) {}
-    
-    
-    // -----------------------
+        TypedInputStream typedInput = open(uri, lang) ;
+        String contentType = typedInput.getMediaType() ;
+        lang = chooseLang(contentType, lang) ;
 
+        if ( lang == null )
+            throw new RiotException("Can't determine the syntax of <"+uri+"> (media type="+typedInput.getMediaType()+")") ;
+        
+        Sink<Quad> sink = RiotLoader.datasetSink(dataset) ;
+        RiotLoader.readQuads(typedInput, lang, uri, sink) ;
+    }
+    
+    private static TypedInputStream open(String uri, Lang lang)
+    {
+        // **** A FileManager that deals in TypedStreams properly (copy/rewrite)
+        return new TypedInputStream(null, null/*Content-Type*/, null/*charset*/) ;
+    }
+    
+    // -----------------------
+    // Extensibility.
     interface Process<T> { void parse(InputStream inputStream) ; }
     // Name?
     interface SinkTriplesFactory { Process<Triple> create(String contentType) ; } 
+    static public void addReader(String contentType, SinkTriplesFactory implFactory) {}
+
+    // -----------------------
 
     // No need for this - use content type to get lang.
     
-    /** Content type to sink factory for triples */ 
-    static Map<String, SinkTriplesFactory> readerTriplesMap = new HashMap<String, SinkTriplesFactory>() ;
+    /** Media type name to language */ 
+    static Map<String, Lang> contentTypeToLang = new HashMap<String, Lang>() ;
     static {
-        readerTriplesMap.put(contentTypeN3.toLowerCase(), null) ;
-        readerTriplesMap.put(contentTypeN3Alt1.toLowerCase(), null) ;
-        readerTriplesMap.put(contentTypeN3Alt2.toLowerCase(), null) ;
+        contentTypeToLang.put(contentTypeN3.toLowerCase(), Lang.N3) ;
+        contentTypeToLang.put(contentTypeN3Alt1.toLowerCase(), Lang.N3) ;
+        contentTypeToLang.put(contentTypeN3Alt2.toLowerCase(), Lang.N3) ;
 
-        readerTriplesMap.put(contentTypeTurtle1.toLowerCase(), null) ;
-        readerTriplesMap.put(contentTypeTurtle2.toLowerCase(), null) ;
-        readerTriplesMap.put(contentTypeTurtle3.toLowerCase(), null) ;
+        contentTypeToLang.put(contentTypeTurtle1.toLowerCase(), Lang.TURTLE) ;
+        contentTypeToLang.put(contentTypeTurtle2.toLowerCase(), Lang.TURTLE) ;
+        contentTypeToLang.put(contentTypeTurtle3.toLowerCase(), Lang.TURTLE) ;
 
-        readerTriplesMap.put(contentTypeRDFXML.toLowerCase(), null) ;
+        contentTypeToLang.put(contentTypeNTriples.toLowerCase(), Lang.NTRIPLES) ;
+        contentTypeToLang.put(contentTypeNTriplesAlt.toLowerCase(), Lang.NTRIPLES) ;
+        
+        contentTypeToLang.put(contentTypeRDFXML.toLowerCase(), Lang.RDFXML) ;
+        
+        contentTypeToLang.put(contentTypeTriG.toLowerCase(), Lang.TRIG) ;
+        contentTypeToLang.put(contentTypeTriGAlt.toLowerCase(), Lang.TRIG) ;
+
+        contentTypeToLang.put(contentTypeNQuads.toLowerCase(), Lang.NQUADS) ;
+        contentTypeToLang.put(contentTypeNQuadsAlt.toLowerCase(), Lang.NQUADS) ;
     }
-
-    interface SinkQuadsFactory {} 
-
-    /** Content type to sink factory for quads */ 
-    static Map<String, SinkQuadsFactory> readerQuadsMap = new HashMap<String, SinkQuadsFactory>() ;
-
-    static {
-        readerQuadsMap.put(contentTypeNTriples.toLowerCase(), null) ;
-        readerQuadsMap.put(contentTypeNTriplesAlt.toLowerCase(), null) ;
-
-        readerQuadsMap.put(contentTypeTriG.toLowerCase(), null) ;
-        readerQuadsMap.put(contentTypeTriGAlt.toLowerCase(), null) ;
-
-        readerQuadsMap.put(contentTypeNQuads.toLowerCase(), null) ;
-        readerQuadsMap.put(contentTypeNQuadsAlt.toLowerCase(), null) ;
-    }
-
-    //public static content
-    
-    // Lang.guess 
-    
-    // open(Name) -> types stream.
-    //   files by ext
-    //   c.f FileManager
-    
 }
 
 /*
- * (c) Copyright 2010 Epimorphics Ltd.
+ * (c) Copyright 2010, 2011 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
