@@ -7,14 +7,13 @@
 package org.openjena.fuseki.servlets;
 
 import java.io.IOException ;
-import java.io.OutputStream ;
 
 import javax.servlet.ServletOutputStream ;
 import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
-import org.openjena.atlas.io.IO ;
 import org.openjena.fuseki.DEF ;
+import org.openjena.fuseki.Fuseki ;
 import org.openjena.fuseki.FusekiException ;
 import org.openjena.fuseki.FusekiLib ;
 import org.openjena.fuseki.HttpNames ;
@@ -32,7 +31,6 @@ import com.hp.hpl.jena.query.ResultSet ;
 import com.hp.hpl.jena.query.ResultSetFormatter ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.RDFWriter ;
-import com.hp.hpl.jena.shared.JenaException ;
 import com.hp.hpl.jena.xmloutput.RDFXMLWriterI ;
 
 /** This is the content negotiation for each kind of SPARQL query result */ 
@@ -57,8 +55,16 @@ public class ResponseQuery
         String writerMimeType = mimeType ;
         
         if ( mimeType == null )
-            // LOG ME
-            SPARQL_ServletBase.error(HttpSC.NOT_ACCEPTABLE_406, "") ;
+        {
+            Fuseki.serverlog.warn("Can't find MIME type for response") ;
+            String x = request.getHeader("Accept") ;
+            String msg ;
+            if ( x == null )
+                msg = "No Accept: header" ;
+            else
+                msg = "Accept: "+x+" : Not understood" ;
+            SPARQL_ServletBase.error(HttpSC.NOT_ACCEPTABLE_406, msg) ;
+        }
         
         TypedInputStream ts = new TypedInputStream(null, mimeType, WebContent.charsetUTF8) ;
         Lang lang = FusekiLib.langFromContentType(ts.getMediaType()) ; 
@@ -67,23 +73,23 @@ public class ResponseQuery
         if ( rdfw instanceof RDFXMLWriterI )
             rdfw.setProperty("showXmlDeclaration", "true") ;
         
-        // TODO Allow a mode of write to buffer (memory, disk), write buffer later.
-        // Time/space tradeoff.
-        try {
-            OutputStream out = new NullOutputStream() ;
-            rdfw.write(model, out, null) ;
-            IO.flush(out) ;
-        } catch (JenaException ex)
-        {
-            SPARQL_ServletBase.errorOccurred(ex) ;
-        }
+//        // Write locally to check it's possible.
+//        // Time/space tradeoff.
+//        try {
+//            OutputStream out = new NullOutputStream() ;
+//            rdfw.write(model, out, null) ;
+//            IO.flush(out) ;
+//        } catch (JenaException ex)
+//        {
+//            SPARQL_ServletBase.errorOccurred(ex) ;
+//        }
         
         // Managed to write it locally
         try {
             rdfw.write(model, response.getOutputStream(), null) ;
             response.getOutputStream().flush() ;
         }
-        catch (IOException ex) { SPARQL_ServletBase.errorOccurred(ex) ; }
+        catch (Exception ex) { SPARQL_ServletBase.errorOccurred(ex) ; }
     }
     
     // One or the other argument must be null
@@ -100,68 +106,29 @@ public class ResponseQuery
             log.warn("doResponseResult: Both result set and boolean result are set") ; 
             throw new FusekiException("Both result set and boolean result are set") ;
         }
-        
+
+        // Content negotiation
         String mimeType = null ; 
         MediaType i = ConNeg.chooseContentType(request, DEF.rsOffer, DEF.acceptRSXML) ;
         if ( i != null )
             mimeType = i.getContentType() ;
         
-        // TODO Stylesheet.
-        
+        // Override content type
         // Does &output= override?
         // Requested output type by the web form or &output= in the request.
-        // Overrides content negotiation. 
         String outputField = paramOutput(request) ;    // Expands short names
         if ( outputField != null )
             mimeType = outputField ;
         
-        String serializationType = mimeType ;           // Chosoe the serializer based on this.
+        String serializationType = mimeType ;           // Choose the serializer based on this.
         String contentType = mimeType ;                 // Set the HTTP respose header to this.
              
-        String x = paramForceAccept(request) ;
-        
-        // Force text.
-        
-//        if ( outputField != null ) 
-//        {
-//            serializationType = 
-//            if ( outputField.equals("json") || outputField.equals(Joseki.contentTypeResultsJSON) )
-//            {
-//                serializationType = Joseki.contentTypeResultsJSON ;
-//                contentType = Joseki.contentTypeResultsJSON ;
-//            }
-//            if ( outputField.equals("xml") || outputField.equals(Joseki.contentTypeResultsXML) )
-//            {
-//                serializationType = Joseki.contentTypeResultsXML ;
-//                contentType = Joseki.contentTypeResultsXML ;
-//            }
-//            if ( outputField.equals("text") || outputField.equals(Joseki.contentTypeTextPlain) )
-//            {
-//                serializationType = Joseki.contentTypeTextPlain ;
-//                contentType = Joseki.contentTypeTextPlain ;
-//            }
-//            
-//            if ( outputField.equals("csv") || outputField.equals(Joseki.contentTypeTextCSV) )
-//            {
-//                serializationType = Joseki.contentTypeTextCSV ;
-//                contentType = Joseki.contentTypeTextCSV ;
-//            }
-//
-//            if ( outputField.equals("tsv") || outputField.equals(Joseki.contentTypeTextTSV) )
-//            {
-//                serializationType = Joseki.contentTypeTextTSV ;
-//                contentType = Joseki.contentTypeTextTSV ;
-//            }
-//
-//        }
-
-        // ---- Step 4: Style sheet - change to application/xml.
+        // Stylesheet - change to application/xml.
         final String stylesheetURL = paramStylesheet(request) ;
         if ( stylesheetURL != null && serializationType.equals(WebContent.contentTypeResultsXML))
             contentType = WebContent.contentTypeXML ;
         
-        
-        // ---- Step 5: text/plain?
+        // Force to text/plain?
         String forceAccept = paramForceAccept(request) ;
         if ( forceAccept != null )
             contentType = forceAccept ;

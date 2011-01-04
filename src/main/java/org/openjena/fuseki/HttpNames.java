@@ -21,13 +21,15 @@ public class HttpNames
     public static final String hContentType         = "Content-Type" ;
     public static final String hServer              = "Server" ;
     public static final String hLocation            = "Location" ; 
+    public static final String charset              = "charset" ;
+    
 
     
     // CORS: 
     //   http://www.w3.org/TR/cors/  http://esw.w3.org/CORS_Enabled
     public static final String hAccessControlAllowOrigin = "Access-Control-Allow-Origin" ;
     
-
+    // Fuseki parameter names 
     public static final String paramGraph           = "graph" ;
     public static final String paramGraphDefault    = "default" ;
 
@@ -43,8 +45,6 @@ public class HttpNames
     public static final String paramCallback        = "callback" ;
     public static final String paramForceAccept     = "force-accept" ;  // Force the accept header at the last moment 
     public static final String paramRequest         = "request" ; 
-    
-    public static final String charset              = "charset" ;
     
     
     public static final String METHOD_DELETE        = "DELETE";

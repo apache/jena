@@ -58,11 +58,11 @@ public class MediaRange extends MediaType
         }
     }
 
-    protected MediaRange(String type, String subtype)
-    {  
-        super(type, subtype) ;  
-        set_q() ;
-    }
+//    protected MediaRange(String type, String subtype)
+//    {  
+//        super(type, subtype) ;  
+//        set_q() ;
+//    }
     
     public boolean accepts(MediaType item)
     {

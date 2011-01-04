@@ -5,6 +5,9 @@ public class DevFuseki
     // Testing:
     //   No file -> error.
     
+    // Remove package conneg - use code from ARQ/Atlas.
+    // TypedStream TypedInoputStrea, TypedOutputStream, MediaType, MediaRange
+    
     // Bundle tdb scripts with Fuseki.
 
     // Error messages as text plain.

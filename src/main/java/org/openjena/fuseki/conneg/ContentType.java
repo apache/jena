@@ -8,7 +8,9 @@ package org.openjena.fuseki.conneg;
 
 import org.openjena.fuseki.HttpNames ;
 
-/** Content Type - TEMPORARY */
+/** Content Type - Parsed version of HTTP headers involving one  Content Type.
+ * @see MediaRange
+ */
 public class ContentType
 {
     // => MediaType and add a map.

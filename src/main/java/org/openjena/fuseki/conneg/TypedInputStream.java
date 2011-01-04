@@ -14,7 +14,7 @@ public class TypedInputStream extends FilterInputStream
     private MediaType mediaType = null ;
     
     public TypedInputStream(InputStream in)
-    { this(in, null) ; }
+    { this(in, null, null) ; }
     
     public TypedInputStream(InputStream in, MediaType mediaType)
     {
@@ -24,7 +24,8 @@ public class TypedInputStream extends FilterInputStream
     
     public TypedInputStream(InputStream in, String mediaType, String charset)
     {
-        this(in) ;
+        super(in) ;
+        
         this.mediaType = MediaType.create(mediaType, charset) ;
     }
     

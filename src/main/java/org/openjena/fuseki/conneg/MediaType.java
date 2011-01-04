@@ -41,12 +41,12 @@ public class MediaType
         parseOneEntry(string) ;
     }
     
-    /** Create a media type from type and subType */
-    protected MediaType(String type, String subType)
-    {
-        this.type = type ;
-        this.subType = subType ;
-    }
+//    /** Create a media type from type and subType */
+//    protected MediaType(String type, String subType)
+//    {
+//        this.type = type ;
+//        this.subType = subType ;
+//    }
 
     public static MediaType create(String contentType, String charset)
     {

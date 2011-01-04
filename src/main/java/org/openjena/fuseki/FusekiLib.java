@@ -48,8 +48,6 @@ public class FusekiLib
     }
     // ---- 
 
-    // TODO Replace with a MediaType parser.
-    
     public static ContentType contentType(HttpServletRequest request)
     {
         return contentType(request.getHeader(HttpNames.hContentType)) ;
