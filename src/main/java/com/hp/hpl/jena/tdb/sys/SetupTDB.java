@@ -314,7 +314,7 @@ public class SetupTDB
         
         TupleIndex quadIndexes[] = makeTupleIndexes(location, config, primary, indexes, indexes) ;
         if ( quadIndexes.length != indexes.length )
-            SetupTDB.error(log, "Wrong number of triple table tuples indexes: "+quadIndexes.length) ;
+            SetupTDB.error(log, "Wrong number of quad table tuples indexes: "+quadIndexes.length) ;
         QuadTable quadTable = new QuadTable(quadIndexes, nodeTable) ;
         metafile.flush() ;
         return quadTable ;
