@@ -62,10 +62,10 @@ public class DatasetBuilderStd implements DatasetBuilder
     
     Builders.BlockMgrBuilder blockMgrBuilder = new BlockMgrBuilderStd(SystemTDB.BlockSize) ;
     
-    Builders.ObjectFileBuilder objectFileBuilder ;
+    Builders.ObjectFileBuilder objectFileBuilder = new ObjectFileBuilderStd() ;
 
-    Builders.IndexBuilder indexBuilder ;
-    Builders.RangeIndexBuilder rangeIndexBuilder ;
+    Builders.IndexBuilder indexBuilder = new IndexBuilderStd() ;        // WRITE ME!
+    Builders.RangeIndexBuilder rangeIndexBuilder = new RangeIndexBuilderStd() ;
     
     Builders.NodeTableBuilder nodeTableBuilder = new NodeTableBuilderStd(indexBuilder, objectFileBuilder) ;
     
@@ -300,6 +300,22 @@ public class DatasetBuilderStd implements DatasetBuilder
     
     // ----
     
+    static class IndexBuilderStd implements Builders.IndexBuilder
+    {
+        public Index buildIndex(FileSet fileSet)
+        {
+            return null ;
+        }
+    }
+    
+    static class RangeIndexBuilderStd implements Builders.RangeIndexBuilder
+    {
+        public RangeIndex buildRangeIndex(FileSet fileSet)
+        {
+            return null ;
+        }
+    }
+
     static class ObjectFileBuilderStd implements Builders.ObjectFileBuilder
     {
         public ObjectFile buildObjectFile(FileSet fileSet, String ext)
