@@ -19,6 +19,9 @@ import com.hp.hpl.jena.sparql.core.DatasetPrefixStorage ;
 import com.hp.hpl.jena.sparql.engine.optimizer.reorder.ReorderTransformation ;
 import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.TDBException ;
+import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
+import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory ;
+import com.hp.hpl.jena.tdb.base.file.FileFactory ;
 import com.hp.hpl.jena.tdb.base.file.FileSet ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.base.file.MetaFile ;
@@ -57,7 +60,7 @@ public class DatasetBuilderStd implements DatasetBuilder
         return singleton.build(location, null) ;  
     }
     
-    Builders.BlockMgrBuilder blockMgrBuilder ;
+    Builders.BlockMgrBuilder blockMgrBuilder = new BlockMgrBuilderStd(SystemTDB.BlockSize) ;
     
     Builders.ObjectFileBuilder objectFileBuilder ;
 
@@ -280,7 +283,7 @@ public class DatasetBuilderStd implements DatasetBuilder
         public NodeTable buildNodeTable(FileSet fsIndex, FileSet fsObjectFile, int sizeNode2NodeIdCache, int sizeNodeId2NodeCache)
         {
             Index idx = indexBuilder.buildIndex(fsIndex) ;
-            ObjectFile objectFile = objectFileBuilder.buildObjectFile(fsObjectFile) ;
+            ObjectFile objectFile = objectFileBuilder.buildObjectFile(fsObjectFile, Names.extNodeData) ;
             NodeTable nodeTable = new NodeTableNative(idx, objectFile) ;
             nodeTable = NodeTableCache.create(nodeTable, sizeNode2NodeIdCache, sizeNodeId2NodeCache) ;
             nodeTable = NodeTableInline.create(nodeTable) ;
@@ -296,6 +299,39 @@ public class DatasetBuilderStd implements DatasetBuilder
     }
     
     // ----
+    
+    static class ObjectFileBuilderStd implements Builders.ObjectFileBuilder
+    {
+        public ObjectFile buildObjectFile(FileSet fileSet, String ext)
+        {
+            if ( fileSet.isMem() )
+                return FileFactory.createObjectFileMem() ;
+            String filename = fileSet.filename(ext) ;
+            return FileFactory.createObjectFileDisk(filename) ;
+        }
+    }
+    
+    static class BlockMgrBuilderStd implements Builders.BlockMgrBuilder
+    {
+        
+        private int blockSize ;
+
+        public BlockMgrBuilderStd(int blockSize) { this.blockSize = blockSize ; }
+
+        public BlockMgr buildBlockMgr(Location location, String name)
+        {
+            //int readCacheSize = PropertyUtils.getPropertyAsInteger(config, Names.pBlockReadCacheSize) ;
+            //int writeCacheSize = PropertyUtils.getPropertyAsInteger(config, Names.pBlockWriteCacheSize) ;
+            
+            int readCacheSize = SystemTDB.BlockReadCacheSize ;
+            int writeCacheSize = SystemTDB.BlockWriteCacheSize ;
+            FileSet fs = new FileSet(location, name) ;
+            
+            BlockMgr mgr = BlockMgrFactory.create(fs, null, blockSize, readCacheSize, writeCacheSize) ;
+            return mgr ;
+        }
+        
+    }
 }
 
 

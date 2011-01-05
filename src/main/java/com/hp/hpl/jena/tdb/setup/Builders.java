@@ -17,9 +17,6 @@ import com.hp.hpl.jena.tdb.index.RangeIndex ;
 import com.hp.hpl.jena.tdb.index.TupleIndex ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable ;
-import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
-import com.hp.hpl.jena.tdb.store.QuadTable ;
-import com.hp.hpl.jena.tdb.store.TripleTable ;
 
 public class Builders
 {
@@ -60,7 +57,7 @@ public class Builders
     }
     
     interface ObjectFileBuilder {
-        ObjectFile buildObjectFile(FileSet fileSet) ;
+        ObjectFile buildObjectFile(FileSet fileSet, String ext) ;
     }
 }
 
