@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.setup;
+package setup;
 
 import java.util.Properties ;
 

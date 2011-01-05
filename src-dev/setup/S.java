@@ -6,7 +6,7 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.setup ;
+package setup ;
 
 import static com.hp.hpl.jena.tdb.TDB.logInfo ;
 import static com.hp.hpl.jena.tdb.sys.SystemTDB.BlockReadCacheSize ;

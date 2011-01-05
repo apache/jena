@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.setup;
+package setup;
 
 import org.openjena.atlas.lib.ColumnMap ;
 
@@ -12,6 +12,7 @@ import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
 import com.hp.hpl.jena.tdb.base.file.FileSet ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile ;
+import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
 import com.hp.hpl.jena.tdb.index.Index ;
 import com.hp.hpl.jena.tdb.index.RangeIndex ;
 import com.hp.hpl.jena.tdb.index.TupleIndex ;
@@ -44,11 +45,11 @@ public class Builders
     }
     
     interface RangeIndexBuilder {
-        RangeIndex buildRangeIndex(FileSet fileSet) ;
+        RangeIndex buildRangeIndex(FileSet fileSet, RecordFactory recordfactory) ;
     }
     
     interface IndexBuilder {
-        Index buildIndex(FileSet fileSet) ;
+        Index buildIndex(FileSet fileSet, RecordFactory recordfactory) ;
     }
     
     interface BlockMgrBuilder {

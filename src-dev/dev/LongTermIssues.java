@@ -28,5 +28,7 @@ public class LongTermIssues
     /*  
      * Binary node table.
      */
+    
+    /* prefixes index to be called "GPU", not "prefixIdx" (for consistency) */  
 }
 

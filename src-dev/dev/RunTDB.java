@@ -8,7 +8,11 @@
 
 package dev;
 
+import com.hp.hpl.jena.tdb.TDB ;
+import com.hp.hpl.jena.tdb.base.file.Location ;
+
 import org.openjena.atlas.logging.Log ;
+import setup.DatasetBuilderStd ;
 
 public class RunTDB
 {
@@ -24,6 +28,12 @@ public class RunTDB
 
     public static void main(String[] args) throws Exception
     {
+        // New setup
+        
+        DatasetBuilderStd.build(new Location("DB1")) ;
+        TDB.closedown() ;
+        System.exit(0) ;
+        
         
         tdb.tdbstats.main("--loc=DB", "--graph=urn:x-arq:UnionGraph") ; System.exit(0) ;
         

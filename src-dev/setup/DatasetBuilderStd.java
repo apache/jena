@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.setup;
+package setup;
 
 import static com.hp.hpl.jena.tdb.sys.SystemTDB.SizeOfNodeId ;
 
@@ -12,8 +12,14 @@ import java.util.Properties ;
 
 import org.openjena.atlas.lib.ColumnMap ;
 import org.openjena.atlas.lib.NotImplemented ;
+import org.openjena.atlas.lib.PropertyUtils ;
 import org.openjena.atlas.lib.StrUtils ;
 import org.slf4j.Logger ;
+import setup.Builders.BlockMgrBuilder ;
+import setup.Builders.IndexBuilder ;
+import setup.Builders.ObjectFileBuilder ;
+import setup.Builders.RangeIndexBuilder ;
+import setup.DatasetBuilderStd.RangeIndexBuilderStd ;
 
 import com.hp.hpl.jena.sparql.core.DatasetPrefixStorage ;
 import com.hp.hpl.jena.sparql.engine.optimizer.reorder.ReorderTransformation ;
@@ -31,14 +37,13 @@ import com.hp.hpl.jena.tdb.index.Index ;
 import com.hp.hpl.jena.tdb.index.RangeIndex ;
 import com.hp.hpl.jena.tdb.index.TupleIndex ;
 import com.hp.hpl.jena.tdb.index.TupleIndexRecord ;
+import com.hp.hpl.jena.tdb.index.bplustree.BPlusTree ;
+import com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTableCache ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTableInline ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTableNative ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable ;
-import com.hp.hpl.jena.tdb.setup.Builders.IndexBuilder ;
-import com.hp.hpl.jena.tdb.setup.Builders.ObjectFileBuilder ;
-import com.hp.hpl.jena.tdb.setup.Builders.RangeIndexBuilder ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.store.DatasetPrefixesTDB ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
@@ -52,6 +57,9 @@ import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 public class DatasetBuilderStd implements DatasetBuilder
 {
+    // TODO Separate out static for general creation purposes (a super factory)
+    // Prefix indx name chnage chaged to "GPU", not "prefixIdx" << Incompatibility
+    
     private static final Logger log = TDB.logInfo ;
     private static DatasetBuilderStd singleton = new DatasetBuilderStd() ;
     
@@ -64,8 +72,8 @@ public class DatasetBuilderStd implements DatasetBuilder
     
     Builders.ObjectFileBuilder objectFileBuilder = new ObjectFileBuilderStd() ;
 
-    Builders.IndexBuilder indexBuilder = new IndexBuilderStd() ;        // WRITE ME!
-    Builders.RangeIndexBuilder rangeIndexBuilder = new RangeIndexBuilderStd() ;
+    Builders.IndexBuilder indexBuilder = new IndexBuilderStd(blockMgrBuilder, blockMgrBuilder) ;
+    Builders.RangeIndexBuilder rangeIndexBuilder = new RangeIndexBuilderStd(blockMgrBuilder, blockMgrBuilder) ;
     
     Builders.NodeTableBuilder nodeTableBuilder = new NodeTableBuilderStd(indexBuilder, objectFileBuilder) ;
     
@@ -79,6 +87,7 @@ public class DatasetBuilderStd implements DatasetBuilder
         this.config = config ;
         init(location) ;
         
+        // No reverse index:
         NodeTable nodeTable = makeNodeTable(location, 
                                             Names.indexNode2Id, Names.indexId2Node,
                                             SystemTDB.Node2NodeIdCacheSize, SystemTDB.NodeId2NodeCacheSize) ;
@@ -251,7 +260,7 @@ public class DatasetBuilderStd implements DatasetBuilder
         {
             RecordFactory recordFactory = new RecordFactory(SizeOfNodeId*colMap.length(),0) ;
             
-            RangeIndex rIdx = rangeIndexBuilder.buildRangeIndex(fileSet) ;
+            RangeIndex rIdx = rangeIndexBuilder.buildRangeIndex(fileSet, recordFactory) ;
             TupleIndex tIdx = new TupleIndexRecord(colMap.length(), colMap, recordFactory, rIdx) ;
             return tIdx ;
         }
@@ -282,7 +291,8 @@ public class DatasetBuilderStd implements DatasetBuilder
         
         public NodeTable buildNodeTable(FileSet fsIndex, FileSet fsObjectFile, int sizeNode2NodeIdCache, int sizeNodeId2NodeCache)
         {
-            Index idx = indexBuilder.buildIndex(fsIndex) ;
+            RecordFactory recordFactory = new RecordFactory(SystemTDB.LenNodeHash, SystemTDB.SizeOfNodeId) ;
+            Index idx = indexBuilder.buildIndex(fsIndex, recordFactory) ;
             ObjectFile objectFile = objectFileBuilder.buildObjectFile(fsObjectFile, Names.extNodeData) ;
             NodeTable nodeTable = new NodeTableNative(idx, objectFile) ;
             nodeTable = NodeTableCache.create(nodeTable, sizeNode2NodeIdCache, sizeNodeId2NodeCache) ;
@@ -290,32 +300,110 @@ public class DatasetBuilderStd implements DatasetBuilder
             return nodeTable ;
         }
     }
-
-    public static void error(Logger log, String msg)
-    {
-        if ( log != null )
-            log.error(msg) ;
-        throw new TDBException(msg) ;
-    }
-    
     // ----
     
     static class IndexBuilderStd implements Builders.IndexBuilder
     {
-        public Index buildIndex(FileSet fileSet)
+        private BlockMgrBuilder bMgr1 ;
+        private BlockMgrBuilder bMgr2 ;
+        private RangeIndexBuilderStd other ;
+
+        public IndexBuilderStd(Builders.BlockMgrBuilder bMgr1, Builders.BlockMgrBuilder bMgr2)
         {
-            return null ;
+            this.bMgr1 = bMgr1 ;
+            this.bMgr2 = bMgr2 ;
+            this.other = new RangeIndexBuilderStd(bMgr1, bMgr2) ;
+        }
+        
+        public Index buildIndex(FileSet fileSet, RecordFactory recordFactory)
+        {
+            // Cheap.
+            return other.buildRangeIndex(fileSet, recordFactory) ;
         }
     }
     
     static class RangeIndexBuilderStd implements Builders.RangeIndexBuilder
     {
-        public RangeIndex buildRangeIndex(FileSet fileSet)
+        private BlockMgrBuilder bMgr1 ;
+        private BlockMgrBuilder bMgr2 ;
+        public RangeIndexBuilderStd(Builders.BlockMgrBuilder bMgr1, Builders.BlockMgrBuilder bMgr2)
         {
-            return null ;
+            this.bMgr1 = bMgr1 ;
+            this.bMgr2 = bMgr2 ;
+        }
+        
+        public RangeIndex buildRangeIndex(FileSet fileSet, RecordFactory recordFactory)
+        {
+            // TODO WRITE ME
+            return makeBPlusTree(fileSet, recordFactory) ;
         }
     }
 
+    public static RangeIndex makeBPlusTree(FileSet fs, RecordFactory recordFactory)
+    {
+        // ---- BPlusTree
+        // Get parameters.
+        /*
+         * tdb.bplustree.record=24,0
+         * tdb.bplustree.blksize=
+         * tdb.bplustree.order=
+         */
+        
+        MetaFile metafile = fs.getMetaFile() ;
+        //RecordFactory recordFactory = new RecordFactory(keyLength, valueLength) ; // makeRecordFactory(metafile, "tdb.bplustree.record", dftKeyLength, dftValueLength) ;
+        
+        String blkSizeStr = metafile.getOrSetDefault("tdb.bplustree.blksize", Integer.toString(SystemTDB.BlockSize)) ; 
+        int blkSize = S.parseInt(blkSizeStr, "Bad block size") ;
+        
+        // IndexBuilder.getBPlusTree().newRangeIndex(fs, recordFactory) ;
+        // Does not set order.
+        
+        int calcOrder = BPlusTreeParams.calcOrder(blkSize, recordFactory.recordLength()) ;
+        String orderStr = metafile.getOrSetDefault("tdb.bplustree.order", Integer.toString(calcOrder)) ;
+        int order = parseInt(orderStr, "Bad order for B+Tree") ;
+        if ( order != calcOrder )
+            error(log, "Wrong order (" + order + "), calculated = "+calcOrder) ;
+
+//        int readCacheSize = PropertyUtils.getPropertyAsInteger(config, Names.pBlockReadCacheSize) ;
+//        int writeCacheSize = PropertyUtils.getPropertyAsInteger(config, Names.pBlockWriteCacheSize) ;
+
+        int readCacheSize = SystemTDB.BlockReadCacheSize ;
+        int writeCacheSize = SystemTDB.BlockWriteCacheSize ;
+        
+        RangeIndex rIndex = createBPTree(fs, order, blkSize, readCacheSize, writeCacheSize, recordFactory) ;
+        metafile.flush() ;
+        return rIndex ;
+    }
+    
+    /** Knowing all the parameters, create a B+Tree */
+    public static RangeIndex createBPTree(FileSet fileset, int order, 
+                                          int blockSize,
+                                          int readCacheSize, int writeCacheSize,
+                                          RecordFactory factory)
+    {
+        // ---- Checking
+        if (blockSize < 0 && order < 0) throw new IllegalArgumentException("Neither blocksize nor order specified") ;
+        if (blockSize >= 0 && order < 0) order = BPlusTreeParams.calcOrder(blockSize, factory.recordLength()) ;
+        if (blockSize >= 0 && order >= 0)
+        {
+            int order2 = BPlusTreeParams.calcOrder(blockSize, factory.recordLength()) ;
+            if (order != order2) throw new IllegalArgumentException("Wrong order (" + order + "), calculated = "
+                                                                    + order2) ;
+        }
+    
+        // Iffy - does not allow for slop.
+        if (blockSize < 0 && order >= 0)
+        {
+            // Only in-memory.
+            blockSize = BPlusTreeParams.calcBlockSize(order, factory) ;
+        }
+    
+        BPlusTreeParams params = new BPlusTreeParams(order, factory) ;
+        BlockMgr blkMgrNodes = BlockMgrFactory.create(fileset, Names.bptExt1, blockSize, readCacheSize, writeCacheSize) ;
+        BlockMgr blkMgrRecords = BlockMgrFactory.create(fileset, Names.bptExt2, blockSize, readCacheSize, writeCacheSize) ;
+        return BPlusTree.attach(params, blkMgrNodes, blkMgrRecords) ;
+    }
+    
     static class ObjectFileBuilderStd implements Builders.ObjectFileBuilder
     {
         public ObjectFile buildObjectFile(FileSet fileSet, String ext)
@@ -348,6 +436,21 @@ public class DatasetBuilderStd implements DatasetBuilder
         }
         
     }
+    
+
+    private static void error(Logger log, String msg)
+    {
+        if ( log != null )
+            log.error(msg) ;
+        throw new TDBException(msg) ;
+    }
+    
+    private static int parseInt(String str, String messageBase)
+    {
+        try { return Integer.parseInt(str) ; }
+        catch (NumberFormatException ex) { error(log, messageBase+": "+str) ; return -1 ; }
+    }
+
 }
 
 
