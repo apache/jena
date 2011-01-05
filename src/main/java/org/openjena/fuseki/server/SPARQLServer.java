@@ -23,6 +23,7 @@ import org.openjena.fuseki.Fuseki ;
 import org.openjena.fuseki.HttpNames ;
 import org.openjena.fuseki.mgt.ActionDataset ;
 import org.openjena.fuseki.servlets.SPARQL_QueryDataset ;
+import org.openjena.fuseki.servlets.SPARQL_REST_R ;
 import org.openjena.fuseki.servlets.SPARQL_REST_RW ;
 import org.openjena.fuseki.servlets.SPARQL_Update ;
 import org.openjena.fuseki.servlets.SPARQL_Upload ;
@@ -44,6 +45,7 @@ public class SPARQLServer
     private String datasetPath ;
     private int port ;
     private boolean verbose = false ;
+    private boolean enableUpdate = false ;;
     
     public Server getServer() { return server ; }
     
@@ -72,17 +74,18 @@ public class SPARQLServer
         { log.warn("SPARQLServer: Exception while stopping server: " + ex.getMessage(), ex) ; }
     }
     
-    public SPARQLServer(DatasetGraph dsg, String datasetPath, int port, boolean verbose)
+    public SPARQLServer(DatasetGraph dsg, String datasetPath, int port, boolean allowUpdate, boolean verbose)
     {
         this.port = port ;
         this.datasetPath = datasetPath ;
+        this.enableUpdate = allowUpdate ;
         this.verbose = verbose ;
         init(dsg, datasetPath, port) ;
     }
     
-    public SPARQLServer(DatasetGraph dsg, String datasetPath, int port)
+    public SPARQLServer(DatasetGraph dsg, String datasetPath, int port, boolean allowUpdate)
     {
-        this(dsg, datasetPath, port, false) ;
+        this(dsg, datasetPath, port, allowUpdate, false) ;
     }
     
     private void init(DatasetGraph dsg, String datasetPath, int port)
@@ -92,13 +95,16 @@ public class SPARQLServer
         else if ( ! datasetPath.startsWith("/") )
             datasetPath = "/"+datasetPath ;
         
-        // Server, with one NIO-based connector, large input buffer size (for long URLs).
+        // Server, with one NIO-based connector, large input buffer size (for long URLs, POSTed forms (queries, updates)).
         server = new Server();
         // Using "= new SelectChannelConnector() ;" on Darwin (OS/X) causes problems 
         // with initialization not seen (thread scheduling?) in Joseki.
         Connector connector = new BlockingChannelConnector() ;
         connector.setPort(port);
-        connector.setRequestBufferSize(16*1024) ;
+        
+        // Some people do try very large operations ...
+        connector.setRequestBufferSize(1*1024*1024) ;
+        
         server.addConnector(connector) ;
 
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
@@ -119,21 +125,35 @@ public class SPARQLServer
         boolean installValidators = true ;
         boolean installManager = true ;
 
+        if ( enableUpdate )
+            serverlog.info("Update enabled") ;
+        else
+            serverlog.info("Read-only server") ;
+        
         for ( String dsPath : datasets )
         {
             HttpServlet sparqlQuery = new SPARQL_QueryDataset(verbose) ;
-            HttpServlet sparqlUpdate = new SPARQL_Update(verbose) ;
-            HttpServlet sparqlHttp = new SPARQL_REST_RW(verbose) ;
-            HttpServlet sparqlUpload = new SPARQL_Upload(verbose) ;
+            HttpServlet sparqlHttp ;
+            if ( enableUpdate )
+                sparqlHttp = new SPARQL_REST_RW(verbose) ;
+            else
+                sparqlHttp = new SPARQL_REST_R(verbose) ;
             
             // SPARQL services.
             addServlet(context, sparqlHttp, dsPath);
             addServlet(context, sparqlHttp, dsPath+HttpNames.ServiceData) ;
             addServlet(context, sparqlQuery, dsPath+HttpNames.ServiceQuery) ;
             addServlet(context, sparqlQuery, dsPath+HttpNames.ServiceQueryAlt) ;      // Alternative name
-            addServlet(context, sparqlUpdate, dsPath+HttpNames.ServiceUpdate) ;
-            addServlet(context, sparqlUpload, dsPath+HttpNames.ServiceUpload) ;
             //add(context, new DumpServlet(),"/dump");
+
+            if ( enableUpdate )
+            {
+                HttpServlet sparqlUpdate = new SPARQL_Update(verbose) ;
+                HttpServlet sparqlUpload = new SPARQL_Upload(verbose) ;
+                addServlet(context, sparqlUpdate, dsPath+HttpNames.ServiceUpdate) ;
+                addServlet(context, sparqlUpload, dsPath+HttpNames.ServiceUpload) ;
+            }
+
         }
         
         // Add generic services 

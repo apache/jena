@@ -32,11 +32,12 @@ import com.hp.hpl.jena.tdb.TDBFactory ;
 
 public class FusekiCmd extends CmdARQ
 {
-    private static ArgDecl argMem       = new ArgDecl(ArgDecl.NoValue,  "mem") ;
-    private static ArgDecl argFile      = new ArgDecl(ArgDecl.HasValue, "file") ;
-    private static ArgDecl argMemTDB    = new ArgDecl(ArgDecl.NoValue,  "memtdb", "memTDB") ;
-    private static ArgDecl argTDB       = new ArgDecl(ArgDecl.HasValue, "loc", "location") ;
-    private static ArgDecl argPort      = new ArgDecl(ArgDecl.HasValue, "port") ;
+    private static ArgDecl argMem           = new ArgDecl(ArgDecl.NoValue,  "mem") ;
+    private static ArgDecl argAllowUpdate   = new ArgDecl(ArgDecl.NoValue,  "allowUpdate") ;
+    private static ArgDecl argFile          = new ArgDecl(ArgDecl.HasValue, "file") ;
+    private static ArgDecl argMemTDB        = new ArgDecl(ArgDecl.NoValue,  "memtdb", "memTDB") ;
+    private static ArgDecl argTDB           = new ArgDecl(ArgDecl.HasValue, "loc", "location") ;
+    private static ArgDecl argPort          = new ArgDecl(ArgDecl.HasValue, "port") ;
     
     //private static ModLocation          modLocation =  new ModLocation() ;
     private static ModDatasetAssembler  modDataset = new ModDatasetAssembler() ;
@@ -53,7 +54,8 @@ public class FusekiCmd extends CmdARQ
     
     private int port = 3030 ;
     private DatasetGraph dsg ;
-    private String datasetPath ; 
+    private String datasetPath ;
+    private boolean allowUpdate = false ;
     
     public FusekiCmd(String...argv)
     {
@@ -175,12 +177,15 @@ public class FusekiCmd extends CmdARQ
         datasetPath = getPositionalArg(0) ;
         if ( datasetPath.length() > 0 && ! datasetPath.startsWith("/") )
             throw new CmdException("Dataset path name must begin with a /: "+datasetPath) ;
+        
+        allowUpdate = contains(argAllowUpdate) ;
+        
     }
 
     @Override
     protected void exec()
     {
-        SPARQLServer server = new SPARQLServer(dsg, datasetPath, port, super.isVerbose()) ;
+        SPARQLServer server = new SPARQLServer(dsg, datasetPath, port, allowUpdate, super.isVerbose()) ;
         server.start() ;
         try { server.getServer().join() ; } catch (Exception ex) {}
     }

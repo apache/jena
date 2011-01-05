@@ -2,6 +2,9 @@ package dev;
 
 public class DevFuseki
 {
+    // Test and document --allowUpdate (HTML app?)
+    // Deploy to sparql.org
+    
     // Testing:
     //   No file -> error.
     
