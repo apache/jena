@@ -10,6 +10,8 @@ public class DevARQ
     
     // Path evaluation as per spec.
     
+    // Multithreaded parser.
+    
     // ?? bNode label checks (UPDATE: can't use same bNode label in template and pattern for DELETE/INSERT.)
 
     // Pull up TransformDynamicDataset, TransformGraphRename from TDB.
