@@ -52,6 +52,7 @@ import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 public class DatasetBuilderStd implements DatasetBuilder
 {
+    // NodeTableBuilder.
     // TODO Separate out static for general creation purposes (a super factory)
     
     private static final Logger log = TDB.logInfo ;
@@ -68,7 +69,6 @@ public class DatasetBuilderStd implements DatasetBuilder
     }
     
     private BlockMgrBuilder blockMgrBuilder ;
-    
     private ObjectFileBuilder objectFileBuilder ;
 
     private IndexBuilder indexBuilder ;
