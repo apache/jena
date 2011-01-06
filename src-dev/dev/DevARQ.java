@@ -84,6 +84,7 @@ public class DevARQ
     //   Should really change Function.eval to strict functions (eval'ed arguments and no binding).   
     
     // ---- RIOT
+    // Extract public API (RiotReader etc) - document
     // closing InputStream
     // Bad character encoding - exception but line/col = 1/1
     //   Feed into the per-byte UTF-8 decoder?
