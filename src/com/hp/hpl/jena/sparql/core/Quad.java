@@ -14,7 +14,7 @@ public class Quad
 {
     // Create QuadNames? GraphNames?
     
-    /** Name of the default graph as used in quad form of algebra. 
+    /** Name of the default graph as used by parsers and in quad form of algebra. 
      *  Not for access to the default graph by name - use Quad.defaultGraphIRI.
      */ 
     public static final Node defaultGraphNodeGenerated     =  Node.createURI("urn:x-arq:DefaultGraphNode") ;
@@ -81,7 +81,7 @@ public class Quad
         return node.equals(defaultGraphNodeGenerated) ;
     }
     
-    /** Default, concrete graph (either generated or explicitly named) */
+    /** Default, concrete graph (either generated or explicitly named) -- not triple-in-quad*/
     public static boolean isDefaultGraph(Node node)
     {
         return node.equals(defaultGraphNodeGenerated) || node.equals(defaultGraphIRI) ; 

@@ -21,6 +21,7 @@ import org.openjena.atlas.json.JsonValue ;
 import org.openjena.atlas.lib.StrUtils ;
 import org.openjena.atlas.logging.Log ;
 import org.openjena.riot.ErrorHandlerFactory ;
+import org.openjena.riot.RiotLoader ;
 import org.openjena.riot.checker.CheckerIRI ;
 import org.openjena.riot.pipeline.normalize.CanonicalizeLiteral ;
 
@@ -96,10 +97,19 @@ public class RunARQ
         System.out.println("Compare = " + cmp);
     }
 
-    
+    public static void exit(int code)
+    {
+        System.out.println("DONE") ;
+        System.exit(code) ;
+    }
     
     public static void main(String[] argv) throws Exception
     {
+        DatasetGraph dsg = DatasetGraphFactory.createMem() ;
+        RiotLoader.read("D.nq", dsg) ;
+        SSE.write(dsg) ;
+        exit(0) ;
+        
         arq.qexpr.main("1/0.0e0") ; System.exit(0) ;
         
         PrefixMapping pmap = new PrefixMappingImpl() ;

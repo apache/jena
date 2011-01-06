@@ -15,6 +15,7 @@ import org.openjena.atlas.lib.Sink ;
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.GraphEvents ;
 import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.sparql.SystemARQ ;
 
 
 public abstract class SinkToGraph implements Sink<Triple>
@@ -51,7 +52,7 @@ public abstract class SinkToGraph implements Sink<Triple>
     }
 
     //@Override
-    public void flush() { }
+    public void flush() { SystemARQ.sync(graph) ; }
     
     //@Override
     public void close()

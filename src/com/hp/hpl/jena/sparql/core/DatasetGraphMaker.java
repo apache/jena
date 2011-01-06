@@ -7,7 +7,6 @@
 package com.hp.hpl.jena.sparql.core;
 
 import com.hp.hpl.jena.graph.Graph ;
-import com.hp.hpl.jena.graph.Node ;
 
 /** Implementation of a DatasetGraph as an open set of graphs where all graphs "exist".
  *  New graphs are created (via the policy of a GraphMaker) when a getGraph call is 
@@ -36,27 +35,8 @@ public class DatasetGraphMaker extends DatasetGraphMap
         super(graph) ;
         this.graphMaker = graphMakerNull ;
     }
-    
-    @Override
-    public boolean containsGraph(Node graphNode)
-    {
-        //return true ;
-        return super.containsGraph(graphNode) ;
-    }
 
     @Override
-//    public Graph getGraph(Node graphNode)
-//    {
-//        Graph g = super.getGraph(graphNode) ;
-//        if ( g == null )
-//        {
-//            g = graphMaker.create() ;
-//            if ( g != null )
-//                super.addGraph(graphNode, g) ;
-//        }
-//        return g ;
-//    }
-    
     protected Graph getGraphCreate()
     {
         return graphMaker.create() ;

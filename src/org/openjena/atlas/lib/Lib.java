@@ -14,6 +14,12 @@ public class Lib
 {
     private Lib() {}
     
+    public static final void sync(Object object)
+    {
+        if ( object instanceof Sync )
+            ((Sync)object).sync() ;
+    }
+    
     public static final <T> boolean equal(T obj1, T obj2)
     {
         if ( obj1 == null )

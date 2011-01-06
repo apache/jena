@@ -1,17 +1,15 @@
 /*
  * (c) Copyright 2010 Talis Systems Ltd.
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
 package org.openjena.riot.lang;
 
-import org.openjena.atlas.lib.Lib ;
 import org.openjena.atlas.lib.Sink ;
-import org.openjena.atlas.lib.Sync ;
 
-import com.hp.hpl.jena.graph.Graph ;
-import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.sparql.SystemARQ ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 
@@ -20,8 +18,8 @@ public class SinkQuadsToDataset implements Sink<Quad>
 {
     /* See also SinkToGraphTriples */ 
     private final DatasetGraph dataset ;
-    private Node graphNode = null ;
-    private Graph graph = null ;
+//    private Node graphNode = null ;
+//    private Graph graph = null ;
 
     public SinkQuadsToDataset(DatasetGraph dataset)
     {
@@ -30,23 +28,15 @@ public class SinkQuadsToDataset implements Sink<Quad>
     
     public void send(Quad quad)
     {
-        if ( graph == null || ! Lib.equal(quad.getGraph(), graphNode) )
-        {
-            // graph == null ==> Uninitialized
-            // not equals ==> different graph to last time.
-            graphNode = quad.getGraph() ;
-            if ( quad.isTriple() )
-                graph = dataset.getDefaultGraph() ;
-            else
-                graph = dataset.getGraph(graphNode) ;
-        }
-        graph.add(quad.asTriple()) ;
+        if ( quad.isTriple() )
+            dataset.getDefaultGraph().add(quad.asTriple()) ;
+        else
+            dataset.add(quad) ;
     }
 
     public void flush()
     {
-        if ( dataset instanceof Sync )
-            ((Sync)dataset).sync();
+        SystemARQ.sync(dataset) ;
     }
 
     public void close()
@@ -55,6 +45,8 @@ public class SinkQuadsToDataset implements Sink<Quad>
 
 /*
  * (c) Copyright 2010 Talis Systems Ltd.
+ * (c) Copyright 2011 Epimorphics Ltd.
+ * 
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

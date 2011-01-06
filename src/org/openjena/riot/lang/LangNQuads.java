@@ -64,7 +64,7 @@ public class LangNQuads extends LangNTuple<Quad>
         }
         else
         {
-            c = Quad.tripleInQuad ;
+            c = Quad.defaultGraphNodeGenerated ;
             currentGraph = null ;
         }
         

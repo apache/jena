@@ -2,6 +2,9 @@ package dev ;
 
 public class DevARQ
 {
+    // SinkQuadToDataset goes via named graphs!
+    //  Go via add(quad).
+    
     // >>>> Tasks
 
     // OutputLangUtils

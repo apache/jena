@@ -39,7 +39,7 @@ public class SystemARQ
         sync(dataset.asDatasetGraph()) ;
     }
     
-    /** Sync a TDB-backed DatasetGraph. Do nothing if not TDB-backed. */
+    /** Sync carefully for compound objects*/
     public static void sync(DatasetGraph dataset)
     { 
         if ( dataset instanceof Sync )
