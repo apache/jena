@@ -33,7 +33,7 @@ import com.hp.hpl.jena.tdb.TDBFactory ;
 public class FusekiCmd extends CmdARQ
 {
     private static ArgDecl argMem           = new ArgDecl(ArgDecl.NoValue,  "mem") ;
-    private static ArgDecl argAllowUpdate   = new ArgDecl(ArgDecl.NoValue,  "allowUpdate") ;
+    private static ArgDecl argAllowUpdate   = new ArgDecl(ArgDecl.NoValue,  "update", "allowUpdate") ;
     private static ArgDecl argFile          = new ArgDecl(ArgDecl.HasValue, "file") ;
     private static ArgDecl argMemTDB        = new ArgDecl(ArgDecl.NoValue,  "memtdb", "memTDB") ;
     private static ArgDecl argTDB           = new ArgDecl(ArgDecl.HasValue, "loc", "location") ;
@@ -67,6 +67,7 @@ public class FusekiCmd extends CmdARQ
         add(argTDB,     "--loc=DIR",    "use an existing TDB database (or create if does not exist)") ;
         add(argMemTDB,  "--memTDB",     "Create an in-memory, non-persistent dataset using TDB (testing only)") ;
         add(argPort,    "--port",       "Port number") ;
+        add(argAllowUpdate, "--update", "Allow updates (via SPARQL Update and SPARQL HTTP Update)") ;
         super.modVersion.addClass(TDB.class) ;
         super.modVersion.addClass(Fuseki.class) ;
     }

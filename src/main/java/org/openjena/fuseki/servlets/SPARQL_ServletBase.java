@@ -261,9 +261,9 @@ public abstract class SPARQL_ServletBase extends HttpServlet
         error(HttpSC.NOT_IMPLEMENTED_501, msg) ;
     }
     
-    protected static void errorMethodNotAllowed(String msg)
+    protected static void errorMethodNotAllowed(String method)
     {
-        error(HttpSC.METHOD_NOT_ALLOWED_405, msg) ;
+        error(HttpSC.METHOD_NOT_ALLOWED_405, "HTTP method not allowed: "+method) ;
     }
 
     protected static void error(int statusCode)

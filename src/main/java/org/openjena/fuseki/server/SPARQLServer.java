@@ -153,7 +153,6 @@ public class SPARQLServer
                 addServlet(context, sparqlUpdate, dsPath+HttpNames.ServiceUpdate) ;
                 addServlet(context, sparqlUpload, dsPath+HttpNames.ServiceUpload) ;
             }
-
         }
         
         // Add generic services 
