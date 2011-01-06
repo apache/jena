@@ -9,6 +9,8 @@
 package dev;
 
 import java.util.Iterator ;
+import java.util.concurrent.ArrayBlockingQueue ;
+import java.util.concurrent.BlockingQueue ;
 
 import javax.xml.datatype.DatatypeFactory ;
 import javax.xml.datatype.Duration ;
@@ -18,10 +20,10 @@ import org.apache.xerces.impl.dv.xs.DurationDV ;
 import org.openjena.atlas.io.IndentedWriter ;
 import org.openjena.atlas.json.JSON ;
 import org.openjena.atlas.json.JsonValue ;
+import org.openjena.atlas.lib.Sink ;
 import org.openjena.atlas.lib.StrUtils ;
 import org.openjena.atlas.logging.Log ;
 import org.openjena.riot.ErrorHandlerFactory ;
-import org.openjena.riot.RiotLoader ;
 import org.openjena.riot.checker.CheckerIRI ;
 import org.openjena.riot.pipeline.normalize.CanonicalizeLiteral ;
 
@@ -29,6 +31,7 @@ import com.hp.hpl.jena.datatypes.TypeMapper ;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.datatypes.xsd.XSDDuration ;
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.iri.IRI ;
 import com.hp.hpl.jena.iri.IRIFactory ;
 import com.hp.hpl.jena.iri.Violation ;
@@ -105,9 +108,22 @@ public class RunARQ
     
     public static void main(String[] argv) throws Exception
     {
-        DatasetGraph dsg = DatasetGraphFactory.createMem() ;
-        RiotLoader.read("D.nq", dsg) ;
-        SSE.write(dsg) ;
+        final BlockingQueue<Triple> queue = new ArrayBlockingQueue<Triple>(10000) ;
+        
+        Sink<Triple> sink = new Sink<Triple>() {
+
+            public void close()
+            {}
+
+            public void send(Triple item)
+            {
+                queue.add(item) ; 
+            }
+
+            public void flush()
+            {} } ;
+        
+        
         exit(0) ;
         
         arq.qexpr.main("1/0.0e0") ; System.exit(0) ;
