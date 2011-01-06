@@ -6,14 +6,12 @@ public class DevTDB
     
     // ** Release
     // TDB shutdown hook.
-    // Check design abstracts Nodes properly 
-    //   Should allow swapping in Nodeid as hash: so NodeId -> Node is a lookup.
-    
-    // SetupTDB : abstract algorithm and pass in (Range)Index builders
-    // layers: database - TupleIndex/NodeTable - (Range)Index+seq store.
-    // See IndexFactory for bulkloader2
-    //
+
+    // New setup
+    //    See IndexFactory for bulkloader2
+    //    Factory for common basic object (lots of args).
     //    Versions with built-in defaults.
+    //    NodeTableFactory and makers in the test area.
     
     // ---- BulkLoader2
     // Tune sort --buffer-size=50%
@@ -22,14 +20,10 @@ public class DevTDB
     
     // BPT
     //  .truncate : release all blocks and create a new (empty) tree. 
-    
-    // Extract a better set of factory operations, using the default names and sizes, 
-    // for internal structures like B+Tress and NodeTable, and TupleIndexes.
-    //   NodeTableFactory and SetupTDB.makeNodeTable have common code. 
-    //   Remove NodeTableFactory and have one per-technology setup/maker
-    
+
     // Abort long running query.
     // PrefixMapping = PrefixMap
+    // Version of PrefixMap that impls (wrapper) PrefixMapping.  
     
     // ---- Documentation
     // http://openjena.org/wiki/TDB/JavaAPI#Concurrency
