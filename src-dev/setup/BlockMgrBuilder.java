@@ -7,11 +7,10 @@
 package setup;
 
 import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
-import com.hp.hpl.jena.tdb.base.file.Location ;
+import com.hp.hpl.jena.tdb.base.file.FileSet ;
 
-interface BlockMgrBuilder {
-    // ?? FileSet fileSet
-    BlockMgr buildBlockMgr(Location location, String name) ;
+public interface BlockMgrBuilder {
+    BlockMgr buildBlockMgr(FileSet fileSet, String ext) ;
 }
 /*
  * (c) Copyright 2011 Epimorphics Ltd.

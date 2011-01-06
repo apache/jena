@@ -55,28 +55,54 @@ public class DatasetBuilderStd implements DatasetBuilder
     // TODO Separate out static for general creation purposes (a super factory)
     
     private static final Logger log = TDB.logInfo ;
-    private static DatasetBuilderStd singleton = new DatasetBuilderStd() ;
+    private static DatasetBuilderStd singleton ;
+    static 
+    {   
+        singleton = new DatasetBuilderStd() ;
+        singleton.setStd() ;
+    }
     
     public static DatasetGraphTDB build(Location location)
     {
         return singleton.build(location, null) ;  
     }
     
-    private final BlockMgrBuilder blockMgrBuilder ;
+    private BlockMgrBuilder blockMgrBuilder ;
     
-    private final ObjectFileBuilder objectFileBuilder ;
+    private ObjectFileBuilder objectFileBuilder ;
 
-    private final IndexBuilder indexBuilder ;
-    private final RangeIndexBuilder rangeIndexBuilder ;
+    private IndexBuilder indexBuilder ;
+    private RangeIndexBuilder rangeIndexBuilder ;
     
-    private final NodeTableBuilder nodeTableBuilder ;
+    private NodeTableBuilder nodeTableBuilder ;
     
-    private final NodeTupleTableBuilder nodeTupleTableBuilder ;
-    private final TupleIndexBuilder tupleIndexBuilder ;
+    private NodeTupleTableBuilder nodeTupleTableBuilder ;
+    private TupleIndexBuilder tupleIndexBuilder ;
     
     private Properties config ;
     
-    private DatasetBuilderStd()
+    protected DatasetBuilderStd()
+    {
+    }
+    
+    protected void set(NodeTableBuilder nodeTableBuilder,
+                       NodeTupleTableBuilder nodeTupleTableBuilder,
+                       TupleIndexBuilder tupleIndexBuilder,
+                       IndexBuilder indexBuilder,
+                       RangeIndexBuilder rangeIndexBuilder,
+                       BlockMgrBuilder blockMgrBuilder,
+                       ObjectFileBuilder objectFileBuilder)
+    {
+        this.nodeTableBuilder = nodeTableBuilder ;
+        this.nodeTupleTableBuilder = nodeTupleTableBuilder ;
+        this.tupleIndexBuilder = tupleIndexBuilder ;
+        this.indexBuilder = indexBuilder ;
+        this.rangeIndexBuilder = rangeIndexBuilder ;
+        this.blockMgrBuilder = blockMgrBuilder ;
+        this.objectFileBuilder = objectFileBuilder ;
+    }
+        
+    private void setStd()
     {
         this.objectFileBuilder      = new ObjectFileBuilderStd() ;
         this.blockMgrBuilder        = new BlockMgrBuilderStd(SystemTDB.BlockSize) ;
@@ -97,15 +123,9 @@ public class DatasetBuilderStd implements DatasetBuilder
                                 BlockMgrBuilder blockMgrBuilder,
                                 ObjectFileBuilder objectFileBuilder)
     {
-        this.nodeTableBuilder = nodeTableBuilder ;
-        this.nodeTupleTableBuilder = nodeTupleTableBuilder ;
-        this.tupleIndexBuilder = tupleIndexBuilder ;
-        this.indexBuilder = indexBuilder ;
-        this.rangeIndexBuilder = rangeIndexBuilder ;
-        this.blockMgrBuilder = blockMgrBuilder ;
-        this.objectFileBuilder = objectFileBuilder ;
+        set(nodeTableBuilder, nodeTupleTableBuilder, tupleIndexBuilder, indexBuilder, rangeIndexBuilder, blockMgrBuilder, objectFileBuilder) ;
     }
-
+    
     public DatasetGraphTDB build(Location location, Properties config)
     {
         this.config = config ;
@@ -278,7 +298,7 @@ public class DatasetBuilderStd implements DatasetBuilder
         return tupleIndexBuilder.buildTupleIndex(fs, colMap) ;
     }
 
-    static class TupleIndexBuilderStd implements TupleIndexBuilder
+    public static class TupleIndexBuilderStd implements TupleIndexBuilder
     {
         private final RangeIndexBuilder rangeIndexBuilder ;
 
@@ -326,7 +346,7 @@ public class DatasetBuilderStd implements DatasetBuilder
         return nt ;
     }
     
-    static class NodeTableBuilderStd implements NodeTableBuilder
+    public static class NodeTableBuilderStd implements NodeTableBuilder
     {
         private final IndexBuilder indexBuilder ;
         private final ObjectFileBuilder objectFileBuilder ;
@@ -350,7 +370,7 @@ public class DatasetBuilderStd implements DatasetBuilder
     }
     // ----
     
-    static class IndexBuilderStd implements IndexBuilder
+    public static class IndexBuilderStd implements IndexBuilder
     {
         private BlockMgrBuilder bMgr1 ;
         private BlockMgrBuilder bMgr2 ;
@@ -370,7 +390,7 @@ public class DatasetBuilderStd implements DatasetBuilder
         }
     }
     
-    static class RangeIndexBuilderStd implements RangeIndexBuilder
+    public static class RangeIndexBuilderStd implements RangeIndexBuilder
     {
         private BlockMgrBuilder bMgr1 ;
         private BlockMgrBuilder bMgr2 ;
@@ -391,6 +411,7 @@ public class DatasetBuilderStd implements DatasetBuilder
              */
 
             // TODO Respect tdb.bplustree.record=24,0 (and so don't need RecordFactory argument).
+            // No - Node table resorc size if different.
             
             MetaFile metafile = fileSet.getMetaFile() ;
             //RecordFactory recordFactory = new RecordFactory(keyLength, valueLength) ; // makeRecordFactory(metafile, "tdb.bplustree.record", dftKeyLength, dftValueLength) ;
@@ -413,42 +434,51 @@ public class DatasetBuilderStd implements DatasetBuilder
             int readCacheSize = SystemTDB.BlockReadCacheSize ;
             int writeCacheSize = SystemTDB.BlockWriteCacheSize ;
 
-            RangeIndex rIndex = createBPTree(fileSet, order, blkSize, readCacheSize, writeCacheSize, recordFactory) ;
+            RangeIndex rIndex = createBPTree(fileSet, order, blkSize, readCacheSize, writeCacheSize, bMgr1, bMgr2, recordFactory) ;
+            
             metafile.flush() ;
             return rIndex ;
         }
+        
+        /** Knowing all the parameters, create a B+Tree */
+        private RangeIndex createBPTree(FileSet fileset, int order, 
+                                        int blockSize,
+                                        int readCacheSize, int writeCacheSize,
+                                        BlockMgrBuilder blockMgrBuilder1,
+                                        BlockMgrBuilder blockMgrBuilder2,
+                                        RecordFactory factory)
+        {
+            // ---- Checking
+            if (blockSize < 0 && order < 0) throw new IllegalArgumentException("Neither blocksize nor order specified") ;
+            if (blockSize >= 0 && order < 0) order = BPlusTreeParams.calcOrder(blockSize, factory.recordLength()) ;
+            if (blockSize >= 0 && order >= 0)
+            {
+                int order2 = BPlusTreeParams.calcOrder(blockSize, factory.recordLength()) ;
+                if (order != order2) throw new IllegalArgumentException("Wrong order (" + order + "), calculated = "
+                                                                        + order2) ;
+            }
+        
+            // Iffy - does not allow for slop.
+            if (blockSize < 0 && order >= 0)
+            {
+                // Only in-memory.
+                blockSize = BPlusTreeParams.calcBlockSize(order, factory) ;
+            }
+        
+            BPlusTreeParams params = new BPlusTreeParams(order, factory) ;
+            
+//            BlockMgr blkMgrNodes = BlockMgrFactory.create(fileset, Names.bptExt1, blockSize, readCacheSize, writeCacheSize) ;
+//            BlockMgr blkMgrRecords = BlockMgrFactory.create(fileset, Names.bptExt2, blockSize, readCacheSize, writeCacheSize) ;
+            BlockMgr blkMgrNodes = blockMgrBuilder1.buildBlockMgr(fileset, Names.bptExt1) ;
+            BlockMgr blkMgrRecords = blockMgrBuilder2.buildBlockMgr(fileset, Names.bptExt2) ;
+            
+            return BPlusTree.attach(params, blkMgrNodes, blkMgrRecords) ;
+        }
+
     }
     
-    /** Knowing all the parameters, create a B+Tree */
-    public static RangeIndex createBPTree(FileSet fileset, int order, 
-                                          int blockSize,
-                                          int readCacheSize, int writeCacheSize,
-                                          RecordFactory factory)
-    {
-        // ---- Checking
-        if (blockSize < 0 && order < 0) throw new IllegalArgumentException("Neither blocksize nor order specified") ;
-        if (blockSize >= 0 && order < 0) order = BPlusTreeParams.calcOrder(blockSize, factory.recordLength()) ;
-        if (blockSize >= 0 && order >= 0)
-        {
-            int order2 = BPlusTreeParams.calcOrder(blockSize, factory.recordLength()) ;
-            if (order != order2) throw new IllegalArgumentException("Wrong order (" + order + "), calculated = "
-                                                                    + order2) ;
-        }
     
-        // Iffy - does not allow for slop.
-        if (blockSize < 0 && order >= 0)
-        {
-            // Only in-memory.
-            blockSize = BPlusTreeParams.calcBlockSize(order, factory) ;
-        }
-    
-        BPlusTreeParams params = new BPlusTreeParams(order, factory) ;
-        BlockMgr blkMgrNodes = BlockMgrFactory.create(fileset, Names.bptExt1, blockSize, readCacheSize, writeCacheSize) ;
-        BlockMgr blkMgrRecords = BlockMgrFactory.create(fileset, Names.bptExt2, blockSize, readCacheSize, writeCacheSize) ;
-        return BPlusTree.attach(params, blkMgrNodes, blkMgrRecords) ;
-    }
-    
-    static class ObjectFileBuilderStd implements ObjectFileBuilder
+    public static class ObjectFileBuilderStd implements ObjectFileBuilder
     {
         public ObjectFile buildObjectFile(FileSet fileSet, String ext)
         {
@@ -459,22 +489,21 @@ public class DatasetBuilderStd implements DatasetBuilder
         }
     }
     
-    static class BlockMgrBuilderStd implements BlockMgrBuilder
+    public static class BlockMgrBuilderStd implements BlockMgrBuilder
     {
         private final int blockSize ;
 
         public BlockMgrBuilderStd(int blockSize) { this.blockSize = blockSize ; }
 
-        public BlockMgr buildBlockMgr(Location location, String name)
+        public BlockMgr buildBlockMgr(FileSet fileset, String ext)
         {
             //int readCacheSize = PropertyUtils.getPropertyAsInteger(config, Names.pBlockReadCacheSize) ;
             //int writeCacheSize = PropertyUtils.getPropertyAsInteger(config, Names.pBlockWriteCacheSize) ;
             
             int readCacheSize = SystemTDB.BlockReadCacheSize ;
             int writeCacheSize = SystemTDB.BlockWriteCacheSize ;
-            FileSet fs = new FileSet(location, name) ;
             
-            BlockMgr mgr = BlockMgrFactory.create(fs, null, blockSize, readCacheSize, writeCacheSize) ;
+            BlockMgr mgr = BlockMgrFactory.create(fileset, ext, blockSize, readCacheSize, writeCacheSize) ;
             return mgr ;
         }
         

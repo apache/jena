@@ -6,13 +6,71 @@
 
 package setup;
 
-import com.hp.hpl.jena.tdb.base.file.FileSet ;
-import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
-import com.hp.hpl.jena.tdb.index.Index ;
+import java.nio.ByteBuffer ;
 
-public interface IndexBuilder {
-    Index buildIndex(FileSet fileSet, RecordFactory recordfactory) ;
+import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
+import com.hp.hpl.jena.tdb.base.block.BlockMgrWrapper ;
+
+public class NoisyBlockMgr extends BlockMgrWrapper
+{
+
+    public NoisyBlockMgr(BlockMgr blockMgr)
+    {
+        super(blockMgr) ;
+    }
+
+    
+    @Override
+    public void put(int id, ByteBuffer block)
+    {
+        System.out.println("PUT!") ;
+        super.put(id, block) ;
+    }
+    
+    @Override
+    public void sync()
+    {
+        System.out.println("Sync!") ;
+        super.sync() ;
+    }
+    
+    @Override
+    public void sync(boolean force)
+    {
+        System.out.println("Sync!/force") ;
+        super.sync(force) ;
+    }
+
+    @Override
+    public void startRead()
+    {
+        System.out.println("startRead!") ;
+        super.startRead() ;
+    }
+
+    @Override
+    public void finishRead()
+    {
+        System.out.println("finishRead!") ;
+        super.finishRead() ;
+    }
+
+    @Override
+    public void startUpdate()
+    {
+        System.out.println("startUpdate!") ;
+        super.startUpdate() ;
+    }
+
+    @Override
+    public void finishUpdate()
+    {
+        System.out.println("finishUpdate!") ;
+        super.finishUpdate() ;
+    }
+
 }
+
 /*
  * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.

@@ -11,7 +11,7 @@ import org.openjena.atlas.lib.ColumnMap ;
 import com.hp.hpl.jena.tdb.base.file.FileSet ;
 import com.hp.hpl.jena.tdb.index.TupleIndex ;
 
-interface TupleIndexBuilder {
+public interface TupleIndexBuilder {
     TupleIndex buildTupleIndex(FileSet fileSet, ColumnMap colMap) ;
 }
 /*

@@ -9,7 +9,7 @@ package setup;
 import com.hp.hpl.jena.tdb.base.file.FileSet ;
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile ;
 
-interface ObjectFileBuilder {
+public interface ObjectFileBuilder {
     ObjectFile buildObjectFile(FileSet fileSet, String ext) ;
 }
 /*

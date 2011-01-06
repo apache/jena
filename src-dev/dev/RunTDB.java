@@ -1,7 +1,8 @@
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
- * (c) Copyright 2010 Talis Systems Ltd
+ * (c) Copyright 2010 Talis Systems Ltd.
  * (c) Copyright 2010 Epimorphics Ltd.
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -9,11 +10,32 @@
 package dev;
 
 import com.hp.hpl.jena.tdb.TDB ;
+import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
+import com.hp.hpl.jena.tdb.base.file.FileSet ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
+import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
+import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 import org.openjena.atlas.lib.FileOps ;
 import org.openjena.atlas.logging.Log ;
+import org.openjena.riot.RiotLoader ;
+import org.openjena.riot.RiotReader ;
+import setup.BlockMgrBuilder ;
+import setup.DatasetBuilder ;
 import setup.DatasetBuilderStd ;
+import setup.IndexBuilder ;
+import setup.NodeTableBuilder ;
+import setup.NodeTupleTableBuilder ;
+import setup.NoisyBlockMgr ;
+import setup.ObjectFileBuilder ;
+import setup.RangeIndexBuilder ;
+import setup.TupleIndexBuilder ;
+import setup.DatasetBuilderStd.BlockMgrBuilderStd ;
+import setup.DatasetBuilderStd.IndexBuilderStd ;
+import setup.DatasetBuilderStd.NodeTableBuilderStd ;
+import setup.DatasetBuilderStd.ObjectFileBuilderStd ;
+import setup.DatasetBuilderStd.RangeIndexBuilderStd ;
+import setup.DatasetBuilderStd.TupleIndexBuilderStd ;
 
 public class RunTDB
 {
@@ -27,11 +49,46 @@ public class RunTDB
         nextDivider = divider ;
     }
 
+    public static class DSB2 extends DatasetBuilderStd
+    {
+        public DSB2()
+        {
+            super() ;
+            ObjectFileBuilder objectFileBuilder         = new ObjectFileBuilderStd() ;
+            BlockMgrBuilderStd blockMgrBuilder          = new BlockMgrBuilderStd(SystemTDB.BlockSize)
+            {
+                @Override
+                public BlockMgr buildBlockMgr(FileSet fileset, String name)
+                {
+                    BlockMgr bMgr = super.buildBlockMgr(fileset, name) ;
+                    return new NoisyBlockMgr(bMgr) ;
+                }
+            } ;
+            
+            IndexBuilderStd indexBuilder                = new IndexBuilderStd(blockMgrBuilder, blockMgrBuilder) ;
+            RangeIndexBuilderStd rangeIndexBuilder      = new RangeIndexBuilderStd(blockMgrBuilder, blockMgrBuilder) ;
+            
+            NodeTableBuilderStd nodeTableBuilder        = new NodeTableBuilderStd(indexBuilder, objectFileBuilder) ;
+            NodeTupleTableBuilder nodeTupleTableBuilder = null ;
+            TupleIndexBuilderStd tupleIndexBuilder      = new TupleIndexBuilderStd(rangeIndexBuilder) ;
+            set(nodeTableBuilder, nodeTupleTableBuilder, tupleIndexBuilder, indexBuilder, rangeIndexBuilder, blockMgrBuilder, objectFileBuilder) ;
+        }
+    }
+    
     public static void main(String[] args) throws Exception
     {
         // New setup
         FileOps.clearDirectory("DB1") ;
-        DatasetBuilderStd.build(new Location("DB1")) ;
+        
+        DatasetBuilder builder = new DSB2() ;
+        DatasetGraphTDB dsg = builder.build(new Location("DB1"), null) ;
+        
+        //DatasetGraphTDB dsg = DatasetBuilderStd.build(new Location("DB1")) ;
+
+        
+        RiotLoader.read("D.nq", dsg) ;
+        dsg.sync() ;
+        
         TDB.closedown() ;
         System.out.println("DONE") ;
         System.exit(0) ;
@@ -49,8 +106,9 @@ public class RunTDB
 
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
- * (c) Copyright 2010 Talis Systems Ltd
+ * (c) Copyright 2010 Talis Systems Ltd.
  * (c) Copyright 2010 Epimorphics Ltd.
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

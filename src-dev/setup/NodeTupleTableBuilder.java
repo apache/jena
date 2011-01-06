@@ -10,7 +10,7 @@ import com.hp.hpl.jena.tdb.index.TupleIndex ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable ;
 
-interface NodeTupleTableBuilder {
+public interface NodeTupleTableBuilder {
     NodeTupleTable buildNodeTupleTable(int N, TupleIndex[] indexes, NodeTable nodeTable) ;
 }
 /*

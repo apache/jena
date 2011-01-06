@@ -10,7 +10,7 @@ import com.hp.hpl.jena.tdb.base.file.FileSet ;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
 import com.hp.hpl.jena.tdb.index.RangeIndex ;
 
-interface RangeIndexBuilder {
+public interface RangeIndexBuilder {
     RangeIndex buildRangeIndex(FileSet fileSet, RecordFactory recordfactory) ;
 }
 /*

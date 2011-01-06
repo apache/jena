@@ -9,7 +9,7 @@ package setup;
 import com.hp.hpl.jena.tdb.base.file.FileSet ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
 
-interface NodeTableBuilder {
+public interface NodeTableBuilder {
     NodeTable buildNodeTable(FileSet fsIndex, FileSet fsObjectFile, int sizeNode2NodeIdCache, int sizeNodeId2NodeCache) ;
 }
 /*
