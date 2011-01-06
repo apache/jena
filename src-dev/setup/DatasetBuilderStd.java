@@ -15,11 +15,6 @@ import org.openjena.atlas.lib.NotImplemented ;
 import org.openjena.atlas.lib.PropertyUtils ;
 import org.openjena.atlas.lib.StrUtils ;
 import org.slf4j.Logger ;
-import setup.Builders.BlockMgrBuilder ;
-import setup.Builders.IndexBuilder ;
-import setup.Builders.ObjectFileBuilder ;
-import setup.Builders.RangeIndexBuilder ;
-import setup.DatasetBuilderStd.RangeIndexBuilderStd ;
 
 import com.hp.hpl.jena.sparql.core.DatasetPrefixStorage ;
 import com.hp.hpl.jena.sparql.engine.optimizer.reorder.ReorderTransformation ;
@@ -58,7 +53,6 @@ import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 public class DatasetBuilderStd implements DatasetBuilder
 {
     // TODO Separate out static for general creation purposes (a super factory)
-    // Prefix indx name chnage chaged to "GPU", not "prefixIdx" << Incompatibility
     
     private static final Logger log = TDB.logInfo ;
     private static DatasetBuilderStd singleton = new DatasetBuilderStd() ;
@@ -68,26 +62,55 @@ public class DatasetBuilderStd implements DatasetBuilder
         return singleton.build(location, null) ;  
     }
     
-    Builders.BlockMgrBuilder blockMgrBuilder = new BlockMgrBuilderStd(SystemTDB.BlockSize) ;
+    private final BlockMgrBuilder blockMgrBuilder ;
     
-    Builders.ObjectFileBuilder objectFileBuilder = new ObjectFileBuilderStd() ;
+    private final ObjectFileBuilder objectFileBuilder ;
 
-    Builders.IndexBuilder indexBuilder = new IndexBuilderStd(blockMgrBuilder, blockMgrBuilder) ;
-    Builders.RangeIndexBuilder rangeIndexBuilder = new RangeIndexBuilderStd(blockMgrBuilder, blockMgrBuilder) ;
+    private final IndexBuilder indexBuilder ;
+    private final RangeIndexBuilder rangeIndexBuilder ;
     
-    Builders.NodeTableBuilder nodeTableBuilder = new NodeTableBuilderStd(indexBuilder, objectFileBuilder) ;
+    private final NodeTableBuilder nodeTableBuilder ;
     
-    Builders.NodeTupleTableBuilder nodeTupleTableBuilder = null ;
-    Builders.TupleIndexBuilder tupleIndexBuilder = new TupleIndexBuilderStd(rangeIndexBuilder) ;
+    private final NodeTupleTableBuilder nodeTupleTableBuilder ;
+    private final TupleIndexBuilder tupleIndexBuilder ;
     
     private Properties config ;
     
+    private DatasetBuilderStd()
+    {
+        this.objectFileBuilder      = new ObjectFileBuilderStd() ;
+        this.blockMgrBuilder        = new BlockMgrBuilderStd(SystemTDB.BlockSize) ;
+        
+        this.indexBuilder           = new IndexBuilderStd(blockMgrBuilder, blockMgrBuilder) ;
+        this.rangeIndexBuilder      = new RangeIndexBuilderStd(blockMgrBuilder, blockMgrBuilder) ;
+        
+        this.nodeTableBuilder       = new NodeTableBuilderStd(indexBuilder, objectFileBuilder) ;
+        this.nodeTupleTableBuilder  = null ;
+        this.tupleIndexBuilder      = new TupleIndexBuilderStd(rangeIndexBuilder) ;
+    }
+
+    protected DatasetBuilderStd(NodeTableBuilder nodeTableBuilder,
+                                NodeTupleTableBuilder nodeTupleTableBuilder,
+                                TupleIndexBuilder tupleIndexBuilder,
+                                IndexBuilder indexBuilder,
+                                RangeIndexBuilder rangeIndexBuilder,
+                                BlockMgrBuilder blockMgrBuilder,
+                                ObjectFileBuilder objectFileBuilder)
+    {
+        this.nodeTableBuilder = nodeTableBuilder ;
+        this.nodeTupleTableBuilder = nodeTupleTableBuilder ;
+        this.tupleIndexBuilder = tupleIndexBuilder ;
+        this.indexBuilder = indexBuilder ;
+        this.rangeIndexBuilder = rangeIndexBuilder ;
+        this.blockMgrBuilder = blockMgrBuilder ;
+        this.objectFileBuilder = objectFileBuilder ;
+    }
+
     public DatasetGraphTDB build(Location location, Properties config)
     {
         this.config = config ;
         init(location) ;
         
-        // No reverse index:
         NodeTable nodeTable = makeNodeTable(location, 
                                             Names.indexNode2Id, Names.indexId2Node,
                                             SystemTDB.Node2NodeIdCacheSize, SystemTDB.NodeId2NodeCacheSize) ;
@@ -126,24 +149,11 @@ public class DatasetBuilderStd implements DatasetBuilder
             SetupTDB.error(log, "Wrong number of triple table tuples indexes: "+tripleIndexes.length) ;
         TripleTable tripleTable = new TripleTable(tripleIndexes, nodeTable) ;
         metafile.flush() ;
+        
+
         return tripleTable ;
     }
     
-    private TupleIndex[] makeTupleIndexes(Location location, String primary, String[] indexNames)
-    {
-        if ( primary.length() != 3 && primary.length() != 4 )
-            SetupTDB.error(log, "Bad primary key length: "+primary.length()) ;
-
-        int indexRecordLen = primary.length()*NodeId.SIZE ;
-        TupleIndex indexes[] = new TupleIndex[indexNames.length] ;
-        for (int i = 0 ; i < indexes.length ; i++)
-        {
-            String indexName = indexNames[i] ;
-            indexes[i] = makeTupleIndex(location, indexName, primary, indexName) ;
-        }
-        return indexes ;
-    }
-
     protected QuadTable makeQuadTable(Location location, NodeTable nodeTable)
     {    
         MetaFile metafile = location.getMetaFile() ;
@@ -199,14 +209,14 @@ public class DatasetBuilderStd implements DatasetBuilder
         String[] dftIndexes = Names.prefixIndexes ;
         
         // The index using for Graph+Prefix => URI
-        String indexPrefixes = metafile.getOrSetDefault("tdb.prefixes.index.file", dftPrimary) ;
+        String indexPrefixes = metafile.getOrSetDefault("tdb.prefixes.index.file", Names.indexPrefix) ;
         String primary = metafile.getOrSetDefault("tdb.prefixes.primary", dftPrimary) ;
         String x = metafile.getOrSetDefault("tdb.prefixes.indexes", StrUtils.strjoin(",",dftIndexes)) ;
         String indexes[] = x.split(",") ;
         
-        TupleIndex prefixIndexes[] = makeTupleIndexes(location, primary, indexes) ;
+        TupleIndex prefixIndexes[] = makeTupleIndexes(location, primary, indexes, new String[]{indexPrefixes}) ;
         if ( prefixIndexes.length != indexes.length )
-            S.error(log, "Wrong number of triple table tuples indexes: "+prefixIndexes.length) ;
+            error(log, "Wrong number of triple table tuples indexes: "+prefixIndexes.length) ;
         
         // The nodetable.
         String pnNode2Id = metafile.getOrSetDefault("tdb.prefixes.nodetable.mapping.node2id", Names.prefixNode2Id) ;
@@ -231,12 +241,33 @@ public class DatasetBuilderStd implements DatasetBuilder
     // ======== Components level
     
     // This is not actually used in main dataset builder because it's done inside TripleTable/QuadTable.
-    protected NodeTupleTable makeNodeTupleTable(Location location, String name)
+    protected NodeTupleTable makeNodeTupleTable(Location location, String name, String[] indexes)
     {    
+        
+        
+        
+        
         if ( true ) throw new NotImplemented() ;
         return nodeTupleTableBuilder.buildNodeTupleTable(0, null, null) ;
     }
     
+    private TupleIndex[] makeTupleIndexes(Location location, String primary, String[] indexNames)
+    {
+        return makeTupleIndexes(location, primary, indexNames, indexNames) ;
+    }
+    
+    private TupleIndex[] makeTupleIndexes(Location location, String primary, String[] indexNames, String[] filenames)
+    {
+        if ( primary.length() != 3 && primary.length() != 4 )
+            SetupTDB.error(log, "Bad primary key length: "+primary.length()) ;
+    
+        int indexRecordLen = primary.length()*NodeId.SIZE ;
+        TupleIndex indexes[] = new TupleIndex[indexNames.length] ;
+        for (int i = 0 ; i < indexes.length ; i++)
+            indexes[i] = makeTupleIndex(location, filenames[i], primary, indexNames[i]) ;
+        return indexes ;
+    }
+
     // ----
     protected TupleIndex makeTupleIndex(Location location, String name, String primary, String indexOrder)
     {
@@ -247,11 +278,11 @@ public class DatasetBuilderStd implements DatasetBuilder
         return tupleIndexBuilder.buildTupleIndex(fs, colMap) ;
     }
 
-    static class TupleIndexBuilderStd implements Builders.TupleIndexBuilder
+    static class TupleIndexBuilderStd implements TupleIndexBuilder
     {
         private final RangeIndexBuilder rangeIndexBuilder ;
 
-        public TupleIndexBuilderStd(Builders.RangeIndexBuilder rangeIndexBuilder)
+        public TupleIndexBuilderStd(RangeIndexBuilder rangeIndexBuilder)
         {
             this.rangeIndexBuilder = rangeIndexBuilder ;
         }
@@ -271,19 +302,36 @@ public class DatasetBuilderStd implements DatasetBuilder
     protected NodeTable makeNodeTable(Location location, String indexNode2Id, String indexId2Node, 
                                       int sizeNode2NodeIdCache, int sizeNodeId2NodeCache)
     {
-        // CACHE SIZES.
+        /* Physical
+         * ---- An object file
+         * tdb.file.type=object
+         * tdb.file.impl=dat
+         * tdb.file.impl.version=dat-v1
+         *
+         * tdb.object.encoding=sse 
+         */
         
-        FileSet fs1 = new FileSet(location, indexNode2Id) ;
-        FileSet fs2 = new FileSet(location, indexId2Node) ;
-        return nodeTableBuilder.buildNodeTable(fs1, fs2, sizeNode2NodeIdCache, sizeNodeId2NodeCache) ;
+        FileSet fsNodeToId = new FileSet(location, indexNode2Id) ;
+        FileSet fsId2Node = new FileSet(location, indexId2Node) ;
+
+        MetaFile metafile = fsId2Node.getMetaFile() ;
+        metafile.checkOrSetMetadata("tdb.file.type", ObjectFile.type) ;
+        metafile.checkOrSetMetadata("tdb.file.impl", "dat") ;
+        metafile.checkOrSetMetadata("tdb.file.impl.version", "dat-v1") ;
+        metafile.checkOrSetMetadata("tdb.object.encoding", "sse") ;
+        
+        NodeTable nt = nodeTableBuilder.buildNodeTable(fsNodeToId, fsId2Node, sizeNode2NodeIdCache, sizeNodeId2NodeCache) ;
+        fsNodeToId.getMetaFile().flush() ;
+        fsId2Node.getMetaFile().flush() ;
+        return nt ;
     }
     
-    static class NodeTableBuilderStd implements Builders.NodeTableBuilder
+    static class NodeTableBuilderStd implements NodeTableBuilder
     {
         private final IndexBuilder indexBuilder ;
         private final ObjectFileBuilder objectFileBuilder ;
         
-        public NodeTableBuilderStd(Builders.IndexBuilder indexBuilder, Builders.ObjectFileBuilder objectFileBuilder)
+        public NodeTableBuilderStd(IndexBuilder indexBuilder, ObjectFileBuilder objectFileBuilder)
         { 
             this.indexBuilder = indexBuilder ;
             this.objectFileBuilder = objectFileBuilder ;
@@ -302,13 +350,13 @@ public class DatasetBuilderStd implements DatasetBuilder
     }
     // ----
     
-    static class IndexBuilderStd implements Builders.IndexBuilder
+    static class IndexBuilderStd implements IndexBuilder
     {
         private BlockMgrBuilder bMgr1 ;
         private BlockMgrBuilder bMgr2 ;
         private RangeIndexBuilderStd other ;
 
-        public IndexBuilderStd(Builders.BlockMgrBuilder bMgr1, Builders.BlockMgrBuilder bMgr2)
+        public IndexBuilderStd(BlockMgrBuilder bMgr1, BlockMgrBuilder bMgr2)
         {
             this.bMgr1 = bMgr1 ;
             this.bMgr2 = bMgr2 ;
@@ -322,57 +370,53 @@ public class DatasetBuilderStd implements DatasetBuilder
         }
     }
     
-    static class RangeIndexBuilderStd implements Builders.RangeIndexBuilder
+    static class RangeIndexBuilderStd implements RangeIndexBuilder
     {
         private BlockMgrBuilder bMgr1 ;
         private BlockMgrBuilder bMgr2 ;
-        public RangeIndexBuilderStd(Builders.BlockMgrBuilder bMgr1, Builders.BlockMgrBuilder bMgr2)
+        public RangeIndexBuilderStd(BlockMgrBuilder bMgr1, BlockMgrBuilder bMgr2)
         {
             this.bMgr1 = bMgr1 ;
             this.bMgr2 = bMgr2 ;
         }
-        
+
         public RangeIndex buildRangeIndex(FileSet fileSet, RecordFactory recordFactory)
         {
-            // TODO WRITE ME
-            return makeBPlusTree(fileSet, recordFactory) ;
+            // ---- BPlusTree based range index.
+            // Get parameters.
+            /*
+             * tdb.bplustree.record=24,0
+             * tdb.bplustree.blksize=
+             * tdb.bplustree.order=
+             */
+
+            // TODO Respect tdb.bplustree.record=24,0 (and so don't need RecordFactory argument).
+            
+            MetaFile metafile = fileSet.getMetaFile() ;
+            //RecordFactory recordFactory = new RecordFactory(keyLength, valueLength) ; // makeRecordFactory(metafile, "tdb.bplustree.record", dftKeyLength, dftValueLength) ;
+
+            String blkSizeStr = metafile.getOrSetDefault("tdb.bplustree.blksize", Integer.toString(SystemTDB.BlockSize)) ; 
+            int blkSize = parseInt(blkSizeStr, "Bad block size") ;
+
+            // IndexBuilder.getBPlusTree().newRangeIndex(fs, recordFactory) ;
+            // Does not set order.
+
+            int calcOrder = BPlusTreeParams.calcOrder(blkSize, recordFactory.recordLength()) ;
+            String orderStr = metafile.getOrSetDefault("tdb.bplustree.order", Integer.toString(calcOrder)) ;
+            int order = parseInt(orderStr, "Bad order for B+Tree") ;
+            if ( order != calcOrder )
+                error(log, "Wrong order (" + order + "), calculated = "+calcOrder) ;
+
+            //        int readCacheSize = PropertyUtils.getPropertyAsInteger(config, Names.pBlockReadCacheSize) ;
+            //        int writeCacheSize = PropertyUtils.getPropertyAsInteger(config, Names.pBlockWriteCacheSize) ;
+
+            int readCacheSize = SystemTDB.BlockReadCacheSize ;
+            int writeCacheSize = SystemTDB.BlockWriteCacheSize ;
+
+            RangeIndex rIndex = createBPTree(fileSet, order, blkSize, readCacheSize, writeCacheSize, recordFactory) ;
+            metafile.flush() ;
+            return rIndex ;
         }
-    }
-
-    public static RangeIndex makeBPlusTree(FileSet fs, RecordFactory recordFactory)
-    {
-        // ---- BPlusTree
-        // Get parameters.
-        /*
-         * tdb.bplustree.record=24,0
-         * tdb.bplustree.blksize=
-         * tdb.bplustree.order=
-         */
-        
-        MetaFile metafile = fs.getMetaFile() ;
-        //RecordFactory recordFactory = new RecordFactory(keyLength, valueLength) ; // makeRecordFactory(metafile, "tdb.bplustree.record", dftKeyLength, dftValueLength) ;
-        
-        String blkSizeStr = metafile.getOrSetDefault("tdb.bplustree.blksize", Integer.toString(SystemTDB.BlockSize)) ; 
-        int blkSize = S.parseInt(blkSizeStr, "Bad block size") ;
-        
-        // IndexBuilder.getBPlusTree().newRangeIndex(fs, recordFactory) ;
-        // Does not set order.
-        
-        int calcOrder = BPlusTreeParams.calcOrder(blkSize, recordFactory.recordLength()) ;
-        String orderStr = metafile.getOrSetDefault("tdb.bplustree.order", Integer.toString(calcOrder)) ;
-        int order = parseInt(orderStr, "Bad order for B+Tree") ;
-        if ( order != calcOrder )
-            error(log, "Wrong order (" + order + "), calculated = "+calcOrder) ;
-
-//        int readCacheSize = PropertyUtils.getPropertyAsInteger(config, Names.pBlockReadCacheSize) ;
-//        int writeCacheSize = PropertyUtils.getPropertyAsInteger(config, Names.pBlockWriteCacheSize) ;
-
-        int readCacheSize = SystemTDB.BlockReadCacheSize ;
-        int writeCacheSize = SystemTDB.BlockWriteCacheSize ;
-        
-        RangeIndex rIndex = createBPTree(fs, order, blkSize, readCacheSize, writeCacheSize, recordFactory) ;
-        metafile.flush() ;
-        return rIndex ;
     }
     
     /** Knowing all the parameters, create a B+Tree */
@@ -404,7 +448,7 @@ public class DatasetBuilderStd implements DatasetBuilder
         return BPlusTree.attach(params, blkMgrNodes, blkMgrRecords) ;
     }
     
-    static class ObjectFileBuilderStd implements Builders.ObjectFileBuilder
+    static class ObjectFileBuilderStd implements ObjectFileBuilder
     {
         public ObjectFile buildObjectFile(FileSet fileSet, String ext)
         {
@@ -415,10 +459,9 @@ public class DatasetBuilderStd implements DatasetBuilder
         }
     }
     
-    static class BlockMgrBuilderStd implements Builders.BlockMgrBuilder
+    static class BlockMgrBuilderStd implements BlockMgrBuilder
     {
-        
-        private int blockSize ;
+        private final int blockSize ;
 
         public BlockMgrBuilderStd(int blockSize) { this.blockSize = blockSize ; }
 

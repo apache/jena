@@ -11,6 +11,7 @@ package dev;
 import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 
+import org.openjena.atlas.lib.FileOps ;
 import org.openjena.atlas.logging.Log ;
 import setup.DatasetBuilderStd ;
 
@@ -29,9 +30,10 @@ public class RunTDB
     public static void main(String[] args) throws Exception
     {
         // New setup
-        
+        FileOps.clearDirectory("DB1") ;
         DatasetBuilderStd.build(new Location("DB1")) ;
         TDB.closedown() ;
+        System.out.println("DONE") ;
         System.exit(0) ;
         
         

@@ -8,60 +8,12 @@ package setup;
 
 import org.openjena.atlas.lib.ColumnMap ;
 
-import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
 import com.hp.hpl.jena.tdb.base.file.FileSet ;
-import com.hp.hpl.jena.tdb.base.file.Location ;
-import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile ;
-import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
-import com.hp.hpl.jena.tdb.index.Index ;
-import com.hp.hpl.jena.tdb.index.RangeIndex ;
 import com.hp.hpl.jena.tdb.index.TupleIndex ;
-import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
-import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable ;
 
-public class Builders
-{
-
-//    interface DatasetGraphBuilder {
-//        DatasetGraphTDB build(Location location) ;
-//    }
-//    
-//    interface TableBuilder {
-//        // (TupleIndex[] indexes, NodeTable nodeTable)
-//        TripleTable buildTripleTable(Location location) ;
-//        QuadTable buildQuadTable(Location location) ;
-//    }
-//    
-    interface NodeTupleTableBuilder {
-        NodeTupleTable buildNodeTupleTable(int N, TupleIndex[] indexes, NodeTable nodeTable) ;
-    }
-    
-    interface NodeTableBuilder {
-        NodeTable buildNodeTable(FileSet fsIndex, FileSet fsObjectFile, int sizeNode2NodeIdCache, int sizeNodeId2NodeCache) ;
-    }
-
-    interface TupleIndexBuilder {
-        TupleIndex buildTupleIndex(FileSet fileSet, ColumnMap colMap) ;
-    }
-    
-    interface RangeIndexBuilder {
-        RangeIndex buildRangeIndex(FileSet fileSet, RecordFactory recordfactory) ;
-    }
-    
-    interface IndexBuilder {
-        Index buildIndex(FileSet fileSet, RecordFactory recordfactory) ;
-    }
-    
-    interface BlockMgrBuilder {
-        // ?? FileSet fileSet
-        BlockMgr buildBlockMgr(Location location, String name) ;
-    }
-    
-    interface ObjectFileBuilder {
-        ObjectFile buildObjectFile(FileSet fileSet, String ext) ;
-    }
+interface TupleIndexBuilder {
+    TupleIndex buildTupleIndex(FileSet fileSet, ColumnMap colMap) ;
 }
-
 /*
  * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
