@@ -1,6 +1,10 @@
 ChangeLog for TDB
 =================
 
+==== 0.8.10
+
++ Increase heap size for data phase in tdbloader2.
+
 ==== 0.8.9
 
 + Bug fix for tdbloader2.

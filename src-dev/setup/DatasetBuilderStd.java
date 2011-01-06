@@ -11,8 +11,6 @@ import static com.hp.hpl.jena.tdb.sys.SystemTDB.SizeOfNodeId ;
 import java.util.Properties ;
 
 import org.openjena.atlas.lib.ColumnMap ;
-import org.openjena.atlas.lib.NotImplemented ;
-import org.openjena.atlas.lib.PropertyUtils ;
 import org.openjena.atlas.lib.StrUtils ;
 import org.slf4j.Logger ;
 
@@ -39,6 +37,7 @@ import com.hp.hpl.jena.tdb.nodetable.NodeTableCache ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTableInline ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTableNative ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable ;
+import com.hp.hpl.jena.tdb.nodetable.NodeTupleTableConcrete ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.store.DatasetPrefixesTDB ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
@@ -52,8 +51,9 @@ import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 public class DatasetBuilderStd implements DatasetBuilder
 {
-    // NodeTableBuilder.
+    // TODO Directory properties initial config.
     // TODO Separate out static for general creation purposes (a super factory)
+    // TODO setting union graph?  Careful - updates!
     
     private static final Logger log = TDB.logInfo ;
     private static DatasetBuilderStd singleton ;
@@ -76,7 +76,6 @@ public class DatasetBuilderStd implements DatasetBuilder
     
     private NodeTableBuilder nodeTableBuilder ;
     
-    private NodeTupleTableBuilder nodeTupleTableBuilder ;
     private TupleIndexBuilder tupleIndexBuilder ;
     
     private Properties config ;
@@ -86,7 +85,7 @@ public class DatasetBuilderStd implements DatasetBuilder
     }
     
     protected void set(NodeTableBuilder nodeTableBuilder,
-                       NodeTupleTableBuilder nodeTupleTableBuilder,
+                       //NodeTupleTableBuilder nodeTupleTableBuilder,
                        TupleIndexBuilder tupleIndexBuilder,
                        IndexBuilder indexBuilder,
                        RangeIndexBuilder rangeIndexBuilder,
@@ -94,7 +93,6 @@ public class DatasetBuilderStd implements DatasetBuilder
                        ObjectFileBuilder objectFileBuilder)
     {
         this.nodeTableBuilder = nodeTableBuilder ;
-        this.nodeTupleTableBuilder = nodeTupleTableBuilder ;
         this.tupleIndexBuilder = tupleIndexBuilder ;
         this.indexBuilder = indexBuilder ;
         this.rangeIndexBuilder = rangeIndexBuilder ;
@@ -111,19 +109,19 @@ public class DatasetBuilderStd implements DatasetBuilder
         this.rangeIndexBuilder      = new RangeIndexBuilderStd(blockMgrBuilder, blockMgrBuilder) ;
         
         this.nodeTableBuilder       = new NodeTableBuilderStd(indexBuilder, objectFileBuilder) ;
-        this.nodeTupleTableBuilder  = null ;
         this.tupleIndexBuilder      = new TupleIndexBuilderStd(rangeIndexBuilder) ;
     }
 
     protected DatasetBuilderStd(NodeTableBuilder nodeTableBuilder,
-                                NodeTupleTableBuilder nodeTupleTableBuilder,
                                 TupleIndexBuilder tupleIndexBuilder,
                                 IndexBuilder indexBuilder,
                                 RangeIndexBuilder rangeIndexBuilder,
                                 BlockMgrBuilder blockMgrBuilder,
                                 ObjectFileBuilder objectFileBuilder)
     {
-        set(nodeTableBuilder, nodeTupleTableBuilder, tupleIndexBuilder, indexBuilder, rangeIndexBuilder, blockMgrBuilder, objectFileBuilder) ;
+        set(nodeTableBuilder, tupleIndexBuilder, 
+            indexBuilder, rangeIndexBuilder, 
+            blockMgrBuilder, objectFileBuilder) ;
     }
     
     public DatasetGraphTDB build(Location location, Properties config)
@@ -145,7 +143,7 @@ public class DatasetBuilderStd implements DatasetBuilder
     
     protected void init(Location location)
     {
-        
+        // TODO Check this.
     }
     
     // ======== Dataset level
@@ -166,11 +164,9 @@ public class DatasetBuilderStd implements DatasetBuilder
         TupleIndex tripleIndexes[] = makeTupleIndexes(location, primary, indexes) ;
         
         if ( tripleIndexes.length != indexes.length )
-            SetupTDB.error(log, "Wrong number of triple table tuples indexes: "+tripleIndexes.length) ;
+            error(log, "Wrong number of triple table tuples indexes: "+tripleIndexes.length) ;
         TripleTable tripleTable = new TripleTable(tripleIndexes, nodeTable) ;
         metafile.flush() ;
-        
-
         return tripleTable ;
     }
     
@@ -185,13 +181,13 @@ public class DatasetBuilderStd implements DatasetBuilder
         String indexes[] = x.split(",") ;
 
         if ( indexes.length != 6 )
-            SetupTDB.error(log, "Wrong number of quad table indexes: "+StrUtils.strjoin(",", indexes)) ;
+            error(log, "Wrong number of quad table indexes: "+StrUtils.strjoin(",", indexes)) ;
         
         log.debug("Quad table: "+primary+" :: "+StrUtils.strjoin(",", indexes)) ;
         
         TupleIndex quadIndexes[] = makeTupleIndexes(location, primary, indexes) ;
         if ( quadIndexes.length != indexes.length )
-            SetupTDB.error(log, "Wrong number of quad table tuples indexes: "+quadIndexes.length) ;
+            error(log, "Wrong number of quad table tuples indexes: "+quadIndexes.length) ;
         QuadTable quadTable = new QuadTable(quadIndexes, nodeTable) ;
         metafile.flush() ;
         return quadTable ;
@@ -261,14 +257,14 @@ public class DatasetBuilderStd implements DatasetBuilder
     // ======== Components level
     
     // This is not actually used in main dataset builder because it's done inside TripleTable/QuadTable.
-    protected NodeTupleTable makeNodeTupleTable(Location location, String name, String[] indexes)
+    protected NodeTupleTable makeNodeTupleTable(Location location, String primary, String[] indexes, NodeTable nodeTable)
     {    
-        
-        
-        
-        
-        if ( true ) throw new NotImplemented() ;
-        return nodeTupleTableBuilder.buildNodeTupleTable(0, null, null) ;
+        int N = indexes.length ;
+        TupleIndex tripleIndexes[] = makeTupleIndexes(location, primary, indexes) ;
+        if ( tripleIndexes.length != indexes.length )
+            error(log, "Wrong number of node table tuples indexes: expected="+N+" : actual="+tripleIndexes.length) ;
+        NodeTupleTable ntt = new NodeTupleTableConcrete(N, tripleIndexes, nodeTable) ;
+        return ntt ;
     }
     
     private TupleIndex[] makeTupleIndexes(Location location, String primary, String[] indexNames)
@@ -298,6 +294,35 @@ public class DatasetBuilderStd implements DatasetBuilder
         return tupleIndexBuilder.buildTupleIndex(fs, colMap) ;
     }
 
+    // ----
+    
+    protected NodeTable makeNodeTable(Location location, String indexNode2Id, String indexId2Node, 
+                                      int sizeNode2NodeIdCache, int sizeNodeId2NodeCache)
+    {
+        /* Physical
+         * ---- An object file
+         * tdb.file.type=object
+         * tdb.file.impl=dat
+         * tdb.file.impl.version=dat-v1
+         *
+         * tdb.object.encoding=sse 
+         */
+        
+        FileSet fsNodeToId = new FileSet(location, indexNode2Id) ;
+        FileSet fsId2Node = new FileSet(location, indexId2Node) ;
+    
+        MetaFile metafile = fsId2Node.getMetaFile() ;
+        metafile.checkOrSetMetadata("tdb.file.type", ObjectFile.type) ;
+        metafile.checkOrSetMetadata("tdb.file.impl", "dat") ;
+        metafile.checkOrSetMetadata("tdb.file.impl.version", "dat-v1") ;
+        metafile.checkOrSetMetadata("tdb.object.encoding", "sse") ;
+        
+        NodeTable nt = nodeTableBuilder.buildNodeTable(fsNodeToId, fsId2Node, sizeNode2NodeIdCache, sizeNodeId2NodeCache) ;
+        fsNodeToId.getMetaFile().flush() ;
+        fsId2Node.getMetaFile().flush() ;
+        return nt ;
+    }
+
     public static class TupleIndexBuilderStd implements TupleIndexBuilder
     {
         private final RangeIndexBuilder rangeIndexBuilder ;
@@ -318,33 +343,6 @@ public class DatasetBuilderStd implements DatasetBuilder
     }
     
     // ----
-    
-    protected NodeTable makeNodeTable(Location location, String indexNode2Id, String indexId2Node, 
-                                      int sizeNode2NodeIdCache, int sizeNodeId2NodeCache)
-    {
-        /* Physical
-         * ---- An object file
-         * tdb.file.type=object
-         * tdb.file.impl=dat
-         * tdb.file.impl.version=dat-v1
-         *
-         * tdb.object.encoding=sse 
-         */
-        
-        FileSet fsNodeToId = new FileSet(location, indexNode2Id) ;
-        FileSet fsId2Node = new FileSet(location, indexId2Node) ;
-
-        MetaFile metafile = fsId2Node.getMetaFile() ;
-        metafile.checkOrSetMetadata("tdb.file.type", ObjectFile.type) ;
-        metafile.checkOrSetMetadata("tdb.file.impl", "dat") ;
-        metafile.checkOrSetMetadata("tdb.file.impl.version", "dat-v1") ;
-        metafile.checkOrSetMetadata("tdb.object.encoding", "sse") ;
-        
-        NodeTable nt = nodeTableBuilder.buildNodeTable(fsNodeToId, fsId2Node, sizeNode2NodeIdCache, sizeNodeId2NodeCache) ;
-        fsNodeToId.getMetaFile().flush() ;
-        fsId2Node.getMetaFile().flush() ;
-        return nt ;
-    }
     
     public static class NodeTableBuilderStd implements NodeTableBuilder
     {

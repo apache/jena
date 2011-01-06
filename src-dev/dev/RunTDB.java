@@ -9,33 +9,20 @@
 
 package dev;
 
+import org.openjena.atlas.lib.FileOps ;
+import org.openjena.atlas.logging.Log ;
+import org.openjena.riot.RiotLoader ;
+import setup.DatasetBuilder ;
+import setup.DatasetBuilderStd ;
+import setup.NoisyBlockMgr ;
+import setup.ObjectFileBuilder ;
+
 import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
 import com.hp.hpl.jena.tdb.base.file.FileSet ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
-
-import org.openjena.atlas.lib.FileOps ;
-import org.openjena.atlas.logging.Log ;
-import org.openjena.riot.RiotLoader ;
-import org.openjena.riot.RiotReader ;
-import setup.BlockMgrBuilder ;
-import setup.DatasetBuilder ;
-import setup.DatasetBuilderStd ;
-import setup.IndexBuilder ;
-import setup.NodeTableBuilder ;
-import setup.NodeTupleTableBuilder ;
-import setup.NoisyBlockMgr ;
-import setup.ObjectFileBuilder ;
-import setup.RangeIndexBuilder ;
-import setup.TupleIndexBuilder ;
-import setup.DatasetBuilderStd.BlockMgrBuilderStd ;
-import setup.DatasetBuilderStd.IndexBuilderStd ;
-import setup.DatasetBuilderStd.NodeTableBuilderStd ;
-import setup.DatasetBuilderStd.ObjectFileBuilderStd ;
-import setup.DatasetBuilderStd.RangeIndexBuilderStd ;
-import setup.DatasetBuilderStd.TupleIndexBuilderStd ;
 
 public class RunTDB
 {
@@ -69,9 +56,8 @@ public class RunTDB
             RangeIndexBuilderStd rangeIndexBuilder      = new RangeIndexBuilderStd(blockMgrBuilder, blockMgrBuilder) ;
             
             NodeTableBuilderStd nodeTableBuilder        = new NodeTableBuilderStd(indexBuilder, objectFileBuilder) ;
-            NodeTupleTableBuilder nodeTupleTableBuilder = null ;
             TupleIndexBuilderStd tupleIndexBuilder      = new TupleIndexBuilderStd(rangeIndexBuilder) ;
-            set(nodeTableBuilder, nodeTupleTableBuilder, tupleIndexBuilder, indexBuilder, rangeIndexBuilder, blockMgrBuilder, objectFileBuilder) ;
+            set(nodeTableBuilder, tupleIndexBuilder, indexBuilder, rangeIndexBuilder, blockMgrBuilder, objectFileBuilder) ;
         }
     }
     
