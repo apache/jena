@@ -186,7 +186,7 @@ def response_no_body(uri, request)
     warn_exit "404 Not found: #{uri}", 9
     #print response.body
   else
-    warn_exit "#{response.code} #{response.message}: #{uri}", 9
+    warn_exit "#{response.code} #{response.message} #{uri}", 9
     # Unreachable
       response.error!
   end
@@ -339,11 +339,11 @@ def cmd_soh(command=nil)
   if requiredFile 
   then
     if ARGV.size != 3
-      warn_exit "Required: dataset URI, graph URI and file", 1 
+      warn_exit "Required: dataset URI, graph URI (or 'default') and file", 1 
     end
   else
     if ARGV.size != 2
-      warn_exit "Required: dataset URI and graph URI", 1 
+      warn_exit "Required: dataset URI and graph URI (or 'default')", 1 
     end
   end
 
