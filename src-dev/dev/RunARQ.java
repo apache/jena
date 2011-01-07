@@ -11,6 +11,9 @@ package dev;
 import java.util.Iterator ;
 import java.util.concurrent.ArrayBlockingQueue ;
 import java.util.concurrent.BlockingQueue ;
+import java.util.concurrent.Callable ;
+import java.util.concurrent.ExecutorService ;
+import java.util.concurrent.Executors ;
 
 import javax.xml.datatype.DatatypeFactory ;
 import javax.xml.datatype.Duration ;
@@ -24,6 +27,7 @@ import org.openjena.atlas.lib.Sink ;
 import org.openjena.atlas.lib.StrUtils ;
 import org.openjena.atlas.logging.Log ;
 import org.openjena.riot.ErrorHandlerFactory ;
+import org.openjena.riot.RiotReader ;
 import org.openjena.riot.checker.CheckerIRI ;
 import org.openjena.riot.pipeline.normalize.CanonicalizeLiteral ;
 
@@ -108,22 +112,76 @@ public class RunARQ
     
     public static void main(String[] argv) throws Exception
     {
-        final BlockingQueue<Triple> queue = new ArrayBlockingQueue<Triple>(10000) ;
+        final Triple marker = new Triple(Node.NULL, Node.NULL, Node.NULL) ; 
+        final String filename = "/home/afs/Datasets/MusicBrainz/tracks-1k.nt" ;
+        final BlockingQueue<Triple> queue = new ArrayBlockingQueue<Triple>(10) ;
         
-        Sink<Triple> sink = new Sink<Triple>() {
+        final Sink<Triple> sink = new Sink<Triple>() {
 
             public void close()
-            {}
+            {
+                System.out.println("Close sink") ;
+                queue.add(marker) ;
+            }
 
             public void send(Triple item)
             {
-                queue.add(item) ; 
+                try
+                {
+                    queue.put(item) ;
+                } catch (InterruptedException e)
+                {
+                    e.printStackTrace();
+                } 
             }
 
             public void flush()
-            {} } ;
+            {}
+        } ;
         
+        Runnable r = new Runnable() {
+            public void run()
+            {
+                RiotReader.parseTriples(filename, sink) ;
+                sink.close() ;
+                System.out.println("Thread end") ;
+            }
+        } ;
+
+//        Thread t = new Thread(r) ;
+//        t.start() ;
+//        for ( ;; )
+//        {
+//           Triple triple = queue.take() ;
+//           if ( triple == marker )
+//               break ;
+//           System.out.println(triple);
+//        }
+//        System.out.println("Wait for thread") ;
+//        t.join() ;
+
+//        Callable<Object> callable = new Callable<Object>() {
+//
+//            public Object call() throws Exception
+//            {
+//                return null ;
+//            }} ;
+
+        ExecutorService executor = Executors.newFixedThreadPool(1);
+        executor.execute(r) ;
         
+        for ( ;; )
+        {
+            Triple triple = queue.take() ;
+            if ( triple == marker )
+                break ;
+            System.out.println(triple);
+        }
+        System.out.println("Wait for thread") ;
+        
+        executor.shutdown() ;
+            
+            
         exit(0) ;
         
         arq.qexpr.main("1/0.0e0") ; System.exit(0) ;
