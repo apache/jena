@@ -42,6 +42,7 @@ public class DevARQ
     //   TransformPropertyPathFlatten
     
     // ---- Documentation
+    // Downplay: PathLib.install.
     // Legacy StageGenerator (http://openjena.org/ARQ/arq-query-eval.html)
     // src-examples of OpExecutor+QueryEngine
     // http://www.openjena.org/wiki/ARQ/Concurrency
