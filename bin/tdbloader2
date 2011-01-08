@@ -46,7 +46,7 @@ log "Data phase"
 DATA_TRIPLES="$LOC/data-triples.$TMP"
 DATA_QUADS="$LOC/data-quads.$TMP"
 
-java -cp "$CP" -server "$PKG".CmdNodeTableBuilder \
+java -Xmx1200M -cp "$CP" -server "$PKG".CmdNodeTableBuilder \
     "--loc=$LOC" "--triples=$DATA_TRIPLES" "--quads=$DATA_QUADS" $FILES
 
 # ---- Index intermediates
