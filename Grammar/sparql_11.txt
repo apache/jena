@@ -187,12 +187,12 @@ TOKENS
 <DEFAULT> TOKEN : {
 <LPAREN: "(">
 | <RPAREN: ")">
-| <NIL: <LPAREN> (<WS> | <SINGLE_LINE_COMMENT>)* <RPAREN>>
+| <NIL: <LPAREN> (<WSC>)* <RPAREN>>
 | <LBRACE: "{">
 | <RBRACE: "}">
 | <LBRACKET: "[">
 | <RBRACKET: "]">
-| <ANON: <LBRACKET> (<WS> | <SINGLE_LINE_COMMENT>)* <RBRACKET>>
+| <ANON: <LBRACKET> (<WSC>)* <RBRACKET>>
 | <SEMICOLON: ";">
 | <COMMA: ",">
 | <DOT: ".">

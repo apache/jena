@@ -217,9 +217,10 @@ void ConstructQuery() : { Template t ;
     WhereClause()
     SolutionModifier()
  |
+   <STAR>
    // templateless form.
     ( DatasetClause() )*
-    <WHERE>
+    (<WHERE>)?
     <LBRACE>
     (TriplesTemplate(acc))?
     <RBRACE>

@@ -4,7 +4,7 @@
 // Author:  Andy Seaborne <andy.seaborne@epimorphics.com>
 // (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
 // (c) Copyright 2010 Talis Systems Ltd.
-// (c) Copyright 2010 Epimorphics Ltd.
+// (c) Copyright 2010, 2011 Epimorphics Ltd.
 // All rights reserved.
 // See end of file for details.
 //
@@ -148,9 +148,10 @@ void ConstructQuery() : { Template t ;
     WhereClause()
     SolutionModifier()
  |
+   <STAR>
    // templateless form.
     ( DatasetClause() )*
-    <WHERE>
+    (<WHERE>)?
     <LBRACE>
     (TriplesTemplate(acc))?
     <RBRACE>
@@ -1721,15 +1722,16 @@ TOKEN :
 {
   < LPAREN: "(" >
 | < RPAREN: ")" >
-// All the stuff for NUIL is needed just to make a 
+// All the stuff for NUL is needed just to make a 
 // single list "() ." as a triple pattern illegal.
 // It leads to a lot of extra work.
-| <NIL: <LPAREN> (<WS>|<SINGLE_LINE_COMMENT>)* <RPAREN> >
+// Similarly [].
+| <NIL: <LPAREN> (<WSC>)* <RPAREN> >
 | < LBRACE: "{" >
 | < RBRACE: "}" >
 | < LBRACKET: "[" >
 | < RBRACKET: "]" >
-| < ANON: <LBRACKET> (<WS>|<SINGLE_LINE_COMMENT>)* <RBRACKET> >
+| < ANON: <LBRACKET> (<WSC>)* <RBRACKET> >
 | < SEMICOLON: ";" >
 | < COMMA: "," >
 | < DOT: "." >
@@ -1800,6 +1802,8 @@ TOKEN:
 }
 /*
  * (c) Copyright 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Systems Ltd.
+ * (c) Copyright 2010, 2011 Epimorphics Ltd.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
