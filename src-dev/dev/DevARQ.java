@@ -2,6 +2,16 @@ package dev ;
 
 public class DevARQ
 {
+    // .filemanager
+    // FileUtils, TypedStream conversion.
+    //   Split LocationMapper into the mapper and the config file.
+    //   Split the extension filename => content mapping.
+    // FileManager is RDF - abstract out the "open a typed connection" unit.
+    
+    // Most Locator.open don't know about types => extensions.
+    // Super class for "guessing" -> RIOT
+    
+    
     // >>>> Tasks
 
     // OutputLangUtils
