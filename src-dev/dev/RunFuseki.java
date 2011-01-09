@@ -14,10 +14,10 @@ public class RunFuseki
     {
         FusekiCmd.main(
                     //"-v", 
-                    "--port=3030", 
-                    //"--mem",
-                    "--loc=DB",
-                    
+                    "--update",
+                    //"--port=3030", 
+                    "--mem",
+                    //"--loc=DB",
                     //"--file=books.ttl",
                     //"--desc=tdb2.ttl", 
                     "/ds"

@@ -45,7 +45,7 @@ public class SPARQLServer
     private String datasetPath ;
     private int port ;
     private boolean verbose = false ;
-    private boolean enableUpdate = false ;;
+    private boolean enableUpdate = false ;
     
     public Server getServer() { return server ; }
     
@@ -123,40 +123,38 @@ public class SPARQLServer
         
         String validationRoot = "/validate" ;
         boolean installValidators = true ;
-        boolean installManager = true ;
+        boolean installManager = false ;
 
         if ( enableUpdate )
-            serverlog.info("Update enabled") ;
-        else
-            serverlog.info("Read-only server") ;
+            installManager = true ;
+            
+        serverlog.info(enableUpdate ? "Update enabled" : "Read-only server") ;
         
         for ( String dsPath : datasets )
         {
             HttpServlet sparqlQuery = new SPARQL_QueryDataset(verbose) ;
-            HttpServlet sparqlHttp ;
-            if ( enableUpdate )
-                sparqlHttp = new SPARQL_REST_RW(verbose) ;
-            else
-                sparqlHttp = new SPARQL_REST_R(verbose) ;
+            HttpServlet sparqlHttp = 
+                enableUpdate 
+                ? new SPARQL_REST_RW(verbose) 
+                : new SPARQL_REST_R(verbose) ;
             
             // SPARQL services.
-            addServlet(context, sparqlHttp, dsPath);
-            addServlet(context, sparqlHttp, dsPath+HttpNames.ServiceData) ;
-            addServlet(context, sparqlQuery, dsPath+HttpNames.ServiceQuery) ;
-            addServlet(context, sparqlQuery, dsPath+HttpNames.ServiceQueryAlt) ;      // Alternative name
+            addServlet(context, sparqlHttp, dsPath);                                // URI: /dataset
+            addServlet(context, sparqlHttp, dsPath+HttpNames.ServiceData) ;         // URI: /dataset/data
+            addServlet(context, sparqlQuery, dsPath+HttpNames.ServiceQuery) ;       // URI: /dataset/query
+            addServlet(context, sparqlQuery, dsPath+HttpNames.ServiceQueryAlt) ;    // URI: /dataset/sparql -- Alternative name
             //add(context, new DumpServlet(),"/dump");
 
             if ( enableUpdate )
             {
                 HttpServlet sparqlUpdate = new SPARQL_Update(verbose) ;
+                addServlet(context, sparqlUpdate, dsPath+HttpNames.ServiceUpdate) ; // URI: /dataset/update
+                
                 HttpServlet sparqlUpload = new SPARQL_Upload(verbose) ;
-                addServlet(context, sparqlUpdate, dsPath+HttpNames.ServiceUpdate) ;
-                addServlet(context, sparqlUpload, dsPath+HttpNames.ServiceUpload) ;
+                addServlet(context, sparqlUpload, dsPath+HttpNames.ServiceUpload) ; // URI: /dataset/upload
             }
         }
         
-        // Add generic services 
-        addServlet(context, new SPARQL_Upload(verbose), HttpNames.ServiceUpload) ;
         
         if ( installValidators )
         {
@@ -186,16 +184,9 @@ public class SPARQLServer
         
         if ( installManager || installValidators )
         {
-            // Make file extensions works for RDF file types. 
-            // Finally, static content
-            DefaultServlet staticServlet = new DefaultServlet() ;
             String [] files = { "fuseki.html" } ;
             context.setWelcomeFiles(files) ;
-            ServletHolder staticContent = new ServletHolder(staticServlet) ;
-            // Content location : isolate so as not to expose the current directory
-            
-            staticContent.setInitParameter("resourceBase", "pages") ;
-            addServlet(context, staticContent, "/") ;
+            addContent(context, "/", "pages") ;
         }
         
 //            // Add the webapp.
@@ -207,6 +198,15 @@ public class SPARQLServer
 //            context.setResourceBase("../test-jetty-webapp/src/main/webapp");
 //            context.setContextPath("/");
 //            context.setParentLoaderPriority(true);Exception ex)
+    }
+    
+    private static void addContent(ServletContextHandler context, String location, String pages)
+    {
+        DefaultServlet staticServlet = new DefaultServlet() ;
+        ServletHolder staticContent = new ServletHolder(staticServlet) ;
+        staticContent.setInitParameter("resourceBase", pages) ;
+        addServlet(context, staticContent, location) ;
+        
     }
     
     private static void addServlet(ServletContextHandler context, HttpServlet servlet, String path)

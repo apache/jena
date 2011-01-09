@@ -2,7 +2,14 @@ package dev;
 
 public class DevFuseki
 {
-    // Test and document --allowUpdate (HTML app?)
+    // Structure pages, different static content servers
+    // /Main - index.html = fuseki.html
+    // /validate
+    // /admin
+    
+    
+    
+    
     // Deploy to sparql.org
     
     // Testing:
