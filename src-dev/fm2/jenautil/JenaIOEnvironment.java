@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package fm2;
+package fm2.jenautil;
 
 import java.io.InputStream ;
 import java.util.StringTokenizer ;
@@ -12,6 +12,7 @@ import java.util.StringTokenizer ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
+import com.hp.hpl.jena.JenaRuntime ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.rdf.model.RDFNode ;
@@ -22,14 +23,105 @@ import com.hp.hpl.jena.shared.JenaException ;
 import com.hp.hpl.jena.util.FileUtils ;
 import com.hp.hpl.jena.vocabulary.LocationMappingVocab ;
 
+import fm2.atlas.LocationMapper ;
+
 /** Code for using the general facilities of the location mapper/ filemanager subsystem
  *  and set up for Jena usage. e.g. find a location mapper with RDf description. 
  */
-public class SetupFileManagement
+public class JenaIOEnvironment
 {
-    // Singletons
+    // TODO Singletons
     
-    static Logger log = LoggerFactory.getLogger(SetupFileManagement.class)  ;
+    static LocationMapper theMapper = null ;
+    /** Get the global LocationMapper */
+    public static LocationMapper getLocationMapper()
+    {
+        if ( theMapper == null )
+        {
+            theMapper = new LocationMapper() ;
+            if ( getGlobalConfigPath() != null )
+                JenaIOEnvironment.createLocationMapper(getGlobalConfigPath()) ;
+        }
+        return theMapper ;
+    }
+    
+    static Logger log = LoggerFactory.getLogger(JenaIOEnvironment.class)  ;
+    
+    /** The default path for searching for the location mapper */
+    public static final String DEFAULT_PATH =
+        "file:location-mapping.rdf;file:location-mapping.n3;file:location-mapping.ttl;"+
+        "file:etc/location-mapping.rdf;file:etc/location-mapping.n3;"+
+        "file:etc/location-mapping.ttl" ;
+    public static final String GlobalMapperSystemProperty1 = "http://jena.hpl.hp.com/2004/08/LocationMap" ;
+    public static final String GlobalMapperSystemProperty2 = "LocationMap" ;
+
+    static String s_globalMapperPath = null ; 
+
+
+
+    static private String getGlobalConfigPath()
+    {
+        if ( s_globalMapperPath == null )
+            s_globalMapperPath = JenaRuntime.getSystemProperty(GlobalMapperSystemProperty1,null) ;
+        if ( s_globalMapperPath == null )
+            s_globalMapperPath = JenaRuntime.getSystemProperty(GlobalMapperSystemProperty2,null) ;
+        if ( s_globalMapperPath == null )
+            s_globalMapperPath = DEFAULT_PATH ;
+        return s_globalMapperPath ;
+    }
+
+    /** Get the global LocationMapper */
+    public static LocationMapper get()
+    {
+        if ( theMapper == null )
+        {
+            theMapper = new LocationMapper() ;
+            if ( getGlobalConfigPath() != null )
+                JenaIOEnvironment.createLocationMapper(getGlobalConfigPath()) ;
+        }
+        return theMapper ;
+    }
+
+    /** Set the global lcoation mapper. (as returned by get())
+     * If called before any call to get(), then the usual default global location mapper is not created 
+     * @param globalLocationMapper
+     */
+    public static void setGlobalLocationMapper(LocationMapper globalLocationMapper)
+    {
+        theMapper = globalLocationMapper ;
+    }
+
+    /** Make a location mapper from the path settings */ 
+    static public LocationMapper makeGlobal()
+    {
+        LocationMapper lMap = new LocationMapper() ;
+        if ( getGlobalConfigPath() != null )
+        {
+            LocationMapper lMap2 = JenaIOEnvironment.createLocationMapper(getGlobalConfigPath()) ;
+            lMap.copyFrom(lMap2) ;
+        }
+        return lMap ;
+    }
+  
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     /** Create a LocationMapper based on Model */
     public static LocationMapper processConfig(Model m)
     {

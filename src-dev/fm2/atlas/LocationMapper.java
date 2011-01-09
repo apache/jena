@@ -4,17 +4,19 @@
  * [See end of file]
  */
 
-package fm2;
+package fm2.atlas;
 
-import java.util.*;
+import java.util.HashMap ;
+import java.util.Iterator ;
+import java.util.Map ;
 
-import org.openjena.atlas.AtlasException ;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
 
-import com.hp.hpl.jena.JenaRuntime;
-import com.hp.hpl.jena.vocabulary.LocationMappingVocab;
-import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.ModelFactory ;
+import com.hp.hpl.jena.rdf.model.Resource ;
+import com.hp.hpl.jena.vocabulary.LocationMappingVocab ;
 
 /** 
  * Alternative locations for URIs.  Maintains two maps:
@@ -26,60 +28,16 @@ import com.hp.hpl.jena.rdf.model.*;
  * is "etc/location-mapping.n3".
  * 
  * There is a default LocationMapper which is used by the global @link{FileManager}.
- * 
- * @see FileManager
  */
 
 public class LocationMapper
 {
     static Logger log = LoggerFactory.getLogger(LocationMapper.class)  ;
-    /** The default path for searching for the location mapper */
-    public static final String DEFAULT_PATH =
-        "file:location-mapping.rdf;file:location-mapping.n3;file:location-mapping.ttl;"+
-        "file:etc/location-mapping.rdf;file:etc/location-mapping.n3;"+
-        "file:etc/location-mapping.ttl" ;
-    public static final String GlobalMapperSystemProperty1 = "http://jena.hpl.hp.com/2004/08/LocationMap" ;
-    public static final String GlobalMapperSystemProperty2 = "LocationMap" ;
-    
-    static String s_globalMapperPath = null ; 
-        
     Map<String, String> altLocations = new HashMap<String, String>() ;
     Map<String, String> altPrefixes = new HashMap<String, String>() ;
     
-    static LocationMapper theMapper = null ;
-    
-    /** Get the global LocationMapper */
-    public static LocationMapper get()
-    {
-        if ( theMapper == null )
-        {
-            theMapper = new LocationMapper() ;
-            if ( getGlobalConfigPath() != null )
-                SetupFileManagement.createLocationMapper(getGlobalConfigPath()) ;
-        }
-        return theMapper ;
-    }
-    
-    /** Set the global lcoation mapper. (as returned by get())
-     * If called before any call to get(), then the usual default global location mapper is not created 
-     * @param globalLocationMapper
-     */
-    public static void setGlobalLocationMapper(LocationMapper globalLocationMapper)
-    {
-        theMapper = globalLocationMapper ;
-    }
 
-    /** Make a location mapper from the path settings */ 
-    static public LocationMapper makeGlobal()
-    {
-        LocationMapper lMap = new LocationMapper() ;
-        if ( getGlobalConfigPath() != null )
-        {
-            LocationMapper lMap2 = SetupFileManagement.createLocationMapper(getGlobalConfigPath()) ;
-            copyFrom(lMap, lMap2) ;
-        }
-        return lMap ;
-    }
+
     
     /** Create a LocationMapper with no mapping yet */
     public LocationMapper() { }
@@ -92,31 +50,32 @@ public class LocationMapper
         altPrefixes.putAll(locMapper.altPrefixes) ;
     }
     
-    /** Create a LocationMapper from an existing model
-     * @see com.hp.hpl.jena.vocabulary.LocationMappingVocab
-     */
-    public LocationMapper(Model model)
-    {
-        LocationMapper lm = SetupFileManagement.processConfig(model) ;
-        if ( lm == null )
-            throw new AtlasException("Model does not provide a location mapping") ;
-        copyFrom(this, lm) ;
-         
-    }
+    // Moved to Jena IO environment setup.
+//    /** Create a LocationMapper from an existing model
+//     * @see com.hp.hpl.jena.vocabulary.LocationMappingVocab
+//     */
+//    public LocationMapper(Model model)
+//    {
+//        LocationMapper lm = JenaIOEnvironment.processConfig(model) ;
+//        if ( lm == null )
+//            throw new AtlasException("Model does not provide a location mapping") ;
+//        copyFrom(lm) ;
+//         
+//    }
+//    
+//    /** Create a LocationMapper from a config file */
+//    public LocationMapper(String config)
+//    {
+//        LocationMapper lm = JenaIOEnvironment.createLocationMapper(config) ;
+//        if ( lm == null )
+//            throw new AtlasException("Config does not provide a location mapping") ;
+//        copyFrom(lm) ;
+//    }
     
-    /** Create a LocationMapper from a config file */
-    public LocationMapper(String config)
+    public void copyFrom(LocationMapper lmap2)
     {
-        LocationMapper lm = SetupFileManagement.createLocationMapper(config) ;
-        if ( lm == null )
-            throw new AtlasException("Config does not provide a location mapping") ;
-        copyFrom(this, lm) ;
-    }
-    
-    private static void copyFrom(LocationMapper lmap1, LocationMapper lmap2)
-    {
-        lmap1.altLocations.putAll(lmap2.altLocations) ;
-        lmap1.altPrefixes.putAll(lmap2.altPrefixes) ;
+        this.altLocations.putAll(lmap2.altLocations) ;
+        this.altPrefixes.putAll(lmap2.altPrefixes) ;
     }
     
     public String altMapping(String uri)
@@ -191,19 +150,7 @@ public class LocationMapper
     {
         return altPrefixes.get(uriPrefix) ;
     }
-    
-    
-    static private String getGlobalConfigPath()
-    {
-        if ( s_globalMapperPath == null )
-            s_globalMapperPath = JenaRuntime.getSystemProperty(GlobalMapperSystemProperty1,null) ;
-        if ( s_globalMapperPath == null )
-            s_globalMapperPath = JenaRuntime.getSystemProperty(GlobalMapperSystemProperty2,null) ;
-        if ( s_globalMapperPath == null )
-            s_globalMapperPath = DEFAULT_PATH ;
-        return s_globalMapperPath ;
-    }
-    
+   
     @Override
     public int hashCode()
     {

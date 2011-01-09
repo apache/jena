@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package fm2;
+package fm2.atlas;
 
 import java.io.File ;
 import java.io.FileInputStream ;
@@ -88,9 +88,9 @@ public class LocatorFile implements Locator
         String fn = FileUtils.toFilename(filenameOrURI) ;
         if ( fn == null )
             return null ;
-        
-        if ( altDir != null && ! fn.startsWith("/") && ! fn.startsWith(FileManager.filePathSeparator) )
-            fn = altDir+java.io.File.separator+fn ;
+        // Include "/" for portability (e.g. file: URIs). 
+        if ( altDir != null && ! fn.startsWith("/") && ! fn.startsWith(File.pathSeparator))
+            fn = altDir+File.separator+fn ;
                      
         return new File(fn) ;
     }
@@ -115,7 +115,7 @@ public class LocatorFile implements Locator
         try {
             if ( f == null || !f.exists() )
             {
-                if ( FileManager.logAllLookups && log.isTraceEnabled())
+                if ( StreamManager.logAllLookups && log.isTraceEnabled())
                     log.trace("Not found: "+filenameOrURI+altDirLogStr) ;
                 return null ;
             }
@@ -127,7 +127,7 @@ public class LocatorFile implements Locator
         try {
             InputStream in = new FileInputStream(f) ;
 
-            if ( FileManager.logAllLookups && log.isTraceEnabled() )
+            if ( StreamManager.logAllLookups && log.isTraceEnabled() )
                 log.trace("Found: "+filenameOrURI+altDirLogStr) ;
                 
             

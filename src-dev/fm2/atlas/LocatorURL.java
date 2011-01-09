@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package fm2;
+package fm2.atlas;
 
 import java.io.BufferedInputStream ;
 import java.io.IOException ;
@@ -30,7 +30,7 @@ public class LocatorURL implements Locator
     {
         if ( ! acceptByScheme(filenameOrURI) )
         {
-            if ( FileManager.logAllLookups && log.isTraceEnabled() )
+            if ( StreamManager.logAllLookups && log.isTraceEnabled() )
                 log.trace("Not found : "+filenameOrURI) ; 
             return null;
         }
@@ -48,14 +48,14 @@ public class LocatorURL implements Locator
             conn.connect() ;
             InputStream in = new BufferedInputStream(conn.getInputStream());
             
-            if ( FileManager.logAllLookups  && log.isTraceEnabled() )
+            if ( StreamManager.logAllLookups  && log.isTraceEnabled() )
                 log.trace("Found: "+filenameOrURI) ;
             //return new TypedStream(in, conn.getContentType()) ; 
             return new TypedStream(in) ;
         }
         catch (java.io.FileNotFoundException ex) 
         {
-            if ( FileManager.logAllLookups && log.isTraceEnabled() )
+            if ( StreamManager.logAllLookups && log.isTraceEnabled() )
                 log.trace("LocatorURL: not found: "+filenameOrURI) ; 
             return null ;
         }
@@ -67,19 +67,19 @@ public class LocatorURL implements Locator
         // IOExceptions that occur sometimes.
         catch (java.net.UnknownHostException ex)
         {
-            if ( FileManager.logAllLookups && log.isTraceEnabled() )
+            if ( StreamManager.logAllLookups && log.isTraceEnabled() )
                 log.trace("LocatorURL: not found (UnknownHostException): "+filenameOrURI) ;
             return null ;
         }
         catch (java.net.ConnectException ex)
         { 
-            if ( FileManager.logAllLookups && log.isTraceEnabled() )
+            if ( StreamManager.logAllLookups && log.isTraceEnabled() )
                 log.trace("LocatorURL: not found (ConnectException): "+filenameOrURI) ;
             return null ;
         }
         catch (java.net.SocketException ex)
         {
-            if ( FileManager.logAllLookups && log.isTraceEnabled() )
+            if ( StreamManager.logAllLookups && log.isTraceEnabled() )
                 log.trace("LocatorURL: not found (SocketException): "+filenameOrURI) ;
             return null ;
         }

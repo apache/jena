@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package fm2;
+package fm2.atlas;
 
 import java.io.IOException ;
 import java.io.InputStream ;
@@ -24,6 +24,8 @@ import com.hp.hpl.jena.util.FileUtils ;
 public class StreamManager
 {
     private static Logger log = LoggerFactory.getLogger(StreamManager.class) ;
+    
+    public static boolean logAllLookups = true ; 
     
     protected List<Locator> handlers = new ArrayList<Locator>() ;
     protected LocationMapper mapper = null ;
@@ -52,7 +54,7 @@ public class StreamManager
     
         if ( uri == null )
         {
-            if ( FileManager.logAllLookups && log.isDebugEnabled() )
+            if ( StreamManager.logAllLookups && log.isDebugEnabled() )
                 log.debug("Not mapped: "+filenameOrURI) ;
             uri = filenameOrURI ;
         }

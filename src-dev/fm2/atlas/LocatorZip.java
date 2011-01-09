@@ -4,22 +4,23 @@
  * [See end of file]
  */
 
-package fm2;
+package fm2.atlas;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
+import java.io.IOException ;
+import java.io.InputStream ;
+import java.util.zip.ZipEntry ;
+import java.util.zip.ZipFile ;
 
 import org.openjena.atlas.web.TypedStream ;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
 
-import com.hp.hpl.jena.shared.JenaException;
+import com.hp.hpl.jena.shared.JenaException ;
+
 
 /** Location files in a zip file */
 
-class LocatorZip implements Locator
+public class LocatorZip implements Locator
 {
     static Logger log = LoggerFactory.getLogger(LocatorZip.class) ;
     String zipFileName = null ; 
@@ -41,7 +42,7 @@ class LocatorZip implements Locator
         ZipEntry entry = zipFile.getEntry(filenameOrURI) ;
         if ( entry == null )
         {
-            if ( FileManager.logAllLookups && log.isDebugEnabled() )
+            if ( StreamManager.logAllLookups && log.isDebugEnabled() )
                 log.debug("Not found: "+zipFileName+" : "+filenameOrURI) ; 
             return null ;
             
@@ -52,12 +53,12 @@ class LocatorZip implements Locator
             
             if ( in == null )
             {
-                if ( FileManager.logAllLookups && log.isTraceEnabled() )
+                if ( StreamManager.logAllLookups && log.isTraceEnabled() )
                     log.trace("Not found: "+filenameOrURI) ; 
                 return null ;
             }
             
-            if ( FileManager.logAllLookups  && log.isTraceEnabled() )
+            if ( StreamManager.logAllLookups  && log.isTraceEnabled() )
                 log.trace("Found: "+filenameOrURI) ;
             return new TypedStream(in) ;
         }

@@ -3,19 +3,31 @@
  * [See end of file]
  */
 
-package fm2;
+package fm2.jenautil;
 
-import java.io.* ;
-import java.util.* ;
+import java.io.File ;
+import java.io.IOException ;
+import java.util.HashMap ;
+import java.util.Iterator ;
+import java.util.Map ;
 
 import org.openjena.atlas.web.TypedStream ;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-//import javax.servlet.* ;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
 
-import com.hp.hpl.jena.rdf.model.* ;
-import com.hp.hpl.jena.shared.*;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.ModelFactory ;
+import com.hp.hpl.jena.shared.JenaException ;
+import com.hp.hpl.jena.shared.NotFoundException ;
 import com.hp.hpl.jena.util.FileUtils ;
+
+import fm2.atlas.LocationMapper ;
+import fm2.atlas.Locator ;
+import fm2.atlas.LocatorClassLoader ;
+import fm2.atlas.LocatorFile ;
+import fm2.atlas.LocatorURL ;
+import fm2.atlas.LocatorZip ;
+import fm2.atlas.StreamManager ;
 
 /** FileManager
  * 
@@ -64,8 +76,6 @@ public class FileManager extends StreamManager
 
     static FileManager instance = null ;
 
-    static boolean logAllLookups = true ; 
-
     boolean cacheModelLoads = false ;
     Map<String, Model> modelCache = null ;
     
@@ -110,7 +120,7 @@ public class FileManager extends StreamManager
     /** Create a "standard" FileManager. */
     public static FileManager makeGlobal()
     {
-        FileManager fMgr = new FileManager(LocationMapper.get()) ;
+        FileManager fMgr = new FileManager(JenaIOEnvironment.get()) ;
         setStdLocators(fMgr) ;
         return fMgr ;
     }

@@ -4,67 +4,22 @@
  * [See end of file]
  */
 
-package fm2;
-
-import java.io.InputStream;
-
-import com.hp.hpl.jena.util.FileUtils ;
+package fm2.atlas;
 
 import org.openjena.atlas.web.TypedStream ;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-public class LocatorClassLoader  implements Locator
+/**
+ *  Interface to things that open streams by some string reference
+ */
+
+public interface Locator
 {
-    static Logger log = LoggerFactory.getLogger(LocatorClassLoader.class) ;
-
-    ClassLoader classLoader = null ;
-    public LocatorClassLoader(ClassLoader _classLoader)
-    {
-        classLoader =_classLoader ;
-    }
-    
-    @Override
-    public boolean equals( Object other )
-    {
-        return 
-            other instanceof LocatorClassLoader 
-            && classLoader == ((LocatorClassLoader) other).classLoader;
-    }
-    
-    @Override
-    public int hashCode()
-        { return classLoader.hashCode(); }
-    
-    public TypedStream open(String filenameOrURI)
-    {
-        if ( classLoader == null )
-            return null ;
-            
-        String fn = FileUtils.toFilename(filenameOrURI) ;
-        if ( fn == null )
-        {
-            if ( FileManager.logAllLookups && log.isTraceEnabled() )
-                log.trace("Not found: "+filenameOrURI) ; 
-            return null ;
-        }
-        InputStream in = classLoader.getResourceAsStream(fn) ;
-        if ( in == null )
-        {
-            if ( FileManager.logAllLookups && log.isTraceEnabled() )
-                log.trace("Failed to open: "+filenameOrURI) ;
-            return null ;
-        }
-        
-        if ( FileManager.logAllLookups  && log.isTraceEnabled() )
-            log.trace("Found: "+filenameOrURI) ;
-        
-        return new TypedStream(in) ;
-    }
-    
-    public String getName() { return "ClassLoaderLocator" ; }
-    
+    public TypedStream open(String filenameOrURI) ;
+    // Too expensive for LocatorURL - just try to open the thing!
+    //public boolean exists(String filenameOrURI) ;
+    public String getName() ;
 }
+
 /*
  * (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
