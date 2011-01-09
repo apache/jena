@@ -18,16 +18,15 @@ public class LongTermIssues
      */
     
     /*
-     * Use 63 bit NodeId, 1 bit for inline/external
+     * Root node not fixed to block zero.
+     * Start at block 1, block0 is control
      */
+    
+    /* Use 63 bit NodeId, 1 bit for inline/external */
 
-    /*  
-     * BNodes are written without leading zeros.
-     */
+    /* BNodes are written without leading zeros. */
 
-    /*  
-     * Binary node table.
-     */
+    /* Binary node table. */
     
     /* prefixes index to be called "GPU", not "prefixIdx" (for consistency) */  
 }
