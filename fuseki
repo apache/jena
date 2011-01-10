@@ -1,0 +1,13 @@
+#!/bin/bash
+
+M2_REPO="/home/afs/.m2/repo" ;
+X=$(perl -ne 'next unless /kind="var"\s*path="M2_REPO([^"]*)"/ ; print "$1","\n"' .classpath)
+
+CP=
+for x in $X
+do
+   CP="$CP:$M2_REPO$x"
+done
+CP="classes$CP"
+
+exec java -cp "$CP" -Xmx1200M org.openjena.fuseki.FusekiCmd "$@"
