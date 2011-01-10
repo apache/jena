@@ -2,6 +2,9 @@ package dev ;
 
 public class DevARQ
 {
+    // round(1.3) -> "1"^^xsd:decimal.
+    // floor, ceil.
+    
     // .filemanager
     // FileUtils, TypedStream conversion.
     // Check use of FileUtils.

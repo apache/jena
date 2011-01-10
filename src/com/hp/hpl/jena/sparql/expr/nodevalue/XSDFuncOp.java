@@ -258,8 +258,7 @@ public class XSDFuncOp
                 BigDecimal dec = v.getDecimal().setScale( 0, BigDecimal.ROUND_CEILING) ;
                 return NodeValue.makeDecimal(dec) ;
             case OP_FLOAT:
-                // NB - returns a double (no Java Math.ceil(float))
-                return NodeValue.makeDouble( Math.ceil(v.getFloat()) ) ;
+                return NodeValue.makeFloat( (float)Math.ceil(v.getFloat()) ) ;
             case OP_DOUBLE:
                 return NodeValue.makeDouble( Math.ceil(v.getDouble()) ) ;
             default:
@@ -277,8 +276,7 @@ public class XSDFuncOp
                 BigDecimal dec = v.getDecimal().setScale(0, BigDecimal.ROUND_FLOOR) ;
                 return NodeValue.makeDecimal(dec) ;
             case OP_FLOAT:
-                // NB - returns a double (no Java Math.floor(float)) 
-                return NodeValue.makeDouble( Math.floor(v.getFloat()) ) ;
+                return NodeValue.makeFloat( (float)Math.floor(v.getFloat()) ) ;
             case OP_DOUBLE:
                 return NodeValue.makeDouble( Math.floor(v.getDouble()) ) ;
             default:
