@@ -32,6 +32,23 @@ import com.hp.hpl.jena.tdb.TDBFactory ;
 
 public class FusekiCmd extends CmdARQ
 {
+    // Arguments:
+    // --update
+    
+    // Specific switches:
+    
+    // --admin=on/off
+    
+    // --http-update
+    // --http-get
+    
+    // --sparql-query
+    // --sparql-update
+    
+    // pages/validators/
+    // pages/control/
+    // pages/query/ or /pages/sparql/
+    
     private static ArgDecl argMem           = new ArgDecl(ArgDecl.NoValue,  "mem") ;
     private static ArgDecl argAllowUpdate   = new ArgDecl(ArgDecl.NoValue,  "update", "allowUpdate") ;
     private static ArgDecl argFile          = new ArgDecl(ArgDecl.HasValue, "file") ;

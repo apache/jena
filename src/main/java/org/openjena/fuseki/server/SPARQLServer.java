@@ -186,9 +186,10 @@ public class SPARQLServer
         {
             String [] files = { "fuseki.html" } ;
             context.setWelcomeFiles(files) ;
-            addContent(context, "/", "pages") ;
+            addContent(context, "/*", "pages") ;
         }
         
+        // TEST
 //            // Add the webapp.
 //            webAppContextJoseki = new WebAppContext(server, "webapps/joseki", "/") ;
 //            server.addHandler(webAppContextJoseki) ;
@@ -200,24 +201,24 @@ public class SPARQLServer
 //            context.setParentLoaderPriority(true);Exception ex)
     }
     
-    private static void addContent(ServletContextHandler context, String location, String pages)
+    private static void addContent(ServletContextHandler context, String pathSpec, String pages)
     {
         DefaultServlet staticServlet = new DefaultServlet() ;
         ServletHolder staticContent = new ServletHolder(staticServlet) ;
         staticContent.setInitParameter("resourceBase", pages) ;
-        addServlet(context, staticContent, location) ;
+        addServlet(context, staticContent, pathSpec) ;
         
     }
     
-    private static void addServlet(ServletContextHandler context, HttpServlet servlet, String path)
+    private static void addServlet(ServletContextHandler context, HttpServlet servlet, String pathSpec)
     {
         ServletHolder holder = new ServletHolder(servlet) ;
-        addServlet(context, holder, path) ;
+        addServlet(context, holder, pathSpec) ;
     }
     
-    private static void addServlet(ServletContextHandler context, ServletHolder holder, String path)
+    private static void addServlet(ServletContextHandler context, ServletHolder holder, String pathSpec)
     {
-        context.addServlet(holder, path) ;
+        context.addServlet(holder, pathSpec) ;
     }
 
 }
