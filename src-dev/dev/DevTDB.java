@@ -4,6 +4,11 @@ public class DevTDB
 {
     // ** CHECK bnode ids without leading zeros in Jena?
     
+    // ** Reorganise documentation.
+    // Page on union dataset.
+    // Tutorial.
+    // COmbin with ARQ? Fuseki? One Trail.
+    
     // ** Release
     // TDB shutdown hook.
 
