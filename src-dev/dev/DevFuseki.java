@@ -7,8 +7,7 @@ public class DevFuseki
     // /validate
     // /admin
     
-    
-    
+    // Server-local graph naming (Done?)
     
     // Deploy to sparql.org
     

@@ -207,7 +207,6 @@ public class SPARQLServer
         ServletHolder staticContent = new ServletHolder(staticServlet) ;
         staticContent.setInitParameter("resourceBase", pages) ;
         addServlet(context, staticContent, pathSpec) ;
-        
     }
     
     private static void addServlet(ServletContextHandler context, HttpServlet servlet, String pathSpec)

@@ -1,16 +1,44 @@
 /*
- * (c) Copyright 2010 Epimorphics Ltd.
+ * (c) Copyright 2010, 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
 package dev;
 
+import javax.servlet.http.HttpServlet ;
+
+import org.eclipse.jetty.servlet.DefaultServlet ;
+import org.eclipse.jetty.servlet.ServletContextHandler ;
+import org.eclipse.jetty.servlet.ServletHolder ;
 import org.openjena.fuseki.FusekiCmd ;
 
 public class RunFuseki
 {
-    public static void main(String[] args)
+    private static void addContent(ServletContextHandler context, String pathSpec, String pages)
+    {
+        DefaultServlet staticServlet = new DefaultServlet() ;
+        
+        
+        
+        ServletHolder staticContent = new ServletHolder(staticServlet) ;
+        staticContent.setInitParameter("resourceBase", pages) ;
+        
+        addServlet(context, staticContent, pathSpec) ;
+    }
+    
+    private static void addServlet(ServletContextHandler context, HttpServlet servlet, String pathSpec)
+    {
+        ServletHolder holder = new ServletHolder(servlet) ;
+        addServlet(context, holder, pathSpec) ;
+    }
+    
+    private static void addServlet(ServletContextHandler context, ServletHolder holder, String pathSpec)
+    {
+        context.addServlet(holder, pathSpec) ;
+    }
+    
+    public static void main(String[] args) throws Exception
     {
         FusekiCmd.main(
                     //"-v", 
@@ -27,7 +55,7 @@ public class RunFuseki
 }
 
 /*
- * (c) Copyright 2010 Epimorphics Ltd.
+ * (c) Copyright 2010, 2011 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
