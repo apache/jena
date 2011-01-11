@@ -14,7 +14,6 @@ import tdb.cmdline.CmdTDB ;
 import tdb.cmdline.ModModel ;
 
 import com.hp.hpl.jena.query.ARQ ;
-import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.TDBLoader ;
 import com.hp.hpl.jena.tdb.store.GraphTDB ;
@@ -28,8 +27,8 @@ public class tdbloader extends CmdTDB
     
     private static final ModModel modRDFS            = new ModModel("rdfs") ;
     
-    private  String rdfsVocabFilename   = null ;
-    private  Model  rdfsVocab           = null ;
+//    private  String rdfsVocabFilename   = null ;
+//    private  Model  rdfsVocab           = null ;
     
     private boolean showProgress = true ;
 //    private boolean doInParallel = false ;
@@ -48,7 +47,7 @@ public class tdbloader extends CmdTDB
 //        super.add(argParallel, "--parallel", "Do rebuilding of secondary indexes in a parallel") ;
 //        super.add(argIncremental, "--incremental",  "Do an incremental load (keep indexes during data load)") ;
 //        super.add(argStats, "--stats",              "Generate statistics while loading (new graph only)") ;
-        addModule(modRDFS) ;
+//        addModule(modRDFS) ;
     }        
 
 
