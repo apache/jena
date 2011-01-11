@@ -1,8 +1,9 @@
-@prefix : <http://example/> .
-@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix rex:     <http://www.basistech.com/ontologies/2010/6/rex.owl#> .
-@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
-@prefix owl:     <http://www.w3.org/2002/07/owl#> .
-@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 
-:x :aprop :y .
+<http://location.data.gov.uk/so/ef/SamplingPoint/bwsp.eaew/21500>
+      a <http://location.data.gov.uk/def/ef/SamplingPoint/SamplingPoint> ;
+<http://data.ordnancesurvey.co.uk/ontology/spatialrelations/easting>
+              "333900.00"^^<http://www.w3.org/2001/XMLSchema#integer> ;
+<http://data.ordnancesurvey.co.uk/ontology/spatialrelations/northing>
+              "91850.00"^^<http://www.w3.org/2001/XMLSchema#integer> ;
+<http://www.w3.org/2004/02/skos/core#prefLabel>
+              "Bathing water quality sampling point at Lyme Regis Cobb."@en . 
