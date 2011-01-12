@@ -1,10 +1,15 @@
 package dev ;
 
+/*
+ * BPT deleting.
+ * Merging two leaves => does not pass consistency test.
+ *   But the test is wrong?
+ *   Due to one-slot slop?
+ */
+
 public class DevTDB
 {
     // ** CHECK bnode ids without leading zeros in Jena?
-    
-    // Enable warnings from the parser.??
     
     // ** Reorganise documentation.
     // Page on union dataset.
