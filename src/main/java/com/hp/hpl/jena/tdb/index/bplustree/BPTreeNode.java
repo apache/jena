@@ -821,7 +821,7 @@ public final class BPTreeNode extends BPTreePage
             
         // Depending on whether there is a gap or not.
         if ( CheckingNode && ! left.isFull() )
-            error("Inconsistent node size: %d", left.getCount()) ; 
+            error("Inconsistent node size: %d/%d", left.getCount(), left.getMaxSize()) ; 
 
         // Remove from parent (which is "this")
         shuffleDown(dividingSlot) ;
