@@ -31,7 +31,8 @@ Assumes jar made and onejar has been assembled.
 	<include>fuseki-server</include>
 	<include>tdb.ttl</include>
 	<include>s-*</include>
-	<include>pages/*</include>
+	<include>pages-update/*</include>
+	<include>pages-publish/*</include>
       </includes>
     </fileSet>
   </fileSets>

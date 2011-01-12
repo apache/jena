@@ -22,6 +22,9 @@ public class Fuseki
     static public String PATH = "org.openjena.fuseki" ;
     static public String FusekiIRI = "http://openjena.org/Fuseki" ;
     
+    static public String PagesPublish = "pages-publish" ;
+    static public String PagesAll =     "pages-update" ;
+    
     //static private String metadataDevLocation = "org/openjena/fuseki/fuseki-properties-dev.xml" ;
     static private String metadataLocation = "org/openjena/fuseki/fuseki-properties.xml" ;
     static private Metadata metadata = initMetadata() ;

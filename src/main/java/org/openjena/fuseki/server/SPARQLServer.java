@@ -125,6 +125,10 @@ public class SPARQLServer
         boolean installValidators = true ;
         boolean installManager = false ;
 
+        // Static pages to install.
+        // Make very sure non-update does not leave holes. 
+        String pages = enableUpdate ? Fuseki.PagesAll : Fuseki.PagesPublish ; 
+        
         if ( enableUpdate )
             installManager = true ;
             
@@ -174,7 +178,7 @@ public class SPARQLServer
             HttpServlet jspServlet = new org.apache.jasper.servlet.JspServlet() ;
             ServletHolder jspContent = new ServletHolder(jspServlet) ;
             //?? Need separate context for admin stuff??
-            context.setResourceBase("pages") ;
+            context.setResourceBase(pages) ;
             addServlet(context, jspContent, "*.jsp") ;
 
             // Action when control panel selects a dataset.
@@ -186,7 +190,8 @@ public class SPARQLServer
         {
             String [] files = { "fuseki.html" } ;
             context.setWelcomeFiles(files) ;
-            addContent(context, "/*", "pages") ;
+            //  if this is /* then don't see *.jsp. Why?
+            addContent(context, "/", pages) ;
         }
         
         // TEST
