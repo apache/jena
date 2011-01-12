@@ -102,7 +102,6 @@ public abstract class SPARQL_ServletBase extends HttpServlet
     }
 
     //@Override
-    @SuppressWarnings("unused")
     protected void doPatch(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException
     {
