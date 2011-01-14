@@ -11,6 +11,18 @@ public class DevTDB
 {
     // ** CHECK bnode ids without leading zeros in Jena?
     
+    // Loader -> warning on bad literals?
+    //  Check?  Test cases.
+    
+/*
+    fuseki.bat
+    Fuseki: file upload: set a base URI :-(
+    Documentation review
+      SOH -> separate out (windows?)
+      */
+    
+    // Include some data in distribution.
+    
     // ** Reorganise documentation.
     // Page on union dataset.
     // Tutorial.
