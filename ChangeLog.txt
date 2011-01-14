@@ -3,3 +3,8 @@
 == Version 1.0
 
 Err - everything.
+
+
+== 0.1.0
+First release.
+

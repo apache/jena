@@ -15,28 +15,7 @@ import org.openjena.fuseki.FusekiCmd ;
 
 public class RunFuseki
 {
-    private static void addContent(ServletContextHandler context, String pathSpec, String pages)
-    {
-        DefaultServlet staticServlet = new DefaultServlet() ;
-        
-        
-        
-        ServletHolder staticContent = new ServletHolder(staticServlet) ;
-        staticContent.setInitParameter("resourceBase", pages) ;
-        
-        addServlet(context, staticContent, pathSpec) ;
-    }
-    
-    private static void addServlet(ServletContextHandler context, HttpServlet servlet, String pathSpec)
-    {
-        ServletHolder holder = new ServletHolder(servlet) ;
-        addServlet(context, holder, pathSpec) ;
-    }
-    
-    private static void addServlet(ServletContextHandler context, ServletHolder holder, String pathSpec)
-    {
-        context.addServlet(holder, pathSpec) ;
-    }
+
     
     public static void main(String[] args) throws Exception
     {

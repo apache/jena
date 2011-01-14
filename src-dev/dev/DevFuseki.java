@@ -2,6 +2,9 @@ package dev;
 
 public class DevFuseki
 {
+    // Documentation:
+    //   MIME types supported
+    
     // Structure pages, different static content servers
     // /Main - index.html = fuseki.html
     // /validate
