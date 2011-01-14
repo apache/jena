@@ -21,6 +21,8 @@ public class DevFuseki
     
     // Deploy to sparql.org
     
+    // + LARQ
+    
     // Testing:
     //   No file -> error.
     
