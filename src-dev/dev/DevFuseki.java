@@ -4,6 +4,13 @@ public class DevFuseki
 {
     // Documentation:
     //   MIME types supported
+    // Include a data file in the distribution.
+    // curl as commandline
+    
+    // Errors that occur and what they mean:
+    
+    // http://localhost:3030/data/data ***
+    // http://localhost:3030/data ***
     
     // Structure pages, different static content servers
     // /Main - index.html = fuseki.html
