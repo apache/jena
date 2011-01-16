@@ -25,7 +25,8 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
 
 public abstract class GraphBase2 implements GraphWithPerform
 {
-    // Like GraphBase but without any reificiation handling 
+    // Like GraphBase but no reificiation handling in normal operations.
+    // AKA Hard coded ReificationStyle.Standard
 
     /**
            Whether or not this graph has been closed - used to report ClosedExceptions
