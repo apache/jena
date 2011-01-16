@@ -11,6 +11,9 @@ public class DevTDB
 {
     // ** CHECK bnode ids without leading zeros in Jena?
     
+    // Are leaf blocks being properly packed?
+    // BPlusTreeParams is wrong?
+    
     // Loader -> warning on bad literals?
     //  Check?  Test cases.
     

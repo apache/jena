@@ -9,6 +9,7 @@
 
 package dev;
 
+import org.openjena.atlas.lib.Bytes ;
 import org.openjena.atlas.lib.FileOps ;
 import org.openjena.atlas.logging.Log ;
 import org.openjena.riot.RiotLoader ;
@@ -17,10 +18,18 @@ import setup.DatasetBuilderStd ;
 import setup.NoisyBlockMgr ;
 import setup.ObjectFileBuilder ;
 
+import com.hp.hpl.jena.rdf.model.RDFList.ReduceFn ;
 import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
 import com.hp.hpl.jena.tdb.base.file.FileSet ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
+import com.hp.hpl.jena.tdb.base.record.Record ;
+import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
+import com.hp.hpl.jena.tdb.index.IndexBuilder ;
+import com.hp.hpl.jena.tdb.index.bplustree.BPTreeNode ;
+import com.hp.hpl.jena.tdb.index.bplustree.BPlusTree ;
+import com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams ;
+import com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeRewriter ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
@@ -62,7 +71,56 @@ public class RunTDB
     }
     
     public static void main(String[] args) throws Exception
-    {
+    { 
+        // Are leaf blocks properly packed? 
+        
+        
+        {   int order = 3 ;
+            BPlusTreeParams params = new BPlusTreeParams(order, 4, 0) ;
+            
+            
+            
+            System.out.println(params) ;
+            params = new BPlusTreeParams(order, 4, 0) ;
+            System.out.println(params) ;
+        }
+        
+        int order = 3 ;
+        BPlusTree bpt = BPlusTree.makeMem(order, order, 4, 0) ;
+        System.out.println(bpt.getParams()) ;
+        System.out.println(bpt.getParams().getBlockSize()) ;
+        int blkSize = bpt.getParams().getBlockSize() ;
+        RecordFactory rf= bpt.getRecordFactory() ;
+        
+        int N = 10 ;
+        for ( int i = 0 ; i < N ; i++ )
+        {
+            Record r = rf.create() ;
+            Bytes.setInt(i, r.getKey()) ;
+            bpt.add(r) ;
+        }
+        
+        BPlusTreeParams.CheckingNode = true ;
+        BPlusTreeParams.CheckingTree = true ;
+        bpt.dump() ;
+        
+        int[] x = new int[] {0,1,2,3,4,5,6,7,8,9,10} ;
+        
+        for ( int i : x )
+        {
+            Record r = rf.create() ;
+            Bytes.setInt(i, r.getKey()) ;
+            bpt.delete(r) ;
+            System.out.println() ;
+            bpt.dump() ;
+        }
+        
+        System.out.println() ;
+        bpt.dump() ;
+        System.out.println("DONE") ;
+        System.exit(0) ;
+        
+        
         // New setup
         FileOps.clearDirectory("DB1") ;
         

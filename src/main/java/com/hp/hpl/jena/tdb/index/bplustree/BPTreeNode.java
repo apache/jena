@@ -820,8 +820,21 @@ public final class BPTreeNode extends BPTreePage
             
             
         // Depending on whether there is a gap or not.
-        if ( CheckingNode && ! left.isFull() )
-            error("Inconsistent node size: %d/%d", left.getCount(), left.getMaxSize()) ; 
+        if ( CheckingNode )
+        {
+            if ( isLeaf )
+            {
+                // If two data blocks, then the split key is not inlcuded (it's alread ythere, with it value)
+                // Size is N+N and max could be odd so N+N and N+N+1 are possible. 
+                if ( left.getCount()+1 != left.getMaxSize() && left.getCount() != left.getMaxSize() )
+                    error("Inconsistent data node size: %d/%d", left.getCount(), left.getMaxSize()) ;
+            }
+            else if ( ! left.isFull() )
+            {
+                // If not two data blocks, the left side should now be full (N+N+split) 
+                error("Inconsistent node size: %d/%d", left.getCount(), left.getMaxSize()) ;
+            }
+        }
 
         // Remove from parent (which is "this")
         shuffleDown(dividingSlot) ;
