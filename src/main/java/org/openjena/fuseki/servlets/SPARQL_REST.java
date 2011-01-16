@@ -281,9 +281,12 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
         // This is reader code as for client GET.
         // ---- ContentNeg / Webreader.
         String contentTypeHeader = action.request.getContentType() ;
+        if ( contentTypeHeader == null )
+            errorBadRequest("No content type: "+contentTypeHeader) ;
+            // lang = Lang.guess(action.request.getRequestURI()) ;
+        
         ContentType ct = FusekiLib.contentType(contentTypeHeader) ;
         int len = action.request.getContentLength() ;
-        
         Lang lang = FusekiLib.langFromContentType(ct.contentType) ;
         if ( lang == null )
         {
@@ -298,7 +301,7 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
                                       action.id, len, ct.contentType, ct.charset, lang.getName())) ;
             else
                 serverlog.info(format("[%d]   Body: Content-Type=%s, Charset=%s => %s", 
-                                      action.id, ct.contentType, ct.charset, lang.getName())) ;
+                                          action.id, ct.contentType, ct.charset, lang.getName())) ;
         }
         
         try {

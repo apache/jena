@@ -7,6 +7,8 @@ public class DevFuseki
     // Include a data file in the distribution.
     // curl as commandline
     
+    // Access the bulk loader via web.
+    
     // Errors that occur and what they mean:
     
     // http://localhost:3030/data/data ***

@@ -6,11 +6,6 @@
 
 package dev;
 
-import javax.servlet.http.HttpServlet ;
-
-import org.eclipse.jetty.servlet.DefaultServlet ;
-import org.eclipse.jetty.servlet.ServletContextHandler ;
-import org.eclipse.jetty.servlet.ServletHolder ;
 import org.openjena.fuseki.FusekiCmd ;
 
 public class RunFuseki
