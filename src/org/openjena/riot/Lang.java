@@ -113,6 +113,8 @@ public enum Lang
      */
     public static Lang guess(String resourceIRI)
     {
+        if ( resourceIRI == null )
+            return null ;
         String ext = FileUtils.getFilenameExt(resourceIRI).toLowerCase() ;
         if ( ext != null && ext.equals("gz") )
         {

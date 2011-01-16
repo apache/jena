@@ -18,6 +18,8 @@ public class StandardFunctions
     {
         String xfn = ARQConstants.fnPrefix ;
         
+        String sparqlfn = "http://www.w3.org/sparqfn/" ;    // Not fixed yet.
+        
         // See http://www.w3.org/TR/xpath-datamodel/#types-hierarchy
         // No durations here
         
@@ -80,6 +82,50 @@ public class StandardFunctions
         add(registry, xfn+"ceiling",        FN_Ceiling.class) ;
         add(registry, xfn+"floor",          FN_floor.class) ;
         add(registry, xfn+"round",          FN_Round.class) ;
+        
+        // SPARQL functions.
+        // Check the exact URI.
+
+//        add(registry, sparqlfn+"boolean",        FN_BEV.class) ;
+//        add(registry, sparqlfn+"not",            FN_Not.class) ;
+//
+//        add(registry, sparqlfn+"matches",        FN_Matches.class) ;
+//        add(registry, sparqlfn+"string-length",  FN_StrLength.class) ;
+//        add(registry, sparqlfn+"concat",         FN_StrConcat.class) ;
+//        add(registry, sparqlfn+"substring",      FN_StrSubstring.class) ;
+//        add(registry, sparqlfn+"starts-with",    FN_StrStartsWith.class) ;
+//        
+//        add(registry, sparqlfn+"lower-case",     FN_StrLowerCase.class) ;
+//        add(registry, sparqlfn+"upper-case",     FN_StrUpperCase.class) ;
+//        
+//        add(registry, sparqlfn+"contains",       FN_StrContains.class) ;
+//        add(registry, sparqlfn+"ends-with",      FN_StrEndsWith.class) ;
+//        
+//        add(registry, sparqlfn+"abs",            FN_Abs.class) ;
+//        add(registry, sparqlfn+"ceiling",        FN_Ceiling.class) ;
+//        add(registry, sparqlfn+"floor",          FN_floor.class) ;
+//        add(registry, sparqlfn+"round",          FN_Round.class) ;
+
+//        add(registry, sparqlfn+"concat",         FN_Concat.class) ;
+//        add(registry, sparqlfn+"upper-case",     FN_UpperCase.class) ;
+//        add(registry, sparqlfn+"lower-case",     FN_LowerCase.class) ;
+//        add(registry, sparqlfn+"encode-for-uri", FN_EncodeForURI.class) ;
+//        add(registry, sparqlfn+"contains",       FN_Contains.class) ;
+//
+//        add(registry, sparqlfn+"starts-with",    FN_StartsWith.class) ;
+//        add(registry, sparqlfn+"ends-with",      FN_EndsWith.class) ;
+
+//        add(registry, xfn+"year-from-dateTime",     FN_YearFromDateTime.class) ;
+//        add(registry, xfn+"month-from-dateTime",    FN_MonthFromDateTime.class) ;
+//        add(registry, xfn+"day-from-dateTime",      FN_DayFromDateTime.class) ;
+//
+//        
+//        add(registry, xfn+"hours-from-dateTime",    FN_HoursFromDateTime.class) ;
+//        add(registry, xfn+"minutes-from-dateTime",  FN_MinutesFromDateTime.class) ;
+//        add(registry, xfn+"seconds-from-dateTime",  FN_SecondsFromDateTime.class) ;
+        
+//        add(registry, xfn+"timezone-from-dateTime",  FN_TimezoneFromDateTime.class) ;
+        
         
         // fn:compare/2 and /3 and provide collation argument
         //    Locale locale = new Locale(String language, String country)
