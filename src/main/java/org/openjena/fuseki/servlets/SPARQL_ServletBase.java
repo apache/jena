@@ -102,6 +102,7 @@ public abstract class SPARQL_ServletBase extends HttpServlet
     }
 
     //@Override
+    @SuppressWarnings("unused")
     protected void doPatch(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException
     {
@@ -167,6 +168,7 @@ public abstract class SPARQL_ServletBase extends HttpServlet
 
     protected abstract String mapRequestToDataset(String uri) ;
     
+    /** A possible implementation for mapRequestToDataset(String) */
     protected String mapRequestToDataset(String uri, String tail)
     {
         if ( uri.endsWith(tail) )
