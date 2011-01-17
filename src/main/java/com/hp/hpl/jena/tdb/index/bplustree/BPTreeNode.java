@@ -818,7 +818,6 @@ public final class BPTreeNode extends BPTreePage
         if ( page == right )
             error("Returned page is not the left") ;
             
-            
         // Depending on whether there is a gap or not.
         if ( CheckingNode )
         {
