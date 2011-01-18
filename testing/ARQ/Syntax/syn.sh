@@ -12,21 +12,21 @@ source syn-func.sh
 
 # DAWG core set,in 3 parts
 (
-    cd Syntax-SPARQL   
+    cd Syntax-SPARQL_10_1   
     clean 
     source ../syn-sparql_10_1.sh  
     createManifest "Syntax SPARQL 1.0 part 1"
 )
 
 (
-    cd Syntax-SPARQL2  
+    cd Syntax-SPARQL_10_2
     clean 
     source ../syn-sparql_10_2.sh  
     createManifest "Syntax SPARQL 1.0 part 2"
 )
 
 (
-    cd Syntax-SPARQL3
+    cd Syntax-SPARQL_10_3
     clean
     source ../syn-sparql_10_3.sh
     createManifest "Syntax SPARQL 1.0 part 3"
@@ -34,7 +34,7 @@ source syn-func.sh
 
 # SPARQL 11
 (
-    cd Syntax-SPARQL4
+    cd Syntax-SPARQL_11
     clean
     source ../syn-sparql_11_1.sh
     createManifest "Syntax SPARQL 1.1"
