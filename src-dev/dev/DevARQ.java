@@ -27,6 +27,8 @@ public class DevARQ
     
     // Multithreaded parser.
     
+    // tdbloader2; filenames.
+    
     // ?? bNode label checks (UPDATE: can't use same bNode label in template and pattern for DELETE/INSERT.)
 
     // Pull up TransformDynamicDataset, TransformGraphRename from TDB.

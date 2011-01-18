@@ -272,6 +272,7 @@ class UpdateEngineWorker implements UpdateVisitor
         {
             if ( update.getUsing().size() > 1 )
             {
+                Log.warn(this, "Multiple graphs in USING: not supported at scale (yet).") ;
                 // NO SCALING HERE
                 // Need to take a copy to merge.
                 Graph g = GraphFactory.createGraphMem() ;

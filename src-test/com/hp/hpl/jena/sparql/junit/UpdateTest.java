@@ -101,10 +101,10 @@ public class UpdateTest extends EarlTestCase
             boolean b = datasetSame(input, output, false) ;
             if ( ! b )
             {
-
                 System.out.println("---- "+getName()) ;
+                System.out.println("---- Got: ") ;
                 System.out.println(input.asDatasetGraph()) ;
-                System.out.println("----------------------------------------") ;
+                System.out.println("---- Expected") ;
                 System.out.println(output.asDatasetGraph()) ;
                 datasetSame(input, output, true) ;
                 System.out.println("----------------------------------------") ;
