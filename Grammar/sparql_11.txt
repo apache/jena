@@ -256,7 +256,7 @@ NON-TERMINALS
 	SelectQuery	:=	SelectClause ( DatasetClause )* WhereClause SolutionModifier
 	SubSelect	:=	SelectClause WhereClause SolutionModifier
 	SelectClause	:=	<SELECT> ( <DISTINCT> | <REDUCED> )? ( ( Var | ( <LPAREN> Expression <AS> Var <RPAREN> ) )+ | <STAR> )
-	ConstructQuery	:=	<CONSTRUCT> ConstructTemplate ( DatasetClause )* WhereClause SolutionModifier
+	ConstructQuery	:=	<CONSTRUCT> ( ConstructTemplate ( DatasetClause )* WhereClause SolutionModifier | ( DatasetClause )* <WHERE> <LBRACE> ( TriplesTemplate )? <RBRACE> SolutionModifier )
 	DescribeQuery	:=	<DESCRIBE> ( ( VarOrIRIref )+ | <STAR> ) ( DatasetClause )* ( WhereClause )? SolutionModifier
 	AskQuery	:=	<ASK> ( DatasetClause )* WhereClause
 // ----

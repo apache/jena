@@ -5113,16 +5113,6 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     finally { jj_save(1, xla); }
   }
 
-  private boolean jj_3R_55() {
-    if (jj_scan_token(LPAREN)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_78() {
-    if (jj_scan_token(IRIref)) return true;
-    return false;
-  }
-
   private boolean jj_3R_77() {
     if (jj_scan_token(ANON)) return true;
     return false;
@@ -5558,6 +5548,16 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
 
   private boolean jj_3R_64() {
     if (jj_3R_70()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_55() {
+    if (jj_scan_token(LPAREN)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_78() {
+    if (jj_scan_token(IRIref)) return true;
     return false;
   }
 

@@ -122,13 +122,42 @@ void SelectClause() : { Var v ; Expr expr ; Node n ; }
 void ConstructQuery() : { Template t ;
                           TripleCollectorBGP acc = new TripleCollectorBGP() ; }
 {
-  <CONSTRUCT>
-     { getQuery().setQueryConstructType() ; }
-  t = ConstructTemplate()
-    { getQuery().setConstructTemplate(t) ; }
-  ( DatasetClause() )*
-  WhereClause()
-  SolutionModifier()
+// #ifndef ARQ
+//   <CONSTRUCT>
+//      { getQuery().setQueryConstructType() ; }
+//   t = ConstructTemplate() 
+//     { getQuery().setConstructTemplate(t) ; }
+//   ( DatasetClause() )*
+//   WhereClause()
+//   SolutionModifier()
+// #else
+ <CONSTRUCT>
+   { getQuery().setQueryConstructType() ; }
+ (
+    // Full form.
+    t = ConstructTemplate()
+      { getQuery().setConstructTemplate(t) ; }
+    ( DatasetClause() )*
+    WhereClause()
+    SolutionModifier()
+ |
+    ( DatasetClause() )*
+    <WHERE>
+    <LBRACE>
+    (TriplesTemplate(acc))?
+    <RBRACE>
+    SolutionModifier()
+    {
+      t = new Template(acc.getBGP()) ;
+      getQuery().setConstructTemplate(t) ;
+      // Create a query in the same shape as the query created by writing out in full.
+      ElementPathBlock epb = new ElementPathBlock(acc.getBGP()) ;
+      ElementGroup elg = new ElementGroup() ;
+      elg.addElement(epb) ;
+      getQuery().setQueryPattern(elg) ;
+    }
+ )
+//#endif
 }
 void DescribeQuery() : { Node n ; }
 {

@@ -2,6 +2,8 @@ package dev ;
 
 public class DevARQ
 {
+    // RIOT -- bad chars
+    
     // round(1.3) -> "1"^^xsd:decimal.
     // floor, ceil.
     

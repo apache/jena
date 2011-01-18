@@ -136,8 +136,15 @@ void SelectClause() : { Var v ; Expr expr ; Node n ; }
 void ConstructQuery() : { Template t ;
                           TripleCollectorBGP acc = new TripleCollectorBGP() ; }
 {
- // ARQ - two forms.
- // Can tidy up
+// #ifndef ARQ
+//   <CONSTRUCT>
+//      { getQuery().setQueryConstructType() ; }
+//   t = ConstructTemplate() 
+//     { getQuery().setConstructTemplate(t) ; }
+//   ( DatasetClause() )*
+//   WhereClause()
+//   SolutionModifier()
+// #else
  <CONSTRUCT>
    { getQuery().setQueryConstructType() ; }
  (
@@ -148,10 +155,6 @@ void ConstructQuery() : { Template t ;
     WhereClause()
     SolutionModifier()
  |
-//    <STAR>
-//    // templateless form.
-//     ( DatasetClause() )*
-//     (<WHERE>)?
     ( DatasetClause() )*
     <WHERE>
     <LBRACE>
@@ -168,6 +171,7 @@ void ConstructQuery() : { Template t ;
       getQuery().setQueryPattern(elg) ;
     }
  )
+//#endif
 }
 void DescribeQuery() : { Node n ; }
 {
