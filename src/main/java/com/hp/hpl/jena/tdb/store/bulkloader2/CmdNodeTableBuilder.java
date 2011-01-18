@@ -37,6 +37,7 @@ import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.sse.Item ;
 import com.hp.hpl.jena.sparql.sse.ItemWriter ;
+import com.hp.hpl.jena.sparql.util.Utils ;
 import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
@@ -145,6 +146,9 @@ public class CmdNodeTableBuilder extends CmdGeneral
         monitor.start() ;
         for( String filename : datafiles)
         {
+            if ( datafiles.size() > 0 )
+                cmdLog.info("Load: "+filename+" -- "+Utils.nowAsString()) ;
+            
             InputStream in = IO.openFile(filename) ;
             Lang lang = Lang.guess(filename, Lang.NQUADS) ;
             if ( lang.isTriples() )
