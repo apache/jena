@@ -22,7 +22,7 @@ public class DatasetGraphMap extends DatasetGraphCollection
 
     private Graph defaultGraph ;
 
-    private DatasetGraphMap()
+    public DatasetGraphMap()
     { }
 
     public DatasetGraphMap(Graph defaultGraph)

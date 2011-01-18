@@ -25,6 +25,7 @@ import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import com.hp.hpl.jena.sparql.core.DatasetGraphMap ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphWrapper ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.engine.Plan ;
@@ -235,28 +236,69 @@ class UpdateEngineWorker implements UpdateVisitor
     
     public void visit(UpdateModify update)
     {
-        Node graph = update.getWithIRI() ;
+        Node withGraph = update.getWithIRI() ;
         Query query = elementToQuery(update.getWherePattern()) ;
         
         // USING/USING NAMED
-        processUsing(update, query) ;
+        DatasetGraph dsg = processUsing(update, query) ;
         
-        final List<Binding> bindings = evalBindings(query, graph) ;
+        // USING overrides WITH
+        if ( dsg == null && withGraph != null )
+        {
+            Graph g = graphStore.getGraph(withGraph) ;
+            dsg = new DatasetGraphAltDefaultGraph(graphStore, g) ;
+        }
+        if ( dsg == null )
+            dsg = graphStore ;
         
-        execDelete(update.getDeleteQuads(), graph, bindings) ;
-        execInsert(update.getInsertQuads(), graph, bindings) ;
+        final List<Binding> bindings = evalBindings(query, dsg, initialBinding) ;
+        
+        execDelete(update.getDeleteQuads(), withGraph, bindings) ;
+        execInsert(update.getInsertQuads(), withGraph, bindings) ;
     }
 
     // Indirection for subsystems to support USING/USING NAMED.
-    protected void processUsing(UpdateModify update, Query query)
+    protected DatasetGraph processUsing(UpdateModify update, Query query)
     {
-        if ( update.getUsing().size() > 0 || update.getUsingNamed().size() > 0 )
-            Log.warn(this, "Graph selection from the dataset not supported - ignored") ;
-        return ;
-//        for ( Node n : update.getUsing() )
-//            query.addGraphURI(n.getURI()) ;
-//        for ( Node n : update.getUsingNamed() )
-//            query.addNamedGraphURI(n.getURI()) ;
+        if ( update.getUsing().size() == 0 && update.getUsingNamed().size() == 0 )
+            return null ;
+        
+//        if ( update.getUsing().size() > 0 || update.getUsingNamed().size() > 0 )
+//            Log.warn(this, "Graph selection from the dataset not supported very well") ;
+//        //return null ;
+        
+        DatasetGraphMap dsg = new DatasetGraphMap(graphStore) ;
+        if ( update.getUsing().size() > 0  )
+        {
+            if ( update.getUsing().size() > 1 )
+            {
+                // NO SCALING HERE
+                // Need to take a copy to merge.
+                Graph g = GraphFactory.createGraphMem() ;
+                
+                for ( Node gn : update.getUsing() )
+                {
+                    Graph g2 = graphStore.getGraph(gn) ;
+                    g.getBulkUpdateHandler().add(g2) ;
+                }
+                dsg.setDefaultGraph(g) ;
+            }
+            else
+            {
+                Node gn = update.getUsing().get(0) ;
+                dsg.setDefaultGraph(graphStore.getGraph(gn)) ;
+            }
+        }
+        
+        if ( update.getUsingNamed().size() > 0  )
+        {
+            // Replace with a no named graphs version.
+            dsg = new DatasetGraphMap(dsg.getDefaultGraph()) ;
+            
+            for ( Node gn : update.getUsingNamed() )
+                dsg.addGraph(gn, graphStore.getGraph(gn)) ; 
+        }
+        return dsg ;
     }
     
     private static List<Quad> convertBNodesToVariables(List<Quad> quads)
@@ -328,11 +370,6 @@ class UpdateEngineWorker implements UpdateVisitor
         return query ;
     }
     
-    protected List<Binding> evalBindings(Element pattern, Node dftGraph)
-    {
-        return evalBindings(elementToQuery(pattern), dftGraph) ;
-    }
-    
     static class DatasetGraphAltDefaultGraph extends DatasetGraphWrapper
     {
         private Graph dftGraph ;
@@ -343,25 +380,39 @@ class UpdateEngineWorker implements UpdateVisitor
         @Override
         public Graph getDefaultGraph()
         { return dftGraph; }
-
+    
         @Override
         public void setDefaultGraph(Graph g)
         { dftGraph = g ; }
     }
+
+    protected List<Binding> evalBindings(Element pattern, Node dftGraph)
+    {
+        return evalBindings(elementToQuery(pattern), dftGraph) ;
+    }
     
     protected List<Binding> evalBindings(Query query, Node dftGraph)
     {
-        List<Binding> bindings = new ArrayList<Binding>() ;
-        
+        DatasetGraph dsg = graphStore ;
         if ( query != null )
         {
-            DatasetGraph dsg = graphStore ;
             if ( dftGraph != null )
             {
                 Graph g = dsg.getGraph(dftGraph) ;
                 dsg = new DatasetGraphAltDefaultGraph(dsg, g) ;
             }
-            
+        }
+        
+        return evalBindings(query, dsg, initialBinding) ;
+        
+    }
+    
+    protected static List<Binding> evalBindings(Query query, DatasetGraph dsg, Binding initialBinding)
+    {
+        List<Binding> bindings = new ArrayList<Binding>() ;
+        
+        if ( query != null )
+        {
             Plan plan = QueryExecutionFactory.createPlan(query, dsg, initialBinding) ;
             QueryIterator qIter = plan.iterator() ;
 

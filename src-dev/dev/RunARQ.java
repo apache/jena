@@ -111,6 +111,11 @@ public class RunARQ
     
     public static void main(String[] argv) throws Exception
     {
+        arq.qtest.main("/home/afs/W3C/SPARQL-docs/tests/data-sparql11/delete/manifest.ttl") ;
+        System.exit(0) ;
+        
+        
+        
         final Triple marker = new Triple(Node.NULL, Node.NULL, Node.NULL) ; 
         final String filename = "/home/afs/Datasets/MusicBrainz/tracks-1k.nt" ;
         final BlockingQueue<Triple> queue = new ArrayBlockingQueue<Triple>(10) ;

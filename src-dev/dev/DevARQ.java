@@ -83,6 +83,7 @@ public class DevARQ
     // ---- Pipeline:
     // Architecture: 
     // Canonicalization: Fix URIs. () [] SPC
+    // Canonicaize IRIs (see IRI RFC).
     // Number canonicalization.
     // Canonicalized lang tags?
     //   owl:equivalentClass, owl:equivalentProperty,
