@@ -143,7 +143,7 @@ EOF
 N=0
 
 N=$((N+1)) ; testGood $SPARQL11 $(fname "syntax-minus-" $N) <<EOF
-SELECT * { ?s ?p ?o FILTER(NOT EXISTS{?s ?p ?o}) }
+SELECT * { ?s ?p ?o MINUS { ?s ?q ?v } }
 EOF
 
 ## ---- IN , NOT IN
@@ -173,7 +173,11 @@ N=$((N+1)) ; testGood $SPARQL11 $(fname "syntax-service-" $N) <<EOF
 SELECT * { ?s ?p ?o SERVICE <g> { ?s ?p ?o } ?s ?p ?o }
 EOF
 
-## ---- BINDING
+N=$((N+1)) ; testGood $SPARQL11 $(fname "syntax-service-" $N) <<EOF
+SELECT * { ?s ?p ?o SERVICE SILENT <g> { ?s ?p ?o } ?s ?p ?o }
+EOF
+
+## ---- BINDINGS
 
 N=0
 N=$((N+1)) ; testGood $SPARQL11 $(fname "syntax-bindings-" $N) <<EOF
@@ -196,8 +200,48 @@ N=$((N+1)) ; testGood $SPARQL11 $(fname "syntax-bindings-" $N) <<EOF
 SELECT * { } BINDINGS ?x ?y { (1 2) }
 EOF
 
+##  ---- BIND
+N=0
+N=$((N+1)) ; testGood $SPARQL11 $(fname "syntax-bindings-" $N) <<EOF
+SELECT ?Z { ?s ?p ?o . BIND(?o+1 AS ?Z) }
+EOF
+
+N=$((N+1)) ; testGood $SPARQL11 $(fname "syntax-bind-" $N) <<EOF
+SELECT ?Z { ?s ?p ?o . BIND(?o+1 AS ?Z) BIND(?Z/2 AS ?Zby2) }
+EOF
+
+##  ---- CONSTRUCT WHERE
+N=0
+
+N=$((N+1)) ; testGood $SPARQL11 $(fname "syntax-construct-where-" $N) <<EOF
+CONSTRUCT WHERE { ?s ?p 1816 }
+EOF
+
+N=$((N+1)) ; testGood $SPARQL11 $(fname "syntax-construct-where-" $N) <<EOF
+CONSTRUCT 
+FROM <file>
+WHERE { ?s ?p 1816 }
+EOF
+
+## ---- Function names.
+
+
 ## == Bad
 N=0
+
+N=$((N+1)) ; testBad $SPARQL11 $(fname "syn-bad-" $N) <<EOF
+# Not allowed with GROUP BY
+SELECT * { ?s ?p ?o } GROUP BY ?s
+EOF
+
+N=$((N+1)) ; testBad $SPARQL11 $(fname "syn-bad-" $N) <<EOF
+# required syntax error : out of scope variable in SELECT from group
+SELECT ?o { ?s ?p ?o } GROUP BY ?s
+EOF
+
+N=$((N+1)) ; testBad $SPARQL11 $(fname "syn-bad-" $N) <<EOF
+SELECT (1 AS ?X) (1 AS ?X) {}
+EOF
 
 N=$((N+1)) ; testBad $SPARQL11 $(fname "syn-bad-" $N) <<EOF
 SELECT (?x +?y) {}

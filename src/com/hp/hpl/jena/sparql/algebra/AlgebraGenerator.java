@@ -501,7 +501,7 @@ public class AlgebraGenerator
     {
         Node serviceNode = eltService.getServiceNode() ;
         Op sub = compileElement(eltService.getElement()) ;
-        return new OpService(serviceNode, sub, eltService) ;
+        return new OpService(serviceNode, sub, eltService, eltService.getSilent()) ;
     }
     
     private Op compileElementFetch(ElementFetch elt)

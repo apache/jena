@@ -1,1 +1,1 @@
-SELECT (SUM(?x,?y) AS ?S) {}
+SELECT (1 AS ?X) (1 AS ?X) {}

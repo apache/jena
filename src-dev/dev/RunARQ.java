@@ -8,21 +8,13 @@
 
 package dev;
 
-import java.io.ByteArrayInputStream ;
-import java.io.InputStream ;
 import java.util.Iterator ;
 import java.util.concurrent.ArrayBlockingQueue ;
 import java.util.concurrent.BlockingQueue ;
 import java.util.concurrent.ExecutorService ;
 import java.util.concurrent.Executors ;
 
-import javax.xml.datatype.DatatypeFactory ;
-import javax.xml.datatype.Duration ;
-
-import junit.framework.TestSuite ;
-import org.apache.xerces.impl.dv.xs.DurationDV ;
 import org.openjena.atlas.io.IndentedWriter ;
-import org.openjena.atlas.io.PeekReader ;
 import org.openjena.atlas.json.JSON ;
 import org.openjena.atlas.json.JsonValue ;
 import org.openjena.atlas.lib.Sink ;
@@ -33,7 +25,6 @@ import org.openjena.riot.RiotReader ;
 import org.openjena.riot.checker.CheckerIRI ;
 import org.openjena.riot.pipeline.normalize.CanonicalizeLiteral ;
 
-import com.hp.hpl.jena.datatypes.TypeMapper ;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.datatypes.xsd.XSDDuration ;
 import com.hp.hpl.jena.graph.Node ;
@@ -50,7 +41,6 @@ import com.hp.hpl.jena.query.QuerySolutionMap ;
 import com.hp.hpl.jena.query.ResultSetFormatter ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.shared.PrefixMapping ;
-import com.hp.hpl.jena.shared.impl.PrefixMappingImpl ;
 import com.hp.hpl.jena.sparql.ARQConstants ;
 import com.hp.hpl.jena.sparql.ARQException ;
 import com.hp.hpl.jena.sparql.algebra.Algebra ;
@@ -64,11 +54,6 @@ import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
 import com.hp.hpl.jena.sparql.function.FunctionEnvBase ;
 import com.hp.hpl.jena.sparql.graph.NodeTransform ;
-import com.hp.hpl.jena.sparql.junit.ScriptTestSuiteFactory ;
-import com.hp.hpl.jena.sparql.junit.SimpleTestRunner ;
-import com.hp.hpl.jena.sparql.path.Path ;
-import com.hp.hpl.jena.sparql.path.PathLib ;
-import com.hp.hpl.jena.sparql.path.PathParser ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.sparql.util.ExprUtils ;
 import com.hp.hpl.jena.sparql.util.FmtUtils ;

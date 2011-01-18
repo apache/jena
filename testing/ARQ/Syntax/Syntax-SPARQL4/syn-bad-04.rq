@@ -1,1 +1,1 @@
-SELECT * { {} SELECT * { ?s ?p ?o } }
+SELECT (?x +?y) {}

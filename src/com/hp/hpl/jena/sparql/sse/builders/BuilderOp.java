@@ -413,12 +413,25 @@ public class BuilderOp
     {
         public Op make(ItemList list)
         {
-            BuilderLib.checkLength(3, list, "service") ;
-            Node service = BuilderNode.buildNode(list.get(1)) ;
+            boolean silent = false ;
+            BuilderLib.checkLength(3, 4, list, "service") ;
+            list = list.cdr() ;
+            if ( list.size() == 3 )
+            {
+                if ( !list.car().isSymbol() )
+                    BuilderLib.broken(list, "Expected a keyword") ;
+                if ( ! list.car().getSymbol().equalsIgnoreCase("SILENT") )
+                    BuilderLib.broken(list, "Service: Expected SILENT") ;
+                silent = true ;
+                list = list.cdr() ;
+            }
+            
+            Node service = BuilderNode.buildNode(list.car()) ;
             if ( ! service.isURI() && ! service.isVariable() )
                 BuilderLib.broken(list, "Service must provide a URI or variable") ;
-            Op sub  = build(list, 2) ;
-            return new OpService(service, sub) ;
+            list = list.cdr() ;
+            Op sub  = build(list, 0) ;
+            return new OpService(service, sub, silent) ;
         }
     } ;
     

@@ -1,7 +1,1 @@
-PREFIX  :     <http://example/>
-WITH :g
-DELETE {
-  <base:s> ?p ?o .
-}
-WHERE
-  { ?s ?p ?o }
+DELETE DATA { GRAPH <G> { <s> <p> 'o1', 'o2', 'o3' } }

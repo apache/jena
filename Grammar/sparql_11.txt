@@ -331,7 +331,7 @@ NON-TERMINALS
 // ---- Definitions of each pattern element
 	OptionalGraphPattern	:=	<OPTIONAL> GroupGraphPattern
 	GraphGraphPattern	:=	<GRAPH> VarOrIRIref GroupGraphPattern
-	ServiceGraphPattern	:=	<SERVICE> VarOrIRIref GroupGraphPattern
+	ServiceGraphPattern	:=	<SERVICE> ( <SILENT> )? VarOrIRIref GroupGraphPattern
 	Bind	:=	<BIND> <LPAREN> Expression <AS> Var <RPAREN>
 	MinusGraphPattern	:=	<MINUS_P> GroupGraphPattern
 // Element UnionGraphPattern() : { Element el ; }

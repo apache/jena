@@ -333,7 +333,10 @@ public class FormatterElement extends FormatterBase
 
     public void visit(ElementService el)
     {
-        visitNodePattern("SERVICE", el.getServiceNode(), el.getElement()) ;
+        String x = "SERVICE" ;
+        if ( el.getSilent() )
+            x = "SERVICE SILENT" ;
+        visitNodePattern(x, el.getServiceNode(), el.getElement()) ;
     }
 
     public void visit(ElementFetch el)

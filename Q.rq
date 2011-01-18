@@ -1,2 +1,7 @@
-#CONSTRUCT WHERE { ?s ?p ?o }
-CONSTRUCT * WHERE { ?s ?p ?o }
+PREFIX : <http://example/> 
+
+SELECT *
+{
+   ?x :p ?b .
+   SERVICE SILENT :g { ?s ?p ?o }
+}

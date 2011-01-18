@@ -273,7 +273,7 @@ public class Substitute
         public Op transform(OpService op, Op sub)
         {
             Node n = substitute(op.getService(), binding) ;
-            return new OpService(n, sub) ;
+            return new OpService(n, sub, op.getSilent()) ;
         }
     }
 }

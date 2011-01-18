@@ -7,6 +7,8 @@
 
 package com.hp.hpl.jena.sparql.engine.main.iterator;
 
+import org.openjena.atlas.logging.Log ;
+
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.op.OpService ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
@@ -15,6 +17,7 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.http.Service ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIter ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterCommonParent ;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIterNullIterator ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterRepeatApply ;
 import com.hp.hpl.jena.sparql.engine.main.QC ;
 
@@ -33,13 +36,26 @@ public class QueryIterService extends QueryIterRepeatApply
     protected QueryIterator nextStage(Binding outerBinding)
     {
         Op op = QC.substitute(opService, outerBinding) ;
-        QueryIterator qIter = Service.exec((OpService)op, getExecContext().getContext()) ;
+        boolean silent = opService.getSilent() ;
+        QueryIterator qIter ;
+        try {
+            qIter = Service.exec((OpService)op, getExecContext().getContext()) ;
+        } catch (RuntimeException ex)
+        {
+            if ( silent )
+            {
+                Log.warn(this, "SERVICE: "+ex.getMessage()) ;
+                return new QueryIterNullIterator(getExecContext()) ; 
+            }
+            throw ex ;
+        }
+            
         // Need to put the outerBinding as parent to every binding of the service call.
         // There should be no variables in common because of the OpSubstitute.substitute 
         QueryIterator qIter2 = new QueryIterCommonParent(qIter, outerBinding, getExecContext()) ;
 
         // Materialise, otherwise we may have outstanding incoming data.
-        // Alows the server to fulfil the request as soon as possible.
+        // Allows the server to fulfil the request as soon as possible.
         // In extremis, can cause a deadlock when SERVICE loops back to this server.
         return QueryIter.materialize(qIter2, getExecContext()) ;
     }

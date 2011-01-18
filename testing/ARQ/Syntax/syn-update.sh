@@ -29,7 +29,7 @@ LOAD <http://example.org/faraway>
 # Comment
 EOF
 
-# LOAD
+## ---- LOAD
 
 N=$((N+1)) ; testGood $SPARQL11U $(fname "syntax-update-" $N) <<EOF
 LOAD <http://example.org/faraway> ;
@@ -39,7 +39,7 @@ N=$((N+1)) ; testGood $SPARQL11U $(fname "syntax-update-" $N) <<EOF
 LOAD <http://example.org/faraway> INTO GRAPH <localCopy>
 EOF
 
-# DROP
+## ---- DROP
 N=$((N+1)) ; testGood $SPARQL11U $(fname "syntax-update-" $N) <<EOF
 DROP NAMED
 EOF
@@ -114,7 +114,7 @@ N=$((N+1)) ; testGood $SPARQL11U $(fname "syntax-update-" $N) <<EOF
 CLEAR SILENT GRAPH <graph>
 EOF
 
-# INSERT DATA
+## ---- INSERT DATA
 N=$((N+1)) ; testGood $SPARQL11U $(fname "syntax-update-" $N) <<EOF
 INSERT DATA { <s> <p> 'o1', 'o2', 'o3' }
 EOF
@@ -132,7 +132,24 @@ INSERT DATA {
 }
 EOF
 
-# DELETE DATA
+
+N=$((N+1)) ; testGood $SPARQL11U $(fname "syntax-update-" $N) <<EOF
+INSERT 
+# Comment
+DATA { GRAPH <G> { <s> <p> 'o1', 'o2', 'o3' } }
+EOF
+
+N=$((N+1)) ; testGood $SPARQL11U $(fname "syntax-update-" $N) <<EOF
+INSERT 
+DATA { }
+EOF
+
+N=$((N+1)) ; testGood $SPARQL11U $(fname "syntax-update-" $N) <<EOF
+INSERT 
+DATA {  GRAPH <G>{} }
+EOF
+
+## ---- DELETE DATA
 N=$((N+1)) ; testGood $SPARQL11U $(fname "syntax-update-" $N) <<EOF
 DELETE DATA { <s> <p> 'o1', 'o2', 'o3' }
 EOF
@@ -150,7 +167,7 @@ DELETE DATA {
 }
 EOF
 
-# Full modify form.
+## ---- Full modify form.
 N=$((N+1)) ; testGood $SPARQL11U $(fname "syntax-update-" $N) <<EOF
 BASE    <base:>
 PREFIX  :     <http://example/>
@@ -162,8 +179,10 @@ DELETE {
 INSERT {
   ?s ?p <#o> .
 }
-USING <base:g>
-USING NAMED :gn
+USING <base:g1>
+USING <base:g2>
+USING NAMED :gn1
+USING NAMED :gn2
 WHERE
   { ?s ?p ?o }
 EOF
@@ -189,8 +208,22 @@ WHERE
   { ?s ?p ?o }
 EOF
 
+## ---- DELETE WHERE
 
-# Compound
+N=$((N+1)) ; testGood $SPARQL11U $(fname "syntax-update-" $N) <<EOF
+DELETE WHERE { ?s ?p ?o }
+EOF
+
+N=$((N+1)) ; testGood $SPARQL11U $(fname "syntax-update-" $N) <<EOF
+# Comment
+DELETE 
+# Comment
+WHERE 
+# Comment
+{ GRAPH <G> { <s> <p> 123 ; <q> 4567.0 . } }
+EOF
+
+# ---- Compound
 N=$((N+1)) ; testGood $SPARQL11U $(fname "syntax-update-" $N) <<EOF
 CREATE GRAPH <g> ;
 LOAD <remote> INTO GRAPH <g> ;

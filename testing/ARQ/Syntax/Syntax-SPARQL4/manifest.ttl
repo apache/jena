@@ -5,7 +5,7 @@
 @prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
 
 <>  rdf:type mf:Manifest ;
-    rdfs:comment "Syntax tests Syntax-SPARQL4" ;
+    rdfs:comment "Syntax tests Syntax SPARQL 1.1" ;
     mf:entries
     ( 
       [  mf:name    "syntax-select-expr-01.rq" ;
@@ -148,6 +148,10 @@
          rdf:type   mf:PositiveSyntaxTest11 ;
          mf:action  <syntax-service-02.rq> ; 
       ]
+      [  mf:name    "syntax-service-03.rq" ;
+         rdf:type   mf:PositiveSyntaxTest11 ;
+         mf:action  <syntax-service-03.rq> ; 
+      ]
       [  mf:name    "syntax-bindings-01.rq" ;
          rdf:type   mf:PositiveSyntaxTest11 ;
          mf:action  <syntax-bindings-01.rq> ; 
@@ -167,6 +171,22 @@
       [  mf:name    "syntax-bindings-05.rq" ;
          rdf:type   mf:PositiveSyntaxTest11 ;
          mf:action  <syntax-bindings-05.rq> ; 
+      ]
+      [  mf:name    "syntax-bindings-01.rq" ;
+         rdf:type   mf:PositiveSyntaxTest11 ;
+         mf:action  <syntax-bindings-01.rq> ; 
+      ]
+      [  mf:name    "syntax-bind-02.rq" ;
+         rdf:type   mf:PositiveSyntaxTest11 ;
+         mf:action  <syntax-bind-02.rq> ; 
+      ]
+      [  mf:name    "syntax-construct-where-01.rq" ;
+         rdf:type   mf:PositiveSyntaxTest11 ;
+         mf:action  <syntax-construct-where-01.rq> ; 
+      ]
+      [  mf:name    "syntax-construct-where-02.rq" ;
+         rdf:type   mf:PositiveSyntaxTest11 ;
+         mf:action  <syntax-construct-where-02.rq> ; 
       ]
       [  mf:name    "syn-bad-01.rq" ;
          rdf:type   mf:NegativeSyntaxTest11 ;
@@ -188,8 +208,20 @@
          rdf:type   mf:NegativeSyntaxTest11 ;
          mf:action  <syn-bad-05.rq> ; 
       ]
-      [  mf:name    "syntax-bindings-06.rq" ;
+      [  mf:name    "syn-bad-06.rq" ;
          rdf:type   mf:NegativeSyntaxTest11 ;
-         mf:action  <syntax-bindings-06.rq> ; 
+         mf:action  <syn-bad-06.rq> ; 
+      ]
+      [  mf:name    "syn-bad-07.rq" ;
+         rdf:type   mf:NegativeSyntaxTest11 ;
+         mf:action  <syn-bad-07.rq> ; 
+      ]
+      [  mf:name    "syn-bad-08.rq" ;
+         rdf:type   mf:NegativeSyntaxTest11 ;
+         mf:action  <syn-bad-08.rq> ; 
+      ]
+      [  mf:name    "syntax-bindings-09.rq" ;
+         rdf:type   mf:NegativeSyntaxTest11 ;
+         mf:action  <syntax-bindings-09.rq> ; 
       ]
     ) .

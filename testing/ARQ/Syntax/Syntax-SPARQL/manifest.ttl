@@ -5,7 +5,7 @@
 @prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
 
 <>  rdf:type mf:Manifest ;
-    rdfs:comment "Syntax tests Syntax-SPARQL" ;
+    rdfs:comment "Syntax tests Syntax SPARQL 1.0 part 1" ;
     mf:entries
     ( 
       [  mf:name    "syntax-basic-01.rq" ;

@@ -14,26 +14,34 @@ import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
 
 public class ElementService extends Element
 {
-    Node serviceNode ;
-    Element element ;
+    private final Node serviceNode ;
+    private final Element element ;
+    private final boolean silent ;
 
     public ElementService(String serviceURI, Element el)
     { 
-        this(Node.createURI(serviceURI), el) ;
+        this(Node.createURI(serviceURI), el, false) ;
+    }
+    
+    public ElementService(String serviceURI, Element el, boolean silent)
+    { 
+        this(Node.createURI(serviceURI), el, silent) ;
     }
     
     // Variable?
-    public ElementService(Node n, Element el)
+    public ElementService(Node n, Element el, boolean silent)
     {
         if ( ! n.isURI() && ! n.isVariable() )
             Log.fatal(this, "Must be a URI (or variable which will be bound) for a service endpoint") ;
         this.serviceNode = n ;
         this.element = el ;
+        this.silent = silent ;
     }
     
     public Element getElement() { return element ; } 
     public Node getServiceNode() { return serviceNode ; }
     public String getServiceURI() { return serviceNode.getURI(); }
+    public boolean getSilent() { return silent ; } 
     
     @Override
     public int hashCode()
@@ -46,6 +54,8 @@ public class ElementService extends Element
             return false ;
         ElementService service = (ElementService)el2 ;
         if ( ! serviceNode.equals(service.serviceNode) )
+            return false ;
+        if ( service.getSilent() != getSilent() )
             return false ;
         if ( ! this.getElement().equalTo(service.getElement(), isoMap) )
             return false ;

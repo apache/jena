@@ -1,1 +1,2 @@
-SELECT (?x +?y) {}
+# Not allowed with GROUP BY
+SELECT * { ?s ?p ?o } GROUP BY ?s

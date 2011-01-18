@@ -305,6 +305,8 @@ public class WriterOp
         public void visit(OpService opService)
         {
             start(opService, NoNL) ;
+            if ( opService.getSilent() )
+                out.println("silent ") ;
             out.println(FmtUtils.stringForNode(opService.getService(), sContext)) ;
             opService.getSubOp().visit(this) ;
             finish(opService) ;

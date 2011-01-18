@@ -292,7 +292,7 @@ public class OpAsQuery
             // Hmm - if the subnode has been optimized, we may fail.
             Op op = opService.getSubOp() ;
             Element x = asElement(opService.getSubOp()) ; 
-            Element elt = new ElementService(opService.getService(), x) ;
+            Element elt = new ElementService(opService.getService(), x, opService.getSilent()) ;
             currentGroup().addElement(elt) ;
         }
         

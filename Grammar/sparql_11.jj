@@ -604,12 +604,15 @@ Element GraphGraphPattern() : { Element el ; Node n ;}
   <GRAPH> n = VarOrIRIref() el = GroupGraphPattern()
     { return new ElementNamedGraph(n, el) ; }
 }
-Element ServiceGraphPattern() : { Element el ; Node n ; }
+Element ServiceGraphPattern() : { Element el ; Node n ; boolean silent = false ; }
 {
   <SERVICE>
+  (<SILENT>
+   { silent=true; }
+  )?
   n = VarOrIRIref()
   el = GroupGraphPattern()
-    { return new ElementService(n, el) ; }
+    { return new ElementService(n, el, silent) ; }
 }
 Element Bind() : { Var v ; Expr expr ; }
 {

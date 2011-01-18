@@ -14,30 +14,30 @@ source syn-func.sh
 (
     cd Syntax-SPARQL   
     clean 
-    source ../syn-sparql.sh  
-    createManifest "Syntax-SPARQL"
+    source ../syn-sparql_10_1.sh  
+    createManifest "Syntax SPARQL 1.0 part 1"
 )
 
 (
     cd Syntax-SPARQL2  
     clean 
-    source ../syn-sparql2.sh  
-    createManifest "Syntax-SPARQL2"
+    source ../syn-sparql_10_2.sh  
+    createManifest "Syntax SPARQL 1.0 part 2"
 )
 
 (
     cd Syntax-SPARQL3
     clean
-    source ../syn-sparql3.sh
-    createManifest "Syntax-SPARQL3"
+    source ../syn-sparql_10_3.sh
+    createManifest "Syntax SPARQL 1.0 part 3"
 )
 
 # SPARQL 11
 (
     cd Syntax-SPARQL4
     clean
-    source ../syn-sparql4.sh
-    createManifest "Syntax-SPARQL4"
+    source ../syn-sparql_11_1.sh
+    createManifest "Syntax SPARQL 1.1"
  )
 
 # ARQ
