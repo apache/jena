@@ -9,6 +9,8 @@ package dev ;
 
 public class DevTDB
 {
+    // (ARQ): SSE to use same tokenizing as RIOT.
+    
     // ** CHECK bnode ids without leading zeros in Jena?
     
     // Are leaf blocks being properly packed?

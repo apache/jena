@@ -23,7 +23,7 @@ import com.hp.hpl.jena.shared.PrefixMapping ;
 import com.hp.hpl.jena.tdb.TDBException ;
 import com.hp.hpl.jena.tdb.lib.NodeFmtLib ;
 
-/** Simple encoder/decoder for nodes that uses the SSE string encoding. */
+/** Simple encoder/decoder for nodes that uses Turtle term string encoding. */
 
 public class NodecSSE implements Nodec
 {
@@ -89,7 +89,10 @@ public class NodecSSE implements Nodec
 
         if ( str.startsWith("<") )
         {
+            // Do directly.
+            // (is it quicker?)
             str = str.substring(1,str.length()-1) ;
+            str = StrUtils.unescapeString(str) ;
             str = StrUtils.decodeHex(str, MarkerChar) ;
             return Node.createURI(str) ;
         }

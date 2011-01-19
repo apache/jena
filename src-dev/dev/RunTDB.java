@@ -74,6 +74,9 @@ public class RunTDB
     { 
         // Are leaf blocks properly packed? 
         
+        tdb.tdbdump.main("--loc=DB") ;
+        System.exit(0) ;
+        
         
         {   int order = 3 ;
             BPlusTreeParams params = new BPlusTreeParams(order, 4, 0) ;
