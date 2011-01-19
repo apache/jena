@@ -47,7 +47,19 @@ public class SPARQLServer
     private boolean verbose = false ;
     private boolean enableUpdate = false ;
     
-    public Server getServer() { return server ; }
+    public SPARQLServer(DatasetGraph dsg, String datasetPath, int port, boolean allowUpdate, boolean verbose)
+    {
+        this.port = port ;
+        this.datasetPath = datasetPath ;
+        this.enableUpdate = allowUpdate ;
+        this.verbose = verbose ;
+        init(dsg, datasetPath, port) ;
+    }
+    
+    public SPARQLServer(DatasetGraph dsg, String datasetPath, int port, boolean allowUpdate)
+    {
+        this(dsg, datasetPath, port, allowUpdate, false) ;
+    }
     
     public void start()
     {
@@ -74,19 +86,7 @@ public class SPARQLServer
         { log.warn("SPARQLServer: Exception while stopping server: " + ex.getMessage(), ex) ; }
     }
     
-    public SPARQLServer(DatasetGraph dsg, String datasetPath, int port, boolean allowUpdate, boolean verbose)
-    {
-        this.port = port ;
-        this.datasetPath = datasetPath ;
-        this.enableUpdate = allowUpdate ;
-        this.verbose = verbose ;
-        init(dsg, datasetPath, port) ;
-    }
-    
-    public SPARQLServer(DatasetGraph dsg, String datasetPath, int port, boolean allowUpdate)
-    {
-        this(dsg, datasetPath, port, allowUpdate, false) ;
-    }
+    public Server getServer() { return server ; }
     
     private void init(DatasetGraph dsg, String datasetPath, int port)
     {
@@ -94,6 +94,9 @@ public class SPARQLServer
             datasetPath = "" ;
         else if ( ! datasetPath.startsWith("/") )
             datasetPath = "/"+datasetPath ;
+        
+        if ( datasetPath.endsWith("/") )
+            datasetPath = datasetPath.substring(0, datasetPath.length()-1) ; 
         
         // Server, with one NIO-based connector, large input buffer size (for long URLs, POSTed forms (queries, updates)).
         server = new Server();
