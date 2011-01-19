@@ -28,17 +28,11 @@ public class E_StrEncodeForURI extends ExprFunction1
         return NodeValue.makeString(encStr) ;
     }
     
-    // Share with ExprDigest
-    static String plainString(NodeValue v)
+    private static String plainString(NodeValue v)
     {
         Node n = v.asNode() ;
-        if ( n.getLiteralLanguage() != null && ! n.getLiteralLanguage().equals("") )
-            throw new ExprEvalException("Not allowed: RDF term with a language tag") ; 
         if ( ! n.isLiteral() )
             throw new ExprEvalException("Not a literal") ;
-        // Literal, no language tag.
-        if ( n.getLiteralDatatype() != null && ! XSDDatatype.XSDstring.equals(n.getLiteralDatatype()) )
-            throw new ExprEvalException("Not a simple literal nor an XSD string") ;
         return n.getLiteralLexicalForm() ;
     }
     

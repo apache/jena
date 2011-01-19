@@ -82,15 +82,16 @@ function output
 {
     local FN="$1"
     local TYPE="$2"
-    shift
-    shift
-    # ToDo: URIs, not bnodes.
-    cat >> manifest.ttl <<EOF
-      [  mf:name    "$FN" ;
-         rdf:type   $TYPE ;
-         mf:action  <$FN> ; 
-      ]
-EOF
+    
+    I="$(($I+1))"
+    local N="<#test_$I>"
+    local E="$N rdf:type   $TYPE ;"
+    E="${E}\n   mf:name    \"$FN\" ;" 
+    E="${E}\n   mf:action  <$FN> ;"
+    E="${E}.\n"
+
+    ENTRIES="$ENTRIES$E\n"
+    ITEMS="$ITEMS\n$N"
 }
     
 
@@ -111,6 +112,14 @@ function createManifest
     mf:entries
     ( 
 EOF
+
+# Build the manifest list.
+# Build the manifest items.
+
+    # These are globals.
+    ENTRIES=""
+    ITEMS=""
+    I=0
 
     # SPARQL 1.0
     for f in "${GOOD_S10[@]}"
@@ -167,8 +176,8 @@ EOF
       output "$f" "mf:NegativeUpdateSyntaxTestARQ"
       done
 
-## Trailer
-    cat >> manifest.ttl <<EOF
-    ) .
-EOF
+    echo -e "$ITEMS" >> manifest.ttl
+    echo ') .' >> manifest.ttl
+    echo >> manifest.ttl
+    echo -e "$ENTRIES" >> manifest.ttl
 }
