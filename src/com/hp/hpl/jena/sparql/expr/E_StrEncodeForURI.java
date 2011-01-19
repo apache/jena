@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010, 2011 Epimorphics Ltd.
  * [See end of file]
  */
 
@@ -23,33 +24,51 @@ public class E_StrEncodeForURI extends ExprFunction1
     @Override
     public NodeValue eval(NodeValue v)
     { 
-        String str = plainString(v) ;
-        String encStr = StrUtils.encodeHex(str,'%', all) ;
-        return NodeValue.makeString(encStr) ;
-    }
-    
-    private static String plainString(NodeValue v)
-    {
         Node n = v.asNode() ;
         if ( ! n.isLiteral() )
             throw new ExprEvalException("Not a literal") ;
-        return n.getLiteralLexicalForm() ;
+        if ( n.getLiteralDatatype() != null )
+        {
+            if ( ! n.getLiteralDatatype().equals(XSDDatatype.XSDstring) )
+                throw new ExprEvalException("Not a string literal") ;
+        }
+        
+        
+        String str = n.getLiteralLexicalForm() ;
+        String encStr = StrUtils.encodeHex(str,'%', uri_all) ;
+        return NodeValue.makeString(encStr) ;
     }
     
     // Put somewhere
-    static char reserved[] = 
+    static char uri_reserved[] = 
     {' ',
      '!', '*', '"', '\'', '(', ')', ';', ':', '@', '&', 
      '=', '+', '$', ',', '/', '?', '%', '#', '[', ']'} ;
 
-    static char[] other = {'<', '>', '~', '.', '{', '}', '|', '\\', '-', '`', '_', '^'} ;     
+    static char[] uri_other = {'<', '>', '~', '.', '{', '}', '|', '\\', '-', '`', '_', '^'} ;     
     
-    static char[] other2 = {'\n', '\r', '\t' } ;
+    static char[] uri_other2 = {'\n', '\r', '\t' } ;
     
-    static char[] all = {  ' ', '!', '*', '"', '\'', '(', ')', ';', ':', '@', '&', 
-                           '=', '+', '$', ',', '/', '?', '%', '#', '[', ']',
-                           '<', '>', '~', '.', '{', '}', '|', '\\', '-', '`', '_', '^',
-                           '\n', '\r', '\t'} ;
+    static char[] uri_all = new char[uri_reserved.length+uri_other.length+uri_other2.length] ;
+    
+    
+//    static char[] uri_allx= {  ' ', '!', '*', '"', '\'', '(', ')', ';', ':', '@', '&', 
+//                           '=', '+', '$', ',', '/', '?', '%', '#', '[', ']',
+//                           '<', '>', '~', '.', '{', '}', '|', '\\', '-', '`', '_', '^',
+//                           '\n', '\r', '\t'} ;
+
+    static {
+        int idx = 0 ;
+        System.arraycopy(uri_reserved, 0, uri_all, idx, uri_reserved.length) ;
+        idx += uri_reserved.length ;
+        
+        System.arraycopy(uri_other, 0, uri_all, idx, uri_other.length) ;
+        idx += uri_other.length ;
+        
+        System.arraycopy(uri_other2, 0, uri_all, idx, uri_other2.length) ;
+        idx += uri_other2.length ;
+    }
+    
         
         /* The encodeURI() function is used to encode a URI.
 special except: , / ? : @ & = + $ #
@@ -64,7 +83,9 @@ special + , / ? : @ & = + $ #
 }
 
 /*
- *  (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010, 2011 Epimorphics Ltd.
+ *  
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

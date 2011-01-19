@@ -182,7 +182,7 @@ public class TestFunctions2 extends BaseTest
     @Test public void encodeURI_03()    { test("encode_for_uri('\\t')",  "'%09'") ; }
     
     @Test(expected=ExprEvalException.class)
-    public void encodeURI_04()          { test("encode_for_uri(1234)",  "") ; }
+    public void encodeURI_04()          { test("encode_for_uri(1234)",  "'1234'") ; }
     
     /* Compatibility rules
     # pairs of simple literals,
