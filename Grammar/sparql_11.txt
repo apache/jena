@@ -126,6 +126,7 @@ TOKENS
 | <MINUTES: "MINUTES">
 | <SECONDS: "SECONDS">
 | <TIMEZONE: "TIMEZONE">
+| <TZ: "TZ">
 | <NOW: "NOW">
 | <MD5: "MD5">
 | <SHA1: "SHA1">
@@ -450,6 +451,7 @@ NON-TERMINALS
 		|	<MINUTES> <LPAREN> Expression <RPAREN>
 		|	<SECONDS> <LPAREN> Expression <RPAREN>
 		|	<TIMEZONE> <LPAREN> Expression <RPAREN>
+		|	<TZ> <LPAREN> Expression <RPAREN>
 		|	<NOW> <NIL>
 		|	<MD5> <LPAREN> Expression <RPAREN>
 		|	<SHA1> <LPAREN> Expression <RPAREN>

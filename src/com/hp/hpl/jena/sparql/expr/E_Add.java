@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010, 2011 Epimorphics Ltd.
  * [See end of file]
  */
 
@@ -24,11 +25,13 @@ public class E_Add extends ExprFunction2
         if ( ARQ.isStrictMode() )
             return XSDFuncOp.add(x, y) ;
 
-        if ( x.isString() && y.isString() )
-            return NodeValue.makeString(x.asString()+y.asString()) ;
-        if ( ! x.isNumber() ||  ! y.isNumber() )
-            throw new ExprEvalTypeException("Operator '+' requires two numbers or two strings: got: "+x+" and "+y) ;
-            
+        if ( true )
+        {
+            if ( x.isString() && y.isString() )
+                return NodeValue.makeString(x.asString()+y.asString()) ;
+            if ( ! x.isNumber() ||  ! y.isNumber() )
+                throw new ExprEvalTypeException("Operator '+' requires two numbers or two strings: got: "+x+" and "+y) ;
+        }   
         return XSDFuncOp.add(x, y) ;
     }
 
@@ -37,7 +40,8 @@ public class E_Add extends ExprFunction2
 }
 
 /*
- *  (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010, 2011 Epimorphics Ltd.
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
