@@ -7,13 +7,7 @@
 package org.openjena.riot.tokens;
 
 import static org.openjena.atlas.lib.Chars.* ;
-import static org.openjena.riot.system.RiotChars.isA2Z ;
-import static org.openjena.riot.system.RiotChars.isA2ZN ;
-import static org.openjena.riot.system.RiotChars.isAlphaNumeric ;
-import static org.openjena.riot.system.RiotChars.isNewlineChar ;
-import static org.openjena.riot.system.RiotChars.isWhitespace ;
-import static org.openjena.riot.system.RiotChars.range ;
-import static org.openjena.riot.system.RiotChars.valHexChar ;
+import static org.openjena.riot.system.RiotChars.* ;
 
 import java.io.IOException ;
 import java.util.NoSuchElementException ;
@@ -268,7 +262,7 @@ public final class TokenizerText implements Tokenizer
             reader.readChar() ;
             token.setType(TokenType.VAR) ;
             // Character set?
-            token.setImage(readWord(true)) ; 
+            token.setImage(readVarName()) ; 
             if ( Checking ) checkVariable(token.getImage()) ;
             return token ;
         }
@@ -300,7 +294,7 @@ public final class TokenizerText implements Tokenizer
             case CH_RBRACKET:   reader.readChar() ; token.setType(TokenType.RBRACKET) ;  token.setImage(CH_RBRACKET) ; return token ;
             case CH_EQUALS:     reader.readChar() ; token.setType(TokenType.EQUALS) ;    token.setImage(CH_EQUALS) ; return token ;
 
-            // Specials (if processing off) -- FIX ME
+            // Specials (if blank node processing off)
             //case CH_COLON:      reader.readChar() ; token.setType(TokenType.COLON) ; return token ;
             case CH_UNDERSCORE: reader.readChar() ; token.setType(TokenType.UNDERSCORE) ; token.setImage(CH_UNDERSCORE) ; return token ;
             case CH_LT:         reader.readChar() ; token.setType(TokenType.LT) ; token.setImage(CH_LT) ; return token ;
@@ -320,7 +314,6 @@ public final class TokenizerText implements Tokenizer
                 
         }
         
-        
         if ( ch == CH_PLUS || ch == CH_MINUS || range(ch, '0', '9'))
         {
             readNumber() ;
@@ -333,32 +326,33 @@ public final class TokenizerText implements Tokenizer
         //   Can't start with a '_' due to blank node test above.
         // If we see a :, the first time it means a prefixed name else it's a token break.
 
-        readPrefixedNameOrKeyWord(token) ;
+        readPrefixedNameOrKeyword(token) ;
         
         if ( Checking ) checkKeyword(token.getImage()) ;
         return token ;
     }
 
-    private void readPrefixedNameOrKeyWord(Token token2)
+    private void readPrefixedNameOrKeyword(Token token)
     {
         long posn = reader.getPosition() ;
-        token2.setImage(readWord(false)) ;
-        token2.setType(TokenType.KEYWORD) ;
+        String prefixPart = readPrefixPart() ;
+        token.setImage(prefixPart) ;
+        token.setType(TokenType.KEYWORD) ;
         int ch = reader.peekChar() ;
         if ( ch == CH_COLON )
         {
             reader.readChar() ;
-            token2.setType(TokenType.PREFIXED_NAME) ;
+            token.setType(TokenType.PREFIXED_NAME) ;
             String ln = readLocalPart() ;
-            token2.setImage2(ln) ;
-            if ( Checking ) checkPrefixedName(token2.getImage(), token2.getImage2()) ;
+            token.setImage2(ln) ;
+            if ( Checking ) checkPrefixedName(token.getImage(), token.getImage2()) ;
         }
 
         // If we made no progress, nothing found, not even a keyword -- it's an error.
         if ( posn == reader.getPosition() )  
             exception(String.format("Unknown char: %c(%d)",ch,ch)) ;
 
-        if ( Checking ) checkKeyword(token2.getImage()) ;
+        if ( Checking ) checkKeyword(token.getImage()) ;
         
     }
     
@@ -389,10 +383,33 @@ public final class TokenizerText implements Tokenizer
     private String readLocalPart()
     { return readWordSub(true, false) ; }
     
+    private String readPrefixPart()
+    { return readWordSub(false, false) ; }
+    
     private String readWord(boolean leadingDigitAllowed)
     { return readWordSub(leadingDigitAllowed, false) ; }
+
+    // A 'word' is used in several places:
+    //   keyword
+    //   prefix part of prefix name 
+    //   local part of prefix name (allows digits)
+    
+    static private char[] extraCharsWord = new char[] {'_', '.' , '-'};
     
     private String readWordSub(boolean leadingDigitAllowed, boolean leadingSignAllowed)
+    {
+        return readCharsAnd(leadingDigitAllowed, leadingSignAllowed, extraCharsWord) ;
+    }
+    
+    static private char[] extraCharsVar = new char[] {'_', '.' , '-', '?', '@', '+'};
+    private String readVarName()
+    {
+        return readCharsAnd(true, true, extraCharsVar) ;
+    }
+    
+    // See also readBlankNodeLabel
+    
+    private String readCharsAnd(boolean leadingDigitAllowed, boolean leadingSignAllowed, char[] extraChars)
     {
         stringBuilder.setLength(0) ;
         int idx = 0 ;
@@ -402,6 +419,8 @@ public final class TokenizerText implements Tokenizer
             if ( Character.isDigit(ch) )
                 return "" ;
         }
+        
+        // Used for local part of prefix names =>   
         if ( ! leadingSignAllowed )
         {
             int ch = reader.peekChar() ;
@@ -413,13 +432,14 @@ public final class TokenizerText implements Tokenizer
         {
             int ch = reader.peekChar() ;
             
-            if ( Character.isLetterOrDigit(ch) || ch == '_' || ch == '.' || ch == '-' ) // ||  ch == '#' || ch == '/' )
+            if ( isAlphaNumeric(ch) || charInArray(ch, extraChars) )
             {
                 reader.readChar() ;
                 stringBuilder.append((char)ch) ;
                 continue ;
             }
             else
+                // Inappropriate character.
                 break ;
             
         }
@@ -664,7 +684,7 @@ public final class TokenizerText implements Tokenizer
     }
 
     // Blank node label: letters, numbers and '-', '_'
-    // Stricky, can't start with "-" or digits.
+    // Strictly, can't start with "-" or digits.
     
     private String readBlankNodeLabel()
     {

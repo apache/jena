@@ -800,26 +800,24 @@ public class TestTokenizer extends BaseTest
         assertEquals("A", token2.getImage()) ;
     }
 
-    @Test
-    public void tokenUnit_var1()
-    {
-        Tokenizer tokenizer = tokenizer("?x ?y") ;
-        assertTrue(tokenizer.hasNext()) ;
-        Token token = tokenizer.next() ;
-        assertEquals(TokenType.VAR, token.getType()) ;
-        assertEquals("x", token.getImage()) ;
-    }
+    @Test public void tokenUnit_var1()  { testVar("?x ?y", "x") ; }
     
-    @Test
-    public void tokenUnit_var2()
+    @Test public void tokenUnit_var2()  { testVar("? x", "") ; }
+
+    @Test public void tokenUnit_var3()  { testVar("??x", "?x") ; }
+    
+    @Test public void tokenUnit_var4()  { testVar("?.1", ".1") ; }
+
+    private void testVar(String input, String varName)
     {
-        Tokenizer tokenizer = tokenizer("? x") ;
+        Tokenizer tokenizer = tokenizer(input) ;
         assertTrue(tokenizer.hasNext()) ;
         Token token = tokenizer.next() ;
         assertEquals(TokenType.VAR, token.getType()) ;
-        assertEquals("", token.getImage()) ;
+        assertEquals(varName, token.getImage()) ;
     }
-
+        
+    
     @Test
     public void tokenUnit_hex1()
     {

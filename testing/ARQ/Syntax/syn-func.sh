@@ -84,8 +84,9 @@ function output
     local TYPE="$2"
     
     I="$(($I+1))"
-    local N="<#test_$I>"
+    local N=":test_$I"
     local E="$N rdf:type   $TYPE ;"
+    E="${E}\n   dawgt:approval dawgt:NotClassified ;" ;
     E="${E}\n   mf:name    \"$FN\" ;" 
     E="${E}\n   mf:action  <$FN> ;"
     E="${E}.\n"
@@ -101,11 +102,13 @@ function createManifest
     local LABEL="$1"
 ## Header
     cat > manifest.ttl <<EOF
+@prefix :       <manifest#> .
 @prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
 @prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
 @prefix mfx:    <http://jena.hpl.hp.com/2005/05/test-manifest-extra#> .
 @prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+@prefix dawgt:  <http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#> .
 
 <>  rdf:type mf:Manifest ;
     rdfs:comment "Syntax tests $LABEL" ;

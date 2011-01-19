@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -66,12 +67,22 @@ public class RiotChars
         return ( ch >= a && ch <= b ) ;
     }
 
+    public static boolean charInArray(int ch, char[] chars)
+    {
+        for ( int xch : chars )
+        {
+            if ( ch == xch )  return true ;
+        }
+        return false ;
+    }
+    
 
 
 }
 
 /*
  * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
