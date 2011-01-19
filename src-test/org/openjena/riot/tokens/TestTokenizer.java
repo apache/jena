@@ -1,7 +1,7 @@
 /*
  * (c) Copyright 2009 Hewlett-Packard Development Company, LP
  * (c) Copyright 2010 Talis Systems Ltd.
- * (c) Copyright 2010 Epimorphics Ltd.
+ * (c) Copyright 2010, 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -643,6 +643,9 @@ public class TestTokenizer extends BaseTest
 //        pnameToken(token, "123", "") ;
 //    }
 
+    // Generic: parse first token from ...
+    // tokenTest(str, TokenType, TokenImage) ; 
+    
     @Test public void tokenUnit_num1()
     {
         Tokenizer tokenizer = tokenizer("123") ;
@@ -706,8 +709,6 @@ public class TestTokenizer extends BaseTest
         assertEquals("1.3e+1", token.getImage()) ;
     }
     
-    // Bad numbers.
-    
     @Test
     public void tokenUnit_num8()
     {
@@ -728,46 +729,9 @@ public class TestTokenizer extends BaseTest
         assertEquals("1.3e67", token.getImage()) ;
     }
 
-    @Test(expected = RiotParseException.class)
+    
+    @Test
     public void tokenUnit_num10()
-    {
-        Tokenizer tokenizer = tokenizer("+") ;
-        assertTrue(tokenizer.hasNext()) ;
-        Token token = tokenizer.next() ;
-        assertEquals(TokenType.KEYWORD, token.getType()) ;
-    }
-    
-    @Test(expected = RiotParseException.class)
-    public void tokenUnit_num11()
-    {
-        Tokenizer tokenizer = tokenizer("+-") ;
-        assertTrue(tokenizer.hasNext()) ;
-        Token token = tokenizer.next() ;
-        assertEquals(TokenType.KEYWORD, token.getType()) ;
-    }
-    
-    @Test
-    public void tokenUnit_num12()
-    {
-        // Not a number.
-        Tokenizer tokenizer = tokenizer(".") ;
-        assertTrue(tokenizer.hasNext()) ;
-        Token token = tokenizer.next() ;
-        assertEquals(TokenType.DOT, token.getType()) ;
-    }
-
-    @Test
-    public void tokenUnit_num13()
-    {
-        // Not a number.
-        Tokenizer tokenizer = tokenizer(".a") ;
-        assertTrue(tokenizer.hasNext()) ;
-        Token token = tokenizer.next() ;
-        assertEquals(TokenType.DOT, token.getType()) ;
-    }
-    
-    @Test
-    public void tokenUnit_num14()
     {
         Tokenizer tokenizer = tokenizer(".1") ;
         assertTrue(tokenizer.hasNext()) ;
@@ -777,7 +741,7 @@ public class TestTokenizer extends BaseTest
     }
 
     @Test
-    public void tokenUnit_num15()
+    public void tokenUnit_num11()
     {
         Tokenizer tokenizer = tokenizer(".1e0") ;
         assertTrue(tokenizer.hasNext()) ;
@@ -787,7 +751,7 @@ public class TestTokenizer extends BaseTest
     }
 
     @Test
-    public void tokenUnit_num16()
+    public void tokenUnit_num12()
     {
         // This is not a hex number.
         Tokenizer tokenizer = tokenizer("000A     .") ;
@@ -1198,23 +1162,75 @@ public class TestTokenizer extends BaseTest
     //-- Symbols
     // CNTRL
 //     @Test public void tokenizer_symbol_01()            { testSymbol("*", TokenType.STAR) ; }
-//    @Test public void tokenizer_symbol_02()            { testSymbol("+", TokenType.PLUS) ; }
-//    @Test public void tokenizer_symbol_03()            { testSymbol("-", TokenType.MINUS) ; }
+    @Test public void tokenizer_symbol_02()            { testSymbol("+", TokenType.PLUS) ; }
+    @Test public void tokenizer_symbol_03()            { testSymbol("-", TokenType.MINUS) ; }
 //    @Test public void tokenizer_symbol_04()            { testSymbol("<", TokenType.LT) ; }
     @Test public void tokenizer_symbol_05()            { testSymbol(">", TokenType.GT) ; }
     @Test public void tokenizer_symbol_06()            { testSymbol("=", TokenType.EQUALS) ; }
+    
 //    @Test public void tokenizer_symbol_07()            { testSymbol(">=", TokenType.LE) ; }
 //    @Test public void tokenizer_symbol_08()            { testSymbol("<=", TokenType.GE) ; }
 //    @Test public void tokenizer_symbol_09()            { testSymbol("&&", TokenType.LOGICAL_AND) ; }
 //    @Test public void tokenizer_symbol_10()            { testSymbol("||", TokenType.LOGICAL_OR) ; }
 //    @Test public void tokenizer_symbol_11()            { testSymbol("&  &", TokenType.AMPHERSAND) ; }
 //    @Test public void tokenizer_symbol_12()            { testSymbol("| |", TokenType.VBAR) ; }
+    
+
+    // Tidy up!
+    @Test
+    public void tokenUnit_symbol_10()
+    {
+        Tokenizer tokenizer = tokenizer("+") ;
+        assertTrue(tokenizer.hasNext()) ;
+        Token token = tokenizer.next() ;
+        assertEquals(TokenType.PLUS, token.getType()) ;
+    }
+    
+    @Test
+    public void tokenUnit_symbol_11()
+    {
+        Tokenizer tokenizer = tokenizer("+A") ;
+        assertTrue(tokenizer.hasNext()) ;
+        Token token = tokenizer.next() ;
+        assertEquals(TokenType.PLUS, token.getType()) ;
+    }
+    
+    @Test
+    public void tokenUnit_symbol_12()
+    {
+        Tokenizer tokenizer = tokenizer("+-") ;
+        assertTrue(tokenizer.hasNext()) ;
+        Token token = tokenizer.next() ;
+        assertEquals(TokenType.PLUS, token.getType()) ;
+        token = tokenizer.next() ;
+        assertEquals(TokenType.MINUS, token.getType()) ;
+    }
+    
+    @Test
+    public void tokenUnit_symbol_13()
+    {
+        // Not a number.
+        Tokenizer tokenizer = tokenizer(".") ;
+        assertTrue(tokenizer.hasNext()) ;
+        Token token = tokenizer.next() ;
+        assertEquals(TokenType.DOT, token.getType()) ;
+    }
+
+    @Test
+    public void tokenUnit_symbol_14()
+    {
+        Tokenizer tokenizer = tokenizer(".a") ;
+        assertTrue(tokenizer.hasNext()) ;
+        Token token = tokenizer.next() ;
+        assertEquals(TokenType.DOT, token.getType()) ;
+    }
+    
 }
 
 /*
  * (c) Copyright 2009 Hewlett-Packard Development Company, LP 
  * (c) Copyright 2010 Talis Systems Ltd.
- * (c) Copyright 2010 Epimorphics Ltd.
+ * (c) Copyright 2010, 2011 Epimorphics Ltd.
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without

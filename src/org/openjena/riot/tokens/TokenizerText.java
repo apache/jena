@@ -314,8 +314,57 @@ public final class TokenizerText implements Tokenizer
                 
         }
         
-        if ( ch == CH_PLUS || ch == CH_MINUS || range(ch, '0', '9'))
+        // ---- Numbers.
+        // But a plain "+" and "-" are symbols.
+        
+        /*
+        [16]    integer         ::=     ('-' | '+') ? [0-9]+
+        [17]    double          ::=     ('-' | '+') ? ( [0-9]+ '.' [0-9]* exponent | '.' ([0-9])+ exponent | ([0-9])+ exponent )
+                                        0.e0, .0e0, 0e0
+        [18]    decimal         ::=     ('-' | '+')? ( [0-9]+ '.' [0-9]* | '.' ([0-9])+ | ([0-9])+ )
+                                        0.0 .0
+        [19]    exponent        ::=     [eE] ('-' | '+')? [0-9]+
+        []      hex             ::=     0x0123456789ABCDEFG
+        
+        */
+        
+        // TODO readNumberNoSign
+        
+        int signCh = 0 ;
+        
+        if ( ch == CH_PLUS || ch == CH_MINUS )
         {
+            reader.readChar() ;
+            int ch2 = reader.peekChar() ;
+            
+            if ( ! range(ch2, '0', '9') )
+            {
+                // ch was end of symbol.
+                //reader.readChar() ;
+                if ( ch == CH_PLUS )
+                {
+                     token.setType(TokenType.PLUS) ; token.setImage(CH_PLUS) ;
+                }
+                else
+                {
+                    token.setType(TokenType.MINUS) ; token.setImage(CH_MINUS) ;
+                }
+                return token ;
+            }
+
+            // Already got a + or - ...
+            // readNumberNoSign
+
+            // Because next, old code proceses signs.
+            // FIXME
+            reader.pushbackChar(ch) ;
+            signCh = ch ;
+            // Drop to next "if"
+        }
+            
+        if ( ch == CH_PLUS || ch == CH_MINUS || range(ch, '0', '9') )
+        {
+            // readNumberNoSign
             readNumber() ;
             if ( Checking ) checkNumber(token.getImage(), token.getImage2() ) ;
             return token ;
