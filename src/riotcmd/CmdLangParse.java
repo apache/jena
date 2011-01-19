@@ -252,7 +252,7 @@ public abstract class CmdLangParse extends CmdGeneral
         // That would change a lot (Triples came several years before Quads). 
         if ( lang.isTriples() )
         {
-            Sink <Triple> s = SinkNull.create() ;
+            Sink<Triple> s = SinkNull.create() ;
             if ( ! modLangParse.toBitBucket() )
                 s = new SinkTripleOutput(System.out) ;
             if ( setup != null )

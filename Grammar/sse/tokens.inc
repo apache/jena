@@ -53,7 +53,7 @@ TOKEN :
 | < #EXPONENT: ["e","E"] (["+","-"])? (["0"-"9"])+ >
 | < #QUOTE_3D: "\"\"\"">
 | < #QUOTE_3S: "'''">
-| <ECHAR: "\\" ( "t"|"b"|"n"|"r"|"f"|"\\"|"\""|"'") >
+| < ECHAR: "\\" ( "t"|"b"|"n"|"r"|"f"|"\\"|"\""|"'") >
 | < STRING_LITERAL1: 
       // Single quoted string
       "'" ( (~["'","\\","\n","\r"]) | <ECHAR> )* "'" >

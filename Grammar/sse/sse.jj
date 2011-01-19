@@ -109,10 +109,14 @@ void Symbol() : { Token t ; }
     { emitSymbol(t.beginLine, t.beginColumn, t.image) ; }
 }
 
-void IRIref() : { Token t ; }
+void IRIref() : { Token t ; String s ; }
 {
   t = <IRIref>
-    { emitIRI(t.beginLine, t.beginColumn, stripQuotes(t.image)) ; } 
+    { 
+      s = t.image ;
+      s = stripQuotes(s) ;
+      s = unescapeStr(s, t.beginLine, t.beginColumn) ;
+      emitIRI(t.beginLine, t.beginColumn, s) ; } 
 }
 
 void PrefixedName() : { Token t ; }

@@ -3,6 +3,7 @@ package dev ;
 public class DevARQ
 {
     // RIOT -- bad chars
+    // SSE - move to RIOT based tokenizer.
     
     // round(1.3) -> "1"^^xsd:decimal.
     // floor, ceil.
@@ -85,7 +86,7 @@ public class DevARQ
     // ---- Pipeline:
     // Architecture: 
     // Canonicalization: Fix URIs. () [] SPC
-    // Canonicaize IRIs (see IRI RFC).
+    // Canonicaize IRIs (see IRI RFC). http://tools.ietf.org/html/rfc3986#page-38 (IRI missing in lib!)
     // Number canonicalization.
     // Canonicalized lang tags?
     //   owl:equivalentClass, owl:equivalentProperty,

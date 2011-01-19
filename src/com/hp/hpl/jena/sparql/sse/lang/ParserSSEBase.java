@@ -48,7 +48,6 @@ public class ParserSSEBase extends ParserBase
     
     protected void emitLiteral(int currLine, int currColumn, String lex, String lang, String dt_iri, String dt_pname)
     { 
-        // XXX Fix escapes
         if ( lang != null )
         {
             if ( dt_iri != null || dt_pname != null )

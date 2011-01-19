@@ -225,9 +225,12 @@ public class SSE_ParserCore extends ParserSSEBase implements SSE_ParserCoreConst
   }
 
   final public void IRIref() throws ParseException {
-                  Token t ;
+                  Token t ; String s ;
     t = jj_consume_token(IRIref);
-      emitIRI(t.beginLine, t.beginColumn, stripQuotes(t.image)) ;
+      s = t.image ;
+      s = stripQuotes(s) ;
+      s = unescapeStr(s, t.beginLine, t.beginColumn) ;
+      emitIRI(t.beginLine, t.beginColumn, s) ;
   }
 
   final public void PrefixedName() throws ParseException {
