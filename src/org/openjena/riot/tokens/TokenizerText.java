@@ -252,6 +252,7 @@ public final class TokenizerText implements Tokenizer
             return token ;
         }
 
+        // A directive (not part of a literal as lang tag)
         if ( ch == CH_AT )
         {
             reader.readChar() ;
@@ -261,6 +262,7 @@ public final class TokenizerText implements Tokenizer
             return token ;
         }
         
+        // Variable
         if ( ch == CH_QMARK )
         {
             reader.readChar() ;

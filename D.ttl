@@ -1,9 +1,0 @@
-
-<http://location.data.gov.uk/so/ef/SamplingPoint/bwsp.eaew/21500>
-      a <http://location.data.gov.uk/def/ef/SamplingPoint/SamplingPoint> ;
-<http://data.ordnancesurvey.co.uk/ontology/spatialrelations/easting>
-              "333900.00"^^<http://www.w3.org/2001/XMLSchema#integer> ;
-<http://data.ordnancesurvey.co.uk/ontology/spatialrelations/northing>
-              "91850.00"^^<http://www.w3.org/2001/XMLSchema#integer> ;
-<http://www.w3.org/2004/02/skos/core#prefLabel>
-              "Bathing water quality sampling point at Lyme Regis Cobb."@en . 
