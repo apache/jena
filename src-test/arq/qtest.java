@@ -17,6 +17,7 @@ import arq.cmdline.ModEngine ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.n3.IRIResolver ;
+import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.rdf.model.Literal ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.Resource ;
@@ -69,6 +70,7 @@ public class qtest extends CmdARQ
     
     public static void main (String... argv)
     {
+        ARQ.init();
         try {
             new qtest(argv).mainRun() ;
         }
