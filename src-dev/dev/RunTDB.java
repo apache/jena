@@ -18,18 +18,14 @@ import setup.DatasetBuilderStd ;
 import setup.NoisyBlockMgr ;
 import setup.ObjectFileBuilder ;
 
-import com.hp.hpl.jena.rdf.model.RDFList.ReduceFn ;
 import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
 import com.hp.hpl.jena.tdb.base.file.FileSet ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.base.record.Record ;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
-import com.hp.hpl.jena.tdb.index.IndexBuilder ;
-import com.hp.hpl.jena.tdb.index.bplustree.BPTreeNode ;
 import com.hp.hpl.jena.tdb.index.bplustree.BPlusTree ;
 import com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams ;
-import com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeRewriter ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
