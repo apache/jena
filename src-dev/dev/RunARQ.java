@@ -27,6 +27,7 @@ import org.openjena.atlas.lib.StrUtils ;
 import org.openjena.atlas.logging.Log ;
 import org.openjena.riot.ErrorHandlerFactory ;
 import org.openjena.riot.RiotReader ;
+import org.openjena.riot.SysRIOT ;
 import org.openjena.riot.checker.CheckerIRI ;
 import org.openjena.riot.pipeline.normalize.CanonicalizeLiteral ;
 
@@ -46,6 +47,7 @@ import com.hp.hpl.jena.query.QueryFactory ;
 import com.hp.hpl.jena.query.QuerySolutionMap ;
 import com.hp.hpl.jena.query.ResultSetFormatter ;
 import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.shared.PrefixMapping ;
 import com.hp.hpl.jena.shared.impl.PrefixMappingImpl ;
 import com.hp.hpl.jena.sparql.ARQConstants ;
@@ -111,6 +113,11 @@ public class RunARQ
     
     public static void main(String[] argv) throws Exception
     {
+        SysRIOT.wireIntoJena() ;
+        ModelFactory.createDefaultModel().read("file:D.nt", "http://EXample/", "N-TRIPLES") ;
+        System.out.println("DONE") ;
+        System.exit(0) ;
+        
         final Triple marker = new Triple(Node.NULL, Node.NULL, Node.NULL) ; 
         final String filename = "/home/afs/Datasets/MusicBrainz/tracks-1k.nt" ;
         final BlockingQueue<Triple> queue = new ArrayBlockingQueue<Triple>(10) ;
