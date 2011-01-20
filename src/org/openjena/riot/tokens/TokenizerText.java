@@ -241,6 +241,7 @@ public final class TokenizerText implements Tokenizer
             return token ;
         }
 
+        // TODO remove and make a symbol/keyword.
         // Control
         if ( ch == CTRL_CHAR )
         {
