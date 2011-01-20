@@ -11,6 +11,8 @@ package org.openjena.riot.tokens ;
 
 import java.io.ByteArrayInputStream ;
 
+import com.hp.hpl.jena.sparql.ARQConstants ;
+
 import org.junit.Test ;
 import org.openjena.atlas.io.PeekReader ;
 import org.openjena.atlas.junit.BaseTest ;
@@ -20,6 +22,7 @@ import org.openjena.riot.RiotParseException ;
 
 public class TestTokenizer extends BaseTest
 {
+    // WORKERS
     private static Tokenizer tokenizer(String string)
     {
         PeekReader r = PeekReader.readString(string) ;
@@ -27,7 +30,18 @@ public class TestTokenizer extends BaseTest
         return tokenizer ;
     }
 
-    private static Token token(String string)
+    private static void token(String string)
+    {
+        Tokenizer tokenizer = tokenizer(string) ;
+        assertTrue(tokenizer.hasNext()) ;
+        assertNotNull(tokenizer.next()) ;
+        // Maybe more.
+        //assertFalse(tokenizer.hasNext()) ;
+    }
+    
+    
+    
+    private static Token token_XX(String string)
     {
         Tokenizer tokenizer = tokenizer(string) ;
         assertTrue(tokenizer.hasNext()) ;
@@ -36,134 +50,124 @@ public class TestTokenizer extends BaseTest
         return token ;
     }
     
-    @Test
-    public void tokenUnit_iri1()
+    private static Token tokenizeAndTestExact(String input, TokenType tokenType, String tokenImage)
     {
-        Tokenizer tokenizer = tokenizer("<x>") ;
+        return tokenizeAndTestExact(input, tokenType, tokenImage, null) ;
+    }
+    
+    private static Token tokenizeAndTestExact(String input, TokenType tokenType, String tokenImage1, String tokenImage2)
+    {
+        Tokenizer tokenizer = tokenizer(input) ;
+        Token token = testNextToken(tokenizer, tokenType, tokenImage1, tokenImage2) ;
+        assertFalse("Excess tokens", tokenizer.hasNext()) ;
+        return token ;
+    }
+    
+
+    private static Tokenizer tokenizeAndTestFirst(String input, TokenType tokenType, String tokenImage)
+    {
+        return tokenizeAndTestFirst(input, tokenType, tokenImage, null) ;
+    }
+    
+    private static Tokenizer tokenizeAndTestFirst(String input, TokenType tokenType, String tokenImage1, String tokenImage2)
+    {
+        Tokenizer tokenizer = tokenizer(input) ;
+        testNextToken(tokenizer, tokenType, tokenImage1, tokenImage2) ;
+        return tokenizer ;
+    }
+    
+    private static Token testNextToken(Tokenizer tokenizer, TokenType tokenType)
+    {
+        return testNextToken(tokenizer, tokenType, null,null) ;
+    }
+    
+    private static Token testNextToken(Tokenizer tokenizer, TokenType tokenType, String tokenImage1)
+    {
+        return testNextToken(tokenizer, tokenType, tokenImage1,null) ;
+    }
+
+    private static Token testNextToken(Tokenizer tokenizer, TokenType tokenType, String tokenImage1, String tokenImage2)
+    {
         assertTrue(tokenizer.hasNext()) ;
         Token token = tokenizer.next() ;
         assertNotNull(token) ;
-        assertEquals(TokenType.IRI, token.getType()) ;
-        assertEquals("x", token.getImage()) ;
-        assertNull(token.getImage2()) ;
-        assertFalse(tokenizer.hasNext()) ;
+        assertEquals(tokenType, token.getType()) ;
+        assertEquals(tokenImage1, token.getImage()) ;
+        assertEquals(tokenImage2, token.getImage2()) ;
+        return token ;
     }
+    
+    @Test public void tokenUnit_iri1()      { tokenizeAndTestExact("<x>", TokenType.IRI, "x") ; }
 
-    @Test
-    public void tokenUnit_iri2()
-    {
-        Tokenizer tokenizer = tokenizer("   <>   ") ;
-        assertTrue(tokenizer.hasNext()) ;
-        Token token = tokenizer.next() ;
-        assertNotNull(token) ;
-        assertEquals(TokenType.IRI, token.getType()) ;
-        assertEquals("", token.getImage()) ;
-        assertNull(token.getImage2()) ;
-        assertFalse(tokenizer.hasNext()) ;
-    }
+    @Test public void tokenUnit_iri2()      { tokenizeAndTestExact("   <>   ", TokenType.IRI, "") ; }
 
-    @Test
+    @Test // (expected=RiotParseException.class) We test the message.
     public void tokenUnit_iri3()
     {
         try {
-            Tokenizer tokenizer = tokenizer("  <abc\\>   123") ;
+            // That's one \
+            token("<abc\\>def>") ;
         } catch (RiotParseException ex)
         {
             String x = ex.getMessage() ;
-            assertTrue("illegal escape sequence value: >".equalsIgnoreCase(x)) ;
+            assertTrue(x.contains("illegal escape sequence value: >")) ;
         }
     }
     
-    @Test
-    public void tokenUnit_iri4()
+    @Test public void tokenUnit_iri4()
     {
         // \\\\ is a double \\ in the data. 
-        Tokenizer tokenizer = tokenizer("   <abc\\\\def>   123") ;
-        Token token = tokenizer.next() ;
-        assertNotNull(token) ;
-        assertEquals(TokenType.IRI, token.getType()) ;
-        assertEquals("abc\\def", token.getImage()) ;
+        tokenizeAndTestFirst("   <abc\\\\def>   123", TokenType.IRI, "abc\\def") ;
+    }
+    
+    @Test
+    public void tokenUnit_iri5()
+    {
+        // \\\\ is a double \\ in the data. 0x41 is 'A' 
+        tokenizeAndTestFirst("<abc\\u0041def>   123", TokenType.IRI, "abcAdef") ;
     }
     
     @Test
     public void tokenUnit_str1()
     {
-        Token token = token("   'abc'   ") ;
-        assertNotNull(token) ;
-        assertEquals(TokenType.STRING1, token.getType()) ;
-        assertEquals("abc", token.getImage()) ;
-        assertNull(token.getImage2()) ;
+        tokenizeAndTestExact("   'abc'   ", TokenType.STRING1, "abc") ;
     }
 
     @Test
     public void tokenUnit_str2()
     {
-        Token token = token("''") ;
-        assertNotNull(token) ;
-        assertEquals(TokenType.STRING1, token.getType()) ;
-        assertEquals("", token.getImage()) ;
-        assertNull(token.getImage2()) ;
+        tokenizeAndTestExact("   ''   ", TokenType.STRING1, "") ;
     }
 
     @Test
     public void tokenUnit_str3()
     {
-        Tokenizer tokenizer = tokenizer("'\\u0020'") ;
-        assertTrue(tokenizer.hasNext()) ;
-        Token token = tokenizer.next() ;
-        assertNotNull(token) ;
-        assertEquals(TokenType.STRING1, token.getType()) ;
-        assertEquals(" ", token.getImage()) ;
-        assertNull(token.getImage2()) ;
-        assertFalse(tokenizer.hasNext()) ;
+        tokenizeAndTestExact("'\\u0020'", TokenType.STRING1, " ") ;
     }
 
     @Test
     public void tokenUnit_str4()
     {
-        Tokenizer tokenizer = tokenizer("'a\\'\\\"\\n\\t\\r'") ;
-        assertTrue(tokenizer.hasNext()) ;
-        Token token = tokenizer.next() ;
-        assertNotNull(token) ;
-        assertEquals(TokenType.STRING1, token.getType()) ;
-        assertEquals("a'\"\n\t\r", token.getImage()) ;
-        assertNull(token.getImage2()) ;
-        assertFalse(tokenizer.hasNext()) ;
+        tokenizeAndTestExact("'a\\'\\\"\\n\\t\\r'", TokenType.STRING1, "a'\"\n\t\r") ;
     }
 
     @Test(expected = RiotParseException.class)
     public void tokenUnit_str5()
     {
-        Tokenizer tokenizer = tokenizer("'\n'") ;
-        assertTrue(tokenizer.hasNext()) ;
-        Token token = tokenizer.next() ;
-        assertNotNull(token) ;
+        // This is a raw newline. \n is a Java string escape.
+        tokenizeAndTestExact("'\n'", TokenType.STRING1, "\n") ;
     }
 
     @Test
     public void tokenUnit_str6()
     {
-        Tokenizer tokenizer = tokenizer("   \"abc\"   ") ;
-        assertTrue(tokenizer.hasNext()) ;
-        Token token = tokenizer.next() ;
-        assertNotNull(token) ;
-        assertEquals(TokenType.STRING2, token.getType()) ;
-        assertEquals("abc", token.getImage()) ;
-        assertNull(token.getImage2()) ;
-        assertFalse(tokenizer.hasNext()) ;
+        tokenizeAndTestExact("   \"abc\"   ", TokenType.STRING2, "abc") ;
     }
 
     @Test
     public void tokenUnit_str7()
     {
-        Tokenizer tokenizer = tokenizer("\"\"") ;
-        assertTrue(tokenizer.hasNext()) ;
-        Token token = tokenizer.next() ;
-        assertNotNull(token) ;
-        assertEquals(TokenType.STRING2, token.getType()) ;
-        assertEquals("", token.getImage()) ;
-        assertNull(token.getImage2()) ;
-        assertFalse(tokenizer.hasNext()) ;
+        tokenizeAndTestExact("\"\"", TokenType.STRING2, "") ;
     }
 
     @Test(expected = RiotParseException.class)
@@ -176,205 +180,104 @@ public class TestTokenizer extends BaseTest
     @Test(expected = RiotParseException.class)
     public void tokenUnit_str9()
     {
-        Tokenizer tokenizer = tokenizer("'abc") ;
-        assertTrue(tokenizer.hasNext()) ;
+        token("'abc") ;
     }
     
     @Test
     public void tokenUnit_str10()
     {
-        Tokenizer tokenizer = tokenizer("'\\'abc'") ;
-        assertTrue(tokenizer.hasNext()) ;
-        Token token = tokenizer.next() ;
-        assertNotNull(token) ;
-        assertEquals(TokenType.STRING1, token.getType()) ;
-        assertEquals("'abc", token.getImage()) ;
-        assertNull(token.getImage2()) ;
-        assertFalse(tokenizer.hasNext()) ;
+        tokenizeAndTestExact("'\\'abc'", TokenType.STRING1, "'abc") ;
     }
     
     @Test
     public void tokenUnit_str11()
     {
-        Tokenizer tokenizer = tokenizer("'\\U00000020'") ;
-        assertTrue(tokenizer.hasNext()) ;
-        Token token = tokenizer.next() ;
-        assertNotNull(token) ;
-        assertEquals(TokenType.STRING1, token.getType()) ;
-        assertEquals(" ", token.getImage()) ;
-        assertNull(token.getImage2()) ;
-        assertFalse(tokenizer.hasNext()) ;
+        tokenizeAndTestExact("'\\U00000020'", TokenType.STRING1, " ") ;
     }
     
 
     @Test
     public void tokenUnit_str_long1()
     {
-        Tokenizer tokenizer = tokenizer("'''aaa'''") ;
-        assertTrue(tokenizer.hasNext()) ;
-        Token token = tokenizer.next() ;
-        assertNotNull(token) ;
-        assertEquals(TokenType.LONG_STRING1, token.getType()) ;
-        assertEquals("aaa", token.getImage()) ;
-        assertNull(token.getImage2()) ;
-        assertFalse(tokenizer.hasNext()) ;
+        tokenizeAndTestExact("'''aaa'''", TokenType.LONG_STRING1, "aaa") ;
     }
 
     @Test
     public void tokenUnit_str_long2()
     {
-        Tokenizer tokenizer = tokenizer("\"\"\"aaa\"\"\"") ;
-        assertTrue(tokenizer.hasNext()) ;
-        Token token = tokenizer.next() ;
-        assertNotNull(token) ;
-        assertEquals(TokenType.LONG_STRING2, token.getType()) ;
-        assertEquals("aaa", token.getImage()) ;
-        assertNull(token.getImage2()) ;
-        assertFalse(tokenizer.hasNext()) ;
+        tokenizeAndTestExact("\"\"\"aaa\"\"\"", TokenType.LONG_STRING2, "aaa") ;
     }
 
     @Test
     public void tokenUnit_str_long3()
     {
-        Tokenizer tokenizer = tokenizer("''''1234'''") ;
-        assertTrue(tokenizer.hasNext()) ;
-        Token token = tokenizer.next() ;
-        assertNotNull(token) ;
-        assertEquals(TokenType.LONG_STRING1, token.getType()) ;
-        assertEquals("'1234", token.getImage()) ;
-        assertNull(token.getImage2()) ;
-        assertFalse(tokenizer.hasNext()) ;
+        tokenizeAndTestExact("''''1234'''", TokenType.LONG_STRING1, "'1234") ;
     }
     
     @Test
     public void tokenUnit_str_long4()
     {
-        Tokenizer tokenizer = tokenizer("'''''1234'''") ;
-        assertTrue(tokenizer.hasNext()) ;
-        Token token = tokenizer.next() ;
-        assertNotNull(token) ;
-        assertEquals(TokenType.LONG_STRING1, token.getType()) ;
-        assertEquals("''1234", token.getImage()) ;
-        assertNull(token.getImage2()) ;
-        assertFalse(tokenizer.hasNext()) ;
+        tokenizeAndTestExact("'''''1234'''", TokenType.LONG_STRING1, "''1234") ;
     }
     
     @Test
     public void tokenUnit_str_long5()
     {
-        Tokenizer tokenizer = tokenizer("'''\\'''1234'''") ;
-        assertTrue(tokenizer.hasNext()) ;
-        Token token = tokenizer.next() ;
-        assertNotNull(token) ;
-        assertEquals(TokenType.LONG_STRING1, token.getType()) ;
-        assertEquals("'''1234", token.getImage()) ;
-        assertNull(token.getImage2()) ;
-        assertFalse(tokenizer.hasNext()) ;
+        tokenizeAndTestExact("'''\\'''1234'''", TokenType.LONG_STRING1, "'''1234") ;
     }
     
     @Test
     public void tokenUnit_str_long6()
     {
-        Tokenizer tokenizer = tokenizer("\"\"\"\"1234\"\"\"") ;
-        assertTrue(tokenizer.hasNext()) ;
-        Token token = tokenizer.next() ;
-        assertNotNull(token) ;
-        assertEquals(TokenType.LONG_STRING2, token.getType()) ;
-        assertEquals("\"1234", token.getImage()) ;
-        assertNull(token.getImage2()) ;
-        assertFalse(tokenizer.hasNext()) ;
+        tokenizeAndTestExact("\"\"\"\"1234\"\"\"", TokenType.LONG_STRING2, "\"1234") ;
     }
     
     @Test
     public void tokenUnit_str_long7()
     {
-        Tokenizer tokenizer = tokenizer("\"\"\"\"\"1234\"\"\"") ;
-        assertTrue(tokenizer.hasNext()) ;
-        Token token = tokenizer.next() ;
-        assertNotNull(token) ;
-        assertEquals(TokenType.LONG_STRING2, token.getType()) ;
-        assertEquals("\"\"1234", token.getImage()) ;
-        assertNull(token.getImage2()) ;
-        assertFalse(tokenizer.hasNext()) ;
+        tokenizeAndTestExact("\"\"\"\"\"1234\"\"\"", TokenType.LONG_STRING2, "\"\"1234") ;
     }
 
     @Test
     public void tokenUnit_str_long8()
     {
-        Tokenizer tokenizer = tokenizer("''''''") ;
-        assertTrue(tokenizer.hasNext()) ;
-        Token token = tokenizer.next() ;
-        assertNotNull(token) ;
-        assertEquals(TokenType.LONG_STRING1, token.getType()) ;
-        assertEquals("", token.getImage()) ;
-        assertNull(token.getImage2()) ;
-        assertFalse(tokenizer.hasNext()) ;
+        tokenizeAndTestExact("''''''", TokenType.LONG_STRING1,"") ;
     }
     
     @Test
     public void tokenUnit_str_long9()
     {
-        Tokenizer tokenizer = tokenizer("\"\"\"'''''''''''''''''\"\"\"") ;
-        assertTrue(tokenizer.hasNext()) ;
-        Token token = tokenizer.next() ;
-        assertNotNull(token) ;
-        assertEquals(TokenType.LONG_STRING2, token.getType()) ;
-        assertEquals("'''''''''''''''''", token.getImage()) ;
-        assertNull(token.getImage2()) ;
-        assertFalse(tokenizer.hasNext()) ;
+        tokenizeAndTestExact("\"\"\"'''''''''''''''''\"\"\"", TokenType.LONG_STRING2, "'''''''''''''''''") ;
     }
     
     @Test(expected = RiotParseException.class)
     public void tokenUnit_str_long10()
     {
-        Tokenizer tokenizer = tokenizer("\"\"\"abcdef") ;
-        assertTrue(tokenizer.hasNext()) ;
+        token("\"\"\"abcdef") ;
     }
     
     @Test(expected = RiotParseException.class)
     public void tokenUnit_str_long11()
     {
-        Tokenizer tokenizer = tokenizer("'''") ;
-        assertTrue(tokenizer.hasNext()) ;
+        token("'''") ;
     }
 
+    @Test
     public void tokenUnit_str_long12()
     {
-        Tokenizer tokenizer = tokenizer("'''x'''@en") ;
-        assertTrue(tokenizer.hasNext()) ;
+        tokenizeAndTestExact("'''x'''@en", TokenType.LITERAL_LANG, "x", "en") ;
     }
 
-    public void tokenUnit_str_long13()
-    {
-        Tokenizer tokenizer = tokenizer("'''123'''^^<xyz>") ;
-        assertTrue(tokenizer.hasNext()) ;
-    }
-
-    
     @Test
     public void tokenUnit_bNode1()
     {
-        Tokenizer tokenizer = tokenizer("_:abc") ;
-        assertTrue(tokenizer.hasNext()) ;
-        Token token = tokenizer.next() ;
-        assertNotNull(token) ;
-        assertEquals(TokenType.BNODE, token.getType()) ;
-        assertEquals("abc", token.getImage()) ;
-        assertNull(token.getImage2()) ;
-        assertFalse(tokenizer.hasNext()) ;
+        tokenizeAndTestExact("_:abc", TokenType.BNODE, "abc") ;
     }
 
     @Test
     public void tokenUnit_bNode2()
     {
-        Tokenizer tokenizer = tokenizer("_:123 ") ;
-        assertTrue(tokenizer.hasNext()) ;
-        Token token = tokenizer.next() ;
-        assertNotNull(token) ;
-        assertEquals(TokenType.BNODE, token.getType()) ;
-        assertEquals("123", token.getImage()) ;
-        assertNull(token.getImage2()) ;
-        assertFalse(tokenizer.hasNext()) ;
+        tokenizeAndTestExact("_:123 ", TokenType.BNODE, "123") ;
     }
 
     @Test(expected = RiotParseException.class)
@@ -389,222 +292,135 @@ public class TestTokenizer extends BaseTest
     @Test
     public void tokenUnit_bNode4()
     {
-        Tokenizer tokenizer = tokenizer("_:1-2-Z ") ;
-        assertTrue(tokenizer.hasNext()) ;
-        Token token = tokenizer.next() ;
-        assertNotNull(token) ;
-        assertEquals(TokenType.BNODE, token.getType()) ;
-        assertEquals("1-2-Z", token.getImage()) ;
-        assertNull(token.getImage2()) ;
-        assertFalse(tokenizer.hasNext()) ;
+        tokenizeAndTestExact("_:1-2-Z ", TokenType.BNODE, "1-2-Z") ;
     }
 
     @Test
     public void tokenUnit_bNode5()
     {
-        Tokenizer tokenizer = tokenizer("_:x.    ") ;
-        assertTrue(tokenizer.hasNext()) ;
-        Token token = tokenizer.next() ;
-        assertNotNull(token) ;
-        assertEquals(TokenType.BNODE, token.getType()) ;
-        assertEquals("x", token.getImage()) ;
-        
-        token = tokenizer.next() ;
-        assertNotNull(token) ;
-        assertEquals(TokenType.DOT, token.getType()) ;
-        
+        Tokenizer tokenizer = tokenizeAndTestFirst("_:x.    ", TokenType.BNODE, "x") ;
+        testNextToken(tokenizer, TokenType.DOT) ;
         assertFalse(tokenizer.hasNext()) ;
     }
 
     @Test
     public void tokenUnit_bNode6()
     {
-        Tokenizer tokenizer = tokenizer("_:x:a.    ") ;
-        assertTrue(tokenizer.hasNext()) ;
-        Token token = tokenizer.next() ;
-        assertNotNull(token) ;
-        assertEquals(TokenType.BNODE, token.getType()) ;
-        assertEquals("x", token.getImage()) ;
-        
-        token = tokenizer.next() ;
-        assertEquals(TokenType.PREFIXED_NAME, token.getType()) ;
-        assertEquals("", token.getImage()) ;
-        assertEquals("a", token.getImage2()) ;
-        
-        token = tokenizer.next() ;
-        assertNotNull(token) ;
-        assertEquals(TokenType.DOT, token.getType()) ;
-        
+		Tokenizer tokenizer = tokenizeAndTestFirst("_:x:a.    ", TokenType.BNODE, "x") ;
+		testNextToken(tokenizer, TokenType.PREFIXED_NAME, "", "a") ;
+		testNextToken(tokenizer, TokenType.DOT) ;
         assertFalse(tokenizer.hasNext()) ;
     }
 
-    @Test
-    public void tokenUnit_cntrl1()
-    {
-        Tokenizer tokenizer = tokenizer("*S") ;
-        assertTrue(tokenizer.hasNext()) ;
-        Token token = tokenizer.next() ;
-        assertNotNull(token) ;
-        assertEquals(TokenType.CNTRL, token.getType()) ;
-        assertEquals('S', token.getCntrlCode()) ;
-        assertNull(token.getImage()) ;
-        assertNull(token.getImage2()) ;
-        assertFalse(tokenizer.hasNext()) ;
-    }
-
-    @Test
-    public void tokenUnit_cntr2()
-    {
-        Tokenizer tokenizer = tokenizer("*SXYZ") ;
-        assertTrue(tokenizer.hasNext()) ;
-        Token token = tokenizer.next() ;
-        assertNotNull(token) ;
-        assertEquals(TokenType.CNTRL, token.getType()) ;
-        assertEquals('S', token.getCntrlCode()) ;
-        assertNull(token.getImage()) ;
-        assertNull(token.getImage2()) ;
-    }
-
-    @Test
-    public void tokenUnit_cntrl3()
-    {
-        Tokenizer tokenizer = tokenizer("*S<x>") ;
-        assertTrue(tokenizer.hasNext()) ;
-        Token token = tokenizer.next() ;
-        assertNotNull(token) ;
-        assertEquals(TokenType.CNTRL, token.getType()) ;
-        assertEquals('S', token.getCntrlCode()) ;
-        assertNull(token.getImage()) ;
-        assertNull(token.getImage2()) ;
-
-        assertTrue(tokenizer.hasNext()) ;
-        Token token2 = tokenizer.next() ;
-        assertNotNull(token2) ;
-        assertEquals(TokenType.IRI, token2.getType()) ;
-        assertEquals("x", token2.getImage()) ;
-        assertNull(token2.getImage2()) ;
-        assertFalse(tokenizer.hasNext()) ;
-    }
+    // TODO CNTRL=>Symbols
+    
+//    @Test
+//    public void tokenUnit_cntrl1()
+//    {
+//        tokenizeAndTestExact("*S", TokenType.CNTRL, "S") ;
+//    }
+//
+//    @Test
+//    public void tokenUnit_cntr2()
+//    {
+//        tokenizeAndTestExact("*SXYZ", TokenType.CNTRL, "SXYZ") ;
+//    }
+//
+//    @Test
+//    public void tokenUnit_cntrl3()
+//    {
+//        Tokenizer tokenizer = tokenizer("*S<x>") ;
+//        assertTrue(tokenizer.hasNext()) ;
+//        Token token = tokenizer.next() ;
+//        assertNotNull(token) ;
+//        assertEquals(TokenType.CNTRL, token.getType()) ;
+//        assertEquals('S', token.getCntrlCode()) ;
+//        assertNull(token.getImage()) ;
+//        assertNull(token.getImage2()) ;
+//
+//        assertTrue(tokenizer.hasNext()) ;
+//        Token token2 = tokenizer.next() ;
+//        assertNotNull(token2) ;
+//        assertEquals(TokenType.IRI, token2.getType()) ;
+//        assertEquals("x", token2.getImage()) ;
+//        assertNull(token2.getImage2()) ;
+//        assertFalse(tokenizer.hasNext()) ;
+//    }
 
     @Test
     public void tokenUnit_syntax1()
     {
-        Tokenizer tokenizer = tokenizer(".") ;
-        assertTrue(tokenizer.hasNext()) ;
-        Token token = tokenizer.next() ;
-        assertNotNull(token) ;
-        assertEquals(TokenType.DOT, token.getType()) ;
-        assertNull(token.getImage()) ;
-        assertNull(token.getImage2()) ;
+        tokenizeAndTestExact(".", TokenType.DOT, null, null) ;
     }
 
     @Test
     public void tokenUnit_syntax2()
     {
         Tokenizer tokenizer = tokenizer(".;,") ;
-        assertTrue(tokenizer.hasNext()) ;
-        Token token = tokenizer.next() ;
-        assertNotNull(token) ;
-        assertEquals(TokenType.DOT, token.getType()) ;
-        assertNull(token.getImage()) ;
-        assertNull(token.getImage2()) ;
-
-        assertTrue(tokenizer.hasNext()) ;
-        Token token2 = tokenizer.next() ;
-        assertNotNull(token2) ;
-        assertEquals(TokenType.SEMICOLON, token2.getType()) ;
-        assertEquals(";", token2.getImage()) ;
-        assertNull(token2.getImage2()) ;
-
-        assertTrue(tokenizer.hasNext()) ;
-        Token token3 = tokenizer.next() ;
-        assertNotNull(token3) ;
-        assertEquals(TokenType.COMMA, token3.getType()) ;
-        assertEquals(",", token3.getImage()) ;
-        assertNull(token3.getImage2()) ;
+        testNextToken(tokenizer, TokenType.DOT) ;
+        testNextToken(tokenizer, TokenType.SEMICOLON) ;
+        testNextToken(tokenizer, TokenType.COMMA) ;
+        assertFalse(tokenizer.hasNext()) ;
     }
+
 
     @Test
     public void tokenUnit_pname1()
     {
-        Tokenizer tokenizer = tokenizer("a:b.c") ;
-        assertTrue(tokenizer.hasNext()) ;
-        Token token = tokenizer.next() ;
-        pnameToken(token, "a", "b.c") ;
+		tokenizeAndTestExact("a:b.c", TokenType.PREFIXED_NAME, "a", "b.c") ;
     }
     
     @Test
     public void tokenUnit_pname2()
     {
-        Tokenizer tokenizer = tokenizer("a:b.") ;
+        Tokenizer tokenizer = tokenizeAndTestFirst("a:b.", TokenType.PREFIXED_NAME, "a", "b") ;
         assertTrue(tokenizer.hasNext()) ;
         Token token = tokenizer.next() ;
-        pnameToken(token, "a", "b") ;
+        assertEquals(TokenType.DOT, token.getType()) ;
     }
 
     @Test
     public void tokenUnit_pname3()
     {
-        Tokenizer tokenizer = tokenizer("a:b123") ;
-        assertTrue(tokenizer.hasNext()) ;
-        Token token = tokenizer.next() ;
-        pnameToken(token, "a", "b123") ;
+		tokenizeAndTestExact("a:b123", TokenType.PREFIXED_NAME, "a", "b123") ;
     }
 
     @Test
     public void tokenUnit_pname4()
     {
-        Tokenizer tokenizer = tokenizer("a:") ;
-        assertTrue(tokenizer.hasNext()) ;
-        Token token = tokenizer.next() ;
-        pnameToken(token, "a", "") ;
+		tokenizeAndTestExact("a:", TokenType.PREFIXED_NAME, "a", "") ;
     }
 
     @Test
     public void tokenUnit_pname5()
     {
-        Tokenizer tokenizer = tokenizer(":") ;
-        assertTrue(tokenizer.hasNext()) ;
-        Token token = tokenizer.next() ;
-        pnameToken(token, "", "") ;
+		tokenizeAndTestExact(":", TokenType.PREFIXED_NAME, "", "") ;
     }
 
     @Test
     public void tokenUnit_pname6()
     {
-        Tokenizer tokenizer = tokenizer(":a") ;
-        assertTrue(tokenizer.hasNext()) ;
-        Token token = tokenizer.next() ;
-        pnameToken(token, "", "a") ;
+		tokenizeAndTestExact(":a", TokenType.PREFIXED_NAME, "", "a") ;
     }
     
     @Test
     public void tokenUnit_pname7()
     {
-        Tokenizer tokenizer = tokenizer(":123") ;
-        assertTrue(tokenizer.hasNext()) ;
-        Token token = tokenizer.next() ;
-        pnameToken(token, "", "123") ;
+		tokenizeAndTestExact(":123", TokenType.PREFIXED_NAME, "", "123") ;
     }
 
     @Test
     public void tokenUnit_pname8()
     {
-        Tokenizer tokenizer = tokenizer("a123:456") ;
-        assertTrue(tokenizer.hasNext()) ;
-        Token token = tokenizer.next() ;
-        pnameToken(token, "a123", "456") ;
+		tokenizeAndTestExact("a123:456", TokenType.PREFIXED_NAME, "a123", "456") ;
     }
 
     @Test
     public void tokenUnit_pname9()
     {
-        Tokenizer tokenizer = tokenizer("a123:-456") ;
+		Tokenizer tokenizer = tokenizeAndTestFirst("a123:-456", TokenType.PREFIXED_NAME, "a123", "") ;
         assertTrue(tokenizer.hasNext()) ;
         Token token = tokenizer.next() ;
-        pnameToken(token, "a123", "") ;
-        
-        token = tokenizer.next() ;
         assertEquals(TokenType.INTEGER, token.getType()) ;
         assertEquals("-456", token.getImage()) ;
     }
@@ -627,250 +443,147 @@ public class TestTokenizer extends BaseTest
 //        pnameToken(token, "a", "b/c") ;
 //    }
 
-    private void pnameToken(Token token, String string1, String string2)
+    @Test
+    public void tokenUnit_25()
     {
-        assertEquals(TokenType.PREFIXED_NAME, token.getType()) ;
-        assertEquals(string1, token.getImage()) ;
-        assertEquals(string2, token.getImage2()) ;
+        Tokenizer tokenizer = tokenizeAndTestFirst("123:", TokenType.INTEGER, "123") ;
+        testNextToken(tokenizer, TokenType.PREFIXED_NAME, "", "") ;
     }
-
-//    @Test(expected = ParseException.class)
-//    public void tokenUnit_25()
-//    {
-//        Tokenizer tokenizer = tokenizer("123:") ;
-//        assertTrue(tokenizer.hasNext()) ;
-//        Token token = tokenizer.next() ;
-//        pnameToken(token, "123", "") ;
-//    }
 
     // Generic: parse first token from ...
     // tokenTest(str, TokenType, TokenImage) ; 
     
     @Test public void tokenUnit_num1()
     {
-        Tokenizer tokenizer = tokenizer("123") ;
-        assertTrue(tokenizer.hasNext()) ;
-        Token token = tokenizer.next() ;
-        assertEquals(TokenType.INTEGER, token.getType()) ;
-        assertEquals("123", token.getImage()) ;
+		tokenizeAndTestExact("123", TokenType.INTEGER, "123") ;
     }
     
     @Test public void tokenUnit_num2()
     {
-        Tokenizer tokenizer = tokenizer("123.") ;
-        assertTrue(tokenizer.hasNext()) ;
-        Token token = tokenizer.next() ;
-        assertEquals(TokenType.DECIMAL, token.getType()) ;
-        assertEquals("123.", token.getImage()) ;
+		tokenizeAndTestExact("123.", TokenType.DECIMAL, "123.") ;
     }
 
     @Test public void tokenUnit_num3()
     {
-        Tokenizer tokenizer = tokenizer("+123.456") ;
-        assertTrue(tokenizer.hasNext()) ;
-        Token token = tokenizer.next() ;
-        assertEquals(TokenType.DECIMAL, token.getType()) ;
-        assertEquals("+123.456", token.getImage()) ;
+		tokenizeAndTestExact("+123.456", TokenType.DECIMAL, "+123.456") ;
     }
     
     @Test public void tokenUnit_num4()
     {
-        Tokenizer tokenizer = tokenizer("-1") ;
-        assertTrue(tokenizer.hasNext()) ;
-        Token token = tokenizer.next() ;
-        assertEquals(TokenType.INTEGER, token.getType()) ;
-        assertEquals("-1", token.getImage()) ;
+		tokenizeAndTestExact("-1", TokenType.INTEGER, "-1") ;
     }
     
     @Test public void tokenUnit_num5()
     {
-        Tokenizer tokenizer = tokenizer("-1e0") ;
-        assertTrue(tokenizer.hasNext()) ;
-        Token token = tokenizer.next() ;
-        assertEquals(TokenType.DOUBLE, token.getType()) ;
-        assertEquals("-1e0", token.getImage()) ;
+		tokenizeAndTestExact("-1e0", TokenType.DOUBLE, "-1e0") ;
     }
     
     @Test public void tokenUnit_num6()
     {
-        Tokenizer tokenizer = tokenizer("1e+1") ;
-        assertTrue(tokenizer.hasNext()) ;
-        Token token = tokenizer.next() ;
-        assertEquals(TokenType.DOUBLE, token.getType()) ;
-        assertEquals("1e+1", token.getImage()) ;
+		tokenizeAndTestExact("1e+1", TokenType.DOUBLE, "1e+1") ;
     }
     
     @Test public void tokenUnit_num7()
     {
-        Tokenizer tokenizer = tokenizer("1.3e+1") ;
-        assertTrue(tokenizer.hasNext()) ;
-        Token token = tokenizer.next() ;
-        assertEquals(TokenType.DOUBLE, token.getType()) ;
-        assertEquals("1.3e+1", token.getImage()) ;
+		tokenizeAndTestExact("1.3e+1", TokenType.DOUBLE, "1.3e+1") ;
     }
     
-    @Test
-    public void tokenUnit_num8()
+    @Test public void tokenUnit_num8()
     {
-        Tokenizer tokenizer = tokenizer("1.3.4") ;
-        assertTrue(tokenizer.hasNext()) ;
-        Token token = tokenizer.next() ;
-        assertEquals(TokenType.DECIMAL, token.getType()) ;
-        assertEquals("1.3", token.getImage()) ;
+		tokenizeAndTestFirst("1.3.4", TokenType.DECIMAL, "1.3") ;
     }
 
-    @Test
-    public void tokenUnit_num9()
+    @Test public void tokenUnit_num9()
     {
-        Tokenizer tokenizer = tokenizer("1.3e67.7") ;
-        assertTrue(tokenizer.hasNext()) ;
-        Token token = tokenizer.next() ;
-        assertEquals(TokenType.DOUBLE, token.getType()) ;
-        assertEquals("1.3e67", token.getImage()) ;
+        tokenizeAndTestFirst("1.3e67.7", TokenType.DOUBLE, "1.3e67") ;
     }
 
     
-    @Test
-    public void tokenUnit_num10()
+    @Test public void tokenUnit_num10()
     {
-        Tokenizer tokenizer = tokenizer(".1") ;
-        assertTrue(tokenizer.hasNext()) ;
-        Token token = tokenizer.next() ;
-        assertEquals(TokenType.DECIMAL, token.getType()) ;
-        assertEquals(".1", token.getImage()) ;
+		tokenizeAndTestExact(".1", TokenType.DECIMAL, ".1") ;
     }
 
-    @Test
-    public void tokenUnit_num11()
+    @Test public void tokenUnit_num11()
     {
-        Tokenizer tokenizer = tokenizer(".1e0") ;
-        assertTrue(tokenizer.hasNext()) ;
-        Token token = tokenizer.next() ;
-        assertEquals(TokenType.DOUBLE, token.getType()) ;
-        assertEquals(".1e0", token.getImage()) ;
+		tokenizeAndTestExact(".1e0", TokenType.DOUBLE, ".1e0") ;
     }
 
-    @Test
-    public void tokenUnit_num12()
+    @Test public void tokenUnit_num12()
     {
         // This is not a hex number.
-        Tokenizer tokenizer = tokenizer("000A     .") ;
-        assertTrue(tokenizer.hasNext()) ;
-        Token token = tokenizer.next() ;
-        assertEquals(TokenType.INTEGER, token.getType()) ;
-        assertEquals("000", token.getImage()) ;
-        Token token2 = tokenizer.next() ;
-        assertEquals(TokenType.KEYWORD, token2.getType()) ;
-        assertEquals("A", token2.getImage()) ;
+        
+        Tokenizer tokenizer = tokenizeAndTestFirst("000A     .", TokenType.INTEGER, "000") ;
+        testNextToken(tokenizer, TokenType.KEYWORD, "A") ;
     }
 
-    @Test public void tokenUnit_var1()  { testVar("?x ?y", "x") ; }
+    @Test public void tokenUnit_var1()  { tokenizeAndTestFirst("?x ?y", TokenType.VAR, "x") ; }
     
-    @Test public void tokenUnit_var2()  { testVar("? x", "") ; }
+    @Test public void tokenUnit_var2()  { tokenizeAndTestFirst("? x", TokenType.VAR, "") ; }
 
-    @Test public void tokenUnit_var3()  { testVar("??x", "?x") ; }
+    @Test public void tokenUnit_var3()  { tokenizeAndTestExact("??x", TokenType.VAR, "?x") ; }
     
-    @Test public void tokenUnit_var4()  { testVar("?.1", ".1") ; }
+    @Test public void tokenUnit_var4()  { tokenizeAndTestExact("?.1", TokenType.VAR, ".1") ; }
 
-    private void testVar(String input, String varName)
+    @Test public void tokenUnit_var5()  { tokenizeAndTestExact("?"+ARQConstants.allocVarMarker, TokenType.VAR, ARQConstants.allocVarMarker) ; }
+
+    @Test public void tokenUnit_var6()  { tokenizeAndTestExact("?"+ARQConstants.allocVarMarker+"0", TokenType.VAR, ARQConstants.allocVarMarker+"0") ; }
+    
+    @Test public void tokenUnit_hex1()
     {
-        Tokenizer tokenizer = tokenizer(input) ;
-        assertTrue(tokenizer.hasNext()) ;
-        Token token = tokenizer.next() ;
-        assertEquals(TokenType.VAR, token.getType()) ;
-        assertEquals(varName, token.getImage()) ;
+		tokenizeAndTestExact("0xABC", TokenType.HEX, "0xABC") ;
     }
         
-    
-    @Test
-    public void tokenUnit_hex1()
+    @Test public void tokenUnit_hex2()
     {
-        Tokenizer tokenizer = tokenizer("0xABC") ;
-        assertTrue(tokenizer.hasNext()) ;
-        Token token = tokenizer.next() ;
-        assertEquals(TokenType.HEX, token.getType()) ;
-        assertEquals("0xABC", token.getImage()) ;
-    }
-        
-    @Test
-    public void tokenUnit_hex2()
-    {
-        Tokenizer tokenizer = tokenizer("0xABCXYZ") ;
-        assertTrue(tokenizer.hasNext()) ;
-        Token token = tokenizer.next() ;
-        assertEquals(TokenType.HEX, token.getType()) ;
-        assertEquals("0xABC", token.getImage()) ;
+		tokenizeAndTestFirst("0xABCXYZ", TokenType.HEX, "0xABC") ;
     }
     
     @Test(expected = RiotParseException.class)
     public void tokenUnit_hex3()
     {
-        Tokenizer tokenizer = tokenizer("0xXYZ") ;
-        assertTrue(tokenizer.hasNext()) ;
+        token("0xXYZ") ;
     }
     
-    @Test
-    public void tokenUnit_hex4()
+    @Test public void tokenUnit_hex4()
     {
-        Tokenizer tokenizer = tokenizer("0Xabc") ;
-        assertTrue(tokenizer.hasNext()) ;
-        Token token = tokenizer.next() ;
-        assertEquals(TokenType.HEX, token.getType()) ;
-        assertEquals("0Xabc", token.getImage()) ;
+		tokenizeAndTestExact("0Xabc", TokenType.HEX, "0Xabc") ;
     }
     
-    @Test
-    public void tokenLiteralDT_0()
+	private static void tokenizeAndTestLiteralDT(String input, String image, TokenType dt, String image1, String image2)
+	{
+		Token token2 = tokenizeAndTestExact(input, TokenType.LITERAL_DT, image).getSubToken() ;
+		assertEquals(dt, token2.getType()) ;
+        assertEquals(image1, token2.getImage()) ;
+        assertEquals(image2, token2.getImage2()) ;
+	}
+
+    @Test public void tokenLiteralDT_0()
     {
-        Tokenizer tokenizer = tokenizer("'123'^^<x> ") ;
-        assertTrue(tokenizer.hasNext()) ;
-        Token token = tokenizer.next() ;
-        assertNotNull(token) ;
-        assertEquals(TokenType.LITERAL_DT, token.getType()) ;
-        assertEquals("123", token.getImage()) ;
-        
-        Token token2 = token.getSubToken() ; 
-        assertEquals(TokenType.IRI, token2.getType()) ;
-        assertEquals("x", token2.getImage()) ;
-        
-        assertFalse(tokenizer.hasNext()) ;
+		tokenizeAndTestLiteralDT("'123'^^<x> ", "123", TokenType.IRI, "x", null) ;
     }
+    
+    // literal test function.
     
     @Test
     public void tokenLiteralDT_1()
     {
-        Tokenizer tokenizer = tokenizer("'123'^^x:y") ;
-        assertTrue(tokenizer.hasNext()) ;
-        Token token = tokenizer.next() ;
-        assertNotNull(token) ;
-        assertEquals(TokenType.LITERAL_DT, token.getType()) ;
-        assertEquals("123", token.getImage()) ;
-        
-        Token token2 = token.getSubToken() ; 
-        assertEquals(TokenType.PREFIXED_NAME, token2.getType()) ;
-        assertEquals("x", token2.getImage()) ;
-        assertEquals("y", token2.getImage2()) ;
-        
-        assertFalse(tokenizer.hasNext()) ;
+		tokenizeAndTestLiteralDT("'123'^^x:y ", "123", TokenType.PREFIXED_NAME, "x", "y") ;
     }
 
     @Test
     public void tokenLiteralDT_2()
     {
-        Tokenizer tokenizer = tokenizer("'123'^^:y") ;
-        assertTrue(tokenizer.hasNext()) ;
-        Token token = tokenizer.next() ;
-        assertNotNull(token) ;
-        assertEquals(TokenType.LITERAL_DT, token.getType()) ;
-        assertEquals("123", token.getImage()) ;
-        
-        Token token2 = token.getSubToken() ; 
-        assertEquals(TokenType.PREFIXED_NAME, token2.getType()) ;
-        assertEquals("", token2.getImage()) ;
-        assertEquals("y", token2.getImage2()) ;
-        
-        assertFalse(tokenizer.hasNext()) ;
+        tokenizeAndTestLiteralDT("'123'^^:y", "123", TokenType.PREFIXED_NAME, "", "y") ;
     }
+    
+    @Test
+    public void tokenLiteralDT_3()
+    {
+        tokenizeAndTestLiteralDT("'''123'''^^<xyz>", "123", TokenType.IRI, "xyz", null) ;
+    }
+        
+
 
     @Test(expected = RiotParseException.class)
     public void tokenLiteralDT_bad_1()
@@ -918,165 +631,80 @@ public class TestTokenizer extends BaseTest
     @Test
     public void tokenLiteralLang_0()
     {
-        Tokenizer tokenizer = tokenizer("'a'@en") ;
-        assertTrue(tokenizer.hasNext()) ;
-        Token token = tokenizer.next() ;
-        assertNotNull(token) ;
-        assertEquals(TokenType.LITERAL_LANG, token.getType()) ;
-        assertEquals("a", token.getImage()) ;
-        assertEquals("en", token.getImage2()) ;
-        assertFalse(tokenizer.hasNext()) ;
+        tokenizeAndTestExact("'a'@en", TokenType.LITERAL_LANG, "a", "en") ;
     }
 
     @Test
     public void tokenLiteralLang_1()
     {
-        Tokenizer tokenizer = tokenizer("'a'@en-UK ") ;
-        assertTrue(tokenizer.hasNext()) ;
-        Token token = tokenizer.next() ;
-        assertNotNull(token) ;
-        assertEquals(TokenType.LITERAL_LANG, token.getType()) ;
-        assertEquals("a", token.getImage()) ;
-        assertEquals("en-UK", token.getImage2()) ;
-        assertFalse(tokenizer.hasNext()) ;
+        tokenizeAndTestExact("'a'@en-UK", TokenType.LITERAL_LANG, "a", "en-UK") ;
     }
 
     @Test public void tokenLiteralLang_2()
     {
-        Tokenizer tokenizer = tokenizer("'' @lang ") ;
-        
-        assertTrue(tokenizer.hasNext()) ;
-        Token token = tokenizer.next() ;
-        assertNotNull(token) ;
-        assertEquals(TokenType.STRING1, token.getType()) ;
-        assertEquals("", token.getImage()) ;
-        assertTrue(tokenizer.hasNext()) ;
-        
-        Token token2 = tokenizer.next() ;
-        assertEquals(TokenType.DIRECTIVE, token2.getType()) ;
-        assertEquals("lang", token2.getImage()) ;
-        assertNotNull(token2) ;
+        Tokenizer tokenizer = tokenizeAndTestFirst("'' @lang ", TokenType.STRING1, "") ;
+        testNextToken(tokenizer, TokenType.DIRECTIVE, "lang") ;
     }
 
     @Test(expected = RiotParseException.class)
     public void tokenLiteralLang_3()
     {
-        Tokenizer tokenizer = tokenizer("''@ lang ") ;
-        assertTrue(tokenizer.hasNext()) ;
-        Token token = tokenizer.next() ;
-        assertNotNull(token) ;
+        token("''@ lang ") ;
     }
 
     @Test(expected = RiotParseException.class)
     public void tokenLiteralLang_4()
     {
-        Tokenizer tokenizer = tokenizer("''@lang- ") ;
-        assertTrue(tokenizer.hasNext()) ;
-        Token token = tokenizer.next() ;
-        assertNotNull(token) ;
+        token("''@lang- ") ;
     }
 
     @Test(expected = RiotParseException.class)
     public void tokenLiteralLang_5()
     {
-        Tokenizer tokenizer = tokenizer("''@- ") ;
-        assertTrue(tokenizer.hasNext()) ;
-        Token token = tokenizer.next() ;
-        assertNotNull(token) ;
+        token("'abc'@- ") ;
     }
 
     @Test
     public void tokenLiteralLang_6()
     {
-        Tokenizer tokenizer = tokenizer("''@a-b-c ") ;
-        assertTrue(tokenizer.hasNext()) ;
-        Token token = tokenizer.next() ;
-        assertNotNull(token) ;
-        assertEquals(TokenType.LITERAL_LANG, token.getType()) ;
-        assertEquals("", token.getImage()) ;
-        assertEquals("a-b-c", token.getImage2()) ;
-        assertFalse(tokenizer.hasNext()) ;
-
+        tokenizeAndTestExact("'XYZ'@a-b-c ", TokenType.LITERAL_LANG, "XYZ", "a-b-c") ;
     }
 
     @Test
     public void tokenLiteralLang_7()
     {
-        Tokenizer tokenizer = tokenizer("''@a-b9z-c99 ") ;
-        assertTrue(tokenizer.hasNext()) ;
-        Token token = tokenizer.next() ;
-        assertNotNull(token) ;
-        assertEquals(TokenType.LITERAL_LANG, token.getType()) ;
-        assertEquals("", token.getImage()) ;
-        assertEquals("a-b9z-c99", token.getImage2()) ;
-        assertFalse(tokenizer.hasNext()) ;
-
+        tokenizeAndTestExact("'X'@a-b9z-c99 ", TokenType.LITERAL_LANG, "X", "a-b9z-c99") ;
     }
 
     @Test(expected = RiotParseException.class)
     public void tokenLiteralLang_8()
     {
-        Tokenizer tokenizer = tokenizer("''@9-b") ;
-        assertTrue(tokenizer.hasNext()) ;
-        Token token = tokenizer.next() ;
-        assertNotNull(token) ;
+        token("''@9-b") ;
     }
 
     @Test
     public void tokenComment_01()
     {
-        Tokenizer tokenizer = tokenizer("_:123 # Comment") ;
-        assertTrue(tokenizer.hasNext()) ;
-        Token token = tokenizer.next() ;
-        assertNotNull(token) ;
-        assertEquals(TokenType.BNODE, token.getType()) ;
-        assertEquals("123", token.getImage()) ;
-        assertNull(token.getImage2()) ;
-        assertFalse(tokenizer.hasNext()) ;
+        tokenizeAndTestExact("_:123 # Comment", TokenType.BNODE, "123") ;
     }
 
     @Test
     public void tokenComment_02()
     {
-        Tokenizer tokenizer = tokenizer("'foo # Non-Comment'") ;
-        assertTrue(tokenizer.hasNext()) ;
-        Token token = tokenizer.next() ;
-        assertNotNull(token) ;
-        assertEquals(TokenType.STRING1, token.getType()) ;
-        assertEquals("foo # Non-Comment", token.getImage()) ;
-        assertNull(token.getImage2()) ;
-        assertFalse(tokenizer.hasNext()) ;
+        tokenizeAndTestExact("\"foo # Non-Comment\"", TokenType.STRING2, "foo # Non-Comment") ;
     }
 
     @Test
     public void tokenComment_03()
     {
-        Tokenizer tokenizer = tokenizer("'foo' # Comment\n'bar'") ;
-        assertTrue(tokenizer.hasNext()) ;
-        Token token = tokenizer.next() ;
-        assertNotNull(token) ;
-        assertEquals(TokenType.STRING1, token.getType()) ;
-        assertEquals("foo", token.getImage()) ;
-        assertNull(token.getImage2()) ;
-
-        assertTrue(tokenizer.hasNext()) ;
-        Token token2 = tokenizer.next() ;
-        assertNotNull(token2) ;
-        assertEquals(TokenType.STRING1, token2.getType()) ;
-        assertEquals("bar", token2.getImage()) ;
-        assertNull(token2.getImage2()) ;
-
-        assertFalse(tokenizer.hasNext()) ;
+        Tokenizer tokenizer = tokenizeAndTestFirst("'foo' # Comment\n'bar'", TokenType.STRING1, "foo") ;
+        testNextToken(tokenizer, TokenType.STRING1, "bar") ;
     }
 
     @Test
     public void tokenWord_01()
     {
-        Tokenizer tokenizer = tokenizer("abc") ;
-        assertTrue(tokenizer.hasNext()) ;
-        Token token = tokenizer.next() ;
-        assertNotNull(token) ;
-        assertEquals(TokenType.KEYWORD, token.getType()) ;
+        tokenizeAndTestExact("abc", TokenType.KEYWORD, "abc") ;
     }
     
     // Multiple terms
@@ -1153,10 +781,7 @@ public class TestTokenizer extends BaseTest
         // First symbol from the stream.
     private static void testSymbol(String string, TokenType expected)
     {
-        Tokenizer tokenizer = tokenizer(string) ;
-        assertTrue(tokenizer.hasNext()) ;
-        Token token = tokenizer.next() ;
-        assertEquals(expected, token.getType()) ;
+        tokenizeAndTestFirst(string, expected, null) ;
     }
     
     //-- Symbols
@@ -1176,53 +801,30 @@ public class TestTokenizer extends BaseTest
 //    @Test public void tokenizer_symbol_12()            { testSymbol("| |", TokenType.VBAR) ; }
     
 
-    // Tidy up!
-    @Test
-    public void tokenUnit_symbol_10()
-    {
-        Tokenizer tokenizer = tokenizer("+") ;
-        assertTrue(tokenizer.hasNext()) ;
-        Token token = tokenizer.next() ;
-        assertEquals(TokenType.PLUS, token.getType()) ;
-    }
-    
     @Test
     public void tokenUnit_symbol_11()
     {
-        Tokenizer tokenizer = tokenizer("+A") ;
-        assertTrue(tokenizer.hasNext()) ;
-        Token token = tokenizer.next() ;
-        assertEquals(TokenType.PLUS, token.getType()) ;
+        testSymbol("+A", TokenType.PLUS) ;
     }
     
     @Test
     public void tokenUnit_symbol_12()
     {
-        Tokenizer tokenizer = tokenizer("+-") ;
-        assertTrue(tokenizer.hasNext()) ;
-        Token token = tokenizer.next() ;
-        assertEquals(TokenType.PLUS, token.getType()) ;
-        token = tokenizer.next() ;
-        assertEquals(TokenType.MINUS, token.getType()) ;
+        Tokenizer tokenizer = tokenizeAndTestFirst("+-", TokenType.PLUS, null) ;
+        testNextToken(tokenizer, TokenType.MINUS) ;
     }
     
     @Test
     public void tokenUnit_symbol_13()
     {
-        // Not a number.
-        Tokenizer tokenizer = tokenizer(".") ;
-        assertTrue(tokenizer.hasNext()) ;
-        Token token = tokenizer.next() ;
-        assertEquals(TokenType.DOT, token.getType()) ;
+        testSymbol(".", TokenType.DOT) ;
     }
 
     @Test
     public void tokenUnit_symbol_14()
     {
-        Tokenizer tokenizer = tokenizer(".a") ;
-        assertTrue(tokenizer.hasNext()) ;
-        Token token = tokenizer.next() ;
-        assertEquals(TokenType.DOT, token.getType()) ;
+        Tokenizer tokenizer = tokenizeAndTestFirst(".a", TokenType.DOT, null) ;
+        testNextToken(tokenizer, TokenType.KEYWORD, "a") ;
     }
     
 }

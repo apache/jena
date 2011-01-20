@@ -21,6 +21,12 @@ import org.openjena.riot.RiotParseException ;
 
 public final class TokenizerText implements Tokenizer
 {
+    // TODO Remove CNTL and make SYMBOLS
+    // Drop through to final general symbol/keyword reader, including <=, != 
+    // Care with <=
+    // STRING, not STIRNG1/2, LONG_STRING1,2
+    // Policy driven for CURIES?
+    
     // Various allow/deny options (via checker?)
     
     // RDF mode:
@@ -142,6 +148,8 @@ public final class TokenizerText implements Tokenizer
         // ---- IRI
         if ( ch == CH_LT )
         {
+            // TODO <= as a symbol.
+            // Look at next char. a '=' swap to a more expensive scan to ">" 
             reader.readChar() ;
             token.setImage(allBetween(CH_LT, CH_GT, false, false)) ;
             token.setType(TokenType.IRI) ;
@@ -284,25 +292,25 @@ public final class TokenizerText implements Tokenizer
                 token.setType(TokenType.DOT) ;
                 return token ;
             
-            case CH_SEMICOLON:  reader.readChar() ; token.setType(TokenType.SEMICOLON) ; token.setImage(CH_SEMICOLON) ; return token ;
-            case CH_COMMA:      reader.readChar() ; token.setType(TokenType.COMMA) ;     token.setImage(CH_COMMA) ; return token ;
-            case CH_LBRACE:     reader.readChar() ; token.setType(TokenType.LBRACE) ;    token.setImage(CH_LBRACE) ; return token ;
-            case CH_RBRACE:     reader.readChar() ; token.setType(TokenType.RBRACE) ;    token.setImage(CH_RBRACE) ; return token ;
-            case CH_LPAREN:     reader.readChar() ; token.setType(TokenType.LPAREN) ;    token.setImage(CH_LPAREN) ; return token ;
-            case CH_RPAREN:     reader.readChar() ; token.setType(TokenType.RPAREN) ;    token.setImage(CH_RPAREN) ; return token ;
-            case CH_LBRACKET:   reader.readChar() ; token.setType(TokenType.LBRACKET) ;  token.setImage(CH_LBRACKET) ; return token ;
-            case CH_RBRACKET:   reader.readChar() ; token.setType(TokenType.RBRACKET) ;  token.setImage(CH_RBRACKET) ; return token ;
-            case CH_EQUALS:     reader.readChar() ; token.setType(TokenType.EQUALS) ;    token.setImage(CH_EQUALS) ; return token ;
+            case CH_SEMICOLON:  reader.readChar() ; token.setType(TokenType.SEMICOLON) ; /*token.setImage(CH_SEMICOLON) ;*/ return token ;
+            case CH_COMMA:      reader.readChar() ; token.setType(TokenType.COMMA) ;     /*token.setImage(CH_COMMA) ;*/ return token ;
+            case CH_LBRACE:     reader.readChar() ; token.setType(TokenType.LBRACE) ;    /*token.setImage(CH_LBRACE) ;*/ return token ;
+            case CH_RBRACE:     reader.readChar() ; token.setType(TokenType.RBRACE) ;    /*token.setImage(CH_RBRACE) ;*/ return token ;
+            case CH_LPAREN:     reader.readChar() ; token.setType(TokenType.LPAREN) ;    /*token.setImage(CH_LPAREN) ;*/ return token ;
+            case CH_RPAREN:     reader.readChar() ; token.setType(TokenType.RPAREN) ;    /*token.setImage(CH_RPAREN) ;*/ return token ;
+            case CH_LBRACKET:   reader.readChar() ; token.setType(TokenType.LBRACKET) ;  /*token.setImage(CH_LBRACKET) ;*/ return token ;
+            case CH_RBRACKET:   reader.readChar() ; token.setType(TokenType.RBRACKET) ;  /*token.setImage(CH_RBRACKET) ;*/ return token ;
+            case CH_EQUALS:     reader.readChar() ; token.setType(TokenType.EQUALS) ;    /*token.setImage(CH_EQUALS) ;*/ return token ;
 
             // Specials (if blank node processing off)
             //case CH_COLON:      reader.readChar() ; token.setType(TokenType.COLON) ; return token ;
-            case CH_UNDERSCORE: reader.readChar() ; token.setType(TokenType.UNDERSCORE) ; token.setImage(CH_UNDERSCORE) ; return token ;
-            case CH_LT:         reader.readChar() ; token.setType(TokenType.LT) ; token.setImage(CH_LT) ; return token ;
-            case CH_GT:         reader.readChar() ; token.setType(TokenType.GT) ; token.setImage(CH_GT) ; return token ;
-            case CH_STAR:       reader.readChar() ; token.setType(TokenType.STAR) ; token.setImage(CH_STAR) ; return token ;
+            case CH_UNDERSCORE: reader.readChar() ; token.setType(TokenType.UNDERSCORE) ; /*token.setImage(CH_UNDERSCORE) ;*/ return token ;
+            case CH_LT:         reader.readChar() ; token.setType(TokenType.LT) ; /*token.setImage(CH_LT) ;*/ return token ;
+            case CH_GT:         reader.readChar() ; token.setType(TokenType.GT) ; /*token.setImage(CH_GT) ;*/ return token ;
+            case CH_STAR:       reader.readChar() ; token.setType(TokenType.STAR) ; /*token.setImage(CH_STAR) ;*/ return token ;
             
             // TODO : Multi character symbols
-            // Two character tokens && || GE, LE
+            // Two character tokens && || GE >= , LE <=
             // Single character symbols for * /
             // +/- may start numbers.
 
@@ -342,13 +350,9 @@ public final class TokenizerText implements Tokenizer
                 // ch was end of symbol.
                 //reader.readChar() ;
                 if ( ch == CH_PLUS )
-                {
-                     token.setType(TokenType.PLUS) ; token.setImage(CH_PLUS) ;
-                }
+                    token.setType(TokenType.PLUS) ;
                 else
-                {
-                    token.setType(TokenType.MINUS) ; token.setImage(CH_MINUS) ;
-                }
+                    token.setType(TokenType.MINUS) ;
                 return token ;
             }
 
@@ -375,6 +379,9 @@ public final class TokenizerText implements Tokenizer
         //   Can't start with a '_' due to blank node test above.
         // If we see a :, the first time it means a prefixed name else it's a token break.
 
+        // (eventually) Make this a very wide definition, including symbols like <= 
+        // Prefixed names are the difficulty.
+        
         readPrefixedNameOrKeyword(token) ;
         
         if ( Checking ) checkKeyword(token.getImage()) ;
@@ -447,18 +454,18 @@ public final class TokenizerText implements Tokenizer
     
     private String readWordSub(boolean leadingDigitAllowed, boolean leadingSignAllowed)
     {
-        return readCharsAnd(leadingDigitAllowed, leadingSignAllowed, extraCharsWord) ;
+        return readCharsAnd(leadingDigitAllowed, leadingSignAllowed, extraCharsWord, false) ;
     }
     
     static private char[] extraCharsVar = new char[] {'_', '.' , '-', '?', '@', '+'};
     private String readVarName()
     {
-        return readCharsAnd(true, true, extraCharsVar) ;
+        return readCharsAnd(true, true, extraCharsVar, true) ;
     }
     
     // See also readBlankNodeLabel
     
-    private String readCharsAnd(boolean leadingDigitAllowed, boolean leadingSignAllowed, char[] extraChars)
+    private String readCharsAnd(boolean leadingDigitAllowed, boolean leadingSignAllowed, char[] extraChars, boolean allowFinalDot)
     {
         stringBuilder.setLength(0) ;
         int idx = 0 ;
@@ -492,14 +499,18 @@ public final class TokenizerText implements Tokenizer
                 break ;
             
         }
-        // BAD : assumes pushbackChar is infinite.
-        // Check is ends in "."
-        while ( idx > 0 && stringBuilder.charAt(idx-1) == CH_DOT )
+        
+        if ( ! allowFinalDot )
         {
-            // Push back the dot.
-            reader.pushbackChar(CH_DOT) ;
-            stringBuilder.setLength(idx-1) ;
-            idx -- ;
+            // BAD : assumes pushbackChar is infinite.
+            // Check is ends in "."
+            while ( idx > 0 && stringBuilder.charAt(idx-1) == CH_DOT )
+            {
+                // Push back the dot.
+                reader.pushbackChar(CH_DOT) ;
+                stringBuilder.setLength(idx-1) ;
+                idx -- ;
+            }
         }
         return stringBuilder.toString() ;
     }
@@ -560,6 +571,16 @@ public final class TokenizerText implements Tokenizer
         boolean isDouble = false ;
         boolean isDecimal = false ;
         stringBuilder.setLength(0) ;
+        
+        
+        /*
+        readPossibleSign(stringBuilder) ;
+        readDigits may be hex
+        readDot
+        readDigits
+        readExponent.
+        */
+        
         
         int x = 0 ; // Digits before a dot.
         int ch = reader.peekChar() ;

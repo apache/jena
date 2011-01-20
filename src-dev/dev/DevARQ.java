@@ -4,6 +4,8 @@ public class DevARQ
 {
     // RIOT -- bad chars
     // SSE - move to RIOT based tokenizer.
+    // TokenizeText:
+    // Just STRING, no CNTL, catchall Keyword/Symbol
     
     // round(1.3) -> "1"^^xsd:decimal.
     // floor, ceil.
