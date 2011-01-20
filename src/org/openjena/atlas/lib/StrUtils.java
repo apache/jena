@@ -11,6 +11,8 @@ import java.util.ArrayList ;
 import java.util.List ;
 import java.util.Map ;
 
+import org.openjena.riot.system.RiotChars ;
+
 import com.hp.hpl.jena.n3.turtle.ParserBase ;
 import com.hp.hpl.jena.sparql.util.FmtUtils ;
 
@@ -202,14 +204,11 @@ public class StrUtils //extends StringUtils
         int N = str.length();
         int idx = 0 ;
         // Scan stage.
-        outer: 
-            for ( ; idx < N ; idx++ )
+        for ( ; idx < N ; idx++ )
         {
             char ch = str.charAt(idx) ;
-            for ( int j = 0 ; j < escapees.length ; j++ )
-                if ( ch == escapees[j] )
-                    // and idx is the first char needed to be worked on.
-                    break outer ;
+            if ( RiotChars.charInArray(ch, escapees) )
+                break ;
         }
         if ( idx == N )
             return str ;
@@ -220,32 +219,16 @@ public class StrUtils //extends StringUtils
         for ( ; idx < N ; idx++ )
         {
             char ch = str.charAt(idx) ;
-            int j = 0 ; 
-            for ( ; j < escapees.length ; j++ )
+            if ( RiotChars.charInArray(ch, escapees) )
             {
-                if ( ch == escapees[j] )
-                {
-                    Chars.encodeAsHex(buff, marker, ch) ;
-                    break ; // Out of escapees loop.
-                }
+                Chars.encodeAsHex(buff, marker, ch) ;
+                continue ;
             }
-            if ( j >= escapees.length )
-                buff.append(ch) ;
+            buff.append(ch) ;
         }
         return buff.toString();
     }
 
-    // Encoding is table-driven but for decode, we use code.
-    static private int hexDecode(char ch) {
-        if (ch >= '0' && ch <= '9' )
-            return ch - '0' ;
-        if ( ch >= 'A' && ch <= 'F' )
-            return ch - 'A' + 10 ;
-        if ( ch >= 'a' && ch <= 'f' )
-            return ch - 'a' + 10 ;
-        return -1 ;
-    }
-    
     /** Decode a string using marked hex values e.g. %20
      * 
      * @param str       String to decode
@@ -280,6 +263,17 @@ public class StrUtils //extends StringUtils
         return buff.toString() ; 
     }
     
+    // Encoding is table-driven but for decode, we use code.
+    static private int hexDecode(char ch) {
+        if (ch >= '0' && ch <= '9' )
+            return ch - '0' ;
+        if ( ch >= 'A' && ch <= 'F' )
+            return ch - 'A' + 10 ;
+        if ( ch >= 'a' && ch <= 'f' )
+            return ch - 'a' + 10 ;
+        return -1 ;
+    }
+
     public static String escapeString(String x)
     {
         return FmtUtils.stringEsc(x) ;

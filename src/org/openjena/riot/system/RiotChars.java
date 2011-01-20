@@ -75,9 +75,6 @@ public class RiotChars
         }
         return false ;
     }
-    
-
-
 }
 
 /*

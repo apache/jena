@@ -113,6 +113,19 @@ public class RunARQ
     
     public static void main(String[] argv) throws Exception
     {
+        //arq.qexpr.main("encode_for_uri('食べ物')") ;
+        arq.qexpr.main("encode_for_uri('100%')") ;
+        System.out.println("DONE") ;
+        //System.exit(0) ;
+        
+        byte b[] = new String("食べ物").getBytes("UTF-8") ;
+        System.out.println(b.length) ;
+        for ( int i = 0 ; i < b.length ; i++ )
+        {
+            System.out.printf("  0x%02X\n", b[i]) ;
+        }
+        System.out.println("DONE") ;
+        System.exit(0) ;
         SysRIOT.wireIntoJena() ;
         ModelFactory.createDefaultModel().read("file:D.nt", "http://EXample/", "N-TRIPLES") ;
         System.out.println("DONE") ;

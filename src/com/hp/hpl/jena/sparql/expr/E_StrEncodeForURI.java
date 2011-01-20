@@ -6,6 +6,7 @@
 
 package com.hp.hpl.jena.sparql.expr;
 
+import org.openjena.atlas.lib.Chars ;
 import org.openjena.atlas.lib.StrUtils ;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
@@ -35,8 +36,50 @@ public class E_StrEncodeForURI extends ExprFunction1
         
         
         String str = n.getLiteralLexicalForm() ;
+        
         String encStr = StrUtils.encodeHex(str,'%', uri_all) ;
+        // Convert to UTF-8.
+        if ( containsNonASCII(encStr) )
+        {
+            byte[] b = StrUtils.asUTF8bytes(encStr) ;
+            encStr = encodeNonASCII(b) ;
+        }
         return NodeValue.makeString(encStr) ;
+    }
+    
+    
+    static String encodeNonASCII(byte[] bytes)
+    {
+        StringBuilder sw = new StringBuilder() ;
+        for ( int i = 0 ; i < bytes.length ; i++ )
+        {
+            byte b = bytes[i] ;
+            // Signed bytes ...
+            if ( b > 0 )
+            {
+                sw.append((char)b) ;
+                continue ;
+            }
+            
+            int hi = (b & 0xF0) >> 4 ;
+            int lo = b & 0xF ;
+            sw.append('%') ;
+            sw.append(Chars.hexDigitsUC[hi]) ;
+            sw.append(Chars.hexDigitsUC[lo]) ;
+        }
+        return sw.toString() ;
+    }
+
+    static boolean containsNonASCII(String string)
+    {
+        boolean clean = true ;
+        for ( int i = 0 ; i < string.length() ; i++ )
+        {
+            char ch = string.charAt(i) ;
+            if ( ch >= 127 )
+                return true;
+        }
+        return false ;
     }
     
     // Put somewhere

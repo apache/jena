@@ -2,10 +2,12 @@ package dev ;
 
 public class DevARQ
 {
-    // RIOT -- bad chars
+    // RIOT -- improper URI as base URI.
+    // -- Loading RDF/XML -- URI checking.
+    
     // SSE - move to RIOT based tokenizer.
     // TokenizeText:
-    // Just STRING, no CNTL, catchall Keyword/Symbol
+    // Just STRING, no CNTL=>KEYWORD = Symbol, catchall Keyword/Symbol
     
     // round(1.3) -> "1"^^xsd:decimal.
     // floor, ceil.

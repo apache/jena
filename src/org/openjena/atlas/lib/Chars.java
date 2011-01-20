@@ -77,20 +77,35 @@ public class Chars
     
     public static void encodeAsHex(StringBuilder buff, char marker, char ch)
     {
+        if ( ch < 256 )
+        {
+            buff.append(marker) ;
+            int lo = ch & 0xF ;
+            int hi = (ch >> 4) & 0xF ;
+            buff.append(Chars.hexDigitsUC[hi]) ;                
+            buff.append(Chars.hexDigitsUC[lo]) ;
+            return ;
+        }
+        int n4 = ch & 0xF ;
+        int n3 = (ch >> 4) & 0xF ;
+        int n2 = (ch >> 8) & 0xF ;
+        int n1 = (ch >> 12) & 0xF ;
         buff.append(marker) ;
-        int lo = ch & 0xF ;
-        int hi = (ch >> 4) & 0xF ;
-        buff.append(Chars.hexDigitsUC[hi]) ;                
-        buff.append(Chars.hexDigitsUC[lo]) ;
+        buff.append(Chars.hexDigitsUC[n1]) ;                
+        buff.append(Chars.hexDigitsUC[n2]) ;
+        buff.append(marker) ;
+        buff.append(Chars.hexDigitsUC[n3]) ;
+        buff.append(Chars.hexDigitsUC[n4]) ;
+        
     }
-    
+
     /** End of file - not a Unicode codepoint */
     public static final int EOF             = -1 ;
     // BOM  : U+FEFF encoded in bytes as xEF,0xBB,0xBF
     public static final char BOM            = 0xFEFF ;  
     
     /** undefined character (exact meaning depends on use) - not a Unicode codepoint */
-    public static final int UNSET           =  -2 ;
+    public static final int  UNSET           =  -2 ;
     public static final char NL              = '\n' ;
     public static final char CR              = '\r' ;
     
