@@ -317,7 +317,7 @@ void BindingsClause() : { Var v ; Node n ; Token t ; }
     (
       t = <LPAREN>
         { startBindingValueRow(t.beginLine, t.beginColumn) ; }
-      (n = BindingValue() { emitBindingValue(n, t.beginLine, t.beginColumn) ; }) +
+      (n = BindingValue() { emitBindingValue(n, t.beginLine, t.beginColumn) ; }) *
       t = <RPAREN>
         { finishBindingValueRow(t.beginLine, t.beginColumn) ; }
     |

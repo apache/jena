@@ -276,7 +276,7 @@ NON-TERMINALS
 	LimitOffsetClauses	:=	( LimitClause ( OffsetClause )? | OffsetClause ( LimitClause )? )
 	LimitClause	:=	<LIMIT> <INTEGER>
 	OffsetClause	:=	<OFFSET> <INTEGER>
-	BindingsClause	:=	( <BINDINGS> ( Var )* <LBRACE> ( <LPAREN> ( BindingValue )+ <RPAREN> | <NIL> )* <RBRACE> )?
+	BindingsClause	:=	( <BINDINGS> ( Var )* <LBRACE> ( <LPAREN> ( BindingValue )* <RPAREN> | <NIL> )* <RBRACE> )?
 	BindingValue	:=	IRIref
 		|	RDFLiteral
 		|	NumericLiteral

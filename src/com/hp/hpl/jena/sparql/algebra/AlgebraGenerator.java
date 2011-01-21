@@ -45,6 +45,7 @@ import com.hp.hpl.jena.sparql.core.BasicPattern ;
 import com.hp.hpl.jena.sparql.core.PathBlock ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.core.VarExprList ;
+import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.expr.E_Exists ;
 import com.hp.hpl.jena.sparql.expr.E_LogicalNot ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
@@ -89,8 +90,8 @@ public class AlgebraGenerator
     // The  {{}} results in (join unit (filter ...)) the filter is not moved
     // into the LeftJoin.  
     
-    static public boolean applySimplification = true ;              // Allows raw algebra to be generated (testing) 
-    private boolean simplifyTooEarlyInAlgebraGeneration = false ;   // False is the correct setting. 
+    static final private boolean applySimplification = true ;              // Allows raw algebra to be generated (testing) 
+    static final private boolean simplifyTooEarlyInAlgebraGeneration = false ;   // False is the correct setting. 
 
     public AlgebraGenerator(Context context)
     { 
@@ -108,6 +109,17 @@ public class AlgebraGenerator
     {
         Op pattern = compile(query.getQueryPattern()) ;     // Not compileElement - may need to apply simplification.
         Op op = compileModifiers(query, pattern) ;
+        
+        if ( query.hasBindings() )
+        {
+            List<Binding> bindings = query.getBindingValues() ;
+            Table table = TableFactory.create() ;
+            for ( Binding binding : bindings )
+                table.addBinding(binding) ;
+            OpTable opTable = OpTable.create(table) ;
+            op = OpJoin.create(op, opTable) ;
+        }
+        
         return op ;
     }
     

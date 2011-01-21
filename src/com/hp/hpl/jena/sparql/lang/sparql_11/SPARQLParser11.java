@@ -1016,8 +1016,6 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
           startBindingValueRow(t.beginLine, t.beginColumn) ;
           label_14:
           while (true) {
-            n = BindingValue();
-                            emitBindingValue(n, t.beginLine, t.beginColumn) ;
             switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
             case IRIref:
             case PNAME_NS:
@@ -1044,6 +1042,8 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
               jj_la1[37] = jj_gen;
               break label_14;
             }
+            n = BindingValue();
+                            emitBindingValue(n, t.beginLine, t.beginColumn) ;
           }
           t = jj_consume_token(RPAREN);
           finishBindingValueRow(t.beginLine, t.beginColumn) ;

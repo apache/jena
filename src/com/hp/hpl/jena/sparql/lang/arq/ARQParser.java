@@ -1353,8 +1353,6 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
           startBindingValueRow(t.beginLine, t.beginColumn) ;
           label_14:
           while (true) {
-            n = BindingValue();
-                            emitBindingValue(n, t.beginLine, t.beginColumn) ;
             switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
             case IRIref:
             case PNAME_NS:
@@ -1381,6 +1379,8 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
               jj_la1[39] = jj_gen;
               break label_14;
             }
+            n = BindingValue();
+                            emitBindingValue(n, t.beginLine, t.beginColumn) ;
           }
           t = jj_consume_token(RPAREN);
           finishBindingValueRow(t.beginLine, t.beginColumn) ;

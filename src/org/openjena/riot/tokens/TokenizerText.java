@@ -276,7 +276,7 @@ public final class TokenizerText implements Tokenizer
             return token ;
         }
         
-        // Number?
+        // Symbol?
         switch(ch)
         { 
             // DOT can start a decimal.  Check for digit.
@@ -288,6 +288,7 @@ public final class TokenizerText implements Tokenizer
                     // Not a DOT after all.
                     reader.pushbackChar(CH_DOT) ;
                     readNumber() ;
+                    if ( Checking ) checkNumber(token.getImage(), token.getImage2() ) ;
                     return token ;
                 }
                 token.setType(TokenType.DOT) ;
@@ -331,7 +332,7 @@ public final class TokenizerText implements Tokenizer
         [17]    double          ::=     ('-' | '+') ? ( [0-9]+ '.' [0-9]* exponent | '.' ([0-9])+ exponent | ([0-9])+ exponent )
                                         0.e0, .0e0, 0e0
         [18]    decimal         ::=     ('-' | '+')? ( [0-9]+ '.' [0-9]* | '.' ([0-9])+ | ([0-9])+ )
-                                        0.0 .0
+                                        0.0 .0 0.
         [19]    exponent        ::=     [eE] ('-' | '+')? [0-9]+
         []      hex             ::=     0x0123456789ABCDEFG
         

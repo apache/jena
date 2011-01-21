@@ -13,6 +13,7 @@ import com.hp.hpl.jena.sparql.algebra.op.OpFilter ;
 import com.hp.hpl.jena.sparql.algebra.op.OpJoin ;
 import com.hp.hpl.jena.sparql.algebra.op.OpLeftJoin ;
 import com.hp.hpl.jena.sparql.algebra.op.OpSequence ;
+import com.hp.hpl.jena.sparql.algebra.op.OpTable ;
 import com.hp.hpl.jena.sparql.engine.main.JoinClassifier ;
 import com.hp.hpl.jena.sparql.engine.main.LeftJoinClassifier ;
 import com.hp.hpl.jena.sparql.util.Context ;
@@ -33,14 +34,24 @@ public class TransformJoinStrategy extends TransformCopy
     @Override
     public Op transform(OpJoin opJoin, Op left, Op right)
     { 
-      // Look one level in for any filters with out-of-scope variables.
-      boolean canDoLinear = JoinClassifier.isLinear(opJoin) ;
+        // Look one level in for any filters with out-of-scope variables.
+        boolean canDoLinear = JoinClassifier.isLinear(opJoin) ;
 
-      if ( canDoLinear )
-          // Streamed evaluation
-          return OpSequence.create(left, right) ;
-      // Can't do better.
-      return super.transform(opJoin, left,right) ;
+        if ( canDoLinear )
+        {
+            if ( right instanceof OpTable )
+            {
+                // Swap left and right so start with a flow of concrete data.
+                Op tmp = left ;
+                left = right ; 
+                right = tmp ;
+            }
+            
+            // Streamed evaluation
+            return OpSequence.create(left, right) ;
+        }
+        // Can't do better.
+        return super.transform(opJoin, left,right) ;
     }
     
     //public Op transform(OpSequence opSequence, List<Op> elts)
