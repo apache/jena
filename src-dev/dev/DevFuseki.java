@@ -3,6 +3,7 @@ package dev;
 public class DevFuseki
 {
     // Documentation:
+    //   Plan documentation.
     //   MIME types supported
     // Include a data file in the distribution.
     // curl as commandline
