@@ -739,13 +739,13 @@ public class SetupTDB
         {
             // Not as good but better than nothing.
             reorder = ReorderLib.fixed() ;
-            logInfo.info("Fixed pattern BGP optimizer") ;  
+            logInfo.debug("Fixed pattern BGP optimizer") ;  
         }
         
         if ( location.exists(Names.optNone) )
         {
             reorder = ReorderLib.identity() ;
-            logInfo.info("Optimizer explicitly turned off") ;
+            logInfo.debug("Optimizer explicitly turned off") ;
         }
     
         if ( reorder == null )

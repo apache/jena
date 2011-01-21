@@ -92,6 +92,8 @@ public class StringFile implements Sync, Closeable
             String str = Bytes.fromByteBuffer(bb) ;
             handler.handle(fileIdx, str) ;
             fileIdx = fileIdx + bb.limit() + 4 ;
+            if ( fileIdx >= file.length() )
+                break ;
         }
     }
     
