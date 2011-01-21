@@ -1,15 +1,8 @@
 package dev ;
 
-/*
- * BPT deleting.
- * Merging two leaves => does not pass consistency test.
- *   But the test is wrong?
- *   Due to one-slot slop?
- */
-
 public class DevTDB
 {
-    // (ARQ): SSE to use same tokenizing as RIOT.
+    // BPT concurrency checks.
     
     // ** CHECK bnode ids without leading zeros in Jena?
     

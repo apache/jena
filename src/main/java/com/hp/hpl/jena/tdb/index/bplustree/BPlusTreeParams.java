@@ -21,9 +21,9 @@ final
 public class BPlusTreeParams
 {
     // Global settings
-    // 
     public static boolean CheckingTree = SystemTDB.Checking ;   // Check on exit of B+Tree modifiying operations
     public static boolean CheckingNode = false ;                // Check within BPTreeNode
+    public static boolean CheckingConcurrency = SystemTDB.Checking ;   // Check on exit of B+Tree modifiying operations
 
     // Metadata
     //public static final String NS = BPlusTreeParams.class.getName() ;

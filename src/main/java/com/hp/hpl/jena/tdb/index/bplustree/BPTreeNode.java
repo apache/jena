@@ -1345,6 +1345,18 @@ public final class BPTreeNode extends BPTreePage
                 Record keySubTree = n.getHighRecord() ;     // high key in immediate child 
                 Record keyHere = records.get(i) ;           // key in this
                 
+                if ( keySubTree == null )
+                    error("Node: %d: Can't get high record from %d", id, n.getId()) ;
+                
+                if ( keySubTree.getKey() == null )
+                    error("Node: %d: Can't get high record is missing it's key from %d", id, n.getId()) ;
+                    
+                if ( keyHere == null )
+                    error("Node: %d: record is null", id) ;
+                
+                if ( keyHere.getKey() == null )
+                    error("Node: %d: Record key is null", id) ;
+                
                 if ( keyGT(keySubTree, keyHere) )
                     error("Node: %d: Child key %s is greater than this key %s", id, keySubTree, keyHere) ;
                 
