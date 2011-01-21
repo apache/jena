@@ -4,6 +4,7 @@ public class DevARQ
 {
     // RIOT -- improper URI as base URI.
     // -- Loading RDF/XML -- URI checking.
+    // Check tokenizing speed.
     
     // SSE - move to RIOT based tokenizer.
     // TokenizeText:
