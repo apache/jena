@@ -4,58 +4,24 @@
  * [See end of file]
  */
 
-package riotcmd;
+package reports;
 
-import java.io.InputStream ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.query.DataSource ;
+import com.hp.hpl.jena.sparql.core.DataSourceImpl ;
+import com.hp.hpl.jena.sparql.core.Quad ;
 
-import org.openjena.atlas.io.IO ;
-import org.openjena.riot.tokens.Token ;
-import org.openjena.riot.tokens.Tokenizer ;
-import org.openjena.riot.tokens.TokenizerFactory ;
-
-import com.hp.hpl.jena.sparql.util.Timer ;
-
-public class perftokens
+public class ReportDatasetGraphAddNPE
 {
-    public static void main(String...args)
+    public static void main(String ...strings)
     {
-        // Turn the node cache off.
-        //com.hp.hpl.jena.graph.Node.cache(false) ;
-        
-        if ( args.length == 0 )
-            args = new String[] {"-"} ;
-        
-        String arg = args[0] ;
-        
-        if ( arg.equals("--help") || arg.equals("-help") || arg.equals("-h") || arg.equals("--h") ) 
-        {
-            System.err.println("Usage: FILE") ;
-            System.exit(1) ;
-        }
-        
-
-        for ( String filename : args )
-        {
-            InputStream in = IO.openFile(args[0]) ;
-            Tokenizer tokenize = TokenizerFactory.makeTokenizerUTF8(in) ;
-            Timer timer = new Timer() ;
-            long count = 0 ; 
-            timer.startTimer() ;
-            for ( ; tokenize.hasNext() ; )
-            {
-                Token t = tokenize.next() ;
-                count++ ;
-            }
-            tokenize.close();
-            long millis = timer.endTimer() ;
-            if ( millis == 0 )
-                System.out.printf("Tokens=%,d : Time=0.00s\n", count) ;
-            else
-            {
-                double seconds = millis/1000.0 ;
-                System.out.printf("Tokens=%,d : Time=%,.2fs : Rate=%,.2f\n", count, seconds, count/seconds) ;
-            }
-        }
+        DataSource dataSource = DataSourceImpl.createMem();
+        Node subject = Node.createURI("http://example/s");
+        Node predicate = Node.createURI("http://example/p");
+        Node object = Node.createAnon();
+        dataSource.asDatasetGraph().add(new Quad(Quad.defaultGraphIRI, subject, predicate, object));
+        dataSource.asDatasetGraph().deleteAny(Node.ANY, subject, null, null);
+        System.out.println("DONE") ;
     }
 }
 

@@ -5,6 +5,15 @@ public class DevARQ
     // RIOT -- improper URI as base URI.
     // -- Loading RDF/XML -- URI checking.
     // Check tokenizing speed.
+    // The Node cache makes difference (~2% better).  Can we do better, locally?
+    // Prepare for no Nodecache.
+    
+    // More test in DatasetGraphTests
+    // Rename Quad.defaultGraphIRI?
+    
+    // Parsers use: Quad.defaultGraphNodeGenerated
+    //   Should find/4 do the same? Via:
+    // DatasetGraphBase.triples2quadsDftGraph
     
     // SSE - move to RIOT based tokenizer.
     // TokenizeText:

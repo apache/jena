@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2010 Talis Systems Ltd.
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -186,17 +187,21 @@ public abstract class DatasetGraphTests
         assertEquals(quad1, q) ;
     }
     
-    // ---- Dataset level tests
-    
-//    @Test public void x()
-//    {
-//        DatasetGraph dsg = emptyDataset() ;
-//        Dataset ds = new DatasetImpl(dsg) ; // DataSourceImpl
-//    }
+    @Test public void deleteAny_01()
+    {
+        DatasetGraph dsg = emptyDataset() ;
+        Node subject = Node.createURI("http://example/s");
+        Node predicate = Node.createURI("http://example/p");
+        Node object = Node.createAnon();
+        dsg.add(new Quad(Quad.defaultGraphIRI, subject, predicate, object));
+        dsg.deleteAny(Node.ANY, subject, null, null);
+    }
+  
 }
 
 /*
  * (c) Copyright 2010 Talis Systems Ltd.
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

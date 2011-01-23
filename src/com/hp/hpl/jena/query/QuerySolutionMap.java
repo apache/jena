@@ -25,7 +25,7 @@ public class QuerySolutionMap extends QuerySolutionBase
 
     public void add(String name, RDFNode node)
     { map.put(Var.canonical(name), node) ; }
-    
+
     @Override
     protected RDFNode _get(String varName)          { return map.get(varName) ; } 
 

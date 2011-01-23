@@ -145,7 +145,9 @@ abstract public class DatasetGraphBase implements DatasetGraph
     
     protected static Iterator<Quad> triples2quadsDftGraph(Iterator<Triple> iter)
     {
-        return triples2quads(Quad.tripleInQuad, iter) ;
+        //return triples2quads(Quad.defaultGraphIRI, iter) ;
+        return triples2quads(Quad.defaultGraphNodeGenerated, iter) ;
+        //return triples2quads(Quad.tripleInQuad, iter) ;
     }
 
     protected static Iter<Quad> triples2quads(final Node graphNode, Iterator<Triple> iter)

@@ -58,7 +58,8 @@ public class DSG_Mem extends DatasetGraphCaching
         for ( Triple t : triples )
             if ( matches(t, s, p, o) )
                 // ?? Quad.defaultGraphNodeGenerated
-                results.add(new Quad(Quad.tripleInQuad, t)) ;
+                //Quad.defaultGraphIRI
+                results.add(new Quad(Quad.defaultGraphIRI, t)) ;
         return results.iterator() ;
     }
     
