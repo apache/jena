@@ -122,55 +122,56 @@ public class BPlusTree implements Iterable<Record>, RangeIndex, Session
     private BPTreeRecordsMgr recordsMgr; 
     private BPlusTreeParams bpTreeParams ;
     
-    // Internal checking for concurrency.
-    // Not perfect.
-    private volatile int readCounter = 0 ;
-    private volatile int insertCounter = 0 ;
-    private volatile int deleteCounter = 0 ;
-    
-    private void checkConcurrency()
-    {
-        checkConcurrency(readCounter, insertCounter, deleteCounter) ;
-    }
-    
-    private static void checkConcurrency(int read, int insert, int delete)
-    {
-
-        if ( ! BPlusTreeParams.CheckingConcurrency ) return ;
-        if ( read > 0 )
-        {
-            if ( insert > 0 )
-                error("Insert in progress when read operation attempted", read, insert, delete) ;
-            if ( delete > 0 )
-                error("Delete in progress when read operation attempted", read, insert, delete) ;
-            return ;
-        }
-        
-        if ( insert > 0 )
-        {
-            if ( read > 0 )
-                error("Read in progress when insert operation attempted", read, insert, delete) ;
-            if ( delete > 0 )
-                error("Delete in progress when insert operation attempted", read, insert, delete) ;
-            return ;
-        }
-
-        if ( delete > 0 )
-        {
-            if ( read > 0 )
-                error("Read in progress when delete operation attempted", read, insert, delete) ;
-            if ( insert > 0 )
-                error("Insert in progress when delete operation attempted", read, insert, delete) ;
-            return ;
-        }
-    }
-    
-    private static void error(String msg, int read, int insert, int delete)
-    {
-        String str = String.format("B+Tree: [R:%d,I:%d,D:%d] %s",read, insert, delete, msg) ;
-        throw new BPTreeException(str) ;
-    }
-    
+    // Better done outside.
+//    // Internal checking for concurrency.
+//    // Not perfect.
+//    private volatile int readCounter = 0 ;
+//    private volatile int insertCounter = 0 ;
+//    private volatile int deleteCounter = 0 ;
+//    
+//    private void checkConcurrency()
+//    {
+//        checkConcurrency(readCounter, insertCounter, deleteCounter) ;
+//    }
+//    
+//    private static void checkConcurrency(int read, int insert, int delete)
+//    {
+//
+//        if ( ! BPlusTreeParams.CheckingConcurrency ) return ;
+//        if ( read > 0 )
+//        {
+//            if ( insert > 0 )
+//                error("Insert in progress when read operation attempted", read, insert, delete) ;
+//            if ( delete > 0 )
+//                error("Delete in progress when read operation attempted", read, insert, delete) ;
+//            return ;
+//        }
+//        
+//        if ( insert > 0 )
+//        {
+//            if ( read > 0 )
+//                error("Read in progress when insert operation attempted", read, insert, delete) ;
+//            if ( delete > 0 )
+//                error("Delete in progress when insert operation attempted", read, insert, delete) ;
+//            return ;
+//        }
+//
+//        if ( delete > 0 )
+//        {
+//            if ( read > 0 )
+//                error("Read in progress when delete operation attempted", read, insert, delete) ;
+//            if ( insert > 0 )
+//                error("Insert in progress when delete operation attempted", read, insert, delete) ;
+//            return ;
+//        }
+//    }
+//    
+//    private static void error(String msg, int read, int insert, int delete)
+//    {
+//        String str = String.format("B+Tree: [R:%d,I:%d,D:%d] %s",read, insert, delete, msg) ;
+//        throw new BPTreeException(str) ;
+//    }
+//    
     /** Create the in-memory structures to correspnond to
      * the supplied block managers for the persistent storage.
      * This is the normal way to create a B+Tree.
