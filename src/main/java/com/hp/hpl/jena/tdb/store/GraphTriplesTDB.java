@@ -75,7 +75,7 @@ public class GraphTriplesTDB extends GraphTDBBase
     @Override
     protected Iterator<Tuple<NodeId>> countThis()
     {
-        return tripleTable.getNodeTupleTable().getTupleTable().getIndex(0).all() ;
+        return tripleTable.getNodeTupleTable().findAll() ;
     }
 
     //@Override

@@ -16,7 +16,6 @@ import java.util.Map.Entry ;
 
 import org.openjena.atlas.lib.MapUtils ;
 import org.openjena.atlas.lib.Tuple ;
-import org.openjena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
@@ -26,7 +25,6 @@ import com.hp.hpl.jena.sparql.sse.Item ;
 import com.hp.hpl.jena.sparql.sse.ItemList ;
 import com.hp.hpl.jena.sparql.util.NodeFactory ;
 import com.hp.hpl.jena.sparql.util.Utils ;
-import com.hp.hpl.jena.tdb.index.TupleIndex ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
 import com.hp.hpl.jena.tdb.store.GraphTDB ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
@@ -121,13 +119,16 @@ public class StatsCollector
         long count = 0 ;
         Map<NodeId, Integer> predicateIds = new HashMap<NodeId, Integer>(1000) ;
         
-        TupleIndex index = graph.getNodeTupleTable().getTupleTable().getIndex(0) ;
-        if ( ! index.getLabel().equals("SPO->SPO") &&
-             ! index.getLabel().equals("GSPO->GSPO") )
-            Log.warn(StatsCollector.class, "May not be the right index: "+index.getLabel()) ;
+//        TupleIndex index = graph.getNodeTupleTable().getTupleTable().getIndex(0) ;
+//        if ( ! index.getLabel().equals("SPO->SPO") &&
+//             ! index.getLabel().equals("GSPO->GSPO") )
+//            Log.warn(StatsCollector.class, "May not be the right index: "+index.getLabel()) ;
+//        boolean quads = (index.getTupleLength()==4)  ;
         
-        Iterator<Tuple<NodeId>> iter = index.all() ;
-        boolean quads = (index.getTupleLength()==4)  ;
+        int len = graph.getNodeTupleTable().getTupleTable().getTupleLen() ;
+        
+        Iterator<Tuple<NodeId>> iter = graph.getNodeTupleTable().findAll() ;
+        boolean quads = (len==4)  ;
         final int idx = (quads ? 2 : 1) ;
         
         for ( ; iter.hasNext() ; )

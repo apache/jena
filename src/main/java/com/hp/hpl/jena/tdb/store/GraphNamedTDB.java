@@ -109,9 +109,10 @@ public class GraphNamedTDB extends GraphTDBBase
     protected Iterator<Tuple<NodeId>> countThis()
     {
         NodeId gn = getGraphNodeId() ;
-        Tuple<NodeId> t = Tuple.create(gn, null, null, null) ;
-        //Iterator<Tuple<NodeId>> iter = dataset.getQuadTable().getNodeTupleTable().getTupleTable().find(t) ;
-        Iterator<Tuple<NodeId>> iter = dataset.getQuadTable().getNodeTupleTable().getTupleTable().getIndex(0).find(t) ;
+        Iterator<Tuple<NodeId>> iter = dataset.getQuadTable().getNodeTupleTable().find(gn, null, null, null) ;
+//        Tuple<NodeId> t = Tuple.create(gn, null, null, null) ;
+//        //Iterator<Tuple<NodeId>> iter = dataset.getQuadTable().getNodeTupleTable().getTupleTable().find(t) ;
+//        Iterator<Tuple<NodeId>> iter = dataset.getQuadTable().getNodeTupleTable().getTupleTable().getIndex(0).find(t) ;
         return iter ;
     }
     

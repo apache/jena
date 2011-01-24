@@ -84,7 +84,9 @@ public class StageMatchTuple extends RepeatApplyIterator<BindingNodeId>
         prepare(nodeTupleTable.getNodeTable(), patternTuple, input, ids, var) ;
         
         // Go directly to the tuple table
-        Iterator<Tuple<NodeId>> iterMatches = nodeTupleTable.getTupleTable().find(Tuple.create(ids)) ;
+        //Iterator<Tuple<NodeId>> iterMatches = nodeTupleTable.getTupleTable().find(Tuple.create(ids)) ;
+        
+        Iterator<Tuple<NodeId>> iterMatches = nodeTupleTable.find(Tuple.create(ids)) ;
         
         // ** Allow a triple or quad filter here.
         if ( filter != null )

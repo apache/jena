@@ -30,6 +30,13 @@ public interface NodeTupleTable extends Sync, Closeable
 
     /** Find by NodeId. */
     public Iterator<Tuple<NodeId>> find(NodeId... ids) ;
+    
+    /** Find by NodeId. */
+    public Iterator<Tuple<NodeId>> find(Tuple<NodeId> ids) ;
+    
+
+    /** Find all tuples */ 
+    public Iterator<Tuple<NodeId>> findAll() ;
 
     /** Return the undelying tuple table - used with great care by tools
      * that directly manipulate internal structures. 
@@ -41,6 +48,10 @@ public interface NodeTupleTable extends Sync, Closeable
 
     public boolean isEmpty() ;
     
+    /** Clear the tuple table.  After this operation, find* will find  nothing.
+     * This does not mean all data has been removed - for example, it does not mean
+     * that any node table has been emptied.
+     */
     public void clear() ;
 
     // No clear operation - need to manage the tuple table 

@@ -16,7 +16,7 @@ import com.hp.hpl.jena.tdb.store.NodeId ;
 
 public class NodeTupleTableWrapper implements NodeTupleTable
 {
-    private NodeTupleTable nodeTupleTable ;
+    protected final NodeTupleTable nodeTupleTable ;
 
     public NodeTupleTableWrapper(NodeTupleTable ntt) { this.nodeTupleTable = ntt ; }
      
@@ -32,8 +32,14 @@ public class NodeTupleTableWrapper implements NodeTupleTable
     public Iterator<Tuple<NodeId>> find(NodeId... ids)
     { return nodeTupleTable.find(ids) ; }
     
+    public Iterator<Tuple<NodeId>> find(Tuple<NodeId> tuple)
+    { return nodeTupleTable.find(tuple) ; }
+    
     public Iterator<Tuple<NodeId>> findAsNodeIds(Node... nodes)
     { return nodeTupleTable.findAsNodeIds(nodes) ; }
+
+    public Iterator<Tuple<NodeId>> findAll()
+    { return nodeTupleTable.findAll() ; }
 
     public NodeTable getNodeTable()
     { return nodeTupleTable.getNodeTable() ; }

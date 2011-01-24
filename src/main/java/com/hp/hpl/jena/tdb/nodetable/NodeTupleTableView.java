@@ -15,7 +15,9 @@ import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.tdb.index.TupleTable ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
 
-/** Read-only projection of another NodeTupleTable. */ 
+/** Read-only projection of another NodeTupleTable. 
+ * This will not reduce a N-wide tuple to N-1 when find*() used. 
+ */ 
 public class NodeTupleTableView extends NodeTupleTableWrapper
 {
     private Node prefix ;
@@ -46,7 +48,7 @@ public class NodeTupleTableView extends NodeTupleTableWrapper
     public Iterator<Tuple<Node>> find(Node... nodes)
     { 
         nodes = push(Node.class, prefix, nodes) ;
-        return super.find(nodes) ;
+        return nodeTupleTable.find(nodes) ;
     }
     
     private static <T> T[] push(Class<T> cls, T x,  T[] array)
@@ -61,14 +63,21 @@ public class NodeTupleTableView extends NodeTupleTableWrapper
     public Iterator<Tuple<NodeId>> find(NodeId... ids)
     {
         ids = push(NodeId.class, prefixId, ids) ;
-        return super.find(ids) ;
+        return nodeTupleTable.find(ids) ;
     }
     
+    @Override
+    public Iterator<Tuple<NodeId>> find(Tuple<NodeId> ids)
+    {
+        NodeId[] ids2 = push(NodeId.class, prefixId, ids.tuple()) ;
+        return nodeTupleTable.find(ids2) ;
+    }
+
     @Override
     public Iterator<Tuple<NodeId>> findAsNodeIds(Node... nodes)
     {
         nodes = push(Node.class, prefix, nodes) ;
-        return super.findAsNodeIds(nodes) ;
+        return nodeTupleTable.findAsNodeIds(nodes) ;
     }
 
 //    public NodeTable getNodeTable()

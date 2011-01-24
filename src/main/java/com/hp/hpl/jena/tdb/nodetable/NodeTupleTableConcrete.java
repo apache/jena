@@ -10,6 +10,7 @@ import static java.lang.String.format ;
 
 import java.util.Iterator ;
 
+import org.openjena.atlas.iterator.Iter ;
 import org.openjena.atlas.iterator.NullIterator ;
 import org.openjena.atlas.lib.Tuple ;
 
@@ -26,6 +27,11 @@ public class NodeTupleTableConcrete implements NodeTupleTable
 {
     protected final NodeTable nodeTable ;
     protected final TupleTable tupleTable ;
+    
+    /* Concurrency checking:
+     * Everything goes through one of addRow, deleteRow or find*
+     */
+    private final boolean concurrencyChecking = true ; 
     
     public NodeTupleTableConcrete(int N, TupleIndex[] indexes, NodeTable nodeTable)
     {
@@ -97,7 +103,7 @@ public class NodeTupleTableConcrete implements NodeTupleTable
         {
             NodeId id = idForNode(nodes[i]) ;
             if ( NodeId.doesNotExist(id) )
-                return null ;
+                return Iter.nullIterator() ;
             n[i] = id ;
         }
 
@@ -109,10 +115,20 @@ public class NodeTupleTableConcrete implements NodeTupleTable
     public Iterator<Tuple<NodeId>> find(NodeId...ids)
     {
         Tuple<NodeId> tuple = Tuple.create(ids) ;
+        return find(tuple) ;
+    }
+
+    /** Find by NodeId. */
+    public Iterator<Tuple<NodeId>> find(Tuple<NodeId> tuple)
+    {
         Iterator<Tuple<NodeId>> iter = tupleTable.find(tuple) ;
         return iter ;
     }
-
+    
+    public Iterator<Tuple<NodeId>> findAll()
+    {
+        return tupleTable.getIndex(0).all() ;
+    }
     
     // ==== Node
 
@@ -137,6 +153,7 @@ public class NodeTupleTableConcrete implements NodeTupleTable
     
     public boolean isEmpty()        { return tupleTable.isEmpty() ; }
     
+    /** Clear the tuple table - does not clear the node table */
     public void clear()             { tupleTable.clear(); }
     
     public long size()              { return tupleTable.size() ; }

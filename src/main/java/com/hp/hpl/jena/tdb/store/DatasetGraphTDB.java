@@ -133,18 +133,6 @@ public class DatasetGraphTDB extends DatasetGraphCaching
     protected void deleteFromNamedGraph(Node g, Node s, Node p, Node o)
     { getQuadTable().delete(g, s, p, o) ; }
     
-    @Override
-    public boolean containsGraph(Node graphNode)
-    {
-        NodeId graphNodeId = quadTable.getNodeTupleTable().getNodeTable().getNodeIdForNode(graphNode) ;
-        if ( NodeId.doesNotExist(graphNodeId) )
-            return false ;
-        Tuple<NodeId> pattern = Tuple.create(graphNodeId, null, null, null) ;
-        Iterator<Tuple<NodeId>> x = quadTable.getNodeTupleTable().getTupleTable().find(pattern) ;
-        boolean result = x.hasNext() ;
-        return result ;
-    }
-
     public GraphTDB getDefaultGraphTDB()
     {
         return (GraphTDB)getDefaultGraph() ;
@@ -171,13 +159,21 @@ public class DatasetGraphTDB extends DatasetGraphCaching
         
         TDBMaker.releaseDataset(this) ;
     }
+    
+    @Override
+    // Empty graphs don't "exist" 
+    public boolean containsGraph(Node graphNode) { return _containsGraph(graphNode) ; }
 
     @Override
     protected boolean _containsGraph(Node graphNode)
     {
-        NodeId graphNodeId = quadTable.getNodeTupleTable().getNodeTable().getNodeIdForNode(graphNode) ;
-        Tuple<NodeId> pattern = Tuple.create(graphNodeId, null, null, null) ;
-        Iterator<Tuple<NodeId>> x = quadTable.getNodeTupleTable().getTupleTable().find(pattern) ;
+        Iterator<Tuple<NodeId>> x = quadTable.getNodeTupleTable().findAsNodeIds(graphNode, null, null, null) ;
+        if ( x == null )
+            return false ; 
+        
+//        NodeId graphNodeId = quadTable.getNodeTupleTable().getNodeTable().getNodeIdForNode(graphNode) ;
+//        Tuple<NodeId> pattern = Tuple.create(graphNodeId, null, null, null) ;
+//        Iterator<Tuple<NodeId>> x = quadTable.getNodeTupleTable().getTupleTable().find(pattern) ;
         boolean result = x.hasNext() ;
         return result ;
     }
@@ -238,7 +234,7 @@ public class DatasetGraphTDB extends DatasetGraphCaching
 
     public Iterator<Node> listGraphNodes()
     {
-        Iterator<Tuple<NodeId>> x = quadTable.getNodeTupleTable().getTupleTable().getIndex(0).all() ;
+        Iterator<Tuple<NodeId>> x = quadTable.getNodeTupleTable().findAll() ;
         Iterator<NodeId> z =  Iter.iter(x).map(project0).distinct() ;
         return NodeLib.nodes(quadTable.getNodeTupleTable().getNodeTable(), z) ;
     }
