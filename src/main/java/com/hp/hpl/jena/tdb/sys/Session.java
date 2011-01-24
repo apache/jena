@@ -13,7 +13,7 @@ package com.hp.hpl.jena.tdb.sys;
  * Most implementations of this interface do not enforce the policy - it
  * is up to the caller to preserve the invariant for the object called.
  * 
- *  An implementation may allow polciies such as transactional (ACID)
+ * An implementation may allow policies such as transactional (ACID)
  * but, unless otherwise documented, an application can not 
  * assume that. 
  */

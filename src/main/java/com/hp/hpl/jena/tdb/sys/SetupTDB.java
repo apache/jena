@@ -246,12 +246,14 @@ public class SetupTDB
                                             indexNode2Id, n2idCacheSize,
                                             indexId2Node, id2nCacheSize) ;
 
+        ConcurrencyPolicy policy = createConcurrencyPolicy() ;
+        
         TripleTable tripleTable = makeTripleTable(location, config, nodeTable, 
-                                                  Names.primaryIndexTriples, Names.tripleIndexes) ;
+                                                  Names.primaryIndexTriples, Names.tripleIndexes, policy) ;
         QuadTable quadTable = makeQuadTable(location, config, nodeTable,
-                                            Names.primaryIndexQuads, Names.quadIndexes) ;
+                                            Names.primaryIndexQuads, Names.quadIndexes, policy) ;
 
-        DatasetPrefixStorage prefixes = makePrefixes(location, config) ;
+        DatasetPrefixStorage prefixes = makePrefixes(location, config, policy) ;
 
         // ---- Create the DatasetGraph object
         DatasetGraphTDB dsg = new DatasetGraphTDB(tripleTable, quadTable, prefixes, chooseOptimizer(location), location, config) ;
@@ -282,7 +284,9 @@ public class SetupTDB
         return dsg ;
     }
 
-    public static TripleTable makeTripleTable(Location location, Properties config, NodeTable nodeTable, String dftPrimary, String[] dftIndexes)
+    protected static ConcurrencyPolicy createConcurrencyPolicy() { return new ConcurrencyPolicyMRSW() ; }
+    
+    public static TripleTable makeTripleTable(Location location, Properties config, NodeTable nodeTable, String dftPrimary, String[] dftIndexes, ConcurrencyPolicy policy)
     {
         MetaFile metafile = location.getMetaFile() ;
         String primary = metafile.getOrSetDefault("tdb.indexes.triples.primary", dftPrimary) ;
@@ -296,12 +300,12 @@ public class SetupTDB
         TupleIndex tripleIndexes[] = makeTupleIndexes(location, config, primary, indexes, indexes) ;
         if ( tripleIndexes.length != indexes.length )
             SetupTDB.error(log, "Wrong number of triple table tuples indexes: "+tripleIndexes.length) ;
-        TripleTable tripleTable = new TripleTable(tripleIndexes, nodeTable) ;
+        TripleTable tripleTable = new TripleTable(tripleIndexes, nodeTable, policy) ;
         metafile.flush() ;
         return tripleTable ;
     }
     
-    public static QuadTable makeQuadTable(Location location, Properties config, NodeTable nodeTable, String dftPrimary, String[] dftIndexes)
+    public static QuadTable makeQuadTable(Location location, Properties config, NodeTable nodeTable, String dftPrimary, String[] dftIndexes, ConcurrencyPolicy policy)
     {
         MetaFile metafile = location.getMetaFile() ; 
         String primary = metafile.getOrSetDefault("tdb.indexes.quads.primary", dftPrimary) ;
@@ -315,13 +319,13 @@ public class SetupTDB
         TupleIndex quadIndexes[] = makeTupleIndexes(location, config, primary, indexes, indexes) ;
         if ( quadIndexes.length != indexes.length )
             SetupTDB.error(log, "Wrong number of quad table tuples indexes: "+quadIndexes.length) ;
-        QuadTable quadTable = new QuadTable(quadIndexes, nodeTable) ;
+        QuadTable quadTable = new QuadTable(quadIndexes, nodeTable, policy) ;
         metafile.flush() ;
         return quadTable ;
     }
 
 
-    public static DatasetPrefixStorage makePrefixes(Location location, Properties config)
+    public static DatasetPrefixStorage makePrefixes(Location location, Properties config, ConcurrencyPolicy policy)
     {
         /*
          * tdb.prefixes.index.file=prefixIdx
@@ -367,7 +371,7 @@ public class SetupTDB
         // No cache - the prefix mapping is a cache
         NodeTable prefixNodes = makeNodeTable(location, pnNode2Id, -1, pnId2Node, -1)  ;
         
-        DatasetPrefixesTDB prefixes = new DatasetPrefixesTDB(prefixIndexes, prefixNodes) ; 
+        DatasetPrefixesTDB prefixes = new DatasetPrefixesTDB(prefixIndexes, prefixNodes, policy) ; 
         
         log.debug("Prefixes: "+x) ;
         

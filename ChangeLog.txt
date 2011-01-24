@@ -3,7 +3,8 @@ ChangeLog for TDB
 
 ==== 0.8.10
 
-+ Print file naes during loading multiple files in tdbloader2.
++ Improved concurrency violation checking.
++ Print file names during loading multiple files in tdbloader2.
 + Increase heap size for data phase in tdbloader2.
 
 ==== 0.8.9

@@ -8,9 +8,7 @@ package com.hp.hpl.jena.tdb.store;
 
 import static com.hp.hpl.jena.sparql.core.Quad.isQuadUnionGraph ;
 
-import java.util.ConcurrentModificationException ;
 import java.util.Iterator ;
-import java.util.NoSuchElementException ;
 
 import org.openjena.atlas.iterator.Iter ;
 import org.slf4j.Logger ;
@@ -39,7 +37,7 @@ import com.hp.hpl.jena.tdb.lib.NodeFmtLib ;
 import com.hp.hpl.jena.tdb.sys.Names ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
-import com.hp.hpl.jena.util.iterator.NiceIterator ;
+import com.hp.hpl.jena.util.iterator.WrappedIterator ;
 
 /** General operations for TDB graphs (free-standing graph, default graph and named graphs) */
 public abstract class GraphTDBBase extends GraphBase2 implements GraphTDB
@@ -50,7 +48,7 @@ public abstract class GraphTDBBase extends GraphBase2 implements GraphTDB
     protected final DatasetGraphTDB dataset ;
     protected final Node graphNode ;
     protected final int syncPoint ;
-    private long epoch = 4 ;                // And reads are always even.
+    //private long epoch = 4 ;                // And reads are always even.
 
     public GraphTDBBase(DatasetGraphTDB dataset, Node graphName)
     { 
@@ -120,7 +118,7 @@ public abstract class GraphTDBBase extends GraphBase2 implements GraphTDB
         }
     }
     
-    // /*static/* - remove when MRSW checkign is stable. 
+    // /*static/* - Not static soley for the epoch testing.  
     protected /*static*/ ExtendedIterator<Triple> graphBaseFindWorker(TripleTable tripleTable, TripleMatch m)
     {
         // See also SolverLib.execute
@@ -130,7 +128,7 @@ public abstract class GraphTDBBase extends GraphBase2 implements GraphTDB
 
         // Look now!
         boolean b = iter.hasNext() ;
-        return new MapperIteratorTriples(iter, this) ;
+        return WrappedIterator.createNoRemove(iter) ;
     }
     
     protected /*static*/ ExtendedIterator<Triple> graphBaseFindWorker(DatasetGraphTDB dataset, Node graphNode, TripleMatch m)
@@ -148,7 +146,7 @@ public abstract class GraphTDBBase extends GraphBase2 implements GraphTDB
         
         if ( gn == Node.ANY )
             iterTriples = Iter.distinct(iterTriples) ;
-        return new MapperIteratorTriples(iterTriples, this) ;
+        return WrappedIterator.createNoRemove(iterTriples) ;
     }
     
     @Override
@@ -165,81 +163,20 @@ public abstract class GraphTDBBase extends GraphBase2 implements GraphTDB
     
 
     //@Override
-    public void finishRead()        {}
+    public void startRead()             { dataset.startRead() ; }
+    //@Override
+    public void finishRead()            { dataset.finishRead() ; }
 
     //@Override
-    public void startRead()         {}
-    
+    public final void startUpdate()     { dataset.startUpdate() ; }
     //@Override
-    public final void startUpdate() { epoch ++ ; }
-    //@Override
-    public final void finishUpdate() { epoch ++ ; }
+    public final void finishUpdate()    { dataset.finishUpdate() ; }
 
     @Override
     protected final int graphBaseSize()
     {
         Iterator<?> iter = countThis() ;
         return (int)Iter.count(iter) ;
-    }
-    
-    // Convert from Iterator<Triple> to ExtendedIterator
-    static class MapperIteratorTriples extends NiceIterator<Triple>
-    {
-        private final Iterator<Triple> iter ;
-        private GraphTDBBase base ;
-        private long epoch ;
-        private boolean finished = false ;
-        
-        MapperIteratorTriples(Iterator<Triple> iter, GraphTDBBase base) 
-        { 
-            this.iter = iter ;
-            this.base = base ;
-            this.epoch = base.epoch ;
-            finished = ! iter.hasNext() ;
-        }
-        
-        private void checkCourrentModification()
-        {
-            if ( finished )
-                return ;
-            
-            long now = base.epoch ;
-            if ( now != epoch )
-                throw new ConcurrentModificationException() ;
-        }
-        
-        @Override public boolean hasNext()
-        { 
-            // Problem - the underlying iterator may have finished.
-            // Solved by .hashNext in next() ;
-            // This is good because many iterators do their the work in .hasNext();
-            checkCourrentModification() ;
-            boolean b = iter.hasNext() ;
-            if ( ! b )
-                finished = true ; 
-            return b ;
-        }
-        
-        @Override public Triple next()
-        { 
-            checkCourrentModification() ;
-            try { 
-                Triple t = iter.next();
-                if ( ! iter.hasNext() )
-                    // Iterator finished.  Note this.
-                    finished = true ;
-                return t ;
-            }
-            catch (NoSuchElementException ex) { finished = true ; throw ex ; }
-        }
-        
-        @Override public void remove()     
-        //{ throw new UnsupportedOperationException() ; }
-        {
-            checkCourrentModification() ; 
-            iter.remove() ;
-            epoch = base.epoch ;
-        }
     }
     
     // Convert from Iterator<Quad> to Iterator<Triple>

@@ -6,21 +6,21 @@
 
 package com.hp.hpl.jena.tdb.graph;
 
-import java.util.Map;
+import java.util.Map ;
 
-import org.junit.Test;
+import org.junit.Test ;
 import org.openjena.atlas.lib.FileOps ;
 
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.shared.PrefixMapping;
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.shared.PrefixMapping ;
 import com.hp.hpl.jena.sparql.graph.AbstractTestPrefixMapping2 ;
-
-import com.hp.hpl.jena.tdb.ConfigTest;
-import com.hp.hpl.jena.tdb.TDB;
-import com.hp.hpl.jena.tdb.TDBFactory;
-import com.hp.hpl.jena.tdb.base.file.Location;
-import com.hp.hpl.jena.tdb.store.DatasetPrefixesTDB;
-import com.hp.hpl.jena.tdb.sys.SystemTDB;
+import com.hp.hpl.jena.tdb.ConfigTest ;
+import com.hp.hpl.jena.tdb.TDB ;
+import com.hp.hpl.jena.tdb.TDBFactory ;
+import com.hp.hpl.jena.tdb.base.file.Location ;
+import com.hp.hpl.jena.tdb.store.DatasetPrefixesTDB ;
+import com.hp.hpl.jena.tdb.sys.ConcurrencyPolicyMRSW ;
+import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 public class TestPrefixMappingTDB extends AbstractTestPrefixMapping2
 {
@@ -66,7 +66,7 @@ public class TestPrefixMappingTDB extends AbstractTestPrefixMapping2
         String dir = ConfigTest.getTestingDir() ;
         FileOps.clearDirectory(dir) ;
         
-        DatasetPrefixesTDB prefixes = DatasetPrefixesTDB.create(new Location(dir)) ;
+        DatasetPrefixesTDB prefixes = DatasetPrefixesTDB.create(new Location(dir), new ConcurrencyPolicyMRSW()) ;
         PrefixMapping pmap1 = prefixes.getPrefixMapping() ;
         
         String x = pmap1.getNsPrefixURI("x") ;
@@ -81,13 +81,13 @@ public class TestPrefixMappingTDB extends AbstractTestPrefixMapping2
         String dir = ConfigTest.getTestingDir() ;
         FileOps.clearDirectory(dir) ;
         
-        DatasetPrefixesTDB prefixes = DatasetPrefixesTDB.create(new Location(dir)) ;
+        DatasetPrefixesTDB prefixes = DatasetPrefixesTDB.create(new Location(dir), new ConcurrencyPolicyMRSW()) ;
         PrefixMapping pmap1 = prefixes.getPrefixMapping() ;
         
         pmap1.setNsPrefix("x", "http://foo/") ;
         prefixes.close() ;
         
-        prefixes = DatasetPrefixesTDB.create(new Location(dir)) ;
+        prefixes = DatasetPrefixesTDB.create(new Location(dir), new ConcurrencyPolicyMRSW()) ;
         assertEquals("http://foo/", pmap1.getNsPrefixURI("x")) ;
         prefixes.close();
     }

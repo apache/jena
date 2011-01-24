@@ -2,6 +2,9 @@ package dev ;
 
 public class DevTDB
 {
+    // Finish and intergate new Dataset builder.
+    //  Todo init().
+    
     // BPT concurrency checks.
     
     // ** CHECK bnode ids without leading zeros in Jena?

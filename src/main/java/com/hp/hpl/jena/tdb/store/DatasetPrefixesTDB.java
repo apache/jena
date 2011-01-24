@@ -30,6 +30,8 @@ import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTableFactory ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTupleTableConcrete ;
+import com.hp.hpl.jena.tdb.sys.ConcurrencyPolicy ;
+import com.hp.hpl.jena.tdb.sys.ConcurrencyPolicyMRSW ;
 import com.hp.hpl.jena.tdb.sys.Names ;
 
 public class DatasetPrefixesTDB implements DatasetPrefixStorage
@@ -47,14 +49,14 @@ public class DatasetPrefixesTDB implements DatasetPrefixStorage
 
     
     @Deprecated
-    public static DatasetPrefixesTDB create(Location location) { return create(IndexBuilder.get(), location) ; }
+    public static DatasetPrefixesTDB create(Location location, ConcurrencyPolicy policy) { return create(IndexBuilder.get(), location, policy) ; }
     
     @Deprecated
-    public static DatasetPrefixesTDB create(IndexBuilder indexBuilder, Location location)
-    { return new DatasetPrefixesTDB(indexBuilder, location) ; }
+    public static DatasetPrefixesTDB create(IndexBuilder indexBuilder, Location location, ConcurrencyPolicy policy)
+    { return new DatasetPrefixesTDB(indexBuilder, location, policy) ; }
 
     @Deprecated
-    private DatasetPrefixesTDB(IndexBuilder indexBuilder, Location location)
+    private DatasetPrefixesTDB(IndexBuilder indexBuilder, Location location, ConcurrencyPolicy policy)
     {
         // TO BE REMOVED when DI sorted out.
         // This is a table "G" "P" "U" (Graph, Prefix, URI), indexed on GPU only.
@@ -76,19 +78,19 @@ public class DatasetPrefixesTDB implements DatasetPrefixStorage
             filesetNodeTable = new FileSet(location, Names.prefixId2Node) ;
         
         NodeTable nodes = NodeTableFactory.create(indexBuilder, filesetNodeTable, filesetNodeTableIdx, -1, -1) ;
-        nodeTupleTable = new NodeTupleTableConcrete(3, indexes, nodes) ;
+        nodeTupleTable = new NodeTupleTableConcrete(3, indexes, nodes, policy) ;
     }
 
     //---- DI version
     
-    public DatasetPrefixesTDB(TupleIndex[] indexes, NodeTable nodes)
+    public DatasetPrefixesTDB(TupleIndex[] indexes, NodeTable nodes, ConcurrencyPolicy policy)
     {
-        this.nodeTupleTable = new NodeTupleTableConcrete(3, indexes, nodes) ;
+        this.nodeTupleTable = new NodeTupleTableConcrete(3, indexes, nodes, policy) ;
     }
     
     private DatasetPrefixesTDB()
     {
-        this(IndexBuilder.mem(), Location.mem()) ;
+        this(IndexBuilder.mem(), Location.mem(), new ConcurrencyPolicyMRSW()) ;
     }
     
     /** Testing - dataset prefixes in-memory */

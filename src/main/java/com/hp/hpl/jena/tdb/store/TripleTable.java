@@ -22,6 +22,7 @@ import com.hp.hpl.jena.tdb.lib.TupleLib ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTupleTableConcrete ;
+import com.hp.hpl.jena.tdb.sys.ConcurrencyPolicy ;
 
 
 /** TripleTable - a collection of TupleIndexes for 3-tuples
@@ -35,9 +36,10 @@ public class TripleTable implements Sync, Closeable
 {
     final NodeTupleTable table ;
     
-    public TripleTable(TupleIndex[] indexes, NodeTable nodeTable)
+    public TripleTable(TupleIndex[] indexes, NodeTable nodeTable, ConcurrencyPolicy policy)
     {
-        table = new NodeTupleTableConcrete(3, indexes, nodeTable) ;
+        table = new NodeTupleTableConcrete(3, indexes, nodeTable, policy) ;
+        
     }
     
     public boolean add( Triple triple ) 

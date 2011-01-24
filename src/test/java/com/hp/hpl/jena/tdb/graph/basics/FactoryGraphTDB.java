@@ -36,6 +36,8 @@ import com.hp.hpl.jena.tdb.store.DatasetPrefixesTDB ;
 import com.hp.hpl.jena.tdb.store.GraphTriplesTDB ;
 import com.hp.hpl.jena.tdb.store.QuadTable ;
 import com.hp.hpl.jena.tdb.store.TripleTable ;
+import com.hp.hpl.jena.tdb.sys.ConcurrencyPolicy ;
+import com.hp.hpl.jena.tdb.sys.ConcurrencyPolicyMRSW ;
 import com.hp.hpl.jena.tdb.sys.Names ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
@@ -124,31 +126,31 @@ class FactoryGraphTDB
         return indexes ;
     }
     
-    private static TripleTable createTripleTableMem()
+    private static TripleTable createTripleTableMem(ConcurrencyPolicy policy)
     {
         NodeTable nodeTable = NodeTableFactory.createMem(IndexBuilder.mem()) ;
-        return createTripleTable(IndexBuilder.mem(), nodeTable, Location.mem(), tripleIndexes) ;
+        return createTripleTable(IndexBuilder.mem(), nodeTable, Location.mem(), tripleIndexes, policy) ;
     }
 
     /** Public for testing only : create a triple table.*/
-    private static TripleTable createTripleTable(IndexBuilder indexBuilder, NodeTable nodeTable, Location location, String...descs)
+    private static TripleTable createTripleTable(IndexBuilder indexBuilder, NodeTable nodeTable, Location location, String[]descs, ConcurrencyPolicy policy)
     {
         TupleIndex indexes[] = indexes(indexBuilder, indexRecordTripleFactory, location, primaryIndexTriples, descs) ;
-        return new TripleTable(indexes, nodeTable) ;
+        return new TripleTable(indexes, nodeTable, policy) ;
     }
 
-    private static QuadTable createQuadTableMem()
+    private static QuadTable createQuadTableMem(ConcurrencyPolicy policy)
     {
         NodeTable nodeTable = NodeTableFactory.createMem(IndexBuilder.mem()) ;
-        return createQuadTable(IndexBuilder.mem(), nodeTable, null, tripleIndexes) ;
+        return createQuadTable(IndexBuilder.mem(), nodeTable, null, tripleIndexes, policy) ;
     }
     
     /** Public for testing only : create a quad table.*/
     private static QuadTable createQuadTable(IndexBuilder indexBuilder, NodeTable nodeTable,
-                                             Location location, String...descs)
+                                             Location location, String[]descs, ConcurrencyPolicy policy)
     {
         TupleIndex indexes[] = indexes(indexBuilder, indexRecordQuadFactory, location, primaryIndexQuads, descs) ;
-        return new QuadTable(indexes, nodeTable) ;
+        return new QuadTable(indexes, nodeTable, policy) ;
     }
     
     // ---- All creation happens here
@@ -156,12 +158,13 @@ class FactoryGraphTDB
     /** Create or connect a TDB dataset (graph-level) */
     private static DatasetGraphTDB _createDatasetGraph(IndexBuilder indexBuilder, Location location, String[] graphIndexDesc, String[] quadIndexDesc)
     {
+        ConcurrencyPolicy policy = new ConcurrencyPolicyMRSW() ;
         @SuppressWarnings("deprecation")
         NodeTable nodeTable = NodeTableFactory.create(indexBuilder, location) ;
-        TripleTable triples = createTripleTable(indexBuilder, nodeTable, location, graphIndexDesc) ;
-        QuadTable quads = createQuadTable(indexBuilder, nodeTable, location, quadIndexDesc) ;
+        TripleTable triples = createTripleTable(indexBuilder, nodeTable, location, graphIndexDesc, policy) ;
+        QuadTable quads = createQuadTable(indexBuilder, nodeTable, location, quadIndexDesc, policy) ;
         @SuppressWarnings("deprecation")
-        DatasetPrefixesTDB prefixes = DatasetPrefixesTDB.create(indexBuilder, location) ;
+        DatasetPrefixesTDB prefixes = DatasetPrefixesTDB.create(indexBuilder, location, policy) ;
         return new DatasetGraphTDB(triples, quads, prefixes, chooseOptimizer(location), location, null) ;
     }
 

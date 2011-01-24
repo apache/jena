@@ -29,12 +29,13 @@ import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.engine.optimizer.reorder.ReorderTransformation ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.lib.NodeLib ;
+import com.hp.hpl.jena.tdb.sys.Session ;
 import com.hp.hpl.jena.tdb.sys.TDBMaker ;
 import com.hp.hpl.jena.update.GraphStore ;
 
 /** TDB Dataset, updateable with SPARQL/Update */
 public class DatasetGraphTDB extends DatasetGraphCaching
-                             implements DatasetGraph, Sync, Closeable, GraphStore
+                             implements DatasetGraph, Sync, Closeable, GraphStore, Session
 {
     // or DatasetGraphCaching
     private TripleTable tripleTable ;
@@ -292,6 +293,18 @@ public class DatasetGraphTDB extends DatasetGraphCaching
     { 
         throw new UnsupportedOperationException("Can't set default graph via GraphStore on a TDB-backed dataset") ;
     }
+
+    public void startUpdate()
+    {}
+
+    public void finishUpdate()
+    {}
+
+    public void startRead()
+    {}
+
+    public void finishRead()
+    {}
 }
 
 /*

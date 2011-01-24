@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2009 Talis Systems Ltd.
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -7,6 +8,7 @@
 package com.hp.hpl.jena.tdb.store;
 
 import java.util.ConcurrentModificationException ;
+import java.util.Iterator ;
 
 import org.junit.Test ;
 import org.openjena.atlas.junit.BaseTest ;
@@ -19,6 +21,8 @@ import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.RDFNode ;
 import com.hp.hpl.jena.rdf.model.Resource ;
 import com.hp.hpl.jena.rdf.model.Statement ;
+import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.sse.Item ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.sparql.sse.builders.BuilderGraph ;
@@ -60,7 +64,7 @@ public class TestConcurrentAccess extends BaseTest
         return ds ;
     }
     
-    @Test public void mrsw1()
+    @Test public void mrswGraph1()
     {
         Model m = create().getDefaultModel() ;
         Resource r = m.createResource("x") ;
@@ -76,7 +80,7 @@ public class TestConcurrentAccess extends BaseTest
     }
     
     @Test(expected=ConcurrentModificationException.class)
-    public void mrsw2()
+    public void mrswGraph2()
     {
         Model m = create().getDefaultModel() ;
         Resource r = m.createResource("x") ;
@@ -91,7 +95,7 @@ public class TestConcurrentAccess extends BaseTest
     }
     
     @Test(expected=ConcurrentModificationException.class)
-    public void mrsw3()
+    public void mrswGraph3()
     {
         Model m = create().getDefaultModel() ;
         Resource r = m.createResource("x") ;
@@ -105,8 +109,8 @@ public class TestConcurrentAccess extends BaseTest
         iter1.hasNext();
     }
 
-    @Test
-    public void mrsw4()
+    @Test(expected=ConcurrentModificationException.class)
+    public void mrswGraph4()
     {
         Model m = create().getDefaultModel() ;
         Resource r = m.createResource("x") ;
@@ -117,13 +121,12 @@ public class TestConcurrentAccess extends BaseTest
         Triple t = SSE.parseTriple("(<y> <p> 99)") ;
         m.getGraph().add(t) ;
         
-        // Good
+        // Bad - modification of the dataset occurred.
         iter1.hasNext();
     }
     
-    
     @Test
-    public void mrsw5()
+    public void mrswGraph5()
     {
         Dataset d = TDBFactory.createDataset() ;
         Model m = d.getNamedModel("http://example") ;
@@ -138,7 +141,7 @@ public class TestConcurrentAccess extends BaseTest
     }
 
     @Test(expected=ConcurrentModificationException.class)
-    public void mrsw6()
+    public void mrswGraph6()
     {
         Dataset d = TDBFactory.createDataset() ;
         Model m = d.getNamedModel("http://example") ;
@@ -150,14 +153,26 @@ public class TestConcurrentAccess extends BaseTest
         Triple t = SSE.parseTriple("(<y> <p> 99)") ;
         m.getGraph().delete(t) ;
         iter1.next() ;
-        
     }
-
     
+    @Test(expected=ConcurrentModificationException.class)
+    public void mrswDataset1()
+    {
+        DatasetGraph dsg = create().asDatasetGraph() ;
+        Quad quad = SSE.parseQuad("(<g> <y> <p> 99)") ;
+        Iterator<Quad> iter = dsg.find() ;
+        dsg.add(quad) ;
+        // Bad - after an update.
+        iter.hasNext() ;
+        iter.next() ;
+    }
+   
+    // More DSG tests ..
 }
 
 /*
  * (c) Copyright 2009 Talis Systems Ltd.
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

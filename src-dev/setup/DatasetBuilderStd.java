@@ -43,6 +43,8 @@ import com.hp.hpl.jena.tdb.store.DatasetPrefixesTDB ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
 import com.hp.hpl.jena.tdb.store.QuadTable ;
 import com.hp.hpl.jena.tdb.store.TripleTable ;
+import com.hp.hpl.jena.tdb.sys.ConcurrencyPolicy ;
+import com.hp.hpl.jena.tdb.sys.ConcurrencyPolicyMRSW ;
 import com.hp.hpl.jena.tdb.sys.Names ;
 import com.hp.hpl.jena.tdb.sys.SetupTDB ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
@@ -129,17 +131,21 @@ public class DatasetBuilderStd implements DatasetBuilder
         this.config = config ;
         init(location) ;
         
+        ConcurrencyPolicy policy = createConcurrencyPolicy() ;
+        
         NodeTable nodeTable = makeNodeTable(location, 
                                             Names.indexNode2Id, Names.indexId2Node,
                                             SystemTDB.Node2NodeIdCacheSize, SystemTDB.NodeId2NodeCacheSize) ;
         
-        TripleTable tripleTable = makeTripleTable(location, nodeTable) ; 
-        QuadTable quadTable = makeQuadTable(location, nodeTable) ;
-        DatasetPrefixStorage prefixes = makePrefixTable(location) ;
+        TripleTable tripleTable = makeTripleTable(location, nodeTable, policy) ; 
+        QuadTable quadTable = makeQuadTable(location, nodeTable, policy) ;
+        DatasetPrefixStorage prefixes = makePrefixTable(location, policy) ;
         ReorderTransformation transform  = chooseReorderTransformation(location) ;
         DatasetGraphTDB dsg = new DatasetGraphTDB(tripleTable, quadTable, prefixes, transform, location, config) ;
         return dsg ;
     }
+    
+    protected ConcurrencyPolicy createConcurrencyPolicy() { return new ConcurrencyPolicyMRSW() ; }
     
     protected void init(Location location)
     {
@@ -147,7 +153,7 @@ public class DatasetBuilderStd implements DatasetBuilder
     }
     
     // ======== Dataset level
-    protected TripleTable makeTripleTable(Location location, NodeTable nodeTable)
+    protected TripleTable makeTripleTable(Location location, NodeTable nodeTable, ConcurrencyPolicy policy)
     {    
         MetaFile metafile = location.getMetaFile() ;
         String dftPrimary = Names.primaryIndexTriples ;
@@ -165,12 +171,12 @@ public class DatasetBuilderStd implements DatasetBuilder
         
         if ( tripleIndexes.length != indexes.length )
             error(log, "Wrong number of triple table tuples indexes: "+tripleIndexes.length) ;
-        TripleTable tripleTable = new TripleTable(tripleIndexes, nodeTable) ;
+        TripleTable tripleTable = new TripleTable(tripleIndexes, nodeTable, policy) ;
         metafile.flush() ;
         return tripleTable ;
     }
     
-    protected QuadTable makeQuadTable(Location location, NodeTable nodeTable)
+    protected QuadTable makeQuadTable(Location location, NodeTable nodeTable, ConcurrencyPolicy policy)
     {    
         MetaFile metafile = location.getMetaFile() ;
         String dftPrimary = Names.primaryIndexQuads ;
@@ -188,12 +194,12 @@ public class DatasetBuilderStd implements DatasetBuilder
         TupleIndex quadIndexes[] = makeTupleIndexes(location, primary, indexes) ;
         if ( quadIndexes.length != indexes.length )
             error(log, "Wrong number of quad table tuples indexes: "+quadIndexes.length) ;
-        QuadTable quadTable = new QuadTable(quadIndexes, nodeTable) ;
+        QuadTable quadTable = new QuadTable(quadIndexes, nodeTable, policy) ;
         metafile.flush() ;
         return quadTable ;
     }
 
-    protected DatasetPrefixStorage makePrefixTable(Location location)
+    protected DatasetPrefixStorage makePrefixTable(Location location, ConcurrencyPolicy policy)
     {    
         /*
          * tdb.prefixes.index.file=prefixIdx
@@ -241,7 +247,7 @@ public class DatasetBuilderStd implements DatasetBuilder
         // No cache - the prefix mapping is a cache
         NodeTable prefixNodes = makeNodeTable(location, pnNode2Id, pnId2Node, -1, -1)  ;
         
-        DatasetPrefixesTDB prefixes = new DatasetPrefixesTDB(prefixIndexes, prefixNodes) ; 
+        DatasetPrefixesTDB prefixes = new DatasetPrefixesTDB(prefixIndexes, prefixNodes, policy) ; 
         
         log.debug("Prefixes: "+x) ;
         
@@ -257,13 +263,13 @@ public class DatasetBuilderStd implements DatasetBuilder
     // ======== Components level
     
     // This is not actually used in main dataset builder because it's done inside TripleTable/QuadTable.
-    protected NodeTupleTable makeNodeTupleTable(Location location, String primary, String[] indexes, NodeTable nodeTable)
+    protected NodeTupleTable makeNodeTupleTable(Location location, String primary, String[] indexes, NodeTable nodeTable, ConcurrencyPolicy policy)
     {    
         int N = indexes.length ;
         TupleIndex tripleIndexes[] = makeTupleIndexes(location, primary, indexes) ;
         if ( tripleIndexes.length != indexes.length )
             error(log, "Wrong number of node table tuples indexes: expected="+N+" : actual="+tripleIndexes.length) ;
-        NodeTupleTable ntt = new NodeTupleTableConcrete(N, tripleIndexes, nodeTable) ;
+        NodeTupleTable ntt = new NodeTupleTableConcrete(N, tripleIndexes, nodeTable, policy) ;
         return ntt ;
     }
     
