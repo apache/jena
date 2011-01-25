@@ -43,7 +43,7 @@
     <p><b>SPARQL Update</b></p>
     <div class="moreindent">
       <form action="<%= ds %>/update" method="post">
-        <textarea style="background-color: #F0F0F0;" name="request" cols="70" rows="10"></textarea>
+        <textarea style="background-color: #F0F0F0;" name="update" cols="70" rows="10"></textarea>
 	    <br/>
         <input type="submit" value="Perform update" />
       </form>

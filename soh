@@ -526,7 +526,7 @@ def SPARQL_update_by_form(service, update, args2={})
   headers={}
   headers.merge!($headers)
   # args? encode?
-  body="request="+update
+  body="update="+uri_escape(update)
   headers[$hContentType] = $mtWWWForm
   headers[$hContentLength] = body.length.to_s
   uri = URI.parse(service)
@@ -586,7 +586,7 @@ def cmd_sparql_update(by_raw_post=true)
     warn e
     exit
   end
-  
+
   $verbose = options[:verbose]
   $print_http = $verbose
 
@@ -598,7 +598,7 @@ def cmd_sparql_update(by_raw_post=true)
 
   if update_file.nil? && ARGV.size == 0
   then
-    warn_exit 'No update specified.',1 if service.nil?
+    warn_exit 'No update specified.',1
     end
   if update_file.nil?
     update = ARGV.shift
