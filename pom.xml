@@ -285,7 +285,7 @@
 	  </descriptors>
 	  <!-- 
 	    This works as well, but generates a "NOTE" message
-	  <finalName>fuseki-${project.version}-server</finalName>
+	  <finalName>fuseki-sys</finalName>
 	  <descriptorRefs>
 	    <descriptorRef>jar-with-dependencies</descriptorRef>
 	  </descriptorRefs>

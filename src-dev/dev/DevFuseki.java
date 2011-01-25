@@ -8,7 +8,8 @@ public class DevFuseki
     // Include a data file in the distribution.
     // curl as commandline
     
-    // Access the bulk loader via web.
+    // Dataset servers - bulk loader.
+    // Access the bulk loader via web. [later]
     
     // Errors that occur and what they mean:
     

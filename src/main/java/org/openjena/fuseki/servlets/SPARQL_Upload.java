@@ -149,7 +149,7 @@ public class SPARQL_Upload extends SPARQL_ServletBase
                     lang = FusekiLib.langFromContentType(ct.contentType) ;
                     if ( lang == null )
                         lang = Lang.guess(name) ;
-                    String base = null ;
+                    String base = "http://example/upload-base/" ;
 
                     // We read into a in-memory graph, then (if successful) update the dataset.
                     Sink<Triple> sink = new SinkTriplesToGraph(graphTmp) ;

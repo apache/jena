@@ -16,9 +16,9 @@ Assumes jar made and onejar has been assembled.
 
   <files>
     <file>
-      <source>${project.build.directory}/${this.root}-server.jar</source>
+      <source>${project.build.directory}/${this.root}-sys.jar</source>
       <outputDirectory></outputDirectory>
-      <destName>fuseki-server.jar</destName>
+      <destName>fuseki-sys.jar</destName>
     </file>
   </files>
 
