@@ -17,6 +17,11 @@ import org.openjena.atlas.lib.StrUtils ;
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.query.Dataset ;
+import com.hp.hpl.jena.query.Query ;
+import com.hp.hpl.jena.query.QueryExecution ;
+import com.hp.hpl.jena.query.QueryExecutionFactory ;
+import com.hp.hpl.jena.query.QueryFactory ;
+import com.hp.hpl.jena.query.ResultSet ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.RDFNode ;
 import com.hp.hpl.jena.rdf.model.Resource ;
@@ -155,6 +160,43 @@ public class TestConcurrentAccess extends BaseTest
         iter1.next() ;
     }
     
+    @Test
+    public void mrswSPARQL1()
+    {
+        Dataset ds = create(); 
+        Query query = QueryFactory.create("SELECT * { ?s ?p ?o}") ;
+        QueryExecution qExec = QueryExecutionFactory.create(query, ds) ;
+        ResultSet rs = qExec.execSelect() ;
+        while(rs.hasNext()) 
+            rs.next();
+        qExec.close() ;
+        
+        DatasetGraph dsg = ds.asDatasetGraph() ;
+        Quad quad = SSE.parseQuad("(<g> <y> <p> 99)") ;
+        dsg.add(quad) ;
+        
+        Iterator<Quad> iter = dsg.find() ;
+        iter.hasNext() ;
+        iter.next() ;
+    }
+    
+    @Test(expected=ConcurrentModificationException.class)
+    public void mrswSPARQL2()
+    {
+        Dataset ds = create(); 
+        DatasetGraph dsg = ds.asDatasetGraph() ;
+        Query query = QueryFactory.create("SELECT * { ?s ?p ?o}") ;
+        QueryExecution qExec = QueryExecutionFactory.create(query, ds) ;
+        ResultSet rs = qExec.execSelect() ;
+        rs.hasNext() ; 
+        rs.next();
+        Quad quad = SSE.parseQuad("(<g> <y> <p> 99)") ;
+        dsg.add(quad) ;
+        rs.hasNext() ;  // <<--- Here.
+        rs.next();
+    }
+
+    
     @Test(expected=ConcurrentModificationException.class)
     public void mrswDataset1()
     {
@@ -166,6 +208,8 @@ public class TestConcurrentAccess extends BaseTest
         iter.hasNext() ;
         iter.next() ;
     }
+    
+    
    
     // More DSG tests ..
 }

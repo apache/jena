@@ -15,6 +15,8 @@ public class LongTermIssues
      * Found during 0.8.8 development.
      * Left to maximise compatibility.
      * Fix when a format change occurs. 
+     * 
+     * (related: check that leaf data blocks are filled to completion). 
      */
     
     /*

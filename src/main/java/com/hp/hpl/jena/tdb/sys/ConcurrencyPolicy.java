@@ -15,6 +15,8 @@ import java.util.Iterator ;
  */
 public interface ConcurrencyPolicy extends Session
 {
+    /* also guaranted that there is a finishX for every startX */ 
+    
     public <T> Iterator<T> checkedIterator(Iterator<T> iter) ;
 }
 

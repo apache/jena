@@ -64,9 +64,9 @@ public class NodeTupleTableConcrete implements NodeTupleTable
 
     public boolean addRow(Node... nodes)
     {
-        startWrite() ;
         try
         {
+            startWrite() ;
             NodeId n[] = new NodeId[nodes.length] ;
             for (int i = 0; i < nodes.length; i++)
                 n[i] = nodeTable.getAllocateNodeId(nodes[i]) ;
@@ -89,9 +89,9 @@ public class NodeTupleTableConcrete implements NodeTupleTable
 
     public boolean deleteRow(Node... nodes)
     {
-        startWrite() ;
         try
         {
+            startWrite() ;
             NodeId n[] = new NodeId[nodes.length] ;
             for (int i = 0; i < nodes.length; i++)
             {
@@ -111,8 +111,8 @@ public class NodeTupleTableConcrete implements NodeTupleTable
     /** Find by node. */
     public Iterator<Tuple<Node>> find(Node... nodes)
     {
-        startRead() ;
         try {
+            startRead() ;
             Iterator<Tuple<NodeId>> iter1 = findAsNodeIds(nodes) ; // **public call
             if (iter1 == null) return new NullIterator<Tuple<Node>>() ;
             Iterator<Tuple<Node>> iter2 = TupleLib.convertToNodes(nodeTable, iter1) ;
@@ -128,8 +128,8 @@ public class NodeTupleTableConcrete implements NodeTupleTable
     public Iterator<Tuple<NodeId>> findAsNodeIds(Node... nodes)
     {
         NodeId n[] = new NodeId[nodes.length] ;
-        startRead() ;
         try {
+            startRead() ;
             for (int i = 0; i < nodes.length; i++)
             {
                 NodeId id = idForNode(nodes[i]) ;
@@ -153,8 +153,8 @@ public class NodeTupleTableConcrete implements NodeTupleTable
     /** Find by NodeId. */
     public Iterator<Tuple<NodeId>> find(Tuple<NodeId> tuple)
     {
-        startRead() ;
         try {
+            startRead() ;
             // find worker - need also protect iterators that access the node table.
             Iterator<Tuple<NodeId>> iter = tupleTable.find(tuple) ;
             return checkIterator(iter) ;
@@ -163,8 +163,8 @@ public class NodeTupleTableConcrete implements NodeTupleTable
 
     public Iterator<Tuple<NodeId>> findAll()
     {
-        startRead() ;
         try {
+            startRead() ;
             return checkIterator(tupleTable.getIndex(0).all()) ;
         } finally { finishRead() ; }
     }
@@ -203,9 +203,14 @@ public class NodeTupleTableConcrete implements NodeTupleTable
     /** Clear the tuple table - does not clear the node table */
     public void clear()
     {
-        startWrite() ;
-        try { tupleTable.clear() ; }
-        finally { finishWrite() ; }
+        try
+        {
+            startWrite() ;
+            tupleTable.clear() ;
+        } finally
+        {
+            finishWrite() ;
+        }
     }
 
     public long size()
@@ -216,9 +221,9 @@ public class NodeTupleTableConcrete implements NodeTupleTable
     // @Override
     public final void close()
     {
-        startWrite() ;
         try
         {
+            startWrite() ;
             tupleTable.close() ;
             nodeTable.close() ;
         } 
@@ -234,8 +239,8 @@ public class NodeTupleTableConcrete implements NodeTupleTable
     // @Override
     public final void sync(boolean force)
     {
-        startWrite() ;
         try {
+            startWrite() ;
             tupleTable.sync(force) ;
             nodeTable.sync(force) ;
         } finally { finishWrite() ; }
