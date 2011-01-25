@@ -14,16 +14,15 @@ Assumes jar made and onejar has been assembled.
 
   <baseDirectory>${project.name}-${project.version}</baseDirectory>
 
-  <fileSets>
-    <fileSet>
-      <!-- Pull up to top level directory -->
+  <files>
+    <file>
+      <source>${project.build.directory}/${this.root}-server.jar</source>
       <outputDirectory></outputDirectory>
-      <directory>${project.build.directory}</directory>
-      <includes>
-	<include>fuseki-*-server.jar</include>
-	<!-- <include>fuseki-*-SOH.zip</include> -->
-      </includes>
-    </fileSet>
+      <destName>fuseki-server.jar</destName>
+    </file>
+  </files>
+
+  <fileSets>
     <fileSet>
       <outputDirectory></outputDirectory>
       <includes>

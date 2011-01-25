@@ -6,7 +6,7 @@
   <artifactId>fuseki</artifactId>
   <packaging>jar</packaging>
   <name>Fuseki</name>
-  <version>0.1.0</version>
+  <version>0.2.0-SNAPSHOT</version>
   <description/>
   <url>http://openjena.org/</url>
 

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-JAR1="fuseki-*-server.jar"
+JAR1="fuseki-server.jar"
 JAR2="target/fuseki-*-server.jar"
 JAR=""
 
