@@ -3,4 +3,3 @@
 curl -d 'BASE <http://example/> INSERT DATA { <s> <p> <o> }' \
  -H Content-type:application/sparql-update \
   http://localhost:3030/dataset/update
-
