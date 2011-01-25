@@ -4,6 +4,7 @@ public class DevTDB
 {
     // Finish and intergate new Dataset builder.
     //  Todo init().
+    // SolverLib - convert Nodes to NodeIds once, as BGP compiled.
     
     // BPT concurrency checks.
     
