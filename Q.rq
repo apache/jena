@@ -2,5 +2,6 @@ PREFIX : <http://example/>
 
 SELECT *
 {
-   ?x :p [] .
+ :a :q* ?X 
+# :a :p ?v .?v :p ?X 
 }
