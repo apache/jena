@@ -2,26 +2,13 @@ package dev ;
 
 public class DevTDB
 {
-    // Finish and intergate new Dataset builder.
+    // Finish, intregate, switch to new Dataset builder.
     //  Todo init().
     // SolverLib - convert Nodes to NodeIds once, as BGP compiled.
     
-    // BPT concurrency checks.
-    
-    // ** CHECK bnode ids without leading zeros in Jena?
-    
-    // Are leaf blocks being properly packed?
-    // BPlusTreeParams is wrong?
-    
     // Loader -> warning on bad literals?
     //  Check?  Test cases.
-    
-/*
-    fuseki.bat
-    Fuseki: file upload: set a base URI :-(
-    Documentation review
-      SOH -> separate out (windows?)
-      */
+    // --base=
     
     // Include some data in distribution.
     
