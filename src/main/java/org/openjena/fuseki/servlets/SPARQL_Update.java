@@ -8,6 +8,7 @@ package org.openjena.fuseki.servlets;
 
 import static java.lang.String.format ;
 import static org.openjena.fuseki.Fuseki.serverlog ;
+import static org.openjena.fuseki.HttpNames.paramUpdate ;
 import static org.openjena.fuseki.HttpNames.paramRequest ;
 
 import java.io.IOException ;
@@ -126,16 +127,18 @@ public class SPARQL_Update extends SPARQL_ServletBase
         
         if ( WebContent.contentTypeForm.equals(incoming) )
         {
-            String requestStr = request.getParameter(paramRequest) ;
+            String requestStr = request.getParameter(paramUpdate) ;
             if ( requestStr == null )
-                errorBadRequest("SPARQL Update: No request= in HTML form") ;
+                requestStr = request.getParameter(paramRequest) ;
+            if ( requestStr == null )
+                errorBadRequest("SPARQL Update: No update= in HTML form") ;
             @SuppressWarnings("unchecked")
             Enumeration<String> en = request.getParameterNames() ;
             for ( ; en.hasMoreElements() ; )
             {
                 String name = en.nextElement() ;
-                if ( !name.equals(paramRequest) )
-                    errorBadRequest("SPARQL Update: Unrecognize request parameter: "+name) ;
+                if ( !name.equals(paramRequest) && !name.equals(paramUpdate) )
+                    errorBadRequest("SPARQL Update: Unrecognized update request parameter: "+name) ;
             }
             
             return ;
@@ -174,7 +177,10 @@ public class SPARQL_Update extends SPARQL_ServletBase
 
     private void executeForm(HttpActionUpdate action)
     {
-        String requestStr = action.request.getParameter(paramRequest) ;
+        String requestStr = action.request.getParameter(paramUpdate) ;
+        if ( requestStr == null )
+            requestStr = action.request.getParameter(paramRequest) ;
+        
         if ( action.verbose )
             serverlog.info(format("[%d] Form update = %s", action.id, formatForLog(requestStr))) ;
         

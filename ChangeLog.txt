@@ -2,8 +2,11 @@
 
 == Version 1.0
 
-Err - everything.
 
+
+== 0.2.0
++ Form parameter name for SPARQL Update sent by HTML form changed from request= to update=
+  Likely direction of SPARQL-WG.
 
 == 0.1.0
 First release.

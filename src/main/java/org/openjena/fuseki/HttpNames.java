@@ -43,8 +43,10 @@ public class HttpNames
     public static final String paramOutput1         = "output" ;        // See Yahoo! developer: http://developer.yahoo.net/common/json.html 
     public static final String paramOutput2         = "format" ;        // Alternative name 
     public static final String paramCallback        = "callback" ;
-    public static final String paramForceAccept     = "force-accept" ;  // Force the accept header at the last moment 
-    public static final String paramRequest         = "request" ; 
+    public static final String paramForceAccept     = "force-accept" ;  // Force the accept header at the last moment
+    
+    public static final String paramUpdate          = "update" ;
+    public static final String paramRequest         = "request" ;       // Alternative name. 
     
     
     public static final String METHOD_DELETE        = "DELETE";
