@@ -6,7 +6,8 @@ public class DevARQ
     // -- Loading RDF/XML -- URI checking.
     // Check tokenizing speed.
     // The Node cache makes difference (~2% better).  Can we do better, locally?
-    // Prepare for no Nodecache.
+    // Prepare for no Nodecache, and no value.
+    // Jena3: Node as holder, delay value. 
     
     // More test in DatasetGraphTests
     // Rename Quad.defaultGraphIRI?

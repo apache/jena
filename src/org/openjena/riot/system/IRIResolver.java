@@ -59,24 +59,35 @@ public abstract class IRIResolver
     {
         return iriFactory.create(iriStr);
     }
-    /**
-     * Resolve the relative URI str against the current global base.
-     * @param str
-     * @return IRI
-     */
-    public static IRI resolveGlobal(String str)
-    {
-        return globalResolver.resolve(str) ;
-    }
-    
-    /**
-     * Resolve the relative URI str against the current global base.
-     * @param str
-     * @return String
-     */
-    public static String resolveGlobalToString(String str) {
-        return globalResolver.resolveToString(str) ;
-    }
+
+//    /**
+//     * Resolve the relative URI str against the current global base.
+//     * @param str
+//     * @return IRI
+//     */
+//    public static IRI resolveGlobal(String str)
+//    {
+//        return globalResolver.resolve(str) ;
+//    }
+//    
+//    /**
+//     * Resolve the relative URI str against the current global base.
+//     * @param str
+//     * @return IRI
+//     */
+//    public static IRI resolveGlobalSilent(String str)
+//    {
+//        return globalResolver.resolveSilent(str) ;
+//    }
+//    
+//    /**
+//     * Resolve the relative URI str against the current global base.
+//     * @param str
+//     * @return String
+//     */
+//    public static String resolveGlobalToString(String str) {
+//        return globalResolver.resolveToString(str) ;
+//    }
 
     
     /**
@@ -84,7 +95,8 @@ public abstract class IRIResolver
      */
     static private String globalBase = FileUtils.toURL(".").replace("/./", "/") ;
     
-    static IRIResolver globalResolver ; 
+    private static IRIResolver globalResolver ; 
+    public static IRIResolver get() { return globalResolver ; }
     
     /**
      * The current global resolver based on the working directory
@@ -202,7 +214,7 @@ public abstract class IRIResolver
     static public IRI chooseBaseURI(String baseURI) {
         if (baseURI == null)
             baseURI = "file:.";
-        return resolveGlobal(baseURI);
+        return get().resolve(baseURI);
     }
 
     public String getBaseIRIasString()
@@ -218,7 +230,12 @@ public abstract class IRIResolver
     public abstract IRI resolve(String uriStr) ;
     /** Create a URI, resolving relative IRIs, but do not throw exception on bad a IRI */
     public abstract IRI resolveSilent(String uriStr) ;
-    public abstract String resolveToString(String uriStr) ;
+    
+    /** Resolving relative IRIs, return a string */
+    public String resolveToString(String uriStr) { return resolve(uriStr).toString() ; }
+    
+    /** Resolving relative IRIs, return a string, but do not throw exception on bad a IRI */
+    public String resolveToStringSilent(String uriStr) { return resolveSilent(uriStr).toString() ; }
     
     protected IRIResolver() {}
     
@@ -290,13 +307,6 @@ public abstract class IRIResolver
                 resolvedIRIs.put(uriStr, iri) ;
             return iri ;
         }
-
-        
-        @Override
-        public String resolveToString(String uriStr)
-        {
-            return uriStr ;
-        }
     }
 
     /** Resolving resolver **/   
@@ -324,15 +334,13 @@ public abstract class IRIResolver
          * by the argument URI. If this is relative,
          * it is relative against the current working directory.
          * @param baseS
-         * 
-         * @throws RiotException
-         *             If resulting base would not be legal, absolute IRI
+         * @throws RiotException If resulting base unparsable.
          */
         public IRIResolverNormal(String baseS) {
             if (baseS == null)
                 base = chooseBaseURI();
             else
-                base = globalResolver.resolve(baseS) ;
+                base = globalResolver.resolveSilent(baseS) ;
         }
 
         public IRIResolverNormal(IRI baseIRI) {
@@ -363,21 +371,6 @@ public abstract class IRIResolver
         public IRI resolve(String relURI)
         {
             return exceptions(resolveSilent(relURI)) ;
-        }
-
-        /**
-         * Resolve the relative URI against the base of
-         * this IRIResolver.
-         * @param relURI
-         * @return the resolved IRI as a string
-         * @throws RiotException
-         *             If resulting URI would not be legal, absolute IRI
-
-         */
-        @Override
-        public String resolveToString(String relURI)
-        {
-            return exceptions(resolveSilent(relURI)).toString() ;
         }
 
         /**

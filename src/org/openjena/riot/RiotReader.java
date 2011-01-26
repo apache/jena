@@ -260,7 +260,7 @@ public class RiotReader
             return baseIRI ;
         if ( filename == null || filename.equals("-") )
             return "http://localhost/stdin/" ;
-        return IRIResolver.resolveGlobalToString(filename) ;
+        return IRIResolver.get().resolveToString(filename) ;
     }
 
     private static String nameForFile(String filename)

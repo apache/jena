@@ -100,7 +100,7 @@ public class RiotLoader
     public static void read(String filename, DatasetGraph dataset, Lang lang, String baseURI)
     {
         InputStream input = IO.openFile(filename) ;
-        read(input, dataset, lang, filename) ;
+        read(input, dataset, lang, baseURI) ;
     }
     
 
