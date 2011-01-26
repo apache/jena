@@ -58,15 +58,13 @@ import com.hp.hpl.jena.update.UpdateException ;
 import com.hp.hpl.jena.util.FileManager ;
 
 /** Implementation of general purpose update reuest execution */ 
-class UpdateEngineWorker implements UpdateVisitor
+public class UpdateEngineWorker implements UpdateVisitor
 {
-    private final GraphStore graphStore ;
-    
-    private final Binding initialBinding ;
-    
-    private final boolean alwaysSilent = true ;
+    protected final GraphStore graphStore ;
+    protected final Binding initialBinding ;
+    protected final boolean alwaysSilent = true ;
 
-    UpdateEngineWorker(GraphStore graphStore, Binding initialBinding)
+    public UpdateEngineWorker(GraphStore graphStore, Binding initialBinding)
     {
         this.graphStore = graphStore ;
         this.initialBinding = initialBinding ;
@@ -79,7 +77,7 @@ class UpdateEngineWorker implements UpdateVisitor
     { execDropClear(update, true) ; }
 
     // ReDo with gs* primitives
-    private void execDropClear(UpdateDropClear update, boolean isClear)
+    protected void execDropClear(UpdateDropClear update, boolean isClear)
     {
         if ( update.isAll() )
         {
@@ -96,7 +94,7 @@ class UpdateEngineWorker implements UpdateVisitor
             throw new ARQInternalErrorException("Target is undefined: "+update.getTarget()) ;
     }
 
-    private void execDropClear(UpdateDropClear update, Node g, boolean isClear)
+    protected void execDropClear(UpdateDropClear update, Node g, boolean isClear)
     {
         if ( ! alwaysSilent )
         {
@@ -110,7 +108,7 @@ class UpdateEngineWorker implements UpdateVisitor
             graphStore.removeGraph(g) ;
     }
 
-    private void execDropClearAllNamed(UpdateDropClear update, boolean isClear)
+    protected void execDropClearAllNamed(UpdateDropClear update, boolean isClear)
     {
         // Avoid ConcurrentModificationException
         List<Node> list = Iter.toList(graphStore.listGraphNodes()) ;
@@ -168,13 +166,13 @@ class UpdateEngineWorker implements UpdateVisitor
     // ----
     // Core operations
     
-    private static void gsCopy(GraphStore gStore, Target src, Target dest)
+    protected static void gsCopy(GraphStore gStore, Target src, Target dest)
     {
         gsClear(gStore, dest, true) ;
         gsCopyTriples(gStore, src, dest) ;
     }
 
-    private static void gsCopyTriples(GraphStore gStore, Target src, Target dest)
+    protected static void gsCopyTriples(GraphStore gStore, Target src, Target dest)
     {
         Graph gSrc = graph(gStore, src) ;
         Graph gDest = graph(gStore, dest) ;
@@ -184,7 +182,7 @@ class UpdateEngineWorker implements UpdateVisitor
         gDest.getBulkUpdateHandler().add(list) ;
     }
 
-    private static void gsClear(GraphStore gStore, Target target, boolean isSilent)
+    protected static void gsClear(GraphStore gStore, Target target, boolean isSilent)
     {
         // No create.
         Graph g = graph(gStore, target) ;
@@ -201,7 +199,7 @@ class UpdateEngineWorker implements UpdateVisitor
         g.getBulkUpdateHandler().removeAll() ;
     }
 
-    private static void gsDrop(GraphStore gStore, Target target, boolean isSilent)
+    protected static void gsDrop(GraphStore gStore, Target target, boolean isSilent)
     {
         if ( target.isDefault() )
             gStore.getDefaultGraph().getBulkUpdateHandler().removeAll() ;
@@ -302,13 +300,13 @@ class UpdateEngineWorker implements UpdateVisitor
         return dsg ;
     }
     
-    private static List<Quad> convertBNodesToVariables(List<Quad> quads)
+    protected static List<Quad> convertBNodesToVariables(List<Quad> quads)
     {
         NodeTransform bnodesToVariables = new NodeTransformBNodesToVariables() ;
         return NodeTransformLib.transformQuads(bnodesToVariables, quads) ;
     }
     
-    private Element elementFromQuads(List<Quad> quads)
+    protected Element elementFromQuads(List<Quad> quads)
     {
         ElementGroup el = new ElementGroup() ;
         ElementTriplesBlock x = new ElementTriplesBlock() ;
@@ -335,7 +333,7 @@ class UpdateEngineWorker implements UpdateVisitor
         return el ;
     }
 
-    private void execDelete(List<Quad> quads, Node dftGraph, List<Binding> bindings)
+    protected void execDelete(List<Quad> quads, Node dftGraph, List<Binding> bindings)
     {
         MultiMap<Node, Triple> acc = template(quads, dftGraph, bindings) ;
         if ( acc == null ) return ; 
@@ -347,7 +345,7 @@ class UpdateEngineWorker implements UpdateVisitor
         }
     }
 
-    private void execInsert(List<Quad> quads, Node dftGraph, List<Binding> bindings)
+    protected void execInsert(List<Quad> quads, Node dftGraph, List<Binding> bindings)
     {
         MultiMap<Node, Triple> acc = template(quads, dftGraph, bindings) ;
         if ( acc == null ) return ; 
@@ -359,7 +357,7 @@ class UpdateEngineWorker implements UpdateVisitor
         }
     }
 
-    private Query elementToQuery(Element pattern)
+    protected Query elementToQuery(Element pattern)
     {
         if ( pattern == null )
             return null ;
@@ -434,7 +432,7 @@ class UpdateEngineWorker implements UpdateVisitor
         return bindings ;
     }
     
-    private static Graph graph(GraphStore graphStore, Node gn)
+    protected static Graph graph(GraphStore graphStore, Node gn)
     {
         if ( gn == null || gn == Quad.defaultGraphNodeGenerated )
             return graphStore.getDefaultGraph() ;
@@ -442,7 +440,7 @@ class UpdateEngineWorker implements UpdateVisitor
             return graphStore.getGraph(gn) ;
     }
 
-    private static Graph graph(GraphStore graphStore, Target target)
+    protected static Graph graph(GraphStore graphStore, Target target)
     {
         if ( target.isDefault() )
             return graphStore.getDefaultGraph() ;
@@ -452,7 +450,7 @@ class UpdateEngineWorker implements UpdateVisitor
         return null ;
     }
 
-    private static void error(String msg)
+    protected static void error(String msg)
     {
         throw new UpdateException(msg) ;
     }

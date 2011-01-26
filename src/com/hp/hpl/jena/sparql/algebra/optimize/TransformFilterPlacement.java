@@ -4,6 +4,11 @@
  * [See end of file]
  */
 
+/* Contains code submitted in email to jena-user@incubator.apache.org 
+ * so software grant and relicensed under the Apache Software License. 
+ *    transformFilterConditional
+ */
+
 package com.hp.hpl.jena.sparql.algebra.optimize;
 
 import java.util.HashSet ;
@@ -17,6 +22,7 @@ import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.OpVars ;
 import com.hp.hpl.jena.sparql.algebra.TransformCopy ;
 import com.hp.hpl.jena.sparql.algebra.op.OpBGP ;
+import com.hp.hpl.jena.sparql.algebra.op.OpConditional ;
 import com.hp.hpl.jena.sparql.algebra.op.OpFilter ;
 import com.hp.hpl.jena.sparql.algebra.op.OpQuadPattern ;
 import com.hp.hpl.jena.sparql.algebra.op.OpSequence ;
@@ -80,6 +86,7 @@ public class TransformFilterPlacement extends TransformCopy
         
     private static Op transform(ExprList exprs, Set<Var> varsScope, Op x)
     {
+        // TODO Dispatch by visitor
         if ( x instanceof OpBGP )
             return transformFilterBGP(exprs, varsScope, (OpBGP)x) ;
 
@@ -88,6 +95,12 @@ public class TransformFilterPlacement extends TransformCopy
         
         if ( x instanceof OpQuadPattern )
             return transformFilterQuadPattern(exprs, varsScope, (OpQuadPattern)x) ;
+        
+        if ( x instanceof OpSequence )
+            return transformFilterSequence(exprs, varsScope, (OpSequence)x) ;
+        
+        if ( x instanceof OpConditional )
+            return transformFilterConditional(exprs, varsScope, (OpConditional)x) ;
         
         // Not special - advance the variable scope tracking. 
         OpVars.patternVars(x, varsScope) ;
@@ -230,6 +243,19 @@ public class TransformFilterPlacement extends TransformCopy
         }
         return op ;
     }
+    
+    // Modularize.
+    private static Op transformFilterConditional(ExprList exprs, Set<Var> varScope, OpConditional opConditional)
+    {
+        // Any filters that depend on no variables. 
+        Op op = insertAnyFilter(exprs, varScope, null) ;
+        Op left = opConditional.getLeft();
+        left = transform(exprs, varScope, left);
+        Op right = opConditional.getRight();
+        op = new OpConditional(left, right);
+        op = insertAnyFilter(exprs, varScope, op);
+        return op;
+     }
     
     // ---- Utilities
     

@@ -15,7 +15,7 @@ import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.core.VarAlloc ;
 import com.hp.hpl.jena.sparql.graph.NodeTransform ;
 
-class NodeTransformBNodesToVariables implements NodeTransform
+public class NodeTransformBNodesToVariables implements NodeTransform
 {
     private VarAlloc varAlloc = new VarAlloc(ARQConstants.allocVarBNodeToVar) ;
     private Map<Node, Var> mapping ;

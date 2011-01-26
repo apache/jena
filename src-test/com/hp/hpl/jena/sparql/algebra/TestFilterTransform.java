@@ -185,6 +185,32 @@ public class TestFilterTransform
         Assert.assertEquals(op3, op2) ;
     }
     
+    
+    @Test public void placement20()
+    {
+        // conditional
+        test("(filter (= ?x 123) (conditional (bgp (?s ?p ?x)) (bgp (?s ?p ?z)) ))",
+             t_placement,
+             "(conditional (filter (= ?x 123) (bgp (?s ?p ?x))) (bgp (?s ?p ?z)) )") ;
+    }
+
+    @Test public void placement21()
+    {
+        // conditional
+        test("(filter (= ?z 123) (conditional (bgp (?s ?p ?x)) (bgp (?s ?p ?z)) ))",
+             t_placement,
+             "(filter (= ?z 123) (conditional (bgp (?s ?p ?x)) (bgp (?s ?p ?z)) ))") ;
+    }
+
+    @Test public void placement22()
+    {
+        // conditional
+        test("(filter (= ?x 123) (conditional (bgp (?s ?p ?x)) (bgp (?s ?p ?x)) ))",
+             t_placement,
+             "(conditional (filter (= ?x 123) (bgp (?s ?p ?x))) (bgp (?s ?p ?x)) )") ;
+    }
+
+    
     @Test public void oneOf1()
     {
         test(
