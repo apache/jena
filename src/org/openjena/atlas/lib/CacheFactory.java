@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -10,32 +11,47 @@ import org.openjena.atlas.lib.cache.* ;
 
 public class CacheFactory
 {
+    /** Create a cache which has space for up to a certain number of objects.
+     *  This is an LRU cache, or similar. 
+     * The cache returns null for a cache miss.
+     */
+    public static <Key, Value> Cache<Key, Value> createCache(int maxSize)
+    {
+        return createCache(0.75f, maxSize) ;
+    }
+
+    /** Create a cache which has space for up to a certain number of objects.
+     * The cache has an explicit loadfactor.
+     * The cache returns null for a cache miss.
+     */
+    public static <Key, Value> Cache<Key, Value> createCache(float loadFactor, int maxSize)
+    {
+        return new CacheLRU<Key, Value>(0.75f, maxSize) ;
+    }
+    
+    /** Create a cache which has space for upto a certain number of objects. 
+     * Call the getter when the cache has a miss.
+     */
     public static <Key, Value> Cache<Key, Value> createCache(Getter<Key, Value> getter, int maxSize)
     {
         Cache<Key, Value> cache = createCache(0.75f, maxSize) ;
         return createCacheWithGetter(cache, getter) ;
     }
 
-    public static <Key, Value> Cache<Key, Value> createCache(int maxSize)
-    {
-        return createCache(0.75f, maxSize) ;
-    }
-    
+    /** Create a cache which has unbounded space */
     public static <Key, Value> Cache<Key, Value> createCacheUnbounded()
     {
         return new CacheUnbounded<Key, Value>() ;
     }
     
-    public static <Key, Value> Cache<Key, Value> createCache(float loadFactor, int maxSize)
-    {
-        return new CacheLRU<Key, Value>(0.75f, maxSize) ;
-    }
-    
+
+    /* Add a getter wrapper to an existing cache */
     public static <Key, Value> Cache<Key, Value> createCacheWithGetter(Cache<Key, Value> cache, Getter<Key, Value> getter)
     {
         return new CacheWithGetter<Key, Value>(cache, getter) ;
     }
 
+    /** Create a lightweight cache (e.g. slot replcaement) */  
     public static <Key, Value> Cache<Key, Value> createSimpleCache(int size)
     {
         return new CacheSimple<Key, Value>(size) ; 
@@ -47,6 +63,7 @@ public class CacheFactory
         return new Cache1<Key, Value>() ;
     }
 
+    /** Add a statistics wrapper to an existing cache */
     public static <Key, Value> CacheStats<Key, Value> createStats(Cache<Key, Value> cache)
     {
         if ( cache instanceof CacheStats<?,?>)
@@ -54,6 +71,7 @@ public class CacheFactory
         return new CacheStatsAtomic<Key, Value>(cache) ;
     }
 
+    /** Add a synchronization wrapper to an existing cache */
     public static <Key, Value> Cache<Key, Value> createSync(Cache<Key, Value> cache)
     {
         if ( cache instanceof CacheSync<?,?>)
@@ -61,12 +79,15 @@ public class CacheFactory
         return new CacheSync<Key, Value>(cache) ;
     }
 
-    
+    /** Create set-cache, rather than a map-cache.
+     * @see Pool
+     */
     public static <Obj> CacheSet<Obj> createCacheSet(int size)
     {
         return new CacheSetLRU<Obj>(size) ;
     }
 
+    /** Add a synchronization wrapper to an existing set-cache */
     public static <Obj> CacheSet<Obj> createSync(CacheSet<Obj> cache)
     {
         if ( cache instanceof CacheSetSync<?>)
@@ -78,6 +99,7 @@ public class CacheFactory
 
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
