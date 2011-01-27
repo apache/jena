@@ -8,6 +8,7 @@
 
 package dev;
 
+import java.io.File ;
 import java.util.Iterator ;
 import java.util.concurrent.ArrayBlockingQueue ;
 import java.util.concurrent.BlockingQueue ;
@@ -28,6 +29,7 @@ import org.openjena.riot.RiotReader ;
 import org.openjena.riot.SysRIOT ;
 import org.openjena.riot.checker.CheckerIRI ;
 import org.openjena.riot.pipeline.normalize.CanonicalizeLiteral ;
+import org.openjena.riot.system.IRIResolver ;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.datatypes.xsd.XSDDuration ;
@@ -71,6 +73,7 @@ import com.hp.hpl.jena.sparql.util.ExprUtils ;
 import com.hp.hpl.jena.sparql.util.FmtUtils ;
 import com.hp.hpl.jena.sparql.util.NodeFactory ;
 import com.hp.hpl.jena.sparql.util.QueryExecUtils ;
+import com.hp.hpl.jena.sparql.util.StringUtils ;
 import com.hp.hpl.jena.sparql.util.Timer ;
 import com.hp.hpl.jena.update.GraphStore ;
 import com.hp.hpl.jena.update.GraphStoreFactory ;
@@ -78,6 +81,7 @@ import com.hp.hpl.jena.update.UpdateAction ;
 import com.hp.hpl.jena.update.UpdateFactory ;
 import com.hp.hpl.jena.update.UpdateRequest ;
 import com.hp.hpl.jena.util.FileManager ;
+import com.hp.hpl.jena.util.FileUtils ;
 
 public class RunARQ
 {
@@ -111,18 +115,77 @@ public class RunARQ
         System.exit(code) ;
     }
     
+    // System.getProperty("os.name").toLowerCase().contains("win") ;
+
+    
+    static boolean isWindows = (File.pathSeparatorChar == ';' ) ;
+    
+    // This code is OS-neutral - given a Windows-style file name on Linux, it converts it.
+    public static void fixFilename(String fn)
+    {
+        if ( fn == null ) return ;
+        
+        if ( fn.length() == 0 ) {}
+        if ( fn.length() == 1 ) {}
+        
+        
+        if ( true || isWindows )
+        {
+            // Char 2, 
+            if ( fn.charAt(1) == ':' )
+                // Windows drive letter
+                fn = "file:///"+fn ;
+            // What to do about the ':'
+            
+        }
+        
+        if ( ! fn.startsWith("file:") )
+        {
+            fn = "file://"+fn ;
+        }
+        
+        // %-encode chars.
+        char[] chars =  
+        {   // Space
+            ' ',
+            // reserved
+            '!', '*', '"', '\'', '(', ')', ';', ':', '@', '&', 
+            '=', '+', '$', ',', '/', '?', '%', '#', '[', ']',
+            // Other 
+            '<', '>', '~', '.', '{', '}', '|', '\\', '-', '`', '_', '^'} ;     
+        fn = StrUtils.encodeHex(fn, '%', chars) ;
+        
+        // Plan B: but OS-dependent 
+        // Also:
+        String fn2 = "file://" + new File(fn).toURI().toString().substring(5);
+    }
+    
     public static void main(String[] argv) throws Exception
     {
+        System.out.println(new File("c:/Program Files\\Java").toURI().toString()) ;
+        System.exit(0) ;
+        
         SysRIOT.wireIntoJena() ;
         DatasetGraph dsg = DatasetLib.createDatasetGraphMem() ;
         
+        String testbase = "http://EXample/" ;
+        
+        // bad name.
+        // Need file name to URI operation.
+        // IRIResolver.filenameToIRI(String) -> String 
+        
+        IRIResolver.chooseBaseURI(testbase) ;
+        System.out.println("DONE") ;
+        System.exit(0) ;
+        
+        
         // Ignore base IRI.
-        RiotLoader.read("D.nt", dsg, Lang.NTRIPLES, "http://EXample/") ;
-        RiotLoader.read("D.nt", dsg, Lang.NQUADS, "http://EXample/") ;
+        RiotLoader.read("D.nt", dsg, Lang.NTRIPLES, testbase) ;
+        RiotLoader.read("D.nt", dsg, Lang.NQUADS, testbase) ;
 
         // Warn/silent on baseIRI. 
-        RiotLoader.read("D.ttl", dsg, Lang.TURTLE, "http://EXample/") ;
-        RiotLoader.read("D.trig", dsg, Lang.TRIG, "http://EXample/") ;
+        RiotLoader.read("D.ttl", dsg, Lang.TURTLE, testbase) ;
+        RiotLoader.read("D.trig", dsg, Lang.TRIG, testbase) ;
         
         System.out.println(dsg) ;
         System.out.println("DONE") ;
