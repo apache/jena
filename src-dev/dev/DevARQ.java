@@ -1,6 +1,5 @@
 package dev ;
 
-import org.openjena.riot.system.IRIResolver ;
 
 public class DevARQ
 {
@@ -13,6 +12,8 @@ public class DevARQ
     // The Node cache makes difference (~2% better).  Can we do better, locally?
     // Prepare for no Nodecache, and no value.
     // Jena3: Node as holder, delay value. 
+    
+    // OpExecute example.
     
     // More test in DatasetGraphTests
     // Rename Quad.defaultGraphIRI?

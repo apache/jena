@@ -177,7 +177,7 @@ public class TestFunctions2 extends BaseTest
     @Test public void lcase_04()    { test("lcase('')",     "''") ; }
     
     // ENCODE_FOR_URI
-    @Test public void encodeURI_01()    { test("encode_for_uri('ab cd/~')",  "'ab%20cd%2F%7E'") ; }
+    @Test public void encodeURI_01()    { test("encode_for_uri('a:b cd/~')",  "'a%3Ab%20cd%2F~'") ; }
     @Test public void encodeURI_02()    { test("encode_for_uri('\\n')",  "'%0A'") ; }
     @Test public void encodeURI_03()    { test("encode_for_uri('\\t')",  "'%09'") ; }
     

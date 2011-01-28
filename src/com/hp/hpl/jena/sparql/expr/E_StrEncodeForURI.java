@@ -6,8 +6,7 @@
 
 package com.hp.hpl.jena.sparql.expr;
 
-import org.openjena.atlas.lib.Chars ;
-import org.openjena.atlas.lib.StrUtils ;
+import org.openjena.atlas.lib.IRILib ;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.graph.Node ;
@@ -34,93 +33,13 @@ public class E_StrEncodeForURI extends ExprFunction1
                 throw new ExprEvalException("Not a string literal") ;
         }
         
-        
         String str = n.getLiteralLexicalForm() ;
+        String encStr = IRILib.encodeUriComponent(str) ;
         
-        String encStr = StrUtils.encodeHex(str,'%', uri_all) ;
-        // Convert to UTF-8.
-        if ( containsNonASCII(encStr) )
-        {
-            byte[] b = StrUtils.asUTF8bytes(encStr) ;
-            encStr = encodeNonASCII(b) ;
-        }
         return NodeValue.makeString(encStr) ;
     }
     
-    
-    static String encodeNonASCII(byte[] bytes)
-    {
-        StringBuilder sw = new StringBuilder() ;
-        for ( int i = 0 ; i < bytes.length ; i++ )
-        {
-            byte b = bytes[i] ;
-            // Signed bytes ...
-            if ( b > 0 )
-            {
-                sw.append((char)b) ;
-                continue ;
-            }
-            
-            int hi = (b & 0xF0) >> 4 ;
-            int lo = b & 0xF ;
-            sw.append('%') ;
-            sw.append(Chars.hexDigitsUC[hi]) ;
-            sw.append(Chars.hexDigitsUC[lo]) ;
-        }
-        return sw.toString() ;
-    }
 
-    static boolean containsNonASCII(String string)
-    {
-        boolean clean = true ;
-        for ( int i = 0 ; i < string.length() ; i++ )
-        {
-            char ch = string.charAt(i) ;
-            if ( ch >= 127 )
-                return true;
-        }
-        return false ;
-    }
-    
-    // Put somewhere
-    static char uri_reserved[] = 
-    {' ',
-     '!', '*', '"', '\'', '(', ')', ';', ':', '@', '&', 
-     '=', '+', '$', ',', '/', '?', '%', '#', '[', ']'} ;
-
-    static char[] uri_other = {'<', '>', '~', '.', '{', '}', '|', '\\', '-', '`', '_', '^'} ;     
-    
-    static char[] uri_other2 = {'\n', '\r', '\t' } ;
-    
-    static char[] uri_all = new char[uri_reserved.length+uri_other.length+uri_other2.length] ;
-    
-    
-//    static char[] uri_allx= {  ' ', '!', '*', '"', '\'', '(', ')', ';', ':', '@', '&', 
-//                           '=', '+', '$', ',', '/', '?', '%', '#', '[', ']',
-//                           '<', '>', '~', '.', '{', '}', '|', '\\', '-', '`', '_', '^',
-//                           '\n', '\r', '\t'} ;
-
-    static {
-        int idx = 0 ;
-        System.arraycopy(uri_reserved, 0, uri_all, idx, uri_reserved.length) ;
-        idx += uri_reserved.length ;
-        
-        System.arraycopy(uri_other, 0, uri_all, idx, uri_other.length) ;
-        idx += uri_other.length ;
-        
-        System.arraycopy(uri_other2, 0, uri_all, idx, uri_other2.length) ;
-        idx += uri_other2.length ;
-    }
-    
-        
-        /* The encodeURI() function is used to encode a URI.
-special except: , / ? : @ & = + $ #
-special + , / ? : @ & = + $ #
- *
- *
- */
-        
-    
     @Override
     public Expr copy(Expr expr) { return new E_StrEncodeForURI(expr) ; } 
 }

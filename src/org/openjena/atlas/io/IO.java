@@ -52,6 +52,7 @@ public class IO
      */
     static public InputStream openFile(String filename)
     {
+        // Decode filename? 
         try {
             if ( filename == null || filename.equals("-") )
                 return System.in ;

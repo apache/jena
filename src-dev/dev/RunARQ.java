@@ -8,7 +8,6 @@
 
 package dev;
 
-import java.io.File ;
 import java.util.Iterator ;
 import java.util.concurrent.ArrayBlockingQueue ;
 import java.util.concurrent.BlockingQueue ;
@@ -19,6 +18,7 @@ import junit.framework.TestSuite ;
 import org.openjena.atlas.io.IndentedWriter ;
 import org.openjena.atlas.json.JSON ;
 import org.openjena.atlas.json.JsonValue ;
+import org.openjena.atlas.lib.IRILib ;
 import org.openjena.atlas.lib.Sink ;
 import org.openjena.atlas.lib.StrUtils ;
 import org.openjena.atlas.logging.Log ;
@@ -73,7 +73,6 @@ import com.hp.hpl.jena.sparql.util.ExprUtils ;
 import com.hp.hpl.jena.sparql.util.FmtUtils ;
 import com.hp.hpl.jena.sparql.util.NodeFactory ;
 import com.hp.hpl.jena.sparql.util.QueryExecUtils ;
-import com.hp.hpl.jena.sparql.util.StringUtils ;
 import com.hp.hpl.jena.sparql.util.Timer ;
 import com.hp.hpl.jena.update.GraphStore ;
 import com.hp.hpl.jena.update.GraphStoreFactory ;
@@ -81,7 +80,6 @@ import com.hp.hpl.jena.update.UpdateAction ;
 import com.hp.hpl.jena.update.UpdateFactory ;
 import com.hp.hpl.jena.update.UpdateRequest ;
 import com.hp.hpl.jena.util.FileManager ;
-import com.hp.hpl.jena.util.FileUtils ;
 
 public class RunARQ
 {
@@ -118,52 +116,29 @@ public class RunARQ
     // System.getProperty("os.name").toLowerCase().contains("win") ;
 
     
-    static boolean isWindows = (File.pathSeparatorChar == ';' ) ;
-    
-    // This code is OS-neutral - given a Windows-style file name on Linux, it converts it.
-    public static void fixFilename(String fn)
-    {
-        if ( fn == null ) return ;
-        
-        if ( fn.length() == 0 ) {}
-        if ( fn.length() == 1 ) {}
-        
-        
-        if ( true || isWindows )
-        {
-            // Char 2, 
-            if ( fn.charAt(1) == ':' )
-                // Windows drive letter
-                fn = "file:///"+fn ;
-            // What to do about the ':'
-            
-        }
-        
-        if ( ! fn.startsWith("file:") )
-        {
-            fn = "file://"+fn ;
-        }
-        
-        // %-encode chars.
-        char[] chars =  
-        {   // Space
-            ' ',
-            // reserved
-            '!', '*', '"', '\'', '(', ')', ';', ':', '@', '&', 
-            '=', '+', '$', ',', '/', '?', '%', '#', '[', ']',
-            // Other 
-            '<', '>', '~', '.', '{', '}', '|', '\\', '-', '`', '_', '^'} ;     
-        fn = StrUtils.encodeHex(fn, '%', chars) ;
-        
-        // Plan B: but OS-dependent 
-        // Also:
-        String fn2 = "file://" + new File(fn).toURI().toString().substring(5);
-    }
-    
     public static void main(String[] argv) throws Exception
     {
-        System.out.println(new File("c:/Program Files\\Java").toURI().toString()) ;
+        // See also FileUtils.
+        // test cases
+        
+        String cwd = new java.io.File("base").getAbsolutePath() ;
+        //cwd = cwd.substring(0, cwd.length()-1) ;
+        System.out.println(cwd) ;
+        String cwd2 = IRIResolver.iriFactory.create("file:///").toString() ;
+        System.out.println(cwd2) ;
+        
+        // See also IO.openFile():: file: => apply decoding
+        // Test for same.
+        String[] x = { "example.nt", "foo bar.baz", "/here", "/Program Files", "file:/xyz",  "file://xyz", "file:///xyz", "c:\\User\\user\\Desktop\\file.dat"} ;
+        for ( String str : x )
+        {
+            String str2 = IRILib.filenameToIRI(str) ;
+            System.out.printf("%-20s ==> %s\n", str, str2) ;
+        }
+        System.out.println("DONE") ;
         System.exit(0) ;
+        
+        
         
         SysRIOT.wireIntoJena() ;
         DatasetGraph dsg = DatasetLib.createDatasetGraphMem() ;
