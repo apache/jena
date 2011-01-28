@@ -11,19 +11,23 @@ public class DevFuseki
     // Dataset servers - bulk loader.
     // Access the bulk loader via web. [later]
     
-    // Errors that occur and what they mean:
+    // ?? Errors that occur and what they mean:
     
     // http://localhost:3030/data/data ***
     // http://localhost:3030/data ***
+    
+    // ?? Local naming of graphs.
     
     // Structure pages, different static content servers
     // /Main - index.html = fuseki.html
     // /validate
     // /admin
     
-    // Server-local graph naming (Done?)
+    // Server-local graph naming
     
-    // Deploy to sparql.org
+    // Plain text error pages
+    
+    // Deploy to sparql.org -- need query form for read-only mode.
     
     // + LARQ
     
@@ -35,19 +39,11 @@ public class DevFuseki
     
     // Bundle tdb scripts with Fuseki.
 
-    // Error messages as text plain.
-    
     // ParserFor - share between SPARQL_REST and SPARQL_Upload
     // UploadTo dataset (TriG, N-Quads)
    
     // populate forms with prefixes (later)
     
-    // Configuration file.
-    // [] :loadClass for java configuration.
-    // [ a tdb:DatasetTDB ; tdb:location "DB" ; tdb:defaultUnionGraph true ]
-    
-    // ----
-
     // Tests
     //   TestProtocol (HTTP update, query, update), inc status codes.
     //   SPARQL Query servlet / SPARQL Update servlet
@@ -73,14 +69,11 @@ public class DevFuseki
     // Drop --service.
     // Local config file - read to get service settings. 
     
-    
     //   --accept line/shortname : s-get, s-query
     //   Basic authentication: --user --password
     
     // **** Clean up SPARQL Query results code.
 
-    // Document
-    // Environment variable for target (s-set but needs to shell built-in)
     // Argument names: --service naming seems inconsistent.
     
     // Plug-ins:
