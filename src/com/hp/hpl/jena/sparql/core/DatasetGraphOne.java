@@ -24,7 +24,7 @@ public class DatasetGraphOne extends DatasetGraphBaseFind
 {
     private final Graph graph ;
     
-    DatasetGraphOne(Graph graph) { this.graph = graph ; }
+    protected DatasetGraphOne(Graph graph) { this.graph = graph ; }
     
     @Override
     public boolean containsGraph(Node graphNode)

@@ -21,6 +21,7 @@ import java.nio.charset.Charset ;
 import java.util.zip.GZIPInputStream ;
 
 import org.openjena.atlas.AtlasException ;
+import org.openjena.atlas.lib.IRILib ;
 import org.openjena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.util.FileUtils ;
@@ -57,7 +58,10 @@ public class IO
             if ( filename == null || filename.equals("-") )
                 return System.in ;
             if ( filename.startsWith("file:") )
+            {
                 filename = filename.substring("file:".length()) ;
+                filename = IRILib.decode(filename) ;
+            }
             InputStream in = new FileInputStream(filename) ;
             if ( filename.endsWith(".gz") )
                 in = new GZIPInputStream(in) ;

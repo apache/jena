@@ -160,7 +160,7 @@ public abstract class LangTurtleBase<X> extends LangBase<X>
             directivePrefix() ;
             return ;
         }
-        exception(t, "Unregcognized directive: %s", x) ;
+        exception(t, "Unrecognized directive: %s", x) ;
     }
     
     protected final void directivePrefix()

@@ -49,6 +49,8 @@ public class RiotReader
      */  
     public static void parseTriples(String filename, Lang lang, String baseIRI, Sink<Triple> sink)
     {
+        // Duplicates RiotReader ??? 
+        
         checkTriplesLanguage(filename, lang) ;
 
         String printName = nameForFile(filename) ;  
@@ -204,7 +206,7 @@ public class RiotReader
     public static LangRDFXML createParserRDFXML(InputStream input, String baseIRI, Sink<Triple> sink)
     {
         if ( baseIRI == null )
-            baseIRI = IRIResolver.chooseBaseURI().toString() ;
+            baseIRI = chooseBaseIRI() ;
         LangRDFXML parser = LangRDFXML.create(input, baseIRI, baseIRI, ErrorHandlerFactory.errorHandlerStd, sink) ;
         return parser ;
     }
@@ -221,7 +223,7 @@ public class RiotReader
     public static LangTriG createParserTriG(Tokenizer tokenizer, String baseIRI, Sink<Quad> sink)
     {
         if ( baseIRI == null )
-            baseIRI = IRIResolver.chooseBaseURI().toString() ;
+            baseIRI = chooseBaseIRI() ;
         LangTriG parser = new LangTriG(baseIRI, tokenizer, RiotLib.profile(Lang.TRIG, baseIRI), sink) ;
         return parser ;
     }
@@ -252,6 +254,11 @@ public class RiotReader
     {
         LangNQuads parser = new LangNQuads(tokenizer, RiotLib.profile(Lang.NQUADS, null), sink) ;
         return parser ;
+    }
+    
+    private static String chooseBaseIRI()
+    {
+        return IRIResolver.chooseBaseURI().toString() ;
     }
     
     private static String chooseBaseIRI(String baseIRI, String filename)

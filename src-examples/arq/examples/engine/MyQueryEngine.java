@@ -24,7 +24,10 @@ import com.hp.hpl.jena.sparql.util.Context ;
 
 /** Example skeleton for a query engine.
  *  To just extend ARQ by custom basic graph pattern matching (a very common case)
- *  see the arq.examples.bgpmatching package */
+ *  see the arq.examples.bgpmatching package.
+ *  To take full control of query execution, use this example for catching the
+ *  execution setup and see opexec for a customized OpExecutor for query execution.   
+ */  
 
 public class MyQueryEngine extends QueryEngineMain
 {
@@ -71,40 +74,40 @@ public class MyQueryEngine extends QueryEngineMain
     static public QueryEngineFactory getFactory() { return factory ; } 
     static public void register()       { QueryEngineRegistry.addFactory(factory) ; }
     static public void unregister()     { QueryEngineRegistry.removeFactory(factory) ; }
-    
-}
 
-class MyTransform extends TransformCopy
-{
-    // Example, do nothing tranform. 
-    @Override
-    public Op transform(OpBGP opBGP)                { return opBGP ; }
-}
 
-class MyQueryEngineFactory implements QueryEngineFactory
-{
-    // Accept any dataset for query execution 
-    public boolean accept(Query query, DatasetGraph dataset, Context context) 
-    { return true ; }
-
-    public Plan create(Query query, DatasetGraph dataset, Binding initial, Context context)
+    static class MyTransform extends TransformCopy
     {
-        // Create a query engine instance.
-        MyQueryEngine engine = new MyQueryEngine(query, dataset, initial, context) ;
-        return engine.getPlan() ;
+        // Example, do nothing tranform. 
+        @Override
+        public Op transform(OpBGP opBGP)                { return opBGP ; }
     }
 
-    public boolean accept(Op op, DatasetGraph dataset, Context context)
-    {   // Refuse to accept algebra expressions directly.
-        return false ;
-    }
+    static class MyQueryEngineFactory implements QueryEngineFactory
+    {
+        // Accept any dataset for query execution 
+        public boolean accept(Query query, DatasetGraph dataset, Context context) 
+        { return true ; }
 
-    public Plan create(Op op, DatasetGraph dataset, Binding inputBinding, Context context)
-    {   // Shodul notbe called because acceept/Op is false
-        throw new ARQInternalErrorException("MyQueryEngine: factory calleddirectly with an algebra expression") ;
-    }
-} 
+        public Plan create(Query query, DatasetGraph dataset, Binding initial, Context context)
+        {
+            // Create a query engine instance.
+            MyQueryEngine engine = new MyQueryEngine(query, dataset, initial, context) ;
+            return engine.getPlan() ;
+        }
 
+        public boolean accept(Op op, DatasetGraph dataset, Context context)
+        {   // Refuse to accept algebra expressions directly.
+            return false ;
+        }
+
+        public Plan create(Op op, DatasetGraph dataset, Binding inputBinding, Context context)
+        {   // Shodul notbe called because acceept/Op is false
+            throw new ARQInternalErrorException("MyQueryEngine: factory calleddirectly with an algebra expression") ;
+        }
+    } 
+
+}
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.

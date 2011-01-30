@@ -9,6 +9,7 @@ package org.openjena.riot;
 import java.io.InputStream ;
 
 import org.openjena.atlas.io.IO ;
+import org.openjena.atlas.lib.IRILib ;
 import org.openjena.atlas.lib.Sink ;
 import org.openjena.riot.lang.LangRIOT ;
 import org.openjena.riot.lang.SinkQuadsToDataset ;
@@ -43,9 +44,8 @@ public class RiotLoader
     /** Parse a file and return the quads in a dataset (in-memory) */ 
     public static DatasetGraph load(String filename, Lang lang)
     {
-        DatasetGraph dsg = DatasetLib.createDatasetGraphMem() ;
-        read(filename, dsg, lang, null) ;
-        return dsg ;
+        String baseURI = IRILib.filenameToIRI(filename) ;
+        return load(filename, lang, baseURI) ; 
     }
     
     /** Parse a file and return the quads in a dataset (in-memory) */ 
@@ -86,14 +86,15 @@ public class RiotLoader
         Lang lang = Lang.guess(filename) ;
         if ( lang == null )
             throw new RiotException("Can't guess language for "+filename) ; 
+        String baseURI = IRILib.filenameToIRI(filename) ;
         InputStream input = IO.openFile(filename) ;
-        read(input, dataset, lang, filename) ;
+        read(input, dataset, lang, baseURI) ;
     }
     
     /** Parse a file to a dataset */ 
     public static void read(String filename, DatasetGraph dataset, Lang lang)
     {
-        read(filename, dataset, lang, filename) ;
+        read(filename, dataset, lang, null) ;
     }
     
     /** Parse a file to a dataset */ 
@@ -103,7 +104,6 @@ public class RiotLoader
         read(input, dataset, lang, baseURI) ;
     }
     
-
     /** Parse an input stream and send the quads to a dataset */ 
     public static void read(InputStream input, DatasetGraph dataset, Lang language, String baseURI)
     {

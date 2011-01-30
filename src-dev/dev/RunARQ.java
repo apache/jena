@@ -118,8 +118,14 @@ public class RunARQ
     
     public static void main(String[] argv) throws Exception
     {
-        // See also FileUtils.
+        // See also FileUtils, IRIResolver.
         // test cases
+        
+        // Filename -> base at 
+        // null baseURI : IRIResolver.chooseBaseURI().toString() ;
+        
+        // RiotReader, RiotLoader both do file-as-baseIRI 
+        // Why RiotReader.parseTriples not do "create - call?" 
         
         String cwd = new java.io.File("base").getAbsolutePath() ;
         //cwd = cwd.substring(0, cwd.length()-1) ;

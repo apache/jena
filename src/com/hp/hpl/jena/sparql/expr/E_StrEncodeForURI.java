@@ -35,6 +35,7 @@ public class E_StrEncodeForURI extends ExprFunction1
         
         String str = n.getLiteralLexicalForm() ;
         String encStr = IRILib.encodeUriComponent(str) ;
+        encStr = IRILib.encodeNonASCII(encStr) ;
         
         return NodeValue.makeString(encStr) ;
     }

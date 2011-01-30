@@ -7,19 +7,23 @@
 package org.openjena.atlas.lib;
 
 import java.io.File ;
+import java.io.IOException ;
+
+import org.openjena.atlas.AtlasException ;
 
 /** Operations related to IRIs */
 public class IRILib
 {
-    /** Encode using the rules for a component (e.g. ':' and'/' get encoded) */
+    /** Encode using the rules for a component (e.g. ':' and '/' get encoded) 
+     * Does not encode non-ASCII characters 
+     */
     public static String encodeUriComponent(String string)
     {
         String encStr = StrUtils.encodeHex(string,'%', charsComponent) ;
-        encStr = encodeNonASCII(encStr) ;
         return encStr ;
     }
     
-    /** Encode using the rules for a path (e.g. ':' and'/' do not get encoded) */
+    /** Encode using the rules for a path (e.g. ':' and '/' do not get encoded) */
     public static String encodeUriPath(String uri)
     {
         // Not perfect.
@@ -29,16 +33,23 @@ public class IRILib
         return uri ;
     }
     
+    public static String decode(String string)
+    {
+        return StrUtils.decodeHex(string, '%') ;
+    }
+    
+    
     private static boolean isWindows = (File.pathSeparatorChar == ';' ) ;
 
-    public static String cwd = new File(".").getAbsolutePath() ;
-    static { cwd.substring(0, cwd.length()-1) ; }
+    static String cwd = new File(".").getAbsolutePath() ;
+    // Current directory, without trailing "/"
+    static { cwd = cwd.substring(0, cwd.length()-2) ; }
     
     // See also IRIResolver     
     /** Encode using the rules for a path (e.g. ':' and'/' do not get encoded) */
     public static String filenameToIRI(String fn)
     {
-        
+        // XXX See also FileUtils, IRIResolver.
         
         // Accept file: and lightly sanitize.
         // else work harder
@@ -50,19 +61,34 @@ public class IRILib
         
         if ( fn.startsWith("file:") )
             return normalizeFilenameURI(fn) ;
-        return normalizeFilename(fn) ;
+        return plainFilenameToURL(fn) ;
         // Also: String fn2 = "file://" + new File(fn).toURI().toString().substring(5);
     }
     
-    private static String normalizeFilename(String fn)
+    public static String IRIToFilename(String iri)
+    {
+        if ( ! iri.startsWith("file:") )
+            throw new AtlasException("Not a file: URI: "+iri) ; 
+        
+        String fn = iri.substring("file:".length()) ;
+        return decode(fn) ;
+    }
+    
+    private static String plainFilenameToURL(String fn)
     {
         // No "file:"
         // Make Absolute filename.
+        boolean trailingSlash = fn.endsWith("/") ;
         File file = new File(fn) ;
-        fn = file.getAbsolutePath() ;
+        
+        try { fn = file.getCanonicalPath() ; }
+        catch (IOException e)
+        { fn = file.getAbsolutePath() ; } 
+        if ( trailingSlash && ! fn.endsWith("/") )
+            fn = fn + "/" ;
         
         // Temporary
-        if ( true || isWindows )
+        if ( isWindows )
         {
             // Char 2, 
             if ( fn.charAt(1) == ':' )
@@ -86,7 +112,7 @@ public class IRILib
         if ( ! fn.startsWith("file:/") )
         {
             String fn2 = fn.substring("file:".length()) ;
-            return normalizeFilename(fn2) ;
+            return plainFilenameToURL(fn2) ;
         }
         // starts file:/
         
@@ -97,15 +123,15 @@ public class IRILib
         if ( fn.startsWith("file://") )
         {
             String fn2 = fn.substring("file:/".length()) ;  // Leave one "/"
-            return normalizeFilename(fn2) ;
+            return plainFilenameToURL(fn2) ;
         }
             
         // Must be file:/
         String fn2 = fn.substring("file:".length()) ;
-        return normalizeFilename(fn2) ;
+        return plainFilenameToURL(fn2) ;
     }
 
-    static String encodeNonASCII(String string)
+    public static String encodeNonASCII(String string)
     {
         if ( ! containsNonASCII(string) )
             return string ;
@@ -131,7 +157,7 @@ public class IRILib
         return sw.toString() ;
     }
 
-    static boolean containsNonASCII(String string)
+    public static boolean containsNonASCII(String string)
     {
         boolean clean = true ;
         for ( int i = 0 ; i < string.length() ; i++ )
