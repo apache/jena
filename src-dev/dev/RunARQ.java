@@ -135,12 +135,15 @@ public class RunARQ
         
         // See also IO.openFile():: file: => apply decoding
         // Test for same.
-        String[] x = { "example.nt", "foo bar.baz", "/here", "/Program Files", "file:/xyz",  "file://xyz", "file:///xyz", "c:\\User\\user\\Desktop\\file.dat"} ;
+        //IRILib.setIsWindowsForTesting(true) ;
+        //String[] x = { "example.nt", "foo bar.baz", "/here", "/Program Files", "file:/xyz",  "file://xyz", "file:///xyz", "c:\\User\\user\\Desktop\\file.dat"} ;
+        String[] x = { "c:\\User\\user\\Desktop\\file.dat"} ;
         for ( String str : x )
         {
             String str2 = IRILib.filenameToIRI(str) ;
             System.out.printf("%-20s ==> %s\n", str, str2) ;
         }
+        
         System.out.println("DONE") ;
         System.exit(0) ;
         

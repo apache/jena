@@ -12,21 +12,21 @@ import org.junit.Test ;
 import org.openjena.atlas.junit.BaseTest ;
 import org.openjena.atlas.lib.IRILib ;
 
-public class TestURIEncoding extends BaseTest
+public class TestFilenameProcessing extends BaseTest
 {
     // See also TestFunction2 for tests for encode_for_uri
-
     @Test public void encode_1() { encodeComponent("abc", "abc") ; }
     @Test public void encode_2() { encodeComponent("", "") ; }
-    
     @Test public void encode_3() { encodeComponent(":/", "%3A%2F") ; }
-    
+
+    // ---- Main tests.
     // Portablility
-    private static String cwd = new File(".").getAbsolutePath() ;
     
+    private static String cwd = new File(".").getAbsolutePath() ;
+    // Without trailing slash.
     static { cwd = cwd.substring(0, cwd.length()-2) ; }
     
-    @Test public void fileURL_1() { filenameToIRI("abc", "file://"+cwd+"/abc" ) ; }
+    @Test public void fileURL_1() { assertNotEquals(cwd, "") ; assertNotNull(cwd) ; filenameToIRI("abc", "file://"+cwd+"/abc" ) ; }
     
     @Test public void fileURL_2() { filenameToIRI("/abc", "file:///abc" ) ; }
     

@@ -57,7 +57,7 @@ import com.hp.hpl.jena.update.GraphStore ;
 import com.hp.hpl.jena.update.UpdateException ;
 import com.hp.hpl.jena.util.FileManager ;
 
-/** Implementation of general purpose update reuest execution */ 
+/** Implementation of general purpose update request execution */ 
 public class UpdateEngineWorker implements UpdateVisitor
 {
     protected final GraphStore graphStore ;
@@ -243,7 +243,8 @@ public class UpdateEngineWorker implements UpdateVisitor
         // USING overrides WITH
         if ( dsg == null && withGraph != null )
         {
-            Graph g = graphStore.getGraph(withGraph) ;
+            //Graph g = graphStore.getGraph(withGraph) ;
+            Graph g = graph(graphStore, withGraph) ;
             dsg = new DatasetGraphAltDefaultGraph(graphStore, g) ;
         }
         if ( dsg == null )

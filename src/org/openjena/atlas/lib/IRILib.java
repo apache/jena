@@ -40,10 +40,57 @@ public class IRILib
     
     
     private static boolean isWindows = (File.pathSeparatorChar == ';' ) ;
+    //public static void setIsWindowsForTesting(boolean val) { isWindows = val ; }
 
-    static String cwd = new File(".").getAbsolutePath() ;
-    // Current directory, without trailing "/"
-    static { cwd = cwd.substring(0, cwd.length()-2) ; }
+    // http://www.w3.org/TR/xpath-functions/#func-encode-for-uri
+    // Encodes delimiters.
+    
+    /* RFC 3986
+     * 
+     * unreserved  = ALPHA / DIGIT / "-" / "." / "_" / "~"
+     *  gen-delims  = ":" / "/" / "?" / "#" / "[" / "]" / "@"
+     * sub-delims  = "!" / "$" / "&" / "'" / "(" / ")"
+                    / "*" / "+" / "," / ";" / "="
+     */
+    
+    private static char uri_reserved[] = 
+    { 
+      '!', '*', '"', '\'', '(', ')', ';', ':', '@', '&', 
+      '=', '+', '$', ',', '/', '?', '%', '#', '[', ']'} ;
+
+    // No allowed in URIs
+    private static char uri_non_chars[] = { '<', '>', '{', '}', '|', '\\', '`', '^', ' ',  '\n', '\r', '\t' } ;
+
+    private static char[] charsComponent =
+    // reserved, + non-chars + nasties.
+    { '!', '*', '"', '\'', '(', ')', ';', ':', '@', '&', 
+      '=', '+', '$', ',', '/', '?', '%', '#', '[', ']',
+      '{', '}', '|', '\\', '`', '^',
+      ' ', '<', '>', '\n', '\r', '\t' } ;
+
+    private static char[] charsPath =  
+    {
+        // Reserved except leave the separators alone. 
+        // Leave the path separator alone.
+        // Leave the drive separator alone.
+        '!', '*', '"', '\'', '(', ')', ';', /*':',*/ '@', '&',
+        '=', '+', '$', ',', /*'/',*/ '?', '%', '#', '[', ']',
+        '{', '}', '|', '\\', '`', '^',
+        // Other junk 
+        ' ', '<', '>', '\n', '\r', '\t' } ;
+
+    // The initializers must have run.
+    static final String cwd ; 
+    static final String cwdURL ;
+    
+    // Current directory, with trailing "/"
+    // This matters for resolution.
+    static { 
+        String x = new File(".").getAbsolutePath() ;
+        x = x.substring(0, x.length()-1) ;
+        cwd = x ;
+        cwdURL = plainFilenameToURL(cwd) ;
+    }
     
     // See also IRIResolver     
     /** Encode using the rules for a path (e.g. ':' and'/' do not get encoded) */
@@ -54,9 +101,9 @@ public class IRILib
         // Accept file: and lightly sanitize.
         // else work harder
         
-        if ( fn == null ) return null ;
+        if ( fn == null ) return cwdURL ;
         
-        if ( fn.length() == 0 ) {}
+        if ( fn.length() == 0 ) return cwdURL ;
         if ( fn.length() == 1 ) {}
         
         if ( fn.startsWith("file:") )
@@ -91,7 +138,7 @@ public class IRILib
         if ( isWindows )
         {
             // Char 2, 
-            if ( fn.charAt(1) == ':' )
+            if ( fn.length() >= 2 && fn.charAt(1) == ':' )
                 // Windows drive letter - already absolute path.
                 fn = "file:///"+fn ;
             // Convert \ to /
@@ -167,45 +214,7 @@ public class IRILib
                 return true;
         }
         return false ;
-    }
-    
-    // http://www.w3.org/TR/xpath-functions/#func-encode-for-uri
-    // Encodes delimiters.
-
-    /* RFC 3986
-     * 
-     * unreserved  = ALPHA / DIGIT / "-" / "." / "_" / "~"
-     *  gen-delims  = ":" / "/" / "?" / "#" / "[" / "]" / "@"
-     * sub-delims  = "!" / "$" / "&" / "'" / "(" / ")"
-                    / "*" / "+" / "," / ";" / "="
-     */
-    
-    private static char uri_reserved[] = 
-    { 
-      '!', '*', '"', '\'', '(', ')', ';', ':', '@', '&', 
-      '=', '+', '$', ',', '/', '?', '%', '#', '[', ']'} ;
-    
-    // No allowed in URIs
-    private static char uri_non_chars[] = { '<', '>', '{', '}', '|', '\\', '`', '^', ' ',  '\n', '\r', '\t' } ;
-
-    
-    private static char[] charsComponent =
-        // reserved, + non-chars + nasties.
-        { '!', '*', '"', '\'', '(', ')', ';', ':', '@', '&', 
-          '=', '+', '$', ',', '/', '?', '%', '#', '[', ']',
-          '{', '}', '|', '\\', '`', '^',
-          ' ', '<', '>', '\n', '\r', '\t' } ; 
-    
-    private static char[] charsPath =  
-    {
-        // Reserved except leave the separators alone. 
-        // Leave the path separator alone.
-        // Leave the drive separator alone.
-        '!', '*', '"', '\'', '(', ')', ';', /*':',*/ '@', '&',
-        '=', '+', '$', ',', /*'/',*/ '?', '%', '#', '[', ']',
-        '{', '}', '|', '\\', '`', '^',
-        // Other junk 
-        ' ', '<', '>', '\n', '\r', '\t' } ; 
+    } 
 }
 
 /*
