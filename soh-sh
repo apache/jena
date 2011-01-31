@@ -1,5 +1,10 @@
 #!/bin/bash
 
+DS=ds
+
 curl -d 'BASE <http://example/> INSERT DATA { <s> <p> <o> }' \
  -H Content-type:application/sparql-update \
-  http://localhost:3030/dataset/update
+  http://localhost:3030/$DS/update
+
+# -T == --upload_file
+curl -T - http://localhost:3030/$DS -H "Content-type:text/turtle" D.ttl 
