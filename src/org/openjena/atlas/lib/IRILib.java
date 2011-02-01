@@ -60,6 +60,10 @@ public class IRILib
 
     // No allowed in URIs
     private static char uri_non_chars[] = { '<', '>', '{', '}', '|', '\\', '`', '^', ' ',  '\n', '\r', '\t' } ;
+    
+    // RFC 2396
+    //private static char uri_unwise[]    = { '{' , '}', '|', '\\', '^', '[', ']', '`' } ;
+
 
     private static char[] charsComponent =
     // reserved, + non-chars + nasties.

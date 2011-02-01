@@ -40,8 +40,8 @@ public abstract class IRIResolver
         //iriFactory.shouldViolation(false,true);
 
         // Moderate it -- allow unwise chars and any scheme name.
-        iriFactory.setIsError(ViolationCodes.UNWISE_CHARACTER,false);
-        iriFactory.setIsWarning(ViolationCodes.UNWISE_CHARACTER,false);
+//        iriFactory.setIsError(ViolationCodes.UNWISE_CHARACTER,false);
+//        iriFactory.setIsWarning(ViolationCodes.UNWISE_CHARACTER,false);
 
         iriFactory.setIsError(ViolationCodes.UNREGISTERED_IANA_SCHEME,false);
         iriFactory.setIsWarning(ViolationCodes.UNREGISTERED_IANA_SCHEME,false);

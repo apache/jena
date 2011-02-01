@@ -104,8 +104,6 @@ public class RunARQ
         int cmp = dur1.compare(dur2);
         System.out.println("Compare = " + cmp);
     }
-    
-    
 
     public static void exit(int code)
     {
@@ -118,8 +116,7 @@ public class RunARQ
     
     public static void main(String[] argv) throws Exception
     {
-        arq.qparse.main("--file=aq0.ru") ; exit(0) ;
-        
+//        processIRI("http://example/<c") ;
         riotcmd.printtokens.main("D.nt") ;
         exit(0) ;
         

@@ -5,19 +5,10 @@ public class DevARQ
 {
     // Mem dataset with union graph
 
-    // N-triples <http://example/a> <http://example/b> <http://example/<c> .
-    // parses OK (!!!!!)
-    // Need "readURI" in tokenizer.text
-    
     // Where does filename => URI happen?   IRIResolver.chooseBaseURI().toString() ;
     
     // RIOT -- improper URI as base URI.
-    // Now filename => URi for base : this is a conversion
-    // -- Loading RDF/XML -- URI checking.
-    // Check tokenizing speed.
-    // The Node cache makes difference (~2% better).  Can we do better, locally?
-    // Prepare for no Nodecache, and no value.
-    // Jena3: Node as holder, delay value. 
+    // Now filename => URI for base : this is a conversion
     
     // OpExecute example.
     

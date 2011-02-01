@@ -151,7 +151,7 @@ public final class TokenizerText implements Tokenizer
             // TODO <= as a symbol.
             // Look at next char. a '=' swap to a more expensive scan to ">" 
             reader.readChar() ;
-            token.setImage(allBetween(CH_LT, CH_GT, false, false)) ;
+            token.setImage(readIRI()) ;
             token.setType(TokenType.IRI) ;
             if ( Checking ) checkURI(token.getImage()) ;
             return token ;
@@ -187,7 +187,7 @@ public final class TokenizerText implements Tokenizer
             else
             {
                 // Single quote character.
-                token.setImage(allBetween(ch, ch, true, false)) ;
+                token.setImage(readString(ch, ch, true)) ;
                 // Single quoted string.
                 token.setType( (ch == CH_QUOTE1) ? TokenType.STRING1 : TokenType.STRING2 ) ;
             }
@@ -390,6 +390,45 @@ public final class TokenizerText implements Tokenizer
         return token ;
     }
 
+    //static char[] badIRIchars = { '<', '>', '{', '}', '|', '\\', '`', '^', ' ' } ; 
+    private String readIRI()
+    {
+        //token.setImage(readString(CH_LT, CH_GT, false)) ;
+        long y = getLine() ;
+        long x = getColumn() ;
+        stringBuilder.setLength(0) ;
+        for(;;)
+        {
+            int ch = reader.readChar() ;
+            if ( ch == EOF )
+            {
+                //if ( endNL ) return stringBuilder.toString() ; 
+                exception("Broken IRI: "+stringBuilder.toString(), y, x) ;
+            }
+
+            if ( ch == '\n' )
+                exception("Broken IRI (newline): "+stringBuilder.toString(), y, x) ;
+            
+            if ( ch == CH_GT )
+            {
+                //sb.append(((char)ch)) ;
+                return stringBuilder.toString() ;
+            }
+            
+            if ( ch == '\\' )
+            {
+                // N-Triples strictly allows \t\n etc in IRIs (grammar says "string escapes")
+                // ch = strEscapes ? readLiteralEscape() : readUnicodeEscape() ;
+                ch = readUnicodeEscape() ;
+                // Drop through.
+            }
+            // Ban certain very bad characters
+            if ( ch == '<' )
+                exception("Broken IRI (bad character: '"+(char)ch+"'): "+stringBuilder.toString(), y, x) ;
+            insertCodepoint(stringBuilder, ch) ;
+        }
+    }
+    
     private void readPrefixedNameOrKeyword(Token token)
     {
         long posn = reader.getPosition() ;
@@ -414,6 +453,48 @@ public final class TokenizerText implements Tokenizer
         
     }
     
+    // Get characters between two markers.
+    // strEscapes may be processed
+    // endNL end of line as an ending is OK
+    private String readString(int startCh, int endCh, boolean strEscapes)
+    {
+        long y = getLine() ;
+        long x = getColumn() ;
+        stringBuilder.setLength(0) ;
+
+        // Assumes first char read already.
+        //        int ch0 = reader.readChar() ;
+        //        if ( ch0 != startCh )
+        //            exception("Broken parser", y, x) ;
+
+
+        for(;;)
+        {
+            int ch = reader.readChar() ;
+            if ( ch == EOF )
+            {
+                //if ( endNL ) return stringBuilder.toString() ; 
+                exception("Broken token: "+stringBuilder.toString(), y, x) ;
+            }
+
+            if ( ch == '\n' )
+                exception("Broken token (newline): "+stringBuilder.toString(), y, x) ;
+
+            if ( ch == endCh )
+            {
+                //sb.append(((char)ch)) ;
+                return stringBuilder.toString() ;
+            }
+
+            if ( ch == '\\' )
+            {
+                ch = strEscapes ? readLiteralEscape() : readUnicodeEscape() ;
+                // Drop through.
+            }
+            insertCodepoint(stringBuilder, ch) ;
+        }
+    }
+
     private String readLongString(int quoteChar, boolean endNL)
     {
         stringBuilder.setLength(0) ;
@@ -517,47 +598,53 @@ public final class TokenizerText implements Tokenizer
         return stringBuilder.toString() ;
     }
 
-    // Need "readCharOrEscape"
-    
-    // Assume have read the first quote char.
-    // On return:
-    //   If false, have moved over no more characters (due to pushbacks) 
-    //   If true, at end of 3 quotes
-    private boolean threeQuotes(int ch)
+    // Blank node label: letters, numbers and '-', '_'
+    // Strictly, can't start with "-" or digits.
+
+    private String readBlankNodeLabel()
     {
-        //reader.readChar() ;         // Read first quote.
-        int ch2 = reader.peekChar() ;
-        if (ch2 != ch )
+        stringBuilder.setLength(0) ;
+        // First character.
         {
-            //reader.pushbackChar(ch2) ;
-            return false ;
+            int ch = reader.peekChar() ;
+            if ( ch == EOF )
+                exception("Blank node label missing (EOF found)") ;
+            if ( isWhitespace(ch))
+                exception("Blank node label missing") ;
+            //if ( ! isAlpha(ch) && ch != '_' )
+            // Not strict
+            if ( ! isAlphaNumeric(ch) && ch != '_' )
+                exception("Blank node label does not start with alphabetic or _ :"+(char)ch) ;
+            reader.readChar() ;
+            stringBuilder.append((char)ch) ;
         }
-        
-        reader.readChar() ;         // Read second quote.
-        int ch3 = reader.peekChar() ;
-        if ( ch3 != ch )
+        // Remainder.
+        for(;;)
         {
-            //reader.pushbackChar(ch3) ;
-            reader.pushbackChar(ch2) ;
-            return false ;
+            int ch = reader.peekChar() ;
+            if ( ch == EOF )
+                break ;
+            if ( ! isAlphaNumeric(ch) && ch != '-' && ch != '_' )
+                break ;
+            reader.readChar() ;
+            stringBuilder.append((char)ch) ;
         }
-            
-        // Three quotes.
-        reader.readChar() ;         // Read third quote.
-        return true ;
+        //        if ( ! seen )
+        //            exception("Blank node label missing") ;
+        return stringBuilder.toString() ; 
     }
 
     // Make better!
-    /*
-    [16]    integer         ::=     ('-' | '+') ? [0-9]+
-    [17]    double          ::=     ('-' | '+') ? ( [0-9]+ '.' [0-9]* exponent | '.' ([0-9])+ exponent | ([0-9])+ exponent )
-                                    0.e0, .0e0, 0e0
-    [18]    decimal         ::=     ('-' | '+')? ( [0-9]+ '.' [0-9]* | '.' ([0-9])+ | ([0-9])+ )
-                                    0.0 .0
-    [19]    exponent        ::=     [eE] ('-' | '+')? [0-9]+
-    []      hex             ::=     0x0123456789ABCDEFG
-    
-    */
+/*
+        [16]    integer         ::=     ('-' | '+') ? [0-9]+
+        [17]    double          ::=     ('-' | '+') ? ( [0-9]+ '.' [0-9]* exponent | '.' ([0-9])+ exponent | ([0-9])+ exponent )
+                                        0.e0, .0e0, 0e0
+        [18]    decimal         ::=     ('-' | '+')? ( [0-9]+ '.' [0-9]* | '.' ([0-9])+ | ([0-9])+ )
+                                        0.0 .0
+        [19]    exponent        ::=     [eE] ('-' | '+')? [0-9]+
+        []      hex             ::=     0x0123456789ABCDEFG
+
+ */
     private void readNumber()
     {
         // One entry, definitely a number.
@@ -642,7 +729,6 @@ public final class TokenizerText implements Tokenizer
             token.setType(TokenType.INTEGER) ;
     }
 
-    
     private static void readHex(PeekReader reader, StringBuilder sb)
     {
         // Just after the 0x, which are in sb
@@ -661,30 +747,6 @@ public final class TokenizerText implements Tokenizer
             exception(reader, "No hex characters after "+sb.toString()) ;
     }
 
-    private boolean exponent(StringBuilder sb)
-    {
-        int ch = reader.peekChar() ;
-        if ( ch != 'e' && ch != 'E' )
-            return false ;
-        reader.readChar() ;
-        sb.append((char)ch) ;
-        readPossibleSign(sb) ;
-        int x = readDigits(sb) ;
-        if ( x == 0 )
-            exception("Malformed double: "+sb) ;
-        return true ;
-    }
-
-    private void readPossibleSign(StringBuilder sb)
-    {
-        int ch = reader.peekChar() ;
-        if ( ch == '-' || ch == '+' )
-        {
-            reader.readChar() ;
-            sb.append((char)ch) ;
-        }
-    }
-
     private int readDigits(StringBuilder buffer)
     {
         int count = 0 ;
@@ -699,7 +761,59 @@ public final class TokenizerText implements Tokenizer
         }
         return count ;
     }
-    
+
+    private void readPossibleSign(StringBuilder sb)
+    {
+        int ch = reader.peekChar() ;
+        if ( ch == '-' || ch == '+' )
+        {
+            reader.readChar() ;
+            sb.append((char)ch) ;
+        }
+    }
+
+    // Assume have read the first quote char.
+    // On return:
+    //   If false, have moved over no more characters (due to pushbacks) 
+    //   If true, at end of 3 quotes
+    private boolean threeQuotes(int ch)
+    {
+        //reader.readChar() ;         // Read first quote.
+        int ch2 = reader.peekChar() ;
+        if (ch2 != ch )
+        {
+            //reader.pushbackChar(ch2) ;
+            return false ;
+        }
+        
+        reader.readChar() ;         // Read second quote.
+        int ch3 = reader.peekChar() ;
+        if ( ch3 != ch )
+        {
+            //reader.pushbackChar(ch3) ;
+            reader.pushbackChar(ch2) ;
+            return false ;
+        }
+            
+        // Three quotes.
+        reader.readChar() ;         // Read third quote.
+        return true ;
+    }
+
+    private boolean exponent(StringBuilder sb)
+    {
+        int ch = reader.peekChar() ;
+        if ( ch != 'e' && ch != 'E' )
+            return false ;
+        reader.readChar() ;
+        sb.append((char)ch) ;
+        readPossibleSign(sb) ;
+        int x = readDigits(sb) ;
+        if ( x == 0 )
+            exception("Malformed double: "+sb) ;
+        return true ;
+    }
+
     private String langTag()
     {
         stringBuilder.setLength(0) ;
@@ -755,89 +869,7 @@ public final class TokenizerText implements Tokenizer
         }
     }
 
-    // Blank node label: letters, numbers and '-', '_'
-    // Strictly, can't start with "-" or digits.
-    
-    private String readBlankNodeLabel()
-    {
-        stringBuilder.setLength(0) ;
-        // First character.
-        {
-            int ch = reader.peekChar() ;
-            if ( ch == EOF )
-                exception("Blank node label missing (EOF found)") ;
-            if ( isWhitespace(ch))
-                exception("Blank node label missing") ;
-            //if ( ! isAlpha(ch) && ch != '_' )
-            // Not strict
-            if ( ! isAlphaNumeric(ch) && ch != '_' )
-                exception("Blank node label does not start with alphabetic or _ :"+(char)ch) ;
-            reader.readChar() ;
-            stringBuilder.append((char)ch) ;
-        }
-        // Remainder.
-        for(;;)
-        {
-            int ch = reader.peekChar() ;
-            if ( ch == EOF )
-                break ;
-            if ( ! isAlphaNumeric(ch) && ch != '-' && ch != '_' )
-                break ;
-            reader.readChar() ;
-            stringBuilder.append((char)ch) ;
-        }
-//        if ( ! seen )
-//            exception("Blank node label missing") ;
-        return stringBuilder.toString() ; 
-    }
 
-    
-    // Get characters between two markers.
-    // strEscapes may be processed
-    // endNL end of line as an ending is OK
-    private String allBetween(int startCh, int endCh,
-                              boolean strEscapes, boolean endNL)
-    {
-        long y = getLine() ;
-        long x = getColumn() ;
-        stringBuilder.setLength(0) ;
-
-        // Assumes first char read already.
-//        int ch0 = reader.readChar() ;
-//        if ( ch0 != startCh )
-//            exception("Broken parser", y, x) ;
-
-        
-        for(;;)
-        {
-            int ch = reader.readChar() ;
-            if ( ch == EOF )
-            {
-                if ( endNL ) return stringBuilder.toString() ; 
-                exception("Broken token: "+stringBuilder.toString(), y, x) ;
-            }
-
-            if ( ch == '\n' )
-                exception("Broken token (newline): "+stringBuilder.toString(), y, x) ;
-            
-            if ( ch == endCh )
-            {
-                //sb.append(((char)ch)) ;
-                return stringBuilder.toString() ;
-            }
-            
-            if ( ch == '\\' )
-            {
-                if ( strEscapes )
-                    ch = readLiteralEscape() ;
-                else
-                    ch = readUnicodeEscape() ;
-                // Drop through.
-            }
-            insertCodepoint(stringBuilder, ch) ;
-        }
-    }
-    
     private void insertCodepoint(StringBuilder buffer, int ch)
     {
         if ( Character.charCount(ch) == 1 )
