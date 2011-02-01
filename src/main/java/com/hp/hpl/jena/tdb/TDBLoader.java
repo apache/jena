@@ -63,7 +63,7 @@ public class TDBLoader
         loader.loadDataset(dataset, urls) ;
     }
     
-    /** Load the contents of URL into a dataset.  URL must name a quads format file (NQuads or TriG - NTriples is also accepted).
+    /** Load the contents of URL into a dataset.  Input is NQUADS.
      *  To load a triples format, use @link{#load(GraphTDB, List<String>, boolean)} 
      *  or @link{#loadTriples(DatasetGraphTDB, List<String>, boolean)} 
     */
@@ -71,10 +71,9 @@ public class TDBLoader
     {
         TDBLoader loader = new TDBLoader() ;
         loader.setShowProgress(showProgress) ;
+        // TODO Lang version
         loader.loadDataset(dataset, input) ;
     }
-    
-    
     
     /** Load the contents of URL into a graph */
     public static void load(GraphTDB graph, String url)

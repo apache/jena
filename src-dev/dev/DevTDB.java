@@ -10,6 +10,8 @@ public class DevTDB
     //  Check?  Test cases.
     // --base=
     
+    // TDBLoader.load(dsg, input, lang, base, showProgress)
+    
     // Include some data in distribution.
     
     // ** Reorganise documentation.
