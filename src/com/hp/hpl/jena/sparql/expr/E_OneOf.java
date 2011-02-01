@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2010 Talis Information Ltd.
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -15,12 +16,15 @@ import com.hp.hpl.jena.sparql.function.FunctionEnv ;
 public class E_OneOf extends E_OneOfBase
 {
     private static final String printName = "in" ;
-    private Expr expr ;
-    private ExprList possibleValues ;
     
     public E_OneOf(Expr expr, ExprList args)
     {
         super(printName, expr, args) ;
+    }
+    
+    protected E_OneOf(ExprList args)
+    {
+        super(printName, args) ;
     }
 
     @Override
@@ -37,12 +41,14 @@ public class E_OneOf extends E_OneOfBase
     @Override
     protected Expr copy(ExprList newArgs)
     {
-        return new E_OneOf(expr, newArgs) ;
+        // Need some care to extract the first expression. 
+        return new E_OneOf(newArgs) ;
     }
 }
 
 /*
  * (c) Copyright 2010 Talis Information Ltd.
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

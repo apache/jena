@@ -30,7 +30,7 @@ public class SystemARQ
     /** Sync a if provided. Do nothing if not TDB-backed. */
     public static void sync(Graph graph)
     {
-        sync(graph, true) ;
+        syncObject(graph) ;
     }
 
     /** Sync a Dataset, if underlying storage provides sync. */
@@ -44,7 +44,7 @@ public class SystemARQ
     { 
         if ( dataset instanceof Sync )
         {
-            ((Sync)dataset).sync(true) ;
+            ((Sync)dataset).sync() ;
             return ;
         }
         else
@@ -55,21 +55,20 @@ public class SystemARQ
             {
                 Node n = iter.next();
                 Graph g = dataset.getGraph(n) ;
-                sync(g, true) ;
+                sync(g) ;
             }
         }
     }
- 
     
     /** Sync an object if synchronizable (model, graph, dataset). 
      *  If force is true, synchronize as much as possible (e.g. file metadata)
      *  else make a reasonable attenpt at synchronization but does not gauarantee disk state. 
      *  Do nothing otherwise 
      */
-    private static void sync(Object object, boolean force)
+    public static void syncObject(Object object)
     {
         if ( object instanceof Sync )
-            ((Sync)object).sync(force) ;
+            ((Sync)object).sync() ;
     }
     
     

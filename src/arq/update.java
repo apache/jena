@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -13,6 +14,7 @@ import arq.cmd.CmdException ;
 import arq.cmdline.ArgDecl ;
 import arq.cmdline.CmdUpdate ;
 
+import com.hp.hpl.jena.sparql.SystemARQ ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 import com.hp.hpl.jena.update.GraphStore ;
@@ -72,7 +74,7 @@ public class update extends CmdUpdate
             requestString = indirect(requestString) ;
             execOne(requestString, graphStore) ;
         }
-        
+        SystemARQ.sync(graphStore) ;
         if ( dump )
             SSE.write(graphStore) ;
     }
@@ -93,6 +95,7 @@ public class update extends CmdUpdate
 
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

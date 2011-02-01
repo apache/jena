@@ -11,14 +11,24 @@ import com.hp.hpl.jena.sparql.function.FunctionEnv ;
 
 public abstract class E_OneOfBase extends ExprFunctionN
 {
-    private Expr expr ;
-    private ExprList possibleValues ;
+    protected final Expr expr ;
+    protected final ExprList possibleValues ;
     
     protected E_OneOfBase(String name, Expr expr, ExprList args)
     {
         super(name, fixup(expr, args)) ;
         this.expr = expr ;
         this.possibleValues = args ;
+    }
+    
+    // All ArgList, first arg is the expression.
+    protected E_OneOfBase(String name, ExprList args)
+    {
+        super(name, args) ;
+        ExprList x = new ExprList(args) ;
+        this.expr = x.get(0) ;
+        x.getList().remove(0) ;
+        this.possibleValues = x ;
     }
     
     private static ExprList fixup(Expr expr2, ExprList args)

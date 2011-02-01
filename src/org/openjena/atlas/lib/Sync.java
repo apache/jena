@@ -9,7 +9,6 @@ package org.openjena.atlas.lib;
 public interface Sync
 {
     public void sync() ;
-    public void sync(boolean force) ;   // Remove?
 }
 
 /*

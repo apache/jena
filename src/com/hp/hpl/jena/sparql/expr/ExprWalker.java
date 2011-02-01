@@ -45,11 +45,11 @@ public class ExprWalker //implements ExprVisitor
             for ( int i = 1 ; i <= func.numArgs() ; i++ )
             {
                 Expr expr = func.getArg(i) ;
-              if ( expr == null )
-                  // Put a dummy in, e.g. to keep the transform stack aligned.
-                  NodeValue.nvNothing.visit(this) ;
-              else
-                  expr.visit(this) ;
+                if ( expr == null )
+                    // Put a dummy in, e.g. to keep the transform stack aligned.
+                    NodeValue.nvNothing.visit(this) ;
+                else
+                    expr.visit(this) ;
             }
             if ( !topDown )
                 func.visit(visitor) ;

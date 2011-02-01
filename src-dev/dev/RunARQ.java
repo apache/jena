@@ -118,6 +118,8 @@ public class RunARQ
     
     public static void main(String[] argv) throws Exception
     {
+        arq.qparse.main("--file=aq0.ru") ; exit(0) ;
+        
         riotcmd.printtokens.main("D.nt") ;
         exit(0) ;
         

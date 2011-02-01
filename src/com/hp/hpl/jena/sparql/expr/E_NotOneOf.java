@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2010 Talis Information Ltd.
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -15,14 +16,17 @@ import com.hp.hpl.jena.sparql.function.FunctionEnv ;
 public class E_NotOneOf extends E_OneOfBase
 {
     private static final String printName = "notin" ;
-    private Expr expr ;
-    private ExprList possibleValues ;
     
     public E_NotOneOf(Expr expr, ExprList args)
     {
         super(printName, expr, args) ;
     }
 
+    protected E_NotOneOf(ExprList args)
+    {
+        super(printName, args) ;
+    }
+    
     @Override
     public NodeValue evalSpecial(Binding binding, FunctionEnv env)
     {
@@ -37,12 +41,14 @@ public class E_NotOneOf extends E_OneOfBase
     @Override
     protected Expr copy(ExprList newArgs)
     {
-        return new E_NotOneOf(expr, newArgs) ;
+        return new E_NotOneOf(newArgs) ;
     }
 }
 
 /*
  * (c) Copyright 2010 Talis Information Ltd.
+ * (c) Copyright 2011 Epimorphics Ltd.
+ * 
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
