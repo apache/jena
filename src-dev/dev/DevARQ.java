@@ -3,6 +3,12 @@ package dev ;
 
 public class DevARQ
 {
+    // Mem dataset with union graph
+
+    // N-triples <http://example/a> <http://example/b> <http://example/<c> .
+    // parses OK (!!!!!)
+    // Need "readURI" in tokenizer.text
+    
     // Where does filename => URI happen?   IRIResolver.chooseBaseURI().toString() ;
     
     // RIOT -- improper URI as base URI.

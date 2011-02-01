@@ -118,6 +118,9 @@ public class RunARQ
     
     public static void main(String[] argv) throws Exception
     {
+        riotcmd.printtokens.main("D.nt") ;
+        exit(0) ;
+        
         // See also FileUtils, IRIResolver.
         // test cases
         

@@ -7,11 +7,11 @@
 package riotcmd;
 
 
-public class perftokens
+public class printtokens
 {
     public static void main(String...args)
     {
-        CmdTokens.tokens(false, true,args) ;
+        CmdTokens.tokens(true, false, args) ;
     }
 }
 

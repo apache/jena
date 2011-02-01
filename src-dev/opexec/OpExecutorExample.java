@@ -126,7 +126,6 @@ public class OpExecutorExample //extends QueryEngineMain
             System.out.print("Execute: "+opFilter) ;
             return super.execute(opFilter, input) ;
         }
-
     }
     
     /** A factory to make OpExecutors */
@@ -141,6 +140,7 @@ public class OpExecutorExample //extends QueryEngineMain
         }
     }
 }
+
 /*
  * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
