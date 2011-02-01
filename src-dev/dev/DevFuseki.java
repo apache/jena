@@ -2,6 +2,8 @@ package dev;
 
 public class DevFuseki
 {
+    // Mem dataset with union graph
+    
     // Documentation:
     //   Plan documentation.
     //   MIME types supported
