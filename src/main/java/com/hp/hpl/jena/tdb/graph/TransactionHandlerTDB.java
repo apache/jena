@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -37,7 +38,7 @@ public class TransactionHandlerTDB extends TransactionHandlerBase //implements T
     //@Override
     public void commit()
     {
-        graph.sync(true) ;
+        graph.sync() ;
     }
 
     //@Override
@@ -49,6 +50,7 @@ public class TransactionHandlerTDB extends TransactionHandlerBase //implements T
 
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -32,7 +33,7 @@ public class UpdateListener extends GraphListenerBase
         {}
         else if ( value.equals(GraphStoreEvents.RequestFinishEvent) )
         {
-            sync.sync(false) ;
+            sync.sync() ;
         }
 
         super.notifyEvent(source, value) ;
@@ -53,6 +54,7 @@ public class UpdateListener extends GraphListenerBase
 
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

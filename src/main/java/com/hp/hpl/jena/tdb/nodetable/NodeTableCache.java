@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -177,14 +178,8 @@ public class NodeTableCache implements NodeTable
     }
 
     //@Override
-    public void sync() { sync(true) ; }
+    public void sync() { baseTable.sync() ; }
     
-    //@Override
-    public synchronized void sync(boolean force)
-    {
-        baseTable.sync(force) ;
-    }
-
     public Iterator<Pair<NodeId, Node>> all()
     {
         return baseTable.all() ;
@@ -192,6 +187,7 @@ public class NodeTableCache implements NodeTable
 }
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

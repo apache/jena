@@ -97,7 +97,7 @@ public class DatasetGraphTDB extends DatasetGraphCaching
 
     protected static Iterator<Quad> triples2quadsDftGraph(Iterator<Triple> iter)
     {
-        return triples2quads(Quad.tripleInQuad, iter) ;
+        return triples2quads(Quad.defaultGraphIRI, iter) ;
     }
     
 //    @Override
@@ -257,14 +257,11 @@ public class DatasetGraphTDB extends DatasetGraphCaching
     public Location getLocation()       { return location ; }
 
     //@Override
-    public void sync() { sync(true) ; }
-    
-    //@Override
-    public void sync(boolean force)
+    public void sync()
     {
-        tripleTable.sync(force) ;
-        quadTable.sync(force) ;
-        prefixes.sync(force) ;
+        tripleTable.sync() ;
+        quadTable.sync() ;
+        prefixes.sync() ;
     }
     
     // Done by superclass that then call _close. public void close()
@@ -274,7 +271,7 @@ public class DatasetGraphTDB extends DatasetGraphCaching
     public void startRequest()      {}
 
     //@Override
-    public void finishRequest()     { this.sync(true) ; } 
+    public void finishRequest()     { this.sync() ; } 
 
     //@Override
     public Dataset toDataset()      { return new DatasetImpl(this) ; }
@@ -309,6 +306,7 @@ public class DatasetGraphTDB extends DatasetGraphCaching
 
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

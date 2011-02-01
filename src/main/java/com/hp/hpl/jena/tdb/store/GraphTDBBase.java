@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -48,7 +49,6 @@ public abstract class GraphTDBBase extends GraphBase2 implements GraphTDB
     protected final DatasetGraphTDB dataset ;
     protected final Node graphNode ;
     protected final int syncPoint ;
-    //private long epoch = 4 ;                // And reads are always even.
 
     public GraphTDBBase(DatasetGraphTDB dataset, Node graphName)
     { 
@@ -82,6 +82,8 @@ public abstract class GraphTDBBase extends GraphBase2 implements GraphTDB
     @Override
     public final void performAdd(Triple triple)
     { 
+        // Should we do try{}finally{}?
+        // Here, no, if there is an exeception, the database is bad. 
         startUpdate() ;
         _performAdd(triple) ;
         finishUpdate() ;
@@ -100,10 +102,7 @@ public abstract class GraphTDBBase extends GraphBase2 implements GraphTDB
     protected abstract boolean _performDelete( Triple triple ) ;
     
     //@Override
-    public void sync() { sync(true) ; }
-
-    //@Override
-    public abstract void sync(boolean force) ;
+    public abstract void sync() ;
     
     @Override
     // make submodels think about this.
@@ -238,6 +237,7 @@ public abstract class GraphTDBBase extends GraphBase2 implements GraphTDB
 
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

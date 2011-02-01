@@ -1,67 +1,51 @@
 /*
- * (c) Copyright 2009 Hewlett-Packard Development Company, LP
- * (c) Copyright 2011 Epimorphics Ltd.
+ * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010, 2011 Epimorphics Ltd. 
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.nodetable;
+package tdb;
 
-import java.util.Iterator ;
+import tdb.cmdline.CmdTDB ;
+import tdb.cmdline.ModTDBDataset ;
+import arq.cmdline.ModDataset ;
 
-import org.openjena.atlas.lib.Pair ;
+import com.hp.hpl.jena.tdb.TDB ;
 
 
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
-import com.hp.hpl.jena.tdb.store.NodeId ;
-
-public class NodeTableWrapper implements NodeTable
+public class tdbupdate extends arq.update
 {
-    private final NodeTable nodeTable ;
-    
-    protected NodeTableWrapper(NodeTable nodeTable)
+    // Inherits from arq.update so is not a CmdTDB.  Mixins for Java!
+    public static void main(String...argv)
     {
-        this.nodeTable = nodeTable ;
+        new tdbupdate(argv).mainRun() ;
     }
     
-    
-    //@Override
-    public NodeId getAllocateNodeId(Node node)
+    public tdbupdate(String[] argv)
     {
-        return nodeTable.getAllocateNodeId(node) ;
+        super(argv) ;
+        // Because this inherits from an ARQ command
+        CmdTDB.init() ;
+        super.modVersion.addClass(TDB.class) ;
     }
 
-    //@Override
-    public NodeId getNodeIdForNode(Node node)
+    @Override
+    protected void processModulesAndArgs()
     {
-        return nodeTable.getNodeIdForNode(node) ;
-    }
-
-    //@Override
-    public Node getNodeForNodeId(NodeId id)
-    {
-        return nodeTable.getNodeForNodeId(id) ;
+        super.processModulesAndArgs() ;
     }
     
-    //@Override
-    public Iterator<Pair<NodeId, Node>> all()
-    {
-        return nodeTable.all();
-    }
-
-    //@Override
-    public void sync() { nodeTable.sync() ; } 
-
-    //@Override
-    public void close()
-    { nodeTable.close() ; }
-
+//    @Override
+//    protected ModDataset setModDataset()
+//    {
+//        return new ModTDBDataset() ;
+//    }
 }
 
 /*
- * (c) Copyright 2009 Hewlett-Packard Development Company, LP
- * (c) Copyright 2011 Epimorphics Ltd.
+ * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010, 2011 Epimorphics Ltd. 
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

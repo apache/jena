@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -165,7 +166,7 @@ public class SystemTDB
     // ---- Misc
     
     /** Number of adds/deletes between calls to sync (-ve to disable) */
-    public static final int SyncTick                = intValue("SyncTick", 100*1000) ;
+    public static final int SyncTick                = intValue("SyncTick", -1) ;
 
     // Choice is made in GraphTDBFactory
     public static ReorderTransformation defaultOptimizer = null ; //ReorderLib.fixed() ;
@@ -393,6 +394,7 @@ public class SystemTDB
 
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2010 Talis Systems Ltd.
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -59,9 +60,6 @@ public class NodeTupleTableWrapper implements NodeTupleTable
     public void sync()
     { nodeTupleTable.sync() ; }
 
-    public void sync(boolean force)
-    { nodeTupleTable.sync(force) ; }
-
     public void close()
     { nodeTupleTable.close() ; }
 
@@ -69,6 +67,7 @@ public class NodeTupleTableWrapper implements NodeTupleTable
 
 /*
  * (c) Copyright 2010 Talis Systems Ltd.
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

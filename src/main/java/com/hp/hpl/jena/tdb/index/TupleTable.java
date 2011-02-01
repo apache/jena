@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -161,15 +162,11 @@ public class TupleTable implements Sync, Closeable
     
     //@Override
     public void sync()
-    { sync(true) ; }
-    
-    //@Override
-    public void sync(boolean force)
     {
         for ( TupleIndex idx : indexes )
         {
             if ( idx != null )
-                idx.sync(force) ;
+                idx.sync() ;
         }
     }
 
@@ -212,6 +209,7 @@ public class TupleTable implements Sync, Closeable
 
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

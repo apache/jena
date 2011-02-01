@@ -51,6 +51,13 @@ public class RunTDB
             System.out.println(nextDivider) ;
         nextDivider = divider ;
     }
+    
+    static void exit(int rc)
+    {
+        System.out.println("EXIT") ;
+        System.exit(rc) ;
+    }
+    
 
     public static class DSB2 extends DatasetBuilderStd
     {
@@ -79,6 +86,8 @@ public class RunTDB
     
     public static void main(String[] args) throws Exception
     { 
+        tdb.tdbquery.main("--loc=DB", "--file=Q.rq") ; exit(0) ;
+        
         final Dataset ds = TDBFactory.createDataset() ;
         final DatasetGraph dsg = ds.asDatasetGraph() ;
         final Quad quad = SSE.parseQuad("(<g> <y> <p> 99)") ;

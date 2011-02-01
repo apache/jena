@@ -57,9 +57,9 @@ public class ConcurrencyPolicyMRSW implements ConcurrencyPolicy
         int R = readCounter.get() ;
         int W = writeCounter.get() ;
         if ( R > 0 && W > 0 )
-            throw new ConcurrentModificationException(format("Reader = %d, Writer = %d", R, W)) ; 
+            policyError(R, W) ;
         if ( W > 1 )
-            throw new ConcurrentModificationException(format("Reader = %d, Writer = %d", R, W)) ;
+            policyError(R, W) ;
     }
     
     //@Override
@@ -86,7 +86,10 @@ public class ConcurrencyPolicyMRSW implements ConcurrencyPolicy
             
             long now = eCount.get() ;
             if ( now != startEpoch )
-                throw new ConcurrentModificationException() ;
+            {
+                policyError(format("Iterator: started at %d, now %d", startEpoch, now)) ;
+
+            }
         }
         
         public boolean hasNext()
@@ -113,6 +116,17 @@ public class ConcurrencyPolicyMRSW implements ConcurrencyPolicy
         }
     }
 
+    
+    private static void policyError(int R, int W)
+    {
+        policyError(format("Reader = %d, Writer = %d", R, W)) ;
+    }
+    
+    private static void policyError(String message)
+    {
+        throw new ConcurrentModificationException(message) ;
+    }
+    
 
 }
 

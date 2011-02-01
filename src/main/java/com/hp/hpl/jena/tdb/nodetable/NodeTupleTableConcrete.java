@@ -233,16 +233,10 @@ public class NodeTupleTableConcrete implements NodeTupleTable
     // @Override
     public final void sync()
     {
-        sync(true) ;
-    }
-
-    // @Override
-    public final void sync(boolean force)
-    {
         try {
             startWrite() ;
-            tupleTable.sync(force) ;
-            nodeTable.sync(force) ;
+            tupleTable.sync() ;
+            nodeTable.sync() ;
         } finally { finishWrite() ; }
     }
 

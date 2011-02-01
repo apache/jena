@@ -1,6 +1,6 @@
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
- * (c) Copyright 2010 Epimorphics ltd.
+ * (c) Copyright 2010, 2011 Epimorphics ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -150,14 +150,13 @@ public class GraphNamedTDB extends GraphTDBBase
     @Override
     final public void close()
     { 
-        // Do nothing much.  May be returned via the dataset again later. 
-        sync(true) ;
+        sync() ;
     }
     
     @Override
-    public void sync(boolean force)
+    public void sync()
     {
-        dataset.sync(force);
+        dataset.sync();
     }
     
     @Override
@@ -166,7 +165,7 @@ public class GraphNamedTDB extends GraphTDBBase
 
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
- * (c) Copyright 2010 Epimorphics ltd.
+ * (c) Copyright 2010, 2011 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

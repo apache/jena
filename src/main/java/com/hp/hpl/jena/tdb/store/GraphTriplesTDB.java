@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -94,7 +95,7 @@ public class GraphTriplesTDB extends GraphTDBBase
         {
             // Part of a dataset which may be cached and so "close" is meaningless.
             // At least sync it to flush data to disk.
-            sync(true) ;
+            sync() ;
         }
         else            
         {
@@ -106,14 +107,14 @@ public class GraphTriplesTDB extends GraphTDBBase
     }
     
     @Override
-    public void sync(boolean force)
+    public void sync()
     {
         if ( dataset != null )
-            dataset.sync(force) ;
+            dataset.sync() ;
         else
         {
-            prefixes.sync(force) ;
-            tripleTable.sync(force);
+            prefixes.sync() ;
+            tripleTable.sync();
         }
     }
     
@@ -123,6 +124,7 @@ public class GraphTriplesTDB extends GraphTDBBase
 
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

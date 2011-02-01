@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -97,11 +98,7 @@ public class QuadTable implements Sync, Closeable
     public NodeTupleTable getNodeTupleTable() { return table ; }
 
     //@Override
-    public void sync() { sync(true) ; }
-
-    //@Override
-    public void sync(boolean force)
-    { table.sync(force) ; }
+    public void sync()              { table.sync() ; }
 
     public boolean isEmpty()        { return table.isEmpty() ; }
     
@@ -123,6 +120,7 @@ public class QuadTable implements Sync, Closeable
 
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

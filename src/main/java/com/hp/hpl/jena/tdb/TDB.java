@@ -1,5 +1,6 @@
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP}
+ * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -108,7 +109,7 @@ public class TDB
     /** Sync a TDB-backed Graph. Do nothing if not TDB-backed. */
     public static void sync(Graph graph)
     {
-        sync(graph, true) ;
+        syncObject(graph) ;
     }
 
     /** Sync a TDB-backed Dataset. Do nothing if not TDB-backed. */
@@ -121,8 +122,9 @@ public class TDB
     /** Sync a TDB-backed DatasetGraph. Do nothing if not TDB-backed. */
     public static void sync(DatasetGraph dataset)
     { 
+        // Should be: SystemARQ.sync(dataset) ;
         if ( dataset instanceof DatasetGraphTDB )
-            sync(dataset, true) ;
+            syncObject(dataset) ;
         else
         {
             // May be a general purpose dataset with TDB objects in it.
@@ -141,12 +143,12 @@ public class TDB
      *  else make a reasonable attenpt at synchronization but does not gauarantee disk state. 
      * Do nothing otherwise 
      */
-    private static void sync(Object object, boolean force)
+    private static void syncObject(Object object)
     {
         if ( object instanceof Sync )
-            ((Sync)object).sync(force) ;
+            ((Sync)object).sync() ;
     }
-    
+
     private static boolean initialized = false ;
     static { initialization1() ; }
     
@@ -175,7 +177,8 @@ public class TDB
             { try { TDBMaker.syncDatasetCache() ; } catch (Exception ex) {} }
         } ;
         
-        Runtime.getRuntime().addShutdownHook(new Thread(runnable)) ;
+        // This does not work with the conncurrency policy 
+        // Runtime.getRuntime().addShutdownHook(new Thread(runnable)) ;
         
         if ( log.isDebugEnabled() )
             log.debug("\n"+ARQ.getContext()) ;
@@ -236,6 +239,7 @@ public class TDB
 
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

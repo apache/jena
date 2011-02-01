@@ -201,12 +201,13 @@ public class BulkLoader
                 loaderTriples.loadIndexStart() ;
                 loaderTriples.loadIndexFinish() ;
                 loaderTriples.loadFinish() ;
+                dsg.sync();
             }
         } ;
         return sink ;
     }
 
-    private static Destination<Quad> destinationDataset(DatasetGraphTDB dsg, boolean showProgress)
+    private static Destination<Quad> destinationDataset(final DatasetGraphTDB dsg, boolean showProgress)
     {
         LoadMonitor monitor1 = createLoadMonitor(dsg, "triples", showProgress) ;
         LoadMonitor monitor2 = createLoadMonitor(dsg, "quads", showProgress) ;
@@ -251,6 +252,8 @@ public class BulkLoader
 
                 loaderTriples.loadFinish() ;
                 loaderQuads.loadFinish() ;
+                
+                dsg.sync() ;
             }
             
             final public void flush() { }

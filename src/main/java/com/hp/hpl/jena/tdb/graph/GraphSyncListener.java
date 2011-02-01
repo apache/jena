@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -25,13 +26,13 @@ public class GraphSyncListener extends GraphListenerCounter
     @Override
     protected void deleteTick()
     {
-        sync.sync(false) ;
+        sync.sync() ;
     }
 
     @Override
     protected void addTick()
     {
-        sync.sync(false);
+        sync.sync();
     }
 
     @Override
@@ -41,7 +42,7 @@ public class GraphSyncListener extends GraphListenerCounter
     @Override
     protected void finishRead()
     { 
-        sync.sync(true) ;
+        sync.sync() ;
     }
 
         
@@ -50,6 +51,7 @@ public class GraphSyncListener extends GraphListenerCounter
 
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

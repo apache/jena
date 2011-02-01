@@ -1,1 +1,62 @@
-select (count(*) AS ?count) { graph ?g { ?s ?p ?o } }
+PREFIX rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rex:   <http://jug.basistech.com/2011/01/rex-entity#>
+# prefixed used for injected predicate constraint, at least in a unit test.
+prefix rules:  <http://www.basistech.com/ontologies/2010/12/rules#>
+ 
+CONSTRUCT {
+  ?root rex:root "true" .
+  ?root ?p ?o .
+  ?root ?rp1 ?orel .
+  ?orel ?p2 ?orelobj .
+  ?osub ?rp2 ?root .
+ ?osub ?p3 ?osubobj .
+  ?rei1 ?rei_p1 ?rei_o1 .
+  ?rei2 ?rei_p2 ?rei_o2 .
+ 
+}
+WHERE
+{
+GRAPH <urn:jug:global> {
+  {
+    # All the triples that have the desired text.
+         ?root (rex:text|rex:alternateText) "Al-Qaida" .
+    # all our triples with that subject.
+         ?root ?p ?o .
+         FILTER (?p IN (rex:alternateText, rex:text, rex:translatedText, rex:corefChainDisplayDescription,
+                 rex:corefChainDisplayName, rex:documentId, rdf:type))
+         # relationships: two UNION alternatives for the two directions.
+        OPTIONAL {
+         ?root ?rp1 ?orel . # ?orel is the object of the relationship.
+         FILTER (?rp1 IN (rules:locatedAt))
+          # all our triples about ?orel
+          ?orel ?p2 ?orelobj .
+          FILTER (?p2 IN (rex:alternateText, rex:text, rex:translatedText, rex:corefChainDisplayDescription,
+                 rex:corefChainDisplayName, rex:documentId, rdf:type))
+          # grab reifications of rels between root and orel.
+          ?rei1 rdf:subject ?root .
+          ?rei1 rdf:object ?orel .
+          ?rei1 rdf:predicate ?rp1 .
+          # and all the facts about the rel.
+          ?rei1 ?rei_p1 ?rei_o1 .
+        } OPTIONAL {
+          ?osub ?rp2 ?root .
+         FILTER (?rp2 IN (rules:locatedAt))
+          # all our triples about ?osub
+          ?osub ?p3 ?osubobj .
+          FILTER (?p3 IN (rex:alternateText, rex:text, rex:translatedText, rex:corefChainDisplayDescription,
+                 rex:corefChainDisplayName, rex:documentId, rdf:type))
+          # grab reifications of rels between osub and root
+          ?rei2 rdf:subject ?osub .
+          ?rei2 rdf:object ?root .
+          ?rei2 rdf:predicate ?rp2 .
+          # and all the facts about the rel.
+          ?rei2 ?rei_p2 ?rei_o2 .
+        }
+  }
+        
+#end of GRAPH        
+  }
+#end of WHERE
+}
+ 
