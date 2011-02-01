@@ -28,6 +28,7 @@ import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.query.QueryParseException ;
+import com.hp.hpl.jena.sparql.SystemARQ ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.update.UpdateAction ;
 import com.hp.hpl.jena.update.UpdateException ;
@@ -200,6 +201,8 @@ public class SPARQL_Update extends SPARQL_ServletBase
         action.beginWrite() ;
         try {
             UpdateAction.execute(updateRequest, action.dsg) ;
+            // Make sure ...
+            SystemARQ.sync(action.dsg) ;
         }
         catch ( UpdateException ex) { errorBadRequest(ex.getMessage()) ; }
         finally { action.endWrite() ; }
