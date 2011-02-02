@@ -10,6 +10,7 @@ package com.hp.hpl.jena.tdb;
 import java.util.Iterator ;
 
 import org.openjena.atlas.lib.Sync ;
+import org.openjena.riot.SysRIOT ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
@@ -159,6 +160,7 @@ public class TDB
             return ;
         initialized = true ;
      
+        SysRIOT.wireIntoJena() ;
         SystemTDB.init() ;
         ARQ.init() ;
         EnvTDB.processGlobalSystemProperties() ;
@@ -170,15 +172,15 @@ public class TDB
 
         wireIntoExecution() ;
         
-        // Attempt to sync everything on exit.
-        // This can not be guaranteed.
-        Runnable runnable = new Runnable() {
-            public void run()
-            { try { TDBMaker.syncDatasetCache() ; } catch (Exception ex) {} }
-        } ;
-        
-        // This does not work with the conncurrency policy 
-        // Runtime.getRuntime().addShutdownHook(new Thread(runnable)) ;
+        // This does not work with the conncurrency policy
+        // Instead, assume all open files (direct and memory mapped) are sync'ed by the OS. 
+//        // Attempt to sync everything on exit.
+//        // This can not be guaranteed.
+//        Runnable runnable = new Runnable() {
+//            public void run()
+//            { try { TDBMaker.syncDatasetCache() ; } catch (Exception ex) {} }
+//        } ;
+//        Runtime.getRuntime().addShutdownHook(new Thread(runnable)) ;
         
         if ( log.isDebugEnabled() )
             log.debug("\n"+ARQ.getContext()) ;
