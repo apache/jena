@@ -42,9 +42,11 @@ public class ExprList implements Iterable<Expr>
         return true ;
     }
     
-    public Expr get(int idx) { return expressions.get(idx) ; }
-    public int size() { return expressions.size() ; }
-    public boolean isEmpty() { return expressions.isEmpty() ; }
+    public Expr get(int idx)    { return expressions.get(idx) ; }
+    public int size()           { return expressions.size() ; }
+    public boolean isEmpty()    { return expressions.isEmpty() ; }
+    public ExprList subList(int fromIdx, int toIdx)     { return new ExprList(expressions.subList(fromIdx, toIdx)) ; }
+    public ExprList tail(int fromIdx)                   { return subList(fromIdx, expressions.size()) ; }
     
     public Set<Var> getVarsMentioned()
     {

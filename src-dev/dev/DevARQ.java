@@ -10,6 +10,8 @@ public class DevARQ
     // RIOT -- improper URI as base URI.
     // Now filename => URI for base : this is a conversion
     
+    // RIOT - own node cache - per object type.
+    
     // OpExecute example.
     
     // More test in DatasetGraphTests

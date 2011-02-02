@@ -64,8 +64,6 @@ public class TransformExpandOneOf extends TransformCopy
                 Expr x = exprOneOf.getLHS() ;
                 Expr disjunction = null ;
                 // if ?x IN () then it's false regardless.  
-                // And breakup the conjunction.
-                // WRONG
                 for ( Expr sub : exprOneOf.getRHS() )
                 {
                     Expr e2 = new E_Equals(x, sub) ;

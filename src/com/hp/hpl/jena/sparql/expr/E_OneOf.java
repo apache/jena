@@ -15,6 +15,7 @@ import com.hp.hpl.jena.sparql.function.FunctionEnv ;
 
 public class E_OneOf extends E_OneOfBase
 {
+
     private static final String printName = "in" ;
     
     public E_OneOf(Expr expr, ExprList args)
@@ -41,7 +42,6 @@ public class E_OneOf extends E_OneOfBase
     @Override
     protected Expr copy(ExprList newArgs)
     {
-        // Need some care to extract the first expression. 
         return new E_OneOf(newArgs) ;
     }
 }

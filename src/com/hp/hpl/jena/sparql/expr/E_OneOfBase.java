@@ -10,7 +10,14 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
 
 public abstract class E_OneOfBase extends ExprFunctionN
-{
+{   
+    /* This operation stores it's arguments as a single list.
+     * The first element of the array is the expression being tested,
+     * the rest are the items to be used to test against.
+     * There are cached copies of the LHS (car) and RHS (cdr).
+     */
+    
+    // Cached values.
     protected final Expr expr ;
     protected final ExprList possibleValues ;
     
@@ -25,10 +32,8 @@ public abstract class E_OneOfBase extends ExprFunctionN
     protected E_OneOfBase(String name, ExprList args)
     {
         super(name, args) ;
-        ExprList x = new ExprList(args) ;
-        this.expr = x.get(0) ;
-        x.getList().remove(0) ;
-        this.possibleValues = x ;
+        this.expr = args.get(0) ;
+        this.possibleValues = args.tail(1) ;
     }
     
     private static ExprList fixup(Expr expr2, ExprList args)
@@ -38,8 +43,12 @@ public abstract class E_OneOfBase extends ExprFunctionN
         return allArgs ;
     }
 
-    public Expr getLHS() { return expr ; }
-    public ExprList getRHS() { return possibleValues ; }
+    public Expr getLHS()        { return expr ; }
+    public ExprList getRHS()    { return possibleValues; }
+
+    
+//    public Expr getLHS() { return expr ; }
+//    public ExprList getRHS() { return possibleValues ; }
 
     protected boolean evalOneOf(Binding binding, FunctionEnv env)
     {

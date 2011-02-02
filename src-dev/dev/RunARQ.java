@@ -116,10 +116,6 @@ public class RunARQ
     
     public static void main(String[] argv) throws Exception
     {
-//        processIRI("http://example/<c") ;
-        riotcmd.printtokens.main("D.nt") ;
-        exit(0) ;
-        
         // See also FileUtils, IRIResolver.
         // test cases
         
@@ -149,7 +145,7 @@ public class RunARQ
         System.out.println("DONE") ;
         System.exit(0) ;
         
-        
+        // Test the various languages
         
         SysRIOT.wireIntoJena() ;
         DatasetGraph dsg = DatasetLib.createDatasetGraphMem() ;
@@ -180,22 +176,6 @@ public class RunARQ
         Model m = ModelFactory.createDefaultModel() ; 
         m.read("file:D.ttl", "http://EXample/", "TTL") ;
         System.out.println("DONE") ;
-        System.exit(0) ;
-        
-        PrefixMapping pmap = new PrefixMappingImpl() ;
-        pmap.setNsPrefix("ex", "http://example/") ;
-        Path path =  PathParser.parse("ex:aprop", pmap) ;
-        PathLib.install("http://example/path", path) ;
-        
-        Query query = QueryFactory.create("PREFIX : <http://example/> SELECT * { ?x :path ?y } ") ;
-        Model model = FileManager.get().loadModel("D.ttl") ;
-        QueryExecution qexec = QueryExecutionFactory.create(query, model) ;
-
-        QueryExecUtils.executeQuery(query, qexec) ;
-        System.exit(0) ;
-        
-        
-        arq.qparse.main("--print=op", "--print=query", "--query=Q.arq") ;
         System.exit(0) ;
         
         //testXSDDurationBug() ; System.exit(0) ;
