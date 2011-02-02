@@ -116,8 +116,6 @@ public class RunARQ
     
     public static void main(String[] argv) throws Exception
     {
-        arq.qparse.main("--print=opt", "--file=Q.rq") ; exit(0) ;
-        
         // See also FileUtils, IRIResolver.
         // test cases
         

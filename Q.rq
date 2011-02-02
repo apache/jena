@@ -2,5 +2,8 @@ PREFIX : <http://example/>
 
 SELECT *
 {
- :a :p+ ?X 
+# :a :p+ ?X 
+  ?s ?p ?o .
+#   FILTER (?o IN (:10,:20,:30))
+  OPTIONAL { ?s ?p1 ?o1 . FILTER (?o1 IN (:1,:2,:3)) .}
 }
