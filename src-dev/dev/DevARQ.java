@@ -4,7 +4,8 @@ package dev ;
 public class DevARQ
 {
     // Mem dataset with union graph
-
+    // Not expanding IN inside OPTIONAL.
+    
     // Where does filename => URI happen?   IRIResolver.chooseBaseURI().toString() ;
     
     // RIOT -- improper URI as base URI.
