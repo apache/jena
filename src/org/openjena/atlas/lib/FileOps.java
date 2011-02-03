@@ -8,6 +8,8 @@ package org.openjena.atlas.lib;
 
 import java.io.File ;
 
+import org.openjena.atlas.logging.Log ;
+
 public class FileOps
 {
     private FileOps() {}
@@ -36,14 +38,12 @@ public class FileOps
              */ 
             f.delete() ;
             if ( reportExistsAfter && f.exists() )
-                System.err.println("*** Still exists: "+f) ;
-            
-        } catch (Exception ex)
+                Log.warn(FileOps.class, "delete: *** File still exists: "+f) ;
+        } catch (SecurityException ex)
         {
-            System.err.println("Exception: "+ex) ;
-            ex.printStackTrace(System.err) ;
-            System.exit(1) ;
+            Log.warn(FileOps.class, "delete: "+f+": Security exception; "+ex.getMessage()) ;
         }
+            
     }
     
     public static void clearDirectory(String dir)
