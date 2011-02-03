@@ -33,6 +33,13 @@ public class RiotLoader
 {
 //    static private Loader loader = new Loader() ;
 //    static public Loader get() { return loader ; }
+    
+    // TODO
+    // why does RiotLoader not build on createParser alwats?
+    // Then defer to 
+    // FileName to URL if base URI.
+
+    // XXX RiotReader.chooseBaseIRI(base, filename)
 
     /** Parse a file and return the quads in a dataset (in-memory) */ 
     public static DatasetGraph load(String filename)

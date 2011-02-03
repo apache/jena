@@ -29,10 +29,12 @@ import org.openjena.riot.tokens.TokenizerFactory ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 
-/** Parse input to a Sink (triples or quads as appropriate) */
+/** Operations to access RIOT parsers and send the output to 
+ * a Sink (triples or quads as appropriate)
+ */
 public class RiotReader
 {
-    /** Parse a number of files, sending triples to a sink.
+    /** Parse a file, sending triples to a sink.
      * Must be in a triples syntax.
      * @param filename 
      * @param sink  Where to send the triples from the parser.
@@ -40,7 +42,7 @@ public class RiotReader
     public static void parseTriples(String filename, Sink<Triple> sink)
     { parseTriples(filename, null, null, sink) ; }
     
-    /** Parse a number of files, sending triples to a sink.
+    /** Parse a file, sending triples to a sink.
      * Must be in a triples syntax.
      * @param filename 
      * @param lang      Language, or null for "guess from URL" (e.g. file extension)
@@ -49,8 +51,6 @@ public class RiotReader
      */  
     public static void parseTriples(String filename, Lang lang, String baseIRI, Sink<Triple> sink)
     {
-        // Duplicates RiotReader ??? 
-        
         checkTriplesLanguage(filename, lang) ;
 
         String printName = nameForFile(filename) ;  
@@ -73,7 +73,7 @@ public class RiotReader
         IO.close(in) ;
     }
 
-    /** Parse a number of files, sending quads to a sink.
+    /** Parse an InputStream, sending triples to a sink.
      * @param in        Source for bytes to parse.
      * @param lang      Language.
      * @param baseIRI   Base IRI. 
@@ -88,14 +88,14 @@ public class RiotReader
     
     // -------- Quads
     
-    /** Parse a number of files, sending quads to a sink.
+    /** Parse a file, sending quads to a sink.
      * @param filename
      * @param sink  Where to send the quads from the parser.
      */
     public static void parseQuads(String filename, Sink<Quad> sink)
     { parseQuads(filename, null, null, sink) ; }
     
-    /** Parse a number of files, sending quads to a sink.
+    /** Parse a file, sending quads to a sink.
      * @param filename 
      * @param lang      Language, or null for "guess from filename" (e.g. extension)
      * @param baseIRI   Base IRI, or null for base on input filename
@@ -114,7 +114,7 @@ public class RiotReader
         IO.close(in) ;
     }
 
-    /** Parse a number of files, sending quads to a sink.
+    /** Parse an InputStream, sending quads to a sink.
      * @param in        Source for bytes to parse.
      * @param lang      Language.
      * @param baseIRI   Base IRI. 
