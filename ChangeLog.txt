@@ -3,11 +3,16 @@ ChangeLog for TDB
 
 ==== 0.8.10
 
++ tdbloader now generates statistics when loading an empty database.
+ 
 + TDB no longer registers a shutdown handler to sync datasets.
   It has been discovered that it's possible to interrupt a write process,
   cause the shutdown handler to run and so break the database.  
+
 + Improved concurrency violation checking.
+
 + Print file names during loading multiple files in tdbloader2.
+
 + Increase heap size for data phase in tdbloader2.
 
 ==== 0.8.9

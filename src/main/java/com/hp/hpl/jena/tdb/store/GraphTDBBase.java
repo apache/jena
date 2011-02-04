@@ -30,12 +30,9 @@ import com.hp.hpl.jena.sparql.graph.GraphBase2 ;
 import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.graph.BulkUpdateHandlerTDB ;
-import com.hp.hpl.jena.tdb.graph.GraphSyncListener ;
 import com.hp.hpl.jena.tdb.graph.QueryHandlerTDB ;
 import com.hp.hpl.jena.tdb.graph.TransactionHandlerTDB ;
-import com.hp.hpl.jena.tdb.graph.UpdateListener ;
 import com.hp.hpl.jena.tdb.lib.NodeFmtLib ;
-import com.hp.hpl.jena.tdb.sys.Names ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
 import com.hp.hpl.jena.util.iterator.WrappedIterator ;
@@ -48,17 +45,12 @@ public abstract class GraphTDBBase extends GraphBase2 implements GraphTDB
     private final BulkUpdateHandler bulkUpdateHandler = new BulkUpdateHandlerTDB(this) ;
     protected final DatasetGraphTDB dataset ;
     protected final Node graphNode ;
-    protected final int syncPoint ;
 
     public GraphTDBBase(DatasetGraphTDB dataset, Node graphName)
     { 
         super() ;
         this.dataset = dataset ; 
         this.graphNode = graphName ;
-        syncPoint = dataset.getConfigValueAsInt(Names.pSyncTick, SystemTDB.SyncTick) ;
-        if ( syncPoint > 0 )
-            this.getEventManager().register(new GraphSyncListener(this, syncPoint)) ;
-        this.getEventManager().register(new UpdateListener(this)) ;
     }
     
     /** Reorder processor - may be null, for "none" */

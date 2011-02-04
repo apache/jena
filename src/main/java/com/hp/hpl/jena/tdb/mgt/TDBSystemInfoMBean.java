@@ -16,8 +16,8 @@ public interface TDBSystemInfoMBean
     /** Size of a memory-mapped file segment */ 
     public int getSegmentSize() ;
 
-    /** Number of adds/deletes between calls to sync (-ve to disable) */
-    public int getSyncTick() ;
+//    /** Number of adds/deletes between calls to sync (-ve to disable) */
+//    public int getSyncTick() ;
     
     /** Size of Node to NodeId cache.
      *  Used to map from Node to NodeId spaces.

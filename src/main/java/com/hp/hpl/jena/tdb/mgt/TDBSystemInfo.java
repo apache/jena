@@ -12,7 +12,7 @@ public class TDBSystemInfo implements TDBSystemInfoMBean
 {
     public int getBlockSize()               { return SystemTDB.BlockSize ; }
     public int getSegmentSize()             { return SystemTDB.SegmentSize ; }
-    public int getSyncTick()                { return SystemTDB.SyncTick ; }
+//    public int getSyncTick()                { return SystemTDB.SyncTick ; }
 
     public int getBlockReadCacheSize()      { return SystemTDB.BlockReadCacheSize ; }
     public int getBlockWriteCacheSize()     { return SystemTDB.BlockWriteCacheSize ; }

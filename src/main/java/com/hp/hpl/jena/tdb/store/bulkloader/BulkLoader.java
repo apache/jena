@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2010 Talis Systems Ltd.
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -267,8 +268,11 @@ public class BulkLoader
 
                 loaderTriples.loadFinish() ;
                 loaderQuads.loadFinish() ;
-                String filename = dsg.getLocation().getPath(Names.optStats) ;
-                Stats.write(filename, stats) ;
+                if ( ! dsg.getLocation().isMem() )
+                {
+                    String filename = dsg.getLocation().getPath(Names.optStats) ;
+                    Stats.write(filename, stats) ;
+                }
                 dsg.sync() ;
             }
             
@@ -281,6 +285,8 @@ public class BulkLoader
 
 /*
  * (c) Copyright 2010 Talis Systems Ltd.
+ * (c) Copyright 2011 Epimorphics Ltd.
+ * 
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

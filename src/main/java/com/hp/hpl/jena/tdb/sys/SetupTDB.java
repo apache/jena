@@ -17,7 +17,6 @@ import static com.hp.hpl.jena.tdb.sys.SystemTDB.LenNodeHash ;
 import static com.hp.hpl.jena.tdb.sys.SystemTDB.Node2NodeIdCacheSize ;
 import static com.hp.hpl.jena.tdb.sys.SystemTDB.NodeId2NodeCacheSize ;
 import static com.hp.hpl.jena.tdb.sys.SystemTDB.SizeOfNodeId ;
-import static com.hp.hpl.jena.tdb.sys.SystemTDB.SyncTick ;
 
 import java.io.IOException ;
 import java.util.Properties ;
@@ -105,7 +104,7 @@ public class SetupTDB
         globalConfig.setProperty(Names.pNodeId2NodeCacheSize,  Integer.toString(NodeId2NodeCacheSize)) ;
         globalConfig.setProperty(Names.pBlockWriteCacheSize,   Integer.toString(BlockWriteCacheSize)) ;
         globalConfig.setProperty(Names.pBlockReadCacheSize,    Integer.toString(BlockReadCacheSize)) ;
-        globalConfig.setProperty(Names.pSyncTick,              Integer.toString(SyncTick)) ;
+//        globalConfig.setProperty(Names.pSyncTick,              Integer.toString(SyncTick)) ;
     }
     
     public final static TDBSystemInfoMBean systemInfo = new TDBSystemInfoMBean() {

@@ -166,8 +166,8 @@ public class SystemTDB
     
     // ---- Misc
     
-    /** Number of adds/deletes between calls to sync (-ve to disable) */
-    public static final int SyncTick                = intValue("SyncTick", -1) ;
+//    /** Number of adds/deletes between calls to sync (-ve to disable) */
+//    public static final int SyncTick                = intValue("SyncTick", -1) ;
 
     // SystemTDB.chooseOptimizer
     public static ReorderTransformation defaultOptimizer = ReorderLib.fixed() ;
