@@ -8,13 +8,10 @@
 package tdb;
 
 import tdb.cmdline.CmdTDB ;
-import tdb.cmdline.ModTDBDataset ;
 import tdb.cmdline.ModTDBGraphStore ;
-import arq.cmdline.ModDataset ;
 import arq.cmdline.ModGraphStore ;
 
 import com.hp.hpl.jena.tdb.TDB ;
-
 
 public class tdbupdate extends arq.update
 {
@@ -33,6 +30,7 @@ public class tdbupdate extends arq.update
 
         // Remove on ARQ update
         modGraphStore = setModGraphStore() ;
+        // Causes warnings.
         super.addModule(modGraphStore) ;
     }
 
