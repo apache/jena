@@ -113,7 +113,7 @@ public class RunARQ
     public static void main(String[] argv) throws Exception
     {
         
-        riotcmd.riot.main("A B/D.ttl") ;exit(0) ;
+        riotcmd.riot.main("file:%44.ttl") ;exit(0) ;
         
         // See also FileUtils, IRIResolver.
         // test cases
