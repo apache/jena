@@ -2,7 +2,7 @@ package dev ;
 
 public class DevTDB
 {
-    // Finish, intregate, switch to new Dataset builder.
+    // Finish, integrate, switch to new Dataset builder.
     //  Todo init().
     // SolverLib - convert Nodes to NodeIds once, as BGP compiled.
     

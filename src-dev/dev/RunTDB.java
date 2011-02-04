@@ -86,7 +86,7 @@ public class RunTDB
     
     public static void main(String[] args) throws Exception
     { 
-        tdb.tdbquery.main("--loc=DB", "--file=Q.rq") ; exit(0) ;
+        tdb.tdbupdate.main("--loc=DBU", "--file=update.ru") ; exit(0) ;
         
         final Dataset ds = TDBFactory.createDataset() ;
         final DatasetGraph dsg = ds.asDatasetGraph() ;

@@ -9,7 +9,9 @@ package tdb;
 
 import tdb.cmdline.CmdTDB ;
 import tdb.cmdline.ModTDBDataset ;
+import tdb.cmdline.ModTDBGraphStore ;
 import arq.cmdline.ModDataset ;
+import arq.cmdline.ModGraphStore ;
 
 import com.hp.hpl.jena.tdb.TDB ;
 
@@ -28,6 +30,10 @@ public class tdbupdate extends arq.update
         // Because this inherits from an ARQ command
         CmdTDB.init() ;
         super.modVersion.addClass(TDB.class) ;
+
+        // Remove on ARQ update
+        modGraphStore = setModGraphStore() ;
+        super.addModule(modGraphStore) ;
     }
 
     @Override
@@ -36,11 +42,12 @@ public class tdbupdate extends arq.update
         super.processModulesAndArgs() ;
     }
     
-//    @Override
-//    protected ModDataset setModDataset()
-//    {
-//        return new ModTDBDataset() ;
-//    }
+    //Need ARQ update 
+    // @Override
+    protected ModGraphStore setModGraphStore()
+    {
+        return new ModTDBGraphStore();
+    }
 }
 
 /*
