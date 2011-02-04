@@ -11,11 +11,9 @@ import static com.hp.hpl.jena.sparql.util.Utils.nowAsString ;
 
 import java.io.FileNotFoundException ;
 import java.io.FileOutputStream ;
-import java.io.IOException ;
 import java.io.InputStream ;
 import java.io.OutputStream ;
 import java.util.List ;
-import java.util.Map ;
 
 import org.openjena.atlas.AtlasException ;
 import org.openjena.atlas.io.IO ;
@@ -35,18 +33,16 @@ import arq.cmdline.CmdGeneral ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.sparql.core.Quad ;
-import com.hp.hpl.jena.sparql.sse.Item ;
-import com.hp.hpl.jena.sparql.sse.ItemWriter ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable ;
-import com.hp.hpl.jena.tdb.solver.stats.StatsCollector ;
+import com.hp.hpl.jena.tdb.solver.stats.Stats ;
+import com.hp.hpl.jena.tdb.solver.stats.StatsCollectorNodeId ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
 import com.hp.hpl.jena.tdb.store.bulkloader.BulkLoader ;
-import com.hp.hpl.jena.tdb.sys.Names ;
 import com.hp.hpl.jena.tdb.sys.SetupTDB ;
 
 /** Build node table - write triples/quads as text file */
@@ -162,21 +158,9 @@ public class CmdNodeTableBuilder extends CmdGeneral
         
         // ---- Stats
         
+        // See Stats class.
         if ( ! location.isMem() )
-        {
-            // Write out the stats
-            try {
-                long statsTotal = sink.getCollector().getCount() ;
-                Map<NodeId, Integer> statsPredicates = sink.getCollector().getPredicateIds() ;
-
-                Item item = StatsCollector.statsOutput(dsg.getTripleTable().getNodeTupleTable().getNodeTable(),
-                                                       statsPredicates, statsTotal) ;
-                OutputStream statsOut = new FileOutputStream(location.getPath(Names.optStats)) ;
-                ItemWriter.write(statsOut, item) ;
-                statsOut.close() ;
-            } catch (IOException ex)
-            { Log.warn(this, "Problem when writing stats file", ex) ; }
-        }
+            Stats.write(dsg, sink.getCollector()) ;
         
         // ---- Monitor
         long time = monitor.finish() ;
@@ -195,7 +179,7 @@ public class CmdNodeTableBuilder extends CmdGeneral
         private WriteRows writerTriples ;
         private WriteRows writerQuads ;
         private ProgressLogger monitor ;
-        private StatsCollector stats ;
+        private StatsCollectorNodeId stats ;
 
         NodeTableBuilder(DatasetGraphTDB dsg, ProgressLogger monitor, OutputStream outputTriples, OutputStream outputQuads)
         {
@@ -205,7 +189,7 @@ public class CmdNodeTableBuilder extends CmdGeneral
             this.nodeTable = ntt.getNodeTable() ;
             this.writerTriples = new WriteRows(outputTriples, 3, 20000) ; 
             this.writerQuads = new WriteRows(outputQuads, 4, 20000) ; 
-            this.stats = new StatsCollector() ;
+            this.stats = new StatsCollectorNodeId() ;
         }
         
         //@Override
@@ -222,20 +206,16 @@ public class CmdNodeTableBuilder extends CmdGeneral
             NodeId sId = nodeTable.getAllocateNodeId(s) ; 
             NodeId pId = nodeTable.getAllocateNodeId(p) ;
             NodeId oId = nodeTable.getAllocateNodeId(o) ;
-
-            
             
             if ( g != null )
             {
                 NodeId gId = nodeTable.getAllocateNodeId(g) ;
-                
-                
                 writerQuads.write(gId.getId()) ;
                 writerQuads.write(sId.getId()) ;
                 writerQuads.write(pId.getId()) ;
                 writerQuads.write(oId.getId()) ;
                 writerQuads.endOfRow() ;
-                stats.send(gId, sId, pId, oId) ;
+                stats.record(gId, sId, pId, oId) ;
             }
             else
             {
@@ -243,7 +223,7 @@ public class CmdNodeTableBuilder extends CmdGeneral
                 writerTriples.write(pId.getId()) ;
                 writerTriples.write(oId.getId()) ;
                 writerTriples.endOfRow() ;
-                stats.send(null, sId, pId, oId) ;
+                stats.record(null, sId, pId, oId) ;
             }
             monitor.tick() ;
         }
@@ -260,7 +240,7 @@ public class CmdNodeTableBuilder extends CmdGeneral
         public void close()
         { flush() ; }
         
-        public StatsCollector getCollector() { return stats ; }
+        public StatsCollectorNodeId getCollector() { return stats ; }
     }
 
     @Override

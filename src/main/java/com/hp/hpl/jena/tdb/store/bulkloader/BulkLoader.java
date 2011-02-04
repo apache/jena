@@ -23,7 +23,10 @@ import com.hp.hpl.jena.sparql.util.Utils ;
 import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTupleTableView ;
+import com.hp.hpl.jena.tdb.solver.stats.Stats ;
+import com.hp.hpl.jena.tdb.solver.stats.StatsCollector ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
+import com.hp.hpl.jena.tdb.sys.Names ;
 
 /** Overall framework for bulk loading */
 public class BulkLoader
@@ -211,6 +214,7 @@ public class BulkLoader
     {
         LoadMonitor monitor1 = createLoadMonitor(dsg, "triples", showProgress) ;
         LoadMonitor monitor2 = createLoadMonitor(dsg, "quads", showProgress) ;
+        
         final LoaderNodeTupleTable loaderTriples = new LoaderNodeTupleTable(
                                                                 dsg.getTripleTable().getNodeTupleTable(),
                                                                 "triples",
@@ -221,6 +225,7 @@ public class BulkLoader
                                                                  monitor2) ;
         Destination<Quad> sink = new Destination<Quad>() {
             long count = 0 ;
+            private StatsCollector stats ;
             final public void start()
             {
                 loaderTriples.loadStart() ;
@@ -228,15 +233,25 @@ public class BulkLoader
 
                 loaderTriples.loadDataStart() ;
                 loaderQuads.loadDataStart() ;
+                this.stats = new StatsCollector() ;
             }
             
             final public void send(Quad quad)
             {
-                if ( quad.isTriple() || quad.isDefaultGraph() )
-                    loaderTriples.load(quad.getSubject(), quad.getPredicate(),  quad.getObject()) ;
+                Node s = quad.getSubject() ;
+                Node p = quad.getPredicate() ;
+                Node o = quad.getObject() ;
+                Node g = null ;
+                // Union graph?!
+                if ( ! quad.isTriple() && ! quad.isDefaultGraph() )
+                    g = quad.getGraph() ;
+                
+                if ( g == null ) 
+                    loaderTriples.load(s, p, o) ;
                 else
-                    loaderQuads.load(quad.getGraph(), quad.getSubject(), quad.getPredicate(),  quad.getObject()) ;
+                    loaderQuads.load(g, s, p, o) ;
                 count++ ;
+                stats.record(g, s, p, o) ; 
             }
 
             final public void finish()
@@ -252,7 +267,8 @@ public class BulkLoader
 
                 loaderTriples.loadFinish() ;
                 loaderQuads.loadFinish() ;
-                
+                String filename = dsg.getLocation().getPath(Names.optStats) ;
+                Stats.write(filename, stats) ;
                 dsg.sync() ;
             }
             

@@ -7,12 +7,12 @@
 package tdb;
 
 import org.openjena.atlas.logging.Log ;
-import tdb.cmdline.CmdTDB;
+import tdb.cmdline.CmdTDB ;
 
-import com.hp.hpl.jena.sparql.sse.Item;
 import com.hp.hpl.jena.tdb.TDB ;
-import com.hp.hpl.jena.tdb.solver.stats.StatsCollector;
-import com.hp.hpl.jena.tdb.store.GraphTDB;
+import com.hp.hpl.jena.tdb.solver.stats.Stats ;
+import com.hp.hpl.jena.tdb.solver.stats.StatsCollector ;
+import com.hp.hpl.jena.tdb.store.GraphTDB ;
 
 
 public class tdbstats extends CmdTDB
@@ -40,8 +40,8 @@ public class tdbstats extends CmdTDB
     protected void exec()
     {
         GraphTDB graph = getGraph() ;
-        Item item = StatsCollector.gatherTDB(graph) ;
-        System.out.println(item) ;
+        StatsCollector stats = Stats.gatherTDB(graph) ;
+        Stats.write(System.out, stats) ;
     }
 }
 

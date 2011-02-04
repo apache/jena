@@ -732,7 +732,7 @@ public class SetupTDB
         {
             try {
                 reorder = ReorderLib.weighted(location.getPath(Names.optStats)) ;
-                logInfo.info("Statistics-based BGP optimizer") ;  
+                logInfo.debug("Statistics-based BGP optimizer") ;  
             } catch (SSEParseException ex) { 
                 log.warn("Error in stats file: "+ex.getMessage()) ;
                 reorder = null ;

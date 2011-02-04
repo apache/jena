@@ -1,6 +1,6 @@
 /*
- * (c) Copyright 2010 Talis Systems Ltd.
- * (c) Copyright 2010 Epimorphics Ltd.
+ * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -10,39 +10,29 @@ package com.hp.hpl.jena.tdb.solver.stats;
 import java.util.HashMap ;
 import java.util.Map ;
 
-import org.openjena.atlas.lib.MapUtils ;
-
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.sparql.sse.Item ;
+import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
+import com.hp.hpl.jena.tdb.store.NodeId ;
 
-public class SinkStatsBase
+/** Statistics collector, aggregates based on NodeId */
+public class StatsCollectorNodeId extends StatsCollectorBase<NodeId>
 {
-    private Map<Node, Integer> predicates = new HashMap<Node, Integer>() ;
-    private long count = 0 ;
-
-    public SinkStatsBase() {}
-    
-    public void count(Node graph, Node subject, Node predicate, Node object)
+    public Map<Node, Integer> asNodeStats(NodeTable nodeTable)
     {
-        MapUtils.increment(predicates, predicate) ;
+        Map<NodeId, Integer> predicateIds = super.getPredicates() ;
+        Map<Node, Integer> predicates2 = new HashMap<Node, Integer>(1000) ;
+        for ( NodeId p : predicateIds.keySet() )
+        {
+            Node n = nodeTable.getNodeForNodeId(p) ;
+            predicates2.put(n, predicateIds.get(p)) ;
+        }
+        return predicates2 ;
     }
-    
-    public Item stats()
-    {
-        count = predicates.keySet().size() ;
-        return StatsCollector.format(predicates, count) ;
-    }
-
-    public void close()
-    {}
-
-    public void flush()
-    {}
 }
 
 /*
- * (c) Copyright 2010 Talis Systems Ltd.
- * (c) Copyright 2010 Epimorphics Ltd.
+ * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

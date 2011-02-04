@@ -1,33 +1,56 @@
 /*
- * (c) Copyright 2010 Talis Systems Ltd.
- * (c) Copyright 2010 Epimorphics Ltd.
+ * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
 package com.hp.hpl.jena.tdb.solver.stats;
 
-import org.openjena.atlas.lib.Sink ;
 
-import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.sparql.core.Quad ;
+import java.util.HashMap ;
+import java.util.Map ;
 
-public class SinkStatsTriples extends SinkStatsBase implements Sink<Triple>
+import org.openjena.atlas.lib.MapUtils ;
+
+/** Statistics collector, general purpose */
+public class StatsCollectorBase<T>
 {
-    public SinkStatsTriples() {}
+    private long count = 0 ;
+    private Map<T, Integer> predicates = new HashMap<T, Integer>(10000) ;
     
-    public void send(Triple triple)
+    protected StatsCollectorBase(long count, Map<T, Integer> predicates)
     {
-        super.count(Quad.tripleInQuad, 
-                    triple.getSubject(),
-                    triple.getPredicate(),
-                    triple.getObject() ) ;
+        this.count = count ;
+        this.predicates = predicates ;
+    }
+    
+    public StatsCollectorBase()
+    {
+        this(0, new HashMap<T, Integer>(10000)) ;
+    }
+
+    //@Override
+    public void record(T g, T s, T p, T o)
+    {
+        count++ ;
+        MapUtils.increment(predicates, p) ;
+    }
+
+    public long getCount()
+    {
+        return count ;
+    }
+
+    public Map<T, Integer> getPredicates()
+    {
+        return predicates ;
     }
 }
 
 /*
- * (c) Copyright 2010 Talis Systems Ltd.
- * (c) Copyright 2010 Epimorphics Ltd.
+ * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

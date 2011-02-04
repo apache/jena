@@ -18,6 +18,7 @@ import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.query.ARQ ;
+import com.hp.hpl.jena.sparql.engine.optimizer.reorder.ReorderLib ;
 import com.hp.hpl.jena.sparql.engine.optimizer.reorder.ReorderTransformation ;
 import com.hp.hpl.jena.sparql.util.Symbol ;
 import com.hp.hpl.jena.tdb.TDB ;
@@ -168,8 +169,8 @@ public class SystemTDB
     /** Number of adds/deletes between calls to sync (-ve to disable) */
     public static final int SyncTick                = intValue("SyncTick", -1) ;
 
-    // Choice is made in GraphTDBFactory
-    public static ReorderTransformation defaultOptimizer = null ; //ReorderLib.fixed() ;
+    // SystemTDB.chooseOptimizer
+    public static ReorderTransformation defaultOptimizer = ReorderLib.fixed() ;
 
     public static final ByteOrder NetworkOrder      = ByteOrder.BIG_ENDIAN ;
 
