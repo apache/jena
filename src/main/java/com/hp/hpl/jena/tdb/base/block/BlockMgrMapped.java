@@ -216,11 +216,10 @@ public class BlockMgrMapped extends BlockMgrFile
     }
     
     //@Override
-    public void sync(boolean force)
+    public void sync()
     {
         checkIfClosed() ;
-        if ( force )
-            force() ;
+        force() ;
     }
 
     @Override

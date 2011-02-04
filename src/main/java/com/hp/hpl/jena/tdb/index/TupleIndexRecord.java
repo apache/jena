@@ -215,14 +215,7 @@ public class TupleIndexRecord extends TupleIndexBase
     }
     
     //@Override
-    public void sync()
-    { sync(true) ; }
-    
-    //@Override
-    public void sync(boolean force)
-    {
-        index.sync(force) ;
-    }
+    public void sync()      { index.sync() ; }
 
     public final RangeIndex getRangeIndex()                 { return index ; } 
 

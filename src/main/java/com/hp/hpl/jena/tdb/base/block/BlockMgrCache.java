@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -41,7 +42,6 @@ public class BlockMgrCache extends BlockMgrSync
         
         // Caches are related so we can't use a Getter for cache management.
         readCache = CacheFactory.createCache(readSlots) ;
-        
         if ( writeSlots > 0 )
         {
             writeCache = CacheFactory.createCache(writeSlots) ;
@@ -66,8 +66,13 @@ public class BlockMgrCache extends BlockMgrSync
             return ;
         }
         log("Drop (write cache): %d", id) ;
+        // This pushes the block to the BlockMgr being cached.
         super.put(id, bb) ;
         writeCache.remove(id) ;
+
+        // Move it into the readCache because it's often read after writing
+        // and the read cache is often larger.
+        readCache.put(id, bb) ;
     }
 
     // Pool?
@@ -119,9 +124,6 @@ public class BlockMgrCache extends BlockMgrSync
             writeCache.put(id, block) ;
         else
             super.put(id, block) ;
-
-        // ????
-        readCache.put(id, block) ;
     }
     
     @Override
@@ -143,7 +145,7 @@ public class BlockMgrCache extends BlockMgrSync
 
     @Override
     synchronized
-    public void sync(boolean force)
+    public void sync()
     {
         if ( true )
         {
@@ -157,13 +159,10 @@ public class BlockMgrCache extends BlockMgrSync
             log("sync (%d blocks)", writeCache.size()) ;
         else
             log("sync") ;
-        boolean somethingWritten = syncFlush(force) ;
+        boolean somethingWritten = syncFlush() ;
         // Sync the wrapped object
         if ( somethingWritten ) 
-        {
             log("sync underlying BlockMgr") ;
-            super.sync(force) ;
-        }
         else
             log("Empty sync") ;
         
@@ -184,11 +183,11 @@ public class BlockMgrCache extends BlockMgrSync
     {
         if ( writeCache != null )
             log("close ("+writeCache.size()+" blocks)") ;
-        syncFlush(true) ;
+        syncFlush() ;
         super.close() ;
     }
 
-    private boolean syncFlush(boolean all)
+    private boolean syncFlush()
     {
         boolean didSync = false ;
 
@@ -222,6 +221,7 @@ public class BlockMgrCache extends BlockMgrSync
 
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

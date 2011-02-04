@@ -366,13 +366,10 @@ public final class ExtHash implements Index
     }
 
     //@Override
-    public void sync() { sync(true) ; }
-    
-    //@Override
-    public void sync(boolean force)
+    public void sync()
     { 
-        hashBucketMgr.getBlockMgr().sync(force) ;
-        dictionaryFile.sync(force) ;
+        hashBucketMgr.getBlockMgr().sync() ;
+        dictionaryFile.sync() ;
     }
 
     //@Override

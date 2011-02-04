@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -68,13 +69,6 @@ public class BlockMgrSync implements BlockMgr
 
     //@Override
     synchronized
-    public void sync(boolean force)
-    {
-        blockMgr.sync(force) ;
-    }
-
-    //@Override
-    synchronized
     public void close()
     { blockMgr.close() ; }
 
@@ -129,6 +123,7 @@ public class BlockMgrSync implements BlockMgr
 }
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

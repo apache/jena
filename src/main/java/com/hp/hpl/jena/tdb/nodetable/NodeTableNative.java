@@ -218,9 +218,9 @@ public class NodeTableNative implements NodeTable
     public synchronized void sync(boolean force)
     {
         if ( nodeHashToId != null )
-            nodeHashToId.sync(force) ;
+            nodeHashToId.sync() ;
         if ( getObjects() != null )
-            getObjects().sync(force) ;
+            getObjects().sync() ;
     }
 
     public ObjectFile getObjects()

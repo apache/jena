@@ -247,13 +247,10 @@ public class BTree implements Iterable<Record>, RangeIndex, Session
     { throw new UnsupportedOperationException("RangeIndex("+Utils.classShortName(this.getClass())+").clear") ; }
     
     //@Override
-    public void sync() { sync(true) ; }
-    
-    //@Override
-    public void sync(boolean force)
+    public void sync() 
     {
         if ( pageMgr.getBlockMgr() != null )
-            pageMgr.getBlockMgr().sync(force)   ;
+            pageMgr.getBlockMgr().sync()   ;
     }
     
     public void close()

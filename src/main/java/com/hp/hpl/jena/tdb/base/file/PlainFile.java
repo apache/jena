@@ -8,7 +8,10 @@ package com.hp.hpl.jena.tdb.base.file;
 
 import java.nio.ByteBuffer;
 
-public abstract class PlainFile
+import org.openjena.atlas.lib.Closeable ;
+import org.openjena.atlas.lib.Sync ;
+
+public abstract class PlainFile implements Sync, Closeable
 {
     protected long filesize = -1 ;
     protected ByteBuffer byteBuffer = null ;
@@ -32,7 +35,7 @@ public abstract class PlainFile
     public final long getFileSize() { return filesize ; }
     
     //@Override
-    public abstract void sync(boolean force) ;
+    public abstract void sync() ;
 
     //@Override
     public abstract void close() ;

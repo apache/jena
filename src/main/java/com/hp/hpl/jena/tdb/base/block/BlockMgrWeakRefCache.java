@@ -132,7 +132,7 @@ public class BlockMgrWeakRefCache extends BlockMgrSync
 
     @Override
     synchronized
-    public void sync(boolean force)
+    public void sync()
     {
         if ( true )
         {
@@ -146,12 +146,12 @@ public class BlockMgrWeakRefCache extends BlockMgrSync
             log("sync (%d blocks)", writeCache.size()) ;
         else
             log("sync") ;
-        boolean somethingWritten = syncFlush(force) ;
+        boolean somethingWritten = syncFlush() ;
         // Sync the wrapped object
         if ( somethingWritten ) 
         {
             log("sync underlying BlockMgr") ;
-            super.sync(force) ;
+            super.sync() ;
         }
         else
             log("Empty sync") ;
@@ -173,11 +173,11 @@ public class BlockMgrWeakRefCache extends BlockMgrSync
     {
         if ( writeCache != null )
             log("close ("+writeCache.size()+" blocks)") ;
-        syncFlush(true) ;
+        syncFlush() ;
         super.close() ;
     }
 
-    private boolean syncFlush(boolean all)
+    private boolean syncFlush()
     {
         boolean didSync = false ;
         if ( writeCache != null )

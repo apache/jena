@@ -35,13 +35,6 @@ public class NoisyBlockMgr extends BlockMgrWrapper
     }
     
     @Override
-    public void sync(boolean force)
-    {
-        System.out.println("Sync!/force") ;
-        super.sync(force) ;
-    }
-
-    @Override
     public void startRead()
     {
         System.out.println("startRead!") ;

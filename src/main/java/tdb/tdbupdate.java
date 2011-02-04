@@ -27,11 +27,6 @@ public class tdbupdate extends arq.update
         // Because this inherits from an ARQ command
         CmdTDB.init() ;
         super.modVersion.addClass(TDB.class) ;
-
-        // Remove on ARQ update
-        modGraphStore = setModGraphStore() ;
-        // Causes warnings.
-        super.addModule(modGraphStore) ;
     }
 
     @Override
@@ -40,8 +35,7 @@ public class tdbupdate extends arq.update
         super.processModulesAndArgs() ;
     }
     
-    //Need ARQ update 
-    // @Override
+    @Override
     protected ModGraphStore setModGraphStore()
     {
         return new ModTDBGraphStore();

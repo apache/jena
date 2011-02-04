@@ -33,6 +33,7 @@ import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.tdb.TDBFactory ;
 import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
+import com.hp.hpl.jena.tdb.base.block.FileMode ;
 import com.hp.hpl.jena.tdb.base.file.FileSet ;
 import com.hp.hpl.jena.tdb.base.record.Record ;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
@@ -86,6 +87,7 @@ public class RunTDB
     
     public static void main(String[] args) throws Exception
     { 
+        SystemTDB.setFileMode(FileMode.direct) ;
         tdb.tdbupdate.main("--loc=DBU", "--file=update.ru") ; exit(0) ;
         
         final Dataset ds = TDBFactory.createDataset() ;

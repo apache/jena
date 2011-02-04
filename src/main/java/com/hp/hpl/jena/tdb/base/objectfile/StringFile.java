@@ -63,20 +63,15 @@ public class StringFile implements Sync, Closeable
     { file.close() ; }
 
     //@Override
-    public void sync(boolean force)
-    { file.sync(force) ; }
+    public void sync() { file.sync() ; }
     
     //@Override
-    public void sync() { sync(true) ; }
-    
-    //@Override
-    public void flush() { sync(true) ; }
+    public void flush() { sync() ; }
 
     public ObjectFile getByteBufferFile()
     {
         return file ;
     }
-
     
     // ---- Dump
     public void dump() { dump(handler) ; }
