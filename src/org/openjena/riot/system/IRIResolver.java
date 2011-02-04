@@ -9,6 +9,7 @@ package org.openjena.riot.system;
 
 import org.openjena.atlas.lib.Cache ;
 import org.openjena.atlas.lib.CacheFactory ;
+import org.openjena.atlas.lib.IRILib ;
 import org.openjena.atlas.lib.cache.Getter ;
 import org.openjena.riot.RiotException ;
 
@@ -16,7 +17,6 @@ import com.hp.hpl.jena.iri.IRI ;
 import com.hp.hpl.jena.iri.IRIException ;
 import com.hp.hpl.jena.iri.IRIFactory ;
 import com.hp.hpl.jena.iri.ViolationCodes ;
-import com.hp.hpl.jena.util.FileUtils ;
 
 /** Package up IRI reolver functionality. 
  */
@@ -93,7 +93,7 @@ public abstract class IRIResolver
     /**
      * The current working directory, as a string.
      */
-    static private String globalBase = FileUtils.toURL(".").replace("/./", "/") ;
+    static private String globalBase = IRILib.filenameToIRI("./") ; // FileUtils.toURL(".").replace("/./", "/") ;
     
     private static IRIResolver globalResolver ; 
     public static IRIResolver get() { return globalResolver ; }
@@ -202,19 +202,22 @@ public abstract class IRIResolver
      */
     
     static public IRI chooseBaseURI() {
-        return chooseBaseURI(null);
+        return globalResolver.getBaseIRI() ;
     }
 
     /**
      * Choose a baseURI based on a suggestion
-     * 
      * @return IRI (if relative, relative to current working directory).
      */
-    
+    @Deprecated
     static public IRI chooseBaseURI(String baseURI) {
         if (baseURI == null)
+            return chooseBaseURI() ;
             baseURI = "file:.";
-        return get().resolve(baseURI);
+        if ( baseURI.startsWith("file:") )
+            return globalResolver.resolveSilent(IRILib.filenameToIRI(baseURI)) ;
+        else
+            return get().resolveSilent(baseURI);
     }
 
     public String getBaseIRIasString()

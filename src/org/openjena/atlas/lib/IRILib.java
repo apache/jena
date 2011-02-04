@@ -100,11 +100,6 @@ public class IRILib
     /** Encode using the rules for a path (e.g. ':' and'/' do not get encoded) */
     public static String filenameToIRI(String fn)
     {
-        // XXX See also FileUtils, IRIResolver.
-        
-        // Accept file: and lightly sanitize.
-        // else work harder
-        
         if ( fn == null ) return cwdURL ;
         
         if ( fn.length() == 0 ) return cwdURL ;

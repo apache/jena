@@ -16,7 +16,14 @@ public abstract class CmdUpdate extends CmdARQ
     protected CmdUpdate(String[] argv)
     {
         super(argv) ;
+        modGraphStore = setModGraphStore() ;
         addModule(modGraphStore) ;
+        
+    }
+    
+    protected ModGraphStore setModGraphStore()
+    {
+        return new ModGraphStore() ;
     }
     
     @Override

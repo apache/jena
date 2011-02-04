@@ -5,10 +5,6 @@ public class DevARQ
 {
     // Mem dataset with union graph
     
-    // Where does filename => URI happen?   IRIResolver.chooseBaseURI().toString() ;
-    // RIOT -- improper URI as base URI.
-    // Now filename => URI for base : this is a conversion
-    
     // RIOT - own node cache - per object type.
     
     // OpExecute example.

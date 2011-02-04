@@ -18,7 +18,6 @@ import junit.framework.TestSuite ;
 import org.openjena.atlas.io.IndentedWriter ;
 import org.openjena.atlas.json.JSON ;
 import org.openjena.atlas.json.JsonValue ;
-import org.openjena.atlas.lib.IRILib ;
 import org.openjena.atlas.lib.Sink ;
 import org.openjena.atlas.lib.StrUtils ;
 import org.openjena.atlas.logging.Log ;
@@ -112,40 +111,6 @@ public class RunARQ
     
     public static void main(String[] argv) throws Exception
     {
-        
-        riotcmd.riot.main("file:%44.ttl") ;exit(0) ;
-        
-        // See also FileUtils, IRIResolver.
-        // test cases
-        
-        // Filename -> base at 
-        // null baseURI : IRIResolver.chooseBaseURI().toString() ;
-        
-        // RiotReader, RiotLoader both do file-as-baseIRI 
-        // Why RiotReader.parseTriples not do "create - call?" 
-        
-        String cwd = new java.io.File("base").getAbsolutePath() ;
-        //cwd = cwd.substring(0, cwd.length()-1) ;
-        System.out.println(cwd) ;
-        String cwd2 = IRIResolver.iriFactory.create("file:///").toString() ;
-        System.out.println(cwd2) ;
-        
-        // See also IO.openFile():: file: => apply decoding
-        // Test for same.
-        //IRILib.setIsWindowsForTesting(true) ;
-        //String[] x = { "example.nt", "foo bar.baz", "/here", "/Program Files", "file:/xyz",  "file://xyz", "file:///xyz", "c:\\User\\user\\Desktop\\file.dat"} ;
-        String[] x = { "c:\\User\\user\\Desktop\\file.dat"} ;
-        for ( String str : x )
-        {
-            String str2 = IRILib.filenameToIRI(str) ;
-            System.out.printf("%-20s ==> %s\n", str, str2) ;
-        }
-        
-        System.out.println("DONE") ;
-        System.exit(0) ;
-        
-        // Test the various languages
-        
         SysRIOT.wireIntoJena() ;
         DatasetGraph dsg = DatasetLib.createDatasetGraphMem() ;
         
@@ -155,7 +120,7 @@ public class RunARQ
         // Need file name to URI operation.
         // IRIResolver.filenameToIRI(String) -> String 
         
-        IRIResolver.chooseBaseURI(testbase) ;
+        System.out.println(IRIResolver.chooseBaseURI()) ;
         System.out.println("DONE") ;
         System.exit(0) ;
         
