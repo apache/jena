@@ -30,6 +30,8 @@ public interface Cache<Key, Value>
     
     public boolean isEmpty() ;
     public void clear() ;
+    
+    /** Current size of cache */
     public long size() ;
     
     /** Register a callback - called when an object is dropped from the cache (optional operation) */ 
