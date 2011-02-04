@@ -17,6 +17,7 @@ import org.openjena.riot.lang.SinkTriplesToGraph ;
 import org.openjena.riot.tokens.Tokenizer ;
 import org.openjena.riot.tokens.TokenizerFactory ;
 
+import com.hp.hpl.jena.graph.Factory ;
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
@@ -31,33 +32,24 @@ import com.hp.hpl.jena.sparql.lib.DatasetLib ;
 
 public class RiotLoader
 {
-//    static private Loader loader = new Loader() ;
-//    static public Loader get() { return loader ; }
-    
-    // TODO
-    // why does RiotLoader not build on createParser alwats?
-    // Then defer to 
-    // FileName to URL if base URI.
-
-    // XXX RiotReader.chooseBaseIRI(base, filename)
 
     /** Parse a file and return the quads in a dataset (in-memory) */ 
     public static DatasetGraph load(String filename)
     {
-        return load(filename, Lang.guess(filename, Lang.NQUADS)) ;
+        return load(filename, null) ;
     }
-
     
     /** Parse a file and return the quads in a dataset (in-memory) */ 
     public static DatasetGraph load(String filename, Lang lang)
     {
-        String baseURI = IRILib.filenameToIRI(filename) ;
-        return load(filename, lang, baseURI) ; 
+        return load(filename, lang, null) ; 
     }
     
     /** Parse a file and return the quads in a dataset (in-memory) */ 
     public static DatasetGraph load(String filename, Lang lang, String baseURI)
     {
+        if ( lang == null )
+            lang = Lang.guess(filename, Lang.NQUADS) ;
         DatasetGraph dsg = DatasetLib.createDatasetGraphMem() ;
         read(filename, dsg, lang, baseURI) ;
         return dsg ;
@@ -69,24 +61,47 @@ public class RiotLoader
         DatasetGraph dsg = DatasetLib.createDatasetGraphMem() ;
         Sink<Quad> sink = RiotLoader.datasetSink(dsg) ;
         Tokenizer tokenizer = TokenizerFactory.makeTokenizerString(string) ;
-        
-        if ( language == Lang.NQUADS )
-        {
-            LangRIOT parser = RiotReader.createParserNQuads(tokenizer, sink) ;
-            parser.parse() ;
-            sink.flush();
-            return dsg;
-        }
-        if ( language == Lang.TRIG )
-        {
-            LangRIOT parser = RiotReader.createParserTriG(tokenizer, baseURI, sink) ;
-            parser.parse() ;
-            sink.flush();
-            return dsg;
-        }
-        return dsg ;
+
+        LangRIOT parser = RiotReader.createParserQuads(tokenizer, language, baseURI, sink) ;
+        parser.parse() ;
+        sink.flush();
+        return dsg;
     }
 
+    /** Parse a file and return a graph */ 
+    public static Graph loadGraph(String filename)
+    {
+        return loadGraph(filename, null) ;
+    }
+    
+    /** Parse a file and return a graph */ 
+    public static Graph loadGraph(String filename, Lang lang)
+    {
+        return loadGraph(filename, lang, null) ; 
+    }
+    
+    /** Parse a file and return a graph */ 
+    public static Graph loadGraph(String filename, Lang lang, String baseURI)
+    {
+        if ( lang == null )
+            lang = Lang.guess(filename, Lang.NTRIPLES) ;
+        Graph g = Factory.createDefaultGraph() ;
+        read(filename, g, lang, baseURI) ;
+        return g ;
+    }
+
+    /** Parse a string and return the triples in a graph (in-memory) (convenience operation)*/ 
+    public static Graph graphFromString(String string, Lang language, String baseURI)
+    {
+        Graph g = Factory.createDefaultGraph() ;
+        Sink<Triple> sink = graphSink(g) ;
+        Tokenizer tokenizer = TokenizerFactory.makeTokenizerString(string) ;
+        LangRIOT parser = RiotReader.createParserTriples(tokenizer, language, baseURI, sink) ;
+        parser.parse() ;
+        sink.flush();
+        return g ;
+    }
+    
     /** Parse a file into a dataset graph */ 
     public static void read(String filename, DatasetGraph dataset)
     {
@@ -107,6 +122,9 @@ public class RiotLoader
     /** Parse a file to a dataset */ 
     public static void read(String filename, DatasetGraph dataset, Lang lang, String baseURI)
     {
+        // All filename/DatasetGraph calls come through here.
+        // ILLEGAL BASE NOT AN OPTION.
+        baseURI = chooseBaseIRI(baseURI, filename) ;
         InputStream input = IO.openFile(filename) ;
         read(input, dataset, lang, baseURI) ;
     }
@@ -127,43 +145,70 @@ public class RiotLoader
     }
     
 
+    /* Parse a file into a graph */
+    public static void read(String filename, Graph graph)
+    {
+        read(filename, graph, null) ;
+    }
+
+    /* Parse a file into a graph */
+    public static void read(String filename, Graph graph, Lang lang)
+    {
+        read(filename, graph, lang, null) ;
+        
+    }
+
+    /* Parse a file into a graph */
+    public static void read(String filename, Graph graph, Lang lang, String baseURI)
+    {
+        if ( lang == null )
+            lang = Lang.guess(filename, Lang.NTRIPLES) ;
+        baseURI = chooseBaseIRI(baseURI, filename) ;
+        InputStream input = IO.openFile(filename) ;
+        read(input, graph, lang, baseURI) ;
+    }
+
+    /* Parse a file into a graph */
+    public static void read(InputStream input, Graph graph, Lang lang, String baseURI)
+    {
+        Sink<Triple> sink = graphSink(graph) ;
+        readTriples(input, lang, baseURI, sink) ;
+    }
+
     /** Parse an input stream and send the quads to the sink */ 
     public static void readQuads(InputStream input, Lang language, String baseURI, Sink<Quad> sink)
     {
-        if ( language == Lang.NQUADS )
-        {
-            LangRIOT parser = RiotReader.createParserNQuads(input, sink) ;
-            parser.parse() ;
-            sink.flush();
-            return ;
-        }
-        if ( language == Lang.TRIG )
-        {
-            LangRIOT parser = RiotReader.createParserTriG(input, baseURI, sink) ;
-            parser.parse() ;
-            sink.flush();
-            return ;
-        }
-        throw new RiotException("Language not supported for quads: "+language) ;
+        if ( ! language.isQuads() )
+        //if ( language != Lang.NQUADS && language != Lang.TRIG )
+            throw new RiotException("Language not supported for quads: "+language) ;
+        
+        LangRIOT parser = RiotReader.createParserQuads(input, language, baseURI, sink) ;
+        parser.parse() ;
+        sink.flush() ;
     }
 
     /** Parse an input stream and send the triples to the sink */ 
     public static void readTriples(InputStream input, Lang language, String baseURI, Sink<Triple> sink)
     {
-        LangRIOT parser ;
-        switch (language)
-        { case NTRIPLES :
-            parser = RiotReader.createParserNTriples(input, sink) ;
-            break ;
-        case TURTLE:
-            parser = RiotReader.createParserTurtle(input, baseURI, sink) ;
-            break ;
-        default:
+        if ( ! language.isTriples() )
             throw new RiotException("Language not supported for triples: "+language) ;
-        }
+        LangRIOT parser = RiotReader.createParserTriples(input, language, baseURI, sink) ;
         parser.parse() ;
         sink.flush();
-        return ;
+//        LangRIOT parser ;
+//        switch (language)
+//        { case NTRIPLES :
+//            parser = RiotReader.createParserNTriples(input, sink) ;
+//            break ;
+//        case TURTLE:
+//            parser = RiotReader.createParserTurtle(input, baseURI, sink) ;
+//            break ;
+//        default:
+//            throw new RiotException("Language not supported for triples: "+language) ;
+//        }
+//        parser.parse() ;
+//        sink.flush();
+//        return ;
     }
 
     // Better place?
@@ -179,7 +224,10 @@ public class RiotLoader
         return new SinkQuadsToDataset(dataset) ;
     }
     
-    
+    private static String chooseBaseIRI(String baseURI, String filename)
+    {
+        return RiotReader.chooseBaseIRI(baseURI, filename) ;
+    }
     
 }
 

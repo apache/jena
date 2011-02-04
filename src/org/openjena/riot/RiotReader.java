@@ -13,6 +13,7 @@ import static org.openjena.riot.Lang.RDFXML ;
 import java.io.InputStream ;
 
 import org.openjena.atlas.io.IO ;
+import org.openjena.atlas.lib.IRILib ;
 import org.openjena.atlas.lib.Sink ;
 import org.openjena.riot.lang.LangNQuads ;
 import org.openjena.riot.lang.LangNTriples ;
@@ -53,11 +54,9 @@ public class RiotReader
     {
         checkTriplesLanguage(filename, lang) ;
 
-        String printName = nameForFile(filename) ;  
         InputStream in = IO.openFile(filename) ; 
-        // Logging:
-        //--    loadLogger.info("Load: "+printName+" -- "+Utils.nowAsString()) ;
         String base = chooseBaseIRI(baseIRI, filename) ;
+
         if ( lang == null )
             lang = Lang.guess(filename, NTRIPLES) ;     // ** N-Triples
         
@@ -103,10 +102,7 @@ public class RiotReader
      */
     public static void parseQuads(String filename, Lang lang, String baseIRI, Sink<Quad> sink)
     {
-        String printName = nameForFile(filename) ;  
         InputStream in = IO.openFile(filename) ; 
-        // Logging:
-        //--    loadLogger.info("Load: "+printName+" -- "+Utils.nowAsString()) ;
         String base = chooseBaseIRI(baseIRI, filename) ;
         if ( lang == null )
             lang = Lang.guess(filename, NQUADS) ;     // ** N-Quads
@@ -256,18 +252,19 @@ public class RiotReader
         return parser ;
     }
     
-    private static String chooseBaseIRI()
+    public static String chooseBaseIRI()
     {
         return IRIResolver.chooseBaseURI().toString() ;
     }
     
-    private static String chooseBaseIRI(String baseIRI, String filename)
+    public static String chooseBaseIRI(String baseIRI, String filename)
     {
         if ( baseIRI != null )
             return baseIRI ;
         if ( filename == null || filename.equals("-") )
             return "http://localhost/stdin/" ;
-        return IRIResolver.get().resolveToString(filename) ;
+        String x = IRILib.filenameToIRI(filename) ;
+        return x ;
     }
 
     private static String nameForFile(String filename)

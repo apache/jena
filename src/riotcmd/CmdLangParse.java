@@ -41,7 +41,6 @@ import arq.cmdline.ModTime ;
 
 import com.hp.hpl.jena.Jena ;
 import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.n3.IRIResolver ;
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 
@@ -190,7 +189,7 @@ public abstract class CmdLangParse extends CmdGeneral
                 System.err.println("Can't open '"+filename+"' "+ex.getMessage()) ;
                 return ;
             }
-            parseFile(filename, filename, in) ;
+            parseFile(null, filename, in) ;
             IO.close(in) ;
         }
     }
@@ -200,8 +199,6 @@ public abstract class CmdLangParse extends CmdGeneral
         String baseURI = modLangParse.getBaseIRI() ;
         if ( baseURI == null )
             baseURI = defaultBaseURI ;
-        // Make absolute
-        baseURI = IRIResolver.resolveGlobal(baseURI) ;
         parseRIOT(baseURI, filename, in) ;
     }
     
@@ -209,6 +206,8 @@ public abstract class CmdLangParse extends CmdGeneral
 
     protected void parseRIOT(String baseURI, String filename, InputStream in)
     {
+        baseURI = RiotReader.chooseBaseIRI(baseURI, filename) ;
+        
         boolean checking = true ;
         if ( modLangParse.explicitChecking() )  checking = true ;
         if ( modLangParse.explicitNoChecking() ) checking = false ;

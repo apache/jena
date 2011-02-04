@@ -36,6 +36,8 @@ import com.hp.hpl.jena.sparql.core.Quad ;
 public class WebReader
 {
     /* where file are "on the web" */
+    
+    // TODO base URIs.
 
     // Reuse FileManager and LocationMapper.
     public static void readGraph(Graph graph, String uri)
