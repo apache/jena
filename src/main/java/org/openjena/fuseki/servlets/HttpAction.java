@@ -10,8 +10,8 @@ import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
 import com.hp.hpl.jena.shared.Lock ;
+import com.hp.hpl.jena.sparql.SystemARQ ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.tdb.TDB ;
 
 class HttpAction
 {
@@ -58,12 +58,13 @@ class HttpAction
     
     public void sync()
     {
-        TDB.sync(dsg) ;
+        SystemARQ.sync(dsg) ;
+        //TDB.sync(dsg) ;
     }
 }
 
 /*
- * (c) Copyright 2010 Epimorphics Ltd.
+ * (c) Copyright 2010, 2011 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -201,7 +201,6 @@ public class SPARQL_Update extends SPARQL_ServletBase
         action.beginWrite() ;
         try {
             UpdateAction.execute(updateRequest, action.dsg) ;
-            // Make sure ...
             SystemARQ.sync(action.dsg) ;
         }
         catch ( UpdateException ex) { errorBadRequest(ex.getMessage()) ; }
