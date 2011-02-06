@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 Epimorphics Ltd.
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -10,29 +10,41 @@ import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.query.QueryExecution ;
 import com.hp.hpl.jena.query.QueryExecutionFactory ;
 import com.hp.hpl.jena.query.QueryFactory ;
-import com.hp.hpl.jena.query.QuerySolutionMap ;
-import com.hp.hpl.jena.query.Syntax ;
+import com.hp.hpl.jena.query.ResultSet ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
-import com.hp.hpl.jena.vocabulary.OWL ;
+import com.hp.hpl.jena.rdf.model.Resource ;
+import com.hp.hpl.jena.vocabulary.RDFS ;
 
-public class ReportCopySubstituteNoContext
+public class ReportPathCycles
 {
-    public static void main(String ...argv)
+    public static void main(String...argv)
     {
-        Query query = QueryFactory.create("ASK WHERE { FILTER IRI(\"http://aldi.de\") }", Syntax.syntaxARQ);
         Model model = ModelFactory.createDefaultModel();
+        // Create chain
+        int count = 1000;
+        for(int i = 0; i < count; i++) {
+            Resource subClass = model.createResource("urn:x-test:class-" + i);
+            Resource superClass = model.createResource("urn:x-test:class-" + (i + 1));
+            model.add(subClass, RDFS.subClassOf, superClass);
+        }
+        // Create random cycles
+        for(int i = 0; i < 100; i++) {
+            Resource subClass = model.createResource("urn:x-test:class-" + (int)(Math.random() * count));
+            Resource superClass = model.createResource("urn:x-test:class-" + (int)(Math.random() * count));
+            model.add(subClass, RDFS.subClassOf, superClass);
+        }
+        Query query = QueryFactory.create("SELECT * WHERE { ?x <" + RDFS.subClassOf + ">* ?y }");
         QueryExecution qexec = QueryExecutionFactory.create(query, model);
-        QuerySolutionMap bindings = new QuerySolutionMap();
-        bindings.add("this", OWL.Thing);
-        qexec.setInitialBinding(bindings);
-        qexec.execAsk();
-        System.out.println("DONE") ;
+        ResultSet rs = qexec.execSelect();
+        while(rs.hasNext()) {
+            rs.next();
+        }
     }
 }
 
 /*
- * (c) Copyright 2010 Epimorphics Ltd.
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

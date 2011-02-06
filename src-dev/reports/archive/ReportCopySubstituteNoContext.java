@@ -4,31 +4,31 @@
  * [See end of file]
  */
 
-package reports;
+package reports.archive;
 
 import com.hp.hpl.jena.query.Query ;
+import com.hp.hpl.jena.query.QueryExecution ;
+import com.hp.hpl.jena.query.QueryExecutionFactory ;
 import com.hp.hpl.jena.query.QueryFactory ;
-import com.hp.hpl.jena.sparql.algebra.Algebra ;
-import com.hp.hpl.jena.sparql.algebra.Op ;
+import com.hp.hpl.jena.query.QuerySolutionMap ;
+import com.hp.hpl.jena.query.Syntax ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.ModelFactory ;
+import com.hp.hpl.jena.vocabulary.OWL ;
 
-import org.openjena.atlas.lib.StrUtils ;
-
-public class ReportServiceVarRename
+public class ReportCopySubstituteNoContext
 {
-    public static void main(String[] args)
+    public static void main(String ...argv)
     {
-        String qs = StrUtils.strjoinNL("SELECT DISTINCT ?s",
-                                       "{ SERVICE <http://dbpedia.org/sparql>",
-                                       "    { SELECT ?s { ?s <http://xmlns.com/foaf/0.1/knows> ?o . } limit 10 }",
-                                       "}") ;
-        Query query = QueryFactory.create(qs) ;
-        Op op = Algebra.compile(query) ;
-        Op op2 = Algebra.optimize(op) ;
-        System.out.println(op) ;
-        System.out.println(op2) ;
-        System.exit(0) ;
+        Query query = QueryFactory.create("ASK WHERE { FILTER IRI(\"http://aldi.de\") }", Syntax.syntaxARQ);
+        Model model = ModelFactory.createDefaultModel();
+        QueryExecution qexec = QueryExecutionFactory.create(query, model);
+        QuerySolutionMap bindings = new QuerySolutionMap();
+        bindings.add("this", OWL.Thing);
+        qexec.setInitialBinding(bindings);
+        qexec.execAsk();
+        System.out.println("DONE") ;
     }
-
 }
 
 /*

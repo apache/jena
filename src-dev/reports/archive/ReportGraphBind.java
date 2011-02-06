@@ -1,4 +1,4 @@
-package reports;
+package reports.archive;
 
 import com.hp.hpl.jena.query.DataSource;
 import com.hp.hpl.jena.query.DatasetFactory;

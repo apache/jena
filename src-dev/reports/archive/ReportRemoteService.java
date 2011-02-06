@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package reports;
+package reports.archive;
 
 import com.hp.hpl.jena.query.QueryExecution ;
 import com.hp.hpl.jena.query.QueryExecutionFactory ;

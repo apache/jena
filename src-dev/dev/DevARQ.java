@@ -5,13 +5,13 @@ public class DevARQ
 {
     // Mem dataset with union graph
     
-    // RIOT - own node cache - per object type.
+    // RIOT - own node cache - per object type (experiment)
+    // parallel parser.
     
     // OpExecute example.
     
     // More test in DatasetGraphTests
     // Rename Quad.defaultGraphIRI?
-    
     // Parsers use: Quad.defaultGraphNodeGenerated
     //   Should find/4 do the same? Via:
     // DatasetGraphBase.triples2quadsDftGraph
@@ -32,7 +32,6 @@ public class DevARQ
     // Most Locator.open don't know about types => extensions.
     // Super class for "guessing" -> RIOT
     
-    
     // >>>> Tasks
 
     // OutputLangUtils
@@ -40,9 +39,6 @@ public class DevARQ
     // Algebra.asUnionQuery .. to access the functionality
     
     // Path evaluation as per spec.
-    
-    // Multithreaded parser.
-    
     // tdbloader2; filenames.
     
     // ?? bNode label checks (UPDATE: can't use same bNode label in template and pattern for DELETE/INSERT.)

@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package reports;
+package reports.archive;
 
 import org.junit.Test ;
 import org.openjena.atlas.lib.StrUtils ;

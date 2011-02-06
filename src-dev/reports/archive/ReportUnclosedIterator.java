@@ -1,62 +1,48 @@
 /*
- * (c) Copyright 2010 Talis Systems Ltd.
+ * (c) Copyright 2009 Talis Information Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
-package reports;
+package reports.archive;
 
 import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.query.QueryExecution ;
 import com.hp.hpl.jena.query.QueryExecutionFactory ;
 import com.hp.hpl.jena.query.QueryFactory ;
+import com.hp.hpl.jena.query.ResultSet ;
+import com.hp.hpl.jena.query.Syntax ;
 import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.sparql.util.QueryExecUtils ;
-import com.hp.hpl.jena.sparql.util.Timer ;
-import com.hp.hpl.jena.util.FileManager ;
+import com.hp.hpl.jena.rdf.model.ModelFactory ;
 
-public class ReportSlowDatatype
+public class ReportUnclosedIterator
 {
     public static void main(String...argv)
     {
-        Model model = FileManager.get().loadModel("tmp/holger-test.ttl") ;
+        // Analysis
+        // Aggregation reads whole results and then "replaces" the root iterator."
+        // Order does the same? No, because ORDER is over everyting, this is per group. 
         
-        Query q1 = QueryFactory.read("tmp/Q1.rq") ;
-        System.out.println(q1) ;
-        Query q2 = QueryFactory.read("tmp/Q2.rq") ;
-        System.out.println(q2) ;
-
-        exec(q1, model) ;
-        exec(q2, model) ;
+        Model model = ModelFactory.createDefaultModel();
+        // Insert one triple here.
+        //model.getGraph().add(SSE.parseTriple("(<x> <p> <y>)")) ;
         
-        System.out.println("----") ;
+        String str = "SELECT count(?object) WHERE { ?subject ?p ?object }";
+        Query query = QueryFactory.create(str, Syntax.syntaxARQ);
+        QueryExecution qexec = QueryExecutionFactory.create(query, model);
+        ResultSet rs = qexec.execSelect();
+//        ResultSetFormatter.out(rs) ;
+//        if ( rs.hasNext() ) 
+//            rs.next();
+        //rs.hasNext() ; // If this, forcing iteraors to finish neatly, it works.
         
-        execTimed(q1, model) ;
-        execTimed(q2, model) ;
+        qexec.close();
+        System.out.println("Exit") ;
     }
-    
-    private static void exec(Query query, Model model)
-    {
-        QueryExecution qexec = QueryExecutionFactory.create(query, model) ;
-        QueryExecUtils.executeQuery(query, qexec) ;
-    }
-    
-    private static void execTimed(Query query, Model model)
-    {
-//        System.out.println(ARQ.VERSION); 
-//        System.out.println(Jena.VERSION); 
-
-        Timer timer = new Timer() ;
-        timer.startTimer() ;
-        exec(query, model) ;
-        long time = timer.endTimer() ;
-        System.out.printf("Time = %.2fs\n", time/1000.0) ;
-    }
-    
 }
 
 /*
- * (c) Copyright 2010 Talis Systems Ltd.
+ * (c) Copyright 2009 Talis Information Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
