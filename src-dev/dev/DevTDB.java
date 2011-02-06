@@ -8,20 +8,14 @@ public class DevTDB
     
     // Loader -> warning on bad literals?
     //  Check?  Test cases.
-    // --base=
     
     // TDBLoader.load(dsg, input, lang, base, showProgress)
-    
-    // Include some data in distribution.
     
     // ** Reorganise documentation.
     // Page on union dataset.
     // Tutorial.
     // Combine with ARQ? Fuseki? One Trail.
     
-    // ** Release
-    // TDB shutdown hook.
-
     // New setup
     //    See IndexFactory for bulkloader2
     //    Factory for common basic object (lots of args).
