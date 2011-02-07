@@ -87,6 +87,13 @@ public class RunTDB
     
     public static void main(String[] args) throws Exception
     { 
+        {
+        DatasetGraph dsg = TDBFactory.createDatasetGraph("DB") ;
+        dsg.close() ;
+        dsg = TDBFactory.createDatasetGraph("DB") ;
+        dsg.close() ;
+        exit(0) ;
+        }
         SystemTDB.setFileMode(FileMode.direct) ;
         tdb.tdbupdate.main("--loc=DBU", "--file=update.ru") ; exit(0) ;
         
