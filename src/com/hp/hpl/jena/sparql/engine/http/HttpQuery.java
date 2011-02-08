@@ -304,9 +304,9 @@ public class HttpQuery extends Params
             InputStream in = httpConnection.getInputStream() ;
             
             // +++ WORKAROUND
-            // Working with Virtuoso does not work.   
+            // Working with Virtuoso does not work reliably.   
             // Some sort of low level network issue interacts with the STaX parser (wstx 3)
-            // so that the parse see end of file earliy. 
+            // so that the parser sees end of file early. 
             // This code works around that by reading everything in as quickly as possible. 
             byte[] bytes = IO.readWholeFile(in) ;
             in = new ByteArrayInputStream(bytes) ;
