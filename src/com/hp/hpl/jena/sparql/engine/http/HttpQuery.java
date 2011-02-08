@@ -5,7 +5,6 @@
 
 package com.hp.hpl.jena.sparql.engine.http;
 
-import java.io.BufferedInputStream ;
 import java.io.ByteArrayInputStream ;
 import java.io.IOException ;
 import java.io.InputStream ;
