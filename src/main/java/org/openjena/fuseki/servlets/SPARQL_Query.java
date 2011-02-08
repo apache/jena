@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 Epimorphics Ltd.
+ * (c) Copyright 2010, 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -282,10 +282,6 @@ public abstract class SPARQL_Query extends SPARQL_ServletBase
     }
 
     protected abstract Dataset decideDataset(HttpActionQuery action, Query query, String queryStringLog) ;
-//    {
-//        return DatasetFactory.create(action.dsg) ;
-//    }
-
 
     protected void sendResults(HttpActionQuery action, SPARQLResult result)
     {
@@ -320,7 +316,7 @@ public abstract class SPARQL_Query extends SPARQL_ServletBase
 }
 
 /*
- * (c) Copyright 2010 Epimorphics Ltd.
+ * (c) Copyright 2010, 2011 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
