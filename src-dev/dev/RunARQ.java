@@ -18,6 +18,7 @@ import junit.framework.TestSuite ;
 import org.openjena.atlas.io.IndentedWriter ;
 import org.openjena.atlas.json.JSON ;
 import org.openjena.atlas.json.JsonValue ;
+import org.openjena.atlas.lib.IRILib ;
 import org.openjena.atlas.lib.Sink ;
 import org.openjena.atlas.lib.StrUtils ;
 import org.openjena.atlas.logging.Log ;
@@ -112,6 +113,15 @@ public class RunARQ
     public static void main(String[] argv) throws Exception
     {
         SysRIOT.wireIntoJena() ;
+        
+        System.out.println(IRILib.filenameToIRI("file://")) ;
+        //IRIResolver.createNoResolve().
+        
+        
+        exit(0) ;
+        
+        
+        
         DatasetGraph dsg = DatasetLib.createDatasetGraphMem() ;
         
         String testbase = "http://EXample/" ;

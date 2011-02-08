@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package dev;
+package org.openjena.atlas.lib;
 
 import java.io.File ;
 

@@ -5,6 +5,7 @@
 
 package com.hp.hpl.jena.sparql.engine.http;
 
+import java.io.BufferedInputStream ;
 import java.io.ByteArrayInputStream ;
 import java.io.IOException ;
 import java.io.InputStream ;
@@ -17,6 +18,7 @@ import java.util.Iterator ;
 import java.util.List ;
 import java.util.Map ;
 
+import org.openjena.atlas.io.IO ;
 import org.openjena.atlas.lib.Base64 ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
@@ -299,19 +301,30 @@ public class HttpQuery extends Params
                 throw new QueryExceptionHTTP(responseCode, responseMessage) ;
   
             // Request suceeded
+            //httpConnection.setReadTimeout(10) ;
             InputStream in = httpConnection.getInputStream() ;
+            
+            // Working with Virtuoso does not work.  
+            // Some sort of low level netting problems which causes woodstox not to
+            // be able to read the whole stream of bytes.
+            
+            // This code works around that by reading everything in as quickly as possible. 
+            byte[] bytes = IO.readWholeFile(in) ;
+            in = new ByteArrayInputStream(bytes) ;
             
             if ( false )
             {
-                // Dump the reply
-                Map<String,List<String>> map = httpConnection.getHeaderFields() ;
-                for ( Iterator<String> iter = map.keySet().iterator() ; iter.hasNext() ; )
+                if ( false  )
                 {
-                    String k = iter.next();
-                    List<String> v = map.get(k) ;
-                    System.out.println(k+" = "+v) ;
+                    // Dump the header
+                    Map<String,List<String>> map = httpConnection.getHeaderFields() ;
+                    for ( Iterator<String> iter = map.keySet().iterator() ; iter.hasNext() ; )
+                    {
+                        String k = iter.next();
+                        List<String> v = map.get(k) ;
+                        System.out.println(k+" = "+v) ;
+                    }
                 }
-                
                 // Dump response body
                 StringBuffer b = new StringBuffer(1000) ;
                 byte[] chars = new byte[1000] ;
