@@ -308,6 +308,7 @@ public class HttpQuery extends Params
             // be able to read the whole stream of bytes.
             
             // This code works around that by reading everything in as quickly as possible. 
+            // Workaround for what appears to be a network issue. 
             byte[] bytes = IO.readWholeFile(in) ;
             in = new ByteArrayInputStream(bytes) ;
             

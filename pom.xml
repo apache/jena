@@ -70,6 +70,7 @@
       <artifactId>wstx-asl</artifactId>
       <version>3.2.9</version>
       <!--
+	And recode XMLInputStax to use STaX2 as stil have the same problems of STaX1 if just upgrade woodstox.
       <groupId>org.codehaus.woodstox</groupId>
       <artifactId>woodstox-core-asl</artifactId>
       <version>4.0.0</version>

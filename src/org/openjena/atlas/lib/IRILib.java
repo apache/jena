@@ -139,7 +139,8 @@ public class IRILib
             // Char 2, 
             if ( fn.length() >= 2 && fn.charAt(1) == ':' )
                 // Windows drive letter - already absolute path.
-                fn = "file:///"+fn ;
+                // Make "URI" absolute path
+                fn = "/"+fn ;
             // Convert \ to /
             // Maybe should do this on all platforms? i.e consistency.
             fn = fn.replace('\\', '/' ) ;
