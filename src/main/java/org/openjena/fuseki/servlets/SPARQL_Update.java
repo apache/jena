@@ -8,8 +8,8 @@ package org.openjena.fuseki.servlets;
 
 import static java.lang.String.format ;
 import static org.openjena.fuseki.Fuseki.serverlog ;
-import static org.openjena.fuseki.HttpNames.paramUpdate ;
 import static org.openjena.fuseki.HttpNames.paramRequest ;
+import static org.openjena.fuseki.HttpNames.paramUpdate ;
 
 import java.io.IOException ;
 import java.io.InputStream ;
@@ -28,7 +28,6 @@ import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.query.QueryParseException ;
-import com.hp.hpl.jena.sparql.SystemARQ ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.update.UpdateAction ;
 import com.hp.hpl.jena.update.UpdateException ;
@@ -201,7 +200,7 @@ public class SPARQL_Update extends SPARQL_ServletBase
         action.beginWrite() ;
         try {
             UpdateAction.execute(updateRequest, action.dsg) ;
-            SystemARQ.sync(action.dsg) ;
+            // Sync done by endWrite.
         }
         catch ( UpdateException ex) { errorBadRequest(ex.getMessage()) ; }
         finally { action.endWrite() ; }

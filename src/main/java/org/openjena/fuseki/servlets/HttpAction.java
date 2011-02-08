@@ -6,6 +6,10 @@
 
 package org.openjena.fuseki.servlets;
 
+
+import java.util.HashMap ;
+import java.util.Map ;
+
 import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
@@ -22,6 +26,22 @@ class HttpAction
     final HttpServletResponse response ;
     final boolean verbose ;
     
+    // ---- Concurrency checking.
+    private static Map<Lock, ConcurrencyPolicyMRSW> lockCounters = new HashMap<Lock, ConcurrencyPolicyMRSW>() ;
+    private static ConcurrencyPolicyMRSW getConcurrencyPolicy(Lock lock)
+    {
+        synchronized(lockCounters)
+        {
+            ConcurrencyPolicyMRSW x = lockCounters.get(lock) ;
+            if ( x == null )
+            {
+                x = new ConcurrencyPolicyMRSW() ;
+                lockCounters.put(lock, x) ;
+            }
+            return x ;
+        }
+    }
+
     public HttpAction(long id, DatasetGraph dsg, HttpServletRequest request, HttpServletResponse response, boolean verbose)
     {
         this.id = id ;
@@ -32,11 +52,30 @@ class HttpAction
         this.verbose = verbose ;
     }
     
-    public void beginRead()     { enter(dsg, lock, Lock.READ) ; } 
-    public void endRead()       { leave(dsg, lock, Lock.READ) ; }
-    
-    public void beginWrite()    { enter(dsg, lock, Lock.WRITE) ; } 
-    public void endWrite()      { sync() ; leave(dsg, lock, Lock.WRITE) ; }
+    public void beginRead()
+    {
+        enter(dsg, lock, Lock.READ) ;
+        getConcurrencyPolicy(lock).startRead() ;
+    }
+
+    public void endRead()
+    {
+        getConcurrencyPolicy(lock).finishRead() ;
+        leave(dsg, lock, Lock.READ) ;
+    }
+
+    public void beginWrite()
+    {
+        enter(dsg, lock, Lock.WRITE) ;
+        getConcurrencyPolicy(lock).startUpdate() ;
+    }
+
+    public void endWrite()
+    {
+        sync() ;
+        getConcurrencyPolicy(lock).finishUpdate() ;
+        leave(dsg, lock, Lock.WRITE) ;
+    }
 
     private void enter(DatasetGraph dsg, Lock lock, boolean readLock)
     {

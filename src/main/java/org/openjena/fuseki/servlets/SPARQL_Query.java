@@ -223,7 +223,7 @@ public abstract class SPARQL_Query extends SPARQL_ServletBase
         try {
             SPARQLResult result = executeQuery(action, query, queryStringLog) ;
             sendResults(action, result) ;
-        } finally { action.endWrite() ; }
+        } finally { action.endRead() ; }
     }
 
     /** Check the query - throw ActionErrorException or call super.error* */
