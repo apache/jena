@@ -303,14 +303,14 @@ public class HttpQuery extends Params
             //httpConnection.setReadTimeout(10) ;
             InputStream in = httpConnection.getInputStream() ;
             
-            // Working with Virtuoso does not work.  
-            // Some sort of low level netting problems which causes woodstox not to
-            // be able to read the whole stream of bytes.
-            
+            // +++ WORKAROUND
+            // Working with Virtuoso does not work.   
+            // Some sort of low level network issue interacts with the STaX parser (wstx 3)
+            // so that the parse see end of file earliy. 
             // This code works around that by reading everything in as quickly as possible. 
-            // Workaround for what appears to be a network issue. 
             byte[] bytes = IO.readWholeFile(in) ;
             in = new ByteArrayInputStream(bytes) ;
+            // +++ 
             
             if ( false )
             {
