@@ -35,8 +35,6 @@ class CacheImpl<K,V> extends LinkedHashMap<K, V>
         // and hence can be one larger than needed.  But safer than one less.
         // +1 is the need for the added entry before the removing the "eldest"
         maxEntries = maxSize ;
-
-
     }
 
     /** Callback for entries when dropped from the cache */
@@ -53,6 +51,7 @@ class CacheImpl<K,V> extends LinkedHashMap<K, V>
 
         boolean b = ( size() > maxEntries ) ;
         if ( b && dropHandler != null )
+            // Should not delete the entry - LinkedHashMap will do that.
             dropHandler.apply(eldest.getKey(), eldest.getValue()) ;
         return b ;
     }
