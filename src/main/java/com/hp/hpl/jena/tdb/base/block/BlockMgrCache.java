@@ -20,6 +20,9 @@ import org.slf4j.LoggerFactory;
 /** Caching block manager - this is an LRU cache */
 public class BlockMgrCache extends BlockMgrSync
 {
+    // The overridden public operations are sync'ed.
+    // As syn is on "this", it also covers all the other operations via BlockMgrSync
+    
     private static Logger log = LoggerFactory.getLogger(BlockMgrCache.class) ;
     // Read cache
     Cache<Integer, ByteBuffer> readCache = null ;
