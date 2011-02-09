@@ -2,6 +2,10 @@ package dev;
 
 public class DevFuseki
 {
+    // Assembler of general datset and putting to graph name not in assembler.
+    
+    // Better handling of bad URI name for a hgrap http:/example/X => stacktrace.
+    
     // Mem dataset with union graph
     
     // Documentation:
