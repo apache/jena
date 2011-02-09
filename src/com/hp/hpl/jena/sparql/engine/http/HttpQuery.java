@@ -303,29 +303,21 @@ public class HttpQuery extends Params
             //httpConnection.setReadTimeout(10) ;
             InputStream in = httpConnection.getInputStream() ;
             
-            // +++ WORKAROUND
-            // Working with Virtuoso does not work reliably.   
-            // Some sort of low level network issue interacts with the STaX parser (wstx 3)
-            // so that the parser sees end of file early. 
-            // This code works around that by reading everything in as quickly as possible. 
-            byte[] bytes = IO.readWholeFile(in) ;
-            in = new ByteArrayInputStream(bytes) ;
-            // +++ 
-            
             if ( false )
             {
-                if ( false  )
+                // Dump the header
+                Map<String,List<String>> map = httpConnection.getHeaderFields() ;
+                for ( Iterator<String> iter = map.keySet().iterator() ; iter.hasNext() ; )
                 {
-                    // Dump the header
-                    Map<String,List<String>> map = httpConnection.getHeaderFields() ;
-                    for ( Iterator<String> iter = map.keySet().iterator() ; iter.hasNext() ; )
-                    {
-                        String k = iter.next();
-                        List<String> v = map.get(k) ;
-                        System.out.println(k+" = "+v) ;
-                    }
+                    String k = iter.next();
+                    List<String> v = map.get(k) ;
+                    System.out.println(k+" = "+v) ;
                 }
-                // Dump response body
+            }
+            
+            // Dump response body
+            if ( false )
+            {
                 StringBuffer b = new StringBuffer(1000) ;
                 byte[] chars = new byte[1000] ;
                 while(true)
@@ -339,6 +331,17 @@ public class HttpQuery extends Params
                 // Reset
                 in = new ByteArrayInputStream(b.toString().getBytes(FileUtils.encodingUTF8)) ;
             }
+            
+            
+            // +++ WORKAROUND
+            // Working with Virtuoso does not work reliably.   
+            // Some sort of low level network issue interacts with the STaX parser (wstx 3)
+            // so that the parser sees end of file early. 
+            // This code works around that by reading everything in as quickly as possible. 
+            byte[] bytes = IO.readWholeFile(in) ;
+            in = new ByteArrayInputStream(bytes) ;
+            // +++ 
+           
             return in ;
         }
         catch (IOException ioEx)

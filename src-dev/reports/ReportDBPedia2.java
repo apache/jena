@@ -19,6 +19,8 @@ public class ReportDBPedia2
     //    public class TestJena {
     public static void main(String[] args) {
 
+        // http://dbpedia.org/sparql?default-graph-uri=http%3A%2F%2Fdbpedia.org&query=PREFIX+rdf%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F1999%2F02%2F22-rdf-syntax-ns%23%3E%0D%0APREFIX+dbpedia-owl%3A+%3Chttp%3A%2F%2Fdbpedia.org%2Fontology%2F%3E%0D%0ASELECT+%3Fvar+%0D%0AWHERE+{+%3Fvar+rdf%3Atype+dbpedia-owl%3ACompany+.+}&debug=on&timeout=&format=text%2Fhtml&save=display&fname=
+        
         String queryString = "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>"
             + "PREFIX dbpedia-owl: <http://dbpedia.org/ontology/>"
             + "SELECT ?var "
