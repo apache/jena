@@ -35,6 +35,8 @@ public class DevTDB
     // Version of PrefixMap that impls (wrapper) PrefixMapping.  
     
     // ---- Documentation
+    // Assembler.
+    // http://openjena.org/wiki/TDB/Assembler#RDFS
     // http://openjena.org/wiki/TDB/JavaAPI#Concurrency
     // http://openjena.org/wiki/TDB/Concurrency
     // and ref to ARQ.
