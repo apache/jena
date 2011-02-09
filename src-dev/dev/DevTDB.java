@@ -2,6 +2,9 @@ package dev ;
 
 public class DevTDB
 {
+    // BlockMgr Cache - expel entry removed from the cache but CacheImpl.removeEldestEntry returns true.
+    // BlockMgrCache - no need for BlockMgrSync.
+    
     // Finish, integrate, switch to new Dataset builder.
     //  Todo init().
     // SolverLib - convert Nodes to NodeIds once, as BGP compiled.

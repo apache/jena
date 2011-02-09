@@ -49,32 +49,23 @@ public class BlockMgrCache extends BlockMgrSync
                 //@Override
                 public void apply(Integer id, ByteBuffer bb)
                 { 
+                    // We're inside a synchronized operation at this point.
                     log("Cache spill: write block: %d", id) ;
-                    expelEntry(id) ;
+                    if (bb == null)
+                    {
+                        log.warn("Write cache: " + id + " dropping an entry that isn't there") ;
+                        return ;
+                    }
+                    // Put in read cache.
+                    readCache.put(id, bb) ;
+                    // Force the block to be writtern
+                    // by sending it to the wrapped BlockMgr
+                    BlockMgrCache.super.put(id, bb) ;
                 }
             }) ;
         }
     }
     
-    // Write out when flushed.
-    private void expelEntry(Integer id)
-    {
-        ByteBuffer bb = writeCache.get(id) ;
-        if ( bb == null )
-        {
-            log.warn("Write cache: "+id+" expelling entry that isn't there") ;
-            return ;
-        }
-        log("Drop (write cache): %d", id) ;
-        // This pushes the block to the BlockMgr being cached.
-        super.put(id, bb) ;
-        writeCache.remove(id) ;
-
-        // Move it into the readCache because it's often read after writing
-        // and the read cache is often larger.
-        readCache.put(id, bb) ;
-    }
-
     // Pool?
 //    @Override
 //    public ByteBuffer allocateBuffer(int id)
@@ -217,6 +208,28 @@ public class BlockMgrCache extends BlockMgrSync
         }
         return didSync ;
     }
+    
+    // Write out when flushed.
+    // Do not call from drop handler.
+    private void expelEntry(Integer id)
+    {
+        ByteBuffer bb = writeCache.get(id) ;
+        if ( bb == null )
+        {
+            log.warn("Write cache: "+id+" expelling entry that isn't there") ;
+            return ;
+        }
+        log("Expel (write cache): %d", id) ;
+        // This pushes the block to the BlockMgr being cached.
+        super.put(id, bb) ;
+        writeCache.remove(id) ;
+
+        // Move it into the readCache because it's often read after writing
+        // and the read cache is often larger.
+        readCache.put(id, bb) ;
+    }
+
+
 }
 
 /*
