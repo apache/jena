@@ -103,7 +103,9 @@ public class SPARQLServer
         // Using "= new SelectChannelConnector() ;" on Darwin (OS/X) causes problems 
         // with initialization not seen (thread scheduling?) in Joseki.
         Connector connector = new BlockingChannelConnector() ;
-        //connector.setMaxIdleTime(200*1000) ; // Jetty outputs a lot of messages if this goes off.
+        // Ignore. 
+        // if set, then if this goes off, it keeps going off.
+        connector.setMaxIdleTime(0) ; // Jetty outputs a lot of messages if this goes off.
         connector.setPort(port);
         
         // Some people do try very large operations ...
