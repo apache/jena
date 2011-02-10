@@ -129,6 +129,13 @@ public class Location
         return filename ;
     }
  
+    /** Does the location exist (and it a directory, and is accessible) */
+    public boolean exists()
+    { 
+        File f = new File(getDirectoryPath()) ;
+        return f.exists() && f.isDirectory() && f.canRead() ;
+    }
+    
     public boolean exists(String filename) { return exists(filename, null) ; }
     
     public boolean exists(String filename, String ext)

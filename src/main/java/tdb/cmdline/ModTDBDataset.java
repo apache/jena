@@ -40,7 +40,7 @@ public class ModTDBDataset extends ModDataset
     // Can make a single model or a dataset
     
     private ArgDecl argMem                  = new ArgDecl(ArgDecl.NoValue, "mem") ;
-    private ModTDBAssembler modAssembler    =  new ModTDBAssembler() ;
+    private ModTDBAssembler modAssembler    = new ModTDBAssembler() ;
     private boolean useMemory               = false ;
     
     public ModTDBDataset() {}
