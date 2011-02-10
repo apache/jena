@@ -6,6 +6,9 @@ public class DevFuseki
     
     // Better handling of bad URI name for a hgrap http:/example/X => stacktrace.
     
+    // FUSEKI_ROOT
+    // --loc => check DB does exist (do in Java) - extension to ModLocation.
+    
     // Mem dataset with union graph
     
     // Documentation:

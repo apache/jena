@@ -9,6 +9,7 @@ package org.openjena.fuseki;
 import java.io.InputStream ;
 
 import org.openjena.atlas.io.IO ;
+import org.openjena.atlas.lib.FileOps ;
 import org.openjena.atlas.lib.Sink ;
 import org.openjena.fuseki.server.SPARQLServer ;
 import org.openjena.riot.Lang ;
@@ -129,10 +130,12 @@ public class FusekiCmd extends CmdARQ
             // replace by RiotLoader after ARQ refresh.
             String filename = getValue(argFile) ;
             log.info("Dataset: in-memory: load file: "+filename) ;
+            if ( ! FileOps.exists(filename) )
+                throw new CmdException("File not found: "+filename) ;
 
             Lang language = Lang.guess(filename) ;
             if ( language == null )
-                throw new CmdException("Can't guess language for file; "+filename) ;
+                throw new CmdException("Can't guess language for file: "+filename) ;
             InputStream input = IO.openFile(filename) ; 
             
             if ( language.isQuads() )
@@ -156,6 +159,8 @@ public class FusekiCmd extends CmdARQ
         {
             String dir = getValue(argTDB) ;
             log.info("TDB dataset: directory="+dir) ;
+            if ( ! FileOps.exists(dir) )
+                throw new CmdException("Directory not found: "+dir) ;
             dsg = TDBFactory.createDatasetGraph(dir) ;
         }
         

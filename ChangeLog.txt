@@ -3,8 +3,9 @@
 == Version 1.0
 
 
-
 == 0.2.0
++ Location of a TDB database must exis when server starts.
+
 + Form parameter name for SPARQL Update sent by HTML form changed from request= to update=
   Likely direction of SPARQL-WG.
 
