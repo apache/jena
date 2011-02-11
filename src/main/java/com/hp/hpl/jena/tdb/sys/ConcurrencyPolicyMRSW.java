@@ -11,7 +11,6 @@ import static java.lang.String.format ;
 import java.util.ConcurrentModificationException ;
 import java.util.Iterator ;
 import java.util.NoSuchElementException ;
-import java.util.concurrent.atomic.AtomicInteger ;
 import java.util.concurrent.atomic.AtomicLong ;
 
 /** A policy that checks, but does not enforce, single writer or multiple writer locking policy */ 
@@ -19,8 +18,8 @@ public class ConcurrencyPolicyMRSW implements ConcurrencyPolicy
 {
     private final boolean concurrencyChecking = true ;
     private final AtomicLong epoch = new AtomicLong(5) ;                // Update counters, used to check iterators. No need to start at 0.
-    private final AtomicInteger readCounter = new AtomicInteger(0) ;
-    private final AtomicInteger writeCounter = new AtomicInteger(0) ;
+    private final AtomicLong readCounter = new AtomicLong(0) ;
+    private final AtomicLong writeCounter = new AtomicLong(0) ;
     
     public ConcurrencyPolicyMRSW()
     { }
@@ -54,8 +53,13 @@ public class ConcurrencyPolicyMRSW implements ConcurrencyPolicy
 
     private void checkConcurrency()
     {
-        int R = readCounter.get() ;
-        int W = writeCounter.get() ;
+        long R, W ;
+        synchronized (this)
+        {
+            R = readCounter.get() ;
+            W = writeCounter.get() ;
+        }
+
         if ( R > 0 && W > 0 )
             policyError(R, W) ;
         if ( W > 1 )
@@ -74,6 +78,7 @@ public class ConcurrencyPolicyMRSW implements ConcurrencyPolicy
 
         IteratorCheckNotConcurrent(Iterator<T> iter, AtomicLong eCount )
         {
+            // Assumes correct locking to set up, i.e. eCount not changing (writer on separate thread).
             this.iter = iter ;
             this.eCount = eCount ;
             this.startEpoch = eCount.get();
@@ -117,7 +122,7 @@ public class ConcurrencyPolicyMRSW implements ConcurrencyPolicy
     }
 
     
-    private static void policyError(int R, int W)
+    private static void policyError(long R, long W)
     {
         policyError(format("Reader = %d, Writer = %d", R, W)) ;
     }

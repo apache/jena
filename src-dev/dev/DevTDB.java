@@ -5,6 +5,7 @@ public class DevTDB
     // Finish, integrate, switch to new Dataset builder.
     //  Todo init().
     // SolverLib - convert Nodes to NodeIds once, as BGP compiled.
+    // check for circularities?
     
     // Loader -> warning on bad literals?
     //  Check?  Test cases.
@@ -26,6 +27,7 @@ public class DevTDB
     // Tune sort --buffer-size=50%
     // Prefixes to be set during bulk loading 1 & 2
     // RIOT parser issue?
+    // On reading, suppress duplicates (adjacent). 
     
     // BPT
     //  .truncate : release all blocks and create a new (empty) tree. 

@@ -185,14 +185,24 @@ public class BulkLoader
         
         Destination<Triple> sink = new Destination<Triple>() {
             long count = 0 ;
+            private StatsCollector stats ;
+            
             final public void start()
             {
                 loaderTriples.loadStart() ;
                 loaderTriples.loadDataStart() ;
+                
+                this.stats = new StatsCollector() ;
             }
             final public void send(Triple triple)
             {
-                loaderTriples.load(triple.getSubject(), triple.getPredicate(),  triple.getObject()) ;
+                Node s = triple.getSubject() ;
+                Node p = triple.getPredicate() ;
+                Node o = triple.getObject() ;
+                
+                loaderTriples.load(s, p, o)  ;
+                stats.record(null, s, p, o) ; 
+                
                 count++ ;
             }
 
@@ -205,6 +215,13 @@ public class BulkLoader
                 loaderTriples.loadIndexStart() ;
                 loaderTriples.loadIndexFinish() ;
                 loaderTriples.loadFinish() ;
+                
+                if ( ! dsg.getLocation().isMem() )
+                {
+                    String filename = dsg.getLocation().getPath(Names.optStats) ;
+                    Stats.write(filename, stats) ;
+                }
+                
                 dsg.sync();
             }
         } ;

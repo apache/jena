@@ -4,6 +4,7 @@ ChangeLog for TDB
 ==== 0.8.10
 
 + tdbloader now generates statistics when loading an empty database.
++ Bug fix: tdbloader2 coudl mishandle duplicate triples.
  
 + TDB no longer registers a shutdown handler to sync datasets.
   It has been discovered that it's possible to interrupt a write process,
