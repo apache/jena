@@ -203,6 +203,7 @@ public abstract class SPARQL_Query extends SPARQL_ServletBase
     {
         String queryStringLog = formatForLog(queryString) ;
         serverlog.info(format("[%d] Query = %s", action.id, queryString));
+        
         Query query = null ;
         try {
             // NB syntax is ARQ (a superset of SPARQL)

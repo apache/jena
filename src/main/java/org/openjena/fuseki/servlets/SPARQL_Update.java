@@ -162,8 +162,8 @@ public class SPARQL_Update extends SPARQL_ServletBase
                 // (fixed)Bug in atlas.IO
                 byte[] b = IO.readWholeFile(input) ;
                 String requestStr = Bytes.bytes2string(b) ;
-                String requestStr1 = formatForLog(requestStr) ;
-                serverlog.info(format("[%d] Update = %s", action.id, requestStr1)) ;
+                String requestStrLog = formatForLog(requestStr) ;
+                serverlog.info(format("[%d] Update = %s", action.id, requestStrLog)) ;
                 req = UpdateFactory.create(requestStr) ;
             }    
             else

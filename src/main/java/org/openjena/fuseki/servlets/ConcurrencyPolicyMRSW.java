@@ -6,66 +6,98 @@
 
 package org.openjena.fuseki.servlets;
 
-import static java.lang.String.format ;
-
 import java.util.ConcurrentModificationException ;
-import java.util.concurrent.atomic.AtomicInteger ;
+import java.util.concurrent.atomic.AtomicLong ;
 
-class ConcurrencyPolicyMRSW
+import org.openjena.fuseki.Fuseki ;
+import org.slf4j.Logger ;
+
+public final class ConcurrencyPolicyMRSW
 {
+    static private Logger log = Fuseki.serverlog ; //org.slf4j.LoggerFactory.getLogger(ConcurrencyPolicyMRSW.class) ;
+    static private final boolean logging = false ; //log.isDebugEnabled() ;
+    
     // This is a simplified version of ConcurrencyPolicyMRSW from TDB. 
-    private final AtomicInteger readCounter = new AtomicInteger(0) ;
-    private final AtomicInteger writeCounter = new AtomicInteger(0) ;
+    private final AtomicLong readCounter = new AtomicLong(0) ;
+    private final AtomicLong writeCounter = new AtomicLong(0) ;
+    static private final AtomicLong policyCounter = new AtomicLong(0) ;
 
     public ConcurrencyPolicyMRSW()
-    { }
+    { policyCounter.incrementAndGet() ; }
 
+    // Loggin -inside the operation.
+    
     //@Override
     public void startRead()
     {
         readCounter.getAndIncrement() ;
+        if ( logging ) log() ;
         checkConcurrency() ;
     }
 
     //@Override
     public void finishRead()
     {
+        if ( logging ) log() ;
         readCounter.decrementAndGet() ;
+        checkConcurrency() ;
     }
 
     //@Override
     public void startUpdate()
     {
         writeCounter.getAndIncrement() ;
+        if ( logging ) log() ;
         checkConcurrency() ;
     }
 
     //@Override
     public void finishUpdate()
     {
+        if ( logging ) log() ;
         writeCounter.decrementAndGet() ;
+        checkConcurrency() ;
     }
 
-    private void checkConcurrency()
+    private synchronized void checkConcurrency()
     {
-        int R = readCounter.get() ;
-        int W = writeCounter.get() ;
+        long R = readCounter.get() ;
+        long W = writeCounter.get() ;
+        long id = policyCounter.get();
         if ( R > 0 && W > 0 )
-            policyError(R, W) ;
+            policyError(id, R, W) ;
         if ( W > 1 )
-            policyError(R, W) ;
+            policyError(id, R, W) ;
     }
 
-    private static void policyError(int R, int W)
+    private synchronized void log()
     {
-        policyError(format("Reader = %d, Writer = %d", R, W)) ;
+        long R , W , id ;
+        synchronized(this)
+        {
+            R = readCounter.get() ;
+            W = writeCounter.get() ;
+            id = policyCounter.get();
+        }
+        log.info(format(id, R, W)) ;
+    }
+    
+    private static void policyError(long id, long R, long W)
+    {
+        policyError(format(id, R, W)) ;
     }
 
     private static void policyError(String message)
     {
         throw new ConcurrentModificationException(message) ;
     }
+    
+    private static String format(long id, long R, long W)
+    {
+        return String.format("(lock=%d) Reader = %d, Writer = %d", id, R, W) ;
+    }
 }
+
 /*
  * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.

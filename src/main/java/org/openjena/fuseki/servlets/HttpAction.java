@@ -52,25 +52,25 @@ class HttpAction
         this.verbose = verbose ;
     }
     
-    public void beginRead()
+    public final void beginRead()
     {
         enter(dsg, lock, Lock.READ) ;
         getConcurrencyPolicy(lock).startRead() ;
     }
 
-    public void endRead()
+    public final void endRead()
     {
         getConcurrencyPolicy(lock).finishRead() ;
         leave(dsg, lock, Lock.READ) ;
     }
 
-    public void beginWrite()
+    public final void beginWrite()
     {
         enter(dsg, lock, Lock.WRITE) ;
         getConcurrencyPolicy(lock).startUpdate() ;
     }
 
-    public void endWrite()
+    public final void endWrite()
     {
         sync() ;
         getConcurrencyPolicy(lock).finishUpdate() ;
