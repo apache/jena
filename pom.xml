@@ -31,7 +31,7 @@
   <properties>
     <this.root>${project.artifactId}-${project.version}</this.root>
     <ver.jena>2.6.4</ver.jena>
-    <ver.arq>2.8.7</ver.arq>
+    <ver.arq>2.8.8-SNAPSHOT</ver.arq>
   </properties>
 
   <dependencies>

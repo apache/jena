@@ -20,8 +20,8 @@
 	<classpathentry kind="lib" path="lib/jena-2.6.4-tests.jar" sourcepath="lib-src/jena-2.6.4-test-sources.jar"/>
 	<classpathentry kind="lib" path="lib/slf4j-api-1.5.8.jar"/>
 	<classpathentry kind="lib" path="lib/slf4j-log4j12-1.5.8.jar"/>
-	<classpathentry kind="lib" path="lib/arq-2.8.7-tests.jar" sourcepath="lib-src/arq-2.8.7-test-sources.jar"/>
-	<classpathentry kind="lib" path="lib/arq-2.8.7.jar" sourcepath="lib-src/arq-2.8.7-sources.jar"/>
 	<classpathentry kind="lib" path="lib/hsqldb-1.8.0.10.jar"/>
+	<classpathentry kind="lib" path="lib/arq-2.8.8-SNAPSHOT-tests.jar" sourcepath="lib-src/arq-2.8.8-SNAPSHOT-test-sources.jar"/>
+	<classpathentry kind="lib" path="lib/arq-2.8.8-SNAPSHOT.jar" sourcepath="lib-src/arq-2.8.8-SNAPSHOT-sources.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>
