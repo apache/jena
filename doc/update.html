@@ -36,6 +36,10 @@ in <tt>src-examples/arq/examples/update</tt>.</p>
 GraphStore graphStore = GraphStoreFactory.create(ds) ;
 UpdateAction.readExecute("update.ru", graphStore) ;</pre>
 
+<p>To execute a SPARQL Update request as a string:</p>
+<pre class="box">Dataset ds = ...
+GraphStore graphStore = GraphStoreFactory.create(ds) ;
+UpdateAction.parseExecute(("DROP ALL", graphStore) ;</pre>
 
 <p>The application writer can create and execute operations:</p>
 
@@ -47,6 +51,11 @@ request.add("DROP ALL")
 // And perform the operations.
 UpdateAction.execute(request, graphStore) ;
 </pre>
+<p>but be aware that each operation added needs to be a complete SPARQL Update
+operation, including prefixes if needed.</p>
+
+
+
 
 <p class="footnote"><a href="documentation.html">ARQ Documentation Page</a></p>
 </body>

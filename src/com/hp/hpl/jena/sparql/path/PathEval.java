@@ -405,6 +405,8 @@ public class PathEval
             {
                 Node n1 = iter1.next();
                 output.add(n1) ;
+//System.out.println("Add : "+n1+ " (" + output.size()+")") ; System.out.flush() ;                
+                
                 doOneOrMore(n1, path, visited) ;
             }
             visited.remove(node) ;
