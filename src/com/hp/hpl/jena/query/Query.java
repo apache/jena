@@ -547,7 +547,7 @@ public class Query extends Prologue implements Cloneable, Printable
     
     // ---- BINDINGS
     
-    /** Does the query have any bindings? */
+    /** Does the query have any BINDINGS? */
     public boolean hasBindings()                { return bindingVariables != null ; }
     
     /** Binding variables */
@@ -658,6 +658,9 @@ public class Query extends Prologue implements Cloneable, Printable
             // Binding variables -- in patterns, not in filters and not in EXISTS
             LinkedHashSet<Var> queryVars = new LinkedHashSet<Var>() ;
             PatternVars.vars(queryVars, this.getQueryPattern()) ;
+            if ( this.hasBindings() )
+                queryVars.addAll(getBindingVariables()) ;
+            
             varIter = queryVars.iterator() ;
         }
         
