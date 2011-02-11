@@ -9,6 +9,9 @@
 + Form parameter name for SPARQL Update sent by HTML form changed from request= to update=
   Likely direction of SPARQL-WG.
 
++ Internal consistency checking (also TDB internal consistecy checking).
+  You should not see any warnings.
+
 == 0.1.0
 First release.
 
