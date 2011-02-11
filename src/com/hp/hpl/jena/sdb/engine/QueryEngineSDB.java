@@ -30,6 +30,7 @@ import com.hp.hpl.jena.sparql.engine.QueryEngineRegistry;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingRoot;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIterRoot ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterSingleton;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIteratorCheck;
 import com.hp.hpl.jena.sparql.engine.main.QC;
@@ -114,7 +115,18 @@ public class QueryEngineSDB extends QueryEngineBase
           }
           // Direct.
           OpSQL opSQL = (OpSQL)op ;
-          QueryIterator qIter = opSQL.exec(binding, execCxt) ;
+          QueryIterator qIter ;
+          if ( opSQL.getSqlNode() == null )
+          {
+              // Empty BGP, nothing else.
+              // Just return the answer.
+              if ( binding != null && binding.size() != 0 )
+                  qIter = QueryIterSingleton.create(binding, execCxt) ;
+              else
+                  qIter = QueryIterRoot.create(execCxt) ;
+          }
+          else
+              qIter = opSQL.exec(binding, execCxt) ;
           qIter = QueryIteratorCheck.check(qIter, execCxt) ;
           return qIter ;
     }

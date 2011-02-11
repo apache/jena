@@ -108,8 +108,8 @@ public class SDB_QC
         
         if ( vars.size() == 0 )
         {
-            // SELECT * {}
-            LoggerFactory.getLogger(SDB_QC.class).warn("No project variables") ;
+            // SELECT * {} or SPARQL Update with WHERE {}
+            // LoggerFactory.getLogger(SDB_QC.class).warn("No project variables") ;
         }
         
         // Add the ORDER BY variables
