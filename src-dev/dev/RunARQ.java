@@ -18,18 +18,13 @@ import junit.framework.TestSuite ;
 import org.openjena.atlas.io.IndentedWriter ;
 import org.openjena.atlas.json.JSON ;
 import org.openjena.atlas.json.JsonValue ;
-import org.openjena.atlas.lib.IRILib ;
 import org.openjena.atlas.lib.Sink ;
 import org.openjena.atlas.lib.StrUtils ;
 import org.openjena.atlas.logging.Log ;
 import org.openjena.riot.ErrorHandlerFactory ;
-import org.openjena.riot.Lang ;
-import org.openjena.riot.RiotLoader ;
 import org.openjena.riot.RiotReader ;
-import org.openjena.riot.SysRIOT ;
 import org.openjena.riot.checker.CheckerIRI ;
 import org.openjena.riot.pipeline.normalize.CanonicalizeLiteral ;
-import org.openjena.riot.system.IRIResolver ;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.datatypes.xsd.XSDDuration ;
@@ -46,7 +41,6 @@ import com.hp.hpl.jena.query.QueryFactory ;
 import com.hp.hpl.jena.query.QuerySolutionMap ;
 import com.hp.hpl.jena.query.ResultSetFormatter ;
 import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.shared.PrefixMapping ;
 import com.hp.hpl.jena.sparql.ARQConstants ;
 import com.hp.hpl.jena.sparql.ARQException ;
@@ -63,7 +57,6 @@ import com.hp.hpl.jena.sparql.function.FunctionEnvBase ;
 import com.hp.hpl.jena.sparql.graph.NodeTransform ;
 import com.hp.hpl.jena.sparql.junit.ScriptTestSuiteFactory ;
 import com.hp.hpl.jena.sparql.junit.SimpleTestRunner ;
-import com.hp.hpl.jena.sparql.lib.DatasetLib ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.sparql.util.ExprUtils ;
 import com.hp.hpl.jena.sparql.util.FmtUtils ;
@@ -112,46 +105,6 @@ public class RunARQ
     
     public static void main(String[] argv) throws Exception
     {
-        SysRIOT.wireIntoJena() ;
-        
-        System.out.println(IRILib.filenameToIRI("file://")) ;
-        //IRIResolver.createNoResolve().
-        
-        
-        exit(0) ;
-        
-        
-        
-        DatasetGraph dsg = DatasetLib.createDatasetGraphMem() ;
-        
-        String testbase = "http://EXample/" ;
-        
-        // bad name.
-        // Need file name to URI operation.
-        // IRIResolver.filenameToIRI(String) -> String 
-        
-        System.out.println(IRIResolver.chooseBaseURI()) ;
-        System.out.println("DONE") ;
-        System.exit(0) ;
-        
-        
-        // Ignore base IRI.
-        RiotLoader.read("D.nt", dsg, Lang.NTRIPLES, testbase) ;
-        RiotLoader.read("D.nt", dsg, Lang.NQUADS, testbase) ;
-
-        // Warn/silent on baseIRI. 
-        RiotLoader.read("D.ttl", dsg, Lang.TURTLE, testbase) ;
-        RiotLoader.read("D.trig", dsg, Lang.TRIG, testbase) ;
-        
-        System.out.println(dsg) ;
-        System.out.println("DONE") ;
-        System.exit(0) ;
-        
-        Model m = ModelFactory.createDefaultModel() ; 
-        m.read("file:D.ttl", "http://EXample/", "TTL") ;
-        System.out.println("DONE") ;
-        System.exit(0) ;
-        
         //testXSDDurationBug() ; System.exit(0) ;
         
         String DIR = "/home/afs/W3C/SPARQL-docs/tests/data-sparql11/delete" ;

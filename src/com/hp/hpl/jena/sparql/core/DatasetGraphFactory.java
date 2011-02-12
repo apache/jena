@@ -6,7 +6,10 @@
 
 package com.hp.hpl.jena.sparql.core;
 
+import java.util.Iterator ;
+
 import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
 
 public class DatasetGraphFactory
@@ -15,12 +18,35 @@ public class DatasetGraphFactory
      *  this is a structre copy of the dataset struture 
      *  but graphs are shared 
      */ 
-    public static DatasetGraph create(DatasetGraph dsg) { return new DatasetGraphMap(dsg) ; }
+    public static DatasetGraph create(DatasetGraph dsg)
+    { 
+        // Fixed.
+        //return new DatasetGraphMap(dsg) ;
+        DatasetGraph dsg2 = createMem() ;
+        copyOver(dsg2, dsg2) ;
+        return dsg2 ;
+    }
     
+    private static void copyOver(DatasetGraph dsgDest, DatasetGraph dsgSrc)
+    {
+        dsgDest.setDefaultGraph(dsgSrc.getDefaultGraph()) ;
+        for ( Iterator<Node> names = dsgSrc.listGraphNodes() ; names.hasNext() ; )
+        {
+            Node gn = names.next() ;
+            dsgDest.addGraph(gn, dsgSrc.getGraph(gn)) ;
+        }
+    }
+
     /**
      * Create a DatasetGraph starting with a single graph.
      */
-    public static DatasetGraph create(Graph graph) { return new DatasetGraphMap(graph) ; }
+    public static DatasetGraph create(Graph graph)
+    { 
+        //return new DatasetGraphMap(graph) ; 
+        DatasetGraph dsg2 = createMem() ;
+        dsg2.setDefaultGraph(graph) ;
+        return dsg2 ;
+    }
     
     /**
      * Create a DatasetGraph which only ever has a single default graph.
@@ -40,6 +66,8 @@ public class DatasetGraphFactory
      */
 
     public static DatasetGraph createMem() { return new DatasetGraphMaker(memGraphMaker) ; }
+    
+    public static DatasetGraph createMemFixed() { return new DatasetGraphMap() ; }
 }
 
 /*
