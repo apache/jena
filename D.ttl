@@ -1,6 +1,11 @@
 @prefix : <http://example/> .
 
-<s> :p 1 .
+:a :p :b .
+:b :p :c .
+:c :p :c .
+
+
+## <s> :p 1 .
 
 ## :a :p :b .
 ## :b :p :c .
