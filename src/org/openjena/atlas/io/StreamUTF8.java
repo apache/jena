@@ -22,6 +22,10 @@ import org.openjena.atlas.AtlasException ;
  */
 public final class StreamUTF8 extends Reader implements CharStream
 {
+    // TODO Add line and col counts.
+    // See arq.utf8. 
+    // TODO Better ready()/available() in InputStreamBuffered
+    
     // The standard Java way of doing this is via charset decoders.
     // One small disadvantage is that bad UTF-8 does not get flagged as to
     // the byte position of the error.
@@ -168,6 +172,9 @@ public final class StreamUTF8 extends Reader implements CharStream
             IO.exception(new IOException("Illegal UTF-8: "+x)) ;
         if ( y > Character.MAX_VALUE )
             throw new AtlasException("Out of range character (must use a surrogate pair)") ;
+        
+//        if ( ! Character.isDefined(x) )
+//            throw new AtlasException(String.format("Undefined codepoint: 0x%04X", x)) ;
         return x ;
     }
     
@@ -185,7 +192,7 @@ public final class StreamUTF8 extends Reader implements CharStream
             //p(x2) ;
             if ( (x2 & 0xC0) != 0x80 )
                 //throw new AtlasException("Illegal UTF-8 processing character "+count+": "+x2) ;
-                throw new AtlasException("Illegal UTF-8 processing character: "+x2) ;
+                throw new AtlasException(String.format("Illegal UTF-8 processing character: 0x%04X",x2)) ;
             // 6 bits of x2
             x = (x << 6) | (x2 & 0x3F); 
         }

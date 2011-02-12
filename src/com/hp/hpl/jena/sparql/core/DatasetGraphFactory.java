@@ -15,16 +15,16 @@ import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
 public class DatasetGraphFactory
 {
     /** Create a DatasetGraph based on an existing one;
-     *  this is a structre copy of the dataset struture 
+     *  this is a structure copy of the dataset struture 
      *  but graphs are shared 
      */ 
     public static DatasetGraph create(DatasetGraph dsg)
     { 
-        // Fixed.
-        //return new DatasetGraphMap(dsg) ;
-        DatasetGraph dsg2 = createMem() ;
-        copyOver(dsg2, dsg2) ;
-        return dsg2 ;
+        // Fixed - requires explicit "add graph"
+        return new DatasetGraphMap(dsg) ;
+//        DatasetGraph dsg2 = createMem() ;
+//        copyOver(dsg2, dsg2) ;
+//        return dsg2 ;
     }
     
     private static void copyOver(DatasetGraph dsgDest, DatasetGraph dsgSrc)
@@ -41,11 +41,12 @@ public class DatasetGraphFactory
      * Create a DatasetGraph starting with a single graph.
      */
     public static DatasetGraph create(Graph graph)
-    { 
-        //return new DatasetGraphMap(graph) ; 
-        DatasetGraph dsg2 = createMem() ;
-        dsg2.setDefaultGraph(graph) ;
-        return dsg2 ;
+    {
+        // Fixed - requires explicit "add graph"
+        return new DatasetGraphMap(graph) ; 
+//        DatasetGraph dsg2 = createMem() ;
+//        dsg2.setDefaultGraph(graph) ;
+//        return dsg2 ;
     }
     
     /**

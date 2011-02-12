@@ -27,7 +27,6 @@ public class DatasetFactory
      * 
      * @return DataSource
      */
-    
     public static DataSource create()
     { return DataSourceImpl.createMem() ; }
 

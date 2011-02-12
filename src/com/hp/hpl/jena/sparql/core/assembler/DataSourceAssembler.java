@@ -18,6 +18,9 @@ import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.RDFNode ;
 import com.hp.hpl.jena.rdf.model.Resource ;
 import org.openjena.atlas.logging.Log ;
+
+import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
 import com.hp.hpl.jena.sparql.util.FmtUtils ;
 import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
 import com.hp.hpl.jena.sparql.util.graph.GraphUtils ;
@@ -29,7 +32,12 @@ public class DataSourceAssembler extends AssemblerBase implements Assembler
     @Override
     public Object open(Assembler a, Resource root, Mode mode)
     {
-        DataSource ds = DatasetFactory.create() ;
+        // Non-expanding version.
+        //DataSource ds = DatasetFactory.create() ;
+        
+        // Expanding version.
+        DatasetGraph dsg = DatasetGraphFactory.createMem() ;
+        DataSource ds = DatasetFactory.create(dsg) ;
 
         // -------- Default graph
         // Can use ja:graph or ja:defaultGraph
