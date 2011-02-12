@@ -91,7 +91,7 @@ public abstract class SPARQL_ServletBase extends HttpServlet
                 //serverlog.info(format("[%d] RC = %d : %s",id, ex.rc)) ;
             }
         }
-        catch (Exception ex)
+        catch (Throwable ex)
         {   // This should not happen.
             ex.printStackTrace(System.err) ;
             responseSendError(response, HttpSC.INTERNAL_SERVER_ERROR_500, ex.getMessage()) ;

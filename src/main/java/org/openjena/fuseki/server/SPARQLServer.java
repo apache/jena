@@ -110,7 +110,6 @@ public class SPARQLServer
         
         // Some people do try very large operations ...
         connector.setRequestBufferSize(1*1024*1024) ;
-        
         server.addConnector(connector) ;
 
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
@@ -139,6 +138,9 @@ public class SPARQLServer
             installManager = true ;
             
         serverlog.info(enableUpdate ? "Update enabled" : "Read-only server") ;
+        
+        // Set the max form size much higher.
+        context.setMaxFormContentSize(1*1024*1024) ;
         
         for ( String dsPath : datasets )
         {

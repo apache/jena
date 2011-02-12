@@ -928,6 +928,9 @@ public class HttpSC
      */
     public static Code getCode(int code)
     {
+        if ( code < 0 )
+            return null ;
+        
         if (code <= MAX_CODE)
         {
             return codeMap[code];
