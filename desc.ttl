@@ -1,0 +1,15 @@
+@prefix tdb:     <http://jena.hpl.hp.com/2008/tdb#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix ja:      <http://jena.hpl.hp.com/2005/11/Assembler#> .
+
+# A dataset of two in-memory graphs, one as a named graph.
+<#dataset> rdf:type      ja:RDFDataset ;
+     ja:defaultGraph <#graph> ;
+     ja:namedGraph
+        [ ja:graphName      <http://example.org/name1> ;
+          ja:graph          <#graph2> ] ;
+     . 
+
+<#graph> rdf:type ja:MemoryModel .
+<#graph2> rdf:type ja:MemoryModel .
