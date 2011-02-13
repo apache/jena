@@ -265,22 +265,24 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
 
     protected static void clearGraph(Target target)
     {
-        if ( target.isGraphSet() )
+        if ( ! target.isGraphSet() )
         {
             Graph g = target.graph() ;
             g.getBulkUpdateHandler().removeAll() ;
         }
     }
 
-    protected static void addDataInto(Graph data, Target dest)
+    protected static void addDataInto(Graph data, HttpActionREST action)
     {   
+        Target dest = action.target ;
         Graph g = dest.graph() ;
         if ( g == null )
         {
             if ( dest.isDefault )
                 errorOccurred("Dataset does not have a default graph") ;
+            serverlog.info(format("[%d]Creating in-memory graph for <%s>", action.id, dest.graphName)) ;
             // Not default graph.
-            // Not an autocreate dadaset - create something.
+            // Not an autocreate dataset - create something.
             g = GraphFactory.createDefaultGraph() ;
             dest.dsg.addGraph(dest.graphName, g) ;
         }
