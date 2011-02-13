@@ -8,6 +8,7 @@ package org.openjena.fuseki.servlets;
 
 import org.openjena.fuseki.HttpNames ;
 
+import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 
 /** The WRITE operations added to the READ oeprations */
@@ -47,6 +48,7 @@ public class SPARQL_REST_RW extends SPARQL_REST_R
         DatasetGraph body = parseBody(action) ;
         action.beginWrite() ;
         try {
+            Graph g = action.target.graph() ;
             clearGraph(action.target) ;
             addDataInto(body.getDefaultGraph(), action.target) ;
         } finally { action.endWrite() ; }

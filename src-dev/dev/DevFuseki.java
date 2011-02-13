@@ -2,6 +2,10 @@ package dev;
 
 public class DevFuseki
 {
+    // Bad concurrency.
+    //  SPARQL_REST calls targetGraph which takes a read lock to test for existence of a graph.
+    //  But lock released and then relocked for the oepration itself. 
+    
     // Assembler of general datset and putting to graph name not in assembler.
     
     // Better handling of bad URI name for a hgrap http:/example/X => stacktrace.

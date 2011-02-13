@@ -18,10 +18,10 @@ public class RunFuseki
                     //"-v", 
                     "--update",
                     //"--port=3030", 
-                    "--mem",
+                    //"--mem",
                     //"--loc=DB",
                     //"--file=books.ttl",
-                    //"--desc=tdb2.ttl", 
+                    "--desc=desc.ttl", 
                     "/ds"
                     ) ;
     }

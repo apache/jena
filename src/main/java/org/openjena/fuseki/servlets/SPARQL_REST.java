@@ -117,7 +117,7 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
 
         public Graph graph()
         {
-            if ( isGraphSet() )
+            if ( ! isGraphSet() )
             {
                 if ( isDefault ) 
                     _graph = dsg.getDefaultGraph() ;
@@ -129,7 +129,7 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
 
         public boolean isGraphSet()
         {
-            return _graph == null ;
+            return _graph != null ;
         }
 
         @Override
@@ -266,12 +266,24 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
     protected static void clearGraph(Target target)
     {
         if ( target.isGraphSet() )
-            target.graph().getBulkUpdateHandler().removeAll() ;
+        {
+            Graph g = target.graph() ;
+            g.getBulkUpdateHandler().removeAll() ;
+        }
     }
 
     protected static void addDataInto(Graph data, Target dest)
     {   
         Graph g = dest.graph() ;
+        if ( g == null )
+        {
+            if ( dest.isDefault )
+                errorOccurred("Dataset does not have a default graph") ;
+            // Not default graph.
+            // Not an autocreate dadaset - create something.
+            g = GraphFactory.createDefaultGraph() ;
+            dest.dsg.addGraph(dest.graphName, g) ;
+        }
         g.getBulkUpdateHandler().add(data) ;
     }
 
