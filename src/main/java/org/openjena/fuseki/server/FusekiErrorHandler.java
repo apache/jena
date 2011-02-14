@@ -8,7 +8,9 @@ package org.openjena.fuseki.server;
 
 import static java.lang.String.format ;
 
+import java.io.ByteArrayOutputStream ;
 import java.io.IOException ;
+import java.io.OutputStreamWriter ;
 import java.io.PrintWriter ;
 import java.io.StringWriter ;
 import java.io.Writer ;
@@ -22,7 +24,6 @@ import org.eclipse.jetty.http.MimeTypes ;
 import org.eclipse.jetty.server.HttpConnection ;
 import org.eclipse.jetty.server.Request ;
 import org.eclipse.jetty.server.handler.ErrorHandler ;
-import org.openjena.atlas.lib.Bytes ;
 import org.openjena.fuseki.Fuseki ;
 import org.openjena.fuseki.http.HttpSC ;
 
@@ -42,18 +43,22 @@ public class FusekiErrorHandler extends ErrorHandler
         response.setContentType(MimeTypes.TEXT_PLAIN_UTF_8) ;
         response.setHeader(HttpHeaders.CACHE_CONTROL, "must-revalidate,no-cache,no-store") ;
         
-        StringWriter writer = new StringWriter() ;
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream(1024) ;
+        //String writer = IO.UTF8(null) ;
+        Writer writer = new OutputStreamWriter(bytes, "UTF-8") ;
+        
         handleErrorPage(request, writer, connection.getResponse().getStatus(), connection.getResponse().getReason());
         
-        
-        writer.write("\n") ;
-        writer.write("\n") ;
-        writer.write(format("Fuseki - version %s (Date: %s)", Fuseki.VERSION, Fuseki.BUILD_DATE)) ;
+        if ( ! Fuseki.VERSION.equalsIgnoreCase("development") )
+        {
+            writer.write("\n") ;
+            writer.write("\n") ;
+            writer.write(format("Fuseki - version %s (Date: %s)", Fuseki.VERSION, Fuseki.BUILD_DATE)) ;
+        }
         writer.flush();
-        // Inefficient.
-        byte b[] = Bytes.string2bytes(writer.getBuffer().toString()) ;
-        response.setContentLength(b.length) ;
-        response.getOutputStream().write(b) ;
+        response.setContentLength(bytes.size()) ;
+        // Copy :-(
+        response.getOutputStream().write(bytes.toByteArray()) ;
         writer.close() ;
     }
     
