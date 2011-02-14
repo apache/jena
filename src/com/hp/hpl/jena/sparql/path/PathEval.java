@@ -385,49 +385,47 @@ public class PathEval
 
         private static long dec(long x) { return (x<=0) ? x : x-1 ; }
 
-        private void doOneOrMore(Path path) { doOneOrMoreALT(path) ; }
-        private void doZeroOrMore(Path path) { doZeroOrMoreALT(path) ; }
+        // OLD
+        private void doOneOrMore_OLD(Path path)
+        {
+            // This is the visited node collection - a set is OK
+            Set<Node> visited = new HashSet<Node>() ;
+            doOneOrMore(node, path, visited) ;
+        }
+
+        private void doOneOrMore(Node node, Path path, Set<Node> visited)
+        {
+            if ( visited.contains(node) ) return ;
+            
+            visited.add(node) ;
+            // Do one step.
+            Iterator<Node> iter1 = eval(graph, node, path, forwardMode) ;
+            
+            // For each step, add to results and recurse.
+            for ( ; iter1.hasNext() ; )
+            {
+                Node n1 = iter1.next();
+                output.add(n1) ;
+//System.out.println("Add : "+n1+ " (" + output.size()+")") ; System.out.flush() ;                
+                
+                doOneOrMore(n1, path, visited) ;
+            }
+            visited.remove(node) ;
+            
+        }
         
-//        private void doOneOrMore(Path path)
-//        {
-//            // This is the visited node collection - a set is OK
-//            Set<Node> visited = new HashSet<Node>() ;
-//            doOneOrMore(node, path, visited) ;
-//        }
-//
-//        private void doOneOrMore(Node node, Path path, Set<Node> visited)
-//        {
-//            if ( visited.contains(node) ) return ;
-//            
-//            visited.add(node) ;
-//            // Do one step.
-//            Iterator<Node> iter1 = eval(graph, node, path, forwardMode) ;
-//            
-//            // For each step, add to results and recurse.
-//            for ( ; iter1.hasNext() ; )
-//            {
-//                Node n1 = iter1.next();
-//                output.add(n1) ;
-////System.out.println("Add : "+n1+ " (" + output.size()+")") ; System.out.flush() ;                
-//                
-//                doOneOrMore(n1, path, visited) ;
-//            }
-//            visited.remove(node) ;
-//            
-//        }
-//        
-//        private void doZeroOrMore(Path path)
-//        {
-//            doZero(path) ;
-//            doOneOrMore(path) ;
-//        }
+        private void doZeroOrMore_OLD(Path path)
+        {
+            doZero(path) ;
+            doOneOrMore(path) ;
+        }
+        // OLD
         
-        // WG New Form.
-        
+        // NEW
         
         static final boolean trace = false ;
         
-        private void doZeroOrMoreALT(Path path)
+        private void doZeroOrMore(Path path)
         {
             if ( trace ) System.out.printf("\nZeroOrMore: %s\n", node) ;
             //Stack<Node> visited = new Stack<Node>() ;
@@ -435,7 +433,7 @@ public class PathEval
             ALP(node, path, visited) ;
         }
         
-        private void doOneOrMoreALT(Path path)
+        private void doOneOrMore(Path path)
         {
             if ( trace ) System.out.printf("\nOneOrMore: %s\n", node) ;
             //Stack<Node> visited = new Stack<Node>() ;
@@ -451,21 +449,7 @@ public class PathEval
             }
         }
         
-        /*
-            ALP(x:term, path, y:var, R:set of bindings, S:stack of terms) =
-              if ( x in S ) return 
-              // Add x to S ?
-              // Add to results.
-              R = R multiset-union {(y,x)}
-              Let X be a multiset of bindings
-              X = eval(x,path,Y) 
-              for (v:var,n:term) in X
-                ALP(n, path, y, R, S)
-              done
-              // remove from S
-         */
-
-        // This is path*
+        // This is the worker function for path*
         private void ALP(Node node, Path path, Collection<Node> visited)
         {
             if ( trace ) System.out.printf("ALP node=%s\n   visited=%s\n   output=%s\n", node, visited, output) ;
