@@ -11,6 +11,8 @@ public class DevFuseki
     // FUSEKI_ROOT
     // --loc => check DB does exist (do in Java) - extension to ModLocation.
     
+    // Direct naming.
+    
     // Mem dataset with union graph
     
     // Documentation:

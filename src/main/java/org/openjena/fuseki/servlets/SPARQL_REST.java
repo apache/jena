@@ -389,7 +389,14 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
             return Target.createDefault(dsg) ;
         
         // Named graph
-        String base = SPARQL_ServletBase.wholeRequestURL(request) ;
+        
+        // Strictly, a bit naughthy on the URI resolution.  But more sensible. 
+        // Base is dataset.
+        String base = request.getRequestURL().toString() ; //SPARQL_ServletBase.wholeRequestURL(request) ;
+        // Make sure it ends in "/", ie. dataset as container.
+        if ( request.getQueryString() != null && ! base.endsWith("/") )
+            base = base + "/" ;
+        
         String absUri = IRIResolver.resolveString(uri, base) ;
         Node gn = Node.createURI(absUri) ;
         return Target.createNamed(dsg, absUri, gn) ;
