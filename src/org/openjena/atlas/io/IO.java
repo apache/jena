@@ -14,6 +14,8 @@ import java.io.IOException ;
 import java.io.InputStream ;
 import java.io.InputStreamReader ;
 import java.io.OutputStream ;
+import java.io.OutputStreamWriter ;
+import java.io.PrintWriter ;
 import java.io.Reader ;
 import java.io.StringWriter ;
 import java.io.Writer ;
@@ -99,6 +101,22 @@ public class IO
     static public Reader asASCII(InputStream in)
     {
         return new InputStreamReader(in, ascii.newDecoder());
+    }
+    
+    /** Create a buffered reader that uses UTF-8 encoding */ 
+    static public BufferedReader asBufferedUTF8(InputStream in) {
+        return new BufferedReader(asUTF8(in)) ;
+    }
+
+    /** Create a writer that uses UTF-8 encoding */ 
+    static public Writer asUTF8(OutputStream out) {
+        return new OutputStreamWriter(out, utf8.newEncoder());
+    }
+
+    /** Create a print writer that uses UTF-8 encoding */ 
+
+    static public PrintWriter asPrintWriterUTF8(OutputStream out) {
+        return new PrintWriter(asUTF8(out)); 
     }
 
     public static void close(InputStream in)
