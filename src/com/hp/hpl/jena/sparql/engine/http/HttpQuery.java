@@ -17,7 +17,6 @@ import java.util.Iterator ;
 import java.util.List ;
 import java.util.Map ;
 
-import org.openjena.atlas.io.IO ;
 import org.openjena.atlas.lib.Base64 ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
@@ -333,13 +332,11 @@ public class HttpQuery extends Params
             }
             
             
-            // +++ WORKAROUND
-            // Working with Virtuoso does not work reliably.   
-            // Some sort of low level network issue interacts with the STaX parser (wstx 3)
-            // so that the parser sees end of file early. 
-            // This code works around that by reading everything in as quickly as possible. 
-            byte[] bytes = IO.readWholeFile(in) ;
-            in = new ByteArrayInputStream(bytes) ;
+            // +++ WORKAROUND for badly behaved apps.
+            // Apps sometimes call QueryExecution.close straight after .execSelect.
+            // that results in some resuls being seen, not all of them => XMl parse errors.
+//            byte[] bytes = IO.readWholeFile(in) ;
+//            in = new ByteArrayInputStream(bytes) ;
             // +++ 
            
             return in ;

@@ -35,6 +35,7 @@ public class ReportDBPedia2
         ResultSet rs = null;
 
         rs = qexec.execSelect();
+        // **** TOO EARLY
         //qexec.close();
 
         while(rs.hasNext()) {

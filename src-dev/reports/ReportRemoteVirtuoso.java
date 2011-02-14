@@ -56,6 +56,7 @@ public class ReportRemoteVirtuoso
         try {
             return qexec.execSelect();
         } finally {
+            //****** TOO EARLY
             qexec.close();
         }
     }
