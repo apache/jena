@@ -458,7 +458,6 @@ public class PathEval
             visited.add(node) ;
             
             Iterator<Node> iter1 = eval(graph, node, path, forwardMode) ;
-            
             // For each step, add to results and recurse.
             for ( ; iter1.hasNext() ; )
             {
