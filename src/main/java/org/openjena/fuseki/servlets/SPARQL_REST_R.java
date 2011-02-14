@@ -11,6 +11,8 @@ import static org.openjena.fuseki.Fuseki.serverlog ;
 
 import java.io.IOException ;
 
+import javax.servlet.ServletOutputStream ;
+
 import org.openjena.fuseki.FusekiLib ;
 import org.openjena.fuseki.HttpNames ;
 import org.openjena.fuseki.conneg.MediaType ;
@@ -33,34 +35,35 @@ public class SPARQL_REST_R extends SPARQL_REST
     @Override
     protected void doGet(HttpActionREST action)
     {
+        // Assume success - do the set up before grabbing the lock.
+        // Sets content type.
+        MediaType mediaType = contentNegotationRDF(action) ;
+        
+        ServletOutputStream output ;
+        try { output = action.response.getOutputStream() ; }
+        catch (IOException ex) { errorOccurred(ex) ; output = null ; }
+        
+        TypedOutputStream out = new TypedOutputStream(output, mediaType) ;
+        Lang lang = FusekiLib.langFromContentType(mediaType.getContentType()) ;
+
+        if ( action.verbose )
+            serverlog.info(format("[%d]   Get: Content-Type=%s, Charset=%s => %s", 
+                                  action.id, mediaType.getContentType(), mediaType.getCharset(), lang.getName())) ;
+
+        action.beginRead() ;
         try {
-            // Creating target creates the graph in some datasets.
-            if ( ! action.target.isDefault )
-            {
-                if ( ! action.dsg.containsGraph(action.target.graphName) )
-                    SPARQL_ServletBase.errorNotFound("No such graph: "+action.target.name) ;
-            }
-
-            MediaType mediaType = contentNegotationRDF(action) ; 
-            TypedOutputStream out = new TypedOutputStream(action.response.getOutputStream(), mediaType) ;
-            Lang lang = FusekiLib.langFromContentType(mediaType.getContentType()) ;
-
-            if ( action.verbose )
-            {
-                serverlog.info(format("[%d]   Get: Content-Type=%s, Charset=%s => %s", 
-                                      action.id, mediaType.getContentType(), mediaType.getCharset(), lang.getName())) ;
-            }
-
-            action.beginRead() ;
-            try {
-                // If we want to set the Content-Length, we need to buffer.
-                //response.setContentLength(??) ;
-                RDFWriter writer = FusekiLib.chooseWriter(lang) ;
-                Model model = ModelFactory.createModelForGraph(action.target.graph()) ;
-                writer.write(model, action.response.getOutputStream(), null) ;
-                success(action) ;
-            } finally { action.endRead() ; }
-        } catch (IOException ex) { errorOccurred(ex) ; }
+            boolean exists = action.target.exists() ;
+            if ( ! exists )
+                errorNotFound("No such graph: <"+action.target.name+">") ;
+            // If we want to set the Content-Length, we need to buffer.
+            //response.setContentLength(??) ;
+            RDFWriter writer = FusekiLib.chooseWriter(lang) ;
+            //action.response.setContentType(getServletInfo())
+            
+            Model model = ModelFactory.createModelForGraph(action.target.graph()) ;
+            writer.write(model, out, null) ;
+            success(action) ;
+        } finally { action.endRead() ; }
     }
     
     @Override
@@ -74,13 +77,16 @@ public class SPARQL_REST_R extends SPARQL_REST
     @Override
     protected void doHead(HttpActionREST action)
     {
-        if ( ! action.target.alreadyExisted )
-        {
-            successNotFound(action) ;
-            return ;
-        }
-        MediaType mediaType = contentNegotationRDF(action) ;
-        success(action) ;
+        action.beginRead() ;
+        try { 
+            if ( ! action.target.exists() )
+            {
+                successNotFound(action) ;
+                return ;
+            }
+            MediaType mediaType = contentNegotationRDF(action) ;
+            success(action) ;
+        } finally { action.endRead() ; }
     }
 
     @Override

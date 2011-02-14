@@ -48,7 +48,6 @@ import org.slf4j.LoggerFactory ;
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.shared.Lock ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
 import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
@@ -73,28 +72,25 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
     protected static final class Target
     {
         final boolean isDefault ;
-        final boolean alreadyExisted ;
         final DatasetGraph dsg ;
         // May be null, then  
         private Graph _graph ;
         final String name ;
         final Node graphName ;
 
-        static Target createNamed(DatasetGraph dsg, boolean alreadyExisted, String name, Node graphName)
+        static Target createNamed(DatasetGraph dsg, String name, Node graphName)
         {
-            return new Target(false, dsg, alreadyExisted, name, graphName) ;
+            return new Target(false, dsg, name, graphName) ;
         }
 
         static Target createDefault(DatasetGraph dsg)
         {
-            return new Target(true, dsg, true, null, null) ;
+            return new Target(true, dsg, null, null) ;
         }
 
-        //private Target(boolean isDefault, Graph graph, String name, Node graphName)
-        private Target(boolean isDefault, DatasetGraph dsg, boolean alreadyExisted, String name, Node graphName)
+        private Target(boolean isDefault, DatasetGraph dsg, String name, Node graphName)
         {
             this.isDefault = isDefault ;
-            this.alreadyExisted = alreadyExisted ;
             this.dsg = dsg ;
             this._graph = null ;
             this.name  = name ;
@@ -115,6 +111,7 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
             }                
         }
 
+        /** Get a graph for the action - this may create a graph in the dataset - this is not a test for graph existence */
         public Graph graph()
         {
             if ( ! isGraphSet() )
@@ -125,6 +122,12 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
                     _graph = dsg.getGraph(graphName) ;
             }
             return _graph ;
+        }
+
+        public boolean exists()
+        {
+            if ( isDefault ) return true ;
+            return dsg.containsGraph(graphName) ;
         }
 
         public boolean isGraphSet()
@@ -280,7 +283,7 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
         {
             if ( dest.isDefault )
                 errorOccurred("Dataset does not have a default graph") ;
-            serverlog.info(format("[%d]Creating in-memory graph for <%s>", action.id, dest.graphName)) ;
+            serverlog.info(format("[%d] Creating in-memory graph for <%s>", action.id, dest.graphName)) ;
             // Not default graph.
             // Not an autocreate dataset - create something.
             g = GraphFactory.createDefaultGraph() ;
@@ -389,12 +392,7 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
         String base = SPARQL_ServletBase.wholeRequestURL(request) ;
         String absUri = IRIResolver.resolveString(uri, base) ;
         Node gn = Node.createURI(absUri) ;
-        boolean alreadyExists ;
-        dsg.getLock().enterCriticalSection(Lock.READ) ;
-        try {
-            alreadyExists = dsg.containsGraph(gn) ;
-            return Target.createNamed(dsg, alreadyExists, absUri, gn) ;
-        } finally { dsg.getLock().leaveCriticalSection() ; }
+        return Target.createNamed(dsg, absUri, gn) ;
     }
     
     protected static String getOneOnly(HttpServletRequest request, String name)

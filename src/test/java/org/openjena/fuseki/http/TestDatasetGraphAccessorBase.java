@@ -53,7 +53,6 @@ public abstract class TestDatasetGraphAccessorBase extends BaseServerTest
     
     @Test public void put_02()
     {
-
         DatasetGraphAccessor updater = getDatasetUpdater() ;
         updater.httpPut(n1, graph1) ;
         
@@ -63,7 +62,6 @@ public abstract class TestDatasetGraphAccessorBase extends BaseServerTest
         graph = updater.httpGet(n1) ;
         assertNotNull("Graph is null", graph) ;
         assertTrue(graph.isIsomorphicWith(graph1)) ;
-        
     }
 
     @Test public void post_01()

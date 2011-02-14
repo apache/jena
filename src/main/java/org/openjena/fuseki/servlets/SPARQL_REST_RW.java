@@ -30,11 +30,11 @@ public class SPARQL_REST_RW extends SPARQL_REST_R
     @Override
     protected void doDelete(HttpActionREST action)
     {
-        boolean existedBefore = action.target.alreadyExisted ; 
-        if ( ! existedBefore)
-            errorNotFound("No such graph: "+action.target.name) ;
         action.beginWrite() ;
         try {
+            boolean existedBefore = action.target.exists() ; 
+            if ( ! existedBefore)
+                errorNotFound("No such graph: "+action.target.name) ;
             deleteGraph(action) ;
         } finally { action.endWrite() ; }
         SPARQL_ServletBase.successNoContent(action) ;
@@ -43,11 +43,13 @@ public class SPARQL_REST_RW extends SPARQL_REST_R
     @Override
     protected void doPut(HttpActionREST action)
     {
-        boolean existedBefore = action.target.alreadyExisted ; 
         DatasetGraph body = parseBody(action) ;
         action.beginWrite() ;
+        boolean existedBefore ;
         try {
-            clearGraph(action.target) ;
+            existedBefore = action.target.exists() ; 
+            if ( existedBefore )
+                clearGraph(action.target) ;
             addDataInto(body.getDefaultGraph(), action) ;
         } finally { action.endWrite() ; }
         // Differentiate: 201 Created or 204 No Content 
@@ -60,10 +62,11 @@ public class SPARQL_REST_RW extends SPARQL_REST_R
     @Override
     protected void doPost(HttpActionREST action)
     {
-        boolean existedBefore = action.target.alreadyExisted ; 
         DatasetGraph body = parseBody(action) ;
         action.beginWrite() ;
+        boolean existedBefore ; 
         try {
+            existedBefore = action.target.exists() ; ;
             addDataInto(body.getDefaultGraph(), action) ;
         } finally { action.endWrite() ; }
         if ( existedBefore )
