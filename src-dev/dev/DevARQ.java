@@ -1,7 +1,5 @@
 package dev ;
 
-
-
 public class DevARQ
 {
     // Mem dataset with union graph

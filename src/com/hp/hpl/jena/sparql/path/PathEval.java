@@ -1,6 +1,6 @@
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
- * (c) Copyright 2010 Epimorphics Ltd.
+ * (c) Copyright 2010, 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -385,45 +385,110 @@ public class PathEval
 
         private static long dec(long x) { return (x<=0) ? x : x-1 ; }
 
-        private void doOneOrMore(Path path)
+        private void doOneOrMore(Path path) { doOneOrMoreALT(path) ; }
+        private void doZeroOrMore(Path path) { doZeroOrMoreALT(path) ; }
+        
+//        private void doOneOrMore(Path path)
+//        {
+//            // This is the visited node collection - a set is OK
+//            Set<Node> visited = new HashSet<Node>() ;
+//            doOneOrMore(node, path, visited) ;
+//        }
+//
+//        private void doOneOrMore(Node node, Path path, Set<Node> visited)
+//        {
+//            if ( visited.contains(node) ) return ;
+//            
+//            visited.add(node) ;
+//            // Do one step.
+//            Iterator<Node> iter1 = eval(graph, node, path, forwardMode) ;
+//            
+//            // For each step, add to results and recurse.
+//            for ( ; iter1.hasNext() ; )
+//            {
+//                Node n1 = iter1.next();
+//                output.add(n1) ;
+////System.out.println("Add : "+n1+ " (" + output.size()+")") ; System.out.flush() ;                
+//                
+//                doOneOrMore(n1, path, visited) ;
+//            }
+//            visited.remove(node) ;
+//            
+//        }
+//        
+//        private void doZeroOrMore(Path path)
+//        {
+//            doZero(path) ;
+//            doOneOrMore(path) ;
+//        }
+        
+        // WG New Form.
+        
+        
+        static final boolean trace = false ;
+        
+        private void doZeroOrMoreALT(Path path)
         {
-            // This is the visited node collection - a set is OK
+            if ( trace ) System.out.printf("\nZeroOrMore: %s\n", node) ;
+            //Stack<Node> visited = new Stack<Node>() ;
             Set<Node> visited = new HashSet<Node>() ;
-            doOneOrMore(node, path, visited) ;
+            ALP(node, path, visited) ;
         }
-
-        private void doOneOrMore(Node node, Path path, Set<Node> visited)
+        
+        private void doOneOrMoreALT(Path path)
         {
-            if ( visited.contains(node) ) return ;
+            if ( trace ) System.out.printf("\nOneOrMore: %s\n", node) ;
+            //Stack<Node> visited = new Stack<Node>() ;
             
+            Set<Node> visited = new HashSet<Node>() ;
+            // Do one step without including.
+            Iterator<Node> iter1 = eval(graph, node, path, forwardMode) ;
+            for ( ; iter1.hasNext() ; )
+            {
+                Node n1 = iter1.next();
+                if ( trace ) System.out.printf("One from %s\n   visited=%s\n   output=%s\n", n1, visited, output) ;
+                ALP(n1, path, visited) ;
+            }
+        }
+        
+        /*
+            ALP(x:term, path, y:var, R:set of bindings, S:stack of terms) =
+              if ( x in S ) return 
+              // Add x to S ?
+              // Add to results.
+              R = R multiset-union {(y,x)}
+              Let X be a multiset of bindings
+              X = eval(x,path,Y) 
+              for (v:var,n:term) in X
+                ALP(n, path, y, R, S)
+              done
+              // remove from S
+         */
+
+        // This is path*
+        private void ALP(Node node, Path path, Collection<Node> visited)
+        {
+            if ( trace ) System.out.printf("ALP node=%s\n   visited=%s\n   output=%s\n", node, visited, output) ;
+            if ( visited.contains(node) ) return ;
+            output.add(node) ;
             visited.add(node) ;
-            // Do one step.
+            
             Iterator<Node> iter1 = eval(graph, node, path, forwardMode) ;
             
             // For each step, add to results and recurse.
             for ( ; iter1.hasNext() ; )
             {
                 Node n1 = iter1.next();
-                output.add(n1) ;
-//System.out.println("Add : "+n1+ " (" + output.size()+")") ; System.out.flush() ;                
-                
-                doOneOrMore(n1, path, visited) ;
+                ALP(n1, path, visited) ;
             }
             visited.remove(node) ;
-            
-        }
-        
-        private void doZeroOrMore(Path path)
-        {
-            doZero(path) ;
-            doOneOrMore(path) ;
         }
     }
 }
 
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
- * (c) Copyright 2010 Epimorphics Ltd.
+ * (c) Copyright 2010, 2011 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

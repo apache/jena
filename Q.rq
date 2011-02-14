@@ -1,6 +1,8 @@
 PREFIX : <http://example/> 
 
-SELECT *
+SELECT ?label ?x 
 {
-   :a :p/^:q ?x
+   { :a :p+ ?x . BIND(":p+" AS ?label) }
+   UNION
+   { :a :p* ?x . BIND(":p*" AS ?label) }
 }
