@@ -35,13 +35,14 @@ public class ReportDBPedia2
         ResultSet rs = null;
 
         rs = qexec.execSelect();
-        qexec.close();
+        //qexec.close();
 
         while(rs.hasNext()) {
             QuerySolution sqs = rs.next();
             RDFNode node = sqs.get("var");
             System.out.println(node);
         }
+        qexec.close();
     }
 
 
