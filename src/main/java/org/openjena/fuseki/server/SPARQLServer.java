@@ -113,6 +113,7 @@ public class SPARQLServer
         server.addConnector(connector) ;
 
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
+        context.setErrorHandler(new FusekiErrorHandler()) ;
         server.setHandler(context);
         // Constants. Add RDF types.
         MimeTypes mt = new MimeTypes() ; 

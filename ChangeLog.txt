@@ -4,7 +4,9 @@
 
 
 == 0.2.0
-+ Location of a TDB database must exis when server starts.
+
++ HTTP request error pages now in "text/plain;charset=utf-8"
++ Location of a TDB database must exist when server starts.
 
 + Form parameter name for SPARQL Update sent by HTML form changed from request= to update=
   Likely direction of SPARQL-WG.
