@@ -4,16 +4,18 @@
  * [See end of file]
  */
 
-package ex_riot;
+package arq.examples.riot;
 
+import org.openjena.riot.RiotLoader ;
 import org.openjena.riot.SysRIOT ;
 
-import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.util.FileManager ;
+import com.hp.hpl.jena.query.Dataset ;
+import com.hp.hpl.jena.query.DatasetFactory ;
+import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 
-/** Example of using RIOT with Jena readers.
+/** Example of using RIOT : reading dada into datasets.
  */
-public class ExRIOT_1
+public class ExRIOT_3
 {
     public static void main(String...argv)
     {
@@ -21,21 +23,19 @@ public class ExRIOT_1
         // This is only needed to be sure - touching any ARQ code will load RIOT.
         // This operation can be called several times.
         SysRIOT.wireIntoJena() ;
+        DatasetGraph dsg = null ;
+        
+        // Read a TriG file into quad storage in-memory.
+        dsg = RiotLoader.load("data.trig") ;
+        
+        // read some (more) data into a dataset graph.
+        RiotLoader.read("data2.trig", dsg) ;
+        
+        // Create a daatset,
+        Dataset ds = DatasetFactory.create() ;
+        // read in data.
+        RiotLoader.read("data2.trig", ds.asDatasetGraph()) ;
 
-        Model m = null ;
-        
-        // Load data, creating the model
-        m = FileManager.get().loadModel("D.ttl") ;
-        
-        // Or read into an existing model.
-        FileManager.get().readModel(m, "D2.ttl") ;
-        
-        // Or use Model.read
-        m.read("file:D3.nt", "TTL") ;
-        
-        // Go back to using the old Jena readers.  
-        SysRIOT.resetJenaReaders() ;
-        m = FileManager.get().loadModel("D.nt") ;
     }
 }
 

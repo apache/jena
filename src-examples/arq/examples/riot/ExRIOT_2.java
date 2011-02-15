@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package ex_riot;
+package arq.examples.riot;
 
 import java.io.FileInputStream ;
 import java.io.FileNotFoundException ;
