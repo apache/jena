@@ -66,7 +66,7 @@ public class SPARQL_REST_RW extends SPARQL_REST_R
         action.beginWrite() ;
         boolean existedBefore ; 
         try {
-            existedBefore = action.target.exists() ; ;
+            existedBefore = action.target.exists() ; 
             addDataInto(body.getDefaultGraph(), action) ;
         } finally { action.endWrite() ; }
         if ( existedBefore )
