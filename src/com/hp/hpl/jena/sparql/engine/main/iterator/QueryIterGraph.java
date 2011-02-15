@@ -1,7 +1,9 @@
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
+ * Includes software from the Apache Software Foundation - Apache Software Licnese (JENA-29)
  */
 
 package com.hp.hpl.jena.sparql.engine.main.iterator;
@@ -23,12 +25,11 @@ import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingFactory ;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIter ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterRepeatApply ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterSingleton ;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIterSub ;
 import com.hp.hpl.jena.sparql.engine.main.QC ;
 import com.hp.hpl.jena.sparql.util.Utils ;
-
 
 public class QueryIterGraph extends QueryIterRepeatApply
 {
@@ -83,16 +84,15 @@ public class QueryIterGraph extends QueryIterRepeatApply
     }
     
 
-    protected static class QueryIterGraphInner extends QueryIter
+    protected static class QueryIterGraphInner extends QueryIterSub
     {
         protected Binding parentBinding ;
         protected Iterator<Node> graphNames ;
         protected OpGraph opGraph ;
-        protected QueryIterator subIter = null ;
 
         protected QueryIterGraphInner(Binding parent, Iterator<Node> graphNames, OpGraph opGraph, ExecutionContext execCxt)
         {
-            super(execCxt) ;
+            super(null, execCxt) ;
             this.parentBinding = parent ;
             this.graphNames = graphNames ;
             this.opGraph = opGraph ;
@@ -103,18 +103,18 @@ public class QueryIterGraph extends QueryIterRepeatApply
         {
             for(;;)
             {
-                if ( subIter == null )
-                    subIter = nextIterator() ;
+                if ( iter == null )
+                    iter = nextIterator() ;
                 
-                if ( subIter == null )
+                if ( iter == null )
                     return false ;
                 
-                if ( subIter.hasNext() )
+                if ( iter.hasNext() )
                     return true ;
                 
-                subIter.close() ;
-                subIter = nextIterator() ;
-                if ( subIter == null )
+                iter.close() ;
+                iter = nextIterator() ;
+                if ( iter == null )
                     return false ;
             }
         }
@@ -122,21 +122,12 @@ public class QueryIterGraph extends QueryIterRepeatApply
         @Override
         protected Binding moveToNextBinding()
         {
-            if ( subIter == null )
+            if ( iter == null )
                 throw new NoSuchElementException(Utils.className(this)+".moveToNextBinding") ;
                 
-            return subIter.nextBinding() ;
+            return iter.nextBinding() ;
         }
 
-        @Override
-        protected void closeIterator()
-        {
-            Iter.close(graphNames) ;
-            if ( subIter != null )
-                subIter.close() ;
-            subIter = null ;
-        }
-        
         // This code predates ARQ using Java 1.5.
 
         // This is very like QueryIteratorRepeatApply except its not
@@ -160,7 +151,6 @@ public class QueryIterGraph extends QueryIterRepeatApply
             Binding b = parentBinding ;
             if ( Var.isVar(opGraph.getNode()) )
                 // (graph ?g (...))
-                // XXX If Var.ANON then no-opt.
                 b = BindingFactory.binding(b, Var.alloc(opGraph.getNode()), gn) ;
             
             QueryIterator qIter = buildIterator(b, gn, opGraph, getExecContext()) ; 
@@ -187,11 +177,20 @@ public class QueryIterGraph extends QueryIterRepeatApply
             QueryIterator subInput = QueryIterSingleton.create(binding, cxt2) ;
             return QC.execute(op, subInput, cxt2) ;
         }
+
+        @Override
+        protected void requestSubCancel()
+        {}
+
+        @Override
+        protected void closeSubIterator()
+        {}
     }
 }
 
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

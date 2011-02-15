@@ -1,6 +1,7 @@
 /*
  * (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
+ * Includes software from the Apache Software Foundation - Apache Software License (JENA-29)
  */
 
 package com.hp.hpl.jena.query;
@@ -76,6 +77,13 @@ public interface QueryExecution
 	 */
 
 	public void abort();
+	
+	/** Stop in mid execution. The concrete implementation will request to cancel the operation and therefore,
+	 *  actual cancellation may not be immediate or even at all. No operations on the query execution or any associated
+     *  result set are permitted after this call.
+	 */
+
+	public void cancel();
 
     /** Close the query execution and stop query evaluation as soon as convenient.
      *  It is important to close query execution objects in order to release

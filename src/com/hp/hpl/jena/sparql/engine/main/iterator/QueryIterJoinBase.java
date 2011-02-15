@@ -2,6 +2,7 @@
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
+ * Includes software from the Apache Software Foundation - Apache Software Licnese (JENA-29)
  */
 
 package com.hp.hpl.jena.sparql.engine.main.iterator;
@@ -21,7 +22,7 @@ import com.hp.hpl.jena.sparql.expr.ExprList ;
  *  from one side into the other. */ 
 public abstract class QueryIterJoinBase extends QueryIter2
 {
-    // Use QuryIter2LoopOnLeft
+    // Use QueryIter2LoopOnLeft
     private QueryIterator current ;
     protected Table tableRight ;          // Materialized iterator
     protected ExprList exprs ;
@@ -67,11 +68,17 @@ public abstract class QueryIterJoinBase extends QueryIter2
     }
 
     @Override
-    protected void releaseResources()
+    protected void closeSubIterator()
     {
-        if ( current != null )
-            current.close() ;
+        performClose(current) ;
+        if ( tableRight != null ) tableRight.close() ;
         tableRight = null ;
+    }
+    
+    @Override
+    protected void requestSubCancel()
+    { 
+        closeSubIterator() ;
     }
 
     // Move on regardless.

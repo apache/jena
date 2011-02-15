@@ -1,7 +1,9 @@
 /*
  * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
+ * Includes software from the Apache Software Foundation - Apache Software License (JENA-29)
  */
 
 package com.hp.hpl.jena.sparql.engine.iterator;
@@ -32,18 +34,20 @@ public abstract class QueryIter1 extends QueryIter
     void closeIterator()
     {
         closeSubIterator() ;
-        if ( input instanceof QueryIter1 )
-        {
-            // Pass on down.
-            QueryIter1 qIter1 = (QueryIter1)input ;
-            qIter1.closeSubIterator() ;
-        }
-        
-        if ( input != null )
-            input.close() ;
-        // Don't clear - leave for printing.
-        //input = null ;
+        performClose(input) ;
+        input = null ;
     }
+    
+    @Override
+    protected final
+    void requestCancel()
+    {
+        requestSubCancel() ;
+        performRequestCancel(input) ;
+    }
+    
+    /** Cancellation of the query execution is happening */
+    protected abstract void requestSubCancel() ;
     
     /** Pass on the close method - no need to close the QueryIterator passed to the QueryIter1 constructor */
     protected abstract void closeSubIterator() ;
@@ -75,6 +79,7 @@ public abstract class QueryIter1 extends QueryIter
 
 /*
  * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

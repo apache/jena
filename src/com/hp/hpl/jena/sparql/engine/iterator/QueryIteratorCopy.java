@@ -1,7 +1,9 @@
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
+ * Includes software from the Apache Software Foundation - Apache Software License (JENA-29)
  */
 
 package com.hp.hpl.jena.sparql.engine.iterator;
@@ -65,6 +67,10 @@ class QueryIteratorCopy extends QueryIteratorBase
     @Override
     protected void closeIterator()
     { iterator.close() ; }
+    
+    @Override
+    protected void requestCancel()
+    { iterator.cancel() ; }
 
     @Override
     protected boolean hasNextBinding()
@@ -75,6 +81,7 @@ class QueryIteratorCopy extends QueryIteratorBase
 
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

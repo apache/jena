@@ -22,6 +22,11 @@ public interface QueryIterator extends Closeable, Iterator<Binding>, PrintSerial
     
     /** Abort a query - may not clearup properly */
     public void abort() ; 
+ 
+    /**
+     * Cancels the query as soon as is possible for the given iterator
+     */
+    public void cancel();
 }
 
 /*

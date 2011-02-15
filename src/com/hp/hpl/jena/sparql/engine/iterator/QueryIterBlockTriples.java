@@ -2,6 +2,7 @@
  * (c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
+ * Includes software from the Apache Software Foundation - Apache Software Licnese (JENA-29)
  */
 
 package com.hp.hpl.jena.sparql.engine.iterator;
@@ -65,6 +66,13 @@ public class QueryIterBlockTriples extends QueryIter1
         if ( output != null )
             output.close() ;
         output = null ;
+    }
+    
+    @Override
+    protected void requestSubCancel()
+    {
+        if ( output != null )
+            output.cancel();
     }
 
     @Override

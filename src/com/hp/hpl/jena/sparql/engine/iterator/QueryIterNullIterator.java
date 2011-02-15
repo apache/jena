@@ -34,6 +34,9 @@ public class QueryIterNullIterator extends QueryIter
 
     @Override
     protected void closeIterator() {}
+    
+    @Override
+    protected void requestCancel() { }
 
     @Override
     public void output(IndentedWriter out, SerializationContext sCxt)

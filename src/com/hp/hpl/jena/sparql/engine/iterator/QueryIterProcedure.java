@@ -2,6 +2,7 @@
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
+ * Includes software from the Apache Software Foundation - Apache Software Licnese (JENA-29)
  */
 
 package com.hp.hpl.jena.sparql.engine.iterator;
@@ -48,6 +49,13 @@ public class QueryIterProcedure extends QueryIter1
         procIter.close(); 
     }
 
+    @Override
+    protected void requestSubCancel()
+    { 
+       if (procIter != null) 
+    	   procIter.cancel(); 
+    }
+    
     @Override
     protected boolean hasNextBinding()
     {

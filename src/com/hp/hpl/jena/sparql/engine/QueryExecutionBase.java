@@ -2,48 +2,51 @@
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
+ * Includes software from the Apache Software Foundation - Apache Software License (JENA-29)
  */
 
 package com.hp.hpl.jena.sparql.engine;
 
-import java.util.HashMap ;
-import java.util.HashSet ;
-import java.util.Iterator ;
-import java.util.List ;
-import java.util.Map ;
-import java.util.Set ;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.n3.IRIResolver ;
-import com.hp.hpl.jena.query.Dataset ;
-import com.hp.hpl.jena.query.Query ;
-import com.hp.hpl.jena.query.QueryExecException ;
-import com.hp.hpl.jena.query.QueryExecution ;
-import com.hp.hpl.jena.query.QuerySolution ;
-import com.hp.hpl.jena.query.ResultSet ;
-import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.rdf.model.ModelFactory ;
-import com.hp.hpl.jena.rdf.model.RDFNode ;
-import com.hp.hpl.jena.rdf.model.Resource ;
-import com.hp.hpl.jena.rdf.model.Statement ;
-import com.hp.hpl.jena.shared.PrefixMapping ;
-import com.hp.hpl.jena.sparql.ARQConstants ;
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.sparql.core.describe.DescribeHandler ;
-import com.hp.hpl.jena.sparql.core.describe.DescribeHandlerRegistry ;
-import com.hp.hpl.jena.sparql.engine.binding.Binding ;
-import com.hp.hpl.jena.sparql.engine.binding.BindingMap ;
-import com.hp.hpl.jena.sparql.engine.binding.BindingRoot ;
-import com.hp.hpl.jena.sparql.engine.binding.BindingUtils ;
-import com.hp.hpl.jena.sparql.syntax.ElementGroup ;
-import com.hp.hpl.jena.sparql.syntax.Template ;
-import org.openjena.atlas.logging.Log ;
-import com.hp.hpl.jena.sparql.util.Context ;
-import com.hp.hpl.jena.sparql.util.DatasetUtils ;
-import com.hp.hpl.jena.sparql.util.ModelUtils ;
-import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
-import com.hp.hpl.jena.util.FileManager ;
+import org.openjena.atlas.logging.Log;
+
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.n3.IRIResolver;
+import com.hp.hpl.jena.query.Dataset;
+import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.QueryExecException;
+import com.hp.hpl.jena.query.QueryExecution;
+import com.hp.hpl.jena.query.QuerySolution;
+import com.hp.hpl.jena.query.ResultSet;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.rdf.model.RDFNode;
+import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.rdf.model.Statement;
+import com.hp.hpl.jena.shared.PrefixMapping;
+import com.hp.hpl.jena.sparql.ARQConstants;
+import com.hp.hpl.jena.sparql.core.DatasetGraph;
+import com.hp.hpl.jena.sparql.core.describe.DescribeHandler;
+import com.hp.hpl.jena.sparql.core.describe.DescribeHandlerRegistry;
+import com.hp.hpl.jena.sparql.engine.binding.Binding;
+import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
+import com.hp.hpl.jena.sparql.engine.binding.BindingRoot;
+import com.hp.hpl.jena.sparql.engine.binding.BindingUtils;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIteratorBase.QueryIterAbortCancellationRequestException;
+import com.hp.hpl.jena.sparql.syntax.ElementGroup;
+import com.hp.hpl.jena.sparql.syntax.Template;
+import com.hp.hpl.jena.sparql.util.Context;
+import com.hp.hpl.jena.sparql.util.DatasetUtils;
+import com.hp.hpl.jena.sparql.util.ModelUtils;
+import com.hp.hpl.jena.sparql.util.graph.GraphFactory;
+import com.hp.hpl.jena.util.FileManager;
 
 /** All the SPARQL query result forms made from a graph-level execution object */ 
 
@@ -62,6 +65,10 @@ public class QueryExecutionBase implements QueryExecution
     private FileManager        fileManager = FileManager.get() ;
     private QuerySolution      initialBinding = null ;      
 
+    private boolean            abort = false ;
+    // has cancel() been called?
+    private boolean            cancel = false ;
+    
     public QueryExecutionBase(Query query, 
                               Dataset dataset,
                               Context context,
@@ -75,8 +82,10 @@ public class QueryExecutionBase implements QueryExecution
     
     public void abort()
     {
+        abort = true ;
         if ( queryIterator != null )
             queryIterator.abort() ;
+        cancel = true ;
     }
 
     public void close()
@@ -87,6 +96,26 @@ public class QueryExecutionBase implements QueryExecution
             plan.close() ;
     }
 
+	public void cancel() 
+	{
+		if ( queryIterator != null ) 
+		{
+			// we cancel the chain of iterators, however, we do *not* close the iterators. 
+			// That happens after the cancellation is properly over.
+			try 
+			{
+				queryIterator.cancel() ;
+			} catch (QueryIterAbortCancellationRequestException e) 
+			{
+				// this means that the cancellation of the main iterator was aborted because
+				// the underlying wrapped iterator was aborted instead
+			}
+			cancel = true ;
+		}
+        abort = true ;
+        cancel = true ;
+	}
+    
     public ResultSet execSelect()
     {
         if ( ! query.isSelectType() )
@@ -241,6 +270,8 @@ public class QueryExecutionBase implements QueryExecution
         if ( queryIterator != null )
             Log.warn(this, "Query iterator has already been started") ;
         queryIterator = getPlan().iterator() ;
+        if ( abort ) queryIterator.abort() ;
+        if ( cancel ) queryIterator.cancel() ;
     }
     
     private ResultSet execResultSet()

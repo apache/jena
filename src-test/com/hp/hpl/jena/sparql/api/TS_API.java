@@ -12,7 +12,8 @@ import org.junit.runners.Suite.SuiteClasses ;
 
 @RunWith(Suite.class)
 @SuiteClasses( {
-    TestAPI.class
+    TestAPI.class,
+    TestQueryExecutionCancel.class
 })
 
 public class TS_API

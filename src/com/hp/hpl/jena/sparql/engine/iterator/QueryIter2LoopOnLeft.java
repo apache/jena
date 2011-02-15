@@ -1,8 +1,10 @@
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (c) Copyright 2010 Talis Systems Ltd
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
+ * Includes software from the Apache Software Foundation - Apache Software License (JENA-29)
  */
 
 package com.hp.hpl.jena.sparql.engine.iterator;
@@ -30,8 +32,12 @@ public abstract class QueryIter2LoopOnLeft extends QueryIter2
     }
 
     @Override
-    protected final void releaseResources()
+    protected final void closeSubIterator()
     { tableRight.close(); }
+    
+    @Override
+    protected void requestSubCancel()
+    { tableRight.close() ; }
    
     @Override
     protected final boolean hasNextBinding()
@@ -69,6 +75,7 @@ public abstract class QueryIter2LoopOnLeft extends QueryIter2
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (c) Copyright 2010 Talis Systems Ltd
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

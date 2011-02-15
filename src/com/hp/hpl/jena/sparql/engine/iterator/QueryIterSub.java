@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
@@ -8,35 +8,49 @@
 
 package com.hp.hpl.jena.sparql.engine.iterator;
 
-import org.openjena.atlas.io.IndentedWriter ;
+import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
+import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 
-import com.hp.hpl.jena.query.ResultSet ;
-import com.hp.hpl.jena.sparql.engine.binding.Binding ;
-import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
-import com.hp.hpl.jena.sparql.util.Utils ;
-
-public class QueryIteratorResultSet extends QueryIteratorBase
+/**
+ * This class supports a QueryIter that uses a single sub iterator.
+ * Unlike QueryIter1, it's asumed the subiterator will be reset and manipulated.
+ */
+public abstract class QueryIterSub extends QueryIter
 {
-    private ResultSet resultSet ; 
-    public QueryIteratorResultSet(ResultSet rs) { resultSet = rs ; }
+    protected QueryIterator iter ; 
+    
+    public QueryIterSub(QueryIterator input, ExecutionContext execCxt)
+    { 
+        super(execCxt) ;
+        this.iter = input ;
+    }
     
     @Override
-    protected void closeIterator()          { resultSet = null ; }
-    @Override
-    protected void requestCancel()          { }
-    @Override
-    protected boolean hasNextBinding()      { return resultSet.hasNext() ; }
-    @Override
-    protected Binding moveToNextBinding()   { return resultSet.nextBinding() ; }
-
-    public void output(IndentedWriter out, SerializationContext cxt)
+    protected final
+    void closeIterator()
     {
-        out.print(Utils.className(this)) ;
+        closeSubIterator() ;
+        performClose(iter) ;
+        iter = null ;
     }
+    
+    @Override
+    protected final
+    void requestCancel()
+    {
+        requestSubCancel() ;
+        performRequestCancel(iter) ;
+    }
+    
+    /** Cancellation of the query execution is happening */
+    protected abstract void requestSubCancel() ;
+    
+    /** Pass on the close method - no need to close the QueryIterator passed to the QueryIter1 constructor */
+    protected abstract void closeSubIterator() ;
 }
 
 /*
- * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  *

@@ -1,6 +1,7 @@
 /*
  * (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
+ * Includes software from the Apache Software Foundation - Apache Software Licnese (JENA-29)
  */
 
 package com.hp.hpl.jena.sparql.engine.iterator;
@@ -104,8 +105,17 @@ public class QueryIterConcat extends QueryIter
         for ( Iterator<QueryIterator> iter = iteratorList.iterator() ; iter.hasNext() ; )
         {
             QueryIterator qIter = iter.next() ;
-            if ( qIter != null )
-                qIter.close() ;
+            performClose(qIter) ;
+        }
+    }
+    
+    @Override
+    protected void requestCancel()
+    {
+        for ( Iterator<QueryIterator> iter = iteratorList.iterator() ; iter.hasNext() ; )
+        {
+            QueryIterator qIter = iter.next() ;
+            performRequestCancel(qIter) ;
         }
     }
     

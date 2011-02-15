@@ -1,7 +1,9 @@
 /*
  * (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
+ * Includes software from the Apache Software Foundation - Apache Software Licnese (JENA-29)
  */
 
 package com.hp.hpl.jena.sparql.engine.iterator;
@@ -40,6 +42,15 @@ public class QueryIteratorWrapper extends QueryIteratorBase
         }
     }
     
+    @Override
+    protected void requestCancel()
+    {
+        if ( iterator != null )
+        {
+           iterator.cancel();
+        }
+    }
+    
     public void output(IndentedWriter out, SerializationContext sCxt)
     {   
         out.println(Utils.className(this)+"/"+Utils.className(iterator)) ;
@@ -53,6 +64,7 @@ public class QueryIteratorWrapper extends QueryIteratorBase
 
 /*
  * (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

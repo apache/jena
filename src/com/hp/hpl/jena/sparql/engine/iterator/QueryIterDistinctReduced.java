@@ -2,6 +2,7 @@
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
+ * Includes software from the Apache Software Foundation - Apache Software Licnese (JENA-29)
  */
 
 package com.hp.hpl.jena.sparql.engine.iterator;
@@ -24,6 +25,11 @@ public abstract class QueryIterDistinctReduced extends QueryIter1
     protected void closeSubIterator()
     { slot = null ; }
 
+    // Subclasses will want to implement this as well. 
+    @Override
+    protected void requestSubCancel()
+    { }
+    
     @Override
     final
     protected boolean hasNextBinding()

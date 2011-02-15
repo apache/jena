@@ -25,6 +25,9 @@ public class QueryIteratorCheck extends QueryIteratorWrapper
     private QueryIteratorCheck(QueryIterator qIter, ExecutionContext execCxt)
     {
         super(qIter) ;
+        if ( qIter instanceof QueryIteratorCheck )
+            Log.warn(this, "Checking checked iterator") ;
+        
         this.execCxt = execCxt ;
         
     }

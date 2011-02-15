@@ -121,6 +121,10 @@ public class QueryIterBlockTriplesQH extends QueryIterRepeatApply
                 graphIter = null ;
             }
         }
+        
+        @Override
+        protected void requestCancel() { closeIterator() ; }
+
     }
     
     private static void compilePattern(com.hp.hpl.jena.graph.query.Query graphQuery,

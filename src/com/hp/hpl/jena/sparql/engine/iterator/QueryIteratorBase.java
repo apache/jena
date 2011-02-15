@@ -1,7 +1,9 @@
 /*
  * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
+ * Includes software from the Apache Software Foundation - Apache Software License (JENA-29)
  */
 
 package com.hp.hpl.jena.sparql.engine.iterator;
@@ -31,6 +33,17 @@ public abstract class QueryIteratorBase
     // so we have only "nextElement()" => null or Binding
     public static boolean traceIterators = false ; 
     private boolean finished = false ;
+
+    // === Cancellation
+    // This can happen asynchronously.
+    // The cancellation process has 2 phases
+    // 1) Notification of cancellation  - called on thread of caller of cancel()
+    // 2) Actual cancelation we only actively set the iterator as cancelled when the nextBinding() is taken
+    // this is required to guarantee thread safety because cancel() will be called from another
+    // thread than the executing thread
+
+    private boolean cancelled = false ;
+    private boolean requestingCancel = false;
     Throwable stackTrace = null ; 
 
     public QueryIteratorBase()
@@ -49,8 +62,11 @@ public abstract class QueryIteratorBase
         Does not need to call hasNext (can presume it is true) */
     protected abstract Binding moveToNextBinding() ;
     
-    /** Implement this, not close() */
+    /** Close the iterator. */
     protected abstract void closeIterator() ;
+   
+    /** Propagates the cancellation request - called asynchronously with the iterator itself */
+    protected abstract void requestCancel();
     
     // -------- The contract with the subclasses 
 
@@ -60,6 +76,10 @@ public abstract class QueryIteratorBase
     public final boolean hasNext()
     {
         try {
+        	if (cancelled) {
+        		close() ;
+        		return false;
+        	}
             if ( finished )
                 return false ;
 
@@ -95,6 +115,11 @@ public abstract class QueryIteratorBase
             Binding obj = moveToNextBinding() ;
             if ( obj == null )
                 throw new NoSuchElementException(Utils.className(this)) ;
+            
+            if ( requestingCancel ) {
+        		cancelled = true;
+        	}
+            
             return obj ;
         } catch (QueryFatalException ex)
         { 
@@ -131,6 +156,33 @@ public abstract class QueryIteratorBase
         finished = true ;
     }
     
+    public void cancel() {
+    	if (!this.requestingCancel) {
+    		// the requestCancel may throw QueryIterAbortCancellationRequestException
+    		try { this.requestCancel() ; } catch (QueryIterAbortCancellationRequestException ex) {}
+    		this.requestingCancel = true; 		
+    	}
+    }
+
+    /** close an iterator */
+    protected static void performClose(QueryIterator iter)
+    {
+        if ( iter == null ) return ;
+        iter.close() ;
+    }
+    
+    /** cancel an iterator */
+    protected static void performRequestCancel(QueryIterator iter)
+    {
+        if ( iter == null ) return ;
+        iter.cancel() ;
+    }
+    
+    @SuppressWarnings("serial")
+	public class QueryIterAbortCancellationRequestException extends RuntimeException {
+        public QueryIterAbortCancellationRequestException() {}
+    }
+    
     public String debug()
     {
         String s = "" ;
@@ -158,6 +210,7 @@ public abstract class QueryIteratorBase
 
 /*
  * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

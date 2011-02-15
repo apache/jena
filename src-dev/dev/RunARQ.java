@@ -39,6 +39,7 @@ import com.hp.hpl.jena.query.QueryExecution ;
 import com.hp.hpl.jena.query.QueryExecutionFactory ;
 import com.hp.hpl.jena.query.QueryFactory ;
 import com.hp.hpl.jena.query.QuerySolutionMap ;
+import com.hp.hpl.jena.query.ResultSet ;
 import com.hp.hpl.jena.query.ResultSetFormatter ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.shared.PrefixMapping ;
@@ -105,6 +106,19 @@ public class RunARQ
     
     public static void main(String[] argv) throws Exception
     {
+        Model model = FileManager.get().loadModel("D.nt") ;
+        Query query = QueryFactory.create("SELECT *{?s ?p ?o} ORDER BY ?s ") ;
+        
+        QueryExecution qExec = QueryExecutionFactory.create(query, model) ;
+        ResultSet rs = qExec.execSelect() ;
+        // Still see the first triple.
+        qExec.cancel() ;
+        //qExec.close() ;
+        ResultSetFormatter.out(rs) ;
+        exit(0) ;
+        
+        //arq.sparql.main("--data=D.nt", "ASK{<http://example/a> <http://example/b> ?x }") ; exit(0) ; 
+        
         //testXSDDurationBug() ; System.exit(0) ;
         
         String DIR = "/home/afs/W3C/SPARQL-docs/tests/data-sparql11/delete" ;

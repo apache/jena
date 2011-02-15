@@ -3,6 +3,7 @@
  * (c) Copyright 2010 Talis Systems Ltd. 
  * All rights reserved.
  * [See end of file]
+ * Includes software from the Apache Software Foundation - Apache Software Licnese (JENA-29)
  */
 
 package com.hp.hpl.jena.sparql.engine.iterator;
@@ -156,6 +157,10 @@ public class QueryIterTriplePattern extends QueryIterRepeatApply
                 NiceIterator.close(graphIter) ;
             graphIter = null ;
         }
+        
+        @Override
+        protected void requestCancel()
+        {  }
     }
 }
 

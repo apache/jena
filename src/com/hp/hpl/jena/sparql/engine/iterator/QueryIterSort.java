@@ -1,7 +1,9 @@
 /*
  * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
+ * Includes software from the Apache Software Foundation - Apache Software Licnese (JENA-29)
  */
 
 package com.hp.hpl.jena.sparql.engine.iterator;
@@ -12,21 +14,24 @@ import java.util.Comparator ;
 import java.util.Iterator ;
 import java.util.List ;
 
+import org.openjena.atlas.iterator.IteratorDelayedInitialization ;
+
 import com.hp.hpl.jena.query.SortCondition ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingComparator ;
 
-/** Sort a query iterator.  Uses an in-memory sort, so limiting the size of
- * iterators that can be handled. */
+/** 
+ * Sort a query iterator.  Uses an in-memory sort, so limiting the size of
+ * iterators that can be handled.
+ */
+// See JENA-44
 
-public class QueryIterSort
-    extends QueryIterPlainWrapper
+public class QueryIterSort extends QueryIterPlainWrapper
 {
-    boolean finished = false ;
-    QueryIterator qIterSorted ;
-    
+	private final QueryIterator embeddedIterator;      // Keep a record of the underlying source for .cancel.
+	
     public QueryIterSort(QueryIterator qIter, List<SortCondition> conditions, ExecutionContext context)
     {
         this(qIter, new BindingComparator(conditions, context), context) ;
@@ -34,29 +39,55 @@ public class QueryIterSort
 
     public QueryIterSort(QueryIterator qIter, Comparator<Binding> comparator, ExecutionContext context)
     {
-        super(sort(qIter, comparator), context) ;
+        super(null, context) ;
+        this.embeddedIterator = qIter;
+        this.setIterator(sort(qIter, comparator));
+    }
+
+    // TODO use this - no exception needed
+//    @Override
+//    public void requestCancel()
+//    {
+//        this.embeddedIterator.cancel();
+//        super.requestCancel() ;
+//    }
+
+    @Override
+    public void cancel() {
+    	// cancel the embedded iterator
+    	this.embeddedIterator.cancel();
+    	throw new QueryIterAbortCancellationRequestException();
+    	// Instead? super.cancel() ;
+    	// requestCancel?
     }
     
-    private static Iterator<Binding> sort(QueryIterator qIter, Comparator<Binding> comparator)
+    private Iterator<Binding> sort(final QueryIterator qIter, final Comparator<Binding> comparator)
     {
-        // Be careful about duplicates.
-        // Used to use a TreeSet but, well, that's a set.
-        List<Binding> x = new ArrayList<Binding>() ;
-        for ( ; qIter.hasNext() ; )
-        {
-            Binding b = qIter.next() ;
-            x.add(b) ;
-        }
-        Binding[] y = x.toArray(new Binding[]{}) ;
-        x = null ;      // Drop the List now - might be big.  Unlikely to really make a real difference.  But we can try.
-        Arrays.sort(y, comparator) ;
-        x = Arrays.asList(y) ;
-        return x.iterator() ;
+        return new IteratorDelayedInitialization<Binding>() {
+            @Override
+            protected Iterator<Binding> initializeIterator()
+            {
+                // Be careful about duplicates.
+                // Used to use a TreeSet but, well, that's a set.
+                List<Binding> x = new ArrayList<Binding>() ;
+                for ( ; qIter.hasNext() ; )
+                {
+                    Binding b = qIter.next() ;
+                    x.add(b) ;
+                }
+                Binding[] y = x.toArray(new Binding[]{}) ;
+                x = null ;      // Drop the List now - might be big.  Unlikely to really make a real difference.  But we can try.
+                Arrays.sort(y, comparator) ;
+                x = Arrays.asList(y) ;
+                return x.iterator() ;
+        	}
+		};
     }
 }
 
 /*
  * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

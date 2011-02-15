@@ -2,8 +2,15 @@ package dev ;
 
 public class DevARQ
 {
+    // JIRA-47 : Timeout query
+    // JIRA-48 : QueryIterAbortCancellationRequestException - is this needed?
+    // JIRA-49 : immediate cancellation if not .hasNext called yet.
+    // And effect on XML results.
+    
     // Mem dataset with union graph
     // Documentation - assemblers for datasets
+    
+    // HTTP result set iterator to know when it's closed.
     
     // RIOT - own node cache - per object type (experiment)
     // parallel parser.
