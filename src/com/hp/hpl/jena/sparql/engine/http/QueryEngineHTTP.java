@@ -199,7 +199,7 @@ public class QueryEngineHTTP implements QueryExecution
         return httpQuery ;
     }
     
-    public void abort() { }
+    public void abort() { try { close() ; } catch (Exception ex) {} }
 
     public void close() {
         if (retainedConnection != null) {
