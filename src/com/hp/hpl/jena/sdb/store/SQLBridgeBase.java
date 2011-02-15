@@ -158,6 +158,11 @@ public abstract class SQLBridgeBase implements SQLBridge
             jdbcResultSet = null ;
         }
 
+        // Asynchronous request to cancel. 
+        @Override
+        protected void requestCancel()
+        {}
+
         @Override
         protected boolean hasNextBinding()
         {
