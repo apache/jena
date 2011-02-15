@@ -81,8 +81,9 @@ public interface QueryExecution
 	/** Stop in mid execution. The concrete implementation will request to cancel the operation and therefore,
 	 *  actual cancellation may not be immediate or even at all. No operations on the query execution or any associated
      *  result set are permitted after this call.
+     *  @deprecated Do not use (not ready yet)
 	 */
-
+	@Deprecated
 	public void cancel();
 
     /** Close the query execution and stop query evaluation as soon as convenient.

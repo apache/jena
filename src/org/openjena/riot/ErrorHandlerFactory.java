@@ -14,9 +14,16 @@ public class ErrorHandlerFactory
     static public final Logger stdLogger = SysRIOT.getLogger() ;
     static public final Logger noLogger = null ;
     
+    /** Standard error handler - logs to stdLogger */
     static public ErrorHandler errorHandlerStd          = errorHandlerStd(stdLogger) ;
+
+    /** Strict error handler - logs to stdLogger - exceptions for warnings */
     static public ErrorHandler errorHandlerStrict       = errorHandlerStrict(stdLogger) ;
+    
+    /** Warning error handler - logs to stdLogger - mesages for warnings and some errors */
     static public ErrorHandler errorHandlerWarn         = errorHandlerWarning(stdLogger) ;
+    
+    /** Silent error handler */
     static public ErrorHandler errorHandlerNoLogging    = errorHandlerSimple() ;
     
     static public void setTestLogging(boolean visible)

@@ -10,6 +10,7 @@ public class DevARQ
     //    Check in sort that don't get one rsult (after a lot of sorting).
     // JIRA-49 : immediate cancellation if not .hasNext called yet.
     // And effect on XML results.
+    // Cancellation -> exception or silent truncation.
     
     // Mem dataset with union graph
     // Documentation - assemblers for datasets
