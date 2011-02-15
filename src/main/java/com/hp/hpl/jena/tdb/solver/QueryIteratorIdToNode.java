@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2010 Talis Systems Ltd.
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -35,7 +36,12 @@ public class QueryIteratorIdToNode extends QueryIter
         Iter.close(iterator) ;
         Iter.close(iteratorBinding) ;
     }
-
+    
+    // Asynchronous request to cancel.
+    @Override
+    protected void requestCancel()
+    {}
+    
     @Override
     protected boolean hasNextBinding()
     {
@@ -47,12 +53,11 @@ public class QueryIteratorIdToNode extends QueryIter
     {
         return iteratorBinding.next() ;
     }
-    
-    
 }
 
 /*
  * (c) Copyright 2010 Talis Systems Ltd.
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
