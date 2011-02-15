@@ -106,6 +106,18 @@ public class RunARQ
     
     public static void main(String[] argv) throws Exception
     {
+        long timeout = 0 ;
+        long last = 0 ;
+        long quantum = 0 ;
+        
+        // Issue - very long sort does not help.
+        // need to hit the input thread. 
+        if ( timeout > 0 && (quantum%10 == 0) )
+        {
+            System.currentTimeMillis() ;
+        }
+        
+        
         Model model = FileManager.get().loadModel("D.nt") ;
         Query query = QueryFactory.create("SELECT *{?s ?p ?o} ORDER BY ?s ") ;
         

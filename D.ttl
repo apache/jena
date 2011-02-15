@@ -1,31 +1,7 @@
 @prefix : <http://example/> .
 
-## Loop
- :a :p :b .
- :b :p :a .
+:a :p 1 ;
+   :q 1 , 2 .
 
-## Arc then loop
-## :a :p :b .
-## :b :p :c .
-## :c :p :d .
-## :d :p :b .
-## 
-## :b :p :x .
-## :x :p :y .
-## :y :p :y .
-
-# Two path DAG
-## :a :p :B . :B :p :X .
-## :a :p :C . :C :p :X .
-
-
-
-## <s> :p 1 .
-
-## :a :p :b .
-## :b :p :c .
-## :c :p :a .
-## 
-## :a :p :x .
-## :x :p :y .
-## :y :p :a .
+:b :p 3.0 ;
+   :q 4.0, 5.0 .
