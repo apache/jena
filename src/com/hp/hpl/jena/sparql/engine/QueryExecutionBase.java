@@ -67,7 +67,7 @@ public class QueryExecutionBase implements QueryExecution
 
     private boolean            abort = false ;
     // has cancel() been called?
-    private boolean            cancel = false ;
+    private volatile boolean   cancel = false ;
     
     public QueryExecutionBase(Query query, 
                               Dataset dataset,
@@ -98,6 +98,7 @@ public class QueryExecutionBase implements QueryExecution
 
 	public void cancel() 
 	{
+	    // This is called asynchronously to the execution.
 		if ( queryIterator != null ) 
 		{
 			// we cancel the chain of iterators, however, we do *not* close the iterators. 
@@ -112,7 +113,6 @@ public class QueryExecutionBase implements QueryExecution
 			}
 			cancel = true ;
 		}
-        abort = true ;
         cancel = true ;
 	}
     
