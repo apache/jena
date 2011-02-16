@@ -25,6 +25,7 @@ import com.hp.hpl.jena.query.QuerySolution ;
 import com.hp.hpl.jena.query.ResultSet ;
 import com.hp.hpl.jena.query.ResultSetFactory ;
 import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.sparql.ARQException ;
 import com.hp.hpl.jena.sparql.resultset.XMLInput ;
 import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
@@ -48,6 +49,8 @@ public class QueryEngineHTTP implements QueryExecution
     List<String> namedGraphURIs  = new ArrayList<String>() ;
     private String user = null ;
     private char[] password = null ;
+    
+    private boolean finished = false ;
     
     // Releasing HTTP input streams is important. We remember this for SELECT,
     // and will close when the engine is closed
@@ -128,6 +131,8 @@ public class QueryEngineHTTP implements QueryExecution
     
     public ResultSet execSelect()
     {
+        
+        
         HttpQuery httpQuery = makeHttpQuery() ;
         // TODO Allow other content types.
         httpQuery.setAccept(HttpParams.contentTypeResultsXML) ;
@@ -179,6 +184,10 @@ public class QueryEngineHTTP implements QueryExecution
     
     private HttpQuery makeHttpQuery()
     {
+        // Also need to tie to ResultSet returned which is streamed back if StAX.
+        if ( finished )
+            throw new ARQException("HTTP execution already closed") ;
+        
         HttpQuery httpQuery = new HttpQuery(service) ;
         httpQuery.addParam(HttpParams.pQuery, queryString );
         
@@ -200,11 +209,12 @@ public class QueryEngineHTTP implements QueryExecution
         return httpQuery ;
     }
     
-    public void cancel() { }
+    public void cancel() { finished = true ; }
     
     public void abort() { try { close() ; } catch (Exception ex) {} }
 
     public void close() {
+        finished = false ;
         if (retainedConnection != null) {
             try { retainedConnection.close(); }
             catch (java.io.IOException e) { log.warn("Failed to close connection", e); }

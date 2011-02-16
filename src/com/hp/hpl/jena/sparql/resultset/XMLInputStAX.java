@@ -18,6 +18,7 @@ import javax.xml.stream.XMLStreamConstants ;
 import javax.xml.stream.XMLStreamException ;
 import javax.xml.stream.XMLStreamReader ;
 
+import org.openjena.atlas.lib.Closeable ;
 import org.openjena.atlas.lib.StrUtils ;
 
 import com.hp.hpl.jena.datatypes.RDFDatatype ;
@@ -143,7 +144,7 @@ class XMLInputStAX extends SPARQLResult
     // -------- Result Set
 
     
-    class ResultSetStAX  implements ResultSet
+    class ResultSetStAX  implements ResultSet, Closeable
     {
         // ResultSet variables
         QuerySolution current = null ; 
@@ -270,6 +271,9 @@ class XMLInputStAX extends SPARQLResult
         throw new UnsupportedOperationException(XMLInputStAX.class.getName()) ; 
     }
     
+    public void close()
+    { finished = true ; }
+
     // -------- Boolean stuff
     
     private void processBoolean() throws XMLStreamException

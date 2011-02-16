@@ -32,7 +32,6 @@ public abstract class QueryIterRepeatApply extends QueryIter1
             return ;
         }
     }
-    
        
     protected QueryIterator getCurrentStage()
     {

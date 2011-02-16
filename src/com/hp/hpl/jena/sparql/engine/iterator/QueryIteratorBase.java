@@ -43,7 +43,7 @@ public abstract class QueryIteratorBase
     // thread than the executing thread
 
     private boolean cancelled = false ;
-    private boolean requestingCancel = false;
+    private volatile boolean requestingCancel = false;
     Throwable stackTrace = null ; 
 
     public QueryIteratorBase()

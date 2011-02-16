@@ -1773,6 +1773,11 @@ Expr Aggregate() : { Aggregator agg = null ; String sep = null ;
     expr = Expression() { a.add(expr) ; } 
     // Single arg version
     (<SEMICOLON> <SEPARATOR> <EQ> sep=String())?
+#ifdef 0
+    { Expr expr2 ; }
+    // Limited GROUP BY
+    (<SEMICOLON> <GROUP><BY> expr2 = Expression()
+#endif
     <RPAREN>
     { agg = AggregatorFactory.createGroupConcat(distinct, expr, sep) ; }
 //     (<COMMA> expr = Expression() { a.add(expr) ; } )*
