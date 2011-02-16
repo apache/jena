@@ -74,7 +74,7 @@ $accept_rdf="#{$mtRDF} , #{$mtTurtle};q=0.9"
 # For SPARQL query
 $accept_results="#{$mtSparqlResultsJ} , #{$mtSparqlResultsX};q=0.9 , #{$accept_rdf}"
 
-# Accept any imn case of trouble.
+# Accept any in case of trouble.
 $accept_rdf="#{$accept_rdf} , */*;q=0.1"
 $accept_results="#{$accept_results} , */*;q=0.1" 
 
