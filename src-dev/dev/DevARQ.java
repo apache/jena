@@ -5,10 +5,11 @@ public class DevARQ
     // SPARQL Update with blank nodes in DELETE {T} WHERE {P}  
     // Optimize when T has no blank nodes.
     
-    // JIRA-47 : Timeout query
-    // JIRA-48 : QueryIterAbortCancellationRequestException - is this needed?
+    // JENA-29: Cancellation
+    // JENA-47 : Timeout query
+    // JENA-48 : QueryIterAbortCancellationRequestException - is this needed?
     //    Check in sort that don't get one rsult (after a lot of sorting).
-    // JIRA-49 : immediate cancellation if not .hasNext called yet.
+    // JENA-49 : immediate cancellation if not .hasNext called yet.
     // And effect on XML results.
     // Cancellation -> exception or silent truncation.
     
