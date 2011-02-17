@@ -323,7 +323,7 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
         
         try {
             InputStream input = action.request.getInputStream() ;
-            String base = SPARQL_ServletBase.wholeRequestURL(action.request) ;
+            String base = wholeRequestURL(action.request) ;
             
             boolean buffering = false ;
             if ( buffering )
@@ -365,15 +365,25 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
     
     protected static void validate(HttpServletRequest request)
     {
+        String g = request.getParameter(HttpNames.paramGraph) ;
+        String d = request.getParameter(HttpNames.paramGraphDefault) ;
+        
+        if ( g != null && d !=null )
+            errorBadRequest("Both ?default and ?graph in request") ;
+        
+        if ( g == null && d == null )
+            errorBadRequest("Neither ?default and ?graph in request") ;
+        
         @SuppressWarnings("unchecked")
         Enumeration<String> en = request.getParameterNames() ;
         for ( ; en.hasMoreElements() ; )
         {
             String h = en.nextElement() ;
             if ( ! HttpNames.paramGraph.equals(h) && ! HttpNames.paramGraphDefault.equals(h) )
-                SPARQL_ServletBase.errorBadRequest("Unknown parameter '"+h+"'") ;
+                errorBadRequest("Unknown parameter '"+h+"'") ;
+            // one of ?default and &graph
             if ( request.getParameterValues(h).length != 1 )
-                SPARQL_ServletBase.errorBadRequest("Multiple parameters '"+h+"'") ;
+                errorBadRequest("Multiple parameters '"+h+"'") ;
         }
     }
 
@@ -383,7 +393,7 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
         String uri = getOneOnly(request, HttpNames.paramGraph) ;
         
         if ( !dftGraph && uri == null )
-            SPARQL_ServletBase.errorBadRequest("Neither default graph nor named graph specificed") ;
+            errorBadRequest("Neither default graph nor named graph specificed") ;
         
         if ( dftGraph )
             return Target.createDefault(dsg) ;
@@ -392,7 +402,7 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
         
         // Strictly, a bit naughthy on the URI resolution.  But more sensible. 
         // Base is dataset.
-        String base = request.getRequestURL().toString() ; //SPARQL_ServletBase.wholeRequestURL(request) ;
+        String base = request.getRequestURL().toString() ; //wholeRequestURL(request) ;
         // Make sure it ends in "/", ie. dataset as container.
         if ( request.getQueryString() != null && ! base.endsWith("/") )
             base = base + "/" ;
@@ -410,7 +420,7 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
         if ( values.length == 0 )
             return null ;
         if ( values.length > 1 )
-            SPARQL_ServletBase.errorBadRequest("Multiple occurrences of '"+name+"'") ;
+            errorBadRequest("Multiple occurrences of '"+name+"'") ;
         return values[0] ;
     }
 }
