@@ -146,9 +146,11 @@ public class ParserQueryBase extends ParserBase
 
     protected void finishBindingValueRow(int line, int col)      
     {
-        if ( variables.size() != currentValueRow().size() )
+        //if ( variables.size() != currentValueRow().size() )
+        
+        if ( currentColumn+1 != variables.size() )
         {
-            String msg = String.format("Mismatch: %d variables but %d values",variables.size(), currentValueRow().size()) ;
+            String msg = String.format("Mismatch: %d variables but %d values",variables.size(), currentColumn+1) ;
             msg = QueryParseException.formatMessage(msg, line, col) ;
             throw new QueryParseException(msg, line , col) ;
         }

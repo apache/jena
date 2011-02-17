@@ -563,8 +563,13 @@ public class Query extends Prologue implements Cloneable, Printable
         int N = variables.size() ;
         for ( Binding valueRow : values )
         {
-            if ( valueRow.size() != N )
-                throw new QueryBuildException("Mismatch in sizes between variables and values") ;
+            Iterator<Var> iter= valueRow.vars() ;
+            for ( ; iter.hasNext() ; )
+            { 
+                Var v = iter.next() ;
+                if ( ! variables.contains(v) )
+                    throw new QueryBuildException("Variable "+v+" not found in "+variables) ;
+            }
         }
         bindingVariables = variables ;
         bindingValues = values ;
