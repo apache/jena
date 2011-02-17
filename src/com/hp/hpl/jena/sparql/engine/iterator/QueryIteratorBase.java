@@ -43,16 +43,14 @@ public abstract class QueryIteratorBase
     // Default cancellation is to stop the iterator immediately. 
     // No further calls of .hasNext or .next are possible.
     // This is signalled by exception QueryTerminationException.
-    
+
+    // Original notes ....
     // The cancellation process has 2 phases
     // 1) Notification of cancellation  - called on thread of caller of cancel()
     // 2) Actual cancelation we only actively set the iterator as cancelled when the nextBinding() is taken
     // this is required to guarantee thread safety because cancel() will be called from another
     // thread than the executing thread
 
-    // If this is true, then the QueryIterator will throw exceptions when  
-    
-    // THIS IS NOT WHAT THE CODE DOES CURRENTLY.
     private boolean cancelled = false ;
     private volatile boolean requestingCancel = false;
     private Throwable stackTrace = null ; 
@@ -125,6 +123,8 @@ public abstract class QueryIteratorBase
             
             if ( requestingCancel ) 
             {
+                // NB If QueryIterAbortCancellationRequestException called,
+                // requestingCancel not set so no close().
         		cancelled = true;
         		close() ;
         		//throw new QueryTerminationException() ; 
