@@ -35,6 +35,8 @@ import com.hp.hpl.jena.util.iterator.ClosableIterator ;
  * a pattern via the Jena graph QueryHandler interface.
  */
  
+// This is only used for RDB - see QueryIterBlockTriples for main BGP solver in ARQ 
+
 public class QueryIterBlockTriplesQH extends QueryIterRepeatApply
 {
     protected BasicPattern pattern ;
@@ -123,8 +125,7 @@ public class QueryIterBlockTriplesQH extends QueryIterRepeatApply
         }
         
         @Override
-        protected void requestCancel() { closeIterator() ; }
-
+        protected void requestCancel() { }
     }
     
     private static void compilePattern(com.hp.hpl.jena.graph.query.Query graphQuery,

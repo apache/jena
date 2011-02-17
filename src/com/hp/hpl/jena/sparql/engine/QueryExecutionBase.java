@@ -110,6 +110,7 @@ public class QueryExecutionBase implements QueryExecution
 			{
 				// this means that the cancellation of the main iterator was aborted because
 				// the underlying wrapped iterator was aborted instead
+			    // XXX Currently, caught in QueryIteratorBase which then avoids setting it's own flags. 
 			}
 			cancel = true ;
 		}

@@ -19,6 +19,8 @@ public abstract class QueryIterRepeatApply extends QueryIter1
 {
     int count = 0 ; 
     private QueryIterator currentStage ;
+    private volatile boolean cancelRequested = false;
+    
     
     public QueryIterRepeatApply( QueryIterator input ,
                                  ExecutionContext context)
@@ -53,6 +55,14 @@ public abstract class QueryIterRepeatApply extends QueryIter1
             
             if ( currentStage == null  )
                 return false ;
+            
+            if ( cancelRequested )
+            {
+                // In the middle of a cancel.
+                // XXX This repeatedly calls subcancel if the iterator is drained.
+                // But QueryItertaorBase turns that into a single call of requestCancel.
+                performRequestCancel(currentStage);
+            }
             
             if ( currentStage.hasNext() )
                 return true ;
@@ -104,6 +114,7 @@ public abstract class QueryIterRepeatApply extends QueryIter1
     {
         if ( currentStage != null )
             currentStage.cancel() ;
+        cancelRequested = true;
     }
 }
 

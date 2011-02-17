@@ -12,6 +12,7 @@ import java.util.NoSuchElementException ;
 
 import com.hp.hpl.jena.query.QueryException ;
 import com.hp.hpl.jena.query.QueryFatalException ;
+import com.hp.hpl.jena.query.QueryTerminatedException ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import org.openjena.atlas.logging.Log ;
@@ -29,22 +30,32 @@ public abstract class QueryIteratorBase
     extends PrintSerializableBase
     implements QueryIterator
 {
-    // Can this keep the next look ahead Binding
-    // so we have only "nextElement()" => null or Binding
     public static boolean traceIterators = false ; 
     private boolean finished = false ;
 
     // === Cancellation
-    // This can happen asynchronously.
+    // .cancel() can be called asynchronously with iterator execution.
+    // It causes notification to cancellation to be made, once, by calling .requestCancel()
+    // which is called synchronously with .cancel() and asynchronously with iterator execution.
+
+    // Cancellation causes 
+    // Variations to the cancellation style are made by setting things in the context (see QueryIter)
+    // Default cancellation is to stop the iterator immediately. 
+    // No further calls of .hasNext or .next are possible.
+    // This is signalled by exception QueryTerminationException.
+    
     // The cancellation process has 2 phases
     // 1) Notification of cancellation  - called on thread of caller of cancel()
     // 2) Actual cancelation we only actively set the iterator as cancelled when the nextBinding() is taken
     // this is required to guarantee thread safety because cancel() will be called from another
     // thread than the executing thread
 
+    // If this is true, then the QueryIterator will throw exceptions when  
+    
+    // THIS IS NOT WHAT THE CODE DOES CURRENTLY.
     private boolean cancelled = false ;
     private volatile boolean requestingCancel = false;
-    Throwable stackTrace = null ; 
+    private Throwable stackTrace = null ; 
 
     public QueryIteratorBase()
     {
@@ -76,10 +87,6 @@ public abstract class QueryIteratorBase
     public final boolean hasNext()
     {
         try {
-        	if (cancelled) {
-        		close() ;
-        		return false;
-        	}
             if ( finished )
                 return false ;
 
@@ -102,7 +109,7 @@ public abstract class QueryIteratorBase
         return nextBinding() ;
     }
 
-    /** final - implement moveToNextBinding() instead */
+    /** final - subclasses implement moveToNextBinding() */
     public final Binding nextBinding()
     {
         try {
@@ -116,8 +123,11 @@ public abstract class QueryIteratorBase
             if ( obj == null )
                 throw new NoSuchElementException(Utils.className(this)) ;
             
-            if ( requestingCancel ) {
+            if ( requestingCancel ) 
+            {
         		cancelled = true;
+        		close() ;
+        		//throw new QueryTerminationException() ; 
         	}
             
             return obj ;
@@ -127,7 +137,6 @@ public abstract class QueryIteratorBase
             abort() ;
             throw ex ; 
         }
-
     }
     
     public final void remove()
@@ -157,10 +166,15 @@ public abstract class QueryIteratorBase
     }
     
     public void cancel() {
+        // Call requestCancel() once.
     	if (!this.requestingCancel) {
     		// the requestCancel may throw QueryIterAbortCancellationRequestException
-    		try { this.requestCancel() ; } catch (QueryIterAbortCancellationRequestException ex) {}
-    		this.requestingCancel = true; 		
+    	    try {
+        		this.requestCancel() ;
+        		this.requestingCancel = true;
+    	    } catch (QueryIterAbortCancellationRequestException ex)
+    	    // XXX Do not set requestingCancel - allows sort to drain.
+    	    {}
     	}
     }
 

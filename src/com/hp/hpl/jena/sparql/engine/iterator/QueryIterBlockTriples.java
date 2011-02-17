@@ -41,7 +41,6 @@ public class QueryIterBlockTriples extends QueryIter1
         this.pattern = pattern ;
         graph = execContext.getActiveGraph() ;
         // Create a chain of triple iterators.
-        // This code is elsewhere (Group? build serial?)
         QueryIterator chain = getInput() ;
         for (Triple triple : pattern)
             chain = new QueryIterTriplePattern(chain, triple, execContext) ;
