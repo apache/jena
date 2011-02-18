@@ -21,7 +21,6 @@ public abstract class QueryIterRepeatApply extends QueryIter1
     private QueryIterator currentStage ;
     private volatile boolean cancelRequested = false;
     
-    
     public QueryIterRepeatApply( QueryIterator input ,
                                  ExecutionContext context)
     {
@@ -58,6 +57,7 @@ public abstract class QueryIterRepeatApply extends QueryIter1
             
             if ( cancelRequested )
             {
+                // This ensures we don't miss a change to cancelRequested
                 // In the middle of a cancel.
                 // XXX This repeatedly calls subcancel if the iterator is drained.
                 // But QueryItertaorBase turns that into a single call of requestCancel.

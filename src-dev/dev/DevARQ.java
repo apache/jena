@@ -5,6 +5,8 @@ public class DevARQ
     // SPARQL Update with blank nodes in DELETE {T} WHERE {P}  
     // Optimize when T has no blank nodes.
     
+    // Comand line tools - work with "--data QUADS" -- add to dataset assembler. 
+    
     // JENA-29: Cancellation
     // JENA-47 : Timeout query
     // JENA-48 : QueryIterAbortCancellationRequestException - is this needed?
