@@ -81,11 +81,10 @@ $accept_results="#{$accept_results} , */*;q=0.1"
 # The media type usually forces the charset.
 $accept_charset=nil
 
+## Who we are.
+$cmd = File.basename($0)
 
-
-## -------- SPARQL HTTP Update
-
-$usageSOH="[get|post|put|delete] datasetURI graph [file]"
+## -------- 
 
 def GET(dataset, graph)
   print "GET #{dataset} #{graph}\n" if $verbose
@@ -285,7 +284,14 @@ def cmd_soh(command=nil)
   optparse = OptionParser.new do |opts|
     # Set a banner, displayed at the top
     # of the help screen.
-    opts.banner = "Usage: #{$0} [get|put|delete|post] dataset graph [file]"
+    case $cmd
+    when "s-http", "sparql-http", "soh"
+      banner="$cmd [get|post|put|delete] datasetURI graph [file]"
+    when "s-get", "s-head", "s-delete"
+      banner="$cmd  datasetURI graph"
+    end
+
+    opts.banner = $banner
     # Define the options, and what they do
     
     options[:verbose] = false
@@ -440,7 +446,7 @@ end
 def cmd_sparql_query
   options={}
   optparse = OptionParser.new do |opts|
-    opts.banner = "Usage: #{$0} [--query QUERY] [--service URI] 'query' | @file"
+    opts.banner = "Usage: #{$cmd} [--query QUERY] [--service URI] 'query' | @file"
      opts.on('--service=URI', '--server=URI', 'SPARQL endpoint') do |uri|
       options[:service]=uri
     end
@@ -560,7 +566,7 @@ def cmd_sparql_update(by_raw_post=true)
   # Share with cmd_sparql_query
   options={}
   optparse = OptionParser.new do |opts|
-    opts.banner = "Usage: #{$0} [--file REQUEST] [--service URI] 'request' | @file"
+    opts.banner = "Usage: #{$cmd} [--file REQUEST] [--service URI] 'request' | @file"
     opts.on('--service=URI', '--server=URI', 'SPARQL endpoint') do |uri|
       options[:service]=uri
     end
@@ -629,14 +635,22 @@ end
 
 ## -------
 
-cmd = File.basename($0)
 
-case cmd
+case $cmd
 when "s-http", "sparql-http", "soh"
+  $banner="#{$cmd} [get|post|put|delete] datasetURI graph [file]"
   cmd_soh
 when "s-get", "s-head", "s-put", "s-delete", "s-post"
-  cmd2 = cmd.sub(/^s-/, '').upcase
+
+  case $cmd
+  when "s-get", "s-head", "s-delete"
+    $banner="#{$cmd} datasetURI graph"
+  when "s-put", "s-post"
+    $banner="#{$cmd} datasetURI graph file"
+  end
+  cmd2 = $cmd.sub(/^s-/, '').upcase
   cmd_soh cmd2
+
 when "s-query", "sparql-query"
   cmd_sparql_query
 when "s-update", "sparql-update"
