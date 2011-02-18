@@ -192,14 +192,18 @@ public abstract class QueryCompilerMain implements QueryCompiler
             if ( ! SDB_QC.isOpSQL(subOp) )
                 return super.transform(opSlice, subOp) ;
 
-            return transformSlice(opSlice, ((OpSQL)subOp).getSqlNode()) ;
+            
+            
+            return transformSlice(opSlice, ((OpSQL)subOp)) ;
         }
 
-        private Op transformSlice(OpSlice opSlice, SqlNode sqlSubOp)
+        private Op transformSlice(OpSlice opSlice, OpSQL opSQL)
         {
             // (slice X)
+            SqlNode sqlSubOp = opSQL.getSqlNode() ;
             SqlNode n = SqlSelectBlock.slice(request, sqlSubOp, opSlice.getStart(), opSlice.getLength()) ;
-            Op x = new OpSQL(n, opSlice, request) ;
+            OpSQL x = new OpSQL(n, opSlice, request) ;
+            x.setBridge(opSQL.getBridge()) ;
             return x ;
         }
 
@@ -212,12 +216,16 @@ public abstract class QueryCompilerMain implements QueryCompiler
                 // Can't cope - just pass the slice to the general superclass. 
                 return super.transform(opSlice, opProject) ;
 
-            SqlNode sqlSubOp = ((OpSQL)subOp).getSqlNode() ;
+            OpSQL opSQL = (OpSQL)subOp ;
+            SqlNode sqlSubOp = opSQL.getSqlNode() ;
             List<Var> pv = opProject.getVars() ;
             // Do as (slice X)
             SqlNode n = SqlSelectBlock.slice(request, sqlSubOp, opSlice.getStart(), opSlice.getLength()) ;
             // Put back project - as an OpProject to leave for the bridge.
-            Op x = new OpSQL(n, opProject, request) ;
+            OpSQL x = new OpSQL(n, opProject, request) ;
+            x.setBridge(opSQL.getBridge()) ;
+            // Bridge will be set later.
+            // Is OpProject needed?
             return new OpProject(x, pv) ;
         }
         

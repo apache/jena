@@ -256,22 +256,22 @@ public class TransformSDB extends TransformCopy
 //        // (slice (sql expression))
 //        return transformSlice(opSlice, ((OpSQL)subOp).getSqlNode()) ;
 //    }
-        
-    private Op transformSlice(OpSlice opSlice, SqlNode sqlSubOp)
-    {
-        SqlNode n = SqlSelectBlock.slice(request, sqlSubOp, opSlice.getStart(), opSlice.getLength()) ;
-        OpSQL x = new OpSQL(n, opSlice, request) ;
-        return x ;
-    }
-    
-    private Op transformSliceProject(OpSlice opSlice, OpSQL subOp, SqlNode sqlOp)
-    {
-        // This put the LIMIT outside all the projects left joins, which is a bit of a pity.
-        // Could improve by rewriting (slice (project...)) into (project (slice...)) in QueryCompilerMain 
-        OpSQL x = (OpSQL)transformSlice(opSlice, sqlOp) ;
-        SQLBridge bridge = subOp.getBridge() ;
-        return x ;
-    }
+//        
+//    private Op transformSlice(OpSlice opSlice, SqlNode sqlSubOp)
+//    {
+//        SqlNode n = SqlSelectBlock.slice(request, sqlSubOp, opSlice.getStart(), opSlice.getLength()) ;
+//        OpSQL x = new OpSQL(n, opSlice, request) ;
+//        return x ;
+//    }
+//    
+//    private Op transformSliceProject(OpSlice opSlice, OpSQL subOp, SqlNode sqlOp)
+//    {
+//        // This put the LIMIT outside all the projects left joins, which is a bit of a pity.
+//        // Could improve by rewriting (slice (project...)) into (project (slice...)) in QueryCompilerMain 
+//        OpSQL x = (OpSQL)transformSlice(opSlice, sqlOp) ;
+//        SQLBridge bridge = subOp.getBridge() ;
+//        return x ;
+//    }
 
 //    // ----
 //    
