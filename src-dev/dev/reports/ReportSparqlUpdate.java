@@ -7,15 +7,12 @@ import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.query.QueryExecution ;
 import com.hp.hpl.jena.query.QueryExecutionFactory ;
 import com.hp.hpl.jena.query.QueryFactory ;
-import com.hp.hpl.jena.query.ResultSet ;
 import com.hp.hpl.jena.query.Syntax ;
-import com.hp.hpl.jena.sdb.SDB ;
 import com.hp.hpl.jena.sdb.SDBFactory ;
 import com.hp.hpl.jena.sdb.Store ;
 import com.hp.hpl.jena.sdb.StoreDesc ;
 import com.hp.hpl.jena.sdb.sql.JDBC ;
 import com.hp.hpl.jena.sdb.sql.SDBConnection ;
-import com.hp.hpl.jena.sparql.resultset.SPARQLResult ;
 import com.hp.hpl.jena.sparql.util.QueryExecUtils ;
 import com.hp.hpl.jena.update.GraphStore ;
 import com.hp.hpl.jena.update.GraphStoreFactory ;
@@ -38,39 +35,49 @@ public class ReportSparqlUpdate {
 		String dbType = "postgresql";
 		
 		JDBC.loadDriverPGSQL() ;
-		SDBConnection connection = SDBFactory.createConnection(url, username, password) ;
+		
+//		JDBC.loadDriverHSQL() ;
+//		url = "jdbc:hsqldb:mem" ;
+//		username = "sa" ;
+//		password = "" ;
+//		dbType = "hsqldb" ;
+
 		StoreDesc storeDesc = new StoreDesc(sdbLayout, dbType);
+		SDBConnection connection = SDBFactory.createConnection(url, username, password) ;
 		Store store = SDBFactory.connectStore(connection, storeDesc);
 		Dataset dataset = SDBFactory.connectDataset(store);
+		
+		//if ( dbType.equals("hsqldb"))
+		    store.getTableFormatter().create() ;
+		
+		
 
-        if ( true )
-        {
-            Dataset ds = SDBFactory.connectDataset(store) ;
-            GraphStore graphStore = GraphStoreFactory.create(ds) ; //using the dataset
-            final String SparqlUpdate= 
-                StrUtils.strjoinNL(
-                 "PREFIX OntologyUserInterest: <http://www.semanticweb.org/ontologies/2010/11/OntologyUserInterest.owl#>",
-                 "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>",
-                 "INSERT DATA { <http://example/s> <http://example/p> <http://example/o> }",   
-                 "") ;
-            
-            //System.out.println(SparqlUpdate) ;
-                 UpdateRequest request = UpdateFactory.create(SparqlUpdate) ; 
-                 System.out.println(request) ;
-               
-                 try {
-                     connection.getTransactionHandler().begin() ;
-                  // And perform the operations.
-                 UpdateAction.execute(request, graphStore) ;
-                  System.out.println("Sparql update success!");
-                  connection.getTransactionHandler().commit() ;
+		    if ( true )
+		    {
+		        Dataset ds = SDBFactory.connectDataset(store) ;
+		        GraphStore graphStore = GraphStoreFactory.create(ds) ; //using the dataset
+		        final String SparqlUpdate= 
+		            StrUtils.strjoinNL(
+		                               "PREFIX OntologyUserInterest: <http://www.semanticweb.org/ontologies/2010/11/OntologyUserInterest.owl#>",
+		                               "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>",
+		                               "INSERT DATA { <http://example/s> <http://example/p> <http://example/o> }",   
+		            "") ;
 
-                }
-                 catch (Exception e){
-                     System.out.println("Sparql Update failed!");
+		        UpdateRequest request = UpdateFactory.create(SparqlUpdate) ; 
+		        System.out.println(request) ;
 
-                 }
-        }
+		        try {
+		            connection.getTransactionHandler().begin() ;
+		            // And perform the operations.
+		            UpdateAction.execute(request, graphStore) ;
+		            System.out.println("Sparql update success!");
+		            connection.getTransactionHandler().commit() ;
+
+		        }
+		        catch (Exception e){
+		            System.out.println("Sparql Update failed!");
+		        }
+		    }
 
         if ( false )
 		{	          
