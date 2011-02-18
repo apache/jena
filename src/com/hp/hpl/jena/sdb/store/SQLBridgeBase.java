@@ -158,11 +158,6 @@ public abstract class SQLBridgeBase implements SQLBridge
             jdbcResultSet = null ;
         }
 
-        // Asynchronous request to cancel. 
-        @Override
-        protected void requestCancel()
-        {}
-
         @Override
         protected boolean hasNextBinding()
         {
@@ -189,6 +184,11 @@ public abstract class SQLBridgeBase implements SQLBridge
             ready = false ; // Must set the state to 'unknown'.
             return assembleBinding(jdbcResultSet, parent) ;
         }
+
+        // Asynchronous request to cancel.
+        @Override
+        protected void requestCancel()
+        {}
         
     }
 }
