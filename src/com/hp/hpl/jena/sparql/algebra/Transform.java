@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010, 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -49,16 +50,17 @@ public interface Transform
     // OpModifier
     public Op transform(OpList opList, Op subOp) ;
     public Op transform(OpOrder opOrder, Op subOp) ;
+    public Op transform(OpTopN opTop, Op subOp) ;
     public Op transform(OpProject opProject, Op subOp) ;
     public Op transform(OpDistinct opDistinct, Op subOp) ;
     public Op transform(OpReduced opReduced, Op subOp) ;
     public Op transform(OpSlice opSlice, Op subOp) ;
-    
     public Op transform(OpGroup opGroup, Op subOp) ;
 }
 
 /*
  * (c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010, 2011 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

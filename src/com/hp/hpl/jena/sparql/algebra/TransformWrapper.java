@@ -1,5 +1,6 @@
 /*
- * (c) 2010 Talis Information Ltd
+ * (c) 2010 Talis Information Ltd.
+ * (c) 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -54,6 +55,7 @@ public class TransformWrapper implements Transform
     
     public Op transform(OpList opList, Op subOp)            { return transform.transform(opList, subOp) ; }
     public Op transform(OpOrder opOrder, Op subOp)          { return transform.transform(opOrder, subOp) ; }
+    public Op transform(OpTopN opTop, Op subOp)             { return transform.transform(opTop, subOp) ; }
     public Op transform(OpProject opProject, Op subOp)      { return transform.transform(opProject, subOp) ; }
     public Op transform(OpDistinct opDistinct, Op subOp)    { return transform.transform(opDistinct, subOp) ; }
     public Op transform(OpReduced opReduced, Op subOp)      { return transform.transform(opReduced, subOp) ; }
@@ -62,7 +64,8 @@ public class TransformWrapper implements Transform
 }
 
 /*
- * (c) 2010 Talis Information Ltd
+ * (c) 2010 Talis Information Ltd.
+ * (c) 2011 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -82,6 +82,7 @@ public class BuilderOp
         addBuild(Tags.tagToList,        buildToList) ;
         addBuild(Tags.tagGroupBy,       buildGroupBy) ;
         addBuild(Tags.tagOrderBy,       buildOrderBy) ;
+        addBuild(Tags.tagTopN,          buildTopN) ;
         addBuild(Tags.tagProject,       buildProject) ;
         addBuild(Tags.tagDistinct,      buildDistinct) ;
         addBuild(Tags.tagReduced,       buildReduced) ;
@@ -569,6 +570,30 @@ public class BuilderOp
             return new SortCondition(expr, direction) ;
     }
     
+    final protected Build buildTopN = new Build()
+    {
+        public Op make(ItemList list)
+        {
+            BuilderLib.checkLength(4, list,  Tags.tagTopN) ;
+            int N = BuilderNode.buildInt(list, 1, -1) ;
+            ItemList conditions = list.get(2).getList() ;
+            
+            // Maybe tagged (asc, desc or a raw expression)
+            List<SortCondition> x = new ArrayList<SortCondition>() ;
+            
+            for ( int i = 0 ; i < conditions.size() ; i++ )
+            {
+                //int direction = Query.ORDER_DEFAULT ;
+                Item item = conditions.get(i) ;
+                SortCondition sc = scBuilder(item) ;
+                x.add(sc) ;
+            }
+            Op sub = build(list, 2) ;
+            Op op = new OpTopN(sub, N, x) ;
+            return op ;
+        }
+    } ;
+
     
     final protected Build buildProject = new Build()
     {

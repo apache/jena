@@ -222,6 +222,15 @@ public class EvaluatorDispatch implements OpVisitor
         push(table) ;
     }
 
+    public void visit(OpTopN opTop)
+    {
+        Table table = eval(opTop.getSubOp()) ;
+        //table = evaluator.topN(table, opTop.getLimti(), opTop.getConditions()) ;
+        table = evaluator.order(table, opTop.getConditions()) ;
+        table = evaluator.slice(table, 0, opTop.getLimit()) ;
+        push(table) ;
+    }
+
     public void visit(OpProject opProject)
     {
         Table table = eval(opProject.getSubOp()) ;

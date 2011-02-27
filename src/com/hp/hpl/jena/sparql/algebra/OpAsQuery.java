@@ -392,6 +392,9 @@ public class OpAsQuery
 
         public void visit(OpGroup opGroup)
         { throw new ARQNotImplemented("OpGroup") ; }
+
+        public void visit(OpTopN opTop)
+        { throw new ARQNotImplemented("OpTopN") ; }
         
         private Element lastElement()
         {

@@ -381,6 +381,15 @@ public class OpExecutor
         return qIter ;
     }
 
+    protected QueryIterator execute(OpTopN opTop, QueryIterator input)
+    { 
+        // XXX Do better; execute - OpTopN
+        QueryIterator qIter = executeOp(opTop.getSubOp(), input) ;
+        qIter = new QueryIterSort(qIter, opTop.getConditions(), execCxt) ;
+        qIter = new QueryIterSlice(qIter, 0, opTop.getLimit(), execCxt) ;
+        return qIter ;
+    }
+
     protected QueryIterator execute(OpProject opProject, QueryIterator input)
     {
         // This may be under a (graph) in which case we need to operate 

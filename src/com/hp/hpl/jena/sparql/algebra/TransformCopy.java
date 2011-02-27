@@ -57,11 +57,12 @@ public class TransformCopy implements Transform
     
     public Op transform(OpList opList, Op subOp)                    { return xform(opList, subOp) ; }
     public Op transform(OpOrder opOrder, Op subOp)                  { return xform(opOrder, subOp) ; }
+    public Op transform(OpTopN opTop, Op subOp)                     { return xform(opTop, subOp) ; }
     public Op transform(OpProject opProject, Op subOp)              { return xform(opProject, subOp) ; }
     public Op transform(OpDistinct opDistinct, Op subOp)            { return xform(opDistinct, subOp) ; }
     public Op transform(OpReduced opReduced, Op subOp)              { return xform(opReduced, subOp) ; }
     public Op transform(OpSlice opSlice, Op subOp)                  { return xform(opSlice, subOp) ; }
-    public Op transform(OpGroup opGroup, Op subOp)            { return xform(opGroup, subOp) ; }
+    public Op transform(OpGroup opGroup, Op subOp)                  { return xform(opGroup, subOp) ; }
 
     private Op xform(Op0 op)
     { 

@@ -256,6 +256,13 @@ class ExecutionDispatch implements OpVisitor
         push(qIter) ;
     }
     
+    public void visit(OpTopN opTop)
+    { 
+        QueryIterator input = pop() ;
+        QueryIterator qIter = opExecutor.execute(opTop, input) ;
+        push(qIter) ;
+    }
+
     private void push(QueryIterator qIter)  { stack.push(qIter) ; }
     private QueryIterator pop()
     { 

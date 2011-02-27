@@ -1,6 +1,6 @@
 /*
  * (c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
- * (c) Copyright 2010 Epimorphics Ltd.
+ * (c) Copyright 2010, 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -54,11 +54,12 @@ public interface OpVisitor
     public void visit(OpSlice opSlice) ;
 
     public void visit(OpGroup opGroup) ;
+    public void visit(OpTopN opTop) ;
 }
 
 /*
  * (c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
- * (c) Copyright 2010 Epimorphics Ltd.
+ * (c) Copyright 2010, 2011 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

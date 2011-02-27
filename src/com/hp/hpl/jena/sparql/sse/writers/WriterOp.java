@@ -421,6 +421,27 @@ public class WriterOp
             finish(opOrder) ;
         }
         
+        public void visit(OpTopN opTop)
+        { 
+            start(opTop, NoNL) ;
+            
+            // Write conditions
+            start() ;
+            writeIntOrDefault(opTop.getLimit()) ;
+            
+            boolean first = true ;
+            for ( SortCondition sc : opTop.getConditions() )
+            {
+                if ( ! first )
+                    out.print(" ") ;
+                first = false ;
+                formatSortCondition(sc) ;
+            }
+            finish() ;
+            out.newline();
+            printOp(opTop.getSubOp()) ;
+            finish(opTop) ;
+        }
         
         // Neater would be a pair of explicit SortCondition formatter
         private void formatSortCondition(SortCondition sc)

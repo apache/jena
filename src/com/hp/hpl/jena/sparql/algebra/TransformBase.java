@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010, 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -46,6 +47,7 @@ public class TransformBase implements Transform
     
     public Op transform(OpList opList, Op subOp)            { return opList ; }
     public Op transform(OpOrder opOrder, Op subOp)          { return opOrder ; }
+    public Op transform(OpTopN opTop, Op subOp)             { return opTop ; }
     public Op transform(OpProject opProject, Op subOp)      { return opProject ; }
     public Op transform(OpDistinct opDistinct, Op subOp)    { return opDistinct ; }
     public Op transform(OpReduced opReduced, Op subOp)      { return opReduced ; }
@@ -55,6 +57,7 @@ public class TransformBase implements Transform
 
 /*
  * (c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010, 2011 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

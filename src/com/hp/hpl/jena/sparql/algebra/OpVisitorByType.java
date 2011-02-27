@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010, 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -116,10 +117,14 @@ public abstract class OpVisitorByType implements OpVisitor
 
     public void visit(OpGroup opGroup)
     { visit1(opGroup) ; }
+
+    public void visit(OpTopN opTop)
+    { visit1(opTop) ; }
 }
 
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010, 2011 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

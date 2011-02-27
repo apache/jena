@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -11,8 +12,8 @@ import static org.openjena.atlas.lib.StrUtils.str ;
 
 public class Pair<A, B>
 {
-    A a ;
-    B b ;
+    final A a ;
+    final B b ;
     public Pair(A a, B b) { this.a = a; this.b = b ; }
     
     public A getLeft()  { return a ; }
@@ -49,6 +50,7 @@ public class Pair<A, B>
 
 /*
  * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

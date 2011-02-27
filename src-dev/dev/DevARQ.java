@@ -2,6 +2,10 @@ package dev ;
 
 public class DevARQ
 {
+    // OpTopN - OpExecutor.execute(OpTop).
+    // BSBM Explore/Update
+    // Remote SPARQL Update 
+    
     // SPARQL Update with blank nodes in DELETE {T} WHERE {P}  
     // Optimize when T has no blank nodes.
     

@@ -63,6 +63,7 @@ public class Tags
 
     public static final String tagToList        = "tolist" ;
     public static final String tagOrderBy       = "order" ;
+    public static final String tagTopN          = "top" ;
     public static final String tagGroupBy       = "group" ;
     public static final String tagProject       = "project" ;
     public static final String tagDistinct      = "distinct" ;
