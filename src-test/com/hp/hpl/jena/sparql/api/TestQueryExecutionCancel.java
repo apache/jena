@@ -6,7 +6,11 @@ package com.hp.hpl.jena.sparql.api;
 
 import junit.framework.TestCase;
 
+import org.junit.AfterClass ;
+import org.junit.BeforeClass ;
+import org.junit.Ignore ;
 import org.junit.Test;
+import org.openjena.atlas.junit.BaseTest ;
 
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecution;
@@ -19,7 +23,7 @@ import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.sparql.function.FunctionRegistry;
 import com.hp.hpl.jena.sparql.util.graph.GraphFactory;
 
-public class TestQueryExecutionCancel extends TestCase {
+public class TestQueryExecutionCancel extends BaseTest {
 
     private static final String ns = "http://example/ns#" ;
     
@@ -34,15 +38,12 @@ public class TestQueryExecutionCancel extends TestCase {
         m.add(r1, p3, "y1") ;
     }
     
-    @Override
-    public void setUp()
-    {}
-
-    @Override
-    public void tearDown()
-    {}
-	
-    @Test public void test_Cancel_API_1()
+    @BeforeClass public static void beforeClass() { FunctionRegistry.get().put(ns + "slow", slow.class) ; }
+    @AfterClass  public static void afterClass() { FunctionRegistry.get().remove(ns + "slow") ; }
+    
+    @Ignore
+    @Test 
+    public void test_Cancel_API_1()
     {
         QueryExecution qExec = makeQExec("SELECT * {?s ?p ?o}") ;
         try {
@@ -55,11 +56,11 @@ public class TestQueryExecutionCancel extends TestCase {
         } finally { qExec.close() ; }
     }
     
-    @Test public void test_Cancel_API_2()
+    @Ignore
+    @Test 
+    public void test_Cancel_API_2()
     {
     	try {
-            FunctionRegistry.get().put(ns + "slow", slow.class) ;
-
             QueryExecution qExec = makeQExec("PREFIX ex: <" + ns + "> " +
             		"SELECT * {?s ?p ?o . FILTER ex:slow() }") ;
             try {
@@ -74,13 +75,11 @@ public class TestQueryExecutionCancel extends TestCase {
     	} finally {
             FunctionRegistry.get().remove("ex:slow") ;
     	}
-    }
+    }    
     
     @Test public void test_Cancel_API_3() throws InterruptedException
     {
     	try {
-            FunctionRegistry.get().put("http://www.example.org/ns#slow", slow.class) ;
-
             QueryExecution qExec = makeQExec("PREFIX ex: <" + ns + "> " +
             		"SELECT * {?s ?p ?o . FILTER ex:slow() }") ;
             CancelThreadRunner thread = new CancelThreadRunner(qExec);
@@ -97,8 +96,6 @@ public class TestQueryExecutionCancel extends TestCase {
     @Test public void test_Cancel_API_4() throws InterruptedException
     {
     	try {
-            FunctionRegistry.get().put(ns + "slow", slow.class) ;
-
             QueryExecution qExec = makeQExec("PREFIX ex: <" + ns + "> " +
             		"SELECT * {?s ?p ?o } ORDER BY ex:slow()") ;
             CancelThreadRunner thread = new CancelThreadRunner(qExec);
