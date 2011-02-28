@@ -11,6 +11,7 @@ package com.hp.hpl.jena.sparql.engine.iterator;
 import java.util.NoSuchElementException ;
 
 import com.hp.hpl.jena.query.QueryException ;
+import com.hp.hpl.jena.query.QueryExecException ;
 import com.hp.hpl.jena.query.QueryFatalException ;
 import com.hp.hpl.jena.query.QueryTerminatedException ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
@@ -51,8 +52,13 @@ public abstract class QueryIteratorBase
     // this is required to guarantee thread safety because cancel() will be called from another
     // thread than the executing thread
 
-    private boolean cancelled = false ;
+    private boolean cancelled = false ; // Volatile? // XXX Remove me?? - or reuse as abortIterator
+    
+    /** In the process of requesting a cancel, or one has been done */  
     private volatile boolean requestingCancel = false;
+
+    /* If set, any hasNext/next throws QueryAbortedException */
+    private volatile boolean abortIterator = false ;
     private Throwable stackTrace = null ; 
 
     public QueryIteratorBase()
@@ -87,7 +93,10 @@ public abstract class QueryIteratorBase
         try {
             if ( finished )
                 return false ;
-
+            
+            if ( abortIterator )
+                throw new QueryCancelledException() ;
+            
             boolean r = hasNextBinding() ; 
                 
             if ( r == false )
@@ -111,8 +120,15 @@ public abstract class QueryIteratorBase
     public final Binding nextBinding()
     {
         try {
+            if ( abortIterator )
+                throw new QueryCancelledException() ;
             if ( finished )
+            {
+                // If abortIterator set after finished.
+                if ( abortIterator )
+                    throw new QueryCancelledException() ;
                 throw new NoSuchElementException(Utils.className(this)) ;
+            }
             
             if ( ! hasNextBinding() )
                 throw new NoSuchElementException(Utils.className(this)) ;
@@ -167,11 +183,13 @@ public abstract class QueryIteratorBase
     
     public void cancel() {
         // Call requestCancel() once.
+        // XXX Multithreaed access to cancel.
     	if (!this.requestingCancel) {
     		// the requestCancel may throw QueryIterAbortCancellationRequestException
     	    try {
         		this.requestCancel() ;
         		this.requestingCancel = true;
+        		this.abortIterator = true ;
     	    } catch (QueryIterAbortCancellationRequestException ex)
     	    // XXX Do not set requestingCancel - allows sort to drain.
     	    {}
@@ -192,10 +210,16 @@ public abstract class QueryIteratorBase
         iter.cancel() ;
     }
     
-    @SuppressWarnings("serial")
-	public class QueryIterAbortCancellationRequestException extends RuntimeException {
+    // XXX Delete me.
+	public static class QueryIterAbortCancellationRequestException extends RuntimeException {
         public QueryIterAbortCancellationRequestException() {}
     }
+    
+	// XXX Move me to "query" package.
+	public static class QueryCancelledException extends QueryExecException {
+        public QueryCancelledException() {}
+    }
+
     
     public String debug()
     {

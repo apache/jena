@@ -9,6 +9,7 @@
 package dev;
 
 import java.util.Iterator ;
+import java.util.NoSuchElementException ;
 import java.util.concurrent.ArrayBlockingQueue ;
 import java.util.concurrent.BlockingQueue ;
 import java.util.concurrent.ExecutorService ;
@@ -50,6 +51,7 @@ import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIteratorBase.* ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
@@ -106,19 +108,16 @@ public class RunARQ
     
     public static void main(String[] argv) throws Exception
     {
-        
-        arq.qparse.main("--file=Q.rq") ; exit(0) ;
-        
         long timeout = 0 ;
         long last = 0 ;
         long quantum = 0 ;
         
-        // Issue - very long sort does not help.
-        // need to hit the input thread. 
-        if ( timeout > 0 && (quantum%10 == 0) )
-        {
-            System.currentTimeMillis() ;
-        }
+//        // Issue - very long sort does not help.
+//        // need to hit the input thread. 
+//        if ( timeout > 0 && (quantum%10 == 0) )
+//        {
+//            System.currentTimeMillis() ;
+//        }
         
         
         Model model = FileManager.get().loadModel("D.nt") ;
@@ -126,10 +125,36 @@ public class RunARQ
         
         QueryExecution qExec = QueryExecutionFactory.create(query, model) ;
         ResultSet rs = qExec.execSelect() ;
-        // Still see the first triple.
+        
+        rs.hasNext() ; 
+        //ResultSetFormatter.out(rs) ;
+        //System.out.println(rs.next()) ;
+        //qExec.cancel() ;
+        try { rs.hasNext() ; }  catch (QueryCancelledException ex) { System.out.println("CANCEL 1") ; } 
+        try { rs.hasNext() ; }  catch (QueryCancelledException ex) { System.out.println("CANCEL 2") ; }
+        try { rs.next() ; }
+        catch (QueryCancelledException ex) { System.out.println("CANCEL 3") ; }
+        catch (NoSuchElementException  ex) { System.out.println("No Elt 3") ; }
+
+        System.out.println(rs.next()) ;
         qExec.cancel() ;
+        try { rs.hasNext() ; }  catch (QueryCancelledException ex) { System.out.println("CANCEL 4") ; } 
+        try { rs.hasNext() ; }  catch (QueryCancelledException ex) { System.out.println("CANCEL 5") ; }
+        try { rs.next() ; }
+        catch (QueryCancelledException ex) { System.out.println("CANCEL 6") ; }
+        catch (NoSuchElementException  ex) { System.out.println("No Elt 6") ; }
+
+        
+//        for ( ; rs.hasNext() ; )
+//        {
+//            rs.nextBinding()
+//            qExec.cancel() ;
+//            
+//        }
+        
+        // Still see the first triple.
         //qExec.close() ;
-        ResultSetFormatter.out(rs) ;
+        // ResultSetFormatter.out(rs) ;
         exit(0) ;
         
         //arq.sparql.main("--data=D.nt", "ASK{<http://example/a> <http://example/b> ?x }") ; exit(0) ; 

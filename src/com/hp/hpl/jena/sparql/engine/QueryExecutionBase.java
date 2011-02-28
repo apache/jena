@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  * Includes software from the Apache Software Foundation - Apache Software License (JENA-29)
@@ -96,11 +97,12 @@ public class QueryExecutionBase implements QueryExecution
             plan.close() ;
     }
 
-	public void cancel() 
+	public synchronized void cancel() 
 	{
 	    // This is called asynchronously to the execution.
 		if ( queryIterator != null ) 
 		{
+		    // XXX Check comment.
 			// we cancel the chain of iterators, however, we do *not* close the iterators. 
 			// That happens after the cancellation is properly over.
 			try 
@@ -370,6 +372,7 @@ public class QueryExecutionBase implements QueryExecution
 
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

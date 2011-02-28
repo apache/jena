@@ -1,6 +1,7 @@
 /*
  * (c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (c) Copyright 2010 Talis Systems Ltd. 
+ * (c) Copyright 2011 Epimorphics Ltd. 
  * All rights reserved.
  * [See end of file]
  * Includes software from the Apache Software Foundation - Apache Software Licnese (JENA-29)
@@ -52,6 +53,7 @@ public class QueryIterTriplePattern extends QueryIterRepeatApply
         private ClosableIterator<Triple> graphIter ;
         private Binding slot = null ;
         private boolean finished = false ;
+        private volatile boolean cancelled = false ;
 
         TripleMapper(Binding binding, Triple pattern, ExecutionContext cxt)
         {
@@ -129,6 +131,12 @@ public class QueryIterTriplePattern extends QueryIterRepeatApply
         {
             if ( finished ) return false ;
             if ( slot != null ) return true ;
+            if ( cancelled )
+            {
+                graphIter.close() ;
+                finished = true ;
+                return false ;
+            }
 
             while(graphIter.hasNext() && slot == null )
             {
@@ -160,7 +168,11 @@ public class QueryIterTriplePattern extends QueryIterRepeatApply
         
         @Override
         protected void requestCancel()
-        {  }
+        {
+            // The QuryIteratorBase machinary will do the real work.
+            // but we cleanly kill the ExtendedIterator.
+            cancelled = true ;
+        }
     }
 }
 
@@ -168,6 +180,7 @@ public class QueryIterTriplePattern extends QueryIterRepeatApply
 /*
  * (c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (c) Copyright 2010 Talis Systems Ltd. 
+ * (c) Copyright 2011 Epimorphics Ltd. 
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

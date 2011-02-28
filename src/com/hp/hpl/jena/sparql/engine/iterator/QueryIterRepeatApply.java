@@ -18,8 +18,8 @@ import com.hp.hpl.jena.sparql.util.Utils ;
 public abstract class QueryIterRepeatApply extends QueryIter1
 {
     int count = 0 ; 
-    private QueryIterator currentStage ;
-    private volatile boolean cancelRequested = false;
+    private QueryIterator currentStage ; 
+    private volatile boolean cancelRequested = false;   // [CANCEL] needed? super.cancelRequest?
     
     public QueryIterRepeatApply( QueryIterator input ,
                                  ExecutionContext context)
@@ -113,7 +113,7 @@ public abstract class QueryIterRepeatApply extends QueryIter1
     protected void requestSubCancel()
     {
         if ( currentStage != null )
-            currentStage.cancel() ;
+            currentStage.cancel() ; // [CANCEL]
         cancelRequested = true;
     }
 }

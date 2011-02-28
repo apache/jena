@@ -5,6 +5,11 @@ public class DevARQ
     // OpTopN - OpExecutor.execute(OpTop).
     // BSBM Explore/Update
     // Remote SPARQL Update 
+    // arq.update --data etc.
+    // --data D.trig.
+    // RIOT/Turtle - trailing DOT net needed.
+    
+    // [CANCEL] for cancellation work items.
     
     // SPARQL Update with blank nodes in DELETE {T} WHERE {P}  
     // Optimize when T has no blank nodes.

@@ -27,6 +27,7 @@ import org.openjena.riot.RiotReader ;
 import org.openjena.riot.SysRIOT ;
 import org.openjena.riot.lang.LangRDFXML ;
 import org.openjena.riot.lang.LangRIOT ;
+import org.openjena.riot.lang.LangTurtleBase ;
 import org.openjena.riot.out.SinkQuadOutput ;
 import org.openjena.riot.out.SinkTripleOutput ;
 import org.openjena.riot.pipeline.inf.InfFactory ;
@@ -154,6 +155,7 @@ public abstract class CmdLangParse extends CmdGeneral
         if ( modLangParse.strictMode() )
         {
             SysRIOT.StrictXSDLexicialForms = true ;
+            LangTurtleBase.strict = true ;
         }
         
         if ( modLangParse.getRDFSVocab() != null )

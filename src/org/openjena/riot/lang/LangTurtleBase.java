@@ -79,7 +79,7 @@ public abstract class LangTurtleBase<X> extends LangBase<X>
     
     protected final static boolean VERBOSE          = false ;
     //protected final static boolean CHECKING         = true ;
-    protected final boolean strict                  = false ;
+    public static boolean strict                    = false ;
     
 //    protected final Prologue prologue ;
     
