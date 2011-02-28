@@ -41,7 +41,7 @@ public class TestQueryExecutionCancel extends BaseTest {
     @BeforeClass public static void beforeClass() { FunctionRegistry.get().put(ns + "slow", slow.class) ; }
     @AfterClass  public static void afterClass() { FunctionRegistry.get().remove(ns + "slow") ; }
     
-    @Ignore
+    @Ignore // [CANCEL]
     @Test 
     public void test_Cancel_API_1()
     {
@@ -56,7 +56,7 @@ public class TestQueryExecutionCancel extends BaseTest {
         } finally { qExec.close() ; }
     }
     
-    @Ignore
+    @Ignore // [CANCEL]
     @Test 
     public void test_Cancel_API_2()
     {
