@@ -97,7 +97,8 @@ public class AggGroupConcatDistinct extends AggregatorBase
     // ---- Accumulator
     static class AccGroupConcatDistinct extends AccumulatorDistinctExpr
     {
-        private StringBuilder stringSoFar = null ;
+        private StringBuilder stringSoFar = new StringBuilder() ;
+        private boolean first = true ;
         private final String separator ;
 
         public AccGroupConcatDistinct(Expr expr, String sep)
@@ -107,13 +108,10 @@ public class AggGroupConcatDistinct extends AggregatorBase
         public void accumulateDistinct(NodeValue nv, Binding binding, FunctionEnv functionEnv)
         {
             String str = nv.asString() ;
-            if ( stringSoFar == null )
-            {
-                stringSoFar = new StringBuilder(str) ;
-                return ;
-            }
-            stringSoFar.append(separator) ;
+            if ( ! first )
+                stringSoFar.append(separator) ;
             stringSoFar.append(str) ;
+            first = false ;
         }
 
         @Override

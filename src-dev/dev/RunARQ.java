@@ -108,6 +108,9 @@ public class RunARQ
     
     public static void main(String[] argv) throws Exception
     {
+        
+        arq.sparql.main("--data=D.ttl", "--query=Q.rq") ; exit(0) ;
+        
         long timeout = 0 ;
         long last = 0 ;
         long quantum = 0 ;
