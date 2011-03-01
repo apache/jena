@@ -10,7 +10,7 @@ import com.hp.hpl.jena.sparql.function.FunctionEnv ;
 abstract class AccumulatorExpr implements Accumulator
 {
     private long count = 0 ;
-    private long errorCount = 0 ; 
+    protected long errorCount = 0 ; 
     private final Expr expr ;
     
     protected AccumulatorExpr(Expr expr)
@@ -31,9 +31,26 @@ abstract class AccumulatorExpr implements Accumulator
         }
     }
     
+    
+    final public NodeValue getValue()
+    {
+        if ( errorCount == 0 )
+            return getAccValue() ;  
+        return null ;
+    }
+    
+
     protected long getErrorCount() { return errorCount ; }
-     
+    
+    /** Called if no errors to get the accumulated result */
+    protected abstract NodeValue getAccValue() ; 
+
+    /** Called when the expression beeing aggregated evaluates OK.
+     * Can throw ExprEvalException - in which case the accumulateError is called */
     protected abstract void accumulate(NodeValue nv, Binding binding, FunctionEnv functionEnv) ;
+    /** Called when an evaluation of the expression causes an error
+     * or when the accumulation step throws ExprEvalException  
+     */
     protected abstract void accumulateError(Binding binding, FunctionEnv functionEnv) ;
 }
 

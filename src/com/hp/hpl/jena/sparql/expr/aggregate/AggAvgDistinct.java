@@ -81,7 +81,8 @@ public class AggAvgDistinct extends AggregatorBase
             if ( DEBUG ) System.out.println("avg: ("+total+","+count+")") ;
         }
 
-        public NodeValue getValue()
+        @Override
+        public NodeValue getAccValue()
         {
             if ( count == 0 ) return noValuesToAvg ;
             NodeValue nvCount = NodeValue.makeInteger(count) ;

@@ -3,6 +3,10 @@ ChangeLog for ARQ
 
 ==== ARQ 2.8.8 or 2.9.0
 
++ SPARQL 1.1: Behaviour change: aggregates where the accumulation cause an error now cause the 
+  AVG of 1,"two", 3 is now an error, was "two" is skipped
+  (and most likely, the error causes unbound in the SELECT expression) 
+
 + Bug fix: Handling of UNDEF in BINDINGS
 
 + RIOT: Better handling of file names with spaces in them for base URI. 

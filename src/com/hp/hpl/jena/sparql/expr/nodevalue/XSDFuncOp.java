@@ -118,7 +118,7 @@ public class XSDFuncOp
                // Note: result is a decimal
                 BigDecimal d1 = new BigDecimal(nv1.getInteger()) ;
                 BigDecimal d2 = new BigDecimal(nv2.getInteger()) ;
-                return NodeValue.makeDecimal(decimalDivide(d1, d2)) ;
+                return decimalDivide(d1, d2) ;
             }
             case OP_DECIMAL:
             {
@@ -126,7 +126,7 @@ public class XSDFuncOp
                     throw new ExprEvalException("Divide by zero in decimal divide") ;
                 BigDecimal d1 = nv1.getDecimal() ;
                 BigDecimal d2 = nv2.getDecimal() ;
-                return NodeValue.makeDecimal(decimalDivide(d1, d2)) ;
+                return decimalDivide(d1, d2) ;
             }
             case OP_FLOAT:
                 // No need to check for divide by zero
@@ -139,19 +139,46 @@ public class XSDFuncOp
         }
     }
     
-    private static BigDecimal decimalDivide(BigDecimal d1, BigDecimal d2)
+    //private static BigDecimal decimalDivide(BigDecimal d1, BigDecimal d2)
+    private static NodeValue decimalDivide(BigDecimal d1, BigDecimal d2)
     {
         // Java 1.5-ism BigDecimal.divide(BigDecimal) -- but fails for 1/3 anyway.
         // return d1.divide(d2) ;
         // The one downside here is that the precision is always extended 
         // even when unnecessary.
         try {
-            return d1.divide(d2, DIVIDE_PRECISION, BigDecimal.ROUND_FLOOR) ;
+            BigDecimal d3 = d1.divide(d2, DIVIDE_PRECISION, BigDecimal.ROUND_FLOOR) ; 
+            return messAroundWithBigDecimalFormat(d3) ;
         } catch (ArithmeticException ex)
         {
             Log.warn(XSDFuncOp.class, "ArithmeticException in decimal divide - attempting to treat as doubles") ;
-            return new BigDecimal(d1.doubleValue()/d2.doubleValue()) ;
+            BigDecimal d3 = new BigDecimal(d1.doubleValue()/d2.doubleValue()) ;
+            return NodeValue.makeDecimal(d3) ;
         }
+    }
+    
+    private static NodeValue messAroundWithBigDecimalFormat(BigDecimal d)
+    {
+        String x = d.toPlainString() ;
+        
+        // The part after the "."
+        int dotIdx = x.indexOf('.') ;
+        if ( dotIdx < 0 )
+            // No DOT.
+            return NodeValue.makeNode(x, XSDDatatype.XSDdecimal) ;
+        
+        // Has a DOT.
+        
+        int i = x.length()-1;
+        while ( i > dotIdx && x.charAt(i) == '0' )
+            i -- ;
+        if ( i < x.length()-1)
+            // And trailing zeros.
+            x = x.substring(0, i+1) ;   
+
+        // Avoid as expensive.
+        //x = x.replaceAll("0*$", "") ;
+        return NodeValue.makeNode(x, XSDDatatype.XSDdecimal) ;
     }
     
     public static NodeValue max(NodeValue nv1, NodeValue nv2)

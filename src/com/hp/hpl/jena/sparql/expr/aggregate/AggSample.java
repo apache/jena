@@ -73,7 +73,8 @@ public class AggSample extends AggregatorBase
         protected void accumulateError(Binding binding, FunctionEnv functionEnv)
         {}
         
-        public NodeValue getValue()
+        @Override
+        public NodeValue getAccValue()
         { return sampleSoFar ; }
     }
 }

@@ -145,7 +145,7 @@ public class Utils
     { 
         // Java 1.5-ism -- 
         //return decimal.toPlainString() ;
-        return decimal.toString() ;
+        return decimal.toPlainString() ;
     }
     
     static public String stringForm(double d)

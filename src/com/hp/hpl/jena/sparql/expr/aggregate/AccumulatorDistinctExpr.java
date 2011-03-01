@@ -39,8 +39,16 @@ abstract class AccumulatorDistinctExpr implements Accumulator
         }
     }
     
+    final public NodeValue getValue()
+    {
+        if ( errorCount == 0 )
+            return getAccValue() ;  
+        return null ;
+    }
+    
     protected long getErrorCount() { return errorCount ; }
      
+    protected abstract NodeValue getAccValue() ; 
     protected abstract void accumulateDistinct(NodeValue nv, Binding binding, FunctionEnv functionEnv) ;
     protected abstract void accumulateError(Binding binding, FunctionEnv functionEnv) ;
 }

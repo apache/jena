@@ -1,12 +1,8 @@
-PREFIX dc:   <http://purl.org/dc/elements/1.1/>
-PREFIX :     <http://example.org/book/>
-PREFIX ns:   <http://example.org/ns#>
+PREFIX : <http://example.com/data/#>
+#SELECT ?g (AVG(?p) AS ?avg) ((MIN(?p) + MAX(?p)) / 2 AS ?c)
 
-SELECT ?book ?title ?price
-{
-   ?book dc:title ?title ;
-         ns:price ?price .
+SELECT ?g ((MIN(?p) + MAX(?p)) / 2 AS ?c)
+WHERE {
+  ?g :p ?p .
 }
-BINDINGS ?book ?title {
- (UNDEF "SPARQL Tutorial")
-}
+GROUP BY ?g

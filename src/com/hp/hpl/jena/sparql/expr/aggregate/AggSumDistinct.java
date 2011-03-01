@@ -79,7 +79,8 @@ public class AggSumDistinct  extends AggregatorBase
                 Log.warn(this, "evaluation error: sum() on "+nv) ;
         }
         
-        public NodeValue getValue()
+        @Override
+        public NodeValue getAccValue()
         { return total ; }
 
         @Override
