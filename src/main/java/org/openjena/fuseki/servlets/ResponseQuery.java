@@ -86,6 +86,8 @@ public class ResponseQuery
         
         // Managed to write it locally
         try {
+            setHttpResponse(request, response, ts.getMediaType(), ts.getCharset()) ; 
+            response.setStatus(HttpSC.OK_200) ;
             rdfw.write(model, response.getOutputStream(), null) ;
             response.getOutputStream().flush() ;
         }
@@ -273,26 +275,33 @@ public class ResponseQuery
     }
 
     public static void setHttpResponse(HttpServletRequest httpRequest,
-                                HttpServletResponse httpResponse,
-                                String contentType, String charset) 
-   {
-       // ---- Set up HTTP Response
-       // Stop caching (not that ?queryString URLs are cached anyway)
-       if ( true )
-       {
-           httpResponse.setHeader("Cache-Control", "no-cache") ;
-           httpResponse.setHeader("Pragma", "no-cache") ;
-       }
-       // See: http://www.w3.org/International/O-HTTP-charset.html
-       if ( contentType != null )
-       {
-           if ( charset != null )
-               contentType = contentType+"; charset="+charset ;
-           log.trace("Content-Type for response: "+contentType) ;
-           httpResponse.setContentType(contentType) ;
-       }
-   }
-    
+                                       HttpServletResponse httpResponse,
+                                       String contentType, String charset) 
+    {
+        // ---- Set up HTTP Response
+        // Stop caching (not that ?queryString URLs are cached anyway)
+        if ( true )
+        {
+            httpResponse.setHeader("Cache-Control", "no-cache") ;
+            httpResponse.setHeader("Pragma", "no-cache") ;
+        }
+        // See: http://www.w3.org/International/O-HTTP-charset.html
+        if ( contentType != null )
+        {
+            if ( charset != null && ! isXML(contentType) )
+                contentType = contentType+"; charset="+charset ;
+            log.trace("Content-Type for response: "+contentType) ;
+            httpResponse.setContentType(contentType) ;
+        }
+    }
+
+    private static boolean isXML(String contentType)
+    {
+        return contentType.equals(WebContent.contentTypeRDFXML)
+            || contentType.equals(WebContent.contentTypeResultsXML)
+            || contentType.equals(WebContent.contentTypeXML) ; 
+    }
+
     private static void jsonOutput(String contentType, OutputContent proc,
                                    HttpServletRequest httpRequest, HttpServletResponse httpResponse)
     {
