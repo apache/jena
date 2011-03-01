@@ -72,7 +72,7 @@ public class DatasetUtils
         return addInGraphs(ds, uriList, namedSourceList, null, null) ;
     }
     
-    /** add graphs into an exiting DataSource */
+    /** add graphs into an existing DataSource */
     public static Dataset addInGraphs(DataSource ds, List<String> uriList, List<String> namedSourceList,
                                       FileManager fileManager, String baseURI)
     {

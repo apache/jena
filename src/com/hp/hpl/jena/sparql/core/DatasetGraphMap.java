@@ -14,7 +14,7 @@ import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
 
 /** Implementation of a DatasetGraph as an extensible set of graphs.
- *  Subclasses need to manage any implicit grap creation.
+ *  Subclasses need to manage any implicit graph creation.
  */
 public class DatasetGraphMap extends DatasetGraphCollection
 {
