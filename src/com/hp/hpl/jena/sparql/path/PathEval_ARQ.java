@@ -34,12 +34,16 @@ import com.hp.hpl.jena.sparql.util.ModelUtils ;
  *  Differs from SPARQL 1.1 in some cases (cardinality of *,+) 
  */
 
+// OLD
+
 public class PathEval_ARQ
 {
     static private Logger log = LoggerFactory.getLogger(PathEval_ARQ.class) ; 
     
     // Graph to Model.
-    static NodeIterator convertGraphNodeToRDFNode(final Model model, Iterator<Node> iter)
+    //static 
+    static private 
+    NodeIterator convertGraphNodeToRDFNode(final Model model, Iterator<Node> iter)
     {
         Transform<Node, RDFNode> conv = new Transform<Node, RDFNode>(){
             public RDFNode convert(Node obj)
@@ -52,13 +56,15 @@ public class PathEval_ARQ
     }
     
     // Possible API usages.
-    static public NodeIterator walkForwards(final Model model, RDFNode rdfNode, Path path)
+    //static public 
+    static private NodeIterator walkForwards(final Model model, RDFNode rdfNode, Path path)
     {
         Iterator<Node> iter = eval(model.getGraph(), rdfNode.asNode(), path) ;
         return convertGraphNodeToRDFNode(model, iter) ;
     }
     
-    static public NodeIterator walkBackwards(final Model model, RDFNode rdfNode, Path path)
+    //static public 
+    static private NodeIterator walkBackwards(final Model model, RDFNode rdfNode, Path path)
     {
         Iterator<Node> iter = evalInverse(model.getGraph(), rdfNode.asNode(), path) ;
         return convertGraphNodeToRDFNode(model, iter) ;
@@ -67,7 +73,8 @@ public class PathEval_ARQ
     // LinkedHashSet for predictable order - remove later??
     
     /** Evaluate a path in the forward direction */ 
-    static public Iterator<Node> eval(Graph graph, Node node, Path path)
+    //static public 
+    static private Iterator<Node> eval(Graph graph, Node node, Path path)
     { 
         if ( node == null  )
             Log.fatal(PathEval_ARQ.class, "PathEval.eval applied to a null node") ;
@@ -77,7 +84,8 @@ public class PathEval_ARQ
     }
     
     /** Evaluate a path starting at the end of the path */ 
-    static public Iterator<Node> evalInverse(Graph g, Node node, Path path) 
+    //static public 
+    static private Iterator<Node> evalInverse(Graph g, Node node, Path path) 
     { return eval(g, node, path, false) ; }
 
     static private Iterator<Node> eval(Graph graph, Node node, Path path, boolean forward)

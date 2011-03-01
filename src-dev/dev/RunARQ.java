@@ -108,9 +108,16 @@ public class RunARQ
     
     public static void main(String[] argv) throws Exception
     {
-        
-        arq.sparql.main("--data=D.ttl", "--query=Q.rq") ; exit(0) ;
-        
+        {
+            String DIR= "/home/afs/W3C/SPARQL-docs/tests/data-sparql11/property-path" ;
+            
+            arq.qparse.main("--query="+DIR+"/path-3-4.rq", "--print=op") ;
+            arq.sparql.main("--data="+DIR+"/data-diamond-loop.ttl", "--query="+DIR+"/path-3-4.rq") ; exit(0) ;
+            
+//            arq.qparse.main("--query="+DIR+"/path-3-2.rq", "--print=op") ;
+//            arq.sparql.main("--data="+DIR+"/data-diamond-loop.ttl", "--query="+DIR+"/path-3-2.rq") ; exit(0) ;
+
+        }
         long timeout = 0 ;
         long last = 0 ;
         long quantum = 0 ;

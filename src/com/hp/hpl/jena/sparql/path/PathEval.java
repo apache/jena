@@ -85,7 +85,7 @@ public class PathEval
     static private Iterator<Node> eval(Graph graph, Node node, Path path, boolean forward)
     {
         Collection<Node> acc = new ArrayList<Node>() ;
-        eval(graph, node, path, forward, acc);
+        eval$(graph, node, path, forward, acc);
         return acc.iterator() ;
     }
     
@@ -96,13 +96,13 @@ public class PathEval
         for ( ; input.hasNext() ; )
         {
             Node node = input.next() ;
-            eval(graph, node, path, forward, acc) ;
+            eval$(graph, node, path, forward, acc) ;
         }
         return acc.iterator() ;
     }
     
     // ---- Worker ??
-    static private void eval(Graph graph, Node node, Path p, boolean forward, Collection<Node> acc)
+    static private void eval$(Graph graph, Node node, Path p, boolean forward, Collection<Node> acc)
     {
         PathEvaluator evaluator = new PathEvaluator(graph, node, acc, forward) ;
         p.visit(evaluator) ;
@@ -192,36 +192,63 @@ public class PathEval
         //@Override
         public void visit(P_Mod pathMod)
         {
+            // :p{n,m} is the iteration count down on n and m. 
+            // :p{n,} Y where n > 0  is :p{N}/:p*
+            // :p{0,} Y is :p*
+            // :p{,n} is :p{0,n}
+
+            
             if ( pathMod.isZeroOrMore() )
             {
+                // :p{0,}
                 doZeroOrMore(pathMod.getSubPath()) ;
                 return ;
             }
             
-            if ( pathMod.isOneOrMore() )
+            
+//            if ( pathMod.isOneOrMore() )
+////            if ( pathMod.getMax() == P_Mod.UNSET )
+//            {
+//                // :p{1,}
+//                doOneOrMore(pathMod.getSubPath()) ;
+//                return ;
+//            }
+            
+            long min1 = pathMod.getMin() ;
+            long max1 = pathMod.getMax() ;
+            
+            if ( min1 == P_Mod.UNSET )
             {
-                doOneOrMore(pathMod.getSubPath()) ;
-                return ;
+                // {,N}
+                min1 = 0 ;
             }
             
-            if ( pathMod.getMin() == 0 )
+            
+            // This code is for p{n,m} and :p{,n}
+            
+            //if ( max1 == P_Mod.UNSET ) max1 = 0 ;
+            
+            if ( min1 == 0 )
                 output.add(node) ;
 
-            if ( pathMod.getMax() == 0 )
+            if ( max1 == 0 )
                 return ;
             
             // One step.
             Iterator<Node> iter = eval(graph, node, pathMod.getSubPath(), forwardMode) ;
 
-            // The next step
-            long min2 = dec(pathMod.getMin()) ;
-            long max2 = dec(pathMod.getMax()) ;
-            P_Mod nextPath = new P_Mod(pathMod.getSubPath(), min2, max2) ;
+            if ( false )
+            {
+                // Debug.
+                List<Node> x = Iter.toList(iter) ;
+                System.out.println("** Step: "+node+ " ==> "+x) ;
+                iter = x.iterator() ;
+            }
             
-//            // Debug.
-//            Listx = Iter.toList(iter) ;
-//            System.out.println(x) ;
-//            iter = x.iterator() ;
+            // The next step
+            long min2 = dec(min1) ;
+            long max2 = dec(max1) ;
+            P_Mod nextPath = new P_Mod(pathMod.getSubPath(), min2, max2) ;
             
             // Moved on one step - now go and do it again on a new path
             //  Need to do the visited thing?  No.  Exact {N,M}
@@ -289,8 +316,22 @@ public class PathEval
 
         private void fill(Iterator<Node> iter)
         {
+            if ( false )
+            {
+                // Debug.
+                List<Node> x = Iter.toList(iter) ;
+                System.out.println("Fill: ==> "+x) ;
+                iter = x.iterator() ;
+            }
+            
             for ( ; iter.hasNext() ; )
                 output.add(iter.next()) ;
+            
+            if ( false )
+            {
+                // Debug.
+                System.out.println("Output: ==> "+output) ;
+            }
         }
 
         private static Transform<Triple, Node> selectSubject = new Transform<Triple, Node>()
