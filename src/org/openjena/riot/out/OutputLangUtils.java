@@ -30,7 +30,7 @@ public class OutputLangUtils
     // Abbreviate numbers or not.
     // Avoids creating intermediate strings.
     
-    // == Class with two subclasses. Trutle policy and N-triples policy.
+    // == Class with two subclasses. Turtle policy and N-triples policy.
     
     private static boolean asciiOnly = true ;
 
@@ -216,34 +216,7 @@ public class OutputLangUtils
         try { out.append("\n") ; } catch (IOException ex) {}
     }
 
-    
-    static boolean applyUnicodeEscapes = true ;
-    
-//    static private void writeString(String s, PrintWriter writer) {
-//
-//        for (int i = 0; i < s.length(); i++) {
-//            char c = s.charAt(i);
-//            if (c == '\\' || c == '"') {
-//                writer.print('\\');
-//                writer.print(c);
-//            } else if (c == '\n') {
-//                writer.print("\\n");
-//            } else if (c == '\r') {
-//                writer.print("\\r");
-//            } else if (c == '\t') {
-//                writer.print("\\t");
-//            } else if (c >= 32 && c < 127) {
-//                writer.print(c);
-//            } else {
-//                String hexstr = Integer.toHexString(c).toUpperCase();
-//                int pad = 4 - hexstr.length();
-//                writer.print("\\u");
-//                for (; pad > 0; pad--)
-//                    writer.print("0");
-//                writer.print(hexstr);
-//            }
-//        }
-//    }
+    static final boolean applyUnicodeEscapes = true ;
     
     /** Output a string, using \t etc and  \ u escape mechanisms.
      * @param out   Writer for output

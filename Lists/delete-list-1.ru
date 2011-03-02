@@ -1,8 +1,8 @@
 # Copyright 2011 Epimorphics Ltd
 # License: CC3.0: http://creativecommons.org/licenses/by/3.0
 
-PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
-PREFIX : <http://example.com/data/#> 
+PREFIX rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
+PREFIX :      <http://example.com/> 
 
 INSERT DATA {
 :x0 :p () .

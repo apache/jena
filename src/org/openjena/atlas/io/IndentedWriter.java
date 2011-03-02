@@ -45,15 +45,6 @@ public class IndentedWriter
     
     private IndentedWriter() { this(System.out, false) ; }
     
-//    // Temp: Adaption from old world to new -
-//    protected IndentedWriter(IndentedWriter other)
-//    { 
-//        out = other.out ;
-//        lineNumbers = other.lineNumbers ;
-//        if ( other.column != column || other.row != row )
-//            throw new ARQInternalErrorException("Can only clone am unstarted IndentedWriter") ;
-//        
-//    }
     /** Construct a UTF8 IndentedWriter around an OutputStream */
     public IndentedWriter(OutputStream outStream) { this(outStream, false) ; }
     

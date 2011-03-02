@@ -1,0 +1,18 @@
+#!/bin/bash
+
+function action
+{
+    local FN=$1
+    echo "==== $FN"
+    cat "$FN"
+    echo "- - - - - - - - - - - - - - - - - - - - -"
+    update --dump --file "$FN" | rdfcat --out TTL -t -
+}
+
+
+action add-first.ru
+action add-last.ru
+action del-first.ru
+action del-last.ru
+action delete-list-1.ru
+action delete-list-2.ru
