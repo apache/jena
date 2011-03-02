@@ -11,13 +11,11 @@ import java.util.Iterator ;
 import java.util.List ;
 
 import org.openjena.riot.out.NQuadsWriter ;
-
 import arq.cmd.CmdException ;
 import arq.cmdline.ArgDecl ;
 import arq.cmdline.CmdUpdate ;
 
 import com.hp.hpl.jena.sparql.SystemARQ ;
-import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 import com.hp.hpl.jena.update.GraphStore ;
 import com.hp.hpl.jena.update.UpdateExecutionFactory ;
@@ -48,6 +46,7 @@ public class update extends CmdUpdate
     {
         requestFiles = getValues(updateArg) ;   // ????
         dump = contains(dumpArg) ;
+        
         super.processModulesAndArgs() ;
     }
     
@@ -85,13 +84,13 @@ public class update extends CmdUpdate
 
     private void execOneFile(String filename, GraphStore store)
     {
-        UpdateRequest req = UpdateFactory.read(filename) ;
+        UpdateRequest req = UpdateFactory.read(filename, updateSyntax) ;
         UpdateExecutionFactory.create(req, store).execute() ;
     }
     
     private void execOne(String requestString, GraphStore store)
     {
-        UpdateRequest req = UpdateFactory.create(requestString) ;
+        UpdateRequest req = UpdateFactory.create(requestString, updateSyntax) ;
         UpdateExecutionFactory.create(req, store).execute() ;
     }
 }

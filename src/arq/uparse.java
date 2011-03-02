@@ -24,7 +24,7 @@ public class uparse extends CmdARQ
     protected static final ArgDecl fileArg = new ArgDecl(ArgDecl.HasValue, "file", "update") ;
     protected static final ArgDecl syntaxArg = new ArgDecl(ArgDecl.HasValue, "syntax", "syn") ;
     List<String> requestFiles = null ;
-    Syntax syntax = Syntax.defaultUpdateSyntax ; 
+    protected Syntax updateSyntax = Syntax.defaultUpdateSyntax ;
     
     public static void main (String... argv)
     { new uparse(argv).mainRun() ; }
@@ -40,9 +40,9 @@ public class uparse extends CmdARQ
     protected void processModulesAndArgs()
     {
         requestFiles = getValues(fileArg) ;
-        if ( super.contains(syntaxArg) )
-            syntax = Syntax.lookup(super.getValue(syntaxArg)) ;
         super.processModulesAndArgs() ;
+        if ( super.cmdStrictMode )
+            updateSyntax = Syntax.syntaxSPARQL_11 ;
     }
     
     @Override
@@ -86,7 +86,7 @@ public class uparse extends CmdARQ
     
     private void execOne(String updateString)
     {
-        UpdateRequest req = UpdateFactory.create(updateString) ;
+        UpdateRequest req = UpdateFactory.create(updateString, updateSyntax) ;
         //req.output(IndentedWriter.stderr) ;
         System.out.print(req) ;
     }

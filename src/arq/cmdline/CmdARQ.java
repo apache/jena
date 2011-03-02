@@ -15,6 +15,8 @@ public abstract class CmdARQ extends CmdGeneral
     protected ModSymbol modSymbol = new ModSymbol() ;
     ArgDecl  strictDecl = new ArgDecl(ArgDecl.NoValue, "strict", "basic") ;
     
+    protected boolean cmdStrictMode = false ; 
+    
     protected CmdARQ(String[] argv)
     {
         super(argv) ;
@@ -31,6 +33,7 @@ public abstract class CmdARQ extends CmdGeneral
             modVersion.printVersionAndExit() ;
         if ( super.contains(strictDecl) ) 
             ARQ.setStrictMode() ;
+        cmdStrictMode = super.contains(strictDecl) ;
         if ( modGeneral.debug )
             QueryIteratorBase.traceIterators = true ;
     }
