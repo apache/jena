@@ -8,7 +8,7 @@ public class DevARQ
     
     // [CANCEL] for cancellation work items.
     
-    // SPARQL Update with blank nodes in DELETE {T} WHERE {P}  
+    // ** SPARQL Update with blank nodes in DELETE {T} WHERE {P}  
     // Optimize when T has no blank nodes.
     
     // JENA-29 : Cancellation
@@ -17,7 +17,6 @@ public class DevARQ
     //    Check in sort that don't get one rsult (after a lot of sorting).
     // JENA-49 : immediate cancellation if not .hasNext called yet.
     // And effect on XML results.
-    // Cancellation -> exception or silent truncation.
     
     // Mem dataset with union graph
     // Documentation - assemblers for datasets
