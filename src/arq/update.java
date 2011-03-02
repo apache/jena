@@ -10,6 +10,8 @@ package arq;
 import java.util.Iterator ;
 import java.util.List ;
 
+import org.openjena.riot.out.NQuadsWriter ;
+
 import arq.cmd.CmdException ;
 import arq.cmdline.ArgDecl ;
 import arq.cmdline.CmdUpdate ;
@@ -76,7 +78,8 @@ public class update extends CmdUpdate
         }
         SystemARQ.sync(graphStore) ;
         if ( dump )
-            SSE.write(graphStore) ;
+            //SSE.write(graphStore) ;
+            NQuadsWriter.write(System.out, graphStore) ;
     }
 
 

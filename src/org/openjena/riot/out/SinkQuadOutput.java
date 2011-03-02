@@ -1,6 +1,7 @@
 /*
  * (c) Copyright 2009 Hewlett-Packard Development Company, LP
  * (c) Copyright 2010 Talis Information Ltd.
+ * (c) Copyright 2010, 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -25,18 +26,20 @@ public class SinkQuadOutput implements Sink<Quad>
     private CharsetEncoder encoder ;
     private Prologue prologue = null ;
     private BufferingWriter out ;
+    private NodeToLabel labelPolicy = null ;
 
     public SinkQuadOutput(OutputStream outs)
     {
-        this(outs, null) ;
+        this(outs, null, NodeToLabel.createScopeByDocument()) ;
     }
     
-    public SinkQuadOutput(OutputStream outs, Prologue prologue)
+    public SinkQuadOutput(OutputStream outs, Prologue prologue, NodeToLabel labels)
     {
         encoder = Chars.charsetUTF8.newEncoder() ;
         Sink<ByteBuffer> dest = new BufferingWriter.SinkOutputStream(outs) ; 
         out = new BufferingWriter(dest) ;
         setPrologue(prologue) ;
+        setLabelPolicy(labels) ;
     }
     
     // Need to do this later sometimes to sort out the plumbing.
@@ -45,6 +48,12 @@ public class SinkQuadOutput implements Sink<Quad>
         this.prologue = prologue ;
     }
     
+    public void setLabelPolicy(NodeToLabel labels)
+    {
+        this.labelPolicy = labels ;
+    }
+
+
     public void flush()
     {
         out.flush() ;
@@ -76,26 +85,26 @@ public class SinkQuadOutput implements Sink<Quad>
             if ( s.equals(lastS) )
                 out.output("*") ;
             else
-                OutputLangUtils.output(out, s, prologue) ;
+                OutputLangUtils.output(out, s, prologue, labelPolicy) ;
             
             out.output(" ") ;
             
             if ( p.equals(lastP) )
                 out.output("*") ;
             else
-                OutputLangUtils.output(out, p, prologue) ;
+                OutputLangUtils.output(out, p, prologue, labelPolicy) ;
     
             out.output(" ") ;
     
             if ( o.equals(lastO) )
                 out.output("*") ;
             else
-                OutputLangUtils.output(out, o, prologue) ;
+                OutputLangUtils.output(out, o, prologue, labelPolicy) ;
             
             if ( g != null && g.equals(lastG) )
                 out.output("*") ;
             else
-                OutputLangUtils.output(out, g, prologue) ;
+                OutputLangUtils.output(out, g, prologue, labelPolicy) ;
             
             
             
@@ -110,16 +119,17 @@ public class SinkQuadOutput implements Sink<Quad>
         }
 
         // N-triples.
-        OutputLangUtils.output(out, s, prologue) ;
+        OutputLangUtils.output(out, s, prologue, labelPolicy) ;
         out.output(" ") ;
-        OutputLangUtils.output(out, p, prologue) ;
+        OutputLangUtils.output(out, p, prologue, labelPolicy) ;
         out.output(" ") ;
-        OutputLangUtils.output(out, o, prologue) ;
+        OutputLangUtils.output(out, o, prologue, labelPolicy) ;
         
-        if ( g != null && g != Quad.tripleInQuad )
+
+        if ( g != null && g != Quad.tripleInQuad && ! Quad.isDefaultGraph(g) ) 
         {
             out.output(" ") ;
-            OutputLangUtils.output(out, g, prologue) ;
+            OutputLangUtils.output(out, g, prologue, labelPolicy) ;
         }
             
         out.output(" .") ;
@@ -134,6 +144,7 @@ public class SinkQuadOutput implements Sink<Quad>
 /*
  * (c) Copyright 2009 Hewlett-Packard Development Company, LP
  * (c) Copyright 2010 Talis Information Ltd.
+ * (c) Copyright 2010, 2011 Epimorphics Ltd.
  * 
  * All rights reserved.
  *

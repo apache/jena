@@ -1,7 +1,7 @@
 /*
  * (c) Copyright 2009 Hewlett-Packard Development Company, LP
  * (c) Copyright 2010 Talis Information Ltd.
- * (c) Copyright 2010 Epimorphics Ltd.
+ * (c) Copyright 2010, 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -25,7 +25,7 @@ public class NQuadsWriter
     {
         Prologue prologue = Prologue.create(null, null) ; // (null, graph.getPrefixMapping()) ;
         // Write prologue.
-        Sink<Quad> sink = new SinkQuadOutput(out, prologue) ;
+        Sink<Quad> sink = new SinkQuadOutput(out, prologue, NodeToLabel.createScopeByDocument()) ;
         Iterator<Quad> iter = dsg.find(Node.ANY, Node.ANY, Node.ANY, Node.ANY) ;
         Iter.sendToSink(iter, sink) ;
     }
@@ -34,7 +34,7 @@ public class NQuadsWriter
 /*
  * (c) Copyright 2009 Hewlett-Packard Development Company, LP
  * (c) Copyright 2010 Talis Information Ltd.
- * (c) Copyright 2010 Epimorphics Ltd.
+ * (c) Copyright 2010, 2011 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

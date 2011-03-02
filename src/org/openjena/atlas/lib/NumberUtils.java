@@ -18,6 +18,7 @@ public class NumberUtils
     /** Fast, but basic, integer to StringBuilder */
     public static void formatInt(StringBuilder sb, int value) 
     { 
+        // SeeAlso Integer.toString.
         int len = length(value) ;
         formatInt(sb, value, len, false) ;
     }

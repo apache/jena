@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2009 Talis Systems Ltd.
+ * (c) Copyright 2010, 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -145,6 +146,7 @@ public class TurtleValidate
 
 /*
  * (c) Copyright 2009 Talis Systems Ltd.
+ * (c) Copyright 2010, 2011 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

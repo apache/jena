@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010, 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -76,6 +77,11 @@ public class OutputLangUtils
     
     static public void output(Writer out, Node node, Prologue prologue)
     {
+        output(out, node, prologue, NodeToLabel.createScopeByDocument()) ;
+    }
+    
+    static public void output(Writer out, Node node, Prologue prologue, NodeToLabel labelPolicy)
+    {
         // NodeVisitor would be nice but don't want to create an object per static call. 
         
         if ( node.isURI() ) 
@@ -85,11 +91,17 @@ public class OutputLangUtils
         }
         if ( node.isBlank() )
         {
-            print(out,"_:") ;
+            if ( labelPolicy == null )
+                labelPolicy = NodeToLabel.labelByInternal() ;
+            
             // N-triples is quite restrictive about the labels. [A-Za-z][A-Za-z0-9]*
             // Our format is _:B<encoded>
-            String label = node.getBlankNodeLabel() ;
-            label = NodeFmtLib.safeBNodeLabel(label) ;
+//            String label = node.getBlankNodeLabel() ;
+//            label = NodeFmtLib.safeBNodeLabel(label) ;
+            
+            // Assumes single scope.
+            String label = labelPolicy.get(null, node) ;
+            print(out,"_:") ;
             print(out,label) ;
             return ;
         }
@@ -281,6 +293,7 @@ public class OutputLangUtils
 
 /*
  * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010, 2011 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
