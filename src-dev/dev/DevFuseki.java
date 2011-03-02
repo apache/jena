@@ -2,18 +2,14 @@ package dev;
 
 public class DevFuseki
 {
-    // Bad concurrency.
-    //  SPARQL_REST calls targetGraph which takes a read lock to test for existence of a graph.
-    //  But lock released and then relocked for the oepration itself. 
+    // Direct naming.
+    // Use absence/presence of a query string to switch.
     
     // Better handling of bad URI name for a graph http:/example/X => stacktrace.
     
     // FUSEKI_ROOT
-    // --loc => check DB does exist (do in Java) - extension to ModLocation.
-    
-    // Direct naming.
-    
-    // Mem dataset with union graph
+
+    // Mem dataset with union graph (ARQ)
     
     // Documentation:
     //   Plan documentation.
@@ -23,13 +19,6 @@ public class DevFuseki
     
     // Dataset servers - bulk loader.
     // Access the bulk loader via web. [later]
-    
-    // ?? Errors that occur and what they mean:
-    
-    // http://localhost:3030/data/data ***
-    // http://localhost:3030/data ***
-    
-    // ?? Local naming of graphs.
     
     // Structure pages, different static content servers
     // /Main - index.html = fuseki.html
@@ -65,12 +54,6 @@ public class DevFuseki
     // ?? Slug header:
     // http://bitworking.org/projects/atom/rfc5023.html#rfc.section.9.7
     
-    // CORS: Access-Control-Allow-Origin: *
-    // http://esw.w3.org/CORS_Enabled
-    // Consider configuration.
-    // http://hacks.mozilla.org/2009/07/cross-site-xmlhttprequest-with-cors/
-    // http://download.eclipse.org/jetty/stable-7/apidocs/org/eclipse/jetty/servlets/CrossOriginFilter.html
-    
     // ETags.
     
     // Authentication
@@ -85,8 +68,6 @@ public class DevFuseki
     //   --accept line/shortname : s-get, s-query
     //   Basic authentication: --user --password
     
-    // **** Clean up SPARQL Query results code.
-
     // Argument names: --service naming seems inconsistent.
     
     // Plug-ins:
