@@ -101,7 +101,6 @@ public class OutputLangUtils
             
             // Assumes single scope.
             String label = labelPolicy.get(null, node) ;
-            print(out,"_:") ;
             print(out,label) ;
             return ;
         }

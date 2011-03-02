@@ -10,6 +10,8 @@ import static java.lang.String.format ;
 import java.util.HashMap ;
 import java.util.Map ;
 
+import org.openjena.riot.system.MapWithScope ;
+
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.rdf.model.AnonId ;
 
@@ -17,7 +19,7 @@ import com.hp.hpl.jena.rdf.model.AnonId ;
  * Various different policies.
  */  
 
-public class LabelToNode
+public class LabelToNode extends MapWithScope<String, Node, Node>
 {
     // Replaces LabelToNodeMap
     
@@ -37,53 +39,15 @@ public class LabelToNode
     public static LabelToNode createIncremental()
     { return new LabelToNode(new SingleScopePolicy(), nodeMakerDeterministic) ; } 
     
-    // ======== Interfaces
-    
-    private interface ScopePolicy
+    private LabelToNode(ScopePolicy<String, Node, Node> scopePolicy, Allocator<String, Node> allocator)
     {
-        Map<String, Node> getScope(Node scope) ;
-        void clear() ;
+        super(scopePolicy, allocator) ;
     }
-    private interface Allocator<T>
-    {
-        public T create(String label) ;
-        public void reset() ;
-    }
-    
-    // ======== The Object
 
-    private final ScopePolicy scopePolicy ;
-    private final Allocator<Node> allocator ;
-
-    private LabelToNode(ScopePolicy scopePolicy, Allocator<Node> allocator)
-    {
-        this.scopePolicy = scopePolicy ;
-        this.allocator = allocator ;
-    }
-    
-    /** Get a node for a label, given the node (for the graph) as scope */
-    public Node get(Node scope, String label)
-    {
-        Map<String, Node> map = scopePolicy.getScope(scope) ;
-        Node n = map.get(label) ;
-        if ( n == null )
-        {
-            n = allocator.create(label) ;
-            map.put(label, n) ;
-        }
-        return n ;
-    }
-    
-    /** Create a node that is guaranteed to be fresh */ 
-    public Node create() { return allocator.create(null) ; }
-    
-    /** Reset the mapping (if meaningful) */ 
-    public void clear() { scopePolicy.clear(); allocator.reset() ; }
-    
     // ======== Scope Policies
     
     /** Single scope */
-    private static class SingleScopePolicy implements ScopePolicy
+    private static class SingleScopePolicy implements ScopePolicy<String, Node, Node>
     { 
         private Map<String, Node> map = new HashMap<String, Node>() ;
         public Map<String, Node> getScope(Node scope) { return map ; }
@@ -91,7 +55,7 @@ public class LabelToNode
     }
     
     /** One scope for labels per graph */
-    private static class GraphScopePolicy  implements ScopePolicy
+    private static class GraphScopePolicy  implements ScopePolicy<String, Node, Node>
     { 
         private Map<String, Node> dftMap = new HashMap<String, Node>() ;
         private Map<Node, Map<String, Node>> map = new HashMap<Node, Map<String, Node>>() ;
@@ -113,7 +77,7 @@ public class LabelToNode
 
     // ======== Node Allocators 
     
-    private static Allocator<Node> nodeMaker = new Allocator<Node>()
+    private static Allocator<String, Node> nodeMaker = new Allocator<String, Node>()
     {
         public Node create(String label)
         { return Node.createAnon() ; }
@@ -121,7 +85,7 @@ public class LabelToNode
         public void reset()     {}
     } ;
 
-    private static Allocator<Node> nodeMakerDeterministic = new Allocator<Node>()
+    private static Allocator<String, Node> nodeMakerDeterministic = new Allocator<String, Node>()
     {
         private long counter = 0 ;
 
@@ -134,7 +98,7 @@ public class LabelToNode
         public void reset()     {}
     } ;
     
-    private static Allocator<Node> nodeMakerByLabel = new Allocator<Node>()
+    private static Allocator<String, Node> nodeMakerByLabel = new Allocator<String, Node>()
     {
         public Node create(String label)
         {

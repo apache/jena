@@ -9,76 +9,40 @@ package org.openjena.riot.out;
 import java.util.HashMap ;
 import java.util.Map ;
 
+import org.openjena.riot.system.MapWithScope ;
+
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.Node_Literal ;
+import com.hp.hpl.jena.sparql.util.FmtUtils ;
 
 /** Map nodes to string (usually, blank nodes to labels) */ 
 
-public class NodeToLabel
-    // extends X2Y<Node, String>
+public class NodeToLabel extends MapWithScope<Node, String, Node>
 {
     /** Allocation from a single scope; just the label matters. */
     static public NodeToLabel createScopeByDocument()
-    { return new NodeToLabel(new SingleScopePolicy(), new AllocatorIncremental()) ; }
+    { return new NodeToLabel(new SingleScopePolicy(), new AllocatorBNode()) ; }
 
     /** Allocation scoped by graph and label. */
     public static NodeToLabel createScopeByGraph() 
-    { return new NodeToLabel(new GraphScopePolicy(), new AllocatorIncremental()) ; }
+    { return new NodeToLabel(new GraphScopePolicy(), new AllocatorBNode()) ; }
 
     /** Allocation as per internal label */
     public static NodeToLabel createScopeByLabel() 
-    { return new NodeToLabel(new SingleScopePolicy(), new AllocatorBNode()) ; }
+    { return new NodeToLabel(new SingleScopePolicy(), new AllocatorInternal()) ; }
 
-    private static NodeToLabel _internal = createScopeByLabel() ;
+    private static final NodeToLabel _internal = createScopeByLabel() ;
     public static NodeToLabel labelByInternal() { return _internal ; }  
     
-    // ======== Interfaces
-    
-    private interface ScopePolicy
-    {
-        Map<Node, String> getScope(Node scope) ;
-        void clear() ;
-    }
-    private interface Allocator<T>
-    {
-        public T create(Node node) ;
-        public void reset() ;
-    }
-    
-    // ======== The Object
 
-    private final ScopePolicy scopePolicy ;
-    private final Allocator<String> allocator ;
-
-    private NodeToLabel(ScopePolicy scopePolicy, Allocator<String> allocator)
+    private NodeToLabel(ScopePolicy<Node, String, Node> scopePolicy, Allocator<Node, String> allocator)
     {
-        this.scopePolicy = scopePolicy ;
-        this.allocator = allocator ;
+        super(scopePolicy, allocator) ;
     }
-    
-    /** Get a node for a label, given the node (for the graph) as scope */
-    public String get(Node scope, Node node)
-    {
-        if ( scope == null )
-            ;
-        Map<Node, String> map = scopePolicy.getScope(scope) ;
-        String str = map.get(node) ;
-        if ( str == null )
-        {
-            str = allocator.create(node) ;
-            map.put(node, str) ;
-        }
-        return str ;
-    }
-    
-    /** Create a label that is guaranteed to be fresh */ 
-    public String create() { return allocator.create(null) ; }
-    
-    public void clear() { scopePolicy.clear() ; allocator.reset() ; }
-    
     // ======== Scope Policies
     
     /** Single scope */
-    private static class SingleScopePolicy implements ScopePolicy
+    private static class SingleScopePolicy implements ScopePolicy<Node, String, Node>
     { 
         private Map<Node, String> map = new HashMap<Node, String>() ;
         public Map<Node, String> getScope(Node scope) { return map ; }
@@ -86,7 +50,7 @@ public class NodeToLabel
     }
     
     /** One scope for labels per graph */
-    private static class GraphScopePolicy implements ScopePolicy
+    private static class GraphScopePolicy implements ScopePolicy<Node, String, Node>
     { 
         private Map<Node, String> dftMap = new HashMap<Node, String>() ;
         private Map<Node, Map<Node, String>> map = new HashMap<Node, Map<Node, String>>() ;
@@ -108,55 +72,61 @@ public class NodeToLabel
     
     // ======== Allocators 
 
-//    private static Allocator<String> nodeMaker = new Allocator<String>()
-//    {
-//        public String create(Node node)
-//        { return Node.createAnon() ; }
-//
-//        public void reset()     {}
-//    } ;
-
-    private static class AllocatorIncremental implements Allocator<String>
+    /** Allocator and some default policies. */
+    private abstract static class AllocatorBase implements Allocator<Node, String>
     {
-        private int counter = 0 ;
-//        private StringBuilder sb = new StringBuilder(20) ; 
-
-        public String create(Node node)
+        // abstract to make you think about the policy!
+        private long counter = 0 ;
+        
+        public final String create(Node node)
         {
-            return Integer.toString(counter++) ;
-//            sb.setLength(0) ;
-//            NumberUtils.formatInt(sb, counter) ;
-//            ++counter ;
-//            return sb.toString() ;
-        }
-
-        public void reset()     {}
-    } ;
-    
-    /** Allocate that emits the bNode label (encoded) */
-    private static class AllocatorBNode implements Allocator<String>
-    {
-        private int counter = 0 ;
-//        private StringBuilder sb = new StringBuilder(20) ; 
-
-        public String create(Node node)
-        {
-            if ( node.isBlank() )
-                return NodeFmtLib.safeBNodeLabel(node.getBlankNodeLabel()) ;
+            if ( node.isURI() )         return labelForURI(node) ;
+            if ( node.isLiteral() )     return labelForLiteral(node) ;
+            if ( node.isBlank() )       return labelForBlank(node) ;
+            if ( node.isVariable() )    return labelForVar(node) ;
             
-            return Integer.toString(counter++) ;
+            // Other??
+            return Long.toString(counter++) ;
         }
 
-        public void reset()     {}
-    } ;
+        protected String labelForURI(Node node)
+        {
+            return "<"+node.getURI()+">" ;
+        }
 
-//    private static class AllocatorDeterministic implements Allocator<String>
-//    {
-//        public Node create(String label)
-//        }
-//
-//        public void reset()     {}
-//    } ;
+        protected String labelForBlank(Node node)
+        {
+            return "_:"+NodeFmtLib.safeBNodeLabel(node.getBlankNodeLabel()) ;
+        }
+
+        protected String labelForLiteral(Node node)
+        {
+            // TODO Better literal output.
+            return FmtUtils.stringForLiteral((Node_Literal)node, null) ;
+        }
+
+        protected String labelForVar(Node node)
+        {
+            return "?"+node.getName() ;
+        }
+        public void reset()     {}
+    }
+    
+    private static class AllocatorInternal extends AllocatorBase
+    {
+        
+    }
+    
+    private static class AllocatorBNode extends AllocatorBase
+    {
+        private int counter = 0 ;
+
+        @Override
+        protected String labelForBlank(Node node)
+        {
+            return "_:b"+Integer.toString(counter++) ;
+        }
+    } ;
 }
 
 /*

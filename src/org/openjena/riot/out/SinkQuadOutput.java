@@ -124,7 +124,6 @@ public class SinkQuadOutput implements Sink<Quad>
         OutputLangUtils.output(out, p, prologue, labelPolicy) ;
         out.output(" ") ;
         OutputLangUtils.output(out, o, prologue, labelPolicy) ;
-        
 
         if ( g != null && g != Quad.tripleInQuad && ! Quad.isDefaultGraph(g) ) 
         {
