@@ -5,17 +5,13 @@ public class DevARQ
     // OpTopN - OpExecutor.execute(OpTop).
     // BSBM Explore/Update
     // Remote SPARQL Update 
-    // arq.update --data etc.
-    // RIOT/Turtle - trailing DOT net needed.
     
     // [CANCEL] for cancellation work items.
     
     // SPARQL Update with blank nodes in DELETE {T} WHERE {P}  
     // Optimize when T has no blank nodes.
     
-    // Command line tools - work with "--data QUADS" -- add to dataset assembler. 
-    
-    // JENA-29: Cancellation
+    // JENA-29 : Cancellation
     // JENA-47 : Timeout query
     // JENA-48 : QueryIterAbortCancellationRequestException - is this needed?
     //    Check in sort that don't get one rsult (after a lot of sorting).

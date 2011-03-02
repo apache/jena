@@ -6,17 +6,12 @@
 
 package arq.cmdline;
 
-import arq.cmd.CmdException ;
-
-import com.hp.hpl.jena.assembler.exceptions.AssemblerException ;
 import com.hp.hpl.jena.query.Dataset ;
-import com.hp.hpl.jena.sparql.ARQException ;
 import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils ;
-import com.hp.hpl.jena.sparql.core.assembler.DatasetAssemblerVocab ;
 import com.hp.hpl.jena.update.GraphStore ;
 import com.hp.hpl.jena.update.GraphStoreFactory ;
 
-public class ModGraphStore extends ModAssembler
+public class ModGraphStore extends ModDatasetGeneralAssembler
 {
     GraphStore graphStore = null ;
     
@@ -47,36 +42,41 @@ public class ModGraphStore extends ModAssembler
     
     public GraphStore createGraphStore()
     {
-        // Default to a simple in-memory one.
-        if ( getAssemblerFile() == null )
+        Dataset ds = createDataset() ;
+        if ( ds == null )
             return GraphStoreFactory.create() ;
-        
-        try {
-            // Try as graph store.
-            graphStore = (GraphStore)create(DatasetAssemblerVocab.tGraphStore) ;
-        } 
-        catch (AssemblerException ex) {}
-        catch (ARQException ex)
-        {
-            ex.printStackTrace(System.err) ;
-        }
-
-        // Try as dataset
-        if ( graphStore == null )
-        {
-            try {
-                Dataset ds = (Dataset)create(DatasetAssemblerVocab.tDataset) ;
-                if ( ds != null )
-                    graphStore = GraphStoreFactory.create(ds) ;
-            } catch (AssemblerException ex) { ex.printStackTrace(System.err) ;}
-            catch (ARQException ex)
-            {
-                ex.printStackTrace(System.err) ;
-            }
-        }
-        if ( graphStore == null )
-            throw new CmdException("Failed to find a dataset or graph store assembler description") ;
-        return graphStore ;
+        return GraphStoreFactory.create(ds) ;
+//        
+//        // Default to a simple in-memory one.
+//        if ( getAssemblerFile() == null )
+//            return GraphStoreFactory.create() ;
+//        
+//        try {
+//            // Try as graph store.
+//            graphStore = (GraphStore)create(DatasetAssemblerVocab.tGraphStore) ;
+//        } 
+//        catch (AssemblerException ex) {}
+//        catch (ARQException ex)
+//        {
+//            ex.printStackTrace(System.err) ;
+//        }
+//
+//        // Try as dataset
+//        if ( graphStore == null )
+//        {
+//            try {
+//                Dataset ds = (Dataset)create(DatasetAssemblerVocab.tDataset) ;
+//                if ( ds != null )
+//                    graphStore = GraphStoreFactory.create(ds) ;
+//            } catch (AssemblerException ex) { ex.printStackTrace(System.err) ;}
+//            catch (ARQException ex)
+//            {
+//                ex.printStackTrace(System.err) ;
+//            }
+//        }
+//        if ( graphStore == null )
+//            throw new CmdException("Failed to find a dataset or graph store assembler description") ;
+//        return graphStore ;
     }
 
 }

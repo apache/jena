@@ -27,8 +27,8 @@ import com.hp.hpl.jena.update.UpdateRequest ;
 public class update extends CmdUpdate
 {
     // --service / --remote
-    ArgDecl updateArg = new ArgDecl(ArgDecl.HasValue, "update", "file") ;
-    ArgDecl dumpArg = new ArgDecl(ArgDecl.NoValue, "dump") ;       // Write the result to stdout.
+    static final ArgDecl updateArg = new ArgDecl(ArgDecl.HasValue, "update", "file") ;
+    static final ArgDecl dumpArg = new ArgDecl(ArgDecl.NoValue, "dump") ;       // Write the result to stdout.
     
     List<String> requestFiles = null ;
     boolean dump = false ;
