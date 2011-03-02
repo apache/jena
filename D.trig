@@ -3,8 +3,11 @@
 @prefix ns:   <http://example.org/ns#> .
 
 {
-:book1  dc:title  "SPARQL Tutorial" .
-:book1  ns:price  42 .
-:book2  dc:title  "The Semantic Web" .
-:book2  ns:price  23 
+  :book1  dc:title  "SPARQL Tutorial" .
+  :book1  ns:price  42 .
+}
+
+:graph {
+  :book2  dc:title  "The Semantic Web" .
+  :book2  ns:price  23 
 }
