@@ -10,12 +10,15 @@ import java.util.HashMap ;
 import java.util.Map ;
 
 import org.openjena.riot.system.MapWithScope ;
+import org.openjena.riot.system.SyntaxLabels ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Node_Literal ;
 import com.hp.hpl.jena.sparql.util.FmtUtils ;
 
-/** Map nodes to string (usually, blank nodes to labels) */ 
+/** Map nodes to string (usually, blank nodes to labels).
+ * See {@link SyntaxLabels#createNodeToLabel} for getting a default setup.
+ */
 
 public class NodeToLabel extends MapWithScope<Node, String, Node>
 {
@@ -28,10 +31,14 @@ public class NodeToLabel extends MapWithScope<Node, String, Node>
     { return new NodeToLabel(new GraphScopePolicy(), new AllocatorBNode()) ; }
 
     /** Allocation as per internal label */
-    public static NodeToLabel createScopeByLabel() 
+    public static NodeToLabel createBNodeByLabel() 
     { return new NodeToLabel(new SingleScopePolicy(), new AllocatorInternal()) ; }
 
-    private static final NodeToLabel _internal = createScopeByLabel() ;
+    /** Allocation as per internal label */
+    public static NodeToLabel createBNodeByIRI() 
+    { return new NodeToLabel(new SingleScopePolicy(), new AllocatorBNodeAsIRI()) ; }
+
+    private static final NodeToLabel _internal = createBNodeByLabel() ;
     public static NodeToLabel labelByInternal() { return _internal ; }  
     
 
@@ -119,14 +126,28 @@ public class NodeToLabel extends MapWithScope<Node, String, Node>
     
     private static class AllocatorBNode extends AllocatorBase
     {
-        private int counter = 0 ;
+        private int X = 0 ;
+        
+        AllocatorBNode() {}
 
         @Override
         protected String labelForBlank(Node node)
         {
-            return "_:b"+Integer.toString(counter++) ;
+            return "_:b"+Integer.toString(X++) ;
         }
     } ;
+    
+    private static class AllocatorBNodeAsIRI extends AllocatorBase
+    {
+        @Override
+        protected String labelForBlank(Node node)
+        {
+            // Needs to be safe?
+            String str = NodeFmtLib.safeBNodeLabel(node.getBlankNodeLabel()) ;
+            return "<_:"+str+">" ;
+        }
+    } ;
+
 }
 
 /*

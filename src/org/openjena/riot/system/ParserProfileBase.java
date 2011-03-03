@@ -31,7 +31,7 @@ public class ParserProfileBase implements ParserProfile
     { 
         this.prologue = prologue ;
         this.errorHandler = errorHandler ; 
-        this.labelMapping = LabelToNode.createScopeByDocument() ;
+        this.labelMapping = SyntaxLabels.createLabelToNode() ;
     }
     
     //@Override

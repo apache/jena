@@ -10,19 +10,20 @@ import static java.lang.String.format ;
 import java.util.HashMap ;
 import java.util.Map ;
 
+import org.openjena.riot.SysRIOT ;
 import org.openjena.riot.system.MapWithScope ;
+import org.openjena.riot.system.SyntaxLabels ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.rdf.model.AnonId ;
 
 /** Allocation Nodes (Bnodes usually) based on the graph and label 
  * Various different policies.
+ * See {@link SyntaxLabels#createLabelToNode} for getting a default setup.
  */  
 
 public class LabelToNode extends MapWithScope<String, Node, Node>
 {
-    // Replaces LabelToNodeMap
-    
     /** Allocation from a single scope; just the label matters. */
     public static LabelToNode createScopeByDocument()
     { return new LabelToNode(new SingleScopePolicy(), nodeMaker) ; }
@@ -100,12 +101,13 @@ public class LabelToNode extends MapWithScope<String, Node, Node>
     
     private static Allocator<String, Node> nodeMakerByLabel = new Allocator<String, Node>()
     {
+        private long counter = 0 ;
+        
         public Node create(String label)
         {
             if ( label == null )
-                return Node.createAnon() ;
-            else
-                return Node.createAnon(new AnonId(label)) ;
+                label = SysRIOT.BNodeGenIdPrefix+counter++ ;
+            return Node.createAnon(new AnonId(label)) ;
         }
 
         public void reset()     {}

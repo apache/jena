@@ -108,6 +108,7 @@ public class RunARQ
     
     public static void main(String[] argv) throws Exception
     {
+        riotcmd.riot.main("D.ttl") ; exit(0) ;
         arq.sparql.main("--data=D.trig", "SELECT * { {?s ?p ?o} UNION {GRAPH ?g { ?s ?p ?o}}}") ; exit(0) ;
         
         long timeout = 0 ;

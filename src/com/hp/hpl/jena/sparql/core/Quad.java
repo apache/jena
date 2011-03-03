@@ -142,11 +142,11 @@ public class Quad
     
     public boolean matches(Node g, Node s, Node p, Node o)
     {
-        return matches(getGraph(), g) && matches(getSubject(), s) &&
-               matches(getPredicate(), p) && matches(getObject(), o) ;
+        return nodeMatches(getGraph(), g) && nodeMatches(getSubject(), s) &&
+               nodeMatches(getPredicate(), p) && nodeMatches(getObject(), o) ;
     }
 
-    private static boolean matches(Node thisNode, Node otherNode)
+    private static boolean nodeMatches(Node thisNode, Node otherNode)
     {
         // otheNode may be Node.ANY, and this works out.
         return otherNode.matches(thisNode) ;

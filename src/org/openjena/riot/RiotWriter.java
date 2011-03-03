@@ -1,69 +1,39 @@
 /*
- * (c) Copyright 2010 Talis Systems Ltd.
- * (c) Copyright 2010 Epimorphics Ltd.
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
 package org.openjena.riot;
 
-import static org.openjena.riot.out.OutputLangUtils.output ;
+import java.io.OutputStream ;
 
-import java.io.IOException ;
-import java.io.OutputStreamWriter ;
-import java.io.PrintStream ;
-import java.io.UnsupportedEncodingException ;
-import java.io.Writer ;
-import java.util.Iterator ;
+import org.openjena.riot.out.NQuadsWriter ;
+import org.openjena.riot.out.NTriplesWriter ;
 
 import com.hp.hpl.jena.graph.Graph ;
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
 
 /** Output RDF in various formats (unfinished) */
 public class RiotWriter
 {
     // Work in progress
-    public static void writeNQuads(PrintStream out, DatasetGraph dsg)
+    // A class of all the ways to write things - just jumps to right place in code. 
+    
+    public static void writeNQuads(OutputStream out, DatasetGraph dsg)
     {
-        Writer w ;
-        try
-        {
-            w = new OutputStreamWriter(out, "ASCII") ;
-        } catch (UnsupportedEncodingException ex)
-        {
-            ex.printStackTrace();
-            return ;
-        }
-        
-        outputOneGraph(w, dsg.getDefaultGraph(), null) ;
-        
-        Iterator<Node> iterGraphs = dsg.listGraphNodes() ;
-        for ( ; iterGraphs.hasNext(); )
-        {
-            Node gn = iterGraphs.next() ;
-            outputOneGraph(w, dsg.getGraph(gn), gn) ;
-        }
-        try { w.flush() ; } catch (IOException ex) { }
-        
+        NQuadsWriter.write(out, dsg) ;
     }
     
-    private static void outputOneGraph(Writer w, Graph graph, Node graphNode)
+    public static void writeTriples(OutputStream out, Graph graph)
     {
-        ExtendedIterator<Triple> iter = graph.find(null, null, null) ;
-        for ( ; iter.hasNext() ; )
-        {
-            Triple triple = iter.next();
-            output(w, triple, graphNode, null) ;
-        }
+        NTriplesWriter.write(out, graph) ;
     }
+
 }
 
 /*
- * (c) Copyright 2010 Talis Systems Ltd.
- * (c) Copyright 2010 Epimorphics Ltd.
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

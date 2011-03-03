@@ -6,6 +6,16 @@ public class DevARQ
     // BSBM Explore/Update
     // Remote SPARQL Update 
     
+    // RIOT Output
+    //   needs clean up.
+    //   OutputLangUtils without the triple.quad writers?
+    
+    
+    // Parse output that preserves explicit labels.
+    // Suggests bnode parser -> bnode storage is done on insertion.
+    //   No parse state needed that.
+    // Test writing then reading Bnodes labels as URIs.
+    
     // [CANCEL] for cancellation work items.
     
     // ** SPARQL Update with blank nodes in DELETE {T} WHERE {P}  

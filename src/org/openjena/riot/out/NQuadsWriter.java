@@ -14,6 +14,7 @@ import java.util.Iterator ;
 import org.openjena.atlas.iterator.Iter ;
 import org.openjena.atlas.lib.Sink ;
 import org.openjena.riot.system.Prologue ;
+import org.openjena.riot.system.SyntaxLabels ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
@@ -25,7 +26,7 @@ public class NQuadsWriter
     {
         Prologue prologue = Prologue.create(null, null) ; // (null, graph.getPrefixMapping()) ;
         // Write prologue.
-        Sink<Quad> sink = new SinkQuadOutput(out, prologue, NodeToLabel.createScopeByDocument()) ;
+        Sink<Quad> sink = new SinkQuadOutput(out, prologue, SyntaxLabels.createNodeToLabel()) ;
         Iterator<Quad> iter = dsg.find(Node.ANY, Node.ANY, Node.ANY, Node.ANY) ;
         Iter.sendToSink(iter, sink) ;
     }

@@ -13,6 +13,7 @@ import java.util.Iterator ;
 import org.openjena.atlas.iterator.Iter ;
 import org.openjena.atlas.lib.Sink ;
 import org.openjena.riot.system.Prologue ;
+import org.openjena.riot.system.SyntaxLabels ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
@@ -24,7 +25,7 @@ public class NTriplesWriter
     {
         Prologue prologue = Prologue.create(null, null) ; // (null, graph.getPrefixMapping()) ;
         // Write prologue.
-        Sink<Triple> sink = new SinkTripleOutput(out, prologue) ;
+        Sink<Triple> sink = new SinkTripleOutput(out, prologue, SyntaxLabels.createNodeToLabel()) ;
         Iterator<Triple> iter = graph.find(Node.ANY, Node.ANY, Node.ANY) ;
         Iter.sendToSink(iter, sink) ;
     }

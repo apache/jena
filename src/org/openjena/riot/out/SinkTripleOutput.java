@@ -15,6 +15,7 @@ import org.openjena.atlas.io.BufferingWriter ;
 import org.openjena.atlas.lib.Chars ;
 import org.openjena.atlas.lib.Sink ;
 import org.openjena.riot.system.Prologue ;
+import org.openjena.riot.system.SyntaxLabels ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
@@ -25,25 +26,32 @@ public class SinkTripleOutput implements Sink<Triple>
     private CharsetEncoder encoder ;
     private Prologue prologue = null ;
     private BufferingWriter out ;
+    private NodeToLabel labelPolicy = null ;
 
     public SinkTripleOutput(OutputStream outs)
     {
-        this(outs, null) ;
+        this(outs, null, SyntaxLabels.createNodeToLabel()) ;
     }
     
-    public SinkTripleOutput(OutputStream outs, Prologue prologue)
+    public SinkTripleOutput(OutputStream outs, Prologue prologue, NodeToLabel labels)
     {
         //encoder = Chars.charsetUTF8.newEncoder() ;
         encoder = Chars.charsetASCII.newEncoder() ;
         Sink<ByteBuffer> dest = new BufferingWriter.SinkOutputStream(outs) ; 
         out = new BufferingWriter(dest) ;
         setPrologue(prologue) ;
+        setLabelPolicy(labels) ;
     }
     
     // Need to do this later sometimes to sort out the plumbing.
     public void setPrologue(Prologue prologue)
     {
         this.prologue = prologue ;
+    }
+    
+    public void setLabelPolicy(NodeToLabel labels)
+    {
+        this.labelPolicy = labels ;
     }
     
     public void flush()
@@ -60,49 +68,14 @@ public class SinkTripleOutput implements Sink<Triple>
         Node s = triple.getSubject() ;
         Node p = triple.getPredicate() ;
         Node o = triple.getObject() ;
-        
-//        if ( ! ( s.isURI() || s.isBlank() ) )
-//            throw new TurtleParseException("["+line+", "+col+"] : Error: Subject is not a URI or blank node") ;
-//        if ( ! p.isURI() )
-//            throw new TurtleParseException("["+line+", "+col+"] : Error: Predicate is not a URI") ;
-//        if ( ! ( o.isURI() || o.isBlank() || o.isLiteral() ) ) 
-//            throw new TurtleParseException("["+line+", "+col+"] : Error: Object is not a URI, blank node or literal") ;
-      
-        if ( false )
-        {
-            if ( s.equals(lastS) )
-                out.output("*") ;
-            else
-                OutputLangUtils.output(out, s, prologue) ;
-            
-            out.output(" ") ;
-            
-            if ( p.equals(lastP) )
-                out.output("*") ;
-            else
-                OutputLangUtils.output(out, p, prologue) ;
-    
-            out.output(" ") ;
-    
-            if ( o.equals(lastO) )
-                out.output("*") ;
-            else
-                OutputLangUtils.output(out, o, prologue) ;
-            out.output(" .") ;
-            out.output("\n") ;
-            
-            lastS = s ;
-            lastP = p ;
-            lastO = o ;
-            return ;
-        }
 
+        // See SinkQuadOutput for "*" (for same as row before).
         // N-triples.
-        OutputLangUtils.output(out, s, prologue) ;
+        OutputLangUtils.output(out, s, prologue, labelPolicy) ;
         out.output(" ") ;
-        OutputLangUtils.output(out, p, prologue) ;
+        OutputLangUtils.output(out, p, prologue, labelPolicy) ;
         out.output(" ") ;
-        OutputLangUtils.output(out, o, prologue) ;
+        OutputLangUtils.output(out, o, prologue, labelPolicy) ;
         out.output(" .") ;
         out.output("\n") ;
         out.flush();

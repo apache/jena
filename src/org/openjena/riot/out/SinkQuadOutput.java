@@ -16,6 +16,7 @@ import org.openjena.atlas.io.BufferingWriter ;
 import org.openjena.atlas.lib.Chars ;
 import org.openjena.atlas.lib.Sink ;
 import org.openjena.riot.system.Prologue ;
+import org.openjena.riot.system.SyntaxLabels ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.core.Quad ;
@@ -30,7 +31,7 @@ public class SinkQuadOutput implements Sink<Quad>
 
     public SinkQuadOutput(OutputStream outs)
     {
-        this(outs, null, NodeToLabel.createScopeByDocument()) ;
+        this(outs, null, SyntaxLabels.createNodeToLabel()) ;
     }
     
     public SinkQuadOutput(OutputStream outs, Prologue prologue, NodeToLabel labels)
@@ -82,6 +83,7 @@ public class SinkQuadOutput implements Sink<Quad>
       
         if ( false )
         {
+            // The compression of temrs 
             if ( s.equals(lastS) )
                 out.output("*") ;
             else
@@ -101,12 +103,13 @@ public class SinkQuadOutput implements Sink<Quad>
             else
                 OutputLangUtils.output(out, o, prologue, labelPolicy) ;
             
-            if ( g != null && g.equals(lastG) )
-                out.output("*") ;
-            else
-                OutputLangUtils.output(out, g, prologue, labelPolicy) ;
-            
-            
+            if ( outputGraphSlot(g) )
+            {
+                if ( g.equals(lastG) )
+                    out.output("*") ;
+                else
+                    OutputLangUtils.output(out, g, prologue, labelPolicy) ;
+            }
             
             out.output(" .") ;
             out.output("\n") ;
@@ -125,7 +128,7 @@ public class SinkQuadOutput implements Sink<Quad>
         out.output(" ") ;
         OutputLangUtils.output(out, o, prologue, labelPolicy) ;
 
-        if ( g != null && g != Quad.tripleInQuad && ! Quad.isDefaultGraph(g) ) 
+        if ( outputGraphSlot(g) ) 
         {
             out.output(" ") ;
             OutputLangUtils.output(out, g, prologue, labelPolicy) ;
@@ -133,6 +136,11 @@ public class SinkQuadOutput implements Sink<Quad>
             
         out.output(" .") ;
         out.output("\n") ;
+    }
+    
+    private static boolean outputGraphSlot(Node g)
+    {
+        return ( g != null && g != Quad.tripleInQuad && ! Quad.isDefaultGraph(g) ) ;
     }
 
     public void close()

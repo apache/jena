@@ -24,6 +24,9 @@ public class SysRIOT
     
     public static boolean StrictXSDLexicialForms = false ;
     
+    public static final String BNodeGenIdPrefix = "genid" ;
+
+    
     static public String fmtMessage(String message, long line, long col)
     {
         if ( col == -1 && line == -1 )

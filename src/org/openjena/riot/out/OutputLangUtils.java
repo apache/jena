@@ -14,6 +14,7 @@ import java.net.MalformedURLException ;
 import org.openjena.atlas.io.OutputUtils ;
 import org.openjena.riot.system.PrefixMap ;
 import org.openjena.riot.system.Prologue ;
+import org.openjena.riot.system.SyntaxLabels ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
@@ -34,50 +35,53 @@ public class OutputLangUtils
     
     private static boolean asciiOnly = true ;
 
-    static public void output(Writer out, Quad quad, Prologue prologue)
+    static public void output(Writer out, Quad quad, Prologue prologue, NodeToLabel labelPolicy)
     {
         Node s = quad.getSubject() ;
         Node p = quad.getPredicate() ;
         Node o = quad.getObject() ;
         Node g = quad.getGraph() ;
-        output(out, s, p, o, g, prologue) ;
+        output(out, s, p, o, g, prologue, labelPolicy) ;
     }
     
-    static public void output(Writer out, Node s, Node p, Node o, Node g, Prologue prologue)
+    // See also SinkQuadWriter and deduplicate
+    static public void output(Writer out, Node s, Node p, Node o, Node g, Prologue prologue, NodeToLabel labelPolicy)
     {
-        output(out, s, prologue) ;
+        output(out, s, prologue, labelPolicy) ;
         print(out," ") ;
-        output(out, p, prologue) ;
+        output(out, p, prologue, labelPolicy) ;
         print(out," ") ;
-        output(out, o, prologue) ;
+        output(out, o, prologue, labelPolicy) ;
         if ( g != null )
         {
             print(out," ") ;
-            output(out, g, prologue) ;
+            output(out, g, prologue, labelPolicy) ;
         }
         print(out," .") ;
         println(out) ;
     }
     
-    static public void output(Writer out, Triple triple, Node graphNode, Prologue prologue)
+    // See also SinkTripleWriter and deduplicate
+    static public void output(Writer out, Triple triple, Node graphNode, Prologue prologue, NodeToLabel labelPolicy)
     {
         Node s = triple.getSubject() ;
         Node p = triple.getPredicate() ;
         Node o = triple.getObject() ;
-        output(out, s, p, o, graphNode, prologue) ;
+        output(out, s, p, o, graphNode, prologue, labelPolicy) ;
     }
     
-    static public void output(Writer out, Triple triple, Prologue prologue)
+    static public void output(Writer out, Triple triple, Prologue prologue, NodeToLabel labelPolicy)
     {
         Node s = triple.getSubject() ;
         Node p = triple.getPredicate() ;
         Node o = triple.getObject() ;
-        output(out, s, p, o, null, prologue) ;
+        output(out, s, p, o, null, prologue, labelPolicy) ;
     }
     
+    /** Use with caution - better to pass in a Node to Label mapper */
     static public void output(Writer out, Node node, Prologue prologue)
     {
-        output(out, node, prologue, NodeToLabel.createScopeByDocument()) ;
+        output(out, node, prologue, SyntaxLabels.createNodeToLabel()) ;
     }
     
     static public void output(Writer out, Node node, Prologue prologue, NodeToLabel labelPolicy)
