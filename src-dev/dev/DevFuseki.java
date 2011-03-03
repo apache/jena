@@ -5,6 +5,8 @@ public class DevFuseki
     // Direct naming.
     // Use absence/presence of a query string to switch.
     
+    // sparql.jsp ==> if no dataset, go to choosing page or error page linking to.
+    
     // Better handling of bad URI name for a graph http:/example/X => stacktrace.
     
     // FUSEKI_ROOT
