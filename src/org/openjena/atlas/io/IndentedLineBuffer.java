@@ -11,10 +11,7 @@ import java.io.StringWriter ;
 /** IndentLineBuffer is a buffer that records an indent level 
  *  and uses that to insert a prefix at each line.
  *  It can also insert line numbers at the beginning of lines.
- * 
- *  <Insert rant about StringBuffer being final here>
- *  Also, Java 1.5, StringBuilding is faster than StringBuffer (not sync'ed)
- *  so could switch to that (except we are really using a StringWriter) */
+ */
 
 public class IndentedLineBuffer extends IndentedWriter
 {
