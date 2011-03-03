@@ -16,7 +16,7 @@ INSERT DATA {
 
   :x3 :p (1 2 3) .
   # :x3 :p "other" .
-}
+} ;
 
 DELETE { ?x :p ?list }
 INSERT { ?x :p [ rdf:first 0 ; 

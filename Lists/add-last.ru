@@ -16,7 +16,7 @@ INSERT DATA {
 
   :x3 :p (1 2 3) .
   :x3 :p "other" .
-}
+} ;
 
 # The order here is important.
 # Must do list >= 1 first.
@@ -31,7 +31,7 @@ WHERE
   ?list rdf:rest+ ?elt .
   ?elt rdf:rest rdf:nil .
   # ?elt is end of list.
-}
+} ;
 
 # List of length = 0
 DELETE { ?x :p rdf:nil . }

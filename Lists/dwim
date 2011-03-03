@@ -1,18 +1,30 @@
 #!/bin/bash
 
+function parse
+{
+    local FN=$1
+    echo "==== $FN"
+    uparse --strict --file "$FN"  > /dev/null
+}
+
 function action
 {
     local FN=$1
     echo "==== $FN"
     cat "$FN"
     echo "- - - - - - - - - - - - - - - - - - - - -"
-    update --dump --file "$FN" | rdfcat --out TTL -t -
+    update --strict --dump --file "$FN" | rdfcat --out TTL -t -
 }
 
 
-action add-first.ru
-action add-last.ru
-action del-first.ru
-action del-last.ru
-action delete-list-1.ru
-action delete-list-2.ru
+U="add-first.ru add-last.ru del-first.ru del-last.ru delete-list-1.ru delete-list-2.ru"
+
+for u in $U
+do
+    parse $u
+    done
+
+for u in $U
+do
+    action $u
+    done

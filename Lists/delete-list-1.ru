@@ -13,7 +13,7 @@ INSERT DATA {
 
 :x2 :p (1 2) .
 :x2 :q "ghi" .
-}
+} ;
 
 # Delete the cons cells.
 DELETE
@@ -23,7 +23,7 @@ WHERE {
       ?list rdf:rest* ?z .
       ?z rdf:first ?head ;
          rdf:rest ?tail .
-      }
+      } ;
 
 # Delete the triples that connect the lists.
 DELETE WHERE { ?x :p ?z . }

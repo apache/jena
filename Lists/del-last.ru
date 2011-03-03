@@ -16,7 +16,7 @@ INSERT DATA {
 
   :x0 :p () .
   :x0 :p "other" .
-}
+} ;
 
 # List of length 1
 # Do before other lists.
@@ -31,7 +31,7 @@ WHERE
   ?x :p ?elt .
   ?elt rdf:first ?v ;
        rdf:rest rdf:nil .
-}
+} ;
 
 # List of length >= 2
 DELETE { ?elt1 rdf:rest ?elt .

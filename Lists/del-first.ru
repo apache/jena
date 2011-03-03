@@ -16,7 +16,7 @@ INSERT DATA {
 
   :x0 :p () .
   :x0 :p "other" .
-}
+} ;
 
 DELETE { 
    ?x :p ?list .

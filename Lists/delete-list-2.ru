@@ -23,7 +23,7 @@ INSERT DATA {
 # Not legal RDF.
 # () .
 
-}
+} ;
 
 # Mark the objects we need to delete at the end
 # A list is either () AKA rdf:nil, or has a rdf:rest.
@@ -38,7 +38,7 @@ INSERT { ?list :deleteMe true . }
 WHERE {
    ?x :p ?list . 
    FILTER (?list = rdf:nil || EXISTS{?list rdf:rest ?z} )
-}
+} ;
 
 # Delete the cons cells.
 DELETE
@@ -48,13 +48,13 @@ WHERE {
       ?list rdf:rest* ?z .
       ?z rdf:first ?head ;
          rdf:rest ?tail .
-      }
+      } ;
 
 # Delete the marked nodes
 DELETE 
 WHERE { ?x :p ?z . 
         ?z :deleteMe true . 
-}
+} ;
 
 ## ------
 ## Unconnected lists.
@@ -67,4 +67,4 @@ WHERE {
       ?list rdf:rest* ?z .
       ?z rdf:first ?head ;
          rdf:rest ?tail .
-      } 
+      } ;
