@@ -115,7 +115,10 @@ public class RunARQ
         if ( true )
         {
             // UTF-8 encoding.
-            char[] chars = { 'x' } ;
+            // character '¢' = code point U+00A2
+            // character '€' = code point U+20AC
+            // character '𤭢' = code point U+024B62
+            char[] chars = { 'x', '¢' , '€' } ;
             for (char ch : chars )
             {
                 System.out.println("Char: "+ch) ;
