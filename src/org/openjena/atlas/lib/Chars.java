@@ -96,8 +96,10 @@ Bits    Last code point     Byte 1  Byte 2  Byte 3  Byte 4  Byte 5  Byte 6
         byte[] bytes = new byte[4] ;
         ByteBuffer bb = ByteBuffer.wrap(bytes) ;
         String s = ""+ch ;
-        Bytes.toByteBuffer(s, bb) ;
-        int x = Bytes.getInt(bytes) ;
+        int len = Bytes.toByteBuffer(s, bb) ;
+        int x = 0 ;
+        for ( int i = 0 ; i < len ; i++ )
+            x = x << 8 | ((bytes[i])&0xFF) ; 
         return x ;
     }
     

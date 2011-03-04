@@ -115,7 +115,7 @@ public class RunARQ
         if ( true )
         {
             // UTF-8 encoding.
-            char[] chars = { } ;
+            char[] chars = { 'x' } ;
             for (char ch : chars )
             {
                 System.out.println("Char: "+ch) ;
@@ -123,8 +123,15 @@ public class RunARQ
                 int enc = Chars.toUTF8(ch) ;
                 char ch2 = Chars.fromUTF8(enc) ;
                 
+                System.out.printf("  '%c' => 0x%04X => '%c'\n", ch, enc, ch2) ;
+
+                int enc2 = Chars.toUTF8_test(ch) ;
+                char ch3 = Chars.fromUTF8_test(enc2) ;
+                System.out.printf("T:'%c' => 0x%04X => '%c'\n", ch, enc2, ch3) ;
+                if ( ch != ch2 )
+                    System.out.println("Mismatch") ;
             }
-            
+            exit(0) ;
             
             
         }
