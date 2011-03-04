@@ -8,6 +8,7 @@
 
 package dev;
 
+import java.util.Arrays ;
 import java.util.Iterator ;
 import java.util.NoSuchElementException ;
 import java.util.concurrent.ArrayBlockingQueue ;
@@ -106,6 +107,25 @@ public class RunARQ
     
     // System.getProperty("os.name").toLowerCase().contains("win") ;
 
+    private static String p(byte[] bytes)
+    {
+        String x = "" ;
+        for ( int i = 0 ; i < bytes.length ; i++ )
+        {
+            String s = String.format("%02X", bytes[i]) ;
+            if ( i != 0 )
+                x=x+" " ;
+            x = x+s ;
+        }
+        return x ;
+    }
+    
+    
+    private static boolean same(byte[] bytes1, byte bytes2[])
+    {
+        return Arrays.equals(bytes1, bytes2) ;
+    }
+    
     
     public static void main(String[] argv) throws Exception
     {
@@ -115,24 +135,28 @@ public class RunARQ
         if ( true )
         {
             // UTF-8 encoding.
-            // character '¢' = code point U+00A2
-            // character '€' = code point U+20AC
+            // character '¢' = code point U+00A2 -> C2 A2
+            // character '€' = code point U+20AC -> E2 82 AC
             // character '𤭢' = code point U+024B62
             char[] chars = { 'x', '¢' , '€' } ;
             for (char ch : chars )
             {
                 System.out.println("Char: "+ch) ;
 
-                int enc = Chars.toUTF8(ch) ;
-                char ch2 = Chars.fromUTF8(enc) ;
+                byte[] enc = Chars2.toUTF8(ch) ;
+                char ch2 = Chars2.fromUTF8(enc) ;
                 
-                System.out.printf("  '%c' => 0x%04X => '%c'\n", ch, enc, ch2) ;
+                System.out.printf("  '%c' => %s => '%c'\n", ch, p(enc), ch2) ;
 
-                int enc2 = Chars.toUTF8_test(ch) ;
-                char ch3 = Chars.fromUTF8_test(enc2) ;
-                System.out.printf("T:'%c' => 0x%04X => '%c'\n", ch, enc2, ch3) ;
+                byte[] enc2 = Chars2.toUTF8_test(ch) ;
+                char ch3 = Chars2.fromUTF8_test(enc2) ;
+
+                System.out.printf("  '%c' => %s => '%c'\n", ch, p(enc2), ch3) ;
+
                 if ( ch != ch2 )
-                    System.out.println("Mismatch") ;
+                    System.out.printf("Mismatch (chars): %c %c\n", ch, ch2) ;
+                if ( ! same(enc, enc2) )
+                    System.out.println("Mismatch (enc): "+p(enc)+" : "+p(enc2)) ;
             }
             exit(0) ;
             

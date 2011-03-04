@@ -6,15 +6,12 @@
 
 package org.openjena.atlas.lib;
 
-import java.io.IOException ;
 import java.nio.ByteBuffer ;
 import java.nio.charset.Charset ;
 import java.nio.charset.CharsetDecoder ;
 import java.nio.charset.CharsetEncoder ;
 
 import org.openjena.atlas.AtlasException ;
-import org.openjena.atlas.io.IO ;
-import org.openjena.atlas.io.InputStreamBuffered ;
 
 public class Chars
 {
@@ -64,117 +61,6 @@ public class Chars
             putEncoder(createEncoder()) ;
             putDecoder(createDecoder()) ;
         }
-    }
-    
-    // In Modified UTF-8,[15] the null character (U+0000) is encoded as 0xC0,0x80; this is not valid UTF-8[16]
-    // Char to bytes.
-    /* http://en.wikipedia.org/wiki/UTF-8
-Bits    Last code point     Byte 1  Byte 2  Byte 3  Byte 4  Byte 5  Byte 6
-  7   U+007F  0xxxxxxx
-  11  U+07FF  110xxxxx    10xxxxxx
-  16  U+FFFF  1110xxxx    10xxxxxx    10xxxxxx
-  21  U+1FFFFF    11110xxx    10xxxxxx    10xxxxxx    10xxxxxx
-  26  U+3FFFFFF   111110xx    10xxxxxx    10xxxxxx    10xxxxxx    10xxxxxx
-  31  U+7FFFFFFF  1111110x    10xxxxxx    10xxxxxx    10xxxxxx    10xxxxxx    10xxxxxx     */
-    
-    //@SuppressWarnings("cast")
-    static public int toUTF8(char ch)
-    {
-        if ( ch != 0 && ch < 127 ) return /*(int)*/ch ;
-        if ( ch == 0 ) return 0xC080 ;
-        
-        if ( ch <= 0x07FF )
-        {
-            int x = 0 ;
-            //x1 = 110xxxxx    x2 = 10xxxxxx
-            int x1 = (ch>>8)&0x1F ;
-            x1 = x1 | 0xC0 ; 
-            int x2 = ch&0x3F ;
-            x2 = x2 | 0x80 ;
-            BitsInt.pack(x, x1, 0, 8) ;
-            BitsInt.pack(x, x2, 8, 16) ;
-            return x ;
-        }
-        if ( ch <= 0xFFFF )
-        {
-            int x = 0 ;
-            //x1 = 110xxxxx    x2 = 10xxxxxx x3 = 10xxxxxx
-            int x1 = (ch>>16)&0x1F ;
-            x1 = x1 | 0xC0 ;
-            
-            int x2 = (ch>>0xFF)&0x3F ;
-            x2 = x2 | 0x80 ;
-            
-            int x3 = ch&0x3F ;
-            x3 = x3 | 0x80 ;
-            
-            BitsInt.pack(x, x1, 0, 8) ;
-            BitsInt.pack(x, x2, 8, 16) ;
-            BitsInt.pack(x, x3, 16, 24) ;
-            return x ;
-            
-        }
-
-        
-        if ( true ) throw new AtlasException() ;
-        // Not java, whare chars are 16 bit.
-        if ( ch <= 0x1FFFFF ) ; 
-        if ( ch <= 0x3FFFFFF ) ; 
-        if ( ch <= 0x7FFFFFFF ) ;
-        
-        return -1 ;
-        
-    }
-    
-    /** Encode a char as UTF-8, using Java's built-in encoders - may be slow - this is for testing */
-    static public int toUTF8_test(char ch)
-    {
-        byte[] bytes = new byte[4] ;
-        ByteBuffer bb = ByteBuffer.wrap(bytes) ;
-        String s = ""+ch ;
-        int len = Bytes.toByteBuffer(s, bb) ;
-        int x = 0 ;
-        for ( int i = 0 ; i < len ; i++ )
-            x = x << 8 | ((bytes[i])&0xFF) ; 
-        return x ;
-    }
-    
-    static public char fromUTF8(int x)
-    {
-        // DRY: Stream UTF8.
-        // Fastpath
-        if ( x == -1 )
-            return (char)x ;
-        if ( x < 127 )
-            return (char)x ;
-
-        if ( (x & 0xE0) == 0xC0 ) 
-            return (char)charMultiBytes(x, x & 0x1F, 2) ;
-        //  1110.... => 3 bytes : 16 bits : not outside 16bit chars 
-        if ( (x & 0xF0) == 0xE0 ) 
-            return (char)charMultiBytes(x, x & 0x0F, 3) ;
-        return '?' ;
-    }
-    
-    private static int charMultiBytes(final int x, int firstValue, int len)
-    {
-        int z = firstValue ;
-        for ( int i = 1 ; i < len-1 ; i++ )
-        {
-            int b = BitsInt.access(x, 8*i, 8*(i+1)) ;
-            if ( (b & 0xC0) != 0x80 )
-                //throw new AtlasException("Illegal UTF-8 processing character "+count+": "+x2) ;
-                throw new AtlasException(String.format("Illegal UTF-8 processing character: 0x%04X",b)) ;
-            // 6 bits of b
-            z = (z << 6) | (b & 0x3F); 
-        }
-        return z ;
-    }
-
-    static public char fromUTF8_test(int x)
-    {
-        char[] chars = Character.toChars(x) ;
-        return chars[0] ;
     }
     
     /** Create a UTF-8 encoder */

@@ -153,7 +153,7 @@ public final class StreamUTF8 extends Reader implements CharStream
         // Fastpath
         if ( x == -1 )
             return x ;
-        if ( x < 127 )
+        if ( x <= 127 )
             return x ;
 
         // 10 => extension byte
