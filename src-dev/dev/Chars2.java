@@ -36,6 +36,9 @@ Bits    Last code point     Byte 1  Byte 2  Byte 3  Byte 4  Byte 5  Byte 6
     
     static public byte[] toUTF8(char ch)
     {
+//        if ( ! Character.isDefined(ch))
+//            throw new AtlasException("No such character: "+(int)ch) ;
+        
         if ( ch != 0 && ch <= 127 ) return new byte[] {(byte)ch } ;
         if ( ch == 0 ) return new byte[] { (byte)0xC0, (byte)0x80 } ;
         
@@ -115,10 +118,19 @@ may be slow - this is for testing */
     
     static public char fromUTF8(byte[] x)
     {
+        if ( x == null ) return (char)0 ; 
+        
+        for ( int i = 0 ; i < x.length ; i++ )
+        {
+            int b = x[i] ;
+            if ( b == 0xC0 || b == 0xC1 || b >= 0xF5 )
+                throw new AtlasException("Bad UTF-8 byte: "+b) ;
+        }
+
         // DRY: Stream UTF8.
         // Fastpath            //if ( (x & 0xE0) == 0xC0 ) 
 
-        if ( x == null || x.length == 0 )
+        if ( x.length == 0 )
             return (char)0 ;
         //if ( x <= 127 )
         if ( x.length == 1 )
@@ -127,6 +139,8 @@ may be slow - this is for testing */
         //if ( x <= 0xFFFF )
         if ( x.length == 2 )
         {
+            // check: byte 0 is 110aaaaa, byte 1 is 10bbbbbb
+            
             int hi = x[0] & 0x1F ;
             int lo = x[1]&0x3F ;
             return (char)((hi<<6)|lo) ;
@@ -135,6 +149,7 @@ may be slow - this is for testing */
         //if ( x <= 0xFFFFFF )
         if ( x.length == 3 )
         {
+            // check: byte 0 is 110aaaaa, byte 1 and 2 are 10bbbbbb
 //            int b0 = (x>>16) & 0x1F ;
 //            int b1 = (x>>8)  & 0x3F ;
 //            int b2 = x&0x3F ;
