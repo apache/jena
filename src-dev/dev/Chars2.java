@@ -12,11 +12,11 @@ import java.io.InputStream ;
 import java.io.Reader ;
 import java.nio.ByteBuffer ;
 
+import org.junit.Assert ;
+import org.junit.Test ;
 import org.openjena.atlas.AtlasException ;
 import org.openjena.atlas.io.StreamUTF8 ;
-import org.openjena.atlas.lib.BitsInt ;
 import org.openjena.atlas.lib.Bytes ;
-import org.openjena.atlas.lib.NotImplemented ;
 
 public class Chars2
 {
@@ -34,7 +34,6 @@ Bits    Last code point     Byte 1  Byte 2  Byte 3  Byte 4  Byte 5  Byte 6
     
     /** char to int, where int is value, at the low end of the int, of the UTF-8 encoding. */
     
-    //@SuppressWarnings("cast")
     static public byte[] toUTF8(char ch)
     {
         if ( ch != 0 && ch <= 127 ) return new byte[] {(byte)ch } ;
@@ -43,6 +42,7 @@ Bits    Last code point     Byte 1  Byte 2  Byte 3  Byte 4  Byte 5  Byte 6
         if ( ch <= 0x07FF )
         {
             int x = 0 ;
+            @SuppressWarnings("cast")
             final int v = (int)ch ;
             // x = low 11 bits yyyyy xxxxxx
             // x = 00000yyyyyxxxxxx
@@ -59,6 +59,7 @@ Bits    Last code point     Byte 1  Byte 2  Byte 3  Byte 4  Byte 5  Byte 6
         if ( ch <= 0xFFFF )
         {
             int x = 0 ;
+            @SuppressWarnings("cast")
             final int v = (int)ch ;
             // x =  aaaa bbbbbb cccccc
             //x1 = 1110aaaa    x2 = 10bbbbbb x3 = 10cccccc
@@ -142,9 +143,39 @@ may be slow - this is for testing */
           int b2 = x[2] & 0x3F ;
             return (char)( (b0<<12) | (b1<<6) | b2 ) ;
         }
+        
         throw new AtlasException("Out of range: "+x) ;
     }
     
+    
+    // UTF-8 encoding.
+    // character '¢' = code point U+00A2 -> C2 A2
+    // character '€' = code point U+20AC -> E2 82 AC
+    
+    @Test public void utf8_1() { testChar(' ') ; }
+    @Test public void utf8_2() { testChar('¢') ; }
+    @Test public void utf8_3() { testChar('€') ; }
+    @Test public void utf8_4() { testChar('\uFFFF') ; }
+    
+    @Test public void utf8_b1() { testBytes((byte)20) ; }
+    @Test public void utf8_b2() { testBytes((byte)0xC2, (byte)0xA2) ; }
+    @Test public void utf8_b3() { testBytes((byte)0xE2, (byte)0x82, (byte)0xAC) ; }
+    @Test public void utf8_b4() { testBytes((byte)0xE2, (byte)0xBF, (byte)0xBF) ; }
+
+
+    private void testChar(char c)
+    {
+        byte[] b = toUTF8(c) ;
+        char c2 = fromUTF8(b) ;
+        Assert.assertEquals(c, c2) ;
+    }
+
+    private void testBytes(byte ...b)
+    {
+        char c = fromUTF8(b) ;
+        byte[] b2 = toUTF8(c) ;
+        Assert.assertArrayEquals(b, b2) ;
+    }
 
 }
 
