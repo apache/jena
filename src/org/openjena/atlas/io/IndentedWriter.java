@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -11,7 +12,7 @@ import java.io.IOException ;
 import java.io.OutputStream ;
 import java.io.Writer ;
 
-import com.hp.hpl.jena.util.FileUtils ;
+import org.openjena.atlas.AtlasException ;
 
 /** A writer that records what the current indentation level is, and
  *  uses that to insert a prefix at each line. 
@@ -51,13 +52,14 @@ public class IndentedWriter
     /** Construct a UTF8 IndentedWriter around an OutputStream */
     public IndentedWriter(OutputStream outStream, boolean withLineNumbers)
     {
-        this(FileUtils.asPrintWriterUTF8(outStream), withLineNumbers) ;
+        //this(FileUtils.asPrintWriterUTF8(outStream), withLineNumbers) ;
+        this(BufferingWriter.create(outStream), withLineNumbers) ;
     }
     
-    /** Using Writers is discouraged */
+    /** Using Writers directly is discouraged */
     protected IndentedWriter(Writer writer) { this(writer, false) ; }
     
-    /** Using Writers is discouraged */
+    /** Using Writers directly is discouraged */
     protected IndentedWriter(Writer writer, boolean withLineNumbers)
     {
         out = writer ;
@@ -116,10 +118,10 @@ public class IndentedWriter
     }
 
     private void write(char ch) 
-    { try { out.write(ch) ; } catch (IOException ex) {} }
+    { try { out.write(ch) ; } catch (IOException ex) { throw new AtlasException(ex) ; } }
     
     private void write(String s) 
-    { try { out.write(s) ; } catch (IOException ex) {} }
+    { try { out.write(s) ; } catch (IOException ex) { throw new AtlasException(ex) ; } }
     
     /** Print a string N times */
     public void print(String s, int n)
@@ -305,6 +307,7 @@ public class IndentedWriter
 
 /*
  * (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

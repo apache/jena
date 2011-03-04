@@ -16,10 +16,7 @@ import org.openjena.riot.RiotException ;
 /** Validation of Turtle terms */
 public class TurtleValidate
 {
-    /* Not SPARQL, where internal (not first or last) dots in the local part are legal.
-     * 
-     */
-    
+    // Not SPARQL, where internal (not first or last) dots in the local part are legal.
     // Checks of prefixed names
     // These tests must agree, or be more restrictive, than the parser. 
     protected static boolean checkValidPrefixedName(String ns, String local)

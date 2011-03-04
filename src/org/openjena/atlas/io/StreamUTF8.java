@@ -138,7 +138,8 @@ public final class StreamUTF8 extends Reader implements CharStream
     
     public final int advance()
     { return advance(input) ; }
-        
+    
+    /** Next char */
     public static final int advance(InputStreamBuffered input)
     {
         //count++ ;
@@ -146,6 +147,7 @@ public final class StreamUTF8 extends Reader implements CharStream
         return advance(input, x) ;
     }
     
+    /** Next char, given the first byte of any UTF-8 byte sequence is already known. */
     public static final int advance(InputStreamBuffered input, int x)
     {
         // Fastpath

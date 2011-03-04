@@ -1,6 +1,6 @@
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
- * (c) Copyright 2010 Talis Information Ltd.
+ * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -211,7 +211,7 @@ public class Optimize implements Rewrite
 
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
- * (c) Copyright 2010 Talis Information Ltd.
+ * (c) Copyright 2010 Talis Systems Ltd.
  * 
  * All rights reserved.
  *

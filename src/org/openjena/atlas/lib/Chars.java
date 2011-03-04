@@ -6,6 +6,7 @@
 
 package org.openjena.atlas.lib;
 
+import java.nio.ByteBuffer ;
 import java.nio.charset.Charset ;
 import java.nio.charset.CharsetDecoder ;
 import java.nio.charset.CharsetEncoder ;
@@ -59,7 +60,59 @@ public class Chars
             putDecoder(createDecoder()) ;
         }
     }
+    
+    // In Modified UTF-8,[15] the null character (U+0000) is encoded as 0xC0,0x80; this is not valid UTF-8[16]
+    // Char to bytes.
+    /* http://en.wikipedia.org/wiki/UTF-8
+Bits    Last code point     Byte 1  Byte 2  Byte 3  Byte 4  Byte 5  Byte 6
+  7   U+007F  0xxxxxxx
+  11  U+07FF  110xxxxx    10xxxxxx
+  16  U+FFFF  1110xxxx    10xxxxxx    10xxxxxx
+  21  U+1FFFFF    11110xxx    10xxxxxx    10xxxxxx    10xxxxxx
+  26  U+3FFFFFF   111110xx    10xxxxxx    10xxxxxx    10xxxxxx    10xxxxxx
+  31  U+7FFFFFFF  1111110x    10xxxxxx    10xxxxxx    10xxxxxx    10xxxxxx    10xxxxxx     */
+    
+    //@SuppressWarnings("cast")
+    static public int toUTF8(char ch)
+    {
+        if ( ch != 0 && ch < 127 ) return (int)ch ;
+        if ( ch == 0 ) return 0xC080 ;
+        
+        if ( ch <= 0x07FF ) ; 
+        if ( ch <= 0xFFFF ) ;
+        
+        // Not java, whare chars are 16 bit.
+        if ( ch <= 0x1FFFFF ) ; 
+        if ( ch <= 0x3FFFFFF ) ; 
+        if ( ch <= 0x7FFFFFFF ) ;
+        
+        return -1 ;
+        
+    }
+    
+    /** Encode a char as UTF-8, using Java's built-in encoders - may be slow */
+    static public int toUTF8_test(char ch)
+    {
+        byte[] bytes = new byte[4] ;
+        ByteBuffer bb = ByteBuffer.wrap(bytes) ;
+        String s = ""+ch ;
+        Bytes.toByteBuffer(s, bb) ;
+        int x = Bytes.getInt(bytes) ;
+        return x ;
+    }
+    
+    static public char fromUTF8(int x)
+    {
+        //char[] chars = Character.toChars(ch) ;
+        return ' ' ;
+    }
 
+    static public char fromUTF8_test(int x)
+    {
+        char[] chars = Character.toChars(x) ;
+        return chars[0] ;
+    }
+    
     /** Create a UTF-8 encoder */
     public static CharsetEncoder createEncoder() { return charsetUTF8.newEncoder() ; }
     /** Create a UTF-8 decoder */
@@ -75,6 +128,33 @@ public class Chars
     /** Add/return a UTF-8 decoder to the pool */
     public static void putDecoder(CharsetDecoder decoder) { decoders.put(decoder) ; }
     
+    /** Allocate a CharsetEncoder, creating as necessary */
+    public static CharsetEncoder allocEncoder()
+    {
+        CharsetEncoder enc = Chars.getEncoder();
+        // Blocking finite Pool - does not happen.
+        // Plain Pool (sync wrapped) - might - allocate an extra one. 
+        if ( enc == null ) 
+            enc = Chars.createEncoder() ;
+        return enc ;
+    }
+    /** Deallocate a CharsetEncoder, may increase pool size */
+    public static void deallocEncoder(CharsetEncoder enc) { putEncoder(enc) ; }
+        
+    /** Allocate a CharsetDecoder, creating as necessary */
+    public static CharsetDecoder allocDecoder()
+    {
+        CharsetDecoder dec = Chars.getDecoder();
+        // Blocking finite Pool - does not happen.
+        // Plain Pool (sync wrapped) - might - allocate an extra one. 
+        if ( dec == null ) 
+            dec = Chars.createDecoder() ;
+        return dec ;
+    }
+    /** Deallocate a CharsetDecoder, may increase pool size */
+    public static void deallocDecoder(CharsetDecoder dec) { putDecoder(dec) ; }
+    
+
     public static void encodeAsHex(StringBuilder buff, char marker, char ch)
     {
         if ( ch < 256 )

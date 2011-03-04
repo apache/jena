@@ -1,6 +1,6 @@
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
- * (c) Copyright 2010 Talis Information Ltd
+ * (c) Copyright 2010 Talis Systems Ltd
  * (c) Copyright 2010 Epimorphics Ltd
  * All rights reserved.
  * [See end of file]
@@ -42,7 +42,7 @@ public interface Aggregator
 
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
- * (c) Copyright 2010 Talis Information Ltd
+ * (c) Copyright 2010 Talis Systems Ltd
  * (c) Copyright 2010 Epimorphics Ltd
  * All rights reserved.
  *

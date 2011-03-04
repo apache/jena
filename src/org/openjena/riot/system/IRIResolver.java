@@ -1,6 +1,6 @@
 /*
  * (c) Copyright 2009 Hewlett-Packard Development Company, LP
- * (c) Copyright 2010 Talis Information Systems Ltd.
+ * (c) Copyright 2010 Talis Systems Systems Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -398,7 +398,7 @@ public abstract class IRIResolver
 
 /*
  * (c) Copyright 2009 Hewlett-Packard Development Company, LP
- * (c) Copyright 2010 Talis Information Systems Ltd.
+ * (c) Copyright 2010 Talis Systems Systems Ltd.
  * 
  * All rights reserved.
  *

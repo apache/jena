@@ -1,5 +1,5 @@
 /*
- * (c) 2010 Talis Information Ltd
+ * (c) 2010 Talis Systems Ltd
  * [See end of file]
  */
 
@@ -50,7 +50,7 @@ public class E_IRI extends ExprFunction1
 }
 
 /*
- * (c) 2010 Talis Information Ltd
+ * (c) 2010 Talis Systems Ltd
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

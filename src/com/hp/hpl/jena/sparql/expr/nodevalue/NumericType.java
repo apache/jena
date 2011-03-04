@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 Talis Information Ltd.
+ * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -9,7 +9,7 @@ package com.hp.hpl.jena.sparql.expr.nodevalue;
 enum NumericType { OP_INTEGER, OP_DECIMAL, OP_DOUBLE, OP_FLOAT}
 
 /*
- * (c) Copyright 2010 Talis Information Ltd.
+ * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

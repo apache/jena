@@ -77,6 +77,13 @@ public final class BufferingWriter extends Writer
         return new BufferingWriter(new SinkChannel(out), size, size/2) ;
     }
     
+    /** Writer(chars) over OutputStream (bytes) -- heavily buffered -- fluishing may be needed */
+    public static BufferingWriter create(OutputStream out)
+    {
+        return new BufferingWriter(new SinkOutputStream(out), SIZE, BLOB_SIZE) ;
+    }
+
+
     /** Convenience operation to output to a Writer */
     public static BufferingWriter create(OutputStream out, int size)
     {
@@ -146,6 +153,8 @@ public final class BufferingWriter extends Writer
     /** Output a single character */
     public void output(int ch)
     {
+        // TODO It might be worth recoding this to directly put UTF-8 bytes
+        // into the output buffer, rather than use oneChar.  
         oneChar[0] = (char)ch ;
         output(oneChar) ;
         oneChar[0] = 0;

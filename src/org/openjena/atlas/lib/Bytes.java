@@ -258,17 +258,9 @@ public class Bytes
     /** Encode a string into a ByteBuffer : on return position is the end of the encoding */
     public static int toByteBuffer(CharSequence s, ByteBuffer bb)
     {
-        CharsetEncoder enc = Chars.getEncoder();
-
-        // Blocking finite Pool - does not happen.
-        // Plain Pool (sync wrapped) - might - allocate an extra one. 
-        if ( enc == null ) 
-            enc = Chars.createEncoder() ;
-        //        enc = enc.onMalformedInput(CodingErrorAction.REPLACE)
-        //                 .onUnmappableCharacter(CodingErrorAction.REPLACE);
-
+        CharsetEncoder enc = Chars.allocEncoder();
         int x = toByteBuffer(s, bb, enc) ;
-        Chars.putEncoder(enc) ;
+        Chars.deallocEncoder(enc) ;
         return x ;
     }
     
@@ -293,11 +285,9 @@ public class Bytes
     /** Decode a string into a ByteBuffer */
     public static String fromByteBuffer(ByteBuffer bb)
     {
-        CharsetDecoder dec = Chars.getDecoder();
-        if ( dec == null )
-            dec = Chars.createDecoder() ;
+        CharsetDecoder dec = Chars.allocDecoder();
         String x = fromByteBuffer(bb, dec) ;
-        Chars.putDecoder(dec) ;
+        Chars.deallocDecoder(dec) ;
         return x ;
     }
     

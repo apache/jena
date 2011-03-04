@@ -8,7 +8,7 @@
 	organisation="com.talis" 
 	revision="0.0.0">
     <license name="BSD"/>
-    <ivyauthor name="Talis Information Ltd" url="http://talis.com/"/>
+    <ivyauthor name="Talis Systems Ltd" url="http://talis.com/"/>
     <description>AFS - toys and </description>
   </info>
 

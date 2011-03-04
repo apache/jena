@@ -1,6 +1,6 @@
 /*
  * (c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
- * (c) Copyright 2010 Talis Information Ltd
+ * (c) Copyright 2010 Talis Systems Ltd
  * (c) Copyright 2010 Epimorphics Ltd.
  * 
  * All rights reserved.
@@ -684,7 +684,7 @@ public class AlgebraGenerator
 
 /*
  * (c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
- * (c) Copyright 2010 Talis Information Ltd
+ * (c) Copyright 2010 Talis Systems Ltd
  * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  *

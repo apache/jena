@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 Talis Information Ltd.
+ * (c) Copyright 2010 Talis Systems Ltd.
  * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
@@ -46,7 +46,7 @@ public class E_NotOneOf extends E_OneOfBase
 }
 
 /*
- * (c) Copyright 2010 Talis Information Ltd.
+ * (c) Copyright 2010 Talis Systems Ltd.
  * (c) Copyright 2011 Epimorphics Ltd.
  * 
  * All rights reserved.

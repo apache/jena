@@ -1,5 +1,5 @@
 /*
- * (c) 2010 Talis Information Ltd.
+ * (c) 2010 Talis Systems Ltd.
  * (c) 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
@@ -64,7 +64,7 @@ public class TransformWrapper implements Transform
 }
 
 /*
- * (c) 2010 Talis Information Ltd.
+ * (c) 2010 Talis Systems Ltd.
  * (c) 2011 Epimorphics Ltd.
  * All rights reserved.
  *

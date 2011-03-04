@@ -1,6 +1,6 @@
 /*
  * (c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
- * (c) Copyright 2010 Talis Information Ltd. 
+ * (c) Copyright 2010 Talis Systems Ltd. 
  * All rights reserved.
  * [See end of file]
  */
@@ -58,7 +58,7 @@ public interface Evaluator
 
 /*
  * (c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
- * (c) Copyright 2010 Talis Information Ltd. 
+ * (c) Copyright 2010 Talis Systems Ltd. 
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
