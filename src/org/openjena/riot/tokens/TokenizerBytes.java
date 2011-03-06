@@ -22,7 +22,7 @@ import java.util.NoSuchElementException ;
 import org.openjena.atlas.AtlasException ;
 import org.openjena.atlas.io.IO ;
 import org.openjena.atlas.io.PeekInputStream ;
-import org.openjena.atlas.io.StreamUTF8 ;
+import org.openjena.atlas.io.InStreamUTF8 ;
 import org.openjena.riot.RiotParseException ;
 
 
@@ -427,7 +427,7 @@ public final class TokenizerBytes implements Tokenizer
             {
                 inputStream.readByte() ;
                 // UTF-8
-                int ch2 = StreamUTF8.advance(inputStream.getInput()) ;
+                int ch2 = InStreamUTF8.advance(inputStream.getInput()) ;
                 stringBuilder.append((char)ch2) ;
                 continue ;
             }
@@ -764,7 +764,7 @@ public final class TokenizerBytes implements Tokenizer
     // Insert character, knowing the first byte.
     private void insertChar(StringBuilder buffer, int first)
     {
-        int ch2 = StreamUTF8.advance(inputStream.getInput(), first) ;
+        int ch2 = InStreamUTF8.advance(inputStream.getInput(), first) ;
         insertCodepoint(buffer, ch2) ;
     }
 

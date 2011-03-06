@@ -132,38 +132,6 @@ public class RunARQ
 //        riotcmd.riot.main("D.ttl") ; exit(0) ;
 //        arq.sparql.main("--data=D.trig", "SELECT * { {?s ?p ?o} UNION {GRAPH ?g { ?s ?p ?o}}}") ; exit(0) ;
 
-        if ( true )
-        {
-            // UTF-8 encoding.
-            // character '¢' = code point U+00A2 -> C2 A2
-            // character '€' = code point U+20AC -> E2 82 AC
-
-            char[] chars = { 'x', '¢' , '€', '\uFFFF' } ;
-            for (char ch : chars )
-            {
-                System.out.println("Char: "+ch) ;
-
-                byte[] enc = Chars2.toUTF8(ch) ;
-                char ch2 = Chars2.fromUTF8(enc) ;
-                
-                System.out.printf("  '%c' => %s => '%c'\n", ch, p(enc), ch2) ;
-
-                byte[] enc2 = Chars2.toUTF8_test(ch) ;
-                char ch3 = Chars2.fromUTF8_test(enc2) ;
-
-                System.out.printf("  '%c' => %s => '%c'\n", ch, p(enc2), ch3) ;
-
-                if ( ch != ch2 )
-                    System.out.printf("Mismatch (chars): %c %c\n", ch, ch2) ;
-                if ( ! same(enc, enc2) )
-                    System.out.println("Mismatch (enc): "+p(enc)+" : "+p(enc2)) ;
-            }
-            exit(0) ;
-            
-            
-        }
-        
-        
         long timeout = 0 ;
         long last = 0 ;
         long quantum = 0 ;

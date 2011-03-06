@@ -94,7 +94,7 @@ public final class PeekReader extends Reader
         {
             // This is a bit slower - reason unknown.
             InputStreamBuffered in2 = new InputStreamBuffered(in) ;
-            CharStream r = new StreamUTF8(in2) ;
+            CharStream r = new InStreamUTF8(in2) ;
             pr = new PeekReader(r) ;
         }
         // Skip BOM.

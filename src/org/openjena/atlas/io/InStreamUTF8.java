@@ -13,14 +13,11 @@ import java.io.Reader ;
 
 import org.openjena.atlas.AtlasException ;
 
-
-
-
 /** Fast and streaming.
  *  Does not guarantee the character is legal or defined; 
  *  this is just the UTF-8 encoding rules.
  */
-public final class StreamUTF8 extends Reader implements CharStream
+public final class InStreamUTF8 extends Reader implements CharStream
 {
     // TODO Add line and col counts.
     // See arq.utf8. 
@@ -79,7 +76,7 @@ public final class StreamUTF8 extends Reader implements CharStream
     private InputStreamBuffered input ;
     //private long count = 0 ;
 
-    public StreamUTF8(InputStream in)
+    public InStreamUTF8(InputStream in)
     {
         if ( in instanceof InputStreamBuffered )
         {
@@ -89,7 +86,7 @@ public final class StreamUTF8 extends Reader implements CharStream
         input = new InputStreamBuffered(in) ;
     }
     
-    public StreamUTF8(InputStreamBuffered in) { input = in ; }
+    public InStreamUTF8(InputStreamBuffered in) { input = in ; }
     
 
     @Override
@@ -215,7 +212,7 @@ public final class StreamUTF8 extends Reader implements CharStream
             char[] chars = new char[bytes.length] ;
             InputStream in = new ByteArrayInputStream(bytes) ;
             StringBuilder buff = new StringBuilder() ;
-            Reader r = new StreamUTF8(in) ;
+            Reader r = new InStreamUTF8(in) ;
             int len ;
             len = r.read(chars) ;
             return new String(chars, 0, len) ;

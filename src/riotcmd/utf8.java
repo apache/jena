@@ -12,7 +12,7 @@ import java.io.InputStream ;
 import org.openjena.atlas.AtlasException ;
 import org.openjena.atlas.io.IO ;
 import org.openjena.atlas.io.InputStreamBuffered ;
-import org.openjena.atlas.io.StreamUTF8 ;
+import org.openjena.atlas.io.InStreamUTF8 ;
 
 public class utf8
 {
@@ -38,7 +38,7 @@ public class utf8
             long colNum = INIT_COL ;
             
             try {
-                StreamUTF8 utf8 = new StreamUTF8(in) ;
+                InStreamUTF8 utf8 = new InStreamUTF8(in) ;
                 for (;;) 
                 {
                     int ch = utf8.read() ;

@@ -14,12 +14,12 @@ import org.openjena.atlas.AtlasException ;
 
 /** Fast and streaming.
  */
-public final class StreamASCII extends Reader implements CharStream
+public final class InStreamASCII extends Reader implements CharStream
 {
     private InputStreamBuffered input ;
     private long count = 0 ;
 
-    public StreamASCII(InputStream in)
+    public InStreamASCII(InputStream in)
     {
         if ( in instanceof InputStreamBuffered )
         {
@@ -29,7 +29,7 @@ public final class StreamASCII extends Reader implements CharStream
         input = new InputStreamBuffered(in) ;
     }
     
-    public StreamASCII(InputStreamBuffered in) { input = in ; }
+    public InStreamASCII(InputStreamBuffered in) { input = in ; }
 
     @Override
     public boolean ready() throws IOException

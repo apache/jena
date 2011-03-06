@@ -25,6 +25,10 @@ public class TestStreamUTF8 extends BaseTest
         static CharsetDecoder dec = utf8.newDecoder() ;
         static CharsetEncoder enc = utf8.newEncoder() ;
         
+        // UTF-8 encoding.
+        // character '¢' = code point U+00A2 -> C2 A2
+        // character '€' = code point U+20AC -> E2 82 AC
+        
         static private final String asciiBase             = "abc" ;
         static private final String latinBase             = "Àéíÿ" ;
         static private final String latinExtraBase        = "ỹﬁﬂ" ;  // fi-ligature, fl-ligature
@@ -35,36 +39,34 @@ public class TestStreamUTF8 extends BaseTest
         static private final String chineseBase           = "孫子兵法" ; // The Art of War 
         static private final String japaneseBase          = "日本" ;    // Japanese
         
-        @Test public void test_01() { test(asciiBase) ; }
-        @Test public void test_02() { test(latinBase) ; }
-        @Test public void test_03() { test(latinExtraBase) ; }
-        @Test public void test_04() { test(greekBase) ; }
-        @Test public void test_05() { test(hewbrewBase) ; }
-        @Test public void test_06() { test(arabicBase) ; }
-        @Test public void test_07() { test(symbolsBase) ; }
-        @Test public void test_08() { test(chineseBase) ; }
-        @Test public void test_09() { test(japaneseBase) ; }
+        @Test public void test_in_01() { testIn(asciiBase) ; }
+        @Test public void test_in_02() { testIn(latinBase) ; }
+        @Test public void test_in_03() { testIn(latinExtraBase) ; }
+        @Test public void test_in_04() { testIn(greekBase) ; }
+        @Test public void test_in_05() { testIn(hewbrewBase) ; }
+        @Test public void test_in_06() { testIn(arabicBase) ; }
+        @Test public void test_in_07() { testIn(symbolsBase) ; }
+        @Test public void test_in_08() { testIn(chineseBase) ; }
+        @Test public void test_in_09() { testIn(japaneseBase) ; }
         
-        static void test(String x)
+        @Test public void test_out_01() { testIn(asciiBase) ; }
+        @Test public void test_out_02() { testIn(latinBase) ; }
+        @Test public void test_out_03() { testIn(latinExtraBase) ; }
+        @Test public void test_out_04() { testIn(greekBase) ; }
+        @Test public void test_out_05() { testIn(hewbrewBase) ; }
+        @Test public void test_out_06() { testIn(arabicBase) ; }
+        @Test public void test_out_07() { testIn(symbolsBase) ; }
+        @Test public void test_out_08() { testIn(chineseBase) ; }
+        @Test public void test_out_09() { testIn(japaneseBase) ; }
+        
+        static void testIn(String x)
         {
             try {
-                ByteArrayOutputStream bout = new ByteArrayOutputStream() ;
-                Writer out = new OutputStreamWriter(bout, utf8) ;
-                out.write(x) ;
-                out.close() ;
-                byte[] bytes = bout.toByteArray() ;
-                
-//                System.out.print(">>") ;
-//                for ( int i = 0 ; i < bytes.length ; i++ )
-//                    System.out.printf(" %02X", bytes[i] & 0xFF) ;
-//                System.out.println() ;
-
-                //String str = new String(bytes, utf8) ;
+                byte[] bytes = stringAsBytes(x) ;
 
                 ByteArrayInputStream bin = new ByteArrayInputStream(bytes) ;
-
                 // Create string from bytes
-                StreamUTF8 r = new StreamUTF8(bin) ;
+                InStreamUTF8 r = new InStreamUTF8(bin) ;
                 //Get tests working.
                 //Reader r = new InputStreamReader(bin, utf8) ;
 
@@ -74,7 +76,31 @@ public class TestStreamUTF8 extends BaseTest
                 assertEquals(x, str) ;
             } catch (IOException ex) { throw new RuntimeException(ex) ; } 
         }
-        
+
+        static void testOut(String x)
+        {
+            try {
+                byte[] bytes = stringAsBytes(x) ;
+                ByteArrayOutputStream bout = new ByteArrayOutputStream() ;
+                Writer out = new OutStreamUTF8(bout) ;
+                out.write(x) ;
+                out.close() ;
+                byte[] bytes2 = bout.toByteArray() ;
+                assertArrayEquals(bytes, bytes2) ;
+            } catch (IOException ex) { throw new RuntimeException(ex) ; } 
+        }
+
+        static byte[] stringAsBytes(String x)
+        {
+            try {
+                ByteArrayOutputStream bout = new ByteArrayOutputStream() ;
+                Writer out = new OutputStreamWriter(bout, utf8) ;
+                out.write(x) ;
+                out.close() ;
+                byte[] bytes = bout.toByteArray() ;
+                return bytes ;
+            } catch (IOException ex) { throw new RuntimeException(ex) ; } 
+        }
     }
 /*
  * (c) Copyright 2010 Talis Systems Ltd.
