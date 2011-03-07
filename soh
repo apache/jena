@@ -11,7 +11,7 @@ require 'pp'
 
 # ToDo
 #  Allow a choice of media type for GET
-#   --accept "content-type"
+#   --accept "content-type" (and abbreviations)
 #   --header "Add:this"
 #   --user, --password
 #  Basic authentication: request.basic_auth("username", "password")
