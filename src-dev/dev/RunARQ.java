@@ -105,28 +105,6 @@ public class RunARQ
         System.exit(code) ;
     }
     
-    // System.getProperty("os.name").toLowerCase().contains("win") ;
-
-    private static String p(byte[] bytes)
-    {
-        String x = "" ;
-        for ( int i = 0 ; i < bytes.length ; i++ )
-        {
-            String s = String.format("%02X", bytes[i]) ;
-            if ( i != 0 )
-                x=x+" " ;
-            x = x+s ;
-        }
-        return x ;
-    }
-    
-    
-    private static boolean same(byte[] bytes1, byte bytes2[])
-    {
-        return Arrays.equals(bytes1, bytes2) ;
-    }
-    
-    
     public static void main(String[] argv) throws Exception
     {
 //        riotcmd.riot.main("D.ttl") ; exit(0) ;
