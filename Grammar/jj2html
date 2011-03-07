@@ -267,6 +267,16 @@ for $r (@rules)
     $rn = anchor("r-".$rulename, $rulename) ;
     $rn = fixupHead($rn) ;
 
+    if($rulename eq 'IRI_REF') 
+    {
+	print "  </tbody></table>\n" ;
+	print "</div>\n" ;
+	print "<p>Productions for terminals:</p>\n" ;
+	print "<div class=\"grammarTable\">\n" ;
+	print "  <table><tbody>\n" ;
+    }
+
+
     print "\n" ;
     print "<tr valign=\"baseline\">\n" ;
     $rlabel = '[' . $ruleNum .  ']&nbsp;&nbsp;' ;

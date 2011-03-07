@@ -2,6 +2,11 @@ package dev ;
 
 public class DevARQ
 {
+    // rdf:PlainLiteral conversion.
+    // Experiment with a parser set up that copies nodes.
+    // If little performance impact, switch to "Jena3 nodes" as trial run.
+    
+    
     // OpTopN - OpExecutor.execute(OpTop).
     // BSBM Explore/Update
     // Remote SPARQL Update 
