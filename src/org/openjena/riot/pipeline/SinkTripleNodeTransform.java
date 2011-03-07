@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 Epimorphics Ltd.
+ * (c) Copyright 2010, 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -56,13 +56,15 @@ public class SinkTripleNodeTransform extends SinkWrapper<Triple>
     private static Node apply(NodeTransform nodeTransform, Node node)
     {
         if ( nodeTransform == null ) return node ;
-        return nodeTransform.convert(node) ;
+        Node n2 = nodeTransform.convert(node) ;
+        if ( n2 == null ) return node ;
+        return n2 ;
     }
 }
 
 
 /*
- * (c) Copyright 2010 Epimorphics Ltd.
+ * (c) Copyright 2010, 2011 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

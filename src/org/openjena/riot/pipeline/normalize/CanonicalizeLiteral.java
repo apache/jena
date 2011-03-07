@@ -23,11 +23,13 @@ public class CanonicalizeLiteral implements NodeTransform
 
     public static CanonicalizeLiteral get() { return singleton ; }
 
-    
     private CanonicalizeLiteral() {}
     
     public Node convert(Node node)
     {
+        if ( ! node.isLiteral() )
+            return node ;
+            
         RDFDatatype dt = node.getLiteralDatatype() ;
         Node n2 ;
         if ( dt == null )

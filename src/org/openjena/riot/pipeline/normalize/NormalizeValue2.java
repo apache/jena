@@ -30,7 +30,7 @@ class NormalizeValue2
             chars[0] = NonChar ;
     }
     
-    // Works on decimals and integers as "." is "just" a  stopping character.
+    // Works on decimals and integers as "." is "just" a stopping character.
     private static void stripLeadingZeros(char[] chars)
     {
         // Avoid sign, or zapped sign.
