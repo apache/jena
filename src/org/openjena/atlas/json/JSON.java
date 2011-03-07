@@ -6,13 +6,14 @@
 
 package org.openjena.atlas.json;
 
-import java.io.FileInputStream ;
 import java.io.FileNotFoundException ;
+import java.io.IOException ;
 import java.io.InputStream ;
 import java.io.OutputStream ;
 import java.io.Reader ;
 import java.io.StringReader ;
 
+import org.openjena.atlas.io.IO ;
 import org.openjena.atlas.io.IndentedWriter ;
 import org.openjena.atlas.io.PeekReader ;
 import org.openjena.atlas.json.io.JSONMaker ;
@@ -56,11 +57,17 @@ public class JSON
     {
         try
         {
-            PeekReader r = PeekReader.makeUTF8(new FileInputStream(filename)) ;
+            InputStream in = IO.openFileEx(filename) ;
+            PeekReader r = PeekReader.makeUTF8(in) ;
             return _parse(r) ;
-        } catch (FileNotFoundException ex)
+        }
+        catch (FileNotFoundException ex)
         {
-            throw new RuntimeException("File not found: "+filename) ;
+            throw new RuntimeException("File not found: "+filename, ex) ;
+        }
+        catch (IOException ex)
+        {
+            throw new RuntimeException("IOException: "+filename, ex) ;
         }
     }
     
@@ -69,12 +76,19 @@ public class JSON
     {
         try
         {
-            PeekReader r = PeekReader.makeUTF8(new FileInputStream(filename)) ;
+            InputStream in = IO.openFileEx(filename) ;
+            PeekReader r = PeekReader.makeUTF8(in) ;
             return _parseAny(r) ;
-        } catch (FileNotFoundException ex)
-        {
-            throw new RuntimeException("File not found: "+filename) ;
         }
+        catch (FileNotFoundException ex)
+        {
+            throw new RuntimeException("File not found: "+filename, ex) ;
+        }
+        catch (IOException ex)
+        {
+            throw new RuntimeException("IOException: "+filename, ex) ;
+        }
+
     }
     
     // Hide the reader versions - not encouraged due to charset problems. 

@@ -10,6 +10,7 @@ package org.openjena.atlas.io;
 import java.io.BufferedReader ;
 import java.io.ByteArrayOutputStream ;
 import java.io.FileInputStream ;
+import java.io.FileNotFoundException ;
 import java.io.IOException ;
 import java.io.InputStream ;
 import java.io.InputStreamReader ;
@@ -55,21 +56,31 @@ public class IO
      */
     static public InputStream openFile(String filename)
     {
-        // Decode filename? 
         try {
-            if ( filename == null || filename.equals("-") )
-                return System.in ;
-            if ( filename.startsWith("file:") )
-            {
-                filename = filename.substring("file:".length()) ;
-                filename = IRILib.decode(filename) ;
-            }
-            InputStream in = new FileInputStream(filename) ;
-            if ( filename.endsWith(".gz") )
-                in = new GZIPInputStream(in) ;
-            return in ;
+           return openFileEx(filename) ;
         }
         catch (Exception ex) { throw new AtlasException(ex) ; }
+    }
+    
+    /** Open an input stream to a file; do not mask IOExceptions. 
+     * If the filename is null or "-", return System.in
+     * If the filename ends in .gz, wrap in  GZIPInputStream  
+     * @param filename
+     * @throws FileNotFoundException 
+     */
+    static public InputStream openFileEx(String filename) throws IOException
+    {
+        if ( filename == null || filename.equals("-") )
+            return System.in ;
+        if ( filename.startsWith("file:") )
+        {
+            filename = filename.substring("file:".length()) ;
+            filename = IRILib.decode(filename) ;
+        }
+        InputStream in = new FileInputStream(filename) ;
+        if ( filename.endsWith(".gz") )
+            in = new GZIPInputStream(in) ;
+        return in ;
     }
     
     /** Open a UTF8 Reader for a file. 
