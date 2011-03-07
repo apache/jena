@@ -1,7 +1,15 @@
-PREFIX : <http://example.com/data/#>
-SELECT ?g (AVG(?p) AS ?avg) ((MIN(?p) + MAX(?p)) / 2 AS ?c)
-#SELECT ?g ((MIN(?p) + MAX(?p)) / 2 AS ?c)
-WHERE {
-  ?g :p ?p .
-}
-GROUP BY ?g
+PREFIX dbpc: <http://dbpedia.org/resource/Category:>
+PREFIX dbpo: <http://dbpedia.org/ontology/>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+SELECT ?x ?y
+## FROM <http://dbpedia.org/resource/Dynamic_programming>
+## FROM <http://dbpedia.org/resource/Optimal_control>
+FROM <D1.nt>
+WHERE {?x dcterms:subject dbpc:Optimal_control .
+{SELECT ?x ?y WHERE
+ {?x rdfs:label ?y . FILTER (lang(?y) = 'en' || lang(?y) = 'de')
+ }ORDER BY (lang(?y))
+}}
+
+
