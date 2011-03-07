@@ -55,7 +55,7 @@ public abstract class QueryIteratorBase
     private boolean cancelled = false ; // Volatile? // XXX Remove me?? - or reuse as abortIterator
     
     /** In the process of requesting a cancel, or one has been done */  
-    private volatile boolean requestingCancel = false;
+    private boolean requestingCancel = false;
 
     /* If set, any hasNext/next throws QueryAbortedException */
     private volatile boolean abortIterator = false ;
@@ -90,24 +90,25 @@ public abstract class QueryIteratorBase
     /** final - subclasses implement hasNextBinding() */
     public final boolean hasNext()
     {
-        try {
-            if ( finished )
-                return false ;
-            
-            if ( abortIterator )
-                throw new QueryCancelledException() ;
-            
-            boolean r = hasNextBinding() ; 
-                
-            if ( r == false )
+        if ( finished )
+            return false ;
+
+        if ( abortIterator )
+            throw new QueryCancelledException() ;
+
+        // Handles exceptions
+        boolean r = hasNextBinding() ; 
+
+        if ( r == false )
+            try {
                 close() ;
+            } catch (QueryFatalException ex)
+            { 
+                Log.fatal(this, "Fatal exception: "+ex.getMessage() ) ;
+                abort() ;       // Abort this iterator.
+                throw ex ;      // And pass on up the exception.
+            }
             return r ;
-        } catch (QueryFatalException ex)
-        { 
-            Log.fatal(this, "Fatal exception: "+ex.getMessage() ) ;
-            abort() ;       // Abort this iterator.
-            throw ex ;      // And pass on up the exception.
-        }
     }
     
     /** final - autoclose and registration relies on it - implement moveToNextBinding() */
@@ -181,19 +182,33 @@ public abstract class QueryIteratorBase
         finished = true ;
     }
     
-    public void cancel() {
+    /** Cancel this iterator */
+    public final void cancel() {
         // Call requestCancel() once.
-        // XXX Multithreaed access to cancel.
     	if (!this.requestingCancel) {
-    		// the requestCancel may throw QueryIterAbortCancellationRequestException
-    	    try {
-        		this.requestCancel() ;
-        		this.requestingCancel = true;
-        		this.abortIterator = true ;
-    	    } catch (QueryIterAbortCancellationRequestException ex)
-    	    // XXX Do not set requestingCancel - allows sort to drain.
-    	    {}
+    	    synchronized (this)
+    	    {
+    	        this.requestCancel() ;
+    	        this.requestingCancel = true;
+    	        this.abortIterator = true ;
+            }
     	}
+    }
+
+    /** Cancel this iterator but allow it to continue servicing hasNext/next.
+     *  Wrong answers are possible(e.g. partial ORDER BY and LIMIT).
+     *  May be useful for debugging. 
+     */
+    public final void cancelAllowContinue() {
+        // Call requestCancel() once.
+        if (!this.requestingCancel) {
+            synchronized (this)
+            {
+                this.requestCancel() ;
+                //this.requestingCancel = true;
+                //this.abortIterator = true ;
+            }
+        }
     }
 
     /** close an iterator */
@@ -208,11 +223,6 @@ public abstract class QueryIteratorBase
     {
         if ( iter == null ) return ;
         iter.cancel() ;
-    }
-    
-    // XXX Delete me.
-	public static class QueryIterAbortCancellationRequestException extends RuntimeException {
-        public QueryIterAbortCancellationRequestException() {}
     }
     
 	// XXX Move me to "query" package.

@@ -40,7 +40,7 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
 import com.hp.hpl.jena.sparql.engine.binding.BindingRoot;
 import com.hp.hpl.jena.sparql.engine.binding.BindingUtils;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIteratorBase.QueryIterAbortCancellationRequestException;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIteratorBase ;
 import com.hp.hpl.jena.sparql.syntax.ElementGroup;
 import com.hp.hpl.jena.sparql.syntax.Template;
 import com.hp.hpl.jena.sparql.util.Context;
@@ -97,23 +97,23 @@ public class QueryExecutionBase implements QueryExecution
             plan.close() ;
     }
 
+    @Deprecated
+    public static boolean cancelAllowDrain = false ; 
 	public synchronized void cancel() 
 	{
 	    // This is called asynchronously to the execution.
 		if ( queryIterator != null ) 
 		{
-		    // XXX Check comment.
 			// we cancel the chain of iterators, however, we do *not* close the iterators. 
 			// That happens after the cancellation is properly over.
-			try 
-			{
-				queryIterator.cancel() ;
-			} catch (QueryIterAbortCancellationRequestException e) 
-			{
-				// this means that the cancellation of the main iterator was aborted because
-				// the underlying wrapped iterator was aborted instead
-			    // XXX Currently, caught in QueryIteratorBase which then avoids setting it's own flags. 
-			}
+		    if ( cancelAllowDrain && queryIterator instanceof QueryIteratorBase )
+		    {
+		        QueryIteratorBase qIter = (QueryIteratorBase)queryIterator ;
+		        qIter.cancelAllowContinue() ;
+		    }
+		    else
+		        // Normal case - correct SPARQL
+		        queryIterator.cancel() ;
 			cancel = true ;
 		}
         cancel = true ;

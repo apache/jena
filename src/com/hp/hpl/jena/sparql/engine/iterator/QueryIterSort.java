@@ -44,23 +44,13 @@ public class QueryIterSort extends QueryIterPlainWrapper
         this.setIterator(sort(qIter, comparator));
     }
 
-    // TODO use this - no exception needed
-//    @Override
-//    public void requestCancel()
-//    {
-//        this.embeddedIterator.cancel();
-//        super.requestCancel() ;
-//    }
-
     @Override
-    public void cancel() {
-    	// cancel the embedded iterator
-    	this.embeddedIterator.cancel();
-    	throw new QueryIterAbortCancellationRequestException();
-    	// Instead? super.cancel() ;
-    	// requestCancel?
+    public void requestCancel()
+    {
+        this.embeddedIterator.cancel();
+        super.requestCancel() ;
     }
-    
+
     private Iterator<Binding> sort(final QueryIterator qIter, final Comparator<Binding> comparator)
     {
         return new IteratorDelayedInitialization<Binding>() {

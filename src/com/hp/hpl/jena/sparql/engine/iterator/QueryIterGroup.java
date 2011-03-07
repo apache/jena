@@ -38,22 +38,13 @@ public class QueryIterGroup extends QueryIterPlainWrapper
         setIterator(iter) ;
     }
 
-    // TODO use this - no exception needed
-//  @Override
-//  public void requestCancel()
-//  {
-//      this.embeddedIterator.cancel();
-//      super.requestCancel() ;
-//  }
-	
 	@Override
-	public void cancel() {
-		// cancel the embedded iterator explicitly
-		this.embeddedIterator.cancel();
-		throw new QueryIterAbortCancellationRequestException();
-		//??super.cancel() ;
+	public void requestCancel()
+	{
+	    this.embeddedIterator.cancel();
+	    super.requestCancel() ;
 	}
-	
+
     // Phase 1 : Consume the input iterator, assigning groups (keys) 
     //           and push rows through the aggregator function. 
     
