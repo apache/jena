@@ -1,6 +1,13 @@
-@prefix : <http://example/> .
+@prefix : <http://people.example/> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>  .
 
-# _:x :p "123" .
-[] :p (1 2) .
+:x1 :p _:b .
+:x2 :p _:b .
 
-# :x :p (2) .
+## _:b :q 1 .
+## _:b :q 2 .
+
+_:b rdf:first 1 ;
+    rdf:rest rdf:nil .
+
+

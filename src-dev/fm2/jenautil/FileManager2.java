@@ -67,14 +67,14 @@ import fm2.atlas.StreamManager ;
  * @see FileUtils
  */
  
-public class FileManager extends StreamManager
+public class FileManager2 extends StreamManager
 {
     /** Delimiter between path entries : because URI scheme names use : we only allow ; */
     public static final String PATH_DELIMITER = ";";
     public static final String filePathSeparator = java.io.File.separator ;
-    private static Logger log = LoggerFactory.getLogger(FileManager.class) ;
+    private static Logger log = LoggerFactory.getLogger(FileManager2.class) ;
 
-    static FileManager instance = null ;
+    static FileManager2 instance = null ;
 
     boolean cacheModelLoads = false ;
     Map<String, Model> modelCache = null ;
@@ -82,7 +82,7 @@ public class FileManager extends StreamManager
     /** Get the global file manager.
      * @return the global file manager
      */
-    public static FileManager get()
+    public static FileManager2 get()
     {
         // Singleton pattern adopted in case we later have several file managers.
         if ( instance == null )
@@ -94,20 +94,20 @@ public class FileManager extends StreamManager
      * If called before any call to get(), then the usual default filemanager is not created 
      * @param globalFileManager
      */
-    public static void setGlobalFileManager(FileManager globalFileManager)
+    public static void setGlobalFileManager(FileManager2 globalFileManager)
     {
         instance = globalFileManager ;
     }
     
     /** Create an uninitialized FileManager */
-    public FileManager() {}
+    public FileManager2() {}
     
     /** Create a new file manager that is a deep copy another.
      *  Location mapper and locators chain are copied (the locators are not cloned).
      *  The model cache is not copied and is initially set to not cache.
      * @param filemanager
      */
-    public FileManager(FileManager filemanager)
+    public FileManager2(FileManager2 filemanager)
     {
         handlers.addAll(filemanager.handlers) ;
         mapper = null ;
@@ -118,15 +118,15 @@ public class FileManager extends StreamManager
     }
 
     /** Create a "standard" FileManager. */
-    public static FileManager makeGlobal()
+    public static FileManager2 makeGlobal()
     {
-        FileManager fMgr = new FileManager(JenaIOEnvironment.get()) ;
+        FileManager2 fMgr = new FileManager2(JenaIOEnvironment.get()) ;
         setStdLocators(fMgr) ;
         return fMgr ;
     }
     
     /** Force a file handler to have the default configuration. */
-    public static void setStdLocators(FileManager fMgr)
+    public static void setStdLocators(FileManager2 fMgr)
     {
         fMgr.handlers.clear() ;
         fMgr.addLocatorFile() ;
@@ -134,7 +134,7 @@ public class FileManager extends StreamManager
         fMgr.addLocatorClassLoader(fMgr.getClass().getClassLoader()) ;
     }
     /** Create with the given location mapper */
-    public FileManager(LocationMapper _mapper)    { setLocationMapper(_mapper) ; }
+    public FileManager2(LocationMapper _mapper)    { setLocationMapper(_mapper) ; }
 
     /** @deprecated Use setLocationMapper */
     @Deprecated

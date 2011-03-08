@@ -185,7 +185,7 @@ public class JenaIOEnvironment
         }
         
         // Make a file manager to look for the location mapping file
-        FileManager fm = new FileManager() ;
+        FileManager2 fm = new FileManager2() ;
         fm.addLocatorFile() ;
         fm.addLocatorClassLoader(fm.getClass().getClassLoader()) ;
         
@@ -193,7 +193,7 @@ public class JenaIOEnvironment
             String uriConfig = null ; 
             InputStream in = null ;
             
-            StringTokenizer pathElems = new StringTokenizer( configPath, FileManager.PATH_DELIMITER );
+            StringTokenizer pathElems = new StringTokenizer( configPath, FileManager2.PATH_DELIMITER );
             while (pathElems.hasMoreTokens()) {
                 String uri = pathElems.nextToken();
                 if ( uri == null || uri.length() == 0 )

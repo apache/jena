@@ -225,7 +225,9 @@ public class UpdateEngineWorker implements UpdateVisitor
     {
         List<Quad> quads = update.getQuads() ;
         // Convert bNodes to named variables first.
-        quads = convertBNodesToVariables(quads) ;
+//        if ( false )
+//            // Removed from SPARQL
+//            quads = convertBNodesToVariables(quads) ;
         // Convert quads to a pattern.
         Element el = elementFromQuads(quads) ;
         List<Binding> bindings = evalBindings(el, null) ;
@@ -301,7 +303,7 @@ public class UpdateEngineWorker implements UpdateVisitor
         return dsg ;
     }
     
-    protected static List<Quad> convertBNodesToVariables(List<Quad> quads)
+    protected static List<Quad> unused_convertBNodesToVariables(List<Quad> quads)
     {
         NodeTransform bnodesToVariables = new NodeTransformBNodesToVariables() ;
         return NodeTransformLib.transformQuads(bnodesToVariables, quads) ;

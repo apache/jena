@@ -1,15 +1,9 @@
-PREFIX dbpc: <http://dbpedia.org/resource/Category:>
-PREFIX dbpo: <http://dbpedia.org/ontology/>
-PREFIX dcterms: <http://purl.org/dc/terms/>
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-SELECT ?x ?y
-## FROM <http://dbpedia.org/resource/Dynamic_programming>
-## FROM <http://dbpedia.org/resource/Optimal_control>
-FROM <D1.nt>
-WHERE {?x dcterms:subject dbpc:Optimal_control .
-{SELECT ?x ?y WHERE
- {?x rdfs:label ?y . FILTER (lang(?y) = 'en' || lang(?y) = 'de')
- }ORDER BY (lang(?y))
-}}
-
-
+PREFIX : <http://people.example/>
+SELECT ?y ?name WHERE {
+ :alice :knows ?y .
+ {SELECT ?y (MIN(?n) AS ?name) WHERE {
+  ?y :name ?n
+  
+ }GROUP BY ?y
+ }
+}
