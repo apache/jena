@@ -18,7 +18,7 @@ import java.util.* ;
  *  Tries to make N3 data look readable - works better on regular data.
  *
  * @author		Andy Seaborne
- * @version 	$Id: N3JenaWriterPP.java,v 1.3 2009-07-01 17:23:13 andy_seaborne Exp $
+ * @version 	$Id: N3JenaWriterPP.java,v 1.4 2011-03-08 19:54:21 andy_seaborne Exp $
  */
 
 
@@ -309,14 +309,17 @@ public class N3JenaWriterPP extends N3JenaWriterCommon
             if (N3JenaWriter.DEBUG)
                 out.println("# RDF List");
 
-            if (!r.isAnon() || countArcsTo(r) > 0 )
-            {
-                // Name it.
-                out.print(formatResource(r));
-                out.print(" :- ");
-            }
-            writeList(r);
-            out.println(" .");
+            // Includes the case of shared lists-as-objects. 
+//            if (!r.isAnon() || countArcsTo(r) > 0 )
+//            {
+//                // Name it.
+//                out.print(formatResource(r));
+//                out.print(" :- ");
+//            }
+//            writeList(r);
+//            out.println(" .");
+            // Turtle does not have :-
+            writeListUnpretty(r) ;
         }
 
         // Finally, panic.
@@ -533,7 +536,6 @@ public class N3JenaWriterPP extends N3JenaWriterCommon
 
 
 	// Need to out.print in short (all on one line) and long forms (multiple lines)
-	// That needs starts point depth tracking.
     protected void writeList(Resource resource)
 	{
 		out.print( "(");
@@ -552,8 +554,51 @@ public class N3JenaWriterPP extends N3JenaWriterCommon
 		rdfListsDone.add(resource);
 
 	}
+    
+    // Need to out.print in long (triples) form.
+    protected void writeListUnpretty(Resource r)
+    {
+        //for ( ; ! r.equals(RDF.nil); )
+        {
+            // Write statements at this node.
+            StmtIterator sIter = r.getModel().listStatements(r, null, (RDFNode)null) ;
+            for ( ; sIter.hasNext() ; )
+            {
+                Statement s = sIter.next() ;
+                writeStatement(s) ;
+            }
 
-	// Called before each writing run.
+            // Look for rdf:rest.
+            sIter = r.getModel().listStatements(r, RDF.rest, (RDFNode)null) ;
+            for ( ; sIter.hasNext() ; )
+            {
+                Statement s = sIter.next() ;
+                RDFNode nextNode = s.getObject() ;
+                if ( nextNode instanceof Resource )
+                {
+                    Resource r2 = (Resource)nextNode ;
+                    writeListUnpretty(r2) ;
+                }
+                else
+                    writeStatement(s) ;
+            }
+        }
+    }
+
+    private void writeStatement(Statement s)
+    {
+        out.print(formatResource(s.getSubject()));
+        out.print(" ") ;
+
+        out.print(formatResource(s.getPredicate())) ;
+        out.print(" ") ;
+        
+        out.print(formatNode(s.getObject())) ;
+        out.println(" .") ;
+        
+    }
+
+    // Called before each writing run.
 	protected void allocateDatastructures()
 	{
 		rdfLists 		= new HashSet<Resource>() ;
