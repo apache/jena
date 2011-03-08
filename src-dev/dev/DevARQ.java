@@ -15,6 +15,8 @@ public class DevARQ
     //   needs clean up.
     //   OutputLangUtils without the triple.quad writers?
     
+    // IRILib: tidyup char lists handling
+    // "~" in file: is (pedantically) illegal.  Think about changing IRI lib. 
     
     // Parse output that preserves explicit labels.
     // Suggests bnode parser -> bnode storage is done on insertion.

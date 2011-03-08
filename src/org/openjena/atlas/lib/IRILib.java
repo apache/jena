@@ -23,6 +23,17 @@ public class IRILib
         return encStr ;
     }
     
+    /** Encode using the rules for a file: URL.  Same as encodeUriPath except
+     * add "~" to the encoded set.
+     *  Does not encode non-ASCII characters
+     *   
+     */
+    public static String encodeFileURL(String string)
+    {
+        String encStr = StrUtils.encodeHex(string,'%', charsFilename) ;
+        return encStr ;
+    }
+    
     /** Encode using the rules for a path (e.g. ':' and '/' do not get encoded) */
     public static String encodeUriPath(String uri)
     {
@@ -48,10 +59,12 @@ public class IRILib
     /* RFC 3986
      * 
      * unreserved  = ALPHA / DIGIT / "-" / "." / "_" / "~"
-     *  gen-delims  = ":" / "/" / "?" / "#" / "[" / "]" / "@"
+     * gen-delims  = ":" / "/" / "?" / "#" / "[" / "]" / "@"
      * sub-delims  = "!" / "$" / "&" / "'" / "(" / ")"
                     / "*" / "+" / "," / ";" / "="
      */
+    
+    // XXX Append(char[], char[])
     
     private static char uri_reserved[] = 
     { 
@@ -71,6 +84,14 @@ public class IRILib
       '=', '+', '$', ',', '/', '?', '%', '#', '[', ']',
       '{', '}', '|', '\\', '`', '^',
       ' ', '<', '>', '\n', '\r', '\t' } ;
+    
+    private static char[] charsFilename =
+        // reserved, + non-chars + nasties.
+        { '!', '*', '"', '\'', '(', ')', ';', ':', '@', '&', 
+          '=', '+', '$', ',', /*'/',*/ '?', '%', '#', '[', ']',
+          '{', '}', '|', '\\', '`', '^',
+          ' ', '<', '>', '\n', '\r', '\t',
+          '~'} ;
 
     private static char[] charsPath =  
     {
@@ -146,7 +167,7 @@ public class IRILib
             fn = fn.replace('\\', '/' ) ;
         }
         
-        fn = encodeUriPath(fn) ;
+        fn = encodeFileURL(fn) ;
         return "file://"+fn ;
     }
     
@@ -165,7 +186,7 @@ public class IRILib
         
         if ( fn.startsWith("file:///") )
             // Good.
-            return encodeUriPath(fn) ;
+            return encodeFileURL(fn) ;
 
         if ( fn.startsWith("file://") )
         {

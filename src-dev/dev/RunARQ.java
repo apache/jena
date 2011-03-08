@@ -21,6 +21,7 @@ import org.openjena.atlas.io.IndentedWriter ;
 import org.openjena.atlas.json.JSON ;
 import org.openjena.atlas.json.JsonValue ;
 import org.openjena.atlas.lib.Chars ;
+import org.openjena.atlas.lib.IRILib ;
 import org.openjena.atlas.lib.Sink ;
 import org.openjena.atlas.lib.StrUtils ;
 import org.openjena.atlas.logging.Log ;
@@ -28,6 +29,7 @@ import org.openjena.riot.ErrorHandlerFactory ;
 import org.openjena.riot.RiotReader ;
 import org.openjena.riot.checker.CheckerIRI ;
 import org.openjena.riot.pipeline.normalize.CanonicalizeLiteral ;
+import org.openjena.riot.system.IRIResolver ;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.datatypes.xsd.XSDDuration ;
@@ -107,6 +109,15 @@ public class RunARQ
     
     public static void main(String[] argv) throws Exception
     {
+        
+        
+        String x = IRILib.filenameToIRI("./") ;
+        System.out.println(x) ;
+        
+        //processIRI("file:///base/dir/a~b") ; exit(0) ;
+        
+        IRIResolver.suppressExceptions() ; exit(0) ; 
+        
 //        riotcmd.riot.main("D.ttl") ; exit(0) ;
 //        arq.sparql.main("--data=D.trig", "SELECT * { {?s ?p ?o} UNION {GRAPH ?g { ?s ?p ?o}}}") ; exit(0) ;
 
@@ -288,6 +299,8 @@ public class RunARQ
     
     private static void processIRI(String iriStr)
     {
+        
+        
         IRI iri = IRIFactory.iriImplementation().create(iriStr) ;
         System.out.println(iri) ;
         System.out.println("Relative: "+iri.isRelative()) ;
@@ -295,7 +308,9 @@ public class RunARQ
         Iterator<Violation> vIter = iri.violations(true) ;
         for ( ; vIter.hasNext() ; )
         {
-            System.out.println(vIter.next()) ;
+            Violation v = vIter.next() ;
+            System.out.println(v.getShortMessage()) ;
+            //System.out.println(v.getSpecificationURL()) ;
         }
         System.out.println(iriStr + " ==> "+iri) ;
         CheckerIRI.iriViolations(iri, ErrorHandlerFactory.errorHandlerWarn) ;
