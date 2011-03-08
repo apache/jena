@@ -137,7 +137,11 @@ public class IRILib
         if ( ! iri.startsWith("file:") )
             throw new AtlasException("Not a file: URI: "+iri) ; 
         
-        String fn = iri.substring("file:".length()) ;
+        String fn ;
+        if ( iri.startsWith("file:///") )
+            fn = iri.substring("file://".length()) ;
+        else
+            fn = iri.substring("file:".length()) ;
         return decode(fn) ;
     }
     

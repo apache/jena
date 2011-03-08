@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 Epimorphics Ltd.
+ * (c) Copyright 2010, 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -191,10 +191,28 @@ class NormalizeValue
             return Node.createLiteral(lex2, null, datatype) ;
         }
     } ;
+
+    public static DatatypeHandler dtPlainLiteral = new DatatypeHandler() {
+        public Node handle(Node node, String lexicalForm, RDFDatatype datatype)
+        {
+            int idx = lexicalForm.lastIndexOf('@') ;
+            if ( idx == -1 )
+            {
+                // Bad.
+                return node ;
+            }
+            
+            String lex = lexicalForm.substring(0, idx) ;
+            if ( idx == lexicalForm.length()-1 )
+                return Node.createLiteral(lex) ;
+            String lang = lexicalForm.substring(idx+1) ;
+            return Node.createLiteral(lex,lang, null) ;
+        }
+    } ;
 }
 
 /*
- * (c) Copyright 2010 Epimorphics Ltd.
+ * (c) Copyright 2010, 2011 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

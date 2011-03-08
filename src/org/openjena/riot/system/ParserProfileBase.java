@@ -6,6 +6,8 @@
 
 package org.openjena.riot.system;
 
+import org.openjena.atlas.lib.Cache ;
+import org.openjena.atlas.lib.CacheFactory ;
 import org.openjena.riot.ErrorHandler ;
 import org.openjena.riot.RiotException ;
 import org.openjena.riot.lang.LabelToNode ;
@@ -68,7 +70,7 @@ public class ParserProfileBase implements ParserProfile
     //@Override
     public Triple createTriple(Node s, Node p, Node o, long line, long col)
     {
-        return new Triple(s,p,o) ;
+        return new Triple(s, p, o) ;
     }
 
     //@Override

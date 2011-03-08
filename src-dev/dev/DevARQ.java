@@ -3,9 +3,11 @@ package dev ;
 public class DevARQ
 {
     // rdf:PlainLiteral conversion.
-    // Experiment with a parser set up that copies nodes.
-    // If little performance impact, switch to "Jena3 nodes" as trial run.
+    // Experiment with a parser set up that copies nodes.  Result: 120: -> 114K
+    // Note the use of ParserProfile to abstract node generation. 
     
+    // SPARQL parser; reuse charstream objects? using Reinit()  
+    // JavaCharStream allocates a 4k char buffer on every call.
     
     // OpTopN - OpExecutor.execute(OpTop).
     // BSBM Explore/Update
@@ -14,9 +16,6 @@ public class DevARQ
     // RIOT Output
     //   needs clean up.
     //   OutputLangUtils without the triple.quad writers?
-    
-    // IRILib: tidyup char lists handling
-    // "~" in file: is (pedantically) illegal.  Think about changing IRI lib. 
     
     // Parse output that preserves explicit labels.
     // Suggests bnode parser -> bnode storage is done on insertion.
@@ -36,7 +35,7 @@ public class DevARQ
     // And effect on XML results.
     
     // Mem dataset with union graph
-    // Documentation - assemblers for datasets
+    // ** Documentation - assemblers for datasets
     
     // HTTP result set iterator to know when it's closed.
     

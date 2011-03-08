@@ -109,15 +109,8 @@ public class RunARQ
     
     public static void main(String[] argv) throws Exception
     {
-        
-        
-        String x = IRILib.filenameToIRI("./") ;
-        System.out.println(x) ;
-        
-        // WRONG
-        String x2 = IRILib.IRIToFilename(x) ;
-        System.out.println(x2) ;
-        exit(0) ;
+        // Parser test
+        riotcmd.riot.main("--sink", "--time", "D.nt") ;
         
         //processIRI("file:///base/dir/a~b") ; exit(0) ;
         

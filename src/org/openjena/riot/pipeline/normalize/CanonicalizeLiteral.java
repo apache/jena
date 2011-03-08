@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 Epimorphics Ltd.
+ * (c) Copyright 2010, 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -16,6 +16,7 @@ import com.hp.hpl.jena.datatypes.RDFDatatype ;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.graph.NodeTransform ;
+import com.hp.hpl.jena.vocabulary.RDF ;
 
 public class CanonicalizeLiteral implements NodeTransform    
 {
@@ -61,6 +62,8 @@ public class CanonicalizeLiteral implements NodeTransform
         return Node.createLiteral(lexicalForm, langTag2, null) ;
     }
     
+    private static final RDFDatatype dtPlainLiteral = Node.getType(RDF.getURI()+"PlainLiteral") ;
+    
     private final static Map<RDFDatatype, DatatypeHandler> dispatch = new HashMap<RDFDatatype, DatatypeHandler>() ;
 
     // MUST be after the handler definitions as these assign to statics, so it's code lexcial order.
@@ -103,10 +106,13 @@ public class CanonicalizeLiteral implements NodeTransform
 
         dispatch.put(XSDDatatype.XSDduration,   null) ;
         dispatch.put(XSDDatatype.XSDboolean,    NormalizeValue.dtBoolean) ;
+        
+        dispatch.put(dtPlainLiteral,            NormalizeValue.dtPlainLiteral) ;
+        
     }
 }
 /*
- * (c) Copyright 2010 Epimorphics Ltd.
+ * (c) Copyright 2010, 2011 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

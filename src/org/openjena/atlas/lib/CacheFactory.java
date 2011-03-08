@@ -51,7 +51,7 @@ public class CacheFactory
         return new CacheWithGetter<Key, Value>(cache, getter) ;
     }
 
-    /** Create a lightweight cache (e.g. slot replcaement) */  
+    /** Create a lightweight cache (e.g. slot replacement) */  
     public static <Key, Value> Cache<Key, Value> createSimpleCache(int size)
     {
         return new CacheSimple<Key, Value>(size) ; 
