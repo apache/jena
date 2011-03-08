@@ -1,30 +1,45 @@
 /*
- * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
 package dev;
 
-import com.hp.hpl.jena.iri.IRI;
-import com.hp.hpl.jena.iri.IRIFactory;
+import java.util.Iterator ;
+
+import com.hp.hpl.jena.iri.IRI ;
+import com.hp.hpl.jena.iri.IRIFactory ;
+import com.hp.hpl.jena.iri.Violation ;
 
 public class RunIRI
 {
-
-    public static void main(String[] args)
+    public static void main(String... argv)
     {
-        IRI base = IRIFactory.iriImplementation().construct("http://example/") ;
-        IRI iii= base.construct("%61%2E%74%78%74");
-        iii.toString();
-        System.out.println(iii) ;
+        processIRI("file:///base/dir/a~b") ;
+    }
+    
+    
+    private static void processIRI(String iriStr)
+    {
+        IRI iri = IRIFactory.iriImplementation().create(iriStr) ;
+        System.out.println(iri) ;
+        System.out.println("Relative: "+iri.isRelative()) ;
+
+        Iterator<Violation> vIter = iri.violations(true) ;
+        for ( ; vIter.hasNext() ; )
+        {
+            System.out.println("** "+vIter.next().getShortMessage()) ;
+        }
+        System.out.println(iriStr + " ==> "+iri) ;
+
         System.exit(0) ;
     }
 
 }
 
 /*
- * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
