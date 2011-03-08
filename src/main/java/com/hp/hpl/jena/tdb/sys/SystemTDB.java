@@ -214,7 +214,7 @@ public class SystemTDB
     
     // ----
     
-    private static int xintValue(String prefix, String name, int defaultValue)
+    private static int intValue(String prefix, String name, int defaultValue)
     {
         if ( ! prefix.endsWith(".") )
             name = prefix+"."+name ;
@@ -248,7 +248,7 @@ public class SystemTDB
         try
         {
             TDB.logInfo.info("Using properties from '"+propertyFileName+"'") ;
-            PropertyUtils.loadFromFile(properties, propertyFileName) ;
+            PropertyUtils.loadFromFile(p, propertyFileName) ;
         } catch (FileNotFoundException ex)
         { 
             log.debug("No system properties file ("+propertyFileName+")") ;
