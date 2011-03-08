@@ -25,21 +25,24 @@ import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 public class ReportOutOfMemoryManyGraphsTDB
 {
     //public static final String TDB_DIR = "D:/work/relm/outofmem_jena_DB";
-    public static final String TDB_DIR = "DB";
-    public static final int NOGRAPHS = 100000; // Number of data graphs to load
+    public static final String TDB_DIR = "DB1";
+    public static final int NOGRAPHS = 500000; // Number of data graphs to load
 
     public static void main( String[] args ) {
 
-        // Set the TDB properties file.
-        System.setProperty("com.hp.hpl.jena.tdb.settings", "tdb.properties") ;
-        
-        System.out.printf("Block read cache      = %d\n", SystemTDB.BlockReadCacheSize) ;
-        System.out.printf("Block write cache     = %d\n", SystemTDB.BlockWriteCacheSize) ;
-        
-        System.out.printf("Node -> NodeId cache  = %d\n", SystemTDB.Node2NodeIdCacheSize) ;
-        System.out.printf("NodeId -> Node cache  = %d\n", SystemTDB.NodeId2NodeCacheSize) ;
-        
+        if ( false )
+        {
+            // Set the TDB properties file.
+            System.setProperty("com.hp.hpl.jena.tdb.settings", "tdb.properties") ;
+
+            System.out.printf("Block read cache      = %d\n", SystemTDB.BlockReadCacheSize) ;
+            System.out.printf("Block write cache     = %d\n", SystemTDB.BlockWriteCacheSize) ;
+
+            System.out.printf("Node -> NodeId cache  = %d\n", SystemTDB.Node2NodeIdCacheSize) ;
+            System.out.printf("NodeId -> Node cache  = %d\n", SystemTDB.NodeId2NodeCacheSize) ;
+        }
         System.out.printf("Max mem: %,dM\n", (Runtime.getRuntime().maxMemory()/(1024*1024))) ;
+        
         if ( true )
         {
             System.out.println("DIRECT mode") ;
