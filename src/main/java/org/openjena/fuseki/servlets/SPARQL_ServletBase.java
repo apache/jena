@@ -247,6 +247,16 @@ public abstract class SPARQL_ServletBase extends HttpServlet
         } catch (IOException ex) { errorOccurred(ex) ; }
     }
 
+    protected static void warning(String string)
+    {
+        serverlog.warn(string) ;
+    }
+    
+    protected static void warning(String string, Throwable thorwable)
+    {
+        serverlog.warn(string, thorwable) ;
+    }
+    
     protected static void errorBadRequest(String string)
     {
         error(HttpSC.BAD_REQUEST_400, string) ;

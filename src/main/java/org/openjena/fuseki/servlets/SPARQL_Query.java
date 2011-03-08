@@ -114,7 +114,7 @@ public abstract class SPARQL_Query extends SPARQL_ServletBase
             errorNotImplemented("Not a GET or POST request") ;
             return false ;
         }
-        log.warn("Service Description / SPARQL Query") ;
+        warning("Service Description / SPARQL Query") ;
         errorNotFound("Service Description") ;
         return false ;
     }
@@ -176,7 +176,7 @@ public abstract class SPARQL_Query extends SPARQL_ServletBase
             {
                 String name = en.nextElement() ;
                 if ( ! params.contains(name) )
-                    errorBadRequest("SPARQL Query: Unrecognize request parameter: "+name) ;
+                    warning("SPARQL Query: Unrecognize request parameter (ignored): "+name) ;
             }
         }
     }

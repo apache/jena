@@ -83,7 +83,7 @@ public class SPARQLServer
         serverlog.info(format("Stopped %s on port %d", now, server.getConnectors()[0].getPort())) ;
         try { server.stop() ; }
         catch (Exception ex)
-        { log.warn("SPARQLServer: Exception while stopping server: " + ex.getMessage(), ex) ; }
+        { Fuseki.serverlog.warn("SPARQLServer: Exception while stopping server: " + ex.getMessage(), ex) ; }
     }
     
     public Server getServer() { return server ; }
