@@ -114,6 +114,11 @@ public class RunARQ
         String x = IRILib.filenameToIRI("./") ;
         System.out.println(x) ;
         
+        // WRONG
+        String x2 = IRILib.IRIToFilename(x) ;
+        System.out.println(x2) ;
+        exit(0) ;
+        
         //processIRI("file:///base/dir/a~b") ; exit(0) ;
         
         IRIResolver.suppressExceptions() ; exit(0) ; 
