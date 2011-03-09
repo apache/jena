@@ -16,6 +16,7 @@ import org.openjena.atlas.lib.FileOps ;
 import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.shared.Lock;
+import com.hp.hpl.jena.sparql.util.Timer ;
 import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.TDBFactory;
 import com.hp.hpl.jena.tdb.base.block.FileMode ;
@@ -26,10 +27,11 @@ public class ReportOutOfMemoryManyGraphsTDB
 {
     //public static final String TDB_DIR = "D:/work/relm/outofmem_jena_DB";
     public static final String TDB_DIR = "DB1";
-    public static final int NOGRAPHS = 500000; // Number of data graphs to load
+    public static final int NOGRAPHS = 100000; // Number of data graphs to load
 
     public static void main( String[] args ) {
 
+        
         if ( false )
         {
             // Set the TDB properties file.
@@ -52,6 +54,9 @@ public class ReportOutOfMemoryManyGraphsTDB
         
         FileOps.clearDirectory(TDB_DIR) ;
         System.out.println("> Starting test: " + new java.util.Date());
+        Timer timer = new Timer() ;
+        timer.startTimer() ;
+        
         Dataset dataset = TDBFactory.createDataset(TDB_DIR);
         System.out.println("> Initial number of indexed graphs: " + dataset.asDatasetGraph().size());
         try {
@@ -69,6 +74,9 @@ public class ReportOutOfMemoryManyGraphsTDB
             TDB.sync(dataset);
             dataset.close();
             System.out.println("> Done at: " + new java.util.Date());
+            long x = timer.endTimer() ;
+            System.out.printf("%,d graphs in %,.2f sec\n", NOGRAPHS, (x/1000.0)) ; 
+
         }
         catch (IOException e) {
             System.out.println("> Failed: " + e.getMessage());
