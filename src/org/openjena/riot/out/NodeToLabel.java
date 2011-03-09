@@ -30,9 +30,13 @@ public class NodeToLabel extends MapWithScope<Node, String, Node>
     public static NodeToLabel createScopeByGraph() 
     { return new NodeToLabel(new GraphScopePolicy(), new AllocatorBNode()) ; }
 
-    /** Allocation as per internal label */
+    /** Allocation as per internal label, with an encoded safe label. */
     public static NodeToLabel createBNodeByLabel() 
     { return new NodeToLabel(new SingleScopePolicy(), new AllocatorInternal()) ; }
+
+    /** Allocation as per internal label */
+    public static NodeToLabel createBNodeByLabelRaw() 
+    { return new NodeToLabel(new SingleScopePolicy(), new AllocatorInternalRaw()) ; }
 
     /** Allocation as per internal label */
     public static NodeToLabel createBNodeByIRI() 
@@ -119,9 +123,20 @@ public class NodeToLabel extends MapWithScope<Node, String, Node>
         public void reset()     {}
     }
     
+    private static class AllocatorInternalRaw extends AllocatorBase
+    {
+        @Override
+        protected String labelForBlank(Node node)
+        {
+            // NodeFmtLib.safeBNodeLabel adds a "B"
+            // This may not be a legal label if it starts with a number, say.  
+            return "_:"+node.getBlankNodeLabel() ;
+        }
+    }
+    
     private static class AllocatorInternal extends AllocatorBase
     {
-        
+       
     }
     
     private static class AllocatorBNode extends AllocatorBase
@@ -143,7 +158,8 @@ public class NodeToLabel extends MapWithScope<Node, String, Node>
         protected String labelForBlank(Node node)
         {
             // Needs to be safe?
-            String str = NodeFmtLib.safeBNodeLabel(node.getBlankNodeLabel()) ;
+            //String str = NodeFmtLib.safeBNodeLabel(node.getBlankNodeLabel()) ;
+            String str = node.getBlankNodeLabel() ;
             return "<_:"+str+">" ;
         }
     } ;

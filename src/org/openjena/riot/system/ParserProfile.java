@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2010 Talis Systems Ltd.
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -36,13 +37,18 @@ public interface ParserProfile
     public Node create(Node currentGraph, Token token) ;
     
     public LabelToNode getLabelToNode() ;
+    public void setLabelToNode(LabelToNode labelToNode) ;
+    
     public ErrorHandler getHandler() ;
     public void setHandler(ErrorHandler handler) ;
+    
     public Prologue getPrologue() ;
+    public void setPrologue(Prologue prologue) ;
 }
 
 /*
  * (c) Copyright 2010 Talis Systems Ltd.
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

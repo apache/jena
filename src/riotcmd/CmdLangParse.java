@@ -25,14 +25,17 @@ import org.openjena.riot.Lang ;
 import org.openjena.riot.RiotException ;
 import org.openjena.riot.RiotReader ;
 import org.openjena.riot.SysRIOT ;
+import org.openjena.riot.lang.LabelToNode ;
 import org.openjena.riot.lang.LangRDFXML ;
 import org.openjena.riot.lang.LangRIOT ;
 import org.openjena.riot.lang.LangTurtleBase ;
+import org.openjena.riot.out.NodeToLabel ;
 import org.openjena.riot.out.SinkQuadOutput ;
 import org.openjena.riot.out.SinkTripleOutput ;
 import org.openjena.riot.pipeline.inf.InfFactory ;
 import org.openjena.riot.pipeline.inf.InferenceSetupRDFS ;
 import org.openjena.riot.system.RiotLib ;
+import org.openjena.riot.system.SyntaxLabels ;
 import org.openjena.riot.tokens.Tokenizer ;
 import org.openjena.riot.tokens.TokenizerFactory ;
 import arq.cmd.CmdException ;
@@ -246,8 +249,21 @@ public abstract class CmdLangParse extends CmdGeneral
             }
         }
         
+        // Make a flag.
+        // Input and output subflags.
+        // If input is "label, then output using NodeToLabel.createBNodeByLabelRaw() ;
+        // else use NodeToLabel.createBNodeByLabel() ;
+        // Also, as URI.
+        final boolean labelsAsGiven = false ;
+        
         SinkCounting<?> sink ;
         LangRIOT parser ;
+        
+        NodeToLabel labels = SyntaxLabels.createNodeToLabel() ;
+        if ( labelsAsGiven )
+            labels = NodeToLabel.createBNodeByLabel() ;
+        //!!
+        //labels = NodeToLabel.createBNodeByIRI() ;
         
         // Uglyness because quads and triples aren't subtype of some Tuple<Node>
         // That would change a lot (Triples came several years before Quads). 
@@ -255,7 +271,7 @@ public abstract class CmdLangParse extends CmdGeneral
         {
             Sink<Triple> s = SinkNull.create() ;
             if ( ! modLangParse.toBitBucket() )
-                s = new SinkTripleOutput(System.out) ;
+                s = new SinkTripleOutput(System.out, null, labels) ;
             if ( setup != null )
                 s = InfFactory.infTriples(s, setup) ;
             
@@ -266,13 +282,14 @@ public abstract class CmdLangParse extends CmdGeneral
                 parser = LangRDFXML.create(in, baseURI, filename, errHandler, sink2) ;
             else
                 parser = RiotReader.createParserTriples(in, lang, baseURI, sink2) ;
+            
             sink = sink2 ;
         }
         else
         {
             Sink <Quad> s = SinkNull.create() ;
             if ( ! modLangParse.toBitBucket() )
-                s = new SinkQuadOutput(System.out) ;
+                s = new SinkQuadOutput(System.out, null, labels) ;
             if ( setup != null )
                 s = InfFactory.infQuads(s, setup) ;
             
@@ -297,6 +314,10 @@ public abstract class CmdLangParse extends CmdGeneral
             }
             else
                 parser.setProfile(RiotLib.profile(baseURI, false, false, errHandler)) ;
+            
+            if ( labelsAsGiven )
+                parser.getProfile().setLabelToNode(LabelToNode.createUseLabelAsGiven()) ;
+            
             parser.parse() ;
         }
         catch (RiotException ex)

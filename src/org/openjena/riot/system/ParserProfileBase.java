@@ -6,8 +6,6 @@
 
 package org.openjena.riot.system;
 
-import org.openjena.atlas.lib.Cache ;
-import org.openjena.atlas.lib.CacheFactory ;
 import org.openjena.riot.ErrorHandler ;
 import org.openjena.riot.RiotException ;
 import org.openjena.riot.lang.LabelToNode ;
@@ -26,14 +24,19 @@ import com.hp.hpl.jena.sparql.core.Quad ;
 public class ParserProfileBase implements ParserProfile
 {
     protected ErrorHandler errorHandler ;
-    protected final Prologue prologue ;
-    protected final LabelToNode labelMapping ;
+    protected Prologue prologue ;
+    protected LabelToNode labelMapping ;
 
     public ParserProfileBase(Prologue prologue, ErrorHandler errorHandler)
     { 
+        this(prologue, errorHandler, SyntaxLabels.createLabelToNode()) ;
+    }
+    
+    public ParserProfileBase(Prologue prologue, ErrorHandler errorHandler, LabelToNode labelMapping)
+    {
         this.prologue = prologue ;
         this.errorHandler = errorHandler ; 
-        this.labelMapping = SyntaxLabels.createLabelToNode() ;
+        this.labelMapping = labelMapping ;
     }
     
     //@Override
@@ -43,10 +46,17 @@ public class ParserProfileBase implements ParserProfile
     public void setHandler(ErrorHandler handler) { errorHandler = handler ; }
 
     //@Override
-    public Prologue getPrologue()       { return prologue ; }      
-    
+    public Prologue getPrologue()           { return prologue ; }      
+
     //@Override
-    public LabelToNode getLabelToNode() { return labelMapping ; }
+    public void setPrologue(Prologue p)     { prologue = p ; }      
+
+    //@Override
+    public LabelToNode getLabelToNode()
+    { return labelMapping ; }
+
+    //@Override
+    public void setLabelToNode(LabelToNode mapper) { labelMapping = mapper ; }
 
     //@Override
     public String resolveIRI(String uriStr, long line, long col)

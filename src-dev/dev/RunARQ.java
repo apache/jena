@@ -110,7 +110,7 @@ public class RunARQ
     public static void main(String[] argv) throws Exception
     {
         // Parser test
-        riotcmd.riot.main("--sink", "--time", "D.nt") ;
+        riotcmd.riot.main(/*"--sink", "--time",*/ "D.nt") ;
         
         //processIRI("file:///base/dir/a~b") ; exit(0) ;
         
