@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            4 Mar 2003
  * Filename           $RCSfile: TestOntDocumentManager.java,v $
- * Revision           $Revision: 1.3 $
+ * Revision           $Revision: 1.4 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2011-03-09 00:30:58 $
+ * Last modified on   $Date: 2011-03-09 10:18:42 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
@@ -47,7 +47,7 @@ import com.hp.hpl.jena.vocabulary.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:ian_dickinson@users.sourceforge.net" >email</a>)
- * @version CVS $Id: TestOntDocumentManager.java,v 1.3 2011-03-09 00:30:58 ian_dickinson Exp $
+ * @version CVS $Id: TestOntDocumentManager.java,v 1.4 2011-03-09 10:18:42 ian_dickinson Exp $
  */
 public class TestOntDocumentManager
     extends TestCase
@@ -483,23 +483,25 @@ public class TestOntDocumentManager
     }
 
     /**
-     * Test disabled 9 Mar 2011. The "obviously won't resolve" URI http://example.org/not/exist
-     * now resolves to an IANA domain, thus breaking the test.
+     * Test the read-fail handler hook.
+     * Test updated to use the domain "example.invalid", not example.com, since .invalid
+     * is designed for domain names that are sure to be invalid. See
+     * <a href="http://tools.ietf.org/html/rfc2606#section-2">tools.ietf.org/html/rfc2606#section-2</a>
      */
-    public void xx_testReadFailHandler1() {
-//        OntDocumentManager o1 = new OntDocumentManager( "file:etc/ont-policy-test.rdf" );
-//
-//        TestFailHandler rfh = new TestFailHandler();
-//        o1.setReadFailureHandler( rfh );
-//
-//        // trigger the odm to read a non-existant source
-//        String source = "@prefix owl: <http://www.w3.org/2002/07/owl#> . <> a owl:Ontology ; owl:imports <http://example.com/not/exist>. ";
-//        OntModelSpec spec = new OntModelSpec( OntModelSpec.OWL_MEM );
-//        spec.setDocumentManager(  o1 );
-//        OntModel m = ModelFactory.createOntologyModel( spec );
-//        m.read( new StringReader( source ), "http://example.com/foo#", "N3" );
-//
-//        assertTrue( rfh.m_seen );
+    public void testReadFailHandler1() {
+        OntDocumentManager o1 = new OntDocumentManager( "file:etc/ont-policy-test.rdf" );
+
+        TestFailHandler rfh = new TestFailHandler();
+        o1.setReadFailureHandler( rfh );
+
+        // trigger the odm to read a non-existant source
+        String source = "@prefix owl: <http://www.w3.org/2002/07/owl#> . <> a owl:Ontology ; owl:imports <http://example.invalid/not/exist>. ";
+        OntModelSpec spec = new OntModelSpec( OntModelSpec.OWL_MEM );
+        spec.setDocumentManager(  o1 );
+        OntModel m = ModelFactory.createOntologyModel( spec );
+        m.read( new StringReader( source ), "http://example.com/foo#", "N3" );
+
+        assertTrue( rfh.m_seen );
     }
 
     public void testReadHook0() {
