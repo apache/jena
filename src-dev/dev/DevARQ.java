@@ -9,6 +9,10 @@ public class DevARQ
     // SPARQL parser; reuse charstream objects? using Reinit()  
     // JavaCharStream allocates a 4k char buffer on every call.
     
+    // riot --keeplabels as is.
+    // riot --canonicalize.
+    // riot --rdfs.
+    
     // OpTopN - OpExecutor.execute(OpTop).
     // BSBM Explore/Update
     // Remote SPARQL Update 
