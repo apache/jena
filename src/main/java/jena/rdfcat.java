@@ -7,10 +7,10 @@
  * Web site           http://jena.sourceforge.net
  * Created            16-Sep-2005
  * Filename           $RCSfile: rdfcat.java,v $
- * Revision           $Revision: 1.3 $
+ * Revision           $Revision: 1.4 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2010-11-02 10:25:46 $
+ * Last modified on   $Date: 2011-03-09 00:31:05 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
@@ -122,7 +122,7 @@ import jena.cmdline.*;
  * serialisations. Also, duplicate triples will be suppressed.</p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:ian_dickinson@users.sourceforge.net">email</a>)
- * @version Release @release@ ($Id: rdfcat.java,v 1.3 2010-11-02 10:25:46 ian_dickinson Exp $)
+ * @version Release @release@ ($Id: rdfcat.java,v 1.4 2011-03-09 00:31:05 ian_dickinson Exp $)
  */
 public class rdfcat
 {
@@ -441,7 +441,7 @@ public class rdfcat
         }
         catch (ClassNotFoundException e) {
             // log if we're in debug mode, but otherwise ignore
-            log.debug( "Did not initialise RIOT parser: " +  e.getMessage(), e );
+//            log.debug( "Did not initialise RIOT parser: " +  e.getMessage(), e );
         }
         catch (SecurityException e) {
             // log if we're in debug mode, but otherwise ignore
