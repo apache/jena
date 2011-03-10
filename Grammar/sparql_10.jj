@@ -503,10 +503,10 @@ Node TriplesNode(TripleCollector acc) : { Node n ; }
 
 }
 
-Node BlankNodePropertyList(TripleCollector acc) : { }
+Node BlankNodePropertyList(TripleCollector acc) : { Token t ; }
 {
-  <LBRACKET>
-    { Node n = createBNode() ; }
+  t = <LBRACKET>
+    { Node n = createBNode(t.beginLine, t.beginColumn) ; }
   PropertyListNotEmpty(n, acc)
   <RBRACKET>
     { return n ; }
@@ -514,11 +514,11 @@ Node BlankNodePropertyList(TripleCollector acc) : { }
 // ------- RDF collections
 
 Node Collection(TripleCollector acc) :
-    { Node listHead = nRDFnil ; Node lastCell = null ; int mark ; Node n ; }
+    { Node listHead = nRDFnil ; Node lastCell = null ; int mark ; Node n ; Token t ; }
 {
-  <LPAREN>
+  t = <LPAREN>
   (
-    { Node cell = createListNode() ;
+    { Node cell = createListNode(t.beginLine, t.beginColumn) ;
       if ( listHead == nRDFnil )
          listHead = cell ;
       if ( lastCell != null )
@@ -900,7 +900,7 @@ Node BlankNode() : { Token t = null ; }
     { return createBNode(t.image, t.beginLine, t.beginColumn) ; }
 |
 //  <LBRACKET> <RBRACKET> { return createBNode() ; }
-  <ANON> { return createBNode() ; }
+  t = <ANON> { return createBNode( t.beginLine, t.beginColumn) ; }
 
 }
 

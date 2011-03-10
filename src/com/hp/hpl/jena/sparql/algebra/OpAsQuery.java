@@ -6,10 +6,15 @@
 
 package com.hp.hpl.jena.sparql.algebra;
 
+import java.util.Collections ;
 import java.util.Iterator ;
 import java.util.List ;
+import java.util.HashMap ;
+import java.util.Map ;
 import java.util.Stack ;
 
+import com.hp.hpl.jena.sparql.core.VarExprList ;
+import com.hp.hpl.jena.sparql.expr.ExprAggregator ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.query.Query ;
@@ -34,11 +39,22 @@ public class OpAsQuery
     public static Query asQuery(Op op)
     {
         Query query = QueryFactory.make() ;
-        query.setQueryResultStar(true) ;    // SELECT *
         
         Converter v = new Converter(query) ;
         //OpWalker.walk(op, v) ;
         op.visit(v) ;
+        
+        List<Var> vars = v.projectVars;
+        query.setQueryResultStar(vars.isEmpty()); // SELECT * unless we are projecting
+        Iterator<Var> iter = vars.iterator();
+        for (; iter.hasNext();) {
+            Var var = iter.next();
+            if (v.varExpression.containsKey(var))
+                query.addResultVar(var, v.varExpression.get(var));
+            else
+                query.addResultVar(var);
+        }
+        
         ElementGroup eg = v.currentGroup ;
         query.setQueryPattern(eg) ;
         query.setQuerySelectType() ;
@@ -53,6 +69,8 @@ public class OpAsQuery
         private Element element = null ;
         private ElementGroup currentGroup = null ;
         private Stack<ElementGroup> stack = new Stack<ElementGroup>() ;
+        private List<Var> projectVars = Collections.emptyList() ;
+        private Map<Var, Expr> varExpression = new HashMap<Var, Expr>() ;
         
         public Converter(Query query)
         {
@@ -324,7 +342,24 @@ public class OpAsQuery
         }
 
         public void visit(OpAssign opAssign)
-        { 
+        {
+	        /**
+             * Special case: group involves and internal assignment
+             * e.g.  (assign ((?.1 ?.0)) (group () ((?.0 (count)))
+             * We attempt to intercept that here.
+             */
+            if (opAssign.getSubOp() instanceof OpGroup) {
+                Map<Var, Var> subs = new HashMap<Var, Var>();
+                Expr exp;
+                for (Var v: opAssign.getVarExprList().getVars()) {
+                    exp = opAssign.getVarExprList().getExpr(v);
+                    if (exp.isVariable()) subs.put(exp.asVar(), v);
+                    else throw new ARQNotImplemented("Expected simple assignment for group");
+                }
+                visit((OpGroup) opAssign.getSubOp(), subs);
+                return;
+            }
+
             opAssign.getSubOp().visit(this) ;
             for ( Var v : opAssign.getVarExprList().getVars() )
             {
@@ -336,10 +371,27 @@ public class OpAsQuery
 
         public void visit(OpExtend opExtend)
         { 
+            /**
+             * Special case: group involves and internal assignment
+             * e.g.  (assign ((?.1 ?.0)) (group () ((?.0 (count)))
+             * We attempt to intercept that here.
+             */
+            if (opExtend.getSubOp() instanceof OpGroup) {
+                Map<Var, Var> subs = new HashMap<Var, Var>();
+                Expr exp;
+                for (Var v: opExtend.getVarExprList().getVars()) {
+                    exp = opExtend.getVarExprList().getExpr(v);
+                    if (exp.isVariable()) subs.put(exp.asVar(), v);
+                    else throw new ARQNotImplemented("Expected simple assignment for group");
+                }
+                visit((OpGroup) opExtend.getSubOp(), subs);
+                return;
+            }
+
             opExtend.getSubOp().visit(this) ;
             for ( Var v : opExtend.getVarExprList().getVars() )
             {
-                Element elt = new ElementBind(v, opExtend.getVarExprList().getExpr(v)) ;
+                Element elt = new ElementAssign(v, opExtend.getVarExprList().getExpr(v)) ;
                 ElementGroup g = currentGroup() ;
                 g.addElement(elt) ;
             }
@@ -359,13 +411,9 @@ public class OpAsQuery
 
         public void visit(OpProject opProject)
         {
-            query.setQueryResultStar(false) ;
-            Iterator<Var> iter = opProject.getVars().iterator() ;
-            for ( ; iter.hasNext() ; )
-            {
-                Var v = iter.next();
-                query.addResultVar(v) ;
-            }
+            // Defer adding result vars until the end.
+            // OpGroup generates dupes otherwise
+            this.projectVars = opProject.getVars();
             opProject.getSubOp().visit(this) ;
         }
 
@@ -390,8 +438,41 @@ public class OpAsQuery
             opSlice.getSubOp().visit(this) ;
         }
 
-        public void visit(OpGroup opGroup)
-        { throw new ARQNotImplemented("OpGroup") ; }
+        @SuppressWarnings("unchecked")
+        public void visit(OpGroup opGroup) {
+            visit(opGroup, Collections.EMPTY_MAP);
+        }
+
+        // Specialised to cope with the preceeding assigns
+        public void visit(OpGroup opGroup, Map<Var, Var> subs) {            
+            List<ExprAggregator> a = opGroup.getAggregators();
+
+            for (ExprAggregator ea : a) {
+                // Substitute generated var for actual
+                Var givenVar = ea.getAggVar().asVar();
+                Var realVar = (subs.containsKey(givenVar))
+                ? subs.get(givenVar)
+                : givenVar;
+                // Copy aggregator across (?)
+                Expr myAggr = query.allocAggregate(ea.getAggregator());
+                varExpression.put(realVar, myAggr);
+                //query.addResultVar(realVar, myAggr);
+            }
+
+            VarExprList b = opGroup.getGroupVars();
+            for (Var v : b.getVars()) {
+                Expr e = b.getExpr(v);
+
+                if (e != null) {
+                    query.addGroupBy(v, e);
+
+                } else {
+                    query.addGroupBy(v);
+
+                }
+            }
+            opGroup.getSubOp().visit(this);
+        }
 
         public void visit(OpTopN opTop)
         { throw new ARQNotImplemented("OpTopN") ; }

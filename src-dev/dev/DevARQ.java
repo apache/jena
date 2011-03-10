@@ -6,6 +6,10 @@ public class DevARQ
     // Experiment with a parser set up that copies nodes.  Result: 120: -> 114K
     // Note the use of ParserProfile to abstract node generation. 
     
+    // SPARQL Update.
+    // StartDeleteClause aroubnd DELETE caluse, DELETE WHERE and DELETE DATA.
+    // Error on bNode.
+    
     // SPARQL parser; reuse charstream objects? using Reinit()  
     // JavaCharStream allocates a 4k char buffer on every call.
     

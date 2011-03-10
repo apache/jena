@@ -1338,9 +1338,9 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
   final public Update InsertData() throws ParseException {
                         QuadDataAcc qd = new QuadDataAcc() ; Token t ;
     t = jj_consume_token(INSERT_DATA);
-    startDataInsert(t.beginLine, t.beginColumn) ;
+    startDataInsert(qd, t.beginLine, t.beginColumn) ;
     QuadData(qd);
-    finishDataInsert(t.beginLine, t.beginColumn) ;
+    finishDataInsert(qd, t.beginLine, t.beginColumn) ;
     {if (true) return new UpdateDataInsert(qd) ;}
     throw new Error("Missing return statement in function");
   }
@@ -1348,17 +1348,19 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
   final public Update DeleteData() throws ParseException {
                         QuadDataAcc qd = new QuadDataAcc() ; Token t ;
     t = jj_consume_token(DELETE_DATA);
-    startDataDelete(t.beginLine, t.beginColumn) ;
+    startDataDelete(qd, t.beginLine, t.beginColumn) ;
     QuadData(qd);
-    finishDataDelete(t.beginLine, t.beginColumn) ;
+    finishDataDelete(qd, t.beginLine, t.beginColumn) ;
     {if (true) return new UpdateDataDelete(qd) ;}
     throw new Error("Missing return statement in function");
   }
 
   final public Update DeleteWhere() throws ParseException {
-                         QuadAcc qp = new QuadAcc() ;
-    jj_consume_token(DELETE_WHERE);
+                         QuadAcc qp = new QuadAcc() ; Token t ;
+    t = jj_consume_token(DELETE_WHERE);
+    startDeleteTemplate(qp, t.beginLine, t.beginColumn) ;
     QuadPattern(qp);
+    finishDeleteTemplate(qp, t.beginLine, t.beginColumn) ;
     {if (true) return new UpdateDeleteWhere(qp) ;}
     throw new Error("Missing return statement in function");
   }
@@ -1416,9 +1418,11 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
   }
 
   final public void DeleteClause(UpdateModify up) throws ParseException {
-                                       QuadAcc qp = up.getDeleteAcc() ;
-    jj_consume_token(DELETE);
+                                       QuadAcc qp = up.getDeleteAcc() ; Token t ;
+    t = jj_consume_token(DELETE);
+     startDeleteTemplate(qp, t.beginLine, t.beginColumn) ;
     QuadPattern(qp);
+     finishDeleteTemplate(qp, t.beginLine, t.beginColumn) ;
      up.setHasDeleteClause(true) ;
   }
 
@@ -2887,8 +2891,9 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
   }
 
   final public Node BlankNodePropertyList(TripleCollector acc) throws ParseException {
-    jj_consume_token(LBRACKET);
-      Node n = createBNode() ;
+                                                    Token t ;
+    t = jj_consume_token(LBRACKET);
+      Node n = createBNode( t.beginLine, t.beginColumn) ;
     PropertyListNotEmpty(n, acc);
     jj_consume_token(RBRACKET);
       {if (true) return n ;}
@@ -2897,11 +2902,11 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
 
 // ------- RDF collections
   final public Node Collection(TripleCollector acc) throws ParseException {
-      Node listHead = nRDFnil ; Node lastCell = null ; int mark ; Node n ;
-    jj_consume_token(LPAREN);
+      Node listHead = nRDFnil ; Node lastCell = null ; int mark ; Node n ; Token t ;
+    t = jj_consume_token(LPAREN);
     label_27:
     while (true) {
-      Node cell = createListNode() ;
+      Node cell = createListNode( t.beginLine, t.beginColumn) ;
       if ( listHead == nRDFnil )
          listHead = cell ;
       if ( lastCell != null )
@@ -4527,8 +4532,9 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
       {if (true) return createBNode(t.image, t.beginLine, t.beginColumn) ;}
       break;
     case ANON:
-      jj_consume_token(ANON);
-           {if (true) return createBNode() ;}
+      //  <LBRACKET> <RBRACKET> { return createBNode(t.beginLine, t.beginColumn) ; }
+        t = jj_consume_token(ANON);
+               {if (true) return createBNode(t.beginLine, t.beginColumn) ;}
       break;
     default:
       jj_la1[157] = jj_gen;

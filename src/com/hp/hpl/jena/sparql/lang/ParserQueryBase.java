@@ -18,6 +18,8 @@ import com.hp.hpl.jena.query.QueryParseException ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap ;
+import com.hp.hpl.jena.sparql.modify.request.QuadAcc ;
+import com.hp.hpl.jena.sparql.modify.request.QuadDataAcc ;
 import com.hp.hpl.jena.update.Update ;
 import com.hp.hpl.jena.update.UpdateRequest ;
 
@@ -66,26 +68,39 @@ public class ParserQueryBase extends ParserBase
     protected void startUpdateRequest() {}
     protected void finishUpdateRequest() {}
     
-    private boolean b ;
-    protected void startDataInsert(int line, int col) 
+    private boolean oldBNodesAreVariables ;
+    protected void startDataInsert(QuadDataAcc qd, int line, int col) 
     {
-        b = getBNodesAreVariables() ;
+        oldBNodesAreVariables = getBNodesAreVariables() ;
         setBNodesAreVariables(false) ;
     } 
-    protected void finishDataInsert(int line, int col)
+    protected void finishDataInsert(QuadDataAcc qd, int line, int col)
     {
-        setBNodesAreVariables(b) ;
+        setBNodesAreVariables(oldBNodesAreVariables) ;
     }
     
-    protected void startDataDelete(int line, int col)
+    private boolean oldBNodesAreAllowed ;
+    
+    protected void startDataDelete(QuadDataAcc qd,int line, int col)
     {
-        b = getBNodesAreVariables() ;
-        setBNodesAreVariables(false) ;
+        oldBNodesAreAllowed = getBNodesAreAllowed() ;
+        setBNodesAreAllowed(false) ;
     } 
     
-    protected void finishDataDelete(int line, int col)
+    protected void finishDataDelete(QuadDataAcc qd, int line, int col)
     {
-        setBNodesAreVariables(b) ;
+        setBNodesAreVariables(oldBNodesAreAllowed) ;
+    }
+    
+    protected void startDeleteTemplate(QuadAcc qd, int line, int col)
+    {
+        oldBNodesAreAllowed = getBNodesAreAllowed() ;
+        setBNodesAreAllowed(false) ;
+    }
+    
+    protected void finishDeleteTemplate(QuadAcc qd, int line, int col)
+    {
+        setBNodesAreVariables(oldBNodesAreAllowed) ;
     }
     
     protected void emitUpdate(Update update)

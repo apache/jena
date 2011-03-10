@@ -417,28 +417,31 @@ void Meta() : { QuadDataAcc qd = new QuadDataAcc() ; }
 Update InsertData() : { QuadDataAcc qd = new QuadDataAcc() ; Token t ; }
 {
   t = <INSERT_DATA>
-  { startDataInsert(t.beginLine, t.beginColumn) ; }
+  { startDataInsert(qd, t.beginLine, t.beginColumn) ; }
    OptionalIntoTarget(qd)
    QuadPattern(qd)
   {
-    finishDataInsert(t.beginLine, t.beginColumn) ;
+    finishDataInsert(qd, t.beginLine, t.beginColumn) ;
     return new UpdateDataInsert(qd) ;
   }
 }
 Update DeleteData() : { QuadDataAcc qd = new QuadDataAcc() ; Token t ; }
 {
   t = <DELETE_DATA>
-  { startDataDelete(t.beginLine, t.beginColumn) ; }
+  { startDataDelete(qd, t.beginLine, t.beginColumn) ; }
   OptionalFromTarget(qd)
   QuadData(qd)
   {
-    finishDataDelete(t.beginLine, t.beginColumn) ;
+    finishDataDelete(qd, t.beginLine, t.beginColumn) ;
     return new UpdateDataDelete(qd) ;
   }
 }
-Update DeleteWhere() : { QuadAcc qp = new QuadAcc() ; }
+Update DeleteWhere() : { QuadAcc qp = new QuadAcc() ; Token t ; }
 {
-  <DELETE_WHERE> QuadPattern(qp)
+  t = <DELETE_WHERE>
+  { startDeleteTemplate(qp, t.beginLine, t.beginColumn) ; }
+  QuadPattern(qp)
+  { finishDeleteTemplate(qp, t.beginLine, t.beginColumn) ; }
   { return new UpdateDeleteWhere(qp) ; }
 }
 Update Modify() : { Element el ; String iri = null ;
@@ -464,11 +467,14 @@ Update ModifyOld() :
     el = GroupGraphPattern() { up.setElement(el) ; }
     { return up ; }
 }
-void DeleteClause(UpdateModify up) : { QuadAcc qp = up.getDeleteAcc() ; }
+void DeleteClause(UpdateModify up) : { QuadAcc qp = up.getDeleteAcc() ; Token t ;}
 {
+   t = <DELETE>
+   { startDeleteTemplate(qp, t.beginLine, t.beginColumn) ; }
    <DELETE>
    OptionalFromTarget(qp)
    QuadPattern(qp)
+   { finishDeleteTemplate(qp, t.beginLine, t.beginColumn) ; }
    { up.setHasDeleteClause(true) ; }
 }
 void InsertClause(UpdateModify up) : { QuadAcc qp = up.getInsertAcc() ; }
@@ -1033,21 +1039,21 @@ Node TriplesNode(TripleCollector acc) : { Node n ; }
  |
   n = BlankNodePropertyList(acc) { return n ; }
 }
-Node BlankNodePropertyList(TripleCollector acc) : { }
+Node BlankNodePropertyList(TripleCollector acc) : { Token t ; }
 {
-  <LBRACKET>
-    { Node n = createBNode() ; }
+  t = <LBRACKET>
+    { Node n = createBNode( t.beginLine, t.beginColumn) ; }
   PropertyListNotEmpty(n, acc)
   <RBRACKET>
     { return n ; }
 }
 // ------- RDF collections
 Node Collection(TripleCollector acc) :
-    { Node listHead = nRDFnil ; Node lastCell = null ; int mark ; Node n ; }
+    { Node listHead = nRDFnil ; Node lastCell = null ; int mark ; Node n ; Token t ; }
 {
-  <LPAREN>
+  t = <LPAREN>
   (
-    { Node cell = createListNode() ;
+    { Node cell = createListNode( t.beginLine, t.beginColumn) ;
       if ( listHead == nRDFnil )
          listHead = cell ;
       if ( lastCell != null )
@@ -1512,8 +1518,8 @@ Node BlankNode() : { Token t = null ; }
   t = <BLANK_NODE_LABEL>
     { return createBNode(t.image, t.beginLine, t.beginColumn) ; }
 |
-//  <LBRACKET> <RBRACKET> { return createBNode() ; }
-  <ANON> { return createBNode() ; }
+//  <LBRACKET> <RBRACKET> { return createBNode(t.beginLine, t.beginColumn) ; }
+  t = <ANON> { return createBNode(t.beginLine, t.beginColumn) ; }
 }
 String IRI_REF() : { Token t ; }
 {

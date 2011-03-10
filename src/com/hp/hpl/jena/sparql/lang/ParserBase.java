@@ -52,7 +52,10 @@ public class ParserBase
     protected final Node nRDFobject     = RDF.Nodes.object ;
     
     // ----
+    // Graph patterns, true; in templates, false.
     private boolean bNodesAreVariables = true ;
+    // In DELETE, false.
+    private boolean bNodesAreAllowed = true ;
     
     // label => bNode for construct templates patterns
     final LabelToNodeMap bNodeLabels = LabelToNodeMap.createBNodeMap() ;
@@ -92,6 +95,12 @@ public class ParserBase
             activeLabelMap = bNodeLabels  ;
     }
     
+    protected boolean getBNodesAreAllowed()   { return bNodesAreAllowed ; }
+    protected void setBNodesAreAllowed(boolean bNodesAreAllowed)
+    {
+        this.bNodesAreAllowed = bNodesAreAllowed ;
+    }
+
     protected Element compressGroupOfOneGroup(ElementGroup elg)
     {
         // remove group of one group.
@@ -288,14 +297,21 @@ public class ParserBase
 //    protected Node createListNode()
 //    { return listLabelMap.allocNode() ; }
     
-    protected Node createListNode() { return createBNode() ; }
+    protected Node createListNode(int line, int column) { return createBNode(line, column) ; }
 
     // Unlabelled bNode.
-    protected Node createBNode() { return activeLabelMap.allocNode() ; }
+    protected Node createBNode(int line, int column)
+    {
+        if ( ! bNodesAreAllowed )
+            throwParseException("Blank nodes not allowed in DELETE templates", line, column) ;
+        return activeLabelMap.allocNode() ;
+    }
     
     // Labelled bNode.
     protected Node createBNode(String label, int line, int column)
     { 
+        if ( ! bNodesAreAllowed )
+            throwParseException("Blank nodes not allowed in DELETE templates: "+label, line, column) ;
         if ( oldLabels.contains(label) )
             throwParseException("Blank node reused across basic graph patterns: "+label,
                                 line, column) ;

@@ -1118,8 +1118,9 @@ public class SPARQLParser10 extends SPARQLParser10Base implements SPARQLParser10
   }
 
   final public Node BlankNodePropertyList(TripleCollector acc) throws ParseException {
-    jj_consume_token(LBRACKET);
-      Node n = createBNode() ;
+                                                    Token t ;
+    t = jj_consume_token(LBRACKET);
+      Node n = createBNode(t.beginLine, t.beginColumn) ;
     PropertyListNotEmpty(n, acc);
     jj_consume_token(RBRACKET);
       {if (true) return n ;}
@@ -1128,11 +1129,11 @@ public class SPARQLParser10 extends SPARQLParser10Base implements SPARQLParser10
 
 // ------- RDF collections
   final public Node Collection(TripleCollector acc) throws ParseException {
-      Node listHead = nRDFnil ; Node lastCell = null ; int mark ; Node n ;
-    jj_consume_token(LPAREN);
+      Node listHead = nRDFnil ; Node lastCell = null ; int mark ; Node n ; Token t ;
+    t = jj_consume_token(LPAREN);
     label_15:
     while (true) {
-      Node cell = createListNode() ;
+      Node cell = createListNode(t.beginLine, t.beginColumn) ;
       if ( listHead == nRDFnil )
          listHead = cell ;
       if ( lastCell != null )
@@ -2094,8 +2095,9 @@ public class SPARQLParser10 extends SPARQLParser10Base implements SPARQLParser10
       {if (true) return createBNode(t.image, t.beginLine, t.beginColumn) ;}
       break;
     case ANON:
-      jj_consume_token(ANON);
-           {if (true) return createBNode() ;}
+      //  <LBRACKET> <RBRACKET> { return createBNode() ; }
+        t = jj_consume_token(ANON);
+               {if (true) return createBNode( t.beginLine, t.beginColumn) ;}
       break;
     default:
       jj_la1[80] = jj_gen;

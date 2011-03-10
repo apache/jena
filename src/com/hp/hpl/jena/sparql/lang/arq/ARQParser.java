@@ -1720,10 +1720,10 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
   final public Update InsertData() throws ParseException {
                         QuadDataAcc qd = new QuadDataAcc() ; Token t ;
     t = jj_consume_token(INSERT_DATA);
-    startDataInsert(t.beginLine, t.beginColumn) ;
+    startDataInsert(qd, t.beginLine, t.beginColumn) ;
     OptionalIntoTarget(qd);
     QuadPattern(qd);
-    finishDataInsert(t.beginLine, t.beginColumn) ;
+    finishDataInsert(qd, t.beginLine, t.beginColumn) ;
     {if (true) return new UpdateDataInsert(qd) ;}
     throw new Error("Missing return statement in function");
   }
@@ -1731,18 +1731,20 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
   final public Update DeleteData() throws ParseException {
                         QuadDataAcc qd = new QuadDataAcc() ; Token t ;
     t = jj_consume_token(DELETE_DATA);
-    startDataDelete(t.beginLine, t.beginColumn) ;
+    startDataDelete(qd, t.beginLine, t.beginColumn) ;
     OptionalFromTarget(qd);
     QuadData(qd);
-    finishDataDelete(t.beginLine, t.beginColumn) ;
+    finishDataDelete(qd, t.beginLine, t.beginColumn) ;
     {if (true) return new UpdateDataDelete(qd) ;}
     throw new Error("Missing return statement in function");
   }
 
   final public Update DeleteWhere() throws ParseException {
-                         QuadAcc qp = new QuadAcc() ;
-    jj_consume_token(DELETE_WHERE);
+                         QuadAcc qp = new QuadAcc() ; Token t ;
+    t = jj_consume_token(DELETE_WHERE);
+    startDeleteTemplate(qp, t.beginLine, t.beginColumn) ;
     QuadPattern(qp);
+    finishDeleteTemplate(qp, t.beginLine, t.beginColumn) ;
     {if (true) return new UpdateDeleteWhere(qp) ;}
     throw new Error("Missing return statement in function");
   }
@@ -1837,10 +1839,13 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
   }
 
   final public void DeleteClause(UpdateModify up) throws ParseException {
-                                       QuadAcc qp = up.getDeleteAcc() ;
+                                       QuadAcc qp = up.getDeleteAcc() ; Token t ;
+    t = jj_consume_token(DELETE);
+     startDeleteTemplate(qp, t.beginLine, t.beginColumn) ;
     jj_consume_token(DELETE);
     OptionalFromTarget(qp);
     QuadPattern(qp);
+     finishDeleteTemplate(qp, t.beginLine, t.beginColumn) ;
      up.setHasDeleteClause(true) ;
   }
 
@@ -3423,8 +3428,9 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
   }
 
   final public Node BlankNodePropertyList(TripleCollector acc) throws ParseException {
-    jj_consume_token(LBRACKET);
-      Node n = createBNode() ;
+                                                    Token t ;
+    t = jj_consume_token(LBRACKET);
+      Node n = createBNode( t.beginLine, t.beginColumn) ;
     PropertyListNotEmpty(n, acc);
     jj_consume_token(RBRACKET);
       {if (true) return n ;}
@@ -3433,11 +3439,11 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
 
 // ------- RDF collections
   final public Node Collection(TripleCollector acc) throws ParseException {
-      Node listHead = nRDFnil ; Node lastCell = null ; int mark ; Node n ;
-    jj_consume_token(LPAREN);
+      Node listHead = nRDFnil ; Node lastCell = null ; int mark ; Node n ; Token t ;
+    t = jj_consume_token(LPAREN);
     label_31:
     while (true) {
-      Node cell = createListNode() ;
+      Node cell = createListNode( t.beginLine, t.beginColumn) ;
       if ( listHead == nRDFnil )
          listHead = cell ;
       if ( lastCell != null )
@@ -5090,8 +5096,9 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
       {if (true) return createBNode(t.image, t.beginLine, t.beginColumn) ;}
       break;
     case ANON:
-      jj_consume_token(ANON);
-           {if (true) return createBNode() ;}
+      //  <LBRACKET> <RBRACKET> { return createBNode(t.beginLine, t.beginColumn) ; }
+        t = jj_consume_token(ANON);
+               {if (true) return createBNode(t.beginLine, t.beginColumn) ;}
       break;
     default:
       jj_la1[171] = jj_gen;
@@ -5120,31 +5127,6 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     try { return !jj_3_2(); }
     catch(LookaheadSuccess ls) { return true; }
     finally { jj_save(1, xla); }
-  }
-
-  private boolean jj_3R_77() {
-    if (jj_scan_token(ANON)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_56() {
-    if (jj_scan_token(LBRACKET)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_76() {
-    if (jj_scan_token(BLANK_NODE_LABEL)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_67() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_76()) {
-    jj_scanpos = xsp;
-    if (jj_3R_77()) return true;
-    }
-    return false;
   }
 
   private boolean jj_3R_52() {
@@ -5550,13 +5532,13 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
-  private boolean jj_3_1() {
-    if (jj_3R_36()) return true;
+  private boolean jj_3R_64() {
+    if (jj_3R_70()) return true;
     return false;
   }
 
-  private boolean jj_3R_64() {
-    if (jj_3R_70()) return true;
+  private boolean jj_3_1() {
+    if (jj_3R_36()) return true;
     return false;
   }
 
@@ -5567,6 +5549,31 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
 
   private boolean jj_3R_78() {
     if (jj_scan_token(IRIref)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_77() {
+    if (jj_scan_token(ANON)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_56() {
+    if (jj_scan_token(LBRACKET)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_76() {
+    if (jj_scan_token(BLANK_NODE_LABEL)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_67() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_76()) {
+    jj_scanpos = xsp;
+    if (jj_3R_77()) return true;
+    }
     return false;
   }
 
