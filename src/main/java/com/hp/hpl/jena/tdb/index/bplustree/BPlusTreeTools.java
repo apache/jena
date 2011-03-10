@@ -23,10 +23,10 @@ import com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPageMgr ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 /** Tools for working with B+Trees and datastructures associated with them, rather directly */
-class BPlusTreeToolsx
+class BPlusTreeTools
 {
-
-    public static void binDump(String filename)
+    
+    /*public*/private static void binDump(String filename)
     {
         try
         {
@@ -50,19 +50,19 @@ class BPlusTreeToolsx
     }
     
     /** Scan/dump a file of RecordBuffers */
-    public static void bpt_scan_record_buffer(String filename, boolean verbose)
+    /*public*/private static void bpt_scan_record_buffer(String filename, boolean verbose)
     {
         BlockMgr blkMgr = BlockMgrFactory.createStdFileNoCache(filename, SystemTDB.BlockSize) ;
         bpt_scan_record_buffer(blkMgr, verbose) ;
         blkMgr.close();
     }
 
-    public static void bpt_scan_record_buffer(BPlusTree bpt, boolean verbose)
+    /*public*/private static void bpt_scan_record_buffer(BPlusTree bpt, boolean verbose)
     {
         bpt_scan_record_buffer(bpt.getRecordsMgr().getBlockMgr(), verbose) ;
     }
     
-    public static void bpt_scan_record_buffer(BlockMgr blkMgr, boolean verbose)
+    /*public*/private static void bpt_scan_record_buffer(BlockMgr blkMgr, boolean verbose)
     {
         RecordFactory f = SystemTDB.indexRecordTripleFactory ; 
         RecordBufferPageMgr recordPageMgr = new RecordBufferPageMgr(f, blkMgr) ;
@@ -70,7 +70,7 @@ class BPlusTreeToolsx
     }
 
 
-    public static void bpt_scan_record_buffer(RecordBufferPageMgr recordPageMgr, boolean verbose)
+    /*public*/private static void bpt_scan_record_buffer(RecordBufferPageMgr recordPageMgr, boolean verbose)
     {
         System.out.print("[Scan Records] start\n") ;
         int idx = 0 ;
@@ -99,7 +99,7 @@ class BPlusTreeToolsx
         System.out.printf("[Scan Records] Count = %d in %d blocks (avg: %.2f)\n", total, n, ((float)total)/n) ;
     }
     
-//    public static void bpt_scan_nodes(String filename, boolean verbose)
+//    /*public*/private static void bpt_scan_nodes(String filename, boolean verbose)
 //    {
 //        RecordFactory f = FactoryGraphTDB.indexRecordTripleFactory ;
 //        BPlusTree.
@@ -108,7 +108,7 @@ class BPlusTreeToolsx
 //        blkMgr.close();
 //    }
     
-    public static void bpt_scan_nodes(BPlusTree bpt, boolean verbose)
+    /*public*/private static void bpt_scan_nodes(BPlusTree bpt, boolean verbose)
     {
         System.out.print("[Scan Nodes] start\n") ;
         RecordFactory f = SystemTDB.indexRecordTripleFactory ; 

@@ -43,11 +43,8 @@ public class FileBase implements Sync, Closeable
 
     }
 
-  //@Override
-    public void sync() { sync(true) ; }
-    
     //@Override
-    public void sync(boolean force)
+    public void sync()
     {
         try {
             channel.force(true) ;

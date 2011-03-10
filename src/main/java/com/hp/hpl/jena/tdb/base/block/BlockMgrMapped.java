@@ -14,6 +14,8 @@ import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.Arrays;
 
+import com.hp.hpl.jena.tdb.sys.SystemTDB ;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,7 +34,7 @@ public class BlockMgrMapped extends BlockMgrFile
 
     // Segmentation avoids over-mapping; allows file to grow (in chunks) 
     private final int GrowthFactor = 2 ;
-    private final int SegmentSize = 8 * 1024 * 1024 ;       // 8Meg
+    private final int SegmentSize = SystemTDB.SegmentSize ;
     private final int blocksPerSegment ;                              
     
     private int initialNumSegements = 1 ;

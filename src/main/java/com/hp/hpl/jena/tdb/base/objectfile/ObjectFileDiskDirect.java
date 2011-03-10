@@ -237,9 +237,6 @@ public class ObjectFileDiskDirect implements ObjectFile
     //@Override
     public void sync()                  { flushOutputBuffer() ; file.sync() ; }
     
-    //@Override
-    public void sync(boolean force)     { flushOutputBuffer() ; file.sync(force) ; }
-
     // ---- Dump
     public void dump() { dump(handler) ; }
 
