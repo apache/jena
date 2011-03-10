@@ -1,2 +1,2 @@
-CREATE GRAPH <g>
-LOAD <remote> INTO GRAPH <g>
+# Missing template
+INSERT WHERE { ?s ?p ?o }

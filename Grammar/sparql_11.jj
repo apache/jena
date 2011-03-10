@@ -497,14 +497,14 @@ void Quads(QuadAcc acc) : { }
      (TriplesTemplate(acc))?
    )*
 }
-void QuadsNotTriples(QuadAcc acc) : {Node n ; Node prev = acc.getGraph() ; }
+void QuadsNotTriples(QuadAcc acc) : {Node gn ; Node prev = acc.getGraph() ; }
 {
-    <GRAPH> n = VarOrIRIref()
-    { acc.setGraph(n) ; }
+    <GRAPH> gn = VarOrIRIref()
+    { setAccGraph(acc, gn) ; }
     <LBRACE>
     (TriplesTemplate(acc))?
     <RBRACE>
-    { acc.setGraph(prev) ; }
+    { setAccGraph(acc, prev) ; }
 }
 void TriplesTemplate(TripleCollector acc) : { }
 {

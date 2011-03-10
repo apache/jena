@@ -234,28 +234,40 @@ EOF
 N=0
 
 N=$((N+1)) ; testBad $SPARQL11U $(fname "syntax-update-bad-" $N) <<EOF
+# Empty
 EOF
 
 N=$((N+1)) ; testBad $SPARQL11U $(fname "syntax-update-bad-" $N) <<EOF
 BASE <http://example/>
+# Otherwise empty
 EOF
 N=$((N+1)) ; testBad $SPARQL11U $(fname "syntax-update-bad-" $N) <<EOF
 PREFIX : <http://example/>
+# Otherwise empty
 EOF
 
 N=$((N+1)) ; testBad $SPARQL11U $(fname "syntax-update-bad-" $N) <<EOF
+# No URL
 LOAD ;
 EOF
 
 N=$((N+1)) ; testBad $SPARQL11U $(fname "syntax-update-bad-" $N) <<EOF
+# Typo in keyword.
 CREATE DEAFULT
 EOF
 
 N=$((N+1)) ; testBad $SPARQL11U $(fname "syntax-update-bad-" $N) <<EOF
+# Variable in data.
 DELETE DATA { ?s <p> <o> }
 EOF
 
 N=$((N+1)) ; testBad $SPARQL11U $(fname "syntax-update-bad-" $N) <<EOF
+# Variable in data.
+INSERT DATA { GRAPH ?g {<s> <p> <o> } }
+EOF
+
+N=$((N+1)) ; testBad $SPARQL11U $(fname "syntax-update-bad-" $N) <<EOF
+# Nested GRAPH
 DELETE DATA { 
   GRAPH <G> { 
     <s> <p> <o> .
@@ -265,17 +277,18 @@ DELETE DATA {
 EOF
 
 N=$((N+1)) ; testBad $SPARQL11U $(fname "syntax-update-bad-" $N) <<EOF
+# Missing template
 INSERT WHERE { ?s ?p ?o }
 EOF
 
-# No separator
 N=$((N+1)) ; testBad $SPARQL11U $(fname "syntax-update-bad-" $N) <<EOF
+# No separator
 CREATE GRAPH <g>
 LOAD <remote> INTO GRAPH <g>
 EOF
 
-# Too many separators
 N=$((N+1)) ; testBad $SPARQL11U $(fname "syntax-update-bad-" $N) <<EOF
+# Too many separators
 CREATE GRAPH <g>
 ;;
 LOAD <remote> INTO GRAPH <g>
@@ -287,4 +300,20 @@ CREATE GRAPH <g>
 ;
 LOAD <remote> INTO GRAPH <g>
 ;;
+EOF
+
+# Bnodes in DELETE
+N=$((N+1)) ; testBad $SPARQL11U $(fname "syntax-update-bad-" $N) <<EOF
+# BNode in DELETE WHERE
+DELETE WHERE { _:a <p> <o> }
+EOF
+
+N=$((N+1)) ; testBad $SPARQL11U $(fname "syntax-update-bad-" $N) <<EOF
+# BNode in DELETE template
+DELETE { <s> <p> [] } WHERE { ?x <p> <o> }
+EOF
+
+N=$((N+1)) ; testBad $SPARQL11U $(fname "syntax-update-bad-" $N) <<EOF
+# BNode in DELETE DATA
+DELETE DATA { _:a <p> <o> }
 EOF

@@ -637,7 +637,7 @@ void OptionalIntoTarget(QuadAcc qp) : { String iri ; }
 {
   ( (<INTO>)? 
      iri = IRIref()
-     { Node gn = createNode(iri) ; qp.setGraph(gn) ; }
+     { Node gn = createNode(iri) ; setAccGraph(qp, gn) ; }
    )?
 }
 
@@ -645,7 +645,7 @@ void OptionalFromTarget(QuadAcc qp) : { String iri ; }
 {
   ( (<FROM>)? 
      iri = IRIref()
-     { Node gn = createNode(iri) ; qp.setGraph(gn) ; }
+     { Node gn = createNode(iri) ; setAccGraph(qp, gn) ; }
    )?
 }
 #endif
@@ -714,14 +714,14 @@ void Quads(QuadAcc acc) : { }
    )*
 }
 
-void QuadsNotTriples(QuadAcc acc) : {Node n ; Node prev = acc.getGraph() ; }
+void QuadsNotTriples(QuadAcc acc) : {Node gn ; Node prev = acc.getGraph() ; }
 {
-    <GRAPH> n = VarOrIRIref()
-    { acc.setGraph(n) ; }
+    <GRAPH> gn = VarOrIRIref()
+    { setAccGraph(acc, gn) ; }
     <LBRACE> 
     (TriplesTemplate(acc))?
     <RBRACE>
-    { acc.setGraph(prev) ; }
+    { setAccGraph(acc, prev) ; }
     
 }
 

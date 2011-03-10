@@ -26,6 +26,7 @@ import com.hp.hpl.jena.sparql.expr.E_Exists ;
 import com.hp.hpl.jena.sparql.expr.E_NotExists ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.graph.NodeConst ;
+import com.hp.hpl.jena.sparql.modify.request.QuadAcc ;
 import com.hp.hpl.jena.sparql.path.Path ;
 import com.hp.hpl.jena.sparql.syntax.Element ;
 import com.hp.hpl.jena.sparql.syntax.ElementGroup ;
@@ -337,6 +338,11 @@ public class ParserBase
         if ( prefix.endsWith(":") )
             prefix = prefix.substring(0, prefix.length()-1) ;
         return prefix ; 
+    }
+    
+    protected void setAccGraph(QuadAcc acc, Node gn)
+    {
+        acc.setGraph(gn) ;
     }
     
     protected void insert(TripleCollector acc, Node s, Node p, Node o)

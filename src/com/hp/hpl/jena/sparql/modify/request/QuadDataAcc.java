@@ -17,6 +17,8 @@ public class QuadDataAcc extends QuadAcc
     @Override
     protected void check(Triple t)
     {
+        if ( Var.isVar(getGraph()) )
+            throw new QueryParseException("Variables not permitted in data quad", -1, -1) ;   
         if ( Var.isVar(t.getSubject()) || Var.isVar(t.getPredicate()) || Var.isVar(t.getObject())) 
             throw new QueryParseException("Variables not permitted in data quad", -1, -1) ;   
     }
@@ -24,7 +26,7 @@ public class QuadDataAcc extends QuadAcc
     @Override
     protected void check(Quad t)
     {
-        if ( Var .isVar(t.getGraph()) || 
+        if ( Var.isVar(t.getGraph()) || 
              Var.isVar(t.getSubject()) || 
              Var.isVar(t.getPredicate()) || 
              Var.isVar(t.getObject())) 

@@ -59,6 +59,10 @@
 :test_46
 :test_47
 :test_48
+:test_49
+:test_50
+:test_51
+:test_52
 ) .
 
 :test_1 rdf:type   mf:PositiveUpdateSyntaxTest11 ;
@@ -300,5 +304,25 @@
    dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-update-bad-11.ru" ;
    mf:action  <syntax-update-bad-11.ru> ;.
+
+:test_49 rdf:type   mf:NegativeUpdateSyntaxTest11 ;
+   dawgt:approval dawgt:NotClassified ;
+   mf:name    "syntax-update-bad-12.ru" ;
+   mf:action  <syntax-update-bad-12.ru> ;.
+
+:test_50 rdf:type   mf:NegativeUpdateSyntaxTest11 ;
+   dawgt:approval dawgt:NotClassified ;
+   mf:name    "syntax-update-bad-13.ru" ;
+   mf:action  <syntax-update-bad-13.ru> ;.
+
+:test_51 rdf:type   mf:NegativeUpdateSyntaxTest11 ;
+   dawgt:approval dawgt:NotClassified ;
+   mf:name    "syntax-update-bad-14.ru" ;
+   mf:action  <syntax-update-bad-14.ru> ;.
+
+:test_52 rdf:type   mf:NegativeUpdateSyntaxTest11 ;
+   dawgt:approval dawgt:NotClassified ;
+   mf:name    "syntax-update-bad-15.ru" ;
+   mf:action  <syntax-update-bad-15.ru> ;.
 
 
