@@ -89,7 +89,7 @@ public class ParserQueryBase extends ParserBase
     
     protected void finishDataDelete(QuadDataAcc qd, int line, int col)
     {
-        setBNodesAreVariables(oldBNodesAreAllowed) ;
+        setBNodesAreAllowed(oldBNodesAreAllowed) ;
     }
     
     protected void startDeleteTemplate(QuadAcc qd, int line, int col)
@@ -100,7 +100,7 @@ public class ParserQueryBase extends ParserBase
     
     protected void finishDeleteTemplate(QuadAcc qd, int line, int col)
     {
-        setBNodesAreVariables(oldBNodesAreAllowed) ;
+        setBNodesAreAllowed(oldBNodesAreAllowed) ;
     }
     
     protected void emitUpdate(Update update)

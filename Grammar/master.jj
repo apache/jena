@@ -613,7 +613,6 @@ void DeleteClause(UpdateModify up) : { QuadAcc qp = up.getDeleteAcc() ;  Token t
 #ifndef ARQ_UPDATE
    QuadPattern(qp)
 #else
-   <DELETE> 
    OptionalFromTarget(qp)
    QuadPattern(qp)
 #endif

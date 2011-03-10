@@ -1842,7 +1842,6 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
                                        QuadAcc qp = up.getDeleteAcc() ; Token t ;
     t = jj_consume_token(DELETE);
      startDeleteTemplate(qp, t.beginLine, t.beginColumn) ;
-    jj_consume_token(DELETE);
     OptionalFromTarget(qp);
     QuadPattern(qp);
      finishDeleteTemplate(qp, t.beginLine, t.beginColumn) ;

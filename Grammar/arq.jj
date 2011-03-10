@@ -471,7 +471,6 @@ void DeleteClause(UpdateModify up) : { QuadAcc qp = up.getDeleteAcc() ; Token t 
 {
    t = <DELETE>
    { startDeleteTemplate(qp, t.beginLine, t.beginColumn) ; }
-   <DELETE>
    OptionalFromTarget(qp)
    QuadPattern(qp)
    { finishDeleteTemplate(qp, t.beginLine, t.beginColumn) ; }
