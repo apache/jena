@@ -10,7 +10,9 @@ public class DevARQ
     // JavaCharStream allocates a 4k char buffer on every call.
     // Pool of parsers.
     
-    // riot --keeplabels as is.
+    // riot --inputLabels -> use input labels
+    //   input choices: normal(generate), preserve labels, decoded safe to internal.
+    //   output choices: normal(short label _:b0), preserve (if input = perserver => same else safe internal), safe internal, raw (illegal)  
     // riot --canonicalize.
     // riot --rdfs.
     
