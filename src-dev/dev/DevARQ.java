@@ -2,39 +2,37 @@ package dev ;
 
 public class DevARQ
 {
-    // rdf:PlainLiteral conversion.
-    // Experiment with a parser set up that copies nodes.  Result: 120: -> 114K
-    // Note the use of ParserProfile to abstract node generation. 
+    // ---- RIOT
+    // Parallel parser
+    // Extract public API (RiotReader etc) - document
+    // Closing InputStream
+    // Errors after file name! Print file name once if error.
+    // Recovery parsing - scan to DOT?
+
+    // riot --inputLabels -> use input labels
+    //   input choices: normal(generate), preserve labels, decoded safe to internal.
+    //   output choices: normal(short label _:b0), preserve (if input = perserve => same else safe internal), safe internal, raw (illegal)
+    // Safe needs to be smarter?
+    // Tests
+
+    // riot --canonicalize --normalize
+    // riot --bnodeIRIs=on|off
+    // riot --rdfs
+    
+    // ----
+    // Listners for dadaset changes -> drive LARQ.
     
     // SPARQL parser; reuse charstream objects? using Reinit()  
     // JavaCharStream allocates a 4k char buffer on every call.
     // Pool of parsers.
-    
-    // riot --inputLabels -> use input labels
-    //   input choices: normal(generate), preserve labels, decoded safe to internal.
-    //   output choices: normal(short label _:b0), preserve (if input = perserver => same else safe internal), safe internal, raw (illegal)  
-    // riot --canonicalize.
-    // riot --rdfs.
-    
+   
     // OpTopN - OpExecutor.execute(OpTop).
     // BSBM Explore/Update
     // Remote SPARQL Update 
     
-    // RIOT Output
-    //   needs clean up.
-    //   OutputLangUtils without the triple.quad writers?
-    
-    // Parse output that preserves explicit labels.
-    // Suggests bnode parser -> bnode storage is done on insertion.
-    //   No parse state needed that.
-    // Test writing then reading Bnodes labels as URIs.
-    
     // [CANCEL] for cancellation work items.
     
-    // ** SPARQL Update with blank nodes in DELETE {T} WHERE {P}  
-    // Optimize when T has no blank nodes.
-    
-    // JENA-29 : Cancellation
+    // JENA-29 : Cancellation --> timeouts
     // JENA-47 : Timeout query
     // JENA-48 : QueryIterAbortCancellationRequestException - is this needed?
     //    Check in sort that don't get one rsult (after a lot of sorting).
@@ -45,9 +43,6 @@ public class DevARQ
     // ** Documentation - assemblers for datasets
     
     // HTTP result set iterator to know when it's closed.
-    
-    // RIOT - own node cache - per object type (experiment)
-    // parallel parser.
     
     // OpExecute example.
     
@@ -61,22 +56,14 @@ public class DevARQ
     // TokenizeText:
     // Just STRING, no CNTL=>KEYWORD = Symbol, catchall Keyword/Symbol
     
-    // round(1.3) -> "1"^^xsd:decimal.
-    // floor, ceil.
-    
     // Apache codec.
     
     // .filemanager
     // FileUtils, TypedStream conversion.
     // Check use of FileUtils.
     
-    // Most Locator.open don't know about types => extensions.
-    // Super class for "guessing" -> RIOT
-    
     // >>>> Tasks
 
-    // OutputLangUtils
-    
     // Algebra.asUnionQuery .. to access the functionality
     
     // Path evaluation as per spec.
@@ -154,15 +141,6 @@ public class DevARQ
     // -- Custom functions
     //   E_Function intercepts at evalSpecial to maintain compatibility.
     //   Should really change Function.eval to strict functions (eval'ed arguments and no binding).   
-    
-    // ---- RIOT
-    // Extract public API (RiotReader etc) - document
-    // closing InputStream
-    // Bad character encoding - exception but line/col = 1/1
-    //   Feed into the per-byte UTF-8 decoder?
-    // Filename in messages.
-    // Errors after file name! Print file name once if error.
-    // Recovery parsing - scan to DOT?
     
     // XSDDuration
 
