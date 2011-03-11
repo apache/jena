@@ -2,14 +2,6 @@ package dev;
 
 public class DevFuseki
 {
-    // Bug: upload no file.
-    // "Bug" text/plain chrome then => "N-Triples", not "N-TRIPLES"
-    // Lang -> WriterName.
-    
-    // Bug; upload no file.
-    // Chrome: Accept: application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,image/png,*/*;q=0.5
-
-    
     // Migrate ContentType to RIOT
     // use in WebContent.
     
