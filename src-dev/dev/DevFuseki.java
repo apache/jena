@@ -2,6 +2,8 @@ package dev;
 
 public class DevFuseki
 {
+    //soh : --accept application/turtle for CONSTRUCT queries.
+    
     // Direct naming.
     // Use absence/presence of a query string to switch.
     
