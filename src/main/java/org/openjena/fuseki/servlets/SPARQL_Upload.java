@@ -170,7 +170,6 @@ public class SPARQL_Upload extends SPARQL_ServletBase
                 }
             }    
                 
-                
             if ( graphName == null )
                 graphName = "default" ;
             serverlog.info(format("[%d] Upload: Filename: %s, Content-Type=%s, Charset=%s => (%s,%s,%d triple(s))", 
