@@ -36,7 +36,6 @@ public final class InStreamUTF8 extends Reader implements CharStream
     // because the app is looking one character at a time and accumulating
     // the chars until it sees the end of a token of arbitrary length
     // or processes escape sequences.  
-    // There may be ways of exploiting this for speed.
     //
     // The app might use a StringBuilder so the bytes get copied into
     // a char buffer and out again.  Instead, this code assumes the
@@ -120,15 +119,6 @@ public final class InStreamUTF8 extends Reader implements CharStream
         return len ; 
     }
 
-//    public int advance()
-//    {
-//        try { return read() ; } catch (IOException ex) { IO.exception(ex) ; return -1 ; } 
-//    }
-//
-//    @Override
-//    public int read() throws IOException
-//    {
-    
     @Override
     public final int read() throws IOException
     { return advance(input) ; }

@@ -8,7 +8,7 @@
 
 package dev;
 
-import java.util.Arrays ;
+import java.io.ByteArrayOutputStream ;
 import java.util.Iterator ;
 import java.util.NoSuchElementException ;
 import java.util.concurrent.ArrayBlockingQueue ;
@@ -18,10 +18,9 @@ import java.util.concurrent.Executors ;
 
 import junit.framework.TestSuite ;
 import org.openjena.atlas.io.IndentedWriter ;
+import org.openjena.atlas.io.OutStreamUTF8 ;
 import org.openjena.atlas.json.JSON ;
 import org.openjena.atlas.json.JsonValue ;
-import org.openjena.atlas.lib.Chars ;
-import org.openjena.atlas.lib.IRILib ;
 import org.openjena.atlas.lib.Sink ;
 import org.openjena.atlas.lib.StrUtils ;
 import org.openjena.atlas.logging.Log ;
@@ -109,6 +108,27 @@ public class RunARQ
     
     public static void main(String[] argv) throws Exception
     {
+        int[] x = { 0, 1,2000, 0x20AC , 0X024B62 } ;
+        // E2 82 AC
+        // F0 A4 AD A2
+        
+        
+        for ( int ch : x )
+        {
+            ByteArrayOutputStream out = new ByteArrayOutputStream() ;
+            OutStreamUTF8.output(out, ch) ;
+            byte[] b = out.toByteArray() ;
+
+            System.out.printf("0x%06X =>", ch) ;
+            for ( int j = 0 ; j < b.length ; j++ )
+                System.out.printf(" %02X", b[j]) ;
+                System.out.println() ;
+        }
+        
+        exit(0) ;
+        
+        
+        
         // Parser test
         riotcmd.riot.main(/*"--sink", "--time",*/ "D.nt") ;
         

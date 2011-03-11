@@ -2,6 +2,14 @@ package dev ;
 
 public class DevARQ
 {
+    // ---- Projects
+    // * FileManager2
+    // * Generalized union query
+    // * RIOT Output
+    // * RIOT I/O architecture
+    // * OutStreamUTF8.
+    // Apache commons codec for MD5 etc.
+    
     // ---- RIOT
     // Parallel parser
     // Extract public API (RiotReader etc) - document
