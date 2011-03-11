@@ -16,6 +16,7 @@ public class RunFuseki
     {
         FusekiCmd.main(
                     //"-v", 
+                    "--debug",
                     "--update",
                     //"--port=3030", 
                     "--mem",

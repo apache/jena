@@ -19,6 +19,13 @@ public class ConNeg
     // See riot.ContentNeg (client side).
     // http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.1
 
+    static public MediaType parse(String contentType)
+    {
+        try {
+            return new MediaType(contentType) ;
+        } catch (RuntimeException ex) { return null ; }
+    }
+    
     static public MediaType match(String headerString, AcceptList offerList)
     {
         AcceptList l = new AcceptList(headerString) ;

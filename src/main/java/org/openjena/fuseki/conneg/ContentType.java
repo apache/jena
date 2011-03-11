@@ -13,6 +13,32 @@ import org.openjena.fuseki.HttpNames ;
  */
 public class ContentType
 {
+    /** Split Content-Type into MIME type and charset */ 
+    public static ContentType parse(String x)
+    {
+        if ( x == null )
+            return null ;
+        String y[] = x.split(";") ;
+        if ( y.length == 0 )
+            return null ;
+        
+        String contentType = null ;
+        if ( y[0] != null )
+            contentType = y[0].trim();
+        
+        String charset = null ;
+        if ( y.length == 2 && y[1] != null && y[1].contains("=") )
+        {
+            String[] z = y[1].split("=") ;
+            if ( z[0].toLowerCase().startsWith(HttpNames.charset) )
+                charset=z[1].trim() ;
+        }
+        
+        if ( contentType != null ) contentType = contentType.toLowerCase() ;
+        if ( charset != null ) charset = charset.toLowerCase() ;
+        return new ContentType(contentType, charset) ;
+    }
+    
     // => MediaType and add a map.
     public final String contentType ;
     public final String charset ;

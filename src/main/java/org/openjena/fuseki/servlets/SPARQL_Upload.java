@@ -144,13 +144,20 @@ public class SPARQL_Upload extends SPARQL_ServletBase
 //                                       + item.getName() + " detected.");
                     // Process the input stream
                     name = item.getName() ; 
+                    if ( name == null || name.equals("") || name.equals("UNSET FILE NAME") ) 
+                        errorBadRequest("No name for content - can't determine RDF syntax") ;
+                    
                     String contentTypeHeader = item.getContentType() ;
-                    ct = FusekiLib.contentType(contentTypeHeader) ;
+                    ct = ContentType.parse(contentTypeHeader) ;
+                    
                     lang = FusekiLib.langFromContentType(ct.contentType) ;
                     if ( lang == null )
                         lang = Lang.guess(name) ;
+                    if ( lang == null )
+                        // Desparate.
+                        lang = Lang.RDFXML ;
+                    
                     String base = "http://example/upload-base/" ;
-
                     // We read into a in-memory graph, then (if successful) update the dataset.
                     Sink<Triple> sink = new SinkTriplesToGraph(graphTmp) ;
                     LangRIOT parser = RiotReader.createParserTriples(stream, lang, base, sink) ;

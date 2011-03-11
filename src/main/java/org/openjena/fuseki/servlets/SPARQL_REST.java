@@ -302,7 +302,7 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
             errorBadRequest("No content type: "+contentTypeHeader) ;
             // lang = Lang.guess(action.request.getRequestURI()) ;
         
-        ContentType ct = FusekiLib.contentType(contentTypeHeader) ;
+        ContentType ct = ContentType.parse(contentTypeHeader) ;
         int len = action.request.getContentLength() ;
         Lang lang = FusekiLib.langFromContentType(ct.contentType) ;
         if ( lang == null )

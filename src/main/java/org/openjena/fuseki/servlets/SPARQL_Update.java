@@ -21,7 +21,9 @@ import javax.servlet.http.HttpServletResponse ;
 
 import org.openjena.atlas.io.IO ;
 import org.openjena.atlas.lib.Bytes ;
+import org.openjena.fuseki.FusekiLib ;
 import org.openjena.fuseki.HttpNames ;
+import org.openjena.fuseki.conneg.ContentType ;
 import org.openjena.fuseki.http.HttpSC ;
 import org.openjena.riot.WebContent ;
 import org.slf4j.Logger ;
@@ -92,27 +94,48 @@ public class SPARQL_Update extends SPARQL_ServletBase
     @Override
     protected void perform(long id, DatasetGraph dsg, HttpServletRequest request, HttpServletResponse response)
     {
+        // validate -> action.
         validate(request) ;
         HttpActionUpdate action = new HttpActionUpdate(id, dsg, request, response, verbose_debug) ;
         
-        String incoming = request.getContentType() ;
-        if (WebContent.contentTypeSPARQLUpdate.equals(incoming))
+        // WebContent needs to migrate to using ContentType.
+        String ctStr ;
+        {
+            ContentType incoming = FusekiLib.contentType(request) ;
+            if ( incoming == null )
+                ctStr = WebContent.contentTypeSPARQLUpdate ;
+            else
+                ctStr = incoming.contentType ;
+        }
+        // ----
+        
+        if (WebContent.contentTypeSPARQLUpdate.equals(ctStr))
         {
             executeBody(action) ;
             return ;
         }
-        if (WebContent.contentTypeForm.equals(incoming))
+        if (WebContent.contentTypeForm.equals(ctStr))
         {
             executeForm(action) ;
             return ;
         }
-        error(HttpSC.UNSUPPORTED_MEDIA_TYPE_415, "Bad content type: " + incoming) ;
+        error(HttpSC.UNSUPPORTED_MEDIA_TYPE_415, "Bad content type: " + request.getContentType()) ;
     }
 
     private void validate(HttpServletRequest request)
     {
-        String incoming = request.getContentType() ;
-        if ( WebContent.contentTypeSPARQLUpdate.equals(incoming) )
+        // WebContent needs to migrate to using ContentType.
+        String ctStr ;
+        {
+            ContentType incoming = FusekiLib.contentType(request) ;
+            if ( incoming == null )
+                ctStr = WebContent.contentTypeSPARQLUpdate ;
+            else
+                ctStr = incoming.contentType ;
+        }
+        // ----
+        
+        if ( WebContent.contentTypeSPARQLUpdate.equals(ctStr) )
         {
             // For now, all query string stuff is not allowed.
             if ( request.getQueryString() != null )
@@ -122,10 +145,14 @@ public class SPARQL_Update extends SPARQL_ServletBase
             Enumeration<String> en = request.getParameterNames() ;
             if ( en.hasMoreElements() )
                 errorBadRequest("No request parameters allowed") ;
+            
+            String charset = request.getCharacterEncoding() ;
+            if ( charset != null && ! charset.equalsIgnoreCase(WebContent.charsetUTF8) )
+                errorBadRequest("Bad charset: "+charset) ;
             return ;
         }
         
-        if ( WebContent.contentTypeForm.equals(incoming) )
+        if ( WebContent.contentTypeForm.equals(ctStr) )
         {
             String requestStr = request.getParameter(paramUpdate) ;
             if ( requestStr == null )

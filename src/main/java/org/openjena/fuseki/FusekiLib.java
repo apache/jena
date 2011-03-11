@@ -50,51 +50,26 @@ public class FusekiLib
 
     public static ContentType contentType(HttpServletRequest request)
     {
-        return contentType(request.getHeader(HttpNames.hContentType)) ;
+        return ContentType.parse(request.getHeader(HttpNames.hContentType)) ;
     }
 
-    /** Split Content-Type into MIME type and charset */ 
-    public static ContentType contentType(String x)
-    {
-        if ( x == null )
-            return null ;
-        String y[] = x.split(";") ;
-        if ( y.length == 0 )
-            return null ;
-        
-        String contentType = null ;
-        if ( y[0] != null )
-            contentType = y[0].trim();
-        
-        String charset = null ;
-        if ( y.length == 2 && y[1] != null && y[1].contains("=") )
-        {
-            String[] z = y[1].split("=") ;
-            if ( z[0].toLowerCase().startsWith(HttpNames.charset) )
-                charset=z[1].trim() ;
-        }
-        
-        return new ContentType(contentType, charset) ;
+    private static Map<Lang, String> mapLangToWriterName =  new HashMap<Lang, String>() ;
+    static {
+        mapLangToWriterName.put(Lang.N3, WebContent.langN3) ;
+        mapLangToWriterName.put(Lang.TURTLE, WebContent.langTurtle) ;
+        mapLangToWriterName.put(Lang.NTRIPLES, WebContent.langNTriples) ;
+        mapLangToWriterName.put(Lang.RDFXML, WebContent.langRDFXML) ;
     }
-
     
     public static RDFWriter chooseWriter(Lang lang)        
     {
         if ( lang == null )
             lang = Lang.RDFXML ;
-        switch (lang)
-        {
-            case N3 :
-            case TURTLE :
-            case NTRIPLES :
-            case RDFXML :
-                return dummy.getWriter(lang.getName()) ;
-            default:
-                throw new RiotException("Not a triples language: "+lang) ;
-//            case NQUADS :
-//            case TRIG :
-//                  throw new RiotException("Not a triples language: "+lang) ;
-        }
+        String name = mapLangToWriterName.get(lang) ;
+        
+        if ( name == null )
+            throw new RiotException("Not a triples language: "+lang) ;
+        return dummy.getWriter(name) ;
     }
 
 //    static public MediaType match(String headerString, AcceptList offerList)

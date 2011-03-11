@@ -30,7 +30,7 @@ $mtNQuads           = 'text/n-quads'
 $mtTriG             = 'application/trig'
 $mtSparqlResultsX   = 'application/sparql-results+xml'
 $mtSparqlResultsJ   = 'application/sparql-results+json'
-$mtSparqlUpdate     = 'application/sparql-update'
+$mtSparqlUpdate     = 'application/sparql-update; charset=utf-8'
 $mtWWWForm          = 'application/x-www-form-urlencoded'
 # $mtSparqlQuery      = "application/sparql-query" ;
 

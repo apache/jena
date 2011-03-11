@@ -87,6 +87,7 @@ public abstract class SPARQL_Query extends SPARQL_ServletBase
             executeForm(action) ;
             return ;
         }
+       // XXX INCLUDES MEDIA TYPE
         // POST
         String incoming = request.getContentType() ;
         if (WebContent.contentTypeSPARQLQuery.equals(incoming))
