@@ -96,14 +96,17 @@ public class WebReader
     interface Process<T> { void parse(InputStream inputStream) ; }
     // Name?
     interface SinkTriplesFactory { Process<Triple> create(String contentType) ; } 
-    static public void addReader(String contentType, SinkTriplesFactory implFactory) {}
+    
+    static private Map<String, Lang> contentTypeToLang = new HashMap<String, Lang>() ;
+
+//    static public void addReader(String contentType, SinkTriplesFactory implFactory) {}
+//    static public void removeReader(String contentType) {}
 
     // -----------------------
 
     // No need for this - use content type to get lang.
     
     /** Media type name to language */ 
-    static Map<String, Lang> contentTypeToLang = new HashMap<String, Lang>() ;
     static {
         contentTypeToLang.put(contentTypeN3.toLowerCase(), Lang.N3) ;
         contentTypeToLang.put(contentTypeN3Alt1.toLowerCase(), Lang.N3) ;
