@@ -12,9 +12,9 @@ import org.junit.runners.Suite ;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
-    TestStreamManager.class
+      TestStreamManager.class
     , TestLocationMapper.class
-    , TestLocators.class,
+    , TestLocators.class
 })
 public class TS_IO2
 {
