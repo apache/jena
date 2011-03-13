@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 Epimorphics Ltd.
+ * (c) Copyright 2010, 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -22,8 +22,6 @@ public class HttpNames
     public static final String hServer              = "Server" ;
     public static final String hLocation            = "Location" ; 
     public static final String charset              = "charset" ;
-    
-
     
     // CORS: 
     //   http://www.w3.org/TR/cors/  http://esw.w3.org/CORS_Enabled
@@ -74,7 +72,7 @@ public class HttpNames
 }
 
 /*
- * (c) Copyright 2010 Epimorphics Ltd.
+ * (c) Copyright 2010, 2011 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

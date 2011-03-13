@@ -16,8 +16,6 @@ public class DevFuseki
     
     // FUSEKI_ROOT
 
-    // Mem dataset with union graph (ARQ)
-    
     // Documentation:
     //   Plan documentation.
     //   MIME types supported

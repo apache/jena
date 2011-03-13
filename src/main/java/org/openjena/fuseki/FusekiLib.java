@@ -37,7 +37,7 @@ public class FusekiLib
     
     private static Model dummy = ModelFactory.createDefaultModel() ;
     private static Map<String, Lang> mapContentTypeToLang = new HashMap<String, Lang>() ;
-    // To riot.WebContent
+    // Use riot.WebContent on next ARQ update.
     static {
         mapContentTypeToLang.put(WebContent.contentTypeRDFXML, Lang.RDFXML) ;
         mapContentTypeToLang.put(WebContent.contentTypeTurtle1, Lang.TURTLE) ;

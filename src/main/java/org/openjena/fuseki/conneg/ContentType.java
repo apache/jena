@@ -13,6 +13,8 @@ import org.openjena.fuseki.HttpNames ;
  */
 public class ContentType
 {
+    // TODO Use version in RIOT (after next ARQ update) 
+    
     /** Split Content-Type into MIME type and charset */ 
     public static ContentType parse(String x)
     {
