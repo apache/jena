@@ -6,23 +6,23 @@
 
 package fm2.atlas;
 
-import java.io.IOException ;
 import java.io.InputStream ;
-import java.io.Reader ;
-import java.io.StringWriter ;
 import java.util.ArrayList ;
 import java.util.List ;
 
+import org.openjena.atlas.lib.IRILib ;
 import org.openjena.atlas.web.TypedStream ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
-import com.hp.hpl.jena.shared.NotFoundException ;
-import com.hp.hpl.jena.shared.WrappedIOException ;
-import com.hp.hpl.jena.util.FileUtils ;
-
+/** Operations to open streams, indirecting via a LocationMapper.
+ * Inckludes filename to IRI, handling ".gz" and "-" 
+ *  
+ *  */ 
 public class StreamManager
 {
+    // Need to combine with IO to do the .gz and "-" things.
+    
     private static Logger log = LoggerFactory.getLogger(StreamManager.class) ;
     
     public static boolean logAllLookups = true ; 
@@ -47,16 +47,22 @@ public class StreamManager
     /** Apply the mapping of a filename or URI */
     public String mapURI(String filenameOrURI)
     {
+        // XXX NO
+        // allow any string (e.g. relative filename - made absolute in LocatorFile)
+        
+        String uriFilename = IRILib.filenameToIRI(filenameOrURI) ;
+        
+        
         if ( mapper == null )
-            return filenameOrURI ; 
-            
-        String uri = mapper.altMapping(filenameOrURI, null) ;
+            return uriFilename ; 
+        
+        String uri = mapper.altMapping(uriFilename, null) ;
     
         if ( uri == null )
         {
             if ( StreamManager.logAllLookups && log.isDebugEnabled() )
                 log.debug("Not mapped: "+filenameOrURI) ;
-            uri = filenameOrURI ;
+            uri = uriFilename ;
         }
         else
         {
@@ -66,48 +72,17 @@ public class StreamManager
         return uri ;
     }
 
-    /** Slurp up a whole file */
-    public String readWholeFileAsUTF8(InputStream in)
-    {
-        try {
-            Reader r = FileUtils.asBufferedUTF8(in) ;
-            StringWriter sw = new StringWriter(1024);
-            char buff[] = new char[1024];
-            while (true) {
-                int l = r.read(buff);
-                if (l <= 0)
-                    break;
-                sw.write(buff, 0, l);
-            }
-            r.close();
-            sw.close();
-            return sw.toString();
-        } catch (IOException ex)
-        {
-            throw new WrappedIOException(ex) ;
-        }
-    }
-
-    /** Slurp up a whole file: map filename as necessary */
-    public String readWholeFileAsUTF8(String filename)
-    {
-        InputStream in = open(filename) ;
-        if ( in == null )
-            throw new NotFoundException("File not found: "+filename) ;
-        return readWholeFileAsUTF8(in) ;
-    }
-
     /** Open a file using the locators of this FileManager 
-         *  but without location mapping */ 
-        public InputStream openNoMap(String filenameOrURI)
-        {
-            TypedStream in = openNoMapOrNull(filenameOrURI) ;
-            if ( in == null )
-                return null ;
-    //        if ( in == null )
-    //            throw new NotFoundException(filenameOrURI) ;
-            return in.getInput() ;
-        }
+     *  but without location mapping */ 
+    public InputStream openNoMap(String filenameOrURI)
+    {
+        TypedStream in = openNoMapOrNull(filenameOrURI) ;
+        if ( in == null )
+            return null ;
+//        if ( in == null )
+//            throw new NotFoundException(filenameOrURI) ;
+        return in.getInput() ;
+    }
 
     /** Open a file using the locators of this FileManager 
      *  but without location mapping.
@@ -116,13 +91,14 @@ public class StreamManager
     
     public TypedStream openNoMapOrNull(String filenameOrURI)
     {
+        String uriFilename = IRILib.filenameToIRI(filenameOrURI) ;
         for (Locator loc : handlers)
         {
-            TypedStream in = loc.open(filenameOrURI) ;
+            TypedStream in = loc.open(uriFilename) ;
             if ( in != null )
             {
                 if ( log.isDebugEnabled() )
-                    log.debug("Found: "+filenameOrURI+" ("+loc.getName()+")") ;
+                    log.debug("Found: "+uriFilename+" ("+loc.getName()+")") ;
                 return in ;
             }
         }

@@ -36,9 +36,6 @@ public class LocationMapper
     Map<String, String> altLocations = new HashMap<String, String>() ;
     Map<String, String> altPrefixes = new HashMap<String, String>() ;
     
-
-
-    
     /** Create a LocationMapper with no mapping yet */
     public LocationMapper() { }
     
@@ -158,22 +155,6 @@ public class LocationMapper
         x = x ^ altLocations.hashCode() ;
         x = x ^ altPrefixes.hashCode() ;
         return x ;
-        
-//        // Err - this is hashMap hash. 
-//        
-//        for ( Iterator<String> iter = altLocations.keySet().iterator() ; iter.hasNext() ; )
-//        {
-//            String k = iter.next() ;
-//            String v = altLocations.get(k) ;
-//            x = x ^ k.hashCode() ^ v.hashCode() ;
-//        }
-//        for ( Iterator<String> iter = altPrefixes.keySet().iterator() ; iter.hasNext() ; )
-//        {
-//            String k = iter.next() ;
-//            String v = altPrefixes.get(k) ;
-//            x = x ^ k.hashCode() ^ v.hashCode() ;
-//        }
-//        return x ;
     }
     
     @Override
@@ -189,28 +170,6 @@ public class LocationMapper
         if ( ! this.altPrefixes.equals(other.altPrefixes) )
             return false ;
         return true ; 
-
-//        if ( altLocations.size() != other.altLocations.size() )
-//            return false ;
-//        
-//        if ( altPrefixes.size() != other.altPrefixes.size() )
-//            return false ;
-//        
-//        for ( Iterator<String> iter = altLocations.keySet().iterator() ; iter.hasNext() ; )
-//        {
-//            String k = iter.next() ;
-//            String v = altLocations.get(k) ;
-//            if ( ! other.altLocations.get(k).equals(v) )
-//                return false ;
-//        }
-//        for ( Iterator<String> iter = altPrefixes.keySet().iterator() ; iter.hasNext() ; )
-//        {
-//            String k = iter.next() ;
-//            String v = altPrefixes.get(k) ;
-//            if ( ! other.altPrefixes.get(k).equals(v) )
-//                return false ;
-//        }
-//        return true ;
     }
     
     @Override

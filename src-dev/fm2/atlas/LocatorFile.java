@@ -12,7 +12,11 @@ import java.io.IOException ;
 import java.io.InputStream ;
 import java.security.AccessControlException ;
 
+import org.openjena.atlas.lib.IRILib ;
+import org.openjena.atlas.lib.Lib ;
 import org.openjena.atlas.web.TypedStream ;
+import org.openjena.riot.Lang ;
+import org.openjena.riot.WebContent ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
@@ -28,28 +32,11 @@ public class LocatorFile implements Locator
     static Logger log = LoggerFactory.getLogger(LocatorFile.class) ;
     private String altDir = null ;
     private String altDirLogStr = "" ;
+
+    public LocatorFile() { this(null) ; }
     
     public LocatorFile(String dir)
     {
-//        if ( false )
-//        {
-//            if ( dir == null )
-//            {
-//                try {
-//                    //String wd = JenaRuntime.getSystemProperty("user.dir") ;
-//                    String wd = new File(".").getCanonicalPath() ;
-//                    log.debug("Base file directory: "+wd) ;
-//                } catch (IOException ex)
-//                {
-//                    log.error("Failed to discover the working directory", ex) ;
-//                }
-//                return ;
-//            }
-//            else
-//            {
-//                log.debug("Base file directory: "+dir) ;
-//            }
-//        }
         if ( dir != null )
         {
             if ( dir.endsWith("/") || dir.endsWith(java.io.File.separator) )
@@ -59,46 +46,46 @@ public class LocatorFile implements Locator
         altDir = dir ;
     }
 
-    LocatorFile()
-    {
-        this(null) ;
-    }
+    // Two LocatorFile are the same if they would look up names to the same files.
     
     @Override
     public boolean equals( Object other )
     {
         return
             other instanceof LocatorFile
-            && equals( altDir, ((LocatorFile) other).altDir );
+            && Lib.equal(altDir, ((LocatorFile) other).altDir );
     }
     
-    private boolean equals( String a, String b )
-    {
-        return a == null ? b == null : a.equals(  b  );
-    }
-
     @Override
     public int hashCode()
     {
+        if ( altDir == null ) return 57 ;
         return altDir.hashCode();
     }
     
-    private File toFile(String filenameOrURI)
+    /** To a File, after processing the filename for file: or relative filename */
+    public File toFile(String filenameIRI)
     {
-        String fn = FileUtils.toFilename(filenameOrURI) ;
-        if ( fn == null )
-            return null ;
-        // Include "/" for portability (e.g. file: URIs). 
-        if ( altDir != null && ! fn.startsWith("/") && ! fn.startsWith(File.pathSeparator))
-            fn = altDir+File.separator+fn ;
-                     
+        String scheme = FileUtils.getScheme(filenameIRI) ;
+        String fn = filenameIRI ;
+        // Windows : C:\\ is not a scheme name!
+        if ( scheme != null && scheme.length() > 1 )
+        {
+            if ( ! scheme.equalsIgnoreCase("file") )
+                // Not filename or a file: IRI
+                return null ;
+            fn = IRILib.IRIToFilename(filenameIRI) ;
+        }
+        // AltDir.
+        // "/" is a path separator on Windows.
+        if ( altDir != null && ! fn.startsWith("/") && ! fn.startsWith(File.pathSeparator) )
+            fn = altDir+"/"+fn ;
         return new File(fn) ;
     }
     
-    
-    public boolean exists(String filenameOrURI)
+    public boolean exists(String fileIRI)
     {
-        File f = toFile(filenameOrURI) ;
+        File f = toFile(fileIRI) ;
         
         if ( f == null )
             return false ;
@@ -106,17 +93,16 @@ public class LocatorFile implements Locator
         return f.exists() ;
     }
     
-    public TypedStream open(String filenameOrURI)
+    /** Opne anything that looks a bit like a file name */ 
+    public TypedStream open(String filenameIRI)
     {
-        // Worry about %20.
-        // toFile calls FileUtils.toFilename(filenameOrURI) ;
-        File f = toFile(filenameOrURI) ;
+        File f = toFile(filenameIRI) ;
 
         try {
             if ( f == null || !f.exists() )
             {
                 if ( StreamManager.logAllLookups && log.isTraceEnabled())
-                    log.trace("Not found: "+filenameOrURI+altDirLogStr) ;
+                    log.trace("Not found: "+filenameIRI+altDirLogStr) ;
                 return null ;
             }
         } catch (AccessControlException e) {
@@ -128,13 +114,13 @@ public class LocatorFile implements Locator
             InputStream in = new FileInputStream(f) ;
 
             if ( StreamManager.logAllLookups && log.isTraceEnabled() )
-                log.trace("Found: "+filenameOrURI+altDirLogStr) ;
-                
+                log.trace("Found: "+filenameIRI+altDirLogStr) ;
             
-            // Create base -- Java 1.4-isms
-            //base = f.toURI().toURL().toExternalForm() ;
-            //base = base.replaceFirst("^file:/([^/])", "file:///$1") ;
-            return new TypedStream(in) ;
+            // Guess content from extension.
+            Lang lang = Lang.guess(filenameIRI) ;
+            String contentType = WebContent.mapLangToContentType(lang) ;
+            String charset = WebContent.getCharsetForContentType(contentType) ;
+            return new TypedStream(in, contentType, charset) ;
         } catch (IOException ioEx)
         {
             // Includes FileNotFoundException
@@ -143,6 +129,7 @@ public class LocatorFile implements Locator
             return null ;
         }
     }
+    
     public String getName()
     {
         String tmp = "LocatorFile" ;

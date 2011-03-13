@@ -4,6 +4,10 @@ public class DevARQ
 {
     // ---- Projects
     // * FileManager2
+    //     Tests - need testing/Atlas/... or tmp/
+    //     Work out what to keep from FileUtils.
+    //     FileUtils2.
+    //     ?? WebContent to work on ContentTypes, not strings. (what about default charsets?)
     // * Generalized union query
     // * RIOT Output
     // * RIOT I/O architecture

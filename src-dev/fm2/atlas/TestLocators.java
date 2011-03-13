@@ -1,42 +1,60 @@
 /*
- * (c) Copyright 2010 Epimorphics Ltd.
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
-package org.openjena.atlas.web;
+package fm2.atlas;
 
-import java.io.InputStream;
+import java.io.File ;
 
-import org.openjena.riot.ContentType ;
+import org.junit.Test ;
+import org.openjena.atlas.junit.BaseTest ;
 
-public class TypedStream
-{ 
-    private InputStream input ;
-    private ContentType contentType ;
-    
-    public TypedStream(InputStream in)
-    { this(in, null) ; }
-    
-    public TypedStream(InputStream in, String mediaType, String charset)
+public class TestLocators extends BaseTest 
+{
+
+    @Test public void locatorFile_01()
     {
-        this(in, new ContentType(mediaType, charset)) ;
+        LocatorFile loc = new LocatorFile() ;
+        assertTrue(loc.exists("pom.xml")) ;
+        assertFalse(loc.exists("IDoNotExist")) ;
     }
     
-    public TypedStream(InputStream in, ContentType ct)
+    @Test public void locatorFile_02()
     {
-        input = in ;
-        contentType = ct ;
+        LocatorFile loc = new LocatorFile(".") ;
+        assertTrue(loc.exists("pom.xml")) ;
+        assertFalse(loc.exists("IDoNotExist")) ;
+    }
+
+    @Test public void locatorFile_03()
+    {
+        String dir = new File(".").getAbsolutePath() ;
+        LocatorFile loc = new LocatorFile(dir) ;
+        assertTrue(loc.exists("pom.xml")) ;
+        assertFalse(loc.exists("IDoNotExist")) ;
     }
     
-    public InputStream getInput()               { return input ; }
-    public String getMediaType()                { return contentType.contentType ; }
-    public String getCharset()                  { return contentType.charset ; }
-    public ContentType getContentType()         { return contentType ; }
-} 
+    @Test public void locatorFile_04()
+    {
+        String dir = new File("src").getAbsolutePath() ;
+        LocatorFile loc = new LocatorFile(dir) ;
+        assertTrue(loc.exists("org")) ;
+        assertTrue(loc.exists("../pom.xml")) ;
+    }
+
+    // TypedStream
+    
+    @Test public void locatorURL_01() {}
+
+    @Test public void locatorZip_01() {}
+
+    @Test public void locatorClassloader_01() {}
+}
 
 /*
- * (c) Copyright 2010 Epimorphics Ltd.
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

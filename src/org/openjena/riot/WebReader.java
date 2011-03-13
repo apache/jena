@@ -35,7 +35,7 @@ import com.hp.hpl.jena.sparql.core.Quad ;
 /** Retrieve data from the web */
 public class WebReader
 {
-    /* where file are "on the web" */
+    /* where files are "on the web" */
     
     // TODO base URIs.
 

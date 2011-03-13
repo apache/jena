@@ -101,7 +101,7 @@ public class IO
         return new InputStreamReader(in, charset) ;
     }
 
-    /** Create a reader that uses UTF-8 encoding */ 
+    /** Create an unbuffered reader that uses UTF-8 encoding */ 
     static public Reader asUTF8(InputStream in)
     {
         // See also Apache commons I/O IOUtils.toString(InutStream)
@@ -114,7 +114,7 @@ public class IO
         return new InputStreamReader(in, ascii.newDecoder());
     }
     
-    /** Create a buffered reader that uses UTF-8 encoding */ 
+    /** Create an buffered reader that uses UTF-8 encoding */ 
     static public BufferedReader asBufferedUTF8(InputStream in) {
         return new BufferedReader(asUTF8(in)) ;
     }
@@ -203,7 +203,8 @@ public class IO
      */
     public static String readWholeFileAsUTF8(InputStream in) throws IOException
     {
-        Reader r = new BufferedReader(asUTF8(in),1024) ;
+        // Don't buffer - we're going to read in larg chunks anyway
+        Reader r = asUTF8(in) ;
         return readWholeFileAsUTF8(r) ;
     }
     

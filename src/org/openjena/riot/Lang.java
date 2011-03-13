@@ -59,6 +59,8 @@ public enum Lang
     public boolean isTriples() { return isTriples ; }
     public boolean isQuads() { return ! isTriples ; }
     
+    public String getContentType() { return WebContent.mapLangToContentType(this) ; }
+    
     @Override
     public String toString() { return "lang:"+name ; }
     

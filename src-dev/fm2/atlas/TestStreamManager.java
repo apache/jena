@@ -1,42 +1,21 @@
 /*
- * (c) Copyright 2010 Epimorphics Ltd.
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
-package org.openjena.atlas.web;
+package fm2.atlas;
 
-import java.io.InputStream;
+import org.junit.Test ;
+import org.openjena.atlas.junit.BaseTest ;
 
-import org.openjena.riot.ContentType ;
-
-public class TypedStream
-{ 
-    private InputStream input ;
-    private ContentType contentType ;
-    
-    public TypedStream(InputStream in)
-    { this(in, null) ; }
-    
-    public TypedStream(InputStream in, String mediaType, String charset)
-    {
-        this(in, new ContentType(mediaType, charset)) ;
-    }
-    
-    public TypedStream(InputStream in, ContentType ct)
-    {
-        input = in ;
-        contentType = ct ;
-    }
-    
-    public InputStream getInput()               { return input ; }
-    public String getMediaType()                { return contentType.contentType ; }
-    public String getCharset()                  { return contentType.charset ; }
-    public ContentType getContentType()         { return contentType ; }
-} 
+public class TestStreamManager extends BaseTest
+{
+    @Test public void streamManager_01() {}
+}
 
 /*
- * (c) Copyright 2010 Epimorphics Ltd.
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

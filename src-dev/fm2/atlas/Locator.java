@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -9,19 +10,19 @@ package fm2.atlas;
 import org.openjena.atlas.web.TypedStream ;
 
 /**
- *  Interface to things that open streams by some string reference
+ *  Interface to things that open TypedStreams from a place
  */
 
 public interface Locator
 {
-    public TypedStream open(String filenameOrURI) ;
-    // Too expensive for LocatorURL - just try to open the thing!
-    //public boolean exists(String filenameOrURI) ;
+    // Open a stream given a name of some kind (not necessarily an IRI).
+    public TypedStream open(String uri) ;
     public String getName() ;
 }
 
 /*
  * (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

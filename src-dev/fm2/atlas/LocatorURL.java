@@ -50,7 +50,8 @@ public class LocatorURL implements Locator
             
             if ( StreamManager.logAllLookups  && log.isTraceEnabled() )
                 log.trace("Found: "+filenameOrURI) ;
-            //return new TypedStream(in, conn.getContentType()) ; 
+            // Parse content type into a ContentType and ...
+            //return new TypedStream(in, ct) ;
             return new TypedStream(in) ;
         }
         catch (java.io.FileNotFoundException ex) 
