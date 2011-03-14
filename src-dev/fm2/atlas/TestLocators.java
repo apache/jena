@@ -10,14 +10,18 @@ import java.io.File ;
 
 import org.junit.Test ;
 import org.openjena.atlas.junit.BaseTest ;
+import org.openjena.atlas.web.TypedStream ;
+import org.openjena.riot.WebContent ;
 
 public class TestLocators extends BaseTest 
 {
-
+    public static final String testingDir = "testing/RIOT/Files/" ;
+    
     @Test public void locatorFile_01()
     {
         LocatorFile loc = new LocatorFile() ;
         assertTrue(loc.exists("pom.xml")) ;
+        assertTrue(loc.exists(testingDir+"data.ttl")) ;
         assertFalse(loc.exists("IDoNotExist")) ;
     }
     
@@ -25,6 +29,7 @@ public class TestLocators extends BaseTest
     {
         LocatorFile loc = new LocatorFile(".") ;
         assertTrue(loc.exists("pom.xml")) ;
+        assertTrue(loc.exists(testingDir+"data.ttl")) ;
         assertFalse(loc.exists("IDoNotExist")) ;
     }
 
@@ -40,8 +45,19 @@ public class TestLocators extends BaseTest
     {
         String dir = new File("src").getAbsolutePath() ;
         LocatorFile loc = new LocatorFile(dir) ;
+        
+        assertFalse(loc.exists("pom.xml")) ;
         assertTrue(loc.exists("org")) ;
+        assertFalse(loc.exists(testingDir+"data.ttl")) ;
         assertTrue(loc.exists("../pom.xml")) ;
+        assertFalse(loc.exists("/../"+testingDir+"data.ttl")) ;
+    }
+    
+    @Test public void locatorFile_05()
+    {
+        LocatorFile loc = new LocatorFile() ;
+        TypedStream ts = loc.open(testingDir+"data.ttl") ;
+        assertTrue("Not equal: "+WebContent.contentTypeTurtle1+" != "+ts.getContentType().contentType, WebContent.contentTypeTurtle2.equalsIgnoreCase(ts.getContentType().contentType)) ;
     }
 
     // TypedStream
