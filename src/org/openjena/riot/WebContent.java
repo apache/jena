@@ -14,12 +14,12 @@ public class WebContent
 {
     // Names for things.
     
+    // contentType => ctStr
+    
     public static final String contentTypeN3                = "text/rdf+n3" ;
     public static final String contentTypeN3Alt1            = "application/n3" ;
     public static final String contentTypeN3Alt2            = "text/n3" ;
     
-    public static final ContentType ctN3                    = new ContentType(contentTypeN3Alt2, null) ;
-
     public static final String contentTypeTurtle1           = "application/turtle" ; 
     public static final String contentTypeTurtle2           = "text/turtle" ; 
     public static final String contentTypeTurtle3           = "application/x-turtle" ;
@@ -52,6 +52,11 @@ public class WebContent
     
     public static final String charsetUTF8                  = "utf-8" ;
     public static final String charsetASCII                 = "ascii" ;
+
+    /** Constants */
+    public static final ContentType ctN3                    = ContentType.createConst(contentTypeN3, charsetUTF8) ;
+
+
     
     // Names used in Jena for the parsers
     // See also Lang enum (preferred).
@@ -102,9 +107,13 @@ public class WebContent
     public static String getCharsetForContentType(String contentType)
     {
         ContentType ct = ContentType.parse(contentType) ;
-        if ( ct.charset != null )
-            return ct.charset ;
-        String mt = ct.contentType ;
+        if ( ct.getCharset() != null )
+            return ct.getCharset() ;
+        
+        if ( ct.getDftCharset() != null )
+            return ct.getDftCharset() ;
+        
+        String mt = ct.getContentType() ;
         if ( contentTypeNTriples.equals(mt) )       return charsetASCII ;
         if ( contentTypeNTriplesAlt.equals(mt) )    return charsetASCII ;
         if ( contentTypeNQuads.equals(mt) )         return charsetASCII ;

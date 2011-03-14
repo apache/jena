@@ -10,6 +10,8 @@ package org.openjena.riot;
 /** Content Type - Parsed version of content type / MIME type */
 public class ContentType
 {
+    // Unify with MediaType
+    
     private static String nameCharset = "charset" ; // HttpNames.charset
     
     /** Split Content-Type into MIME type and charset */ 
@@ -35,24 +37,38 @@ public class ContentType
         
         if ( contentType != null ) contentType = contentType.toLowerCase() ;
         if ( charset != null ) charset = charset.toLowerCase() ;
-        return new ContentType(contentType, charset) ;
+        return new ContentType(contentType, charset, null) ;
     }
     
-    // => MediaType and add a map.
-    public final String contentType ;
-    public final String charset ;
-    public ContentType(String contentType, String charset)
+    private final String contentType ;
+    // Split into type/substype.
+    private final String charset ;
+    private final String dftCharset ;
+    
+    /** Create a media type, with a default charset */ 
+    public static ContentType createConst(String contentType, String dftCharset)
+    {
+        return new ContentType(contentType, null, dftCharset) ;
+    }
+    
+    public static ContentType create(String contentType, String charset)
+    {
+        return new ContentType(contentType, charset, null) ;
+    }
+    
+    public static ContentType create(String contentType)
+    {
+        return new ContentType(contentType, null, null) ;
+    }
+
+    private ContentType(String contentType, String charset, String dftCharset)
     {
         this.contentType = contentType ;
         this.charset = charset ;
+        this.dftCharset = dftCharset ;
     }
     
-//    public ContentType(MediaType mediaType)
-//    {
-//        contentType = mediaType.getContentType() ;
-//        charset = mediaType.getCharset() ;
-//    }
-
+    
     @Override
     public String toString()
     {
@@ -60,6 +76,21 @@ public class ContentType
         if ( charset != null )
             x = x + ";" + nameCharset + "=" + charset ;
         return x ;
+    }
+
+    public String getContentType()
+    {
+        return contentType ;
+    }
+
+    public String getCharset()
+    {
+        return charset ;
+    }
+
+    public String getDftCharset()
+    {
+        return dftCharset ;
     }
 }
 

@@ -13,26 +13,26 @@ import org.openjena.riot.ContentType ;
 public class TypedStream
 { 
     private InputStream input ;
-    private ContentType contentType ;
+    private ContentType mediaType ;
     
     public TypedStream(InputStream in)
     { this(in, null) ; }
     
     public TypedStream(InputStream in, String mediaType, String charset)
     {
-        this(in, new ContentType(mediaType, charset)) ;
+        this(in, ContentType.create(mediaType, charset)) ;
     }
     
     public TypedStream(InputStream in, ContentType ct)
     {
         input = in ;
-        contentType = ct ;
+        mediaType = ct ;
     }
     
-    public InputStream getInput()               { return input ; }
-    public String getMediaType()                { return contentType.contentType ; }
-    public String getCharset()                  { return contentType.charset ; }
-    public ContentType getContentType()         { return contentType ; }
+    public InputStream getInput()           { return input ; }
+    public String getContentType()          { return mediaType.getContentType() ; }
+    public String getCharset()              { return mediaType.getCharset() ; }
+    public ContentType getMediaType()       { return mediaType ; }
 } 
 
 /*

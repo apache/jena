@@ -21,6 +21,8 @@ import org.slf4j.LoggerFactory ;
  */
 public class MediaType
 {
+    // Unify with Content Type???
+    
     private static Logger log = LoggerFactory.getLogger(MediaType.class) ; 
 
     private String type = null ;

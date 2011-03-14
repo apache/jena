@@ -57,7 +57,8 @@ public class TestLocators extends BaseTest
     {
         LocatorFile loc = new LocatorFile() ;
         TypedStream ts = loc.open(testingDir+"data.ttl") ;
-        assertTrue("Not equal: "+WebContent.contentTypeTurtle1+" != "+ts.getContentType().contentType, WebContent.contentTypeTurtle2.equalsIgnoreCase(ts.getContentType().contentType)) ;
+        assertTrue("Not equal: "+WebContent.contentTypeTurtle1+" != "+ts.getMediaType(), 
+                   WebContent.contentTypeTurtle2.equalsIgnoreCase(ts.getContentType())) ;
     }
 
     // TypedStream
