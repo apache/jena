@@ -15,6 +15,10 @@ import org.openjena.atlas.lib.StrUtils ;
 
 public class IOBytes
 {
+    // ** Alternative.
+    // Use InStreamUTF.advance to get a single char.  Use with InputStreamBuffered
+    // OutStreamUTF8.output (but how to avoid a copy into the string).
+    
     /** Read an integer */
     public static int readInt(InputStream in)
     {
@@ -36,29 +40,42 @@ public class IOBytes
         catch (IOException ex) { IO.exception(ex) ; return -1 ; }
     }
 
-    /** Read bytes */
+    /** Read bytes, as a (length,bytes pair). return null if bad I/O or insufficient bytes. */
     public static byte[] readBytes(InputStream in)
     {
         int len = readInt(in) ;
+        byte b[] = new byte[len] ;
+        int r = readBytes(in, b) ;
+        if ( r == len )
+            return b ;
+        else
+            return null ;
+    }
+    
+    /** Read a fixed length of bytes, trying quite hard.  Return len read. */
+    public static int readBytes(InputStream in, byte b[])
+    {
         try {
-            byte b[] = new byte[len] ;
+            int len = b.length ;
             int x = 0 ;
             while ( x < len )
             {
                 int z = in.read(b, x, len-x) ;
                 if ( z < 0 )
-                    return null ;
+                    return x ;
                 x = x+z ;
             }
-            return b ;
+            return x ;
         }
-        catch (IOException ex) { IO.exception(ex) ; return null ; }
+        catch (IOException ex) { IO.exception(ex) ; return -1 ; }
     }
 
     /** Read string (UTF-8 bytes) */
     public static String readStr(InputStream in)
     {
         byte[] b = readBytes(in) ;
+        if ( b == null )
+            return null ;
         // Faster to use InStreamUTF8?
         return StrUtils.fromUTF8bytes(b) ;
     }
@@ -79,7 +96,7 @@ public class IOBytes
         catch (IOException ex) { IO.exception(ex) ; }
     }
 
-    /** Write bytes */
+    /** Write bytes as (length, bytes) */
     public static void writeBytes(OutputStream out, byte[] b)
     {
         writeInt(out, b.length) ;
