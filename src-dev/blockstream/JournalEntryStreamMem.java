@@ -14,7 +14,10 @@ import org.openjena.atlas.lib.ByteBufferLib ;
 
 import com.hp.hpl.jena.tdb.TDBException ;
 
-/** In-memory testing implementation of a JournalEntryStream (in and out).
+/** In-memory testing implementation of a JournalEntryStream (in and out)
+ * using in-memory copy storage.
+ * Better to use a ByteArray stream for tetsing, but his code can be useful in
+ * looking at the log. 
  * Does a lot of copying to make the semantics exactly like a disk. 
  */
 
@@ -23,7 +26,7 @@ public class JournalEntryStreamMem
     
     public JournalEntryStreamMem() {}
     
-    private static JournalEntry copy(JournalEntry entry)
+    private static JournalEntry deepCopy(JournalEntry entry)
     {
         ByteBuffer bb = ByteBufferLib.duplicate(entry.getByteBuffer()) ;
         FileRef rf = copy(entry.getFileRef()) ;
@@ -58,7 +61,7 @@ public class JournalEntryStreamMem
                 return null ;
             JournalEntry e = entries.get(idx) ;
             idx++ ;
-            e = copy(e) ;
+            e = deepCopy(e) ;
             return e ;
         }
     }
@@ -75,11 +78,13 @@ public class JournalEntryStreamMem
             if ( closed ) throw new TDBException("JournalEntryOutputStream has already been closed") ;
             closed = true ;
         }
+        
+        public void sync() {}
 
         public void write(JournalEntry entry)
         {
             if ( closed ) throw new TDBException("JournalEntryOutputStream has been closed") ;
-            entry = copy(entry) ;
+            entry = deepCopy(entry) ;
             entries.add(entry) ;
         }
         

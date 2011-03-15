@@ -7,9 +7,10 @@
 package blockstream;
 
 import org.openjena.atlas.lib.Closeable ;
+import org.openjena.atlas.lib.Sync ;
 
 
-public interface JournalEntryOutput extends Closeable
+public interface JournalEntryOutput extends Closeable, Sync
 {
     public void write(JournalEntry entry) ; 
 }

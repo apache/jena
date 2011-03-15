@@ -34,6 +34,11 @@ public class JournalEntryOutputStream implements JournalEntryOutput
 
     public void close()
     { IO.close(out) ; }
+
+    public void sync()
+    { 
+        System.err.println("Need to find the channel and fsync it") ;
+    }
 }
 
 /*
