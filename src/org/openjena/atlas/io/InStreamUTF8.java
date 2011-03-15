@@ -131,6 +131,7 @@ public final class InStreamUTF8 extends Reader implements CharStream
     {
         //count++ ;
         int x = input.advance() ;
+        if ( x == -1 ) return -1 ;
         return advance(input, x) ;
     }
     
