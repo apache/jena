@@ -86,6 +86,7 @@ public class qparse extends CmdARQ
                       arg.equalsIgnoreCase("alg") || 
                       arg.equalsIgnoreCase("algebra") ) { printOp = true ; }
             else if ( arg.equalsIgnoreCase("quad"))     { printQuad = true ; }
+            else if ( arg.equalsIgnoreCase("quads"))    { printQuad = true ; }
             else if ( arg.equalsIgnoreCase("plan"))     { printPlan = true ; }
             else if ( arg.equalsIgnoreCase("opt"))      { printOpt = true ; }
             else if ( arg.equalsIgnoreCase("optquad"))  { printQuadOpt = true ; }

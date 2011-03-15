@@ -54,7 +54,6 @@
       <groupId>com.hp.hpl.jena</groupId>
       <artifactId>jena</artifactId>
       <classifier>tests</classifier>
-      <!--<type>test-jar</type>-->
       <version>${ver.jena}</version>
       <scope>test</scope>
     </dependency>
