@@ -44,7 +44,7 @@ public class JournalEntryStreamMem
         private int idx ;
         private boolean closed = false ;
 
-        public Input(List<JournalEntry> entries)
+        Input(List<JournalEntry> entries)
         {
             this.entries = entries ;
             idx = 0 ;
@@ -61,6 +61,7 @@ public class JournalEntryStreamMem
                 return null ;
             JournalEntry e = entries.get(idx) ;
             idx++ ;
+            // Modification to this do not effect the journal copy.
             e = deepCopy(e) ;
             return e ;
         }
@@ -84,14 +85,10 @@ public class JournalEntryStreamMem
         public void write(JournalEntry entry)
         {
             if ( closed ) throw new TDBException("JournalEntryOutputStream has been closed") ;
+            // Journal copy can't be modified
             entry = deepCopy(entry) ;
             entries.add(entry) ;
         }
-        
-//        public List<JournalEntry> getEntries()
-//        {
-//            return new ArrayList<JournalEntry>(entries) ;
-//        }
         
         public Input reverse()
         {
