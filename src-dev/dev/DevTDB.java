@@ -2,6 +2,10 @@ package dev ;
 
 public class DevTDB
 {
+    // Check: BlockMgrMapped
+    // ** remove force/sync (non-)distinction
+    // MappedByteBuffer.sync, not just sync on the FileChannel
+    
     // Finish, integrate, switch to new Dataset builder.
     //  Todo init().
     // SolverLib - convert Nodes to NodeIds once, as BGP compiled.

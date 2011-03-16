@@ -6,6 +6,8 @@
 
 package blockstream;
 
+import java.io.FileOutputStream ;
+import java.io.IOException ;
 import java.io.OutputStream ;
 
 import org.openjena.atlas.io.IO ;
@@ -37,7 +39,14 @@ public class JournalEntryOutputStream implements JournalEntryOutput
 
     public void sync()
     { 
-        System.err.println("Need to find the channel and fsync it") ;
+        // Need our own "FileOutput" which is buffered and connects to sync() 
+        System.err.println("Need to find the channel of FD and fsync it : ") ;
+        if ( out instanceof FileOutputStream )
+        {
+            // And if it's a buffered ??
+            try { ((FileOutputStream)out).getFD().sync() ; } catch(IOException ex) { IO.exception(ex) ; } 
+        }
+        
     }
 }
 

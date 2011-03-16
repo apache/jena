@@ -181,11 +181,15 @@ public class BlockMgrMapped extends BlockMgrFile
 
     private synchronized void flushDirtySegments()
     {
+        // This does not force dirty segments to disk.
+        super.force() ;
+        
         // A linked list (with uniqueness) of dirty segments may be better.
         for ( int i = 0 ; i < segments.length ; i++ )
         {
             if ( segments[i] != null && segmentDirty[i] )
             {
+                // Can we "flush" them all at once?
                 segments[i].force() ;
                 segmentDirty[i] = false ;
                 segmentDirtyCount-- ;
