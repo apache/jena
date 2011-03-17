@@ -4,24 +4,22 @@
 
 package com.hp.hpl.jena.sparql.api;
 
-import junit.framework.TestCase;
-
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
-import org.junit.Ignore ;
-import org.junit.Test;
+import org.junit.Test ;
 import org.openjena.atlas.junit.BaseTest ;
 
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryExecution;
-import com.hp.hpl.jena.query.QueryExecutionFactory;
-import com.hp.hpl.jena.query.QueryFactory;
-import com.hp.hpl.jena.query.ResultSet;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.Property;
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.sparql.function.FunctionRegistry;
-import com.hp.hpl.jena.sparql.util.graph.GraphFactory;
+import com.hp.hpl.jena.query.Query ;
+import com.hp.hpl.jena.query.QueryCancelledException ;
+import com.hp.hpl.jena.query.QueryExecution ;
+import com.hp.hpl.jena.query.QueryExecutionFactory ;
+import com.hp.hpl.jena.query.QueryFactory ;
+import com.hp.hpl.jena.query.ResultSet ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.Property ;
+import com.hp.hpl.jena.rdf.model.Resource ;
+import com.hp.hpl.jena.sparql.function.FunctionRegistry ;
+import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
 
 public class TestQueryExecutionCancel extends BaseTest {
 
@@ -41,23 +39,22 @@ public class TestQueryExecutionCancel extends BaseTest {
     @BeforeClass public static void beforeClass() { FunctionRegistry.get().put(ns + "slow", slow.class) ; }
     @AfterClass  public static void afterClass() { FunctionRegistry.get().remove(ns + "slow") ; }
     
-    @Ignore // [CANCEL]
-    @Test 
+    @Test(expected=QueryCancelledException.class)
     public void test_Cancel_API_1()
     {
         QueryExecution qExec = makeQExec("SELECT * {?s ?p ?o}") ;
         try {
             ResultSet rs = qExec.execSelect() ;
             assertTrue(rs.hasNext()) ;
-            qExec.cancel();
+            qExec.abort();
+            
             assertTrue(rs.hasNext()) ;
             rs.nextSolution();
             assertFalse("Results not expected after cancel.", rs.hasNext()) ;
         } finally { qExec.close() ; }
     }
     
-    @Ignore // [CANCEL]
-    @Test 
+    @Test(expected=QueryCancelledException.class)
     public void test_Cancel_API_2()
     {
     	try {
@@ -66,7 +63,7 @@ public class TestQueryExecutionCancel extends BaseTest {
             try {
                 ResultSet rs = qExec.execSelect() ;
                 assertTrue(rs.hasNext()) ;
-                qExec.cancel();
+                qExec.abort();
                 assertTrue(rs.hasNext()) ;
                 rs.nextSolution();
                 assertFalse("Results not expected after cancel.", rs.hasNext()) ;
@@ -85,7 +82,7 @@ public class TestQueryExecutionCancel extends BaseTest {
             CancelThreadRunner thread = new CancelThreadRunner(qExec);
             thread.start();
             synchronized (qExec) { qExec.wait() ; }
-            qExec.cancel();
+            qExec.abort();
             synchronized (qExec) { qExec.notify() ; }
             assertEquals (1, thread.getCount()) ;
     	} finally {
@@ -101,7 +98,7 @@ public class TestQueryExecutionCancel extends BaseTest {
             CancelThreadRunner thread = new CancelThreadRunner(qExec);
             thread.start();
             synchronized (qExec) { qExec.wait() ; }
-            qExec.cancel();
+            qExec.abort();
             synchronized (qExec) { qExec.notify() ; }
             assertEquals (1, thread.getCount()) ;
     	} finally {
@@ -140,8 +137,10 @@ public class TestQueryExecutionCancel extends BaseTest {
                     synchronized (qExec) { qExec.notify() ; }
                     synchronized (qExec) { qExec.wait() ; }
                 }
-    		} catch (InterruptedException e) { 
-    			e.printStackTrace();
+    		} 
+            catch (QueryCancelledException e) {}
+            catch (InterruptedException e) { 
+                e.printStackTrace();
     		} finally { qExec.close() ; }
     	}
     	

@@ -10,13 +10,13 @@ package com.hp.hpl.jena.sparql.engine.iterator;
 
 import java.util.NoSuchElementException ;
 
+import org.openjena.atlas.logging.Log ;
+
+import com.hp.hpl.jena.query.QueryCancelledException ;
 import com.hp.hpl.jena.query.QueryException ;
-import com.hp.hpl.jena.query.QueryExecException ;
 import com.hp.hpl.jena.query.QueryFatalException ;
-import com.hp.hpl.jena.query.QueryTerminatedException ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
-import org.openjena.atlas.logging.Log ;
 import com.hp.hpl.jena.sparql.util.PrintSerializableBase ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 
@@ -225,13 +225,7 @@ public abstract class QueryIteratorBase
         iter.cancel() ;
     }
     
-	// XXX Move me to "query" package.
-	public static class QueryCancelledException extends QueryExecException {
-        public QueryCancelledException() {}
-    }
-
-    
-    public String debug()
+	public String debug()
     {
         String s = "" ;
         if ( stackTrace != null )

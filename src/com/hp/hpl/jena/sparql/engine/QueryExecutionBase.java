@@ -81,13 +81,15 @@ public class QueryExecutionBase implements QueryExecution
         this.qeFactory = qeFactory ;
     }
     
-    public void abort()
-    {
-        abort = true ;
-        if ( queryIterator != null )
-            queryIterator.abort() ;
-        cancel = true ;
-    }
+    // Old, synchronosous code.
+    // Delete when we are sure cancellation is stable.
+//    public void abort()
+//    {
+//        abort = true ;
+//        if ( queryIterator != null )
+//            queryIterator.abort() ;
+//        cancel = true ;
+//    }
 
     public void close()
     {
@@ -99,9 +101,11 @@ public class QueryExecutionBase implements QueryExecution
 
     @Deprecated
     public static boolean cancelAllowDrain = false ; 
-	public synchronized void cancel() 
+    //public synchronized void cancel()
+    public synchronized void abort()
 	{
 	    // This is called asynchronously to the execution.
+        // synchronized is for coordination with other calls of .abort.
 		if ( queryIterator != null ) 
 		{
 			// we cancel the chain of iterators, however, we do *not* close the iterators. 

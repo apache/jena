@@ -170,9 +170,14 @@ public class QuerySerializer implements QueryVisitor
     {
         if ( query.hasGroupBy() )
         {
-            out.print("GROUP BY ") ;
-            appendNamedExprList(query, out, query.getGroupBy()) ;
-            out.println();
+            // Can have an empty GROUP BY list if the groupin gis implicit
+            // by use of an aggregate in the SELECT clause.
+            if ( ! query.getGroupBy().isEmpty() )
+            {
+                out.print("GROUP BY ") ;
+                appendNamedExprList(query, out, query.getGroupBy()) ;
+                out.println();
+            }
         }
     }
 
@@ -206,7 +211,6 @@ public class QuerySerializer implements QueryVisitor
             out.println() ;
         }
     }
-    
     
     public void visitLimit(Query query)
     {

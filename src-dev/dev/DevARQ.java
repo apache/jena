@@ -42,8 +42,6 @@ public class DevARQ
     // BSBM Explore/Update
     // Remote SPARQL Update 
     
-    // [CANCEL] for cancellation work items.
-    
     // JENA-29 : Cancellation --> timeouts
     // JENA-47 : Timeout query
     // JENA-48 : QueryIterAbortCancellationRequestException - is this needed?

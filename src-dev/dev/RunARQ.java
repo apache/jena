@@ -39,6 +39,7 @@ import com.hp.hpl.jena.iri.IRIFactory ;
 import com.hp.hpl.jena.iri.Violation ;
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.query.Query ;
+import com.hp.hpl.jena.query.QueryCancelledException ;
 import com.hp.hpl.jena.query.QueryExecution ;
 import com.hp.hpl.jena.query.QueryExecutionFactory ;
 import com.hp.hpl.jena.query.QueryFactory ;
@@ -54,7 +55,6 @@ import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIteratorBase.QueryCancelledException ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
@@ -108,6 +108,13 @@ public class RunARQ
     
     public static void main(String[] argv) throws Exception
     {
+        
+        Query q = QueryFactory.create("select (count(*) as ?count) { ?s ?p ?o }") ;
+        
+        System.out.println(q) ;
+        
+        arq.qparse.main("select (count(*) as ?count) { ?s ?p ?o }") ; exit(0) ;
+        
         int[] x = { 0, 1,2000, 0x20AC , 0X024B62 } ;
         // E2 82 AC
         // F0 A4 AD A2
@@ -168,7 +175,7 @@ public class RunARQ
         catch (NoSuchElementException  ex) { System.out.println("No Elt 3") ; }
 
         System.out.println(rs.next()) ;
-        qExec.cancel() ;
+        qExec.abort() ;
         try { rs.hasNext() ; }  catch (QueryCancelledException ex) { System.out.println("CANCEL 4") ; } 
         try { rs.hasNext() ; }  catch (QueryCancelledException ex) { System.out.println("CANCEL 5") ; }
         try { rs.next() ; }

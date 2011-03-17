@@ -3,6 +3,11 @@ ChangeLog for ARQ
 
 ==== ARQ 2.8.8 or 2.9.0
 
++ Query cancellation: method for QueryExecution.abort() can now be called by any thread at any time.
+  The effect is to stop the query execution as soon as possible.
+  After calling .abort(), at some time. .hasNext() and .next() will throw an exception if called.
+  Exactly when this happens is not defined - it may be immediately.
+
 + "arq.update --dump" : Output is now N-quads.
 
 + riot command: Output now abbreviates bNode labels.
