@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package blockstream;
+package tx.blockstream;
 
 public class FileRef
 {
