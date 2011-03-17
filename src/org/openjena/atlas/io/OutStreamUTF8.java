@@ -17,7 +17,7 @@ import org.openjena.atlas.lib.InternalErrorException ;
  *  This class implements the "Modified UTF8" encoding rules (null -> C0 80)
  *  It will encode any 16 bit value.  
  * 
- *  @See InStreamUTF8 for detail
+ *  @see InStreamUTF8
  */
 public class OutStreamUTF8 extends Writer
 {
