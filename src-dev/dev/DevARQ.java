@@ -14,6 +14,17 @@ public class DevARQ
     // * OutStreamUTF8.
     // Apache commons codec for MD5 etc.
     
+    /*
+    JSON CONSTRUCT {
+        { ?name: [ ?lat, ?long ] }
+      }
+      WHERE {
+        ?x rdfs:label ?name ;
+           geo:lat ?lat ;
+           geo:long ?long ;
+      }
+    */
+    
     // ---- RIOT
     // Parallel parser
     // Extract public API (RiotReader etc) - document
