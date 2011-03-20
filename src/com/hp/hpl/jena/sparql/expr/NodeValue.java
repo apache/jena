@@ -747,25 +747,25 @@ public abstract class NodeValue extends ExprNode
     
     private static ValueSpaceClassification classifyValueSpace(NodeValue nv)
     {
-        if ( nv.isNumber() )   return VSPACE_NUM ;
-        if ( nv.isDateTime() ) return VSPACE_DATETIME ;
-        if ( nv.isDate() ) return VSPACE_DATE ;
-        if ( nv.isTime() ) return VSPACE_TIME ;
-        if ( nv.isDuration() ) return VSPACE_DURATION ;
+        if ( nv.isNumber() )        return VSPACE_NUM ;
+        if ( nv.isDateTime() )      return VSPACE_DATETIME ;
+        if ( nv.isDate() )          return VSPACE_DATE ;
+        if ( nv.isTime() )          return VSPACE_TIME ;
+        if ( nv.isDuration() )      return VSPACE_DURATION ;
         
-        if ( nv.isGYear() ) return VSPACE_G_YEAR ;
-        if ( nv.isGYearMonth() ) return VSPACE_G_YEARMONTH ;
-        if ( nv.isGMonth() ) return VSPACE_G_MONTH ;
-        if ( nv.isGMonthDay() ) return VSPACE_G_MONTHDAY ;
-        if ( nv.isGDay() ) return VSPACE_G_DAY ;
+        if ( nv.isGYear() )         return VSPACE_G_YEAR ;
+        if ( nv.isGYearMonth() )    return VSPACE_G_YEARMONTH ;
+        if ( nv.isGMonth() )        return VSPACE_G_MONTH ;
+        if ( nv.isGMonthDay() )     return VSPACE_G_MONTHDAY ;
+        if ( nv.isGDay() )          return VSPACE_G_DAY ;
         
         if ( VALUE_EXTENSIONS && nv.isDate() )
             return VSPACE_DATE ;
-        if ( nv.isString())    return VSPACE_STRING ;
-        if ( nv.isBoolean())   return VSPACE_BOOLEAN ;
         
-        if ( ! nv.isLiteral() )
-            return VSPACE_NODE ;
+        if ( nv.isString())         return VSPACE_STRING ;
+        if ( nv.isBoolean())        return VSPACE_BOOLEAN ;
+        
+        if ( ! nv.isLiteral() )     return VSPACE_NODE ;
 
         if ( VALUE_EXTENSIONS && nv.getNode() != null &&
              nv.getNode().isLiteral() &&
