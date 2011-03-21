@@ -28,6 +28,7 @@ import com.hp.hpl.jena.sparql.engine.main.QueryEngineMain ;
 import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.migrate.A2 ;
+import com.hp.hpl.jena.tdb.migrate.NodeUtils2 ;
 import com.hp.hpl.jena.tdb.migrate.TransformDynamicDataset ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.store.GraphNamedTDB ;
@@ -133,8 +134,8 @@ public class QueryEngineTDB extends QueryEngineMain
     {
         if ( query.hasDatasetDescription() )
         {
-            Set<Node> defaultGraphs = SolverLib.convertToNodes(query.getGraphURIs()) ; 
-            Set<Node> namedGraphs = SolverLib.convertToNodes(query.getNamedGraphURIs()) ;
+            Set<Node> defaultGraphs = NodeUtils2.convertToNodes(query.getGraphURIs()) ; 
+            Set<Node> namedGraphs = NodeUtils2.convertToNodes(query.getNamedGraphURIs()) ;
             
             context.set(SystemTDB.symDatasetDefaultGraphs, defaultGraphs) ;
             context.set(SystemTDB.symDatasetNamedGraphs, namedGraphs) ;

@@ -30,8 +30,8 @@ import com.hp.hpl.jena.sparql.engine.optimizer.reorder.ReorderLib ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.TDBFactory ;
+import com.hp.hpl.jena.tdb.migrate.NodeUtils2 ;
 import com.hp.hpl.jena.tdb.migrate.TransformDynamicDataset ;
-import com.hp.hpl.jena.tdb.solver.SolverLib ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 public class TestDynamicDataset extends BaseTest
@@ -226,8 +226,8 @@ public class TestDynamicDataset extends BaseTest
     {
         Op op = Algebra.compile(query) ;
         op = Algebra.toQuadForm(op) ;
-        Set<Node> defaultGraphs = SolverLib.convertToNodes(query.getGraphURIs()) ; 
-        Set<Node> namedGraphs = SolverLib.convertToNodes(query.getNamedGraphURIs()) ;
+        Set<Node> defaultGraphs = NodeUtils2.convertToNodes(query.getGraphURIs()) ; 
+        Set<Node> namedGraphs = NodeUtils2.convertToNodes(query.getNamedGraphURIs()) ;
         Op op2 = Transformer.transform(new TransformDynamicDataset(defaultGraphs, namedGraphs, false), op) ;
         System.out.println(op2) ;
     }

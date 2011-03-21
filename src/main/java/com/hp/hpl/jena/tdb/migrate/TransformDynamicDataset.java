@@ -10,11 +10,14 @@ import java.util.HashSet ;
 import java.util.Set ;
 
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.sparql.ARQException ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.Table ;
 import com.hp.hpl.jena.sparql.algebra.TableFactory ;
+import com.hp.hpl.jena.sparql.algebra.Transform ;
 import com.hp.hpl.jena.sparql.algebra.TransformCopy ;
+import com.hp.hpl.jena.sparql.algebra.Transformer ;
 import com.hp.hpl.jena.sparql.algebra.op.* ;
 import com.hp.hpl.jena.sparql.algebra.table.Table1 ;
 import com.hp.hpl.jena.sparql.core.BasicPattern ;
@@ -40,6 +43,20 @@ public class TransformDynamicDataset extends TransformCopy
     private Set<Node> defaultGraphsReal ;
     private Set<Node> namedGraphs ;
 
+    /** Apply the dynamic dataset transformation: rewrite the algebra into a form that uses
+     *  the dataset description for a dynamic choice of graphs.  
+     */
+    public static Op transform(Query query, Op op)
+    {
+        if ( ! query.hasDatasetDescription() )
+            return op ;
+        Set<Node> defaultGraphs = NodeUtils2.convertToNodes(query.getGraphURIs()) ; 
+        Set<Node> namedGraphs = NodeUtils2.convertToNodes(query.getNamedGraphURIs()) ;
+        Transform t = new TransformDynamicDataset(defaultGraphs, namedGraphs, false) ; // false??
+        Op op2 = Transformer.transform(t, op) ;
+        return op2 ;
+    }
+    
     public TransformDynamicDataset(Set<Node> defaultGraphs, Set<Node> namedGraphs, boolean defaultGraphIncludesNamedGraphUnion)
     {
         this.defaultGraphs = defaultGraphs ;

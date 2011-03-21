@@ -249,14 +249,6 @@ public class SolverLib
         return printAbbrev(x) ; 
     }
 
-    public static Set<Node> convertToNodes(Collection<String> uris)
-    {
-        Set<Node> nodes = new HashSet<Node>() ;
-        for ( String x : uris )
-            nodes.add(Node.createURI(x)) ;
-        return nodes ;
-    }
-    
     public static Set<NodeId> convertToNodeIds(Collection<Node> nodes, DatasetGraphTDB dataset)
     {
         Set<NodeId> graphIds = new HashSet<NodeId>() ;
