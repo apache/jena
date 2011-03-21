@@ -735,15 +735,9 @@ public class Query extends Prologue implements Cloneable, Printable
     /** Perform some check on the query */ 
     public void validate()
     {
+        // This is mostly done now as part of parsing.
+        // See SyntaxVarScope and Parser.validatePasredQuery.
         setResultVars() ;
-        
-        if ( hasGroupBy() )
-        {}
-        
-        if ( hasAggregators() )
-        {}
-        
-        //if has select expressions
     }
 
     @Override

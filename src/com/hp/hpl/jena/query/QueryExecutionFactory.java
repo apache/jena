@@ -525,7 +525,7 @@ public class QueryExecutionFactory
     
     static private QueryExecution make(Query query, Dataset dataset, Context context)
     {
-        query.validate() ;
+        query.setResultVars() ;
         if ( context == null )
             context = ARQ.getContext().copy();  // .copy probably not necessary but safe. 
         DatasetGraph dsg = null ;
