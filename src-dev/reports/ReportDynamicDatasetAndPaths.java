@@ -45,6 +45,8 @@ public class ReportDynamicDatasetAndPaths
         String qs = StrUtils.strjoinNL(
             "PREFIX : <http://example/>", 
             "SELECT ?s ?o",
+            // This breaks the query.
+            // 
             "FROM :g1 FROM :g2",
             " { ?s :p1/:p2 ?o }"
         ) ;
@@ -53,6 +55,9 @@ public class ReportDynamicDatasetAndPaths
 
         if ( true )
         {
+            // Order of transformation in TDB is:
+            // ??
+            
             Op op = Algebra.compile(query) ;
 //            op = Transformer.transform(new TransformPathFlattern(),op) ; output(op) ;
 //            op = Algebra.toQuadForm(op) ; output(op) ;
