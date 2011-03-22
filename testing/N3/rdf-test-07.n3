@@ -1,6 +1,0 @@
-# Tests reverse properties
-@prefix : <#> .
-
-# Should be one statement.
-"value"  is :prop of :b .
-:b :prop "value"  .

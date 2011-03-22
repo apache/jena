@@ -18,7 +18,7 @@ import java.util.* ;
  *  Tries to make N3 data look readable - works better on regular data.
  *
  * @author		Andy Seaborne
- * @version 	$Id: N3JenaWriterPP.java,v 1.4 2011-03-08 19:54:21 andy_seaborne Exp $
+ * @version 	$Id: N3JenaWriterPP.java,v 1.5 2011-03-22 11:26:39 andy_seaborne Exp $
  */
 
 
@@ -115,7 +115,11 @@ public class N3JenaWriterPP extends N3JenaWriterCommon
 	// Validate one list element.
 	protected boolean checkListElement(Resource listElement) 
 	{
-		if (!listElement.hasProperty(RDF.rest)
+	    // Must be a blank node for abbreviated form.
+        if ( ! listElement.isAnon() )
+            return false ;
+
+        if (!listElement.hasProperty(RDF.rest)
 			|| !listElement.hasProperty(RDF.first))
 		{
 			if (N3JenaWriter.DEBUG)
@@ -132,7 +136,6 @@ public class N3JenaWriterPP extends N3JenaWriterCommon
         if ( numProp == 2)
             // Must have exactly the properties we just tested for.
             return true ;
-
 
         if (numProp == 3)
         {
