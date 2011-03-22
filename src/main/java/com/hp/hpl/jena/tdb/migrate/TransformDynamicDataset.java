@@ -10,6 +10,8 @@ package com.hp.hpl.jena.tdb.migrate;
 import java.util.HashSet ;
 import java.util.Set ;
 
+import org.openjena.atlas.logging.Log ;
+
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.query.Query ;
@@ -27,6 +29,7 @@ import com.hp.hpl.jena.sparql.algebra.op.OpDistinct ;
 import com.hp.hpl.jena.sparql.algebra.op.OpGraph ;
 import com.hp.hpl.jena.sparql.algebra.op.OpJoin ;
 import com.hp.hpl.jena.sparql.algebra.op.OpNull ;
+import com.hp.hpl.jena.sparql.algebra.op.OpPath ;
 import com.hp.hpl.jena.sparql.algebra.op.OpQuadPattern ;
 import com.hp.hpl.jena.sparql.algebra.op.OpSequence ;
 import com.hp.hpl.jena.sparql.algebra.op.OpTable ;
@@ -91,6 +94,14 @@ public class TransformDynamicDataset extends TransformCopy
         // toQuadForm transformation.
         throw new ARQException("Unexpected use of BGP in for a dynamic dataset") ;
         //return super.transform(op) ;
+    }
+    
+    @Override
+    public Op transform(OpPath op)
+    {
+        Log.warn(this, "Paths in dynamic datasets queries not supported yet") ;
+        //throw new ARQException("Unexpected use of Path in for a dynamic dataset") ;
+        return super.transform(op) ;
     }
     
 //    @Override
