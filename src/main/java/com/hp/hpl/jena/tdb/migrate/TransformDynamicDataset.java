@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2010 Talis Systems Ltd.
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -10,6 +11,7 @@ import java.util.HashSet ;
 import java.util.Set ;
 
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.sparql.ARQException ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
@@ -18,7 +20,17 @@ import com.hp.hpl.jena.sparql.algebra.TableFactory ;
 import com.hp.hpl.jena.sparql.algebra.Transform ;
 import com.hp.hpl.jena.sparql.algebra.TransformCopy ;
 import com.hp.hpl.jena.sparql.algebra.Transformer ;
-import com.hp.hpl.jena.sparql.algebra.op.* ;
+import com.hp.hpl.jena.sparql.algebra.op.OpAssign ;
+import com.hp.hpl.jena.sparql.algebra.op.OpBGP ;
+import com.hp.hpl.jena.sparql.algebra.op.OpDatasetNames ;
+import com.hp.hpl.jena.sparql.algebra.op.OpDistinct ;
+import com.hp.hpl.jena.sparql.algebra.op.OpGraph ;
+import com.hp.hpl.jena.sparql.algebra.op.OpJoin ;
+import com.hp.hpl.jena.sparql.algebra.op.OpNull ;
+import com.hp.hpl.jena.sparql.algebra.op.OpQuadPattern ;
+import com.hp.hpl.jena.sparql.algebra.op.OpSequence ;
+import com.hp.hpl.jena.sparql.algebra.op.OpTable ;
+import com.hp.hpl.jena.sparql.algebra.op.OpUnion ;
 import com.hp.hpl.jena.sparql.algebra.table.Table1 ;
 import com.hp.hpl.jena.sparql.core.BasicPattern ;
 import com.hp.hpl.jena.sparql.core.Quad ;
@@ -134,25 +146,50 @@ public class TransformDynamicDataset extends TransformCopy
     // Generate quad algebra that accesses the set of graphs as a single graph (including duplicate surpression). 
     private Op patternOver(Set<Node> graphs, BasicPattern basicPattern)
     {
+        if ( basicPattern.size() == 0 )
+            return OpTable.unit() ;
+        
         if ( graphs.size() == 0 )
         {
             // No graphs => no results.
             return OpNull.create() ;
         }
         
-        Op union = null ;
+        // WRONG - must be per triple pattern. 
+        // distinct needed each step?
         
-        for ( Node n : graphs )
+//        Op union = null ;
+//         
+//        for ( Node n : graphs )
+//        {
+//            Op pattern = new OpQuadPattern(n, basicPattern) ;
+//            union = OpUnion.create(union, pattern) ;
+//        }
+        if ( graphs.size() == 1 )
         {
-            Op pattern = new OpQuadPattern(n, basicPattern) ;
-            union = OpUnion.create(union, pattern) ;
+            // Simple rewrite.
+            Node n = graphs.iterator().next() ;
+            return new OpQuadPattern(n, basicPattern) ;
+        }
+            
+        OpSequence opSeq = OpSequence.create() ;
+        
+        for ( Triple t : basicPattern )
+        {
+            // One expansion for each triple pattern.
+            Op union = null ;
+            for ( Node n : graphs )
+            {
+                BasicPattern bp = new BasicPattern() ;
+                bp.add(t) ;
+                Op pattern = new OpQuadPattern(n, bp) ;
+                union = OpUnion.create(union, pattern) ;
+            }
+            opSeq.add(union) ;
         }
         
-        if ( graphs.size() == 1 )
-            return union ;
-        
         // More than one graph - make distinct
-        return new OpDistinct(union) ;
+        return new OpDistinct(opSeq) ;
     }
 
     @Override
@@ -189,6 +226,12 @@ public class TransformDynamicDataset extends TransformCopy
         // and try each possibility.
         
         Node gn = opGraph.getNode() ;
+        if ( Quad.isDefaultGraph(gn) )
+        {
+            System.err.println("<Cough/>") ;
+        }
+        
+        
         if ( namedGraphs.size() == 0 )
             return OpNull.create() ;
         
@@ -226,6 +269,7 @@ public class TransformDynamicDataset extends TransformCopy
 
 /*
  * (c) Copyright 2010 Talis Systems Ltd.
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

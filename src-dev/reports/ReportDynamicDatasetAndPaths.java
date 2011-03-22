@@ -9,6 +9,7 @@ package reports;
 import org.openjena.atlas.lib.StrUtils ;
 import org.openjena.riot.out.NQuadsWriter ;
 
+import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.query.DatasetFactory ;
 import com.hp.hpl.jena.query.Query ;
@@ -18,10 +19,9 @@ import com.hp.hpl.jena.query.QueryFactory ;
 import com.hp.hpl.jena.query.ResultSetFormatter ;
 import com.hp.hpl.jena.sparql.algebra.Algebra ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
-import com.hp.hpl.jena.sparql.algebra.Transformer ;
-import com.hp.hpl.jena.sparql.algebra.optimize.TransformPathFlattern ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.Quad ;
+import com.hp.hpl.jena.sparql.mgt.Explain.InfoLevel ;
 import com.hp.hpl.jena.sparql.resultset.ResultsFormat ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.sparql.util.QueryExecUtils ;
@@ -35,7 +35,10 @@ public class ReportDynamicDatasetAndPaths
     
     public static void main(String ...argv)
     {
-        main2() ; System.exit(0) ;
+        //main2() ; System.exit(0) ;
+        
+        // One - create a graph that does the FROM thing properly.  Use as defaul graph.
+        // two - rewrite quads (BGP?) to  
         
         DatasetGraph dsg = TDBFactory.createDatasetGraph() ;
         Dataset ds = DatasetFactory.create(dsg) ;
@@ -44,57 +47,40 @@ public class ReportDynamicDatasetAndPaths
         dsg.add(q1) ;
         dsg.add(q2) ;
         NQuadsWriter.write(System.out, dsg) ;
+        
         String qs = StrUtils.strjoinNL(
             "PREFIX : <http://example/>", 
             "SELECT ?s ?o",
             // This breaks the query.
             "FROM :g1 FROM :g2",
+            // Broken still.
             " { ?s :p1/:p2 ?o }"
+            // Fixed.
+            //" { ?s :p1 ?x . ?x :p2 ?o }"
         ) ;
-
+        
         Query query = QueryFactory.create(qs) ;
-
-        if ( true )
+        if ( false ) 
         {
-            // Order of transformation in TDB is:
-            // ??
-            
-            Op op = Algebra.compile(query) ;
-//            op = Transformer.transform(new TransformPathFlattern(),op) ; output(op) ;
-//            op = Algebra.toQuadForm(op) ; output(op) ;
-            op = TransformDynamicDataset.transform(query, op) ; output(op) ;
-            //op = Algebra.optimize(op) ; output(op) ;
-            
-            QueryExecUtils.executeAlgebra(op, dsg, ResultsFormat.FMT_TEXT) ;
+            ARQ.setExecutionLogging(InfoLevel.ALL) ;
+            QueryExecution qExec = QueryExecutionFactory.create(query, ds) ;
+            // No effect if using dynamic datasets.
+            //qExec.getContext().set(TDB.symUnionDefaultGraph, true) ;
+            ResultSetFormatter.out(qExec.execSelect()) ;
             System.exit(0) ;
-            
-            divider() ;
-            System.out.print(op) ;
-    
-            // Optimize flattens paths.
-            op = Algebra.optimize(op) ;
-            divider() ;
-            System.out.print(op) ;
-    
-            op = Algebra.toQuadForm(op) ;
-            divider() ;
-            System.out.print(op) ;
-            
-    //        op = Algebra.optimize(op) ;
-    //        divider() ;
-    //        System.out.print(op) ;
-    
-            op = TransformDynamicDataset.transform(query, op) ;
-            divider() ;
-            System.out.print(op) ;
-    
-            QueryExecUtils.executeAlgebra(op, dsg, ResultsFormat.FMT_TEXT) ;
         }
         
-        QueryExecution qExec = QueryExecutionFactory.create(query, ds) ;
-        // No effect if using dynamic datasets.
-        qExec.getContext().set(TDB.symUnionDefaultGraph, true) ;
-        ResultSetFormatter.out(qExec.execSelect()) ;
+        ARQ.setExecutionLogging(InfoLevel.ALL) ;
+        Op op = Algebra.compile(query) ;
+        output(op) ;
+        // Unoptimized - no path flattening.
+        op = Algebra.toQuadForm(op) ;
+        output(op) ;
+        op = TransformDynamicDataset.transform(query, op) ; 
+        output(op) ;
+        QueryExecUtils.executeAlgebra(op, dsg, ResultsFormat.FMT_TEXT) ;
+        System.exit(0) ;
+        
     }
     
     public static void main2(String ...argv)
