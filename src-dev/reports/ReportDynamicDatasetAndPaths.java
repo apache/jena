@@ -31,9 +31,11 @@ import com.hp.hpl.jena.tdb.migrate.TransformDynamicDataset ;
 
 public class ReportDynamicDatasetAndPaths
 {
+    // Does cross graph tracking work at all?
+    
     public static void main(String ...argv)
     {
-        //main2() ; System.exit(0) ;
+        main2() ; System.exit(0) ;
         
         DatasetGraph dsg = TDBFactory.createDatasetGraph() ;
         Dataset ds = DatasetFactory.create(dsg) ;
@@ -46,7 +48,6 @@ public class ReportDynamicDatasetAndPaths
             "PREFIX : <http://example/>", 
             "SELECT ?s ?o",
             // This breaks the query.
-            // 
             "FROM :g1 FROM :g2",
             " { ?s :p1/:p2 ?o }"
         ) ;
@@ -115,7 +116,7 @@ public class ReportDynamicDatasetAndPaths
             "PREFIX : <http://example/>", 
             "SELECT ?s ?o",
             //"FROM :g1 FROM :g2",
-            " { ?s :p1/:p2 ?o }"
+            " { ?s :p1 ?x . ?x :p2 ?o }"
         ) ;
         Query query = QueryFactory.create(qs) ;
         QueryExecution qExec = QueryExecutionFactory.create(query, ds) ;
