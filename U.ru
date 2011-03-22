@@ -1,3 +1,7 @@
 PREFIX : <http://example/>
 
-DELETE DATA { GRAPH ?g { :x :p :y } }
+INSERT DATA 
+{ GRAPH <http://www.social.com/> { :s :p :o } }
+
+DELETE WHERE {  GRAPH <http://www.social.com/> { :s :p :o } }
+

@@ -2,6 +2,8 @@ package dev ;
 
 public class DevARQ
 {
+    // ReportListsWithURLs
+    
     // ---- Projects
     // * FileManager2
     //     Tests - need testing/Atlas/... or tmp/
@@ -24,6 +26,7 @@ public class DevARQ
            geo:long ?long ;
       }
     */
+    // MIME type negotiation for QueryEngineHTTP.execSelect.
     
     // ---- RIOT
     // Parallel parser
@@ -56,7 +59,7 @@ public class DevARQ
     // JENA-29 : Cancellation --> timeouts
     // JENA-47 : Timeout query
     // JENA-48 : QueryIterAbortCancellationRequestException - is this needed?
-    //    Check in sort that don't get one rsult (after a lot of sorting).
+    //    Check in sort that don't get one result (after a lot of sorting).
     // JENA-49 : immediate cancellation if not .hasNext called yet.
     // And effect on XML results.
     
