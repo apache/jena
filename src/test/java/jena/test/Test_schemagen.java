@@ -6,10 +6,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            8 Sep 2006
  * Filename           $RCSfile: Test_schemagen.java,v $
- * Revision           $Revision: 1.9 $
+ * Revision           $Revision: 1.10 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2010-07-26 10:01:23 $
+ * Last modified on   $Date: 2011-03-22 12:38:05 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
@@ -46,7 +46,7 @@ import com.hp.hpl.jena.util.FileUtils;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: Test_schemagen.java,v 1.9 2010-07-26 10:01:23 ian_dickinson Exp $
+ * @version CVS $Id: Test_schemagen.java,v 1.10 2011-03-22 12:38:05 ian_dickinson Exp $
  */
 public class Test_schemagen
     extends TestCase
@@ -522,6 +522,18 @@ public class Test_schemagen
 
         testSchemagenOutput( SOURCE, null,
                 new String[] {"-a", "http://example.com/sg#", "--owl", "--includeSource"},
+                new String[] {},
+                new String[] {} );
+
+    }
+
+    public void testIncludeSource3() throws Exception {
+        // multiple literals on one line can cause double-quote issues
+        String SOURCE = PREFIX +
+                       " ex:foo a ex:Foo; rdfs:label \"thing called foo\"@en, \"le foo\"@fr, \"das foo\"@de. ";
+
+        testSchemagenOutput( SOURCE, null,
+                new String[] {"-a", "http://example.com/sg#", "--rdfs", "--includeSource"},
                 new String[] {},
                 new String[] {} );
 
