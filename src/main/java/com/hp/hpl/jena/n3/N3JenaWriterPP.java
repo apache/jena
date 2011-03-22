@@ -18,7 +18,7 @@ import java.util.* ;
  *  Tries to make N3 data look readable - works better on regular data.
  *
  * @author		Andy Seaborne
- * @version 	$Id: N3JenaWriterPP.java,v 1.5 2011-03-22 11:26:39 andy_seaborne Exp $
+ * @version 	$Id: N3JenaWriterPP.java,v 1.6 2011-03-22 11:30:33 andy_seaborne Exp $
  */
 
 
@@ -137,16 +137,17 @@ public class N3JenaWriterPP extends N3JenaWriterCommon
             // Must have exactly the properties we just tested for.
             return true ;
 
-        if (numProp == 3)
-        {
-            if (listElement.hasProperty(RDF.type, RDF.List))
-                return true;
-            if (N3JenaWriter.DEBUG)
-                out.println(
-                    "# RDF list element: 3 properties but no rdf:type rdf:List"
-                        + formatResource(listElement));
-            return false;
-        }
+        // rdf:type is not implicit.
+//        if (numProp == 3)
+//        {
+//            if (listElement.hasProperty(RDF.type, RDF.List))
+//                return true;
+//            if (N3JenaWriter.DEBUG)
+//                out.println(
+//                    "# RDF list element: 3 properties but no rdf:type rdf:List"
+//                        + formatResource(listElement));
+//            return false;
+//        }
 
         if (N3JenaWriter.DEBUG)
             out.println(

@@ -18,7 +18,6 @@ public class N3TurtleJenaWriter extends N3JenaWriter
     public N3TurtleJenaWriter()
     {
         super() ;
-        
 //        if ( writer.getPropValue("usePropertySymbols") == null )
 //            writer.useWellKnownPropertySymbols = false ;
         // Only allow "a" for rdf:type.
