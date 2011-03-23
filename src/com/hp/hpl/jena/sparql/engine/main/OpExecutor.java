@@ -133,7 +133,7 @@ public class OpExecutor
             OpBGP opBGP = new OpBGP(quadPattern.getBasicPattern()) ;
             return execute(opBGP, input) ;  
         }
-        if ( Quad.isQuadUnionGraph(quadPattern.getGraphNode()) )
+        if ( Quad.isUnionGraph(quadPattern.getGraphNode()) )
             Log.warn(this, "Not implemented yet: quad/union default graph in general OpExecutor") ;
         
         // Not default graph - (graph .... )

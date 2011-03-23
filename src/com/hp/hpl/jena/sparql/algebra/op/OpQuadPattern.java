@@ -74,10 +74,10 @@ public class OpQuadPattern extends Op0
     public boolean isDefaultGraph()         { return Quad.isDefaultGraph(graphNode) ; }
     
     /** Is this quad pattern explicitly naming the default graph? */ 
-    public boolean isExplicitDefaultGraph() { return Quad.isQuadDefaultGraphGenerated(graphNode) ; }
+    public boolean isExplicitDefaultGraph() { return Quad.isDefaultGraphExplicit(graphNode) ; }
     /** Is this quad pattern explicitly naming the union graph? */
     
-    public boolean isUnionGraph()           { return Quad.isQuadUnionGraph(graphNode) ; }
+    public boolean isUnionGraph()           { return Quad.isUnionGraph(graphNode) ; }
     
     public String getName()                 { return Tags.tagQuadPattern ; }
     @Override

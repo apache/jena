@@ -74,23 +74,42 @@ public class Quad
     }
     
     /** Test whether this is a quad for the default graph (not the default graphs by explicit name) */
-    public static boolean isQuadDefaultGraphGenerated(Node node)
+    public static boolean isDefaultGraphGenerated(Node node)
     {
         // The node used by the quad generator for the default graph 
         // Not the named graph that refers to the default graph.
-        return node.equals(defaultGraphNodeGenerated) ;
+        return defaultGraphNodeGenerated.equals(node) ;
+    }
+    
+    /** Default, concrete graph (either generated or explicitly named) -- not triple-in-quad*/
+    public static boolean isDefaultGraphExplicit(Node node)
+    {
+        return defaultGraphIRI.equals(node) ; 
     }
     
     /** Default, concrete graph (either generated or explicitly named) -- not triple-in-quad*/
     public static boolean isDefaultGraph(Node node)
     {
-        return node.equals(defaultGraphNodeGenerated) || node.equals(defaultGraphIRI) ; 
+        return isDefaultGraphGenerated(node) ||isDefaultGraphExplicit(node) ; 
     }
-    
+
+    /** Default, concrete graph (either generated or explicitly named) -- not triple-in-quad*/
+    public static boolean isUnionGraph(Node node)
+    {
+        return unionGraph.equals(node) ; 
+    }
+
+
     /** Default, concrete graph via generated URI (not explciitly named) */
-    public boolean isDefaultGraphGenerated()
-    { return isQuadDefaultGraphGenerated(getGraph()) ; }
+    public boolean isDefaultGraphExplicit()
+    { return isDefaultGraphExplicit(getGraph()) ; }
     
+    /** Default graph, explicitly named (not generated) */
+    public boolean isDefaultGraphGenerated()
+    {
+        return  isDefaultGraphGenerated(getGraph()) ;
+    }
+
     /** Default, concrete graph (either generated or explicitly named) */
     public boolean isDefaultGraph()
     {
@@ -98,18 +117,16 @@ public class Quad
     }
     
     /** node used for the RDF merge of named graphs */
-    public static boolean isQuadUnionGraph(Node node)
-    {
-        return node.equals(unionGraph) ;
-    }
-    
+//    public static boolean isQuadUnionGraph(Node node)
+//    {
+//        return node.equals(unionGraph) ;
+//    }
+//    
+    public boolean isUnionGraph()           { return isUnionGraph(graph) ; }
+
     /** Is it really a triple? */  
     public boolean isTriple()               { return equal(graph, tripleInQuad) ; } 
 
-    //public boolean isDefaultGraph()         { return isQuadDefaultGraphNode(graph) ; }
-    public boolean isDefaultGraphIRI()      { return graph.equals(defaultGraphIRI) ; }
-    public boolean isUnionGraph()           { return isQuadUnionGraph(graph) ; }
-    
     @Override
     public int hashCode() 
     { 
