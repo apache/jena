@@ -7,7 +7,7 @@
 
 package com.hp.hpl.jena.tdb.store;
 
-import static com.hp.hpl.jena.sparql.core.Quad.isQuadUnionGraph ;
+import static com.hp.hpl.jena.sparql.core.Quad.isUnionGraph ;
 
 import java.util.Iterator ;
 
@@ -109,8 +109,7 @@ public abstract class GraphTDBBase extends GraphBase2 implements GraphTDB
         }
     }
     
-    // /*static/* - Not static soley for the epoch testing.  
-    protected /*static*/ ExtendedIterator<Triple> graphBaseFindWorker(TripleTable tripleTable, TripleMatch m)
+    protected static ExtendedIterator<Triple> graphBaseFindWorker(TripleTable tripleTable, TripleMatch m)
     {
         // See also SolverLib.execute
         Iterator<Triple> iter = tripleTable.find(m.getMatchSubject(), m.getMatchPredicate(), m.getMatchObject()) ;
@@ -122,11 +121,11 @@ public abstract class GraphTDBBase extends GraphBase2 implements GraphTDB
         return WrappedIterator.createNoRemove(iter) ;
     }
     
-    protected /*static*/ ExtendedIterator<Triple> graphBaseFindWorker(DatasetGraphTDB dataset, Node graphNode, TripleMatch m)
+    protected static ExtendedIterator<Triple> graphBaseFindWorker(DatasetGraphTDB dataset, Node graphNode, TripleMatch m)
     {
         Node gn = graphNode ;
         // Explicitly named union graph. 
-        if ( isQuadUnionGraph(gn) )
+        if ( isUnionGraph(gn) )
             gn = Node.ANY ;
 
         Iterator<Quad> iter = dataset.getQuadTable().find(gn, m.getMatchSubject(), m.getMatchPredicate(), m.getMatchObject()) ;

@@ -8,7 +8,7 @@
 package com.hp.hpl.jena.tdb.store;
 
 import static com.hp.hpl.jena.sparql.core.Quad.isDefaultGraph ;
-import static com.hp.hpl.jena.sparql.core.Quad.isQuadUnionGraph ;
+import static com.hp.hpl.jena.sparql.core.Quad.isUnionGraph ;
 
 import java.util.Iterator ;
 
@@ -68,7 +68,7 @@ public class GraphNamedTDB extends GraphTDBBase
     @Override
     protected boolean _performAdd( Triple t ) 
     { 
-        if ( isQuadUnionGraph(graphNode) )
+        if ( isUnionGraph(graphNode) )
             throw new TDBException("Can't add a triple to the RDF merge of all named graphs") ;
         boolean changed ;
         if ( isDefaultGraph(graphNode) )
@@ -85,7 +85,7 @@ public class GraphNamedTDB extends GraphTDBBase
     @Override
     protected boolean _performDelete( Triple t ) 
     { 
-        if ( isQuadUnionGraph(graphNode) )
+        if ( isUnionGraph(graphNode) )
             throw new TDBException("Can't delete triple from the RDF merge of all named graphs") ;
         
         if ( isDefaultGraph(graphNode) )

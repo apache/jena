@@ -20,6 +20,7 @@ import com.hp.hpl.jena.query.ResultSetFormatter ;
 import com.hp.hpl.jena.sparql.algebra.Algebra ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.mgt.Explain.InfoLevel ;
 import com.hp.hpl.jena.sparql.resultset.ResultsFormat ;
@@ -31,7 +32,9 @@ import com.hp.hpl.jena.tdb.migrate.TransformDynamicDataset ;
 
 public class ReportDynamicDatasetAndPaths
 {
-    // Does cross graph tracking work at all?
+    // GraphDynamicUnion for paths.
+    // Cross graph does each triple pattern as a distinct-union over graphs.
+    // But let's be general.
     
     public static void main(String ...argv)
     {
@@ -39,8 +42,10 @@ public class ReportDynamicDatasetAndPaths
         
         // One - create a graph that does the FROM thing properly.  Use as defaul graph.
         // two - rewrite quads (BGP?) to  
+
+        //DatasetGraph dsg = TDBFactory.createDatasetGraph() ;
+        DatasetGraph dsg = DatasetGraphFactory.createMem() ;
         
-        DatasetGraph dsg = TDBFactory.createDatasetGraph() ;
         Dataset ds = DatasetFactory.create(dsg) ;
         Quad q1 = SSE.parseQuad("(<http://example/g1> <http://example/x1> <http://example/p1> <http://example/x2>)") ;
         Quad q2 = SSE.parseQuad("(<http://example/g2> <http://example/x2> <http://example/p2> <http://example/x3>)") ;

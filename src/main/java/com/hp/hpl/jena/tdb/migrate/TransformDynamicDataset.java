@@ -115,7 +115,7 @@ public class TransformDynamicDataset extends TransformCopy
     {
         Node gn = opQuadPattern.getGraphNode() ;
 
-        if ( Quad.isQuadDefaultGraphGenerated(gn) )  
+        if ( Quad.isDefaultGraphGenerated(gn) )  
             // Quad pattern directed at the default graph (not by explicit name). 
             return patternOver(defaultGraphs, opQuadPattern.getBasicPattern()) ;
 
@@ -123,7 +123,7 @@ public class TransformDynamicDataset extends TransformCopy
             // <urn:x-arq:DefaultGraph>
             return patternOver(defaultGraphsReal, opQuadPattern.getBasicPattern()) ;
         
-        if ( Quad.isQuadUnionGraph(gn) )  
+        if ( Quad.isUnionGraph(gn) )  
             // <urn:x-arq:UnionGraph>
             // Quad pattern directed at the union of (visible) named graphs 
             return patternOver(namedGraphs, opQuadPattern.getBasicPattern()) ;
