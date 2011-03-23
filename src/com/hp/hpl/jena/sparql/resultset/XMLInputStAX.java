@@ -340,7 +340,7 @@ class XMLInputStAX extends SPARQLResult
             String s2 = "" ;
             if ( stopElementNames != null )
                 s2 = StrUtils.strjoin(", ",stopElementNames) ;
-            Log.warn(this, "Failed to find start of stop of specified elements: "+s1+" :: "+s2) ; 
+            Log.warn(this, "Failed to find start and stop of specified elements: "+s1+" :: "+s2) ; 
         }
     }
     
