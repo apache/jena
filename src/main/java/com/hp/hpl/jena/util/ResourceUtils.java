@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            05-Jun-2003
  * Filename           $RCSfile: ResourceUtils.java,v $
- * Revision           $Revision: 1.5 $
+ * Revision           $Revision: 1.6 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2011-03-23 13:29:12 $
+ * Last modified on   $Date: 2011-03-23 14:28:24 $
  *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
@@ -48,7 +48,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:ian_dickinson@users.sourceforge.net" >email</a>)
- * @version CVS $Id: ResourceUtils.java,v 1.5 2011-03-23 13:29:12 chris-dollin Exp $
+ * @version CVS $Id: ResourceUtils.java,v 1.6 2011-03-23 14:28:24 chris-dollin Exp $
  */
 public class ResourceUtils {
 
@@ -208,7 +208,8 @@ public class ResourceUtils {
         // Work at the graph level. Also, work underneath one layer of inference
         // if it's there. This avoids both fighting the inference engine and the
         // Statement reconstruction work of the Model layer.
-        if (old.getURI().equals( uri )) return old;
+        String oldURI = old.getURI();
+        if (oldURI != null && oldURI.equals( uri )) return old;
        	Node resAsNode = old.asNode();
        	Model model = old.getModel();
        	Graph graph = model.getGraph();
@@ -226,8 +227,8 @@ public class ResourceUtils {
             x.remove();
         }
     //
-    // It's possible there's a triple (old wossname old) that's in triples twice. 
-    // It doesn't matter.
+    // It's possible there are triples (old wossname old) that are in triples 
+    // twice. It doesn't matter.
     //
        	for (Triple t: triples) {
        	    Node oldS = t.getSubject(), oldO = t.getObject();
