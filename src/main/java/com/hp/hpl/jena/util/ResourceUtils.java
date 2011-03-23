@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            05-Jun-2003
  * Filename           $RCSfile: ResourceUtils.java,v $
- * Revision           $Revision: 1.4 $
+ * Revision           $Revision: 1.5 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2010-08-18 16:06:04 $
- *               by   $Author: der $
+ * Last modified on   $Date: 2011-03-23 13:29:12 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (c) Copyright 2010, Epimorphics Ltd
@@ -25,17 +25,7 @@
 ///////////////
 package com.hp.hpl.jena.util;
 
-
-
-// Imports
-///////////////
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
@@ -49,9 +39,6 @@ import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
 import com.hp.hpl.jena.reasoner.InfGraph;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
-import com.hp.hpl.jena.util.iterator.Filter;
-
-
 
 /**
  * <p>
@@ -61,7 +48,7 @@ import com.hp.hpl.jena.util.iterator.Filter;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:ian_dickinson@users.sourceforge.net" >email</a>)
- * @version CVS $Id: ResourceUtils.java,v 1.4 2010-08-18 16:06:04 der Exp $
+ * @version CVS $Id: ResourceUtils.java,v 1.5 2011-03-23 13:29:12 chris-dollin Exp $
  */
 public class ResourceUtils {
 
@@ -204,11 +191,13 @@ public class ResourceUtils {
      * identity of a resource to change, this is the closest approximation to a rename operation
      * that works.
      * </p>
-     * <p><strong>Notes:</strong> This method does minimal checking, so renaming a resource
-     * to its own URI is unpredictable.  Furthermore, it is a general and simple approach, and
-     * in given applications it may be possible to do this operation more efficiently. Finally,
-     * if <code>res</code> is a property, existing statements that use the property will not
-     * be renamed, nor will occurrences of <code>res</code> in other models.
+     * <p>Renaming a resource to its own URI is a no-op. Resources in the
+     * predicate position of statements are not renamed. Intermediate store
+     * for the triples mentioning <code>old</code> is required.
+     * </p>
+     * 
+     * <p><b>Note</b>This implementation is a general and simple approach, and
+     * in given applications it may be possible to do this operation more efficiently. 
      * </p>
      * @param old An existing resource in a given model
      * @param uri A new URI for resource old, or <code>null</code> to rename old to a bNode
@@ -216,72 +205,42 @@ public class ResourceUtils {
      * has the new given URI.
      */
     public static Resource renameResource(final Resource old, final String uri) {
-       	 // Let's work directly with the Graph. Faster if old is attached to a InfModel (~2 times).
-       	 // Otherwise, we would create more or less many fine grained removals and additions of
-       	 // statements on model which may cause to refresh the backing reasoner frequently, thus,
-       	 // introducing a lot of update work. With this implementation this happens at most once.
-       	 // It could be solved without the need to work directly with the graph if we had a bulk
-       	 // update feature over Model/InfModel/OntModel.
-       	 // Some tests have shown that even if there is just one triple involving the resource
-       	 // to be renamed and the model has a reasonable size (~10000 triples) then it is still
-       	 // faster (~30%) -- including the final rebind() -- than working at the level of model.
-       	 final Node resAsNode = old.asNode();
-       	 final Model model = old.getModel();
-       	 final Graph graph = model.getGraph(), rawGraph;
-       	 if (graph instanceof InfGraph) 
-       	     rawGraph = ((InfGraph) graph).getRawGraph();
-       	 else 
-       	     rawGraph = graph;
-    
-       	 final Set<Triple> reflexiveTriples = new HashSet<Triple>();
-    
-       	 // list the statements that mention old as a subject
-       	 ExtendedIterator<Triple> i = rawGraph.find(resAsNode, null, null);
-    
-       	 // List the statements that mention old as an object and filter reflexive triples.
-       	 // Latter ones are found twice in each find method, thus, we need to make sure to
-       	 // keep only one.
-       	 i = i.andThen(rawGraph.find(null, null, resAsNode)).filterKeep(new Filter<Triple>() {
-       		 @Override public boolean accept(final Triple o) {
-       			 if (o.getSubject().equals(o.getObject())) {
-       				 reflexiveTriples.add(o);
-       				 return false;
-       			 }
-       			 return true;
-       		 }
-       	 });
-    
-       	 // create a new resource node to replace old
-       	 final Resource newRes = model.createResource(uri);
-       	 final Node newResAsNode = newRes.asNode();
-    
-       	 Triple t;
-       	 Node subj, obj;
-       	 while (i.hasNext())
-       	 {
-       		 t = i.next();
-    
-       		 // first, create a new triple to refer to newRes instead of old
-       		 subj = (t.getSubject().equals(resAsNode))? newResAsNode : t.getSubject();
-       		 obj = (t.getObject().equals(resAsNode))? newResAsNode : t.getObject();
-       		 rawGraph.add(Triple.create(subj, t.getPredicate(), obj));
-    
-       		 // second, remove existing triple
-       		 i.remove();
+        // Work at the graph level. Also, work underneath one layer of inference
+        // if it's there. This avoids both fighting the inference engine and the
+        // Statement reconstruction work of the Model layer.
+        if (old.getURI().equals( uri )) return old;
+       	Node resAsNode = old.asNode();
+       	Model model = old.getModel();
+       	Graph graph = model.getGraph();
+       	Graph rawGraph = graph instanceof InfGraph ? ((InfGraph) graph).getRawGraph() : graph;
+     	Resource newRes = model.createResource(uri);
+       	Node newResAsNode = newRes.asNode();
+       	List<Triple> triples = new ArrayList<Triple>();
+     //
+       	for (ExtendedIterator<Triple> x = rawGraph.find( resAsNode, Node.ANY, Node.ANY ); x.hasNext();) {
+       	    triples.add( x.next() );
+       	    x.remove();
+       	}
+       	for (ExtendedIterator<Triple> x = rawGraph.find( Node.ANY, Node.ANY, resAsNode ); x.hasNext();) {
+            triples.add( x.next() );
+            x.remove();
+        }
+    //
+    // It's possible there's a triple (old wossname old) that's in triples twice. 
+    // It doesn't matter.
+    //
+       	for (Triple t: triples) {
+       	    Node oldS = t.getSubject(), oldO = t.getObject();
+       	    Node newS = oldS.equals(resAsNode) ? newResAsNode : oldS;
+       	    Node newO = oldO.equals(resAsNode) ? newResAsNode : oldO;
+       	    rawGraph.add( Triple.create( newS, t.getPredicate(), newO ) );
        	 }
-    
-       	 // finally, move reflexive triples (if any) <-- cannot do this in former loop as it
-       	 // causes ConcurrentModificationException
-       	 for (final Triple rt : reflexiveTriples)
-       	 {
-       		 rawGraph.delete(rt);
-       		 rawGraph.add(Triple.create(newResAsNode, rt.getPredicate(), newResAsNode));
-       	 }
-    
-       	 // Did we work in the back of the InfGraph? If so, we need to rebind raw data (more or less expensive)!
-       	 if (rawGraph != graph) ((InfGraph) graph).rebind();
-    
-       	 return newRes;
+     //
+  	 // If we were underneath an InfGraph, and at least one triple changed,
+     // then we have to rebind.
+     //
+       	if (rawGraph != graph && triples.size() > 0) ((InfGraph) graph).rebind();
+       	return newRes;
     }
 
 

@@ -1,10 +1,12 @@
 /*
   (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestNodeCache.java,v 1.1 2009-06-29 08:55:40 castagna Exp $
+  $Id: TestNodeCache.java,v 1.2 2011-03-23 13:29:20 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
+
+import java.util.*;
 
 import junit.framework.*;
 
@@ -32,16 +34,23 @@ public class TestNodeCache extends GraphTestBase
     public static void main( String [] ignoredArguments )
         {
         String alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        String [] strings = new String[32000];
+        Map<Integer, Set<String>> strings = new HashMap<Integer, Set<String>>();
         for (int i = 0; i < alphabet.length(); i += 1)
             for (int j = 0; j < alphabet.length(); j += 1)
-                {
-                String s = "" + alphabet.charAt( i ) + alphabet.charAt( j );
-                if (i == 10 && j == 10) System.err.println( s );
-                int hash = s.hashCode();
-                if (strings[hash] == null) strings[hash] = s;
-                else System.out.println( ">> " + strings[hash] + " and " + s + " both hash to " + hash );
-                }
+                for (int k = 0; k < alphabet.length(); k += 1)
+                    {
+                    String s = "" + alphabet.charAt( i ) + alphabet.charAt( j ) + alphabet.charAt( k );
+                    if (i == 10 && j == 10) System.err.println( s );
+                    int hash = s.hashCode();
+                    if (strings.get( hash ) == null) strings.put( hash, new HashSet<String>() );
+                    strings.get( hash ).add( s );
+                    }
+        for (Map.Entry<Integer, Set<String>> e: strings.entrySet())
+            {
+            Set<String> clashing = e.getValue();
+            if (clashing.size() > 1)
+                System.err.println( "hash " + e.getKey() + " has clashing strings " + clashing );
+            }
         }
     
     /**

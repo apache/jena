@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            06-Jun-2003
  * Filename           $RCSfile: TestResourceUtils.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-10-06 13:04:44 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2011-03-23 13:29:21 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -24,6 +24,7 @@ package com.hp.hpl.jena.util.iterator.test;
 
 // Imports
 ///////////////
+import com.hp.hpl.jena.mem.SmallGraphMem;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.vocabulary.RDFS;
 import com.hp.hpl.jena.util.*;
@@ -40,7 +41,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:ian_dickinson@users.sourceforge.net" >email</a>)
- * @version CVS $Id: TestResourceUtils.java,v 1.2 2009-10-06 13:04:44 ian_dickinson Exp $
+ * @version CVS $Id: TestResourceUtils.java,v 1.3 2011-03-23 13:29:21 chris-dollin Exp $
  */
 public class TestResourceUtils
     extends TestCase
@@ -89,10 +90,18 @@ public class TestResourceUtils
         assertEquals( "Wrong number of remaining resources", 1, ResourceUtils.maximalLowerElements( cd, RDFS.subClassOf, true ).size() );
         assertEquals( "Result should be a", c, ResourceUtils.maximalLowerElements( cd, RDFS.subClassOf, true ).iterator().next() );
     }
+    
+    // this is a way to check for violation of the CME constraint.
+    public void testRenameResourceAvoidsCCE() {
+        testRenameResource( ModelFactory.createModelForGraph( new SmallGraphMem() ) );
+    }
 
     public void testRenameResource() {
-        Model m = ModelFactory.createDefaultModel();
+        testRenameResource( ModelFactory.createDefaultModel() );
+    }
 
+    private void testRenameResource( Model m )
+        {
         Resource a = m.createResource( NS + "a" );
         Resource b = m.createResource( NS + "b" );
         Resource c = m.createResource( NS + "c" );
@@ -143,7 +152,7 @@ public class TestResourceUtils
         Resource f1 = ResourceUtils.renameResource( f, NS +"f1" );
         assertFalse( "Should be no f statements",  m.listStatements( f, null, (RDFNode) null).hasNext() );
         assertTrue( "f1 has p f1", f1.hasProperty( p, f1 ) );
-    }
+        }
 
     public void testReachableGraphClosure() {
         Model m0 = ModelFactory.createDefaultModel();
