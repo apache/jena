@@ -27,6 +27,8 @@ public class DevTDB
     //    Versions with built-in defaults.
     //    NodeTableFactory and makers in the test area.
     
+    // listSubjects can be done fast for TDB
+    
     // ---- BulkLoader2
     // Tune sort --buffer-size=50%
     // Prefixes to be set during bulk loading 1 & 2
