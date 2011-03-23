@@ -47,6 +47,7 @@ public class ReportDynamicDatasetAndPaths
         dsg.add(q1) ;
         dsg.add(q2) ;
         NQuadsWriter.write(System.out, dsg) ;
+        divider() ;
         
         String qs = StrUtils.strjoinNL(
             "PREFIX : <http://example/>", 
@@ -54,7 +55,9 @@ public class ReportDynamicDatasetAndPaths
             // This breaks the query.
             "FROM :g1 FROM :g2",
             // Broken still.
-            " { ?s :p1/:p2 ?o }"
+            // Any unconverted paths (e.g. :p*) remain as (graph .. (path ...))
+            //" { ?s :p1/:p2 ?o }"
+            " { ?s :p1 ?z . ?z :p1* ?x . ?x :p2 ?o }"
             // Fixed.
             //" { ?s :p1 ?x . ?x :p2 ?o }"
         ) ;
@@ -72,12 +75,15 @@ public class ReportDynamicDatasetAndPaths
         
         ARQ.setExecutionLogging(InfoLevel.ALL) ;
         Op op = Algebra.compile(query) ;
-        output(op) ;
+        //op = Algebra.optimize(op) ;
+        output("** Compiled", op) ;
         // Unoptimized - no path flattening.
         op = Algebra.toQuadForm(op) ;
-        output(op) ;
+        output("** Quad form", op) ;
         op = TransformDynamicDataset.transform(query, op) ; 
-        output(op) ;
+        output("** DynDS transform", op) ;
+       
+        divider() ;
         QueryExecUtils.executeAlgebra(op, dsg, ResultsFormat.FMT_TEXT) ;
         System.exit(0) ;
         
@@ -102,7 +108,7 @@ public class ReportDynamicDatasetAndPaths
             "PREFIX : <http://example/>", 
             "SELECT ?s ?o",
             //"FROM :g1 FROM :g2",
-            " { ?s :p1 ?x . ?x :p2 ?o }"
+            " { ?s :p1/:p2 ?o }"
         ) ;
         Query query = QueryFactory.create(qs) ;
         QueryExecution qExec = QueryExecutionFactory.create(query, ds) ;
@@ -112,10 +118,14 @@ public class ReportDynamicDatasetAndPaths
         
     }
     
-    private static void output(Op op)
+    private static void output(String label, Op op)
     {
         divider() ;
-        System.out.println(op) ;
+        
+        System.out.println(label) ;
+        System.out.flush() ;
+        System.out.print(op) ;
+        System.out.flush() ;
     }
 
     static String divider = "----------------------------------------" ;
