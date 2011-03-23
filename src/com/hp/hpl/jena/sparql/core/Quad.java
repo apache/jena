@@ -73,6 +73,11 @@ public class Quad
         return subject.isConcrete() && predicate.isConcrete() && object.isConcrete() && graph.isConcrete() ;
     }
     
+    /** @deprectaed use Quad.isDefaultGraphGenerated */
+    @Deprecated
+    public static boolean isQuadDefaultGraphGenerated(Node node)
+    { return isDefaultGraphGenerated(node) ; }
+    
     /** Test whether this is a quad for the default graph (not the default graphs by explicit name) */
     public static boolean isDefaultGraphGenerated(Node node)
     {
@@ -93,6 +98,10 @@ public class Quad
         return isDefaultGraphGenerated(node) ||isDefaultGraphExplicit(node) ; 
     }
 
+    /** @deprectaed use Quad.isUnionGraph */
+    @Deprecated
+    public static boolean isQuadUnionGraph(Node node) { return isUnionGraph(node) ; }
+    
     /** Default, concrete graph (either generated or explicitly named) -- not triple-in-quad*/
     public static boolean isUnionGraph(Node node)
     {

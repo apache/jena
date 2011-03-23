@@ -1,7 +1,7 @@
 PREFIX : <http://example/>
 
-INSERT DATA 
-{ GRAPH <http://www.social.com/> { :s :p :o } }
+LOAD <http://rdf.freebase.com/ns/en.miles_davis> INTO GRAPH <http://example/tmp> ;
 
-DELETE WHERE {  GRAPH <http://www.social.com/> { :s :p :o } }
-
+INSERT { <http://rdf.freebase.com/ns/en.miles_davis> ?p ?o }
+WHERE { GRAPH <http://example/tmp> 
+   { <http://rdf.freebase.com/ns/en.miles_davis> ?p ?o } }
