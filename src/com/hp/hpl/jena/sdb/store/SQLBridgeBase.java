@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -185,8 +186,8 @@ public abstract class SQLBridgeBase implements SQLBridge
             return assembleBinding(jdbcResultSet, parent) ;
         }
 
-        // Asynchronous request to cancel.
-        @Override
+        // Asynchronous request to cancel.  ARQ 2.8.8 and later.
+        //@Override
         protected void requestCancel()
         {}
         
@@ -195,6 +196,7 @@ public abstract class SQLBridgeBase implements SQLBridge
 
 /*
  * (c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

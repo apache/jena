@@ -7,7 +7,7 @@
   <artifactId>sdb</artifactId>
   <packaging>jar</packaging>
   <name>SDB</name>
-  <version>1.3.4-SNAPSHOT</version>
+  <version>1.3.4</version>
   <description/>
   <url>http://openjena.org/SDB</url>
 
@@ -31,7 +31,7 @@
   <properties>
     <this.root>${project.artifactId}-${project.version}</this.root>
     <ver.jena>2.6.4</ver.jena>
-    <ver.arq>2.8.8-SNAPSHOT</ver.arq>
+    <ver.arq>2.8.7</ver.arq>
   </properties>
 
   <dependencies>
