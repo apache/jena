@@ -266,22 +266,15 @@ public class QueryExecutionBase implements QueryExecution
     {
         this.timeout1 = timeout ;
         this.timeout2 = TIMEOUT_UNSET ;
-        if ( timeout < 0 && pingback != null )
-            alarmClock.cancel(pingback) ;
+        // What about resetting while running?  maybe later.
     }
 
-    // TODO check on queryIterator first result; unset out pingback time, set new ping back time. 
-    
-//    //@Override
-//    public void setTimeout(long timeout1, long timeout2)
-//    {
-//            this.timeout1 = timeout1 ;
-//        this.timeout2 = timeout2 ;
-//        // CHECK 
-//        if ( timeout1 < 0 && pingback != null )
-//            alarmClock.cancel(pingback) ;
-//
-//    }
+    //@Override
+    public void setTimeout(long timeout1, long timeout2)
+    {
+        this.timeout1 = timeout1 ;
+        this.timeout2 = timeout2 ;
+    }
 
     private static final long TIMEOUT_UNSET = -1 ;
     private long timeout1 = TIMEOUT_UNSET ;

@@ -188,6 +188,13 @@ public class QueryEngineHTTP implements QueryExecution
         throw new NotImplemented("Not implemented yet - please send a patch to the Apache Jena project : https://issues.apache.org/jira/browse/JENA-56") ;
     }
 
+    public void setTimeout(long timeout1, long timeout2)
+    {
+        throw new NotImplemented("Not implemented yet - please send a patch to the Apache Jena project : https://issues.apache.org/jira/browse/JENA-56") ;
+    }
+
+
+    
     private HttpQuery makeHttpQuery()
     {
         // Also need to tie to ResultSet returned which is streamed back if StAX.
