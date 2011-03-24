@@ -185,7 +185,7 @@ public class QueryEngineHTTP implements QueryExecution
     
     public void setTimeout(long timeout)
     {
-        throw new NotImplemented("Not implemented yet - please send a patch to the Apache Jena project") ;
+        throw new NotImplemented("Not implemented yet - please send a patch to the Apache Jena project : https://issues.apache.org/jira/browse/JENA-56") ;
     }
 
     private HttpQuery makeHttpQuery()
