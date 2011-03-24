@@ -269,6 +269,8 @@ public class QueryExecutionBase implements QueryExecution
             alarmClock.cancel(pingback) ;
     }
 
+    // TODO check on queryIterator first result; unset out pingback time, set new ping back time. 
+    
 //    //@Override
 //    public void setTimeout(long timeout1, long timeout2)
 //    {
