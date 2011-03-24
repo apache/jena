@@ -36,8 +36,8 @@ public class TestQueryExecutionCancel extends BaseTest {
         m.add(r1, p3, "y1") ;
     }
     
-    @BeforeClass public static void beforeClass() { FunctionRegistry.get().put(ns + "slow", slow.class) ; }
-    @AfterClass  public static void afterClass() { FunctionRegistry.get().remove(ns + "slow") ; }
+    @BeforeClass public static void beforeClass() { FunctionRegistry.get().put(ns + "wait", wait.class) ; }
+    @AfterClass  public static void afterClass() { FunctionRegistry.get().remove(ns + "wait") ; }
     
     @Test(expected=QueryCancelledException.class)
     public void test_Cancel_API_1()
@@ -57,53 +57,40 @@ public class TestQueryExecutionCancel extends BaseTest {
     @Test(expected=QueryCancelledException.class)
     public void test_Cancel_API_2()
     {
-    	try {
-            QueryExecution qExec = makeQExec("PREFIX ex: <" + ns + "> " +
-            		"SELECT * {?s ?p ?o . FILTER ex:slow() }") ;
-            try {
-                ResultSet rs = qExec.execSelect() ;
-                assertTrue(rs.hasNext()) ;
-                qExec.abort();
-                assertTrue(rs.hasNext()) ;
-                rs.nextSolution();
-                assertFalse("Results not expected after cancel.", rs.hasNext()) ;
-            } finally { qExec.close() ; }
-            
-    	} finally {
-            FunctionRegistry.get().remove("ex:slow") ;
-    	}
+        QueryExecution qExec = makeQExec("PREFIX ex: <" + ns + "> " +
+        "SELECT * {?s ?p ?o . FILTER ex:wait(100) }") ;
+        try {
+            ResultSet rs = qExec.execSelect() ;
+            assertTrue(rs.hasNext()) ;
+            qExec.abort();
+            assertTrue(rs.hasNext()) ;
+            rs.nextSolution();
+            assertFalse("Results not expected after cancel.", rs.hasNext()) ;
+        } finally { qExec.close() ; }
     }    
     
     @Test public void test_Cancel_API_3() throws InterruptedException
     {
-    	try {
-            QueryExecution qExec = makeQExec("PREFIX ex: <" + ns + "> " +
-            		"SELECT * {?s ?p ?o . FILTER ex:slow() }") ;
-            CancelThreadRunner thread = new CancelThreadRunner(qExec);
-            thread.start();
-            synchronized (qExec) { qExec.wait() ; }
-            qExec.abort();
-            synchronized (qExec) { qExec.notify() ; }
-            assertEquals (1, thread.getCount()) ;
-    	} finally {
-            FunctionRegistry.get().remove("ex:slow") ;
-    	}
+        QueryExecution qExec = makeQExec("PREFIX ex: <" + ns + "> " +
+        "SELECT * {?s ?p ?o . FILTER ex:wait(100) }") ;
+        CancelThreadRunner thread = new CancelThreadRunner(qExec);
+        thread.start();
+        synchronized (qExec) { qExec.wait() ; }
+        qExec.abort();
+        synchronized (qExec) { qExec.notify() ; }
+        assertEquals (1, thread.getCount()) ;
     }
     
     @Test public void test_Cancel_API_4() throws InterruptedException
     {
-    	try {
-            QueryExecution qExec = makeQExec("PREFIX ex: <" + ns + "> " +
-            		"SELECT * {?s ?p ?o } ORDER BY ex:slow()") ;
-            CancelThreadRunner thread = new CancelThreadRunner(qExec);
-            thread.start();
-            synchronized (qExec) { qExec.wait() ; }
-            qExec.abort();
-            synchronized (qExec) { qExec.notify() ; }
-            assertEquals (1, thread.getCount()) ;
-    	} finally {
-            FunctionRegistry.get().remove("ex:slow") ;
-    	}
+        QueryExecution qExec = makeQExec("PREFIX ex: <" + ns + "> " +
+        "SELECT * {?s ?p ?o } ORDER BY ex:wait(100)") ;
+        CancelThreadRunner thread = new CancelThreadRunner(qExec);
+        thread.start();
+        synchronized (qExec) { qExec.wait() ; }
+        qExec.abort();
+        synchronized (qExec) { qExec.notify() ; }
+        assertEquals (1, thread.getCount()) ;
     }
 
     private QueryExecution makeQExec(String queryString)
