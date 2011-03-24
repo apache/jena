@@ -39,21 +39,6 @@ public abstract class QueryIteratorBase
     // It causes notification to cancellation to be made, once, by calling .requestCancel()
     // which is called synchronously with .cancel() and asynchronously with iterator execution.
 
-    // Cancellation causes 
-    // Variations to the cancellation style are made by setting things in the context (see QueryIter)
-    // Default cancellation is to stop the iterator immediately. 
-    // No further calls of .hasNext or .next are possible.
-    // This is signalled by exception QueryTerminationException.
-
-    // Original notes ....
-    // The cancellation process has 2 phases
-    // 1) Notification of cancellation  - called on thread of caller of cancel()
-    // 2) Actual cancelation we only actively set the iterator as cancelled when the nextBinding() is taken
-    // this is required to guarantee thread safety because cancel() will be called from another
-    // thread than the executing thread
-
-    private boolean cancelled = false ; // Volatile? // XXX Remove me?? - or reuse as abortIterator
-    
     /** In the process of requesting a cancel, or one has been done */  
     private boolean requestingCancel = false;
 
@@ -138,13 +123,11 @@ public abstract class QueryIteratorBase
             if ( obj == null )
                 throw new NoSuchElementException(Utils.className(this)) ;
             
-            if ( requestingCancel ) 
+            if ( requestingCancel && ! finished ) 
             {
-                // NB If QueryIterAbortCancellationRequestException called,
-                // requestingCancel not set so no close().
-        		cancelled = true;
+                // But .cancel sets both requestingCancel and abortIterator
+                // This only happens with a continuing iterator.
         		close() ;
-        		//throw new QueryTerminationException() ; 
         	}
             
             return obj ;
@@ -172,6 +155,7 @@ public abstract class QueryIteratorBase
         finished = true ;
     }
     
+    @Deprecated
     public void abort()
     {
         if ( finished )
@@ -205,7 +189,7 @@ public abstract class QueryIteratorBase
             synchronized (this)
             {
                 this.requestCancel() ;
-                //this.requestingCancel = true;
+                this.requestingCancel = true;
                 //this.abortIterator = true ;
             }
         }

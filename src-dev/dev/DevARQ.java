@@ -2,8 +2,8 @@ package dev ;
 
 public class DevARQ
 {
-    // setTimeout(long, long)
     // Add timeout tests to TestQueryExecution.
+    // Stop timeout in close.
     
     // ---- Projects
     // * FileManager2

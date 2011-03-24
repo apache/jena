@@ -44,6 +44,7 @@ import com.hp.hpl.jena.sparql.engine.binding.BindingMap ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingRoot ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingUtils ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIteratorBase ;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIteratorWrapper ;
 import com.hp.hpl.jena.sparql.syntax.ElementGroup ;
 import com.hp.hpl.jena.sparql.syntax.Template ;
 import com.hp.hpl.jena.sparql.util.Context ;
@@ -69,7 +70,6 @@ public class QueryExecutionBase implements QueryExecution
     private FileManager        fileManager = FileManager.get() ;
     private QuerySolution      initialBinding = null ;      
 
-    private boolean            abort = false ;
     // has cancel() been called?
     private volatile boolean   cancel = false ;
     
@@ -100,6 +100,7 @@ public class QueryExecutionBase implements QueryExecution
             queryIterator.close() ;
         if ( plan != null )
             plan.close() ;
+        cancelPingback() ;
     }
 
     @Deprecated
@@ -286,37 +287,56 @@ public class QueryExecutionBase implements QueryExecution
     private long timeout1 = TIMEOUT_UNSET ;
     private long timeout2 = TIMEOUT_UNSET ;
     
-    private static AlarmClock alarmClock = new AlarmClock() ; 
+    private static AlarmClock alarmClock = AlarmClock.get() ; 
     private Pingback<QueryExecution> pingback = null ;
     
     //@Override
-    private void initTimeout()
+    private void initTimeout1()
     {
         if ( timeout1 == TIMEOUT_UNSET ) return ;
         
-        if ( timeout2 < 0 )
+        if ( pingback != null )
+            alarmClock.reset(pingback, timeout1) ;
+        else
         {
-            if ( pingback != null )
-                alarmClock.reset(pingback, timeout1) ;
-            else
-            {
-                Callback<QueryExecution> callback = new Callback<QueryExecution>() {
-                    public void proc(QueryExecution arg)
-                    {
-                        arg.abort() ;
-                    }} ;
+            Callback<QueryExecution> callback = new Callback<QueryExecution>() {
+                public void proc(QueryExecution arg)
+                {
+                    arg.abort() ;
+                }} ;
                 pingback = alarmClock.add(callback, this, timeout1) ;
             }
-            return ;
+        return ;
+        // Second timeout done by wrapping the iterator.
+    }
+    
+    private void initTimeout2()
+    {
+        if ( timeout2 > 0 )
+        {
+            QueryIterator qIter = new QueryIteratorWrapper(queryIterator)
+            {
+                @Override
+                protected Binding moveToNextBinding()
+                { 
+                    Binding b = super.moveToNextBinding() ;
+                    // We have moved!
+                    // Reset the timer.
+                    alarmClock.reset(pingback, timeout2) ;
+                    return b ;
+                }
+            };
         }
-        // Double timeout.
-        
+    }
+    
+    private void cancelPingback()
+    {
+        if ( pingback != null )
+            alarmClock.cancel(pingback) ;
     }
     
     protected final void execInit()
-    {
-        initTimeout() ;
-    }
+    { }
 
     private ResultSet asResultSet(QueryIterator qIter)
     {
@@ -335,8 +355,13 @@ public class QueryExecutionBase implements QueryExecution
         execInit() ;
         if ( queryIterator != null )
             Log.warn(this, "Query iterator has already been started") ;
+        initTimeout1() ;
+        // We don't know if getPlan().iterator() does a lot of work or not
+        // (ideally it shouldn't start executing the query but in some sub-systems 
+        // it might be necessary)
         queryIterator = getPlan().iterator() ;
-        if ( abort ) queryIterator.abort() ;
+        // Add the second timeout wrapper.
+        initTimeout2() ;
         if ( cancel ) queryIterator.cancel() ;
     }
     

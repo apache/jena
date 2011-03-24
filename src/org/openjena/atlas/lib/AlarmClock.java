@@ -10,7 +10,6 @@ import java.util.HashSet ;
 import java.util.Set ;
 import java.util.Timer ;
 
-
 /** An AlarmClock is an object that will make a call back at a preset time.
  * It addes to java.util.Timer by having an active Timer (and its thread)
  * only when callbacks are outstanding.  The Timer's thread can stop the JVM exiting.
@@ -26,6 +25,13 @@ public class AlarmClock
     public Set<Pingback<?>> outstanding = new HashSet<Pingback<?>>() ;
     
     public AlarmClock() {}
+    
+    static private AlarmClock singleton = new AlarmClock() ; ;
+    /** Global singleton for general use */ 
+    static public AlarmClock get()
+    {
+        return singleton ;
+    }
 
     synchronized public long getCount() { return outstanding.size() ; }
     
@@ -60,6 +66,8 @@ public class AlarmClock
 
     synchronized public void cancel(Pingback<?> pingback)
     {
+        if ( pingback == null )
+            return ;
         cancel$(pingback, true) ;
     }
     

@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -20,7 +21,9 @@ public interface QueryIterator extends Closeable, Iterator<Binding>, PrintSerial
     /** Get next binding */ 
     public Binding nextBinding() ;
     
-    /** Abort a query - may not clearup properly */
+    /** Abort a query - may not clearup properly
+     * @deprecated - Use cancel() which can be called asynchronously. */
+    @Deprecated
     public void abort() ; 
  
     /**
@@ -31,6 +34,7 @@ public interface QueryIterator extends Closeable, Iterator<Binding>, PrintSerial
 
 /*
  * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

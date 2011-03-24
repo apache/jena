@@ -37,6 +37,9 @@ public class QueryIteratorCheck extends QueryIteratorWrapper
         super.close() ;
         checkForOpenIterators(execCxt) ;
     }
+    
+    // Remove me sometime.
+    @Deprecated
     @Override
     public void abort()
     {
