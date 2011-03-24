@@ -37,9 +37,12 @@ public class ReportPathCycles
         Query query = QueryFactory.create("SELECT * WHERE { ?x <" + RDFS.subClassOf + ">* ?y }");
         QueryExecution qexec = QueryExecutionFactory.create(query, model);
         ResultSet rs = qexec.execSelect();
+        int x = 0 ;
         while(rs.hasNext()) {
+            x++ ;
             rs.next();
         }
+        System.out.println("results = "+x) ;
     }
 }
 

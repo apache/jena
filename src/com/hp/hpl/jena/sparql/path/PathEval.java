@@ -426,41 +426,41 @@ public class PathEval
 
         private static long dec(long x) { return (x<=0) ? x : x-1 ; }
 
-        // OLD
-        private void doOneOrMore_OLD(Path path)
-        {
-            // This is the visited node collection - a set is OK
-            Set<Node> visited = new HashSet<Node>() ;
-            doOneOrMore(node, path, visited) ;
-        }
-
-        private void doOneOrMore(Node node, Path path, Set<Node> visited)
-        {
-            if ( visited.contains(node) ) return ;
-            
-            visited.add(node) ;
-            // Do one step.
-            Iterator<Node> iter1 = eval(graph, node, path, forwardMode) ;
-            
-            // For each step, add to results and recurse.
-            for ( ; iter1.hasNext() ; )
-            {
-                Node n1 = iter1.next();
-                output.add(n1) ;
-//System.out.println("Add : "+n1+ " (" + output.size()+")") ; System.out.flush() ;                
-                
-                doOneOrMore(n1, path, visited) ;
-            }
-            visited.remove(node) ;
-            
-        }
-        
-        private void doZeroOrMore_OLD(Path path)
-        {
-            doZero(path) ;
-            doOneOrMore(path) ;
-        }
-        // OLD
+//        // OLD
+//        private void doOneOrMore_OLD(Path path)
+//        {
+//            // This is the visited node collection - a set is OK
+//            Set<Node> visited = new HashSet<Node>() ;
+//            doOneOrMore(node, path, visited) ;
+//        }
+//
+//        private void doOneOrMore(Node node, Path path, Set<Node> visited)
+//        {
+//            if ( visited.contains(node) ) return ;
+//            
+//            visited.add(node) ;
+//            // Do one step.
+//            Iterator<Node> iter1 = eval(graph, node, path, forwardMode) ;
+//            
+//            // For each step, add to results and recurse.
+//            for ( ; iter1.hasNext() ; )
+//            {
+//                Node n1 = iter1.next();
+//                output.add(n1) ;
+////System.out.println("Add : "+n1+ " (" + output.size()+")") ; System.out.flush() ;                
+//                
+//                doOneOrMore(n1, path, visited) ;
+//            }
+//            visited.remove(node) ;
+//            
+//        }
+//        
+//        private void doZeroOrMore_OLD(Path path)
+//        {
+//            doZero(path) ;
+//            doOneOrMore(path) ;
+//        }
+//        // OLD
         
         // NEW
         
@@ -495,7 +495,13 @@ public class PathEval
         {
             if ( trace ) System.out.printf("ALP node=%s\n   visited=%s\n   output=%s\n", node, visited, output) ;
             if ( visited.contains(node) ) return ;
-            output.add(node) ;
+            
+            // If output is a set, then no point going on if node has been added to the results.
+            // If output includes duplicates, more solutions are generated
+            // "visited" is nodes on this path (see the matching .remove).
+            if ( ! output.add(node) )
+                return ;
+            
             visited.add(node) ;
             
             Iterator<Node> iter1 = eval(graph, node, path, forwardMode) ;
