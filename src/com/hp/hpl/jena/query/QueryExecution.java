@@ -70,10 +70,12 @@ public interface QueryExecution
     public boolean execAsk();
     
 	/** Stop in mid execution.
-	 *  No guarantee that the concrete implementation actual
+	 *  This method can be called in parallel with other methods on the
+     *  QueryExecution object.
+	 *  There is no guarantee that the concrete implementation actual
      *  will stop or that it will do so immediately.
      *  No operations on the query execution or any associated
-     *  result set are permitted after this call.
+     *  result set are permitted after this call and may cause exceptions to be thrown.
 	 */
 
 	public void abort();
@@ -85,12 +87,16 @@ public interface QueryExecution
      *  operation will cause those to be called where necessary.
      *  No operations on the query execution or any associated
      *  result set are permitted after this call.
+     *  This method should not be called in parallel with other methods on the
+     *  QueryExecution object.
      */
 	public void close();
     
-//    /** Say whether this QueryExecution is useable or not.
+//	/** Say whether this QueryExecution is useable or not.
+//	 * An active execution is one that has not been closed, ended or aborted yet.
 //     * May not be supported or meaningful for all QueryExecution implementations.
-//     * @throws UnsupportedMethodException 
+//     * aborted queries may not immediate show as no longer active.
+//     * This should not be called in parallel with other QueryExecution methods. 
 //     */  
 //    public boolean isActive() ;
 }
