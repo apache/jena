@@ -91,8 +91,25 @@ public interface QueryExecution
      *  QueryExecution object.
      */
 	public void close();
+	
+	/** Set a timeout on the query execution.
+	 * Processing will be aborted after the timeout (which starts when the approprate exec call is made).
+	 * Not all query execution systems support timeouts.
+	 * A timeout of less than zero will cancel the timeout.
+	 */
+	
+	public void setTimeout(long timeout) ;
     
-//	/** Say whether this QueryExecution is useable or not.
+//    /** Set timeouts on the query execution; the first timeout refers to time to first result, 
+//     * the second refers to overall query execution after the first result.  
+//     * Processing will be aborted if a timeout expires.
+//     * Not all query execution systems support timeouts.
+//     * A timeout of less than zero will cancel the timeout.
+//     */
+//    
+//    public void setTimeout(long timeout1, long timeout2) ;
+
+    //	/** Say whether this QueryExecution is useable or not.
 //	 * An active execution is one that has not been closed, ended or aborted yet.
 //     * May not be supported or meaningful for all QueryExecution implementations.
 //     * aborted queries may not immediate show as no longer active.

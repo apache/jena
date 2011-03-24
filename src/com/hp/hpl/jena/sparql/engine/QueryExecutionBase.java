@@ -8,46 +8,49 @@
 
 package com.hp.hpl.jena.sparql.engine;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.HashMap ;
+import java.util.HashSet ;
+import java.util.Iterator ;
+import java.util.List ;
+import java.util.Map ;
+import java.util.Set ;
 
-import org.openjena.atlas.logging.Log;
+import org.openjena.atlas.lib.AlarmClock ;
+import org.openjena.atlas.lib.Callback ;
+import org.openjena.atlas.lib.Pingback ;
+import org.openjena.atlas.logging.Log ;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.n3.IRIResolver;
-import com.hp.hpl.jena.query.Dataset;
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryExecException;
-import com.hp.hpl.jena.query.QueryExecution;
-import com.hp.hpl.jena.query.QuerySolution;
-import com.hp.hpl.jena.query.ResultSet;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.RDFNode;
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.rdf.model.Statement;
-import com.hp.hpl.jena.shared.PrefixMapping;
-import com.hp.hpl.jena.sparql.ARQConstants;
-import com.hp.hpl.jena.sparql.core.DatasetGraph;
-import com.hp.hpl.jena.sparql.core.describe.DescribeHandler;
-import com.hp.hpl.jena.sparql.core.describe.DescribeHandlerRegistry;
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
-import com.hp.hpl.jena.sparql.engine.binding.BindingRoot;
-import com.hp.hpl.jena.sparql.engine.binding.BindingUtils;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.n3.IRIResolver ;
+import com.hp.hpl.jena.query.Dataset ;
+import com.hp.hpl.jena.query.Query ;
+import com.hp.hpl.jena.query.QueryExecException ;
+import com.hp.hpl.jena.query.QueryExecution ;
+import com.hp.hpl.jena.query.QuerySolution ;
+import com.hp.hpl.jena.query.ResultSet ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.ModelFactory ;
+import com.hp.hpl.jena.rdf.model.RDFNode ;
+import com.hp.hpl.jena.rdf.model.Resource ;
+import com.hp.hpl.jena.rdf.model.Statement ;
+import com.hp.hpl.jena.shared.PrefixMapping ;
+import com.hp.hpl.jena.sparql.ARQConstants ;
+import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import com.hp.hpl.jena.sparql.core.describe.DescribeHandler ;
+import com.hp.hpl.jena.sparql.core.describe.DescribeHandlerRegistry ;
+import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.engine.binding.BindingMap ;
+import com.hp.hpl.jena.sparql.engine.binding.BindingRoot ;
+import com.hp.hpl.jena.sparql.engine.binding.BindingUtils ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIteratorBase ;
-import com.hp.hpl.jena.sparql.syntax.ElementGroup;
-import com.hp.hpl.jena.sparql.syntax.Template;
-import com.hp.hpl.jena.sparql.util.Context;
-import com.hp.hpl.jena.sparql.util.DatasetUtils;
-import com.hp.hpl.jena.sparql.util.ModelUtils;
-import com.hp.hpl.jena.sparql.util.graph.GraphFactory;
-import com.hp.hpl.jena.util.FileManager;
+import com.hp.hpl.jena.sparql.syntax.ElementGroup ;
+import com.hp.hpl.jena.sparql.syntax.Template ;
+import com.hp.hpl.jena.sparql.util.Context ;
+import com.hp.hpl.jena.sparql.util.DatasetUtils ;
+import com.hp.hpl.jena.sparql.util.ModelUtils ;
+import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
+import com.hp.hpl.jena.util.FileManager ;
 
 /** All the SPARQL query result forms made from a graph-level execution object */ 
 
@@ -81,7 +84,7 @@ public class QueryExecutionBase implements QueryExecution
         this.qeFactory = qeFactory ;
     }
     
-    // Old, synchronosous code.
+    // Old, synchronous code.
     // Delete when we are sure cancellation is stable.
 //    public void abort()
 //    {
@@ -257,7 +260,61 @@ public class QueryExecutionBase implements QueryExecution
         return r ; 
     }
 
-    protected void execInit() {}
+    //@Override
+    public void setTimeout(long timeout)
+    {
+        this.timeout1 = timeout ;
+        this.timeout2 = TIMEOUT_UNSET ;
+        if ( timeout < 0 && pingback != null )
+            alarmClock.cancel(pingback) ;
+    }
+
+//    //@Override
+//    public void setTimeout(long timeout1, long timeout2)
+//    {
+//            this.timeout1 = timeout1 ;
+//        this.timeout2 = timeout2 ;
+//        // CHECK 
+//        if ( timeout1 < 0 && pingback != null )
+//            alarmClock.cancel(pingback) ;
+//
+//    }
+
+    private static final long TIMEOUT_UNSET = -1 ;
+    private long timeout1 = TIMEOUT_UNSET ;
+    private long timeout2 = TIMEOUT_UNSET ;
+    
+    private static AlarmClock alarmClock = new AlarmClock() ; 
+    private Pingback<QueryExecution> pingback = null ;
+    
+    //@Override
+    private void initTimeout()
+    {
+        if ( timeout1 == TIMEOUT_UNSET ) return ;
+        
+        if ( timeout2 < 0 )
+        {
+            if ( pingback != null )
+                alarmClock.reset(pingback, timeout1) ;
+            else
+            {
+                Callback<QueryExecution> callback = new Callback<QueryExecution>() {
+                    public void proc(QueryExecution arg)
+                    {
+                        arg.abort() ;
+                    }} ;
+                pingback = alarmClock.add(callback, this, timeout1) ;
+            }
+            return ;
+        }
+        // Double timeout.
+        
+    }
+    
+    protected final void execInit()
+    {
+        initTimeout() ;
+    }
 
     private ResultSet asResultSet(QueryIterator qIter)
     {
@@ -305,7 +362,7 @@ public class QueryExecutionBase implements QueryExecution
         }            
         return plan ;
     }
-    
+
     private void insertPrefixesInto(Model model)
     {
         try {

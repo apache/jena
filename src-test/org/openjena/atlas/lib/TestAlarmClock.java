@@ -4,11 +4,11 @@
  * [See end of file]
  */
 
-package dev;
+package org.openjena.atlas.lib;
 
-import dev.AlarmClock.Pingback ;
 import org.junit.Test ;
 import org.openjena.atlas.junit.BaseTest ;
+import org.openjena.atlas.lib.AlarmClock ;
 import org.openjena.atlas.lib.Callback ;
 import org.openjena.atlas.lib.Lib ;
 

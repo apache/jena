@@ -4,15 +4,12 @@
  * [See end of file]
  */
 
-package dev;
+package org.openjena.atlas.lib;
 
 import java.util.HashSet ;
 import java.util.Set ;
 import java.util.Timer ;
-import java.util.TimerTask ;
 
-import org.openjena.atlas.lib.Callback ;
-import org.openjena.atlas.lib.InternalErrorException ;
 
 /** An AlarmClock is an object that will make a call back at a preset time.
  * It addes to java.util.Timer by having an active Timer (and its thread)
@@ -25,27 +22,6 @@ public class AlarmClock
     // directly by the app. We need to go via AlarmClock tracking of callbacks so
     // we can release the Timer in AlarmClock.
 
-    public static class Pingback<T>
-    {
-        final TimerTask timerTask ;
-        final Callback<T> callback ;
-        final T arg ;
-
-        Pingback(final AlarmClock alarmClock, final Callback<T> callback, T argument)
-        {
-            this.callback = callback ;
-            this.arg = argument ;
-            this.timerTask = new TimerTask() {
-                @Override
-                public void run()
-                {
-                    callback.proc(arg) ;
-                    alarmClock.cancel(Pingback.this) ;
-                }
-            } ;
-        }
-    }
-    
     public Timer timer = null ;
     public Set<Pingback<?>> outstanding = new HashSet<Pingback<?>>() ;
     

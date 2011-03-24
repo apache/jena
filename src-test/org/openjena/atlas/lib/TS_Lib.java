@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -26,6 +27,7 @@ import org.junit.runners.Suite ;
     , TestFileOps.class
     , TestStrUtils.class
     , TestXMLLib.class
+    , TestAlarmClock.class
 } )
 
 public class TS_Lib
@@ -35,6 +37,7 @@ public class TS_Lib
 
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

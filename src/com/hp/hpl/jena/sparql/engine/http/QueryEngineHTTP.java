@@ -14,6 +14,7 @@ import java.util.Iterator ;
 import java.util.List ;
 
 import org.openjena.atlas.io.IO ;
+import org.openjena.atlas.lib.NotImplemented ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
@@ -182,6 +183,11 @@ public class QueryEngineHTTP implements QueryExecution
 
     public Context getContext() { return context ; }
     
+    public void setTimeout(long timeout)
+    {
+        throw new NotImplemented("Not implemented yet - please send a patch to the Apache Jena project") ;
+    }
+
     private HttpQuery makeHttpQuery()
     {
         // Also need to tie to ResultSet returned which is streamed back if StAX.

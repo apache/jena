@@ -8,7 +8,6 @@
 
 package dev;
 
-import java.io.ByteArrayOutputStream ;
 import java.util.Iterator ;
 import java.util.NoSuchElementException ;
 import java.util.concurrent.ArrayBlockingQueue ;
@@ -18,9 +17,9 @@ import java.util.concurrent.Executors ;
 
 import junit.framework.TestSuite ;
 import org.openjena.atlas.io.IndentedWriter ;
-import org.openjena.atlas.io.OutStreamUTF8 ;
 import org.openjena.atlas.json.JSON ;
 import org.openjena.atlas.json.JsonValue ;
+import org.openjena.atlas.lib.Lib ;
 import org.openjena.atlas.lib.Sink ;
 import org.openjena.atlas.lib.StrUtils ;
 import org.openjena.atlas.logging.Log ;
@@ -28,7 +27,6 @@ import org.openjena.riot.ErrorHandlerFactory ;
 import org.openjena.riot.RiotReader ;
 import org.openjena.riot.checker.CheckerIRI ;
 import org.openjena.riot.pipeline.normalize.CanonicalizeLiteral ;
-import org.openjena.riot.system.IRIResolver ;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.datatypes.xsd.XSDDuration ;
@@ -55,11 +53,14 @@ import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
+import com.hp.hpl.jena.sparql.engine.QueryExecutionBase ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
+import com.hp.hpl.jena.sparql.function.FunctionBase1 ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
 import com.hp.hpl.jena.sparql.function.FunctionEnvBase ;
+import com.hp.hpl.jena.sparql.function.FunctionRegistry ;
 import com.hp.hpl.jena.sparql.graph.NodeTransform ;
 import com.hp.hpl.jena.sparql.junit.ScriptTestSuiteFactory ;
 import com.hp.hpl.jena.sparql.junit.SimpleTestRunner ;
@@ -106,65 +107,46 @@ public class RunARQ
         System.exit(code) ;
     }
     
+    
+    static public class wait extends FunctionBase1 {
+
+        @Override
+        public NodeValue exec(NodeValue nv)
+        {
+            if ( ! nv.isInteger() )
+                throw new ExprEvalException("Not an integer") ;
+            int x = nv.getInteger().intValue() ;
+            Lib.sleep(x) ;
+            return nv ;
+        }
+
+    }
+    
     public static void main(String[] argv) throws Exception
     {
         
-        Query q = QueryFactory.create("select (count(*) as ?count) { ?s ?p ?o }") ;
-        
-        System.out.println(q) ;
-        
-        arq.qparse.main("select (count(*) as ?count) { ?s ?p ?o }") ; exit(0) ;
-        
-        int[] x = { 0, 1,2000, 0x20AC , 0X024B62 } ;
-        // E2 82 AC
-        // F0 A4 AD A2
-        
-        
-        for ( int ch : x )
-        {
-            ByteArrayOutputStream out = new ByteArrayOutputStream() ;
-            OutStreamUTF8.output(out, ch) ;
-            byte[] b = out.toByteArray() ;
-
-            System.out.printf("0x%06X =>", ch) ;
-            for ( int j = 0 ; j < b.length ; j++ )
-                System.out.printf(" %02X", b[j]) ;
-                System.out.println() ;
-        }
-        
-        exit(0) ;
-        
-        
-        
-        // Parser test
-        riotcmd.riot.main(/*"--sink", "--time",*/ "D.nt") ;
-        
-        //processIRI("file:///base/dir/a~b") ; exit(0) ;
-        
-        IRIResolver.suppressExceptions() ; exit(0) ; 
-        
-//        riotcmd.riot.main("D.ttl") ; exit(0) ;
-//        arq.sparql.main("--data=D.trig", "SELECT * { {?s ?p ?o} UNION {GRAPH ?g { ?s ?p ?o}}}") ; exit(0) ;
-
-        long timeout = 0 ;
-        long last = 0 ;
-        long quantum = 0 ;
-        
-//        // Issue - very long sort does not help.
-//        // need to hit the input thread. 
-//        if ( timeout > 0 && (quantum%10 == 0) )
-//        {
-//            System.currentTimeMillis() ;
-//        }
-        
+        FunctionRegistry.get().put("http://example/f#wait", wait.class) ;
         
         Model model = FileManager.get().loadModel("D.nt") ;
-        Query query = QueryFactory.create("SELECT *{?s ?p ?o} ORDER BY ?s ") ;
+        Query query = QueryFactory.create("PREFIX f: <http://example/f#> SELECT *{?s ?p ?o FILTER (f:wait(1)) } ") ;
         
         QueryExecution qExec = QueryExecutionFactory.create(query, model) ;
-        ResultSet rs = qExec.execSelect() ;
         
-        rs.hasNext() ; 
+        ((QueryExecutionBase)qExec).setTimeout(100) ;
+        System.out.println("0");        // Not started yet.
+        Lib.sleep(500) ;
+        
+        System.out.println("1");
+        ResultSet rs = qExec.execSelect() ;
+        System.out.println("2");
+        rs.hasNext() ;
+        System.out.println("3");
+        rs.next() ;
+        System.out.println("4");
+        Lib.sleep(1000) ;
+        System.out.println("5");
+        exit(0) ;
+        
         //ResultSetFormatter.out(rs) ;
         //System.out.println(rs.next()) ;
         //qExec.cancel() ;
