@@ -30,7 +30,6 @@ public class ReportOutOfMemoryManyGraphsTDB
     public static final int NOGRAPHS = 100000; // Number of data graphs to load
 
     public static void main( String[] args ) {
-
         
         if ( false )
         {
