@@ -2,9 +2,6 @@ package dev ;
 
 public class DevARQ
 {
-    // Add timeout tests to TestQueryExecution.
-    // Stop timeout in close.
-    
     // ---- Projects
     // * FileManager2
     //     Tests - need testing/Atlas/... or tmp/
@@ -12,6 +9,7 @@ public class DevARQ
     //     FileUtils2.
     //     ?? WebContent to work on ContentTypes, not strings. (what about default charsets?)
     // * Generalized union query
+    // * Generalized dynamic datasets
     // * RIOT Output
     // * RIOT I/O architecture
     // * OutStreamUTF8.
