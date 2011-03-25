@@ -50,7 +50,6 @@ public class ReportOutOfMemoryManyGraphsTDB
             SystemTDB.setFileMode(FileMode.direct) ;
         }
         
-        
         FileOps.clearDirectory(TDB_DIR) ;
         System.out.println("> Starting test: " + new java.util.Date());
         Timer timer = new Timer() ;
