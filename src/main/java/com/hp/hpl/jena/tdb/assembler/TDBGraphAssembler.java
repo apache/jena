@@ -77,12 +77,10 @@ public class TDBGraphAssembler extends AssemblerBase implements Assembler
             ds = DatasetAssemblerTDB.make(dataset) ;
 
         try {
-        
-        if ( graphName != null )
-            return ds.getNamedModel(graphName) ;
-        else
-            return ds.getDefaultModel() ;
-        
+            if ( graphName != null )
+                return ds.getNamedModel(graphName) ;
+            else
+                return ds.getDefaultModel() ;
         } catch (RuntimeException ex)
         {
             ex.printStackTrace(System.err) ;
