@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -23,7 +24,7 @@ public abstract class JsonValue implements Printable
     public JsonArray getAsArray()       { throw new JsonException("Not a JSON array") ; }
     
     public boolean isPrimitive()        { return isString() || isNumber() || isBoolean() || isNull() ; }
-    public boolean isNull()             { throw new JsonException("Not a JSON Null") ; }
+    public boolean isNull()             { return false ; }
 
     public boolean isNumber()           { return false ; }
     public JsonNumber getAsNumber()     { throw new JsonException("Not a JSON number") ; }
@@ -36,7 +37,6 @@ public abstract class JsonValue implements Printable
     
     @Override public abstract int hashCode() ;
     @Override public abstract boolean equals(Object other) ;
-    
     
     public abstract void visit(JsonVisitor visitor) ;
 
@@ -60,6 +60,7 @@ public abstract class JsonValue implements Printable
 
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
