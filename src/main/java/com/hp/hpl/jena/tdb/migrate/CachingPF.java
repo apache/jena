@@ -4,36 +4,38 @@
  * [See end of file]
  */
 
-package dev;
+package com.hp.hpl.jena.tdb.migrate;
 
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.expr.Expr;
-import com.hp.hpl.jena.tdb.store.NodeId;
+import java.util.ArrayList;
+import java.util.List;
 
-public class FindSpec
+import com.hp.hpl.jena.graph.Node;
+
+import com.hp.hpl.jena.sparql.engine.ExecutionContext;
+import com.hp.hpl.jena.sparql.engine.QueryIterator;
+import com.hp.hpl.jena.sparql.engine.binding.Binding;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper;
+import com.hp.hpl.jena.sparql.pfunction.PropFuncArg;
+import com.hp.hpl.jena.sparql.pfunction.PropertyFunction;
+
+/** A Property function that ignores it's arguments but reads and caches it's inputs */
+public class CachingPF implements PropertyFunction
 {
-    /** A condition on a column.
-     *  Fixed, OneOf, Range, Filter, All 
-     */
-    
-    // Fixed
-    private NodeId fixed ;
 
-    // Oneof
-    private NodeId[] oneOf ;
-    
-    // Range
-    private NodeId start ;
-    private NodeId finish ;
-    
-    // Filter
-    private Expr filter ;
-    
-    // else All.
-    
-    // Null for don't want result recorded.
-    private Var variable ;  
-    
+    //@Override
+    public void build(PropFuncArg argSubject, Node predicate, PropFuncArg argObject, ExecutionContext execCxt)
+    {}
+
+    //Override
+    public QueryIterator exec(QueryIterator input, PropFuncArg argSubject, Node predicate, PropFuncArg argObject,
+                              ExecutionContext execCxt)
+    {
+        List<Binding> bindings = new ArrayList<Binding>() ;
+        for ( ; input.hasNext() ; )
+            bindings.add(input.nextBinding()) ;
+        return new QueryIterPlainWrapper(bindings.iterator(), execCxt) ;
+    }
+
 }
 
 /*

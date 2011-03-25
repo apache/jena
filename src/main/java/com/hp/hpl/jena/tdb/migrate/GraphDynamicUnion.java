@@ -8,6 +8,9 @@ package com.hp.hpl.jena.tdb.migrate;
 
 import java.util.Collection ;
 
+import org.openjena.atlas.iterator.Iter ;
+import org.openjena.atlas.iterator.IteratorConcat ;
+
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
@@ -19,9 +22,9 @@ import com.hp.hpl.jena.shared.impl.PrefixMappingImpl ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.graph.GraphBase2 ;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
+import com.hp.hpl.jena.util.iterator.WrappedIterator ;
 
-/** Immutable graph that is the view of a a union of graphs in a TDB store.
- *  Works in NodeID space when possible */ 
+/** Immutable graph that is the view of a a union of graphs in a TDB store. */ 
 public class GraphDynamicUnion extends GraphBase2
 {
     // This exists for the property path evaulator to have a graph to call.
@@ -57,7 +60,13 @@ public class GraphDynamicUnion extends GraphBase2
     @Override
     protected ExtendedIterator<Triple> graphBaseFind(TripleMatch m)
     {
-        return null ;
+        IteratorConcat<Triple> iter = new IteratorConcat<Triple>() ;
+        for ( Node gn : graphs )
+        {
+            ExtendedIterator<Triple> eIter = dataset.getGraph(gn).find(m) ;
+            iter.add(eIter) ;
+        }
+        return WrappedIterator.create(Iter.distinct(iter)) ;
     }
 }
 

@@ -9,18 +9,26 @@
 
 package dev;
 
+import java.util.ArrayList ;
+import java.util.Collection ;
+import java.util.List ;
 import java.util.concurrent.ExecutorService ;
 import java.util.concurrent.Executors ;
 import java.util.concurrent.TimeUnit ;
 
+import org.openjena.atlas.iterator.Iter ;
 import org.openjena.atlas.lib.Bytes ;
 import org.openjena.atlas.lib.Lib ;
 import org.openjena.atlas.logging.Log ;
 import org.openjena.riot.RiotLoader ;
+import org.openjena.riot.RiotReader ;
+import org.openjena.riot.RiotWriter ;
 import setup.DatasetBuilderStd ;
 import setup.NoisyBlockMgr ;
 import setup.ObjectFileBuilder ;
 
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.query.QueryExecution ;
@@ -28,6 +36,8 @@ import com.hp.hpl.jena.query.QueryExecutionFactory ;
 import com.hp.hpl.jena.query.QueryFactory ;
 import com.hp.hpl.jena.query.QuerySolution ;
 import com.hp.hpl.jena.query.ResultSet ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
@@ -39,6 +49,7 @@ import com.hp.hpl.jena.tdb.base.record.Record ;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
 import com.hp.hpl.jena.tdb.index.bplustree.BPlusTree ;
 import com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams ;
+import com.hp.hpl.jena.tdb.migrate.GraphDynamicUnion ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 public class RunTDB
@@ -86,85 +97,22 @@ public class RunTDB
     }
     
     public static void main(String[] args) throws Exception
-    { 
-        {
-        DatasetGraph dsg = TDBFactory.createDatasetGraph("DB") ;
-        dsg.close() ;
-        dsg = TDBFactory.createDatasetGraph("DB") ;
-        dsg.close() ;
+    {
+        DatasetGraph dsg = RiotLoader.load("D.trig") ;
+        
+        List<Node> gn = new ArrayList<Node>() ;
+        gn.add(Node.createURI("http://example/g1")) ;
+        gn.add(Node.createURI("http://example/g2")) ;
+        //gn.add(Node.createURI("http://example/g3")) ;
+        
+        Graph g = new GraphDynamicUnion(dsg, gn) ;
+        Model model = ModelFactory.createModelForGraph(g) ;
+        RiotWriter.writeTriples(System.out, g) ;
         exit(0) ;
-        }
-        SystemTDB.setFileMode(FileMode.direct) ;
-        tdb.tdbupdate.main("--loc=DBU", "--file=update.ru") ; exit(0) ;
         
-        final Dataset ds = TDBFactory.createDataset() ;
-        final DatasetGraph dsg = ds.asDatasetGraph() ;
-        final Quad quad = SSE.parseQuad("(<g> <y> <p> 99)") ;
-         
-        
-        RiotLoader.read("/home/afs/Datasets/MusicBrainz/tracks-1k.nt", ds.asDatasetGraph()) ;
-        
-        ExecutorService exec = Executors.newFixedThreadPool(20) ;
-        
-        Runnable reader = new Runnable() {
-            public void run()
-            {
-                Query query = QueryFactory.create("SELECT * { <http://musicbrainz.org/mm-2.1/track/ee0d27be-0a8c-4002-bcdc-9c0937c1bb3e> ?p ?o }") ;
-                QueryExecution qExec = QueryExecutionFactory.create(query, ds) ;
-                ResultSet rs = qExec.execSelect() ;
-                while(rs.hasNext())
-                {
-                    Lib.sleep(20) ;
-                    QuerySolution qs = rs.next();
-                    System.out.println(qs) ;
-                }
-            }
-        } ;
-        
-        Runnable writer = new Runnable() {
-            public void run()
-            {
-                for ( int i = 0 ; i < 20 ; i++ )
-                {
-                    dsg.add(quad) ;
-                    System.out.println("Add quad") ;
-                    Lib.sleep(100) ;
-                }
-            }
-        } ;
-        
-//        for ( int i = 0 ; i < 1 ; i++ )
-//        {
-//            exec.execute(reader) ;
-//        }
-
-        for ( int i = 0 ; i < 10 ; i++ )
-        {
-            exec.execute(writer) ;
-        }
-        
-//        exec.shutdown() ;
-        exec.awaitTermination(1000, TimeUnit.SECONDS) ;
-        //exec.shutdown() ;
-        
-        System.out.println("DONE");
-        System.exit(0) ;
-        
-            
+        //g.find(Node.createURI(""), null,null) ;
         
         
-        
-        String uri = "http://musicbrainz.org/mm-2.1/track/56eb39eb-22e3-4d39-9380-39cd55a97acc" ;
-        
-        tdb.tdbquery.main("--loc=DB", "SELECT * { <"+uri+"> ?p ?o }" ) ;
-        System.exit(0) ;
-        
-        System.exit(0) ;
-        tdb.tdbstats.main("--loc=DB", "--graph=urn:x-arq:UnionGraph") ; System.exit(0) ;
-        tdb.tdbquery.main("--set=tdb:logExec=true", 
-                          "--set=tdb:unionDefaultGraph=true", 
-                          "--query=Q.rq") ;
-        System.exit(0) ;
     }
  
     static void bptLeafBlocks()
