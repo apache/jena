@@ -3,6 +3,9 @@ ChangeLog for ARQ
 
 ==== ARQ 2.8.8 or 2.9.0
 
++ Added QueryExecution.setTimeout that uses the abort mechanism below to stop queries after
+  a preset period of time.
+
 + Query cancellation: method for QueryExecution.abort() can now be called by any thread at any time.
   The effect is to stop the query execution as soon as possible.
   After calling .abort(), at some time. .hasNext() and .next() will throw an exception if called.
