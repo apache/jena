@@ -55,13 +55,14 @@ public class AlarmClock
         outstanding.add(pingback) ;
     }
 
-    synchronized public <T> void reset(Pingback<T> pingback, long delay)
+    synchronized public <T> Pingback<T> reset(Pingback<T> pingback, long delay)
     {
         if ( timer != null )
             cancel$(pingback, false) ;
         // Experimentation shows we need to create a new TimerTask. 
         pingback = new Pingback<T>(this, pingback.callback, pingback.arg) ;
         add$(pingback, delay) ;
+        return pingback ;
     }
 
     synchronized public void cancel(Pingback<?> pingback)
@@ -77,8 +78,9 @@ public class AlarmClock
             // Nothing outstanding.
             return ;
         outstanding.remove(pingback) ;
-        // Throw timer away if no outstanding pingbacks.
-        // This helps apps exit properly but may be troublesome in large systems.  May reconsider. 
+        // Throw timer, and it's thread, away if no outstanding pingbacks.
+        // This helps apps exit properly (daemon threads don't always seem to be as clean as porimised)
+        // but may be troublesome in large systems.  May reconsider. 
         if ( clearTimer && getCount() == 0 )
         {
             timer.cancel();
@@ -87,44 +89,13 @@ public class AlarmClock
     }
     
     /*synchronized*/ private Timer getTimer()
-    {    // Wrap a TimerTask so that the TimerTask.cancel operation can not be called by the app.
-        // We need to go via our tracking of callbacks so we can release the Timer in AlarmClock.
-        
-
-
+    {
         if ( timer == null )
-            timer = new Timer() ;
+            timer = new Timer(true) ;
         return timer ;
     }
     
     public long timeStart = System.currentTimeMillis() ;
-    
-    
-    // -------- Testing.
-    
-    static class MyCallback implements Callback<Object>
-    {
-        long timeStart = System.currentTimeMillis() ;
-        MyCallback() {} 
-        
-        //@Override
-        public void proc(Object arg)
-        { 
-            long timeNow = System.currentTimeMillis() ;
-            System.out.println("Ping @ "+(timeNow-timeStart)+"ms") ;
-        }
-    } 
-    
-    public static void main(String ...argv)
-    {
-        AlarmClock alarmClock = new AlarmClock() ;
-        Callback<Object> callback = new MyCallback() ;
-        Pingback<?> x = alarmClock.add(callback, 1000) ;
-        alarmClock.reset(x, 2000) ;
-        System.out.println("DONE") ;
-    }
-    
-    
 }
 
 /*

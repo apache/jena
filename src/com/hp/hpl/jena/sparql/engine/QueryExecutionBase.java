@@ -273,14 +273,27 @@ public class QueryExecutionBase implements QueryExecution
     public void setTimeout(long timeout1, long timeout2)
     {
         this.timeout1 = timeout1 ;
-        this.timeout2 = timeout2 ;
+        if ( timeout2 < 0 )
+            this.timeout2 = TIMEOUT_INF ;
+        else
+            this.timeout2 = timeout2 ;
     }
 
     private static final long TIMEOUT_UNSET = -1 ;
+    private static final long TIMEOUT_INF = -2 ;
     private long timeout1 = TIMEOUT_UNSET ;
     private long timeout2 = TIMEOUT_UNSET ;
     
     private static AlarmClock alarmClock = AlarmClock.get() ; 
+    private static final Callback<QueryExecution> callback = 
+        new Callback<QueryExecution>() {
+            public void proc(QueryExecution qExec)
+            {
+                qExec.abort() ;
+                
+            }
+        } ;
+        
     private Pingback<QueryExecution> pingback = null ;
     
     //@Override
@@ -291,35 +304,47 @@ public class QueryExecutionBase implements QueryExecution
         if ( pingback != null )
             alarmClock.reset(pingback, timeout1) ;
         else
-        {
-            Callback<QueryExecution> callback = new Callback<QueryExecution>() {
-                public void proc(QueryExecution arg)
-                {
-                    arg.abort() ;
-                }} ;
-                pingback = alarmClock.add(callback, this, timeout1) ;
-            }
+            pingback = alarmClock.add(callback, this, timeout1) ;
         return ;
         // Second timeout done by wrapping the iterator.
     }
     
-    private void initTimeout2()
+    private QueryIterator initTimeout2(QueryIterator queryIterator)
     {
-        if ( timeout2 > 0 )
+        if ( timeout2 < 0 && timeout2 != TIMEOUT_INF )
+            return queryIterator ;
+        // Wrap with a resetter.
+        return new QueryIteratorWrapper(queryIterator)
         {
-            QueryIterator qIter = new QueryIteratorWrapper(queryIterator)
-            {
-                @Override
-                protected Binding moveToNextBinding()
-                { 
-                    Binding b = super.moveToNextBinding() ;
-                    // We have moved!
-                    // Reset the timer.
-                    alarmClock.reset(pingback, timeout2) ;
-                    return b ;
+            boolean resetDone = false ;
+            @Override
+            protected Binding moveToNextBinding()
+            { 
+                Binding b = super.moveToNextBinding() ;
+                //System.out.println(b) ;
+                if ( ! resetDone )
+                {
+                    //System.out.printf("Reset timer: ==> %d\n", timeout2) ;
+                    if ( pingback == null )
+                    {
+                        if ( timeout2 > 0 )
+                            // No first timeout - finite second timeout. 
+                            pingback = alarmClock.add(callback, QueryExecutionBase.this, timeout2) ;
+                    }
+                    else
+                    {
+                        // We have moved for the first time.
+                        // Reset the timer if finite timeout else cancel.
+                        if ( timeout2 < 0 )
+                            alarmClock.cancel(pingback) ;
+                        else
+                            pingback = alarmClock.reset(pingback, timeout2) ;
+                    }
+                    resetDone = true ;
                 }
-            };
-        }
+                return b ;
+            }
+        };
     }
     
     private void cancelPingback()
@@ -354,7 +379,7 @@ public class QueryExecutionBase implements QueryExecution
         // it might be necessary)
         queryIterator = getPlan().iterator() ;
         // Add the second timeout wrapper.
-        initTimeout2() ;
+        queryIterator = initTimeout2(queryIterator) ;
         if ( cancel ) queryIterator.cancel() ;
     }
     

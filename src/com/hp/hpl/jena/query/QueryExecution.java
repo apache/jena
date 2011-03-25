@@ -95,7 +95,7 @@ public interface QueryExecution
 	/** Set a timeout on the query execution.
 	 * Processing will be aborted after the timeout (which starts when the approprate exec call is made).
 	 * Not all query execution systems support timeouts.
-	 * A timeout of less than zero will cancel the timeout.
+	 * A timeout of less than zero means no timeout.
 	 */
 	
 	public void setTimeout(long timeout) ;
@@ -104,7 +104,7 @@ public interface QueryExecution
 	 * the second refers to overall query execution after the first result.  
 	 * Processing will be aborted if a timeout expires.
 	 * Not all query execution systems support timeouts.
-	 * A timeout of less than zero will cancel the timeout.
+	 * A timeout of less than zero means no timeout; this can be used for timeout1 or timeout2.
 	 */
 
 	public void setTimeout(long timeout1, long timeout2) ;

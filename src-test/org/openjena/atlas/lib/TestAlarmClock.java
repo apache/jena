@@ -6,11 +6,9 @@
 
 package org.openjena.atlas.lib;
 
+import static org.openjena.atlas.lib.Lib.sleep; 
 import org.junit.Test ;
 import org.openjena.atlas.junit.BaseTest ;
-import org.openjena.atlas.lib.AlarmClock ;
-import org.openjena.atlas.lib.Callback ;
-import org.openjena.atlas.lib.Lib ;
 
 public class TestAlarmClock extends BaseTest
 {
@@ -33,7 +31,7 @@ public class TestAlarmClock extends BaseTest
         assertEquals(0, alarmClock.getCount()) ;
         // Short - happens.
         Pingback<?> ping = alarmClock.add(callback, 10) ;
-        Lib.sleep(100) ;
+        sleep(100) ;
         assertEquals(0, alarmClock.getCount()) ;
         
         // try to cancel anyway.
@@ -48,12 +46,39 @@ public class TestAlarmClock extends BaseTest
         Pingback<?> ping1 = alarmClock.add(callback, 100) ;
         Pingback<?> ping2 = alarmClock.add(callback, 100000) ;
         assertEquals(2, alarmClock.getCount()) ;
-        Lib.sleep(200) ;
+        sleep(200) ;
+        // ping1 went off.
+        assertEquals(1, alarmClock.getCount()) ;
         alarmClock.cancel(ping1) ;
+        assertEquals(1, alarmClock.getCount()) ;
         alarmClock.cancel(ping2) ;
         assertEquals(0, alarmClock.getCount()) ;
     }
 
+    @Test public void alarm_04()
+    {
+        AlarmClock alarmClock = new AlarmClock() ;
+        assertEquals(0, alarmClock.getCount()) ;
+        Pingback<?> ping1 = alarmClock.add(callback, 100) ;
+        assertEquals(1, alarmClock.getCount()) ;
+        alarmClock.reset(ping1, 2000) ;
+        assertEquals(1, alarmClock.getCount()) ;
+        sleep(100) ;
+        assertEquals(1, alarmClock.getCount()) ;
+    }
+    
+    @Test public void alarm_05()
+    {
+        AlarmClock alarmClock = new AlarmClock() ;
+        assertEquals(0, alarmClock.getCount()) ;
+        Pingback<?> ping1 = alarmClock.add(callback, 50) ;
+        Pingback<?> ping2 = alarmClock.add(callback, 100) ;
+        assertEquals(2, alarmClock.getCount()) ;
+        alarmClock.reset(ping1, 2000) ;
+        assertEquals(2, alarmClock.getCount()) ;
+        sleep(200) ;    // ping2 goes off.
+        assertEquals(1, alarmClock.getCount()) ;
+    }
     
 }
 

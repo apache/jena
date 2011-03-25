@@ -76,6 +76,7 @@ public abstract class QueryIteratorBase
     public final boolean hasNext()
     {
         if ( finished )
+            // Even if aborted. Finished is finished.
             return false ;
 
         if ( abortIterator )

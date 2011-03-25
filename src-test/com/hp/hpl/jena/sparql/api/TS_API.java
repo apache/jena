@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2010 Talis Systems Ltd.
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -12,8 +13,9 @@ import org.junit.runners.Suite.SuiteClasses ;
 
 @RunWith(Suite.class)
 @SuiteClasses( {
-    TestAPI.class,
-    TestQueryExecutionCancel.class
+    TestAPI.class
+    , TestQueryExecutionCancel.class
+    , TestQueryExecutionTimeout.class
 })
 
 public class TS_API
@@ -21,6 +23,8 @@ public class TS_API
 
 /*
  * (c) Copyright 2010 Talis Systems Ltd.
+ * (c) Copyright 2011 Epimorphics Ltd.
+ * 
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
