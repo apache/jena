@@ -275,14 +275,20 @@ public class TestDynamicDataset extends BaseTest
         testCount(qs, 3, dataset2) ; 
     }
     
+    @Test public void pattern_03()
+    {
+        // Do it externally to the TDB query engine.
+        String qs = prefix + "SELECT * FROM :g1 FROM :g2 { ?s :p1+ ?x }" ;
+        Query query = QueryFactory.create(qs) ;
+        Dataset ds = DatasetFactory.create(DynamicDatasets.dynamicDataset(query, dataset2.asDatasetGraph())) ;
+        testCount(qs, 3, ds) ; 
+    }
 
     
     private static void testCount(String queryString, int expected, Dataset ds)
     {
         Query query = QueryFactory.create(queryString) ;
-        
         if ( false ) trace(query) ;
-        
         QueryExecution qExec = QueryExecutionFactory.create(query, ds) ;
         ResultSet rs = qExec.execSelect() ;
         int n = ResultSetFormatter.consume(rs) ;
