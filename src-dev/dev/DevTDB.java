@@ -1,7 +1,18 @@
 package dev ;
 
+
 public class DevTDB
 {
+    // DynamicDS
+    // ** Make the dft graph of a union graph query.
+    //    Pass a graph yp to be the active graph of the QueryExecution -> chnage to QueryEngineMain.
+    // FROM <urn:x-arq:DefaultGraph> FROM <urn:x-arq:UnionGraph>
+    // OpExecutor in ARQ need "specialcase" fixing.
+    // See [[DynDS] in QueryEngineTDB
+
+    
+    // http://sna-projects.com/krati/
+    
     // Check: BlockMgrMapped
     // ** remove force/sync (non-)distinction
     // MappedByteBuffer.sync, not just sync on the FileChannel

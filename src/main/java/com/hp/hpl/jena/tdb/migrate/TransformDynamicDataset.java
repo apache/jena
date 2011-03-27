@@ -49,6 +49,8 @@ import com.hp.hpl.jena.sparql.expr.NodeValue ;
  * graphs in the datasets.
  */
 
+// Problems with paths - that code accesses the active graph.
+
 public class TransformDynamicDataset extends TransformCopy
 {
     // The graphs making up the usual default graph of the query.

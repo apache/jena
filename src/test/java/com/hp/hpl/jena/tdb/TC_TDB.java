@@ -20,6 +20,7 @@ import com.hp.hpl.jena.tdb.base.TC_Base ;
 import com.hp.hpl.jena.tdb.graph.TS_Graph ;
 import com.hp.hpl.jena.tdb.index.TS_Index ;
 import com.hp.hpl.jena.tdb.lib.TS_LibTDB ;
+import com.hp.hpl.jena.tdb.migrate.TS_Migrate ;
 import com.hp.hpl.jena.tdb.nodetable.TS_NodeTable ;
 import com.hp.hpl.jena.tdb.solver.TS_SolverTDB ;
 import com.hp.hpl.jena.tdb.store.TS_Store ;
@@ -44,6 +45,7 @@ import com.hp.hpl.jena.tdb.sys.TS_Sys ;
     , TS_Factory.class
     , TS_TDBAssembler.class
     , TS_Jena.class
+    , TS_Migrate.class
 } )
 
 public class TC_TDB

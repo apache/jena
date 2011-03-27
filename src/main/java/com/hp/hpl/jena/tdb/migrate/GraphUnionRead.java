@@ -25,13 +25,13 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
 import com.hp.hpl.jena.util.iterator.WrappedIterator ;
 
 /** Immutable graph that is the view of a a union of graphs in a TDB store. */ 
-public class GraphDynamicUnion extends GraphBase2
+public class GraphUnionRead extends GraphBase2
 {
     // This exists for the property path evaulator to have a graph to call.
     private final DatasetGraph dataset ;
     private final Collection<Node> graphs ;
 
-    public GraphDynamicUnion(DatasetGraph dsg, Collection<Node> graphs)
+    public GraphUnionRead(DatasetGraph dsg, Collection<Node> graphs)
     {
         this.dataset = dsg ;
         this.graphs = graphs ; 
@@ -63,6 +63,8 @@ public class GraphDynamicUnion extends GraphBase2
         IteratorConcat<Triple> iter = new IteratorConcat<Triple>() ;
         for ( Node gn : graphs )
         {
+            if ( ! dataset.containsGraph(gn) )
+                continue ;
             ExtendedIterator<Triple> eIter = dataset.getGraph(gn).find(m) ;
             iter.add(eIter) ;
         }

@@ -6,16 +6,53 @@
 
 package com.hp.hpl.jena.tdb.migrate;
 
+import java.util.Collection ;
+import java.util.Set ;
+
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.Query ;
-import com.hp.hpl.jena.sparql.algebra.Op ;
+import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import com.hp.hpl.jena.sparql.core.DatasetGraphMap ;
 
 public class DynamicDatasets
 {
-    // See QueryEngineTDB.dynamicDatasetOp
-    public static Op dynamicDatasetOp(Query query, Op op)
+//    // See QueryEngineTDB.dynamicDatasetOp
+//    public static Op dynamicDatasetOp(Query query, Op op)
+//    {
+    // problems with paths and property functions? which access the active graph. 
+//        return TransformDynamicDataset.transform(query, op) ;
+//    }
+    
+    /** Given a DatasetGraph and a query, form a DatasetGraph that 
+     * is the dynamic dataset from the query.
+     * Returns the original DatasetGraph is the query has no dataset deascription
+     */ 
+    public static DatasetGraph dynamicDataset(Query query, DatasetGraph dsg)
     {
-        return TransformDynamicDataset.transform(query, op) ;
+        if ( query.hasDatasetDescription() )
+        {
+            Set<Node> defaultGraphs = NodeUtils2.convertToNodes(query.getGraphURIs()) ; 
+            Set<Node> namedGraphs = NodeUtils2.convertToNodes(query.getNamedGraphURIs()) ;
+            return dynamicDataset(defaultGraphs, namedGraphs, dsg) ; 
+        }
+        return dsg ;
     }
+
+    /** Given a DatasetGraph and a query, form a DatasetGraph that 
+     * is the dynamic dataset from the collection of graphs from the dataset
+     * that go to make up the default graph (union) and named graphs.  
+     */
+    public static DatasetGraph dynamicDataset(Collection<Node> defaultGraphs, Collection<Node> namedGraphs, DatasetGraph dsg)
+    {
+        Graph dft = new GraphUnionRead(dsg, defaultGraphs) ;
+        DatasetGraph dsg2 = new DatasetGraphMap(dft) ;
+        for ( Node gn : namedGraphs )
+            dsg2.addGraph(gn, dsg.getGraph(gn)) ;
+        
+        return dsg2 ;
+    }
+    
 }
 
 /*

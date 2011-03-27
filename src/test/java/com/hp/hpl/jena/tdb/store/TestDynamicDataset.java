@@ -1,21 +1,25 @@
 /*
  * (c) Copyright 2010 Talis Systems Ltd.
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
 package com.hp.hpl.jena.tdb.store;
 
+import java.util.Iterator ;
 import java.util.Set ;
 
 import org.apache.log4j.Level ;
 import org.apache.log4j.Logger ;
 import org.junit.Test ;
 import org.openjena.atlas.junit.BaseTest ;
+import org.openjena.atlas.lib.StrUtils ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.query.Dataset ;
+import com.hp.hpl.jena.query.DatasetFactory ;
 import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.query.QueryExecution ;
 import com.hp.hpl.jena.query.QueryExecutionFactory ;
@@ -26,10 +30,15 @@ import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.sparql.algebra.Algebra ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.Transformer ;
+import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.engine.optimizer.reorder.ReorderLib ;
+import com.hp.hpl.jena.sparql.sse.Item ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
+import com.hp.hpl.jena.sparql.sse.builders.BuilderGraph ;
 import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.TDBFactory ;
+import com.hp.hpl.jena.tdb.migrate.DynamicDatasets ;
 import com.hp.hpl.jena.tdb.migrate.NodeUtils2 ;
 import com.hp.hpl.jena.tdb.migrate.TransformDynamicDataset ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
@@ -68,61 +77,60 @@ public class TestDynamicDataset extends BaseTest
         m.getGraph().add(t2) ;
     }
     
+    @Test public void dynamic01()    { testCount("SELECT * {?s ?p ?o}", 3, dataset) ; }
     
-    @Test public void dynamic01()    { testCount("SELECT * {?s ?p ?o}", 3) ; }
+    @Test public void dynamic02()    { testCount("SELECT ?g { GRAPH ?g {} }", 5, dataset) ; }
     
-    @Test public void dynamic02()    { testCount("SELECT ?g { GRAPH ?g {} }", 5) ; }
-    
-    @Test public void dynamic03()    { testCount("SELECT * FROM <graph:1> {?s <uri:p> ?o}", 1) ; }
+    @Test public void dynamic03()    { testCount("SELECT * FROM <graph:1> {?s <uri:p> ?o}", 1, dataset) ; }
 
-    @Test public void dynamic04()    { testCount("SELECT * FROM <graph:1> { GRAPH ?g { ?s ?p ?o} }", 0) ; }
+    @Test public void dynamic04()    { testCount("SELECT * FROM <graph:1> { GRAPH ?g { ?s ?p ?o} }", 0, dataset) ; }
     
-    @Test public void dynamic05()    { testCount("SELECT * FROM <graph:1> FROM <graph:2> {?s <uri:p> ?o}", 2) ; }
+    @Test public void dynamic05()    { testCount("SELECT * FROM <graph:1> FROM <graph:2> {?s <uri:p> ?o}", 2, dataset) ; }
 
     // Duplicate surpression
-    @Test public void dynamic06()    { testCount("SELECT ?s FROM <graph:1> FROM <graph:2> {?s <uri:q> ?o}", 1) ; }
+    @Test public void dynamic06()    { testCount("SELECT ?s FROM <graph:1> FROM <graph:2> {?s <uri:q> ?o}", 1, dataset) ; }
     
-    @Test public void dynamic07()    { testCount("SELECT ?s FROM NAMED <graph:1> {?s <uri:q> ?o}", 0) ; }
+    @Test public void dynamic07()    { testCount("SELECT ?s FROM NAMED <graph:1> {?s <uri:q> ?o}", 0, dataset) ; }
     
-    @Test public void dynamic08()    { testCount("SELECT ?s FROM <graph:2> FROM NAMED <graph:1> {?s <uri:q> ?o}", 1) ; }
+    @Test public void dynamic08()    { testCount("SELECT ?s FROM <graph:2> FROM NAMED <graph:1> {?s <uri:q> ?o}", 1, dataset) ; }
 
     @Test public void dynamic09()    { testCount("SELECT * "+
                                                 "FROM <graph:1> FROM <graph:2> "+
                                                 "FROM NAMED <graph:3> FROM NAMED <graph:4> "+
                                                 "{ GRAPH ?g { ?s <uri:q> ?o }}",
-                                                2) ; 
+                                                2, dataset) ; 
                                     }
     
     @Test public void dynamic10()    { testCount("SELECT * "+
                                                 "FROM <graph:1> FROM <graph:2>"+
                                                 "FROM NAMED <graph:3> FROM NAMED <graph:4> "+
                                                 "{ GRAPH ?g { ?s <uri:q> ?o }}",
-                                                2) ; 
+                                                2, dataset) ; 
                                     }
 
     @Test public void dynamic11()    { testCount("SELECT * "+
                                                 "FROM <x:unknown>"+
                                                 "{ GRAPH ?g { ?s <uri:q> ?o }}",
-                                                0) ; 
+                                                0, dataset) ; 
                                     }
 
     @Test public void dynamic12()    { testCount("SELECT * "+
                                                  "FROM  <graph:1>"+
                                                  "{ GRAPH ?g { }}",
-                                                 0) ; 
+                                                 0, dataset) ; 
                                      }
 
     @Test public void dynamic13()    { testCount("SELECT * "+
                                                  "FROM NAMED <graph:1>"+
                                                  "{ GRAPH ?g { }}",
-                                                 1) ; 
+                                                 1, dataset) ; 
                                      }
 
     @Test public void dynamic14()    { testCount("SELECT * "+
                                                  "FROM NAMED <graph:1> FROM NAMED <graph:2>"+
                                                  "FROM <graph:3> "+
                                                  "{ GRAPH ?g { }}",
-                                                 2) ; 
+                                                 2, dataset) ; 
                                      }
     
 
@@ -133,7 +141,7 @@ public class TestDynamicDataset extends BaseTest
         testCount("SELECT * "+
                   "FROM NAMED <graph:3> FROM NAMED <graph:4> "+
                   "{ GRAPH ?g { ?s <uri:q> ?o }}",
-                  2) ; 
+                  2, dataset) ; 
         TDB.getContext().unset(TDB.symUnionDefaultGraph) ;
         } finally { TDB.getContext().unset(TDB.symUnionDefaultGraph) ; }
     }    
@@ -143,7 +151,7 @@ public class TestDynamicDataset extends BaseTest
         testCount("SELECT * "+
                   "FROM NAMED <graph:3> FROM NAMED <graph:4> "+
                   "{ ?s <uri:q> ?o }",    // Same in each graph
-                  1) ; 
+                  1, dataset) ; 
         } finally { TDB.getContext().unset(TDB.symUnionDefaultGraph) ; } 
     }    
 
@@ -152,7 +160,7 @@ public class TestDynamicDataset extends BaseTest
         testCount("SELECT * "+
                   "FROM NAMED <graph:3> FROM NAMED <graph:4> "+
                   "{ ?s <uri:p> ?o }",    // Different in each graph
-                  2) ; 
+                  2, dataset) ; 
         } finally { TDB.getContext().unset(TDB.symUnionDefaultGraph) ; } 
     }    
 
@@ -162,7 +170,7 @@ public class TestDynamicDataset extends BaseTest
                   "FROM <graph:1> FROM <graph:2>"+
                   "FROM NAMED <graph:3> FROM NAMED <graph:4> "+
                   "{ ?s <uri:p> ?o }",    // Different in each graph
-                  4) ; 
+                  4, dataset) ; 
         } finally { TDB.getContext().unset(TDB.symUnionDefaultGraph) ; } 
     }  
 
@@ -171,7 +179,7 @@ public class TestDynamicDataset extends BaseTest
                   "FROM <graph:1>"+
                   "FROM NAMED <graph:3> FROM NAMED <graph:4> "+
                   "{ GRAPH <urn:x-arq:DefaultGraph> { ?s <uri:p> ?o } }",    // Different in each graph
-                  1) ;
+                  1, dataset) ;
     }  
     
     @Test public void dynamicAndUnion6() {
@@ -181,7 +189,7 @@ public class TestDynamicDataset extends BaseTest
                       "FROM <graph:1>"+
                       "FROM NAMED <graph:3> FROM NAMED <graph:4> "+
                       "{ GRAPH <urn:x-arq:DefaultGraph> { ?s <uri:p> ?o } }",
-                      1) ;
+                      1, dataset) ;
         } finally { TDB.getContext().unset(TDB.symUnionDefaultGraph) ; } 
     }  
     
@@ -190,7 +198,7 @@ public class TestDynamicDataset extends BaseTest
                   "FROM <graph:1>"+
                   "FROM NAMED <graph:3> FROM NAMED <graph:4> "+
                   "{ GRAPH <urn:x-arq:UnionGraph> { ?s <uri:p> ?o } }",
-                  2) ;
+                  2, dataset) ;
     }  
     
     @Test public void dynamicAndUnion8() {
@@ -200,22 +208,82 @@ public class TestDynamicDataset extends BaseTest
                       "FROM <graph:1>"+
                       "FROM NAMED <graph:3> FROM NAMED <graph:4> "+
                       "{ GRAPH <urn:x-arq:UnionGraph> { ?s <uri:p> ?o } }",
-                      2) ;
+                      2, dataset) ;
         } finally { TDB.getContext().unset(TDB.symUnionDefaultGraph) ; } 
     }  
 
     @Test public void dynamic99() {
         // Check we did not mess with the global context in getting previous tests to pass.
-        testCount("SELECT * FROM NAMED <graph:3> { ?s ?p ?o }", 0) ;
-    }  
+        testCount("SELECT * FROM NAMED <graph:3> { ?s ?p ?o }", 0, dataset) ;
+    }
+    
+    // Tests of patterns and paths across graphs.
+    
+    private static String dataStr = StrUtils.strjoinNL(
+       "(dataset" ,
+       "  (graph" ,
+       "   (triple <http://example/s> <http://example/p> 'dft')" ,
+       "   (triple <http://example/s> <http://example/p> <http://example/x>)" ,
+       "   (triple <http://example/x> <http://example/p> <http://example/o>)" ,
+       " )" ,
+       " (graph <http://example/g1>",
+       "   (triple <http://example/s> <http://example/p> 'g1')",
+       "   (triple <http://example/s> <http://example/p1> <http://example/x>)",
+       "   (triple <http://example/x> <http://example/p2> <http://example/o>)",
+       " )",
+       " (graph <http://example/g2>", 
+       "   (triple <http://example/s> <http://example/p> 'g2')",
+       "   (triple <http://example/x> <http://example/p1> <http://example/z>)",
+       "   (triple <http://example/x> <http://example/p2> <http://example/o>)",
+       "   (triple <http://example/x> <http://example/p2> <http://example/o2>)",
+       " )",
+       " (graph <http://example/g3>",
+       "   (triple <http://example/s> <http://example/p> 'g3')",
+       "   (triple <http://example/s> <http://example/p1> <http://example/y>)",
+       " ))") ;
+    private static Dataset dataset2 = TDBFactory.createDataset() ; 
+    static {
+        Item item = SSE.parse(dataStr) ;
+        DatasetGraph dsg = BuilderGraph.buildDataset(item) ;
+        
+        Iterator<Quad> iter = dsg.find() ;
+        for ( ; iter.hasNext(); )
+            dataset2.asDatasetGraph().add(iter.next()) ;    
+    }
+    private static Node gn1 = SSE.parseNode("<http://example/g1>") ;
+    private static Node gn2 = SSE.parseNode("<http://example/g2>") ;
+    private static Node gn3 = SSE.parseNode("<http://example/g3>") ;
+    private static Node gn9 = SSE.parseNode("<http://example/g9>") ;
 
-    private static void testCount(String queryString, int expected)
+    private static final String prefix = "PREFIX : <http://example/> " ; 
+    
+    // g1+g2 { ?s :p1 ?x . ?x :p2 ?o } ==> 1
+    // g1+g2 { ?s :p1* ?o } ==> 1
+    
+    @Test public void pattern_01()
+    {
+        testCount(prefix + "SELECT * FROM :g1 FROM :g2 { ?s :p1 ?x . ?x :p2 ?o }", 2, dataset2) ; 
+    }
+    
+    @Test public void pattern_02()
+    {
+        String qs = prefix + "SELECT * FROM :g1 FROM :g2 { ?s :p1+ ?x }" ;
+//        Query query = QueryFactory.create(qs) ;
+//        Dataset ds = DatasetFactory.create(DynamicDatasets.dynamicDataset(query, dataset2.asDatasetGraph())) ;
+//        QueryExecution qExec = QueryExecutionFactory.create(query, ds) ;
+//        ResultSetFormatter.out(qExec.execSelect()) ;
+        testCount(qs, 3, dataset2) ; 
+    }
+    
+
+    
+    private static void testCount(String queryString, int expected, Dataset ds)
     {
         Query query = QueryFactory.create(queryString) ;
         
         if ( false ) trace(query) ;
         
-        QueryExecution qExec = QueryExecutionFactory.create(query, dataset) ;
+        QueryExecution qExec = QueryExecutionFactory.create(query, ds) ;
         ResultSet rs = qExec.execSelect() ;
         int n = ResultSetFormatter.consume(rs) ;
         assertEquals(expected, n) ;
@@ -235,6 +303,7 @@ public class TestDynamicDataset extends BaseTest
 
 /*
  * (c) Copyright 2010 Talis Systems Ltd.
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

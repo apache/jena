@@ -28,6 +28,7 @@ import com.hp.hpl.jena.sparql.engine.main.QueryEngineMain ;
 import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.migrate.A2 ;
+import com.hp.hpl.jena.tdb.migrate.DynamicDatasets ;
 import com.hp.hpl.jena.tdb.migrate.NodeUtils2 ;
 import com.hp.hpl.jena.tdb.migrate.TransformDynamicDataset ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
@@ -56,9 +57,28 @@ public class QueryEngineTDB extends QueryEngineMain
         this.initialInput = input ;
     }
     
+    /*
+     * rewrite does not work for paths (:p*) because the path evaluator uses the active graph. 
+     * Need to alter the active graph in the QueryExecutionContext which is set in
+     * QueryEngineMain.
+     * Possibility: pass up the presferred active graph (defaulting to the default graph).
+     * TEMPORARY FIX: rewrite the dataset to be a general one with the right graphs in it.  
+     */
+    private static final boolean DynamicDatasetByRewrite = false ;
+    private boolean doingDynamicDatasetBySpecialDataset = false ;
+    
     protected QueryEngineTDB(Query query, DatasetGraphTDB dataset, Binding input, Context context)
     { 
-        super(query, dataset, input, context) ; 
+        // [[DynDS]
+        super(query, 
+              //dataset,
+              (! DynamicDatasetByRewrite && query.hasDatasetDescription()) ? DynamicDatasets.dynamicDataset(query, dataset) : dataset,
+              input, context) ; 
+        // Dynamic dataset if done as a special datasets
+        if ( ! DynamicDatasetByRewrite && query.hasDatasetDescription() )
+        {
+            doingDynamicDatasetBySpecialDataset = true ;
+        }
         this.initialInput = input ; 
     }
     
@@ -69,12 +89,24 @@ public class QueryEngineTDB extends QueryEngineMain
         op = Substitute.substitute(op, initialInput) ;
         // Optimize (high-level)
         op = super.modifyOp(op) ;
+
         // Quadification
-        op = Algebra.toQuadForm(op) ;
+        if ( ! doingDynamicDatasetBySpecialDataset )
+            // [[DynDS]
+            // We flipped to general execution-leave alone.
+            op = Algebra.toQuadForm(op) ;
 
         // Could apply dynamic dataset transform before everything else
         // but default merged graphs works on quads. 
-        op = dynamicDatasetOp(op, context) ;
+
+        // [[DynDS]
+        if ( doingDynamicDatasetBySpecialDataset )
+        {
+            
+        }
+        else if ( DynamicDatasetByRewrite )
+            // Do by rewrite - note issues about paths
+            op = dynamicDatasetOp(op, context) ;
         
         // Record it.
         setOp(op) ;
@@ -130,6 +162,7 @@ public class QueryEngineTDB extends QueryEngineMain
         }
     } ;
     
+    // Write the DatasetDescription into the context.
     private static void dynamicDatasetQE(Query query,  Context context)
     {
         if ( query.hasDatasetDescription() )
@@ -142,6 +175,7 @@ public class QueryEngineTDB extends QueryEngineMain
         }
     }
     
+    // By rewrite, not using a general purpose dataset with the right graphs in.
     private static Op dynamicDatasetOp(Op op,  Context context)
     {
         Transform transform = null ;
