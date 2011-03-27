@@ -18,7 +18,7 @@ import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
 /** Test the test for datasets and graphs */
 public class TestGraphsMem extends GraphsTests
 {
-    //TOD reenable when memory DSGs support quads and union.
+    //TODO reenable when memory DSGs support quads and union.
     @Override
     protected Dataset createDataset()
     {

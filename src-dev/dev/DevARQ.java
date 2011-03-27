@@ -15,6 +15,8 @@ public class DevARQ
     // * OutStreamUTF8.
     // Apache commons codec for MD5 etc.
     
+    // TestGraphsMem
+    
     /*
     JSON CONSTRUCT {
         { ?name: [ ?lat, ?long ] }
@@ -63,7 +65,9 @@ public class DevARQ
     // And effect on XML results.
     
     // Mem dataset with union graph
+    // Union graph for all in query execution sequence.
     // ** Documentation - assemblers for datasets
+    // qExec.getContext().set(TDB.symUnionDefaultGraph, true) ;
     
     // HTTP result set iterator to know when it's closed.
     

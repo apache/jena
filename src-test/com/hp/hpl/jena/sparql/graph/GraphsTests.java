@@ -28,7 +28,7 @@ import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 
-/** Test API use of models, including some uinion graph cases : see also DatasetGraphTests */
+/** Test API use of models, including some union graph cases : see also DatasetGraphTests */
 
 public abstract class GraphsTests extends BaseTest
 {
