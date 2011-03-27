@@ -16,6 +16,11 @@ public class DevARQ
     // Apache commons codec for MD5 etc.
     
     // TestGraphsMem
+    // General:
+    //   Union graph (OpExecutor.specialcase)
+    //   Named defaut graph (OpExecutor.specialcase)
+    // DynamicDatasets (quads and BGPs and paths) 
+    
     
     /*
     JSON CONSTRUCT {
