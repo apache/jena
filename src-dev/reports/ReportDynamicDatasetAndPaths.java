@@ -9,7 +9,6 @@ package reports;
 import org.openjena.atlas.lib.StrUtils ;
 import org.openjena.riot.out.NQuadsWriter ;
 
-import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.query.DatasetFactory ;
 import com.hp.hpl.jena.query.Query ;
@@ -20,14 +19,13 @@ import com.hp.hpl.jena.query.ResultSetFormatter ;
 import com.hp.hpl.jena.sparql.algebra.Algebra ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
 import com.hp.hpl.jena.sparql.core.Quad ;
-import com.hp.hpl.jena.sparql.mgt.Explain.InfoLevel ;
 import com.hp.hpl.jena.sparql.resultset.ResultsFormat ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.sparql.util.QueryExecUtils ;
 import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.TDBFactory ;
+import com.hp.hpl.jena.tdb.migrate.DynamicDatasets ;
 import com.hp.hpl.jena.tdb.migrate.TransformDynamicDataset ;
 
 public class ReportDynamicDatasetAndPaths
@@ -43,14 +41,17 @@ public class ReportDynamicDatasetAndPaths
         // One - create a graph that does the FROM thing properly.  Use as defaul graph.
         // two - rewrite quads (BGP?) to  
 
-        //DatasetGraph dsg = TDBFactory.createDatasetGraph() ;
-        DatasetGraph dsg = DatasetGraphFactory.createMem() ;
-        
+        DatasetGraph dsg = TDBFactory.createDatasetGraph() ;
+        //DatasetGraph dsg = DatasetGraphFactory.createMem() ;
         Dataset ds = DatasetFactory.create(dsg) ;
         Quad q1 = SSE.parseQuad("(<http://example/g1> <http://example/x1> <http://example/p1> <http://example/x2>)") ;
         Quad q2 = SSE.parseQuad("(<http://example/g2> <http://example/x2> <http://example/p2> <http://example/x3>)") ;
+        Quad q3 = SSE.parseQuad("(_ <http://example/x2> <http://example/p2> <http://example/x3>)") ;
         dsg.add(q1) ;
         dsg.add(q2) ;
+        dsg.add(q1) ;
+        dsg.add(q3) ;
+        divider() ;
         NQuadsWriter.write(System.out, dsg) ;
         divider() ;
         
@@ -58,27 +59,27 @@ public class ReportDynamicDatasetAndPaths
             "PREFIX : <http://example/>", 
             "SELECT ?s ?o",
             // This breaks the query.
-            "FROM :g1 FROM :g2",
-            // Broken still.
+            //"FROM <urn:x-arq:DefaultGraph> FROM <urn:x-arq:UnionGraph>",
+            "FROM :g1 FROM :g2 FROM <urn:x-arq:DefaultGraph>",
             // Any unconverted paths (e.g. :p*) remain as (graph .. (path ...))
             //" { ?s :p1/:p2 ?o }"
-            " { ?s :p1 ?z . ?z :p1* ?x . ?x :p2 ?o }"
+            "{ ?s ?p ?o }"
+            //" { ?s :p1 ?z . ?z :p1* ?x . ?x :p2 ?o }"
             // Fixed.
             //" { ?s :p1 ?x . ?x :p2 ?o }"
         ) ;
         
-        Query query = QueryFactory.create(qs) ;
-        if ( false ) 
-        {
-            ARQ.setExecutionLogging(InfoLevel.ALL) ;
-            QueryExecution qExec = QueryExecutionFactory.create(query, ds) ;
-            // No effect if using dynamic datasets.
-            //qExec.getContext().set(TDB.symUnionDefaultGraph, true) ;
-            ResultSetFormatter.out(qExec.execSelect()) ;
-            System.exit(0) ;
-        }
         
-        ARQ.setExecutionLogging(InfoLevel.ALL) ;
+        Query query = QueryFactory.create(qs) ;
+        Dataset ds2 = DynamicDatasets.dynamicDataset(query, ds) ;
+        QueryExecution qExec = QueryExecutionFactory.create(query, ds2) ;
+        // No effect if using dynamic datasets.
+        //qExec.getContext().set(TDB.symUnionDefaultGraph, true) ;
+        ResultSetFormatter.out(qExec.execSelect()) ;
+        System.exit(0) ;
+        
+        
+        //ARQ.setExecutionLogging(InfoLevel.ALL) ;
         Op op = Algebra.compile(query) ;
         //op = Algebra.optimize(op) ;
         output("** Compiled", op) ;

@@ -11,6 +11,8 @@ import java.util.Set ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.query.Dataset ;
+import com.hp.hpl.jena.query.DatasetFactory ;
 import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphMap ;
@@ -26,7 +28,7 @@ public class DynamicDatasets
     
     /** Given a DatasetGraph and a query, form a DatasetGraph that 
      * is the dynamic dataset from the query.
-     * Returns the original DatasetGraph is the query has no dataset deascription
+     * Returns the original DatasetGraph if the query has no dataset description.
      */ 
     public static DatasetGraph dynamicDataset(Query query, DatasetGraph dsg)
     {
@@ -37,6 +39,20 @@ public class DynamicDatasets
             return dynamicDataset(defaultGraphs, namedGraphs, dsg) ; 
         }
         return dsg ;
+    }
+    
+    
+    /** Given a Dataset and a query, form a Dataset that 
+     * is the dynamic dataset from the query.
+     * Returns the original Dataset if the query has no dataset description.
+     */ 
+    public static Dataset dynamicDataset(Query query, Dataset ds)
+    {
+        DatasetGraph dsg = ds.asDatasetGraph() ;
+        DatasetGraph dsg2 = dynamicDataset(query, dsg) ;
+        if ( dsg == dsg2 )
+            return ds ;
+        return DatasetFactory.create(dsg2) ;
     }
 
     /** Given a DatasetGraph and a query, form a DatasetGraph that 

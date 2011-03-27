@@ -5,9 +5,10 @@ public class DevTDB
 {
     // DynamicDS
     // ** Make the dft graph of a union graph query.
-    //    Pass a graph yp to be the active graph of the QueryExecution -> chnage to QueryEngineMain.
-    // FROM <urn:x-arq:DefaultGraph> FROM <urn:x-arq:UnionGraph>
-    // OpExecutor in ARQ need "specialcase" fixing.
+    //    Pass a graph up to be the active graph of the QueryExecution -> chnage to QueryEngineMain.
+    // Does not work for: FROM <urn:x-arq:DefaultGraph> FROM <urn:x-arq:UnionGraph>
+    //   Need to propagate understanding of these to ARQ.
+    //   OpExecutor in ARQ need "specialcase" fixing.
     // See [[DynDS] in QueryEngineTDB
 
     
