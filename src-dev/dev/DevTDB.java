@@ -4,19 +4,17 @@ package dev ;
 public class DevTDB
 {
     // DynamicDS
+    //   Reverted to datset rewrite. See [[DynDS] in QueryEngineTDB
     // ** Make the dft graph of a union graph query.
-    //    Pass a graph up to be the active graph of the QueryExecution -> chnage to QueryEngineMain.
+    //    Pass a graph up to be the active graph of the QueryExecution -> change to QueryEngineMain.
     // Does not work for: FROM <urn:x-arq:DefaultGraph> FROM <urn:x-arq:UnionGraph>
     //   Need to propagate understanding of these to ARQ.
     //   OpExecutor in ARQ need "specialcase" fixing.
-    // See [[DynDS] in QueryEngineTDB
-
+ 
+    // symUnionDefaultGraph and DESCRIBE
+    // Example with query timeout.
     
     // http://sna-projects.com/krati/
-    
-    // Check: BlockMgrMapped
-    // ** remove force/sync (non-)distinction
-    // MappedByteBuffer.sync, not just sync on the FileChannel
     
     // Finish, integrate, switch to new Dataset builder.
     //  Todo init().
