@@ -11,6 +11,8 @@ public class DevTDB
     //   Need to propagate understanding of these to ARQ.
     //   OpExecutor in ARQ need "specialcase" fixing.
  
+    // Dataset which allows graph to be added around an undelying dataset. 
+    
     // symUnionDefaultGraph and DESCRIBE
     // Example with query timeout.
     
