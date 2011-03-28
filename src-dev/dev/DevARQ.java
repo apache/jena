@@ -8,18 +8,18 @@ public class DevARQ
     //     Work out what to keep from FileUtils.
     //     FileUtils2.
     //     ?? WebContent to work on ContentTypes, not strings. (what about default charsets?)
+
     // * Generalized union query
     // * Generalized dynamic datasets
+    //     Union graph (OpExecutor.specialcase)
+    //     Named defaut graph (OpExecutor.specialcase)
+    //     Pull up from TDB - DynamicDatasets (quads and BGPs and paths) 
+
     // * RIOT Output
     // * RIOT I/O architecture
-    // * OutStreamUTF8.
     // Apache commons codec for MD5 etc.
     
     // TestGraphsMem
-    // General:
-    //   Union graph (OpExecutor.specialcase)
-    //   Named defaut graph (OpExecutor.specialcase)
-    // DynamicDatasets (quads and BGPs and paths) 
     
     
     /*
