@@ -21,6 +21,19 @@ public class DevARQ
     
     // TestGraphsMem
     
+    // DynamicDS
+    //  Reverted to dataset rewrite. See [[DynDS] in QueryEngineTDB
+    //  Migrate to ARQ.
+    //    Pass a graph up to be the active graph of the QueryExecution -> change to QueryEngineMain.
+    //  Does not work for: FROM <urn:x-arq:DefaultGraph> FROM <urn:x-arq:UnionGraph>
+    //  Have a magic dataset implementation that can hodl hiden graphs (i.e. not is listNodes but show in getGraph) 
+    //  Propagate  <urn:x-arq:DefaultGraph> FROM <urn:x-arq:UnionGraph>
+    //   OpExecutor in ARQ need "specialcase" fixing.??
+    
+    // Dataset which allows graph to be added around an undelying dataset. 
+    
+    // symUnionDefaultGraph and DESCRIBE
+    // Example with query timeout.
     
     /*
     JSON CONSTRUCT {
