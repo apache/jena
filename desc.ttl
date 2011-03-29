@@ -10,9 +10,9 @@ tdb:GraphTDB    rdfs:subClassOf  ja:Model .
 # A dataset of two in-memory graphs, one as a named graph.
 <#dataset> rdf:type      ja:RDFDataset ;
      ja:defaultGraph <#graph> ;
-     ja:namedGraph
-        [ ja:graphName      <http://example.org/name1> ;
-          ja:graph          <#graph2> ] ;
+##      ja:namedGraph
+##         [ ja:graphName      <http://example.org/name1> ;
+##           ja:graph          <#graph2> ] ;
      . 
 
 
