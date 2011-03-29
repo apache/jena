@@ -6,10 +6,13 @@
 
 package com.hp.hpl.jena.tdb.solver;
 
+import java.util.List ;
 import java.util.Set ;
 
+import org.openjena.atlas.iterator.Iter ;
 import org.openjena.atlas.logging.Log ;
 
+import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.sparql.algebra.Algebra ;
@@ -29,6 +32,7 @@ import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.migrate.A2 ;
 import com.hp.hpl.jena.tdb.migrate.DynamicDatasets ;
+import com.hp.hpl.jena.tdb.migrate.GraphUnionRead ;
 import com.hp.hpl.jena.tdb.migrate.NodeUtils2 ;
 import com.hp.hpl.jena.tdb.migrate.TransformDynamicDataset ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
@@ -69,15 +73,35 @@ public class QueryEngineTDB extends QueryEngineMain
     
     protected QueryEngineTDB(Query query, DatasetGraphTDB dataset, Binding input, Context context)
     { 
+        super(query, dataset, input, context) ; 
         // [[DynDS]
-        super(query, 
-              //dataset,
-              (! DynamicDatasetByRewrite && query.hasDatasetDescription()) ? DynamicDatasets.dynamicDataset(query, dataset) : dataset,
-              input, context) ; 
         // Dynamic dataset if done as a special datasets
         if ( ! DynamicDatasetByRewrite && query.hasDatasetDescription() )
         {
+            // MIGRATION.
+            // 1 - All this to ARQ.
+            //     Context slot for real default graph and union graph.
+            //     or DatasetGraph.getUnionGraph(), DatasetGraph.getRealDftGraph(),   
+            // 2 - Modify OpExecutor.execute(OpGraph) to skip Quad.unionGraph, Quad.defaultGraphIRI
+            
             doingDynamicDatasetBySpecialDataset = true ;
+            DatasetGraph dsg = super.dataset; 
+            // Before dynamic dataset processing.
+            Graph realDftGraph = dsg.getDefaultGraph() ;
+            dsg = DynamicDatasets.dynamicDataset(query, dataset) ;
+            
+            // Create a union graph.
+            List<Node> namedGraphs = Iter.toList(dsg.listGraphNodes()) ;
+            Graph unionGraph = new GraphUnionRead(dsg, namedGraphs) ;
+            if ( super.context.isTrue(TDB.symUnionDefaultGraph) )
+                dsg.setDefaultGraph(unionGraph) ;
+
+            // What about <urn:x-arq:DefaultGraph> and <urn:x-arq:UnionGraph>?
+            // really, really create those names?
+            // --> shows in listGraphs.
+//            dsg.addGraph(Quad.unionGraph, unionGraph) ;
+//            dsg.addGraph(Quad.defaultGraphIRI, realDftGraph) ;
+            super.dataset = dsg ;
         }
         this.initialInput = input ; 
     }
@@ -102,7 +126,7 @@ public class QueryEngineTDB extends QueryEngineMain
         // [[DynDS]
         if ( doingDynamicDatasetBySpecialDataset )
         {
-            
+            // No action. Already done.
         }
         else if ( DynamicDatasetByRewrite )
             // Do by rewrite - note issues about paths
@@ -120,11 +144,11 @@ public class QueryEngineTDB extends QueryEngineMain
         // Op is quad'ed by now but there still may be some (graph ....) forms e.g. paths
         
         // Fix DatasetGraph for global union.
-        if ( context.isTrue(TDB.symUnionDefaultGraph) ) 
+        if ( context.isTrue(TDB.symUnionDefaultGraph) && ! doingDynamicDatasetBySpecialDataset ) 
         {
+            // doingDynamicDatasetBySpecialDataset => done earlier.
             op = A2.unionDefaultGraphQuads(op) ;
             // Rewrite so that any explicitly named "default graph" is union graph.
-
             // And set the default graph to be the union graph as well.
             DatasetGraphTDB ds = ((DatasetGraphTDB)dsg).duplicate() ;
             ds.setEffectiveDefaultGraph(new GraphNamedTDB(ds, Quad.unionGraph)) ;

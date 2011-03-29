@@ -65,7 +65,8 @@ public class DynamicDatasets
         DatasetGraph dsg2 = new DatasetGraphMap(dft) ;
         for ( Node gn : namedGraphs )
             dsg2.addGraph(gn, dsg.getGraph(gn)) ;
-        
+        if ( dsg.getContext() != null )
+            dsg2.getContext().putAll(dsg.getContext()) ;
         return dsg2 ;
     }
     
