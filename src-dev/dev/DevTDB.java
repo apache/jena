@@ -3,18 +3,7 @@ package dev ;
 
 public class DevTDB
 {
-    // DynamicDS
-    //   Reverted to dataset rewrite. See [[DynDS] in QueryEngineTDB
-    //   Migrate to ARQ.
-    //    Pass a graph up to be the active graph of the QueryExecution -> change to QueryEngineMain.
-    // Does not work for: FROM <urn:x-arq:DefaultGraph> FROM <urn:x-arq:UnionGraph>
-    //   Need to propagate understanding of these to ARQ.
-    //   OpExecutor in ARQ need "specialcase" fixing.??
- 
-    // Dataset which allows graph to be added around an undelying dataset. 
-    
     // symUnionDefaultGraph and DESCRIBE
-    // Example with query timeout.
     
     // http://sna-projects.com/krati/
     
