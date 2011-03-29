@@ -1,3 +1,2 @@
-# No separator
-CREATE GRAPH <g>
-LOAD <remote> INTO GRAPH <g>
+# BNode in DELETE WHERE
+DELETE WHERE { _:a <p> <o> }

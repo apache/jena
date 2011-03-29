@@ -1,2 +1,2 @@
-BASE <http://example/>
-# Otherwise empty
+# Typo in keyword.
+CREATE DEAFULT

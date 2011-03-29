@@ -1,2 +1,2 @@
-PREFIX : <http://example/>
-# Otherwise empty
+# Variable in data.
+DELETE DATA { ?s <p> <o> }

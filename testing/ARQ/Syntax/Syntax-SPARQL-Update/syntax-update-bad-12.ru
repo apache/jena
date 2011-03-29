@@ -1,4 +1,2 @@
-CREATE GRAPH <g>
-;
-LOAD <remote> INTO GRAPH <g>
-;;
+# BNode in DELETE DATA
+DELETE DATA { _:a <p> <o> }

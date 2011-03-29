@@ -17,7 +17,6 @@ declare -a BAD_U11
 declare -a GOOD_ARQU
 declare -a BAD_ARQU
 
-
 function fname
 {
     local BASE="$1"	# Base
@@ -99,10 +98,17 @@ function output
 
 function createManifest
 {
+    if [ "$#" != 2 ]
+    then
+	echo "Wrong number of arguments to createManifest" 1>&2
+	exit 1
+    fi
+
     local LABEL="$1"
+    local URI="$2"
 ## Header
     cat > manifest.ttl <<EOF
-@prefix :       <manifest#> .
+@prefix :       $URI .
 @prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
 @prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .

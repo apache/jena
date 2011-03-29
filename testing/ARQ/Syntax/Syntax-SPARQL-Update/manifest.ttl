@@ -1,4 +1,4 @@
-@prefix :       <manifest#> .
+@prefix :       <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-update-1/manifest#> .
 @prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
 @prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
@@ -250,79 +250,79 @@
    mf:name    "syntax-update-37.ru" ;
    mf:action  <syntax-update-37.ru> ;.
 
-:test_38 rdf:type   mf:NegativeUpdateSyntaxTest11 ;
+:test_38 rdf:type   mf:PositiveUpdateSyntaxTest11 ;
+   dawgt:approval dawgt:NotClassified ;
+   mf:name    "syntax-update-38.ru" ;
+   mf:action  <syntax-update-38.ru> ;.
+
+:test_39 rdf:type   mf:PositiveUpdateSyntaxTest11 ;
+   dawgt:approval dawgt:NotClassified ;
+   mf:name    "syntax-update-39.ru" ;
+   mf:action  <syntax-update-39.ru> ;.
+
+:test_40 rdf:type   mf:PositiveUpdateSyntaxTest11 ;
+   dawgt:approval dawgt:NotClassified ;
+   mf:name    "syntax-update-40.ru" ;
+   mf:action  <syntax-update-40.ru> ;.
+
+:test_41 rdf:type   mf:NegativeUpdateSyntaxTest11 ;
    dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-update-bad-01.ru" ;
    mf:action  <syntax-update-bad-01.ru> ;.
 
-:test_39 rdf:type   mf:NegativeUpdateSyntaxTest11 ;
+:test_42 rdf:type   mf:NegativeUpdateSyntaxTest11 ;
    dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-update-bad-02.ru" ;
    mf:action  <syntax-update-bad-02.ru> ;.
 
-:test_40 rdf:type   mf:NegativeUpdateSyntaxTest11 ;
+:test_43 rdf:type   mf:NegativeUpdateSyntaxTest11 ;
    dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-update-bad-03.ru" ;
    mf:action  <syntax-update-bad-03.ru> ;.
 
-:test_41 rdf:type   mf:NegativeUpdateSyntaxTest11 ;
+:test_44 rdf:type   mf:NegativeUpdateSyntaxTest11 ;
    dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-update-bad-04.ru" ;
    mf:action  <syntax-update-bad-04.ru> ;.
 
-:test_42 rdf:type   mf:NegativeUpdateSyntaxTest11 ;
+:test_45 rdf:type   mf:NegativeUpdateSyntaxTest11 ;
    dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-update-bad-05.ru" ;
    mf:action  <syntax-update-bad-05.ru> ;.
 
-:test_43 rdf:type   mf:NegativeUpdateSyntaxTest11 ;
+:test_46 rdf:type   mf:NegativeUpdateSyntaxTest11 ;
    dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-update-bad-06.ru" ;
    mf:action  <syntax-update-bad-06.ru> ;.
 
-:test_44 rdf:type   mf:NegativeUpdateSyntaxTest11 ;
+:test_47 rdf:type   mf:NegativeUpdateSyntaxTest11 ;
    dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-update-bad-07.ru" ;
    mf:action  <syntax-update-bad-07.ru> ;.
 
-:test_45 rdf:type   mf:NegativeUpdateSyntaxTest11 ;
+:test_48 rdf:type   mf:NegativeUpdateSyntaxTest11 ;
    dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-update-bad-08.ru" ;
    mf:action  <syntax-update-bad-08.ru> ;.
 
-:test_46 rdf:type   mf:NegativeUpdateSyntaxTest11 ;
+:test_49 rdf:type   mf:NegativeUpdateSyntaxTest11 ;
    dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-update-bad-09.ru" ;
    mf:action  <syntax-update-bad-09.ru> ;.
 
-:test_47 rdf:type   mf:NegativeUpdateSyntaxTest11 ;
+:test_50 rdf:type   mf:NegativeUpdateSyntaxTest11 ;
    dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-update-bad-10.ru" ;
    mf:action  <syntax-update-bad-10.ru> ;.
 
-:test_48 rdf:type   mf:NegativeUpdateSyntaxTest11 ;
+:test_51 rdf:type   mf:NegativeUpdateSyntaxTest11 ;
    dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-update-bad-11.ru" ;
    mf:action  <syntax-update-bad-11.ru> ;.
 
-:test_49 rdf:type   mf:NegativeUpdateSyntaxTest11 ;
+:test_52 rdf:type   mf:NegativeUpdateSyntaxTest11 ;
    dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-update-bad-12.ru" ;
    mf:action  <syntax-update-bad-12.ru> ;.
-
-:test_50 rdf:type   mf:NegativeUpdateSyntaxTest11 ;
-   dawgt:approval dawgt:NotClassified ;
-   mf:name    "syntax-update-bad-13.ru" ;
-   mf:action  <syntax-update-bad-13.ru> ;.
-
-:test_51 rdf:type   mf:NegativeUpdateSyntaxTest11 ;
-   dawgt:approval dawgt:NotClassified ;
-   mf:name    "syntax-update-bad-14.ru" ;
-   mf:action  <syntax-update-bad-14.ru> ;.
-
-:test_52 rdf:type   mf:NegativeUpdateSyntaxTest11 ;
-   dawgt:approval dawgt:NotClassified ;
-   mf:name    "syntax-update-bad-15.ru" ;
-   mf:action  <syntax-update-bad-15.ru> ;.
 
 

@@ -124,28 +124,8 @@ public class RunARQ
     
     public static void main(String[] argv) throws Exception
     {
-        String NL = "\n" ;
-        String Prefix="PREFIX OntologyUserInterest: <http://www.semanticweb.org/ontologies/2010/11/OntologyUserInterest.owl#>"+NL+
-        "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>"+NL+"PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>";
-String graph=NL+"CREATE GRAPH <http://www.user.com>";  //create graph
-
-String StrUp=NL+"INSERT DATA {"+NL+
-         "GRAPH <http://www.user.com> {"+NL+
-        "OntologyUserInterest:Rachel rdf:type OntologyUserInterest:Person."+NL+
-        "OntologyUserInterest:Rachel OntologyUserInterest:hasFirstName 'Ratpunzel'."+NL+
-        "OntologyUserInterest:Rachel OntologyUserInterest:hasLastName  'Rudolf'."+NL+
-        "OntologyUserInterest:Rachel OntologyUserInterest:hasAge 23."+NL+
-        "OntologyUserInterest:Rachel OntologyUserInterest:hasGender 'female'."+NL+
-        "OntologyUserInterest:Rachel OntologyUserInterest:hasAddress 'England'."+NL+
-        "OntologyUserInterest:Rachel OntologyUserInterest:hasEmail 'rach@hot.com'."+NL+
-        "OntologyUserInterest:Rachel OntologyUserInterest:hasInterest 'poetry'}}";
-
-    System.out.println(Prefix+graph+StrUp) ;
-    
-    UpdateRequest request = UpdateFactory.create(Prefix+graph+StrUp) ;  
-    System.out.println(request);
-    
-    exit(0) ;
+        arq.uparse.main("LOAD <g>") ;
+        exit(0) ;
         
         
         FunctionRegistry.get().put("http://example/f#wait", wait.class) ;

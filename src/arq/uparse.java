@@ -49,7 +49,7 @@ public class uparse extends CmdARQ
     protected String getCommandName() { return Utils.className(this) ; }
     
     @Override
-    protected String getSummary() { return getCommandName()+"--file=<request file>" ; }
+    protected String getSummary() { return getCommandName()+" --file=<request file> | <update string>" ; }
 
     @Override
     protected void exec()

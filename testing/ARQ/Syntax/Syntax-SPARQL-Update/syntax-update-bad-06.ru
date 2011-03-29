@@ -1,2 +1,2 @@
-# Variable in data.
-DELETE DATA { ?s <p> <o> }
+# Missing template
+INSERT WHERE { ?s ?p ?o }

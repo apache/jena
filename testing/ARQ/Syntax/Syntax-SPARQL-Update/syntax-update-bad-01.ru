@@ -1,1 +1,2 @@
-# Empty
+# No URL
+LOAD ;

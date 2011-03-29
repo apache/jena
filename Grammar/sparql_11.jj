@@ -49,7 +49,9 @@ PARSER_END(SPARQLParser11)
 // Query only entry point
 void QueryUnit(): { }
 {
+  { startQuery() ; }
   Query() <EOF>
+  { finishQuery() ; }
 }
 void Query() : { }
 {
@@ -59,8 +61,10 @@ void Query() : { }
 }
 void UpdateUnit() : {}
 {
-    Update()
-    <EOF>
+  { startUpdateRequest() ; }
+  Update()
+  <EOF>
+  { finishUpdateRequest() ; }
 }
 void Prologue() : {}
 {
@@ -328,10 +332,8 @@ Node BindingValue() : { Node n ; String iri ; }
 // Strict SPARQL 1.1 : mandatory separator, optional terminator.
 void Update() : { }
 {
-   { startUpdateRequest() ; }
    Prologue()
-   Update1() ( <SEMICOLON> (Update())?)?
-   { finishUpdateRequest() ; }
+   (Update1() ( <SEMICOLON> Update() )? )?
 }
 void Update1() : { Update up ; }
 {
@@ -353,7 +355,7 @@ void Update1() : { Update up ; }
     finishUpdateOperation() ;
   }
 }
-Update Load() : { String url ; Node dest = null ; boolean silent = true ; }
+Update Load() : { String url ; Node dest = null ; boolean silent = false ; }
 {
     // Should be +?
     //    <LOAD> ( IRIref() )+

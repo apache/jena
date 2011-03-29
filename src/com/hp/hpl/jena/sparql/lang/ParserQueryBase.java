@@ -62,6 +62,10 @@ public class ParserQueryBase extends ParserBase
     }
     
     // Move down to SPARQL 1.1 or rename as ParserBase
+    protected void startQuery() {}
+    protected void finishQuery() {}
+
+    // Move down to SPARQL 1.1 or rename as ParserBase
     protected void startUpdateOperation() {}
     protected void finishUpdateOperation() {}
     

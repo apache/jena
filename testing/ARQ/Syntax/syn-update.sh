@@ -229,22 +229,23 @@ CREATE GRAPH <g> ;
 LOAD <remote> INTO GRAPH <g> ;
 EOF
 
-# Bad syntax
+# ---- Empty 
 
-N=0
-
-N=$((N+1)) ; testBad $SPARQL11U $(fname "syntax-update-bad-" $N) <<EOF
+N=$((N+1)) ; testGood $SPARQL11U $(fname "syntax-update-" $N) <<EOF
 # Empty
 EOF
 
-N=$((N+1)) ; testBad $SPARQL11U $(fname "syntax-update-bad-" $N) <<EOF
+N=$((N+1)) ; testGood $SPARQL11U $(fname "syntax-update-" $N) <<EOF
 BASE <http://example/>
 # Otherwise empty
 EOF
-N=$((N+1)) ; testBad $SPARQL11U $(fname "syntax-update-bad-" $N) <<EOF
+N=$((N+1)) ; testGood $SPARQL11U $(fname "syntax-update-" $N) <<EOF
 PREFIX : <http://example/>
 # Otherwise empty
 EOF
+
+# Bad syntax
+N=0
 
 N=$((N+1)) ; testBad $SPARQL11U $(fname "syntax-update-bad-" $N) <<EOF
 # No URL

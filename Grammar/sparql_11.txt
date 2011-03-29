@@ -285,7 +285,7 @@ NON-TERMINALS
 // SPARQL Update + transitional extensions for SPARQL/Update (the W3C submission)
 // Update only entry point
 // Strict SPARQL 1.1 : mandatory separator, optional terminator.
-	Update	:=	Prologue Update1 ( <SEMICOLON> ( Update )? )?
+	Update	:=	Prologue ( Update1 ( <SEMICOLON> Update )? )?
 	Update1	:=	( Load | Clear | Drop | Add | Move | Copy | Create | InsertData | DeleteData | DeleteWhere | Modify )
 	Load	:=	<LOAD> ( <SILENT> )? IRIref ( <INTO> GraphRef )?
 	Clear	:=	<CLEAR> ( <SILENT> )? GraphRefAll

@@ -1,2 +1,3 @@
-# Variable in data.
-INSERT DATA { GRAPH ?g { <s> <p> <o> } }
+# No separator
+CREATE GRAPH <g>
+LOAD <remote> INTO GRAPH <g>
