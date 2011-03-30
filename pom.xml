@@ -54,8 +54,8 @@
 
   <properties>
     <lucene.version>3.0.3</lucene.version>
-    <arq.version>2.8.6</arq.version>
-    <tdb.version>0.8.7</tdb.version>
+    <arq.version>2.8.7</arq.version>
+    <tdb.version>0.8.9</tdb.version>
     <slf4j.version>1.6.1</slf4j.version>
     <junit.version>4.8.1</junit.version>
     <jdk.version>1.6</jdk.version>
