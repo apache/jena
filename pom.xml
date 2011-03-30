@@ -37,7 +37,6 @@
     <!-- These two go together -->
     <ver.jetty>7.2.1.v20101111</ver.jetty>
     <ver.servlet-jsp>2.1.v20100127</ver.servlet-jsp>
-    
     <ver.httpclient>4.0.3</ver.httpclient>
     <ver.httpfileupload>1.2.2</ver.httpfileupload>
   </properties>
