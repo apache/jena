@@ -14,6 +14,7 @@ import java.util.Iterator ;
 import java.util.List ;
 import java.util.Set ;
 
+import org.openjena.atlas.io.IndentedWriter ;
 import org.openjena.atlas.iterator.Filter ;
 import org.openjena.atlas.iterator.Iter ;
 import org.openjena.atlas.iterator.Transform ;
@@ -189,22 +190,26 @@ public class PathEval
             fill(iter) ;
         }
 
+        static boolean DEBUG = false ; 
         //@Override
         public void visit(P_Mod pathMod)
         {
+            if ( DEBUG ) IndentedWriter.stdout.println("Eval: "+pathMod+" "+node+"("+(forwardMode?"fwd":"bkd")+")") ;
+            
             // :p{n,m} is the iteration count down on n and m. 
             // :p{n,} Y where n > 0  is :p{N}/:p*
             // :p{0,} Y is :p*
             // :p{,n} is :p{0,n}
-
             
             if ( pathMod.isZeroOrMore() )
             {
+                if ( DEBUG ) IndentedWriter.stdout.println("ZeroOrMore") ;
+                if ( DEBUG ) IndentedWriter.stdout.println("ZeroOrMore: "+output) ;
                 // :p{0,}
                 doZeroOrMore(pathMod.getSubPath()) ;
+                if ( DEBUG ) IndentedWriter.stdout.println("ZeroOrMore: "+output) ;
                 return ;
             }
-            
             
 //            if ( pathMod.isOneOrMore() )
 ////            if ( pathMod.getMax() == P_Mod.UNSET )
@@ -237,11 +242,11 @@ public class PathEval
             // One step.
             Iterator<Node> iter = eval(graph, node, pathMod.getSubPath(), forwardMode) ;
 
-            if ( false )
+            if ( DEBUG )
             {
                 // Debug.
                 List<Node> x = Iter.toList(iter) ;
-                System.out.println("** Step: "+node+ " ==> "+x) ;
+                IndentedWriter.stdout.println("** One step: "+pathMod+" "+node+"("+(forwardMode?"fwd":"bkd")+") ==> "+x) ;
                 iter = x.iterator() ;
             }
             
@@ -256,9 +261,19 @@ public class PathEval
             for ( ; iter.hasNext() ; )
             {
                 Node n2 = iter.next() ;
+                IndentedWriter.stdout.incIndent(4) ;
                 Iterator<Node> iter2 = eval(graph, n2, nextPath, forwardMode) ;
+                IndentedWriter.stdout.decIndent(4) ;
+                if ( DEBUG )
+                {
+                    List<Node> x = Iter.toList(iter2) ;
+                    IndentedWriter.stdout.println("** Recursive step: "+n2+" "+pathMod+" => "+x) ;
+                    iter2 = x.iterator() ;
+                }
                 fill(iter2) ;
             }
+            
+            if ( DEBUG ) IndentedWriter.stdout.println("** Output: "+pathMod+" => "+output) ;
             // If no matches, will not call eval and we drop out.
         }
         

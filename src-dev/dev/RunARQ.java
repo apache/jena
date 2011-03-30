@@ -124,7 +124,7 @@ public class RunARQ
     
     public static void main(String[] argv) throws Exception
     {
-        arq.uparse.main("LOAD <g>") ;
+        arq.sparql.main("--data=D.ttl", "--query=Q.rq") ;
         exit(0) ;
         
         

@@ -1,12 +1,9 @@
-PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX : <http://example/> SELECT * { ?s :p{1,} :c }
 
-SELECT  ?o (count(?o) AS ?n) ?label
-WHERE
-  {
-    ?x <http://purl.org/dc/elements/1.1/date> ?o
-    OPTIONAL
-      { ?o rdfs:label ?label }
-  }
-ORDER BY DESC(?n)
-LIMIT   5
-
+## SELECT * WHERE {
+## #      ?s :p{1,} :c
+## 
+##       ?s :p ?V  . 
+##  #     ?V :p* :c .
+## 
+## } 
