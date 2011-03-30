@@ -2,6 +2,8 @@ package dev ;
 
 public class DevARQ
 {
+    // ---- RIOT start printing decimals as 18.0
+    
     // ---- Projects
     // * FileManager2
     //     Tests - need testing/Atlas/... or tmp/
@@ -26,7 +28,7 @@ public class DevARQ
     //  Migrate to ARQ.
     //    Pass a graph up to be the active graph of the QueryExecution -> change to QueryEngineMain.
     //  Does not work for: FROM <urn:x-arq:DefaultGraph> FROM <urn:x-arq:UnionGraph>
-    //  Have a magic dataset implementation that can hodl hiden graphs (i.e. not is listNodes but show in getGraph) 
+    //  Have a magic dataset implementation that can hold hidden graphs (i.e. not is listNodes but show in getGraph) 
     //  Propagate  <urn:x-arq:DefaultGraph> FROM <urn:x-arq:UnionGraph>
     //   OpExecutor in ARQ need "specialcase" fixing.??
     
