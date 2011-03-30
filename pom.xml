@@ -6,7 +6,7 @@
   <artifactId>larq</artifactId>
   <packaging>jar</packaging>
   <name>LARQ</name>
-  <version>0.1.5</version>
+  <version>0.1.6-SNAPSHOT</version>
 
   <description>LARQ - Free Text Indexing for SPARQL</description>
   <url>http://openjena.org/wiki/LARQ</url>
@@ -48,8 +48,8 @@
   </developers>
 
   <scm>
-    <connection>scm:svn:https://jena.svn.sourceforge.net/svnroot/jena/LARQ/tags/larq-0.1.5</connection>
-    <url>http://jena.svn.sourceforge.net/viewvc/jena/LARQ/tags/larq-0.1.5</url>
+    <connection>scm:svn:https://jena.svn.sourceforge.net/svnroot/jena/LARQ/</connection>
+    <url>http://jena.svn.sourceforge.net/viewvc/jena/LARQ/</url>
   </scm>
 
   <properties>
