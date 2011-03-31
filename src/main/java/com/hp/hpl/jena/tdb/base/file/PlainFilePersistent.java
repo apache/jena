@@ -60,7 +60,7 @@ public class PlainFilePersistent extends PlainFile
     { 
         try
         {
-            channel.force(true) ;
+            channel.force(false) ;
         } catch (IOException ex)
         { throw new FileException("force", ex) ; }
     }

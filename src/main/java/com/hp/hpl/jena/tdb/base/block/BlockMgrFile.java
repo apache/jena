@@ -132,7 +132,7 @@ public abstract class BlockMgrFile extends BlockMgrBase
             getLog().debug("force") ;
         try
         {
-            channel.force(true) ;
+            channel.force(false) ;  // Don't flush metadata 
         } catch (IOException ex)
         { throw new BlockException("Channel.force failed", ex) ; }
     }

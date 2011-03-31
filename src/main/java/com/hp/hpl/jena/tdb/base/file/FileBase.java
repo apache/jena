@@ -47,7 +47,7 @@ public class FileBase implements Sync, Closeable
     public void sync()
     {
         try {
-            channel.force(true) ;
+            channel.force(false) ;
         } catch (IOException ex)
         { throw new FileException("FileBase.sync", ex) ; }
     }
