@@ -135,7 +135,43 @@ public class PathCompiler
                     return ;
                 }
             }
-            // Not fixed - drop through, including zero length paths.
+
+            // This is the rewrite of 
+            //    "x {N,} y" to "x :p{N} ?V . ?V :p* y"
+            //    "x {N,M} y" to "x :p{N} ?V . ?V {0,M} y"
+            if ( pMod.getMin() > 0 )
+            {
+                Path p1 = PathFactory.pathFixedLength(pMod.getSubPath(), pMod.getMin()) ;
+                Path p2 ;
+                
+                if ( pMod.getMax() < 0 )
+                    p2 = PathFactory.pathZeroOrMore(pMod.getSubPath()) ;
+                else
+                {
+                    long len2 = pMod.getMax()-pMod.getMin() ;
+                    if ( len2 < 0 ) len2 = 0 ;
+                    p2 = PathFactory.pathMod(pMod.getSubPath(),0, len2) ;
+                }
+                
+                Node v = varAlloc.allocVar() ;
+                
+                // Start at the fixed end.
+                if ( ! startNode.isVariable() || endNode.isVariable() )
+                {
+                    reduce(x, varAlloc, startNode, p1, v) ;
+                    reduce(x, varAlloc, v, p2, endNode) ;
+                }
+                else
+                {
+                    // endNode fixed, start node not.
+                    reduce(x, varAlloc, v, p2, endNode) ;
+                    reduce(x, varAlloc, startNode, p1, v) ;
+                }
+                return ;
+            }
+            
+            
+            // Else drop through
         }
         
         // Nothing can be done.

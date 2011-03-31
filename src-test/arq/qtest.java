@@ -47,8 +47,6 @@ import com.hp.hpl.jena.vocabulary.XSD ;
  *   <i>testManifest</i>
  *   [ --query <i>query</i> --data <i>data</i> --result <i>result</i> ] -- run one test
  * </pre>
- * 
- * @author  Andy Seaborne, Olaf Hartig
  */
 
 public class qtest extends CmdARQ
@@ -145,23 +143,22 @@ public class qtest extends CmdARQ
             
             createEarlReport = contains(earlDecl) ;
         }
+        
+        
     }
     
     @Override
     protected void exec()
     {
+        if ( cmdStrictMode )
+            ARQ.setStrictMode() ;
+        
         if ( suite != null )
-        {
             SimpleTestRunner.runAndReport(suite) ;
-        }
         else if ( execAllTests )
-        {
             allTests() ;
-        }
         else if ( execDAWGTests )
-        {
             dawgTests() ;
-        }
         else
         {
             // running a manifest

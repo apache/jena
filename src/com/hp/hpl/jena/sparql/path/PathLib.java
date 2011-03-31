@@ -29,6 +29,7 @@ import com.hp.hpl.jena.sparql.engine.binding.BindingFactory ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterConcat ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterYieldN ;
+import com.hp.hpl.jena.sparql.mgt.Explain ;
 import com.hp.hpl.jena.sparql.pfunction.PropertyFunction ;
 import com.hp.hpl.jena.sparql.pfunction.PropertyFunctionFactory ;
 import com.hp.hpl.jena.sparql.pfunction.PropertyFunctionRegistry ;
@@ -116,6 +117,8 @@ public class PathLib
                                                Node s, Path path, Node o,
                                                ExecutionContext execCxt)
     {
+        Explain.explain(s, path, o, execCxt.getContext()) ;
+        
         s = Var.lookup(binding, s) ;
         o = Var.lookup(binding, o) ;
         Iterator<Node> iter = null ;

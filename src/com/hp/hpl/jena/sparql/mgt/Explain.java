@@ -11,12 +11,14 @@ import org.openjena.atlas.io.IndentedLineBuffer ;
 import org.openjena.atlas.lib.StrUtils ;
 import org.slf4j.Logger ;
 
+import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.core.BasicPattern ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.core.QuadPattern ;
+import com.hp.hpl.jena.sparql.path.Path ;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.sparql.sse.writers.WriterNode ;
@@ -297,6 +299,21 @@ Document:
         }
         
         return Boolean.TRUE.equals(x) ;
+    }
+
+    // Path
+    public static void explain(Node s, Path path, Node o, Context context)
+    {
+        explain("Path", s, path, o, context) ; 
+    }
+
+    public static void explain(String message, Node s, Path path, Node o, Context context)
+    {
+        if ( explaining(InfoLevel.ALL, logExec, context) )
+        {
+            String str = s+" "+path+" "+o ;
+            _explain(logExec, message, str, false) ;
+        }
     }
 }
 

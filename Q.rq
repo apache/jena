@@ -1,9 +1,25 @@
-PREFIX : <http://example/> SELECT * { ?s :p{1,} :c }
+PREFIX : <http://example/> 
 
-## SELECT * WHERE {
-## #      ?s :p{1,} :c
-## 
-##       ?s :p ?V  . 
-##  #     ?V :p* :c .
-## 
-## } 
+SELECT * { ?s :p{2,} :z }
+
+#SELECT * { :a :p{2,3} ?Z }
+
+## SELECT *
+## {
+##     { ?s :p{2} ?V . ?V :p* :z }
+##     UNION
+##     { ?s :p* ?W . ?W :p{2} :z }
+## }
+           
+
+## SELECT * 
+## {
+##   { ?s :p{2,} :z }
+##   UNION
+##   { ?s :p{2} ?V . ?V :p* :z }
+##   UNION
+##   { :z (^:p){2} ?Q . ?Q (^:p)* ?s }
+##   UNION
+##   { :z (^:p)* ?R . ?R (^:p){2} ?s }
+## }
+

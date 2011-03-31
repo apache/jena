@@ -4,6 +4,8 @@ public class DevARQ
 {
     // ---- RIOT start printing decimals as 18.0
     
+    // Optimization: remember (some!) query executions because index-join causes a lot of repeats.
+    
     // ---- Projects
     // * FileManager2
     //     Tests - need testing/Atlas/... or tmp/
@@ -65,6 +67,10 @@ public class DevARQ
     // riot --canonicalize --normalize
     // riot --bnodeIRIs=on|off
     // riot --rdfs
+    
+    // Canonicalize
+    //   IRIs - corect, best %-encoding
+    //   Numbers to decimals, not integers (not default!)
     
     // ----
     // Listners for dadaset changes -> drive LARQ.

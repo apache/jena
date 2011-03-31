@@ -6,6 +6,8 @@
 
 package com.hp.hpl.jena.query;
 
+import java.util.concurrent.TimeUnit ;
+
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.util.FileManager ;
@@ -98,7 +100,8 @@ public interface QueryExecution
 	 * A timeout of less than zero means no timeout.
 	 */
 	
-	public void setTimeout(long timeout) ;
+	//public void setTimeout(long timeout) ;
+	public void setTimeout(long timeout, TimeUnit timeoutUnits) ;
     
 	/** Set timeouts on the query execution; the first timeout refers to time to first result, 
 	 * the second refers to overall query execution after the first result.  
@@ -107,7 +110,8 @@ public interface QueryExecution
 	 * A timeout of less than zero means no timeout; this can be used for timeout1 or timeout2.
 	 */
 
-	public void setTimeout(long timeout1, long timeout2) ;
+	//public void setTimeout(long timeout1, long timeout2) ;
+	public void setTimeout(long timeout1, TimeUnit timeUnit1, long timeout2, TimeUnit timeUnit2) ;
 
     //	/** Say whether this QueryExecution is useable or not.
 //	 * An active execution is one that has not been closed, ended or aborted yet.

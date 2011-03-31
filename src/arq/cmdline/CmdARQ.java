@@ -13,7 +13,7 @@ import com.hp.hpl.jena.sparql.util.Utils ;
 public abstract class CmdARQ extends CmdGeneral
 {
     protected ModSymbol modSymbol = new ModSymbol() ;
-    ArgDecl  strictDecl = new ArgDecl(ArgDecl.NoValue, "strict", "basic") ;
+    ArgDecl  strictDecl = new ArgDecl(ArgDecl.NoValue, "strict") ;
     
     protected boolean cmdStrictMode = false ; 
     

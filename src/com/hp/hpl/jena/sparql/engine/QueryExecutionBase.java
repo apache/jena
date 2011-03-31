@@ -14,6 +14,7 @@ import java.util.Iterator ;
 import java.util.List ;
 import java.util.Map ;
 import java.util.Set ;
+import java.util.concurrent.TimeUnit ;
 
 import org.openjena.atlas.lib.AlarmClock ;
 import org.openjena.atlas.lib.Callback ;
@@ -264,21 +265,40 @@ public class QueryExecutionBase implements QueryExecution
     //@Override
     public void setTimeout(long timeout)
     {
-        this.timeout1 = timeout ;
+        setTimeout(timeout, TimeUnit.MILLISECONDS) ;
+    }
+
+    //@Override
+    public void setTimeout(long timeout, TimeUnit timeUnit)
+    {
+        long x = asMillis(timeout, timeUnit) ;
+        this.timeout1 = x ;
         this.timeout2 = TIMEOUT_UNSET ;
-        // What about resetting while running?  maybe later.
     }
 
     //@Override
     public void setTimeout(long timeout1, long timeout2)
     {
-        this.timeout1 = timeout1 ;
+        setTimeout(timeout1, TimeUnit.MILLISECONDS, timeout2, TimeUnit.MILLISECONDS) ;
+    }
+
+    //@Override
+    public void setTimeout(long timeout1, TimeUnit timeUnit1, long timeout2, TimeUnit timeUnit2)
+    {
+        long x1 = asMillis(timeout1, timeUnit1) ;
+        long x2 = asMillis(timeout2, timeUnit2) ;
+        this.timeout1 = x1 ;
         if ( timeout2 < 0 )
             this.timeout2 = TIMEOUT_INF ;
         else
-            this.timeout2 = timeout2 ;
+            this.timeout2 = x2 ;
     }
 
+    private static long asMillis(long duration, TimeUnit timeUnit)
+    {
+        return (duration < 0 ) ? duration : timeUnit.toMillis(duration) ;
+    }
+    
     private static final long TIMEOUT_UNSET = -1 ;
     private static final long TIMEOUT_INF = -2 ;
     private long timeout1 = TIMEOUT_UNSET ;

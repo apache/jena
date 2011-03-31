@@ -190,16 +190,19 @@ public class PathEval
             fill(iter) ;
         }
 
-        static boolean DEBUG = false ; 
+        static boolean DEBUG = false ;
+        
         //@Override
         public void visit(P_Mod pathMod)
         {
             if ( DEBUG ) IndentedWriter.stdout.println("Eval: "+pathMod+" "+node+"("+(forwardMode?"fwd":"bkd")+")") ;
             
-            // :p{n,m} is the iteration count down on n and m. 
-            // :p{n,} Y where n > 0  is :p{N}/:p*
             // :p{0,} Y is :p*
+            // :p{n,} Y where n > 0  is :p{N}/:p*
+            
+            // This is the main line code here:
             // :p{,n} is :p{0,n}
+            // :p{n,m} is the iteration count down on n and m. 
             
             if ( pathMod.isZeroOrMore() )
             {
@@ -210,26 +213,21 @@ public class PathEval
                 if ( DEBUG ) IndentedWriter.stdout.println("ZeroOrMore: "+output) ;
                 return ;
             }
-            
-//            if ( pathMod.isOneOrMore() )
-////            if ( pathMod.getMax() == P_Mod.UNSET )
-//            {
-//                // :p{1,}
-//                doOneOrMore(pathMod.getSubPath()) ;
-//                return ;
-//            }
-            
+
             long min1 = pathMod.getMin() ;
             long max1 = pathMod.getMax() ;
+
+            // Why not always reduce {N,M} to {N} and {0,M-N}
+            // Why not iterate, not recurse, for {N,} 
+            // -- optimizer wil have expanded this so only in unoptimized mode.
             
             if ( min1 == P_Mod.UNSET )
-            {
                 // {,N}
                 min1 = 0 ;
-            }
             
-            
-            // This code is for p{n,m} and :p{,n}
+            // ----------------
+            // This code is for p{n,m} and :p{,n} inc :p{0,n}
+            // and for :p{N,}
             
             //if ( max1 == P_Mod.UNSET ) max1 = 0 ;
             
@@ -239,8 +237,26 @@ public class PathEval
             if ( max1 == 0 )
                 return ;
             
+            // The next step
+            long min2 = dec(min1) ;
+            long max2 = dec(max1) ;
+
+            Path p1 = pathMod.getSubPath() ;   
+            Path p2 = new P_Mod(pathMod.getSubPath(), min2, max2) ;
+            
+            if ( !forwardMode )
+            {
+                // Reverse order.  Do the second bit first.
+                Path tmp = p1 ; 
+                p1 = p2 ; p2 = tmp ;
+                // This forces execution to be in the order that it's written, when working backwards.
+                // {N,*} is  {*} then {N} backwards != do {N} then do {*} as cardinality of the 
+                // two operations is different.
+            }
+            // ****
+
             // One step.
-            Iterator<Node> iter = eval(graph, node, pathMod.getSubPath(), forwardMode) ;
+            Iterator<Node> iter = eval(graph, node, p1, forwardMode) ;
 
             if ( DEBUG )
             {
@@ -250,20 +266,13 @@ public class PathEval
                 iter = x.iterator() ;
             }
             
-            // The next step
-            long min2 = dec(min1) ;
-            long max2 = dec(max1) ;
-            P_Mod nextPath = new P_Mod(pathMod.getSubPath(), min2, max2) ;
-            
-            // Moved on one step - now go and do it again on a new path
-            //  Need to do the visited thing?  No.  Exact {N,M}
-            
+            // Moved on one step
             for ( ; iter.hasNext() ; )
             {
                 Node n2 = iter.next() ;
-                IndentedWriter.stdout.incIndent(4) ;
-                Iterator<Node> iter2 = eval(graph, n2, nextPath, forwardMode) ;
-                IndentedWriter.stdout.decIndent(4) ;
+                if ( DEBUG ) IndentedWriter.stdout.incIndent(4) ;
+                Iterator<Node> iter2 = eval(graph, n2, p2, forwardMode) ;
+                if ( DEBUG ) IndentedWriter.stdout.decIndent(4) ;
                 if ( DEBUG )
                 {
                     List<Node> x = Iter.toList(iter2) ;

@@ -295,6 +295,7 @@ public class ARQ
     public static void setStrictMode(Context context)
     {
         XSDFuncOp.strictDateTimeFO = true ;
+        context.set(optimization,           false) ;
         
         context.set(hideNonDistiguishedVariables, true) ;
         context.set(strictGraph,                true) ;
@@ -304,7 +305,7 @@ public class ARQ
         context.set(enablePropertyFunctions,    false) ;
         context.set(generateToList,             true) ;
         context.set(regexImpl,                  xercesRegex) ;
-        context.set(filterPlacement,            false) ;
+        //context.set(filterPlacement,            false) ;
 //        XSDFuncOp.strictDateTimeFO = false ;
     }
     
@@ -315,6 +316,7 @@ public class ARQ
     public static void setNormalMode(Context context)
     {
         XSDFuncOp.strictDateTimeFO = false ;
+        context.unset(optimization) ;
 
         //context.set(hideNonDistiguishedVariables, true) ;
         context.set(strictSPARQL,                  "false") ; 
@@ -328,7 +330,6 @@ public class ARQ
         context.set(regexImpl,                     javaRegex) ;
 //        if (  getContext().isTrue(romanNumeralsAsFirstClassDatatypes) )
 //            RomanNumeralDatatype.enableAsFirstClassDatatype() ; // Wires into the TypeMapper.
-        context.set(filterPlacement,                true) ;
     }
     
     // ----------------------------------

@@ -33,10 +33,12 @@ import com.hp.hpl.jena.sparql.util.Utils ;
 
 public class query extends CmdARQ
 {
-    private ArgDecl argRepeat = new ArgDecl(ArgDecl.HasValue, "repeat") ;
-    private ArgDecl argExplain = new ArgDecl(ArgDecl.NoValue, "explain") ;
+    private ArgDecl argRepeat   = new ArgDecl(ArgDecl.HasValue, "repeat") ;
+    private ArgDecl argExplain  = new ArgDecl(ArgDecl.NoValue, "explain") ;
+    private ArgDecl argOptimize = new ArgDecl(ArgDecl.HasValue, "opt", "optimize") ;
 
     protected int repeatCount = 1 ; 
+    protected boolean queryOptimization = true ;
     
     protected ModTime       modTime =     new ModTime() ;
     protected ModQueryIn    modQuery =    new ModQueryIn() ;
@@ -58,8 +60,11 @@ public class query extends CmdARQ
         super.addModule(modDataset) ;
         super.addModule(modEngine) ;
         super.addModule(modTime) ;
-        super.add(argRepeat) ;
-        super.add(argExplain) ;
+
+        super.getUsage().startCategory("Control") ;
+        super.add(argExplain, "--explain", "Explain and log query execution") ;
+        super.add(argRepeat, "--repeat=N", "Do N times (use for timing to overcome start up costs of Java)");
+        super.add(argOptimize, "--optimize=", "Turn the query optimizer on or off (default: on") ;
     }
 
     @Override
@@ -77,6 +82,14 @@ public class query extends CmdARQ
         
         if ( hasArg(argExplain) )
             ARQ.setExecutionLogging(Explain.InfoLevel.ALL) ;
+        
+        if ( hasArg(argOptimize) )
+        {
+            String x1 = getValue(argOptimize).toLowerCase() ;
+            if ( hasValueOfTrue(argOptimize) || x1.equals("on") || x1.equals("yes") )      queryOptimization = true ;
+            else if ( hasValueOfFalse(argOptimize) || x1.equals("off") || x1.equals("no") ) queryOptimization = false ;
+            else throw new CmdException("Optimization flag must be true/false/on/off/yes/no. Found: "+getValue(argOptimize)) ;
+        }
     }
     
     protected ModDataset setModDataset()
@@ -87,6 +100,11 @@ public class query extends CmdARQ
     @Override
     protected void exec()
     {
+        if ( ! queryOptimization )
+            ARQ.getContext().setFalse(ARQ.optimization) ;
+        if ( cmdStrictMode )
+            ARQ.getContext().setFalse(ARQ.optimization) ;
+        
         for ( int i = 0 ; i < repeatCount ; i++ )
             queryExec() ;
     }

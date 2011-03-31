@@ -12,6 +12,7 @@ import java.io.InputStream ;
 import java.util.ArrayList ;
 import java.util.Iterator ;
 import java.util.List ;
+import java.util.concurrent.TimeUnit ;
 
 import org.openjena.atlas.io.IO ;
 import org.openjena.atlas.lib.NotImplemented ;
@@ -189,6 +190,17 @@ public class QueryEngineHTTP implements QueryExecution
     }
 
     public void setTimeout(long timeout1, long timeout2)
+    {
+        throw new NotImplemented("Not implemented yet - please send a patch to the Apache Jena project : https://issues.apache.org/jira/browse/JENA-56") ;
+    }
+
+
+    public void setTimeout(long timeout, TimeUnit timeoutUnits)
+    {
+        throw new NotImplemented("Not implemented yet - please send a patch to the Apache Jena project : https://issues.apache.org/jira/browse/JENA-56") ;
+    }
+
+    public void setTimeout(long timeout1, TimeUnit timeUnit1, long timeout2, TimeUnit timeUnit2)
     {
         throw new NotImplemented("Not implemented yet - please send a patch to the Apache Jena project : https://issues.apache.org/jira/browse/JENA-56") ;
     }
