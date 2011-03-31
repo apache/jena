@@ -16,6 +16,7 @@ import com.hp.hpl.jena.query.DatasetFactory ;
 import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphMap ;
+import com.hp.hpl.jena.sparql.core.Quad ;
 
 public class DynamicDatasets
 {
@@ -30,13 +31,13 @@ public class DynamicDatasets
      * is the dynamic dataset from the query.
      * Returns the original DatasetGraph if the query has no dataset description.
      */ 
-    public static DatasetGraph dynamicDataset(Query query, DatasetGraph dsg)
+    public static DatasetGraph dynamicDataset(Query query, DatasetGraph dsg, boolean defaultUnionGraph)
     {
         if ( query.hasDatasetDescription() )
         {
             Set<Node> defaultGraphs = NodeUtils2.convertToNodes(query.getGraphURIs()) ; 
             Set<Node> namedGraphs = NodeUtils2.convertToNodes(query.getNamedGraphURIs()) ;
-            return dynamicDataset(defaultGraphs, namedGraphs, dsg) ; 
+            return dynamicDataset(defaultGraphs, namedGraphs, dsg, defaultUnionGraph) ; 
         }
         return dsg ;
     }
@@ -46,10 +47,10 @@ public class DynamicDatasets
      * is the dynamic dataset from the query.
      * Returns the original Dataset if the query has no dataset description.
      */ 
-    public static Dataset dynamicDataset(Query query, Dataset ds)
+    public static Dataset dynamicDataset(Query query, Dataset ds, boolean defaultUnionGraph)
     {
         DatasetGraph dsg = ds.asDatasetGraph() ;
-        DatasetGraph dsg2 = dynamicDataset(query, dsg) ;
+        DatasetGraph dsg2 = dynamicDataset(query, dsg, defaultUnionGraph) ;
         if ( dsg == dsg2 )
             return ds ;
         return DatasetFactory.create(dsg2) ;
@@ -59,17 +60,59 @@ public class DynamicDatasets
      * is the dynamic dataset from the collection of graphs from the dataset
      * that go to make up the default graph (union) and named graphs.  
      */
-    public static DatasetGraph dynamicDataset(Collection<Node> defaultGraphs, Collection<Node> namedGraphs, DatasetGraph dsg)
+    public static DatasetGraph dynamicDataset(Collection<Node> defaultGraphs, Collection<Node> namedGraphs, DatasetGraph dsg, boolean defaultUnionGraph)
     {
         Graph dft = new GraphUnionRead(dsg, defaultGraphs) ;
         DatasetGraph dsg2 = new DatasetGraphMap(dft) ;
+        
+        // The named graphs.
         for ( Node gn : namedGraphs )
-            dsg2.addGraph(gn, dsg.getGraph(gn)) ;
+        {
+            Graph g = GraphOps.getGraph(dsg, gn) ;
+            if ( g != null )
+                dsg2.addGraph(gn, g) ;
+        }
+        
         if ( dsg.getContext() != null )
             dsg2.getContext().putAll(dsg.getContext()) ;
+
+        if ( defaultUnionGraph && defaultGraphs.size() == 0 )
+        {
+            // Create a union graph - there were no defaultGraphs explicitly named.
+            Graph unionGraph = new GraphUnionRead(dsg, namedGraphs) ;
+            dsg2.setDefaultGraph(unionGraph) ;
+        }
+
+        // read-only, <urn:x-arq:DefaultGraph> and <urn:x-arq:UnionGraph> processing.
+        dsg2 = new DynamicDatasetGraph(dsg2) ;
         return dsg2 ;
     }
     
+    public static class DynamicDatasetGraph extends DatasetGraphReadOnly
+    {
+        public DynamicDatasetGraph(DatasetGraph dsg)
+        {
+            super(dsg) ;
+        }
+
+        private Graph unionGraph = null ;
+        
+        // See also the GraphOps
+        @Override
+        public Graph getGraph(Node graphNode)
+        {
+            if ( Quad.isUnionGraph(graphNode) )
+            {
+                if ( unionGraph == null )
+                    unionGraph = GraphOps.unionGraph(super.getWrapped()) ;
+                return unionGraph ;
+            }
+            if ( Quad.isDefaultGraphExplicit(graphNode))
+                return getDefaultGraph() ;
+            
+            return super.getGraph(graphNode) ;
+        }
+    }
 }
 
 /*

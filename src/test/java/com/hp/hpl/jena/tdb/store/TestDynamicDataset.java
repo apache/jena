@@ -8,11 +8,9 @@
 package com.hp.hpl.jena.tdb.store;
 
 import java.util.Iterator ;
-import java.util.Set ;
 
 import org.apache.log4j.Level ;
 import org.apache.log4j.Logger ;
-import org.junit.Ignore ;
 import org.junit.Test ;
 import org.openjena.atlas.junit.BaseTest ;
 import org.openjena.atlas.lib.StrUtils ;
@@ -28,9 +26,6 @@ import com.hp.hpl.jena.query.QueryFactory ;
 import com.hp.hpl.jena.query.ResultSet ;
 import com.hp.hpl.jena.query.ResultSetFormatter ;
 import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.sparql.algebra.Algebra ;
-import com.hp.hpl.jena.sparql.algebra.Op ;
-import com.hp.hpl.jena.sparql.algebra.Transformer ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.engine.optimizer.reorder.ReorderLib ;
@@ -40,8 +35,6 @@ import com.hp.hpl.jena.sparql.sse.builders.BuilderGraph ;
 import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.TDBFactory ;
 import com.hp.hpl.jena.tdb.migrate.DynamicDatasets ;
-import com.hp.hpl.jena.tdb.migrate.NodeUtils2 ;
-import com.hp.hpl.jena.tdb.migrate.TransformDynamicDataset ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 public class TestDynamicDataset extends BaseTest
@@ -175,7 +168,7 @@ public class TestDynamicDataset extends BaseTest
         } finally { TDB.getContext().unset(TDB.symUnionDefaultGraph) ; } 
     }  
 
-    @Ignore("Test of dynamic datasets with named default or union graph")
+    //@Ignore("Test of dynamic datasets with named default or union graph")
     @Test public void dynamicAndUnion5() {
         testCount("SELECT * "+
                   "FROM <graph:1>"+
@@ -184,7 +177,7 @@ public class TestDynamicDataset extends BaseTest
                   1, dataset) ;
     }  
     
-    @Ignore("Test of dynamic datasets with named default or union graph")
+    //@Ignore("Test of dynamic datasets with named default or union graph")
     @Test public void dynamicAndUnion6() {
         try {
             TDB.getContext().setTrue(TDB.symUnionDefaultGraph) ;
@@ -196,7 +189,7 @@ public class TestDynamicDataset extends BaseTest
         } finally { TDB.getContext().unset(TDB.symUnionDefaultGraph) ; } 
     }  
     
-    @Ignore("Test of dynamic datasets with named default or union graph")
+    //@Ignore("Test of dynamic datasets with named default or union graph")
     @Test public void dynamicAndUnion7() {
         testCount("SELECT * "+
                   "FROM <graph:1>"+
@@ -205,7 +198,7 @@ public class TestDynamicDataset extends BaseTest
                   2, dataset) ;
     }  
     
-    @Ignore("Test of dynamic datasets with named default or union graph")
+    //@Ignore("Test of dynamic datasets with named default or union graph")
     @Test public void dynamicAndUnion8() {
         try {
             TDB.getContext().setTrue(TDB.symUnionDefaultGraph) ;
@@ -217,6 +210,56 @@ public class TestDynamicDataset extends BaseTest
         } finally { TDB.getContext().unset(TDB.symUnionDefaultGraph) ; } 
     }  
 
+    //@Ignore("Test of dynamic datasets with named default or union graph")
+    @Test public void dynamicAndUnion10() {
+            testCount("SELECT * "+
+                      "FROM <urn:x-arq:DefaultGraph>" +
+                      "{ ?s ?p ?o }",
+                      3, dataset) ;
+    }  
+
+    //@Ignore("Test of dynamic datasets with named default or union graph")
+    @Test public void dynamicAndUnion10a() {
+            testCount("SELECT * "+
+                      "FROM <urn:x-arq:DefaultGraph>" +
+                      "{ GRAPH ?g { ?s ?p ?o } }",
+                      0, dataset) ;
+    }  
+
+    //@Ignore("Test of dynamic datasets with named default or union graph")
+    @Test public void dynamicAndUnion11() {
+            testCount("SELECT * "+
+                      "FROM <urn:x-arq:UnionGraph>" +
+                      "{ ?s ?p ?o }",
+                      6, dataset) ;
+    } 
+    
+    //@Ignore("Test of dynamic datasets with named default or union graph")
+    @Test public void dynamicAndUnion11a() {
+            testCount("SELECT * "+
+                      "FROM <urn:x-arq:UnionGraph>" +
+                      "{ GRAPH ?g { ?s ?p ?o } }",
+                      0, dataset) ;
+    }  
+
+
+    //@Ignore("Test of dynamic datasets with named default or union graph")
+    @Test public void dynamicAndUnion12() {
+            testCount("SELECT * "+
+                      "FROM <urn:x-arq:DefaultGraph>" +
+                      "FROM <urn:x-arq:UnionGraph>" +
+                      "{ ?s ?p ?o }",
+                      7, dataset) ;
+    }  
+
+    //@Ignore("Test of dynamic datasets with named default or union graph")
+    @Test public void dynamicAndUnion12a() {
+        testCount("SELECT * "+
+                  "FROM <urn:x-arq:DefaultGraph>" +
+                  "FROM <urn:x-arq:UnionGraph>" +
+                  "{ GRAPH ?g { ?s ?p ?o } }",
+                  0, dataset) ;
+    }
     @Test public void dynamic99() {
         // Check we did not mess with the global context in getting previous tests to pass.
         testCount("SELECT * FROM NAMED <graph:3> { ?s ?p ?o }", 0, dataset) ;
@@ -285,7 +328,7 @@ public class TestDynamicDataset extends BaseTest
         // Do it externally to the TDB query engine.
         String qs = prefix + "SELECT * FROM :g1 FROM :g2 { ?s :p1+ ?x }" ;
         Query query = QueryFactory.create(qs) ;
-        Dataset ds = DatasetFactory.create(DynamicDatasets.dynamicDataset(query, dataset2.asDatasetGraph())) ;
+        Dataset ds = DatasetFactory.create(DynamicDatasets.dynamicDataset(query, dataset2.asDatasetGraph(), false)) ;
         testCount(qs, 3, ds) ; 
     }
 
@@ -293,22 +336,10 @@ public class TestDynamicDataset extends BaseTest
     private static void testCount(String queryString, int expected, Dataset ds)
     {
         Query query = QueryFactory.create(queryString) ;
-        if ( false ) trace(query) ;
         QueryExecution qExec = QueryExecutionFactory.create(query, ds) ;
         ResultSet rs = qExec.execSelect() ;
         int n = ResultSetFormatter.consume(rs) ;
         assertEquals(expected, n) ;
-        //rs.
-    }
-    
-    private static void trace(Query query)
-    {
-        Op op = Algebra.compile(query) ;
-        op = Algebra.toQuadForm(op) ;
-        Set<Node> defaultGraphs = NodeUtils2.convertToNodes(query.getGraphURIs()) ; 
-        Set<Node> namedGraphs = NodeUtils2.convertToNodes(query.getNamedGraphURIs()) ;
-        Op op2 = Transformer.transform(new TransformDynamicDataset(defaultGraphs, namedGraphs, false), op) ;
-        System.out.println(op2) ;
     }
 }
 

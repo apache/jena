@@ -26,7 +26,7 @@ import com.hp.hpl.jena.sparql.util.QueryExecUtils ;
 import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.TDBFactory ;
 import com.hp.hpl.jena.tdb.migrate.DynamicDatasets ;
-import com.hp.hpl.jena.tdb.migrate.TransformDynamicDataset ;
+import com.hp.hpl.jena.tdb.migrate.TransformDynamicDataset_Imperfect ;
 
 public class ReportDynamicDatasetAndPaths
 {
@@ -71,7 +71,7 @@ public class ReportDynamicDatasetAndPaths
         
         
         Query query = QueryFactory.create(qs) ;
-        Dataset ds2 = DynamicDatasets.dynamicDataset(query, ds) ;
+        Dataset ds2 = DynamicDatasets.dynamicDataset(query, ds, false ) ;
         QueryExecution qExec = QueryExecutionFactory.create(query, ds2) ;
         // No effect if using dynamic datasets.
         //qExec.getContext().set(TDB.symUnionDefaultGraph, true) ;
@@ -86,7 +86,7 @@ public class ReportDynamicDatasetAndPaths
         // Unoptimized - no path flattening.
         op = Algebra.toQuadForm(op) ;
         output("** Quad form", op) ;
-        op = TransformDynamicDataset.transform(query, op) ; 
+        op = TransformDynamicDataset_Imperfect.transform(query, op) ; 
         output("** DynDS transform", op) ;
        
         divider() ;

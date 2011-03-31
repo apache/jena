@@ -63,9 +63,10 @@ public class GraphUnionRead extends GraphBase2
         IteratorConcat<Triple> iter = new IteratorConcat<Triple>() ;
         for ( Node gn : graphs )
         {
-            if ( ! dataset.containsGraph(gn) )
+            if ( ! GraphOps.containsGraph(dataset, gn) )
                 continue ;
-            ExtendedIterator<Triple> eIter = dataset.getGraph(gn).find(m) ;
+            
+            ExtendedIterator<Triple> eIter = GraphOps.getGraph(dataset, gn).find(m) ;
             iter.add(eIter) ;
         }
         return WrappedIterator.create(Iter.distinct(iter)) ;

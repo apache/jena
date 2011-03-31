@@ -51,7 +51,7 @@ import com.hp.hpl.jena.sparql.expr.NodeValue ;
 
 // Problems with paths - that code accesses the active graph.
 
-public class TransformDynamicDataset extends TransformCopy
+public class TransformDynamicDataset_Imperfect extends TransformCopy
 {
     // The graphs making up the usual default graph of the query.
     private Set<Node> defaultGraphs ;
@@ -69,12 +69,12 @@ public class TransformDynamicDataset extends TransformCopy
             return op ;
         Set<Node> defaultGraphs = NodeUtils2.convertToNodes(query.getGraphURIs()) ; 
         Set<Node> namedGraphs = NodeUtils2.convertToNodes(query.getNamedGraphURIs()) ;
-        Transform t = new TransformDynamicDataset(defaultGraphs, namedGraphs, false) ; // false??
+        Transform t = new TransformDynamicDataset_Imperfect(defaultGraphs, namedGraphs, false) ; // false??
         Op op2 = Transformer.transform(t, op) ;
         return op2 ;
     }
     
-    public TransformDynamicDataset(Set<Node> defaultGraphs, Set<Node> namedGraphs, boolean defaultGraphIncludesNamedGraphUnion)
+    public TransformDynamicDataset_Imperfect(Set<Node> defaultGraphs, Set<Node> namedGraphs, boolean defaultGraphIncludesNamedGraphUnion)
     {
         this.defaultGraphs = defaultGraphs ;
         this.defaultGraphsReal = defaultGraphs ;
