@@ -1,13 +1,15 @@
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
- * [See end of file]
  */
 
 package dev;
 
 public class DevSDB
 {
+    // Stage generator
+    
     // Check named models for union graph work.
     
     // Drop support for SQL server 2000
