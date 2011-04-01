@@ -1,5 +1,6 @@
 /*
- * (c) C;opyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -36,18 +37,18 @@ public class StageGeneratorDirectTDB implements StageGenerator
         // --- In case this isn't for TDB
         Graph g = execCxt.getActiveGraph() ;
         
-        Filter<Tuple<NodeId>> filter = QC2.getFilter(execCxt.getContext()) ;
-        
         if ( ! ( g instanceof GraphTDB ) )
             // Not us - bounce up the StageGenerator chain
             return above.execute(pattern, input, execCxt) ;
         GraphTDB graph = (GraphTDB)g ;
+        Filter<Tuple<NodeId>> filter = QC2.getFilter(execCxt.getContext()) ;
         return SolverLib.execute(graph, pattern, input, filter, execCxt) ;
     }
 }
 
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
