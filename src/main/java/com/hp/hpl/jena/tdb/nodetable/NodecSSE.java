@@ -9,13 +9,9 @@ package com.hp.hpl.jena.tdb.nodetable;
 import java.nio.ByteBuffer ;
 
 import org.openjena.atlas.lib.Bytes ;
-import org.openjena.atlas.lib.Pool ;
-import org.openjena.atlas.lib.PoolBase ;
-import org.openjena.atlas.lib.PoolSync ;
 import org.openjena.atlas.lib.StrUtils ;
 import org.openjena.riot.tokens.Tokenizer ;
 import org.openjena.riot.tokens.TokenizerFactory ;
-
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.rdf.model.AnonId ;
@@ -31,14 +27,6 @@ public class NodecSSE implements Nodec
     // Characters in IRIs that are illegal and cause SSE problems, but we wish to keep.
     final private static char MarkerChar = '_' ;
     final private static char[] invalidIRIChars = { MarkerChar , ' ' } ; 
-    
-    static int poolBufferSize = 1000 ; 
-    static int poolSize = 2 ;
-    static final private Pool<ByteBuffer> buffers = PoolSync.create(new PoolBase<ByteBuffer>()) ;
-    static {
-        for ( int i = 0 ; i < poolSize ; i++ )
-            buffers.put(ByteBuffer.allocate(poolBufferSize)) ;
-    }
     
     public NodecSSE() {}
     

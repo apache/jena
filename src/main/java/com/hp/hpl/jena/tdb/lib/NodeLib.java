@@ -8,7 +8,6 @@ package com.hp.hpl.jena.tdb.lib;
 
 import static com.hp.hpl.jena.tdb.sys.SystemTDB.LenNodeHash ;
 
-import java.io.UnsupportedEncodingException ;
 import java.nio.ByteBuffer ;
 import java.security.DigestException ;
 import java.security.MessageDigest ;
@@ -18,7 +17,10 @@ import java.util.Iterator ;
 import org.openjena.atlas.iterator.Iter ;
 import org.openjena.atlas.iterator.Transform ;
 import org.openjena.atlas.lib.Bytes ;
-
+import org.openjena.atlas.lib.Pool ;
+import org.openjena.atlas.lib.PoolBase ;
+import org.openjena.atlas.lib.PoolSync ;
+import org.openjena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.tdb.TDBException ;
@@ -52,6 +54,8 @@ public class NodeLib
 
     public static long encodeStore(Node node, ObjectFile file)
     {
+        // Buffer pool?
+        
         // Nodes can be writtern during reads.
         // Make sure this operation is sync'ed. 
         int maxSize = nodec.maxSize(node) ;
@@ -116,6 +120,33 @@ public class NodeLib
         throw new TDBException("NodeType broken: "+n) ; 
     }
     
+    /** This pattern is common - abstract */ 
+    private static int InitialPoolSize = 5 ;
+    private static Pool<MessageDigest> digesters = PoolSync.create(new PoolBase<MessageDigest>()) ;
+    static {
+        try {
+            for ( int i = 0 ; i < InitialPoolSize ; i++ )
+                digesters.put(MessageDigest.getInstance("MD5"));
+        }
+        catch (NoSuchAlgorithmException e)
+        { e.printStackTrace(); }
+    }
+    
+    private static MessageDigest allocDigest()
+    {
+        try {
+            MessageDigest disgest = digesters.get() ;
+            if ( disgest == null ) 
+                disgest = MessageDigest.getInstance("MD5");
+            return disgest ;
+        }
+        catch (NoSuchAlgorithmException e)
+        { e.printStackTrace(); return null ; }
+    }
+
+    private static void deallocDigest(MessageDigest digest) { digest.reset() ; digesters.put(digest) ; }
+    
+    
     private static void hash(Hash h, String lex, String lang, String datatype, NodeType nodeType)
     {
         if ( datatype == null )
@@ -126,8 +157,8 @@ public class NodeLib
         MessageDigest digest;
         try
         {
-            digest = MessageDigest.getInstance("MD5");
-            digest.update(toHash.getBytes("UTF8"));
+            digest = allocDigest() ; //MessageDigest.getInstance("MD5");
+            digest.update(Bytes.string2bytes(toHash)); //digest.update(toHash.getBytes("UTF8"));
             if ( h.getLen() == 16 )
                 // MD5 is 16 bytes.
                 digest.digest(h.getBytes(), 0, 16) ;
@@ -137,15 +168,10 @@ public class NodeLib
                 // Avoid the copy? If length is 16.  digest.digest(bytes, 0, length) needs 16 bytes
                 System.arraycopy(b, 0, h.getBytes(), 0, h.getLen()) ;
             }
+            deallocDigest(digest) ;
             return ;
         }
-        catch (NoSuchAlgorithmException e)
-        { e.printStackTrace(); }
-        catch (UnsupportedEncodingException e)
-        { e.printStackTrace(); } 
-        catch (DigestException ex)
-        { ex.printStackTrace(); }
-        return ;
+        catch (DigestException ex) { Log.fatal(NodeLib.class, "DigestException", ex); } 
     }
     
     public static NodeId getNodeId(Record r, int idx)
