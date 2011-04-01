@@ -2,7 +2,7 @@ package dev ;
 
 public class DevARQ
 {
-    // ---- RIOT start printing decimals as 18.0
+    // OpExecutor example.
     
     // Optimization: remember (some!) query executions because index-join causes a lot of repeats.
     
@@ -14,6 +14,7 @@ public class DevARQ
     //     ?? WebContent to work on ContentTypes, not strings. (what about default charsets?)
 
     // * Generalized union query
+    //   DatasetGraph to understand union graph name 
     // * Generalized dynamic datasets
     //     Union graph (OpExecutor.specialcase)
     //     Named defaut graph (OpExecutor.specialcase)
