@@ -22,7 +22,6 @@ public class DevARQ
 
     // * RIOT Output
     // * RIOT I/O architecture
-    // Apache commons codec for MD5 etc.
     
     // TestGraphsMem
     
@@ -164,7 +163,7 @@ public class DevARQ
     // DatasetGraph : connections
     
     // Event type -> list of parts vs regex filtering (?)
-    // Base 64, MD5, SHA :: Apache commons codec.
+    // Base 64 :: Apache commons codec.
 
     // ---- SPARQL 1.1
     // Update: can't use same bNode label in template and pattern for DELETE/INSERT.
@@ -172,15 +171,14 @@ public class DevARQ
     // Aggregates to return iterators.
     
     // Property path rewrites as per spec (i.e. earlier than evaluation)
-    //   Path tests: WorkSpace/PropertyPathTests/
-    //   Transform: paths for new operators. e.g. {2}
-    //   {N,} to be {N} UNION {0,N}
 
     // ---- Pipeline:
     // Architecture: 
     // Canonicalization: Fix URIs. () [] SPC
     // Canonicaize IRIs (see IRI RFC). http://tools.ietf.org/html/rfc3986#page-38 (IRI missing in lib!)
+    //   De-% unreserved characters.
     // Number canonicalization.
+    //   Always to decimal?
     // Canonicalized lang tags?
     //   owl:equivalentClass, owl:equivalentProperty,
     //   owl:inverseOf, owl:SymmetricProperty, owl:TransitiveProperty

@@ -8,7 +8,7 @@ package org.openjena.atlas.lib;
 
 public class PoolFiniteBlocking<T> implements Pool<T> 
 {
-    private PoolFiniteBlocking(int size) { }
+    private PoolFiniteBlocking(int size) { throw new NotImplemented() ; }
     
     public T get()
     {
