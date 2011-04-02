@@ -3,6 +3,8 @@ package dev ;
 
 public class DevTDB
 {
+    // Optimizer - named graph and union graph
+    
     // symUnionDefaultGraph and DESCRIBE
     
     // http://sna-projects.com/krati/
