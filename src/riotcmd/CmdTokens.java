@@ -30,11 +30,9 @@ public class CmdTokens
 
         if ( arg.equals("--help") || arg.equals("-help") || arg.equals("-h") || arg.equals("--h") ) 
         {
-            System.err.println("Usage: FILE") ;
+            System.err.println("Usage: stdin | FILE ...") ;
             System.exit(1) ;
         }
-        // Mem dataset with union graph
-
         for ( String filename : args )
         {
             InputStream in = IO.openFile(args[0]) ;

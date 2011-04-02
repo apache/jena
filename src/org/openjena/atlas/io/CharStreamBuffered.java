@@ -21,7 +21,6 @@ public final class CharStreamBuffered extends CharStreamReader
 {
     // ARQ to v2.8.7
     // /*package*/ static final int CB_SIZE       = 16 * 1024 ;
-    
     /*package*/ static final int CB_SIZE       = 128 * 1024 ;
     
     private final char[] chars ;            // CharBuffer?

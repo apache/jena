@@ -104,7 +104,6 @@ public class IO
     /** Create an unbuffered reader that uses UTF-8 encoding */ 
     static public Reader asUTF8(InputStream in)
     {
-        // See also Apache commons I/O IOUtils.toString(InutStream)
         return new InputStreamReader(in, utf8.newDecoder());
     }
     

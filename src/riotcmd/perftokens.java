@@ -11,7 +11,7 @@ public class perftokens
 {
     public static void main(String...args)
     {
-        CmdTokens.tokens(false, true,args) ;
+        CmdTokens.tokens(false, true, args) ;
     }
 }
 

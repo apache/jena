@@ -52,7 +52,6 @@ public class Service
 //        }
 //        else
             query = OpAsQuery.asQuery(opRemote) ;
-        
             
         Explain.explain("HTTP", query, context) ;            
         HttpQuery httpQuery = new HttpQuery(op.getService().getURI()) ;

@@ -22,6 +22,9 @@ public class DevARQ
 
     // * RIOT Output
     // * RIOT I/O architecture
+    // Hard wired N-Triples/N-Quads parser.
+    // Fastest UTF-8 decoding, tokenize in byte space, massive byte buffering.
+    // Tokenize for N-triples tokens only.
     
     // TestGraphsMem
     

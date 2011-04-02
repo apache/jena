@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2010 Talis Systems Ltd.
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -23,13 +24,16 @@ public final class InStreamUTF8 extends Reader implements CharStream
     // See arq.utf8. 
     // TODO Better ready()/available() in InputStreamBuffered
     
+    // Add ?? Character.isDefinded(codepoint)
+    
     // The standard Java way of doing this is via charset decoders.
     // One small disadvantage is that bad UTF-8 does not get flagged as to
     // the byte position of the error.
     
     // This class collects knowledge of how UTF-8 encoding works;
-    // the Java classes are usually faster compared to using this class and a
-    // with an InputStreamBuffered but the difference is small.
+    // the Java classes are usually slightly faster compared to using
+    // this class with an InputStreamBuffered but the difference is small.
+    // This class generated meaningful error messages (when line/col added).
     
     // The Java classes copy-convert a byte buffer into a char buffer.
     // Sometimes, for example in a parser, this isn't a convenient model
@@ -42,7 +46,7 @@ public final class InStreamUTF8 extends Reader implements CharStream
     // app is in charge of that.
     
     // UTF-8 (UTF-16) is different from other character sets because 
-    // the relationship with java's internal character representation is
+    // the relationship with Java's internal character representation is
     // arithmetic, not a character mapping. 
     
     // Todo: chars > 16 bits -> surrogate pairs. 
@@ -64,7 +68,7 @@ public final class InStreamUTF8 extends Reader implements CharStream
      * 11111100-11111101    FC-FD   252-253     start of 6-byte sequence
      * 
      * Illegal:
-     * 11000000-11000001    C0-C1   192-193     Overlong encoding: start of a 2-byte sequence, but code point ≤ 127
+     * 11000000-11000001    C0-C1   192-193     Overlong encoding: start of a 2-byte sequence, but code point <= 127
      * 11111110-11111111    FE-FF   254-255     Invalid: not defined by original UTF-8 specification
      */
     
@@ -105,6 +109,7 @@ public final class InStreamUTF8 extends Reader implements CharStream
     @Override
     public int read(char[] cbuf, int off, int len) throws IOException
     {
+        // Doing this on a block of bytes may be faster.
         for ( int i = off ; i < off+len ; i++ )
         {
             int x = read() ;
@@ -121,51 +126,77 @@ public final class InStreamUTF8 extends Reader implements CharStream
 
     @Override
     public final int read() throws IOException
-    { return advance(input) ; }
+    { 
+        int ch = advance(input) ;
+        //if ( ! Character.isDefined(ch) ) throw new AtlasException(String.format("Undefined codepoint: 0x%04X", ch)) ;
+        return ch ;
+    }
     
+    
+    /** Next codepoint, given the first byte of any UTF-8 byte sequence is already known.
+     *  Not necessarily a valid char (this function can be used a straight UTF8 decoder
+     */
     public final int advance()
     { return advance(input) ; }
     
-    /** Next char */
+    /** Next codepoint */
     public static final int advance(InputStreamBuffered input)
     {
-        //count++ ;
         int x = input.advance() ;
         if ( x == -1 ) return -1 ;
         return advance(input, x) ;
     }
     
-    /** Next char, given the first byte of any UTF-8 byte sequence is already known. */
+    /** Next codepoint, given the first byte of any UTF-8 byte sequence is already known.
+     * Not necessarily a valid char (this function can be used a straight UTF8 decoder
+     */
+    
     public static final int advance(InputStreamBuffered input, int x)
     {
+        //count++ ;
         // Fastpath
-        if ( x == -1 )
+        if ( x == -1 || x <= 127 ) 
+        {
+            //count++ ;
             return x ;
-        if ( x <= 127 )
-            return x ;
+        }
 
         // 10 => extension byte
         // 110..... => 2 bytes
-        if ( (x & 0xE0) == 0xC0 ) 
-            return readMultiBytes(input, x & 0x1F, 2) ;
+        if ( (x & 0xE0) == 0xC0 )
+        {
+            int ch = readMultiBytes(input, x & 0x1F, 2) ;
+            // count += 2 ;
+            return ch ;
+            
+        }
         //  1110.... => 3 bytes : 16 bits : not outside 16bit chars 
         if ( (x & 0xF0) == 0xE0 ) 
-            return readMultiBytes(input, x & 0x0F, 3) ;
+        {
+            int ch = readMultiBytes(input, x & 0x0F, 3) ;
+            // count += 3 ;
+            //if ( ! Character.isDefined(ch) ) throw new AtlasException(String.format("Undefined codepoint: 0x%04X", ch)) ;
+            return ch ;
+        }
 
         // Looking like 4 byte charcater.
-        int y = -2 ;
-        // 11110zzz => 4 bytes 
-        if ( (x & 0xF8) == 0xF0 ) 
-             y = readMultiBytes(input, x & 0x08, 4) ;
-
-        if ( y == -2 )
+        int ch = -2 ;
+        // 11110zzz => 4 bytes.
+        if ( (x & 0xF8) == 0xF0 )
+        {
+             ch = readMultiBytes(input, x & 0x08, 4) ;
+             // Opsp - need two returns. Character.toChars(ch, chars, 0) ;
+             // count += 4 ;
+        }
+             
+        else 
             IO.exception(new IOException("Illegal UTF-8: "+x)) ;
-        if ( y > Character.MAX_VALUE )
+
+        // This test will go off.  We're processing a 4 byte sequence but Java only supports 16 bit chars. 
+        if ( ch > Character.MAX_VALUE )
             throw new AtlasException("Out of range character (must use a surrogate pair)") ;
-        
-//        if ( ! Character.isDefined(x) )
-//            throw new AtlasException(String.format("Undefined codepoint: 0x%04X", x)) ;
-        return x ;
+        if ( ! Character.isDefined(ch) ) throw new AtlasException(String.format("Undefined codepoint: 0x%04X", ch)) ;
+        return ch ;
     }
     
     private static int readMultiBytes(InputStreamBuffered input, int start, int len) //throws IOException
@@ -177,9 +208,8 @@ public final class InStreamUTF8 extends Reader implements CharStream
         {
             int x2 = input.advance() ;
             if ( x2 == -1 )
-                throw new AtlasException("Premature end to UTF-8 sequnce at end of input") ;
+                throw new AtlasException("Premature end to UTF-8 sequence at end of input") ;
             
-            //p(x2) ;
             if ( (x2 & 0xC0) != 0x80 )
                 //throw new AtlasException("Illegal UTF-8 processing character "+count+": "+x2) ;
                 throw new AtlasException(String.format("Illegal UTF-8 processing character: 0x%04X",x2)) ;
