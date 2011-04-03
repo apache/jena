@@ -26,11 +26,7 @@ import com.hp.hpl.jena.graph.Node ;
 /** Common operations for RIOT parsers */
 public abstract class LangBase<X> implements LangRIOT
 {
-    //protected Checker checker = null ;
-    // Temp
-    protected ParserProfile profile ; //= new MakerChecker(ErrorHandlerLib.errorHandlerNoLogging, 
-                              //        new CheckerLiterals(ErrorHandlerLib.errorHandlerNoLogging, false )) ;
-
+    protected ParserProfile profile ;
     protected final Tokenizer tokens ;
     private final PeekIterator<Token> peekIter ;
 

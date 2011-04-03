@@ -12,14 +12,16 @@ import org.openjena.atlas.io.IO ;
 import org.openjena.atlas.io.PeekInputStream ;
 import org.openjena.riot.RiotParseException ;
 import org.openjena.riot.system.RiotChars ;
-import org.openjena.riot.tokens.Token ;
 import org.openjena.riot.tokens.TokenType ;
 
 import com.hp.hpl.jena.sparql.util.Timer ;
 
 /** NTriples parser written for speed. */ 
-public final class LangNTriples2
+public final class LangNTriples4
 {
+    // LangNTriples2 but no Token class.
+    // Faster: 268 -> 271 KTPS 
+    
     public static void main(String... argv) 
     {
         // ?? Process from a buffer with index arithmetic.
@@ -41,7 +43,7 @@ public final class LangNTriples2
         InputStream in = IO.openFile(filename) ;
         // Bigger is not better. 
         PeekInputStream peek = PeekInputStream.make(in, 8*1024) ;
-        LangNTriples2 parser = new LangNTriples2(peek) ;
+        LangNTriples4 parser = new LangNTriples4(peek) ;
         timer.startTimer() ;
         
         try {
@@ -63,8 +65,11 @@ public final class LangNTriples2
     long line = 0 ;
     long col = 0 ;
     long count = 0 ;
+    private TokenType tokenType = null ;
+    private String tokenImage = null ;
+    private String tokenImage2 = null ;
     
-    public LangNTriples2(PeekInputStream input) { this.input = input ; }
+    public LangNTriples4(PeekInputStream input) { this.input = input ; }
 
     private long parse()
     {
@@ -79,11 +84,14 @@ public final class LangNTriples2
                 continue ;
             }
             // Checking.
-            Token s = token() ;
+            token() ;
+            String s = tokenImage ;
             skipWS() ;
-            Token p = token() ;
+            token() ;
+            String p = tokenImage ;
             skipWS() ;
-            Token o = token() ;
+            token() ;
+            String o = tokenImage ;
             skipWS() ;
             ch = input.peekByte() ;
             if ( ch != '.' )
@@ -98,7 +106,6 @@ public final class LangNTriples2
             count++ ;
         }
     }
-    
 
     final StringBuilder sbuff = new StringBuilder(200) ;
     
@@ -107,7 +114,7 @@ public final class LangNTriples2
     // No \ u processing.
     // next: work on chars to see the difference. 
     
-    private Token token()
+    private void token()
     {
         sbuff.setLength(0) ;
         int ch = input.peekByte() ;
@@ -122,10 +129,8 @@ public final class LangNTriples2
                 sbuff.append((char)ch) ;
                 
             }
-            Token t = new Token(line, col) ;
-            t.setType(TokenType.IRI) ;
-            t.setImage(sbuff.toString()) ;
-            return t ;
+            tokenType = TokenType.IRI ;
+            tokenImage = sbuff.toString() ;
         }
         else if ( ch == '_' )
         {
@@ -139,10 +144,9 @@ public final class LangNTriples2
                 sbuff.append((char)ch) ;
                 input.readByte() ;
             }
-            Token t = new Token(line, col) ;
-            t.setType(TokenType.BNODE) ;
-            t.setImage(sbuff.toString()) ;
-            return t ;
+            tokenType = TokenType.BNODE ;
+            tokenImage = sbuff.toString() ;
+            return ;
         }
         else if ( ch == '"')
         {
@@ -172,32 +176,32 @@ public final class LangNTriples2
                 if ( ch != '^' )
                     throw new RiotParseException("Syntax error in datatype literal after ^", line, col) ;
                 input.readByte() ;
-                Token t2 = token() ;
-                if ( ! t2.hasType(TokenType.IRI) )
+                
+                String s = sbuff.toString() ;
+                
+                token() ;
+                if (  tokenType != TokenType.IRI )
                     throw new RiotParseException("Synatx error in datatype: IRI expected", line, col) ;
                 input.readByte() ;
-                Token t = new Token(line, col) ;
-                t.setType(TokenType.LITERAL_DT) ;
-                t.setImage(sbuff.toString()) ;
-                t.setSubToken(t2) ;
-                return t ;
+
+                tokenImage = s ;
+                tokenImage2 = sbuff.toString() ;
+                tokenType = TokenType.LITERAL_DT ;
+                return ;
             }
             else if ( ch == '@' )
             {
                 input.readByte() ;
-                String s = getLang() ;
-                Token t = new Token(line, col) ;
-                t.setType(TokenType.LITERAL_LANG) ;
-                t.setImage(sbuff.toString()) ;
-                t.setImage2(s) ;
-                return t ;
+                String s = sbuff.toString() ;
+                String l = getLang() ;
+                tokenType = TokenType.LITERAL_LANG ;
+                tokenImage = s ;
+                tokenImage2 = l ;
             }
             else
             {
-                Token t = new Token(line, col) ;
-                t.setType(TokenType.STRING2) ;
-                t.setImage(sbuff.toString()) ;
-                return t ;
+                tokenType = TokenType.STRING2 ;
+                tokenImage = sbuff.toString() ;
             }
         }
         else

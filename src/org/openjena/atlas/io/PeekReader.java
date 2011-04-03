@@ -34,11 +34,7 @@ public final class PeekReader extends Reader
     // Buffering is done by a CharStream - does i t make adifference?
     // Yes.  A lot (Java6).
     
-    // Possibly because BufferedReader internally uses synchronized,
-    // even on getting a single character.  This is not only an unnecessary cost
-    // but also possibly because it stops the JIT doing a better job.
-    // **** read(char[]) is a loop of single char operations.
-    
+    // Using a Reader here seems to have zero cost or benefit but CharStream allows fast String handling. 
     private final CharStream source ;
     
     private static final int PUSHBACK_SIZE = 10 ; 
@@ -70,7 +66,7 @@ public final class PeekReader extends Reader
 //        if ( r instanceof BufferedReader )
 //        {
 //            // Already buffered - and we can't unbuffer it.
-//            // Still worth our bufering because of the synchronized on one char reads 
+//            // Still worth our buffering because of the synchronized on one char reads 
 //            return new PeekReader(new CharStreamBuffered(r, bufferSize)) ;
 //        }
         return new PeekReader(new CharStreamBuffered(r, bufferSize)) ;
@@ -113,7 +109,6 @@ public final class PeekReader extends Reader
         Reader r = IO.asASCII(in) ;
         return make(r) ;
     }
-    
     
     public static PeekReader make(CharStream r) 
     {

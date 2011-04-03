@@ -67,15 +67,15 @@ public class ModLangParse implements ArgModuleGeneral
             bitbucket = true ;
         }
         
-        if ( cmdLine.contains(argNoCheck) )
-            explicitNoCheck = false ;
-        
         if ( cmdLine.contains(argCheck) )
         {
             boolean b = ! cmdLine.getArg(argCheck).getValue().equalsIgnoreCase("false") ;
             explicitCheck = b ;
             explicitNoCheck = !b ;
         }
+        
+        if ( cmdLine.contains(argNoCheck) )
+            explicitNoCheck = true ;
         
         if ( cmdLine.contains(argStrict) )
             strict = true ;

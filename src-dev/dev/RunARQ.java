@@ -124,6 +124,8 @@ public class RunARQ
     
     public static void main(String[] argv) throws Exception
     {
+        riotcmd.riot.main("--nocheck", "--sink", "--time", "X.nt") ; exit(0) ;
+        
         arq.sparql.main(/*"--opt=false",*/ "--explain", "--data=D.ttl", "--query=Q.rq") ;
         exit(0) ;
         

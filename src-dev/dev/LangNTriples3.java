@@ -7,9 +7,10 @@
 package dev;
 
 import java.io.InputStream ;
+import java.io.Reader ;
 
 import org.openjena.atlas.io.IO ;
-import org.openjena.atlas.io.PeekInputStream ;
+import org.openjena.atlas.io.PeekReader ;
 import org.openjena.riot.RiotParseException ;
 import org.openjena.riot.system.RiotChars ;
 import org.openjena.riot.tokens.Token ;
@@ -18,14 +19,11 @@ import org.openjena.riot.tokens.TokenType ;
 import com.hp.hpl.jena.sparql.util.Timer ;
 
 /** NTriples parser written for speed. */ 
-public final class LangNTriples2
+public final class LangNTriples3
 {
     public static void main(String... argv) 
     {
-        // ?? Process from a buffer with index arithmetic.
-        
-        // Run at about 260KTPS raw paring speed.
-        // No hotspot detection tried.
+        // Same as LangNTriples2 but works in char space.
         
         if ( argv.length == 0 )
             argv = new String[] {"-"} ;
@@ -33,15 +31,31 @@ public final class LangNTriples2
         for ( String filename : argv )
             processOneFile(filename) ;
     }
-        
+    
     private static void processOneFile(String filename)
     {
-         
         Timer timer = new Timer() ;
         InputStream in = IO.openFile(filename) ;
-        // Bigger is not better. 
-        PeekInputStream peek = PeekInputStream.make(in, 8*1024) ;
-        LangNTriples2 parser = new LangNTriples2(peek) ;
+
+        // The byte-space one is 267K TPS
+        // PeekReader uses CharStream - is that an overhead too much? 
+        
+        // 253K TPS - control the buffer size.
+        Reader r = IO.asUTF8(in) ;
+        PeekReader peek = PeekReader.make(r, 128*1024) ;
+        
+        // Slower: e.g. 190K TPS
+//        InputStreamBuffered in2 = new InputStreamBuffered(in, 128*1024) ;
+//        Reader r = new InStreamUTF8(in2) ;
+//        PeekReader peek = PeekReader.make(r) ;
+        
+//        // Buffer in byte space.
+//        InputStreamBuffered in2 = new InputStreamBuffered(in, 8*1024) ;
+//        Reader r = IO.asUTF8(in) ;
+//        // And in char space 
+//        PeekReader peek = PeekReader.make(r) ;
+        
+        LangNTriples3 parser = new LangNTriples3(peek) ;
         timer.startTimer() ;
         
         try {
@@ -50,7 +64,7 @@ public final class LangNTriples2
 
             double timeSec = timeMillis/1000.0 ;
             System.out.printf("%s : %,5.2f sec  %,d %s  %,.2f %s\n",
-                              "NT2",
+                              "NT3",
                               timeMillis/1000.0, numberTriples,
                               filename,
                               timeSec == 0 ? 0.0 : numberTriples/timeSec,
@@ -58,20 +72,19 @@ public final class LangNTriples2
         } catch (RiotParseException ex) { System.out.flush() ; throw ex ; }
     }
     
-    
-    final PeekInputStream input ;
+    final PeekReader input ;
     long line = 0 ;
     long col = 0 ;
     long count = 0 ;
     
-    public LangNTriples2(PeekInputStream input) { this.input = input ; }
+    public LangNTriples3(PeekReader input) { this.input = input ; }
 
     private long parse()
     {
         for ( ;; )
         {
             skipWS() ;
-            int ch = input.peekByte() ;
+            int ch = input.peekChar() ;
             if ( ch == -1 ) return count ; 
             if ( ch == '#' )
             {
@@ -85,12 +98,12 @@ public final class LangNTriples2
             skipWS() ;
             Token o = token() ;
             skipWS() ;
-            ch = input.peekByte() ;
+            ch = input.peekChar() ;
             if ( ch != '.' )
                 throw new RiotParseException("Triple not terminated by DOT ("+(char)ch+") ["+count+"]", line, col) ;
-            input.readByte() ;
+            input.readChar() ;
             skipWS() ;
-            ch = input.readByte() ;
+            ch = input.readChar() ;
             if ( ch != '\n' )
                 throw new RiotParseException("Triple not terminated by DOT-NL", line, col) ;
             
@@ -110,13 +123,13 @@ public final class LangNTriples2
     private Token token()
     {
         sbuff.setLength(0) ;
-        int ch = input.peekByte() ;
+        int ch = input.peekChar() ;
         if ( ch == '<' )
         {
-            input.readByte() ;
+            input.readChar() ;
             for(;;)
             {
-                ch = input.readByte() ;
+                ch = input.readChar() ;
                 if ( ch == '>' )
                     break ;
                 sbuff.append((char)ch) ;
@@ -129,15 +142,15 @@ public final class LangNTriples2
         }
         else if ( ch == '_' )
         {
-            input.readByte() ;
+            input.readChar() ;
             for(;;)
             {
                 // TODO Better
-                ch = input.peekByte() ;
+                ch = input.peekChar() ;
                 if ( ! RiotChars.isA2ZN(ch) && ch != '-' && ch != ':' )
                     break ;
                 sbuff.append((char)ch) ;
-                input.readByte() ;
+                input.readChar() ;
             }
             Token t = new Token(line, col) ;
             t.setType(TokenType.BNODE) ;
@@ -146,36 +159,36 @@ public final class LangNTriples2
         }
         else if ( ch == '"')
         {
-            input.readByte() ;
+            input.readChar() ;
             for(;;)
             {
-                ch = input.peekByte() ;
-                input.readByte() ;
+                ch = input.peekChar() ;
+                input.readChar() ;
                 if ( ch == '"' )
                     break ;
                 sbuff.append((char)ch) ;
                 // Escape
                 if ( ch == '\\' )
                 {
-                    ch = input.readByte() ;
+                    ch = input.readChar() ;
                     sbuff.append((char)ch) ;
                 }
             }
             // We skipped the "
-//            input.readByte() ;
-            ch = input.peekByte() ;
+//            input.readChar() ;
+            ch = input.peekChar() ;
             
             if ( ch == '^' )
             {
-                input.readByte() ;
-                ch = input.peekByte() ;
+                input.readChar() ;
+                ch = input.peekChar() ;
                 if ( ch != '^' )
                     throw new RiotParseException("Syntax error in datatype literal after ^", line, col) ;
-                input.readByte() ;
+                input.readChar() ;
                 Token t2 = token() ;
                 if ( ! t2.hasType(TokenType.IRI) )
                     throw new RiotParseException("Synatx error in datatype: IRI expected", line, col) ;
-                input.readByte() ;
+                input.readChar() ;
                 Token t = new Token(line, col) ;
                 t.setType(TokenType.LITERAL_DT) ;
                 t.setImage(sbuff.toString()) ;
@@ -184,7 +197,7 @@ public final class LangNTriples2
             }
             else if ( ch == '@' )
             {
-                input.readByte() ;
+                input.readChar() ;
                 String s = getLang() ;
                 Token t = new Token(line, col) ;
                 t.setType(TokenType.LITERAL_LANG) ;
@@ -209,10 +222,10 @@ public final class LangNTriples2
         sbuff.setLength(0) ;
         for ( ;; )
         {
-            int x = input.peekByte() ;
+            int x = input.peekChar() ;
             if ( ! RiotChars.isA2Z(x) && x != '-' )
                 break ;
-            input.readByte() ;
+            input.readChar() ;
             sbuff.append((char)x) ;
         }
         return sbuff.toString() ;
@@ -222,10 +235,10 @@ public final class LangNTriples2
     {
         for ( ;; )
         {
-            int x = input.peekByte() ;
+            int x = input.peekChar() ;
             if ( x != '\n' && x != -1 )
                 continue ;
-            input.readByte() ;
+            input.readChar() ;
         }
 
     }
@@ -234,10 +247,10 @@ public final class LangNTriples2
     {
         for ( ;; )
         {
-            int x = input.peekByte() ;
+            int x = input.peekChar() ;
             if ( x != ' ' && x != '\t' )
                 return ;
-            input.readByte() ;
+            input.readChar() ;
         }
     }            
 

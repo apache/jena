@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 
-public class LangNTriples extends LangNTuple<Triple>
+public final class LangNTriples extends LangNTuple<Triple>
 {
     private static Logger messageLog = LoggerFactory.getLogger("N-Triples") ;
     
@@ -32,6 +32,8 @@ public class LangNTriples extends LangNTuple<Triple>
     //@Override
     public Lang getLang()   { return Lang.NTRIPLES ; }
 
+    static final Node X = Node.createURI("http://example") ;
+    
     @Override
     protected final Triple parseOne() 
     { 
@@ -52,6 +54,10 @@ public class LangNTriples extends LangNTuple<Triple>
         checkIRI(pToken) ;
         checkRDFTerm(oToken) ;
 
+//        Node s = X ;
+//        Node p = X ;
+//        Node o = X ;
+        
         Node s = tokenAsNode(sToken) ;
         Node p = tokenAsNode(pToken) ;
         Node o = tokenAsNode(oToken) ;
@@ -60,12 +66,11 @@ public class LangNTriples extends LangNTuple<Triple>
         
         if ( x.getType() != TokenType.DOT )
             exception(x, "Triple not terminated by DOT: %s", x) ;
-        
         return profile.createTriple(s, p, o, sToken.getLine(), sToken.getColumn()) ;
     }
     
     @Override
-    protected Node tokenAsNode(Token token)
+    protected final Node tokenAsNode(Token token)
     {
         return profile.create(null, token) ;
     }
