@@ -24,9 +24,10 @@ public class DevARQ
     // * RIOT I/O architecture
     // Hard wired N-Triples/N-Quads parser. LangNTriples2 - Tokenize for N-triples tokens only.
     // NT-Perf next:
-    //   TokeizerText seems to be nearly as fast a LangNTriples4 so where is the time going in RIOT?
-    // Misc overhead in sink? ** Node creation.  125KTPS with, 200KTPS without.
-    // tokenAsNode = profile.create(null, token) ;
+    //   TokenizerText seems to be nearly as fast a LangNTriples4 so where is the time going in RIOT?
+    //   Particularly Node literals.
+    //    ** Node creation  125KTPS with, 200KTPS without.
+    //    ** LangNTriples4  265K
     
     // DynamicDS
     //  Reverted to dataset rewrite. See [[DynDS]] in QueryEngineTDB and QueryUnionRead

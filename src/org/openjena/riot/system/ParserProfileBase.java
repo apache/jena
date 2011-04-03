@@ -146,7 +146,6 @@ public class ParserProfileBase implements ParserProfile
                 return createTypedLiteral(str, XSDDatatype.XSDinteger, line, col) ;
             case LITERAL_DT :
             {
-                
                 Token tokenDT = token.getSubToken() ;
                 String uriStr ;
                 
