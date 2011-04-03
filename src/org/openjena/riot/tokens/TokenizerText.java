@@ -9,7 +9,6 @@ package org.openjena.riot.tokens;
 import static org.openjena.atlas.lib.Chars.* ;
 import static org.openjena.riot.system.RiotChars.* ;
 
-import java.io.IOException ;
 import java.util.NoSuchElementException ;
 
 import org.openjena.atlas.AtlasException ;
@@ -104,8 +103,7 @@ public final class TokenizerText implements Tokenizer
     //@Override
     public void close()
     { 
-        try { reader.close() ; }
-        catch (IOException ex) { IO.exception(ex) ; }
+        IO.close(reader) ;
     }
 
     // ---- Machinary

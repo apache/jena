@@ -31,7 +31,6 @@ public class DSG_Notify extends DatasetGraphWrapper
     static final EventType etRemoveQuad     = new EventType(URI+"removeGraph") ;
     static final EventType etClose          = new EventType(URI+"close") ;
     
-    
     public DSG_Notify(DatasetGraph dsg)
     {
         super(dsg) ;

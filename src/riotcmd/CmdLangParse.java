@@ -141,7 +141,8 @@ public abstract class CmdLangParse extends CmdGeneral
     @Override
     protected String getSummary()
     {
-        return getCommandName()+" [--time] [--check|--noCheck] [--sink] [--base=IRI] [--skip | --stopOnError] file ..." ;
+        //return getCommandName()+" [--time] [--check|--noCheck] [--sink] [--base=IRI] [--skip | --stopOnError] file ..." ;
+        return getCommandName()+" [--time] [--check|--noCheck] [--sink] [--base=IRI] file ..." ;
     }
 
     @Override
@@ -298,7 +299,6 @@ public abstract class CmdLangParse extends CmdGeneral
             sink = sink2 ;
         }
         
-        modTime.startTimer() ;
         // Pending log message having he filename in them.
         // output(filename) ;
         try
@@ -318,6 +318,7 @@ public abstract class CmdLangParse extends CmdGeneral
             if ( labelsAsGiven )
                 parser.getProfile().setLabelToNode(LabelToNode.createUseLabelAsGiven()) ;
             
+            modTime.startTimer() ;
             parser.parse() ;
         }
         catch (RiotException ex)

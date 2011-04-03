@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package dev ;
+package reports.archive ;
 import java.util.concurrent.ExecutionException ;
 import java.util.concurrent.ExecutorService ;
 import java.util.concurrent.Executors ;
@@ -28,7 +28,7 @@ import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.shared.Lock ;
 
-public class TestLARQConcurrent {
+public class ReportLARQConcurrent {
     
     static final int numThreads = 2;
     static final long duration = 2;
@@ -97,7 +97,7 @@ public class TestLARQConcurrent {
     }
 
 
-    private static Logger logger = Logger.getLogger(TestLARQConcurrent.class);
+    private static Logger logger = Logger.getLogger(ReportLARQConcurrent.class);
 }
 
 /*

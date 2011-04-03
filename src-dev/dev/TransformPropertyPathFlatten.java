@@ -188,6 +188,8 @@ X path{,n} Y                ==>   X path{0,n} Y
     
     static class RewritePath implements PathVisitor
     {
+        // OUT OF DATE
+        
         // Stack?
         VarAlloc varAlloc = VarAlloc.getVarAllocator() ;
         Stack<Path> stack = new Stack<Path>() ;

@@ -16,7 +16,7 @@ import com.hp.hpl.jena.util.FileManager ;
 public class ModLangParse implements ArgModuleGeneral
 {
     private ArgDecl argCheck    = new ArgDecl(ArgDecl.HasValue, "check") ;
-    private ArgDecl argNoCheck  = new ArgDecl(ArgDecl.NoValue, "nocheck") ;
+    private ArgDecl argNoCheck  = new ArgDecl(ArgDecl.NoValue, "nocheck", "noCheck") ;
     private ArgDecl argSink     = new ArgDecl(ArgDecl.NoValue, "sink", "null") ;
 
     private ArgDecl argStrict   = new ArgDecl(ArgDecl.NoValue, "strict") ;
@@ -51,7 +51,7 @@ public class ModLangParse implements ArgModuleGeneral
         cmdLine.add(argValidate,"--validate",       "Same as --sink --check=true --strict") ;
 //        cmdLine.add(argRDFS,    "--rdfs=file",      "Apply some RDFS inference using the vocabulary in the file") ;
         
-//        cmdLine.add(argNoCheck, "--nocheck",        "Turn off checking of RDF terms") ;
+        cmdLine.add(argNoCheck, "--nocheck",        "Turn off checking of RDF terms") ;
 //        cmdLine.add(argSkip,    "--skip",           "Skip (do not output) triples failing the RDF term tests") ;
 //        cmdLine.add(argNoSkip,  "--noSkip",         "Include triples failing the RDF term tests (not recommended)") ;
 //        cmdLine.add(argStop,    "--stop",           "Stop parsing on encountering a bad RDF term") ;

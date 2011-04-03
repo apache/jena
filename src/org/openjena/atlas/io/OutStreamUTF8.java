@@ -10,16 +10,14 @@ import java.io.IOException ;
 import java.io.OutputStream ;
 import java.io.Writer ;
 
-import org.openjena.atlas.AtlasException ;
-import org.openjena.atlas.lib.InternalErrorException ;
-
 /** Output UTF-8 encoded data.
  *  This class implements the "Modified UTF8" encoding rules (null -> C0 80)
  *  It will encode any 16 bit value.  
+ *  It can be used as a pure UTf-8 encoder. 
  * 
  *  @see InStreamUTF8
  */
-public class OutStreamUTF8 extends Writer
+public final class OutStreamUTF8 extends Writer
 {
     private OutputStream out ;
 
@@ -56,6 +54,13 @@ public class OutStreamUTF8 extends Writer
             write(str.charAt(idx+i)) ;
     }
 
+    public void output(int x)
+    { 
+        try { 
+            output(out, x) ;
+        } catch (IOException ex) { IO.exception(ex) ; }
+    }
+    
     /*
      * Bits 
      * 7    U+007F      1 to 127              0xxxxxxx 
@@ -107,10 +112,10 @@ public class OutStreamUTF8 extends Writer
             return ;
         }
         
-        if ( Character.isDefined(ch) )
-            throw new AtlasException("not a character") ;
+//        if ( Character.isDefined(ch) )
+//            throw new AtlasException("not a character") ;
         
-        if ( true ) throw new InternalErrorException("Valid code point for Java but not encodable") ;
+        //if ( true ) throw new InternalErrorException("Valid code point for Java but not encodable") ;
         
         // Not java, where chars are 16 bit.
         if ( ch <= 0x1FFFFF )

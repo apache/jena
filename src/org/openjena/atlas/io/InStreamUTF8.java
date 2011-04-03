@@ -14,17 +14,12 @@ import java.io.Reader ;
 
 import org.openjena.atlas.AtlasException ;
 
-/** Fast and streaming.
- *  Does not guarantee the character is legal or defined; 
- *  this is just the UTF-8 encoding rules.
- */
+/** Fast and streaming UTF-8 */
 public final class InStreamUTF8 extends Reader implements CharStream
 {
     // TODO Add line and col counts.
     // See arq.utf8. 
     // TODO Better ready()/available() in InputStreamBuffered
-    
-    // Add ?? Character.isDefinded(codepoint)
     
     // The standard Java way of doing this is via charset decoders.
     // One small disadvantage is that bad UTF-8 does not get flagged as to
