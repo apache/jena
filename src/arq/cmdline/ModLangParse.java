@@ -52,9 +52,9 @@ public class ModLangParse implements ArgModuleGeneral
 //        cmdLine.add(argRDFS,    "--rdfs=file",      "Apply some RDFS inference using the vocabulary in the file") ;
         
         cmdLine.add(argNoCheck, "--nocheck",        "Turn off checking of RDF terms") ;
-//        cmdLine.add(argSkip,    "--skip",           "Skip (do not output) triples failing the RDF term tests") ;
-//        cmdLine.add(argNoSkip,  "--noSkip",         "Include triples failing the RDF term tests (not recommended)") ;
-//        cmdLine.add(argStop,    "--stop",           "Stop parsing on encountering a bad RDF term") ;
+//        cmdLine.add(argSkip,    "--noSkip",         "Skip (do not output) triples failing the RDF term tests") ;
+//        cmdLine.add(argNoSkip,  "--skip",           "Include triples failing the RDF term tests (not recommended)") ;
+        cmdLine.add(argStop,    "--stop",           "Stop parsing on encountering a bad RDF term") ;
     }
 
     public void processArgs(CmdArgModule cmdLine)

@@ -92,7 +92,8 @@ public class ParserProfileChecker extends ParserProfileBase //implements ParserP
             return Node.createURI(resolvedIRI) ;
         } catch (RiotException ex)
         {
-            errorHandler.error(ex.getMessage(), line, col) ;
+            // Error was handled.
+            //errorHandler.error(ex.getMessage(), line, col) ;
             throw ex ;
         }
     }

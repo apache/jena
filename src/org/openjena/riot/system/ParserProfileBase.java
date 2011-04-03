@@ -155,7 +155,7 @@ public class ParserProfileBase implements ParserProfile
                     case PREFIXED_NAME:
                     {
                         String prefix = tokenDT.getImage() ;
-                        String suffix   = tokenDT.getImage2() ;
+                        String suffix = tokenDT.getImage2() ;
                         uriStr = expandPrefixedName(prefix, suffix, tokenDT) ;
                         break ;
                     }
