@@ -28,6 +28,7 @@ import org.openjena.fuseki.servlets.SPARQL_REST_RW ;
 import org.openjena.fuseki.servlets.SPARQL_Update ;
 import org.openjena.fuseki.servlets.SPARQL_Upload ;
 import org.openjena.fuseki.validation.DataValidator ;
+import org.openjena.fuseki.validation.IRIValidator ;
 import org.openjena.fuseki.validation.QueryValidator ;
 import org.openjena.fuseki.validation.UpdateValidator ;
 import org.openjena.riot.WebContent ;
@@ -175,9 +176,11 @@ public class SPARQLServer
             HttpServlet validateQuery = new QueryValidator() ;
             HttpServlet validateUpdate = new UpdateValidator() ;
             HttpServlet validateData = new DataValidator() ;    
+            HttpServlet validateIRI = new IRIValidator() ;
             addServlet(context, validateQuery, validationRoot+"/query") ;
             addServlet(context, validateUpdate, validationRoot+"/update") ;
             addServlet(context, validateData, validationRoot+"/data") ;
+            addServlet(context, validateIRI, validationRoot+"/iri") ;
         }
 
         if ( installManager )

@@ -5,6 +5,12 @@
 
 == 0.2.0
 
++ Validators now include:
+  Query
+  Update
+  RDF (non-XML formats)
+  IRI
+
 + HTTP request error pages now in "text/plain;charset=utf-8"
 + Location of a TDB database must exist when server starts.
 
