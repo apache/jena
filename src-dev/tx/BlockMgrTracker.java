@@ -8,11 +8,15 @@ package tx;
 
 import java.nio.ByteBuffer ;
 
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
+
 import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
 
 public class BlockMgrTracker implements BlockMgr //extends BlockMgrWrapper
 {
     private final BlockMgr blockMgr ;
+    private static Logger log = LoggerFactory.getLogger(BlockMgrTracker.class) ; 
     
     // Not a BlockMgrWrapper to ensure we write all the operations.
     
@@ -23,63 +27,85 @@ public class BlockMgrTracker implements BlockMgr //extends BlockMgrWrapper
 
     public int allocateId()
     {
-        return 0 ;
+        int x = blockMgr.allocateId() ;
+        log.info("Allocate: "+x) ;
+        return x ;
     }
 
     public ByteBuffer allocateBuffer(int id)
     {
-        return null ;
+        log.info("Allocate buffer: "+id) ;
+        return blockMgr.allocateBuffer(id) ;
     }
 
     public boolean isEmpty()
     {
-        return false ;
+        return blockMgr.isEmpty() ;
     }
 
     public int blockSize()
     {
-        return 0 ;
+        return blockMgr.blockSize() ;
     }
 
     public ByteBuffer get(int id)
     {
-        return null ;
+        log.info("get: "+id) ;
+        return blockMgr.get(id) ;
     }
 
     public void put(int id, ByteBuffer block)
-    {}
+    {
+        log.info("put: "+id) ;
+        blockMgr.put(id, block) ;
+    }
 
     public void freeBlock(int id)
-    {}
+    {
+        log.info("Free buffer: "+id) ;
+        blockMgr.freeBlock(id) ;
+    }
 
     public boolean valid(int id)
     {
-        return false ;
+        return blockMgr.valid(id) ;
     }
 
     public void close()
-    {}
+    {
+        blockMgr.close() ;
+    }
 
     public boolean isClosed()
     {
-        return false ;
+        return blockMgr.isClosed() ;
     }
 
     public void sync()
-    {}
-
-    public void startUpdate()
-    {}
-
-    public void finishUpdate()
-    {}
+    {
+        log.info("Sync") ;
+        blockMgr.sync() ;
+    }
 
     public void startRead()
-    {}
+    {
+        blockMgr.startRead() ;
+    }
 
     public void finishRead()
-    {}
+    {
+        blockMgr.finishRead() ;
+    }
 
+    public void startUpdate()
+    {
+        blockMgr.startUpdate() ;
+    }
+
+    public void finishUpdate()
+    {
+        blockMgr.finishUpdate() ;
+    }
 }
 
 /*
