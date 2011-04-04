@@ -32,7 +32,8 @@ public final class LangNTriples extends LangNTuple<Triple>
     //@Override
     public Lang getLang()   { return Lang.NTRIPLES ; }
 
-    static final Node X = Node.createURI("http://example") ;
+//    static final Node X = Node.createURI("http://example") ;
+//    static final Triple T = new Triple(X, X, X) ;
     
     @Override
     protected final Triple parseOne() 
@@ -53,19 +54,18 @@ public final class LangNTriples extends LangNTuple<Triple>
         checkIRIOrBNode(sToken) ;
         checkIRI(pToken) ;
         checkRDFTerm(oToken) ;
-
-//        Node s = X ;
-//        Node p = X ;
-//        Node o = X ;
-        
-        Node s = tokenAsNode(sToken) ;
-        Node p = tokenAsNode(pToken) ;
-        Node o = tokenAsNode(oToken) ;
-        
         Token x = nextToken() ;
         
         if ( x.getType() != TokenType.DOT )
             exception(x, "Triple not terminated by DOT: %s", x) ;
+//        Node s = X ;
+//        Node p = X ;
+//        Node o = X ;
+//        return T ;
+        
+        Node s = tokenAsNode(sToken) ;
+        Node p = tokenAsNode(pToken) ;
+        Node o = tokenAsNode(oToken) ;
         return profile.createTriple(s, p, o, sToken.getLine(), sToken.getColumn()) ;
     }
     

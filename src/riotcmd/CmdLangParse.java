@@ -354,7 +354,8 @@ public abstract class CmdLangParse extends CmdGeneral
     {
         double timeSec = timeMillis/1000.0 ;
         
-        System.out.printf("%s : %,5.2f sec  %,d %s  %,.2f %s\n",
+        System.out.flush() ;
+        System.err.printf("%s : %,5.2f sec  %,d %s  %,.2f %s\n",
                           label,
                           timeMillis/1000.0, numberTriples,
                           handler.getItemsName(),
@@ -364,7 +365,7 @@ public abstract class CmdLangParse extends CmdGeneral
     
     protected void output(String label)
     {
-        System.out.printf("%s : \n", label) ;
+        System.err.printf("%s : \n", label) ;
     }
 }
 

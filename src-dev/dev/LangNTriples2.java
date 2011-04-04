@@ -50,9 +50,9 @@ public final class LangNTriples2
 
             double timeSec = timeMillis/1000.0 ;
             System.out.printf("%s : %,5.2f sec  %,d %s  %,.2f %s\n",
-                              "NT2",
-                              timeMillis/1000.0, numberTriples,
                               filename,
+                              timeMillis/1000.0, numberTriples,
+                              "triples",
                               timeSec == 0 ? 0.0 : numberTriples/timeSec,
                               "TPS") ;
         } catch (RiotParseException ex) { System.out.flush() ; throw ex ; }
@@ -175,7 +175,6 @@ public final class LangNTriples2
                 Token t2 = token() ;
                 if ( ! t2.hasType(TokenType.IRI) )
                     throw new RiotParseException("Synatx error in datatype: IRI expected", line, col) ;
-                input.readByte() ;
                 Token t = new Token(line, col) ;
                 t.setType(TokenType.LITERAL_DT) ;
                 t.setImage(sbuff.toString()) ;
