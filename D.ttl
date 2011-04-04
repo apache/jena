@@ -1,3 +1,16 @@
 @prefix  : <http://example/> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
 
-:s :p "hello\nworld" .
+:s1 :p :key1 .
+
+:s2 :p :key2 .
+:s3 :p :key3 .
+:s4 :p :key4 .
+:s5 :p :key5 .
+
+
+
+
+:key1 rdfs:label "Key 1" .
+:key2 rdfs:label "Key 2" .
+

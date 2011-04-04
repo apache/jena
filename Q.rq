@@ -1,1 +1,7 @@
-SELECT (count(*) AS ?c) { ?s ?p ?o FILTER ( ?s != '34' ) }
+PREFIX : <http://example/>
+PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?key ?label WHERE
+{ :s ?p ?key . 
+  ?key <http://www.w3.org/2000/01/rdf-schema#label> ?label }
+
