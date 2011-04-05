@@ -122,56 +122,6 @@ public class BPlusTree implements Iterable<Record>, RangeIndex, Session
     private BPTreeRecordsMgr recordsMgr; 
     private BPlusTreeParams bpTreeParams ;
     
-    // Better done outside.
-//    // Internal checking for concurrency.
-//    // Not perfect.
-//    private volatile int readCounter = 0 ;
-//    private volatile int insertCounter = 0 ;
-//    private volatile int deleteCounter = 0 ;
-//    
-//    private void checkConcurrency()
-//    {
-//        checkConcurrency(readCounter, insertCounter, deleteCounter) ;
-//    }
-//    
-//    private static void checkConcurrency(int read, int insert, int delete)
-//    {
-//
-//        if ( ! BPlusTreeParams.CheckingConcurrency ) return ;
-//        if ( read > 0 )
-//        {
-//            if ( insert > 0 )
-//                error("Insert in progress when read operation attempted", read, insert, delete) ;
-//            if ( delete > 0 )
-//                error("Delete in progress when read operation attempted", read, insert, delete) ;
-//            return ;
-//        }
-//        
-//        if ( insert > 0 )
-//        {
-//            if ( read > 0 )
-//                error("Read in progress when insert operation attempted", read, insert, delete) ;
-//            if ( delete > 0 )
-//                error("Delete in progress when insert operation attempted", read, insert, delete) ;
-//            return ;
-//        }
-//
-//        if ( delete > 0 )
-//        {
-//            if ( read > 0 )
-//                error("Read in progress when delete operation attempted", read, insert, delete) ;
-//            if ( insert > 0 )
-//                error("Insert in progress when delete operation attempted", read, insert, delete) ;
-//            return ;
-//        }
-//    }
-//    
-//    private static void error(String msg, int read, int insert, int delete)
-//    {
-//        String str = String.format("B+Tree: [R:%d,I:%d,D:%d] %s",read, insert, delete, msg) ;
-//        throw new BPTreeException(str) ;
-//    }
-//    
     /** Create the in-memory structures to correspnond to
      * the supplied block managers for the persistent storage.
      * This is the normal way to create a B+Tree.
@@ -235,16 +185,18 @@ public class BPlusTree implements Iterable<Record>, RangeIndex, Session
         // This fixes the root to being block 0
         if ( nodeManager.valid(0) )
         {
+            nodeManager.startRead() ;       // Just the nodeManager
             // Existing BTree
             root = nodeManager.getRoot(rootIdx) ;
-            
             rootIdx = root.getId() ;
             // Build root node.
             // Per session count only.
             sessionCounter = 0 ;
+            nodeManager.finishRead() ;
         }
         else
         {
+            startUpdateBlkMgr() ;
             // Fresh BPlusTree
             root = nodeManager.createEmptyBPT() ;
             rootIdx = root.getId() ;
@@ -253,6 +205,7 @@ public class BPlusTree implements Iterable<Record>, RangeIndex, Session
             sessionCounter = 0 ;
             if ( CheckingNode )
                 root.checkNodeDeep() ;
+            finishUpdateBlkMgr() ;
         }
     }
 
@@ -271,27 +224,61 @@ public class BPlusTree implements Iterable<Record>, RangeIndex, Session
     
     public Record find(Record record)
     {
+        startReadBlkMgr() ;
+        BPTreeNode root = getRoot() ;
         Record v = root.search(record) ;
         if ( logging() )
             log.debug(format("find(%s) ==> %s", record, v)) ;
+        releaseRoot(root) ;
+        finishReadBlkMgr() ;
         return v ;
     }
     
+    private BPTreeNode getRoot()
+    {
+        // Cache it?
+        // Across staert/Update
+        //BPTreeNode root2 = nodeManager.getRoot(rootIdx) ;
+        return root ;
+    }
+    
+    private void releaseRoot(BPTreeNode root)
+    {
+        //nodeManager.releaseRoot(rootIdx) ;
+        if ( root != this.root )
+            log.warn("Root is not root!") ;
+    }
+
     public boolean contains(Record record)
     {
+        startReadBlkMgr() ;
+        BPTreeNode root = getRoot() ;
         if ( logging() )
             log.debug(format("contains(%s)", record)) ;
-        return root.search(record) != null ;
+        Record r = root.search(record) ;
+        releaseRoot(root) ;
+        finishReadBlkMgr() ;
+        return r != null ;
     }
 
     public Record minKey()
     {
-        return root.minRecord();
+        startReadBlkMgr() ;
+        BPTreeNode root = getRoot() ;
+        Record r = root.minRecord();
+        releaseRoot(root) ;
+        finishReadBlkMgr() ;
+        return r ;
     }
 
     public Record maxKey()
     {
-        return root.maxRecord() ;
+        startReadBlkMgr() ;
+        BPTreeNode root = getRoot() ;
+        Record r = root.maxRecord() ;
+        releaseRoot(root) ;
+        finishReadBlkMgr() ;
+        return r ;
     }
 
     //@Override
@@ -305,12 +292,14 @@ public class BPlusTree implements Iterable<Record>, RangeIndex, Session
     {
         if ( logging() )
             log.debug(format("add(%s)", record)) ;
-        nodeManager.startUpdate() ;
+        startUpdateBlkMgr() ;
+        BPTreeNode root = getRoot() ;
         Record r = root.insert(record) ;
         if ( r == null )
             sessionCounter++ ;
         if ( CheckingTree ) root.checkNodeDeep() ;
-        nodeManager.finishUpdate() ;
+        releaseRoot(root) ;
+        finishUpdateBlkMgr() ;
         return r ;
     }
     
@@ -321,46 +310,92 @@ public class BPlusTree implements Iterable<Record>, RangeIndex, Session
     {
         if ( logging() )
             log.debug(format("delete(%s)", record)) ;
-        nodeManager.startUpdate() ;
+        startUpdateBlkMgr() ;
+        BPTreeNode root = getRoot() ;
         Record r =  root.delete(record) ;
         if ( r != null )
             sessionCounter -- ;
         if ( CheckingTree ) root.checkNodeDeep() ;
-        nodeManager.finishUpdate() ;
+        releaseRoot(root) ;
+        finishUpdateBlkMgr() ;
         return r ;
     }
 
     //@Override
     public Iterator<Record> iterator()
     {
-        return root.iterator() ;
+        startReadBlkMgr() ;
+        BPTreeNode root = getRoot() ;
+        Iterator<Record> iter = root.iterator() ;
+        releaseRoot(root) ;
+        finishReadBlkMgr() ;    // WRONG!
+        return iter ;
     }
     
     public Iterator<Record> iterator(Record fromRec, Record toRec)
     {
-        return root.iterator(fromRec, toRec) ;
+        startReadBlkMgr() ;
+        BPTreeNode root = getRoot() ;
+        Iterator<Record> iter = root.iterator(fromRec, toRec) ;
+        releaseRoot(root) ;
+        finishReadBlkMgr() ;    // WRONG!
+        return iter ;
     }
     
     //@Override
-    public void finishRead()
-    {}
-
-    //@Override
-    public void finishUpdate()
-    {}
-
-    //@Override
     public void startRead()
-    {}
+    { }
+
+    //@Override
+    public void finishRead()
+    { }
 
     //@Override
     public void startUpdate()
-    {}
+    { }
+    
+    //@Override
+    public void finishUpdate()
+    { }
+
+    // Internal calls.
+    //@Override
+    private void startReadBlkMgr()
+    {
+        nodeManager.startRead() ;
+        recordsMgr.startRead() ;
+    }
+
+    //@Override
+    private void finishReadBlkMgr()
+    {
+        nodeManager.finishRead() ;
+        recordsMgr.finishRead() ;
+    }
+
+    //@Override
+    private void startUpdateBlkMgr()
+    {
+        nodeManager.startUpdate() ;
+        recordsMgr.startUpdate() ;
+    }
+    
+    //@Override
+    private void finishUpdateBlkMgr()
+    {
+        nodeManager.finishUpdate() ;
+        recordsMgr.finishUpdate() ;
+    }
 
     //@Override
     public boolean isEmpty()
     {
-        return ! root.hasAnyKeys() ;
+        startReadBlkMgr() ;
+        BPTreeNode root = getRoot() ;
+        boolean b = ! root.hasAnyKeys() ;
+        releaseRoot(root) ;
+        finishReadBlkMgr() ;
+        return b ;
     }
     
     //@Override
@@ -368,11 +403,8 @@ public class BPlusTree implements Iterable<Record>, RangeIndex, Session
     { throw new UnsupportedOperationException("RangeIndex("+Utils.classShortName(this.getClass())+").clear") ; }
     
     //@Override
-    public void sync() { sync(true) ; }
-    
-    //@Override
-    public void sync(boolean force)
-    {
+    public void sync() 
+    { 
         if ( nodeManager.getBlockMgr() != null )
             nodeManager.getBlockMgr().sync() ;
         if ( recordsMgr.getBlockMgr() != null )
