@@ -9,11 +9,8 @@ package com.hp.hpl.jena.tdb.index.bplustree;
 
 import static com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams.CheckingNode;
 import static com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams.CheckingTree;
-import static java.lang.String.format;
-
 
 import java.util.Iterator;
-
 
 import org.openjena.atlas.io.IndentedWriter ;
 import org.openjena.atlas.iterator.Iter ;
@@ -113,6 +110,12 @@ public class BPlusTree implements Iterable<Record>, RangeIndex, Session
      * sibling nodes instead of immediately splitting (like delete, only on insert).
      */ 
     
+    /* TODO
+     * static factories:
+     *   Simplify (or separate factory), return a RangeIndex  
+     *   If BPlusTreeLogging, the wrap in a logging RangeIndexWrapper
+     */
+    
     private static Logger log = LoggerFactory.getLogger(BPlusTree.class) ;
     
     private long sessionCounter = 0 ;              // Session counter
@@ -185,6 +188,7 @@ public class BPlusTree implements Iterable<Record>, RangeIndex, Session
         // This fixes the root to being block 0
         if ( nodeManager.valid(0) )
         {
+            // Signal both?
             nodeManager.startRead() ;       // Just the nodeManager
             // Existing BTree
             root = nodeManager.getRoot(rootIdx) ;
@@ -227,12 +231,12 @@ public class BPlusTree implements Iterable<Record>, RangeIndex, Session
         startReadBlkMgr() ;
         BPTreeNode root = getRoot() ;
         Record v = root.search(record) ;
-        if ( logging() )
-            log.debug(format("find(%s) ==> %s", record, v)) ;
         releaseRoot(root) ;
         finishReadBlkMgr() ;
         return v ;
     }
+    
+    // Operations to bracket access to the root node.
     
     private BPTreeNode getRoot()
     {
@@ -253,8 +257,6 @@ public class BPlusTree implements Iterable<Record>, RangeIndex, Session
     {
         startReadBlkMgr() ;
         BPTreeNode root = getRoot() ;
-        if ( logging() )
-            log.debug(format("contains(%s)", record)) ;
         Record r = root.search(record) ;
         releaseRoot(root) ;
         finishReadBlkMgr() ;
@@ -290,8 +292,6 @@ public class BPlusTree implements Iterable<Record>, RangeIndex, Session
     /** Add a record into the B+Tree */
     public Record addAndReturnOld(Record record)
     {
-        if ( logging() )
-            log.debug(format("add(%s)", record)) ;
         startUpdateBlkMgr() ;
         BPTreeNode root = getRoot() ;
         Record r = root.insert(record) ;
@@ -308,8 +308,6 @@ public class BPlusTree implements Iterable<Record>, RangeIndex, Session
     
     public Record deleteAndReturnOld(Record record)
     {
-        if ( logging() )
-            log.debug(format("delete(%s)", record)) ;
         startUpdateBlkMgr() ;
         BPTreeNode root = getRoot() ;
         Record r =  root.delete(record) ;
@@ -359,28 +357,24 @@ public class BPlusTree implements Iterable<Record>, RangeIndex, Session
     { }
 
     // Internal calls.
-    //@Override
     private void startReadBlkMgr()
     {
         nodeManager.startRead() ;
         recordsMgr.startRead() ;
     }
 
-    //@Override
     private void finishReadBlkMgr()
     {
         nodeManager.finishRead() ;
         recordsMgr.finishRead() ;
     }
 
-    //@Override
     private void startUpdateBlkMgr()
     {
         nodeManager.startUpdate() ;
         recordsMgr.startUpdate() ;
     }
     
-    //@Override
     private void finishUpdateBlkMgr()
     {
         nodeManager.finishUpdate() ;
@@ -452,11 +446,6 @@ public class BPlusTree implements Iterable<Record>, RangeIndex, Session
     public void dump(IndentedWriter out)
     {
         root.dump(out) ;
-    }
-
-    private static final boolean logging()
-    {
-        return BPlusTreeParams.logging(log) ;
     }
 }
 

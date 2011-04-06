@@ -10,13 +10,19 @@ import java.util.Iterator ;
 
 import org.openjena.atlas.lib.Bytes ;
 import org.openjena.atlas.logging.Log ;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory ;
 import com.hp.hpl.jena.tdb.base.record.Record ;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
+import com.hp.hpl.jena.tdb.index.RangeIndex ;
+import com.hp.hpl.jena.tdb.index.RangeIndexWrapper ;
 import com.hp.hpl.jena.tdb.index.bplustree.BPlusTree ;
 import com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams ;
+import com.hp.hpl.jena.tdb.index.btree.BTree ;
+import com.hp.hpl.jena.tdb.index.btree.BTreeParams ;
 
 public class TxMain
 {
@@ -34,36 +40,95 @@ public class TxMain
     public static void main(String... args)
     {
         RecordFactory rf = new RecordFactory(8,8) ;
-        int order = 2 ;
-        BPlusTreeParams params = new BPlusTreeParams(order, rf) ;
-        System.out.println(params) ;
-        int blockSize  = BPlusTreeParams.calcBlockSize(order, rf) ;
-        System.out.println("Block size = "+blockSize) ;
-        BlockMgr mgr1 = BlockMgrFactory.createMem("B1", blockSize) ;
-        mgr1 = new BlockMgrTracker("B1", mgr1) ;
         
-        BlockMgr mgr2 = BlockMgrFactory.createMem("B2", blockSize) ;
-        mgr2 = new BlockMgrTracker("B2", mgr2) ;
-        BPlusTree bpt = BPlusTree.attach(params, mgr1, mgr2) ;
+        RangeIndex rIndex ;
+        if ( false )
+        {
+            int order = 2 ;
+            BPlusTreeParams params = new BPlusTreeParams(order, rf) ;
+            System.out.println(params) ;
+            int blockSize  = BPlusTreeParams.calcBlockSize(order, rf) ;
+            System.out.println("Block size = "+blockSize) ;
+            BlockMgr mgr1 = BlockMgrFactory.createMem("B1", blockSize) ;
+            mgr1 = new BlockMgrTracker("BlkMgr1", mgr1) ;
+            
+            BlockMgr mgr2 = BlockMgrFactory.createMem("B2", blockSize) ;
+            mgr2 = new BlockMgrTracker("BlkMgr2", mgr2) ;
+            BPlusTree bpt = BPlusTree.attach(params, mgr1, mgr2) ;
+            rIndex = bpt ;
+        }
+        else
+        {
+            // BTree : version testing.
+            int btOrder  = 3 ;
+            int blkSize = BTreeParams.calcBlockSize(btOrder, rf) ;
+            BlockMgr mgr = BlockMgrFactory.createMem("B3", blkSize) ;
+            mgr = new BlockMgrTracker("B3", mgr) ;
+            BTreeParams p = new BTreeParams(btOrder, rf) ;
+            BTree btree = new BTree(p, mgr) ;
+            rIndex = btree ;
+        }
+        
+        final Logger log = LoggerFactory.getLogger("B+Tree") ;
+        
+        rIndex = new RangeIndexWrapper(rIndex)
+        {
+            @Override
+            public boolean add(Record record)
+            { 
+                log.info("Add: "+record) ;
+                return super.add(record) ; 
+            }
+            
+            @Override
+            public boolean delete(Record record)
+            { 
+                log.info("Delete: "+record) ;
+                return super.delete(record) ; 
+            }
+            
+            @Override
+            public Record find(Record record)
+            {
+                log.info("Find: "+record) ;
+                Record r2 = super.find(record) ;
+                log.info("Find: "+record+" ==> "+r2) ;
+                return r2 ;
+            }
+
+            @Override
+            public Iterator<Record> iterator()
+            {
+                log.info("iterator()") ;
+                return super.iterator() ;
+            }
+
+            @Override
+            public Iterator<Record> iterator(Record minRec, Record maxRec)
+            {
+                log.info("iterator("+minRec+", "+maxRec+")") ;
+                return super.iterator(minRec, maxRec) ;
+            }
+        } ;
         
         for ( int i = 0 ; i < 4 ; i++ ) 
         {
             Record r = record(rf, i+0x100000L, i+0x90000000L) ;
-            bpt.add(r) ;
+            rIndex.add(r) ;
         }
 
         System.out.println() ;
         
         Record r = record(rf, 3+0x100000L, 0) ;
-        r = bpt.find(r) ;
-        System.out.println("Find: "+r) ;
+        r = rIndex.find(r) ;
         System.out.println() ;
         
-        Iterator<Record> iter = bpt.iterator() ;
+        Iterator<Record> iter = rIndex.iterator() ;
         for ( ; iter.hasNext() ; )
             System.out.println(iter.next()) ;
         System.out.println() ;
-        bpt.dump() ;
+
+//        bpt.dump() ;
     }
 
     static Record record(RecordFactory rf, long key, long val)

@@ -4,59 +4,73 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.index.bplustree;
+package com.hp.hpl.jena.tdb.index;
 
 import java.util.Iterator ;
 
 import com.hp.hpl.jena.tdb.base.record.Record ;
+import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
+import com.hp.hpl.jena.tdb.index.RangeIndex ;
 
-public class BPlusTreeWrapper // implement BPlusTree
+public class RangeIndexWrapper implements RangeIndex
 {
-    private final BPlusTree bpt ;
+    private final RangeIndex rIndex ;
     
-    BPlusTreeWrapper(BPlusTree bpt) { this.bpt = bpt ; }
+    public RangeIndexWrapper(RangeIndex rIdx) { this.rIndex = rIdx ; }
     
     public Record find(Record record)
-    { return bpt.find(record) ; }
+    { return rIndex.find(record) ; }
     
     public boolean contains(Record record)
-    { return bpt.contains(record) ; }
+    { return rIndex.contains(record) ; }
     
     public Record minKey()
-    { return bpt.minKey() ; }
+    { return rIndex.minKey() ; }
     
     public Record maxKey()
-    { return bpt.maxKey() ; }
+    { return rIndex.maxKey() ; }
     
     public boolean add(Record record)
-    { return bpt.add(record) ; }
-    
-    public Record addAndReturnOld(Record record)
-    { return bpt.addAndReturnOld(record) ; }
+    { return rIndex.add(record) ; }
     
     public boolean delete(Record record)
-    { return bpt.delete(record) ; }
+    { return rIndex.delete(record) ; }
     
-    public Record deleteAndReturnOld(Record record)
-    { return bpt.deleteAndReturnOld(record) ; }
+//  public Record addAndReturnOld(Record record)
+//  { return bpt.addAndReturnOld(record) ; }
+  
+//    public Record deleteAndReturnOld(Record record)
+//    { return bpt.deleteAndReturnOld(record) ; }
     
     public Iterator<Record> iterator()
-    { return bpt.iterator() ; }
+    { return rIndex.iterator() ; }
     
     public Iterator<Record> iterator(Record minRec, Record maxRec)
-    { return bpt.iterator(minRec, maxRec) ; }
+    { return rIndex.iterator(minRec, maxRec) ; }
     
     public boolean isEmpty()
-    { return bpt.isEmpty() ; }
+    { return rIndex.isEmpty() ; }
     
     public void clear()
-    { bpt.clear() ; }
+    { rIndex.clear() ; }
     
     public void sync()
-    { bpt.sync() ; }
+    { rIndex.sync() ; }
     
     public void close()
-    { bpt.close() ; }
+    { rIndex.close() ; }
+
+    public RecordFactory getRecordFactory()
+    { return rIndex.getRecordFactory() ; }
+
+    public void check()
+    { rIndex.check() ; }
+
+    public long size()
+    { return rIndex.size() ; }
+
+    public long sessionTripleCount()
+    { return rIndex.sessionTripleCount() ; }
 }
 
 /*

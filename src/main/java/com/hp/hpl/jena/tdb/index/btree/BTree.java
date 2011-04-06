@@ -6,27 +6,22 @@
 
 package com.hp.hpl.jena.tdb.index.btree;
 
-import static com.hp.hpl.jena.tdb.index.btree.BTreeParams.CheckingBTree;
-import static com.hp.hpl.jena.tdb.index.btree.BTreeParams.CheckingNode;
-import static java.lang.String.format;
+import static com.hp.hpl.jena.tdb.index.btree.BTreeParams.CheckingBTree ;
+import static com.hp.hpl.jena.tdb.index.btree.BTreeParams.CheckingNode ;
 
-
-import java.util.Iterator;
-
+import java.util.Iterator ;
 
 import org.openjena.atlas.iterator.Iter ;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.sparql.util.Utils ;
-import com.hp.hpl.jena.tdb.base.block.BlockMgr;
-import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory;
-import com.hp.hpl.jena.tdb.base.record.Record;
-import com.hp.hpl.jena.tdb.base.record.RecordFactory;
-import com.hp.hpl.jena.tdb.index.RangeIndex;
+import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
+import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory ;
+import com.hp.hpl.jena.tdb.base.record.Record ;
+import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
+import com.hp.hpl.jena.tdb.index.RangeIndex ;
 import com.hp.hpl.jena.tdb.sys.Session ;
-
-
 
 /** B-Tree
  * 
@@ -136,16 +131,18 @@ public class BTree implements Iterable<Record>, RangeIndex, Session
         this.pageMgr = new BTreePageMgr(this, blkMgr) ;
         if ( pageMgr.valid(0) )
         {
+            startReadBlkMgr() ;
             // Existing BTree
             root = pageMgr.getRoot(rootIdx) ;
             rootIdx = root.id ;
             // Build root node.
             // Per session count only.
             sessionCounter = 0 ;
-            log.debug("Existing BTree: crude implementation of size") ; 
+            finishReadBlkMgr() ;
         }
         else
         {
+            startUpdateBlkMgr() ;
             // Fresh BTree
             root = pageMgr.createRoot() ;
             rootIdx = root.id ;
@@ -153,6 +150,7 @@ public class BTree implements Iterable<Record>, RangeIndex, Session
             if ( CheckingNode )
                 root.checkNodeDeep() ;
             pageMgr.put(root) ;
+            finishUpdateBlkMgr() ;
         }
     }
     
@@ -166,27 +164,57 @@ public class BTree implements Iterable<Record>, RangeIndex, Session
     
     public Record find(Record record)
     {
+        startReadBlkMgr() ;
+        BTreeNode root = getRoot() ;
         Record v = root.search(record) ;
-        if ( log.isDebugEnabled() )
-            log.debug(format("find(%s) ==> %s", record, v)) ;
+        finishReadBlkMgr() ;
         return v ;
+    }
+    
+    private BTreeNode getRoot()
+    {
+        // Cache it?
+        // Across staert/Update
+        //BPTreeNode root2 = nodeManager.getRoot(rootIdx) ;
+        return root ;
+    }
+    
+    
+    private void releaseRoot(BTreeNode root)
+    {
+        //nodeManager.releaseRoot(rootIdx) ;
+        if ( root != this.root )
+            log.warn("Root is not root!") ;
     }
     
     public boolean contains(Record record)
     {
-        if ( log.isDebugEnabled() )
-            log.debug(format("contains(%s)", record)) ;
-        return root.search(record) != null ;
+        startReadBlkMgr() ;
+        BTreeNode root = getRoot() ;
+        Record r = root.search(record) ;
+        releaseRoot(root) ;
+        finishReadBlkMgr() ;
+        return r != null ;
     }
 
     public Record minKey()
     {
-        return root.minRecord();
+        startReadBlkMgr() ;
+        BTreeNode root = getRoot() ;
+        Record r = root.minRecord();
+        releaseRoot(root) ;
+        finishReadBlkMgr() ;
+        return r ;
     }
 
     public Record maxKey()
     {
-        return root.maxRecord() ;
+        startReadBlkMgr() ;
+        BTreeNode root = getRoot() ;
+        Record r = root.maxRecord();
+        releaseRoot(root) ;
+        finishReadBlkMgr() ;
+        return r ;
     }
 
     //@Override
@@ -198,14 +226,14 @@ public class BTree implements Iterable<Record>, RangeIndex, Session
     /** Add a record into the BTree */
     public Record addAndReturnOld(Record record)
     {
-        if ( log.isDebugEnabled() )
-            log.debug(format("add(%s)", record)) ;
-        pageMgr.startUpdate() ;
+        startUpdateBlkMgr() ;
+        BTreeNode root = getRoot() ;
         Record r = root.insert(record) ;
         if ( r == null )
             sessionCounter++ ;
         if ( CheckingBTree ) root.checkNodeDeep() ;
-        pageMgr.finishUpdate() ;
+        releaseRoot(root) ;
+        finishUpdateBlkMgr() ;
         return r ;
     }
     
@@ -214,32 +242,47 @@ public class BTree implements Iterable<Record>, RangeIndex, Session
     
     public Record deleteAndReturnOld(Record record)
     {
-        if ( log.isDebugEnabled() )
-            log.debug(format("delete(%s)", record)) ;
-        pageMgr.startUpdate() ;
-        Record r =  root.delete(record) ;
+        startUpdateBlkMgr() ;
+        BTreeNode root = getRoot() ;
+        Record r = root.delete(record) ;
         if ( r != null )
-            sessionCounter -- ;
+            sessionCounter-- ;
         if ( CheckingBTree ) root.checkNodeDeep() ;
-        pageMgr.finishUpdate() ;
+        releaseRoot(root) ;
+        finishUpdateBlkMgr() ;
         return r ;
     }
 
     //@Override
     public Iterator<Record> iterator()
     {
-        return root.iterator() ;
+        startReadBlkMgr() ;
+        BTreeNode root = getRoot() ;
+        Iterator<Record> iter = root.iterator() ;
+        releaseRoot(root) ;
+        finishReadBlkMgr() ;    // WRONG!
+        return iter ;
     }
     
     public Iterator<Record> iterator(Record fromRec, Record toRec)
     {
-        return root.iterator(fromRec, toRec) ;
+        startReadBlkMgr() ;
+        BTreeNode root = getRoot() ;
+        Iterator<Record> iter = root.iterator(fromRec, toRec) ;
+        releaseRoot(root) ;
+        finishReadBlkMgr() ;    // WRONG!
+        return iter ;
     }
     
     //@Override
     public boolean isEmpty()
     {
-        return root.getCount() == 0 ;
+        startReadBlkMgr() ;
+        BTreeNode root = getRoot() ;
+        boolean b = ( root.getCount() == 0 ) ;
+        releaseRoot(root) ;
+        finishReadBlkMgr() ;
+        return b ;
     }
 
     //@Override
@@ -271,6 +314,15 @@ public class BTree implements Iterable<Record>, RangeIndex, Session
     public void finishUpdate()
     {}
 
+    // Internal calls.
+    private void startReadBlkMgr()      { pageMgr.startRead() ; }
+
+    private void finishReadBlkMgr()     { pageMgr.finishRead() ; }
+
+    private void startUpdateBlkMgr()    { pageMgr.startUpdate() ; }
+    
+    private void finishUpdateBlkMgr()   { pageMgr.finishUpdate() ; }
+    
     //@Override
     public long size()
     { 
