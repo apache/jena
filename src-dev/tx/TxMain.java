@@ -27,12 +27,11 @@ import com.hp.hpl.jena.tdb.index.btree.BTreeParams ;
 public class TxMain
 {
     /*
-     * read oeprations not called sesssion ops at all.
      * reads not doing a release
-     * BPlusTreeWrapper.
      * Iterator tracking?
      * End transaction => close all and any open iterators.
      *   BPlusTree.replicate(BlockMgr1, BlocMgr2)
+     * Recycle DatasetGraphTx objects.  Setup - set PageView
      */
     
     static { Log.setLog4j() ; }
@@ -42,11 +41,13 @@ public class TxMain
         RecordFactory rf = new RecordFactory(8,8) ;
         
         RangeIndex rIndex ;
-        if ( false )
+        String label ;
+        if ( true )
         {
+            label = "B+Tree" ;
             int order = 2 ;
             BPlusTreeParams params = new BPlusTreeParams(order, rf) ;
-            System.out.println(params) ;
+            System.out.println(label+": "+params) ;
             int blockSize  = BPlusTreeParams.calcBlockSize(order, rf) ;
             System.out.println("Block size = "+blockSize) ;
             BlockMgr mgr1 = BlockMgrFactory.createMem("B1", blockSize) ;
@@ -59,17 +60,19 @@ public class TxMain
         }
         else
         {
+            label = "BTree" ;
             // BTree : version testing.
             int btOrder  = 3 ;
             int blkSize = BTreeParams.calcBlockSize(btOrder, rf) ;
             BlockMgr mgr = BlockMgrFactory.createMem("B3", blkSize) ;
             mgr = new BlockMgrTracker("B3", mgr) ;
-            BTreeParams p = new BTreeParams(btOrder, rf) ;
-            BTree btree = new BTree(p, mgr) ;
+            BTreeParams params = new BTreeParams(btOrder, rf) ;
+            System.out.println(label+": "+params) ;
+            BTree btree = new BTree(params, mgr) ;
             rIndex = btree ;
         }
         
-        final Logger log = LoggerFactory.getLogger("B+Tree") ;
+        final Logger log = LoggerFactory.getLogger(label) ;
         
         rIndex = new RangeIndexWrapper(rIndex)
         {
