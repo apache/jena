@@ -27,9 +27,9 @@ import com.hp.hpl.jena.tdb.index.btree.BTreeParams ;
 public class TxMain
 {
     /*
-     * reads not doing a release
-     * Iterator tracking?
-     * End transaction => close all and any open iterators.
+     * Reads not doing a release
+     * Iterator tracking
+     * End transaction => close all open iterators.
      *   BPlusTree.replicate(BlockMgr1, BlocMgr2)
      * Recycle DatasetGraphTx objects.  Setup - set PageView
      */
