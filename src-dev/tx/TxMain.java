@@ -46,10 +46,13 @@ public class TxMain
         {
             label = "B+Tree" ;
             int order = 2 ;
+            
             BPlusTreeParams params = new BPlusTreeParams(order, rf) ;
             System.out.println(label+": "+params) ;
+            
             int blockSize  = BPlusTreeParams.calcBlockSize(order, rf) ;
             System.out.println("Block size = "+blockSize) ;
+            
             BlockMgr mgr1 = BlockMgrFactory.createMem("B1", blockSize) ;
             mgr1 = new BlockMgrTracker("BlkMgr1", mgr1) ;
             
@@ -61,7 +64,6 @@ public class TxMain
         else
         {
             label = "BTree" ;
-            // BTree : version testing.
             int btOrder  = 3 ;
             int blkSize = BTreeParams.calcBlockSize(btOrder, rf) ;
             BlockMgr mgr = BlockMgrFactory.createMem("B3", blkSize) ;
@@ -74,6 +76,7 @@ public class TxMain
         
         final Logger log = LoggerFactory.getLogger(label) ;
         
+        // Add logging.
         rIndex = new RangeIndexWrapper(rIndex)
         {
             @Override
