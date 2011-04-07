@@ -23,7 +23,7 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.util.FileUtils ;
 
 /** Convenient comma separated values - see also TSV (tab separated values)
- *  which output full RDf terms (in Turtle-style).
+ *  which outputs full RDF terms (in Turtle-style).
  *  
  *  The CSV format supported is:
  *  <ul>
@@ -32,6 +32,7 @@ import com.hp.hpl.jena.util.FileUtils ;
  *  No language tags, or datatypes.
  *  URIs are send without $lt;&gt;  
  *  </li>
+ *  CSV is RFC 4180, but there are many variations. 
  *  </ul> 
  */
 public class CSVOutput extends OutputBase
@@ -102,11 +103,13 @@ public class CSVOutput extends OutputBase
 
     private String csvSafe(String str)
     {
-        str = str.replaceAll("\"", "\"\"") ; 
-        
-        if ( str.contains(",") )
-            str = "\""+str+"\"" ; 
-        return str ;
+        // Apparently, there are CSV parsers that only accept "" as an escaped quote if inside a "..."  
+        if (str.contains("\"")
+            || str.contains(",")
+            || str.contains("\r")
+            || str.contains("\n") )
+            str = "\"" + str.replaceAll("\"", "\"\"") + "\"";
+        return str;
     }
 
     static final byte[] yesBytes = StrUtils.asUTF8bytes("yes") ;
