@@ -5,6 +5,7 @@ public class DevTDB
 {
     // Optimizer - named graph and union graph
     // Add ((TERM ANY ANY) 1), ((ANY ANY TERM) 1) to all stats files.?
+    // What is the fixed builtin?
     
     // symUnionDefaultGraph and DESCRIBE
     
