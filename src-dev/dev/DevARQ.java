@@ -3,6 +3,7 @@ package dev ;
 public class DevARQ
 {
     // OpExecutor example.
+    // Dataetfactory.create() -> autocreate graphs?
     
     // Optimization: remember (some!) query executions because index-join causes a lot of repeats.
     
