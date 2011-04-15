@@ -24,6 +24,13 @@ import com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams ;
 import com.hp.hpl.jena.tdb.index.btree.BTree ;
 import com.hp.hpl.jena.tdb.index.btree.BTreeParams ;
 
+/* NEXT
+ *   allocateId - allocateBuffer combined
+ *   freeBlock inc contents. freeBlock(id, byteBuffer)
+ *   Do we need a Block class?  Page class?
+ *     
+ */
+
 public class TxMain
 {
     /*
@@ -54,10 +61,10 @@ public class TxMain
             System.out.println("Block size = "+blockSize) ;
             
             BlockMgr mgr1 = BlockMgrFactory.createMem("B1", blockSize) ;
-            mgr1 = new BlockMgrTracker("BlkMgr1", mgr1) ;
+            mgr1 = new BlockMgrTracker("BlkMgr1", mgr1, false) ;
             
             BlockMgr mgr2 = BlockMgrFactory.createMem("B2", blockSize) ;
-            mgr2 = new BlockMgrTracker("BlkMgr2", mgr2) ;
+            mgr2 = new BlockMgrTracker("BlkMgr2", mgr2, false) ;
             BPlusTree bpt = BPlusTree.attach(params, mgr1, mgr2) ;
             rIndex = bpt ;
         }
@@ -67,7 +74,7 @@ public class TxMain
             int btOrder  = 3 ;
             int blkSize = BTreeParams.calcBlockSize(btOrder, rf) ;
             BlockMgr mgr = BlockMgrFactory.createMem("B3", blkSize) ;
-            mgr = new BlockMgrTracker("B3", mgr) ;
+            mgr = new BlockMgrTracker("B3", mgr, false) ;
             BTreeParams params = new BTreeParams(btOrder, rf) ;
             System.out.println(label+": "+params) ;
             BTree btree = new BTree(params, mgr) ;

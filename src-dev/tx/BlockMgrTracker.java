@@ -14,15 +14,10 @@ import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
+import com.hp.hpl.jena.tdb.base.block.BlockMgrWrapper ;
 
-public class BlockMgrTracker implements BlockMgr //extends BlockMgrWrapper
+public class BlockMgrTracker extends BlockMgrWrapper // implements BlockMgr
 {
-    private final BlockMgr blockMgr ;
-    //private static Logger log = LoggerFactory.getLogger(BlockMgrTracker.class) ; 
-    private Logger log ;
-    
-    // Not a BlockMgrWrapper to ensure we write all the operations.
-
     List<Integer> readGetIds = new ArrayList<Integer>() ;
     List<Integer> updateGetIds = new ArrayList<Integer>() ;
     List<Integer> readReleaseIds = new ArrayList<Integer>() ;
@@ -30,39 +25,18 @@ public class BlockMgrTracker implements BlockMgr //extends BlockMgrWrapper
     
     boolean inRead = false ;
     boolean inUpdate = false ;
+    protected final Logger log ;
     
 
-    public BlockMgrTracker(String label, BlockMgr blockMgr)
+    public BlockMgrTracker(String label, BlockMgr blockMgr, boolean logUpdatesOnly)
     {
-        this.blockMgr = blockMgr ;
+        //super(label, blockMgr, logUpdatesOnly) ;
+        super(blockMgr) ;
         log = LoggerFactory.getLogger(label) ;
+        
     }
 
-    public int allocateId()
-    {
-        int x = blockMgr.allocateId() ;
-        log.info("Allocate: "+x) ;
-        return x ;
-    }
-
-    public ByteBuffer allocateBuffer(int id)
-    {
-        log.info("Allocate buffer: "+id) ;
-        return blockMgr.allocateBuffer(id) ;
-    }
-
-    public boolean isEmpty()
-    {
-        log.info("isEmpty") ;
-        return blockMgr.isEmpty() ;
-    }
-
-    public int blockSize()
-    {
-        log.info("blockSize") ;
-        return blockMgr.blockSize() ;
-    }
-
+    @Override
     public ByteBuffer get(int id)
     {
         if ( inRead )
@@ -72,60 +46,38 @@ public class BlockMgrTracker implements BlockMgr //extends BlockMgrWrapper
         else
             log.warn("No session active") ;
         
-        //log.info("get: "+id) ;
-        return blockMgr.get(id) ;
+        return super.get(id) ;
     }
 
+    @Override
     public void put(int id, ByteBuffer block)
     {
         updatePutIds.add(id) ;
-        //log.info("put: "+id) ;
-        blockMgr.put(id, block) ;
+        super.put(id, block) ;
     }
 
+    @Override
     public void freeBlock(int id)
     {
         updatePutIds.add(id) ;
         log.info("Free buffer: "+id) ;
-        blockMgr.freeBlock(id) ;
+        super.freeBlock(id) ;
     }
 
-    public boolean valid(int id)
-    {
-        log.info("valid("+id+")") ;
-        return blockMgr.valid(id) ;
-    }
-
-    public void close()
-    {
-        log.info("close") ;
-        blockMgr.close() ;
-    }
-
-    public boolean isClosed()
-    {
-        log.info("isClosed") ;
-        return blockMgr.isClosed() ;
-    }
-
-    public void sync()
-    {
-        log.info("Sync") ;
-        blockMgr.sync() ;
-    }
-
+    @Override
     public void startRead()
     {
         if ( inRead )
             log.warn("startRead when already in read") ;
         if ( inUpdate )
             log.warn("startRead when already in update") ;
+        log.info("> start read") ;
         
         inRead = true ;
-        log.info("> start read") ;
-        blockMgr.startRead() ;
+        super.startRead() ;
     }
 
+    @Override
     public void finishRead()
     {
         if ( ! inRead )
@@ -134,15 +86,14 @@ public class BlockMgrTracker implements BlockMgr //extends BlockMgrWrapper
             log.warn("finishRead when in update") ;
         
         inRead = false ;
-        
 
         log.info("Read end: Gets: "+readGetIds) ;
         log.info("Read end: Free: "+readReleaseIds) ;
-        
         log.info("< finish read") ;
-        blockMgr.finishRead() ;
+        super.finishRead() ;
     }
 
+    @Override
     public void startUpdate()
     {
         if ( inRead )
@@ -151,9 +102,10 @@ public class BlockMgrTracker implements BlockMgr //extends BlockMgrWrapper
             log.warn("startUpdate when already in update") ;
         inUpdate = true ;
         log.info("> start update") ;
-        blockMgr.startUpdate() ;
+        super.startUpdate() ;
     }
 
+    @Override
     public void finishUpdate()
     {
         if ( ! inUpdate )
@@ -167,9 +119,8 @@ public class BlockMgrTracker implements BlockMgr //extends BlockMgrWrapper
         
         updateGetIds.clear() ;
         updatePutIds.clear() ;
-        
         log.info("< finish update") ;
-        blockMgr.finishUpdate() ;
+        super.finishUpdate() ;
     }
 }
 
