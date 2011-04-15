@@ -18,17 +18,17 @@ import com.hp.hpl.jena.tdb.base.block.BlockMgrWrapper ;
 
 public class BlockMgrTracker extends BlockMgrWrapper // implements BlockMgr
 {
-    List<Integer> readGetIds = new ArrayList<Integer>() ;
-    List<Integer> updateGetIds = new ArrayList<Integer>() ;
-    List<Integer> readReleaseIds = new ArrayList<Integer>() ;
-    List<Integer> updatePutIds = new ArrayList<Integer>() ;
+    private List<Integer> readGetIds = new ArrayList<Integer>() ;
+    private List<Integer> updateGetIds = new ArrayList<Integer>() ;
+    private List<Integer> readReleaseIds = new ArrayList<Integer>() ;
+    private List<Integer> updatePutIds = new ArrayList<Integer>() ;
     
-    boolean inRead = false ;
-    boolean inUpdate = false ;
+    private boolean inRead = false ;
+    private boolean inUpdate = false ;
     protected final Logger log ;
     
 
-    public BlockMgrTracker(String label, BlockMgr blockMgr, boolean logUpdatesOnly)
+    public BlockMgrTracker(String label, BlockMgr blockMgr)
     {
         //super(label, blockMgr, logUpdatesOnly) ;
         super(blockMgr) ;

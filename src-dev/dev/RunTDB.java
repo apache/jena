@@ -12,8 +12,9 @@ import java.util.Date ;
 
 import org.openjena.atlas.logging.Log ;
 import setup.DatasetBuilderStd ;
-import setup.NoisyBlockMgr ;
 import setup.ObjectFileBuilder ;
+import tx.BlockMgrLogger ;
+import tx.BlockMgrTracker ;
 
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.query.Query ;
@@ -58,7 +59,7 @@ public class RunTDB
                 public BlockMgr buildBlockMgr(FileSet fileset, String name)
                 {
                     BlockMgr bMgr = super.buildBlockMgr(fileset, name) ;
-                    return new NoisyBlockMgr(bMgr) ;
+                    return new BlockMgrTracker("DSB2", bMgr) ;
                 }
             } ;
             
