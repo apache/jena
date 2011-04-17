@@ -1,7 +1,3 @@
 @prefix : <http://example/> .
-
-:a :p :b .
-:b :p :z .
-:a :p :c .
-:c :p :z .
-:c :p :c .
+:a :p 18. .
+:a :p 18.

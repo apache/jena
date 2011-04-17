@@ -55,7 +55,6 @@ public final class LangNTriples4
         } catch (RiotParseException ex) { System.out.flush() ; throw ex ; }
     }
     
-    
     final PeekInputStream input ;
     long line = 0 ;
     long col = 0 ;
