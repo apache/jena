@@ -22,8 +22,11 @@ public final class LangNTriples2
 {
     public static void main(String... argv) 
     {
-        // ?? Process from a buffer with index arithmetic.
+        // LangNTriples2 - Byte-space parsing.
+        // LangNTriples3 - Char-space parsing.
+        // LangNTriples3 - Byte-space parsing, no token creation.
         
+        // ?? Process from a buffer with index arithmetic.
         // Run at about 260KTPS raw paring speed.
         // No hotspot detection tried.
         
@@ -36,7 +39,6 @@ public final class LangNTriples2
         
     private static void processOneFile(String filename)
     {
-         
         Timer timer = new Timer() ;
         InputStream in = IO.openFile(filename) ;
         // Bigger is not better. 
@@ -93,19 +95,11 @@ public final class LangNTriples2
             ch = input.readByte() ;
             if ( ch != '\n' )
                 throw new RiotParseException("Triple not terminated by DOT-NL", line, col) ;
-            
-            //System.out.printf("%s %s %s .\n", s, p, o) ;
             count++ ;
         }
     }
-    
 
     final StringBuilder sbuff = new StringBuilder(200) ;
-    
-    // Basic tokenizer, in byte space.
-    // NT only.
-    // No \ u processing.
-    // next: work on chars to see the difference. 
     
     private Token token()
     {

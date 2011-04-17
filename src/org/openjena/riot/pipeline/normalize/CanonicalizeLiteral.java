@@ -36,8 +36,10 @@ public class CanonicalizeLiteral implements NodeTransform
         if ( dt == null )
         {
             if ( node.getLiteralLanguage().equals("") )
+                //n2 = NormalizeValue.dtSimpleLiteral.handle(node, node.getLiteralLexicalForm(), null) ;
                 return node ;
-            n2 = canonicalLangtag(node, node.getLiteralLexicalForm(), node.getLiteralLanguage()) ; 
+            else
+                n2 = canonicalLangtag(node, node.getLiteralLexicalForm(), node.getLiteralLanguage()) ; 
         }
         else
         {
@@ -88,7 +90,6 @@ public class CanonicalizeLiteral implements NodeTransform
         dispatch.put(XSDDatatype.XSDpositiveInteger,        NormalizeValue.dtInteger) ;
         dispatch.put(XSDDatatype.XSDnegativeInteger,        NormalizeValue.dtInteger) ;
 
-
         dispatch.put(XSDDatatype.XSDfloat,      NormalizeValue.dtFloat ) ;
         dispatch.put(XSDDatatype.XSDdouble,     NormalizeValue.dtDouble ) ;
 
@@ -106,6 +107,9 @@ public class CanonicalizeLiteral implements NodeTransform
 
         dispatch.put(XSDDatatype.XSDduration,   null) ;
         dispatch.put(XSDDatatype.XSDboolean,    NormalizeValue.dtBoolean) ;
+        
+        dispatch.put(XSDDatatype.XSDstring,     NormalizeValue.dtXSDString) ;
+
         
         dispatch.put(dtPlainLiteral,            NormalizeValue.dtPlainLiteral) ;
         

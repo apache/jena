@@ -192,7 +192,24 @@ class NormalizeValue
         }
     } ;
 
-    public static DatatypeHandler dtPlainLiteral = new DatatypeHandler() {
+    /** Convert xsd:string to simple literal */
+    static DatatypeHandler dtXSDString = new DatatypeHandler() {
+        public Node handle(Node node, String lexicalForm, RDFDatatype datatype)
+        {
+            return Node.createLiteral(lexicalForm) ;
+        }
+    } ;
+    
+    /** Convert simple literal to xsd:string */
+    static DatatypeHandler dtSimpleLiteral = new DatatypeHandler() {
+        public Node handle(Node node, String lexicalForm, RDFDatatype datatype)
+        {
+            return Node.createLiteral(lexicalForm, "", datatype) ;
+        }
+    } ;
+
+    
+    static DatatypeHandler dtPlainLiteral = new DatatypeHandler() {
         public Node handle(Node node, String lexicalForm, RDFDatatype datatype)
         {
             int idx = lexicalForm.lastIndexOf('@') ;

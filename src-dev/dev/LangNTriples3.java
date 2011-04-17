@@ -36,11 +36,6 @@ public final class LangNTriples3
     {
         Timer timer = new Timer() ;
         InputStream in = IO.openFile(filename) ;
-
-        // The byte-space one is 267K TPS
-        // PeekReader uses CharStream - is that an overhead too much? 
-        
-        // 253K TPS - control the buffer size.
         Reader r = IO.asUTF8(in) ;
         PeekReader peek = PeekReader.make(r, 128*1024) ;
         
@@ -111,14 +106,8 @@ public final class LangNTriples3
             count++ ;
         }
     }
-    
 
     final StringBuilder sbuff = new StringBuilder(200) ;
-    
-    // Basic tokenizer, in byte space.
-    // NT only.
-    // No \ u processing.
-    // next: work on chars to see the difference. 
     
     private Token token()
     {

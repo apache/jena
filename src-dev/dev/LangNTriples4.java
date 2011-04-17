@@ -24,11 +24,6 @@ public final class LangNTriples4
     
     public static void main(String... argv) 
     {
-        // ?? Process from a buffer with index arithmetic.
-        
-        // Run at about 260KTPS raw paring speed.
-        // No hotspot detection tried.
-        
         if ( argv.length == 0 )
             argv = new String[] {"-"} ;
         
@@ -38,7 +33,6 @@ public final class LangNTriples4
         
     private static void processOneFile(String filename)
     {
-         
         Timer timer = new Timer() ;
         InputStream in = IO.openFile(filename) ;
         // Bigger is not better. 
