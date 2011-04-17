@@ -19,11 +19,6 @@ public class LongTermIssues
      * (related: check that leaf data blocks are filled to completion). 
      */
     
-    /*
-     * Root node not fixed to block zero.
-     * Start at block 1, block0 is control
-     */
-    
     /* Use 63 bit NodeId, 1 bit for inline/external */
 
     /* BNodes are written without leading zeros. */
@@ -31,5 +26,14 @@ public class LongTermIssues
     /* Binary node table. */
     
     /* prefixes index to be called "GPU", not "prefixIdx" (for consistency) */  
+    
+    /* New file layout 
+     *   class Block(id, ByteBuffer on disk)
+     *   Central file management
+     *   Central cache management
+     *   File with a control block; multiple "block sequences" (= BlockMgr). 
+     *   getRoot.
+     *   Free chain management
+     */
 }
 

@@ -18,13 +18,15 @@ import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory ;
 import com.hp.hpl.jena.tdb.base.record.Record ;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
 import com.hp.hpl.jena.tdb.index.RangeIndex ;
-import com.hp.hpl.jena.tdb.index.RangeIndexWrapper ;
+import com.hp.hpl.jena.tdb.index.RangeIndexLogger ;
 import com.hp.hpl.jena.tdb.index.bplustree.BPlusTree ;
 import com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams ;
 import com.hp.hpl.jena.tdb.index.btree.BTree ;
 import com.hp.hpl.jena.tdb.index.btree.BTreeParams ;
 
 /* NEXT
+ * Setup
+ * 
  *   allocateId - allocateBuffer combined
  *   freeBlock inc contents. freeBlock(id, byteBuffer)
  *   Do we need a Block class?  Page class?
@@ -39,6 +41,9 @@ public class TxMain
      * End transaction => close all open iterators.
      *   BPlusTree.replicate(BlockMgr1, BlocMgr2)
      * Recycle DatasetGraphTx objects.  Setup - set PageView
+     * 
+     * Allocate and deallocate "Blocks" = id, (raw) size, and ByteBuffer (which knows it's size?)
+     *   Build for variable length
      */
     
     static { Log.setLog4j() ; }
@@ -84,45 +89,7 @@ public class TxMain
         final Logger log = LoggerFactory.getLogger(label) ;
         
         // Add logging.
-        rIndex = new RangeIndexWrapper(rIndex)
-        {
-            @Override
-            public boolean add(Record record)
-            { 
-                log.info("Add: "+record) ;
-                return super.add(record) ; 
-            }
-            
-            @Override
-            public boolean delete(Record record)
-            { 
-                log.info("Delete: "+record) ;
-                return super.delete(record) ; 
-            }
-            
-            @Override
-            public Record find(Record record)
-            {
-                log.info("Find: "+record) ;
-                Record r2 = super.find(record) ;
-                log.info("Find: "+record+" ==> "+r2) ;
-                return r2 ;
-            }
-
-            @Override
-            public Iterator<Record> iterator()
-            {
-                log.info("iterator()") ;
-                return super.iterator() ;
-            }
-
-            @Override
-            public Iterator<Record> iterator(Record minRec, Record maxRec)
-            {
-                log.info("iterator("+minRec+", "+maxRec+")") ;
-                return super.iterator(minRec, maxRec) ;
-            }
-        } ;
+        rIndex = new RangeIndexLogger(rIndex, log) ;
         
         for ( int i = 0 ; i < 4 ; i++ ) 
         {

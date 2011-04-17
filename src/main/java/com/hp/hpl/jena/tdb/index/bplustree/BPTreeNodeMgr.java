@@ -36,9 +36,6 @@ public final class BPTreeNodeMgr extends BPTreePageMgr
    
     public BlockMgr getBlockMgr() { return blockMgr ; } 
     
-    /** Allocate an uninitialized slot.  Fill with a .put later */ 
-    public int allocateId()           { return blockMgr.allocateId() ; }
-    
     /** Allocate root node space. The root is a node with a Records block.*/ 
     public BPTreeNode createEmptyBPT()
     { 

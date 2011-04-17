@@ -15,7 +15,8 @@ import com.hp.hpl.jena.tdb.TDBException ;
 import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrWrapper ;
 
-// Recycle blocks.
+// Recycle blocks - but only in-session.
+// At the end of JVM run, the blocks are made "permanent" as no one finds them again on restart.
 public class BlockMgrFreeChain extends BlockMgrWrapper
 {
     // Could keep Pair<Integer, ByteBuffer>
