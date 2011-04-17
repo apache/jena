@@ -22,9 +22,11 @@ public final class LangNTriples2
 {
     public static void main(String... argv) 
     {
-        // LangNTriples2 - Byte-space parsing.
-        // LangNTriples3 - Char-space parsing.
-        // LangNTriples3 - Byte-space parsing, no token creation.
+        // Figurs for bsbm 5m .gz (and from uncompressed)
+        // LangNTriples2 - Byte-space parsing. 260 KTPS (354) 
+        // LangNTriples3 - Char-space parsing. 255 KTPS (302)
+        // LangNTriples4 - Byte-space parsing, no token creation. 275 KTPS (341)
+        //   298 KTPS if no StringBuilder.toString. (400 KTPS from un-gzipped)
         
         // ?? Process from a buffer with index arithmetic.
         // Run at about 260KTPS raw paring speed.
