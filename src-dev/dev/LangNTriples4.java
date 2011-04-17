@@ -19,8 +19,7 @@ import com.hp.hpl.jena.sparql.util.Timer ;
 /** NTriples parser written for speed. */ 
 public final class LangNTriples4
 {
-    // LangNTriples2 but no Token class.
-    // Faster: 268 -> 271 KTPS 
+    // Abstract peek/read.
     
     public static void main(String... argv) 
     {
@@ -37,6 +36,8 @@ public final class LangNTriples4
         InputStream in = IO.openFile(filename) ;
         // Bigger is not better. 
         PeekInputStream peek = PeekInputStream.make(in, 8*1024) ;
+        // PeekReader thing based on PeekInputStream+StreamUTF8.
+        
         LangNTriples4 parser = new LangNTriples4(peek) ;
         timer.startTimer() ;
         
@@ -65,12 +66,15 @@ public final class LangNTriples4
     
     public LangNTriples4(PeekInputStream input) { this.input = input ; }
 
+    private int peek() { return input.peekByte() ; }
+    private int read() { return input.readByte() ; }
+    
     private long parse()
     {
         for ( ;; )
         {
             skipWS() ;
-            int ch = input.peekByte() ;
+            int ch = peek() ;
             if ( ch == -1 ) return count ; 
             if ( ch == '#' )
             {
@@ -87,12 +91,12 @@ public final class LangNTriples4
             token() ;
             String o = tokenImage ;
             skipWS() ;
-            ch = input.peekByte() ;
+            ch = peek() ;
             if ( ch != '.' )
                 throw new RiotParseException("Triple not terminated by DOT ("+(char)ch+") ["+count+"]", line, col) ;
-            input.readByte() ;
+            read() ;
             skipWS() ;
-            ch = input.readByte() ;
+            ch = read() ;
             if ( ch != '\n' )
                 throw new RiotParseException("Triple not terminated by DOT-NL", line, col) ;
             
@@ -111,13 +115,13 @@ public final class LangNTriples4
     private void token()
     {
         sbuff.setLength(0) ;
-        int ch = input.peekByte() ;
+        int ch = peek() ;
         if ( ch == '<' )
         {
-            input.readByte() ;
+            read() ;
             for(;;)
             {
-                ch = input.readByte() ;
+                ch = read() ;
                 if ( ch == '>' )
                     break ;
                 sbuff.append((char)ch) ;
@@ -128,15 +132,15 @@ public final class LangNTriples4
         }
         else if ( ch == '_' )
         {
-            input.readByte() ;
+            read() ;
             for(;;)
             {
                 // TODO Better
-                ch = input.peekByte() ;
+                ch = peek() ;
                 if ( ! RiotChars.isA2ZN(ch) && ch != '-' && ch != ':' )
                     break ;
                 sbuff.append((char)ch) ;
-                input.readByte() ;
+                read() ;
             }
             tokenType = TokenType.BNODE ;
             tokenImage = sbuff.toString() ;
@@ -144,32 +148,32 @@ public final class LangNTriples4
         }
         else if ( ch == '"')
         {
-            input.readByte() ;
+            read() ;
             for(;;)
             {
-                ch = input.peekByte() ;
-                input.readByte() ;
+                ch = peek() ;
+                read() ;
                 if ( ch == '"' )
                     break ;
                 sbuff.append((char)ch) ;
                 // Escape
                 if ( ch == '\\' )
                 {
-                    ch = input.readByte() ;
+                    ch = read() ;
                     sbuff.append((char)ch) ;
                 }
             }
             // We skipped the "
-//            input.readByte() ;
-            ch = input.peekByte() ;
+//            read() ;
+            ch = peek() ;
             
             if ( ch == '^' )
             {
-                input.readByte() ;
-                ch = input.peekByte() ;
+                read() ;
+                ch = peek() ;
                 if ( ch != '^' )
                     throw new RiotParseException("Syntax error in datatype literal after ^", line, col) ;
-                input.readByte() ;
+                read() ;
                 
                 String s = sbuff.toString() ;
                 
@@ -183,7 +187,7 @@ public final class LangNTriples4
             }
             else if ( ch == '@' )
             {
-                input.readByte() ;
+                read() ;
                 String s = sbuff.toString() ;
                 String l = getLang() ;
                 tokenType = TokenType.LITERAL_LANG ;
@@ -205,10 +209,10 @@ public final class LangNTriples4
         sbuff.setLength(0) ;
         for ( ;; )
         {
-            int x = input.peekByte() ;
+            int x = peek() ;
             if ( ! RiotChars.isA2Z(x) && x != '-' )
                 break ;
-            input.readByte() ;
+            read() ;
             sbuff.append((char)x) ;
         }
         return sbuff.toString() ;
@@ -218,10 +222,10 @@ public final class LangNTriples4
     {
         for ( ;; )
         {
-            int x = input.peekByte() ;
+            int x = peek() ;
             if ( x != '\n' && x != -1 )
                 continue ;
-            input.readByte() ;
+            read() ;
         }
 
     }
@@ -230,10 +234,10 @@ public final class LangNTriples4
     {
         for ( ;; )
         {
-            int x = input.peekByte() ;
+            int x = peek() ;
             if ( x != ' ' && x != '\t' )
                 return ;
-            input.readByte() ;
+            read() ;
         }
     }            
 
