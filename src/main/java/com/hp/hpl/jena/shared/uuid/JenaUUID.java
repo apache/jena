@@ -5,7 +5,7 @@
 
 /** A class to create and recreate UUIDs.
  * @author   Andy Seaborne
- * @version  $Id: JenaUUID.java,v 1.1 2009-06-29 08:55:39 castagna Exp $
+ * @version  $Id: JenaUUID.java,v 1.2 2011-04-18 12:38:05 andy_seaborne Exp $
  * http://www.opengroup.org/onlinepubs/009629399/apdxa.htm
  */
 
@@ -26,6 +26,10 @@ import org.slf4j.LoggerFactory;
 
 public abstract class JenaUUID
 {
+    
+    // Java6: get MAC address:
+    // http://www.kodejava.org/examples/250.html 
+    
     static final int HEX = 16 ;
     static final int Var_NCS = 0 ;
     static final int Var_Std = 2 ;      // Same as DCE
