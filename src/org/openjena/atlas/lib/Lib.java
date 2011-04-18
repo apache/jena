@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -7,6 +8,9 @@
 package org.openjena.atlas.lib;
 
 import java.util.List ;
+import java.util.zip.Adler32 ;
+import java.util.zip.CRC32 ;
+import java.util.zip.Checksum ;
 
 import org.openjena.atlas.logging.Log ;
 
@@ -67,10 +71,35 @@ public class Lib
         try  { Thread.sleep(milliSeconds) ; }
         catch (InterruptedException ex) { Log.warn(Lib.class, "interrupted", ex) ; }
     }
+    
+    // Confess - these constructors are very cheap (objects are one private int) so this is unnecessary.
+    private static Checksum crc32 = new CRC32() ;
+    private static Checksum adler32 = new Adler32() ;
+    
+    public static long crc32(byte[] bytes)
+    {
+        return crc(crc32, bytes) ;
+    }
+    
+    /** Faster than CRC32, nearly as good.
+     * @see Adler32
+     */
+    public static long adler32(byte[] bytes)
+    {
+        return crc(adler32, bytes) ;
+    }
+
+    private static long crc(Checksum alg, byte[] bytes)
+    {
+        alg.reset() ;
+        alg.update(bytes, 0, bytes.length) ;
+        return alg.getValue() ;
+    }
 }
 
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
