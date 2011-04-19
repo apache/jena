@@ -2,8 +2,12 @@ package dev ;
 
 public class DevARQ
 {
+    // Config assembler.
+    
+    // 18.
+    
     // OpExecutor example.
-    // Dataetfactory.create() -> autocreate graphs?
+    // Datasetfactory.create() -> autocreate graphs?
     
     // Optimization: remember (some!) query executions because index-join causes a lot of repeats.
     
@@ -43,6 +47,10 @@ public class DevARQ
     
     // symUnionDefaultGraph and DESCRIBE
     // Example with query timeout.
+    
+    // Configuration generally.
+    //   Via assemblers ==? 
+    //   Via a global file.
     
     /*
     JSON CONSTRUCT {
