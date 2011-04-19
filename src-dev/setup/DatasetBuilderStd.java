@@ -53,25 +53,8 @@ import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 public class DatasetBuilderStd implements DatasetBuilder
 {
-    // TODO Testing (inc variations)
-    // TODO Directory properties initial config.
-    // TODO Separate out static for general creation purposes (a super factory)
-    // TODO setting union graph?  Careful - updates!
-    // TODO Set direct/mapped modes 
-    
     private static final Logger log = TDB.logInfo ;
-    private static DatasetBuilderStd singleton ;
-    static 
-    {   
-        singleton = new DatasetBuilderStd() ;
-        singleton.setStd() ;
-    }
-    
-    public static DatasetGraphTDB build(Location location)
-    {
-        return singleton.build(location, null) ;  
-    }
-    
+
     private BlockMgrBuilder blockMgrBuilder ;
     private ObjectFileBuilder objectFileBuilder ;
 
@@ -104,7 +87,7 @@ public class DatasetBuilderStd implements DatasetBuilder
         this.objectFileBuilder = objectFileBuilder ;
     }
         
-    private void setStd()
+    protected void setStd()
     {
         this.objectFileBuilder      = new ObjectFileBuilderStd() ;
         this.blockMgrBuilder        = new BlockMgrBuilderStd(SystemTDB.BlockSize) ;

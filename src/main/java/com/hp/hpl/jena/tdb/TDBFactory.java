@@ -90,7 +90,6 @@ public class TDBFactory
     public static Dataset createDataset(DatasetGraphTDB datasetGraph)
     { return new DatasetImpl(datasetGraph) ; }
     
-    
     /** Create a graph, at the given location */
     public static Graph createGraph(Location loc)       { return TDBMaker._createGraph(loc) ; }
 

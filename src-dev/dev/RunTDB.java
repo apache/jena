@@ -13,6 +13,7 @@ import java.util.Date ;
 import org.openjena.atlas.logging.Log ;
 import setup.DatasetBuilderStd ;
 import setup.ObjectFileBuilder ;
+import setup.TDBBuilder ;
 import tx.BlockMgrLogger ;
 import tx.BlockMgrTracker ;
 
@@ -23,9 +24,14 @@ import com.hp.hpl.jena.query.QueryExecution ;
 import com.hp.hpl.jena.query.QueryExecutionFactory ;
 import com.hp.hpl.jena.query.QueryFactory ;
 import com.hp.hpl.jena.query.ResultSetFormatter ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.TDBFactory ;
 import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
 import com.hp.hpl.jena.tdb.base.file.FileSet ;
+import com.hp.hpl.jena.tdb.base.file.Location ;
+import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 public class RunTDB
@@ -74,7 +80,10 @@ public class RunTDB
     
     public static void main(String[] args) throws Exception
     {
-        Dataset ds = TDBFactory.createDataset("DB") ;
+        DatasetGraphTDB dsg = TDBBuilder.build(new Location("DB")) ;
+        
+        //Dataset ds = TDBFactory.createDataset("DB") ;
+        Dataset ds = TDBFactory.createDataset(dsg) ;
         Query query = QueryFactory.read("Q.rq") ;
         QueryExecution qExec = QueryExecutionFactory.create(query, ds) ;
         System.out.println(new Date()) ;
