@@ -15,7 +15,6 @@ import java.util.concurrent.BlockingQueue ;
 import java.util.concurrent.ExecutorService ;
 import java.util.concurrent.Executors ;
 
-import junit.framework.TestSuite ;
 import org.openjena.atlas.io.IndentedWriter ;
 import org.openjena.atlas.json.JSON ;
 import org.openjena.atlas.json.JsonValue ;
@@ -62,8 +61,6 @@ import com.hp.hpl.jena.sparql.function.FunctionEnv ;
 import com.hp.hpl.jena.sparql.function.FunctionEnvBase ;
 import com.hp.hpl.jena.sparql.function.FunctionRegistry ;
 import com.hp.hpl.jena.sparql.graph.NodeTransform ;
-import com.hp.hpl.jena.sparql.junit.ScriptTestSuiteFactory ;
-import com.hp.hpl.jena.sparql.junit.SimpleTestRunner ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.sparql.util.ExprUtils ;
 import com.hp.hpl.jena.sparql.util.FmtUtils ;
@@ -108,6 +105,29 @@ public class RunARQ
     }
     
     
+   
+    public static void main(String[] argv) throws Exception
+    {
+        exit(0) ;
+    }
+
+    public static void canoncialNodes()
+    {
+        NodeTransform ntLitCanon = CanonicalizeLiteral.get();
+        // To do :
+        //   double and floats.
+        //   decimals and X.0
+        String[] strings = { "123", "0123", "0123.00900" , "-0089", "-0089.0" , "1e5", "+001.5e6", "'fred'"} ;
+        for ( String s : strings )
+        {
+            Node n = SSE.parseNode(s) ;
+            Node n2 = ntLitCanon.convert(n) ;
+            System.out.println(n+" => "+n2) ;
+        }
+        exit(0) ;
+    }
+    
+    
     static public class wait extends FunctionBase1 {
 
         @Override
@@ -119,17 +139,10 @@ public class RunARQ
             Lib.sleep(x) ;
             return nv ;
         }
-
     }
     
-    public static void main(String[] argv) throws Exception
+    public static void queryExecTimeout()
     {
-        riotcmd.riot.main("--stop", "--sink", "--time", "X.nt") ; exit(0) ;
-        
-        arq.sparql.main(/*"--opt=false",*/ "--explain", "--data=D.ttl", "--query=Q.rq") ;
-        exit(0) ;
-        
-        
         FunctionRegistry.get().put("http://example/f#wait", wait.class) ;
         
         Model model = FileManager.get().loadModel("D.nt") ;
@@ -168,46 +181,8 @@ public class RunARQ
         try { rs.next() ; }
         catch (QueryCancelledException ex) { System.out.println("CANCEL 6") ; }
         catch (NoSuchElementException  ex) { System.out.println("No Elt 6") ; }
-
-        
-//        for ( ; rs.hasNext() ; )
-//        {
-//            rs.nextBinding()
-//            qExec.cancel() ;
-//            
-//        }
-        
-        // Still see the first triple.
-        //qExec.close() ;
-        // ResultSetFormatter.out(rs) ;
-        exit(0) ;
-        
-        //arq.sparql.main("--data=D.nt", "ASK{<http://example/a> <http://example/b> ?x }") ; exit(0) ; 
-        
-        //testXSDDurationBug() ; System.exit(0) ;
-        
-        String DIR = "/home/afs/W3C/SPARQL-docs/tests/data-sparql11/delete" ;
-        TestSuite ts = ScriptTestSuiteFactory.make(DIR+"/manifest.ttl") ;
-        SimpleTestRunner.runAndReport(ts) ;
-        System.exit(0) ;
-        
-        if ( false )
-        {
-            NodeTransform ntLitCanon = CanonicalizeLiteral.get();
-            // To do :
-            //   double and floats.
-            //   decimals and X.0
-            String[] strings = { "123", "0123", "0123.00900" , "-0089", "-0089.0" , "1e5", "+001.5e6", "'fred'"} ;
-            for ( String s : strings )
-            {
-                Node n = SSE.parseNode(s) ;
-                Node n2 = ntLitCanon.convert(n) ;
-                System.out.println(n+" => "+n2) ;
-            }
-            System.exit(0) ;
-        }
     }
-
+    
     public static void parallelParser() throws Exception
     {
         

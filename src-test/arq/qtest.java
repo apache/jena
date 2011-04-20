@@ -245,7 +245,6 @@ public class qtest extends CmdARQ
         ensureDirExists("testing") ;
         ensureDirExists("testing/ARQ") ;
         ensureDirExists("testing/DAWG") ;
-        ensureDirExists("testing/DAWG-Approved") ;
         
         TestSuite ts = ARQTestSuite.suite() ;
         junit.textui.TestRunner.run(ts) ;

@@ -41,13 +41,13 @@ function proc
 ## proc test-manifest.ttl TestManifest \
 ##     "http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#"
 
-## syntaxCheck test-manifest-1_1.ttl
-## proc test-manifest-1_1.ttl TestManifest_11 \
-##     "http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#"
+syntaxCheck test-manifest-1_1.ttl
+proc test-manifest-1_1.ttl TestManifest_11 \
+    "http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#"
 
-syntaxCheck test-update.n3
-proc test-update.n3 TestManifestUpdate_11 \
-    "http://www.w3.org/2009/sparql/tests/test-update#"
+## syntaxCheck test-update.n3
+## proc test-update.n3 TestManifestUpdate_11 \
+##     "http://www.w3.org/2009/sparql/tests/test-update#"
 
 ## syntaxCheck test-manifest-x.ttl
 ## proc test-manifest-x.ttl TestManifestX \

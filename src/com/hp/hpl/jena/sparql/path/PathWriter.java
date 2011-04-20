@@ -240,12 +240,11 @@ public class PathWriter
 
         private void printPathMod(String mod, Path path)
         {
-            if ( needParens )
-                out.print("(") ;
-            if ( alwaysInnerParens )
+            boolean doParens = ( needParens || alwaysInnerParens ) ;
+            if ( doParens )
                 out.print("(") ;
             path.visit(this) ;
-            if ( alwaysInnerParens )
+            if ( doParens )
                 out.print(")") ;
             out.print(mod) ;
         }

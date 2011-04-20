@@ -83,17 +83,22 @@ public class ScriptTestSuiteFactory extends TestFactoryManifest
             testType = entry.getProperty(RDF.type).getResource() ;
         
         TestItem item = null ;
-        if ( testType == null || ! testType.equals(TestManifestUpdate_11.UpdateEvaluationTest))
+        if ( testType == null 
+            || // Not an update evaluation test.  
+                ! ( testType.equals(TestManifestUpdate_11.UpdateEvaluationTest) || testType.equals(TestManifest_11.UpdateEvaluationTest) )
+           )
         {
-            // Bodge.
+            // Bodge.  Update results can be a Bnode.
+            //  TestItem.create assumes it is a a URI or string.
+            // Clean up.
             item = TestItem.create(entry, defaultTestType, querySyntax, DataFormat.langXML) ;
         }
-
+        
         TestCase test = null ;
 
         // Frankly this all needs rewriting.
-        // Drop the idea of testItem.  pss entry/action/result to subclass.
-        // Library for paring entries.
+        // Drop the idea of testItem.  pass entry/action/result to subclass.
+        // Library for parsing entries.
         
         if ( testType != null )
         {
@@ -119,7 +124,11 @@ public class ScriptTestSuiteFactory extends TestFactoryManifest
             if ( testType.equals(TestManifest_11.NegativeUpdateSyntaxTest11) )
                 return new SyntaxUpdateTest(testName, results, item, false) ;
 
+            // Two names for same thing.
+            // Note item is not passed down.
             if ( testType.equals(TestManifestUpdate_11.UpdateEvaluationTest) )
+                return UpdateTest.create(testName, results, entry, action, result) ;
+            if ( testType.equals(TestManifest_11.UpdateEvaluationTest) )
                 return UpdateTest.create(testName, results, entry, action, result) ;
 
             // ----

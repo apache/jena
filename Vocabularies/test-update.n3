@@ -20,6 +20,7 @@
     dc:identifier    : ;
     .
 ## ---- Class declarations ----
+# Legacy
 
 :UpdateTest
     rdfs:comment "The superclass of all SPARQL 1.1 Update tests" .
