@@ -4,12 +4,35 @@
  * [See end of file]
  */
 
-package tx.transaction;
+package tx;
 
-/** A transaction handle */
-public class Txn
+import java.util.Properties ;
+
+import tx.transaction.Transaction ;
+
+import com.hp.hpl.jena.sparql.core.DatasetPrefixStorage ;
+import com.hp.hpl.jena.sparql.engine.optimizer.reorder.ReorderTransformation ;
+import com.hp.hpl.jena.tdb.base.file.Location ;
+import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
+import com.hp.hpl.jena.tdb.store.QuadTable ;
+import com.hp.hpl.jena.tdb.store.TripleTable ;
+
+public class DatasetGraphTxView extends DatasetGraphTDB
 {
+    private final Transaction transaction ;
 
+    public DatasetGraphTxView(Transaction txn,
+                              TripleTable tripleTable, QuadTable quadTable, DatasetPrefixStorage prefixes, 
+                              ReorderTransformation transform, Location location, Properties config)
+    {
+        super(tripleTable,  quadTable,  prefixes, 
+                            transform,  location,  config) ;
+        this.transaction = txn ;
+    }
+
+    public void commit() { transaction.commit() ; }
+    public void abort() { transaction.abort() ; }
+    
 }
 
 /*

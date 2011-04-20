@@ -6,32 +6,14 @@
 
 package tx.transaction;
 
-import tx.DatasetGraphTxView ;
+import com.hp.hpl.jena.tdb.TDBException ;
 
-import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
-
-public class TransactionManager
+public class TransactionAbort extends TDBException
 {
-    static DatasetGraphTxView begin(DatasetGraphTDB dsg)
-    {
-        // If already a transaction ... 
-        // Subs transactions are a new view - commit is only comit to parent transaction.  
-        if ( dsg instanceof DatasetGraphTxView )
-        {
-            // Either:
-            //   error -> implies nested
-            //   create new transaction 
-        }
-        
-        
-        return null ;
-    }
-
-    public void commit(Transaction transaction)
-    {}
-
-    public void abort(Transaction transaction)
-    {}
+    public TransactionAbort()                          { super() ; }
+    public TransactionAbort(String msg)                { super(msg) ; }
+    public TransactionAbort(Throwable th)              { super(th) ; }
+    public TransactionAbort(String msg, Throwable th)  { super(msg, th) ; }
 }
 
 /*
