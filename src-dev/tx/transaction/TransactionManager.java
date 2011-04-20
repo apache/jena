@@ -4,38 +4,11 @@
  * [See end of file]
  */
 
-package tx.blockstream;
+package tx.transaction;
 
-public class FileRef
+public class TransactionManager
 {
-    private final String filename ;
-    private final int blockId ;
 
-    public FileRef(String filename, int blockId)
-    {
-        this.filename = filename ;
-        this.blockId = blockId ;
-    }
-    
-    public String getFilename()     { return filename ; }
-
-    public int getBlockId()         { return blockId ; }
-
-    @Override
-    public int hashCode()
-    {
-        return filename.hashCode() ^ blockId ;
-    }
-    
-    @Override
-    public boolean equals(Object other)
-    {
-        if ( ! ( other instanceof FileRef ) )
-            return false ;
-        FileRef fRef = (FileRef)other ;
-        
-        return (blockId == fRef.blockId) && filename.equals(fRef.filename) ;  
-    }
 }
 
 /*

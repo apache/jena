@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package tx;
+package tx.other;
 
 import java.nio.ByteBuffer ;
 import java.util.ArrayList ;

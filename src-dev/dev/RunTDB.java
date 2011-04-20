@@ -13,9 +13,7 @@ import java.util.Date ;
 import org.openjena.atlas.logging.Log ;
 import setup.DatasetBuilderStd ;
 import setup.ObjectFileBuilder ;
-import setup.TDBBuilder ;
-import tx.BlockMgrLogger ;
-import tx.BlockMgrTracker ;
+import tx.other.BlockMgrTracker ;
 
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.query.Query ;
@@ -24,9 +22,6 @@ import com.hp.hpl.jena.query.QueryExecution ;
 import com.hp.hpl.jena.query.QueryExecutionFactory ;
 import com.hp.hpl.jena.query.QueryFactory ;
 import com.hp.hpl.jena.query.ResultSetFormatter ;
-import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.TDBFactory ;
 import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
 import com.hp.hpl.jena.tdb.base.file.FileSet ;
@@ -80,7 +75,7 @@ public class RunTDB
     
     public static void main(String[] args) throws Exception
     {
-        DatasetGraphTDB dsg = TDBBuilder.build(new Location("DB")) ;
+        DatasetGraphTDB dsg = setup.TDBBuilder.build(new Location("DB")) ;
         
         //Dataset ds = TDBFactory.createDataset("DB") ;
         Dataset ds = TDBFactory.createDataset(dsg) ;

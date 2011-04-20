@@ -11,6 +11,7 @@ import java.io.IOException ;
 import java.io.OutputStream ;
 
 import org.openjena.atlas.io.IO ;
+import tx.base.FileRef ;
 
 public class JournalEntryOutputStream implements JournalEntryOutput
 {

@@ -12,6 +12,7 @@ import org.openjena.atlas.lib.Bytes ;
 import org.openjena.atlas.logging.Log ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
+import tx.other.BlockMgrTracker ;
 
 import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory ;

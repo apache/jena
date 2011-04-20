@@ -8,6 +8,8 @@ package tx.blockstream;
 
 import java.nio.ByteBuffer ;
 
+import tx.base.FileRef ;
+
 public class JournalEntry
 {
 

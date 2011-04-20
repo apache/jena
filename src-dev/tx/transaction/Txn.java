@@ -4,55 +4,12 @@
  * [See end of file]
  */
 
-package tx.blockstream;
+package tx.transaction;
 
-import java.io.InputStream ;
-import java.nio.ByteBuffer ;
-
-import org.openjena.atlas.io.IO ;
-import tx.base.FileRef ;
-
-public class JournalEntryInputStream implements JournalEntryInput
+/** A transaction handle */
+public class Txn
 {
-    private final InputStream in ;
-    public JournalEntryInputStream(InputStream in)
-    {
-        this.in = in ;
-        
-    }
-    
-    public JournalEntry read()
-    {
-        int type = IOBytes.readInt(in) ;
-        if ( type == -1 )
-            return null ;
-        
-        FileRef fRef = readFileRef() ;
-        if ( fRef == null )
-            return null ;
-        
-        byte b[] = IOBytes.readBytes(in) ;
-        if ( b == null )
-            return null ;
-        ByteBuffer bb = ByteBuffer.wrap(b) ;
-        return new JournalEntry(type, fRef, bb) ;
-    }
-    
-    public void close()
-    {
-        IO.close(in) ;
-    }
 
-    private FileRef readFileRef()
-    {
-        String fn = IOBytes.readStr(in) ;
-        if ( fn == null )
-            return null ;
-        int blockId = IOBytes.readInt(in) ;
-        if ( blockId == -1 )
-            return null ;
-        return new FileRef(fn, blockId) ;
-    }
 }
 
 /*

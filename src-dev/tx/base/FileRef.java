@@ -4,54 +4,37 @@
  * [See end of file]
  */
 
-package tx.blockstream;
+package tx.base;
 
-import java.io.InputStream ;
-import java.nio.ByteBuffer ;
-
-import org.openjena.atlas.io.IO ;
-import tx.base.FileRef ;
-
-public class JournalEntryInputStream implements JournalEntryInput
+public class FileRef
 {
-    private final InputStream in ;
-    public JournalEntryInputStream(InputStream in)
-    {
-        this.in = in ;
-        
-    }
-    
-    public JournalEntry read()
-    {
-        int type = IOBytes.readInt(in) ;
-        if ( type == -1 )
-            return null ;
-        
-        FileRef fRef = readFileRef() ;
-        if ( fRef == null )
-            return null ;
-        
-        byte b[] = IOBytes.readBytes(in) ;
-        if ( b == null )
-            return null ;
-        ByteBuffer bb = ByteBuffer.wrap(b) ;
-        return new JournalEntry(type, fRef, bb) ;
-    }
-    
-    public void close()
-    {
-        IO.close(in) ;
-    }
+    private final String filename ;
+    private final int blockId ;
 
-    private FileRef readFileRef()
+    public FileRef(String filename, int blockId)
     {
-        String fn = IOBytes.readStr(in) ;
-        if ( fn == null )
-            return null ;
-        int blockId = IOBytes.readInt(in) ;
-        if ( blockId == -1 )
-            return null ;
-        return new FileRef(fn, blockId) ;
+        this.filename = filename ;
+        this.blockId = blockId ;
+    }
+    
+    public String getFilename()     { return filename ; }
+
+    public int getBlockId()         { return blockId ; }
+
+    @Override
+    public int hashCode()
+    {
+        return filename.hashCode() ^ blockId ;
+    }
+    
+    @Override
+    public boolean equals(Object other)
+    {
+        if ( ! ( other instanceof FileRef ) )
+            return false ;
+        FileRef fRef = (FileRef)other ;
+        
+        return (blockId == fRef.blockId) && filename.equals(fRef.filename) ;  
     }
 }
 

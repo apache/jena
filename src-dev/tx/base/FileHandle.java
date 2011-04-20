@@ -15,6 +15,8 @@ import java.util.Iterator ;
 /** A file handler - everything TDB needs to do with files */
 public interface FileHandle
 {
+    // Some ideas for centralizing all file operations to enable caching, management, closedown etc.
+    
     // FileHandlerManager
     
     // Create from location , inc memory.
