@@ -1,37 +1,34 @@
 /*
- * (c) Copyright 2011 Epimorphics Ltd.
+ * (c) Copyright 2011 Epimorp;ics Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
 package tx;
 
-import java.util.Properties ;
-
 import tx.transaction.Transaction ;
 
-import com.hp.hpl.jena.sparql.core.DatasetPrefixStorage ;
-import com.hp.hpl.jena.sparql.engine.optimizer.reorder.ReorderTransformation ;
-import com.hp.hpl.jena.tdb.base.file.Location ;
-import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
-import com.hp.hpl.jena.tdb.store.QuadTable ;
-import com.hp.hpl.jena.tdb.store.TripleTable ;
+import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import com.hp.hpl.jena.sparql.core.DatasetGraphWrapper ;
 
-public class DatasetGraphTxView extends DatasetGraphTDB
+public class DatasetGraphTxView extends DatasetGraphWrapper
 {
     private final Transaction transaction ;
 
-    public DatasetGraphTxView(Transaction txn,
-                              TripleTable tripleTable, QuadTable quadTable, DatasetPrefixStorage prefixes, 
-                              ReorderTransformation transform, Location location, Properties config)
+    public DatasetGraphTxView(Transaction txn, 
+                              DatasetGraph dsg)
     {
-        super(tripleTable,  quadTable,  prefixes, 
-                            transform,  location,  config) ;
+        super(dsg) ;
         this.transaction = txn ;
     }
 
     public void commit() { transaction.commit() ; }
     public void abort() { transaction.abort() ; }
+    
+    @Override
+    public String toString()
+    { return getWrapped().toString() ; }
+
     
 }
 

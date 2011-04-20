@@ -89,14 +89,19 @@ public class DatasetBuilderStd implements DatasetBuilder
         
     protected void setStd()
     {
-        this.objectFileBuilder      = new ObjectFileBuilderStd() ;
-        this.blockMgrBuilder        = new BlockMgrBuilderStd(SystemTDB.BlockSize) ;
+        ObjectFileBuilder objectFileBuilder     = new ObjectFileBuilderStd() ;
+        BlockMgrBuilder blockMgrBuilder         = new BlockMgrBuilderStd(SystemTDB.BlockSize) ;
         
-        this.indexBuilder           = new IndexBuilderStd(blockMgrBuilder, blockMgrBuilder) ;
-        this.rangeIndexBuilder      = new RangeIndexBuilderStd(blockMgrBuilder, blockMgrBuilder) ;
+        IndexBuilder indexBuilder               = new IndexBuilderStd(blockMgrBuilder, blockMgrBuilder) ;
+        RangeIndexBuilder rangeIndexBuilder     = new RangeIndexBuilderStd(blockMgrBuilder, blockMgrBuilder) ;
         
-        this.nodeTableBuilder       = new NodeTableBuilderStd(indexBuilder, objectFileBuilder) ;
-        this.tupleIndexBuilder      = new TupleIndexBuilderStd(rangeIndexBuilder) ;
+        NodeTableBuilder nodeTableBuilder       = new NodeTableBuilderStd(indexBuilder, objectFileBuilder) ;
+        TupleIndexBuilder tupleIndexBuilder     = new TupleIndexBuilderStd(rangeIndexBuilder) ;
+        
+        set(nodeTableBuilder, tupleIndexBuilder, 
+            indexBuilder, rangeIndexBuilder, 
+            blockMgrBuilder, objectFileBuilder) ;
+        
     }
 
     protected DatasetBuilderStd(NodeTableBuilder nodeTableBuilder,

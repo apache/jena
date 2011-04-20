@@ -9,13 +9,17 @@ package tx;
 import java.util.Iterator ;
 
 import org.openjena.atlas.lib.Bytes ;
+import org.openjena.atlas.lib.FileOps ;
 import org.openjena.atlas.logging.Log ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 import tx.other.BlockMgrTracker ;
+import tx.transaction.TransactionManager ;
 
+import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory ;
+import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.base.record.Record ;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
 import com.hp.hpl.jena.tdb.index.RangeIndex ;
@@ -24,6 +28,7 @@ import com.hp.hpl.jena.tdb.index.bplustree.BPlusTree ;
 import com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams ;
 import com.hp.hpl.jena.tdb.index.btree.BTree ;
 import com.hp.hpl.jena.tdb.index.btree.BTreeParams ;
+import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 
 /* NEXT
  * Setup
@@ -48,8 +53,33 @@ public class TxMain
      */
     
     static { Log.setLog4j() ; }
-    
+
     public static void main(String... args)
+    {
+        FileOps.clearDirectory("DBX") ;
+        TransactionManager txnMgr = new TransactionManager() ;
+        
+        DatasetGraphTDB dsg = txnMgr.build(new Location("DBX")) ;
+        dsg.add(SSE.parseQuad("(_ <s> <p> <o>)")) ;
+        
+        DatasetGraphTxView dsgX = txnMgr.begin(dsg) ;
+        dsgX.add(SSE.parseQuad("(_ <sx> <px> <ox>)")) ;
+        
+        System.out.println("Transaction:") ;
+        System.out.println(dsgX) ;
+        System.out.println("Base:") ;
+        System.out.println(dsg) ;
+        System.out.println("Transaction:") ;
+        System.out.println(dsgX) ;
+        
+        dsgX.abort() ;
+        
+        System.out.println("Done") ;
+        System.exit(0) ;
+        
+    }
+    
+    public static void bpTreeTracking(String... args)
     {
         RecordFactory rf = new RecordFactory(8,8) ;
         
