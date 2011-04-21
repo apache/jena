@@ -9,6 +9,7 @@
 package dev;
 
 import java.util.Date ;
+import java.util.concurrent.TimeUnit ;
 
 import org.openjena.atlas.logging.Log ;
 import setup.DatasetBuilderStd ;
@@ -82,7 +83,7 @@ public class RunTDB
         Query query = QueryFactory.read("Q.rq") ;
         QueryExecution qExec = QueryExecutionFactory.create(query, ds) ;
         System.out.println(new Date()) ;
-        qExec.setTimeout(2000) ;
+        qExec.setTimeout(2000, TimeUnit.MILLISECONDS) ;
         try { ResultSetFormatter.out(qExec.execSelect()) ; } catch (QueryCancelledException ex) { System.out.println("Cancelled") ;}
         System.out.println(new Date()) ;
         exit(0) ;

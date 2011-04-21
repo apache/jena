@@ -10,7 +10,7 @@
   <artifactId>tdb</artifactId>
   <packaging>jar</packaging>
   <name>TDB</name>
-  <version>0.8.10-SNAPSHOT</version>
+  <version>0.8.10</version>
 
   <description>TDB is a storage subsystem for Jena and ARQ</description>
   <url>http://openjena.org/TDB</url>
@@ -40,7 +40,7 @@
   <properties>
     <this.root>${project.artifactId}-${project.version}</this.root>
     <ver.jena>2.6.4</ver.jena>
-    <ver.arq>2.8.8-SNAPSHOT</ver.arq>
+    <ver.arq>2.8.8</ver.arq>
   </properties>
 
   <dependencies>
