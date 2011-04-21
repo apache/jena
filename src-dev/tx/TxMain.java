@@ -47,17 +47,23 @@ import com.hp.hpl.jena.update.UpdateRequest ;
  *   allocateId - allocateBuffer combined
  *   freeBlock inc contents. freeBlock(id, byteBuffer)
  *   Do we need a Block class?  Page class?
- *     
+ * BlockMgr.getRead, BlockMgr.getWrite
  */
 
 public class TxMain
 {
     /*
      * Reads not doing a release
+     *   BlockMgr.getRead, BlockMgr.getWrite
+     * 
      * Iterator tracking
      * End transaction => close all open iterators.
-     *   BPlusTree.replicate(BlockMgr1, BlocMgr2)
+     *   BPlusTree.replicate(BlockMgr1, BlockMgr2)
+     *   BPlusTree.replicate(BlockMgrBuilder)
+     *   BPlusTree.replicate(BlockMgrMaker.make(old block mgr))
+     *      
      * Recycle DatasetGraphTx objects.  Setup - set PageView
+     *   better setup.
      * 
      * Allocate and deallocate "Blocks" = id, (raw) size, and ByteBuffer (which knows it's size?)
      *   Build for variable length
@@ -72,8 +78,8 @@ public class TxMain
             FileOps.clearDirectory(dirname) ;
         TransactionManager txnMgr = new TransactionManager() ;
         
-        //Location location = Location.mem() ;
-        Location location = new Location(dirname) ;
+        Location location = Location.mem() ;
+        //Location location = new Location(dirname) ;
         
         DatasetGraphTDB dsg = txnMgr.build(location) ;
         //dsg.add(SSE.parseQuad("(_ <s> <p> 'o')")) ;
