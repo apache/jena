@@ -10,7 +10,7 @@ import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
 import com.hp.hpl.jena.tdb.base.file.FileSet ;
 
 public interface BlockMgrBuilder {
-    BlockMgr buildBlockMgr(FileSet fileSet, String ext) ;
+    BlockMgr buildBlockMgr(FileSet fileSet, String ext, int blockSize) ;
 }
 /*
  * (c) Copyright 2011 Epimorphics Ltd.

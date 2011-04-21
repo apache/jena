@@ -10,7 +10,7 @@
   <artifactId>tdb</artifactId>
   <packaging>jar</packaging>
   <name>TDB</name>
-  <version>0.8.10</version>
+  <version>0.8.11-SNAPSHOT</version>
 
   <description>TDB is a storage subsystem for Jena and ARQ</description>
   <url>http://openjena.org/TDB</url>

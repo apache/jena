@@ -28,7 +28,6 @@ import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
 import com.hp.hpl.jena.tdb.base.file.FileSet ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
-import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 public class RunTDB
 {
@@ -55,12 +54,12 @@ public class RunTDB
         {
             super() ;
             ObjectFileBuilder objectFileBuilder         = new ObjectFileBuilderStd() ;
-            BlockMgrBuilderStd blockMgrBuilder          = new BlockMgrBuilderStd(SystemTDB.BlockSize)
+            BlockMgrBuilderStd blockMgrBuilder          = new BlockMgrBuilderStd()
             {
                 @Override
-                public BlockMgr buildBlockMgr(FileSet fileset, String name)
+                public BlockMgr buildBlockMgr(FileSet fileset, String name, int blockSize)
                 {
-                    BlockMgr bMgr = super.buildBlockMgr(fileset, name) ;
+                    BlockMgr bMgr = super.buildBlockMgr(fileset, name, blockSize) ;
                     return new BlockMgrTracker("DSB2", bMgr) ;
                 }
             } ;

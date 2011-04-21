@@ -3,7 +3,7 @@ package dev ;
 
 public class DevTDB
 {
-    // TDBFcatory.createModel -> dataset isn't in the cache. 
+    // New builder - does it work for memory?  Non-std block sizes?
     
     // Optimizer - named graph and union graph
     // Add ((TERM ANY ANY) 1), ((ANY ANY TERM) 1) to all stats files.?

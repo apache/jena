@@ -14,8 +14,6 @@ import java.util.List ;
 import java.util.Map ;
 import java.util.Properties ;
 
-import org.openjena.atlas.lib.ByteBufferLib ;
-import org.openjena.atlas.lib.NotImplemented ;
 import org.openjena.atlas.lib.Pair ;
 import setup.BlockMgrBuilder ;
 import setup.DatasetBuilder ;
@@ -27,6 +25,7 @@ import setup.ObjectFileBuilder ;
 import setup.RangeIndexBuilder ;
 import setup.TupleIndexBuilder ;
 import tx.DatasetGraphTxView ;
+import tx.other.BlockMgrLogger ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
@@ -43,23 +42,27 @@ import com.hp.hpl.jena.tdb.store.NodeId ;
 import com.hp.hpl.jena.tdb.store.QuadTable ;
 import com.hp.hpl.jena.tdb.store.TripleTable ;
 import com.hp.hpl.jena.tdb.sys.ConcurrencyPolicy ;
-import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 public class TransactionManager
 {
     // Setup.
     // Fragile.
-    BlockMgrBuilderRemember baseBlockMgrBuilder ;
+    private final DatasetBuilderTxnBase baseDatasetBuilder ;
+    private final BlockMgrBuilderRemember baseBlockMgrBuilder ;
     NodeTable nodeTable ;
     //Location location = new Location("dummy") ;
     static long transactionId = 10 ;
     
+    public TransactionManager()
+    {
+        baseDatasetBuilder = new DatasetBuilderTxnBase() ;
+        baseDatasetBuilder.setStd() ;
+        baseBlockMgrBuilder = baseDatasetBuilder.blockMgrBuilder1 ;
+    }
+    
     public DatasetGraphTDB build(Location location)
     {
-        DatasetBuilderTxnBase x = new DatasetBuilderTxnBase() ;
-        x.setStd() ;
-        DatasetGraphTDB dsg = x.build(location, null) ;
-        baseBlockMgrBuilder = x.blockMgrBuilder1 ;
+        DatasetGraphTDB dsg = baseDatasetBuilder.build(location, null) ;
         nodeTable = dsg.getTripleTable().getNodeTupleTable().getNodeTable() ;
         return dsg ;
     }
@@ -88,15 +91,15 @@ public class TransactionManager
     }
 
     public void abort(Transaction transaction)
-    {
+    {    // TDBFcatory.createModel -> dataset isn't in the cache. 
+
         System.err.println("Abort") ;
 
     }
     
     static class DatasetBuilderTxnBase extends DatasetBuilderStd
     {
-        // Need block manager below.
-        BlockMgrBuilderRemember blockMgrBuilder1         = new BlockMgrBuilderRemember(SystemTDB.BlockSize) ;
+        BlockMgrBuilderRemember blockMgrBuilder1         = new BlockMgrBuilderRemember() ;
         
         DatasetBuilderTxnBase() {}
         
@@ -104,7 +107,7 @@ public class TransactionManager
         protected void setStd()
         {
             ObjectFileBuilder objectFileBuilder     = new ObjectFileBuilderStd() ;
-            //BlockMgrBuilder blockMgrBuilder         = new BlockMgrBuilderStd(SystemTDB.BlockSize) ;
+            //BlockMgrBuilder blockMgrBuilderStd         = new BlockMgrBuilderStd(SystemTDB.BlockSize) ;
             
             BlockMgrBuilder blockMgrBuilder = blockMgrBuilder1 ;
             
@@ -123,9 +126,6 @@ public class TransactionManager
     
     static class DatasetBuilderTxn extends DatasetBuilderStd
     {
-        
-        
-        
         private BlockMgrBuilderRemember blockMgrBuilderRemember ;
         private NodeTableBuilder nodeTableBuilder ; 
 
@@ -177,10 +177,18 @@ public class TransactionManager
             this.baseBlockMgr = blockMgr ;
         }
 
-        public BlockMgr buildBlockMgr(FileSet fileSet, String ext)
+        public BlockMgr buildBlockMgr(FileSet fileSet, String ext, int blockSize)
         {
             BlockMgr base = baseBlockMgr.created(fileSet, ext) ;
-            return new BlockMgrTxn(base) ;
+            String label = fileSet.getBasename()+"."+ext ;
+            BlockMgr blkMgr = new BlockMgrTxn(base) ;
+            
+            if ( false )
+            {
+                label = label.replace('.', '-') ;
+                return new BlockMgrLogger(label, blkMgr, true) ;
+            }
+            return blkMgr ;
         }
     }
     
@@ -220,9 +228,20 @@ public class TransactionManager
             // Until we track read and write gets, need to copy for safety
             // INEFFCIEINT
             bb = super.get(id) ;
-            bb = ByteBufferLib.duplicate(bb) ;
-            blocks.put(id, bb) ;
-            return bb ;
+            
+            // This copies contents and resizes ByteBuffer - seems to break for memory use.
+            //bb = ByteBufferLib.duplicate(bb) ;
+            
+            ByteBuffer bb2 = ByteBuffer.allocate(bb.capacity()) ;
+            int x = bb.position() ;
+            bb.position(0) ;
+            bb2.put(bb) ;
+            bb.position(x) ;
+            
+            bb2.position(0) ;
+            bb2.limit(bb2.capacity()) ;
+            blocks.put(id, bb2) ;
+            return bb2 ;
         }
 
         @Override
@@ -247,15 +266,15 @@ public class TransactionManager
         private Map<String, BlockMgr> created = new  HashMap<String, BlockMgr>() ;
         BlockMgrBuilderStd bmb ;
         
-        public BlockMgrBuilderRemember(int blockSize)
+        public BlockMgrBuilderRemember()
         {
-            bmb = new BlockMgrBuilderStd(blockSize) ;
+            bmb = new BlockMgrBuilderStd() ;
         }
 
-        public BlockMgr buildBlockMgr(FileSet fileSet, String ext)
+        public BlockMgr buildBlockMgr(FileSet fileSet, String ext, int blockSize)
         {
             String key = fileSet.getBasename()+"."+ext ;
-            BlockMgr blkMgr = bmb.buildBlockMgr(fileSet, ext) ;
+            BlockMgr blkMgr = bmb.buildBlockMgr(fileSet, ext, blockSize) ;
             created.put(key, blkMgr) ;
             return blkMgr ;
         }

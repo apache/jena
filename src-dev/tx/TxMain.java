@@ -16,7 +16,15 @@ import org.slf4j.LoggerFactory ;
 import tx.other.BlockMgrTracker ;
 import tx.transaction.TransactionManager ;
 
+import com.hp.hpl.jena.query.DatasetFactory ;
+import com.hp.hpl.jena.query.Query ;
+import com.hp.hpl.jena.query.QueryExecution ;
+import com.hp.hpl.jena.query.QueryExecutionFactory ;
+import com.hp.hpl.jena.query.QueryFactory ;
+import com.hp.hpl.jena.query.Syntax ;
+import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
+import com.hp.hpl.jena.sparql.util.QueryExecUtils ;
 import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
@@ -29,6 +37,9 @@ import com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams ;
 import com.hp.hpl.jena.tdb.index.btree.BTree ;
 import com.hp.hpl.jena.tdb.index.btree.BTreeParams ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
+import com.hp.hpl.jena.update.UpdateAction ;
+import com.hp.hpl.jena.update.UpdateFactory ;
+import com.hp.hpl.jena.update.UpdateRequest ;
 
 /* NEXT
  * Setup
@@ -56,27 +67,60 @@ public class TxMain
 
     public static void main(String... args)
     {
-        FileOps.clearDirectory("DBX") ;
+        String dirname = "DBX" ;
+        if ( false && FileOps.exists(dirname) )
+            FileOps.clearDirectory(dirname) ;
         TransactionManager txnMgr = new TransactionManager() ;
         
-        DatasetGraphTDB dsg = txnMgr.build(new Location("DBX")) ;
-        dsg.add(SSE.parseQuad("(_ <s> <p> <o>)")) ;
+        //Location location = Location.mem() ;
+        Location location = new Location(dirname) ;
         
-        DatasetGraphTxView dsgX = txnMgr.begin(dsg) ;
-        dsgX.add(SSE.parseQuad("(_ <sx> <px> <ox>)")) ;
+        DatasetGraphTDB dsg = txnMgr.build(location) ;
+        //dsg.add(SSE.parseQuad("(_ <s> <p> 'o')")) ;
+        
+        DatasetGraphTxView dsgX1 = txnMgr.begin(dsg) ;
+        dsgX1.add(SSE.parseQuad("(_ <sx> <px> 'ox1')")) ;
+        
+//        System.out.println("Base:") ;
+//        //System.out.println(dsg) ;
+//        query("SELECT count(*) { ?s ?p ?o }", dsg) ;
         
         System.out.println("Transaction:") ;
-        System.out.println(dsgX) ;
+        //System.out.println(dsgX) ;
+        query("SELECT count(*) { ?s ?p ?o }", dsgX1) ;
+        update("CLEAR DEFAULT", dsgX1) ;
+        query("SELECT count(*) { ?s ?p ?o }", dsgX1) ;
+        
         System.out.println("Base:") ;
-        System.out.println(dsg) ;
-        System.out.println("Transaction:") ;
-        System.out.println(dsgX) ;
+        //System.out.println(dsg) ;
+        query("SELECT count(*) { ?s ?p ?o }", dsg) ;
         
-        dsgX.abort() ;
+        
+        DatasetGraphTxView dsgX2 = txnMgr.begin(dsg) ;
+        dsgX2.add(SSE.parseQuad("(_ <sx> <px> 'ox2')")) ;
+
+        
+        System.out.println("Transaction:") ;
+        //System.out.println(dsgX) ;
+        query("SELECT count(*) { ?s ?p ?o }", dsgX1) ;
+        dsgX1.abort() ;
         
         System.out.println("Done") ;
         System.exit(0) ;
         
+    }
+    
+    public static void query(String queryStr, DatasetGraph dsg)
+    {
+        Query query = QueryFactory.create(queryStr, Syntax.syntaxARQ) ;
+        QueryExecution qExec = QueryExecutionFactory.create(query, DatasetFactory.create(dsg)) ;
+        QueryExecUtils.executeQuery(query, qExec) ;
+    }
+    
+    public static void update(String updateStr, DatasetGraph dsg)
+    {
+        UpdateRequest req = UpdateFactory.create(updateStr) ;
+        UpdateAction.execute(req, dsg) ;
     }
     
     public static void bpTreeTracking(String... args)

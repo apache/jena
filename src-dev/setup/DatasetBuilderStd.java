@@ -90,7 +90,8 @@ public class DatasetBuilderStd implements DatasetBuilder
     protected void setStd()
     {
         ObjectFileBuilder objectFileBuilder     = new ObjectFileBuilderStd() ;
-        BlockMgrBuilder blockMgrBuilder         = new BlockMgrBuilderStd(SystemTDB.BlockSize) ;
+        // Depends on memory/file?
+        BlockMgrBuilder blockMgrBuilder         = new BlockMgrBuilderStd() ;
         
         IndexBuilder indexBuilder               = new IndexBuilderStd(blockMgrBuilder, blockMgrBuilder) ;
         RangeIndexBuilder rangeIndexBuilder     = new RangeIndexBuilderStd(blockMgrBuilder, blockMgrBuilder) ;
@@ -463,8 +464,8 @@ public class DatasetBuilderStd implements DatasetBuilder
             
 //            BlockMgr blkMgrNodes = BlockMgrFactory.create(fileset, Names.bptExt1, blockSize, readCacheSize, writeCacheSize) ;
 //            BlockMgr blkMgrRecords = BlockMgrFactory.create(fileset, Names.bptExt2, blockSize, readCacheSize, writeCacheSize) ;
-            BlockMgr blkMgrNodes = blockMgrBuilder1.buildBlockMgr(fileset, Names.bptExt1) ;
-            BlockMgr blkMgrRecords = blockMgrBuilder2.buildBlockMgr(fileset, Names.bptExt2) ;
+            BlockMgr blkMgrNodes = blockMgrBuilder1.buildBlockMgr(fileset, Names.bptExt1, blockSize) ;
+            BlockMgr blkMgrRecords = blockMgrBuilder2.buildBlockMgr(fileset, Names.bptExt2, blockSize) ;
             
             return BPlusTree.attach(params, blkMgrNodes, blkMgrRecords) ;
         }
@@ -485,11 +486,9 @@ public class DatasetBuilderStd implements DatasetBuilder
     
     public static class BlockMgrBuilderStd implements BlockMgrBuilder
     {
-        private final int blockSize ;
+        public BlockMgrBuilderStd() {}
 
-        public BlockMgrBuilderStd(int blockSize) { this.blockSize = blockSize ; }
-
-        public BlockMgr buildBlockMgr(FileSet fileset, String ext)
+        public BlockMgr buildBlockMgr(FileSet fileset, String ext, int blockSize)
         {
             //int readCacheSize = PropertyUtils.getPropertyAsInteger(config, Names.pBlockReadCacheSize) ;
             //int writeCacheSize = PropertyUtils.getPropertyAsInteger(config, Names.pBlockWriteCacheSize) ;
