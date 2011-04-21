@@ -73,7 +73,7 @@ public class Quad
         return subject.isConcrete() && predicate.isConcrete() && object.isConcrete() && graph.isConcrete() ;
     }
     
-    /** @deprectaed use Quad.isDefaultGraphGenerated */
+    /** @deprecated use Quad.isDefaultGraphGenerated */
     @Deprecated
     public static boolean isQuadDefaultGraphGenerated(Node node)
     { return isDefaultGraphGenerated(node) ; }
@@ -98,7 +98,7 @@ public class Quad
         return isDefaultGraphGenerated(node) ||isDefaultGraphExplicit(node) ; 
     }
 
-    /** @deprectaed use Quad.isUnionGraph */
+    /** @deprecated use Quad.isUnionGraph */
     @Deprecated
     public static boolean isQuadUnionGraph(Node node) { return isUnionGraph(node) ; }
     

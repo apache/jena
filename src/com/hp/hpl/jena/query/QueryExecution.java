@@ -101,8 +101,12 @@ public interface QueryExecution
 	 * A timeout of less than zero means no timeout.
 	 */
 	
-	//public void setTimeout(long timeout) ;
 	public void setTimeout(long timeout, TimeUnit timeoutUnits) ;
+	
+	/** Set time, in milliseconds 
+	 * @see #setTimeout(long, TimeUnit)
+	 */
+	public void setTimeout(long timeout) ;
     
 	/** Set timeouts on the query execution; the first timeout refers to time to first result, 
 	 * the second refers to overall query execution after the first result.  
@@ -114,6 +118,11 @@ public interface QueryExecution
 	//public void setTimeout(long timeout1, long timeout2) ;
 	public void setTimeout(long timeout1, TimeUnit timeUnit1, long timeout2, TimeUnit timeUnit2) ;
 
+    /** Set time, in milliseconds
+     *  @see #setTimeout(long, TimeUnit, long, TimeUnit)
+     */
+    public void setTimeout(long timeout1, long timeout2) ;
+    
     //	/** Say whether this QueryExecution is useable or not.
 //	 * An active execution is one that has not been closed, ended or aborted yet.
 //     * May not be supported or meaningful for all QueryExecution implementations.

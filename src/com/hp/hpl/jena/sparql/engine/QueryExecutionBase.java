@@ -263,12 +263,6 @@ public class QueryExecutionBase implements QueryExecution
     }
 
     //@Override
-    public void setTimeout(long timeout)
-    {
-        setTimeout(timeout, TimeUnit.MILLISECONDS) ;
-    }
-
-    //@Override
     public void setTimeout(long timeout, TimeUnit timeUnit)
     {
         long x = asMillis(timeout, timeUnit) ;
@@ -277,9 +271,9 @@ public class QueryExecutionBase implements QueryExecution
     }
 
     //@Override
-    public void setTimeout(long timeout1, long timeout2)
+    public void setTimeout(long timeout)
     {
-        setTimeout(timeout1, TimeUnit.MILLISECONDS, timeout2, TimeUnit.MILLISECONDS) ;
+        setTimeout(timeout, TimeUnit.MILLISECONDS) ;
     }
 
     //@Override
@@ -292,6 +286,12 @@ public class QueryExecutionBase implements QueryExecution
             this.timeout2 = TIMEOUT_INF ;
         else
             this.timeout2 = x2 ;
+    }
+
+    //@Override
+    public void setTimeout(long timeout1, long timeout2)
+    {
+        setTimeout(timeout1, TimeUnit.MILLISECONDS, timeout2, TimeUnit.MILLISECONDS) ;
     }
 
     private static long asMillis(long duration, TimeUnit timeUnit)
