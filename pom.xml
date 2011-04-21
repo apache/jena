@@ -427,9 +427,9 @@ build.time.txt=${build.time.txt}
     <repository>
       <id>jena-repo</id>
       <name>Jena repo</name>
-      <!--<url>sftp://openjena.org/var/repo</url>-->
+      <url>sftp://openjena.org/var/repo</url>
       <!-- Because RC's are snapshots IMHO -->
-      <url>sftp://openjena.org/var/repo-dev</url>
+      <!-- <url>sftp://openjena.org/var/repo-dev</url> -->
       <layout>default</layout>
     </repository> 
 
