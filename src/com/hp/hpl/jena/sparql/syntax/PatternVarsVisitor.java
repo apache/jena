@@ -66,7 +66,6 @@ public class PatternVarsVisitor extends ElementVisitorBase
         // And any GROUP BY 
         x = el.getQuery().getGroupBy() ;
         acc.addAll(x.getVars()) ;
-        
     }
 
     @Override
