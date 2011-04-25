@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -7,6 +8,7 @@
 package com.hp.hpl.jena.sparql.engine.iterator;
 
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.query.QueryExecException ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.core.VarExprList ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
@@ -18,17 +20,18 @@ import com.hp.hpl.jena.sparql.engine.binding.BindingMap ;
 
 public class QueryIterAssign extends QueryIterProcessBinding
 {
-    private VarExprList exprs ; 
+    private VarExprList exprs ;
+    private final boolean mustBeNewVar ;
     
     public QueryIterAssign(QueryIterator input, VarExprList exprs, ExecutionContext qCxt, boolean mustBeNewVar)
     {
         // mustBeNewVar : any variable introduced must not already exist.
         // true => BIND
         // false => LET 
-        // Syntax checking shoud have assured this.
+        // Syntax checking should have assured this.
         super(input, qCxt) ;
         this.exprs = exprs ;
-        //super(input, new Extend(exprs, qCxt), qCxt) ;
+        this.mustBeNewVar = mustBeNewVar ;
     }
     
     @Override
@@ -49,6 +52,9 @@ public class QueryIterAssign extends QueryIterProcessBinding
             // Check is already has a value; if so, must be sameValueAs
             if ( b.contains(v) )
             {
+                if ( mustBeNewVar )
+                    throw new QueryExecException("Already set: "+v) ;
+                
                 Node n2 = b.get(v) ;
                 if ( ! n2.sameValueAs(n) )
                     //throw new QueryExecException("Already set: "+v) ;

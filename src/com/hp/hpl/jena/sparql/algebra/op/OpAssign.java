@@ -21,7 +21,7 @@ public class OpAssign extends Op1
 {
     private VarExprList assignments ;
     
-    // Theer factory operations compress nested assignments if possible.
+    // There factory operations compress nested assignments if possible.
     // Not possible if it's the reassignment of something already assigned.
     // Or we could implement something like (let*).
     

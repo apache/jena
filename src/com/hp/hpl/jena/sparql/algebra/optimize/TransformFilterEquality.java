@@ -12,9 +12,9 @@ import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.OpVars ;
 import com.hp.hpl.jena.sparql.algebra.TransformCopy ;
+import com.hp.hpl.jena.sparql.algebra.op.OpAssign ;
 import com.hp.hpl.jena.sparql.algebra.op.OpBGP ;
 import com.hp.hpl.jena.sparql.algebra.op.OpConditional ;
-import com.hp.hpl.jena.sparql.algebra.op.OpExtend ;
 import com.hp.hpl.jena.sparql.algebra.op.OpFilter ;
 import com.hp.hpl.jena.sparql.algebra.op.OpGraph ;
 import com.hp.hpl.jena.sparql.algebra.op.OpQuadPattern ;
@@ -172,15 +172,15 @@ public class TransformFilterEquality extends TransformCopy
     private static Op subst(Op subOp , Var var, NodeValue nv)
     {
         Op op = Substitute.substitute(subOp, var, nv.asNode()) ;
-        return OpExtend.extend(op, var, nv) ;
+        return OpAssign.assign(op, var, nv) ;
     }
     
     private static Op subst(Op subOp , ExprVar var1, ExprVar var2)
     {
         // Replace var2 with var1
         Op op = Substitute.substitute(subOp, var2.asVar(), var1.asVar()) ;
-        // Insert BIND(var1 AS var2)
-        return OpExtend.extend(op, var2.asVar(), var1) ;
+        // Insert LET(var2 := var1)
+        return OpAssign.assign(op, var2.asVar(), var1) ;
     }
 
 }

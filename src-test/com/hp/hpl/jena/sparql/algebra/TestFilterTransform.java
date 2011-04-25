@@ -35,7 +35,7 @@ public class TestFilterTransform
     {
         test("(filter (= ?x <x>) (bgp ( ?s ?p ?x)) )",
              t_equality,
-             "(extend ((?x <x>)) (bgp ( ?s ?p <x>)) )") ;
+             "(assign ((?x <x>)) (bgp ( ?s ?p <x>)) )") ;
     }
     
     @Test public void equality02()
@@ -68,8 +68,8 @@ public class TestFilterTransform
         test("(filter (|| (= ?x <x>) (= ?x <y>)) (bgp ( ?s ?p ?x)) )",
              t_disjunction,
              "(disjunction ",
-               "(extend ((?x <x>)) (bgp ( ?s ?p <x>)))",
-               "(extend ((?x <y>)) (bgp ( ?s ?p <y>)))",
+               "(assign ((?x <x>)) (bgp ( ?s ?p <x>)))",
+               "(assign ((?x <y>)) (bgp ( ?s ?p <y>)))",
              ")") ;
     }
     
@@ -78,7 +78,7 @@ public class TestFilterTransform
         test("(filter (|| (= ?x <x>) (!= ?x <y>)) (bgp ( ?s ?p ?x)) )",
              t_disjunction,
              "(disjunction ",
-               "(extend ((?x <x>)) (bgp ( ?s ?p <x>)))",
+               "(assign ((?x <x>)) (bgp ( ?s ?p <x>)))",
                "(filter (!= ?x <y>) (bgp ( ?s ?p ?x)))",
              ")") ;
     }
@@ -89,7 +89,7 @@ public class TestFilterTransform
              t_disjunction,
              // Note - reording of disjunction terms.
              "(disjunction ",
-               "(extend ((?x <y>)) (bgp ( ?s ?p <y>)))",
+               "(assign ((?x <y>)) (bgp ( ?s ?p <y>)))",
                "(filter (!= ?x <x>) (bgp ( ?s ?p ?x)))",
              ")") ;
     }
