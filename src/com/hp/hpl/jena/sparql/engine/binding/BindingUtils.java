@@ -7,8 +7,11 @@
 package com.hp.hpl.jena.sparql.engine.binding;
 import java.util.Iterator ;
 
+import org.openjena.atlas.logging.Log ;
+
 import com.hp.hpl.jena.query.QuerySolution ;
 import com.hp.hpl.jena.rdf.model.RDFNode ;
+import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
 import com.hp.hpl.jena.sparql.core.Var ;
 
 public class BindingUtils
@@ -59,10 +62,11 @@ public class BindingUtils
             if ( Var.isBlankNodeVarName(n) )
                 continue ;
             try {
-            binding.add(Var.alloc(n), x.asNode()) ;
-            } catch (Exception ex)
+                binding.add(Var.alloc(n), x.asNode()) ;
+            } catch (ARQInternalErrorException ex)
             {
-                System.err.println("!!!") ;
+                // bad binding attempt.
+                Log.warn(BindingUtils.class, "Attempt to bind "+n+" when already bound") ;
             }
         }
     }

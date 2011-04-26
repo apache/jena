@@ -107,19 +107,12 @@ public class AlgebraGenerator
     
     public Op compile(Query query)
     {
-        Op pattern = compile(query.getQueryPattern()) ;     // Not compileElement - may need to apply simplification.
-        Op op = compileModifiers(query, pattern) ;
+        Op op = compile(query.getQueryPattern()) ;     // Not compileElement - may need to apply simplification.
         
         if ( query.hasBindings() )
-        {
-            List<Binding> bindings = query.getBindingValues() ;
-            Table table = TableFactory.create() ;
-            for ( Binding binding : bindings )
-                table.addBinding(binding) ;
-            OpTable opTable = OpTable.create(table) ;
-            op = OpJoin.create(op, opTable) ;
-        }
+            op = bindings(op, query.getBindingValues()) ;
         
+        op = compileModifiers(query, op) ;
         return op ;
     }
     
@@ -139,6 +132,19 @@ public class AlgebraGenerator
         return Transformer.transform(simplify, op) ;
     }
 
+    private static Op bindings(Op op, List<Binding> bindings)
+    {
+        if ( bindings != null )
+        {
+            Table table = TableFactory.create() ;
+            for ( Binding binding : bindings )
+                table.addBinding(binding) ;
+            OpTable opTable = OpTable.create(table) ;
+            op = OpJoin.create(op, opTable) ;
+        }
+        return op ;
+    }
+    
     // This is the operation to call for recursive application of step 4.
     protected Op compileElement(Element elt)
     {

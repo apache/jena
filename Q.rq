@@ -1,11 +1,7 @@
 PREFIX : <http://example/>
 
-SELECT *
+SELECT ?x (123 AS ?y)
 {
-    ?x :p ?v .
-    FILTER(?x = :x3 ) 
-    OPTIONAL {   
-      ?x :p ?v .
-      FILTER (?v = :z )
-  }
 }
+BINDINGS ?x {(456)}
+

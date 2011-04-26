@@ -108,6 +108,8 @@ public class RunARQ
    
     public static void main(String[] argv) throws Exception
     {
+        arq.qtest.main("/home/afs/W3C/SPARQL-docs/tests/data-sparql11/bindings/manifest.ttl") ;
+        exit(0) ;
         Query query = QueryFactory.read("Q.rq") ;
         ARQ.setExecutionLogging(InfoLevel.ALL) ;
         Model m = ModelFactory.createDefaultModel() ;
