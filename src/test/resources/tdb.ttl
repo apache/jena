@@ -7,9 +7,5 @@
  <#dataset> rdf:type      tdb:DatasetTDB ;
      tdb:location "target/data/tdb" ;
      tdb:unionGraph true ;
+     ja:textIndex "target/data/lucene" ;
      .
-
- <#index> rdf:type      ja:TextIndex ;
-     ja:index "target/data/lucene" ;
-     .      
-     

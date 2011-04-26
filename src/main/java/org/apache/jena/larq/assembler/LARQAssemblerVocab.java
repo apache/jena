@@ -8,17 +8,14 @@ package org.apache.jena.larq.assembler;
 
 import com.hp.hpl.jena.assembler.JA ;
 import com.hp.hpl.jena.rdf.model.Property ;
-import com.hp.hpl.jena.rdf.model.Resource ;
 import com.hp.hpl.jena.rdf.model.ResourceFactory ;
 
 public class LARQAssemblerVocab
 {
     public static final String NS = JA.getURI() ;
     public static String getURI() { return NS ; }
-    
-    public static final Resource tTextIndex         = ResourceFactory.createResource(NS+"TextIndex") ;
 
-    public static final Property pIndex             = ResourceFactory.createProperty(NS, "index") ;
+    public static final Property pIndex             = ResourceFactory.createProperty(NS, "textIndex") ;
 }
 
 /*

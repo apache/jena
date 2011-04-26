@@ -8,10 +8,18 @@
 package org.apache.jena.larq.assembler;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.Iterator;
 
 import org.apache.jena.larq.ARQLuceneException;
+import org.apache.jena.larq.IndexBuilderModel;
+import org.apache.jena.larq.IndexBuilderString;
 import org.apache.jena.larq.IndexLARQ;
+import org.apache.jena.larq.IndexWriterFactory;
+import org.apache.jena.larq.LARQ;
+import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 
@@ -19,33 +27,57 @@ import com.hp.hpl.jena.assembler.Assembler;
 import com.hp.hpl.jena.assembler.Mode;
 import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
 import com.hp.hpl.jena.assembler.exceptions.AssemblerException;
+import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.sparql.util.graph.GraphUtils;
 
 public class AssemblerLARQ extends AssemblerBase implements Assembler
 {
     /** Vocabulary
-     *     ja:luceneIndex ....
+     *     ja:textIndex ....
      */
+
+    static { LARQ.init(); }
     
     @Override
     public Object open(Assembler a, Resource root, Mode mode)
     {
+        LARQ.init();
+
+        if ( ! GraphUtils.exactlyOneProperty(root, LARQAssemblerVocab.pIndex) )
+            throw new AssemblerException(root, "Required: exactly one index property" ) ;
+
         try
         {
-            if ( ! GraphUtils.exactlyOneProperty(root, LARQAssemblerVocab.pIndex) )
-                throw new AssemblerException(root, "Required: exactly one index property" ) ;
-
             String index = GraphUtils.getAsStringValue(root, LARQAssemblerVocab.pIndex) ;
-            Directory dir = FSDirectory.open(new File(index));
-            IndexReader indexReader = IndexReader.open(dir, false) ;
-            IndexLARQ indexLARQ = new IndexLARQ(indexReader) ;
-            return indexLARQ ;
+            Directory directory = FSDirectory.open(new File(index));
+            return make(null, directory) ;
         } catch (Exception ex)
         {
             throw new ARQLuceneException("Failed to assemble Lucene index", ex) ;
         }
     }
+    
+    public static IndexLARQ make (Dataset dataset, Directory directory) throws CorruptIndexException, IOException 
+    {
+        IndexReader indexReader = null;
+        if ( dataset != null ) {
+            IndexWriter indexWriter = IndexWriterFactory.create(directory);
+            IndexBuilderModel larqBuilder = new IndexBuilderString(indexWriter) ; 
+            dataset.getDefaultModel().register(larqBuilder);
+            for ( Iterator<String> iter = dataset.listNames() ; iter.hasNext() ; ) {
+                String g = iter.next() ;
+                dataset.getNamedModel(g).register(larqBuilder) ;
+            }
+            indexReader = IndexReader.open(indexWriter, true);
+        } else {
+            indexReader = IndexReader.open(directory, true) ; // read-only
+        }
+        IndexLARQ indexLARQ = new IndexLARQ(indexReader) ;
+        LARQ.setDefaultIndex(indexLARQ) ;
+        return indexLARQ ;
+    }
+
 }
 
 

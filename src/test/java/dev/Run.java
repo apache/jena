@@ -37,7 +37,6 @@ public class Run {
             String g = iter.next() ;
             index(larqBuilder, dataset.getNamedModel(g)) ;
         }
-
     }
     
     private static void index(IndexBuilderModel larqBuilder, Model model) {
