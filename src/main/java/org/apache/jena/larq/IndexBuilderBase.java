@@ -10,10 +10,8 @@ package org.apache.jena.larq;
 import java.io.File;
 import java.io.IOException;
 
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
-import org.apache.lucene.index.IndexWriter.MaxFieldLength;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.store.RAMDirectory;
@@ -74,7 +72,7 @@ public class IndexBuilderBase implements IndexBuilder
     private void makeIndex()
     {
         try {
-            indexWriter = new IndexWriter(dir, new StandardAnalyzer(LARQ.LUCENE_VERSION), MaxFieldLength.UNLIMITED) ;
+            indexWriter = IndexWriterFactory.create(dir) ;
         } catch (Exception ex)
         { throw new ARQLuceneException("IndexBuilderLARQ", ex) ; }
     }
@@ -86,7 +84,7 @@ public class IndexBuilderBase implements IndexBuilder
         try {
             flushWriter() ;
             if ( indexWriter != null ) {
-                return indexWriter.getReader() ; // Let's use the Near Real Time (NRT) 
+                return IndexReader.open(indexWriter, true); // Let's use the Near Real Time (NRT) 
             } else {
             	return IndexReader.open(dir, true) ;
             }

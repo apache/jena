@@ -52,7 +52,7 @@ public class LARQ
     // The number of results returned by default
     public static final int NUM_RESULTS             = 1000 ; // should we increase this? -- PC
     
-    public static final Version LUCENE_VERSION      = Version.LUCENE_29 ;
+    public static final Version LUCENE_VERSION      = Version.LUCENE_31 ;
     
     public static final boolean AVOID_DUPLICATES    = true;
 

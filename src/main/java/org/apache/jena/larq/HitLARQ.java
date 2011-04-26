@@ -7,8 +7,8 @@
 
 package org.apache.jena.larq;
 
+import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.ScoreDoc;
-import org.apache.lucene.search.Searcher;
 
 import com.hp.hpl.jena.graph.Node;
 
@@ -18,7 +18,7 @@ public class HitLARQ
     protected float score ;
     protected int docId ;
 
-    public HitLARQ(Searcher searcher, ScoreDoc scoreDoc)
+    public HitLARQ(IndexSearcher searcher, ScoreDoc scoreDoc)
     {
         try {
             node = LARQ.build(searcher.doc(scoreDoc.doc)) ;

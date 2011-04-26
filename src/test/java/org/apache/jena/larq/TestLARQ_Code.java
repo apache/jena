@@ -8,32 +8,30 @@
 package org.apache.jena.larq;
 
 import java.io.IOException;
-import java.io.StringReader ;
+import java.io.StringReader;
 
-import junit.framework.JUnit4TestAdapter ;
-import junit.framework.TestCase ;
+import junit.framework.JUnit4TestAdapter;
+import junit.framework.TestCase;
 
-import org.apache.jena.larq.IndexBuilderNode;
-import org.apache.jena.larq.IndexBuilderString;
-import org.apache.jena.larq.IndexBuilderSubject;
-import org.apache.jena.larq.IndexLARQ;
-import org.apache.jena.larq.LARQ;
-import org.junit.Test ;
+import org.apache.lucene.index.IndexWriter;
+import org.apache.lucene.store.Directory;
+import org.apache.lucene.store.RAMDirectory;
+import org.junit.Test;
 
-import com.hp.hpl.jena.query.ARQ ;
-import com.hp.hpl.jena.query.QueryExecution ;
-import com.hp.hpl.jena.query.ResultSet ;
-import com.hp.hpl.jena.rdf.model.Literal ;
-import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.rdf.model.ModelFactory ;
-import com.hp.hpl.jena.rdf.model.NodeIterator ;
+import com.hp.hpl.jena.query.ARQ;
+import com.hp.hpl.jena.query.QueryExecution;
+import com.hp.hpl.jena.query.ResultSet;
+import com.hp.hpl.jena.rdf.model.Literal;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.rdf.model.NodeIterator;
 import com.hp.hpl.jena.rdf.model.Property;
-import com.hp.hpl.jena.rdf.model.RDFNode ;
-import com.hp.hpl.jena.rdf.model.Resource ;
+import com.hp.hpl.jena.rdf.model.RDFNode;
+import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.ResourceFactory;
 import com.hp.hpl.jena.util.FileManager;
-import com.hp.hpl.jena.vocabulary.DC ;
-import com.hp.hpl.jena.vocabulary.RDFS ;
+import com.hp.hpl.jena.vocabulary.DC;
+import com.hp.hpl.jena.vocabulary.RDFS;
 
 public class TestLARQ_Code extends TestCase
 {
@@ -484,6 +482,28 @@ public class TestLARQ_Code extends TestCase
         nIter = index.searchModelByIndex("bar") ;
         assertEquals(1, TestLARQUtils.count(nIter)) ;
         assertEquals(blank, index.searchModelByIndex("bar").nextNode());
+    }
+    
+    @Test public void test_existing_index_not_overridden() throws Exception 
+    {
+        Directory dir = new RAMDirectory() ;
+        IndexWriter indexWriter = IndexWriterFactory.create(dir) ;
+
+        IndexBuilderNode b = new IndexBuilderNode(indexWriter) ;
+        Resource r1 = ResourceFactory.createResource() ;
+        b.index(r1, "foo") ;
+        b.closeWriter();
+
+        indexWriter = IndexWriterFactory.create(dir) ;
+        b = new IndexBuilderNode(indexWriter) ;
+        Resource r2 = ResourceFactory.createResource() ;
+        b.index(r2, "bar") ;
+
+        IndexLARQ index = b.getIndex() ;
+        NodeIterator nIter = index.searchModelByIndex("foo") ;
+        assertEquals(1, TestLARQUtils.count(nIter)) ;
+        nIter = index.searchModelByIndex("bar") ;
+        assertEquals(1, TestLARQUtils.count(nIter)) ;
     }
     
 //    

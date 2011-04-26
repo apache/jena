@@ -20,7 +20,6 @@ import org.apache.lucene.search.Filter;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
-import org.apache.lucene.search.Searcher;
 import org.apache.lucene.search.TopDocs;
 import org.openjena.atlas.iterator.IteratorTruncate;
 
@@ -126,7 +125,7 @@ public class IndexLARQ
     public Iterator<HitLARQ> search(String queryString)
     {    
         try{
-            final Searcher searcher = new IndexSearcher(reader);
+            final IndexSearcher searcher = new IndexSearcher(reader);
             
             Query query = getLuceneQueryParser().parse(queryString) ;
             

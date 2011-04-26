@@ -11,11 +11,9 @@ import java.io.File;
 
 import org.apache.jena.larq.ARQLuceneException;
 import org.apache.jena.larq.IndexLARQ;
-import org.apache.jena.larq.LARQ;
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.jena.larq.IndexWriterFactory;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
-import org.apache.lucene.index.IndexWriter.MaxFieldLength;
 import org.apache.lucene.store.FSDirectory;
 
 import arq.cmd.CmdException;
@@ -58,7 +56,7 @@ public class ModLARQindex implements ArgModuleGeneral
     {
         try {
             FSDirectory dir = FSDirectory.open(luceneDir);
-            IndexWriter indexWriter = new IndexWriter(dir, new StandardAnalyzer(LARQ.LUCENE_VERSION), MaxFieldLength.UNLIMITED) ;
+            IndexWriter indexWriter = IndexWriterFactory.create(dir) ;
             return indexWriter ;
         } catch (Exception ex)
         { throw new ARQLuceneException("LARQ", ex) ; }
