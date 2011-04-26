@@ -1,7 +1,7 @@
 /*
  * (c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (c) Copyright 2010 Talis Systems Ltd
- * (c) Copyright 2010 Epimorphics Ltd.
+ * (c) Copyright 2010, 2011 Epimorphics Ltd.
  * 
  * All rights reserved.
  * [See end of file]
@@ -109,9 +109,6 @@ public class AlgebraGenerator
     {
         Op op = compile(query.getQueryPattern()) ;     // Not compileElement - may need to apply simplification.
         
-        if ( query.hasBindings() )
-            op = bindings(op, query.getBindingValues()) ;
-        
         op = compileModifiers(query, op) ;
         return op ;
     }
@@ -132,19 +129,6 @@ public class AlgebraGenerator
         return Transformer.transform(simplify, op) ;
     }
 
-    private static Op bindings(Op op, List<Binding> bindings)
-    {
-        if ( bindings != null )
-        {
-            Table table = TableFactory.create() ;
-            for ( Binding binding : bindings )
-                table.addBinding(binding) ;
-            OpTable opTable = OpTable.create(table) ;
-            op = OpJoin.create(op, opTable) ;
-        }
-        return op ;
-    }
-    
     // This is the operation to call for recursive application of step 4.
     protected Op compileElement(Element elt)
     {
@@ -548,7 +532,7 @@ public class AlgebraGenerator
     }
     
     /** Compile query modifiers */
-    public Op compileModifiers(Query query, Op pattern)
+    private Op compileModifiers(Query query, Op pattern)
     {
          /* The modifier order in algebra is:
           * 
@@ -556,9 +540,10 @@ public class AlgebraGenerator
           *   Distinct/reduce
           *     project
           *       OrderBy
-          *         having
-          *           select expressions
-          *             group
+          *         Bindings
+          *           having
+          *             select expressions
+          *               group
           */
         
         // Preparation: sort SELECT clause into assignments and projects.
@@ -568,11 +553,6 @@ public class AlgebraGenerator
         List<Var> vars = new ArrayList<Var>() ;     // projection variables
         
         Op op = pattern ;
-        
-        // ---- ToList
-        if ( context.isTrue(ARQ.generateToList) )
-            // Listify it.
-            op = new OpList(op) ;
         
         // ---- GROUP BY
         
@@ -622,6 +602,20 @@ public class AlgebraGenerator
                 op = OpFilter.filter(expr2 , op) ;
             }
         }
+        // ---- BINDINGS
+        if ( query.hasBindings() )
+        {
+            Table table = TableFactory.create() ;
+            for ( Binding binding : query.getBindingValues() )
+                table.addBinding(binding) ;
+            OpTable opTable = OpTable.create(table) ;
+            op = OpJoin.create(op, opTable) ;
+        }
+        
+        // ---- ToList
+        if ( context.isTrue(ARQ.generateToList) )
+            // Listify it.
+            op = new OpList(op) ;
         
         // ---- ORDER BY
         if ( query.getOrderBy() != null )
@@ -691,7 +685,7 @@ public class AlgebraGenerator
 /*
  * (c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (c) Copyright 2010 Talis Systems Ltd
- * (c) Copyright 2010 Epimorphics Ltd.
+ * (c) Copyright 2010, 2011 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -6,15 +6,11 @@
 
 package opexec;
 
-import java.io.ByteArrayInputStream ;
 import java.io.StringReader ;
 
 import org.openjena.atlas.lib.StrUtils ;
 import org.openjena.atlas.logging.Log ;
-import org.openjena.riot.RiotLoader ;
-import org.openjena.riot.RiotReader ;
 
-import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.query.QueryExecution ;
@@ -26,14 +22,12 @@ import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.sparql.algebra.op.OpBGP ;
 import com.hp.hpl.jena.sparql.algebra.op.OpFilter ;
 import com.hp.hpl.jena.sparql.core.BasicPattern ;
-import com.hp.hpl.jena.sparql.core.DatasetGraphOne ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.main.OpExecutor ;
 import com.hp.hpl.jena.sparql.engine.main.OpExecutorFactory ;
 import com.hp.hpl.jena.sparql.engine.main.QC ;
 import com.hp.hpl.jena.sparql.engine.main.StageBuilder ;
-import com.hp.hpl.jena.sparql.sse.SSE ;
 
 /** Example skeleton for a query engine.
  *  To just extend ARQ by custom basic graph pattern matching (a very common case)
