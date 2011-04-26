@@ -88,7 +88,7 @@ public class TestItem
         namedGraphURIs = _getNamedGraphsURIs() ; 
         
         queryFile = _getQueryFile() ;
-        queryFileSyntax = _getSyntax(entry.getModel(), queryFile, defaultQuerySyntax) ;
+        queryFileSyntax = _getQuerySyntax(entry.getModel(), queryFile, defaultQuerySyntax) ;
         if ( queryFileSyntax == null && queryFile != null )
             queryFileSyntax = Syntax.guessFileSyntax(queryFile) ;
         buildLuceneIndex = _getTextIndex() ;
@@ -272,11 +272,19 @@ public class TestItem
         return _getAction().getURI() ;
     }
         
-    private Syntax _getSyntax(Model m, String uri, Syntax def)
+    private Syntax _getQuerySyntax(Model m, String uri, Syntax def)
     {
         Resource r = m.createResource(uri) ;
-        if ( r.hasProperty(RDF.type) )
-            return Syntax.make(r.getProperty(RDF.type).getResource().getURI()) ;
+        if ( r.hasProperty(TestManifestX.querySyntax) )
+        {
+            Syntax x = Syntax.make(r.getProperty(TestManifestX.querySyntax).getResource().getURI()) ; 
+            //System.err.println("Query syntax: "+x) ;
+            return x ;
+        }
+        
+//        Resource r = m.createResource(uri) ;
+//        if ( r.hasProperty(RDF.type) )
+//            return Syntax.make(r.getProperty(RDF.type).getResource().getURI()) ;
         return def ;
     }
 

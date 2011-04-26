@@ -167,7 +167,7 @@ TOKENS
 <DEFAULT> TOKEN : {
 <#DIGITS: (["0"-"9"])+>
 | <INTEGER: <DIGITS>>
-| <DECIMAL: <DIGITS> "." (<DIGITS>)* | "." <DIGITS>>
+| <DECIMAL: (<DIGITS>)? "." <DIGITS>>
 | <DOUBLE: (["0"-"9"])+ "." (["0"-"9"])* <EXPONENT> | "." (["0"-"9"])+ <EXPONENT> | (["0"-"9"])+ <EXPONENT>>
 | <INTEGER_POSITIVE: <PLUS> <INTEGER>>
 | <DECIMAL_POSITIVE: <PLUS> <DECIMAL>>

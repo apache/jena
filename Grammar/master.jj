@@ -2144,8 +2144,8 @@ TOKEN :
 {
   < #DIGITS: (["0"-"9"])+>
 | < INTEGER: <DIGITS> >
-| < DECIMAL: ( <DIGITS> "." (<DIGITS>)* | "." <DIGITS> ) >
-//| < DECIMAL: (<DIGITS>)? "." <DIGITS> >
+//| < DECIMAL: ( <DIGITS> "." (<DIGITS>)* | "." <DIGITS> ) >
+| < DECIMAL: (<DIGITS>)? "." <DIGITS> >
 | < DOUBLE:   // Required exponent.
       (
         (["0"-"9"])+ "." (["0"-"9"])* <EXPONENT>
