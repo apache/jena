@@ -24,20 +24,20 @@ public class ConcurrencyPolicyMRSW implements ConcurrencyPolicy
     public ConcurrencyPolicyMRSW()
     { }
 
-    //@Override
+    @Override
     public void startRead()
     {
         readCounter.getAndIncrement() ;
         checkConcurrency() ;
     }
 
-    //@Override
+    @Override
     public void finishRead()
     {
         readCounter.decrementAndGet() ;
     }
 
-    //@Override
+    @Override
     public void startUpdate()
     {
         epoch.getAndIncrement() ;
@@ -45,7 +45,7 @@ public class ConcurrencyPolicyMRSW implements ConcurrencyPolicy
         checkConcurrency() ;
     }
 
-    //@Override
+    @Override
     public void finishUpdate()
     {
         writeCounter.decrementAndGet() ;
@@ -66,7 +66,7 @@ public class ConcurrencyPolicyMRSW implements ConcurrencyPolicy
             policyError(R, W) ;
     }
     
-    //@Override
+    @Override
     public <T> Iterator<T> checkedIterator(Iterator<T> iter) { return new IteratorCheckNotConcurrent<T>(iter, epoch) ; }
     
     private static class IteratorCheckNotConcurrent<T> implements Iterator<T>
@@ -97,6 +97,7 @@ public class ConcurrencyPolicyMRSW implements ConcurrencyPolicy
             }
         }
         
+        @Override
         public boolean hasNext()
         {
             checkCourrentModification() ;
@@ -106,6 +107,7 @@ public class ConcurrencyPolicyMRSW implements ConcurrencyPolicy
             return b ;
         }
 
+        @Override
         public T next()
         {
             checkCourrentModification() ;
@@ -114,6 +116,7 @@ public class ConcurrencyPolicyMRSW implements ConcurrencyPolicy
             } catch (NoSuchElementException ex) { finished = true ; throw ex ; }
         }
 
+        @Override
         public void remove()
         {
             checkCourrentModification() ;

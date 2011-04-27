@@ -97,7 +97,7 @@ public class DatasetPrefixesTDB implements DatasetPrefixStorage
     /** Testing - dataset prefixes in-memory */
     public static DatasetPrefixesTDB testing() { return new DatasetPrefixesTDB() ; }
 
-    //@Override
+    @Override
     public synchronized void insertPrefix(String graphName, String prefix, String uri)
     {
         Node g = Node.createURI(graphName) ; 
@@ -107,7 +107,7 @@ public class DatasetPrefixesTDB implements DatasetPrefixStorage
         nodeTupleTable.addRow(g,p,u) ;
     }
 
-    //@Override
+    @Override
     public Set<String> graphNames()
     {
         Iterator<Tuple<Node>> iter = nodeTupleTable.find((Node)null, null, null) ;
@@ -118,7 +118,7 @@ public class DatasetPrefixesTDB implements DatasetPrefixStorage
         return x ;
     }
     
-    //@Override
+    @Override
     public synchronized String readPrefix(String graphName, String prefix)
     {
         Node g = Node.createURI(graphName) ; 
@@ -133,7 +133,7 @@ public class DatasetPrefixesTDB implements DatasetPrefixStorage
         return uri.getURI() ; 
     }
 
-    //@Override
+    @Override
     public synchronized String readByURI(String graphName, String uriStr)
     {
         Node g = Node.createURI(graphName) ; 
@@ -146,7 +146,7 @@ public class DatasetPrefixesTDB implements DatasetPrefixStorage
         return prefix.getLiteralLexicalForm()  ;
     }
 
-    //@Override
+    @Override
     public synchronized Map<String, String> readPrefixMap(String graphName)
     {
         Node g = Node.createURI(graphName) ;
@@ -163,7 +163,7 @@ public class DatasetPrefixesTDB implements DatasetPrefixStorage
         return map ;
     }
     
-    //@Override
+    @Override
     public synchronized void loadPrefixMapping(String graphName, PrefixMapping pmap)
     {
         Node g = Node.createURI(graphName) ;
@@ -178,7 +178,7 @@ public class DatasetPrefixesTDB implements DatasetPrefixStorage
         Iter.close(iter) ;
     }
     
-    //@Override
+    @Override
     public synchronized void removeFromPrefixMap(String graphName, String prefix, String uri)
     {
         Node g = Node.createURI(graphName) ; 
@@ -192,22 +192,22 @@ public class DatasetPrefixesTDB implements DatasetPrefixStorage
     public NodeTupleTable getNodeTupleTable()  { return nodeTupleTable ; }
     
     /** Return a PrefixMapping for the unamed graph */
-    //@Override
+    @Override
     public PrefixMapping getPrefixMapping()
     { return getPrefixMapping(unamedGraphURI) ; }
 
     /** Return a PrefixMapping for a named graph */
-    //@Override
+    @Override
     public PrefixMapping getPrefixMapping(String graphName)
     { return new GraphPrefixesProjection(graphName, this) ; }
 
-    //@Override
+    @Override
     public void close()
     {
         nodeTupleTable.close() ;
     }
 
-    //@Override
+    @Override
     public void sync()  { nodeTupleTable.sync() ; }
 }
 

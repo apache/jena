@@ -221,11 +221,13 @@ public class BPlusTree implements Iterable<Record>, RangeIndex, Session
     /** Only use for careful manipulation of structures */
     public BPTreeRecordsMgr getRecordsMgr()     { return recordsMgr ; }
     
+    @Override
     public RecordFactory getRecordFactory()
     {
         return bpTreeParams.recordFactory ;
     }
     
+    @Override
     public Record find(Record record)
     {
         startReadBlkMgr() ;
@@ -253,6 +255,7 @@ public class BPlusTree implements Iterable<Record>, RangeIndex, Session
             log.warn("Root is not root!") ;
     }
 
+    @Override
     public boolean contains(Record record)
     {
         startReadBlkMgr() ;
@@ -263,6 +266,7 @@ public class BPlusTree implements Iterable<Record>, RangeIndex, Session
         return r != null ;
     }
 
+    @Override
     public Record minKey()
     {
         startReadBlkMgr() ;
@@ -273,6 +277,7 @@ public class BPlusTree implements Iterable<Record>, RangeIndex, Session
         return r ;
     }
 
+    @Override
     public Record maxKey()
     {
         startReadBlkMgr() ;
@@ -283,7 +288,7 @@ public class BPlusTree implements Iterable<Record>, RangeIndex, Session
         return r ;
     }
 
-    //@Override
+    @Override
     public boolean add(Record record)
     {
         return addAndReturnOld(record) == null ;
@@ -303,6 +308,7 @@ public class BPlusTree implements Iterable<Record>, RangeIndex, Session
         return r ;
     }
     
+    @Override
     public boolean delete(Record record)
     { return deleteAndReturnOld(record) != null ; }
     
@@ -319,7 +325,7 @@ public class BPlusTree implements Iterable<Record>, RangeIndex, Session
         return r ;
     }
 
-    //@Override
+    @Override
     public Iterator<Record> iterator()
     {
         startReadBlkMgr() ;
@@ -330,6 +336,7 @@ public class BPlusTree implements Iterable<Record>, RangeIndex, Session
         return iter ;
     }
     
+    @Override
     public Iterator<Record> iterator(Record fromRec, Record toRec)
     {
         startReadBlkMgr() ;
@@ -340,19 +347,19 @@ public class BPlusTree implements Iterable<Record>, RangeIndex, Session
         return iter ;
     }
     
-    //@Override
+    @Override
     public void startRead()
     { }
 
-    //@Override
+    @Override
     public void finishRead()
     { }
 
-    //@Override
+    @Override
     public void startUpdate()
     { }
     
-    //@Override
+    @Override
     public void finishUpdate()
     { }
 
@@ -381,7 +388,7 @@ public class BPlusTree implements Iterable<Record>, RangeIndex, Session
         recordsMgr.finishUpdate() ;
     }
 
-    //@Override
+    @Override
     public boolean isEmpty()
     {
         startReadBlkMgr() ;
@@ -392,11 +399,11 @@ public class BPlusTree implements Iterable<Record>, RangeIndex, Session
         return b ;
     }
     
-    //@Override
+    @Override
     public void clear()
     { throw new UnsupportedOperationException("RangeIndex("+Utils.classShortName(this.getClass())+").clear") ; }
     
-    //@Override
+    @Override
     public void sync() 
     { 
         if ( nodeManager.getBlockMgr() != null )
@@ -405,6 +412,7 @@ public class BPlusTree implements Iterable<Record>, RangeIndex, Session
             recordsMgr.getBlockMgr().sync() ;
     }
     
+    @Override
     public void close()
     { 
         if ( nodeManager.getBlockMgr() != null )
@@ -417,11 +425,13 @@ public class BPlusTree implements Iterable<Record>, RangeIndex, Session
 //    {
 //    }
 
+    @Override
     public long sessionTripleCount()
     {
         return sessionCounter ;
     }
 
+    @Override
     public long size()
     {
         Iterator<Record> iter = iterator() ;
@@ -433,6 +443,7 @@ public class BPlusTree implements Iterable<Record>, RangeIndex, Session
         return root.size() ;
     }
 
+    @Override
     public void check()
     {
         root.checkNodeDeep() ;

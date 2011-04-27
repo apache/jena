@@ -33,6 +33,7 @@ public interface ObjectFile extends Sync, Closeable
     
     /** Length, in units used by read/write for ids */
     public long length() ;
+    @Override
     public void close() ;
     
     /** All the bytebuffers */

@@ -11,16 +11,19 @@ import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 
 public class DatasetGraphSetup implements DatasetGraphMakerTDB
 {
+    @Override
     public DatasetGraphTDB createDatasetGraph()
     {
         return SetupTDB.buildDataset(Location.mem()) ;
     }
 
+    @Override
     public DatasetGraphTDB createDatasetGraph(Location location)
     {
         return SetupTDB.buildDataset(location) ;
     }
 
+    @Override
     public void releaseDatasetGraph(DatasetGraphTDB dataset)
     {}
 }

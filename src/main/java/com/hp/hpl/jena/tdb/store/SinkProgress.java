@@ -45,9 +45,11 @@ public class SinkProgress<X> implements Sink<X>
     
     public long getCount() { return totalCount ; }
     
+    @Override
     public void flush()
     {}
 
+    @Override
     public void close()
     {
         printAtEnd() ;
@@ -73,6 +75,7 @@ public class SinkProgress<X> implements Sink<X>
     }
     
     
+    @Override
     public void send(X item)
     {
         oneItem() ;

@@ -46,7 +46,7 @@ import com.hp.hpl.jena.update.UpdateRequest ;
  *   Makes release conordination easier.
  * 2 phase:
  *   Fixup B+Tree/B-Tree by always asking to write blocks.  Marked [TxTDB:PATCH-UP]
-
+  * BlockType arg to Block() makes no sense - may not know in advance.
  *   Separately rewrite to be better.
  *   
  * 

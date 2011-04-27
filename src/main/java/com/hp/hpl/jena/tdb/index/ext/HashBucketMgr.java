@@ -58,7 +58,7 @@ public class HashBucketMgr extends BlockConverter<HashBucket>
             this.pageMgr = pageMgr ;
         }
         
-        //@Override
+        @Override
         public HashBucket createFromByteBuffer(ByteBuffer bb, BlockType blkType)
         {
             // No need to additionally sync - this is a triggered by write operations so only one writer.
@@ -69,7 +69,7 @@ public class HashBucketMgr extends BlockConverter<HashBucket>
             return bucket ;
         }
 
-        //@Override
+        @Override
         public HashBucket fromByteBuffer(ByteBuffer byteBuffer)
         {
             synchronized (byteBuffer)
@@ -86,7 +86,7 @@ public class HashBucketMgr extends BlockConverter<HashBucket>
             }
         }
 
-        //@Override
+        @Override
         public ByteBuffer toBlock(HashBucket bucket)
         {
             // No need to additionally sync - this is a triggered by write operations so only one writer.

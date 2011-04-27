@@ -50,24 +50,31 @@ public interface BlockMgr extends Sync, Closeable, Session
     public boolean valid(int id) ;
     
     /** Close the block manager */
+    @Override
     public void close() ;
     
     /** Is this block manager still usable?  Closed block managers can not perform any operations except this one. */  
     public boolean isClosed() ; 
     
     /** Sync the block manager */
+    @Override
     public void sync() ;
     
     /** Signal the start of update operations */
+    @Override
     public void startUpdate();
     
     /** Signal the completion of update operations */
+    @Override
     public void finishUpdate();
 
     /** Signal the start of read operations */
+    @Override
     public void startRead();
+
     
     /** Signal the completeion of read operations */
+    @Override
     public void finishRead();
 }
 

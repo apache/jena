@@ -30,10 +30,10 @@ public final class CachingTDBMaker implements DatasetGraphMakerTDB
     { this.factory1 = factory ; }
     
     // Uncached currently
-    //@Override
+    @Override
     public DatasetGraphTDB createDatasetGraph()    { return factory1.createDatasetGraph() ; }
 
-    //@Override
+    @Override
     public DatasetGraphTDB createDatasetGraph(Location location)
     {
         //if ( location.isMem() )
@@ -64,6 +64,7 @@ public final class CachingTDBMaker implements DatasetGraphMakerTDB
             } finally { dsg.getLock().leaveCriticalSection() ; }
         }
     }
+    @Override
     public void releaseDatasetGraph(DatasetGraphTDB dataset)
     {
         Location location = dataset.getLocation() ; 

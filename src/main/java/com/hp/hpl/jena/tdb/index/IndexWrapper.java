@@ -18,55 +18,55 @@ public class IndexWrapper implements Index
     
     public IndexWrapper(Index idx) { this.index = idx ; }
     
-    //@Override
+    @Override
     public Record find(Record record)
     { return index.find(record) ; }
 
-    //@Override
+    @Override
     public boolean contains(Record record)
     { return index.contains(record) ; }
     
-    //@Override
+    @Override
     public boolean add(Record record)
     { return index.add(record) ; }
     
-    //@Override
+    @Override
     public boolean delete(Record record)
     { return index.delete(record) ; }
     
-    //@Override
+    @Override
     public Iterator<Record> iterator()
     { return index.iterator() ; }
     
-    //@Override
+    @Override
     public boolean isEmpty()
     { return index.isEmpty() ; }
     
-    //@Override
+    @Override
     public void clear()
     { index.clear() ; }
     
-    //@Override
+    @Override
     public void sync()
     { index.sync() ; }
     
-    //@Override
+    @Override
     public void close()
     { index.close() ; }
 
-    //@Override
+    @Override
     public RecordFactory getRecordFactory()
     { return index.getRecordFactory() ; }
 
-    //@Override
+    @Override
     public void check()
     { index.check() ; }
 
-    //@Override
+    @Override
     public long size()
     { return index.size() ; }
 
-    //@Override
+    @Override
     public long sessionTripleCount()
     { return index.sessionTripleCount() ; }
 }

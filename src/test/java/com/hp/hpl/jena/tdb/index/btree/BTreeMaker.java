@@ -18,17 +18,17 @@ public class BTreeMaker implements RangeIndexMaker
 
     public BTreeMaker(int order) { this.order = order ; }
     
-    //@Override
+    @Override
     public Index makeIndex() { return makeRangeIndex() ; }
 
-    //@Override
+    @Override
     public RangeIndex makeRangeIndex()
     {
         BTree bTree = BTree.makeMem(order, RecordLib.TestRecordLength, 0) ;
         return bTree ;
     }
     
-    //@Override
+    @Override
     public String getLabel() { return "BTree order = "+order ; } 
 }
 /*

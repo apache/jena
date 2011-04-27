@@ -35,6 +35,7 @@ public class ObjectFileMem implements ObjectFile
     { }
 
     
+    @Override
     public long length()
     {
         if ( closed )
@@ -42,6 +43,7 @@ public class ObjectFileMem implements ObjectFile
         return buffers.size() ;
     }
 
+    @Override
     public ByteBuffer read(long id)
     {
         if ( id < 0 || id >= buffers.size() )
@@ -55,6 +57,7 @@ public class ObjectFileMem implements ObjectFile
         return bb2 ;
     }
 
+    @Override
     public long write(ByteBuffer bb)
     {
         if ( closed )
@@ -64,21 +67,25 @@ public class ObjectFileMem implements ObjectFile
         return buffers.size()-1 ; 
     }
 
+    @Override
     public ByteBuffer allocWrite(int maxBytes)
     {
         return ByteBuffer.allocate(maxBytes) ;
     }
 
+    @Override
     public long completeWrite(ByteBuffer buffer)
     {
         return write(buffer) ;
     }
 
+    @Override
     public Iterator<Pair<Long, ByteBuffer>> all()
     {
         int N = buffers.size() ;
         Iterator<Long> iter = new IteratorInteger(0,N) ;
         Transform<Long, Pair<Long, ByteBuffer>> transform = new Transform<Long, Pair<Long, ByteBuffer>>() {
+            @Override
             public Pair<Long, ByteBuffer> convert(Long item)
             {
                 ByteBuffer bb = buffers.get(item.intValue()) ;
@@ -88,12 +95,14 @@ public class ObjectFileMem implements ObjectFile
         return Iter.map(iter, transform) ;
     }
 
+    @Override
     public void sync()
     {}
     
     public void sync(boolean force)
     {}
 
+    @Override
     public void close()
     {
         closed = true ;

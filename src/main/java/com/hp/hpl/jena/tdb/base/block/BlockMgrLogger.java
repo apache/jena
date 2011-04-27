@@ -28,7 +28,7 @@ public class BlockMgrLogger implements BlockMgr //extends BlockMgrWrapper
         this.logAllOperations = logAllOperations ;
     }
 
-    //@Override
+    @Override
     public Block allocate(BlockType blockType, int blockSize)
     {
         Block x = blockMgr.allocate(blockType, blockSize) ;
@@ -36,118 +36,119 @@ public class BlockMgrLogger implements BlockMgr //extends BlockMgrWrapper
         return x ;
     }
 
-    //@Override
+    @Override
     public boolean isEmpty()
     {
         log.info("isEmpty") ;
         return blockMgr.isEmpty() ;
     }
 
-    //@Override
+    @Override
     public int blockSize()
     {
         log.info("blockSize") ;
         return blockMgr.blockSize() ;
     }
 
-    //@Override
+    @Override
     public Block getRead(int id)
     {
         log.info("getRead("+id+")") ;
         return blockMgr.getRead(id) ;
     }
 
-    //@Override
+    @Override
     public Block getWrite(int id)
     {
         log.info("getWrite("+id+")") ;
         return blockMgr.getWrite(id) ;
     }
 
+    @Override
     public Block promote(Block block)
     {
         log.info("promote("+block.getId()+")") ;
         return blockMgr.promote(block) ;
     }
 
-    //@Override
+    @Override
     public void releaseRead(Block block)
     {
         log.info("releaseRead("+block.getId()+")") ;
         blockMgr.releaseRead(block) ;
     }
 
-    //@Override
+    @Override
     public void releaseWrite(Block block)
     {
         log.info("releaseWrite("+block.getId()+")") ;
         blockMgr.releaseWrite(block) ;
     }
 
-    //@Override
+    @Override
     public void put(Block block)
     {
         log.info("put("+block.getId()+")") ;
         blockMgr.put(block) ;
     }
 
-    //@Override
+    @Override
     public void freeBlock(Block block)
     {
         log.info("freeBlock("+block.getId()+")") ;
         blockMgr.freeBlock(block) ;
     }
 
-    //@Override
+    @Override
     public boolean valid(int id)
     {
         log.info("valid("+id+")") ;
         return blockMgr.valid(id) ;
     }
 
-    //@Override
+    @Override
     public void close()
     {
         log.info("close") ;
         blockMgr.close() ;
     }
 
-    //@Override
+    @Override
     public boolean isClosed()
     {
         log.info("isClosed") ;
         return blockMgr.isClosed() ;
     }
 
-    //@Override
+    @Override
     public void sync()
     {
         log.info("Sync") ;
         blockMgr.sync() ;
     }
 
-    //@Override
+    @Override
     public void startRead()
     {
         log.info("> start read") ;
         blockMgr.startRead() ;
     }
 
-    //@Override
+    @Override
     public void finishRead()
     {
         log.info("< finish read") ;
         blockMgr.finishRead() ;
     }
 
-    //@Override
+    @Override
     public void startUpdate()
     {
         log.info("> start update") ;
         blockMgr.startUpdate() ;
     }
 
-    //@Override
+    @Override
     public void finishUpdate()
     {
         log.info("< finish update") ;

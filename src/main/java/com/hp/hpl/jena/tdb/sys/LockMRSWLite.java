@@ -24,6 +24,7 @@ public class LockMRSWLite implements Lock
     // >0 for read lock, -1 for write lock.
     private int count = 0 ;
     
+    @Override
     public synchronized void enterCriticalSection(boolean readLockRequested)
     {
         // Once we have the lock, we can record the lock state
@@ -42,6 +43,7 @@ public class LockMRSWLite implements Lock
         }
     }
 
+    @Override
     public synchronized void leaveCriticalSection()
     {
         //mrswLock.readLock().tryLock() ;

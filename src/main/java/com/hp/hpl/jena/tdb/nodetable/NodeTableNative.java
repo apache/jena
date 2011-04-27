@@ -52,18 +52,18 @@ public class NodeTableNative implements NodeTable
     // ---- Public interface for Node <==> NodeId
 
     /** Get the Node for this NodeId, or null if none */
-    //@Override
+    @Override
     public Node getNodeForNodeId(NodeId id)
     {
         return _retrieveNodeByNodeId(id) ;
     }
 
     /** Find the NodeId for a node, or return NodeId.NodeDoesNotExist */ 
-    //@Override
+    @Override
     public NodeId getNodeIdForNode(Node node)  { return _idForNode(node, false) ; }
 
     /** Find the NodeId for a node, allocating a new NodeId if the Node does not yet have a NodeId */ 
-    //@Override
+    @Override
     public NodeId getAllocateNodeId(Node node)  { return _idForNode(node, true) ; }
 
     // ---- The worker functions
@@ -160,7 +160,7 @@ public class NodeTableNative implements NodeTable
     }
     // -------- NodeId<->Node
 
-    //@Override
+    @Override
     public synchronized void close()
     {
         // Close once.  This may be shared (e.g. triples table and quads table). 
@@ -177,6 +177,7 @@ public class NodeTableNative implements NodeTable
     }
 
     // Not synchronized
+    @Override
     public Iterator<Pair<NodeId, Node>> all() { return all2() ; }
     
     private Iterator<Pair<NodeId, Node>> all1()
@@ -186,6 +187,7 @@ public class NodeTableNative implements NodeTable
         Iterator<Record> iter = nodeHashToId.iterator() ; ;
 
         Transform<Record, Pair<NodeId, Node>> transform = new Transform<Record, Pair<NodeId, Node>>() {
+            @Override
             public Pair<NodeId, Node> convert(Record item)
             {
                 NodeId id = NodeId.create(item.getValue(), 0) ;
@@ -200,6 +202,7 @@ public class NodeTableNative implements NodeTable
         Iterator<Pair<Long, ByteBuffer>> objs = objects.all() ; 
         
         Transform<Pair<Long, ByteBuffer>, Pair<NodeId, Node>> transform = new Transform<Pair<Long, ByteBuffer>, Pair<NodeId, Node>>() {
+            @Override
             public Pair<NodeId, Node> convert(Pair<Long, ByteBuffer> item)
             {
                 NodeId id = NodeId.create(item.car().longValue()) ;
@@ -211,10 +214,10 @@ public class NodeTableNative implements NodeTable
         return Iter.map(objs, transform) ;
     }
 
-    //@Override
+    @Override
     public void sync() { sync(true) ; } 
     
-    //@Override
+    @Override
     public synchronized void sync(boolean force)
     {
         if ( nodeHashToId != null )

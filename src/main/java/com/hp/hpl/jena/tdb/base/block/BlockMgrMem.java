@@ -69,18 +69,19 @@ public class BlockMgrMem extends BlockMgrBase
         return block;
     }
 
+    @Override
     public Block promote(Block block)
     {
         return null ;
     }
 
-    //@Override
+    @Override
     public Block getRead(int id)
     {
         return getBlock(id) ;
     }
 
-    //@Override
+    @Override
     public Block getWrite(int id)
     {
         return getBlock(id) ;
@@ -96,15 +97,15 @@ public class BlockMgrMem extends BlockMgrBase
         return block ;
     }
 
-    //@Override
+    @Override
     public void releaseRead(Block block)
     { check(block) ; }
 
-    //@Override
+    @Override
     public void releaseWrite(Block block)
     { check(block) ; }
 
-    //@Override
+    @Override
     public void put(Block block)
     {
         check(block) ;
@@ -113,14 +114,14 @@ public class BlockMgrMem extends BlockMgrBase
         blocks.set(block.getId(), block) ;
     }
 
-    //@Override
+    @Override
     public void freeBlock(Block block)
     {
         blocks.set(block.getId(), FreeBlock) ;
         freeBlocks.add(block) ;
     }
 
-//    //@Override
+//    @Override
 //    private int allocateId()
 //    {
 //        int idx = -1 ;
@@ -158,7 +159,7 @@ public class BlockMgrMem extends BlockMgrBase
 //        return bb ;
 //    }
 //    
-//    //@Override
+//    @Override
 //    public ByteBuffer get(int id)
 //    {
 //        check(id) ;
@@ -176,7 +177,7 @@ public class BlockMgrMem extends BlockMgrBase
 //        return bb ;
 //    }
 
-    //@Override
+    @Override
     public boolean valid(int id)
     {
         if ( id >= blocks.size() )
@@ -188,7 +189,7 @@ public class BlockMgrMem extends BlockMgrBase
         return (blk != FreeBlock) && (blk != null) ;
     }
 
-//    //@Override
+//    @Override
 //    public void put(int id, ByteBuffer block)
 //    {
 //        check(id, block) ;
@@ -199,7 +200,7 @@ public class BlockMgrMem extends BlockMgrBase
 //        blocks.set(id, block) ;
 //    }
 //    
-//    //@Override
+//    @Override
 //    public void freeBlock(int id)
 //    { 
 //        check(id) ;
@@ -218,21 +219,21 @@ public class BlockMgrMem extends BlockMgrBase
         return blocks.get(id) == FreeBlock ; 
     }
     
-    //@Override
+    @Override
     public void sync()
     { }
     
-    //@Override
+    @Override
     public boolean isClosed() { return blocks == null ; }  
     
-    //@Override
+    @Override
     public void close()
     { 
         blocks = null ;
         freeBlocks = null ;
     }
     
-    //@Override
+    @Override
     public boolean isEmpty()
     {
         return blocks.size() == 0 ;

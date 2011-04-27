@@ -202,7 +202,7 @@ public class NodeLib
     public static Iterator<Node> nodes(final NodeTable nodeTable, Iterator<NodeId> iter)
     {
         return Iter.map(iter, new Transform<NodeId, Node>(){
-            //@Override
+            @Override
             public Node convert(NodeId item)
             {
                 return nodeTable.getNodeForNodeId(item) ;

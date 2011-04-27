@@ -26,34 +26,34 @@ public class NodeTableWrapper implements NodeTable
     }
     
     
-    //@Override
+    @Override
     public NodeId getAllocateNodeId(Node node)
     {
         return nodeTable.getAllocateNodeId(node) ;
     }
 
-    //@Override
+    @Override
     public NodeId getNodeIdForNode(Node node)
     {
         return nodeTable.getNodeIdForNode(node) ;
     }
 
-    //@Override
+    @Override
     public Node getNodeForNodeId(NodeId id)
     {
         return nodeTable.getNodeForNodeId(id) ;
     }
     
-    //@Override
+    @Override
     public Iterator<Pair<NodeId, Node>> all()
     {
         return nodeTable.all();
     }
 
-    //@Override
+    @Override
     public void sync() { nodeTable.sync() ; } 
 
-    //@Override
+    @Override
     public void close()
     { nodeTable.close() ; }
 

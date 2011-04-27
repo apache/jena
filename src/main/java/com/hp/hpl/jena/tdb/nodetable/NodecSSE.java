@@ -30,12 +30,13 @@ public class NodecSSE implements Nodec
     
     public NodecSSE() {}
     
+    @Override
     public int maxSize(Node node)
     {
         return maxLength(node) ;
     }
 
-    //@Override
+    @Override
     public int encode(Node node, ByteBuffer bb, PrefixMapping pmap)
     {
         if ( node.isURI() ) 
@@ -55,7 +56,7 @@ public class NodecSSE implements Nodec
         return x ;
     }
 
-    //@Override
+    @Override
     public Node decode(ByteBuffer bb, PrefixMapping pmap)
     {
         // Ideally, this would be straight from the byte buffer.

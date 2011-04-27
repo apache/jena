@@ -18,21 +18,27 @@ public class RangeIndexWrapper implements RangeIndex
     
     public RangeIndexWrapper(RangeIndex rIdx) { this.rIndex = rIdx ; }
     
+    @Override
     public Record find(Record record)
     { return rIndex.find(record) ; }
     
+    @Override
     public boolean contains(Record record)
     { return rIndex.contains(record) ; }
     
+    @Override
     public Record minKey()
     { return rIndex.minKey() ; }
     
+    @Override
     public Record maxKey()
     { return rIndex.maxKey() ; }
     
+    @Override
     public boolean add(Record record)
     { return rIndex.add(record) ; }
     
+    @Override
     public boolean delete(Record record)
     { return rIndex.delete(record) ; }
     
@@ -42,33 +48,43 @@ public class RangeIndexWrapper implements RangeIndex
 //    public Record deleteAndReturnOld(Record record)
 //    { return bpt.deleteAndReturnOld(record) ; }
     
+    @Override
     public Iterator<Record> iterator()
     { return rIndex.iterator() ; }
     
+    @Override
     public Iterator<Record> iterator(Record minRec, Record maxRec)
     { return rIndex.iterator(minRec, maxRec) ; }
     
+    @Override
     public boolean isEmpty()
     { return rIndex.isEmpty() ; }
     
+    @Override
     public void clear()
     { rIndex.clear() ; }
     
+    @Override
     public void sync()
     { rIndex.sync() ; }
     
+    @Override
     public void close()
     { rIndex.close() ; }
 
+    @Override
     public RecordFactory getRecordFactory()
     { return rIndex.getRecordFactory() ; }
 
+    @Override
     public void check()
     { rIndex.check() ; }
 
+    @Override
     public long size()
     { return rIndex.size() ; }
 
+    @Override
     public long sessionTripleCount()
     { return rIndex.sessionTripleCount() ; }
 }

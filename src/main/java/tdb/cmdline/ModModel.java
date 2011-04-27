@@ -33,11 +33,13 @@ public class ModModel implements ArgModuleGeneral
         return modelArgDecl ;
     }
     
+    @Override
     public void registerWith(CmdGeneral cmdLine)
     {
         cmdLine.add(modelArgDecl, "--"+modelArgDecl.getKeyName()+"=filename", "Filename for a model") ;
     }
 
+    @Override
     public void processArgs(CmdArgModule cmdLine)
     {
         if ( cmdLine.contains(modelArgDecl) )

@@ -67,7 +67,7 @@ public class GraphTriplesTDB extends GraphTDBBase
     @Override
     protected final Logger getLog() { return log ; }
 
-    //@Override
+    @Override
     public Tuple<Node> asTuple(Triple triple)
     {
         return Tuple.create(triple.getSubject(), triple.getPredicate(), triple.getObject()) ;
@@ -79,7 +79,7 @@ public class GraphTriplesTDB extends GraphTDBBase
         return tripleTable.getNodeTupleTable().findAll() ;
     }
 
-    //@Override
+    @Override
     public NodeTupleTable getNodeTupleTable()           { return tripleTable.getNodeTupleTable()   ; }
    
     @Override

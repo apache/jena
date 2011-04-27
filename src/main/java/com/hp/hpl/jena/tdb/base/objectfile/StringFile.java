@@ -33,7 +33,6 @@ public class StringFile implements Sync, Closeable
         this.file = file ;
     }
     
-    //@Override
     public long write(String str)
     { 
         str = compress(str) ;
@@ -49,7 +48,6 @@ public class StringFile implements Sync, Closeable
 //        return file.write(bb) ;
     }
     
-    //@Override
     public String read(long id)
     {
         ByteBuffer bb = file.read(id) ;
@@ -58,14 +56,13 @@ public class StringFile implements Sync, Closeable
         return x ;
     }
 
-    //@Override
+    @Override
     public void close()
     { file.close() ; }
 
-    //@Override
+    @Override
     public void sync() { file.sync() ; }
     
-    //@Override
     public void flush() { sync() ; }
 
     public ObjectFile getByteBufferFile()
@@ -93,7 +90,7 @@ public class StringFile implements Sync, Closeable
     }
     
     static StringFile.DumpHandler handler = new StringFile.DumpHandler() {
-        //@Override
+        @Override
         public void handle(long fileIdx, String str)
         {
             System.out.printf("0x%08X : %s\n", fileIdx, str) ;

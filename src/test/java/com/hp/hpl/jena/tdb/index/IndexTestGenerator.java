@@ -24,7 +24,7 @@ public class IndexTestGenerator implements ExecGenerator
         this.maxNumKeys = maxNumKeys ;
     }
     
-    //@Override
+    @Override
     public void executeOneTest()
     {
         int numKeys = RandomLib.random.nextInt(maxNumKeys)+1 ;

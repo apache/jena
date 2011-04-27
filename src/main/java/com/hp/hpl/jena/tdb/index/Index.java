@@ -32,12 +32,14 @@ public interface Index extends Iterable<Record>, Sync, Closeable
 //    public boolean clear() ;
 
     /** Iterate over the whole index */ 
+    @Override
     public Iterator<Record> iterator() ;
     
     /** Get the Record factory associated with this index */
     public RecordFactory getRecordFactory() ;
     
     /** Close the index - can't not be used again through this object */
+    @Override
     public void close() ;
     
     /** Answer whether the index is empty or not.  May return false for unknown or meaningless

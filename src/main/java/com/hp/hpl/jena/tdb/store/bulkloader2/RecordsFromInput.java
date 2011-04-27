@@ -47,7 +47,7 @@ class RecordsFromInput implements Iterator<Record>
         this.recordFactory = new RecordFactory(length*SystemTDB.SizeOfNodeId, 0) ;
     }
     
-    //@Override
+    @Override
     public boolean hasNext()
     {
         if ( finished ) return false ;
@@ -122,7 +122,7 @@ class RecordsFromInput implements Iterator<Record>
         } catch (IOException ex) { throw new AtlasException(ex) ; }
     }
 
-    //@Override
+    @Override
     public Record next()
     {
         if ( !hasNext() ) throw new NoSuchElementException() ;
@@ -131,7 +131,7 @@ class RecordsFromInput implements Iterator<Record>
         return r ;
     }
 
-    //@Override
+    @Override
     public void remove()
     { throw new UnsupportedOperationException() ; }
 }

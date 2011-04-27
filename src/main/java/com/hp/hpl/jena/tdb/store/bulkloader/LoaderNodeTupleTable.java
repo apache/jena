@@ -155,10 +155,12 @@ public class LoaderNodeTupleTable implements Closeable, Sync
     
     
     public void sync(boolean force) {}
+    @Override
     public void sync() {}
     
     // --------
     
+    @Override
     public void close()
     { sync() ; }
 

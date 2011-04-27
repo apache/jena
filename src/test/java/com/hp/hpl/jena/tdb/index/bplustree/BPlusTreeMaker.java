@@ -24,17 +24,17 @@ public class BPlusTreeMaker implements RangeIndexMaker
         this.recordOrder = recordOrder ;
     }
     
-    //@Override
+    @Override
     public Index makeIndex() { return makeRangeIndex() ; }
 
-    //@Override
+    @Override
     public RangeIndex makeRangeIndex()
     {
         BPlusTree bpTree = BPlusTree.makeMem(order, recordOrder, RecordLib.TestRecordLength, 0) ;
         return bpTree ;
     }
 
-    //@Override
+    @Override
     public String getLabel() { return "B+Tree order = "+order ; } 
 
 }

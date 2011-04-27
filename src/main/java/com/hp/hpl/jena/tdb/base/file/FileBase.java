@@ -33,7 +33,7 @@ public class FileBase implements Sync, Closeable
         } catch (IOException ex) { throw new BlockException("Failed to create FileBase", ex) ; } 
     }
 
-    //@Override
+    @Override
     public void close()
     {
         try {
@@ -43,7 +43,7 @@ public class FileBase implements Sync, Closeable
 
     }
 
-    //@Override
+    @Override
     public void sync()
     {
         try {

@@ -179,6 +179,7 @@ public class TransactionManager
             this.baseBlockMgr = blockMgr ;
         }
 
+        @Override
         public BlockMgr buildBlockMgr(FileSet fileSet, String ext, int blockSize)
         {
             BlockMgr base = baseBlockMgr.created(fileSet, ext) ;
@@ -279,6 +280,7 @@ public class TransactionManager
             bmb = new BlockMgrBuilderStd() ;
         }
 
+        @Override
         public BlockMgr buildBlockMgr(FileSet fileSet, String ext, int blockSize)
         {
             String key = fileSet.getBasename()+"."+ext ;
@@ -308,6 +310,7 @@ public class TransactionManager
         }
         
         
+        @Override
         public NodeTable buildNodeTable(FileSet fsIndex, FileSet fsObjectFile, int sizeNode2NodeIdCache,
                                         int sizeNodeId2NodeCache)
         {

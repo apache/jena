@@ -62,6 +62,7 @@ public class NodeTupleTableConcrete implements NodeTupleTable
     private void finishRead()
     { conPolicy.finishRead() ; }
 
+    @Override
     public boolean addRow(Node... nodes)
     {
         try
@@ -87,6 +88,7 @@ public class NodeTupleTableConcrete implements NodeTupleTable
         }
     }
 
+    @Override
     public boolean deleteRow(Node... nodes)
     {
         try
@@ -109,6 +111,7 @@ public class NodeTupleTableConcrete implements NodeTupleTable
     }
 
     /** Find by node. */
+    @Override
     public Iterator<Tuple<Node>> find(Node... nodes)
     {
         try {
@@ -125,6 +128,7 @@ public class NodeTupleTableConcrete implements NodeTupleTable
      * node is known to be unknown) for not found as well as NullIterator (when
      * no tuples are found (unknown unknown).
      */
+    @Override
     public Iterator<Tuple<NodeId>> findAsNodeIds(Node... nodes)
     {
         NodeId n[] = new NodeId[nodes.length] ;
@@ -141,6 +145,7 @@ public class NodeTupleTableConcrete implements NodeTupleTable
     }
 
     /** Find by NodeId. */
+    @Override
     public Iterator<Tuple<NodeId>> find(NodeId... ids)
     {
         Tuple<NodeId> tuple = Tuple.create(ids) ;
@@ -151,6 +156,7 @@ public class NodeTupleTableConcrete implements NodeTupleTable
     }
 
     /** Find by NodeId. */
+    @Override
     public Iterator<Tuple<NodeId>> find(Tuple<NodeId> tuple)
     {
         try {
@@ -161,6 +167,7 @@ public class NodeTupleTableConcrete implements NodeTupleTable
         } finally { finishRead() ; }
     }
 
+    @Override
     public Iterator<Tuple<NodeId>> findAll()
     {
         try {
@@ -184,23 +191,27 @@ public class NodeTupleTableConcrete implements NodeTupleTable
      * Return the undelying tuple table - used with great care by tools that
      * directly manipulate internal structures.
      */
+    @Override
     public final TupleTable getTupleTable()
     {
         return tupleTable ;
     }
 
     /** Return the node table */
+    @Override
     public final NodeTable getNodeTable()
     {
         return nodeTable ;
     }
 
+    @Override
     public boolean isEmpty()
     {
         return tupleTable.isEmpty() ;
     }
 
     /** Clear the tuple table - does not clear the node table */
+    @Override
     public void clear()
     {
         try
@@ -213,12 +224,14 @@ public class NodeTupleTableConcrete implements NodeTupleTable
         }
     }
 
+    @Override
     public long size()
     {
         return tupleTable.size() ;
     }
 
     // @Override
+    @Override
     public final void close()
     {
         try
@@ -231,6 +244,7 @@ public class NodeTupleTableConcrete implements NodeTupleTable
     }
 
     // @Override
+    @Override
     public final void sync()
     {
         try {

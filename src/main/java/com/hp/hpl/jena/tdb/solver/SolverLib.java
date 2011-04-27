@@ -53,7 +53,7 @@ public class SolverLib
      * around the BindingNodeId stream. 
      */
     public final static ConvertNodeIDToNode converter = new ConvertNodeIDToNode(){
-        //@Override
+        @Override
         public Iterator<Binding> convert(NodeTable nodeTable, Iterator<BindingNodeId> iterBindingIds)
         {
             return Iter.map(iterBindingIds, convToBinding(nodeTable)) ;
@@ -154,7 +154,7 @@ public class SolverLib
     {
         return new Transform<BindingNodeId, Binding>()
         {
-            //@Override
+            @Override
             public Binding convert(BindingNodeId bindingNodeIds)
             {
                 return convToBinding(nodeTable, bindingNodeIds) ;
@@ -185,7 +185,7 @@ public class SolverLib
     {
         return new Transform<Binding, BindingNodeId>()
         {
-            //@Override
+            @Override
             public BindingNodeId convert(Binding binding)
             {
                 if ( binding instanceof BindingTDB )
@@ -230,6 +230,7 @@ public class SolverLib
         
         final Var var = Var.alloc(graphNode) ;
         Transform<Node, Binding> bindGraphName = new Transform<Node, Binding>(){
+            @Override
             public Binding convert(Node node)
             {
                 return BindingFactory.binding(var, node) ;

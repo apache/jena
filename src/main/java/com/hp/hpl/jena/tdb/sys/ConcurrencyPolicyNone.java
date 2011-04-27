@@ -14,18 +14,23 @@ import java.util.Iterator ;
 public final class ConcurrencyPolicyNone implements ConcurrencyPolicy
 {
 
+    @Override
     public void startUpdate()
     {}
 
+    @Override
     public void finishUpdate()
     {}
 
+    @Override
     public void startRead()
     {}
 
+    @Override
     public void finishRead()
     {}
 
+    @Override
     public <T> Iterator<T> checkedIterator(Iterator<T> iter)
     {
         return iter ;

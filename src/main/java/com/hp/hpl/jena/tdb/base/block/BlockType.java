@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -20,8 +21,10 @@ public enum BlockType implements Printable, Named
     BPTREE_BRANCH(6, "BPlusTreeBranch") ,
     BPTREE_LEAF(7, "BPlusTreeLeaf") ,
     DICTIONARY(10, "Dictionary") ,
-    RECORD_BLOCK(99, "RecordBlock") 
-
+    RECORD_BLOCK(99, "RecordBlock"),
+    
+    // [TxTDB:PATCH-UP]
+    UNDEF(-2, "UndefinedBlockType")
     ;
 
     private final int id ;
@@ -34,10 +37,13 @@ public enum BlockType implements Printable, Named
         
     }
     
+    @Override
     public void output(IndentedWriter out)
     { out.print(getName()) ; }
 
     final public int id() { return id ; }
+    
+    @Override
     final public String getName() { return name ; }
     
     @Override public String toString() { return getName() ; }
@@ -55,6 +61,7 @@ public enum BlockType implements Printable, Named
 
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

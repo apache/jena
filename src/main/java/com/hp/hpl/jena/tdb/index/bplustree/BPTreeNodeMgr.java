@@ -115,26 +115,30 @@ public final class BPTreeNodeMgr extends BPTreePageMgr
     }
     
     /** Signal the start of an update operation */
+    @Override
     public void startRead()         { blockMgr.startRead() ; }
 
     /** Signal the completeion of an update operation */
+    @Override
     public void finishRead()        { blockMgr.finishRead() ; }
 
     /** Signal the start of an update operation */
+    @Override
     public void startUpdate()       { blockMgr.startUpdate() ; }
     
     /** Signal the completion of an update operation */
+    @Override
     public void finishUpdate()      { blockMgr.finishUpdate() ; }
     
     private class Block2BPTreeNode implements BlockConverter.Converter<BPTreeNode>
     {
-        //@Override
+        @Override
         public BPTreeNode createFromBlock(Block block, BlockType bType)
         { 
             return overlay(bpTree, block, bType==RECORD_BLOCK, 0) ;
         }
 
-        //@Override
+        @Override
         public BPTreeNode fromBlock(Block block)
         {
             // [TxTDB:PATCH-UP]
@@ -151,7 +155,7 @@ public final class BPTreeNodeMgr extends BPTreePageMgr
             }
         }
 
-        //@Override
+        @Override
         public Block toBlock(BPTreeNode node)
         {
             // It's manipulated in-place so no conversion needed, 

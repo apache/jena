@@ -92,15 +92,19 @@ final class BTreePageMgr implements Session
     }
     
     /** Signal the start of an update operation */
+    @Override
     public void startUpdate()       { blockMgr.startUpdate() ; }
     
     /** Signal the completion of an update operation */
+    @Override
     public void finishUpdate()      { blockMgr.finishUpdate() ; }
 
     /** Signal the start of an update operation */
+    @Override
     public void startRead()         { blockMgr.startRead() ; }
     
     /** Signal the completeion of an update operation */
+    @Override
     public void finishRead()        { blockMgr.finishRead() ; }
     
     // ---- On-disk support
@@ -109,13 +113,13 @@ final class BTreePageMgr implements Session
     
     private class Block2BTreeNode implements BlockConverter.Converter<BTreeNode>
     {
-        //@Override
+        @Override
         public BTreeNode createFromByteBuffer(ByteBuffer bb, BlockType bType)
         { 
             return overlay(btree, bb, bType==RECORD_BLOCK, 0) ;
         }
 
-        //@Override
+        @Override
         public BTreeNode fromByteBuffer(ByteBuffer byteBuffer)
         {
             synchronized (byteBuffer)
@@ -131,7 +135,7 @@ final class BTreePageMgr implements Session
             }
         }
 
-        //@Override
+        @Override
         public ByteBuffer toBlock(BTreeNode node)
         {
             // It's manipulated in-place so no conversion needed, 

@@ -29,7 +29,7 @@ public class ExtHashIterator implements Iterator<Record>
         dictionaryIdx = 0 ;
     }
 
-    //@Override
+    @Override
     public boolean hasNext()
     {
         if ( dictionaryIdx < 0 )
@@ -66,7 +66,7 @@ public class ExtHashIterator implements Iterator<Record>
         dictionaryIdx = -99 ;
     }
     
-    //@Override
+    @Override
     public Record next()
     {
         if ( ! hasNext() )
@@ -74,7 +74,7 @@ public class ExtHashIterator implements Iterator<Record>
         return rBuffIterator.next() ;
     }
 
-    //@Override
+    @Override
     public void remove()
     {}
  

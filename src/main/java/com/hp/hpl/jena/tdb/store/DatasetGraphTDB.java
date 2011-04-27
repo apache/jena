@@ -191,10 +191,10 @@ public class DatasetGraphTDB extends DatasetGraphCaching
         return new GraphNamedTDB(this, graphNode) ;
     }
 
-    //@Override
+    @Override
     public void setEffectiveDefaultGraph(GraphTDB g) { effectiveDefaultGraph = g ; }
 
-    //@Override
+    @Override
     public GraphTDB getEffectiveDefaultGraph() 
     {
         return effectiveDefaultGraph ;
@@ -225,7 +225,7 @@ public class DatasetGraphTDB extends DatasetGraphCaching
 
     static private Transform<Tuple<NodeId>, NodeId> project0 = new Transform<Tuple<NodeId>, NodeId>()
     {
-        //@Override
+        @Override
         public NodeId convert(Tuple<NodeId> item)
         {
             return item.get(0) ;
@@ -233,6 +233,7 @@ public class DatasetGraphTDB extends DatasetGraphCaching
     } ;
     
 
+    @Override
     public Iterator<Node> listGraphNodes()
     {
         Iterator<Tuple<NodeId>> x = quadTable.getNodeTupleTable().findAll() ;
@@ -246,7 +247,7 @@ public class DatasetGraphTDB extends DatasetGraphCaching
     @Override
     public boolean isEmpty()            { return getTripleTable().isEmpty() && getQuadTable().isEmpty() ; }
 
-    //@Override
+    @Override
     public void clear()
     {
         // Leave the node table alone.
@@ -256,7 +257,7 @@ public class DatasetGraphTDB extends DatasetGraphCaching
     
     public Location getLocation()       { return location ; }
 
-    //@Override
+    @Override
     public void sync()
     {
         tripleTable.sync() ;
@@ -267,13 +268,13 @@ public class DatasetGraphTDB extends DatasetGraphCaching
     // Done by superclass that then call _close. public void close()
 
     // --- GraphStore
-    //@Override
+    @Override
     public void startRequest()      {}
 
-    //@Override
+    @Override
     public void finishRequest()     { this.sync() ; } 
 
-    //@Override
+    @Override
     public Dataset toDataset()      { return new DatasetImpl(this) ; }
 
     // ---- DataSourceGraph
@@ -291,15 +292,19 @@ public class DatasetGraphTDB extends DatasetGraphCaching
         throw new UnsupportedOperationException("Can't set default graph via GraphStore on a TDB-backed dataset") ;
     }
 
+    @Override
     public void startUpdate()
     {}
 
+    @Override
     public void finishUpdate()
     {}
 
+    @Override
     public void startRead()
     {}
 
+    @Override
     public void finishRead()
     {}
 }

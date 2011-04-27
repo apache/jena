@@ -22,7 +22,7 @@ public class IndexFactoryExtHashMem implements IndexFactory
     public IndexFactoryExtHashMem()
     { }
     
-    //@Override
+    @Override
     public Index createIndex(FileSet fileset, RecordFactory recordFactory)
     {
         return ExtHash.createMem(recordFactory, SystemTDB.BlockSize) ;

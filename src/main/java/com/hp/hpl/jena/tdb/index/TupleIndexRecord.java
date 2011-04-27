@@ -168,7 +168,7 @@ public class TupleIndexRecord extends TupleIndexBase
         return tuples ;
     }
     
-    //@Override
+    @Override
     public Iterator<Tuple<NodeId>> all()
     {
         Iterator<Record> iter = index.iterator() ;
@@ -177,7 +177,7 @@ public class TupleIndexRecord extends TupleIndexBase
     
     private Transform<Record, Tuple<NodeId>> transformToTuple = new Transform<Record, Tuple<NodeId>>()
     {
-        //@Override
+        @Override
         public Tuple<NodeId> convert(Record item)
         {
             return TupleLib.tuple(item, colMap) ;
@@ -189,7 +189,7 @@ public class TupleIndexRecord extends TupleIndexBase
     {
         Filter<Tuple<NodeId>> filter = new Filter<Tuple<NodeId>>()
         {
-            //@Override
+            @Override
             public boolean accept(Tuple<NodeId> item)
             {
                 // Check on pattern
@@ -208,32 +208,32 @@ public class TupleIndexRecord extends TupleIndexBase
         return Iter.filter(iter, filter) ;
     }
     
-    //@Override
+    @Override
     public void close()
     {
         index.close();
     }
     
-    //@Override
+    @Override
     public void sync()      { index.sync() ; }
 
     public final RangeIndex getRangeIndex()                 { return index ; } 
 
     //protected final RecordFactory getRecordFactory()        { return factory ; }
     
-    //@Override
+    @Override
     public boolean isEmpty()
     {
         return index.isEmpty() ;
     }
     
-    //@Override
+    @Override
     public void clear()
     {
         index.clear() ;
     }
     
-    //@Override
+    @Override
     public long size()
     {
         return index.size() ;

@@ -139,7 +139,7 @@ public class TupleTable implements Sync, Closeable
         return index.find(pattern) ;
     }
     
-    //@Override
+    @Override
     final public void close()
     {
         for ( TupleIndex idx : indexes )
@@ -160,7 +160,7 @@ public class TupleTable implements Sync, Closeable
 //        
 //    }
     
-    //@Override
+    @Override
     public void sync()
     {
         for ( TupleIndex idx : indexes )

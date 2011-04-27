@@ -17,52 +17,45 @@ public class ObjectFileSink implements ObjectFile
 {
     long id = 0 ;
     
-    //@Override
+    @Override
     public Iterator<Pair<Long, ByteBuffer>> all()
     {
         throw new UnsupportedOperationException() ;
     }
 
-    //@Override
+    @Override
     public void close()
     {}
 
-    //@Override
+    @Override
     public ByteBuffer read(long id)
     {
         throw new UnsupportedOperationException() ;
     }
 
-    //@Override
+    @Override
     public long write(ByteBuffer str)
     {
         return ++id ;
     }
 
-    //@Override
+    @Override
     public ByteBuffer allocWrite(int maxBytes)
     {
         return ByteBuffer.allocate(maxBytes) ;
     }
 
-    //@Override
+    @Override
     public long completeWrite(ByteBuffer buffer)
     {
         return write(buffer) ;
     }
 
-    //@Override
+    @Override
     public void sync()
     {}
     
-    //@Override
-    public void sync(boolean force)
-    {}
-
-    //@Override
-    public void dump() {}
-
-    //@Override
+    @Override
     public long length()
     { return id ; }
 }

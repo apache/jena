@@ -48,7 +48,7 @@ public class BindingNodeId extends Map2<Var, NodeId>
     
     public Binding getParentBinding()    { return parentBinding ; } 
     
-    //@Override public NodeId get(Var v)    { return super.get(v) ; } 
+    @Override public NodeId get(Var v)    { return super.get(v) ; } 
     
     @Override public void put(Var v, NodeId n)
     {

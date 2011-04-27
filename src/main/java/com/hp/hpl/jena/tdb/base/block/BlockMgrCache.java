@@ -50,7 +50,7 @@ public class BlockMgrCache extends BlockMgrSync
         {
             writeCache = CacheFactory.createCache(writeSlots) ;
             writeCache.setDropHandler(new ActionKeyValue<Integer, Block>(){
-                //@Override
+                @Override
                 public void apply(Integer id, Block block)
                 { 
                     // We're inside a synchronized operation at this point.

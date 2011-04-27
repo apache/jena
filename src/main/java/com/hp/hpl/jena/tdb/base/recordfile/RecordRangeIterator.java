@@ -66,7 +66,7 @@ class RecordRangeIterator implements Iterator<Record>
     }
     
 
-    //@Override
+    @Override
     public boolean hasNext()
     {
         if ( slot != null )
@@ -118,7 +118,7 @@ class RecordRangeIterator implements Iterator<Record>
     }
 
 
-    //@Override
+    @Override
     public Record next()
     {
         if ( ! hasNext() )
@@ -129,7 +129,7 @@ class RecordRangeIterator implements Iterator<Record>
         return x ;
     }
 
-    //@Override
+    @Override
     public void remove()
     { throw new UnsupportedOperationException("remove") ; }
 

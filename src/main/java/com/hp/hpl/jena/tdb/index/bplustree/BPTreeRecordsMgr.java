@@ -61,10 +61,14 @@ final public class BPTreeRecordsMgr extends BPTreePageMgr
         rBuffPageMgr.dump() ;
     }
 
+    @Override
     public void startRead()         { rBuffPageMgr.startRead() ; }
+    @Override
     public void finishRead()        { rBuffPageMgr.finishRead() ; }
 
+    @Override
     public void startUpdate()       { rBuffPageMgr.startUpdate() ; }
+    @Override
     public void finishUpdate()      { rBuffPageMgr.finishUpdate() ; }
 }
 

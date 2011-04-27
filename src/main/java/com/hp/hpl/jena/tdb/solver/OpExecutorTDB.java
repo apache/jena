@@ -53,7 +53,7 @@ public class OpExecutorTDB extends OpExecutor
     
     public final static OpExecutorFactory OpExecFactoryTDB = new OpExecutorFactory()
     {
-        //@Override
+        @Override
         public OpExecutor create(ExecutionContext execCxt)
         { return new OpExecutorTDB(execCxt) ; }
     } ;
@@ -334,7 +334,7 @@ public class OpExecutorTDB extends OpExecutor
     private static OpExecutorFactory plainFactory = new OpExecutorPlainFactoryTDB() ;
     private static class OpExecutorPlainFactoryTDB implements OpExecutorFactory
     {
-        //@Override
+        @Override
         public OpExecutor create(ExecutionContext execCxt)
         {
             return new OpExecutorPlainTDB(execCxt) ;

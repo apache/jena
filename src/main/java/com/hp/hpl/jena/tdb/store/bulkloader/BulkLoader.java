@@ -187,6 +187,7 @@ public class BulkLoader
             long count = 0 ;
             private StatsCollector stats ;
             
+            @Override
             final public void start()
             {
                 loaderTriples.loadStart() ;
@@ -194,6 +195,7 @@ public class BulkLoader
                 
                 this.stats = new StatsCollector() ;
             }
+            @Override
             final public void send(Triple triple)
             {
                 Node s = triple.getSubject() ;
@@ -206,9 +208,12 @@ public class BulkLoader
                 count++ ;
             }
 
+            @Override
             final public void flush() { }
+            @Override
             public void close() { }
 
+            @Override
             final public void finish()
             {
                 loaderTriples.loadDataFinish() ;
@@ -244,6 +249,7 @@ public class BulkLoader
         Destination<Quad> sink = new Destination<Quad>() {
             long count = 0 ;
             private StatsCollector stats ;
+            @Override
             final public void start()
             {
                 loaderTriples.loadStart() ;
@@ -254,6 +260,7 @@ public class BulkLoader
                 this.stats = new StatsCollector() ;
             }
             
+            @Override
             final public void send(Quad quad)
             {
                 Node s = quad.getSubject() ;
@@ -272,6 +279,7 @@ public class BulkLoader
                 stats.record(g, s, p, o) ; 
             }
 
+            @Override
             final public void finish()
             {
                 loaderTriples.loadDataFinish() ;
@@ -293,7 +301,9 @@ public class BulkLoader
                 dsg.sync() ;
             }
             
+            @Override
             final public void flush() { }
+            @Override
             final public void close() { }
         } ;
         return sink ;

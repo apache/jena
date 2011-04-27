@@ -52,18 +52,18 @@ public class NodeTableCache implements NodeTable
     }
 
     /** Get the Node for this NodeId, or null if none */
-    //@Override
+    @Override
     public Node getNodeForNodeId(NodeId id)
     {
         return _retrieveNodeByNodeId(id) ;
     }
 
     /** Find the NodeId for a node, or return NodeId.NodeDoesNotExist */ 
-    //@Override
+    @Override
     public NodeId getNodeIdForNode(Node node)  { return _idForNode(node, false) ; }
 
     /** Find the NodeId for a node, allocating a new NodeId if the Node does not yet have a NodeId */ 
-    //@Override
+    @Override
     public NodeId getAllocateNodeId(Node node)  { return _idForNode(node, true) ; }
 
     // ---- The worker functions
@@ -163,7 +163,7 @@ public class NodeTableCache implements NodeTable
     }
     // ----
 
-    //@Override
+    @Override
     public synchronized void close()
     {
         if ( baseTable == null )
@@ -177,9 +177,10 @@ public class NodeTableCache implements NodeTable
         baseTable = null ;
     }
 
-    //@Override
+    @Override
     public void sync() { baseTable.sync() ; }
     
+    @Override
     public Iterator<Pair<NodeId, Node>> all()
     {
         return baseTable.all() ;

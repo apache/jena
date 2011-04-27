@@ -133,7 +133,7 @@ class BTreeRangeIterator implements Iterator<Record>
         upperLimitRec = toRec ;
     }
 
-    //@Override
+    @Override
     public boolean hasNext()
     {
         // Leaf?
@@ -218,7 +218,7 @@ class BTreeRangeIterator implements Iterator<Record>
         slot = rec ;
     }
 
-    //@Override
+    @Override
     public Record next()
     {
         if ( ! hasNext() )
@@ -228,7 +228,7 @@ class BTreeRangeIterator implements Iterator<Record>
         return x ;
     }
 
-    //@Override
+    @Override
     public void remove()
     { throw new UnsupportedOperationException("remove") ; }
 

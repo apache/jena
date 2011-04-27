@@ -16,6 +16,7 @@ class BuilderSecondaryIndexesSequential implements BuilderSecondaryIndexes
     BuilderSecondaryIndexesSequential(LoadMonitor monitor) { this.monitor = monitor ; } 
     
     // Create each secondary indexes, doing one at a time.
+    @Override
     public void createSecondaryIndexes(TupleIndex   primaryIndex ,
                                        TupleIndex[] secondaryIndexes)
     {

@@ -51,19 +51,24 @@ public class tdbconfig extends CmdSub
 //          { @Override public void exec(String[] argv) { new tdbclean(argv).main() ; } }) ;
         
         super.addSubCommand(CMD_HELP, new Exec()
-        { /*@Override*/ public void exec(String[] argv) { new SubHelp(argv).mainRun() ; } }) ;
+        { /*@Override*/ @Override
+        public void exec(String[] argv) { new SubHelp(argv).mainRun() ; } }) ;
         
         super.addSubCommand(CMD_STATS, new Exec()
-        { /*@Override*/ public void exec(String[] argv) { new SubStats(argv).mainRun() ; } }) ;
+        { /*@Override*/ @Override
+        public void exec(String[] argv) { new SubStats(argv).mainRun() ; } }) ;
         
         super.addSubCommand(CMD_NODES, new Exec()
-        { /*@Override*/ public void exec(String[] argv) { new SubNodes(argv).mainRun() ; } }) ;
+        { /*@Override*/ @Override
+        public void exec(String[] argv) { new SubNodes(argv).mainRun() ; } }) ;
         
         super.addSubCommand(CMD_INFO, new Exec()
-        { /*@Override*/ public void exec(String[] argv) { new SubInfo(argv).mainRun() ; } }) ;
+        { /*@Override*/ @Override
+        public void exec(String[] argv) { new SubInfo(argv).mainRun() ; } }) ;
         
         super.addSubCommand(CMD_PREFIXES, new Exec()
-        { /*@Override*/ public void exec(String[] argv) { new SubPrefixes(argv).mainRun() ; } }) ;
+        { /*@Override*/ @Override
+        public void exec(String[] argv) { new SubPrefixes(argv).mainRun() ; } }) ;
 
         
     }

@@ -71,26 +71,23 @@ public abstract class BlockMgrFile extends BlockMgrBase
         } catch (IOException ex) { throw new BlockException("Failed to create BlockMgrFile", ex) ; }    
     }
 
+    @Override
     final public boolean isEmpty() { return isEmpty ; }
     
-    final protected void putNotification(int id, ByteBuffer block) { isEmpty = false ; }
+    final protected void putNotification(Block block) { isEmpty = false ; }
     
     //@Override 
     final synchronized
-    public int allocateId()
+    //public 
+    protected int allocateId()
     {
         checkIfClosed() ;
-        //return numFileBlocks.getAndIncrement() ;
-        
         int id = (int)numFileBlocks ;
         numFileBlocks ++ ;
-
-//        if ( getLog().isDebugEnabled() ) 
-//            getLog().debug(format("allocateId(%d)", id)) ;
         return id ;
     }
     
-    //@Override
+    @Override
     final synchronized
     public boolean valid(int id)
     {
@@ -117,9 +114,10 @@ public abstract class BlockMgrFile extends BlockMgrBase
         }
     }
     
-    final protected void check(int id, ByteBuffer bb)
+    final protected void check(Block block)
     {
-        check(id) ;
+        check(block.getId()) ;
+        ByteBuffer bb = block.getByteBuffer() ;
         if ( bb.capacity() != blockSize )
             throw new BlockException(format("BlockMgrFile: Wrong size block.  Expected=%d : actual=%d", blockSize, bb.capacity())) ;
         if ( bb.order() != SystemTDB.NetworkOrder )
@@ -137,7 +135,7 @@ public abstract class BlockMgrFile extends BlockMgrBase
         { throw new BlockException("Channel.force failed", ex) ; }
     }
     
-    //@Override 
+    @Override
     final public boolean isClosed() { return channel == null ; }  
     
     protected final void checkIfClosed() 
@@ -147,7 +145,8 @@ public abstract class BlockMgrFile extends BlockMgrBase
     }
     
     protected abstract void _close() ; 
-    //@Override
+
+    @Override
     final public void close()
     {
         _close() ;

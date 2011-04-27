@@ -44,7 +44,7 @@ public class ObjectFileDiskDirect implements ObjectFile
     
     private ByteBuffer lengthBuffer = ByteBuffer.allocate(SizeOfInt) ;
     
-    //@Override
+    @Override
     public long write(ByteBuffer bb)
     {
         try {
@@ -68,6 +68,7 @@ public class ObjectFileDiskDirect implements ObjectFile
 
     private long allocLocation = -1 ;
     
+    @Override
     public ByteBuffer allocWrite(int maxBytes)
     {
         // Include space for length.
@@ -100,6 +101,7 @@ public class ObjectFileDiskDirect implements ObjectFile
         return bb ;
     }
 
+    @Override
     public long completeWrite(ByteBuffer buffer)
     {
         if ( ! inAllocWrite )
@@ -140,7 +142,7 @@ public class ObjectFileDiskDirect implements ObjectFile
     }
 
 
-    //@Override
+    @Override
     public ByteBuffer read(long loc)
     {
         if ( loc < 0 )
@@ -185,11 +187,13 @@ public class ObjectFileDiskDirect implements ObjectFile
         { throw new FileException("ObjectFile.read", ex) ; }
     }
     
+    @Override
     public long length()
     {
         return filesize ;
     }
 
+    @Override
     public Iterator<Pair<Long, ByteBuffer>> all()
     {
         try { file.out.seek(0) ; } 
@@ -212,11 +216,13 @@ public class ObjectFileDiskDirect implements ObjectFile
             this.current = start ;
         }
         
+        @Override
         public boolean hasNext()
         {
             return ( current < finish ) ;
         }
 
+        @Override
         public Pair<Long, ByteBuffer> next()
         {
             long x = current ;
@@ -225,16 +231,17 @@ public class ObjectFileDiskDirect implements ObjectFile
             return new Pair<Long, ByteBuffer>(x, bb) ;
         }
 
+        @Override
         public void remove()
         { throw new UnsupportedOperationException() ; }
     }
     
 
-    //@Override
+    @Override
     public void close()
     { file.close() ; }
 
-    //@Override
+    @Override
     public void sync()                  { flushOutputBuffer() ; file.sync() ; }
     
     // ---- Dump
@@ -258,7 +265,7 @@ public class ObjectFileDiskDirect implements ObjectFile
     }
     
     static ObjectFileDiskDirect.DumpHandler handler = new ObjectFileDiskDirect.DumpHandler() {
-        //@Override
+        @Override
         public void handle(long fileIdx, String str)
         {
             System.out.printf("0x%08X : %s\n", fileIdx, str) ;

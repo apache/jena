@@ -11,6 +11,7 @@ import com.hp.hpl.jena.tdb.index.RangeIndex;
 public interface RangeIndexMaker extends IndexMaker
 {
     RangeIndex makeRangeIndex() ;
+    @Override
     String getLabel() ;
 }
 /*

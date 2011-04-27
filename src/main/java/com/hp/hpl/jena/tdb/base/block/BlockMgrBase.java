@@ -20,6 +20,7 @@ public abstract class BlockMgrBase implements BlockMgr
         this.blockSize = blockSize ;
     }
 
+    @Override
     public Block allocate(BlockType blockType, int blockSize)
     {
         return allocate(blockType) ;
@@ -27,24 +28,24 @@ public abstract class BlockMgrBase implements BlockMgr
     
     protected abstract Block allocate(BlockType blockType) ;
 
-    //@Override
+    @Override
     final
     public int blockSize()
     { return blockSize ; }
 
-    //@Override
+    @Override
     public void finishUpdate()
     {}
 
-    //@Override
+    @Override
     public void startUpdate()
     {}
 
-    //@Override
+    @Override
     public void startRead()
     {}
 
-    //@Override
+    @Override
     public void finishRead()
     {}
 }

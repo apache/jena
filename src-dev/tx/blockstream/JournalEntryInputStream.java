@@ -21,6 +21,7 @@ public class JournalEntryInputStream implements JournalEntryInput
         
     }
     
+    @Override
     public JournalEntry read()
     {
         int type = IOBytes.readInt(in) ;
@@ -38,6 +39,7 @@ public class JournalEntryInputStream implements JournalEntryInput
         return new JournalEntry(type, fRef, bb) ;
     }
     
+    @Override
     public void close()
     {
         IO.close(in) ;

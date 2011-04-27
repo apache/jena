@@ -34,10 +34,10 @@ public abstract class PlainFile implements Sync, Closeable
     
     public final long getFileSize() { return filesize ; }
     
-    //@Override
+    @Override
     public abstract void sync() ;
 
-    //@Override
+    @Override
     public abstract void close() ;
 
     protected abstract ByteBuffer allocateBuffer(long size) ;

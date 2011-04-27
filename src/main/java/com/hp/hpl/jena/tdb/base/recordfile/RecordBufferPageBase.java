@@ -71,19 +71,19 @@ public class RecordBufferPageBase extends PageBase //implements Page
         return recBuff ;
     }
     
-    //@Override
+    @Override
     public final int getCount()
     {
         return recBuff.size() ;
     }
 
-    //@Override
+    @Override
     public final int getMaxSize()
     {
         return recBuff.maxSize() ;
     }
 
-    //@Override
+    @Override
     public void setCount(int count)
     { recBuff.setSize(count) ; }
 
@@ -91,6 +91,7 @@ public class RecordBufferPageBase extends PageBase //implements Page
     public String toString()
     { return String.format("RecordBufferPageBase[id=%d]: %s", getId(), recBuff) ; }
 
+    @Override
     public void output(IndentedWriter out)
     { out.print(toString()) ; }
 }

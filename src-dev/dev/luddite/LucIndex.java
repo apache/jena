@@ -107,26 +107,26 @@ public class LucIndex implements TupleIndex
         reader = IndexReader.open(d) ;
     }
     
-    //@Override
+    @Override
     public boolean add(Tuple<NodeId> tuple)
     {
         return false ;
     }
 
-    //@Override
+    @Override
     public Iterator<Tuple<NodeId>> all()
     {
         return null ;
     }
 
-    //@Override
+    @Override
     public boolean delete(Tuple<NodeId> tuple)
     {
         return false ;
     }
 
 
-    //@Override
+    @Override
     public Iterator<Tuple<NodeId>> find(Tuple<NodeId> pattern)
     {
         try{
@@ -153,56 +153,56 @@ public class LucIndex implements TupleIndex
     }
 
 
-    //@Override
+    @Override
     public String getLabel()
     {
         return null ;
     }
 
 
-    //@Override
+    @Override
     public int getTupleLength()
     {
         return 0 ;
     }
 
 
-    //@Override
+    @Override
     public boolean isEmpty()
     {
         return false ;
     }
 
 
-    //@Override
+    @Override
     public void clear()
     {}
 
 
-    //@Override
+    @Override
     public long size()
     {
         return 0 ;
     }
 
 
-    //@Override
+    @Override
     public int weight(Tuple<NodeId> pattern)
     {
         return 0 ;
     }
 
-    //@Override
+    @Override
     public void sync()
     {}
 
 
-    //@Override
+    @Override
     public void sync(boolean force)
     {}
 
 
-    //@Override
+    @Override
     public void close()
     {}
 }

@@ -21,6 +21,7 @@ public class ModLocation implements ArgModuleGeneral
     protected final ArgDecl locationDecl = new ArgDecl(ArgDecl.HasValue, "location", "loc") ;
     protected Location location = null ;
     
+    @Override
     public void registerWith(CmdGeneral cmdLine)
     {
         cmdLine.getUsage().startCategory("Location") ;
@@ -30,6 +31,7 @@ public class ModLocation implements ArgModuleGeneral
     public void checkCommandLine(CmdArgModule cmdLine)
     {}
 
+    @Override
     public void processArgs(CmdArgModule cmdLine)
     {
         if ( cmdLine.contains(locationDecl) )

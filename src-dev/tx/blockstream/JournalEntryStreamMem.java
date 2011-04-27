@@ -50,12 +50,14 @@ public class JournalEntryStreamMem
             this.entries = entries ;
             idx = 0 ;
         }
+        @Override
         public void close()
         {
             if ( closed ) throw new TDBException("JournalEntryOutputStream has already been closed") ;
             closed = true ;
         }
         
+        @Override
         public JournalEntry read()
         {
             if ( idx >= entries.size() )
@@ -75,14 +77,17 @@ public class JournalEntryStreamMem
 
         public Output() {}
         
+        @Override
         public void close()
         {
             if ( closed ) throw new TDBException("JournalEntryOutputStream has already been closed") ;
             closed = true ;
         }
         
+        @Override
         public void sync() {}
 
+        @Override
         public void write(JournalEntry entry)
         {
             if ( closed ) throw new TDBException("JournalEntryOutputStream has been closed") ;

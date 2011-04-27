@@ -36,7 +36,7 @@ class RecordBufferPageLinker implements Iterator<RecordBufferPage>
         peekIter = new PeekIterator<RecordBufferPage>(iter) ;
     }
     
-    //@Override
+    @Override
     public boolean hasNext()
     {
         if ( slot != null )
@@ -60,7 +60,7 @@ class RecordBufferPageLinker implements Iterator<RecordBufferPage>
         return true ;
     }
     
-    //@Override
+    @Override
     public RecordBufferPage next()
     {
         if ( ! hasNext() ) throw new NoSuchElementException() ;
@@ -69,7 +69,7 @@ class RecordBufferPageLinker implements Iterator<RecordBufferPage>
         return rbp ;
     }
     
-    //@Override
+    @Override
     public void remove()
     { throw new UnsupportedOperationException() ; }
 }

@@ -69,6 +69,7 @@ public class TestQuadFilter extends BaseTest
         final NodeTable nodeTable = dsg.getQuadTable().getNodeTupleTable().getNodeTable() ;
         final NodeId target = nodeTable.getNodeIdForNode(Node.createURI(graphToHide)) ;
         Filter<Tuple<NodeId>> filter = new Filter<Tuple<NodeId>>() {
+            @Override
             public boolean accept(Tuple<NodeId> item)
             {
                 // Reverse the lookup as a demo

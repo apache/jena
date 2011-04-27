@@ -273,13 +273,13 @@ public final class BPTreeRecords extends BPTreePage
         return rBuff.getHigh() ;
     }
 
-    //@Override
+    @Override
     public final int getMaxSize()             { return rBuff.maxSize() ; }
     
-    //@Override
+    @Override
     public final int getCount()             { return rBuff.size() ; }
  
-    //@Override
+    @Override
     public final void setCount(int count)   { rBuff.setSize(count) ; }
     
     @Override
@@ -306,15 +306,16 @@ public final class BPTreeRecords extends BPTreePage
     public final void checkNodeDeep()
     { checkNode() ; }
 
-    //@Override
+    @Override
     public ByteBuffer getBackingByteBuffer()   { return rBuffPage.getBackingByteBuffer() ; }
 
-    //@Override
+    @Override
     public int getId()                  { return rBuffPage.getId() ; } 
 
-    //@Override
+    @Override
     public void setId(int id)           { rBuffPage.setId(id) ; }
 
+    @Override
     public void output(IndentedWriter out)
     {
         out.print(toString()) ;

@@ -31,7 +31,7 @@ public class StageGeneratorDirectTDB implements StageGenerator
         above = original ;
     }
     
-    //@Override
+    @Override
     public QueryIterator execute(BasicPattern pattern, QueryIterator input, ExecutionContext execCxt)
     {
         // --- In case this isn't for TDB

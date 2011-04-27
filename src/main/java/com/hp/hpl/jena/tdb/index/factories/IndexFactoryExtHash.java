@@ -36,7 +36,7 @@ public class IndexFactoryExtHash implements IndexFactory
         this.blockSize = blockSize ;
     }
     
-    //@Override
+    @Override
     public Index createIndex(FileSet fileset, RecordFactory recordFactory)
     {
         String fnDictionary = fileset.filename(Names.extHashExt) ;

@@ -17,6 +17,7 @@ class BuilderSecondaryIndexesInterleaved implements BuilderSecondaryIndexes
     
     // Do as one pass over the SPO index, creating both other indexes at the same time.
     // Can be hugely costly in system resources.
+    @Override
     public void createSecondaryIndexes(TupleIndex   primaryIndex ,
                                        TupleIndex[] secondaryIndexes)
     {

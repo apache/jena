@@ -163,9 +163,11 @@ public class QueryEngineTDB extends QueryEngineMain
         
     private static class QueryEngineFactoryTDB implements QueryEngineFactory
     {
+        @Override
         public boolean accept(Query query, DatasetGraph dataset, Context context) 
         { return (dataset instanceof DatasetGraphTDB) ; }
 
+        @Override
         public Plan create(Query query, DatasetGraph ds, Binding input, Context context)
         {
             DatasetGraphTDB dataset = (DatasetGraphTDB)ds ;
@@ -174,9 +176,11 @@ public class QueryEngineTDB extends QueryEngineMain
             return engine.getPlan() ;
         }
         
+        @Override
         public boolean accept(Op op, DatasetGraph dataset, Context context) 
         { return (dataset instanceof DatasetGraphTDB) ; }
 
+        @Override
         public Plan create(Op op, DatasetGraph dataset, Binding binding, Context context)
         {
             QueryEngineTDB engine = new QueryEngineTDB(op, (DatasetGraphTDB)dataset, binding, context) ;

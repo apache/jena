@@ -21,19 +21,19 @@ public class NodecBinary implements Nodec
     private static byte codeLiteralLang = 4 ;
     private static byte codeLiteralDT   = 5 ;
     
-    //@Override
+    @Override
     public int maxSize(Node node)
     {
         return 0 ;
     }
     
-    //@Override
+    @Override
     public int encode(Node node, ByteBuffer bb, PrefixMapping pmap)
     {
         return 0 ;
     }
 
-    //@Override
+    @Override
     public Node decode(ByteBuffer bb, PrefixMapping pmap)
     {
         return null ;

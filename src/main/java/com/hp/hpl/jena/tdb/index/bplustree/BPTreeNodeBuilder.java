@@ -35,7 +35,7 @@ class BPTreeNodeBuilder implements Iterator<Pair<Integer, Record>>
         this.recordFactory = recordFactory ;
     }
     
-    //@Override
+    @Override
     public boolean hasNext()
     {
         if ( slot != null )
@@ -150,7 +150,7 @@ class BPTreeNodeBuilder implements Iterator<Pair<Integer, Record>>
         return true ;
     }
 
-    //@Override
+    @Override
     public Pair<Integer, Record> next()
     {
         if ( ! hasNext() ) throw new NoSuchElementException() ;
@@ -159,7 +159,7 @@ class BPTreeNodeBuilder implements Iterator<Pair<Integer, Record>>
         return x ;
     }
     
-    //@Override
+    @Override
     public void remove()
     { throw new UnsupportedOperationException() ; }
 }

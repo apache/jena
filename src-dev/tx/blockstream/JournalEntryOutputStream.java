@@ -22,6 +22,7 @@ public class JournalEntryOutputStream implements JournalEntryOutput
         this.out = out ;
     }
     
+    @Override
     public void write(JournalEntry entry)
     {
         IOBytes.writeInt(out, entry.getType()) ;
@@ -35,9 +36,11 @@ public class JournalEntryOutputStream implements JournalEntryOutput
         IOBytes.writeInt(out, fileRef.getBlockId()) ;
     }
 
+    @Override
     public void close()
     { IO.close(out) ; }
 
+    @Override
     public void sync()
     { 
         // Need our own "FileOutput" which is buffered and connects to sync() 

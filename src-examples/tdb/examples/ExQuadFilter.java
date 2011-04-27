@@ -73,6 +73,7 @@ public class ExQuadFilter
         // Filter for accept/reject as quad as being visible.
         // Return true for "accept", false for "reject"
         Filter<Tuple<NodeId>> filter = new Filter<Tuple<NodeId>>() {
+            @Override
             public boolean accept(Tuple<NodeId> item)
             {
                 // Reverse the lookup as a demo

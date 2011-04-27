@@ -30,7 +30,7 @@ public class StatsCollectorBase<T>
         this(0, new HashMap<T, Integer>(10000)) ;
     }
 
-    //@Override
+    @Override
     public void record(T g, T s, T p, T o)
     {
         count++ ;

@@ -107,7 +107,7 @@ public abstract class ExtHashRun
             this.maxNumKeys = maxNumKeys ;
         }
 
-        //@Override
+        @Override
         public void executeOneTest()
         {
             int numKeys = random.nextInt(maxNumKeys)+1 ;

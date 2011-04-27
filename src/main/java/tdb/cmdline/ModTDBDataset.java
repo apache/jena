@@ -45,12 +45,14 @@ public class ModTDBDataset extends ModDataset
     
     public ModTDBDataset() {}
     
+    @Override
     public void registerWith(CmdGeneral cmdLine)
     {
         cmdLine.add(argMem) ; //, "mem", "Memory graph") ;
         cmdLine.addModule(modAssembler) ;
     }
 
+    @Override
     public void processArgs(CmdArgModule cmdLine)
     {
         useMemory = cmdLine.contains(argMem) ;

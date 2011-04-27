@@ -21,16 +21,16 @@ public abstract class PageBase implements Page
         this.block = block ;
     }
     
-//    //@Override
+//    @Override
 //    final public ByteBuffer getBackingByteBuffer()       { return byteBuffer ; }
 
-    //@Override
+    @Override
     final public Block getBackingBlock()    { return block ; }
 
-    //@Override
+    @Override
     final public int getId()                { return id ; }
 
-    //@Override
+    @Override
     final public void setId(int id)         { this.id = id ; }
 }
 

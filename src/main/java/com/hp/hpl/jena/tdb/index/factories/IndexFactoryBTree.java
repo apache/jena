@@ -30,13 +30,13 @@ public class IndexFactoryBTree implements IndexFactory, IndexRangeFactory
         this.blockSize = blockSize ;
     }
     
-    //@Override
+    @Override
     public Index createIndex(FileSet fileset, RecordFactory recordFactory)
     {
         return createRangeIndex(fileset, recordFactory) ;
     }
     
-    //@Override
+    @Override
     public RangeIndex createRangeIndex(FileSet fileset, RecordFactory recordFactory)
     {
         int order = BTreeParams.calcOrder(blockSize, recordFactory) ;

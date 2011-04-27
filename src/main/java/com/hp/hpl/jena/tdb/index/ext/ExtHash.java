@@ -147,7 +147,7 @@ public final class ExtHash implements Index
     
     // Hash function that is the first 4 bytes of the key (key must be at least 4 bytes long). 
     static HashRecordKey hash4bytes = new HashRecordKey(){
-        //@Override
+        @Override
         public final int hashCode(byte[] key)
         { return Bytes.getInt(key) ; }
     } ;
@@ -166,7 +166,7 @@ public final class ExtHash implements Index
     static HashRecordKey hashFNV = new HashRecordKey(){
         private static final long FNV_BASIS = 0x811c9dc5;
         private static final long FNV_PRIME = (1 << 24) + 0x193;
-        //@Override
+        @Override
         public final int hashCode(byte[] key)
         {
             long hash = FNV_BASIS;
@@ -265,13 +265,13 @@ public final class ExtHash implements Index
     
     // =====================
     
-    //@Override
+    @Override
     public boolean contains(Record key)
     {
         return find(key) != null ;
     }
     
-    //@Override
+    @Override
     public Record find(Record key)
     {
         if ( logging() ) log(">> get(%s)", key) ;
@@ -283,7 +283,7 @@ public final class ExtHash implements Index
     }
 
     
-    //@Override
+    @Override
     public boolean add(Record record)
     {
         if ( logging() ) log(">> add(%s)", record) ;
@@ -300,7 +300,7 @@ public final class ExtHash implements Index
         return b ;
     }
         
-    //@Override
+    @Override
     public boolean delete(Record record)
     {
         if ( logging() ) log(">> remove(%s)", record) ;
@@ -317,17 +317,17 @@ public final class ExtHash implements Index
         return b ;
     }
 
-    //@Override
+    @Override
     public RecordFactory getRecordFactory()
     { return recordFactory ; }
 
-    //@Override
+    @Override
     public Iterator<Record> iterator()
     {
         return new ExtHashIterator(this) ; 
     }
 
-    //@Override
+    @Override
     public boolean isEmpty()
     { 
        if ( dictionary.limit() == 1 )
@@ -339,15 +339,15 @@ public final class ExtHash implements Index
        return false ;
     }
     
-    //@Override
+    @Override
     public void clear()
     { throw new UnsupportedOperationException("RangeIndex("+Utils.classShortName(this.getClass())+").clear") ; }
 
-    //@Override
+    @Override
     public long size()
     { return count() ; }
 
-    //@Override
+    @Override
     /** Explicitly count the items in the hash table */
     public long count()
     {
@@ -365,20 +365,20 @@ public final class ExtHash implements Index
         return count ;
     }
 
-    //@Override
+    @Override
     public void sync()
     { 
         hashBucketMgr.getBlockMgr().sync() ;
         dictionaryFile.sync() ;
     }
 
-    //@Override
+    @Override
     public long sessionTripleCount()
     {
         return sessionCounter ;
     }
 
-    //@Override
+    @Override
     public void close()
     {
         hashBucketMgr.getBlockMgr().close() ;
@@ -638,6 +638,7 @@ public final class ExtHash implements Index
         out.decIndent(4) ;
     }
     
+    @Override
     public void check()
     {
         performCheck() ;

@@ -21,45 +21,59 @@ public class NodeTupleTableWrapper implements NodeTupleTable
 
     public NodeTupleTableWrapper(NodeTupleTable ntt) { this.nodeTupleTable = ntt ; }
      
+    @Override
     public boolean addRow(Node... nodes)
     { return nodeTupleTable.addRow(nodes) ; }
 
+    @Override
     public boolean deleteRow(Node... nodes)
     { return nodeTupleTable.deleteRow(nodes) ; }
 
+    @Override
     public Iterator<Tuple<Node>> find(Node... nodes)
     { return nodeTupleTable.find(nodes) ; }
     
+    @Override
     public Iterator<Tuple<NodeId>> find(NodeId... ids)
     { return nodeTupleTable.find(ids) ; }
     
+    @Override
     public Iterator<Tuple<NodeId>> find(Tuple<NodeId> tuple)
     { return nodeTupleTable.find(tuple) ; }
     
+    @Override
     public Iterator<Tuple<NodeId>> findAsNodeIds(Node... nodes)
     { return nodeTupleTable.findAsNodeIds(nodes) ; }
 
+    @Override
     public Iterator<Tuple<NodeId>> findAll()
     { return nodeTupleTable.findAll() ; }
 
+    @Override
     public NodeTable getNodeTable()
     { return nodeTupleTable.getNodeTable() ; }
 
+    @Override
     public TupleTable getTupleTable()
     { return nodeTupleTable.getTupleTable() ; }
 
+    @Override
     public boolean isEmpty()
     { return nodeTupleTable.isEmpty() ; }
     
+    @Override
     public void clear()
     { nodeTupleTable.clear(); }
 
+    @Override
     public long size()
     { return nodeTupleTable.size() ; }
 
+    @Override
     public void sync()
     { nodeTupleTable.sync() ; }
 
+    @Override
     public void close()
     { nodeTupleTable.close() ; }
 

@@ -192,7 +192,7 @@ public class CmdNodeTableBuilder extends CmdGeneral
             this.stats = new StatsCollectorNodeId() ;
         }
         
-        //@Override
+        @Override
         public void send(Quad quad)
         {
             Node s = quad.getSubject() ;
@@ -228,7 +228,7 @@ public class CmdNodeTableBuilder extends CmdGeneral
             monitor.tick() ;
         }
 
-        //@Override
+        @Override
         public void flush()
         {
             writerTriples.flush() ;
@@ -236,7 +236,7 @@ public class CmdNodeTableBuilder extends CmdGeneral
             nodeTable.sync() ;
         }
 
-        //@Override
+        @Override
         public void close()
         { flush() ; }
         

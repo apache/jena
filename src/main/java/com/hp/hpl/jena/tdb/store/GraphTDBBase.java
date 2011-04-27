@@ -54,19 +54,19 @@ public abstract class GraphTDBBase extends GraphBase2 implements GraphTDB
     }
     
     /** Reorder processor - may be null, for "none" */
-    //@Override
+    @Override
     public final ReorderTransformation getReorderTransform()    { return dataset.getTransform() ; }
     
-    //@Override
+    @Override
     public final Location getLocation()                         { return dataset.getLocation() ; }
     
-    //@Override
+    @Override
     public final Node getGraphNode()                            { return graphNode ; }
     
-    //@Override
+    @Override
     public final DatasetGraphTDB getDataset()                   { return dataset ; }
     
-    //@Override
+    @Override
     public Lock getLock()                                       { return dataset.getLock() ; }
     
     // Intercept performAdd/preformDelete and bracket in start/finish markers   
@@ -93,7 +93,7 @@ public abstract class GraphTDBBase extends GraphBase2 implements GraphTDB
     
     protected abstract boolean _performDelete( Triple triple ) ;
     
-    //@Override
+    @Override
     public abstract void sync() ;
     
     @Override
@@ -152,14 +152,14 @@ public abstract class GraphTDBBase extends GraphBase2 implements GraphTDB
     
     
 
-    //@Override
+    @Override
     public void startRead()             { dataset.startRead() ; }
-    //@Override
+    @Override
     public void finishRead()            { dataset.finishRead() ; }
 
-    //@Override
+    @Override
     public final void startUpdate()     { dataset.startUpdate() ; }
-    //@Override
+    @Override
     public final void finishUpdate()    { dataset.finishUpdate() ; }
 
     @Override
@@ -176,10 +176,10 @@ public abstract class GraphTDBBase extends GraphBase2 implements GraphTDB
         private final Node graphNode ;
         /** Project quads to triples - check the graphNode is as expected if not null */
         ProjectQuadsToTriples(Node graphNode, Iterator<Quad> iter) { this.graphNode = graphNode ; this.iter = iter ; }
-        //@Override
+        @Override
         public boolean hasNext() { return iter.hasNext() ; }
         
-        //@Override
+        @Override
         public Triple next()
         { 
             Quad q = iter.next();
@@ -187,7 +187,7 @@ public abstract class GraphTDBBase extends GraphBase2 implements GraphTDB
                 throw new InternalError("ProjectQuadsToTriples: Quads from unexpected graph") ;
             return q.asTriple() ;
         }
-        //@Override
+        @Override
         public void remove() { iter.remove(); }
     }
     
@@ -199,14 +199,23 @@ public abstract class GraphTDBBase extends GraphBase2 implements GraphTDB
     {
         if ( capabilities == null )
             capabilities = new Capabilities(){
+                @Override
                 public boolean sizeAccurate() { return true; }
+                @Override
                 public boolean addAllowed() { return true ; }
+                @Override
                 public boolean addAllowed( boolean every ) { return true; } 
+                @Override
                 public boolean deleteAllowed() { return true ; }
+                @Override
                 public boolean deleteAllowed( boolean every ) { return true; } 
+                @Override
                 public boolean canBeEmpty() { return true; }
+                @Override
                 public boolean iteratorRemoveAllowed() { return false; } /* ** */
+                @Override
                 public boolean findContractSafe() { return true; }
+                @Override
                 public boolean handlesLiteralTyping() { return false; } /* ** */
             } ; 
         

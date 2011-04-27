@@ -10,14 +10,20 @@ import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 public class TDBSystemInfo implements TDBSystemInfoMBean
 {
+    @Override
     public int getBlockSize()               { return SystemTDB.BlockSize ; }
+    @Override
     public int getSegmentSize()             { return SystemTDB.SegmentSize ; }
 //    public int getSyncTick()                { return SystemTDB.SyncTick ; }
 
+    @Override
     public int getBlockReadCacheSize()      { return SystemTDB.BlockReadCacheSize ; }
+    @Override
     public int getBlockWriteCacheSize()     { return SystemTDB.BlockWriteCacheSize ; }
 
+    @Override
     public int getNode2NodeIdCacheSize()     { return SystemTDB.Node2NodeIdCacheSize ; }
+    @Override
     public int getNodeId2NodeCacheSize()     { return SystemTDB.NodeId2NodeCacheSize ; }
 }
 

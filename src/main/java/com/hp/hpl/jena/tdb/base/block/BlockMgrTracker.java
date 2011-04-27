@@ -55,12 +55,13 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
         log = LoggerFactory.getLogger(label) ;
     }
 
+    @Override
     public Block allocate(BlockType blockType, int blockSize)
     {
         return blockMgr.allocate(blockType, blockSize) ;
     }
 
-    //@Override
+    @Override
     public Block getRead(int id)
     {
         checkRead("getRead") ;
@@ -69,7 +70,7 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
         return blockMgr.getRead(id) ;
     }
 
-    //@Override
+    @Override
     public Block getWrite(int id)
     {
         checkUpdate("getWrite") ;
@@ -78,14 +79,14 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
         return blockMgr.getWrite(id) ;
     }
     
-    //@Override
+    @Override
     public Block promote(Block block)
     {
         log.info("promote("+block.getId()+")") ;
         return blockMgr.promote(block) ;
     }
     
-    //@Override
+    @Override
     public void releaseRead(Block block)
     {   
         Integer id = block.getId() ;
@@ -102,7 +103,7 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
         blockMgr.releaseRead(block) ;
     }
 
-    //@Override
+    @Override
     public void releaseWrite(Block block)
     {   
         Integer id = block.getId() ;
@@ -119,7 +120,7 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
         blockMgr.releaseWrite(block) ;
     }
 
-    //@Override
+    @Override
     public void put(Block block)
     {
         Integer id = block.getId() ;
@@ -136,7 +137,7 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
         blockMgr.put(block) ;
     }
 
-    //@Override
+    @Override
     public void freeBlock(Block block)
     {
         Integer id = block.getId() ;
@@ -152,40 +153,40 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
         blockMgr.freeBlock(block) ;
     }
 
-    //@Override
+    @Override
     public int blockSize()
     { return blockMgr.blockSize() ; }
     
 
-    //@Override
+    @Override
     public void sync()
     {
         blockMgr.sync() ;
     }
     
-    //@Override
+    @Override
     public void close()
     { blockMgr.close() ; }
 
-    //@Override
+    @Override
     public boolean isEmpty()
     {
         return blockMgr.isEmpty() ;
     }
 
-    //@Override
+    @Override
     public boolean valid(int id)
     {
         return blockMgr.valid(id) ;
     }
 
-    //@Override
+    @Override
     public boolean isClosed()
     {
         return blockMgr.isClosed() ;
     }
 
-    //@Override
+    @Override
     public void startRead()
     {
         if ( inRead )
@@ -198,7 +199,7 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
         blockMgr.startRead() ;
     }
 
-    //@Override
+    @Override
     public void finishRead()
     {
         if ( ! inRead )
@@ -214,7 +215,7 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
         blockMgr.finishRead() ;
     }
 
-    //@Override
+    @Override
     public void startUpdate()
     {
         if ( inRead )
@@ -225,7 +226,7 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
         blockMgr.startUpdate() ;
     }
 
-    //@Override
+    @Override
     public void finishUpdate()
     {
         if ( ! inUpdate )

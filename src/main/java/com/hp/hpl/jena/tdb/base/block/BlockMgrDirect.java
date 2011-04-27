@@ -18,6 +18,10 @@ import org.slf4j.LoggerFactory;
 /** Block manager that is NOT memory mapped. */
 public class BlockMgrDirect extends BlockMgrFile
 {
+    // [TxTDB:PATCH-UP]
+    // BlockMgrFile/BlockMgrDirect/BlockMgrMapped need reworking
+    
+    
     // Consider: having one file per "segment", not one large file.
     private static Logger log = LoggerFactory.getLogger(BlockMgrDirect.class) ;
     
@@ -27,53 +31,81 @@ public class BlockMgrDirect extends BlockMgrFile
     }
     
     @Override
-    public ByteBuffer allocateBuffer(int id)
+    public Block allocate(BlockType blockType)
     {
 //    if ( getLog().isDebugEnabled() ) 
 //        getLog().debug(format("allocateBuffer(%d)", id)) ;
-    
-        return ByteBuffer.allocate(blockSize) ;
+        int id = allocateId() ;
+        ByteBuffer bb = ByteBuffer.allocate(blockSize) ;
+        Block block = new Block(id, blockType, bb) ;
+        return block ;
     }
 
-    //@Override
-    public ByteBuffer get(int id)
+    @Override
+    public Block getRead(int id)
+    { 
+        // [TxTDB:PATCH-UP]
+        return get(id) ; 
+    }
+        
+    @Override
+    public Block getWrite(int id)
+    { 
+        // [TxTDB:PATCH-UP]
+        return get(id) ; 
+    }
+
+    private Block get(int id)
     {
         check(id) ;
         checkIfClosed() ;
-        
-        if ( log.isDebugEnabled() ) 
-            log.debug(format("get(%d)", id)) ;
-        return getByteBuffer(id) ;
+        ByteBuffer bb = ByteBuffer.allocate(blockSize) ;
+        readByteBuffer(id, bb) ;
+        Block block = new Block(id, BlockType.UNDEF, bb) ;
+        readByteBuffer(id, bb) ;
+        return block ;
     }
 
-    private ByteBuffer getByteBuffer(int id)
+    // [TxTDB:PATCH-UP]
+    @Override
+    public void releaseRead(Block block)
+    {}
+
+    @Override
+    public void releaseWrite(Block block)
+    {}
+
+    @Override
+    public Block promote(Block block)
+    {
+        return block ;
+    }
+
+    private void readByteBuffer(int id, ByteBuffer dst)
     {
         try {
-            ByteBuffer dst = allocateBuffer(id) ;
             int len = channel.read(dst, filePosition(id)) ;
             if ( len != blockSize )
                 throw new BlockException(format("get: short read (%d, not %d)", len, blockSize)) ;   
-            return dst ;
         } catch (IOException ex)
         { throw new BlockException("BlockMgrDirect.get", ex) ; }
     }
     
-    //@Override
-    public void put(int id, ByteBuffer block)
+    @Override
+    public void put(Block block)
     {
-        if ( log.isDebugEnabled() ) 
-            log.debug(format("put(%d)", id)) ;
-        check(id, block) ;
+        check(block) ;
         checkIfClosed() ;
-        block.position(0) ;
-        block.limit(block.capacity()) ;
+        ByteBuffer bb = block.getByteBuffer() ;
+        bb.position(0) ;
+        bb.limit(bb.capacity()) ;
         try {
-            int len = channel.write(block, filePosition(id)) ;
+            int len = channel.write(bb, filePosition(block.getId())) ;
             if ( len != blockSize )
                 throw new BlockException(format("put: short write (%d, not %d)", len, blockSize)) ;   
         } catch (IOException ex)
         { throw new BlockException("BlockMgrDirect.put", ex) ; }
-        putNotification(id, block) ;
+        putNotification(block) ;
     }
     
     
@@ -82,13 +114,11 @@ public class BlockMgrDirect extends BlockMgrFile
         return ((long)id)*((long)blockSize) ;
     }
     
-    //@Override
-    public void freeBlock(int id)
+    @Override
+    public void freeBlock(Block block)
     { 
-        check(id) ;
+        check(block.getId()) ;
         checkIfClosed() ;
-        if ( log.isDebugEnabled() ) 
-            log.debug(format("release(%d)", id)) ;
     }
     
 //    @Override
@@ -114,7 +144,7 @@ public class BlockMgrDirect extends BlockMgrFile
     }
 
     static long count = 0 ;
-    //@Override
+    @Override
     public void sync()
     {
         count++ ;

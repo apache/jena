@@ -46,7 +46,7 @@ public class RecordBufferIterator implements Iterator<Record>
         slot = null ;
     }
     
-    //@Override
+    @Override
     public boolean hasNext()
     {
         if ( slot != null )
@@ -70,7 +70,7 @@ public class RecordBufferIterator implements Iterator<Record>
         return true ;
     }
 
-    //@Override
+    @Override
     public Record next()
     {
         if ( ! hasNext() )
@@ -80,7 +80,7 @@ public class RecordBufferIterator implements Iterator<Record>
         return r ;
     }
 
-    //@Override
+    @Override
     public void remove()
     { throw new UnsupportedOperationException("RecordBufferIterator.remove") ; }
     

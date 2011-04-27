@@ -27,7 +27,7 @@ public class SettingAssembler //extends DatasetAssembler
      *  :setting [ :name tdbsym:name ; :value "SPO.idx" ]
      */
     
-    //@Override
+    @Override
     public Object open(Assembler a, Resource root, Mode mode)
     {
         Resource r = getResourceValue(root, pSetting ) ;

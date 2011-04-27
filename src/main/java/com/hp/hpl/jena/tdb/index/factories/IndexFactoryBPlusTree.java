@@ -38,13 +38,13 @@ public class IndexFactoryBPlusTree implements IndexFactory, IndexRangeFactory
         this.blockSize = blockSize ;
     }
     
-    //@Override
+    @Override
     public Index createIndex(FileSet fileset, RecordFactory factory)
     {
         return createRangeIndex(fileset, factory) ;
     }
     
-    //@Override
+    @Override
     public RangeIndex createRangeIndex(FileSet fileset, RecordFactory factory)
     {
         int order = BPlusTreeParams.calcOrder(blockSize, factory) ;

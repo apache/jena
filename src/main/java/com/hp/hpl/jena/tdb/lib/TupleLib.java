@@ -34,7 +34,7 @@ public class TupleLib
     public static  Iterator<Tuple<Node>> convertToNodes(final NodeTable nodeTable, Iterator<Tuple<NodeId>> iter)
     {
         Transform<Tuple<NodeId>, Tuple<Node>> action =  new Transform<Tuple<NodeId>, Tuple<Node>>(){
-            //@Override
+            @Override
             public Tuple<Node> convert(Tuple<NodeId> item)
             {
                 return tupleNodes(nodeTable, item) ;
@@ -45,7 +45,7 @@ public class TupleLib
     public static Iterator<Tuple<NodeId>> convertToNodeId(final NodeTable nodeTable, Iterator<Tuple<Node>> iter)
     {
         Transform<Tuple<Node>, Tuple<NodeId>> action =  new Transform<Tuple<Node>, Tuple<NodeId>>(){
-            //@Override
+            @Override
             public Tuple<NodeId> convert(Tuple<Node> item)
             {
                 return tupleNodeIds(nodeTable, item) ;
@@ -58,7 +58,7 @@ public class TupleLib
     public static Iterator<Triple> convertToTriples(final NodeTable nodeTable, Iterator<Tuple<NodeId>> iter)
     {
         Transform<Tuple<NodeId>, Triple> action =  new Transform<Tuple<NodeId>, Triple>(){
-            //@Override
+            @Override
             public Triple convert(Tuple<NodeId> item)
             {
                 return triple(nodeTable, item) ;
@@ -70,7 +70,7 @@ public class TupleLib
     public static Iterator<Quad> convertToQuads(final NodeTable nodeTable, Iterator<Tuple<NodeId>> iter)
     {
         Transform<Tuple<NodeId>, Quad> action =  new Transform<Tuple<NodeId>, Quad>(){
-            //@Override
+            @Override
             public Quad convert(Tuple<NodeId> item)
             {
                 return quad(nodeTable, item) ;

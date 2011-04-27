@@ -107,7 +107,7 @@ public class StageMatchTuple extends RepeatApplyIterator<BindingNodeId>
         // Map Tuple<NodeId> to BindingNodeId
         Transform<Tuple<NodeId>, BindingNodeId> binder = new Transform<Tuple<NodeId>, BindingNodeId>()
         {
-            //@Override
+            @Override
             public BindingNodeId convert(Tuple<NodeId> tuple)
             {
                 BindingNodeId output = new BindingNodeId(input) ;
@@ -130,14 +130,14 @@ public class StageMatchTuple extends RepeatApplyIterator<BindingNodeId>
     
     // -- Mutating "transform in place"
     private static Action<Tuple<NodeId>> quadsToTriples = new Action<Tuple<NodeId>>(){
-        //@Override
+        @Override
         public void apply(Tuple<NodeId> item)
         { item.tuple()[0] = NodeId.NodeIdAny ; }
     } ;
     
     // -- Copying
     private static Transform<Tuple<NodeId>,Tuple<NodeId>> projectToTriples = new Transform<Tuple<NodeId>,Tuple<NodeId>>(){
-        //@Override
+        @Override
         public Tuple<NodeId> convert(Tuple<NodeId> item)
         {
             // Zap graph node id.

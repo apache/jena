@@ -17,105 +17,106 @@ public class BlockMgrWrapper implements BlockMgr
         this.blockMgr = blockMgr ;
     }
 
-    //@Override
+    @Override
     public Block allocate(BlockType blockType, int blockSize)
     {
         return blockMgr.allocate(blockType, blockSize) ;
     }
 
-    //@Override
+    @Override
     public Block getRead(int id)
     {
         return blockMgr.getRead(id) ;
     }
 
-    //@Override
+    @Override
     public Block getWrite(int id)
     {
         return blockMgr.getWrite(id) ;
     }
 
+    @Override
     public Block promote(Block block)
     {
         return blockMgr.promote(block) ;
     }
 
-    //@Override
+    @Override
     public void releaseRead(Block block)
     {
         blockMgr.releaseRead(block) ;
     }
 
-    //@Override
+    @Override
     public void releaseWrite(Block block)
     {
         blockMgr.releaseWrite(block) ;
     }
 
-    //@Override
+    @Override
     public void put(Block block)
     {
         blockMgr.put(block) ;
     }
 
-    //@Override
+    @Override
     public void freeBlock(Block block)
     {
         blockMgr.freeBlock(block) ;
     }
 
-    //@Override
+    @Override
     public int blockSize()
     { return blockMgr.blockSize() ; }
     
 
-    //@Override
+    @Override
     public boolean isEmpty()
     {
         return blockMgr.isEmpty() ;
     }
 
-    //@Override
+    @Override
     public void sync()
     {
         blockMgr.sync() ;
     }
 
-    //@Override
+    @Override
     public boolean valid(int id)
     {
         return blockMgr.valid(id) ;
     }
 
-    //@Override
+    @Override
     public boolean isClosed()
     {
         return blockMgr.isClosed() ;
     }
 
-    //@Override
+    @Override
     public void close()
     { blockMgr.close() ; }
 
-    //@Override
+    @Override
     public void startRead()
     {
         blockMgr.startRead() ;
     }
 
-    //@Override
+    @Override
     public void finishRead()
     {
         blockMgr.finishRead() ;
     }
 
-    //@Override
+    @Override
     public void startUpdate()
     {
         blockMgr.startUpdate() ;
     }
 
-    //@Override
+    @Override
     public void finishUpdate()
     {
         blockMgr.finishUpdate() ;

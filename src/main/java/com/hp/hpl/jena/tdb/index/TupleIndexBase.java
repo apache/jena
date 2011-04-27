@@ -38,7 +38,7 @@ public abstract class TupleIndexBase implements TupleIndex
     protected abstract Iterator<Tuple<NodeId>> performFind(Tuple<NodeId> tuple) ;
 
     /** Insert a tuple - return true if it was really added, false if it was a duplicate */
-    //@Override
+    @Override
     public final boolean add(Tuple<NodeId> tuple) 
     { 
         if ( Check )
@@ -49,7 +49,7 @@ public abstract class TupleIndexBase implements TupleIndex
         return performAdd(tuple) ;
     }
     /** Delete a tuple - return true if it was deleted, false if it didn't exist */
-    //@Override
+    @Override
     public final boolean delete(Tuple<NodeId> tuple) 
     { 
         if ( Check )
@@ -64,7 +64,7 @@ public abstract class TupleIndexBase implements TupleIndex
     /** Find all matching tuples - a slot of NodeId.NodeIdAny (or null) means match any.
      *  Input pattern in natural order, not index order.
      */
-    //@Override
+    @Override
     public final Iterator<Tuple<NodeId>> find(Tuple<NodeId> pattern)
     {
         if ( Check )
@@ -76,7 +76,7 @@ public abstract class TupleIndexBase implements TupleIndex
         return performFind(pattern) ;
     }
     
-    //@Override
+    @Override
     public final int weight(Tuple<NodeId> pattern)
     {
         for ( int i = 0 ; i < tupleLength ; i++ )
@@ -90,13 +90,13 @@ public abstract class TupleIndexBase implements TupleIndex
     }
     
 
-    //@Override
+    @Override
     public final String getLabel()
     {
         return colMap.getLabel() ;
     }
 
-    //@Override
+    @Override
     public final int getTupleLength()
     {
         return tupleLength ;

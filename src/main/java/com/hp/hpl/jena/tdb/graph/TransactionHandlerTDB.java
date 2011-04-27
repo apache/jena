@@ -24,24 +24,24 @@ public class TransactionHandlerTDB extends TransactionHandlerBase //implements T
         this.graph = graph ;
     }
     
-    //@Override
+    @Override
     public void abort()
     {
         throw new UnsupportedOperationException("TDB: 'abort' of a transaction not supported") ;
         //log.warn("'Abort' of a transaction not supported - ignored") ;
     }
 
-    //@Override
+    @Override
     public void begin()
     {}
 
-    //@Override
+    @Override
     public void commit()
     {
         graph.sync() ;
     }
 
-    //@Override
+    @Override
     public boolean transactionsSupported()
     {
         return false ;

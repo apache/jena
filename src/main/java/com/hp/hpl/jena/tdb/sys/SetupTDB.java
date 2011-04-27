@@ -109,12 +109,18 @@ public class SetupTDB
     
     public final static TDBSystemInfoMBean systemInfo = new TDBSystemInfoMBean() {
 		public int getSyncTick() { return getIntProperty(Names.pSyncTick); }
-		public int getSegmentSize() { return SystemTDB.SegmentSize; }
-		public int getNodeId2NodeCacheSize() { return getIntProperty(Names.pNodeId2NodeCacheSize); }
-		public int getNode2NodeIdCacheSize() { return getIntProperty(Names.pNode2NodeIdCacheSize); }
-		public int getBlockWriteCacheSize() { return getIntProperty(Names.pBlockWriteCacheSize); }
-		public int getBlockSize() { return SystemTDB.BlockSize; }
-		public int getBlockReadCacheSize() { return getIntProperty(Names.pBlockReadCacheSize); }
+		@Override
+        public int getSegmentSize() { return SystemTDB.SegmentSize; }
+		@Override
+        public int getNodeId2NodeCacheSize() { return getIntProperty(Names.pNodeId2NodeCacheSize); }
+		@Override
+        public int getNode2NodeIdCacheSize() { return getIntProperty(Names.pNode2NodeIdCacheSize); }
+		@Override
+        public int getBlockWriteCacheSize() { return getIntProperty(Names.pBlockWriteCacheSize); }
+		@Override
+        public int getBlockSize() { return SystemTDB.BlockSize; }
+		@Override
+        public int getBlockReadCacheSize() { return getIntProperty(Names.pBlockReadCacheSize); }
 		
 		private int getIntProperty(String name) {
 			return Integer.parseInt(globalConfig.getProperty(name));

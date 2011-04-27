@@ -33,7 +33,7 @@ class RecordBufferPagePacker implements Iterator<RecordBufferPage>
         this.rbMgr = rbMgr ;
     }
     
-    //@Override
+    @Override
     public boolean hasNext()
     {
         if ( recordBufferPage == null )
@@ -70,7 +70,7 @@ class RecordBufferPagePacker implements Iterator<RecordBufferPage>
         
     }
     
-    //@Override
+    @Override
     public RecordBufferPage next()
     {
         if ( ! hasNext() ) throw new NoSuchElementException() ;
@@ -79,7 +79,7 @@ class RecordBufferPagePacker implements Iterator<RecordBufferPage>
         return rbp ;
     }
     
-    //@Override
+    @Override
     public void remove()
     { throw new UnsupportedOperationException() ; }
 }

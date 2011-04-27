@@ -334,13 +334,10 @@ public class MetaFile implements Sync, Closeable
         }
     }
 
-    //@Override
+    @Override
     public void sync()                  { flush() ; }
     
-    //@Override
-    public void sync(boolean force)     { flush() ; }
-
-    //@Override
+    @Override
     public void close()
     {
         flush() ;
@@ -352,6 +349,7 @@ public class MetaFile implements Sync, Closeable
 
     private static class ComparatorKeys implements Comparator<String>
     {
+        @Override
         public int compare(String o1, String o2)
         {
             return - o1.compareTo(o2) ;
