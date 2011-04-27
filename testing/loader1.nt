@@ -1,0 +1,4 @@
+<http://example/s> <http://example/p> <http://example/o> .
+# Comment
+<http://example/s> <http://example/p> "abc".
+<http://example/s> <http://example/p> "abc". #comment

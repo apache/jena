@@ -1,0 +1,36 @@
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+
+<>  rdf:type mf:Manifest ;
+    rdfs:label "Quads and quad patterns" ;
+    mf:entries
+    ( 
+       [  mf:name    "Quad-1" ;
+          mf:action
+            [ qt:query  <quad-01.rq> ;
+              qt:data       <data-dft.ttl> ;
+              qt:graphData  <data-1.ttl> ;
+              qt:graphData  <data-2.ttl> ;
+             ]
+      ]
+       [  mf:name    "Quad-2" ;
+          mf:action
+            [ qt:query  <quad-02.rq> ;
+              qt:data       <data-dft.ttl> ;
+              qt:graphData  <data-1.ttl> ;
+              qt:graphData  <data-2.ttl> ;
+             ]
+      ]
+
+        ## Union of named graphs, explicitly named default graph
+        ## Complex patterns.
+
+##       [  mf:name    "Basic 00" ;
+##          mf:action
+##             [ qt:query  <basic-00.rq> ;
+##               qt:data   <data-1.ttl> ;
+##               qt:graphData ; ]
+##       ]
+    ) .

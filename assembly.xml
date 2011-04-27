@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<assembly xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.1"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="xmlns=http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.1 http://maven.apache.org/xsd/assembly-1.1.1.xsd">
+  <baseDirectory>${project.name}-${project.version}</baseDirectory>
+  <formats>
+    <!--
+    <format>tar.gz</format>
+    <format>tar.bz2</format>
+    -->
+    <format>zip</format>
+  </formats>
+
+  <dependencySets>
+    <dependencySet>
+      <unpack>false</unpack>
+      <scope>test</scope>
+      <outputDirectory>lib</outputDirectory>
+      <excludes>
+        <exclude>*-sources.jar</exclude>
+        <exclude>*-javadoc.jar</exclude>
+      </excludes>
+    </dependencySet>
+  </dependencySets>
+
+  <fileSets>
+    <fileSet>
+      <includes>
+        <include>Copyright.txt</include>
+        <include>README*</include>
+        <include>ChangeLog.txt</include>
+        <include>pom.xml</include>
+      </includes>
+    </fileSet>
+    
+    <!-- More for the lib/ -->
+    <fileSet>
+      <directory>${project.build.directory}</directory>
+      <outputDirectory>lib</outputDirectory>
+      <includes>
+        <include>${this.root}-tests.jar</include>
+      </includes>
+    </fileSet>
+
+    <!-- Put sources at the top level -->
+    <fileSet>
+      <directory>${project.build.directory}</directory>
+      <outputDirectory></outputDirectory>
+      <includes>
+        <include>${this.root}-sources.jar</include>
+        <include>${this.root}-test-sources.jar</include>
+      </includes>
+    </fileSet>
+
+    <fileSet>
+      <directory>bin</directory>
+    </fileSet>
+
+    <fileSet>
+      <directory>bin2</directory>
+    </fileSet>
+
+    <fileSet>
+      <directory>Store</directory>
+    </fileSet>
+
+    <!-- For testing the deployment -->
+    <fileSet>
+      <directory>testing</directory>
+    </fileSet>
+
+    <fileSet>
+      <directory>doc</directory>
+      <excludes>
+        <exclude>linkcheck</exclude>
+        <exclude>template.html</exclude>
+        <exclude>**/_*/**</exclude>
+        <exclude>**/desktop.ini</exclude>
+        <!-- javadoc done separately below -->
+        <exclude>javadoc/**</exclude>
+      </excludes>
+    </fileSet>
+
+    <fileSet>
+      <directory>${project.build.directory}/apidocs</directory>
+      <outputDirectory>doc/javadoc</outputDirectory>
+    </fileSet>
+
+    <fileSet>
+      <directory>src-examples</directory>
+    </fileSet>
+
+  </fileSets>
+  
+</assembly>

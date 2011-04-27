@@ -1,0 +1,10 @@
+#!/bin/bash
+
+if [ "$TDBROOT" = "" ]
+then
+    echo "TDBROOT is not set" 1>&2
+    exit 1
+    fi
+
+CP="$($TDBROOT/bin/tdb_path)"
+java -cp "$CP" -server tdb.CmdRewriteIndex "$@"

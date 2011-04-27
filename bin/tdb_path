@@ -1,0 +1,6 @@
+#!/bin/bash
+# Sets CP
+
+# Adds "classes", "build/classes", "target/classes"
+CP="$($TDBROOT/bin/make_classpath "$TDBROOT")"
+echo "$CP"

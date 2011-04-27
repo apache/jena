@@ -1,0 +1,15 @@
+@prefix tdb:     <http://jena.hpl.hp.com/2008/tdb#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix ja:      <http://jena.hpl.hp.com/2005/11/Assembler#> .
+
+[] ja:loadClass "com.hp.hpl.jena.tdb.TDB" .
+
+<#dataset> rdf:type      ja:RDFDataset ;
+    ja:defaultGraph <#graph> ;
+    . 
+
+<#graph> rdf:type tdb:GraphTDB ;
+    tdb:location "--mem--" ;
+    #tdb:location "tmp/testing/DB" ;
+    tdb:graphName "http://example.com/graph" ;
+    .

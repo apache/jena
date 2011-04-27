@@ -1,0 +1,61 @@
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+
+<>  rdf:type mf:Manifest ;
+    rdfs:label "Value tests" ;
+    mf:entries
+    ( 
+      [  mf:name    "Value-00" ;
+         mf:action
+            [ qt:query  <value-00.rq> ;
+              qt:data   <data-1.ttl> ] ;
+      ]
+      [  mf:name    "Value-01" ;
+         mf:action
+            [ qt:query  <value-01.rq> ;
+              qt:data   <data-1.ttl> ] ;
+      ]
+      [  mf:name    "Value-02" ;
+         mf:action
+            [ qt:query  <value-02.rq> ;
+              qt:data   <data-1.ttl> ] ;
+      ]
+      [  mf:name    "Value-03" ;
+         mf:action
+            [ qt:query  <value-03.rq> ;
+              qt:data   <data-1.ttl> ] ;
+      ]
+
+      [  mf:name    "Value-04" ;
+         mf:action
+            [ qt:query  <value-04.rq> ;
+              qt:data   <data-1.ttl> ] ;
+      ]
+      [  mf:name    "Value-05" ;
+         mf:action
+            [ qt:query  <value-05.rq> ;
+              qt:data   <data-1.ttl> ] ;
+      ]
+      [  mf:name    "Value-06" ;
+         mf:action
+            [ qt:query  <value-06.rq> ;
+              qt:data   <data-1.ttl> ] ;
+      ]
+      [  mf:name    "Value-07" ;
+         mf:action
+            [ qt:query  <value-07.rq> ;
+              qt:data   <data-1.ttl> ] ;
+      ]
+      [  mf:name    "Value-08" ;
+         mf:action
+            [ qt:query  <value-08.rq> ;
+              qt:data   <data-1.ttl> ] ;
+      ]
+      [  mf:name    "Value-09" ;
+         mf:action
+            [ qt:query  <value-09.rq> ;
+              qt:data   <data-1.ttl> ] ;
+      ]
+    ) .

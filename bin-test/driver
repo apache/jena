@@ -1,0 +1,75 @@
+#!/bin/bash
+
+## if [ "$TDBROOT" = "" ]
+## then
+##     echo "TDBROOT is not set" 1>&2
+##     exit 1
+##     fi
+
+source "$TDBROOT/bin/tdb_init"
+
+# Do "-" bits
+
+if [ "$1" = "" ]
+then
+    echo "Driver: No structure type" 1>&2
+    exit 1
+    fi
+
+T="$1"
+shift
+
+case "$T" in
+    btree) T="BTree";;
+    bptree) T="BPlusTree";;
+    exthash) T="ExtHash";;
+
+    avl)   T="AVL";;
+    exthashmem) T="ExtHashMem";;
+    skiplist) T="SkipList";;
+    ttree)    T="TTree" ;;
+
+    *)   echo "$T : Unknown" 1>&2 ; exit 1 ;;
+esac
+
+
+AGENT=""
+#AGENT="-agentlib:hprof=cpu=samples"
+#AGENT="-agentlib:hprof=cpu=times"
+
+while [ "$1" != "" ]
+do
+  A=${1//--/-}
+  case "$A" in
+      -v)               echo "Verbose" ;;
+      -times)    AGENT="-agentlib:hprof=cpu=times" ;;
+      -samples)  AGENT="-agentlib:hprof=cpu=samples" ;;
+      -*)               echo "$1 : No such command flag" 1>&2 ; exit 1 ;;
+      *)                break ;;
+  esac
+  shift
+done
+
+
+
+CMD="$1"
+shift ;
+if [ "$CMD" = "" ]
+then
+    echo "No subcommand (test, perf)" 1>&2
+    exit 1 ;
+    fi
+
+CP="$($TDBROOT/bin/tdb_path)"
+
+JAVA="java -server $AGENT"
+
+ASSERT="-enableassertions"
+#ASSERT="-enableassertions:com.hp"
+
+# test - with assertions
+case $CMD in
+    test)   $JAVA -cp "$CP" "$ASSERT" test.${T}Run Test "$@" ; exit $? ;;
+    perf*)  $JAVA -cp "$CP" test.${T}Run Perf "$@" ; exit $? ;;
+    *)      echo "'$CMD' : no such subcommand" 1>&2 ; exit 1 ;;
+esac

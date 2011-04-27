@@ -1,0 +1,10 @@
+#!/bin/bash
+
+if [ "$TDBROOT" == "" ]
+then
+    echo "TDBROOT not set" 1>&2
+    exit 1
+    fi
+
+TDB_CMD="$(basename $0)"
+exec "${TDBROOT}/bin/${TDB_CMD}" "$@"

@@ -1,0 +1,42 @@
+#!/bin/bash 
+#  -- hint to emacs
+# Source this file, not execute it.
+
+## Environment variable usage:
+## TDBROOT         :: The root of the TDB installation (required)
+## JVM_ARGS        :: Additional argument to the JVM (e.g. -Xmx1024M)
+## 
+##   Default store description 
+##   is the file sdb.ttl in the
+##   current directory
+
+## Source this file to set:
+##  TDB_CP         :: Classpath
+##  TDB_SPEC       :: Default store specification
+##  TDB_CMD        :: The TDB command to call.
+
+## ---- Check root
+if [ "$TDBROOT" = "" ]
+then
+    echo "TDBROOT is not set" 1>&2
+    exit 1
+    fi
+
+## ---- Set class path separator 
+SEP=':'
+if [ "$OSTYPE" = "cygwin" ]
+then
+    SEP=';'
+    fi
+
+## ---- who am I?
+TDB_CMD=$(basename $0)
+
+## ---- JVM Args e.g. -Xmx1200M
+JVM_ARGS=${JVM_ARGS:--Xmx1200M -server}
+
+## ---- Classpath : adds in current CP
+TDB_CP="$($TDBROOT/bin/tdb_path)"
+
+## ## ---- Store description (default)
+## TDB_SPEC="${TDB_SPEC:---tdb=tdb.ttl}"

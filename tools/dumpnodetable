@@ -1,0 +1,19 @@
+#!/bin/bash
+
+if [ "$TDBROOT" = "" ]
+    then 
+    echo "TDBROOT is not set" 1>&2
+    exit 1
+fi
+
+INIT="$TDBROOT/bin/tdb_init"
+
+if [ ! -r "$INIT" ] 
+    then 
+    echo "Script $INIT (\$TDBROOT/bin/tdb_init) does not exist or is not readable"
+    exit 1
+fi
+
+source "$INIT"
+#echo "$TDB_CP"
+exec java $JVM_ARGS $SOCKS -cp "$TDB_CP" "tdb.tools.$TDB_CMD" "$@"

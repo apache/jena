@@ -1,0 +1,9 @@
+#!/bin/bash
+
+if [ "$TDBROOT" = "" ]
+then
+    echo "TDBROOT is not set" 1>&2
+    exit 1
+    fi
+
+"$TDBROOT/bin-test/driver"  exthash "$@"
