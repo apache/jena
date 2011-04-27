@@ -12,9 +12,6 @@ import java.util.Date ;
 import java.util.concurrent.TimeUnit ;
 
 import org.openjena.atlas.logging.Log ;
-import setup.DatasetBuilderStd ;
-import setup.ObjectFileBuilder ;
-import tx.other.BlockMgrTracker ;
 
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.query.Query ;
@@ -24,8 +21,6 @@ import com.hp.hpl.jena.query.QueryExecutionFactory ;
 import com.hp.hpl.jena.query.QueryFactory ;
 import com.hp.hpl.jena.query.ResultSetFormatter ;
 import com.hp.hpl.jena.tdb.TDBFactory ;
-import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
-import com.hp.hpl.jena.tdb.base.file.FileSet ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 
@@ -48,31 +43,6 @@ public class RunTDB
     }
     
 
-    public static class DSB2 extends DatasetBuilderStd
-    {
-        public DSB2()
-        {
-            super() ;
-            ObjectFileBuilder objectFileBuilder         = new ObjectFileBuilderStd() ;
-            BlockMgrBuilderStd blockMgrBuilder          = new BlockMgrBuilderStd()
-            {
-                @Override
-                public BlockMgr buildBlockMgr(FileSet fileset, String name, int blockSize)
-                {
-                    BlockMgr bMgr = super.buildBlockMgr(fileset, name, blockSize) ;
-                    return new BlockMgrTracker("DSB2", bMgr) ;
-                }
-            } ;
-            
-            IndexBuilderStd indexBuilder                = new IndexBuilderStd(blockMgrBuilder, blockMgrBuilder) ;
-            RangeIndexBuilderStd rangeIndexBuilder      = new RangeIndexBuilderStd(blockMgrBuilder, blockMgrBuilder) ;
-            
-            NodeTableBuilderStd nodeTableBuilder        = new NodeTableBuilderStd(indexBuilder, objectFileBuilder) ;
-            TupleIndexBuilderStd tupleIndexBuilder      = new TupleIndexBuilderStd(rangeIndexBuilder) ;
-            set(nodeTableBuilder, tupleIndexBuilder, indexBuilder, rangeIndexBuilder, blockMgrBuilder, objectFileBuilder) ;
-        }
-    }
-    
     public static void main(String[] args) throws Exception
     {
         DatasetGraphTDB dsg = setup.TDBBuilder.build(new Location("DB")) ;
