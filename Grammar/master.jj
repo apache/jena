@@ -620,15 +620,17 @@ void DeleteClause(UpdateModify up) : { QuadAcc qp = up.getDeleteAcc() ;  Token t
    { up.setHasDeleteClause(true) ; }
 }
 
-void InsertClause(UpdateModify up) : { QuadAcc qp = up.getInsertAcc() ; }
+void InsertClause(UpdateModify up) : { QuadAcc qp = up.getInsertAcc() ; Token t ; }
 {
+   t = <INSERT>
+   { startInsertTemplate(qp, t.beginLine, t.beginColumn) ; }
 #ifndef ARQ_UPDATE
-   <INSERT> QuadPattern(qp)
+   QuadPattern(qp)
 #else
-   <INSERT> 
    OptionalIntoTarget(qp)
    QuadPattern(qp)
 #endif
+   { finishInsertTemplate(qp, t.beginLine, t.beginColumn) ; }
    { up.setHasInsertClause(true) ; }
 }
 

@@ -96,6 +96,17 @@ public class ParserQueryBase extends ParserBase
         setBNodesAreAllowed(oldBNodesAreAllowed) ;
     }
     
+    protected void startInsertTemplate(QuadAcc qd, int line, int col)
+    {
+        oldBNodesAreVariables = getBNodesAreVariables() ;
+        setBNodesAreVariables(false) ;
+    }
+    
+    protected void finishInsertTemplate(QuadAcc qd, int line, int col)
+    {
+        setBNodesAreVariables(oldBNodesAreVariables) ;
+    }
+    
     protected void startDeleteTemplate(QuadAcc qd, int line, int col)
     {
         oldBNodesAreAllowed = getBNodesAreAllowed() ;

@@ -441,9 +441,12 @@ void DeleteClause(UpdateModify up) : { QuadAcc qp = up.getDeleteAcc() ; Token t 
    { finishDeleteTemplate(qp, t.beginLine, t.beginColumn) ; }
    { up.setHasDeleteClause(true) ; }
 }
-void InsertClause(UpdateModify up) : { QuadAcc qp = up.getInsertAcc() ; }
+void InsertClause(UpdateModify up) : { QuadAcc qp = up.getInsertAcc() ; Token t ; }
 {
-   <INSERT> QuadPattern(qp)
+   t = <INSERT>
+   { startInsertTemplate(qp, t.beginLine, t.beginColumn) ; }
+   QuadPattern(qp)
+   { finishInsertTemplate(qp, t.beginLine, t.beginColumn) ; }
    { up.setHasInsertClause(true) ; }
 }
 void UsingClause(UpdateWithUsing update) : { String iri ; Node n ; }

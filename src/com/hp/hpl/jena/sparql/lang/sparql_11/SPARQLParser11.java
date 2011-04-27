@@ -1427,9 +1427,11 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
   }
 
   final public void InsertClause(UpdateModify up) throws ParseException {
-                                       QuadAcc qp = up.getInsertAcc() ;
-    jj_consume_token(INSERT);
+                                       QuadAcc qp = up.getInsertAcc() ; Token t ;
+    t = jj_consume_token(INSERT);
+     startInsertTemplate(qp, t.beginLine, t.beginColumn) ;
     QuadPattern(qp);
+     finishInsertTemplate(qp, t.beginLine, t.beginColumn) ;
      up.setHasInsertClause(true) ;
   }
 

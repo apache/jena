@@ -1851,10 +1851,12 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
   }
 
   final public void InsertClause(UpdateModify up) throws ParseException {
-                                       QuadAcc qp = up.getInsertAcc() ;
-    jj_consume_token(INSERT);
+                                       QuadAcc qp = up.getInsertAcc() ; Token t ;
+    t = jj_consume_token(INSERT);
+     startInsertTemplate(qp, t.beginLine, t.beginColumn) ;
     OptionalIntoTarget(qp);
     QuadPattern(qp);
+     finishInsertTemplate(qp, t.beginLine, t.beginColumn) ;
      up.setHasInsertClause(true) ;
   }
 
@@ -5130,16 +5132,6 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     finally { jj_save(1, xla); }
   }
 
-  private boolean jj_3R_52() {
-    if (jj_3R_56()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_88() {
-    if (jj_scan_token(PNAME_NS)) return true;
-    return false;
-  }
-
   private boolean jj_3R_48() {
     Token xsp;
     xsp = jj_scanpos;
@@ -5533,13 +5525,13 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
-  private boolean jj_3_1() {
-    if (jj_3R_36()) return true;
+  private boolean jj_3R_64() {
+    if (jj_3R_70()) return true;
     return false;
   }
 
-  private boolean jj_3R_64() {
-    if (jj_3R_70()) return true;
+  private boolean jj_3_1() {
+    if (jj_3R_36()) return true;
     return false;
   }
 
@@ -5575,6 +5567,16 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     jj_scanpos = xsp;
     if (jj_3R_77()) return true;
     }
+    return false;
+  }
+
+  private boolean jj_3R_52() {
+    if (jj_3R_56()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_88() {
+    if (jj_scan_token(PNAME_NS)) return true;
     return false;
   }
 
