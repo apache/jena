@@ -298,10 +298,8 @@ public final class BPTreeNode extends BPTreePage
     // [TxTDB:PATCH-UP]
     public void setId(int id)               { this.id = id ; }
 
-    @Override
     public void setIsLeaf(boolean isLeaf)   { this.isLeaf = isLeaf ; }
 
-    @Override
     public boolean isLeaf()                 { return this.isLeaf ; }
     
     public long size()

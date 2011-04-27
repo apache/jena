@@ -34,7 +34,7 @@ public class RecordBufferPage extends RecordBufferPageBase
     public void setLink(int link)
     { 
         this.link = link ;
-        getBackingByteBuffer().putInt(LINK, link) ;
+        getBackingBlock().putInt(LINK, link) ;
     }
     
     public static int calcRecordSize(RecordFactory factory, int blkSize)
