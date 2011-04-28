@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: Rule.java,v 1.1 2009-06-29 08:55:38 castagna Exp $
+ * $Id: Rule.java,v 1.2 2011-04-28 19:40:26 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -75,7 +75,7 @@ import com.hp.hpl.jena.util.Tokenizer;
  * embedded rule, commas are ignore and can be freely used as separators. Functor names
  * may not end in ':'.
  * </p>
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:38 $ 
+ * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.2 $ on $Date: 2011-04-28 19:40:26 $ 
  */
 public class Rule implements ClauseEntry {
     
@@ -470,12 +470,16 @@ public class Rule implements ClauseEntry {
      * @throws RulesetNotFoundException
      */
     public static List<Rule> rulesFromURL( String uri ) {
+        BufferedReader br = null;
         try {
-            BufferedReader br = FileUtils.asBufferedUTF8( FileManager.get().open(uri) );
+            br = FileUtils.asBufferedUTF8( FileManager.get().open(uri) );
             return parseRules( Rule.rulesParserFromReader( br ) );
         }
-        catch (WrappedIOException e)
-            { throw new RulesetNotFoundException( uri ); }
+        catch (WrappedIOException e) {
+            throw new RulesetNotFoundException( uri ); 
+        } finally {
+            if (br != null) try { br.close(); } catch (IOException e2) {}
+        }
     }
         
     /**
