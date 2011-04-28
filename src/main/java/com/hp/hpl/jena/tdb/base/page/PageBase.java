@@ -7,8 +7,6 @@
 
 package com.hp.hpl.jena.tdb.base.page;
 
-import java.nio.ByteBuffer ;
-
 import com.hp.hpl.jena.tdb.base.block.Block ;
 
 /** A page with a byte buffer */
@@ -17,17 +15,17 @@ public abstract class PageBase implements Page
     private int id ;
     private final Block block ;
 
-    protected PageBase(int id, Block block)
+    protected PageBase(Block block)
     {
-        this.id = id ;
         this.block = block ;
+        this.id = block.getId() ;
     }
     
     @Override
     final public Block getBackingBlock()    { return block ; }
 
-//  @Override
-    final public ByteBuffer getBackingByteBuffer()       { return block.getByteBuffer() ; }
+//    @Override
+//    final public ByteBuffer getBackingByteBuffer()       { return dataBuffer ; }
 
     @Override
     final public int getId()                { return id ; }

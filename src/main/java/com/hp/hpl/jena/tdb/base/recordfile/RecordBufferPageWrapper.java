@@ -7,13 +7,11 @@
 package com.hp.hpl.jena.tdb.base.recordfile;
 
 
-import java.nio.ByteBuffer;
-
 import org.openjena.atlas.io.IndentedWriter ;
 
-
-import com.hp.hpl.jena.tdb.base.buffer.RecordBuffer;
-import com.hp.hpl.jena.tdb.base.page.Page;
+import com.hp.hpl.jena.tdb.base.block.Block ;
+import com.hp.hpl.jena.tdb.base.buffer.RecordBuffer ;
+import com.hp.hpl.jena.tdb.base.page.Page ;
 
 public class RecordBufferPageWrapper implements Page
 {
@@ -45,7 +43,7 @@ public class RecordBufferPageWrapper implements Page
     public final void setCount(int count)   { rBuff.setSize(count) ; }
     
     @Override
-    public ByteBuffer getBackingByteBuffer()   { return rBuffPage.getBackingByteBuffer() ; }
+    public Block getBackingBlock()   { return rBuffPage.getBackingBlock() ; }
 
     @Override
     public int getId()                  { return rBuffPage.getId() ; } 

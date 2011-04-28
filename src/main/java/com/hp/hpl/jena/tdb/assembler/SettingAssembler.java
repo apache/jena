@@ -15,9 +15,9 @@ import tdb.cmdline.CmdTDB ;
 
 import com.hp.hpl.jena.assembler.Assembler ;
 import com.hp.hpl.jena.assembler.Mode ;
+import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.rdf.model.Resource ;
 import com.hp.hpl.jena.sparql.util.Symbol ;
-import com.hp.hpl.jena.tdb.TDB ;
 
 public class SettingAssembler //extends DatasetAssembler
 {
@@ -27,14 +27,14 @@ public class SettingAssembler //extends DatasetAssembler
      *  :setting [ :name tdbsym:name ; :value "SPO.idx" ]
      */
     
-    @Override
+    //@Override
     public Object open(Assembler a, Resource root, Mode mode)
     {
         Resource r = getResourceValue(root, pSetting ) ;
         String k = getAsStringValue(r, pName) ;
         String v = getAsStringValue(r, pValue) ;
         Symbol symbol = Symbol.create(k) ;
-        TDB.getContext().set(symbol, v) ;
+        ARQ.getContext().set(symbol, v) ;
         return r ;
     }
 }

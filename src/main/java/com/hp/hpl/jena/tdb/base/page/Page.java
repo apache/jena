@@ -6,9 +6,9 @@
 
 package com.hp.hpl.jena.tdb.base.page;
 
-import com.hp.hpl.jena.tdb.base.block.Block ;
-
 import org.openjena.atlas.io.Printable ;
+
+import com.hp.hpl.jena.tdb.base.block.Block ;
 
 /** Abstract of a bytebuffer, a block type, an id and a count */
 public interface Page extends Printable
@@ -23,15 +23,17 @@ public interface Page extends Printable
 //    
 //    public final BlockType getBlockType()   { return blockType ; }
     
+    // [TxTDB:PATCH-UP] Remove
     public int getId() ;
     
-    // [TxTDB:PATCH-UP]
+    // [TxTDB:PATCH-UP] Remove
     public void setId(int id) ;
-//    /** Return the ByteBuffer backing this page */ 
-//    public ByteBuffer getBackingByteBuffer() ;
 
-    /** Return the ByteBuffer backing this page */ 
+    /** Return the block associated with this page */ 
     public Block getBackingBlock() ;
+    
+//    /** Return the ByteBuffer that covers the data area of this page - not the byte buffer of the block */   
+//    public ByteBuffer getBackingByteBuffer() ;
 
     public int getCount() ; 
     public void setCount(int count) ;

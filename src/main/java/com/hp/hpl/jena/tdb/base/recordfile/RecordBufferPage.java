@@ -6,11 +6,10 @@
 
 package com.hp.hpl.jena.tdb.base.recordfile;
 
-import java.nio.ByteBuffer;
-
-import com.hp.hpl.jena.tdb.base.page.Page;
-import com.hp.hpl.jena.tdb.base.record.RecordFactory;
-import com.hp.hpl.jena.tdb.sys.SystemTDB;
+import com.hp.hpl.jena.tdb.base.block.Block ;
+import com.hp.hpl.jena.tdb.base.page.Page ;
+import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
+import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 /** The on-disk form of a block of a single RecordBuffer
  * (i.e. not part of a BTree/BPlusTree node).
@@ -34,7 +33,7 @@ public class RecordBufferPage extends RecordBufferPageBase
     public void setLink(int link)
     { 
         this.link = link ;
-        getBackingBlock().putInt(LINK, link) ;
+        getBackingBlock().getByteBuffer().putInt(LINK, link) ;
     }
     
     public static int calcRecordSize(RecordFactory factory, int blkSize)
@@ -44,11 +43,11 @@ public class RecordBufferPage extends RecordBufferPageBase
     { return RecordBufferPageBase.calcBlockSize(factory, maxRec, FIELD_LENGTH) ; }
     
     
-    /*public*/ RecordBufferPage(int id, int linkId, ByteBuffer byteBuffer,
+    /*public*/ RecordBufferPage(Block block, int linkId,
                                 RecordFactory factory, RecordBufferPageMgr recordBufferPageMgr, 
                                 int count)
     {
-        super(id, FIELD_LENGTH, byteBuffer, factory, count) ;
+        super(block, FIELD_LENGTH, factory, count) ;
         this.pageMgr = recordBufferPageMgr ; 
         this.link = linkId ;
         

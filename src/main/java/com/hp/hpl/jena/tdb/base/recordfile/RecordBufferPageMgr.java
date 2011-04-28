@@ -9,6 +9,7 @@ package com.hp.hpl.jena.tdb.base.recordfile;
 import static com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPage.* ;
 import java.nio.ByteBuffer;
 
+import com.hp.hpl.jena.tdb.base.block.Block ;
 import com.hp.hpl.jena.tdb.base.block.BlockConverter;
 import com.hp.hpl.jena.tdb.base.block.BlockMgr;
 import com.hp.hpl.jena.tdb.base.block.BlockType;
@@ -61,35 +62,36 @@ public class RecordBufferPageMgr extends BlockConverter<RecordBufferPage>
         }
         
         @Override
-        public RecordBufferPage createFromByteBuffer(ByteBuffer bb, BlockType blkType)
+        public RecordBufferPage createFromBlock(Block block, BlockType blkType)
         {
             if ( blkType != BlockType.RECORD_BLOCK )
                 throw new RecordException("Not RECORD_BLOCK: "+blkType) ;
             // Initially empty
-            RecordBufferPage rb = new RecordBufferPage(NO_ID, NO_ID, bb, factory, pageMgr, 0) ;
+            RecordBufferPage rb = new RecordBufferPage(block, NO_ID, factory, pageMgr, 0) ;
             return rb ;
         }
 
         @Override
-        public RecordBufferPage fromByteBuffer(ByteBuffer byteBuffer)
+        public RecordBufferPage fromBlock(Block block)
         {
-            synchronized (byteBuffer)
+            synchronized (block)
             {
-                int count = byteBuffer.getInt(COUNT) ;
-                int linkId = byteBuffer.getInt(LINK) ;
-                RecordBufferPage rb = new RecordBufferPage(NO_ID, linkId, byteBuffer, factory, pageMgr, count) ;
+                int count = block.getByteBuffer().getInt(COUNT) ;
+                int linkId = block.getByteBuffer().getInt(LINK) ;
+                RecordBufferPage rb = new RecordBufferPage(block, linkId, factory, pageMgr, count) ;
                 return rb ;
             }
         }
 
         @Override
-        public ByteBuffer toBlock(RecordBufferPage rbp)
+        public Block toBlock(RecordBufferPage rbp)
         {
             int count = rbp.getRecordBuffer().size() ;
             rbp.setCount(count) ;
-            rbp.getBackingByteBuffer().putInt(COUNT, rbp.getCount()) ;
-            rbp.getBackingByteBuffer().putInt(LINK, rbp.getLink()) ;
-            return rbp.getBackingByteBuffer() ;
+            ByteBuffer bb = rbp.getBackingBlock().getByteBuffer() ;
+            bb.putInt(COUNT, rbp.getCount()) ;
+            bb.putInt(LINK, rbp.getLink()) ;
+            return rbp.getBackingBlock() ;
         }
     }
 }

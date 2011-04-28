@@ -12,6 +12,7 @@ import java.nio.ByteBuffer;
 import org.openjena.atlas.io.IndentedWriter ;
 
 
+import com.hp.hpl.jena.tdb.base.block.Block ;
 import com.hp.hpl.jena.tdb.base.buffer.RecordBuffer;
 import com.hp.hpl.jena.tdb.base.page.PageBase;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
@@ -55,14 +56,15 @@ public class RecordBufferPageBase extends PageBase //implements Page
         return FIELD_LENGTH+headerOffset ;
     }
 
-    protected RecordBufferPageBase(int id, int offset, 
-                                   ByteBuffer byteBuffer, RecordFactory factory,
+    protected RecordBufferPageBase(Block block, int offset, 
+                                   RecordFactory factory,
                                    int count)
     {   // This code knows the alignment of the records in the ByteBuffer.
-        super(id, byteBuffer) ;
+        super(block) ;
         this.headerLength = FIELD_LENGTH+offset ;        // NB +4 for the count field
-        byteBuffer.position(headerLength) ;
-        ByteBuffer bb = byteBuffer.slice();
+        ByteBuffer bb = block.getByteBuffer() ;
+        bb.position(headerLength) ;
+        bb = bb.slice();
         this.recBuff = new RecordBuffer(bb, factory, count) ;
     }
 
