@@ -3,5 +3,7 @@ PREFIX : <http://example/>
 SELECT ?x (123 AS ?y)
 {
 }
+GROUP BY ?x
+HAVING (?x > 0)
 BINDINGS ?x {(456)}
 
