@@ -97,7 +97,7 @@ public class GraphSDB extends GraphBase2 implements Graph
     { 
         try {
             String graphURI = null ;
-            if ( Quad.isQuadDefaultGraphGenerated(graphNode) )
+            if ( Quad.isDefaultGraphGenerated(graphNode) )
                 graphURI = "" ;
             else if ( graphNode.isURI() )
                 graphURI = graphNode.getURI() ; 
@@ -268,7 +268,7 @@ public class GraphSDB extends GraphBase2 implements Graph
     {
     	if (inBulkUpdate == 0) store.getLoader().startBulkUpdate();
         
-        if ( Quad.isQuadDefaultGraphGenerated(graphNode) )
+        if ( Quad.isDefaultGraphGenerated(graphNode) )
             store.getLoader().addTriple(triple) ;
         else
         {
@@ -283,7 +283,7 @@ public class GraphSDB extends GraphBase2 implements Graph
     public void performDelete( Triple triple ) 
     {
     	if (inBulkUpdate == 0) store.getLoader().startBulkUpdate();
-        if ( Quad.isQuadDefaultGraphGenerated(graphNode) )
+        if ( Quad.isDefaultGraphGenerated(graphNode) )
             store.getLoader().deleteTriple(triple) ;
         else
         {
@@ -301,11 +301,11 @@ public class GraphSDB extends GraphBase2 implements Graph
     public TransactionHandler getTransactionHandler() { return store.getConnection().getTransactionHandler() ; }
     
     @Override
-    public int graphBaseSize() { return (int) (Quad.isQuadDefaultGraphGenerated(graphNode) ? store.getSize() : store.getSize(graphNode)); }
+    public int graphBaseSize() { return (int) (Quad.isDefaultGraphGenerated(graphNode) ? store.getSize() : store.getSize(graphNode)); }
     
 	public void deleteAll() {
 		if (inBulkUpdate == 0) store.getLoader().startBulkUpdate();
-		if ( Quad.isQuadDefaultGraphGenerated(graphNode) )
+		if ( Quad.isDefaultGraphGenerated(graphNode) )
 			store.getLoader().deleteAll();
 		else
 			((StoreLoaderPlus) store.getLoader()).deleteAll(graphNode);

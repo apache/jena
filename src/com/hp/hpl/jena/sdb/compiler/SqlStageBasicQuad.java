@@ -64,7 +64,7 @@ public class SqlStageBasicQuad implements SqlStage
         }
         
         // GRAPH <name of default graph> { } 
-        if ( quad.isDefaultGraphIRI() )
+        if ( quad.isDefaultGraphExplicit() )
         {
             // "named" access to the default graph
             accessStoredDefaultGraph = true ;
