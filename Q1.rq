@@ -1,4 +1,0 @@
-SELECT * {} BINDINGS ?var1 ?var2  {
-  ( "var1-value1"  "var2-value1" )
-  ( "var1-value2"  "var2-value2" )
-}
