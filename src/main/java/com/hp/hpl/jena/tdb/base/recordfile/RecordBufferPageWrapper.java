@@ -47,9 +47,6 @@ public class RecordBufferPageWrapper implements Page
 
     @Override
     public int getId()                  { return rBuffPage.getId() ; } 
-
-    @Override
-    public void setId(int id)           { rBuffPage.setId(id) ; }
 }
 
 /*

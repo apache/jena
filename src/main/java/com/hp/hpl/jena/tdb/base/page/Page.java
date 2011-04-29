@@ -26,8 +26,8 @@ public interface Page extends Printable
     // [TxTDB:PATCH-UP] Remove
     public int getId() ;
     
-    // [TxTDB:PATCH-UP] Remove
-    public void setId(int id) ;
+//    // [TxTDB:PATCH-UP] Remove
+//    public void setId(int id) ;
 
     /** Return the block associated with this page */ 
     public Block getBackingBlock() ;

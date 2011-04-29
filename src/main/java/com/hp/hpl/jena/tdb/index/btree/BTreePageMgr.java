@@ -11,7 +11,7 @@ import static com.hp.hpl.jena.tdb.base.block.BlockType.RECORD_BLOCK;
 
 import java.nio.ByteBuffer;
 
-import com.hp.hpl.jena.tdb.base.block.BlockConverter;
+import com.hp.hpl.jena.tdb.base.block.BlockConverter ;
 import com.hp.hpl.jena.tdb.base.block.BlockMgr;
 import com.hp.hpl.jena.tdb.base.block.BlockType;
 import com.hp.hpl.jena.tdb.base.buffer.PtrBuffer;
@@ -111,7 +111,7 @@ final class BTreePageMgr implements Session
     
     // Using a BlockConverter interally.
     
-    private class Block2BTreeNode implements BlockConverter.Converter<BTreeNode>
+    private class Block2BTreeNode implements BlockConverter<BTreeNode, T>
     {
         @Override
         public BTreeNode createFromByteBuffer(ByteBuffer bb, BlockType bType)

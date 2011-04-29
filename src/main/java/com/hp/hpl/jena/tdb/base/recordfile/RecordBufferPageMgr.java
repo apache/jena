@@ -10,7 +10,8 @@ import static com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPage.* ;
 import java.nio.ByteBuffer;
 
 import com.hp.hpl.jena.tdb.base.block.Block ;
-import com.hp.hpl.jena.tdb.base.block.BlockConverter;
+import com.hp.hpl.jena.tdb.base.block.BlockConverter ;
+import com.hp.hpl.jena.tdb.base.block.PageBlock;
 import com.hp.hpl.jena.tdb.base.block.BlockMgr;
 import com.hp.hpl.jena.tdb.base.block.BlockType;
 import com.hp.hpl.jena.tdb.base.record.RecordException;
@@ -21,7 +22,7 @@ import com.hp.hpl.jena.tdb.base.record.RecordFactory;
  */
 
 final
-public class RecordBufferPageMgr extends BlockConverter<RecordBufferPage>
+public class RecordBufferPageMgr extends PageBlock<RecordBufferPage>
 {
     public RecordBufferPageMgr(RecordFactory factory, BlockMgr blockMgr)
     {
@@ -30,16 +31,15 @@ public class RecordBufferPageMgr extends BlockConverter<RecordBufferPage>
         super.setConverter(conv) ;
     }
 
-    public RecordBufferPage create(int x)
+    public RecordBufferPage create()
     {
-        RecordBufferPage rbp = super.create(x, BlockType.RECORD_BLOCK) ;
-        rbp.setId(x) ;
-        return rbp ;
+        return super.create(BlockType.RECORD_BLOCK) ;
     }
     
     @Override
     public RecordBufferPage get(int id)
     {
+        // [TxTDB:PATCH-UP] -- read/write
         synchronized(this) 
         {
             // Must call in single reader for the context.
@@ -50,7 +50,7 @@ public class RecordBufferPageMgr extends BlockConverter<RecordBufferPage>
         }
     }
     
-    private static class Block2RecordBufferPage implements Converter<RecordBufferPage>
+    private static class Block2RecordBufferPage implements BlockConverter<RecordBufferPage>
     {
         private RecordFactory factory ;
         private RecordBufferPageMgr pageMgr ;

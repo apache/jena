@@ -191,19 +191,11 @@ public class DatasetGraphTDB extends DatasetGraphCaching
         return new GraphNamedTDB(this, graphNode) ;
     }
 
-    @Override
-    public void setEffectiveDefaultGraph(GraphTDB g) { effectiveDefaultGraph = g ; }
+    public void setEffectiveDefaultGraph(GraphTDB g)    { effectiveDefaultGraph = g ; }
 
-    @Override
-    public GraphTDB getEffectiveDefaultGraph() 
-    {
-        return effectiveDefaultGraph ;
-    }
+    public GraphTDB getEffectiveDefaultGraph()          { return effectiveDefaultGraph ; }
 
-    public Properties getConfig()
-    {
-        return config ;
-    }
+    public Properties getConfig()                       { return config ; }
     
     public String getConfigValue(String key)
     {
@@ -247,7 +239,6 @@ public class DatasetGraphTDB extends DatasetGraphCaching
     @Override
     public boolean isEmpty()            { return getTripleTable().isEmpty() && getQuadTable().isEmpty() ; }
 
-    @Override
     public void clear()
     {
         // Leave the node table alone.

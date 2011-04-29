@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -215,11 +216,8 @@ public class NodeTableNative implements NodeTable
     }
 
     @Override
-    public void sync() { sync(true) ; } 
-    
-    @Override
-    public synchronized void sync(boolean force)
-    {
+    public void sync() 
+    { 
         if ( nodeHashToId != null )
             nodeHashToId.sync() ;
         if ( getObjects() != null )
@@ -233,6 +231,7 @@ public class NodeTableNative implements NodeTable
 }
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

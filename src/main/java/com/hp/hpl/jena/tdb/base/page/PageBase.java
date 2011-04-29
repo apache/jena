@@ -24,14 +24,8 @@ public abstract class PageBase implements Page
     @Override
     final public Block getBackingBlock()    { return block ; }
 
-//    @Override
-//    final public ByteBuffer getBackingByteBuffer()       { return dataBuffer ; }
-
     @Override
     final public int getId()                { return id ; }
-
-    @Override
-    final public void setId(int id)         { this.id = id ; }
 }
 
 /*

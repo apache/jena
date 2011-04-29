@@ -402,7 +402,7 @@ public class BPlusTreeRewriter
         BPTreeNode node = bpt2.getNodeManager().get(pair.car(), BPlusTreeParams.RootParent) ;
         copyBPTreeNode(node, root, bpt2) ;
         
-        bpt2.getNodeManager().release(node.getId()) ;
+        bpt2.getNodeManager().release(node.getBackingBlock()) ;
     }
     
     private static void copyBPTreeNode(BPTreeNode nodeSrc, BPTreeNode nodeDst, BPlusTree bpt2)

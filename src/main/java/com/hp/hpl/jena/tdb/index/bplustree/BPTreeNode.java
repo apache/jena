@@ -326,7 +326,7 @@ public final class BPTreeNode extends BPTreePage
     void put()   { bpTree.getNodeManager().put(this) ; } 
     
     @Override final
-    void release()   { bpTree.getNodeManager().release(getId()) ; } 
+    void release()   { bpTree.getNodeManager().release(block) ; } 
     
     // ============ SEARCH
     
@@ -699,7 +699,7 @@ public final class BPTreeNode extends BPTreePage
         isLeaf = n.isLeaf ;
         count = n.count ;
         this.put();
-        bpTree.getNodeManager().release(n.id) ;
+        bpTree.getNodeManager().release(n.block) ;
         internalCheckNodeDeep() ;
         
         if ( logging() )

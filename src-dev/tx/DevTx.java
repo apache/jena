@@ -2,13 +2,22 @@ package tx;
 
 public class DevTx
 {
-    // See all : [TxTDB:PATCH-UP]
+    // See all : // [TxTDB:PATCH-UP]
     
     /*
      * 1 - everything a write block.
      *     This should then work for single app.
      * 2 - Convert idnexes to differentiate and track read and write pages. 
      * 
+     */
+    
+    /*
+     * Layers:
+     *   DatasetGraph
+     *   Indexes
+     *   Pages
+     *   Blocks
+     *   Storage 
      */
     
     /* NEXT

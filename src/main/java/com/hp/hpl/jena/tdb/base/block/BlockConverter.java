@@ -1,122 +1,31 @@
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
 package com.hp.hpl.jena.tdb.base.block;
 
-import com.hp.hpl.jena.tdb.base.page.PageBase ;
+import com.hp.hpl.jena.tdb.base.page.Page ;
 
-/** Engine that wraps from blocks to typed pages. */
-
-public class BlockConverter<T extends PageBase>
+public interface BlockConverter<T extends Page>
 {
-    public interface Converter<T>
-    {
-        // [TxTDB:PATCH-UP]
-        // revise comment.
-        // Pull out converter.
-        
-        // OLD
-        /* Synchronization: The fromByteBuffer() operation must either be called
-         * from a situation where it is safe against multiple readers
-         * or the implementation coverter must provide multiple-reader safty.
-         * 
-         * toByteBuffer and createFromByteBuffer are writer-operations, hence
-         * single writer policy applies. 
-         */ 
-        public T fromBlock(Block block) ;
-        public Block toBlock(T t) ;
-        public T createFromBlock(Block block, BlockType bType) ;
-    }
+    // [TxTDB:PATCH-UP]
     
-    private BlockMgr blockMgr ;
-    private Converter<T> pageFactory ;
-
-    protected BlockConverter(Converter<T> pageFactory, BlockMgr blockMgr)
-    { 
-        this.pageFactory = pageFactory ;
-        this.blockMgr = blockMgr ;
-    }
-   
-    // Sometimes, the subclass must pass null to the constructor then call this. 
-    protected void setConverter(Converter<T> pageFactory) { this.pageFactory = pageFactory ; }
-    
-    public BlockMgr getBlockMgr() { return blockMgr ; } 
-    
-//    /** Allocate an uninitialized slot.  Fill with a .put later */ 
-//    public int allocateId()           { return blockMgr.allocateId() ; }
-    
-    /** Allocate a new thing */
-    public T create(int id, BlockType bType)
-    {
-        Block block = blockMgr.allocate(bType, -1) ;
-        
-//        ByteBuffer bb = blockMgr.allocateBuffer(id) ;
-//        T newThing = pageFactory.createFromByteBuffer(bb, bType) ;
-        T newThing = pageFactory.createFromBlock(block, bType) ;
-        newThing.setId(id) ;
-        return newThing ;
-    }
-    
-    /** Fetch a block and make a T : must be called single-reader */
-    public T get(int id)
-    {
-        synchronized (blockMgr)
-        {
-            // [TxTDB:PATCH-UP]
-            // Always a write block.
-            Block block = blockMgr.getWrite(id) ;
-            T newThing = pageFactory.fromBlock(block) ;
-//            ByteBuffer bb = blockMgr.get(id) ;
-//            T newThing = pageFactory.fromByteBuffer(bb) ;
-            newThing.setId(id) ;
-            return newThing ;
-        }
-    }
-
-    public void put(int id, T page)
-    {
-//        ByteBuffer bb = pageFactory.toByteBuffer(page) ;
-//        blockMgr.put(id, bb) ;
-        Block blk = pageFactory.toBlock(page) ;
-        blockMgr.put(blk) ;
-    }
-    
-    public void put(T page)
-    {
-        put(page.getId(), page) ;
-    }
-
-    public void release(Block block)     { blockMgr.freeBlock(block) ; }
-    
-    public boolean valid(int id)    { return blockMgr.valid(id) ; }
-    
-    public void dump()
-    { 
-        for ( int idx = 0 ; valid(idx) ; idx++ )
-        {
-            T page = get(idx) ;
-            System.out.println(page) ;
-        }
-    }
-    
-    /** Signal the start of an update operation */
-    public void startUpdate()       { blockMgr.startUpdate() ; }
-    
-    /** Signal the completion of an update operation */
-    public void finishUpdate()      { blockMgr.finishUpdate() ; }
-
-    /** Signal the start of an update operation */
-    public void startRead()         { blockMgr.startRead() ; }
-    
-    /** Signal the completeion of an update operation */
-    public void finishRead()        { blockMgr.finishRead() ; }
+    // OLD
+    /* Synchronization: The fromByteBuffer() operation must either be called
+     * from a situation where it is safe against multiple readers
+     * or the implementation coverter must provide multiple-reader safty.
+     * 
+     * toByteBuffer and createFromByteBuffer are writer-operations, hence
+     * single writer policy applies. 
+     */ 
+    public T fromBlock(Block block) ;
+    public Block toBlock(T t) ;
+    public T createFromBlock(Block block, BlockType bType) ;
 }
-
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

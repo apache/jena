@@ -8,9 +8,9 @@ package com.hp.hpl.jena.tdb.base.block;
 
 import java.nio.ByteBuffer ;
 
-import com.hp.hpl.jena.tdb.base.page.PageBase ;
-
 import tx.base.FileRef ;
+
+import com.hp.hpl.jena.tdb.base.page.Page ;
 
 public final class Block
 {
@@ -47,7 +47,7 @@ public final class Block
         type = blockType ;
     }
         
-    public <T extends PageBase> T convert(BlockConverter.Converter<T> converter)
+    public <T extends Page> T convert(BlockConverter<T> converter)
     {
         // converter.checkType(type) ; 
         return converter.fromBlock(this) ;

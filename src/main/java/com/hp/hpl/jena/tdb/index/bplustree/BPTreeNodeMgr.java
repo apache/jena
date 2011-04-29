@@ -12,6 +12,7 @@ import static com.hp.hpl.jena.tdb.base.block.BlockType.RECORD_BLOCK ;
 
 import java.nio.ByteBuffer ;
 
+import com.hp.hpl.jena.tdb.TDBException ;
 import com.hp.hpl.jena.tdb.base.block.Block ;
 import com.hp.hpl.jena.tdb.base.block.BlockConverter ;
 import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
@@ -41,6 +42,16 @@ public final class BPTreeNodeMgr extends BPTreePageMgr
     public BPTreeNode createEmptyBPT()
     { 
         // Create an empty records block.
+        
+        Block block = bpTree.getRecordsMgr().getBlockMgr().allocate(BlockType.BPTREE_BRANCH, -1) ;
+        if ( block.getId() != 0 )
+            // [TxTDB:PATCH-UP]
+            throw new TDBException("Root blocks must be at position zero") ;
+        // [TxTDB:PATCH-UP]
+        BPTreePage page = bpTree.getRecordsMgr().create() ;
+        
+        // ----
+        
         int recId = bpTree.getRecordsMgr().allocateId() ;
         BPTreePage page = bpTree.getRecordsMgr().create(recId) ;
         page.put();
@@ -130,7 +141,7 @@ public final class BPTreeNodeMgr extends BPTreePageMgr
     @Override
     public void finishUpdate()      { blockMgr.finishUpdate() ; }
     
-    private class Block2BPTreeNode implements BlockConverter.Converter<BPTreeNode>
+    private class Block2BPTreeNode implements BlockConverter<BPTreeNode, T>
     {
         @Override
         public BPTreeNode createFromBlock(Block block, BlockType bType)

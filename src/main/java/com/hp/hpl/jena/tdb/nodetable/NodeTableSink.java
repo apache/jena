@@ -51,12 +51,7 @@ public class NodeTableSink implements NodeTable
     }
     
     @Override
-    public void sync() { sync(true) ; } 
-    
-    @Override
-    public void sync(boolean force)
-    {}
-
+    public void sync() { } 
 }
 
 /*

@@ -13,14 +13,15 @@ import static com.hp.hpl.jena.tdb.index.ext.HashBucket.TRIE;
 
 import java.nio.ByteBuffer;
 
-import com.hp.hpl.jena.tdb.base.block.BlockConverter;
+import com.hp.hpl.jena.tdb.base.block.BlockConverter ;
+import com.hp.hpl.jena.tdb.base.block.PageBlock;
 import com.hp.hpl.jena.tdb.base.block.BlockMgr;
 import com.hp.hpl.jena.tdb.base.block.BlockType;
 import com.hp.hpl.jena.tdb.base.record.RecordException;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 
 
-public class HashBucketMgr extends BlockConverter<HashBucket>
+public class HashBucketMgr extends PageBlock<HashBucket>
 {
     public HashBucketMgr(RecordFactory factory, BlockMgr blockMgr)
     {
@@ -47,7 +48,7 @@ public class HashBucketMgr extends BlockConverter<HashBucket>
         return bucket ;
     }
     
-    private static class Block2HashBucketMgr implements Converter<HashBucket>
+    private static class Block2HashBucketMgr implements BlockConverter<HashBucket, T>
     {
         private RecordFactory factory ;
         private HashBucketMgr pageMgr ;
