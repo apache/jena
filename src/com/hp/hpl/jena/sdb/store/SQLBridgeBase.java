@@ -187,7 +187,7 @@ public abstract class SQLBridgeBase implements SQLBridge
         }
 
         // Asynchronous request to cancel.  ARQ 2.8.8 and later.
-        //@Override
+        @Override
         protected void requestCancel()
         {}
         
