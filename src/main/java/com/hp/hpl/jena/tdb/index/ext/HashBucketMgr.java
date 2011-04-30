@@ -13,6 +13,7 @@ import static com.hp.hpl.jena.tdb.index.ext.HashBucket.TRIE;
 
 import java.nio.ByteBuffer;
 
+import com.hp.hpl.jena.tdb.base.block.Block ;
 import com.hp.hpl.jena.tdb.base.block.BlockConverter ;
 import com.hp.hpl.jena.tdb.base.block.PageBlock;
 import com.hp.hpl.jena.tdb.base.block.BlockMgr;
@@ -30,10 +31,9 @@ public class HashBucketMgr extends PageBlock<HashBucket>
         super.setConverter(conv) ;
     }
 
-    public HashBucket create(int id, int hash, int hashBitLen)
+    public HashBucket create(int hash, int hashBitLen)
     {
-        HashBucket bucket = super.create(id, BlockType.RECORD_BLOCK) ;
-        bucket.setId(id) ;
+        HashBucket bucket = super.create(BlockType.RECORD_BLOCK) ;
         bucket.setTrieValue(hash) ;
         bucket.setTrieLength(hashBitLen) ;
         return bucket ;
@@ -48,7 +48,7 @@ public class HashBucketMgr extends PageBlock<HashBucket>
         return bucket ;
     }
     
-    private static class Block2HashBucketMgr implements BlockConverter<HashBucket, T>
+    private static class Block2HashBucketMgr implements BlockConverter<HashBucket>
     {
         private RecordFactory factory ;
         private HashBucketMgr pageMgr ;
@@ -60,43 +60,45 @@ public class HashBucketMgr extends PageBlock<HashBucket>
         }
         
         @Override
-        public HashBucket createFromByteBuffer(ByteBuffer bb, BlockType blkType)
+        public HashBucket createFromBlock(Block block, BlockType blkType)
         {
             // No need to additionally sync - this is a triggered by write operations so only one writer.
             if ( blkType != BlockType.RECORD_BLOCK )
                 throw new RecordException("Not RECORD_BLOCK: "+blkType) ;
             // Initially empty
-            HashBucket bucket = new HashBucket(NO_ID, -1, -1, bb, factory, pageMgr, 0) ;
+            HashBucket bucket = new HashBucket(NO_ID, -1, -1, block, factory, pageMgr, 0) ;
             return bucket ;
         }
 
         @Override
-        public HashBucket fromByteBuffer(ByteBuffer byteBuffer)
+        public HashBucket fromBlock(Block block)
         {
-            synchronized (byteBuffer)
+            synchronized (block)
             {
                 // Be safe - one reader only.
                 // But it is likely that the caller needs to also
                 // perform internal updates so syncrhoized on
                 // the bytebuffer here is not enough.
+                ByteBuffer byteBuffer = block.getByteBuffer() ;
                 int count = byteBuffer.getInt(COUNT) ;
                 int hash = byteBuffer.getInt(TRIE) ;
                 int hashLen = byteBuffer.getInt(BITLEN) ;
-                HashBucket bucket = new HashBucket(NO_ID, hash, hashLen, byteBuffer, factory, pageMgr, count) ;
+                HashBucket bucket = new HashBucket(NO_ID, hash, hashLen, block, factory, pageMgr, count) ;
                 return bucket ;
             }
         }
 
         @Override
-        public ByteBuffer toBlock(HashBucket bucket)
+        public Block toBlock(HashBucket bucket)
         {
             // No need to additionally sync - this is a triggered by write operations so only one writer.
             int count = bucket.getRecordBuffer().size() ;
             bucket.setCount(count) ;
-            bucket.getBackingByteBuffer().putInt(COUNT, bucket.getCount()) ;
-            bucket.getBackingByteBuffer().putInt(TRIE,  bucket.getTrieValue()) ;
-            bucket.getBackingByteBuffer().putInt(BITLEN,  bucket.getTrieBitLen()) ;
-            return bucket.getBackingByteBuffer() ;
+            ByteBuffer bb = bucket.getBackingBlock().getByteBuffer() ;
+            bb.putInt(COUNT, bucket.getCount()) ;
+            bb.putInt(TRIE,  bucket.getTrieValue()) ;
+            bb.putInt(BITLEN,  bucket.getTrieBitLen()) ;
+            return bucket.getBackingBlock() ;
         }
     }
 }

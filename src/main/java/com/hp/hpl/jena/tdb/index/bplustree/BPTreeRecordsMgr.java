@@ -46,9 +46,9 @@ final public class BPTreeRecordsMgr extends BPTreePageMgr
     
     public boolean valid(int id)    { return rBuffPageMgr.valid(id) ; }
     
-    public BPTreeRecords create(int id)
+    public BPTreeRecords create()
     {
-        RecordBufferPage rbp = rBuffPageMgr.create(id) ;
+        RecordBufferPage rbp = rBuffPageMgr.create() ;
         BPTreeRecords bRec = new BPTreeRecords(bpTree, rbp) ;
         return bRec ;
     }

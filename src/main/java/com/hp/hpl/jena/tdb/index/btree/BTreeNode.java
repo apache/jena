@@ -6,27 +6,30 @@
 
 package com.hp.hpl.jena.tdb.index.btree;
 
-import static com.hp.hpl.jena.tdb.base.record.Record.compareByKey;
-import static com.hp.hpl.jena.tdb.base.record.Record.keyGE;
-import static com.hp.hpl.jena.tdb.index.btree.BTreeParams.CheckingNode;
-import static com.hp.hpl.jena.tdb.index.btree.BTreeParams.DumpTree;
-import static com.hp.hpl.jena.tdb.index.btree.BTreeParams.Logging;
-import static java.lang.String.format;
+import static com.hp.hpl.jena.tdb.base.record.Record.compareByKey ;
+import static com.hp.hpl.jena.tdb.base.record.Record.keyGE ;
+import static com.hp.hpl.jena.tdb.index.btree.BTreeParams.CheckingNode ;
+import static com.hp.hpl.jena.tdb.index.btree.BTreeParams.DumpTree ;
+import static com.hp.hpl.jena.tdb.index.btree.BTreeParams.Logging ;
+import static java.lang.String.format ;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
-import java.nio.ByteBuffer;
-import java.util.Iterator;
+import java.io.ByteArrayOutputStream ;
+import java.io.PrintStream ;
+import java.util.Iterator ;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.openjena.atlas.io.IndentedWriter ;
+import org.openjena.atlas.lib.NotImplemented ;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
 
-import com.hp.hpl.jena.tdb.base.buffer.PtrBuffer;
-import com.hp.hpl.jena.tdb.base.buffer.RecordBuffer;
-import com.hp.hpl.jena.tdb.base.record.Record;
-import com.hp.hpl.jena.tdb.sys.SystemTDB;
+import com.hp.hpl.jena.tdb.base.block.Block ;
+import com.hp.hpl.jena.tdb.base.buffer.PtrBuffer ;
+import com.hp.hpl.jena.tdb.base.buffer.RecordBuffer ;
+import com.hp.hpl.jena.tdb.base.page.PageBase ;
+import com.hp.hpl.jena.tdb.base.record.Record ;
+import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
-public class BTreeNode
+public class BTreeNode extends PageBase 
 {
     private static Logger log = LoggerFactory.getLogger(BTreeNode.class) ;
  
@@ -43,11 +46,10 @@ public class BTreeNode
     BTree bTree ;
     BTreeParams bTreeParams ;
     BTreePageMgr pageMgr ;
-    ByteBuffer byteBuffer ;
+    final int id ;
     
     boolean isLeaf ; 
     int count ;             // # records in use : ==records.size() : ptrs.size() is 1 more
-    int id ; 
     int parent ;            // Need to consider splitRoot - let the root id change?
     
     RecordBuffer records ;
@@ -95,16 +97,15 @@ public class BTreeNode
         return n ;
     }
     
-    BTreeNode(BTree bTree, int id, ByteBuffer bb)
+    BTreeNode(BTree bTree, int id, Block block)
     {
-        this.id = id ;
+        super(block) ;
         if ( bTree == null )
             System.err.println("NULL btree") ;
-        
+        this.id = getId() ;
         this.bTree = bTree ;
         this.bTreeParams = bTree.getParams() ;
         this.pageMgr = bTree.getPageMgr() ;
-        this.byteBuffer = bb ;
         this.count = -1 ;
     }
     
@@ -114,19 +115,14 @@ public class BTreeNode
         return pageMgr.get(ptr, id) ;
     }
     
-    public final int getCount() { return count ; } 
-    
-    /** Return the nodes id */ 
-    public int getId()      { return id ; }
-    
-    /** Return the nodes id */ 
-    public ByteBuffer getByteBuffer()
-    {
-//        if ( CheckingNode )
-//            checkNodeDeep() ;
-        return byteBuffer ;
-    }
-    
+//    /** Return the nodes id */ 
+//    public ByteBuffer getByteBuffer()
+//    {
+////        if ( CheckingNode )
+////            checkNodeDeep() ;
+//        return byteBuffer ;
+//    }
+//    
     // ---------- Public calls.
     // None of these are called recursively.
 
@@ -135,11 +131,13 @@ public class BTreeNode
     {
         if ( CheckingNode )
             internalCheckNodeDeep() ;
-        if ( id != 0 )
+        if ( getId() != 0 )
             throw new BTreeException("Search not starting from the root: "+this) ;
         return _search(rec) ;
     }
 
+    final int getCount() { return count ; }
+    
     static final boolean DUP_CHECK = false;
     /** Insert a record - return existing value if any, else null */
     public Record insert(Record record)
@@ -629,7 +627,7 @@ public class BTreeNode
         count = n.count ;
         
         pageMgr.put(this) ;
-        pageMgr.release(n.id) ;
+        pageMgr.release(n.getBackingBlock()) ;
         
         if ( logging() )
             log.debug(format("reduceRoot << %s", this)) ;
@@ -964,8 +962,8 @@ public class BTreeNode
         ptrs.set(dividingSlot, n.id) ;
 
         // Release old nodes
-        pageMgr.release(left.id) ;
-        pageMgr.release(right.id) ;
+        pageMgr.release(left.getBackingBlock()) ;
+        pageMgr.release(right.getBackingBlock()) ;
         
         if ( CheckingNode && findSlot(medianRec) >= 0 )
             error("Can still find record in parent of merge blocks") ;
@@ -1272,6 +1270,12 @@ public class BTreeNode
         return r.toString() ;
     }
     
+    @Override
+    public void output(IndentedWriter out)
+    {
+        throw new NotImplemented() ;
+    }
+
     public void dump()
     {
         dump(System.out, 0) ;

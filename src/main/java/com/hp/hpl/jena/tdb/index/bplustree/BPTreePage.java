@@ -72,6 +72,12 @@ abstract public class BPTreePage implements Page
     /**  Test whether this page is of minimum size (removing a record would violate the packing limits) - used in "delete" */
     abstract boolean isMinSize() ;
     
+    abstract int getCount() ;
+    
+    abstract void setCount(int count) ;
+  
+    abstract public int getMaxSize() ;
+    
     /**  Test whether this page has any keys */
     abstract boolean hasAnyKeys() ;
 

@@ -294,10 +294,6 @@ public final class BPTreeNode extends BPTreePage
     @Override
     public int getId()                      { return id ; }
 
-    @Override
-    // [TxTDB:PATCH-UP]
-    public void setId(int id)               { this.id = id ; }
-
     public void setIsLeaf(boolean isLeaf)   { this.isLeaf = isLeaf ; }
 
     public boolean isLeaf()                 { return this.isLeaf ; }

@@ -47,13 +47,9 @@ public final class BPTreeNodeMgr extends BPTreePageMgr
         if ( block.getId() != 0 )
             // [TxTDB:PATCH-UP]
             throw new TDBException("Root blocks must be at position zero") ;
+        // Empty data block.
         // [TxTDB:PATCH-UP]
         BPTreePage page = bpTree.getRecordsMgr().create() ;
-        
-        // ----
-        
-        int recId = bpTree.getRecordsMgr().allocateId() ;
-        BPTreePage page = bpTree.getRecordsMgr().create(recId) ;
         page.put();
         
         BPTreeNode n = createNode(BPlusTreeParams.RootParent) ;
@@ -78,7 +74,6 @@ public final class BPTreeNodeMgr extends BPTreePageMgr
         //bb.clear();
         Block block = blockMgr.allocate(null, -1) ;
         BPTreeNode n = converter.createFromBlock(block, BPTREE_BRANCH) ;
-        n.setId(block.getId()) ;
         n.isLeaf = false ;
         n.parent = parent ;
         return n ;
@@ -98,7 +93,6 @@ public final class BPTreeNodeMgr extends BPTreePageMgr
 //        BPTreeNode n = converter.fromByteBuffer(bb) ;
         Block block = blockMgr.getRead(id) ;
         BPTreeNode n = converter.fromBlock(block) ;
-        n.setId(id) ;
         n.parent = parent ;
         return n ;
     }
@@ -141,7 +135,7 @@ public final class BPTreeNodeMgr extends BPTreePageMgr
     @Override
     public void finishUpdate()      { blockMgr.finishUpdate() ; }
     
-    private class Block2BPTreeNode implements BlockConverter<BPTreeNode, T>
+    private class Block2BPTreeNode implements BlockConverter<BPTreeNode>
     {
         @Override
         public BPTreeNode createFromBlock(Block block, BlockType bType)
@@ -238,10 +232,9 @@ public final class BPTreeNodeMgr extends BPTreePageMgr
         // Allocate space for record, key and value, despite slight over allocation.
         int recBuffLen = params.MaxRec * params.getRecordLength() ;
         
-        // Should be: key space only.
+        // [Issue:FREC] Should be: key space only.
         // int recBuffLen = params.MaxRec * params.getKeyLength() ;
 
-        n.setId(-1) ;
         n.parent = -2 ;
         n.setCount(count) ;
         n.isLeaf = leaf ; 
@@ -290,7 +283,6 @@ public final class BPTreeNodeMgr extends BPTreePageMgr
         BPTreeNodeMgr.formatBPTreeNode(n, n.bpTree, n.getBackingBlock(), asLeaf, 0) ;
         // Tweak for the root-specials.  The node is not consistent yet.
         // Has one dangling pointer.
-        n.setId(0) ;
         n.parent = BPlusTreeParams.RootParent ;
     }
     

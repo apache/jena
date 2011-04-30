@@ -73,19 +73,16 @@ public class RecordBufferPageBase extends PageBase //implements Page
         return recBuff ;
     }
     
-    @Override
     public final int getCount()
     {
         return recBuff.size() ;
     }
 
-    @Override
     public final int getMaxSize()
     {
         return recBuff.maxSize() ;
     }
 
-    @Override
     public void setCount(int count)
     { recBuff.setSize(count) ; }
 

@@ -11,6 +11,7 @@ import static com.hp.hpl.jena.tdb.base.block.BlockType.RECORD_BLOCK;
 
 import java.nio.ByteBuffer;
 
+import com.hp.hpl.jena.tdb.base.block.Block ;
 import com.hp.hpl.jena.tdb.base.block.BlockConverter ;
 import com.hp.hpl.jena.tdb.base.block.BlockMgr;
 import com.hp.hpl.jena.tdb.base.block.BlockType;
@@ -45,12 +46,10 @@ final class BTreePageMgr implements Session
     /** Allocate space. */ 
     public BTreeNode create(int parent, boolean makeLeaf)
     { 
-        int id = blockMgr.allocateId() ;
-        ByteBuffer bb = blockMgr.allocateBuffer(id) ;
-
+        // [TxTDB:PATCH-UP]
         BlockType bType = (makeLeaf ? RECORD_BLOCK : BTREE_NODE ) ;
-        BTreeNode n = converter.createFromByteBuffer(bb, bType) ;
-        n.id = id ;
+        Block block = blockMgr.allocate(bType, blockMgr.blockSize()) ;
+        BTreeNode n = converter.createFromBlock(block, bType) ;
         n.parent = parent ;
         return n ;
     }
@@ -64,21 +63,20 @@ final class BTreePageMgr implements Session
     /** Fetch a block */
     public BTreeNode get(int id, int parent)
     {
-        ByteBuffer bb = blockMgr.get(id) ;
-        BTreeNode n = converter.fromByteBuffer(bb) ;
-        n.id = id ;
+        // [TxTDB:PATCH-UP]
+        Block block = blockMgr.getWrite(id) ;
+        BTreeNode n = converter.fromBlock(block) ;
         n.parent = parent ;
         return n ;
     }
 
     public void put(BTreeNode node)
     {
-        // ByteBuffer bb = node.getByteBuffer() ;
-        ByteBuffer bb = converter.toBlock(node) ;
-        blockMgr.put(node.getId(), bb) ;
+        Block b = converter.toBlock(node) ;
+        blockMgr.put(b) ;
     }
 
-    public void release(int id)     { blockMgr.freeBlock(id) ; }
+    public void release(Block block)     { blockMgr.freeBlock(block) ; }
     
     public boolean valid(int id)    { return blockMgr.valid(id) ; }
     
@@ -111,40 +109,40 @@ final class BTreePageMgr implements Session
     
     // Using a BlockConverter interally.
     
-    private class Block2BTreeNode implements BlockConverter<BTreeNode, T>
+    private class Block2BTreeNode implements BlockConverter<BTreeNode>
     {
         @Override
-        public BTreeNode createFromByteBuffer(ByteBuffer bb, BlockType bType)
+        public BTreeNode createFromBlock(Block block, BlockType bType)
         { 
-            return overlay(btree, bb, bType==RECORD_BLOCK, 0) ;
+            return overlay(btree, block, bType==RECORD_BLOCK, 0) ;
         }
 
         @Override
-        public BTreeNode fromByteBuffer(ByteBuffer byteBuffer)
+        public BTreeNode fromBlock(Block block)
         {
-            synchronized (byteBuffer)
+            synchronized (block)
             {
                 // Must call from a context that is single threaded for reading.
-                int x = byteBuffer.getInt(0) ;
+                int x = block.getByteBuffer().getInt(0) ;
                 BlockType type = getType(x) ;
 
                 if ( type != BlockType.BTREE_NODE && type != BlockType.RECORD_BLOCK )
                     throw new BTreeException("Wrong block type: "+type) ; 
                 int count = decCount(x) ;
-                return overlay(btree, byteBuffer, (type==BlockType.RECORD_BLOCK), count) ;
+                return overlay(btree, block, (type==BlockType.RECORD_BLOCK), count) ;
             }
         }
 
         @Override
-        public ByteBuffer toBlock(BTreeNode node)
+        public Block toBlock(BTreeNode node)
         {
             // It's manipulated in-place so no conversion needed, 
             // Just the count needs to be fixed up. 
-            ByteBuffer bb = node.getByteBuffer() ;
+            Block block = node.getBackingBlock() ;
             BlockType bType = (node.isLeaf ? RECORD_BLOCK : BTREE_NODE ) ;
             int c = encCount(bType, node.count) ;
-            bb.putInt(0, c) ;
-            return bb ;
+            block.getByteBuffer().putInt(0, c) ;
+            return block ;
         }
     }
     
@@ -194,16 +192,16 @@ final class BTreePageMgr implements Session
      *    X- :        Pointers: btree*MaxPtr*ptr length 
      */
     // Produce a BTreeNode from a ByteBuffer
-    private static BTreeNode overlay(BTree bTree, ByteBuffer byteBuffer, boolean asLeaf, int count)
+    private static BTreeNode overlay(BTree bTree, Block block, boolean asLeaf, int count)
     {
 //        if ( byteBuffer.order() != Const.NetworkOrder )
 //            throw new BTreeException("ByteBuffer in wrong order") ;
 
         // Fix up the id later.
-        BTreeNode n = new BTreeNode(bTree, -1, byteBuffer) ;
+        BTreeNode n = new BTreeNode(bTree, -1, block) ;
         // The count is zero at the root only.
         // When the root is zero, it's a leaf.
-        formatBTreeNode(n, bTree, byteBuffer, asLeaf, count) ; 
+        formatBTreeNode(n, bTree, block.getByteBuffer(), asLeaf, count) ; 
         return n ;
     }
         
@@ -234,7 +232,6 @@ final class BTreePageMgr implements Session
 //      throw new BTreeException(format("Short byte block: expected=%d, actual=%d", x, n.byteBuffer.capacity())) ;
 //      }
 
-        n.id = -1 ;
         n.parent = -2 ;
         n.count = count ;
         n.isLeaf = leaf ; 
@@ -258,9 +255,9 @@ final class BTreePageMgr implements Session
         else    // Count > 0
             numPtrs = n.count+1 ;
 
-        n.byteBuffer.position(rStart) ;
-        n.byteBuffer.limit(rStart+recBuffLen) ;
-        ByteBuffer bbr = n.byteBuffer.slice() ;
+        byteBuffer.position(rStart) ;
+        byteBuffer.limit(rStart+recBuffLen) ;
+        ByteBuffer bbr = byteBuffer.slice() ;
         //bbr.limit(recBuffLen) ;
         n.records = new RecordBuffer(bbr, n.bTreeParams.recordFactory, n.count) ;
 
@@ -270,23 +267,22 @@ final class BTreePageMgr implements Session
 //        }
 //        else
         {
-            n.byteBuffer.position(pStart) ;
-            n.byteBuffer.limit(pStart+ptrBuffLen) ;
+            byteBuffer.position(pStart) ;
+            byteBuffer.limit(pStart+ptrBuffLen) ;
             
-            ByteBuffer bbi = n.byteBuffer.slice() ;
+            ByteBuffer bbi = byteBuffer.slice() ;
             //bbi.limit(ptrBuffLen) ;
             n.ptrs = new PtrBuffer(bbi, numPtrs) ;
         }
         
-        n.byteBuffer.rewind() ;
+        byteBuffer.rewind() ;
         return n ;
     }
     
     static final void formatForRoot(BTreeNode n, boolean asLeaf)
     {
-        BTreePageMgr.formatBTreeNode(n, n.bTree, n.getByteBuffer(), asLeaf, 0) ;
+        BTreePageMgr.formatBTreeNode(n, n.bTree, n.getBackingBlock().getByteBuffer(), asLeaf, 0) ;
         // Tweak for the root-specials.  The node is not consistent yet.
-        n.id = 0 ;
         n.parent = BTreeParams.RootParent ;
     }
     

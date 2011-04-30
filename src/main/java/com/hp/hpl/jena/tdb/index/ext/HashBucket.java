@@ -8,12 +8,11 @@ package com.hp.hpl.jena.tdb.index.ext;
 
 import static org.openjena.atlas.lib.Alg.decodeIndex ;
 
-import java.nio.ByteBuffer;
-
-import com.hp.hpl.jena.tdb.base.StorageException;
-import com.hp.hpl.jena.tdb.base.record.Record;
-import com.hp.hpl.jena.tdb.base.record.RecordFactory;
-import com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPageBase;
+import com.hp.hpl.jena.tdb.base.StorageException ;
+import com.hp.hpl.jena.tdb.base.block.Block ;
+import com.hp.hpl.jena.tdb.base.record.Record ;
+import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
+import com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPageBase ;
 
 /** A HashBucket is a record buffer, with space store it's hash value and the bit length */  
 
@@ -34,11 +33,11 @@ public final class HashBucket extends RecordBufferPageBase
     
     /** Create a bucket */
     public HashBucket(int id, int hashValue, int bucketBitLen,
-                      ByteBuffer byteBuffer,
+                      Block block,
                       RecordFactory factory, HashBucketMgr hashBucketPageMgr, 
                       int count)
     {
-        super(id, FIELD_LENGTH, byteBuffer, factory, count) ;
+        super(block, FIELD_LENGTH, factory, count) ;
         this.pageMgr = hashBucketPageMgr ;
         this.bucketBitLen = bucketBitLen ;
         this.trie = hashValue ;

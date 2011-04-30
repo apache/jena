@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -34,16 +35,11 @@ public interface Page extends Printable
     
 //    /** Return the ByteBuffer that covers the data area of this page - not the byte buffer of the block */   
 //    public ByteBuffer getBackingByteBuffer() ;
-
-    public int getCount() ; 
-    public void setCount(int count) ;
-    
-    public int getMaxSize() ;
-
 }
 
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

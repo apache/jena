@@ -121,12 +121,11 @@ public final class ExtHash implements Index
         }
         else
         {
-            int id = hashBucketMgr.allocateId() ;
-            if ( id != 0 )
-                throw new StorageException("ExtHash: First bucket is not id zero") ;
-            HashBucket hb = hashBucketMgr.create(id, 0, 0) ;
-            
-            dictionary.put(0, id) ;    
+//            int id = hashBucketMgr.allocateId() ;
+//            if ( id != 0 )
+//                throw new StorageException("ExtHash: First bucket is not id zero") ;
+            HashBucket hb = hashBucketMgr.create(0, 0) ;
+            dictionary.put(0, hb.getId()) ;    
             bitLen = 0 ;
             hashBucketMgr.put(hb) ;
         }
@@ -347,7 +346,6 @@ public final class ExtHash implements Index
     public long size()
     { return count() ; }
 
-    @Override
     /** Explicitly count the items in the hash table */
     public long count()
     {
@@ -551,9 +549,9 @@ public final class ExtHash implements Index
         if ( logging() ) 
             log("split: bucket hashes 0x%04X 0x%04X", hash1, hash2) ;
 
-        // New bucket
-        int id2 = hashBucketMgr.allocateId() ;
-        HashBucket bucket2 = hashBucketMgr.create(id2, hash2, bucket.getTrieBitLen()) ;
+//        // New bucket
+        HashBucket bucket2 = hashBucketMgr.create(hash2, bucket.getTrieBitLen()) ;
+        
         if ( logging() ) log("New bucket: %s", bucket2) ;
         //bucket2.setTrieValue(hash2) ;
         

@@ -6,22 +6,18 @@
 
 package com.hp.hpl.jena.tdb.index.bplustree;
 
-import static com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams.CheckingNode;
-import static java.lang.String.format;
+import static com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams.CheckingNode ;
+import static java.lang.String.format ;
 import static org.openjena.atlas.lib.Alg.decodeIndex ;
-
-import java.nio.ByteBuffer;
-
-
 import org.openjena.atlas.io.IndentedWriter ;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
 
-import com.hp.hpl.jena.tdb.base.StorageException;
-import com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPage;
-
-import com.hp.hpl.jena.tdb.base.buffer.RecordBuffer;
-import com.hp.hpl.jena.tdb.base.record.Record;
+import com.hp.hpl.jena.tdb.base.StorageException ;
+import com.hp.hpl.jena.tdb.base.block.Block ;
+import com.hp.hpl.jena.tdb.base.buffer.RecordBuffer ;
+import com.hp.hpl.jena.tdb.base.record.Record ;
+import com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPage ;
 
 /** B+Tree wrapper over a block of records in a RecordBufferPage.
  * This class adds no peristent state to a RecordBufferPage */
@@ -45,6 +41,12 @@ public final class BPTreeRecords extends BPTreePage
     
     /*TEMP*/ public RecordBuffer getRecordBuffer()
     { return rBuff ; }
+
+    @Override
+    public Block getBackingBlock()
+    {
+        return rBuffPage.getBackingBlock() ;
+    }
 
     int getLink()
     { return rBuffPage.getLink() ; }
@@ -97,7 +99,7 @@ public final class BPTreeRecords extends BPTreePage
     void put()   { bpTree.getRecordsMgr().put(this) ; } 
     
     @Override final
-    void release()   { bpTree.getRecordsMgr().release(getId()) ; } 
+    void release()   { bpTree.getRecordsMgr().release(getBackingBlock()) ; }
     
     @Override
     Record internalInsert(Record record)
@@ -177,10 +179,8 @@ public final class BPTreeRecords extends BPTreePage
 
     private BPTreeRecords create(int linkId)
     {
-        int id = bpTree.getRecordsMgr().allocateId() ;
-        BPTreeRecords newPage = bpTree.getRecordsMgr().create(id) ;
+        BPTreeRecords newPage = bpTree.getRecordsMgr().create() ;
         newPage.getRecordBufferPage().setLink(linkId) ;
-        newPage.getRecordBufferPage().setId(id) ;
         return newPage ;
     }
 
@@ -306,14 +306,14 @@ public final class BPTreeRecords extends BPTreePage
     public final void checkNodeDeep()
     { checkNode() ; }
 
-    @Override
-    public ByteBuffer getBackingByteBuffer()   { return rBuffPage.getBackingByteBuffer() ; }
+//    @Override
+//    public ByteBuffer getBackingByteBuffer()   { return rBuffPage.getBackingByteBuffer() ; }
 
     @Override
     public int getId()                  { return rBuffPage.getId() ; } 
 
-    @Override
-    public void setId(int id)           { rBuffPage.setId(id) ; }
+//    @Override
+//    public void setId(int id)           { rBuffPage.setId(id) ; }
 
     @Override
     public void output(IndentedWriter out)
