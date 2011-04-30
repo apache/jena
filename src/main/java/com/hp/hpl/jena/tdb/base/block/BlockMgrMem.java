@@ -58,6 +58,9 @@ public class BlockMgrMem extends BlockMgrBase
         if ( !freeBlocks.isEmpty() )
         {
             Block block = freeBlocks.removeFirst() ;
+            if ( blocks.get(block.getId()) != FreeBlock )
+                throw new BlockException("Inconsistent : free chain block is not marked a free") ;
+            blocks.set(block.getId(), block) ;
             block.reset(blockType) ;
             return block ;
         }
@@ -65,7 +68,7 @@ public class BlockMgrMem extends BlockMgrBase
         int x = blocks.size() ;
         ByteBuffer bb = ByteBuffer.allocate(blockSize) ;
         Block block = new Block(x, blockType, bb) ;
-        blocks.add(block) ;   
+        blocks.add(block) ;
         return block;
     }
 
@@ -111,6 +114,8 @@ public class BlockMgrMem extends BlockMgrBase
         check(block) ;
         if ( safeModeThisMgr )
             block = replicate(block) ;
+        if ( block == FreeBlock )
+            throw new BlockException("Attempt to put the free block") ;
         blocks.set(block.getId(), block) ;
     }
 
@@ -120,62 +125,6 @@ public class BlockMgrMem extends BlockMgrBase
         blocks.set(block.getId(), FreeBlock) ;
         freeBlocks.add(block) ;
     }
-
-//    @Override
-//    private int allocateId()
-//    {
-//        int idx = -1 ;
-//        
-//        
-//        if ( !freeBlocks.isEmpty() )
-//        {
-//            //idx = freeBlocks.removeFirst() ;
-//            idx = freeBlocks.peek().
-//            // Set this slot - remove a FreeBlock.
-//            blocks.set(idx, null) ;
-//            return idx ;
-//        }
-//            
-//        // Not found a free slot.
-//        int x = blocks.size() ;
-//        // "blocks.add(x, null)" because it extends the array
-//        blocks.add(null) ;   
-//        if ( log.isDebugEnabled() ) 
-//            log.debug(format("allocate() : %d", x)) ;
-//        return x;
-//    }
-//    
-//    @Override
-//    public ByteBuffer allocateBuffer(int id)
-//    {
-////    if ( getLog().isDebugEnabled() ) 
-////        getLog().debug(format("allocateBuffer(%d)", id)) ;
-//    
-//        ByteBuffer bb = ByteBuffer.allocate(blockSize) ;
-//        ByteBuffer bb2 = blocks.get(id) ;
-//        if ( bb2 != null )
-//            throw new BlockException("Block overwrite: "+id) ;
-//        blocks.set(id, bb) ;
-//        return bb ;
-//    }
-//    
-//    @Override
-//    public ByteBuffer get(int id)
-//    {
-//        check(id) ;
-//        ByteBuffer bb = blocks.get(id) ;
-//        if ( bb == null )
-//            throw new BlockException("Null block: "+id) ;
-//        if ( bb == FreeBlock )
-//            throw new BlockException("Free block: "+id) ;
-//
-//        if ( log.isDebugEnabled() ) 
-//            log.debug(format("get(%d) : %s", id, bb)) ;
-//        // Return a copy - helps check for failure-to-write back
-//        if ( safeModeThisMgr )
-//            bb = replicate(bb) ;
-//        return bb ;
-//    }
 
     @Override
     public boolean valid(int id)
@@ -188,31 +137,6 @@ public class BlockMgrMem extends BlockMgrBase
         Block blk = blocks.get(id) ; 
         return (blk != FreeBlock) && (blk != null) ;
     }
-
-//    @Override
-//    public void put(int id, ByteBuffer block)
-//    {
-//        check(id, block) ;
-//        if ( log.isDebugEnabled() ) 
-//            log.debug(format("put(%d,)", id)) ;
-//        if ( safeModeThisMgr )
-//            block = replicate(block) ;
-//        blocks.set(id, block) ;
-//    }
-//    
-//    @Override
-//    public void freeBlock(int id)
-//    { 
-//        check(id) ;
-//        if ( log.isDebugEnabled() ) 
-//            log.debug(format("release(%d)", id)) ;
-//        if (isFree(id) )
-//            throw new BlockException("Already free: "+id) ;
-//        
-//        blocks.set(id, FreeBlock) ;
-//        //freeBlocks.addLast(id) ;      // Java6
-//        freeBlocks.push(id) ;
-//    }
 
     private boolean isFree(int id)
     {
@@ -265,7 +189,10 @@ public class BlockMgrMem extends BlockMgrBase
         if ( id < 0 || id >= blocks.size() )
             throw new BlockException("BlockMgrMem: Bounds exception: "+id) ;
         if ( isFree(id) )
+        {
+            isFree(id) ;
             throw new BlockException("BlockMgrMem: Block is the free block: "+id) ;
+        }
     }
 
     private void check(ByteBuffer bb)
