@@ -58,7 +58,12 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
     @Override
     public Block allocate(BlockType blockType, int blockSize)
     {
-        return blockMgr.allocate(blockType, blockSize) ;
+        checkUpdate("allocate") ;
+        Block block = blockMgr.allocate(blockType, blockSize) ;
+        Integer id = block.getId() ;
+        activeWriteBlocks.add(id) ;
+        getWriteIds.add(id) ;
+        return block ;
     }
 
     @Override
@@ -130,7 +135,7 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
             if ( getWriteIds.contains(id) )
                 log.error("Multiple attempts to return write block "+id) ;
             else
-                log.error("put("+id+") but no getWrite()") ;
+                log.error("put("+id+") but no active write block()") ;
         }
         activeWriteBlocks.remove(id) ;
         putIds.add(id) ;

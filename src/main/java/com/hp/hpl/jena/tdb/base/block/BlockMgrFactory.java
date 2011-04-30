@@ -28,7 +28,7 @@ public class BlockMgrFactory
     {
         BlockMgr blockMgr = new BlockMgrMem(blockSize) ;
         // Small cache - testing.
-        blockMgr = new BlockMgrCache(indexName, 3, 3, blockMgr) ;
+        //blockMgr = new BlockMgrCache(indexName, 3, 3, blockMgr) ;
         return blockMgr ;
     }
     

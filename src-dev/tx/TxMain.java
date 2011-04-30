@@ -26,17 +26,20 @@ import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.sparql.util.QueryExecUtils ;
 import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory ;
+import com.hp.hpl.jena.tdb.base.block.BlockMgrLogger ;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrTracker ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.base.record.Record ;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
 import com.hp.hpl.jena.tdb.index.RangeIndex ;
 import com.hp.hpl.jena.tdb.index.RangeIndexLogger ;
+import com.hp.hpl.jena.tdb.index.bplustree.BPTreeNode ;
 import com.hp.hpl.jena.tdb.index.bplustree.BPlusTree ;
 import com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams ;
 import com.hp.hpl.jena.tdb.index.btree.BTree ;
 import com.hp.hpl.jena.tdb.index.btree.BTreeParams ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
+import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 import com.hp.hpl.jena.update.UpdateAction ;
 import com.hp.hpl.jena.update.UpdateFactory ;
 import com.hp.hpl.jena.update.UpdateRequest ;
@@ -62,9 +65,26 @@ public class TxMain
      */
     
     static { Log.setLog4j() ; }
-
+    static String divider = "----------" ;
+    static String nextDivider = null ;
+    static void divider()
+    {
+        if ( nextDivider != null )
+            System.out.println(nextDivider) ;
+        nextDivider = divider ;
+    }
+    
+    static void exit(int rc)
+    {
+        System.out.println("EXIT") ;
+        System.exit(rc) ;
+    }
+    
     public static void main(String... args)
     {
+        bpTreeTracking(args) ; exit(0) ;
+        
+        
         String dirname = "DBX" ;
         if ( false && FileOps.exists(dirname) )
             FileOps.clearDirectory(dirname) ;
@@ -123,6 +143,12 @@ public class TxMain
     
     public static void bpTreeTracking(String... args)
     {
+        Log.enable(BPTreeNode.class.getName(), "ALL") ;
+        SystemTDB.Checking = true ;
+        BPlusTreeParams.CheckingNode = true ;
+        BPlusTreeParams.CheckingTree = true ;
+        
+        BPlusTreeParams.Logging = true ;
         RecordFactory rf = new RecordFactory(8,8) ;
         
         RangeIndex rIndex ;
@@ -140,9 +166,13 @@ public class TxMain
             
             BlockMgr mgr1 = BlockMgrFactory.createMem("B1", blockSize) ;
             mgr1 = new BlockMgrTracker("BlkMgr1", mgr1) ;
+            mgr1 = new BlockMgrLogger("BlkMgr1", mgr1, true) ;
             
             BlockMgr mgr2 = BlockMgrFactory.createMem("B2", blockSize) ;
+
             mgr2 = new BlockMgrTracker("BlkMgr2", mgr2) ;
+            mgr2 = new BlockMgrLogger("BlkMgr2", mgr2, true) ;
+            
             BPlusTree bpt = BPlusTree.attach(params, mgr1, mgr2) ;
             rIndex = bpt ;
         }
@@ -162,11 +192,12 @@ public class TxMain
         final Logger log = LoggerFactory.getLogger(label) ;
         
         // Add logging.
-        rIndex = new RangeIndexLogger(rIndex, log) ;
+        //rIndex = new RangeIndexLogger(rIndex, log) ;
         
-        for ( int i = 0 ; i < 4 ; i++ ) 
+        for ( int i = 0 ; i < 10 ; i++ ) 
         {
             Record r = record(rf, i+0x100000L, i+0x90000000L) ;
+            ((BPlusTree)rIndex).dump() ;
             rIndex.add(r) ;
         }
 
