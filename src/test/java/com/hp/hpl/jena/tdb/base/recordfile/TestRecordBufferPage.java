@@ -6,16 +6,16 @@
 
 package com.hp.hpl.jena.tdb.base.recordfile;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.BeforeClass ;
+import org.junit.Test ;
 import org.openjena.atlas.junit.BaseTest ;
 
-import com.hp.hpl.jena.tdb.base.block.BlockMgr;
-import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory;
-import com.hp.hpl.jena.tdb.base.buffer.RecordBuffer;
-import com.hp.hpl.jena.tdb.base.record.Record;
-import com.hp.hpl.jena.tdb.base.record.RecordFactory;
-import com.hp.hpl.jena.tdb.sys.SystemTDB;
+import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
+import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory ;
+import com.hp.hpl.jena.tdb.base.buffer.RecordBuffer ;
+import com.hp.hpl.jena.tdb.base.record.Record ;
+import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
+import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 public class TestRecordBufferPage extends BaseTest
 {
@@ -34,8 +34,7 @@ public class TestRecordBufferPage extends BaseTest
     {
         BlockMgr blkMgr = makeBlockMgr() ;
         RecordBufferPageMgr rpm = new RecordBufferPageMgr(factory, blkMgr) ;
-        int x = rpm.allocateId() ;
-        RecordBufferPage page = rpm.create(x) ;
+        RecordBufferPage page = rpm.create() ;
         fill(page.getRecordBuffer(), 10, 20, 30) ;
         assertEquals(10, get(page, 0)) ;
         assertEquals(20, get(page, 1)) ;
@@ -46,12 +45,13 @@ public class TestRecordBufferPage extends BaseTest
     {
         BlockMgr blkMgr = makeBlockMgr() ;
         RecordBufferPageMgr rpm = new RecordBufferPageMgr(factory, blkMgr) ;
-        int x = rpm.allocateId() ;
+        int x = -99 ;
         {
-            RecordBufferPage page1 = rpm.create(x) ;
+            RecordBufferPage page1 = rpm.create() ;
             fill(page1.getRecordBuffer(), 10, 20, 30) ;
             // Now forget it.
             rpm.put(page1) ;
+            x = page1.getId() ;
             page1 = null ;
         }
         {

@@ -43,13 +43,12 @@ public final class BPTreeNodeMgr extends BPTreePageMgr
     { 
         // Create an empty records block.
         
-        Block block = bpTree.getRecordsMgr().getBlockMgr().allocate(BlockType.BPTREE_BRANCH, -1) ;
-        if ( block.getId() != 0 )
+        BPTreePage page = bpTree.getRecordsMgr().create() ;
+        if ( page.getId() != 0 )
             // [TxTDB:PATCH-UP]
             throw new TDBException("Root blocks must be at position zero") ;
         // Empty data block.
         // [TxTDB:PATCH-UP]
-        BPTreePage page = bpTree.getRecordsMgr().create() ;
         page.put();
         
         BPTreeNode n = createNode(BPlusTreeParams.RootParent) ;
@@ -91,7 +90,7 @@ public final class BPTreeNodeMgr extends BPTreePageMgr
      // [TxTDB:PATCH-UP]
 //        ByteBuffer bb = blockMgr.get(id) ;
 //        BPTreeNode n = converter.fromByteBuffer(bb) ;
-        Block block = blockMgr.getRead(id) ;
+        Block block = blockMgr.getWrite(id) ;
         BPTreeNode n = converter.fromBlock(block) ;
         n.parent = parent ;
         return n ;

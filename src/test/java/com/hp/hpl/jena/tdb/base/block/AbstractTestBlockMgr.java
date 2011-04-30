@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -30,57 +31,71 @@ public abstract class AbstractTestBlockMgr extends BaseTest
     
     @Test public void file01()
     {
-        int id = blockMgr.allocateId() ;
-        ByteBuffer bb = blockMgr.allocateBuffer(id) ;
+        Block block = blockMgr.allocate(BlockType.UNDEF, BlkSize) ;
+        ByteBuffer bb = block.getByteBuffer() ;
         fill(bb, (byte)1) ;
-        blockMgr.put(id, bb) ;
+        blockMgr.put(block) ;
     }
     
     @Test public void file02()
     {
-        int id = blockMgr.allocateId() ;
-        ByteBuffer bb = blockMgr.allocateBuffer(id) ;
+        Block block = blockMgr.allocate(BlockType.UNDEF, BlkSize) ;
+        ByteBuffer bb = block.getByteBuffer() ;
         fill(bb, (byte)1) ;
-        blockMgr.put(id, bb) ;
-        ByteBuffer bb2 = blockMgr.get(id) ;
+        int id = block.getId() ;
+        blockMgr.put(block) ;
+        
+        Block block2 = blockMgr.getRead(id) ;
+        ByteBuffer bb2 = block2.getByteBuffer() ;
         assertEquals(bb2.capacity(), BlkSize) ;
         assertEquals(bb2.get(0), (byte)1) ;
         assertEquals(bb2.get(BlkSize-1), (byte)1) ;
+        blockMgr.releaseRead(block2) ;
     }
     
     @Test public void file03()
     {
-        int id = blockMgr.allocateId() ;
-        ByteBuffer bb = blockMgr.allocateBuffer(id) ;
+        Block block = blockMgr.allocate(BlockType.UNDEF, BlkSize) ;
+        ByteBuffer bb = block.getByteBuffer() ;
         fill(bb, (byte)2) ;
-        blockMgr.put(id, bb) ;
-        ByteBuffer bb2 = blockMgr.get(id) ;
+        int id = block.getId() ;
+        blockMgr.put(block) ;
+
+        Block block2 = blockMgr.getRead(id) ;
+        ByteBuffer bb2 = block2.getByteBuffer() ;
         assertEquals(bb2.capacity(), BlkSize) ;
         assertEquals(bb2.get(0), (byte)2) ;
         assertEquals(bb2.get(BlkSize-1), (byte)2) ;
+        blockMgr.releaseRead(block2) ;
     }
 
-    // Move to abstract class
     @Test public void multiAccess01()
     {
-        int id1 = blockMgr.allocateId() ;
-        int id2 = blockMgr.allocateId() ;
-
-        ByteBuffer bb1 = blockMgr.allocateBuffer(id1) ;
-        ByteBuffer bb2 = blockMgr.allocateBuffer(id2) ;
-
+        Block block1 = blockMgr.allocate(BlockType.UNDEF, BlkSize) ;
+        Block block2 = blockMgr.allocate(BlockType.UNDEF, BlkSize) ;
+        int id1 = block1.getId() ;
+        int id2 = block2.getId() ;
+        
+        ByteBuffer bb1 = block1.getByteBuffer() ;
+        ByteBuffer bb2 = block2.getByteBuffer() ;
+        
         fill(bb1, (byte)1) ;
         fill(bb2, (byte)2) ;
-
-        blockMgr.put(id1, bb1) ;
-        blockMgr.put(id2, bb2) ;
-
-        ByteBuffer bb_1 = blockMgr.get(id1) ;
-        ByteBuffer bb_2 = blockMgr.get(id2) ;
+        
+        blockMgr.put(block1) ;
+        blockMgr.put(block2) ;
+        
+        Block block3 = blockMgr.getRead(id1) ;
+        Block block4 = blockMgr.getRead(id2) ;
+        
+        ByteBuffer bb_1 = block3.getByteBuffer() ;
+        ByteBuffer bb_2 = block4.getByteBuffer() ;
 
         contains(bb_1, (byte)1) ;
         contains(bb_2, (byte)2) ;
         
+        blockMgr.releaseRead(block3) ;
+        blockMgr.releaseRead(block4) ;
     }
     
     
@@ -95,6 +110,7 @@ public abstract class AbstractTestBlockMgr extends BaseTest
 
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

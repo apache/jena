@@ -115,6 +115,7 @@ public final class BPTreeNode extends BPTreePage
     {
         super(bpTree, bpTree.getNodeManager().getBlockMgr()) ;
         this.block = block ;
+        this.id = block.getId() ;
     }
     
     /** Get the page at slot idx - switch between B+Tree and records files */ 

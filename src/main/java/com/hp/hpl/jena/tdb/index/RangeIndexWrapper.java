@@ -72,6 +72,9 @@ public class RangeIndexWrapper implements RangeIndex
     public void close()
     { rIndex.close() ; }
 
+    public RangeIndex getWrapped()
+    { return rIndex ; }
+    
     @Override
     public RecordFactory getRecordFactory()
     { return rIndex.getRecordFactory() ; }

@@ -299,10 +299,10 @@ public class TestBPTreeRecords extends BaseTest
 
     private static BPTreeRecords make()
     {
-        int id = recordBufferPageMgr.allocateId() ;
-        RecordBufferPage page = recordBufferPageMgr.create(id) ;
+        RecordBufferPage page = recordBufferPageMgr.create() ;
         return new BPTreeRecords(bPlusTree, page) ;
     }
+    
     private static void fill(BPTreeRecords bpr)
     {
         RecordBuffer rb = bpr.getRecordBuffer() ;

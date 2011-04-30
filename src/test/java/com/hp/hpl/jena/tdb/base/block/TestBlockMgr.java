@@ -20,11 +20,13 @@ public class TestBlockMgr extends BaseTest
     @Test public void block1()
     {
         BlockMgr mgr = BlockMgrFactory.createMem("BPTRecord", 4) ;
-        int id = mgr.allocateId() ;
-        ByteBuffer bb = mgr.allocateBuffer(id) ;
+        Block block = mgr.allocate(BlockType.UNDEF, 4) ;
+        ByteBuffer bb = block.getByteBuffer() ;
         bb.putInt(0,1234) ;
-        mgr.put(id, bb) ;
-        ByteBuffer bb2 = mgr.get(id) ;
+        mgr.put(block) ;
+        // -----
+        Block block2 = mgr.getRead(block.getId()) ;
+        ByteBuffer bb2 = block2.getByteBuffer() ;
         assertArrayEquals(bb.array(), bb2.array()) ;
     }
 }

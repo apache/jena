@@ -7,9 +7,11 @@ public class DevTx
     /*
      * 1 - everything a write block.
      *     This should then work for single app.
-     * 2 - Convert idnexes to differentiate and track read and write pages. 
-     * 
+     * 2 - Convert indexes to differentiate and track read and write pages. 
      */
+    
+    /* add freeblock wrapper ? */
+    
     
     /*
      * Layers:

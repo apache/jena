@@ -143,12 +143,14 @@ public class TxMain
     
     public static void bpTreeTracking(String... args)
     {
-        Log.enable(BPTreeNode.class.getName(), "ALL") ;
-        SystemTDB.Checking = true ;
-        BPlusTreeParams.CheckingNode = true ;
-        BPlusTreeParams.CheckingTree = true ;
-        
-        BPlusTreeParams.Logging = true ;
+        if ( true )
+        {
+            Log.enable(BPTreeNode.class.getName(), "ALL") ;
+            SystemTDB.Checking = true ;
+            BPlusTreeParams.CheckingNode = true ;
+            BPlusTreeParams.CheckingTree = true ;
+            BPlusTreeParams.Logging = true ;
+        }
         RecordFactory rf = new RecordFactory(8,8) ;
         
         RangeIndex rIndex ;
@@ -165,8 +167,8 @@ public class TxMain
             System.out.println("Block size = "+blockSize) ;
             
             BlockMgr mgr1 = BlockMgrFactory.createMem("B1", blockSize) ;
-            mgr1 = new BlockMgrTracker("BlkMgr1", mgr1) ;
-            mgr1 = new BlockMgrLogger("BlkMgr1", mgr1, true) ;
+            //mgr1 = new BlockMgrTracker("BlkMgr1", mgr1) ;
+            //mgr1 = new BlockMgrLogger("BlkMgr1", mgr1, true) ;
             
             BlockMgr mgr2 = BlockMgrFactory.createMem("B2", blockSize) ;
 
@@ -189,15 +191,27 @@ public class TxMain
             rIndex = btree ;
         }
         
+        boolean b = rIndex.isEmpty() ;
+        
+        
         final Logger log = LoggerFactory.getLogger(label) ;
         
         // Add logging.
         //rIndex = new RangeIndexLogger(rIndex, log) ;
         
-        for ( int i = 0 ; i < 10 ; i++ ) 
+        for ( int i = 0 ; i < 4 ; i++ ) 
         {
+            //System.out.println("i = "+i) ;
+            if ( false )
+            {
+                RangeIndex rIdx = rIndex ;
+                if ( rIdx instanceof RangeIndexLogger )
+                    rIdx = ((RangeIndexLogger)rIdx).getWrapped() ;
+                if ( rIdx instanceof BPlusTree )
+                    ((BPlusTree)rIndex).dump() ;
+            }
+            
             Record r = record(rf, i+0x100000L, i+0x90000000L) ;
-            ((BPlusTree)rIndex).dump() ;
             rIndex.add(r) ;
         }
 

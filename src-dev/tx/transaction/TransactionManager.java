@@ -216,28 +216,25 @@ public class TransactionManager
             
             blocks.put(blk.getId(), blk) ;
             return blk ;
-            
-            
-            return blockMgr.allocate(blockType) ;
         }
 
-        @Override
-        public ByteBuffer allocateBuffer(int id)
-        {
-            //return blockMgr.allocateBuffer(id) ;
-        }
-     
         
         @Override
-        public ByteBuffer get(int id)
+        public Block getWrite(int id)
         {
-            ByteBuffer bb = blocks.get(id) ;
-            if ( bb != null )
-                return bb ;
+            // [TxTDB:PATCH-UP]
+            // Copies out of the underlying layer always.
+            {
+            Block block = blocks.get(id) ;
+            if ( block != null )
+                return block ;
+            }
+            
             // Until we track read and write gets, need to copy for safety
             // INEFFCIEINT
-            bb = super.get(id) ;
             
+            Block block = super.getRead(id) ;
+            ByteBuffer bb = block.getByteBuffer() ;
             // This copies contents and resizes ByteBuffer - seems to break for memory use.
             //bb = ByteBufferLib.duplicate(bb) ;
             
@@ -249,23 +246,24 @@ public class TransactionManager
             
             bb2.position(0) ;
             bb2.limit(bb2.capacity()) ;
-            blocks.put(id, bb2) ;
-            return bb2 ;
+            Block block2 = new Block(id, block.getType(), bb2) ;
+            blocks.put(id, block2) ;
+            return block2 ;
         }
 
         @Override
-        public void put(int id, ByteBuffer block)
+        public void put(Block block)
         {
-            ByteBuffer bb = blocks.get(id) ;
+            Block bb = blocks.get(block.getId()) ;
             if ( bb != block )
                 System.err.println("Odd!") ;
-            blocks.put(id, block) ;
+            blocks.put(block.getId(), block) ;
         }
 
         @Override
-        public void freeBlock(int id)
+        public void freeBlock(Block block)
         {
-            blocks.remove(id) ;
+            blocks.remove(block.getId()) ;
         }
     }
     
