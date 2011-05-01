@@ -34,7 +34,7 @@ import com.hp.hpl.jena.tdb.sys.TS_Sys ;
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
     // TDB
-    TC_Base.class         // Test Collection.    
+    TC_Base.class    
     , TS_LibTDB.class
     , TS_NodeTable.class
     , TS_Index.class

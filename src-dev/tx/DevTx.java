@@ -3,6 +3,7 @@ package tx;
 public class DevTx
 {
     // See all : // [TxTDB:PATCH-UP]
+    // Memory mapped files.
     
     /*
      * 1 - everything a write block.

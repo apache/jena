@@ -21,7 +21,6 @@ public class BlockMgrDirect extends BlockMgrFile
     // [TxTDB:PATCH-UP]
     // BlockMgrFile/BlockMgrDirect/BlockMgrMapped need reworking
     
-    
     // Consider: having one file per "segment", not one large file.
     private static Logger log = LoggerFactory.getLogger(BlockMgrDirect.class) ;
     
@@ -62,7 +61,6 @@ public class BlockMgrDirect extends BlockMgrFile
         ByteBuffer bb = ByteBuffer.allocate(blockSize) ;
         readByteBuffer(id, bb) ;
         Block block = new Block(id, BlockType.UNDEF, bb) ;
-        readByteBuffer(id, bb) ;
         return block ;
     }
 
