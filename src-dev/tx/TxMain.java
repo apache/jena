@@ -82,7 +82,7 @@ public class TxMain
     
     public static void main(String... args)
     {
-        bpTreeTracking(args) ; exit(0) ;
+        //bpTreeTracking(args) ; exit(0) ;
         
         
         String dirname = "DBX" ;
@@ -90,8 +90,8 @@ public class TxMain
             FileOps.clearDirectory(dirname) ;
         TransactionManager txnMgr = new TransactionManager() ;
         
-        Location location = Location.mem() ;
-        //Location location = new Location(dirname) ;
+        //Location location = Location.mem() ;
+        Location location = new Location(dirname) ;
         
         DatasetGraphTDB dsg = txnMgr.build(location) ;
         //dsg.add(SSE.parseQuad("(_ <s> <p> 'o')")) ;
