@@ -32,8 +32,6 @@ public class BlockMgrDirect extends BlockMgrFile
     @Override
     public Block allocate(BlockType blockType)
     {
-//    if ( getLog().isDebugEnabled() ) 
-//        getLog().debug(format("allocateBuffer(%d)", id)) ;
         int id = allocateId() ;
         ByteBuffer bb = ByteBuffer.allocate(blockSize) ;
         Block block = new Block(id, blockType, bb) ;
@@ -118,22 +116,6 @@ public class BlockMgrDirect extends BlockMgrFile
         check(block.getId()) ;
         checkIfClosed() ;
     }
-    
-//    @Override
-//    public void finishUpdate()
-//    {}
-//
-//    @Override
-//    public void startUpdate()
-//    {}
-//
-//    @Override
-//    public void startRead()
-//    {}
-//
-//    @Override
-//    public void finishRead()
-//    {}
 
     @Override
     protected Logger getLog()
