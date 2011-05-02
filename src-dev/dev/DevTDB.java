@@ -43,7 +43,8 @@ public class DevTDB
     // On reading, suppress duplicates (adjacent). 
     
     // BPT
-    //  .truncate : release all blocks and create a new (empty) tree. 
+    //  .truncate : release all blocks and create a new (empty) tree.
+    // When spliting (esp records block) don't split symmetrically as incremental adding "common"
 
     // Abort long running query.
     // PrefixMapping = PrefixMap
