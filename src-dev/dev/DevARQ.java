@@ -3,6 +3,7 @@ package dev ;
 public class DevARQ
 {
     // Config assembler.
+    // In-memory query to use reordering. 
     
     // 18.
     
