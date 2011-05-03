@@ -4,6 +4,8 @@ package dev ;
 public class DevTDB
 {
     // New builder - does it work for memory?  Non-std block sizes?
+    // TDBFactory API clean up - make it possible to get the dataset for a model?
+    //   Model API operation?
     
     // Optimizer - named graph and union graph
     // Add ((TERM ANY ANY) 1), ((ANY ANY TERM) 1) to all stats files.?
