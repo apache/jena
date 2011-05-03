@@ -4,9 +4,12 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.base.block;
+package com.hp.hpl.jena.tdb.base.page;
 
-import com.hp.hpl.jena.tdb.base.page.Page ;
+import com.hp.hpl.jena.tdb.base.block.Block ;
+import com.hp.hpl.jena.tdb.base.block.BlockConverter ;
+import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
+import com.hp.hpl.jena.tdb.base.block.BlockType ;
 
 /** Engine that wraps from blocks to typed pages. */
 

@@ -24,6 +24,7 @@ import org.slf4j.LoggerFactory;
 final
 public class BlockMgrMapped extends BlockMgrFile
 {
+    // --> FileAccessMapped
     // [TxTDB:PATCH-UP]
     // BlockMgrFile/BlockMgrDirect/BlockMgrMapped need reworking
     // FileAccess over a simple read/write 

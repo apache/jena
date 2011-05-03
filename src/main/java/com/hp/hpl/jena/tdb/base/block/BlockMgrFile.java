@@ -25,6 +25,7 @@ import com.hp.hpl.jena.tdb.sys.SystemTDB;
 /** Abstract class for block managers over a file */
 public abstract class BlockMgrFile extends BlockMgrBase
 {
+    // --> FileAccessFile.
     // Would like multiple inheritiance to reuse FileBase
     private static Logger log = LoggerFactory.getLogger(BlockMgrFile.class) ;
     protected String filename ;

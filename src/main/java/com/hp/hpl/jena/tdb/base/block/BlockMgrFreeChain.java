@@ -31,7 +31,7 @@ public class BlockMgrFreeChain extends BlockMgrWrapper
         {
             Block block = freeBlocks.removeFirst() ;
             block.reset(blockType) ;
-            block.getByteBuffer().rewind() ;
+            block.getByteBuffer().position(0) ;
             return block ;
         }
         return super.allocate(blockType, blockSize) ;

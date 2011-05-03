@@ -15,9 +15,9 @@ import java.nio.ByteBuffer;
 
 import com.hp.hpl.jena.tdb.base.block.Block ;
 import com.hp.hpl.jena.tdb.base.block.BlockConverter ;
-import com.hp.hpl.jena.tdb.base.block.PageBlock;
 import com.hp.hpl.jena.tdb.base.block.BlockMgr;
 import com.hp.hpl.jena.tdb.base.block.BlockType;
+import com.hp.hpl.jena.tdb.base.page.PageBlock ;
 import com.hp.hpl.jena.tdb.base.record.RecordException;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 

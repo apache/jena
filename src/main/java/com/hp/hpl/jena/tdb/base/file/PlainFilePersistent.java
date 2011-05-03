@@ -6,15 +6,14 @@
 
 package com.hp.hpl.jena.tdb.base.file;
 
-import java.io.IOException;
-import java.io.RandomAccessFile;
-import java.nio.ByteBuffer;
-import java.nio.channels.FileChannel;
+import java.io.IOException ;
+import java.io.RandomAccessFile ;
+import java.nio.ByteBuffer ;
+import java.nio.channels.FileChannel ;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.hp.hpl.jena.tdb.base.block.BlockException;
+import org.openjena.atlas.io.IO ;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
 
 /** Single, unsegmented file with ByteBuffer */
 public class PlainFilePersistent extends PlainFile
@@ -49,7 +48,6 @@ public class PlainFilePersistent extends PlainFile
     
     protected PlainFilePersistent() 
     {
-        //For simulating subclasses.
         channel = null ;
         out = null ;
     }
@@ -58,36 +56,27 @@ public class PlainFilePersistent extends PlainFile
     @Override
     public void sync()
     { 
-        try
-        {
-            channel.force(false) ;
-        } catch (IOException ex)
-        { throw new FileException("force", ex) ; }
+        try { channel.force(true) ; } 
+        catch (IOException ex) { IO.exception(ex) ; }
     }
     
     @Override
     public void close()
     {
         try {
-            //sync() ;
-            //channel.close();
+            sync() ;
             out.close();        // Closes the channel.
             channel = null ;
             out = null ;
-        } catch (IOException ex)
-        { throw new BlockException("BlockMgrMapped.close", ex) ; }
+        } catch (IOException ex) { IO.exception(ex) ; }
 
     }
 
     @Override
     protected ByteBuffer allocateBuffer(long size)
     {
-        try {
-            return channel.map(FileChannel.MapMode.READ_WRITE, 0, size) ;
-        } catch (IOException ex)
-        {
-            throw new FileException("allocateBuffer", ex) ;
-        }
+        try { return channel.map(FileChannel.MapMode.READ_WRITE, 0, size) ; }
+        catch (IOException ex)  { IO.exception(ex) ; return null ; }
     }
 }
 

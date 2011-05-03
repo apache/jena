@@ -23,7 +23,7 @@ public class PlainFileMem extends PlainFile
         filesize = size ;
         ByteBuffer bb = ByteBuffer.allocate((int)size) ;
         // If copy-over
-        if ( false )
+        if ( true )
         {
             bb.position(0) ;
             bb.put(super.byteBuffer) ;

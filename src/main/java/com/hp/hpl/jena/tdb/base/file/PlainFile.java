@@ -11,11 +11,14 @@ import java.nio.ByteBuffer;
 import org.openjena.atlas.lib.Closeable ;
 import org.openjena.atlas.lib.Sync ;
 
+/** Single file, single ByteBuffer */
 public abstract class PlainFile implements Sync, Closeable
 {
     protected long filesize = -1 ;
     protected ByteBuffer byteBuffer = null ;
 
+    PlainFile() {}
+    
     public final ByteBuffer getByteBuffer()
     {
 //        if ( byteBuffer == null )
