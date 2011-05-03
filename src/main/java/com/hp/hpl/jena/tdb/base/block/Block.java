@@ -84,6 +84,12 @@ public final class Block
     {
         return type ;
     }
+    
+    @Override
+    public String toString()
+    {
+        return "Block: "+id+" : Length: "+byteBuffer.capacity() ;
+    }
 }
 
 /*

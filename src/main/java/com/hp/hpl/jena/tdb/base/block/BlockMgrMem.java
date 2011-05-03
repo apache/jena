@@ -10,13 +10,15 @@ package com.hp.hpl.jena.tdb.base.block;
 import static java.lang.String.format ;
 
 import java.nio.ByteBuffer ;
+import java.util.ArrayDeque ;
 import java.util.ArrayList ;
-import java.util.LinkedList ;
+import java.util.Deque ;
 import java.util.List ;
 
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
+import com.hp.hpl.jena.tdb.base.file.FileAccess ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 /** Block manager that simulates a disk in-memory - for testing, not written for efficiency.
@@ -26,19 +28,110 @@ import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 final   // Given the other inefficiencies, this is trivial!
 public class BlockMgrMem extends BlockMgrBase
 {
+    private boolean closed = false ;
     private static final boolean Checking = true ;
     private static Logger log = LoggerFactory.getLogger(BlockMgrMem.class) ;
-    private List<Block> blocks = new ArrayList<Block>() ;
     
-    // Chain of indexes of free blocks.
-    //private Deque<Integer> freeBlocks = new ArrayDeque<Integer>();    // Java6
+    //Splitting into a general BlockMgr-FileAccess adapter and a FileAccess object.
     
-    private LinkedList<Block> freeBlocks = new LinkedList<Block>();
     
-    private static Block FreeBlock = new Block(-1, BlockType.FREE, null) ;
+    //private static Block FreeBlock = new Block(-1, BlockType.FREE, null) ;
     // This controls whether blocks are copied in and out
     public static boolean SafeMode = true ;
-    private final boolean safeModeThisMgr ;                            
+    private final FileAccess file ;
+    
+    private static class FileAccessMem implements FileAccess
+    {
+        boolean fileClosed = false ;
+        private List<Block> blocks = new ArrayList<Block>() ;
+        private final boolean safeModeThisMgr ;
+        protected final int blockSize ;
+        
+        public FileAccessMem(int blockSize, boolean b)
+        {
+            this.blockSize = blockSize ;
+            safeModeThisMgr = b ;
+        }
+        
+        @Override
+        public Block allocate()
+        {
+            int x = blocks.size() ;
+            ByteBuffer bb = ByteBuffer.allocate(blockSize) ;
+            Block block = new Block(x, BlockType.UNDEF, bb) ;
+            blocks.add(block) ;
+            return block;
+        }
+
+        @Override
+        public Block read(int id)
+        {
+            check(id) ;
+            Block blk = blocks.get(id) ;
+            if ( safeModeThisMgr ) 
+                return replicate(blk) ;
+            else
+                return blk ;
+        }
+
+        @Override
+        public void write(Block block)
+        {
+            check(block) ;
+            if ( safeModeThisMgr )
+                block = replicate(block) ;
+            blocks.set(block.getId(), block) ;
+        }
+        
+        @Override
+        public boolean isEmpty()
+        {
+            return false ;
+        }
+
+        @Override
+        public boolean valid(int id)
+        {
+            return id >= 0 && id < blocks.size() ;
+        }
+
+        @Override
+        public void close()
+        {
+            fileClosed = true ;
+            //blocks = null ;
+        }
+        
+        @Override
+        public void sync()
+        {}
+        
+        private void check(Block block)
+        {
+            check(block.getId()) ;
+            check(block.getByteBuffer()) ;
+        }
+
+        private void check(int id)
+        {
+            if ( !Checking ) return ;
+            if ( id < 0 || id >= blocks.size() )
+                throw new BlockException("BlockMgrMem: Bounds exception: "+id) ;
+        }
+
+        private void check(ByteBuffer bb)
+        {
+            if ( !Checking ) return ;
+            if ( bb.capacity() != blockSize )
+                throw new BlockException(format("BlockMgrMem: Wrong size block.  Expected=%d : actual=%d", blockSize, bb.capacity())) ;
+            if ( bb.order() != SystemTDB.NetworkOrder )
+                throw new BlockException("BlockMgrMem: Wrong byte order") ;
+            
+        }
+    };
+    
+    // Chain of indexes of free blocks.
+    private Deque<Block> freeBlocks = new ArrayDeque<Block>();
     
     // Create via the BlockMgrFactory.
     BlockMgrMem(int blockSize)
@@ -49,7 +142,7 @@ public class BlockMgrMem extends BlockMgrBase
     BlockMgrMem(int blockSize, boolean safeMode)
     {
         super(blockSize) ;
-        safeModeThisMgr = safeMode ;
+        file = new FileAccessMem(blockSize, SafeMode) ;
     }
     
     @Override
@@ -58,24 +151,19 @@ public class BlockMgrMem extends BlockMgrBase
         if ( !freeBlocks.isEmpty() )
         {
             Block block = freeBlocks.removeFirst() ;
-            if ( blocks.get(block.getId()) != FreeBlock )
-                throw new BlockException("Inconsistent : free chain block is not marked a free") ;
-            blocks.set(block.getId(), block) ;
+//            if ( blocks.get(block.getId()) != FreeBlock )
+//                throw new BlockException("Inconsistent : free chain block is not marked a free") ;
             block.reset(blockType) ;
             return block ;
         }
         
-        int x = blocks.size() ;
-        ByteBuffer bb = ByteBuffer.allocate(blockSize) ;
-        Block block = new Block(x, blockType, bb) ;
-        blocks.add(block) ;
-        return block;
+        return file.allocate() ;
     }
 
     @Override
     public Block promote(Block block)
     {
-        return null ;
+        return block ;
     }
 
     @Override
@@ -92,82 +180,80 @@ public class BlockMgrMem extends BlockMgrBase
 
     private Block getBlock(int id)
     {
-        Block block = blocks.get(id) ;
-        if ( block == FreeBlock )
-            throw new BlockException("Attempt to get a free block: id = "+id) ;
-        if ( safeModeThisMgr )
-            block = replicate(block) ;
+        // Where is space allocated?
+        Block block = file.read(id) ;
         return block ;
     }
 
     @Override
     public void releaseRead(Block block)
-    { check(block) ; }
+    { 
+        //check(block) ;
+    }
 
     @Override
     public void releaseWrite(Block block)
-    { check(block) ; }
+    { 
+        //check(block) ;
+    }
 
     @Override
     public void put(Block block)
     {
-        check(block) ;
-        if ( safeModeThisMgr )
-            block = replicate(block) ;
-        if ( block == FreeBlock )
-            throw new BlockException("Attempt to put the free block") ;
-        blocks.set(block.getId(), block) ;
+        file.write(block) ;
     }
 
     @Override
     public void freeBlock(Block block)
     {
-        blocks.set(block.getId(), FreeBlock) ;
         freeBlocks.add(block) ;
+        // But do nothing about the file access layer.
     }
 
     @Override
     public boolean valid(int id)
     {
-        if ( id >= blocks.size() )
-            return false ;
-        if ( id < 0 )
-            return false ;
-
-        Block blk = blocks.get(id) ; 
-        return (blk != FreeBlock) && (blk != null) ;
+        if ( isFree(id) ) return false ;
+        return file.valid(id) ;
     }
 
     private boolean isFree(int id)
     {
-        return blocks.get(id) == FreeBlock ; 
+        return freeBlocks.contains(id) ; 
     }
     
     @Override
     public void sync()
-    { }
+    { file.sync() ; }
     
     @Override
-    public boolean isClosed() { return blocks == null ; }  
+    public boolean isClosed() { return closed ; }  
     
     @Override
     public void close()
     { 
-        blocks = null ;
-        freeBlocks = null ;
+        closed = true ;
+        file.close() ;
+        //freeBlocks = null ;
     }
     
     @Override
     public boolean isEmpty()
     {
-        return blocks.size() == 0 ;
+        return file.isEmpty() ;
     }
 
     private static Block replicate(Block srcBlock)
     {
-        ByteBuffer srcBytes = srcBlock.getByteBuffer() ;
-        ByteBuffer dstBytes = replicate(srcBytes) ;
-        return new Block(srcBlock.getId(), srcBlock.getType(), dstBytes) ; 
+        ByteBuffer dstBuffer = replicate(srcBlock.getByteBuffer()) ;
+        return new Block(srcBlock.getId(), srcBlock.getType(), dstBuffer) ;
+    }  
+
+    private static void replicate(Block srcBlock, Block dstBlock)
+    {
+        if ( ! srcBlock.getId().equals(dstBlock.getId()) )
+            throw new BlockException("Attempt to copy across blocks: "+srcBlock.getId()+" => "+dstBlock.getId()) ;
+        replicate(srcBlock.getByteBuffer(), dstBlock.getByteBuffer()) ;
     }  
 
     private static ByteBuffer replicate(ByteBuffer srcBlk)
@@ -177,33 +263,12 @@ public class BlockMgrMem extends BlockMgrBase
         return dstBlk ; 
     }  
     
-    private void check(Block block)
+    private static void replicate(ByteBuffer srcBlk, ByteBuffer dstBlk)
     {
-        check(block.getId()) ;
-        check(block.getByteBuffer()) ;
-    }
-    
-    private void check(int id)
-    {
-        if ( !Checking ) return ;
-        if ( id < 0 || id >= blocks.size() )
-            throw new BlockException("BlockMgrMem: Bounds exception: "+id) ;
-        if ( isFree(id) )
-        {
-            isFree(id) ;
-            throw new BlockException("BlockMgrMem: Block is the free block: "+id) ;
-        }
-    }
-
-    private void check(ByteBuffer bb)
-    {
-        if ( !Checking ) return ;
-        if ( bb.capacity() != blockSize )
-            throw new BlockException(format("BlockMgrMem: Wrong size block.  Expected=%d : actual=%d", blockSize, bb.capacity())) ;
-        if ( bb.order() != SystemTDB.NetworkOrder )
-            throw new BlockException("BlockMgrMem: Wrong byte order") ;
-        
-    }
+        dstBlk.reset() ;
+        dstBlk.put(srcBlk) ;
+        //System.arraycopy(srcBlk.array(), 0, dstBlk.array(), 0, srcBlk.capacity()) ;
+    }  
 
     @Override
     public String toString() { return format("BlockMgrMem[%d bytes]", blockSize) ; }

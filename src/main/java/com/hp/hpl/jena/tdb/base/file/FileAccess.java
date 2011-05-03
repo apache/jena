@@ -6,10 +6,10 @@
 
 package com.hp.hpl.jena.tdb.base.file;
 
-import java.nio.ByteBuffer ;
-
 import org.openjena.atlas.lib.Closeable ;
 import org.openjena.atlas.lib.Sync ;
+
+import com.hp.hpl.jena.tdb.base.block.Block ;
 
 /** Interface to concrete storage.
  *  This is wrapped in a BlockMgrAccess to add the in-memory tracking of read and write blocks,
@@ -17,11 +17,16 @@ import org.openjena.atlas.lib.Sync ;
  */
 public interface FileAccess extends Sync, Closeable
 {
-    public int allocateId() ;
+    public Block allocate() ;
     
-    public ByteBuffer read(int id) ;
+    // Who should do the space allocation? 
+    public Block read(int id) ;
     
-    public void write(int id, ByteBuffer byteBuffer) ;
+    public void write(Block block) ;
+    
+    public boolean isEmpty() ; 
+    
+    public boolean valid(int id) ;
 }
 
 /*

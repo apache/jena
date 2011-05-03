@@ -5,6 +5,11 @@ public class DevTx
     // See all : // [TxTDB:PATCH-UP]
     // Memory mapped files.
     
+    
+    // BlockMgr: remove? 
+    // public boolean valid(int id) ; -- used for root block only -> isEmpty.
+    // public boolean isClosed() ; 
+    
     /*
      * 1 - everything a write block.
      *     This should then work for single app.
