@@ -19,7 +19,7 @@ public class DevTx
      *   Indexes
      *   Pages
      *   Blocks
-     *   Storage = FileAccess 
+     *   Storage = FileAccess (a sequence of blocks) 
      */
     
     /* NEXT

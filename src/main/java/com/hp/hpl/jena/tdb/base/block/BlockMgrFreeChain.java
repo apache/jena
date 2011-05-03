@@ -6,30 +6,32 @@
 
 package com.hp.hpl.jena.tdb.base.block;
 
-import java.util.ArrayList ;
-import java.util.List ;
+import java.util.ArrayDeque ;
+import java.util.Deque ;
 
-
-// Recycle blocks - but only in-session.
-// At the end of JVM run, the blocks are made "permanent" as no one finds them again on restart.
+/** Recycle blocks - but only in-session.
+ *   At the end of JVM run, the blocks are made "permanent" as no one finds them again on restart.
+ */
+final
 public class BlockMgrFreeChain extends BlockMgrWrapper
 {
     // Could keep Pair<Integer, ByteBuffer>
-    List<Block> freeBlocks = new ArrayList<Block>() ;
-    private BlockType managedBlockType ;
+    //List<Block> freeBlocks = new ArrayList<Block>() ;
+    private final Deque<Block> freeBlocks = new ArrayDeque<Block>();
     
-    public BlockMgrFreeChain(BlockMgr blockMgr, BlockType blockType)
+    public BlockMgrFreeChain(BlockMgr blockMgr)
     {
         super(blockMgr) ;
-        this.managedBlockType = blockType ;
     }
 
     @Override
     public Block allocate(BlockType blockType, int blockSize)
     {
-        if ( freeBlocks.size() > 0 )
+        if ( ! freeBlocks.isEmpty() )
         {
-            Block block = freeBlocks.remove(freeBlocks.size()-1) ;
+            Block block = freeBlocks.removeFirst() ;
+            block.reset(blockType) ;
+            block.getByteBuffer().rewind() ;
             return block ;
         }
         return super.allocate(blockType, blockSize) ;
@@ -38,12 +40,7 @@ public class BlockMgrFreeChain extends BlockMgrWrapper
     @Override
     public void freeBlock(Block block)
     {
-        if ( block.getType().equals(managedBlockType) )
-        {
-            freeBlocks.add(block) ;
-            return ;
-        }
-        super.freeBlock(block) ;
+        freeBlocks.add(block) ;
     }
 
     @Override
@@ -56,12 +53,17 @@ public class BlockMgrFreeChain extends BlockMgrWrapper
         }
         return super.valid(id) ;
     }
+    
+    private boolean isFree(int id)
+    {
+        return freeBlocks.contains(id) ; 
+    }
 
     @Override
     public void sync()
     {
+        // Flush free blocks?
         super.sync() ;
-        
     }
 }
 

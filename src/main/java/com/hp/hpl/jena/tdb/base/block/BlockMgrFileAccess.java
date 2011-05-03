@@ -1,5 +1,4 @@
 /*
- * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
@@ -8,10 +7,6 @@
 package com.hp.hpl.jena.tdb.base.block;
 
 import static java.lang.String.format ;
-
-import java.util.ArrayDeque ;
-import java.util.Deque ;
-
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
@@ -29,11 +24,8 @@ public class BlockMgrFileAccess extends BlockMgrBase
     private final FileAccess file ;
     private boolean closed = false ;
     
-    // Chain of indexes of free blocks.
-    private Deque<Block> freeBlocks = new ArrayDeque<Block>();
-    
     // Create via the BlockMgrFactory.
-    BlockMgrFileAccess(FileAccess fileAccess, int blockSize)
+    /*package*/ BlockMgrFileAccess(FileAccess fileAccess, int blockSize)
     {
         super(blockSize) ;
         file = fileAccess ;
@@ -42,15 +34,6 @@ public class BlockMgrFileAccess extends BlockMgrBase
     @Override
     protected Block allocate(BlockType blockType)
     {
-        if ( !freeBlocks.isEmpty() )
-        {
-            Block block = freeBlocks.removeFirst() ;
-//            if ( blocks.get(block.getId()) != FreeBlock )
-//                throw new BlockException("Inconsistent : free chain block is not marked a free") ;
-            block.reset(blockType) ;
-            return block ;
-        }
-        
         return file.allocate() ;
     }
 
@@ -74,7 +57,6 @@ public class BlockMgrFileAccess extends BlockMgrBase
 
     private Block getBlock(int id)
     {
-        // Where is space allocated?
         Block block = file.read(id) ;
         return block ;
     }
@@ -100,22 +82,15 @@ public class BlockMgrFileAccess extends BlockMgrBase
     @Override
     public void freeBlock(Block block)
     {
-        freeBlocks.add(block) ;
-        // But do nothing about the file access layer.
+        // We do nothing about free blocks currently.
     }
 
     @Override
     public boolean valid(int id)
     {
-        if ( isFree(id) ) return false ;
         return file.valid(id) ;
     }
 
-    private boolean isFree(int id)
-    {
-        return freeBlocks.contains(id) ; 
-    }
-    
     @Override
     public void sync()
     { file.sync() ; }
@@ -128,7 +103,6 @@ public class BlockMgrFileAccess extends BlockMgrBase
     { 
         closed = true ;
         file.close() ;
-        //freeBlocks = null ;
     }
     
     @Override
@@ -148,7 +122,6 @@ public class BlockMgrFileAccess extends BlockMgrBase
 }
 
 /*
- * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  *

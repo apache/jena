@@ -139,7 +139,7 @@ public class FileAccessMem implements FileAccess
     
     private static void replicate(ByteBuffer srcBlk, ByteBuffer dstBlk)
     {
-        dstBlk.reset() ;
+        dstBlk.rewind() ;
         dstBlk.put(srcBlk) ;
         //System.arraycopy(srcBlk.array(), 0, dstBlk.array(), 0, srcBlk.capacity()) ;
     }  

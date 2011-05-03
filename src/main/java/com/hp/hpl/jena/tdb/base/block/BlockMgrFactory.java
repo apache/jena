@@ -30,6 +30,8 @@ public class BlockMgrFactory
     {
         FileAccess file = new FileAccessMem(blockSize) ;
         BlockMgr blockMgr = new BlockMgrFileAccess(file, blockSize) ;
+        blockMgr = new BlockMgrFreeChain(blockMgr) ;
+
         // Small cache - testing.
         //blockMgr = new BlockMgrCache(indexName, 3, 3, blockMgr) ;
         return blockMgr ;
