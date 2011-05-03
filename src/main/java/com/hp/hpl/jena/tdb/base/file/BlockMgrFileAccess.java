@@ -6,22 +6,110 @@
 
 package com.hp.hpl.jena.tdb.base.file;
 
-import java.nio.ByteBuffer ;
+import com.hp.hpl.jena.tdb.base.block.Block ;
+import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
+import com.hp.hpl.jena.tdb.base.block.BlockType ;
 
-import org.openjena.atlas.lib.Closeable ;
-import org.openjena.atlas.lib.Sync ;
-
-/** Interface to concrete storage.
- *  This is wrapped in a BlockMgrAccess to add the in-memory tracking of read and write blocks,
- *   
- */
-public interface FileAccess extends Sync, Closeable
+public class BlockMgrFileAccess implements BlockMgr
 {
-    public int allocateId() ;
+    private final FileAccess file ;
+
+    // tracking.
     
-    public ByteBuffer read(int id) ;
+    public BlockMgrFileAccess(FileAccess fileAccess)
+    {
+        this.file = fileAccess ;
+    }
+
+    @Override
+    public Block allocate(BlockType blockType, int blockSize)
+    {
+        return null ;
+    }
+
+    @Override
+    public boolean isEmpty()
+    {
+        return false ;
+    }
+
+    @Override
+    public int blockSize()
+    {
+        return 0 ;
+    }
+
+    @Override
+    public Block getRead(int id)
+    {
+        return null ;
+    }
+
+    @Override
+    public void releaseRead(Block block)
+    {}
+
+    @Override
+    public void releaseWrite(Block block)
+    {}
+
+    @Override
+    public Block getWrite(int id)
+    {
+        return null ;
+    }
+
+    @Override
+    public Block promote(Block block)
+    {
+        return null ;
+    }
+
+    @Override
+    public void put(Block block)
+    {}
+
+    @Override
+    public void freeBlock(Block block)
+    {}
+
+    @Override
+    public boolean valid(int id)
+    {
+        return false ;
+    }
+
+    @Override
+    public void close()
+    {}
+
+    @Override
+    public boolean isClosed()
+    {
+        return false ;
+    }
+
+    @Override
+    public void sync()
+    {}
+
+    @Override
+    public void startUpdate()
+    {}
+
+    @Override
+    public void finishUpdate()
+    {}
+
+    @Override
+    public void startRead()
+    {}
+
+    @Override
+    public void finishRead()
+    {}
     
-    public void write(int id, ByteBuffer byteBuffer) ;
+    
 }
 
 /*
