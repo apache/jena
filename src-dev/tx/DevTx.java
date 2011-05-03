@@ -5,19 +5,14 @@ public class DevTx
     // See all : // [TxTDB:PATCH-UP]
     // Memory mapped files.
     
-    
+
+    // FreeChain Mangement - separate from BlockMgrFileAccess.
     // BlockMgr: remove? 
-    // public boolean valid(int id) ; -- used for root block only -> isEmpty.
+    // public int blockSize() ;
+    
+    // public boolean valid(int id) ; -- used for checking iteration.
     // public boolean isClosed() ; 
     
-    /*
-     * 1 - everything a write block.
-     *     This should then work for single app.
-     * 2 - Convert indexes to differentiate and track read and write pages. 
-     */
-    
-    /* add freeblock wrapper ? */
-
     /*
      * Layers:
      *   DatasetGraph

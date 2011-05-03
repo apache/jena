@@ -11,7 +11,7 @@ public class TestBlockMgrMem extends AbstractTestBlockMgr
 {
     @Override
     protected BlockMgr make()
-    { return new BlockMgrMem(BlkSize) ; }
+    { return BlockMgrFactory.createMem(null, BlkSize) ; } 
     
 }
 

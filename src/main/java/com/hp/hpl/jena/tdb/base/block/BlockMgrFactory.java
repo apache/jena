@@ -9,6 +9,8 @@ package com.hp.hpl.jena.tdb.base.block;
 import java.io.File;
 
 import com.hp.hpl.jena.tdb.TDBException;
+import com.hp.hpl.jena.tdb.base.file.FileAccess ;
+import com.hp.hpl.jena.tdb.base.file.FileAccessMem ;
 import com.hp.hpl.jena.tdb.base.file.FileSet ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
@@ -26,7 +28,8 @@ public class BlockMgrFactory
     /** Create an in-memory block manager */ 
     public static BlockMgr createMem(String indexName, int blockSize)
     {
-        BlockMgr blockMgr = new BlockMgrMem(blockSize) ;
+        FileAccess file = new FileAccessMem(blockSize) ;
+        BlockMgr blockMgr = new BlockMgrFileAccess(file, blockSize) ;
         // Small cache - testing.
         //blockMgr = new BlockMgrCache(indexName, 3, 3, blockMgr) ;
         return blockMgr ;
