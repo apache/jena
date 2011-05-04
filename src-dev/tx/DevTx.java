@@ -27,10 +27,6 @@ public class DevTx
      *   Separately rewrite to be better.
      * 
      * Setup
-     * Transaction start: grab alloc id.
-     * 
-     *   allocateId - allocateBuffer combined
-     *    If we allocate space for a block, we must honour the id->disk location.
-     *   abort needs to release 
+     *   Transaction start: grab alloc id.
      */
 }
