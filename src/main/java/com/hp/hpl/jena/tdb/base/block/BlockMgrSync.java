@@ -77,12 +77,6 @@ public class BlockMgrSync implements BlockMgr
 
     @Override
     synchronized
-    public int blockSize()
-    { return blockMgr.blockSize() ; }
-    
-
-    @Override
-    synchronized
     public void sync()
     {
         blockMgr.sync() ;

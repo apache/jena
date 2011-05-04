@@ -44,13 +44,6 @@ public class BlockMgrLogger implements BlockMgr //extends BlockMgrWrapper
     }
 
     @Override
-    public int blockSize()
-    {
-        log.info("blockSize") ;
-        return blockMgr.blockSize() ;
-    }
-
-    @Override
     public Block getRead(int id)
     {
         log.info("getRead("+id+")") ;

@@ -159,11 +159,6 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
     }
 
     @Override
-    public int blockSize()
-    { return blockMgr.blockSize() ; }
-    
-
-    @Override
     public void sync()
     {
         blockMgr.sync() ;

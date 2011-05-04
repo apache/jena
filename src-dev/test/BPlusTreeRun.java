@@ -32,7 +32,7 @@ public class BPlusTreeRun extends RunnerRangeIndex
         BPlusTreeParams param = bpt.getParams() ;
         
         System.out.println(bpt.getParams()) ;
-        System.out.println("Block size = "+bpt.getParams().getBlockSize()) ;
+        System.out.println("Block size = "+bpt.getParams().getCalcBlockSize()) ;
         return new BPlusTreeMaker(order, order) ;
         
 

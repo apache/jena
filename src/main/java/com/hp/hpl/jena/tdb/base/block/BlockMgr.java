@@ -15,15 +15,12 @@ import com.hp.hpl.jena.tdb.sys.Session ;
 public interface BlockMgr extends Sync, Closeable, Session
 {
     /** Allocate an uninitialized block - writable - call only inside a update sequence. 
-     * if blockSize is -1, means "fixed for this BlockMgr
+     *  If blockSize is -1, means "default/fixed size" for this BlockMgr
      */
     public Block allocate(BlockType blockType, int blockSize) ;
     
     /** Answer whether there are any blocks in the collection being managed */
     public boolean isEmpty() ; 
-    
-    /** Block size */
-    public int blockSize() ;
     
     /** Fetch a block, use for read only */
     public Block getRead(int id);

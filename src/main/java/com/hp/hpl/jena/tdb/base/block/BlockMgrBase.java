@@ -29,11 +29,6 @@ public abstract class BlockMgrBase implements BlockMgr
     protected abstract Block allocate(BlockType blockType) ;
 
     @Override
-    final
-    public int blockSize()
-    { return blockSize ; }
-
-    @Override
     public void finishUpdate()
     {}
 

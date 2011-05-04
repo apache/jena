@@ -101,8 +101,8 @@ public class CmdRewriteIndex
         bptParams = bpt.getParams() ;
         recordFactory = bpt.getRecordFactory() ;
 
-        int blockSizeNodes = bpt.getNodeManager().getBlockMgr().blockSize() ;
-        int blockSizeRecords = bpt.getNodeManager().getBlockMgr().blockSize() ;
+        int blockSizeNodes = blockSize ;
+        int blockSizeRecords = blockSize ;
 
         blkMgrNodes = BlockMgrFactory.create(destination, Names.bptExt1, blockSizeNodes, readCacheSize, writeCacheSize) ;
         blkMgrRecords = BlockMgrFactory.create(destination, Names.bptExt2, blockSizeRecords, readCacheSize, writeCacheSize) ;

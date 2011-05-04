@@ -199,7 +199,7 @@ public class BPlusTreeParams
     }
     
     
-    public int getBlockSize()
+    public int getCalcBlockSize()
     {
         return calcBlockSize(order, recordFactory) ;
     }

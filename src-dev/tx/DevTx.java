@@ -2,17 +2,20 @@ package tx;
 
 public class DevTx
 {
+    // TDB 0.8.10 is rev 8718; TxTDB forked at 8731
+    
     // See all : // [TxTDB:PATCH-UP]
     // Memory mapped files.
     
 
-    // FreeChain Mangement - separate from BlockMgrFileAccess.
-    // BlockMgr: remove? 
+    // BlockMgr: remove these: 
     // public int blockSize() ;
     
     // public boolean valid(int id) ; -- used for checking iteration.
     // public boolean isClosed() ; 
     
+    /* add freeblock wrapper ? */
+
     /*
      * Layers:
      *   DatasetGraph

@@ -66,11 +66,6 @@ public class BlockMgrWrapper implements BlockMgr
     }
 
     @Override
-    public int blockSize()
-    { return blockMgr.blockSize() ; }
-    
-
-    @Override
     public boolean isEmpty()
     {
         return blockMgr.isEmpty() ;

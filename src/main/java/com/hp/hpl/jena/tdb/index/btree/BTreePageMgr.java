@@ -48,7 +48,7 @@ final class BTreePageMgr implements Session
     { 
         // [TxTDB:PATCH-UP]
         BlockType bType = (makeLeaf ? RECORD_BLOCK : BTREE_NODE ) ;
-        Block block = blockMgr.allocate(bType, blockMgr.blockSize()) ;
+        Block block = blockMgr.allocate(bType, -1) ;
         BTreeNode n = converter.createFromBlock(block, bType) ;
         n.parent = parent ;
         return n ;
