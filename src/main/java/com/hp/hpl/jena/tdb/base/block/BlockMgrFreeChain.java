@@ -30,7 +30,6 @@ public class BlockMgrFreeChain extends BlockMgrWrapper
         if ( ! freeBlocks.isEmpty() )
         {
             Block block = freeBlocks.removeFirst() ;
-            block.reset(blockType) ;
             block.getByteBuffer().position(0) ;
             return block ;
         }

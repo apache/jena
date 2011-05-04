@@ -246,7 +246,7 @@ public class TransactionManager
             
             bb2.position(0) ;
             bb2.limit(bb2.capacity()) ;
-            Block block2 = new Block(id, block.getType(), bb2) ;
+            Block block2 = new Block(id, bb2) ;
             blocks.put(id, block2) ;
             return block2 ;
         }

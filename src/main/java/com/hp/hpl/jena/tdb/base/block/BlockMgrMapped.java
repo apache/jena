@@ -68,12 +68,12 @@ public class BlockMgrMapped extends BlockMgrFile
     
     
     @Override
-    protected Block allocate(BlockType blockType)
+    protected Block allocate()
     {
         int id = allocateId() ;
         ByteBuffer bb = getByteBuffer(id) ;
         bb.position(0) ;
-        Block block = new Block(id, blockType, bb) ;
+        Block block = new Block(id, bb) ;
         return block ;
     }
     
@@ -96,7 +96,7 @@ public class BlockMgrMapped extends BlockMgrFile
         if ( getLog().isDebugEnabled() ) 
             getLog().debug(format("get(%d)", id)) ;
         ByteBuffer bb = getByteBuffer(id) ;
-        Block block = new Block(id, BlockType.UNDEF, bb) ;
+        Block block = new Block(id, bb) ;
         return block ;
     }
     

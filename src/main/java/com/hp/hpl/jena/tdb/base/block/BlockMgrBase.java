@@ -23,10 +23,10 @@ public abstract class BlockMgrBase implements BlockMgr
     @Override
     public Block allocate(BlockType blockType, int blockSize)
     {
-        return allocate(blockType) ;
+        return allocate() ;
     }
     
-    protected abstract Block allocate(BlockType blockType) ;
+    protected abstract Block allocate() ;
 
     @Override
     public void finishUpdate()

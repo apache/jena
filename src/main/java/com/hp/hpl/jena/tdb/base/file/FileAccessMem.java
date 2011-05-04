@@ -13,7 +13,6 @@ import java.util.ArrayList ;
 import java.util.List ;
 
 import com.hp.hpl.jena.tdb.base.block.Block ;
-import com.hp.hpl.jena.tdb.base.block.BlockType ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 /*
@@ -47,7 +46,7 @@ public class FileAccessMem implements FileAccess
     {
         int x = blocks.size() ;
         ByteBuffer bb = ByteBuffer.allocate(blockSize) ;
-        Block block = new Block(x, BlockType.UNDEF, bb) ;
+        Block block = new Block(x, bb) ;
         blocks.add(block) ;
         return block;
     }
@@ -120,7 +119,9 @@ public class FileAccessMem implements FileAccess
     private static Block replicate(Block srcBlock)
     {
         ByteBuffer dstBuffer = replicate(srcBlock.getByteBuffer()) ;
-        return new Block(srcBlock.getId(), srcBlock.getType(), dstBuffer) ;
+        Block b = new Block(srcBlock.getId(), dstBuffer) ;
+        b.setType(srcBlock.getType()) ;
+        return b ;
     }  
 
     private static void replicate(Block srcBlock, Block dstBlock)

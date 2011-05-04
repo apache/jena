@@ -29,24 +29,18 @@ public final class Block
     private final boolean readOnly = false ;
     private final FileRef fileRef ;
     
-    private BlockType type ;
     private final ByteBuffer byteBuffer ;
+    private BlockType type ;
 
-    public Block(int id, BlockType type, ByteBuffer byteBuffer)
+    public Block(int id, ByteBuffer byteBuffer)
     { 
         // ByteBuffer is whole disk space from byte 0 for this disk unit. 
         this.id = id ; 
         this.byteBuffer = byteBuffer ;
-        
+        this.type = BlockType.UNDEF ;
         this.fileRef = null ;
-        this.type = type ;
     }
     
-    public void reset(BlockType blockType) 
-    {
-        type = blockType ;
-    }
-        
     public <T extends Page> T convert(BlockConverter<T> converter)
     {
         // converter.checkType(type) ; 
@@ -80,6 +74,11 @@ public final class Block
         return fileRef ;
     }
 
+    public void setType(BlockType blockType) 
+    {
+        type = blockType ;
+    }
+        
     public BlockType getType()
     {
         return type ;

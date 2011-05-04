@@ -31,11 +31,11 @@ public class BlockMgrDirect extends BlockMgrFile
     }
     
     @Override
-    public Block allocate(BlockType blockType)
+    public Block allocate()
     {
         int id = allocateId() ;
         ByteBuffer bb = ByteBuffer.allocate(blockSize) ;
-        Block block = new Block(id, blockType, bb) ;
+        Block block = new Block(id, bb) ;
         return block ;
     }
 
@@ -59,7 +59,7 @@ public class BlockMgrDirect extends BlockMgrFile
         checkIfClosed() ;
         ByteBuffer bb = ByteBuffer.allocate(blockSize) ;
         readByteBuffer(id, bb) ;
-        Block block = new Block(id, BlockType.UNDEF, bb) ;
+        Block block = new Block(id, bb) ;
         return block ;
     }
 
