@@ -212,6 +212,17 @@ public class TestQueryExecutionTimeout extends BaseTest
         exceptionExpected(rs) ; 
     }
 
+    @Test
+    public void timeout_22()
+    {
+        String qs = prefix + "SELECT * { ?s ?p ?o }" ;
+        ARQ.getContext().set(ARQ.queryTimeout, "-1") ;
+        QueryExecution qExec = QueryExecutionFactory.create(qs, ds) ;
+        ResultSet rs = qExec.execSelect() ;
+        ResultSetFormatter.consume(rs) ;
+        qExec.close() ;
+    }
+
     private static void exceptionExpected(ResultSet rs)
     {
         try { ResultSetFormatter.consume(rs) ; fail("QueryCancelledException expected") ; } catch (QueryCancelledException ex) {}
