@@ -6,9 +6,13 @@
 
 package com.hp.hpl.jena.tdb.index.bplustree;
 
+import com.hp.hpl.jena.tdb.base.block.BlockConverter ;
+import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
+import com.hp.hpl.jena.tdb.base.page.Page ;
+import com.hp.hpl.jena.tdb.base.page.PageBlockMgr ;
 import com.hp.hpl.jena.tdb.sys.Session ;
 
-abstract class BPTreePageMgr implements Session
+abstract class BPTreePageMgr<T extends Page> extends PageBlockMgr<T> implements Session
 {
     // This a "missing" class
     // BPTreeRecordMgr works on a RecordBufferPageMgr
@@ -17,8 +21,9 @@ abstract class BPTreePageMgr implements Session
     
     protected final BPlusTree bpTree ;
     
-    BPTreePageMgr(BPlusTree bpTree)
+    BPTreePageMgr(BPlusTree bpTree, BlockConverter<T> pageFactory, BlockMgr blockMgr)
     {
+        super(pageFactory, blockMgr) ;
         this.bpTree = bpTree ;
     }
 }

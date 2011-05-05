@@ -13,7 +13,7 @@ import com.hp.hpl.jena.tdb.base.block.Block ;
 import com.hp.hpl.jena.tdb.base.block.BlockConverter ;
 import com.hp.hpl.jena.tdb.base.block.BlockMgr;
 import com.hp.hpl.jena.tdb.base.block.BlockType;
-import com.hp.hpl.jena.tdb.base.page.PageBlock ;
+import com.hp.hpl.jena.tdb.base.page.PageBlockMgr ;
 import com.hp.hpl.jena.tdb.base.record.RecordException;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 
@@ -21,8 +21,7 @@ import com.hp.hpl.jena.tdb.base.record.RecordFactory;
  *  This must be compatible with B+Tree records nodes and with hash buckets. 
  */
 
-final
-public class RecordBufferPageMgr extends PageBlock<RecordBufferPage>
+public class RecordBufferPageMgr extends PageBlockMgr<RecordBufferPage>
 {
     public RecordBufferPageMgr(RecordFactory factory, BlockMgr blockMgr)
     {
@@ -36,19 +35,19 @@ public class RecordBufferPageMgr extends PageBlock<RecordBufferPage>
         return super.create(BlockType.RECORD_BLOCK) ;
     }
     
-    @Override
-    public RecordBufferPage get(int id)
-    {
-        // [TxTDB:PATCH-UP] -- read/write
-        synchronized(this) 
-        {
-            // Must call in single reader for the context.
-            RecordBufferPage rbp = super.get(id) ;
-            rbp.setPageMgr(this) ;
-            // Link and Count are in the block and got done by the converter.
-            return rbp ;
-        }
-    }
+//    @Override
+//    public RecordBufferPage get(int id)
+//    {
+//        // [TxTDB:PATCH-UP] -- read/write
+//        synchronized(this) 
+//        {
+//            // Must call in single reader for the context.
+//            RecordBufferPage rbp = super.get(id) ;
+//            rbp.setPageMgr(this) ;
+//            // Link and Count are in the block and got done by the converter.
+//            return rbp ;
+//        }
+//    }
     
     private static class Block2RecordBufferPage implements BlockConverter<RecordBufferPage>
     {

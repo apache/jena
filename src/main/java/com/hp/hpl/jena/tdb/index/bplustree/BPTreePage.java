@@ -10,7 +10,7 @@ import com.hp.hpl.jena.tdb.base.page.Page;
 import com.hp.hpl.jena.tdb.base.record.Record;
 
 /** Abstraction of a B+Tree node - either an branch (BTreeNode) or leaf (BTreeLeaf - records)*/
-abstract public class BPTreePage implements Page
+abstract public interface BPTreePage extends Page
 {
     // BPTreePageMgr to be superclass of BPTreeRecordsMgr and BPTreeNodeMgr 
     //  Provides the bpTree and their operations.
@@ -18,18 +18,21 @@ abstract public class BPTreePage implements Page
     // Only "public" for external very low level tools in development to access this class.
     // Assume package access.
 
-    // Does not use PageBase because BPTreeRecords does not need it.
-    protected final BPlusTree bpTree ;
-    protected final BPlusTreeParams params ;
+//    // Does not use PageBase because BPTreeRecords does not need it.
+//    protected final BPlusTree bpTree ;
+//    protected final BPlusTreeParams params ;
+//    
+//    protected BPTreePage(BPlusTree bpTree)
+//    {
+//        if ( bpTree == null )
+//            System.err.println("NULL B+Tree") ;
+//        
+//        this.bpTree = bpTree ;
+//        this.params = bpTree.getParams() ;
+//    }
     
-    protected BPTreePage(BPlusTree bpTree)
-    {
-        if ( bpTree == null )
-            System.err.println("NULL B+Tree") ;
-        
-        this.bpTree = bpTree ;
-        this.params = bpTree.getParams() ;
-    }
+    abstract BPlusTree getBPlusTree() ;
+    abstract BPlusTreeParams getParams() ;
     
     /** Split in two, return the new (upper) page.  
      *  Split key is highest key of the old (lower) page.

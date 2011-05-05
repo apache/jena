@@ -32,7 +32,7 @@ import com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPage ;
 import com.hp.hpl.jena.tdb.base.recordfile.RecordRangeIterator ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
-public final class BPTreeNode extends BPTreePage
+public final class BPTreeNode implements BPTreePage
 {
     private static final short READ = 1 ;
     private static final short WRITE = 2 ;
@@ -54,6 +54,9 @@ public final class BPTreeNode extends BPTreePage
     boolean isLeaf ;        
     RecordBuffer records ;
     PtrBuffer ptrs ;
+    
+    private final BPlusTree bpTree ;
+    private final BPlusTreeParams params ;
 
     /* B+Tree
      * 
@@ -124,7 +127,11 @@ public final class BPTreeNode extends BPTreePage
     
     /*package*/ BPTreeNode(BPlusTree bpTree, Block block)
     {
-        super(bpTree) ;
+        //super(bpTree) ;
+        this.bpTree = bpTree ;
+        this.params = bpTree.getParams() ;
+
+        
         this.block = block ;
         this.id = block.getId() ;
     }
@@ -257,7 +264,7 @@ public final class BPTreeNode extends BPTreePage
     }
 
     @Override
-    Record maxRecord()
+    public Record maxRecord()
     {
         BPTreePage page = get(count, READ) ;
         Record r = page.maxRecord() ;
@@ -266,7 +273,7 @@ public final class BPTreeNode extends BPTreePage
     }
 
     @Override
-    Record minRecord()
+    public Record minRecord()
     {
         BPTreePage page = get(0, READ) ;
         Record r = page.minRecord() ;
@@ -275,7 +282,7 @@ public final class BPTreeNode extends BPTreePage
     }
 
     @Override
-    BPTreeRecords findPage(Record rec)
+    public BPTreeRecords findPage(Record rec)
     {
         if ( CheckingNode ) internalCheckNode() ;
         
@@ -287,7 +294,7 @@ public final class BPTreeNode extends BPTreePage
     
     // Find first page.
     @Override
-    BPTreeRecords findFirstPage()
+    public BPTreeRecords findFirstPage()
     {
         BPTreePage page = get(0, READ) ;
         BPTreeRecords records = page.findFirstPage() ;
@@ -296,13 +303,13 @@ public final class BPTreeNode extends BPTreePage
     }
 
     @Override final
-    Record getLowRecord()
+    public Record getLowRecord()
     {
         return records.getLow() ;
     }
 
     @Override final
-    Record getHighRecord()
+    public Record getHighRecord()
     {
         return records.getHigh() ; 
     }
@@ -326,6 +333,12 @@ public final class BPTreeNode extends BPTreePage
     public RecordBuffer getRecordBuffer()   { return records ; }
     /** Do not use without great care */
     public PtrBuffer getPtrBuffer()         { return ptrs ; }
+    
+    @Override
+    public BPlusTree getBPlusTree()         { return bpTree ; }
+    
+    @Override
+    public  BPlusTreeParams getParams()     { return params ; }
 
     @Override
     public int getId()                      { return id ; }
@@ -355,10 +368,10 @@ public final class BPTreeNode extends BPTreePage
 //    }
 
     @Override final
-    void put()   { bpTree.getNodeManager().put(this) ; } 
+    public void put()   { bpTree.getNodeManager().put(this) ; } 
     
     @Override final
-    void release()   { bpTree.getNodeManager().release(block) ; } 
+    public void release()   { bpTree.getNodeManager().release(block) ; } 
     
     // ============ SEARCH
     
@@ -371,7 +384,7 @@ public final class BPTreeNode extends BPTreePage
      */
     
     @Override final
-    Record internalSearch(Record rec)
+    public Record internalSearch(Record rec)
     {
         if ( CheckingNode ) internalCheckNode() ;
         BPTreePage page = findHere(rec) ;
@@ -400,7 +413,7 @@ public final class BPTreeNode extends BPTreePage
      */
     
     @Override final
-    Record internalInsert(Record record)
+    public Record internalInsert(Record record)
     {
         if ( logging() )
             log.debug(format("internalInsert: %s [%s]", record, this)) ;
@@ -521,7 +534,7 @@ public final class BPTreeNode extends BPTreePage
     }
     
     @Override final
-    Record getSplitKey()
+    public Record getSplitKey()
     {
         int ix = params.SplitIndex ;
         Record split = records.get(ix) ; 
@@ -530,7 +543,7 @@ public final class BPTreeNode extends BPTreePage
     
     /** Split this block - return the split record (key only needed) */
     @Override final
-    BPTreePage split()
+    public BPTreePage split()
     {
         // Median record : will go in parent.
         int ix = params.SplitIndex ;
@@ -662,7 +675,7 @@ public final class BPTreeNode extends BPTreePage
      */
     
     @Override final
-    Record internalDelete(Record rec)
+    public Record internalDelete(Record rec)
     {
         internalCheckNode() ;
         if ( logging() )
@@ -918,7 +931,7 @@ public final class BPTreeNode extends BPTreePage
     }
 
     @Override
-    BPTreePage merge(BPTreePage right, Record splitKey)
+    public BPTreePage merge(BPTreePage right, Record splitKey)
     {
         return merge(this, splitKey, cast(right)) ;
     }
@@ -993,7 +1006,7 @@ public final class BPTreeNode extends BPTreePage
     }
 
     @Override
-    Record shiftRight(BPTreePage other, Record splitKey)
+    public Record shiftRight(BPTreePage other, Record splitKey)
     {
         BPTreeNode node = cast(other) ;
         if ( CheckingNode )
@@ -1017,7 +1030,7 @@ public final class BPTreeNode extends BPTreePage
     }
 
     @Override
-    Record shiftLeft(BPTreePage other, Record splitKey)
+    public Record shiftLeft(BPTreePage other, Record splitKey)
     {
         BPTreeNode node = cast(other) ;
         if ( CheckingNode )
@@ -1104,7 +1117,7 @@ public final class BPTreeNode extends BPTreePage
     private final int maxRecords() { return params.MaxRec ; }
     
     @Override
-    final boolean isFull()
+    public final boolean isFull()
     {
         if ( CheckingNode && count > maxRecords()  )
             error("isFull: Moby block: %s", this) ;
@@ -1115,7 +1128,7 @@ public final class BPTreeNode extends BPTreePage
     
     /** Return true if there are no keys here or below this node */
     @Override
-    final boolean hasAnyKeys()
+    public final boolean hasAnyKeys()
     {
         if ( this.count > 0 ) 
             return true ;
@@ -1131,7 +1144,7 @@ public final class BPTreeNode extends BPTreePage
 
     
     @Override
-    final boolean isMinSize()
+    public final boolean isMinSize()
     {
         int min = params.getMinRec() ;
         if ( CheckingNode && count < min  )
@@ -1268,13 +1281,13 @@ public final class BPTreeNode extends BPTreePage
     }
 
     @Override
-    final void checkNode()
+    public final void checkNode()
     {
         checkNode(null, null) ;
     }
 
     @Override
-    final void checkNodeDeep()
+    public final void checkNodeDeep()
     {
         if ( isRoot() )
         {

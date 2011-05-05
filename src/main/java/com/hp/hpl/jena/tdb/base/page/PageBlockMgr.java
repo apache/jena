@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -13,12 +14,12 @@ import com.hp.hpl.jena.tdb.base.block.BlockType ;
 
 /** Engine that wraps from blocks to typed pages. */
 
-public class PageBlock<T extends Page>
+public class PageBlockMgr<T extends Page>
 {
     private BlockMgr blockMgr ;
     private BlockConverter<T> pageFactory ;
 
-    protected PageBlock(BlockConverter<T> pageFactory, BlockMgr blockMgr)
+    protected PageBlockMgr(BlockConverter<T> pageFactory, BlockMgr blockMgr)
     { 
         this.pageFactory = pageFactory ;
         this.blockMgr = blockMgr ;
@@ -43,6 +44,7 @@ public class PageBlock<T extends Page>
     /** Fetch a block and make a T : must be called single-reader */
     public T get(int id)
     {
+        // I don't think this is needed.
         synchronized (blockMgr)
         {
             // [TxTDB:PATCH-UP]
@@ -53,20 +55,17 @@ public class PageBlock<T extends Page>
         }
     }
 
-    public void put(int id, T page)
+    public void put(T page)
     {
         Block blk = pageFactory.toBlock(page) ;
         blockMgr.put(blk) ;
     }
-    
-    public void put(T page)
-    {
-        put(page.getId(), page) ;
-    }
 
-    public void release(Block block)     { blockMgr.freeBlock(block) ; }
+    public void release(Page page)      { blockMgr.freeBlock(page.getBackingBlock()) ; }
     
-    public boolean valid(int id)    { return blockMgr.valid(id) ; }
+    public void promote(Page page)      { blockMgr.promote(page.getBackingBlock()) ; }
+    
+    public boolean valid(int id)        { return blockMgr.valid(id) ; }
     
     public void dump()
     { 
@@ -92,6 +91,8 @@ public class PageBlock<T extends Page>
 
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
+ * 
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

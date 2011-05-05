@@ -21,22 +21,18 @@ import com.hp.hpl.jena.tdb.base.buffer.PtrBuffer ;
 import com.hp.hpl.jena.tdb.base.buffer.RecordBuffer ;
 
 /** BPlusTreePageMgr = BPlusTreeNode manager */
-public final class BPTreeNodeMgr extends BPTreePageMgr
+public final class BPTreeNodeMgr extends BPTreePageMgr<BPTreeNode>
 {
     // Only "public" for external very low level tools in development to access this class.
     // Assume package access.
 
-    private BlockMgr blockMgr ;
-    private Block2BPTreeNode converter ;
-
     public BPTreeNodeMgr(BPlusTree bpTree, BlockMgr blockMgr)
     {
-        super(bpTree) ;
-        this.blockMgr = blockMgr ;
-        this.converter = new Block2BPTreeNode() ;
+        super(bpTree, new Block2BPTreeNode(bpTree), blockMgr) ;
     }
    
-    public BlockMgr getBlockMgr() { return blockMgr ; } 
+//    @Override
+//    public BlockMgr getBlockMgr() { return blockMgr ; } 
     
     /** Allocate root node space. The root is a node with a Records block.*/ 
     public BPTreeNode createEmptyBPT()
@@ -71,8 +67,8 @@ public final class BPTreeNodeMgr extends BPTreePageMgr
 //        int id = blockMgr.allocateId() ;
 //        ByteBuffer bb = blockMgr.allocateBuffer(id) ;
         //bb.clear();
-        Block block = blockMgr.allocate(null, -1) ;
-        BPTreeNode n = converter.createFromBlock(block, BPTREE_BRANCH) ;
+        //Block block = blockMgr.allocate(null, -1) ;
+        BPTreeNode n = create(BPTREE_BRANCH) ;
         n.isLeaf = false ;
         n.parent = parent ;
         return n ;
@@ -86,34 +82,35 @@ public final class BPTreeNodeMgr extends BPTreePageMgr
         return get(id, BPlusTreeParams.RootParent) ;
     }
     
-    /** Fetch a block */
+    /** Fetch a block - fil in the parent id, which is not in the on-disk bytes */
     public BPTreeNode get(int id, int parent)
     {
-     // [TxTDB:PATCH-UP]
-//        ByteBuffer bb = blockMgr.get(id) ;
-//        BPTreeNode n = converter.fromByteBuffer(bb) ;
-        Block block = blockMgr.getWrite(id) ;
-        BPTreeNode n = converter.fromBlock(block) ;
-        n.parent = parent ;
+        // [TxTDB:PATCH-UP]
+//        Block block = blockMgr.getWrite(id) ;
+//        BPTreeNode n = converter.fromBlock(block) ;
+        BPTreeNode n = super.get(id) ;
+        n.parent = parent ; // Necessary?
         return n ;
     }
-    
-
-    public void put(BPTreeNode node)
-    {
-//        ByteBuffer bb = converter.toBlock(node) ;
-//        blockMgr.put(node.getId(), bb) ;
-        Block block = converter.toBlock(node) ;
-        blockMgr.put(block) ;
-    }
+//    
+//
+//    @Override
+//    public void put(BPTreeNode node)
+//    {
+////        ByteBuffer bb = converter.toBlock(node) ;
+////        blockMgr.put(node.getId(), bb) ;
+//        Block block = converter.toBlock(node) ;
+//        blockMgr.put(block) ;
+//    }
 
     // [TxTDB:PATCH-UP]
-    public void release(Block block)    { blockMgr.releaseWrite(block) ; }
+    public void release(Block block)    { getBlockMgr().releaseWrite(block) ; }
     
-    public boolean valid(int id)        { return blockMgr.valid(id) ; }
+//    public boolean valid(int id)        { return blockMgr.valid(id) ; }
     
-    public boolean isEmpty()            { return blockMgr.isEmpty() ; }
+    public boolean isEmpty()            { return getBlockMgr().isEmpty() ; }
     
+    @Override
     public void dump()
     { 
         for ( int idx = 0 ; valid(idx) ; idx++ )
@@ -125,22 +122,26 @@ public final class BPTreeNodeMgr extends BPTreePageMgr
     
     /** Signal the start of an update operation */
     @Override
-    public void startRead()         { blockMgr.startRead() ; }
+    public void startRead()         { getBlockMgr().startRead() ; }
 
     /** Signal the completeion of an update operation */
     @Override
-    public void finishRead()        { blockMgr.finishRead() ; }
+    public void finishRead()        { getBlockMgr().finishRead() ; }
 
     /** Signal the start of an update operation */
     @Override
-    public void startUpdate()       { blockMgr.startUpdate() ; }
+    public void startUpdate()       { getBlockMgr().startUpdate() ; }
     
     /** Signal the completion of an update operation */
     @Override
-    public void finishUpdate()      { blockMgr.finishUpdate() ; }
+    public void finishUpdate()      { getBlockMgr().finishUpdate() ; }
     
-    private class Block2BPTreeNode implements BlockConverter<BPTreeNode>
+    private static class Block2BPTreeNode implements BlockConverter<BPTreeNode>
     {
+        private final BPlusTree bpTree ;
+
+        Block2BPTreeNode(BPlusTree bpTree) { this.bpTree = bpTree ; }
+        
         @Override
         public BPTreeNode createFromBlock(Block block, BlockType bType)
         { 
@@ -267,7 +268,7 @@ public final class BPTreeNodeMgr extends BPTreePageMgr
         byteBuffer.limit(rStart+recBuffLen) ;
         ByteBuffer bbr = byteBuffer.slice() ;
         //bbr.limit(recBuffLen) ;
-        n.records = new RecordBuffer(bbr, n.params.keyFactory, n.getCount()) ;
+        n.records = new RecordBuffer(bbr, n.getParams().keyFactory, n.getCount()) ;
 
         // -- Pointers area
         byteBuffer.position(pStart) ;
@@ -284,7 +285,7 @@ public final class BPTreeNodeMgr extends BPTreePageMgr
     
     static final void formatForRoot(BPTreeNode n, boolean asLeaf)
     {
-        BPTreeNodeMgr.formatBPTreeNode(n, n.bpTree, n.getBackingBlock(), asLeaf, 0) ;
+        BPTreeNodeMgr.formatBPTreeNode(n, n.getBPlusTree(), n.getBackingBlock(), asLeaf, 0) ;
         // Tweak for the root-specials.  The node is not consistent yet.
         // Has one dangling pointer.
         n.parent = BPlusTreeParams.RootParent ;

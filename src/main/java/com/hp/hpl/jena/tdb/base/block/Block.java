@@ -14,20 +14,10 @@ import com.hp.hpl.jena.tdb.base.page.Page ;
 
 public final class Block
 {
-    /* Layout on disk:
-     * TYPE
-     * Bytes
-     * 
-     * and different block types define their layout. 
-     * e.g.
-     * FREE, 4bytes for the free chain 
-     * 
-     * 
-     */
-
-    private final Integer id ;          // Keep as objects.  It's the cache key.
+    private final Integer id ;          // Keep as object.  It's the cache key.
     private final boolean readOnly = false ;
     private final FileRef fileRef ;
+    //private boolean dirty = false ;
     
     private final ByteBuffer byteBuffer ;
     private BlockType type ;

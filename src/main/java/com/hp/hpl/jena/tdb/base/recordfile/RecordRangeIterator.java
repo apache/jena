@@ -39,8 +39,6 @@ class RecordRangeIterator implements Iterator<Record>
     
     private long countRecords = 0 ;
     private long countBlocks = 0 ;
-    
-
 
     public RecordRangeIterator(RecordBufferPage page, Record fromRec, Record toRec)
     {

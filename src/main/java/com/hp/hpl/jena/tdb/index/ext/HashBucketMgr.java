@@ -17,12 +17,12 @@ import com.hp.hpl.jena.tdb.base.block.Block ;
 import com.hp.hpl.jena.tdb.base.block.BlockConverter ;
 import com.hp.hpl.jena.tdb.base.block.BlockMgr;
 import com.hp.hpl.jena.tdb.base.block.BlockType;
-import com.hp.hpl.jena.tdb.base.page.PageBlock ;
+import com.hp.hpl.jena.tdb.base.page.PageBlockMgr ;
 import com.hp.hpl.jena.tdb.base.record.RecordException;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 
 
-public class HashBucketMgr extends PageBlock<HashBucket>
+public class HashBucketMgr extends PageBlockMgr<HashBucket>
 {
     public HashBucketMgr(RecordFactory factory, BlockMgr blockMgr)
     {

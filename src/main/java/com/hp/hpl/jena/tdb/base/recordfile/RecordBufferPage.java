@@ -25,7 +25,7 @@ public class RecordBufferPage extends RecordBufferPageBase
     final public static int LINK            = 4 ;
     final private static int FIELD_LENGTH   = SystemTDB.SizeOfInt ;
 
-    private RecordBufferPageMgr pageMgr ;
+    private final RecordBufferPageMgr pageMgr ;
     private int link = Page.NO_ID ;
     
     public int getLink() { return link ; }
@@ -58,10 +58,10 @@ public class RecordBufferPage extends RecordBufferPageBase
         return pageMgr ;
     }
 
-    public void setPageMgr(RecordBufferPageMgr recordBufferPageMgr)
-    {
-        this.pageMgr = recordBufferPageMgr ;
-    }
+//    public void setPageMgr(RecordBufferPageMgr recordBufferPageMgr)
+//    {
+//        this.pageMgr = recordBufferPageMgr ;
+//    }
 
 
     

@@ -1,8 +1,21 @@
 package tx;
 
+
 public class DevTx
 {
     // TDB 0.8.10 is rev 8718; TxTDB forked at 8731
+    
+    // BPTreeRecords and BPTreeNode need have a common supertype - can it be an interface?
+    //   Then BPTreeRecords inherits from RecordBufferPage
+    
+    // Check through BPLusNode/BPTreeRecords hierarchy.
+    // Check through BPlusNodeMgr/BPTreeRecordsMgr hierarchy.
+    // Currently BPTreeRecordsMgr wraps a RecordBufferPageMgr -- does it matter?
+    
+    // Can we:
+    //   BPTreeRecords extends RecordBufferPage (it only adds functionality)
+    //   BPTreeRecordsMgr extends extends PageBlockMgr<BPTreeRecords> 
+    //   BPTreeNodeMgr extends PageBlockMgr<BPlusTreeNode>
     
     // Block to have a clean/dirty flag.
     

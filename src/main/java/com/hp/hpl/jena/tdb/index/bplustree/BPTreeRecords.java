@@ -21,18 +21,21 @@ import com.hp.hpl.jena.tdb.base.record.Record ;
 import com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPage ;
 
 /** B+Tree wrapper over a block of records in a RecordBufferPage.
- * This class adds no peristent state to a RecordBufferPage */
-public final class BPTreeRecords extends BPTreePage
+ * This class adds no persistent state to a RecordBufferPage */
+public final class BPTreeRecords implements BPTreePage // extends BPTreePage
 {
-    // Could require all Page operations to the RecordBufferPage
-    // Page is then an interface and BPTreeNode has the state 
     private static Logger log = LoggerFactory.getLogger(BPTreeRecords.class) ;
     private final RecordBufferPage    rBuffPage ;
     private final RecordBuffer        rBuff ;        // Used heavily.
     
+    private final BPlusTree bpTree ;
+    private final BPlusTreeParams params ;
+    
     public BPTreeRecords(BPlusTree bpTree, RecordBufferPage rbp)
     {
-        super(bpTree) ;
+        //super(bpTree) ;
+        this.bpTree = bpTree ;
+        this.params = bpTree.getParams() ;
         rBuffPage = rbp ;
         rBuff = rBuffPage.getRecordBuffer() ;
     }
@@ -53,19 +56,25 @@ public final class BPTreeRecords extends BPTreePage
     { return rBuffPage.getLink() ; }
 
     @Override
-    boolean isFull()
+    public boolean isFull()
     {
         return ( rBuff.size() >= rBuff.maxSize() ) ;
     }
-
+    
     @Override
-    boolean hasAnyKeys()
+    public BPlusTree getBPlusTree()         { return bpTree ; }
+    
+    @Override
+    public  BPlusTreeParams getParams()     { return params ; }
+    
+    @Override
+    public boolean hasAnyKeys()
     {
         return rBuff.size() > 0 ;
     }
 
     @Override
-    boolean isMinSize()
+    public boolean isMinSize()
     {
         // 50% packing minimum.
         // If of max length 5 (i.e. odd), min size is 2.  Integer division works.  
@@ -73,7 +82,7 @@ public final class BPTreeRecords extends BPTreePage
    }
 
     @Override
-    Record internalSearch(Record rec)
+    public Record internalSearch(Record rec)
     {
         int i = rBuff.find(rec) ;
         if ( i < 0 )
@@ -82,7 +91,7 @@ public final class BPTreeRecords extends BPTreePage
     }
 
     @Override
-    BPTreeRecords findPage(Record record)
+    public BPTreeRecords findPage(Record record)
     {
         if ( rBuff.size() == 0 )
             return this ;
@@ -94,16 +103,16 @@ public final class BPTreeRecords extends BPTreePage
     }
     
     @Override
-    BPTreeRecords findFirstPage() { return this ; }
+    public BPTreeRecords findFirstPage() { return this ; }
 
     @Override final
-    void put()   { bpTree.getRecordsMgr().put(this) ; } 
+    public void put()   { bpTree.getRecordsMgr().put(this) ; } 
     
     @Override final
-    void release()   { bpTree.getRecordsMgr().release(getBackingBlock()) ; }
+    public void release()   { bpTree.getRecordsMgr().release(this) ; }
     
     @Override
-    Record internalInsert(Record record)
+    public Record internalInsert(Record record)
     {
         int i = rBuff.find(record) ;
         Record r2 = null ;
@@ -126,7 +135,7 @@ public final class BPTreeRecords extends BPTreePage
     }
 
     @Override
-    Record internalDelete(Record record)
+    public Record internalDelete(Record record)
     {
         int i = rBuff.find(record) ;
         if ( i < 0 )
@@ -138,7 +147,7 @@ public final class BPTreeRecords extends BPTreePage
     }
     
     @Override final
-    Record getSplitKey()
+    public Record getSplitKey()
     {
         int splitIdx = rBuff.size()/2-1 ;
         Record r = rBuff.get(splitIdx) ;
@@ -149,7 +158,7 @@ public final class BPTreeRecords extends BPTreePage
      * Split is the high end of the low page.
      */
     @Override final
-    BPTreePage split() 
+    public BPTreePage split() 
     {
         // LinkIn
         // Create a new BPTreeRecords.
@@ -186,7 +195,7 @@ public final class BPTreeRecords extends BPTreePage
     }
 
     @Override
-    Record shiftRight(BPTreePage other, Record splitKey)
+    public Record shiftRight(BPTreePage other, Record splitKey)
     {
         // Error checking by RecordBuffer
         BPTreeRecords page = cast(other) ;
@@ -197,7 +206,7 @@ public final class BPTreeRecords extends BPTreePage
     }
     
     @Override
-    Record shiftLeft(BPTreePage other, Record splitKey)
+    public Record shiftLeft(BPTreePage other, Record splitKey)
     {
         // Error checking by RecordBuffer
         BPTreeRecords page = cast(other) ;
@@ -208,7 +217,7 @@ public final class BPTreeRecords extends BPTreePage
     }
 
     @Override
-    BPTreePage merge(BPTreePage right, Record splitKey)
+    public BPTreePage merge(BPTreePage right, Record splitKey)
     {
         // Split key ignored - it's for the B+Tree case of pushing down a key
         // Records blocks have all the key/values in them anyway.
@@ -239,13 +248,13 @@ public final class BPTreeRecords extends BPTreePage
     }
     
     @Override final
-    Record minRecord()
+    public Record minRecord()
     {
         return getLowRecord() ;
     }
 
     @Override final
-    Record maxRecord()
+    public Record maxRecord()
     {
         return getHighRecord() ;
     }
@@ -259,7 +268,7 @@ public final class BPTreeRecords extends BPTreePage
     }
 
     @Override
-    final Record getLowRecord()
+    public final Record getLowRecord()
     {
         if ( rBuff.size() == 0 )
             return null ;
@@ -267,7 +276,7 @@ public final class BPTreeRecords extends BPTreePage
     }
 
     @Override
-    final Record getHighRecord()
+    public final Record getHighRecord()
     {
         if ( rBuff.size() == 0 )
             return null ;
