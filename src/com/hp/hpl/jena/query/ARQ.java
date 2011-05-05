@@ -145,10 +145,12 @@ public class ARQ
     /**
      * Set timeout.  The value of this symbol gives thevalue of the timeout in milliseconds
      * <ul>
-     * <li>A Number</li>
+     * <li>A Number; the long value is used</li>
      * <li>A string, e.g. "1000", parsed as a number</li>
-     * <li>A string, as two numbers separated by a comma, "1000,500" parsed as two numbers</li>
+     * <li>A string, as two numbers separated by a comma, e.g. "500,10000" parsed as two numbers</li>
      * </ul>
+     * @see QueryExecution#setTimeout(long)
+     * @see QueryExecution#setTimeout(long,long)
      */
     public static final Symbol queryTimeout = ARQConstants.allocSymbol("queryTimeout") ;
     
