@@ -110,21 +110,15 @@ public class BPlusTree implements Iterable<Record>, RangeIndex, Session
      * sibling nodes instead of immediately splitting (like delete, only on insert).
      */ 
     
-    /* TODO
-     * static factories:
-     *   Simplify (or separate factory), return a RangeIndex  
-     *   If BPlusTreeLogging, the wrap in a logging RangeIndexWrapper
-     */
-    
     private static Logger log = LoggerFactory.getLogger(BPlusTree.class) ;
     
     private int rootIdx ;
-    BPTreeNode root ;
+    /*package*/ BPTreeNode root ;
     private BPTreeNodeMgr nodeManager ; 
     private BPTreeRecordsMgr recordsMgr; 
     private BPlusTreeParams bpTreeParams ;
     
-    /** Create the in-memory structures to correspnond to
+    /** Create the in-memory structures to correspond to
      * the supplied block managers for the persistent storage.
      * This is the normal way to create a B+Tree.
      */
@@ -429,11 +423,6 @@ public class BPlusTree implements Iterable<Record>, RangeIndex, Session
         return Iter.count(iter) ;
     }
     
-    long sizeByCounting()
-    {
-        return getRoot().size() ;
-    }
-
     @Override
     public void check()
     {

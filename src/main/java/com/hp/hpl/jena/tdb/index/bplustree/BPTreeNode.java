@@ -32,7 +32,7 @@ import com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPage ;
 import com.hp.hpl.jena.tdb.base.recordfile.RecordRangeIterator ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
-public final class BPTreeNode implements BPTreePage
+public final class BPTreeNode extends BPTreePage
 {
     private static final short READ = 1 ;
     private static final short WRITE = 2 ;
@@ -54,9 +54,6 @@ public final class BPTreeNode implements BPTreePage
     boolean isLeaf ;        
     RecordBuffer records ;
     PtrBuffer ptrs ;
-    
-    private final BPlusTree bpTree ;
-    private final BPlusTreeParams params ;
 
     /* B+Tree
      * 
@@ -127,11 +124,7 @@ public final class BPTreeNode implements BPTreePage
     
     /*package*/ BPTreeNode(BPlusTree bpTree, Block block)
     {
-        //super(bpTree) ;
-        this.bpTree = bpTree ;
-        this.params = bpTree.getParams() ;
-
-        
+        super(bpTree) ;
         this.block = block ;
         this.id = block.getId() ;
     }
@@ -335,38 +328,12 @@ public final class BPTreeNode implements BPTreePage
     public PtrBuffer getPtrBuffer()         { return ptrs ; }
     
     @Override
-    public BPlusTree getBPlusTree()         { return bpTree ; }
-    
-    @Override
-    public  BPlusTreeParams getParams()     { return params ; }
-
-    @Override
     public int getId()                      { return id ; }
 
     public void setIsLeaf(boolean isLeaf)   { this.isLeaf = isLeaf ; }
 
     public boolean isLeaf()                 { return this.isLeaf ; }
     
-    public long size()
-    {
-        System.err.println("B+Tree size - not implemented.  Iterate over all records instead") ;
-        return -1 ;
-    }
-//    public long size()
-//    {
-//        long x = count ;
-//        if ( ! isLeaf )
-//        {
-//            for ( int i = 0 ; i <= count ; i++ )
-//            {
-//                BPTreeNode n = pageMgr.get(ptrs.get(i), BPlusTreeParams.NoParent) ;
-//                //n.internalCheckNode() ;
-//                x = x + n.size() ;
-//            }
-//        }
-//        return x ;
-//    }
-
     @Override final
     public void put()   { bpTree.getNodeManager().put(this) ; } 
     

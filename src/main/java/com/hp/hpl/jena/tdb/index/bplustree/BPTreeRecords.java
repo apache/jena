@@ -22,20 +22,15 @@ import com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPage ;
 
 /** B+Tree wrapper over a block of records in a RecordBufferPage.
  * This class adds no persistent state to a RecordBufferPage */
-public final class BPTreeRecords implements BPTreePage // extends BPTreePage
+public final class BPTreeRecords extends BPTreePage
 {
     private static Logger log = LoggerFactory.getLogger(BPTreeRecords.class) ;
     private final RecordBufferPage    rBuffPage ;
     private final RecordBuffer        rBuff ;        // Used heavily.
     
-    private final BPlusTree bpTree ;
-    private final BPlusTreeParams params ;
-    
     public BPTreeRecords(BPlusTree bpTree, RecordBufferPage rbp)
     {
-        //super(bpTree) ;
-        this.bpTree = bpTree ;
-        this.params = bpTree.getParams() ;
+        super(bpTree) ;
         rBuffPage = rbp ;
         rBuff = rBuffPage.getRecordBuffer() ;
     }
@@ -60,12 +55,6 @@ public final class BPTreeRecords implements BPTreePage // extends BPTreePage
     {
         return ( rBuff.size() >= rBuff.maxSize() ) ;
     }
-    
-    @Override
-    public BPlusTree getBPlusTree()         { return bpTree ; }
-    
-    @Override
-    public  BPlusTreeParams getParams()     { return params ; }
     
     @Override
     public boolean hasAnyKeys()
