@@ -102,8 +102,6 @@ public class BTree implements Iterable<Record>, RangeIndex, Session
      */ 
     
     private static Logger log = LoggerFactory.getLogger(BTree.class) ;
-    
-    private long sessionCounter = 0 ;              // Session counter
     private int rootIdx ;
     BTreeNode root ;
     private BTreePageMgr pageMgr ; 
@@ -137,7 +135,6 @@ public class BTree implements Iterable<Record>, RangeIndex, Session
             rootIdx = root.id ;
             // Build root node.
             // Per session count only.
-            sessionCounter = 0 ;
             finishReadBlkMgr() ;
         }
         else
@@ -146,7 +143,6 @@ public class BTree implements Iterable<Record>, RangeIndex, Session
             // Fresh BTree
             root = pageMgr.createRoot() ;
             rootIdx = root.id ;
-            sessionCounter = 0 ;
             if ( CheckingNode )
                 root.checkNodeDeep() ;
             pageMgr.put(root) ;
@@ -234,8 +230,6 @@ public class BTree implements Iterable<Record>, RangeIndex, Session
         startUpdateBlkMgr() ;
         BTreeNode root = getRoot() ;
         Record r = root.insert(record) ;
-        if ( r == null )
-            sessionCounter++ ;
         if ( CheckingBTree ) root.checkNodeDeep() ;
         releaseRoot(root) ;
         finishUpdateBlkMgr() ;
@@ -251,8 +245,6 @@ public class BTree implements Iterable<Record>, RangeIndex, Session
         startUpdateBlkMgr() ;
         BTreeNode root = getRoot() ;
         Record r = root.delete(record) ;
-        if ( r != null )
-            sessionCounter-- ;
         if ( CheckingBTree ) root.checkNodeDeep() ;
         releaseRoot(root) ;
         finishUpdateBlkMgr() ;
@@ -340,12 +332,6 @@ public class BTree implements Iterable<Record>, RangeIndex, Session
     { 
         Iterator<Record> iter = iterator() ;
         return Iter.count(iter) ;
-    }
-
-    @Override
-    public long sessionTripleCount()
-    {
-        return sessionCounter ;
     }
 
     public long sizeByCounting()

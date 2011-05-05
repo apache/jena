@@ -11,24 +11,16 @@ import org.openjena.atlas.io.Printable ;
 
 import com.hp.hpl.jena.tdb.base.block.Block ;
 
-/** Abstract of a bytebuffer, a block type, an id and a count */
+/** Abstract of a buffer, a block type, an id and a count */
 public interface Page extends Printable
 {
     public static final int NO_ID   = -1 ;
     
-    /** Return the nodes id */ 
-//    public final int getId()                { return id ; }
-//    public final void setId(int id)         { this.id = id ; }
-//    /** Return the ByteBuffer backing this page */ 
-//    public final ByteBuffer getByteBuffer() { return byteBuffer ; }
-//    
-//    public final BlockType getBlockType()   { return blockType ; }
-    
     // [TxTDB:PATCH-UP] Remove
     public int getId() ;
     
-//    // [TxTDB:PATCH-UP] Remove
-//    public void setId(int id) ;
+    // [TxTDB:PATCH-UP] Remove
+    // public void setId(int id) ;
 
     /** Return the block associated with this page */ 
     public Block getBackingBlock() ;

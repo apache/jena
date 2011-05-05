@@ -137,8 +137,6 @@ public class ExtHashTestBase
         }
         List<Integer> y = unique(asList(recs)) ;
         int x = (int)extHash.size() ;
-        if ( x < 0 )
-            x = (int)extHash.sessionTripleCount() ;
         assertEquals(y.size(), x); 
     }
 

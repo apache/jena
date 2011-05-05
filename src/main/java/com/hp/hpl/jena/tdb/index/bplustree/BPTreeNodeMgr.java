@@ -78,6 +78,8 @@ public final class BPTreeNodeMgr extends BPTreePageMgr
         return n ;
     }
 
+    // getRead, getWrite, releaseRead, releaseWrite, promote.
+    
     /** Fetch a block for the root. */
     public BPTreeNode getRoot(int id)
     {
@@ -105,9 +107,12 @@ public final class BPTreeNodeMgr extends BPTreePageMgr
         blockMgr.put(block) ;
     }
 
-    public void release(Block block)     { blockMgr.freeBlock(block) ; }
+    // [TxTDB:PATCH-UP]
+    public void release(Block block)    { blockMgr.releaseWrite(block) ; }
     
-    public boolean valid(int id)    { return blockMgr.valid(id) ; }
+    public boolean valid(int id)        { return blockMgr.valid(id) ; }
+    
+    public boolean isEmpty()            { return blockMgr.isEmpty() ; }
     
     public void dump()
     { 

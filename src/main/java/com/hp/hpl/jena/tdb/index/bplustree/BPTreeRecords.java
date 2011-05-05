@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -31,7 +32,7 @@ public final class BPTreeRecords extends BPTreePage
     
     public BPTreeRecords(BPlusTree bpTree, RecordBufferPage rbp)
     {
-        super(bpTree, bpTree.getRecordsMgr().getBlockMgr()) ;
+        super(bpTree) ;
         rBuffPage = rbp ;
         rBuff = rBuffPage.getRecordBuffer() ;
     }
@@ -324,6 +325,7 @@ public final class BPTreeRecords extends BPTreePage
 
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

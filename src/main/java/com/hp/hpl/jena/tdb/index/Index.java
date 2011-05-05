@@ -54,14 +54,6 @@ public interface Index extends Iterable<Record>, Sync, Closeable
     
     /** Return size if known else return -1 : does not count the peristent storage */
     public long size() ;
-    
-    /** [testing] Count the nunber of triples in the index 
-     * (+1 for succesful insertion, -1 for successful deletion)
-     * Return Integer.MIN_VALUE for unknown.
-     * "session" has no formal definition.
-     */
-    
-    public long sessionTripleCount() ;
 }
 
 /*

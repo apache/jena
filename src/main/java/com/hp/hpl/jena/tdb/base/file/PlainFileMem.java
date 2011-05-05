@@ -14,6 +14,7 @@ public class PlainFileMem extends PlainFile
     public PlainFileMem()
     {
         super() ;
+        byteBuffer = ByteBuffer.allocate(0) ;
         ensure(0) ;
     }
 
@@ -25,8 +26,8 @@ public class PlainFileMem extends PlainFile
         // If copy-over
         if ( true )
         {
+            bb.put(byteBuffer) ;
             bb.position(0) ;
-            bb.put(super.byteBuffer) ;
         }
         return bb ;
     }

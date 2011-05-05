@@ -51,10 +51,10 @@ public class TestBTreeLong extends BaseTest
         assertTrue(bTree.contains(r)) ;
         bTree.add(r) ;
         assertTrue(bTree.contains(r)) ;
-        assertEquals(1, bTree.sessionTripleCount()) ;
+        assertEquals(1, bTree.sizeByCounting()) ;
         bTree.delete(r) ;
         assertFalse(bTree.contains(r)) ;
-        assertEquals(0, bTree.sessionTripleCount()) ;
+        assertEquals(0, bTree.sizeByCounting()) ;
     }
     
     @Test public void record3()
@@ -66,11 +66,11 @@ public class TestBTreeLong extends BaseTest
         assertTrue(bTree.contains(r1)) ;
         bTree.add(r2) ;
         assertTrue(bTree.contains(r2)) ;
-        assertEquals(2, bTree.sessionTripleCount()) ;
+        assertEquals(2, bTree.sizeByCounting()) ;
         bTree.delete(r1) ;
         assertFalse(bTree.contains(r1)) ;
         assertTrue(bTree.contains(r2)) ;
-        assertEquals(1, bTree.sessionTripleCount()) ;
+        assertEquals(1, bTree.sizeByCounting()) ;
     }
     
     @Test public void record4()
@@ -86,11 +86,11 @@ public class TestBTreeLong extends BaseTest
         assertTrue(bTree.contains(r1)) ;
         bTree.add(r2) ;
         assertTrue(bTree.contains(r2)) ;
-        assertEquals(7, bTree.sessionTripleCount()) ;
+        assertEquals(7, bTree.sizeByCounting()) ;
         bTree.delete(r1) ;
         assertFalse(bTree.contains(r1)) ;
         assertTrue(bTree.contains(r2)) ;
-        assertEquals(6, bTree.sessionTripleCount()) ;
+        assertEquals(6, bTree.sizeByCounting()) ;
     }
     
     // --------

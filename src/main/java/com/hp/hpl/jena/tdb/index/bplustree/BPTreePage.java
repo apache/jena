@@ -6,7 +6,6 @@
 
 package com.hp.hpl.jena.tdb.index.bplustree;
 
-import com.hp.hpl.jena.tdb.base.block.BlockMgr;
 import com.hp.hpl.jena.tdb.base.page.Page;
 import com.hp.hpl.jena.tdb.base.record.Record;
 
@@ -14,7 +13,7 @@ import com.hp.hpl.jena.tdb.base.record.Record;
 abstract public class BPTreePage implements Page
 {
     // BPTreePageMgr to be superclass of BPTreeRecordsMgr and BPTreeNodeMgr 
-    //  Provides the commonn slots blockMgr, bpTree and their operations.
+    //  Provides the bpTree and their operations.
     
     // Only "public" for external very low level tools in development to access this class.
     // Assume package access.
@@ -22,17 +21,14 @@ abstract public class BPTreePage implements Page
     // Does not use PageBase because BPTreeRecords does not need it.
     protected final BPlusTree bpTree ;
     protected final BPlusTreeParams params ;
-    //int parent ;   
-    protected final BlockMgr blockMgr ;
     
-    protected BPTreePage(BPlusTree bpTree, BlockMgr blockMgr)
+    protected BPTreePage(BPlusTree bpTree)
     {
         if ( bpTree == null )
             System.err.println("NULL B+Tree") ;
         
         this.bpTree = bpTree ;
         this.params = bpTree.getParams() ;
-        this.blockMgr = blockMgr ;
     }
     
     /** Split in two, return the new (upper) page.  
@@ -113,6 +109,9 @@ abstract public class BPTreePage implements Page
     
     /** Discard with this block (for ever) */
     abstract void release() ;
+    
+//    /** Promote to a write */
+//    abstract BPTreePage promote() ;
     
     /** Check - just this level.*/
     abstract void checkNode() ;

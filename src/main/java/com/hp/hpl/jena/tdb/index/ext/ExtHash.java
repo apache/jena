@@ -87,9 +87,6 @@ public final class ExtHash implements Index
     // Current length of trie bit used.  Invariant: dictionary.length = 1<<bitLen 
     private int bitLen = 0 ;
     
-    // Number of things in the hash table. Session.
-    private long sessionCounter = 0 ;
-    
     private final HashBucketMgr hashBucketMgr ;
     private final RecordFactory recordFactory ;
     private final PlainFile dictionaryFile ;
@@ -224,7 +221,7 @@ public final class ExtHash implements Index
             // NB Fills from high to low so that it works "in place"
             for ( int i = oldSize-1 ; i>=0 ; i-- )
             {
-                int b = dictionary.get(i) ; 
+                int b = newDictionary.get(i) ; 
                 //if ( logging() ) log("Resize: put: (%d, %d)", 2*i, b) ;
                 newDictionary.put(2*i, b) ; 
                 newDictionary.put(2*i+1, b) ; 
@@ -288,8 +285,6 @@ public final class ExtHash implements Index
         if ( logging() ) log(">> add(%s)", record) ;
         int h = trieKey(record) ;
         boolean b = put(record, h) ;
-        if ( b )
-            sessionCounter++ ;
         if ( logging() )
         {
             log("<< add(%s)", record) ;
@@ -308,9 +303,6 @@ public final class ExtHash implements Index
 
         boolean b = bucket.removeByKey(record) ;
         hashBucketMgr.put(bucket) ;
-        
-        if ( b )
-            sessionCounter-- ;
         internalCheck() ;
         if ( logging() ) log("<< remove(%s)", record) ;
         return b ;
@@ -368,12 +360,6 @@ public final class ExtHash implements Index
     { 
         hashBucketMgr.getBlockMgr().sync() ;
         dictionaryFile.sync() ;
-    }
-
-    @Override
-    public long sessionTripleCount()
-    {
-        return sessionCounter ;
     }
 
     @Override

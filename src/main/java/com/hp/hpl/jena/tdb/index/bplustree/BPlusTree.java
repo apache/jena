@@ -38,12 +38,12 @@ import com.hp.hpl.jena.tdb.sys.Session ;
  * Includes implementation of removal.
  * 
  * Notes:
- * Stores "records", which are a key and value (the valu emay be null).
+ * Stores "records", which are a key and value (the value may be null).
  * 
  * In this B+Tree implementation, the (key,value) pairs are held in
  * RecordBuffer, which wrap a ByteBuffer that only has records in it.  
  * BPTreeRecords provides the B+Tree view of a RecordBuffer. All records
- * are in RecordBufefr - the "tree" part is an index for finding the right
+ * are in RecordBuffer - the "tree" part is an index for finding the right
  * page. The tree only holds keys, copies from the (key, value) pairs in
  * the RecordBuffers. 
  *
@@ -118,7 +118,6 @@ public class BPlusTree implements Iterable<Record>, RangeIndex, Session
     
     private static Logger log = LoggerFactory.getLogger(BPlusTree.class) ;
     
-    private long sessionCounter = 0 ;              // Session counter
     private int rootIdx ;
     BPTreeNode root ;
     private BPTreeNodeMgr nodeManager ; 
@@ -132,7 +131,7 @@ public class BPlusTree implements Iterable<Record>, RangeIndex, Session
     public static BPlusTree attach(BPlusTreeParams params, BlockMgr blkMgrNodes, BlockMgr blkMgrLeaves)
     { 
         BPlusTree bpt = new BPlusTree(params, blkMgrNodes, blkMgrLeaves) ;
-        bpt.attach() ;
+        bpt.createIfAbsent() ;
         return bpt ;
     }
     
@@ -166,12 +165,12 @@ public class BPlusTree implements Iterable<Record>, RangeIndex, Session
         return new BPlusTree(params, blkMgrNodes, blkMgrLeaves) ;
     }
     
-    private BPlusTree(BPlusTreeParams params) { this.bpTreeParams = params ; }
-
-    BPlusTree(int N, int recordLength, BlockMgr blkMgrNodes, BlockMgr blkMgrLeaves)
-    {
-        this(new BPlusTreeParams(N, recordLength, 0), blkMgrNodes, blkMgrLeaves) ;
-    }
+//    private BPlusTree(BPlusTreeParams params) { this.bpTreeParams = params ; }
+//
+//    BPlusTree(int N, int recordLength, BlockMgr blkMgrNodes, BlockMgr blkMgrLeaves)
+//    {
+//        this(new BPlusTreeParams(N, recordLength, 0), blkMgrNodes, blkMgrLeaves) ;
+//    }
 
     BPlusTree(BPlusTreeParams params, BlockMgr blkMgrNodes, BlockMgr blkMgrLeaves)
     {
@@ -182,35 +181,58 @@ public class BPlusTree implements Iterable<Record>, RangeIndex, Session
         recordsMgr = new BPTreeRecordsMgr(this, recordPageMgr) ;
     }
 
-    /** Set up according to the attached block storage for the B+Tree */
-    void attach()
+    /** Create if does not exist */
+    private void createIfAbsent()
     {
         // This fixes the root to being block 0
-        if ( nodeManager.valid(0) )
+        if ( ! nodeManager.valid(0) )
+        //if ( ! nodeManager.getBlockMgr().isEmpty() )
         {
-            // Signal both?
-            nodeManager.startRead() ;       // Just the nodeManager
-            // Existing BTree
+            // Create as does not exist.
+            // [TxTDB:PATCH-UP]
+            // ** Better: seperate "does it exist? - create statics used in factory"
+            startUpdateBlkMgr() ;
+            // Fresh BPlusTree
+            BPTreeNode root = nodeManager.createEmptyBPT() ;
+            rootIdx = root.getId() ;
+            if ( rootIdx != 0 )
+                throw new InternalError() ;
+            if ( CheckingNode )
+                root.checkNodeDeep() ;
+            setRoot(root) ;
+            finishUpdateBlkMgr() ;
+        }
+    }
+
+    private BPTreeNode getRoot()
+    {
+        // Do we cache it or not?
+        // Need to set read/write on every operation.
+        if ( root == null )
+        {
+            rootIdx = 0 ;
+            nodeManager.startRead() ;
             root = nodeManager.getRoot(rootIdx) ;
             rootIdx = root.getId() ;
             // Build root node.
             // Per session count only.
-            sessionCounter = 0 ;
             nodeManager.finishRead() ;
         }
-        else
-        {
-            startUpdateBlkMgr() ;
-            // Fresh BPlusTree
-            root = nodeManager.createEmptyBPT() ;
-            rootIdx = root.getId() ;
-            if ( rootIdx != 0 )
-                throw new InternalError() ;
-            sessionCounter = 0 ;
-            if ( CheckingNode )
-                root.checkNodeDeep() ;
-            finishUpdateBlkMgr() ;
-        }
+        //BPTreeNode root2 = nodeManager.getRoot(rootIdx) ;
+        return root ;
+    }
+
+    private void setRoot(BPTreeNode node)
+    {
+        root = node ;
+    }
+
+    private void releaseRoot(BPTreeNode root)
+    {
+        root.release() ;
+        //nodeManager.releaseRoot(rootIdx) ;
+        if ( root != this.root )
+            log.warn("Root is not root!") ;
     }
 
     /** Get the parameters describing this B+Tree */
@@ -232,37 +254,16 @@ public class BPlusTree implements Iterable<Record>, RangeIndex, Session
     {
         startReadBlkMgr() ;
         BPTreeNode root = getRoot() ;
-        Record v = root.search(record) ;
+        Record v = BPTreeNode.search(root, record) ;
         releaseRoot(root) ;
         finishReadBlkMgr() ;
         return v ;
     }
     
-    // Operations to bracket access to the root node.
-    
-    private BPTreeNode getRoot()
-    {
-        // Cache it?
-        // Across staert/Update
-        //BPTreeNode root2 = nodeManager.getRoot(rootIdx) ;
-        return root ;
-    }
-    
-    private void releaseRoot(BPTreeNode root)
-    {
-        //nodeManager.releaseRoot(rootIdx) ;
-        if ( root != this.root )
-            log.warn("Root is not root!") ;
-    }
-
     @Override
     public boolean contains(Record record)
     {
-        startReadBlkMgr() ;
-        BPTreeNode root = getRoot() ;
-        Record r = root.search(record) ;
-        releaseRoot(root) ;
-        finishReadBlkMgr() ;
+        Record r = find(record) ;
         return r != null ;
     }
 
@@ -299,9 +300,7 @@ public class BPlusTree implements Iterable<Record>, RangeIndex, Session
     {
         startUpdateBlkMgr() ;
         BPTreeNode root = getRoot() ;
-        Record r = root.insert(record) ;
-        if ( r == null )
-            sessionCounter++ ;
+        Record r = BPTreeNode.insert(root, record) ;
         if ( CheckingTree ) root.checkNodeDeep() ;
         releaseRoot(root) ;
         finishUpdateBlkMgr() ;
@@ -316,9 +315,7 @@ public class BPlusTree implements Iterable<Record>, RangeIndex, Session
     {
         startUpdateBlkMgr() ;
         BPTreeNode root = getRoot() ;
-        Record r =  root.delete(record) ;
-        if ( r != null )
-            sessionCounter -- ;
+        Record r = BPTreeNode.delete(root, record) ;
         if ( CheckingTree ) root.checkNodeDeep() ;
         releaseRoot(root) ;
         finishUpdateBlkMgr() ;
@@ -426,12 +423,6 @@ public class BPlusTree implements Iterable<Record>, RangeIndex, Session
 //    }
 
     @Override
-    public long sessionTripleCount()
-    {
-        return sessionCounter ;
-    }
-
-    @Override
     public long size()
     {
         Iterator<Record> iter = iterator() ;
@@ -440,23 +431,23 @@ public class BPlusTree implements Iterable<Record>, RangeIndex, Session
     
     long sizeByCounting()
     {
-        return root.size() ;
+        return getRoot().size() ;
     }
 
     @Override
     public void check()
     {
-        root.checkNodeDeep() ;
+        getRoot().checkNodeDeep() ;
     }
 
     public void dump()
     {
-        root.dump() ;
+        getRoot().dump() ;
     }
     
     public void dump(IndentedWriter out)
     {
-        root.dump(out) ;
+        getRoot().dump(out) ;
     }
 }
 

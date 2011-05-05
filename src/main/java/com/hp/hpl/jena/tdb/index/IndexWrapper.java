@@ -65,10 +65,6 @@ public class IndexWrapper implements Index
     @Override
     public long size()
     { return index.size() ; }
-
-    @Override
-    public long sessionTripleCount()
-    { return index.sessionTripleCount() ; }
 }
 
 /*

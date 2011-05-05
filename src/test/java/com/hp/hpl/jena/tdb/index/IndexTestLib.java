@@ -138,8 +138,6 @@ public class IndexTestLib
     public static void testDelete(Index index, int[] vals)
     {
         long size1 = index.size() ;
-        long size1a = index.sessionTripleCount() ;
-        assertEquals(size1, size1a) ;
         
         int count = 0 ;
         count = delete(index, vals) ;
@@ -155,11 +153,8 @@ public class IndexTestLib
         for ( Record r : x )
             BaseTest.assertFalse(index.contains(r)) ;
         long size2 = index.size() ;
-        long size2a = index.sessionTripleCount() ;
 
         assertEquals(size1-count, size2) ;
-        assertEquals(size2,size2a) ;
-        
     }
 
     public static int delete(Index index, int[] vals)
@@ -188,7 +183,7 @@ public class IndexTestLib
         // Make a unique list of expected records.  Remove duplicates
         List<Integer> y = unique(asList(records)) ;
         
-        assertEquals("Expected records size and tree size different", y.size(), index.sessionTripleCount()) ;
+        assertEquals("Expected records size and tree size different", y.size(), index.size()) ;
         assertEquals("Expected records size and iteration over all keys are of different sizes", y.size(), x.size()) ;
         
         if ( index instanceof RangeIndex )

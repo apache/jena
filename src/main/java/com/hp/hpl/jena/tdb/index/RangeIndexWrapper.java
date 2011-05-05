@@ -86,10 +86,6 @@ public class RangeIndexWrapper implements RangeIndex
     @Override
     public long size()
     { return rIndex.size() ; }
-
-    @Override
-    public long sessionTripleCount()
-    { return rIndex.sessionTripleCount() ; }
 }
 
 /*
