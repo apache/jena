@@ -56,10 +56,14 @@ and is used by the clock.
 
 */
 
+/* Java6: get MAC address:
+NetworkInterface ni = NetworkInterface.getByInetAddress(address)
+*/
+
 /** Generator for timebased UUIDs (version 1, variant 2)
  * 
  * @author		Andy Seaborne
- * @version 	$Id: UUID_V1_Gen.java,v 1.1 2009-06-29 08:55:40 castagna Exp $
+ * @version 	$Id: UUID_V1_Gen.java,v 1.2 2011-05-05 20:48:51 andy_seaborne Exp $
  */
 
 
@@ -269,7 +273,7 @@ public class UUID_V1_Gen implements UUIDFactory
         // Can also set the clock sequence number to increase the randomness.
         // Use up to 13 bits for the clock (actually, it's 14 bits as 
         // strays into the variant).
-        // We use less to ge a characteristic "-80??-" in the string
+        // We use less to get a characteristic "-80??-" in the string
         
         clockSeq = 0 ;
         if ( CLOCK_BITS != 0 )

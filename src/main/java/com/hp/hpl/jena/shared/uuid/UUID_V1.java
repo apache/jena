@@ -41,11 +41,7 @@ The least significant long consists of the following unsigned fields:
 0x0000FFFFFFFFFFFF node
 */
 
-/** Timebased UUIDs.
- * 
- * @author		Andy Seaborne
- * @version 	$Id: UUID_V1.java,v 1.1 2009-06-29 08:55:39 castagna Exp $
- */
+/** Timebased UUIDs. */
 
 
 public class UUID_V1 extends JenaUUID
