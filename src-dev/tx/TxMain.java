@@ -82,7 +82,7 @@ public class TxMain
     
     public static void main(String... args)
     {
-        //bpTreeTracking(args) ; exit(0) ;
+        bpTreeTracking() ; exit(0) ;
         
         
         String dirname = "DBX" ;
@@ -143,7 +143,9 @@ public class TxMain
     
     public static void bpTreeTracking(String... args)
     {
-        if ( true )
+        boolean logging = false ;
+
+        if ( false )
         {
             Log.enable(BPTreeNode.class.getName(), "ALL") ;
             SystemTDB.Checking = true ;
@@ -167,13 +169,15 @@ public class TxMain
             System.out.println("Block size = "+blockSize) ;
             
             BlockMgr mgr1 = BlockMgrFactory.createMem("B1", blockSize) ;
-            //mgr1 = new BlockMgrTracker("BlkMgr1", mgr1) ;
-            //mgr1 = new BlockMgrLogger("BlkMgr1", mgr1, true) ;
+            mgr1 = new BlockMgrTracker("BlkMgr1", mgr1) ;
+            if ( logging )
+                mgr1 = new BlockMgrLogger("BlkMgr1", mgr1, true) ;
             
             BlockMgr mgr2 = BlockMgrFactory.createMem("B2", blockSize) ;
 
             mgr2 = new BlockMgrTracker("BlkMgr2", mgr2) ;
-            mgr2 = new BlockMgrLogger("BlkMgr2", mgr2, true) ;
+            if ( logging )
+                mgr2 = new BlockMgrLogger("BlkMgr2", mgr2, true) ;
             
             BPlusTree bpt = BPlusTree.attach(params, mgr1, mgr2) ;
             rIndex = bpt ;
