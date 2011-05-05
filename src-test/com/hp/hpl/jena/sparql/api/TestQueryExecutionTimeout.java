@@ -4,15 +4,17 @@
 
 package com.hp.hpl.jena.sparql.api ;
 
+import static org.openjena.atlas.lib.Lib.sleep ;
+
 import java.util.concurrent.TimeUnit ;
 
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
 import org.openjena.atlas.junit.BaseTest ;
-import static org.openjena.atlas.lib.Lib.sleep ;
 
 import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.query.DatasetFactory ;
 import com.hp.hpl.jena.query.QueryCancelledException ;
@@ -186,6 +188,30 @@ public class TestQueryExecutionTimeout extends BaseTest
         qExec.close() ;
     }
     
+    // Set timeouts via context.
+    
+    @Test
+    public void timeout_20()
+    {
+        String qs = prefix + "SELECT * { ?s ?p ?o }" ;
+        ARQ.getContext().set(ARQ.queryTimeout, "20") ;
+        QueryExecution qExec = QueryExecutionFactory.create(qs, ds) ;
+        ResultSet rs = qExec.execSelect() ;
+        sleep(50) ;
+        exceptionExpected(rs) ; 
+    }
+    
+    @Test
+    public void timeout_21()
+    {
+        String qs = prefix + "SELECT * { ?s ?p ?o }" ;
+        ARQ.getContext().set(ARQ.queryTimeout, "20,10") ;
+        QueryExecution qExec = QueryExecutionFactory.create(qs, ds) ;
+        ResultSet rs = qExec.execSelect() ;
+        sleep(50) ;
+        exceptionExpected(rs) ; 
+    }
+
     private static void exceptionExpected(ResultSet rs)
     {
         try { ResultSetFormatter.consume(rs) ; fail("QueryCancelledException expected") ; } catch (QueryCancelledException ex) {}

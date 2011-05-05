@@ -7,8 +7,8 @@
 package com.hp.hpl.jena.sparql.engine;
 
 import org.openjena.atlas.lib.Closeable ;
+import org.openjena.atlas.logging.Log ;
 
-import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.sparql.ARQConstants ;
 import com.hp.hpl.jena.sparql.algebra.Algebra ;
@@ -18,9 +18,7 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingRoot ;
 import com.hp.hpl.jena.sparql.mgt.Explain ;
 import com.hp.hpl.jena.sparql.mgt.QueryEngineInfo ;
-import org.openjena.atlas.logging.Log ;
 import com.hp.hpl.jena.sparql.util.Context ;
-import com.hp.hpl.jena.sparql.util.NodeFactory ;
 
 /** Main part of a QueryEngine - something that takes responsibility for a complete query execution */ 
 public abstract class QueryEngineBase implements OpEval, Closeable
@@ -42,7 +40,6 @@ public abstract class QueryEngineBase implements OpEval, Closeable
     {
         this(dataset, input, context) ;
         this.query = query ;
-        this.context.put(ARQConstants.sysCurrentQuery, query) ;
         // Build the Op.
         query.setResultVars() ;
         // Unoptimized so far.
@@ -52,14 +49,14 @@ public abstract class QueryEngineBase implements OpEval, Closeable
     protected QueryEngineBase(Op op, DatasetGraph dataset, Binding input, Context context)
     {
         this(dataset, input, context) ;
-        query = null ;
+        this.query = null ;
         setOp(op) ;
     }
     
     private QueryEngineBase(DatasetGraph dataset, Binding input, Context context)
     {
+        this.context = context ;
         this.dataset = dataset ;    // Maybe null e.g. in query
-        this.context = setupContext(context, dataset) ;
         
         if ( input == null )
         {
@@ -67,28 +64,6 @@ public abstract class QueryEngineBase implements OpEval, Closeable
             input = BindingRoot.create() ;
         }
         this.startBinding = input ;
-    }
-    
-    // Put any per-dataset execution global configuration state here.
-    private static Context setupContext(Context context, DatasetGraph dataset)
-    {
-        if ( context == null )
-            context = ARQ.getContext() ;    // Already copied?
-        context = context.copy() ;
-
-        if ( dataset.getContext() != null )
-            // Copy per-dataset settings.
-            context.putAll(dataset.getContext()) ;
-        
-        context.set(ARQConstants.sysCurrentTime, NodeFactory.nowAsDateTime()) ;
-        
-        // Allocators.
-//        context.set(ARQConstants.sysVarAllocNamed, new VarAlloc(ARQConstants.allocVarMarkerExec)) ;
-//        context.set(ARQConstants.sysVarAllocAnon,  new VarAlloc(ARQConstants.allocVarAnonMarkerExec)) ;
-        // Add VarAlloc for variables and bNodes (this is not the parse name). 
-        // More added later e.g. query (if there is a query), algebra form (in setOp)
-        
-        return context ; 
     }
     
     public Plan getPlan()

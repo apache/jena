@@ -24,6 +24,7 @@ import org.openjena.atlas.logging.Log ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.n3.IRIResolver ;
+import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.query.QueryExecException ;
@@ -51,6 +52,7 @@ import com.hp.hpl.jena.sparql.syntax.Template ;
 import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.sparql.util.DatasetUtils ;
 import com.hp.hpl.jena.sparql.util.ModelUtils ;
+import com.hp.hpl.jena.sparql.util.NodeFactory ;
 import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
 import com.hp.hpl.jena.util.FileManager ;
 
@@ -83,6 +85,72 @@ public class QueryExecutionBase implements QueryExecution
         this.dataset = dataset ;
         this.context = context ;
         this.qeFactory = qeFactory ;
+        init() ;
+    }
+    
+    private void init()
+    {
+        context = setupContext(context, dataset == null ? null : dataset.asDatasetGraph()) ;
+        if ( query != null )
+            context.put(ARQConstants.sysCurrentQuery, query) ;
+        setAnyTimeouts() ;
+    }
+    
+    // Put any per-dataset execution global configuration state here.
+    private static Context setupContext(Context context, DatasetGraph dataset)
+    {
+        if ( context == null )
+            context = ARQ.getContext() ;    // Already copied?
+        context = context.copy() ;
+
+        if ( dataset != null && dataset.getContext() != null )
+            // Copy per-dataset settings.
+            context.putAll(dataset.getContext()) ;
+        
+        context.set(ARQConstants.sysCurrentTime, NodeFactory.nowAsDateTime()) ;
+        
+        // Allocators.
+//        context.set(ARQConstants.sysVarAllocNamed, new VarAlloc(ARQConstants.allocVarMarkerExec)) ;
+//        context.set(ARQConstants.sysVarAllocAnon,  new VarAlloc(ARQConstants.allocVarAnonMarkerExec)) ;
+        // Add VarAlloc for variables and bNodes (this is not the parse name). 
+        // More added later e.g. query (if there is a query), algebra form (in setOp)
+        
+        return context ; 
+    }
+    
+    private void setAnyTimeouts()
+    {
+        if ( context.isDefined(ARQ.queryTimeout) )
+        {
+            Object obj = context.get(ARQ.queryTimeout) ;
+            if ( obj instanceof Number )
+            {
+                long x = ((Number)obj).longValue() ;
+                //System.err.println("timeout("+x+")") ;
+                setTimeout(x) ;
+            } else if ( obj instanceof String )
+            {
+                try {
+                    String str = obj.toString() ;
+                    if ( str.contains(",") )
+                    {
+                        String[] a = str.split(",") ;
+                        long x1 = Long.parseLong(a[0]) ;
+                        long x2 = Long.parseLong(a[1]) ;
+                        //System.err.println("timeout("+x1+", "+x2+")") ;
+                        setTimeout(x1, x2) ;
+                    }
+                    else
+                    {
+                        long x = Long.parseLong(str) ;
+                        //System.err.println("timeout("+x+")") ;
+                        setTimeout(x) ;
+                    }
+                } catch (RuntimeException ex) { Log.warn(this, "Can't interpret string for timeout: "+obj) ; }
+            }
+            else
+                Log.warn(this, "Can't interpret timeout: "+obj) ;
+        }
     }
     
     // Old, synchronous code.
@@ -134,7 +202,6 @@ public class QueryExecutionBase implements QueryExecution
             throw new QueryExecException("Attempt to have ResultSet from a "+labelForQuery(query)+" query") ; 
         return execResultSet() ;
     }
-
 
     // Construct
     public Model execConstruct()

@@ -3,7 +3,13 @@ package dev ;
 public class DevARQ
 {
     // Config assembler.
-    // In-memory query to use reordering. 
+    // In-memory query to use reordering.
+    
+    // Timeout: content info - 
+    //  set in QueryExecutionBase constructor
+    //    (or QueryExecutionFactory.make(Query query, Dataset dataset, Context context))
+    //   1/ copy in dataset context earlier, not in QueryEngineMain.setupContext
+    //   2/ Move to QueryExecutionBase constructor.
     
     // 18.
     

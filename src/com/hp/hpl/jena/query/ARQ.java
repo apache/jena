@@ -129,7 +129,6 @@ public class ARQ
     
     public static final Symbol inputGraphBNodeLabels =  
         ARQConstants.allocSymbol("inputGraphBNodeLabels") ;
-    
 
     /** Turn on processing of blank node labels in queries */  
     public static void enableBlankNodeResultLabels() { enableBlankNodeResultLabels(true) ; }
@@ -142,9 +141,19 @@ public class ARQ
         globalContext.set(outputGraphBNodeLabels, b) ;
     }
 
+
+    /**
+     * Set timeout.  The value of this symbol gives thevalue of the timeout in milliseconds
+     * <ul>
+     * <li>A Number</li>
+     * <li>A string, e.g. "1000", parsed as a number</li>
+     * <li>A string, as two numbers separated by a comma, "1000,500" parsed as two numbers</li>
+     * </ul>
+     */
+    public static final Symbol queryTimeout = ARQConstants.allocSymbol("queryTimeout") ;
+    
     /**
      * Context symbol controlling Roman Numerals in Filters.
-     * This is on a global basis - it can't be set per-query or per-query-execution basis.
      */
     public static final Symbol enableRomanNumerals = ARQConstants.allocSymbol("romanNumerals") ;
 
