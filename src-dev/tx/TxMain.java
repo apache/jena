@@ -148,15 +148,15 @@ public class TxMain
         System.out.println("Block size = "+blockSize) ;
         
         BlockMgr mgr1 = BlockMgrFactory.createMem("B1", blockSize) ;
-        mgr1 = new BlockMgrTracker("BlkMgr1", mgr1) ;
+        mgr1 = new BlockMgrTracker("BlkMgr/Nodes", mgr1) ;
         if ( logging )
-            mgr1 = new BlockMgrLogger("BlkMgr1", mgr1, true) ;
+            mgr1 = new BlockMgrLogger("BlkMgr/Nodes", mgr1, true) ;
         
         BlockMgr mgr2 = BlockMgrFactory.createMem("B2", blockSize) ;
 
-        mgr2 = new BlockMgrTracker("BlkMgr2", mgr2) ;
+        mgr2 = new BlockMgrTracker("BlkMgr/Records", mgr2) ;
         if ( logging )
-            mgr2 = new BlockMgrLogger("BlkMgr2", mgr2, true) ;
+            mgr2 = new BlockMgrLogger("BlkMgr/Records", mgr2, true) ;
         
         BPlusTree bpt = BPlusTree.create(params, mgr1, mgr2) ;
         return bpt ;
@@ -174,6 +174,7 @@ public class TxMain
         }
         RecordFactory rf = new RecordFactory(8,8) ;
         RangeIndex rIndex = createBPT(3, rf, false) ;
+        
         boolean b = rIndex.isEmpty() ;
         
         final Logger log = LoggerFactory.getLogger("BPlusTree") ;

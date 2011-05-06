@@ -205,13 +205,13 @@ public class BPlusTree implements Iterable<Record>, RangeIndex, Session
         if ( root == null )
         {
             rootIdx = 0 ;
-            nodeManager.startRead() ;
+            //--nodeManager.startRead() ;
             // Get, readable.
             root = nodeManager.getRoot(rootIdx) ;
             rootIdx = root.getId() ;
             // Build root node.
             // Per session count only.
-            nodeManager.finishRead() ;
+            //--nodeManager.finishRead() ;
         }
         //BPTreeNode root2 = nodeManager.getRoot(rootIdx) ;
         return root ;
@@ -225,7 +225,6 @@ public class BPlusTree implements Iterable<Record>, RangeIndex, Session
     private void releaseRoot(BPTreeNode root)
     {
         root.release() ;
-        //nodeManager.releaseRoot(rootIdx) ;
         if ( root != this.root )
             log.warn("Root is not root!") ;
     }
