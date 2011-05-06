@@ -1,34 +1,44 @@
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Talis Systems Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
 package com.hp.hpl.jena.tdb.assembler;
 
-import static com.hp.hpl.jena.sparql.util.graph.GraphUtils.exactlyOneProperty ;
-import static com.hp.hpl.jena.sparql.util.graph.GraphUtils.getStringValue ;
-import static com.hp.hpl.jena.tdb.assembler.VocabTDB.pLocation ;
-import static com.hp.hpl.jena.tdb.assembler.VocabTDB.* ;
-import org.openjena.atlas.logging.Log ;
+import static com.hp.hpl.jena.sparql.util.graph.GraphUtils.exactlyOneProperty;
+import static com.hp.hpl.jena.sparql.util.graph.GraphUtils.getStringValue;
+import static com.hp.hpl.jena.tdb.assembler.VocabTDB.pLocation;
+import static com.hp.hpl.jena.tdb.assembler.VocabTDB.pUnionDefaultGraph;
 
-import com.hp.hpl.jena.assembler.Assembler ;
-import com.hp.hpl.jena.assembler.Mode ;
-import com.hp.hpl.jena.assembler.exceptions.AssemblerException ;
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.query.Dataset ;
-import com.hp.hpl.jena.rdf.model.Resource ;
-import com.hp.hpl.jena.sparql.core.assembler.DatasetAssembler ;
-import com.hp.hpl.jena.sparql.expr.NodeValue ;
-import com.hp.hpl.jena.tdb.TDB ;
-import com.hp.hpl.jena.tdb.TDBFactory ;
-import com.hp.hpl.jena.tdb.base.file.Location ;
-import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
+import java.lang.reflect.Method;
+
+import org.openjena.atlas.logging.Log;
+
+import com.hp.hpl.jena.assembler.Assembler;
+import com.hp.hpl.jena.assembler.JA;
+import com.hp.hpl.jena.assembler.Mode;
+import com.hp.hpl.jena.assembler.exceptions.AssemblerException;
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.query.Dataset;
+import com.hp.hpl.jena.rdf.model.Property;
+import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.rdf.model.ResourceFactory;
+import com.hp.hpl.jena.sparql.core.assembler.DatasetAssembler;
+import com.hp.hpl.jena.sparql.expr.NodeValue;
+import com.hp.hpl.jena.sparql.util.graph.GraphUtils;
+import com.hp.hpl.jena.tdb.TDB;
+import com.hp.hpl.jena.tdb.TDBFactory;
+import com.hp.hpl.jena.tdb.base.file.Location;
+import com.hp.hpl.jena.tdb.store.DatasetGraphTDB;
 
 public class DatasetAssemblerTDB extends DatasetAssembler
 {
     static { TDB.init(); }
     
+    public static final Property pIndex = ResourceFactory.createProperty(JA.getURI(), "textIndex") ;
+
     @Override
     public Object open(Assembler a, Resource root, Mode mode)
     {
@@ -56,6 +66,26 @@ public class DatasetAssemblerTDB extends DatasetAssembler
                          "Failed to recognize value for union graph setting (ignored): "+b) ;
         }
         
+        try 
+        {
+            Class<?> clazz = Class.forName("org.apache.jena.larq.assembler.AssemblerLARQ") ;
+            if ( root.hasProperty(pIndex) ) 
+            {
+                try {
+                    Log.info(DatasetAssemblerTDB.class, "Initializing LARQ") ;
+                    String index = GraphUtils.getAsStringValue(root, pIndex) ;
+                    Class<?> paramTypes[] = new Class[] { Dataset.class, String.class } ;
+                    Method method = clazz.getDeclaredMethod("make", paramTypes) ;
+                    Object args[] = new Object[] { dsg.toDataset(), index } ;
+                    method.invoke(clazz, args) ;
+                } catch (Exception e) {
+                    Log.warn(DatasetAssemblerTDB.class, "Unable to initialize LARQ: " + e.getMessage()) ;
+                }                
+            }
+        } catch(ClassNotFoundException e) {
+            // 
+        }
+        
         /*
         <r> rdf:type tdb:DatasetTDB ;
             tdb:location "dir" ;
@@ -71,6 +101,7 @@ public class DatasetAssemblerTDB extends DatasetAssembler
 
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Talis Systems Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
