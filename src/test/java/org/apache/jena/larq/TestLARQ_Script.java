@@ -112,6 +112,16 @@ public class TestLARQ_Script extends TestCase
 
     @Test public void test_larq_7()
     { runTestScript("larq-q-7.rq", "data-1.ttl", "results-7.srj", new IndexBuilderString()) ; }
+
+    @Test public void test_larq_8()
+    {
+        if ( LARQ.AVOID_DUPLICATES ) {
+            runTestScript("larq-q-8.rq", "data-3.ttl", "results-8-nodup.srj", new IndexBuilderString()) ;
+        } else {
+            runTestScript("larq-q-8.rq", "data-3.ttl", "results-8.srj", new IndexBuilderString()) ;            
+        }
+    }
+
 }
 
 /*
