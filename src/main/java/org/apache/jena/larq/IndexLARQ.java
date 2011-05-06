@@ -36,6 +36,8 @@ import com.hp.hpl.jena.util.iterator.Map1Iterator;
 /** ARQ wrapper for a Lucene index. */
 public class IndexLARQ
 {
+    
+    protected final IndexSearcher searcher ;
     protected final IndexReader reader ;
     protected final QueryParser luceneQueryParser ;
     protected final Analyzer analyzer ;
@@ -49,6 +51,7 @@ public class IndexLARQ
     { 
         //this(r, new QueryParser(LARQ.fIndex, a)) ;
         reader = r ;
+        searcher = new IndexSearcher(reader) ;
         analyzer = a ;
         luceneQueryParser = null ;
         
@@ -59,6 +62,7 @@ public class IndexLARQ
     public IndexLARQ(IndexReader r, QueryParser qp)
     { 
         reader = r ;
+        searcher = new IndexSearcher(reader) ;
         analyzer = qp.getAnalyzer() ;
         luceneQueryParser = qp ;
     }
@@ -125,8 +129,6 @@ public class IndexLARQ
     public Iterator<HitLARQ> search(String queryString)
     {    
         try{
-            final IndexSearcher searcher = new IndexSearcher(reader);
-            
             Query query = getLuceneQueryParser().parse(queryString) ;
             
             TopDocs topDocs = searcher.search(query, (Filter)null, LARQ.NUM_RESULTS ) ;
@@ -168,6 +170,11 @@ public class IndexLARQ
         try{
             if ( reader != null )
                 reader.close() ;
+        } catch (Exception e)
+        { throw new ARQLuceneException("close", e) ; }
+        try{
+            if ( searcher != null )
+                searcher.close() ;
         } catch (Exception e)
         { throw new ARQLuceneException("close", e) ; }
     }
