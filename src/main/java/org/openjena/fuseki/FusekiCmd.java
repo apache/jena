@@ -185,12 +185,6 @@ public class FusekiCmd extends CmdARQ
                 throw new CmdException(argPort.getKeyName()+" : bad port number: "+portStr) ;
             }
         }
-        else
-        {
-            Dataset ds = modDataset.createDataset() ;
-            if ( ds != null )
-                dsg = ds.asDatasetGraph() ;
-        }
             
         if ( dsg == null )
             throw new CmdException("No dataset defined: "+argUsage) ;
