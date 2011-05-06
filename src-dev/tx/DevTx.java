@@ -13,7 +13,7 @@ public class DevTx
     //   Write test harness for lock read/write usage in BPT operations.
     
     // Block to have a clean/dirty flag.
-    // Promote pages or promote blocks?
+    //   Promote pages or promote blocks?  Blocks - page pass down promotion.
     // End of transaction forces end of iterators, release of blocks etc.
     //   Blocks - assumes that system does magic to promote 
     //   Demote? No == put().
@@ -25,7 +25,8 @@ public class DevTx
      * interface UnitMgr<T>
      *  T getRead(int)
      *  T getWrite(int)
-     *  void release(T) or releaseRead, releaseWrite
+     *  void release(T) or releaseRead(T), releaseWrite(T)
+     *    release() because may getRead->promote->release
      *  void put(T)
      *  void free(T)
      *  void promote(T)
@@ -33,23 +34,17 @@ public class DevTx
     
     /*
      * Iterator tracking
-     * End transaction => close all open iterators.
-     * Need transaction - at least something to attach for tracking.
-     *   ==> Add "transaction txn" to all operations.
+     *   End transaction => close all open iterators.
+     *   Need transaction - at least something to attach for tracking.
+     *     ==> Add "transaction txn" to all RangeIndex operations.  Default null -> no transaction.
+     *     OR
+     *     ==> Add to B+Tree   .setTransaction(Transaction txn) 
+     *   End transaction -> close block managers -> checking? 
      *   
      * Recycle DatasetGraphTx objects.  Setup - set PageView
      *   better setup.
      */
 
-    
-    /** BTreePage has:
-    abstract void put() ;
-    abstract void promote() ;
-    abstract void release() ;
-    */
-    /* 
-     */
-    
     /*
      * Layers:
      *   DatasetGraph

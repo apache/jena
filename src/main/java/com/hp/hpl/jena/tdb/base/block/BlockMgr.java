@@ -25,16 +25,16 @@ public interface BlockMgr extends Sync, Closeable, Session
     /** Fetch a block, use for read only */
     public Block getRead(int id);
     
-    /** Release a block, obtained via getRead, unmodified. */
+    /** Fetch a block, use for write and read - only inside "update" */
+    public Block getWrite(int id);
+
+    /** Release a block, unmodified. */
     public void releaseRead(Block block) ;
     
     /** Release a block, obtained via getWrite, unmodified. */
     public void releaseWrite(Block block) ;
 
-    /** Fetch a block, use for write and read - only inside "update" */
-    public Block getWrite(int id);
-
-    /** Pomote from read-omnly to writeable */ 
+    /** Promote from read-only to writeable */ 
     public Block promote(Block block);
 
     /** Block is no longer being worked on - do not use after this call - get() it again */ 
