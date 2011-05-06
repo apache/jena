@@ -8,14 +8,15 @@ package larq;
 
 import java.util.Iterator;
 
+import larq.cmdline.CmdLARQ;
+import larq.cmdline.ModLARQindex;
+
 import org.apache.jena.larq.IndexBuilderModel;
 import org.apache.jena.larq.IndexBuilderString;
 import org.apache.jena.larq.IndexBuilderSubject;
 
 import arq.cmdline.ArgDecl;
-import arq.cmdline.CmdLARQ;
 import arq.cmdline.ModDatasetAssembler;
-import arq.cmdline.ModLARQindex;
 
 import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.rdf.model.Model;
