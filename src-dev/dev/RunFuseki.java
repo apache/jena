@@ -18,10 +18,11 @@ public class RunFuseki
                     //"-v", 
                     "--debug",
                     "--update",
+                    "--set=arq:queryTimeout=1000",
                     //"--port=3030", 
-                    "--mem",
+                    //"--mem",
                     //"--loc=DB",
-                    //"--file=books.ttl",
+                    "--file=/home/afs/Datasets/MusicBrainz/tracks-1k.nt",
                     //"--desc=desc.ttl", 
                     "/ds"
                     ) ;

@@ -56,6 +56,7 @@ public class FusekiCmd extends CmdARQ
     private static ArgDecl argMemTDB        = new ArgDecl(ArgDecl.NoValue,  "memtdb", "memTDB") ;
     private static ArgDecl argTDB           = new ArgDecl(ArgDecl.HasValue, "loc", "location") ;
     private static ArgDecl argPort          = new ArgDecl(ArgDecl.HasValue, "port") ;
+    private static ArgDecl argTimeout       = new ArgDecl(ArgDecl.HasValue, "timeout") ;
     
     //private static ModLocation          modLocation =  new ModLocation() ;
     private static ModDatasetAssembler  modDataset = new ModDatasetAssembler() ;
@@ -85,6 +86,7 @@ public class FusekiCmd extends CmdARQ
         add(argTDB,     "--loc=DIR",    "use an existing TDB database (or create if does not exist)") ;
         add(argMemTDB,  "--memTDB",     "Create an in-memory, non-persistent dataset using TDB (testing only)") ;
         add(argPort,    "--port",       "Port number") ;
+        add(argTimeout, "--timeout",    "Global timeout applied to queries (value in ms)") ;
         add(argAllowUpdate, "--update", "Allow updates (via SPARQL Update and SPARQL HTTP Update)") ;
         super.modVersion.addClass(TDB.class) ;
         super.modVersion.addClass(Fuseki.class) ;
@@ -202,6 +204,12 @@ public class FusekiCmd extends CmdARQ
             throw new CmdException("Dataset path name must begin with a /: "+datasetPath) ;
         
         allowUpdate = contains(argAllowUpdate) ;
+        
+        if ( contains(argTimeout) )
+        {
+            String str = getValue(argTimeout) ;
+            ARQ.getContext().set(ARQ.queryTimeout, str) ;
+        }
         
     }
 
