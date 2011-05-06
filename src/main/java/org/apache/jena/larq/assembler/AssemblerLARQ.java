@@ -49,17 +49,17 @@ public class AssemblerLARQ extends AssemblerBase implements Assembler
 
         try
         {
-            String index = GraphUtils.getAsStringValue(root, LARQAssemblerVocab.pIndex) ;
-            Directory directory = FSDirectory.open(new File(index));
-            return make(null, directory) ;
+            String indexPath = GraphUtils.getAsStringValue(root, LARQAssemblerVocab.pIndex) ;
+            return make(null, indexPath) ;
         } catch (Exception ex)
         {
             throw new ARQLuceneException("Failed to assemble Lucene index", ex) ;
         }
     }
     
-    public static IndexLARQ make (Dataset dataset, Directory directory) throws CorruptIndexException, IOException 
+    public static IndexLARQ make (Dataset dataset, String indexPath) throws CorruptIndexException, IOException 
     {
+        Directory directory = FSDirectory.open(new File(indexPath));
         IndexReader indexReader = null;
         if ( dataset != null ) {
             IndexWriter indexWriter = IndexWriterFactory.create(directory);
