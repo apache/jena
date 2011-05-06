@@ -73,12 +73,8 @@ public abstract class IndexBuilderLiteral extends IndexBuilderModel
             {
                 Node node = s.getObject().asNode() ;
                 
-                // this is to avoid duplicates
-                if ( ! super.index.getIndex().hasMatch(LARQ.fLex + ":\"" + node.getLiteralLexicalForm() + "\"" ))
-                {
-                    if ( indexThisLiteral(s.getLiteral()))
-                        index.index(node, node.getLiteralLexicalForm()) ;
-                }
+                if ( indexThisLiteral(s.getLiteral()))
+                    index.index(node, node.getLiteralLexicalForm()) ;
             }
         } catch (Exception e)
         { throw new ARQLuceneException("indexStatement", e) ; }
