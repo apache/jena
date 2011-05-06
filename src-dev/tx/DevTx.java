@@ -6,30 +6,41 @@ public class DevTx
     // TDB 0.8.10 is rev 8718; TxTDB forked at 8731
     // BlockMgrTracker to dump inconsistences on finish*, not just log a warning.
     
+    // B+Tree
+    //   Avoid reparsing root blocks.  Maybe release only after change.
     
     // Next: 
-    //   Write test harness for nlock read/write usage in BPT operations.
-    //   Release()
+    //   Write test harness for lock read/write usage in BPT operations.
     
     // Block to have a clean/dirty flag.
     // Promote pages or promote blocks?
+    // End of transaction forces end of iterators, release of blocks etc.
     //   Blocks - assumes that system does magic to promote 
     //   Demote? No == put().
-    //    Page extends Block?
     
     // See all : // [TxTDB:PATCH-UP]
     // Memory mapped files.
-    // Avoid reparsing root blocks.  Maybe release only after change.
-    
+
     /*
      * interface UnitMgr<T>
      *  T getRead(int)
      *  T getWrite(int)
-     *  void release(T)
+     *  void release(T) or releaseRead, releaseWrite
      *  void put(T)
      *  void free(T)
      *  void promote(T)
      */
+    
+    /*
+     * Iterator tracking
+     * End transaction => close all open iterators.
+     * Need transaction - at least something to attach for tracking.
+     *   ==> Add "transaction txn" to all operations.
+     *   
+     * Recycle DatasetGraphTx objects.  Setup - set PageView
+     *   better setup.
+     */
+
     
     /** BTreePage has:
     abstract void put() ;

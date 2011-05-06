@@ -6,25 +6,33 @@
 
 package tx.transaction;
 
+import java.util.ArrayList ;
+import java.util.Collections ;
+import java.util.Iterator ;
+import java.util.List ;
+
 /** A transaction handle */
 public class Transaction
 {
     private final long id ;
     private final TransactionManager txnMgr ;
+    private final List<Iterator<?>> iterators ; 
 
     public Transaction(long id, TransactionManager txnMgr)
     {
         this.id = id ;
         this.txnMgr = txnMgr ;
+        this.iterators = new ArrayList<Iterator<?>>() ;
     }
 
-    public void commit()                    { txnMgr.commit(this) ; }
+    public void commit()                            { txnMgr.commit(this) ; }
+    public void abort()                             { txnMgr.abort(this) ; }
+    public long getTxnId()                          { return id ; }
+    public TransactionManager getTxnMgr()           { return txnMgr ; }
     
-    public void abort()                     { txnMgr.abort(this) ; }
-
-    public long getId()                     { return id ; }
-
-    public TransactionManager getTxnMgr()   { return txnMgr ; }
+    public void addIterator(Iterator<?> iter)       { iterators.add(iter) ; }
+    public void removeIterator(Iterator<?> iter)    { iterators.remove(iter) ; }
+    public List<Iterator<?>> iterators()            { return Collections.unmodifiableList(iterators) ; }
 }
 
 /*

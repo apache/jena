@@ -44,24 +44,6 @@ import com.hp.hpl.jena.update.UpdateRequest ;
 
 public class TxMain
 {
-    /*
-     * Reads not doing a release
-     *   BlockMgr.getRead, BlockMgr.getWrite
-     *   BlockMgr.promote(Block) ;
-     * 
-     * Iterator tracking
-     * End transaction => close all open iterators.
-     *   BPlusTree.replicate(BlockMgr1, BlockMgr2)
-     *   BPlusTree.replicate(BlockMgrBuilder)
-     *   BPlusTree.replicate(BlockMgrMaker.make(old block mgr))
-     *      
-     * Recycle DatasetGraphTx objects.  Setup - set PageView
-     *   better setup.
-     * 
-     * Allocate and deallocate "Blocks" = id, (raw) size, and ByteBuffer (which knows it's size?)
-     *   Build for variable length
-     */
-    
     static { Log.setLog4j() ; }
     static String divider = "----------" ;
     static String nextDivider = null ;
