@@ -28,7 +28,9 @@ public class larqbuilder extends CmdLARQ
     ModLARQindex modIndex = new ModLARQindex() ;
     
     ArgDecl argNodes = new ArgDecl(ArgDecl.NoValue, "nodes", "subjects")  ;
+    ArgDecl argDuplicates = new ArgDecl(ArgDecl.NoValue, "allow-duplicates")  ;
     private boolean indexSubjects ;
+    private boolean allow_duplicates ;
     
     // --larq filename 
     public static void main(String... argv)
@@ -42,12 +44,13 @@ public class larqbuilder extends CmdLARQ
         super.addModule(modDataset) ;
         super.addModule(modIndex) ;
         super.add(argNodes, "--subjects", "Index literals to subject nodes") ;
+        super.add(argDuplicates, "--allow-duplicates", "Don't try to avoid duplicate literals (i.e. faster for bulk indexing)") ;
     }
 
     @Override
     protected String getSummary()
     {
-        return "larqbuilder --larq DIR [--subjects] --data RDF" ;
+        return "larqbuilder --larq DIR [--subjects] [--allow-duplicates] --data RDF" ;
     }
 
     @Override
@@ -55,6 +58,7 @@ public class larqbuilder extends CmdLARQ
     {
         super.processModulesAndArgs() ;
         indexSubjects = super.contains(argNodes) ;
+        allow_duplicates = super.contains(argDuplicates) ;
     }
     
     @Override
@@ -63,7 +67,8 @@ public class larqbuilder extends CmdLARQ
         // ---- Read and index all literal strings.
         IndexBuilderModel larqBuilder = 
             indexSubjects ? new IndexBuilderSubject(modIndex.getIndexWriter()) :
-                            new IndexBuilderString(modIndex.getIndexWriter()) ; 
+                            new IndexBuilderString(modIndex.getIndexWriter()) ;
+        if ( allow_duplicates ) larqBuilder.setAvoidDuplicates(false) ;
         Dataset ds = modDataset.getDataset() ;
         index(larqBuilder, ds.getDefaultModel()) ;
         for ( Iterator<String> iter = ds.listNames() ; iter.hasNext() ; )
