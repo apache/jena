@@ -35,7 +35,7 @@ public final class BPTreeNodeMgr extends BPTreePageMgr<BPTreeNode>
 //    public BlockMgr getBlockMgr() { return blockMgr ; } 
     
     /** Allocate root node space. The root is a node with a Records block.*/ 
-    public BPTreeNode createEmptyBPT()
+    public int createEmptyBPT()
     { 
         // Create an empty records block.
         
@@ -56,9 +56,10 @@ public final class BPTreeNodeMgr extends BPTreePageMgr<BPTreeNode>
         //n.ptrs.set(0, page.getId()) ; // This is the same as the size is one.
         
         n.isLeaf = true ;
-        n.setCount(0) ;     // Count is count of records. 
+        n.setCount(0) ;     // Count is count of records.
+        int rootId = n.getId()  ;
         n.put();
-        return n ;
+        return rootId ;
     }
     
     /** Allocate space for a fresh node. */ 

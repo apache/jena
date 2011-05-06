@@ -182,12 +182,16 @@ public class BPlusTree implements Iterable<Record>, RangeIndex, Session
             // ** Better: seperate "does it exist? - create statics used in factory"
             startUpdateBlkMgr() ;
             // Fresh BPlusTree
-            BPTreeNode root = nodeManager.createEmptyBPT() ;
-            rootIdx = root.getId() ;
+            rootIdx = nodeManager.createEmptyBPT() ;
             if ( rootIdx != 0 )
                 throw new InternalError() ;
+            
             if ( CheckingNode )
-                root.checkNodeDeep() ;
+            {            
+                BPTreeNode root = nodeManager.getRead(rootIdx) ;
+                    root.checkNodeDeep() ;
+                nodeManager.release(root) ;
+            }
             setRoot(root) ;
             finishUpdateBlkMgr() ;
         }
