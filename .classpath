@@ -5,8 +5,8 @@
 	<classpathentry kind="src" path="src-dev"/>
 	<classpathentry excluding="**/*.java" kind="src" path="resources"/>
 	<classpathentry kind="src" path="src-examples"/>
-	<classpathentry kind="var" path="M2_REPO/com/hp/hpl/jena/arq/2.8.9-SNAPSHOT/arq-2.8.9-SNAPSHOT-tests.jar" sourcepath="M2_REPO/com/hp/hpl/jena/arq/2.8.9-SNAPSHOT/arq-2.8.9-SNAPSHOT-test-sources.jar"/>
 	<classpathentry kind="var" path="M2_REPO/com/hp/hpl/jena/arq/2.8.9-SNAPSHOT/arq-2.8.9-SNAPSHOT.jar" sourcepath="M2_REPO/com/hp/hpl/jena/arq/2.8.9-SNAPSHOT/arq-2.8.9-SNAPSHOT-sources.jar"/>
+	<classpathentry kind="var" path="M2_REPO/com/hp/hpl/jena/arq/2.8.9-SNAPSHOT/arq-2.8.9-SNAPSHOT-tests.jar" sourcepath="M2_REPO/com/hp/hpl/jena/arq/2.8.9-SNAPSHOT/arq-2.8.9-SNAPSHOT-test-sources.jar"/>
 	<classpathentry kind="var" path="M2_REPO/com/ibm/icu/icu4j/3.4.4/icu4j-3.4.4.jar" sourcepath="M2_REPO/com/ibm/icu/icu4j/3.4.4/icu4j-3.4.4-sources.jar"/>
 	<classpathentry kind="var" path="M2_REPO/com/hp/hpl/jena/iri/0.8/iri-0.8.jar" sourcepath="M2_REPO/com/hp/hpl/jena/iri/0.8/iri-0.8-sources.jar"/>
 	<classpathentry kind="var" path="M2_REPO/com/hp/hpl/jena/jena/2.6.4/jena-2.6.4.jar" sourcepath="M2_REPO/com/hp/hpl/jena/jena/2.6.4/jena-2.6.4-sources.jar"/>
