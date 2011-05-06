@@ -4,8 +4,12 @@
   <classpathentry kind="src" path="src/main/java" including="**/*.java"/>
   <classpathentry kind="src" path="src/main/resources" excluding="**/*.java"/>
   <classpathentry kind="output" path="target/classes-eclipse"/>
-  <classpathentry kind="var" path="M2_REPO/com/hp/hpl/jena/arq/2.8.8/arq-2.8.8.jar" sourcepath="M2_REPO/com/hp/hpl/jena/arq/2.8.8/arq-2.8.8-sources.jar"/>
-  <classpathentry kind="var" path="M2_REPO/com/hp/hpl/jena/arq/2.8.8/arq-2.8.8-tests.jar" sourcepath="M2_REPO/com/hp/hpl/jena/arq/2.8.8/arq-2.8.8-test-sources.jar"/>
+  <classpathentry kind="var" path="M2_REPO/com/hp/hpl/jena/arq/2.8.9-SNAPSHOT/arq-2.8.9-SNAPSHOT.jar" sourcepath="M2_REPO/com/hp/hpl/jena/arq/2.8.9-SNAPSHOT/arq-2.8.9-SNAPSHOT-sources.jar">
+    <attributes>
+      <attribute value="jar:file:/home/castagna/.m2/repository/com/hp/hpl/jena/arq/2.8.9-SNAPSHOT/arq-2.8.9-SNAPSHOT-javadoc.jar!/" name="javadoc_location"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry kind="var" path="M2_REPO/com/hp/hpl/jena/arq/2.8.9-SNAPSHOT/arq-2.8.9-SNAPSHOT-tests.jar" sourcepath="M2_REPO/com/hp/hpl/jena/arq/2.8.9-SNAPSHOT/arq-2.8.9-SNAPSHOT-test-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/com/ibm/icu/icu4j/3.4.4/icu4j-3.4.4.jar" sourcepath="M2_REPO/com/ibm/icu/icu4j/3.4.4/icu4j-3.4.4-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/com/hp/hpl/jena/iri/0.8/iri-0.8.jar" sourcepath="M2_REPO/com/hp/hpl/jena/iri/0.8/iri-0.8-sources.jar">
     <attributes>
