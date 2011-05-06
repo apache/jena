@@ -145,7 +145,7 @@ public class IndexLARQ
         { throw new ARQLuceneException("search", e) ; }
     }
     
-    /** Check whether an index recognizes a node.   
+    /** Check whether an index recognises a node.   
      * @param node
      * @param queryString
      * @return boolean 
