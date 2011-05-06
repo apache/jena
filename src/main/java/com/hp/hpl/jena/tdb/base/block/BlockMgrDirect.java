@@ -18,6 +18,8 @@ import org.slf4j.LoggerFactory;
 /** Block manager that is NOT memory mapped. */
 public class BlockMgrDirect extends BlockMgrFile
 {
+    // OLD : See BlockMgrFileAccess + FileAccessDirect
+    
     // --> FileAccessDirect
     // [TxTDB:PATCH-UP]
     // BlockMgrFile/BlockMgrDirect/BlockMgrMapped need reworking

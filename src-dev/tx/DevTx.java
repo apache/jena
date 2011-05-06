@@ -4,6 +4,8 @@ package tx;
 public class DevTx
 {
     // TDB 0.8.10 is rev 8718; TxTDB forked at 8731
+    // BlockMgrTracker to dump inconsistences on finish*, not just log a warning.
+    
     
     // Next: 
     //   Write test harness for nlock read/write usage in BPT operations.

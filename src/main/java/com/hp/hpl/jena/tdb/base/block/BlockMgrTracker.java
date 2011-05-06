@@ -87,7 +87,10 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
     @Override
     public Block promote(Block block)
     {
-        log.info("promote("+block.getId()+")") ;
+        Integer id = block.getId() ;
+        activeWriteBlocks.add(id) ;
+//        getReadIds.remove(id) ;
+//        getWriteIds.add(id) ;
         return blockMgr.promote(block) ;
     }
     
