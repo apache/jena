@@ -414,7 +414,11 @@ public class TestLARQ_Code extends TestCase
 
         IndexLARQ index = b.getIndex() ;
         NodeIterator nIter = index.searchModelByIndex("foo") ;
-        assertEquals(1, TestLARQUtils.count(nIter)) ;
+        if ( LARQ.AVOID_DUPLICATES ) {
+            assertEquals(1, TestLARQUtils.count(nIter)) ;
+        } else {
+            assertEquals(2, TestLARQUtils.count(nIter)) ;
+        }
     }
     
     @Test public void test_duplicates_2() throws Exception 
@@ -428,7 +432,11 @@ public class TestLARQ_Code extends TestCase
 
         IndexLARQ index = indexBuilder.getIndex() ;
         NodeIterator nIter = index.searchModelByIndex("foo") ;
-        assertEquals(1, TestLARQUtils.count(nIter)) ;
+        if ( LARQ.AVOID_DUPLICATES ) {
+            assertEquals(1, TestLARQUtils.count(nIter)) ;
+        } else {
+            assertEquals(2, TestLARQUtils.count(nIter)) ;
+        }
     }
 
     @Test public void test_duplicates_3() 
@@ -446,7 +454,11 @@ public class TestLARQ_Code extends TestCase
 
         IndexLARQ index = b.getIndex() ;
         NodeIterator nIter = index.searchModelByIndex("foo") ;
-        assertEquals(2, TestLARQUtils.count(nIter)) ;
+        if ( LARQ.AVOID_DUPLICATES ) {
+            assertEquals(2, TestLARQUtils.count(nIter)) ;
+        } else {
+            assertEquals(4, TestLARQUtils.count(nIter)) ;
+        }
         nIter = index.searchModelByIndex("bar") ;
         assertEquals(2, TestLARQUtils.count(nIter)) ;
     }
@@ -462,7 +474,11 @@ public class TestLARQ_Code extends TestCase
         
         IndexLARQ index = indexBuilder.getIndex() ;
         NodeIterator nIter = index.searchModelByIndex("foo") ;
-        assertEquals(1, TestLARQUtils.count(nIter)) ;
+        if ( LARQ.AVOID_DUPLICATES ) {
+            assertEquals(1, TestLARQUtils.count(nIter)) ;
+        } else { 
+            assertEquals(2, TestLARQUtils.count(nIter)) ;
+        }
     }
     
     @Test public void test_duplicates_5() throws Exception 
@@ -477,7 +493,11 @@ public class TestLARQ_Code extends TestCase
         
         IndexLARQ index = indexBuilder.getIndex() ;
         NodeIterator nIter = index.searchModelByIndex("foo") ;
-        assertEquals(1, TestLARQUtils.count(nIter)) ;
+        if ( LARQ.AVOID_DUPLICATES ) {
+            assertEquals(1, TestLARQUtils.count(nIter)) ;
+        } else {
+            assertEquals(2, TestLARQUtils.count(nIter)) ;
+        }
         assertEquals(blank, index.searchModelByIndex("foo").nextNode());
         nIter = index.searchModelByIndex("bar") ;
         assertEquals(1, TestLARQUtils.count(nIter)) ;

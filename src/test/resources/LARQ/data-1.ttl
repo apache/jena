@@ -11,7 +11,7 @@
     .
 
 :doc2 dc:title "Document 2" ;
-    rdfs:label "A general label"
+    rdfs:label "Another general label"
     .
 
 :doc3 dc:title "Without the keyword" ;
