@@ -55,7 +55,7 @@ public class IndexFactoryBPlusTree implements IndexFactory, IndexRangeFactory
         
         BlockMgr blkMgrNodes = createBlockMgr(fileset, Names.bptExt1, blockSize) ;
         BlockMgr blkMgrRecords = createBlockMgr(fileset, Names.bptExt2, blockSize) ;
-        return BPlusTree.attach(params, blkMgrNodes, blkMgrRecords) ;
+        return BPlusTree.create(params, blkMgrNodes, blkMgrRecords) ;
     }
     
     static BlockMgr createBlockMgr(FileSet fileset, String filename, int blockSize)

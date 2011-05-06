@@ -79,35 +79,27 @@ public final class BPTreeNodeMgr extends BPTreePageMgr<BPTreeNode>
     /** Fetch a block for the root. */
     public BPTreeNode getRoot(int id)
     {
-        return get(id, BPlusTreeParams.RootParent) ;
+        return getRead(id, BPlusTreeParams.RootParent) ;
     }
     
-    /** Fetch a block - fil in the parent id, which is not in the on-disk bytes */
-    public BPTreeNode get(int id, int parent)
+    /** Fetch a block - fill in the parent id, which is not in the on-disk bytes */
+    public BPTreeNode getRead(int id, int parent)
     {
         // [TxTDB:PATCH-UP]
-//        Block block = blockMgr.getWrite(id) ;
-//        BPTreeNode n = converter.fromBlock(block) ;
-        BPTreeNode n = super.get(id) ;
+        BPTreeNode n = super.getRead(id) ;
         n.parent = parent ; // Necessary?
         return n ;
     }
-//    
-//
-//    @Override
-//    public void put(BPTreeNode node)
-//    {
-////        ByteBuffer bb = converter.toBlock(node) ;
-////        blockMgr.put(node.getId(), bb) ;
-//        Block block = converter.toBlock(node) ;
-//        blockMgr.put(block) ;
-//    }
+    
+    /** Fetch a block - fill in the parent id, which is not in the on-disk bytes */
+    public BPTreeNode getWrite(int id, int parent)
+    {
+        // [TxTDB:PATCH-UP]
+        BPTreeNode n = super.getWrite(id) ;
+        n.parent = parent ; // Necessary?
+        return n ;
+    }
 
-    // [TxTDB:PATCH-UP]
-    public void release(Block block)    { getBlockMgr().releaseWrite(block) ; }
-    
-//    public boolean valid(int id)        { return blockMgr.valid(id) ; }
-    
     public boolean isEmpty()            { return getBlockMgr().isEmpty() ; }
     
     @Override
@@ -115,8 +107,9 @@ public final class BPTreeNodeMgr extends BPTreePageMgr<BPTreeNode>
     { 
         for ( int idx = 0 ; valid(idx) ; idx++ )
         {
-            BPTreeNode n = get(idx, BPlusTreeParams.NoParent) ;
+            BPTreeNode n = getRead(idx, BPlusTreeParams.NoParent) ;
             System.out.println(n) ;
+            release(n) ;
         }
     }
     

@@ -83,13 +83,14 @@ class BPlusTreeTools
             while ( idx >= 0 )
             {
                 if ( verbose ) System.out.printf("idx = %d\n", idx) ;
-                RecordBufferPage page = recordPageMgr.get(idx) ;
+                RecordBufferPage page = recordPageMgr.getRead(idx) ;
                 if ( verbose ) System.out.printf("%04d :: id=%04d -> link=%04d [count=%d, max=%d]\n", n, page.getId(), page.getLink(), page.getCount(), page.getMaxSize()) ;
                 RecordBuffer rb = page.getRecordBuffer() ;
                 if ( verbose ) System.out.printf("     :: %d %d\n", rb.getSize(), rb.maxSize() ) ;
                 total += rb.size();
                 idx = page.getLink() ;
                 n++ ;
+                recordPageMgr.release(page) ;
             }
         } catch (Exception ex)
         {
@@ -125,7 +126,7 @@ class BPlusTreeTools
             {
                 if ( verbose ) System.out.printf("idx = %d\n", idx) ;
 
-                BPTreeNode node = nodeMgr.get(idx, 0) ;
+                BPTreeNode node = nodeMgr.getRead(idx, 0) ;
                 if ( node == null )
                     break ;
                 System.out.println(node) ;
@@ -134,6 +135,7 @@ class BPlusTreeTools
                 //                System.out.printf("%04d :: id=%04d -> link=%04d [count=%d, max=%d]\n", n, page.getId(), page.getLink(), page.getCount(), page.getMaxSize()) ;
                 n++ ;
                 idx ++ ;
+                nodeMgr.release(node) ;
             }
         } catch (Exception ex)
         {

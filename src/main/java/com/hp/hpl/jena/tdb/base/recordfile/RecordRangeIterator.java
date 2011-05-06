@@ -82,7 +82,10 @@ class RecordRangeIterator implements Iterator<Record>
                 return false ;
             }
             
-            RecordBufferPage nextPage = pageMgr.get(link) ;
+            if ( currentPage != null )
+                pageMgr.release(currentPage) ;
+            
+            RecordBufferPage nextPage = pageMgr.getRead(link) ;
             // Check currentPage -> nextPage is strictly increasing keys. 
             Record r1 = currentPage.getRecordBuffer().getHigh() ;
             Record r2 = nextPage.getRecordBuffer().getLow() ;
@@ -95,6 +98,9 @@ class RecordRangeIterator implements Iterator<Record>
             
         slot = currentPage.getRecordBuffer().get(currentIdx) ;
         currentIdx++ ;
+        if ( currentPage != null )
+            pageMgr.release(currentPage) ;
+        
         if ( maxRec != null && Record.keyGE(slot, maxRec) )
         {
             finish() ;

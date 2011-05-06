@@ -472,7 +472,7 @@ public class DatasetBuilderStd implements DatasetBuilder
             BlockMgr blkMgrNodes = blockMgrBuilder1.buildBlockMgr(fileset, Names.bptExt1, blockSize) ;
             BlockMgr blkMgrRecords = blockMgrBuilder2.buildBlockMgr(fileset, Names.bptExt2, blockSize) ;
             
-            return BPlusTree.attach(params, blkMgrNodes, blkMgrRecords) ;
+            return BPlusTree.create(params, blkMgrNodes, blkMgrRecords) ;
         }
 
     }

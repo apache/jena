@@ -55,10 +55,11 @@ public class TestRecordBufferPage extends BaseTest
             page1 = null ;
         }
         {
-            RecordBufferPage page2 = rpm.get(x) ;
+            RecordBufferPage page2 = rpm.getRead(x) ;
             assertEquals(10, get(page2, 0)) ;
             assertEquals(20, get(page2, 1)) ;
             assertEquals(30, get(page2, 2)) ;
+            rpm.release(page2) ;
         }
     }
 

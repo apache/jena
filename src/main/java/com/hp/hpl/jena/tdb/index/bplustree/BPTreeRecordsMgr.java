@@ -31,13 +31,20 @@ final public class BPTreeRecordsMgr implements Session //extends BPTreePageMgr
 //    /** Allocate an uninitialized slot. */ 
 //    public int allocateId()           { return rBuffPageMgr.allocateId() ; }
     
-    public BPTreeRecords get(int id)
+    public BPTreeRecords getRead(int id)
     {
-        RecordBufferPage rbp =  rBuffPageMgr.get(id) ;
+        RecordBufferPage rbp =  rBuffPageMgr.getRead(id) ;
         BPTreeRecords bRec = new BPTreeRecords(bpTree, rbp) ;
         return bRec ;
     }
     
+    public BPTreeRecords getWrite(int id)
+    {
+        RecordBufferPage rbp =  rBuffPageMgr.getWrite(id) ;
+        BPTreeRecords bRec = new BPTreeRecords(bpTree, rbp) ;
+        return bRec ;
+    }
+
     //public RecordBufferPageMgr getRecordBufferPageMgr() { return  rBuffPageMgr ; }
     
     public void put(BPTreeRecords bRec)

@@ -15,9 +15,9 @@ import com.hp.hpl.jena.tdb.base.page.Page ;
 public final class Block
 {
     private final Integer id ;          // Keep as object.  It's the cache key.
-    private final boolean readOnly = false ;
+    private final boolean readOnly ;
     private final FileRef fileRef ;
-    //private boolean dirty = false ;
+    private boolean modified = false ;
     
     private final ByteBuffer byteBuffer ;
     private BlockType type ;
@@ -29,7 +29,11 @@ public final class Block
         this.byteBuffer = byteBuffer ;
         this.type = BlockType.UNDEF ;
         this.fileRef = null ;
+        this.readOnly = false ;
+        // Initially a block is not modified.
+        this.modified = false ;
     }
+    
     
     public <T extends Page> T convert(BlockConverter<T> converter)
     {
@@ -44,11 +48,6 @@ public final class Block
     }
     
     
-    public boolean isReadonly()
-    {
-        return readOnly ;
-    }
-
     public final ByteBuffer getByteBuffer()
     {
         return byteBuffer ;
@@ -57,6 +56,18 @@ public final class Block
     public boolean isReadOnly()
     {
         return readOnly ;
+    }
+
+    public boolean isModified()
+    {
+        return modified ;
+    }
+
+    public void setModified(boolean modified)
+    {
+        if ( readOnly && modified )
+            throw new BlockException("Attempt to mark a readonly block as modified") ;
+        this.modified = modified ;
     }
 
     public FileRef getFileRef()

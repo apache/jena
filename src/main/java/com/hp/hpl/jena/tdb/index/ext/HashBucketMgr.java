@@ -39,10 +39,27 @@ public class HashBucketMgr extends PageBlockMgr<HashBucket>
         return bucket ;
     }
     
+    // [TxTDB:PATCH-UP]
     @Override
-    public HashBucket get(int id)
+    public HashBucket getWrite(int id)
+    { 
+        HashBucket page = _get(id) ;
+        page.getBackingBlock().setModified(true) ;
+        return page ;
+    }
+    // [TxTDB:PATCH-UP]
+    @Override
+    public HashBucket getRead(int id)        { return _get(id) ; }
+    
+    // [TxTDB:PATCH-UP]
+    //@Override
+    public HashBucket get(int id)        { return getWrite(id) ; }
+    
+   
+    public HashBucket _get(int id)
     {
-        HashBucket bucket = super.get(id) ;
+        // [TxTDB:PATCH-UP]
+        HashBucket bucket = super.getWrite(id) ;
         bucket.setPageMgr(this) ;
         // Link and Count are in the block and got done by the converter.
         return bucket ;

@@ -146,20 +146,19 @@ public final class BPTreeNode extends BPTreePage
     
     private BPTreePage getMgrRead(int subId)
     {
-        // [TxTDB:PATCH-UP]
         if ( isLeaf )
-            return bpTree.getRecordsMgr().get(subId) ;
+            return bpTree.getRecordsMgr().getRead(subId) ;
         else
-            return bpTree.getNodeManager().get(subId, this.id) ;
+            return bpTree.getNodeManager().getRead(subId, this.id) ;
     }
     
     private BPTreePage getMgrWrite(int subId)
     {
         // [TxTDB:PATCH-UP]
         if ( isLeaf )
-            return bpTree.getRecordsMgr().get(subId) ;
+            return bpTree.getRecordsMgr().getWrite(subId) ;
         else
-            return bpTree.getNodeManager().get(subId, this.id) ;
+            return bpTree.getNodeManager().getWrite(subId, this.id) ;
     }
     
 
@@ -338,7 +337,7 @@ public final class BPTreeNode extends BPTreePage
     public void put()   { bpTree.getNodeManager().put(this) ; } 
     
     @Override final
-    public void release()   { bpTree.getNodeManager().release(block) ; } 
+    public void release()   { bpTree.getNodeManager().release(this) ; } 
     
     // ============ SEARCH
     
@@ -716,7 +715,7 @@ public final class BPTreeNode extends BPTreePage
         count = n.count ;
         this.put();
         // Free up.
-        bpTree.getNodeManager().release(n.block) ;
+        bpTree.getNodeManager().release(n) ;
         internalCheckNodeDeep() ;
         
         if ( logging() )
@@ -1324,7 +1323,7 @@ public final class BPTreeNode extends BPTreePage
             if ( isLeaf )
             {
                 int ptr = ptrs.get(i) ;
-                BPTreeRecords records = bpTree.getRecordsMgr().get(ptr) ;
+                BPTreeRecords records = bpTree.getRecordsMgr().getRead(ptr) ;
                 int id = records.getId() ;
                 if ( id != ptrs.get(i) )
                     error("Records: Block @%d has a different id: %d :: %s", id, i, this) ;
@@ -1332,10 +1331,13 @@ public final class BPTreeNode extends BPTreePage
                 // Don't check if +1 does not exist.
                 if ( i != count )
                 {
-                    int id2 = bpTree.getRecordsMgr().get(ptrs.get(i)).getLink() ;
+                    BPTreeRecords page = bpTree.getRecordsMgr().getRead(ptrs.get(i)) ;
+                    int id2 = page.getLink() ;
                     if ( link != id2 )
                         error("Records: Link not to next block @%d/@%d has a different id: %d :: %s", id, id2, i, records) ;
+                    bpTree.getRecordsMgr().release(page) ;
                 }
+                bpTree.getRecordsMgr().release(records) ;
             }
             
         }

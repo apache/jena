@@ -36,8 +36,6 @@ import com.hp.hpl.jena.tdb.index.RangeIndexLogger ;
 import com.hp.hpl.jena.tdb.index.bplustree.BPTreeNode ;
 import com.hp.hpl.jena.tdb.index.bplustree.BPlusTree ;
 import com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams ;
-import com.hp.hpl.jena.tdb.index.btree.BTree ;
-import com.hp.hpl.jena.tdb.index.btree.BTreeParams ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 import com.hp.hpl.jena.update.UpdateAction ;
@@ -141,10 +139,34 @@ public class TxMain
         UpdateAction.execute(req, dsg) ;
     }
     
-    public static void bpTreeTracking(String... args)
+    private static RangeIndex createBPT(int order, RecordFactory rf)
     {
         boolean logging = false ;
+        
+        String label = "B+Tree" ;
+        BPlusTreeParams params = new BPlusTreeParams(order, rf) ;
+        System.out.println(label+": "+params) ;
+        
+        int blockSize  = BPlusTreeParams.calcBlockSize(order, rf) ;
+        System.out.println("Block size = "+blockSize) ;
+        
+        BlockMgr mgr1 = BlockMgrFactory.createMem("B1", blockSize) ;
+        mgr1 = new BlockMgrTracker("BlkMgr1", mgr1) ;
+        if ( logging )
+            mgr1 = new BlockMgrLogger("BlkMgr1", mgr1, true) ;
+        
+        BlockMgr mgr2 = BlockMgrFactory.createMem("B2", blockSize) ;
 
+        mgr2 = new BlockMgrTracker("BlkMgr2", mgr2) ;
+        if ( logging )
+            mgr2 = new BlockMgrLogger("BlkMgr2", mgr2, true) ;
+        
+        BPlusTree bpt = BPlusTree.create(params, mgr1, mgr2) ;
+        return bpt ;
+    }
+    
+    public static void bpTreeTracking(String... args)
+    {
         if ( false )
         {
             Log.enable(BPTreeNode.class.getName(), "ALL") ;
@@ -155,55 +177,15 @@ public class TxMain
         }
         RecordFactory rf = new RecordFactory(8,8) ;
         
-        RangeIndex rIndex ;
-        String label ;
-        if ( true )
-        {
-            label = "B+Tree" ;
-            int order = 2 ;
-            
-            BPlusTreeParams params = new BPlusTreeParams(order, rf) ;
-            System.out.println(label+": "+params) ;
-            
-            int blockSize  = BPlusTreeParams.calcBlockSize(order, rf) ;
-            System.out.println("Block size = "+blockSize) ;
-            
-            BlockMgr mgr1 = BlockMgrFactory.createMem("B1", blockSize) ;
-            mgr1 = new BlockMgrTracker("BlkMgr1", mgr1) ;
-            if ( logging )
-                mgr1 = new BlockMgrLogger("BlkMgr1", mgr1, true) ;
-            
-            BlockMgr mgr2 = BlockMgrFactory.createMem("B2", blockSize) ;
-
-            mgr2 = new BlockMgrTracker("BlkMgr2", mgr2) ;
-            if ( logging )
-                mgr2 = new BlockMgrLogger("BlkMgr2", mgr2, true) ;
-            
-            BPlusTree bpt = BPlusTree.attach(params, mgr1, mgr2) ;
-            rIndex = bpt ;
-        }
-        else
-        {
-            label = "BTree" ;
-            int btOrder  = 3 ;
-            int blkSize = BTreeParams.calcBlockSize(btOrder, rf) ;
-            BlockMgr mgr = BlockMgrFactory.createMem("B3", blkSize) ;
-            mgr = new BlockMgrTracker("B3", mgr) ;
-            BTreeParams params = new BTreeParams(btOrder, rf) ;
-            System.out.println(label+": "+params) ;
-            BTree btree = new BTree(params, mgr) ;
-            rIndex = btree ;
-        }
-        
+        RangeIndex rIndex = createBPT(3, rf) ;
         boolean b = rIndex.isEmpty() ;
         
-        
-        final Logger log = LoggerFactory.getLogger(label) ;
+        final Logger log = LoggerFactory.getLogger("BPlusTree") ;
         
         // Add logging.
         //rIndex = new RangeIndexLogger(rIndex, log) ;
         
-        for ( int i = 0 ; i < 4 ; i++ ) 
+        for ( int i = 0 ; i < 1 ; i++ ) 
         {
             //System.out.println("i = "+i) ;
             if ( false )
@@ -219,6 +201,10 @@ public class TxMain
             rIndex.add(r) ;
         }
 
+        
+        
+        exit(0) ;
+        
         System.out.println() ;
         
         Record r = record(rf, 3+0x100000L, 0) ;

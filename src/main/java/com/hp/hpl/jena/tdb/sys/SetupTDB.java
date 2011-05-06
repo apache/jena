@@ -718,7 +718,7 @@ public class SetupTDB
         BPlusTreeParams params = new BPlusTreeParams(order, factory) ;
         BlockMgr blkMgrNodes = BlockMgrFactory.create(fileset, Names.bptExt1, blockSize, readCacheSize, writeCacheSize) ;
         BlockMgr blkMgrRecords = BlockMgrFactory.create(fileset, Names.bptExt2, blockSize, readCacheSize, writeCacheSize) ;
-        return BPlusTree.attach(params, blkMgrNodes, blkMgrRecords) ;
+        return BPlusTree.create(params, blkMgrNodes, blkMgrRecords) ;
     }
 
     /** Set the global flag that control the "No BGP optimizer" warning.

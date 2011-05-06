@@ -57,8 +57,8 @@ public class TestBPTreeRecords extends BaseTest
         blkMgrRecords = BlockMgrFactory.createMem("BPTreeRecords", blockSize) ;
         recordBufferPageMgr = new RecordBufferPageMgr(recordFactory, blkMgrRecords) ;
         
-        // Order does not matter.
-        bPlusTree = BPlusTree.dummy(new BPlusTreeParams(3, recordFactory), null, blkMgrRecords) ;
+        // B+Tree order does not matter.
+        bPlusTree = BPlusTree.attach(new BPlusTreeParams(3, recordFactory), null, blkMgrRecords) ;
     }
     
     @AfterClass public static void afterClass()

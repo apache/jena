@@ -28,8 +28,9 @@ class BPlusTreeRewriterUtils
         List<Pair<Integer, Record>> x = Iter.toList(iter) ;
         for (Pair<Integer, Record> pair : x )
         {
-            RecordBufferPage rbp = recordPageMgr.get(pair.car()) ;
+            RecordBufferPage rbp = recordPageMgr.getRead(pair.car()) ;
             System.out.printf("%s -- RecordBufferPage[id=%d,link=%d] (%d) -> [%s]\n", pair, rbp.getId(), rbp.getLink(), rbp.getCount(), rbp.getRecordBuffer().getHigh() ) ;
+            recordPageMgr.release(rbp) ;
         }
         return x.iterator() ;
     }
@@ -40,13 +41,14 @@ class BPlusTreeRewriterUtils
         List<Pair<Integer, Record>> x = Iter.toList(iter2) ;
         for (Pair<Integer, Record> pair : x )
         {
-            BPTreeNode bpNode = bptNodeMgr.get(pair.car(), BPlusTreeParams.RootParent) ;
+            BPTreeNode bpNode = bptNodeMgr.getRead(pair.car(), BPlusTreeParams.RootParent) ;
             
             String hr = "null" ;
             if ( ! bpNode.getRecordBuffer().isEmpty() ) 
                 hr = bpNode.getRecordBuffer().getHigh().toString() ;
             
             System.out.printf("%s -- BPTreeNode: %d (%d) -> [%s]\n", pair, bpNode.getId(), bpNode.getCount(), hr) ;
+            bptNodeMgr.release(bpNode) ;
         }
         return x.iterator() ;
     }
@@ -59,9 +61,10 @@ class BPlusTreeRewriterUtils
         for (Pair<Integer, Record> pair : x )
         {
             System.out.printf("  %s\n",pair) ;
-            RecordBufferPage rbp = recordPageMgr.get(pair.car()) ;
+            RecordBufferPage rbp = recordPageMgr.getRead(pair.car()) ;
             //System.out.printf("RecordBufferPage[id=%d,link=%d] %d\n", rbp.getId(), rbp.getLink(), rbp.getCount() ) ;
             System.out.println(rbp) ;
+            recordPageMgr.release(rbp) ;
         }
         System.out.printf("<<Packed data blocks\n") ;
         System.out.printf("Blocks: %d\n", x.size()) ;
@@ -76,10 +79,11 @@ class BPlusTreeRewriterUtils
         for (Pair<Integer, Record> pair : x )
         {
             System.out.printf("  %s\n",pair) ;
-            BPTreeNode bpNode = bptNodeMgr.get(pair.car(), BPlusTreeParams.RootParent) ;
+            BPTreeNode bpNode = bptNodeMgr.getRead(pair.car(), BPlusTreeParams.RootParent) ;
             bpNode.setIsLeaf(true) ;
             System.out.printf("BPTreeNode: %d\n", bpNode.getId()) ;
             System.out.println(bpNode) ;
+            bptNodeMgr.release(bpNode) ;
         }
         System.out.printf("<<Packed index blocks\n") ;
         return x.iterator() ;

@@ -7,6 +7,8 @@
 
 package com.hp.hpl.jena.tdb.base.page;
 
+import org.openjena.atlas.logging.Log ;
+
 import com.hp.hpl.jena.tdb.base.block.Block ;
 import com.hp.hpl.jena.tdb.base.block.BlockConverter ;
 import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
@@ -37,12 +39,23 @@ public class PageBlockMgr<T extends Page>
     public T create(BlockType bType)
     {
         Block block = blockMgr.allocate(bType, -1) ;
+        block.setModified(true) ;
         T newThing = pageFactory.createFromBlock(block, bType) ;
         return newThing ;
     }
     
+    // [TxTDB:PATCH-UP]
+    public T getWrite(int id)
+    { 
+        T page = _get(id) ;
+        page.getBackingBlock().setModified(true) ;
+        return page ;
+    }
+    // [TxTDB:PATCH-UP]
+    public T getRead(int id)        { return _get(id) ; }
+
     /** Fetch a block and make a T : must be called single-reader */
-    public T get(int id)
+    private T _get(int id)
     {
         // I don't think this is needed.
         synchronized (blockMgr)
@@ -57,13 +70,31 @@ public class PageBlockMgr<T extends Page>
 
     public void put(T page)
     {
+        if ( ! page.getBackingBlock().isModified() )
+            Log.warn(this, "Page "+page.getId()+" not modified") ;
+        
         Block blk = pageFactory.toBlock(page) ;
         blockMgr.put(blk) ;
     }
 
-    public void release(Page page)      { blockMgr.freeBlock(page.getBackingBlock()) ; }
+    public void release(Page page)
+    { 
+        Block block = page.getBackingBlock() ;
+        if ( block.isModified() )
+        {
+            Log.warn(this, "Page "+page.getId()+": releasing a page acquired for write") ;
+            blockMgr.releaseWrite(block) ;
+        }
+        else
+            blockMgr.releaseRead(block) ;
+    }
     
-    public void promote(Page page)      { blockMgr.promote(page.getBackingBlock()) ; }
+    public void promote(Page page)
+    { 
+        Block block = page.getBackingBlock() ;
+        blockMgr.promote(block) ;
+        block.setModified(true) ;
+    }
     
     public boolean valid(int id)        { return blockMgr.valid(id) ; }
     
@@ -71,7 +102,7 @@ public class PageBlockMgr<T extends Page>
     { 
         for ( int idx = 0 ; valid(idx) ; idx++ )
         {
-            T page = get(idx) ;
+            T page = getRead(idx) ;
             System.out.println(page) ;
         }
     }

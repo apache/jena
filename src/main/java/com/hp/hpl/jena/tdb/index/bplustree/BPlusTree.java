@@ -120,15 +120,26 @@ public class BPlusTree implements Iterable<Record>, RangeIndex, Session
     
     /** Create the in-memory structures to correspond to
      * the supplied block managers for the persistent storage.
+     * Initialize the persistent storage to the empty B+Tree if it does not exist.
      * This is the normal way to create a B+Tree.
      */
-    public static BPlusTree attach(BPlusTreeParams params, BlockMgr blkMgrNodes, BlockMgr blkMgrLeaves)
+    public static BPlusTree create(BPlusTreeParams params, BlockMgr blkMgrNodes, BlockMgr blkMgrLeaves)
     { 
-        BPlusTree bpt = new BPlusTree(params, blkMgrNodes, blkMgrLeaves) ;
+        BPlusTree bpt = attach(params, blkMgrNodes, blkMgrLeaves) ;
         bpt.createIfAbsent() ;
         return bpt ;
     }
     
+    /** Create the in-memory structures to correspond to
+     *  the supplied block managers for the persistent storage.
+     *  Does not inityalize the B+Tree - it assumes the block managers
+     *  correspond to an existing B+Tree.
+     */
+    public static BPlusTree attach(BPlusTreeParams params, BlockMgr blkMgrNodes, BlockMgr blkMgrLeaves)
+    { 
+        return new BPlusTree(params, blkMgrNodes, blkMgrLeaves) ;
+    }
+
     /** (Testing mainly) Make an in-memory B+Tree, with copy-in, copy-out block managers */
     public static BPlusTree makeMem(int order, int minRecords, int keyLength, int valueLength)
     { return makeMem(null, order, minRecords, keyLength, valueLength) ; }
@@ -146,27 +157,11 @@ public class BPlusTree implements Iterable<Record>, RangeIndex, Session
         BlockMgr mgr1 = BlockMgrFactory.createMem(name+"(nodes)", params.getCalcBlockSize()) ;
         BlockMgr mgr2 = BlockMgrFactory.createMem(name+"(records)", blkSize) ;
         
-        BPlusTree bpTree = BPlusTree.attach(params, mgr1, mgr2) ;
+        BPlusTree bpTree = BPlusTree.create(params, mgr1, mgr2) ;
         return bpTree ;
     }
 
-    /** Create the in-memory structures to correspond to
-     *  the supplied block managers for the persistent storage.
-     *  Do not initialize root - only for testing.
-     */
-    public static BPlusTree dummy(BPlusTreeParams params, BlockMgr blkMgrNodes, BlockMgr blkMgrLeaves)
-    { 
-        return new BPlusTree(params, blkMgrNodes, blkMgrLeaves) ;
-    }
-    
-//    private BPlusTree(BPlusTreeParams params) { this.bpTreeParams = params ; }
-//
-//    BPlusTree(int N, int recordLength, BlockMgr blkMgrNodes, BlockMgr blkMgrLeaves)
-//    {
-//        this(new BPlusTreeParams(N, recordLength, 0), blkMgrNodes, blkMgrLeaves) ;
-//    }
-
-    BPlusTree(BPlusTreeParams params, BlockMgr blkMgrNodes, BlockMgr blkMgrLeaves)
+    private BPlusTree(BPlusTreeParams params, BlockMgr blkMgrNodes, BlockMgr blkMgrLeaves)
     {
         // Consistency checks.
         this.bpTreeParams = params ;
@@ -206,6 +201,7 @@ public class BPlusTree implements Iterable<Record>, RangeIndex, Session
         {
             rootIdx = 0 ;
             nodeManager.startRead() ;
+            // Get, readable.
             root = nodeManager.getRoot(rootIdx) ;
             rootIdx = root.getId() ;
             // Build root node.
