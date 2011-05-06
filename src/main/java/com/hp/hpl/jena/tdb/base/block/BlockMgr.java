@@ -69,7 +69,6 @@ public interface BlockMgr extends Sync, Closeable, Session
     @Override
     public void startRead();
 
-    
     /** Signal the completeion of read operations */
     @Override
     public void finishRead();

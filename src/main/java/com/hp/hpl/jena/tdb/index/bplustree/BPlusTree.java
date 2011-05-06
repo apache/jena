@@ -25,6 +25,7 @@ import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPage;
 import com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPageMgr;
 import com.hp.hpl.jena.tdb.index.RangeIndex;
+import com.hp.hpl.jena.tdb.index.btree.BTreeParams ;
 import com.hp.hpl.jena.tdb.sys.Session ;
 
 /** B-Tree converted to B+Tree
@@ -188,7 +189,7 @@ public class BPlusTree implements Iterable<Record>, RangeIndex, Session
             
             if ( CheckingNode )
             {            
-                BPTreeNode root = nodeManager.getRead(rootIdx) ;
+                BPTreeNode root = nodeManager.getRead(rootIdx, BTreeParams.RootParent) ;
                     root.checkNodeDeep() ;
                 nodeManager.release(root) ;
             }

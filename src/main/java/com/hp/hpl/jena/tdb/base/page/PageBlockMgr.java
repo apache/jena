@@ -40,33 +40,38 @@ public class PageBlockMgr<T extends Page>
     {
         Block block = blockMgr.allocate(bType, -1) ;
         block.setModified(true) ;
-        T newThing = pageFactory.createFromBlock(block, bType) ;
-        return newThing ;
-    }
-    
-    // [TxTDB:PATCH-UP]
-    public T getWrite(int id)
-    { 
-        T page = _get(id) ;
-        page.getBackingBlock().setModified(true) ;
+        T page = pageFactory.createFromBlock(block, bType) ;
         return page ;
     }
-    // [TxTDB:PATCH-UP]
-    public T getRead(int id)        { return _get(id) ; }
-
-    /** Fetch a block and make a T : must be called single-reader */
-    private T _get(int id)
-    {
-        // I don't think this is needed.
-        synchronized (blockMgr)
-        {
-            // [TxTDB:PATCH-UP]
-            // Always a write block.
-            Block block = blockMgr.getWrite(id) ;
-            T newThing = pageFactory.fromBlock(block) ;
-            return newThing ;
-        }
+    
+    public T getWrite(int id)
+    { 
+        Block block = blockMgr.getWrite(id) ;
+        block.setModified(true) ;
+        T page = pageFactory.fromBlock(block) ;
+        return page ;
     }
+    
+    public T getRead(int id)
+    { 
+        Block block = blockMgr.getRead(id) ;
+        T page = pageFactory.fromBlock(block) ;
+        return page ;
+    }
+
+//    /** Fetch a block and make a T : must be called single-reader */
+//    private T _get(int id)
+//    {
+//        // I don't think this is needed.
+//        synchronized (blockMgr)
+//        {
+//            // [TxTDB:PATCH-UP]
+//            // Always a write block.
+//            Block block = blockMgr.getWrite(id) ;
+//            T newThing = pageFactory.fromBlock(block) ;
+//            return newThing ;
+//        }
+//    }
 
     public void put(T page)
     {

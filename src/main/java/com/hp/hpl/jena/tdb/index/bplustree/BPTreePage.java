@@ -104,11 +104,11 @@ abstract public class BPTreePage implements Page
     /** Finished with this block (for now!) */
     abstract void put() ;
     
+    /** Turn a read page into a write page */
+    abstract void promote() ;
+
     /** Discard with this block (for ever) */
     abstract void release() ;
-    
-//    /** Promote to a write */
-//    abstract BPTreePage promote() ;
     
     /** Check - just this level.*/
     abstract void checkNode() ;

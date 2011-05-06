@@ -82,7 +82,6 @@ public class TxMain
     {
         bpTreeTracking() ; exit(0) ;
         
-        
         String dirname = "DBX" ;
         if ( false && FileOps.exists(dirname) )
             FileOps.clearDirectory(dirname) ;
@@ -139,10 +138,8 @@ public class TxMain
         UpdateAction.execute(req, dsg) ;
     }
     
-    private static RangeIndex createBPT(int order, RecordFactory rf)
+    private static RangeIndex createBPT(int order, RecordFactory rf, boolean logging)
     {
-        boolean logging = false ;
-        
         String label = "B+Tree" ;
         BPlusTreeParams params = new BPlusTreeParams(order, rf) ;
         System.out.println(label+": "+params) ;
@@ -176,8 +173,7 @@ public class TxMain
             BPlusTreeParams.Logging = true ;
         }
         RecordFactory rf = new RecordFactory(8,8) ;
-        
-        RangeIndex rIndex = createBPT(3, rf) ;
+        RangeIndex rIndex = createBPT(3, rf, false) ;
         boolean b = rIndex.isEmpty() ;
         
         final Logger log = LoggerFactory.getLogger("BPlusTree") ;
@@ -187,7 +183,7 @@ public class TxMain
         
         for ( int i = 0 ; i < 1 ; i++ ) 
         {
-            //System.out.println("i = "+i) ;
+            System.out.println("i = "+i) ;
             if ( false )
             {
                 RangeIndex rIdx = rIndex ;

@@ -20,6 +20,24 @@ public class DevTx
     // Avoid reparsing root blocks.  Maybe release only after change.
     
     /*
+     * interface UnitMgr<T>
+     *  T getRead(int)
+     *  T getWrite(int)
+     *  void release(T)
+     *  void put(T)
+     *  void free(T)
+     *  void promote(T)
+     */
+    
+    /** BTreePage has:
+    abstract void put() ;
+    abstract void promote() ;
+    abstract void release() ;
+    */
+    /* 
+     */
+    
+    /*
      * Layers:
      *   DatasetGraph
      *   Indexes

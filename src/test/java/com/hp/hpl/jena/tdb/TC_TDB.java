@@ -52,6 +52,8 @@ public class TC_TDB
 {
     @BeforeClass static public void beforeClass()   
     {
+        //org.apache.log4j.LogManager.resetConfiguration() ;
+        //org.apache.log4j.PropertyConfigurator.configure("log4j.properties") ;
         Logger.getLogger("com.hp.hpl.jena.tdb.info").setLevel(Level.WARN) ;
         //Logger.getLogger("com.hp.hpl.jena.tdb.exec").setLevel(Level.WARN) ;
         SystemTDB.defaultOptimizer = ReorderLib.identity() ;

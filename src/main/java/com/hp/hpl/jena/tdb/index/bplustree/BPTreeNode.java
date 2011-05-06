@@ -162,9 +162,6 @@ public final class BPTreeNode extends BPTreePage
     }
     
 
-    // TODO
-    //@Override
-    protected BPTreePage promote() { return this ; }
     private void release(BPTreePage node) {}
     private void put(BPTreePage node) {}
     
@@ -336,6 +333,9 @@ public final class BPTreeNode extends BPTreePage
     @Override final
     public void put()   { bpTree.getNodeManager().put(this) ; } 
     
+    @Override
+    public void promote() { bpTree.getRecordsMgr().promote(this) ; }
+
     @Override final
     public void release()   { bpTree.getNodeManager().release(this) ; } 
     
@@ -400,7 +400,8 @@ public final class BPTreeNode extends BPTreePage
         
         if ( page.isFull() )
         {
-            //page = page.promote() ;
+            promote() ;
+            page.promote() ;
             // Need to split the page before descending.
             split(idx, page) ;
             // Did it shift the insert index?

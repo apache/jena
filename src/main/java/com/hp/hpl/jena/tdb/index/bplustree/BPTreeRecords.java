@@ -98,11 +98,16 @@ public final class BPTreeRecords extends BPTreePage
     public void put()   { bpTree.getRecordsMgr().put(this) ; } 
     
     @Override final
+    public void promote()   { bpTree.getRecordsMgr().promote(this) ; } 
+    
+    @Override final
     public void release()   { bpTree.getRecordsMgr().release(this) ; }
     
     @Override
     public Record internalInsert(Record record)
     {
+        // [TxTDB:PATCH-UP]
+        promote() ;
         int i = rBuff.find(record) ;
         Record r2 = null ;
         if ( i < 0 )

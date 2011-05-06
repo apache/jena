@@ -52,6 +52,8 @@ final public class BPTreeRecordsMgr implements Session //extends BPTreePageMgr
         rBuffPageMgr.put(bRec.getRecordBufferPage()) ;
     }
 
+    public void promote(Page page)     { rBuffPageMgr.promote(page) ; }
+
     public void release(Page page)     { rBuffPageMgr.release(page) ; }
     
     public boolean valid(int id)    { return rBuffPageMgr.valid(id) ; }

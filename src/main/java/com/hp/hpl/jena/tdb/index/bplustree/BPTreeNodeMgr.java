@@ -88,16 +88,24 @@ public final class BPTreeNodeMgr extends BPTreePageMgr<BPTreeNode>
     {
         // [TxTDB:PATCH-UP]
         BPTreeNode n = super.getRead(id) ;
-        n.parent = parent ; // Necessary?
+        n.parent = parent ;
         return n ;
     }
+    
+    // Maybe we should not inherit but wrap.
+    @Override
+    public BPTreeNode getWrite(int id)
+    { throw new UnsupportedOperationException("call getWrite(int, int)") ; }
+    @Override
+    public BPTreeNode getRead(int id)
+    { throw new UnsupportedOperationException("call getRead(int, int)") ; }
     
     /** Fetch a block - fill in the parent id, which is not in the on-disk bytes */
     public BPTreeNode getWrite(int id, int parent)
     {
         // [TxTDB:PATCH-UP]
         BPTreeNode n = super.getWrite(id) ;
-        n.parent = parent ; // Necessary?
+        n.parent = parent ;
         return n ;
     }
 
@@ -114,21 +122,21 @@ public final class BPTreeNodeMgr extends BPTreePageMgr<BPTreeNode>
         }
     }
     
-    /** Signal the start of an update operation */
-    @Override
-    public void startRead()         { getBlockMgr().startRead() ; }
-
-    /** Signal the completeion of an update operation */
-    @Override
-    public void finishRead()        { getBlockMgr().finishRead() ; }
-
-    /** Signal the start of an update operation */
-    @Override
-    public void startUpdate()       { getBlockMgr().startUpdate() ; }
-    
-    /** Signal the completion of an update operation */
-    @Override
-    public void finishUpdate()      { getBlockMgr().finishUpdate() ; }
+//    /** Signal the start of an update operation */
+//    @Override
+//    public void startRead()         { getBlockMgr().startRead() ; }
+//
+//    /** Signal the completeion of an update operation */
+//    @Override
+//    public void finishRead()        { getBlockMgr().finishRead() ; }
+//
+//    /** Signal the start of an update operation */
+//    @Override
+//    public void startUpdate()       { getBlockMgr().startUpdate() ; }
+//    
+//    /** Signal the completion of an update operation */
+//    @Override
+//    public void finishUpdate()      { getBlockMgr().finishUpdate() ; }
     
     private static class Block2BPTreeNode implements BlockConverter<BPTreeNode>
     {
