@@ -414,7 +414,7 @@ public class TestLARQ_Code extends TestCase
 
         IndexLARQ index = b.getIndex() ;
         NodeIterator nIter = index.searchModelByIndex("foo") ;
-        if ( LARQ.AVOID_DUPLICATES ) {
+        if ( b.avoidDuplicates() ) {
             assertEquals(1, TestLARQUtils.count(nIter)) ;
         } else {
             assertEquals(2, TestLARQUtils.count(nIter)) ;
@@ -432,7 +432,7 @@ public class TestLARQ_Code extends TestCase
 
         IndexLARQ index = indexBuilder.getIndex() ;
         NodeIterator nIter = index.searchModelByIndex("foo") ;
-        if ( LARQ.AVOID_DUPLICATES ) {
+        if ( indexBuilder.avoidDuplicates() ) {
             assertEquals(1, TestLARQUtils.count(nIter)) ;
         } else {
             assertEquals(2, TestLARQUtils.count(nIter)) ;
@@ -454,7 +454,7 @@ public class TestLARQ_Code extends TestCase
 
         IndexLARQ index = b.getIndex() ;
         NodeIterator nIter = index.searchModelByIndex("foo") ;
-        if ( LARQ.AVOID_DUPLICATES ) {
+        if ( b.avoidDuplicates() ) {
             assertEquals(2, TestLARQUtils.count(nIter)) ;
         } else {
             assertEquals(4, TestLARQUtils.count(nIter)) ;
@@ -474,7 +474,7 @@ public class TestLARQ_Code extends TestCase
         
         IndexLARQ index = indexBuilder.getIndex() ;
         NodeIterator nIter = index.searchModelByIndex("foo") ;
-        if ( LARQ.AVOID_DUPLICATES ) {
+        if ( indexBuilder.avoidDuplicates() ) {
             assertEquals(1, TestLARQUtils.count(nIter)) ;
         } else { 
             assertEquals(2, TestLARQUtils.count(nIter)) ;
@@ -493,7 +493,7 @@ public class TestLARQ_Code extends TestCase
         
         IndexLARQ index = indexBuilder.getIndex() ;
         NodeIterator nIter = index.searchModelByIndex("foo") ;
-        if ( LARQ.AVOID_DUPLICATES ) {
+        if ( indexBuilder.avoidDuplicates() ) {
             assertEquals(1, TestLARQUtils.count(nIter)) ;
         } else {
             assertEquals(2, TestLARQUtils.count(nIter)) ;

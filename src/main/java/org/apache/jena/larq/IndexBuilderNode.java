@@ -45,7 +45,7 @@ public class IndexBuilderNode extends IndexBuilderBase
     public void index(RDFNode rdfNode, String indexStr)
     {
         try {
-        	if ( LARQ.AVOID_DUPLICATES ) unindex(rdfNode, indexStr);
+        	if ( avoidDuplicates() ) unindex(rdfNode, indexStr);
             Document doc = new Document() ;
             LARQ.store(doc, rdfNode.asNode()) ;
             LARQ.index(doc, rdfNode.asNode(), indexStr) ;
@@ -57,7 +57,7 @@ public class IndexBuilderNode extends IndexBuilderBase
     public void index(RDFNode rdfNode, Reader indexStream)
     {
         try {
-        	if ( LARQ.AVOID_DUPLICATES ) unindex(rdfNode, indexStream);
+        	if ( avoidDuplicates() ) unindex(rdfNode, indexStream);
             Document doc = new Document() ;
             LARQ.store(doc, rdfNode.asNode()) ;
             LARQ.index(doc, rdfNode.asNode(), indexStream) ;
@@ -69,7 +69,7 @@ public class IndexBuilderNode extends IndexBuilderBase
     public void index(Node node, String indexStr)
     {
         try {
-        	if ( LARQ.AVOID_DUPLICATES ) unindex(node, indexStr);
+        	if ( avoidDuplicates() ) unindex(node, indexStr);
             Document doc = new Document() ;
             LARQ.store(doc, node) ;
             LARQ.index(doc, node, indexStr) ;
@@ -81,7 +81,7 @@ public class IndexBuilderNode extends IndexBuilderBase
     public void index(Node node, Reader indexStream)
     {
         try {
-        	if ( LARQ.AVOID_DUPLICATES ) unindex(node, indexStream);
+        	if ( avoidDuplicates() ) unindex(node, indexStream);
             Document doc = new Document() ;
             LARQ.store(doc, node) ;
             LARQ.index(doc, node, indexStream) ;

@@ -48,6 +48,14 @@ public abstract class IndexBuilderModel extends StatementListener
 //    protected IndexWriter getIndexWriter() { return index.getIndexWriter() ; }
 //    protected IndexReader getIndexReader() { return index.getIndexReader() ; }
     
+    public boolean avoidDuplicates() {
+        return index.avoidDuplicates() ;
+    }
+
+    public void setAvoidDuplicates(boolean avoid) {
+        index.setAvoidDuplicates(avoid) ;
+    }
+
     /** ModelListener interface : statement taken out of the model */
     @Override
     public void removedStatement(Statement s)

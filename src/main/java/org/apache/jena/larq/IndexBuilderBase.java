@@ -21,6 +21,7 @@ import org.apache.lucene.store.RAMDirectory;
 public class IndexBuilderBase implements IndexBuilder 
 {
     private Directory dir = null ;
+    private boolean avoid_duplicates = true ;
 
     // Use this for incremental indexing?
     //private IndexModifier modifier ;
@@ -75,6 +76,14 @@ public class IndexBuilderBase implements IndexBuilder
             indexWriter = IndexWriterFactory.create(dir) ;
         } catch (Exception ex)
         { throw new ARQLuceneException("IndexBuilderLARQ", ex) ; }
+    }
+
+    public boolean avoidDuplicates() {
+        return avoid_duplicates;
+    }
+
+    public void setAvoidDuplicates(boolean avoidDuplicates) {
+        avoid_duplicates = avoidDuplicates;
     }
 
     protected IndexWriter getIndexWriter() { return indexWriter ; }

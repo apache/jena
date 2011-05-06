@@ -54,8 +54,6 @@ public class LARQ
     
     public static final Version LUCENE_VERSION      = Version.LUCENE_31 ;
     
-    public static final boolean AVOID_DUPLICATES    = true;
-
     // The field that is the index
     public static final String fIndex               = "index" ;
 
