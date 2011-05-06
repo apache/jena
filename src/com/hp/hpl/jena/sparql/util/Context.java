@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -12,6 +13,10 @@ import java.util.Iterator ;
 import java.util.List ;
 import java.util.Map ;
 import java.util.Set ;
+
+import com.hp.hpl.jena.query.ARQ ;
+import com.hp.hpl.jena.sparql.ARQConstants ;
+import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 
 /** A class for setting and keeping named values.  Used to pass 
  *  implementation-specific parameters across general
@@ -268,10 +273,34 @@ public class Context
         }
         return x ;
     }
+    
+    // Put any per-dataset execution global configuration state here.
+    public static Context setupContext(Context context, DatasetGraph dataset)
+    {
+        if ( context == null )
+            context = ARQ.getContext() ;    // Already copied?
+        context = context.copy() ;
+
+        if ( dataset != null && dataset.getContext() != null )
+            // Copy per-dataset settings.
+            context.putAll(dataset.getContext()) ;
+        
+        context.set(ARQConstants.sysCurrentTime, NodeFactory.nowAsDateTime()) ;
+        
+        // Allocators.
+//        context.set(ARQConstants.sysVarAllocNamed, new VarAlloc(ARQConstants.allocVarMarkerExec)) ;
+//        context.set(ARQConstants.sysVarAllocAnon,  new VarAlloc(ARQConstants.allocVarAnonMarkerExec)) ;
+        // Add VarAlloc for variables and bNodes (this is not the parse name). 
+        // More added later e.g. query (if there is a query), algebra form (in setOp)
+        
+        return context ; 
+    }
+
 }
 
 /*
  * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

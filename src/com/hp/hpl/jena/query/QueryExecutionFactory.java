@@ -527,7 +527,7 @@ public class QueryExecutionFactory
     {
         query.setResultVars() ;
         if ( context == null )
-            context = ARQ.getContext().copy();  // .copy probably not necessary but safe. 
+            context = ARQ.getContext();  // .copy done in QueryExecutionBase -> Context.setupContext. 
         DatasetGraph dsg = null ;
         if ( dataset != null )
             dsg = dataset.asDatasetGraph() ;

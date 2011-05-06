@@ -8,6 +8,7 @@
 package com.hp.hpl.jena.sparql.expr.nodevalue;
 import java.util.Iterator ;
 
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.iri.IRI ;
 import com.hp.hpl.jena.iri.IRIFactory ;
@@ -263,41 +264,53 @@ public class NodeFunctions
             return Node.createURI("_:"+x) ;
         }
         
-        if ( nv.isLiteral() && 
-             nv.getLiteralDatatype() == null && 
-             nv.getLiteralLanguage().equals("") )
+        // Simple literal or xsd:string
+        String str = simpleLiteralOrXSDString(nv) ;
+        if  (str == null )
+            throw new ExprEvalException("Can't make an IRI from "+nv) ;
+
+        IRI iri = null ;
+        String iriStr = nv.getLiteralLexicalForm() ;
+            
+        // Level of checking?
+        if ( baseIRI != null )
         {
-            // Plain literal
-            IRI iri = null ;
-            String iriStr = nv.getLiteralLexicalForm() ;
-            
-            // Level of checking?
-            if ( baseIRI != null )
-            {
-                IRI base = iriFactory.create(baseIRI);
-                iri = base.create(iriStr);
-            }
-            else
-                iri = iriFactory.create(iriStr);
-            
-            if ( ! iri.isAbsolute() )
-                throw new ExprEvalException("Relative IRI string: "+iriStr) ;
-            if ( warningsForIRIs && iri.hasViolation(false) )
-            {
-                String msg = "unknown violation from IRI library" ; 
-                Iterator<Violation> iter = iri.violations(false) ;
-                if ( iter.hasNext() )
-                {
-                    Violation viol = iter.next() ;
-                    msg = viol.getShortMessage() ;
-                }
-                Log.warn(NodeFunctions.class, "Bad IRI: "+msg+": "+iri) ;
-            }
-            return Node.createURI(iri.toString()) ;
+            IRI base = iriFactory.create(baseIRI);
+            iri = base.create(iriStr);
         }
-        throw new ExprEvalException("Can't make an IRI from "+nv) ;
+        else
+            iri = iriFactory.create(iriStr);
+
+        if ( ! iri.isAbsolute() )
+            throw new ExprEvalException("Relative IRI string: "+iriStr) ;
+        if ( warningsForIRIs && iri.hasViolation(false) )
+        {
+            String msg = "unknown violation from IRI library" ; 
+            Iterator<Violation> iter = iri.violations(false) ;
+            if ( iter.hasNext() )
+            {
+                Violation viol = iter.next() ;
+                msg = viol.getShortMessage() ;
+            }
+            Log.warn(NodeFunctions.class, "Bad IRI: "+msg+": "+iri) ;
+        }
+        return Node.createURI(iri.toString()) ;
     }
 
+    private static String simpleLiteralOrXSDString(Node n)
+    {
+        if ( ! n.isLiteral() ) return null ;
+        
+        if ( n.getLiteralDatatype() == null )
+        {
+            if ( n.getLiteralLanguage().equals("") )
+                return n.getLiteralLexicalForm() ;
+        } else
+            if ( n.getLiteralDatatype().equals(XSDDatatype.XSDstring ))
+                return n.getLiteralLexicalForm() ;
+        return null ;
+    }
+    
     public static NodeValue strDatatype(NodeValue v1, NodeValue v2)
     {
         if ( ! v1.isString() ) throw new ExprEvalException("Not a string (arg 1): "+v1) ;

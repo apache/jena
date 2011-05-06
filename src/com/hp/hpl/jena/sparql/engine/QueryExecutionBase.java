@@ -90,14 +90,15 @@ public class QueryExecutionBase implements QueryExecution
     
     private void init()
     {
-        context = setupContext(context, dataset == null ? null : dataset.asDatasetGraph()) ;
+        DatasetGraph dsg = (dataset == null) ? null : dataset.asDatasetGraph() ;
+        context = Context.setupContext(context, dsg) ;
         if ( query != null )
             context.put(ARQConstants.sysCurrentQuery, query) ;
         setAnyTimeouts() ;
     }
     
     // Put any per-dataset execution global configuration state here.
-    private static Context setupContext(Context context, DatasetGraph dataset)
+    public static Context setupContext(Context context, DatasetGraph dataset)
     {
         if ( context == null )
             context = ARQ.getContext() ;    // Already copied?

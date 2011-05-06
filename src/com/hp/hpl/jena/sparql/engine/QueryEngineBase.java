@@ -36,19 +36,21 @@ public abstract class QueryEngineBase implements OpEval, Closeable
     protected QueryEngineBase(Query query,
                               DatasetGraph dataset, 
                               Binding input,
-                              Context context)
+                              Context cxt)
     {
-        this(dataset, input, context) ;
+        this(dataset, input, cxt) ;
         this.query = query ;
-        // Build the Op.
         query.setResultVars() ;
         // Unoptimized so far.
         setOp(createOp(query)) ;
     }
     
-    protected QueryEngineBase(Op op, DatasetGraph dataset, Binding input, Context context)
+    protected QueryEngineBase(Op op, DatasetGraph dataset, Binding input, Context cxt)
     {
-        this(dataset, input, context) ;
+        this(dataset, input, cxt) ;
+        //Ensure context setup - usually done in QueryExecutionBase so it can be chnaged after initialization.
+        if ( context == null )
+            context = Context.setupContext(context, dataset) ;
         this.query = null ;
         setOp(op) ;
     }

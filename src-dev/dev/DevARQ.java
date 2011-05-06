@@ -2,7 +2,15 @@ package dev ;
 
 public class DevARQ
 {
+    // Rework documentation - extensions are now SPARQL 1.1-isms
+    
     // Config assembler.
+    //   [ arq:queryTimeout "123" ] 
+    // vs:
+    //   [ ja:feature arq:queryTimeout ; ja:value "123" ]
+    //   [ ja:feature "arq:queryTimeout" ; ja:value "123" ]
+    // Latter allows non-URIs more easily.
+    
     // In-memory query to use reordering.
     
     // Timeout: content info - 
