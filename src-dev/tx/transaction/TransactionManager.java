@@ -261,7 +261,7 @@ public class TransactionManager
         }
 
         @Override
-        public void freeBlock(Block block)
+        public void free(Block block)
         {
             blocks.remove(block.getId()) ;
         }

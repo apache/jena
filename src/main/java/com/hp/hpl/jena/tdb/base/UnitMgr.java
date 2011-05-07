@@ -4,66 +4,59 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.base.block;
+package com.hp.hpl.jena.tdb.base;
 
-import java.util.ArrayDeque ;
-import java.util.Deque ;
+import org.openjena.atlas.lib.Closeable ;
+import org.openjena.atlas.lib.Sync ;
 
-/** Recycle blocks - but only in-session.
- *   At the end of JVM run, the blocks are made "permanent" as no one finds them again on restart.
- */
-final
-public class BlockMgrFreeChain extends BlockMgrWrapper
+import com.hp.hpl.jena.tdb.base.block.Block ;
+import com.hp.hpl.jena.tdb.sys.Session ;
+
+public interface UnitMgr<T> extends Sync, Closeable, Session
 {
-    // Could keep Pair<Integer, ByteBuffer>
-    //List<Block> freeBlocks = new ArrayList<Block>() ;
-    private final Deque<Block> freeBlocks = new ArrayDeque<Block>();
+    /** Fetch, for use for read only */
+    public T getRead(int id);
     
-    public BlockMgrFreeChain(BlockMgr blockMgr)
-    {
-        super(blockMgr) ;
-    }
+    /** Fetch, use for write and read - only inside "update" */
+    public T getWrite(int id);
 
-    @Override
-    public Block allocate(BlockType blockType, int blockSize)
-    {
-        if ( ! freeBlocks.isEmpty() )
-        {
-            Block block = freeBlocks.removeFirst() ;
-            block.getByteBuffer().position(0) ;
-            return block ;
-        }
-        return super.allocate(blockType, blockSize) ;
-    }
-
-    @Override
-    public void free(Block block)
-    {
-        freeBlocks.add(block) ;
-    }
-
-    @Override
-    public boolean valid(int id)
-    {
-        for ( Block blk : freeBlocks ) 
-        {
-            if ( blk.getId() == id )
-                return true ; 
-        }
-        return super.valid(id) ;
-    }
+    /** Release a T, unmodified. */
+    public void releaseRead(T block) ;
     
-    private boolean isFree(int id)
-    {
-        return freeBlocks.contains(id) ; 
-    }
+    /** Release a T, obtained via getWrite, unmodified. */
+    public void releaseWrite(T block) ;
 
-    @Override
-    public void sync()
-    {
-        // Flush free blocks?
-        super.sync() ;
-    }
+    /** Promote to writeable : it's OK to promote an already writeable T */ 
+    public T promote(T block);
+
+    /** T is no longer being worked on - do not use after this call - get() it again */ 
+    public void put(T block) ;
+
+    /** Announce a block is no longer in use (i.e it's now freed) */ 
+    public void free(Block block);
+  
+    /** Is this a valid block id? (may be a free block)*/
+    public boolean valid(int id) ;
+    
+//    /** Sync the manager */
+//    @Override
+//    public void sync() ;
+//    
+//    /** Signal the start of update operations */
+//    @Override
+//    public void startUpdate();
+//    
+//    /** Signal the completion of update operations */
+//    @Override
+//    public void finishUpdate();
+//
+//    /** Signal the start of read operations */
+//    @Override
+//    public void startRead();
+//
+//    /** Signal the completeion of read operations */
+//    @Override
+//    public void finishRead();
 }
 
 /*

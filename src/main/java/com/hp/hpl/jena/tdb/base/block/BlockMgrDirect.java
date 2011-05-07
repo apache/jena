@@ -114,7 +114,7 @@ public class BlockMgrDirect extends BlockMgrFile
     }
     
     @Override
-    public void freeBlock(Block block)
+    public void free(Block block)
     { 
         check(block.getId()) ;
         checkIfClosed() ;

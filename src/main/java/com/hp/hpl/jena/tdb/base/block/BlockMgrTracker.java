@@ -15,6 +15,7 @@ import org.openjena.atlas.lib.Pair ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
+import static com.hp.hpl.jena.tdb.base.block.BlockMgrTracker.Action.* ;
 
 public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
 {
@@ -67,7 +68,7 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
         Block block = blockMgr.allocate(blockType, blockSize) ;
         Integer id = block.getId() ;
         activeWriteBlocks.add(id) ;
-        add(Action.Alloc, id) ;
+        add(Alloc, id) ;
         return block ;
     }
 
@@ -76,8 +77,8 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
     public Block getRead(int id)
     {
         checkRead("getRead") ;
+        add(GetRead, id) ;
         activeReadBlocks.add(id) ;
-        add(Action.GetRead, id) ;
         return blockMgr.getRead(id) ;
     }
 
@@ -85,8 +86,8 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
     public Block getWrite(int id)
     {
         checkUpdate("getWrite") ;
+        add(GetWrite, id) ;
         activeWriteBlocks.add(id) ;
-        add(Action.GetWrite, id) ;
         return blockMgr.getWrite(id) ;
     }
     
@@ -94,18 +95,19 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
     public Block promote(Block block)
     {
         Integer id = block.getId() ;
-        activeWriteBlocks.add(id) ;
-        if ( activeReadBlocks.contains(id) )
-            activeReadBlocks.remove(id) ;
-        else
-        {
-            if ( activeWriteBlocks.contains(id) )
-                log.info("Promoting "+id+" - already a write") ;
-            else
-                log.warn("Promoting "+id+" but not a read block") ;
-        }
+        checkUpdate("promote") ;
+        add(Promote, id) ;
+        
+        if ( ! activeWriteBlocks.contains(id) && ! activeReadBlocks.contains(id) )
+            error(Promote, "Promoting "+id+" but block not active") ;
+        
+//        if ( 
+//            log.info("Promoting "+id+" - already a write") ;
+//        if ( ! activeReadBlocks.contains(id) )
+//            error("Promoting "+id+" but not a read block") ;
              
-        add(Action.Promote, id) ;
+        activeReadBlocks.remove(id) ;
+        activeWriteBlocks.add(id) ;
         return blockMgr.promote(block) ;
     }
     
@@ -114,15 +116,15 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
     {   
         Integer id = block.getId() ;
         checkRead("releaseRead") ;
+        add(ReleaseRead, id) ;
         
         if ( ! activeReadBlocks.contains(id) )
-            log.error("releaseRead("+id+") -- not an active read block") ;
+            error(ReleaseRead, id+" is not an active read block") ;
 
         if ( activeWriteBlocks.contains(id) )
-            log.error("releaseRead("+id+") on a write block") ;
+            error(ReleaseRead, id+" is a a write block") ;
             
         activeReadBlocks.remove(block.getId()) ;
-        add(Action.ReleaseRead, id) ;
         blockMgr.releaseRead(block) ;
     }
 
@@ -131,14 +133,13 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
     {   
         Integer id = block.getId() ;
         checkUpdate("releaseRead") ;
+        add(ReleaseWrite, id) ;
 
         if ( activeReadBlocks.contains(id) )
-            log.error("releaseWrite("+id+") on a read block") ;
-
-        if ( ! activeWriteBlocks.contains(id) )
-            log.error("releaseWrite("+id+") not an action write block") ;
+            error(ReleaseWrite, id+" is a read block") ;
+        else if ( ! activeWriteBlocks.contains(id) )
+            error(ReleaseWrite, id+" is not an action write block") ;
         activeWriteBlocks.remove(id) ;
-        add(Action.ReleaseWrite, id) ;
         blockMgr.releaseWrite(block) ;
     }
 
@@ -147,25 +148,34 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
     {
         Integer id = block.getId() ;
         checkUpdate("put") ;
+        add(Put, id) ;
         if ( ! activeWriteBlocks.contains(id) )
-            log.error("put("+id+") but no active write block()") ;
+            error(Put, id+ "is not an active write block") ;
         activeWriteBlocks.remove(id) ;
-        add(Action.Put, id) ;
         blockMgr.put(block) ;
     }
 
     @Override
-    public void freeBlock(Block block)
+    public void free(Block block)
     {
         Integer id = block.getId() ;
         checkUpdate("freeBlock") ;
+        add(Free, id) ;
         if ( activeReadBlocks.contains(id) )
-            log.error("freeBlock("+id+") on a read block") ;
-        if ( ! activeWriteBlocks.contains(id) )
-            log.error("freeBlock("+id+") but not a write block") ;
-        add(Action.Free, id) ;
-        blockMgr.freeBlock(block) ;
+            error(Free, id+" is a read block") ;
+        else if ( ! activeWriteBlocks.contains(id) )
+            error(Free, id+" is not a write block") ;
+        blockMgr.free(block) ;
     }
+
+    private void error(Action action, String string)
+    {
+        log.error(action+": "+string) ;
+        history() ;
+    }
+
+    private void warn(Action action, String string)
+    { log.warn(action+": "+string) ; }
 
     @Override
     public void sync()

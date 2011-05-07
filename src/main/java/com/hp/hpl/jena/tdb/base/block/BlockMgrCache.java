@@ -190,7 +190,7 @@ public class BlockMgrCache extends BlockMgrSync
     
     @Override
     synchronized
-    public void freeBlock(Block block)
+    public void free(Block block)
     {
         Integer id = block.getId() ;
         log("Free  : %d", id) ;
@@ -201,7 +201,7 @@ public class BlockMgrCache extends BlockMgrSync
         }
         if ( writeCache != null )
             writeCache.remove(id) ;
-        super.freeBlock(block) ;
+        super.free(block) ;
     }
 
     @Override

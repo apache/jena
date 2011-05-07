@@ -224,7 +224,9 @@ public class BPlusTree implements Iterable<Record>, RangeIndex, Session
 
     private void releaseRoot(BPTreeNode rootNode)
     {
-        if ( root != null ) 
+        // This is a hack to avoid releasing the root after it has been put.
+        // [TxTDB:PATCH-UP]
+        if ( root != null && ! root.getBackingBlock().isModified() ) 
             root.release() ;
         if ( root != null && rootNode != root )
             log.warn("Root is not root!") ;

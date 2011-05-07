@@ -76,7 +76,7 @@ final class BTreePageMgr implements Session
         blockMgr.put(b) ;
     }
 
-    public void release(Block block)     { blockMgr.freeBlock(block) ; }
+    public void release(Block block)     { blockMgr.free(block) ; }
     
     public boolean valid(int id)    { return blockMgr.valid(id) ; }
     

@@ -334,7 +334,7 @@ public final class BPTreeNode extends BPTreePage
     public void put()   { bpTree.getNodeManager().put(this) ; } 
     
     @Override
-    public void promote() { bpTree.getRecordsMgr().promote(this) ; }
+    public void promote() { bpTree.getNodeManager().promote(this) ; }
 
     @Override final
     public void release()   { bpTree.getNodeManager().release(this) ; } 

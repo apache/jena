@@ -6,6 +6,13 @@ public class DevTx
     // TDB 0.8.10 is rev 8718; TxTDB forked at 8731
     // BlockMgrTracker to dump inconsistences on finish*, not just log a warning.
     
+    // PageMgr implements UnitMgr<Page>
+    //   Add "write" - put = write - releaseWrite.
+    // PageBlockMgr.free, not via bypassing PageBlockMgr.
+    
+    // releasing the root after update and put --> warning
+    // "Needs put()'ing"
+    
     // B+Tree
     //   Avoid reparsing root blocks.  Maybe release only after change.
     
@@ -21,17 +28,6 @@ public class DevTx
     // See all : // [TxTDB:PATCH-UP]
     // Memory mapped files.
 
-    /*
-     * interface UnitMgr<T>
-     *  T getRead(int)
-     *  T getWrite(int)
-     *  void release(T) or releaseRead(T), releaseWrite(T)
-     *    release() because may getRead->promote->release
-     *  void put(T)
-     *  void free(T)
-     *  void promote(T)
-     */
-    
     /*
      * Iterator tracking
      *   End transaction => close all open iterators.

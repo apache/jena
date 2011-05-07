@@ -70,9 +70,9 @@ public class BlockMgrSync implements BlockMgr
 
     @Override
     synchronized
-    public void freeBlock(Block block)
+    public void free(Block block)
     {
-        blockMgr.freeBlock(block) ;
+        blockMgr.free(block) ;
     }
 
     @Override

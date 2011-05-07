@@ -166,6 +166,8 @@ public class TxMain
         
         // Add logging.
         //rIndex = new RangeIndexLogger(rIndex, log) ;
+
+        System.out.println() ;
         
         for ( int i = 0 ; i < 10 ; i++ ) 
         {
@@ -189,6 +191,7 @@ public class TxMain
         
         Record r = record(rf, 3+0x100000L, 0) ;
         r = rIndex.find(r) ;
+        
         System.out.println() ;
         
         Iterator<Record> iter = rIndex.iterator() ;

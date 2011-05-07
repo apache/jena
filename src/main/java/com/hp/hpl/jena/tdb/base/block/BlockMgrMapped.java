@@ -115,7 +115,7 @@ public class BlockMgrMapped extends BlockMgrFile
         return block ;
     }
     @Override
-    public void freeBlock(Block block)
+    public void free(Block block)
     { 
         check(block.getId()) ;
         checkIfClosed() ;
