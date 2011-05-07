@@ -157,6 +157,7 @@ public class FusekiCmd extends CmdARQ
             log.info("TDB dataset: in-memory") ;
             dsg = TDBFactory.createDatasetGraph() ;
         }
+        
         if ( contains(argTDB) )
         {
             String dir = getValue(argTDB) ;
