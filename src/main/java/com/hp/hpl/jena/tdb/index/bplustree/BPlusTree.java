@@ -113,7 +113,7 @@ public class BPlusTree implements Iterable<Record>, RangeIndex, Session
     
     private static Logger log = LoggerFactory.getLogger(BPlusTree.class) ;
     
-    private int rootIdx ;
+    private int rootIdx = BPlusTreeParams.RootId ;
     /*package*/ BPTreeNode root ;
     private BPTreeNodeMgr nodeManager ; 
     private BPTreeRecordsMgr recordsMgr; 
@@ -175,7 +175,7 @@ public class BPlusTree implements Iterable<Record>, RangeIndex, Session
     private void createIfAbsent()
     {
         // This fixes the root to being block 0
-        if ( ! nodeManager.valid(0) )
+        if ( ! nodeManager.valid(BPlusTreeParams.RootId) )
         //if ( ! nodeManager.getBlockMgr().isEmpty() )
         {
             // Create as does not exist.
@@ -190,8 +190,9 @@ public class BPlusTree implements Iterable<Record>, RangeIndex, Session
             if ( CheckingNode )
             {            
                 BPTreeNode root = nodeManager.getRead(rootIdx, BTreeParams.RootParent) ;
-                    root.checkNodeDeep() ;
+                root.checkNodeDeep() ;
                 nodeManager.release(root) ;
+                // And the records page?
             }
             setRoot(root) ;
             finishUpdateBlkMgr() ;
@@ -200,33 +201,38 @@ public class BPlusTree implements Iterable<Record>, RangeIndex, Session
 
     private BPTreeNode getRoot()
     {
-        // Do we cache it or not?
-        // Need to set read/write on every operation.
-        if ( root == null )
-        {
-            rootIdx = 0 ;
-            //--nodeManager.startRead() ;
-            // Get, readable.
-            root = nodeManager.getRoot(rootIdx) ;
-            rootIdx = root.getId() ;
-            // Build root node.
-            // Per session count only.
-            //--nodeManager.finishRead() ;
-        }
-        //BPTreeNode root2 = nodeManager.getRoot(rootIdx) ;
+        // No caching here.
+        root = nodeManager.getRoot(rootIdx) ;
         return root ;
+        
+//        // Do we cache it or not?
+//        // Need to set read/write on every operation.
+//        if ( root == null )
+//        {
+//            rootIdx = 0 ;
+//            //--nodeManager.startRead() ;
+//            // Get, readable.
+//            root = nodeManager.getRoot(rootIdx) ;
+//            rootIdx = root.getId() ;
+//            // Build root node.
+//            // Per session count only.
+//            //--nodeManager.finishRead() ;
+//        }
+//        //BPTreeNode root2 = nodeManager.getRoot(rootIdx) ;
+//        return root ;
+    }
+
+    private void releaseRoot(BPTreeNode rootNode)
+    {
+        if ( root != null ) 
+            root.release() ;
+        if ( root != null && rootNode != root )
+            log.warn("Root is not root!") ;
     }
 
     private void setRoot(BPTreeNode node)
     {
-        root = node ;
-    }
-
-    private void releaseRoot(BPTreeNode root)
-    {
-        root.release() ;
-        if ( root != this.root )
-            log.warn("Root is not root!") ;
+        //root = node ;
     }
 
     /** Get the parameters describing this B+Tree */

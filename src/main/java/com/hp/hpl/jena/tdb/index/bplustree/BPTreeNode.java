@@ -1072,7 +1072,8 @@ public final class BPTreeNode extends BPTreePage
     
     private final boolean isRoot()
     {
-        return bpTree.root == this ;
+        if ( bpTree.root == this ) return true ;
+        return this.id == BPlusTreeParams.RootId ;
     }
 
     private Record keyRecord(Record record)
@@ -1105,7 +1106,9 @@ public final class BPTreeNode extends BPTreePage
         // The root can be zero size and point to a single data block.
         int id = this.getPtrBuffer().getLow() ;
         BPTreePage page = get(id, READ) ;
-        return page.hasAnyKeys() ;
+        boolean b = page.hasAnyKeys() ;  
+        page.release() ;
+        return b ;
     }
 
 

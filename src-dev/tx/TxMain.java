@@ -146,6 +146,8 @@ public class TxMain
     
     public static void bpTreeTracking(String... args)
     {
+        final Logger log = LoggerFactory.getLogger("BPlusTree") ;
+
         if ( false )
         {
             Log.enable(BPTreeNode.class.getName(), "ALL") ;
@@ -156,17 +158,18 @@ public class TxMain
         }
         RecordFactory rf = new RecordFactory(8,8) ;
         RangeIndex rIndex = createBPT(3, rf, false) ;
-        
+
+        log.info("Created") ;
+        log.info("") ;
         boolean b = rIndex.isEmpty() ;
-        
-        final Logger log = LoggerFactory.getLogger("BPlusTree") ;
+        log.info("isEmpty done") ;
         
         // Add logging.
         //rIndex = new RangeIndexLogger(rIndex, log) ;
         
-        for ( int i = 0 ; i < 1 ; i++ ) 
+        for ( int i = 0 ; i < 10 ; i++ ) 
         {
-            System.out.println("i = "+i) ;
+            log.info("i = "+i) ;
             if ( false )
             {
                 RangeIndex rIdx = rIndex ;
@@ -179,8 +182,6 @@ public class TxMain
             Record r = record(rf, i+0x100000L, i+0x90000000L) ;
             rIndex.add(r) ;
         }
-
-        
         
         exit(0) ;
         

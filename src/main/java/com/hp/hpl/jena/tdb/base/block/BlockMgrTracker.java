@@ -11,6 +11,7 @@ import java.util.HashSet ;
 import java.util.List ;
 import java.util.Set ;
 
+import org.openjena.atlas.lib.Pair ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
@@ -18,17 +19,15 @@ import org.slf4j.LoggerFactory ;
 public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
 {
     // Don't inherit BlockMgrWrapper to make sure this class caches everything.
-    // Track the status of blocks.
+
+    // Track the active state of the BlockMgr
     protected final Set<Integer> activeReadBlocks = new HashSet<Integer>() ;
     protected final Set<Integer> activeWriteBlocks = new HashSet<Integer>() ;
     
-    // Track operations - clear on finish*  
-    protected final List<Integer> getReadIds = new ArrayList<Integer>() ;
-    protected final List<Integer> getWriteIds = new ArrayList<Integer>() ;
-    protected final List<Integer> releasedReadIds = new ArrayList<Integer>() ;
-    protected final List<Integer> releasedWriteIds = new ArrayList<Integer>() ;
-    protected final List<Integer> putIds = new ArrayList<Integer>() ;
-    protected final List<Integer> freedIds = new ArrayList<Integer>() ;
+    // Track the operations
+    // an enum (op+id) and a single list. 
+    static enum Action { Alloc, Promote, GetRead, GetWrite, ReleaseRead, ReleaseWrite, Put, Free }
+    protected final List<Pair<Action, Integer>> actions = new ArrayList<Pair<Action, Integer>>() ;
     
     protected final BlockMgr blockMgr ;
     
@@ -36,12 +35,7 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
     {
         activeReadBlocks.clear() ;
         activeWriteBlocks.clear() ;
-        getReadIds.clear() ;
-        getWriteIds.clear() ;
-        releasedReadIds.clear() ;
-        releasedWriteIds.clear() ;
-        putIds.clear() ;
-        freedIds.clear() ;
+        actions.clear() ;
     }
     
     private boolean inRead = false ;
@@ -50,10 +44,21 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
     
     public BlockMgrTracker(String label, BlockMgr blockMgr)
     {
-        //super(label, blockMgr, logUpdatesOnly) ;
-        this.blockMgr = blockMgr ;
-        log = LoggerFactory.getLogger(label) ;
+        this(LoggerFactory.getLogger(label), blockMgr) ;
     }
+    
+    public BlockMgrTracker(Class<?> label, BlockMgr blockMgr)
+    {
+        this(LoggerFactory.getLogger(label), blockMgr) ;
+    }
+    
+    public BlockMgrTracker(Logger logger, BlockMgr blockMgr)
+    {
+        this.blockMgr = blockMgr ;
+        this.log = logger ;
+    }
+
+    private void add(Action action, Integer id) { actions.add(new Pair<Action, Integer>(action, id)) ; }
 
     @Override
     public Block allocate(BlockType blockType, int blockSize)
@@ -62,16 +67,17 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
         Block block = blockMgr.allocate(blockType, blockSize) ;
         Integer id = block.getId() ;
         activeWriteBlocks.add(id) ;
-        getWriteIds.add(id) ;
+        add(Action.Alloc, id) ;
         return block ;
     }
 
+    
     @Override
     public Block getRead(int id)
     {
         checkRead("getRead") ;
-        getReadIds.add(id) ;
         activeReadBlocks.add(id) ;
+        add(Action.GetRead, id) ;
         return blockMgr.getRead(id) ;
     }
 
@@ -80,7 +86,7 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
     {
         checkUpdate("getWrite") ;
         activeWriteBlocks.add(id) ;
-        getWriteIds.add(id) ;
+        add(Action.GetWrite, id) ;
         return blockMgr.getWrite(id) ;
     }
     
@@ -89,8 +95,17 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
     {
         Integer id = block.getId() ;
         activeWriteBlocks.add(id) ;
-//        getReadIds.remove(id) ;
-//        getWriteIds.add(id) ;
+        if ( activeReadBlocks.contains(id) )
+            activeReadBlocks.remove(id) ;
+        else
+        {
+            if ( activeWriteBlocks.contains(id) )
+                log.info("Promoting "+id+" - already a write") ;
+            else
+                log.warn("Promoting "+id+" but not a read block") ;
+        }
+             
+        add(Action.Promote, id) ;
         return blockMgr.promote(block) ;
     }
     
@@ -99,15 +114,15 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
     {   
         Integer id = block.getId() ;
         checkRead("releaseRead") ;
+        
         if ( ! activeReadBlocks.contains(id) )
-        {
-            if ( getReadIds.contains(id) )
-                log.error("Multiple releaseRead("+id+") after getRead()") ;
-            else
-                log.error("releaseRead("+id+") but no getRead()") ;
-        }
+            log.error("releaseRead("+id+") -- not an active read block") ;
+
+        if ( activeWriteBlocks.contains(id) )
+            log.error("releaseRead("+id+") on a write block") ;
+            
         activeReadBlocks.remove(block.getId()) ;
-        releasedReadIds.add(block.getId()) ;
+        add(Action.ReleaseRead, id) ;
         blockMgr.releaseRead(block) ;
     }
 
@@ -116,15 +131,14 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
     {   
         Integer id = block.getId() ;
         checkUpdate("releaseRead") ;
+
+        if ( activeReadBlocks.contains(id) )
+            log.error("releaseWrite("+id+") on a read block") ;
+
         if ( ! activeWriteBlocks.contains(id) )
-        {
-            if ( getWriteIds.contains(id) )
-                log.error("Multiple releaseWrite("+id+") after getWrite()") ;
-            else
-                log.error("releaseWrite("+id+") but no getWrite()") ;
-        }
+            log.error("releaseWrite("+id+") not an action write block") ;
         activeWriteBlocks.remove(id) ;
-        releasedWriteIds.add(id) ;
+        add(Action.ReleaseWrite, id) ;
         blockMgr.releaseWrite(block) ;
     }
 
@@ -134,14 +148,9 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
         Integer id = block.getId() ;
         checkUpdate("put") ;
         if ( ! activeWriteBlocks.contains(id) )
-        {
-            if ( getWriteIds.contains(id) )
-                log.error("Multiple attempts to return write block "+id) ;
-            else
-                log.error("put("+id+") but no active write block()") ;
-        }
+            log.error("put("+id+") but no active write block()") ;
         activeWriteBlocks.remove(id) ;
-        putIds.add(id) ;
+        add(Action.Put, id) ;
         blockMgr.put(block) ;
     }
 
@@ -150,14 +159,11 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
     {
         Integer id = block.getId() ;
         checkUpdate("freeBlock") ;
+        if ( activeReadBlocks.contains(id) )
+            log.error("freeBlock("+id+") on a read block") ;
         if ( ! activeWriteBlocks.contains(id) )
-        {
-            if ( getWriteIds.contains(id) )
-                log.error("Multiple attempts to return write block "+id) ;
-            else
-                log.error("freeBlock("+id+") but no getWrite()") ;
-        }
-        freedIds.add(block.getId()) ;
+            log.error("freeBlock("+id+") but not a write block") ;
+        add(Action.Free, id) ;
         blockMgr.freeBlock(block) ;
     }
 
@@ -209,9 +215,12 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
             log.error("finishRead but not in read") ;
         if ( inUpdate )
             log.error("finishRead when in update") ;
-        if ( ! activeReadBlocks.isEmpty() )
-            log.error("Outstanding read blocks at end of read operations") ; 
-
+        
+        checkEmpty("Outstanding read blocks at end of read operations",
+                   activeReadBlocks) ;
+        checkEmpty("Outstanding write blocks at end of read operations!",
+                   activeWriteBlocks) ;
+        
         inUpdate = false ;
         inRead = false ;
         clearInternal() ;
@@ -236,10 +245,13 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
             log.warn("finishUpdate but not in update") ;
         if ( inRead )
             log.warn("finishUpdate when in read") ;
-        
-        if ( ! activeReadBlocks.isEmpty() )
-            log.error("Outstanding read blocks at end of read operations") ; 
+     
+        checkEmpty("Outstanding read blocks at end of update operations",
+                   activeReadBlocks) ;
 
+        checkEmpty("Outstanding write blocks at end of update operations",
+                   activeWriteBlocks) ;
+        
         inUpdate = false ;
         inRead = false ;
         clearInternal() ;
@@ -256,6 +268,24 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
     {
         if ( ! inUpdate && ! inRead )
             log.error(method+" called outside update and read") ;
+    }
+
+    private void checkEmpty(String string, Set<Integer> blocks)
+    {
+        if ( ! blocks.isEmpty() )
+        {
+            log.error(string) ;
+            for ( Integer id : blocks )
+                log.info("    Block: "+id) ;
+            history() ;
+        }
+    }
+    
+    private void history()
+    {
+        log.info("History") ;
+        for ( Pair<Action, Integer> p : actions ) 
+            log.info(String.format("    %-12s  %d", p.getLeft(), p.getRight())) ;
     }
 }
 

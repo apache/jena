@@ -37,10 +37,11 @@ public final class BPTreeNodeMgr extends BPTreePageMgr<BPTreeNode>
     /** Allocate root node space. The root is a node with a Records block.*/ 
     public int createEmptyBPT()
     { 
+        // Must be inside already : startUpdate() ;
         // Create an empty records block.
         
         BPTreePage page = bpTree.getRecordsMgr().create() ;
-        if ( page.getId() != 0 )
+        if ( page.getId() != BPlusTreeParams.RootId )
             // [TxTDB:PATCH-UP]
             throw new TDBException("Root blocks must be at position zero") ;
         // Empty data block.
@@ -59,6 +60,7 @@ public final class BPTreeNodeMgr extends BPTreePageMgr<BPTreeNode>
         n.setCount(0) ;     // Count is count of records.
         int rootId = n.getId()  ;
         n.put();
+        // Must be inside already : finishUpdate() ;
         return rootId ;
     }
     
