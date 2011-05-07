@@ -95,7 +95,7 @@ public final class BPTreeRecords extends BPTreePage
     public BPTreeRecords findFirstPage() { return this ; }
 
     @Override final
-    public void put()   { bpTree.getRecordsMgr().put(this) ; } 
+    public void put()       { bpTree.getRecordsMgr().put(this) ; } 
     
     @Override final
     public void promote()   { bpTree.getRecordsMgr().promote(this) ; } 
@@ -103,6 +103,9 @@ public final class BPTreeRecords extends BPTreePage
     @Override final
     public void release()   { bpTree.getRecordsMgr().release(this) ; }
     
+    @Override final
+    public void free()      { bpTree.getRecordsMgr().free(this) ; }
+
     @Override
     public Record internalInsert(Record record)
     {
@@ -131,6 +134,7 @@ public final class BPTreeRecords extends BPTreePage
     @Override
     public Record internalDelete(Record record)
     {
+        promote() ;
         int i = rBuff.find(record) ;
         if ( i < 0 )
             return null ;

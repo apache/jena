@@ -162,8 +162,8 @@ public final class BPTreeNode extends BPTreePage
     }
     
 
-    private void release(BPTreePage node) {}
-    private void put(BPTreePage node) {}
+//    private void release(BPTreePage node) {}
+//    private void put(BPTreePage node) {}
     
     // ---------- Public calls.
     // None of these are called recursively.
@@ -193,9 +193,6 @@ public final class BPTreeNode extends BPTreePage
         
         if ( root.isFull() )
         {
-            // [TxTDB:PATCH-UP]
-            //root.block = root.bpTree.getNodeManager().getBlockMgr().promote(root.block) ;
-            //root = root.promote() ;
             // Root full - root split is a special case.
             splitRoot(root) ;
             if ( DumpTree ) root.dump() ;
@@ -257,7 +254,7 @@ public final class BPTreeNode extends BPTreePage
     {
         BPTreePage page = get(count, READ) ;
         Record r = page.maxRecord() ;
-        release(page) ;
+        page.release() ;
         return r ;
     }
 
@@ -266,7 +263,7 @@ public final class BPTreeNode extends BPTreePage
     {
         BPTreePage page = get(0, READ) ;
         Record r = page.minRecord() ;
-        release(page) ;
+        page.release() ;
         return r ;
     }
 
@@ -287,7 +284,7 @@ public final class BPTreeNode extends BPTreePage
     {
         BPTreePage page = get(0, READ) ;
         BPTreeRecords records = page.findFirstPage() ;
-        release(page) ;
+        page.release() ;
         return records ;
     }
 
@@ -338,6 +335,10 @@ public final class BPTreeNode extends BPTreePage
 
     @Override final
     public void release()   { bpTree.getNodeManager().release(this) ; } 
+
+    @Override final
+    public void free()      { bpTree.getNodeManager().free(this) ; } 
+    
     
     // ============ SEARCH
     
@@ -355,7 +356,7 @@ public final class BPTreeNode extends BPTreePage
         if ( CheckingNode ) internalCheckNode() ;
         BPTreePage page = findHere(rec) ;
         Record r = page.internalSearch(rec) ;
-        release(page) ;
+        page.release() ;
         return r ;
     }
 
@@ -400,8 +401,6 @@ public final class BPTreeNode extends BPTreePage
         
         if ( page.isFull() )
         {
-            promote() ;
-            page.promote() ;
             // Need to split the page before descending.
             split(idx, page) ;
             // Did it shift the insert index?
@@ -416,7 +415,7 @@ public final class BPTreeNode extends BPTreePage
         }
 
         Record r = page.internalInsert(record) ;
-        release(page) ;
+        page.release() ;
         return r ;
     }
 
@@ -452,6 +451,9 @@ public final class BPTreeNode extends BPTreePage
         }
         if ( CheckingTree )
             internalCheckNodeDeep() ;
+        
+        promote() ;
+        y.promote() ;
         
         Record splitKey = y.getSplitKey() ;
         splitKey = keyRecord(splitKey) ;
@@ -563,6 +565,7 @@ public final class BPTreeNode extends BPTreePage
         if ( CheckingNode )
             if ( root.id != 0 ) root.error("Not root: %d (root is id zero)", root.id) ;
         root.internalCheckNode() ;
+        root.promote() ;
         
         // Median record
         int splitIdx = root.params.SplitIndex ;
@@ -748,6 +751,8 @@ public final class BPTreeNode extends BPTreePage
             log.debug(format(">> node: %s", n)) ;
         }
         internalCheckNode() ;
+        promote() ;
+        n.promote() ;
         
         BPTreePage left = null ;
         if ( idx > 0 )
@@ -837,7 +842,7 @@ public final class BPTreeNode extends BPTreePage
             log.debug("-- merge: "+page) ;
 
         left.put();
-        right.release() ;
+        right.free() ;
         
         if ( page == right )
             error("Returned page is not the left") ;

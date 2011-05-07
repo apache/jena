@@ -76,7 +76,7 @@ public class PageBlockMgr<T extends Page>
     public void put(T page)
     {
         if ( ! page.getBackingBlock().isModified() )
-            Log.warn(this, "Page "+page.getId()+" not modified") ;
+            warn("Page "+page.getId()+" not modified") ;
         
         Block blk = pageFactory.toBlock(page) ;
         blockMgr.put(blk) ;
@@ -87,11 +87,22 @@ public class PageBlockMgr<T extends Page>
         Block block = page.getBackingBlock() ;
         if ( block.isModified() )
         {
-            Log.warn(this, "Page "+page.getId()+": releasing a page acquired for write") ;
+            warn("Page "+page.getId()+": releasing a page acquired for write") ;
             blockMgr.releaseWrite(block) ;
         }
         else
             blockMgr.releaseRead(block) ;
+    }
+    
+    private void warn(String string)
+    {
+        Log.warn(this, string) ;
+    }
+    
+    public void free(Page page)
+    {
+        Block block = page.getBackingBlock() ;
+        blockMgr.free(block) ;
     }
     
     public void promote(Page page)

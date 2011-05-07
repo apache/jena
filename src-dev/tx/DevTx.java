@@ -3,6 +3,10 @@ package tx;
 
 public class DevTx
 {
+    // Block or page - dirty flag? tie to promote? setModified()
+    // BPTree.delete - avoids double put but gets into more trouble.
+    //   .write, and auto write on releaseWrite?
+    
     // TDB 0.8.10 is rev 8718; TxTDB forked at 8731
     // BlockMgrTracker to dump inconsistences on finish*, not just log a warning.
     
