@@ -415,7 +415,18 @@ public final class BPTreeNode extends BPTreePage
         }
 
         Record r = page.internalInsert(record) ;
-        page.release() ;
+        
+        // Correct:
+//        page.release() ;
+        
+        /* Incorrect */
+        // [TxTDB:PATCH-UP]
+        // This is a hack - uses that a block that was put is a write block and already returned. 
+        
+        if ( ! page.getBackingBlock().isModified() )
+            // If modifed, it was put()
+            page.release() ;
+        /* Incorrect */
         return r ;
     }
 
@@ -719,7 +730,7 @@ public final class BPTreeNode extends BPTreePage
         count = n.count ;
         this.put();
         // Free up.
-        bpTree.getNodeManager().release(n) ;
+        n.free() ;
         internalCheckNodeDeep() ;
         
         if ( logging() )
