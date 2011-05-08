@@ -6,74 +6,72 @@
 
 package com.hp.hpl.jena.tdb.index.bplustree;
 
-import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
-import com.hp.hpl.jena.tdb.base.page.Page ;
-import com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPage ;
-import com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPageMgr ;
-import com.hp.hpl.jena.tdb.sys.Session ;
+import com.hp.hpl.jena.tdb.base.block.Block ;
+import com.hp.hpl.jena.tdb.base.block.BlockConverter ;
+import com.hp.hpl.jena.tdb.base.block.BlockType ;
+import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
+import com.hp.hpl.jena.tdb.base.recordbuffer.RecordBufferPage ;
+import com.hp.hpl.jena.tdb.base.recordbuffer.RecordBufferPageMgr ;
+import com.hp.hpl.jena.tdb.base.recordbuffer.RecordBufferPageMgr.Block2RecordBufferPage ;
 
 /** Bridge for making, getting and putting BPTreeRecords over a RecordBufferPageMgr */
-final public class BPTreeRecordsMgr implements Session //extends BPTreePageMgr
+final public class BPTreeRecordsMgr extends BPTreePageMgr<BPTreeRecords>
 {
     // Only "public" for external very low level tools in development to access this class.
     // Assume package access.
 
     private RecordBufferPageMgr rBuffPageMgr ;
-    private final BPlusTree bpTree ;
     
     BPTreeRecordsMgr(BPlusTree bpTree, RecordBufferPageMgr rBuffPageMgr)
     {
-        //super(bpTree) ;
-        this.bpTree = bpTree ;
+        super(bpTree, null, rBuffPageMgr.getBlockMgr()) ;
         this.rBuffPageMgr = rBuffPageMgr ;
+        super.setConverter(new Block2BPTreeRecords(bpTree, bpTree.getRecordFactory())) ;
     }
     
-//    /** Allocate an uninitialized slot. */ 
-//    public int allocateId()           { return rBuffPageMgr.allocateId() ; }
-    
-    public BPTreeRecords getRead(int id)
+    /** Converter BPTreeRecords -- make a RecordBufferPage and wraps it.*/ 
+    static class Block2BPTreeRecords implements BlockConverter<BPTreeRecords>
     {
-        RecordBufferPage rbp =  rBuffPageMgr.getRead(id) ;
-        BPTreeRecords bRec = new BPTreeRecords(bpTree, rbp) ;
-        return bRec ;
-    }
-    
-    public BPTreeRecords getWrite(int id)
-    {
-        RecordBufferPage rbp =  rBuffPageMgr.getWrite(id) ;
-        BPTreeRecords bRec = new BPTreeRecords(bpTree, rbp) ;
-        return bRec ;
-    }
+        private Block2RecordBufferPage z ;
+        private BPlusTree bpTree ;
 
-    //public RecordBufferPageMgr getRecordBufferPageMgr() { return  rBuffPageMgr ; }
-    
-    public void put(BPTreeRecords bRec)
-    {
-        rBuffPageMgr.put(bRec.getRecordBufferPage()) ;
+        Block2BPTreeRecords(BPlusTree bpTree, RecordFactory recordFactory)
+        { 
+            this.bpTree = bpTree ; 
+            this.z = new RecordBufferPageMgr.Block2RecordBufferPage(recordFactory) ;
+        }
+        
+        @Override
+        public BPTreeRecords fromBlock(Block block)
+        {
+            RecordBufferPage rbp = z.fromBlock(block) ;
+            return new BPTreeRecords(bpTree, rbp) ;
+        }
+
+        @Override
+        public Block toBlock(BPTreeRecords t)
+        {
+            return z.toBlock(t.getRecordBufferPage()) ;
+        }
+
+        @Override
+        public BPTreeRecords createFromBlock(Block block, BlockType bType)
+        {
+            RecordBufferPage rbp = z.createFromBlock(block, bType) ;
+            return new BPTreeRecords(bpTree, rbp) ;
+        }
     }
-
-    public void promote(Page page)      { rBuffPageMgr.promote(page) ; }
-
-    public void release(Page page)      { rBuffPageMgr.release(page) ; }
-    
-    public void free(Page page)         { rBuffPageMgr.free(page) ; }
-    
-    public boolean valid(int id)        { return rBuffPageMgr.valid(id) ; }
     
     public BPTreeRecords create()
     {
-        RecordBufferPage rbp = rBuffPageMgr.create() ;
-        BPTreeRecords bRec = new BPTreeRecords(bpTree, rbp) ;
-        return bRec ;
+        return super.create(BlockType.RECORD_BLOCK) ;
+//        
+//        RecordBufferPage rbp = rBuffPageMgr.create() ;
+//        BPTreeRecords bRec = new BPTreeRecords(bpTree, rbp) ;
+//        return bRec ;
     }
     
-    public BlockMgr getBlockMgr() { return rBuffPageMgr.getBlockMgr() ; }
     public RecordBufferPageMgr getRecordBufferPageMgr() { return rBuffPageMgr ; }
-
-    public void dump()
-    {
-        rBuffPageMgr.dump() ;
-    }
 
     @Override
     public void startRead()         { rBuffPageMgr.startRead() ; }

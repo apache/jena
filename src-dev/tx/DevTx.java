@@ -3,34 +3,9 @@ package tx;
 
 public class DevTx
 {
-    // Block or page - dirty flag? tie to promote? setModified()
-    
-    // BPTree.delete - avoids double put but gets into more trouble.
-    //   .write, and auto write on releaseWrite?
-    
-    // check BPTreeNode for:
-    //  Use of bpTree.getNodeManager() -- should be a  page.op() call.
-    
-    // Sort out:
-    // BPtreeNode and BPlusTreeRecords (and HashBucketMgr) subclass BPTreePage.
-    //   Move .promote/.put/.free to BPTreePage, and take a "PageBlockMgr" 
-    //   BPTreePage has been released flag.
-    
-    
-    
-    // BPTreeRecords adds operations over RecordBufferPage
-    //   Not if inherit from BPTreePage
-    //   Traits
-    
-    // BPTreePage : BPTreeNode , BPTreeRecords -- converted for BPTreeRecords needs a RecordBufferPage converter
-    
-    // BPTreePageMgr : BPTreeNodeMgr, BPTreeRecordsMgr 
-    
-    
-    //   Track BPTreePages "has been released flag"
-    //   PageBlockMgr > BPTreePageMgr
-    
-    // BPtreeNode.getMgrRead flips on route down, no need in BPlusTreeRecords
+    // Tidy up 
+    // Is BlockType really necessary?
+    // See HACK
     
     // ---- ---- ---- ----
     
@@ -38,25 +13,12 @@ public class DevTx
     // BlockMgrTracker to dump inconsistences on finish*, not just log a warning.
     
     // PageMgr implements UnitMgr<Page> -- allocate(size) with no type. 
-    //   Add "write" - put = write - releaseWrite.
-    // PageBlockMgr.free, not via bypassing PageBlockMgr.
-    
     // releasing the root after update and put --> warning
     // "Needs put()'ing"
     
     // B+Tree
     //   Avoid reparsing root blocks.  Maybe release only after change.
     
-    // Next: 
-    //   Write test harness for lock read/write usage in BPT operations.
-    
-    // Block to have a clean/dirty flag.
-    //   Promote pages or promote blocks?  Blocks - page pass down promotion.
-    // End of transaction forces end of iterators, release of blocks etc.
-    //   Blocks - assumes that system does magic to promote 
-    //   Demote? No == put().
-    
-    // See all : 
     // [TxTDB:PATCH-UP]
     // Memory mapped files.
 

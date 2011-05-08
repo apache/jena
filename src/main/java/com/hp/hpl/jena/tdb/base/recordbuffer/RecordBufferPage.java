@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.base.recordfile;
+package com.hp.hpl.jena.tdb.base.recordbuffer;
 
 import com.hp.hpl.jena.tdb.base.block.Block ;
 import com.hp.hpl.jena.tdb.base.page.Page ;
@@ -25,7 +25,6 @@ public class RecordBufferPage extends RecordBufferPageBase
     final public static int LINK            = 4 ;
     final private static int FIELD_LENGTH   = SystemTDB.SizeOfInt ;
 
-    private final RecordBufferPageMgr pageMgr ;
     private int link = Page.NO_ID ;
     
     public int getLink() { return link ; }
@@ -44,26 +43,13 @@ public class RecordBufferPage extends RecordBufferPageBase
     
     
     /*public*/ RecordBufferPage(Block block, int linkId,
-                                RecordFactory factory, RecordBufferPageMgr recordBufferPageMgr, 
+                                RecordFactory factory, 
                                 int count)
     {
         super(block, FIELD_LENGTH, factory, count) ;
-        this.pageMgr = recordBufferPageMgr ; 
         this.link = linkId ;
         
     }
-    
-    public final RecordBufferPageMgr getPageMgr()
-    {
-        return pageMgr ;
-    }
-
-//    public void setPageMgr(RecordBufferPageMgr recordBufferPageMgr)
-//    {
-//        this.pageMgr = recordBufferPageMgr ;
-//    }
-
-
     
     @Override
     public String toString()

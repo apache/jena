@@ -120,6 +120,7 @@ public class PageBlockMgr<T extends Page>
         {
             T page = getRead(idx) ;
             System.out.println(page) ;
+            release(page) ;
         }
     }
     

@@ -31,28 +31,25 @@ public final class BPTreeNodeMgr extends BPTreePageMgr<BPTreeNode>
         super(bpTree, new Block2BPTreeNode(bpTree), blockMgr) ;
     }
    
-//    @Override
-//    public BlockMgr getBlockMgr() { return blockMgr ; } 
-    
     /** Allocate root node space. The root is a node with a Records block.*/ 
     public int createEmptyBPT()
     { 
         // Must be inside already : startUpdate() ;
         // Create an empty records block.
         
-        BPTreePage page = bpTree.getRecordsMgr().create() ;
-        if ( page.getId() != BPlusTreeParams.RootId )
+        BPTreePage recordsPage = bpTree.getRecordsMgr().create() ;
+        if ( recordsPage.getId() != BPlusTreeParams.RootId )
             // [TxTDB:PATCH-UP]
             throw new TDBException("Root blocks must be at position zero") ;
         // Empty data block.
         // [TxTDB:PATCH-UP]
-        page.put();
+        recordsPage.put();
         
         BPTreeNode n = createNode(BPlusTreeParams.RootParent) ;
         // n.ptrs is currently invalid.  count was 0 so thinks it has a pointer.
         // Force to right layout.
         n.ptrs.setSize(0) ;         // No pointers
-        n.ptrs.add(page.getId()) ;  // Add the page below
+        n.ptrs.add(recordsPage.getId()) ;  // Add the page below
         
         //n.ptrs.set(0, page.getId()) ; // This is the same as the size is one.
         
@@ -67,31 +64,16 @@ public final class BPTreeNodeMgr extends BPTreePageMgr<BPTreeNode>
     /** Allocate space for a fresh node. */ 
     public BPTreeNode createNode(int parent)
     { 
-//        int id = blockMgr.allocateId() ;
-//        ByteBuffer bb = blockMgr.allocateBuffer(id) ;
-        //bb.clear();
-        //Block block = blockMgr.allocate(null, -1) ;
         BPTreeNode n = create(BPTREE_BRANCH) ;
         n.isLeaf = false ;
         n.parent = parent ;
         return n ;
     }
 
-    // getRead, getWrite, releaseRead, releaseWrite, promote.
-    
     /** Fetch a block for the root. */
     public BPTreeNode getRoot(int id)
     {
         return getRead(id, BPlusTreeParams.RootParent) ;
-    }
-    
-    /** Fetch a block - fill in the parent id, which is not in the on-disk bytes */
-    public BPTreeNode getRead(int id, int parent)
-    {
-        // [TxTDB:PATCH-UP]
-        BPTreeNode n = super.getRead(id) ;
-        n.parent = parent ;
-        return n ;
     }
     
     // Maybe we should not inherit but wrap.
@@ -103,6 +85,15 @@ public final class BPTreeNodeMgr extends BPTreePageMgr<BPTreeNode>
     { throw new UnsupportedOperationException("call getRead(int, int)") ; }
     
     /** Fetch a block - fill in the parent id, which is not in the on-disk bytes */
+    public BPTreeNode getRead(int id, int parent)
+    {
+        // [TxTDB:PATCH-UP]
+        BPTreeNode n = super.getRead(id) ;
+        n.parent = parent ;
+        return n ;
+    }
+    
+    /** Fetch a block - fill in the parent id, which is not in the on-disk bytes */
     public BPTreeNode getWrite(int id, int parent)
     {
         // [TxTDB:PATCH-UP]
@@ -111,35 +102,6 @@ public final class BPTreeNodeMgr extends BPTreePageMgr<BPTreeNode>
         return n ;
     }
 
-    public boolean isEmpty()            { return getBlockMgr().isEmpty() ; }
-    
-    @Override
-    public void dump()
-    { 
-        for ( int idx = 0 ; valid(idx) ; idx++ )
-        {
-            BPTreeNode n = getRead(idx, BPlusTreeParams.NoParent) ;
-            System.out.println(n) ;
-            release(n) ;
-        }
-    }
-    
-//    /** Signal the start of an update operation */
-//    @Override
-//    public void startRead()         { getBlockMgr().startRead() ; }
-//
-//    /** Signal the completeion of an update operation */
-//    @Override
-//    public void finishRead()        { getBlockMgr().finishRead() ; }
-//
-//    /** Signal the start of an update operation */
-//    @Override
-//    public void startUpdate()       { getBlockMgr().startUpdate() ; }
-//    
-//    /** Signal the completion of an update operation */
-//    @Override
-//    public void finishUpdate()      { getBlockMgr().finishUpdate() ; }
-    
     private static class Block2BPTreeNode implements BlockConverter<BPTreeNode>
     {
         private final BPlusTree bpTree ;

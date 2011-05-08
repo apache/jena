@@ -12,7 +12,7 @@ import com.hp.hpl.jena.tdb.base.StorageException ;
 import com.hp.hpl.jena.tdb.base.block.Block ;
 import com.hp.hpl.jena.tdb.base.record.Record ;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
-import com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPageBase ;
+import com.hp.hpl.jena.tdb.base.recordbuffer.RecordBufferPageBase ;
 
 /** A HashBucket is a record buffer, with space store it's hash value and the bit length */  
 

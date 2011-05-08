@@ -18,8 +18,8 @@ import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory ;
 import com.hp.hpl.jena.tdb.base.buffer.RecordBuffer ;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
-import com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPage ;
-import com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPageMgr ;
+import com.hp.hpl.jena.tdb.base.recordbuffer.RecordBufferPage ;
+import com.hp.hpl.jena.tdb.base.recordbuffer.RecordBufferPageMgr ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 /** Tools for working with B+Trees and datastructures associated with them, rather directly */

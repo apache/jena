@@ -6,8 +6,8 @@
 
 package com.hp.hpl.jena.tdb.index.ext;
 
-import static com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPageBase.COUNT;
-import static com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPageBase.NO_ID;
+import static com.hp.hpl.jena.tdb.base.recordbuffer.RecordBufferPageBase.COUNT ;
+import static com.hp.hpl.jena.tdb.base.recordbuffer.RecordBufferPageBase.NO_ID;
 import static com.hp.hpl.jena.tdb.index.ext.HashBucket.BITLEN;
 import static com.hp.hpl.jena.tdb.index.ext.HashBucket.TRIE;
 

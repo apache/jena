@@ -8,13 +8,11 @@ package com.hp.hpl.jena.tdb.index.bplustree;
 
 import com.hp.hpl.jena.tdb.base.block.BlockConverter ;
 import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
-import com.hp.hpl.jena.tdb.base.page.Page ;
 import com.hp.hpl.jena.tdb.base.page.PageBlockMgr ;
 import com.hp.hpl.jena.tdb.sys.Session ;
 
-abstract class BPTreePageMgr<T extends Page> extends PageBlockMgr<T> implements Session
+abstract class BPTreePageMgr<T extends BPTreePage> extends PageBlockMgr<T> implements Session
 {
-    // This a "missing" class
     // BPTreeRecordMgr works on a RecordBufferPageMgr
     // BPTreeNodeMgr works on a BPTreeNodeMgr 
     // so they share very little.

@@ -12,7 +12,7 @@ import java.util.NoSuchElementException;
 
 import org.openjena.atlas.iterator.PeekIterator;
 
-import com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPage;
+import com.hp.hpl.jena.tdb.base.recordbuffer.RecordBufferPage ;
 
 /** From a stream of RecordBufferPage,  manage the link fields.
  * That is, be a one slot delay so that the "link" field can point to the next page.

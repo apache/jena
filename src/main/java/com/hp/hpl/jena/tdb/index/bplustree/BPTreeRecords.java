@@ -18,7 +18,7 @@ import com.hp.hpl.jena.tdb.base.StorageException ;
 import com.hp.hpl.jena.tdb.base.block.Block ;
 import com.hp.hpl.jena.tdb.base.buffer.RecordBuffer ;
 import com.hp.hpl.jena.tdb.base.record.Record ;
-import com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPage ;
+import com.hp.hpl.jena.tdb.base.recordbuffer.RecordBufferPage ;
 
 /** B+Tree wrapper over a block of records in a RecordBufferPage.
  * This class adds no persistent state to a RecordBufferPage */

@@ -13,8 +13,8 @@ import org.openjena.atlas.iterator.Iter ;
 import org.openjena.atlas.lib.Pair ;
 
 import com.hp.hpl.jena.tdb.base.record.Record ;
-import com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPage ;
-import com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPageMgr ;
+import com.hp.hpl.jena.tdb.base.recordbuffer.RecordBufferPage ;
+import com.hp.hpl.jena.tdb.base.recordbuffer.RecordBufferPageMgr ;
 
 class BPlusTreeRewriterUtils
 {

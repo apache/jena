@@ -1,12 +1,14 @@
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.base.recordfile;
+package com.hp.hpl.jena.tdb.base.recordbuffer;
 
-import static com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPage.* ;
+import static com.hp.hpl.jena.tdb.base.recordbuffer.RecordBufferPage.* ;
+
 import java.nio.ByteBuffer;
 
 import com.hp.hpl.jena.tdb.base.block.Block ;
@@ -26,7 +28,7 @@ public class RecordBufferPageMgr extends PageBlockMgr<RecordBufferPage>
     public RecordBufferPageMgr(RecordFactory factory, BlockMgr blockMgr)
     {
         super(null, blockMgr) ;
-        Block2RecordBufferPage conv = new Block2RecordBufferPage(factory, this) ;
+        Block2RecordBufferPage conv = new Block2RecordBufferPage(factory) ;
         super.setConverter(conv) ;
     }
 
@@ -35,29 +37,13 @@ public class RecordBufferPageMgr extends PageBlockMgr<RecordBufferPage>
         return super.create(BlockType.RECORD_BLOCK) ;
     }
     
-//    @Override
-//    public RecordBufferPage get(int id)
-//    {
-//        // [TxTDB:PATCH-UP] -- read/write
-//        synchronized(this) 
-//        {
-//            // Must call in single reader for the context.
-//            RecordBufferPage rbp = super.get(id) ;
-//            rbp.setPageMgr(this) ;
-//            // Link and Count are in the block and got done by the converter.
-//            return rbp ;
-//        }
-//    }
-    
-    private static class Block2RecordBufferPage implements BlockConverter<RecordBufferPage>
+    public static class Block2RecordBufferPage implements BlockConverter<RecordBufferPage>
     {
         private RecordFactory factory ;
-        private RecordBufferPageMgr pageMgr ;
 
-        Block2RecordBufferPage(RecordFactory factory, RecordBufferPageMgr pageMgr)
+        public Block2RecordBufferPage(RecordFactory factory)
         {
             this.factory = factory ;
-            this.pageMgr = pageMgr ;
         }
         
         @Override
@@ -66,7 +52,7 @@ public class RecordBufferPageMgr extends PageBlockMgr<RecordBufferPage>
             if ( blkType != BlockType.RECORD_BLOCK )
                 throw new RecordException("Not RECORD_BLOCK: "+blkType) ;
             // Initially empty
-            RecordBufferPage rb = new RecordBufferPage(block, NO_ID, factory, pageMgr, 0) ;
+            RecordBufferPage rb = new RecordBufferPage(block, NO_ID, factory, 0) ;
             return rb ;
         }
 
@@ -77,7 +63,7 @@ public class RecordBufferPageMgr extends PageBlockMgr<RecordBufferPage>
             {
                 int count = block.getByteBuffer().getInt(COUNT) ;
                 int linkId = block.getByteBuffer().getInt(LINK) ;
-                RecordBufferPage rb = new RecordBufferPage(block, linkId, factory, pageMgr, count) ;
+                RecordBufferPage rb = new RecordBufferPage(block, linkId, factory, count) ;
                 return rb ;
             }
         }
@@ -97,6 +83,7 @@ public class RecordBufferPageMgr extends PageBlockMgr<RecordBufferPage>
 
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

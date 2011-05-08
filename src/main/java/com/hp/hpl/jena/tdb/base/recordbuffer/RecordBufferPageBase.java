@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.base.recordfile;
+package com.hp.hpl.jena.tdb.base.recordbuffer;
 
 
 import java.nio.ByteBuffer;

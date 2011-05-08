@@ -7,7 +7,7 @@
 package com.hp.hpl.jena.tdb.index.ext;
 
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
-import com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPageBase;
+import com.hp.hpl.jena.tdb.base.recordbuffer.RecordBufferPageBase ;
 
 public class ExtHashParams
 {

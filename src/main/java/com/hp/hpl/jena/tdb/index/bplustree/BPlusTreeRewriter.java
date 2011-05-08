@@ -25,8 +25,8 @@ import com.hp.hpl.jena.tdb.base.buffer.PtrBuffer ;
 import com.hp.hpl.jena.tdb.base.buffer.RecordBuffer ;
 import com.hp.hpl.jena.tdb.base.record.Record ;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
-import com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPage ;
-import com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPageMgr ;
+import com.hp.hpl.jena.tdb.base.recordbuffer.RecordBufferPage ;
+import com.hp.hpl.jena.tdb.base.recordbuffer.RecordBufferPageMgr ;
 import com.hp.hpl.jena.tdb.index.btree.BTreeParams ;
 
 public class BPlusTreeRewriter
@@ -129,7 +129,7 @@ public class BPlusTreeRewriter
             System.out.println("---- Data level") ;
         }
 
-        RecordBufferPageMgr mgr = bpt.getRecordsMgr().getRecordBufferPageMgr() ;
+        final RecordBufferPageMgr mgr = bpt.getRecordsMgr().getRecordBufferPageMgr() ;
         Iterator<RecordBufferPage> iter = new RecordBufferPageLinker(new RecordBufferPagePacker(records, mgr)) ;
 
         Transform<RecordBufferPage, Pair<Integer, Record>> transform = new Transform<RecordBufferPage, Pair<Integer, Record>>()
@@ -137,9 +137,7 @@ public class BPlusTreeRewriter
             @Override
             public Pair<Integer, Record> convert(RecordBufferPage rbp)
             {
-                RecordBufferPageMgr mgr = rbp.getPageMgr() ;
-                
-                rbp.getPageMgr().put(rbp) ;
+                mgr.put(rbp) ;
                 Record r = rbp.getRecordBuffer().getHigh() ;
                 r = bpt.getRecordFactory().createKeyOnly(r) ;
                 return new Pair<Integer, Record>(rbp.getId(), r) ;

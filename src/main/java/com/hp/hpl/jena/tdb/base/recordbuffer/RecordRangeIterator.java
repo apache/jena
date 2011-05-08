@@ -1,10 +1,11 @@
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.base.recordfile;
+package com.hp.hpl.jena.tdb.base.recordbuffer;
 
 import static org.openjena.atlas.lib.Alg.decodeIndex ;
 
@@ -19,15 +20,15 @@ class RecordRangeIterator implements Iterator<Record>
 {
     /** Iterate over a range of fromRec (inclusive) to toRec (exclusive) */
     
-    public static Iterator<Record> iterator(RecordBufferPage page, Record fromRec, Record toRec)
+    public static Iterator<Record> iterator(RecordBufferPage page, Record fromRec, Record toRec, RecordBufferPageMgr pageMgr)
     {
-        return new RecordRangeIterator(page, fromRec, toRec) ;
+        return new RecordRangeIterator(page, fromRec, toRec, pageMgr) ;
     }
     
     /** Iterate over all records from this page onwards */
-    public static Iterator<Record> iterator(RecordBufferPage page)
+    public static Iterator<Record> iterator(RecordBufferPage page, RecordBufferPageMgr pageMgr)
     {
-        return new RecordRangeIterator(page, null, null) ;
+        return new RecordRangeIterator(page, null, null, pageMgr) ;
     }
     
     private RecordBufferPage currentPage ;      // Set null when finished.
@@ -40,12 +41,11 @@ class RecordRangeIterator implements Iterator<Record>
     private long countRecords = 0 ;
     private long countBlocks = 0 ;
 
-    public RecordRangeIterator(RecordBufferPage page, Record fromRec, Record toRec)
+    public RecordRangeIterator(RecordBufferPage page, Record fromRec, Record toRec, RecordBufferPageMgr pageMgr)
     {
-        
         currentPage = page ;
         currentIdx = 0 ;
-        this.pageMgr = page.getPageMgr() ;
+        this.pageMgr = pageMgr; //page.getPageMgr() ;
         this.minRec = fromRec ;
         this.maxRec = toRec ;
         
@@ -113,14 +113,12 @@ class RecordRangeIterator implements Iterator<Record>
         return true ;
     }
 
-
     private void finish()
     {
         currentPage = null ;
         currentIdx = -99 ;
         slot = null ;
     }
-
 
     @Override
     public Record next()
@@ -143,7 +141,6 @@ class RecordRangeIterator implements Iterator<Record>
         return countRecords ;
     }
 
-
     public long getCountBlocks()
     {
         return countBlocks ;
@@ -153,6 +150,7 @@ class RecordRangeIterator implements Iterator<Record>
 
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

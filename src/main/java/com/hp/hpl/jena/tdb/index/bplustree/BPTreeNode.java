@@ -28,8 +28,8 @@ import com.hp.hpl.jena.tdb.base.block.Block ;
 import com.hp.hpl.jena.tdb.base.buffer.PtrBuffer ;
 import com.hp.hpl.jena.tdb.base.buffer.RecordBuffer ;
 import com.hp.hpl.jena.tdb.base.record.Record ;
-import com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPage ;
-import com.hp.hpl.jena.tdb.base.recordfile.RecordRangeIterator ;
+import com.hp.hpl.jena.tdb.base.recordbuffer.RecordBufferPage ;
+import com.hp.hpl.jena.tdb.base.recordbuffer.RecordRangeIterator ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 public final class BPTreeNode extends BPTreePage
@@ -325,21 +325,19 @@ public final class BPTreeNode extends BPTreePage
     public boolean isLeaf()                 { return this.isLeaf ; }
     
     @Override
-    public int getId()                      { return id ; }
+    public final int getId()                { return id ; }
 
-    // TODO Tidy - move this to BPTreePage, pass up a BPTreeMgr 
+    @Override
+    public final void put()             { bpTree.getNodeManager().put(this) ; } 
     
-    @Override final
-    public void put()   { bpTree.getNodeManager().put(this) ; } 
-    
-    @Override final
-    public void promote() { bpTree.getNodeManager().promote(this) ; }
+    @Override
+    public final void promote()         { bpTree.getNodeManager().promote(this) ; }
 
-    @Override final
-    public void release()   { bpTree.getNodeManager().release(this) ; } 
+    @Override
+    public final void release()         { bpTree.getNodeManager().release(this) ; } 
 
-    @Override final
-    public void free()      { bpTree.getNodeManager().free(this) ; } 
+    @Override
+    public final void free()            { bpTree.getNodeManager().free(this) ; } 
     
     
     // ============ SEARCH
@@ -423,10 +421,10 @@ public final class BPTreeNode extends BPTreePage
         
         /* Incorrect */
         // [TxTDB:PATCH-UP]
-        // This is a hack - uses that a block that was put is a write block and already returned. 
+        // This is a HACK - uses that a block that was put is a write block and already returned. 
         
         if ( ! page.getBackingBlock().isModified() )
-            // If modifed, it was put()
+            // If modified, it was put() and so is done.
             page.release() ;
         /* Incorrect */
         return r ;
@@ -1161,7 +1159,7 @@ public final class BPTreeNode extends BPTreePage
             return Iter.nullIter() ;
         
         RecordBufferPage page = btr.getRecordBufferPage()  ;
-        return RecordRangeIterator.iterator(page, fromRec, toRec) ;
+        return RecordRangeIterator.iterator(page, fromRec, toRec, bpTree.getRecordsMgr().getRecordBufferPageMgr()) ;
     }
     
     Iterator<Record> iterator()

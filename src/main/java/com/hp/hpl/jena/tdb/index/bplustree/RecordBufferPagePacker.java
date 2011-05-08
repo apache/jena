@@ -12,8 +12,8 @@ import java.util.NoSuchElementException ;
 
 import com.hp.hpl.jena.tdb.base.buffer.RecordBuffer ;
 import com.hp.hpl.jena.tdb.base.record.Record ;
-import com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPage ;
-import com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPageMgr ;
+import com.hp.hpl.jena.tdb.base.recordbuffer.RecordBufferPage ;
+import com.hp.hpl.jena.tdb.base.recordbuffer.RecordBufferPageMgr ;
 
 /** Iterate over a stream of records, packing them into RecordBufferPage -- the leaf of a B+Tree 
  *  This class does not write the blocks back to the block manager.
