@@ -20,6 +20,7 @@ import com.hp.hpl.jena.sdb.store.DatasetStoreGraph;
 import com.hp.hpl.jena.sparql.algebra.Algebra;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.Transformer;
+import com.hp.hpl.jena.sparql.algebra.optimize.TransformFilterEquality ;
 import com.hp.hpl.jena.sparql.algebra.optimize.TransformPropertyFunction;
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
@@ -80,6 +81,7 @@ public class QueryEngineSDB extends QueryEngineBase
         
         // Do property functions.
         op = Transformer.transform(new TransformPropertyFunction(context), op) ;
+        op = Transformer.transform(new TransformFilterEquality(false), op) ;
         
         // Quad it now so it can be passed to Compile.compile
         op = Algebra.toQuadForm(op) ;
