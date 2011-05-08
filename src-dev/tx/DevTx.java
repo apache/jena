@@ -4,23 +4,17 @@ package tx;
 public class DevTx
 {
     // Tidy up 
-    // Is BlockType really necessary?
-    // See HACK
+    //   Is BlockType really necessary?
+    //   See HACK (BPTreeNode)
+    //   UnitMgr -- extends to "PageMgr".
+    //     PageMgr implements UnitMgr<Page> -- allocate(size) with no type. 
     
     // ---- ---- ---- ----
-    
-    // TDB 0.8.10 is rev 8718; TxTDB forked at 8731
-    // BlockMgrTracker to dump inconsistences on finish*, not just log a warning.
-    
-    // PageMgr implements UnitMgr<Page> -- allocate(size) with no type. 
-    // releasing the root after update and put --> warning
-    // "Needs put()'ing"
     
     // B+Tree
     //   Avoid reparsing root blocks.  Maybe release only after change.
     
     // [TxTDB:PATCH-UP]
-    // Memory mapped files.
 
     /*
      * Iterator tracking
@@ -46,9 +40,10 @@ public class DevTx
     
     /* 
      * Fast B+Tree creation: wrap an existsing BPTree with another that switches the block managers only.
-     * BPtree.reattach (misses the test of if exists).
-     *   Later.
+     * Cache root block.
      * Setup
      *   Transaction start: grab alloc id.
      */
+    
+    // TDB 0.8.10 is rev 8718; TxTDB forked at 8731
 }

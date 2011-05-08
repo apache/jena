@@ -32,7 +32,6 @@ import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.base.record.Record ;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
 import com.hp.hpl.jena.tdb.index.RangeIndex ;
-import com.hp.hpl.jena.tdb.index.RangeIndexLogger ;
 import com.hp.hpl.jena.tdb.index.bplustree.BPTreeNode ;
 import com.hp.hpl.jena.tdb.index.bplustree.BPlusTree ;
 import com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams ;
@@ -169,22 +168,23 @@ public class TxMain
 
         System.out.println() ;
         
+        
+        log.info("ADD") ;
         for ( int i = 0 ; i < 10 ; i++ ) 
         {
             log.info("i = "+i) ;
-            if ( false )
-            {
-                RangeIndex rIdx = rIndex ;
-                if ( rIdx instanceof RangeIndexLogger )
-                    rIdx = ((RangeIndexLogger)rIdx).getWrapped() ;
-                if ( rIdx instanceof BPlusTree )
-                    ((BPlusTree)rIndex).dump() ;
-            }
-            
             Record r = record(rf, i+0x100000L, i+0x90000000L) ;
             rIndex.add(r) ;
         }
         
+        log.info("DELETE") ;
+        for ( int i = 0 ; i < 10 ; i++ ) 
+        {
+            log.info("i = "+i) ;
+            Record r = record(rf, i+0x100000L, i+0x90000000L) ;
+            rIndex.delete(r) ;
+        }
+
         exit(0) ;
         
         System.out.println() ;
