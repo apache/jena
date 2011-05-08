@@ -1,13 +1,14 @@
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
 package com.hp.hpl.jena.tdb.index.bplustree;
 
-import com.hp.hpl.jena.tdb.base.page.Page;
-import com.hp.hpl.jena.tdb.base.record.Record;
+import com.hp.hpl.jena.tdb.base.page.Page ;
+import com.hp.hpl.jena.tdb.base.record.Record ;
 
 /** Abstraction of a B+Tree node - either an branch (BTreeNode) or leaf (BTreeLeaf - records)*/
 abstract public class BPTreePage implements Page
@@ -102,7 +103,7 @@ abstract public class BPTreePage implements Page
     abstract Record maxRecord() ;
     
     /** Finished with this block (for now!) */
-    abstract void put() ;
+    abstract void put() ; 
     
     /** Turn a read page into a write page */
     abstract void promote() ;
@@ -125,6 +126,7 @@ abstract public class BPTreePage implements Page
 
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

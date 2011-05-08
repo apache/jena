@@ -320,17 +320,19 @@ public final class BPTreeNode extends BPTreePage
     /** Do not use without great care */
     public PtrBuffer getPtrBuffer()         { return ptrs ; }
     
-    @Override
-    public int getId()                      { return id ; }
-
     public void setIsLeaf(boolean isLeaf)   { this.isLeaf = isLeaf ; }
 
     public boolean isLeaf()                 { return this.isLeaf ; }
     
+    @Override
+    public int getId()                      { return id ; }
+
+    // TODO Tidy - move this to BPTreePage, pass up a BPTreeMgr 
+    
     @Override final
     public void put()   { bpTree.getNodeManager().put(this) ; } 
     
-    @Override
+    @Override final
     public void promote() { bpTree.getNodeManager().promote(this) ; }
 
     @Override final
@@ -693,7 +695,13 @@ public final class BPTreeNode extends BPTreePage
             thisPutNeeded = true ;
         }
         if ( thisPutNeeded )
+        {
+            // [TxTDB:PATCH-UP]
+            // Until the hierarch support marking "put done"
+            this.getBackingBlock().setModified(true) ;
+            // HACK
             this.put();
+        }
         return r2 ;
     }
 
