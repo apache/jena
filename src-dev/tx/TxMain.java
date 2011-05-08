@@ -61,16 +61,19 @@ public class TxMain
     
     public static void main(String... args)
     {
-        bpTreeTracking() ; exit(0) ;
+        //bpTreeTracking() ; exit(0) ;
         
-        String dirname = "DBX" ;
-        if ( false && FileOps.exists(dirname) )
-            FileOps.clearDirectory(dirname) ;
+        Location location ;
+        if ( false )
+        {
+            String dirname = "DBX" ;
+            if ( false && FileOps.exists(dirname) )
+                FileOps.clearDirectory(dirname) ;
+            location = new Location(dirname) ;
+        } else
+            location = Location.mem() ;
+
         TransactionManager txnMgr = new TransactionManager() ;
-        
-        //Location location = Location.mem() ;
-        Location location = new Location(dirname) ;
-        
         DatasetGraphTDB dsg = txnMgr.build(location) ;
         //dsg.add(SSE.parseQuad("(_ <s> <p> 'o')")) ;
         
@@ -90,7 +93,6 @@ public class TxMain
         System.out.println("Base:") ;
         //System.out.println(dsg) ;
         query("SELECT count(*) { ?s ?p ?o }", dsg) ;
-        
         
         DatasetGraphTxView dsgX2 = txnMgr.begin(dsg) ;
         dsgX2.add(SSE.parseQuad("(_ <sx> <px> 'ox2')")) ;

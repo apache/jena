@@ -218,7 +218,21 @@ public class TransactionManager
             return blk ;
         }
 
+        @Override
+        public Block getRead(int id)
+        {
+            // HACK
+            Block b = getWrite(id) ;
+            b.setModified(false) ;
+            return b ;
+        }
         
+        @Override
+        public Block promote(Block block)
+        {
+            return block ;
+        }
+
         @Override
         public Block getWrite(int id)
         {
