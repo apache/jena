@@ -99,7 +99,7 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
         add(Promote, id) ;
         
         if ( ! activeWriteBlocks.contains(id) && ! activeReadBlocks.contains(id) )
-            error(Promote, "Promoting "+id+" but block not active") ;
+            error(Promote, id+" is not an active block") ;
         
 //        if ( 
 //            log.info("Promoting "+id+" - already a write") ;
@@ -150,7 +150,7 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
         checkUpdate("put") ;
         add(Put, id) ;
         if ( ! activeWriteBlocks.contains(id) )
-            error(Put, id+ "is not an active write block") ;
+            error(Put, id+ " is not an active write block") ;
         activeWriteBlocks.remove(id) ;
         blockMgr.put(block) ;
     }
@@ -165,6 +165,7 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
             error(Free, id+" is a read block") ;
         else if ( ! activeWriteBlocks.contains(id) )
             error(Free, id+" is not a write block") ;
+        activeWriteBlocks.remove(id) ;
         blockMgr.free(block) ;
     }
 
