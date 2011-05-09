@@ -13,13 +13,11 @@ import com.hp.hpl.jena.tdb.base.block.Block ;
 
 /** Interface to concrete storage.
  *  This is wrapped in a BlockMgrAccess to add the in-memory tracking of read and write blocks,
- *   
  */
 public interface FileAccess extends Sync, Closeable
 {
     public Block allocate() ;
     
-    // Who should do the space allocation? 
     public Block read(int id) ;
     
     public void write(Block block) ;

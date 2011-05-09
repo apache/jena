@@ -5,7 +5,6 @@ public class DevTx
 {
     // Tidy up 
     //   See HACK (BPTreeNode)
-    //   Needs block policy cleaned up. Use after put().
     // Block: Split "modified" into isWriteable and hasChanged
     
     // Caching pages across actions sequences. e.g BPT root block.

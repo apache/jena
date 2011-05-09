@@ -661,7 +661,9 @@ public final class BPTreeNode extends BPTreePage
         boolean thisWriteNeeded = false ;
         if ( page.isMinSize() )             // Can't be root - we decended in the get(). 
         {
-            page = rebalance(page, y) ;     // Flushes nodes
+            page.isMinSize() ;
+            
+            page = rebalance(page, y) ;
             thisWriteNeeded = true ;
             // May have moved/removed at x.  Find again. YUK.
             x = findSlot(rec) ;
@@ -812,31 +814,30 @@ public final class BPTreeNode extends BPTreePage
         // Couldn't shift.  Collapse two pages.  
         if ( CheckingNode && left == null && right == null) error("No siblings") ;
 
-        try {
-            if ( left != null )
-            {
-                if ( logging() )
-                    log.debug(format("rebalance/merge/left: left=%d n=%d [%d]", left.getId(), n.getId(), idx-1)) ;
-                if ( CheckingNode && left.getId() == n.getId() ) 
-                    error("Left and n the same: %s", left) ;
-                return merge(left, n, idx-1) ;
-            }
-            else
-            {
-                // right != null
-                if ( logging() )
-                    log.debug(format("rebalance/merge/right: n=%d right=%d [%d]", n.getId(), right.getId(), idx)) ;
-                if ( CheckingNode && right.getId() == n.getId() )
-                    error("N and right the same: %s",right ) ;
-                return merge(n, right, idx) ;
-            }
-        } finally
+        if ( left != null )
         {
-            if ( left != null ) left.release() ;
-            if ( right != null ) right.release() ;
+            if ( logging() )
+                log.debug(format("rebalance/merge/left: left=%d n=%d [%d]", left.getId(), n.getId(), idx-1)) ;
+            if ( CheckingNode && left.getId() == n.getId() ) 
+                error("Left and n the same: %s", left) ;
+            BPTreePage page = merge(left, n, idx-1) ;
+            left.release() ;
+            return page ;
+        }
+        else
+        {
+            // right != null
+            if ( logging() )
+                log.debug(format("rebalance/merge/right: n=%d right=%d [%d]", n.getId(), right.getId(), idx)) ;
+            if ( CheckingNode && right.getId() == n.getId() )
+                error("N and right the same: %s",right ) ;
+            BPTreePage page = merge(n, right, idx) ;
+            n.release() ;
+            return page ;
         }
     }
     
+    /** Merge left into right ; frees right */
     private BPTreePage merge(BPTreePage left, BPTreePage right, int dividingSlot)
     {
         if ( logging() )

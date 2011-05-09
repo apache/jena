@@ -48,17 +48,9 @@ abstract public class BPTreePage implements Page
     abstract Record shiftLeft(BPTreePage other, Record splitKey) ;
     
     /** Merge this (left) and the page imemdiately to it's right other into a single block
-     * Return the new page (may be left or right)
      */
     abstract BPTreePage merge(BPTreePage right, Record splitKey) ;
-    
-//    /** Rebalance records/pointers across this page and page other. 
-//     *  Can assume other is the same type as 'this'
-//     *  Can assume that other is the immediate left or immediate right of this page; 
-//     *  which is indicated by the boolean.
-//     *  Return BPTreePage if it is the only page now used having released other.  
-//     */
-//    public abstract BPTreePage rebalance(BPTreePage other, boolean pageIsRight) ; 
+    //* Return the new page (may be left or right)
     
     /** Test whether this page is full (has no space for a new element) - used in "insert" */
     abstract boolean isFull() ;
