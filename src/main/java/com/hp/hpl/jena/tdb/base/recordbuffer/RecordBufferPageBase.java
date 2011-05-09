@@ -19,8 +19,7 @@ import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 /** The on-disk form of a block of a single RecordBuffer
- * (i.e. not part of a BTree/BPlusTree node).
- * The association of ByteBuffer from the BlockMgr to the RecordBuffer.
+ * (i.e. this is not part of a BTree/BPlusTree branch node).
  * This must be compatible with B+Tree records nodes and hashbuckets.
  */
 

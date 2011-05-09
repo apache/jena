@@ -29,9 +29,9 @@ public class BlockMgrLogger implements BlockMgr //extends BlockMgrWrapper
     }
 
     @Override
-    public Block allocate(BlockType blockType, int blockSize)
+    public Block allocate(int blockSize)
     {
-        Block x = blockMgr.allocate(blockType, blockSize) ;
+        Block x = blockMgr.allocate(blockSize) ;
         log.info("Allocate: "+x.getId()) ;
         return x ;
     }

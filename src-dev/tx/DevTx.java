@@ -4,7 +4,6 @@ package tx;
 public class DevTx
 {
     // Tidy up 
-    //   Is BlockType really necessary?
     //   See HACK (BPTreeNode)
     //   UnitMgr -- extends to "PageMgr".
     //     PageMgr implements UnitMgr<Page> -- allocate(size) with no type. 

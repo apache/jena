@@ -25,7 +25,7 @@ public class BlockMgrFreeChain extends BlockMgrWrapper
     }
 
     @Override
-    public Block allocate(BlockType blockType, int blockSize)
+    public Block allocate(int blockSize)
     {
         if ( ! freeBlocks.isEmpty() )
         {
@@ -33,7 +33,7 @@ public class BlockMgrFreeChain extends BlockMgrWrapper
             block.getByteBuffer().position(0) ;
             return block ;
         }
-        return super.allocate(blockType, blockSize) ;
+        return super.allocate(blockSize) ;
     }
 
     @Override

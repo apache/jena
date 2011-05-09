@@ -110,15 +110,15 @@ public final class BPTreeNode extends BPTreePage
     // Leaf nodes only create leaf nodes.
     // The root is an exception.
     
-    private BPTreeNode create(int parent)
+    private BPTreeNode create(int parent, boolean isLeaf)
     {
-        return create(bpTree, parent) ;
+        return create(bpTree, parent, isLeaf) ;
     }
     
-    private static BPTreeNode create(BPlusTree bpTree, int parent)
+    private static BPTreeNode create(BPlusTree bpTree, int parent, boolean isLeaf)
     {
         BPTreeNode n = bpTree.getNodeManager().createNode(parent) ;
-        //n.isLeaf = asLeaf ;   // Gets sorted out anyway.
+        n.isLeaf = isLeaf ;
         return n ;
     }
     
@@ -250,7 +250,7 @@ public final class BPTreeNode extends BPTreePage
     }
 
     @Override
-    public Record maxRecord()
+    protected Record maxRecord()
     {
         BPTreePage page = get(count, READ) ;
         Record r = page.maxRecord() ;
@@ -259,7 +259,7 @@ public final class BPTreeNode extends BPTreePage
     }
 
     @Override
-    public Record minRecord()
+    protected Record minRecord()
     {
         BPTreePage page = get(0, READ) ;
         Record r = page.minRecord() ;
@@ -268,7 +268,7 @@ public final class BPTreeNode extends BPTreePage
     }
 
     @Override
-    public BPTreeRecords findPage(Record rec)
+    protected BPTreeRecords findPage(Record rec)
     {
         if ( CheckingNode ) internalCheckNode() ;
         
@@ -280,7 +280,7 @@ public final class BPTreeNode extends BPTreePage
     
     // Find first page.
     @Override
-    public BPTreeRecords findFirstPage()
+    BPTreeRecords findFirstPage()
     {
         BPTreePage page = get(0, READ) ;
         BPTreeRecords records = page.findFirstPage() ;
@@ -289,13 +289,13 @@ public final class BPTreeNode extends BPTreePage
     }
 
     @Override final
-    public Record getLowRecord()
+    Record getLowRecord()
     {
         return records.getLow() ;
     }
 
     @Override final
-    public Record getHighRecord()
+    Record getHighRecord()
     {
         return records.getHigh() ; 
     }
@@ -303,41 +303,41 @@ public final class BPTreeNode extends BPTreePage
     // count is the number of pointers.
     
     @Override
-    public final int getMaxSize()           { return params.getOrder() ; }
+    final int getMaxSize()           { return params.getOrder() ; }
     
     @Override
-    public final int getCount()             { return count ; }
+    final int getCount()             { return count ; }
  
     @Override
-    public final void setCount(int count)   { this.count = count ; }
+    final void setCount(int count)   { this.count = count ; }
     
     @Override
 //    public ByteBuffer getBackingByteBuffer()       { return byteBuffer ; }
     public Block getBackingBlock()       { return block ; }
     
     /** Do not use without great care */
-    public RecordBuffer getRecordBuffer()   { return records ; }
+    RecordBuffer getRecordBuffer()   { return records ; }
     /** Do not use without great care */
-    public PtrBuffer getPtrBuffer()         { return ptrs ; }
+    PtrBuffer getPtrBuffer()         { return ptrs ; }
     
-    public void setIsLeaf(boolean isLeaf)   { this.isLeaf = isLeaf ; }
+    void setIsLeaf(boolean isLeaf)   { this.isLeaf = isLeaf ; }
 
-    public boolean isLeaf()                 { return this.isLeaf ; }
+    boolean isLeaf()                 { return this.isLeaf ; }
     
     @Override
     public final int getId()                { return id ; }
 
     @Override
-    public final void put()             { bpTree.getNodeManager().put(this) ; } 
+    final void put()             { bpTree.getNodeManager().put(this) ; } 
     
     @Override
-    public final void promote()         { bpTree.getNodeManager().promote(this) ; }
+    final void promote()         { bpTree.getNodeManager().promote(this) ; }
 
     @Override
-    public final void release()         { bpTree.getNodeManager().release(this) ; } 
+    final void release()         { bpTree.getNodeManager().release(this) ; } 
 
     @Override
-    public final void free()            { bpTree.getNodeManager().free(this) ; } 
+    final void free()            { bpTree.getNodeManager().free(this) ; } 
     
     
     // ============ SEARCH
@@ -351,7 +351,7 @@ public final class BPTreeNode extends BPTreePage
      */
     
     @Override final
-    public Record internalSearch(Record rec)
+    Record internalSearch(Record rec)
     {
         if ( CheckingNode ) internalCheckNode() ;
         BPTreePage page = findHere(rec) ;
@@ -380,7 +380,7 @@ public final class BPTreeNode extends BPTreePage
      */
     
     @Override final
-    public Record internalInsert(Record record)
+    Record internalInsert(Record record)
     {
         if ( logging() )
             log.debug(format("internalInsert: %s [%s]", record, this)) ;
@@ -419,6 +419,8 @@ public final class BPTreeNode extends BPTreePage
         // Correct:
 //        page.release() ;
         
+        //************** WRONG
+        //  split may have caused put, then we added a record.
         /* Incorrect */
         // [TxTDB:PATCH-UP]
         // This is a HACK - uses that a block that was put is a write block and already returned. 
@@ -514,7 +516,7 @@ public final class BPTreeNode extends BPTreePage
     }
     
     @Override final
-    public Record getSplitKey()
+    Record getSplitKey()
     {
         int ix = params.SplitIndex ;
         Record split = records.get(ix) ; 
@@ -523,13 +525,13 @@ public final class BPTreeNode extends BPTreePage
     
     /** Split this block - return the split record (key only needed) */
     @Override final
-    public BPTreePage split()
+    BPTreePage split()
     {
         // Median record : will go in parent.
         int ix = params.SplitIndex ;
 
         // New block.
-        BPTreeNode z = create(this.parent) ;
+        BPTreeNode z = create(this.parent, isLeaf) ;
         
         // Leave the low end untouched and copy, and clear the high end.
         // z becomes the new upper node, not the lower node.
@@ -589,10 +591,8 @@ public final class BPTreeNode extends BPTreePage
         }
 
         // New blocks.
-        BPTreeNode left = create(bpTree, root.id) ;
-        left.isLeaf = root.isLeaf ;
-        BPTreeNode right = create(bpTree, root.id) ;
-        right.isLeaf = root.isLeaf ;
+        BPTreeNode left = create(bpTree, root.id, root.isLeaf) ;
+        BPTreeNode right = create(bpTree, root.id, root.isLeaf) ;
         
         //int maxRecords = maxRecords() ;
         
@@ -656,7 +656,7 @@ public final class BPTreeNode extends BPTreePage
      */
     
     @Override final
-    public Record internalDelete(Record rec)
+    Record internalDelete(Record rec)
     {
         internalCheckNode() ;
         if ( logging() )
@@ -920,7 +920,7 @@ public final class BPTreeNode extends BPTreePage
     }
 
     @Override
-    public BPTreePage merge(BPTreePage right, Record splitKey)
+    BPTreePage merge(BPTreePage right, Record splitKey)
     {
         return merge(this, splitKey, cast(right)) ;
     }
@@ -995,7 +995,7 @@ public final class BPTreeNode extends BPTreePage
     }
 
     @Override
-    public Record shiftRight(BPTreePage other, Record splitKey)
+    Record shiftRight(BPTreePage other, Record splitKey)
     {
         BPTreeNode node = cast(other) ;
         if ( CheckingNode )
@@ -1019,7 +1019,7 @@ public final class BPTreeNode extends BPTreePage
     }
 
     @Override
-    public Record shiftLeft(BPTreePage other, Record splitKey)
+    Record shiftLeft(BPTreePage other, Record splitKey)
     {
         BPTreeNode node = cast(other) ;
         if ( CheckingNode )
@@ -1107,7 +1107,7 @@ public final class BPTreeNode extends BPTreePage
     private final int maxRecords() { return params.MaxRec ; }
     
     @Override
-    public final boolean isFull()
+    final boolean isFull()
     {
         if ( CheckingNode && count > maxRecords()  )
             error("isFull: Moby block: %s", this) ;
@@ -1118,7 +1118,7 @@ public final class BPTreeNode extends BPTreePage
     
     /** Return true if there are no keys here or below this node */
     @Override
-    public final boolean hasAnyKeys()
+    final boolean hasAnyKeys()
     {
         if ( this.count > 0 ) 
             return true ;
@@ -1136,7 +1136,7 @@ public final class BPTreeNode extends BPTreePage
 
     
     @Override
-    public final boolean isMinSize()
+    final boolean isMinSize()
     {
         int min = params.getMinRec() ;
         if ( CheckingNode && count < min  )
@@ -1273,13 +1273,13 @@ public final class BPTreeNode extends BPTreePage
     }
 
     @Override
-    public final void checkNode()
+    final void checkNode()
     {
         checkNode(null, null) ;
     }
 
     @Override
-    public final void checkNodeDeep()
+    final void checkNodeDeep()
     {
         if ( isRoot() )
         {

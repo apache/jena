@@ -38,7 +38,7 @@ public class PageBlockMgr<T extends Page>
     /** Allocate a new thing */
     public T create(BlockType bType)
     {
-        Block block = blockMgr.allocate(bType, -1) ;
+        Block block = blockMgr.allocate(-1) ;
         block.setModified(true) ;
         T page = pageFactory.createFromBlock(block, bType) ;
         return page ;

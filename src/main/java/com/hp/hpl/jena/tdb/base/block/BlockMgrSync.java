@@ -21,9 +21,9 @@ public class BlockMgrSync implements BlockMgr
 
     @Override
     synchronized
-    public Block allocate(BlockType blockType, int blockSize)
+    public Block allocate(int blockSize)
     {
-        return blockMgr.allocate(blockType, blockSize) ;
+        return blockMgr.allocate(blockSize) ;
     }
 
     @Override

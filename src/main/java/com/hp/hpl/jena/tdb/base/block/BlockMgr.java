@@ -15,7 +15,7 @@ public interface BlockMgr extends /*Sync, Closeable, Session*/ UnitMgr<Block>
     /** Allocate an uninitialized block - writable - call only inside a update sequence. 
      *  If blockSize is -1, means "default/fixed size" for this BlockMgr
      */
-    public Block allocate(BlockType blockType, int blockSize) ;
+    public Block allocate(int blockSize) ;
     
     /** Answer whether there are any blocks in the collection being managed */
     public boolean isEmpty() ; 

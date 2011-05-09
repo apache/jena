@@ -28,7 +28,7 @@ public final class BPTreeRecords extends BPTreePage
     private final RecordBufferPage    rBuffPage ;
     private final RecordBuffer        rBuff ;        // Used heavily.
     
-    public BPTreeRecords(BPlusTree bpTree, RecordBufferPage rbp)
+    BPTreeRecords(BPlusTree bpTree, RecordBufferPage rbp)
     {
         super(bpTree) ;
         rBuffPage = rbp ;
@@ -42,7 +42,7 @@ public final class BPTreeRecords extends BPTreePage
     { return rBuff ; }
 
     @Override
-    public Block getBackingBlock()
+    public final Block getBackingBlock()
     {
         return rBuffPage.getBackingBlock() ;
     }

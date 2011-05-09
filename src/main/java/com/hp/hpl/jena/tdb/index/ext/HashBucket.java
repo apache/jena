@@ -23,7 +23,7 @@ public final class HashBucket extends RecordBufferPageBase
     final public static int TRIE        = COUNT+4 ;
     final public static int BITLEN      = TRIE+4 ;
     
-    final public static int FIELD_LENGTH      = BITLEN ;      // Length of the space needed
+    final public static int FIELD_LENGTH      = BITLEN ;      // Length of the space needed here (not count)
     
     // Trie/Hash of this bucket.
     private int trie ;

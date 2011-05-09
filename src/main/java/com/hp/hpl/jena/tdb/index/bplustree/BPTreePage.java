@@ -70,7 +70,7 @@ abstract public class BPTreePage implements Page
     
     abstract void setCount(int count) ;
   
-    abstract public int getMaxSize() ;
+    abstract int getMaxSize() ;
     
     /**  Test whether this page has any keys */
     abstract boolean hasAnyKeys() ;

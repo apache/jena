@@ -20,7 +20,7 @@ public class TestBlockMgr extends BaseTest
     @Test public void block1()
     {
         BlockMgr mgr = BlockMgrFactory.createMem("BPTRecord", 4) ;
-        Block block = mgr.allocate(BlockType.UNDEF, 4) ;
+        Block block = mgr.allocate(4) ;
         ByteBuffer bb = block.getByteBuffer() ;
         bb.putInt(0,1234) ;
         mgr.put(block) ;

@@ -11,23 +11,29 @@ import com.hp.hpl.jena.tdb.base.page.Page ;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
-/** The on-disk form of a block of a single RecordBuffer
- * (i.e. not part of a BTree/BPlusTree node).
- * The association of ByteBuffer from the BlockMgr to the RecordBuffer.
- * This must be compatible with B+Tree records nodes and hash buckets.
+/**
+ * B+Tree records nodes and hash buckets.
+ * Add link field to a RecordBufferPageBase
  */
 
-public class RecordBufferPage extends RecordBufferPageBase
+public final class RecordBufferPage extends RecordBufferPageBase
 {
+    // Why not straight to BPlusTreeRecords?
+    // 1 - this may be useful in its own right as a seqeunce of records on-disk.
+    // 2 - BPlusTreeRecords inherits from BPlusTreePage
+    //
+    // Could combine with HashBuck and just have an unused link area in a HashBucket
+    
+    
     // To Constants
     // Offsets
 //    final public static int COUNT      = 0 ;
     final public static int LINK            = 4 ;
-    final private static int FIELD_LENGTH   = SystemTDB.SizeOfInt ;
+    final private static int FIELD_LENGTH   = SystemTDB.SizeOfInt ; // Length of the space needed here (not count)
 
     private int link = Page.NO_ID ;
     
-    public int getLink() { return link ; }
+    public final int getLink() { return link ; }
     
     public void setLink(int link)
     { 

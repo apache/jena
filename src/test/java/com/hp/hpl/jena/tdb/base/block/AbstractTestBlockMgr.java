@@ -31,7 +31,7 @@ public abstract class AbstractTestBlockMgr extends BaseTest
     
     @Test public void file01()
     {
-        Block block = blockMgr.allocate(BlockType.UNDEF, BlkSize) ;
+        Block block = blockMgr.allocate(BlkSize) ;
         ByteBuffer bb = block.getByteBuffer() ;
         fill(bb, (byte)1) ;
         blockMgr.put(block) ;
@@ -39,7 +39,7 @@ public abstract class AbstractTestBlockMgr extends BaseTest
     
     @Test public void file02()
     {
-        Block block = blockMgr.allocate(BlockType.UNDEF, BlkSize) ;
+        Block block = blockMgr.allocate(BlkSize) ;
         ByteBuffer bb = block.getByteBuffer() ;
         fill(bb, (byte)1) ;
         int id = block.getId() ;
@@ -55,7 +55,7 @@ public abstract class AbstractTestBlockMgr extends BaseTest
     
     @Test public void file03()
     {
-        Block block = blockMgr.allocate(BlockType.UNDEF, BlkSize) ;
+        Block block = blockMgr.allocate(BlkSize) ;
         ByteBuffer bb = block.getByteBuffer() ;
         fill(bb, (byte)2) ;
         int id = block.getId() ;
@@ -71,8 +71,8 @@ public abstract class AbstractTestBlockMgr extends BaseTest
 
     @Test public void multiAccess01()
     {
-        Block block1 = blockMgr.allocate(BlockType.UNDEF, BlkSize) ;
-        Block block2 = blockMgr.allocate(BlockType.UNDEF, BlkSize) ;
+        Block block1 = blockMgr.allocate(BlkSize) ;
+        Block block2 = blockMgr.allocate(BlkSize) ;
         int id1 = block1.getId() ;
         int id2 = block2.getId() ;
         

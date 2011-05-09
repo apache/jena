@@ -62,10 +62,10 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
     private void add(Action action, Integer id) { actions.add(new Pair<Action, Integer>(action, id)) ; }
 
     @Override
-    public Block allocate(BlockType blockType, int blockSize)
+    public Block allocate(int blockSize)
     {
         checkUpdate("allocate") ;
-        Block block = blockMgr.allocate(blockType, blockSize) ;
+        Block block = blockMgr.allocate(blockSize) ;
         Integer id = block.getId() ;
         activeWriteBlocks.add(id) ;
         add(Alloc, id) ;
@@ -101,11 +101,6 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
         if ( ! activeWriteBlocks.contains(id) && ! activeReadBlocks.contains(id) )
             error(Promote, id+" is not an active block") ;
         
-//        if ( 
-//            log.info("Promoting "+id+" - already a write") ;
-//        if ( ! activeReadBlocks.contains(id) )
-//            error("Promoting "+id+" but not a read block") ;
-             
         activeReadBlocks.remove(id) ;
         activeWriteBlocks.add(id) ;
         return blockMgr.promote(block) ;

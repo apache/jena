@@ -34,7 +34,6 @@ import com.hp.hpl.jena.tdb.base.block.Block ;
 import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrLogger ;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrWrapper ;
-import com.hp.hpl.jena.tdb.base.block.BlockType ;
 import com.hp.hpl.jena.tdb.base.file.FileSet ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
@@ -207,9 +206,9 @@ public class TransactionManager
         // Create new blocks here in-memory
         
         @Override
-        public Block allocate(BlockType blockType, int blockSize)
+        public Block allocate(int blockSize)
         {
-            Block blk = blockMgr.allocate(blockType, blockSize) ;
+            Block blk = blockMgr.allocate(blockSize) ;
             // Hmm - if backed by a mmap, may mess with file.
             // But does it matter?
             // How do we recover?

@@ -61,7 +61,7 @@ public class TxMain
     
     public static void main(String... args)
     {
-        //bpTreeTracking() ; exit(0) ;
+        bpTreeTracking() ; exit(0) ;
         
         Location location ;
         if ( false )
