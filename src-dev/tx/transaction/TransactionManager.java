@@ -220,6 +220,7 @@ public class TransactionManager
         @Override
         public Block getRead(int id)
         {
+            // [TxTDB:PATCH-UP]
             // HACK
             Block b = getWrite(id) ;
             b.setModified(false) ;
@@ -265,7 +266,7 @@ public class TransactionManager
         }
 
         @Override
-        public void put(Block block)
+        public void write(Block block)
         {
             Block bb = blocks.get(block.getId()) ;
             if ( bb != block )

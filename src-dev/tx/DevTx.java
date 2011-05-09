@@ -5,8 +5,8 @@ public class DevTx
 {
     // Tidy up 
     //   See HACK (BPTreeNode)
-    //   UnitMgr -- extends to "PageMgr".
-    //     PageMgr implements UnitMgr<Page> -- allocate(size) with no type. 
+    //   Needs block policy cleaned up. Use after put().
+    // Block: Split "modified" into isWriteable and hasChanged
     
     // ---- ---- ---- ----
     

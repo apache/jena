@@ -191,9 +191,9 @@ public class BPlusTree implements Iterable<Record>, RangeIndex, Session
             {            
                 BPTreeNode root = nodeManager.getRead(rootIdx, BTreeParams.RootParent) ;
                 root.checkNodeDeep() ;
-                nodeManager.release(root) ;
-                // And the records page?
+                root.release() ;
             }
+            // Cache : not currently done - root is null
             setRoot(root) ;
             finishUpdateBlkMgr() ;
         }
@@ -224,15 +224,8 @@ public class BPlusTree implements Iterable<Record>, RangeIndex, Session
 
     private void releaseRoot(BPTreeNode rootNode)
     {
-        // Correct:
-//        if ( root != null ) 
-//            root.release() ;
-        
-        /* Incorrect */
-        // This is a hack to avoid releasing the root after it has been put.
         // [TxTDB:PATCH-UP]
-        // This is a hack - uses that a block that was put is a write block and already returned. 
-        if ( root != null && ! root.getBackingBlock().isModified() ) 
+        if ( root != null ) 
             root.release() ;
         if ( root != null && rootNode != root )
             log.warn("Root is not root!") ;

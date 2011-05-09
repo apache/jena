@@ -160,11 +160,7 @@ public final class BPTreeNode extends BPTreePage
         else
             return bpTree.getNodeManager().getWrite(subId, this.id) ;
     }
-    
 
-//    private void release(BPTreePage node) {}
-//    private void put(BPTreePage node) {}
-    
     // ---------- Public calls.
     // None of these are called recursively.
     
@@ -228,7 +224,9 @@ public final class BPTreeNode extends BPTreePage
             BPTreePage page = root.get(0, WRITE) ;
             if ( CheckingNode && ! ( page instanceof BPTreeRecords ) )
                 root.error("Zero size leaf root but not pointing a records block") ;
-            return page.internalDelete(rec) ;
+            Record r = page.internalDelete(rec) ;
+            page.release() ;
+            return r ;
         }
         
         // Entry: checkNodeDeep() ;
@@ -275,7 +273,9 @@ public final class BPTreeNode extends BPTreePage
         BPTreePage page = findHere(rec) ;
         if ( page == null )
             return null ;
-        return page.findPage(rec) ;
+        BPTreeRecords bpr = page.findPage(rec) ;
+        page.release() ;
+        return bpr ;
     }
     
     // Find first page.
@@ -328,7 +328,7 @@ public final class BPTreeNode extends BPTreePage
     public final int getId()                { return id ; }
 
     @Override
-    final void put()             { bpTree.getNodeManager().put(this) ; } 
+    final void write()             { bpTree.getNodeManager().write(this) ; } 
     
     @Override
     final void promote()         { bpTree.getNodeManager().promote(this) ; }
@@ -407,6 +407,7 @@ public final class BPTreeNode extends BPTreePage
             // Examine the record we pulled up in the split.
             if ( Record.keyGT(record, records.get(idx)) )
             {
+                page.release() ;
                 // Yes.  Get the new (upper) page
                 idx = idx+1 ;
                 page = get(idx, READ) ;
@@ -415,20 +416,7 @@ public final class BPTreeNode extends BPTreePage
         }
 
         Record r = page.internalInsert(record) ;
-        
-        // Correct:
-//        page.release() ;
-        
-        //************** WRONG
-        //  split may have caused put, then we added a record.
-        /* Incorrect */
-        // [TxTDB:PATCH-UP]
-        // This is a HACK - uses that a block that was put is a write block and already returned. 
-        
-        if ( ! page.getBackingBlock().isModified() )
-            // If modified, it was put() and so is done.
-            page.release() ;
-        /* Incorrect */
+        page.release() ;
         return r ;
     }
 
@@ -504,9 +492,11 @@ public final class BPTreeNode extends BPTreePage
             log.debug("split <<   "+z) ;
         }
         
-        y.put();
-        z.put();
-        this.put();
+        y.write();
+        z.write();
+        z.release() ;
+        // y.release() ; y release management done by caller.
+        this.write();
         if ( CheckingTree )
         {
             if ( Record.keyNE(splitKey, y.maxRecord()) )
@@ -633,9 +623,9 @@ public final class BPTreeNode extends BPTreePage
             log.debug("splitRoot <<   "+right) ;
         }
 
-        left.put() ;
-        right.put() ;
-        root.put() ;
+        left.write() ;
+        right.write() ;
+        root.write() ;
 
         if ( CheckingTree )
             root.checkNodeDeep() ;
@@ -668,11 +658,11 @@ public final class BPTreeNode extends BPTreePage
         int y = convert(x) ;
         BPTreePage page = get(y, READ) ;
         
-        boolean thisPutNeeded = false ;
-        if ( page.isMinSize() )     // Can't be root - we decended in the get(). 
+        boolean thisWriteNeeded = false ;
+        if ( page.isMinSize() )             // Can't be root - we decended in the get(). 
         {
-            page = rebalance(page, y) ;   // Flushes nodes
-            thisPutNeeded = true ;
+            page = rebalance(page, y) ;     // Flushes nodes
+            thisWriteNeeded = true ;
             // May have moved/removed at x.  Find again. YUK.
             x = findSlot(rec) ;
             if ( CheckingNode )
@@ -680,6 +670,7 @@ public final class BPTreeNode extends BPTreePage
                 internalCheckNode() ;
                 page.checkNode() ;
             }
+            this.write() ;
         }
         
         // Go to bottom
@@ -689,17 +680,10 @@ public final class BPTreeNode extends BPTreePage
         {
             // YUK
             records.set(x, keyRecord(page.maxRecord())) ;
-            // Who else has put() this?
-            thisPutNeeded = true ;
+            this.write() ;
         }
-        if ( thisPutNeeded )
-        {
-            // [TxTDB:PATCH-UP]
-            // Until the hierarch support marking "put done"
-            this.getBackingBlock().setModified(true) ;
-            // HACK
-            this.put();
-        }
+
+        page.release() ;
         return r2 ;
     }
 
@@ -734,7 +718,7 @@ public final class BPTreeNode extends BPTreePage
         n.ptrs.copy(0, ptrs, 0, n.count+1) ;
         isLeaf = n.isLeaf ;
         count = n.count ;
-        this.put();
+        this.write();
         // Free up.
         n.free() ;
         internalCheckNodeDeep() ;
@@ -752,7 +736,7 @@ public final class BPTreeNode extends BPTreePage
      *   WRITE(n)
      *   WRITE(this)
      * try to shift left, from the right sibling (if exists)
-     *   WRITE(rght)
+     *   WRITE(right)
      *   WRITE(n)
      *   WRITE(this)
      * else 
@@ -773,6 +757,8 @@ public final class BPTreeNode extends BPTreePage
         
         BPTreePage left = null ;
         if ( idx > 0 )
+            // [TxTDB:PATCH-UP] 
+            // release on left
             left = get(idx-1, WRITE) ;
         
         // *** SHIFTING : need to change the marker record in the parent.
@@ -795,6 +781,7 @@ public final class BPTreeNode extends BPTreePage
                 n.checkNode();
                 this.internalCheckNode() ;
             }
+            left.release() ;
             return n ;
         }
 
@@ -817,28 +804,36 @@ public final class BPTreeNode extends BPTreePage
                 n.checkNode();
                 this.internalCheckNode() ;
             }
+            if ( left != null ) left.release() ;
+            right.release() ;
             return n ;
         }
 
         // Couldn't shift.  Collapse two pages.  
         if ( CheckingNode && left == null && right == null) error("No siblings") ;
 
-        if ( left != null )
-        {
-            if ( logging() )
-                log.debug(format("rebalance/merge/left: left=%d n=%d [%d]", left.getId(), n.getId(), idx-1)) ;
-            if ( CheckingNode && left.getId() == n.getId() ) 
-                error("Left and n the same: %s", left) ;
-            return merge(left, n, idx-1) ;
-        }
-        else
-        {
-            // right != null
-            if ( logging() )
-                log.debug(format("rebalance/merge/right: n=%d right=%d [%d]", n.getId(), right.getId(), idx)) ;
-            if ( CheckingNode && right.getId() == n.getId() )
+        try {
+            if ( left != null )
+            {
+                if ( logging() )
+                    log.debug(format("rebalance/merge/left: left=%d n=%d [%d]", left.getId(), n.getId(), idx-1)) ;
+                if ( CheckingNode && left.getId() == n.getId() ) 
+                    error("Left and n the same: %s", left) ;
+                return merge(left, n, idx-1) ;
+            }
+            else
+            {
+                // right != null
+                if ( logging() )
+                    log.debug(format("rebalance/merge/right: n=%d right=%d [%d]", n.getId(), right.getId(), idx)) ;
+                if ( CheckingNode && right.getId() == n.getId() )
                     error("N and right the same: %s",right ) ;
-            return merge(n, right, idx) ;
+                return merge(n, right, idx) ;
+            }
+        } finally
+        {
+            if ( left != null ) left.release() ;
+            if ( right != null ) right.release() ;
         }
     }
     
@@ -858,7 +853,7 @@ public final class BPTreeNode extends BPTreePage
         if ( logging() )
             log.debug("-- merge: "+page) ;
 
-        left.put();
+        left.write();
         right.free() ;
         
         if ( page == right )
@@ -883,7 +878,7 @@ public final class BPTreeNode extends BPTreePage
 
         // Remove from parent (which is "this")
         shuffleDown(dividingSlot) ;
-        this.put();
+        this.write();
         internalCheckNodeDeep() ;
         if ( logging() )
         {
@@ -959,8 +954,8 @@ public final class BPTreeNode extends BPTreePage
         r2 = keyRecord(r2) ;
         this.records.set(i, r2) ;
         
-        left.put() ;
-        right.put() ;
+        left.write() ;
+        right.write() ;
         // Do later -- this.put();
         if ( logging() )
         {
@@ -983,8 +978,8 @@ public final class BPTreeNode extends BPTreePage
         r2 = keyRecord(r2) ;
         this.records.set(i, r2) ;
         
-        left.put() ;
-        right.put() ;
+        left.write() ;
+        right.write() ;
         // Do this later - this.put();
         if ( logging() )
         {
@@ -1236,6 +1231,7 @@ public final class BPTreeNode extends BPTreePage
             out.println();
             BPTreePage page = get(i, READ) ;
             page.output(out) ;
+            page.release() ;
             
         }
         out.decIndent() ;
@@ -1435,6 +1431,7 @@ public final class BPTreeNode extends BPTreePage
             {
                 // Records.
                 n.checkNodeDeep() ;
+                n.release() ;
                 continue ;
             }
             
@@ -1467,6 +1464,7 @@ public final class BPTreeNode extends BPTreePage
 //                error("Node: %d [%d]: Parent/child mismatch :: %s", id, n.parent, this) ;
             
             ((BPTreeNode)n).checkNodeDeep(min1, max1) ;
+            n.release() ;
         }
     }
 

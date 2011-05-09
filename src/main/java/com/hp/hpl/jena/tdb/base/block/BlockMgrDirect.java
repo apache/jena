@@ -67,11 +67,7 @@ public class BlockMgrDirect extends BlockMgrFile
 
     // [TxTDB:PATCH-UP]
     @Override
-    public void releaseRead(Block block)
-    {}
-
-    @Override
-    public void releaseWrite(Block block)
+    public void release(Block block)
     {}
 
     @Override
@@ -91,7 +87,7 @@ public class BlockMgrDirect extends BlockMgrFile
     }
     
     @Override
-    public void put(Block block)
+    public void write(Block block)
     {
         check(block) ;
         checkIfClosed() ;
@@ -104,7 +100,7 @@ public class BlockMgrDirect extends BlockMgrFile
                 throw new BlockException(format("put: short write (%d, not %d)", len, blockSize)) ;   
         } catch (IOException ex)
         { throw new BlockException("BlockMgrDirect.put", ex) ; }
-        putNotification(block) ;
+        writeNotification(block) ;
     }
     
     

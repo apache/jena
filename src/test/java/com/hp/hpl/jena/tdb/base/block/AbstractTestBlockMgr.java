@@ -34,7 +34,7 @@ public abstract class AbstractTestBlockMgr extends BaseTest
         Block block = blockMgr.allocate(BlkSize) ;
         ByteBuffer bb = block.getByteBuffer() ;
         fill(bb, (byte)1) ;
-        blockMgr.put(block) ;
+        blockMgr.write(block) ;
     }
     
     @Test public void file02()
@@ -43,14 +43,15 @@ public abstract class AbstractTestBlockMgr extends BaseTest
         ByteBuffer bb = block.getByteBuffer() ;
         fill(bb, (byte)1) ;
         int id = block.getId() ;
-        blockMgr.put(block) ;
+        blockMgr.write(block) ;
+        blockMgr.release(block) ;
         
         Block block2 = blockMgr.getRead(id) ;
         ByteBuffer bb2 = block2.getByteBuffer() ;
         assertEquals(bb2.capacity(), BlkSize) ;
         assertEquals(bb2.get(0), (byte)1) ;
         assertEquals(bb2.get(BlkSize-1), (byte)1) ;
-        blockMgr.releaseRead(block2) ;
+        blockMgr.release(block2) ;
     }
     
     @Test public void file03()
@@ -59,14 +60,15 @@ public abstract class AbstractTestBlockMgr extends BaseTest
         ByteBuffer bb = block.getByteBuffer() ;
         fill(bb, (byte)2) ;
         int id = block.getId() ;
-        blockMgr.put(block) ;
+        blockMgr.write(block) ;
+        blockMgr.release(block) ;
 
         Block block2 = blockMgr.getRead(id) ;
         ByteBuffer bb2 = block2.getByteBuffer() ;
         assertEquals(bb2.capacity(), BlkSize) ;
         assertEquals(bb2.get(0), (byte)2) ;
         assertEquals(bb2.get(BlkSize-1), (byte)2) ;
-        blockMgr.releaseRead(block2) ;
+        blockMgr.release(block2) ;
     }
 
     @Test public void multiAccess01()
@@ -82,8 +84,10 @@ public abstract class AbstractTestBlockMgr extends BaseTest
         fill(bb1, (byte)1) ;
         fill(bb2, (byte)2) ;
         
-        blockMgr.put(block1) ;
-        blockMgr.put(block2) ;
+        blockMgr.write(block1) ;
+        blockMgr.write(block2) ;
+        blockMgr.release(block1) ;
+        blockMgr.release(block2) ;
         
         Block block3 = blockMgr.getRead(id1) ;
         Block block4 = blockMgr.getRead(id2) ;
@@ -94,8 +98,8 @@ public abstract class AbstractTestBlockMgr extends BaseTest
         contains(bb_1, (byte)1) ;
         contains(bb_2, (byte)2) ;
         
-        blockMgr.releaseRead(block3) ;
-        blockMgr.releaseRead(block4) ;
+        blockMgr.release(block3) ;
+        blockMgr.release(block4) ;
     }
     
     

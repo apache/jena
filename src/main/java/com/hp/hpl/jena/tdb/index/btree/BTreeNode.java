@@ -962,8 +962,8 @@ public class BTreeNode extends PageBase
         ptrs.set(dividingSlot, n.id) ;
 
         // Release old nodes
-        pageMgr.release(left.getBackingBlock()) ;
-        pageMgr.release(right.getBackingBlock()) ;
+        pageMgr.free(left.getBackingBlock()) ;
+        pageMgr.free(right.getBackingBlock()) ;
         
         if ( CheckingNode && findSlot(medianRec) >= 0 )
             error("Can still find record in parent of merge blocks") ;

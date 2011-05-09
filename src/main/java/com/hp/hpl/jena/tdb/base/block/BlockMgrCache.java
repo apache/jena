@@ -62,7 +62,7 @@ public class BlockMgrCache extends BlockMgrSync
                     }
                     // Force the block to be writtern
                     // by sending it to the wrapped BlockMgr
-                    BlockMgrCache.super.put(block) ;
+                    BlockMgrCache.super.write(block) ;
                 }
             }) ;
         }
@@ -159,34 +159,20 @@ public class BlockMgrCache extends BlockMgrSync
     
     @Override
     synchronized
-    public void put(Block block)
+    public void write(Block block)
     {
         Integer id = block.getId() ;
         log("Put   : %d", id) ;
         // Should not be in the read cache due to a getWrite earlier.
         if ( readCache.containsKey(id) )
-            log.error("put: Block in the read cache") ;
+            log.error("write: Block in the read cache") ;
         if ( writeCache != null )
         {
             writeCache.put(id, block) ;
             return ;
         }
-        super.put(block) ;
+        super.write(block) ;
     }
-    
-//    @Override
-//    synchronized
-//    public void releaseRead(Block block)
-//    {
-//        blockMgr.releaseRead(block) ;
-//    }
-//
-//    @Override
-//    synchronized
-//    public void releaseWrite(Block block)
-//    {
-//        blockMgr.releaseWrite(block) ;
-//    }
     
     @Override
     synchronized
@@ -289,7 +275,7 @@ public class BlockMgrCache extends BlockMgrSync
         }
         log("Expel (write cache): %d", id) ;
         // This pushes the block to the BlockMgr being cached.
-        super.put(block) ;
+        super.write(block) ;
         writeCache.remove(id) ;
 
         // Move it into the readCache because it's often read after writing

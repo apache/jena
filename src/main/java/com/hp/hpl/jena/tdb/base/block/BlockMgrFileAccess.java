@@ -62,19 +62,13 @@ public class BlockMgrFileAccess extends BlockMgrBase
     }
 
     @Override
-    public void releaseRead(Block block)
+    public void release(Block block)
     { 
         //check(block) ;
     }
 
     @Override
-    public void releaseWrite(Block block)
-    { 
-        //check(block) ;
-    }
-
-    @Override
-    public void put(Block block)
+    public void write(Block block)
     {
         file.write(block) ;
     }

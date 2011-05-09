@@ -12,6 +12,10 @@ import org.openjena.atlas.lib.Sync ;
 import com.hp.hpl.jena.tdb.base.block.Block ;
 import com.hp.hpl.jena.tdb.sys.Session ;
 
+// This concept does not work - for pages there can be some additional information
+// need to create a page (BTree - needs branch/leaf switch)
+// Without that, the advantages of a generic interface are somewhat reduced.
+
 public interface UnitMgr<T> extends Sync, Closeable, Session
 {
     /** Fetch, for use for read only */

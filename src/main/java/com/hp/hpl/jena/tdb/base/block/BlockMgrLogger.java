@@ -65,24 +65,17 @@ public class BlockMgrLogger implements BlockMgr //extends BlockMgrWrapper
     }
 
     @Override
-    public void releaseRead(Block block)
+    public void release(Block block)
     {
-        log.info("releaseRead("+block.getId()+")") ;
-        blockMgr.releaseRead(block) ;
+        log.info("release("+block.getId()+")") ;
+        blockMgr.release(block) ;
     }
 
     @Override
-    public void releaseWrite(Block block)
+    public void write(Block block)
     {
-        log.info("releaseWrite("+block.getId()+")") ;
-        blockMgr.releaseWrite(block) ;
-    }
-
-    @Override
-    public void put(Block block)
-    {
-        log.info("put("+block.getId()+")") ;
-        blockMgr.put(block) ;
+        log.info("write("+block.getId()+")") ;
+        blockMgr.write(block) ;
     }
 
     @Override

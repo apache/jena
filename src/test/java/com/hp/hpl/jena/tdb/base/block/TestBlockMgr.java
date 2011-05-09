@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -23,7 +24,8 @@ public class TestBlockMgr extends BaseTest
         Block block = mgr.allocate(4) ;
         ByteBuffer bb = block.getByteBuffer() ;
         bb.putInt(0,1234) ;
-        mgr.put(block) ;
+        mgr.write(block) ;
+        mgr.release(block) ;
         // -----
         Block block2 = mgr.getRead(block.getId()) ;
         ByteBuffer bb2 = block2.getByteBuffer() ;
@@ -33,6 +35,7 @@ public class TestBlockMgr extends BaseTest
 
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

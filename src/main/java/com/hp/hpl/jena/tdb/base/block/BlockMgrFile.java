@@ -75,7 +75,7 @@ public abstract class BlockMgrFile extends BlockMgrBase
     @Override
     final public boolean isEmpty() { return isEmpty ; }
     
-    final protected void putNotification(Block block) { isEmpty = false ; }
+    final protected void writeNotification(Block block) { isEmpty = false ; }
     
     //@Override 
     final synchronized

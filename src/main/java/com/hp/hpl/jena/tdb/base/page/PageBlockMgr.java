@@ -59,39 +59,25 @@ public class PageBlockMgr<T extends Page>
         return page ;
     }
 
-//    /** Fetch a block and make a T : must be called single-reader */
-//    private T _get(int id)
-//    {
-//        // I don't think this is needed.
-//        synchronized (blockMgr)
-//        {
-//            // [TxTDB:PATCH-UP]
-//            // Always a write block.
-//            Block block = blockMgr.getWrite(id) ;
-//            T newThing = pageFactory.fromBlock(block) ;
-//            return newThing ;
-//        }
-//    }
-
     public void put(T page)
+    {
+        write(page) ;
+        release(page) ;
+    }
+    
+    public void write(T page)
     {
         if ( ! page.getBackingBlock().isModified() )
             warn("Page "+page.getId()+" not modified") ;
         
         Block blk = pageFactory.toBlock(page) ;
-        blockMgr.put(blk) ;
+        blockMgr.write(blk) ;
     }
 
     public void release(Page page)
     { 
         Block block = page.getBackingBlock() ;
-        if ( block.isModified() )
-        {
-            warn("Page "+page.getId()+": releasing a page acquired for write") ;
-            blockMgr.releaseWrite(block) ;
-        }
-        else
-            blockMgr.releaseRead(block) ;
+        blockMgr.release(block) ;
     }
     
     private void warn(String string)

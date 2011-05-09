@@ -102,8 +102,8 @@ abstract public class BPTreePage implements Page
     /** Greatest in subtree */
     abstract Record maxRecord() ;
     
-    /** Finished with this block (for now!) */
-    abstract void put() ; 
+    /** Write, or at least ensure wil be written */
+    abstract void write() ; 
     
     /** Turn a read page into a write page */
     abstract void promote() ;

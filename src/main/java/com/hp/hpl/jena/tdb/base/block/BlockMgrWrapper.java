@@ -42,21 +42,15 @@ public class BlockMgrWrapper implements BlockMgr
     }
 
     @Override
-    public void releaseRead(Block block)
+    public void release(Block block)
     {
-        blockMgr.releaseRead(block) ;
+        blockMgr.release(block) ;
     }
 
     @Override
-    public void releaseWrite(Block block)
+    public void write(Block block)
     {
-        blockMgr.releaseWrite(block) ;
-    }
-
-    @Override
-    public void put(Block block)
-    {
-        blockMgr.put(block) ;
+        blockMgr.write(block) ;
     }
 
     @Override

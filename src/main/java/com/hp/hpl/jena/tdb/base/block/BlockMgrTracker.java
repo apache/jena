@@ -27,7 +27,7 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
     
     // Track the operations
     // an enum (op+id) and a single list. 
-    static enum Action { Alloc, Promote, GetRead, GetWrite, ReleaseRead, ReleaseWrite, Put, Free }
+    static enum Action { Alloc, Promote, GetRead, GetWrite, Write, Release, Free }
     protected final List<Pair<Action, Integer>> actions = new ArrayList<Pair<Action, Integer>>() ;
     
     protected final BlockMgr blockMgr ;
@@ -107,47 +107,29 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
     }
     
     @Override
-    public void releaseRead(Block block)
-    {   
-        Integer id = block.getId() ;
-        checkRead("releaseRead") ;
-        add(ReleaseRead, id) ;
-        
-        if ( ! activeReadBlocks.contains(id) )
-            error(ReleaseRead, id+" is not an active read block") ;
-
-        if ( activeWriteBlocks.contains(id) )
-            error(ReleaseRead, id+" is a a write block") ;
-            
-        activeReadBlocks.remove(block.getId()) ;
-        blockMgr.releaseRead(block) ;
-    }
-
-    @Override
-    public void releaseWrite(Block block)
-    {   
-        Integer id = block.getId() ;
-        checkUpdate("releaseRead") ;
-        add(ReleaseWrite, id) ;
-
-        if ( activeReadBlocks.contains(id) )
-            error(ReleaseWrite, id+" is a read block") ;
-        else if ( ! activeWriteBlocks.contains(id) )
-            error(ReleaseWrite, id+" is not an action write block") ;
-        activeWriteBlocks.remove(id) ;
-        blockMgr.releaseWrite(block) ;
-    }
-
-    @Override
-    public void put(Block block)
+    public void release(Block block)
     {
         Integer id = block.getId() ;
-        checkUpdate("put") ;
-        add(Put, id) ;
+        checkRead("release") ;
+        add(Release, id) ;
+        
+        if ( ! activeReadBlocks.contains(id) && ! activeWriteBlocks.contains(id) )
+            error(Release, id+" is not an active block") ;
+            
+        activeReadBlocks.remove(block.getId()) ;
+        activeWriteBlocks.remove(block.getId()) ;
+        blockMgr.release(block) ;
+    }
+
+    @Override
+    public void write(Block block)
+    {
+        Integer id = block.getId() ;
+        checkUpdate("write") ;
+        add(Write, id) ;
         if ( ! activeWriteBlocks.contains(id) )
-            error(Put, id+ " is not an active write block") ;
-        activeWriteBlocks.remove(id) ;
-        blockMgr.put(block) ;
+            error(Write, id+ " is not an active write block") ;
+        blockMgr.write(block) ;
     }
 
     @Override

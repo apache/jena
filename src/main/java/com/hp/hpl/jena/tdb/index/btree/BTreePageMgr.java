@@ -73,11 +73,13 @@ final class BTreePageMgr implements Session
     public void put(BTreeNode node)
     {
         Block b = converter.toBlock(node) ;
-        blockMgr.put(b) ;
+        blockMgr.write(b) ;
     }
 
-    public void release(Block block)     { blockMgr.free(block) ; }
+    public void release(Block block)        { blockMgr.free(block) ; }
     
+    public void free(Block block)    { blockMgr.free(block) ; }
+
     public boolean valid(int id)    { return blockMgr.valid(id) ; }
     
     public void dump()

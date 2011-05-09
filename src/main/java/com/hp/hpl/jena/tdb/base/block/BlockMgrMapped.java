@@ -102,11 +102,7 @@ public class BlockMgrMapped extends BlockMgrFile
     
     // [TxTDB:PATCH-UP]
     @Override
-    public void releaseRead(Block block)
-    {}
-
-    @Override
-    public void releaseWrite(Block block)
+    public void release(Block block)
     {}
     
     @Override
@@ -231,7 +227,7 @@ public class BlockMgrMapped extends BlockMgrFile
     }
 
     @Override
-    public void put(Block block)
+    public void write(Block block)
     {
         check(block) ;
         checkIfClosed() ;
@@ -239,8 +235,9 @@ public class BlockMgrMapped extends BlockMgrFile
         // Assumed MRSW - no need to sync as we are the only W
         segmentDirty[segment(id)] = true ;
         // No other work.
-        putNotification(block) ;
+        writeNotification(block) ;
     }
+    
     @Override
     public void sync()
     {

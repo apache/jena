@@ -49,23 +49,16 @@ public class BlockMgrSync implements BlockMgr
     
     @Override
     synchronized
-    public void releaseRead(Block block)
+    public void release(Block block)
     {
-        blockMgr.releaseRead(block) ;
+        blockMgr.release(block) ;
     }
 
     @Override
     synchronized
-    public void releaseWrite(Block block)
+    public void write(Block block)
     {
-        blockMgr.releaseWrite(block) ;
-    }
-
-    @Override
-    synchronized
-    public void put(Block block)
-    {
-        blockMgr.put(block) ;
+        blockMgr.write(block) ;
     }
 
     @Override

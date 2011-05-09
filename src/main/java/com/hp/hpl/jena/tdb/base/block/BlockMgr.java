@@ -7,10 +7,13 @@
 
 package com.hp.hpl.jena.tdb.base.block;
 
-import com.hp.hpl.jena.tdb.base.UnitMgr ;
+import org.openjena.atlas.lib.Closeable ;
+import org.openjena.atlas.lib.Sync ;
+
+import com.hp.hpl.jena.tdb.sys.Session ;
 
 
-public interface BlockMgr extends /*Sync, Closeable, Session*/ UnitMgr<Block>
+public interface BlockMgr extends Sync, Closeable, Session /*UnitMgr<Block>*/
 {
     /** Allocate an uninitialized block - writable - call only inside a update sequence. 
      *  If blockSize is -1, means "default/fixed size" for this BlockMgr
@@ -21,35 +24,24 @@ public interface BlockMgr extends /*Sync, Closeable, Session*/ UnitMgr<Block>
     public boolean isEmpty() ; 
     
     /** Fetch a block, use for read only */
-    @Override
     public Block getRead(int id);
     
     /** Fetch a block, use for write and read - only inside "update" */
-    @Override
     public Block getWrite(int id);
 
     /** Release a block, unmodified. */
-    @Override
-    public void releaseRead(Block block) ;
-    
-    /** Release a block, obtained via getWrite, unmodified. */
-    @Override
-    public void releaseWrite(Block block) ;
+    public void release(Block block) ;
 
     /** Promote to writeable : it's OK to promote an already writeable block */ 
-    @Override
     public Block promote(Block block);
 
-    /** Block is no longer being worked on - do not use after this call - get() it again */ 
-    @Override
-    public void put(Block block) ;
+    /** Write a block back - it stil needs releasing. */ 
+    public void write(Block block) ;
 
     /** Announce a block is no longer in use (i.e it's now freed) */ 
-    @Override
     public void free(Block block);
   
     /** Is this a valid block id? (may be a free block)*/
-    @Override
     public boolean valid(int id) ;
     
     /** Close the block manager */
@@ -65,19 +57,19 @@ public interface BlockMgr extends /*Sync, Closeable, Session*/ UnitMgr<Block>
     
     /** Signal the start of update operations */
     @Override
-    public void startUpdate();
+    public void startUpdate() ;
     
     /** Signal the completion of update operations */
     @Override
-    public void finishUpdate();
+    public void finishUpdate() ;
 
     /** Signal the start of read operations */
     @Override
-    public void startRead();
+    public void startRead() ;
 
     /** Signal the completeion of read operations */
     @Override
-    public void finishRead();
+    public void finishRead() ;
 }
 
 /*

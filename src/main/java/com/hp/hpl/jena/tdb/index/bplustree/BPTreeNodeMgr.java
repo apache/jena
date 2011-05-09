@@ -43,7 +43,8 @@ public final class BPTreeNodeMgr extends BPTreePageMgr<BPTreeNode>
             throw new TDBException("Root blocks must be at position zero") ;
         // Empty data block.
         // [TxTDB:PATCH-UP]
-        recordsPage.put();
+        recordsPage.write();
+        recordsPage.release() ;
         
         BPTreeNode n = createNode(BPlusTreeParams.RootParent) ;
         // n.ptrs is currently invalid.  count was 0 so thinks it has a pointer.
@@ -56,7 +57,8 @@ public final class BPTreeNodeMgr extends BPTreePageMgr<BPTreeNode>
         n.isLeaf = true ;
         n.setCount(0) ;     // Count is count of records.
         int rootId = n.getId()  ;
-        n.put();
+        n.write();
+        n.release() ;
         // Must be inside already : finishUpdate() ;
         return rootId ;
     }
