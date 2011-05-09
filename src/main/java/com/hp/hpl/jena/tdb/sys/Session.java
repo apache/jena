@@ -8,7 +8,8 @@ package com.hp.hpl.jena.tdb.sys;
 
 
 /** A Session is a set of operations that are either all read actions 
- * or a mixture of read and write (an update).
+ * or a mixture of read and write (an update). Sessions are noty necessarily long - 
+ * they are just a grouping of operations. 
  * 
  * Most implementations of this interface do not enforce the policy - it
  * is up to the caller to preserve the invariant for the object called.

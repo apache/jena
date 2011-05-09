@@ -8,10 +8,10 @@ public class DevTx
     //   Needs block policy cleaned up. Use after put().
     // Block: Split "modified" into isWriteable and hasChanged
     
-    // ---- ---- ---- ----
+    // Caching pages across actions sequences. e.g BPT root block.
+    // Cache in transaction so forgettable?
     
-    // B+Tree
-    //   Avoid reparsing root blocks.  Maybe release only after change.
+    // ---- ---- ---- ----
     
     // [TxTDB:PATCH-UP]
 
