@@ -69,6 +69,13 @@
       <version>${ver.arq}</version>
       <classifier>tests</classifier>
       <scope>test</scope>
+      <!-- This is temporary and necessary, until Lucene is removed from ARQ -->
+      <exclusions>
+        <exclusion>
+          <groupId>org.apache.lucene</groupId>
+          <artifactId>lucene-core</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>
@@ -291,21 +298,20 @@
               <mainClass>org.openjena.fuseki.FusekiCmd</mainClass>
             </manifest>
           </archive>
-	  <descriptors>
-	    <descriptor>assembly-server.xml</descriptor>
-	    <descriptor>assembly-soh.xml</descriptor>
-	    <descriptor>assembly-dist.xml</descriptor>
-	  </descriptors>
-	  <!-- 
-	    This works as well, but generates a "NOTE" message
-	  <finalName>fuseki-sys</finalName>
-	  <descriptorRefs>
-	    <descriptorRef>jar-with-dependencies</descriptorRef>
-	  </descriptorRefs>
-	  <appendAssemblyId>false</appendAssemblyId>
-	  -->
+	      <descriptors>
+	        <descriptor>assembly-server.xml</descriptor>
+	        <descriptor>assembly-soh.xml</descriptor>
+	        <descriptor>assembly-dist.xml</descriptor>
+	      </descriptors>
+	      <!-- This works as well, but generates a "NOTE" message
+	      <finalName>fuseki-sys</finalName>
+	      <descriptorRefs>
+	        <descriptorRef>jar-with-dependencies</descriptorRef>
+	      </descriptorRefs>
+	      <appendAssemblyId>false</appendAssemblyId>
+	      -->
         </configuration>
-	<executions>
+        <executions>
           <execution>
             <id>create-assemblies</id>
             <phase>package</phase>
@@ -321,6 +327,17 @@
         <artifactId>maven-resources-plugin</artifactId>
         <configuration>
           <encoding>UTF-8</encoding>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-eclipse-plugin</artifactId>
+        <configuration>
+         <buildOutputDirectory>${project.build.directory}/classes-eclipse</buildOutputDirectory>
+         <downloadSources>true</downloadSources>
+         <downloadJavadocs>false</downloadJavadocs>
+         <useProjectReferences>false</useProjectReferences>
         </configuration>
       </plugin>
 
