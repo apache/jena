@@ -92,6 +92,9 @@ public class TxMain
     public static void main(String... args)
     {
         //tree_ins_2_01() ; exit(0) ;
+        
+        test.BPlusTreeRun.main("test", "--bptree:track", "3", "10", "1") ; exit(0) ;
+        
         bpTreeTracking() ; exit(0) ;
         
         Location location ;

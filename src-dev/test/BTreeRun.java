@@ -8,10 +8,10 @@ package test;
 
 import org.openjena.atlas.logging.Log ;
 
-import com.hp.hpl.jena.tdb.index.RangeIndexMaker;
-import com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeMaker;
-import com.hp.hpl.jena.tdb.index.btree.BTreeParams;
-import com.hp.hpl.jena.tdb.sys.SystemTDB;
+import com.hp.hpl.jena.tdb.index.RangeIndexMaker ;
+import com.hp.hpl.jena.tdb.index.btree.BTreeMaker ;
+import com.hp.hpl.jena.tdb.index.btree.BTreeParams ;
+import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 public abstract class BTreeRun extends RunnerRangeIndex
 {
@@ -26,7 +26,7 @@ public abstract class BTreeRun extends RunnerRangeIndex
     @Override
     protected RangeIndexMaker makeRangeIndexMaker()
     {
-        return new BPlusTreeMaker(order, order) ;
+        return new BTreeMaker(order) ;
     }
 
 

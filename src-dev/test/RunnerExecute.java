@@ -71,6 +71,7 @@ public abstract class RunnerExecute
         printStream.println("   --display") ;
         printStream.println("   --check (same as btree:checknode)") ;
         printStream.println("   --bptree:check") ;
+        printStream.println("   --bptree:track") ;
         printStream.println("   --bptree:checknode (expensive)") ;
         printStream.println("   --bptree:log") ;
         printStream.println("   --bptree:safe") ;
@@ -86,7 +87,7 @@ public abstract class RunnerExecute
         int[] keys1 = rand(numKeys, 0, maxValue) ;
         int[] keys2 = permute(keys1, numKeys) ;
         try {
-            IndexMaker maker = new BPlusTreeMaker(order, order) ;
+            IndexMaker maker = new BPlusTreeMaker(order, order, false) ;
             Index rIndex = IndexTestLib.buildIndex(maker, keys1);
             IndexTestLib.delete(rIndex, keys2) ;
         } catch (RuntimeException ex)

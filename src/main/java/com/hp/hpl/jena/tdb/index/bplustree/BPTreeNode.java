@@ -1343,7 +1343,8 @@ public final class BPTreeNode extends BPTreePage
             if ( ptrs.get(i) < 0 ) 
                 error("Node: %d: Invalid child pointer @%d :: %s", id, i , this) ;
 
-            if ( isLeaf )
+            // This does BlockIO so distrubs tracking. 
+            if ( CheckingTree && isLeaf )
             {
                 int ptr = ptrs.get(i) ;
                 BPTreeRecords records = bpTree.getRecordsMgr().getRead(ptr) ;
@@ -1360,7 +1361,7 @@ public final class BPTreeNode extends BPTreePage
                         error("Records: Link not to next block @%d/@%d has a different id: %d :: %s", id, id2, i, records) ;
                     bpTree.getRecordsMgr().release(page) ;
                 }
-                bpTree.getRecordsMgr().release(records) ;
+                records.release() ;
             }
             
         }

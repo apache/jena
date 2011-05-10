@@ -23,24 +23,22 @@ public class BPlusTreeRun extends RunnerRangeIndex
         new BPlusTreeRun().perform(a) ;
     }
     
-    
     @Override
     protected RangeIndexMaker makeRangeIndexMaker()
     {
+        BPlusTreeMaker maker = new BPlusTreeMaker(order, order, trackingBlocks) ;
         
-        BPlusTree bpt = (BPlusTree)(new BPlusTreeMaker(order, order).makeIndex()) ;
+        BPlusTree bpt = (BPlusTree)(maker.makeIndex()) ;
         BPlusTreeParams param = bpt.getParams() ;
-        
         System.out.println(bpt.getParams()) ;
         System.out.println("Block size = "+bpt.getParams().getCalcBlockSize()) ;
-        return new BPlusTreeMaker(order, order) ;
+        return maker ;
     }
 
 
     @Override
     protected void startRun(RunType runType)
     {
-        
         switch (runType)
         {
             case test:

@@ -16,12 +16,14 @@ public class BPlusTreeMaker implements RangeIndexMaker
 {
     private int order ;
     private int recordOrder ;
+    private boolean trackers ;
 
 
-    public BPlusTreeMaker(int order, int recordOrder)
+    public BPlusTreeMaker(int order, int recordOrder, boolean trackers)
     { 
         this.order = order ; 
         this.recordOrder = recordOrder ;
+        this.trackers = trackers ;
     }
     
     @Override
@@ -31,6 +33,8 @@ public class BPlusTreeMaker implements RangeIndexMaker
     public RangeIndex makeRangeIndex()
     {
         BPlusTree bpTree = BPlusTree.makeMem(order, recordOrder, RecordLib.TestRecordLength, 0) ;
+        if ( trackers )
+            bpTree = BPlusTree.addTracking(bpTree) ;
         return bpTree ;
     }
 

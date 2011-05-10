@@ -7,24 +7,25 @@
 
 package com.hp.hpl.jena.tdb.index.bplustree;
 
-import static com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams.CheckingNode;
-import static com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams.CheckingTree;
+import static com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams.CheckingNode ;
+import static com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams.CheckingTree ;
 
-import java.util.Iterator;
+import java.util.Iterator ;
 
 import org.openjena.atlas.io.IndentedWriter ;
 import org.openjena.atlas.iterator.Iter ;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.sparql.util.Utils ;
-import com.hp.hpl.jena.tdb.base.block.BlockMgr;
-import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory;
-import com.hp.hpl.jena.tdb.base.record.Record;
-import com.hp.hpl.jena.tdb.base.record.RecordFactory;
+import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
+import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory ;
+import com.hp.hpl.jena.tdb.base.block.BlockMgrTracker ;
+import com.hp.hpl.jena.tdb.base.record.Record ;
+import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
 import com.hp.hpl.jena.tdb.base.recordbuffer.RecordBufferPage ;
 import com.hp.hpl.jena.tdb.base.recordbuffer.RecordBufferPageMgr ;
-import com.hp.hpl.jena.tdb.index.RangeIndex;
+import com.hp.hpl.jena.tdb.index.RangeIndex ;
 import com.hp.hpl.jena.tdb.index.btree.BTreeParams ;
 import com.hp.hpl.jena.tdb.sys.Session ;
 
@@ -160,6 +161,16 @@ public class BPlusTree implements Iterable<Record>, RangeIndex, Session
         
         BPlusTree bpTree = BPlusTree.create(params, mgr1, mgr2) ;
         return bpTree ;
+    }
+
+    /** Debugging */
+    public static BPlusTree addTracking(BPlusTree bpTree)
+    {
+        BlockMgr mgr1 = bpTree.getNodeManager().getBlockMgr() ;
+        BlockMgr mgr2 = bpTree.getRecordsMgr().getBlockMgr() ;
+        mgr1 = new BlockMgrTracker("BPT/Nodes", mgr1) ;
+        mgr2 = new BlockMgrTracker("BPT/Records", mgr2) ;
+        return BPlusTree.attach(bpTree.getParams(), mgr1, mgr2) ;
     }
 
     private BPlusTree(BPlusTreeParams params, BlockMgr blkMgrNodes, BlockMgr blkMgrRecords)

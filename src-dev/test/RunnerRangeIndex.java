@@ -22,6 +22,8 @@ public abstract class RunnerRangeIndex extends RunnerExecute
     int maxValue ; 
     int maxNumKeys ;
     
+    static boolean trackingBlocks = false ;
+    
     protected abstract RangeIndexMaker makeRangeIndexMaker() ;
     
     @Override
@@ -68,7 +70,7 @@ public abstract class RunnerRangeIndex extends RunnerExecute
                 a = a.substring(2) ;
             else
                 a = a.substring(1) ;
-
+            
             if ( a.equals("h") || a.equals("help") )
             {
                 usage(System.out) ;
@@ -110,12 +112,18 @@ public abstract class RunnerRangeIndex extends RunnerExecute
             {
                 showProgress = ! showProgress ;
             }
+            else if ( a.equalsIgnoreCase("bptree:track") )
+            {
+                trackingBlocks = true ;
+            }
             else   
             {
                 System.err.println("Unknown argument: "+a) ;
                 System.exit(1) ;
             }
         }
+        
+        // add --track? 
         
         if ( args.size() != 3 )
         {

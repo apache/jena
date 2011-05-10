@@ -35,13 +35,8 @@ public class TestBPlusTree extends TestRangeIndex
     protected RangeIndex makeRangeIndex(int order, int minRecords)
     {
         BPlusTree bpt = BPlusTree.makeMem(order, minRecords, RecordLib.TestRecordLength, 0) ;
+        //bpt = BPlusTree.addTracking(bpt) ;
         return bpt ; 
-//        BlockMgr mgr1 = bpt.getNodeManager().getBlockMgr() ;
-//        BlockMgr mgr2 = bpt.getRecordsMgr().getBlockMgr() ;
-//        mgr1 = new BlockMgrTracker("BPT/Nodes", mgr1) ;
-//        mgr2 = new BlockMgrTracker("BPT/Records", mgr2) ;
-//        return BPlusTree.attach(bpt.getParams(), mgr1, mgr2) ;
-        
     }
 }
 
