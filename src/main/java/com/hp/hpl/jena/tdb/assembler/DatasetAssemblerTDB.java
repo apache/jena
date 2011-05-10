@@ -30,7 +30,7 @@ public class DatasetAssemblerTDB extends DatasetAssembler
     static { TDB.init(); }
     
     @Override
-    public Object open(Assembler a, Resource root, Mode mode)
+    public Dataset createDataset(Assembler a, Resource root, Mode mode)
     {
         TDB.init() ;
         return make(root) ;

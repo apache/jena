@@ -661,8 +661,6 @@ public final class BPTreeNode extends BPTreePage
         boolean thisWriteNeeded = false ;
         if ( page.isMinSize() )             // Can't be root - we decended in the get(). 
         {
-            page.isMinSize() ;
-            
             page = rebalance(page, y) ;
             thisWriteNeeded = true ;
             // May have moved/removed at x.  Find again. YUK.
@@ -745,17 +743,17 @@ public final class BPTreeNode extends BPTreePage
      *  merge with left or right sibling
      * Suboperations do all the write-back of nodes.
      */ 
-    private BPTreePage rebalance(BPTreePage n, int idx)
+    private BPTreePage rebalance(final BPTreePage node, int idx)
     {
         if ( logging() )
         {
-            log.debug(format("rebalance(id=%d, idx=%d)", n.getId(), idx)) ;
+            log.debug(format("rebalance(id=%d, idx=%d)", node.getId(), idx)) ;
             log.debug(format(">> this: %s", this)) ;
-            log.debug(format(">> node: %s", n)) ;
+            log.debug(format(">> node: %s", node)) ;
         }
         internalCheckNode() ;
         promote() ;
-        n.promote() ;
+        node.promote() ;
         
         BPTreePage left = null ;
         if ( idx > 0 )
@@ -773,18 +771,18 @@ public final class BPTreeNode extends BPTreePage
             
             // Move elements around.
             // Has not done "this.put()" yet.
-            shiftRight(left, n, idx-1) ;
+            shiftRight(left, node, idx-1) ;
             
             if ( logging() )
                 log.debug("<< rebalance: "+this) ;
             if ( CheckingNode )
             {
                 left.checkNode() ;
-                n.checkNode();
+                node.checkNode();
                 this.internalCheckNode() ;
             }
             left.release() ;
-            return n ;
+            return node ;
         }
 
         BPTreePage right = null ;
@@ -796,19 +794,19 @@ public final class BPTreeNode extends BPTreePage
             if ( logging() )
                 log.debug("rebalance/shiftLeft") ;
 
-            shiftLeft(n, right, idx) ;
+            shiftLeft(node, right, idx) ;
 
             if ( logging() )
                 log.debug("<< rebalance: "+this) ;
             if ( CheckingNode )
             {
                 right.checkNode();
-                n.checkNode();
+                node.checkNode();
                 this.internalCheckNode() ;
             }
             if ( left != null ) left.release() ;
             right.release() ;
-            return n ;
+            return node ;
         }
 
         // Couldn't shift.  Collapse two pages.  
@@ -817,27 +815,25 @@ public final class BPTreeNode extends BPTreePage
         if ( left != null )
         {
             if ( logging() )
-                log.debug(format("rebalance/merge/left: left=%d n=%d [%d]", left.getId(), n.getId(), idx-1)) ;
-            if ( CheckingNode && left.getId() == n.getId() ) 
+                log.debug(format("rebalance/merge/left: left=%d n=%d [%d]", left.getId(), node.getId(), idx-1)) ;
+            if ( CheckingNode && left.getId() == node.getId() ) 
                 error("Left and n the same: %s", left) ;
-            BPTreePage page = merge(left, n, idx-1) ;
-            left.release() ;
+            BPTreePage page = merge(left, node, idx-1) ;
             return page ;
         }
         else
         {
             // right != null
             if ( logging() )
-                log.debug(format("rebalance/merge/right: n=%d right=%d [%d]", n.getId(), right.getId(), idx)) ;
-            if ( CheckingNode && right.getId() == n.getId() )
+                log.debug(format("rebalance/merge/right: n=%d right=%d [%d]", node.getId(), right.getId(), idx)) ;
+            if ( CheckingNode && right.getId() == node.getId() )
                 error("N and right the same: %s",right ) ;
-            BPTreePage page = merge(n, right, idx) ;
-            n.release() ;
+            BPTreePage page = merge(node, right, idx) ;
             return page ;
         }
     }
     
-    /** Merge left into right ; frees right */
+    /** Merge left with right ; fills left, frees right */
     private BPTreePage merge(BPTreePage left, BPTreePage right, int dividingSlot)
     {
         if ( logging() )
@@ -847,7 +843,7 @@ public final class BPTreeNode extends BPTreePage
             log.debug(">> right: "+right) ;
         }
         
-        // /==\ + key + /==\ ==> /====\ 
+        // /==\ + key + /==\   ==>   /====\ 
         Record splitKey = records.get(dividingSlot) ;
         BPTreePage page = left.merge(right, splitKey) ;
         // Must release right (not done in merge)

@@ -150,7 +150,11 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
     {
         log.error(action+": "+string) ;
         history() ;
+        debugPoint() ;
     }
+
+    // Do nothing - but use a a breakpoint point.
+    private void debugPoint() {}
 
     private void warn(Action action, String string)
     { log.warn(action+": "+string) ; }
