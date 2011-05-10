@@ -35,6 +35,8 @@ public class BPlusTreeMaker implements RangeIndexMaker
         BPlusTree bpTree = BPlusTree.makeMem(order, recordOrder, RecordLib.TestRecordLength, 0) ;
         if ( trackers )
             bpTree = BPlusTree.addTracking(bpTree) ;
+//        System.err.println("CheckingNode = "+BPlusTreeParams.CheckingNode) ;
+//        System.err.println("CheckingTree = "+BPlusTreeParams.CheckingTree) ;
         return bpTree ;
     }
 

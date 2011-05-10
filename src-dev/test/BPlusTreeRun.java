@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -8,11 +9,12 @@ package test;
 
 import org.openjena.atlas.logging.Log ;
 
-import com.hp.hpl.jena.tdb.index.RangeIndexMaker;
+import com.hp.hpl.jena.tdb.base.file.FileAccessMem ;
+import com.hp.hpl.jena.tdb.index.RangeIndexMaker ;
 import com.hp.hpl.jena.tdb.index.bplustree.BPlusTree ;
-import com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeMaker;
-import com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams;
-import com.hp.hpl.jena.tdb.sys.SystemTDB;
+import com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeMaker ;
+import com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams ;
+import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 public class BPlusTreeRun extends RunnerRangeIndex
 {
@@ -46,23 +48,23 @@ public class BPlusTreeRun extends RunnerRangeIndex
                 BPlusTreeParams.CheckingTree = true ;
                 BPlusTreeParams.CheckingNode = true ;
                 SystemTDB.NullOut = true ;
+                FileAccessMem.SafeMode = true ;
                 break ;
             case perf:  
                 showProgress = false ;
                 BPlusTreeParams.CheckingTree = false ;
                 BPlusTreeParams.CheckingNode = false ;
                 SystemTDB.NullOut = false ;
+                FileAccessMem.SafeMode = false ;
                 break ;
         } 
     }
 
-    @Override
-    protected void startRun(RunType runType)
-    {}
 }
 
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

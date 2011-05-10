@@ -38,18 +38,14 @@ public abstract class RunnerRangeIndex extends RunnerExecute
     @Override
     protected int startRun(List<String> args, RunType runType)
     {
-        startRun(runType) ;
         order = Integer.parseInt(args.get(0)) ;
         int numKeys = Integer.parseInt(args.get(1)) ;
         int iterations = Integer.parseInt(args.get(2)) ;
-        
+
         maxValue = 10*numKeys ;  
         maxNumKeys = numKeys ;
         return iterations ;
     }
-
-    protected abstract void initialize(RunType runType) ;
-    protected abstract void startRun(RunType runType) ;
 
     @Override
     protected void finishRun()
@@ -59,7 +55,6 @@ public abstract class RunnerRangeIndex extends RunnerExecute
     @Override
     protected List<String> processArgs(List<String> args)
     {
-        
         int i = 0 ;
         while ( args.size()>0 )
         {
@@ -82,10 +77,13 @@ public abstract class RunnerRangeIndex extends RunnerExecute
             else if ( a.equalsIgnoreCase("bptree:check") )
             {
                 BPlusTreeParams.CheckingTree = true ;
+                BPlusTreeParams.CheckingNode = false ;
                 SystemTDB.NullOut = true ;
+                FileAccessMem.SafeMode = true ;
             }
             else if ( a.equalsIgnoreCase("bptree:checknode") )
             {
+                BPlusTreeParams.CheckingTree = true ;
                 BPlusTreeParams.CheckingNode = true ;
                 SystemTDB.NullOut = true ;
                 FileAccessMem.SafeMode = true ;
@@ -105,9 +103,10 @@ public abstract class RunnerRangeIndex extends RunnerExecute
                 FileAccessMem.SafeMode = true ;
             else if ( a.equalsIgnoreCase("check") )
             {
-                BPlusTreeParams.CheckingNode = true ;
-                SystemTDB.NullOut = true ;
-                FileAccessMem.SafeMode = true ;
+                BPlusTreeParams.CheckingNode = false;
+                BPlusTreeParams.CheckingTree = false ;
+//                SystemTDB.NullOut = true ;
+//                FileAccessMem.SafeMode = true ;
             }
             else if ( a.equalsIgnoreCase("display") )
             {
@@ -116,6 +115,7 @@ public abstract class RunnerRangeIndex extends RunnerExecute
             else if ( a.equalsIgnoreCase("bptree:track") )
             {
                 BPlusTreeParams.CheckingTree = false ;
+                BPlusTreeParams.CheckingNode = false ;
                 trackingBlocks = true ;
             }
             else   

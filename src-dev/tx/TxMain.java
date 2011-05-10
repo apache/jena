@@ -14,7 +14,6 @@ import java.util.Iterator ;
 import org.openjena.atlas.lib.Bytes ;
 import org.openjena.atlas.lib.FileOps ;
 import org.openjena.atlas.logging.Log ;
-import org.openjena.atlas.test.Gen ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 import tx.transaction.TransactionManager ;
@@ -97,6 +96,8 @@ public class TxMain
         //tree_ins_2_01() ; exit(0) ;
         
         test.BPlusTreeRun.main("test", "--bptree:track", "3", "125", "100000") ; exit(0) ;
+        //test.BPlusTreeRun.main("perf", "3", "125", "100") ; exit(0) ;
+        //test.BPlusTreeRun.main("test", "--bptree:check", "3", "125", "100000") ; exit(0) ;
         
         bpTreeTracking() ; exit(0) ;
         

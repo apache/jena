@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -38,6 +39,7 @@ public abstract class RunnerExecute
             System.err.println("No subcommand") ;
             System.exit(1) ;
         }
+        System.out.println(args) ;
         String subCmd = args.remove(0) ;
         RunType runType = null ;
         
@@ -51,13 +53,17 @@ public abstract class RunnerExecute
             System.exit(1) ;
         }
         
+        initialize(runType) ;
+        
         args = processArgs(args) ;
         int iterations = startRun(args, runType) ;
+        
         ExecGenerator gen = execGenerator() ;
         RepeatExecution.repeatExecutions(gen, iterations, showProgress) ;
         finishRun() ;
     }
     
+    protected abstract void initialize(RunType runType) ;
     protected abstract List<String> processArgs(List<String> args) ;
 
     protected abstract ExecGenerator execGenerator() ;
@@ -81,9 +87,10 @@ public abstract class RunnerExecute
     
     public static void perfTest(int order, int maxValue, int numKeys)
     {
+        // UNUSED.
 //        if ( numKeys >= 3000 )
 //            System.err.printf("Warning: too many keys\n") ;
-            
+       
         int[] keys1 = rand(numKeys, 0, maxValue) ;
         int[] keys2 = permute(keys1, numKeys) ;
         try {
@@ -102,6 +109,7 @@ public abstract class RunnerExecute
 
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
