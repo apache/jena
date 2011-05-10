@@ -203,16 +203,20 @@
     </plugins>
 
   </build>
-
+  
   <distributionManagement>
-    <!-- This is temporary, just to test that maven-release-plugin works -->
+    <downloadUrl>http://openjena.org/repo-dev</downloadUrl>
     <repository>
-      <id>talis-oss-releases</id>
-      <url>http://oss.talisplatform.com/content/repositories/talis-releases</url>
-    </repository>
+      <id>jena-repo</id>
+      <name>Jena repo</name>
+      <url>sftp://openjena.org/var/repo</url>
+      <layout>default</layout>
+    </repository> 
     <snapshotRepository>
-      <id>talis-oss-snapshots</id>
-      <url>http://oss.talisplatform.com/content/repositories/talis-snapshots</url>
+      <id>jena-repo-dev</id>
+      <name>Jena development repo</name>
+      <url>sftp://openjena.org/var/repo-dev</url>
+      <layout>default</layout>
     </snapshotRepository>
   </distributionManagement>
   
