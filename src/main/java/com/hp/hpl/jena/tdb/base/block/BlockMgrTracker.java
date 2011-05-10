@@ -11,6 +11,8 @@ import java.util.HashSet ;
 import java.util.List ;
 import java.util.Set ;
 
+import com.hp.hpl.jena.tdb.TDBException ;
+
 import org.openjena.atlas.lib.Pair ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
@@ -151,7 +153,8 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
     {
         log.error(action+": "+string) ;
         history() ;
-        debugPoint() ;
+        throw new TDBException() ;
+        //debugPoint() ;
     }
 
     // Do nothing - but use a a breakpoint point.

@@ -7,6 +7,7 @@
 package tx;
 
 import static com.hp.hpl.jena.tdb.index.IndexTestLib.testInsert ;
+import static org.openjena.atlas.test.Gen.strings ;
 
 import java.util.Iterator ;
 
@@ -34,6 +35,7 @@ import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.base.record.Record ;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
 import com.hp.hpl.jena.tdb.base.record.RecordLib ;
+import com.hp.hpl.jena.tdb.base.recordbuffer.RecordBufferPage ;
 import com.hp.hpl.jena.tdb.index.RangeIndex ;
 import com.hp.hpl.jena.tdb.index.bplustree.BPTreeNode ;
 import com.hp.hpl.jena.tdb.index.bplustree.BPlusTree ;
@@ -93,10 +95,128 @@ public class TxMain
     {
         //tree_ins_2_01() ; exit(0) ;
         
-        test.BPlusTreeRun.main("test", "--bptree:track", "3", "10", "1") ; exit(0) ;
+       //test.BPlusTreeRun.main("test", "--bptree:track", "3", "15", "100") ; exit(0) ;
         
         bpTreeTracking() ; exit(0) ;
         
+        transactional() ; exit(0) ;
+    }
+    
+    public static void bpTreeTracking(String... args)
+    {
+        final Logger log = LoggerFactory.getLogger("BPlusTree") ;
+
+        int order = 3 ;
+        int keySize = RecordLib.TestRecordLength ;
+        int valueSize = 0 ;
+        boolean tracking = true ;
+        int numKeys = 10 ;
+        int maxValue = 100 ;
+
+//        int[] keys1 = rand(numKeys, 0, maxValue) ;
+//        int[] keys2 = permute(keys1, numKeys) ;
+        
+//        int[] keys1 = {93, 45, 35, 44, 71, 61, 46, 10, 8, 68, 96, 82, 41, 65, 1} ;
+//        int[] keys2 = {93, 35, 61, 1, 45, 46, 44, 96, 8, 10, 71, 82, 68, 65, 41} ; 
+
+        int[] keys1 = {68, 5, 23, 65, 43, 21, 25, 81, 46, 74} ;
+        int[] keys2 = {68, 46, 21, 65, 5, 43, 81, 25, 74, 23} ; 
+        
+        System.out.printf("int[] keys1 = {%s} ;\n", strings(keys1)) ;
+        System.out.printf("int[] keys2 = {%s} ; \n", strings(keys2)) ;
+        
+        // Debug options.
+        if ( true )
+        {
+//            SystemTDB.Checking = true ;
+            BPlusTreeParams.CheckingNode = true ;
+//            BPlusTreeParams.CheckingTree = true ;
+            BPlusTreeParams.Logging = true ;
+            Log.enable(BPTreeNode.class.getName(), "ALL") ;
+        }
+        RecordFactory rf = new RecordFactory(keySize,valueSize) ;
+        BPlusTree bpTree = createBPT(order, rf, tracking, false) ;
+        
+        String label = "B+Tree" ;
+        BPlusTreeParams params = bpTree.getParams() ;
+        System.out.println(label+": "+params) ;
+        int blockSize  = BPlusTreeParams.calcBlockSize(order, rf) ;
+        System.out.println("Block size = "+params.getCalcBlockSize()) ;
+
+        BlockMgr mgr1 = bpTree.getNodeManager().getBlockMgr() ;
+        BlockMgr mgr2 = bpTree.getRecordsMgr().getBlockMgr() ;
+
+        log.info("ADD") ;
+        for ( int i : keys1 ) 
+        {
+            log.info(String.format("i = 0x%04X", i)) ;
+            Record r = record(rf, i, 0) ;
+            bpTree.add(r) ;
+        }
+        
+        //exit(0) ;
+        log.info("DELETE") ;
+        for ( int i : keys2 ) 
+        {
+            log.info(String.format("i = 0x%04X", i)) ;
+            System.out.println() ;
+            bpTree.dump() ;
+            Record r = record(rf, i, 0) ;
+            bpTree.delete(r) ;
+        }
+
+        if ( true )
+            return ;
+
+        System.out.println() ;
+
+        System.out.println() ;
+
+        Iterator<Record> iter = bpTree.iterator() ;
+        for ( ; iter.hasNext() ; )
+            System.out.println(iter.next()) ;
+        System.out.println() ;
+
+        //        bpt.dump() ;
+    }
+
+    private static BPlusTree createBPT(int order, RecordFactory rf, boolean tracking, boolean logging)
+    {
+        String label = "B+Tree" ;
+        BPlusTreeParams params = new BPlusTreeParams(order, rf) ;
+        int blockSize  = BPlusTreeParams.calcBlockSize(order, rf) ;
+        
+        if ( false )
+        {
+            BPlusTree rIndex = BPlusTree.makeMem(order, order, RecordLib.TestRecordLength, 0) ;
+            return BPlusTree.addTracking(rIndex) ;
+        }
+            
+        int nodeBlkSize = blockSize ;
+        int maxRecords = 2*order ;
+        // Or blockSize
+        int recBlkSize = RecordBufferPage.calcBlockSize(params.getRecordFactory(), maxRecords) ;
+        
+        BlockMgr mgr1 = BlockMgrFactory.createMem("B1", nodeBlkSize) ;
+        
+        if ( tracking )
+            mgr1 = new BlockMgrTracker("BlkMgr/Nodes", mgr1) ;
+        if ( logging )
+            mgr1 = new BlockMgrLogger("BlkMgr/Nodes", mgr1, true) ;
+        
+        BlockMgr mgr2 = BlockMgrFactory.createMem("B2", recBlkSize) ;
+    
+        if ( tracking )
+            mgr2 = new BlockMgrTracker("BlkMgr/Records", mgr2) ;
+        if ( logging )
+            mgr2 = new BlockMgrLogger("BlkMgr/Records", mgr2, true) ;
+        
+        BPlusTree bpt = BPlusTree.create(params, mgr1, mgr2) ;
+        return bpt ;
+    }
+
+    public static void transactional(String... args)
+    {
         Location location ;
         if ( false )
         {
@@ -155,93 +275,12 @@ public class TxMain
         UpdateAction.execute(req, dsg) ;
     }
     
-    private static RangeIndex createBPT(int order, RecordFactory rf, boolean logging)
-    {
-        String label = "B+Tree" ;
-        BPlusTreeParams params = new BPlusTreeParams(order, rf) ;
-        System.out.println(label+": "+params) ;
-        
-        int blockSize  = BPlusTreeParams.calcBlockSize(order, rf) ;
-        System.out.println("Block size = "+blockSize) ;
-        
-        BlockMgr mgr1 = BlockMgrFactory.createMem("B1", blockSize) ;
-        mgr1 = new BlockMgrTracker("BlkMgr/Nodes", mgr1) ;
-        if ( logging )
-            mgr1 = new BlockMgrLogger("BlkMgr/Nodes", mgr1, true) ;
-        
-        BlockMgr mgr2 = BlockMgrFactory.createMem("B2", blockSize) ;
-
-        mgr2 = new BlockMgrTracker("BlkMgr/Records", mgr2) ;
-        if ( logging )
-            mgr2 = new BlockMgrLogger("BlkMgr/Records", mgr2, true) ;
-        
-        BPlusTree bpt = BPlusTree.create(params, mgr1, mgr2) ;
-        return bpt ;
-    }
-    
-    public static void bpTreeTracking(String... args)
-    {
-        final Logger log = LoggerFactory.getLogger("BPlusTree") ;
-
-        if ( false )
-        {
-//            SystemTDB.Checking = true ;
-//            BPlusTreeParams.CheckingNode = true ;
-//            BPlusTreeParams.CheckingTree = true ;
-            BPlusTreeParams.Logging = true ;
-            Log.enable(BPTreeNode.class.getName(), "ALL") ;
-        }
-        RecordFactory rf = new RecordFactory(8,8) ;
-        RangeIndex rIndex = createBPT(3, rf, false) ;
-
-        log.info("Created") ;
-        log.info("") ;
-        boolean b = rIndex.isEmpty() ;
-        log.info("isEmpty done") ;
-        
-        // Add logging.
-        //rIndex = new RangeIndexLogger(rIndex, log) ;
-
-        System.out.println() ;
-        
-        log.info("ADD") ;
-        for ( int i = 0 ; i < 50 ; i++ ) 
-        {
-            log.info("i = "+i) ;
-            Record r = record(rf, i+0x100000L, i+0x90000000L) ;
-            rIndex.add(r) ;
-        }
-        //exit(0) ;
-        log.info("DELETE") ;
-        for ( int i = 0 ; i < 50 ; i++ ) 
-        {
-            log.info("i = "+i) ;
-            Record r = record(rf, i+0x100000L, i+0x90000000L) ;
-            rIndex.delete(r) ;
-        }
-
-        exit(0) ;
-        
-        System.out.println() ;
-        
-        Record r = record(rf, 3+0x100000L, 0) ;
-        r = rIndex.find(r) ;
-        
-        System.out.println() ;
-        
-        Iterator<Record> iter = rIndex.iterator() ;
-        for ( ; iter.hasNext() ; )
-            System.out.println(iter.next()) ;
-        System.out.println() ;
-
-//        bpt.dump() ;
-    }
-
-    static Record record(RecordFactory rf, long key, long val)
+    static Record record(RecordFactory rf, int key, int val)
     {
         Record r = rf.create() ;
-        Bytes.setLong(key, r.getKey()) ;
-        Bytes.setLong(val, r.getValue()) ;
+        Bytes.setInt(key, r.getKey()) ;
+        if ( rf.hasValue() )
+            Bytes.setInt(val, r.getValue()) ;
         return r ;
     }
 }
