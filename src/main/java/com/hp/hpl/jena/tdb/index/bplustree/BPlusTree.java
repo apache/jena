@@ -301,15 +301,7 @@ public class BPlusTree implements Iterable<Record>, RangeIndex, Session
     {
         startUpdateBlkMgr() ;
         BPTreeNode root = getRoot() ;
-        
-        if ( record.getKey()[3] == 9 )
-            dump() ;
-        
         Record r = BPTreeNode.insert(root, record) ;
-        
-//        if ( record.getKey()[3] == 9 )
-//            dump() ;
-        
         if ( CheckingTree ) root.checkNodeDeep() ;
         releaseRoot(root) ;
         finishUpdateBlkMgr() ;

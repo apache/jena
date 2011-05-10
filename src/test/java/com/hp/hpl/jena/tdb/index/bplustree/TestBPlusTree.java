@@ -9,8 +9,6 @@ package com.hp.hpl.jena.tdb.index.bplustree;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 
-import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
-import com.hp.hpl.jena.tdb.base.block.BlockMgrTracker ;
 import com.hp.hpl.jena.tdb.base.record.RecordLib ;
 import com.hp.hpl.jena.tdb.index.RangeIndex ;
 import com.hp.hpl.jena.tdb.index.TestRangeIndex ;
@@ -37,13 +35,12 @@ public class TestBPlusTree extends TestRangeIndex
     protected RangeIndex makeRangeIndex(int order, int minRecords)
     {
         BPlusTree bpt = BPlusTree.makeMem(order, minRecords, RecordLib.TestRecordLength, 0) ;
-        BlockMgr mgr1 = bpt.getNodeManager().getBlockMgr() ;
-        BlockMgr mgr2 = bpt.getRecordsMgr().getBlockMgr() ;
-        
-        mgr1 = new BlockMgrTracker("BPT/Nodes", mgr1) ;
-        mgr2 = new BlockMgrTracker("BPT/Records", mgr2) ;
-        
-        return BPlusTree.attach(bpt.getParams(), mgr1, mgr2) ;
+        return bpt ; 
+//        BlockMgr mgr1 = bpt.getNodeManager().getBlockMgr() ;
+//        BlockMgr mgr2 = bpt.getRecordsMgr().getBlockMgr() ;
+//        mgr1 = new BlockMgrTracker("BPT/Nodes", mgr1) ;
+//        mgr2 = new BlockMgrTracker("BPT/Records", mgr2) ;
+//        return BPlusTree.attach(bpt.getParams(), mgr1, mgr2) ;
         
     }
 }
