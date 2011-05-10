@@ -24,6 +24,8 @@ public class DatasetAssemblerVocab
     public static final Property pGraphName          = ResourceFactory.createProperty(NS, "graphName") ;
     public static final Property pGraph              = ResourceFactory.createProperty(NS, "graph") ;
     public static final Property pGraphAlt           = ResourceFactory.createProperty(NS, "graphData") ;
+
+    public static final Property pIndex              = ResourceFactory.createProperty(NS, "textIndex") ;
 }
 
 /*

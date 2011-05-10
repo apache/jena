@@ -4,12 +4,30 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.core.assembler;
+package com.hp.hpl.jena.sparql.core.assembler ;
 
+import com.hp.hpl.jena.assembler.Assembler ;
+import com.hp.hpl.jena.assembler.Mode ;
+import com.hp.hpl.jena.query.Dataset ;
+import com.hp.hpl.jena.rdf.model.Resource ;
 
 public class DatasetAssembler extends DataSourceAssembler
 {
-    // Just an alternative name.
+
+    @Override
+    public final Object open(Assembler a, Resource root, Mode mode)
+    {
+        Dataset ds = createDataset(a, root, mode) ;
+        createTextIndex(ds, root) ;
+        
+        return ds ;
+    }
+    
+    public Dataset createDataset(Assembler a, Resource root, Mode mode)
+    {
+        return super.createDataSource(a, root, mode) ;
+    }
+    
 }
 
 

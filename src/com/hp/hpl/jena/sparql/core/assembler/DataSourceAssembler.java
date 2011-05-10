@@ -6,6 +6,7 @@
 
 package com.hp.hpl.jena.sparql.core.assembler;
 
+import java.lang.reflect.Method;
 import java.util.Iterator ;
 import java.util.List ;
 
@@ -13,6 +14,7 @@ import com.hp.hpl.jena.assembler.Assembler ;
 import com.hp.hpl.jena.assembler.Mode ;
 import com.hp.hpl.jena.assembler.assemblers.AssemblerBase ;
 import com.hp.hpl.jena.query.DataSource ;
+import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.query.DatasetFactory ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.RDFNode ;
@@ -31,6 +33,14 @@ public class DataSourceAssembler extends AssemblerBase implements Assembler
     
     @Override
     public Object open(Assembler a, Resource root, Mode mode)
+    {
+        DataSource ds = createDataSource(a, root, mode) ;
+        createTextIndex(ds, root) ;
+
+        return ds ;
+    }
+    
+    public DataSource createDataSource(Assembler a, Resource root, Mode mode) 
     {
         // Non-expanding version.
         //DataSource ds = DatasetFactory.create() ;
@@ -81,6 +91,32 @@ public class DataSourceAssembler extends AssemblerBase implements Assembler
         
         return ds ;
     }
+
+    public Object createTextIndex (Dataset ds, Resource root) 
+    {
+        try 
+        {
+            Class<?> clazz = Class.forName("org.apache.jena.larq.assembler.AssemblerLARQ") ;
+            if ( root.hasProperty(DatasetAssemblerVocab.pIndex) ) 
+            {
+                try {
+                    Log.info(DataSourceAssembler.class, "Initializing LARQ") ;
+                    String index = GraphUtils.getAsStringValue(root, DatasetAssemblerVocab.pIndex) ;
+                    Class<?> paramTypes[] = new Class[] { Dataset.class, String.class } ;
+                    Method method = clazz.getDeclaredMethod("make", paramTypes) ;
+                    Object args[] = new Object[] { ds, index } ;
+                    return method.invoke(clazz, args) ;
+                } catch (Exception e) {
+                    Log.warn(DataSourceAssembler.class, "Unable to initialize LARQ: " + e.getMessage()) ;
+                }                
+            }
+        } catch(ClassNotFoundException e) {
+            // 
+        }
+        
+        return null ;
+    }
+    
 }
 
 /*

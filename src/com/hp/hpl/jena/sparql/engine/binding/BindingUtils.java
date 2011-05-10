@@ -56,7 +56,6 @@ public class BindingUtils
         {
             String n = iter.next() ;
             
-            
             RDFNode x = qSolution.get(n) ;
             //XXX
             if ( Var.isBlankNodeVarName(n) )
