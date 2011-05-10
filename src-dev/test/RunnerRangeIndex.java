@@ -48,6 +48,7 @@ public abstract class RunnerRangeIndex extends RunnerExecute
         return iterations ;
     }
 
+    protected abstract void initialize(RunType runType) ;
     protected abstract void startRun(RunType runType) ;
 
     @Override
@@ -114,6 +115,7 @@ public abstract class RunnerRangeIndex extends RunnerExecute
             }
             else if ( a.equalsIgnoreCase("bptree:track") )
             {
+                BPlusTreeParams.CheckingTree = false ;
                 trackingBlocks = true ;
             }
             else   
@@ -122,8 +124,6 @@ public abstract class RunnerRangeIndex extends RunnerExecute
                 System.exit(1) ;
             }
         }
-        
-        // add --track? 
         
         if ( args.size() != 3 )
         {

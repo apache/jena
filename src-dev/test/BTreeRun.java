@@ -13,7 +13,7 @@ import com.hp.hpl.jena.tdb.index.btree.BTreeMaker ;
 import com.hp.hpl.jena.tdb.index.btree.BTreeParams ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
-public abstract class BTreeRun extends RunnerRangeIndex
+public class BTreeRun extends RunnerRangeIndex
 {
     static { Log.setLog4j() ; }
     
@@ -29,9 +29,8 @@ public abstract class BTreeRun extends RunnerRangeIndex
         return new BTreeMaker(order) ;
     }
 
-
     @Override
-    protected void startRun(RunType runType)
+    protected void initialize(RunType runType)
     {
         switch (runType)
         {
@@ -49,6 +48,11 @@ public abstract class BTreeRun extends RunnerRangeIndex
                 break ;
         }
     }
+
+    @Override
+    protected void startRun(RunType runType)
+    {}
+    
 }
 
 /*

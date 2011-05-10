@@ -149,20 +149,6 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
         blockMgr.free(block) ;
     }
 
-    private void error(Action action, String string)
-    {
-        log.error(action+": "+string) ;
-        history() ;
-        throw new TDBException() ;
-        //debugPoint() ;
-    }
-
-    // Do nothing - but use a a breakpoint point.
-    private void debugPoint() {}
-
-    private void warn(Action action, String string)
-    { log.warn(action+": "+string) ; }
-
     @Override
     public void sync()
     {
@@ -275,10 +261,27 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
             for ( Integer id : blocks )
                 log.info("    Block: "+id) ;
             history() ;
-            debugPoint() ;
+            throw new TDBException() ;
+            //debugPoint() ;
         }
     }
     
+    private void error(Action action, String string)
+    {
+        log.error(action+": "+string) ;
+        history() ;
+        
+        
+        throw new TDBException() ;
+        //debugPoint() ;
+    }
+
+    // Do nothing - but use a a breakpoint point.
+    private void debugPoint() {}
+
+    private void warn(Action action, String string)
+    { log.warn(action+": "+string) ; }
+
     private void history()
     {
         log.info("History") ;

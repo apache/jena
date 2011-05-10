@@ -14,6 +14,7 @@ import java.util.Iterator ;
 import org.openjena.atlas.lib.Bytes ;
 import org.openjena.atlas.lib.FileOps ;
 import org.openjena.atlas.logging.Log ;
+import org.openjena.atlas.test.Gen ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 import tx.transaction.TransactionManager ;
@@ -95,7 +96,7 @@ public class TxMain
     {
         //tree_ins_2_01() ; exit(0) ;
         
-       //test.BPlusTreeRun.main("test", "--bptree:track", "3", "15", "100") ; exit(0) ;
+        test.BPlusTreeRun.main("test", "--bptree:track", "3", "125", "100000") ; exit(0) ;
         
         bpTreeTracking() ; exit(0) ;
         
@@ -109,58 +110,60 @@ public class TxMain
         int order = 3 ;
         int keySize = RecordLib.TestRecordLength ;
         int valueSize = 0 ;
-        boolean tracking = true ;
+        boolean blkTracking = true ;
+        boolean blkLogging = false ;
         int numKeys = 10 ;
         int maxValue = 100 ;
 
-//        int[] keys1 = rand(numKeys, 0, maxValue) ;
-//        int[] keys2 = permute(keys1, numKeys) ;
-        
-//        int[] keys1 = {93, 45, 35, 44, 71, 61, 46, 10, 8, 68, 96, 82, 41, 65, 1} ;
-//        int[] keys2 = {93, 35, 61, 1, 45, 46, 44, 96, 8, 10, 71, 82, 68, 65, 41} ; 
+//        int[] keys1 = Gen.rand(numKeys, 0, maxValue) ;
+//        int[] keys2 = Gen.permute(keys1, numKeys) ;
 
-        int[] keys1 = {68, 5, 23, 65, 43, 21, 25, 81, 46, 74} ;
-        int[] keys2 = {68, 46, 21, 65, 5, 43, 81, 25, 74, 23} ; 
+        
+        int[] keys1 = {32, 19, 77, 133, 78, 145, 137, 124, 97, 85, 14} ;
+//        int[] keys2 = {19, 78, 124, 145, 137, 85, 77, 14, 32, 133, 97}; 
+        int[] keys2 = {19, 78, 124}; 
         
         System.out.printf("int[] keys1 = {%s} ;\n", strings(keys1)) ;
         System.out.printf("int[] keys2 = {%s} ; \n", strings(keys2)) ;
         
         // Debug options.
-        if ( true )
+        if ( false )
         {
+            // These alter the block behaviour.
 //            SystemTDB.Checking = true ;
-            BPlusTreeParams.CheckingNode = true ;
+//            BPlusTreeParams.CheckingNode = true ;
 //            BPlusTreeParams.CheckingTree = true ;
             BPlusTreeParams.Logging = true ;
             Log.enable(BPTreeNode.class.getName(), "ALL") ;
         }
         RecordFactory rf = new RecordFactory(keySize,valueSize) ;
-        BPlusTree bpTree = createBPT(order, rf, tracking, false) ;
+        BPlusTree bpTree = createBPT(order, rf, blkTracking, blkLogging) ;
+        System.out.println("CheckingNode: "+BPlusTreeParams.CheckingNode) ;
+        System.out.println("CheckingTree: "+BPlusTreeParams.CheckingTree) ;
         
         String label = "B+Tree" ;
         BPlusTreeParams params = bpTree.getParams() ;
         System.out.println(label+": "+params) ;
         int blockSize  = BPlusTreeParams.calcBlockSize(order, rf) ;
         System.out.println("Block size = "+params.getCalcBlockSize()) ;
-
-        BlockMgr mgr1 = bpTree.getNodeManager().getBlockMgr() ;
-        BlockMgr mgr2 = bpTree.getRecordsMgr().getBlockMgr() ;
+        System.out.println() ;
 
         log.info("ADD") ;
         for ( int i : keys1 ) 
         {
-            log.info(String.format("i = 0x%04X", i)) ;
+//            log.info(String.format("i = 0x%04X", i)) ;
             Record r = record(rf, i, 0) ;
             bpTree.add(r) ;
         }
         
         //exit(0) ;
+        System.out.println() ;
         log.info("DELETE") ;
         for ( int i : keys2 ) 
         {
-            log.info(String.format("i = 0x%04X", i)) ;
-            System.out.println() ;
-            bpTree.dump() ;
+//            System.out.println() ;
+//            log.info(String.format("i = 0x%04X", i)) ;
+//            bpTree.dump() ;
             Record r = record(rf, i, 0) ;
             bpTree.delete(r) ;
         }

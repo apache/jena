@@ -35,9 +35,8 @@ public class BPlusTreeRun extends RunnerRangeIndex
         return maker ;
     }
 
-
     @Override
-    protected void startRun(RunType runType)
+    protected void initialize(RunType runType)
     {
         switch (runType)
         {
@@ -54,8 +53,12 @@ public class BPlusTreeRun extends RunnerRangeIndex
                 BPlusTreeParams.CheckingNode = false ;
                 SystemTDB.NullOut = false ;
                 break ;
-        }
+        } 
     }
+
+    @Override
+    protected void startRun(RunType runType)
+    {}
 }
 
 /*

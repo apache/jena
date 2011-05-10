@@ -450,8 +450,7 @@ public final class BPTreeNode extends BPTreePage
                 error("Node to be split isn't in right place [%d/%d]", a, b) ;
             }
         }
-        if ( CheckingTree )
-            internalCheckNodeDeep() ;
+        internalCheckNodeDeep() ;
         
         promote() ;
         y.promote() ;
@@ -823,11 +822,15 @@ public final class BPTreeNode extends BPTreePage
             if ( CheckingNode && left.getId() == node.getId() ) 
                 error("Left and n the same: %s", left) ;
             BPTreePage page = merge(left, node, idx-1) ;
+            if ( right != null )
+                // HACK : We didn't use it.
+                right.release() ;
             return page ;
         }
         else
         {
-            // right != null
+            // left == null
+            // rigth != null
             if ( logging() )
                 log.debug(format("rebalance/merge/right: n=%d right=%d [%d]", node.getId(), right.getId(), idx)) ;
             if ( CheckingNode && right.getId() == node.getId() )
@@ -1264,7 +1267,7 @@ public final class BPTreeNode extends BPTreePage
     
     private final void internalCheckNodeDeep()
     {
-        if ( ! CheckingNode )
+        if ( ! CheckingTree )
             return ;
         checkNodeDeep() ;
     }
