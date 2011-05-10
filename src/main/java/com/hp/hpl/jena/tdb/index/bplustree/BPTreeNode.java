@@ -625,6 +625,8 @@ public final class BPTreeNode extends BPTreePage
 
         left.write() ;
         right.write() ;
+        left.release() ;
+        right.release() ;
         root.write() ;
 
         if ( CheckingTree )
@@ -661,6 +663,7 @@ public final class BPTreeNode extends BPTreePage
         boolean thisWriteNeeded = false ;
         if ( page.isMinSize() )             // Can't be root - we decended in the get(). 
         {
+            promote() ;
             page = rebalance(page, y) ;
             thisWriteNeeded = true ;
             // May have moved/removed at x.  Find again. YUK.
@@ -678,6 +681,7 @@ public final class BPTreeNode extends BPTreePage
         Record r2 =  page.internalDelete(rec) ;
         if ( x >= 0 )
         {
+            promote() ;
             // YUK
             records.set(x, keyRecord(page.maxRecord())) ;
             this.write() ;

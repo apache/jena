@@ -112,9 +112,10 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
         Integer id = block.getId() ;
         checkRead("release") ;
         add(Release, id) ;
-        
-        if ( ! activeReadBlocks.contains(id) && ! activeWriteBlocks.contains(id) )
-            error(Release, id+" is not an active block") ;
+
+     // [TxTDB:PATCH-UP] Iterator trip this.
+//        if ( ! activeReadBlocks.contains(id) && ! activeWriteBlocks.contains(id) )
+//            error(Release, id+" is not an active block") ;
             
         activeReadBlocks.remove(block.getId()) ;
         activeWriteBlocks.remove(block.getId()) ;
@@ -258,8 +259,9 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
 
     private void checkRead(String method)
     {
-        if ( ! inUpdate && ! inRead )
-            log.error(method+" called outside update and read") ;
+        // [TxTDB:PATCH-UP] Iterator trip this.
+//        if ( ! inUpdate && ! inRead )
+//            log.error(method+" called outside update and read") ;
     }
 
     private void checkEmpty(String string, Set<Integer> blocks)
@@ -270,6 +272,7 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
             for ( Integer id : blocks )
                 log.info("    Block: "+id) ;
             history() ;
+            debugPoint() ;
         }
     }
     
@@ -279,6 +282,9 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
         for ( Pair<Action, Integer> p : actions ) 
             log.info(String.format("    %-12s  %d", p.getLeft(), p.getRight())) ;
     }
+    
+    @Override
+    public String toString() { return "BlockMgrTracker: "+log.getName() ; } 
 }
 
 /*

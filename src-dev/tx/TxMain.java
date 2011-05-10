@@ -6,6 +6,8 @@
 
 package tx;
 
+import static com.hp.hpl.jena.tdb.index.IndexTestLib.testInsert ;
+
 import java.util.Iterator ;
 
 import org.openjena.atlas.lib.Bytes ;
@@ -31,6 +33,7 @@ import com.hp.hpl.jena.tdb.base.block.BlockMgrTracker ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.base.record.Record ;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
+import com.hp.hpl.jena.tdb.base.record.RecordLib ;
 import com.hp.hpl.jena.tdb.index.RangeIndex ;
 import com.hp.hpl.jena.tdb.index.bplustree.BPTreeNode ;
 import com.hp.hpl.jena.tdb.index.bplustree.BPlusTree ;
@@ -59,8 +62,36 @@ public class TxMain
         System.exit(rc) ;
     }
     
+    static public void tree_ins_2_01() 
+    {
+        if ( true )
+        {
+            Log.enable(BPTreeNode.class.getName(), "ALL") ;
+            SystemTDB.Checking = true ;
+            BPlusTreeParams.CheckingNode = true ;
+            BPlusTreeParams.CheckingTree = true ;
+            BPlusTreeParams.Logging = true ;
+        }
+        int[] keys = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+        RangeIndex rIndex = makeRangeIndex(2, 2) ;
+        testInsert(rIndex, keys) ;
+    }
+    
+    static protected RangeIndex makeRangeIndex(int order, int minRecords)
+    {
+        BPlusTree bpt = BPlusTree.makeMem(order, minRecords, RecordLib.TestRecordLength, 0) ;
+        BlockMgr mgr1 = bpt.getNodeManager().getBlockMgr() ;
+        BlockMgr mgr2 = bpt.getRecordsMgr().getBlockMgr() ;
+        
+        mgr1 = new BlockMgrTracker("BPT/Nodes", mgr1) ;
+        mgr2 = new BlockMgrTracker("BPT/Records", mgr2) ;
+        
+        return BPlusTree.attach(bpt.getParams(), mgr1, mgr2) ;
+    }
+    
     public static void main(String... args)
     {
+        //tree_ins_2_01() ; exit(0) ;
         bpTreeTracking() ; exit(0) ;
         
         Location location ;
@@ -151,11 +182,11 @@ public class TxMain
 
         if ( false )
         {
-            Log.enable(BPTreeNode.class.getName(), "ALL") ;
-            SystemTDB.Checking = true ;
-            BPlusTreeParams.CheckingNode = true ;
-            BPlusTreeParams.CheckingTree = true ;
+//            SystemTDB.Checking = true ;
+//            BPlusTreeParams.CheckingNode = true ;
+//            BPlusTreeParams.CheckingTree = true ;
             BPlusTreeParams.Logging = true ;
+            Log.enable(BPTreeNode.class.getName(), "ALL") ;
         }
         RecordFactory rf = new RecordFactory(8,8) ;
         RangeIndex rIndex = createBPT(3, rf, false) ;
@@ -170,15 +201,14 @@ public class TxMain
 
         System.out.println() ;
         
-        
         log.info("ADD") ;
-        for ( int i = 0 ; i < 10 ; i++ ) 
+        for ( int i = 0 ; i < 50 ; i++ ) 
         {
             log.info("i = "+i) ;
             Record r = record(rf, i+0x100000L, i+0x90000000L) ;
             rIndex.add(r) ;
         }
-        
+        exit(0) ;
         log.info("DELETE") ;
         for ( int i = 0 ; i < 10 ; i++ ) 
         {

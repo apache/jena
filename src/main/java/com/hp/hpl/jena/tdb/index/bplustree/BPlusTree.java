@@ -136,9 +136,9 @@ public class BPlusTree implements Iterable<Record>, RangeIndex, Session
      *  Does not inityalize the B+Tree - it assumes the block managers
      *  correspond to an existing B+Tree.
      */
-    public static BPlusTree attach(BPlusTreeParams params, BlockMgr blkMgrNodes, BlockMgr blkMgrLeaves)
+    public static BPlusTree attach(BPlusTreeParams params, BlockMgr blkMgrNodes, BlockMgr blkMgrRecords)
     { 
-        return new BPlusTree(params, blkMgrNodes, blkMgrLeaves) ;
+        return new BPlusTree(params, blkMgrNodes, blkMgrRecords) ;
     }
 
     /** (Testing mainly) Make an in-memory B+Tree, with copy-in, copy-out block managers */
@@ -162,12 +162,12 @@ public class BPlusTree implements Iterable<Record>, RangeIndex, Session
         return bpTree ;
     }
 
-    private BPlusTree(BPlusTreeParams params, BlockMgr blkMgrNodes, BlockMgr blkMgrLeaves)
+    private BPlusTree(BPlusTreeParams params, BlockMgr blkMgrNodes, BlockMgr blkMgrRecords)
     {
         // Consistency checks.
         this.bpTreeParams = params ;
         this.nodeManager = new BPTreeNodeMgr(this, blkMgrNodes) ;
-        RecordBufferPageMgr recordPageMgr = new RecordBufferPageMgr(params.getRecordFactory(), blkMgrLeaves) ;
+        RecordBufferPageMgr recordPageMgr = new RecordBufferPageMgr(params.getRecordFactory(), blkMgrRecords) ;
         recordsMgr = new BPTreeRecordsMgr(this, recordPageMgr) ;
     }
 
@@ -301,7 +301,15 @@ public class BPlusTree implements Iterable<Record>, RangeIndex, Session
     {
         startUpdateBlkMgr() ;
         BPTreeNode root = getRoot() ;
+        
+        if ( record.getKey()[3] == 9 )
+            dump() ;
+        
         Record r = BPTreeNode.insert(root, record) ;
+        
+//        if ( record.getKey()[3] == 9 )
+//            dump() ;
+        
         if ( CheckingTree ) root.checkNodeDeep() ;
         releaseRoot(root) ;
         finishUpdateBlkMgr() ;

@@ -6,15 +6,15 @@
 
 package com.hp.hpl.jena.tdb.index.bplustree;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.AfterClass ;
+import org.junit.BeforeClass ;
 
-import com.hp.hpl.jena.tdb.base.record.RecordLib;
-import com.hp.hpl.jena.tdb.index.RangeIndex;
-import com.hp.hpl.jena.tdb.index.TestRangeIndex;
-import com.hp.hpl.jena.tdb.index.bplustree.BPlusTree;
-import com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams;
-import com.hp.hpl.jena.tdb.sys.SystemTDB;
+import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
+import com.hp.hpl.jena.tdb.base.block.BlockMgrTracker ;
+import com.hp.hpl.jena.tdb.base.record.RecordLib ;
+import com.hp.hpl.jena.tdb.index.RangeIndex ;
+import com.hp.hpl.jena.tdb.index.TestRangeIndex ;
+import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 public class TestBPlusTree extends TestRangeIndex
 {
@@ -36,7 +36,15 @@ public class TestBPlusTree extends TestRangeIndex
     @Override
     protected RangeIndex makeRangeIndex(int order, int minRecords)
     {
-        return BPlusTree.makeMem(order, minRecords, RecordLib.TestRecordLength, 0) ;
+        BPlusTree bpt = BPlusTree.makeMem(order, minRecords, RecordLib.TestRecordLength, 0) ;
+        BlockMgr mgr1 = bpt.getNodeManager().getBlockMgr() ;
+        BlockMgr mgr2 = bpt.getRecordsMgr().getBlockMgr() ;
+        
+        mgr1 = new BlockMgrTracker("BPT/Nodes", mgr1) ;
+        mgr2 = new BlockMgrTracker("BPT/Records", mgr2) ;
+        
+        return BPlusTree.attach(bpt.getParams(), mgr1, mgr2) ;
+        
     }
 }
 
