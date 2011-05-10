@@ -31,8 +31,7 @@
     <this.root>${project.artifactId}-${project.version}</this.root>
     <ver.jena>2.6.4</ver.jena>
     <ver.arq>2.8.9-SNAPSHOT</ver.arq>
-    <ver.larq>0.2.2-SNAPSHOT</ver.larq>
-    <ver.tdb>0.8.11-SNAPSHOT</ver.tdb>
+    <ver.tdb>0.8.10</ver.tdb>
     <!-- But <optional> does not work -->
     <!-- <ver.sdb>1.3.3</ver.sdb> -->
     <!-- These two go together -->
@@ -48,34 +47,14 @@
       <groupId>com.hp.hpl.jena</groupId>
       <artifactId>arq</artifactId>
       <version>${ver.arq}</version>
-      <!-- This is temporary and necessary, until Lucene is removed from ARQ -->
-      <exclusions>
-        <exclusion>
-          <groupId>org.apache.lucene</groupId>
-          <artifactId>lucene-core</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
 
-    <dependency>
-      <groupId>org.apache.jena</groupId>
-      <artifactId>larq</artifactId>
-      <version>${ver.larq}</version>
-    </dependency>
- 
     <dependency>
       <groupId>com.hp.hpl.jena</groupId>
       <artifactId>arq</artifactId>
       <version>${ver.arq}</version>
       <classifier>tests</classifier>
       <scope>test</scope>
-      <!-- This is temporary and necessary, until Lucene is removed from ARQ -->
-      <exclusions>
-        <exclusion>
-          <groupId>org.apache.lucene</groupId>
-          <artifactId>lucene-core</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
 
     <dependency>
@@ -298,20 +277,21 @@
               <mainClass>org.openjena.fuseki.FusekiCmd</mainClass>
             </manifest>
           </archive>
-	      <descriptors>
-	        <descriptor>assembly-server.xml</descriptor>
-	        <descriptor>assembly-soh.xml</descriptor>
-	        <descriptor>assembly-dist.xml</descriptor>
-	      </descriptors>
-	      <!-- This works as well, but generates a "NOTE" message
-	      <finalName>fuseki-sys</finalName>
-	      <descriptorRefs>
-	        <descriptorRef>jar-with-dependencies</descriptorRef>
-	      </descriptorRefs>
-	      <appendAssemblyId>false</appendAssemblyId>
-	      -->
+	  <descriptors>
+	    <descriptor>assembly-server.xml</descriptor>
+	    <descriptor>assembly-soh.xml</descriptor>
+	    <descriptor>assembly-dist.xml</descriptor>
+	  </descriptors>
+	  <!-- 
+	    This works as well, but generates a "NOTE" message
+	  <finalName>fuseki-sys</finalName>
+	  <descriptorRefs>
+	    <descriptorRef>jar-with-dependencies</descriptorRef>
+	  </descriptorRefs>
+	  <appendAssemblyId>false</appendAssemblyId>
+	  -->
         </configuration>
-        <executions>
+	<executions>
           <execution>
             <id>create-assemblies</id>
             <phase>package</phase>
@@ -327,17 +307,6 @@
         <artifactId>maven-resources-plugin</artifactId>
         <configuration>
           <encoding>UTF-8</encoding>
-        </configuration>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-eclipse-plugin</artifactId>
-        <configuration>
-         <buildOutputDirectory>${project.build.directory}/classes-eclipse</buildOutputDirectory>
-         <downloadSources>true</downloadSources>
-         <downloadJavadocs>false</downloadJavadocs>
-         <useProjectReferences>false</useProjectReferences>
         </configuration>
       </plugin>
 
@@ -366,15 +335,6 @@
         <enabled>true</enabled>
       </snapshots>
     </repository>
-    
-    <repository>
-      <id>talis-oss-snapshots</id>
-      <url>http://oss.talisplatform.com/content/repositories/talis-snapshots/</url>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-    </repository>
-    
   </repositories>
 
   <distributionManagement>
