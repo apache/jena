@@ -23,31 +23,30 @@ public class StandardFunctions
         // See http://www.w3.org/TR/xpath-datamodel/#types-hierarchy
         // No durations here
         
-        addCast(registry, XSDDatatype.XSDdecimal) ;
-        addCast(registry, XSDDatatype.XSDinteger) ;
+        addCastNumeric(registry, XSDDatatype.XSDdecimal) ;
+        addCastNumeric(registry, XSDDatatype.XSDinteger) ;
 
-        addCast(registry, XSDDatatype.XSDlong) ;
-        addCast(registry, XSDDatatype.XSDint) ;
-        addCast(registry, XSDDatatype.XSDshort) ;
-        addCast(registry, XSDDatatype.XSDbyte) ;
+        addCastNumeric(registry, XSDDatatype.XSDlong) ;
+        addCastNumeric(registry, XSDDatatype.XSDint) ;
+        addCastNumeric(registry, XSDDatatype.XSDshort) ;
+        addCastNumeric(registry, XSDDatatype.XSDbyte) ;
         
-        addCast(registry, XSDDatatype.XSDnonPositiveInteger) ;
-        addCast(registry, XSDDatatype.XSDnegativeInteger) ;
+        addCastNumeric(registry, XSDDatatype.XSDnonPositiveInteger) ;
+        addCastNumeric(registry, XSDDatatype.XSDnegativeInteger) ;
 
-        addCast(registry, XSDDatatype.XSDnonNegativeInteger) ;
-        addCast(registry, XSDDatatype.XSDpositiveInteger) ;
-        addCast(registry, XSDDatatype.XSDunsignedLong) ;
-        addCast(registry, XSDDatatype.XSDunsignedInt) ;
-        addCast(registry, XSDDatatype.XSDunsignedShort) ;
+        addCastNumeric(registry, XSDDatatype.XSDnonNegativeInteger) ;
+        addCastNumeric(registry, XSDDatatype.XSDpositiveInteger) ;
+        addCastNumeric(registry, XSDDatatype.XSDunsignedLong) ;
+        addCastNumeric(registry, XSDDatatype.XSDunsignedInt) ;
+        addCastNumeric(registry, XSDDatatype.XSDunsignedShort) ;
 
-        addCast(registry, XSDDatatype.XSDdouble) ;
-        addCast(registry, XSDDatatype.XSDfloat) ;
+        addCastNumeric(registry, XSDDatatype.XSDdouble) ;
+        addCastNumeric(registry, XSDDatatype.XSDfloat) ;
         
+        addCastBoolean(registry, XSDDatatype.XSDboolean) ;
+
         addCast(registry, XSDDatatype.XSDduration) ;
-        
-        addCast(registry, XSDDatatype.XSDboolean) ;
         addCast(registry, XSDDatatype.XSDstring) ;
-
         addCast(registry, XSDDatatype.XSDanyURI) ;
         
         // Specialized casting rules
@@ -148,10 +147,20 @@ public class StandardFunctions
     {
         registry.put(dt.getURI(), new CastXSD(dt) ) ;
     }
+    
+    private static void addCastNumeric(FunctionRegistry registry, XSDDatatype dt)
+    {
+        registry.put(dt.getURI(), new CastXSD_Numeric(dt) ) ;
+    }
+
+    private static void addCastBoolean(FunctionRegistry registry, XSDDatatype dt)
+    {
+        registry.put(dt.getURI(), new CastXSD_Boolean(dt) ) ;
+    }
 
     private static void addCastDT(FunctionRegistry registry, XSDDatatype dt)
     {
-        registry.put(dt.getURI(), new CastXSD_DT(dt) ) ;
+        registry.put(dt.getURI(), new CastXSD_DateTime(dt) ) ;
     }
 
     private static void add(FunctionRegistry registry, String uri, Class<?> funcClass)

@@ -10,6 +10,10 @@ import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
 
+/** General casting : lexcial form must be right. 
+ * @see CastXSD_DateTime 
+ * @see CastXSD_Numeric 
+ */
 public class CastXSD implements FunctionFactory
 {
     protected final XSDDatatype castType ;
@@ -24,7 +28,6 @@ public class CastXSD implements FunctionFactory
         return new Instance(castType) ;
     }
 
-
     protected static class Instance extends FunctionBase1 
     {
         XSDDatatype castType ;
@@ -34,9 +37,6 @@ public class CastXSD implements FunctionFactory
         public NodeValue exec(NodeValue v)
         {
             // http://www.w3.org/TR/xpath-functions/#casting
-            // xsd:boolean() needs to be a special.
-            // casting from xsd:boolean is also special (get 0 or 1)
-
             String s = null ;
             Node n = v.asNode() ;
 

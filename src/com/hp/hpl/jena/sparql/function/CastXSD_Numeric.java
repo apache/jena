@@ -1,5 +1,5 @@
 /*
- * (c) 2010 Talis Systems Ltd
+ *  (c) Copyright 2011 Epimorphics Ltd.
  * [See end of file]
  */
 
@@ -8,12 +8,10 @@ package com.hp.hpl.jena.sparql.function;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp ;
-import com.hp.hpl.jena.sparql.util.NodeUtils ;
 
-
-public class CastXSD_DT extends CastXSD implements FunctionFactory
+public class CastXSD_Numeric extends CastXSD
 {
-    public CastXSD_DT(XSDDatatype dt)
+    public CastXSD_Numeric(XSDDatatype dt)
     {
         super(dt) ;
     }
@@ -21,27 +19,38 @@ public class CastXSD_DT extends CastXSD implements FunctionFactory
     @Override
     public Function create(String uri)
     {        
-        return new InstanceDT(castType) ;
+        return new Instance(castType) ;
     }
 
 
-    protected static class InstanceDT extends CastXSD.Instance 
+    protected static class Instance extends CastXSD.Instance 
     {
-        InstanceDT(XSDDatatype dt) { super(dt) ; }
+        Instance(XSDDatatype dt)
+        {
+            super(dt) ;
+        }
 
         @Override
         protected NodeValue cast(String s, NodeValue nv, XSDDatatype castType)
         {
-            // Plain cast.
-            if ( nv.isString() ||  NodeUtils.hasLang(nv.asNode()) ) 
-                return super.cast(s, nv, castType) ;
-            return XSDFuncOp.dateTimeCast(nv, castType) ;
+            if ( nv.isBoolean() )
+            {
+                boolean b = nv.getBoolean() ;
+                if ( XSDDatatype.XSDfloat.equals(castType) || XSDDatatype.XSDdouble.equals(castType) )
+                    s = ( b ? "1.0E0" : "0.0E0" ) ;
+                else if ( XSDDatatype.XSDdecimal.equals(castType) )
+                    s = ( b ? "1.0" : "0.0" ) ;
+                else if ( XSDFuncOp.isIntegerType(castType)) 
+                    s = ( b ? "1" : "0" ) ;
+                // else do nothing and hope. 
+            }
+            
+            return super.cast(s, nv, castType) ;
         }
     }
 }
 /*
- *  (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
- * (c) 2010 Talis Systems Ltd
+ *  (c) Copyright 2011 Epimorphics Ltd.
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

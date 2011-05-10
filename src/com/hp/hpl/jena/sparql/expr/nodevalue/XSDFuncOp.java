@@ -15,7 +15,9 @@ import static com.hp.hpl.jena.sparql.expr.nodevalue.NumericType.OP_INTEGER ;
 import java.math.BigDecimal ;
 import java.math.BigInteger ;
 import java.text.DecimalFormat ;
+import java.util.HashSet ;
 import java.util.List ;
+import java.util.Set ;
 
 import org.openjena.atlas.lib.StrUtils ;
 import org.openjena.atlas.logging.Log ;
@@ -677,6 +679,45 @@ public class XSDFuncOp
             return OP_DOUBLE ;
         throw new ARQInternalErrorException("Numeric op unrecognized ("+fName+"): "+nv) ;
     }
+    
+    private static Set<XSDDatatype> integerSubTypes = new HashSet<XSDDatatype>() ;
+    static { 
+//        decimalSubTypes.add(XSDDatatype.XSDfloat) ;
+//        decimalSubTypes.add(XSDDatatype.XSDdouble) ;
+        integerSubTypes.add(XSDDatatype.XSDint) ;
+        integerSubTypes.add(XSDDatatype.XSDlong) ;
+        integerSubTypes.add(XSDDatatype.XSDshort) ;
+        integerSubTypes.add(XSDDatatype.XSDbyte) ;
+        integerSubTypes.add(XSDDatatype.XSDunsignedByte) ;
+        integerSubTypes.add(XSDDatatype.XSDunsignedShort) ;
+        integerSubTypes.add(XSDDatatype.XSDunsignedInt) ;
+        integerSubTypes.add(XSDDatatype.XSDunsignedLong) ;
+//        integerSubTypes.add(XSDDatatype.XSDdecimal) ;
+        integerSubTypes.add(XSDDatatype.XSDinteger) ;
+        integerSubTypes.add(XSDDatatype.XSDnonPositiveInteger) ;
+        integerSubTypes.add(XSDDatatype.XSDnonNegativeInteger) ;
+        integerSubTypes.add(XSDDatatype.XSDpositiveInteger) ;
+        integerSubTypes.add(XSDDatatype.XSDnegativeInteger) ;
+    }
+    
+    public static boolean isNumericType(XSDDatatype xsdDatatype )
+    {
+        if ( XSDDatatype.XSDfloat.equals(xsdDatatype) ) return true ;
+        if ( XSDDatatype.XSDdouble.equals(xsdDatatype) ) return true ;
+        return isDecimalType(xsdDatatype) ;
+    }
+
+    public static boolean isDecimalType(XSDDatatype xsdDatatype )
+    {
+        if ( XSDDatatype.XSDdecimal.equals(xsdDatatype) ) return true ;
+        return isIntegerType(xsdDatatype) ;
+    }
+
+    public static boolean isIntegerType(XSDDatatype xsdDatatype )
+    {
+        return integerSubTypes.contains(xsdDatatype) ;
+    }
+
     // --------------------------------
     // Comparisons operations
     // Do not confuse with sameValueAs/notSamevalueAs
