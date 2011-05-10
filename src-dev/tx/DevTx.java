@@ -7,6 +7,8 @@ public class DevTx
     //   See HACK (BPTreeNode)
     // Block: Split "modified" into isWriteable and hasChanged
     
+    // bin-test/bptree --track
+    
     // Caching pages across actions sequences. e.g BPT root block.
     // Cache in transaction so forgettable?
     

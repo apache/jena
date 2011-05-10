@@ -208,9 +208,9 @@ public class TxMain
             Record r = record(rf, i+0x100000L, i+0x90000000L) ;
             rIndex.add(r) ;
         }
-        exit(0) ;
+        //exit(0) ;
         log.info("DELETE") ;
-        for ( int i = 0 ; i < 10 ; i++ ) 
+        for ( int i = 0 ; i < 50 ; i++ ) 
         {
             log.info("i = "+i) ;
             Record r = record(rf, i+0x100000L, i+0x90000000L) ;
