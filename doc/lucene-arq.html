@@ -190,6 +190,58 @@ RDFNodes.</p>
 <p>
   The <a href="http://lucene.apache.org/java/docs/contributions.html">Lucene 
   contributions page</a> lists some content converters.</p>
+
+<h2>A new LARQ module</h2>
+<p>
+  A new LARQ is available as a separate module from ARQ, this enables the two 
+  modules to have independent release cycles. Lucene dependency has been upgraded 
+  from v2.3.1 to v3.1.0 (i.e. the latest stable Lucene release). Two other improvements 
+  to LARQ are the support for index removals/deletions that can be used to keep a 
+  Lucene index in sync with an RDF Dataset/DataSource as RDF triples are added or 
+  removed to it and the duplicate avoidance using the Lucene index itself instead 
+  of in memory data structures. These two improvements required an additional field 
+  to Lucene index, therefore a reindex is necessary to use the new LARQ module.</p> 
+<p>
+  Once LARQ is included in the classpath, larq.larqbuilder and larq.larq helper 
+  commands are available. They works the same as the arq.larqbuilder and arq.larq 
+  commands, with only one additional option for larq.larqbuilder:
+<ul>
+  <li><code>--allow-duplicates</code> : Suppress duplicate avoidance using Lucene 
+  index, this is recommended for bulk indexing large RDF datasets (even if it might 
+  add a few duplicate documents to the Lucene index).</li>
+</ul>
+<p>
+  The new LARQ module is distributed as a Maven artifact and it can be included in 
+  a project, as any other dependency, using:</p>
+<pre class="box">
+  &lt;dependency&gt;
+    &lt;groupId&gt;org.apache.jena&lt;/groupId&gt;
+    &lt;artifactId&gt;larq&lt;/artifactId&gt;
+    &lt;version&gt;0.2.2-SNAPSHOT&lt;/version&gt;
+  &lt;/dependency&gt;
+</pre>
+
+<h2>Enabling LARQ for RDF Datasets via an Assembler specification</h2>
+<p>
+  It is possible to attach an exiting Lucene index built by larqbuilder to an RDF 
+  Dataset using the ja:textIndex property. For example, this is the assembler 
+  specification of a TDB Dataset with LARQ enabled:</p>
+
+<pre class="box">
+@prefix rdf: &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt; .
+@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt; .
+@prefix ja: &lt;http://jena.hpl.hp.com/2005/11/Assembler#&gt; .
+@prefix tdb: &lt;http://jena.hpl.hp.com/2008/tdb#&gt; .
+[] ja:loadClass "com.hp.hpl.jena.tdb.TDB" .
+tdb:DatasetTDB rdfs:subClassOf ja:RDFDataset .
+tdb:GraphTDB rdfs:subClassOf ja:Model .
+
+<#dataset> rdf:type tdb:DatasetTDB ;
+  tdb:location "/path/to/tdb/indexes/" ;
+  ja:textIndex "/path/to/lucene/index/" ;
+  . 
+</pre>
+
 <p class="footnote"><a href="documentation.html">ARQ Documentation Page</a></p>
 </body>
 </html>
