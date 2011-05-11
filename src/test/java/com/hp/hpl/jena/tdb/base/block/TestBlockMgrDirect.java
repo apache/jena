@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -11,11 +12,12 @@ import org.junit.BeforeClass;
 import org.openjena.atlas.lib.FileOps ;
 
 import com.hp.hpl.jena.tdb.ConfigTest;
+import com.hp.hpl.jena.tdb.base.file.FileAccess ;
+import com.hp.hpl.jena.tdb.base.file.FileAccessDirect ;
 
 public class TestBlockMgrDirect extends AbstractTestBlockMgr
 {
     static final String filename = ConfigTest.getTestingDir()+"/block-mgr" ;
-    
     
     @BeforeClass static public void remove1() { FileOps.delete(filename) ; } 
     @AfterClass  static public void remove2() { FileOps.delete(filename) ; }
@@ -23,12 +25,16 @@ public class TestBlockMgrDirect extends AbstractTestBlockMgr
     @Override
     protected BlockMgr make()
     { 
-        return new BlockMgrDirect(filename, BlkSize) ;
+        // Make directly - no wrapper, no cache, no free block mgt.
+        FileOps.delete(filename) ;
+        FileAccess file = new FileAccessDirect(filename, BlkSize) ;
+        return new BlockMgrFileAccess(file, BlkSize) ;
     }
 }
 
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

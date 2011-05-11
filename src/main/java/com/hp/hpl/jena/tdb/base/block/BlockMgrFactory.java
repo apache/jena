@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -10,6 +11,7 @@ import java.io.File;
 
 import com.hp.hpl.jena.tdb.TDBException;
 import com.hp.hpl.jena.tdb.base.file.FileAccess ;
+import com.hp.hpl.jena.tdb.base.file.FileAccessDirect ;
 import com.hp.hpl.jena.tdb.base.file.FileAccessMem ;
 import com.hp.hpl.jena.tdb.base.file.FileSet ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
@@ -59,7 +61,8 @@ public class BlockMgrFactory
     /** Create a Block Manager using direct access (and a cache) */
     public static BlockMgr createStdFile(String filename, int blockSize, int readBlockCacheSize, int writeBlockCacheSize)
     {
-        BlockMgr blockMgr = new BlockMgrDirect(filename, blockSize) ;
+        BlockMgr blockMgr = createStdFileNoCache(filename, blockSize) ;
+        
         String fn = filename ;
         
         int j = filename.lastIndexOf(File.separatorChar) ;
@@ -73,13 +76,18 @@ public class BlockMgrFactory
     /** Create a Block Manager using direct access */
     public static BlockMgr createStdFileNoCache(String filename, int blockSize)
     {
-        BlockMgr blockMgr = new BlockMgrDirect(filename, blockSize) ;
+        FileAccess file = new FileAccessDirect(filename, blockSize) ;
+        BlockMgr blockMgr = new BlockMgrFileAccess(file, blockSize) ;
+        // FREE
+        // This is a temporary fix to the problem that 
+        blockMgr = new BlockMgrFreeChain(blockMgr) ;
         return blockMgr ;
     }
 }
 
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

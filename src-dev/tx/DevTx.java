@@ -7,6 +7,8 @@ public class DevTx
     //   .tracked, .logged
     // FileAccessDirect (and delete BlockMgrDirect)
     // FileAccessMapped (and delete BlockMgrmapped)
+    // tests for BlockMgr tracking?
+    // Add BlockMgr tracked to index tests?
     
     // Tidy up 
     //   See HACK (BPTreeNode)
