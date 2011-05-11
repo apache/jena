@@ -8,7 +8,7 @@ package com.hp.hpl.jena.tdb.sys;
 
 
 /** A Session is a set of operations that are either all read actions 
- * or a mixture of read and write (an update). Sessions are noty necessarily long - 
+ * or a mixture of read and write (an update). Sessions are not necessarily long - 
  * they are just a grouping of operations. 
  * 
  * Most implementations of this interface do not enforce the policy - it
@@ -16,7 +16,7 @@ package com.hp.hpl.jena.tdb.sys;
  * 
  * An implementation may allow policies such as transactional (ACID)
  * but, unless otherwise documented, an application can not 
- * assume that. 
+ * assume that.
  */
 public interface Session
 {
@@ -26,10 +26,10 @@ public interface Session
     /** Signal the completion of an update operation */
     public void finishUpdate();
 
-    /** Signal the start of an update operation */
+    /** Signal the start of a read operation */
     public void startRead();
     
-    /** Signal the completeion of an update operation */
+    /** Signal the completion of a read operation */
     public void finishRead();
 
 }

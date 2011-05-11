@@ -3,14 +3,19 @@ package tx;
 
 public class DevTx
 {
+    // BlockMgrFactory
+    //   .tracked, .logged
+    // FileAccessDirect (and delete BlockMgrDirect)
+    // FileAccessMapped (and delete BlockMgrmapped)
+    
     // Tidy up 
     //   See HACK (BPTreeNode)
-    // Block: Split "modified" into isWriteable and hasChanged
-    
-    // bin-test/bptree --track
+    //   See [TxTDB:PATCH-UP]
     
     // Caching pages across actions sequences. e.g BPT root block.
+    // Iterators
     // Cache in transaction so forgettable?
+    // Session.migrate ; DatsetGraph isa session. ; session nesting and overlap - session manager?
     
     // ---- ---- ---- ----
     

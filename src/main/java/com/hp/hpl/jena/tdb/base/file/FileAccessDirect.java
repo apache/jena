@@ -1,4 +1,5 @@
 /*
+ * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
  * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
@@ -9,64 +10,20 @@ package com.hp.hpl.jena.tdb.base.file;
 import static java.lang.String.format ;
 
 import java.io.IOException ;
-import java.io.RandomAccessFile ;
 import java.nio.ByteBuffer ;
-import java.nio.channels.FileChannel ;
-import java.util.concurrent.atomic.AtomicLong ;
 
-import org.openjena.atlas.lib.FileOps ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.tdb.base.block.Block ;
-import com.hp.hpl.jena.tdb.base.block.BlockException ;
-import com.hp.hpl.jena.tdb.base.block.BlockMgrFile ;
 
-public class FileAccessDirect /*extends FileBase*/ implements FileAccess
+public class FileAccessDirect extends FileAccessBase
 {
-
-    final private int blockSize ;
-    private static Logger log = LoggerFactory.getLogger(BlockMgrFile.class) ;
-    protected final String filename ;
-    protected final String label ;
-    protected final FileChannel channel ;
-    protected final RandomAccessFile out ;
-    protected long numFileBlocks = -1 ;             // Don't overload use of this!
-    protected final AtomicLong seq ;   // Id (future)
-    protected boolean isEmpty = false ;
-
+    private static Logger log = LoggerFactory.getLogger(FileAccessDirect.class) ;
+    
     public FileAccessDirect(String filename, int blockSize)
     {
-        //super(filename) ;
-        this.blockSize = blockSize ;
-        
-        // COMMON CODE!!!!!!
-        // [TxTDB:PATCH-UP]
-        try {
-            this.filename = filename ;
-            this.label = FileOps.basename(filename) ;
-            // "rwd" - Syncs only the file contents
-            // "rws" - Syncs the file contents and metadata
-            // "rw" - cached?
-
-            out = new RandomAccessFile(filename, "rw") ;
-            long filesize = out.length() ;
-            isEmpty = (filesize==0) ;
-            long longBlockSize = blockSize ;
-            
-            numFileBlocks = filesize/longBlockSize ;
-            seq = new AtomicLong(numFileBlocks) ;
-            
-            if ( numFileBlocks > Integer.MAX_VALUE )
-                log.warn(format("File size (%d) exceeds tested block number limits (%d)", filesize, blockSize)) ;
-            
-            if ( filesize%longBlockSize != 0 )
-                throw new BlockException(format("File size (%d) not a multiple of blocksize (%d)", filesize, blockSize)) ;
-
-            channel = out.getChannel() ;
-            if ( channel.size() == 0 )
-                isEmpty = true ;
-        } catch (IOException ex) { throw new BlockException("Failed to create BlockMgrFile", ex) ; }    
+        super(filename, blockSize) ;
     }
 
     @Override
@@ -80,47 +37,68 @@ public class FileAccessDirect /*extends FileBase*/ implements FileAccess
         return block;
     }
     
-    protected int allocateId()
-    {
-        //checkIfClosed() ;
-        long id = seq.getAndIncrement() ;
-        numFileBlocks ++ ;
-        return (int)id ;
-    }
-
     @Override
     public Block read(int id)
     {
-        return null ;
+        check(id) ;
+        checkIfClosed() ;
+        ByteBuffer bb = ByteBuffer.allocate(blockSize) ;
+        readByteBuffer(id, bb) ;
+        Block block = new Block(id, bb) ;
+        return block ;
+    }
+    
+    private void readByteBuffer(int id, ByteBuffer dst)
+    {
+        try {
+            int len = channel.read(dst, filePosition(id)) ;
+            if ( len != blockSize )
+                throw new FileException(format("get: short read (%d, not %d)", len, blockSize)) ;   
+        } catch (IOException ex)
+        { throw new FileException("FileAccessDirect", ex) ; }
+    }
+    
+    private final long filePosition(int id)
+    {
+        return ((long)id)*((long)blockSize) ;
     }
 
     @Override
     public void write(Block block)
-    {}
-
-    @Override
-    public boolean valid(int id)
     {
-        return false ;
-    }
-
-    @Override
-    public boolean isEmpty()
-    {
-        return false ;
+        check(block) ;
+        checkIfClosed() ;
+        ByteBuffer bb = block.getByteBuffer() ;
+        bb.position(0) ;
+        bb.limit(bb.capacity()) ;
+        try {
+            int len = channel.write(bb, filePosition(block.getId())) ;
+            if ( len != blockSize )
+                throw new FileException(format("put: short write (%d, not %d)", len, blockSize)) ;   
+        } catch (IOException ex)
+        { throw new FileException("FileAccessDirect", ex) ; }
+        writeNotification(block) ;
     }
 
     @Override
     public void sync()
-    {}
+    {
+        force() ;
+    }
 
     @Override
-    public void close()
-    {}
+    protected void _close()
+    { super.force() ; }
 
+    @Override
+    protected Logger getLog()
+    {
+        return log ;
+    }
 }
 
 /*
+ * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
  * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  *
