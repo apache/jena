@@ -42,10 +42,13 @@ public class FileAccessMem implements FileAccess
     }
 
     @Override
-    public Block allocate()
+    public Block allocate(int blkSize)
     {
+        if ( blkSize > 0 && blkSize != this.blockSize )
+            throw new FileException("Fixed blocksize only: request= "+blkSize+"fixed size="+this.blockSize) ;
+        
         int x = blocks.size() ;
-        ByteBuffer bb = ByteBuffer.allocate(blockSize) ;
+        ByteBuffer bb = ByteBuffer.allocate(blkSize) ;
         Block block = new Block(x, bb) ;
         blocks.add(block) ;
         return block;

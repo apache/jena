@@ -16,7 +16,7 @@ import com.hp.hpl.jena.tdb.base.block.Block ;
  */
 public interface FileAccess extends Sync, Closeable
 {
-    public Block allocate() ;
+    public Block allocate(int size) ;
     
     public Block read(int id) ;
     

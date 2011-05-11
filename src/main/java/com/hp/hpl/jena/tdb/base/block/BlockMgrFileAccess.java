@@ -34,7 +34,7 @@ public class BlockMgrFileAccess extends BlockMgrBase
     @Override
     protected Block allocate()
     {
-        return file.allocate() ;
+        return file.allocate(blockSize) ;
     }
 
     @Override
