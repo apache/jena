@@ -6,7 +6,6 @@
 
 package tx;
 
-import static com.hp.hpl.jena.tdb.index.IndexTestLib.testInsert ;
 import static org.openjena.atlas.test.Gen.strings ;
 
 import java.util.Iterator ;
@@ -14,6 +13,7 @@ import java.util.Iterator ;
 import org.openjena.atlas.lib.Bytes ;
 import org.openjena.atlas.lib.FileOps ;
 import org.openjena.atlas.logging.Log ;
+import org.openjena.atlas.test.Gen ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 import tx.transaction.TransactionManager ;
@@ -36,12 +36,10 @@ import com.hp.hpl.jena.tdb.base.record.Record ;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
 import com.hp.hpl.jena.tdb.base.record.RecordLib ;
 import com.hp.hpl.jena.tdb.base.recordbuffer.RecordBufferPage ;
-import com.hp.hpl.jena.tdb.index.RangeIndex ;
 import com.hp.hpl.jena.tdb.index.bplustree.BPTreeNode ;
 import com.hp.hpl.jena.tdb.index.bplustree.BPlusTree ;
 import com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
-import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 import com.hp.hpl.jena.update.UpdateAction ;
 import com.hp.hpl.jena.update.UpdateFactory ;
 import com.hp.hpl.jena.update.UpdateRequest ;
@@ -64,38 +62,11 @@ public class TxMain
         System.exit(rc) ;
     }
     
-    static public void tree_ins_2_01() 
-    {
-        if ( true )
-        {
-            Log.enable(BPTreeNode.class.getName(), "ALL") ;
-            SystemTDB.Checking = true ;
-            BPlusTreeParams.CheckingNode = true ;
-            BPlusTreeParams.CheckingTree = true ;
-            BPlusTreeParams.Logging = true ;
-        }
-        int[] keys = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-        RangeIndex rIndex = makeRangeIndex(2, 2) ;
-        testInsert(rIndex, keys) ;
-    }
-    
-    static protected RangeIndex makeRangeIndex(int order, int minRecords)
-    {
-        BPlusTree bpt = BPlusTree.makeMem(order, minRecords, RecordLib.TestRecordLength, 0) ;
-        BlockMgr mgr1 = bpt.getNodeManager().getBlockMgr() ;
-        BlockMgr mgr2 = bpt.getRecordsMgr().getBlockMgr() ;
-        
-        mgr1 = new BlockMgrTracker("BPT/Nodes", mgr1) ;
-        mgr2 = new BlockMgrTracker("BPT/Records", mgr2) ;
-        
-        return BPlusTree.attach(bpt.getParams(), mgr1, mgr2) ;
-    }
-    
     public static void main(String... args)
     {
         //tree_ins_2_01() ; exit(0) ;
         
-        test.BPlusTreeRun.main("test", "--bptree:track", "3", "125", "100000") ; exit(0) ;
+        //test.BPlusTreeRun.main("test", "--bptree:track", "3", "125", "100000") ; exit(0) ;
         //test.BPlusTreeRun.main("perf", "3", "125", "100") ; exit(0) ;
         //test.BPlusTreeRun.main("test", "--bptree:check", "3", "125", "100000") ; exit(0) ;
         
@@ -116,13 +87,8 @@ public class TxMain
         int numKeys = 10 ;
         int maxValue = 100 ;
 
-//        int[] keys1 = Gen.rand(numKeys, 0, maxValue) ;
-//        int[] keys2 = Gen.permute(keys1, numKeys) ;
-
-        
-        int[] keys1 = {32, 19, 77, 133, 78, 145, 137, 124, 97, 85, 14} ;
-//        int[] keys2 = {19, 78, 124, 145, 137, 85, 77, 14, 32, 133, 97}; 
-        int[] keys2 = {19, 78, 124}; 
+        int[] keys1 = Gen.rand(numKeys, 0, maxValue) ;
+        int[] keys2 = Gen.permute(keys1, numKeys) ;
         
         System.out.printf("int[] keys1 = {%s} ;\n", strings(keys1)) ;
         System.out.printf("int[] keys2 = {%s} ; \n", strings(keys2)) ;
@@ -171,8 +137,6 @@ public class TxMain
 
         if ( true )
             return ;
-
-        System.out.println() ;
 
         System.out.println() ;
 
