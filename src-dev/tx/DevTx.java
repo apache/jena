@@ -4,9 +4,9 @@ package tx;
 public class DevTx
 {
     // Run tests with BlockMgrFactory.tracked on.
+    // 
     // FileAccessDirect (and delete BlockMgrDirect) [DONE]
     // FileAccessMapped (and delete BlockMgrmapped)
-    // tests for BlockMgr tracking?
     
     // Tidy up 
     //   See HACK (BPTreeNode)
@@ -15,12 +15,12 @@ public class DevTx
     
     // Caching pages across actions sequences. e.g BPT root block.
     // Iterators
-    // Cache in transaction so forgettable?
+    //   Cache in transaction so forgettable?
+    //   Iterator / session tracking replaces epoch mechanism? 
+    
     // Session.migrate ; DatsetGraph isa session. ; session nesting and overlap - session manager?
     
     // ---- ---- ---- ----
-    
-    // [TxTDB:PATCH-UP]
 
     /*
      * Iterator tracking
@@ -46,6 +46,8 @@ public class DevTx
     
     /* 
      * Fast B+Tree creation: wrap an existsing BPTree with another that switches the block managers only.
+     *    BPTree.attach with warpping BlockMgrs.
+     *    Delay creation of some things?
      * Cache root block.
      * Setup
      *   Transaction start: grab alloc id.
