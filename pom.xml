@@ -425,9 +425,9 @@
     <repository>
       <id>jena-repo</id>
       <name>Jena repo</name>
-      <!--<url>sftp://openjena.org/var/repo</url>-->
+      <url>sftp://openjena.org/var/repo</url>
       <!-- Note: RC aren't snapshots so go to jena-repo -->
-      <url>sftp://openjena.org/var/repo-dev</url>
+      <!--<url>sftp://openjena.org/var/repo-dev</url>-->
       <layout>default</layout>
     </repository> 
     <snapshotRepository>
