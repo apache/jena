@@ -1,4 +1,13 @@
 PREFIX : <http://example/>
 
-#SELECT * WHERE { :a (:p?)/(:p*) ?x }
-SELECT * WHERE { :a (:p*)/(:p*) ?x }
+SELECT ?s ?p ?o 
+{
+{
+   BIND(<s> AS ?s)
+   ?s ?p ?o
+}
+UNION
+{
+ ?s ?p ?o FILTER(?s = <s>)
+}
+}

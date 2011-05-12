@@ -6,9 +6,8 @@
 
 package org.openjena.riot;
 
-import java.io.IOException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.regex.Matcher ;
+import java.util.regex.Pattern ;
 
 
 /**
@@ -24,6 +23,8 @@ import java.util.regex.Pattern;
   
 public class LangTag
 {
+    // See also http://tools.ietf.org/html/rfc5646 - irregular lang tags
+    
     /** Index of the language part */
     public static final int idxLanguage     = 0 ;
     /** Index of the script part */ 
@@ -194,6 +195,12 @@ public class LangTag
         if ( parts == null )
             return null ;
         
+        if ( parts[0] == null )
+        {
+            // Grandfathered
+            return parts[idxExtension] ;
+        }
+
         StringBuilder sb = new StringBuilder() ;
         sb.append(parts[0]) ;
         for ( int i = 1 ; i < parts.length ; i++ )
@@ -238,8 +245,9 @@ public class LangTag
 
     // ----------
     
-    public static void main(String ... args) throws IOException
+    public static void main(String ... args) //throws IOException
     {
+        // Test data.
         String[] tags = {
             "en", "en-uk", "es-419", "zh-Hant", 
             "sr-Latn-CS" , "sl-nedis", "sl-IT-nedis" , "sl-Latn-IT-nedis",
@@ -248,19 +256,22 @@ public class LangTag
             "x-foo",
             "i-whatever",
             "12345"} ;
-        for ( String str : tags )
+        for ( String str : args )
         {
             String[] parts = LangTag.parse(str) ;
-            System.out.print("{\""+str+"\", \""+str+"\", ") ;
+            System.out.print("\""+str+"\"") ;
             boolean first =true ;
 
             if ( parts == null )
             {
-                System.out.print("(String[])null") ;
+                System.out.print("  ==>  null") ;
             }
             else
             {
-                System.out.print("new String[]{") ;
+                String canonical = canonical(parts) ;
+                System.out.print("  ==>  \""+canonical+"\"") ;
+
+                System.out.print(" (") ;
                 for ( String s : parts )
                 {
                     if ( ! first )
@@ -271,9 +282,9 @@ public class LangTag
                     else
                         System.out.print("\""+s+"\"") ;
                 }
-                System.out.print("}") ;
+                System.out.print(")") ;
             }
-            System.out.println("},") ;
+            System.out.println() ;
         }
     }
 }
