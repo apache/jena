@@ -63,6 +63,8 @@ public class AggCountDistinct extends AggregatorBase
         @Override public void accumulateDistinct(Binding binding, FunctionEnv functionEnv)
         { count++ ; }
 
+        // Errors can't occur.
+
         public NodeValue getValue()
         { return NodeValue.makeInteger(count) ; }
     }

@@ -1,7 +1,0 @@
-_:a <http://example/p> "a" .
-_:a <http://example/p> "a\"b" .
-_:a <http://example/p> "a\nb" .
-_:a <http://example/p> "a,b" .
-_:a <http://example/p> "ab" .
-
-

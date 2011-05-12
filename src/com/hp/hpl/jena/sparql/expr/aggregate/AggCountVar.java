@@ -64,6 +64,11 @@ public class AggCountVar extends AggregatorBase
         @Override
         protected void accumulateError(Binding binding, FunctionEnv functionEnv)
         {}
+        
+        // Ignore errors.
+        @Override
+        public NodeValue getValue()
+        { return getAccValue() ; }
 
         @Override
         public NodeValue getAccValue()             { return NodeValue.makeInteger(count) ; }

@@ -66,6 +66,11 @@ public class AggCountVarDistinct extends AggregatorBase
         protected void accumulateError(Binding binding, FunctionEnv functionEnv)
         {}
 
+        // Ignore errors.
+        @Override
+        public NodeValue getValue()
+        { return getAccValue() ; }
+
         @Override
         public NodeValue getAccValue()            
         { return NodeValue.makeInteger(count) ; }

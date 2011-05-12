@@ -5,6 +5,9 @@
   </head>
   <results>
     <result>
+      <binding name=".1">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">2</literal>
+      </binding>
     </result>
   </results>
 </sparql>

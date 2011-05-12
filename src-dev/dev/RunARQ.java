@@ -44,7 +44,6 @@ import com.hp.hpl.jena.query.QuerySolutionMap ;
 import com.hp.hpl.jena.query.ResultSet ;
 import com.hp.hpl.jena.query.ResultSetFormatter ;
 import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.shared.PrefixMapping ;
 import com.hp.hpl.jena.sparql.ARQConstants ;
 import com.hp.hpl.jena.sparql.ARQException ;
@@ -62,7 +61,6 @@ import com.hp.hpl.jena.sparql.function.FunctionEnv ;
 import com.hp.hpl.jena.sparql.function.FunctionEnvBase ;
 import com.hp.hpl.jena.sparql.function.FunctionRegistry ;
 import com.hp.hpl.jena.sparql.graph.NodeTransform ;
-import com.hp.hpl.jena.sparql.mgt.Explain.InfoLevel ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.sparql.util.ExprUtils ;
 import com.hp.hpl.jena.sparql.util.FmtUtils ;
@@ -108,12 +106,10 @@ public class RunARQ
    
     public static void main(String[] argv) throws Exception
     {
-        arq.uparse.main("--file=U.ru") ;
-        exit(0) ;
         Query query = QueryFactory.read("Q.rq") ;
-        ARQ.setExecutionLogging(InfoLevel.ALL) ;
-        Model m = ModelFactory.createDefaultModel() ;
-        QueryExecution qExec = QueryExecutionFactory.create(query) ;
+        Model m = FileManager.get().loadModel("D.ttl") ;
+        //ARQ.setExecutionLogging(InfoLevel.ALL) ;
+        QueryExecution qExec = QueryExecutionFactory.create(query, m) ;
         ResultSetFormatter.out(qExec.execSelect()) ;
     
         exit(0) ;

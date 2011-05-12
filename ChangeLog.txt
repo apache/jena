@@ -1,7 +1,12 @@
 ChangeLog for ARQ
 =================
 
-==== ARQ 2.8.8 or 2.9.0
+==== ARQ 2.8.9
+
++ Aggregates COUNT(?x) and COUNT(DISTINCT ?x) now skips errors in their expressions
+  rather than evaluating to an error (SPARQL 1.1 Query Last Call compliance).   
+
+==== ARQ 2.8.8
 
 + Added QueryExecution.setTimeout that uses the abort mechanism below to stop queries after
   a preset period of time.

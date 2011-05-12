@@ -1,13 +1,7 @@
 PREFIX : <http://example/>
 
-SELECT ?s ?p ?o 
+SELECT (count(?x) AS ?C) 
 {
-{
-   BIND(<s> AS ?s)
-   ?s ?p ?o
-}
-UNION
-{
- ?s ?p ?o FILTER(?s = <s>)
-}
+   ?z a :foo 
+   OPTIONAL { ?z :p ?x }   
 }

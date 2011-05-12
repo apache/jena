@@ -39,7 +39,8 @@ abstract class AccumulatorDistinctExpr implements Accumulator
         }
     }
     
-    final public NodeValue getValue()
+    // Count(DISTINCT ?v) is different
+    public NodeValue getValue()
     {
         if ( errorCount == 0 )
             return getAccValue() ;  

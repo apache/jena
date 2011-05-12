@@ -1,5 +1,5 @@
 @prefix : <http://example/> .
 
-:a :p :b .
-:b :p :c .
-:c :p :a .
+:z1 a :foo .
+:z2 a :foo .
+:z2 :p "x" .

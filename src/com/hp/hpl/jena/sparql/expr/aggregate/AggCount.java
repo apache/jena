@@ -61,6 +61,7 @@ public class AggCount extends AggregatorBase
         public AccCount()   { }
         public void accumulate(Binding binding, FunctionEnv functionEnv)
         { count++ ; }
+        // Errors can't occur.
         public NodeValue getValue()             { return NodeValue.makeInteger(count) ; }
     }
 }

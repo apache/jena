@@ -32,7 +32,8 @@ abstract class AccumulatorExpr implements Accumulator
     }
     
     
-    final public NodeValue getValue()
+    // Count(?v) is different
+    public NodeValue getValue()
     {
         if ( errorCount == 0 )
             return getAccValue() ;  
