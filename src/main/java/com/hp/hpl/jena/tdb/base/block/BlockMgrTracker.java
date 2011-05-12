@@ -6,21 +6,29 @@
 
 package com.hp.hpl.jena.tdb.base.block;
 
+import static com.hp.hpl.jena.tdb.base.block.BlockMgrTracker.Action.Alloc ;
+import static com.hp.hpl.jena.tdb.base.block.BlockMgrTracker.Action.Free ;
+import static com.hp.hpl.jena.tdb.base.block.BlockMgrTracker.Action.GetRead ;
+import static com.hp.hpl.jena.tdb.base.block.BlockMgrTracker.Action.GetWrite ;
+import static com.hp.hpl.jena.tdb.base.block.BlockMgrTracker.Action.Promote ;
+import static com.hp.hpl.jena.tdb.base.block.BlockMgrTracker.Action.Release ;
+import static com.hp.hpl.jena.tdb.base.block.BlockMgrTracker.Action.Write ;
+
 import java.util.ArrayList ;
 import java.util.HashSet ;
 import java.util.List ;
 import java.util.Set ;
 
-import com.hp.hpl.jena.tdb.TDBException ;
-
 import org.openjena.atlas.lib.Pair ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
-import static com.hp.hpl.jena.tdb.base.block.BlockMgrTracker.Action.* ;
+import com.hp.hpl.jena.tdb.TDBException ;
 
 public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
 {
+    // HACK - needs to be multitread safe, ideally without a big lock.
+    
     // Don't inherit BlockMgrWrapper to make sure this class caches everything.
 
     // Track the active state of the BlockMgr
@@ -41,7 +49,7 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
         actions.clear() ;
     }
     
-    private boolean inRead = false ;
+    private int inRead = 0 ;
     private boolean inUpdate = false ;
     private final Logger log ;
     
@@ -178,41 +186,45 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
     }
 
     @Override
+    synchronized
     public void startRead()
     {
-        if ( inRead )
-            log.warn("startRead when already in read") ;
         if ( inUpdate )
             log.warn("startRead when already in update") ;
-        
-        inRead = true ;
+        inRead++ ;
         inUpdate = false ;
         blockMgr.startRead() ;
     }
 
     @Override
+    synchronized
     public void finishRead()
     {
-        if ( ! inRead )
+        if ( inRead == 0 )
             log.error("finishRead but not in read") ;
         if ( inUpdate )
             log.error("finishRead when in update") ;
         
-        checkEmpty("Outstanding read blocks at end of read operations",
-                   activeReadBlocks) ;
         checkEmpty("Outstanding write blocks at end of read operations!",
                    activeWriteBlocks) ;
         
+        if ( inRead == 0 )
+        {
+            // Check at end of multiple reads or a write
+            checkEmpty("Outstanding read blocks at end of read operations",
+                       activeReadBlocks) ;
+            clearInternal() ;
+        }
+
         inUpdate = false ;
-        inRead = false ;
-        clearInternal() ;
+        inRead-- ;
         blockMgr.finishRead() ;
     }
 
     @Override
     public void startUpdate()
     {
-        if ( inRead )
+        if ( inRead > 0 )
             log.error("startUpdate when already in read") ;
         if ( inUpdate )
             log.error("startUpdate when already in update") ;
@@ -225,7 +237,7 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
     {
         if ( ! inUpdate )
             log.warn("finishUpdate but not in update") ;
-        if ( inRead )
+        if ( inRead > 0 )
             log.warn("finishUpdate when in read") ;
      
         checkEmpty("Outstanding read blocks at end of update operations",
@@ -235,7 +247,7 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
                    activeWriteBlocks) ;
         
         inUpdate = false ;
-        inRead = false ;
+        inRead = 0 ;
         clearInternal() ;
         blockMgr.finishUpdate() ;
     }
