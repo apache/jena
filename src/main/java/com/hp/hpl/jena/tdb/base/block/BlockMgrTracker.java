@@ -53,6 +53,11 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
     private boolean inUpdate = false ;
     private final Logger log ;
     
+    public BlockMgrTracker(BlockMgr blockMgr)
+    {
+        this(LoggerFactory.getLogger(BlockMgrTracker.class), blockMgr) ;
+    }
+    
     public BlockMgrTracker(String label, BlockMgr blockMgr)
     {
         this(LoggerFactory.getLogger(label), blockMgr) ;
@@ -282,8 +287,6 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
     {
         log.error(action+": "+string) ;
         history() ;
-        
-        
         throw new TDBException() ;
         //debugPoint() ;
     }

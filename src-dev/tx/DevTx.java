@@ -3,16 +3,15 @@ package tx;
 
 public class DevTx
 {
-    // BlockMgrFactory
-    //   .tracked, .logged
-    // FileAccessDirect (and delete BlockMgrDirect)
+    // Run tests with BlockMgrFactory.tracked on.
+    // FileAccessDirect (and delete BlockMgrDirect) [DONE]
     // FileAccessMapped (and delete BlockMgrmapped)
     // tests for BlockMgr tracking?
-    // Add BlockMgr tracked to index tests?
     
     // Tidy up 
     //   See HACK (BPTreeNode)
     //   See [TxTDB:PATCH-UP]
+    //   See FREE
     
     // Caching pages across actions sequences. e.g BPT root block.
     // Iterators

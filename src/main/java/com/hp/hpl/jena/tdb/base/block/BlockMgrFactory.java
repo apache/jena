@@ -19,6 +19,14 @@ import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 public class BlockMgrFactory
 {
+    private final static boolean AddTracker = false ;
+    private static BlockMgr tracker(BlockMgr blockMgr)
+    {
+        if ( ! AddTracker ) return blockMgr ;
+        return new BlockMgrTracker(blockMgr) ;
+    }
+    
+    
     public static BlockMgr create(FileSet fileSet, String ext, int blockSize, int readBlockCacheSize, int writeBlockCacheSize)
     {
         if ( fileSet.isMem() )
@@ -36,7 +44,8 @@ public class BlockMgrFactory
 
         // Small cache - testing.
         //blockMgr = new BlockMgrCache(indexName, 3, 3, blockMgr) ;
-        return blockMgr ;
+        
+        return tracker(blockMgr) ;
     }
     
     /** Create a BlockMgr backed by a file */
@@ -55,7 +64,13 @@ public class BlockMgrFactory
     /** Create a NIO Block Manager */
     public static BlockMgr createMMapFile(String filename, int blockSize)
     {
-        return new BlockMgrMapped(filename, blockSize) ;
+//        FileAccess file = new FileAccessMapped(filename, blockSize) ;
+//        BlockMgr blockMgr = new BlockMgrFileAccess(file, blockSize) ;
+        // FREE
+        // This is a temporary fix to the problem that 
+        BlockMgr blockMgr = new BlockMgrMapped(filename, blockSize) ;
+        blockMgr = new BlockMgrFreeChain(blockMgr) ;
+        return tracker(blockMgr) ;
     }
     
     /** Create a Block Manager using direct access (and a cache) */
@@ -70,7 +85,7 @@ public class BlockMgrFactory
             fn = filename.substring(j+1) ;
         
         blockMgr = new BlockMgrCache(fn, readBlockCacheSize, writeBlockCacheSize, blockMgr) ;
-        return blockMgr ;
+        return tracker(blockMgr) ;
     }
     
     /** Create a Block Manager using direct access */
