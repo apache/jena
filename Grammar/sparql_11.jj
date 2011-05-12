@@ -393,6 +393,13 @@ Update Copy() : { Target src ; Target dest ; boolean silent = false ; }
   <COPY> (<SILENT> { silent=true ; } )? src = GraphOrDefault() <TO> dest = GraphOrDefault()
   { return new UpdateCopy(src, dest, silent) ; }
 }
+// #ifdef ARQ
+// void Meta() : { QuadDataAcc qd = new QuadDataAcc() ; }
+// {
+//    <META> 
+//    QuadData(qd)
+// }
+// #endif
 Update InsertData() : { QuadDataAcc qd = new QuadDataAcc() ; Token t ; }
 {
   t = <INSERT_DATA>

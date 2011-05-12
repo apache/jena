@@ -294,6 +294,13 @@ NON-TERMINALS
 	Add	:=	<ADD> ( <SILENT> )? GraphOrDefault <TO> GraphOrDefault
 	Move	:=	<MOVE> ( <SILENT> )? GraphOrDefault <TO> GraphOrDefault
 	Copy	:=	<COPY> ( <SILENT> )? GraphOrDefault <TO> GraphOrDefault
+// #ifdef ARQ
+// void Meta() : { QuadDataAcc qd = new QuadDataAcc() ; }
+// {
+//    <META> 
+//    QuadData(qd)
+// }
+// #endif
 	InsertData	:=	<INSERT_DATA> QuadData
 	DeleteData	:=	<DELETE_DATA> QuadData
 	DeleteWhere	:=	<DELETE_WHERE> QuadPattern

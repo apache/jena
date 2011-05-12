@@ -435,19 +435,13 @@ Node BindingValue() : { Node n ; String iri ; }
 void Update() : { }
 {
    Prologue()
-#ifdef ARQ 
-   (Meta())*
-#endif
-   ( Update1() (<SEMICOLON>)?)*
+   ( Update1() (<SEMICOLON>)*  Update() )?
 }
 #else
 // Strict SPARQL 1.1 : mandatory separator, optional terminator.
 void Update() : { }
 {  
    Prologue()
-#ifdef ARQ 
-   (Meta())*
-#endif
    (Update1() ( <SEMICOLON> Update() )? )?
 }
 #endif
@@ -470,9 +464,6 @@ void Update1() : { Update up ; }
   | up = ModifyOld()
 #endif
   )
-#ifdef ARQ
-  (Meta())*
-#endif
   {
     emitUpdate(up) ;
     finishUpdateOperation() ;
@@ -530,13 +521,13 @@ Update Copy() : { Target src ; Target dest ; boolean silent = false ; }
   { return new UpdateCopy(src, dest, silent) ; }
 }
 
-#ifdef ARQ
-void Meta() : { QuadDataAcc qd = new QuadDataAcc() ; }
-{
-   <META> 
-   QuadData(qd)
-}
-#endif
+// #ifdef ARQ
+// void Meta() : { QuadDataAcc qd = new QuadDataAcc() ; }
+// {
+//    <META> 
+//    QuadData(qd)
+// }
+// #endif
 
 Update InsertData() : { QuadDataAcc qd = new QuadDataAcc() ; Token t ; }
 {

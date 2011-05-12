@@ -1335,6 +1335,13 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
     throw new Error("Missing return statement in function");
   }
 
+// #ifdef ARQ
+// void Meta() : { QuadDataAcc qd = new QuadDataAcc() ; }
+// {
+//    <META> 
+//    QuadData(qd)
+// }
+// #endif
   final public Update InsertData() throws ParseException {
                         QuadDataAcc qd = new QuadDataAcc() ; Token t ;
     t = jj_consume_token(INSERT_DATA);
