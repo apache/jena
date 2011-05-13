@@ -34,6 +34,14 @@ class GeneratorVisitorOracle extends GenerateSQLVisitor
     @Override
     protected String leftJoinNoConditionsString()
     { return "1=1" ; }
+
+    // TODO
+    // It looks like the LIMIT only case can be done with SELECT * from T WHERE ROWNUM <= 10
+    // but OFFSET/LIMIT needs SELECT * FROM (SELECT ... FROM ...) WHERE ROWNUM BETWEEN 3 AND 200
+    
+//    @Override
+//    protected void genLimitOffset(SqlSelectBlock sqlSelectBlock)
+//    { super.genLimitOffset(sqlSelectBlock) ; }
 }
 
 /*
