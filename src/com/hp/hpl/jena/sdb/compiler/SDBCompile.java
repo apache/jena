@@ -53,6 +53,8 @@ public class SDBCompile
             request.LimitOffsetTranslation = false ;        // ?? H2 does not like the nested SQL.
         }
         
+        // Any of these need fixing and testing ...
+        
         if ( StoreUtils.isDerby(store) )
             request.DistinctTranslation = false ;
         
@@ -66,7 +68,10 @@ public class SDBCompile
             request.DistinctTranslation = false ;
         
         if ( StoreUtils.isOracle(store) )
+        {
             request.DistinctTranslation = false ;
+            request.LimitOffsetTranslation = false ;
+        }
         
         if ( StoreUtils.isDB2(store) )
             request.DistinctTranslation = false ;
