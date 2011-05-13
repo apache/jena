@@ -179,7 +179,7 @@ public class ParserProfileBase implements ParserProfile
                 return createPlainLiteral(str, line, col) ;
             // XXX Centralize exceptions
             default: 
-                errorHandler.fatal("Not a valid token for an RDF term", line , col) ;
+                errorHandler.fatal("Not a valid token for an RDF term: "+token, line , col) ;
                 return null ;
         }
     }
