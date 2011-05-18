@@ -1,14 +1,4 @@
 TODO
 
- - Think about how ARQ could initialise LARQ checking in the classpath.
-   (LARQ depends on ARQ, therefore ARQ should not depend on LARQ to avoid
-   a cycle in our dependencies).
-
- - Publish artifacts to the http://www.openjena.org/repo-dev/ and /repo/
-   repositories, can we use maven-release-plugin there?
-
- - Check if https://github.com/castagna/LARQ is still necessary, if not
-   remove it and/or point at SVN on SourceForge.
-
- - Add an assembly.xml to distribute LARQ, or we should avoid this and
-   just publish the jar and distribute it with ARQ.
+ - Publish artifacts to the Apache Snapshot repository,
+   can we use maven-release-plugin there?

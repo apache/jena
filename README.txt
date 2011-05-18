@@ -7,7 +7,8 @@ the RDF graph, not storage for the graph itself.
 
 See also:
 
+ - https://svn.apache.org/repos/asf/incubator/jena/Jena2/LARQ/trunk/
  - http://www.openjena.org/ARQ/lucene-arq.html
  - http://openjena.org/wiki/LARQ
  - http://jena.sourceforge.net/ARQ/extension.html#propertyFunctions
- - https://github.com/castagna/LARQ
+

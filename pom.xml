@@ -1,26 +1,50 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.apache</groupId>
+    <artifactId>apache</artifactId>
+    <version>9</version>
+  </parent> 
 
   <groupId>org.apache.jena</groupId>
   <artifactId>larq</artifactId>
   <packaging>jar</packaging>
   <name>LARQ</name>
-  <version>0.2.2-SNAPSHOT</version>
+  <version>0.2.2-incubating-SNAPSHOT</version>
 
   <description>LARQ - Free Text Indexing for SPARQL</description>
   <url>http://openjena.org/wiki/LARQ</url>
 
   <licenses>
     <license>
-      <name>BSD-style license</name>
-      <url>http://openjena.org/license.html</url>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
     </license>
   </licenses>
 
   <organization>
-    <name>OpenJena</name>
-    <url>http://www.openjena.org/</url>
+    <name>The Apache Software Foundation</name>
+    <url>http://www.apache.org/</url>
   </organization>
 
   <developers>
@@ -48,8 +72,9 @@
   </developers>
 
   <scm>
-    <connection>scm:svn:https://jena.svn.sourceforge.net/svnroot/jena/LARQ/</connection>
-    <url>http://jena.svn.sourceforge.net/viewvc/jena/LARQ/</url>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/incubator/jena/Jena2/LARQ/</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/incubator/jena/Jena2/LARQ/</developerConnection>
+    <url>http://svn.apache.org/repos/asf/incubator/jena/Jena2/LARQ/</url>
   </scm>
 
   <properties>
@@ -57,7 +82,7 @@
     <arq.version>2.8.9-SNAPSHOT</arq.version>
     <tdb.version>0.8.11-SNAPSHOT</tdb.version>
     <slf4j.version>1.6.1</slf4j.version>
-    <junit.version>4.8.1</junit.version>
+    <junit.version>4.8.2</junit.version>
     <jdk.version>1.6</jdk.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
@@ -173,7 +198,7 @@
           <windowtitle>${project.name} ${project.version}</windowtitle>
           <doctitle>${project.name} ${project.version}</doctitle>
           <!-- Exclude the implementation -->
-          <includePackageNames>com.hp.hpl.jena.larq</includePackageNames>
+          <includePackageNames>org.apache.jena.larq</includePackageNames>
         </configuration>
       </plugin>
 
@@ -200,6 +225,24 @@
         </configuration>
       </plugin>
 
+      <plugin>
+        <groupId>org.apache.rat</groupId>
+        <artifactId>apache-rat-plugin</artifactId>
+        <configuration>
+          <excludes>
+            <exclude>**/CHANGES.txt</exclude>
+            <exclude>**/DISCLAIMER.txt</exclude>
+            <exclude>**/TODO.txt</exclude>
+            <exclude>**/.svn/**</exclude>
+            <exclude>.git/**</exclude>
+            <exclude>.gitignore</exclude>
+            <exclude>**/.project</exclude>
+            <exclude>**/target/**</exclude>
+            <exclude>src/test/resources/**</exclude>
+          </excludes>
+        </configuration>
+      </plugin>
+
     </plugins>
 
   </build>
@@ -211,12 +254,19 @@
       <name>Jena repo</name>
       <url>sftp://openjena.org/var/repo</url>
       <layout>default</layout>
-    </repository> 
+    </repository>
+    <!-- 
     <snapshotRepository>
       <id>jena-repo-dev</id>
       <name>Jena development repo</name>
       <url>sftp://openjena.org/var/repo-dev</url>
       <layout>default</layout>
+    </snapshotRepository>
+    -->
+    <snapshotRepository>
+      <id>apache.snapshots.https</id>
+      <name>Apache Development Snapshot Repository</name>
+      <url>https://repository.apache.org/content/repositories/snapshots</url>
     </snapshotRepository>
   </distributionManagement>
   
@@ -229,6 +279,44 @@
       </snapshots>
     </repository>
   </repositories>
+
+  <issueManagement>
+    <system>JIRA</system>
+    <url>http://issues.apache.org/jira/browse/JENA</url>
+  </issueManagement>
+
+  <mailingLists>
+    <mailingList>
+      <name>Users</name>
+      <post>jena-users@incubator.apache.org</post>
+      <subscribe>jena-users-subscribe@incubator.apache.org</subscribe>
+      <unsubscribe>jena-users-unsubscribe@incubator.apache.org</unsubscribe>
+      <archive>http://mail-archives.apache.org/mod_mbox/incubator-jena-users/</archive>
+      <otherArchives>
+        <otherArchive>http://incubator.apache.org/mail/jena-users/</otherArchive>
+      </otherArchives>
+    </mailingList>
+    <mailingList>
+      <name>Development</name>
+      <post>jena-dev@incubator.apache.org</post>
+      <subscribe>jena-dev-subscribe@incubator.apache.org</subscribe>
+      <unsubscribe>jena-dev-unsubscribe@incubator.apache.org</unsubscribe>
+      <archive>http://mail-archives.apache.org/mod_mbox/incubator-jena-dev/</archive>
+      <otherArchives>
+        <otherArchive>http://incubator.apache.org/mail/jena-dev/</otherArchive>
+      </otherArchives>
+    </mailingList>
+    <mailingList>
+      <name>Commits</name>
+      <post>jena-commits@incubator.apache.org</post>
+      <subscribe>jena-commits-subscribe@incubator.apache.org</subscribe>
+      <unsubscribe>jena-commits-unsubscribe@incubator.apache.org</unsubscribe>
+      <archive>http://mail-archives.apache.org/mod_mbox/incubator-jena-commits/</archive>
+      <otherArchives>
+        <otherArchive>http://incubator.apache.org/mail/jena-commits/</otherArchive>
+      </otherArchives>
+    </mailingList>
+  </mailingLists>
 
   <reporting>
 
@@ -281,6 +369,24 @@
           <minimumTokens>100</minimumTokens>
           <targetJdk>${jdk.version}</targetJdk>
           <failOnViolation>false</failOnViolation>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.rat</groupId>
+        <artifactId>apache-rat-plugin</artifactId>
+        <configuration>
+          <excludes>
+            <exclude>**/CHANGES.txt</exclude>
+            <exclude>**/DISCLAIMER.txt</exclude>
+            <exclude>**/TODO.txt</exclude>
+            <exclude>**/.svn/**</exclude>
+            <exclude>.git/**</exclude>
+            <exclude>.gitignore</exclude>
+            <exclude>**/.project</exclude>
+            <exclude>**/target/**</exclude>
+            <exclude>src/test/resources/**</exclude>
+          </excludes>
         </configuration>
       </plugin>
 
