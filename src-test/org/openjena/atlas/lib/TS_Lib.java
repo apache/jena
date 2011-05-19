@@ -28,6 +28,7 @@ import org.junit.runners.Suite ;
     , TestStrUtils.class
     , TestXMLLib.class
     , TestAlarmClock.class
+    , TestRefLong.class 
 } )
 
 public class TS_Lib

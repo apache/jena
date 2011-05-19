@@ -2,6 +2,11 @@ package dev ;
 
 public class DevARQ
 {
+    // Split pom into:
+    //   downloadmaker
+    //   Everything else.
+    
+    
     // Rework documentation - extensions are now SPARQL 1.1-isms
     
     // Config assembler.
