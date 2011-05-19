@@ -35,6 +35,8 @@ import com.hp.hpl.jena.iri.IRI ;
 import com.hp.hpl.jena.iri.IRIFactory ;
 import com.hp.hpl.jena.iri.Violation ;
 import com.hp.hpl.jena.query.ARQ ;
+import com.hp.hpl.jena.query.DataSource ;
+import com.hp.hpl.jena.query.DatasetFactory ;
 import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.query.QueryCancelledException ;
 import com.hp.hpl.jena.query.QueryExecution ;
@@ -44,6 +46,7 @@ import com.hp.hpl.jena.query.QuerySolutionMap ;
 import com.hp.hpl.jena.query.ResultSet ;
 import com.hp.hpl.jena.query.ResultSetFormatter ;
 import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.shared.PrefixMapping ;
 import com.hp.hpl.jena.sparql.ARQConstants ;
 import com.hp.hpl.jena.sparql.ARQException ;
@@ -106,6 +109,23 @@ public class RunARQ
    
     public static void main(String[] argv) throws Exception
     {
+        if ( true )
+        {
+        Query query = QueryFactory.create("PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>  SELECT ?a0 ?a1 WHERE { ?a0 rdf:type ?a1 }") ;
+        DataSource source = DatasetFactory.create();
+        Model model = ModelFactory.createDefaultModel();
+        source.addNamedModel("?a1", model);
+        source.setDefaultModel(model);
+        QueryExecution queryExecution = QueryExecutionFactory.create(query, source);
+        ResultSetFormatter.out(queryExecution.execSelect()) ;
+        return ;
+        }
+        
+        
+        
+        
+        
+        // -----
         Query query = QueryFactory.read("Q.rq") ;
         Model m = FileManager.get().loadModel("D.ttl") ;
         //ARQ.setExecutionLogging(InfoLevel.ALL) ;

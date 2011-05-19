@@ -29,7 +29,7 @@ import com.hp.hpl.jena.util.FileManager ;
  
 public class QueryExecutionFactory
 {
-    private QueryExecutionFactory() {}
+    protected QueryExecutionFactory() {}
     
     // ---------------- Query
     
@@ -514,16 +514,16 @@ public class QueryExecutionFactory
     
     // ---- Make executions
     
-    static private QueryExecution make(Query query)
+    static protected QueryExecution make(Query query)
     {
         return make(query, null) ;
     }
 
-    static private QueryExecution make(Query query, Dataset dataset)
+    protected  static QueryExecution make(Query query, Dataset dataset)
     { return make(query, dataset, null) ; }
 
     
-    static private QueryExecution make(Query query, Dataset dataset, Context context)
+    protected static QueryExecution make(Query query, Dataset dataset, Context context)
     {
         query.setResultVars() ;
         if ( context == null )
