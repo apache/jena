@@ -52,10 +52,14 @@ import com.hp.hpl.jena.sparql.ARQConstants ;
 import com.hp.hpl.jena.sparql.ARQException ;
 import com.hp.hpl.jena.sparql.algebra.Algebra ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
+import com.hp.hpl.jena.sparql.algebra.Transformer ;
+import com.hp.hpl.jena.sparql.algebra.op.OpJoin ;
+import com.hp.hpl.jena.sparql.algebra.optimize.TransformJoinStrategy ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.engine.QueryExecutionBase ;
+import com.hp.hpl.jena.sparql.engine.main.JoinClassifier ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
@@ -102,28 +106,49 @@ public class RunARQ
     }
 
     public static void exit(int code)
-    {
+    {System.out.flush() ;
         System.out.println("DONE") ;
         System.exit(code) ;
     }
-   
+
     public static void main(String[] argv) throws Exception
     {
-        if ( true )
+        String x = StrUtils.strjoinNL("(join",
+                                      "  (conditional",
+                                      //"  (leftjoin",
+                                      "    (bgp (triple ?s ?p1 ?o1))" ,
+                                      "    (bgp (triple ?s <foaf:knows> ?o2)))" ,
+                                      "  (table",
+                                      "    (row [?o2 :b])",
+                                      "  ))") ;
+        
+        Op op = SSE.parseOp(x) ;
+        System.out.print(op) ;
+        Op left = ((OpJoin)op).getLeft() ;
+        Op right = ((OpJoin)op).getRight() ;
+        
+        if ( false )
         {
-        Query query = QueryFactory.create("PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>  SELECT ?a0 ?a1 WHERE { ?a0 rdf:type ?a1 }") ;
-        DataSource source = DatasetFactory.create();
-        Model model = ModelFactory.createDefaultModel();
-        source.addNamedModel("?a1", model);
-        source.setDefaultModel(model);
-        QueryExecution queryExecution = QueryExecutionFactory.create(query, source);
-        ResultSetFormatter.out(queryExecution.execSelect()) ;
-        return ;
+            JoinClassifier.print = true ;
+            System.out.flush() ;
+            boolean b1 = JoinClassifier.isLinear(left, right) ;
+            System.out.println("Left/right: "+b1) ;
+           
+            
+            
+            System.out.println() ;
+            System.out.flush() ;
+            boolean b2 = JoinClassifier.isLinear(right, left) ;
+            System.out.println("Right/left: "+b2) ;
+            exit(0) ;
+            System.out.println() ;
+            System.out.flush() ;
         }
+        Op op2 = Transformer.transform(new TransformJoinStrategy(ARQ.getContext()), op) ;
+        System.out.println(op2) ;
+        System.out.flush() ;
         
-        
-        
-        
+        exit(0) ;
         
         // -----
         Query query = QueryFactory.read("Q.rq") ;
@@ -131,7 +156,7 @@ public class RunARQ
         //ARQ.setExecutionLogging(InfoLevel.ALL) ;
         QueryExecution qExec = QueryExecutionFactory.create(query, m) ;
         ResultSetFormatter.out(qExec.execSelect()) ;
-    
+
         exit(0) ;
     }
 

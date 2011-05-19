@@ -133,8 +133,6 @@ public class QueryEngineHTTP implements QueryExecution
     
     public ResultSet execSelect()
     {
-        
-        
         HttpQuery httpQuery = makeHttpQuery() ;
         // TODO Allow other content types.
         httpQuery.setAccept(HttpParams.contentTypeResultsXML) ;

@@ -19,7 +19,7 @@ import com.hp.hpl.jena.sparql.core.Var ;
 
 public class JoinClassifier
 {
-    static final boolean print = false ;
+    static /*final*/ public  boolean print = false ;
 
     static public boolean isLinear(OpJoin join)
     {
@@ -29,11 +29,11 @@ public class JoinClassifier
 
     static public boolean isLinear(Op left, Op right)
     {
-         left = effectiveOp(left) ;
-         right = effectiveOp(right) ;
+        left = effectiveOp(left) ;
+        right = effectiveOp(right) ;
 
         // Old: Subquery with modifier. Substitution does not apply.
-         // Renaming should make this work.
+        // Renaming should make this work.
         // With SELECT *, it's as if the subquery were just the pattern.
 
         if (right instanceof OpModifier) return false ;
@@ -73,7 +73,7 @@ public class JoinClassifier
         if (print) System.err.println("Right/filter:  " + vRightFilter) ;
 
         // Step 1 : remove any variable definitely fixed from the floating sets
-        // because the nature of the "join" will dela with that.
+        // because the nature of the "join" will deal with that.
         vLeftOpt = SetUtils.difference(vLeftOpt, vLeftFixed) ;
         vRightOpt = SetUtils.difference(vRightOpt, vRightFixed) ;
 
@@ -100,6 +100,8 @@ public class JoinClassifier
         boolean r11 = SetUtils.intersectionP(vRightOpt, vLeftFixed) ;
 
         boolean r12 = SetUtils.intersectionP(vRightOpt, vLeftOpt) ;
+        
+        // What about rightfixed, left opt?
 
         boolean bad1 = r11 || r12 ;
 

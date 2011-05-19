@@ -41,10 +41,15 @@ public class TransformJoinStrategy extends TransformCopy
         {
             if ( right instanceof OpTable )
             {
-                // Swap left and right so start with a flow of concrete data.
-                Op tmp = left ;
-                left = right ; 
-                right = tmp ;
+                // Safe to swap? Need to reclassify.
+                boolean b = JoinClassifier.isLinear(right, left) ;
+                if ( b )
+                {
+                    // Swap left and right so start with a flow of concrete data.
+                    Op tmp = left ;
+                    left = right ; 
+                    right = tmp ;
+                }
             }
             
             // Streamed evaluation

@@ -18,6 +18,7 @@ import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.OpVisitorBase ;
 import com.hp.hpl.jena.sparql.algebra.op.OpAssign ;
 import com.hp.hpl.jena.sparql.algebra.op.OpBGP ;
+import com.hp.hpl.jena.sparql.algebra.op.OpConditional ;
 import com.hp.hpl.jena.sparql.algebra.op.OpExt ;
 import com.hp.hpl.jena.sparql.algebra.op.OpExtend ;
 import com.hp.hpl.jena.sparql.algebra.op.OpFilter ;
@@ -27,12 +28,14 @@ import com.hp.hpl.jena.sparql.algebra.op.OpLeftJoin ;
 import com.hp.hpl.jena.sparql.algebra.op.OpNull ;
 import com.hp.hpl.jena.sparql.algebra.op.OpProject ;
 import com.hp.hpl.jena.sparql.algebra.op.OpQuadPattern ;
+import com.hp.hpl.jena.sparql.algebra.op.OpSequence ;
 import com.hp.hpl.jena.sparql.algebra.op.OpTable ;
 import com.hp.hpl.jena.sparql.algebra.op.OpUnion ;
 import com.hp.hpl.jena.sparql.core.BasicPattern ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.core.VarExprList ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
+import com.hp.hpl.jena.sparql.expr.ExprList ;
 
 public class VarFinder
 {
@@ -144,23 +147,42 @@ public class VarFinder
         @Override
         public void visit(OpJoin opJoin)
         {
-            VarUsageVisitor leftUsage = VarUsageVisitor.apply(opJoin.getLeft()) ;
-            VarUsageVisitor rightUsage = VarUsageVisitor.apply(opJoin.getRight()) ;
-
-            defines.addAll(leftUsage.defines) ;
-            optDefines.addAll(leftUsage.optDefines) ;
-            filterMentions.addAll(leftUsage.filterMentions) ;
+            joinAcc(opJoin.getLeft()) ;
+            joinAcc(opJoin.getRight()) ;
+        }
+        
+        @Override
+        public void visit(OpSequence opSequence)
+        {
+            for ( Op op : opSequence.getElements() )
+                joinAcc(op) ;    
+        }
+        
+        private void joinAcc(Op op)
+        {
+            VarUsageVisitor usage = VarUsageVisitor.apply(op) ;
             
-            defines.addAll(rightUsage.defines) ;
-            optDefines.addAll(rightUsage.optDefines) ;
-            filterMentions.addAll(rightUsage.filterMentions) ;
+            defines.addAll(usage.defines) ;
+            optDefines.addAll(usage.optDefines) ;
+            filterMentions.addAll(usage.filterMentions) ;
         }
 
         @Override
         public void visit(OpLeftJoin opLeftJoin)
         {
-            VarUsageVisitor leftUsage = VarUsageVisitor.apply(opLeftJoin.getLeft()) ;
-            VarUsageVisitor rightUsage = VarUsageVisitor.apply(opLeftJoin.getRight()) ;
+            leftJoin(opLeftJoin.getLeft(), opLeftJoin.getRight(), opLeftJoin.getExprs()) ;
+        }
+        
+        @Override
+        public void visit(OpConditional opLeftJoin)
+        { 
+            leftJoin(opLeftJoin.getLeft(), opLeftJoin.getRight(), null) ;
+        }
+
+        private void leftJoin(Op left, Op right, ExprList exprs)
+        {
+            VarUsageVisitor leftUsage = VarUsageVisitor.apply(left) ;
+            VarUsageVisitor rightUsage = VarUsageVisitor.apply(right) ;
             
             defines.addAll(leftUsage.defines) ;
             optDefines.addAll(leftUsage.optDefines) ;
@@ -175,10 +197,10 @@ public class VarFinder
             optDefines.removeAll(leftUsage.defines) ;
 
             // And the associated filter.
-            if ( opLeftJoin.getExprs() != null )
-                opLeftJoin.getExprs().varsMentioned(filterMentions);
+            if ( exprs != null )
+                exprs.varsMentioned(filterMentions);
         }
-
+        
         @Override
         public void visit(OpUnion opUnion)
         {
@@ -250,7 +272,9 @@ public class VarFinder
 
         @Override
         public void visit(OpTable opTable)
-        { }
+        { 
+            defines.addAll(opTable.getTable().getVars()) ;
+        }
 
         @Override
         public void visit(OpNull opNull)
