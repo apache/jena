@@ -16,11 +16,11 @@ import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 public class TestBPlusTree extends TestRangeIndex
 {
- 
     static boolean b ;
     @BeforeClass public static void before()
     { 
-        BPlusTreeParams.checkAll() ;
+        BPlusTreeParams.CheckingNode = true ;
+        //BPlusTreeParams.CheckingTree = true ;   // Breaks with block tracking.
         b = SystemTDB.NullOut ;
         SystemTDB.NullOut = true ;
     }
@@ -35,7 +35,13 @@ public class TestBPlusTree extends TestRangeIndex
     protected RangeIndex makeRangeIndex(int order, int minRecords)
     {
         BPlusTree bpt = BPlusTree.makeMem(order, minRecords, RecordLib.TestRecordLength, 0) ;
-        //bpt = BPlusTree.addTracking(bpt) ;
+        if ( false )
+        {
+            // Breaks with CheckingTree = true ; because they deep reads the tree.
+            BPlusTreeParams.CheckingNode = true ;
+            BPlusTreeParams.CheckingTree = false ;
+            bpt = BPlusTree.addTracking(bpt) ;
+        }
         return bpt ; 
     }
 }

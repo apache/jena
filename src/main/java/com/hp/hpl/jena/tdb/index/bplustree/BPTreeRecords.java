@@ -79,20 +79,20 @@ public final class BPTreeRecords extends BPTreePage
         return rBuff.get(i) ;
     }
 
-    @Override
-    public BPTreeRecords findPage(Record record)
-    {
-        if ( rBuff.size() == 0 )
-            return this ;
-        
-        // Not true if above the last record.
-        if ( this.getLink() != RecordBufferPage.NO_ID && Record.keyGT(record, maxRecord()) ) 
-            error("Record [%s] not in this page: %s", record , this) ;
-        return this ;
-    }
-    
-    @Override
-    public BPTreeRecords findFirstPage() { return this ; }
+//    @Override
+//    public BPTreeRecords findPage(Record record)
+//    {
+//        if ( rBuff.size() == 0 )
+//            return this ;
+//        
+//        // Not true if above the last record.
+//        if ( this.getLink() != RecordBufferPage.NO_ID && Record.keyGT(record, maxRecord()) ) 
+//            error("Record [%s] not in this page: %s", record , this) ;
+//        return this ;
+//    }
+//    
+//    @Override
+//    public BPTreeRecords findFirstPage() { return this ; }
 
     @Override final
     public void write()     { bpTree.getRecordsMgr().write(this) ; } 

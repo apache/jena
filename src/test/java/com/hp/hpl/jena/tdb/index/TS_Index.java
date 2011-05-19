@@ -12,17 +12,11 @@ import org.junit.runners.Suite;
 import com.hp.hpl.jena.tdb.index.bplustree.TestBPTreeRecords;
 import com.hp.hpl.jena.tdb.index.bplustree.TestBPlusTree;
 import com.hp.hpl.jena.tdb.index.bplustree.TestBPlusTreeRewriter ;
-import com.hp.hpl.jena.tdb.index.btree.TestBTree;
-import com.hp.hpl.jena.tdb.index.btree.TestBTreeLong;
 import com.hp.hpl.jena.tdb.index.ext.TestExtHash;
 
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
-    
-    TestBTree.class,
-    TestBTreeLong.class,
-    
     TestBPlusTree.class,
     TestBPTreeRecords.class,
     TestBPlusTreeRewriter.class,

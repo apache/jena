@@ -6,13 +6,15 @@
 
 package com.hp.hpl.jena.tdb.base.block;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.After ;
+import org.junit.AfterClass ;
+import org.junit.BeforeClass ;
 import org.openjena.atlas.lib.FileOps ;
 import org.openjena.atlas.logging.Log ;
 
-import com.hp.hpl.jena.tdb.ConfigTest;
+import com.hp.hpl.jena.tdb.ConfigTest ;
+import com.hp.hpl.jena.tdb.base.file.FileAccess ;
+import com.hp.hpl.jena.tdb.base.file.FileAccessMapped ;
 
 public class TestBlockMgrMapped extends AbstractTestBlockMgr
 {
@@ -43,7 +45,8 @@ public class TestBlockMgrMapped extends AbstractTestBlockMgr
     protected BlockMgr make()
     { 
         clearBlockMgr() ;
-        return new BlockMgrMapped(filename, BlkSize) ;
+        FileAccess file = new FileAccessMapped(filename, BlkSize) ;
+        return new BlockMgrFileAccess(file, BlkSize) ;
     }
 }
 

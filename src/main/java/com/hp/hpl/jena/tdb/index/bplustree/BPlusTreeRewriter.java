@@ -27,7 +27,6 @@ import com.hp.hpl.jena.tdb.base.record.Record ;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
 import com.hp.hpl.jena.tdb.base.recordbuffer.RecordBufferPage ;
 import com.hp.hpl.jena.tdb.base.recordbuffer.RecordBufferPageMgr ;
-import com.hp.hpl.jena.tdb.index.btree.BTreeParams ;
 
 public class BPlusTreeRewriter
 {
@@ -309,8 +308,8 @@ public class BPlusTreeRewriter
         protected Record rebalance(int id1, Record r1, int id2, Record r2)
         {
             BPTreeNodeMgr mgr = bpt.getNodeManager() ; 
-            BPTreeNode node1 = mgr.getWrite(id1, BTreeParams.NoParent) ;
-            BPTreeNode node2 = mgr.getWrite(id2, BTreeParams.NoParent) ;
+            BPTreeNode node1 = mgr.getWrite(id1, BPlusTreeParams.NoParent) ;
+            BPTreeNode node2 = mgr.getWrite(id2, BPlusTreeParams.NoParent) ;
             
             // rebalence
             // ** Need rebalance of data leaf layer. 

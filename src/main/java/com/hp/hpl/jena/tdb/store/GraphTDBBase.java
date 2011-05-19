@@ -149,8 +149,6 @@ public abstract class GraphTDBBase extends GraphBase2 implements GraphTDB
     
     /** Iterator over something that, when counted, is the graph size. */
     protected abstract Iterator<?> countThis() ;
-    
-    
 
     @Override
     public void startRead()             { dataset.startRead() ; }

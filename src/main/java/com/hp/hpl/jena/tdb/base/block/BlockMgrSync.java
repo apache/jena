@@ -7,6 +7,8 @@
 
 package com.hp.hpl.jena.tdb.base.block;
 
+import java.util.Iterator ;
+
 
 /** Add synchronized to a BlockMgr.  This is the same as BlockMgrWrapper but with 'synchronized' added */
 
@@ -32,6 +34,13 @@ public class BlockMgrSync implements BlockMgr
     {
         return blockMgr.getRead(id) ;
     }
+    
+    @Override
+    public Block getReadIterator(int id)
+    {
+        return blockMgr.getReadIterator(id) ;
+    }
+
 
     @Override
     synchronized
@@ -89,30 +98,44 @@ public class BlockMgrSync implements BlockMgr
 
     @Override
     synchronized
-    public void startRead()
+    public void beginIterator(Iterator<?> iter)
     {
-        blockMgr.startRead() ;
+        blockMgr.beginIterator(iter) ;
     }
 
     @Override
     synchronized
-    public void finishRead()
+    public void endIterator(Iterator<?> iter)
     {
-        blockMgr.finishRead() ;
+        blockMgr.endIterator(iter) ;
+    }
+    
+    @Override
+    synchronized
+    public void beginRead()
+    {
+        blockMgr.beginRead() ;
     }
 
     @Override
     synchronized
-    public void startUpdate()
+    public void endRead()
     {
-        blockMgr.startUpdate() ;
+        blockMgr.endRead() ;
     }
 
     @Override
     synchronized
-    public void finishUpdate()
+    public void beginUpdate()
     {
-        blockMgr.finishUpdate() ;
+        blockMgr.beginUpdate() ;
+    }
+
+    @Override
+    synchronized
+    public void endUpdate()
+    {
+        blockMgr.endUpdate() ;
     }
 
     @Override

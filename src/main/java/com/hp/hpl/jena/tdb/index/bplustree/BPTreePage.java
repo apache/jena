@@ -70,11 +70,11 @@ abstract public class BPTreePage implements Page
     /** Find a record; return null if not found */
     abstract Record internalSearch(Record rec) ;
     
-    /** Find the page for the record (bottom-most page) */
-    abstract BPTreeRecords findPage(Record rec) ;
-    
-    /** Find the first page (supports iterators) */
-    abstract BPTreeRecords findFirstPage() ;
+//    /** Find the page for the record (bottom-most page) */
+//    abstract BPTreeRecords findPage(Record rec) ;
+//    
+//    /** Find the first page (supports iterators) */
+//    abstract BPTreeRecords findFirstPage() ;
 
     /** Insert a record - return existing value if any, else null - put back modifed blocks */
     abstract Record internalInsert(Record record) ;

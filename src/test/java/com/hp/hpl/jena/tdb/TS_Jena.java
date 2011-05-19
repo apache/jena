@@ -12,8 +12,6 @@ import org.junit.runners.Suite ;
 
 import com.hp.hpl.jena.tdb.graph.basics.TestGraphBPlusTreeMem ;
 import com.hp.hpl.jena.tdb.graph.basics.TestGraphBPlusTreeMemNew ;
-import com.hp.hpl.jena.tdb.graph.basics.TestGraphBTreeMem ;
-import com.hp.hpl.jena.tdb.graph.basics.TestGraphBTreeMemNew ;
 import com.hp.hpl.jena.tdb.junit.Base_TS ;
 
 // Tests using Jena graph tests
@@ -22,8 +20,6 @@ import com.hp.hpl.jena.tdb.junit.Base_TS ;
 @Suite.SuiteClasses( {
     TestGraphBPlusTreeMem.class
     , TestGraphBPlusTreeMemNew.class
-    , TestGraphBTreeMem.class
-    , TestGraphBTreeMemNew.class
 })
 
 public class TS_Jena extends Base_TS

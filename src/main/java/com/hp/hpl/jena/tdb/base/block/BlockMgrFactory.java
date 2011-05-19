@@ -12,6 +12,7 @@ import java.io.File;
 import com.hp.hpl.jena.tdb.TDBException;
 import com.hp.hpl.jena.tdb.base.file.FileAccess ;
 import com.hp.hpl.jena.tdb.base.file.FileAccessDirect ;
+import com.hp.hpl.jena.tdb.base.file.FileAccessMapped ;
 import com.hp.hpl.jena.tdb.base.file.FileAccessMem ;
 import com.hp.hpl.jena.tdb.base.file.FileSet ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
@@ -64,22 +65,18 @@ public class BlockMgrFactory
     /** Create a NIO Block Manager */
     public static BlockMgr createMMapFile(String filename, int blockSize)
     {
-//        FileAccess file = new FileAccessMapped(filename, blockSize) ;
-//        BlockMgr blockMgr = new BlockMgrFileAccess(file, blockSize) ;
-        // FREE
-        // This is a temporary fix to the problem that 
-        BlockMgr blockMgr = new BlockMgrMapped(filename, blockSize) ;
-        blockMgr = new BlockMgrFreeChain(blockMgr) ;
+        FileAccess file = new FileAccessMapped(filename, blockSize) ;
+        BlockMgr blockMgr =  wrapFileAccess(file, blockSize) ;
         return tracker(blockMgr) ;
     }
     
     /** Create a Block Manager using direct access (and a cache) */
     public static BlockMgr createStdFile(String filename, int blockSize, int readBlockCacheSize, int writeBlockCacheSize)
     {
-        BlockMgr blockMgr = createStdFileNoCache(filename, blockSize) ;
-        
+        FileAccess file = new FileAccessDirect(filename, blockSize) ;
+        BlockMgr blockMgr =  wrapFileAccess(file, blockSize) ;
+
         String fn = filename ;
-        
         int j = filename.lastIndexOf(File.separatorChar) ;
         if ( j > 0 )
             fn = filename.substring(j+1) ;
@@ -88,15 +85,21 @@ public class BlockMgrFactory
         return tracker(blockMgr) ;
     }
     
-    /** Create a Block Manager using direct access */
+    /** Create a Block Manager using direct access, no caching, no nothing. */
     public static BlockMgr createStdFileNoCache(String filename, int blockSize)
     {
-        FileAccess file = new FileAccessDirect(filename, blockSize) ;
-        BlockMgr blockMgr = new BlockMgrFileAccess(file, blockSize) ;
-        // FREE
-        // This is a temporary fix to the problem that 
+        FileAccess fileAccess = new FileAccessDirect(filename, blockSize) ;
+        BlockMgr blockMgr = new BlockMgrFileAccess(fileAccess, blockSize) ;
+        return blockMgr ;
+    }
+    
+    private static BlockMgr wrapFileAccess(FileAccess fileAccess, int blockSize)
+    {
+        BlockMgr blockMgr = new BlockMgrFileAccess(fileAccess, blockSize) ;
+        // This is a temporary fix to the problem 
         blockMgr = new BlockMgrFreeChain(blockMgr) ;
         return blockMgr ;
+        
     }
 }
 

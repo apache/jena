@@ -7,13 +7,13 @@
 
 package com.hp.hpl.jena.tdb.base.block;
 
+import java.util.Iterator ;
+
 import org.openjena.atlas.lib.Closeable ;
 import org.openjena.atlas.lib.Sync ;
 
-import com.hp.hpl.jena.tdb.sys.Session ;
 
-
-public interface BlockMgr extends Sync, Closeable, Session /*UnitMgr<Block>*/
+public interface BlockMgr extends Sync, Closeable /*UnitMgr<Block>*/
 {
     /** Allocate an uninitialized block - writable - call only inside a update sequence. 
      *  If blockSize is -1, means "default/fixed size" for this BlockMgr
@@ -26,6 +26,9 @@ public interface BlockMgr extends Sync, Closeable, Session /*UnitMgr<Block>*/
     /** Fetch a block, use for read only */
     public Block getRead(int id);
     
+    /** Fetch a block, use for read only in an iterator */
+    public Block getReadIterator(int id);
+
     /** Fetch a block, use for write and read - only inside "update" */
     public Block getWrite(int id);
 
@@ -55,21 +58,28 @@ public interface BlockMgr extends Sync, Closeable, Session /*UnitMgr<Block>*/
     @Override
     public void sync() ;
     
-    /** Signal the start of update operations */
-    @Override
-    public void startUpdate() ;
     
-    /** Signal the completion of update operations */
-    @Override
-    public void finishUpdate() ;
+    // This is not Session interface which si more an application facing
+    // coarser granularity interface.  We also add iterator tracking.
+    
+    /** Start of update */
+    public void beginUpdate() ;
+    
+    /** Completion of update */
+    public void endUpdate() ;
 
-    /** Signal the start of read operations */
-    @Override
-    public void startRead() ;
+    /** Start of read */
+    public void beginRead() ;
 
-    /** Signal the completeion of read operations */
-    @Override
-    public void finishRead() ;
+    /** Completion of read */
+    public void endRead() ;
+
+    /** Start of iterator */
+    public void beginIterator(Iterator<?> iterator) ;
+
+    /** Completion of iterator */
+    public void endIterator(Iterator<?> iterator) ;
+
 }
 
 /*

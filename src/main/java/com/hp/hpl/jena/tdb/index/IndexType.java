@@ -10,8 +10,6 @@ import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 public enum IndexType
 {
-    BTree 
-    { @Override public String getName() { return "BTree" ; } } ,
     BPlusTree
     { @Override public String getName() { return "BPlusTree" ; } } ,
     ExtHash
@@ -22,7 +20,6 @@ public enum IndexType
 
     public static IndexType get(String name)
     {
-        if ( name.equalsIgnoreCase(SystemTDB.indexTypeBTree) ) return BTree ;
         if ( name.equalsIgnoreCase(SystemTDB.indexTypeBPlusTree) ) return BPlusTree ;
         if ( name.equalsIgnoreCase(SystemTDB.indexTypeExtHash) ) return ExtHash ;
         return null ;

@@ -12,24 +12,34 @@ import static org.openjena.atlas.lib.Alg.decodeIndex ;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+import org.openjena.atlas.lib.Closeable ;
+
 import com.hp.hpl.jena.tdb.base.StorageException ;
 import com.hp.hpl.jena.tdb.base.record.Record;
 
 final public
-class RecordRangeIterator implements Iterator<Record>
+class RecordRangeIterator implements Iterator<Record>, Closeable
 {
     /** Iterate over a range of fromRec (inclusive) to toRec (exclusive) */
-    
-    public static Iterator<Record> iterator(RecordBufferPage page, Record fromRec, Record toRec, RecordBufferPageMgr pageMgr)
+    public static Iterator<Record> iterator(int pageId, Record fromRec, Record toRec, RecordBufferPageMgr pageMgr)
     {
-        return new RecordRangeIterator(page, fromRec, toRec, pageMgr) ;
+        return new RecordRangeIterator(pageId, fromRec, toRec, pageMgr) ;
     }
+
     
-    /** Iterate over all records from this page onwards */
-    public static Iterator<Record> iterator(RecordBufferPage page, RecordBufferPageMgr pageMgr)
-    {
-        return new RecordRangeIterator(page, null, null, pageMgr) ;
-    }
+    
+    // ITER release the page and re-get it as a   
+//    /** Iterate over a range of fromRec (inclusive) to toRec (exclusive) */
+//    public static Iterator<Record> iterator(RecordBufferPage page, Record fromRec, Record toRec, RecordBufferPageMgr pageMgr)
+//    {
+//        return new RecordRangeIterator(page, fromRec, toRec, pageMgr) ;
+//    }
+//    
+//    /** Iterate over all records from this page onwards */
+//    public static Iterator<Record> iterator(RecordBufferPage page, RecordBufferPageMgr pageMgr)
+//    {
+//        return new RecordRangeIterator(page, null, null, pageMgr) ;
+//    }
     
     private RecordBufferPage currentPage ;      // Set null when finished.
     private RecordBufferPageMgr pageMgr ;
@@ -41,11 +51,10 @@ class RecordRangeIterator implements Iterator<Record>
     private long countRecords = 0 ;
     private long countBlocks = 0 ;
 
-    public RecordRangeIterator(RecordBufferPage page, Record fromRec, Record toRec, RecordBufferPageMgr pageMgr)
+    private RecordRangeIterator(int id, Record fromRec, Record toRec, RecordBufferPageMgr pageMgr)
     {
-        currentPage = page ;
         currentIdx = 0 ;
-        this.pageMgr = pageMgr; //page.getPageMgr() ;
+        this.pageMgr = pageMgr;
         this.minRec = fromRec ;
         this.maxRec = toRec ;
         
@@ -55,14 +64,22 @@ class RecordRangeIterator implements Iterator<Record>
             return ;
         }
 
+        pageMgr.getBlockMgr().beginIterator(this) ;
+        currentPage = pageMgr.getReadIterator(id) ;
+        if ( currentPage.getCount() == 0 )
+        {
+            // Empty page.
+            close() ;
+            return ;
+        }
+            
         if ( fromRec != null )
         {
-            currentIdx = page.getRecordBuffer().find(fromRec) ;
+            currentIdx = currentPage.getRecordBuffer().find(fromRec) ;
             if ( currentIdx < 0 )
                 currentIdx = decodeIndex(currentIdx) ;
         }
     }
-    
 
     @Override
     public boolean hasNext()
@@ -78,14 +95,14 @@ class RecordRangeIterator implements Iterator<Record>
             int link = currentPage.getLink() ;
             if ( link < 0 )
             {
-                finish() ;
+                close() ;
                 return false ;
             }
             
             if ( currentPage != null )
                 pageMgr.release(currentPage) ;
             
-            RecordBufferPage nextPage = pageMgr.getRead(link) ;
+            RecordBufferPage nextPage = pageMgr.getReadIterator(link) ;
             // Check currentPage -> nextPage is strictly increasing keys. 
             Record r1 = currentPage.getRecordBuffer().getHigh() ;
             Record r2 = nextPage.getRecordBuffer().getLow() ;
@@ -98,12 +115,9 @@ class RecordRangeIterator implements Iterator<Record>
             
         slot = currentPage.getRecordBuffer().get(currentIdx) ;
         currentIdx++ ;
-        if ( currentPage != null )
-            pageMgr.release(currentPage) ;
-        
         if ( maxRec != null && Record.keyGE(slot, maxRec) )
         {
-            finish() ;
+            close() ;
             return false ;
         }
         
@@ -113,11 +127,15 @@ class RecordRangeIterator implements Iterator<Record>
         return true ;
     }
 
-    private void finish()
+    @Override
+    public void close()
     {
+        if (currentPage != null )
+            pageMgr.release(currentPage) ;
         currentPage = null ;
         currentIdx = -99 ;
         slot = null ;
+        pageMgr.getBlockMgr().endIterator(this) ;
     }
 
     @Override
@@ -135,17 +153,9 @@ class RecordRangeIterator implements Iterator<Record>
     public void remove()
     { throw new UnsupportedOperationException("remove") ; }
 
+    final public long getCountRecords()     { return countRecords ; }
 
-    public long getCountRecords()
-    {
-        return countRecords ;
-    }
-
-    public long getCountBlocks()
-    {
-        return countBlocks ;
-    }
-
+    final public long getCountBlocks()      { return countBlocks ; }
 }
 
 /*

@@ -15,12 +15,8 @@ import static com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams.CheckingTree ;
 import static com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams.DumpTree ;
 import static java.lang.String.format ;
 import static org.openjena.atlas.lib.Alg.decodeIndex ;
-
-import java.util.Iterator ;
-
 import org.openjena.atlas.io.IndentedLineBuffer ;
 import org.openjena.atlas.io.IndentedWriter ;
-import org.openjena.atlas.iterator.Iter ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
@@ -28,8 +24,6 @@ import com.hp.hpl.jena.tdb.base.block.Block ;
 import com.hp.hpl.jena.tdb.base.buffer.PtrBuffer ;
 import com.hp.hpl.jena.tdb.base.buffer.RecordBuffer ;
 import com.hp.hpl.jena.tdb.base.record.Record ;
-import com.hp.hpl.jena.tdb.base.recordbuffer.RecordBufferPage ;
-import com.hp.hpl.jena.tdb.base.recordbuffer.RecordRangeIterator ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 public final class BPTreeNode extends BPTreePage
@@ -246,6 +240,41 @@ public final class BPTreeNode extends BPTreePage
         }
         return v ;
     }
+    
+    /** Returns the id of the records buffer page for this record.  Records Buffer Page NOT read; record may not exist */ 
+    static int recordsPageId(BPTreeNode node, Record fromRec)
+    {
+        // Walk down the B+tree part of the structure ...
+        while ( !node.isLeaf() )
+        {
+            BPTreePage page = (fromRec == null ) ? node.get(0, READ) : node.findHere(fromRec) ;
+            // Not a leaf so we can cast safely.
+            BPTreeNode n = (BPTreeNode)page ;
+            // Release if not root.
+            if ( ! node.isRoot() )
+                node.release() ;
+            node = n ;
+        } ;
+        // ... then find the id of the next step down, but do not touch the records buffer page. 
+        int id ;
+        if ( fromRec == null )
+        {
+            // Just get the lowest starting place.
+            id = node.getPtrBuffer().getLow() ;
+        }
+        else
+        {
+            // Get the right id based on starting record.
+            int idx = node.findSlot(fromRec) ; 
+            idx = convert(idx) ;
+            id = node.getPtrBuffer().get(idx) ;
+        }
+        if ( ! node.isRoot() )
+            node.release() ;
+        return id ;
+    }
+
+
 
     @Override
     protected Record maxRecord()
@@ -265,28 +294,29 @@ public final class BPTreeNode extends BPTreePage
         return r ;
     }
 
-    @Override
-    protected BPTreeRecords findPage(Record rec)
-    {
-        if ( CheckingNode ) internalCheckNode() ;
-        
-        BPTreePage page = findHere(rec) ;
-        if ( page == null )
-            return null ;
-        BPTreeRecords bpr = page.findPage(rec) ;
-        page.release() ;
-        return bpr ;
-    }
-    
-    // Find first page.
-    @Override
-    BPTreeRecords findFirstPage()
-    {
-        BPTreePage page = get(0, READ) ;
-        BPTreeRecords records = page.findFirstPage() ;
-        page.release() ;
-        return records ;
-    }
+//    @Override
+//    protected BPTreeRecords findPage(Record rec)
+//    {
+//        if ( CheckingNode ) internalCheckNode() ;
+//        
+//        BPTreePage page = findHere(rec) ;
+//        if ( page == null )
+//            return null ;
+//        BPTreeRecords bpr = page.findPage(rec) ;
+//        page.release() ;
+//        return bpr ;
+//    }
+//    
+//    // Find first page.
+//    @Override
+//    BPTreeRecords findFirstPage()
+//    {
+//        BPTreePage page = get(0, READ) ;
+//        BPTreeRecords records = page.findFirstPage() ;
+//        page.release() ;
+//        // Err - records is released!
+//        return records ;
+//    }
 
     @Override final
     Record getLowRecord()
@@ -1091,7 +1121,7 @@ public final class BPTreeNode extends BPTreePage
         return x ;
     }
     
-    private final boolean isRoot()
+    final boolean isRoot()
     {
         if ( bpTree.root == this ) return true ;
         return this.id == BPlusTreeParams.RootId ;
@@ -1142,28 +1172,6 @@ public final class BPTreeNode extends BPTreePage
             error("isMinSize: Dwarf block: %s", this) ;
         
         return count <= min ;
-    }
-    
-    
-    /** Iterate over a range of fromRec (inclusive) to toRec (exclusive) */ 
-    Iterator<Record> iterator(Record fromRec, Record toRec)
-    { 
-        BPTreeRecords btr = null ;
-        if ( fromRec == null )
-            btr = findFirstPage() ;
-        else
-            btr = findPage(fromRec) ;
-        
-        if ( btr == null )
-            return Iter.nullIter() ;
-        
-        RecordBufferPage page = btr.getRecordBufferPage()  ;
-        return RecordRangeIterator.iterator(page, fromRec, toRec, bpTree.getRecordsMgr().getRecordBufferPageMgr()) ;
-    }
-    
-    Iterator<Record> iterator()
-    { 
-        return iterator(null, null) ; 
     }
     
     // ========== Other

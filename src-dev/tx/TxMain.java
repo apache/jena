@@ -6,10 +6,12 @@
 
 package tx;
 
+import static com.hp.hpl.jena.tdb.index.IndexTestLib.testInsert ;
 import static org.openjena.atlas.test.Gen.strings ;
 
 import java.util.Iterator ;
 
+import org.junit.Test ;
 import org.openjena.atlas.lib.Bytes ;
 import org.openjena.atlas.lib.FileOps ;
 import org.openjena.atlas.logging.Log ;
@@ -27,6 +29,7 @@ import com.hp.hpl.jena.query.Syntax ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.sparql.util.QueryExecUtils ;
+import com.hp.hpl.jena.tdb.base.block.Block ;
 import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory ;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrLogger ;
@@ -36,6 +39,8 @@ import com.hp.hpl.jena.tdb.base.record.Record ;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
 import com.hp.hpl.jena.tdb.base.record.RecordLib ;
 import com.hp.hpl.jena.tdb.base.recordbuffer.RecordBufferPage ;
+import com.hp.hpl.jena.tdb.index.IndexTestLib ;
+import com.hp.hpl.jena.tdb.index.RangeIndex ;
 import com.hp.hpl.jena.tdb.index.bplustree.BPTreeNode ;
 import com.hp.hpl.jena.tdb.index.bplustree.BPlusTree ;
 import com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams ;
@@ -70,9 +75,63 @@ public class TxMain
         //test.BPlusTreeRun.main("perf", "3", "125", "100") ; exit(0) ;
         //test.BPlusTreeRun.main("test", "--bptree:check", "3", "125", "100000") ; exit(0) ;
         
+        
+        BlockMgr blkMgr = BlockMgrFactory.createMem("test", 100) ;
+        blkMgr = BlockMgrTracker.track("foo", blkMgr) ;
+        blkMgr.beginUpdate() ;
+        Block block = blkMgr.allocate(-1) ;
+        blkMgr.release(block) ;
+        blkMgr.release(block) ; // Need to check where an active bloock is - promote is one read -> write? 
+        Block block2 = blkMgr.allocate(-1) ;
+        blkMgr.endUpdate() ;
+      
+        exit(0) ;
+        
+        
+        
         bpTreeTracking() ; exit(0) ;
         
         transactional() ; exit(0) ;
+    }
+    
+    @Test public static void tree_ins_2_01() 
+    {
+        int[] keys = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+        RangeIndex rIndex = makeRangeIndex(2) ;
+        testInsert(rIndex, keys) ;
+//        assertEquals(0, r(rIndex.minKey())) ;
+//        assertEquals(9, r(rIndex.maxKey())) ;
+    }
+    
+    
+    //@Override
+    protected static RangeIndex makeRangeIndex(int order)
+    {
+        return makeRangeIndex(order, order) ;
+    }
+    
+    protected static RangeIndex makeRangeIndex(int order, int minRecords)
+    {
+        BPlusTree bpt = BPlusTree.makeMem(order, minRecords, RecordLib.TestRecordLength, 0) ;
+        bpt = BPlusTree.addTracking(bpt) ;
+        return bpt ; 
+    }
+    
+    public static RangeIndex make(int order, int[] vals)
+    {
+        RangeIndex rIndex = makeRangeIndex(2) ;
+        IndexTestLib.add(rIndex, vals) ;
+        return rIndex ;
+    }
+    
+    public static void test()
+    {
+        int[] keys = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+        RangeIndex rIndex = make(2, keys) ;
+        Iterator<Record> iter1 = rIndex.iterator() ;
+        Iterator<Record> iter2 = rIndex.iterator() ;
+        iter1.next() ;
+        iter2.next() ;
     }
     
     public static void bpTreeTracking(String... args)
@@ -124,22 +183,25 @@ public class TxMain
         }
         
         //exit(0) ;
-        System.out.println() ;
-        log.info("DELETE") ;
-        for ( int i : keys2 ) 
+        
+        if ( false )
         {
-//            System.out.println() ;
-//            log.info(String.format("i = 0x%04X", i)) ;
-//            bpTree.dump() ;
-            Record r = record(rf, i, 0) ;
-            bpTree.delete(r) ;
+            System.out.println() ;
+            log.info("DELETE") ;
+            for ( int i : keys2 ) 
+            {
+    //            System.out.println() ;
+    //            log.info(String.format("i = 0x%04X", i)) ;
+    //            bpTree.dump() ;
+                Record r = record(rf, i, 0) ;
+                bpTree.delete(r) ;
+            }
         }
 
-        if ( true )
-            return ;
+        //exit(0) ;
 
         System.out.println() ;
-
+        log.info("ITERATOR") ;
         Iterator<Record> iter = bpTree.iterator() ;
         for ( ; iter.hasNext() ; )
             System.out.println(iter.next()) ;

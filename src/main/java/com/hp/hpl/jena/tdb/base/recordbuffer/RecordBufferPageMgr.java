@@ -37,6 +37,13 @@ public class RecordBufferPageMgr extends PageBlockMgr<RecordBufferPage>
         return super.create(BlockType.RECORD_BLOCK) ;
     }
     
+    public RecordBufferPage getReadIterator(int id)
+    { 
+        Block block = blockMgr.getReadIterator(id) ;
+        RecordBufferPage page = pageFactory.fromBlock(block) ;
+        return page ;
+    }
+    
     public static class Block2RecordBufferPage implements BlockConverter<RecordBufferPage>
     {
         private RecordFactory factory ;

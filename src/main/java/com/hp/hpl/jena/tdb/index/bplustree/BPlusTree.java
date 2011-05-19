@@ -25,9 +25,8 @@ import com.hp.hpl.jena.tdb.base.record.Record ;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
 import com.hp.hpl.jena.tdb.base.recordbuffer.RecordBufferPage ;
 import com.hp.hpl.jena.tdb.base.recordbuffer.RecordBufferPageMgr ;
+import com.hp.hpl.jena.tdb.base.recordbuffer.RecordRangeIterator ;
 import com.hp.hpl.jena.tdb.index.RangeIndex ;
-import com.hp.hpl.jena.tdb.index.btree.BTreeParams ;
-import com.hp.hpl.jena.tdb.sys.Session ;
 
 /** B-Tree converted to B+Tree
  * 
@@ -62,7 +61,7 @@ import com.hp.hpl.jena.tdb.sys.Session ;
  * The root is always the same block.
  */
 
-public class BPlusTree implements Iterable<Record>, RangeIndex, Session
+public class BPlusTree implements Iterable<Record>, RangeIndex
 {
     /*
      * Insertion:
@@ -205,7 +204,7 @@ public class BPlusTree implements Iterable<Record>, RangeIndex, Session
             
             if ( CheckingNode )
             {            
-                BPTreeNode root = nodeManager.getRead(rootIdx, BTreeParams.RootParent) ;
+                BPTreeNode root = nodeManager.getRead(rootIdx, BPlusTreeParams.RootParent) ;
                 root.checkNodeDeep() ;
                 root.release() ;
             }
@@ -344,9 +343,9 @@ public class BPlusTree implements Iterable<Record>, RangeIndex, Session
     {
         startReadBlkMgr() ;
         BPTreeNode root = getRoot() ;
-        Iterator<Record> iter = root.iterator() ;
+        Iterator<Record> iter = iterator(root) ;
         releaseRoot(root) ;
-        finishReadBlkMgr() ;    // WRONG!
+        finishReadBlkMgr() ;
         return iter ;
     }
     
@@ -355,28 +354,32 @@ public class BPlusTree implements Iterable<Record>, RangeIndex, Session
     {
         startReadBlkMgr() ;
         BPTreeNode root = getRoot() ;
-        Iterator<Record> iter = root.iterator(fromRec, toRec) ;
+        Iterator<Record> iter = iterator(root, fromRec, toRec) ;
         releaseRoot(root) ;
         finishReadBlkMgr() ;    // WRONG!
+        
+        // Add a checkign wrapper via: 
+        // ConcurrencyPolicyMRSW
         return iter ;
     }
     
-    @Override
-    public void startRead()
-    { }
-
-    @Override
-    public void finishRead()
-    { }
-
-    @Override
-    public void startUpdate()
-    { }
+    /** Iterate over a range of fromRec (inclusive) to toRec (exclusive) */ 
+    private static Iterator<Record> iterator(BPTreeNode node, Record fromRec, Record toRec)
+    { 
+        // Look for starting RecordsBufferPage id.
+        int id = BPTreeNode.recordsPageId(node, fromRec) ; 
+        if ( id < 0 )
+            return Iter.nullIter() ;
+        RecordBufferPageMgr pageMgr = node.getBPlusTree().getRecordsMgr().getRecordBufferPageMgr() ;
+        // No pages are active at this point.
+        return RecordRangeIterator.iterator(id, fromRec, toRec, pageMgr) ;
+    }
     
-    @Override
-    public void finishUpdate()
-    { }
-
+    private static Iterator<Record> iterator(BPTreeNode node)
+    { 
+        return iterator(node, null, null) ; 
+    }
+    
     // Internal calls.
     private void startReadBlkMgr()
     {
@@ -401,7 +404,7 @@ public class BPlusTree implements Iterable<Record>, RangeIndex, Session
         nodeManager.finishUpdate() ;
         recordsMgr.finishUpdate() ;
     }
-
+    
     @Override
     public boolean isEmpty()
     {

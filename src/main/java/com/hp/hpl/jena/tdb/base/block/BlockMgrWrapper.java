@@ -7,6 +7,8 @@
 
 package com.hp.hpl.jena.tdb.base.block;
 
+import java.util.Iterator ;
+
 
 public class BlockMgrWrapper implements BlockMgr
 {
@@ -28,6 +30,13 @@ public class BlockMgrWrapper implements BlockMgr
     {
         return blockMgr.getRead(id) ;
     }
+
+    @Override
+    public Block getReadIterator(int id)
+    {
+        return blockMgr.getReadIterator(id) ;
+    }
+
 
     @Override
     public Block getWrite(int id)
@@ -87,28 +96,41 @@ public class BlockMgrWrapper implements BlockMgr
     public void close()
     { blockMgr.close() ; }
 
+
     @Override
-    public void startRead()
+    public void beginIterator(Iterator<?> iter)
     {
-        blockMgr.startRead() ;
+        blockMgr.beginIterator(iter) ;
     }
 
     @Override
-    public void finishRead()
+    public void endIterator(Iterator<?> iter)
     {
-        blockMgr.finishRead() ;
+        blockMgr.endIterator(iter) ;
+    }
+    
+    @Override
+    public void beginRead()
+    {
+        blockMgr.beginRead() ;
     }
 
     @Override
-    public void startUpdate()
+    public void endRead()
     {
-        blockMgr.startUpdate() ;
+        blockMgr.endRead() ;
     }
 
     @Override
-    public void finishUpdate()
+    public void beginUpdate()
     {
-        blockMgr.finishUpdate() ;
+        blockMgr.beginUpdate() ;
+    }
+
+    @Override
+    public void endUpdate()
+    {
+        blockMgr.endUpdate() ;
     }
 }
 /*

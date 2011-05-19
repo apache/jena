@@ -6,6 +6,8 @@
 
 package com.hp.hpl.jena.tdb.base.block;
 
+import java.util.Iterator ;
+
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
@@ -50,6 +52,13 @@ public class BlockMgrLogger implements BlockMgr //extends BlockMgrWrapper
         return blockMgr.getRead(id) ;
     }
 
+    @Override
+    public Block getReadIterator(int id)
+    {
+        log.info("getReadIterator("+id+")") ;
+        return blockMgr.getReadIterator(id) ;
+    }
+    
     @Override
     public Block getWrite(int id)
     {
@@ -114,31 +123,45 @@ public class BlockMgrLogger implements BlockMgr //extends BlockMgrWrapper
     }
 
     @Override
-    public void startRead()
+    public void beginIterator(Iterator<?> iter)
+    {
+        log.info("> start iterator") ;
+        blockMgr.beginIterator(iter) ;
+    }
+    
+    @Override
+    public void endIterator(Iterator<?> iter)
+    {
+        log.info("< end iterator") ;
+        blockMgr.beginIterator(iter) ;
+    }
+    
+    @Override
+    public void beginRead()
     {
         log.info("> start read") ;
-        blockMgr.startRead() ;
+        blockMgr.beginRead() ;
     }
 
     @Override
-    public void finishRead()
+    public void endRead()
     {
         log.info("< finish read") ;
-        blockMgr.finishRead() ;
+        blockMgr.endRead() ;
     }
 
     @Override
-    public void startUpdate()
+    public void beginUpdate()
     {
         log.info("> start update") ;
-        blockMgr.startUpdate() ;
+        blockMgr.beginUpdate() ;
     }
 
     @Override
-    public void finishUpdate()
+    public void endUpdate()
     {
         log.info("< finish update") ;
-        blockMgr.finishUpdate() ;
+        blockMgr.endUpdate() ;
     }
 }
 

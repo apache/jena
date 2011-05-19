@@ -11,7 +11,6 @@ import com.hp.hpl.jena.tdb.base.file.FileSet ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
 import com.hp.hpl.jena.tdb.index.factories.IndexFactoryBPlusTree ;
-import com.hp.hpl.jena.tdb.index.factories.IndexFactoryBTree ;
 import com.hp.hpl.jena.tdb.index.factories.IndexFactoryExtHash ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
@@ -24,7 +23,6 @@ public class IndexBuilder
     private static IndexBuilder builder         = chooseIndexBuilder() ;
     public static IndexBuilder get()            { return builder ; }
     
-    public static IndexBuilder getBTree()       { return createIndexBuilder(IndexType.BTree) ; }
     public static IndexBuilder getBPlusTree()   { return createIndexBuilder(IndexType.BPlusTree) ; }
     public static IndexBuilder getExtHash()     { return createIndexBuilder(IndexType.ExtHash) ; }
     
@@ -55,11 +53,6 @@ public class IndexBuilder
     {
         switch (indexType)
         {
-            case BTree:
-            {
-                IndexFactoryBTree idx = new IndexFactoryBTree() ;
-                return new IndexBuilder(idx, idx) ;
-            }
             case BPlusTree:
             {
                 IndexFactoryBPlusTree idx = new IndexFactoryBPlusTree() ;

@@ -5,7 +5,7 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.base.block;
+package com.hp.hpl.jena.tdb.base.file;
 
 import static java.lang.String.format;
 
@@ -15,20 +15,16 @@ import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.Arrays;
 
+import com.hp.hpl.jena.tdb.base.block.Block ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/** Block manager for a file, using memory mapped I/O */
+/** FileAccess for a file, using memory mapped I/O */
 final
-public class BlockMgrMapped extends BlockMgrFile
+public class FileAccessMapped extends FileAccessBase
 {
-    // --> FileAccessMapped
-    // [TxTDB:PATCH-UP]
-    // BlockMgrFile/BlockMgrDirect/BlockMgrMapped need reworking
-    // FileAccess over a simple read/write 
-    
     /* Blocks are addressed by positive ints - 
      * Is that a limit?
      * One billion is 2^30
@@ -36,7 +32,7 @@ public class BlockMgrMapped extends BlockMgrFile
      * No limit at the moment - later performance tuning will see what the cost of 48 or 63 bit addresses would be.    
      */
     
-    private static Logger log = LoggerFactory.getLogger(BlockMgrMapped.class) ;
+    private static Logger log = LoggerFactory.getLogger(FileAccessMapped.class) ;
 
     // Segmentation avoids over-mapping; allows file to grow (in chunks) 
     private final int GrowthFactor = 2 ;
@@ -50,7 +46,7 @@ public class BlockMgrMapped extends BlockMgrFile
     private int segmentDirtyCount = 0 ;
     private boolean[] segmentDirty = new boolean[initialNumSegements] ; 
     
-    BlockMgrMapped(String filename, int blockSize)
+    public FileAccessMapped(String filename, int blockSize)
     {
         super(filename, blockSize) ;
         blocksPerSegment = SegmentSize/blockSize ;
@@ -68,8 +64,10 @@ public class BlockMgrMapped extends BlockMgrFile
     
     
     @Override
-    protected Block allocate()
+    public Block allocate(int blkSize)
     {
+        if ( blkSize > 0 && blkSize != this.blockSize )
+            throw new FileException("Fixed blocksize only: request= "+blkSize+"fixed size="+this.blockSize) ;
         int id = allocateId() ;
         ByteBuffer bb = getByteBuffer(id) ;
         bb.position(0) ;
@@ -78,45 +76,37 @@ public class BlockMgrMapped extends BlockMgrFile
     }
     
     @Override
-    public Block getRead(int id)
-    {
-        return get(id) ;
-    }
-
-    @Override
-    public Block getWrite(int id)
-    {
-        return get(id) ;
-    }
-
-    private Block get(int id)
+    public Block read(int id)
     {
         check(id) ;
         checkIfClosed() ;
-        if ( getLog().isDebugEnabled() ) 
-            getLog().debug(format("get(%d)", id)) ;
         ByteBuffer bb = getByteBuffer(id) ;
+        bb.position(0) ;
         Block block = new Block(id, bb) ;
         return block ;
     }
-    
-    // [TxTDB:PATCH-UP]
+
     @Override
-    public void release(Block block)
-    {}
-    
-    @Override
-    public Block promote(Block block)
+    public void write(Block block)
     {
-        return block ;
-    }
-    @Override
-    public void free(Block block)
-    { 
-        check(block.getId()) ;
+        check(block) ;
         checkIfClosed() ;
+        int id = block.getId() ;
+        // Assumed MRSW - no need to sync as we are the only W
+        segmentDirty[segment(id)] = true ;
+        // No other work.
+        writeNotification(block) ;
     }
-    
+
+
+    @Override
+    public void sync()
+    {
+        checkIfClosed() ;
+        force() ;
+    }
+
+
     private ByteBuffer getByteBuffer(int id)
     {
         int seg = segment(id) ;                 // Segment.
@@ -164,7 +154,7 @@ public class BlockMgrMapped extends BlockMgrFile
         if ( seg < 0 )
         {
             getLog().error("Segment negative: "+seg) ;
-            throw new BlockException("Negative segment: "+seg) ;
+            throw new FileException("Negative segment: "+seg) ;
         }
 
         while ( seg >= segments.length )
@@ -184,7 +174,7 @@ public class BlockMgrMapped extends BlockMgrFile
         if ( offset < 0 )
         {
             getLog().error("Segment offset gone negative: "+seg) ;
-            throw new BlockException("Negative segment offset: "+seg) ;
+            throw new FileException("Negative segment offset: "+seg) ;
         }
         
         // This, the relocation code above, and flushDirtySegements(), 
@@ -200,8 +190,8 @@ public class BlockMgrMapped extends BlockMgrFile
             } catch (IOException ex)
             {
                 if ( ex.getCause() instanceof java.lang.OutOfMemoryError )
-                    throw new BlockException("BlockMgrMapped.segmentAllocate: Segment = "+seg+" : Offset = "+offset) ;
-                throw new BlockException("BlockMgrMapped.segmentAllocate: Segment = "+seg, ex) ;
+                    throw new FileException("BlockMgrMapped.segmentAllocate: Segment = "+seg+" : Offset = "+offset) ;
+                throw new FileException("BlockMgrMapped.segmentAllocate: Segment = "+seg, ex) ;
             }
         }
         //segmentDirty[seg] = true ; // Old - why was it ever here?
@@ -224,25 +214,6 @@ public class BlockMgrMapped extends BlockMgrFile
                 segmentDirtyCount-- ;
             }
         }
-    }
-
-    @Override
-    public void write(Block block)
-    {
-        check(block) ;
-        checkIfClosed() ;
-        int id = block.getId() ;
-        // Assumed MRSW - no need to sync as we are the only W
-        segmentDirty[segment(id)] = true ;
-        // No other work.
-        writeNotification(block) ;
-    }
-    
-    @Override
-    public void sync()
-    {
-        checkIfClosed() ;
-        force() ;
     }
 
     @Override

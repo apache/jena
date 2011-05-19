@@ -18,8 +18,8 @@ import com.hp.hpl.jena.tdb.base.block.BlockType ;
 
 public class PageBlockMgr<T extends Page>
 {
-    private BlockMgr blockMgr ;
-    private BlockConverter<T> pageFactory ;
+    protected final BlockMgr blockMgr ;
+    protected BlockConverter<T> pageFactory ;
 
     protected PageBlockMgr(BlockConverter<T> pageFactory, BlockMgr blockMgr)
     { 
@@ -58,6 +58,13 @@ public class PageBlockMgr<T extends Page>
         T page = pageFactory.fromBlock(block) ;
         return page ;
     }
+    
+//    public T getReadIterator(int id)
+//    { 
+//        Block block = blockMgr.getReadIterator(id) ;
+//        T page = pageFactory.fromBlock(block) ;
+//        return page ;
+//    }
 
     public void put(T page)
     {
@@ -111,16 +118,16 @@ public class PageBlockMgr<T extends Page>
     }
     
     /** Signal the start of an update operation */
-    public void startUpdate()       { blockMgr.startUpdate() ; }
+    public void startUpdate()       { blockMgr.beginUpdate() ; }
     
     /** Signal the completion of an update operation */
-    public void finishUpdate()      { blockMgr.finishUpdate() ; }
+    public void finishUpdate()      { blockMgr.endUpdate() ; }
 
     /** Signal the start of an update operation */
-    public void startRead()         { blockMgr.startRead() ; }
+    public void startRead()         { blockMgr.beginRead() ; }
     
     /** Signal the completeion of an update operation */
-    public void finishRead()        { blockMgr.finishRead() ; }
+    public void finishRead()        { blockMgr.endRead() ; }
 }
 
 /*

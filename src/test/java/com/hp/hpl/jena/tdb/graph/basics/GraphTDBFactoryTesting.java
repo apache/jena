@@ -9,7 +9,6 @@ package com.hp.hpl.jena.tdb.graph.basics;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.index.IndexBuilder ;
 import com.hp.hpl.jena.tdb.index.factories.IndexFactoryBPlusTree ;
-import com.hp.hpl.jena.tdb.index.factories.IndexFactoryBTree ;
 import com.hp.hpl.jena.tdb.store.GraphTriplesTDB ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
@@ -19,14 +18,6 @@ class GraphTDBFactoryTesting
 {
     // This class and FactoryGraphTDB are old ways of making graphs and datasets 
     
-    /** Create a graph backed with storage at a location using and BTree (not B+Tree) indexes (testing) */
-    public static GraphTriplesTDB createBTree(Location location)
-    { 
-        IndexFactoryBTree idxFactory = new IndexFactoryBTree(SystemTDB.BlockSizeTest) ;
-        IndexBuilder builder = new IndexBuilder(idxFactory,idxFactory) ; 
-        return FactoryGraphTDB.createGraph(builder, location) ;
-    }
-
     /** Create a graph backed with storage at a location using B+Tree indexes (testing) */
     public static GraphTriplesTDB createBPlusTree(Location location)
     { 
@@ -42,15 +33,7 @@ class GraphTDBFactoryTesting
         IndexBuilder builder = new IndexBuilder(idxFactory,idxFactory) ; 
         return FactoryGraphTDB.createGraphMem(builder) ;
     }
-    
-    /** Create a graph backed with storage and B+Tree indexes in-memory (testing) */
-    public static GraphTriplesTDB createBTreeMem()
-    { 
-        IndexFactoryBTree idxFactory = new IndexFactoryBTree(SystemTDB.BlockSizeTestMem) ;
-        IndexBuilder builder = new IndexBuilder(idxFactory,idxFactory) ; 
-        return FactoryGraphTDB.createGraphMem(builder) ;
-    }
-}
+}    
 
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP

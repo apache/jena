@@ -4,24 +4,31 @@ package tx;
 public class DevTx
 {
     // Run tests with BlockMgrFactory.tracked on.
-    // 
-    // FileAccessDirect (and delete BlockMgrDirect) [DONE]
-    // FileAccessMapped (and delete BlockMgrmapped)
+    // Test with overlapping iterators.
+    
+    // test for block managers and tracking.
+    
+    // Ref counting get/release.
+    // pom.xml - exclude resources/log4j.properies
     
     // Tidy up 
     //   See HACK (BPTreeNode)
     //   See [TxTDB:PATCH-UP]
     //   See FREE
+    //   See [ITER]
     
     // Caching pages across actions sequences. e.g BPT root block.
     // Iterators
     //   Cache in transaction so forgettable?
-    //   Iterator / session tracking replaces epoch mechanism? 
-    
-    // Session.migrate ; DatsetGraph isa session. ; session nesting and overlap - session manager?
+    //   Iterator tracking replaces epoch mechanism?
+    //   (No - it's a step of iterator that complains, not the update.) 
     
     // ---- ---- ---- ----
 
+    // Other:
+    //   Sort out IndexBulder/IndexFactory/(IndexMaker in test)
+    
+    
     /*
      * Iterator tracking
      *   End transaction => close all open iterators.
