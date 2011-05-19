@@ -1,3 +1,0 @@
-#!/bin/bash
-
-zip -r btree-java.zip src/*/java/com/hp/hpl/jena/tdb/index/btree src/main/java/com/hp/hpl/jena/tdb/index/factories/IndexFactoryBTree.java -x '**/.svn**'
