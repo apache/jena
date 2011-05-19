@@ -18,11 +18,9 @@ import static com.hp.hpl.jena.tdb.base.block.BlockMgrTracker.Action.Write ;
 import java.util.ArrayList ;
 import java.util.Iterator ;
 import java.util.List ;
-import java.util.Map ;
 
 import org.openjena.atlas.lib.MultiSet ;
 import org.openjena.atlas.lib.Pair ;
-import org.openjena.atlas.lib.RefLong ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
@@ -33,21 +31,15 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
     static enum Action { Alloc, Promote, GetRead, GetWrite, Write, Release, Free, IterRead }
     static final Integer NoId = Integer.valueOf(-9) ;
     
-    // HACK - needs to be multitread safe over it's own datastructures.
-    // But don't sync the underlying blockMgr (so history may be wrong but 
-    // we do not want to force inglethread access to the underlying blockMgr).
-
-    // ref counting blocks.
-    
     // Don't inherit BlockMgrWrapper to make sure this class caches everything.
 
+    // XXX Issue: two block with same id but different ByteBuffers --> in someway, don't
+    //   Check in getRead/getWrite/getReadIterator
+    
     // ---- State for tracking
-    // Track the active state of the BlockMgr
-    
-    // The use of AtomicInteger here isn't for the atomicity but because they are also "refs to ints"
-    
-    private static boolean contains(Map<Integer,RefLong> x, Integer id) { return x.containsKey(id) ; } 
-    
+    // Track and count block references and releases
+    // XXX Can a block be a read block AND a write block?
+    //   No - the page is dirty.
     protected final MultiSet<Integer> activeReadBlocks   = new MultiSet<Integer>() ;
     protected final MultiSet<Integer> activeWriteBlocks  = new MultiSet<Integer>() ;
     protected final MultiSet<Integer> activeIterBlocks   = new MultiSet<Integer>() ;
@@ -118,7 +110,6 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
         }
         return block ;
     }
-
     
     @Override
     public Block getRead(int id)

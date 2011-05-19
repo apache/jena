@@ -28,7 +28,7 @@ public abstract class FileAccessBase implements FileAccess
     protected final String filename ;
     protected final String label ;
     protected FileChannel channel ;
-    protected RandomAccessFile out ;
+//    protected RandomAccessFile out ;
     protected long numFileBlocks = -1 ;             // Don't overload use of this!
     protected final AtomicLong seq ;   // Id (future)
     protected boolean isEmpty = false ;
@@ -44,8 +44,10 @@ public abstract class FileAccessBase implements FileAccess
             // "rws" - Syncs the file contents and metadata
             // "rw" - cached?
 
-            out = new RandomAccessFile(filename, "rw") ;
-            long filesize = out.length() ;
+            RandomAccessFile out = new RandomAccessFile(filename, "rw") ;
+            channel = out.getChannel() ;
+            
+            long filesize = channel.size() ;
             long longBlockSize = blockSize ;
             
             numFileBlocks = filesize/longBlockSize ;
@@ -57,7 +59,6 @@ public abstract class FileAccessBase implements FileAccess
             if ( filesize%longBlockSize != 0 )
                 throw new BlockException(format("File size (%d) not a multiple of blocksize (%d)", filesize, blockSize)) ;
 
-            channel = out.getChannel() ;
             if ( channel.size() == 0 )
                 isEmpty = true ;
         } catch (IOException ex) { throw new BlockException("Failed to create BlockMgrFile", ex) ; }    
@@ -141,14 +142,12 @@ public abstract class FileAccessBase implements FileAccess
     final public void close()
     {
         _close() ;
-        if ( out != null )
+        if ( channel != null )
         {
             try {
                 force() ;
                 channel.close();
-                out.close();
                 channel = null ;
-                out = null ;
             } catch (IOException ex)
             { throw new BlockException(ex) ; }
         }

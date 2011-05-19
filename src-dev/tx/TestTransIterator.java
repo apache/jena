@@ -57,14 +57,10 @@ public class TestTransIterator extends BaseTest
         RangeIndex rIndex = build(2, vals) ;
         Iterator<Record> iter1 = rIndex.iterator() ;
         Iterator<Record> iter2 = rIndex.iterator() ;
-        
-        System.out.println("03") ;
         for ( ; iter1.hasNext() ; )
         {
             Record r1 = iter1.next();
-            System.out.println("r1 = "+r1) ;
             Record r2 = iter2.next();
-            System.out.println("r2 = "+r2) ;
         }
         assertFalse(iter2.hasNext()) ;
     }
