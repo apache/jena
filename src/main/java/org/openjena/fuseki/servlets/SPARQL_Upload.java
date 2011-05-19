@@ -23,9 +23,9 @@ import org.apache.commons.fileupload.util.Streams ;
 import org.openjena.atlas.lib.Sink ;
 import org.openjena.fuseki.FusekiLib ;
 import org.openjena.fuseki.HttpNames ;
-import org.openjena.fuseki.conneg.ContentType ;
 import org.openjena.fuseki.http.HttpSC ;
 import org.openjena.fuseki.server.DatasetRegistry ;
+import org.openjena.riot.ContentType ;
 import org.openjena.riot.ErrorHandler ;
 import org.openjena.riot.ErrorHandlerFactory ;
 import org.openjena.riot.Lang ;
@@ -150,7 +150,7 @@ public class SPARQL_Upload extends SPARQL_ServletBase
                     String contentTypeHeader = item.getContentType() ;
                     ct = ContentType.parse(contentTypeHeader) ;
                     
-                    lang = FusekiLib.langFromContentType(ct.contentType) ;
+                    lang = FusekiLib.langFromContentType(ct.getContentType()) ;
                     if ( lang == null )
                         lang = Lang.guess(name) ;
                     if ( lang == null )
@@ -173,7 +173,7 @@ public class SPARQL_Upload extends SPARQL_ServletBase
             if ( graphName == null )
                 graphName = "default" ;
             serverlog.info(format("[%d] Upload: Filename: %s, Content-Type=%s, Charset=%s => (%s,%s,%d triple(s))", 
-                                      action.id, name,  ct.contentType, ct.charset, graphName, lang.getName(), tripleCount)) ;
+                                      action.id, name,  ct.getContentType(), ct.getCharset(), graphName, lang.getName(), tripleCount)) ;
 
             // Delay updating until all form fields processed to get the graph name 
             action.beginWrite() ;

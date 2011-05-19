@@ -2,6 +2,11 @@ package dev;
 
 public class DevFuseki
 {
+    // WebContent and ContentType clean up.
+    
+	// SOH defualt to not needing 'default'
+	// More error handling.
+
     // Migrate ContentType to RIOT
     // use in WebContent.
     

@@ -12,7 +12,7 @@ import java.util.Map ;
 import javax.servlet.http.HttpServletRequest ;
 
 import org.openjena.atlas.lib.MultiMap ;
-import org.openjena.fuseki.conneg.ContentType ;
+import org.openjena.riot.ContentType ;
 import org.openjena.riot.Lang ;
 import org.openjena.riot.RiotException ;
 import org.openjena.riot.WebContent ;

@@ -20,9 +20,11 @@ import javax.servlet.http.HttpServletResponse ;
 
 import org.openjena.atlas.io.IO ;
 import org.openjena.atlas.io.IndentedLineBuffer ;
+import org.openjena.fuseki.FusekiLib ;
 import org.openjena.fuseki.HttpNames ;
 import org.openjena.fuseki.http.HttpSC ;
 import org.openjena.fuseki.migrate.WebIO ;
+import org.openjena.riot.ContentType ;
 import org.openjena.riot.WebContent ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
@@ -84,12 +86,13 @@ public abstract class SPARQL_Query extends SPARQL_ServletBase
         HttpActionQuery action = new HttpActionQuery(id, dsg, request, response, verbose_debug) ;
         if ( request.getMethod().equals(HttpNames.METHOD_GET) )
         {
-            executeForm(action) ;
+            executeWithParameter(action) ;
             return ;
         }
-       // XXX INCLUDES MEDIA TYPE
+
         // POST
-        String incoming = request.getContentType() ;
+        ContentType ct = FusekiLib.contentType(request) ;
+        String incoming = ct.getContentType() ;
         if (WebContent.contentTypeSPARQLQuery.equals(incoming))
         {
             executeBody(action) ;
@@ -97,7 +100,7 @@ public abstract class SPARQL_Query extends SPARQL_ServletBase
         }
         if (WebContent.contentTypeForm.equals(incoming))
         {
-            executeForm(action) ;
+            executeWithParameter(action) ;
             return ;
         }
 
@@ -152,22 +155,33 @@ public abstract class SPARQL_Query extends SPARQL_ServletBase
     /** Helper for validating request */
     protected void validate(HttpServletRequest request, Set<String> params)
     {
-        String incoming = request.getContentType() ;
-        if ( incoming != null )
+        ContentType ct = FusekiLib.contentType(request) ;
+        boolean mustHaveQueryParam = true ;
+        if ( ct != null )
         {
-        
+            String incoming = ct.getContentType() ;
+            
             if ( WebContent.contentTypeSPARQLQuery.equals(incoming) )
-                error(HttpSC.UNSUPPORTED_MEDIA_TYPE_415, "Unofficial "+WebContent.contentTypeSPARQLQuery+" not supported") ;
-                
-            if ( ! WebContent.contentTypeForm.equals(incoming) )
+            {
+                mustHaveQueryParam = false ;
+                //error(HttpSC.UNSUPPORTED_MEDIA_TYPE_415, "Unofficial "+WebContent.contentTypeSPARQLQuery+" not supported") ;
+            }
+            else if ( WebContent.contentTypeForm.equals(incoming) )
+                ; // OK
+            else
                 error(HttpSC.UNSUPPORTED_MEDIA_TYPE_415, "Unsupported: "+incoming) ;
         }
         
         // GET/POST of a form at this point.
-        String queryStr = request.getParameter(HttpNames.paramQuery) ;
         
-        if ( queryStr == null )
-            errorBadRequest("SPARQL Query: No query specificied (no 'query=' found)") ;
+        if ( mustHaveQueryParam )
+        {
+            // application/sparql-query does not use a query param.
+            String queryStr = request.getParameter(HttpNames.paramQuery) ;
+            
+            if ( queryStr == null )
+                errorBadRequest("SPARQL Query: No query specificied (no 'query=' found)") ;
+        }
 
         if ( params != null )
         {
@@ -182,7 +196,7 @@ public abstract class SPARQL_Query extends SPARQL_ServletBase
         }
     }
 
-    private void executeForm(HttpActionQuery action)
+    private void executeWithParameter(HttpActionQuery action)
     {
         String queryString = action.request.getParameter(paramQuery) ;
         execute(queryString, action) ;

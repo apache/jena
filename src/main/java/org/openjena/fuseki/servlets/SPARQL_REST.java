@@ -32,8 +32,8 @@ import org.openjena.fuseki.DEF ;
 import org.openjena.fuseki.FusekiLib ;
 import org.openjena.fuseki.HttpNames ;
 import org.openjena.fuseki.conneg.ConNeg ;
-import org.openjena.fuseki.conneg.ContentType ;
 import org.openjena.fuseki.conneg.MediaType ;
+import org.openjena.riot.ContentType ;
 import org.openjena.riot.ErrorHandler ;
 import org.openjena.riot.ErrorHandlerFactory ;
 import org.openjena.riot.Lang ;
@@ -304,7 +304,7 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
         
         ContentType ct = ContentType.parse(contentTypeHeader) ;
         int len = action.request.getContentLength() ;
-        Lang lang = FusekiLib.langFromContentType(ct.contentType) ;
+        Lang lang = FusekiLib.langFromContentType(ct.getContentType()) ;
         if ( lang == null )
         {
             errorBadRequest("Unknown: "+contentTypeHeader) ;
@@ -315,10 +315,10 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
         {
             if ( len >= 0 )
                 serverlog.info(format("[%d]   Body: Content-Length=%d, Content-Type=%s, Charset=%s => %s", 
-                                      action.id, len, ct.contentType, ct.charset, lang.getName())) ;
+                                      action.id, len, ct.getContentType(), ct.getCharset(), lang.getName())) ;
             else
                 serverlog.info(format("[%d]   Body: Content-Type=%s, Charset=%s => %s", 
-                                          action.id, ct.contentType, ct.charset, lang.getName())) ;
+                                          action.id, ct.getContentType(), ct.getCharset(), lang.getName())) ;
         }
         
         try {

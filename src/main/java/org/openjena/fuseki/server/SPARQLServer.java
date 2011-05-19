@@ -169,7 +169,6 @@ public class SPARQLServer
             }
         }
         
-        
         if ( installValidators )
         {
             // Validators

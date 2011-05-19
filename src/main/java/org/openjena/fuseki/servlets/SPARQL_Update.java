@@ -23,8 +23,8 @@ import org.openjena.atlas.io.IO ;
 import org.openjena.atlas.lib.Bytes ;
 import org.openjena.fuseki.FusekiLib ;
 import org.openjena.fuseki.HttpNames ;
-import org.openjena.fuseki.conneg.ContentType ;
 import org.openjena.fuseki.http.HttpSC ;
+import org.openjena.riot.ContentType ;
 import org.openjena.riot.WebContent ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
@@ -105,7 +105,7 @@ public class SPARQL_Update extends SPARQL_ServletBase
             if ( incoming == null )
                 ctStr = WebContent.contentTypeSPARQLUpdate ;
             else
-                ctStr = incoming.contentType ;
+                ctStr = incoming.getContentType() ;
         }
         // ----
         
@@ -131,7 +131,7 @@ public class SPARQL_Update extends SPARQL_ServletBase
             if ( incoming == null )
                 ctStr = WebContent.contentTypeSPARQLUpdate ;
             else
-                ctStr = incoming.contentType ;
+                ctStr = incoming.getContentType() ;
         }
         // ----
         
