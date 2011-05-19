@@ -22,7 +22,7 @@ public class TestMultiSet extends BaseTest
     {
         MultiSet<String> x = new MultiSet<String>() ;
         assertTrue(x.isEmpty()) ;
-        assertEquals(0, x.get("A")) ;
+        assertEquals(0, x.count("A")) ;
     }
 
     @Test public void multiSet_02()
@@ -30,9 +30,9 @@ public class TestMultiSet extends BaseTest
         MultiSet<String> x = new MultiSet<String>() ;
         x.add("A") ;
         assertFalse(x.isEmpty()) ;
-        assertEquals(1, x.get("A") ) ;
+        assertEquals(1, x.count("A") ) ;
         x.add("A") ;
-        assertEquals(2, x.get("A") ) ;
+        assertEquals(2, x.count("A") ) ;
     }
 
     @Test public void multiSet_03()
@@ -41,10 +41,10 @@ public class TestMultiSet extends BaseTest
         x.add("A") ;
         x.add("A") ;
         x.remove("A") ;
-        assertEquals(1, x.get("A") ) ;
+        assertEquals(1, x.count("A") ) ;
         assertTrue(x.contains("A")) ;
         x.remove("A") ;
-        assertEquals(0, x.get("A") ) ;
+        assertEquals(0, x.count("A") ) ;
         assertFalse(x.contains("A")) ;
     }
 

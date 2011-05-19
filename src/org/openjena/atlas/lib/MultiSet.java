@@ -13,6 +13,9 @@ import java.util.List ;
 import java.util.Map ;
 import java.util.NoSuchElementException ;
 
+/** A MultiSet - also known as a Bag
+ */
+
 public class MultiSet<T> implements Iterable<T>
 {
     private Map<T,RefLong> map   = new HashMap<T,RefLong>() ;
@@ -26,18 +29,17 @@ public class MultiSet<T> implements Iterable<T>
         }
         return z ;
     }
-    
+ 
+    /** Does it contain any elements at all? */
     public boolean isEmpty()        { return map.isEmpty() ; }
+
+    /** Does it contain the object? */
     public boolean contains(T obj)  { return map.containsKey(obj) ; }
-    public void add(T obj)          { _get(obj).inc(); } 
-    public long get(T obj)
-    {
-        RefLong z = map.get(obj) ;
-        if ( z == null )
-            return 0 ;
-        return z.value() ;
-    }
     
+    /** Add an object */
+    public void add(T obj)          { _get(obj).inc(); } 
+
+    /** Remove one occurrence of the object from the multiset */
     public void remove(T obj)
     {
         RefLong x = map.get(obj) ;
@@ -46,7 +48,20 @@ public class MultiSet<T> implements Iterable<T>
         if ( x.value() == 0 )
             map.remove(obj) ;
     }
+    
+    /** Remove all occurrences of the object in themultiset */
+    public void removeAll(T obj)
+    {
+        map.remove(obj) ;
+    }
+
+    /* Remove everything */
     public void clear() { map.clear() ; }
+    
+    
+    /** Get the count of the number of times the object appears in the multiset - i.e. it's cardinality.
+     * Returns zero when not present.
+     */
     public long count(T obj)
     {
         if ( ! map.containsKey(obj) ) return 0 ;
@@ -88,7 +103,7 @@ public class MultiSet<T> implements Iterable<T>
                 
                 if ( key != null )
                 {
-                    if ( count < get(key) )
+                    if ( count < count(key) )
                     {
                         count++ ;
                         slot = key ;
@@ -124,7 +139,8 @@ public class MultiSet<T> implements Iterable<T>
         } ; 
     }
     
-    @Override public String toString()
+    @Override 
+    public String toString()
     {
         StringBuilder sb = new StringBuilder() ;
         String sep = "" ;
@@ -139,8 +155,8 @@ public class MultiSet<T> implements Iterable<T>
         
         return sb.toString() ;
     }
-    
 }
+
 /*
  * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
