@@ -61,4 +61,6 @@ public class DevTx
      */
     
     // TDB 0.8.10 is rev 8718; TxTDB forked at 8731
+    // Diff of SF ref 8718 to Apache cross over applied. (src/ only)
+    // Now Apache: rev 1124661 
 }

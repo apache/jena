@@ -81,7 +81,7 @@ public class TxMain
         blkMgr.beginUpdate() ;
         Block block = blkMgr.allocate(-1) ;
         blkMgr.release(block) ;
-        blkMgr.release(block) ; // Need to check where an active bloock is - promote is one read -> write? 
+        blkMgr.release(block) ; // Need to check where an active block is - promote is one read -> write? 
         Block block2 = blkMgr.allocate(-1) ;
         blkMgr.endUpdate() ;
       

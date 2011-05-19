@@ -14,7 +14,6 @@ import com.hp.hpl.jena.tdb.junit.Base_TS ;
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
     TestGraphUnionRead.class
-    //, 
 })
 
 public class TS_Migrate extends Base_TS

@@ -16,12 +16,13 @@ import static com.hp.hpl.jena.tdb.base.block.BlockMgrTracker.Action.Release ;
 import static com.hp.hpl.jena.tdb.base.block.BlockMgrTracker.Action.Write ;
 
 import java.util.ArrayList ;
-import java.util.HashMap ;
 import java.util.Iterator ;
 import java.util.List ;
 import java.util.Map ;
 
+import org.openjena.atlas.lib.MultiSet ;
 import org.openjena.atlas.lib.Pair ;
+import org.openjena.atlas.lib.RefLong ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
@@ -45,88 +46,6 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
     
     // The use of AtomicInteger here isn't for the atomicity but because they are also "refs to ints"
     
-    static final class RefLong
-    {
-        private long value ;
-        public RefLong() { this(0) ; }
-        public RefLong(long v) { value = v ; }
-        public long value()     { return value ; }
-        public void inc()       { value++ ; } 
-        public void dec()       { --value ; }
-        public long getAndInc() { return value++ ; }
-        public long incAndGet() { return ++value ; }
-        public long getAndDec() { return value-- ; }
-        public long decAndGet() { return -value ; }
-        public void add(long v) { value += v ; }
-        public void set(long v) { value = v ; }
-        @Override public String toString() { return "Ref:"+Long.toString(value) ; } 
-        // hashCode and equals are Object equality - this is a mutable object
-    }
-
-    static class MultiSet<T> implements Iterable<T>
-    {
-        private Map<T,RefLong> map   = new HashMap<T,RefLong>() ;
-        private RefLong get(T obj)
-        {
-            RefLong z = map.get(obj) ;
-            if ( z == null )
-            {
-                z = new RefLong(0) ;
-                map.put(obj, z) ;
-            }
-            return z ;
-        }
-        
-        public boolean isEmpty()        { return map.isEmpty() ; }
-        public boolean contains(T obj)  { return map.containsKey(obj) ; }
-        public void add(T obj)          { get(obj).inc(); } 
-        public void remove(T obj)
-        {
-            RefLong x = map.get(obj) ;
-            if ( x == null ) return ;
-            x.dec() ;
-            if ( x.value() == 0 )
-                map.remove(obj) ;
-        }
-        public void clear() { map.clear() ; }
-        public long count(T obj)
-        {
-            if ( ! map.containsKey(obj) ) return 0 ;
-            return map.get(obj).value() ;
-        }
-        
-        @Override
-        public Iterator<T> iterator()
-        {
-            // CRUDE
-            // TODO Fixme
-            List<T> expanded = new ArrayList<T>() ;
-            for ( Map.Entry<T, RefLong> e : map.entrySet() )
-            {
-                for ( int i = 0 ; i < e.getValue().value() ; i++ )
-                    expanded.add(e.getKey()) ;
-            }
-            
-            return expanded.iterator() ;
-        }
-        
-        @Override public String toString()
-        {
-            StringBuilder sb = new StringBuilder() ;
-            String sep = "" ;
-            for ( Map.Entry<T, RefLong> e : map.entrySet() )
-            {
-                sb.append(sep) ;
-                sep = ", " ;
-                sb.append(e.getKey().toString()) ;
-                sb.append("=") ;
-                sb.append(Long.toString(e.getValue().value())) ;
-            }
-            
-            return sb.toString() ;
-        }
-        
-    }    
     private static boolean contains(Map<Integer,RefLong> x, Integer id) { return x.containsKey(id) ; } 
     
     protected final MultiSet<Integer> activeReadBlocks   = new MultiSet<Integer>() ;
