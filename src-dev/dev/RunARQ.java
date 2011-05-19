@@ -35,8 +35,6 @@ import com.hp.hpl.jena.iri.IRI ;
 import com.hp.hpl.jena.iri.IRIFactory ;
 import com.hp.hpl.jena.iri.Violation ;
 import com.hp.hpl.jena.query.ARQ ;
-import com.hp.hpl.jena.query.DataSource ;
-import com.hp.hpl.jena.query.DatasetFactory ;
 import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.query.QueryCancelledException ;
 import com.hp.hpl.jena.query.QueryExecution ;
@@ -46,7 +44,6 @@ import com.hp.hpl.jena.query.QuerySolutionMap ;
 import com.hp.hpl.jena.query.ResultSet ;
 import com.hp.hpl.jena.query.ResultSetFormatter ;
 import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.shared.PrefixMapping ;
 import com.hp.hpl.jena.sparql.ARQConstants ;
 import com.hp.hpl.jena.sparql.ARQException ;
@@ -114,8 +111,8 @@ public class RunARQ
     public static void main(String[] argv) throws Exception
     {
         String x = StrUtils.strjoinNL("(join",
-                                      "  (conditional",
-                                      //"  (leftjoin",
+                                      //"  (conditional",
+                                      "  (leftjoin",
                                       "    (bgp (triple ?s ?p1 ?o1))" ,
                                       "    (bgp (triple ?s <foaf:knows> ?o2)))" ,
                                       "  (table",
