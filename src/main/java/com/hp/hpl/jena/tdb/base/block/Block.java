@@ -20,14 +20,14 @@ public final class Block
     private boolean modified = false ;
     
     private final ByteBuffer byteBuffer ;
-    private BlockType type ;
+//    private BlockType type ;
 
     public Block(int id, ByteBuffer byteBuffer)
     { 
         // ByteBuffer is whole disk space from byte 0 for this disk unit. 
         this.id = id ; 
         this.byteBuffer = byteBuffer ;
-        this.type = BlockType.UNDEF ;
+        //this.type = BlockType.UNDEF ;
         this.fileRef = null ;
         this.readOnly = false ;
         // Initially a block is not modified.
@@ -75,21 +75,49 @@ public final class Block
         return fileRef ;
     }
 
-    public void setType(BlockType blockType) 
-    {
-        type = blockType ;
-    }
-        
-    public BlockType getType()
-    {
-        return type ;
-    }
+//    public void setType(BlockType blockType) 
+//    {
+//        type = blockType ;
+//    }
+//        
+//    public BlockType getType()
+//    {
+//        return type ;
+//    }
     
     @Override
     public String toString()
     {
         return "Block: "+id+" : Length: "+byteBuffer.capacity() ;
     }
+    
+    public Block replicate()
+    {
+        ByteBuffer dstBuffer = replicate(getByteBuffer()) ;
+        Block b = new Block(getId(), dstBuffer) ;
+        return b ;
+    }  
+
+    public static void replicate(Block srcBlock, Block dstBlock)
+    {
+        if ( ! srcBlock.getId().equals(dstBlock.getId()) )
+            throw new BlockException("FileAccessMem: Attempt to copy across blocks: "+srcBlock.getId()+" => "+dstBlock.getId()) ;
+        replicate(srcBlock.getByteBuffer(), dstBlock.getByteBuffer()) ;
+    }  
+
+    private static ByteBuffer replicate(ByteBuffer srcBlk)
+    {
+        ByteBuffer dstBlk = ByteBuffer.allocate(srcBlk.capacity()) ;
+        System.arraycopy(srcBlk.array(), 0, dstBlk.array(), 0, srcBlk.capacity()) ;
+        return dstBlk ; 
+    }  
+
+    private static void replicate(ByteBuffer srcBlk, ByteBuffer dstBlk)
+    {
+        srcBlk.position(0) ;
+        dstBlk.position(0) ;
+        dstBlk.put(srcBlk) ;
+    }  
 }
 
 /*

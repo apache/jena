@@ -45,7 +45,7 @@ public class FileAccessMem implements FileAccess
     public Block allocate(int blkSize)
     {
         if ( blkSize > 0 && blkSize != this.blockSize )
-            throw new FileException("Fixed blocksize only: request= "+blkSize+"fixed size="+this.blockSize) ;
+            throw new FileException("Fixed blocksize only: request= "+blkSize+" / fixed size="+this.blockSize) ;
         
         int x = blocks.size() ;
         ByteBuffer bb = ByteBuffer.allocate(blkSize) ;
@@ -60,7 +60,7 @@ public class FileAccessMem implements FileAccess
         check(id) ;
         Block blk = blocks.get(id) ;
         if ( safeModeThisMgr ) 
-            return replicate(blk) ;
+            return blk.replicate() ;
         else
             return blk ;
     }
@@ -70,14 +70,14 @@ public class FileAccessMem implements FileAccess
     {
         check(block) ;
         if ( safeModeThisMgr )
-            block = replicate(block) ;
+            block = block.replicate() ;
         blocks.set(block.getId(), block) ;
     }
     
     @Override
     public boolean isEmpty()
     {
-        return false ;
+        return blocks.isEmpty() ;
     }
 
     @Override
@@ -118,35 +118,6 @@ public class FileAccessMem implements FileAccess
         if ( bb.order() != SystemTDB.NetworkOrder )
             throw new FileException("BlockMgrMem: Wrong byte order") ;
     }
-    
-    private static Block replicate(Block srcBlock)
-    {
-        ByteBuffer dstBuffer = replicate(srcBlock.getByteBuffer()) ;
-        Block b = new Block(srcBlock.getId(), dstBuffer) ;
-        b.setType(srcBlock.getType()) ;
-        return b ;
-    }  
-
-    private static void replicate(Block srcBlock, Block dstBlock)
-    {
-        if ( ! srcBlock.getId().equals(dstBlock.getId()) )
-            throw new FileException("FileAccessMem: Attempt to copy across blocks: "+srcBlock.getId()+" => "+dstBlock.getId()) ;
-        replicate(srcBlock.getByteBuffer(), dstBlock.getByteBuffer()) ;
-    }  
-
-    private static ByteBuffer replicate(ByteBuffer srcBlk)
-    {
-        ByteBuffer dstBlk = ByteBuffer.allocate(srcBlk.capacity()) ;
-        System.arraycopy(srcBlk.array(), 0, dstBlk.array(), 0, srcBlk.capacity()) ;
-        return dstBlk ; 
-    }  
-    
-    private static void replicate(ByteBuffer srcBlk, ByteBuffer dstBlk)
-    {
-        srcBlk.position(0) ;
-        dstBlk.position(0) ;
-        dstBlk.put(srcBlk) ;
-    }  
 }
 /*
  * (c) Copyright 2011 Epimorphics Ltd.

@@ -3,6 +3,11 @@ package tx;
 
 public class DevTx
 {
+    // BlobStream.
+    //   Include "read() == read next"
+    // TestByteArray and up - exception tests.
+    
+    
     // Run tests with BlockMgrFactory.tracked on.
     // Test with overlapping iterators.
     

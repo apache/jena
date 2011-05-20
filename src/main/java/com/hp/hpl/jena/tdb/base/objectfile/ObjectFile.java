@@ -13,8 +13,11 @@ import org.openjena.atlas.lib.Closeable ;
 import org.openjena.atlas.lib.Pair ;
 import org.openjena.atlas.lib.Sync ;
 
-/** Temporary name.
+/** 
+ * An ObjectFile is an append-read file, that is you can append blocks
+ * to the stream or read any block.
  */
+
 public interface ObjectFile extends Sync, Closeable
 {
     public static final String type = "object" ;
@@ -22,13 +25,13 @@ public interface ObjectFile extends Sync, Closeable
     /** Allocate space for a write - pass this buffer to completeWrite */ 
     public ByteBuffer allocWrite(int maxBytes) ;
     
-    /** Announce that a write is complete - return the accessor number */
+    /** Announce that a write is complete (buffer must come from allocWrite) - return the accessor number */
     public long completeWrite(ByteBuffer buffer) ;
 
     /** Write out the buffer - return the accessor number */ 
     public long write(ByteBuffer buffer) ;
 
-    /** Read a buffer. */
+    /** Read a buffer at the accessor number. */
     public ByteBuffer read(long id) ;
     
     /** Length, in units used by read/write for ids */

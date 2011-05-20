@@ -19,7 +19,8 @@ public class BlockStreamDirect extends FileBase /*Simply incorproate this?*/ imp
 {
     private long length ;
     
-    // NoteTable I/O is much the same - reuse ObjectFileDiskDirect
+    // ObjectFileDiskDirect
+    // Use a FileAccess wrapper and delete ObjectFileDiskDirect
 
     public BlockStreamDirect(String filename)
     {

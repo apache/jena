@@ -6,6 +6,9 @@
 
 package com.hp.hpl.jena.tdb.base.objectfile;
 
+import static com.hp.hpl.jena.tdb.sys.SystemTDB.ObjectFileWriteCacheSize ;
+import static com.hp.hpl.jena.tdb.sys.SystemTDB.SizeOfInt ;
+
 import java.io.IOException ;
 import java.nio.ByteBuffer ;
 import java.util.Iterator ;
@@ -16,27 +19,37 @@ import org.openjena.atlas.lib.Pair ;
 import com.hp.hpl.jena.tdb.base.block.BlockException ;
 import com.hp.hpl.jena.tdb.base.file.FileBase ;
 import com.hp.hpl.jena.tdb.base.file.FileException ;
-import com.hp.hpl.jena.tdb.lib.StringAbbrev ;
-import static com.hp.hpl.jena.tdb.sys.SystemTDB.SizeOfInt ;
-import static com.hp.hpl.jena.tdb.sys.SystemTDB.ObjectFileWriteCacheSize;
 
 /** Variable length ByteBuffer file on disk.  Read by id ; write is append-only */  
 
 public class ObjectFileDiskDirect implements ObjectFile 
 {
-    /* No synchronization - assumes that the caller has some appropriate lock
-     * because the combination of file and cache operations needs to be thread safe.  
+    /* 
+     * No synchronization - assumes that the caller has some appropriate lock
+     * because the combination of file and cache operations needs to be thread safe.
+     * 
+     * The position of the channel is assumed to be the end of the file always.
+     * Read operations are done with absolute channel calls, 
+     * which do not reset the position.
+     * 
+     * Writing is buffered.
      */
+    
+    // Replaces with a FileAccess wrapper?
+    
+    // One disk file size.
     protected long filesize ;
-    protected final FileBase file ;
     // Delayed write buffer
+    // This adds to the length of the file  
     private ByteBuffer output = ByteBuffer.allocate(ObjectFileWriteCacheSize) ;
+    
+    protected final FileBase file ;
     private boolean inAllocWrite = true ;
     private ByteBuffer allocByteBuffer = null ;
 
     public ObjectFileDiskDirect(String filename)
     {
-        file = new FileBase(filename) ;
+        file = new FileBase(filename) ; // Inherit?
         try { 
             filesize = file.out.length() ;
         } catch (IOException ex) { throw new BlockException("Failed to get filesize", ex) ; } 
@@ -48,6 +61,7 @@ public class ObjectFileDiskDirect implements ObjectFile
     public long write(ByteBuffer bb)
     {
         try {
+            // XXX Use the allocByteBuffer. 
             // Write length
             int len = bb.limit() - bb.position();
             lengthBuffer.clear() ;
@@ -148,7 +162,7 @@ public class ObjectFileDiskDirect implements ObjectFile
         if ( loc < 0 )
             throw new IllegalArgumentException("ObjectFile.read: Bad read: "+loc) ;
         
-        // Maybe be in the write buffer
+        // Maybe it's in the in the write buffer
         if ( loc >= filesize )
         {
             if ( loc > filesize+output.capacity() )
@@ -194,6 +208,12 @@ public class ObjectFileDiskDirect implements ObjectFile
     }
 
     @Override
+    public void close()                 { flushOutputBuffer() ; file.close() ; }
+
+    @Override
+    public void sync()                  { flushOutputBuffer() ; file.sync() ; }
+
+    @Override
     public Iterator<Pair<Long, ByteBuffer>> all()
     {
         try { file.out.seek(0) ; } 
@@ -236,14 +256,6 @@ public class ObjectFileDiskDirect implements ObjectFile
         { throw new UnsupportedOperationException() ; }
     }
     
-
-    @Override
-    public void close()
-    { file.close() ; }
-
-    @Override
-    public void sync()                  { flushOutputBuffer() ; file.sync() ; }
-    
     // ---- Dump
     public void dump() { dump(handler) ; }
 
@@ -271,42 +283,6 @@ public class ObjectFileDiskDirect implements ObjectFile
             System.out.printf("0x%08X : %s\n", fileIdx, str) ;
         }
     } ;
-    // ----
- 
-    
-    // URI compression can be effective but literals are more of a problem.  More variety. 
-    public final static boolean compression = false ; 
-    private static StringAbbrev abbreviations = new StringAbbrev() ;
-    static {
-        abbreviations.add(  "rdf",      "<http://www.w3.org/1999/02/22-rdf-syntax-ns#") ;
-        abbreviations.add(  "rdfs",     "<http://www.w3.org/2000/01/rdf-schema#") ;
-        abbreviations.add(  "xsd",      "<http://www.w3.org/2001/XMLSchema#") ;
-        
-        // MusicBrainz
-        abbreviations.add(  "mal",      "<http://musicbrainz.org/mm-2.1/album/") ;
-        abbreviations.add(  "mt",       "<http://musicbrainz.org/mm-2.1/track/") ;
-        abbreviations.add(  "mar",      "<http://musicbrainz.org/mm-2.1/artist/") ;
-        abbreviations.add(  "mtr",      "<http://musicbrainz.org/mm-2.1/trmid/") ;
-        abbreviations.add(  "mc",       "<http://musicbrainz.org/mm-2.1/cdindex/") ;
-        
-        abbreviations.add(  "m21",      "<http://musicbrainz.org/mm/mm-2.1#") ;
-        abbreviations.add(  "dc",       "<http://purl.org/dc/elements/1.1/") ;
-        // DBPedia
-        abbreviations.add(  "r",        "<http://dbpedia/resource/") ;
-        abbreviations.add(  "p",        "<http://dbpedia/property/") ;
-    }
-    private String compress(String str)
-    {
-        if ( !compression || abbreviations == null ) return str ;
-        return abbreviations.abbreviate(str) ;
-    }
-
-    private String decompress(String x)
-    {
-        if ( !compression || abbreviations == null ) return x ;
-        return abbreviations.expand(x) ;
-    }
-
 }
 
 /*

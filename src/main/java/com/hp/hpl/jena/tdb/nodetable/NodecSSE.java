@@ -18,6 +18,7 @@ import com.hp.hpl.jena.rdf.model.AnonId ;
 import com.hp.hpl.jena.shared.PrefixMapping ;
 import com.hp.hpl.jena.tdb.TDBException ;
 import com.hp.hpl.jena.tdb.lib.NodeFmtLib ;
+import com.hp.hpl.jena.tdb.lib.StringAbbrev ;
 
 /** Simple encoder/decoder for nodes that uses Turtle term string encoding. */
 
@@ -135,6 +136,39 @@ public class NodecSSE implements Nodec
         // Encoding every character as _XX or bad UTF-8 conversion (3 bytes)
         // Max 3 bytes UTF-8 for up to 10FFFF (NB Java treats above 16bites as surrogate pairs only). 
         return string.length()*3 ;
+    }
+    
+    // URI compression can be effective but literals are more of a problem.  More variety. 
+    public final static boolean compression = false ; 
+    private static StringAbbrev abbreviations = new StringAbbrev() ;
+    static {
+        abbreviations.add(  "rdf",      "<http://www.w3.org/1999/02/22-rdf-syntax-ns#") ;
+        abbreviations.add(  "rdfs",     "<http://www.w3.org/2000/01/rdf-schema#") ;
+        abbreviations.add(  "xsd",      "<http://www.w3.org/2001/XMLSchema#") ;
+
+        // MusicBrainz
+        abbreviations.add(  "mal",      "<http://musicbrainz.org/mm-2.1/album/") ;
+        abbreviations.add(  "mt",       "<http://musicbrainz.org/mm-2.1/track/") ;
+        abbreviations.add(  "mar",      "<http://musicbrainz.org/mm-2.1/artist/") ;
+        abbreviations.add(  "mtr",      "<http://musicbrainz.org/mm-2.1/trmid/") ;
+        abbreviations.add(  "mc",       "<http://musicbrainz.org/mm-2.1/cdindex/") ;
+
+        abbreviations.add(  "m21",      "<http://musicbrainz.org/mm/mm-2.1#") ;
+        abbreviations.add(  "dc",       "<http://purl.org/dc/elements/1.1/") ;
+        // DBPedia
+        abbreviations.add(  "r",        "<http://dbpedia/resource/") ;
+        abbreviations.add(  "p",        "<http://dbpedia/property/") ;
+    }
+    private String compress(String str)
+    {
+        if ( !compression || abbreviations == null ) return str ;
+        return abbreviations.abbreviate(str) ;
+    }
+
+    private String decompress(String x)
+    {
+        if ( !compression || abbreviations == null ) return x ;
+        return abbreviations.expand(x) ;
     }
 
 }
