@@ -41,7 +41,7 @@ public class ObjectFileStorage implements ObjectFile
     private ByteBuffer lengthBuffer = ByteBuffer.allocate(SizeOfInt) ;
     
     // Delayed write buffer.
-    private ByteBuffer output = ByteBuffer.allocate(ObjectFileWriteCacheSize) ;
+    private final ByteBuffer writeBuffer ;
     private int bufferSize ;
     
     private final Storage file ;                // Access to storage
@@ -52,35 +52,46 @@ public class ObjectFileStorage implements ObjectFile
     private ByteBuffer allocByteBuffer = null ;
     private long allocLocation = -1 ;
 
+    public ObjectFileStorage(Storage file)
+    {
+        this(file, ObjectFileWriteCacheSize) ;
+    }
+    
     public ObjectFileStorage(Storage file, int bufferSize)
     {
         this.file = file ;
         this.bufferSize = bufferSize ;
         filesize = file.length() ;
+        writeBuffer = ByteBuffer.allocate(bufferSize) ;
     }
     
     @Override
     public long write(ByteBuffer bb)
     {
-        
         int len = bb.limit() - bb.position() ;
         
-        if ( output.limit()+len > output.capacity() )
+        if ( writeBuffer.limit()+len > writeBuffer.capacity() )
             // No room - flush.
             flushOutputBuffer() ;
-        // Is there room now?
-        // XXX
-        System.err.println("Use the delayed write buffer") ;
+        if ( writeBuffer.limit()+len > writeBuffer.capacity() )
+        {
+            long x = rawWrite(bb) ;
+            return x ;
+        }
         
-        lengthBuffer.clear() ;
-        lengthBuffer.putInt(0, len) ;
-        
+        writeBuffer.put(bb) ;
+        return len ;
+    }
+    
+    private long rawWrite(ByteBuffer bb)
+    {
         long location = filesize ;
         int x = file.write(bb, location) ;
         long loc2 = location+SizeOfInt ;
         x += file.write(bb, loc2) ;
         filesize = filesize+x ;
         return location ;
+        
     }
     
     @Override
@@ -89,10 +100,10 @@ public class ObjectFileStorage implements ObjectFile
         // Include space for length.
         int spaceRequired = maxBytes + SizeOfInt ;
         // Find space.
-        if ( spaceRequired > output.remaining() )
+        if ( spaceRequired > writeBuffer.remaining() )
             flushOutputBuffer() ;
         
-        if ( spaceRequired > output.remaining() )
+        if ( spaceRequired > writeBuffer.remaining() )
         {
             // Too big.
             inAllocWrite = true ;
@@ -103,14 +114,14 @@ public class ObjectFileStorage implements ObjectFile
         
         // Will fit.
         inAllocWrite = true ;
-        int start = output.position() ;
+        int start = writeBuffer.position() ;
         // id (but don't tell the caller yet).
         allocLocation = filesize+start ;
         
         // Slice it.
-        output.position(start + SizeOfInt) ;
-        output.limit(start+spaceRequired) ;
-        ByteBuffer bb = output.slice() ; 
+        writeBuffer.position(start + SizeOfInt) ;
+        writeBuffer.limit(start+spaceRequired) ;
+        ByteBuffer bb = writeBuffer.slice() ; 
 
         allocByteBuffer = bb ;
         return bb ;
@@ -126,28 +137,28 @@ public class ObjectFileStorage implements ObjectFile
 
         if ( allocLocation == -1 )
             // It was too big to use the buffering.
-            return write(buffer) ;
+            return rawWrite(buffer) ;
         
         int actualLength = buffer.limit()-buffer.position() ;
         // Insert object length
         int idx = (int)(allocLocation-filesize) ;
-        output.putInt(idx, actualLength) ;
+        writeBuffer.putInt(idx, actualLength) ;
         // And bytes to idx+actualLength+4 are used
         inAllocWrite = false;
         allocByteBuffer = null ;
         int newLen = idx+actualLength+4 ;
-        output.position(newLen);
-        output.limit(output.capacity()) ;
+        writeBuffer.position(newLen);
+        writeBuffer.limit(writeBuffer.capacity()) ;
         return allocLocation ;
     }
 
     private void flushOutputBuffer()
     {
         long location = filesize ;
-        output.flip();
-        int x = file.write(output) ;
+        writeBuffer.flip();
+        int x = file.write(writeBuffer) ;
         filesize += x ;
-        output.clear() ;
+        writeBuffer.clear() ;
     }
 
 
@@ -160,21 +171,21 @@ public class ObjectFileStorage implements ObjectFile
         // Maybe it's in the in the write buffer
         if ( loc >= filesize )
         {
-            if ( loc > filesize+output.capacity() )
+            if ( loc > filesize+writeBuffer.capacity() )
                 throw new IllegalArgumentException("ObjectFile.read: Bad read: "+loc) ;
             
-            int x = output.position() ;
-            int y = output.limit() ;
+            int x = writeBuffer.position() ;
+            int y = writeBuffer.limit() ;
             
             int offset = (int)(loc-filesize) ;
-            int len = output.getInt(offset) ;
+            int len = writeBuffer.getInt(offset) ;
             int posn = offset + SizeOfInt ;
             // Slice the data bytes,
-            output.position(posn) ;
-            output.limit(posn+len) ;
-            ByteBuffer bb = output.slice() ;
-            output.limit(y) ;
-            output.position(x) ;
+            writeBuffer.position(posn) ;
+            writeBuffer.limit(posn+len) ;
+            ByteBuffer bb = writeBuffer.slice() ;
+            writeBuffer.limit(y) ;
+            writeBuffer.position(x) ;
             return bb ; 
         }
         

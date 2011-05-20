@@ -1,15 +1,19 @@
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
 package com.hp.hpl.jena.tdb.base.file;
 
-import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile;
-import com.hp.hpl.jena.tdb.base.objectfile.ObjectFileDiskDirect;
-import com.hp.hpl.jena.tdb.base.objectfile.ObjectFileMem;
-import com.hp.hpl.jena.tdb.base.objectfile.StringFile;
+import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile ;
+import com.hp.hpl.jena.tdb.base.objectfile.ObjectFileMem ;
+import com.hp.hpl.jena.tdb.base.objectfile.ObjectFileStorage ;
+import com.hp.hpl.jena.tdb.base.objectfile.StringFile ;
+import com.hp.hpl.jena.tdb.base.storage.Storage ;
+import com.hp.hpl.jena.tdb.base.storage.StorageFile ;
+import com.hp.hpl.jena.tdb.base.storage.StorageMem ;
 
 public class FileFactory
 {
@@ -20,10 +24,23 @@ public class FileFactory
     { return new StringFile(createObjectFileMem()) ; }
     
     public static ObjectFile createObjectFileDisk(String filename)
-    { return new ObjectFileDiskDirect(filename) ; }
+    {
+        Storage store = new StorageFile(filename) ; 
+        return new ObjectFileStorage(store) ;
+    }
 
     public static ObjectFile createObjectFileMem()
-    { return new ObjectFileMem() ; }
+    { 
+        if ( true )
+            // Older code.
+            return new ObjectFileMem() ;
+        else
+        {
+            // Newer way.
+            Storage store = new StorageMem("mem") ; 
+            return new ObjectFileStorage(store) ;
+        }
+    }
     
     public static PlainFile createPlainFileDisk(String filename)
     { return new PlainFilePersistent(filename) ; }
@@ -34,6 +51,7 @@ public class FileFactory
 
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

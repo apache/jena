@@ -34,6 +34,7 @@ public class ObjectFileMem implements ObjectFile
     public ObjectFileMem()
     { }
 
+    // Could have been ObjectFileStorage + a byte array.  
     
     @Override
     public long length()
