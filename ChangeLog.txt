@@ -3,6 +3,8 @@ ChangeLog for ARQ
 
 ==== ARQ 2.8.9
 
++ Added DatasetGraph.add(g,s,p,o) and .delete(g,s,p,o).
+  (JENA-65)
 + Aggregates COUNT(?x) and COUNT(DISTINCT ?x) now skips errors in their expressions
   rather than evaluating to an error (SPARQL 1.1 Query Last Call compliance).   
 
