@@ -110,6 +110,25 @@ public abstract class DatasetGraphTests
         assertTrue(x.contains(quad2)) ;
     }
 
+    @Test public void quad_05()
+    {
+        DatasetGraph dsg = emptyDataset() ;
+        assertNotNull(dsg) ;
+        Quad quad1 = SSE.parseQuad("(quad <g> <s> <p> <o1>)") ;
+        Quad quad2 = SSE.parseQuad("(quad <g> <s> <p> <o2>)") ;
+        Node g  = SSE.parseNode("<g>") ;
+        Node s  = SSE.parseNode("<s>") ;
+        Node p  = SSE.parseNode("<p>") ;
+        Node o1 = SSE.parseNode("<o1>") ;
+        Node o2 = SSE.parseNode("<o2>") ;
+        
+        dsg.add(g,s,p,o1) ;
+        assertTrue(dsg.contains(quad1)) ;
+        assertTrue(dsg.contains(g,s,p,o1)) ;
+        assertFalse(dsg.contains(g,s,p,o2)) ;
+    }
+
+
     /*
      * getDefaultGraph()
      * getGraph(Node) 

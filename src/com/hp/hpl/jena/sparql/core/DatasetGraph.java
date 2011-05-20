@@ -74,6 +74,12 @@ public interface DatasetGraph extends Closeable
     /** Delete a quad */
     public void delete(Quad quad) ;
     
+    /** Add a quad */
+    public void add(Node g, Node s, Node p, Node o) ;
+
+    /** Delete a quad */
+    public void delete(Node g, Node s, Node p, Node o) ;
+    
     /** Delete any quads matching the pattern */
     public void deleteAny(Node g, Node s, Node p, Node o) ;
 

@@ -70,6 +70,12 @@ abstract public class DatasetGraphBase implements DatasetGraph
     public void delete(Quad quad) { throw new UnsupportedOperationException("DatasetGraph.delete(Quad)") ; }
     
     //@Override
+    public void add(Node g, Node s, Node p, Node o) { throw new UnsupportedOperationException("DatasetGraph.add(Node, Node, Node, Node)") ; } 
+    
+    //@Override
+    public void delete(Node g, Node s, Node p, Node o) { throw new UnsupportedOperationException("DatasetGraph.delete(Node, Node, Node, Node)") ; }
+    
+    //@Override
     /** Simple implementation */
     public void deleteAny(Node g, Node s, Node p, Node o)
     { 

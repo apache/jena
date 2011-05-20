@@ -17,21 +17,33 @@ public abstract class DatasetGraphTriplesQuads extends DatasetGraphBaseFind
     @Override
     public void add(Quad quad)
     {
-        if ( quad.isDefaultGraph() )
-            addToDftGraph(quad.getSubject(), quad.getPredicate(), quad.getObject()) ;
-        else
-            addToNamedGraph(quad.getGraph(), quad.getSubject(), quad.getPredicate(), quad.getObject()) ;
+        add(quad.getGraph(), quad.getSubject(), quad.getPredicate(), quad.getObject());
     }
 
     @Override
     public void delete(Quad quad)
     {
-        if ( quad.isDefaultGraph() )
-            deleteFromDftGraph(quad.getSubject(), quad.getPredicate(), quad.getObject()) ;
-        else
-            deleteFromNamedGraph(quad.getGraph(), quad.getSubject(), quad.getPredicate(), quad.getObject()) ;
+        delete(quad.getGraph(), quad.getSubject(), quad.getPredicate(), quad.getObject());
     }
 
+    @Override
+    public void add(Node g, Node s, Node p, Node o)
+    {
+        if ( Quad.isDefaultGraphGenerated(g) || Quad.isDefaultGraphExplicit(g) )
+            addToDftGraph(s, p, o) ;
+        else
+            addToNamedGraph(g, s, p, o) ;
+    }
+
+    @Override
+    public void delete(Node g, Node s, Node p, Node o)
+    {
+        if ( Quad.isDefaultGraphGenerated(g) || Quad.isDefaultGraphExplicit(g) )
+            deleteFromDftGraph(s, p, o) ;
+        else
+            deleteFromNamedGraph(g, s, p, o) ;
+    }
+    
     protected abstract void addToDftGraph(Node s, Node p, Node o) ;
     protected abstract void addToNamedGraph(Node g, Node s, Node p, Node o) ;
     protected abstract void deleteFromDftGraph(Node s, Node p, Node o) ;
