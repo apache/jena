@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -10,14 +11,16 @@ import com.hp.hpl.jena.tdb.base.block.TS_Block;
 import com.hp.hpl.jena.tdb.base.file.TS_File;
 import com.hp.hpl.jena.tdb.base.record.TS_Record;
 import com.hp.hpl.jena.tdb.base.recordfile.TS_RecordFile;
+import com.hp.hpl.jena.tdb.base.storage.TS_Storage ;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
-      TS_Block.class
+      TS_Storage.class
     , TS_File.class
+    , TS_Block.class
     , TS_Record.class
     , TS_RecordFile.class
 })
@@ -28,6 +31,7 @@ public class TC_Base
 
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

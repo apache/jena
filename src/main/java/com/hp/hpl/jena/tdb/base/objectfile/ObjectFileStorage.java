@@ -9,23 +9,20 @@ package com.hp.hpl.jena.tdb.base.objectfile;
 import static com.hp.hpl.jena.tdb.sys.SystemTDB.ObjectFileWriteCacheSize ;
 import static com.hp.hpl.jena.tdb.sys.SystemTDB.SizeOfInt ;
 
-import java.io.IOException ;
 import java.nio.ByteBuffer ;
 import java.util.Iterator ;
 
 import org.openjena.atlas.lib.Bytes ;
 import org.openjena.atlas.lib.Pair ;
 
-import com.hp.hpl.jena.tdb.base.block.BlockException ;
-import com.hp.hpl.jena.tdb.base.file.FileBase ;
 import com.hp.hpl.jena.tdb.base.file.FileException ;
+import com.hp.hpl.jena.tdb.base.storage.Storage ;
 
-/** ObjectFile backed by a rgular disk file
- *  Buffering of writes to disk.  
- */
+/** Variable length ByteBuffer file on disk. 
+ *  Buffering for delayed writes.
+ */  
 
-@Deprecated
-public class ObjectFileDiskDirect implements ObjectFile 
+public class ObjectFileStorage implements ObjectFile 
 {
     /* 
      * No synchronization - assumes that the caller has some appropriate lock
@@ -38,52 +35,53 @@ public class ObjectFileDiskDirect implements ObjectFile
      * Writing is buffered.
      */
     
-    // Replaces with a Storage wrapper?
-    
     // One disk file size.
-    protected long filesize ;
-    // Delayed write buffer
-    // This adds to the length of the file  
-    private ByteBuffer output = ByteBuffer.allocate(ObjectFileWriteCacheSize) ;
     
-    protected final FileBase file ;
+    // This adds to the length of the file  
+    private ByteBuffer lengthBuffer = ByteBuffer.allocate(SizeOfInt) ;
+    
+    // Delayed write buffer.
+    private ByteBuffer output = ByteBuffer.allocate(ObjectFileWriteCacheSize) ;
+    private int bufferSize ;
+    
+    private final Storage file ;                // Access to storage
+    private long filesize ;                     // Size of on-disk. 
+    
+    // Two-step write - alloc, write
     private boolean inAllocWrite = true ;
     private ByteBuffer allocByteBuffer = null ;
+    private long allocLocation = -1 ;
 
-    public ObjectFileDiskDirect(String filename)
+    public ObjectFileStorage(Storage file, int bufferSize)
     {
-        file = new FileBase(filename) ; // Inherit?
-        try { 
-            filesize = file.out.length() ;
-        } catch (IOException ex) { throw new BlockException("Failed to get filesize", ex) ; } 
+        this.file = file ;
+        this.bufferSize = bufferSize ;
+        filesize = file.length() ;
     }
-    
-    private ByteBuffer lengthBuffer = ByteBuffer.allocate(SizeOfInt) ;
     
     @Override
     public long write(ByteBuffer bb)
     {
-        try {
-            // XXX Use the allocByteBuffer. 
-            // Write length
-            int len = bb.limit() - bb.position();
-            lengthBuffer.clear() ;
-            lengthBuffer.putInt(0, len) ;
-            
-            long location = filesize ;
-            file.channel.position(location) ;
-            int x1 = file.channel.write(lengthBuffer) ;
-            int x2 = file.channel.write(bb) ;
-            if ( x2 != len )
-                throw new FileException("ObjectFile.write: Buffer length = "+len+" : actual write = "+x2) ;
-            
-            filesize = filesize+x1+x2 ;
-            return location ;
-        } catch (IOException ex)
-        { throw new FileException("ObjectFile.write", ex) ; }
+        
+        int len = bb.limit() - bb.position() ;
+        
+        if ( output.limit()+len > output.capacity() )
+            // No room - flush.
+            flushOutputBuffer() ;
+        // Is there room now?
+        // XXX
+        System.err.println("Use the delayed write buffer") ;
+        
+        lengthBuffer.clear() ;
+        lengthBuffer.putInt(0, len) ;
+        
+        long location = filesize ;
+        int x = file.write(bb, location) ;
+        long loc2 = location+SizeOfInt ;
+        x += file.write(bb, loc2) ;
+        filesize = filesize+x ;
+        return location ;
     }
-
-    private long allocLocation = -1 ;
     
     @Override
     public ByteBuffer allocWrite(int maxBytes)
@@ -146,16 +144,10 @@ public class ObjectFileDiskDirect implements ObjectFile
     private void flushOutputBuffer()
     {
         long location = filesize ;
-        try {
-            file.channel.position(location) ;
-            output.flip();
-            int x = file.channel.write(output) ;
-            filesize += x ;
-        } catch (IOException ex)
-        { throw new FileException("ObjectFile.flushOutputBuffer", ex) ; }
-        
-        output.position(0) ;
-        output.limit(output.capacity()) ;
+        output.flip();
+        int x = file.write(output) ;
+        filesize += x ;
+        output.clear() ;
     }
 
 
@@ -186,22 +178,18 @@ public class ObjectFileDiskDirect implements ObjectFile
             return bb ; 
         }
         
-        try {
-            file.channel.position(loc) ;
-            lengthBuffer.position(0) ;
-            int x = file.channel.read(lengthBuffer) ;  // Updates position.
-            if ( x != 4 )
-                throw new FileException("ObjectFile.read: Failed to read the length : got "+x+" bytes") ;
-            int len = lengthBuffer.getInt(0) ;
-            ByteBuffer bb = ByteBuffer.allocate(len) ;
-            //file.channel.position(loc+4) ; // Unnecessary.
-            x = file.channel.read(bb) ;
-            bb.flip() ;
-            if ( x != len )
-                throw new FileException("ObjectFile.read: Failed to read the object ("+len+" bytes) : got "+x+" bytes") ;
-            return bb ;
-        } catch (IOException ex)
-        { throw new FileException("ObjectFile.read", ex) ; }
+        // No - it's in the underlying file storage.
+        lengthBuffer.position(0) ;
+        int x = file.read(lengthBuffer, loc) ;
+        if ( x != 4 )
+            throw new FileException("ObjectFile.read: Failed to read the length : got "+x+" bytes") ;
+        int len = lengthBuffer.getInt(0) ;
+        ByteBuffer bb = ByteBuffer.allocate(len) ;
+        x = file.read(bb, loc+SizeOfInt) ;
+        bb.flip() ;
+        if ( x != len )
+            throw new FileException("ObjectFile.read: Failed to read the object ("+len+" bytes) : got "+x+" bytes") ;
+        return bb ;
     }
     
     @Override
@@ -219,9 +207,7 @@ public class ObjectFileDiskDirect implements ObjectFile
     @Override
     public Iterator<Pair<Long, ByteBuffer>> all()
     {
-        try { file.out.seek(0) ; } 
-        catch (IOException ex) { throw new FileException("ObjectFile.all", ex) ; }
-
+        file.position(0) ; 
         ObjectIterator iter = new ObjectIterator(0, filesize) ;
         return iter ;
     }
@@ -266,9 +252,7 @@ public class ObjectFileDiskDirect implements ObjectFile
     
     public void dump(DumpHandler handler)
     {
-        try { file.out.seek(0) ; } 
-        catch (IOException ex) { throw new FileException("ObjectFile.all", ex) ; }
-        
+        file.position(0) ; 
         long fileIdx = 0 ;
         while ( fileIdx < filesize )
         {
@@ -279,7 +263,7 @@ public class ObjectFileDiskDirect implements ObjectFile
         }
     }
     
-    static ObjectFileDiskDirect.DumpHandler handler = new ObjectFileDiskDirect.DumpHandler() {
+    static DumpHandler handler = new DumpHandler() {
         @Override
         public void handle(long fileIdx, String str)
         {

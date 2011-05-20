@@ -18,7 +18,7 @@ public class FileAccessByteArray implements FileAccess
 {
     private ByteBuffer bytes ;
     private long length ;           // Bytes in use: 0 to length-1 
-    private long alloc ;           // Bytes in use: 0 to length-1
+    private long alloc ;            // Bytes allocated
     
     public FileAccessByteArray()
     {
@@ -32,7 +32,7 @@ public class FileAccessByteArray implements FileAccess
     {
         long addr = alloc ;
         ByteBuffer bb = ByteBuffer.allocate(size) ;
-        alloc += size + SizeOfInt ;
+        alloc += (size + SizeOfInt) ;
         return new Block((int)addr, bb) ; 
     }
 

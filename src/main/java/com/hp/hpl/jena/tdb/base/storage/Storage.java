@@ -4,27 +4,52 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.base.file;
+package com.hp.hpl.jena.tdb.base.storage;
+
+import java.nio.ByteBuffer ;
 
 import org.openjena.atlas.lib.Closeable ;
 import org.openjena.atlas.lib.Sync ;
 
-import com.hp.hpl.jena.tdb.base.block.Block ;
+import com.hp.hpl.jena.tdb.base.file.FileAccess ;
 
-/** Interface to concrete storage.
- *  This is wrapped in a BlockMgrAccess to provide a higher level abstraction.
+/** Interface to storage : a simplifed version of FileChannel
+ *  @see FileAccess
  */
-public interface FileAccess extends Sync, Closeable
+public interface Storage extends Sync, Closeable
 {
-    public Block allocate(int size) ;
+    // This is a simple, low level "file = array of bytes" interface"
+    // This interface does not support slicing - so it's not suitable for memory mapped I/O
+    // but it is suitable for compression.
     
-    public Block read(int id) ;
+    /** return the position */
+    public long position() ;
     
-    public void write(Block block) ;
+    /** set the position */
+    public void position(long pos) ;
+
+    /** Read into a ByteBuffer. Returns the number of bytes read.
+     */
+    public int read(ByteBuffer buffer) ;
     
-    public boolean isEmpty() ; 
+    /** Read into a ByteBuffer, starting at position loc. Return the number of bytes read.
+     * loc must be within the file.
+     */
+    public int read(ByteBuffer buffer, long loc) ;
+
+    /** Write from ByteBuffer, starting at position loc.  
+     * Return the number of bytes written
+     */
+    public int write(ByteBuffer buffer) ;
     
-    public boolean valid(int id) ;
+    /** Write from ByteBuffer, starting at position loc.  
+     * Return the number of bytes written.
+     * loc must be within 0 to length - writing at length is append */
+    public int write(ByteBuffer buffer, long loc) ;
+    
+    /** Length of storage, in bytes.*/
+    public long length() ;
+
 }
 
 /*

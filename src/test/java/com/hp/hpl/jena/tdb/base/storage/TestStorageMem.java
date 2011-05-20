@@ -4,27 +4,19 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.base.file;
+package com.hp.hpl.jena.tdb.base.storage;
 
-import org.openjena.atlas.lib.Closeable ;
-import org.openjena.atlas.lib.Sync ;
 
-import com.hp.hpl.jena.tdb.base.block.Block ;
-
-/** Interface to concrete storage.
- *  This is wrapped in a BlockMgrAccess to provide a higher level abstraction.
- */
-public interface FileAccess extends Sync, Closeable
+public class TestStorageMem extends AbstractTestStorage
 {
-    public Block allocate(int size) ;
+    static int counter = 0 ;
     
-    public Block read(int id) ;
-    
-    public void write(Block block) ;
-    
-    public boolean isEmpty() ; 
-    
-    public boolean valid(int id) ;
+    @Override
+    protected Storage make()
+    {
+        return new StorageMem("Test-"+(counter++)) ;
+    }
+
 }
 
 /*

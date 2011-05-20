@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.tdb.base.file;
 
-public class TestFileAccessByteArray extends AbstractFileAccessVarSizeTest
+public class TestFileAccessByteArray extends AbstractTestFileAccessVarSize
 {
 
     @Override

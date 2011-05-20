@@ -21,7 +21,7 @@ import com.hp.hpl.jena.tdb.base.block.Block ;
 import com.hp.hpl.jena.tdb.base.block.BlockException ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
-/** Support for a disk file backed FielAccess */
+/** Support for a disk file backed FileAccess */
 public abstract class FileAccessBase implements FileAccess 
 {
     final protected int blockSize ;

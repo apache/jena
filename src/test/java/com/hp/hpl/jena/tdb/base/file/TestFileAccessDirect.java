@@ -6,25 +6,29 @@
 
 package com.hp.hpl.jena.tdb.base.file;
 
-import org.openjena.atlas.lib.Closeable ;
-import org.openjena.atlas.lib.Sync ;
+import org.junit.AfterClass ;
+import org.openjena.atlas.lib.FileOps ;
 
-import com.hp.hpl.jena.tdb.base.block.Block ;
+import com.hp.hpl.jena.tdb.ConfigTest ;
 
-/** Interface to concrete storage.
- *  This is wrapped in a BlockMgrAccess to provide a higher level abstraction.
- */
-public interface FileAccess extends Sync, Closeable
+public class TestFileAccessDirect extends AbstractTestFileAccessFixedSize
 {
-    public Block allocate(int size) ;
+    static String filename = ConfigTest.getTestingDir()+"/test-file-access-direct" ;
     
-    public Block read(int id) ;
+    static final int BlockSize = 50 ;
+    public TestFileAccessDirect()
+    {
+        super(BlockSize) ;
+    }
+
+    @AfterClass public static void cleanup() { FileOps.deleteSilent(filename) ; } 
     
-    public void write(Block block) ;
-    
-    public boolean isEmpty() ; 
-    
-    public boolean valid(int id) ;
+    @Override
+    protected FileAccess make()
+    {
+        FileOps.deleteSilent(filename) ;
+        return new FileAccessDirect(filename, BlockSize) ;
+    }
 }
 
 /*

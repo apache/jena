@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -15,6 +16,8 @@ import org.junit.runners.Suite;
     , TestStringFile.class 
     , TestFileAccessMem.class
     , TestFileAccessByteArray.class
+    , TestFileAccessDirect.class
+    , TestFileAccessMapped.class
 })
 
 
@@ -23,6 +26,7 @@ public class TS_File
 
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

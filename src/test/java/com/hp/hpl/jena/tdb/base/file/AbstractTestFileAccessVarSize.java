@@ -11,33 +11,29 @@ import org.junit.Test ;
 import com.hp.hpl.jena.tdb.base.block.Block ;
 
 
-public abstract class AbstractFileAccessVarSizeTest extends AbstractFileAccessFixedSizeTest
+public abstract class AbstractTestFileAccessVarSize extends AbstractTestFileAccessFixedSize
 {
-    AbstractFileAccessVarSizeTest()
+    protected AbstractTestFileAccessVarSize()
     {
         super(25) ;
     }
     
-    @Test public void fileaccess_50()
+    @Test
+    public void fileaccess_50()
     {
         FileAccess file = make() ;
         Block b1 = data(file, 10) ;
         Block b2 = data(file, 20) ;
         file.write(b1) ;
+        file.write(b2) ;
         
-        System.out.println("b1: "+b1) ;
-        System.out.println("b2: "+b2) ;
-        
-        // SHOULD NOT WORK.
-        Block b2a = file.read(b2.getId()) ;
         Block b1a = file.read(b1.getId()) ;
-        
+        Block b2a = file.read(b2.getId()) ;
+
         assertNotSame(b1a, b1) ;
         assertNotSame(b2a, b2) ;
         sameValue(b1, b1a) ;
         sameValue(b2, b2a) ;
-        
-        
     }        
 }
 

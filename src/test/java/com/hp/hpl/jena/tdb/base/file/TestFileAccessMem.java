@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.tdb.base.file;
 
-public class TestFileAccessMem extends AbstractFileAccessFixedSizeTest
+public class TestFileAccessMem extends AbstractTestFileAccessFixedSize
 {
     static final int BlockSize = 50 ;
     public TestFileAccessMem()

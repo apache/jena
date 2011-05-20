@@ -4,41 +4,35 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.base.file;
+package com.hp.hpl.jena.tdb.base.storage;
 
 import java.nio.ByteBuffer ;
 
 import org.junit.Test ;
 import org.openjena.atlas.junit.BaseTest ;
 
-import com.hp.hpl.jena.tdb.base.block.Block ;
-
-public abstract class AbstractFileAccessFixedSizeTest extends BaseTest
+public abstract class AbstractTestStorage extends BaseTest
 {
-    // Fixed block tests.
+    protected abstract Storage make() ;
+    static final int blkSize = 100 ;
     
-    int blkSize ;
-    
-    protected AbstractFileAccessFixedSizeTest(int blkSize)
+    @Test public void storage_01() 
     {
-        this.blkSize = blkSize ;
+        Storage store = make() ;
+        assertEquals(0, store.length()) ;
     }
     
-    protected abstract FileAccess make() ;
-    protected static Block data(FileAccess file, int len)
+    protected static ByteBuffer data(int len)
     {
-        Block b = file.allocate(len) ;
+        ByteBuffer b = ByteBuffer.allocate(len) ;
         for (int i = 0 ; i < len ; i++ )
-            b.getByteBuffer().put((byte)(i&0xFF)) ;
+            b.put((byte)(i&0xFF)) ;
+        b.clear() ;
         return b ;
     }
     
-    protected static boolean sameValue(Block block1, Block block2)
+    protected static boolean same(ByteBuffer bb1, ByteBuffer bb2)
     {
-        if ( block1.getId() != block2.getId()) return false ;
-        ByteBuffer bb1 = block1.getByteBuffer() ; 
-        ByteBuffer bb2 = block2.getByteBuffer() ;
-        
         if ( bb1.capacity() != bb2.capacity() ) return false ;
         
         for ( int i = 0 ; i < bb1.capacity() ; i++ )
@@ -46,49 +40,41 @@ public abstract class AbstractFileAccessFixedSizeTest extends BaseTest
         return true ;
     }
 
-    @Test public void fileaccess_01()
+    @Test public void storage_02()
     {
-        FileAccess file = make() ;
-        assertTrue(file.isEmpty()) ;
-    }
-    
-    @Test public void fileaccess_02()
-    {
-        FileAccess file = make() ;
-        Block b = data(file, blkSize) ;
-        file.write(b) ;
+        Storage store = make() ;
+        ByteBuffer b = data(blkSize) ;
+        store.write(b) ;
+        long x = store.length() ;
+        assertEquals(blkSize, x) ;
     }
 
-    @Test public void fileaccess_03()
+    @Test public void storage_03()
     {
-        FileAccess file = make() ;
-        Block b1 = data(file, blkSize) ;
-        file.write(b1) ;
-        int x = b1.getId() ;
-        Block b9 = file.read(x) ;
-        assertNotSame(b1, b9) ;
-        assertTrue(sameValue(b1, b9)) ;
-        b9 = file.read(x) ;
-        assertNotSame(b1, b9) ;
-        assertTrue(sameValue(b1, b9)) ;
+        Storage store = make() ;
+        ByteBuffer b1 = data(blkSize) ;
+        long posn = store.position() ; 
+        store.write(b1) ;
+        ByteBuffer b9 = ByteBuffer.allocate(blkSize) ;
+        int r = store.read(b9, posn) ;
+        assertEquals(blkSize, r) ;
+        assertTrue(same(b1, b9)) ;
     }
     
-    @Test public void fileaccess_04()
+    @Test public void storage_04()
     {
-        FileAccess file = make() ;
-        Block b1 = data(file, blkSize) ;
-        Block b2 = data(file, blkSize) ;
-        file.write(b1) ;
-        file.write(b2) ;
+        Storage store = make() ;
+        ByteBuffer b1 = data(blkSize) ;
+        ByteBuffer b2 = data(blkSize/2) ;
+
+        store.write(b2, 0) ;
+        store.write(b1, 0) ;
         
-        int x = b1.getId() ;
-        Block b8 = file.read(b1.getId()) ;
-        Block b9 = file.read(b1.getId()) ;
-        assertNotSame(b8, b9) ;
-        assertTrue(b8.getId() == b9.getId()) ;
+        assertEquals(blkSize, store.length()) ;
+        ByteBuffer b9 = ByteBuffer.allocate(5) ;
+        int z = store.read(b9) ;
+        assertEquals(5, z) ;
     }
-    
-    // Exceptions.
 }
 
 /*
