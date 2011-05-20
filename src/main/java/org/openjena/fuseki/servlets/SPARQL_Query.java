@@ -166,8 +166,7 @@ public abstract class SPARQL_Query extends SPARQL_ServletBase
                 mustHaveQueryParam = false ;
                 //error(HttpSC.UNSUPPORTED_MEDIA_TYPE_415, "Unofficial "+WebContent.contentTypeSPARQLQuery+" not supported") ;
             }
-            else if ( WebContent.contentTypeForm.equals(incoming) )
-                ; // OK
+            else if ( WebContent.contentTypeForm.equals(incoming) ) {}
             else
                 error(HttpSC.UNSUPPORTED_MEDIA_TYPE_415, "Unsupported: "+incoming) ;
         }
