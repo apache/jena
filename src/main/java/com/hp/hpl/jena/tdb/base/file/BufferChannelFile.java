@@ -12,11 +12,11 @@ import java.nio.ByteBuffer ;
 import org.openjena.atlas.io.IO ;
 
 
-public class ChannelFile implements Channel
+public class BufferChannelFile implements BufferChannel
 {
     private FileBase file ;
 
-    public ChannelFile(String filename)
+    public BufferChannelFile(String filename)
     {
         file = new FileBase(filename) ;
     }

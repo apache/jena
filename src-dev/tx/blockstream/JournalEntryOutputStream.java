@@ -11,7 +11,7 @@ import java.io.IOException ;
 import java.io.OutputStream ;
 
 import org.openjena.atlas.io.IO ;
-import tx.base.FileRef ;
+import tx.base.BlockRef ;
 
 public class JournalEntryOutputStream implements JournalEntryOutput
 {
@@ -30,10 +30,10 @@ public class JournalEntryOutputStream implements JournalEntryOutput
         IOBytes.writeBytes(out, entry.getByteBuffer().array())  ;
     }
 
-    private void writeFileRef(FileRef fileRef)
+    private void writeFileRef(BlockRef blockRef)
     {
-        IOBytes.writeStr(out, fileRef.getFilename()) ;
-        IOBytes.writeInt(out, fileRef.getBlockId()) ;
+        IOBytes.writeStr(out, blockRef.getFile().getFilename()) ;
+        IOBytes.writeInt(out, blockRef.getBlockId()) ;
     }
 
     @Override

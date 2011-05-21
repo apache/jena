@@ -13,6 +13,8 @@ import com.hp.hpl.jena.tdb.base.block.Block ;
 
 /** Interface to concrete storage.
  *  This is wrapped in a BlockMgrAccess to provide a higher level abstraction.
+ *  BufferChannels are a separate lower-level, interface to storage.
+ *  @see BufferChannel
  */
 public interface BlockAccess extends Sync, Closeable
 {

@@ -8,24 +8,25 @@ package tx.blockstream;
 
 import java.nio.ByteBuffer ;
 
-import tx.base.FileRef ;
+import tx.base.BlockRef ;
 
 public class JournalEntry
 {
-
+    public enum Type { Block, Object, Commit, Checkpoint } 
+    
     private final int type ;
-    private final FileRef fileReference ; 
+    private final BlockRef fileReference ; 
     private final ByteBuffer byteBuffer ;
     
-    public JournalEntry(int type, FileRef fileRef, ByteBuffer bytes)
+    public JournalEntry(int type, BlockRef blockRef, ByteBuffer bytes)
     {
         this.type = type ;
-        this.fileReference = fileRef ;
+        this.fileReference = blockRef ;
         this.byteBuffer = bytes ;
     }
 
     public int getType()                { return type ; }
-    public FileRef getFileRef()         { return fileReference ; }
+    public BlockRef getFileRef()         { return fileReference ; }
     public ByteBuffer getByteBuffer()   { return byteBuffer ; }
 }
 

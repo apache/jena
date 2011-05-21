@@ -11,7 +11,6 @@ import java.util.ArrayList ;
 import java.util.List ;
 
 import org.openjena.atlas.lib.ByteBufferLib ;
-import tx.base.FileRef ;
 
 import com.hp.hpl.jena.tdb.TDBException ;
 
@@ -30,15 +29,10 @@ public class JournalEntryStreamMem
     private static JournalEntry deepCopy(JournalEntry entry)
     {
         ByteBuffer bb = ByteBufferLib.duplicate(entry.getByteBuffer()) ;
-        FileRef rf = copy(entry.getFileRef()) ;
-        return new JournalEntry(entry.getType(), rf, bb) ;
+        // Filerefs are value-types.
+        return new JournalEntry(entry.getType(), entry.getFileRef(), bb) ;
     }
  
-    private static FileRef copy(FileRef fileRef)
-    {
-        return new FileRef(fileRef.getFilename(), fileRef.getBlockId()) ;
-    }
-    
     public static class Input implements JournalEntryInput
     {
         private final List<JournalEntry> entries ;

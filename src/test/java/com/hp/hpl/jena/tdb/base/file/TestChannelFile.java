@@ -10,8 +10,8 @@ import org.junit.AfterClass ;
 import org.openjena.atlas.lib.FileOps ;
 
 import com.hp.hpl.jena.tdb.ConfigTest ;
-import com.hp.hpl.jena.tdb.base.file.Channel ;
-import com.hp.hpl.jena.tdb.base.file.ChannelFile ;
+import com.hp.hpl.jena.tdb.base.file.BufferChannel ;
+import com.hp.hpl.jena.tdb.base.file.BufferChannelFile ;
 
 public class TestChannelFile extends AbstractTestChannel
 {
@@ -20,10 +20,10 @@ public class TestChannelFile extends AbstractTestChannel
     @AfterClass public static void cleanup() { FileOps.deleteSilent(filename) ; } 
     
     @Override
-    protected Channel make()
+    protected BufferChannel make()
     {
         FileOps.deleteSilent(filename) ;
-        return new ChannelFile(filename) ;
+        return new BufferChannelFile(filename) ;
     }
 }
 

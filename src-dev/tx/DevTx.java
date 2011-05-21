@@ -7,7 +7,7 @@ public class DevTx
     
     // Test with overlapping iterators.
     
-    // Storage+Adler32
+    // Channel+Adler32
     
     // Ref counting get/release.
     

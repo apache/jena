@@ -6,8 +6,8 @@
 
 package com.hp.hpl.jena.tdb.base.file;
 
-import com.hp.hpl.jena.tdb.base.file.Channel ;
-import com.hp.hpl.jena.tdb.base.file.ChannelMem ;
+import com.hp.hpl.jena.tdb.base.file.BufferChannel ;
+import com.hp.hpl.jena.tdb.base.file.BufferChannelMem ;
 
 
 public class TestChannelMem extends AbstractTestChannel
@@ -15,9 +15,9 @@ public class TestChannelMem extends AbstractTestChannel
     static int counter = 0 ;
     
     @Override
-    protected Channel make()
+    protected BufferChannel make()
     {
-        return new ChannelMem("Test-"+(counter++)) ;
+        return new BufferChannelMem("Test-"+(counter++)) ;
     }
 
 }

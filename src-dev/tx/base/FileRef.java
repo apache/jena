@@ -6,36 +6,53 @@
 
 package tx.base;
 
+final
 public class FileRef
 {
+    // Symbol<T> ?
     private final String filename ;
-    private final int blockId ;
 
-    public FileRef(String filename, int blockId)
+    static public FileRef create(String symbolStr) { return new FileRef(symbolStr) ; }
+    static public FileRef create(FileRef other) { return new FileRef(other) ; }
+    
+    private FileRef(String filename)
     {
-        this.filename = filename ;
-        this.blockId = blockId ;
+        // Canonicalise filename.
+        if ( filename == null )
+            throw new IllegalArgumentException("Null for a FileRef filename") ;
+        this.filename = filename.intern() ;
     }
     
-    public String getFilename()     { return filename ; }
-
-    public int getBlockId()         { return blockId ; }
-
+    private FileRef(FileRef other)  { this.filename = other.filename ; }
+    
+    public String getFilename() { return filename ; }
+    
     @Override
     public int hashCode()
     {
-        return filename.hashCode() ^ blockId ;
+        final int prime = 37 ;
+        int result = 1 ;
+        result = prime * result + ((filename == null) ? 0 : filename.hashCode()) ;
+        return result ;
     }
     
     @Override
-    public boolean equals(Object other)
+    public boolean equals(Object obj)
     {
-        if ( ! ( other instanceof FileRef ) )
-            return false ;
-        FileRef fRef = (FileRef)other ;
-        
-        return (blockId == fRef.blockId) && filename.equals(fRef.filename) ;  
+        if (this == obj) return true ;
+        if (obj == null) return false ;
+        if (getClass() != obj.getClass()) return false ;
+        FileRef other = (FileRef)obj ;
+        if (filename == null)
+        {
+            if (other.filename != null) return false ;
+        } else
+            if (!filename.equals(other.filename)) return false ;
+        return true ;
     }
+    
+    @Override
+    public String toString()  { return "file:"+filename ; }
 }
 
 /*

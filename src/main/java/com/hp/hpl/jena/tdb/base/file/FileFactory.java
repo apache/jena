@@ -22,7 +22,7 @@ public class FileFactory
     
     public static ObjectFile createObjectFileDisk(String filename)
     {
-        Channel file = new ChannelFile(filename) ; 
+        BufferChannel file = new BufferChannelFile(filename) ; 
         return new ObjectFileStorage(file) ;
     }
 
@@ -34,7 +34,7 @@ public class FileFactory
         else
         {
             // Newer way.
-            Channel file = new ChannelMem("mem") ; 
+            BufferChannel file = new BufferChannelMem("mem") ; 
             return new ObjectFileStorage(file) ;
         }
     }

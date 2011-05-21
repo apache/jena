@@ -8,7 +8,7 @@ package com.hp.hpl.jena.tdb.base.block;
 
 import java.nio.ByteBuffer ;
 
-import tx.base.FileRef ;
+import tx.base.BlockRef ;
 
 import com.hp.hpl.jena.tdb.base.page.Page ;
 
@@ -16,7 +16,7 @@ public final class Block
 {
     private final Integer id ;          // Keep as object.  It's the cache key.
     private final boolean readOnly ;
-    private final FileRef fileRef ;
+    private final BlockRef blockRef ;
     private boolean modified = false ;
     
     private final ByteBuffer byteBuffer ;
@@ -28,7 +28,7 @@ public final class Block
         this.id = id ; 
         this.byteBuffer = byteBuffer ;
         //this.type = BlockType.UNDEF ;
-        this.fileRef = null ;
+        this.blockRef = null ;
         this.readOnly = false ;
         // Initially a block is not modified.
         this.modified = false ;
@@ -70,9 +70,9 @@ public final class Block
         this.modified = modified ;
     }
 
-    public FileRef getFileRef()
+    public BlockRef getFileRef()
     {
-        return fileRef ;
+        return blockRef ;
     }
 
 //    public void setType(BlockType blockType) 

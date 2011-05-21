@@ -15,7 +15,7 @@ import java.util.Iterator ;
 import org.openjena.atlas.lib.Bytes ;
 import org.openjena.atlas.lib.Pair ;
 
-import com.hp.hpl.jena.tdb.base.file.Channel ;
+import com.hp.hpl.jena.tdb.base.file.BufferChannel ;
 import com.hp.hpl.jena.tdb.base.file.FileException ;
 
 /** Variable length ByteBuffer file on disk. 
@@ -44,7 +44,7 @@ public class ObjectFileStorage implements ObjectFile
     private final ByteBuffer writeBuffer ;
     private int bufferSize ;
     
-    private final Channel file ;                // Access to storage
+    private final BufferChannel file ;                // Access to storage
     private long filesize ;                     // Size of on-disk. 
     
     // Two-step write - alloc, write
@@ -52,12 +52,12 @@ public class ObjectFileStorage implements ObjectFile
     private ByteBuffer allocByteBuffer = null ;
     private long allocLocation = -1 ;
 
-    public ObjectFileStorage(Channel file)
+    public ObjectFileStorage(BufferChannel file)
     {
         this(file, ObjectFileWriteCacheSize) ;
     }
     
-    public ObjectFileStorage(Channel file, int bufferSize)
+    public ObjectFileStorage(BufferChannel file, int bufferSize)
     {
         this.file = file ;
         this.bufferSize = bufferSize ;

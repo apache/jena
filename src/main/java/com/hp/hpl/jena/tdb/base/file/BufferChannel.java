@@ -4,70 +4,52 @@
  * [See end of file]
  */
 
-package tx.base;
+package com.hp.hpl.jena.tdb.base.file;
 
-import java.io.InputStream ;
-import java.io.OutputStream ;
 import java.nio.ByteBuffer ;
-import java.util.Iterator ;
+
+import org.openjena.atlas.lib.Closeable ;
+import org.openjena.atlas.lib.Sync ;
 
 
-/** A file handler - everything TDB needs to do with files */
-public interface FileHandle
+/** Interface to storage : a simplified version of FileChannel.
+ *  This also enables use to implement memory-backed versions.
+ *  @see BlockAccess
+ */
+public interface BufferChannel extends Sync, Closeable
 {
-    // Some ideas for centralizing all file operations to enable caching, management, closedown etc.
+    // This is a simple, low level "file = array of bytes" interface"
+    // This interface does not support slicing - so it's not suitable for memory mapped I/O
+    // but it is suitable for compression.
     
-    // FileHandlerManager
+    /** return the position */
+    public long position() ;
     
-    // Create from location , inc memory.
-    //Location.mem
+    /** set the position */
+    public void position(long pos) ;
+
+    /** Read into a ByteBuffer. Returns the number of bytes read.
+     */
+    public int read(ByteBuffer buffer) ;
     
-    public void getFileName() ;
+    /** Read into a ByteBuffer, starting at position loc. Return the number of bytes read.
+     * loc must be within the file.
+     */
+    public int read(ByteBuffer buffer, long loc) ;
+
+    /** Write from ByteBuffer, starting at position loc.  
+     * Return the number of bytes written
+     */
+    public int write(ByteBuffer buffer) ;
     
-    /* Sync to disk */
-    public void sync();
-    public void close();
+    /** Write from ByteBuffer, starting at position loc.  
+     * Return the number of bytes written.
+     * loc must be within 0 to length - writing at length is append */
+    public int write(ByteBuffer buffer, long loc) ;
     
-    // Stream view - add buffering wrappers.
-    static interface Stream {
-        public InputStream getInputStream() ;
-        public OutputStream getOutputStream() ;
-    }
-    
-    
-    static interface BlockStream
-    {
-        // Stream block view
-        public BlockInputStream getInputBlockStream() ;
-        public BlockOutputStream getOutputBlockStreamStream() ;
-    }
-    
-    static interface BlockFile
-    {
-        // Random block view
-        public Block get(int id) ;
-        public Block put(int id, Block block) ;
-        public Block free(int id) ;
-    }
-                     
-    static interface BlockInputStream extends Iterator<Block>
-    {
-    }
-    
-    static interface BlockOutputStream 
-    {
-        public void write(Block block) ;
-    }
-    
-    static class Block
-    {
-        // Header stuff
-        // File - ptr to name
-        // id - number / int
-        // type - int. -1 means free.
-        ByteBuffer data ;
-    }
-    
+    /** Length of storage, in bytes.*/
+    public long length() ;
+
 }
 
 /*

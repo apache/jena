@@ -15,7 +15,7 @@ import org.junit.Test ;
 import org.openjena.atlas.junit.BaseTest ;
 import org.openjena.atlas.lib.Bytes ;
 import org.openjena.atlas.lib.Lib ;
-import tx.base.FileRef ;
+import tx.base.BlockRef ;
 
 public class TestJournalEntryStreams extends BaseTest
 {
@@ -24,11 +24,11 @@ public class TestJournalEntryStreams extends BaseTest
     static ByteBuffer bb2 = ByteBuffer.allocate(4) ;
     static ByteBuffer bb3 = ByteBuffer.allocate(4) ;
     
-    static FileRef fileref1 = new FileRef("xyz", 10) ;
-    static FileRef fileref2 = new FileRef("xyz", 10) ;
+    static BlockRef fileref1 = BlockRef.create("xyz", 10) ;
+    static BlockRef fileref2 = BlockRef.create("xyz", 10) ;
 
-    static FileRef fileref3 = new FileRef("xyz", 20) ;
-    static FileRef fileref4 = new FileRef("abc", 10) ;
+    static BlockRef fileref3 = BlockRef.create("xyz", 20) ;
+    static BlockRef fileref4 = BlockRef.create("abc", 10) ;
     
     static JournalEntry je1 = new JournalEntry(10, fileref1, bb1) ;
     static JournalEntry je2 = new JournalEntry(10, fileref2, bb2) ;

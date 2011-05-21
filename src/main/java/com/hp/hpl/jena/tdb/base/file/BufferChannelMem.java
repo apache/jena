@@ -10,7 +10,7 @@ import java.nio.ByteBuffer ;
 
 import com.hp.hpl.jena.tdb.base.StorageException ;
 
-public class ChannelMem implements Channel
+public class BufferChannelMem implements BufferChannel
 {
     private ByteBuffer bytes ;      // Position is our file position.
     private long length ;           // Bytes in use: 0 to length-1
@@ -18,7 +18,7 @@ public class ChannelMem implements Channel
     private static int INIT_SIZE = 1024 ;
     private static int INC_SIZE = 1024 ;
     
-    public ChannelMem(String name)
+    public BufferChannelMem(String name)
     {
         bytes = ByteBuffer.allocate(1024) ;
         length = 0 ; 

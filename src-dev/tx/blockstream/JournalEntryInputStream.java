@@ -10,7 +10,7 @@ import java.io.InputStream ;
 import java.nio.ByteBuffer ;
 
 import org.openjena.atlas.io.IO ;
-import tx.base.FileRef ;
+import tx.base.BlockRef ;
 
 public class JournalEntryInputStream implements JournalEntryInput
 {
@@ -28,7 +28,7 @@ public class JournalEntryInputStream implements JournalEntryInput
         if ( type == -1 )
             return null ;
         
-        FileRef fRef = readFileRef() ;
+        BlockRef fRef = readFileRef() ;
         if ( fRef == null )
             return null ;
         
@@ -45,7 +45,7 @@ public class JournalEntryInputStream implements JournalEntryInput
         IO.close(in) ;
     }
 
-    private FileRef readFileRef()
+    private BlockRef readFileRef()
     {
         String fn = IOBytes.readStr(in) ;
         if ( fn == null )
@@ -53,7 +53,7 @@ public class JournalEntryInputStream implements JournalEntryInput
         int blockId = IOBytes.readInt(in) ;
         if ( blockId == -1 )
             return null ;
-        return new FileRef(fn, blockId) ;
+        return BlockRef.create(fn, blockId) ;
     }
 }
 

@@ -8,19 +8,19 @@ package com.hp.hpl.jena.tdb.base.file;
 
 import java.nio.ByteBuffer ;
 
-import com.hp.hpl.jena.tdb.base.file.Channel ;
+import com.hp.hpl.jena.tdb.base.file.BufferChannel ;
 
 import org.junit.Test ;
 import org.openjena.atlas.junit.BaseTest ;
 
 public abstract class AbstractTestChannel extends BaseTest
 {
-    protected abstract Channel make() ;
+    protected abstract BufferChannel make() ;
     static final int blkSize = 100 ;
     
     @Test public void storage_01() 
     {
-        Channel store = make() ;
+        BufferChannel store = make() ;
         assertEquals(0, store.length()) ;
     }
     
@@ -46,7 +46,7 @@ public abstract class AbstractTestChannel extends BaseTest
 
     @Test public void storage_02()
     {
-        Channel store = make() ;
+        BufferChannel store = make() ;
         ByteBuffer b = data(blkSize) ;
         store.write(b) ;
         long x = store.length() ;
@@ -55,7 +55,7 @@ public abstract class AbstractTestChannel extends BaseTest
 
     @Test public void storage_03()
     {
-        Channel store = make() ;
+        BufferChannel store = make() ;
         ByteBuffer b1 = data(blkSize) ;
         long posn = store.position() ; 
         store.write(b1) ;
@@ -67,7 +67,7 @@ public abstract class AbstractTestChannel extends BaseTest
     
     @Test public void storage_04()
     {
-        Channel store = make() ;
+        BufferChannel store = make() ;
         ByteBuffer b1 = data(blkSize) ;
         ByteBuffer b2 = data(blkSize/2) ;
 
@@ -82,7 +82,7 @@ public abstract class AbstractTestChannel extends BaseTest
     
     @Test public void storage_05()
     {
-        Channel store = make() ;
+        BufferChannel store = make() ;
         ByteBuffer b1 = data(blkSize) ;
         ByteBuffer b1a = ByteBuffer.allocate(blkSize) ;
         ByteBuffer b2 = data(blkSize/2) ;
