@@ -12,8 +12,8 @@ import org.junit.BeforeClass;
 import org.openjena.atlas.lib.FileOps ;
 
 import com.hp.hpl.jena.tdb.ConfigTest;
-import com.hp.hpl.jena.tdb.base.file.FileAccess ;
-import com.hp.hpl.jena.tdb.base.file.FileAccessDirect ;
+import com.hp.hpl.jena.tdb.base.file.BlockAccess ;
+import com.hp.hpl.jena.tdb.base.file.BlockAccessDirect ;
 
 public class TestBlockMgrDirect extends AbstractTestBlockMgr
 {
@@ -27,7 +27,7 @@ public class TestBlockMgrDirect extends AbstractTestBlockMgr
     { 
         // Make directly - no wrapper, no cache, no free block mgt.
         FileOps.delete(filename) ;
-        FileAccess file = new FileAccessDirect(filename, BlkSize) ;
+        BlockAccess file = new BlockAccessDirect(filename, BlkSize) ;
         return new BlockMgrFileAccess(file, BlkSize) ;
     }
 }

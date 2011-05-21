@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
 
 /** FileAccess for a file, using memory mapped I/O */
 final
-public class FileAccessMapped extends FileAccessBase
+public class BlockAccessMapped extends BlockAccessBase
 {
     /* Blocks are addressed by positive ints - 
      * Is that a limit?
@@ -32,7 +32,7 @@ public class FileAccessMapped extends FileAccessBase
      * No limit at the moment - later performance tuning will see what the cost of 48 or 63 bit addresses would be.    
      */
     
-    private static Logger log = LoggerFactory.getLogger(FileAccessMapped.class) ;
+    private static Logger log = LoggerFactory.getLogger(BlockAccessMapped.class) ;
 
     // Segmentation avoids over-mapping; allows file to grow (in chunks) 
     private final int GrowthFactor = 2 ;
@@ -46,7 +46,7 @@ public class FileAccessMapped extends FileAccessBase
     private int segmentDirtyCount = 0 ;
     private boolean[] segmentDirty = new boolean[initialNumSegements] ; 
     
-    public FileAccessMapped(String filename, int blockSize)
+    public BlockAccessMapped(String filename, int blockSize)
     {
         super(filename, blockSize) ;
         blocksPerSegment = SegmentSize/blockSize ;

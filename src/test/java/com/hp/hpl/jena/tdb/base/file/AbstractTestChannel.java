@@ -13,7 +13,7 @@ import com.hp.hpl.jena.tdb.base.file.Channel ;
 import org.junit.Test ;
 import org.openjena.atlas.junit.BaseTest ;
 
-public abstract class AbstractTestStorage extends BaseTest
+public abstract class AbstractTestChannel extends BaseTest
 {
     protected abstract Channel make() ;
     static final int blkSize = 100 ;

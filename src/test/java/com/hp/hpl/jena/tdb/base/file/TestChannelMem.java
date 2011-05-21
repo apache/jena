@@ -10,7 +10,7 @@ import com.hp.hpl.jena.tdb.base.file.Channel ;
 import com.hp.hpl.jena.tdb.base.file.ChannelMem ;
 
 
-public class TestStorageMem extends AbstractTestStorage
+public class TestChannelMem extends AbstractTestChannel
 {
     static int counter = 0 ;
     

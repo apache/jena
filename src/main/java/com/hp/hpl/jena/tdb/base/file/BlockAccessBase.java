@@ -22,7 +22,7 @@ import com.hp.hpl.jena.tdb.base.block.BlockException ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 /** Support for a disk file backed FileAccess */
-public abstract class FileAccessBase implements FileAccess 
+public abstract class BlockAccessBase implements BlockAccess 
 {
     final protected int blockSize ;
     protected final String filename ;
@@ -33,7 +33,7 @@ public abstract class FileAccessBase implements FileAccess
     protected final AtomicLong seq ;   // Id (future)
     protected boolean isEmpty = false ;
 
-    public FileAccessBase(String filename, int blockSize)
+    public BlockAccessBase(String filename, int blockSize)
     {
         //super(filename) ;
         this.blockSize = blockSize ;

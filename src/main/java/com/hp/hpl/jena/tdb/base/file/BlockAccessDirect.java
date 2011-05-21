@@ -17,11 +17,11 @@ import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.tdb.base.block.Block ;
 
-public class FileAccessDirect extends FileAccessBase
+public class BlockAccessDirect extends BlockAccessBase
 {
-    private static Logger log = LoggerFactory.getLogger(FileAccessDirect.class) ;
+    private static Logger log = LoggerFactory.getLogger(BlockAccessDirect.class) ;
     
-    public FileAccessDirect(String filename, int blockSize)
+    public BlockAccessDirect(String filename, int blockSize)
     {
         super(filename, blockSize) ;
     }

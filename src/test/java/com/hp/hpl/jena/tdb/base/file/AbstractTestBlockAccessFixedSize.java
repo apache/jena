@@ -13,19 +13,19 @@ import org.openjena.atlas.junit.BaseTest ;
 
 import com.hp.hpl.jena.tdb.base.block.Block ;
 
-public abstract class AbstractTestFileAccessFixedSize extends BaseTest
+public abstract class AbstractTestBlockAccessFixedSize extends BaseTest
 {
     // Fixed block tests.
     
     int blkSize ;
     
-    protected AbstractTestFileAccessFixedSize(int blkSize)
+    protected AbstractTestBlockAccessFixedSize(int blkSize)
     {
         this.blkSize = blkSize ;
     }
     
-    protected abstract FileAccess make() ;
-    protected static Block data(FileAccess file, int len)
+    protected abstract BlockAccess make() ;
+    protected static Block data(BlockAccess file, int len)
     {
         Block b = file.allocate(len) ;
         for (int i = 0 ; i < len ; i++ )
@@ -48,20 +48,20 @@ public abstract class AbstractTestFileAccessFixedSize extends BaseTest
 
     @Test public void fileaccess_01()
     {
-        FileAccess file = make() ;
+        BlockAccess file = make() ;
         assertTrue(file.isEmpty()) ;
     }
     
     @Test public void fileaccess_02()
     {
-        FileAccess file = make() ;
+        BlockAccess file = make() ;
         Block b = data(file, blkSize) ;
         file.write(b) ;
     }
 
     @Test public void fileaccess_03()
     {
-        FileAccess file = make() ;
+        BlockAccess file = make() ;
         Block b1 = data(file, blkSize) ;
         file.write(b1) ;
         int x = b1.getId() ;
@@ -75,7 +75,7 @@ public abstract class AbstractTestFileAccessFixedSize extends BaseTest
     
     @Test public void fileaccess_04()
     {
-        FileAccess file = make() ;
+        BlockAccess file = make() ;
         Block b1 = data(file, blkSize) ;
         Block b2 = data(file, blkSize) ;
         file.write(b1) ;
@@ -91,7 +91,7 @@ public abstract class AbstractTestFileAccessFixedSize extends BaseTest
     @Test(expected=FileException.class)
     public void fileaccess_05()
     {
-        FileAccess file = make() ;
+        BlockAccess file = make() ;
         Block b1 = data(file, 10) ;
         Block b2 = data(file, 20) ;
         file.write(b1) ;

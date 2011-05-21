@@ -10,7 +10,7 @@ import java.util.List ;
 import org.apache.log4j.Level ;
 import org.openjena.atlas.test.ExecGenerator ;
 
-import com.hp.hpl.jena.tdb.base.file.FileAccessMem ;
+import com.hp.hpl.jena.tdb.base.file.BlockAccessMem ;
 import com.hp.hpl.jena.tdb.index.IndexTestGenerator ;
 import com.hp.hpl.jena.tdb.index.RangeIndexMaker ;
 import com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams ;
@@ -79,14 +79,14 @@ public abstract class RunnerRangeIndex extends RunnerExecute
                 BPlusTreeParams.CheckingTree = true ;
                 BPlusTreeParams.CheckingNode = false ;
                 SystemTDB.NullOut = true ;
-                FileAccessMem.SafeMode = true ;
+                BlockAccessMem.SafeMode = true ;
             }
             else if ( a.equalsIgnoreCase("bptree:checknode") )
             {
                 BPlusTreeParams.CheckingTree = true ;
                 BPlusTreeParams.CheckingNode = true ;
                 SystemTDB.NullOut = true ;
-                FileAccessMem.SafeMode = true ;
+                BlockAccessMem.SafeMode = true ;
             }
             else if ( a.equalsIgnoreCase("bptree:log") )
             {
@@ -100,7 +100,7 @@ public abstract class RunnerRangeIndex extends RunnerExecute
                 org.apache.log4j.LogManager.getLogger("bptree.block").setLevel(Level.DEBUG) ;
             }
             else if ( a.equalsIgnoreCase("block:safe") )
-                FileAccessMem.SafeMode = true ;
+                BlockAccessMem.SafeMode = true ;
             else if ( a.equalsIgnoreCase("check") )
             {
                 BPlusTreeParams.CheckingNode = false;

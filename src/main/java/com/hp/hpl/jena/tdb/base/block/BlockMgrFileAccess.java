@@ -10,7 +10,7 @@ import static java.lang.String.format ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
-import com.hp.hpl.jena.tdb.base.file.FileAccess ;
+import com.hp.hpl.jena.tdb.base.file.BlockAccess ;
 
 /** Block manager that maps from the FileAccess layer to a BlockMgr. 
  * Add free block management (but we should layer with BlockMgrFreeChain) 
@@ -21,14 +21,14 @@ public class BlockMgrFileAccess extends BlockMgrBase
 {
     private static Logger log = LoggerFactory.getLogger(BlockMgrFileAccess.class) ;
     
-    private final FileAccess file ;
+    private final BlockAccess file ;
     private boolean closed = false ;
     
     // Create via the BlockMgrFactory.
-    /*package*/ BlockMgrFileAccess(FileAccess fileAccess, int blockSize)
+    /*package*/ BlockMgrFileAccess(BlockAccess blockAccess, int blockSize)
     {
         super(blockSize) ;
-        file = fileAccess ;
+        file = blockAccess ;
     }
     
     @Override

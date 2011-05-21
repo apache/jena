@@ -14,7 +14,7 @@ import com.hp.hpl.jena.tdb.base.block.Block ;
 /** Interface to concrete storage.
  *  This is wrapped in a BlockMgrAccess to provide a higher level abstraction.
  */
-public interface FileAccess extends Sync, Closeable
+public interface BlockAccess extends Sync, Closeable
 {
     public Block allocate(int size) ;
     

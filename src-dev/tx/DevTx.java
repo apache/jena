@@ -4,17 +4,10 @@ package tx;
 public class DevTx
 {
     // Run tests with BlockMgrFactory.tracked on.
-    // Version of FileAccess where you can give the read size.
-    // FileAccess over Storage??
-    // Reorganise - one package for all basic file access.
-    //   FileAccess ==> BlockAccess
-    //   Storage ==> FileStorage
     
     // Test with overlapping iterators.
     
     // Storage+Adler32
-    
-    // test for block managers and tracking.
     
     // Ref counting get/release.
     

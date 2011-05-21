@@ -11,9 +11,9 @@ import org.junit.Test ;
 import com.hp.hpl.jena.tdb.base.block.Block ;
 
 
-public abstract class AbstractTestFileAccessVarSize extends AbstractTestFileAccessFixedSize
+public abstract class AbstractTestBlockAccessVarSize extends AbstractTestBlockAccessFixedSize
 {
-    protected AbstractTestFileAccessVarSize()
+    protected AbstractTestBlockAccessVarSize()
     {
         super(25) ;
     }
@@ -21,7 +21,7 @@ public abstract class AbstractTestFileAccessVarSize extends AbstractTestFileAcce
     @Test
     public void fileaccess_50()
     {
-        FileAccess file = make() ;
+        BlockAccess file = make() ;
         Block b1 = data(file, 10) ;
         Block b2 = data(file, 20) ;
         file.write(b1) ;

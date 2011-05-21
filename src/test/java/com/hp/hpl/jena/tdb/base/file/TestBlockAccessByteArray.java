@@ -6,29 +6,15 @@
 
 package com.hp.hpl.jena.tdb.base.file;
 
-import org.junit.AfterClass ;
-import org.openjena.atlas.lib.FileOps ;
-
-import com.hp.hpl.jena.tdb.ConfigTest ;
-
-public class TestFileAccessDirect extends AbstractTestFileAccessFixedSize
+public class TestBlockAccessByteArray extends AbstractTestBlockAccessVarSize
 {
-    static String filename = ConfigTest.getTestingDir()+"/test-file-access-direct" ;
-    
-    static final int BlockSize = 50 ;
-    public TestFileAccessDirect()
+
+    @Override
+    protected BlockAccess make()
     {
-        super(BlockSize) ;
+        return new BlockAccessByteArray() ;
     }
 
-    @AfterClass public static void cleanup() { FileOps.deleteSilent(filename) ; } 
-    
-    @Override
-    protected FileAccess make()
-    {
-        FileOps.deleteSilent(filename) ;
-        return new FileAccessDirect(filename, BlockSize) ;
-    }
 }
 
 /*

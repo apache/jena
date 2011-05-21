@@ -10,10 +10,10 @@ package com.hp.hpl.jena.tdb.base.block;
 import java.io.File;
 
 import com.hp.hpl.jena.tdb.TDBException;
-import com.hp.hpl.jena.tdb.base.file.FileAccess ;
-import com.hp.hpl.jena.tdb.base.file.FileAccessDirect ;
-import com.hp.hpl.jena.tdb.base.file.FileAccessMapped ;
-import com.hp.hpl.jena.tdb.base.file.FileAccessMem ;
+import com.hp.hpl.jena.tdb.base.file.BlockAccess ;
+import com.hp.hpl.jena.tdb.base.file.BlockAccessDirect ;
+import com.hp.hpl.jena.tdb.base.file.BlockAccessMapped ;
+import com.hp.hpl.jena.tdb.base.file.BlockAccessMem ;
 import com.hp.hpl.jena.tdb.base.file.FileSet ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
@@ -44,7 +44,7 @@ public class BlockMgrFactory
     /** Create an in-memory block manager */ 
     public static BlockMgr createMem(String indexName, int blockSize)
     {
-        FileAccess file = new FileAccessMem(blockSize) ;
+        BlockAccess file = new BlockAccessMem(blockSize) ;
         BlockMgr blockMgr = new BlockMgrFileAccess(file, blockSize) ;
         blockMgr = new BlockMgrFreeChain(blockMgr) ;
 
@@ -70,7 +70,7 @@ public class BlockMgrFactory
     /** Create a NIO Block Manager */
     public static BlockMgr createMMapFile(String filename, int blockSize)
     {
-        FileAccess file = new FileAccessMapped(filename, blockSize) ;
+        BlockAccess file = new BlockAccessMapped(filename, blockSize) ;
         BlockMgr blockMgr =  wrapFileAccess(file, blockSize) ;
         return track(blockMgr) ;
     }
@@ -78,7 +78,7 @@ public class BlockMgrFactory
     /** Create a Block Manager using direct access (and a cache) */
     public static BlockMgr createStdFile(String filename, int blockSize, int readBlockCacheSize, int writeBlockCacheSize)
     {
-        FileAccess file = new FileAccessDirect(filename, blockSize) ;
+        BlockAccess file = new BlockAccessDirect(filename, blockSize) ;
         BlockMgr blockMgr =  wrapFileAccess(file, blockSize) ;
 
         String fn = filename ;
@@ -93,14 +93,14 @@ public class BlockMgrFactory
     /** Create a Block Manager using direct access, no caching, no nothing. */
     public static BlockMgr createStdFileNoCache(String filename, int blockSize)
     {
-        FileAccess fileAccess = new FileAccessDirect(filename, blockSize) ;
-        BlockMgr blockMgr = new BlockMgrFileAccess(fileAccess, blockSize) ;
+        BlockAccess blockAccess = new BlockAccessDirect(filename, blockSize) ;
+        BlockMgr blockMgr = new BlockMgrFileAccess(blockAccess, blockSize) ;
         return blockMgr ;
     }
     
-    private static BlockMgr wrapFileAccess(FileAccess fileAccess, int blockSize)
+    private static BlockMgr wrapFileAccess(BlockAccess blockAccess, int blockSize)
     {
-        BlockMgr blockMgr = new BlockMgrFileAccess(fileAccess, blockSize) ;
+        BlockMgr blockMgr = new BlockMgrFileAccess(blockAccess, blockSize) ;
         // This is a temporary fix to the problem 
         blockMgr = new BlockMgrFreeChain(blockMgr) ;
         return blockMgr ;

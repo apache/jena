@@ -14,7 +14,7 @@ import org.openjena.atlas.lib.Sync ;
 
 /** Interface to storage : a simplified version of FileChannel.
  *  This also enables use to implement memory-bcked versions.
- *  @see FileAccess
+ *  @see BlockAccess
  */
 public interface Channel extends Sync, Closeable
 {

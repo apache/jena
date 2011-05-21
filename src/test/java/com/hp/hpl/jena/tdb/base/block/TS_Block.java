@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -11,9 +12,10 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
-    TestBlockMgrMem.class,
-    TestBlockMgrDirect.class,
-    TestBlockMgrMapped.class
+    TestBlockMgrMem.class
+    , TestBlockMgrDirect.class
+    , TestBlockMgrMapped.class
+    , TestBlockMgrTracked.class
 })
 
 
@@ -22,6 +24,7 @@ public class TS_Block
 
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

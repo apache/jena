@@ -9,7 +9,7 @@ package test;
 
 import org.openjena.atlas.logging.Log ;
 
-import com.hp.hpl.jena.tdb.base.file.FileAccessMem ;
+import com.hp.hpl.jena.tdb.base.file.BlockAccessMem ;
 import com.hp.hpl.jena.tdb.index.RangeIndexMaker ;
 import com.hp.hpl.jena.tdb.index.bplustree.BPlusTree ;
 import com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeMaker ;
@@ -48,14 +48,14 @@ public class BPlusTreeRun extends RunnerRangeIndex
                 BPlusTreeParams.CheckingTree = true ;
                 BPlusTreeParams.CheckingNode = true ;
                 SystemTDB.NullOut = true ;
-                FileAccessMem.SafeMode = true ;
+                BlockAccessMem.SafeMode = true ;
                 break ;
             case perf:  
                 showProgress = false ;
                 BPlusTreeParams.CheckingTree = false ;
                 BPlusTreeParams.CheckingNode = false ;
                 SystemTDB.NullOut = false ;
-                FileAccessMem.SafeMode = false ;
+                BlockAccessMem.SafeMode = false ;
                 break ;
         } 
     }

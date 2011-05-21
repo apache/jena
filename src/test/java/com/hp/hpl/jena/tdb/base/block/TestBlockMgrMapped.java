@@ -13,8 +13,8 @@ import org.openjena.atlas.lib.FileOps ;
 import org.openjena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.tdb.ConfigTest ;
-import com.hp.hpl.jena.tdb.base.file.FileAccess ;
-import com.hp.hpl.jena.tdb.base.file.FileAccessMapped ;
+import com.hp.hpl.jena.tdb.base.file.BlockAccess ;
+import com.hp.hpl.jena.tdb.base.file.BlockAccessMapped ;
 
 public class TestBlockMgrMapped extends AbstractTestBlockMgr
 {
@@ -45,7 +45,7 @@ public class TestBlockMgrMapped extends AbstractTestBlockMgr
     protected BlockMgr make()
     { 
         clearBlockMgr() ;
-        FileAccess file = new FileAccessMapped(filename, BlkSize) ;
+        BlockAccess file = new BlockAccessMapped(filename, BlkSize) ;
         return new BlockMgrFileAccess(file, BlkSize) ;
     }
 }

@@ -21,7 +21,7 @@ import com.hp.hpl.jena.tdb.sys.SystemTDB ;
  * This is very inefficient but a better simulation of a disk.
  */
 
-public class FileAccessMem implements FileAccess
+public class BlockAccessMem implements BlockAccess
 {
     public static boolean SafeMode = true ;
     static final boolean Checking = true ;
@@ -30,12 +30,12 @@ public class FileAccessMem implements FileAccess
     private final boolean safeModeThisMgr ;
     protected final int blockSize ;
     
-    public FileAccessMem(int blockSize)
+    public BlockAccessMem(int blockSize)
     {
         this(blockSize, SafeMode) ;
     }
     
-    private FileAccessMem(int blockSize, boolean b)
+    private BlockAccessMem(int blockSize, boolean b)
     {
         this.blockSize = blockSize ;
         safeModeThisMgr = b ;

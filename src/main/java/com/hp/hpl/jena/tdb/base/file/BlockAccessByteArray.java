@@ -14,13 +14,13 @@ import static com.hp.hpl.jena.tdb.sys.SystemTDB.SizeOfInt ;
 /** 
  *  FileAccess interface backed by a byte array.
  */
-public class FileAccessByteArray implements FileAccess
+public class BlockAccessByteArray implements BlockAccess
 {
     private ByteBuffer bytes ;
     private long length ;           // Bytes in use: 0 to length-1 
     private long alloc ;            // Bytes allocated
     
-    public FileAccessByteArray()
+    public BlockAccessByteArray()
     {
         bytes = ByteBuffer.allocate(1024) ;
         length = 0 ; 

@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package tx;
+package com.hp.hpl.jena.tdb.base.block;
 
 import java.nio.ByteBuffer ;
 
@@ -19,7 +19,7 @@ import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory ;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrTracker ;
 
-public class TestBlockMgr extends BaseTest
+public class TestBlockMgrTracked extends BaseTest
 {
     // Mainly testing the tracking
 
@@ -28,24 +28,8 @@ public class TestBlockMgr extends BaseTest
     @AfterClass  static public void afterClass()    { BlockMgrTracker.verbose = b ;}
     
     
-    @Test public void block_01()
+    @Test public void track_01()
     {
-        BlockMgr mgr = BlockMgrFactory.createMem("BPTRecord", 4) ;
-        Block block = mgr.allocate(4) ;
-        ByteBuffer bb = block.getByteBuffer() ;
-        bb.putInt(0,1234) ;
-        mgr.write(block) ;
-        mgr.release(block) ;
-        // -----
-        Block block2 = mgr.getRead(block.getId()) ;
-        ByteBuffer bb2 = block2.getByteBuffer() ;
-        assertArrayEquals(bb.array(), bb2.array()) ;
-        mgr.release(block2) ;
-    }
-    
-    @Test public void block_02()
-    {
-        // Same - with tracking.
         BlockMgr mgr = BlockMgrFactory.createMem("BPTRecord", 4) ;
         mgr = BlockMgrFactory.tracker(mgr) ;
         mgr.beginUpdate() ;
@@ -81,7 +65,7 @@ public class TestBlockMgr extends BaseTest
         mgr.endUpdate() ;
     }
     
-    @Test public void block_03()
+    @Test public void track_02()
     {
         BlockMgr mgr = setup() ;
         write(mgr, 1234) ;
@@ -101,7 +85,7 @@ public class TestBlockMgr extends BaseTest
     }
     
     @Test(expected=BlockException.class)
-    public void block_04()
+    public void track_03()
     {
         BlockMgr mgr = setup() ;
         write(mgr, 1234) ;
@@ -113,7 +97,7 @@ public class TestBlockMgr extends BaseTest
     }
 
     @Test(expected=BlockException.class)
-    public void block_05()
+    public void track_04()
     {
         BlockMgr mgr = setup() ;
         write(mgr, 1234) ;
@@ -124,7 +108,7 @@ public class TestBlockMgr extends BaseTest
     }
 
     @Test(expected=BlockException.class)
-    public void block_06()
+    public void track_05()
     {
         BlockMgr mgr = setup() ;
         mgr.beginRead() ;
@@ -132,7 +116,7 @@ public class TestBlockMgr extends BaseTest
     }
 
     @Test(expected=BlockException.class)
-    public void block_07()
+    public void track_06()
     {
         BlockMgr mgr = setup() ;
         mgr.beginUpdate() ;

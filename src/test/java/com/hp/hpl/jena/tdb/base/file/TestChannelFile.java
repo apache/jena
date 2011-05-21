@@ -6,15 +6,25 @@
 
 package com.hp.hpl.jena.tdb.base.file;
 
-public class TestFileAccessByteArray extends AbstractTestFileAccessVarSize
+import org.junit.AfterClass ;
+import org.openjena.atlas.lib.FileOps ;
+
+import com.hp.hpl.jena.tdb.ConfigTest ;
+import com.hp.hpl.jena.tdb.base.file.Channel ;
+import com.hp.hpl.jena.tdb.base.file.ChannelFile ;
+
+public class TestChannelFile extends AbstractTestChannel
 {
+    static String filename = ConfigTest.getTestingDir()+"/test-storage" ;
 
+    @AfterClass public static void cleanup() { FileOps.deleteSilent(filename) ; } 
+    
     @Override
-    protected FileAccess make()
+    protected Channel make()
     {
-        return new FileAccessByteArray() ;
+        FileOps.deleteSilent(filename) ;
+        return new ChannelFile(filename) ;
     }
-
 }
 
 /*

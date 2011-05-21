@@ -10,20 +10,24 @@ import org.junit.AfterClass ;
 import org.openjena.atlas.lib.FileOps ;
 
 import com.hp.hpl.jena.tdb.ConfigTest ;
-import com.hp.hpl.jena.tdb.base.file.Channel ;
-import com.hp.hpl.jena.tdb.base.file.ChannelFile ;
 
-public class TestStorageFile extends AbstractTestStorage
+public class TestBlockAccessMapped extends AbstractTestBlockAccessFixedSize
 {
-    static String filename = ConfigTest.getTestingDir()+"/test-storage" ;
+    static String filename = ConfigTest.getTestingDir()+"/test-file-access-mapped" ;
+    
+    static final int BlockSize = 64 ;
+    public TestBlockAccessMapped()
+    {
+        super(BlockSize) ;
+    }
 
     @AfterClass public static void cleanup() { FileOps.deleteSilent(filename) ; } 
     
     @Override
-    protected Channel make()
+    protected BlockAccess make()
     {
         FileOps.deleteSilent(filename) ;
-        return new ChannelFile(filename) ;
+        return new BlockAccessMapped(filename, BlockSize) ;
     }
 }
 
