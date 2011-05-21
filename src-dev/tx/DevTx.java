@@ -3,18 +3,20 @@ package tx;
 
 public class DevTx
 {
-    // BlobStream.
-    //   Include "read() == read next"
-    // TestByteArray and up - exception tests.
-    
-    
     // Run tests with BlockMgrFactory.tracked on.
+    // Version of FileAccess where you can give the read size.
+    // FileAccess over Storage??
+    // Reorganise - one package for all basic file access.
+    //   FileAccess ==> BlockAccess
+    //   Storage ==> FileStorage
+    
     // Test with overlapping iterators.
+    
+    // Storage+Adler32
     
     // test for block managers and tracking.
     
     // Ref counting get/release.
-    // pom.xml - exclude resources/log4j.properies
     
     // Tidy up 
     //   See HACK (BPTreeNode)

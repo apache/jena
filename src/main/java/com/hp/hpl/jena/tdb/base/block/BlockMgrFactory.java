@@ -21,12 +21,17 @@ import com.hp.hpl.jena.tdb.sys.SystemTDB;
 public class BlockMgrFactory
 {
     private final static boolean AddTracker = false ;
-    private static BlockMgr tracker(BlockMgr blockMgr)
+    public static BlockMgr tracker(BlockMgr blockMgr)
     {
-        if ( ! AddTracker ) return blockMgr ;
+        if ( blockMgr instanceof BlockMgrTracker ) return blockMgr ;
         return new BlockMgrTracker(blockMgr) ;
     }
     
+    private static BlockMgr track(BlockMgr blockMgr)
+    {
+        if ( ! AddTracker ) return blockMgr ;
+        return tracker(blockMgr) ;
+    }
     
     public static BlockMgr create(FileSet fileSet, String ext, int blockSize, int readBlockCacheSize, int writeBlockCacheSize)
     {
@@ -46,7 +51,7 @@ public class BlockMgrFactory
         // Small cache - testing.
         //blockMgr = new BlockMgrCache(indexName, 3, 3, blockMgr) ;
         
-        return tracker(blockMgr) ;
+        return track(blockMgr) ;
     }
     
     /** Create a BlockMgr backed by a file */
@@ -67,7 +72,7 @@ public class BlockMgrFactory
     {
         FileAccess file = new FileAccessMapped(filename, blockSize) ;
         BlockMgr blockMgr =  wrapFileAccess(file, blockSize) ;
-        return tracker(blockMgr) ;
+        return track(blockMgr) ;
     }
     
     /** Create a Block Manager using direct access (and a cache) */
@@ -82,7 +87,7 @@ public class BlockMgrFactory
             fn = filename.substring(j+1) ;
         
         blockMgr = new BlockMgrCache(fn, readBlockCacheSize, writeBlockCacheSize, blockMgr) ;
-        return tracker(blockMgr) ;
+        return track(blockMgr) ;
     }
     
     /** Create a Block Manager using direct access, no caching, no nothing. */

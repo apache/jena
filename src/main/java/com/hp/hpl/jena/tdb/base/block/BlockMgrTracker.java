@@ -6,14 +6,7 @@
 
 package com.hp.hpl.jena.tdb.base.block;
 
-import static com.hp.hpl.jena.tdb.base.block.BlockMgrTracker.Action.Alloc ;
-import static com.hp.hpl.jena.tdb.base.block.BlockMgrTracker.Action.Free ;
-import static com.hp.hpl.jena.tdb.base.block.BlockMgrTracker.Action.GetRead ;
-import static com.hp.hpl.jena.tdb.base.block.BlockMgrTracker.Action.GetWrite ;
-import static com.hp.hpl.jena.tdb.base.block.BlockMgrTracker.Action.IterRead ;
-import static com.hp.hpl.jena.tdb.base.block.BlockMgrTracker.Action.Promote ;
-import static com.hp.hpl.jena.tdb.base.block.BlockMgrTracker.Action.Release ;
-import static com.hp.hpl.jena.tdb.base.block.BlockMgrTracker.Action.Write ;
+import static com.hp.hpl.jena.tdb.base.block.BlockMgrTracker.Action.* ;
 
 import java.util.ArrayList ;
 import java.util.Iterator ;
@@ -28,9 +21,12 @@ import com.hp.hpl.jena.tdb.TDBException ;
 
 public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
 {
-    static enum Action { Alloc, Promote, GetRead, GetWrite, Write, Release, Free, IterRead }
+    public static boolean verbose = false ;
+
+    static enum Action { Alloc, Promote, GetRead, GetWrite, Write, Release, Free, IterRead, BeginRead, EndRead, BeginUpdate, EndUpdate}
     static final Integer NoId = Integer.valueOf(-9) ;
-    
+
+
     // Don't inherit BlockMgrWrapper to make sure this class caches everything.
 
     // XXX Issue: two block with same id but different ByteBuffers --> in someway, don't
@@ -102,7 +98,7 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
         Block block ;
         synchronized (this)
         {
-            checkUpdate("allocate") ;
+            checkUpdate(Alloc) ;
             block = blockMgr.allocate(blockSize) ;
             Integer id = block.getId() ;
             activeWriteBlocks.add(id) ;
@@ -116,7 +112,7 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
     {
         synchronized (this)
         {
-            checkRead("getRead") ;
+            checkRead(GetRead) ;
             add(GetRead, id) ;
             activeReadBlocks.add(id) ;
         }
@@ -128,7 +124,7 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
     {
         synchronized (this)
         {
-            checkRead("getReadIterator") ;
+            checkRead(IterRead) ;
             add(IterRead, id) ;
             activeIterBlocks.add(id) ;
         }
@@ -140,7 +136,7 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
     {
         synchronized (this)
         {
-            checkUpdate("getWrite") ;
+            checkUpdate(GetWrite) ;
             add(GetWrite, id) ;
             activeWriteBlocks.add(id) ;
         }
@@ -152,8 +148,8 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
     {
         synchronized (this)
         {
+            checkUpdate(Promote) ;
             Integer id = block.getId() ;
-            checkUpdate("promote") ;
             add(Promote, id) ;
 
             if ( ! activeWriteBlocks.contains(id) && ! activeReadBlocks.contains(id) )
@@ -171,8 +167,8 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
     {
         synchronized (this)
         {
+            checkRead(Release) ;
             Integer id = block.getId() ;
-            checkRead("release") ;
             add(Release, id) ;
 
             if ( ! activeReadBlocks.contains(id) && ! activeIterBlocks.contains(id) && ! activeWriteBlocks.contains(id) )
@@ -191,8 +187,8 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
     {
         synchronized (this)
         {
+            checkUpdate(Write) ;
             Integer id = block.getId() ;
-            checkUpdate("write") ;
             add(Write, id) ;
             if ( ! activeWriteBlocks.contains(id) )
                 error(Write, id+ " is not an active write block") ;
@@ -205,8 +201,8 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
     {
         synchronized (this)
         {
+            checkUpdate(Free) ;
             Integer id = block.getId() ;
-            checkUpdate("freeBlock") ;
             add(Free, id) ;
             if ( activeReadBlocks.contains(id) )
                 error(Free, id+" is a read block") ;
@@ -278,7 +274,7 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
         synchronized (this)
         {
             if ( inUpdate )
-                log.warn("beginRead when already in update") ;
+                error(BeginRead, "beginRead when already in update") ;
             inRead++ ;
             inUpdate = false ;
         }
@@ -292,9 +288,9 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
         synchronized (this)
         {
             if ( inRead == 0 )
-                log.error("endRead but not in read") ;
+                error(EndRead, "endRead but not in read") ;
             if ( inUpdate )
-                log.error("endRead when in update") ;
+                error(EndRead, "endRead when in update") ;
 
             checkEmpty("Outstanding write blocks at end of read operations!",
                        activeWriteBlocks) ;
@@ -319,9 +315,9 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
         synchronized (this)
         {
             if ( inRead > 0 )
-                log.error("beginUpdate when already in read") ;
+                error(BeginUpdate, "beginUpdate when already in read") ;
             if ( inUpdate )
-                log.error("beginUpdate when already in update") ;
+                error(BeginUpdate, "beginUpdate when already in update") ;
             inUpdate = true ;
         }
         blockMgr.beginUpdate() ;
@@ -333,9 +329,9 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
         synchronized (this)
         {
             if ( ! inUpdate )
-                log.warn("endUpdate but not in update") ;
+                error(EndUpdate, "endUpdate but not in update") ;
             if ( inRead > 0 )
-                log.warn("endUpdate when in read") ;
+                error(EndUpdate, "endUpdate when in read") ;
 
             checkEmpty("Outstanding read blocks at end of update operations",
                        activeReadBlocks) ;
@@ -350,17 +346,16 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
         blockMgr.endUpdate() ;
     }
 
-    private void checkUpdate(String method)
+    private void checkUpdate(Action action)
     {
         if ( ! inUpdate )
-            log.error(method+" called outside update") ;
+            error(action,"called outside update") ;
     }
 
-    private void checkRead(String method)
+    private void checkRead(Action action)
     {
-        // [TxTDB:PATCH-UP] Iterator trip this.
-//        if ( ! inUpdate && ! inRead )
-//            log.error(method+" called outside update and read") ;
+        if ( ! inUpdate && inRead == 0 )
+            error(action, "Called outside update and read") ;
     }
 
     private void checkEmpty(String string, MultiSet<Integer> blocks)
@@ -378,9 +373,12 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
     
     private void error(Action action, String string)
     {
-        log.error(action+": "+string) ;
-        history() ;
-        throw new TDBException() ;
+        if ( verbose )
+        {
+            log.error(action+": "+string) ;
+            history() ;
+        }
+        throw new BlockException(action+": "+string) ;
         //debugPoint() ;
     }
 

@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -14,7 +15,7 @@ import org.openjena.atlas.lib.Pair ;
 import org.openjena.atlas.lib.Sync ;
 
 /** 
- * An ObjectFile is an append-read file, that is you can append blocks
+ * An ObjectFile is an append-read file, that is you can append data
  * to the stream or read any block.
  */
 
@@ -36,15 +37,14 @@ public interface ObjectFile extends Sync, Closeable
     
     /** Length, in units used by read/write for ids */
     public long length() ;
-    @Override
-    public void close() ;
     
-    /** All the bytebuffers */
+    /** All the bytebuffers - debugging aid */
     public Iterator<Pair<Long, ByteBuffer>> all() ;
 }
 
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -7,20 +7,18 @@
 
 package com.hp.hpl.jena.tdb.base;
 
-import com.hp.hpl.jena.tdb.base.block.TS_Block;
-import com.hp.hpl.jena.tdb.base.file.TS_File;
-import com.hp.hpl.jena.tdb.base.record.TS_Record;
-import com.hp.hpl.jena.tdb.base.recordfile.TS_RecordFile;
-import com.hp.hpl.jena.tdb.base.storage.TS_Storage ;
+import org.junit.runner.RunWith ;
+import org.junit.runners.Suite ;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import com.hp.hpl.jena.tdb.base.block.TS_Block ;
+import com.hp.hpl.jena.tdb.base.file.TS_File ;
+import com.hp.hpl.jena.tdb.base.record.TS_Record ;
+import com.hp.hpl.jena.tdb.base.recordfile.TS_RecordFile ;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
-      TS_Storage.class
+      TS_Block.class
     , TS_File.class
-    , TS_Block.class
     , TS_Record.class
     , TS_RecordFile.class
 })

@@ -15,8 +15,8 @@ import java.util.Iterator ;
 import org.openjena.atlas.lib.Bytes ;
 import org.openjena.atlas.lib.Pair ;
 
+import com.hp.hpl.jena.tdb.base.file.Channel ;
 import com.hp.hpl.jena.tdb.base.file.FileException ;
-import com.hp.hpl.jena.tdb.base.storage.Storage ;
 
 /** Variable length ByteBuffer file on disk. 
  *  Buffering for delayed writes.
@@ -44,7 +44,7 @@ public class ObjectFileStorage implements ObjectFile
     private final ByteBuffer writeBuffer ;
     private int bufferSize ;
     
-    private final Storage file ;                // Access to storage
+    private final Channel file ;                // Access to storage
     private long filesize ;                     // Size of on-disk. 
     
     // Two-step write - alloc, write
@@ -52,12 +52,12 @@ public class ObjectFileStorage implements ObjectFile
     private ByteBuffer allocByteBuffer = null ;
     private long allocLocation = -1 ;
 
-    public ObjectFileStorage(Storage file)
+    public ObjectFileStorage(Channel file)
     {
         this(file, ObjectFileWriteCacheSize) ;
     }
     
-    public ObjectFileStorage(Storage file, int bufferSize)
+    public ObjectFileStorage(Channel file, int bufferSize)
     {
         this.file = file ;
         this.bufferSize = bufferSize ;
@@ -168,7 +168,8 @@ public class ObjectFileStorage implements ObjectFile
         if ( loc < 0 )
             throw new IllegalArgumentException("ObjectFile.read: Bad read: "+loc) ;
         
-        // Maybe it's in the in the write buffer
+        // Maybe it's in the in the write buffer.
+        // Maybe the write buffer should keep more structure? 
         if ( loc >= filesize )
         {
             if ( loc > filesize+writeBuffer.capacity() )

@@ -4,70 +4,88 @@
  * [See end of file]
  */
 
-package tx.blockstream;
+package com.hp.hpl.jena.tdb.base.file;
 
 import java.io.IOException ;
 import java.nio.ByteBuffer ;
 
 import org.openjena.atlas.io.IO ;
 
-import com.hp.hpl.jena.tdb.base.block.Block ;
-import com.hp.hpl.jena.tdb.base.file.FileBase ;
-import com.hp.hpl.jena.tdb.base.file.FileException ;
 
-public class BlockStreamDirect extends FileBase /*Simply incorproate this?*/ implements BlockStream
+public class ChannelFile implements Channel
 {
-    private long length ;
-    
-    // ObjectFileDiskDirect
-    // Use a FileAccess wrapper and delete ObjectFileDiskDirect
+    private FileBase file ;
 
-    public BlockStreamDirect(String filename)
+    public ChannelFile(String filename)
     {
-        super(filename) ;
-        try {
-            length = channel.size() ;
-            // This remains at the end of the file at all times.
-            channel.position(length) ;
-        } catch(IOException ex) { IO.exception(ex) ; }
+        file = new FileBase(filename) ;
+    }
+    
+    @Override
+    public long position()
+    {
+        try { return file.channel.position() ; } 
+        catch (IOException e) { IO.exception(e) ; return -1 ; }
+    }
+
+    @Override
+    public void position(long pos)
+    {
+        try { file.channel.position(pos) ; } 
+        catch (IOException e) { IO.exception(e) ; }
+    }
+
+    @Override
+    public int read(ByteBuffer buffer)
+    {
+        try { return file.channel.read(buffer) ; } 
+        catch (IOException e) { IO.exception(e) ; return -1 ; }
     }
     
     
     @Override
-    public Block read(long id)
+    public int read(ByteBuffer buffer, long loc)
     {
-        int loc = (int)id ;
-        try {
-            // From NodeTable.
-            
-            // Does not change position()
-            ByteBuffer bb = ByteBuffer.allocate(4) ;    // reuse.
-            channel.read(bb, loc) ;
-            return null ;
-        } catch(IOException ex) { IO.exception(ex) ; return null ; } 
+        try { return file.channel.read(buffer, loc) ; } 
+        catch (IOException e) { IO.exception(e) ; return -1 ; }
     }
 
     @Override
-    public long append(ByteBuffer byteBuffer)
+    public int write(ByteBuffer buffer)
     {
-        try {
-            int len = channel.write(byteBuffer) ;
-            if ( len != byteBuffer.capacity() )
-                throw new FileException() ;
-            // Our block id is where we wrote it.
-            long loc = length ;
-            length += len ;
-            return loc ;
-        } catch(IOException ex) { IO.exception(ex) ; return -1 ; } 
-        
+        try { return file.channel.write(buffer) ; } 
+        catch (IOException e) { IO.exception(e) ; return -1 ; }
     }
-
 
     @Override
-    public void truncate()
+    public int write(ByteBuffer buffer, long loc)
     {
-        try { channel.truncate(0) ; } catch (IOException ex) { IO.exception(ex) ; }
+        try { return file.channel.write(buffer, loc) ; } 
+        catch (IOException e) { IO.exception(e) ; return -1 ; }
     }
+
+    @Override
+    public long length()
+    {
+        try { return file.channel.size() ; }
+        catch (IOException e) { IO.exception(e) ; return -1 ; }
+    }
+
+    @Override
+    public void sync()
+    { 
+        try { file.channel.force(true) ; }
+        catch (IOException e) { IO.exception(e) ; }
+    }
+
+    @Override
+    public void close()
+    {
+        try { file.channel.close() ; }
+        catch (IOException e) { IO.exception(e) ; }
+    }
+
+    
 }
 
 /*

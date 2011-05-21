@@ -11,9 +11,6 @@ import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile ;
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFileMem ;
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFileStorage ;
 import com.hp.hpl.jena.tdb.base.objectfile.StringFile ;
-import com.hp.hpl.jena.tdb.base.storage.Storage ;
-import com.hp.hpl.jena.tdb.base.storage.StorageFile ;
-import com.hp.hpl.jena.tdb.base.storage.StorageMem ;
 
 public class FileFactory
 {
@@ -25,8 +22,8 @@ public class FileFactory
     
     public static ObjectFile createObjectFileDisk(String filename)
     {
-        Storage store = new StorageFile(filename) ; 
-        return new ObjectFileStorage(store) ;
+        Channel file = new ChannelFile(filename) ; 
+        return new ObjectFileStorage(file) ;
     }
 
     public static ObjectFile createObjectFileMem()
@@ -37,8 +34,8 @@ public class FileFactory
         else
         {
             // Newer way.
-            Storage store = new StorageMem("mem") ; 
-            return new ObjectFileStorage(store) ;
+            Channel file = new ChannelMem("mem") ; 
+            return new ObjectFileStorage(file) ;
         }
     }
     

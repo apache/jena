@@ -4,25 +4,22 @@
  * [See end of file]
  */
 
-package tx.blockstream;
+package com.hp.hpl.jena.tdb.base.file;
 
-import java.io.Closeable ;
-import java.nio.ByteBuffer ;
+import com.hp.hpl.jena.tdb.base.file.Channel ;
+import com.hp.hpl.jena.tdb.base.file.ChannelMem ;
 
-import org.openjena.atlas.lib.Sync ;
 
-import com.hp.hpl.jena.tdb.base.block.Block ;
-
-/** 
- * A BlockStream is an append-read file, that is you can append blocks
- * to the stream or read any block.
- */
-public interface BlockStream extends Closeable, Sync
+public class TestStorageMem extends AbstractTestStorage
 {
-    // ByteBuffer or Blocks - not sure yet
-    public Block read(long id) ;
-    public long  append(ByteBuffer byteBuffer) ;
-    public void truncate() ;
+    static int counter = 0 ;
+    
+    @Override
+    protected Channel make()
+    {
+        return new ChannelMem("Test-"+(counter++)) ;
+    }
+
 }
 
 /*

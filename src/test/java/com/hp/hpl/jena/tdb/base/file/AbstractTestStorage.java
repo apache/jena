@@ -4,21 +4,23 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.base.storage;
+package com.hp.hpl.jena.tdb.base.file;
 
 import java.nio.ByteBuffer ;
+
+import com.hp.hpl.jena.tdb.base.file.Channel ;
 
 import org.junit.Test ;
 import org.openjena.atlas.junit.BaseTest ;
 
 public abstract class AbstractTestStorage extends BaseTest
 {
-    protected abstract Storage make() ;
+    protected abstract Channel make() ;
     static final int blkSize = 100 ;
     
     @Test public void storage_01() 
     {
-        Storage store = make() ;
+        Channel store = make() ;
         assertEquals(0, store.length()) ;
     }
     
@@ -33,8 +35,10 @@ public abstract class AbstractTestStorage extends BaseTest
     
     protected static boolean same(ByteBuffer bb1, ByteBuffer bb2)
     {
-        if ( bb1.capacity() != bb2.capacity() ) return false ;
         
+        if ( bb1.capacity() != bb2.capacity() ) return false ;
+        bb1.clear() ;
+        bb2.clear() ;
         for ( int i = 0 ; i < bb1.capacity() ; i++ )
             if ( bb1.get(i) != bb2.get(i) ) return false ;
         return true ;
@@ -42,7 +46,7 @@ public abstract class AbstractTestStorage extends BaseTest
 
     @Test public void storage_02()
     {
-        Storage store = make() ;
+        Channel store = make() ;
         ByteBuffer b = data(blkSize) ;
         store.write(b) ;
         long x = store.length() ;
@@ -51,7 +55,7 @@ public abstract class AbstractTestStorage extends BaseTest
 
     @Test public void storage_03()
     {
-        Storage store = make() ;
+        Channel store = make() ;
         ByteBuffer b1 = data(blkSize) ;
         long posn = store.position() ; 
         store.write(b1) ;
@@ -63,7 +67,7 @@ public abstract class AbstractTestStorage extends BaseTest
     
     @Test public void storage_04()
     {
-        Storage store = make() ;
+        Channel store = make() ;
         ByteBuffer b1 = data(blkSize) ;
         ByteBuffer b2 = data(blkSize/2) ;
 
@@ -75,6 +79,23 @@ public abstract class AbstractTestStorage extends BaseTest
         int z = store.read(b9) ;
         assertEquals(5, z) ;
     }
+    
+    @Test public void storage_05()
+    {
+        Channel store = make() ;
+        ByteBuffer b1 = data(blkSize) ;
+        ByteBuffer b1a = ByteBuffer.allocate(blkSize) ;
+        ByteBuffer b2 = data(blkSize/2) ;
+        ByteBuffer b2a = ByteBuffer.allocate(blkSize/2) ;
+        store.write(b1) ;
+        store.write(b2) ;
+        store.position(0) ;
+        store.read(b1a) ;
+        assertTrue(same(b1, b1a)) ;
+        store.read(b2a) ;
+        assertTrue(same(b2, b2a)) ;
+    }
+    
 }
 
 /*

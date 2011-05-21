@@ -4,52 +4,27 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.base.storage;
+package com.hp.hpl.jena.tdb.base.file;
 
-import java.nio.ByteBuffer ;
+import org.junit.AfterClass ;
+import org.openjena.atlas.lib.FileOps ;
 
-import org.openjena.atlas.lib.Closeable ;
-import org.openjena.atlas.lib.Sync ;
+import com.hp.hpl.jena.tdb.ConfigTest ;
+import com.hp.hpl.jena.tdb.base.file.Channel ;
+import com.hp.hpl.jena.tdb.base.file.ChannelFile ;
 
-import com.hp.hpl.jena.tdb.base.file.FileAccess ;
-
-/** Interface to storage : a simplifed version of FileChannel
- *  @see FileAccess
- */
-public interface Storage extends Sync, Closeable
+public class TestStorageFile extends AbstractTestStorage
 {
-    // This is a simple, low level "file = array of bytes" interface"
-    // This interface does not support slicing - so it's not suitable for memory mapped I/O
-    // but it is suitable for compression.
-    
-    /** return the position */
-    public long position() ;
-    
-    /** set the position */
-    public void position(long pos) ;
+    static String filename = ConfigTest.getTestingDir()+"/test-storage" ;
 
-    /** Read into a ByteBuffer. Returns the number of bytes read.
-     */
-    public int read(ByteBuffer buffer) ;
+    @AfterClass public static void cleanup() { FileOps.deleteSilent(filename) ; } 
     
-    /** Read into a ByteBuffer, starting at position loc. Return the number of bytes read.
-     * loc must be within the file.
-     */
-    public int read(ByteBuffer buffer, long loc) ;
-
-    /** Write from ByteBuffer, starting at position loc.  
-     * Return the number of bytes written
-     */
-    public int write(ByteBuffer buffer) ;
-    
-    /** Write from ByteBuffer, starting at position loc.  
-     * Return the number of bytes written.
-     * loc must be within 0 to length - writing at length is append */
-    public int write(ByteBuffer buffer, long loc) ;
-    
-    /** Length of storage, in bytes.*/
-    public long length() ;
-
+    @Override
+    protected Channel make()
+    {
+        FileOps.deleteSilent(filename) ;
+        return new ChannelFile(filename) ;
+    }
 }
 
 /*

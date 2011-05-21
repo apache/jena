@@ -13,6 +13,8 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
     TestMetaFile.class
+    , TestStorageMem.class
+    , TestStorageFile.class
     , TestStringFile.class 
     , TestFileAccessMem.class
     , TestFileAccessByteArray.class

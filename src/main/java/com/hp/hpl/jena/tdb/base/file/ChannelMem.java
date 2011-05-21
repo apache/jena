@@ -4,13 +4,13 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.base.storage;
+package com.hp.hpl.jena.tdb.base.file;
 
 import java.nio.ByteBuffer ;
 
 import com.hp.hpl.jena.tdb.base.StorageException ;
 
-public class StorageMem implements Storage
+public class ChannelMem implements Channel
 {
     private ByteBuffer bytes ;      // Position is our file position.
     private long length ;           // Bytes in use: 0 to length-1
@@ -18,7 +18,7 @@ public class StorageMem implements Storage
     private static int INIT_SIZE = 1024 ;
     private static int INC_SIZE = 1024 ;
     
-    public StorageMem(String name)
+    public ChannelMem(String name)
     {
         bytes = ByteBuffer.allocate(1024) ;
         length = 0 ; 
