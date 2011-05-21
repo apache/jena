@@ -36,7 +36,7 @@ public class SDBRequest extends StoreHolder
     
     // Set in SDBCompile.compile
     public boolean LeftJoinTranslation = true ;     // Does the DB support general join expressions? 
-    public boolean LimitOffsetTranslation = true ;  // Does the DB grok the Limit/Offset SQL?
+    public boolean LimitOffsetTranslation = false ; // Does the DB grok the Limit/Offset SQL?
     public boolean DistinctTranslation = true ;     // Some DBs can't do DISTINCt on CLOBS.
     
     private Context context ;

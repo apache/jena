@@ -41,40 +41,69 @@ public class SDBCompile
         if ( binding != null && ! binding.isEmpty() )
             op = Substitute.substitute(op, binding) ;
         
+        // Defaults are set in SDBCompile.compile
+        // LeftJoinTranslation = true ;         -- Does the DB support general join expressions? 
+        // LimitOffsetTranslation = false ;     -- Does the DB grok the Limit/Offset SQL?
+        // DistinctTranslation = true ;         -- Some DBs can't do DISTINCT on CLOBS.
+        
+        
         if ( StoreUtils.isHSQL(store) )
         {
-            request.LeftJoinTranslation = false ;
-            request.LimitOffsetTranslation = false ;        // ?? HSQLDB does not like the nested SQL.
+            request.LeftJoinTranslation = false ;   // Does not deal with non-linear join trees.
+            request.DistinctTranslation = true ; 
+            request.LimitOffsetTranslation = false ;    // Does not cope with the nested SQL
         }
         
         if ( StoreUtils.isH2(store) )
         {
-            request.LeftJoinTranslation = false ;
-            request.LimitOffsetTranslation = false ;        // ?? H2 does not like the nested SQL.
+            request.LeftJoinTranslation = false ;   // Does not deal with non-linear join trees.
+            request.DistinctTranslation = true ; 
+            request.LimitOffsetTranslation = false ;    // Does not cope with the nested SQL
         }
         
         // Any of these need fixing and testing ...
         
         if ( StoreUtils.isDerby(store) )
+        {
+            request.LeftJoinTranslation = true ;
+            request.LimitOffsetTranslation = false ;
             request.DistinctTranslation = false ;
+        }
         
         if ( StoreUtils.isPostgreSQL(store) )
+        {
+            request.LeftJoinTranslation = true ;
             request.LimitOffsetTranslation = true ;
+            request.DistinctTranslation = true ;
+        }
         
         if ( StoreUtils.isMySQL(store) )
+        {
+            request.LeftJoinTranslation = true ;
             request.LimitOffsetTranslation = true ;
+            request.DistinctTranslation = true ;
+        }
         
         if ( StoreUtils.isSQLServer(store) )
+        {
+            request.LeftJoinTranslation = true ;
+            request.LimitOffsetTranslation = false ;
             request.DistinctTranslation = false ;
+        }
         
         if ( StoreUtils.isOracle(store) )
         {
-            request.DistinctTranslation = false ;
+            request.LeftJoinTranslation = true ;
             request.LimitOffsetTranslation = false ;
+            request.DistinctTranslation = false ;
         }
         
         if ( StoreUtils.isDB2(store) )
+        {
+            request.LeftJoinTranslation = true ;
+            request.LimitOffsetTranslation = false ;
             request.DistinctTranslation = false ;
+        }
         
         QueryCompiler queryCompiler = store.getQueryCompilerFactory().createQueryCompiler(request) ;
         Op op2 = queryCompiler.compile(op) ;
