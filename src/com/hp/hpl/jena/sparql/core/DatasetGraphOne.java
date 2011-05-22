@@ -15,6 +15,7 @@ import org.openjena.atlas.iterator.NullIterator ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.Triple ;
 
 /** 
  * DatasetGraph of a single graph as default graph. 
@@ -50,6 +51,15 @@ public class DatasetGraphOne extends DatasetGraphBaseFind
     }
 
     @Override
+    public void add(Node g , Node s, Node p, Node o)
+    {
+        if (  Quad.isDefaultGraph(g) )
+            graph.add(new Triple(s, p, o)) ;
+        else
+            throw new UnsupportedOperationException("DatasetGraphOne.add/named graph") ;
+    }
+    
+    @Override
     public void add(Quad quad)
     { 
         if (  isDefaultGraph(quad) )
@@ -58,6 +68,15 @@ public class DatasetGraphOne extends DatasetGraphBaseFind
             throw new UnsupportedOperationException("DatasetGraphOne.add/named graph") ;
     }      
     
+    @Override
+    public void delete(Node g , Node s, Node p, Node o)
+    {
+        if (  Quad.isDefaultGraph(g) )
+            graph.delete(new Triple(s, p, o)) ;
+        else
+            throw new UnsupportedOperationException("DatasetGraphOne.delete/named graph") ;
+    }
+
     @Override
     public void delete(Quad quad)
     {
