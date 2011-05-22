@@ -24,9 +24,19 @@ public class TestBlockMgrTracked extends BaseTest
     // Mainly testing the tracking
 
     static boolean b ;
-    @BeforeClass static public void beforeClass()   { b = BlockMgrTracker.verbose ; BlockMgrTracker.verbose = false ; }
-    @AfterClass  static public void afterClass()    { BlockMgrTracker.verbose = b ;}
-    
+
+    @BeforeClass
+    static public void beforeClass()
+    {
+        b = BlockMgrTracker.verbose ;
+        BlockMgrTracker.verbose = false ;
+    }
+
+    @AfterClass
+    static public void afterClass()
+    {
+        BlockMgrTracker.verbose = b ;
+    }    
     
     @Test public void track_01()
     {

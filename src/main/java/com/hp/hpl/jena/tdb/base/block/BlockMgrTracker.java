@@ -124,7 +124,7 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
     {
         synchronized (this)
         {
-            checkRead(IterRead) ;
+            checkReadOrIter(IterRead) ;
             add(IterRead, id) ;
             activeIterBlocks.add(id) ;
         }
@@ -167,7 +167,7 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
     {
         synchronized (this)
         {
-            checkRead(Release) ;
+            checkReadOrIter(Release) ;
             Integer id = block.getId() ;
             add(Release, id) ;
 
@@ -357,6 +357,13 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
         if ( ! inUpdate && inRead == 0 )
             error(action, "Called outside update and read") ;
     }
+
+    private void checkReadOrIter(Action action)
+    {
+        if ( ! inUpdate && inRead == 0 && activeIterBlocks.size() == 0 )
+            error(action, "Called outside update, read or an iterator") ;
+    }
+
 
     private void checkEmpty(String string, MultiSet<Integer> blocks)
     {

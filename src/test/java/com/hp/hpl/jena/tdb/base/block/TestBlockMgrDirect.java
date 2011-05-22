@@ -28,7 +28,10 @@ public class TestBlockMgrDirect extends AbstractTestBlockMgr
         // Make directly - no wrapper, no cache, no free block mgt.
         FileOps.delete(filename) ;
         BlockAccess file = new BlockAccessDirect(filename, BlkSize) ;
-        return new BlockMgrFileAccess(file, BlkSize) ;
+        BlockMgr mgr = new BlockMgrFileAccess(file, BlkSize) ;
+        if ( BlockMgrFactory.AddTracker )
+            mgr = BlockMgrFactory.tracker(mgr) ;
+        return mgr ;
     }
 }
 

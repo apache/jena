@@ -3,9 +3,11 @@ package tx;
 
 public class DevTx
 {
+    // Test with overlapping iterators.
     // Run tests with BlockMgrFactory.tracked on.
     
-    // Test with overlapping iterators.
+    // BlockMgr  -- count begine/end iters (or just via activeIterators?)
+    // checkReadOrIter --> 
     
     // Channel+Adler32
     

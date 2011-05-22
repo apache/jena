@@ -20,13 +20,14 @@ import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 public class BlockMgrFactory
 {
-    private final static boolean AddTracker = false ;
+    public final static boolean AddTracker = true ;
     public static BlockMgr tracker(BlockMgr blockMgr)
     {
         if ( blockMgr instanceof BlockMgrTracker ) return blockMgr ;
         return new BlockMgrTracker(blockMgr) ;
     }
     
+    /** Add a tracker if the system default is to do so */
     private static BlockMgr track(BlockMgr blockMgr)
     {
         if ( ! AddTracker ) return blockMgr ;

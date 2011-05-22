@@ -23,10 +23,18 @@ public abstract class AbstractTestBlockMgr extends BaseTest
     
     protected BlockMgr blockMgr = null ;
     
-    @Before public void before() { blockMgr = make() ; }
+    @Before public void before()
+    { 
+       blockMgr = make() ;
+       blockMgr.beginUpdate() ;
+    }
     @After  public void after()
     {
-        if (blockMgr != null) blockMgr.close() ;
+        if (blockMgr != null)
+        {
+            blockMgr.endUpdate() ;
+            blockMgr.close() ;
+        }
     }
     
     @Test public void file01()
@@ -35,6 +43,7 @@ public abstract class AbstractTestBlockMgr extends BaseTest
         ByteBuffer bb = block.getByteBuffer() ;
         fill(bb, (byte)1) ;
         blockMgr.write(block) ;
+        blockMgr.release(block) ;
     }
     
     @Test public void file02()

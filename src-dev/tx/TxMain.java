@@ -69,12 +69,11 @@ public class TxMain
     
     public static void main(String... args)
     {
-        //tree_ins_2_01() ; exit(0) ;
+        tree_ins_2_01() ; exit(0) ;
         
         //test.BPlusTreeRun.main("test", "--bptree:track", "3", "125", "100000") ; exit(0) ;
         //test.BPlusTreeRun.main("perf", "3", "125", "100") ; exit(0) ;
         //test.BPlusTreeRun.main("test", "--bptree:check", "3", "125", "100000") ; exit(0) ;
-        
         
         BlockMgr blkMgr = BlockMgrFactory.createMem("test", 100) ;
         blkMgr = BlockMgrTracker.track("foo", blkMgr) ;
