@@ -61,6 +61,7 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
     }
 
     private int inRead = 0 ;
+    private int inIterator = 0 ;
     private boolean inUpdate = false ;
     private final Logger log ;
     
@@ -360,7 +361,7 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
 
     private void checkReadOrIter(Action action)
     {
-        if ( ! inUpdate && inRead == 0 && activeIterBlocks.size() == 0 )
+        if ( ! inUpdate && inRead == 0 && activeIterators.size() == 0 )
             error(action, "Called outside update, read or an iterator") ;
     }
 

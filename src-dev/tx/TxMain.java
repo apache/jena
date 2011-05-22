@@ -29,7 +29,6 @@ import com.hp.hpl.jena.query.Syntax ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.sparql.util.QueryExecUtils ;
-import com.hp.hpl.jena.tdb.base.block.Block ;
 import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory ;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrLogger ;
@@ -69,23 +68,14 @@ public class TxMain
     
     public static void main(String... args)
     {
-        tree_ins_2_01() ; exit(0) ;
+        test() ; exit(0) ;
+        //tree_ins_2_01() ; exit(0) ;
         
         //test.BPlusTreeRun.main("test", "--bptree:track", "3", "125", "100000") ; exit(0) ;
         //test.BPlusTreeRun.main("perf", "3", "125", "100") ; exit(0) ;
         //test.BPlusTreeRun.main("test", "--bptree:check", "3", "125", "100000") ; exit(0) ;
         
-        BlockMgr blkMgr = BlockMgrFactory.createMem("test", 100) ;
-        blkMgr = BlockMgrTracker.track("foo", blkMgr) ;
-        blkMgr.beginUpdate() ;
-        Block block = blkMgr.allocate(-1) ;
-        blkMgr.release(block) ;
-        blkMgr.release(block) ; // Need to check where an active block is - promote is one read -> write? 
-        Block block2 = blkMgr.allocate(-1) ;
-        blkMgr.endUpdate() ;
-      
         exit(0) ;
-        
         
         
         bpTreeTracking() ; exit(0) ;
@@ -93,6 +83,31 @@ public class TxMain
         transactional() ; exit(0) ;
     }
     
+    
+    public static void test()
+    {
+        //int[] keys = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+        int[] keys = {9,8,7,6,5,4,3,2,1,0};
+        RangeIndex rIndex = makeRangeIndex(2) ;
+        IndexTestLib.add(rIndex, keys) ;
+
+        for ( Record r : rIndex )
+        {
+            System.out.println(r) ;
+            System.out.flush() ;
+        }
+            
+        //List<Integer> x = toIntList(rIndex.iterator());
+            
+            
+    //        int[] keys = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+    //        RangeIndex rIndex = make(2, keys) ;
+    //        Iterator<Record> iter1 = rIndex.iterator() ;
+    //        Iterator<Record> iter2 = rIndex.iterator() ;
+    //        iter1.next() ;
+    //        iter2.next() ;
+    }
+
     @Test public static void tree_ins_2_01() 
     {
         int[] keys = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
@@ -121,16 +136,6 @@ public class TxMain
         RangeIndex rIndex = makeRangeIndex(2) ;
         IndexTestLib.add(rIndex, vals) ;
         return rIndex ;
-    }
-    
-    public static void test()
-    {
-        int[] keys = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-        RangeIndex rIndex = make(2, keys) ;
-        Iterator<Record> iter1 = rIndex.iterator() ;
-        Iterator<Record> iter2 = rIndex.iterator() ;
-        iter1.next() ;
-        iter2.next() ;
     }
     
     public static void bpTreeTracking(String... args)
