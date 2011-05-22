@@ -33,7 +33,7 @@ public class RecordLib
     public static Record intToRecord(int v) { return intToRecord(v, recordFactory) ; }
     public static Record intToRecord(int v, int recLen) { return intToRecord(v, new RecordFactory(recLen, 0)) ; }
     
-    static Record intToRecord(int v, RecordFactory factory)
+    public static Record intToRecord(int v, RecordFactory factory)
     {
         byte[] vb = Bytes.packInt(v) ;
 

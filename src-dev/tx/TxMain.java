@@ -6,6 +6,7 @@
 
 package tx;
 
+import static com.hp.hpl.jena.tdb.base.record.RecordLib.intToRecord ;
 import static com.hp.hpl.jena.tdb.index.IndexTestLib.testInsert ;
 import static org.openjena.atlas.test.Gen.strings ;
 
@@ -87,9 +88,23 @@ public class TxMain
     public static void test()
     {
         //int[] keys = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-        int[] keys = {9,8,7,6,5,4,3,2,1,0};
+        int[] vals = {9,8,7,6,5,4,3,2,1,0};
         RangeIndex rIndex = makeRangeIndex(2) ;
-        IndexTestLib.add(rIndex, keys) ;
+       
+//      BPlusTreeParams.CheckingNode = true ;
+//      BPlusTreeParams.CheckingTree = true ;
+        
+        for ( int v : vals )
+        {
+            Record r = intToRecord(v, rIndex.getRecordFactory()) ;
+            if ( v == 5 )
+            {
+                BPlusTreeParams.Logging = true ;
+                Log.enable(BPTreeNode.class.getName(), "ALL") ;
+            }
+            System.out.println("  Add: "+r) ;
+            rIndex.add(r) ;
+        }
 
         for ( Record r : rIndex )
         {
