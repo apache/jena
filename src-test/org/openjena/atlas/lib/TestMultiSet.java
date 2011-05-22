@@ -74,6 +74,47 @@ public class TestMultiSet extends BaseTest
         iterTest(data) ;
     }
 
+    @Test public void multiSet_08()
+    {
+        String[] data = {  } ;
+        MultiSet<String> x = add(data) ;
+        assertEquals(0, x.size()) ;
+    }
+    
+    @Test public void multiSet_09()
+    {
+        String[] data = { "A", "A" } ;
+        MultiSet<String> x = add(data) ;
+        assertEquals(2, x.size()) ;
+    }
+
+    @Test public void multiSet_10()
+    {
+        String[] data = { "A", "A" } ;
+        MultiSet<String> x = add(data) ;
+        x.remove("A") ;
+        assertEquals(1, x.size()) ;
+        x.remove("A") ;
+        assertEquals(0, x.size()) ;
+        x.remove("A") ;
+        assertEquals(0, x.size()) ;
+    }
+    
+    @Test public void multiSet_11()
+    {
+        String[] data = { "A", "A" } ;
+        MultiSet<String> x = add(data) ;
+        long c = Iter.count(x.elements()) ;
+        assertEquals(1, c) ;
+    }
+    
+    private static MultiSet<String> add(String[] data)
+    {
+        MultiSet<String> x = new MultiSet<String>() ;
+        for ( String str : data )
+            x.add(str) ;
+        return x ;
+    }
     
     private static void iterTest(String[] data)
     {

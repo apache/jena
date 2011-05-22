@@ -19,6 +19,8 @@ import java.util.NoSuchElementException ;
 public class MultiSet<T> implements Iterable<T>
 {
     private Map<T,RefLong> map   = new HashMap<T,RefLong>() ;
+    private int multiSetSize = 0 ;
+    
     private RefLong _get(T obj)
     {
         RefLong z = map.get(obj) ;
@@ -36,8 +38,11 @@ public class MultiSet<T> implements Iterable<T>
     /** Does it contain the object? */
     public boolean contains(T obj)  { return map.containsKey(obj) ; }
     
+    /** Yiled one object per element (i.e without counts) */
+    public Iterator<T> elements()   { return map.keySet().iterator() ; }
+
     /** Add an object */
-    public void add(T obj)          { _get(obj).inc(); } 
+    public void add(T obj)          { _get(obj).inc(); multiSetSize++ ; } 
 
     /** Remove one occurrence of the object from the multiset */
     public void remove(T obj)
@@ -45,6 +50,7 @@ public class MultiSet<T> implements Iterable<T>
         RefLong x = map.get(obj) ;
         if ( x == null ) return ;
         x.dec() ;
+        multiSetSize-- ;
         if ( x.value() == 0 )
             map.remove(obj) ;
     }
@@ -52,11 +58,13 @@ public class MultiSet<T> implements Iterable<T>
     /** Remove all occurrences of the object in themultiset */
     public void removeAll(T obj)
     {
+        RefLong x = map.get(obj) ;
+        multiSetSize -= x.value() ;
         map.remove(obj) ;
     }
 
     /* Remove everything */
-    public void clear() { map.clear() ; }
+    public void clear() { map.clear() ; multiSetSize = 0 ; }
     
     
     /** Get the count of the number of times the object appears in the multiset - i.e. it's cardinality.
@@ -66,6 +74,21 @@ public class MultiSet<T> implements Iterable<T>
     {
         if ( ! map.containsKey(obj) ) return 0 ;
         return map.get(obj).value() ;
+    }
+    
+    public int size()
+    {
+//        int count = 0 ;
+//        for ( Map.Entry<T, RefLong> e : map.entrySet() )
+//            count += e.getValue().value() ;
+//        //return count ;
+//        if ( count != multiSetSize )
+//        {
+//            Log.warn(this, "Mismatch") ;
+//            return count ; 
+//        }
+
+        return multiSetSize ;
     }
     
     //@Override
@@ -89,7 +112,7 @@ public class MultiSet<T> implements Iterable<T>
             
             Iterator<T> keys = map.keySet().iterator() ;
             T key = null ;
-            long count = 0 ;
+            long keyCount = 0 ;
             T slot = null ;
             
             //@Override
@@ -103,9 +126,9 @@ public class MultiSet<T> implements Iterable<T>
                 
                 if ( key != null )
                 {
-                    if ( count < count(key) )
+                    if ( keyCount < count(key) )
                     {
-                        count++ ;
+                        keyCount++ ;
                         slot = key ;
                         return true ;
                     }
@@ -116,7 +139,7 @@ public class MultiSet<T> implements Iterable<T>
                 if ( keys.hasNext() )
                 {
                     key = keys.next() ;
-                    count = 1 ;
+                    keyCount = 1 ;
                     slot = key ;
                     return true ;
                 }
