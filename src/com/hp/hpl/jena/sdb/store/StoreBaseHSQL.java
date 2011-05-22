@@ -42,6 +42,7 @@ public abstract class StoreBaseHSQL extends StoreBase
     {
         if ( currentlyOpen ) {
         	super.close() ;
+            // This interacts with JDBC connection management 
             HSQLUtils.shutdown(getConnection()) ;
         }
         

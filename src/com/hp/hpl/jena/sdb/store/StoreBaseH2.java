@@ -41,6 +41,7 @@ public abstract class StoreBaseH2 extends StoreBase
     {
         if ( currentlyOpen ) {
         	super.close() ;
+        	// This interacts with JDBC connection management 
             H2Utils.shutdown(getConnection()) ;
         }
         
