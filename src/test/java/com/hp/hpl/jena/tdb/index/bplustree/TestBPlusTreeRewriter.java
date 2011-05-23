@@ -10,6 +10,8 @@ import java.util.ArrayList ;
 import java.util.Iterator ;
 import java.util.List ;
 
+import org.junit.AfterClass ;
+import org.junit.BeforeClass ;
 import org.junit.Test ;
 import org.openjena.atlas.iterator.Iter ;
 import org.openjena.atlas.junit.BaseTest ;
@@ -20,11 +22,6 @@ import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory ;
 import com.hp.hpl.jena.tdb.base.file.FileSet ;
 import com.hp.hpl.jena.tdb.base.record.Record ;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
-import com.hp.hpl.jena.tdb.index.bplustree.BPTreeException ;
-import com.hp.hpl.jena.tdb.index.bplustree.BPlusTree ;
-import com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams ;
-import com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeRewriter ;
-import com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeRewriterUtils ;
 import com.hp.hpl.jena.tdb.sys.Names ;
 import com.hp.hpl.jena.tdb.sys.SetupTDB ;
 
@@ -35,6 +32,11 @@ public class TestBPlusTreeRewriter extends BaseTest
     static int KeySize     = 4 ;
     static int ValueSize   = 8 ;
     static RecordFactory recordFactory = new RecordFactory(KeySize,ValueSize) ;
+    
+    // The BPlusTreeRewriter works directly on storage.
+    static boolean b ; 
+    @BeforeClass public static void beforeClass()   { b = BlockMgrFactory.AddTracker ; BlockMgrFactory.AddTracker = false ; }
+    @AfterClass  public static void afterClass()    { BlockMgrFactory.AddTracker = b  ;}
     
     @Test public void bpt_rewrite_01()  { runTest(2, 0) ; }
     @Test public void bpt_rewrite_02()  { runTest(3, 0) ; }

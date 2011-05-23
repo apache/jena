@@ -20,7 +20,7 @@ import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 public class BlockMgrFactory
 {
-    public final static boolean AddTracker = true ;
+    public /*final*/ static boolean AddTracker = true ;
     public static BlockMgr tracker(BlockMgr blockMgr)
     {
         if ( blockMgr instanceof BlockMgrTracker ) return blockMgr ;

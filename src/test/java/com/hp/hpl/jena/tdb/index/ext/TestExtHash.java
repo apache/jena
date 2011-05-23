@@ -21,16 +21,20 @@ import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 public class TestExtHash extends TestIndex
 {
+    static boolean b ; 
+
     @BeforeClass static public void setup()
     {
         SystemTDB.NullOut = true ;
         ExtHash.Checking = true ;
         ExtHash.Logging = false ;
+        b = BlockMgrFactory.AddTracker ;
+        BlockMgrFactory.AddTracker = false ;
     }
     
     @AfterClass static public void teardown()
     {
-        
+        BlockMgrFactory.AddTracker = b  ;
     }
 
     @Override

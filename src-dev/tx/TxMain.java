@@ -87,17 +87,36 @@ public class TxMain
     
     public static void test()
     {
+        BlockMgrFactory.AddTracker = false ;
+        
         //int[] keys = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
         int[] vals = {9,8,7,6,5,4,3,2,1,0};
-        RangeIndex rIndex = makeRangeIndex(2) ;
+        
+        //RangeIndex rIndex = makeRangeIndex(2) ;
+        BPlusTree bpt = BPlusTree.makeMem(2, 2, RecordLib.TestRecordLength, 0) ;
+        
+        
+        if ( false )
+        {
+            BlockMgr mgr = bpt.getRecordsMgr().getBlockMgr() ;
+            mgr = BlockMgrFactory.tracker(mgr) ;
+            mgr = new BlockMgrLogger("ABC", mgr, true) ;
+            bpt = BPlusTree.attach(bpt.getParams(), bpt.getNodeManager().getBlockMgr(), mgr) ;
+        }
+        else
+        {
+            bpt = BPlusTree.addTracking(bpt) ;
+        }
        
+        RangeIndex rIndex = bpt ;
+        
 //      BPlusTreeParams.CheckingNode = true ;
 //      BPlusTreeParams.CheckingTree = true ;
         
         for ( int v : vals )
         {
             Record r = intToRecord(v, rIndex.getRecordFactory()) ;
-            if ( v == 5 )
+            if ( false && v == 5 )
             {
                 BPlusTreeParams.Logging = true ;
                 Log.enable(BPTreeNode.class.getName(), "ALL") ;

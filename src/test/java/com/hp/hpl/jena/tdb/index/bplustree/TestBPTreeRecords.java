@@ -6,7 +6,9 @@
 
 package com.hp.hpl.jena.tdb.index.bplustree;
 
+import org.junit.After ;
 import org.junit.AfterClass;
+import org.junit.Before ;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openjena.atlas.junit.BaseTest ;
@@ -68,15 +70,16 @@ public class TestBPTreeRecords extends BaseTest
         BPlusTreeParams.CheckingTree = oldCheckingBTree ;
     }
 
-//    @Before public void before() {}
-//    @After public void after() {}
-
     @Test public void bpt_records_1()
     {
         BPTreeRecords bpr = make() ;
         fill(bpr) ;
         check(bpr) ;
+        bpr.release() ;
     }
+    
+    @Before public void before() { blkMgrRecords.beginUpdate() ; }
+    @After public void after() { blkMgrRecords.endUpdate() ; }
     
 
     @Test public void bpt_records_2()
@@ -90,6 +93,8 @@ public class TestBPTreeRecords extends BaseTest
         assertEquals(s, z.getCount()+bpr.getCount()) ;
         check(bpr) ;
         check((BPTreeRecords)z) ;
+        bpr.release() ;
+        z.release() ;
     }
 
     @Test public void bpt_records_3()
@@ -98,6 +103,7 @@ public class TestBPTreeRecords extends BaseTest
         for ( int i = 0 ; bpr.getCount() < bpr.getMaxSize() ; i++ )
             insert(bpr, (i+0x20)) ;
         check(bpr) ;
+        bpr.release() ;
     }
     
     @Test public void bpt_records_4()
@@ -106,6 +112,7 @@ public class TestBPTreeRecords extends BaseTest
         for ( int i = bpr.getMaxSize()-1 ; i >= 0 ; i-- )
             insert(bpr, i+0x20) ;
         check(bpr) ;
+        bpr.release() ;
     }
     
     @Test public void bpt_records_5()
@@ -131,6 +138,8 @@ public class TestBPTreeRecords extends BaseTest
         bpr.internalDelete(bpr.getHighRecord()) ;
         assertEquals(N-4, bpr.getCount()) ;
         check(bpr) ;
+        
+        bpr.release() ;
     }
     
     @Test public void bpt_records_6()
@@ -152,7 +161,8 @@ public class TestBPTreeRecords extends BaseTest
         r = bpr.getHighRecord() ;
         r2 = search(bpr, r) ;
         assertTrue(Record.keyEQ(r, r2)) ;
-
+        
+        bpr.release() ;
     }
     
     @Test public void bpt_shift_1()
@@ -166,6 +176,10 @@ public class TestBPTreeRecords extends BaseTest
         //assertTrue(Record.keyEQ(r, RecordTestLib.intToRecord(10))) ;
         contains(bpr1) ;
         contains(bpr2, 10) ;
+        
+        bpr1.release() ;
+        bpr2.release() ;
+
     }
     
     @Test public void bpt_shift_2()
@@ -179,6 +193,8 @@ public class TestBPTreeRecords extends BaseTest
         assertTrue(Record.keyEQ(r, RecordLib.intToRecord(10))) ;
         contains(bpr1) ;
         contains(bpr2, 10) ;
+        bpr1.release() ;
+        bpr2.release() ;
     }
 
     @Test public void bpt_shift_3()
@@ -194,6 +210,8 @@ public class TestBPTreeRecords extends BaseTest
         assertTrue(r+" != "+RecordLib.intToRecord(10), Record.keyEQ(r, RecordLib.intToRecord(10))) ;
         contains(bpr1, 10) ;
         contains(bpr2, 20, 99) ;
+        bpr1.release() ;
+        bpr2.release() ;
     }
 
     @Test public void bpt_shift_4()
@@ -209,6 +227,8 @@ public class TestBPTreeRecords extends BaseTest
         
         contains(bpr1, 20) ;
         contains(bpr2, 5, 10) ;
+        bpr1.release() ;
+        bpr2.release() ;
     }
     
     @Test public void bpt_merge_1()
@@ -223,6 +243,8 @@ public class TestBPTreeRecords extends BaseTest
         contains(bpr1, 10, 20, 99) ;
         contains(bpr2) ;
         assertSame(bpr1, bpr3) ;
+        bpr1.release() ;
+        bpr2.release() ;
     }
 
     @Test public void bpt_merge_2()
@@ -237,6 +259,8 @@ public class TestBPTreeRecords extends BaseTest
         contains(bpr1) ;
         contains(bpr2, 5, 10, 20) ;
         assertSame(bpr2, bpr3) ;
+        bpr1.release() ;
+        bpr2.release() ;
     }
     
     private static void check(BPTreeRecords bpr)

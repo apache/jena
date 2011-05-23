@@ -26,7 +26,6 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
     static enum Action { Alloc, Promote, GetRead, GetWrite, Write, Release, Free, IterRead, BeginRead, EndRead, BeginUpdate, EndUpdate}
     static final Integer NoId = Integer.valueOf(-9) ;
 
-
     // Don't inherit BlockMgrWrapper to make sure this class caches everything.
 
     // XXX Issue: two block with same id but different ByteBuffers --> in someway, don't
@@ -155,10 +154,14 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
 
             if ( ! activeWriteBlocks.contains(id) && ! activeReadBlocks.contains(id) )
                 error(Promote, id+" is not an active block") ;
-
-            activeReadBlocks.remove(id) ;
-            // Still on read blocks?
-            activeWriteBlocks.add(id) ;
+            // Promote read uses of this block.
+            // Leave iterator reads alone.
+            if ( activeReadBlocks.contains(id) )
+            {
+                long x = activeReadBlocks.count(id) ;
+                activeReadBlocks.removeAll(id) ;
+                activeWriteBlocks.add(id, x) ;
+            }
         }
         return blockMgr.promote(block) ;
     }
@@ -175,9 +178,10 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
             if ( ! activeReadBlocks.contains(id) && ! activeIterBlocks.contains(id) && ! activeWriteBlocks.contains(id) )
                 error(Release, id+" is not an active block") ;
 
-            // ???????????????????????
             activeReadBlocks.remove(block.getId()) ;
             activeIterBlocks.remove(block.getId()) ;
+            
+            // This seems to need removeAll - is that acceptable?
             activeWriteBlocks.remove(block.getId()) ;
         }
         blockMgr.release(block) ;
