@@ -77,10 +77,7 @@ public class TxMain
         //test.BPlusTreeRun.main("test", "--bptree:check", "3", "125", "100000") ; exit(0) ;
         
         exit(0) ;
-        
-        
         bpTreeTracking() ; exit(0) ;
-        
         transactional() ; exit(0) ;
     }
     
@@ -90,7 +87,8 @@ public class TxMain
         BlockMgrFactory.AddTracker = false ;
         
         //int[] keys = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-        int[] vals = {9,8,7,6,5,4,3,2,1,0};
+        int[] vals1 = {9,8,7,6};
+        int[] vals2 = {5,4,3,2,1,0};
         
         //RangeIndex rIndex = makeRangeIndex(2) ;
         BPlusTree bpt = BPlusTree.makeMem(2, 2, RecordLib.TestRecordLength, 0) ;
@@ -113,18 +111,32 @@ public class TxMain
 //      BPlusTreeParams.CheckingNode = true ;
 //      BPlusTreeParams.CheckingTree = true ;
         
-        for ( int v : vals )
+        for ( int v : vals1 )
         {
             Record r = intToRecord(v, rIndex.getRecordFactory()) ;
-            if ( false && v == 5 )
-            {
-                BPlusTreeParams.Logging = true ;
-                Log.enable(BPTreeNode.class.getName(), "ALL") ;
-            }
             System.out.println("  Add: "+r) ;
             rIndex.add(r) ;
         }
-
+        
+        if ( true )
+        {
+            BlockMgr mgr = bpt.getRecordsMgr().getBlockMgr() ;
+            mgr = BlockMgrFactory.tracker(mgr) ;
+            mgr = new BlockMgrLogger("ABC", mgr, true) ;
+            bpt = BPlusTree.attach(bpt.getParams(), bpt.getNodeManager().getBlockMgr(), mgr) ;
+            rIndex = bpt ;
+            
+            BPlusTreeParams.Logging = true ;
+            Log.enable(BPTreeNode.class) ;
+        }
+            
+        for ( int v : vals2 )
+        {
+            Record r = intToRecord(v, rIndex.getRecordFactory()) ;
+            System.out.println("  Add: "+r) ;
+            rIndex.add(r) ;
+        }
+        
         for ( Record r : rIndex )
         {
             System.out.println(r) ;

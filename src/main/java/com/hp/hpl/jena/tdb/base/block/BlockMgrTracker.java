@@ -110,11 +110,17 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
     @Override
     public Block getRead(int id)
     {
+        // What if this is a write block already?
         synchronized (this)
         {
             checkRead(GetRead) ;
+            Integer x = id ;
             add(GetRead, id) ;
-            activeReadBlocks.add(id) ;
+            
+            if ( activeWriteBlocks.contains(x))
+                activeWriteBlocks.add(x) ;
+            else
+                activeReadBlocks.add(x) ;
         }
         return blockMgr.getRead(id) ;
     }
@@ -125,8 +131,9 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
         synchronized (this)
         {
             checkReadOrIter(IterRead) ;
-            add(IterRead, id) ;
-            activeIterBlocks.add(id) ;
+            Integer x = id ;
+            add(IterRead, x) ;
+            activeIterBlocks.add(x) ;
         }
         return blockMgr.getReadIterator(id) ;
     }    
@@ -137,8 +144,9 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
         synchronized (this)
         {
             checkUpdate(GetWrite) ;
-            add(GetWrite, id) ;
-            activeWriteBlocks.add(id) ;
+            Integer x = id ;
+            add(GetWrite, x) ;
+            activeWriteBlocks.add(x) ;
         }
         return blockMgr.getWrite(id) ;
     }
@@ -154,14 +162,15 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
 
             if ( ! activeWriteBlocks.contains(id) && ! activeReadBlocks.contains(id) )
                 error(Promote, id+" is not an active block") ;
-            // Promote read uses of this block.
-            // Leave iterator reads alone.
+
             if ( activeReadBlocks.contains(id) )
-            {
-                long x = activeReadBlocks.count(id) ;
-                activeReadBlocks.removeAll(id) ;
-                activeWriteBlocks.add(id, x) ;
-            }
+                // Remove one read count
+                // Really, do this if obtained via "getRead" and not "getWrite" 
+                activeReadBlocks.remove(id) ;
+            
+            // Double promotion results in only one entry.
+            if ( ! activeWriteBlocks.contains(id) )
+                activeWriteBlocks.add(id) ;
         }
         return blockMgr.promote(block) ;
     }
@@ -178,10 +187,9 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
             if ( ! activeReadBlocks.contains(id) && ! activeIterBlocks.contains(id) && ! activeWriteBlocks.contains(id) )
                 error(Release, id+" is not an active block") ;
 
+            // May have been promoted.
             activeReadBlocks.remove(block.getId()) ;
             activeIterBlocks.remove(block.getId()) ;
-            
-            // This seems to need removeAll - is that acceptable?
             activeWriteBlocks.remove(block.getId()) ;
         }
         blockMgr.release(block) ;

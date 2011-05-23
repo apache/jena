@@ -34,7 +34,7 @@ public class BlockMgrLogger implements BlockMgr //extends BlockMgrWrapper
     public Block allocate(int blockSize)
     {
         Block x = blockMgr.allocate(blockSize) ;
-        log.info("Allocate: "+x.getId()) ;
+        log.info("Allocate("+x.getId()+")") ;
         return x ;
     }
 
