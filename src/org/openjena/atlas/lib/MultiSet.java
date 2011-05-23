@@ -44,6 +44,14 @@ public class MultiSet<T> implements Iterable<T>
     /** Add an object */
     public void add(T obj)          { _get(obj).inc(); multiSetSize++ ; } 
 
+    /** Add an object, with cardinality n */
+    public void add(T obj, long n)
+    { 
+        if ( n <= 0 ) return ;
+        _get(obj).add(n) ;
+        multiSetSize += n ;
+    }
+    
     /** Remove one occurrence of the object from the multiset */
     public void remove(T obj)
     {
@@ -55,10 +63,27 @@ public class MultiSet<T> implements Iterable<T>
             map.remove(obj) ;
     }
     
+    /** Remove N occurrences of the object from the multiset */
+    public void remove(T obj, long n)
+    {
+        RefLong x = map.get(obj) ;
+        if ( x == null ) return ;
+        long z = x.value() ;
+        if ( z < n )
+            n = z ;
+        x.subtract(n) ;
+        multiSetSize -= n ;
+        if ( x.value() <= 0 )
+            map.remove(obj) ;
+    }    
+    
+
     /** Remove all occurrences of the object in themultiset */
     public void removeAll(T obj)
     {
         RefLong x = map.get(obj) ;
+        if ( x == null )
+            return ;
         multiSetSize -= x.value() ;
         map.remove(obj) ;
     }

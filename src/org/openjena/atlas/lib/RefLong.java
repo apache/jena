@@ -9,20 +9,22 @@ package org.openjena.atlas.lib;
 public final class RefLong
 {
     private long value ;
-    public RefLong() { this(0) ; }
-    public RefLong(long v) { value = v ; }
-    public long value()     { return value ; }
-    public void inc()       { value++ ; } 
-    public void dec()       { --value ; }
-    public long getAndInc() { return value++ ; }
-    public long incAndGet() { return ++value ; }
-    public long getAndDec() { return value-- ; }
-    public long decAndGet() { return --value ; }
-    public void add(long v) { value += v ; }
-    public void set(long v) { value = v ; }
+    public RefLong()                { this(0) ; }
+    public RefLong(long v)          { value = v ; }
+    public long value()             { return value ; }
+    public void inc()               { value++ ; } 
+    public void dec()               { --value ; }
+    public long getAndInc()         { return value++ ; }
+    public long incAndGet()         { return ++value ; }
+    public long getAndDec()         { return value-- ; }
+    public long decAndGet()         { return --value ; }
+    public void add(long v)         { value += v ; }
+    public void subtract(long v)    { value -= v ; }
+    public void set(long v)         { value = v ; }
     @Override public String toString() { return "Ref:"+Long.toString(value) ; } 
     // hashCode and equals are Object equality - this is a mutable object
 }
+
 /*
  * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
