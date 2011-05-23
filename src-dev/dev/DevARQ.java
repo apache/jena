@@ -6,7 +6,6 @@ public class DevARQ
     //   downloadmaker
     //   Everything else.
     
-    
     // Rework documentation - extensions are now SPARQL 1.1-isms
     
     // Config assembler.
@@ -14,7 +13,8 @@ public class DevARQ
     // vs:
     //   [ ja:feature arq:queryTimeout ; ja:value "123" ]
     //   [ ja:feature "arq:queryTimeout" ; ja:value "123" ]
-    // Latter allows non-URIs more easily.
+    // Allows non-URIs more easily.
+    //   ja:feature "arq:queryTimeout=123"
     
     // In-memory query to use reordering.
     
