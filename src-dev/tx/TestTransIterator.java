@@ -46,7 +46,6 @@ public class TestTransIterator extends BaseTest
         Iterator<Record> iter1 = rIndex.iterator() ;
         Iterator<Record> iter2 = rIndex.iterator() ;
         count(iter1, vals.length) ;
-        System.out.println("Iter2") ;
         count(iter2, vals.length) ;
     }
     

@@ -118,7 +118,7 @@ public class TxMain
             rIndex.add(r) ;
         }
         
-        if ( true )
+        if ( false )
         {
             BlockMgr mgr = bpt.getRecordsMgr().getBlockMgr() ;
             mgr = BlockMgrFactory.tracker(mgr) ;

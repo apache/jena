@@ -3,15 +3,7 @@ package tx;
 
 public class DevTx
 {
-    // Test with overlapping iterators.
-    // Run tests with BlockMgrFactory.tracked on.
-    
-    // BlockMgr  -- count begine/end iters (or just via activeIterators?)
-    // checkReadOrIter --> 
-    
     // Channel+Adler32
-    
-    // Ref counting get/release.
     
     // Tidy up 
     //   See HACK (BPTreeNode)
@@ -29,7 +21,6 @@ public class DevTx
 
     // Other:
     //   Sort out IndexBulder/IndexFactory/(IndexMaker in test)
-    
     
     /*
      * Iterator tracking
@@ -50,7 +41,7 @@ public class DevTx
      *   Indexes
      *   Pages
      *   Blocks
-     *   Storage = FileAccess (a sequence of blocks) 
+     *   Storage = BlockAccess (a sequence of blocks) and BufferChannel  
      */
     
     /* 
