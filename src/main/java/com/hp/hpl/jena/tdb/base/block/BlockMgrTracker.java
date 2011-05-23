@@ -23,17 +23,12 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
 {
     public static boolean verbose = false ;
 
-    static enum Action { Alloc, Promote, GetRead, GetWrite, Write, Release, Free, IterRead, BeginRead, EndRead, BeginUpdate, EndUpdate}
+    static enum Action { Alloc, Promote, GetRead, GetWrite, Write, Release, Free, IterRead, 
+        BeginRead, EndRead, BeginUpdate, EndUpdate, BeginIter, EndIter } ;
     static final Integer NoId = Integer.valueOf(-9) ;
 
-    // Don't inherit BlockMgrWrapper to make sure this class caches everything.
-
-    // XXX Issue: two block with same id but different ByteBuffers --> in someway, don't
-    //   Check in getRead/getWrite/getReadIterator
-    
     // ---- State for tracking
     // Track and count block references and releases
-    // XXX Can a block be a read block AND a write block?
     //   No - the page is dirty.
     protected final MultiSet<Integer> activeReadBlocks   = new MultiSet<Integer>() ;
     protected final MultiSet<Integer> activeWriteBlocks  = new MultiSet<Integer>() ;
@@ -260,7 +255,7 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
         synchronized (this)
         {
             if ( activeIterators.contains(iter) )
-                log.warn("Iterator already active: "+iter) ;
+                error(BeginIter, "Iterator already active: "+iter) ;
             activeIterators.add(iter) ;
         }
         blockMgr.beginIterator(iter) ;
@@ -272,7 +267,7 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
         synchronized (this)
         {
             if ( ! activeIterators.contains(iter) )
-                log.warn("Iterator not active: "+iter) ;
+                error(EndIter, "Iterator not active: "+iter) ;
             activeIterators.remove(iter) ;
             if ( activeIterators.size() == 0 )
                 checkEmpty("Outstanding iterator read blocks", activeIterBlocks) ;

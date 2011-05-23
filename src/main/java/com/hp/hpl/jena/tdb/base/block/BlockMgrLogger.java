@@ -133,7 +133,7 @@ public class BlockMgrLogger implements BlockMgr //extends BlockMgrWrapper
     public void endIterator(Iterator<?> iter)
     {
         log.info("< end iterator") ;
-        blockMgr.beginIterator(iter) ;
+        blockMgr.endIterator(iter) ;
     }
     
     @Override
