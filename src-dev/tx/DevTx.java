@@ -3,11 +3,19 @@ package tx;
 
 public class DevTx
 {
+    // BlockMgrJournal
+    
     // Channel+Adler32
+    
+    // Journal
+    // Either entry based, write/read like 
+    //   Or buffer slicing version.
+    //   Allocate space to include the reader.  Seems liek more work for less reason.
     
     // Tidy up 
     //   See HACK (BPTreeNode)
     //   See [TxTDB:PATCH-UP]
+    //   See [TxTDB:TODO]
     //   See FREE
     //   See [ITER]
     

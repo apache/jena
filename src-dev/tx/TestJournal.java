@@ -4,34 +4,14 @@
  * [See end of file]
  */
 
-package tx.blockstream;
+package tx;
 
-import java.nio.ByteBuffer ;
+import org.junit.Test ;
+import org.openjena.atlas.junit.BaseTest ;
 
-import tx.base.BlockRef ;
-
-public class JournalEntry
+public class TestJournal extends BaseTest
 {
-    public enum Type { Block(1), Object(2), Commit(3), Checkpoint(4) ;
-        final int id ;
-        Type(int x) { id = x ; }
-        int getId() { return id ; }
-    } 
-    
-    private final int type ;
-    private final BlockRef fileReference ; 
-    private final ByteBuffer byteBuffer ;
-    
-    public JournalEntry(int type, BlockRef blockRef, ByteBuffer bytes)
-    {
-        this.type = type ;
-        this.fileReference = blockRef ;
-        this.byteBuffer = bytes ;
-    }
-
-    public int getType()                { return type ; }
-    public BlockRef getFileRef()        { return fileReference ; }
-    public ByteBuffer getByteBuffer()   { return byteBuffer ; }
+    @Test public void journal_01() { }
 }
 
 /*

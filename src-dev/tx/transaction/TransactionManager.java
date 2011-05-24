@@ -245,7 +245,7 @@ public class TransactionManager
             }
             
             // Until we track read and write gets, need to copy for safety
-            // INEFFCIEINT
+            // INEFFICIENT
             
             Block block = super.getRead(id) ;
             ByteBuffer bb = block.getByteBuffer() ;

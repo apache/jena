@@ -39,6 +39,7 @@ public class BlockAccessByteArray implements BlockAccess
     @Override
     public Block read(int id)
     {
+        // Variable length blocks.
         if ( id < 0 || id >= length || id >= bytes.capacity() )
             throw new FileException("Bad id (read): "+id) ;
         bytes.position(id) ;
@@ -52,6 +53,7 @@ public class BlockAccessByteArray implements BlockAccess
     @Override
     public void write(Block block)
     {
+        // Variable length blocks.
         int loc = block.getId() ;
         if ( loc < 0 || loc > length )  // Can be equal => append.
             throw new FileException("Bad id (write): "+loc+" ("+alloc+","+length+")") ;
