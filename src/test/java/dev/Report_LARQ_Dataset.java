@@ -50,11 +50,10 @@ public class Report_LARQ_Dataset {
         d.add(ResourceFactory.createResource("x"), RDFS.label, "london");
         m1.add(ResourceFactory.createResource("y"), RDFS.label, "london");
         m2.add(ResourceFactory.createResource("z"), RDFS.label, "london");
-
         query(dataset);
         
         m1.remove(ResourceFactory.createResource("y"), RDFS.label, ResourceFactory.createPlainLiteral("london"));
-
+        query(dataset);
         query(dataset);
     }
     
