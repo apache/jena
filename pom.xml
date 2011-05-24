@@ -101,21 +101,6 @@
       <version>${lucene.version}</version>
     </dependency>
 
-<!--
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-      <version>${slf4j.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-log4j12</artifactId>
-      <version>${slf4j.version}</version>
-      <optional>true</optional> or <scope>provided</scope>
-    </dependency>
--->
-
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
@@ -256,19 +241,10 @@
       <layout>default</layout>
     </repository>
     <snapshotRepository>
-      <id>jena-repo-dev</id>
-      <name>Jena development repo</name>
-      <url>sftp://openjena.org/var/repo-dev</url>
-      <layout>default</layout>
-    </snapshotRepository>
-    <!-- Until https://issues.apache.org/jira/browse/INFRA-3646 is closed... -->
-    <!--
-    <snapshotRepository>
       <id>apache.snapshots.https</id>
       <name>Apache Development Snapshot Repository</name>
       <url>https://repository.apache.org/content/repositories/snapshots</url>
     </snapshotRepository>
-    -->
   </distributionManagement>
   
   <repositories>
