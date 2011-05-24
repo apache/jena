@@ -27,17 +27,21 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses( {
     TestLARQ_Code.class,
     TestLARQ_Script.class,
-    TestLARQ_Examples.class
+    TestLARQ_Examples.class,
+    TestAssemblerLARQ.class,
+    TestLuceneNRT.class
 } )
 
 public class TS_LARQ
 {
-    static public TestSuite suite()
-    {
-        TestSuite ts = new TestSuite(TS_LARQ.class.getName()) ;
-        ts.addTest(TestLARQ_Code.suite()) ;
-        ts.addTest(TestLARQ_Script.suite()) ;
-        ts.addTest(TestLARQ_Examples.suite()) ;
-        return ts ;
-    }
+// Is this necessary? Why?
+//
+//    static public TestSuite suite()
+//    {
+//        TestSuite ts = new TestSuite(TS_LARQ.class.getName()) ;
+//        ts.addTest(TestLARQ_Code.suite()) ;
+//        ts.addTest(TestLARQ_Script.suite()) ;
+//        ts.addTest(TestLARQ_Examples.suite()) ;
+//        return ts ;
+//    }
 }

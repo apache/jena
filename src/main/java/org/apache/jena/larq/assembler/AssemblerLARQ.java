@@ -33,6 +33,7 @@ import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
+import org.apache.lucene.store.RAMDirectory;
 
 import com.hp.hpl.jena.assembler.Assembler;
 import com.hp.hpl.jena.assembler.Mode;
@@ -70,8 +71,15 @@ public class AssemblerLARQ extends AssemblerBase implements Assembler
     
     public static IndexLARQ make (Dataset dataset, String indexPath) throws CorruptIndexException, IOException 
     {
-        Directory directory = FSDirectory.open(new File(indexPath));
+        Directory directory;
+        if ( indexPath != null ) 
+        {
+            directory = FSDirectory.open(new File(indexPath));
+        } else {
+            directory = new RAMDirectory();
+        }
         IndexReader indexReader = null;
+        IndexLARQ indexLARQ = null;
         if ( dataset != null ) {
             IndexWriter indexWriter = IndexWriterFactory.create(directory);
             IndexBuilderModel larqBuilder = new IndexBuilderString(indexWriter) ; 
@@ -81,10 +89,11 @@ public class AssemblerLARQ extends AssemblerBase implements Assembler
                 dataset.getNamedModel(g).register(larqBuilder) ;
             }
             indexReader = IndexReader.open(indexWriter, true);
+            indexLARQ = new IndexLARQ(indexWriter) ;
         } else {
             indexReader = IndexReader.open(directory, true) ; // read-only
+            indexLARQ = new IndexLARQ(indexReader) ;
         }
-        IndexLARQ indexLARQ = new IndexLARQ(indexReader) ;
         LARQ.setDefaultIndex(indexLARQ) ;
         return indexLARQ ;
     }

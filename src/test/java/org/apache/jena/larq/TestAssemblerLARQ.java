@@ -22,6 +22,13 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.IOException;
+
+import org.apache.jena.larq.assembler.AssemblerLARQ;
+import org.apache.lucene.index.CorruptIndexException;
+import org.apache.lucene.store.Directory;
+import org.apache.lucene.store.FSDirectory;
+import org.apache.lucene.store.RAMDirectory;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -30,6 +37,7 @@ import org.openjena.atlas.lib.FileOps;
 
 import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils;
+import com.hp.hpl.jena.tdb.TDBFactory;
 import com.hp.hpl.jena.tdb.assembler.VocabTDB;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB;
 
@@ -49,6 +57,7 @@ public class TestAssemblerLARQ {
     {
         FileOps.clearDirectory(tmpDir + "/tdb") ;
         FileOps.clearDirectory(tmpDir + "/lucene") ;
+        LARQ.setDefaultIndex(null) ;
     }
     
     @AfterClass static public void afterClass()
@@ -71,6 +80,23 @@ public class TestAssemblerLARQ {
         assertNotNull(LARQ.getDefaultIndex()) ;
         
         ds.close() ;
+        
+        IndexLARQ indexLARQ = LARQ.getDefaultIndex();
+        indexLARQ.close();
+    }
+    
+    @Test public void testMake1() throws CorruptIndexException, IOException {
+        Dataset ds = TDBFactory.createDataset() ;
+        IndexLARQ indexLARQ = AssemblerLARQ.make(ds, tmpDir + "/lucene") ;
+        Directory directory = indexLARQ.getLuceneReader().directory() ;
+        assertTrue ( directory instanceof FSDirectory );
+    }
+    
+    @Test public void testMake2() throws CorruptIndexException, IOException {
+        Dataset ds = TDBFactory.createDataset() ;
+        IndexLARQ indexLARQ = AssemblerLARQ.make(ds, null) ;
+        Directory directory = indexLARQ.getLuceneReader().directory() ;
+        assertTrue ( directory instanceof RAMDirectory );
     }
     
 }

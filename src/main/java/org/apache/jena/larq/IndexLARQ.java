@@ -19,12 +19,14 @@
 package org.apache.jena.larq;
 
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Iterator;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.Filter;
 import org.apache.lucene.search.IndexSearcher;
@@ -47,11 +49,13 @@ import com.hp.hpl.jena.util.iterator.Map1Iterator;
 public class IndexLARQ
 {
     
-    protected final IndexSearcher searcher ;
-    protected final IndexReader reader ;
+    protected IndexSearcher searcher ;
+    protected IndexReader reader ;
+    protected final IndexWriter writer ;
     protected final QueryParser luceneQueryParser ;
     protected final Analyzer analyzer ;
 
+    
     public IndexLARQ(IndexReader r)
     { 
         this(r, new StandardAnalyzer(LARQ.LUCENE_VERSION)) ;
@@ -60,6 +64,7 @@ public class IndexLARQ
     public IndexLARQ(IndexReader r, Analyzer a)
     { 
         //this(r, new QueryParser(LARQ.fIndex, a)) ;
+        writer = null ;
         reader = r ;
         searcher = new IndexSearcher(reader) ;
         analyzer = a ;
@@ -67,10 +72,28 @@ public class IndexLARQ
         
     }
     
+    public IndexLARQ(IndexWriter w)
+    {
+        this (w, new StandardAnalyzer(LARQ.LUCENE_VERSION)) ;
+    }
+    
+    public IndexLARQ(IndexWriter w, Analyzer a)
+    {
+        writer = w ;
+        try {
+            reader = IndexReader.open(writer, true) ;
+        } catch (IOException e) 
+        { throw new ARQLuceneException("IndexLARQ", e) ; }
+        searcher = new IndexSearcher(reader) ;
+        analyzer = a ;
+        luceneQueryParser = null ;
+    }
+    
     @Deprecated
     /** Passing in a fixed QueryParser is not thread safe */
     public IndexLARQ(IndexReader r, QueryParser qp)
     { 
+        writer = null ;
         reader = r ;
         searcher = new IndexSearcher(reader) ;
         analyzer = qp.getAnalyzer() ;
@@ -139,6 +162,7 @@ public class IndexLARQ
     public Iterator<HitLARQ> search(String queryString)
     {    
         try{
+            final IndexSearcher searcher = getIndexSearcher() ;
             Query query = getLuceneQueryParser().parse(queryString) ;
             
             TopDocs topDocs = searcher.search(query, (Filter)null, LARQ.NUM_RESULTS ) ;
@@ -175,8 +199,24 @@ public class IndexLARQ
         { throw new ARQLuceneException("contains", e) ; }
     }
     
+    private synchronized IndexSearcher getIndexSearcher() throws IOException {
+        if ( !reader.isCurrent() ) {
+            IndexReader newReader = reader.reopen(true) ;
+            reader.close();
+            reader = newReader;
+            searcher = new IndexSearcher(reader);
+        }
+        
+        return searcher ;
+    }
+
     public void close()
     {
+        try{
+            if ( writer != null )
+                writer.close() ;
+        } catch (Exception e)
+        { throw new ARQLuceneException("close", e) ; }
         try{
             if ( reader != null )
                 reader.close() ;
