@@ -255,19 +255,20 @@
       <url>sftp://openjena.org/var/repo</url>
       <layout>default</layout>
     </repository>
-    <!-- 
     <snapshotRepository>
       <id>jena-repo-dev</id>
       <name>Jena development repo</name>
       <url>sftp://openjena.org/var/repo-dev</url>
       <layout>default</layout>
     </snapshotRepository>
-    -->
+    <!-- Until https://issues.apache.org/jira/browse/INFRA-3646 is closed... -->
+    <!--
     <snapshotRepository>
       <id>apache.snapshots.https</id>
       <name>Apache Development Snapshot Repository</name>
       <url>https://repository.apache.org/content/repositories/snapshots</url>
     </snapshotRepository>
+    -->
   </distributionManagement>
   
   <repositories>
