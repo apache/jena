@@ -62,6 +62,15 @@ public class ByteBufferLib
 //            out.print(" ...") ;
         out.println();
     }
+    
+    public static boolean sameValue(ByteBuffer bb1, ByteBuffer bb2)
+    {
+        if ( bb1.capacity() != bb2.capacity() ) return false ;
+        
+        for ( int i = 0 ; i < bb1.capacity() ; i++ )
+            if ( bb1.get(i) != bb2.get(i) ) return false ;
+        return true ;
+    }
 
     /** Copy of a ByteBuffer - the contents are copied (unlike ByteBuffer.duplicate) */
     final public static ByteBuffer duplicate(ByteBuffer bb)

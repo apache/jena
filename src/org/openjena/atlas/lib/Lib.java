@@ -24,6 +24,7 @@ public class Lib
             ((Sync)object).sync() ;
     }
     
+    /** Return true if obj1 and obj are both null or are .equals, else return false */
     public static final <T> boolean equal(T obj1, T obj2)
     {
         if ( obj1 == null )
@@ -34,6 +35,12 @@ public class Lib
         return obj1.equals(obj2) ;
     }
     
+    /** Return true if obj1 and obj are ! equal */
+    public static final <T> boolean notEqual(T obj1, T obj2)
+    {
+        return ! equal(obj1, obj2) ;
+    }
+
     static public final String className(Object obj)
     { return classShortName(obj.getClass()) ; }
     
