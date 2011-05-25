@@ -15,6 +15,7 @@ import java.util.Set ;
 
 import org.openjena.atlas.logging.Log ;
 
+import tx.journal.Journal ;
 import tx.transaction.Transaction ;
 
 import com.hp.hpl.jena.tdb.base.block.Block ;
@@ -23,9 +24,9 @@ import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
 public class BlockMgrJournal implements BlockMgr
 {
     
-    final private BlockMgr blockMgr ; // read-only except during journal checkpoint.
-    final private Journal journal ;
-    final private Transaction transaction ;
+    private BlockMgr blockMgr ; // read-only except during journal checkpoint.
+    private Journal journal ;
+    private Transaction transaction ;
     
     final private Set<Integer> readBlocks = new HashSet<Integer>() ;
     final private Set<Integer> iteratorBlocks = new HashSet<Integer>() ;
@@ -35,13 +36,21 @@ public class BlockMgrJournal implements BlockMgr
     
     public BlockMgrJournal(Transaction txn, BlockMgr underlyingBlockMgr, Journal journal)
     {
-        this.blockMgr = underlyingBlockMgr ;
-        this.journal = journal ;
-        this.transaction = txn ;
+        reset(txn, underlyingBlockMgr, journal) ;
     }
 
     public Iterator<Block> updatedBlocks()  { return writeBlocks.values().iterator() ; }
     public Iterator<Block> freedBlocks()    { return freedBlocks.values().iterator() ; }
+
+    /** Set, or reset, this BlockMgr.
+     *  Enables it to be reused when already part of a datastructure. 
+     */
+    public void reset(Transaction txn, BlockMgr underlyingBlockMgr, Journal journal)
+    {
+        this.blockMgr = underlyingBlockMgr ;
+        this.journal = journal ;
+        this.transaction = txn ;
+    }
     
     @Override
     public Block allocate(int blockSize)

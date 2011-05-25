@@ -4,6 +4,11 @@ package tx;
 public class DevTx
 {
     // BlockMgrJournal
+    // FileRefs : builtin names<->numbers
+    
+    // NodeTable over Journal.
+    // One transaction dataset - reuse.  Pool?
+    // Record BlockMgrs, BlockMgrTx.reset
     
     // Channel+Adler32
     

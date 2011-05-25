@@ -21,7 +21,7 @@ public abstract class AbstractTestChannel extends BaseTest
     @Test public void storage_01() 
     {
         BufferChannel store = make() ;
-        assertEquals(0, store.length()) ;
+        assertEquals(0, store.size()) ;
     }
     
     protected static ByteBuffer data(int len)
@@ -49,7 +49,7 @@ public abstract class AbstractTestChannel extends BaseTest
         BufferChannel store = make() ;
         ByteBuffer b = data(blkSize) ;
         store.write(b) ;
-        long x = store.length() ;
+        long x = store.size() ;
         assertEquals(blkSize, x) ;
     }
 
@@ -74,7 +74,7 @@ public abstract class AbstractTestChannel extends BaseTest
         store.write(b2, 0) ;
         store.write(b1, 0) ;
         
-        assertEquals(blkSize, store.length()) ;
+        assertEquals(blkSize, store.size()) ;
         ByteBuffer b9 = ByteBuffer.allocate(5) ;
         int z = store.read(b9) ;
         assertEquals(5, z) ;

@@ -4,59 +4,71 @@
  * [See end of file]
  */
 
-package tx.base;
+package tx;
 
-final
-public class BlockRef
+import java.util.Arrays ;
+import java.util.Iterator ;
+import java.util.List ;
+
+import org.junit.Test ;
+import org.openjena.atlas.junit.BaseTest ;
+
+public class TestIteratorSlotted extends BaseTest
 {
-    private final FileRef file ;
-    private final int blockId ;
-    
-    static public BlockRef create(FileRef file, int blockId)    { return new BlockRef(file, blockId) ; }
-    static public BlockRef create(String file, int blockId)     { return new BlockRef(file, blockId) ; }
-
-    private BlockRef(String file, int blockId)
+    static class IterStr extends IteratorSlotted<String>
     {
-        this(FileRef.create(file), blockId) ;
-    }
-    
-    private BlockRef(FileRef file, int blockId)
-    {
-        this.file = file ;
-        this.blockId = blockId ;
-    }
-    
-    public FileRef getFile()        { return file ; }
+        private List<String> array ;
+        private Iterator<String> iter ;
 
-    public int getFileId()          { return getFile().getId() ; }
-
-    public int getBlockId()         { return blockId ; }
-
-    @Override
-    public int hashCode()
-    {
-        final int prime = 31 ;
-        int result = 1 ;
-        result = prime * result + blockId ;
-        result = prime * result + ((file == null) ? 0 : file.hashCode()) ;
-        return result ;
-    }
-
-    @Override
-    public boolean equals(Object obj)
-    {
-        if (this == obj) return true ;
-        if (obj == null) return false ;
-        if (getClass() != obj.getClass()) return false ;
-        BlockRef other = (BlockRef)obj ;
-        if (blockId != other.blockId) return false ;
-        if (file == null)
+        IterStr(String...array)
+        { 
+            this.array = Arrays.asList(array) ;
+            iter = this.array.iterator() ;
+        }
+        
+        @Override
+        protected String moveToNext()
         {
-            if (other.file != null) return false ;
-        } else
-            if (!file.equals(other.file)) return false ;
-        return true ;
+            return iter.next() ;
+        }
+
+        @Override
+        protected boolean hasMore()
+        {
+            return iter.hasNext() ;
+        }
+        
     }
+    
+    @Test public void iter_01()
+    {
+        IterStr iter = new IterStr() ;
+        assertFalse(iter.hasNext()) ;
+    }
+    
+    @Test public void iter_02()
+    {
+        IterStr iter = new IterStr("A") ;
+        assertTrue(iter.hasNext()) ;
+        assertEquals("A", iter.peek()) ;
+        assertEquals("A", iter.peek()) ;
+        assertEquals("A", iter.next()) ;
+        assertFalse(iter.hasNext()) ;
+        assertNull(iter.peek()) ;
+    }
+    
+    @Test public void iter_03()
+    {
+        IterStr iter = new IterStr("A", "B") ;
+        assertTrue(iter.hasNext()) ;
+        assertEquals("A", iter.peek()) ;
+        assertEquals("A", iter.next()) ;
+        assertEquals("B", iter.peek()) ;
+        assertEquals("B", iter.next()) ;
+        assertFalse(iter.hasNext()) ;
+    }
+    
+    
 }
 
 /*

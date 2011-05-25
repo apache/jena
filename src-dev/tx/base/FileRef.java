@@ -6,33 +6,114 @@
 
 package tx.base;
 
+import java.util.HashMap ;
+import java.util.Map ;
+
+import org.openjena.atlas.lib.FileOps ;
+import org.openjena.atlas.lib.Tuple ;
+import org.openjena.atlas.logging.Log ;
+
+import com.hp.hpl.jena.tdb.TDBException ;
+import com.hp.hpl.jena.tdb.sys.Names ;
+
 final
 public class FileRef
 {
     // Symbol<T> ?
     private final String filename ;
+    private final int id ;
 
-    static public FileRef create(String symbolStr) { return new FileRef(symbolStr) ; }
-    static public FileRef create(FileRef other) { return new FileRef(other) ; }
+    // --------
+    // May to/from names to a short id.
+    // THIS MUST BE PERSISTENT
+    static Map<String, Integer> name2id = new HashMap<String, Integer>() ;
+    static Map<Integer, FileRef> id2name = new HashMap<Integer, FileRef>() ;
     
-    private FileRef(String filename)
+    
+    static {
+        int count = 0 ;
+        for ( String name : Names.tripleIndexes )
+            bTree(name) ;
+        for ( String name : Names.quadIndexes )
+            bTree(name) ;
+        // Not the name of the index.
+//        for ( String name : Names.prefixIndexes )
+//            bTree(name) ;
+        
+        bTree(Names.prefixId2Node) ;
+        bTree(Names.prefixNode2Id) ;
+        file(Names.indexId2Node+".dat") ;
+    }
+
+    private static void bTree(String name)
+    {
+        file(name+".idn") ;
+        file(name+".dat") ;
+    }
+    
+    /** Public - for testing */
+    public static void file(String name)
+    {
+        int count = name2id.size() ;
+        name2id.put(name, count) ;
+        id2name.put(count, new FileRef(name, count)) ;
+    }
+    // --------
+
+    static public FileRef create(String filename)
+    {
+        Tuple<String> x = FileOps.splitDirBaseExt(filename) ;
+        String key = x.get(1) ;
+        if ( ! name2id.containsKey(key) )
+        {
+            Log.warn(FileRef.class, "File name not registered: "+filename) ;
+            file(key) ;
+        }
+            
+        return new FileRef(key, name2id.get(key)) ;
+    }
+    
+    public static FileRef get(int fileId)
+    {
+        FileRef f = id2name.get(fileId) ;
+        if ( f == null )
+        {
+            Log.fatal(FileRef.class, "No FileRef registered for id: "+fileId) ;
+            throw new TDBException("No FileRef registered for id: "+fileId) ;
+        }
+        return f ;
+    }
+
+    //    static public FileRef create(FileRef other)
+//    { 
+//        return new FileRef(other) ;
+//    }
+    
+    private FileRef(String filename, int id)
     {
         // Canonicalise filename.
         if ( filename == null )
             throw new IllegalArgumentException("Null for a FileRef filename") ;
         this.filename = filename.intern() ;
+        this.id = id ;
     }
     
-    private FileRef(FileRef other)  { this.filename = other.filename ; }
+    //private FileRef(FileRef other)  { this.filename = other.filename ; this.id = other.id ; }
     
     public String getFilename() { return filename ; }
     
     @Override
+    public String toString()    { return "file:"+filename ; }
+
+    public int getId()          { return id ; }
+
+    @Override
     public int hashCode()
     {
-        final int prime = 37 ;
+        final int prime = 31 ;
         int result = 1 ;
         result = prime * result + ((filename == null) ? 0 : filename.hashCode()) ;
+        result = prime * result + id ;
         return result ;
     }
     
@@ -48,11 +129,9 @@ public class FileRef
             if (other.filename != null) return false ;
         } else
             if (!filename.equals(other.filename)) return false ;
+        if (id != other.id) return false ;
         return true ;
     }
-    
-    @Override
-    public String toString()  { return "file:"+filename ; }
 }
 
 /*

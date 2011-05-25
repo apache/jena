@@ -4,39 +4,41 @@
  * [See end of file]
  */
 
-package tx;
+package tx.journal;
 
 import static com.hp.hpl.jena.tdb.sys.SystemTDB.SizeOfInt ;
 
 import java.nio.ByteBuffer ;
 import java.util.Iterator ;
 
-import tx.blockstream.JournalEntry ;
+import tx.IteratorSlotted ;
+import tx.base.BlockRef ;
+import tx.base.FileRef ;
 
-import com.hp.hpl.jena.tdb.base.file.BlockAccess ;
 import com.hp.hpl.jena.tdb.base.file.BufferChannel ;
-import com.hp.hpl.jena.tdb.base.file.FileBase ;
 
 /** The Journal is slightly odd - it is append-only for write but random read.
- *  The write performance is more important than read. 
+ *  The write performance is more important than read; reads only happen
+ *  if the journal grows to the point where it needs to free up cache. 
  */
 public class Journal
 {
     // Version 1 : issue might be excessive copying
+    // [TxTDB:TODO] Caching
+    // [TxTDB:TODO] Caching
+    
     // We want random access AND stream efficiency to write.  Opps.
     
     // FileOutputStream calls straight to native code
     
     BufferChannel channel ;
-    BlockAccess access ;
-    
-    private FileBase file ;
     private long position ;
-    ByteBuffer buffer = ByteBuffer.allocate(2*SizeOfInt) ;
+    // Length, type, fileref id, block id
+    ByteBuffer buffer = ByteBuffer.allocate(4*SizeOfInt) ;
     
-    public Journal(String filename)
+    public Journal(BufferChannel channel)
     {
-        file = new FileBase(filename) ;
+        this.channel = channel ;
         position = 0 ;
     }
     
@@ -52,14 +54,21 @@ public class Journal
         // length, type, buffer bytes [0,limit())
         
         // Length include length
-        long len = SizeOfInt + SizeOfInt + entry.getByteBuffer().limit() ;
+        long len = 4*SizeOfInt + entry.getByteBuffer().limit() ;
         int type = entry.getType() ;
+        int fileId = entry.getBlockRef().getFileId() ;
+        int blockId = entry.getBlockRef().getBlockId() ;
+        
         // Write length, write type
-        buffer.reset() ;
-        buffer.putInt((int)len, 0) ;
-        buffer.putInt(type, SizeOfInt) ;
+        buffer.clear() ;
+        buffer.putInt((int)len) ;
+        buffer.putInt(type) ;
+        buffer.putInt(fileId) ;
+        buffer.putInt(blockId) ;
+        buffer.rewind() ;
         channel.write(buffer) ;
         
+        entry.getByteBuffer().rewind() ;
         // Write bytes
         channel.write(entry.getByteBuffer()) ;
         
@@ -82,14 +91,21 @@ public class Journal
     private JournalEntry read()
     {
         // [TxTDB:TODO] Make robust against partial read.
-        buffer.reset() ;
+        buffer.clear() ;
         channel.read(buffer) ;
-        int len = buffer.getInt(0) ;
-        len = len - SizeOfInt + SizeOfInt ;
-        int type = buffer.getInt(SizeOfInt) ;
+        buffer.rewind() ;
+        int len = buffer.getInt() ;
+        int type = buffer.getInt() ;
+        int fileId = buffer.getInt() ;
+        int blockId = buffer.getInt() ;
+        FileRef fileRef = FileRef.get(fileId) ;
+        BlockRef blockRef = BlockRef.create(fileRef, blockId) ;
+        
+        len = len - 4*SizeOfInt ;
+        
         ByteBuffer bb = ByteBuffer.allocate(len) ;
         channel.read(bb) ;
-        return new JournalEntry(type, null, bb) ;
+        return new JournalEntry(type, blockRef, bb) ;
     } 
 
     /** Iterator of entries from current point in Journal, going forward. Must be JournalEntry aligned at start. */
@@ -104,7 +120,7 @@ public class Journal
         // See QueryIteratorBase
         public IteratorEntries() 
         {
-            endPoint = channel.length() ;
+            endPoint = channel.size() ;
         }
         
         @Override
@@ -153,7 +169,7 @@ public class Journal
     public Iterator<JournalEntry> entries()
     {
         channel.position(0) ;
-        return new IteratorEntries() {} ;
+        return new IteratorEntries() ;
     }
     
 }

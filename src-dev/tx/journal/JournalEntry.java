@@ -4,14 +4,43 @@
  * [See end of file]
  */
 
-package tx;
+package tx.journal;
 
-import org.junit.Test ;
-import org.openjena.atlas.junit.BaseTest ;
+import java.nio.ByteBuffer ;
 
-public class TestJournal extends BaseTest
+import org.openjena.atlas.logging.Log ;
+
+import tx.base.BlockRef ;
+
+public class JournalEntry
 {
-    @Test public void journal_01() { }
+    public enum Type { Block(1), Object(2), Commit(3), Checkpoint(4) ;
+        final int id ;
+        Type(int x) { id = x ; }
+        int getId() { return id ; }
+    } 
+    
+    private final int type ;
+    private final BlockRef fileReference ; 
+    private final ByteBuffer byteBuffer ;
+    
+    public JournalEntry(int type, BlockRef blockRef, ByteBuffer bytes)
+    {
+        if ( type == 0 )
+            Log.warn(this, "Journal entry with type = 0") ;
+        if ( blockRef == null )
+            Log.warn(this, "Journal entry with blockRef = null") ;
+        if ( bytes == null )
+            Log.warn(this, "Journal entry with bytes = null") ;
+        
+        this.type = type ;
+        this.fileReference = blockRef ;
+        this.byteBuffer = bytes ;
+    }
+
+    public int getType()                { return type ; }
+    public BlockRef getBlockRef()       { return fileReference ; }
+    public ByteBuffer getByteBuffer()   { return byteBuffer ; }
 }
 
 /*
