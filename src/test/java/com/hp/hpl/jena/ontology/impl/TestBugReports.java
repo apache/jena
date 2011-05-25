@@ -1940,6 +1940,15 @@ public class TestBugReports
         assertFalse( "super-properties should not include reflexive case", sp.contains( p ) );
     }
 
+    /** Bugrep from Benson Margulies: see
+     * <a href="https://issues.apache.org/jira/browse/JENA-21">JENA-21</a>
+     */
+    public void testBM0() {
+        OntModel m = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM_RDFS_INF );
+        // should not throw NPE:
+        m.listStatements( null, null, (RDFNode) null, null );
+    }
+
 
     // Internal implementation methods
     //////////////////////////////////

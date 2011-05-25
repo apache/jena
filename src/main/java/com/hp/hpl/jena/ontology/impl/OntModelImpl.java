@@ -2665,7 +2665,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      *  that match a pattern.  The statements selected are those
      *  whose subject matches the <code>subject</code> argument,
      *  whose predicate matches the <code>predicate</code> argument
-     *  and whose object matchesthe <code>object</code> argument.
+     *  and whose object matches the <code>object</code> argument.
      *  If an argument is <code>null</code> it matches anything.</p>
      * <p>
      * The s/p/o terms may refer to resources which are temporarily defined in the "posit" model.
@@ -2676,10 +2676,12 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @param subject   The subject sought
      * @param predicate The predicate sought
      * @param object    The value sought
+     * @param posit Model containing additional assertions to be considered when matching statements
      */
     public StmtIterator listStatements( Resource subject, Property predicate, RDFNode object, Model posit ) {
         if (getGraph() instanceof InfGraph) {
-            Iterator<Triple> iter = getInfGraph().find( asNode(subject), asNode(predicate), asNode(object), posit.getGraph());
+            Graph gp = posit == null ? ModelFactory.createDefaultModel().getGraph() : posit.getGraph();
+            Iterator<Triple> iter = getInfGraph().find( asNode(subject), asNode(predicate), asNode(object), gp );
             return IteratorFactory.asStmtIterator(iter,this);
         }
         else {
