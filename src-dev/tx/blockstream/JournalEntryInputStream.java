@@ -11,6 +11,7 @@ import java.nio.ByteBuffer ;
 
 import org.openjena.atlas.io.IO ;
 import tx.base.BlockRef ;
+import tx.journal.JournalEntry ;
 
 public class JournalEntryInputStream implements JournalEntryInput
 {

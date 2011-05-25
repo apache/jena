@@ -7,6 +7,7 @@
 package tx.blockstream;
 
 import org.openjena.atlas.lib.Closeable ;
+import tx.journal.JournalEntry ;
 
 public interface JournalEntryInput extends Closeable
 {

@@ -12,6 +12,7 @@ import java.io.OutputStream ;
 
 import org.openjena.atlas.io.IO ;
 import tx.base.BlockRef ;
+import tx.journal.JournalEntry ;
 
 public class JournalEntryOutputStream implements JournalEntryOutput
 {

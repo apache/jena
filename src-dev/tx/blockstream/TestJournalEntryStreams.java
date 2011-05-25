@@ -16,6 +16,7 @@ import org.openjena.atlas.junit.BaseTest ;
 import org.openjena.atlas.lib.Bytes ;
 import org.openjena.atlas.lib.Lib ;
 import tx.base.BlockRef ;
+import tx.journal.JournalEntry ;
 
 public class TestJournalEntryStreams extends BaseTest
 {

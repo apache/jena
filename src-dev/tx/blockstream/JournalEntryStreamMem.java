@@ -11,6 +11,7 @@ import java.util.ArrayList ;
 import java.util.List ;
 
 import org.openjena.atlas.lib.ByteBufferLib ;
+import tx.journal.JournalEntry ;
 
 import com.hp.hpl.jena.tdb.TDBException ;
 

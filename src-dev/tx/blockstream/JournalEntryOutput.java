@@ -8,6 +8,7 @@ package tx.blockstream;
 
 import org.openjena.atlas.lib.Closeable ;
 import org.openjena.atlas.lib.Sync ;
+import tx.journal.JournalEntry ;
 
 
 public interface JournalEntryOutput extends Closeable, Sync
