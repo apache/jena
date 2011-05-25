@@ -13,7 +13,7 @@ public class BlockRef
     private final int blockId ;
     
     static public BlockRef create(FileRef file, int blockId)    { return new BlockRef(file, blockId) ; }
-    static public BlockRef create(String file, int blockId)     { return new BlockRef(file, blockId) ; }
+    //static public BlockRef create(String file, Integer blockId)     { return new BlockRef(file, blockId) ; }
 
     private BlockRef(String file, int blockId)
     {

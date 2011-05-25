@@ -14,8 +14,9 @@ import java.util.Map ;
 import java.util.Set ;
 
 import org.openjena.atlas.logging.Log ;
-
+import tx.base.FileRef ;
 import tx.journal.Journal ;
+import tx.journal.JournalEntry ;
 import tx.transaction.Transaction ;
 
 import com.hp.hpl.jena.tdb.base.block.Block ;
@@ -27,6 +28,7 @@ public class BlockMgrJournal implements BlockMgr
     private BlockMgr blockMgr ; // read-only except during journal checkpoint.
     private Journal journal ;
     private Transaction transaction ;
+    private FileRef fileRef ;
     
     final private Set<Integer> readBlocks = new HashSet<Integer>() ;
     final private Set<Integer> iteratorBlocks = new HashSet<Integer>() ;
@@ -34,9 +36,9 @@ public class BlockMgrJournal implements BlockMgr
     final private Map<Integer, Block> freedBlocks = new HashMap<Integer, Block>() ;
     private boolean closed = false ;
     
-    public BlockMgrJournal(Transaction txn, BlockMgr underlyingBlockMgr, Journal journal)
+    public BlockMgrJournal(Transaction txn, FileRef fileRef, BlockMgr underlyingBlockMgr, Journal journal)
     {
-        reset(txn, underlyingBlockMgr, journal) ;
+        reset(txn, fileRef, underlyingBlockMgr, journal) ;
     }
 
     public Iterator<Block> updatedBlocks()  { return writeBlocks.values().iterator() ; }
@@ -45,11 +47,12 @@ public class BlockMgrJournal implements BlockMgr
     /** Set, or reset, this BlockMgr.
      *  Enables it to be reused when already part of a datastructure. 
      */
-    public void reset(Transaction txn, BlockMgr underlyingBlockMgr, Journal journal)
+    public void reset(Transaction txn, FileRef fileRef, BlockMgr underlyingBlockMgr, Journal journal)
     {
+        this.transaction = txn ;
+        this.fileRef = fileRef ;
         this.blockMgr = underlyingBlockMgr ;
         this.journal = journal ;
-        this.transaction = txn ;
     }
     
     @Override
@@ -201,13 +204,25 @@ public class BlockMgrJournal implements BlockMgr
         checkIfClosed() ;
     }
 
+    // we only use the underlying blockMgr in read-mode - we don't write back blocks.  
     @Override
-    // Yes - read.
     public void beginUpdate()           { checkIfClosed() ; blockMgr.beginRead() ; }
 
     @Override
-    public void endUpdate()             { checkIfClosed() ; blockMgr.endRead() ; }
+    public void endUpdate()
+    {
+        checkIfClosed() ;
+        blockMgr.endRead() ;
+        for ( Block blk : writeBlocks.values() )
+            writeJournalEntry(blk) ;
+    }
 
+    private void writeJournalEntry(Block blk)
+    {
+        JournalEntry entry = new JournalEntry(fileRef, blk) ;
+        journal.writeJournal(entry) ;
+    }
+    
     @Override
     public void beginRead()             { checkIfClosed() ; blockMgr.beginRead() ; }
 

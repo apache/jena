@@ -4,11 +4,9 @@
  * [See end of file]
  */
 
-package tx.transaction;
+package tx.transaction ;
 
-import com.hp.hpl.jena.tdb.TDBException ;
-
-public class TransactionAbort extends TDBException
+public class TransactionAbort extends TransactionException
 {
     public TransactionAbort()                          { super() ; }
     public TransactionAbort(String msg)                { super(msg) ; }

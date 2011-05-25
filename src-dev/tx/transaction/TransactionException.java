@@ -4,51 +4,16 @@
  * [See end of file]
  */
 
-package tx.journal;
+package tx.transaction;
 
-import java.nio.ByteBuffer ;
+import com.hp.hpl.jena.tdb.TDBException ;
 
-import com.hp.hpl.jena.tdb.base.block.Block ;
-
-import org.openjena.atlas.logging.Log ;
-
-import tx.base.BlockRef ;
-import tx.base.FileRef ;
-
-public class JournalEntry
+public class TransactionException extends TDBException
 {
-    public enum Type { Block(1), Object(2), Commit(3), Checkpoint(4) ;
-        final int id ;
-        Type(int x) { id = x ; }
-        int getId() { return id ; }
-    } 
-    
-    private final int type ;
-    private final BlockRef fileReference ; 
-    private final ByteBuffer byteBuffer ;
-    
-    public JournalEntry(FileRef fileRef, Block block)
-    {
-        this(Type.Block.id, BlockRef.create(fileRef, block.getId()), block.getByteBuffer()) ;
-    }
-    
-    public JournalEntry(int type, BlockRef blockRef, ByteBuffer bytes)
-    {
-        if ( type == 0 )
-            Log.warn(this, "Journal entry with type = 0") ;
-        if ( blockRef == null )
-            Log.warn(this, "Journal entry with blockRef = null") ;
-        if ( bytes == null )
-            Log.warn(this, "Journal entry with bytes = null") ;
-        
-        this.type = type ;
-        this.fileReference = blockRef ;
-        this.byteBuffer = bytes ;
-    }
-
-    public int getType()                { return type ; }
-    public BlockRef getBlockRef()       { return fileReference ; }
-    public ByteBuffer getByteBuffer()   { return byteBuffer ; }
+    public TransactionException()                          { super() ; }
+    public TransactionException(String msg)                { super(msg) ; }
+    public TransactionException(Throwable th)              { super(th) ; }
+    public TransactionException(String msg, Throwable th)  { super(msg, th) ; }
 }
 
 /*

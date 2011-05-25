@@ -31,12 +31,16 @@ public class TestJournal extends BaseTest
     static ByteBuffer bb1 = ByteBuffer.allocate(4) ;
     static ByteBuffer bb2 = ByteBuffer.allocate(4) ;
     static ByteBuffer bb3 = ByteBuffer.allocate(4) ;
-    
-    static BlockRef blockref1 = BlockRef.create("xyz", 10) ;
-    static BlockRef blockref2 = BlockRef.create("xyz", 10) ;
 
-    static BlockRef blockref3 = BlockRef.create("xyz", 20) ;
-    static BlockRef blockref4 = BlockRef.create("abc", 10) ;
+    static FileRef fileref1 = FileRef.create("xyz") ;
+    static FileRef fileref2 = FileRef.create("abc") ;
+
+    
+    static BlockRef blockref1 = BlockRef.create(fileref1, 10) ;
+    static BlockRef blockref2 = BlockRef.create(fileref1, 10) ;
+
+    static BlockRef blockref3 = BlockRef.create(fileref1, 20) ;
+    static BlockRef blockref4 = BlockRef.create(fileref2, 10) ;
     
     // [TxTDB:TODO] Use these 
     static JournalEntry je1 = new JournalEntry(10, blockref1, bb1) ;

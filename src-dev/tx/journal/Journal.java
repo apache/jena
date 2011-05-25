@@ -21,7 +21,8 @@ import com.hp.hpl.jena.tdb.base.file.BufferChannel ;
  *  The write performance is more important than read; reads only happen
  *  if the journal grows to the point where it needs to free up cache. 
  */
-public class Journal
+public final
+class Journal implements Iterable<JournalEntry>
 {
     // Version 1 : issue might be excessive copying
     // [TxTDB:TODO] Caching
@@ -172,6 +173,8 @@ public class Journal
         return new IteratorEntries() ;
     }
     
+    @Override
+    public Iterator<JournalEntry> iterator() { return entries() ; }
 }
 
 /*
