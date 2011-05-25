@@ -14,10 +14,14 @@ import com.hp.hpl.jena.sparql.util.Utils ;
 /** An Iterator with a one slot lookahead. */  
 abstract class IteratorSlotted<T> implements Iterator<T>
 {
-    // Could move in the async abort part of QueryIterator
+    // Could move in the async abort.
     private boolean finished = false ;
-    private T slot = null ; 
+    private boolean slotIsSet = false ;
+    private T NULL = null ;
+    private T slot = NULL ; 
 
+    private boolean slotIsSet() { return slot != NULL ; } 
+    
     protected IteratorSlotted() { }
 
     // -------- The contract with the subclasses 
@@ -29,7 +33,7 @@ abstract class IteratorSlotted<T> implements Iterator<T>
     
     /** Can return true here then null from moveToNext() to indicate end. */ 
     protected abstract boolean hasMore() ;
-    // altter add a flag to say if null is a legal value.
+    // alter add a flag to say if null is a legal value.
     
     /** Close the iterator. */
     protected void closeIterator() { }
@@ -44,8 +48,8 @@ abstract class IteratorSlotted<T> implements Iterator<T>
     {
         if ( finished )
             return false ;
-        if ( slot != null )
-            return false ;
+        if ( slotIsSet() )
+            return true ;
 
         boolean r = hasMore() ;
         if ( ! r )
@@ -55,7 +59,9 @@ abstract class IteratorSlotted<T> implements Iterator<T>
         }
         
         slot = moveToNext() ;
-        if ( slot == null )
+        slotIsSet = true ;
+        
+        if ( ! slotIsSet() )
         {
             close() ;
             return false ;
@@ -70,15 +76,16 @@ abstract class IteratorSlotted<T> implements Iterator<T>
         if ( ! hasNext() ) throw new NoSuchElementException(Utils.className(this)) ;
         
         T obj = slot ;
-        slot = moveToNext() ;
+        slot = null ;
         return obj ;
     }
-    
+
+    /** Look at the next element - returns null when there is no element */
     public final T peek()
     {
+        hasNext() ;
         return slot ;
     }
-    
     
     //@Override
     public final void remove()
@@ -91,6 +98,8 @@ abstract class IteratorSlotted<T> implements Iterator<T>
         if ( finished )
             return ;
         closeIterator() ;
+        slotIsSet = false ;
+        slot = NULL ;
         finished = true ;
     }
 }
