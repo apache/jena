@@ -101,11 +101,12 @@ public class BufferChannelMem implements BufferChannel
         bytes.position((int)loc) ;
         int len = write(buffer) ;
         bytes.position(x) ;
+        length = Math.max(length, loc+len) ;
         return len ;
     }
 
     @Override
-    public long length()
+    public long size()
     {
         checkIfClosed() ;
         return length ;

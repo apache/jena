@@ -48,7 +48,7 @@ public interface BufferChannel extends Sync, Closeable
     public int write(ByteBuffer buffer, long loc) ;
     
     /** Length of storage, in bytes.*/
-    public long length() ;
+    public long size() ;
 
 }
 

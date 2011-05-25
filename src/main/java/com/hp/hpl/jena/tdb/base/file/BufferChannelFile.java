@@ -65,7 +65,7 @@ public class BufferChannelFile implements BufferChannel
     }
 
     @Override
-    public long length()
+    public long size()
     {
         try { return file.channel.size() ; }
         catch (IOException e) { IO.exception(e) ; return -1 ; }
