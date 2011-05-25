@@ -649,11 +649,16 @@ public class Test_schemagen
             Class<?> jc = Class.forName( "javax.tools.JavaCompiler" );
             Method jcRun = jc.getMethod( "run", new Class[] {InputStream.class, OutputStream.class, OutputStream.class, String[].class} );
 
-            // build the args list for javac
-            String[] args = new String[] {"-classpath", getClassPath( tmpDir ), "-d", tmpDir.getPath(), srcFile.getPath()};
+            if (sjc != null && jcRun != null) {
+                // build the args list for javac
+                String[] args = new String[] {"-classpath", getClassPath( tmpDir ), "-d", tmpDir.getPath(), srcFile.getPath()};
 
-            int success = (Integer) jcRun.invoke( sjc, null, null, null, args );
-            assertEquals( "Errors reported from compilation of schemagen output", 0, success );
+                int success = (Integer) jcRun.invoke( sjc, null, null, null, args );
+                assertEquals( "Errors reported from compilation of schemagen output", 0, success );
+            }
+            else {
+                log.debug( "Could not resolve javax.tools.JavaCompiler.run() method. Is the CLASSPATH defined correctly?" );
+            }
         }
         catch (ClassNotFoundException nf) {
             log.debug( "javax.tools not found (no tools.jar on classpath?). schemagen compilation test skipped." );
