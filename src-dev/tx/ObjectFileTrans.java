@@ -4,29 +4,77 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.base.file;
+package tx;
 
-import org.openjena.atlas.lib.Closeable ;
-import org.openjena.atlas.lib.Sync ;
+import java.nio.ByteBuffer ;
+import java.util.Iterator ;
 
-import com.hp.hpl.jena.tdb.base.block.Block ;
+import org.openjena.atlas.lib.Pair ;
+import tx.journal.Journal ;
+import tx.journal.JournalEntryType ;
 
-/** Interface to concrete storage.
- *  This is wrapped in a BlockMgrAccess to provide a higher level abstraction.
- *  BufferChannels are a separate lower-level, interface to storage.
- *  @see BufferChannel
- */
-public interface BlockAccess extends Sync, Closeable
+import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile ;
+
+public class ObjectFileTrans implements ObjectFile
 {
-    public Block allocate(int size) ;
+    private final Journal journal ;
+    private final ObjectFile other ;
+    private long alloc ;
+
+    // Objects aren't huge - a block per object and the file ref overhead is a bit much.
     
-    public Block read(long id) ;
+    public ObjectFileTrans(Journal journal, ObjectFile other)
+    {
+        this.journal = journal ;
+        this.other = other ;
+        this.alloc = other.length() ;
+    }
     
-    public void write(Block block) ;
-    
-    public boolean isEmpty() ; 
-    
-    public boolean valid(int id) ;
+    @Override
+    public void sync()
+    {}
+
+    @Override
+    public void close()
+    {}
+
+    @Override
+    public ByteBuffer allocWrite(int maxBytes)
+    {
+        return ByteBuffer.allocate(maxBytes) ;
+    }
+
+    @Override
+    public long completeWrite(ByteBuffer buffer)
+    {
+        // Ah.  This is not the id!
+        return journal.writeJournal(JournalEntryType.Object, buffer) ;
+    }
+
+    @Override
+    public long write(ByteBuffer buffer)
+    {
+        return 0 ;
+    }
+
+    @Override
+    public ByteBuffer read(long id)
+    {
+        return null ;
+    }
+
+    @Override
+    public long length()
+    {
+        return 0 ;
+    }
+
+    @Override
+    public Iterator<Pair<Long, ByteBuffer>> all()
+    {
+        return null ;
+    }
+
 }
 
 /*

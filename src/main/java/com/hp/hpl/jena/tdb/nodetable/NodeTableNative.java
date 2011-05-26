@@ -25,7 +25,7 @@ import com.hp.hpl.jena.tdb.lib.NodeLib ;
 import com.hp.hpl.jena.tdb.store.Hash ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
 
-/** A concrete NodeTable based on native storage (string file and a index) */ 
+/** A concrete NodeTable based on native storage (string file and an index) */ 
 public class NodeTableNative implements NodeTable
 {
     // Assumes an StringFile and an Indexer, which may be an Index but allows

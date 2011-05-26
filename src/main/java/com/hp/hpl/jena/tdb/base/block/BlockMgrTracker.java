@@ -25,16 +25,16 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
 
     static enum Action { Alloc, Promote, GetRead, GetWrite, Write, Release, Free, IterRead, 
         BeginRead, EndRead, BeginUpdate, EndUpdate, BeginIter, EndIter } ;
-    static final Integer NoId = Integer.valueOf(-9) ;
+    static final Long NoId = Long.valueOf(-9) ;
 
     // ---- State for tracking
     // Track and count block references and releases
     //   No - the page is dirty.
-    protected final MultiSet<Integer> activeReadBlocks   = new MultiSet<Integer>() ;
-    protected final MultiSet<Integer> activeWriteBlocks  = new MultiSet<Integer>() ;
-    protected final MultiSet<Integer> activeIterBlocks   = new MultiSet<Integer>() ;
+    protected final MultiSet<Long> activeReadBlocks   = new MultiSet<Long>() ;
+    protected final MultiSet<Long> activeWriteBlocks  = new MultiSet<Long>() ;
+    protected final MultiSet<Long> activeIterBlocks   = new MultiSet<Long>() ;
     // Track the operations 
-    protected final List<Pair<Action, Integer>> actions = new ArrayList<Pair<Action, Integer>>() ;
+    protected final List<Pair<Action, Long>> actions = new ArrayList<Pair<Action, Long>>() ;
     protected final List<Iterator<?>> activeIterators = new ArrayList<Iterator<?>>() ;
     // ---- State for tracking
     
@@ -85,7 +85,7 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
         this.log = logger ;
     }
 
-    private void add(Action action, Integer id) { actions.add(new Pair<Action, Integer>(action, id)) ; }
+    private void add(Action action, Long id) { actions.add(new Pair<Action, Long>(action, id)) ; }
 
     @Override
     public Block allocate(int blockSize)
@@ -95,7 +95,7 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
         {
             checkUpdate(Alloc) ;
             block = blockMgr.allocate(blockSize) ;
-            Integer id = block.getId() ;
+            Long id = block.getId() ;
             activeWriteBlocks.add(id) ;
             add(Alloc, id) ;
         }
@@ -103,14 +103,14 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
     }
     
     @Override
-    public Block getRead(int id)
+    public Block getRead(long id)
     {
         // What if this is a write block already?
         synchronized (this)
         {
             checkRead(GetRead) ;
-            Integer x = id ;
-            add(GetRead, id) ;
+            Long x = Long.valueOf(id) ;
+            add(GetRead, x) ;
             
             if ( activeWriteBlocks.contains(x))
                 activeWriteBlocks.add(x) ;
@@ -121,12 +121,12 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
     }
     
     @Override
-    public Block getReadIterator(int id)
+    public Block getReadIterator(long id)
     {
         synchronized (this)
         {
             checkReadOrIter(IterRead) ;
-            Integer x = id ;
+            Long x = Long.valueOf(id) ;
             add(IterRead, x) ;
             activeIterBlocks.add(x) ;
         }
@@ -134,12 +134,12 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
     }    
 
     @Override
-    public Block getWrite(int id)
+    public Block getWrite(long id)
     {
         synchronized (this)
         {
             checkUpdate(GetWrite) ;
-            Integer x = id ;
+            Long x = Long.valueOf(id) ;
             add(GetWrite, x) ;
             activeWriteBlocks.add(x) ;
         }
@@ -152,7 +152,7 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
         synchronized (this)
         {
             checkUpdate(Promote) ;
-            Integer id = block.getId() ;
+            Long id = block.getId() ;
             add(Promote, id) ;
 
             if ( ! activeWriteBlocks.contains(id) && ! activeReadBlocks.contains(id) )
@@ -176,7 +176,7 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
         synchronized (this)
         {
             checkReadOrIter(Release) ;
-            Integer id = block.getId() ;
+            Long id = block.getId() ;
             add(Release, id) ;
 
             if ( ! activeReadBlocks.contains(id) && ! activeIterBlocks.contains(id) && ! activeWriteBlocks.contains(id) )
@@ -196,7 +196,7 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
         synchronized (this)
         {
             checkUpdate(Write) ;
-            Integer id = block.getId() ;
+            Long id = block.getId() ;
             add(Write, id) ;
             if ( ! activeWriteBlocks.contains(id) )
                 error(Write, id+ " is not an active write block") ;
@@ -210,7 +210,7 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
         synchronized (this)
         {
             checkUpdate(Free) ;
-            Integer id = block.getId() ;
+            Long id = block.getId() ;
             add(Free, id) ;
             if ( activeReadBlocks.contains(id) )
                 error(Free, id+" is a read block") ;
@@ -373,12 +373,12 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
     }
 
 
-    private void checkEmpty(String string, MultiSet<Integer> blocks)
+    private void checkEmpty(String string, MultiSet<Long> blocks)
     {
         if ( ! blocks.isEmpty() )
         {
             log.error(string) ;
-            for ( Integer id : blocks )
+            for ( Long id : blocks )
                 log.info("    Block: "+id) ;
             history() ;
             throw new TDBException() ;
@@ -406,7 +406,7 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
     private void history()
     {
         log.info("History") ;
-        for ( Pair<Action, Integer> p : actions )
+        for ( Pair<Action, Long> p : actions )
         {
             if ( p.getRight() != NoId )
                 log.info(String.format("    %-12s  %d", p.getLeft(), p.getRight())) ;

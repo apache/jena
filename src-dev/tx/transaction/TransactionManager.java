@@ -196,7 +196,7 @@ public class TransactionManager
     
     static class BlockMgrTxn extends BlockMgrWrapper
     {
-        Map<Integer, Block> blocks = new HashMap<Integer, Block>() ;
+        Map<Long, Block> blocks = new HashMap<Long, Block>() ;
         
         public BlockMgrTxn(BlockMgr blockMgr)
         {
@@ -218,7 +218,7 @@ public class TransactionManager
         }
 
         @Override
-        public Block getRead(int id)
+        public Block getRead(long id)
         {
             // [TxTDB:PATCH-UP]
             // HACK
@@ -234,7 +234,7 @@ public class TransactionManager
         }
 
         @Override
-        public Block getWrite(int id)
+        public Block getWrite(long id)
         {
             // [TxTDB:PATCH-UP]
             // Copies out of the underlying layer always.
@@ -261,7 +261,7 @@ public class TransactionManager
             bb2.position(0) ;
             bb2.limit(bb2.capacity()) ;
             Block block2 = new Block(id, bb2) ;
-            blocks.put(id, block2) ;
+            blocks.put(Long.valueOf(id), block2) ;
             return block2 ;
         }
 

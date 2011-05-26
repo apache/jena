@@ -51,7 +51,7 @@ public abstract class AbstractTestBlockMgr extends BaseTest
         Block block = blockMgr.allocate(BlkSize) ;
         ByteBuffer bb = block.getByteBuffer() ;
         fill(bb, (byte)1) ;
-        int id = block.getId() ;
+        long id = block.getId() ;
         blockMgr.write(block) ;
         blockMgr.release(block) ;
         
@@ -68,7 +68,7 @@ public abstract class AbstractTestBlockMgr extends BaseTest
         Block block = blockMgr.allocate(BlkSize) ;
         ByteBuffer bb = block.getByteBuffer() ;
         fill(bb, (byte)2) ;
-        int id = block.getId() ;
+        long id = block.getId() ;
         blockMgr.write(block) ;
         blockMgr.release(block) ;
 
@@ -84,8 +84,8 @@ public abstract class AbstractTestBlockMgr extends BaseTest
     {
         Block block1 = blockMgr.allocate(BlkSize) ;
         Block block2 = blockMgr.allocate(BlkSize) ;
-        int id1 = block1.getId() ;
-        int id2 = block2.getId() ;
+        long id1 = block1.getId() ;
+        long id2 = block2.getId() ;
         
         ByteBuffer bb1 = block1.getByteBuffer() ;
         ByteBuffer bb2 = block2.getByteBuffer() ;

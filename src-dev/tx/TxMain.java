@@ -20,9 +20,9 @@ import org.openjena.atlas.logging.Log ;
 import org.openjena.atlas.test.Gen ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
-import tx.base.BlockRef ;
 import tx.journal.Journal ;
 import tx.journal.JournalEntry ;
+import tx.journal.JournalEntryType ;
 import tx.transaction.TransactionManager ;
 
 import com.hp.hpl.jena.query.DatasetFactory ;
@@ -34,7 +34,6 @@ import com.hp.hpl.jena.query.Syntax ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.sparql.util.QueryExecUtils ;
-import com.hp.hpl.jena.tdb.base.block.Block ;
 import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory ;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrLogger ;
@@ -92,12 +91,8 @@ public class TxMain
         
         for ( JournalEntry e : journal )
         {
-            BlockRef ref = e.getBlockRef() ;
+            JournalEntryType type = e.getType() ;
             ByteBuffer bb = e.getByteBuffer() ;
-            Block block = new Block(ref.getBlockId(), bb) ;
-            // File BlockMgr ;
-            BlockMgr blockMgr = fromBlockRef(null) ;
-            blockMgr.write(block) ;
         }
     }
     

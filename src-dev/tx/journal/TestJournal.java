@@ -9,16 +9,14 @@ package tx.journal;
 import java.nio.ByteBuffer ;
 import java.util.Iterator ;
 
-import com.hp.hpl.jena.tdb.base.file.BufferChannel ;
-import com.hp.hpl.jena.tdb.base.file.BufferChannelMem ;
-
 import org.junit.Before ;
 import org.junit.Test ;
 import org.openjena.atlas.junit.BaseTest ;
 import org.openjena.atlas.lib.Bytes ;
-import org.openjena.atlas.lib.Lib ;
-import tx.base.BlockRef ;
 import tx.base.FileRef ;
+
+import com.hp.hpl.jena.tdb.base.file.BufferChannel ;
+import com.hp.hpl.jena.tdb.base.file.BufferChannelMem ;
 
 public class TestJournal extends BaseTest
 {
@@ -30,30 +28,32 @@ public class TestJournal extends BaseTest
     // bb1 and bb2 have the same contents and different contents to bb3.
     static ByteBuffer bb1 = ByteBuffer.allocate(4) ;
     static ByteBuffer bb2 = ByteBuffer.allocate(4) ;
-    static ByteBuffer bb3 = ByteBuffer.allocate(4) ;
+    static ByteBuffer bb3 = ByteBuffer.allocate(8) ;
 
-    static FileRef fileref1 = FileRef.create("xyz") ;
-    static FileRef fileref2 = FileRef.create("abc") ;
-
-    
-    static BlockRef blockref1 = BlockRef.create(fileref1, 10) ;
-    static BlockRef blockref2 = BlockRef.create(fileref1, 10) ;
-
-    static BlockRef blockref3 = BlockRef.create(fileref1, 20) ;
-    static BlockRef blockref4 = BlockRef.create(fileref2, 10) ;
-    
-    // [TxTDB:TODO] Use these 
-    static JournalEntry je1 = new JournalEntry(10, blockref1, bb1) ;
-    static JournalEntry je2 = new JournalEntry(10, blockref2, bb2) ;
-    static JournalEntry je3 = new JournalEntry(10, blockref3, bb3) ;
-    static JournalEntry je4 = new JournalEntry(20, blockref1, bb1) ;
-    
     static
     {
-        Bytes.setInt(0xABCD1234, bb1.array()) ;
-        Bytes.setInt(0xABCD1234, bb2.array()) ;
-        Bytes.setInt(0x11111111, bb3.array()) ;
+        Bytes.setInt(0xFFABCD12, bb1.array()) ;
+        Bytes.setInt(0x1234ABCD, bb2.array()) ;
+        Bytes.setLong(0x2222222211111111L, bb3.array()) ;
     }
+
+    
+//    static FileRef fileref1 = FileRef.create("xyz") ;
+//    static FileRef fileref2 = FileRef.create("abc") ;
+//
+//    
+//    static BlockRef blockref1 = BlockRef.create(fileref1, 10) ;
+//    static BlockRef blockref2 = BlockRef.create(fileref1, 10) ;
+//
+//    static BlockRef blockref3 = BlockRef.create(fileref1, 20) ;
+//    static BlockRef blockref4 = BlockRef.create(fileref2, 10) ;
+//    
+//    // [TxTDB:TODO] Use these 
+//    static JournalEntry je1 = new JournalEntry(10, blockref1, bb1) ;
+//    static JournalEntry je2 = new JournalEntry(10, blockref2, bb2) ;
+//    static JournalEntry je3 = new JournalEntry(10, blockref3, bb3) ;
+//    static JournalEntry je4 = new JournalEntry(20, blockref1, bb1) ;
+    
     
     Journal journal ;
     @Before public void before()
@@ -69,7 +69,7 @@ public class TestJournal extends BaseTest
     
     @Test public void journal_02()
     {
-        JournalEntry entry1 = new JournalEntry(99, blockref1, bb1) ;
+        JournalEntry entry1 = new JournalEntry(JournalEntryType.Block, bb1) ;
         long x = journal.writeJournal(entry1) ;
         assertEquals(0, x) ;
         JournalEntry entry9 = journal.readJournal(x) ;
@@ -78,8 +78,8 @@ public class TestJournal extends BaseTest
 
     @Test public void journal_03()
     {
-        JournalEntry entry1 = new JournalEntry(99, blockref1, bb1) ;
-        JournalEntry entry2 = new JournalEntry(13, blockref1, bb2) ;
+        JournalEntry entry1 = new JournalEntry(JournalEntryType.Block, bb1) ;
+        JournalEntry entry2 = new JournalEntry(JournalEntryType.Object, bb1) ;
         
         long x1 = journal.writeJournal(entry1) ;
         long x2 = journal.writeJournal(entry2) ;
@@ -98,8 +98,8 @@ public class TestJournal extends BaseTest
     
     @Test public void journal_04()
     {
-        JournalEntry entry1 = new JournalEntry(99, blockref1, bb1) ;
-        JournalEntry entry2 = new JournalEntry(99, blockref2, bb1) ;
+        JournalEntry entry1 = new JournalEntry(JournalEntryType.Object, bb1) ;
+        JournalEntry entry2 = new JournalEntry(JournalEntryType.Object, bb3) ;
         
         long x1 = journal.writeJournal(entry1) ;
         long x2 = journal.writeJournal(entry2) ;
@@ -114,7 +114,6 @@ public class TestJournal extends BaseTest
     private static boolean equal(JournalEntry entry1, JournalEntry entry2)
     {
         if ( entry1.getType() != entry2.getType()) return false ;
-        if ( ! Lib.equal(entry1.getBlockRef(), entry2.getBlockRef()) ) return false ;
         return sameValue(entry1.getByteBuffer(), entry2.getByteBuffer()) ;
     }
     

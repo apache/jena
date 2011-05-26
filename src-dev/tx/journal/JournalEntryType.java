@@ -4,31 +4,31 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.base.file;
+package tx.journal;
 
-import org.openjena.atlas.lib.Closeable ;
-import org.openjena.atlas.lib.Sync ;
+import org.openjena.atlas.lib.InternalErrorException ;
+import org.openjena.atlas.logging.Log ;
 
-import com.hp.hpl.jena.tdb.base.block.Block ;
-
-/** Interface to concrete storage.
- *  This is wrapped in a BlockMgrAccess to provide a higher level abstraction.
- *  BufferChannels are a separate lower-level, interface to storage.
- *  @see BufferChannel
- */
-public interface BlockAccess extends Sync, Closeable
-{
-    public Block allocate(int size) ;
+public enum JournalEntryType 
+{ 
+    Block(1), Object(2), Commit(3), Checkpoint(4) ;
     
-    public Block read(long id) ;
-    
-    public void write(Block block) ;
-    
-    public boolean isEmpty() ; 
-    
-    public boolean valid(int id) ;
+    final int id ;
+    JournalEntryType(int x) { id = x ; }
+    int getId() { return id ; }
+    static public JournalEntryType type(int x)
+    {
+        if ( x == Block.id )             return Block ;
+        else if ( x == Object.id )       return Object ;
+        else if ( x == Commit.id )       return Commit ;
+        else if ( x == Checkpoint.id )   return Checkpoint ;
+        else
+        {
+            Log.fatal(JournalEntryType.class, "Unknown type: "+x) ;
+            throw new InternalErrorException() ;
+        }
+    }
 }
-
 /*
  * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.

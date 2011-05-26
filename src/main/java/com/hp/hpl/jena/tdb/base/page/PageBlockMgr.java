@@ -75,7 +75,7 @@ public class PageBlockMgr<T extends Page>
     public void write(T page)
     {
         if ( ! page.getBackingBlock().isModified() )
-            warn("Page "+page.getId()+" not modified") ;
+            warn("Page for block "+page.getBackingBlock().getId()+" not modified") ;
         
         Block blk = pageFactory.toBlock(page) ;
         blockMgr.write(blk) ;

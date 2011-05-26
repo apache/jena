@@ -30,10 +30,10 @@ public class BlockMgrJournal implements BlockMgr
     private Transaction transaction ;
     private FileRef fileRef ;
     
-    final private Set<Integer> readBlocks = new HashSet<Integer>() ;
-    final private Set<Integer> iteratorBlocks = new HashSet<Integer>() ;
-    final private Map<Integer, Block> writeBlocks = new HashMap<Integer, Block>() ;
-    final private Map<Integer, Block> freedBlocks = new HashMap<Integer, Block>() ;
+    final private Set<Long> readBlocks = new HashSet<Long>() ;
+    final private Set<Long> iteratorBlocks = new HashSet<Long>() ;
+    final private Map<Long, Block> writeBlocks = new HashMap<Long, Block>() ;
+    final private Map<Long, Block> freedBlocks = new HashMap<Long, Block>() ;
     private boolean closed = false ;
     
     public BlockMgrJournal(Transaction txn, FileRef fileRef, BlockMgr underlyingBlockMgr, Journal journal)
@@ -59,6 +59,9 @@ public class BlockMgrJournal implements BlockMgr
     public Block allocate(int blockSize)
     {
         checkIfClosed() ;
+        
+        // Could allocate ready to go to Journal.
+        // Need to get the id though.
 
         // Might as well allocate now. 
         // This allocates the id.
@@ -71,7 +74,7 @@ public class BlockMgrJournal implements BlockMgr
     }
 
     @Override
-    public Block getRead(int id)
+    public Block getRead(long id)
     {
         checkIfClosed() ;
         Block block = localBlock(id) ;
@@ -84,7 +87,7 @@ public class BlockMgrJournal implements BlockMgr
     }
 
     @Override
-    public Block getReadIterator(int id)
+    public Block getReadIterator(long id)
     {
         checkIfClosed() ;
         Block block = localBlock(id) ;
@@ -97,7 +100,7 @@ public class BlockMgrJournal implements BlockMgr
     }
 
     @Override
-    public Block getWrite(int id)
+    public Block getWrite(long id)
     {
         checkIfClosed() ;
         Block block = localBlock(id) ;
@@ -112,7 +115,7 @@ public class BlockMgrJournal implements BlockMgr
         return block ;
     }
 
-    private Block localBlock(int id)
+    private Block localBlock(long id)
     {
         checkIfClosed() ;
         return writeBlocks.get(id) ;
@@ -139,7 +142,7 @@ public class BlockMgrJournal implements BlockMgr
     public void release(Block block)
     {
         checkIfClosed() ;
-        Integer id = block.getId() ;
+        Long id = block.getId() ;
         if ( readBlocks.contains(id) || iteratorBlocks.contains(id) )
             blockMgr.release(block) ;
     }
@@ -219,7 +222,9 @@ public class BlockMgrJournal implements BlockMgr
 
     private void writeJournalEntry(Block blk)
     {
-        JournalEntry entry = new JournalEntry(fileRef, blk) ;
+        // Space for BlockRef.
+        // [TxTDB:TODO] Space for BlockRef.
+        JournalEntry entry = null ; //new JournalEntry(fileRef, blk) ;
         journal.writeJournal(entry) ;
     }
     

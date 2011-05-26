@@ -120,7 +120,7 @@ public final class BPTreeNode extends BPTreePage
     {
         super(bpTree) ;
         this.block = block ;
-        this.id = block.getId() ;
+        this.id = block.getId().intValue() ;
     }
     
     // [TxTDB:PATCH-UP] REMOVE

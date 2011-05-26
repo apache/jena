@@ -86,7 +86,7 @@ public class RecordBufferPageBase extends PageBase //implements Page
 
     @Override
     public String toString()
-    { return String.format("RecordBufferPageBase[id=%d]: %s", getId(), recBuff) ; }
+    { return String.format("RecordBufferPageBase[id=%d]: %s", getBackingBlock().getId(), recBuff) ; }
 
     @Override
     public void output(IndentedWriter out)

@@ -23,6 +23,15 @@ public interface ObjectFile extends Sync, Closeable
 {
     public static final String type = "object" ;
     
+//  /** Allocate space for a write - pass this block to completeWrite */ 
+//  public Block allocWrite(int maxBytes) ;
+//  
+//  //public Block alloc(int maxBytes) ;
+//  //public void completeWrite(Block block) ;
+//  
+//  /** Announce that a write is complete (buffer must come from allocWrite) - return the accessor number */
+//  public void completeWrite(Block buffer) ;
+
     /** Allocate space for a write - pass this buffer to completeWrite */ 
     public ByteBuffer allocWrite(int maxBytes) ;
     

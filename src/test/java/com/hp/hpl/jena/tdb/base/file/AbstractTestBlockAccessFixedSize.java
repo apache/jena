@@ -64,7 +64,7 @@ public abstract class AbstractTestBlockAccessFixedSize extends BaseTest
         BlockAccess file = make() ;
         Block b1 = data(file, blkSize) ;
         file.write(b1) ;
-        int x = b1.getId() ;
+        long x = b1.getId() ;
         Block b9 = file.read(x) ;
         assertNotSame(b1, b9) ;
         assertTrue(sameValue(b1, b9)) ;
@@ -81,7 +81,7 @@ public abstract class AbstractTestBlockAccessFixedSize extends BaseTest
         file.write(b1) ;
         file.write(b2) ;
         
-        int x = b1.getId() ;
+        long x = b1.getId() ;
         Block b8 = file.read(b1.getId()) ;
         Block b9 = file.read(b1.getId()) ;
         assertNotSame(b8, b9) ;

@@ -19,6 +19,9 @@ import com.hp.hpl.jena.tdb.base.block.Block ;
 
 public class BlockAccessDirect extends BlockAccessBase
 {
+    // Maybe layer BlockAccess on BufferChannel - retrofitting.
+    // but need separate for memory mapped files anyway.
+
     private static Logger log = LoggerFactory.getLogger(BlockAccessDirect.class) ;
     
     public BlockAccessDirect(String filename, int blockSize)
@@ -38,7 +41,7 @@ public class BlockAccessDirect extends BlockAccessBase
     }
     
     @Override
-    public Block read(int id)
+    public Block read(long id)
     {
         check(id) ;
         checkIfClosed() ;
@@ -48,7 +51,7 @@ public class BlockAccessDirect extends BlockAccessBase
         return block ;
     }
     
-    private void readByteBuffer(int id, ByteBuffer dst)
+    private void readByteBuffer(long id, ByteBuffer dst)
     {
         try {
             int len = channel.read(dst, filePosition(id)) ;
@@ -58,9 +61,9 @@ public class BlockAccessDirect extends BlockAccessBase
         { throw new FileException("FileAccessDirect", ex) ; }
     }
     
-    private final long filePosition(int id)
+    private final long filePosition(long id)
     {
-        return ((long)id)*((long)blockSize) ;
+        return id*blockSize ;
     }
 
     @Override

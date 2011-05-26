@@ -6,6 +6,10 @@ public class DevTx
     // BlockMgrJournal
     // FileRefs : builtin names<->numbers
     
+    // BlockMgr: address by long.
+    //   Can we use BlockMgr for ObjectFile?
+    // BlockAccess
+    
     // NodeTable over Journal.
     // One transaction dataset - reuse.  Pool?
     // Record BlockMgrs, BlockMgrTx.reset

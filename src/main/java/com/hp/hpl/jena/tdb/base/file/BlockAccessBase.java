@@ -94,8 +94,11 @@ public abstract class BlockAccessBase implements BlockAccess
     }
 
     final
-    protected void check(int id)
+    protected void check(long id)
     {
+        if ( id > Integer.MAX_VALUE )
+            throw new BlockException(format("BlockAccessBase: Id (%d) too large", id )) ;
+        
         // Access to numFileBlocks not synchronized - it's only a check
         if ( id < 0 || id >= numFileBlocks )
         {
@@ -103,7 +106,7 @@ public abstract class BlockAccessBase implements BlockAccess
             synchronized(this)
             {
                 if ( id < 0 || id >= numFileBlocks )
-                    throw new BlockException(format("BlockMgrFile: Bounds exception: %s: (%d,%d)", filename, id,numFileBlocks)) ;
+                    throw new BlockException(format("BlockAccessBase: Bounds exception: %s: (%d,%d)", filename, id,numFileBlocks)) ;
             }
         }
     }

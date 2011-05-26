@@ -7,18 +7,24 @@
 
 package com.hp.hpl.jena.tdb.base.page;
 
+import com.hp.hpl.jena.tdb.TDBException ;
 import com.hp.hpl.jena.tdb.base.block.Block ;
 
 /** A page with a byte buffer */
 public abstract class PageBase implements Page
 {
-    private int id ;
+    private final int id ;
     private final Block block ;
 
     protected PageBase(Block block)
     {
         this.block = block ;
-        this.id = block.getId() ;
+        long x = block.getId() ;
+        if ( x < 0 )
+            throw new TDBException("Page id is negative: "+x) ;
+        if ( x > Integer.MAX_VALUE )
+            throw new TDBException("Page id is large than MAX_INT: "+x) ;
+        this.id = block.getId().intValue() ;
     }
     
     @Override

@@ -1,28 +1,53 @@
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
  * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.base.page;
+package com.hp.hpl.jena.tdb.base.objectfile;
 
-import org.openjena.atlas.io.Printable ;
+import java.nio.ByteBuffer ;
+import java.util.Iterator ;
 
-import com.hp.hpl.jena.tdb.base.block.Block ;
+import org.openjena.atlas.lib.Pair ;
 
-public interface Page extends Printable
+/** 
+ * An ObjectFile is an append-read file, that is you can append data
+ * to the stream or read any block.
+ */
+
+public class ObjectFileWrapper implements ObjectFile
 {
-    public static final int NO_ID   = -1 ;
+    protected final ObjectFile other ;
+
+    public ObjectFileWrapper(ObjectFile other)      { this.other = other ; }
     
-    public int getId() ;
-    
-    /** Return the block associated with this page */ 
-    public Block getBackingBlock() ;
+    @Override
+    public ByteBuffer allocWrite(int maxBytes)      { return other.allocWrite(maxBytes) ; }
+
+    @Override
+    public long completeWrite(ByteBuffer buffer)    { return other.completeWrite(buffer) ; }
+
+    @Override
+    public long write(ByteBuffer buffer)            { return other.write(buffer) ; }
+
+    @Override
+    public ByteBuffer read(long id)                 { return other.read(id) ; }
+
+    @Override
+    public Iterator<Pair<Long, ByteBuffer>> all()   { return other.all() ; }
+
+    @Override
+    public void sync()                              { other.sync() ; }
+
+    @Override
+    public void close()                             { other.close() ; }
+
+    @Override
+    public long length()                            { return other.length() ; }
 }
 
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
  * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  *

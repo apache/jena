@@ -24,13 +24,13 @@ public interface BlockMgr extends Sync, Closeable /*UnitMgr<Block>*/
     public boolean isEmpty() ; 
     
     /** Fetch a block, use for read only */
-    public Block getRead(int id);
+    public Block getRead(long id);
     
     /** Fetch a block, use for read only in an iterator */
-    public Block getReadIterator(int id);
+    public Block getReadIterator(long id);
 
     /** Fetch a block, use for write and read - only inside "update" */
-    public Block getWrite(int id);
+    public Block getWrite(long id);
 
     /** Release a block, unmodified. */
     public void release(Block block) ;

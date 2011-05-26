@@ -46,21 +46,21 @@ public class BlockMgrLogger implements BlockMgr //extends BlockMgrWrapper
     }
 
     @Override
-    public Block getRead(int id)
+    public Block getRead(long id)
     {
         log.info("getRead("+id+")") ;
         return blockMgr.getRead(id) ;
     }
 
     @Override
-    public Block getReadIterator(int id)
+    public Block getReadIterator(long id)
     {
         log.info("getReadIterator("+id+")") ;
         return blockMgr.getReadIterator(id) ;
     }
     
     @Override
-    public Block getWrite(int id)
+    public Block getWrite(long id)
     {
         log.info("getWrite("+id+")") ;
         return blockMgr.getWrite(id) ;

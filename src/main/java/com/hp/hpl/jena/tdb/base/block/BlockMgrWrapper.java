@@ -26,20 +26,20 @@ public class BlockMgrWrapper implements BlockMgr
     }
 
     @Override
-    public Block getRead(int id)
+    public Block getRead(long id)
     {
         return blockMgr.getRead(id) ;
     }
 
     @Override
-    public Block getReadIterator(int id)
+    public Block getReadIterator(long id)
     {
         return blockMgr.getReadIterator(id) ;
     }
 
 
     @Override
-    public Block getWrite(int id)
+    public Block getWrite(long id)
     {
         return blockMgr.getWrite(id) ;
     }

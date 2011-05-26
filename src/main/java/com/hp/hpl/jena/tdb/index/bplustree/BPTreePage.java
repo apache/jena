@@ -29,6 +29,9 @@ abstract public class BPTreePage implements Page
     public final BPlusTree getBPlusTree()       { return bpTree ; } 
     public final BPlusTreeParams getParams()    { return params ; }
     
+//    /** Return the page number */
+//    abstract int getId() ;
+    
     /** Split in two, return the new (upper) page.  
      *  Split key is highest key of the old (lower) page.
      *  Does NOT put pages back to any underlying block manager

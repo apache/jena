@@ -24,10 +24,10 @@ public class BlockMgrCache extends BlockMgrSync
     
     private static Logger log = LoggerFactory.getLogger(BlockMgrCache.class) ;
     // Read cache : always present.
-    private final Cache<Integer, Block> readCache ;
+    private final Cache<Long, Block> readCache ;
 
     // Delayed dirty writes.  May be present, may not.
-    private final Cache<Integer, Block> writeCache ;
+    private final Cache<Long, Block> writeCache ;
     
     public static boolean globalLogging = false ;           // Also enable the logging level. 
     private boolean logging = false ;                       // Also enable the logging level. 
@@ -49,9 +49,9 @@ public class BlockMgrCache extends BlockMgrSync
         else
         {
             writeCache = CacheFactory.createCache(writeSlots) ;
-            writeCache.setDropHandler(new ActionKeyValue<Integer, Block>(){
+            writeCache.setDropHandler(new ActionKeyValue<Long, Block>(){
                 @Override
-                public void apply(Integer id, Block block)
+                public void apply(Long id, Block block)
                 { 
                     // We're inside a synchronized operation at this point.
                     log("Cache spill: write block: %d", id) ;
@@ -77,9 +77,8 @@ public class BlockMgrCache extends BlockMgrSync
     
     @Override
     synchronized
-    public Block getRead(int _id)
+    public Block getRead(long id)
     {
-        Integer id = _id ;
         // A Block may be in the read cache or the write cache.
         // It can be just in the write cache because the read cache is finite.
         Block blk = readCache.get(id) ;
@@ -113,9 +112,9 @@ public class BlockMgrCache extends BlockMgrSync
 
     @Override
     synchronized
-    public Block getWrite(int _id)
+    public Block getWrite(long _id)
     {
-        Integer id = _id ;
+        Long id = Long.valueOf(_id) ;
         Block blk = null ;
         if ( writeCache != null )
             blk = writeCache.get(id) ;
@@ -150,7 +149,7 @@ public class BlockMgrCache extends BlockMgrSync
     synchronized
     public Block promote(Block block)
     {
-        Integer id = block.getId() ;
+        Long id = block.getId() ;
         readCache.remove(id) ;
         Block block2 = super.promote(block) ;
         writeCache.put(id, block2) ;
@@ -161,7 +160,7 @@ public class BlockMgrCache extends BlockMgrSync
     synchronized
     public void write(Block block)
     {
-        Integer id = block.getId() ;
+        Long id = block.getId() ;
         log("Put   : %d", id) ;
         // Should not be in the read cache due to a getWrite earlier.
         if ( readCache.containsKey(id) )
@@ -178,7 +177,7 @@ public class BlockMgrCache extends BlockMgrSync
     synchronized
     public void free(Block block)
     {
-        Integer id = block.getId() ;
+        Long id = block.getId() ;
         log("Free  : %d", id) ;
         if ( readCache.containsKey(id) )
         {
@@ -242,12 +241,12 @@ public class BlockMgrCache extends BlockMgrSync
         log("Flush (write cache)") ;
 
         long N = writeCache.size() ;
-        Integer[] ids = new Integer[(int)N] ;
+        Long[] ids = new Long[(int)N] ;
 
         // Single writer (sync is a write operation MRSW)
         // Iterating is safe.
 
-        Iterator<Integer> iter = writeCache.keys() ;
+        Iterator<Long> iter = writeCache.keys() ;
         if ( iter.hasNext() )
             didSync = true ;
 
@@ -257,7 +256,7 @@ public class BlockMgrCache extends BlockMgrSync
 
         for ( int i = 0 ; i < N ; i++ )
         {
-            Integer id = ids[i] ;
+            Long id = ids[i] ;
             expelEntry(id) ;
         }
         return didSync ;
@@ -265,7 +264,7 @@ public class BlockMgrCache extends BlockMgrSync
     
     // Write out when flushed.
     // Do not call from drop handler.
-    private void expelEntry(Integer id)
+    private void expelEntry(Long id)
     {
         Block block = writeCache.get(id) ;
         if ( block == null )

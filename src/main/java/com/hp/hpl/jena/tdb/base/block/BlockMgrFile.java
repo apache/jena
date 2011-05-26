@@ -101,7 +101,7 @@ public abstract class BlockMgrFile extends BlockMgrBase
     }
 
     final
-    protected void check(int id)
+    protected void check(Long id)
     {
         // Access to numFileBlocks not synchronized - it's only a check
         if ( id < 0 || id >= numFileBlocks )

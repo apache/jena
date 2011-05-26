@@ -59,7 +59,7 @@ public final class RecordBufferPage extends RecordBufferPageBase
     
     @Override
     public String toString()
-    { return String.format("RecordBufferPage[id=%d,link=%d]: %s", getId(), getLink(), recBuff) ; }
+    { return String.format("RecordBufferPage[id=%d,link=%d]: %s", getBackingBlock().getId(), getLink(), recBuff) ; }
 
 }
 /*

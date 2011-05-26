@@ -52,7 +52,10 @@ public class BufferChannelMem implements BufferChannel
             len = bytes.remaining() ;
         // Copy out, moving the position of the bytes of stroage. 
         for (int i = 0; i < len; i++)
-            buffer.put(bytes.get());
+        {
+            byte b = bytes.get() ;
+            buffer.put(b);
+        }
         return len ;
     }
     

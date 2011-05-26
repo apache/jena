@@ -14,7 +14,13 @@ import com.hp.hpl.jena.tdb.base.page.Page ;
 
 public final class Block
 {
-    private final Integer id ;          // Keep as object.  It's the cache key.
+    // While the general mechanisms support long block id,
+    // some uses make restrictions.
+    // BlockMgrs:
+    //   Blocks for indexes (B+Trees) are addressed by int - one int is 2G of 8K units = 16T
+    // Blocks for objects are addressed by long - this is file offset so 2G is not enough. 
+    
+    private final Long id ;          // Keep as object.  It's the cache key.
     private final boolean readOnly ;
     private final BlockRef blockRef ;
     private boolean modified = false ;
@@ -22,8 +28,14 @@ public final class Block
     private final ByteBuffer byteBuffer ;
 //    private BlockType type ;
 
-    public Block(int id, ByteBuffer byteBuffer)
-    { 
+    public Block(long id, ByteBuffer byteBuffer)
+    {
+        this(Long.valueOf(id), byteBuffer) ; 
+    }
+    
+    
+    public Block(Long id, ByteBuffer byteBuffer)
+    {
         // ByteBuffer is whole disk space from byte 0 for this disk unit. 
         this.id = id ; 
         this.byteBuffer = byteBuffer ;
@@ -42,11 +54,7 @@ public final class Block
     }
         
     
-    public final Integer getId()
-    {
-        return id ;
-    }
-    
+    public final Long getId()   { return id ; }
     
     public final ByteBuffer getByteBuffer()
     {

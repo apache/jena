@@ -55,10 +55,10 @@ public class BlockAccessMem implements BlockAccess
     }
 
     @Override
-    public Block read(int id)
+    public Block read(long id)
     {
         check(id) ;
-        Block blk = blocks.get(id) ;
+        Block blk = blocks.get((int)id) ;
         if ( safeModeThisMgr ) 
             return blk.replicate() ;
         else
@@ -71,7 +71,8 @@ public class BlockAccessMem implements BlockAccess
         check(block) ;
         if ( safeModeThisMgr )
             block = block.replicate() ;
-        blocks.set(block.getId(), block) ;
+        // Memory isn't scaling to multi gigabytes.
+        blocks.set(block.getId().intValue(), block) ;
     }
     
     @Override
@@ -103,11 +104,13 @@ public class BlockAccessMem implements BlockAccess
         check(block.getByteBuffer()) ;
     }
 
-    private void check(int id)
+    private void check(long id)
     {
+        if ( id > Integer.MAX_VALUE )
+            throw new FileException("BlockAccessMem: Bounds exception (id large than an int): "+id) ;
         if ( !Checking ) return ;
         if ( id < 0 || id >= blocks.size() )
-            throw new FileException("FileAccessMem: Bounds exception: "+id) ;
+            throw new FileException("BlockAccessMem: Bounds exception: "+id) ;
     }
 
     private void check(ByteBuffer bb)

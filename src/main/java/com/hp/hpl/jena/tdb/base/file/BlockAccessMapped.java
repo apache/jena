@@ -76,7 +76,7 @@ public class BlockAccessMapped extends BlockAccessBase
     }
     
     @Override
-    public Block read(int id)
+    public Block read(long id)
     {
         check(id) ;
         checkIfClosed() ;
@@ -91,8 +91,8 @@ public class BlockAccessMapped extends BlockAccessBase
     {
         check(block) ;
         checkIfClosed() ;
-        int id = block.getId() ;
-        // Assumed MRSW - no need to sync as we are the only W
+        int id = block.getId().intValue() ; // check() ensures it's an int.
+        // Assumed MRSW - no need to sync as we are the only Writer
         segmentDirty[segment(id)] = true ;
         // No other work.
         writeNotification(block) ;
@@ -107,8 +107,12 @@ public class BlockAccessMapped extends BlockAccessBase
     }
 
 
-    private ByteBuffer getByteBuffer(int id)
+    private ByteBuffer getByteBuffer(long _id)
     {
+        // Limitation: ids must be integers.
+        // ids are used to index into []-arrays.
+        int id = (int)_id ;
+        
         int seg = segment(id) ;                 // Segment.
         int segOff = byteOffset(id) ;           // Byte offset in segment
 
