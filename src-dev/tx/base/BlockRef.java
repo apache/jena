@@ -10,17 +10,17 @@ final
 public class BlockRef
 {
     private final FileRef file ;
-    private final int blockId ;
+    private final long blockId ;
     
-    static public BlockRef create(FileRef file, int blockId)    { return new BlockRef(file, blockId) ; }
+    static public BlockRef create(FileRef file, long blockId)    { return new BlockRef(file, blockId) ; }
     //static public BlockRef create(String file, Integer blockId)     { return new BlockRef(file, blockId) ; }
 
-    private BlockRef(String file, int blockId)
+    private BlockRef(String file, long blockId)
     {
         this(FileRef.create(file), blockId) ;
     }
     
-    private BlockRef(FileRef file, int blockId)
+    private BlockRef(FileRef file, long blockId)
     {
         this.file = file ;
         this.blockId = blockId ;
@@ -30,14 +30,14 @@ public class BlockRef
 
     public int getFileId()          { return getFile().getId() ; }
 
-    public int getBlockId()         { return blockId ; }
+    public long getBlockId()         { return blockId ; }
 
     @Override
     public int hashCode()
     {
         final int prime = 31 ;
         int result = 1 ;
-        result = prime * result + blockId ;
+        result = prime * result + (int)(blockId ^ (blockId >>> 32)) ;
         result = prime * result + ((file == null) ? 0 : file.hashCode()) ;
         return result ;
     }
