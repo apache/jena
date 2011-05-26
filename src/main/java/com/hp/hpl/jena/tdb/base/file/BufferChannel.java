@@ -20,7 +20,6 @@ public interface BufferChannel extends Sync, Closeable
 {
     // This is a simple, low level "file = array of bytes" interface"
     // This interface does not support slicing - so it's not suitable for memory mapped I/O
-    // but it is suitable for compression.
     
     /** return the position */
     public long position() ;
