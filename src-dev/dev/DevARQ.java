@@ -7,6 +7,7 @@ public class DevARQ
     //   Everything else.
     
     // Rework documentation - extensions are now SPARQL 1.1-isms
+    // Update library function page
     
     // Config assembler.
     //   [ arq:queryTimeout "123" ] 
