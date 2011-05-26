@@ -9,6 +9,8 @@ package com.hp.hpl.jena.tdb.base.objectfile;
 import java.nio.ByteBuffer ;
 import java.util.Iterator ;
 
+import com.hp.hpl.jena.tdb.base.block.Block ;
+
 import org.openjena.atlas.lib.Pair ;
 
 /** 
@@ -23,10 +25,10 @@ public class ObjectFileWrapper implements ObjectFile
     public ObjectFileWrapper(ObjectFile other)      { this.other = other ; }
     
     @Override
-    public ByteBuffer allocWrite(int maxBytes)      { return other.allocWrite(maxBytes) ; }
+    public Block allocWrite(int maxBytes)           { return other.allocWrite(maxBytes) ; }
 
     @Override
-    public long completeWrite(ByteBuffer buffer)    { return other.completeWrite(buffer) ; }
+    public void completeWrite(Block buffer)         { other.completeWrite(buffer) ; }
 
     @Override
     public long write(ByteBuffer buffer)            { return other.write(buffer) ; }

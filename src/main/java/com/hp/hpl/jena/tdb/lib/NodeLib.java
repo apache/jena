@@ -24,8 +24,8 @@ import org.openjena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.tdb.TDBException ;
+import com.hp.hpl.jena.tdb.base.block.Block ;
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile ;
-import com.hp.hpl.jena.tdb.base.objectfile.StringFile ;
 import com.hp.hpl.jena.tdb.base.record.Record ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
 import com.hp.hpl.jena.tdb.nodetable.Nodec ;
@@ -42,16 +42,6 @@ public class NodeLib
     final private static char MarkerChar = '_' ;
     final private static char[] invalidIRIChars = { MarkerChar , ' ' } ; 
     
-    public static long encodeStore(Node node, StringFile file)
-    {
-        return encodeStore(node, file.getByteBufferFile()) ;
-    }
-
-    public static Node fetchDecode(long id, StringFile file)
-    {
-        return fetchDecode(id, file.getByteBufferFile()) ;
-    }
-
     public static long encodeStore(Node node, ObjectFile file)
     {
         // Buffer pool?
@@ -59,10 +49,10 @@ public class NodeLib
         // Nodes can be writtern during reads.
         // Make sure this operation is sync'ed. 
         int maxSize = nodec.maxSize(node) ;
-        ByteBuffer bb = file.allocWrite(maxSize) ;
-        int len = nodec.encode(node, bb, null) ;
-        long x = file.completeWrite(bb) ;
-        return x ;
+        Block block = file.allocWrite(maxSize) ;
+        int len = nodec.encode(node, block.getByteBuffer(), null) ;
+        file.completeWrite(block) ;
+        return block.getId() ;
     }
     
     public static Node fetchDecode(long id, ObjectFile file)

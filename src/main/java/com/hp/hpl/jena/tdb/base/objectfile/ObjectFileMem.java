@@ -11,6 +11,9 @@ import java.util.ArrayList ;
 import java.util.Iterator ;
 import java.util.List ;
 
+import com.hp.hpl.jena.tdb.base.StorageException ;
+import com.hp.hpl.jena.tdb.base.block.Block ;
+
 import org.openjena.atlas.iterator.Iter ;
 import org.openjena.atlas.iterator.IteratorInteger ;
 import org.openjena.atlas.iterator.Transform ;
@@ -63,21 +66,36 @@ public class ObjectFileMem implements ObjectFile
     {
         if ( closed )
             throw new IllegalStateException("Closed") ;
+        int id = buffers.size() ;
+        buffers.add(null) ;
+        write(id, bb) ;
+        return id ; 
+    }
+
+    private void write(long id, ByteBuffer bb)
+    {
+        if ( closed )
+            throw new IllegalStateException("Closed") ;
         ByteBuffer bb2 = ByteBufferLib.duplicate(bb) ;
-        buffers.add(bb2) ;
-        return buffers.size()-1 ; 
+        buffers.set((int)id, bb2) ;
+    }
+    
+    
+    @Override
+    public Block allocWrite(int maxBytes)
+    {
+        long id = buffers.size() ;
+        buffers.add(null) ;
+        return new Block(id, ByteBuffer.allocate(maxBytes)) ;
     }
 
     @Override
-    public ByteBuffer allocWrite(int maxBytes)
+    public void completeWrite(Block block)
     {
-        return ByteBuffer.allocate(maxBytes) ;
-    }
-
-    @Override
-    public long completeWrite(ByteBuffer buffer)
-    {
-        return write(buffer) ;
+        if ( block.getId() != buffers.size() )
+            throw new StorageException() ;
+        
+        write(block.getId(), block.getByteBuffer()) ;
     }
 
     @Override

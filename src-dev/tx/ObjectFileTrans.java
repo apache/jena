@@ -11,8 +11,8 @@ import java.util.Iterator ;
 
 import org.openjena.atlas.lib.Pair ;
 import tx.journal.Journal ;
-import tx.journal.JournalEntryType ;
 
+import com.hp.hpl.jena.tdb.base.block.Block ;
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile ;
 
 public class ObjectFileTrans implements ObjectFile
@@ -39,16 +39,16 @@ public class ObjectFileTrans implements ObjectFile
     {}
 
     @Override
-    public ByteBuffer allocWrite(int maxBytes)
+    public Block allocWrite(int maxBytes)
     {
-        return ByteBuffer.allocate(maxBytes) ;
+        ByteBuffer bb = ByteBuffer.allocate(maxBytes) ;
+        // Allocation in ObjectFile.other?
+        return null ;
     }
 
     @Override
-    public long completeWrite(ByteBuffer buffer)
+    public void completeWrite(Block buffer)
     {
-        // Ah.  This is not the id!
-        return journal.writeJournal(JournalEntryType.Object, buffer) ;
     }
 
     @Override

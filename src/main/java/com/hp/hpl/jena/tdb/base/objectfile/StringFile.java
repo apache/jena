@@ -13,6 +13,7 @@ import org.openjena.atlas.lib.Closeable ;
 import org.openjena.atlas.lib.Sync ;
 
 
+import com.hp.hpl.jena.tdb.base.block.Block ;
 import com.hp.hpl.jena.tdb.lib.StringAbbrev ;
 
 /** Wrap a {@link ObjectFile} with a string encoder/decoder.  
@@ -36,16 +37,10 @@ public class StringFile implements Sync, Closeable
     public long write(String str)
     { 
         str = compress(str) ;
-        ByteBuffer bb = file.allocWrite(4*str.length()) ;
-        int len = Bytes.toByteBuffer(str, bb) ;
-        bb.flip() ;
-        return file.completeWrite(bb) ;
-        
-        
-//        ByteBuffer bb = ByteBuffer.allocate(4*str.length()) ;   // Worst case
-//        int len = Bytes.toByteBuffer(str, bb) ;
-//        bb.flip() ;
-//        return file.write(bb) ;
+        Block block = file.allocWrite(4*str.length()) ;
+        int len = Bytes.toByteBuffer(str, block.getByteBuffer()) ;
+        file.completeWrite(block) ;
+        return block.getId() ;
     }
     
     public String read(long id)

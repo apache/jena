@@ -9,6 +9,8 @@ package com.hp.hpl.jena.tdb.base.objectfile;
 import java.nio.ByteBuffer ;
 import java.util.Iterator ;
 
+import com.hp.hpl.jena.tdb.base.block.Block ;
+
 import org.openjena.atlas.lib.Pair ;
 
 
@@ -40,15 +42,15 @@ public class ObjectFileSink implements ObjectFile
     }
 
     @Override
-    public ByteBuffer allocWrite(int maxBytes)
+    public Block allocWrite(int maxBytes)
     {
-        return ByteBuffer.allocate(maxBytes) ;
+        return new Block(id+1, ByteBuffer.allocate(maxBytes)) ;
     }
 
     @Override
-    public long completeWrite(ByteBuffer buffer)
+    public void completeWrite(Block buffer)
     {
-        return write(buffer) ;
+        write(buffer.getByteBuffer()) ;
     }
 
     @Override
