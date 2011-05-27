@@ -92,9 +92,8 @@ public class ObjectFileMem implements ObjectFile
     @Override
     public void completeWrite(Block block)
     {
-        if ( block.getId() != buffers.size() )
+        if ( block.getId() != buffers.size()-1 )
             throw new StorageException() ;
-        
         write(block.getId(), block.getByteBuffer()) ;
     }
 

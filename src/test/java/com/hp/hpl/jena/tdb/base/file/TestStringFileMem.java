@@ -1,5 +1,4 @@
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
  * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
@@ -7,28 +6,25 @@
 
 package com.hp.hpl.jena.tdb.base.file;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import com.hp.hpl.jena.tdb.base.objectfile.StringFile ;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-    TestMetaFile.class
-    , TestChannelMem.class
-    , TestChannelFile.class
-    , TestStringFileMem.class 
-    , TestStringFileDisk.class 
-    , TestBlockAccessMem.class
-    , TestBlockAccessByteArray.class
-    , TestBlockAccessDirect.class
-    , TestBlockAccessMapped.class
-})
+public class TestStringFileMem extends AbstractTestStringFile
+{
+    
+    @Override
+    protected StringFile createStringFile()
+    {
+        return FileFactory.createStringFileMem() ;
+    }
 
-
-public class TS_File
-{}
+    @Override
+    protected void removeStringFile(StringFile f)
+    {
+        f.close() ;
+    }
+}
 
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
  * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  *

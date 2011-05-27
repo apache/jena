@@ -96,7 +96,8 @@ public final class Block
     @Override
     public String toString()
     {
-        return "Block: "+id+" : Length: "+byteBuffer.capacity() ;
+        ByteBuffer bb = getByteBuffer() ;
+        return String.format("Block: %d  : (posn=%d, limit=%d, cap=%d)", id, bb.position(), bb.limit(), bb.capacity()) ;
     }
     
     public Block replicate()

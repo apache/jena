@@ -7,25 +7,34 @@
 
 package com.hp.hpl.jena.tdb.base.file;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import static org.openjena.atlas.lib.FileOps.clearDirectory ;
+import org.openjena.atlas.lib.FileOps ;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-    TestMetaFile.class
-    , TestChannelMem.class
-    , TestChannelFile.class
-    , TestStringFileMem.class 
-    , TestStringFileDisk.class 
-    , TestBlockAccessMem.class
-    , TestBlockAccessByteArray.class
-    , TestBlockAccessDirect.class
-    , TestBlockAccessMapped.class
-})
+import com.hp.hpl.jena.tdb.ConfigTest ;
+import com.hp.hpl.jena.tdb.base.objectfile.StringFile ;
 
+public class TestStringFileDisk extends AbstractTestStringFile
+{
+    String fn = null ;
+    
+    @Override
+    protected StringFile createStringFile()
+    {
+        String dir = ConfigTest.getTestingDir() ;
+      clearDirectory(dir) ;
+      Location loc = new Location(dir) ;
+      fn = loc.getPath("xyz", "node") ;
+      FileOps.delete(fn) ;
+      return FileFactory.createStringFileDisk(fn) ;
+    }
 
-public class TS_File
-{}
+    @Override
+    protected void removeStringFile(StringFile f)
+    {
+        f.close() ;
+        FileOps.delete(fn) ;
+    }
+}
 
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP

@@ -6,52 +6,76 @@
 
 package com.hp.hpl.jena.tdb.base.file;
 
-import static org.openjena.atlas.lib.FileOps.clearDirectory ;
 import org.junit.After ;
 import org.junit.Before ;
-import org.junit.Test;
+import org.junit.Test ;
 import org.openjena.atlas.junit.BaseTest ;
 
-import com.hp.hpl.jena.tdb.ConfigTest;
-import com.hp.hpl.jena.tdb.base.objectfile.StringFile;
+import com.hp.hpl.jena.tdb.base.objectfile.StringFile ;
 
-public class TestStringFile extends BaseTest
+public abstract class AbstractTestStringFile extends BaseTest
 {
     StringFile f = null ;
-    @Before public void setup()
+    
+    @Before public void setup() { f = createStringFile() ; }
+    @After public void teardown() { removeStringFile(f) ; }
+    
+    protected abstract StringFile createStringFile() ;
+    protected abstract void removeStringFile(StringFile f) ;
+
+    @Test public void object_file_01()
     {
-        String dir = ConfigTest.getTestingDir() ;
-        clearDirectory(dir) ;
-        Location loc = new Location(dir) ;
-        f = FileFactory.createStringFileDisk(loc.getPath("xyz", "node")) ;
+        String x1 = "abc" ;
+        long id1 = f.write(x1) ;
+        test(id1, x1) ;
+        test(0, x1) ;
     }
-    
-    @After public void teardown() { f.close() ; f = null ; }
-    
-    @Test public void object_file_1()
+
+    @Test public void object_file_02()
+    {
+        String x1 = "" ;
+        
+        long id1 = f.write(x1) ;
+        test(id1, x1) ;
+        test(0, x1) ;
+    }
+
+    @Test public void object_file_03()
     {
         String x1 = "abbbbbbc" ;
-        String x2 = "孫子兵法" ;
+        String x2 = "deeeef" ;
         
         long id1 = f.write(x1) ;
         long id2 = f.write(x2) ;
         
         assertNotEquals("Node Ids", id1, id2) ;
         
-        test(id2, x2) ;
         test(id1, x1) ;
+        test(id2, x2) ;
         test(0, x1) ;
-//        String y2 = f.read(id2) ;
-//        assertEquals("x2",x2, y2) ;
-//
-//        String y1 = f.read(id1) ;
-//        assertEquals("x1", x1, y1) ;
-//        
-//        String y1a = f.read(0) ;
-//        assertEquals("x1a", x1, y1) ;
     }
     
-    @Test public void object_file_2()
+    @Test public void object_file_04()
+    {
+        String x1 = "abbbbbbc" ;
+        String x2 = "deeeef" ;
+        
+        long id1 = f.write(x1) ;
+        long id2 = f.write(x2) ;
+        // Read in opposite order
+        test(id2, x2) ;
+        test(id1, x1) ;
+    }
+
+    @Test public void object_file_05()
+    {
+        String x = "孫子兵法" ;
+        
+        long id = f.write(x) ;
+        test(0, x) ;
+    }
+    
+    @Test public void object_file_06()
     {
         String x1 = "abbbbbbc" ;
         String x2 = "孫子兵法" ;
@@ -70,7 +94,7 @@ public class TestStringFile extends BaseTest
         test(0, x1) ;
     }
     
-    @Test public void object_file_3()
+    @Test public void object_file_07()
     {
         String x1 = "abbbbbbc" ;
         String x2 = "孫子兵法" ;
@@ -86,7 +110,7 @@ public class TestStringFile extends BaseTest
         test(0, x1) ;
     }
 
-    @Test public void object_file_4()
+    @Test public void object_file_08()
     {
         String x1 = "abbbbbbc" ;
         String x2 = "孫子兵法" ;

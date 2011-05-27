@@ -39,6 +39,7 @@ public class StringFile implements Sync, Closeable
         str = compress(str) ;
         Block block = file.allocWrite(4*str.length()) ;
         int len = Bytes.toByteBuffer(str, block.getByteBuffer()) ;
+        block.getByteBuffer().flip() ;
         file.completeWrite(block) ;
         return block.getId() ;
     }
