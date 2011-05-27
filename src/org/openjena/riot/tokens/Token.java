@@ -62,13 +62,13 @@ public final class Token
     public final int getCntrlCode()  { return cntrlCode ; }
     public final Token getSubToken() { return subToken ; }
     
-    public final Token setType(TokenType tokenType)    { this.tokenType = tokenType ; return this ; }
-    public final Token setImage(String tokenImage)     { this.tokenImage = tokenImage ; return this ; }
-    public final Token setImage(char tokenImage)     { this.tokenImage = String.valueOf(tokenImage) ; return this ; }
+    public final Token setType(TokenType tokenType)     { this.tokenType = tokenType ; return this ; }
+    public final Token setImage(String tokenImage)      { this.tokenImage = tokenImage ; return this ; }
+    public final Token setImage(char tokenImage)        { this.tokenImage = String.valueOf(tokenImage) ; return this ; }
     //public final Token setImage1(String tokenImage1)   { this.tokenImage1 = tokenImage1 ; return this ; }
-    public final Token setImage2(String tokenImage2)   { this.tokenImage2 = tokenImage2 ; return this ; }
-    public final Token setCntrlCode(int cntrlCode)     { this.cntrlCode = cntrlCode ; return this ; }
-    public final Token setSubToken(Token subToken)     { this.subToken = subToken ; return this ; }
+    public final Token setImage2(String tokenImage2)    { this.tokenImage2 = tokenImage2 ; return this ; }
+    public final Token setCntrlCode(int cntrlCode)      { this.cntrlCode = cntrlCode ; return this ; }
+    public final Token setSubToken(Token subToken)      { this.subToken = subToken ; return this ; }
     
     static Token create(String s)
     {
