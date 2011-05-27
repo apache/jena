@@ -10,6 +10,8 @@ public class DevTx
     // Delete.
     
     // NodeTable over Journal.
+    //   NodeTable to have "do everything except write" operation. 
+    
     // One transaction dataset - reuse.  Pool?
     // Record BlockMgrs, BlockMgrTx.reset
     
