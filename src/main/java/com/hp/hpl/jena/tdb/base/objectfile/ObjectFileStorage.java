@@ -124,7 +124,7 @@ public class ObjectFileStorage implements ObjectFile
         // Slice it.
         writeBuffer.position(start + SizeOfInt) ;
         writeBuffer.limit(start+spaceRequired) ;
-        ByteBuffer bb = writeBuffer.slice() ; 
+        ByteBuffer bb = writeBuffer.slice() ;
 
         allocBlock = new Block(allocLocation, bb) ;
         return allocBlock ;

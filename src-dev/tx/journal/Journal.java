@@ -24,7 +24,6 @@ class Journal implements Iterable<JournalEntry>
 {
     // Version 1 : issue might be excessive copying
     // [TxTDB:TODO] Caching
-    // [TxTDB:TODO] Assumes we're writing blocks (fileId, blockId)
     
     // Why synchronized?
     // Object handling - avoid length twice. 
@@ -55,16 +54,15 @@ class Journal implements Iterable<JournalEntry>
     public long writeJournal(JournalEntryType type, ByteBuffer buffer)
     {
         long posn = position ;
-        // (type, length), bytes [0,limit())
         // [TxDEV:TODO] CRC
 
-        buffer.rewind() ;
-        int len = buffer.limit() ;
+        // ?? buffer.position(0) ;
+        int len = buffer.remaining() ; 
         
         header.clear() ;
         header.putInt(type.id) ;
         header.putInt(len) ;
-        header.rewind() ;
+        header.flip() ;
         
 //        switch (type)
 //        {

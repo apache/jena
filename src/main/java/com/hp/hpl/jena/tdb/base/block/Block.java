@@ -21,29 +21,33 @@ public final class Block
     // Blocks for objects are addressed by long - this is file offset so 2G is not enough. 
     
     private final Long id ;          // Keep as object.  It's the cache key.
-    private final boolean readOnly ;
-    private final BlockRef blockRef ;
+    private BlockRef blockRef ;
+    
+
+    // Information carrying these are not enforced. 
+    private boolean readOnly = false ;
     private boolean modified = false ;
     
     private final ByteBuffer byteBuffer ;
-//    private BlockType type ;
+    // If the byteBuffer is, say, a slice of another one,
+    // this can be used to carry a ref to the real ByteBuffer.  
+    private ByteBuffer underlyingByteBuffer ;
 
     public Block(long id, ByteBuffer byteBuffer)
     {
         this(Long.valueOf(id), byteBuffer) ; 
     }
     
-    
     public Block(Long id, ByteBuffer byteBuffer)
     {
         // ByteBuffer is whole disk space from byte 0 for this disk unit. 
         this.id = id ; 
         this.byteBuffer = byteBuffer ;
-        //this.type = BlockType.UNDEF ;
         this.blockRef = null ;
+        
         this.readOnly = false ;
-        // Initially a block is not modified.
         this.modified = false ;
+        this.underlyingByteBuffer = null ;
     }
     
     
@@ -61,15 +65,15 @@ public final class Block
         return byteBuffer ;
     }
  
-    public boolean isReadOnly()
+    public boolean isReadOnly()     { return readOnly ; }
+    public void setReadOnly(boolean readonly)
     {
-        return readOnly ;
+        if ( readonly && modified )
+            throw new BlockException("Attempt to mark a modified block as read-only") ;
+        this.readOnly = readonly ;
     }
-
-    public boolean isModified()
-    {
-        return modified ;
-    }
+    
+    public boolean isModified()     { return modified ; }
 
     public void setModified(boolean modified)
     {
@@ -78,20 +82,14 @@ public final class Block
         this.modified = modified ;
     }
 
-    public BlockRef getFileRef()
-    {
-        return blockRef ;
-    }
+    public BlockRef getBlockRef()   { return blockRef ; }
 
-//    public void setType(BlockType blockType) 
-//    {
-//        type = blockType ;
-//    }
-//        
-//    public BlockType getType()
-//    {
-//        return type ;
-//    }
+    public ByteBuffer getUnderlyingByteBuffer()
+    { return underlyingByteBuffer ; }
+
+
+    public void setUnderlyingByteBuffer(ByteBuffer underlyingByteBuffer)
+    { this.underlyingByteBuffer = underlyingByteBuffer ; }
     
     @Override
     public String toString()
@@ -100,10 +98,14 @@ public final class Block
         return String.format("Block: %d  : (posn=%d, limit=%d, cap=%d)", id, bb.position(), bb.limit(), bb.capacity()) ;
     }
     
+    /** Deep copy, including ByteBuffer contents. */
     public Block replicate()
     {
         ByteBuffer dstBuffer = replicate(getByteBuffer()) ;
         Block b = new Block(getId(), dstBuffer) ;
+        b.modified = modified ;
+        b.readOnly = readOnly ;
+        b.blockRef = null ;
         return b ;
     }  
 
