@@ -80,13 +80,16 @@ public class ObjectFileMem implements ObjectFile
         buffers.set((int)id, bb2) ;
     }
     
+    private Block allocBlock = null ;
     
     @Override
     public Block allocWrite(int bytesSpace)
     {
         long id = buffers.size() ;
         buffers.add(null) ;
-        return new Block(id, ByteBuffer.allocate(bytesSpace)) ;
+        Block b = new Block(id, ByteBuffer.allocate(bytesSpace)) ;
+        allocBlock = b ;
+        return b ;
     }
 
     @Override
@@ -94,12 +97,17 @@ public class ObjectFileMem implements ObjectFile
     {
         if ( block.getId() != buffers.size()-1 )
             throw new StorageException() ;
+        if ( block != allocBlock )
+            throw new StorageException() ;
+        allocBlock = null ;
         write(block.getId(), block.getByteBuffer()) ;
     }
 
     @Override
     public void reposition(long id)
     {
+        if ( allocBlock != null )
+            throw new StorageException("In the middle of an alloc-write") ;
         int newSize = (int)id ;
         if ( newSize < 0 || newSize >= buffers.size() )
             throw new StorageException() ;

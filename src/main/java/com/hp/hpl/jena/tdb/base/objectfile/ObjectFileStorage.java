@@ -14,6 +14,7 @@ import java.util.Iterator ;
 
 import org.openjena.atlas.lib.Bytes ;
 import org.openjena.atlas.lib.Pair ;
+import org.openjena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.tdb.base.block.Block ;
 import com.hp.hpl.jena.tdb.base.file.BufferChannel ;
@@ -49,7 +50,7 @@ public class ObjectFileStorage implements ObjectFile
     private long filesize ;                         // Size of on-disk. 
     
     // Two-step write - alloc, write
-    private boolean inAllocWrite = true ;
+    private boolean inAllocWrite = false ;
     private Block allocBlock = null ;
     private long allocLocation = -1 ;
 
@@ -69,6 +70,8 @@ public class ObjectFileStorage implements ObjectFile
     @Override
     public long write(ByteBuffer bb)
     {
+        if ( inAllocWrite )
+            Log.fatal(this, "In the middle of an alloc-write") ;
         inAllocWrite = false ;
         int len = bb.limit() - bb.position() ;
         int spaceNeeded = len + SizeOfInt ;
@@ -105,6 +108,9 @@ public class ObjectFileStorage implements ObjectFile
     @Override
     public Block allocWrite(int bytesSpace)
     {
+        if ( inAllocWrite )
+            Log.fatal(this, "In the middle of an alloc-write") ;
+        
         // Include space for length.
         int spaceRequired = bytesSpace + SizeOfInt ;
         // Find space.
@@ -145,6 +151,8 @@ public class ObjectFileStorage implements ObjectFile
         if ( allocBlock != block )
             throw new FileException("Wrong byte buffer in an allocated write operation pair") ;
 
+        inAllocWrite = false ;
+        
         ByteBuffer buffer = block.getByteBuffer() ;
         
         if ( allocLocation == -1 )
@@ -159,7 +167,6 @@ public class ObjectFileStorage implements ObjectFile
         int idx = (int)(allocLocation-filesize) ;
         writeBuffer.putInt(idx, actualLength) ;
         // And bytes to idx+actualLength+4 are used
-        inAllocWrite = false;
         allocBlock = null ;
         int newLen = idx+actualLength+4 ;
         writeBuffer.position(newLen);
@@ -168,8 +175,7 @@ public class ObjectFileStorage implements ObjectFile
 
     private void flushOutputBuffer()
     {
-        //if ( writeBuffer.position() == 0 ) return ;
-        
+        if ( writeBuffer.position() == 0 ) return ;
         long location = filesize ;
         writeBuffer.flip();
         int x = file.write(writeBuffer) ;
@@ -180,6 +186,8 @@ public class ObjectFileStorage implements ObjectFile
     @Override
     public void reposition(long id)
     {
+        if ( inAllocWrite )
+            throw new FileException("In the middle of an alloc-write") ;
         if ( id < 0 || id > filesize )
             throw new IllegalArgumentException("reposition: Bad location: "+id) ;
         flushOutputBuffer() ;
@@ -190,7 +198,8 @@ public class ObjectFileStorage implements ObjectFile
     @Override
     public ByteBuffer read(long loc)
     {
-        inAllocWrite = false ;
+        if ( inAllocWrite )
+            throw new FileException("In the middle of an alloc-write") ;
         if ( loc < 0 )
             throw new IllegalArgumentException("ObjectFile.read: Bad read: "+loc) ;
         

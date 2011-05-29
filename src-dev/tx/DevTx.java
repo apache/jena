@@ -3,9 +3,6 @@ package tx;
 
 public class DevTx
 {
-    // Sort out alloc/complete in storage.  Does not have to adjacent pairs.
-    // ** ObjectFileStorage does not include a length.
-    
     // check test cases.
     
     // ObjectFile
