@@ -19,6 +19,11 @@ public class BaseTest extends Assert
     {
          assertFalse(msg, a.equals(b)) ;
     }
+    
+    public static void assertNotEquals(long a, long b)
+    {
+         assertFalse(a == b ) ;
+    }
 }
 
 /*
