@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.tdb.base.file;
 
-import static com.hp.hpl.jena.tdb.base.BlockLib.sameValue ;
+import static com.hp.hpl.jena.tdb.base.BufferTestLib.sameValue ;
 import org.junit.Test ;
 import org.openjena.atlas.junit.BaseTest ;
 

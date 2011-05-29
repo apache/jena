@@ -10,7 +10,7 @@ import java.nio.ByteBuffer ;
 
 import com.hp.hpl.jena.tdb.base.block.Block ;
 
-public class BlockLib
+public class BufferTestLib
 {
     public static boolean sameValue(Block block1, Block block2)
     {

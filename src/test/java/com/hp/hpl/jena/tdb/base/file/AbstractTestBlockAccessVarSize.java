@@ -10,7 +10,7 @@ import org.junit.Test ;
 
 import com.hp.hpl.jena.tdb.base.block.Block ;
 
-import static com.hp.hpl.jena.tdb.base.BlockLib.* ;
+import static com.hp.hpl.jena.tdb.base.BufferTestLib.* ;
 
 public abstract class AbstractTestBlockAccessVarSize extends AbstractTestBlockAccessFixedSize
 {

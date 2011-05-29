@@ -13,7 +13,7 @@ import com.hp.hpl.jena.tdb.base.block.Block ;
 import org.junit.Test ;
 import org.openjena.atlas.junit.BaseTest ;
 
-import static com.hp.hpl.jena.tdb.base.BlockLib.* ;
+import static com.hp.hpl.jena.tdb.base.BufferTestLib.* ;
 
 public abstract class AbstractTestObjectFile extends BaseTest
 {

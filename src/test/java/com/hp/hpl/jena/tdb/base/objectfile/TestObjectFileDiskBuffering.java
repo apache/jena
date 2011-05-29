@@ -18,7 +18,7 @@ import com.hp.hpl.jena.tdb.base.block.Block ;
 import com.hp.hpl.jena.tdb.base.file.BufferChannel ;
 import com.hp.hpl.jena.tdb.base.file.BufferChannelFile ;
 
-import static com.hp.hpl.jena.tdb.base.BlockLib.* ;
+import static com.hp.hpl.jena.tdb.base.BufferTestLib.* ;
 import static com.hp.hpl.jena.tdb.base.objectfile.AbstractTestObjectFile.fill ;
 
 public class TestObjectFileDiskBuffering extends BaseTest
