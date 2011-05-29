@@ -4,38 +4,28 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.base.file;
+package com.hp.hpl.jena.tdb.base.objectfile;
 
-import org.junit.Test ;
+import org.junit.AfterClass ;
+import org.openjena.atlas.lib.FileOps ;
 
-import com.hp.hpl.jena.tdb.base.block.Block ;
+import com.hp.hpl.jena.tdb.ConfigTest ;
+import com.hp.hpl.jena.tdb.base.file.BufferChannel ;
+import com.hp.hpl.jena.tdb.base.file.BufferChannelFile ;
 
-import static com.hp.hpl.jena.tdb.base.BlockLib.* ;
-
-public abstract class AbstractTestBlockAccessVarSize extends AbstractTestBlockAccessFixedSize
+public class TestObjectFileDisk extends AbstractTestObjectFile
 {
-    protected AbstractTestBlockAccessVarSize()
-    {
-        super(25) ;
-    }
-    
-    @Test
-    public void fileaccess_50()
-    {
-        BlockAccess file = make() ;
-        Block b1 = data(file, 10) ;
-        Block b2 = data(file, 20) ;
-        file.write(b1) ;
-        file.write(b2) ;
-        
-        Block b1a = file.read(b1.getId()) ;
-        Block b2a = file.read(b2.getId()) ;
+    static String filename = ConfigTest.getTestingDir()+"/test-objectfile" ;
 
-        assertNotSame(b1a, b1) ;
-        assertNotSame(b2a, b2) ;
-        sameValue(b1, b1a) ;
-        sameValue(b2, b2a) ;
-    }        
+    @AfterClass public static void cleanup() { FileOps.deleteSilent(filename) ; } 
+    
+    @Override
+    protected ObjectFile make()
+    {
+        FileOps.deleteSilent(filename) ;
+        BufferChannel chan = new BufferChannelFile(filename) ;
+        return new ObjectFileStorage(chan) ;
+    }
 }
 
 /*

@@ -83,7 +83,7 @@ public abstract class BlockAccessBase implements BlockAccess
     
     @Override
     final synchronized
-    public boolean valid(int id)
+    public boolean valid(long id)
     {
         // Access to numFileBlocks not synchronized - it's only a check
         if ( id >= numFileBlocks )

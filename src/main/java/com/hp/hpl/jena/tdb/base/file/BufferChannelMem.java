@@ -13,7 +13,7 @@ import com.hp.hpl.jena.tdb.base.StorageException ;
 public class BufferChannelMem implements BufferChannel
 {
     private ByteBuffer bytes ;      // Position is our file position.
-    private long length ;           // Bytes in use: 0 to length-1
+    //private long length ;           // Bytes in use: 0 to length-1 -- NO -- Use Bytes.limit()
     private String name ;
     private static int INIT_SIZE = 1024 ;
     private static int INC_SIZE = 1024 ;
@@ -21,7 +21,7 @@ public class BufferChannelMem implements BufferChannel
     public BufferChannelMem(String name)
     {
         bytes = ByteBuffer.allocate(1024) ;
-        length = 0 ; 
+        bytes.limit(0) ;
         this.name = name ;
     }
 
@@ -63,7 +63,7 @@ public class BufferChannelMem implements BufferChannel
     public int read(ByteBuffer buffer, long loc)
     {
         checkIfClosed() ;
-        if ( loc < 0 || loc > length )
+        if ( loc < 0 || loc >= buffer.limit() )
             throw new StorageException("Out of range: "+loc) ;
         int x = buffer.position() ;
         bytes.position((int)loc) ;
@@ -79,40 +79,62 @@ public class BufferChannelMem implements BufferChannel
         int len = buffer.limit()-buffer.position() ;
         int posn = bytes.position() ;
 
-        if ( len > bytes.remaining() )
+        int freespace = bytes.capacity() - bytes.position() ;
+        
+        if ( len > freespace )
         {
-            int inc = len-bytes.remaining() ;
+            int inc = len-freespace ;
             inc += INC_SIZE ;
             ByteBuffer bb2 = ByteBuffer.allocate(bytes.capacity()+inc) ;
-            bytes.clear() ;
+            bytes.position(0) ;
             // Copy contents.
-            bb2.put(bytes) ;
+            bb2.put(bytes) ;    // From 0 to limit.
             bytes.position(posn) ;
         }
+        
+        if ( bytes.limit() < posn+len )
+            bytes.limit(posn+len) ;
+
         bytes.put(buffer) ;
-        length = Math.max(length, posn+len) ;
         return len ;
     }
     
+    // Invert : write(ByteBuffer) = write(ByteBuffer,posn)
     @Override
     public int write(ByteBuffer buffer, long loc)
     {
         checkIfClosed() ;
-        if ( loc < 0 || loc > length )
+        if ( loc < 0 || loc > bytes.limit() )
+            // Can write at loc = bytes()
             throw new StorageException("Out of range: "+loc) ;
         int x = bytes.position() ; 
         bytes.position((int)loc) ;
         int len = write(buffer) ;
         bytes.position(x) ;
-        length = Math.max(length, loc+len) ;
         return len ;
+    }
+    
+    @Override
+    public void truncate(long size)
+    {
+        checkIfClosed() ;
+        int x = (int) size ;
+        
+        if ( x < 0 )
+            throw new StorageException("Out of range: "+size) ;
+        if ( x > bytes.limit() )
+            return ;
+        
+        if ( bytes.position() > x )
+            bytes.position(x) ;
+        bytes.limit(x) ;
     }
 
     @Override
     public long size()
     {
         checkIfClosed() ;
-        return length ;
+        return bytes.limit() ;
     }
     
     @Override

@@ -7,16 +7,14 @@
 
 package com.hp.hpl.jena.tdb.base.file;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.junit.runner.RunWith ;
+import org.junit.runners.Suite ;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
     TestMetaFile.class
     , TestChannelMem.class
     , TestChannelFile.class
-    , TestStringFileMem.class 
-    , TestStringFileDisk.class 
     , TestBlockAccessMem.class
     , TestBlockAccessByteArray.class
     , TestBlockAccessDirect.class

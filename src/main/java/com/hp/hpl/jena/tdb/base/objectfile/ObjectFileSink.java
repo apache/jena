@@ -54,6 +54,10 @@ public class ObjectFileSink implements ObjectFile
     }
 
     @Override
+    public void reposition(long id)
+    { this.id = (id-1) ; }
+
+    @Override
     public void sync()
     {}
     

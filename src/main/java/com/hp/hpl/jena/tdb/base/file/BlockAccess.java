@@ -11,10 +11,14 @@ import org.openjena.atlas.lib.Sync ;
 
 import com.hp.hpl.jena.tdb.base.block.Block ;
 
-/** Interface to concrete storage.
- *  This is wrapped in a BlockMgrAccess to provide a higher level abstraction.
- *  BufferChannels are a separate lower-level, interface to storage.
- *  @see BufferChannel
+/**
+ * Interface to concrete storage - read and write Blocks, addressed by id. 
+ * Suitable for memory mapped I/O (returns
+ * internally allocated space for read, not provided from outside; write() can
+ * insist the block written comes from allocate()). This is wrapped in a
+ * BlockMgrAccess to provide a higher level abstraction.
+ * 
+ * @see BufferChannel
  */
 public interface BlockAccess extends Sync, Closeable
 {
@@ -26,7 +30,7 @@ public interface BlockAccess extends Sync, Closeable
     
     public boolean isEmpty() ; 
     
-    public boolean valid(int id) ;
+    public boolean valid(long id) ;
 }
 
 /*

@@ -3,14 +3,15 @@ package tx;
 
 public class DevTx
 {
-    // BlockMgrJournal
-    // FileRefs : builtin names<->numbers
+    // Sort out alloc/complete in storage.  Does not have to adjacent pairs.
+    // ** ObjectFileStorage does not include a length.
     
-    // ObjectFile is "just" BlockAccess with different preallocate.
-    // Delete.
+    // check test cases.
     
-    // NodeTable over Journal.
-    //   NodeTable to have "do everything except write" operation. 
+    // ObjectFile
+    //   ObjectFile over BufferChannel -- "storeage" 
+    //   Hide current mem-based one.
+    //   Append only with replay.
     
     // One transaction dataset - reuse.  Pool?
     // Record BlockMgrs, BlockMgrTx.reset

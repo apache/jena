@@ -96,6 +96,40 @@ public abstract class AbstractTestChannel extends BaseTest
         assertTrue(same(b2, b2a)) ;
     }
     
+    @Test public void storage_06()
+    {
+        BufferChannel store = make() ;
+        ByteBuffer b1 = data(blkSize) ;
+        store.write(b1) ;
+        store.truncate(0) ;
+        assertEquals(0, store.size()) ;
+    }
+    
+    @Test public void storage_07()
+    {
+        BufferChannel store = make() ;
+        ByteBuffer b1 = data(blkSize) ;
+        store.write(b1) ;
+        store.position(10) ;
+        b1.rewind() ;
+        store.write(b1) ;
+        assertEquals(blkSize+10, store.size()) ;
+    }    
+
+    
+    @Test public void storage_08()
+    {
+        BufferChannel store = make() ;
+        ByteBuffer b1 = data(blkSize) ;
+        ByteBuffer b2 = data(blkSize) ;
+        store.write(b1) ;
+        store.write(b2) ;
+        store.position(10) ;
+        b1.rewind() ;
+        store.write(b1) ;
+        assertEquals(2*blkSize, store.size()) ;
+    }    
+
 }
 
 /*

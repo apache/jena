@@ -6,8 +6,7 @@
 
 package com.hp.hpl.jena.tdb.base.file;
 
-import java.nio.ByteBuffer ;
-
+import static com.hp.hpl.jena.tdb.base.BlockLib.sameValue ;
 import org.junit.Test ;
 import org.openjena.atlas.junit.BaseTest ;
 
@@ -31,19 +30,6 @@ public abstract class AbstractTestBlockAccessFixedSize extends BaseTest
         for (int i = 0 ; i < len ; i++ )
             b.getByteBuffer().put((byte)(i&0xFF)) ;
         return b ;
-    }
-    
-    protected static boolean sameValue(Block block1, Block block2)
-    {
-        if ( block1.getId() != block2.getId()) return false ;
-        ByteBuffer bb1 = block1.getByteBuffer() ; 
-        ByteBuffer bb2 = block2.getByteBuffer() ;
-        
-        if ( bb1.capacity() != bb2.capacity() ) return false ;
-        
-        for ( int i = 0 ; i < bb1.capacity() ; i++ )
-            if ( bb1.get(i) != bb2.get(i) ) return false ;
-        return true ;
     }
 
     @Test public void fileaccess_01()

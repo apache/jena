@@ -82,7 +82,7 @@ public class BlockAccessMem implements BlockAccess
     }
 
     @Override
-    public boolean valid(int id)
+    public boolean valid(long id)
     {
         return id >= 0 && id < blocks.size() ;
     }

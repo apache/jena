@@ -45,8 +45,8 @@ public class ObjectFileStorage implements ObjectFile
     private final ByteBuffer writeBuffer ;
     private int bufferSize ;
     
-    private final BufferChannel file ;                // Access to storage
-    private long filesize ;                     // Size of on-disk. 
+    private final BufferChannel file ;              // Access to storage
+    private long filesize ;                         // Size of on-disk. 
     
     // Two-step write - alloc, write
     private boolean inAllocWrite = true ;
@@ -71,36 +71,42 @@ public class ObjectFileStorage implements ObjectFile
     {
         inAllocWrite = false ;
         int len = bb.limit() - bb.position() ;
+        int spaceNeeded = len + SizeOfInt ;
         
-        if ( writeBuffer.limit()+len > writeBuffer.capacity() )
+        if ( writeBuffer.position()+spaceNeeded > writeBuffer.capacity() )
             // No room - flush.
             flushOutputBuffer() ;
-        if ( writeBuffer.limit()+len > writeBuffer.capacity() )
+        if ( writeBuffer.position()+spaceNeeded > writeBuffer.capacity() )
         {
             long x = rawWrite(bb) ;
             return x ;
         }
         
+        long loc = writeBuffer.position() ;
+        writeBuffer.putInt(len) ;
         writeBuffer.put(bb) ;
-        return len ;
+        return loc ;
     }
     
     private long rawWrite(ByteBuffer bb)
     {
-        long location = filesize ;
-        int x = file.write(bb, location) ;
+        int len = bb.limit() - bb.position() ;
+        lengthBuffer.rewind() ;
+        lengthBuffer.putInt(len) ;
+        lengthBuffer.flip() ;
+        long location = file.position() ; 
+        file.write(lengthBuffer, location) ;
         long loc2 = location+SizeOfInt ;
-        x += file.write(bb, loc2) ;
+        int x = file.write(bb, loc2) ;
         filesize = filesize+x ;
         return location ;
-        
     }
     
     @Override
-    public Block allocWrite(int maxBytes)
+    public Block allocWrite(int bytesSpace)
     {
         // Include space for length.
-        int spaceRequired = maxBytes + SizeOfInt ;
+        int spaceRequired = bytesSpace + SizeOfInt ;
         // Find space.
         if ( spaceRequired > writeBuffer.remaining() )
             flushOutputBuffer() ;
@@ -109,7 +115,7 @@ public class ObjectFileStorage implements ObjectFile
         {
             // Too big. have flushed buffering.
             inAllocWrite = true ;
-            ByteBuffer bb = ByteBuffer.allocate(spaceRequired) ;
+            ByteBuffer bb = ByteBuffer.allocate(bytesSpace) ;
             allocBlock = new Block(filesize, bb) ;  
             allocLocation = -1 ;
             return allocBlock ;
@@ -122,6 +128,7 @@ public class ObjectFileStorage implements ObjectFile
         allocLocation = filesize+start ;
         
         // Slice it.
+        writeBuffer.putInt(bytesSpace) ;
         writeBuffer.position(start + SizeOfInt) ;
         writeBuffer.limit(start+spaceRequired) ;
         ByteBuffer bb = writeBuffer.slice() ;
@@ -161,6 +168,8 @@ public class ObjectFileStorage implements ObjectFile
 
     private void flushOutputBuffer()
     {
+        //if ( writeBuffer.position() == 0 ) return ;
+        
         long location = filesize ;
         writeBuffer.flip();
         int x = file.write(writeBuffer) ;
@@ -168,6 +177,15 @@ public class ObjectFileStorage implements ObjectFile
         writeBuffer.clear() ;
     }
 
+    @Override
+    public void reposition(long id)
+    {
+        if ( id < 0 || id > filesize )
+            throw new IllegalArgumentException("reposition: Bad location: "+id) ;
+        flushOutputBuffer() ;
+        file.truncate(id) ;
+        filesize = id ;
+    }
 
     @Override
     public ByteBuffer read(long loc)

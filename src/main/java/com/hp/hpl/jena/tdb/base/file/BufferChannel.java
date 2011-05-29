@@ -7,14 +7,26 @@
 package com.hp.hpl.jena.tdb.base.file;
 
 import java.nio.ByteBuffer ;
+import java.nio.channels.FileChannel ;
 
 import org.openjena.atlas.lib.Closeable ;
 import org.openjena.atlas.lib.Sync ;
 
 
 /** Interface to storage : a simplified version of FileChannel.
- *  This also enables use to implement memory-backed versions.
+ *  Read and write bytes, passed via ByteBuffers, addressed
+ *  by file location.
+ *  
+ *  Not suitable for memory mapped I/O - no allocation from the 
+ *  I/O resource but instead reads into storage provided outside
+ *  and writes from  storage provided outside.
+ *  
+ *  Does not insert size of ByteBuffer - size of ByteBuffer passed to
+ *  read controls the number of bytes read. 
+ *  
+ *  Having our own abstraction enables us to implement memory-backed versions.
  *  @see BlockAccess
+ *  @see FileChannel
  */
 public interface BufferChannel extends Sync, Closeable
 {
@@ -46,9 +58,13 @@ public interface BufferChannel extends Sync, Closeable
      * loc must be within 0 to length - writing at length is append */
     public int write(ByteBuffer buffer, long loc) ;
     
+    /** Truncate the file.
+     * @see FileChannel#truncate(long)
+     */
+    public void truncate(long size) ;
+    
     /** Length of storage, in bytes.*/
     public long size() ;
-
 }
 
 /*

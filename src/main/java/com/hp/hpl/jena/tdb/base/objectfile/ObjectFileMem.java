@@ -82,11 +82,11 @@ public class ObjectFileMem implements ObjectFile
     
     
     @Override
-    public Block allocWrite(int maxBytes)
+    public Block allocWrite(int bytesSpace)
     {
         long id = buffers.size() ;
         buffers.add(null) ;
-        return new Block(id, ByteBuffer.allocate(maxBytes)) ;
+        return new Block(id, ByteBuffer.allocate(bytesSpace)) ;
     }
 
     @Override
@@ -95,6 +95,18 @@ public class ObjectFileMem implements ObjectFile
         if ( block.getId() != buffers.size()-1 )
             throw new StorageException() ;
         write(block.getId(), block.getByteBuffer()) ;
+    }
+
+    @Override
+    public void reposition(long id)
+    {
+        int newSize = (int)id ;
+        if ( newSize < 0 || newSize >= buffers.size() )
+            throw new StorageException() ;
+        List<ByteBuffer> buffers2 = new ArrayList<ByteBuffer>(newSize) ;
+        for ( int i =0 ; i < id ; i++ )
+            buffers2.add(buffers.get(newSize)) ;
+        buffers = buffers2 ;
     }
 
     @Override

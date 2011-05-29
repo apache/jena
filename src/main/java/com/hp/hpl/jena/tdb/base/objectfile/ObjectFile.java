@@ -26,7 +26,7 @@ public interface ObjectFile extends Sync, Closeable
     public static final String type = "object" ;
     
     /** Allocate space for a write - pass this buffer to completeWrite */ 
-    public Block allocWrite(int maxBytes) ;
+    public Block allocWrite(int bytesSpace) ;
     
     /** Announce that a write is complete (buffer must come from allocWrite) - return the accessor number */
     public void completeWrite(Block buffer) ;
@@ -39,6 +39,12 @@ public interface ObjectFile extends Sync, Closeable
     
     /** Length, in units used by read/write for ids */
     public long length() ;
+    
+    /** Reset the "append" point; may only be moved earlier.
+     * The new position must correspond to a position returned by
+     * {@link #write(ByteBuffer)} or an id in a {@link Block Block} from {@link #completeWrite(Block)}
+     */
+    public void reposition(long id) ;
     
     /** All the bytebuffers - debugging aid */
     public Iterator<Pair<Long, ByteBuffer>> all() ;

@@ -10,6 +10,7 @@ import java.nio.ByteBuffer ;
 import java.util.Iterator ;
 
 import org.openjena.atlas.lib.Pair ;
+import org.openjena.atlas.logging.Log ;
 import tx.journal.Journal ;
 
 import com.hp.hpl.jena.tdb.base.block.Block ;
@@ -19,62 +20,125 @@ public class ObjectFileTrans implements ObjectFile
 {
     private final Journal journal ;
     private final ObjectFile other ;
+    private long startAlloc ;
     private long alloc ;
-
-    // Objects aren't huge - a block per object and the file ref overhead is a bit much.
+    private boolean passthrough = false ;
+    private final ObjectFile base ;
     
-    public ObjectFileTrans(Journal journal, ObjectFile other)
+    public ObjectFileTrans(Journal journal, ObjectFile base, ObjectFile other)
     {
+        // The other object file must use the same allocation policy.
         this.journal = journal ;
+        this.base = base ;
         this.other = other ;
-        this.alloc = other.length() ;
+        this.alloc = base.length() ;
+        this.startAlloc = base.length() ;
+    }
+
+    public void begin()     { passthrough = false ; }
+    public void commit()    { append() ; base.sync() ; other.reposition(0) ; passthrough = true ; }
+    public void abort()     { other.reposition(0) ; }
+    
+    /** Copy from the temporary file to the real file */
+    private void append()
+    {
+        // We could write directly to the real file if:
+        //   we record the truncate point needed for an abort
+        //   manage partial final writes
+        //   deny the existence of nodes after the transaction mark.
+        // Later - stay simple for now.
+        
+        // Truncate/position the ObjectFile.
+        base.reposition(startAlloc) ;
+        
+        Iterator<Pair<Long, ByteBuffer>> iter = other.all() ;
+        for ( ; iter.hasNext() ; )
+        {
+            Pair<Long, ByteBuffer> p = iter.next() ;
+            long x = base.write(p.getRight()) ;
+            if ( p.getLeft()+startAlloc != x )
+                Log.fatal(this, "Expected id of "+p.getLeft()+startAlloc+", got an id of "+x) ;
+        }
     }
     
+    public void setPassthrough(boolean v) { passthrough = v ; }
+    
     @Override
-    public void sync()
-    {}
-
-    @Override
-    public void close()
-    {}
+    public void reposition(long id)
+    {
+        if ( passthrough ) { base.reposition(id) ; return ; }
+        if ( id > startAlloc )
+        {
+            other.reposition(id-startAlloc) ;
+            return ;
+        }
+        
+        other.reposition(0) ;
+        base.reposition(id) ;
+        startAlloc = id ;
+        alloc = id ;
+    }
 
     @Override
     public Block allocWrite(int maxBytes)
     {
-        ByteBuffer bb = ByteBuffer.allocate(maxBytes) ;
-        // Allocation in ObjectFile.other?
-        return null ;
+        if ( passthrough ) return base.allocWrite(maxBytes) ;
+        Block block = other.allocWrite(maxBytes) ;
+        block = new Block(block.getId()+startAlloc, block.getByteBuffer()) ;
+        return block ;
     }
 
     @Override
-    public void completeWrite(Block buffer)
+    public void completeWrite(Block block)
     {
+        if ( passthrough ) { base.completeWrite(block) ; return ; } 
+        block = new Block(block.getId()-startAlloc, block.getByteBuffer()) ;
+        other.completeWrite(block) ;
     }
 
     @Override
     public long write(ByteBuffer buffer)
     {
-        return 0 ;
+        if ( passthrough ) { return base.write(buffer) ; } 
+        // Write to auxillary
+        long x = other.write(buffer) ;
+        return alloc+x ;
     }
 
     @Override
     public ByteBuffer read(long id)
     {
-        return null ;
+        if ( passthrough ) { return base.read(id) ; } 
+        if ( id < startAlloc )
+            return base.read(id) ;
+        return other.read(id-startAlloc) ;
     }
 
     @Override
     public long length()
     {
-        return 0 ;
+        if ( passthrough ) { return base.length() ; } 
+        return startAlloc+other.length() ;
     }
 
     @Override
     public Iterator<Pair<Long, ByteBuffer>> all()
     {
+        if ( passthrough ) { return base.all() ; } 
         return null ;
     }
 
+    @Override
+    public void sync()
+    { 
+        if ( passthrough ) { base.sync() ; return ; } 
+    }
+
+    @Override
+    public void close()
+    {
+        if ( passthrough ) { base.close() ; return ; }
+    }
 }
 
 /*

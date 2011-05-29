@@ -36,6 +36,13 @@ public class BufferChannelFile implements BufferChannel
     }
 
     @Override
+    public void truncate(long length)
+    {
+        try { file.channel.truncate(length) ; } 
+        catch (IOException e) { IO.exception(e) ; }
+    }
+
+    @Override
     public int read(ByteBuffer buffer)
     {
         try { return file.channel.read(buffer) ; } 

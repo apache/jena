@@ -23,6 +23,12 @@ import com.hp.hpl.jena.tdb.store.NodeId ;
 
 public class NodeTableJournal implements NodeTable
 {
+    // Becomes   extends NodeTableNative.
+    // Uses a second ObjectFile as the journal for write ahead.
+    // Write name of this to Journal.
+    // Transaction commit is now two sync's, not one.
+    
+    
     private final Journal journal ;
     private final NodeTable other ;
     
@@ -41,9 +47,16 @@ public class NodeTableJournal implements NodeTable
     
     // OR do everything but write - return (id,bytes) that would be written (sans length)
     
+//  @Override
+//  public NodeId preallocate(Node node, NodeId last)
+//  {
+//      return null ;
+//  }
+    
     @Override
     public NodeId getAllocateNodeId(Node node)
     {
+        // ????????????
         return null ;
     }
 
@@ -85,6 +98,8 @@ public class NodeTableJournal implements NodeTable
 
     @Override
     public void close() { }
+
+
 }
 
 /*

@@ -4,38 +4,50 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.base.file;
+package com.hp.hpl.jena.tdb.base;
 
-import org.junit.Test ;
+import java.nio.ByteBuffer ;
 
 import com.hp.hpl.jena.tdb.base.block.Block ;
 
-import static com.hp.hpl.jena.tdb.base.BlockLib.* ;
-
-public abstract class AbstractTestBlockAccessVarSize extends AbstractTestBlockAccessFixedSize
+public class BlockLib
 {
-    protected AbstractTestBlockAccessVarSize()
+    public static boolean sameValue(Block block1, Block block2)
     {
-        super(25) ;
+        if ( block1.getId() != block2.getId()) return false ;
+        ByteBuffer bb1 = block1.getByteBuffer() ; 
+        ByteBuffer bb2 = block2.getByteBuffer() ;
+        
+        if ( bb1.capacity() != bb2.capacity() ) return false ;
+        
+        for ( int i = 0 ; i < bb1.capacity() ; i++ )
+            if ( bb1.get(i) != bb2.get(i) ) return false ;
+        return true ;
     }
     
-    @Test
-    public void fileaccess_50()
+    public static boolean sameValue(ByteBuffer bb1, ByteBuffer bb2)
     {
-        BlockAccess file = make() ;
-        Block b1 = data(file, 10) ;
-        Block b2 = data(file, 20) ;
-        file.write(b1) ;
-        file.write(b2) ;
+        if ( bb1.capacity() != bb2.capacity() ) return false ;
         
-        Block b1a = file.read(b1.getId()) ;
-        Block b2a = file.read(b2.getId()) ;
-
-        assertNotSame(b1a, b1) ;
-        assertNotSame(b2a, b2) ;
-        sameValue(b1, b1a) ;
-        sameValue(b2, b2a) ;
-    }        
+        int posn1 = bb1.position();
+        int limit1 = bb1.limit();
+        int posn2 = bb2.position();
+        int limit2 = bb2.limit();
+        
+        bb1.clear() ;
+        bb2.clear() ;
+        
+        try {
+            for ( int i = 0 ; i < bb1.capacity() ; i++ )
+                if ( bb1.get(i) != bb2.get(i) ) return false ;
+            return true ;
+        } finally {
+            bb1.position(posn1) ;
+            bb1.limit(limit1) ;
+            bb2.position(posn2) ;
+            bb2.limit(limit2) ;
+        }
+    }
 }
 
 /*
