@@ -16,6 +16,8 @@ import java.util.Iterator ;
 import org.junit.Test ;
 import org.openjena.atlas.lib.Bytes ;
 import org.openjena.atlas.lib.FileOps ;
+import org.openjena.atlas.lib.Pair ;
+import org.openjena.atlas.lib.StrUtils ;
 import org.openjena.atlas.logging.Log ;
 import org.openjena.atlas.test.Gen ;
 import org.slf4j.Logger ;
@@ -39,6 +41,8 @@ import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory ;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrLogger ;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrTracker ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
+import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile ;
+import com.hp.hpl.jena.tdb.base.objectfile.ObjectFileMem ;
 import com.hp.hpl.jena.tdb.base.record.Record ;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
 import com.hp.hpl.jena.tdb.base.record.RecordLib ;
@@ -73,7 +77,64 @@ public class TxMain
     
     public static void main(String... args)
     {
-        test() ; exit(0) ;
+        ObjectFile file1 = new ObjectFileMem() ;
+        long x1 = file1.write(stringToBuffer("ABCDEF")) ;
+        long x2 = file1.write(stringToBuffer("AABBCC")) ;
+        
+        ObjectFile file2 = new ObjectFileMem() ;
+        ObjectFileTrans file = new ObjectFileTrans(null, file1, file2) ;
+        
+        ByteBuffer bb = stringToBuffer("XYZ") ;
+        file.write(bb) ;
+        
+        System.out.println("file1:") ;
+        dump(file1) ;
+        System.out.println("file2:") ;
+        dump(file2) ;
+        
+        System.out.println("commit") ;
+        file.commit() ;
+        System.out.println("file1:") ;
+        dump(file1) ;
+        System.out.println("file2:") ;
+        dump(file2) ;
+//        
+//        System.out.println("begin") ;
+//        file.begin() ;
+//        System.out.println("file1:") ;
+//        dump(file1) ;
+//        file.write(stringToBuffer("12")) ;
+//        System.out.println("file2:") ;
+//        dump(file2) ;
+//        
+//        System.out.println("abort") ;
+//        file.abort();
+//        System.out.println("file1:") ;
+//        dump(file1) ;
+//        System.out.println("file2:") ;
+//        dump(file2) ;
+//        
+//        
+        System.out.println("begin") ;
+        file.begin() ;
+        System.out.println("file1:") ;
+        dump(file1) ;
+        file.write(stringToBuffer("12")) ;
+        System.out.println("file2:") ;
+        dump(file2) ;
+        System.out.println("commit") ;
+        file.commit();
+        System.out.println("file1:") ;
+        dump(file1) ;
+        System.out.println("file2:") ;
+        dump(file2) ;
+        
+        exit(0) ;
+        
+        
+        
+        
+        
         //tree_ins_2_01() ; exit(0) ;
         
         //test.BPlusTreeRun.main("test", "--bptree:track", "3", "125", "100000") ; exit(0) ;
@@ -85,6 +146,23 @@ public class TxMain
         transactional() ; exit(0) ;
     }
     
+    private static void dump(ObjectFile file)
+    {
+        Iterator<Pair<Long, ByteBuffer>> iter = file.all() ;
+        for ( ; iter.hasNext() ; )
+        {
+            Pair<Long, ByteBuffer> p = iter.next();
+            String x = StrUtils.fromUTF8bytes(p.cdr().array()) ;
+            System.out.printf("  %04d %s\n", p.car(), x) ;
+        }
+    }
+    
+    private static ByteBuffer stringToBuffer(String string)
+    {
+        byte b[] = StrUtils.asUTF8bytes(string) ;
+        return ByteBuffer.wrap(b) ;
+    }
+
     public static void replay()
     {
         Journal journal = new Journal(null) ;

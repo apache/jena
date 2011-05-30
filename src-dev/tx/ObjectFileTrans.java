@@ -9,6 +9,7 @@ package tx;
 import java.nio.ByteBuffer ;
 import java.util.Iterator ;
 
+import org.openjena.atlas.iterator.Iter ;
 import org.openjena.atlas.lib.Pair ;
 import org.openjena.atlas.logging.Log ;
 import tx.journal.Journal ;
@@ -16,7 +17,7 @@ import tx.journal.Journal ;
 import com.hp.hpl.jena.tdb.base.block.Block ;
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile ;
 
-public class ObjectFileTrans implements ObjectFile
+public class ObjectFileTrans implements ObjectFile, Transactional
 {
     private final Journal journal ;
     private final ObjectFile other ;
@@ -25,19 +26,44 @@ public class ObjectFileTrans implements ObjectFile
     private boolean passthrough = false ;
     private final ObjectFile base ;
     
+    // For recovery replay, we need to truncate "base" first. 
+    
     public ObjectFileTrans(Journal journal, ObjectFile base, ObjectFile other)
     {
         // The other object file must use the same allocation policy.
         this.journal = journal ;
         this.base = base ;
+        begin() ;
         this.other = other ;
         this.alloc = base.length() ;
         this.startAlloc = base.length() ;
     }
 
-    public void begin()     { passthrough = false ; }
-    public void commit()    { append() ; base.sync() ; other.reposition(0) ; passthrough = true ; }
-    public void abort()     { other.reposition(0) ; }
+    // Begin read ==> passthrough.
+    
+    @Override
+    public void begin()
+    {
+        passthrough = false ;
+        other.reposition(0) ;
+        this.alloc = base.length() ;
+        this.startAlloc = base.length() ;
+    }
+    
+    @Override
+    public void commit()
+    {
+        append() ;
+        base.sync() ;
+        other.reposition(0) ;
+        passthrough = true ;
+    }
+
+    @Override
+    public void abort()
+    {
+        other.reposition(0) ;
+    }
     
     /** Copy from the temporary file to the real file */
     private void append()
@@ -125,7 +151,7 @@ public class ObjectFileTrans implements ObjectFile
     public Iterator<Pair<Long, ByteBuffer>> all()
     {
         if ( passthrough ) { return base.all() ; } 
-        return null ;
+        return Iter.concat(base.all(), other.all()) ;
     }
 
     @Override

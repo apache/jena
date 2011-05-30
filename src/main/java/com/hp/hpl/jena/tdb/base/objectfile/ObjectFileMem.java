@@ -109,11 +109,15 @@ public class ObjectFileMem implements ObjectFile
         if ( allocBlock != null )
             throw new StorageException("In the middle of an alloc-write") ;
         int newSize = (int)id ;
-        if ( newSize < 0 || newSize >= buffers.size() )
+        if ( newSize < 0 || newSize > buffers.size() )
+            // Can reposition to the end of the file.
             throw new StorageException() ;
+        if ( newSize == buffers.size() )
+            return ;
+        
         List<ByteBuffer> buffers2 = new ArrayList<ByteBuffer>(newSize) ;
-        for ( int i =0 ; i < id ; i++ )
-            buffers2.add(buffers.get(newSize)) ;
+        for ( int i = 0 ; i < id ; i++ )
+            buffers2.add(buffers.get(i)) ;
         buffers = buffers2 ;
     }
 

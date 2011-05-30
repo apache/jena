@@ -11,6 +11,8 @@ public class DevTx
     //   Append only with replay.
     
     // One transaction dataset - reuse.  Pool?
+    //   Create the one transaction dadaset when the datasetgraph itself is created
+    //   Reset/Reuse -- internal API : TransactionCycle. 
     // Record BlockMgrs, BlockMgrTx.reset
     
     // Channel+Adler32
