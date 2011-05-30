@@ -120,7 +120,7 @@ public class LangTag
                                                         ) ;
     
     // Private use forms "x-"
-    private static final String privateuseRE    = "[xX]-[a-zA-Z0-9]{1,8}" ; 
+    private static final String privateuseRE    = "^[xX](-[a-zA-Z0-9]{1,8})*$" ; 
     // In general, this can look like a langtag but there are no registered forms that do so.
     // This is for the "i-" forms only.
     private static final String grandfatheredRE = "i(?:-[a-zA-Z0-9]{2,8}){1,2}" ;  
@@ -265,7 +265,7 @@ public class LangTag
 
             if ( parts == null )
             {
-                System.out.print("  ==>  null") ;
+                System.out.print("  ==>  Illegal") ;
             }
             else
             {
