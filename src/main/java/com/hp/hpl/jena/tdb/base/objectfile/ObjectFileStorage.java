@@ -12,13 +12,16 @@ import static com.hp.hpl.jena.tdb.sys.SystemTDB.SizeOfInt ;
 import java.nio.ByteBuffer ;
 import java.util.Iterator ;
 
+import org.openjena.atlas.iterator.Iter ;
 import org.openjena.atlas.lib.Bytes ;
 import org.openjena.atlas.lib.Pair ;
 import org.openjena.atlas.logging.Log ;
+import tx.IteratorSlotted ;
 
 import com.hp.hpl.jena.tdb.base.block.Block ;
 import com.hp.hpl.jena.tdb.base.file.BufferChannel ;
 import com.hp.hpl.jena.tdb.base.file.FileException ;
+import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 /** Variable length ByteBuffer file on disk. 
  *  Buffering for delayed writes.
@@ -85,7 +88,7 @@ public class ObjectFileStorage implements ObjectFile
             return x ;
         }
         
-        long loc = writeBuffer.position() ;
+        long loc = writeBuffer.position()+filesize ;
         writeBuffer.putInt(len) ;
         writeBuffer.put(bb) ;
         return loc ;
@@ -188,7 +191,7 @@ public class ObjectFileStorage implements ObjectFile
     {
         if ( inAllocWrite )
             throw new FileException("In the middle of an alloc-write") ;
-        if ( id < 0 || id > filesize )
+        if ( id < 0 || id > length() )
             throw new IllegalArgumentException("reposition: Bad location: "+id) ;
         flushOutputBuffer() ;
         file.truncate(id) ;
@@ -242,7 +245,7 @@ public class ObjectFileStorage implements ObjectFile
     @Override
     public long length()
     {
-        return filesize ;
+        return filesize+writeBuffer.position() ;
     }
 
     @Override
@@ -254,9 +257,49 @@ public class ObjectFileStorage implements ObjectFile
     @Override
     public Iterator<Pair<Long, ByteBuffer>> all()
     {
+        flushOutputBuffer() ;
         file.position(0) ; 
         ObjectIterator iter = new ObjectIterator(0, filesize) ;
-        return iter ;
+        //return iter ;
+        
+        if ( writeBuffer.position() == 0 ) return iter ;
+        return Iter.concat(iter, new BufferIterator(writeBuffer)) ;
+    }
+    
+    private class BufferIterator extends IteratorSlotted<Pair<Long, ByteBuffer>> implements Iterator<Pair<Long, ByteBuffer>>
+    {
+        private ByteBuffer buffer ;
+        private int posn ;
+
+        public BufferIterator(ByteBuffer buffer)
+        {
+            this.buffer = buffer ;
+            this.posn = 0 ;
+        }
+
+        @Override
+        protected Pair<Long, ByteBuffer> moveToNext()
+        {
+            if ( posn >= buffer.limit() )
+                return null ;
+            
+            int x = buffer.getInt(posn) ;
+            posn += SystemTDB.SizeOfInt ;
+            ByteBuffer bb = ByteBuffer.allocate(x) ;
+            int p = buffer.position() ;
+            buffer.position(posn) ;
+            buffer.get(bb.array()) ;
+            buffer.position(p);
+            posn += x ;
+            return new Pair<Long, ByteBuffer>((long)x, bb) ;
+        }
+
+        @Override
+        protected boolean hasMore()
+        {
+            return posn < buffer.limit();
+        }
+
     }
     
     private class ObjectIterator implements Iterator<Pair<Long, ByteBuffer>>

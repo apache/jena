@@ -3,12 +3,8 @@ package tx;
 
 public class DevTx
 {
-    // check test cases.
-    
-    // ObjectFile
-    //   ObjectFile over BufferChannel -- "storeage" 
-    //   Hide current mem-based one.
-    //   Append only with replay.
+    // TestObjectFileTrans
+    // More TestObjectFile tests - write - flush, write some more.
     
     // One transaction dataset - reuse.  Pool?
     //   Create the one transaction dadaset when the datasetgraph itself is created

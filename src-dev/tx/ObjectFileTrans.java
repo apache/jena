@@ -11,10 +11,11 @@ import java.util.Iterator ;
 
 import org.openjena.atlas.iterator.Iter ;
 import org.openjena.atlas.lib.Pair ;
-import org.openjena.atlas.logging.Log ;
+import org.openjena.atlas.lib.StrUtils ;
 import tx.journal.Journal ;
 
 import com.hp.hpl.jena.tdb.base.block.Block ;
+import com.hp.hpl.jena.tdb.base.file.FileException ;
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile ;
 
 public class ObjectFileTrans implements ObjectFile, Transactional
@@ -81,9 +82,12 @@ public class ObjectFileTrans implements ObjectFile, Transactional
         for ( ; iter.hasNext() ; )
         {
             Pair<Long, ByteBuffer> p = iter.next() ;
+            String s = StrUtils.fromUTF8bytes(p.getRight().array()) ;
+            
             long x = base.write(p.getRight()) ;
+            
             if ( p.getLeft()+startAlloc != x )
-                Log.fatal(this, "Expected id of "+p.getLeft()+startAlloc+", got an id of "+x) ;
+                throw new FileException("Expected id of "+(p.getLeft()+startAlloc)+", got an id of "+x) ;
         }
     }
     
