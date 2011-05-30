@@ -6,36 +6,36 @@
 
 package tx;
 
-import org.openjena.atlas.lib.FileOps ;
-
-import com.hp.hpl.jena.tdb.ConfigTest ;
 import com.hp.hpl.jena.tdb.base.file.BufferChannel ;
-import com.hp.hpl.jena.tdb.base.file.BufferChannelFile ;
-import com.hp.hpl.jena.tdb.base.file.Location ;
+import com.hp.hpl.jena.tdb.base.file.BufferChannelMem ;
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile ;
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFileStorage ;
 
-public class TestObjectFileTransDisk extends AbstractTestObjectFileTrans
+public class TestObjectFileTransStorage extends AbstractTestObjectFileTrans
 {
     @Override
     ObjectFile createFile(String basename)
     {
-        String dir = ConfigTest.getTestingDir() ;
-        Location loc = new Location(dir) ;
-        String fn = loc.getPath(basename) ;
-        FileOps.deleteSilent(fn) ;
-        BufferChannel chan = new BufferChannelFile(fn) ;
+//        String dir = ConfigTest.getTestingDir() ;
+//        Location loc = new Location(dir) ;
+//        String fn = loc.getPath(basename) ;
+//        FileOps.deleteSilent(fn) ;
+//        BufferChannel chan = new BufferChannelFile(fn) ;
+//        return new ObjectFileStorage(chan) ;
+        
+        BufferChannel chan = new BufferChannelMem() ;
         return new ObjectFileStorage(chan) ;
+        
     }
 
 
     @Override
     void deleteFile(String basename)
     {
-        String dir = ConfigTest.getTestingDir() ;
-        Location loc = new Location(dir) ;
-        String fn = loc.getPath(basename) ;
-        FileOps.delete(fn) ;
+//        String dir = ConfigTest.getTestingDir() ;
+//        Location loc = new Location(dir) ;
+//        String fn = loc.getPath(basename) ;
+//        FileOps.delete(fn) ;
     }
 }
 

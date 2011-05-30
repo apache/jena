@@ -4,10 +4,7 @@ package tx;
 public class DevTx
 {
     // TestObjectFileTrans -- more tests.
-    // TestObjectFileBuffering --> make abstract
-    
-    
-    //    More TestObjectFile tests - write - flush, write some more.
+    // TestObjectFileBuffering --> make abstract, it stress tests the BufferChannel.
     
     // One transaction dataset - reuse.  Pool?
     //   Create the one transaction dadaset when the datasetgraph itself is created
