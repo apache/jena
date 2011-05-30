@@ -18,6 +18,7 @@ import java.util.regex.Pattern ;
  * <ul>
  * <li>Language tags syntax: <a href="http://www.ietf.org/rfc/rfc4646.txt">RFC 4646</a></li>
  * <li>Matching Language tags: <a href="http://www.ietf.org/rfc/rfc4647.txt">RFC 4647</a></li>
+ * <li>Language tags syntax: <a href="http://www.ietf.org/rfc/rfc5646.txt">RFC 5646</a></li>
  * </ul>
  */
   
