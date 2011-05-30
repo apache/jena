@@ -6,31 +6,23 @@
 
 package com.hp.hpl.jena.tdb.base.objectfile;
 
-import java.nio.ByteBuffer ;
-
-import org.junit.AfterClass ;
-import org.junit.Test ;
-import org.openjena.atlas.junit.BaseTest ;
-import org.openjena.atlas.lib.FileOps ;
-
-import com.hp.hpl.jena.tdb.ConfigTest ;
-import com.hp.hpl.jena.tdb.base.block.Block ;
-import com.hp.hpl.jena.tdb.base.file.BufferChannel ;
-import com.hp.hpl.jena.tdb.base.file.BufferChannelFile ;
-
-import static com.hp.hpl.jena.tdb.base.BufferTestLib.* ;
+import static com.hp.hpl.jena.tdb.base.BufferTestLib.sameValue ;
 import static com.hp.hpl.jena.tdb.base.objectfile.AbstractTestObjectFile.fill ;
 
-public class TestObjectFileDiskBuffering extends BaseTest
-{
-    static String filename = ConfigTest.getTestingDir()+"/test-objectfile" ;
+import java.nio.ByteBuffer ;
 
-    @AfterClass public static void cleanup() { FileOps.deleteSilent(filename) ; } 
-    
+import org.junit.Test ;
+import org.openjena.atlas.junit.BaseTest ;
+
+import com.hp.hpl.jena.tdb.base.block.Block ;
+import com.hp.hpl.jena.tdb.base.file.BufferChannel ;
+import com.hp.hpl.jena.tdb.base.file.BufferChannelMem ;
+
+public class TestObjectFileBuffering extends BaseTest
+{
     protected ObjectFile make(int bufferSize)
     {
-        FileOps.deleteSilent(filename) ;
-        BufferChannel chan = new BufferChannelFile(filename) ;
+        BufferChannel chan = new BufferChannelMem() ;
         return new ObjectFileStorage(chan, bufferSize) ;
     }
 
@@ -90,6 +82,10 @@ public class TestObjectFileDiskBuffering extends BaseTest
     @Test public void objectfile_57()       { writePrealloc(12, 6, 10) ; }
     @Test public void objectfile_58()       { write(20, 6, 10, 5) ; }
     @Test public void objectfile_59()       { writePrealloc(20, 6, 10, 5) ; }
+
+    @Test public void objectfile_60()       { write(20, 4, 4, 8) ; }
+    @Test public void objectfile_61()       { writePrealloc(20, 4, 4, 8) ; }
+
 }
 
 /*

@@ -3,8 +3,11 @@ package tx;
 
 public class DevTx
 {
-    // TestObjectFileTrans
-    // More TestObjectFile tests - write - flush, write some more.
+    // TestObjectFileTrans -- more tests.
+    // TestObjectFileBuffering --> make abstract
+    
+    
+    //    More TestObjectFile tests - write - flush, write some more.
     
     // One transaction dataset - reuse.  Pool?
     //   Create the one transaction dadaset when the datasetgraph itself is created

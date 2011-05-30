@@ -13,7 +13,6 @@ import java.nio.ByteBuffer ;
 import java.util.Iterator ;
 
 import org.openjena.atlas.iterator.Iter ;
-import org.openjena.atlas.lib.Bytes ;
 import org.openjena.atlas.lib.Pair ;
 import org.openjena.atlas.logging.Log ;
 import tx.IteratorSlotted ;
@@ -47,7 +46,6 @@ public class ObjectFileStorage implements ObjectFile
     
     // Delayed write buffer.
     private final ByteBuffer writeBuffer ;
-    private int bufferSize ;
     
     private final BufferChannel file ;              // Access to storage
     private long filesize ;                         // Size of on-disk. 
@@ -65,9 +63,8 @@ public class ObjectFileStorage implements ObjectFile
     public ObjectFileStorage(BufferChannel file, int bufferSize)
     {
         this.file = file ;
-        this.bufferSize = bufferSize ;
         filesize = file.size() ;
-        writeBuffer = ByteBuffer.allocate(bufferSize) ;
+        writeBuffer = (bufferSize >= 0) ? ByteBuffer.allocate(bufferSize) : null ;
     }
     
     @Override
@@ -76,6 +73,12 @@ public class ObjectFileStorage implements ObjectFile
         if ( inAllocWrite )
             Log.fatal(this, "In the middle of an alloc-write") ;
         inAllocWrite = false ;
+        if ( writeBuffer == null )
+        {
+            long x = rawWrite(bb) ;
+            return x ;
+        }
+        
         int len = bb.limit() - bb.position() ;
         int spaceNeeded = len + SizeOfInt ;
         
@@ -101,10 +104,11 @@ public class ObjectFileStorage implements ObjectFile
         lengthBuffer.putInt(len) ;
         lengthBuffer.flip() ;
         long location = file.position() ; 
-        file.write(lengthBuffer, location) ;
-        long loc2 = location+SizeOfInt ;
-        int x = file.write(bb, loc2) ;
-        filesize = filesize+x ;
+        file.write(lengthBuffer) ;
+        int x = file.write(bb) ;
+        if ( x != len )
+            throw new FileException() ;
+        filesize = filesize+x+SizeOfInt ;
         return location ;
     }
     
@@ -116,13 +120,14 @@ public class ObjectFileStorage implements ObjectFile
         
         // Include space for length.
         int spaceRequired = bytesSpace + SizeOfInt ;
+        
         // Find space.
-        if ( spaceRequired > writeBuffer.remaining() )
+        if (  writeBuffer != null && spaceRequired > writeBuffer.remaining() )
             flushOutputBuffer() ;
         
-        if ( spaceRequired > writeBuffer.remaining() )
+        if ( writeBuffer == null || spaceRequired > writeBuffer.remaining() )
         {
-            // Too big. have flushed buffering.
+            // Too big. Have flushed buffering if buffering.
             inAllocWrite = true ;
             ByteBuffer bb = ByteBuffer.allocate(bytesSpace) ;
             allocBlock = new Block(filesize, bb) ;  
@@ -178,6 +183,7 @@ public class ObjectFileStorage implements ObjectFile
 
     private void flushOutputBuffer()
     {
+        if ( writeBuffer == null ) return ;
         if ( writeBuffer.position() == 0 ) return ;
         long location = filesize ;
         writeBuffer.flip();
@@ -229,7 +235,7 @@ public class ObjectFileStorage implements ObjectFile
         }
         
         // No - it's in the underlying file storage.
-        lengthBuffer.position(0) ;
+        lengthBuffer.clear() ;
         int x = file.read(lengthBuffer, loc) ;
         if ( x != 4 )
             throw new FileException("ObjectFile.read: Failed to read the length : got "+x+" bytes") ;
@@ -245,6 +251,7 @@ public class ObjectFileStorage implements ObjectFile
     @Override
     public long length()
     {
+        if ( writeBuffer == null ) return filesize ; 
         return filesize+writeBuffer.position() ;
     }
 
@@ -262,7 +269,7 @@ public class ObjectFileStorage implements ObjectFile
         ObjectIterator iter = new ObjectIterator(0, filesize) ;
         //return iter ;
         
-        if ( writeBuffer.position() == 0 ) return iter ;
+        if ( writeBuffer == null || writeBuffer.position() == 0 ) return iter ;
         return Iter.concat(iter, new BufferIterator(writeBuffer)) ;
     }
     
@@ -334,32 +341,6 @@ public class ObjectFileStorage implements ObjectFile
         public void remove()
         { throw new UnsupportedOperationException() ; }
     }
-    
-    // ---- Dump
-    public void dump() { dump(handler) ; }
-
-    public interface DumpHandler { void handle(long fileIdx, String str) ; }  
-    
-    public void dump(DumpHandler handler)
-    {
-        file.position(0) ; 
-        long fileIdx = 0 ;
-        while ( fileIdx < filesize )
-        {
-            ByteBuffer bb = read(fileIdx) ;
-            String str = Bytes.fromByteBuffer(bb) ;
-            handler.handle(fileIdx, str) ;
-            fileIdx = fileIdx + bb.limit() + 4 ;
-        }
-    }
-    
-    static DumpHandler handler = new DumpHandler() {
-        @Override
-        public void handle(long fileIdx, String str)
-        {
-            System.out.printf("0x%08X : %s\n", fileIdx, str) ;
-        }
-    } ;
 }
 
 /*

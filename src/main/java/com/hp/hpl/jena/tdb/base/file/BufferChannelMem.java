@@ -18,6 +18,12 @@ public class BufferChannelMem implements BufferChannel
     private static int INIT_SIZE = 1024 ;
     private static int INC_SIZE = 1024 ;
     
+    
+    public BufferChannelMem()
+    {
+        this("unnamed") ;
+    }
+    
     public BufferChannelMem(String name)
     {
         bytes = ByteBuffer.allocate(1024) ;
@@ -63,8 +69,8 @@ public class BufferChannelMem implements BufferChannel
     public int read(ByteBuffer buffer, long loc)
     {
         checkIfClosed() ;
-        if ( loc < 0 || loc >= buffer.limit() )
-            throw new StorageException("Out of range: "+loc) ;
+        if ( loc < 0 || loc >= bytes.limit() )
+            throw new StorageException("Out of range: "+loc+" [0,"+buffer.limit()+")") ;
         int x = buffer.position() ;
         bytes.position((int)loc) ;
         int len = read(buffer) ;

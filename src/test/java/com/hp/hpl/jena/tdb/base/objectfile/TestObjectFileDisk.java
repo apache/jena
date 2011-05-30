@@ -24,7 +24,8 @@ public class TestObjectFileDisk extends AbstractTestObjectFile
     {
         FileOps.deleteSilent(filename) ;
         BufferChannel chan = new BufferChannelFile(filename) ;
-        return new ObjectFileStorage(chan) ;
+        // No buffering.
+        return new ObjectFileStorage(chan, -1) ;
     }
 }
 

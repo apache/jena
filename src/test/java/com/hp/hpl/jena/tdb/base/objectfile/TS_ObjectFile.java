@@ -13,7 +13,7 @@ import org.junit.runners.Suite ;
 @Suite.SuiteClasses( {
     TestObjectFileMem.class
     , TestObjectFileDisk.class
-    , TestObjectFileDiskBuffering.class
+    , TestObjectFileBuffering.class
     , TestStringFileMem.class 
     , TestStringFileDisk.class 
 })
