@@ -1,6 +1,6 @@
 /*
  * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
- * (c) Copyright 2010 Epimoprhics Ltd.
+ * (c) Copyright 2010 Epimorphics Ltd.
  * [See end of file]
  */
 
@@ -201,7 +201,7 @@ public class QueryIterBlockTriplesQH extends QueryIterRepeatApply
 
 /*
  * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
- * (c) Copyright 2010 Epimoprhics Ltd.
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
