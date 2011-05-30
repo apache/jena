@@ -33,10 +33,10 @@ public class ObjectFileTrans implements ObjectFile, Transactional
         // The other object file must use the same allocation policy.
         this.journal = journal ;
         this.base = base ;
-        begin() ;
         this.other = other ;
         this.alloc = base.length() ;
         this.startAlloc = base.length() ;
+        begin() ;
     }
 
     // Begin read ==> passthrough.
@@ -66,7 +66,7 @@ public class ObjectFileTrans implements ObjectFile, Transactional
     }
     
     /** Copy from the temporary file to the real file */
-    private void append()
+    public /*temporary*/ void append()
     {
         // We could write directly to the real file if:
         //   we record the truncate point needed for an abort

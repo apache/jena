@@ -122,12 +122,24 @@ public class TxMain
         file.write(stringToBuffer("12")) ;
         System.out.println("file2:") ;
         dump(file2) ;
+        
+        
+        System.out.println("append") ;
+        file.append();
+        dump(file1) ;
+        System.out.println("reappend") ;
+        file.append();
+        dump(file1) ;
+        
         System.out.println("commit") ;
         file.commit();
         System.out.println("file1:") ;
         dump(file1) ;
         System.out.println("file2:") ;
         dump(file2) ;
+
+//        System.out.println("file2:") ;
+//        dump(file2) ;
         
         exit(0) ;
         
