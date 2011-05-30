@@ -255,8 +255,13 @@ public class LangTag
             "de-CH-x-Phonebk",
             "zh-cn-a-myExt-x-private",
             "x-foo",
+            "x-kx-kx-kx",
             "i-whatever",
             "12345"} ;
+        
+        if ( args.length == 0 )
+            args = tags ;
+        
         for ( String str : args )
         {
             String[] parts = LangTag.parse(str) ;
