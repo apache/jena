@@ -17,18 +17,13 @@ public abstract class IteratorSlotted<T> implements Iterator<T>
     // Could move in the async abort.
     private boolean finished = false ;
     private boolean slotIsSet = false ;
-    private T NULL = null ;
-    private T slot = NULL ; 
+    private T slot = null ; 
 
-    private boolean slotIsSet() { return slot != NULL ; } 
-    
     protected IteratorSlotted() { }
 
     // -------- The contract with the subclasses 
     
-    /** Implement this, not next() or nextBinding()
-        Returning null is turned into NoSuchElementException 
-        Does not need to call hasNext (can presume it is true) */
+    /** Implement this, not next() or nextBinding() */
     protected abstract T moveToNext() ;
     
     /** Can return true here then null from moveToNext() to indicate end. */ 
@@ -48,7 +43,7 @@ public abstract class IteratorSlotted<T> implements Iterator<T>
     {
         if ( finished )
             return false ;
-        if ( slotIsSet() )
+        if ( slotIsSet )
             return true ;
 
         boolean r = hasMore() ;
@@ -60,12 +55,6 @@ public abstract class IteratorSlotted<T> implements Iterator<T>
         
         slot = moveToNext() ;
         slotIsSet = true ;
-        
-        if ( ! slotIsSet() )
-        {
-            close() ;
-            return false ;
-        }
         return true ;
     }
     
@@ -77,6 +66,7 @@ public abstract class IteratorSlotted<T> implements Iterator<T>
         
         T obj = slot ;
         slot = null ;
+        slotIsSet = false ;
         return obj ;
     }
 
@@ -93,13 +83,13 @@ public abstract class IteratorSlotted<T> implements Iterator<T>
         throw new UnsupportedOperationException(Utils.className(this)+".remove") ;
     }
     
-    public void close()
+    public final void close()
     {
         if ( finished )
             return ;
         closeIterator() ;
         slotIsSet = false ;
-        slot = NULL ;
+        slot = null ;
         finished = true ;
     }
 }
