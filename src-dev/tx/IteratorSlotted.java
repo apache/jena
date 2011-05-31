@@ -73,7 +73,14 @@ public abstract class IteratorSlotted<T> implements Iterator<T>
     /** Look at the next element - returns null when there is no element */
     public final T peek()
     {
+        return peek(null) ;
+    }
+    
+    /** Look at the next element - returns dft when there is no element */
+    public final T peek(T dft)
+    {
         hasNext() ;
+        if ( ! slotIsSet ) return dft ;
         return slot ;
     }
     
