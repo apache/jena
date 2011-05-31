@@ -6,8 +6,6 @@
 
 package com.hp.hpl.jena.tdb.transaction;
 
-import tx.transaction.Transaction ;
-
 /** Interface that components of the transaction system implmement.  
  * This is not the public/application interface to transactions.
  */ 

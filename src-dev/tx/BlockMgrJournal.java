@@ -17,10 +17,10 @@ import org.openjena.atlas.logging.Log ;
 import tx.base.FileRef ;
 import tx.journal.Journal ;
 import tx.journal.JournalEntry ;
-import tx.transaction.Transaction ;
 
 import com.hp.hpl.jena.tdb.base.block.Block ;
 import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
+import com.hp.hpl.jena.tdb.transaction.Transaction ;
 import com.hp.hpl.jena.tdb.transaction.Transactional ;
 
 public class BlockMgrJournal implements BlockMgr, Transactional

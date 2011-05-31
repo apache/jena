@@ -15,7 +15,6 @@ import java.util.Iterator ;
 
 import org.junit.Test ;
 import org.openjena.atlas.lib.Bytes ;
-import org.openjena.atlas.lib.FileOps ;
 import org.openjena.atlas.lib.Pair ;
 import org.openjena.atlas.lib.StrUtils ;
 import org.openjena.atlas.logging.Log ;
@@ -25,8 +24,6 @@ import org.slf4j.LoggerFactory ;
 import tx.journal.Journal ;
 import tx.journal.JournalEntry ;
 import tx.journal.JournalEntryType ;
-import tx.transaction.Transaction ;
-import tx.transaction.TransactionManager_X ;
 
 import com.hp.hpl.jena.query.DatasetFactory ;
 import com.hp.hpl.jena.query.Query ;
@@ -35,16 +32,12 @@ import com.hp.hpl.jena.query.QueryExecutionFactory ;
 import com.hp.hpl.jena.query.QueryFactory ;
 import com.hp.hpl.jena.query.Syntax ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.sparql.util.QueryExecUtils ;
 import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory ;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrLogger ;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrTracker ;
-import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile ;
-import com.hp.hpl.jena.tdb.base.objectfile.ObjectFileMem ;
-import com.hp.hpl.jena.tdb.base.objectfile.ObjectFileTrans ;
 import com.hp.hpl.jena.tdb.base.record.Record ;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
 import com.hp.hpl.jena.tdb.base.record.RecordLib ;
@@ -54,7 +47,6 @@ import com.hp.hpl.jena.tdb.index.RangeIndex ;
 import com.hp.hpl.jena.tdb.index.bplustree.BPTreeNode ;
 import com.hp.hpl.jena.tdb.index.bplustree.BPlusTree ;
 import com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams ;
-import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.update.UpdateAction ;
 import com.hp.hpl.jena.update.UpdateFactory ;
 import com.hp.hpl.jena.update.UpdateRequest ;
@@ -79,79 +71,6 @@ public class TxMain
     
     public static void main(String... args)
     {
-        ObjectFile file1 = new ObjectFileMem() ;
-        long x1 = file1.write(stringToBuffer("ABCDEF")) ;
-        long x2 = file1.write(stringToBuffer("AABBCC")) ;
-        
-        Transaction txn = new Transaction(57, null) ;
-        
-        ObjectFile file2 = new ObjectFileMem() ;
-        ObjectFileTrans file = new ObjectFileTrans(null, file1, file2) ;
-        file.begin(txn) ; 
-        
-        ByteBuffer bb = stringToBuffer("XYZ") ;
-        file.write(bb) ;
-        
-        System.out.println("file1:") ;
-        dump(file1) ;
-        System.out.println("file2:") ;
-        dump(file2) ;
-        
-        System.out.println("commit") ;
-        file.commit(txn) ;
-        System.out.println("file1:") ;
-        dump(file1) ;
-        System.out.println("file2:") ;
-        dump(file2) ;
-//        
-//        System.out.println("begin") ;
-//        file.begin() ;
-//        System.out.println("file1:") ;
-//        dump(file1) ;
-//        file.write(stringToBuffer("12")) ;
-//        System.out.println("file2:") ;
-//        dump(file2) ;
-//        
-//        System.out.println("abort") ;
-//        file.abort();
-//        System.out.println("file1:") ;
-//        dump(file1) ;
-//        System.out.println("file2:") ;
-//        dump(file2) ;
-//        
-//        
-        System.out.println("begin") ;
-        file.begin(txn) ;
-        System.out.println("file1:") ;
-        dump(file1) ;
-        file.write(stringToBuffer("12")) ;
-        System.out.println("file2:") ;
-        dump(file2) ;
-        
-        
-        System.out.println("append") ;
-        file.append();
-        dump(file1) ;
-        System.out.println("reappend") ;
-        file.append();
-        dump(file1) ;
-        
-        System.out.println("commit") ;
-        file.commit(txn);
-        System.out.println("file1:") ;
-        dump(file1) ;
-        System.out.println("file2:") ;
-        dump(file2) ;
-
-//        System.out.println("file2:") ;
-//        dump(file2) ;
-        
-        exit(0) ;
-        
-        
-        
-        
-        
         //tree_ins_2_01() ; exit(0) ;
         
         //test.BPlusTreeRun.main("test", "--bptree:track", "3", "125", "100000") ; exit(0) ;
@@ -160,7 +79,6 @@ public class TxMain
         
         exit(0) ;
         bpTreeTracking() ; exit(0) ;
-        transactional() ; exit(0) ;
     }
     
     private static void dump(ObjectFile file)
@@ -410,53 +328,6 @@ public class TxMain
         return bpt ;
     }
 
-    public static void transactional(String... args)
-    {
-        Location location ;
-        if ( false )
-        {
-            String dirname = "DBX" ;
-            if ( false && FileOps.exists(dirname) )
-                FileOps.clearDirectory(dirname) ;
-            location = new Location(dirname) ;
-        } else
-            location = Location.mem() ;
-
-        TransactionManager_X txnMgr = new TransactionManager_X() ;
-        DatasetGraphTDB dsg = txnMgr.build(location) ;
-        //dsg.add(SSE.parseQuad("(_ <s> <p> 'o')")) ;
-        
-        DatasetGraphTxView dsgX1 = txnMgr.begin(dsg) ;
-        dsgX1.add(SSE.parseQuad("(_ <sx> <px> 'ox1')")) ;
-        
-//        System.out.println("Base:") ;
-//        //System.out.println(dsg) ;
-//        query("SELECT count(*) { ?s ?p ?o }", dsg) ;
-        
-        System.out.println("Transaction:") ;
-        //System.out.println(dsgX) ;
-        query("SELECT count(*) { ?s ?p ?o }", dsgX1) ;
-        update("CLEAR DEFAULT", dsgX1) ;
-        query("SELECT count(*) { ?s ?p ?o }", dsgX1) ;
-        
-        System.out.println("Base:") ;
-        //System.out.println(dsg) ;
-        query("SELECT count(*) { ?s ?p ?o }", dsg) ;
-        
-        DatasetGraphTxView dsgX2 = txnMgr.begin(dsg) ;
-        dsgX2.add(SSE.parseQuad("(_ <sx> <px> 'ox2')")) ;
-
-        
-        System.out.println("Transaction:") ;
-        //System.out.println(dsgX) ;
-        query("SELECT count(*) { ?s ?p ?o }", dsgX1) ;
-        dsgX1.abort() ;
-        
-        System.out.println("Done") ;
-        System.exit(0) ;
-        
-    }
-    
     public static void query(String queryStr, DatasetGraph dsg)
     {
         Query query = QueryFactory.create(queryStr, Syntax.syntaxARQ) ;

@@ -12,11 +12,11 @@ import java.util.Iterator ;
 import org.openjena.atlas.iterator.Iter ;
 import org.openjena.atlas.lib.Pair ;
 import org.openjena.atlas.lib.StrUtils ;
-import tx.transaction.Transaction ;
 
 import com.hp.hpl.jena.tdb.base.block.Block ;
 import com.hp.hpl.jena.tdb.base.file.FileException ;
 import com.hp.hpl.jena.tdb.transaction.TDBTransactionException ;
+import com.hp.hpl.jena.tdb.transaction.Transaction ;
 import com.hp.hpl.jena.tdb.transaction.Transactional ;
 
 public class ObjectFileTrans implements ObjectFile, Transactional

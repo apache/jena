@@ -9,13 +9,14 @@ package com.hp.hpl.jena.tdb.base.objectfile;
 import java.nio.ByteBuffer ;
 import java.util.Iterator ;
 
+import com.hp.hpl.jena.tdb.transaction.Transaction ;
+
 import org.junit.After ;
 import org.junit.Before ;
 import org.junit.Test ;
 import org.openjena.atlas.junit.BaseTest ;
 import org.openjena.atlas.lib.Pair ;
 import org.openjena.atlas.lib.StrUtils ;
-import tx.transaction.Transaction ;
 
 public abstract class AbstractTestObjectFileTrans extends BaseTest
 {
