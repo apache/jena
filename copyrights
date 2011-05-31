@@ -1,6 +1,7 @@
 #!/usr/bin/perl
-
-# Run with: find src -name \*.java | xargs perl perl-script
+# Find copyright statements in a file.
+# Run with: find src -name \*.java | xargs perl SCRIPT | sort | uniq 
+# to get all the copyright statements in the source tree.
 
 &setExclude ;
 undef $/ ;
@@ -18,17 +19,9 @@ sub process
     open(FILE, "<$file") || die ;
     binmode FILE ;
     $_ = <FILE> ;
-    # my $t = &clean($_) ;
     my @a = &copyrights($_) ;
-
-    @a = m!\(c\)\s*Copyright(?:[\s\d,]*)(.*)!gx ;
     map {$copyrights{$_} = 1} @a ;
-
     print join("\n", keys %copyrights),"\n" ;
-
-##     print "---------------\n" ;
-##     print $t ;
-##     print "---------------\n" ;
 }
 
 sub copyrights
@@ -38,81 +31,7 @@ sub copyrights
      return @a ;
 }
 
-## head and tail
-sub clean
-{
-    my $text = @_[0] ;
-    $text =~ s!^\s*/\*[^{}/]*\*/\s*!!s ;
-    $text =~ s!\s*/\*[^{}]*\*/\s*$!!s ;
-    return $text."\n" ;
-}
-
-sub copyrights
-{
-    local $text = $_[0] ;
-    local @a = $text =~ m!\(c\)\s*Copyright(?:[\s\d,]*)(.*)!gx ;
-    return @a ;
-}
-
-##     # Head
-##     if ( m!^\s*/\*[^{}]*\*/!s )
-##     {
-## 	##print "HEAD\n" ;
-## 	$head = $& ;
-## 	##print $head,"\n" ;
-## 	##print "HEAD\n" ;
-##     }
-##     if ( m!/\*[^{}]*\*/\s*$!s )
-##     {
-## 	##print "TAIL\n" ;
-## 	$tail = $& ;
-## 	##print $tail,"\n" ;
-## 	##print "TAIL\n" ;
-##     }
-
-
-
-
-
-
 sub setExclude
 {
-    # Mostly, these files are the output of JavaCC
-    $exclude{'src/com/hp/hpl/jena/n3/N3AntlrLexer.java'} = 1 ;
-    $exclude{'src/com/hp/hpl/jena/n3/N3AntlrLexer.java'} = 1 ;
-    $exclude{'src/com/hp/hpl/jena/n3/N3AntlrLexer.java'} = 1 ;
-    $exclude{'src/com/hp/hpl/jena/n3/N3AntlrParser.java'} = 1 ;
-    $exclude{'src/com/hp/hpl/jena/n3/N3AntlrParser.java'} = 1 ;
-    $exclude{'src/com/hp/hpl/jena/n3/N3AntlrParser.java'} = 1 ;
-    $exclude{'src/com/hp/hpl/jena/n3/N3AntlrParserTokenTypes.java'} = 1 ;
-    $exclude{'src/com/hp/hpl/jena/n3/N3AntlrParserTokenTypes.java'} = 1 ;
-    $exclude{'src/com/hp/hpl/jena/n3/N3AntlrParserTokenTypes.java'} = 1 ;
-
-    $exclude{'src/com/hp/hpl/jena/n3/turtle/parser/JavaCharStream.java'}= 1 ;
-    $exclude{'src/com/hp/hpl/jena/n3/turtle/parser/ParseException.java'} = 1 ;
-    $exclude{'src/com/hp/hpl/jena/n3/turtle/parser/Token.java'} = 1 ;
-    $exclude{'src/com/hp/hpl/jena/n3/turtle/parser/TokenMgrError.java'} = 1 ;
-    $exclude{'src/com/hp/hpl/jena/n3/turtle/parser/TurtleParser.java'} = 1 ;
-    $exclude{'src/com/hp/hpl/jena/n3/turtle/parser/TurtleParser.java'} = 1 ;
-    $exclude{'src/com/hp/hpl/jena/n3/turtle/parser/TurtleParserConstants.java'} = 1 ;
-    $exclude{'src/com/hp/hpl/jena/n3/turtle/parser/TurtleParserConstants.java'} = 1 ;
-    $exclude{'src/com/hp/hpl/jena/n3/turtle/parser/TurtleParserTokenManager.java'} = 1 ;
-    $exclude{'src/com/hp/hpl/jena/n3/turtle/parser/TurtleParserTokenManager.java'} = 1 ;
-    $exclude{'src/com/hp/hpl/jena/n3/turtle/test/TurtleTestVocab.java'} = 1 ;
-    $exclude{'src/com/hp/hpl/jena/n3/turtle/test/TurtleTestVocab.java'} = 1 ;
-
-    $exclude{'src/com/hp/hpl/jena/rdql/parser/JavaCharStream.java'} = 1 ;
-    $exclude{'src/com/hp/hpl/jena/rdql/parser/ParseException.java'} = 1 ;
-    $exclude{'src/com/hp/hpl/jena/rdql/parser/RDQLParser.java'} = 1 ;
-    $exclude{'src/com/hp/hpl/jena/rdql/parser/RDQLParserConstants.java'} = 1 ;
-    $exclude{'src/com/hp/hpl/jena/rdql/parser/RDQLParserTokenManager.java'} = 1 ;
-    $exclude{'src/com/hp/hpl/jena/rdql/parser/RDQLParserTreeConstants.java'} = 1 ;
-    $exclude{'src/com/hp/hpl/jena/rdql/parser/RDQLParserTreeConstants.java'} = 1 ;
-    $exclude{'src/com/hp/hpl/jena/rdql/parser/RDQLParserTreeConstants.java'} = 1 ;
-    $exclude{'src/com/hp/hpl/jena/rdql/parser/Token.java'} = 1 ;
-    $exclude{'src/com/hp/hpl/jena/rdql/parser/TokenMgrError.java'} = 1 ;
-
-    $exclude{'src/com/hp/hpl/jena/shared/uuid/MD5.java'} = 1 ;
-    $exclude{'src/com/hp/hpl/jena/vocabulary/TestManifest.java'} = 1 ;
-    $exclude{'src/com/hp/hpl/jena/vocabulary/TestManifestX.java'} = 1 ;
+    # Typically generated files.
 }
