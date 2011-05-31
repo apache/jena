@@ -1154,6 +1154,7 @@ public class BuilderExpr
             String separator = null ;
             if ( x.get(0).isTagged(Tags.tagSeparator))
             {
+                // What about ORDERED BY
                 ItemList y = x.get(0).getList() ;
                 BuilderLib.checkLength(2, y, "Broken syntax: "+list) ;
                 Node n = y.get(1).getNode() ;
@@ -1164,7 +1165,7 @@ public class BuilderExpr
             }
             
             Expr expr = buildExpr(x.get(0)) ;
-            Aggregator agg = AggregatorFactory.createGroupConcat(distinct, expr, separator) ;
+            Aggregator agg = AggregatorFactory.createGroupConcat(distinct, expr, separator, null) ;
             return new ExprAggregator((Var)null, agg) ; 
         }
     };

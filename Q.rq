@@ -1,7 +1,4 @@
-PREFIX : <http://example/>
-
-SELECT (count(?x) AS ?C) 
+SELECT (GROUP_CONCAT(?o ; SEPARATOR = ":" ) AS ?c)
 {
-   ?z a :foo 
-   OPTIONAL { ?z :p ?x }   
-}
+  ?s ?p ?o
+} GROUP BY ?o

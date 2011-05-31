@@ -4066,7 +4066,9 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
   final public Expr Aggregate() throws ParseException {
                      Aggregator agg = null ; String sep = null ;
                      boolean distinct = false ;
-                     Expr expr = null ; ExprList a = new ExprList() ;
+                     Expr expr = null ; Expr expr2 = null ;
+                     ExprList a = new ExprList() ;
+                     ExprList ordered = new ExprList() ;
                      Token t ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case COUNT:
@@ -4283,7 +4285,7 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
         ;
       }
       jj_consume_token(RPAREN);
-      agg = AggregatorFactory.createGroupConcat(distinct, expr, sep) ;
+      agg = AggregatorFactory.createGroupConcat(distinct, expr, sep, ordered) ;
       break;
     default:
       jj_la1[145] = jj_gen;

@@ -8,6 +8,9 @@
 package com.hp.hpl.jena.sparql.expr.aggregate;
 
 import com.hp.hpl.jena.sparql.expr.Expr ;
+import com.hp.hpl.jena.sparql.expr.ExprList ;
+
+import org.openjena.atlas.lib.NotImplemented ;
 import org.openjena.atlas.logging.Log ;
 
 public class AggregatorFactory
@@ -48,8 +51,10 @@ public class AggregatorFactory
         return distinct ? new AggSampleDistinct(expr) : new AggSample(expr) ;
     }
     
-    public static Aggregator createGroupConcat(boolean distinct, Expr expr, String separator)
+    public static Aggregator createGroupConcat(boolean distinct, Expr expr, String separator, ExprList orderedBy)
     { 
+        if ( orderedBy != null && ! orderedBy.isEmpty())
+            throw new NotImplemented("GROUP_CONCAT / ORDER BY not implemented yet") ;        
         return distinct ? new AggGroupConcatDistinct(expr, separator) : new AggGroupConcat(expr, separator) ;
     }
     

@@ -110,6 +110,8 @@ public class RunARQ
 
     public static void main(String[] argv) throws Exception
     {
+        arq.qparse.main("--file=Q.arq") ; exit(0) ;
+        
         String x = StrUtils.strjoinNL("(join",
                                       //"  (conditional",
                                       "  (leftjoin",

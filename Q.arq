@@ -1,3 +1,4 @@
-CONSTRUCT 
-FROM <D.ttl>
-WHERE { ?s ?p ?o }
+SELECT GROUP_CONCAT(?o ; ORDER BY ?p )
+{
+  ?s ?p ?o
+} GROUP BY ?o

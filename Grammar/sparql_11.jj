@@ -1281,7 +1281,9 @@ Expr NotExistsFunc() : { Element el ; }
 }
 Expr Aggregate() : { Aggregator agg = null ; String sep = null ;
                      boolean distinct = false ;
-                     Expr expr = null ; ExprList a = new ExprList() ;
+                     Expr expr = null ; Expr expr2 = null ;
+                     ExprList a = new ExprList() ;
+                     ExprList ordered = new ExprList() ;
                      Token t ; }
 {
   // Count is special because of COUNT(*)
@@ -1310,11 +1312,7 @@ Expr Aggregate() : { Aggregator agg = null ; String sep = null ;
     // Single arg version
     (<SEMICOLON> <SEPARATOR> <EQ> sep=String())?
     <RPAREN>
-    { agg = AggregatorFactory.createGroupConcat(distinct, expr, sep) ; }
-//     (<COMMA> expr = Expression() { a.add(expr) ; } )*
-//     (<SEMICOLON> <SEPARATOR> <EQ> sep=String())?
-//     <RPAREN>
-//     { agg = AggregatorFactory.createGroupConcat(distinct, a, sep) ; }
+    { agg = AggregatorFactory.createGroupConcat(distinct, expr, sep, ordered) ; }
    )
    {
      if ( ! allowAggregatesInExpressions )

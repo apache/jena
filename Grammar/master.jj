@@ -1736,7 +1736,9 @@ Expr NotExistsFunc() : { Element el ; }
 
 Expr Aggregate() : { Aggregator agg = null ; String sep = null ;
                      boolean distinct = false ;
-                     Expr expr = null ; ExprList a = new ExprList() ;
+                     Expr expr = null ;  Expr expr2 = null ;
+                     ExprList a = new ExprList() ;
+                     ExprList ordered = new ExprList() ;
                      Token t ; }
 {
   // Count is special because of COUNT(*)
@@ -1769,19 +1771,22 @@ Expr Aggregate() : { Aggregator agg = null ; String sep = null ;
     <LPAREN>
     (t = <DISTINCT> { distinct = true ; })?
     expr = Expression() { a.add(expr) ; } 
+#ifdef SPARQL_11
     // Single arg version
     (<SEMICOLON> <SEPARATOR> <EQ> sep=String())?
-#ifdef false
-    { Expr expr2 ; }
-    // Limited GROUP BY
-    (<SEMICOLON> <GROUP><BY> expr2 = Expression()
+#endif
+#ifdef ARQ
+       // JavcaCC 5.0 - rewriting as LL(1) didn't work - code generated was wrong
+    (LOOKAHEAD(2)
+       ( <SEMICOLON>  <SEPARATOR> <EQ> sep=String()
+           (<SEMICOLON> <ORDER><BY> expr2 = Expression() { ordered.add(expr2) ; })?
+       )
+       |
+       (<SEMICOLON> <ORDER><BY> expr2 = Expression() { ordered.add(expr2) ; } )
+    )?
 #endif
     <RPAREN>
-    { agg = AggregatorFactory.createGroupConcat(distinct, expr, sep) ; }
-//     (<COMMA> expr = Expression() { a.add(expr) ; } )*
-//     (<SEMICOLON> <SEPARATOR> <EQ> sep=String())?
-//     <RPAREN>
-//     { agg = AggregatorFactory.createGroupConcat(distinct, a, sep) ; }
+    { agg = AggregatorFactory.createGroupConcat(distinct, expr, sep, ordered) ; }
    )
 
    {
