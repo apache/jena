@@ -6,22 +6,22 @@
 
 package com.hp.hpl.jena.tdb.base.objectfile;
 
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
+import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile ;
+import com.hp.hpl.jena.tdb.base.objectfile.ObjectFileMem ;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-    TestObjectFileMem.class
-    , TestObjectFileDisk.class
-    , TestObjectFileBuffering.class
-    , TestStringFileMem.class 
-    , TestStringFileDisk.class
-    , TestObjectFileTransMem.class
-    , TestObjectFileTransStorage.class
-})
+public class TestObjectFileTransMem extends AbstractTestObjectFileTrans
+{
+    @Override
+    ObjectFile createFile(String basename)
+    {
+        return new ObjectFileMem() ;
+    }
 
-public class TS_ObjectFile
-{ }
+    @Override
+    void deleteFile(String basename)
+    {}
+
+}
 
 /*
  * (c) Copyright 2011 Epimorphics Ltd.

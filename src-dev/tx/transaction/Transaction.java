@@ -15,10 +15,10 @@ import java.util.List ;
 public class Transaction
 {
     private final long id ;
-    private final TransactionManager txnMgr ;
+    private final TransactionManager_X txnMgr ;
     private final List<Iterator<?>> iterators ; 
 
-    public Transaction(long id, TransactionManager txnMgr)
+    public Transaction(long id, TransactionManager_X txnMgr)
     {
         this.id = id ;
         this.txnMgr = txnMgr ;
@@ -28,7 +28,7 @@ public class Transaction
     public void commit()                            { txnMgr.commit(this) ; }
     public void abort()                             { txnMgr.abort(this) ; }
     public long getTxnId()                          { return id ; }
-    public TransactionManager getTxnMgr()           { return txnMgr ; }
+    public TransactionManager_X getTxnMgr()           { return txnMgr ; }
     
     public void addIterator(Iterator<?> iter)       { iterators.add(iter) ; }
     public void removeIterator(Iterator<?> iter)    { iterators.remove(iter) ; }

@@ -4,39 +4,16 @@
  * [See end of file]
  */
 
-package tx;
+package com.hp.hpl.jena.tdb.transaction;
 
-import com.hp.hpl.jena.tdb.base.file.BufferChannel ;
-import com.hp.hpl.jena.tdb.base.file.BufferChannelMem ;
-import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile ;
-import com.hp.hpl.jena.tdb.base.objectfile.ObjectFileStorage ;
+import com.hp.hpl.jena.tdb.TDBException ;
 
-public class TestObjectFileTransStorage extends AbstractTestObjectFileTrans
+public class TDBTransactionException extends TDBException
 {
-    @Override
-    ObjectFile createFile(String basename)
-    {
-//        String dir = ConfigTest.getTestingDir() ;
-//        Location loc = new Location(dir) ;
-//        String fn = loc.getPath(basename) ;
-//        FileOps.deleteSilent(fn) ;
-//        BufferChannel chan = new BufferChannelFile(fn) ;
-//        return new ObjectFileStorage(chan) ;
-        
-        BufferChannel chan = new BufferChannelMem() ;
-        return new ObjectFileStorage(chan) ;
-        
-    }
-
-
-    @Override
-    void deleteFile(String basename)
-    {
-//        String dir = ConfigTest.getTestingDir() ;
-//        Location loc = new Location(dir) ;
-//        String fn = loc.getPath(basename) ;
-//        FileOps.delete(fn) ;
-    }
+    public TDBTransactionException()                          { super() ; }
+    public TDBTransactionException(String msg)                { super(msg) ; }
+    public TDBTransactionException(Throwable th)              { super(th) ; }
+    public TDBTransactionException(String msg, Throwable th)  { super(msg, th) ; }
 }
 
 /*

@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package tx;
+package com.hp.hpl.jena.tdb.base.objectfile;
 
 import java.nio.ByteBuffer ;
 import java.util.Iterator ;
@@ -12,48 +12,49 @@ import java.util.Iterator ;
 import org.openjena.atlas.iterator.Iter ;
 import org.openjena.atlas.lib.Pair ;
 import org.openjena.atlas.lib.StrUtils ;
-import tx.journal.Journal ;
+import tx.transaction.Transaction ;
 
 import com.hp.hpl.jena.tdb.base.block.Block ;
 import com.hp.hpl.jena.tdb.base.file.FileException ;
-import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile ;
+import com.hp.hpl.jena.tdb.transaction.TDBTransactionException ;
+import com.hp.hpl.jena.tdb.transaction.Transactional ;
 
 public class ObjectFileTrans implements ObjectFile, Transactional
 {
-    private final Journal journal ;
     private final ObjectFile other ;
     private long startAlloc ;
     private long alloc ;
     private boolean passthrough = false ;
+    private boolean inTransaction = false ;
     private final ObjectFile base ;
     
     // For recovery replay, we need to truncate "base" first. 
     
-    public ObjectFileTrans(Journal journal, ObjectFile base, ObjectFile other)
+    public ObjectFileTrans(Transaction txn, ObjectFile base, ObjectFile other)
     {
         // The other object file must use the same allocation policy.
-        this.journal = journal ;
         this.base = base ;
         this.other = other ;
-        this.alloc = base.length() ;
-        this.startAlloc = base.length() ;
-        begin() ;
+        inTransaction = false ;
     }
 
     // Begin read ==> passthrough.
     
     @Override
-    public void begin()
+    public void begin(Transaction txn)
     {
         passthrough = false ;
+        inTransaction = true ;
         other.reposition(0) ;
         this.alloc = base.length() ;
         this.startAlloc = base.length() ;
     }
     
     @Override
-    public void commit()
+    public void commit(Transaction txn)
     {
+        if ( ! inTransaction )
+            throw new TDBTransactionException("Not in a transaction for a commit to happen") ; 
         append() ;
         base.sync() ;
         other.reposition(0) ;
@@ -61,7 +62,7 @@ public class ObjectFileTrans implements ObjectFile, Transactional
     }
 
     @Override
-    public void abort()
+    public void abort(Transaction txn)
     {
         other.reposition(0) ;
     }

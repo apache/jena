@@ -4,16 +4,14 @@
  * [See end of file]
  */
 
-package tx.transaction;
+package com.hp.hpl.jena.tdb.transaction ;
 
-import com.hp.hpl.jena.tdb.TDBException ;
-
-public class TransactionException extends TDBException
+public class TransactionAbort extends TDBTransactionException
 {
-    public TransactionException()                          { super() ; }
-    public TransactionException(String msg)                { super(msg) ; }
-    public TransactionException(Throwable th)              { super(th) ; }
-    public TransactionException(String msg, Throwable th)  { super(msg, th) ; }
+    public TransactionAbort()                          { super() ; }
+    public TransactionAbort(String msg)                { super(msg) ; }
+    public TransactionAbort(Throwable th)              { super(th) ; }
+    public TransactionAbort(String msg, Throwable th)  { super(msg, th) ; }
 }
 
 /*

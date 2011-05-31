@@ -4,32 +4,35 @@
  * [See end of file]
  */
 
-package tx;
+package com.hp.hpl.jena.tdb.transaction;
 
-public interface Transactional
+import java.util.ArrayList ;
+import java.util.Collections ;
+import java.util.Iterator ;
+import java.util.List ;
+
+/** A transaction handle */
+public class Transaction
 {
-    // version 1
-    public void begin() ;
-    public void commit() ;
-    public void abort() ;
+    private final long id ;
+    private final TransactionManager txnMgr ;
+    private final List<Iterator<?>> iterators ; 
+
+    public Transaction(long id, TransactionManager txnMgr)
+    {
+        this.id = id ;
+        this.txnMgr = txnMgr ;
+        this.iterators = new ArrayList<Iterator<?>>() ;
+    }
+
+    public void commit()                            { txnMgr.commit(this) ; }
+    public void abort()                             { txnMgr.abort(this) ; }
+    public long getTxnId()                          { return id ; }
+    public TransactionManager getTxnMgr()           { return txnMgr ; }
     
-    /*
-    // version 2
-    public void beginRead() ;
-    public void endRead() ;
-    
-    public void beginUpdate() ;
-    public void commitUpdate() ;
-    public void abortUpdate() ;
-    */
-    
-    /*
-    // version 3
-    enum Mode { READ, WRITE } ;
-    public void begin(Mode mode) ;
-    public void end(Mode mode) ;
-    public void cancel(Mode mode) ;
-    */
+    public void addIterator(Iterator<?> iter)       { iterators.add(iter) ; }
+    public void removeIterator(Iterator<?> iter)    { iterators.remove(iter) ; }
+    public List<Iterator<?>> iterators()            { return Collections.unmodifiableList(iterators) ; }
 }
 
 /*

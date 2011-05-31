@@ -25,7 +25,8 @@ import org.slf4j.LoggerFactory ;
 import tx.journal.Journal ;
 import tx.journal.JournalEntry ;
 import tx.journal.JournalEntryType ;
-import tx.transaction.TransactionManager ;
+import tx.transaction.Transaction ;
+import tx.transaction.TransactionManager_X ;
 
 import com.hp.hpl.jena.query.DatasetFactory ;
 import com.hp.hpl.jena.query.Query ;
@@ -43,6 +44,7 @@ import com.hp.hpl.jena.tdb.base.block.BlockMgrTracker ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile ;
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFileMem ;
+import com.hp.hpl.jena.tdb.base.objectfile.ObjectFileTrans ;
 import com.hp.hpl.jena.tdb.base.record.Record ;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
 import com.hp.hpl.jena.tdb.base.record.RecordLib ;
@@ -81,8 +83,11 @@ public class TxMain
         long x1 = file1.write(stringToBuffer("ABCDEF")) ;
         long x2 = file1.write(stringToBuffer("AABBCC")) ;
         
+        Transaction txn = new Transaction(57, null) ;
+        
         ObjectFile file2 = new ObjectFileMem() ;
         ObjectFileTrans file = new ObjectFileTrans(null, file1, file2) ;
+        file.begin(txn) ; 
         
         ByteBuffer bb = stringToBuffer("XYZ") ;
         file.write(bb) ;
@@ -93,7 +98,7 @@ public class TxMain
         dump(file2) ;
         
         System.out.println("commit") ;
-        file.commit() ;
+        file.commit(txn) ;
         System.out.println("file1:") ;
         dump(file1) ;
         System.out.println("file2:") ;
@@ -116,7 +121,7 @@ public class TxMain
 //        
 //        
         System.out.println("begin") ;
-        file.begin() ;
+        file.begin(txn) ;
         System.out.println("file1:") ;
         dump(file1) ;
         file.write(stringToBuffer("12")) ;
@@ -132,7 +137,7 @@ public class TxMain
         dump(file1) ;
         
         System.out.println("commit") ;
-        file.commit();
+        file.commit(txn);
         System.out.println("file1:") ;
         dump(file1) ;
         System.out.println("file2:") ;
@@ -417,7 +422,7 @@ public class TxMain
         } else
             location = Location.mem() ;
 
-        TransactionManager txnMgr = new TransactionManager() ;
+        TransactionManager_X txnMgr = new TransactionManager_X() ;
         DatasetGraphTDB dsg = txnMgr.build(location) ;
         //dsg.add(SSE.parseQuad("(_ <s> <p> 'o')")) ;
         

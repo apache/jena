@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package tx;
+package com.hp.hpl.jena.tdb.base.objectfile;
 
 import java.nio.ByteBuffer ;
 import java.util.Iterator ;
@@ -15,17 +15,23 @@ import org.junit.Test ;
 import org.openjena.atlas.junit.BaseTest ;
 import org.openjena.atlas.lib.Pair ;
 import org.openjena.atlas.lib.StrUtils ;
-
-import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile ;
+import tx.transaction.Transaction ;
 
 public abstract class AbstractTestObjectFileTrans extends BaseTest
 {
+    static long count = 0 ;
+    ObjectFile file1 ;
+    ObjectFile file2 ;
+    ObjectFileTrans file ;
+    Transaction txn ;
+    
     abstract ObjectFile createFile(String basename) ;
     abstract void deleteFile(String basename) ;
     
     @Before
     public void setup()
     {
+        txn = new Transaction(++count, null) ;
         file1 = createFile("base") ;
         file2 = createFile("log") ;
     }
@@ -58,10 +64,7 @@ public abstract class AbstractTestObjectFileTrans extends BaseTest
         assertFalse(iter.hasNext()) ;
     }
     
-    ObjectFile file1 ;
-    ObjectFile file2 ;
-    ObjectFileTrans file ;
-    
+
     private void init() { file = new ObjectFileTrans(null, file1, file2) ; } 
     
     static void fill(ObjectFile file, String... contents)
@@ -81,9 +84,9 @@ public abstract class AbstractTestObjectFileTrans extends BaseTest
         fill(file1, "ABC") ;
         init() ;
         
-        contains(file1, "ABC") ;
+        file.begin(txn) ; 
         contains(file2) ;
-        file.commit() ;
+        file.commit(txn) ;
         contains(file1, "ABC") ;
     }
 
@@ -91,11 +94,41 @@ public abstract class AbstractTestObjectFileTrans extends BaseTest
     {
         fill(file1, "ABC") ;
         init() ;
-        write(file2, "X") ;
-        file.commit() ;
+        file.begin(txn) ; 
+        write(file, "X") ;
+        file.commit(txn) ;
         contains(file1, "ABC", "X") ;
-    }        
+    }
 
+    @Test public void objFileTrans_04()
+    {
+        fill(file1, "ABC", "ABC") ;
+        init() ;
+        file.begin(txn) ; 
+        write(file, "ABCDEFGHIJKLMNOPQRSTUVWXYZ") ;
+        file.commit(txn) ;
+        contains(file1, "ABC", "ABC", "ABCDEFGHIJKLMNOPQRSTUVWXYZ") ;
+    }
+
+    @Test public void objFileTrans_05()
+    {
+        fill(file1, "ABC") ;
+        init() ;
+        file.begin(txn) ; 
+        write(file, "ABCDEF") ;
+        file.abort(txn) ;
+        contains(file1, "ABC") ;
+    }
+
+    @Test public void objFileTrans_06()
+    {
+        fill(file1, "ABC", "123") ;
+        init() ;
+        file.begin(txn) ; 
+        write(file, "ABCDEFGHIJKLMNOPQRSTUVWXYZ") ;
+        file.abort(txn) ;
+        contains(file1, "ABC", "123") ;
+    }
 
 }
 

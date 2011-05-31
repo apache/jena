@@ -4,22 +4,17 @@
  * [See end of file]
  */
 
-package tx;
+package com.hp.hpl.jena.tdb.transaction;
 
-import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile ;
-import com.hp.hpl.jena.tdb.base.objectfile.ObjectFileMem ;
+import org.junit.runner.RunWith ;
+import org.junit.runners.Suite ;
 
-public class TestObjectFileTransMem extends AbstractTestObjectFileTrans
+@RunWith(Suite.class)
+@Suite.SuiteClasses( {
+
+})
+public class TS_Transaction
 {
-    @Override
-    ObjectFile createFile(String basename)
-    {
-        return new ObjectFileMem() ;
-    }
-
-    @Override
-    void deleteFile(String basename)
-    {}
 
 }
 

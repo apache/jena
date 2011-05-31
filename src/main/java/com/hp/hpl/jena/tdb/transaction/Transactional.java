@@ -4,24 +4,38 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.base.objectfile;
+package com.hp.hpl.jena.tdb.transaction;
 
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
+import tx.transaction.Transaction ;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-    TestObjectFileMem.class
-    , TestObjectFileDisk.class
-    , TestObjectFileBuffering.class
-    , TestStringFileMem.class 
-    , TestStringFileDisk.class
-    , TestObjectFileTransMem.class
-    , TestObjectFileTransStorage.class
-})
-
-public class TS_ObjectFile
-{ }
+/** Interface that components of the transaction system implmement.  
+ * This is not the public/application interface to transactions.
+ */ 
+public interface Transactional
+{
+    // version 1
+    public void begin(Transaction txn) ;
+    public void commit(Transaction txn) ;
+    public void abort(Transaction txn) ;
+    
+    /*
+    // version 2
+    public void beginRead() ;
+    public void endRead() ;
+    
+    public void beginUpdate() ;
+    public void commitUpdate() ;
+    public void abortUpdate() ;
+    */
+    
+    /*
+    // version 3
+    enum Mode { READ, WRITE } ;
+    public void begin(Mode mode) ;
+    public void end(Mode mode) ;
+    public void cancel(Mode mode) ;
+    */
+}
 
 /*
  * (c) Copyright 2011 Epimorphics Ltd.

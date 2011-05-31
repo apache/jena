@@ -6,22 +6,39 @@
 
 package com.hp.hpl.jena.tdb.base.objectfile;
 
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
+import com.hp.hpl.jena.tdb.base.file.BufferChannel ;
+import com.hp.hpl.jena.tdb.base.file.BufferChannelMem ;
+import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile ;
+import com.hp.hpl.jena.tdb.base.objectfile.ObjectFileStorage ;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-    TestObjectFileMem.class
-    , TestObjectFileDisk.class
-    , TestObjectFileBuffering.class
-    , TestStringFileMem.class 
-    , TestStringFileDisk.class
-    , TestObjectFileTransMem.class
-    , TestObjectFileTransStorage.class
-})
+public class TestObjectFileTransStorage extends AbstractTestObjectFileTrans
+{
+    @Override
+    ObjectFile createFile(String basename)
+    {
+//        String dir = ConfigTest.getTestingDir() ;
+//        Location loc = new Location(dir) ;
+//        String fn = loc.getPath(basename) ;
+//        FileOps.deleteSilent(fn) ;
+//        BufferChannel chan = new BufferChannelFile(fn) ;
+//        return new ObjectFileStorage(chan) ;
+        
+        BufferChannel chan = new BufferChannelMem() ;
+        // Small buffer
+        return new ObjectFileStorage(chan,10) ;
+        
+    }
 
-public class TS_ObjectFile
-{ }
+
+    @Override
+    void deleteFile(String basename)
+    {
+//        String dir = ConfigTest.getTestingDir() ;
+//        Location loc = new Location(dir) ;
+//        String fn = loc.getPath(basename) ;
+//        FileOps.delete(fn) ;
+    }
+}
 
 /*
  * (c) Copyright 2011 Epimorphics Ltd.

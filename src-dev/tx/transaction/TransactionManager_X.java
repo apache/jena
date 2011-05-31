@@ -44,7 +44,7 @@ import com.hp.hpl.jena.tdb.store.QuadTable ;
 import com.hp.hpl.jena.tdb.store.TripleTable ;
 import com.hp.hpl.jena.tdb.sys.ConcurrencyPolicy ;
 
-public class TransactionManager
+public class TransactionManager_X
 {
     // Setup.
     // Fragile.
@@ -53,7 +53,7 @@ public class TransactionManager
     NodeTable nodeTable ;
     static long transactionId = 10 ;
     
-    public TransactionManager()
+    public TransactionManager_X()
     {
         baseDatasetBuilder = new DatasetBuilderTxnBase() ;
         baseDatasetBuilder.setStd() ;
@@ -81,8 +81,14 @@ public class TransactionManager
         DatasetBuilder x = new DatasetBuilderTxn(baseBlockMgrBuilder, nodeTable) ;
         DatasetGraph dsg2 = x.build(Location.mem(), null) ;
         
-        Transaction txn = new Transaction(transactionId++, this) ;
+        Transaction txn = createTransaction() ;
         return new DatasetGraphTxView(txn, dsg2) ;
+    }
+    
+    public Transaction createTransaction()
+    {
+        Transaction txn = new Transaction(transactionId++, this) ;
+        return txn ;
     }
     
     public void commit(Transaction transaction)

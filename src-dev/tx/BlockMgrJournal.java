@@ -21,10 +21,10 @@ import tx.transaction.Transaction ;
 
 import com.hp.hpl.jena.tdb.base.block.Block ;
 import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
+import com.hp.hpl.jena.tdb.transaction.Transactional ;
 
-public class BlockMgrJournal implements BlockMgr
+public class BlockMgrJournal implements BlockMgr, Transactional
 {
-    
     private BlockMgr blockMgr ; // read-only except during journal checkpoint.
     private Journal journal ;
     private Transaction transaction ;
@@ -41,13 +41,27 @@ public class BlockMgrJournal implements BlockMgr
         reset(txn, fileRef, underlyingBlockMgr, journal) ;
     }
 
-    public Iterator<Block> updatedBlocks()  { return writeBlocks.values().iterator() ; }
-    public Iterator<Block> freedBlocks()    { return freedBlocks.values().iterator() ; }
+    @Override
+    public void begin(Transaction txn)
+    {
+        reset(txn, fileRef, blockMgr, journal) ;
+    }
+
+    @Override
+    public void commit(Transaction txn)
+    {}
+
+    @Override
+    public void abort(Transaction txn)
+    {}
+
+//    public Iterator<Block> updatedBlocks()  { return writeBlocks.values().iterator() ; }
+//    public Iterator<Block> freedBlocks()    { return freedBlocks.values().iterator() ; }
 
     /** Set, or reset, this BlockMgr.
      *  Enables it to be reused when already part of a datastructure. 
      */
-    public void reset(Transaction txn, FileRef fileRef, BlockMgr underlyingBlockMgr, Journal journal)
+    private void reset(Transaction txn, FileRef fileRef, BlockMgr underlyingBlockMgr, Journal journal)
     {
         this.transaction = txn ;
         this.fileRef = fileRef ;

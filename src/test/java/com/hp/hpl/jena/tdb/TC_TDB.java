@@ -26,6 +26,7 @@ import com.hp.hpl.jena.tdb.solver.TS_SolverTDB ;
 import com.hp.hpl.jena.tdb.store.TS_Store ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 import com.hp.hpl.jena.tdb.sys.TS_Sys ;
+import com.hp.hpl.jena.tdb.transaction.TS_Transaction ;
 
 // Naming conventions.
 // TS_* - Test sets: collections of testing files (Often Test*)
@@ -46,6 +47,7 @@ import com.hp.hpl.jena.tdb.sys.TS_Sys ;
     , TS_TDBAssembler.class
     , TS_Jena.class
     , TS_Migrate.class
+    , TS_Transaction.class
 } )
 
 public class TC_TDB

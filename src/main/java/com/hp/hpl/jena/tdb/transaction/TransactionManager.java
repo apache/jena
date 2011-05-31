@@ -4,14 +4,37 @@
  * [See end of file]
  */
 
-package tx.transaction ;
+package com.hp.hpl.jena.tdb.transaction;
 
-public class TransactionAbort extends TransactionException
+
+public class TransactionManager
 {
-    public TransactionAbort()                          { super() ; }
-    public TransactionAbort(String msg)                { super(msg) ; }
-    public TransactionAbort(Throwable th)              { super(th) ; }
-    public TransactionAbort(String msg, Throwable th)  { super(msg, th) ; }
+    static long transactionId = 10 ;
+    
+    public TransactionManager()
+    {
+    }
+    
+    public Transaction createTransaction()
+    {
+        Transaction txn = new Transaction(transactionId++, this) ;
+        return txn ;
+    }
+    
+    public Transaction begin() { return createTransaction() ; }
+    
+    public void commit(Transaction transaction)
+    {
+        System.err.println("Commit") ;
+    }
+
+    public void abort(Transaction transaction)
+    {    
+        System.err.println("Abort") ;
+        // Release allocated blocks back to the
+        //   Reset allocation id.
+        // Forget any free blocks as being free. 
+    }
 }
 
 /*
