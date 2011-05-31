@@ -3,6 +3,7 @@ ChangeLog for ARQ
 
 ==== ARQ 2.8.9
 
++ Add TSVInput processor (JENA-69 / Laurent Pellegrino) 
 + Added DatasetGraph.add(g,s,p,o) and .delete(g,s,p,o).
   (JENA-65)
 + Aggregates COUNT(?x) and COUNT(DISTINCT ?x) now skips errors in their expressions

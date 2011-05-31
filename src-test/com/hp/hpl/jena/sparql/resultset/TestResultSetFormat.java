@@ -78,6 +78,15 @@ public class TestResultSetFormat
         ResultSet rs2 = ResultSetFactory.fromJSON(in) ;
     }
     
+    @Test public void resultset_04()           
+    {
+        ResultSet rs = make($rs1) ; 
+        ByteArrayOutputStream out = new ByteArrayOutputStream() ;
+        ResultSetFormatter.outputAsTSV(out, rs) ;
+        ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray()) ;
+        ResultSet rs2 = ResultSetFactory.fromTSV(in) ;
+    }
+    
 }
 
 /*

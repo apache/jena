@@ -47,18 +47,19 @@ public class TSVOutput extends OutputBase
             List<String> varNames = resultSet.getResultVars() ;
             List<Var> vars = new ArrayList<Var>(varNames.size()) ;
             
+            // writes the variables on the first line
             for( String v : varNames )
             {
                 if ( sep != null )
                     w.write(sep) ;
                 else
                     sep = SEP ;
-                w.write("?") ;
                 w.write(v) ; 
                 vars.add(Var.alloc(v)) ;
             }
             w.write(NL) ;
             
+            // writes one binding by line
             for ( ; resultSet.hasNext() ; )
             {
                 sep = null ;

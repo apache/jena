@@ -115,6 +115,11 @@ public class ResultSetFactory
             return JSONInput.fromJSON(input) ;
         }
         
+        if ( format.equals(ResultSetFormat.syntaxTSV) )
+        {
+            return TSVInput.fromTSV(input) ;
+        }
+        
         Log.warn(ResultSet.class, "Unknown result set syntax: "+format) ;
         return null ;
 
@@ -308,6 +313,16 @@ public class ResultSetFactory
     public static ResultSet fromJSON(InputStream in)
     {
         return JSONInput.fromJSON(in) ;
+    }
+    
+    /** Read from an input stream which is the format of the SPARQL result set format in TSV.
+     * 
+     * @param in    InputStream
+     * @return      ResultSet
+     */  
+    public static ResultSet fromTSV(InputStream in)
+    {
+        return TSVInput.fromTSV(in) ;
     }
     
     /** Read from an input stream which is the format of the SPARQL result set format in SSE.

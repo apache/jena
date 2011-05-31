@@ -137,6 +137,11 @@ public final class Token
         this.column = token.column ;
     }
     
+    public int asInt() {
+        if ( ! hasType(TokenType.INTEGER) ) return -1 ;
+        return Integer.valueOf(tokenImage);
+    }
+    
     public long asLong()
     {
         return asLong(-1) ;
@@ -153,11 +158,10 @@ public final class Token
         }
     }
     
-    
     public String asWord()
     {
         if ( ! hasType(TokenType.KEYWORD) ) return null ;
-        return getImage() ; 
+        return tokenImage ; 
     }
     
     public String text()
