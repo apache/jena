@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package tx.journal;
+package com.hp.hpl.jena.tdb.transaction;
 
 import java.nio.ByteBuffer ;
 import java.util.Iterator ;

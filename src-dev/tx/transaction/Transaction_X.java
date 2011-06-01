@@ -12,13 +12,13 @@ import java.util.Iterator ;
 import java.util.List ;
 
 /** A transaction handle */
-public class Transaction
+public class Transaction_X
 {
     private final long id ;
     private final TransactionManager_X txnMgr ;
     private final List<Iterator<?>> iterators ; 
 
-    public Transaction(long id, TransactionManager_X txnMgr)
+    public Transaction_X(long id, TransactionManager_X txnMgr)
     {
         this.id = id ;
         this.txnMgr = txnMgr ;

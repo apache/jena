@@ -24,7 +24,6 @@ import setup.NodeTableBuilder ;
 import setup.ObjectFileBuilder ;
 import setup.RangeIndexBuilder ;
 import setup.TupleIndexBuilder ;
-import tx.DatasetGraphTxView ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
@@ -81,22 +80,22 @@ public class TransactionManager_X
         DatasetBuilder x = new DatasetBuilderTxn(baseBlockMgrBuilder, nodeTable) ;
         DatasetGraph dsg2 = x.build(Location.mem(), null) ;
         
-        Transaction txn = createTransaction() ;
+        Transaction_X txn = createTransaction() ;
         return new DatasetGraphTxView(txn, dsg2) ;
     }
     
-    public Transaction createTransaction()
+    public Transaction_X createTransaction()
     {
-        Transaction txn = new Transaction(transactionId++, this) ;
+        Transaction_X txn = new Transaction_X(transactionId++, this) ;
         return txn ;
     }
     
-    public void commit(Transaction transaction)
+    public void commit(Transaction_X transaction)
     {
         System.err.println("Commit") ;
     }
 
-    public void abort(Transaction transaction)
+    public void abort(Transaction_X transaction)
     {    
         System.err.println("Abort") ;
         // Release allocated blocks back to the

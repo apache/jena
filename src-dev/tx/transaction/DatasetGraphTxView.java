@@ -4,18 +4,17 @@
  * [See end of file]
  */
 
-package tx;
+package tx.transaction;
 
-import tx.transaction.Transaction ;
 
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphWrapper ;
 
 public class DatasetGraphTxView extends DatasetGraphWrapper
 {
-    private final Transaction transaction ;
+    private final Transaction_X transaction ;
 
-    public DatasetGraphTxView(Transaction txn, 
+    public DatasetGraphTxView(Transaction_X txn, 
                               DatasetGraph dsg)
     {
         super(dsg) ;

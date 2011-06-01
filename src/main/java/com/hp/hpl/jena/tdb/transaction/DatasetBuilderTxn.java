@@ -6,18 +6,34 @@
 
 package com.hp.hpl.jena.tdb.transaction;
 
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
+import setup.BlockMgrBuilder ;
+import setup.DatasetBuilderStd ;
+import setup.IndexBuilder ;
+import setup.NodeTableBuilder ;
+import setup.ObjectFileBuilder ;
+import setup.RangeIndexBuilder ;
+import setup.TupleIndexBuilder ;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-      TestJournal.class
-    , TestTransIterator.class
-    , TestObjectFileTransMem.class
-    , TestObjectFileTransStorage.class
-})
-public class TS_Transaction
+public class DatasetBuilderTxn extends DatasetBuilderStd
 {
+    
+    
+    @Override
+    protected void setStd()
+    {
+        ObjectFileBuilder objectFileBuilder     = new ObjectFileBuilderStd() ;
+        BlockMgrBuilder blockMgrBuilder         = new BlockMgrBuilderStd() ;
+
+        // These are the usual.
+        IndexBuilder indexBuilder               = new IndexBuilderStd(blockMgrBuilder, blockMgrBuilder) ;
+        RangeIndexBuilder rangeIndexBuilder     = new RangeIndexBuilderStd(blockMgrBuilder, blockMgrBuilder) ;
+
+        NodeTableBuilder nodeTableBuilder       = new NodeTableBuilderStd(indexBuilder, objectFileBuilder) ;
+        TupleIndexBuilder tupleIndexBuilder     = new TupleIndexBuilderStd(rangeIndexBuilder) ;
+        set(nodeTableBuilder, tupleIndexBuilder, 
+            indexBuilder, rangeIndexBuilder, 
+            blockMgrBuilder, objectFileBuilder) ;
+    }
 }
 
 /*

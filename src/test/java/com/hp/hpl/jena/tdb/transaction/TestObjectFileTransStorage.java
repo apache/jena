@@ -4,31 +4,42 @@
  * [See end of file]
  */
 
-package tx.journal;
+package com.hp.hpl.jena.tdb.transaction;
 
-import org.openjena.atlas.lib.InternalErrorException ;
-import org.openjena.atlas.logging.Log ;
+import com.hp.hpl.jena.tdb.base.file.BufferChannel ;
+import com.hp.hpl.jena.tdb.base.file.BufferChannelMem ;
+import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile ;
+import com.hp.hpl.jena.tdb.base.objectfile.ObjectFileStorage ;
 
-public enum JournalEntryType 
-{ 
-    Block(1), Object(2), Commit(3), Checkpoint(4) ;
-    
-    final int id ;
-    JournalEntryType(int x) { id = x ; }
-    int getId() { return id ; }
-    static public JournalEntryType type(int x)
+public class TestObjectFileTransStorage extends AbstractTestObjectFileTrans
+{
+    @Override
+    ObjectFile createFile(String basename)
     {
-        if ( x == Block.id )             return Block ;
-        else if ( x == Object.id )       return Object ;
-        else if ( x == Commit.id )       return Commit ;
-        else if ( x == Checkpoint.id )   return Checkpoint ;
-        else
-        {
-            Log.fatal(JournalEntryType.class, "Unknown type: "+x) ;
-            throw new InternalErrorException() ;
-        }
+//        String dir = ConfigTest.getTestingDir() ;
+//        Location loc = new Location(dir) ;
+//        String fn = loc.getPath(basename) ;
+//        FileOps.deleteSilent(fn) ;
+//        BufferChannel chan = new BufferChannelFile(fn) ;
+//        return new ObjectFileStorage(chan) ;
+        
+        BufferChannel chan = new BufferChannelMem() ;
+        // Small buffer
+        return new ObjectFileStorage(chan,10) ;
+        
+    }
+
+
+    @Override
+    void deleteFile(String basename)
+    {
+//        String dir = ConfigTest.getTestingDir() ;
+//        Location loc = new Location(dir) ;
+//        String fn = loc.getPath(basename) ;
+//        FileOps.delete(fn) ;
     }
 }
+
 /*
  * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.

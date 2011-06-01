@@ -4,11 +4,13 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.base.objectfile;
+package com.hp.hpl.jena.tdb.transaction;
 
 import java.nio.ByteBuffer ;
 import java.util.Iterator ;
 
+import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile ;
+import com.hp.hpl.jena.tdb.transaction.ObjectFileTrans ;
 import com.hp.hpl.jena.tdb.transaction.Transaction ;
 
 import org.junit.After ;

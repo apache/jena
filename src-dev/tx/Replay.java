@@ -9,8 +9,9 @@ package tx;
 
 import java.nio.ByteBuffer ;
 
-import tx.journal.Journal ;
-import tx.journal.JournalEntry ;
+import com.hp.hpl.jena.tdb.transaction.Journal ;
+import com.hp.hpl.jena.tdb.transaction.JournalEntry ;
+
 
 public class Replay
 {

@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package tx;
+package com.hp.hpl.jena.tdb.transaction;
 
 import java.nio.ByteBuffer ;
 import java.util.HashMap ;
@@ -13,15 +13,12 @@ import java.util.Iterator ;
 import java.util.Map ;
 import java.util.Set ;
 
+import org.openjena.atlas.lib.NotImplemented ;
 import org.openjena.atlas.logging.Log ;
 import tx.base.FileRef ;
-import tx.journal.Journal ;
-import tx.journal.JournalEntry ;
 
 import com.hp.hpl.jena.tdb.base.block.Block ;
 import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
-import com.hp.hpl.jena.tdb.transaction.Transaction ;
-import com.hp.hpl.jena.tdb.transaction.Transactional ;
 
 public class BlockMgrJournal implements BlockMgr, Transactional
 {
@@ -49,12 +46,16 @@ public class BlockMgrJournal implements BlockMgr, Transactional
 
     @Override
     public void commit(Transaction txn)
-    {}
+    {
+        throw new NotImplemented("yet") ;
+    }
 
     @Override
     public void abort(Transaction txn)
-    {}
-
+    {
+        reset(txn) ;
+    }
+    
 //    public Iterator<Block> updatedBlocks()  { return writeBlocks.values().iterator() ; }
 //    public Iterator<Block> freedBlocks()    { return freedBlocks.values().iterator() ; }
 
@@ -63,12 +64,21 @@ public class BlockMgrJournal implements BlockMgr, Transactional
      */
     private void reset(Transaction txn, FileRef fileRef, BlockMgr underlyingBlockMgr, Journal journal)
     {
-        this.transaction = txn ;
         this.fileRef = fileRef ;
         this.blockMgr = underlyingBlockMgr ;
         this.journal = journal ;
+        reset(txn) ;
     }
     
+    private void reset(Transaction txn)
+    {
+        this.transaction = txn ;
+        this.readBlocks.clear() ;
+        iteratorBlocks.clear() ;
+        this.writeBlocks.clear() ;
+        this.freedBlocks.clear() ;
+    }
+                       
     @Override
     public Block allocate(int blockSize)
     {

@@ -4,25 +4,31 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.base.objectfile;
+package com.hp.hpl.jena.tdb.transaction;
 
-import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile ;
-import com.hp.hpl.jena.tdb.base.objectfile.ObjectFileMem ;
+import org.openjena.atlas.lib.InternalErrorException ;
+import org.openjena.atlas.logging.Log ;
 
-public class TestObjectFileTransMem extends AbstractTestObjectFileTrans
-{
-    @Override
-    ObjectFile createFile(String basename)
+public enum JournalEntryType 
+{ 
+    Block(1), Object(2), Commit(3), Checkpoint(4) ;
+    
+    final int id ;
+    JournalEntryType(int x) { id = x ; }
+    int getId() { return id ; }
+    static public JournalEntryType type(int x)
     {
-        return new ObjectFileMem() ;
+        if ( x == Block.id )             return Block ;
+        else if ( x == Object.id )       return Object ;
+        else if ( x == Commit.id )       return Commit ;
+        else if ( x == Checkpoint.id )   return Checkpoint ;
+        else
+        {
+            Log.fatal(JournalEntryType.class, "Unknown type: "+x) ;
+            throw new InternalErrorException() ;
+        }
     }
-
-    @Override
-    void deleteFile(String basename)
-    {}
-
 }
-
 /*
  * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.

@@ -2,16 +2,17 @@ package tx;
 
 public class DevTx
 {
+    // Building a datset.
+    // Need a clearly defined start/finish 
+    //   start => location, journal and set datastructures.
+    
     // TestObjectFileTrans -- more tests.
     // TestObjectFileBuffering --> make abstract, it stress tests the BufferChannel.
-    // ByteBuffer.allocateDirect + pooling
-    // http://mail-archives.apache.org/mod_mbox/mina-dev/200804.mbox/%3C47F90DF0.6050101@gmail.com%3E
-    // http://mail-archives.apache.org/mod_mbox/mina-dev/200804.mbox/%3Cloom.20080407T064019-708@post.gmane.org%3E
     
     // One transaction dataset - reuse.  Pool?
-    //   Create the one transaction dadaset when the datasetgraph itself is created
+    //   Create the one transaction dataset when the datasetgraph itself is created
     //   Reset/Reuse -- internal API : TransactionCycle. 
-    // Record BlockMgrs, BlockMgrTx.reset
+    // Record BlockMgrs, BlockMgrTx.reset ==> .begin
     
     // Channel+Adler32
     
@@ -34,6 +35,12 @@ public class DevTx
     //   (No - it's a step of iterator that complains, not the update.) 
     
     // ---- ---- ---- ----
+
+    // Optimizations:
+    //   ByteBuffer.allocateDirect + pooling
+    //     http://mail-archives.apache.org/mod_mbox/mina-dev/200804.mbox/%3C47F90DF0.6050101@gmail.com%3E
+    //     http://mail-archives.apache.org/mod_mbox/mina-dev/200804.mbox/%3Cloom.20080407T064019-708@post.gmane.org%3E
+    //   ObjectFileTrans - avoid copy!
 
     // Other:
     //   Sort out IndexBulder/IndexFactory/(IndexMaker in test)

@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.base.objectfile;
+package com.hp.hpl.jena.tdb.transaction;
 
 import java.nio.ByteBuffer ;
 import java.util.Iterator ;
@@ -15,9 +15,7 @@ import org.openjena.atlas.lib.StrUtils ;
 
 import com.hp.hpl.jena.tdb.base.block.Block ;
 import com.hp.hpl.jena.tdb.base.file.FileException ;
-import com.hp.hpl.jena.tdb.transaction.TDBTransactionException ;
-import com.hp.hpl.jena.tdb.transaction.Transaction ;
-import com.hp.hpl.jena.tdb.transaction.Transactional ;
+import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile ;
 
 public class ObjectFileTrans implements ObjectFile, Transactional
 {

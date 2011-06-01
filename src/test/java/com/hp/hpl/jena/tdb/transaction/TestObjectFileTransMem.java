@@ -4,40 +4,23 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.base.objectfile;
+package com.hp.hpl.jena.tdb.transaction;
 
-import com.hp.hpl.jena.tdb.base.file.BufferChannel ;
-import com.hp.hpl.jena.tdb.base.file.BufferChannelMem ;
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile ;
-import com.hp.hpl.jena.tdb.base.objectfile.ObjectFileStorage ;
+import com.hp.hpl.jena.tdb.base.objectfile.ObjectFileMem ;
 
-public class TestObjectFileTransStorage extends AbstractTestObjectFileTrans
+public class TestObjectFileTransMem extends AbstractTestObjectFileTrans
 {
     @Override
     ObjectFile createFile(String basename)
     {
-//        String dir = ConfigTest.getTestingDir() ;
-//        Location loc = new Location(dir) ;
-//        String fn = loc.getPath(basename) ;
-//        FileOps.deleteSilent(fn) ;
-//        BufferChannel chan = new BufferChannelFile(fn) ;
-//        return new ObjectFileStorage(chan) ;
-        
-        BufferChannel chan = new BufferChannelMem() ;
-        // Small buffer
-        return new ObjectFileStorage(chan,10) ;
-        
+        return new ObjectFileMem() ;
     }
-
 
     @Override
     void deleteFile(String basename)
-    {
-//        String dir = ConfigTest.getTestingDir() ;
-//        Location loc = new Location(dir) ;
-//        String fn = loc.getPath(basename) ;
-//        FileOps.delete(fn) ;
-    }
+    {}
+
 }
 
 /*

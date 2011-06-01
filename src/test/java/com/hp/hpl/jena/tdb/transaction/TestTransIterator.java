@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package tx;
+package com.hp.hpl.jena.tdb.transaction;
 
 import java.util.Iterator ;
 

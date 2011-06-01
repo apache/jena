@@ -16,8 +16,6 @@ import org.junit.runners.Suite ;
     , TestObjectFileBuffering.class
     , TestStringFileMem.class 
     , TestStringFileDisk.class
-    , TestObjectFileTransMem.class
-    , TestObjectFileTransStorage.class
 })
 
 public class TS_ObjectFile
