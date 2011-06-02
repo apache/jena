@@ -28,6 +28,7 @@ import com.hp.hpl.jena.shared.JenaException ;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
 import com.hp.hpl.jena.sparql.mgt.Explain ;
 import com.hp.hpl.jena.sparql.resultset.ResultSetException ;
+import com.hp.hpl.jena.sparql.resultset.ResultsFormat ;
 import com.hp.hpl.jena.sparql.util.QueryExecUtils ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 
@@ -38,6 +39,7 @@ public class query extends CmdARQ
     private ArgDecl argOptimize = new ArgDecl(ArgDecl.HasValue, "opt", "optimize") ;
 
     protected int repeatCount = 1 ; 
+    protected int warmupCount = 0 ;
     protected boolean queryOptimization = true ;
     
     protected ModTime       modTime =     new ModTime() ;
@@ -63,7 +65,7 @@ public class query extends CmdARQ
 
         super.getUsage().startCategory("Control") ;
         super.add(argExplain, "--explain", "Explain and log query execution") ;
-        super.add(argRepeat, "--repeat=N", "Do N times (use for timing to overcome start up costs of Java)");
+        super.add(argRepeat, "--repeat=N or N,M", "Do N times or N warmup and then M times (use for timing to overcome start up costs of Java)");
         super.add(argOptimize, "--optimize=", "Turn the query optimizer on or off (default: on") ;
     }
 
@@ -73,9 +75,25 @@ public class query extends CmdARQ
         super.processModulesAndArgs() ;
         if ( contains(argRepeat) )
         {
-            try { repeatCount = Integer.parseInt(getValue(argRepeat)) ; }
-            catch (NumberFormatException ex)
-            { throw new CmdException("Can't parse "+getValue(argRepeat)+" as an integer", ex) ; }
+            String[] x = getValue(argRepeat).split(",") ;
+            if ( x.length == 1 )
+            {
+                try { repeatCount = Integer.parseInt(x[0]) ; }
+                catch (NumberFormatException ex)
+                { throw new CmdException("Can't parse "+x[0]+" in arg "+getValue(argRepeat)+" as an integer") ; }
+                
+            }
+            else if ( x.length == 2 )
+            {
+                try { warmupCount = Integer.parseInt(x[0]) ; }
+                catch (NumberFormatException ex)
+                { throw new CmdException("Can't parse "+x[0]+" in arg "+getValue(argRepeat)+" as an integer") ; }
+                try { repeatCount = Integer.parseInt(x[1]) ; }
+                catch (NumberFormatException ex)
+                { throw new CmdException("Can't parse "+x[1]+" in arg "+getValue(argRepeat)+" as an integer") ; }
+            }
+            else
+                throw new CmdException("Wrong format for repeat count: "+getValue(argRepeat)) ;
         }
         if ( isVerbose() )
             ARQ.getContext().setTrue(ARQ.symLogExec) ;
@@ -105,8 +123,17 @@ public class query extends CmdARQ
         if ( cmdStrictMode )
             ARQ.getContext().setFalse(ARQ.optimization) ;
         
+        // Warm up.
+        for ( int i = 0 ; i < warmupCount ; i++ )
+        {
+            queryExec(false, ResultsFormat.FMT_NONE) ;
+        }
+        
         for ( int i = 0 ; i < repeatCount ; i++ )
-            queryExec() ;
+            queryExec(modTime.timingEnabled(),  modResults.getResultsFormat()) ;
+        
+        if ( modTime.timingEnabled() && repeatCount > 1 )
+            System.out.println("Total time: "+modTime.timeStr(totalTime)+" sec  for repeat count of "+repeatCount) ;
     }
 
     @Override
@@ -117,7 +144,8 @@ public class query extends CmdARQ
     
     protected Dataset getDataset()  { return modDataset.getDataset() ; }
     
-    protected void queryExec()
+    protected long totalTime = 0 ;
+    protected void queryExec(boolean timed, ResultsFormat fmt)
     {
         try{
             Query query = modQuery.getQuery() ;
@@ -139,10 +167,13 @@ public class query extends CmdARQ
                 System.err.println("Dataset not specified in query nor provided on command line.");
                 throw new TerminationException(1) ;
             }
-            QueryExecUtils.executeQuery(query, qe, modResults.getResultsFormat()) ;
+            QueryExecUtils.executeQuery(query, qe,fmt) ;
             long time = modTime.endTimer() ;
-            if ( modTime.timingEnabled() )
+            if ( timed )
+            {
+                totalTime += time ;
                 System.out.println("Time: "+modTime.timeStr(time)+" sec") ;
+            }
             qe.close() ;
         }
         catch (ARQInternalErrorException intEx)
