@@ -7,6 +7,9 @@
 &setExclude ;
 undef $/ ;
 
+$HTEXT="HEADER" ;
+$TTEXT="TRAILER" ;
+
 while(defined($file = shift @ARGV))
 {
     # Excludes
@@ -21,8 +24,10 @@ sub process
     binmode FILE ;
     $_ = <FILE> ;
     my $t = &clean($_) ;
+    print $HTEXT,"\n" ;
     print $t ;
-    print "\n" ;
+    print "\n" unless ( $t =~ /\n$/s ) ;
+    print $TTEXT,"\n" ;
 }
 
 ## head and tail
@@ -30,9 +35,16 @@ sub clean
 {
     my $text = @_[0] ;
     $text =~ s!^\s*/\*[^{}/]*\*/\s*!!s ;
-    # This removes all trailing comments, not just the last.
-    $text =~ s!\s*/\*[^{}]*\*/\s*$!!s ;
-    # No newline on end.
+##     # This removes all trailing comments, not just the last.
+##     $text =~ s!\s*/\*[^{}]*\*/\s*$!!s ;
+    $text =~ s!
+\s*               ## Whitespace
+/\*               ## Start of comment
+[^*]*\*+          ## Any non-* then 1-or-more *
+([^/][^*]*\*+)*   ## Repeats of not-/ then unit as above
+/                 ## Close / for the comment
+\s*$              ## Whitespace, end of file
+!!sx ;
     return $text ;
 }
 
