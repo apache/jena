@@ -107,9 +107,13 @@ public class RunARQ
         System.out.println("DONE") ;
         System.exit(code) ;
     }
+    
 
+    // count(filter)
+    
     public static void main(String[] argv) throws Exception
     {
+        
         arq.qparse.main("--file=Q.arq") ; exit(0) ;
         
         String x = StrUtils.strjoinNL("(join",

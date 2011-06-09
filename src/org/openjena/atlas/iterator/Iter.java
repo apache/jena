@@ -1,6 +1,6 @@
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
- * (c) Copyright 2010 Epimorphics Ltd.
+ * (c) Copyright 2010, 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -497,6 +497,65 @@ public class Iter<T> implements Iterable<T>, Iterator<T>
             return iter1 ;
         return Iter.iter(iter1).append(Iter.iter(iter2)) ;
     }
+    
+    public static <T> T first(Iterator<T> iter, Filter<T> filter)
+    {
+        for ( int idx = 0 ; iter.hasNext() ; idx++ )
+        {
+            T t = iter.next();
+            if ( filter.accept(t))
+                return t ;
+                //return idx ;
+        }
+        return null ;
+    }
+
+    public static <T> T first(Collection<T> collection, Filter<T> filter)
+    { return first(collection.iterator(), filter) ; }
+
+    public static <T> int firstIndex(Iterator<T> iter, Filter<T> filter)
+    {
+        for ( int idx = 0 ; iter.hasNext() ; idx++ )
+        {
+            T t = iter.next();
+            if ( filter.accept(t))
+                return idx ;
+        }
+        return -1 ;
+    }
+
+    public static <T> int firstIndex(Collection<T> collection, Filter<T> filter)
+    { return firstIndex(collection.iterator(), filter) ; }
+
+    public static <T> T last(Iterator<T> iter, Filter<T> filter)
+    {
+        T thing = null ;
+        for ( int idx = 0 ; iter.hasNext() ; idx++ )
+        {
+            T t = iter.next();
+            if ( filter.accept(t))
+                thing = t ;
+        }
+        return thing ;
+    }
+
+    public static <T> T last(Collection<T> collection, Filter<T> filter)
+    { return last(collection.iterator(), filter) ; }
+
+    public static <T> int lastIndex(Iterator<T> iter, Filter<T> filter)
+    {
+        int location = -1 ;
+        for ( int idx = 0 ; iter.hasNext() ; idx++ )
+        {
+            T t = iter.next();
+            if ( filter.accept(t))
+                location = idx  ;
+        }
+        return location ;
+    }
+
+    public static <T> int lastIndex(Collection<T> collection, Filter<T> filter)
+    { return lastIndex(collection.iterator(), filter) ; }
 
     // ------------------------------------------------------
     // The class.
@@ -519,6 +578,25 @@ public class Iter<T> implements Iterable<T>, Iterator<T>
         sendToSink(iterator, sink) ;
     }
     
+    public T first(Filter<T> filter)
+    {
+        return first(iterator, filter) ;
+    }
+
+    public int firstIndex(Filter<T> filter)
+    {
+        return firstIndex(iterator, filter) ;
+    }
+
+    public T last(Filter<T> filter)
+    {
+        return last(iterator, filter) ;
+    }
+
+    public int lastIndex(Filter<T> filter)
+    {
+        return lastIndex(iterator, filter) ;
+    }
 
     public Iter<T> filter(Filter<T> filter)
     {
@@ -619,7 +697,7 @@ public class Iter<T> implements Iterable<T>, Iterator<T>
 
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
- * (c) Copyright 2010 Epimorphics Ltd.
+ * (c) Copyright 2010, 2011 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -20,18 +21,9 @@ import org.junit.Test ;
 public class TestIter
 {
     List<String> data0 = new ArrayList<String>() ;
-    List<String> data1 = new ArrayList<String>() ;
-    {
-        data1.add("a") ;
-    }
-    
-    List<String> data2 = new ArrayList<String>() ;
-    {
-        data2.add("x") ;
-        data2.add("y") ;
-        data2.add("z") ;
-    }
-
+    List<String> data1 = Arrays.asList("a") ;
+    List<String> data2 = Arrays.asList("x","y","z") ;
+ 
     @Test
     public void append_1()
     {
@@ -131,11 +123,101 @@ public class TestIter
         String z = Iter.foldRight(Arrays.asList(x), f1, "X") ;
         assertEquals("X", z) ;
     }
+    
+    Filter<String> filter = new Filter<String>() {
+        public boolean accept(String item)
+        {
+            return item.length() == 1 ;
+        }} ;
+   
+    @Test
+    public void first_01()
+    {
+        Iter<String> iter = Iter.nullIter() ;
+        assertEquals(null, Iter.first(iter, filter)) ;
+    }
 
+    @Test
+    public void first_02()
+    {
+        List<String> data = Arrays.asList( "11", "A", "B", "C") ;
+        assertEquals("A", Iter.first(data, filter)) ;
+    }
+
+    @Test
+    public void first_03()
+    {
+        List<String> data = Arrays.asList( "11", "AA", "BB", "CC") ;
+        assertEquals(null, Iter.first(data, filter)) ;
+    }
+ 
+    @Test
+    public void first_04()
+    {
+        Iter<String> iter = Iter.nullIter() ;
+        assertEquals(-1, Iter.firstIndex(iter, filter)) ;
+    }
+
+    @Test
+    public void first_05()
+    {
+        List<String> data = Arrays.asList( "11", "A", "B", "C") ;
+        assertEquals(1, Iter.firstIndex(data, filter)) ;
+    }
+
+    @Test
+    public void first_06()
+    {
+        List<String> data = Arrays.asList( "11", "AA", "BB", "CC") ;
+        assertEquals(-1, Iter.firstIndex(data, filter)) ;
+    }
+
+    @Test
+    public void last_01()
+    {
+        Iter<String> iter = Iter.nullIter() ;
+        assertEquals(null, Iter.last(iter, filter)) ;
+    }
+
+    @Test
+    public void last_02()
+    {
+        List<String> data = Arrays.asList( "11", "A", "B", "C") ;
+        assertEquals("C", Iter.last(data, filter)) ;
+    }
+
+    @Test
+    public void last_03()
+    {
+        List<String> data = Arrays.asList( "11", "AA", "BB", "CC") ;
+        assertEquals(null, Iter.last(data, filter)) ;
+    }
+ 
+    @Test
+    public void last_04()
+    {
+        Iter<String> iter = Iter.nullIter() ;
+        assertEquals(-1, Iter.lastIndex(iter, filter)) ;
+    }
+
+    @Test
+    public void last_05()
+    {
+        List<String> data = Arrays.asList( "11", "A", "B", "C") ;
+        assertEquals(3, Iter.lastIndex(data, filter)) ;
+    }
+
+    @Test
+    public void last_06()
+    {
+        List<String> data = Arrays.asList( "11", "AA", "BB", "CC") ;
+        assertEquals(-1, Iter.firstIndex(data, filter)) ;
+    }
 }
 
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
