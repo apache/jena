@@ -10,6 +10,7 @@ package com.hp.hpl.jena.tdb.store;
 import java.util.HashMap ;
 import java.util.HashSet ;
 import java.util.Iterator ;
+import java.util.List ;
 import java.util.Map ;
 import java.util.Set ;
 
@@ -184,9 +185,10 @@ public class DatasetPrefixesTDB implements DatasetPrefixStorage
         Node g = Node.createURI(graphName) ; 
         Node p = Node.createLiteral(prefix) ; 
         Iterator<Tuple<Node>> iter = nodeTupleTable.find(g, p, null) ;
-        while ( iter.hasNext() )
-            nodeTupleTable.deleteRow(g, p, iter.next().get(2)) ;
+        List<Tuple<Node>> list = Iter.toList(iter) ;    // Materialize.
         Iter.close(iter) ;
+        for ( Tuple<Node> tuple : list )
+            nodeTupleTable.deleteRow(g, p, tuple.get(2)) ;
     }
 
     public NodeTupleTable getNodeTupleTable()  { return nodeTupleTable ; }
