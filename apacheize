@@ -34,9 +34,22 @@ sub process
 sub clean
 {
     my $text = @_[0] ;
-    $text =~ s!^\s*/\*[^{}/]*\*/\s*!!s ;
-##     # This removes all trailing comments, not just the last.
+    ## These remove multipl adjacent comments
+    # remove first comment
+
+##     $text =~ s!^\s*/\*[^{}/]*\*/\s*!!s ;
 ##     $text =~ s!\s*/\*[^{}]*\*/\s*$!!s ;
+
+    $text =~ s!^ ## Start of file.
+\s*               ## Whitespace
+/\*               ## Start of comment
+[^*]*\*+          ## Any non-* then 1-or-more *
+([^/][^*]*\*+)*   ## Repeats of not-/ then unit as above
+/                 ## Close / for the comment
+\s*               ## Whitespace
+!!sx ;
+
+    # Blocks *(not/)-starting text
     $text =~ s!
 \s*               ## Whitespace
 /\*               ## Start of comment
