@@ -9,7 +9,7 @@ While incubation status is not necessarily a reflection of the completeness
 or stability of the code, it does indicate that the project has yet to be 
 fully endorsed by the ASF.
 
-For more information about the incubation status of the Whirr project you
+For more information about the incubation status of the Jena project you
 can go to the following page:
 
 http://incubator.apache.org/jena/
