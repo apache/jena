@@ -3,6 +3,8 @@ package dev ;
 
 public class DevTDB
 {
+    // DatasetGraphTDB - wrapper to ignore close in cache.
+    
     // New builder - does it work for memory?  Non-std block sizes?
     // DatasetAssemblerTDB has an undocumented feature for LARQ (not even in ChangeLog)
     
