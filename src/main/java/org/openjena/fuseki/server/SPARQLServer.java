@@ -110,7 +110,8 @@ public class SPARQLServer
         connector.setPort(port);
         
         // Some people do try very large operations ...
-        connector.setRequestBufferSize(1*1024*1024) ;
+        connector.setRequestBufferSize(2*1024*1024) ;
+        connector.setResponseBufferSize(2*1024*1024) ;
         server.addConnector(connector) ;
 
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
