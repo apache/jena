@@ -32,6 +32,9 @@ public class PrefixMap
     /** return the underlying mapping - do not modify */
     public Map<String, IRI> getMapping() { return prefixes2 ; }
     
+    /** return a copy of the underlying mapping */
+    public Map<String, IRI> getMappingCopy() { return new HashMap<String, IRI>(prefixes) ; }
+
     /** Add a prefix, overwites any existing association */
     public void add(String prefix, String iriString)
     { 
