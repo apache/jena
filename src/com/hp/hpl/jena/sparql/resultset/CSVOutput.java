@@ -21,6 +21,7 @@ import com.hp.hpl.jena.query.ResultSet ;
 import com.hp.hpl.jena.sparql.ARQException ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.util.NodeToLabelMap ;
 import com.hp.hpl.jena.util.FileUtils ;
 
 /** Convenient comma separated values - see also TSV (tab separated values)
@@ -45,8 +46,8 @@ public class CSVOutput extends OutputBase
     public void format(OutputStream out, ResultSet resultSet)
     {
         try {
-
             Writer w = FileUtils.asUTF8(out) ;
+            NodeToLabelMap bnodes = new NodeToLabelMap() ;
             w = new BufferedWriter(w) ;
             
             String sep = null ;
@@ -79,7 +80,7 @@ public class CSVOutput extends OutputBase
                     
                     Node n = b.get(v) ;
                     if ( n != null )
-                        output(w, n) ;
+                        output(w, n, bnodes) ;
                 }
                 w.write(NL) ;
             }
@@ -90,13 +91,14 @@ public class CSVOutput extends OutputBase
         }
     }
 
-    private void output(Writer w, Node n) throws IOException 
+    private void output(Writer w, Node n, NodeToLabelMap bnodes) throws IOException 
     {
         //String str = FmtUtils.stringForNode(n) ;
         String str = "?" ;
         if ( n.isLiteral() ) str = n.getLiteralLexicalForm() ;
         else if ( n.isURI() ) str = n.getURI() ;
-        else if ( n.isBlank() ) str = n.getBlankNodeLabel() ;
+        else if ( n.isBlank() )
+            str = bnodes.asString(n) ;
         
         str = csvSafe(str) ;
         w.write(str) ;
