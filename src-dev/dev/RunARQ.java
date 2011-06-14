@@ -8,6 +8,8 @@
 
 package dev;
 
+import java.io.PrintWriter ;
+import java.io.Writer ;
 import java.util.Iterator ;
 import java.util.NoSuchElementException ;
 import java.util.concurrent.ArrayBlockingQueue ;
@@ -23,10 +25,14 @@ import org.openjena.atlas.lib.Sink ;
 import org.openjena.atlas.lib.StrUtils ;
 import org.openjena.atlas.logging.Log ;
 import org.openjena.riot.ErrorHandlerFactory ;
+import org.openjena.riot.Lang ;
 import org.openjena.riot.RiotReader ;
 import org.openjena.riot.checker.CheckerIRI ;
 import org.openjena.riot.out.NodeFmtLib ;
+import org.openjena.riot.out.OutputLangUtils ;
 import org.openjena.riot.pipeline.normalize.CanonicalizeLiteral ;
+import org.openjena.riot.system.ParserProfile ;
+import org.openjena.riot.system.RiotLib ;
 import org.openjena.riot.tokens.Token ;
 import org.openjena.riot.tokens.Tokenizer ;
 import org.openjena.riot.tokens.TokenizerFactory ;
@@ -108,7 +114,8 @@ public class RunARQ
     }
 
     public static void exit(int code)
-    {System.out.flush() ;
+    {
+        System.out.flush() ;
         System.out.println("DONE") ;
         System.exit(code) ;
     }
@@ -118,6 +125,28 @@ public class RunARQ
     
     public static void main(String[] argv) throws Exception
     {
+        
+        ParserProfile p = RiotLib.profile(Lang.NTRIPLES, null) ;
+        {
+            Writer w = new PrintWriter(System.out) ; 
+            OutputLangUtils.output(w, Node.ANY, null, null) ;
+            w.write("\n") ;
+            w.flush();
+            
+            
+            Tokenizer tokenizer = TokenizerFactory.makeTokenizerString("ANY <123> KW.") ;
+            for ( ; tokenizer.hasNext() ; )
+            {
+                Token t = tokenizer.next() ;
+                System.out.println(t) ;
+                if ( t.isNode() )
+                    System.out.println("==> "+t.asNode()) ;
+                Node n = p.create(null, t) ;
+                System.out.println("--> "+n) ;
+            }
+            exit(0) ;
+        }
+
         Node node1 = Node_Blank.createAnon();
         String str = NodeFmtLib.serialize(node1);
         Tokenizer tokenizer = TokenizerFactory.makeTokenizerString(str);

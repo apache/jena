@@ -57,7 +57,7 @@ public final class Token
     private long line ;
     
     // Keywords recognized.
-    static final private String ImageANY = "ANY" ;
+    public static final String ImageANY = "ANY" ;
     
     public final TokenType getType() { return tokenType ; }
     public final String getImage()   { return tokenImage ; }
@@ -347,7 +347,7 @@ public final class Token
     {
         switch(tokenType)
         {
-            // Assumes that bnode labes have been sorted out already.
+            // Assumes that bnode labels have been sorted out already.
             case BNODE : return Node.createAnon(new AnonId(tokenImage)) ;
             case IRI :   return Node.createURI(tokenImage) ; 
             case PREFIXED_NAME :

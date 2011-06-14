@@ -33,6 +33,9 @@ public interface ParserProfile
     public Node createPlainLiteral(String lexical, long line, long col) ;
     public Node createBlankNode(Node scope, String label, long line, long col) ;
     
+    /** Make a node from a token - called after all else has been tried - return null for no such node */
+    public Node createNodeFromToken(Node scope, Token token, long line, long col) ;
+    
     /** Make any node from a token as appropriate */
     public Node create(Node currentGraph, Token token) ;
     

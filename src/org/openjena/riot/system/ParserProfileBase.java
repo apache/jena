@@ -10,6 +10,7 @@ import org.openjena.riot.ErrorHandler ;
 import org.openjena.riot.RiotException ;
 import org.openjena.riot.lang.LabelToNode ;
 import org.openjena.riot.tokens.Token ;
+import org.openjena.riot.tokens.TokenType ;
 
 import com.hp.hpl.jena.datatypes.RDFDatatype ;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
@@ -119,6 +120,19 @@ public class ParserProfileBase implements ParserProfile
     {
         return Node.createLiteral(lexical) ;
     }
+    
+    /** Special token forms*/ 
+    //@Override
+    public Node createNodeFromToken(Node scope, Token token, long line, long col)
+    {
+        // OFF - Don't produce Node.ANY by default. 
+        if ( false && token.getType() == TokenType.KEYWORD )
+        {
+            if ( Token.ImageANY.equals(token.getImage()) )
+                return Node.ANY ;
+        }
+        return null ;
+    }
 
     //@Override
     public Node create(Node currentGraph, Token token)
@@ -177,10 +191,14 @@ public class ParserProfileBase implements ParserProfile
             case LONG_STRING1:
             case LONG_STRING2:
                 return createPlainLiteral(str, line, col) ;
-            // XXX Centralize exceptions
             default: 
+            {
+                Node x = createNodeFromToken(currentGraph, token, line, col) ;
+                if ( x != null )
+                    return x ;
                 errorHandler.fatal("Not a valid token for an RDF term: "+token, line , col) ;
                 return null ;
+            }
         }
     }
     
