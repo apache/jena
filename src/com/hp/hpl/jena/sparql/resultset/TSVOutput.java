@@ -54,8 +54,9 @@ public class TSVOutput extends OutputBase
                     w.write(sep) ;
                 else
                     sep = SEP ;
-                w.write(v) ; 
-                vars.add(Var.alloc(v)) ;
+                Var var = Var.alloc(v) ;
+                w.write(var.toString()) ; 
+                vars.add(var) ;
             }
             w.write(NL) ;
             
