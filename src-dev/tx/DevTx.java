@@ -2,7 +2,10 @@ package tx;
 
 public class DevTx
 {
-    // Building a datset.
+    // Building a dataset.
+    //   Commit and reply?
+    //   Reattach a journal?
+    
     // Need a clearly defined start/finish 
     //   start => location, journal and set datastructures.
     

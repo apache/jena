@@ -15,7 +15,6 @@ import setup.NodeTableBuilder ;
 import setup.ObjectFileBuilder ;
 import setup.RangeIndexBuilder ;
 import setup.TupleIndexBuilder ;
-import tx.transaction.DatasetGraphTxView ;
 
 import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
 import com.hp.hpl.jena.tdb.base.file.BufferChannel ;
@@ -29,7 +28,7 @@ import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 
 public class DatasetBuilderTxn extends DatasetBuilderStd
 {
-    public DatasetBuilderTxn() { setStd() ; }
+    public DatasetBuilderTxn(TransactionManager txnMgr) { setStd() ; this.txnMgr = txnMgr ; }
     
     @Override
     protected void setStd()
@@ -61,14 +60,13 @@ public class DatasetBuilderTxn extends DatasetBuilderStd
         txn.add(journal) ;
 
         DatasetGraphTDB dsg = super.build(location, config) ;
-        new DatasetGraphTxnTDB(dsg, txn) ;
+        return new DatasetGraphTxnTDB(dsg, txn) ;
     }
 
     public static final String journalExt = "jrnl" ;
     public static final String journalFilename = "journal" ;
    
-    // Maybe part of DatasetGraphTDB
-    private static TransactionManager txnMgr = new TransactionManager() ;
+    private TransactionManager txnMgr ;
     private Journal  journal ;
     private Transaction txn ;
     private Location location ;

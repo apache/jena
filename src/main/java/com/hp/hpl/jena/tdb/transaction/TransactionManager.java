@@ -29,7 +29,7 @@ public class TransactionManager
         return txn ;
     }
     
-    public Transaction begin(DatasetGraph dsg)
+    public DatasetGraphTxnTDB begin(DatasetGraph dsg)
     {
         // If already a transaction ... 
         // Subs transactions are a new view - commit is only comit to parent transaction.  
@@ -48,13 +48,11 @@ public class TransactionManager
         // For now, always build a parallel dataset - later, associate with the DatasetGraphTDB
         Location location = dsgtdb.getLocation() ;
         
-        
-        
-        DatasetBuilder x = new DatasetBuilderTxn(baseBlockMgrBuilder, nodeTable) ;
-        DatasetGraph dsg2 = x.build(Location.mem(), null) ;
-
-        Transaction_X txn = createTransaction() ;
-        return new DatasetGraphTxView(txn, dsg2) ;
+        // TODO Don't rebuild every time.
+        DatasetBuilder builder = new DatasetBuilderTxn(this) ;
+        //return builder.build(Location.mem(), null) ;
+        DatasetGraphTxnTDB dsgTxn = (DatasetGraphTxnTDB)builder.build(location, null) ;
+        return dsgTxn ;
     }
 
     public void commit(Transaction transaction)

@@ -15,12 +15,14 @@ import java.util.Iterator ;
 
 import org.junit.Test ;
 import org.openjena.atlas.lib.Bytes ;
+import org.openjena.atlas.lib.FileOps ;
 import org.openjena.atlas.lib.Pair ;
 import org.openjena.atlas.lib.StrUtils ;
 import org.openjena.atlas.logging.Log ;
 import org.openjena.atlas.test.Gen ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
+import setup.DatasetBuilder ;
 
 import com.hp.hpl.jena.query.DatasetFactory ;
 import com.hp.hpl.jena.query.Query ;
@@ -28,12 +30,17 @@ import com.hp.hpl.jena.query.QueryExecution ;
 import com.hp.hpl.jena.query.QueryExecutionFactory ;
 import com.hp.hpl.jena.query.QueryFactory ;
 import com.hp.hpl.jena.query.Syntax ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.util.QueryExecUtils ;
+import com.hp.hpl.jena.tdb.TDBFactory ;
+import com.hp.hpl.jena.tdb.TDBLoader ;
 import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory ;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrLogger ;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrTracker ;
+import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile ;
 import com.hp.hpl.jena.tdb.base.record.Record ;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
@@ -44,12 +51,16 @@ import com.hp.hpl.jena.tdb.index.RangeIndex ;
 import com.hp.hpl.jena.tdb.index.bplustree.BPTreeNode ;
 import com.hp.hpl.jena.tdb.index.bplustree.BPlusTree ;
 import com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams ;
+import com.hp.hpl.jena.tdb.transaction.DatasetBuilderTxn ;
+import com.hp.hpl.jena.tdb.transaction.DatasetGraphTxnTDB ;
 import com.hp.hpl.jena.tdb.transaction.Journal ;
 import com.hp.hpl.jena.tdb.transaction.JournalEntry ;
 import com.hp.hpl.jena.tdb.transaction.JournalEntryType ;
+import com.hp.hpl.jena.tdb.transaction.TransactionManager ;
 import com.hp.hpl.jena.update.UpdateAction ;
 import com.hp.hpl.jena.update.UpdateFactory ;
 import com.hp.hpl.jena.update.UpdateRequest ;
+import com.hp.hpl.jena.util.FileManager ;
 
 public class TxMain
 {
@@ -71,6 +82,12 @@ public class TxMain
     
     public static void main(String... args)
     {
+        DatasetGraphTxnTDB dsg = build() ;
+        dsg.commit() ;
+        load("D.ttl", dsg) ;
+        query("SELECT (Count(*) AS ?c) { ?s ?p ?o }", dsg) ;
+        exit(0) ;
+        
         //tree_ins_2_01() ; exit(0) ;
         
         //test.BPlusTreeRun.main("test", "--bptree:track", "3", "125", "100000") ; exit(0) ;
@@ -81,6 +98,15 @@ public class TxMain
         bpTreeTracking() ; exit(0) ;
     }
     
+    private static DatasetGraphTxnTDB build()
+    {
+        FileOps.ensureDir("DB") ;
+        FileOps.clearDirectory("DB") ;
+        DatasetGraph dsg = TDBFactory.createDatasetGraph("DB") ;
+        DatasetGraphTxnTDB dsg2 = new TransactionManager().begin(dsg) ;
+        return dsg2 ;
+    }
+
     private static void dump(ObjectFile file)
     {
         Iterator<Pair<Long, ByteBuffer>> iter = file.all() ;
@@ -335,6 +361,13 @@ public class TxMain
         QueryExecUtils.executeQuery(query, qExec) ;
     }
     
+    private static void load(String file, DatasetGraphTxnTDB dsg)
+    {
+        Model m = ModelFactory.createModelForGraph(dsg.getDefaultGraph()) ;
+        FileManager.get().readModel(m, file) ;
+        
+    }
+
     public static void update(String updateStr, DatasetGraph dsg)
     {
         UpdateRequest req = UpdateFactory.create(updateStr) ;

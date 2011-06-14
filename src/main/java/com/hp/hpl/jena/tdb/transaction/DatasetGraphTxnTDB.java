@@ -6,10 +6,9 @@
 
 package com.hp.hpl.jena.tdb.transaction;
 
-import com.hp.hpl.jena.sparql.core.DatasetGraphWrapper ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 
-public class DatasetGraphTxnTDB extends DatasetGraphWrapper
+public class DatasetGraphTxnTDB extends DatasetGraphTDB
 {
     private final Transaction transaction ;
 
@@ -24,7 +23,7 @@ public class DatasetGraphTxnTDB extends DatasetGraphWrapper
     
     @Override
     public String toString()
-    { return "Txn:"+getWrapped().toString() ; }
+    { return "Txn:"+super.toString() ; }
 }
 
 /*

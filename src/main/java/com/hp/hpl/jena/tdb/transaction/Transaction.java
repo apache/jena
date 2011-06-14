@@ -14,6 +14,7 @@ import java.util.List ;
 /** A transaction handle */
 public class Transaction
 {
+    // TODO split internal and external features.
     private final long id ;
     private final TransactionManager txnMgr ;
     private final List<Iterator<?>> iterators ; 
