@@ -61,6 +61,9 @@ public class TestTokenForNode extends BaseTest
     @Test public void tokenForNode10()
     { test( Node.createAnon(new AnonId("abc")), TokenType.BNODE, "abc", null, null) ; }
 
+    @Test public void tokenForNode11()
+    { test( Node.ANY, TokenType.KEYWORD, "ANY", null, null) ; }
+
     private static void test(String nodeStr,
                              TokenType type, String image, String image2, Token subToken)
     {

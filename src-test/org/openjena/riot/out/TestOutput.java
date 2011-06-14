@@ -21,7 +21,7 @@ import com.hp.hpl.jena.sparql.util.NodeFactory ;
 
 public class TestOutput extends BaseTest
 {
-    static Prologue prologue = new Prologue(null) ;
+    static Prologue prologue = new Prologue() ;
     static {
         prologue.getPrefixMap().add("", "http://example/") ;
         prologue.getPrefixMap().add("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#") ;
@@ -50,6 +50,23 @@ public class TestOutput extends BaseTest
 
     @Test public void output_12()        { testStringForNode("123", "\"123\"^^xsd:integer", prologue) ; }
     
+    @Test public void output_13()        { test(Node.ANY, "ANY", prologue) ; } 
+    
+    private void test(Node node, String string, Prologue prologue2)
+    {
+        try
+        {
+            ByteArrayOutputStream bytes = new ByteArrayOutputStream() ;
+            Writer w = new OutputStreamWriter(bytes, "ASCII") ;
+            OutputLangUtils.output(w, node, prologue) ;
+            w.flush();
+            String str = bytes.toString("ASCII") ;
+            assertEquals(string, str) ;
+        }
+        catch (UnsupportedEncodingException ex) { ex.printStackTrace(); }
+        catch (IOException ex) { ex.printStackTrace(); }
+    }
+
     private static void testStringForNode(String nodeStr)
     {
         String expected = nodeStr.replace("'", "\"") ;

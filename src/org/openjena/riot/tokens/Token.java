@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -54,6 +55,9 @@ public final class Token
     public int cntrlCode = 0 ;
     private long column ;
     private long line ;
+    
+    // Keywords recognized.
+    static final private String ImageANY = "ANY" ;
     
     public final TokenType getType() { return tokenType ; }
     public final String getImage()   { return tokenImage ; }
@@ -273,6 +277,10 @@ public final class Token
             case LONG_STRING1:
             case LONG_STRING2:
                 return true ;
+            case KEYWORD:
+                if ( tokenImage.equals(ImageANY) )
+                    return true ;
+                return false ;
             default:
                 return false ;
         }
@@ -362,7 +370,10 @@ public final class Token
             case LONG_STRING1:
             case LONG_STRING2:
                 return Node.createLiteral(tokenImage) ;
-            
+            case KEYWORD:
+                if ( tokenImage.equals(ImageANY) )
+                    return Node.ANY ;
+                //$FALL-THROUGH$
             default: break ;
         }
         return null ;
@@ -431,11 +442,11 @@ public final class Token
         return tokenForNode(n, prologue.getBaseURI(), prologue.getPrefixMap()) ;
     }
 
-    public static Token tokenForNode(Node n, String base, PrefixMap mapping)
+    public static Token tokenForNode(Node node, String base, PrefixMap mapping)
     {
-            if ( n.isURI() )
+            if ( node.isURI() )
             {
-                String uri = n.getURI();
+                String uri = node.getURI();
                 if ( mapping != null )
                 {
                     Pair<String,String> pname = mapping.abbrev(uri) ;
@@ -448,17 +459,17 @@ public final class Token
                     if ( x != null ) 
                         return new Token(TokenType.IRI, x) ;
                 }
-                return new Token(IRI, n.getURI()) ;
+                return new Token(IRI, node.getURI()) ;
             }
-            if ( n.isBlank() )
-                return new Token(BNODE, n.getBlankNodeLabel()) ;
-            if ( n.isVariable() )
-                return new Token(VAR, n.getName()) ;
-            if ( n.isLiteral() )
+            if ( node.isBlank() )
+                return new Token(BNODE, node.getBlankNodeLabel()) ;
+            if ( node.isVariable() )
+                return new Token(VAR, node.getName()) ;
+            if ( node.isLiteral() )
             {
-                String datatype = n.getLiteralDatatypeURI() ;
-                String lang = n.getLiteralLanguage() ;
-                String s = n.getLiteralLexicalForm() ;
+                String datatype = node.getLiteralDatatypeURI() ;
+                String lang = node.getLiteralLanguage() ;
+                String s = node.getLiteralLexicalForm() ;
                 
                 if ( datatype != null )
                 {
@@ -528,6 +539,9 @@ public final class Token
                 return new Token(STRING, s) ; 
             }
             
+            if ( node.equals(Node.ANY) )
+                return new Token(TokenType.KEYWORD, ImageANY) ;
+            
             throw new IllegalArgumentException() ;
             
         }
@@ -535,6 +549,7 @@ public final class Token
 
 /*
  * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
