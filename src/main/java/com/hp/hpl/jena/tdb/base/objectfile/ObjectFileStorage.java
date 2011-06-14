@@ -156,7 +156,7 @@ public class ObjectFileStorage implements ObjectFile
     {
         if ( ! inAllocWrite )
             throw new FileException("Not in the process of an allocated write operation pair") ;
-        if ( allocBlock != block )
+        if ( allocBlock != null && ( allocBlock.getByteBuffer() != block.getByteBuffer() ) )
             throw new FileException("Wrong byte buffer in an allocated write operation pair") ;
 
         inAllocWrite = false ;

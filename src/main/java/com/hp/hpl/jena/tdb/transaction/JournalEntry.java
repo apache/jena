@@ -17,9 +17,6 @@ public class JournalEntry
     
     public JournalEntry(JournalEntryType type, ByteBuffer bytes)
     {
-        if ( bytes == null )
-            Log.warn(this, "Journal entry with bytes = null") ;
-        
         this.type = type ;
         this.byteBuffer = bytes ;
     }

@@ -44,8 +44,6 @@ public class Transaction
     
         for ( Journal jrnl : journals )
             jrnl.sync() ;
-        
-        txnMgr.commit(this) ;
     }
     
     public void abort()                             { txnMgr.abort(this) ; }

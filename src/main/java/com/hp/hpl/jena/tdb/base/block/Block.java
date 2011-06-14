@@ -119,7 +119,12 @@ public final class Block
     private static ByteBuffer replicate(ByteBuffer srcBlk)
     {
         ByteBuffer dstBlk = ByteBuffer.allocate(srcBlk.capacity()) ;
-        System.arraycopy(srcBlk.array(), 0, dstBlk.array(), 0, srcBlk.capacity()) ;
+        
+        if ( srcBlk.hasArray() && dstBlk.hasArray() )
+            System.arraycopy(srcBlk.array(), 0, dstBlk.array(), 0, srcBlk.capacity()) ;
+        else
+            dstBlk.put(srcBlk) ;
+        dstBlk.clear() ;
         return dstBlk ; 
     }  
 
