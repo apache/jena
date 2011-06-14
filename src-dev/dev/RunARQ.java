@@ -25,11 +25,16 @@ import org.openjena.atlas.logging.Log ;
 import org.openjena.riot.ErrorHandlerFactory ;
 import org.openjena.riot.RiotReader ;
 import org.openjena.riot.checker.CheckerIRI ;
+import org.openjena.riot.out.NodeFmtLib ;
 import org.openjena.riot.pipeline.normalize.CanonicalizeLiteral ;
+import org.openjena.riot.tokens.Token ;
+import org.openjena.riot.tokens.Tokenizer ;
+import org.openjena.riot.tokens.TokenizerFactory ;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.datatypes.xsd.XSDDuration ;
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.Node_Blank ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.iri.IRI ;
 import com.hp.hpl.jena.iri.IRIFactory ;
@@ -113,6 +118,14 @@ public class RunARQ
     
     public static void main(String[] argv) throws Exception
     {
+        Node node1 = Node_Blank.createAnon();
+        String str = NodeFmtLib.serialize(node1);
+        Tokenizer tokenizer = TokenizerFactory.makeTokenizerString(str);
+        Token token = tokenizer.next();
+        Node node2 = token.asNode();
+        System.out.println(node1) ;
+        System.out.println(node2) ;
+        exit(0) ;
         
         arq.qparse.main("--file=Q.arq") ; exit(0) ;
         
