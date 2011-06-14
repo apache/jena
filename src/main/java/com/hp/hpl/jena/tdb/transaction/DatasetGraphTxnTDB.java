@@ -6,66 +6,25 @@
 
 package com.hp.hpl.jena.tdb.transaction;
 
-import setup.DatasetBuilder ;
-
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.tdb.TDBException ;
-import com.hp.hpl.jena.tdb.base.file.Location ;
+import com.hp.hpl.jena.sparql.core.DatasetGraphWrapper ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 
-
-
-public class TransactionManager
+public class DatasetGraphTxnTDB extends DatasetGraphWrapper
 {
-    static long transactionId = 10 ;
+    private final Transaction transaction ;
+
+    public DatasetGraphTxnTDB(DatasetGraphTDB dsg, Transaction txn)
+    {
+        super(dsg) ;
+        this.transaction = txn ;
+    }
+
+    public void commit() { transaction.commit() ; }
+    public void abort() { transaction.abort() ; }
     
-    public TransactionManager()
-    {
-    }
-    
-    public Transaction createTransaction()
-    {
-        Transaction txn = new Transaction(transactionId++, this) ;
-        return txn ;
-    }
-    
-    public Transaction begin(DatasetGraph dsg)
-    {
-        // If already a transaction ... 
-        // Subs transactions are a new view - commit is only comit to parent transaction.  
-        if ( dsg instanceof DatasetGraphTxnTDB )
-        {
-            throw new TDBException("Already in transactional DatasetGraph") ;
-            // Either:
-            //   error -> implies nested
-            //   create new transaction 
-        }
-        
-        if ( ! ( dsg instanceof DatasetGraphTDB ) )
-            throw new TDBException("Not a TDB-backed dataset") ;
-
-        DatasetGraphTDB dsgtdb = (DatasetGraphTDB)dsg ;
-        // For now, always build a parallel dataset - later, associate with the DatasetGraphTDB
-        Location location = dsgtdb.getLocation() ;
-        
-        
-        
-        DatasetBuilder x = new DatasetBuilderTxn(baseBlockMgrBuilder, nodeTable) ;
-        DatasetGraph dsg2 = x.build(Location.mem(), null) ;
-
-        Transaction_X txn = createTransaction() ;
-        return new DatasetGraphTxView(txn, dsg2) ;
-    }
-
-    public void commit(Transaction transaction)
-    {
-        transaction.commit() ;
-    }
-
-    public void abort(Transaction transaction)
-    {    
-        transaction.abort() ;
-    }
+    @Override
+    public String toString()
+    { return "Txn:"+getWrapped().toString() ; }
 }
 
 /*

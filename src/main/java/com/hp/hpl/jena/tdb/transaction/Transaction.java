@@ -17,6 +17,8 @@ public class Transaction
     private final long id ;
     private final TransactionManager txnMgr ;
     private final List<Iterator<?>> iterators ; 
+    private final List<Journal> journals = new ArrayList<Journal>() ;
+    private final List<ObjectFileTrans> objJournals = new ArrayList<ObjectFileTrans>() ;
 
     public Transaction(long id, TransactionManager txnMgr)
     {
@@ -25,7 +27,26 @@ public class Transaction
         this.iterators = new ArrayList<Iterator<?>>() ;
     }
 
-    public void commit()                            { txnMgr.commit(this) ; }
+    public void commit()
+    {
+        // Write commit entry.
+        if ( journals.size() > 0 )
+        {
+            Journal jrnl = journals.get(0) ;
+            JournalEntry entry = new JournalEntry(JournalEntryType.Commit, null) ;
+            jrnl.writeJournal(entry) ;
+        }
+        
+        
+        for ( ObjectFileTrans jrnl : objJournals )
+            jrnl.sync() ;
+    
+        for ( Journal jrnl : journals )
+            jrnl.sync() ;
+        
+        txnMgr.commit(this) ;
+    }
+    
     public void abort()                             { txnMgr.abort(this) ; }
     public long getTxnId()                          { return id ; }
     public TransactionManager getTxnMgr()           { return txnMgr ; }
@@ -33,6 +54,16 @@ public class Transaction
     public void addIterator(Iterator<?> iter)       { iterators.add(iter) ; }
     public void removeIterator(Iterator<?> iter)    { iterators.remove(iter) ; }
     public List<Iterator<?>> iterators()            { return Collections.unmodifiableList(iterators) ; }
+    
+    public void add(Journal journal)
+    {
+        journals.add(journal) ;
+    }
+
+    public void add(ObjectFileTrans objFileTrans)
+    {
+        objJournals.add(objFileTrans) ;
+    }
 }
 
 /*

@@ -11,6 +11,9 @@ import static com.hp.hpl.jena.tdb.sys.SystemTDB.SizeOfInt ;
 import java.nio.ByteBuffer ;
 import java.util.Iterator ;
 
+import org.openjena.atlas.lib.Closeable ;
+import org.openjena.atlas.lib.Sync ;
+
 import tx.IteratorSlotted ;
 
 import com.hp.hpl.jena.tdb.base.file.BufferChannel ;
@@ -20,7 +23,7 @@ import com.hp.hpl.jena.tdb.base.file.BufferChannel ;
  *  if the journal grows to the point where it needs to free up cache. 
  */
 public final
-class Journal implements Iterable<JournalEntry>
+class Journal implements Iterable<JournalEntry>, Sync, Closeable
 {
     // Version 1 : issue might be excessive copying
     // [TxTDB:TODO] Caching
@@ -54,28 +57,22 @@ class Journal implements Iterable<JournalEntry>
     public long writeJournal(JournalEntryType type, ByteBuffer buffer)
     {
         long posn = position ;
+        int len ;
         // [TxDEV:TODO] CRC
-
-        // ?? buffer.position(0) ;
-        int len = buffer.remaining() ; 
+        if ( buffer == null )
+            len = 0 ;
+        else
+            len = buffer.remaining() ; 
         
         header.clear() ;
         header.putInt(type.id) ;
         header.putInt(len) ;
         header.flip() ;
-        
-//        switch (type)
-//        {
-//            case Block:
-//            case Object:
-//            case Commit:
-//            case Checkpoint:
-//            default:
-//        }
-        
+
         channel.write(header) ;
-        // Write bytes
-        channel.write(buffer) ;
+        if ( len > 0 )
+            // Write bytes
+            channel.write(buffer) ;
         
         position += len+Overhead ;
         return posn ;
@@ -173,6 +170,12 @@ class Journal implements Iterable<JournalEntry>
     
     @Override
     public Iterator<JournalEntry> iterator() { return entries() ; }
+
+    @Override
+    public void sync()  { channel.sync() ; }
+
+    @Override
+    public void close() { channel.close() ; }
 }
 
 /*
