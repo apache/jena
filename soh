@@ -8,6 +8,7 @@ require 'net/http'
 require 'uri'
 require 'cgi'
 require 'pp'
+require 'ostruct'
 
 # ToDo
 #  Allow a choice of media type for GET
@@ -19,6 +20,8 @@ require 'pp'
 
 SOH_NAME="SOH"
 SOH_VERSION="0.0.0"
+
+$proxy = ENV['http_proxy'] ? URI.parse(ENV['http_proxy']) : OpenStruct.new  
 
 # What about direct naming?
 
@@ -168,7 +171,7 @@ def send_body(dataset, graph, file, method)
 end
 
 def response_no_body(uri, request)
-  http = Net::HTTP.new(uri.host, uri.port)
+  http = Net::HTTP::Proxy($proxy.host,$proxy.port).new(uri.host, uri.port)
   # check we can connect.
   begin http.start
   rescue Exception => e  
@@ -193,7 +196,7 @@ def response_no_body(uri, request)
 end
 
 def response_print_body(uri, request)
-  http = Net::HTTP.new(uri.host, uri.port)
+  http = Net::HTTP::Proxy($proxy.host,$proxy.port).new(uri.host, uri.port)
   # check we can connect.
   begin http.start
   rescue => e  
