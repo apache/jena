@@ -8,8 +8,6 @@ package com.hp.hpl.jena.tdb.transaction;
 
 import java.nio.ByteBuffer ;
 
-import org.openjena.atlas.logging.Log ;
-
 public class JournalEntry
 {
     private final JournalEntryType type ;
@@ -21,8 +19,8 @@ public class JournalEntry
         this.byteBuffer = bytes ;
     }
 
-    public JournalEntryType getType()               { return type ; }
-    public ByteBuffer getByteBuffer()   { return byteBuffer ; }
+    public JournalEntryType getType()       { return type ; }
+    public ByteBuffer getByteBuffer()       { return byteBuffer ; }
 }
 
 /*
