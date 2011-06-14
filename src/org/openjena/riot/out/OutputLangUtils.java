@@ -121,6 +121,13 @@ public class OutputLangUtils
             print(out, node.getName()) ;
             return ; 
         }
+        
+        if ( node.equals(Node.ANY) )
+        {
+        	print(out, "ANY") ;
+        	return ;
+        }
+        
         System.err.println("Illegal node: "+node) ;
     }
 
