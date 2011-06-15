@@ -23,6 +23,7 @@ import org.openjena.atlas.test.Gen ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 import setup.DatasetBuilder ;
+import tx.base.FileRef ;
 
 import com.hp.hpl.jena.query.DatasetFactory ;
 import com.hp.hpl.jena.query.Query ;
@@ -82,8 +83,20 @@ public class TxMain
     
     public static void main(String... args)
     {
+        Location location = new Location("DB") ;
+        String [] filenames = { "SPO.dat", "SPO.idn", "GSPO.idn", "xxx" } ; 
+        for ( String fn : filenames )
+        {
+            fn = location.absolute(fn) ;
+            FileRef fileRef = FileRef.create(fn) ;
+            System.out.println(fileRef.toString()) ;
+        }
+        
+        exit(0) ;
+        
+        
         DatasetGraphTxnTDB dsg = build() ;
-        dsg.commit() ;
+        //dsg.commit() ;
         load("D.ttl", dsg) ;
         query("SELECT (Count(*) AS ?c) { ?s ?p ?o }", dsg) ;
         exit(0) ;

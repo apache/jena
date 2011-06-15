@@ -8,15 +8,29 @@ package com.hp.hpl.jena.tdb.transaction;
 
 import java.nio.ByteBuffer ;
 
+import tx.base.FileRef ;
+
 public class JournalEntry
 {
+    static public final JournalEntry Commit = new JournalEntry(JournalEntryType.Commit) ;
+    static public final JournalEntry Abort = new JournalEntry(JournalEntryType.Abort) ;
+    static public final JournalEntry CheckPoint = new JournalEntry(JournalEntryType.Checkpoint) ;
     private final JournalEntryType type ;
     private final ByteBuffer byteBuffer ;
+    private final FileRef fileRef ;
     
-    public JournalEntry(JournalEntryType type, ByteBuffer bytes)
+    private JournalEntry(JournalEntryType type)
+    {
+        this.type = type ;
+        this.byteBuffer = null ;
+        this.fileRef = null ;
+    }
+    
+    public JournalEntry(JournalEntryType type, /*FileRef fileRef, */ByteBuffer bytes)
     {
         this.type = type ;
         this.byteBuffer = bytes ;
+        this.fileRef = null ;
     }
 
     public JournalEntryType getType()       { return type ; }

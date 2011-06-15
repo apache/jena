@@ -11,17 +11,19 @@ import org.openjena.atlas.logging.Log ;
 
 public enum JournalEntryType 
 { 
-    Block(1), Object(2), Commit(3), Checkpoint(4) ;
+    // Abort is used 
+    Block(1), Object(2), Commit(3), Abort(4), Checkpoint(5) ;
     
     final int id ;
     JournalEntryType(int x) { id = x ; }
     int getId() { return id ; }
     static public JournalEntryType type(int x)
     {
-        if ( x == Block.id )             return Block ;
-        else if ( x == Object.id )       return Object ;
-        else if ( x == Commit.id )       return Commit ;
-        else if ( x == Checkpoint.id )   return Checkpoint ;
+        if ( x == Block.id )                return Block ;
+        else if ( x == Object.id )          return Object ;
+        else if ( x == Commit.id )          return Commit ;
+        else if ( x == Abort.id )           return Abort ;
+        else if ( x == Checkpoint.id )      return Checkpoint ;
         else
         {
             Log.fatal(JournalEntryType.class, "Unknown type: "+x) ;

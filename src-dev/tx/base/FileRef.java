@@ -16,10 +16,12 @@ import org.openjena.atlas.logging.Log ;
 import com.hp.hpl.jena.tdb.TDBException ;
 import com.hp.hpl.jena.tdb.sys.Names ;
 
-final
+
+
+/** File references.  
+ */
 public class FileRef
 {
-    // Symbol<T> ?
     private final String filename ;
     private final int id ;
 
@@ -28,7 +30,6 @@ public class FileRef
     // THIS MUST BE PERSISTENT
     static Map<String, Integer> name2id = new HashMap<String, Integer>() ;
     static Map<Integer, FileRef> id2name = new HashMap<Integer, FileRef>() ;
-    
     
     static {
         int count = 0 ;
@@ -62,7 +63,7 @@ public class FileRef
 
     static public FileRef create(String filename)
     {
-        Tuple<String> x = FileOps.splitDirBaseExt(filename) ;
+        Tuple<String> x = FileOps.splitDirFile(filename) ;
         String key = x.get(1) ;
         if ( ! name2id.containsKey(key) )
         {
@@ -103,7 +104,7 @@ public class FileRef
     public String getFilename() { return filename ; }
     
     @Override
-    public String toString()    { return "file:"+filename ; }
+    public String toString()    { return "fileref("+id+"):"+filename ; }
 
     public int getId()          { return id ; }
 
