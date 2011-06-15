@@ -7,7 +7,6 @@
 package org.openjena.fuseki.servlets;
 
 import static java.lang.String.format ;
-import static org.openjena.fuseki.Fuseki.serverlog ;
 import static org.openjena.fuseki.HttpNames.HEADER_LASTMOD ;
 import static org.openjena.fuseki.HttpNames.METHOD_DELETE ;
 import static org.openjena.fuseki.HttpNames.METHOD_GET ;
@@ -57,7 +56,7 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
 {
     protected static Logger classLog = LoggerFactory.getLogger(SPARQL_REST.class) ;
     
-    protected static ErrorHandler errorHandler = ErrorHandlerFactory.errorHandlerStd(serverlog) ;
+    protected static ErrorHandler errorHandler = ErrorHandlerFactory.errorHandlerStd(log) ;
 
     class HttpActionREST extends HttpAction {
         final Target target ; 
@@ -283,7 +282,7 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
         {
             if ( dest.isDefault )
                 errorOccurred("Dataset does not have a default graph") ;
-            serverlog.info(format("[%d] Creating in-memory graph for <%s>", action.id, dest.graphName)) ;
+            log.info(format("[%d] Creating in-memory graph for <%s>", action.id, dest.graphName)) ;
             // Not default graph.
             // Not an autocreate dataset - create something.
             g = GraphFactory.createDefaultGraph() ;
@@ -314,10 +313,10 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
         if ( action.verbose )
         {
             if ( len >= 0 )
-                serverlog.info(format("[%d]   Body: Content-Length=%d, Content-Type=%s, Charset=%s => %s", 
+                log.info(format("[%d]   Body: Content-Length=%d, Content-Type=%s, Charset=%s => %s", 
                                       action.id, len, ct.getContentType(), ct.getCharset(), lang.getName())) ;
             else
-                serverlog.info(format("[%d]   Body: Content-Type=%s, Charset=%s => %s", 
+                log.info(format("[%d]   Body: Content-Type=%s, Charset=%s => %s", 
                                           action.id, ct.getContentType(), ct.getCharset(), lang.getName())) ;
         }
         

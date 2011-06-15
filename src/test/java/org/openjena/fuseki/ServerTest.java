@@ -54,7 +54,7 @@ public class ServerTest extends BaseTest
     protected static void serverStart()
     {
         Log.logLevel(SPARQLServer.log.getName(), org.apache.log4j.Level.WARN, java.util.logging.Level.WARNING) ;
-        Log.logLevel(Fuseki.serverlog.getName(), org.apache.log4j.Level.WARN, java.util.logging.Level.WARNING) ;
+        Log.logLevel(Fuseki.serverLog.getName(), org.apache.log4j.Level.WARN, java.util.logging.Level.WARNING) ;
         Log.logLevel("org.eclipse.jetty", org.apache.log4j.Level.WARN, java.util.logging.Level.WARNING) ;
         server = new SPARQLServer(DatasetGraphFactory.createMem(), datasetPath, port, true) ;
         server.start() ;
@@ -65,7 +65,7 @@ public class ServerTest extends BaseTest
     {
         server.stop() ;
         Log.logLevel(SPARQLServer.log.getName(), org.apache.log4j.Level.INFO, java.util.logging.Level.INFO) ;
-        Log.logLevel(Fuseki.serverlog.getName(), org.apache.log4j.Level.INFO, java.util.logging.Level.INFO) ;
+        Log.logLevel(Fuseki.serverLog.getName(), org.apache.log4j.Level.INFO, java.util.logging.Level.INFO) ;
         Log.logLevel("org.eclipse.jetty", org.apache.log4j.Level.INFO, java.util.logging.Level.INFO) ;
     }
     

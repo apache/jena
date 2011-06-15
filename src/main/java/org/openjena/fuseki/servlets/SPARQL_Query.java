@@ -7,7 +7,6 @@
 package org.openjena.fuseki.servlets;
 
 import static java.lang.String.format ;
-import static org.openjena.fuseki.Fuseki.serverlog ;
 import static org.openjena.fuseki.HttpNames.paramQuery ;
 
 import java.io.IOException ;
@@ -26,8 +25,6 @@ import org.openjena.fuseki.http.HttpSC ;
 import org.openjena.fuseki.migrate.WebIO ;
 import org.openjena.riot.ContentType ;
 import org.openjena.riot.WebContent ;
-import org.slf4j.Logger ;
-import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.query.Query ;
@@ -43,8 +40,6 @@ import com.hp.hpl.jena.sparql.resultset.SPARQLResult ;
 
 public abstract class SPARQL_Query extends SPARQL_ServletBase
 {
-    private static Logger log = LoggerFactory.getLogger(SPARQL_Query.class) ;
-    
     protected class HttpActionQuery extends HttpAction {
         public HttpActionQuery(long id, DatasetGraph dsg, HttpServletRequest request, HttpServletResponse response, boolean verbose)
         {
@@ -216,7 +211,7 @@ public abstract class SPARQL_Query extends SPARQL_ServletBase
     private void execute(String queryString, HttpActionQuery action)
     {
         String queryStringLog = formatForLog(queryString) ;
-        serverlog.info(format("[%d] Query = %s", action.id, queryString));
+        log.info(format("[%d] Query = %s", action.id, queryString));
         
         Query query = null ;
         try {
@@ -267,28 +262,28 @@ public abstract class SPARQL_Query extends SPARQL_ServletBase
 //            // Not necessary if we are inside readlock under end of sending results. 
 //            rs = ResultSetFactory.copyResults(rs) ;
 
-            serverlog.info(format("[%d] OK/select", action.id)) ;
+            log.info(format("[%d] OK/select", action.id)) ;
             return new SPARQLResult(rs) ;
         }
 
         if ( query.isConstructType() )
         {
             Model model = qexec.execConstruct() ;
-            serverlog.info(format("[%d] OK/construct", action.id)) ;
+            log.info(format("[%d] OK/construct", action.id)) ;
             return new SPARQLResult(model) ;
         }
 
         if ( query.isDescribeType() )
         {
             Model model = qexec.execDescribe() ;
-            serverlog.info(format("[%d] OK/describe",action.id)) ;
+            log.info(format("[%d] OK/describe",action.id)) ;
             return new SPARQLResult(model) ;
         }
 
         if ( query.isAskType() )
         {
             boolean b = qexec.execAsk() ;
-            serverlog.info(format("[%d] OK/ask",action.id)) ;
+            log.info(format("[%d] OK/ask",action.id)) ;
             return new SPARQLResult(b) ;
         }
 

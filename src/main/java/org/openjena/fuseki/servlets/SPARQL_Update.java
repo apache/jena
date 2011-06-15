@@ -7,7 +7,7 @@
 package org.openjena.fuseki.servlets;
 
 import static java.lang.String.format ;
-import static org.openjena.fuseki.Fuseki.serverlog ;
+import static org.openjena.fuseki.Fuseki.requestLog ;
 import static org.openjena.fuseki.HttpNames.paramRequest ;
 import static org.openjena.fuseki.HttpNames.paramUpdate ;
 
@@ -26,8 +26,6 @@ import org.openjena.fuseki.HttpNames ;
 import org.openjena.fuseki.http.HttpSC ;
 import org.openjena.riot.ContentType ;
 import org.openjena.riot.WebContent ;
-import org.slf4j.Logger ;
-import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.query.QueryParseException ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
@@ -38,7 +36,6 @@ import com.hp.hpl.jena.update.UpdateRequest ;
 
 public class SPARQL_Update extends SPARQL_ServletBase
 {
-    private static Logger log = LoggerFactory.getLogger(SPARQL_Update.class) ;
     private static String updateParseBase = "http://example/base/" ;
     
     private class HttpActionUpdate extends HttpAction {
@@ -190,7 +187,7 @@ public class SPARQL_Update extends SPARQL_ServletBase
                 byte[] b = IO.readWholeFile(input) ;
                 String requestStr = Bytes.bytes2string(b) ;
                 String requestStrLog = formatForLog(requestStr) ;
-                serverlog.info(format("[%d] Update = %s", action.id, requestStrLog)) ;
+                requestLog.info(format("[%d] Update = %s", action.id, requestStrLog)) ;
                 req = UpdateFactory.create(requestStr) ;
             }    
             else
@@ -209,7 +206,7 @@ public class SPARQL_Update extends SPARQL_ServletBase
             requestStr = action.request.getParameter(paramRequest) ;
         
         if ( action.verbose )
-            serverlog.info(format("[%d] Form update = %s", action.id, formatForLog(requestStr))) ;
+            requestLog.info(format("[%d] Form update = %s", action.id, formatForLog(requestStr))) ;
         
         UpdateRequest req ; 
         try {

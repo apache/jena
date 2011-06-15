@@ -7,7 +7,7 @@
 package org.openjena.fuseki.server;
 
 import static java.lang.String.format ;
-import static org.openjena.fuseki.Fuseki.serverlog ;
+import static org.openjena.fuseki.Fuseki.serverLog ;
 
 import javax.servlet.http.HttpServlet ;
 
@@ -65,11 +65,11 @@ public class SPARQLServer
     public void start()
     {
         String now = Utils.nowAsString() ;
-        serverlog.info(format("%s %s", Fuseki.NAME, Fuseki.VERSION)) ;
+        serverLog.info(format("%s %s", Fuseki.NAME, Fuseki.VERSION)) ;
         String jettyVersion = org.eclipse.jetty.server.Server.getVersion() ;
-        serverlog.info(format("Jetty %s",jettyVersion)) ;
-        serverlog.info(format("Dataset = %s", datasetPath)) ;
-        serverlog.info(format("Started %s on port %d", now, server.getConnectors()[0].getPort())) ;
+        serverLog.info(format("Jetty %s",jettyVersion)) ;
+        serverLog.info(format("Dataset = %s", datasetPath)) ;
+        serverLog.info(format("Started %s on port %d", now, server.getConnectors()[0].getPort())) ;
 
         try { server.start() ; }
         catch (Exception ex)
@@ -81,10 +81,10 @@ public class SPARQLServer
     public void stop()
     {
         String now = Utils.nowAsString() ;
-        serverlog.info(format("Stopped %s on port %d", now, server.getConnectors()[0].getPort())) ;
+        serverLog.info(format("Stopped %s on port %d", now, server.getConnectors()[0].getPort())) ;
         try { server.stop() ; }
         catch (Exception ex)
-        { Fuseki.serverlog.warn("SPARQLServer: Exception while stopping server: " + ex.getMessage(), ex) ; }
+        { Fuseki.serverLog.warn("SPARQLServer: Exception while stopping server: " + ex.getMessage(), ex) ; }
     }
     
     public Server getServer() { return server ; }
@@ -140,7 +140,7 @@ public class SPARQLServer
         if ( enableUpdate )
             installManager = true ;
             
-        serverlog.info(enableUpdate ? "Update enabled" : "Read-only server") ;
+        serverLog.info(enableUpdate ? "Update enabled" : "Read-only server") ;
         
         // Set the max form size much higher.
         context.setMaxFormContentSize(1*1024*1024) ;

@@ -7,7 +7,6 @@
 package org.openjena.fuseki.servlets;
 
 import static java.lang.String.format ;
-import static org.openjena.fuseki.Fuseki.serverlog ;
 
 import java.io.IOException ;
 import java.io.InputStream ;
@@ -44,7 +43,7 @@ import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
 
 public class SPARQL_Upload extends SPARQL_ServletBase 
 {
-    private static ErrorHandler errorHandler = ErrorHandlerFactory.errorHandlerStd(serverlog) ;
+    private static ErrorHandler errorHandler = ErrorHandlerFactory.errorHandlerStd(log) ;
     
     private class HttpActionUpload extends HttpAction {
         public HttpActionUpload(long id, DatasetGraph dsg, HttpServletRequest request, HttpServletResponse response, boolean verbose)
@@ -137,7 +136,7 @@ public class SPARQL_Upload extends SPARQL_ServletBase
                     }
                     // Add file type?
                     else
-                        serverlog.info(format("[%d] Upload: Field="+fieldName+" - ignored")) ;
+                        log.info(format("[%d] Upload: Field="+fieldName+" - ignored")) ;
                     //System.out.println("Form field " + fieldName + " with value " + Streams.asString(stream) + " detected.");
                 } else {
 //                    System.out.println("File field " + fieldName + " with file name "
@@ -172,7 +171,7 @@ public class SPARQL_Upload extends SPARQL_ServletBase
                 
             if ( graphName == null )
                 graphName = "default" ;
-            serverlog.info(format("[%d] Upload: Filename: %s, Content-Type=%s, Charset=%s => (%s,%s,%d triple(s))", 
+            log.info(format("[%d] Upload: Filename: %s, Content-Type=%s, Charset=%s => (%s,%s,%d triple(s))", 
                                       action.id, name,  ct.getContentType(), ct.getCharset(), graphName, lang.getName(), tripleCount)) ;
 
             // Delay updating until all form fields processed to get the graph name 

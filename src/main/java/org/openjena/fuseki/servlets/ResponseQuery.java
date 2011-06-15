@@ -56,7 +56,7 @@ public class ResponseQuery
         
         if ( mimeType == null )
         {
-            Fuseki.serverlog.warn("Can't find MIME type for response") ;
+            Fuseki.requestLog.warn("Can't find MIME type for response") ;
             String x = request.getHeader("Accept") ;
             String msg ;
             if ( x == null )

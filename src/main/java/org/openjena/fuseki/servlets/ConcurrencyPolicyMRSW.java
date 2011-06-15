@@ -14,7 +14,7 @@ import org.slf4j.Logger ;
 
 public final class ConcurrencyPolicyMRSW
 {
-    static private Logger log = Fuseki.serverlog ; //org.slf4j.LoggerFactory.getLogger(ConcurrencyPolicyMRSW.class) ;
+    static private Logger log = Fuseki.requestLog ; //org.slf4j.LoggerFactory.getLogger(ConcurrencyPolicyMRSW.class) ;
     static private final boolean logging = false ; //log.isDebugEnabled() ;
     
     // This is a simplified version of ConcurrencyPolicyMRSW from TDB. 
@@ -31,14 +31,14 @@ public final class ConcurrencyPolicyMRSW
     public void startRead()
     {
         readCounter.getAndIncrement() ;
-        if ( logging ) log() ;
+        log() ;
         checkConcurrency() ;
     }
 
     //@Override
     public void finishRead()
     {
-        if ( logging ) log() ;
+        log() ;
         readCounter.decrementAndGet() ;
         checkConcurrency() ;
     }
@@ -47,14 +47,14 @@ public final class ConcurrencyPolicyMRSW
     public void startUpdate()
     {
         writeCounter.getAndIncrement() ;
-        if ( logging ) log() ;
+        log() ;
         checkConcurrency() ;
     }
 
     //@Override
     public void finishUpdate()
     {
-        if ( logging ) log() ;
+        log() ;
         writeCounter.decrementAndGet() ;
         checkConcurrency() ;
     }
@@ -70,8 +70,10 @@ public final class ConcurrencyPolicyMRSW
             policyError(id, R, W) ;
     }
 
-    private synchronized void log()
+    private void log()
     {
+        if ( ! logging ) 
+            return ;
         long R , W , id ;
         synchronized(this)
         {

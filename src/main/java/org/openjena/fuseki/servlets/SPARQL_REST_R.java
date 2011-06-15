@@ -7,7 +7,6 @@
 package org.openjena.fuseki.servlets;
 
 import static java.lang.String.format ;
-import static org.openjena.fuseki.Fuseki.serverlog ;
 
 import java.io.IOException ;
 
@@ -47,7 +46,7 @@ public class SPARQL_REST_R extends SPARQL_REST
         Lang lang = FusekiLib.langFromContentType(mediaType.getContentType()) ;
 
         if ( action.verbose )
-            serverlog.info(format("[%d]   Get: Content-Type=%s, Charset=%s => %s", 
+            log.info(format("[%d]   Get: Content-Type=%s, Charset=%s => %s", 
                                   action.id, mediaType.getContentType(), mediaType.getCharset(), lang.getName())) ;
 
         action.beginRead() ;

@@ -105,7 +105,7 @@ public class FusekiCmd extends CmdARQ
     {
         int x = 0 ;
         
-        Logger log = Fuseki.serverlog ; //SPARQLServer.log ;
+        Logger log = Fuseki.serverLog ;
         
         ArgDecl assemblerDescDecl = new ArgDecl(ArgDecl.HasValue, "desc", "dataset") ;
         if ( contains(argMem) ) x++ ; 

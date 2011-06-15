@@ -7,7 +7,6 @@
 package org.openjena.fuseki.servlets;
 
 import static java.lang.String.format ;
-import static org.openjena.fuseki.Fuseki.serverlog ;
 
 import java.io.IOException ;
 import java.io.PrintWriter ;
@@ -24,11 +23,13 @@ import org.openjena.fuseki.Fuseki ;
 import org.openjena.fuseki.HttpNames ;
 import org.openjena.fuseki.http.HttpSC ;
 import org.openjena.fuseki.server.DatasetRegistry ;
+import org.slf4j.Logger ;
 
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 
 public abstract class SPARQL_ServletBase extends HttpServlet
 {
+    protected static final Logger log = Fuseki.requestLog ;
     protected static AtomicLong requestIdAlloc = new AtomicLong(0) ;
     private final PlainRequestFlag noQueryString ;
     protected final boolean verbose_debug ;
@@ -114,7 +115,7 @@ public abstract class SPARQL_ServletBase extends HttpServlet
         String url = wholeRequestURL(request) ;
         String method = request.getMethod() ;
 
-        serverlog.info(format("[%d] %s %s", id, method, url)) ; 
+        log.info(format("[%d] %s %s", id, method, url)) ; 
         if ( verbose_debug )
         {
             @SuppressWarnings("unchecked")
@@ -125,11 +126,11 @@ public abstract class SPARQL_ServletBase extends HttpServlet
                 @SuppressWarnings("unchecked")
                 Enumeration<String> vals = request.getHeaders(h) ;
                 if ( ! vals.hasMoreElements() )
-                    serverlog.info(format("[%d]   ",id, h)) ;
+                    log.info(format("[%d]   ",id, h)) ;
                 else
                 {
                     for ( ; vals.hasMoreElements() ; )
-                        serverlog.info(format("[%d]   %-20s %s", id, h, vals.nextElement())) ;
+                        log.info(format("[%d]   %-20s %s", id, h, vals.nextElement())) ;
                 }
             }
         }
@@ -141,17 +142,17 @@ public abstract class SPARQL_ServletBase extends HttpServlet
         if ( verbose_debug )
         {
             if ( response.contentType != null )
-                serverlog.info(format("[%d]   %-20s %s", id, HttpNames.hContentType, response.contentType)) ;
+                log.info(format("[%d]   %-20s %s", id, HttpNames.hContentType, response.contentType)) ;
             if ( response.contentLength != -1 )
-                serverlog.info(format("[%d]   %-20s %d", id, HttpNames.hContentLengh, response.contentLength)) ;
+                log.info(format("[%d]   %-20s %d", id, HttpNames.hContentLengh, response.contentLength)) ;
             for ( Map.Entry<String, String> e: response.headers.entrySet() )
-                serverlog.info(format("[%d]   %-20s %s", id, e.getKey(), e.getValue())) ;
+                log.info(format("[%d]   %-20s %s", id, e.getKey(), e.getValue())) ;
         }
         
         if ( response.message == null )
-            serverlog.info(String.format("[%d] %d %s", id, response.statusCode, HttpSC.getMessage(response.statusCode))) ;
+            log.info(String.format("[%d] %d %s", id, response.statusCode, HttpSC.getMessage(response.statusCode))) ;
         else
-            serverlog.info(String.format("[%d] %d %s", id, response.statusCode, response.message)) ;
+            log.info(String.format("[%d] %d %s", id, response.statusCode, response.message)) ;
     }
     
     private void responseSendError(HttpServletResponse response, int statusCode, String message)
@@ -249,12 +250,12 @@ public abstract class SPARQL_ServletBase extends HttpServlet
 
     protected static void warning(String string)
     {
-        serverlog.warn(string) ;
+        log.warn(string) ;
     }
     
     protected static void warning(String string, Throwable thorwable)
     {
-        serverlog.warn(string, thorwable) ;
+        log.warn(string, thorwable) ;
     }
     
     protected static void errorBadRequest(String string)

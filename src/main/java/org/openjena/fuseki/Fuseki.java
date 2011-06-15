@@ -41,7 +41,10 @@ public class Fuseki
     static public String BUILD_DATE = metadata.get(PATH+".build.datetime", "unknown") ; // call Date if unavailable.
     public static String serverHttpName     = NAME+" ("+VERSION+")" ;    
     
-    public static Logger serverlog = LoggerFactory.getLogger(PATH+".Fuseki") ;
+    // Log for operations
+    public static Logger requestLog = LoggerFactory.getLogger(PATH+".Fuseki") ;
+    // Log for general server messages.
+    public static Logger serverLog = LoggerFactory.getLogger(PATH+".Server") ;
     
     private static boolean initialized = false ;
     public static void init()
