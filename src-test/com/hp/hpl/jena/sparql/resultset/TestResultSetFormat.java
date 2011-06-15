@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2009 Talis Systems Ltd
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -8,9 +9,13 @@ package com.hp.hpl.jena.sparql.resultset;
 
 import java.io.ByteArrayInputStream ;
 import java.io.ByteArrayOutputStream ;
+import java.util.Arrays ;
+import java.util.Collection ;
 
-import junit.framework.JUnit4TestAdapter ;
 import org.junit.Test ;
+import org.junit.runner.RunWith ;
+import org.junit.runners.Parameterized ;
+import org.junit.runners.Parameterized.Parameters ;
 import org.openjena.atlas.lib.StrUtils ;
 
 import com.hp.hpl.jena.query.ResultSet ;
@@ -20,27 +25,41 @@ import com.hp.hpl.jena.sparql.sse.Item ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.sparql.sse.builders.BuilderResultSet ;
 
-
+@RunWith(Parameterized.class)
 public class TestResultSetFormat
 {
-    public static junit.framework.Test suite()
-    {
-        return new JUnit4TestAdapter(TestResultSetFormat.class) ;
-    }
-    
 
     static String[] $rs1 = {
         "(resultset (?a ?b ?c)",
-        "  (row (?a 1) (?b 2))",
+        "  (row (?a 1) (?b 2)       )",
         "  (row (?a 1) (?b 4) (?c 3))",
         ")"} ;
 
     static String[] $rs2 = {
         "(resultset (?a ?b ?c)",
         "  (row (?a 1) (?b 4) (?c 3))",
-        "  (row (?a 1) (?b 2))",
+        "  (row (?a 1) (?b 2)       )",
         ")"} ;
 
+    static String[] $rs3 = {
+        "(resultset (?a ?b ?c)", 
+        "  (row (?a 1)        (?c 4))",
+        "  (row (?a 1) (?b 2) (?c 3))",
+        ")"} ;
+
+    
+    @Parameters
+    public static Collection<Object[]> data()
+    {
+        return Arrays.asList(new Object[][] { {$rs1}, {$rs2}, {$rs3} } ) ;
+    }
+
+    private final String[] $rs ;
+    
+    public TestResultSetFormat(String[] rs)
+    {
+        this.$rs = rs ;
+    }
     
     static ResultSet make(String... strings)
     {
@@ -52,17 +71,15 @@ public class TestResultSetFormat
         return BuilderResultSet.build(item) ;
     }
     
-    //@Test equality tests. 
-    
     @Test public void resultset_01()           
     {
-        ResultSet rs = make($rs1) ; 
+        ResultSet rs = make($rs) ; 
         ResultSetFormatter.asText(rs) ;
     }
     
     @Test public void resultset_02()           
     {
-        ResultSet rs = make($rs1) ; 
+        ResultSet rs = make($rs) ; 
         ByteArrayOutputStream out = new ByteArrayOutputStream() ;
         ResultSetFormatter.outputAsXML(out, rs) ;
         ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray()) ;
@@ -71,7 +88,7 @@ public class TestResultSetFormat
 
     @Test public void resultset_03()           
     {
-        ResultSet rs = make($rs1) ; 
+        ResultSet rs = make($rs) ; 
         ByteArrayOutputStream out = new ByteArrayOutputStream() ;
         ResultSetFormatter.outputAsJSON(out, rs) ;
         ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray()) ;
@@ -80,17 +97,25 @@ public class TestResultSetFormat
     
     @Test public void resultset_04()           
     {
-        ResultSet rs = make($rs1) ; 
+        ResultSet rs = make($rs) ; 
         ByteArrayOutputStream out = new ByteArrayOutputStream() ;
         ResultSetFormatter.outputAsTSV(out, rs) ;
         ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray()) ;
         ResultSet rs2 = ResultSetFactory.fromTSV(in) ;
     }
-    
+
+    @Test public void resultset_05()           
+    {
+        ResultSet rs = make($rs) ; 
+        ByteArrayOutputStream out = new ByteArrayOutputStream() ;
+        ResultSetFormatter.outputAsCSV(out, rs) ;
+    }
+
 }
 
 /*
  * (c) Copyright 2009 Talis Systems Ltd
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
