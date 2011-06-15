@@ -296,8 +296,20 @@ public class HttpQuery extends Params
             // Other 400 and 500 - errors 
             
             if ( responseCode >= 400 )
-                throw new QueryExceptionHTTP(responseCode, responseMessage) ;
-  
+            {
+                
+                InputStream x = httpConnection.getErrorStream() ;
+                if ( x != null )
+                {
+                    //String ct = httpConnection.getContentType() ;
+                    //httpConnection.getContentEncoding() ;
+                    String str = FileUtils.readWholeFileAsUTF8(x) ;
+                    throw new QueryExceptionHTTP(responseCode, responseMessage+"\n"+str) ;
+                }
+                else
+                    throw new QueryExceptionHTTP(responseCode, responseMessage) ;
+            }
+            
             // Request suceeded
             //httpConnection.setReadTimeout(10) ;
             InputStream in = httpConnection.getInputStream() ;
