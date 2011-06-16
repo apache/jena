@@ -114,7 +114,13 @@ public class DataSourceAssembler extends AssemblerBase implements Assembler
                     Object args[] = new Object[] { ds, index } ;
                     return method.invoke(clazz, args) ;
                 } catch (Exception e) {
-                    Log.warn(DataSourceAssembler.class, String.format("Unable to initialize LARQ using %s: %s", className, e.getMessage())) ;
+                	String msg;
+                	if ( e.getMessage() != null ) {
+                		msg = e.getMessage();
+                	} else {
+                		msg = e.getCause().getMessage();
+                	}
+                    Log.warn(DataSourceAssembler.class, String.format("Unable to initialize LARQ using %s: %s", className, msg)) ;
                 }                
             }
         } catch(ClassNotFoundException e) {
