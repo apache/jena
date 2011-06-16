@@ -26,7 +26,7 @@ import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.sparql.sse.builders.BuilderResultSet ;
 
 @RunWith(Parameterized.class)
-public class TestResultSetFormat
+public class TestResultSetFormat1
 {
 
     static String[] $rs1 = {
@@ -56,7 +56,7 @@ public class TestResultSetFormat
 
     private final String[] $rs ;
     
-    public TestResultSetFormat(String[] rs)
+    public TestResultSetFormat1(String[] rs)
     {
         this.$rs = rs ;
     }
@@ -110,7 +110,6 @@ public class TestResultSetFormat
         ByteArrayOutputStream out = new ByteArrayOutputStream() ;
         ResultSetFormatter.outputAsCSV(out, rs) ;
     }
-
 }
 
 /*

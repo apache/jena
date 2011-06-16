@@ -12,7 +12,8 @@ import org.junit.runners.Suite ;
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
     TestResultSet.class
-    , TestResultSetFormat.class
+    , TestResultSetFormat1.class
+    , TestResultSetFormat2.class
     //, TestResultSetCompare.class
 })
 public class TS_ResultSet
