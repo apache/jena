@@ -1,5 +1,9 @@
 PREFIX : <http://example/>
+PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
+
 SELECT *
 {
-  <http://example/s> <http://example/p> 123 .
+ { ?s ?p ?o . FILTER(?p = rdfs:member) }
+ UNION 
+ { ?s rdfs:member ?o }
 }
