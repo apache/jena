@@ -6,8 +6,11 @@
 
 package org.openjena.fuseki;
 
+import org.junit.AfterClass ;
+import org.junit.BeforeClass ;
 import org.junit.runner.RunWith ;
 import org.junit.runners.Suite ;
+import org.openjena.atlas.logging.Log ;
 import org.openjena.fuseki.http.TestDatasetGraphAccessorHTTP ;
 import org.openjena.fuseki.http.TestDatasetGraphAccessorMem ;
 import org.openjena.fuseki.http.TestDatasetGraphAccessorTDB ;
@@ -26,7 +29,10 @@ import org.openjena.fuseki.http.TestDatasetAccessorHTTP ;
     , TestQuery.class
 })
 public class TS_Fuseki extends BaseServerTest
-{}
+{
+    @BeforeClass static public void beforeClass() { Log.disable(Fuseki.requestLogName) ; }
+    @AfterClass static public void afterClass()   { Log.setInfo(Fuseki.requestLogName) ;}
+}
 
 /*
  * (c) Copyright 2010 Epimorphics Ltd.

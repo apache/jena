@@ -14,8 +14,6 @@ import org.openjena.fuseki.ServerTest ;
 
 public class TestDatasetGraphAccessorHTTP extends TestDatasetGraphAccessorBase
 {
-    
-    
     @BeforeClass public static void beforeClass() { ServerTest.allocServer() ; }
     @AfterClass public static void afterClass() { ServerTest.freeServer() ; }
     @Before public void before() { ServerTest.resetServer() ; }

@@ -12,8 +12,9 @@ import static org.openjena.fuseki.Fuseki.serverLog ;
 import javax.servlet.http.HttpServlet ;
 
 import org.eclipse.jetty.http.MimeTypes ;
+import org.eclipse.jetty.server.Connector ;
 import org.eclipse.jetty.server.Server ;
-import org.eclipse.jetty.server.nio.BlockingChannelConnector ;
+import org.eclipse.jetty.server.nio.SelectChannelConnector ;
 import org.eclipse.jetty.servlet.DefaultServlet ;
 import org.eclipse.jetty.servlet.ServletContextHandler ;
 import org.eclipse.jetty.servlet.ServletHolder ;
@@ -48,7 +49,7 @@ public class SPARQLServer
     private boolean verbose = false ;
     private boolean enableUpdate = false ;
     
-    private static int ThreadPoolSize = 5 ;
+    private static int ThreadPoolSize = 50;
     
     public SPARQLServer(DatasetGraph dsg, String datasetPath, int port, boolean allowUpdate, boolean verbose)
     {
@@ -74,6 +75,8 @@ public class SPARQLServer
         serverLog.info(format("Started %s on port %d", now, server.getConnectors()[0].getPort())) ;
 
         try { server.start() ; }
+        catch (java.net.BindException ex)
+        { log.error("SPARQLServer: Failed to start server: " + ex.getMessage()) ; System.exit(1) ; }
         catch (Exception ex)
         { log.error("SPARQLServer: Failed to start server: " + ex.getMessage(), ex) ; }
         
@@ -103,11 +106,18 @@ public class SPARQLServer
         
         // Server, with one NIO-based connector, large input buffer size (for long URLs, POSTed forms (queries, updates)).
         server = new Server();
+        // Keep the server to a maximum number of threads.
+        server.setThreadPool(new QueuedThreadPool(ThreadPoolSize)) ;
+        
         // Using "= new SelectChannelConnector() ;" on Darwin (OS/X) causes problems 
         // with initialization not seen (thread scheduling?) in Joseki.
-        BlockingChannelConnector connector = new BlockingChannelConnector() ;
-        // Max outstanding requests per connector (= server) 
-        connector.setThreadPool(new QueuedThreadPool(ThreadPoolSize));
+        Connector connector = new SelectChannelConnector() ;
+        
+        /* The BlockingChannelConnector seems to not interact with thread management,
+        *  at least in the way I expect.
+        */
+//        BlockingChannelConnector connector = new BlockingChannelConnector() ;
+//        connector.setThreadPool(new QueuedThreadPool(ThreadPoolSize));
         
         // Ignore. If set, then if this goes off, it keeps going off.
         connector.setMaxIdleTime(0) ; // Jetty outputs a lot of messages if this goes off.

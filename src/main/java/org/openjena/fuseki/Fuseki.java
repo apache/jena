@@ -42,9 +42,11 @@ public class Fuseki
     public static String serverHttpName     = NAME+" ("+VERSION+")" ;    
     
     // Log for operations
+    public static String requestLogName = PATH+".Fuseki" ;
     public static Logger requestLog = LoggerFactory.getLogger(PATH+".Fuseki") ;
-    // Log for general server messages.
+    public static String serverLogName = PATH+".Server" ;
     public static Logger serverLog = LoggerFactory.getLogger(PATH+".Server") ;
+    // Log for general server messages.
     
     private static boolean initialized = false ;
     public static void init()
