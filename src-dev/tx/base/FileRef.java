@@ -8,8 +8,10 @@ package tx.base;
 
 import java.util.HashMap ;
 import java.util.Map ;
+import java.util.TreeMap ;
 
 import org.openjena.atlas.lib.FileOps ;
+import org.openjena.atlas.lib.Lib ;
 import org.openjena.atlas.lib.Tuple ;
 import org.openjena.atlas.logging.Log ;
 
@@ -24,40 +26,97 @@ public class FileRef
 {
     private final String filename ;
     private final int id ;
-
+    static final int idxOffset = 10 ;   // Must be > journal index name.
+    
+    static final String journalName = "journal" ;
+    static final int journalIdx = idxOffset-1 ;
     // --------
     // May to/from names to a short id.
     // THIS MUST BE PERSISTENT
     static Map<String, Integer> name2id = new HashMap<String, Integer>() ;
-    static Map<Integer, FileRef> id2name = new HashMap<Integer, FileRef>() ;
+    static Map<Integer, FileRef> id2name = new TreeMap<Integer, FileRef>() ;// new HashMap<Integer, FileRef>() ;
     
-    static {
-        int count = 0 ;
+    static private void printTable()
+    {
         for ( String name : Names.tripleIndexes )
             bTree(name) ;
         for ( String name : Names.quadIndexes )
             bTree(name) ;
-        // Not the name of the index.
+//        // Not the name of the index.
 //        for ( String name : Names.prefixIndexes )
 //            bTree(name) ;
-        
+
         bTree(Names.prefixId2Node) ;
         bTree(Names.prefixNode2Id) ;
         file(Names.indexId2Node+".dat") ;
+        bTree(Names.indexNode2Id) ;
+        bTree(Names.indexPrefix) ;
+        
+        for ( Map.Entry<Integer, FileRef> e : id2name.entrySet() )
+        {
+            System.out.printf("    add(%s+idxOffset , %s) ;\n", e.getKey()-idxOffset, '"'+e.getValue().filename+'"') ;
+        }
+        
+        
     }
-
+    
+    static {
+        //printTable() ;
+        add(journalIdx , journalName) ;
+        // The code above produces this:
+        // To make it clear and stable, we keep this form.
+        add(0+idxOffset , "SPO.idn") ;
+        add(1+idxOffset , "SPO.dat") ;
+        add(2+idxOffset , "POS.idn") ;
+        add(3+idxOffset , "POS.dat") ;
+        add(4+idxOffset , "OSP.idn") ;
+        add(5+idxOffset , "OSP.dat") ;
+        add(6+idxOffset , "GSPO.idn") ;
+        add(7+idxOffset , "GSPO.dat") ;
+        add(8+idxOffset , "GPOS.idn") ;
+        add(9+idxOffset , "GPOS.dat") ;
+        add(10+idxOffset , "GOSP.idn") ;
+        add(11+idxOffset , "GOSP.dat") ;
+        add(12+idxOffset , "POSG.idn") ;
+        add(13+idxOffset , "POSG.dat") ;
+        add(14+idxOffset , "OSPG.idn") ;
+        add(15+idxOffset , "OSPG.dat") ;
+        add(16+idxOffset , "SPOG.idn") ;
+        add(17+idxOffset , "SPOG.dat") ;
+        add(18+idxOffset , "prefixes.idn") ;
+        add(19+idxOffset , "prefixes.dat") ;
+        add(20+idxOffset , "prefix2id.idn") ;
+        add(21+idxOffset , "prefix2id.dat") ;
+        add(22+idxOffset , "nodes.dat") ;
+        add(23+idxOffset , "node2id.idn") ;
+        add(24+idxOffset , "node2id.dat") ;
+        add(25+idxOffset , "prefixIdx.idn") ;
+        add(26+idxOffset , "prefixIdx.dat") ;
+        
+        add(50+idxOffset , "TEST") ;
+        add(51+idxOffset , "TEST1") ;
+        add(52+idxOffset , "TEST2") ;
+    }
+    public static final FileRef Journal = get(journalIdx) ;
+    
+    private static void add(int idx, String fn)
+    {
+        name2id.put(fn, idx) ;
+        id2name.put(idx, new FileRef(fn, idx)) ;
+    }
+    
     private static void bTree(String name)
     {
         file(name+".idn") ;
         file(name+".dat") ;
     }
-    
+
     /** Public - for testing */
     public static void file(String name)
     {
-        int count = name2id.size() ;
-        name2id.put(name, count) ;
-        id2name.put(count, new FileRef(name, count)) ;
+        int idx = name2id.size() + idxOffset ;
+        name2id.put(name, idx) ;
+        id2name.put(idx, new FileRef(name, idx)) ;
     }
     // --------
 
@@ -125,12 +184,10 @@ public class FileRef
         if (obj == null) return false ;
         if (getClass() != obj.getClass()) return false ;
         FileRef other = (FileRef)obj ;
-        if (filename == null)
-        {
-            if (other.filename != null) return false ;
-        } else
-            if (!filename.equals(other.filename)) return false ;
-        if (id != other.id) return false ;
+        if ( id != other.id )
+            return false ;
+        // Should not be needed.
+        if ( ! Lib.equal(filename, other.filename) ) return false ;
         return true ;
     }
 }

@@ -19,6 +19,8 @@ public class IOBytes
     // Use InStreamUTF.advance to get a single char.  Use with InputStreamBuffered
     // OutStreamUTF8.output (but how to avoid a copy into the string).
     
+    // Like Data(Input|Output)Stream
+    
     /** Read an integer */
     public static int readInt(InputStream in)
     {

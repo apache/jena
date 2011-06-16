@@ -26,15 +26,16 @@ public class JournalEntry
         this.fileRef = null ;
     }
     
-    public JournalEntry(JournalEntryType type, /*FileRef fileRef, */ByteBuffer bytes)
+    public JournalEntry(JournalEntryType type, FileRef fileRef, ByteBuffer bytes)
     {
         this.type = type ;
         this.byteBuffer = bytes ;
-        this.fileRef = null ;
+        this.fileRef = fileRef ;
     }
 
     public JournalEntryType getType()       { return type ; }
     public ByteBuffer getByteBuffer()       { return byteBuffer ; }
+    public FileRef getFileRef()             { return fileRef ; }
 }
 
 /*

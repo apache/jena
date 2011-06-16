@@ -83,17 +83,19 @@ public class TxMain
     
     public static void main(String... args)
     {
-        Location location = new Location("DB") ;
-        String [] filenames = { "SPO.dat", "SPO.idn", "GSPO.idn", "xxx" } ; 
-        for ( String fn : filenames )
+        if ( false )
         {
-            fn = location.absolute(fn) ;
-            FileRef fileRef = FileRef.create(fn) ;
-            System.out.println(fileRef.toString()) ;
+            Location location = new Location("DB") ;
+            String [] filenames = { "SPO.dat", "SPO.idn", "GSPO.idn", "xxx" } ; 
+            for ( String fn : filenames )
+            {
+                fn = location.absolute(fn) ;
+                FileRef fileRef = FileRef.create(fn) ;
+                System.out.println(fileRef.toString()) ;
+            }
+
+            exit(0) ;
         }
-        
-        exit(0) ;
-        
         
         DatasetGraphTxnTDB dsg = build() ;
         //dsg.commit() ;

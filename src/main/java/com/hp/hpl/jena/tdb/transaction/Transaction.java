@@ -11,6 +11,8 @@ import java.util.Collections ;
 import java.util.Iterator ;
 import java.util.List ;
 
+import tx.base.FileRef ;
+
 /** A transaction handle */
 public class Transaction
 {
@@ -34,7 +36,7 @@ public class Transaction
         if ( journals.size() > 0 )
         {
             Journal jrnl = journals.get(0) ;
-            JournalEntry entry = new JournalEntry(JournalEntryType.Commit, null) ;
+            JournalEntry entry = new JournalEntry(JournalEntryType.Commit, FileRef.Journal, null) ;
             jrnl.writeJournal(entry) ;
         }
         

@@ -15,6 +15,7 @@ import org.openjena.atlas.lib.Closeable ;
 import org.openjena.atlas.lib.Sync ;
 
 import tx.IteratorSlotted ;
+import tx.base.FileRef ;
 
 import com.hp.hpl.jena.tdb.base.file.BufferChannel ;
 
@@ -32,11 +33,13 @@ class Journal implements Iterable<JournalEntry>, Sync, Closeable
     // Object handling - avoid length twice. 
     
     // We want random access AND stream efficiency to write.  Opps.
+    // Also means we can't use DataOutputStream etc.
     
     BufferChannel channel ;
     private long position ;
-    // Length, type
-    public static int Overhead = 2*SizeOfInt ;
+    // Length, type, fileRef.
+    // Length is length of variable part.
+    public static int Overhead = 3*SizeOfInt ;
     
     byte[] buffer = new byte[Overhead] ;
     ByteBuffer header = ByteBuffer.wrap(buffer) ;
@@ -50,23 +53,31 @@ class Journal implements Iterable<JournalEntry>, Sync, Closeable
     synchronized
     public long writeJournal(JournalEntry entry)
     {
-        return  writeJournal(entry.getType(), entry.getByteBuffer()) ;
+        return  _write(entry.getType(), entry.getFileRef(), entry.getByteBuffer()) ;
     }
     
     synchronized
-    public long writeJournal(JournalEntryType type, ByteBuffer buffer)
+    public long writeJournal(JournalEntryType type, FileRef fileRef, ByteBuffer buffer)
     {
+        return _write(type, fileRef, buffer) ;
+    }
+     
+    synchronized
+    private long _write(JournalEntryType type, FileRef fileRef, ByteBuffer buffer)
+    {
+        // FileRefs: one int.
+        
         long posn = position ;
-        int len ;
+        int len = 0 ;
+        
         // [TxDEV:TODO] CRC
-        if ( buffer == null )
-            len = 0 ;
-        else
+        if ( buffer != null )
             len = buffer.remaining() ; 
         
         header.clear() ;
         header.putInt(type.id) ;
         header.putInt(len) ;
+        header.putInt(fileRef.getId()) ;
         header.flip() ;
 
         channel.write(header) ;
@@ -83,25 +94,27 @@ class Journal implements Iterable<JournalEntry>, Sync, Closeable
     {
         long x = channel.position() ;
         channel.position(id) ;
-        JournalEntry entry = read() ;
+        JournalEntry entry = _read() ;
         channel.position(x) ;
         return entry ;
     }
     
     // read one entry at the channel position.
     // Move position to end of read.
-    private JournalEntry read()
+    private JournalEntry _read()
     {
         // [TxTDB:TODO] Make robust against partial read.
         header.clear() ;
         channel.read(header) ;
         header.rewind() ;
         int typeId = header.getInt() ; 
-        int len = header.getInt() ;
+        int len    = header.getInt() ;
+        int ref    = header.getInt() ;
+        FileRef fileRef = FileRef.get(ref) ;
         ByteBuffer bb = ByteBuffer.allocate(len) ;
         channel.read(bb) ;
         JournalEntryType type = JournalEntryType.type(typeId) ;
-        return new JournalEntry(type, bb) ;
+        return new JournalEntry(type, fileRef, bb) ;
     } 
 
     /** Iterator of entries from current point in Journal, going forward. Must be JournalEntry aligned at start. */
@@ -122,7 +135,7 @@ class Journal implements Iterable<JournalEntry>, Sync, Closeable
         @Override
         protected JournalEntry moveToNext()
         {
-            return read() ;
+            return _read() ;
         }
 
         @Override

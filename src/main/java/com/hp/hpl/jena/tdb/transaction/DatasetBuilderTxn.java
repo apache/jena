@@ -15,6 +15,7 @@ import setup.NodeTableBuilder ;
 import setup.ObjectFileBuilder ;
 import setup.RangeIndexBuilder ;
 import setup.TupleIndexBuilder ;
+import tx.base.FileRef ;
 
 import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
 import com.hp.hpl.jena.tdb.base.file.BufferChannel ;
@@ -98,7 +99,8 @@ public class DatasetBuilderTxn extends DatasetBuilderStd
         public BlockMgr buildBlockMgr(FileSet fileSet, String ext, int blockSize)
         {
             BlockMgr baseMgr = base.buildBlockMgr(fileSet, ext, blockSize) ;
-            BlockMgrJournal blkMg = new BlockMgrJournal(txn, null, baseMgr, journal) ;
+            FileRef ref = FileRef.create(fileSet.filename(ext)) ;
+            BlockMgrJournal blkMg = new BlockMgrJournal(txn, ref, baseMgr, journal) ;
             // Add to transaction.
             return blkMg ;
         }

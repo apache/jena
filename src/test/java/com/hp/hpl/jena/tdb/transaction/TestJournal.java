@@ -38,28 +38,18 @@ public class TestJournal extends BaseTest
     }
 
     
-//    static FileRef fileref1 = FileRef.create("xyz") ;
-//    static FileRef fileref2 = FileRef.create("abc") ;
-//
-//    
-//    static BlockRef blockref1 = BlockRef.create(fileref1, 10) ;
-//    static BlockRef blockref2 = BlockRef.create(fileref1, 10) ;
-//
-//    static BlockRef blockref3 = BlockRef.create(fileref1, 20) ;
-//    static BlockRef blockref4 = BlockRef.create(fileref2, 10) ;
-//    
-//    // [TxTDB:TODO] Use these 
-//    static JournalEntry je1 = new JournalEntry(10, blockref1, bb1) ;
-//    static JournalEntry je2 = new JournalEntry(10, blockref2, bb2) ;
-//    static JournalEntry je3 = new JournalEntry(10, blockref3, bb3) ;
-//    static JournalEntry je4 = new JournalEntry(20, blockref1, bb1) ;
-    
+    static FileRef testRef = FileRef.create("TEST") ;
+    static FileRef testRef1 = FileRef.create("TEST1") ;
+    static FileRef testRef2 = FileRef.create("TEST2") ;
     
     Journal journal ;
     @Before public void before()
     {
         BufferChannel mem = new BufferChannelMem("journal") ;
         journal = new Journal(mem) ;
+        bb1.clear() ;
+        bb2.clear() ;
+        bb3.clear() ;
     }
     
     @Test public void journal_01()
@@ -69,7 +59,7 @@ public class TestJournal extends BaseTest
     
     @Test public void journal_02()
     {
-        JournalEntry entry1 = new JournalEntry(JournalEntryType.Block, bb1) ;
+        JournalEntry entry1 = new JournalEntry(JournalEntryType.Block, testRef, bb1) ;
         long x = journal.writeJournal(entry1) ;
         assertEquals(0, x) ;
         JournalEntry entry9 = journal.readJournal(x) ;
@@ -78,11 +68,13 @@ public class TestJournal extends BaseTest
 
     @Test public void journal_03()
     {
-        JournalEntry entry1 = new JournalEntry(JournalEntryType.Block, bb1) ;
-        JournalEntry entry2 = new JournalEntry(JournalEntryType.Object, bb1) ;
+        JournalEntry entry1 = new JournalEntry(JournalEntryType.Block, testRef, bb1) ;
+        JournalEntry entry2 = new JournalEntry(JournalEntryType.Object, testRef, bb1) ;
         
         long x1 = journal.writeJournal(entry1) ;
+        bb1.clear() ;
         long x2 = journal.writeJournal(entry2) ;
+        bb1.clear() ;
         assertEquals(0, x1) ;
         assertNotEquals(0, x2) ;
         
@@ -98,8 +90,8 @@ public class TestJournal extends BaseTest
     
     @Test public void journal_04()
     {
-        JournalEntry entry1 = new JournalEntry(JournalEntryType.Object, bb1) ;
-        JournalEntry entry2 = new JournalEntry(JournalEntryType.Object, bb3) ;
+        JournalEntry entry1 = new JournalEntry(JournalEntryType.Object, testRef, bb1) ;
+        JournalEntry entry2 = new JournalEntry(JournalEntryType.Object, testRef, bb3) ;
         
         long x1 = journal.writeJournal(entry1) ;
         long x2 = journal.writeJournal(entry2) ;
@@ -108,12 +100,37 @@ public class TestJournal extends BaseTest
         JournalEntry entry1a = iter.next();
         JournalEntry entry2a = iter.next();
         assertFalse(iter.hasNext()) ;
+    }
+
+    @Test public void journal_05()
+    {
+        JournalEntry entry1 = new JournalEntry(JournalEntryType.Block, testRef, bb1) ;
+        JournalEntry entry2 = new JournalEntry(JournalEntryType.Block, testRef1, bb1) ;
+        
+        long x1 = journal.writeJournal(entry1) ;
+        bb1.clear();
+        long x2 = journal.writeJournal(entry2) ;
+        bb1.clear();
+        assertEquals(0, x1) ;
+        assertNotEquals(0, x2) ;
+        
+        JournalEntry entry1a = journal.readJournal(x1) ;
+        JournalEntry entry2a = journal.readJournal(x2) ;
+        
+        assertNotSame(entry1, entry1a) ;
+        assertNotSame(entry2, entry2a) ;
+        assertTrue(equal(entry1, entry1a)) ;
+        assertTrue(equal(entry2, entry2a)) ;
+        assertFalse(equal(entry1a, entry2a)) ;
         
     }
 
     private static boolean equal(JournalEntry entry1, JournalEntry entry2)
     {
-        if ( entry1.getType() != entry2.getType()) return false ;
+        if ( entry1.getType() != entry2.getType())
+            return false ;
+        if ( ! entry1.getFileRef().equals(entry2.getFileRef()) )
+            return false ;
         return sameValue(entry1.getByteBuffer(), entry2.getByteBuffer()) ;
     }
     
@@ -126,9 +143,6 @@ public class TestJournal extends BaseTest
             if ( bb1.get(i) != bb2.get(i) ) return false ;
         return true ;
     }
-
-
-    
 }
 
 /*

@@ -248,7 +248,7 @@ public class BlockMgrJournal implements BlockMgr, Transactional
     {
         // Space for BlockRef.
         // [TxTDB:TODO] Space for BlockRef.
-        JournalEntry entry = null ; //new JournalEntry(fileRef, blk) ;
+        JournalEntry entry = new JournalEntry(JournalEntryType.Block, fileRef, blk.getByteBuffer()) ;
         journal.writeJournal(entry) ;
     }
     
