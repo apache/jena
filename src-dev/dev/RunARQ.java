@@ -76,6 +76,7 @@ import com.hp.hpl.jena.sparql.function.FunctionEnv ;
 import com.hp.hpl.jena.sparql.function.FunctionEnvBase ;
 import com.hp.hpl.jena.sparql.function.FunctionRegistry ;
 import com.hp.hpl.jena.sparql.graph.NodeTransform ;
+import com.hp.hpl.jena.sparql.pfunction.PropertyFunctionRegistry ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.sparql.util.ExprUtils ;
 import com.hp.hpl.jena.sparql.util.FmtUtils ;
@@ -88,6 +89,7 @@ import com.hp.hpl.jena.update.UpdateAction ;
 import com.hp.hpl.jena.update.UpdateFactory ;
 import com.hp.hpl.jena.update.UpdateRequest ;
 import com.hp.hpl.jena.util.FileManager ;
+import com.hp.hpl.jena.vocabulary.RDFS ;
 
 public class RunARQ
 {
@@ -119,13 +121,12 @@ public class RunARQ
         System.out.println("DONE") ;
         System.exit(code) ;
     }
-    
 
     // count(filter)
     
     public static void main(String[] argv) throws Exception
     {
-        
+        PropertyFunctionRegistry.get().remove(RDFS.getURI()) ;
         ParserProfile p = RiotLib.profile(Lang.NTRIPLES, null) ;
         {
             Writer w = new PrintWriter(System.out) ; 
