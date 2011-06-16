@@ -27,6 +27,16 @@ public class TestResultSetFormat2
         ByteArrayInputStream in = new ByteArrayInputStream(b) ;
         ResultSet rs2 = ResultSetFactory.fromTSV(in) ;
     }
+
+    @Test (expected=ARQException.class) public void resultset_11()
+    {
+        // This is illegal
+        // Two vars, row of 1 value only.
+        String x = "?x\t?y\n'a'" ;
+        byte[] b = StrUtils.asUTF8bytes(x) ;
+        ByteArrayInputStream in = new ByteArrayInputStream(b) ;
+        ResultSet rs2 = ResultSetFactory.fromTSV(in) ;
+    }    
     
 }
 

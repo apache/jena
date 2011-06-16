@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.StringTokenizer;
+import java.util.regex.Pattern;
 
 import org.openjena.atlas.io.IO;
 import org.openjena.riot.tokens.Tokenizer;
@@ -27,6 +27,8 @@ import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper;
  */
 public class TSVInput {
 
+	static Pattern pattern = Pattern.compile("\t");
+	
     public static ResultSet fromTSV(InputStream in) {
     	BufferedReader reader = IO.asBufferedUTF8(in);
         List<Var> vars = new ArrayList<Var>();
@@ -39,10 +41,9 @@ public class TSVInput {
         try {
         	while ( ( str = reader.readLine() ) != null ) {
         		line++;
-            	StringTokenizer st = new StringTokenizer(str, "\t");
+        		String[] tokens = pattern.split(str);
         		if ( first ) {
-                	while ( st.hasMoreTokens() ) {
-                		String token = st.nextToken();
+        			for ( String token : tokens ) {
                 		if ( token.startsWith("?") ) 
                 			token = token.substring(1);
                 		Var var = Var.alloc(token);
@@ -51,18 +52,19 @@ public class TSVInput {
                 	}
                 	first = false;
         		} else {
-        	        if ( st.countTokens() > vars.size() ) {
-        	        	throw new ARQException(String.format("Line %d has %d values instead of %d.", line, st.countTokens(), vars.size()));
+        			int num_tokens = tokens.length;
+        			if ( str.endsWith("\t") )
+        				num_tokens += 1;
+        	        if ( num_tokens != vars.size() ) {
+        	        	 throw new ARQException(String.format("Line %d has %d values instead of %d.", line, num_tokens, vars.size()));
         	        }
-        	        int i = 0;
         	        Binding binding = BindingFactory.create();
-                	while ( st.hasMoreTokens() ) {
-                		String token = st.nextToken();
+        	        for ( int i = 0; i < tokens.length; i++ ) {
+        	        	String token = tokens[i];
                 		Tokenizer tokenizer = TokenizerFactory.makeTokenizerString(token);
-                		if ( tokenizer.hasNext() ) {
+                		if ( tokenizer.hasNext() && token.length() > 0 ) {
                 			Node node = tokenizer.next().asNode();
                 			binding.add(vars.get(i), node);
-                			i++;
                 		}
                 	}
                 	bindings.add(binding);
