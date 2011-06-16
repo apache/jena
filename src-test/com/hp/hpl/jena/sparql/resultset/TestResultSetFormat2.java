@@ -7,17 +7,18 @@
 
 package com.hp.hpl.jena.sparql.resultset;
 
-import java.io.ByteArrayInputStream ;
+import java.io.ByteArrayInputStream;
 
-import org.junit.Test ;
-import org.openjena.atlas.lib.StrUtils ;
+import org.junit.Test;
+import org.openjena.atlas.lib.StrUtils;
 
-import com.hp.hpl.jena.query.ResultSet ;
-import com.hp.hpl.jena.query.ResultSetFactory ;
+import com.hp.hpl.jena.query.ResultSet;
+import com.hp.hpl.jena.query.ResultSetFactory;
+import com.hp.hpl.jena.sparql.ARQException;
 
 public class TestResultSetFormat2
 {
-    @Test public void resultset_10()
+    @Test (expected=ARQException.class) public void resultset_10()
     {
         // This is illegal
         // Two vars, row of 3 values.
@@ -26,7 +27,7 @@ public class TestResultSetFormat2
         ByteArrayInputStream in = new ByteArrayInputStream(b) ;
         ResultSet rs2 = ResultSetFactory.fromTSV(in) ;
     }
-
+    
 }
 
 /*

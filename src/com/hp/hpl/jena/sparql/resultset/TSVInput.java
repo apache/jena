@@ -34,10 +34,12 @@ public class TSVInput {
         List<Binding> bindings = new ArrayList<Binding>();
 
         boolean first = true;
+    	String str = null;
+    	int line = 0;
         try {
-        	String line = null;
-        	while ( ( line = reader.readLine() ) != null ) {
-            	StringTokenizer st = new StringTokenizer(line, "\t");
+        	while ( ( str = reader.readLine() ) != null ) {
+        		line++;
+            	StringTokenizer st = new StringTokenizer(str, "\t");
         		if ( first ) {
                 	while ( st.hasMoreTokens() ) {
                 		String token = st.nextToken();
@@ -49,7 +51,10 @@ public class TSVInput {
                 	}
                 	first = false;
         		} else {
-        			int i = 0;
+        	        if ( st.countTokens() > vars.size() ) {
+        	        	throw new ARQException(String.format("Line %d has %d values instead of %d.", line, st.countTokens(), vars.size()));
+        	        }
+        	        int i = 0;
         	        Binding binding = BindingFactory.create();
                 	while ( st.hasMoreTokens() ) {
                 		String token = st.nextToken();
