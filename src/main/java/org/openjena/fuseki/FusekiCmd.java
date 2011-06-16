@@ -86,7 +86,7 @@ public class FusekiCmd extends CmdARQ
         add(argTDB,     "--loc=DIR",    "use an existing TDB database (or create if does not exist)") ;
         add(argMemTDB,  "--memTDB",     "Create an in-memory, non-persistent dataset using TDB (testing only)") ;
         add(argPort,    "--port",       "Port number") ;
-        add(argTimeout, "--timeout",    "Global timeout applied to queries (value in ms)") ;
+        add(argTimeout, "--timeout",    "Global timeout applied to queries (value in ms) -- format is X[,Y] ") ;
         add(argAllowUpdate, "--update", "Allow updates (via SPARQL Update and SPARQL HTTP Update)") ;
         super.modVersion.addClass(TDB.class) ;
         super.modVersion.addClass(Fuseki.class) ;

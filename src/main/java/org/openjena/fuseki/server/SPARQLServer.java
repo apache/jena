@@ -12,12 +12,12 @@ import static org.openjena.fuseki.Fuseki.serverLog ;
 import javax.servlet.http.HttpServlet ;
 
 import org.eclipse.jetty.http.MimeTypes ;
-import org.eclipse.jetty.server.Connector ;
 import org.eclipse.jetty.server.Server ;
 import org.eclipse.jetty.server.nio.BlockingChannelConnector ;
 import org.eclipse.jetty.servlet.DefaultServlet ;
 import org.eclipse.jetty.servlet.ServletContextHandler ;
 import org.eclipse.jetty.servlet.ServletHolder ;
+import org.eclipse.jetty.util.thread.QueuedThreadPool ;
 import org.openjena.atlas.logging.Log ;
 import org.openjena.fuseki.Fuseki ;
 import org.openjena.fuseki.HttpNames ;
@@ -47,6 +47,8 @@ public class SPARQLServer
     private int port ;
     private boolean verbose = false ;
     private boolean enableUpdate = false ;
+    
+    private static int ThreadPoolSize = 5 ;
     
     public SPARQLServer(DatasetGraph dsg, String datasetPath, int port, boolean allowUpdate, boolean verbose)
     {
@@ -103,15 +105,18 @@ public class SPARQLServer
         server = new Server();
         // Using "= new SelectChannelConnector() ;" on Darwin (OS/X) causes problems 
         // with initialization not seen (thread scheduling?) in Joseki.
-        Connector connector = new BlockingChannelConnector() ;
-        // Ignore. 
-        // if set, then if this goes off, it keeps going off.
+        BlockingChannelConnector connector = new BlockingChannelConnector() ;
+        // Max outstanding requests per connector (= server) 
+        connector.setThreadPool(new QueuedThreadPool(ThreadPoolSize));
+        
+        // Ignore. If set, then if this goes off, it keeps going off.
         connector.setMaxIdleTime(0) ; // Jetty outputs a lot of messages if this goes off.
         connector.setPort(port);
         
         // Some people do try very large operations ...
-        connector.setRequestBufferSize(2*1024*1024) ;
-        connector.setResponseBufferSize(2*1024*1024) ;
+        connector.setRequestHeaderSize(64*1024) ;
+        connector.setRequestBufferSize(5*1024*1024) ;
+        connector.setResponseBufferSize(5*1024*1024) ;
         server.addConnector(connector) ;
 
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
