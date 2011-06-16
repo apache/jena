@@ -94,9 +94,16 @@ public class DataSourceAssembler extends AssemblerBase implements Assembler
 
     public Object createTextIndex (Dataset ds, Resource root) 
     {
+    	Object result = createTextIndex (ds, root, "org.apache.jena.larq.assembler.AssemblerLARQ") ;
+    	if ( result == null ) result = createTextIndex (ds, root, "com.hp.hpl.jena.query.larq.AssemblerLARQ") ;
+    	return result ;
+    }
+    
+    protected Object createTextIndex (Dataset ds, Resource root, String className) 
+    {
         try 
         {
-            Class<?> clazz = Class.forName("org.apache.jena.larq.assembler.AssemblerLARQ") ;
+            Class<?> clazz = Class.forName(className) ;
             if ( root.hasProperty(DatasetAssemblerVocab.pIndex) ) 
             {
                 try {
@@ -107,11 +114,11 @@ public class DataSourceAssembler extends AssemblerBase implements Assembler
                     Object args[] = new Object[] { ds, index } ;
                     return method.invoke(clazz, args) ;
                 } catch (Exception e) {
-                    Log.warn(DataSourceAssembler.class, "Unable to initialize LARQ: " + e.getMessage()) ;
+                    Log.warn(DataSourceAssembler.class, String.format("Unable to initialize LARQ using %s: %s", className, e.getMessage())) ;
                 }                
             }
         } catch(ClassNotFoundException e) {
-            // 
+            Log.info(DataSourceAssembler.class, "LARQ initialization: class " + className + " not in the classpath.") ;
         }
         
         return null ;
