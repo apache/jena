@@ -17,7 +17,6 @@ import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.optimize.Optimize ;
 import com.hp.hpl.jena.sparql.core.Substitute ;
 import com.hp.hpl.jena.sparql.core.Var ;
-import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.sparql.util.NodeFactory ;
 
 public class ReportAssignSubstitute
@@ -56,7 +55,7 @@ public class ReportAssignSubstitute
         Op op2 = Algebra.optimize(op1) ;
         System.out.println(op2) ;
         
-        Op op2a = Substitute.substitute(op2, Var.alloc("label"), SSE.parseNode("'aa'")) ;
+        Op op2a = Substitute.substitute(op2, Var.alloc("label"), NodeFactory.parseNode("'aa'")) ;
         System.out.println(op2a) ;
         
         Optimize.noOptimizer() ;

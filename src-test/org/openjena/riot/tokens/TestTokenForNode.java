@@ -85,6 +85,7 @@ public class TestTokenForNode extends BaseTest
     private static void test(String nodeStr, PrefixMap pmap,
                              TokenType type, String image, String image2, Token subToken)
     {
+        // Use SSE to be clear we expect it to be a different node parser to calling Tokenizer.
         Node n = SSE.parseNode(nodeStr) ;
         Token t = Token.tokenForNode(n) ;
         assertEquals(type, t.getType()) ;
