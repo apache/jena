@@ -191,6 +191,7 @@ public class MultiSet<T> implements Iterable<T>
     public String toString()
     {
         StringBuilder sb = new StringBuilder() ;
+        sb.append("{") ;
         String sep = "" ;
         for ( Map.Entry<T, RefLong> e : map.entrySet() )
         {
@@ -200,7 +201,7 @@ public class MultiSet<T> implements Iterable<T>
             sb.append("=") ;
             sb.append(Long.toString(e.getValue().value())) ;
         }
-        
+        sb.append("}") ;
         return sb.toString() ;
     }
 }
