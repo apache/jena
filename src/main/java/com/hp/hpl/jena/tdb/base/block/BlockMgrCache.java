@@ -37,13 +37,25 @@ public class BlockMgrCache extends BlockMgrSync
     long cacheMisses = 0 ;
     long cacheWriteHits = 0 ;
     
-    public BlockMgrCache(String indexName, int readSlots, int writeSlots, final BlockMgr blockMgr)
+    static BlockMgr create(String indexName, int readSlots, int writeSlots, final BlockMgr blockMgr)
+    {
+        if ( readSlots < 0 && writeSlots < 0 )
+            return blockMgr ;
+        return new BlockMgrCache(indexName, readSlots, writeSlots, blockMgr) ;
+    }
+    
+    private BlockMgrCache(String indexName, int readSlots, int writeSlots, final BlockMgr blockMgr)
     {
         super(blockMgr) ;
         this.indexName = String.format("%-12s", indexName) ;
         
+        System.out.printf("%s %d %d\n", indexName, readSlots, writeSlots) ; 
+        
         // Caches are related so we can't use a Getter for cache management.
-        readCache = CacheFactory.createCache(readSlots) ;
+        if ( readSlots < -1 )
+            readCache = CacheFactory.createNullCache() ;
+        else
+            readCache = CacheFactory.createCache(readSlots) ;
         if ( writeSlots <= 0 )
             writeCache = null ;
         else
@@ -152,7 +164,8 @@ public class BlockMgrCache extends BlockMgrSync
         Long id = block.getId() ;
         readCache.remove(id) ;
         Block block2 = super.promote(block) ;
-        writeCache.put(id, block2) ;
+        if ( writeCache != null )
+            writeCache.put(id, block2) ;
         return block ;
     }
     

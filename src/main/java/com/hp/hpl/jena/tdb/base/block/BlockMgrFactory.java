@@ -89,7 +89,7 @@ public class BlockMgrFactory
 
         String fn = FileOps.basename(filename) ;
         
-        blockMgr = new BlockMgrCache(fn, readBlockCacheSize, writeBlockCacheSize, blockMgr) ;
+        blockMgr = BlockMgrCache.create(fn, readBlockCacheSize, writeBlockCacheSize, blockMgr) ;
         return track(blockMgr) ;
     }
     

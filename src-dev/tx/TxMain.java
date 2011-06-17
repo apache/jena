@@ -103,25 +103,29 @@ public class TxMain
         
 //        FileOps.ensureDir("DB") ;
 //        FileOps.clearDirectory("DB") ;
-//        DatasetGraph dsg0 = TDBFactory.createDatasetGraph("DB") ;
-//        load("D.ttl", dsg0) ;
-//        query("SELECT (Count(*) AS ?c) { ?s ?p ?o }", dsg0) ;
-//        exit(0) ;
-        
-        SystemTDB.setFileMode(FileMode.direct) ;
+
+        //SystemTDB.setFileMode(FileMode.direct) ;
         DatasetGraphTDB dsg0 = build() ;
-//        load("D.ttl", dsg0) ;
-//        query("SELECT * { ?s ?p ?o }", dsg0) ;
+        load("D.ttl", dsg0) ;
+        query("SELECT * { ?s ?p ?o }", dsg0) ;
 //        exit(0) ;
         
+        dsg0.sync() ;
+        
+        System.out.println("Txn") ;
         DatasetGraphTxnTDB dsg = buildTx(dsg0) ;
-        load("D.ttl", dsg) ;
+        //load("D.ttl", dsg) ;
         //dsg.commit() ;
         //query("SELECT (Count(*) AS ?c) { ?s ?p ?o }", dsg) ;
-        System.out.println("Start query") ;
+        System.out.println("Query 1") ;
         query("SELECT * { ?s ?p ?o }", dsg) ;
         //query("SELECT * { ?s ?p ?o }", dsg0) ;
 
+        load("D1.ttl", dsg0) ;
+        System.out.println("Query 2") ;
+        query("SELECT * { ?s ?p ?o }", dsg) ;
+
+        
         exit(0) ;
         System.out.println("Commit") ;
         dsg.commit() ;
@@ -409,6 +413,7 @@ public class TxMain
     
     private static void load(String file, DatasetGraph dsg)
     {
+        System.out.println("Load: "+file) ;
         Model m = ModelFactory.createModelForGraph(dsg.getDefaultGraph()) ;
         FileManager.get().readModel(m, file) ;
         

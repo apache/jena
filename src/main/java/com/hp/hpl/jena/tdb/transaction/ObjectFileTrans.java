@@ -34,6 +34,11 @@ public class ObjectFileTrans implements ObjectFile, Transactional
         this.base = base ;
         this.other = other ;
         inTransaction = false ;
+
+        //  [TxTDB:PATCH-UP] Begin is not being called.
+        this.alloc = base.length() ;
+        this.startAlloc = base.length() ;
+        
     }
 
     // Begin read ==> passthrough.
@@ -138,6 +143,8 @@ public class ObjectFileTrans implements ObjectFile, Transactional
     public ByteBuffer read(long id)
     {
         if ( passthrough ) { return base.read(id) ; } 
+        // case of id=0 , startAlloc=0??? 
+        // 
         if ( id < startAlloc )
             return base.read(id) ;
         return other.read(id-startAlloc) ;

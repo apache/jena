@@ -115,7 +115,7 @@ public class BlockMgrJournal implements BlockMgr, Transactional
     {
         checkIfClosed() ;
         Block block = localBlock(id) ;
-        if ( block != null )
+        if ( block == null )
             block = blockMgr.getReadIterator(id) ;
         iteratorBlocks.add(block.getId()) ;
         return block ;

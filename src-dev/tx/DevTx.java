@@ -3,6 +3,7 @@ package tx;
 public class DevTx
 {
     // Transaction needs to do FileRef to file. 
+    // Every sync hits the NodeTupleTable sync hist teh node table repeatedly - keep dirty flag? 
     
     // Delete BlockMgrFile.
     
