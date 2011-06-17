@@ -12,8 +12,8 @@ import org.openjena.atlas.iterator.Iter ;
 import org.openjena.atlas.lib.ActionKeyValue ;
 import org.openjena.atlas.lib.Cache ;
 
-/** A cache that keep nothing */ 
-public class Cache0<K, V> implements Cache<K,V>
+/** A cache that keeps nothing */ 
+public final class Cache0<K, V> implements Cache<K,V>
 {
     public boolean containsKey(K key)
     {

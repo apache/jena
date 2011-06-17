@@ -85,8 +85,7 @@ public final class TokenizerText implements Tokenizer
     //@Override
     public final Token next()
     {
-        
-        if ( ! hasNext() )
+        if ( ! hasNext() ) 
             throw new NoSuchElementException() ;
         Token t = token ;
         token = null ;
