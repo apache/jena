@@ -116,9 +116,7 @@ public class BlockMgrJournal implements BlockMgr, Transactional
         checkIfClosed() ;
         Block block = localBlock(id) ;
         if ( block != null )
-            return block ;
-        
-        block = blockMgr.getReadIterator(id) ;
+            block = blockMgr.getReadIterator(id) ;
         iteratorBlocks.add(block.getId()) ;
         return block ;
     }
@@ -167,7 +165,8 @@ public class BlockMgrJournal implements BlockMgr, Transactional
     {
         checkIfClosed() ;
         Long id = block.getId() ;
-        if ( readBlocks.contains(id) || iteratorBlocks.contains(id) )
+        // Only release unchanged blocks.
+        if ( ! writeBlocks.containsKey(id))
             blockMgr.release(block) ;
     }
 
@@ -179,7 +178,7 @@ public class BlockMgrJournal implements BlockMgr, Transactional
         {
             Log.warn(this, "Block not recognized: "+block.getId()) ;
             // Probably corruption by writing in-place.
-            // but at least when this trasnaction commits,
+            // but at least when this transaction commits,
             // the update data is written,
             writeBlocks.put(block.getId(), block) ;
         }
@@ -273,6 +272,12 @@ public class BlockMgrJournal implements BlockMgr, Transactional
         transaction.removeIterator(iterator) ;
         blockMgr.endIterator(iterator) ;
     }
+
+    @Override
+    public String toString() { return "Journal:"+blockMgr.toString() ; }
+
+    @Override
+    public String getLabel() { return fileRef.getFilename() ; }
 }
 
 /*

@@ -12,7 +12,7 @@ public class TestBlockAccessByteArray extends AbstractTestBlockAccessVarSize
     @Override
     protected BlockAccess make()
     {
-        return new BlockAccessByteArray() ;
+        return new BlockAccessByteArray("test") ;
     }
 
 }

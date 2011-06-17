@@ -35,12 +35,14 @@ import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.util.QueryExecUtils ;
+import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.TDBFactory ;
 import com.hp.hpl.jena.tdb.TDBLoader ;
 import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory ;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrLogger ;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrTracker ;
+import com.hp.hpl.jena.tdb.base.block.FileMode ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile ;
 import com.hp.hpl.jena.tdb.base.record.Record ;
@@ -52,6 +54,8 @@ import com.hp.hpl.jena.tdb.index.RangeIndex ;
 import com.hp.hpl.jena.tdb.index.bplustree.BPTreeNode ;
 import com.hp.hpl.jena.tdb.index.bplustree.BPlusTree ;
 import com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams ;
+import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
+import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 import com.hp.hpl.jena.tdb.transaction.DatasetBuilderTxn ;
 import com.hp.hpl.jena.tdb.transaction.DatasetGraphTxnTDB ;
 import com.hp.hpl.jena.tdb.transaction.Journal ;
@@ -97,10 +101,32 @@ public class TxMain
             exit(0) ;
         }
         
-        DatasetGraphTxnTDB dsg = build() ;
-        //dsg.commit() ;
+//        FileOps.ensureDir("DB") ;
+//        FileOps.clearDirectory("DB") ;
+//        DatasetGraph dsg0 = TDBFactory.createDatasetGraph("DB") ;
+//        load("D.ttl", dsg0) ;
+//        query("SELECT (Count(*) AS ?c) { ?s ?p ?o }", dsg0) ;
+//        exit(0) ;
+        
+        SystemTDB.setFileMode(FileMode.direct) ;
+        DatasetGraphTDB dsg0 = build() ;
+//        load("D.ttl", dsg0) ;
+//        query("SELECT * { ?s ?p ?o }", dsg0) ;
+//        exit(0) ;
+        
+        DatasetGraphTxnTDB dsg = buildTx(dsg0) ;
         load("D.ttl", dsg) ;
-        query("SELECT (Count(*) AS ?c) { ?s ?p ?o }", dsg) ;
+        //dsg.commit() ;
+        //query("SELECT (Count(*) AS ?c) { ?s ?p ?o }", dsg) ;
+        System.out.println("Start query") ;
+        query("SELECT * { ?s ?p ?o }", dsg) ;
+        //query("SELECT * { ?s ?p ?o }", dsg0) ;
+
+        exit(0) ;
+        System.out.println("Commit") ;
+        dsg.commit() ;
+        query("SELECT * { ?s ?p ?o }", dsg) ;
+        
         exit(0) ;
         
         //tree_ins_2_01() ; exit(0) ;
@@ -113,15 +139,20 @@ public class TxMain
         bpTreeTracking() ; exit(0) ;
     }
     
-    private static DatasetGraphTxnTDB build()
+    private static DatasetGraphTDB build()
     {
         FileOps.ensureDir("DB") ;
         FileOps.clearDirectory("DB") ;
-        DatasetGraph dsg = TDBFactory.createDatasetGraph("DB") ;
+        DatasetGraphTDB dsg = TDBFactory.createDatasetGraph("DB") ;
+        return dsg ;
+    }
+
+    private static DatasetGraphTxnTDB buildTx(DatasetGraph dsg)
+    {
         DatasetGraphTxnTDB dsg2 = new TransactionManager().begin(dsg) ;
         return dsg2 ;
     }
-
+    
     private static void dump(ObjectFile file)
     {
         Iterator<Pair<Long, ByteBuffer>> iter = file.all() ;
@@ -354,14 +385,14 @@ public class TxMain
         BlockMgr mgr1 = BlockMgrFactory.createMem("B1", nodeBlkSize) ;
         
         if ( tracking )
-            mgr1 = new BlockMgrTracker("BlkMgr/Nodes", mgr1) ;
+            mgr1 = BlockMgrTracker.track(mgr1) ;
         if ( logging )
             mgr1 = new BlockMgrLogger("BlkMgr/Nodes", mgr1, true) ;
         
         BlockMgr mgr2 = BlockMgrFactory.createMem("B2", recBlkSize) ;
     
         if ( tracking )
-            mgr2 = new BlockMgrTracker("BlkMgr/Records", mgr2) ;
+            mgr2 = BlockMgrTracker.track(mgr2) ;
         if ( logging )
             mgr2 = new BlockMgrLogger("BlkMgr/Records", mgr2, true) ;
         
@@ -376,7 +407,7 @@ public class TxMain
         QueryExecUtils.executeQuery(query, qExec) ;
     }
     
-    private static void load(String file, DatasetGraphTxnTDB dsg)
+    private static void load(String file, DatasetGraph dsg)
     {
         Model m = ModelFactory.createModelForGraph(dsg.getDefaultGraph()) ;
         FileManager.get().readModel(m, file) ;

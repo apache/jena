@@ -15,9 +15,11 @@ import setup.NodeTableBuilder ;
 import setup.ObjectFileBuilder ;
 import setup.RangeIndexBuilder ;
 import setup.TupleIndexBuilder ;
+import setup.DatasetBuilderStd.RangeIndexBuilderStd ;
 import tx.base.FileRef ;
 
 import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
+import com.hp.hpl.jena.tdb.base.block.BlockMgrLogger ;
 import com.hp.hpl.jena.tdb.base.file.BufferChannel ;
 import com.hp.hpl.jena.tdb.base.file.BufferChannelFile ;
 import com.hp.hpl.jena.tdb.base.file.BufferChannelMem ;
@@ -25,11 +27,34 @@ import com.hp.hpl.jena.tdb.base.file.FileFactory ;
 import com.hp.hpl.jena.tdb.base.file.FileSet ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile ;
+import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
+import com.hp.hpl.jena.tdb.index.Index ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 
 public class DatasetBuilderTxn extends DatasetBuilderStd
 {
     public DatasetBuilderTxn(TransactionManager txnMgr) { setStd() ; this.txnMgr = txnMgr ; }
+    
+    // ---- Add tracking
+    static BlockMgrBuilder track(BlockMgrBuilder other) { return new BlockMgrBuilderLogger(other) ; }
+    
+    static class BlockMgrBuilderLogger implements BlockMgrBuilder
+    {
+        public BlockMgrBuilder other ;
+        public BlockMgrBuilderLogger(BlockMgrBuilder other)
+        { 
+            this.other = other ;
+        }
+        
+        @Override
+        public BlockMgr buildBlockMgr(FileSet fileSet, String ext, int blockSize)
+        {
+            BlockMgr blkMgr = other.buildBlockMgr(fileSet, ext, blockSize) ;
+            blkMgr = new BlockMgrLogger(blkMgr.getLabel(), blkMgr, true) ;
+            return blkMgr ;
+        }
+    }
+    // ----
     
     @Override
     protected void setStd()
@@ -37,8 +62,10 @@ public class DatasetBuilderTxn extends DatasetBuilderStd
         ObjectFileBuilder objectFileBuilder = new ObjectFileBuilderTx() ;
         BlockMgrBuilder blockMgrBuilder = new BlockMgrBuilderTx() ;
 
-        // These are the usual.
+        // Add track(...) to log.
         IndexBuilder indexBuilder = new IndexBuilderStd(blockMgrBuilder, blockMgrBuilder) ;
+        
+        //RangeIndexBuilder rangeIndexBuilder = new RangeIndexBuilderStd(blockMgrBuilder, track(blockMgrBuilder)) ;
         RangeIndexBuilder rangeIndexBuilder = new RangeIndexBuilderStd(blockMgrBuilder, blockMgrBuilder) ;
 
         NodeTableBuilder nodeTableBuilder = new NodeTableBuilderStd(indexBuilder, objectFileBuilder) ;

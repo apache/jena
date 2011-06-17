@@ -2,6 +2,10 @@ package tx;
 
 public class DevTx
 {
+    // Transaction needs to do FileRef to file. 
+    
+    // Delete BlockMgrFile.
+    
     // Building a dataset.
     //   Commit and reply?
     //   Reattach a journal?

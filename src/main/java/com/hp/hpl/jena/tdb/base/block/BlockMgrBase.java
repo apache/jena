@@ -9,16 +9,19 @@ package com.hp.hpl.jena.tdb.base.block;
 
 import java.util.Iterator ;
 
+import org.openjena.atlas.lib.FileOps ;
 import org.slf4j.Logger ;
 
 public abstract class BlockMgrBase implements BlockMgr
 {
     protected final int blockSize ;
+    private String label ;
     protected abstract Logger getLog() ;
 
     // Fixed size, fixed block type.
-    protected BlockMgrBase(int blockSize)
+    protected BlockMgrBase(String label, int blockSize)
     {
+        this.label = FileOps.basename(label) ;
         this.blockSize = blockSize ;
     }
 
@@ -31,6 +34,8 @@ public abstract class BlockMgrBase implements BlockMgr
     }
     
     protected abstract Block allocate() ;
+    
+    @Override final public String getLabel() { return label ; } 
 
     @Override public void beginIterator(Iterator<?> iter)   {}
     @Override public void endIterator(Iterator<?> iter)     {}

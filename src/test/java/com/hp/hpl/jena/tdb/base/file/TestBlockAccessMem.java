@@ -17,7 +17,7 @@ public class TestBlockAccessMem extends AbstractTestBlockAccessFixedSize
     @Override
     protected BlockAccess make()
     {
-        return new BlockAccessMem(BlockSize) ;
+        return new BlockAccessMem("test", BlockSize) ;
     }
 
 }

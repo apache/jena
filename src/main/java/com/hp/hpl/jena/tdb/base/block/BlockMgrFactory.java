@@ -7,24 +7,29 @@
 
 package com.hp.hpl.jena.tdb.base.block;
 
-import java.io.File;
+import org.openjena.atlas.lib.FileOps ;
 
-import com.hp.hpl.jena.tdb.TDBException;
+import com.hp.hpl.jena.tdb.TDBException ;
 import com.hp.hpl.jena.tdb.base.file.BlockAccess ;
 import com.hp.hpl.jena.tdb.base.file.BlockAccessDirect ;
 import com.hp.hpl.jena.tdb.base.file.BlockAccessMapped ;
 import com.hp.hpl.jena.tdb.base.file.BlockAccessMem ;
 import com.hp.hpl.jena.tdb.base.file.FileSet ;
-import com.hp.hpl.jena.tdb.sys.SystemTDB;
+import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 
 public class BlockMgrFactory
 {
-    public /*final*/ static boolean AddTracker = true ;
+    // This isn't always helpful so be careful if setting the default to "true".
+    // Sometimes the tracking is too strict
+    //     e.g. transactions keep blocks and not release them down the layers.
+    //     But journal layers over a tracked BlockMgr is this is on. 
+    public /*final*/ static boolean AddTracker = false ;
+    
     public static BlockMgr tracker(BlockMgr blockMgr)
     {
         if ( blockMgr instanceof BlockMgrTracker ) return blockMgr ;
-        return new BlockMgrTracker(blockMgr) ;
+        return BlockMgrTracker.track(blockMgr) ;
     }
     
     /** Add a tracker if the system default is to do so */
@@ -45,7 +50,7 @@ public class BlockMgrFactory
     /** Create an in-memory block manager */ 
     public static BlockMgr createMem(String indexName, int blockSize)
     {
-        BlockAccess file = new BlockAccessMem(blockSize) ;
+        BlockAccess file = new BlockAccessMem(indexName, blockSize) ;
         BlockMgr blockMgr = new BlockMgrFileAccess(file, blockSize) ;
         blockMgr = new BlockMgrFreeChain(blockMgr) ;
 
@@ -82,10 +87,7 @@ public class BlockMgrFactory
         BlockAccess file = new BlockAccessDirect(filename, blockSize) ;
         BlockMgr blockMgr =  wrapFileAccess(file, blockSize) ;
 
-        String fn = filename ;
-        int j = filename.lastIndexOf(File.separatorChar) ;
-        if ( j > 0 )
-            fn = filename.substring(j+1) ;
+        String fn = FileOps.basename(filename) ;
         
         blockMgr = new BlockMgrCache(fn, readBlockCacheSize, writeBlockCacheSize, blockMgr) ;
         return track(blockMgr) ;

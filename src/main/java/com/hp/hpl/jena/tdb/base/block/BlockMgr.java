@@ -58,7 +58,6 @@ public interface BlockMgr extends Sync, Closeable /*UnitMgr<Block>*/
     @Override
     public void sync() ;
     
-    
     // This is not Session interface which si more an application facing
     // coarser granularity interface.  We also add iterator tracking.
     
@@ -80,6 +79,8 @@ public interface BlockMgr extends Sync, Closeable /*UnitMgr<Block>*/
     /** Completion of iterator */
     public void endIterator(Iterator<?> iterator) ;
 
+    /* Label for hleping trace which BlockMgr is which */
+    public String getLabel() ;
 }
 
 /*

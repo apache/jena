@@ -17,151 +17,170 @@ public class BlockMgrLogger implements BlockMgr //extends BlockMgrWrapper
     private final BlockMgr blockMgr ;
     protected final Logger log ;
     protected final boolean logAllOperations ;
+    private final String label ;
+    
+    public BlockMgrLogger(BlockMgr blockMgr, boolean logAllOperations )
+    {
+        this(null, blockMgr.getLabel(), blockMgr, logAllOperations) ;
+    }
     
     public BlockMgrLogger(String label, BlockMgr blockMgr, boolean logAllOperations )
     {
-        this(LoggerFactory.getLogger(label), blockMgr, logAllOperations) ;
-    }
-    
-    public BlockMgrLogger(Logger log, BlockMgr blockMgr, boolean logAllOperations )
-    {
-        this.blockMgr = blockMgr ;
-        this.log = log ;
-        this.logAllOperations = logAllOperations ;
+        this(null, label, blockMgr, logAllOperations) ;
     }
 
+    public BlockMgrLogger(Logger log, String label, BlockMgr blockMgr, boolean logAllOperations )
+    {
+        this.blockMgr = blockMgr ;
+        if ( log == null )
+            log = LoggerFactory.getLogger(BlockMgr.class) ;
+        this.log = log ;
+        this.logAllOperations = logAllOperations ;
+        this.label = label ;
+    }
+
+    @Override
+    public String getLabel() { return label ; }
+    
     @Override
     public Block allocate(int blockSize)
     {
         Block x = blockMgr.allocate(blockSize) ;
-        log.info("Allocate("+x.getId()+")") ;
+        info("Allocate("+x.getId()+")") ;
         return x ;
     }
 
     @Override
     public boolean isEmpty()
     {
-        log.info("isEmpty") ;
+        info("isEmpty") ;
         return blockMgr.isEmpty() ;
     }
 
     @Override
     public Block getRead(long id)
     {
-        log.info("getRead("+id+")") ;
+        info("getRead("+id+")") ;
         return blockMgr.getRead(id) ;
     }
 
     @Override
     public Block getReadIterator(long id)
     {
-        log.info("getReadIterator("+id+")") ;
+        info("getReadIterator("+id+")") ;
         return blockMgr.getReadIterator(id) ;
     }
     
     @Override
     public Block getWrite(long id)
     {
-        log.info("getWrite("+id+")") ;
+        info("getWrite("+id+")") ;
         return blockMgr.getWrite(id) ;
     }
 
     @Override
     public Block promote(Block block)
     {
-        log.info("promote("+block.getId()+")") ;
+        info("promote("+block.getId()+")") ;
         return blockMgr.promote(block) ;
     }
 
     @Override
     public void release(Block block)
     {
-        log.info("release("+block.getId()+")") ;
+        info("release("+block.getId()+")") ;
         blockMgr.release(block) ;
     }
 
     @Override
     public void write(Block block)
     {
-        log.info("write("+block.getId()+")") ;
+        info("write("+block.getId()+")") ;
         blockMgr.write(block) ;
     }
 
     @Override
     public void free(Block block)
     {
-        log.info("freeBlock("+block.getId()+")") ;
+        info("freeBlock("+block.getId()+")") ;
         blockMgr.free(block) ;
     }
 
     @Override
     public boolean valid(int id)
     {
-        log.info("valid("+id+")") ;
+        info("valid("+id+")") ;
         return blockMgr.valid(id) ;
     }
 
     @Override
     public void close()
     {
-        log.info("close") ;
+        info("close") ;
         blockMgr.close() ;
     }
 
     @Override
     public boolean isClosed()
     {
-        log.info("isClosed") ;
+        info("isClosed") ;
         return blockMgr.isClosed() ;
     }
 
     @Override
     public void sync()
     {
-        log.info("Sync") ;
+        info("Sync") ;
         blockMgr.sync() ;
     }
 
     @Override
     public void beginIterator(Iterator<?> iter)
     {
-        log.info("> start iterator") ;
+        info("> start iterator") ;
         blockMgr.beginIterator(iter) ;
     }
     
     @Override
     public void endIterator(Iterator<?> iter)
     {
-        log.info("< end iterator") ;
+        info("< end iterator") ;
         blockMgr.endIterator(iter) ;
     }
     
     @Override
     public void beginRead()
     {
-        log.info("> start read") ;
+        info("> start read") ;
         blockMgr.beginRead() ;
     }
 
     @Override
     public void endRead()
     {
-        log.info("< finish read") ;
+        info("< finish read") ;
         blockMgr.endRead() ;
     }
 
     @Override
     public void beginUpdate()
     {
-        log.info("> start update") ;
+        info("> start update") ;
         blockMgr.beginUpdate() ;
     }
 
     @Override
     public void endUpdate()
     {
-        log.info("< finish update") ;
+        info("< finish update") ;
         blockMgr.endUpdate() ;
+    }
+
+    private void info(String string)
+    {
+        if ( label != null )
+            string = label+": "+string ;
+        log.info(string) ; 
     }
 }
 

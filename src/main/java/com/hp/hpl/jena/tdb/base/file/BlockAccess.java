@@ -31,6 +31,8 @@ public interface BlockAccess extends Sync, Closeable
     public boolean isEmpty() ; 
     
     public boolean valid(long id) ;
+
+    public String getLabel() ;
 }
 
 /*

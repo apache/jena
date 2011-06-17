@@ -35,11 +35,10 @@ public abstract class BlockAccessBase implements BlockAccess
 
     public BlockAccessBase(String filename, int blockSize)
     {
-        //super(filename) ;
         this.blockSize = blockSize ;
+        this.filename = filename ;
+        this.label = FileOps.basename(filename) ;
         try {
-            this.filename = filename ;
-            this.label = FileOps.basename(filename) ;
             // "rwd" - Syncs only the file contents
             // "rws" - Syncs the file contents and metadata
             // "rw" - cached?
@@ -154,6 +153,12 @@ public abstract class BlockAccessBase implements BlockAccess
             } catch (IOException ex)
             { throw new BlockException(ex) ; }
         }
+    }
+    
+    @Override
+    public String getLabel()
+    {
+        return label ;
     }
 }
 

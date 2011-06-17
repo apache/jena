@@ -369,15 +369,15 @@ public class DatasetBuilderStd implements DatasetBuilder
     
     public static class IndexBuilderStd implements IndexBuilder
     {
-        private BlockMgrBuilder bMgr1 ;
-        private BlockMgrBuilder bMgr2 ;
-        private RangeIndexBuilderStd other ;
+        protected BlockMgrBuilder bMgrNodes ;
+        protected BlockMgrBuilder bMgrRecords ;
+        protected RangeIndexBuilderStd other ;
 
-        public IndexBuilderStd(BlockMgrBuilder bMgr1, BlockMgrBuilder bMgr2)
+        public IndexBuilderStd(BlockMgrBuilder bMgrNodes, BlockMgrBuilder bMgrRecords)
         {
-            this.bMgr1 = bMgr1 ;
-            this.bMgr2 = bMgr2 ;
-            this.other = new RangeIndexBuilderStd(bMgr1, bMgr2) ;
+            this.bMgrNodes = bMgrNodes ;
+            this.bMgrRecords = bMgrRecords ;
+            this.other = new RangeIndexBuilderStd(bMgrNodes, bMgrRecords) ;
         }
         
         @Override
@@ -390,12 +390,13 @@ public class DatasetBuilderStd implements DatasetBuilder
     
     public static class RangeIndexBuilderStd implements RangeIndexBuilder
     {
-        private BlockMgrBuilder bMgr1 ;
-        private BlockMgrBuilder bMgr2 ;
-        public RangeIndexBuilderStd(BlockMgrBuilder bMgr1, BlockMgrBuilder bMgr2)
+        private BlockMgrBuilder bMgrNodes ;
+        private BlockMgrBuilder bMgrRecords ;
+        public RangeIndexBuilderStd( BlockMgrBuilder blockMgrBuilderNodes,
+                                     BlockMgrBuilder blockMgrBuilderRecords)
         {
-            this.bMgr1 = bMgr1 ;
-            this.bMgr2 = bMgr2 ;
+            this.bMgrNodes = blockMgrBuilderNodes ;
+            this.bMgrRecords = blockMgrBuilderRecords ;
         }
 
         @Override
@@ -433,7 +434,7 @@ public class DatasetBuilderStd implements DatasetBuilder
             int readCacheSize = SystemTDB.BlockReadCacheSize ;
             int writeCacheSize = SystemTDB.BlockWriteCacheSize ;
 
-            RangeIndex rIndex = createBPTree(fileSet, order, blkSize, readCacheSize, writeCacheSize, bMgr1, bMgr2, recordFactory) ;
+            RangeIndex rIndex = createBPTree(fileSet, order, blkSize, readCacheSize, writeCacheSize, bMgrNodes, bMgrRecords, recordFactory) ;
             
             metafile.flush() ;
             return rIndex ;
@@ -443,8 +444,8 @@ public class DatasetBuilderStd implements DatasetBuilder
         private RangeIndex createBPTree(FileSet fileset, int order, 
                                         int blockSize,
                                         int readCacheSize, int writeCacheSize,
-                                        BlockMgrBuilder blockMgrBuilder1,
-                                        BlockMgrBuilder blockMgrBuilder2,
+                                        BlockMgrBuilder blockMgrBuilderNodes,
+                                        BlockMgrBuilder blockMgrBuilderRecords,
                                         RecordFactory factory)
         {
             // ---- Checking
@@ -468,8 +469,8 @@ public class DatasetBuilderStd implements DatasetBuilder
             
 //            BlockMgr blkMgrNodes = BlockMgrFactory.create(fileset, Names.bptExt1, blockSize, readCacheSize, writeCacheSize) ;
 //            BlockMgr blkMgrRecords = BlockMgrFactory.create(fileset, Names.bptExt2, blockSize, readCacheSize, writeCacheSize) ;
-            BlockMgr blkMgrNodes = blockMgrBuilder1.buildBlockMgr(fileset, Names.bptExt1, blockSize) ;
-            BlockMgr blkMgrRecords = blockMgrBuilder2.buildBlockMgr(fileset, Names.bptExt2, blockSize) ;
+            BlockMgr blkMgrNodes = blockMgrBuilderNodes.buildBlockMgr(fileset, Names.bptExt1, blockSize) ;
+            BlockMgr blkMgrRecords = blockMgrBuilderRecords.buildBlockMgr(fileset, Names.bptExt2, blockSize) ;
             
             return BPlusTree.create(params, blkMgrNodes, blkMgrRecords) ;
         }

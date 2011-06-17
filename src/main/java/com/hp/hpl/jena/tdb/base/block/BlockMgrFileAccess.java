@@ -27,7 +27,7 @@ public class BlockMgrFileAccess extends BlockMgrBase
     // Create via the BlockMgrFactory.
     /*package*/ BlockMgrFileAccess(BlockAccess blockAccess, int blockSize)
     {
-        super(blockSize) ;
+        super(blockAccess.getLabel(), blockSize) ;
         file = blockAccess ;
     }
     

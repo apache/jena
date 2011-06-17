@@ -151,6 +151,13 @@ public class BlockMgrSync implements BlockMgr
     {
         return blockMgr.isClosed() ;
     }
+
+    @Override
+    synchronized
+    public String getLabel()
+    {
+        return blockMgr.getLabel() ;
+    }
 }
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP

@@ -19,13 +19,18 @@ public class BlockAccessByteArray implements BlockAccess
     private ByteBuffer bytes ;
     private long length ;           // Bytes in use: 0 to length-1 
     private long alloc ;            // Bytes allocated
+    private final String label ;
     
-    public BlockAccessByteArray()
+    public BlockAccessByteArray(String label)
     {
         bytes = ByteBuffer.allocate(1024) ;
         length = 0 ; 
         alloc = 0 ;
+        this.label = label ;
     }
+    
+    @Override
+    public String getLabel () { return label ; }
     
     @Override
     public Block allocate(int size)

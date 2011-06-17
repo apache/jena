@@ -21,6 +21,7 @@ import com.hp.hpl.jena.tdb.TDBException ;
 
 public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
 {
+    private static Logger loggerDefault = LoggerFactory.getLogger(BlockMgrTracker.class) ; 
     public static boolean verbose = false ;
 
     static enum Action { Alloc, Promote, GetRead, GetWrite, Write, Release, Free, IterRead, 
@@ -58,31 +59,35 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
     private int inIterator = 0 ;
     private boolean inUpdate = false ;
     private final Logger log ;
+    private final String label ;
     
-    public static BlockMgr track(String label, BlockMgr blkMgr)
+    public static BlockMgr track(BlockMgr blkMgr) { return track(blkMgr.getLabel(), blkMgr) ; }
+
+    private static BlockMgr track(String label, BlockMgr blkMgr)
     {
         return new BlockMgrTracker(label, blkMgr) ;
     }
 
-    public BlockMgrTracker(BlockMgr blockMgr)
+    private BlockMgrTracker(BlockMgr blockMgr)
     {
-        this(LoggerFactory.getLogger(BlockMgrTracker.class), blockMgr) ;
+        this(LoggerFactory.getLogger(BlockMgrTracker.class), blockMgr.getLabel(), blockMgr) ;
     }
     
-    public BlockMgrTracker(String label, BlockMgr blockMgr)
+    private BlockMgrTracker(String label, BlockMgr blockMgr)
     {
-        this(LoggerFactory.getLogger(label), blockMgr) ;
+        this(loggerDefault, label, blockMgr) ;
     }
+//    
+//    public BlockMgrTracker(Class<?> cls, String label, BlockMgr blockMgr)
+//    {
+//        this(LoggerFactory.getLogger(cls), label, blockMgr) ;
+//    }
     
-    public BlockMgrTracker(Class<?> label, BlockMgr blockMgr)
-    {
-        this(LoggerFactory.getLogger(label), blockMgr) ;
-    }
-    
-    public BlockMgrTracker(Logger logger, BlockMgr blockMgr)
+    public BlockMgrTracker(Logger logger, String label, BlockMgr blockMgr)
     {
         this.blockMgr = blockMgr ;
         this.log = logger ;
+        this.label = blockMgr.getLabel() ;
     }
 
     private void add(Action action, Long id) { actions.add(new Pair<Action, Long>(action, id)) ; }
@@ -183,9 +188,12 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
                 error(Release, id+" is not an active block") ;
 
             // May have been promoted.
-            activeReadBlocks.remove(block.getId()) ;
+            if ( activeWriteBlocks.contains(id) )
+                activeWriteBlocks.remove(id) ;
+            else
+                activeReadBlocks.remove(block.getId()) ;
+            
             activeIterBlocks.remove(block.getId()) ;
-            activeWriteBlocks.remove(block.getId()) ;
         }
         blockMgr.release(block) ;
     }
@@ -377,47 +385,76 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
     {
         if ( ! blocks.isEmpty() )
         {
-            log.error(string) ;
+            error(string) ;
             for ( Long id : blocks )
-                log.info("    Block: "+id) ;
+                info("    Block: "+id) ;
             history() ;
             throw new TDBException() ;
             //debugPoint() ;
         }
     }
     
+    private String msg(String string)
+    {
+        if ( label == null ) return string ;
+        return label+": "+string ;
+    }
+
+    private void info(String string)
+    {
+        log.info(msg(string)) ;
+    }
+
+    private void warn(String string)
+    {
+        log.warn(msg(string)) ;
+    }
+
+    private void warn(Action action, String string)
+    {
+        warn(action + ": " + string) ;
+    }
+   
+    private void error(String string)
+    {
+        log.error(msg(string)) ;
+    }
+
     private void error(Action action, String string)
     {
         if ( verbose )
         {
-            log.error(action+": "+string) ;
+            error(action+": "+string) ;
             history() ;
         }
-        throw new BlockException(action+": "+string) ;
+        throw new BlockException(msg(action+": "+string)) ;
         //debugPoint() ;
     }
 
     // Do nothing - but use a a breakpoint point.
     private void debugPoint() {}
 
-    private void warn(Action action, String string)
-    { log.warn(action+": "+string) ; }
-
     private void history()
     {
-        log.info("History") ;
+        info("History") ;
         for ( Pair<Action, Long> p : actions )
         {
             if ( p.getRight() != NoId )
-                log.info(String.format("    %-12s  %d", p.getLeft(), p.getRight())) ;
+                log.info(String.format("%s:     %-12s  %d", label, p.getLeft(), p.getRight())) ;
             else
-                log.info(String.format("    %-12s", p.getLeft())) ;
+                log.info(String.format("%s:     %-12s", label, p.getLeft())) ;
             
         }
     }
     
     @Override
-    public String toString() { return "BlockMgrTracker: "+log.getName() ; } 
+    public String toString() { return "BlockMgrTracker"+((label==null)?"":(": "+label)) ; }
+
+    @Override
+    public String getLabel()
+    {
+        return label ;
+    } 
 }
 
 /*

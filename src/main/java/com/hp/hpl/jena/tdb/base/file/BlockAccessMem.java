@@ -15,10 +15,12 @@ import java.util.List ;
 import com.hp.hpl.jena.tdb.base.block.Block ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
-/*
+/**
  * File access layer that simulates a disk in-memory - for testing, not written for efficiency.
  * There is a safe mode, whereby blocks are copied in and out to guarantee no writing to an unallocated block.
  * This is very inefficient but a better simulation of a disk.
+ * 
+ * @See BlockAccessByteArray
  */
 
 public class BlockAccessMem implements BlockAccess
@@ -29,15 +31,17 @@ public class BlockAccessMem implements BlockAccess
     private List<Block> blocks = new ArrayList<Block>() ;
     private final boolean safeModeThisMgr ;
     protected final int blockSize ;
+    private final String label ;
     
-    public BlockAccessMem(int blockSize)
+    public BlockAccessMem(String label, int blockSize)
     {
-        this(blockSize, SafeMode) ;
+        this(label, blockSize, SafeMode) ;
     }
     
-    private BlockAccessMem(int blockSize, boolean b)
+    private BlockAccessMem(String label, int blockSize, boolean b)
     {
         this.blockSize = blockSize ;
+        this.label = label ;
         safeModeThisMgr = b ;
     }
 
@@ -120,6 +124,12 @@ public class BlockAccessMem implements BlockAccess
             throw new FileException(format("FileAccessMem: Wrong size block.  Expected=%d : actual=%d", blockSize, bb.capacity())) ;
         if ( bb.order() != SystemTDB.NetworkOrder )
             throw new FileException("BlockMgrMem: Wrong byte order") ;
+    }
+
+    @Override
+    public String getLabel()
+    {
+        return label ;
     }
 }
 /*

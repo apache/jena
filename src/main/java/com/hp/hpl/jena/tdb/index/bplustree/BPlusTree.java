@@ -172,8 +172,11 @@ public class BPlusTree implements Iterable<Record>, RangeIndex
     {
         BlockMgr mgr1 = bpTree.getNodeManager().getBlockMgr() ;
         BlockMgr mgr2 = bpTree.getRecordsMgr().getBlockMgr() ;
-        mgr1 = new BlockMgrTracker("BPT/Nodes", mgr1) ;
-        mgr2 = new BlockMgrTracker("BPT/Records", mgr2) ;
+//        mgr1 = BlockMgrTracker.track("BPT/Nodes", mgr1) ;
+//        mgr2 = BlockMgrTracker.track("BPT/Records", mgr2) ;
+        mgr1 = BlockMgrTracker.track(mgr1) ;
+        mgr2 = BlockMgrTracker.track(mgr2) ;
+
         return BPlusTree.attach(bpTree.getParams(), mgr1, mgr2) ;
     }
 
@@ -241,7 +244,10 @@ public class BPlusTree implements Iterable<Record>, RangeIndex
     {
         // [TxTDB:PATCH-UP]
         if ( root != null ) 
-            root.release() ;
+        {
+            //root.release() ;
+            //nodeManager.release(rootNode) ;
+        }
         if ( root != null && rootNode != root )
             log.warn("Root is not root!") ;
     }
@@ -356,10 +362,9 @@ public class BPlusTree implements Iterable<Record>, RangeIndex
         BPTreeNode root = getRoot() ;
         Iterator<Record> iter = iterator(root, fromRec, toRec) ;
         releaseRoot(root) ;
-        finishReadBlkMgr() ;    // WRONG!
-        
-        // Add a checkign wrapper via: 
-        // ConcurrencyPolicyMRSW
+        finishReadBlkMgr() ;
+        // Note that this end the read-part (find the start), not the iteration.
+        // Iterator read blocks still get handled.
         return iter ;
     }
     
