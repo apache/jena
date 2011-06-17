@@ -38,6 +38,12 @@ public class CacheFactory
         return createCacheWithGetter(cache, getter) ;
     }
 
+    /** Create a null cache */
+    public static <Key, Value> Cache<Key, Value> createNullCache()
+    {
+        return new Cache0<Key, Value>() ;
+    }
+
     /** Create a cache which has unbounded space */
     public static <Key, Value> Cache<Key, Value> createCacheUnbounded()
     {

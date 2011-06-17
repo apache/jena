@@ -22,7 +22,7 @@ public interface Cache<Key, Value>
     /** Insert into from cache and return old value (or null if none) */
     public Value put(Key key, Value thing) ;
 
-    /** Remove from cache - return true if key referenecd an entry */
+    /** Remove from cache - return true if key referenced an entry */
     public boolean remove(Key key) ;
     
     /** Iterate over all keys. Iteratering over the keys requires the caller be thread-safe. */ 
