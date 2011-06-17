@@ -11,14 +11,14 @@ import org.openjena.atlas.io.IO ;
 import org.openjena.atlas.lib.Sink ;
 import org.openjena.riot.RiotReader ;
 import org.openjena.riot.lang.LangRIOT ;
-import org.openjena.riot.out.SinkTripleOutput ;
+import org.openjena.riot.out.SinkQuadOutput ;
 import org.openjena.riot.pipeline.inf.InfFactory ;
 import arq.cmd.CmdException ;
 import arq.cmdline.ArgDecl ;
 import arq.cmdline.CmdGeneral ;
 
-import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.sparql.core.Quad;
 import com.hp.hpl.jena.util.FileManager ;
 
 /*
@@ -111,9 +111,9 @@ public class infer extends CmdGeneral
     @Override
     protected void exec()
     {
-        Sink<Triple> sink = new SinkTripleOutput(System.out) ;
-        sink = InfFactory.infTriples(sink, vocab) ;
-        LangRIOT parser = RiotReader.createParserNTriples(System.in, sink) ;
+        Sink<Quad> sink = new SinkQuadOutput(System.out) ;
+        sink = InfFactory.infQuads(sink, vocab) ;
+        LangRIOT parser = RiotReader.createParserNQuads(System.in, sink) ; 
         parser.parse() ;
         IO.flush(System.out); 
     }
