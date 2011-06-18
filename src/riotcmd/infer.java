@@ -7,18 +7,25 @@
 
 package riotcmd;
 
+import java.io.InputStream ;
+import java.util.List ;
+
 import org.openjena.atlas.io.IO ;
+import org.openjena.atlas.lib.IRILib ;
 import org.openjena.atlas.lib.Sink ;
+import org.openjena.riot.Lang ;
 import org.openjena.riot.RiotReader ;
 import org.openjena.riot.lang.LangRIOT ;
 import org.openjena.riot.out.SinkQuadOutput ;
 import org.openjena.riot.pipeline.inf.InfFactory ;
+import org.openjena.riot.system.SinkExtendTriplesToQuads ;
 import arq.cmd.CmdException ;
 import arq.cmdline.ArgDecl ;
 import arq.cmdline.CmdGeneral ;
 
+import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.sparql.core.Quad;
+import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.util.FileManager ;
 
 /*
@@ -96,7 +103,7 @@ public class infer extends CmdGeneral
     @Override
     protected String getSummary()
     {
-        return "infer --rdfs=vocab" ;
+        return "infer --rdfs=vocab FILE ..." ;
     }
 
     @Override
@@ -113,15 +120,41 @@ public class infer extends CmdGeneral
     {
         Sink<Quad> sink = new SinkQuadOutput(System.out) ;
         sink = InfFactory.infQuads(sink, vocab) ;
-        LangRIOT parser = RiotReader.createParserNQuads(System.in, sink) ; 
-        parser.parse() ;
+        
+        List<String> files = getPositionalOrStdin() ;
+        if ( files.isEmpty() )
+            files.add("-") ;
+            
+        for ( String fn : files )
+            processFile(fn, sink) ;
         IO.flush(System.out); 
+    }
+
+    private void processFile(String filename, Sink<Quad> sink)
+    {
+        Lang lang = filename.equals("-") ? Lang.NQUADS : Lang.guess(filename, Lang.NQUADS) ;
+        String baseURI = IRILib.filenameToIRI(filename) ;
+        
+        if ( lang.isTriples() )
+        {
+            InputStream in = IO.openFile(filename) ;
+            Sink<Triple> sink2 = new SinkExtendTriplesToQuads(sink) ;
+            LangRIOT parser = RiotReader.createParserTriples(in, lang, baseURI, sink2) ;
+            parser.parse() ;
+            return ;
+        }
+        else
+        {
+            InputStream in = IO.openFile(filename) ;
+            LangRIOT parser = RiotReader.createParserQuads(in, lang, baseURI, sink) ; 
+            parser.parse() ;
+        }        
     }
 
     @Override
     protected String getCommandName()
     {
-        return null ;
+        return "infer" ;
     }
 }
 

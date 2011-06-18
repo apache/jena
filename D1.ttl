@@ -3,4 +3,6 @@
 @prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix : <http://example/> .
 
-:C1 rdfs:subClassOf :C2 .
+:x1 a :C .
+:x2 a :C1 .
+:x3 a :C2 .

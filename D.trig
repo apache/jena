@@ -1,13 +1,9 @@
-@prefix dc:   <http://purl.org/dc/elements/1.1/> .
 @prefix :     <http://example.org/book/> .
-@prefix ns:   <http://example.org/ns#> .
-
+@prefix : <http://example/> .
 {
-  :book1  dc:title  "SPARQL Tutorial" .
-  :book1  ns:price  42 .
+  :x1 a :C1 .
 }
 
 :graph {
-  :book2  dc:title  "The Semantic Web" .
-  :book2  ns:price  23 
+  :x2 a :C1 .
 }

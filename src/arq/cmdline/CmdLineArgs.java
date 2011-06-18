@@ -7,6 +7,8 @@
 package arq.cmdline;
 
 import java.util.ArrayList ;
+import java.util.Arrays ;
+import java.util.Collections ;
 import java.util.HashMap ;
 import java.util.Iterator ;
 import java.util.List ;
@@ -325,6 +327,12 @@ public class CmdLineArgs extends CommandLineBase
         return positionals ;
     }
 
+    public List<String> getPositionalOrStdin()
+    {
+        if ( ! positionals.isEmpty() ) return Collections.unmodifiableList(positionals) ;
+        List<String> x = Arrays.asList("-") ;
+        return Collections.unmodifiableList(x) ;
+    }
     
     // ----
     

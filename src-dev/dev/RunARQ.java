@@ -126,6 +126,10 @@ public class RunARQ
     
     public static void main(String[] argv) throws Exception
     {
+        
+        riotcmd.infer.main("--rdfs=D.ttl", "D.ttl") ;
+        exit(0) ;
+        
         PropertyFunctionRegistry.get().remove(RDFS.getURI()) ;
         ParserProfile p = RiotLib.profile(Lang.NTRIPLES, null) ;
         {

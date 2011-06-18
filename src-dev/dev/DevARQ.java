@@ -1,7 +1,5 @@
 package dev ;
 
-import org.openjena.atlas.event.EventManager ;
-
 public class DevARQ
 {
     // Langbase - calls EventManager.send... but Turtle rpefixes done after (read is not finished)

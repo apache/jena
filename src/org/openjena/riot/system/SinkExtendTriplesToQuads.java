@@ -8,33 +8,48 @@ package org.openjena.riot.system;
 
 import org.openjena.atlas.lib.Sink ;
 
+import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 
 /** Take a stream of triples and send down a Sink&lt;Quad>
- *  The quad will have <code>Quad.tripleInQuad</code> in the G field.
+ *  The quad will have <code>Quad.tripleInQuad</code> in the G field or a specified node..
  *  @see Quad#tripleInQuad
  */   
 public class SinkExtendTriplesToQuads implements Sink<Triple>
 {
-    private final Sink<Quad> sinkQuad ;
+    private final Sink<Quad> quadSink ;
+    private final Node graph ;
 
-    public SinkExtendTriplesToQuads(Sink<Quad> sinkQuad)
+    public SinkExtendTriplesToQuads(Sink<Quad> quadSink)
     {
-        this.sinkQuad = sinkQuad ;
-    }
-
-    public void send(Triple triple)
-    {
-        Quad quad = new Quad(Quad.tripleInQuad, triple) ;
-        sinkQuad.send(quad) ;
+        this(Quad.tripleInQuad, quadSink) ;
     }
     
-    //@Override
-    public void flush() { sinkQuad.flush(); }
-    //@Override
-    public void close() { sinkQuad.close(); }
+    public SinkExtendTriplesToQuads(Node gn, Sink<Quad> quadSink)
+    {
+        this.quadSink = quadSink ;
+        this.graph = gn ;
+    }
+    
+    public void send(Triple triple)
+    {
+        Quad q = new Quad(graph, triple) ;
+        quadSink.send(q) ;
+    }
+
+    public void flush()
+    {
+        quadSink.flush() ;
+    }
+    
+    public void close()
+    {
+        // Don't close - the underlying sink may be reused. 
+        //quadSink.close() ;
+    }
 }
+
 /*
  * (c) Copyright 2010 Talis Systems Ltd.
  * All rights reserved.
