@@ -95,7 +95,7 @@ public final class Block
     public String toString()
     {
         ByteBuffer bb = getByteBuffer() ;
-        return String.format("Block: %d  : (posn=%d, limit=%d, cap=%d)", id, bb.position(), bb.limit(), bb.capacity()) ;
+        return String.format("Block: %d (posn=%d, limit=%d, cap=%d)", id, bb.position(), bb.limit(), bb.capacity()) ;
     }
     
     /** Deep copy, including ByteBuffer contents. */

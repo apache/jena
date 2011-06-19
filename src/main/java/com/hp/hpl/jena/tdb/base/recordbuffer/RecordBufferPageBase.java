@@ -23,7 +23,7 @@ import com.hp.hpl.jena.tdb.sys.SystemTDB;
  * This must be compatible with B+Tree records nodes and hashbuckets.
  */
 
-public class RecordBufferPageBase extends PageBase //implements Page
+public abstract class RecordBufferPageBase extends PageBase //implements Page
 {
     // Field offsets
     final public static int COUNT           = 0 ;

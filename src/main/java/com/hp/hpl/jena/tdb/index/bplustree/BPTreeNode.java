@@ -36,7 +36,7 @@ public final class BPTreeNode extends BPTreePage
 
     private static Logger log = LoggerFactory.getLogger(BPTreeNode.class) ;
     
-    final private Block block ;
+    private Block block ;
     private int id ;
     private short blockState = READ ;  
     
@@ -46,7 +46,8 @@ public final class BPTreeNode extends BPTreePage
     // "Leaf" of the BPTree is the lowest level of ptr/key splits, not the data blocks.
     // We need to know this to know which block manager the block pointers refer to.
     boolean isLeaf ;        
-    RecordBuffer records ;
+    private RecordBuffer records ;
+    void setRecordBuffer(RecordBuffer r) { records = r ; }
     PtrBuffer ptrs ;
 
     /* B+Tree
@@ -121,6 +122,12 @@ public final class BPTreeNode extends BPTreePage
         super(bpTree) ;
         this.block = block ;
         this.id = block.getId().intValue() ;
+    }
+
+    @Override
+    public void reset(Block block) 
+    { 
+        this.block = block ;
     }
     
     // [TxTDB:PATCH-UP] REMOVE
@@ -358,16 +365,16 @@ public final class BPTreeNode extends BPTreePage
     public final int getId()                { return id ; }
 
     @Override
-    final void write()             { bpTree.getNodeManager().write(this) ; } 
+    final void write()          { bpTree.getNodeManager().write(this) ; } 
     
     @Override
-    final void promote()         { bpTree.getNodeManager().promote(this) ; }
+    final void promote()        { bpTree.getNodeManager().promote(this) ; }
 
     @Override
-    final void release()         { bpTree.getNodeManager().release(this) ; } 
+    final void release()        { bpTree.getNodeManager().release(this) ; } 
 
     @Override
-    final void free()            { bpTree.getNodeManager().free(this) ; } 
+    final void free()           { bpTree.getNodeManager().free(this) ; } 
     
     
     // ============ SEARCH

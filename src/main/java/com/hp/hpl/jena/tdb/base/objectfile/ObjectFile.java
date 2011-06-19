@@ -48,6 +48,9 @@ public interface ObjectFile extends Sync, Closeable
     
     /** All the bytebuffers - debugging aid */
     public Iterator<Pair<Long, ByteBuffer>> all() ;
+    
+//    /** return a useful short display string */ 
+//    public String getLabel() ;
 }
 
 /*

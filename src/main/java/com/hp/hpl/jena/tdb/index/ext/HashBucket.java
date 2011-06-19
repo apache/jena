@@ -7,6 +7,7 @@
 package com.hp.hpl.jena.tdb.index.ext;
 
 import static org.openjena.atlas.lib.Alg.decodeIndex ;
+import org.openjena.atlas.lib.NotImplemented ;
 
 import com.hp.hpl.jena.tdb.base.StorageException ;
 import com.hp.hpl.jena.tdb.base.block.Block ;
@@ -96,6 +97,10 @@ public final class HashBucket extends RecordBufferPageBase
         return true ;         
     }
     
+    @Override
+    public void reset(Block block)
+    { throw new NotImplemented("reset") ; }
+
     public final boolean isFull()
     {
         return getRecordBuffer().isFull() ;

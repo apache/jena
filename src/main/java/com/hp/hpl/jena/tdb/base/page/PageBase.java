@@ -28,6 +28,9 @@ public abstract class PageBase implements Page
     }
     
     @Override
+    public abstract void reset(Block block) ;
+
+    @Override
     final public Block getBackingBlock()    { return block ; }
 
     @Override

@@ -13,6 +13,7 @@ import java.io.FileNotFoundException ;
 import java.io.FileOutputStream ;
 import java.io.InputStream ;
 import java.io.OutputStream ;
+import java.util.Arrays ;
 import java.util.List ;
 
 import org.openjena.atlas.AtlasException ;
@@ -96,7 +97,10 @@ public class CmdNodeTableBuilder extends CmdGeneral
         if ( Lib.equal(dataFileTriples, dataFileQuads) )
             cmdError("Triples and Quads work files are the same") ;
         
-        datafiles  = super.getPositional() ;
+        //datafiles  = getPositionalOrStdin() ;
+        datafiles  = getPositional() ;
+        if ( datafiles.isEmpty() )
+            datafiles = Arrays.asList("-") ;
         
         // ---- Checking.
 //        if ( false ) 

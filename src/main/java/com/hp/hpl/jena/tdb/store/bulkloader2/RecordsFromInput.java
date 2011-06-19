@@ -21,7 +21,8 @@ import com.hp.hpl.jena.tdb.base.record.Record ;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
-class RecordsFromInput implements Iterator<Record> 
+final
+public class RecordsFromInput implements Iterator<Record> 
 {
     private final InputStream input ;
     private Record slot = null ;
@@ -35,16 +36,16 @@ class RecordsFromInput implements Iterator<Record>
     private final int itemsPerRow ;
     private final ColumnMap colMap ;
 
-    RecordsFromInput(InputStream input, int length, ColumnMap colMap, int rowBlockSize)
+    public RecordsFromInput(InputStream input, int itemsPerRow, ColumnMap colMap, int rowBlockSize)
     { 
         this.input = input ;
-        this.itemsPerRow = length ;
+        this.itemsPerRow = itemsPerRow ;
         this.colMap = colMap ;
         this.rowLength = itemsPerRow*16 + itemsPerRow ;   // Length in bytes of a row.
         this.rowBlockSize = rowBlockSize ; 
         this.buffer = new byte[rowLength*rowBlockSize] ;
         this.idx = -1 ;
-        this.recordFactory = new RecordFactory(length*SystemTDB.SizeOfNodeId, 0) ;
+        this.recordFactory = new RecordFactory(itemsPerRow*SystemTDB.SizeOfNodeId, 0) ;
     }
     
     @Override

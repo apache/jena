@@ -132,7 +132,6 @@ public abstract class AbstractTestObjectFileTrans extends BaseTest
         file.abort(txn) ;
         contains(file1, "ABC", "123") ;
     }
-
 }
 
 /*

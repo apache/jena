@@ -100,9 +100,15 @@ public class PageBlockMgr<T extends Page>
     
     public void promote(Page page)
     { 
+        // Replace, reset Block in page.
         Block block = page.getBackingBlock() ;
-        blockMgr.promote(block) ;
-        block.setModified(true) ;
+        Block block2 = blockMgr.promote(block) ;
+        if ( block2 != block )
+        {        
+            block2.setModified(true) ;
+            // Change - reset Block in page.
+            page.reset(block2) ;
+        }
     }
     
     public boolean valid(int id)        { return blockMgr.valid(id) ; }

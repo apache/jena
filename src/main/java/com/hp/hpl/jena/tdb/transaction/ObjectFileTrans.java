@@ -135,7 +135,9 @@ public class ObjectFileTrans implements ObjectFile, Transactional
     {
         if ( passthrough ) { return base.write(buffer) ; } 
         // Write to auxillary
+        System.out.println("Write") ;
         long x = other.write(buffer) ;
+        System.out.println("Write -> "+x+" ("+alloc+")") ;
         return alloc+x ;
     }
 

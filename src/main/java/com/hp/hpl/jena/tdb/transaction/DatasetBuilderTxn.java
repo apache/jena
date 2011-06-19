@@ -8,6 +8,7 @@ package com.hp.hpl.jena.tdb.transaction ;
 
 import java.util.Properties ;
 
+import org.openjena.atlas.lib.FileOps ;
 import setup.BlockMgrBuilder ;
 import setup.DatasetBuilderStd ;
 import setup.IndexBuilder ;
@@ -15,7 +16,6 @@ import setup.NodeTableBuilder ;
 import setup.ObjectFileBuilder ;
 import setup.RangeIndexBuilder ;
 import setup.TupleIndexBuilder ;
-import setup.DatasetBuilderStd.RangeIndexBuilderStd ;
 import tx.base.FileRef ;
 
 import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
@@ -27,8 +27,9 @@ import com.hp.hpl.jena.tdb.base.file.FileFactory ;
 import com.hp.hpl.jena.tdb.base.file.FileSet ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile ;
-import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
-import com.hp.hpl.jena.tdb.index.Index ;
+import com.hp.hpl.jena.tdb.base.objectfile.ObjectFileLogger ;
+import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
+import com.hp.hpl.jena.tdb.nodetable.NodeTableLogger ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 
 public class DatasetBuilderTxn extends DatasetBuilderStd
@@ -65,10 +66,21 @@ public class DatasetBuilderTxn extends DatasetBuilderStd
         // Add track(...) to log.
         IndexBuilder indexBuilder = new IndexBuilderStd(blockMgrBuilder, blockMgrBuilder) ;
         
-        //RangeIndexBuilder rangeIndexBuilder = new RangeIndexBuilderStd(blockMgrBuilder, track(blockMgrBuilder)) ;
-        RangeIndexBuilder rangeIndexBuilder = new RangeIndexBuilderStd(blockMgrBuilder, blockMgrBuilder) ;
+        RangeIndexBuilder rangeIndexBuilder = new RangeIndexBuilderStd(blockMgrBuilder, track(blockMgrBuilder)) ;
+        //RangeIndexBuilder rangeIndexBuilder = new RangeIndexBuilderStd(blockMgrBuilder, blockMgrBuilder) ;
 
-        NodeTableBuilder nodeTableBuilder = new NodeTableBuilderStd(indexBuilder, objectFileBuilder) ;
+        NodeTableBuilder nodeTableBuilder = new NodeTableBuilderStd(indexBuilder, objectFileBuilder)
+        {
+            @Override
+            public NodeTable buildNodeTable(FileSet fsIndex, FileSet fsObjectFile, int sizeNode2NodeIdCache, int sizeNodeId2NodeCache)
+            {
+                NodeTable nt = super.buildNodeTable(fsIndex, fsObjectFile, sizeNode2NodeIdCache, sizeNodeId2NodeCache) ;
+                if ( true )
+                    nt = new NodeTableLogger(fsObjectFile.getBasename(), nt) ;
+                return nt ;
+                
+            }
+        } ;
         TupleIndexBuilder tupleIndexBuilder = new TupleIndexBuilderStd(rangeIndexBuilder) ;
         set(nodeTableBuilder, tupleIndexBuilder, indexBuilder, rangeIndexBuilder, blockMgrBuilder, objectFileBuilder) ;
     }
@@ -115,7 +127,13 @@ public class DatasetBuilderTxn extends DatasetBuilderStd
 
             ObjectFileTrans objFileTrans = new ObjectFileTrans(txn, main, backing) ;
             txn.add(objFileTrans) ;
-            return objFileTrans ;
+            ObjectFile objFile = objFileTrans ;
+            if ( true )
+            {
+                String fn = FileOps.basename(fileSet.filename(ext)) ;
+                objFile = new ObjectFileLogger(fn, objFile) ;
+            }
+            return objFile ;
         }
     }
 
@@ -128,7 +146,7 @@ public class DatasetBuilderTxn extends DatasetBuilderStd
             BlockMgr baseMgr = base.buildBlockMgr(fileSet, ext, blockSize) ;
             FileRef ref = FileRef.create(fileSet.filename(ext)) ;
             BlockMgrJournal blkMg = new BlockMgrJournal(txn, ref, baseMgr, journal) ;
-            // Add to transaction.
+            // [TxTDB:TODO]
             return blkMg ;
         }
     }
@@ -136,9 +154,7 @@ public class DatasetBuilderTxn extends DatasetBuilderStd
     /** Add transactions to an existing datatset */
     public static DatasetGraphTDB enhance(DatasetGraphTDB dsg)
     {
-
         return dsg ;
-
     }
 
 }

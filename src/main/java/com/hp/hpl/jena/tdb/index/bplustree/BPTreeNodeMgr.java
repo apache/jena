@@ -236,7 +236,7 @@ public final class BPTreeNodeMgr extends BPTreePageMgr<BPTreeNode>
         byteBuffer.limit(rStart+recBuffLen) ;
         ByteBuffer bbr = byteBuffer.slice() ;
         //bbr.limit(recBuffLen) ;
-        n.records = new RecordBuffer(bbr, n.getParams().keyFactory, n.getCount()) ;
+        n.setRecordBuffer(new RecordBuffer(bbr, n.getParams().keyFactory, n.getCount())) ;
 
         // -- Pointers area
         byteBuffer.position(pStart) ;

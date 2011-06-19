@@ -7,6 +7,13 @@ public class DevTx
     
     // Delete BlockMgrFile.
     
+    // Config
+    //   One config file?
+    //   Cache sizes
+    //   Index names
+    //   Length of NodeId?
+    //   Setting of content properties.
+    
     // Building a dataset.
     //   Commit and reply?
     //   Reattach a journal?

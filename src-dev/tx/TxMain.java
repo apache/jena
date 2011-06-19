@@ -22,7 +22,6 @@ import org.openjena.atlas.logging.Log ;
 import org.openjena.atlas.test.Gen ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
-import setup.DatasetBuilder ;
 import tx.base.FileRef ;
 
 import com.hp.hpl.jena.query.DatasetFactory ;
@@ -106,19 +105,22 @@ public class TxMain
 
         //SystemTDB.setFileMode(FileMode.direct) ;
         DatasetGraphTDB dsg0 = build() ;
-        load("D.ttl", dsg0) ;
-        query("SELECT * { ?s ?p ?o }", dsg0) ;
-//        exit(0) ;
-        
-        dsg0.sync() ;
+//        load("D.ttl", dsg0) ;
+//        query("SELECT * { ?s ?p ?o }", dsg0) ;
+////        exit(0) ;
+//        dsg0.sync() ;
         
         System.out.println("Txn") ;
         DatasetGraphTxnTDB dsg = buildTx(dsg0) ;
-        //load("D.ttl", dsg) ;
+        load("D.ttl", dsg) ;
+        
         //dsg.commit() ;
         //query("SELECT (Count(*) AS ?c) { ?s ?p ?o }", dsg) ;
         System.out.println("Query 1") ;
         query("SELECT * { ?s ?p ?o }", dsg) ;
+        
+        exit(0) ;
+        
         //query("SELECT * { ?s ?p ?o }", dsg0) ;
 
         load("D1.ttl", dsg0) ;

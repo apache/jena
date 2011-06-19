@@ -13,11 +13,13 @@ import java.util.Iterator ;
 import java.util.Map ;
 import java.util.Set ;
 
+import org.openjena.atlas.lib.ByteBufferLib ;
 import org.openjena.atlas.lib.NotImplemented ;
 import org.openjena.atlas.logging.Log ;
 import tx.base.FileRef ;
 
 import com.hp.hpl.jena.tdb.base.block.Block ;
+import com.hp.hpl.jena.tdb.base.block.BlockException ;
 import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
 
 public class BlockMgrJournal implements BlockMgr, Transactional
@@ -113,10 +115,14 @@ public class BlockMgrJournal implements BlockMgr, Transactional
     @Override
     public Block getReadIterator(long id)
     {
+        logState() ;
+        
         checkIfClosed() ;
         Block block = localBlock(id) ;
         if ( block == null )
             block = blockMgr.getReadIterator(id) ;
+        if ( block == null )
+            throw new BlockException("No such block: "+getLabel()+" "+id) ;
         iteratorBlocks.add(block.getId()) ;
         return block ;
     }
@@ -147,6 +153,7 @@ public class BlockMgrJournal implements BlockMgr, Transactional
     public Block promote(Block block)
     {
         checkIfClosed() ;
+        if ( true ) throw new NotImplemented("promote=>reset") ; 
         if ( writeBlocks.containsKey(block.getId()) )
             return block ;
         return _promote(block) ;
@@ -154,8 +161,9 @@ public class BlockMgrJournal implements BlockMgr, Transactional
 
     private Block _promote(Block block)
     {
-        checkIfClosed() ;
+        ByteBufferLib.print(block.getByteBuffer()) ;
         block = block.replicate() ;
+        ByteBufferLib.print(block.getByteBuffer()) ;
         writeBlocks.put(block.getId(), block) ;
         return block ;
     }
@@ -249,6 +257,15 @@ public class BlockMgrJournal implements BlockMgr, Transactional
         // [TxTDB:TODO] Space for BlockRef.
         JournalEntry entry = new JournalEntry(JournalEntryType.Block, fileRef, blk.getByteBuffer()) ;
         journal.writeJournal(entry) ;
+    }
+    
+    private void logState()
+    {
+        Log.info(this, "state: "+getLabel()) ;
+        Log.info(this, "  readBlocks:      "+readBlocks) ;
+        Log.info(this, "  writeBlocks:     "+writeBlocks) ;
+        Log.info(this, "  iteratorBlocks:  "+iteratorBlocks) ;
+        Log.info(this, "  freedBlocks:     "+freedBlocks) ;
     }
     
     @Override

@@ -6,6 +6,8 @@
 
 package com.hp.hpl.jena.tdb.base.recordbuffer;
 
+import org.openjena.atlas.lib.NotImplemented ;
+
 import com.hp.hpl.jena.tdb.base.block.Block ;
 import com.hp.hpl.jena.tdb.base.page.Page ;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
@@ -41,6 +43,10 @@ public final class RecordBufferPage extends RecordBufferPageBase
         getBackingBlock().getByteBuffer().putInt(LINK, link) ;
     }
     
+    @Override
+    public void reset(Block block)
+    { throw new NotImplemented("reset") ; }
+
     public static int calcRecordSize(RecordFactory factory, int blkSize)
     { return RecordBufferPageBase.calcRecordSize(factory, blkSize, FIELD_LENGTH) ; }
     
