@@ -3,9 +3,16 @@ package tx;
 public class DevTx
 {
     // Transaction needs to do FileRef to file. 
-    // Every sync hits the NodeTupleTable sync hist teh node table repeatedly - keep dirty flag? 
+    // Every sync hits the NodeTupleTable sync the node table repeatedly - keep dirty flag? 
     
     // Delete BlockMgrFile.
+    
+    // Caching of node table
+    //  no W cache needed anywhere, just the write ahead buffer
+    //  Check W c aches uses for indexes.
+    // Cache in front of NodeTable for transactions.
+    
+    // In-memory datasets.
     
     // Add changed flag to DatsetTDB so sync can be skipped.
     //   Other routes to change?  Prefixes?

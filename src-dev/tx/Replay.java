@@ -36,6 +36,8 @@ public class Replay
                     break ;
                 case Commit:
                     break ;
+                case Abort:
+                    break ;
                 case Checkpoint:
                     //default:
             }

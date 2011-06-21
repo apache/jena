@@ -84,37 +84,20 @@ public class TxMain
         System.exit(rc) ;
     }
     
+    static public String DBdir = "DB" ;
+    
     public static void main(String... args)
     {
-        if ( false )
-        {
-            Location location = new Location("DB") ;
-            String [] filenames = { "SPO.dat", "SPO.idn", "GSPO.idn", "xxx" } ; 
-            for ( String fn : filenames )
-            {
-                fn = location.absolute(fn) ;
-                FileRef fileRef = FileRef.create(fn) ;
-                System.out.println(fileRef.toString()) ;
-            }
-
-            exit(0) ;
-        }
-        
-//        FileOps.ensureDir("DB") ;
-//        FileOps.clearDirectory("DB") ;
-
-        //SystemTDB.setFileMode(FileMode.direct) ;
+        SystemTDB.setFileMode(FileMode.direct) ;
         DatasetGraphTDB dsg0 = build() ;
         load("D.ttl", dsg0) ;
         query("SELECT * { ?s ?p ?o }", dsg0) ;
-////        exit(0) ;
-//        dsg0.sync() ;
         
         System.out.println("Txn") ;
         DatasetGraphTxnTDB dsg = buildTx(dsg0) ;
         load("D1.ttl", dsg) ;
         
-        //dsg.commit() ;
+        dsg.commit() ;
         //query("SELECT (Count(*) AS ?c) { ?s ?p ?o }", dsg) ;
         System.out.println("Query 1") ;
         query("SELECT * { ?s ?p ?o }", dsg) ;
@@ -149,9 +132,9 @@ public class TxMain
     
     private static DatasetGraphTDB build()
     {
-        FileOps.ensureDir("DB") ;
-        FileOps.clearDirectory("DB") ;
-        DatasetGraphTDB dsg = TDBFactory.createDatasetGraph("DB") ;
+        FileOps.ensureDir(DBdir) ;
+        FileOps.clearDirectory(DBdir) ;
+        DatasetGraphTDB dsg = TDBFactory.createDatasetGraph(DBdir) ;
         return dsg ;
     }
 

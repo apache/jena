@@ -34,7 +34,7 @@ public class NodeTableLogger implements NodeTable
     @Override
     public NodeId getAllocateNodeId(Node node)
     {
-        info("getAllocateNodeId("+node+") =>") ;
+        //info("getAllocateNodeId("+node+") =>") ;
         NodeId nId = nodeTable.getAllocateNodeId(node) ;
         info("getAllocateNodeId("+node+") => "+nId) ;
         return nId ;
@@ -43,7 +43,7 @@ public class NodeTableLogger implements NodeTable
     @Override
     public NodeId getNodeIdForNode(Node node)
     {
-        info("getNodeIdForNode("+node+") =>") ;
+        //info("getNodeIdForNode("+node+") =>") ;
         NodeId nId = nodeTable.getNodeIdForNode(node) ;
         info("getNodeIdForNode("+node+") => "+nId) ;
         return nId ;
@@ -52,9 +52,9 @@ public class NodeTableLogger implements NodeTable
     @Override
     public Node getNodeForNodeId(NodeId id)
     {
-        info("getNodeForNodeId("+id+") =>") ;
+        //info("getNodeForNodeId("+id+") =>") ;
         Node n = nodeTable.getNodeForNodeId(id) ;
-        info("getNodeIdForNode("+id+") => "+n) ;
+        info("getNodeForNodeId("+id+") => "+n) ;
         return n ;
     }
     

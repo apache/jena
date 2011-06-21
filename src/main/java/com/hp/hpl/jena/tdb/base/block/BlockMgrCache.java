@@ -48,9 +48,6 @@ public class BlockMgrCache extends BlockMgrSync
     {
         super(blockMgr) ;
         this.indexName = String.format("%-12s", indexName) ;
-        
-        System.out.printf("%s %d %d\n", indexName, readSlots, writeSlots) ; 
-        
         // Caches are related so we can't use a Getter for cache management.
         if ( readSlots < -1 )
             readCache = CacheFactory.createNullCache() ;

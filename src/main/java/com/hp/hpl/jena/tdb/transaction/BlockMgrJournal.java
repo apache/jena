@@ -13,7 +13,6 @@ import java.util.Iterator ;
 import java.util.Map ;
 import java.util.Set ;
 
-import org.openjena.atlas.lib.ByteBufferLib ;
 import org.openjena.atlas.lib.NotImplemented ;
 import org.openjena.atlas.logging.Log ;
 import tx.base.FileRef ;
