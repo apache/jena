@@ -90,17 +90,22 @@ public class TxMain
     {
         SystemTDB.setFileMode(FileMode.direct) ;
         DatasetGraphTDB dsg0 = build() ;
-        load("D.ttl", dsg0) ;
-        query("SELECT * { ?s ?p ?o }", dsg0) ;
         
+        //If direct , this is needed - why?  Did it ever work?
+        // dsg0.sync() ;
+        
+        //load("D.ttl", dsg0) ;
+        query("SELECT (Count(*) AS ?c) { ?s ?p ?o }", dsg0) ;
+        //query("SELECT * { ?s ?p ?o }", dsg0) ;
+        exit(0) ;
         System.out.println("Txn") ;
         DatasetGraphTxnTDB dsg = buildTx(dsg0) ;
         load("D1.ttl", dsg) ;
         
-        dsg.commit() ;
-        //query("SELECT (Count(*) AS ?c) { ?s ?p ?o }", dsg) ;
+        //dsg.commit() ;
         System.out.println("Query 1") ;
-        query("SELECT * { ?s ?p ?o }", dsg) ;
+        //query("SELECT * { ?s ?p ?o }", dsg) ;
+        query("SELECT (Count(*) AS ?c) { ?s ?p ?o }", dsg) ;
         System.out.println("Query 2") ;
         query("SELECT * { ?s ?p ?o }", dsg0) ;
         
@@ -111,23 +116,13 @@ public class TxMain
         load("D1.ttl", dsg0) ;
         System.out.println("Query 2") ;
         query("SELECT * { ?s ?p ?o }", dsg) ;
-
         
         exit(0) ;
         System.out.println("Commit") ;
         dsg.commit() ;
         query("SELECT * { ?s ?p ?o }", dsg) ;
-        
+
         exit(0) ;
-        
-        //tree_ins_2_01() ; exit(0) ;
-        
-        //test.BPlusTreeRun.main("test", "--bptree:track", "3", "125", "100000") ; exit(0) ;
-        //test.BPlusTreeRun.main("perf", "3", "125", "100") ; exit(0) ;
-        //test.BPlusTreeRun.main("test", "--bptree:check", "3", "125", "100000") ; exit(0) ;
-        
-        exit(0) ;
-        bpTreeTracking() ; exit(0) ;
     }
     
     private static DatasetGraphTDB build()
@@ -142,253 +137,6 @@ public class TxMain
     {
         DatasetGraphTxnTDB dsg2 = new TransactionManager().begin(dsg) ;
         return dsg2 ;
-    }
-    
-    private static void dump(ObjectFile file)
-    {
-        Iterator<Pair<Long, ByteBuffer>> iter = file.all() ;
-        for ( ; iter.hasNext() ; )
-        {
-            Pair<Long, ByteBuffer> p = iter.next();
-            String x = StrUtils.fromUTF8bytes(p.cdr().array()) ;
-            System.out.printf("  %04d %s\n", p.car(), x) ;
-        }
-    }
-    
-    private static ByteBuffer stringToBuffer(String string)
-    {
-        byte b[] = StrUtils.asUTF8bytes(string) ;
-        return ByteBuffer.wrap(b) ;
-    }
-
-    public static void replay()
-    {
-        Journal journal = new Journal(null) ;
-        
-        for ( JournalEntry e : journal )
-        {
-            JournalEntryType type = e.getType() ;
-            ByteBuffer bb = e.getByteBuffer() ;
-        }
-    }
-    
-    
-    private static BlockMgr fromBlockRef(Object object)
-    {
-        return null ;
-    }
-
-    public static void test()
-    {
-        BlockMgrFactory.AddTracker = false ;
-        
-        //int[] keys = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-        int[] vals1 = {9,8,7,6};
-        int[] vals2 = {5,4,3,2,1,0};
-        
-        //RangeIndex rIndex = makeRangeIndex(2) ;
-        BPlusTree bpt = BPlusTree.makeMem(2, 2, RecordLib.TestRecordLength, 0) ;
-        
-        
-        if ( false )
-        {
-            BlockMgr mgr = bpt.getRecordsMgr().getBlockMgr() ;
-            mgr = BlockMgrFactory.tracker(mgr) ;
-            mgr = new BlockMgrLogger("ABC", mgr, true) ;
-            bpt = BPlusTree.attach(bpt.getParams(), bpt.getNodeManager().getBlockMgr(), mgr) ;
-        }
-        else
-        {
-            bpt = BPlusTree.addTracking(bpt) ;
-        }
-       
-        RangeIndex rIndex = bpt ;
-        
-//      BPlusTreeParams.CheckingNode = true ;
-//      BPlusTreeParams.CheckingTree = true ;
-        
-        for ( int v : vals1 )
-        {
-            Record r = intToRecord(v, rIndex.getRecordFactory()) ;
-            System.out.println("  Add: "+r) ;
-            rIndex.add(r) ;
-        }
-        
-        if ( false )
-        {
-            BlockMgr mgr = bpt.getRecordsMgr().getBlockMgr() ;
-            mgr = BlockMgrFactory.tracker(mgr) ;
-            mgr = new BlockMgrLogger("ABC", mgr, true) ;
-            bpt = BPlusTree.attach(bpt.getParams(), bpt.getNodeManager().getBlockMgr(), mgr) ;
-            rIndex = bpt ;
-            
-            BPlusTreeParams.Logging = true ;
-            Log.enable(BPTreeNode.class) ;
-        }
-            
-        for ( int v : vals2 )
-        {
-            Record r = intToRecord(v, rIndex.getRecordFactory()) ;
-            System.out.println("  Add: "+r) ;
-            rIndex.add(r) ;
-        }
-        
-        for ( Record r : rIndex )
-        {
-            System.out.println(r) ;
-            System.out.flush() ;
-        }
-            
-        //List<Integer> x = toIntList(rIndex.iterator());
-            
-            
-    //        int[] keys = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-    //        RangeIndex rIndex = make(2, keys) ;
-    //        Iterator<Record> iter1 = rIndex.iterator() ;
-    //        Iterator<Record> iter2 = rIndex.iterator() ;
-    //        iter1.next() ;
-    //        iter2.next() ;
-    }
-
-    @Test public static void tree_ins_2_01() 
-    {
-        int[] keys = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-        RangeIndex rIndex = makeRangeIndex(2) ;
-        testInsert(rIndex, keys) ;
-//        assertEquals(0, r(rIndex.minKey())) ;
-//        assertEquals(9, r(rIndex.maxKey())) ;
-    }
-    
-    
-    //@Override
-    protected static RangeIndex makeRangeIndex(int order)
-    {
-        return makeRangeIndex(order, order) ;
-    }
-    
-    protected static RangeIndex makeRangeIndex(int order, int minRecords)
-    {
-        BPlusTree bpt = BPlusTree.makeMem(order, minRecords, RecordLib.TestRecordLength, 0) ;
-        bpt = BPlusTree.addTracking(bpt) ;
-        return bpt ; 
-    }
-    
-    public static RangeIndex make(int order, int[] vals)
-    {
-        RangeIndex rIndex = makeRangeIndex(2) ;
-        IndexTestLib.add(rIndex, vals) ;
-        return rIndex ;
-    }
-    
-    public static void bpTreeTracking(String... args)
-    {
-        final Logger log = LoggerFactory.getLogger("BPlusTree") ;
-
-        int order = 3 ;
-        int keySize = RecordLib.TestRecordLength ;
-        int valueSize = 0 ;
-        boolean blkTracking = true ;
-        boolean blkLogging = false ;
-        int numKeys = 10 ;
-        int maxValue = 100 ;
-
-        int[] keys1 = Gen.rand(numKeys, 0, maxValue) ;
-        int[] keys2 = Gen.permute(keys1, numKeys) ;
-        
-        System.out.printf("int[] keys1 = {%s} ;\n", strings(keys1)) ;
-        System.out.printf("int[] keys2 = {%s} ; \n", strings(keys2)) ;
-        
-        // Debug options.
-        if ( false )
-        {
-            // These alter the block behaviour.
-//            SystemTDB.Checking = true ;
-//            BPlusTreeParams.CheckingNode = true ;
-//            BPlusTreeParams.CheckingTree = true ;
-            BPlusTreeParams.Logging = true ;
-            Log.enable(BPTreeNode.class.getName(), "ALL") ;
-        }
-        RecordFactory rf = new RecordFactory(keySize,valueSize) ;
-        BPlusTree bpTree = createBPT(order, rf, blkTracking, blkLogging) ;
-        System.out.println("CheckingNode: "+BPlusTreeParams.CheckingNode) ;
-        System.out.println("CheckingTree: "+BPlusTreeParams.CheckingTree) ;
-        
-        String label = "B+Tree" ;
-        BPlusTreeParams params = bpTree.getParams() ;
-        System.out.println(label+": "+params) ;
-        int blockSize  = BPlusTreeParams.calcBlockSize(order, rf) ;
-        System.out.println("Block size = "+params.getCalcBlockSize()) ;
-        System.out.println() ;
-
-        log.info("ADD") ;
-        for ( int i : keys1 ) 
-        {
-//            log.info(String.format("i = 0x%04X", i)) ;
-            Record r = record(rf, i, 0) ;
-            bpTree.add(r) ;
-        }
-        
-        //exit(0) ;
-        
-        if ( false )
-        {
-            System.out.println() ;
-            log.info("DELETE") ;
-            for ( int i : keys2 ) 
-            {
-    //            System.out.println() ;
-    //            log.info(String.format("i = 0x%04X", i)) ;
-    //            bpTree.dump() ;
-                Record r = record(rf, i, 0) ;
-                bpTree.delete(r) ;
-            }
-        }
-
-        //exit(0) ;
-
-        System.out.println() ;
-        log.info("ITERATOR") ;
-        Iterator<Record> iter = bpTree.iterator() ;
-        for ( ; iter.hasNext() ; )
-            System.out.println(iter.next()) ;
-        System.out.println() ;
-
-        //        bpt.dump() ;
-    }
-
-    private static BPlusTree createBPT(int order, RecordFactory rf, boolean tracking, boolean logging)
-    {
-        String label = "B+Tree" ;
-        BPlusTreeParams params = new BPlusTreeParams(order, rf) ;
-        int blockSize  = BPlusTreeParams.calcBlockSize(order, rf) ;
-        
-        if ( false )
-        {
-            BPlusTree rIndex = BPlusTree.makeMem(order, order, RecordLib.TestRecordLength, 0) ;
-            return BPlusTree.addTracking(rIndex) ;
-        }
-            
-        int nodeBlkSize = blockSize ;
-        int maxRecords = 2*order ;
-        // Or blockSize
-        int recBlkSize = RecordBufferPage.calcBlockSize(params.getRecordFactory(), maxRecords) ;
-        
-        BlockMgr mgr1 = BlockMgrFactory.createMem("B1", nodeBlkSize) ;
-        
-        if ( tracking )
-            mgr1 = BlockMgrTracker.track(mgr1) ;
-        if ( logging )
-            mgr1 = new BlockMgrLogger("BlkMgr/Nodes", mgr1, true) ;
-        
-        BlockMgr mgr2 = BlockMgrFactory.createMem("B2", recBlkSize) ;
-    
-        if ( tracking )
-            mgr2 = BlockMgrTracker.track(mgr2) ;
-        if ( logging )
-            mgr2 = new BlockMgrLogger("BlkMgr/Records", mgr2, true) ;
-        
-        BPlusTree bpt = BPlusTree.create(params, mgr1, mgr2) ;
-        return bpt ;
     }
 
     public static void query(String queryStr, DatasetGraph dsg)
