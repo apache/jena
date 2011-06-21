@@ -7,19 +7,18 @@
 package com.hp.hpl.jena.tdb.index.ext;
 
 import static com.hp.hpl.jena.tdb.base.recordbuffer.RecordBufferPageBase.COUNT ;
-import static com.hp.hpl.jena.tdb.base.recordbuffer.RecordBufferPageBase.NO_ID;
-import static com.hp.hpl.jena.tdb.index.ext.HashBucket.BITLEN;
-import static com.hp.hpl.jena.tdb.index.ext.HashBucket.TRIE;
+import static com.hp.hpl.jena.tdb.index.ext.HashBucket.BITLEN ;
+import static com.hp.hpl.jena.tdb.index.ext.HashBucket.TRIE ;
 
-import java.nio.ByteBuffer;
+import java.nio.ByteBuffer ;
 
 import com.hp.hpl.jena.tdb.base.block.Block ;
 import com.hp.hpl.jena.tdb.base.block.BlockConverter ;
-import com.hp.hpl.jena.tdb.base.block.BlockMgr;
-import com.hp.hpl.jena.tdb.base.block.BlockType;
+import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
+import com.hp.hpl.jena.tdb.base.block.BlockType ;
 import com.hp.hpl.jena.tdb.base.page.PageBlockMgr ;
-import com.hp.hpl.jena.tdb.base.record.RecordException;
-import com.hp.hpl.jena.tdb.base.record.RecordFactory;
+import com.hp.hpl.jena.tdb.base.record.RecordException ;
+import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
 
 
 public class HashBucketMgr extends PageBlockMgr<HashBucket>
@@ -27,7 +26,7 @@ public class HashBucketMgr extends PageBlockMgr<HashBucket>
     public HashBucketMgr(RecordFactory factory, BlockMgr blockMgr)
     {
         super(null, blockMgr) ;
-        Block2HashBucketMgr conv = new Block2HashBucketMgr(factory, null) ;
+        Block2HashBucketMgr conv = new Block2HashBucketMgr(factory) ;
         super.setConverter(conv) ;
     }
 
@@ -60,7 +59,6 @@ public class HashBucketMgr extends PageBlockMgr<HashBucket>
     {
         // [TxTDB:PATCH-UP]
         HashBucket bucket = super.getWrite(id) ;
-        bucket.setPageMgr(this) ;
         // Link and Count are in the block and got done by the converter.
         return bucket ;
     }
@@ -68,12 +66,10 @@ public class HashBucketMgr extends PageBlockMgr<HashBucket>
     private static class Block2HashBucketMgr implements BlockConverter<HashBucket>
     {
         private RecordFactory factory ;
-        private HashBucketMgr pageMgr ;
 
-        Block2HashBucketMgr(RecordFactory factory, HashBucketMgr pageMgr)
+        Block2HashBucketMgr(RecordFactory factory)
         {
             this.factory = factory ;
-            this.pageMgr = pageMgr ;
         }
         
         @Override
@@ -83,7 +79,7 @@ public class HashBucketMgr extends PageBlockMgr<HashBucket>
             if ( blkType != BlockType.RECORD_BLOCK )
                 throw new RecordException("Not RECORD_BLOCK: "+blkType) ;
             // Initially empty
-            HashBucket bucket = new HashBucket(NO_ID, -1, -1, block, factory, pageMgr, 0) ;
+            HashBucket bucket = HashBucket.createBlank(block, factory) ; // NO_ID, -1, -1, block, factory, 0) ;
             return bucket ;
         }
 
@@ -92,15 +88,16 @@ public class HashBucketMgr extends PageBlockMgr<HashBucket>
         {
             synchronized (block)
             {
-                // Be safe - one reader only.
-                // But it is likely that the caller needs to also
-                // perform internal updates so syncrhoized on
-                // the bytebuffer here is not enough.
-                ByteBuffer byteBuffer = block.getByteBuffer() ;
-                int count = byteBuffer.getInt(COUNT) ;
-                int hash = byteBuffer.getInt(TRIE) ;
-                int hashLen = byteBuffer.getInt(BITLEN) ;
-                HashBucket bucket = new HashBucket(NO_ID, hash, hashLen, block, factory, pageMgr, count) ;
+                HashBucket bucket = HashBucket.format(block, factory) ;
+//                // Be safe - one reader only.
+//                // But it is likely that the caller needs to also
+//                // perform internal updates so syncrhoized on
+//                // the bytebuffer here is not enough.
+//                ByteBuffer byteBuffer = block.getByteBuffer() ;
+//                int count = byteBuffer.getInt(COUNT) ;
+//                int hash = byteBuffer.getInt(TRIE) ;
+//                int hashLen = byteBuffer.getInt(BITLEN) ;
+//                HashBucket bucket = new HashBucket(NO_ID, hash, hashLen, block, factory, pageMgr, count) ;
                 return bucket ;
             }
         }
@@ -110,7 +107,6 @@ public class HashBucketMgr extends PageBlockMgr<HashBucket>
         {
             // No need to additionally sync - this is a triggered by write operations so only one writer.
             int count = bucket.getRecordBuffer().size() ;
-            bucket.setCount(count) ;
             ByteBuffer bb = bucket.getBackingBlock().getByteBuffer() ;
             bb.putInt(COUNT, bucket.getCount()) ;
             bb.putInt(TRIE,  bucket.getTrieValue()) ;

@@ -120,11 +120,19 @@ public final class Block
     {
         ByteBuffer dstBlk = ByteBuffer.allocate(srcBlk.capacity()) ;
         
+        int x = srcBlk.position() ;
+        int y = srcBlk.limit() ;
+        srcBlk.clear() ;
+        
         if ( srcBlk.hasArray() && dstBlk.hasArray() )
             System.arraycopy(srcBlk.array(), 0, dstBlk.array(), 0, srcBlk.capacity()) ;
         else
             dstBlk.put(srcBlk) ;
-        dstBlk.clear() ;
+        
+        srcBlk.position(x);
+        dstBlk.position(x);
+        srcBlk.limit(y);
+        dstBlk.limit(y);
         return dstBlk ; 
     }  
 

@@ -6,8 +6,6 @@
 
 package com.hp.hpl.jena.tdb.base.recordbuffer;
 
-import org.openjena.atlas.lib.NotImplemented ;
-
 import com.hp.hpl.jena.tdb.base.block.Block ;
 import com.hp.hpl.jena.tdb.base.page.Page ;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
@@ -44,8 +42,11 @@ public final class RecordBufferPage extends RecordBufferPageBase
     }
     
     @Override
-    public void reset(Block block)
-    { throw new NotImplemented("reset") ; }
+    protected void _reset(Block block)
+    { 
+        super.reset(block, this.getCount()) ;
+        this.link = block.getByteBuffer().getInt(LINK) ;
+    }
 
     public static int calcRecordSize(RecordFactory factory, int blkSize)
     { return RecordBufferPageBase.calcRecordSize(factory, blkSize, FIELD_LENGTH) ; }
@@ -53,14 +54,26 @@ public final class RecordBufferPage extends RecordBufferPageBase
     public static int calcBlockSize(RecordFactory factory, int maxRec)
     { return RecordBufferPageBase.calcBlockSize(factory, maxRec, FIELD_LENGTH) ; }
     
+    /** The construction methods */
+    public static RecordBufferPage createBlank(Block block,RecordFactory factory)
+    {
+        int count = 0 ;
+        int linkId = NO_ID ;
+        return new RecordBufferPage(block, factory, count, linkId) ;
+    }
+
+    public static RecordBufferPage format(Block block, RecordFactory factory)
+    {
+        int count = block.getByteBuffer().getInt(COUNT) ;
+        int linkId = block.getByteBuffer().getInt(LINK) ;
+        return new RecordBufferPage(block, factory, count, linkId) ;
+    } 
+        
     
-    /*public*/ RecordBufferPage(Block block, int linkId,
-                                RecordFactory factory, 
-                                int count)
+    private RecordBufferPage(Block block, RecordFactory factory, int count, int linkId)  
     {
         super(block, FIELD_LENGTH, factory, count) ;
         this.link = linkId ;
-        
     }
     
     @Override

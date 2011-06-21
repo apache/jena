@@ -11,7 +11,6 @@ import static com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams.CheckingNode ;
 import static java.lang.String.format ;
 import static org.openjena.atlas.lib.Alg.decodeIndex ;
 import org.openjena.atlas.io.IndentedWriter ;
-import org.openjena.atlas.lib.NotImplemented ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
@@ -26,8 +25,8 @@ import com.hp.hpl.jena.tdb.base.recordbuffer.RecordBufferPage ;
 public final class BPTreeRecords extends BPTreePage
 {
     private static Logger log = LoggerFactory.getLogger(BPTreeRecords.class) ;
-    private final RecordBufferPage    rBuffPage ;
-    private final RecordBuffer        rBuff ;        // Used heavily.
+    private final RecordBufferPage  rBuffPage ;
+    private RecordBuffer            rBuff ;         // Used heavily.
     
     BPTreeRecords(BPlusTree bpTree, RecordBufferPage rbp)
     {
@@ -50,7 +49,10 @@ public final class BPTreeRecords extends BPTreePage
     
     @Override
     public void reset(Block block)
-    { throw new NotImplemented("reset") ; }
+    { 
+        rBuffPage.reset(block) ;
+        rBuff = rBuffPage.getRecordBuffer() ;
+    }
 
     int getLink()
     { return rBuffPage.getLink() ; }

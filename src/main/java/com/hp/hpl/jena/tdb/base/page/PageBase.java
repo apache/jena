@@ -7,6 +7,8 @@
 
 package com.hp.hpl.jena.tdb.base.page;
 
+import org.openjena.atlas.logging.Log ;
+
 import com.hp.hpl.jena.tdb.TDBException ;
 import com.hp.hpl.jena.tdb.base.block.Block ;
 
@@ -14,7 +16,7 @@ import com.hp.hpl.jena.tdb.base.block.Block ;
 public abstract class PageBase implements Page
 {
     private final int id ;
-    private final Block block ;
+    private Block block ;
 
     protected PageBase(Block block)
     {
@@ -28,7 +30,15 @@ public abstract class PageBase implements Page
     }
     
     @Override
-    public abstract void reset(Block block) ;
+    final public void reset(Block block2)
+    { 
+        if ( block2.getId() != id )
+            Log.fatal(this, "Block id changed: "+id+" => "+block2.getId()) ;
+        _reset(block2) ; 
+        this.block = block2 ;
+    } 
+
+    protected abstract void _reset(Block block) ;
 
     @Override
     final public Block getBackingBlock()    { return block ; }

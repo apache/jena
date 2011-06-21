@@ -34,6 +34,7 @@ public abstract class RecordBufferPageBase extends PageBase //implements Page
 
     // Interface: "Page" - id, byteBuffer, count
     protected RecordBuffer recBuff ;
+    private final RecordFactory factory ;
     
     //private int offset ;                // Bytes of overhead.
     
@@ -55,12 +56,18 @@ public abstract class RecordBufferPageBase extends PageBase //implements Page
     }
 
     protected RecordBufferPageBase(Block block, int offset, 
-                                   RecordFactory factory,
-                                   int count)
+                                   RecordFactory factory, int count)
     {   // This code knows the alignment of the records in the ByteBuffer.
         super(block) ;
         this.headerLength = FIELD_LENGTH+offset ;        // NB +4 for the count field
+        this.factory = factory ;
+        reset(block, count) ;
+    }
+    
+    protected void reset(Block block, int count)
+    {
         ByteBuffer bb = block.getByteBuffer() ;
+        bb.clear() ;
         bb.position(headerLength) ;
         bb = bb.slice();
         this.recBuff = new RecordBuffer(bb, factory, count) ;

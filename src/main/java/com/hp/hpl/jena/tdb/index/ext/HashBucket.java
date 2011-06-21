@@ -7,6 +7,9 @@
 package com.hp.hpl.jena.tdb.index.ext;
 
 import static org.openjena.atlas.lib.Alg.decodeIndex ;
+
+import java.nio.ByteBuffer ;
+
 import org.openjena.atlas.lib.NotImplemented ;
 
 import com.hp.hpl.jena.tdb.base.StorageException ;
@@ -30,16 +33,36 @@ public final class HashBucket extends RecordBufferPageBase
     private int trie ;
     // How many bits are used for storing in this bucket.
     private int bucketBitLen ;
-    private HashBucketMgr pageMgr ;
+
+    public static HashBucket format(Block block, RecordFactory factory)
+    {
+        ByteBuffer byteBuffer = block.getByteBuffer() ;
+        int count = byteBuffer.getInt(COUNT) ;
+        int hash = byteBuffer.getInt(TRIE) ;
+        int hashLen = byteBuffer.getInt(BITLEN) ;
+        HashBucket bucket = new HashBucket(NO_ID, hash, hashLen, block, factory, count) ;
+        return bucket ;
+    }
+    
+    public static HashBucket createBlank(Block block, RecordFactory factory)
+    {
+        ByteBuffer byteBuffer = block.getByteBuffer() ;
+        int count = 0 ; 
+        int hash = -1 ;
+        int hashLen = -1 ;
+        HashBucket bucket = new HashBucket(NO_ID, hash, hashLen, block, factory, count) ;
+        return bucket ;
+    }
+
+
     
     /** Create a bucket */
     public HashBucket(int id, int hashValue, int bucketBitLen,
                       Block block,
-                      RecordFactory factory, HashBucketMgr hashBucketPageMgr, 
+                      RecordFactory factory, 
                       int count)
     {
         super(block, FIELD_LENGTH, factory, count) ;
-        this.pageMgr = hashBucketPageMgr ;
         this.bucketBitLen = bucketBitLen ;
         this.trie = hashValue ;
     }
@@ -98,7 +121,7 @@ public final class HashBucket extends RecordBufferPageBase
     }
     
     @Override
-    public void reset(Block block)
+    public void _reset(Block block)
     { throw new NotImplemented("reset") ; }
 
     public final boolean isFull()
@@ -126,16 +149,16 @@ public final class HashBucket extends RecordBufferPageBase
     public final int getTrieBitLen()        { return bucketBitLen ; }
     
     public void setTrieLength(int trieBitLen) { bucketBitLen = trieBitLen ; }
-
-    public void setPageMgr(HashBucketMgr pageMgr)
-    {
-        this.pageMgr = pageMgr;
-    }
-
-    public HashBucketMgr getPageMgr()
-    {
-        return pageMgr;
-    }
+//
+//    public void setPageMgr(HashBucketMgr pageMgr)
+//    {
+//        this.pageMgr = pageMgr;
+//    }
+//
+//    public HashBucketMgr getPageMgr()
+//    {
+//        return pageMgr;
+//    }
 
     final void incTrieBitLen()              { bucketBitLen++ ; }
 

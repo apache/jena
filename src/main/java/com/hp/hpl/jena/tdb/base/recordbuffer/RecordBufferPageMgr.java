@@ -59,18 +59,19 @@ public class RecordBufferPageMgr extends PageBlockMgr<RecordBufferPage>
             if ( blkType != BlockType.RECORD_BLOCK )
                 throw new RecordException("Not RECORD_BLOCK: "+blkType) ;
             // Initially empty
-            RecordBufferPage rb = new RecordBufferPage(block, NO_ID, factory, 0) ;
+            RecordBufferPage rb = RecordBufferPage.createBlank(block, factory) ;
             return rb ;
         }
 
         @Override
         public RecordBufferPage fromBlock(Block block)
         {
-            synchronized (block)
+            synchronized (block)    // [[TxTDB:TODO] needed? Right place?
             {
-                int count = block.getByteBuffer().getInt(COUNT) ;
-                int linkId = block.getByteBuffer().getInt(LINK) ;
-                RecordBufferPage rb = new RecordBufferPage(block, linkId, factory, count) ;
+                RecordBufferPage rb = RecordBufferPage.format(block, factory) ;
+//                int count = block.getByteBuffer().getInt(COUNT) ;
+//                int linkId = block.getByteBuffer().getInt(LINK) ;
+//                RecordBufferPage rb = new RecordBufferPage(block, linkId, factory, count) ;
                 return rb ;
             }
         }
@@ -79,7 +80,6 @@ public class RecordBufferPageMgr extends PageBlockMgr<RecordBufferPage>
         public Block toBlock(RecordBufferPage rbp)
         {
             int count = rbp.getRecordBuffer().size() ;
-            rbp.setCount(count) ;
             ByteBuffer bb = rbp.getBackingBlock().getByteBuffer() ;
             bb.putInt(COUNT, rbp.getCount()) ;
             bb.putInt(LINK, rbp.getLink()) ;

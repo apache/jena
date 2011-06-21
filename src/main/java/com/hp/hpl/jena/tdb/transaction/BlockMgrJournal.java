@@ -160,9 +160,7 @@ public class BlockMgrJournal implements BlockMgr, Transactional
 
     private Block _promote(Block block)
     {
-        ByteBufferLib.print(block.getByteBuffer()) ;
         block = block.replicate() ;
-        ByteBufferLib.print(block.getByteBuffer()) ;
         writeBlocks.put(block.getId(), block) ;
         return block ;
     }
