@@ -40,6 +40,9 @@ public class ObjectFileWrapper implements ObjectFile
     public ByteBuffer read(long id)                 { return other.read(id) ; }
 
     @Override
+    public String getLabel()                        { return other.getLabel()  ; }
+
+    @Override
     public Iterator<Pair<Long, ByteBuffer>> all()   { return other.all() ; }
 
     @Override

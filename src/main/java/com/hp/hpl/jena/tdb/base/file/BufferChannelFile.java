@@ -10,6 +10,7 @@ import java.io.IOException ;
 import java.nio.ByteBuffer ;
 
 import org.openjena.atlas.io.IO ;
+import org.openjena.atlas.lib.FileOps ;
 
 
 public class BufferChannelFile implements BufferChannel
@@ -92,6 +93,17 @@ public class BufferChannelFile implements BufferChannel
         catch (IOException e) { IO.exception(e) ; }
     }
 
+    @Override
+    public String getLabel()
+    {
+        return FileOps.basename(file.getFilename()) ;
+    }
+
+    @Override
+    public String toString()
+    {
+        return file.getFilename() ;
+    }
     
 }
 

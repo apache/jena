@@ -87,6 +87,12 @@ public class ObjectFileLogger implements ObjectFile
     }
 
     @Override
+    public String getLabel()
+    {
+        return other.getLabel() ;
+    }
+
+    @Override
     public long length()
     {
         info("") ;

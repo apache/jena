@@ -238,7 +238,7 @@ public class ObjectFileStorage implements ObjectFile
         lengthBuffer.clear() ;
         int x = file.read(lengthBuffer, loc) ;
         if ( x != 4 )
-            throw new FileException("ObjectFile.read: Failed to read the length : got "+x+" bytes") ;
+            throw new FileException("ObjectFile.read("+loc+")["+filesize+"]: Failed to read the length : got "+x+" bytes") ;
         int len = lengthBuffer.getInt(0) ;
         ByteBuffer bb = ByteBuffer.allocate(len) ;
         x = file.read(bb, loc+SizeOfInt) ;
@@ -260,6 +260,12 @@ public class ObjectFileStorage implements ObjectFile
 
     @Override
     public void sync()                  { flushOutputBuffer() ; file.sync() ; }
+
+    @Override
+    public String getLabel()            { return file.getLabel() ; }
+    
+    @Override
+    public String toString()            { return file.getLabel() ; }
 
     @Override
     public Iterator<Pair<Long, ByteBuffer>> all()

@@ -18,7 +18,6 @@ public class BufferChannelMem implements BufferChannel
     private static int INIT_SIZE = 1024 ;
     private static int INC_SIZE = 1024 ;
     
-    
     public BufferChannelMem()
     {
         this("unnamed") ;
@@ -157,6 +156,18 @@ public class BufferChannelMem implements BufferChannel
     {
         if ( bytes == null )
             throw new StorageException("Closed: "+name) ;
+    }
+    
+    @Override
+    public String getLabel()
+    {
+        return name ;
+    }
+    
+    @Override
+    public String toString()
+    {
+        return name ;
     }
 }
 

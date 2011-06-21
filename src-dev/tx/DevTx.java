@@ -7,6 +7,9 @@ public class DevTx
     
     // Delete BlockMgrFile.
     
+    // Add changed flag to DatsetTDB so sync can be skipped.
+    //   Other routes to change?  Prefixes?
+    
     // Config
     //   One config file?
     //   Cache sizes

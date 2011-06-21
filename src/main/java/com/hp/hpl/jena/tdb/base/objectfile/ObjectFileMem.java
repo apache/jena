@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -28,14 +29,16 @@ import org.openjena.atlas.lib.ByteBufferLib ;
 
 public class ObjectFileMem implements ObjectFile 
 {
-    List<ByteBuffer> buffers = new ArrayList<ByteBuffer>() ;
-    boolean closed = false ;
+    private List<ByteBuffer> buffers = new ArrayList<ByteBuffer>() ;
+    private boolean closed = false ;
+
+    private final String label ;
 
     public ObjectFileMem(String label)
-    { }
+    { this.label = label ; }
 
     public ObjectFileMem()
-    { }
+    { this("ObjectFileMem") ; }
 
     // Could have been ObjectFileStorage + a byte array.  
     
@@ -81,7 +84,6 @@ public class ObjectFileMem implements ObjectFile
     }
     
     private Block allocBlock = null ;
-    
     @Override
     public Block allocWrite(int bytesSpace)
     {
@@ -150,10 +152,14 @@ public class ObjectFileMem implements ObjectFile
         closed = true ;
     }
 
+    @Override
+    public String getLabel()            { return label ; }
+
 }
 
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

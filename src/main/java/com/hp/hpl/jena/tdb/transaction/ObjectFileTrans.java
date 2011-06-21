@@ -12,6 +12,7 @@ import java.util.Iterator ;
 import org.openjena.atlas.iterator.Iter ;
 import org.openjena.atlas.lib.Pair ;
 import org.openjena.atlas.lib.StrUtils ;
+import org.openjena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.tdb.base.block.Block ;
 import com.hp.hpl.jena.tdb.base.file.FileException ;
@@ -20,8 +21,7 @@ import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile ;
 public class ObjectFileTrans implements ObjectFile, Transactional
 {
     private final ObjectFile other ;
-    private long startAlloc ;
-    private long alloc ;
+    private long otherAllocOffset ;           // record where we start allocating
     private boolean passthrough = false ;
     private boolean inTransaction = false ;
     private final ObjectFile base ;
@@ -36,9 +36,9 @@ public class ObjectFileTrans implements ObjectFile, Transactional
         inTransaction = false ;
 
         //  [TxTDB:PATCH-UP] Begin is not being called.
-        this.alloc = base.length() ;
-        this.startAlloc = base.length() ;
+        this.otherAllocOffset = base.length() ;
         
+        Log.info(this, getLabel()+": otherAllocOffset = "+otherAllocOffset) ;
     }
 
     // Begin read ==> passthrough.
@@ -49,8 +49,7 @@ public class ObjectFileTrans implements ObjectFile, Transactional
         passthrough = false ;
         inTransaction = true ;
         other.reposition(0) ;
-        this.alloc = base.length() ;
-        this.startAlloc = base.length() ;
+        this.otherAllocOffset = base.length() ;
     }
     
     @Override
@@ -80,7 +79,7 @@ public class ObjectFileTrans implements ObjectFile, Transactional
         // Later - stay simple for now.
         
         // Truncate/position the ObjectFile.
-        base.reposition(startAlloc) ;
+        base.reposition(otherAllocOffset) ;
         
         Iterator<Pair<Long, ByteBuffer>> iter = other.all() ;
         for ( ; iter.hasNext() ; )
@@ -90,8 +89,8 @@ public class ObjectFileTrans implements ObjectFile, Transactional
             
             long x = base.write(p.getRight()) ;
             
-            if ( p.getLeft()+startAlloc != x )
-                throw new FileException("Expected id of "+(p.getLeft()+startAlloc)+", got an id of "+x) ;
+            if ( p.getLeft()+otherAllocOffset != x )
+                throw new FileException("Expected id of "+(p.getLeft()+otherAllocOffset)+", got an id of "+x) ;
         }
     }
     
@@ -101,16 +100,16 @@ public class ObjectFileTrans implements ObjectFile, Transactional
     public void reposition(long id)
     {
         if ( passthrough ) { base.reposition(id) ; return ; }
-        if ( id > startAlloc )
+        if ( id > otherAllocOffset )
         {
-            other.reposition(id-startAlloc) ;
+            other.reposition(mapToOther(id)) ;
             return ;
         }
         
-        other.reposition(0) ;
+        Log.warn(this, "Attempt to reposition over base file") ;
         base.reposition(id) ;
-        startAlloc = id ;
-        alloc = id ;
+        other.reposition(0) ;
+        otherAllocOffset = base.length() ;
     }
 
     @Override
@@ -118,7 +117,7 @@ public class ObjectFileTrans implements ObjectFile, Transactional
     {
         if ( passthrough ) return base.allocWrite(maxBytes) ;
         Block block = other.allocWrite(maxBytes) ;
-        block = new Block(block.getId()+startAlloc, block.getByteBuffer()) ;
+        block = new Block(block.getId()+otherAllocOffset, block.getByteBuffer()) ;
         return block ;
     }
 
@@ -126,37 +125,45 @@ public class ObjectFileTrans implements ObjectFile, Transactional
     public void completeWrite(Block block)
     {
         if ( passthrough ) { base.completeWrite(block) ; return ; } 
-        block = new Block(block.getId()-startAlloc, block.getByteBuffer()) ;
+        block = new Block(block.getId()-otherAllocOffset, block.getByteBuffer()) ;
         other.completeWrite(block) ;
     }
 
+    /** Convert from a id to the id in the "other" file */ 
+    private long mapToOther(long x) { return x-otherAllocOffset ; }
+    /** Convert from a id in other to an external id  */ 
+    private long mapFromOther(long x) { return x+otherAllocOffset ; }
+    
     @Override
     public long write(ByteBuffer buffer)
     {
         if ( passthrough ) { return base.write(buffer) ; } 
         // Write to auxillary
-        System.out.println("Write") ;
+        System.out.println("***** Write") ;
         long x = other.write(buffer) ;
-        System.out.println("Write -> "+x+" ("+alloc+")") ;
-        return alloc+x ;
+        System.out.println("***** Write -> "+x+" ("+otherAllocOffset+")") ;
+        return mapFromOther(x) ;
     }
 
     @Override
     public ByteBuffer read(long id)
     {
         if ( passthrough ) { return base.read(id) ; } 
-        // case of id=0 , startAlloc=0??? 
-        // 
-        if ( id < startAlloc )
+        // case of id=0 , startAlloc=0???  base file = alloc 0.
+        if ( otherAllocOffset == 0 )
+            ;
+        
+        if ( id < otherAllocOffset )
             return base.read(id) ;
-        return other.read(id-startAlloc) ;
+        long x = mapToOther(id) ; 
+        return other.read(id-otherAllocOffset) ;
     }
 
     @Override
     public long length()
     {
         if ( passthrough ) { return base.length() ; } 
-        return startAlloc+other.length() ;
+        return otherAllocOffset+other.length() ;
     }
 
     @Override
@@ -176,6 +183,12 @@ public class ObjectFileTrans implements ObjectFile, Transactional
     public void close()
     {
         if ( passthrough ) { base.close() ; return ; }
+    }
+
+    @Override
+    public String getLabel()
+    {
+        return "("+base.getLabel()+":"+other.getLabel()+")" ;
     }
 }
 

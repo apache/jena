@@ -52,6 +52,7 @@ public class FileBase implements Sync, Closeable
         { throw new FileException("FileBase.sync", ex) ; }
     }
 
+    public String getFilename() { return filename ; }  
 }
 
 /*

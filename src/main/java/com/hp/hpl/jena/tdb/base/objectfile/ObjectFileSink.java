@@ -64,6 +64,9 @@ public class ObjectFileSink implements ObjectFile
     @Override
     public long length()
     { return id ; }
+    
+    @Override
+    public String getLabel()            { return "ObjectFielSink" ; }
 }
 
 /*

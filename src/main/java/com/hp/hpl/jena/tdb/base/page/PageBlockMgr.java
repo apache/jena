@@ -67,8 +67,9 @@ public class PageBlockMgr<T extends Page>
     
     public void write(T page)
     {
-        if ( ! page.getBackingBlock().isModified() )
-            warn("Page for block "+page.getBackingBlock().getId()+" not modified") ;
+        // Catch updates to non-trasnactioned datasetgraph.  Check in BlockMgrJournal instead.
+//        if ( ! page.getBackingBlock().isModified() )
+//            warn("Page for block "+page.getBackingBlock().getId()+" not modified") ;
         
         Block blk = pageFactory.toBlock(page) ;
         blockMgr.write(blk) ;

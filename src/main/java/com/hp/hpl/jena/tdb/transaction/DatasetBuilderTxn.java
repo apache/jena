@@ -18,6 +18,7 @@ import setup.RangeIndexBuilder ;
 import setup.TupleIndexBuilder ;
 import tx.base.FileRef ;
 
+import com.hp.hpl.jena.sparql.core.DatasetPrefixStorage ;
 import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrLogger ;
 import com.hp.hpl.jena.tdb.base.file.BufferChannel ;
@@ -31,6 +32,8 @@ import com.hp.hpl.jena.tdb.base.objectfile.ObjectFileLogger ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTableLogger ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
+import com.hp.hpl.jena.tdb.store.DatasetPrefixStorageLogger ;
+import com.hp.hpl.jena.tdb.sys.ConcurrencyPolicy ;
 
 public class DatasetBuilderTxn extends DatasetBuilderStd
 {
@@ -83,6 +86,14 @@ public class DatasetBuilderTxn extends DatasetBuilderStd
         } ;
         TupleIndexBuilder tupleIndexBuilder = new TupleIndexBuilderStd(rangeIndexBuilder) ;
         set(nodeTableBuilder, tupleIndexBuilder, indexBuilder, rangeIndexBuilder, blockMgrBuilder, objectFileBuilder) ;
+    }
+    
+    @Override
+    protected DatasetPrefixStorage makePrefixTable(Location location, ConcurrencyPolicy policy)
+    {
+        DatasetPrefixStorage x = super.makePrefixTable(location, policy) ;
+        x = new DatasetPrefixStorageLogger(x) ;
+        return x ;
     }
 
     @Override

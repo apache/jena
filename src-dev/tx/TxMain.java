@@ -105,19 +105,21 @@ public class TxMain
 
         //SystemTDB.setFileMode(FileMode.direct) ;
         DatasetGraphTDB dsg0 = build() ;
-//        load("D.ttl", dsg0) ;
-//        query("SELECT * { ?s ?p ?o }", dsg0) ;
+        load("D.ttl", dsg0) ;
+        query("SELECT * { ?s ?p ?o }", dsg0) ;
 ////        exit(0) ;
 //        dsg0.sync() ;
         
         System.out.println("Txn") ;
         DatasetGraphTxnTDB dsg = buildTx(dsg0) ;
-        load("D.ttl", dsg) ;
+        load("D1.ttl", dsg) ;
         
         //dsg.commit() ;
         //query("SELECT (Count(*) AS ?c) { ?s ?p ?o }", dsg) ;
         System.out.println("Query 1") ;
         query("SELECT * { ?s ?p ?o }", dsg) ;
+        System.out.println("Query 2") ;
+        query("SELECT * { ?s ?p ?o }", dsg0) ;
         
         exit(0) ;
         

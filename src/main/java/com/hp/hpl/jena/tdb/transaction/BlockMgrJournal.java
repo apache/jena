@@ -179,6 +179,9 @@ public class BlockMgrJournal implements BlockMgr, Transactional
     public void write(Block block)
     {
         checkIfClosed() ;
+        if ( ! block.isModified() )
+            Log.warn(this, "Page for block "+fileRef+"/"+block.getId()+" not modified") ;
+        
         if ( ! writeBlocks.containsKey(block.getId()) )
         {
             Log.warn(this, "Block not recognized: "+block.getId()) ;
