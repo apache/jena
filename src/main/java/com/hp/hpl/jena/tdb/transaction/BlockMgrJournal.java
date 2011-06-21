@@ -153,7 +153,6 @@ public class BlockMgrJournal implements BlockMgr, Transactional
     public Block promote(Block block)
     {
         checkIfClosed() ;
-        if ( true ) throw new NotImplemented("promote=>reset") ; 
         if ( writeBlocks.containsKey(block.getId()) )
             return block ;
         return _promote(block) ;

@@ -58,13 +58,6 @@ public class PageBlockMgr<T extends Page>
         T page = pageFactory.fromBlock(block) ;
         return page ;
     }
-    
-//    public T getReadIterator(int id)
-//    { 
-//        Block block = blockMgr.getReadIterator(id) ;
-//        T page = pageFactory.fromBlock(block) ;
-//        return page ;
-//    }
 
     public void put(T page)
     {

@@ -32,32 +32,32 @@ final public class BPTreeRecordsMgr extends BPTreePageMgr<BPTreeRecords>
     /** Converter BPTreeRecords -- make a RecordBufferPage and wraps it.*/ 
     static class Block2BPTreeRecords implements BlockConverter<BPTreeRecords>
     {
-        private Block2RecordBufferPage z ;
+        private Block2RecordBufferPage recordBufferConverter ;
         private BPlusTree bpTree ;
 
         Block2BPTreeRecords(BPlusTree bpTree, RecordFactory recordFactory)
         { 
             this.bpTree = bpTree ; 
-            this.z = new RecordBufferPageMgr.Block2RecordBufferPage(recordFactory) ;
+            this.recordBufferConverter = new RecordBufferPageMgr.Block2RecordBufferPage(recordFactory) ;
         }
         
         @Override
         public BPTreeRecords fromBlock(Block block)
         {
-            RecordBufferPage rbp = z.fromBlock(block) ;
+            RecordBufferPage rbp = recordBufferConverter.fromBlock(block) ;
             return new BPTreeRecords(bpTree, rbp) ;
         }
 
         @Override
         public Block toBlock(BPTreeRecords t)
         {
-            return z.toBlock(t.getRecordBufferPage()) ;
+            return recordBufferConverter.toBlock(t.getRecordBufferPage()) ;
         }
 
         @Override
         public BPTreeRecords createFromBlock(Block block, BlockType bType)
         {
-            RecordBufferPage rbp = z.createFromBlock(block, bType) ;
+            RecordBufferPage rbp = recordBufferConverter.createFromBlock(block, bType) ;
             return new BPTreeRecords(bpTree, rbp) ;
         }
     }
