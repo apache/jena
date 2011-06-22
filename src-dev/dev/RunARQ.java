@@ -67,6 +67,7 @@ import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.engine.QueryExecutionBase ;
+import com.hp.hpl.jena.sparql.engine.http.QueryEngineHTTP ;
 import com.hp.hpl.jena.sparql.engine.main.JoinClassifier ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
@@ -126,6 +127,18 @@ public class RunARQ
     
     public static void main(String[] argv) throws Exception
     {
+     
+        {
+            Query query = QueryFactory.create("SELECT (count(*) AS ?C) { { SELECT ?s { ?s ?p ?o } LIMIT 100000000} }") ;
+            QueryEngineHTTP qExec = QueryExecutionFactory.createServiceRequest("http://dbpedia.org/sparql", query) ;
+            qExec.addParam("timeout", "10000") ;
+            ResultSetFormatter.out(qExec.execSelect()) ;
+            exit(0) ;
+            
+            
+        }
+        
+        
         
         riotcmd.infer.main("--rdfs=D.ttl", "D.ttl") ;
         exit(0) ;
