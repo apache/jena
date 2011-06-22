@@ -40,7 +40,7 @@ public class DatasetBuilderTxn extends DatasetBuilderStd
     public DatasetBuilderTxn(TransactionManager txnMgr) { setStd() ; this.txnMgr = txnMgr ; }
     
     // ---- Add tracking
-    static BlockMgrBuilder track(BlockMgrBuilder other) { return new BlockMgrBuilderLogger(other) ; }
+    static BlockMgrBuilder logging(BlockMgrBuilder other) { return new BlockMgrBuilderLogger(other) ; }
     
     static class BlockMgrBuilderLogger implements BlockMgrBuilder
     {
@@ -68,22 +68,25 @@ public class DatasetBuilderTxn extends DatasetBuilderStd
 
         // Add track(...) to log.
         IndexBuilder indexBuilder = new IndexBuilderStd(blockMgrBuilder, blockMgrBuilder) ;
-        
-        RangeIndexBuilder rangeIndexBuilder = new RangeIndexBuilderStd(blockMgrBuilder, track(blockMgrBuilder)) ;
-        //RangeIndexBuilder rangeIndexBuilder = new RangeIndexBuilderStd(blockMgrBuilder, blockMgrBuilder) ;
+
+        // Add logging to a BlockMgrBuilder (here, just the records par of the B+Tree
+        //RangeIndexBuilder rangeIndexBuilder = new RangeIndexBuilderStd(blockMgrBuilder, logging(blockMgrBuilder)) ;
+        RangeIndexBuilder rangeIndexBuilder = new RangeIndexBuilderStd(blockMgrBuilder, blockMgrBuilder) ;
 
         NodeTableBuilder nodeTableBuilder = new NodeTableBuilderStd(indexBuilder, objectFileBuilder)
         {
+            // track all Nodetbale operations
             @Override
             public NodeTable buildNodeTable(FileSet fsIndex, FileSet fsObjectFile, int sizeNode2NodeIdCache, int sizeNodeId2NodeCache)
             {
                 NodeTable nt = super.buildNodeTable(fsIndex, fsObjectFile, sizeNode2NodeIdCache, sizeNodeId2NodeCache) ;
-                if ( true )
+                if ( false )
                     nt = new NodeTableLogger(fsObjectFile.getBasename(), nt) ;
                 return nt ;
                 
             }
-        } ;
+        } ; 
+        
         TupleIndexBuilder tupleIndexBuilder = new TupleIndexBuilderStd(rangeIndexBuilder) ;
         set(nodeTableBuilder, tupleIndexBuilder, indexBuilder, rangeIndexBuilder, blockMgrBuilder, objectFileBuilder) ;
     }
@@ -92,7 +95,9 @@ public class DatasetBuilderTxn extends DatasetBuilderStd
     protected DatasetPrefixStorage makePrefixTable(Location location, ConcurrencyPolicy policy)
     {
         DatasetPrefixStorage x = super.makePrefixTable(location, policy) ;
-        x = new DatasetPrefixStorageLogger(x) ;
+        // Logging.
+        if ( false )
+            x = new DatasetPrefixStorageLogger(x) ;
         return x ;
     }
 
@@ -139,7 +144,7 @@ public class DatasetBuilderTxn extends DatasetBuilderStd
             ObjectFileTrans objFileTrans = new ObjectFileTrans(txn, main, backing) ;
             txn.add(objFileTrans) ;
             ObjectFile objFile = objFileTrans ;
-            if ( true )
+            if ( false )
             {
                 String fn = FileOps.basename(fileSet.filename(ext)) ;
                 objFile = new ObjectFileLogger(fn, objFile) ;

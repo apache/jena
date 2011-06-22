@@ -37,8 +37,7 @@ public class ObjectFileTrans implements ObjectFile, Transactional
 
         //  [TxTDB:PATCH-UP] Begin is not being called.
         this.otherAllocOffset = base.length() ;
-        
-        Log.info(this, getLabel()+": otherAllocOffset = "+otherAllocOffset) ;
+        //Log.info(this, getLabel()+": otherAllocOffset = "+otherAllocOffset) ;
     }
 
     // Begin read ==> passthrough.
@@ -106,7 +105,7 @@ public class ObjectFileTrans implements ObjectFile, Transactional
             return ;
         }
         
-        Log.warn(this, "Attempt to reposition over base file") ;
+        Log.warn(this, "Unexpected: Attempt to reposition over base file") ;
         base.reposition(id) ;
         other.reposition(0) ;
         otherAllocOffset = base.length() ;

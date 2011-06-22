@@ -390,8 +390,8 @@ public class DatasetBuilderStd implements DatasetBuilder
     
     public static class RangeIndexBuilderStd implements RangeIndexBuilder
     {
-        private BlockMgrBuilder bMgrNodes ;
-        private BlockMgrBuilder bMgrRecords ;
+        protected final BlockMgrBuilder bMgrNodes ;
+        protected final BlockMgrBuilder bMgrRecords ;
         public RangeIndexBuilderStd( BlockMgrBuilder blockMgrBuilderNodes,
                                      BlockMgrBuilder blockMgrBuilderRecords)
         {

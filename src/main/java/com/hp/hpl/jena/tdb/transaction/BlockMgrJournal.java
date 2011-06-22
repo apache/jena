@@ -114,8 +114,7 @@ public class BlockMgrJournal implements BlockMgr, Transactional
     @Override
     public Block getReadIterator(long id)
     {
-        logState() ;
-        
+        //logState() ;
         checkIfClosed() ;
         Block block = localBlock(id) ;
         if ( block == null )

@@ -6,24 +6,11 @@
 
 package tx;
 
-import static com.hp.hpl.jena.tdb.base.record.RecordLib.intToRecord ;
-import static com.hp.hpl.jena.tdb.index.IndexTestLib.testInsert ;
-import static org.openjena.atlas.test.Gen.strings ;
-
-import java.nio.ByteBuffer ;
-import java.util.Iterator ;
-
-import org.junit.Test ;
 import org.openjena.atlas.lib.Bytes ;
 import org.openjena.atlas.lib.FileOps ;
-import org.openjena.atlas.lib.Pair ;
-import org.openjena.atlas.lib.StrUtils ;
 import org.openjena.atlas.logging.Log ;
-import org.openjena.atlas.test.Gen ;
-import org.slf4j.Logger ;
-import org.slf4j.LoggerFactory ;
-import tx.base.FileRef ;
 
+import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.query.DatasetFactory ;
 import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.query.QueryExecution ;
@@ -33,33 +20,16 @@ import com.hp.hpl.jena.query.Syntax ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import com.hp.hpl.jena.sparql.core.Quad ;
+import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.sparql.util.QueryExecUtils ;
-import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.TDBFactory ;
-import com.hp.hpl.jena.tdb.TDBLoader ;
-import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
-import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory ;
-import com.hp.hpl.jena.tdb.base.block.BlockMgrLogger ;
-import com.hp.hpl.jena.tdb.base.block.BlockMgrTracker ;
 import com.hp.hpl.jena.tdb.base.block.FileMode ;
-import com.hp.hpl.jena.tdb.base.file.Location ;
-import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile ;
 import com.hp.hpl.jena.tdb.base.record.Record ;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
-import com.hp.hpl.jena.tdb.base.record.RecordLib ;
-import com.hp.hpl.jena.tdb.base.recordbuffer.RecordBufferPage ;
-import com.hp.hpl.jena.tdb.index.IndexTestLib ;
-import com.hp.hpl.jena.tdb.index.RangeIndex ;
-import com.hp.hpl.jena.tdb.index.bplustree.BPTreeNode ;
-import com.hp.hpl.jena.tdb.index.bplustree.BPlusTree ;
-import com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
-import com.hp.hpl.jena.tdb.transaction.DatasetBuilderTxn ;
 import com.hp.hpl.jena.tdb.transaction.DatasetGraphTxnTDB ;
-import com.hp.hpl.jena.tdb.transaction.Journal ;
-import com.hp.hpl.jena.tdb.transaction.JournalEntry ;
-import com.hp.hpl.jena.tdb.transaction.JournalEntryType ;
 import com.hp.hpl.jena.tdb.transaction.TransactionManager ;
 import com.hp.hpl.jena.update.UpdateAction ;
 import com.hp.hpl.jena.update.UpdateFactory ;
@@ -88,27 +58,29 @@ public class TxMain
     
     public static void main(String... args)
     {
-        SystemTDB.setFileMode(FileMode.direct) ;
+        if ( false ) SystemTDB.setFileMode(FileMode.direct) ;
+        
+        initFS() ;
         DatasetGraphTDB dsg0 = build() ;
-        
-        //If direct , this is needed - why?  Did it ever work?
-        // dsg0.sync() ;
-        
-        //load("D.ttl", dsg0) ;
+        load("D.ttl", dsg0) ;
         query("SELECT (Count(*) AS ?c) { ?s ?p ?o }", dsg0) ;
+        
+
         //query("SELECT * { ?s ?p ?o }", dsg0) ;
-        exit(0) ;
+        //exit(0) ;
         System.out.println("Txn") ;
         DatasetGraphTxnTDB dsg = buildTx(dsg0) ;
         load("D1.ttl", dsg) ;
+        Triple t = SSE.parseTriple("( <http://example/z1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://example/foo>)") ;
+        dsg.delete(new Quad(Quad.defaultGraphNodeGenerated, t)) ;
+        
         
         //dsg.commit() ;
         System.out.println("Query 1") ;
-        //query("SELECT * { ?s ?p ?o }", dsg) ;
-        query("SELECT (Count(*) AS ?c) { ?s ?p ?o }", dsg) ;
+        query("SELECT * { ?s ?p ?o }", dsg) ;
+        //query("SELECT (Count(*) AS ?c) { ?s ?p ?o }", dsg) ;
         System.out.println("Query 2") ;
         query("SELECT * { ?s ?p ?o }", dsg0) ;
-        
         exit(0) ;
         
         //query("SELECT * { ?s ?p ?o }", dsg0) ;
@@ -125,10 +97,14 @@ public class TxMain
         exit(0) ;
     }
     
-    private static DatasetGraphTDB build()
+    private static void initFS()
     {
         FileOps.ensureDir(DBdir) ;
         FileOps.clearDirectory(DBdir) ;
+    }
+    
+    private static DatasetGraphTDB build()
+    {
         DatasetGraphTDB dsg = TDBFactory.createDatasetGraph(DBdir) ;
         return dsg ;
     }

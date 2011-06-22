@@ -2,6 +2,8 @@ package tx;
 
 public class DevTx
 {
+    // DSg.add(Quad(tripleInQuad, triple)) does not affect default graph.
+    
     // Transaction needs to do FileRef to file. 
     // Every sync hits the NodeTupleTable sync the node table repeatedly - keep dirty flag? 
     
