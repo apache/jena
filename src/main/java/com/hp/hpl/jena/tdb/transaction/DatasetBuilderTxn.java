@@ -75,7 +75,7 @@ public class DatasetBuilderTxn extends DatasetBuilderStd
 
         NodeTableBuilder nodeTableBuilder = new NodeTableBuilderStd(indexBuilder, objectFileBuilder)
         {
-            // track all Nodetbale operations
+            // track all NodeTable operations
             @Override
             public NodeTable buildNodeTable(FileSet fsIndex, FileSet fsObjectFile, int sizeNode2NodeIdCache, int sizeNodeId2NodeCache)
             {
