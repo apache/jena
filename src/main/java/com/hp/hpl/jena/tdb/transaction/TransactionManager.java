@@ -46,7 +46,9 @@ public class TransactionManager
 
         DatasetGraphTDB dsgtdb = (DatasetGraphTDB)dsg ;
         // For now, always build a parallel dataset - later, associate with the DatasetGraphTDB
+        // [TxTDB:TODO]
         // THIS IS NECESSARY BECAUSE THE DATASET MAY HAVE BEEN UPDATED AND CHANGES STILL IN CACHES.
+        // MUST WRITE OUT - BUT ALSO REUSE CACHES
         dsgtdb.sync() ; 
         
         Location location = dsgtdb.getLocation() ;

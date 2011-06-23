@@ -20,6 +20,7 @@ import com.hp.hpl.jena.query.Syntax ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import com.hp.hpl.jena.sparql.core.DatasetPrefixStorage ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.sparql.util.QueryExecUtils ;
@@ -27,7 +28,11 @@ import com.hp.hpl.jena.tdb.TDBFactory ;
 import com.hp.hpl.jena.tdb.base.block.FileMode ;
 import com.hp.hpl.jena.tdb.base.record.Record ;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
+import com.hp.hpl.jena.tdb.index.TupleIndex ;
+import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
+import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
+import com.hp.hpl.jena.tdb.store.DatasetPrefixesTDB ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 import com.hp.hpl.jena.tdb.transaction.DatasetGraphTxnTDB ;
 import com.hp.hpl.jena.tdb.transaction.TransactionManager ;
@@ -62,6 +67,9 @@ public class TxMain
         
         initFS() ;
         DatasetGraphTDB dsg0 = build() ;
+        
+        deconstruct(dsg0) ;
+        
         load("D.ttl", dsg0) ;
         query("SELECT (Count(*) AS ?c) { ?s ?p ?o }", dsg0) ;
         
@@ -97,6 +105,31 @@ public class TxMain
         exit(0) ;
     }
     
+    private static void deconstruct(DatasetGraphTDB dsg)
+    {
+        /* Better:
+        dsg.getBlockMgrs(), getNodeTable() etc 
+          */  
+        
+        // Tuples
+        NodeTupleTable ntt = dsg.getTripleTable().getNodeTupleTable() ;
+        NodeTable nt = ntt.getNodeTable() ;
+        // Find indexes.  Find object table.
+        
+        for ( TupleIndex index : ntt.getTupleTable().getIndexes() )
+        {
+            // Find RangeIndex, find BPT, find BlockMgrs.
+        }
+        
+        DatasetPrefixStorage prefixes = dsg.getPrefixes() ;
+        // Cast to TDB.
+        DatasetPrefixesTDB prefixesTDB = null ;
+        
+        
+        
+        
+    }
+
     private static void initFS()
     {
         FileOps.ensureDir(DBdir) ;

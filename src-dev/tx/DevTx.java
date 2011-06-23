@@ -2,7 +2,12 @@ package tx;
 
 public class DevTx
 {
-    // DSg.add(Quad(tripleInQuad, triple)) does not affect default graph.
+    // DSG.add(Quad(tripleInQuad, triple)) does not affect default graph.
+    
+    // DatasetGraphTxnTDB to graph the NodeTable and it's caches from the dsg wrapped.
+    //   Do this in general to reuse caches - don't build on files.
+    //   Standard DSG builder to collect of BlockMgrs and all ObjectsFiles together
+    //   Txn builder reuses.  Can we do this by taking apart a DSG?
     
     // Transaction needs to do FileRef to file. 
     // Every sync hits the NodeTupleTable sync the node table repeatedly - keep dirty flag? 
