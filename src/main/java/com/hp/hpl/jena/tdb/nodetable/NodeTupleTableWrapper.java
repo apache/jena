@@ -17,9 +17,19 @@ import com.hp.hpl.jena.tdb.store.NodeId ;
 
 public class NodeTupleTableWrapper implements NodeTupleTable
 {
-    protected final NodeTupleTable nodeTupleTable ;
+    protected NodeTupleTable nodeTupleTable ;
 
-    public NodeTupleTableWrapper(NodeTupleTable ntt) { this.nodeTupleTable = ntt ; }
+    public NodeTupleTableWrapper(NodeTupleTable ntt)
+    { 
+        setNodeTupleTable(ntt) ;
+    }
+    
+    protected NodeTupleTable setNodeTupleTable(NodeTupleTable ntt)
+    {
+        NodeTupleTable old = nodeTupleTable ;
+        nodeTupleTable = ntt ;
+        return old ;
+    }
      
     @Override
     public boolean addRow(Node... nodes)

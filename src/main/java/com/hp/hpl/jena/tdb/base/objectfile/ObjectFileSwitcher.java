@@ -6,53 +6,31 @@
 
 package com.hp.hpl.jena.tdb.base.objectfile;
 
-import java.nio.ByteBuffer ;
-import java.util.Iterator ;
-
-import com.hp.hpl.jena.tdb.base.block.Block ;
-
-import org.openjena.atlas.lib.Pair ;
 
 /** 
  * An ObjectFile is an append-read file, that is you can append data
  * to the stream or read any block.
  */
 
-public class ObjectFileWrapper implements ObjectFile
+public class ObjectFileSwitcher extends ObjectFileWrapper
 {
-    protected ObjectFile other ;
+    protected final ObjectFile objFile1 ;
+    protected final ObjectFile objFile2 ;
 
-    public ObjectFileWrapper(ObjectFile other)      { this.other = other ; }
+    public ObjectFileSwitcher(ObjectFile objFile1, ObjectFile objFile2)
+    {
+        super(objFile1) ;
+        this.objFile1 = objFile1 ;
+        this.objFile2 = objFile2 ;
+    }
     
-    @Override
-    public Block allocWrite(int maxBytes)           { return other.allocWrite(maxBytes) ; }
-
-    @Override
-    public void completeWrite(Block buffer)         { other.completeWrite(buffer) ; }
-
-    @Override
-    public long write(ByteBuffer buffer)            { return other.write(buffer) ; }
-    
-    @Override
-    public void reposition(long id)                 { other.reposition(id) ; }
-
-    @Override
-    public ByteBuffer read(long id)                 { return other.read(id) ; }
-
-    @Override
-    public String getLabel()                        { return other.getLabel()  ; }
-
-    @Override
-    public Iterator<Pair<Long, ByteBuffer>> all()   { return other.all() ; }
-
-    @Override
-    public void sync()                              { other.sync() ; }
-
-    @Override
-    public void close()                             { other.close() ; }
-
-    @Override
-    public long length()                            { return other.length() ; }
+    public final void switchover()
+    {
+        if ( super.other == objFile1 )
+            super.other = objFile2 ;
+        else
+            super.other = objFile1 ;
+    }
 }
 
 /*

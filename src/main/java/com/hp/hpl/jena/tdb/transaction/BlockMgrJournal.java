@@ -33,6 +33,7 @@ public class BlockMgrJournal implements BlockMgr, Transactional
     final private Map<Long, Block> writeBlocks = new HashMap<Long, Block>() ;
     final private Map<Long, Block> freedBlocks = new HashMap<Long, Block>() ;
     private boolean closed = false ;
+    private boolean active = false ;
     
     public BlockMgrJournal(Transaction txn, FileRef fileRef, BlockMgr underlyingBlockMgr, Journal journal)
     {

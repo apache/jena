@@ -2,6 +2,14 @@ package tx;
 
 public class DevTx
 {
+    // Build original with necessary indirects at right points 
+    //   1 - gets cache postioning right
+    //   2 - fast to start
+    // => change DatasetGraphTDB, DatasetBuilderStd
+    // See BlockMgrSwitcher(normal, BlockMgrJournal), ObjectFileSwitcher, 
+    //    Prefixes and NodeTupelTables will just work if the BlockMgrs and ObjectFiles at top-of-stack switchover.
+    
+    
     // DSG.add(Quad(tripleInQuad, triple)) does not affect default graph.
     
     // DatasetGraphTxnTDB to graph the NodeTable and it's caches from the dsg wrapped.

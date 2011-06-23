@@ -4,57 +4,28 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.base.objectfile;
+package com.hp.hpl.jena.tdb.base.block;
 
-import java.nio.ByteBuffer ;
-import java.util.Iterator ;
-
-import com.hp.hpl.jena.tdb.base.block.Block ;
-
-import org.openjena.atlas.lib.Pair ;
-
-/** 
- * An ObjectFile is an append-read file, that is you can append data
- * to the stream or read any block.
- */
-
-public class ObjectFileWrapper implements ObjectFile
+public class BlockMgrSwitcher extends BlockMgrWrapper 
 {
-    protected ObjectFile other ;
+    protected final BlockMgr blockMgr1 ;
+    protected final BlockMgr blockMgr2 ;
 
-    public ObjectFileWrapper(ObjectFile other)      { this.other = other ; }
-    
-    @Override
-    public Block allocWrite(int maxBytes)           { return other.allocWrite(maxBytes) ; }
+    public BlockMgrSwitcher(BlockMgr blockMgr1, BlockMgr blockMgr2)
+    {
+        super(blockMgr1) ;
+        this.blockMgr1 = blockMgr1 ;
+        this.blockMgr2 = blockMgr2 ;
+    }
 
-    @Override
-    public void completeWrite(Block buffer)         { other.completeWrite(buffer) ; }
-
-    @Override
-    public long write(ByteBuffer buffer)            { return other.write(buffer) ; }
-    
-    @Override
-    public void reposition(long id)                 { other.reposition(id) ; }
-
-    @Override
-    public ByteBuffer read(long id)                 { return other.read(id) ; }
-
-    @Override
-    public String getLabel()                        { return other.getLabel()  ; }
-
-    @Override
-    public Iterator<Pair<Long, ByteBuffer>> all()   { return other.all() ; }
-
-    @Override
-    public void sync()                              { other.sync() ; }
-
-    @Override
-    public void close()                             { other.close() ; }
-
-    @Override
-    public long length()                            { return other.length() ; }
+    public void switchover()
+    {
+        if ( super.blockMgr == blockMgr1 )
+            setBlockMgr(blockMgr2) ;
+        else
+            setBlockMgr(blockMgr1) ;
+    }
 }
-
 /*
  * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.

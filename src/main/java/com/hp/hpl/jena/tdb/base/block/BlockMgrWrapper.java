@@ -12,13 +12,21 @@ import java.util.Iterator ;
 
 public class BlockMgrWrapper implements BlockMgr
 {
-    protected final BlockMgr blockMgr ;
+    protected BlockMgr blockMgr ;
 
     public BlockMgrWrapper(BlockMgr blockMgr)
     {
-        this.blockMgr = blockMgr ;
+        setBlockMgr(blockMgr) ;
     }
 
+    /** Set another BlockMgr as the target of the wrapper - return the old one */ 
+    protected final BlockMgr setBlockMgr(BlockMgr blockMgr)
+    {
+        BlockMgr old = blockMgr ;
+        this.blockMgr = blockMgr ;
+        return old ;
+    }
+    
     @Override
     public Block allocate(int blockSize)
     {
