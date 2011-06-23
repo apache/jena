@@ -2,6 +2,8 @@ package dev ;
 
 public class DevARQ
 {
+    // FILTER(?x=?y) optimization - at least FILTER(sameTerm(?x,?y)) 
+    
     // QueryEngineHTTP - content negotiation, Apache httpClient.
     
     // Langbase - calls EventManager.send... but Turtle rpefixes done after (read is not finished)
