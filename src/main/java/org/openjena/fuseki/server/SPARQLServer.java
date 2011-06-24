@@ -51,18 +51,18 @@ public class SPARQLServer
     
     private static int ThreadPoolSize = 50;
     
-    public SPARQLServer(DatasetGraph dsg, String datasetPath, int port, boolean allowUpdate, boolean verbose)
+    public SPARQLServer(DatasetGraph dsg, String datasetPath, String host, int port, boolean allowUpdate, boolean verbose)
     {
         this.port = port ;
         this.datasetPath = datasetPath ;
         this.enableUpdate = allowUpdate ;
         this.verbose = verbose ;
-        init(dsg, datasetPath, port) ;
+        init(dsg, datasetPath, host, port) ;
     }
     
-    public SPARQLServer(DatasetGraph dsg, String datasetPath, int port, boolean allowUpdate)
+    public SPARQLServer(DatasetGraph dsg, String datasetPath, String host, int port, boolean allowUpdate)
     {
-        this(dsg, datasetPath, port, allowUpdate, false) ;
+        this(dsg, datasetPath, host, port, allowUpdate, false) ;
     }
     
     public void start()
@@ -72,6 +72,9 @@ public class SPARQLServer
         String jettyVersion = org.eclipse.jetty.server.Server.getVersion() ;
         serverLog.info(format("Jetty %s",jettyVersion)) ;
         serverLog.info(format("Dataset = %s", datasetPath)) ;
+        String host = server.getConnectors()[0].getHost();
+        if (host != null)
+            serverLog.info("Incoming connections limited to " + host);
         serverLog.info(format("Started %s on port %d", now, server.getConnectors()[0].getPort())) ;
 
         try { server.start() ; }
@@ -94,7 +97,7 @@ public class SPARQLServer
     
     public Server getServer() { return server ; }
     
-    private void init(DatasetGraph dsg, String datasetPath, int port)
+    private void init(DatasetGraph dsg, String datasetPath, String host, int port)
     {
         if ( datasetPath.equals("/") )
             datasetPath = "" ;
@@ -122,6 +125,9 @@ public class SPARQLServer
         // Ignore. If set, then if this goes off, it keeps going off.
         connector.setMaxIdleTime(0) ; // Jetty outputs a lot of messages if this goes off.
         connector.setPort(port);
+        // limit connections to those from a given interface
+        if (host != null)
+        	connector.setHost(host);
         
         // Some people do try very large operations ...
         connector.setRequestHeaderSize(64*1024) ;

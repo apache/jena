@@ -4,7 +4,11 @@
 
 == 0.2.1
 
-+ Split loggin into 2 loggers: general messages and per-request messages.
++ JENA-74 (from Brian McBride): --host= to select the interface to listen on.  Use with --host=localhost if using Apache as a front-end. 
+
++ Add --timeout: adds a timeout to all query executions
+
++ Split logging into 2 loggers: general messages and per-request messages.
   http://openjena.org/wiki/Fuseki#Logging
 
 == 0.2.0

@@ -7,6 +7,8 @@
 package org.openjena.fuseki;
 
 import java.io.InputStream ;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 import org.openjena.atlas.io.IO ;
 import org.openjena.atlas.lib.FileOps ;
@@ -56,6 +58,7 @@ public class FusekiCmd extends CmdARQ
     private static ArgDecl argMemTDB        = new ArgDecl(ArgDecl.NoValue,  "memtdb", "memTDB") ;
     private static ArgDecl argTDB           = new ArgDecl(ArgDecl.HasValue, "loc", "location") ;
     private static ArgDecl argPort          = new ArgDecl(ArgDecl.HasValue, "port") ;
+    private static ArgDecl argHost          = new ArgDecl(ArgDecl.HasValue, "host") ;
     private static ArgDecl argTimeout       = new ArgDecl(ArgDecl.HasValue, "timeout") ;
     
     //private static ModLocation          modLocation =  new ModLocation() ;
@@ -72,6 +75,7 @@ public class FusekiCmd extends CmdARQ
     }
     
     private int port = 3030 ;
+    private String clientHost = null;
     private DatasetGraph dsg ;
     private String datasetPath ;
     private boolean allowUpdate = false ;
@@ -81,18 +85,19 @@ public class FusekiCmd extends CmdARQ
         super(argv) ;
         getUsage().startCategory("Fuseki") ;
         addModule(modDataset) ;
-        add(argMem,     "--mem",        "Create an in-memory, non-persistent dataset for the server") ;
-        add(argFile,    "--file=FILE",  "Create an in-memory, non-persistent dataset for the server, initialised with the contents of the file") ;
-        add(argTDB,     "--loc=DIR",    "use an existing TDB database (or create if does not exist)") ;
-        add(argMemTDB,  "--memTDB",     "Create an in-memory, non-persistent dataset using TDB (testing only)") ;
-        add(argPort,    "--port",       "Port number") ;
-        add(argTimeout, "--timeout",    "Global timeout applied to queries (value in ms) -- format is X[,Y] ") ;
-        add(argAllowUpdate, "--update", "Allow updates (via SPARQL Update and SPARQL HTTP Update)") ;
+        add(argMem,     "--mem",                "Create an in-memory, non-persistent dataset for the server") ;
+        add(argFile,    "--file=FILE",          "Create an in-memory, non-persistent dataset for the server, initialised with the contents of the file") ;
+        add(argTDB,     "--loc=DIR",            "Use an existing TDB database (or create if does not exist)") ;
+        add(argMemTDB,  "--memTDB",             "Create an in-memory, non-persistent dataset using TDB (testing only)") ;
+        add(argPort,    "--port",               "Listen on this port number") ;
+        add(argHost,    "--host=name or IP",    "Listen on a particualr interface (e.g. localhost)") ;
+        add(argTimeout, "--timeout",            "Global timeout applied to queries (value in ms) -- format is X[,Y] ") ;
+        add(argAllowUpdate, "--update",         "Allow updates (via SPARQL Update and SPARQL HTTP Update)") ;
         super.modVersion.addClass(TDB.class) ;
         super.modVersion.addClass(Fuseki.class) ;
     }
 
-    static String argUsage = "[--mem|--desc=AssemblerFile|--file=FILE] [--port PORT] /DatasetPathName" ; 
+    static String argUsage = "[--mem|--desc=AssemblerFile|--file=FILE] [--port PORT] [--host HOST] /DatasetPathName" ; 
     
     @Override
     protected String getSummary()
@@ -186,6 +191,16 @@ public class FusekiCmd extends CmdARQ
                 throw new CmdException(argPort.getKeyName()+" : bad port number: "+portStr) ;
             }
         }
+        
+        if ( contains(argHost) )
+        {
+        	clientHost = getValue(argHost);
+        	try {
+        		InetAddress.getByName(clientHost);
+        	} catch (UnknownHostException e) {
+        		throw new CmdException("unknown host name");
+        	}
+        }
             
         if ( dsg == null )
             throw new CmdException("No dataset defined: "+argUsage) ;
@@ -211,7 +226,7 @@ public class FusekiCmd extends CmdARQ
     @Override
     protected void exec()
     {
-        SPARQLServer server = new SPARQLServer(dsg, datasetPath, port, allowUpdate, super.isVerbose()) ;
+        SPARQLServer server = new SPARQLServer(dsg, datasetPath, clientHost, port, allowUpdate, super.isVerbose()) ;
         server.start() ;
         try { server.getServer().join() ; } catch (Exception ex) {}
     }
