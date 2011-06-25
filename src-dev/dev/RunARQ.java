@@ -127,7 +127,10 @@ public class RunARQ
     
     public static void main(String[] argv) throws Exception
     {
-     
+        arq.sparql.main("--data=D.ttl", "--query=Q.rq") ;
+        exit(0) ;
+        
+        
         {
             Query query = QueryFactory.create("SELECT (count(*) AS ?C) { { SELECT ?s { ?s ?p ?o } LIMIT 100000000} }") ;
             QueryEngineHTTP qExec = QueryExecutionFactory.createServiceRequest("http://dbpedia.org/sparql", query) ;

@@ -11,6 +11,7 @@ package com.hp.hpl.jena.sparql.expr.aggregate;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
+import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
@@ -78,6 +79,9 @@ public class AggAvgDistinct extends AggregatorBase
                 else
                     total = XSDFuncOp.add(nv, total) ;
             }
+            else
+                throw new ExprEvalException("avg: not a number: "+nv) ;
+
             if ( DEBUG ) System.out.println("avg: ("+total+","+count+")") ;
         }
 

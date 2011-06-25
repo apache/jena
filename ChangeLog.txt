@@ -1,6 +1,10 @@
 ChangeLog for ARQ
 =================
 
+==== ARQ 2.8.10
+
++ Bug fix: SUM and AVG over errors didn't generate an error as they should do.
+
 ==== ARQ 2.8.9
 
 + Add TSVInput processor (JENA-69 / Laurent Pellegrino) 

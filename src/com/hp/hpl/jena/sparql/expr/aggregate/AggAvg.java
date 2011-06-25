@@ -9,7 +9,6 @@
 package com.hp.hpl.jena.sparql.expr.aggregate;
 
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
@@ -86,8 +85,8 @@ public class AggAvg extends AggregatorBase
             }
             else
             {
-                ARQ.getExecLogger().warn("Evaluation error: avg() on "+nv) ;
-                throw new ExprEvalException("avg: not a number") ;
+                //ARQ.getExecLogger().warn("Evaluation error: avg() on "+nv) ;
+                throw new ExprEvalException("avg: not a number: "+nv) ;
             }
             
             if ( DEBUG ) System.out.println("avg: ("+total+","+count+")") ;

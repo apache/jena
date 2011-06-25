@@ -9,9 +9,9 @@
 package com.hp.hpl.jena.sparql.expr.aggregate;
 
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
+import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
@@ -74,7 +74,7 @@ public class AggSum  extends AggregatorBase
                     total = XSDFuncOp.add(nv, total) ;
             }
             else
-                ARQ.getExecLogger().warn("Evaluation error: sum() on "+nv) ;
+                throw new ExprEvalException("Not a number: "+nv) ;
         }
 
         @Override

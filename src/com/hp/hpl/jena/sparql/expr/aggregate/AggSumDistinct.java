@@ -8,11 +8,10 @@
 
 package com.hp.hpl.jena.sparql.expr.aggregate;
 
-import org.openjena.atlas.logging.Log ;
-
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
+import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
@@ -76,7 +75,7 @@ public class AggSumDistinct  extends AggregatorBase
                     total = XSDFuncOp.add(nv, total) ;
             }
             else
-                Log.warn(this, "evaluation error: sum() on "+nv) ;
+                throw new ExprEvalException("Not a number: "+nv) ;
         }
         
         @Override
