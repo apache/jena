@@ -2,35 +2,18 @@ package tx;
 
 public class DevTx
 {
-    // Build original with necessary indirects at right points 
-    //   1 - gets cache postioning right
-    //   2 - fast to start
-    // => change DatasetGraphTDB, DatasetBuilderStd
-    // See BlockMgrSwitcher(normal, BlockMgrJournal), ObjectFileSwitcher, 
-    //    Prefixes and NodeTupelTables will just work if the BlockMgrs and ObjectFiles at top-of-stack switchover.
-    
+    // DatasetGraphBuilder.
+    //   Call "register(ObjectFile)" / "register(BlockMgr)" on every create.
+    // DatasetGraphTDB : read-only mode (when transaction active)
+    //   Prefixes as well.
     
     // DSG.add(Quad(tripleInQuad, triple)) does not affect default graph.
     
-    // DatasetGraphTxnTDB to graph the NodeTable and it's caches from the dsg wrapped.
-    //   Do this in general to reuse caches - don't build on files.
-    //   Standard DSG builder to collect of BlockMgrs and all ObjectsFiles together
-    //   Txn builder reuses.  Can we do this by taking apart a DSG?
-    
-    // Transaction needs to do FileRef to file. 
     // Every sync hits the NodeTupleTable sync the node table repeatedly - keep dirty flag? 
     
     // Delete BlockMgrFile.
     
-    // Caching of node table
-    //  no W cache needed anywhere, just the write ahead buffer
-    //  Check W c aches uses for indexes.
-    // Cache in front of NodeTable for transactions.
-    
     // In-memory datasets.
-    
-    // Add changed flag to DatsetTDB so sync can be skipped.
-    //   Other routes to change?  Prefixes?
     
     // Config
     //   One config file?
@@ -39,27 +22,10 @@ public class DevTx
     //   Length of NodeId?
     //   Setting of content properties.
     
-    // Building a dataset.
-    //   Commit and reply?
-    //   Reattach a journal?
-    
-    // Need a clearly defined start/finish 
-    //   start => location, journal and set datastructures.
-    
     // TestObjectFileTrans -- more tests.
     // TestObjectFileBuffering --> make abstract, it stress tests the BufferChannel.
     
-    // One transaction dataset - reuse.  Pool?
-    //   Create the one transaction dataset when the datasetgraph itself is created
-    //   Reset/Reuse -- internal API : TransactionCycle. 
-    // Record BlockMgrs, BlockMgrTx.reset ==> .begin
-    
     // Channel+Adler32
-    
-    // Journal
-    // Either entry based, write/read like 
-    //   Or buffer slicing version.
-    //   Allocate space to include the reader.  Seems liek more work for less reason.
     
     // Tidy up 
     //   See HACK (BPTreeNode)
@@ -68,19 +34,10 @@ public class DevTx
     //   See FREE
     //   See [ITER]
     
-    // Caching pages across actions sequences. e.g BPT root block.
-    // Iterators
-    //   Cache in transaction so forgettable?
-    //   Iterator tracking replaces epoch mechanism?
-    //   (No - it's a step of iterator that complains, not the update.) 
-    
-    // ---- ---- ---- ----
-
     // Optimizations:
     //   ByteBuffer.allocateDirect + pooling
     //     http://mail-archives.apache.org/mod_mbox/mina-dev/200804.mbox/%3C47F90DF0.6050101@gmail.com%3E
     //     http://mail-archives.apache.org/mod_mbox/mina-dev/200804.mbox/%3Cloom.20080407T064019-708@post.gmane.org%3E
-    //   ObjectFileTrans - avoid copy!
 
     // Other:
     //   Sort out IndexBulder/IndexFactory/(IndexMaker in test)

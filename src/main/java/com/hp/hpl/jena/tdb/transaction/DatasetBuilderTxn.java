@@ -37,9 +37,14 @@ import com.hp.hpl.jena.tdb.sys.ConcurrencyPolicy ;
 
 public class DatasetBuilderTxn extends DatasetBuilderStd
 {
+    // Track resources for the datsetgraph as built.
+    //    BlockMgr.
+    //    ObjectFile.
+    
+    
     public DatasetBuilderTxn(TransactionManager txnMgr) { setStd() ; this.txnMgr = txnMgr ; }
     
-    // ---- Add tracking
+    // ---- Add logging to a BlockMgr when built.
     static BlockMgrBuilder logging(BlockMgrBuilder other) { return new BlockMgrBuilderLogger(other) ; }
     
     static class BlockMgrBuilderLogger implements BlockMgrBuilder

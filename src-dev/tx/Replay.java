@@ -19,7 +19,11 @@ public class Replay
     {
         for ( JournalEntry e : journal )
         {
+            
             ByteBuffer bb = e.getByteBuffer() ;
+            
+            e.getFileRef() ;
+            
             switch (e.getType())
             {
                 case Block:
