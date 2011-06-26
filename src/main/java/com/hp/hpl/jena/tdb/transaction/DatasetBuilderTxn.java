@@ -6,9 +6,12 @@
 
 package com.hp.hpl.jena.tdb.transaction ;
 
+import java.util.HashMap ;
+import java.util.Map ;
 import java.util.Properties ;
 
 import org.openjena.atlas.lib.FileOps ;
+import org.openjena.atlas.logging.Log ;
 import setup.BlockMgrBuilder ;
 import setup.DatasetBuilderStd ;
 import setup.IndexBuilder ;
@@ -107,7 +110,7 @@ public class DatasetBuilderTxn extends DatasetBuilderStd
     }
 
     @Override
-    public DatasetGraphTDB build(Location location, Properties config)
+    protected DatasetGraphTDB _build(Location location, Properties config)
     {
         this.location = location ;
         this.txn = txnMgr.createTransaction() ;
@@ -131,6 +134,11 @@ public class DatasetBuilderTxn extends DatasetBuilderStd
     private Journal  journal ;
     private Transaction txn ;
     private Location location ;
+    private Map<FileRef, BlockMgr> blockMgrs = new HashMap<FileRef, BlockMgr>() ;
+    
+    
+    // *** TODO NodTbale has cachign over this ==> broken.
+    private Map<FileRef, ObjectFile> objectFile = new HashMap<FileRef, ObjectFile>() ;
 
     class ObjectFileBuilderTx implements ObjectFileBuilder
     {
@@ -154,6 +162,12 @@ public class DatasetBuilderTxn extends DatasetBuilderStd
                 String fn = FileOps.basename(fileSet.filename(ext)) ;
                 objFile = new ObjectFileLogger(fn, objFile) ;
             }
+            
+            { 
+                FileRef fileref = FileRef.create(fileSet, ext) ;
+                Log.info(DatasetBuilderTxn.class, "ObjectFile: "+fileref) ;
+            }
+            
             return objFile ;
         }
     }
@@ -168,6 +182,12 @@ public class DatasetBuilderTxn extends DatasetBuilderStd
             FileRef ref = FileRef.create(fileSet.filename(ext)) ;
             BlockMgrJournal blkMg = new BlockMgrJournal(txn, ref, baseMgr, journal) ;
             // [TxTDB:TODO]
+            
+            { 
+                FileRef fileref = FileRef.create(fileSet, ext) ;
+                Log.info(DatasetBuilderTxn.class, "BlockMgr: "+fileref) ;
+            }
+            
             return blkMg ;
         }
     }
