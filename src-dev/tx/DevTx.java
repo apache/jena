@@ -3,7 +3,11 @@ package tx;
 public class DevTx
 {
     // DatasetGraphBuilder.
-    //   Call "register(ObjectFile)" / "register(BlockMgr)" on every create.
+    //   1 - Call "register(ObjectFile)" / "register(BlockMgr)" on every create.
+    //   2a - NodeTable has caching over ObjectFile => cope with this.
+    //   2b - NodeTable needs reintegrating on txn end. 
+    //   3 - DatasetBuilderTxn registers transactional components 
+    
     // DatasetGraphTDB : read-only mode (when transaction active)
     //   Prefixes as well.
     
