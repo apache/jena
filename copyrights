@@ -20,7 +20,7 @@ sub process
     binmode FILE ;
     $_ = <FILE> ;
     my @a = &copyrights($_) ;
-    map {$copyrights{$_} = 1} @a ;
+    map {$copyrights{$_} = $file} @a ;
     print join("\n", keys %copyrights),"\n" ;
 }
 
