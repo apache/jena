@@ -16,6 +16,7 @@ import org.openjena.atlas.lib.Tuple ;
 import org.openjena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.tdb.TDBException ;
+import com.hp.hpl.jena.tdb.base.file.FileSet ;
 import com.hp.hpl.jena.tdb.sys.Names ;
 
 
@@ -119,6 +120,11 @@ public class FileRef
         id2name.put(idx, new FileRef(name, idx)) ;
     }
     // --------
+    
+    static public FileRef create(FileSet fileSet, String ext)
+    {
+        return create(fileSet.filename(ext)) ;
+    }
 
     static public FileRef create(String filename)
     {
