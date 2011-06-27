@@ -6,6 +6,8 @@
 
 package tx.base;
 
+import com.hp.hpl.jena.tdb.sys.FileRef ;
+
 final
 public class BlockRef
 {

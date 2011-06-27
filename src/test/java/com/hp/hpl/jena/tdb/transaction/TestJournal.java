@@ -13,10 +13,10 @@ import org.junit.Before ;
 import org.junit.Test ;
 import org.openjena.atlas.junit.BaseTest ;
 import org.openjena.atlas.lib.Bytes ;
-import tx.base.FileRef ;
 
 import com.hp.hpl.jena.tdb.base.file.BufferChannel ;
 import com.hp.hpl.jena.tdb.base.file.BufferChannelMem ;
+import com.hp.hpl.jena.tdb.sys.FileRef ;
 
 public class TestJournal extends BaseTest
 {

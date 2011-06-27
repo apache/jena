@@ -19,11 +19,12 @@ import org.openjena.atlas.logging.Log ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
 
-/** Cache wrapper around a NodeTable.  Assumes all access goes through this wrapper */
+/** Cache wrapper around a NodeTable.  
+ * Assumes all access goes through this wrapper.
+ * Read-cache - write caching is done via the object file used by the base NodeTable. 
+ */ 
 public class NodeTableCache implements NodeTable
 {
-    // **** Use wrapper?
-    
     // These caches are updated together.
     // See synchronization in _retrieveNodeByNodeId and _idForNode
     private Cache<Node, NodeId> node2id_Cache = null ;

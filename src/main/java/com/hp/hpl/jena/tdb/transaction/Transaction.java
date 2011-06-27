@@ -11,7 +11,8 @@ import java.util.Collections ;
 import java.util.Iterator ;
 import java.util.List ;
 
-import tx.base.FileRef ;
+import com.hp.hpl.jena.tdb.sys.FileRef ;
+
 
 /** A transaction handle */
 public class Transaction

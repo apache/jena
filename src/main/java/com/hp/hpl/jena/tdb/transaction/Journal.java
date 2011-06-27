@@ -11,13 +11,13 @@ import static com.hp.hpl.jena.tdb.sys.SystemTDB.SizeOfInt ;
 import java.nio.ByteBuffer ;
 import java.util.Iterator ;
 
+import org.openjena.atlas.iterator.IteratorSlotted ;
 import org.openjena.atlas.lib.Closeable ;
 import org.openjena.atlas.lib.Sync ;
 
-import tx.IteratorSlotted ;
-import tx.base.FileRef ;
 
 import com.hp.hpl.jena.tdb.base.file.BufferChannel ;
+import com.hp.hpl.jena.tdb.sys.FileRef ;
 
 /** The Journal is slightly odd - it is append-only for write but random read.
  *  The write performance is more important than read; reads only happen

@@ -15,11 +15,11 @@ import java.util.Set ;
 
 import org.openjena.atlas.lib.NotImplemented ;
 import org.openjena.atlas.logging.Log ;
-import tx.base.FileRef ;
 
 import com.hp.hpl.jena.tdb.base.block.Block ;
 import com.hp.hpl.jena.tdb.base.block.BlockException ;
 import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
+import com.hp.hpl.jena.tdb.sys.FileRef ;
 
 public class BlockMgrJournal implements BlockMgr, Transactional
 {

@@ -245,7 +245,7 @@ public class BPlusTree implements Iterable<Record>, RangeIndex
         // [TxTDB:PATCH-UP]
         if ( root != null ) 
         {
-            //root.release() ;
+            root.release() ;
             //nodeManager.release(rootNode) ;
         }
         if ( root != null && rootNode != root )

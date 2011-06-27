@@ -36,6 +36,7 @@ import com.hp.hpl.jena.tdb.sys.ConcurrencyPolicy ;
 public class TripleTable implements Sync, Closeable
 {
     final NodeTupleTable table ;
+    private boolean syncNeeded = false ; 
     
     public TripleTable(TupleIndex[] indexes, NodeTable nodeTable, ConcurrencyPolicy policy)
     {
@@ -45,23 +46,27 @@ public class TripleTable implements Sync, Closeable
     
     public boolean add( Triple triple ) 
     { 
+        //syncNeeded = true ;
         return add(triple.getSubject(), triple.getPredicate(), triple.getObject()) ;
     }
 
     public boolean add(Node s, Node p, Node o) 
     { 
+        syncNeeded = true ;
         return table.addRow(s, p, o) ;
     }
     
     /** Delete a triple  - return true if it was deleted, false if it didn't exist */
     public boolean delete( Triple triple ) 
     { 
-        return table.deleteRow(triple.getSubject(), triple.getPredicate(), triple.getObject()) ;
+        //syncNeeded = true ;
+        return delete(triple.getSubject(), triple.getPredicate(), triple.getObject()) ;
     }
     
     /** Delete a triple  - return true if it was deleted, false if it didn't exist */
     public boolean delete(Node s, Node p, Node o) 
     { 
+        syncNeeded = true ;
         return table.deleteRow(s, p, o) ;
     }
 
@@ -86,7 +91,11 @@ public class TripleTable implements Sync, Closeable
 
     @Override
     public void sync()
-    { table.sync() ; }
+    { 
+        if ( syncNeeded )
+            table.sync() ;
+        syncNeeded = false ;
+    }
 
     @Override
     public void close()

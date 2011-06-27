@@ -8,7 +8,7 @@ package com.hp.hpl.jena.tdb.base.block;
 
 import java.nio.ByteBuffer ;
 
-import tx.base.BlockRef ;
+// import tx.base.BlockRef ;
 
 import com.hp.hpl.jena.tdb.base.page.Page ;
 
@@ -21,7 +21,7 @@ public final class Block
     // Blocks for objects are addressed by long - this is file offset so 2G is not enough. 
     
     private final Long id ;          // Keep as object.  It's the cache key.
-    private BlockRef blockRef ;
+    //private BlockRef blockRef ;
     
 
     // Information carrying these are not enforced. 
@@ -43,7 +43,7 @@ public final class Block
         // ByteBuffer is whole disk space from byte 0 for this disk unit. 
         this.id = id ; 
         this.byteBuffer = byteBuffer ;
-        this.blockRef = null ;
+        //this.blockRef = null ;
         
         this.readOnly = false ;
         this.modified = false ;
@@ -82,7 +82,7 @@ public final class Block
         this.modified = modified ;
     }
 
-    public BlockRef getBlockRef()   { return blockRef ; }
+//    public BlockRef getBlockRef()   { return blockRef ; }
 
     public ByteBuffer getUnderlyingByteBuffer()
     { return underlyingByteBuffer ; }
@@ -105,7 +105,7 @@ public final class Block
         Block b = new Block(getId(), dstBuffer) ;
         b.modified = modified ;
         b.readOnly = readOnly ;
-        b.blockRef = null ;
+//        b.blockRef = null ;
         return b ;
     }  
 

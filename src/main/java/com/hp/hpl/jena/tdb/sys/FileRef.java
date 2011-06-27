@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package tx.base;
+package com.hp.hpl.jena.tdb.sys;
 
 import java.util.HashMap ;
 import java.util.Map ;
@@ -17,7 +17,6 @@ import org.openjena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.tdb.TDBException ;
 import com.hp.hpl.jena.tdb.base.file.FileSet ;
-import com.hp.hpl.jena.tdb.sys.Names ;
 
 
 

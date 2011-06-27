@@ -13,9 +13,9 @@ import java.nio.ByteBuffer ;
 import java.util.Iterator ;
 
 import org.openjena.atlas.iterator.Iter ;
+import org.openjena.atlas.iterator.IteratorSlotted ;
 import org.openjena.atlas.lib.Pair ;
 import org.openjena.atlas.logging.Log ;
-import tx.IteratorSlotted ;
 
 import com.hp.hpl.jena.tdb.base.block.Block ;
 import com.hp.hpl.jena.tdb.base.file.BufferChannel ;

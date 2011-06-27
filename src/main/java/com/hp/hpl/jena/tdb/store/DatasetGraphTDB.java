@@ -37,7 +37,6 @@ import com.hp.hpl.jena.update.GraphStore ;
 public class DatasetGraphTDB extends DatasetGraphCaching
                              implements DatasetGraph, Sync, Closeable, GraphStore, Session
 {
-    // or DatasetGraphCaching
     private TripleTable tripleTable ;
     private QuadTable quadTable ;
     private DatasetPrefixStorage prefixes ;

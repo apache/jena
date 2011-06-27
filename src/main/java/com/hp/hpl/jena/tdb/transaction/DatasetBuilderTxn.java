@@ -19,7 +19,6 @@ import setup.NodeTableBuilder ;
 import setup.ObjectFileBuilder ;
 import setup.RangeIndexBuilder ;
 import setup.TupleIndexBuilder ;
-import tx.base.FileRef ;
 
 import com.hp.hpl.jena.sparql.core.DatasetPrefixStorage ;
 import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
@@ -37,6 +36,7 @@ import com.hp.hpl.jena.tdb.nodetable.NodeTableLogger ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.store.DatasetPrefixStorageLogger ;
 import com.hp.hpl.jena.tdb.sys.ConcurrencyPolicy ;
+import com.hp.hpl.jena.tdb.sys.FileRef ;
 
 public class DatasetBuilderTxn extends DatasetBuilderStd
 {

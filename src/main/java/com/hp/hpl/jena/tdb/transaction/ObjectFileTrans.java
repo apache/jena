@@ -138,9 +138,7 @@ public class ObjectFileTrans implements ObjectFile, Transactional
     {
         if ( passthrough ) { return base.write(buffer) ; } 
         // Write to auxillary
-        System.out.println("***** Write") ;
         long x = other.write(buffer) ;
-        System.out.println("***** Write -> "+x+" ("+otherAllocOffset+")") ;
         return mapFromOther(x) ;
     }
 
@@ -148,10 +146,6 @@ public class ObjectFileTrans implements ObjectFile, Transactional
     public ByteBuffer read(long id)
     {
         if ( passthrough ) { return base.read(id) ; } 
-        // case of id=0 , startAlloc=0???  base file = alloc 0.
-        if ( otherAllocOffset == 0 )
-            ;
-        
         if ( id < otherAllocOffset )
             return base.read(id) ;
         long x = mapToOther(id) ; 

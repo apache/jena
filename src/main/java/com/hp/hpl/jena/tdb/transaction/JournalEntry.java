@@ -8,7 +8,8 @@ package com.hp.hpl.jena.tdb.transaction;
 
 import java.nio.ByteBuffer ;
 
-import tx.base.FileRef ;
+import com.hp.hpl.jena.tdb.sys.FileRef ;
+
 
 public class JournalEntry
 {
