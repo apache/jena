@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -17,6 +18,7 @@ import org.junit.runners.Suite ;
     , TestIteratorPushback.class
     , TestIteratorWithHistory.class
     , TestIteratorWithBuffer.class
+    , TestIteratorSlotted.class
 } )
 
 public class TS_Iterator
@@ -26,6 +28,7 @@ public class TS_Iterator
 
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
