@@ -239,12 +239,10 @@ public class LARQ
             BigInteger bigInt = new BigInteger(hash);
             return bigInt.toString();
         } catch (NoSuchAlgorithmException e) {
-        	new ARQLuceneException("hash", e);
+        	throw new ARQLuceneException("hash", e);
         } catch (UnsupportedEncodingException e) {
-        	new ARQLuceneException("hash", e);
+            throw new ARQLuceneException("hash", e);
         }
-
-        return null;
     }
     
     private static String hash (Node node, String str) 
@@ -305,7 +303,7 @@ public class LARQ
 			} while (charsRead != -1);
 			reader.reset();
 		} catch (IOException e) {
-			new ARQLuceneException("hash", e);
+			throw new ARQLuceneException("hash", e);
 		}
 		
 		return hash (lexForm + "|" + langStr + "|" + datatypeStr + "|" + sb.toString());
