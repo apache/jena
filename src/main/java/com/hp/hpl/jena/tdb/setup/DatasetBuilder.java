@@ -4,16 +4,26 @@
  * [See end of file]
  */
 
-package setup;
+package com.hp.hpl.jena.tdb.setup;
 
-import org.openjena.atlas.lib.ColumnMap ;
+import java.util.Properties ;
 
-import com.hp.hpl.jena.tdb.base.file.FileSet ;
-import com.hp.hpl.jena.tdb.index.TupleIndex ;
+import com.hp.hpl.jena.tdb.base.file.Location ;
+import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 
-public interface TupleIndexBuilder {
-    TupleIndex buildTupleIndex(FileSet fileSet, ColumnMap colMap) ;
+/** A builder of datasets in a Location (usually, a directory on disk) */ 
+
+public interface DatasetBuilder
+{
+    /** 
+     * Build a new Java object for a dataset.
+     * Location may already contains files for the state, or may need initializing.  
+     */
+    public DatasetGraphTDB build(Location location, Properties config) ;
 }
+
+
+
 /*
  * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.

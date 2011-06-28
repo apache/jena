@@ -4,13 +4,13 @@
  * [See end of file]
  */
 
-package setup;
+package com.hp.hpl.jena.tdb.setup;
 
 import com.hp.hpl.jena.tdb.base.file.FileSet ;
-import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
+import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile ;
 
-public interface NodeTableBuilder {
-    NodeTable buildNodeTable(FileSet fsIndex, FileSet fsObjectFile, int sizeNode2NodeIdCache, int sizeNodeId2NodeCache) ;
+public interface ObjectFileBuilder {
+    ObjectFile buildObjectFile(FileSet fileSet, String ext) ;
 }
 /*
  * (c) Copyright 2011 Epimorphics Ltd.

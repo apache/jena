@@ -21,9 +21,9 @@ package tx;
 import java.util.Properties ;
 
 import com.hp.hpl.jena.tdb.base.file.Location ;
+import com.hp.hpl.jena.tdb.setup.DatasetBuilder ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 
-import setup.DatasetBuilder ;
 
 /** Yet another dataset builder.
  *  This one builds the DatasetGraph and the transactional DatasetGraph toegther.

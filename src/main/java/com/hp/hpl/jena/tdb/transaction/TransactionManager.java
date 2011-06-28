@@ -6,11 +6,11 @@
 
 package com.hp.hpl.jena.tdb.transaction;
 
-import setup.DatasetBuilder ;
 
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.tdb.TDBException ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
+import com.hp.hpl.jena.tdb.setup.DatasetBuilder ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 
 

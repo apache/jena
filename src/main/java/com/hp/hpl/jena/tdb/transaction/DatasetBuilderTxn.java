@@ -12,13 +12,6 @@ import java.util.Properties ;
 
 import org.openjena.atlas.lib.FileOps ;
 import org.openjena.atlas.logging.Log ;
-import setup.BlockMgrBuilder ;
-import setup.DatasetBuilderStd ;
-import setup.IndexBuilder ;
-import setup.NodeTableBuilder ;
-import setup.ObjectFileBuilder ;
-import setup.RangeIndexBuilder ;
-import setup.TupleIndexBuilder ;
 
 import com.hp.hpl.jena.sparql.core.DatasetPrefixStorage ;
 import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
@@ -33,6 +26,13 @@ import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile ;
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFileLogger ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTableLogger ;
+import com.hp.hpl.jena.tdb.setup.BlockMgrBuilder ;
+import com.hp.hpl.jena.tdb.setup.DatasetBuilderStd ;
+import com.hp.hpl.jena.tdb.setup.IndexBuilder ;
+import com.hp.hpl.jena.tdb.setup.NodeTableBuilder ;
+import com.hp.hpl.jena.tdb.setup.ObjectFileBuilder ;
+import com.hp.hpl.jena.tdb.setup.RangeIndexBuilder ;
+import com.hp.hpl.jena.tdb.setup.TupleIndexBuilder ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.store.DatasetPrefixStorageLogger ;
 import com.hp.hpl.jena.tdb.sys.ConcurrencyPolicy ;

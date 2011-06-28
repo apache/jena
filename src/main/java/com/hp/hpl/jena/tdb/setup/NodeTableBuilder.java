@@ -4,14 +4,13 @@
  * [See end of file]
  */
 
-package setup;
+package com.hp.hpl.jena.tdb.setup;
 
 import com.hp.hpl.jena.tdb.base.file.FileSet ;
-import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
-import com.hp.hpl.jena.tdb.index.Index ;
+import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
 
-public interface IndexBuilder {
-    Index buildIndex(FileSet fileSet, RecordFactory recordfactory) ;
+public interface NodeTableBuilder {
+    NodeTable buildNodeTable(FileSet fsIndex, FileSet fsObjectFile, int sizeNode2NodeIdCache, int sizeNodeId2NodeCache) ;
 }
 /*
  * (c) Copyright 2011 Epimorphics Ltd.

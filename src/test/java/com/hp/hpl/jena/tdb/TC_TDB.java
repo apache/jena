@@ -17,6 +17,11 @@ import org.junit.runners.Suite ;
 import com.hp.hpl.jena.sparql.engine.optimizer.reorder.ReorderLib ;
 import com.hp.hpl.jena.tdb.assembler.TS_TDBAssembler ;
 import com.hp.hpl.jena.tdb.base.TC_Base ;
+import com.hp.hpl.jena.tdb.base.block.TS_Block ;
+import com.hp.hpl.jena.tdb.base.file.TS_File ;
+import com.hp.hpl.jena.tdb.base.objectfile.TS_ObjectFile ;
+import com.hp.hpl.jena.tdb.base.record.TS_Record ;
+import com.hp.hpl.jena.tdb.base.recordfile.TS_RecordFile ;
 import com.hp.hpl.jena.tdb.graph.TS_Graph ;
 import com.hp.hpl.jena.tdb.index.TS_Index ;
 import com.hp.hpl.jena.tdb.lib.TS_LibTDB ;
@@ -35,7 +40,7 @@ import com.hp.hpl.jena.tdb.transaction.TS_Transaction ;
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
     // TDB
-    TC_Base.class    
+    TC_Base.class       // ==>  TS_Block, TS_File.class, TS_Record, TS_RecordFile
     , TS_LibTDB.class
     , TS_NodeTable.class
     , TS_Index.class
@@ -48,6 +53,7 @@ import com.hp.hpl.jena.tdb.transaction.TS_Transaction ;
     , TS_Jena.class
     , TS_Migrate.class
     , TS_Transaction.class
+    , TS_ObjectFile.class
 } )
 
 public class TC_TDB

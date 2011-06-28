@@ -4,32 +4,15 @@
  * [See end of file]
  */
 
-package setup;
+package com.hp.hpl.jena.tdb.setup;
 
-import com.hp.hpl.jena.tdb.base.file.Location ;
-import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
+import com.hp.hpl.jena.tdb.base.file.FileSet ;
+import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
+import com.hp.hpl.jena.tdb.index.Index ;
 
-public class TDBBuilder
-{
-    // TODO Testing (inc variations)
-    // TODO Directory properties initial config.
-    // TODO Separate out static for general creation purposes (a super factory)
-    // TODO setting union graph?  Careful - updates!
-    // TODO Set direct/mapped modes 
-    
-    private static DatasetBuilderStd singleton ;
-    static 
-    {   
-        singleton = new DatasetBuilderStd() ;
-        singleton.setStd() ;
-    }
-    
-    public static DatasetGraphTDB build(Location location)
-    {
-        return singleton.build(location, null) ;  
-    }
+public interface IndexBuilder {
+    Index buildIndex(FileSet fileSet, RecordFactory recordfactory) ;
 }
-
 /*
  * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.

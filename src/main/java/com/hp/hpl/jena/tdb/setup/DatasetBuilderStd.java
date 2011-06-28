@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package setup;
+package com.hp.hpl.jena.tdb.setup;
 
 import static com.hp.hpl.jena.tdb.sys.SystemTDB.SizeOfNodeId ;
 

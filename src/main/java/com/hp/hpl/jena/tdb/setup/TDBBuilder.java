@@ -4,14 +4,32 @@
  * [See end of file]
  */
 
-package setup;
+package com.hp.hpl.jena.tdb.setup;
 
-import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
-import com.hp.hpl.jena.tdb.base.file.FileSet ;
+import com.hp.hpl.jena.tdb.base.file.Location ;
+import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 
-public interface BlockMgrBuilder {
-    BlockMgr buildBlockMgr(FileSet fileSet, String ext, int blockSize) ;
+public class TDBBuilder
+{
+    // TODO Testing (inc variations)
+    // TODO Directory properties initial config.
+    // TODO Separate out static for general creation purposes (a super factory)
+    // TODO setting union graph?  Careful - updates!
+    // TODO Set direct/mapped modes 
+    
+    private static DatasetBuilderStd singleton ;
+    static 
+    {   
+        singleton = new DatasetBuilderStd() ;
+        singleton.setStd() ;
+    }
+    
+    public static DatasetGraphTDB build(Location location)
+    {
+        return singleton.build(location, null) ;  
+    }
 }
+
 /*
  * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
