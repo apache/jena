@@ -20,6 +20,7 @@ import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.RDFNode ;
 import com.hp.hpl.jena.rdf.model.Resource ;
 import org.openjena.atlas.logging.Log ;
+import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
@@ -124,7 +125,7 @@ public class DataSourceAssembler extends AssemblerBase implements Assembler
                 }                
             }
         } catch(ClassNotFoundException e) {
-            Log.info(DataSourceAssembler.class, "LARQ initialization: class " + className + " not in the classpath.") ;
+            LoggerFactory.getLogger(DataSourceAssembler.class).debug("LARQ initialization: class " + className + " not in the classpath.") ;
         }
         
         return null ;
