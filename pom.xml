@@ -338,13 +338,10 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>findbugs-maven-plugin</artifactId>
-      </plugin>
-
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>findbugs-maven-plugin</artifactId>
-        <version>1.2</version>
+        <version>2.3.1</version>
         <configuration>
+          <omitVisitors>Naming</omitVisitors>
+          <onlyAnalyze>org.apache.jena.larq.*</onlyAnalyze>
           <findbugsXmlOutput>true</findbugsXmlOutput>
           <findbugsXmlWithMessages>true</findbugsXmlWithMessages>
           <xmlOutput>true</xmlOutput>
