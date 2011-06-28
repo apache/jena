@@ -214,7 +214,7 @@ public class ObjectFileStorage implements ObjectFile
         
         // Maybe it's in the in the write buffer.
         // Maybe the write buffer should keep more structure? 
-        if ( loc > filesize )
+        if ( loc >= filesize )
         {
             if ( loc >= filesize+writeBuffer.position() )
                 throw new IllegalArgumentException("ObjectFile.read: Bad read: "+loc) ;

@@ -40,7 +40,7 @@ public class TestObjectFileBuffering extends BaseTest
             fill(bb[i]) ;
             loc[i] = file.write(bb[i]) ;
         }
-
+        //file.sync() ;
         for ( int i = 0 ; i < N ; i++ )
         {
             read[i] = file.read(loc[i]) ;

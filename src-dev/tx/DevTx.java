@@ -2,11 +2,8 @@ package tx;
 
 public class DevTx
 {
-    // DatasetGraphBuilder.
-    //   1 - Call "register(ObjectFile)" / "register(BlockMgr)" on every create.
-    //   2a - NodeTable has caching over ObjectFile => cope with this.
-    //   2b - NodeTable needs reintegrating on txn end. 
-    //   3 - DatasetBuilderTxn registers transactional components 
+    // DatasetGraphBuilder3
+    // Parallel stacks or "add txn" layer
     
     // DatasetGraphTDB : read-only mode (when transaction active)
     //   Prefixes as well.
@@ -14,8 +11,6 @@ public class DevTx
     // DSG.add(Quad(tripleInQuad, triple)) does not affect default graph.
     
     // Every sync hits the NodeTupleTable sync the node table repeatedly - keep dirty flag? 
-    
-    // Delete BlockMgrFile.
     
     // In-memory datasets.
     
