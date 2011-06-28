@@ -53,9 +53,8 @@ public class TestVarScope extends BaseTest
     
     @Test public void scope_22() { scope("SELECT * { ?s ?p ?o OPTIONAL{?s ?p2 ?o2} BIND(?o2+5 AS ?z) }") ; }
 
-    // This is turned off.
-//    @Test(expected=QueryException.class)
-//    public void scope_23() { scope("SELECT * { ?s ?p ?o OPTIONAL{?s ?p2 ?o2} BIND(?HAH+5 AS ?z) }") ; }
+    @Test(expected=QueryException.class)
+    public void scope_23() { scope("SELECT * { ?s ?p ?o OPTIONAL{?s ?p2 ?o2} BIND(5 AS ?o2) }") ; }
 
     @Test(expected=QueryException.class)
     public void scope_24() { scope("SELECT * { ?s ?p ?o OPTIONAL{?s ?p2 ?o2} BIND(?o+5 AS ?o2) }") ; }
@@ -64,6 +63,26 @@ public class TestVarScope extends BaseTest
     public void scope_25() { scope("SELECT * { ?s ?p ?o OPTIONAL{?s ?p2 ?o2} BIND(5 AS ?o) }") ; }
     
     // Subqueries
+    
+    @Test(expected=QueryException.class)
+    public void scope_30() { scope("SELECT * { SELECT (?o+1 AS ?o) { ?s ?p ?o }}") ; }
+    
+    @Test
+    public void scope_31()
+    {
+        scope("SELECT ?y { " +
+        		"{ { SELECT (?x AS ?y) { ?s ?p ?x } } } UNION { { SELECT (?x AS ?y) { ?s ?p ?x } } }" +
+        		"}") ;
+    }
+    
+    @Test(expected=QueryException.class)
+    public void scope_32()
+    {
+        scope("SELECT ?y { " +
+                "{ { SELECT (?o+1 AS ?x) (?o+1 AS ?x) { ?s ?p ?o } } UNION { ?s ?p ?x } }" +
+                "}") ;
+    }
+
 }
 
 /*

@@ -1,7 +1,21 @@
-PREFIX : <http://example/>
-PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-
-SELECT (SUM(?val) as ?value)
+PREFIX skos:  <http://www.w3.org/2004/02/skos/core#>
+SELECT DISTINCT ?stw ?stw_pref ?rel ?thesoz_pref ?thesoz
 WHERE {
-  ?a rdf:value ?val .
-} GROUP BY ?a 
+  {
+    SELECT DISTINCT ?stw ('=' as ?rel) ?thesoz
+    WHERE {
+      ?stw skos:exactMatch ?thesoz .
+      ?stw skos:inScheme <http://zbw.eu/stw> .
+      ?thesoz skos:inScheme <http://lod.gesis.org/thesoz/> .
+    }
+  } UNION {
+    SELECT DISTINCT ?stw ('<' as ?rel) ?thesoz
+    WHERE  {
+      ?stw skos:broadMatch ?thesoz .
+      ?stw skos:inScheme <http://zbw.eu/stw> .
+      ?thesoz skos:inScheme <http://lod.gesis.org/thesoz/> .
+    }
+  } .
+  ?stw skos:prefLabel ?stw_pref .
+  ?thesoz skos:prefLabel ?thesoz_pref 
+}

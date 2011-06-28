@@ -9,10 +9,10 @@ package com.hp.hpl.jena.sparql.syntax;
 
 
 
-/** An element visitor that walks the graph pattern tree, applying a visitor
- *  at each Element traversed.
+/** An element visitor that walks the graph pattern tree, 
+ *  applying a visitor at each Element traversed.
  *  Only walks one level of the query (not subqueries -- sub SELECT, (NOT)EXISTS
- *  these wil need to call down themselves if it is meaningful for the visitor.  
+ *  these will need to call down themselves if it is meaningful for the visitor.  
  *  Bottom-up walk - apply to subelements before applying to current element. */
 
 public class ElementWalker 
@@ -54,13 +54,11 @@ public class ElementWalker
         {
             proc.visit(el) ;
         }
-
         
         public void visit(ElementBind el)
         {
             proc.visit(el) ;
         }
-
         
         public void visit(ElementUnion el)
         {
