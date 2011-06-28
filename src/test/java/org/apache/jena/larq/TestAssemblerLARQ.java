@@ -99,4 +99,13 @@ public class TestAssemblerLARQ {
         assertTrue ( directory instanceof RAMDirectory );
     }
     
+    @Test public void testMake3() throws CorruptIndexException, IOException {
+        Dataset ds = TDBFactory.createDataset() ;
+        IndexLARQ indexLARQ = AssemblerLARQ.make(ds, tmpDir + "/lucene") ;
+        indexLARQ.writer.commit();
+        indexLARQ = AssemblerLARQ.make(ds, tmpDir + "/lucene") ;
+        Directory directory = indexLARQ.getLuceneReader().directory() ;
+        assertTrue ( directory instanceof FSDirectory );
+    }
+    
 }

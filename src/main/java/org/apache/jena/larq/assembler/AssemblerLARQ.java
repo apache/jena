@@ -33,7 +33,10 @@ import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
+import org.apache.lucene.store.LockObtainFailedException;
 import org.apache.lucene.store.RAMDirectory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.assembler.Assembler;
 import com.hp.hpl.jena.assembler.Mode;
@@ -49,6 +52,8 @@ public class AssemblerLARQ extends AssemblerBase implements Assembler
      *     ja:textIndex ....
      */
 
+    private static final Logger log = LoggerFactory.getLogger(AssemblerLARQ.class);
+    
     static { LARQ.init(); }
     
     @Override
@@ -80,20 +85,29 @@ public class AssemblerLARQ extends AssemblerBase implements Assembler
         }
         IndexReader indexReader = null;
         IndexLARQ indexLARQ = null;
-        if ( dataset != null ) {
-            IndexWriter indexWriter = IndexWriterFactory.create(directory);
-            IndexBuilderModel larqBuilder = new IndexBuilderString(indexWriter) ; 
-            dataset.getDefaultModel().register(larqBuilder);
-            for ( Iterator<String> iter = dataset.listNames() ; iter.hasNext() ; ) {
-                String g = iter.next() ;
-                dataset.getNamedModel(g).register(larqBuilder) ;
+        if ( dataset != null ) 
+        {
+            try 
+            {
+                IndexWriter indexWriter = IndexWriterFactory.create(directory);
+                IndexBuilderModel larqBuilder = new IndexBuilderString(indexWriter) ; 
+                dataset.getDefaultModel().register(larqBuilder);
+                for ( Iterator<String> iter = dataset.listNames() ; iter.hasNext() ; ) {
+                    String g = iter.next() ;
+                    dataset.getNamedModel(g).register(larqBuilder) ;
+                }
+                indexLARQ = new IndexLARQ(indexWriter) ;
+            } catch (LockObtainFailedException e) {
+                log.warn("Someone else has a lock on the Lucene index, falling back to read-only mode.");
             }
-            indexReader = IndexReader.open(indexWriter, true);
-            indexLARQ = new IndexLARQ(indexWriter) ;
-        } else {
+        } 
+        
+        if ( indexLARQ == null ) 
+        {
             indexReader = IndexReader.open(directory, true) ; // read-only
             indexLARQ = new IndexLARQ(indexReader) ;
         }
+
         LARQ.setDefaultIndex(indexLARQ) ;
         return indexLARQ ;
     }
