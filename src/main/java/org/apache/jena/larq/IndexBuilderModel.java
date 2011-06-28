@@ -80,7 +80,7 @@ public abstract class IndexBuilderModel extends StatementListener
     /** Index all the statements from a StmtIterator */
     public void indexStatements(StmtIterator sIter)
     {
-        for ( ; sIter.hasNext() ; )
+        while ( sIter.hasNext() )
             indexStatement(sIter.nextStatement()) ;
     }
     

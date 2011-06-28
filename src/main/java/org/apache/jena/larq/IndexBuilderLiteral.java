@@ -90,12 +90,5 @@ public abstract class IndexBuilderLiteral extends IndexBuilderModel
         } catch (Exception e)
         { throw new ARQLuceneException("indexStatement", e) ; }
     }
-   
-    /** Close the index - no more updates possible */
-    @Override
-    public void closeWriter()
-    { 
-        super.closeWriter() ;
-    }
     
 }

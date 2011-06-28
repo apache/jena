@@ -188,7 +188,7 @@ public class IndexLARQ
     {
         try{
             Iterator<HitLARQ> iter = search(queryString) ;
-            for ( ; iter.hasNext() ; )
+            while ( iter.hasNext() )
             {
                 HitLARQ x = iter.next();
                 if ( x != null && x.getNode().equals(node)) 

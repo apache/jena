@@ -50,12 +50,6 @@ public class larq extends CmdLARQ
     }
 
     @Override
-    protected void processModulesAndArgs()
-    {
-        super.processModulesAndArgs() ;
-    }
-    
-    @Override
     protected void exec()
     {
         IndexLARQ index = modIndex.getIndexLARQ() ;
@@ -63,7 +57,7 @@ public class larq extends CmdLARQ
         {
             System.out.println("Search : "+s) ;
             Iterator<HitLARQ> hits = index.search(s) ;
-            for ( ; hits.hasNext() ; )
+            while ( hits.hasNext() )
             {
                 HitLARQ h = hits.next() ;
                 String str = FmtUtils.stringForNode(h.getNode()) ;
