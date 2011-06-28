@@ -36,11 +36,11 @@ public class LabelToNode extends MapWithScope<String, Node, Node>
     public static LabelToNode createUseLabelAsGiven()
     { return new LabelToNode(new SingleScopePolicy(), nodeMakerByLabel) ; }
 
-    /** Allocation, globallay scoped, that uses a incrementing field to create new nodes */  
+    /** Allocation, globally scoped, that uses a incrementing field to create new nodes */  
     public static LabelToNode createIncremental()
     { return new LabelToNode(new SingleScopePolicy(), nodeMakerDeterministic) ; } 
     
-    private LabelToNode(ScopePolicy<String, Node, Node> scopePolicy, Allocator<String, Node> allocator)
+    public LabelToNode(ScopePolicy<String, Node, Node> scopePolicy, Allocator<String, Node> allocator)
     {
         super(scopePolicy, allocator) ;
     }
