@@ -18,8 +18,14 @@
 
 package tx;
 
-public class TestNodeTableTrans
+public class TestNodeTableTrans extends AbstractTestNodeTableTrans
 {
+
+    @Override
+    protected NodeTableTrans getEmpty()
+    {
+        return null ;
+    }
 
 }
 

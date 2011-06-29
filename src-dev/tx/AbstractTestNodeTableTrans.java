@@ -25,10 +25,10 @@ import org.junit.Test ;
 
 public abstract class AbstractTestNodeTableTrans
 {
-    abstract NodeTableTrans getEmpty() ;
+    abstract protected NodeTableTrans getEmpty() ;
     
-    static Node node1 = NodeFactory.parseNode("<x>") ;
-    static Node node2 = NodeFactory.parseNode("<y>") ;
+    protected static Node node1 = NodeFactory.parseNode("<x>") ;
+    protected static Node node2 = NodeFactory.parseNode("<y>") ;
     
     @Test public void test()
     {
