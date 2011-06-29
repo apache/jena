@@ -10,6 +10,7 @@ import org.openjena.atlas.lib.Bytes ;
 import org.openjena.atlas.lib.FileOps ;
 import org.openjena.atlas.logging.Log ;
 
+import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.query.DatasetFactory ;
 import com.hp.hpl.jena.query.Query ;
@@ -17,22 +18,31 @@ import com.hp.hpl.jena.query.QueryExecution ;
 import com.hp.hpl.jena.query.QueryExecutionFactory ;
 import com.hp.hpl.jena.query.QueryFactory ;
 import com.hp.hpl.jena.query.Syntax ;
+import com.hp.hpl.jena.query.larq.IndexBuilder ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.DatasetPrefixStorage ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
+import com.hp.hpl.jena.sparql.util.NodeFactory ;
 import com.hp.hpl.jena.sparql.util.QueryExecUtils ;
 import com.hp.hpl.jena.tdb.TDBFactory ;
 import com.hp.hpl.jena.tdb.base.block.FileMode ;
+import com.hp.hpl.jena.tdb.base.file.FileFactory ;
+import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile ;
 import com.hp.hpl.jena.tdb.base.record.Record ;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
+import com.hp.hpl.jena.tdb.index.Index ;
 import com.hp.hpl.jena.tdb.index.TupleIndex ;
+import com.hp.hpl.jena.tdb.index.bplustree.BPlusTree ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
+import com.hp.hpl.jena.tdb.nodetable.NodeTableInline ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.store.DatasetPrefixesTDB ;
+import com.hp.hpl.jena.tdb.store.NodeId ;
+import com.hp.hpl.jena.tdb.sys.Names ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 import com.hp.hpl.jena.tdb.transaction.DatasetGraphTxnTDB ;
 import com.hp.hpl.jena.tdb.transaction.TransactionManager ;
@@ -63,6 +73,10 @@ public class TxMain
     
     public static void main(String... args)
     {
+        execNT() ;  exit(0) ;
+        
+        
+        
         if ( false ) SystemTDB.setFileMode(FileMode.direct) ;
         
         initFS() ;
@@ -105,6 +119,55 @@ public class TxMain
         exit(0) ;
     }
     
+    private static void execNT()
+    {
+        String dir = "DB" ;
+        FileOps.clearDirectory(dir) ;
+        
+        DatasetGraphTDB dsg = TDBFactory.createDatasetGraph(dir) ;
+        BPlusTree index = BPlusTree.makeMem(20, 20, SystemTDB.LenNodeHash, SystemTDB.SizeOfNodeId) ;
+        RecordFactory recordFactory = new RecordFactory(SystemTDB.LenNodeHash, SystemTDB.SizeOfNodeId) ;
+        Index idx = index ;
+        //ObjectFile objectFile = FileFactory.createObjectFileMem() ;
+        ObjectFile objectFile = FileFactory.createObjectFileDisk("DB/N.jrnl") ;
+        NodeTable nt0 = dsg.getTripleTable().getNodeTupleTable().getNodeTable() ;
+
+        // Add to the base table.
+        Node node1 = NodeFactory.parseNode("<x>") ; 
+        NodeId id_1 = nt0.getAllocateNodeId(node1) ;
+
+        // Set up the trans table.
+        int offset = (int)nt0.allocOffset().getId() ;
+        System.out.println("Offset = "+offset) ;
+        NodeTableTrans ntt = new NodeTableTrans(null, nt0, offset, idx, objectFile) ;
+        NodeTable nt = NodeTableInline.create(ntt) ;
+        
+        Node node2 = NodeFactory.parseNode("<y>") ;
+        NodeId id_2 = nt.getAllocateNodeId(node2) ;
+        System.out.println("==> "+id_2) ;
+
+        Node node3 = NodeFactory.parseNode("123") ;
+        NodeId id_3 = nt.getAllocateNodeId(node3) ;
+        System.out.println("==> "+id_3) ;
+        
+        Node n = nt.getNodeForNodeId(id_1) ;
+        System.out.println("1: ==> "+n) ;
+        n = nt.getNodeForNodeId(id_2) ;
+        System.out.println("2: ==> "+n) ;
+        n = nt.getNodeForNodeId(id_3) ;
+        System.out.println("3: ==> "+n) ;
+
+        NodeId x = nt.getNodeIdForNode(node2) ;
+        System.out.println("==> "+x) ;
+        
+        System.out.println("Base:  "+nt0.getNodeIdForNode(node1)) ;
+        System.out.println("Trans: "+nt.getNodeIdForNode(node1)) ;
+        System.out.println("Base:  "+nt0.getNodeIdForNode(node2)) ;
+        System.out.println("Trans: "+nt.getNodeIdForNode(node2)) ;
+        System.out.println("Base:  "+nt0.getNodeIdForNode(node3)) ;
+        System.out.println("Trans: "+nt.getNodeIdForNode(node3)) ;
+    }
+
     private static void deconstruct(DatasetGraphTDB dsg)
     {
         /* Better:

@@ -177,6 +177,12 @@ public class NodeTableNative implements NodeTable
         }
     }
 
+    @Override
+    public NodeId allocOffset()
+    {
+        return NodeId.create(getObjects().length()) ;
+    }
+    
     // Not synchronized
     @Override
     public Iterator<Pair<NodeId, Node>> all() { return all2() ; }

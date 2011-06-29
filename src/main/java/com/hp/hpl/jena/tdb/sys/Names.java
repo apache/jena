@@ -19,8 +19,8 @@ public class Names
     public static final String[] prefixIndexes          = { primaryIndexPrefix } ;
     
     /** B+Trees - nodes file and records file */
-    public static final String bptExt1                  = "idn" ;
-    public static final String bptExt2                  = "dat" ;
+    public static final String bptExtTree               = "idn" ;
+    public static final String bptExtRecords            = "dat" ;
 
     /** BTrees - single file per tree */
     public static final String btExt                    = "idx" ;

@@ -165,6 +165,12 @@ public class NodeTableCache implements NodeTable
     // ----
 
     @Override
+    public NodeId allocOffset()
+    {
+        return baseTable.allocOffset() ;
+    }
+    
+    @Override
     public synchronized void close()
     {
         if ( baseTable == null )

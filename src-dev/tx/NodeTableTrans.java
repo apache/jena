@@ -19,77 +19,148 @@
 package tx;
 
 import java.util.Iterator ;
-import java.util.Map ;
 
+import org.openjena.atlas.iterator.Iter ;
 import org.openjena.atlas.lib.Pair ;
 
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.tdb.TDBException ;
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile ;
+import com.hp.hpl.jena.tdb.index.Index ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
+import com.hp.hpl.jena.tdb.nodetable.NodeTableCache ;
+import com.hp.hpl.jena.tdb.nodetable.NodeTableNative ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
+import com.hp.hpl.jena.tdb.transaction.Transaction ;
+import com.hp.hpl.jena.tdb.transaction.Transactional ;
 
-public class NodeTableTrans implements NodeTable
+public class NodeTableTrans implements NodeTable, Transactional
 {
-    private final NodeTable other ;
+    private final NodeTable base ;
     private final long offset ;
     private final ObjectFile journal ;
     
-    private Map<Node, NodeId> node2NodeId ;
-    private Map<NodeId, Node> nodeId2Node ;
-
-    public NodeTableTrans(NodeTable sub, long offset, ObjectFile journal)
+    private NodeTable nodeTableJournal ;
+    private static int CacheSize = 10000 ;
+    private boolean passthrough = false ;
+    
+    public NodeTableTrans(Transaction txn, NodeTable sub, long offset, Index tmpIndex, ObjectFile journal)
     {
-        this.other = sub ;
+        this.base = sub ;
         this.offset = offset ;
         this.journal = journal ;
+        // This is a temporary file, and does not itself need to be transactional.
+        // It's used to scale the transactional node table.
+        // We need direct access to the ObjectFile for reply after crash.
+        
+        this.nodeTableJournal = new NodeTableNative(tmpIndex, journal) ;
+        this.nodeTableJournal = NodeTableCache.create(nodeTableJournal, CacheSize, CacheSize) ;
     }
 
+    public void setPassthrough(boolean v) { passthrough = v ; }
+    
     @Override
     public NodeId getAllocateNodeId(Node node)
     {
+        if ( passthrough ) return base.getAllocateNodeId(node) ;
         NodeId nodeId = getNodeIdForNode(node) ;
         if ( ! NodeId.doesNotExist(nodeId) )
             return nodeId ;
         // add to journal
         nodeId = allocate(node) ;
-        // Convert 
-        long x = nodeId.getId() ;
-        nodeId = new NodeId(x+offset) ;
-        node2NodeId.put(node, nodeId) ;
-        nodeId2Node.put(nodeId, node) ;
-        
         return nodeId ;
     }
     
     @Override
     public NodeId getNodeIdForNode(Node node)
     {
-        NodeId nodeId = node2NodeId.get(node) ;
-        if ( nodeId != null )
-            return nodeId ;
-        nodeId = other.getNodeIdForNode(node) ;
+        if ( passthrough ) return base.getNodeIdForNode(node) ;
+        NodeId nodeId = nodeTableJournal.getNodeIdForNode(node) ;
+        if ( ! NodeId.doesNotExist(nodeId) )
+            return mapFromJournal(nodeId) ;
+        nodeId = base.getNodeIdForNode(node) ;
         return nodeId ;
     }
 
+    /** Convert from a id to the id in the "journal" file */ 
+    private NodeId mapToJournal(NodeId id) { return NodeId.create(id.getId()-offset) ; }
+    
+    /** Convert from a id in other to an external id  */ 
+    private NodeId mapFromJournal(NodeId id) { return NodeId.create(id.getId()+offset) ; }
+    
     @Override
     public Node getNodeForNodeId(NodeId id)
     {
-        Node node = nodeId2Node.get(id) ;
-        if ( node != null )
-            return node ;
-        node = other.getNodeForNodeId(id) ;
+        if ( passthrough ) return base.getNodeForNodeId(id) ;
+        long x = id.getId() ;
+        if ( x < offset )
+            return base.getNodeForNodeId(id) ;
+        id = mapToJournal(id) ;
+        Node node = nodeTableJournal.getNodeForNodeId(id) ;
         return node ;
     }
 
     private NodeId allocate(Node node)
     {
-        return null ;
+        NodeId nodeId = nodeTableJournal.getAllocateNodeId(node) ;
+        nodeId = mapFromJournal(nodeId) ;
+        return nodeId ;
+    }
+    
+    @Override
+    public NodeId allocOffset()
+    {
+        NodeId x = nodeTableJournal.allocOffset() ;
+        return mapFromJournal(x) ;
+    }
+
+    @Override
+    public void begin(Transaction txn)
+    {
+        passthrough = false ;
+//        inTransaction = true ;
+//        journal.position(0) ;
+//        this.otherAllocOffset = journal.length() ;
+    }
+    
+    /** Copy from the journal file to the real file */
+    public /*temporary*/ void append()
+    {
+        // Asummes all() is in order from low to high.
+        Iterator<Pair<NodeId, Node>> iter = nodeTableJournal.all() ;
+        for ( ; iter.hasNext() ; )
+        {
+            Pair<NodeId, Node> x = iter.next() ;
+            NodeId nodeId = x.getLeft() ;
+            Node node = x.getRight() ;
+            NodeId nodeId2 = base.getAllocateNodeId(node) ;
+            if ( ! nodeId2.equals(mapFromJournal(nodeId)) )
+                throw new TDBException(String.format("Different ids allocated: expected %s, got %s\n", nodeId, nodeId2)) ; 
+        }
+    }
+    
+    @Override
+    public void commit(Transaction txn)
+    {
+//        if ( ! inTransaction )
+//            throw new TDBTransactionException("Not in a transaction for a commit to happen") ; 
+//        append() ;
+//        base.sync() ;
+//        other.reposition(0) ;
+//        passthrough = true ;
+    }
+
+    @Override
+    public void abort(Transaction txn)
+    {
+//        other.reposition(0) ;
     }
     
     @Override
     public Iterator<Pair<NodeId, Node>> all()
     {
-        return null ;
+        // Better would be to convert the spill file format.
+        return Iter.concat(base.all(), nodeTableJournal.all()) ;
     }
 
     @Override

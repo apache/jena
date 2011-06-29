@@ -10,6 +10,7 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.openjena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.sparql.graph.AbstractTestGraph2 ;
@@ -42,7 +43,15 @@ public class TestGraphTDB extends AbstractTestGraph2
     static Graph graph = null ;
     @Before public void before()
     { 
-        graph.getBulkUpdateHandler().removeAll() ;
+        try {
+            graph.getBulkUpdateHandler().removeAll() ;
+        } catch (Exception ex)
+        {
+            Log.warn(this, "before() : "+ex.getMessage(), ex) ;
+            // Problem - reset.
+            beforeClass() ;
+        }
+        
     }
             
             

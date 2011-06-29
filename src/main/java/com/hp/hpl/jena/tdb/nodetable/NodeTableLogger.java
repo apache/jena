@@ -59,6 +59,14 @@ public class NodeTableLogger implements NodeTable
     }
     
     @Override
+    public NodeId allocOffset()
+    {
+        NodeId nodeId = nodeTable.allocOffset() ;
+        info("allocOffset() => "+nodeId) ;
+        return nodeId ;
+    }
+    
+    @Override
     public Iterator<Pair<NodeId, Node>> all()
     {
         info("all()") ;

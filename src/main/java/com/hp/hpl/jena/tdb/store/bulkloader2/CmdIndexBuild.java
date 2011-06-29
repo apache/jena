@@ -115,8 +115,8 @@ public class CmdIndexBuild
 
         FileSet destination = new FileSet(location, indexName) ;
 
-        BlockMgr blkMgrNodes = BlockMgrFactory.create(destination, Names.bptExt1, blockSizeNodes, readCacheSize, writeCacheSize) ;
-        BlockMgr blkMgrRecords = BlockMgrFactory.create(destination, Names.bptExt2, blockSizeRecords, readCacheSize, writeCacheSize) ;
+        BlockMgr blkMgrNodes = BlockMgrFactory.create(destination, Names.bptExtTree, blockSizeNodes, readCacheSize, writeCacheSize) ;
+        BlockMgr blkMgrRecords = BlockMgrFactory.create(destination, Names.bptExtRecords, blockSizeRecords, readCacheSize, writeCacheSize) ;
         
         int rowBlock = 1000 ;
         Iterator<Record> iter = new RecordsFromInput(input, tupleLength, colMap, rowBlock) ;

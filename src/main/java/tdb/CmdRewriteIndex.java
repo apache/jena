@@ -47,7 +47,7 @@ public class CmdRewriteIndex
             System.exit(1) ;
         }
         
-        if ( FileOps.exists(dstLoc.getPath(indexName, Names.bptExt1)) )
+        if ( FileOps.exists(dstLoc.getPath(indexName, Names.bptExtTree)) )
         {
             System.err.println("Destination contains an index of that name") ;
             System.exit(1) ;
@@ -104,8 +104,8 @@ public class CmdRewriteIndex
         int blockSizeNodes = blockSize ;
         int blockSizeRecords = blockSize ;
 
-        blkMgrNodes = BlockMgrFactory.create(destination, Names.bptExt1, blockSizeNodes, readCacheSize, writeCacheSize) ;
-        blkMgrRecords = BlockMgrFactory.create(destination, Names.bptExt2, blockSizeRecords, readCacheSize, writeCacheSize) ;
+        blkMgrNodes = BlockMgrFactory.create(destination, Names.bptExtTree, blockSizeNodes, readCacheSize, writeCacheSize) ;
+        blkMgrRecords = BlockMgrFactory.create(destination, Names.bptExtRecords, blockSizeRecords, readCacheSize, writeCacheSize) ;
 
         iterator = bpt.iterator() ;
             

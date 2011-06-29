@@ -45,6 +45,12 @@ public class NodeTableSink implements NodeTable
     }
 
     @Override
+    public NodeId allocOffset()
+    {
+        return NodeId.create(id) ;
+    }
+    
+    @Override
     public Iterator<Pair<NodeId, Node>> all()
     {
         return Iter.nullIterator() ;

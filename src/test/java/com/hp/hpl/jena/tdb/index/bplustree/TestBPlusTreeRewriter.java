@@ -66,9 +66,9 @@ public class TestBPlusTreeRewriter extends BaseTest
         FileSet destination = FileSet.mem() ;
         // ---- Rewrite
         // Write leaves to ...
-        BlockMgr blkMgr1 = BlockMgrFactory.create(destination, Names.bptExt1, bptParams.getCalcBlockSize(), 10, 10) ;
+        BlockMgr blkMgr1 = BlockMgrFactory.create(destination, Names.bptExtTree, bptParams.getCalcBlockSize(), 10, 10) ;
         // Write nodes to ...
-        BlockMgr blkMgr2 = BlockMgrFactory.create(destination, Names.bptExt1, bptParams.getCalcBlockSize(), 10, 10) ;
+        BlockMgr blkMgr2 = BlockMgrFactory.create(destination, Names.bptExtTree, bptParams.getCalcBlockSize(), 10, 10) ;
         
         BPlusTree bpt2 = BPlusTreeRewriter.packIntoBPlusTree(originaldata.iterator(), bptParams, 
                                                              recordFactory, blkMgr1, blkMgr2) ;

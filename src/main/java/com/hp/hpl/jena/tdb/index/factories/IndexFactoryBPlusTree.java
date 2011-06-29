@@ -53,8 +53,8 @@ public class IndexFactoryBPlusTree implements IndexFactory, IndexRangeFactory
         if ( params.getCalcBlockSize() > blockSize )
             throw new TDBException("Calculated block size is greater than required size") ;
         
-        BlockMgr blkMgrNodes = createBlockMgr(fileset, Names.bptExt1, blockSize) ;
-        BlockMgr blkMgrRecords = createBlockMgr(fileset, Names.bptExt2, blockSize) ;
+        BlockMgr blkMgrNodes = createBlockMgr(fileset, Names.bptExtTree, blockSize) ;
+        BlockMgr blkMgrRecords = createBlockMgr(fileset, Names.bptExtRecords, blockSize) ;
         return BPlusTree.create(params, blkMgrNodes, blkMgrRecords) ;
     }
     

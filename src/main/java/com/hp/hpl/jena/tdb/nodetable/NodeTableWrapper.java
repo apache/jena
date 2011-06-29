@@ -45,6 +45,13 @@ public class NodeTableWrapper implements NodeTable
     }
     
     @Override
+    public NodeId allocOffset()
+    {
+        return nodeTable.allocOffset() ;
+    }
+
+
+    @Override
     public Iterator<Pair<NodeId, Node>> all()
     {
         return nodeTable.all();

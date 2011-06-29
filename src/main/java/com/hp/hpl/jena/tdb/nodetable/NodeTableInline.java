@@ -11,9 +11,9 @@ import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
 
-/** NodeTable wrapper to hanlde inline node ids.
+/** NodeTable wrapper to handle inline node ids.
  * If a node can be made inline, then the underlying table never sees it.
- * If an inline Nodeid is seen, itis decoded and returned without
+ * If an inline Nodeid is seen, it is decoded and returned without
  * the underlying table being called. 
  */
 
