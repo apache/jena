@@ -6,6 +6,7 @@
 
 # TODO
 ## Comments /** with ending **/ confuse this script.
+## Use of //********** confuse this script.
 
 $HTEXT= <<'END';
 /**
