@@ -21,6 +21,7 @@ import org.openjena.fuseki.conneg.AcceptList ;
 import org.openjena.fuseki.conneg.ConNeg ;
 import org.openjena.fuseki.conneg.MediaType ;
 import org.openjena.fuseki.conneg.TypedInputStream ;
+import org.openjena.fuseki.conneg.WebLib ;
 import org.openjena.fuseki.http.HttpSC ;
 import org.openjena.riot.Lang ;
 import org.openjena.riot.WebContent ;
@@ -57,7 +58,7 @@ public class ResponseQuery
         if ( mimeType == null )
         {
             Fuseki.requestLog.warn("Can't find MIME type for response") ;
-            String x = request.getHeader("Accept") ;
+            String x = WebLib.getAccept(request) ;
             String msg ;
             if ( x == null )
                 msg = "No Accept: header" ;
@@ -360,7 +361,7 @@ public class ResponseQuery
     
     private static String paramAcceptField(HttpServletRequest request)
     {
-        String acceptField = request.getHeader(HttpNames.hAccept) ;
+        String acceptField = WebLib.getAccept(request) ;
         String acceptParam = fetchParam(request, HttpNames.paramAccept) ;
         
         if ( acceptParam != null )

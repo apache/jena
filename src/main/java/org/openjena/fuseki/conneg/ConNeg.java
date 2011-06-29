@@ -8,6 +8,7 @@ package org.openjena.fuseki.conneg;
 
 import static org.openjena.fuseki.HttpNames.hAcceptCharset ;
 
+
 import javax.servlet.http.HttpServletRequest ;
 
 import org.slf4j.Logger ;
@@ -73,7 +74,7 @@ public class ConNeg
                                               AcceptList myPrefs,
                                               MediaType defaultMediaType)
     {
-        String a = httpRequest.getHeader("Accept") ;
+        String a = WebLib.getAccept(httpRequest) ;
         if ( log.isDebugEnabled() )
             log.debug("Accept request: "+a) ;
         

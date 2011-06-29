@@ -2,6 +2,10 @@ package dev;
 
 public class DevFuseki
 {
+	// Flint?
+	// Pages for publish mode.
+
+	// Multiple Accept headers
     // WebContent and ContentType clean up.
     
 	// SOH defualt to not needing 'default'
