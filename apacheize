@@ -1,46 +1,45 @@
 #!/usr/bin/perl
 # Remove old head/tail /*...*/ comments and add apache boilerplate.
-# find DIRS -name \*.java -o -name .svn -prune | xargs perl perl-script
 
-# TODO Remove only last /*..*/ comment, not all the ones after last }
+# find DIRS -name \*.java -o -name .svn -prune | xargs -n 1 perl -i.bak perl-script
+# find src* -name \*.java -print -o -name .svn -prune |  xargs -n 1 perl -i.bak ../ARQ/apacheize
 
-&setExclude ;
+# TODO
+## Comments /** with ending **/ confuse this script.
+
+$HTEXT= <<'END';
+/**
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+END
+
+$TTEXT="" ;
+
+
 undef $/ ;
+$text = <> ;
+# Protect // /* and " /*
+$text =~ s!//(.*)/\*!//$1/-XYXY-!g ;
+$text =~ s!//(.*)"\*!//$1"-XYXY-!g ;
 
-$HTEXT="HEADER" ;
-$TTEXT="TRAILER" ;
+## These remove multiple adjacent comments
+# remove first comment
 
-while(defined($file = shift @ARGV))
-{
-    # Excludes
-    next if ( defined($exclude{$file}) ) ;
-    &process($file) ;
-}
-
-sub process
-{
-    my $file = @_[0] ;
-    open(FILE, "<$file") || die ;
-    binmode FILE ;
-    $_ = <FILE> ;
-    my $t = &clean($_) ;
-    print $HTEXT,"\n" ;
-    print $t ;
-    print "\n" unless ( $t =~ /\n$/s ) ;
-    print $TTEXT,"\n" ;
-}
-
-## head and tail
-sub clean
-{
-    my $text = @_[0] ;
-    ## These remove multipl adjacent comments
-    # remove first comment
-
-##     $text =~ s!^\s*/\*[^{}/]*\*/\s*!!s ;
-##     $text =~ s!\s*/\*[^{}]*\*/\s*$!!s ;
-
-    $text =~ s!^ ## Start of file.
+$text =~ s!^ ## Start of file.
 \s*               ## Whitespace
 /\*               ## Start of comment
 [^*]*\*+          ## Any non-* then 1-or-more *
@@ -49,8 +48,8 @@ sub clean
 \s*               ## Whitespace
 !!sx ;
 
-    # Blocks *(not/)-starting text
-    $text =~ s!
+# Blocks *(not/)-starting text
+$text =~ s!
 \s*               ## Whitespace
 /\*               ## Start of comment
 [^*]*\*+          ## Any non-* then 1-or-more *
@@ -58,25 +57,20 @@ sub clean
 /                 ## Close / for the comment
 \s*$              ## Whitespace, end of file
 !!sx ;
-    return $text ;
-}
 
-##     # Head
-##     if ( m!^\s*/\*[^{}]*\*/!s )
-##     {
-## 	##print "HEAD\n" ;
-## 	$head = $& ;
-## 	##print $head,"\n" ;
-## 	##print "HEAD\n" ;
-##     }
-##     if ( m!/\*[^{}]*\*/\s*$!s )
-##     {
-## 	##print "TAIL\n" ;
-## 	$tail = $& ;
-## 	##print $tail,"\n" ;
-## 	##print "TAIL\n" ;
-##     }
+$text = trim($text) ;
+$text =~ s!-XYXY-!\*!g ;
 
-sub setExclude
+print $HTEXT,"\n" ;
+print $text ;
+print "\n" unless ( $text =~ /\n$/s ) ;
+print $TTEXT,"\n" if ( $TTEXT ne "" ) ;
+
+# Perl trim function to remove whitespace from the start and end of the string
+sub trim($)
 {
+	my $string = shift;
+	$string =~ s/^\s+//;
+	$string =~ s/\s+$//;
+	return $string;
 }
