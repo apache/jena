@@ -23,6 +23,8 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingFactory ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterConcat ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper ;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIterRoot ;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIterTriplePattern ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterYieldN ;
 import com.hp.hpl.jena.sparql.pfunction.PFuncSimple ;
 import com.hp.hpl.jena.sparql.util.IterLib ;
@@ -44,8 +46,27 @@ public class container extends PFuncSimple
     @Override
     public QueryIterator execEvaluated(Binding binding, Node containerNode, Node predicate, Node member, ExecutionContext execCxt)
     {
+        QueryIterator qIter1 = execEvaluatedConcrete(binding, containerNode, predicate, member, execCxt) ;
+        QueryIterator qIter2 = execEvaluatedCalc(binding, containerNode, predicate, member, execCxt) ;
+        QueryIterConcat concat = new QueryIterConcat(execCxt) ;
+        concat.add(qIter1) ;
+        concat.add(qIter2) ;
+        return concat ;
+    }
+    
+    // Ask directly.
+    private QueryIterator execEvaluatedConcrete(Binding binding, Node containerNode, Node predicate, Node member,
+                                                ExecutionContext execCxt)
+    {
         Graph graph = execCxt.getActiveGraph() ;
-        
+        QueryIterator qIter = new QueryIterTriplePattern(QueryIterRoot.create(execCxt), new Triple(containerNode, predicate, member), execCxt) ;
+        return qIter ;
+    }
+
+    // Ask by finding all the rdf:_N + rdf:type  
+    private QueryIterator execEvaluatedCalc(Binding binding, Node containerNode, Node predicate, Node member, ExecutionContext execCxt)
+    {    
+        Graph graph = execCxt.getActiveGraph() ;
         if ( ! containerNode.isVariable() )
         {
             // Container a ground term.

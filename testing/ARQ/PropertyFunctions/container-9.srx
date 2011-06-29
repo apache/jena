@@ -1,0 +1,89 @@
+<?xml version="1.0"?>
+<sparql xmlns="http://www.w3.org/2005/sparql-results#">
+  <head>
+    <variable name="x"/>
+    <variable name="y"/>
+  </head>
+  <results>
+    <result>
+      <binding name="x">
+        <uri>http://example/x12</uri>
+      </binding>
+      <binding name="y">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">2</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="x">
+        <uri>http://example/x11</uri>
+      </binding>
+      <binding name="y">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">2</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="x">
+        <uri>http://example/x5</uri>
+      </binding>
+      <binding name="y">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">1</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="x">
+        <uri>http://example/x5</uri>
+      </binding>
+      <binding name="y">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">10</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="x">
+        <uri>http://example/x10</uri>
+      </binding>
+      <binding name="y">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">1</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="x">
+        <uri>http://example/x10</uri>
+      </binding>
+      <binding name="y">
+        <uri>http://example/x6</uri>
+      </binding>
+    </result>
+    <result>
+      <binding name="x">
+        <uri>http://example/x3</uri>
+      </binding>
+      <binding name="y">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">5</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="x">
+        <uri>http://example/x6</uri>
+      </binding>
+      <binding name="y">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">1</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="x">
+        <uri>http://example/x6</uri>
+      </binding>
+      <binding name="y">
+        <uri>http://example/x6</uri>
+      </binding>
+    </result>
+    <result>
+      <binding name="x">
+        <uri>http://example/x11</uri>
+      </binding>
+      <binding name="y">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">1</literal>
+      </binding>
+    </result>
+  </results>
+</sparql>

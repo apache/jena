@@ -197,6 +197,13 @@
         mf:result  <container-8.srx>
       ]
 
+      [  mf:name    "Property Function - container 9" ;
+         mf:action
+            [ qt:query  <container-9.rq> ;
+              qt:data   <data-6.ttl> ] ;
+        mf:result  <container-9.srx>
+      ]
+
       [  mf:name    "Property Function - sequence 1" ;
          mf:action
             [ qt:query  <seq-1.rq> ;

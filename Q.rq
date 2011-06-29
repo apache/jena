@@ -1,21 +1,8 @@
-PREFIX skos:  <http://www.w3.org/2004/02/skos/core#>
-SELECT DISTINCT ?stw ?stw_pref ?rel ?thesoz_pref ?thesoz
+PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
+PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX :    <http://example/>
+
+SELECT *
 WHERE {
-  {
-    SELECT DISTINCT ?stw ('=' as ?rel) ?thesoz
-    WHERE {
-      ?stw skos:exactMatch ?thesoz .
-      ?stw skos:inScheme <http://zbw.eu/stw> .
-      ?thesoz skos:inScheme <http://lod.gesis.org/thesoz/> .
-    }
-  } UNION {
-    SELECT DISTINCT ?stw ('<' as ?rel) ?thesoz
-    WHERE  {
-      ?stw skos:broadMatch ?thesoz .
-      ?stw skos:inScheme <http://zbw.eu/stw> .
-      ?thesoz skos:inScheme <http://lod.gesis.org/thesoz/> .
-    }
-  } .
-  ?stw skos:prefLabel ?stw_pref .
-  ?thesoz skos:prefLabel ?thesoz_pref 
+    ?x rdfs:member ?y .
 }
