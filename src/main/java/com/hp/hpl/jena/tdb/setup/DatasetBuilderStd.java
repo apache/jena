@@ -6,7 +6,6 @@
 
 package com.hp.hpl.jena.tdb.setup;
 
-
 import java.util.Properties ;
 
 import org.openjena.atlas.lib.ColumnMap ;
@@ -23,8 +22,6 @@ import com.hp.hpl.jena.tdb.base.file.MetaFile ;
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile ;
 import com.hp.hpl.jena.tdb.index.TupleIndex ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
-import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable ;
-import com.hp.hpl.jena.tdb.nodetable.NodeTupleTableConcrete ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.store.DatasetPrefixesTDB ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
@@ -250,16 +247,16 @@ public class DatasetBuilderStd implements DatasetBuilder
 
     // ======== Components level
     
-    // This is not actually used in main dataset builder because it's done inside TripleTable/QuadTable.
-    protected NodeTupleTable makeNodeTupleTable(Location location, String primary, String[] indexes, NodeTable nodeTable, ConcurrencyPolicy policy)
-    {    
-        int N = indexes.length ;
-        TupleIndex tripleIndexes[] = makeTupleIndexes(location, primary, indexes) ;
-        if ( tripleIndexes.length != indexes.length )
-            error(log, "Wrong number of node table tuples indexes: expected="+N+" : actual="+tripleIndexes.length) ;
-        NodeTupleTable ntt = new NodeTupleTableConcrete(N, tripleIndexes, nodeTable, policy) ;
-        return ntt ;
-    }
+//    // This is not actually used in main dataset builder because it's done inside TripleTable/QuadTable.
+//    protected NodeTupleTable makeNodeTupleTable(Location location, String primary, String[] indexes, NodeTable nodeTable, ConcurrencyPolicy policy)
+//    {    
+//        int N = indexes.length ;
+//        TupleIndex tripleIndexes[] = makeTupleIndexes(location, primary, indexes) ;
+//        if ( tripleIndexes.length != indexes.length )
+//            error(log, "Wrong number of node table tuples indexes: expected="+N+" : actual="+tripleIndexes.length) ;
+//        NodeTupleTable ntt = new NodeTupleTableConcrete(N, tripleIndexes, nodeTable, policy) ;
+//        return ntt ;
+//    }
     
     private TupleIndex[] makeTupleIndexes(Location location, String primary, String[] indexNames)
     {

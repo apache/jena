@@ -18,22 +18,82 @@
 
 package tx;
 
+import org.junit.Test ;
+import org.openjena.atlas.junit.BaseTest ;
+
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.util.NodeFactory ;
+import com.hp.hpl.jena.tdb.junit.Base_TS ;
+import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
+import com.hp.hpl.jena.tdb.store.NodeId ;
+import com.hp.hpl.jena.tdb.transaction.Transaction ;
 
-import org.junit.Test ;
-
-public abstract class AbstractTestNodeTableTrans
+public abstract class AbstractTestNodeTableTrans extends BaseTest
 {
-    abstract protected NodeTableTrans getEmpty() ;
+    abstract protected NodeTableTrans create(Node... nodes) ;
     
     protected static Node node1 = NodeFactory.parseNode("<x>") ;
     protected static Node node2 = NodeFactory.parseNode("<y>") ;
-    
-    @Test public void test()
+
+    static void contains(NodeTable nt, Node...nodes)
     {
-        
+        for ( Node n : nodes)
+        {
+            NodeId nodeId = nt.getNodeIdForNode(n) ;
+            assertFalse(NodeId.doesNotExist(nodeId)) ;
+        }
     }
     
+    @Test public void nodetrans_01()
+    {
+        NodeTableTrans ntt = create() ;
+        Transaction txn = new Transaction(11, null) ; 
+        ntt.begin(txn) ;
+        ntt.abort(txn) ;
+    }
+
+    
+    @Test public void nodetrans_02()
+    {
+        NodeTableTrans ntt = create() ;
+        NodeTable nt0 = ntt.getBaseNodeTable() ;
+        
+        Transaction txn = new Transaction(11, null) ; 
+        ntt.begin(txn) ;
+        // Add a node
+        NodeId nodeId = ntt.getAllocateNodeId(node1) ;
+        // Check not in the base.
+        assertNull(nt0.getNodeForNodeId(nodeId)) ;
+        // Check is in the transaction node table.
+        assertEquals(NodeId.NodeDoesNotExist, nt0.getNodeIdForNode(node1)) ;
+        assertEquals(node1, ntt.getNodeForNodeId(nodeId)) ;
+        
+        ntt.commit(txn) ;
+        // Check it is now in the base.
+        assertEquals(node1, nt0.getNodeForNodeId(nodeId)) ;
+        assertEquals(nodeId, nt0.getNodeIdForNode(node1)) ;
+    }
+
+    @Test public void nodetrans_03()
+    {
+        NodeTableTrans ntt = create() ;
+        NodeTable nt0 = ntt.getBaseNodeTable() ;
+        
+        Transaction txn = new Transaction(11, null) ; 
+        ntt.begin(txn) ;
+        // Add a node
+        NodeId nodeId = ntt.getAllocateNodeId(node1) ;
+        // Check not in the base.
+        assertEquals(NodeId.NodeDoesNotExist, nt0.getNodeIdForNode(node1)) ;
+        assertNull(nt0.getNodeForNodeId(nodeId)) ;
+        // Check is in the transaction node table.
+        assertEquals(node1, ntt.getNodeForNodeId(nodeId)) ;
+        
+        ntt.abort(txn) ;
+        // Check it is not in the base.
+        assertEquals(NodeId.NodeDoesNotExist, nt0.getNodeIdForNode(node1)) ;
+        assertNull(nt0.getNodeForNodeId(nodeId)) ;
+    }
+
 }
 

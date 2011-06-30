@@ -12,6 +12,7 @@ import java.util.Properties ;
 
 import org.openjena.atlas.lib.FileOps ;
 import org.openjena.atlas.logging.Log ;
+import tx.NodeTableTrans ;
 
 import com.hp.hpl.jena.sparql.core.DatasetPrefixStorage ;
 import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
@@ -24,6 +25,9 @@ import com.hp.hpl.jena.tdb.base.file.FileSet ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile ;
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFileLogger ;
+import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
+import com.hp.hpl.jena.tdb.index.Index ;
+import com.hp.hpl.jena.tdb.index.IndexMap ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTableLogger ;
 import com.hp.hpl.jena.tdb.setup.BlockMgrBuilder ;
@@ -38,6 +42,7 @@ import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.store.DatasetPrefixStorageLogger ;
 import com.hp.hpl.jena.tdb.sys.ConcurrencyPolicy ;
 import com.hp.hpl.jena.tdb.sys.FileRef ;
+import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 public class DatasetBuilderTxn extends DatasetBuilderStd
 {
@@ -75,7 +80,6 @@ public class DatasetBuilderTxn extends DatasetBuilderStd
         ObjectFileBuilder objectFileBuilder = new ObjectFileBuilderTx() ;
         BlockMgrBuilder blockMgrBuilder = new BlockMgrBuilderTx() ;
 
-        // Add track(...) to log.
         IndexBuilder indexBuilder = new Builder.IndexBuilderStd(blockMgrBuilder, blockMgrBuilder) ;
 
         // Add logging to a BlockMgrBuilder (here, just the records par of the B+Tree
@@ -128,19 +132,36 @@ public class DatasetBuilderTxn extends DatasetBuilderStd
         return new DatasetGraphTxnTDB(dsg, txn) ;
     }
 
+    // To SystemTDB
     public static final String journalExt = "jrnl" ;
     public static final String journalFilename = "journal" ;
+    public static final String nodeJournalFilename = "nodes" ;
    
     private TransactionManager txnMgr ;
     private Journal  journal ;
     private Transaction txn ;
     private Location location ;
     private Map<FileRef, BlockMgr> blockMgrs = new HashMap<FileRef, BlockMgr>() ;
-    
-    
-    // *** TODO NodTbale has cachign over this ==> broken.
     private Map<FileRef, ObjectFile> objectFile = new HashMap<FileRef, ObjectFile>() ;
 
+    
+    @Override
+    protected NodeTable makeNodeTable(Location location, String indexNode2Id, String indexId2Node, 
+                                      int sizeNode2NodeIdCache, int sizeNodeId2NodeCache)
+    {
+        // GET FROM DATASET
+        NodeTable nt = super.makeNodeTable(location, indexNode2Id, indexId2Node, sizeNode2NodeIdCache, sizeNodeId2NodeCache) ;
+        
+        RecordFactory recordFactory = new RecordFactory(SystemTDB.LenNodeHash, SystemTDB.SizeOfNodeId) ;
+        Index idx = new IndexMap(recordFactory) ;   // In-memory
+        ObjectFile objFile = FileFactory.createObjectFileDisk(location.absolute(nodeJournalFilename, journalExt)) ;
+        NodeTable nt0 = nt ; 
+        NodeTableTrans ntt = new NodeTableTrans(null, nt0, idx, objFile) ;
+        // Remember ntt.
+        return nt ;
+        
+    }
+    
     class ObjectFileBuilderTx implements ObjectFileBuilder
     {
         ObjectFileBuilder base = new Builder.ObjectFileBuilderStd() ;

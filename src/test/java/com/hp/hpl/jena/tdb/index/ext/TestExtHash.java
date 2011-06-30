@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -38,9 +39,9 @@ public class TestExtHash extends TestIndex
     }
 
     @Override
-    protected Index makeIndex()
+    protected Index makeIndex(int kLen, int vLen)
     {
-        RecordFactory factory = new RecordFactory(4, 0) ;
+        RecordFactory factory = new RecordFactory(kLen, vLen) ;
         BlockMgr mgr = BlockMgrFactory.createMem("EXT", 32) ;
         ExtHash eHash = new ExtHash(new PlainFileMem(), factory, mgr) ;
         return eHash ;
@@ -49,6 +50,7 @@ public class TestExtHash extends TestIndex
 
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

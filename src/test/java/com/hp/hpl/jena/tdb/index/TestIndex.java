@@ -30,7 +30,7 @@ public abstract class TestIndex extends BaseTest
     }
     
     // ---- Overridable maker
-    protected abstract Index makeIndex() ;
+    protected abstract Index makeIndex(int kLen, int vLen) ;
     
     @Test public void index_ins_0()
     {
@@ -95,7 +95,6 @@ public abstract class TestIndex extends BaseTest
         assertNull(r) ;
     }
     
-    
     @Test public void index_del_1()
     {
         int[] keys1 = {0, 1, 2};
@@ -122,7 +121,7 @@ public abstract class TestIndex extends BaseTest
 
     private Index test(int[] insKeys, int[] delKeys, int[] expected)
     {
-        index = makeIndex() ;
+        index = makeIndex(4,0) ;
         testInsert(index, insKeys) ;
         long x = index.size() ;
         if ( x >= 0 )

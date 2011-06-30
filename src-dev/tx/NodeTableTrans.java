@@ -29,35 +29,40 @@ import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile ;
 import com.hp.hpl.jena.tdb.index.Index ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTableCache ;
+import com.hp.hpl.jena.tdb.nodetable.NodeTableInline ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTableNative ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
+import com.hp.hpl.jena.tdb.transaction.TDBTransactionException ;
 import com.hp.hpl.jena.tdb.transaction.Transaction ;
 import com.hp.hpl.jena.tdb.transaction.Transactional ;
 
 public class NodeTableTrans implements NodeTable, Transactional
 {
     private final NodeTable base ;
-    private final long offset ;
-    private final ObjectFile journal ;
+    private long offset ;
     
     private NodeTable nodeTableJournal ;
     private static int CacheSize = 10000 ;
     private boolean passthrough = false ;
+    private boolean inTransaction = false ;
     
-    public NodeTableTrans(Transaction txn, NodeTable sub, long offset, Index tmpIndex, ObjectFile journal)
+    private final Index nodeIndex ;
+    private final ObjectFile journal ;
+    
+    public NodeTableTrans(Transaction txn, NodeTable sub, Index nodeIndex, ObjectFile journal)
     {
         this.base = sub ;
-        this.offset = offset ;
+
+        this.nodeIndex = nodeIndex ;
         this.journal = journal ;
-        // This is a temporary file, and does not itself need to be transactional.
-        // It's used to scale the transactional node table.
-        // We need direct access to the ObjectFile for reply after crash.
-        
-        this.nodeTableJournal = new NodeTableNative(tmpIndex, journal) ;
-        this.nodeTableJournal = NodeTableCache.create(nodeTableJournal, CacheSize, CacheSize) ;
+//        this.nodeTableJournal = new NodeTableNative(tmpIndex, journal) ;
+//        this.nodeTableJournal = NodeTableCache.create(nodeTableJournal, CacheSize, CacheSize) ;
+//        // Do not add the inline NodeTable here - don't convert it's values by the offset!  
     }
 
-    public void setPassthrough(boolean v) { passthrough = v ; }
+    public void setPassthrough(boolean v)   { passthrough = v ; }
+    public NodeTable getBaseNodeTable()     { return base ; }
+    public NodeTable getJournalTable()      { return nodeTableJournal ; }
     
     @Override
     public NodeId getAllocateNodeId(Node node)
@@ -118,7 +123,18 @@ public class NodeTableTrans implements NodeTable, Transactional
     public void begin(Transaction txn)
     {
         passthrough = false ;
-//        inTransaction = true ;
+        inTransaction = true ;
+        offset = (int)base.allocOffset().getId() ;
+        // Fast-ish clearing of the file.
+        nodeIndex.clear() ;
+        journal.reposition(0) ;
+        
+        this.nodeTableJournal = new NodeTableNative(nodeIndex, journal) ;
+        this.nodeTableJournal = NodeTableCache.create(nodeTableJournal, CacheSize, CacheSize) ;
+        // Do not add the inline NodeTable here - don't convert it's values by the offset!  
+
+        
+        // Setup.
 //        journal.position(0) ;
 //        this.otherAllocOffset = journal.length() ;
     }
@@ -142,12 +158,12 @@ public class NodeTableTrans implements NodeTable, Transactional
     @Override
     public void commit(Transaction txn)
     {
-//        if ( ! inTransaction )
-//            throw new TDBTransactionException("Not in a transaction for a commit to happen") ; 
-//        append() ;
-//        base.sync() ;
-//        other.reposition(0) ;
-//        passthrough = true ;
+        if ( ! inTransaction )
+            throw new TDBTransactionException("Not in a transaction for a commit to happen") ; 
+        append() ;
+        base.sync() ;
+        //other.reposition(0) ;
+        passthrough = true ;
     }
 
     @Override

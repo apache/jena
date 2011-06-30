@@ -18,14 +18,34 @@
 
 package tx;
 
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.tdb.base.file.FileFactory ;
+import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile ;
+import com.hp.hpl.jena.tdb.base.objectfile.ObjectFileMem ;
+import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
+import com.hp.hpl.jena.tdb.index.Index ;
+import com.hp.hpl.jena.tdb.index.IndexMap ;
+import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
+import com.hp.hpl.jena.tdb.nodetable.NodeTableNative ;
+import com.hp.hpl.jena.tdb.sys.SystemTDB ;
+
 public class TestNodeTableTrans extends AbstractTestNodeTableTrans
 {
 
     @Override
-    protected NodeTableTrans getEmpty()
+    protected NodeTableTrans create(Node...nodes)
     {
-        return null ;
-    }
+        RecordFactory recordFactory = new RecordFactory(SystemTDB.LenNodeHash, SystemTDB.SizeOfNodeId) ;
+        
+        NodeTable base = new NodeTableNative(new IndexMap(recordFactory), new ObjectFileMem()) ;
+        for ( Node n : nodes )
+            base.getAllocateNodeId(n) ;
 
+        // Set up the transaction table.
+        Index idx = new IndexMap(recordFactory) ;
+        ObjectFile objectFile = FileFactory.createObjectFileMem() ;
+        NodeTableTrans ntt = new NodeTableTrans(null, base, idx, objectFile) ;
+        return ntt ;
+    }
 }
 

@@ -58,6 +58,8 @@ public class NodeLib
     public static Node fetchDecode(long id, ObjectFile file)
     {
         ByteBuffer bb = file.read(id) ;
+        if ( bb == null )
+            return null ;
         return decode(bb) ;
     }
     
