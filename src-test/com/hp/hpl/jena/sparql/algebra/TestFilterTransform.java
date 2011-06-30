@@ -62,6 +62,34 @@ public class TestFilterTransform
              (String[])null) ;
     }
     
+    @Test public void equality05()
+    {
+        // Can't optimize if filter does not only cover vars in LHS 
+        test("(filter (= ?UNUSED <x>) (conditional (bgp ( ?s ?p ?x))  (bgp ( ?s ?p ?x))))",
+             t_equality,
+             "(filter (= ?UNUSED <x>) (conditional (bgp ( ?s ?p ?x))  (bgp ( ?s ?p ?x))))") ;
+    }
+    
+    @Test public void equality06()
+    {
+        test("(filter (= ?x <x>) (conditional (bgp ( ?s ?p ?x))  (bgp ( ?s ?p ?x))))",
+             t_equality,
+             "(assign((?x <x>)) (conditional (bgp ( ?s ?p <x>))  (bgp ( ?s ?p <x>))))") ;
+    }
+    
+    @Test public void equality07()
+    {
+        test("(filter (= ?x <x>) (conditional (bgp ( ?s ?p ?x))  (bgp ( ?s ?p ?x1))))",
+             t_equality,
+             "(assign((?x <x>)) (conditional (bgp ( ?s ?p <x>))  (bgp ( ?s ?p ?x1))))") ;
+    }
+    
+    @Test public void equality08()
+    {
+        test("(filter (= ?x1 <x>) (conditional (bgp ( ?s ?p ?x))  (bgp ( ?s ?p ?x1))))",
+             t_equality,
+             "(filter (= ?x1 <x>) (conditional (bgp ( ?s ?p ?x))  (bgp ( ?s ?p ?x1))))") ;
+    }
     
     @Test public void disjunction01()
     {
