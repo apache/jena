@@ -27,6 +27,7 @@ import com.hp.hpl.jena.tdb.base.objectfile.ObjectFileLogger ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTableLogger ;
 import com.hp.hpl.jena.tdb.setup.BlockMgrBuilder ;
+import com.hp.hpl.jena.tdb.setup.Builder ;
 import com.hp.hpl.jena.tdb.setup.DatasetBuilderStd ;
 import com.hp.hpl.jena.tdb.setup.IndexBuilder ;
 import com.hp.hpl.jena.tdb.setup.NodeTableBuilder ;
@@ -75,13 +76,13 @@ public class DatasetBuilderTxn extends DatasetBuilderStd
         BlockMgrBuilder blockMgrBuilder = new BlockMgrBuilderTx() ;
 
         // Add track(...) to log.
-        IndexBuilder indexBuilder = new IndexBuilderStd(blockMgrBuilder, blockMgrBuilder) ;
+        IndexBuilder indexBuilder = new Builder.IndexBuilderStd(blockMgrBuilder, blockMgrBuilder) ;
 
         // Add logging to a BlockMgrBuilder (here, just the records par of the B+Tree
         //RangeIndexBuilder rangeIndexBuilder = new RangeIndexBuilderStd(blockMgrBuilder, logging(blockMgrBuilder)) ;
-        RangeIndexBuilder rangeIndexBuilder = new RangeIndexBuilderStd(blockMgrBuilder, blockMgrBuilder) ;
+        RangeIndexBuilder rangeIndexBuilder = new Builder.RangeIndexBuilderStd(blockMgrBuilder, blockMgrBuilder) ;
 
-        NodeTableBuilder nodeTableBuilder = new NodeTableBuilderStd(indexBuilder, objectFileBuilder)
+        NodeTableBuilder nodeTableBuilder = new Builder.NodeTableBuilderStd(indexBuilder, objectFileBuilder)
         {
             // track all NodeTable operations
             @Override
@@ -95,7 +96,7 @@ public class DatasetBuilderTxn extends DatasetBuilderStd
             }
         } ; 
         
-        TupleIndexBuilder tupleIndexBuilder = new TupleIndexBuilderStd(rangeIndexBuilder) ;
+        TupleIndexBuilder tupleIndexBuilder = new Builder.TupleIndexBuilderStd(rangeIndexBuilder) ;
         set(nodeTableBuilder, tupleIndexBuilder, indexBuilder, rangeIndexBuilder, blockMgrBuilder, objectFileBuilder) ;
     }
     
@@ -142,7 +143,7 @@ public class DatasetBuilderTxn extends DatasetBuilderStd
 
     class ObjectFileBuilderTx implements ObjectFileBuilder
     {
-        ObjectFileBuilder base = new ObjectFileBuilderStd() ;
+        ObjectFileBuilder base = new Builder.ObjectFileBuilderStd() ;
         @Override
         public ObjectFile buildObjectFile(FileSet fileSet, String ext)
         {
@@ -174,7 +175,7 @@ public class DatasetBuilderTxn extends DatasetBuilderStd
 
     class BlockMgrBuilderTx implements BlockMgrBuilder
     {
-        BlockMgrBuilder base = new BlockMgrBuilderStd() ;
+        BlockMgrBuilder base = new Builder.BlockMgrBuilderStd() ;
         @Override
         public BlockMgr buildBlockMgr(FileSet fileSet, String ext, int blockSize)
         {

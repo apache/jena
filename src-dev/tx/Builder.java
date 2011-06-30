@@ -41,6 +41,9 @@ public final class Builder
     
     // Become a library of builders - take code from DatasetBuilderStd
     
+    
+    //static BlockMgrBuilder blkMgrBuilder = new BlockMgrBuilderStd() ;
+    
     public static Index createIndex(FileSet fileset, RecordFactory recordFactory)
     {
         return createRangeIndex(fileset, recordFactory) ;

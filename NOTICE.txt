@@ -1,0 +1,15 @@
+Copyright ownership:
+
+Portions of this software were originally based on the following
+original contributions to Apache Software Foundation:
+
+(c) Copyright 2010, 2011 Epimorphics Ltd.
+(c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+(c) Copyright 2009, 2010 Talis Systems Ltd.
+
+Other contributions:
+(c) Copyright 2010 IBM Corp. All rights reserved.
+  Licenses/other.txt
+
+Subsequent copyrights:
+Epimorphics Ltd.
