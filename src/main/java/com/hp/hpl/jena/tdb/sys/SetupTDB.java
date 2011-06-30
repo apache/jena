@@ -86,10 +86,7 @@ public class SetupTDB
     
     // IndexBuilder for metadata files. 
     
-    // TODO Check everywhere else for non-DI constructors.
-    
     // Old code:
-    // 
     // IndexBuilders.  Or add a new IndexBuilder that can make from meta files.
     
     static public final String NodeTableType   = "dat" ; 
@@ -193,7 +190,6 @@ public class SetupTDB
         // On return, can just read the metadata key/value. 
         
         /* Semi-global 
-         * TODO Configure caches.
          * tdb.cache.node2id.size=100000  # Smaller? Much smaller!
          * tdb.cache.id2node.size=100000
          * tdb.cache.blockwrite.size=2000

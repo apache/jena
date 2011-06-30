@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package tx;
+package com.hp.hpl.jena.tdb.transaction;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.tdb.base.file.FileFactory ;
@@ -28,6 +28,7 @@ import com.hp.hpl.jena.tdb.index.IndexMap ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTableNative ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
+import com.hp.hpl.jena.tdb.transaction.NodeTableTrans ;
 
 public class TestNodeTableTrans extends AbstractTestNodeTableTrans
 {

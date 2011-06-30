@@ -29,9 +29,10 @@ import com.hp.hpl.jena.tdb.store.QuadTable ;
 import com.hp.hpl.jena.tdb.store.TripleTable ;
 import com.hp.hpl.jena.tdb.sys.ConcurrencyPolicy ;
 import com.hp.hpl.jena.tdb.sys.ConcurrencyPolicyMRSW ;
+import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 import com.hp.hpl.jena.tdb.sys.Names ;
 import com.hp.hpl.jena.tdb.sys.SetupTDB ;
-import com.hp.hpl.jena.tdb.sys.SystemTDB ;
+//import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 /** This class is the process of building a dataset. */ 
 
@@ -50,6 +51,13 @@ public class DatasetBuilderStd implements DatasetBuilder
     private TupleIndexBuilder tupleIndexBuilder ;
     
     private Properties config ;
+    
+    public static DatasetGraphTDB build(String dir)
+    {
+        DatasetBuilderStd x = new DatasetBuilderStd() ;
+        x.setStd() ;
+        return x.build(new Location(dir), null) ;
+    }
     
     protected DatasetBuilderStd()
     {
@@ -70,6 +78,9 @@ public class DatasetBuilderStd implements DatasetBuilder
         this.objectFileBuilder = objectFileBuilder ;
     }
         
+    
+    // Capture
+    
     protected void setStd()
     {
         ObjectFileBuilder objectFileBuilder     = new Builder.ObjectFileBuilderStd() ;
@@ -119,7 +130,7 @@ public class DatasetBuilderStd implements DatasetBuilder
         ConcurrencyPolicy policy = createConcurrencyPolicy() ;
         
         NodeTable nodeTable = makeNodeTable(location, 
-                                            Names.indexNode2Id, Names.indexId2Node,
+                                            params.indexNode2Id, params.indexId2Node,
                                             SystemTDB.Node2NodeIdCacheSize, SystemTDB.NodeId2NodeCacheSize) ;
         
         TripleTable tripleTable = makeTripleTable(location, nodeTable, policy) ; 
@@ -134,15 +145,15 @@ public class DatasetBuilderStd implements DatasetBuilder
     
     protected void init(Location location)
     {
-        // TODO Check this.
+        // Build params.
     }
     
     // ======== Dataset level
     protected TripleTable makeTripleTable(Location location, NodeTable nodeTable, ConcurrencyPolicy policy)
     {    
         MetaFile metafile = location.getMetaFile() ;
-        String dftPrimary = Names.primaryIndexTriples ;
-        String[] dftIndexes = Names.tripleIndexes ;
+        String dftPrimary = params.primaryIndexTriples ;
+        String[] dftIndexes = params.tripleIndexes ;
         
         String primary = metafile.getOrSetDefault("tdb.indexes.triples.primary", dftPrimary) ;
         String x = metafile.getOrSetDefault("tdb.indexes.triples", StrUtils.strjoin(",",dftIndexes)) ;
@@ -164,8 +175,8 @@ public class DatasetBuilderStd implements DatasetBuilder
     protected QuadTable makeQuadTable(Location location, NodeTable nodeTable, ConcurrencyPolicy policy)
     {    
         MetaFile metafile = location.getMetaFile() ;
-        String dftPrimary = Names.primaryIndexQuads ;
-        String[] dftIndexes = Names.quadIndexes ;
+        String dftPrimary = params.primaryIndexQuads ;
+        String[] dftIndexes = params.quadIndexes ;
         
         String primary = metafile.getOrSetDefault("tdb.indexes.quads.primary", dftPrimary) ;
         String x = metafile.getOrSetDefault("tdb.indexes.quads", StrUtils.strjoin(",",dftIndexes)) ;
@@ -212,11 +223,11 @@ public class DatasetBuilderStd implements DatasetBuilder
         // Some of this is also in locationMetadata.
         
         MetaFile metafile = location.getMetaFile() ;
-        String dftPrimary = Names.primaryIndexPrefix ;
-        String[] dftIndexes = Names.prefixIndexes ;
+        String dftPrimary = params.primaryIndexPrefix ;
+        String[] dftIndexes = params.prefixIndexes ;
         
         // The index using for Graph+Prefix => URI
-        String indexPrefixes = metafile.getOrSetDefault("tdb.prefixes.index.file", Names.indexPrefix) ;
+        String indexPrefixes = metafile.getOrSetDefault("tdb.prefixes.index.file", params.indexPrefix) ;
         String primary = metafile.getOrSetDefault("tdb.prefixes.primary", dftPrimary) ;
         String x = metafile.getOrSetDefault("tdb.prefixes.indexes", StrUtils.strjoin(",",dftIndexes)) ;
         String indexes[] = x.split(",") ;
@@ -226,8 +237,8 @@ public class DatasetBuilderStd implements DatasetBuilder
             error(log, "Wrong number of triple table tuples indexes: "+prefixIndexes.length) ;
         
         // The nodetable.
-        String pnNode2Id = metafile.getOrSetDefault("tdb.prefixes.nodetable.mapping.node2id", Names.prefixNode2Id) ;
-        String pnId2Node = metafile.getOrSetDefault("tdb.prefixes.nodetable.mapping.id2node", Names.prefixId2Node) ;
+        String pnNode2Id = metafile.getOrSetDefault("tdb.prefixes.nodetable.mapping.node2id", params.prefixNode2Id) ;
+        String pnId2Node = metafile.getOrSetDefault("tdb.prefixes.nodetable.mapping.id2node", params.prefixId2Node) ;
         
         // No cache - the prefix mapping is a cache
         NodeTable prefixNodes = makeNodeTable(location, pnNode2Id, pnId2Node, -1, -1)  ;
@@ -325,6 +336,31 @@ public class DatasetBuilderStd implements DatasetBuilder
     {
         try { return Integer.parseInt(str) ; }
         catch (NumberFormatException ex) { error(log, messageBase+": "+str) ; return -1 ; }
+    }
+    
+    private static Params params = new Params() ;
+    
+    // The standard setting
+    private static class Params
+    {
+        final int      blockSize           = SystemTDB.BlockSize ;
+        final int      memBlockSize        = SystemTDB.BlockSizeTestMem ;
+        final int      readCacheSize       = SystemTDB.BlockReadCacheSize ;
+        final int      writeCacheSize      = SystemTDB.BlockWriteCacheSize ;
+
+        final String   indexNode2Id        = Names.indexNode2Id ;
+        final String   indexId2Node        = Names.indexId2Node ;
+        final String   primaryIndexTriples = Names.primaryIndexTriples ;
+        final String[] tripleIndexes       = Names.tripleIndexes ;
+        final String   primaryIndexQuads   = Names.primaryIndexQuads ;
+        final String[] quadIndexes         = Names.quadIndexes ;
+        final String   primaryIndexPrefix  = Names.primaryIndexPrefix ;
+        final String[] prefixIndexes       = Names.prefixIndexes ;
+        final String   indexPrefix         = Names.indexPrefix ;
+
+        final String   prefixNode2Id       = Names.prefixNode2Id ;
+        final String   prefixId2Node       = Names.prefixId2Node ;
+         
     }
 }
 

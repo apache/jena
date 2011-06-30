@@ -12,7 +12,6 @@ import java.util.Properties ;
 
 import org.openjena.atlas.lib.FileOps ;
 import org.openjena.atlas.logging.Log ;
-import tx.NodeTableTrans ;
 
 import com.hp.hpl.jena.sparql.core.DatasetPrefixStorage ;
 import com.hp.hpl.jena.tdb.base.block.BlockMgr ;

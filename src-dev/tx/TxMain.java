@@ -29,6 +29,7 @@ import com.hp.hpl.jena.sparql.util.QueryExecUtils ;
 import com.hp.hpl.jena.tdb.TDBFactory ;
 import com.hp.hpl.jena.tdb.base.block.FileMode ;
 import com.hp.hpl.jena.tdb.base.file.FileFactory ;
+import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile ;
 import com.hp.hpl.jena.tdb.base.record.Record ;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
@@ -39,11 +40,13 @@ import com.hp.hpl.jena.tdb.index.bplustree.BPlusTree ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTableInline ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable ;
+import com.hp.hpl.jena.tdb.setup.DatasetBuilderStd ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.store.DatasetPrefixesTDB ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 import com.hp.hpl.jena.tdb.transaction.DatasetGraphTxnTDB ;
+import com.hp.hpl.jena.tdb.transaction.NodeTableTrans ;
 import com.hp.hpl.jena.tdb.transaction.TransactionManager ;
 import com.hp.hpl.jena.update.UpdateAction ;
 import com.hp.hpl.jena.update.UpdateFactory ;
@@ -72,6 +75,9 @@ public class TxMain
     
     public static void main(String... args)
     {
+        DatasetGraphTDB dsg00 = build() ;
+        exit(0) ;
+        
         execNT() ;  exit(0) ;
         
         if ( false ) 
@@ -217,8 +223,10 @@ public class TxMain
     
     private static DatasetGraphTDB build()
     {
-        DatasetGraphTDB dsg = TDBFactory.createDatasetGraph(DBdir) ;
-        return dsg ;
+        return DatasetBuilderStd.build(DBdir) ;
+        
+//        DatasetGraphTDB dsg = TDBFactory.createDatasetGraph(DBdir) ;
+//        return dsg ;
     }
 
     private static DatasetGraphTxnTDB buildTx(DatasetGraph dsg)

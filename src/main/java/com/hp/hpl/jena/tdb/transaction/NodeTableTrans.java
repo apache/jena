@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package tx;
+package com.hp.hpl.jena.tdb.transaction;
 
 import java.util.Iterator ;
 
@@ -29,12 +29,8 @@ import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile ;
 import com.hp.hpl.jena.tdb.index.Index ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTableCache ;
-import com.hp.hpl.jena.tdb.nodetable.NodeTableInline ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTableNative ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
-import com.hp.hpl.jena.tdb.transaction.TDBTransactionException ;
-import com.hp.hpl.jena.tdb.transaction.Transaction ;
-import com.hp.hpl.jena.tdb.transaction.Transactional ;
 
 public class NodeTableTrans implements NodeTable, Transactional
 {
@@ -55,9 +51,7 @@ public class NodeTableTrans implements NodeTable, Transactional
 
         this.nodeIndex = nodeIndex ;
         this.journal = journal ;
-//        this.nodeTableJournal = new NodeTableNative(tmpIndex, journal) ;
-//        this.nodeTableJournal = NodeTableCache.create(nodeTableJournal, CacheSize, CacheSize) ;
-//        // Do not add the inline NodeTable here - don't convert it's values by the offset!  
+        this.nodeTableJournal = null ;
     }
 
     public void setPassthrough(boolean v)   { passthrough = v ; }

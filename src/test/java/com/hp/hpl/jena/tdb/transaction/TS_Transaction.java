@@ -15,6 +15,7 @@ import org.junit.runners.Suite ;
     , TestTransIterator.class
     , TestObjectFileTransMem.class
     , TestObjectFileTransStorage.class
+    , TestNodeTableTrans.class
 })
 public class TS_Transaction
 {

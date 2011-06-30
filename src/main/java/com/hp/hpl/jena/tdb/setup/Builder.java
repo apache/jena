@@ -20,6 +20,8 @@ package com.hp.hpl.jena.tdb.setup;
 
 import static com.hp.hpl.jena.tdb.sys.SystemTDB.SizeOfNodeId ;
 import org.openjena.atlas.lib.ColumnMap ;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory ;
@@ -42,7 +44,9 @@ import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 public class Builder
 {
-
+    private static boolean VERBOSE = true ;
+    private static Logger log = LoggerFactory.getLogger(Builder.class) ;
+    
     public static class TupleIndexBuilderStd implements TupleIndexBuilder
     {
         private final RangeIndexBuilder rangeIndexBuilder ;
@@ -77,6 +81,9 @@ public class Builder
         @Override
         public NodeTable buildNodeTable(FileSet fsIndex, FileSet fsObjectFile, int sizeNode2NodeIdCache, int sizeNodeId2NodeCache)
         {
+            if ( VERBOSE )
+                log.info("NodeTable: "+fsIndex+"/"+fsObjectFile) ;
+            
             RecordFactory recordFactory = new RecordFactory(SystemTDB.LenNodeHash, SystemTDB.SizeOfNodeId) ;
             Index idx = indexBuilder.buildIndex(fsIndex, recordFactory) ;
             ObjectFile objectFile = objectFileBuilder.buildObjectFile(fsObjectFile, Names.extNodeData) ;
@@ -123,6 +130,9 @@ public class Builder
             @Override
             public RangeIndex buildRangeIndex(FileSet fileSet, RecordFactory recordFactory)
             {
+                if ( VERBOSE )
+                    log.info("RangeIndex: "+fileSet) ;
+                
                 int blkSize = SystemTDB.BlockSize ;
                 int order = BPlusTreeParams.calcOrder(blkSize, recordFactory.recordLength()) ;
                 int readCacheSize = SystemTDB.BlockReadCacheSize ;

@@ -33,6 +33,10 @@ import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 public final class Builder
 {
+    // See SetupTDB
+    // This already has many statics.
+    // Reuse with defaults.
+    
     // Yet another attempt to have one place to "build things"
     // See DatasetBuilderStd.
     

@@ -40,7 +40,7 @@ public class Names
     /** Prefixes file */
     public static final String prefixId2Node            = "prefixes" ;      // Prefix node table 
     public static final String prefixNode2Id            = "prefix2id";      // Prefix node table for index Node/hash->id
-    public static final String indexPrefix              = "prefixIdx";      // Primary key on the prefixes table.
+    public static final String indexPrefix              = "prefixIdx";      // Prefix index name
     
     /** Optimizer / stats */
     public static final String optStats                 = "stats.opt" ;
