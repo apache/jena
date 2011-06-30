@@ -23,7 +23,15 @@ public class ExprVars
         varsMentioned(acc, expr) ;
         return acc ;
     }
-    
+
+    public static Set<Var> getVarsMentioned(ExprList exprs)
+    {
+        Set<Var> acc = new HashSet<Var>() ;
+        for ( Expr expr : exprs )
+            varsMentioned(acc, expr) ;    
+        return acc ;
+    }
+
     public static void varsMentioned(Collection<Var> acc, Expr expr)
     {
         ExprVars.Action<Var> action =

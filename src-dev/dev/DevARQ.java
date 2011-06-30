@@ -2,7 +2,9 @@ package dev ;
 
 public class DevARQ
 {
-    // FILTER(?x=?y) optimization - at least FILTER(sameTerm(?x,?y)) 
+    // FILTER(?x=?y) optimization - at least FILTER(sameTerm(?x,?y))
+    // FILTER(?x=<x> && ...) does not push down on the ?x=<x>
+    
     
     // QueryEngineHTTP - content negotiation, Apache httpClient.
     
