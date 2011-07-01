@@ -21,35 +21,43 @@ public class Transaction
     private final long id ;
     private final TransactionManager txnMgr ;
     private final List<Iterator<?>> iterators ; 
-    private final List<Journal> journals = new ArrayList<Journal>() ;
-    private final List<ObjectFileTrans> objJournals = new ArrayList<ObjectFileTrans>() ;
+    private Journal journal = null ;
+    
+    private final List<NodeTableTrans> nodeTableTrans = new ArrayList<NodeTableTrans>() ;
+    private final List<BlockMgrJournal> blkMgrs = new ArrayList<BlockMgrJournal>() ;
 
     public Transaction(long id, TransactionManager txnMgr)
     {
         this.id = id ;
         this.txnMgr = txnMgr ;
+        //this.journal = journal ;
         this.iterators = new ArrayList<Iterator<?>>() ;
     }
 
     public void commit()
     {
-        // Write commit entry.
-        if ( journals.size() > 0 )
-        {
-            Journal jrnl = journals.get(0) ;
-            JournalEntry entry = new JournalEntry(JournalEntryType.Commit, FileRef.Journal, null) ;
-            jrnl.writeJournal(entry) ;
-        }
+        for ( BlockMgrJournal x : blkMgrs )
+            x.commit(this) ;
         
+        for ( NodeTableTrans x : nodeTableTrans )
+            x.commit(this) ;
         
-        for ( ObjectFileTrans jrnl : objJournals )
-            jrnl.sync() ;
-    
-        for ( Journal jrnl : journals )
-            jrnl.sync() ;
+        JournalEntry entry = new JournalEntry(JournalEntryType.Commit, FileRef.Journal, null) ;
+        journal.writeJournal(entry) ;
+        journal.sync() ;        // Commit point.
     }
     
-    public void abort()                             { txnMgr.abort(this) ; }
+    public void abort()
+    { 
+        // Clearup.
+        for ( BlockMgrJournal x : blkMgrs )
+            x.abort(this) ;
+        
+        for ( NodeTableTrans x : nodeTableTrans )
+            x.abort(this) ;
+    }
+    
+    
     public long getTxnId()                          { return id ; }
     public TransactionManager getTxnMgr()           { return txnMgr ; }
     
@@ -57,14 +65,28 @@ public class Transaction
     public void removeIterator(Iterator<?> iter)    { iterators.remove(iter) ; }
     public List<Iterator<?>> iterators()            { return Collections.unmodifiableList(iterators) ; }
     
-    public void add(Journal journal)
+    public Iterator<Transactional> components()
     {
-        journals.add(journal) ;
+        // FIX NEEDED
+        List<Transactional> x = new ArrayList<Transactional>() ;
+        x.addAll(nodeTableTrans) ;
+        x.addAll(blkMgrs) ;
+        return x.iterator() ;
+    }
+    
+    public void set(Journal journal)
+    {
+        this.journal = journal ;
     }
 
-    public void add(ObjectFileTrans objFileTrans)
+    public void add(NodeTableTrans ntt)
     {
-        objJournals.add(objFileTrans) ;
+        nodeTableTrans.add(ntt) ;
+    }
+
+    public void add(BlockMgrJournal blkMgr)
+    {
+        blkMgrs.add(blkMgr) ;
     }
 }
 

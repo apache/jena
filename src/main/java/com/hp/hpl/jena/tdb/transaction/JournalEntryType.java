@@ -12,7 +12,7 @@ import org.openjena.atlas.logging.Log ;
 public enum JournalEntryType 
 { 
     // Abort is used 
-    Block(1), Object(2), Commit(3), Abort(4), Checkpoint(5) ;
+    Block(1), Buffer(2), Object(3), Commit(4), Abort(5), Checkpoint(6) ;
     
     final int id ;
     JournalEntryType(int x) { id = x ; }
@@ -20,6 +20,7 @@ public enum JournalEntryType
     static public JournalEntryType type(int x)
     {
         if ( x == Block.id )                return Block ;
+        else if ( x == Buffer.id )          return Buffer ;
         else if ( x == Object.id )          return Object ;
         else if ( x == Commit.id )          return Commit ;
         else if ( x == Abort.id )           return Abort ;

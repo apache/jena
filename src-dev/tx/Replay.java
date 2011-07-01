@@ -5,48 +5,53 @@
  */
 
 package tx;
-//import static tx.journal.JournalEntryType.* ;
 
 import java.nio.ByteBuffer ;
 
+import com.hp.hpl.jena.tdb.base.block.Block ;
 import com.hp.hpl.jena.tdb.transaction.Journal ;
 import com.hp.hpl.jena.tdb.transaction.JournalEntry ;
 
-
 public class Replay
 {
-    public static void reply(Journal journal)
+    public static void print(Journal journal)
     {
         for ( JournalEntry e : journal )
         {
-            
+            System.out.println("Entry: ") ;
             ByteBuffer bb = e.getByteBuffer() ;
-            
-            e.getFileRef() ;
-            
-            switch (e.getType())
-            {
-                case Block:
-                    // Get block ref.
-                    // Find block mgr
-                    // do it.
-                    break ;
-                case Object:
-                    // Get id
-                    // get bytes
-                    // dispatch to NodeTable.
-                    // ?? Node rebuilding?
-                    // Check ids.
-                    break ;
-                case Commit:
-                    break ;
-                case Abort:
-                    break ;
-                case Checkpoint:
-                    //default:
-            }
+            Block blk = e.getBlock() ;
+            if ( bb != null )
+                System.out.println("  "+bb) ;
+            if ( blk != null )
+                System.out.println("  "+blk) ;
+            System.out.println("  "+e.getFileRef()) ;
+            System.out.println("  "+e.getType()) ;
         }
     }
+//            switch (e.getType())
+//            {
+//                case Block:
+//                    // Get block ref.
+//                    // Find block mgr
+//                    // do it.
+//                    break ;
+//                case Object:
+//                    // Get id
+//                    // get bytes
+//                    // dispatch to NodeTable.
+//                    // ?? Node rebuilding?
+//                    // Check ids.
+//                    break ;
+//                case Commit:
+//                    break ;
+//                case Abort:
+//                    break ;
+//                case Checkpoint:
+//                    //default:
+//            }
+//        }
+//    }
 }
 
 /*

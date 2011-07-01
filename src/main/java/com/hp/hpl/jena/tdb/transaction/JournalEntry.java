@@ -8,6 +8,7 @@ package com.hp.hpl.jena.tdb.transaction;
 
 import java.nio.ByteBuffer ;
 
+import com.hp.hpl.jena.tdb.base.block.Block ;
 import com.hp.hpl.jena.tdb.sys.FileRef ;
 
 
@@ -16,26 +17,42 @@ public class JournalEntry
     static public final JournalEntry Commit = new JournalEntry(JournalEntryType.Commit) ;
     static public final JournalEntry Abort = new JournalEntry(JournalEntryType.Abort) ;
     static public final JournalEntry CheckPoint = new JournalEntry(JournalEntryType.Checkpoint) ;
-    private final JournalEntryType type ;
+    
+    private final JournalEntryType type ;   // One or other must be null - or both.
     private final ByteBuffer byteBuffer ;
+    private final Block block ;
+    private final int id = -98 ;
     private final FileRef fileRef ;
     
     private JournalEntry(JournalEntryType type)
     {
-        this.type = type ;
-        this.byteBuffer = null ;
-        this.fileRef = null ;
+        this(type, null, null, null) ;
     }
     
     public JournalEntry(JournalEntryType type, FileRef fileRef, ByteBuffer bytes)
     {
+        this(type, fileRef, bytes, null) ;
+    }
+    
+    public JournalEntry(FileRef fileRef, Block block)
+    {
+        this(JournalEntryType.Block, fileRef, null, block) ;
+    }
+
+    JournalEntry(JournalEntryType type, FileRef fileRef, ByteBuffer bytes, Block block)
+    {
+        if ( bytes != null && block != null )
+            throw new TDBTransactionException("buffer != null and block != null") ;
         this.type = type ;
         this.byteBuffer = bytes ;
+        this.block = block ;
         this.fileRef = fileRef ;
     }
+    
 
     public JournalEntryType getType()       { return type ; }
     public ByteBuffer getByteBuffer()       { return byteBuffer ; }
+    public Block getBlock()                 { return block ; }
     public FileRef getFileRef()             { return fileRef ; }
 }
 

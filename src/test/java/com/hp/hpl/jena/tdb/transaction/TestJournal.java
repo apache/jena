@@ -14,6 +14,7 @@ import org.junit.Test ;
 import org.openjena.atlas.junit.BaseTest ;
 import org.openjena.atlas.lib.Bytes ;
 
+import com.hp.hpl.jena.tdb.base.block.Block ;
 import com.hp.hpl.jena.tdb.base.file.BufferChannel ;
 import com.hp.hpl.jena.tdb.base.file.BufferChannelMem ;
 import com.hp.hpl.jena.tdb.sys.FileRef ;
@@ -37,6 +38,9 @@ public class TestJournal extends BaseTest
         Bytes.setLong(0x2222222211111111L, bb3.array()) ;
     }
 
+    static Block blk1 = new Block(1, bb1) ;
+    static Block blk2 = new Block(2, bb2) ;
+    static Block blk3 = new Block(3, bb3) ;
     
     static FileRef testRef = FileRef.create("TEST") ;
     static FileRef testRef1 = FileRef.create("TEST1") ;
@@ -59,7 +63,7 @@ public class TestJournal extends BaseTest
     
     @Test public void journal_02()
     {
-        JournalEntry entry1 = new JournalEntry(JournalEntryType.Block, testRef, bb1) ;
+        JournalEntry entry1 = new JournalEntry(JournalEntryType.Buffer, testRef, bb1) ;
         long x = journal.writeJournal(entry1) ;
         assertEquals(0, x) ;
         JournalEntry entry9 = journal.readJournal(x) ;
@@ -68,7 +72,7 @@ public class TestJournal extends BaseTest
 
     @Test public void journal_03()
     {
-        JournalEntry entry1 = new JournalEntry(JournalEntryType.Block, testRef, bb1) ;
+        JournalEntry entry1 = new JournalEntry(JournalEntryType.Buffer, testRef, bb1) ;
         JournalEntry entry2 = new JournalEntry(JournalEntryType.Object, testRef, bb1) ;
         
         long x1 = journal.writeJournal(entry1) ;
@@ -104,8 +108,8 @@ public class TestJournal extends BaseTest
 
     @Test public void journal_05()
     {
-        JournalEntry entry1 = new JournalEntry(JournalEntryType.Block, testRef, bb1) ;
-        JournalEntry entry2 = new JournalEntry(JournalEntryType.Block, testRef1, bb1) ;
+        JournalEntry entry1 = new JournalEntry(JournalEntryType.Buffer, testRef, bb1) ;
+        JournalEntry entry2 = new JournalEntry(JournalEntryType.Buffer, testRef1, bb1) ;
         
         long x1 = journal.writeJournal(entry1) ;
         bb1.clear();
@@ -122,7 +126,28 @@ public class TestJournal extends BaseTest
         assertTrue(equal(entry1, entry1a)) ;
         assertTrue(equal(entry2, entry2a)) ;
         assertFalse(equal(entry1a, entry2a)) ;
+    }
+
+    @Test public void journal_06()
+    {
+        JournalEntry entry1 = new JournalEntry(testRef, blk1) ;
+        JournalEntry entry2 = new JournalEntry(testRef, blk2) ;
         
+        long x1 = journal.writeJournal(entry1) ;
+        bb1.clear();
+        long x2 = journal.writeJournal(entry2) ;
+        bb1.clear();
+        assertEquals(0, x1) ;
+        assertNotEquals(0, x2) ;
+        
+        JournalEntry entry1a = journal.readJournal(x1) ;
+        JournalEntry entry2a = journal.readJournal(x2) ;
+        
+        assertNotSame(entry1, entry1a) ;
+        assertNotSame(entry2, entry2a) ;
+        assertTrue(equal(entry1, entry1a)) ;
+        assertTrue(equal(entry2, entry2a)) ;
+        assertFalse(equal(entry1a, entry2a)) ;
     }
 
     private static boolean equal(JournalEntry entry1, JournalEntry entry2)
@@ -131,18 +156,50 @@ public class TestJournal extends BaseTest
             return false ;
         if ( ! entry1.getFileRef().equals(entry2.getFileRef()) )
             return false ;
-        return sameValue(entry1.getByteBuffer(), entry2.getByteBuffer()) ;
+        if ( entry1.getByteBuffer() == null && entry2.getByteBuffer() != null )
+            return false ;
+        if ( entry1.getByteBuffer() != null && entry2.getByteBuffer() == null )
+            return false ; 
+        if ( entry1.getBlock() == null && entry2.getBlock() != null )
+            return false ;
+        if ( entry1.getBlock() != null && entry2.getBlock() == null )
+            return false ; 
+        if ( entry1.getBlock() != null )
+            return sameValue(entry1.getBlock(), entry2.getBlock()) ;
+        else
+            return sameValue(entry1.getByteBuffer(), entry2.getByteBuffer()) ;
     }
     
     // In ByteBufferLib - remove/migrate
     public static boolean sameValue(ByteBuffer bb1, ByteBuffer bb2)
     {
+        if ( bb1 == null && bb2 == null ) return true ;
+        if ( bb1 == null ) return false ;
+        if ( bb2 == null ) return false ;
+        
         if ( bb1.capacity() != bb2.capacity() ) return false ;
         
-        for ( int i = 0 ; i < bb1.capacity() ; i++ )
-            if ( bb1.get(i) != bb2.get(i) ) return false ;
-        return true ;
+        int x1 = bb1.position() ; 
+        int x2 = bb1.position() ;
+
+        try {
+            for ( int i = 0 ; i < bb1.capacity() ; i++ )
+                if ( bb1.get(i) != bb2.get(i) ) return false ;
+            return true ;
+        } finally { bb1.position(x1) ; bb2.position(x2) ; }  
     }
+    
+    // In ByteBufferLib - remove/migrate
+    public static boolean sameValue(Block bb1, Block bb2)
+    {
+        if ( bb1 == null && bb2 == null ) return true ;
+        if ( bb1 == null ) return false ;
+        if ( bb2 == null ) return false ;
+        
+        if ( bb1.getId() != bb2.getId() ) return false ;
+        return  sameValue(bb1.getByteBuffer(), bb2.getByteBuffer()) ;
+    }
+
 }
 
 /*

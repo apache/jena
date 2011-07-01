@@ -18,6 +18,8 @@ public class DatasetGraphTxnTDB extends DatasetGraphTDB
         this.transaction = txn ;
     }
 
+    public Transaction getTransaction() { return transaction ; }
+    
     public void commit() { transaction.commit() ; }
     public void abort() { transaction.abort() ; }
     

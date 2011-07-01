@@ -13,7 +13,6 @@ import java.util.Iterator ;
 import java.util.Map ;
 import java.util.Set ;
 
-import org.openjena.atlas.lib.NotImplemented ;
 import org.openjena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.tdb.base.block.Block ;
@@ -49,7 +48,8 @@ public class BlockMgrJournal implements BlockMgr, Transactional
     @Override
     public void commit(Transaction txn)
     {
-        throw new NotImplemented("yet") ;
+        for ( Block blk : writeBlocks.values() )
+            writeJournalEntry(blk) ;
     }
 
     @Override
@@ -246,15 +246,11 @@ public class BlockMgrJournal implements BlockMgr, Transactional
     {
         checkIfClosed() ;
         blockMgr.endRead() ;
-        for ( Block blk : writeBlocks.values() )
-            writeJournalEntry(blk) ;
     }
 
     private void writeJournalEntry(Block blk)
     {
-        // Space for BlockRef.
-        // [TxTDB:TODO] Space for BlockRef.
-        JournalEntry entry = new JournalEntry(JournalEntryType.Block, fileRef, blk.getByteBuffer()) ;
+        JournalEntry entry = new JournalEntry(fileRef, blk) ;
         journal.writeJournal(entry) ;
     }
     

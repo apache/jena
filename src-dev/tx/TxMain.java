@@ -28,6 +28,8 @@ import com.hp.hpl.jena.sparql.util.NodeFactory ;
 import com.hp.hpl.jena.sparql.util.QueryExecUtils ;
 import com.hp.hpl.jena.tdb.TDBFactory ;
 import com.hp.hpl.jena.tdb.base.block.FileMode ;
+import com.hp.hpl.jena.tdb.base.file.BufferChannel ;
+import com.hp.hpl.jena.tdb.base.file.BufferChannelFile ;
 import com.hp.hpl.jena.tdb.base.file.FileFactory ;
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile ;
 import com.hp.hpl.jena.tdb.base.record.Record ;
@@ -43,8 +45,8 @@ import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.store.DatasetPrefixesTDB ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
-import com.hp.hpl.jena.tdb.transaction.DatasetBuilderTxn ;
 import com.hp.hpl.jena.tdb.transaction.DatasetGraphTxnTDB ;
+import com.hp.hpl.jena.tdb.transaction.Journal ;
 import com.hp.hpl.jena.tdb.transaction.NodeTableTrans ;
 import com.hp.hpl.jena.tdb.transaction.TransactionManager ;
 import com.hp.hpl.jena.update.UpdateAction ;
@@ -74,6 +76,9 @@ public class TxMain
     
     public static void main(String... args)
     {
+        // next: write block id to Journal 
+        // Next: API, transactions, and rollback.
+        
         if ( false ) 
             SystemTDB.setFileMode(FileMode.direct) ;
         
@@ -81,10 +86,19 @@ public class TxMain
         DatasetGraphTDB dsg0 = build() ;
         query("SELECT (Count(*) AS ?c) { ?s ?p ?o }", dsg0) ;
 
-        DatasetGraphTDB dsg1 = new DatasetBuilderTxn(new TransactionManager()).build(dsg0) ;
+        TransactionManager txnMgr = new TransactionManager() ;
+        
+        DatasetGraphTxnTDB dsg1 = txnMgr.begin(dsg0) ;
+        
         load("D.ttl", dsg1) ;
         query("SELECT (Count(*) AS ?c) { ?s ?p ?o }", dsg1) ;
         query("SELECT (Count(*) AS ?c) { ?s ?p ?o }", dsg0) ;
+        
+        dsg1.commit() ;
+        
+        BufferChannel bc = new BufferChannelFile(DBdir+"/journal.jrnl") ;
+        Journal j = new Journal(bc) ;
+        Replay.print(j) ;
         
         exit(0) ;
         deconstruct(dsg0) ;

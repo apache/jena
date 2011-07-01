@@ -7,10 +7,10 @@
 package com.hp.hpl.jena.tdb.transaction;
 
 
+import java.util.Iterator ;
+
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.tdb.TDBException ;
-import com.hp.hpl.jena.tdb.base.file.Location ;
-import com.hp.hpl.jena.tdb.setup.DatasetBuilder ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 
 
@@ -32,7 +32,7 @@ public class TransactionManager
     public DatasetGraphTxnTDB begin(DatasetGraph dsg)
     {
         // If already a transaction ... 
-        // Subs transactions are a new view - commit is only comit to parent transaction.  
+        // Subs transactions are a new view - commit is only commit to parent transaction.  
         if ( dsg instanceof DatasetGraphTxnTDB )
         {
             throw new TDBException("Already in transactional DatasetGraph") ;
@@ -45,18 +45,15 @@ public class TransactionManager
             throw new TDBException("Not a TDB-backed dataset") ;
 
         DatasetGraphTDB dsgtdb = (DatasetGraphTDB)dsg ;
-        // For now, always build a parallel dataset - later, associate with the DatasetGraphTDB
-        // [TxTDB:TODO]
         // THIS IS NECESSARY BECAUSE THE DATASET MAY HAVE BEEN UPDATED AND CHANGES STILL IN CACHES.
-        // MUST WRITE OUT - BUT ALSO REUSE CACHES
+        // MUST WRITE OUT - BUT ALSO REUSE CACHES.
         dsgtdb.sync() ; 
         
-        Location location = dsgtdb.getLocation() ;
+        DatasetGraphTxnTDB dsgTxn = (DatasetGraphTxnTDB)new DatasetBuilderTxn(new TransactionManager()).build(dsgtdb) ;
         
-        // TODO Don't rebuild every time.
-        DatasetBuilder builder = new DatasetBuilderTxn_Old(this) ;
-        //return builder.build(Location.mem(), null) ;
-        DatasetGraphTxnTDB dsgTxn = (DatasetGraphTxnTDB)builder.build(location, null) ;
+        Iterator<Transactional> iter = dsgTxn.getTransaction().components() ;
+        for ( ; iter.hasNext() ; )
+            iter.next().begin(dsgTxn.getTransaction()) ;
         return dsgTxn ;
     }
 

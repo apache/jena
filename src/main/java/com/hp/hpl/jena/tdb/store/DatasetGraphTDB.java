@@ -8,7 +8,6 @@ package com.hp.hpl.jena.tdb.store;
 
 
 import java.util.Iterator ;
-import java.util.Properties ;
 
 import org.openjena.atlas.iterator.Iter ;
 import org.openjena.atlas.iterator.Transform ;

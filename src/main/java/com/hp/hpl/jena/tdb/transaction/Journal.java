@@ -7,7 +7,7 @@
 package com.hp.hpl.jena.tdb.transaction;
 
 import static com.hp.hpl.jena.tdb.sys.SystemTDB.SizeOfInt ;
-
+import static com.hp.hpl.jena.tdb.transaction.JournalEntryType.* ;
 import java.nio.ByteBuffer ;
 import java.util.Iterator ;
 
@@ -16,6 +16,7 @@ import org.openjena.atlas.lib.Closeable ;
 import org.openjena.atlas.lib.Sync ;
 
 
+import com.hp.hpl.jena.tdb.base.block.Block ;
 import com.hp.hpl.jena.tdb.base.file.BufferChannel ;
 import com.hp.hpl.jena.tdb.sys.FileRef ;
 
@@ -37,12 +38,14 @@ class Journal implements Iterable<JournalEntry>, Sync, Closeable
     
     BufferChannel channel ;
     private long position ;
-    // Length, type, fileRef.
+    // Length, type, fileRef, [block id]
     // Length is length of variable part.
-    public static int Overhead = 3*SizeOfInt ;
+    public static int Overhead = 4*SizeOfInt ;
+    public static final int NoId = 5 ;
     
-    byte[] buffer = new byte[Overhead] ;
-    ByteBuffer header = ByteBuffer.wrap(buffer) ;
+//    byte[] _buffer = new byte[Overhead] ;
+//    ByteBuffer header = ByteBuffer.wrap(_buffer) ;
+    ByteBuffer header = ByteBuffer.allocate(Overhead) ;
     
     public Journal(BufferChannel channel)
     {
@@ -53,24 +56,38 @@ class Journal implements Iterable<JournalEntry>, Sync, Closeable
     synchronized
     public long writeJournal(JournalEntry entry)
     {
-        return  _write(entry.getType(), entry.getFileRef(), entry.getByteBuffer()) ;
+        return  _write(entry.getType(), entry.getFileRef(), entry.getByteBuffer(), entry.getBlock()) ;
     }
     
     synchronized
     public long writeJournal(JournalEntryType type, FileRef fileRef, ByteBuffer buffer)
     {
-        return _write(type, fileRef, buffer) ;
+        return _write(type, fileRef, buffer, null) ;
+    }
+    
+    synchronized
+    public long writeJournal(FileRef fileRef, Block block)
+    {
+        return _write(Block, fileRef, null, block) ;
     }
      
     synchronized
-    private long _write(JournalEntryType type, FileRef fileRef, ByteBuffer buffer)
+    private long _write(JournalEntryType type, FileRef fileRef, ByteBuffer buffer, Block block)
     {
-        // FileRefs: one int.
+        if ( buffer != null && block != null )
+            throw new TDBTransactionException("Buffer and block to write") ;
+        if ( block != null )
+            buffer = block.getByteBuffer() ;
+
+        if ( block != null && type != Block )
+            throw new TDBTransactionException("Block to write but not block type") ;
         
         long posn = position ;
         int len = 0 ;
         
         // [TxDEV:TODO] CRC
+        // [TxDEV:TODO] compress
+        
         if ( buffer != null )
             len = buffer.remaining() ; 
         
@@ -78,12 +95,18 @@ class Journal implements Iterable<JournalEntry>, Sync, Closeable
         header.putInt(type.id) ;
         header.putInt(len) ;
         header.putInt(fileRef.getId()) ;
+        int blkId = (block==null) ? NoId : block.getId().intValue() ;
+        header.putInt(blkId) ;
         header.flip() ;
-
         channel.write(header) ;
+        
         if ( len > 0 )
+        {
+            int x = buffer.position() ;
             // Write bytes
             channel.write(buffer) ;
+            buffer.position(x) ;
+        }
         
         position += len+Overhead ;
         return posn ;
@@ -103,18 +126,30 @@ class Journal implements Iterable<JournalEntry>, Sync, Closeable
     // Move position to end of read.
     private JournalEntry _read()
     {
+        // UGLY Maybe better to leave some space in the block's byte buffer.
         // [TxTDB:TODO] Make robust against partial read.
         header.clear() ;
         channel.read(header) ;
         header.rewind() ;
-        int typeId = header.getInt() ; 
-        int len    = header.getInt() ;
-        int ref    = header.getInt() ;
+        int typeId  = header.getInt() ; 
+        int len     = header.getInt() ;
+        int ref     = header.getInt() ;
+        int blockId = header.getInt() ;
+        
+        JournalEntryType type = JournalEntryType.type(typeId) ;
         FileRef fileRef = FileRef.get(ref) ;
         ByteBuffer bb = ByteBuffer.allocate(len) ;
+        Block block = null ;
         channel.read(bb) ;
-        JournalEntryType type = JournalEntryType.type(typeId) ;
-        return new JournalEntry(type, fileRef, bb) ;
+        bb.rewind() ;
+        if ( type == Block )
+        {
+            block = new Block(blockId, bb) ;
+            bb = null ;
+        }
+        else
+            blockId = NoId ;
+        return new JournalEntry(type, fileRef, bb, block) ;
     } 
 
     /** Iterator of entries from current point in Journal, going forward. Must be JournalEntry aligned at start. */

@@ -52,14 +52,15 @@ public class DatasetBuilderTxn
         else
             chan = new BufferChannelFile(dsg.getLocation().absolute(Names.journalFile)) ;
         journal = new Journal(chan) ;
+        txn.set(journal) ;
         
         BlockMgrBuilder blockMgrBuilder = new BlockMgrBuilderTx() ;
         NodeTableBuilder nodeTableBuilder = new NodeTableBuilderTx() ;
         
-        //  [TxTDB:PATCH-UP] FAKE BEGIN
-        
         DatasetBuilderStd x = new DatasetBuilderStd(blockMgrBuilder, nodeTableBuilder) ;
-        return x.build(dsg.getLocation(), dsg.getConfig().properties) ;    
+        DatasetGraphTDB dsg2 = x.build(dsg.getLocation(), dsg.getConfig().properties) ;
+        return new DatasetGraphTxnTDB(dsg2, txn) ;
+        
     }
     
     
@@ -104,7 +105,7 @@ public class DatasetBuilderTxn
                 objectFile = FileFactory.createObjectFileDisk(objFilename) ;
 
             NodeTableTrans ntt = new NodeTableTrans(ntBase, idx, objectFile) ;
-            ntt.begin(txn) ; //  [TxTDB:PATCH-UP] FAKE BEGIN
+            txn.add(ntt) ;
             
             // Add inline wrapper.
             NodeTable nt = NodeTableInline.create(ntt) ;
@@ -122,8 +123,9 @@ public class DatasetBuilderTxn
             BlockMgr baseMgr = blockMgrs.get(ref) ;
             if ( baseMgr == null )
                 throw new TDBException("No BlockMgr for "+ref) ;
-            BlockMgrJournal blkMg = new BlockMgrJournal(txn, ref, baseMgr, journal) ;
-            return blkMg ;
+            BlockMgrJournal blkMgr = new BlockMgrJournal(txn, ref, baseMgr, journal) ;
+            txn.add(blkMgr) ;
+            return blkMgr ;
         }
     }
 }
