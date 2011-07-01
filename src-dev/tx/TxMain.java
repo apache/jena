@@ -29,14 +29,12 @@ import com.hp.hpl.jena.sparql.util.QueryExecUtils ;
 import com.hp.hpl.jena.tdb.TDBFactory ;
 import com.hp.hpl.jena.tdb.base.block.FileMode ;
 import com.hp.hpl.jena.tdb.base.file.FileFactory ;
-import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile ;
 import com.hp.hpl.jena.tdb.base.record.Record ;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
 import com.hp.hpl.jena.tdb.index.Index ;
 import com.hp.hpl.jena.tdb.index.IndexMap ;
 import com.hp.hpl.jena.tdb.index.TupleIndex ;
-import com.hp.hpl.jena.tdb.index.bplustree.BPlusTree ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTableInline ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable ;
@@ -45,6 +43,7 @@ import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.store.DatasetPrefixesTDB ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
+import com.hp.hpl.jena.tdb.transaction.DatasetBuilderTxn ;
 import com.hp.hpl.jena.tdb.transaction.DatasetGraphTxnTDB ;
 import com.hp.hpl.jena.tdb.transaction.NodeTableTrans ;
 import com.hp.hpl.jena.tdb.transaction.TransactionManager ;
@@ -75,17 +74,19 @@ public class TxMain
     
     public static void main(String... args)
     {
-        DatasetGraphTDB dsg00 = build() ;
-        exit(0) ;
-        
-        execNT() ;  exit(0) ;
-        
         if ( false ) 
             SystemTDB.setFileMode(FileMode.direct) ;
         
         initFS() ;
         DatasetGraphTDB dsg0 = build() ;
+        query("SELECT (Count(*) AS ?c) { ?s ?p ?o }", dsg0) ;
+
+        DatasetGraphTDB dsg1 = new DatasetBuilderTxn(new TransactionManager()).build(dsg0) ;
+        load("D.ttl", dsg1) ;
+        query("SELECT (Count(*) AS ?c) { ?s ?p ?o }", dsg1) ;
+        query("SELECT (Count(*) AS ?c) { ?s ?p ?o }", dsg0) ;
         
+        exit(0) ;
         deconstruct(dsg0) ;
         
         load("D.ttl", dsg0) ;
@@ -144,7 +145,7 @@ public class TxMain
         NodeId id_1 = nt0.getAllocateNodeId(node1) ;
 
         // Set up the trans table.
-        NodeTableTrans ntt = new NodeTableTrans(null, nt0, idx, objectFile) ;
+        NodeTableTrans ntt = new NodeTableTrans(nt0, idx, objectFile) ;
         NodeTable nt = NodeTableInline.create(ntt) ;
         
         ntt.begin(null) ;

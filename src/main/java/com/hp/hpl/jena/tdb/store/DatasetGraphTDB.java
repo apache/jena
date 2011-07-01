@@ -41,32 +41,30 @@ public class DatasetGraphTDB extends DatasetGraphCaching
     private QuadTable quadTable ;
     private DatasetPrefixStorage prefixes ;
     private final ReorderTransformation transform ;
-    private final Location location ;
-    private final Properties config ;
+    private final StoreConfig config ;
     
     private GraphTDB effectiveDefaultGraph ;
     private boolean closed = false ;
 
     public DatasetGraphTDB(TripleTable tripleTable, QuadTable quadTable, DatasetPrefixStorage prefixes, 
-                           ReorderTransformation transform, Location location, Properties config)
+                           ReorderTransformation transform, StoreConfig config)
     {
         this.tripleTable = tripleTable ;
         this.quadTable = quadTable ;
         this.prefixes = prefixes ;
         this.transform = transform ;
-        this.location = location ;
         this.config = config ;
         this.effectiveDefaultGraph = getDefaultGraphTDB() ;
     }
     
     protected DatasetGraphTDB(DatasetGraphTDB other)
     {
-        this(other.tripleTable, other.quadTable, other.prefixes, other.transform, other.location, other.config) ;
+        this(other.tripleTable, other.quadTable, other.prefixes, other.transform, other.config) ;
     }
 
     public DatasetGraphTDB duplicate()
     {
-        return new DatasetGraphTDB(tripleTable, quadTable, prefixes, transform, location, config) ;
+        return new DatasetGraphTDB(tripleTable, quadTable, prefixes, transform, config) ;
     }
     
     public QuadTable getQuadTable()         { return quadTable ; }
@@ -194,20 +192,20 @@ public class DatasetGraphTDB extends DatasetGraphCaching
 
     public GraphTDB getEffectiveDefaultGraph()          { return effectiveDefaultGraph ; }
 
-    public Properties getConfig()                       { return config ; }
+    public StoreConfig getConfig()                       { return config ; }
     
     public String getConfigValue(String key)
     {
         if ( config == null )
             return null ;
-        return config.getProperty(key) ;
+        return config.properties.getProperty(key) ;
     }
     
     public int getConfigValueAsInt(String key, int dftValue)
     {
         if ( config == null )
             return dftValue ;
-        return PropertyUtils.getPropertyAsInteger(config, key, dftValue) ;
+        return PropertyUtils.getPropertyAsInteger(config.properties, key, dftValue) ;
     }
 
     public ReorderTransformation getTransform()     { return transform ; }
@@ -245,7 +243,7 @@ public class DatasetGraphTDB extends DatasetGraphCaching
         getQuadTable().clearQuads() ;
     }
     
-    public Location getLocation()       { return location ; }
+    public Location getLocation()       { return config.location ; }
 
     @Override
     public void sync()

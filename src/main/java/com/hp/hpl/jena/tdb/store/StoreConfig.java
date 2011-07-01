@@ -16,37 +16,30 @@
  * limitations under the License.
  */
 
-package tx;
+package com.hp.hpl.jena.tdb.store;
 
+import java.util.Map ;
 import java.util.Properties ;
 
+import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
-import com.hp.hpl.jena.tdb.setup.DatasetBuilder ;
-import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
+import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
+import com.hp.hpl.jena.tdb.sys.FileRef ;
 
-
-/** Yet another dataset builder.
- *  This one builds the DatasetGraph and the transactional DatasetGraph toegther.
- *  It heavily assumes that there is one active transaction
- *  It does currently assume that a transaction   
- */
-public class DatasetBuilderTxn2 implements DatasetBuilder
+public class StoreConfig
 {
-    private static Object builderLock = new Object() ;
+    public Properties properties ;
+    public Map<FileRef, BlockMgr> blockMgrs ;
+    public Map<FileRef, NodeTable> nodeTables ;
+    public Location location ; 
+
+    public StoreConfig(Location location, Properties properties, Map<FileRef, BlockMgr> blockMgrs, Map<FileRef, NodeTable> nodeTables)
+    {
+        this.location = location ;
+        this.properties = properties ;
+        this.blockMgrs = blockMgrs ;
+        this.nodeTables = nodeTables ;
+    }
     
-    @Override
-    public DatasetGraphTDB build(Location location, Properties config)
-    {
-        synchronized(builderLock)
-        {
-            return _build(location, config) ;
-        }
-    }
-
-    private DatasetGraphTDB _build(Location location, Properties config)
-    {
-        return null ;
-    }
-
 }
 

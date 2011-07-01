@@ -45,7 +45,7 @@ public class NodeTableTrans implements NodeTable, Transactional
     private final Index nodeIndex ;
     private final ObjectFile journal ;
     
-    public NodeTableTrans(Transaction txn, NodeTable sub, Index nodeIndex, ObjectFile journal)
+    public NodeTableTrans(NodeTable sub, Index nodeIndex, ObjectFile journal)
     {
         this.base = sub ;
 

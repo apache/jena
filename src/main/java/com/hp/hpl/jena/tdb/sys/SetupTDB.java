@@ -60,6 +60,7 @@ import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.store.DatasetPrefixesTDB ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
 import com.hp.hpl.jena.tdb.store.QuadTable ;
+import com.hp.hpl.jena.tdb.store.StoreConfig ;
 import com.hp.hpl.jena.tdb.store.TripleTable ;
 
 /** Makes things: datasets from locations, indexes */
@@ -257,7 +258,8 @@ public class SetupTDB
         DatasetPrefixStorage prefixes = makePrefixes(location, config, policy) ;
 
         // ---- Create the DatasetGraph object
-        DatasetGraphTDB dsg = new DatasetGraphTDB(tripleTable, quadTable, prefixes, chooseOptimizer(location), location, config) ;
+        StoreConfig storeConfig = new StoreConfig(location, config, null, null) ;
+        DatasetGraphTDB dsg = new DatasetGraphTDB(tripleTable, quadTable, prefixes, chooseOptimizer(location), storeConfig) ;
 
         // Finalize
         metafile.flush() ;

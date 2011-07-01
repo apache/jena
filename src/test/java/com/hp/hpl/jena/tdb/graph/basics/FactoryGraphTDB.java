@@ -165,7 +165,7 @@ class FactoryGraphTDB
         QuadTable quads = createQuadTable(indexBuilder, nodeTable, location, quadIndexDesc, policy) ;
         @SuppressWarnings("deprecation")
         DatasetPrefixesTDB prefixes = DatasetPrefixesTDB.create(indexBuilder, location, policy) ;
-        return new DatasetGraphTDB(triples, quads, prefixes, chooseOptimizer(location), location, null) ;
+        return new DatasetGraphTDB(triples, quads, prefixes, chooseOptimizer(location), null) ;
     }
 
     private static TupleIndex createTupleIndex(IndexBuilder indexBuilder, RecordFactory recordFactory, Location location, String primary, String desc)

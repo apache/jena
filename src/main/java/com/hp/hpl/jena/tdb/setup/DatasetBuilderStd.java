@@ -6,6 +6,8 @@
 
 package com.hp.hpl.jena.tdb.setup;
 
+import java.util.HashMap ;
+import java.util.Map ;
 import java.util.Properties ;
 
 import org.openjena.atlas.lib.ColumnMap ;
@@ -16,6 +18,7 @@ import com.hp.hpl.jena.sparql.core.DatasetPrefixStorage ;
 import com.hp.hpl.jena.sparql.engine.optimizer.reorder.ReorderTransformation ;
 import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.TDBException ;
+import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
 import com.hp.hpl.jena.tdb.base.file.FileSet ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.base.file.MetaFile ;
@@ -26,13 +29,14 @@ import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.store.DatasetPrefixesTDB ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
 import com.hp.hpl.jena.tdb.store.QuadTable ;
+import com.hp.hpl.jena.tdb.store.StoreConfig ;
 import com.hp.hpl.jena.tdb.store.TripleTable ;
 import com.hp.hpl.jena.tdb.sys.ConcurrencyPolicy ;
 import com.hp.hpl.jena.tdb.sys.ConcurrencyPolicyMRSW ;
-import com.hp.hpl.jena.tdb.sys.SystemTDB ;
+import com.hp.hpl.jena.tdb.sys.FileRef ;
 import com.hp.hpl.jena.tdb.sys.Names ;
 import com.hp.hpl.jena.tdb.sys.SetupTDB ;
-//import com.hp.hpl.jena.tdb.sys.SystemTDB ;
+import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 /** This class is the process of building a dataset. */ 
 
@@ -43,7 +47,7 @@ public class DatasetBuilderStd implements DatasetBuilder
     private BlockMgrBuilder blockMgrBuilder ;
     private ObjectFileBuilder objectFileBuilder ;
 
-    private IndexBuilder indexBuilder ;
+    //private IndexBuilder indexBuilder ;
     private RangeIndexBuilder rangeIndexBuilder ;
     
     private NodeTableBuilder nodeTableBuilder ;
@@ -52,6 +56,9 @@ public class DatasetBuilderStd implements DatasetBuilder
     
     private Properties config ;
     
+    private Map<FileRef, BlockMgr> blockMgrs = new HashMap<FileRef, BlockMgr>() ;
+    private Map<FileRef, NodeTable> nodeTables = new HashMap<FileRef, NodeTable>() ;
+
     public static DatasetGraphTDB build(String dir)
     {
         DatasetBuilderStd x = new DatasetBuilderStd() ;
@@ -63,7 +70,13 @@ public class DatasetBuilderStd implements DatasetBuilder
     {
     }
     
-    protected void set(NodeTableBuilder nodeTableBuilder,
+    public DatasetBuilderStd(BlockMgrBuilder blockMgrBuilder,
+                             NodeTableBuilder nodeTableBuilder)
+    {
+        set(blockMgrBuilder, nodeTableBuilder) ;
+    }
+    
+    protected void setAll(NodeTableBuilder nodeTableBuilder,
                        TupleIndexBuilder tupleIndexBuilder,
                        IndexBuilder indexBuilder,
                        RangeIndexBuilder rangeIndexBuilder,
@@ -72,45 +85,63 @@ public class DatasetBuilderStd implements DatasetBuilder
     {
         this.nodeTableBuilder = nodeTableBuilder ;
         this.tupleIndexBuilder = tupleIndexBuilder ;
-        this.indexBuilder = indexBuilder ;
+        //this.indexBuilder = indexBuilder ;
         this.rangeIndexBuilder = rangeIndexBuilder ;
         this.blockMgrBuilder = blockMgrBuilder ;
         this.objectFileBuilder = objectFileBuilder ;
     }
+    
+    protected void set(NodeTableBuilder nodeTableBuilder,
+                       TupleIndexBuilder tupleIndexBuilder,
+                       //IndexBuilder indexBuilder,
+                       RangeIndexBuilder rangeIndexBuilder)
+    {
+        this.nodeTableBuilder = nodeTableBuilder ;
+        this.tupleIndexBuilder = tupleIndexBuilder ;
+        //this.indexBuilder = indexBuilder ;
+        this.rangeIndexBuilder = rangeIndexBuilder ;
+    }
+    
+    protected void set(BlockMgrBuilder blockMgrBuilder,
+                       NodeTableBuilder nodeTableBuilder)
+    {
+        Recorder recorder = new Recorder(this) ;
+        BlockMgrBuilder blockMgrBuilderRec = new BlockMgrBuilderRecorder(blockMgrBuilder, recorder) ;
+
+        IndexBuilder indexBuilder               = new Builder.IndexBuilderStd(blockMgrBuilderRec, blockMgrBuilderRec) ;
+        RangeIndexBuilder rangeIndexBuilder     = new Builder.RangeIndexBuilderStd(blockMgrBuilderRec, blockMgrBuilderRec) ;
         
-    
-    // Capture
-    
+        this.nodeTableBuilder = nodeTableBuilder ;
+        nodeTableBuilder = new NodeTableBuilderRecorder(nodeTableBuilder, recorder) ;
+        
+        TupleIndexBuilder tupleIndexBuilder     = new Builder.TupleIndexBuilderStd(rangeIndexBuilder) ;
+        set(nodeTableBuilder, tupleIndexBuilder, rangeIndexBuilder) ;
+    }
+        
     protected void setStd()
     {
-        ObjectFileBuilder objectFileBuilder     = new Builder.ObjectFileBuilderStd() ;
-        // Depends on memory/file?
-        BlockMgrBuilder blockMgrBuilder         = new Builder.BlockMgrBuilderStd() ;
-        
-        IndexBuilder indexBuilder               = new Builder.IndexBuilderStd(blockMgrBuilder, blockMgrBuilder) ;
-        RangeIndexBuilder rangeIndexBuilder     = new Builder.RangeIndexBuilderStd(blockMgrBuilder, blockMgrBuilder) ;
-        
-        NodeTableBuilder nodeTableBuilder       = new Builder.NodeTableBuilderStd(indexBuilder, objectFileBuilder) ;
-        TupleIndexBuilder tupleIndexBuilder     = new Builder.TupleIndexBuilderStd(rangeIndexBuilder) ;
-        
-        set(nodeTableBuilder, tupleIndexBuilder, 
-            indexBuilder, rangeIndexBuilder, 
-            blockMgrBuilder, objectFileBuilder) ;
+          ObjectFileBuilder objectFileBuilder     = new Builder.ObjectFileBuilderStd() ;
+          BlockMgrBuilder blockMgrBuilder         = new Builder.BlockMgrBuilderStd() ;
+          IndexBuilder indexBuilderNT             = new Builder.IndexBuilderStd(blockMgrBuilder, blockMgrBuilder) ;
+          NodeTableBuilder nodeTableBuilder       = new Builder.NodeTableBuilderStd(indexBuilderNT, objectFileBuilder) ;
+          
+          set(blockMgrBuilder, nodeTableBuilder) ;
+//        ObjectFileBuilder objectFileBuilder     = new Builder.ObjectFileBuilderStd() ;
+//        // Depends on memory/file?
+//        BlockMgrBuilder blockMgrBuilder         = new Builder.BlockMgrBuilderStd() ;
+//        
+//        IndexBuilder indexBuilder               = new Builder.IndexBuilderStd(blockMgrBuilder, blockMgrBuilder) ;
+//        RangeIndexBuilder rangeIndexBuilder     = new Builder.RangeIndexBuilderStd(blockMgrBuilder, blockMgrBuilder) ;
+//        
+//        NodeTableBuilder nodeTableBuilder       = new Builder.NodeTableBuilderStd(indexBuilder, objectFileBuilder) ;
+//        TupleIndexBuilder tupleIndexBuilder     = new Builder.TupleIndexBuilderStd(rangeIndexBuilder) ;
+//        
+//        set(nodeTableBuilder, tupleIndexBuilder, 
+//            indexBuilder, rangeIndexBuilder, 
+//            blockMgrBuilder, objectFileBuilder) ;
         
     }
 
-    protected DatasetBuilderStd(NodeTableBuilder nodeTableBuilder,
-                                TupleIndexBuilder tupleIndexBuilder,
-                                IndexBuilder indexBuilder,
-                                RangeIndexBuilder rangeIndexBuilder,
-                                BlockMgrBuilder blockMgrBuilder,
-                                ObjectFileBuilder objectFileBuilder)
-    {
-        set(nodeTableBuilder, tupleIndexBuilder, 
-            indexBuilder, rangeIndexBuilder, 
-            blockMgrBuilder, objectFileBuilder) ;
-    }
-    
     @Override
     synchronized final
     public DatasetGraphTDB build(Location location, Properties config)
@@ -137,7 +168,9 @@ public class DatasetBuilderStd implements DatasetBuilder
         QuadTable quadTable = makeQuadTable(location, nodeTable, policy) ;
         DatasetPrefixStorage prefixes = makePrefixTable(location, policy) ;
         ReorderTransformation transform  = chooseReorderTransformation(location) ;
-        DatasetGraphTDB dsg = new DatasetGraphTDB(tripleTable, quadTable, prefixes, transform, location, config) ;
+        
+        StoreConfig storeConfig = new StoreConfig(location, config, blockMgrs, nodeTables) ;
+        DatasetGraphTDB dsg = new DatasetGraphTDB(tripleTable, quadTable, prefixes, transform, storeConfig) ;
         return dsg ;
     }
     
@@ -361,6 +394,86 @@ public class DatasetBuilderStd implements DatasetBuilder
         final String   prefixNode2Id       = Names.prefixNode2Id ;
         final String   prefixId2Node       = Names.prefixId2Node ;
          
+    }
+    
+    interface RecordBlockMgr 
+    {
+        void record(FileRef fileRef, BlockMgr blockMgr) ;
+    }
+    
+    interface RecordNodeTable 
+    {
+        void record(FileRef fileRef, NodeTable nodeTable) ;
+    }
+
+    static class NodeTableBuilderRecorder implements NodeTableBuilder
+    {
+        private NodeTableBuilder builder ;
+        private RecordNodeTable recorder ;
+
+        NodeTableBuilderRecorder(NodeTableBuilder ntb, RecordNodeTable recorder)
+        {
+            this.builder = ntb ;
+            this.recorder = recorder ;
+        }
+        
+        @Override
+        public NodeTable buildNodeTable(FileSet fsIndex, FileSet fsObjectFile, int sizeNode2NodeIdCache,
+                                        int sizeNodeId2NodeCache)
+        {
+            NodeTable nt = builder.buildNodeTable(fsIndex, fsObjectFile, sizeNode2NodeIdCache, sizeNodeId2NodeCache) ;
+            // It just knows, right?
+            FileRef ref = FileRef.create(fsObjectFile.filename(Names.extNodeData)) ;
+            recorder.record(ref, nt) ;
+            return nt ;
+        }
+        
+    }
+    
+    static class BlockMgrBuilderRecorder implements BlockMgrBuilder
+    {
+        private BlockMgrBuilder builder ;
+        private RecordBlockMgr recorder ;
+
+        BlockMgrBuilderRecorder(BlockMgrBuilder blkMgrBuilder, RecordBlockMgr recorder)
+        {
+            this.builder = blkMgrBuilder ;
+            this.recorder = recorder ;
+        }
+        
+        @Override
+        public BlockMgr buildBlockMgr(FileSet fileSet, String ext, int blockSize)
+        {
+            BlockMgr blkMgr = builder.buildBlockMgr(fileSet, ext, blockSize) ;
+            FileRef ref = FileRef.create(fileSet, ext) ;
+            recorder.record(ref, blkMgr) ;
+            return blkMgr ;
+        }
+    }
+    
+    static class Recorder implements RecordBlockMgr, RecordNodeTable
+    {
+
+        private DatasetBuilderStd dsBuilder ;
+
+        Recorder(DatasetBuilderStd dsBuilder)
+        {
+            this.dsBuilder = dsBuilder ;
+        }
+        
+        @Override
+        public void record(FileRef fileRef, BlockMgr blockMgr)
+        {
+            //log.info("BlockMgr: "+fileRef) ;
+            dsBuilder.blockMgrs.put(fileRef, blockMgr) ;
+        }
+
+        @Override
+        public void record(FileRef fileRef, NodeTable nodeTable)
+        {
+            //log.info("NodeTable: "+fileRef) ;
+            dsBuilder.nodeTables.put(fileRef, nodeTable) ;
+        }
     }
 }
 

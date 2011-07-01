@@ -54,7 +54,7 @@ public class TransactionManager
         Location location = dsgtdb.getLocation() ;
         
         // TODO Don't rebuild every time.
-        DatasetBuilder builder = new DatasetBuilderTxn(this) ;
+        DatasetBuilder builder = new DatasetBuilderTxn_Old(this) ;
         //return builder.build(Location.mem(), null) ;
         DatasetGraphTxnTDB dsgTxn = (DatasetGraphTxnTDB)builder.build(location, null) ;
         return dsgTxn ;

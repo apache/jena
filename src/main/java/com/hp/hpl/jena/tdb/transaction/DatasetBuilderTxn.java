@@ -6,14 +6,9 @@
 
 package com.hp.hpl.jena.tdb.transaction ;
 
-import java.util.HashMap ;
 import java.util.Map ;
-import java.util.Properties ;
 
-import org.openjena.atlas.lib.FileOps ;
-import org.openjena.atlas.logging.Log ;
-
-import com.hp.hpl.jena.sparql.core.DatasetPrefixStorage ;
+import com.hp.hpl.jena.tdb.TDBException ;
 import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrLogger ;
 import com.hp.hpl.jena.tdb.base.file.BufferChannel ;
@@ -21,36 +16,52 @@ import com.hp.hpl.jena.tdb.base.file.BufferChannelFile ;
 import com.hp.hpl.jena.tdb.base.file.BufferChannelMem ;
 import com.hp.hpl.jena.tdb.base.file.FileFactory ;
 import com.hp.hpl.jena.tdb.base.file.FileSet ;
-import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile ;
-import com.hp.hpl.jena.tdb.base.objectfile.ObjectFileLogger ;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
 import com.hp.hpl.jena.tdb.index.Index ;
 import com.hp.hpl.jena.tdb.index.IndexMap ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
-import com.hp.hpl.jena.tdb.nodetable.NodeTableLogger ;
+import com.hp.hpl.jena.tdb.nodetable.NodeTableInline ;
 import com.hp.hpl.jena.tdb.setup.BlockMgrBuilder ;
-import com.hp.hpl.jena.tdb.setup.Builder ;
 import com.hp.hpl.jena.tdb.setup.DatasetBuilderStd ;
-import com.hp.hpl.jena.tdb.setup.IndexBuilder ;
 import com.hp.hpl.jena.tdb.setup.NodeTableBuilder ;
-import com.hp.hpl.jena.tdb.setup.ObjectFileBuilder ;
-import com.hp.hpl.jena.tdb.setup.RangeIndexBuilder ;
-import com.hp.hpl.jena.tdb.setup.TupleIndexBuilder ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
-import com.hp.hpl.jena.tdb.store.DatasetPrefixStorageLogger ;
-import com.hp.hpl.jena.tdb.sys.ConcurrencyPolicy ;
 import com.hp.hpl.jena.tdb.sys.FileRef ;
+import com.hp.hpl.jena.tdb.sys.Names ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
-public class DatasetBuilderTxn extends DatasetBuilderStd
+public class DatasetBuilderTxn
 {
-    // Track resources for the datsetgraph as built.
-    //    BlockMgr.
-    //    ObjectFile.
+    private TransactionManager txnMgr ;
+    Map<FileRef, BlockMgr> blockMgrs ; 
+    Map<FileRef, NodeTable> nodeTables ;
+    Journal journal ;
+    Transaction txn ;
+
+    public DatasetBuilderTxn(TransactionManager txnMgr) { this.txnMgr = txnMgr ; }
     
+    public DatasetGraphTDB build(DatasetGraphTDB dsg)
+    {
+        blockMgrs = dsg.getConfig().blockMgrs ;
+        nodeTables = dsg.getConfig().nodeTables ;
+        txn = txnMgr.createTransaction() ;
+            
+        BufferChannel chan ;
+        if ( dsg.getLocation().isMem() )
+            chan = new BufferChannelMem() ;
+        else
+            chan = new BufferChannelFile(dsg.getLocation().absolute(Names.journalFile)) ;
+        journal = new Journal(chan) ;
+        
+        BlockMgrBuilder blockMgrBuilder = new BlockMgrBuilderTx() ;
+        NodeTableBuilder nodeTableBuilder = new NodeTableBuilderTx() ;
+        
+        //  [TxTDB:PATCH-UP] FAKE BEGIN
+        
+        DatasetBuilderStd x = new DatasetBuilderStd(blockMgrBuilder, nodeTableBuilder) ;
+        return x.build(dsg.getLocation(), dsg.getConfig().properties) ;    
+    }
     
-    public DatasetBuilderTxn(TransactionManager txnMgr) { setStd() ; this.txnMgr = txnMgr ; }
     
     // ---- Add logging to a BlockMgr when built.
     static BlockMgrBuilder logging(BlockMgrBuilder other) { return new BlockMgrBuilderLogger(other) ; }
@@ -71,154 +82,50 @@ public class DatasetBuilderTxn extends DatasetBuilderStd
             return blkMgr ;
         }
     }
-    // ----
     
-    @Override
-    protected void setStd()
+    class NodeTableBuilderTx implements NodeTableBuilder
     {
-        ObjectFileBuilder objectFileBuilder = new ObjectFileBuilderTx() ;
-        BlockMgrBuilder blockMgrBuilder = new BlockMgrBuilderTx() ;
-
-        IndexBuilder indexBuilder = new Builder.IndexBuilderStd(blockMgrBuilder, blockMgrBuilder) ;
-
-        // Add logging to a BlockMgrBuilder (here, just the records par of the B+Tree
-        //RangeIndexBuilder rangeIndexBuilder = new RangeIndexBuilderStd(blockMgrBuilder, logging(blockMgrBuilder)) ;
-        RangeIndexBuilder rangeIndexBuilder = new Builder.RangeIndexBuilderStd(blockMgrBuilder, blockMgrBuilder) ;
-
-        NodeTableBuilder nodeTableBuilder = new Builder.NodeTableBuilderStd(indexBuilder, objectFileBuilder)
-        {
-            // track all NodeTable operations
-            @Override
-            public NodeTable buildNodeTable(FileSet fsIndex, FileSet fsObjectFile, int sizeNode2NodeIdCache, int sizeNodeId2NodeCache)
-            {
-                NodeTable nt = super.buildNodeTable(fsIndex, fsObjectFile, sizeNode2NodeIdCache, sizeNodeId2NodeCache) ;
-                if ( false )
-                    nt = new NodeTableLogger(fsObjectFile.getBasename(), nt) ;
-                return nt ;
-                
-            }
-        } ; 
-        
-        TupleIndexBuilder tupleIndexBuilder = new Builder.TupleIndexBuilderStd(rangeIndexBuilder) ;
-        set(nodeTableBuilder, tupleIndexBuilder, indexBuilder, rangeIndexBuilder, blockMgrBuilder, objectFileBuilder) ;
-    }
-    
-    @Override
-    protected DatasetPrefixStorage makePrefixTable(Location location, ConcurrencyPolicy policy)
-    {
-        DatasetPrefixStorage x = super.makePrefixTable(location, policy) ;
-        // Logging.
-        if ( false )
-            x = new DatasetPrefixStorageLogger(x) ;
-        return x ;
-    }
-
-    @Override
-    protected DatasetGraphTDB _build(Location location, Properties config)
-    {
-        this.location = location ;
-        this.txn = txnMgr.createTransaction() ;
-        
-        BufferChannel chan ;
-        if (location.isMem()) chan = new BufferChannelMem("journal") ;
-        else
-            chan = new BufferChannelFile(location.getPath(journalFilename, journalExt)) ;
-
-        journal = new Journal(chan) ;
-        txn.add(journal) ;
-
-        DatasetGraphTDB dsg = super.build(location, config) ;
-        return new DatasetGraphTxnTDB(dsg, txn) ;
-    }
-
-    // To SystemTDB
-    public static final String journalExt = "jrnl" ;
-    public static final String journalFilename = "journal" ;
-    public static final String nodeJournalFilename = "nodes" ;
-   
-    private TransactionManager txnMgr ;
-    private Journal  journal ;
-    private Transaction txn ;
-    private Location location ;
-    private Map<FileRef, BlockMgr> blockMgrs = new HashMap<FileRef, BlockMgr>() ;
-    private Map<FileRef, ObjectFile> objectFile = new HashMap<FileRef, ObjectFile>() ;
-
-    
-    @Override
-    protected NodeTable makeNodeTable(Location location, String indexNode2Id, String indexId2Node, 
-                                      int sizeNode2NodeIdCache, int sizeNodeId2NodeCache)
-    {
-        // GET FROM DATASET
-        NodeTable nt = super.makeNodeTable(location, indexNode2Id, indexId2Node, sizeNode2NodeIdCache, sizeNodeId2NodeCache) ;
-        
-        RecordFactory recordFactory = new RecordFactory(SystemTDB.LenNodeHash, SystemTDB.SizeOfNodeId) ;
-        Index idx = new IndexMap(recordFactory) ;   // In-memory
-        ObjectFile objFile = FileFactory.createObjectFileDisk(location.absolute(nodeJournalFilename, journalExt)) ;
-        NodeTable nt0 = nt ; 
-        NodeTableTrans ntt = new NodeTableTrans(null, nt0, idx, objFile) ;
-        // Remember ntt.
-        return nt ;
-        
-    }
-    
-    class ObjectFileBuilderTx implements ObjectFileBuilder
-    {
-        ObjectFileBuilder base = new Builder.ObjectFileBuilderStd() ;
         @Override
-        public ObjectFile buildObjectFile(FileSet fileSet, String ext)
+        public NodeTable buildNodeTable(FileSet fsIndex, FileSet fsObjectFile, int sizeNode2NodeIdCache,
+                                        int sizeNodeId2NodeCache)
         {
-            ObjectFile backing ;
-            ObjectFile main = base.buildObjectFile(fileSet, ext) ;
+            FileRef ref = FileRef.create(fsObjectFile.filename(Names.extNodeData)) ;
+            NodeTable ntBase = nodeTables.get(ref) ;
+            if ( ntBase == null )
+                throw new TDBException("No NodeTable for "+ref) ;
             
-            if ( location.isMem() )
-                backing = FileFactory.createObjectFileMem() ;
+            RecordFactory recordFactory = new RecordFactory(SystemTDB.LenNodeHash, SystemTDB.SizeOfNodeId) ;
+            Index idx = new IndexMap(recordFactory) ;
+            String objFilename = fsObjectFile.filename(Names.extNodeData+"-"+Names.extJournal) ;
+            ObjectFile objectFile ;
+            if ( fsObjectFile.isMem() )
+                objectFile = FileFactory.createObjectFileMem() ;
             else
-                backing = FileFactory.createObjectFileDisk(fileSet.filename(journalExt)) ;
+                objectFile = FileFactory.createObjectFileDisk(objFilename) ;
 
-            ObjectFileTrans objFileTrans = new ObjectFileTrans(txn, main, backing) ;
-            txn.add(objFileTrans) ;
-            ObjectFile objFile = objFileTrans ;
-            if ( false )
-            {
-                String fn = FileOps.basename(fileSet.filename(ext)) ;
-                objFile = new ObjectFileLogger(fn, objFile) ;
-            }
+            NodeTableTrans ntt = new NodeTableTrans(ntBase, idx, objectFile) ;
+            ntt.begin(txn) ; //  [TxTDB:PATCH-UP] FAKE BEGIN
             
-            { 
-                FileRef fileref = FileRef.create(fileSet, ext) ;
-                Log.info(DatasetBuilderTxn.class, "ObjectFile: "+fileref) ;
-            }
-            
-            return objFile ;
+            // Add inline wrapper.
+            NodeTable nt = NodeTableInline.create(ntt) ;
+            return nt ;
         }
     }
-
+    
     class BlockMgrBuilderTx implements BlockMgrBuilder
     {
-        BlockMgrBuilder base = new Builder.BlockMgrBuilderStd() ;
         @Override
         public BlockMgr buildBlockMgr(FileSet fileSet, String ext, int blockSize)
         {
-            BlockMgr baseMgr = base.buildBlockMgr(fileSet, ext, blockSize) ;
-            FileRef ref = FileRef.create(fileSet.filename(ext)) ;
+            // Find from file ref.
+            FileRef ref = FileRef.create(fileSet, ext) ;
+            BlockMgr baseMgr = blockMgrs.get(ref) ;
+            if ( baseMgr == null )
+                throw new TDBException("No BlockMgr for "+ref) ;
             BlockMgrJournal blkMg = new BlockMgrJournal(txn, ref, baseMgr, journal) ;
-            // [TxTDB:TODO]
-            
-            { 
-                FileRef fileref = FileRef.create(fileSet, ext) ;
-                Log.info(DatasetBuilderTxn.class, "BlockMgr: "+fileref) ;
-            }
-            
             return blkMg ;
         }
     }
-
-    /** Add transactions to an existing datatset */
-    public static DatasetGraphTDB enhance(DatasetGraphTDB dsg)
-    {
-        return dsg ;
-    }
-
 }
 
 /*

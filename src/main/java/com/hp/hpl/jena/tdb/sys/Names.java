@@ -30,7 +30,9 @@ public class Names
     public static final String extHashBucketExt         = "dat" ;
     
     /** Node file */
-    public static final String extNodeData              = "dat" ;           // Extension of node files.
+    public static final String extNodeData              = "dat" ;           // Extension of node files
+    public static final String extJournal               = "jrnl" ;          // Extension of node files.
+    public static final String journalFile              = "journal"+"."+extJournal ;
     
     public static final String indexId2Node             = "nodes" ;         // Node table
     public static final String indexNode2Id             = "node2id";        // Node hash to id table

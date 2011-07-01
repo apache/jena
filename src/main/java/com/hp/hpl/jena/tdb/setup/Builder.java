@@ -81,9 +81,6 @@ public class Builder
         @Override
         public NodeTable buildNodeTable(FileSet fsIndex, FileSet fsObjectFile, int sizeNode2NodeIdCache, int sizeNodeId2NodeCache)
         {
-            if ( VERBOSE )
-                log.info("NodeTable: "+fsIndex+"/"+fsObjectFile) ;
-            
             RecordFactory recordFactory = new RecordFactory(SystemTDB.LenNodeHash, SystemTDB.SizeOfNodeId) ;
             Index idx = indexBuilder.buildIndex(fsIndex, recordFactory) ;
             ObjectFile objectFile = objectFileBuilder.buildObjectFile(fsObjectFile, Names.extNodeData) ;
@@ -130,9 +127,6 @@ public class Builder
             @Override
             public RangeIndex buildRangeIndex(FileSet fileSet, RecordFactory recordFactory)
             {
-                if ( VERBOSE )
-                    log.info("RangeIndex: "+fileSet) ;
-                
                 int blkSize = SystemTDB.BlockSize ;
                 int order = BPlusTreeParams.calcOrder(blkSize, recordFactory.recordLength()) ;
                 int readCacheSize = SystemTDB.BlockReadCacheSize ;

@@ -45,7 +45,7 @@ public class TestNodeTableTrans extends AbstractTestNodeTableTrans
         // Set up the transaction table.
         Index idx = new IndexMap(recordFactory) ;
         ObjectFile objectFile = FileFactory.createObjectFileMem() ;
-        NodeTableTrans ntt = new NodeTableTrans(null, base, idx, objectFile) ;
+        NodeTableTrans ntt = new NodeTableTrans(base, idx, objectFile) ;
         return ntt ;
     }
 }
