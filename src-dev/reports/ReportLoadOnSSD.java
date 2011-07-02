@@ -36,10 +36,11 @@ http://downloads.dbpedia.org/3.6/dbpedia_3.6.owl.bz2
         
         //SystemTDB.setFileMode(FileMode.direct) ;
         
-        String datafile = "/home/afs/Desktop/jamendo-rdf/jamendo.nt" ;
+        //String datafile = "/home/afs/Desktop/jamendo-rdf/jamendo.nt" ;
+        String datafile = "/home/afs/Desktop/mappingbased_properties_en.nt.gz" ;
         DatasetGraphTDB datasetGraph ;
         
-        if ( false ) {
+        if ( true ) {
             String dir = "DB-X" ;
             FileOps.clearDirectory(dir) ;
             datasetGraph = TDBFactory.createDatasetGraph(dir);
