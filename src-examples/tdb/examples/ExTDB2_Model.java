@@ -8,13 +8,9 @@
 package tdb.examples;
 
 import com.hp.hpl.jena.query.Dataset ;
-import com.hp.hpl.jena.query.Query ;
-import com.hp.hpl.jena.query.QueryExecution ;
-import com.hp.hpl.jena.query.QueryExecutionFactory ;
-import com.hp.hpl.jena.query.QueryFactory ;
-import com.hp.hpl.jena.query.ResultSet ;
-import com.hp.hpl.jena.query.ResultSetFormatter ;
-import com.hp.hpl.jena.tdb.TDBFactory ;
+import com.hp.hpl.jena.rdf.model.Model;
+
+import com.hp.hpl.jena.tdb.TDBFactory;
 
 /** Example of creating a TDB-backed model.
  *  The preferred way is to create a dataset then get the mode required from the dataset.
@@ -26,25 +22,20 @@ import com.hp.hpl.jena.tdb.TDBFactory ;
  *  Calling TDBFactory is the only place TDB-specific code is needed.
  */
 
-public class ExTDB4
+public class ExTDB2_Model
 {
     public static void main(String... argv)
     {
         // Direct way: Make a TDB-back Jena model in the named directory.
         String directory = "MyDatabases/DB1" ;
-        Dataset dataset = TDBFactory.createDataset(directory) ;
+        Dataset ds = TDBFactory.createDataset(directory) ;
+        Model model = ds.getDefaultModel() ;
         
-        // Potentially expensive query.
-        String sparqlQueryString = "SELECT (count(*) AS ?count) { ?s ?p ?o }" ;
-        // See http://www.openjena.org/ARQ/app_api.html
+        // ... do work ...
         
-        Query query = QueryFactory.create(sparqlQueryString) ;
-        QueryExecution qexec = QueryExecutionFactory.create(query, dataset) ;
-        ResultSet results = qexec.execSelect() ;
-        ResultSetFormatter.out(results) ;
-        qexec.close() ;
-
-        dataset.close();
+        // Close the dataset.
+        ds.close();
+        
     }
 }
 

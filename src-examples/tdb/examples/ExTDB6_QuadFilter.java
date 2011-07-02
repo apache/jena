@@ -26,14 +26,14 @@ import com.hp.hpl.jena.tdb.store.NodeId ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 /** Example of how to filter quads as they are accessed at the lowest level.
- * Can be used to exclude daat from specific graphs.   
+ * Can be used to exclude data from specific graphs.   
  * This mechanism is not limited to graphs - it works for properties or anything
  * where the visibility of otherwise is determined by the elements of the quad. 
  * See <a href="http://openjena.org/wiki/TDB/QuadFilter">TDB/QuadFilter</a>
  * for further details.
  */
 
-public class ExQuadFilter
+public class ExTDB6_QuadFilter
 {
     private static String graphToHide = "http://example/g2" ;
 

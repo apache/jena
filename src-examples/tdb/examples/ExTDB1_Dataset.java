@@ -8,34 +8,26 @@
 package tdb.examples;
 
 import com.hp.hpl.jena.query.Dataset ;
-import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.tdb.TDBFactory ;
 
-import com.hp.hpl.jena.tdb.TDBFactory;
-
-/** Example of creating a TDB-backed model.
- *  The preferred way is to create a dataset then get the mode required from the dataset.
- *  The dataset can be used for SPARQL query and update
- *  but the Model (or Graph) can also be used.
- *  
- *  All the Jena APIs work on the model.
- *   
- *  Calling TDBFactory is the only place TDB-specific code is needed.
+/**
+ * Using an assembler description (see wiki for details of the assembler format for TDB)
+ * This way, you can change the model being used without changing the code.
+ * The assembler file is a configuration file.
+ * The same assembler description will work as part of a Joseki configuration file. 
  */
 
-public class ExTDB1
+public class ExTDB1_Dataset
 {
     public static void main(String... argv)
     {
-        // Direct way: Make a TDB-back Jena model in the named directory.
-        String directory = "MyDatabases/DB1" ;
-        Dataset ds = TDBFactory.createDataset(directory) ;
-        Model model = ds.getDefaultModel() ;
+        String assemblerFile = "Store/tdb-assembler.ttl" ;
+
+        Dataset ds = TDBFactory.assembleDataset(assemblerFile) ;
         
         // ... do work ...
         
-        // Close the dataset.
-        ds.close();
-        
+        ds.close() ;
     }
 }
 

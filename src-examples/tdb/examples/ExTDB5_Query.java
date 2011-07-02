@@ -8,52 +8,47 @@
 package tdb.examples;
 
 import com.hp.hpl.jena.query.Dataset ;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.query.Query ;
+import com.hp.hpl.jena.query.QueryExecution ;
+import com.hp.hpl.jena.query.QueryExecutionFactory ;
+import com.hp.hpl.jena.query.QueryFactory ;
+import com.hp.hpl.jena.query.QuerySolution ;
+import com.hp.hpl.jena.query.ResultSet ;
+import com.hp.hpl.jena.tdb.TDBFactory ;
 
-import com.hp.hpl.jena.util.FileManager;
-
-import com.hp.hpl.jena.assembler.Assembler;
-import com.hp.hpl.jena.shared.JenaException;
-
-import com.hp.hpl.jena.sparql.core.assembler.DatasetAssemblerVocab;
-import com.hp.hpl.jena.sparql.util.TypeNotUniqueException;
-import com.hp.hpl.jena.sparql.util.graph.GraphUtils;
-
-import com.hp.hpl.jena.tdb.assembler.VocabTDB;
-
-/** 
- * Examples of finding an assembler for a TDB model in a larger collection
- * of descriptions in a single file.
+/** Example of creating a TDB-backed model for data already
+ *  stored in the database. Query it, print results.
+ *  Calling TDBFactory is the only place TDB-specific code is needed.
  */
-public class ExTDB3
+
+
+public class ExTDB5_Query
 {
     public static void main(String... argv)
     {
-        String assemblerFile = "Store/tdb-assembler.ttl" ;
+        // Direct way: Make a TDB-back Jena model in the named directory.
+        String directory = "MyDatabases/DB1" ;
+        Dataset dataset = TDBFactory.createDataset(directory) ;
         
-        // Find a particular description in the file where there are several: 
-        Model spec = FileManager.get().loadModel(assemblerFile) ;
+        // Potentially expensive query.
+        String sparqlQueryString = "SELECT (count(*) AS ?count) { ?s ?p ?o }" ;
+        // See http://www.openjena.org/ARQ/app_api.html
+        
+        Query query = QueryFactory.create(sparqlQueryString) ;
+        QueryExecution qexec = QueryExecutionFactory.create(query, dataset) ;
+        try {
+          ResultSet results = qexec.execSelect() ;
+          for ( ; results.hasNext() ; )
+          {
+              QuerySolution soln = results.nextSolution() ;
+              int count = soln.getLiteral("count").getInt() ;
+              System.out.println("count = "+count) ;
+          }
+        } finally { qexec.close() ; }
 
-        // Find the right starting point for the description in some way.
-        Resource root = null ;
-
-        if ( false )
-            // If you know the Resource URI:
-            root = spec.createResource("http://example/myChoiceOfURI" );
-        else
-        {
-            // Alternatively, look for the a single resource of the right type. 
-            try {
-                // Find the required description - the file can contain descriptions of many different types.
-                root = GraphUtils.findRootByType(spec, VocabTDB.tDatasetTDB) ;
-                if ( root == null )
-                    throw new JenaException("Failed to find a suitable root") ;
-            } catch (TypeNotUniqueException ex)
-            { throw new JenaException("Multiple types for: "+DatasetAssemblerVocab.tDataset) ; }
-        }
-
-        Dataset ds = (Dataset)Assembler.general.open(root) ;
+        // Close the dataset.
+        dataset.close();
+        
     }
 }
 

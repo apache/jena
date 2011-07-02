@@ -8,26 +8,38 @@
 package tdb.examples;
 
 import com.hp.hpl.jena.query.Dataset ;
+import com.hp.hpl.jena.query.Query ;
+import com.hp.hpl.jena.query.QueryExecution ;
+import com.hp.hpl.jena.query.QueryExecutionFactory ;
+import com.hp.hpl.jena.query.QueryFactory ;
+import com.hp.hpl.jena.query.ResultSet ;
+import com.hp.hpl.jena.query.ResultSetFormatter ;
 import com.hp.hpl.jena.tdb.TDBFactory ;
 
-/**
- * Using an assembler description (see wiki for details of the assembler format for TDB)
- * This way, you can change the model being used without changing the code.
- * The assembler file is a configuration file.
- * The same assembler description will work as part of a Joseki configuration file. 
+/** Example of creating a TDB-backed model for data already
+ *  stored in the database. Query it, print results.
+ *  Calling TDBFactory is the only place TDB-specific code is needed.
  */
 
-public class ExTDB2
+public class ExTDB4_Query
 {
     public static void main(String... argv)
     {
-        String assemblerFile = "Store/tdb-assembler.ttl" ;
+        // Direct way: Make a TDB-back Jena model in the named directory.
+        String directory = "MyDatabases/DB1" ;
+        Dataset dataset = TDBFactory.createDataset(directory) ;
+        
+        // Potentially expensive query.
+        String sparqlQueryString = "SELECT (count(*) AS ?count) { ?s ?p ?o }" ;
+        // See http://www.openjena.org/ARQ/app_api.html
+        
+        Query query = QueryFactory.create(sparqlQueryString) ;
+        QueryExecution qexec = QueryExecutionFactory.create(query, dataset) ;
+        ResultSet results = qexec.execSelect() ;
+        ResultSetFormatter.out(results) ;
+        qexec.close() ;
 
-        Dataset ds = TDBFactory.assembleDataset(assemblerFile) ;
-        
-        // ... do work ...
-        
-        ds.close() ;
+        dataset.close();
     }
 }
 
