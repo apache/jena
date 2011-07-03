@@ -40,6 +40,8 @@ import static java.lang.System.out;
 
 public class ExTDB7
 {
+    // Example : In-progress - from JENA-2 / Matthew Daniel
+    
     /// observe the non-http "protocol", because it is a bad precident
     /// to only use http IRI when there is no http protocol involved
     public static final String MY_NS =
