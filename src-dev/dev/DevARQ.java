@@ -6,10 +6,9 @@ public class DevARQ
     // FILTER(?x=<x> && ...) does not push down on the ?x=<x>
     // Do FILTER placement before filter equality -- but dnager of breaking up BGPs.
     
-    
     // QueryEngineHTTP - content negotiation, Apache httpClient.
     
-    // Langbase - calls EventManager.send... but Turtle rpefixes done after (read is not finished)
+    // Langbase - calls EventManager.send... but Turtle prefixes done after (read is not finished)
     //   JenaReaderRIOT to do the event? 
     // One token call to Tokenizer.parse -- Replace SSE.parseNode stuff.
     
@@ -127,13 +126,6 @@ public class DevARQ
     // OpTopN - OpExecutor.execute(OpTop).
     // BSBM Explore/Update
     // Remote SPARQL Update 
-    
-    // JENA-29 : Cancellation --> timeouts
-    // JENA-47 : Timeout query
-    // JENA-48 : QueryIterAbortCancellationRequestException - is this needed?
-    //    Check in sort that don't get one result (after a lot of sorting).
-    // JENA-49 : immediate cancellation if not .hasNext called yet.
-    // And effect on XML results.
     
     // Mem dataset with union graph
     // Union graph for all in query execution sequence.
