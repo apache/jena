@@ -64,6 +64,9 @@ public class BlockMgrFreeChain extends BlockMgrWrapper
         // Flush free blocks?
         super.sync() ;
     }
+    
+    @Override
+    public String toString() { return "Free:"+super.toString() ; }
 }
 
 /*

@@ -250,8 +250,8 @@ public class BlockMgrJournal implements BlockMgr, Transactional
 
     private void writeJournalEntry(Block blk)
     {
-        JournalEntry entry = new JournalEntry(fileRef, blk) ;
-        journal.writeJournal(entry) ;
+        blk.getByteBuffer().rewind() ;
+        journal.writeJournal(fileRef, blk) ;
     }
     
     private void logState()
@@ -286,7 +286,7 @@ public class BlockMgrJournal implements BlockMgr, Transactional
     }
 
     @Override
-    public String toString() { return "Journal:"+blockMgr.toString() ; }
+    public String toString() { return "Journal:"+fileRef.getFilename()+" ("+blockMgr.getClass().getSimpleName()+")" ; }
 
     @Override
     public String getLabel() { return fileRef.getFilename() ; }

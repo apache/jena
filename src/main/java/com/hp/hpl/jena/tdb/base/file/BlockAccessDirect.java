@@ -12,6 +12,7 @@ import static java.lang.String.format ;
 import java.io.IOException ;
 import java.nio.ByteBuffer ;
 
+import org.openjena.atlas.lib.FileOps ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
@@ -98,6 +99,9 @@ public class BlockAccessDirect extends BlockAccessBase
     {
         return log ;
     }
+    
+    @Override
+    public String toString() { return "Direct:"+FileOps.basename(filename) ; }
 }
 
 /*

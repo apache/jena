@@ -36,6 +36,7 @@ public class BlockMgrSync implements BlockMgr
     }
     
     @Override
+    synchronized
     public Block getReadIterator(long id)
     {
         return blockMgr.getReadIterator(id) ;
@@ -158,6 +159,13 @@ public class BlockMgrSync implements BlockMgr
     {
         return blockMgr.getLabel() ;
     }
+    
+    @Override
+    public String toString()
+    {
+        return "Sync:"+blockMgr.toString() ;
+    }
+
 }
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP

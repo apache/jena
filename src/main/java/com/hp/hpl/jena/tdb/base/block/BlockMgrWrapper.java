@@ -146,6 +146,9 @@ public class BlockMgrWrapper implements BlockMgr
     {
         return blockMgr.getLabel() ;
     }
+    
+    @Override
+    public String toString() { return blockMgr.toString() ; } 
 }
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP

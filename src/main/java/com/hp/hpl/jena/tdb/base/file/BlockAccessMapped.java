@@ -106,7 +106,6 @@ public class BlockAccessMapped extends BlockAccessBase
         force() ;
     }
 
-
     private ByteBuffer getByteBuffer(long _id)
     {
         // Limitation: ids must be integers.

@@ -232,6 +232,13 @@ public class BlockMgrCache extends BlockMgrSync
         syncFlush() ;
         super.close() ;
     }
+    
+    @Override
+    public String toString()
+    {
+        return "Cache:"+super.toString() ; 
+    }
+    
 
     private void log(String fmt, Object... args)
     { 

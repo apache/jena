@@ -113,7 +113,7 @@ public class BlockMgrFileAccess extends BlockMgrBase
     }
 
     @Override
-    public String toString() { return format("BlockMgrMem[%d bytes]", blockSize) ; }
+    public String toString() { return format("BlockMgrFileAccess[%d bytes]:%s", blockSize, file) ; }
     
     @Override
     protected Logger getLog()

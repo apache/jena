@@ -7,13 +7,24 @@
 package tx;
 
 import java.nio.ByteBuffer ;
+import java.util.Map ;
 
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
+
+import com.hp.hpl.jena.shared.Lock ;
 import com.hp.hpl.jena.tdb.base.block.Block ;
+import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
+import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
+import com.hp.hpl.jena.tdb.sys.FileRef ;
 import com.hp.hpl.jena.tdb.transaction.Journal ;
 import com.hp.hpl.jena.tdb.transaction.JournalEntry ;
 
 public class Replay
 {
+    private static Logger log = LoggerFactory.getLogger(Replay.class) ;
+    
+
     public static void print(Journal journal)
     {
         for ( JournalEntry e : journal )
@@ -29,29 +40,44 @@ public class Replay
             System.out.println("  "+e.getType()) ;
         }
     }
-//            switch (e.getType())
-//            {
-//                case Block:
-//                    // Get block ref.
-//                    // Find block mgr
-//                    // do it.
-//                    break ;
-//                case Object:
-//                    // Get id
-//                    // get bytes
-//                    // dispatch to NodeTable.
-//                    // ?? Node rebuilding?
-//                    // Check ids.
-//                    break ;
-//                case Commit:
-//                    break ;
-//                case Abort:
-//                    break ;
-//                case Checkpoint:
-//                    //default:
-//            }
-//        }
-//    }
+
+    public static void replay(Journal journal, DatasetGraphTDB dsg)
+    {
+        dsg.getLock().enterCriticalSection(Lock.WRITE) ;
+        try {
+        for ( JournalEntry e : journal )
+            replay(e, dsg) ;
+        } 
+        catch (RuntimeException ex)
+        { 
+            // Bad news travels fast.
+            log.error("Exception during journal replay", ex) ;
+            throw ex ;
+        }
+        finally { dsg.getLock().leaveCriticalSection() ; }
+    }
+
+    /** return true for "go on" */
+    private static boolean replay(JournalEntry e, DatasetGraphTDB dsg)
+    {
+        Map<FileRef, BlockMgr> mgrs = dsg.getConfig().blockMgrs ;
+    
+        switch (e.getType())
+        {
+            case Block:
+                BlockMgr blkMgr = mgrs.get(e.getFileRef()) ;
+                blkMgr.write(e.getBlock()) ; 
+                return true ;
+            case Commit:
+                return false ;
+            case Abort:
+            case Buffer:
+            case Object:
+            case Checkpoint:
+                log.warn("Unexpect block type: "+e.getType()) ;
+        }
+        return false ;
+    }
 }
 
 /*

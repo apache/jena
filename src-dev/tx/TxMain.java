@@ -31,12 +31,17 @@ import com.hp.hpl.jena.tdb.base.block.FileMode ;
 import com.hp.hpl.jena.tdb.base.file.BufferChannel ;
 import com.hp.hpl.jena.tdb.base.file.BufferChannelFile ;
 import com.hp.hpl.jena.tdb.base.file.FileFactory ;
+import com.hp.hpl.jena.tdb.base.file.FileSet ;
+import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile ;
 import com.hp.hpl.jena.tdb.base.record.Record ;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
 import com.hp.hpl.jena.tdb.index.Index ;
 import com.hp.hpl.jena.tdb.index.IndexMap ;
+import com.hp.hpl.jena.tdb.index.RangeIndex ;
 import com.hp.hpl.jena.tdb.index.TupleIndex ;
+import com.hp.hpl.jena.tdb.index.bplustree.BPlusTree ;
+import com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTableInline ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable ;
@@ -44,6 +49,7 @@ import com.hp.hpl.jena.tdb.setup.DatasetBuilderStd ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.store.DatasetPrefixesTDB ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
+import com.hp.hpl.jena.tdb.sys.SetupTDB ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 import com.hp.hpl.jena.tdb.transaction.DatasetGraphTxnTDB ;
 import com.hp.hpl.jena.tdb.transaction.Journal ;
@@ -79,13 +85,29 @@ public class TxMain
         // next: write block id to Journal 
         // Next: API, transactions, and rollback.
         
-        if ( false ) 
+        if ( true ) 
             SystemTDB.setFileMode(FileMode.direct) ;
         
         initFS() ;
+        
+        int order = BPlusTreeParams.calcOrder(SystemTDB.BlockSize, new RecordFactory(24, 0)) ;
+        RangeIndex rIdx = SetupTDB.createBPTree(new FileSet("DB/tree"), order, SystemTDB.BlockSize,
+                              100, 100, new RecordFactory(24, 0)) ;
+        // Necessary ... shouldn't be.
+        //rIdx.sync() ;
+        
+        for ( Record r : rIdx )
+        {
+            System.out.println(r) ;
+        }
+        exit(0) ;
+        
+        
         DatasetGraphTDB dsg0 = build() ;
+        dsg0.sync() ;
         query("SELECT (Count(*) AS ?c) { ?s ?p ?o }", dsg0) ;
-
+        exit(0) ;
+        
         TransactionManager txnMgr = new TransactionManager() ;
         
         DatasetGraphTxnTDB dsg1 = txnMgr.begin(dsg0) ;
@@ -96,19 +118,16 @@ public class TxMain
         
         dsg1.commit() ;
         
+        
+        System.out.println("Replay") ;
         BufferChannel bc = new BufferChannelFile(DBdir+"/journal.jrnl") ;
         Journal j = new Journal(bc) ;
-        Replay.print(j) ;
-        
-        exit(0) ;
-        deconstruct(dsg0) ;
-        
-        load("D.ttl", dsg0) ;
+        //Replay.print(j) ;
+        Replay.replay(j, dsg0) ;
         query("SELECT (Count(*) AS ?c) { ?s ?p ?o }", dsg0) ;
         
-
-        //query("SELECT * { ?s ?p ?o }", dsg0) ;
-        //exit(0) ;
+        exit(0) ;
+        
         System.out.println("Txn") ;
         DatasetGraphTxnTDB dsg = buildTx(dsg0) ;
         load("D1.ttl", dsg) ;
@@ -201,31 +220,6 @@ public class TxMain
         System.out.println("Trans: "+nt.getNodeIdForNode(node2)) ;
         System.out.println("Base:  "+nt0.getNodeIdForNode(node3)) ;
         System.out.println("Trans: "+nt.getNodeIdForNode(node3)) ;
-        
-        
-    }
-
-    private static void deconstruct(DatasetGraphTDB dsg)
-    {
-        /* Better:
-        dsg.getBlockMgrs(), getNodeTable() etc 
-          */  
-        
-        // Tuples
-        NodeTupleTable ntt = dsg.getTripleTable().getNodeTupleTable() ;
-        NodeTable nt = ntt.getNodeTable() ;
-        // Find indexes.  Find object table.
-        
-        for ( TupleIndex index : ntt.getTupleTable().getIndexes() )
-        {
-            // Find RangeIndex, find BPT, find BlockMgrs.
-        }
-        
-        DatasetPrefixStorage prefixes = dsg.getPrefixes() ;
-        // Cast to TDB.
-        DatasetPrefixesTDB prefixesTDB = null ;
-        
-        
         
         
     }

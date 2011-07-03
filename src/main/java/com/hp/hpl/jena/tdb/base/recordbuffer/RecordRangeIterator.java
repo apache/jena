@@ -12,6 +12,7 @@ import static org.openjena.atlas.lib.Alg.decodeIndex ;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+import org.openjena.atlas.iterator.Iter ;
 import org.openjena.atlas.lib.Closeable ;
 
 import com.hp.hpl.jena.tdb.base.StorageException ;
@@ -23,6 +24,8 @@ class RecordRangeIterator implements Iterator<Record>, Closeable
     /** Iterate over a range of fromRec (inclusive) to toRec (exclusive) */
     public static Iterator<Record> iterator(int pageId, Record fromRec, Record toRec, RecordBufferPageMgr pageMgr)
     {
+        if ( ! pageMgr.valid(pageId) )
+            return Iter.nullIterator() ;
         return new RecordRangeIterator(pageId, fromRec, toRec, pageMgr) ;
     }
 
