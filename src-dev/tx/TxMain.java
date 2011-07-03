@@ -85,8 +85,8 @@ public class TxMain
         // next: write block id to Journal 
         // Next: API, transactions, and rollback.
         
-        if ( true ) 
-            SystemTDB.setFileMode(FileMode.direct) ;
+        SystemTDB.setFileMode(FileMode.direct) ;
+        //SystemTDB.setFileMode(FileMode.mapped) ;
         
         initFS() ;
         
@@ -106,7 +106,7 @@ public class TxMain
         DatasetGraphTDB dsg0 = build() ;
         dsg0.sync() ;
         query("SELECT (Count(*) AS ?c) { ?s ?p ?o }", dsg0) ;
-        exit(0) ;
+        //exit(0) ;
         
         TransactionManager txnMgr = new TransactionManager() ;
         
