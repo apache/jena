@@ -9,6 +9,7 @@ package tx;
 import java.nio.ByteBuffer ;
 import java.util.Map ;
 
+import org.openjena.atlas.lib.ByteBufferLib ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
@@ -65,8 +66,19 @@ public class Replay
         switch (e.getType())
         {
             case Block:
+                // All-purpose, works for direct and mapped mode, copy of a block.
+                // [TxTDB:PATCH-UP]
+                // Direct: blkMgr.write(e.getBlock()) would work.
+                // Mapped: need to copy over the bytes.
+                
                 BlockMgr blkMgr = mgrs.get(e.getFileRef()) ;
-                blkMgr.write(e.getBlock()) ; 
+                Block blk = e.getBlock() ;
+                blkMgr.overwrite(blk) ; 
+                
+//                Block blk = blkMgr.getWrite(e.getBlock().getId()) ;
+//                blk.getByteBuffer().rewind() ;
+//                blk.getByteBuffer().put(e.getBlock().getByteBuffer()) ;
+//                blkMgr.write(e.getBlock()) ; 
                 return true ;
             case Commit:
                 return false ;

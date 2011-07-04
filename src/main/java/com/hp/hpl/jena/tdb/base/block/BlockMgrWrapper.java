@@ -71,6 +71,12 @@ public class BlockMgrWrapper implements BlockMgr
     }
 
     @Override
+    public void overwrite(Block block)
+    {
+        blockMgr.overwrite(block) ;
+    }
+
+    @Override
     public void free(Block block)
     {
         blockMgr.free(block) ;

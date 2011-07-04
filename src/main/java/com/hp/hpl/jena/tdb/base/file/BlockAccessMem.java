@@ -80,6 +80,12 @@ public class BlockAccessMem implements BlockAccess
     }
     
     @Override
+    public void overwrite(Block block)
+    {
+        write(block) ;
+    }
+    
+    @Override
     public boolean isEmpty()
     {
         return blocks.isEmpty() ;

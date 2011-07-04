@@ -689,10 +689,45 @@ public class SetupTDB
 //        // Block size control?
 //        return chooseIndexBuilder(fileset).newRangeIndex(fileset, recordFactory) ;
 //    }
+    
+    /** Create a B+Tree using defaults */
+    public static RangeIndex createBPTree(FileSet fileset,
+                                          RecordFactory factory)
+    {
+        int readCacheSize = SystemTDB.BlockReadCacheSize ;
+        int writeCacheSize = SystemTDB.BlockWriteCacheSize ;
+        int blockSize = SystemTDB.BlockSize ;
+        if ( fileset.isMem() )
+        {
+            readCacheSize = 0 ;
+            writeCacheSize = 0 ;
+            blockSize = SystemTDB.BlockSizeTest ;
+        }
+        
+        return createBPTreeByBlockSize(fileset, blockSize, readCacheSize, writeCacheSize, factory) ; 
+    }
+    
+    /** Create a B+Tree by BlockSize */
+    public static RangeIndex createBPTreeByBlockSize(FileSet fileset,
+                                                     int blockSize,
+                                                     int readCacheSize, int writeCacheSize,
+                                                     RecordFactory factory)
+    {
+        return createBPTree(fileset, -1, blockSize, readCacheSize, writeCacheSize, factory) ; 
+    }
+    
+    /** Create a B+Tree by Order */
+    public static RangeIndex createBPTreeByOrder(FileSet fileset,
+                                                 int order,
+                                                 int readCacheSize, int writeCacheSize,
+                                                 RecordFactory factory)
+    {
+        return createBPTree(fileset, order, -1, readCacheSize, writeCacheSize, factory) ; 
+    }
+    
 
     /** Knowing all the parameters, create a B+Tree */
-    public static RangeIndex createBPTree(FileSet fileset, int order, 
-                                          int blockSize,
+    public static RangeIndex createBPTree(FileSet fileset, int order, int blockSize,
                                           int readCacheSize, int writeCacheSize,
                                           RecordFactory factory)
     {

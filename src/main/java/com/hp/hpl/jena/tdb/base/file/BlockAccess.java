@@ -28,6 +28,8 @@ public interface BlockAccess extends Sync, Closeable
     
     public void write(Block block) ;
     
+    public void overwrite(Block block) ;
+    
     public boolean isEmpty() ; 
     
     public boolean valid(long id) ;

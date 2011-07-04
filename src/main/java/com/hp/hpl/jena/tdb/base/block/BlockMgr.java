@@ -38,10 +38,17 @@ public interface BlockMgr extends Sync, Closeable /*UnitMgr<Block>*/
     /** Promote to writeable : it's OK to promote an already writeable block */ 
     public Block promote(Block block);
 
-    /** Write a block back - it stil needs releasing. */ 
+    // Bad name?  "endWrite", "put" -- for a mapped block, the changes are made directly, not on the write() */   
+    /** Write a block back - it still needs releasing. */ 
     public void write(Block block) ;
-
-    /** Announce a block is no longer in use (i.e it's now freed) */ 
+    
+    /** Replace the contents of a block slot with new contents. Block does not need releasing.
+     * The write() operation may not do real work if the block is mapped - this operation
+     * really does replace the contents with the new contents.  
+     */ 
+    public void overwrite(Block blk) ;
+    
+   /** Announce a block is no longer in use (i.e it's now freed) */ 
     public void free(Block block);
   
     /** Is this a valid block id? (may be a free block)*/
@@ -79,7 +86,7 @@ public interface BlockMgr extends Sync, Closeable /*UnitMgr<Block>*/
     /** Completion of iterator */
     public void endIterator(Iterator<?> iterator) ;
 
-    /* Label for hleping trace which BlockMgr is which */
+    /* Label for helping trace which BlockMgr is which */
     public String getLabel() ;
 }
 

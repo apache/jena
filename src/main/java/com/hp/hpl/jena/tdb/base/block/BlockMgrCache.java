@@ -118,6 +118,15 @@ public class BlockMgrCache extends BlockMgrSync
         readCache.put(id, blk) ;
         return blk ;
     }
+    
+    @Override
+    synchronized
+    public Block getReadIterator(long id)
+    {
+        // And don't pass down "iterator" calls.
+        return getRead(id) ; 
+    }
+
 
     @Override
     synchronized
@@ -139,6 +148,7 @@ public class BlockMgrCache extends BlockMgrSync
         
         if ( readCache.containsKey(id) )
         {
+            blk = readCache.get(id) ;
             cacheReadHits++ ;
             log("Hit(w->r) : %d", id) ;
             blk = promote(blk) ;
@@ -170,8 +180,22 @@ public class BlockMgrCache extends BlockMgrSync
     synchronized
     public void write(Block block)
     {
+        writeCache(block) ;
+        super.write(block) ;
+    }
+    
+    @Override
+    synchronized
+    public void overwrite(Block block)
+    {
+        writeCache(block) ;
+        super.overwrite(block) ;
+    }
+    
+    private void writeCache(Block block)
+    {
         Long id = block.getId() ;
-        log("Put   : %d", id) ;
+        log("Overwrite : %d", id) ;
         // Should not be in the read cache due to a getWrite earlier.
         if ( readCache.containsKey(id) )
             log.error("write: Block in the read cache") ;
@@ -180,7 +204,6 @@ public class BlockMgrCache extends BlockMgrSync
             writeCache.put(id, block) ;
             return ;
         }
-        super.write(block) ;
     }
     
     @Override
@@ -236,7 +259,7 @@ public class BlockMgrCache extends BlockMgrSync
     @Override
     public String toString()
     {
-        return "Cache:"+super.toString() ; 
+        return "Cache:"+super.blockMgr.toString() ; 
     }
     
 

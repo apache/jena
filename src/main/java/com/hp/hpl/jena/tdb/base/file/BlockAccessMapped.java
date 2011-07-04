@@ -33,7 +33,8 @@ public class BlockAccessMapped extends BlockAccessBase
      */
     
     private static Logger log = LoggerFactory.getLogger(BlockAccessMapped.class) ;
-
+    private enum CopyContents { Overwrite, NoCopy } 
+    
     // Segmentation avoids over-mapping; allows file to grow (in chunks) 
     private final int GrowthFactor = 2 ;
     private final int SegmentSize = SystemTDB.SegmentSize ;
@@ -89,16 +90,35 @@ public class BlockAccessMapped extends BlockAccessBase
     @Override
     public void write(Block block)
     {
-        check(block) ;
-        checkIfClosed() ;
-        int id = block.getId().intValue() ; // check() ensures it's an int.
-        // Assumed MRSW - no need to sync as we are the only Writer
-        segmentDirty[segment(id)] = true ;
-        // No other work.
-        writeNotification(block) ;
+        write(block, CopyContents.NoCopy) ;
+    }
+    
+    @Override
+    public void overwrite(Block block)
+    {
+        write(block, CopyContents.Overwrite) ;
     }
 
-
+    private void write(Block block, CopyContents copyContents)
+    {
+        check(block) ;
+        checkIfClosed() ;
+        int id = block.getId().intValue() ;
+        
+        if ( copyContents == CopyContents.Overwrite )
+        {
+            ByteBuffer bbDst = getByteBuffer(id) ;
+            bbDst.position(0) ;
+            ByteBuffer bbSrc = block.getByteBuffer() ;
+            bbSrc.rewind() ;
+            bbDst.put(bbSrc) ;
+        }
+        
+        // Assumed MRSW - no need to sync as we are the only Writer
+        segmentDirty[segment(id)] = true ;
+        writeNotification(block) ;
+    }
+    
     @Override
     public void sync()
     {

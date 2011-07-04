@@ -100,6 +100,13 @@ public class BlockMgrLogger implements BlockMgr //extends BlockMgrWrapper
     }
 
     @Override
+    public void overwrite(Block block)
+    {
+        info("overwrite("+block.getId()+")") ;
+        blockMgr.overwrite(block) ;
+    }
+
+    @Override
     public void free(Block block)
     {
         info("freeBlock("+block.getId()+")") ;

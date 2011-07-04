@@ -10,6 +10,7 @@ import org.openjena.atlas.lib.Bytes ;
 import org.openjena.atlas.lib.FileOps ;
 import org.openjena.atlas.logging.Log ;
 
+import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.query.DatasetFactory ;
@@ -30,20 +31,16 @@ import com.hp.hpl.jena.tdb.base.block.FileMode ;
 import com.hp.hpl.jena.tdb.base.file.BufferChannel ;
 import com.hp.hpl.jena.tdb.base.file.BufferChannelFile ;
 import com.hp.hpl.jena.tdb.base.file.FileFactory ;
-import com.hp.hpl.jena.tdb.base.file.FileSet ;
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile ;
 import com.hp.hpl.jena.tdb.base.record.Record ;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
 import com.hp.hpl.jena.tdb.index.Index ;
 import com.hp.hpl.jena.tdb.index.IndexMap ;
-import com.hp.hpl.jena.tdb.index.RangeIndex ;
-import com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTableInline ;
 import com.hp.hpl.jena.tdb.setup.DatasetBuilderStd ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
-import com.hp.hpl.jena.tdb.sys.SetupTDB ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 import com.hp.hpl.jena.tdb.transaction.DatasetGraphTxnTDB ;
 import com.hp.hpl.jena.tdb.transaction.Journal ;
@@ -79,27 +76,23 @@ public class TxMain
         // next: write block id to Journal 
         // Next: API, transactions, and rollback.
         
-        SystemTDB.setFileMode(FileMode.direct) ;
-        //SystemTDB.setFileMode(FileMode.mapped) ;
+        //SystemTDB.setFileMode(FileMode.direct) ;
+        SystemTDB.setFileMode(FileMode.mapped) ;
         
         initFS() ;
         
-        int order = BPlusTreeParams.calcOrder(SystemTDB.BlockSize, new RecordFactory(24, 0)) ;
-        RangeIndex rIdx = SetupTDB.createBPTree(new FileSet("DB/tree"), order, SystemTDB.BlockSize,
-                              100, 100, new RecordFactory(24, 0)) ;
-        // Necessary ... shouldn't be.
-        //rIdx.sync() ;
-        
-        for ( Record r : rIdx )
-        {
-            System.out.println(r) ;
-        }
-        exit(0) ;
+//        RangeIndex rIdx = SetupTDB.createBPTree(new FileSet("DB/tree"), new RecordFactory(24, 0)) ;
+//        
+//        for ( Record r : rIdx )
+//        {
+//            System.out.println(r) ;
+//        }
+//        exit(0) ;
         
         
         DatasetGraphTDB dsg0 = build() ;
         dsg0.sync() ;
-        query("SELECT (Count(*) AS ?c) { ?s ?p ?o }", dsg0) ;
+        query("SELECT (Count(*) AS ?c0) { ?s ?p ?o }", dsg0) ;
         //exit(0) ;
         
         TransactionManager txnMgr = new TransactionManager() ;
@@ -107,18 +100,19 @@ public class TxMain
         DatasetGraphTxnTDB dsg1 = txnMgr.begin(dsg0) ;
         
         load("D.ttl", dsg1) ;
-        query("SELECT (Count(*) AS ?c) { ?s ?p ?o }", dsg1) ;
-        query("SELECT (Count(*) AS ?c) { ?s ?p ?o }", dsg0) ;
+        query("SELECT (Count(*) AS ?c1) { ?s ?p ?o }", dsg1) ;
+        query("SELECT (Count(*) AS ?c0) { ?s ?p ?o }", dsg0) ;
         
         dsg1.commit() ;
-        
         
         System.out.println("Replay") ;
         BufferChannel bc = new BufferChannelFile(DBdir+"/journal.jrnl") ;
         Journal j = new Journal(bc) ;
         //Replay.print(j) ;
         Replay.replay(j, dsg0) ;
-        query("SELECT (Count(*) AS ?c) { ?s ?p ?o }", dsg0) ;
+        query("SELECT (Count(*) AS ?c0) { ?s ?p ?o }", dsg0) ;
+        query("SELECT * { ?s ?p ?o }", dsg0) ;
+        write(dsg0.getDefaultGraph(), "TTL") ;
         
         exit(0) ;
         
@@ -151,6 +145,12 @@ public class TxMain
         exit(0) ;
     }
     
+    private static void write(Graph graph, String lang)
+    {
+        Model model = ModelFactory.createModelForGraph(graph) ;
+        model.write(System.out, lang) ; 
+    }
+
     private static void execNT()
     {
         String dir = "DB" ;

@@ -201,6 +201,20 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
     @Override
     public void write(Block block)
     {
+        writeTracker(block) ;
+        blockMgr.write(block) ;
+    }
+    
+    @Override
+    synchronized
+    public void overwrite(Block block)
+    {
+        writeTracker(block) ;
+        blockMgr.overwrite(block) ;
+    }
+    
+    private void writeTracker(Block block)
+    {
         synchronized (this)
         {
             checkUpdate(Write) ;
@@ -209,7 +223,6 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
             if ( ! activeWriteBlocks.contains(id) )
                 error(Write, id+ " is not an active write block") ;
         }
-        blockMgr.write(block) ;
     }
 
     @Override

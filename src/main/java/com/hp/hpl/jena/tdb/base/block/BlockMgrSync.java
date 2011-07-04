@@ -42,7 +42,6 @@ public class BlockMgrSync implements BlockMgr
         return blockMgr.getReadIterator(id) ;
     }
 
-
     @Override
     synchronized
     public Block getWrite(long id)
@@ -69,6 +68,13 @@ public class BlockMgrSync implements BlockMgr
     public void write(Block block)
     {
         blockMgr.write(block) ;
+    }
+    
+    @Override
+    synchronized
+    public void overwrite(Block block)
+    {
+        blockMgr.overwrite(block) ;
     }
 
     @Override

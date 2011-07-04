@@ -83,6 +83,12 @@ public class BlockAccessByteArray implements BlockAccess
         bytes.putInt(len) ;
         bytes.put(bb.array(), 0, bb.capacity()) ;
     }
+    
+    @Override
+    public void overwrite(Block block)
+    {
+        write(block) ;
+    }    
 
     @Override
     public boolean isEmpty()

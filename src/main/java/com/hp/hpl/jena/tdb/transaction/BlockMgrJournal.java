@@ -190,6 +190,12 @@ public class BlockMgrJournal implements BlockMgr, Transactional
             writeBlocks.put(block.getId(), block) ;
         }
     }
+    
+    @Override
+    public void overwrite(Block block)
+    {
+        write(block) ;
+    }
 
     @Override
     public void free(Block block)

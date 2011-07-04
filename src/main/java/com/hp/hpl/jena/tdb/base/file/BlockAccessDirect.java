@@ -48,6 +48,7 @@ public class BlockAccessDirect extends BlockAccessBase
         checkIfClosed() ;
         ByteBuffer bb = ByteBuffer.allocate(blockSize) ;
         readByteBuffer(id, bb) ;
+        bb.rewind() ;
         Block block = new Block(id, bb) ;
         return block ;
     }
@@ -73,15 +74,23 @@ public class BlockAccessDirect extends BlockAccessBase
         check(block) ;
         checkIfClosed() ;
         ByteBuffer bb = block.getByteBuffer() ;
-        bb.position(0) ;
-        bb.limit(bb.capacity()) ;
+        // This .clear() except the javadoc suggests this is not the correct use of .clear()
+        // and the name does 
+        bb.limit(bb.capacity()) ;   // It shouldn't have been changed.
+        bb.rewind() ;
         try {
             int len = channel.write(bb, filePosition(block.getId())) ;
             if ( len != blockSize )
-                throw new FileException(format("put: short write (%d, not %d)", len, blockSize)) ;   
+                throw new FileException(format("write: short write (%d, not %d)", len, blockSize)) ;   
         } catch (IOException ex)
         { throw new FileException("FileAccessDirect", ex) ; }
         writeNotification(block) ;
+    }
+    
+    @Override
+    public void overwrite(Block block)
+    {
+        write(block) ;
     }
 
     @Override

@@ -81,6 +81,13 @@ public class BlockMgrFileAccess extends BlockMgrBase
     }
 
     @Override
+    public void overwrite(Block block)
+    {
+        file.overwrite(block) ;
+    }
+
+
+    @Override
     public void free(Block block)
     {
         // We do nothing about free blocks currently.
