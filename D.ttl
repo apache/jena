@@ -1,1 +1,7 @@
-<x> <p> 123 .
+@prefix : <http://example/> .
+
+:x :p 123 .
+:x :q :r .
+:r :p1 124 .
+:r :p2 124 .
+
