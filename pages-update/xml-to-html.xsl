@@ -122,7 +122,10 @@ Fix:
   <xsl:template match="res:uri">
     <xsl:variable name="uri" select="text()"/>
     <xsl:text>&lt;</xsl:text>
+    <!-- Roughly: SELECT ($uri AS ?subject) ?predicate ?object { $uri ?predicate ?object } -->
+    <a href="?query=SELECT%20%28%3C{$uri}%3E%20AS%20%3Fsubject%29%20%3Fpredicate%20%3Fobject%20%7B%3C{$uri}%3E%20%3Fpredicate%20%3Fobject%20%7D&amp;output=xml&amp;stylesheet=%2Fxml-to-html-2.xsl">
     <xsl:value-of select="$uri"/>
+    </a>
     <xsl:text>&gt;</xsl:text>
   </xsl:template>
 
