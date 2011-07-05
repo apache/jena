@@ -123,7 +123,7 @@ public class BlockMgrFileAccess extends BlockMgrBase
     public String toString() { return format("BlockMgrFileAccess[%d bytes]:%s", blockSize, file) ; }
     
     @Override
-    protected Logger getLog()
+    protected Logger log()
     {
         return log ;
     }

@@ -2,9 +2,6 @@ package tx;
 
 public class DevTx
 {
-    // DatasetGraphBuilder3
-    // Parallel stacks or "add txn" layer
-    
     // DatasetGraphTDB : read-only mode (when transaction active)
     //   Prefixes as well.
     

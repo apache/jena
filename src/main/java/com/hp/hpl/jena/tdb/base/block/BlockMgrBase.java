@@ -16,7 +16,7 @@ public abstract class BlockMgrBase implements BlockMgr
 {
     protected final int blockSize ;
     private String label ;
-    protected abstract Logger getLog() ;
+    protected abstract Logger log() ;
 
     // Fixed size, fixed block type.
     protected BlockMgrBase(String label, int blockSize)
