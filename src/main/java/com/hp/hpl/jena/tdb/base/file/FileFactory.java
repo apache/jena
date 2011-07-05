@@ -34,7 +34,7 @@ public class FileFactory
         else
         {
             // Newer way.
-            BufferChannel file = new BufferChannelMem("mem") ; 
+            BufferChannel file = BufferChannelMem.create("mem") ; 
             return new ObjectFileStorage(file) ;
         }
     }

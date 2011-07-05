@@ -34,6 +34,11 @@ public interface BufferChannel extends Sync, Closeable
     // This interface does not support slicing - so it's not suitable for memory mapped I/O
     // TODO Consider use of allocateDirect 
     
+    /** Return another channel to the same storage but with independent position.
+     * Chaos may result due to concurrent use.
+     */
+    public BufferChannel duplicate() ;
+    
     /** return the position */
     public long position() ;
     

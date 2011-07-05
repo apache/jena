@@ -48,11 +48,11 @@ public class DatasetBuilderTxn
             
         BufferChannel chan ;
         if ( dsg.getLocation().isMem() )
-            chan = new BufferChannelMem() ;
+            chan = BufferChannelMem.create() ;
         else
             chan = new BufferChannelFile(dsg.getLocation().absolute(Names.journalFile)) ;
         journal = new Journal(chan) ;
-        txn.set(journal) ;
+        txn.setJournal(journal) ;
         
         BlockMgrBuilder blockMgrBuilder = new BlockMgrBuilderTx() ;
         NodeTableBuilder nodeTableBuilder = new NodeTableBuilderTx() ;

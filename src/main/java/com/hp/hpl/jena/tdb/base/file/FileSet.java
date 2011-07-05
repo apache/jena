@@ -27,8 +27,6 @@ public class FileSet
     private Location location ;
     private String basename ;
     private MetaFile metafile ;
-    
-    private boolean isInMemory ;
 
     /** FileSet for "in-memory" */
     public static FileSet mem()
@@ -74,9 +72,7 @@ public class FileSet
         this.location = directory ;
         this.basename = basename ;
         
-        isInMemory = location.isMem() ;
-
-        if ( isInMemory )
+        if ( location.isMem() )
         {
             if ( useLocationMetadata )
                 metafile = location.getMetaFile() ;
@@ -113,7 +109,7 @@ public class FileSet
 //        
     public boolean exists(String ext)
     {
-        if ( isInMemory )
+        if ( location.isMem() )
             return true ;
         String fn = filename(ext) ;
         File f = new File(fn) ;

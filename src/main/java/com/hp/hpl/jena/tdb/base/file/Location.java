@@ -49,6 +49,7 @@ public class Location
     
     private String pathname ;
     private MetaFile metafile = null ; 
+    private boolean isMem = false ;
     
     static Location mem = new Location() ;
     // Every mem()is a fresh location and importantly fresh metadata.
@@ -56,7 +57,8 @@ public class Location
     
     private Location()
     {
-        pathname = Names.memName ;
+        pathname = Names.memName+pathSeparator ;
+        isMem = true ;
         metafile = new MetaFile(Names.memName, Names.memName) ;
     }
     
@@ -65,7 +67,8 @@ public class Location
         super() ;
         if ( rootname.equals(Names.memName) )
         {
-            pathname = Names.memName ;
+            isMem = true ;
+            pathname = Names.memName + pathSeparator  ;
             metafile = new MetaFile(Names.memName, Names.memName) ;
             return ;
         }
@@ -94,7 +97,7 @@ public class Location
 
     public String getDirectoryPath()    { return pathname ; }
     public MetaFile getMetaFile()       { return metafile ; }
-    public boolean isMem()              { return Names.isMem(pathname) ; }
+    public boolean isMem()              { return isMem ; }
     
     public Location getSubLocation(String dirname)
     {

@@ -74,10 +74,12 @@ public class Transaction
         return x.iterator() ;
     }
     
-    public void set(Journal journal)
+    public void setJournal(Journal journal)
     {
         this.journal = journal ;
     }
+    
+    public Journal getJournal()    { return journal ; }
 
     public void add(NodeTableTrans ntt)
     {

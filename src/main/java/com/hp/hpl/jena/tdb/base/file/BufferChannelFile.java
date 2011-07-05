@@ -23,6 +23,12 @@ public class BufferChannelFile implements BufferChannel
     }
     
     @Override
+    public BufferChannel duplicate()
+    {
+        return new BufferChannelFile(file.filename) ;
+    }
+
+    @Override
     public long position()
     {
         try { return file.channel.position() ; } 

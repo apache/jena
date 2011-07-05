@@ -8,6 +8,8 @@ package com.hp.hpl.jena.tdb.base.file;
 
 import java.nio.ByteBuffer ;
 
+import org.openjena.atlas.lib.ByteBufferLib ;
+
 import com.hp.hpl.jena.tdb.base.StorageException ;
 
 public class BufferChannelMem implements BufferChannel
@@ -18,12 +20,16 @@ public class BufferChannelMem implements BufferChannel
     private static int INIT_SIZE = 1024 ;
     private static int INC_SIZE = 1024 ;
     
-    public BufferChannelMem()
-    {
-        this("unnamed") ;
-    }
+    static public BufferChannel create() { return new BufferChannelMem("unnamed") ; }
+    static public BufferChannel create(String name) { return new BufferChannelMem(name) ; }
     
-    public BufferChannelMem(String name)
+    private BufferChannelMem()
+    { 
+        // Unitialized blank.
+    }
+ 
+    
+    private BufferChannelMem(String name)
     {
         bytes = ByteBuffer.allocate(1024) ;
         bytes.limit(0) ;
@@ -31,6 +37,20 @@ public class BufferChannelMem implements BufferChannel
     }
 
     @Override
+    synchronized
+    public BufferChannel duplicate()
+    {
+        BufferChannelMem chan = new BufferChannelMem() ;
+        int x = bytes.position() ;
+        bytes.rewind() ;
+        chan.bytes = bytes.slice() ;
+        chan.bytes.position(0) ;
+        bytes.position(x) ;
+        return chan ;
+    }
+
+    @Override
+    synchronized
     public long position()
     {
         checkIfClosed() ;
@@ -38,6 +58,7 @@ public class BufferChannelMem implements BufferChannel
     }
 
     @Override
+    synchronized
     public void position(long pos)
     { 
         checkIfClosed() ;
@@ -47,6 +68,7 @@ public class BufferChannelMem implements BufferChannel
     }
 
     @Override
+    synchronized
     public int read(ByteBuffer buffer)
     {
         checkIfClosed() ;
@@ -65,6 +87,7 @@ public class BufferChannelMem implements BufferChannel
     }
     
     @Override
+    synchronized
     public int read(ByteBuffer buffer, long loc)
     {
         checkIfClosed() ;
@@ -78,6 +101,7 @@ public class BufferChannelMem implements BufferChannel
     }
 
     @Override
+    synchronized
     public int write(ByteBuffer buffer)
     {
         checkIfClosed() ;
@@ -93,8 +117,10 @@ public class BufferChannelMem implements BufferChannel
             ByteBuffer bb2 = ByteBuffer.allocate(bytes.capacity()+inc) ;
             bytes.position(0) ;
             // Copy contents.
+            bb2.limit(bytes.limit()) ;
             bb2.put(bytes) ;    // From 0 to limit.
-            bytes.position(posn) ;
+            bb2.position(posn) ;
+            bytes = bb2 ;
         }
         
         if ( bytes.limit() < posn+len )
@@ -106,6 +132,7 @@ public class BufferChannelMem implements BufferChannel
     
     // Invert : write(ByteBuffer) = write(ByteBuffer,posn)
     @Override
+    synchronized
     public int write(ByteBuffer buffer, long loc)
     {
         checkIfClosed() ;
@@ -120,6 +147,7 @@ public class BufferChannelMem implements BufferChannel
     }
     
     @Override
+    synchronized
     public void truncate(long size)
     {
         checkIfClosed() ;
@@ -136,6 +164,7 @@ public class BufferChannelMem implements BufferChannel
     }
 
     @Override
+    synchronized
     public long size()
     {
         checkIfClosed() ;
@@ -143,12 +172,14 @@ public class BufferChannelMem implements BufferChannel
     }
     
     @Override
+    synchronized
     public void sync()
     { 
         checkIfClosed() ;
     }
 
     @Override
+    synchronized
     public void close()
     { checkIfClosed() ; bytes = null ; }
     
@@ -159,12 +190,14 @@ public class BufferChannelMem implements BufferChannel
     }
     
     @Override
+    synchronized
     public String getLabel()
     {
         return name ;
     }
     
     @Override
+    synchronized
     public String toString()
     {
         return name ;

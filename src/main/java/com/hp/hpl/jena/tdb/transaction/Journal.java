@@ -178,35 +178,6 @@ class Journal implements Iterable<JournalEntry>, Sync, Closeable
         {
             return channel.position() < endPoint  ;
         }
-        
-//        @Override
-//        public boolean hasNext()
-//        {
-//            if ( finished ) return false ;
-//            if ( slot != null ) return true ;
-//            if ( channel.position() >= endPoint )
-//            {
-//                finished = true ;
-//                return false ;
-//            }
-//            
-//            slot = read() ;
-//            return true ;
-//        }
-//
-//        @Override
-//        public JournalEntry next()
-//        {
-//            if ( ! hasNext() )
-//                throw new NoSuchElementException() ;
-//            JournalEntry entry = slot ;
-//            slot = null ;
-//            return entry ;
-//        }
-//        
-//        @Override
-//        public void remove()
-//        { throw new UnsupportedOperationException("remove") ; }
     }
     
     synchronized

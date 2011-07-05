@@ -14,6 +14,8 @@ import java.util.Map ;
 import java.util.Set ;
 
 import org.openjena.atlas.logging.Log ;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.tdb.base.block.Block ;
 import com.hp.hpl.jena.tdb.base.block.BlockException ;
@@ -22,6 +24,7 @@ import com.hp.hpl.jena.tdb.sys.FileRef ;
 
 public class BlockMgrJournal implements BlockMgr, Transactional
 {
+    private static Logger log = LoggerFactory.getLogger(BlockMgrJournal.class) ;
     private BlockMgr blockMgr ; // read-only except during journal checkpoint.
     private Journal journal ;
     private Transaction transaction ;
@@ -48,6 +51,7 @@ public class BlockMgrJournal implements BlockMgr, Transactional
     @Override
     public void commit(Transaction txn)
     {
+        log.info("Commit {} {}", fileRef.getFilename(), writeBlocks.size()) ;
         for ( Block blk : writeBlocks.values() )
             writeJournalEntry(blk) ;
     }

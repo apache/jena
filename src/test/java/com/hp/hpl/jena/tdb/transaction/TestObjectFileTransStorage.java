@@ -23,7 +23,7 @@ public class TestObjectFileTransStorage extends AbstractTestObjectFileTrans
 //        BufferChannel chan = new BufferChannelFile(fn) ;
 //        return new ObjectFileStorage(chan) ;
         
-        BufferChannel chan = new BufferChannelMem() ;
+        BufferChannel chan = BufferChannelMem.create() ;
         // Small buffer
         return new ObjectFileStorage(chan,10) ;
         

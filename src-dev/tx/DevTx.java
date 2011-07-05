@@ -2,6 +2,9 @@ package tx;
 
 public class DevTx
 {
+    // Does not work for memory datasets. (in-memory journal, then opened on disk?)
+    // Moding in Journal - startReply-endReplay. 
+    
     // DatasetGraphTDB : read-only mode (when transaction active)
     //   Prefixes as well.
     

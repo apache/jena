@@ -17,7 +17,7 @@ public class TestChannelMem extends AbstractTestChannel
     @Override
     protected BufferChannel make()
     {
-        return new BufferChannelMem("Test-"+(counter++)) ;
+        return BufferChannelMem.create("Test-"+(counter++)) ;
     }
 
 }

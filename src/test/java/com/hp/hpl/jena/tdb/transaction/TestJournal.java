@@ -49,7 +49,7 @@ public class TestJournal extends BaseTest
     Journal journal ;
     @Before public void before()
     {
-        BufferChannel mem = new BufferChannelMem("journal") ;
+        BufferChannel mem = BufferChannelMem.create("journal") ;
         journal = new Journal(mem) ;
         bb1.clear() ;
         bb2.clear() ;

@@ -66,6 +66,14 @@ public class DatasetBuilderStd implements DatasetBuilder
         return x.build(new Location(dir), null) ;
     }
     
+    public static DatasetGraphTDB build()
+    {
+        DatasetBuilderStd x = new DatasetBuilderStd() ;
+        x.setStd() ;
+        return x.build(Location.mem(), null) ;
+    }
+    
+    
     protected DatasetBuilderStd()
     {
     }

@@ -22,7 +22,7 @@ public class TestObjectFileBuffering extends BaseTest
 {
     protected ObjectFile make(int bufferSize)
     {
-        BufferChannel chan = new BufferChannelMem() ;
+        BufferChannel chan = BufferChannelMem.create() ;
         return new ObjectFileStorage(chan, bufferSize) ;
     }
 

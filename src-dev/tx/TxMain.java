@@ -41,6 +41,7 @@ import com.hp.hpl.jena.tdb.nodetable.NodeTableInline ;
 import com.hp.hpl.jena.tdb.setup.DatasetBuilderStd ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
+import com.hp.hpl.jena.tdb.sys.Names ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 import com.hp.hpl.jena.tdb.transaction.DatasetGraphTxnTDB ;
 import com.hp.hpl.jena.tdb.transaction.Journal ;
@@ -106,42 +107,20 @@ public class TxMain
         dsg1.commit() ;
         
         System.out.println("Replay") ;
-        BufferChannel bc = new BufferChannelFile(DBdir+"/journal.jrnl") ;
-        Journal j = new Journal(bc) ;
+        
+        
+        // Better journal control
+//        BufferChannel bc = new BufferChannelFile(DBdir+"/journal.jrnl") ;
+//        Journal j = new Journal(bc) ;
+
+        Journal j = dsg1.getTransaction().getJournal() ;
+        
         //Replay.print(j) ;
         Replay.replay(j, dsg0) ;
         query("SELECT (Count(*) AS ?c0) { ?s ?p ?o }", dsg0) ;
         query("SELECT * { ?s ?p ?o }", dsg0) ;
         write(dsg0.getDefaultGraph(), "TTL") ;
         
-        exit(0) ;
-        
-        System.out.println("Txn") ;
-        DatasetGraphTxnTDB dsg = buildTx(dsg0) ;
-        load("D1.ttl", dsg) ;
-        Triple t = SSE.parseTriple("( <http://example/z1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://example/foo>)") ;
-        dsg.delete(new Quad(Quad.defaultGraphNodeGenerated, t)) ;
-        
-        
-        //dsg.commit() ;
-        System.out.println("Query 1") ;
-        query("SELECT * { ?s ?p ?o }", dsg) ;
-        //query("SELECT (Count(*) AS ?c) { ?s ?p ?o }", dsg) ;
-        System.out.println("Query 2") ;
-        query("SELECT * { ?s ?p ?o }", dsg0) ;
-        exit(0) ;
-        
-        //query("SELECT * { ?s ?p ?o }", dsg0) ;
-
-        load("D1.ttl", dsg0) ;
-        System.out.println("Query 2") ;
-        query("SELECT * { ?s ?p ?o }", dsg) ;
-        
-        exit(0) ;
-        System.out.println("Commit") ;
-        dsg.commit() ;
-        query("SELECT * { ?s ?p ?o }", dsg) ;
-
         exit(0) ;
     }
     
@@ -226,7 +205,7 @@ public class TxMain
     
     private static DatasetGraphTDB build()
     {
-        return DatasetBuilderStd.build(DBdir) ;
+        return DatasetBuilderStd.build() ;
         
 //        DatasetGraphTDB dsg = TDBFactory.createDatasetGraph(DBdir) ;
 //        return dsg ;
