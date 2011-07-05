@@ -8,8 +8,6 @@ package com.hp.hpl.jena.tdb.base.file;
 
 import java.nio.ByteBuffer ;
 
-import org.openjena.atlas.lib.ByteBufferLib ;
-
 import com.hp.hpl.jena.tdb.base.StorageException ;
 
 public class BufferChannelMem implements BufferChannel
@@ -116,9 +114,9 @@ public class BufferChannelMem implements BufferChannel
             inc += INC_SIZE ;
             ByteBuffer bb2 = ByteBuffer.allocate(bytes.capacity()+inc) ;
             bytes.position(0) ;
-            // Copy contents.
-            bb2.limit(bytes.limit()) ;
-            bb2.put(bytes) ;    // From 0 to limit.
+            // Copy contents; make written bytes area the same as before.
+            bb2.put(bytes) ;
+            bb2.limit(bytes.limit()) ;  // limit is used as the end of active bytes.
             bb2.position(posn) ;
             bytes = bb2 ;
         }
