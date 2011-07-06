@@ -61,7 +61,7 @@ public class SPARQLServer
     private boolean verbose = false ;
     private boolean enableUpdate = false ;
     
-    private static int ThreadPoolSize = 50;
+    //private static int ThreadPoolSize = 100 ;
     
     public SPARQLServer(DatasetGraph dsg, String datasetPath, String host, int port, boolean allowUpdate, boolean verbose)
     {
@@ -121,8 +121,11 @@ public class SPARQLServer
         
         // Server, with one NIO-based connector, large input buffer size (for long URLs, POSTed forms (queries, updates)).
         server = new Server();
+        
         // Keep the server to a maximum number of threads.
-        server.setThreadPool(new QueuedThreadPool(ThreadPoolSize)) ;
+        // Issue - the test suite seems to need a lot of threads (>50) - lack of close?
+        
+        //server.setThreadPool(new QueuedThreadPool(ThreadPoolSize)) ;
         
         // Using "= new SelectChannelConnector() ;" on Darwin (OS/X) causes problems 
         // with initialization not seen (thread scheduling?) in Joseki.
