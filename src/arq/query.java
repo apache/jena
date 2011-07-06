@@ -133,7 +133,11 @@ public class query extends CmdARQ
             queryExec(modTime.timingEnabled(),  modResults.getResultsFormat()) ;
         
         if ( modTime.timingEnabled() && repeatCount > 1 )
-            System.out.println("Total time: "+modTime.timeStr(totalTime)+" sec  for repeat count of "+repeatCount) ;
+        {
+            long avg = totalTime/repeatCount ;
+            String avgStr = modTime.timeStr(avg) ;
+            System.out.println("Total time: "+modTime.timeStr(totalTime)+" sec for repeat count of "+repeatCount+ " : average: "+avgStr) ;
+        }
     }
 
     @Override
