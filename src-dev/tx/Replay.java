@@ -9,7 +9,6 @@ package tx;
 import java.nio.ByteBuffer ;
 import java.util.Map ;
 
-import org.openjena.atlas.lib.ByteBufferLib ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 

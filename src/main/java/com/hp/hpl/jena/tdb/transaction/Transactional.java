@@ -14,25 +14,8 @@ public interface Transactional
     // version 1
     public void begin(Transaction txn) ;
     public void commit(Transaction txn) ;
+    //public boolean postCommit(Transaction txn) ;
     public void abort(Transaction txn) ;
-    
-    /*
-    // version 2
-    public void beginRead() ;
-    public void endRead() ;
-    
-    public void beginUpdate() ;
-    public void commitUpdate() ;
-    public void abortUpdate() ;
-    */
-    
-    /*
-    // version 3
-    enum Mode { READ, WRITE } ;
-    public void begin(Mode mode) ;
-    public void end(Mode mode) ;
-    public void cancel(Mode mode) ;
-    */
 }
 
 /*
