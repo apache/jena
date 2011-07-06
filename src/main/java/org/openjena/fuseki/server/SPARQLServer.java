@@ -26,7 +26,7 @@ import javax.servlet.http.HttpServlet ;
 import org.eclipse.jetty.http.MimeTypes ;
 import org.eclipse.jetty.server.Connector ;
 import org.eclipse.jetty.server.Server ;
-import org.eclipse.jetty.server.nio.SelectChannelConnector ;
+import org.eclipse.jetty.server.nio.BlockingChannelConnector ;
 import org.eclipse.jetty.servlet.DefaultServlet ;
 import org.eclipse.jetty.servlet.ServletContextHandler ;
 import org.eclipse.jetty.servlet.ServletHolder ;
@@ -126,13 +126,11 @@ public class SPARQLServer
         
         // Using "= new SelectChannelConnector() ;" on Darwin (OS/X) causes problems 
         // with initialization not seen (thread scheduling?) in Joseki.
-        Connector connector = new SelectChannelConnector() ;
         
-        /* The BlockingChannelConnector seems to not interact with thread management,
-        *  at least in the way I expect.
-        */
-//        BlockingChannelConnector connector = new BlockingChannelConnector() ;
-//        connector.setThreadPool(new QueuedThreadPool(ThreadPoolSize));
+        // BlockingChannelConnector is better for pumping large responses back.
+        //Connector connector = new SelectChannelConnector() ;
+        
+        Connector connector = new BlockingChannelConnector() ;
         
         // Ignore. If set, then if this goes off, it keeps going off.
         connector.setMaxIdleTime(0) ; // Jetty outputs a lot of messages if this goes off.

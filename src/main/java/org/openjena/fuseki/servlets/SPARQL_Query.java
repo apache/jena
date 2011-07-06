@@ -308,12 +308,12 @@ public abstract class SPARQL_Query extends SPARQL_ServletBase
     protected void sendResults(HttpActionQuery action, SPARQLResult result)
     {
         if ( result.isResultSet() )
-            ResponseQuery.doResponseResultSet(result.getResultSet(), null, action.request, action.response) ;
+            ResponseResultSet.doResponseResultSet(result.getResultSet(), null, action.request, action.response) ;
         else if ( result.isGraph() )
-            ResponseQuery.doResponseModel(result.getModel(), action.request, action.response) ;
+            ResponseModel.doResponseModel(result.getModel(), action.request, action.response) ;
         else if ( result.isBoolean() )
             // Make different?
-            ResponseQuery.doResponseResultSet(null, result.getBooleanResult(), action.request, action.response) ;
+            ResponseResultSet.doResponseResultSet(null, result.getBooleanResult(), action.request, action.response) ;
         else
             errorOccurred("Unknown or invalid result type") ;
     }

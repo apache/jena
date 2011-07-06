@@ -25,88 +25,28 @@ import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
 import org.openjena.fuseki.DEF ;
-import org.openjena.fuseki.Fuseki ;
 import org.openjena.fuseki.FusekiException ;
-import org.openjena.fuseki.FusekiLib ;
-import org.openjena.fuseki.HttpNames ;
 import org.openjena.fuseki.conneg.AcceptList ;
 import org.openjena.fuseki.conneg.ConNeg ;
 import org.openjena.fuseki.conneg.MediaType ;
-import org.openjena.fuseki.conneg.TypedInputStream ;
-import org.openjena.fuseki.conneg.WebLib ;
 import org.openjena.fuseki.http.HttpSC ;
-import org.openjena.riot.Lang ;
 import org.openjena.riot.WebContent ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.query.ResultSet ;
 import com.hp.hpl.jena.query.ResultSetFormatter ;
-import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.rdf.model.RDFWriter ;
-import com.hp.hpl.jena.xmloutput.RDFXMLWriterI ;
 
 /** This is the content negotiation for each kind of SPARQL query result */ 
-public class ResponseQuery
+public class ResponseResultSet
 {
-    private static Logger log = LoggerFactory.getLogger(ResponseQuery.class) ;
+    private static Logger log = LoggerFactory.getLogger(ResponseResultSet.class) ;
     
     interface OutputContent { void output(ServletOutputStream out) ; }
 
     static AcceptList prefContentTypeResultSet     = DEF.rsOffer ; 
     static AcceptList prefContentTypeRDF           = DEF.rdfOffer ;
 
-    public static void doResponseModel(Model model, HttpServletRequest request, HttpServletResponse response)
-    {
-        String mimeType = null ;        // Header request type 
-        
-        // TODO Use MediaType throughout.
-        MediaType i = ConNeg.chooseContentType(request, DEF.rdfOffer, DEF.acceptRDFXML) ;
-        if ( i != null )
-            mimeType = i.getContentType() ;
-        
-        String writerMimeType = mimeType ;
-        
-        if ( mimeType == null )
-        {
-            Fuseki.requestLog.warn("Can't find MIME type for response") ;
-            String x = WebLib.getAccept(request) ;
-            String msg ;
-            if ( x == null )
-                msg = "No Accept: header" ;
-            else
-                msg = "Accept: "+x+" : Not understood" ;
-            SPARQL_ServletBase.error(HttpSC.NOT_ACCEPTABLE_406, msg) ;
-        }
-        
-        TypedInputStream ts = new TypedInputStream(null, mimeType, WebContent.charsetUTF8) ;
-        Lang lang = FusekiLib.langFromContentType(ts.getMediaType()) ; 
-        RDFWriter rdfw = FusekiLib.chooseWriter(lang) ;
-             
-        if ( rdfw instanceof RDFXMLWriterI )
-            rdfw.setProperty("showXmlDeclaration", "true") ;
-        
-//        // Write locally to check it's possible.
-//        // Time/space tradeoff.
-//        try {
-//            OutputStream out = new NullOutputStream() ;
-//            rdfw.write(model, out, null) ;
-//            IO.flush(out) ;
-//        } catch (JenaException ex)
-//        {
-//            SPARQL_ServletBase.errorOccurred(ex) ;
-//        }
-        
-        // Managed to write it locally
-        try {
-            setHttpResponse(request, response, ts.getMediaType(), ts.getCharset()) ; 
-            response.setStatus(HttpSC.OK_200) ;
-            rdfw.write(model, response.getOutputStream(), null) ;
-            response.getOutputStream().flush() ;
-        }
-        catch (Exception ex) { SPARQL_ServletBase.errorOccurred(ex) ; }
-    }
-    
     // One or the other argument must be null
     public static void doResponseResultSet(final ResultSet resultSet, final Boolean booleanResult, HttpServletRequest request, HttpServletResponse response)
     {
@@ -131,7 +71,7 @@ public class ResponseQuery
         // Override content type
         // Does &output= override?
         // Requested output type by the web form or &output= in the request.
-        String outputField = paramOutput(request) ;    // Expands short names
+        String outputField = ResponseOps.paramOutput(request) ;    // Expands short names
         if ( outputField != null )
             mimeType = outputField ;
         
@@ -139,12 +79,12 @@ public class ResponseQuery
         String contentType = mimeType ;                 // Set the HTTP respose header to this.
              
         // Stylesheet - change to application/xml.
-        final String stylesheetURL = paramStylesheet(request) ;
+        final String stylesheetURL = ResponseOps.paramStylesheet(request) ;
         if ( stylesheetURL != null && serializationType.equals(WebContent.contentTypeResultsXML))
             contentType = WebContent.contentTypeXML ;
         
         // Force to text/plain?
-        String forceAccept = paramForceAccept(request) ;
+        String forceAccept = ResponseOps.paramForceAccept(request) ;
         if ( forceAccept != null )
             contentType = forceAccept ;
 
@@ -265,15 +205,6 @@ public class ResponseQuery
     }
     
     
-    private static boolean isEOFexception(IOException ioEx)
-    {
-        if ( ioEx.getClass().getName().equals("org.mortbay.jetty.EofException eofEx") )
-            return true ;
-        if ( ioEx instanceof java.io.EOFException )
-            return true ;
-        return false ;
-    }
-
     private static void output(String contentType, String charset, OutputContent proc, 
                                HttpServletRequest httpRequest, HttpServletResponse httpResponse)
     {
@@ -319,8 +250,8 @@ public class ResponseQuery
                                    HttpServletRequest httpRequest, HttpServletResponse httpResponse)
     {
         try {
-            String callback = paramCallback(httpRequest) ;
-            String outputField = paramOutput(httpRequest) ;
+            String callback = ResponseOps.paramCallback(httpRequest) ;
+            String outputField = ResponseOps.paramOutput(httpRequest) ;
             ServletOutputStream out = httpResponse.getOutputStream() ;
 
             if ( callback != null )
@@ -353,36 +284,6 @@ public class ResponseQuery
         } catch (IOException ex) { SPARQL_ServletBase.errorOccurred(ex) ; }
     }
 
-    private static String paramForceAccept(HttpServletRequest request)
-    {
-        String x = fetchParam(request, HttpNames.paramForceAccept) ;
-        return expandShortName(x) ; 
-    }
-    
-    private static String paramStylesheet(HttpServletRequest request)
-    { return fetchParam(request, HttpNames.paramStyleSheet) ; }
-    
-    private static String paramOutput(HttpServletRequest request)
-    {
-        // Two names.
-        String x = fetchParam(request, HttpNames.paramOutput1) ;
-        if ( x == null )
-            x = fetchParam(request, HttpNames.paramOutput2) ;
-        return expandShortName(x) ; 
-    }
-    
-    private static String paramAcceptField(HttpServletRequest request)
-    {
-        String acceptField = WebLib.getAccept(request) ;
-        String acceptParam = fetchParam(request, HttpNames.paramAccept) ;
-        
-        if ( acceptParam != null )
-            acceptField = acceptParam ;
-        if ( acceptField == null )
-            return null ;
-        return expandShortName(acceptField) ; 
-    }
-
     // Short names for "output="
     // TODO Map !
     public static final String contentOutputJSON          = "json" ;
@@ -391,45 +292,5 @@ public class ResponseQuery
     public static final String contentOutputText          = "text" ;
     public static final String contentOutputCSV           = "csv" ;
     public static final String contentOutputTSV           = "tsv" ;
-    
-    private static String expandShortName(String str)
-    {
-        if ( str == null )
-            return null ;
-        // Some short names.
-        if ( str.equalsIgnoreCase(contentOutputJSON) ) 
-            return WebContent.contentTypeResultsJSON ;
-        
-        if ( str.equalsIgnoreCase(contentOutputSPARQL) )
-            return WebContent.contentTypeResultsXML ;
-        
-        if ( str.equalsIgnoreCase(contentOutputXML) )
-            return WebContent.contentTypeResultsXML ;
-        
-        if ( str.equalsIgnoreCase(contentOutputText) )
-            return WebContent.contentTypeTextPlain ;
-        
-        if ( str.equalsIgnoreCase(contentOutputCSV) )
-            return WebContent.contentTypeTextCSV ;
-        
-        if ( str.equalsIgnoreCase(contentOutputTSV) )
-            return WebContent.contentTypeTextTSV ;
-        
-        return str ;
-    }
-    
-    private static String paramCallback(HttpServletRequest request) { return fetchParam(request, HttpNames.paramCallback) ; }
-    
-    private static String fetchParam(HttpServletRequest request, String parameterName)
-    {
-        String value = request.getParameter(parameterName) ;
-        if ( value != null )
-        {
-            value = value.trim() ;
-            if ( value.length() == 0 )
-                value = null ;
-        }
-        return value ;
-    }
 
 }
