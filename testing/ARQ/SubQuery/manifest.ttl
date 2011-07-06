@@ -11,28 +11,28 @@
       [  mf:name    "Sub SELECT 1" ;
          rdf:type   mfx:TestQuery ; 
          mf:action
-            [ qt:query  <sub-select-01.arq> ;
+            [ qt:query  <sub-select-01.rq> ;
               qt:data   <data.ttl> ] ;
         mf:result  <sub-select-01.srx>
       ]
       [  mf:name    "Sub SELECT 2" ;
          rdf:type   mfx:TestQuery ; 
          mf:action
-            [ qt:query  <sub-select-02.arq> ;
+            [ qt:query  <sub-select-02.rq> ;
               qt:data   <data.ttl> ] ;
         mf:result  <sub-select-02.srx>
       ]
       [  mf:name    "Sub SELECT 3" ;
          rdf:type   mfx:TestQuery ; 
          mf:action
-            [ qt:query  <sub-select-03.arq> ;
+            [ qt:query  <sub-select-03.rq> ;
               qt:data   <data.ttl> ] ;
         mf:result  <sub-select-03.srx>
       ]
       [  mf:name    "Sub SELECT 4" ;
          rdf:type   mfx:TestQuery ; 
          mf:action
-            [ qt:query  <sub-select-04.arq> ;
+            [ qt:query  <sub-select-04.rq> ;
               qt:data   <data.ttl> ] ;
         mf:result  <sub-select-04.srx>
       ] 

@@ -11,6 +11,7 @@ import java.util.List ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.query.SortCondition ;
 import com.hp.hpl.jena.sparql.ARQNotImplemented ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.TransformCopy ;
@@ -21,6 +22,7 @@ import com.hp.hpl.jena.sparql.algebra.op.OpExtend ;
 import com.hp.hpl.jena.sparql.algebra.op.OpFilter ;
 import com.hp.hpl.jena.sparql.algebra.op.OpGraph ;
 import com.hp.hpl.jena.sparql.algebra.op.OpGroup ;
+import com.hp.hpl.jena.sparql.algebra.op.OpOrder ;
 import com.hp.hpl.jena.sparql.algebra.op.OpPath ;
 import com.hp.hpl.jena.sparql.algebra.op.OpProject ;
 import com.hp.hpl.jena.sparql.algebra.op.OpQuadPattern ;
@@ -54,6 +56,8 @@ class NodeTransformOp extends TransformCopy
     { 
         ExprList exprList = opFilter.getExprs() ;
         ExprList exprList2 = NodeTransformLib.transform(transform, exprList) ;
+        if ( exprList2 == exprList )
+            return super.transform(opFilter, subOp) ;
         return OpFilter.filter(exprList2, subOp) ;
     }        
     
@@ -73,9 +77,9 @@ class NodeTransformOp extends TransformCopy
         Node o = tp.getObject() ;
         Node o1 = transform.convert(o) ;
         
-        if ( s1 == s || o1 == o )
+        if ( s1 == s && o1 == o )
             // No change.
-            return opPath ;
+            return super.transform(opPath) ;
         
         Path path = tp.getPath() ;
         TriplePath tp2 ;
@@ -131,6 +135,8 @@ class NodeTransformOp extends TransformCopy
     { 
         List<Var> x = opProject.getVars() ;
         List<Var> x2 = NodeTransformLib.transformVars(transform, x) ;
+        if ( x == x2 )
+            return super.transform(opProject, subOp) ;
         return new OpProject(subOp, x2) ; 
     }
     
@@ -138,6 +144,8 @@ class NodeTransformOp extends TransformCopy
     { 
         VarExprList varExprList = opAssign.getVarExprList() ;
         VarExprList varExprList2 = NodeTransformLib.transform(transform, varExprList) ;
+        if ( varExprList == varExprList2 )
+            return super.transform(opAssign, subOp) ;
         return OpAssign.assign(subOp, varExprList2) ;
     }
     
@@ -145,19 +153,38 @@ class NodeTransformOp extends TransformCopy
     { 
         VarExprList varExprList = opExtend.getVarExprList() ;
         VarExprList varExprList2 = NodeTransformLib.transform(transform, varExprList) ;
+        if ( varExprList == varExprList2 )
+            return super.transform(opExtend, subOp) ;
         return OpExtend.extend(subOp, varExprList2) ;
+    }
+    
+    @Override public Op transform(OpOrder opOrder, Op subOp)
+    {
+        List<SortCondition> conditions = NodeTransformLib.transform(transform, opOrder.getConditions()) ;
+        
+        if ( conditions == opOrder.getConditions() )
+            return super.transform(opOrder, subOp) ;
+        return new OpOrder(subOp, conditions) ;
     }
     
     @Override public Op transform(OpGroup opGroup, Op subOp)
     {
         VarExprList groupVars = NodeTransformLib.transform(transform, opGroup.getGroupVars()) ;
-
+        
+        
         // Rename the vars in the expression as well.
         // .e.g max(?y) ==> max(?/y)  
         // These need renaming as well.
         List<ExprAggregator> aggregators = new ArrayList<ExprAggregator>() ;
         for ( ExprAggregator agg : opGroup.getAggregators() )
             aggregators.add(agg.applyNodeTransform(transform)) ;
+        
+        if ( aggregators.equals(opGroup.getAggregators())) 
+        {
+            if ( groupVars == opGroup.getGroupVars() )
+                return super.transform(opGroup, subOp) ;
+        }
+        
         return new OpGroup(subOp, groupVars, aggregators) ;
     }
 }

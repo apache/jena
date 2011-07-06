@@ -38,27 +38,6 @@ public class VarRename
         return NodeTransformLib.transform(renamer, exprList) ;
     }
         
-//    public static ExprList transform(ExprList exprList, NodeTransform transform)
-//    {
-//        ExprList exprList2 = new ExprList() ;
-//        boolean changed = false ;
-//        for(Expr expr : exprList)
-//        {
-//            Expr expr2 = expr.copyNodeTransform(transform) ;
-//            if ( expr != expr2 )
-//                changed = true ;
-//            exprList2.add(expr2) ;
-//        }
-//        if ( ! changed ) return exprList ;
-//        return exprList2 ;
-//    }
-//    
-//    /** Rename all variables in an expression, EXCEPT for those named as constant */ 
-//    public static Expr transform(Expr expr, NodeTransform transform)
-//    {
-//        return expr.copyNodeTransform(transform) ;
-//    }
-
     public static Expr rename(Expr expr, Set<Var> constants)
     {
         NodeTransform renamer = new RenamerVars(constants, prefix) ;

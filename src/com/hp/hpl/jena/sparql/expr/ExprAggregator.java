@@ -6,6 +6,7 @@
 
 package com.hp.hpl.jena.sparql.expr;
 
+import static org.openjena.atlas.lib.Lib.equal ;
 import org.openjena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.graph.Node ;
@@ -65,7 +66,9 @@ public class ExprAggregator extends ExprNode
         if ( ! ( other instanceof ExprAggregator ) )
             return false ;
         ExprAggregator agg = (ExprAggregator)other ;
-        return aggregator.equals(agg.aggregator) ;
+        if ( ! equal(var, agg.var) )
+            return false ;
+        return equal(aggregator, agg.aggregator) ;
     }
 
     // Ensure no confusion - in an old design, an ExprAggregator was a subclass of ExprVar. 

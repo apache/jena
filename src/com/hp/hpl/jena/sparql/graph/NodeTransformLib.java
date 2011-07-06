@@ -13,6 +13,7 @@ import static org.openjena.atlas.lib.Lib.equal ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.query.SortCondition ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.Transform ;
 import com.hp.hpl.jena.sparql.algebra.Transformer ;
@@ -184,10 +185,28 @@ public class NodeTransformLib
         return expr.applyNodeTransform(nodeTransform) ;
     }
 
+    public static List<SortCondition> transform(NodeTransform nodeTransform, List<SortCondition> conditions)
+    {
+        List<SortCondition> conditions2 = new ArrayList<SortCondition>() ;
+        boolean same = true ;
+        for ( SortCondition sc : conditions )
+        {
+            Expr expr = sc.getExpression() ;
+            Expr expr2 = transform(nodeTransform, expr) ;
+            if ( expr != expr2 )
+                same = false ;
+            SortCondition sc2 = new SortCondition(expr2, sc.getDirection()) ;
+            conditions2.add(sc2) ;
+        }
+
+        if ( same )
+            return conditions ;
+        return conditions2 ;
+    }
 }
 
 /*
- * (c) Copyright 2010 Epimorphics Ltd.
+ * (c) Copyright 2010, 2011 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

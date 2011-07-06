@@ -46,6 +46,10 @@ public class OpOrder extends OpModifier
     {
         if ( ! (other instanceof OpOrder) ) return false ;
         OpOrder opOrder = (OpOrder)other ;
+        
+        if ( ! opOrder.getConditions().equals(this.getConditions()) )
+            return false ;
+        
         //
         return getSubOp().equalTo(opOrder.getSubOp(), labelMap) ;
     }
