@@ -48,6 +48,10 @@ public interface NodeTupleTable extends Sync, Closeable
 
     public boolean isEmpty() ;
     
+    public boolean isReadOnly() ;
+    public void    setReadOnly(boolean mode) ;
+    
+    
     /** Clear the tuple table.  After this operation, find* will find  nothing.
      * This does not mean all data has been removed - for example, it does not mean
      * that any node table has been emptied.

@@ -9,6 +9,8 @@ package com.hp.hpl.jena.tdb.transaction;
 
 import java.util.Iterator ;
 
+import com.hp.hpl.jena.query.DataSource ;
+import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.tdb.TDBException ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
@@ -18,6 +20,18 @@ import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 public class TransactionManager
 {
     static long transactionId = 10 ;
+    
+    public static DataSource begin(Dataset ds) 
+    {
+        return null ;
+    }
+    
+    public static DataSource commit(Dataset ds) 
+    {
+        return null ;
+    }
+    
+    
     
     public TransactionManager()
     {

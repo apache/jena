@@ -179,6 +179,36 @@ public class Location
     }
     
     @Override
+    public int hashCode()
+    {
+        if ( isMem )
+            return 37 ;
+        final int prime = 31 ;
+        int result = 1 ;
+        result = prime * result + ((pathname == null) ? 0 : pathname.hashCode()) ;
+        return result ;
+    }
+
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (this == obj) return true ;
+        if (obj == null) return false ;
+        if (getClass() != obj.getClass()) return false ;
+        Location other = (Location)obj ;
+        if ( isMem && other.isMem ) return true ;
+        if ( isMem && ! other.isMem ) return false ; 
+        if ( ! isMem && other.isMem ) return false ; 
+        
+        if (pathname == null)
+        {
+            if (other.pathname != null) return false ;
+        } else
+            if (!pathname.equals(other.pathname)) return false ;
+        return true ;
+    }
+
+    @Override
     public String toString() { return "location:"+pathname ; }
 }
 

@@ -59,6 +59,9 @@ public class DatasetBuilderTxn
         
         DatasetBuilderStd x = new DatasetBuilderStd(blockMgrBuilder, nodeTableBuilder) ;
         DatasetGraphTDB dsg2 = x.build(dsg.getLocation(), dsg.getConfig().properties) ;
+        
+        dsg.setReadOnly(true) ;
+        
         return new DatasetGraphTxnTDB(dsg2, txn) ;
         
     }

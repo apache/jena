@@ -68,6 +68,14 @@ public class NodeTupleTableWrapper implements NodeTupleTable
     { return nodeTupleTable.getTupleTable() ; }
 
     @Override
+    public boolean isReadOnly()
+    { return nodeTupleTable.isReadOnly() ; }
+
+    @Override
+    public void setReadOnly(boolean mode)
+    { nodeTupleTable.setReadOnly(mode) ; }
+
+    @Override
     public boolean isEmpty()
     { return nodeTupleTable.isEmpty() ; }
     

@@ -12,8 +12,6 @@ import java.util.Iterator ;
 
 import org.openjena.atlas.iterator.NullIterator ;
 import org.openjena.atlas.iterator.Transform ;
-import org.openjena.atlas.lib.Closeable ;
-import org.openjena.atlas.lib.Sync ;
 import org.openjena.atlas.lib.Tuple ;
 
 import com.hp.hpl.jena.graph.Node ;
@@ -22,8 +20,6 @@ import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.tdb.index.TupleIndex ;
 import com.hp.hpl.jena.tdb.lib.TupleLib ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
-import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable ;
-import com.hp.hpl.jena.tdb.nodetable.NodeTupleTableConcrete ;
 import com.hp.hpl.jena.tdb.sys.ConcurrencyPolicy ;
 
 
@@ -31,14 +27,11 @@ import com.hp.hpl.jena.tdb.sys.ConcurrencyPolicy ;
  *  together with a node table.
  */
 
-public class QuadTable implements Sync, Closeable
+public class QuadTable extends TableBase
 {
-    final private NodeTupleTable table ;
-    private boolean syncNeeded = false ; 
-    
     public QuadTable(TupleIndex[] indexes, NodeTable nodeTable, ConcurrencyPolicy policy)
     {
-        table = new NodeTupleTableConcrete(4, indexes, nodeTable, policy);
+        super(4, indexes, nodeTable, policy);
     }
 
     /** Add a quad - return true if it was added, false if it already existed */
@@ -99,35 +92,10 @@ public class QuadTable implements Sync, Closeable
         {
             return new Quad(item.get(0), item.get(1), item.get(2), item.get(3)) ;
         }} ; 
-    
-    
-    public NodeTupleTable getNodeTupleTable() { return table ; }
-
-    @Override
-    public void sync()
-    { 
-        if ( syncNeeded )
-            table.sync() ;
-        syncNeeded = false ;
-    }
-        
-
-    public boolean isEmpty()        { return table.isEmpty() ; }
-    
-    @Override
-    public void close()
-    { table.close() ; }
 
     /** Clear - does not clear the associated node tuple table */
     public void clearQuads()
     { table.clear() ; }
-
-//    /** Clear - including the associated node tuple table */
-//    public void clear()
-//    { 
-//        table.getTupleTable().clear() ;
-//        table.getNodeTable().clear() ;
-//    }
 }
 
 /*

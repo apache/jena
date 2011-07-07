@@ -51,7 +51,7 @@ public class BlockMgrJournal implements BlockMgr, Transactional
     @Override
     public void commit(Transaction txn)
     {
-        log.info("Commit {} {}", fileRef.getFilename(), writeBlocks.size()) ;
+        //log.info("Commit {} {}", fileRef.getFilename(), writeBlocks.size()) ;
         for ( Block blk : writeBlocks.values() )
             writeJournalEntry(blk) ;
     }

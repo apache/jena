@@ -31,6 +31,8 @@ public class NodeTupleTableConcrete implements NodeTupleTable
     protected final NodeTable  nodeTable ;
     protected final TupleTable tupleTable ;
     private final ConcurrencyPolicy conPolicy ;
+    private boolean readOnly ;
+
     /*
      * Concurrency checking: Everything goes through one of addRow, deleteRow or
      * find*
@@ -41,17 +43,23 @@ public class NodeTupleTableConcrete implements NodeTupleTable
         if (indexes.length == 0 || indexes[0] == null) throw new TDBException("A primary index is required") ;
         for (TupleIndex index : indexes)
         {
-            if (N != index.getTupleLength()) throw new TDBException(format("Inconsistent: TupleTable width is %d but index %s is %d",
-                                                                           N, index.getLabel(), index.getTupleLength())) ;
+            if (N != index.getTupleLength())
+                throw new TDBException(format("Inconsistent: TupleTable width is %d but index %s is %d",
+                                              N, index.getLabel(), index.getTupleLength())) ;
         }
 
         this.conPolicy = conPolicy ;
         this.tupleTable = new TupleTable(N, indexes) ;
         this.nodeTable = nodeTable ;
+        this.readOnly = false ;
     }
 
     private void startWrite()
-    { conPolicy.startUpdate() ; }
+    {
+        if ( readOnly )
+            throw new TDBException("read only") ;
+        conPolicy.startUpdate() ;
+    }
 
     private void finishWrite()
     { conPolicy.finishUpdate() ; }
@@ -204,6 +212,12 @@ public class NodeTupleTableConcrete implements NodeTupleTable
         return nodeTable ;
     }
 
+    @Override
+    public boolean isReadOnly() { return readOnly ; }
+    
+    @Override
+    public void setReadOnly(boolean mode) { readOnly = mode ; }
+    
     @Override
     public boolean isEmpty()
     {

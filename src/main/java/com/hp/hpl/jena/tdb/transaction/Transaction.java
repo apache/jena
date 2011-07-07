@@ -13,7 +13,6 @@ import java.util.List ;
 
 import com.hp.hpl.jena.tdb.sys.FileRef ;
 
-
 /** A transaction handle */
 public class Transaction
 {
@@ -22,6 +21,8 @@ public class Transaction
     private final TransactionManager txnMgr ;
     private final List<Iterator<?>> iterators ; 
     private Journal journal = null ;
+    private enum State { ACTIVE, COMMITED, ABORTED } 
+    private State state ;
     
     private final List<NodeTableTrans> nodeTableTrans = new ArrayList<NodeTableTrans>() ;
     private final List<BlockMgrJournal> blkMgrs = new ArrayList<BlockMgrJournal>() ;
@@ -32,10 +33,14 @@ public class Transaction
         this.txnMgr = txnMgr ;
         //this.journal = journal ;
         this.iterators = new ArrayList<Iterator<?>>() ;
+        state = State.ACTIVE ;
     }
 
     public void commit()
     {
+        if ( state != State.ACTIVE )
+            throw new TDBTransactionException("Transaction has already committed or aborted") ; 
+        
         for ( BlockMgrJournal x : blkMgrs )
             x.commit(this) ;
         
@@ -49,12 +54,18 @@ public class Transaction
     
     public void abort()
     { 
+        if ( state != State.ACTIVE )
+            throw new TDBTransactionException("Transaction has already committed or aborted") ; 
+        
+        journal.truncate() ;
+
         // Clearup.
         for ( BlockMgrJournal x : blkMgrs )
             x.abort(this) ;
         
         for ( NodeTableTrans x : nodeTableTrans )
             x.abort(this) ;
+        
     }
     
     

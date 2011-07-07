@@ -74,7 +74,7 @@ public final class CachingTDBMaker implements DatasetGraphMakerTDB
         String absPath = location.getDirectoryPath() ;
         
         if ( ! cache.containsKey(absPath) )
-            if ( ! absPath.equals(Names.memName) )
+            if ( ! location.isMem() )
                 // Don't worry if a dataset in-memory is cached or not.
                 log.warn("Not a cached location: "+absPath) ;
         log.debug("Remove from dataset cache: "+absPath) ;

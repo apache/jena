@@ -15,13 +15,14 @@ import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.tdb.index.TupleTable ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
 
-/** Read-only projection of another NodeTupleTable. 
+/** (Read-only?) projection of another NodeTupleTable. 
  * This will not reduce a N-wide tuple to N-1 when find*() used. 
  */ 
 public class NodeTupleTableView extends NodeTupleTableWrapper
 {
     private Node prefix ;
     private NodeId prefixId ;
+    //private boolean readOnly = false ;
 
     public NodeTupleTableView(NodeTupleTable ntt, Node prefix)
     {
@@ -80,8 +81,11 @@ public class NodeTupleTableView extends NodeTupleTableWrapper
         return nodeTupleTable.findAsNodeIds(nodes) ;
     }
 
-//    public NodeTable getNodeTable()
-//    { return nodeTupleTable.getNodeTable() ; }
+//    @Override
+//    public boolean isReadOnly() { return readOnly ; }
+//
+//    @Override
+//    public void setReadOnly(boolean mode)   { readOnly = mode ; }
 
     @Override
     public TupleTable getTupleTable()

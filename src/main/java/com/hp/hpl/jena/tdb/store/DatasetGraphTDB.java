@@ -44,6 +44,7 @@ public class DatasetGraphTDB extends DatasetGraphCaching
     
     private GraphTDB effectiveDefaultGraph ;
     private boolean closed = false ;
+    private boolean readOnly = false ;
 
     public DatasetGraphTDB(TripleTable tripleTable, QuadTable quadTable, DatasetPrefixStorage prefixes, 
                            ReorderTransformation transform, StoreConfig config)
@@ -67,7 +68,16 @@ public class DatasetGraphTDB extends DatasetGraphCaching
     }
     
     public QuadTable getQuadTable()         { return quadTable ; }
-    public TripleTable getTripleTable()     { return tripleTable ; } 
+    public TripleTable getTripleTable()     { return tripleTable ; }
+    
+    public boolean isReadOnly()             { return readOnly ; }
+    public void    setReadOnly(boolean mode)
+    {
+        tripleTable.setReadOnly(mode) ;
+        quadTable.setReadOnly(mode) ;
+        
+        ((DatasetPrefixesTDB)prefixes).setReadOnly(mode) ;
+    }
     
 //    private Lock lock = new MRSWLite() ;
 //    @Override 
@@ -220,7 +230,6 @@ public class DatasetGraphTDB extends DatasetGraphCaching
         }
     } ;
     
-
     @Override
     public Iterator<Node> listGraphNodes()
     {

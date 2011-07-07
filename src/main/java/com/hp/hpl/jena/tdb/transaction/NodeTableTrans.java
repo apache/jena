@@ -48,7 +48,6 @@ public class NodeTableTrans implements NodeTable, Transactional
     public NodeTableTrans(NodeTable sub, Index nodeIndex, ObjectFile journal)
     {
         this.base = sub ;
-
         this.nodeIndex = nodeIndex ;
         this.journal = journal ;
         nodeTableJournal = new NodeTableNative(nodeIndex, journal) ;
@@ -157,14 +156,22 @@ public class NodeTableTrans implements NodeTable, Transactional
             throw new TDBTransactionException("Not in a transaction for a commit to happen") ; 
         append() ;
         base.sync() ;
-        //other.reposition(0) ;
-        passthrough = true ;
+        clearUp() ;
     }
 
     @Override
     public void abort(Transaction txn)
     {
-//        other.reposition(0) ;
+        clearUp() ;
+    }
+    
+    private void clearUp()
+    {
+        passthrough = true ;
+        //nodeIndex ;
+        journal.reposition(0) ;
+        journal.close() ;
+        nodeTableJournal = null ;
     }
     
     @Override

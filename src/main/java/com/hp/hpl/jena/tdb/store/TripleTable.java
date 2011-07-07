@@ -12,8 +12,6 @@ import java.util.Iterator ;
 
 import org.openjena.atlas.iterator.NullIterator ;
 import org.openjena.atlas.iterator.Transform ;
-import org.openjena.atlas.lib.Closeable ;
-import org.openjena.atlas.lib.Sync ;
 import org.openjena.atlas.lib.Tuple ;
 
 import com.hp.hpl.jena.graph.Node ;
@@ -21,8 +19,6 @@ import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.tdb.index.TupleIndex ;
 import com.hp.hpl.jena.tdb.lib.TupleLib ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
-import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable ;
-import com.hp.hpl.jena.tdb.nodetable.NodeTupleTableConcrete ;
 import com.hp.hpl.jena.tdb.sys.ConcurrencyPolicy ;
 
 
@@ -33,15 +29,12 @@ import com.hp.hpl.jena.tdb.sys.ConcurrencyPolicy ;
  *   The node table form can map to and from NodeIds (longs)
  */
 
-public class TripleTable implements Sync, Closeable
+public class TripleTable extends TableBase
 {
-    final NodeTupleTable table ;
-    private boolean syncNeeded = false ; 
-    
     public TripleTable(TupleIndex[] indexes, NodeTable nodeTable, ConcurrencyPolicy policy)
     {
-        table = new NodeTupleTableConcrete(3, indexes, nodeTable, policy) ;
-        
+        super(3, indexes, nodeTable, policy) ;
+        //table = new NodeTupleTableConcrete(3, indexes, nodeTable, policy) ;
     }
     
     public boolean add( Triple triple ) 
@@ -86,33 +79,10 @@ public class TripleTable implements Sync, Closeable
         {
             return new Triple(item.get(0), item.get(1), item.get(2)) ;
         }} ; 
-    
-    public NodeTupleTable getNodeTupleTable() { return table ; }
-
-    @Override
-    public void sync()
-    { 
-        if ( syncNeeded )
-            table.sync() ;
-        syncNeeded = false ;
-    }
-
-    @Override
-    public void close()
-    { table.close() ; }
-    
-    public boolean isEmpty()        { return table.isEmpty() ; }
-    
+   
     /** Clear - does not clear the associated node tuple table */
     public void clearTriples()
     { table.clear() ; }
-
-//    /** Clear - including the associated node tuple table */
-//    public void clear()
-//    { 
-//        table.getTupleTable().clear() ;
-//        table.getNodeTable().clear() ;
-//    }
 }
 
 /*
