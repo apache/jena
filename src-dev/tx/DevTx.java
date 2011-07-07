@@ -8,6 +8,7 @@ public class DevTx
     //    nodes.dat-jrnl, prefixed.dat-jrnl
     // 2/ Need to scan for whether commit written or not.
     // 3/ general setup
+    // 4/ Clear up and reply snode journals.
     // Replay ==> JournalCtl.
     // warmReplay, coldReplay 
     // Dataset API
