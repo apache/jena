@@ -37,6 +37,9 @@ public class ObjectFileWrapper implements ObjectFile
     public void reposition(long id)                 { other.reposition(id) ; }
 
     @Override
+    public void truncate(long size)                 { other.truncate(size) ; }
+
+    @Override
     public ByteBuffer read(long id)                 { return other.read(id) ; }
 
     @Override

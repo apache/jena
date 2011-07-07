@@ -205,6 +205,12 @@ public class ObjectFileStorage implements ObjectFile
     }
 
     @Override
+    public void truncate(long size)
+    {
+        reposition(size) ;
+    }
+
+    @Override
     public ByteBuffer read(long loc)
     {
         if ( inAllocWrite )

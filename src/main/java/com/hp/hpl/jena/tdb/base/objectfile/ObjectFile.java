@@ -49,6 +49,10 @@ public interface ObjectFile extends Sync, Closeable
      */
     public void reposition(long id) ;
     
+    /** 
+     */
+    public void truncate(long size) ;
+
     /** All the bytebuffers - debugging aid */
     public Iterator<Pair<Long, ByteBuffer>> all() ;
     

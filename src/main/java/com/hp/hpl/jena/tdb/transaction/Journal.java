@@ -196,12 +196,9 @@ class Journal implements Iterable<JournalEntry>, Sync, Closeable
     @Override
     public void close() { channel.close() ; }
 
-    public void truncate() { truncate(0) ; }
+    public void truncate(long size) { channel.truncate(size) ; }
     
-    private void truncate(long posn)
-    {
-        channel.truncate(posn) ;
-    }
+    public void position(long posn) { channel.position(posn) ; }
 }
 
 /*

@@ -110,6 +110,20 @@ public class ObjectFileTrans implements ObjectFile, Transactional
         other.reposition(0) ;
         otherAllocOffset = base.length() ;
     }
+    
+    @Override
+    public void truncate(long id)
+    {
+        if ( passthrough ) { base.truncate(id) ; return ; }
+        if ( id > otherAllocOffset )
+        {
+            other.truncate(mapToOther(id)) ;
+            return ;
+        }
+        base.truncate(id) ;
+        other.truncate(0) ;
+        otherAllocOffset = base.length() ;
+    }
 
     @Override
     public Block allocWrite(int maxBytes)

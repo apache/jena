@@ -169,7 +169,7 @@ public class NodeTableTrans implements NodeTable, Transactional
     {
         passthrough = true ;
         //nodeIndex ;
-        journal.reposition(0) ;
+        journal.truncate(0) ;
         journal.close() ;
         nodeTableJournal = null ;
     }

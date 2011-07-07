@@ -73,6 +73,13 @@ public class ObjectFileLogger implements ObjectFile
     }
 
     @Override
+    public void truncate(long size)
+    {
+        info("truncate("+size+")") ;
+        other.truncate(size) ;
+    }
+
+    @Override
     public void sync()
     {
         info("sync") ;

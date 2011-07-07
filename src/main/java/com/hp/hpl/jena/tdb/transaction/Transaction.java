@@ -43,7 +43,6 @@ public class Transaction
         
         for ( BlockMgrJournal x : blkMgrs )
             x.commit(this) ;
-        
         for ( NodeTableTrans x : nodeTableTrans )
             x.commit(this) ;
         
@@ -57,7 +56,7 @@ public class Transaction
         if ( state != State.ACTIVE )
             throw new TDBTransactionException("Transaction has already committed or aborted") ; 
         
-        journal.truncate() ;
+        journal.truncate(0) ;
 
         // Clearup.
         for ( BlockMgrJournal x : blkMgrs )

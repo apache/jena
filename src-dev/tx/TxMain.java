@@ -42,6 +42,8 @@ import com.hp.hpl.jena.tdb.sys.Names ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 import com.hp.hpl.jena.tdb.transaction.DatasetGraphTxnTDB ;
 import com.hp.hpl.jena.tdb.transaction.Journal ;
+import com.hp.hpl.jena.tdb.transaction.JournalEntry ;
+import com.hp.hpl.jena.tdb.transaction.JournalEntryType ;
 import com.hp.hpl.jena.tdb.transaction.NodeTableTrans ;
 import com.hp.hpl.jena.tdb.transaction.TransactionManager ;
 import com.hp.hpl.jena.update.UpdateAction ;
@@ -83,24 +85,42 @@ public class TxMain
         String journalFilename = dsg0.getLocation().absolute(Names.journalFile) ;
         if ( FileOps.exists(journalFilename))
         {
-            
             BufferChannel bc = new BufferChannelFile(journalFilename) ;
-            if ( bc.size() != 0 )
+            System.out.println("Journal found") ;
+            query("Before", "SELECT (Count(*) AS ?c1) { ?s ?p ?o }", dsg0) ;
+            Journal j0 = new Journal(bc) ;
+
+            // Scan for commit.
+            boolean committed = false ;
+            for ( JournalEntry e : j0 )
             {
-                System.out.println("Recovery !") ;
-                query("Before", "SELECT (Count(*) AS ?c1) { ?s ?p ?o }", dsg0) ;
-                Journal j0 = new Journal(bc) ;
-                
+                if ( e.getType() == JournalEntryType.Commit )
+                    committed = true ;
+                else
+                {
+                    if ( committed )
+                    {
+                        Log.warn(Journal.class, "Extra journal entries") ;
+                        break ;
+                    }
+                }
+
+            }
+            j0.position(0) ;
+            if ( committed )
+            {
+                System.out.println("Journal has transaction") ;
                 // NOTE
                 // The NodeTable Journal has already been done!
-                
                 Replay.replay(j0, dsg0) ;
-                System.out.println("after") ;
-                query("After", "SELECT (Count(*) AS ?c1) { ?s ?p ?o }", dsg0) ;
-                bc.close() ;
-                FileOps.delete(journalFilename) ;
-                
             }
+            else
+                System.out.println("Journal has no cmmitted transaction") ;
+            j0.truncate(0) ;
+            System.out.println("after") ;
+            query("After", "SELECT (Count(*) AS ?c1) { ?s ?p ?o }", dsg0) ;
+            FileOps.delete(journalFilename) ;
+            exit(0) ;
         }
         
         dsg0.sync() ;

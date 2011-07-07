@@ -124,6 +124,12 @@ public class ObjectFileMem implements ObjectFile
     }
 
     @Override
+    public void truncate(long size)
+    {
+        reposition(size) ;
+    }
+
+    @Override
     public Iterator<Pair<Long, ByteBuffer>> all()
     {
         int N = buffers.size() ;

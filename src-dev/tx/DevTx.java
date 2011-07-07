@@ -3,8 +3,16 @@ package tx;
 public class DevTx
 {
     // NodeTable journalling and recovery
-    //   Currently, NT wriiten in commit phase, before the journal commit entry.
-    //   Safe
+    // 1/ Currently, NT written in commit phase, before the journal commit entry.
+    //    Safe but?
+    //    nodes.dat-jrnl, prefixed.dat-jrnl
+    // 2/ Need to scan for whether commit written or not.
+    // 3/ general setup
+    // Replay ==> JournalCtl.
+    // warmReplay, coldReplay 
+    // Dataset API
+    // DatasetGraphAPI - everything some kinds of transaction?
+    // Iterator tracking.
     
     // DSG.add(Quad(tripleInQuad, triple)) does not affect default graph.
     
