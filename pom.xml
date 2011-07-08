@@ -9,17 +9,17 @@
   <name>SDB</name>
   <version>1.3.5-SNAPSHOT</version>
   <description/>
-  <url>http://openjena.org/SDB</url>
+   <url>http://incubator.apache.org/jena</url>
 
   <organization>
-    <name>OpenJena</name>
-    <url>http://openjena.org/</url>
+    <name>Apache Jena</name>
+    <url>http://incubator.apache.org/jena</url>
   </organization>
 
   <licenses>
     <license>
-      <name>BSD-style license</name>
-      <url>http://openjena.org/license.html</url>
+      <name>Apache 2.0 License</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0</url>
     </license>
   </licenses>
 
