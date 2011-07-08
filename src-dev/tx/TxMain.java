@@ -74,6 +74,10 @@ public class TxMain
         //SystemTDB.setFileMode(FileMode.direct) ;
         SystemTDB.setFileMode(FileMode.mapped) ;
         DatasetGraphTDB dsg0 = build() ;
+        dsg0.setReadOnly(true) ;
+        load("D.ttl", dsg0) ;
+        exit(0) ;
+        
         Replay.recovery(dsg0) ;
         query("Initial state", "SELECT (Count(*) AS ?c0) { ?s ?p ?o }", dsg0) ;
         //exit(0) ;

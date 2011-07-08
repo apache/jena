@@ -1,19 +1,33 @@
 package tx;
 
+
 public class DevTx
 {
+    // Tests
+    
     // NodeTable journalling and recovery
-    // 1/ Currently, NT written in commit phase, before the journal commit entry.
-    //    Safe but?
-    //    nodes.dat-jrnl, prefixed.dat-jrnl
-    // 2/ Need to scan for whether commit written or not.
     // 3/ general setup
-    // 4/ Clear up and reply snode journals.
     // Replay ==> JournalCtl.
     // warmReplay, coldReplay 
     // Dataset API
     // DatasetGraphAPI - everything some kinds of transaction?
     // Iterator tracking.
+    //   DatasetGraphTDB.find*, prefixes, OpExecutorTDB.OpExecutorPlainTDB=>SolverLib.execute 
+    //   OpExecutorTDB.OpExecutorPlainTDB
+    //     =>SolverLib.execute 
+    //     =>StageMatchTuple
+    //     =>NodeTupleTable.find [NodeTupleTableConcrete]
+    //         ====> "ConcurrencyPolicy" => "system state"
+    //            Iterator<Tuple<NodeId>> find(Tuple<NodeId> tuple) ==> checkIterator: 
+    //     =>RangeIndex eventually.
+    //     **** Catch in NodeTupleTable.find
+    // Larger grain "start write" -- one on each NodeTupleTableConcrete.addRow but need a parser or triple "add" 
+    
+    // ?? Read-only by concurrency policy.
+    
+    
+    // Evenetually:
+    // Iterator<Tuple<NodeId>> find(Tuple<NodeId> tuple)
     
     // DSG.add(Quad(tripleInQuad, triple)) does not affect default graph.
     
