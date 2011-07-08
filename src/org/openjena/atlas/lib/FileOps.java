@@ -8,6 +8,7 @@ package org.openjena.atlas.lib;
 
 import java.io.File ;
 
+import org.openjena.atlas.AtlasException ;
 import org.openjena.atlas.logging.Log ;
 
 public class FileOps
@@ -71,6 +72,14 @@ public class FileOps
     {
         File f = new File(path) ;
         return f.exists() ; 
+    }
+    
+    public static boolean isEmpty(String filename)
+    {
+        File f = new File(filename) ;
+        if ( f.exists() ) return true ;
+        if ( f.isFile() ) return f.length() == 0 ;
+        throw new AtlasException("Not a file") ;
     }
 
     public static void ensureDir(String dirname)
