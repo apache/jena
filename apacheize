@@ -1,12 +1,13 @@
 #!/usr/bin/perl
 # Remove old head/tail /*...*/ comments and add apache boilerplate.
 
-# find DIRS -name \*.java -o -name .svn -prune | xargs -n 1 perl -i.bak perl-script
+# find DIRS -name \*.java -print -o -name .svn -prune | xargs -n 1 perl -i.bak perl-script
 # find src* -name \*.java -print -o -name .svn -prune |  xargs -n 1 perl -i.bak ../ARQ/apacheize
 
 # TODO
 ## Comments /** with ending **/ confuse this script.
 ## Use of //********** confuse this script.
+## /** **/ confuses script.
 
 $HTEXT= <<'END';
 /**
@@ -33,9 +34,9 @@ $TTEXT="" ;
 
 undef $/ ;
 $text = <> ;
-# Protect // /* and " /*
-$text =~ s!//(.*)/\*!//$1/-XYXY-!g ;
-$text =~ s!//(.*)"\*!//$1"-XYXY-!g ;
+## # Protect // /* and " /*
+## $text =~ s!//(.*)/\*!//$1/-XYXY-!g ;
+## $text =~ s!//(.*)"\*!//$1"-XYXY-!g ;
 
 ## These remove multiple adjacent comments
 # remove first comment
@@ -50,14 +51,18 @@ $text =~ s!^ ## Start of file.
 !!sx ;
 
 # Blocks *(not/)-starting text
+# Includes trailing } to anchor things.
+# Assumes no {} in the final /* comment block
+#  Indeed, "}[^}*]$" is probably enough without training comments.
+
 $text =~ s!
-\s*               ## Whitespace
+}[^}]*            ## End of class - anchors expression. {} do not appear in (c)
 /\*               ## Start of comment
-[^*]*\*+          ## Any non-* then 1-or-more *
-([^/][^*]*\*+)*   ## Repeats of not-/ then unit as above
+[^*{}]*\*+          ## Any non-* then 1-or-more *
+([^/{}][^*{}]*\*+)*   ## Repeats of not-/ then unit as above
 /                 ## Close / for the comment
 \s*$              ## Whitespace, end of file
-!!sx ;
+!}\n!sx ;
 
 $text = trim($text) ;
 $text =~ s!-XYXY-!\*!g ;
