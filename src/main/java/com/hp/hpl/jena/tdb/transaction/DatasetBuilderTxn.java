@@ -44,7 +44,7 @@ public class DatasetBuilderTxn
     {
         blockMgrs = dsg.getConfig().blockMgrs ;
         nodeTables = dsg.getConfig().nodeTables ;
-        txn = txnMgr.createTransaction() ;
+        txn = txnMgr.createTransaction(dsg) ;
             
         BufferChannel chan ;
         if ( dsg.getLocation().isMem() )

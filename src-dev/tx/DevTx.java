@@ -19,8 +19,6 @@ public class DevTx
     
     // Every sync hits the NodeTupleTable sync the node table repeatedly - keep dirty flag? 
     
-    // In-memory datasets.
-    
     // Config
     //   One config file?
     //   Cache sizes
@@ -61,15 +59,6 @@ public class DevTx
      *   better setup.
      */
 
-    /*
-     * Layers:
-     *   DatasetGraph
-     *   Indexes
-     *   Pages
-     *   Blocks
-     *   Storage = BlockAccess (a sequence of blocks) and BufferChannel  
-     */
-    
     /* 
      * Fast B+Tree creation: wrap an existsing BPTree with another that switches the block managers only.
      *    BPTree.attach with warpping BlockMgrs.

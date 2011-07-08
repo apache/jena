@@ -37,9 +37,9 @@ public class TransactionManager
     {
     }
     
-    public Transaction createTransaction()
+    public Transaction createTransaction(DatasetGraphTDB dsg)
     {
-        Transaction txn = new Transaction(transactionId++, this) ;
+        Transaction txn = new Transaction(dsg, transactionId++, this) ;
         return txn ;
     }
     

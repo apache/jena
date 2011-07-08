@@ -25,8 +25,6 @@ import com.hp.hpl.jena.sparql.util.NodeFactory ;
 import com.hp.hpl.jena.sparql.util.QueryExecUtils ;
 import com.hp.hpl.jena.tdb.TDBFactory ;
 import com.hp.hpl.jena.tdb.base.block.FileMode ;
-import com.hp.hpl.jena.tdb.base.file.BufferChannel ;
-import com.hp.hpl.jena.tdb.base.file.BufferChannelFile ;
 import com.hp.hpl.jena.tdb.base.file.FileFactory ;
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile ;
 import com.hp.hpl.jena.tdb.base.record.Record ;
@@ -38,12 +36,9 @@ import com.hp.hpl.jena.tdb.nodetable.NodeTableInline ;
 import com.hp.hpl.jena.tdb.setup.DatasetBuilderStd ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
-import com.hp.hpl.jena.tdb.sys.Names ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 import com.hp.hpl.jena.tdb.transaction.DatasetGraphTxnTDB ;
 import com.hp.hpl.jena.tdb.transaction.Journal ;
-import com.hp.hpl.jena.tdb.transaction.JournalEntry ;
-import com.hp.hpl.jena.tdb.transaction.JournalEntryType ;
 import com.hp.hpl.jena.tdb.transaction.NodeTableTrans ;
 import com.hp.hpl.jena.tdb.transaction.TransactionManager ;
 import com.hp.hpl.jena.update.UpdateAction ;
@@ -79,51 +74,7 @@ public class TxMain
         //SystemTDB.setFileMode(FileMode.direct) ;
         SystemTDB.setFileMode(FileMode.mapped) ;
         DatasetGraphTDB dsg0 = build() ;
-        
-        //initFS() ;
-        // replay!
-        String journalFilename = dsg0.getLocation().absolute(Names.journalFile) ;
-        if ( FileOps.exists(journalFilename))
-        {
-            BufferChannel bc = new BufferChannelFile(journalFilename) ;
-            System.out.println("Journal found") ;
-            query("Before", "SELECT (Count(*) AS ?c1) { ?s ?p ?o }", dsg0) ;
-            Journal j0 = new Journal(bc) ;
-
-            // Scan for commit.
-            boolean committed = false ;
-            for ( JournalEntry e : j0 )
-            {
-                if ( e.getType() == JournalEntryType.Commit )
-                    committed = true ;
-                else
-                {
-                    if ( committed )
-                    {
-                        Log.warn(Journal.class, "Extra journal entries") ;
-                        break ;
-                    }
-                }
-
-            }
-            j0.position(0) ;
-            if ( committed )
-            {
-                System.out.println("Journal has transaction") ;
-                // NOTE
-                // The NodeTable Journal has already been done!
-                Replay.replay(j0, dsg0) ;
-            }
-            else
-                System.out.println("Journal has no cmmitted transaction") ;
-            j0.truncate(0) ;
-            System.out.println("after") ;
-            query("After", "SELECT (Count(*) AS ?c1) { ?s ?p ?o }", dsg0) ;
-            FileOps.delete(journalFilename) ;
-            exit(0) ;
-        }
-        
-        dsg0.sync() ;
+        Replay.recovery(dsg0) ;
         query("Initial state", "SELECT (Count(*) AS ?c0) { ?s ?p ?o }", dsg0) ;
         //exit(0) ;
         
@@ -135,10 +86,10 @@ public class TxMain
         query("dsg1", "SELECT (Count(*) AS ?c1) { ?s ?p ?o }", dsg1) ;
         query("dsg0", "SELECT (Count(*) AS ?c0) { ?s ?p ?o }", dsg0) ;
         
-        
+
+        //dsg1.getTransaction().prepare() ;
         dsg1.commit() ;
-        
-//        dsg1.abort() ;
+        //dsg1.abort() ;
         
         //System.out.println("Replay") ;
         

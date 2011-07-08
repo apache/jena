@@ -21,6 +21,7 @@ import com.hp.hpl.jena.tdb.base.file.FileSet ;
 
 
 /** File references.  
+ *  These are not filenames - they are a per-database file id.
  */
 public class FileRef
 {

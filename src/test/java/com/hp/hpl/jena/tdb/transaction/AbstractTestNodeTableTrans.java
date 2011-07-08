@@ -47,7 +47,7 @@ public abstract class AbstractTestNodeTableTrans extends BaseTest
     @Test public void nodetrans_01()
     {
         NodeTableTrans ntt = create() ;
-        Transaction txn = new Transaction(11, null) ; 
+        Transaction txn = new Transaction(null, 11, null) ; 
         ntt.begin(txn) ;
         ntt.abort(txn) ;
     }
@@ -58,7 +58,7 @@ public abstract class AbstractTestNodeTableTrans extends BaseTest
         NodeTableTrans ntt = create() ;
         NodeTable nt0 = ntt.getBaseNodeTable() ;
         
-        Transaction txn = new Transaction(11, null) ; 
+        Transaction txn = new Transaction(null, 11, null) ; 
         ntt.begin(txn) ;
         // Add a node
         NodeId nodeId = ntt.getAllocateNodeId(node1) ;
@@ -79,7 +79,7 @@ public abstract class AbstractTestNodeTableTrans extends BaseTest
         NodeTableTrans ntt = create() ;
         NodeTable nt0 = ntt.getBaseNodeTable() ;
         
-        Transaction txn = new Transaction(11, null) ; 
+        Transaction txn = new Transaction(null, 11, null) ; 
         ntt.begin(txn) ;
         // Add a node
         NodeId nodeId = ntt.getAllocateNodeId(node1) ;
@@ -99,7 +99,7 @@ public abstract class AbstractTestNodeTableTrans extends BaseTest
     {
         NodeTableTrans ntt = create(node1) ;
         NodeTable nt0 = ntt.getBaseNodeTable() ;
-        Transaction txn = new Transaction(11, null) ; 
+        Transaction txn = new Transaction(null, 11, null) ; 
         ntt.begin(txn) ;
         // Add a node
         NodeId nodeId = ntt.getAllocateNodeId(node2) ;

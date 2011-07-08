@@ -6,23 +6,38 @@
 
 package tx;
 
+import static com.hp.hpl.jena.tdb.sys.SystemTDB.errlog ;
+import static com.hp.hpl.jena.tdb.sys.SystemTDB.syslog ;
+
+import java.io.File ;
 import java.nio.ByteBuffer ;
 import java.util.Map ;
 
-import org.slf4j.Logger ;
-import org.slf4j.LoggerFactory ;
+import org.openjena.atlas.lib.FileOps ;
 
 import com.hp.hpl.jena.shared.Lock ;
 import com.hp.hpl.jena.tdb.base.block.Block ;
 import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
+import com.hp.hpl.jena.tdb.base.file.FileFactory ;
+import com.hp.hpl.jena.tdb.base.file.Location ;
+import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile ;
+import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
+import com.hp.hpl.jena.tdb.index.IndexMap ;
+import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.sys.FileRef ;
+import com.hp.hpl.jena.tdb.sys.Names ;
+import com.hp.hpl.jena.tdb.sys.SystemTDB ;
+import com.hp.hpl.jena.tdb.transaction.DatasetGraphTxnTDB ;
 import com.hp.hpl.jena.tdb.transaction.Journal ;
 import com.hp.hpl.jena.tdb.transaction.JournalEntry ;
+import com.hp.hpl.jena.tdb.transaction.JournalEntryType ;
+import com.hp.hpl.jena.tdb.transaction.NodeTableTrans ;
+import com.hp.hpl.jena.tdb.transaction.TDBTransactionException ;
 
 public class Replay
 {
-    private static Logger log = LoggerFactory.getLogger(Replay.class) ;
+    //private static Logger log = LoggerFactory.getLogger(Replay.class) ;
     
 
     public static void print(Journal journal)
@@ -41,8 +56,92 @@ public class Replay
         }
     }
 
+    public static void recovery(DatasetGraphTDB dsg)
+    {
+        if ( dsg instanceof DatasetGraphTxnTDB )
+            throw new TDBTransactionException("Reocery works on the base dataset, not a transactional one") ; 
+        
+        if ( dsg.getLocation().isMem() )
+            return ;
+        
+        for ( FileRef fileRef : dsg.getConfig().nodeTables.keySet() )
+            recoverNodeDat(dsg, fileRef) ;
+        
+        recoverSystemJournal(dsg) ;
+    }
+    
+    /** Recovery from the system journal.
+     *  Find is there is a commit record; if so, reply the journal.
+     */
+    private static void recoverSystemJournal(DatasetGraphTDB dsg)
+    {
+        Location loc = dsg.getLocation() ;
+        String journalFilename = loc.absolute(Names.journalFile) ;
+        File f = new File(journalFilename) ;
+        //if ( FileOps.exists(journalFilename)
+        if ( f.exists() && f.isFile() && f.length() > 0 )
+        {
+            Journal jrnl = new Journal(journalFilename) ;
+            // Scan for commit.
+            boolean committed = false ;
+            for ( JournalEntry e : jrnl )
+            {
+                if ( e.getType() == JournalEntryType.Commit )
+                    committed = true ;
+                else
+                {
+                    if ( committed )
+                    {
+                        errlog.warn("Extra journal entries ("+loc+")") ;
+                        break ;
+                    }
+                }
+            }
+            if ( committed )
+            {
+                syslog.info("Recovering committed transaction") ;
+                // The NodeTable Journal has already been done!
+                Replay.replay(jrnl, dsg) ;
+            }
+            jrnl.truncate(0) ;
+            jrnl.close();
+            dsg.sync() ;
+        }
+        
+        if ( f.exists() )
+            FileOps.delete(journalFilename) ;
+    }
+    
+    /** Recover a node data file (".dat").
+     *  Node data files are append-only so recovering, then not using the data is safe.
+     *  Node data file is a precursor for ful lrecovery that works from the master journal.
+     */
+    private static void recoverNodeDat(DatasetGraphTDB dsg, FileRef fileRef)
+    {
+        // See DatasetBuilderTxn - same name generation code.
+        // [TxTDB:TODO]
+        
+        RecordFactory recordFactory = new RecordFactory(SystemTDB.LenNodeHash, SystemTDB.SizeOfNodeId) ;
+        NodeTable baseNodeTable = dsg.getConfig().nodeTables.get(fileRef) ;
+        String objFilename = fileRef.getFilename()+"-"+Names.extJournal ;
+        objFilename = dsg.getLocation().absolute(objFilename) ;
+        File jrnlFile = new File(objFilename) ;
+        if ( jrnlFile.exists() && jrnlFile.length() > 0 )
+        {
+            syslog.info("Recovering node data: "+fileRef.getFilename()) ;
+            ObjectFile dataJrnl = FileFactory.createObjectFileDisk(objFilename) ;
+            NodeTableTrans ntt = new NodeTableTrans(baseNodeTable, new IndexMap(recordFactory), dataJrnl) ;
+            ntt.append() ;
+            ntt.close() ;
+            baseNodeTable.sync() ;
+        }
+        if ( jrnlFile.exists() )
+            FileOps.delete(objFilename) ;
+    }
+    
     public static void replay(Journal journal, DatasetGraphTDB dsg)
     {
+        journal.position(0) ;
         dsg.getLock().enterCriticalSection(Lock.WRITE) ;
         try {
         for ( JournalEntry e : journal )
@@ -51,7 +150,7 @@ public class Replay
         catch (RuntimeException ex)
         { 
             // Bad news travels fast.
-            log.error("Exception during journal replay", ex) ;
+            syslog.error("Exception during journal replay", ex) ;
             throw ex ;
         }
         finally { dsg.getLock().leaveCriticalSection() ; }
@@ -85,7 +184,7 @@ public class Replay
             case Buffer:
             case Object:
             case Checkpoint:
-                log.warn("Unexpect block type: "+e.getType()) ;
+                errlog.warn("Unexpected block type: "+e.getType()) ;
         }
         return false ;
     }

@@ -38,7 +38,7 @@ public class NodeTableTrans implements NodeTable, Transactional
     private long offset ;
     
     private NodeTable nodeTableJournal ;
-    private static int CacheSize = 10000 ;
+    private static int CacheSize = 10000 ;      // [TxTDB:TODO] Make configurable 
     private boolean passthrough = false ;
     private boolean inTransaction = false ;
     

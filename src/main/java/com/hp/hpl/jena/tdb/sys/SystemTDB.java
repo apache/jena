@@ -34,6 +34,16 @@ public class SystemTDB
     // It's visibility is TDB, not really public. 
     private static final Logger log = LoggerFactory.getLogger(TDB.class) ;
     
+    /** TDB System log - use for general messages (a few) and warnings.
+     *  Generally, do not log events unless you want every user to see them every time.
+     *  TDB is an embedded database - libraries and embedded systsm shoudl be seen and not heard.
+     *  @see #errlog 
+     */
+    // This was added quite late in TDB so need to check it's used appropriately - check for Log.*
+    public static final Logger syslog = LoggerFactory.getLogger("TDB") ;
+    /** Send warnings and error */
+    public static final Logger errlog = LoggerFactory.getLogger("TDB") ;
+    
     public static final String TDB_NS = "http://jena.hpl.hp.com/TDB#" ;
     
     // ---- Constants that can't be changed without invalidating on-disk data.  

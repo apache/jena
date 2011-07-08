@@ -11,6 +11,9 @@ import java.util.Collections ;
 import java.util.Iterator ;
 import java.util.List ;
 
+import tx.Replay ;
+
+import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.sys.FileRef ;
 
 /** A transaction handle */
@@ -21,16 +24,18 @@ public class Transaction
     private final TransactionManager txnMgr ;
     private final List<Iterator<?>> iterators ; 
     private Journal journal = null ;
-    private enum State { ACTIVE, COMMITED, ABORTED } 
+    private enum State { ACTIVE, PREPARING, COMMITED, ABORTED } 
     private State state ;
     
     private final List<NodeTableTrans> nodeTableTrans = new ArrayList<NodeTableTrans>() ;
     private final List<BlockMgrJournal> blkMgrs = new ArrayList<BlockMgrJournal>() ;
+    private DatasetGraphTDB basedsg ;
 
-    public Transaction(long id, TransactionManager txnMgr)
+    public Transaction(DatasetGraphTDB basedsg, long id, TransactionManager txnMgr)
     {
         this.id = id ;
         this.txnMgr = txnMgr ;
+        this.basedsg = basedsg ;
         //this.journal = journal ;
         this.iterators = new ArrayList<Iterator<?>>() ;
         state = State.ACTIVE ;
@@ -38,17 +43,33 @@ public class Transaction
 
     public void commit()
     {
+        prepare() ;
+        
+        JournalEntry entry = new JournalEntry(JournalEntryType.Commit, FileRef.Journal, null) ;
+        journal.writeJournal(entry) ;
+        journal.sync() ;        // Commit point.
+        // Attempt to play the journal into the dataset.
+        // This is idempotent and safe to partial replay.  
+        state = State.COMMITED ;
+        Replay.replay(journal, basedsg) ;
+    }
+    
+    public void prepare()
+    {
         if ( state != State.ACTIVE )
             throw new TDBTransactionException("Transaction has already committed or aborted") ; 
+        state = State.PREPARING ;
         
         for ( BlockMgrJournal x : blkMgrs )
             x.commit(this) ;
         for ( NodeTableTrans x : nodeTableTrans )
             x.commit(this) ;
-        
-        JournalEntry entry = new JournalEntry(JournalEntryType.Commit, FileRef.Journal, null) ;
-        journal.writeJournal(entry) ;
-        journal.sync() ;        // Commit point.
+    }
+
+    /** For testing - do things but do not write the commit record */
+    public void semiCommit()
+    {
+        prepare() ;
     }
     
     public void abort()
@@ -64,6 +85,7 @@ public class Transaction
         
         for ( NodeTableTrans x : nodeTableTrans )
             x.abort(this) ;
+        state = State.ABORTED ;
         
     }
     

@@ -18,6 +18,7 @@ import org.openjena.atlas.lib.Sync ;
 
 import com.hp.hpl.jena.tdb.base.block.Block ;
 import com.hp.hpl.jena.tdb.base.file.BufferChannel ;
+import com.hp.hpl.jena.tdb.base.file.BufferChannelFile ;
 import com.hp.hpl.jena.tdb.sys.FileRef ;
 
 /** The Journal is slightly odd - it is append-only for write but random read.
@@ -46,6 +47,11 @@ class Journal implements Iterable<JournalEntry>, Sync, Closeable
 //    byte[] _buffer = new byte[Overhead] ;
 //    ByteBuffer header = ByteBuffer.wrap(_buffer) ;
     ByteBuffer header = ByteBuffer.allocate(Overhead) ;
+    
+    public Journal(String filename)
+    {
+        this(new BufferChannelFile(filename)) ;
+    }
     
     public Journal(BufferChannel channel)
     {
