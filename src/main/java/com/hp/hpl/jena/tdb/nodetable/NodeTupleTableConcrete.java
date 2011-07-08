@@ -167,6 +167,7 @@ public class NodeTupleTableConcrete implements NodeTupleTable
     @Override
     public Iterator<Tuple<NodeId>> find(Tuple<NodeId> tuple)
     {
+        // All find/*, except findAll, comes through this operation so startRead/finishRead/checkIterator only needs to happen here.
         try {
             startRead() ;
             // find worker - need also protect iterators that access the node table.
