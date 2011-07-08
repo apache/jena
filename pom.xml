@@ -8,17 +8,17 @@
   <name>Fuseki</name>
   <version>0.2.1-SNAPSHOT</version>
   <description/>
-  <url>http://openjena.org/</url>
+  <url>http://incubator.apache.org/jena</url>
 
   <organization>
-    <name>The Jena Project</name>
-    <url>http://www.openjena.org/</url>
+    <name>Apache Jena</name>
+    <url>http://incubator.apache.org/jena</url>
   </organization>
 
   <licenses>
     <license>
-      <name>BSD-style license</name>
-      <url>http://www.openjena.org/license.html</url>
+      <name>Apache 2.0 License</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0</url>
     </license>
   </licenses>
 
