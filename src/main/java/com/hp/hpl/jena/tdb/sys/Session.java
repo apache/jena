@@ -31,7 +31,6 @@ public interface Session
     
     /** Signal the completion of a read operation */
     public void finishRead();
-
 }
 
 /*

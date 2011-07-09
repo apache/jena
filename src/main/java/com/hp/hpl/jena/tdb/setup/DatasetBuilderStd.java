@@ -14,7 +14,6 @@ import org.openjena.atlas.lib.ColumnMap ;
 import org.openjena.atlas.lib.StrUtils ;
 import org.slf4j.Logger ;
 
-import com.hp.hpl.jena.sparql.core.DatasetPrefixStorage ;
 import com.hp.hpl.jena.sparql.engine.optimizer.reorder.ReorderTransformation ;
 import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.TDBException ;
@@ -174,7 +173,7 @@ public class DatasetBuilderStd implements DatasetBuilder
         
         TripleTable tripleTable = makeTripleTable(location, nodeTable, policy) ; 
         QuadTable quadTable = makeQuadTable(location, nodeTable, policy) ;
-        DatasetPrefixStorage prefixes = makePrefixTable(location, policy) ;
+        DatasetPrefixesTDB prefixes = makePrefixTable(location, policy) ;
         ReorderTransformation transform  = chooseReorderTransformation(location) ;
         
         StoreConfig storeConfig = new StoreConfig(location, config, blockMgrs, nodeTables) ;
@@ -236,7 +235,7 @@ public class DatasetBuilderStd implements DatasetBuilder
         return quadTable ;
     }
 
-    protected DatasetPrefixStorage makePrefixTable(Location location, ConcurrencyPolicy policy)
+    protected DatasetPrefixesTDB makePrefixTable(Location location, ConcurrencyPolicy policy)
     {    
         /*
          * tdb.prefixes.index.file=prefixIdx

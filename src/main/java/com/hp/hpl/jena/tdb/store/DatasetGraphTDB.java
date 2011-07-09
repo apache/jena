@@ -23,7 +23,6 @@ import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphCaching ;
 import com.hp.hpl.jena.sparql.core.DatasetImpl ;
-import com.hp.hpl.jena.sparql.core.DatasetPrefixStorage ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.engine.optimizer.reorder.ReorderTransformation ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
@@ -38,7 +37,7 @@ public class DatasetGraphTDB extends DatasetGraphCaching
 {
     private TripleTable tripleTable ;
     private QuadTable quadTable ;
-    private DatasetPrefixStorage prefixes ;
+    private DatasetPrefixesTDB prefixes ;
     private final ReorderTransformation transform ;
     private final StoreConfig config ;
     
@@ -46,7 +45,7 @@ public class DatasetGraphTDB extends DatasetGraphCaching
     private boolean closed = false ;
     private boolean readOnly = false ;
 
-    public DatasetGraphTDB(TripleTable tripleTable, QuadTable quadTable, DatasetPrefixStorage prefixes, 
+    public DatasetGraphTDB(TripleTable tripleTable, QuadTable quadTable, DatasetPrefixesTDB prefixes, 
                            ReorderTransformation transform, StoreConfig config)
     {
         this.tripleTable = tripleTable ;
@@ -75,8 +74,7 @@ public class DatasetGraphTDB extends DatasetGraphCaching
     {
         tripleTable.setReadOnly(mode) ;
         quadTable.setReadOnly(mode) ;
-        
-        ((DatasetPrefixesTDB)prefixes).setReadOnly(mode) ;
+        prefixes.setReadOnly(mode) ;
     }
     
 //    private Lock lock = new MRSWLite() ;
@@ -219,7 +217,7 @@ public class DatasetGraphTDB extends DatasetGraphCaching
 
     public ReorderTransformation getTransform()     { return transform ; }
     
-    public DatasetPrefixStorage getPrefixes()       { return prefixes ; }
+    public DatasetPrefixesTDB getPrefixes()       { return prefixes ; }
 
     static private Transform<Tuple<NodeId>, NodeId> project0 = new Transform<Tuple<NodeId>, NodeId>()
     {

@@ -136,7 +136,7 @@ public class NodeTableTrans implements NodeTable, Transactional
     /** Copy from the journal file to the real file */
     public /*temporary*/ void append()
     {
-        // Asummes all() is in order from low to high.
+        // Assumes all() is in order from low to high.
         Iterator<Pair<NodeId, Node>> iter = nodeTableJournal.all() ;
         for ( ; iter.hasNext() ; )
         {
@@ -155,7 +155,7 @@ public class NodeTableTrans implements NodeTable, Transactional
         if ( ! inTransaction )
             throw new TDBTransactionException("Not in a transaction for a commit to happen") ; 
         append() ;
-        base.sync() ;
+        base.sync() ;   // NodeTables shoudl do an actual sync only if they have changed.
         clearUp() ;
     }
 

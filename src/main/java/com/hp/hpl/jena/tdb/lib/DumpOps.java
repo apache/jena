@@ -75,7 +75,7 @@ public class DumpOps
         if ( true )
         {
             System.out.print("## Prefix Table\n") ;  
-            DatasetPrefixesTDB prefixes = (DatasetPrefixesTDB)dsg.getPrefixes() ;
+            DatasetPrefixesTDB prefixes = dsg.getPrefixes() ;
 
             NodeTupleTable pntt = prefixes.getNodeTupleTable() ;
             if ( ! dumpedNodeTables.contains(pntt.getNodeTable()))

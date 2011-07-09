@@ -28,7 +28,6 @@ import org.openjena.atlas.lib.StrUtils ;
 import org.slf4j.Logger ;
 
 import com.hp.hpl.jena.query.ARQ ;
-import com.hp.hpl.jena.sparql.core.DatasetPrefixStorage ;
 import com.hp.hpl.jena.sparql.engine.optimizer.reorder.ReorderLib ;
 import com.hp.hpl.jena.sparql.engine.optimizer.reorder.ReorderTransformation ;
 import com.hp.hpl.jena.sparql.sse.SSEParseException ;
@@ -255,7 +254,7 @@ public class SetupTDB
         QuadTable quadTable = makeQuadTable(location, config, nodeTable,
                                             Names.primaryIndexQuads, Names.quadIndexes, policy) ;
 
-        DatasetPrefixStorage prefixes = makePrefixes(location, config, policy) ;
+        DatasetPrefixesTDB prefixes = makePrefixes(location, config, policy) ;
 
         // ---- Create the DatasetGraph object
         StoreConfig storeConfig = new StoreConfig(location, config, null, null) ;
@@ -328,7 +327,7 @@ public class SetupTDB
     }
 
 
-    public static DatasetPrefixStorage makePrefixes(Location location, Properties config, ConcurrencyPolicy policy)
+    public static DatasetPrefixesTDB makePrefixes(Location location, Properties config, ConcurrencyPolicy policy)
     {
         /*
          * tdb.prefixes.index.file=prefixIdx
