@@ -4,10 +4,11 @@
 # find DIRS -name \*.java -print -o -name .svn -prune | xargs -n 1 perl -i.bak perl-script
 # find src* -name \*.java -print -o -name .svn -prune |  xargs -n 1 perl -i.bak ../ARQ/apacheize
 
-# TODO
-## Comments /** with ending **/ confuse this script.
-## Use of //********** confuse this script.
-## /** **/ confuses script.
+# Also:
+#  Fix pom (website, license)
+#  NOTICE.txt
+
+
 
 $HTEXT= <<'END';
 /**
