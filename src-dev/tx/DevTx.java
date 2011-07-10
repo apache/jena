@@ -21,9 +21,16 @@ public class DevTx
     //            Iterator<Tuple<NodeId>> find(Tuple<NodeId> tuple) ==> checkIterator: 
     //     =>RangeIndex eventually.
     //     **** Catch in NodeTupleTable.find
+    // reset ConcurrencyPolicy
+    
     // Larger grain "start write" -- one on each NodeTupleTableConcrete.addRow but need a parser or triple "add" 
     
     // ?? Read-only by concurrency policy.
+    
+    // "Connection" to a daatset.
+    //   Enable txn mode and then must use transactions.
+    //   or require queries explicitly closed.
+    
     
     
     // Evenetually:
