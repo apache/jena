@@ -26,6 +26,10 @@ public class DatasetGraphSetup implements DatasetGraphMakerTDB
     @Override
     public void releaseDatasetGraph(DatasetGraphTDB dataset)
     {}
+
+    @Override
+    public void releaseLocation(Location location)
+    {}
 }
 
 /*

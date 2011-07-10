@@ -65,9 +65,8 @@ public final class CachingTDBMaker implements DatasetGraphMakerTDB
         }
     }
     @Override
-    public void releaseDatasetGraph(DatasetGraphTDB dataset)
+    public void releaseLocation(Location location)
     {
-        Location location = dataset.getLocation() ; 
         if ( location == null /*|| location.isMem()*/ )
             return ;
         
@@ -79,6 +78,13 @@ public final class CachingTDBMaker implements DatasetGraphMakerTDB
                 log.warn("Not a cached location: "+absPath) ;
         log.debug("Remove from dataset cache: "+absPath) ;
         cache.remove(absPath) ;
+    }
+
+    @Override
+    public void releaseDatasetGraph(DatasetGraphTDB dataset)
+    {
+        Location location = dataset.getLocation() ; 
+        releaseLocation(location) ;
     } 
 }
 

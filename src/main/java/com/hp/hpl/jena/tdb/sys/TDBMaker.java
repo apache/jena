@@ -62,6 +62,10 @@ public class TDBMaker
     public static void releaseDataset(DatasetGraphTDB dataset)
     { factory.releaseDatasetGraph(dataset) ; }
     
+    /** Release a location from any caching */
+    public static void releaseLocation(Location location)
+    { factory.releaseLocation(location) ; }
+    
     public static Graph _createGraph()
     { return factory.createDatasetGraph().getDefaultGraph() ; }
 
