@@ -16,11 +16,46 @@
  * limitations under the License.
  */
 
-package tx.api;
+package com.hp.hpl.jena.tdb.sys;
 
-public enum ReadWrite
+import java.util.Iterator ;
+
+public class DatasetControlMutable implements DatasetControl 
 {
-    READ,
-    WRITE
+    private DatasetControl other ;
+    
+    public DatasetControlMutable(DatasetControl control) { set(control) ; } 
+    
+    public void set(DatasetControl newOther) { other = newOther ; }
+    
+    @Override
+    public void startUpdate()
+    {
+        other.startUpdate() ;
+    }
+
+    @Override
+    public void finishUpdate()
+    {
+        other.finishUpdate() ;
+    }
+
+    @Override
+    public void startRead()
+    {
+        other.startRead() ;
+    }
+
+    @Override
+    public void finishRead()
+    {
+        other.finishUpdate() ;
+    }
+
+    @Override
+    public <T> Iterator<T> iteratorControl(Iterator<T> iter)
+    {
+        return other.iteratorControl(iter) ;
+    }
 }
 

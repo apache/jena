@@ -6,11 +6,15 @@
 
 package com.hp.hpl.jena.tdb.transaction;
 
+
+import com.hp.hpl.jena.tdb.TxnState ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
+import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 public class DatasetGraphTxnTDB extends DatasetGraphTDB
 {
     private final Transaction transaction ;
+    TxnState state = TxnState.BEGIN ;       // TODO Part of transaction -- but checked in close()
 
     public DatasetGraphTxnTDB(DatasetGraphTDB dsg, Transaction txn)
     {
@@ -20,12 +24,47 @@ public class DatasetGraphTxnTDB extends DatasetGraphTDB
 
     public Transaction getTransaction() { return transaction ; }
     
-    public void commit() { transaction.commit() ; }
-    public void abort() { transaction.abort() ; }
+    synchronized
+    public void commit()
+    {
+        if ( state != TxnState.BEGIN )
+        {
+            SystemTDB.syslog.warn("Can't commit: Transaction is already "+state) ;
+            throw new TDBTransactionException("commit: Illegal state: "+state) ;
+        }
+        state = TxnState.COMMITTED ;
+        transaction.commit() ;
+    }
+
+    synchronized
+    public void abort()
+    {
+        if ( state != TxnState.BEGIN )
+        {
+            SystemTDB.syslog.warn("Can't abort: Transaction is already "+state) ;
+            throw new TDBTransactionException("abort: Illegal state: "+state) ;
+        }
+        state = TxnState.ABORTED ;
+        transaction.abort() ;
+    }
     
     @Override
     public String toString()
     { return "Txn:"+super.toString() ; }
+    
+    @Override
+    synchronized
+    public void close()
+    {
+        if ( state == TxnState.BEGIN )
+        {
+            SystemTDB.syslog.warn("close: Transaction not commited or aborted: Transaction: "+transaction.getTxnId()+" @ "+getLocation().getDirectoryPath()) ;
+            abort() ;
+        }
+        //Don't really close.
+        //super.close() ;
+    }
+    
 }
 
 /*

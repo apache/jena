@@ -23,8 +23,9 @@ import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.util.NodeFactory ;
 import com.hp.hpl.jena.sparql.util.QueryExecUtils ;
+import com.hp.hpl.jena.tdb.ReadWrite ;
+import com.hp.hpl.jena.tdb.StoreConnection ;
 import com.hp.hpl.jena.tdb.TDBFactory ;
-import com.hp.hpl.jena.tdb.base.block.FileMode ;
 import com.hp.hpl.jena.tdb.base.file.FileFactory ;
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile ;
 import com.hp.hpl.jena.tdb.base.record.Record ;
@@ -38,9 +39,7 @@ import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 import com.hp.hpl.jena.tdb.transaction.DatasetGraphTxnTDB ;
-import com.hp.hpl.jena.tdb.transaction.Journal ;
 import com.hp.hpl.jena.tdb.transaction.NodeTableTrans ;
-import com.hp.hpl.jena.tdb.transaction.TransactionManager ;
 import com.hp.hpl.jena.update.UpdateAction ;
 import com.hp.hpl.jena.update.UpdateFactory ;
 import com.hp.hpl.jena.update.UpdateRequest ;
@@ -68,49 +67,28 @@ public class TxMain
     
     public static void main(String... args)
     {
-        // next: write block id to Journal 
-        // Next: API, transactions, and rollback.
+        initFS() ;
         
-        //SystemTDB.setFileMode(FileMode.direct) ;
-        SystemTDB.setFileMode(FileMode.mapped) ;
-        DatasetGraphTDB dsg0 = build() ;
-        dsg0.setReadOnly(true) ;
-        load("D.ttl", dsg0) ;
-        exit(0) ;
+        // StoreConfig is the static part
+        // DatasetControl is the active part.
+        //  DSG_TDB does not know the control - set by the builder.
         
-        Replay.recovery(dsg0) ;
-        query("Initial state", "SELECT (Count(*) AS ?c0) { ?s ?p ?o }", dsg0) ;
-        //exit(0) ;
+        // Read-only dataset for read-only transactions.
+        // Not in a transaction.
         
-        TransactionManager txnMgr = new TransactionManager() ;
+        // ConcurrencyPolicy -> DatasetControl
+        //   .setControl, remopve .setReadMode
+        // Replay=>JournalControl/SystemControl/TxnControl
         
-        DatasetGraphTxnTDB dsg1 = txnMgr.begin(dsg0) ;
+        StoreConnection sConn = StoreConnection.make(DBdir) ;
+        DatasetGraphTxnTDB dsg = sConn.begin(ReadWrite.WRITE) ;
+        load("D.ttl", dsg) ;
+        query("DSG1", "SELECT (count(*) AS ?C) { ?s ?p ?o }", dsg) ;
         
-        load("D.ttl", dsg1) ;
-        query("dsg1", "SELECT (Count(*) AS ?c1) { ?s ?p ?o }", dsg1) ;
-        query("dsg0", "SELECT (Count(*) AS ?c0) { ?s ?p ?o }", dsg0) ;
-        
-
-        //dsg1.getTransaction().prepare() ;
-        dsg1.commit() ;
-        //dsg1.abort() ;
-        
-        //System.out.println("Replay") ;
+        dsg.abort();
+        dsg.close() ;
         
         
-        // Better journal control
-//        BufferChannel bc = new BufferChannelFile(DBdir+"/journal.jrnl") ;
-//        Journal j = new Journal(bc) ;
-
-        Journal j = dsg1.getTransaction().getJournal() ;
-        
-        //Replay.print(j) ;
-        //Replay.replay(j, dsg0) ;
-        //query("dsg0", "SELECT (Count(*) AS ?c0) { ?s ?p ?o }", dsg0) ;
-        query("dsg0", "SELECT * { ?s ?p ?o }", dsg0) ;
-        write(dsg0.getDefaultGraph(), "TTL") ;
-        
-        exit(0) ;
     }
     
     private static void write(Graph graph, String lang)
@@ -196,12 +174,6 @@ public class TxMain
         //DatasetGraphTDB dsg = TDBFactory.createDatasetGraph(DBdir) ;
         DatasetGraphTDB dsg = DatasetBuilderStd.build(DBdir) ;
         return dsg ;
-    }
-
-    private static DatasetGraphTxnTDB buildTx(DatasetGraph dsg)
-    {
-        DatasetGraphTxnTDB dsg2 = new TransactionManager().begin(dsg) ;
-        return dsg2 ;
     }
 
     public static void query(String label, String queryStr, DatasetGraph dsg)

@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package tx;
+package com.hp.hpl.jena.tdb.transaction;
 
 import static com.hp.hpl.jena.tdb.sys.SystemTDB.errlog ;
 import static com.hp.hpl.jena.tdb.sys.SystemTDB.syslog ;
@@ -28,14 +28,8 @@ import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.sys.FileRef ;
 import com.hp.hpl.jena.tdb.sys.Names ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
-import com.hp.hpl.jena.tdb.transaction.DatasetGraphTxnTDB ;
-import com.hp.hpl.jena.tdb.transaction.Journal ;
-import com.hp.hpl.jena.tdb.transaction.JournalEntry ;
-import com.hp.hpl.jena.tdb.transaction.JournalEntryType ;
-import com.hp.hpl.jena.tdb.transaction.NodeTableTrans ;
-import com.hp.hpl.jena.tdb.transaction.TDBTransactionException ;
 
-public class Replay
+public class JournalControl
 {
     //private static Logger log = LoggerFactory.getLogger(Replay.class) ;
     
@@ -101,7 +95,7 @@ public class Replay
             {
                 syslog.info("Recovering committed transaction") ;
                 // The NodeTable Journal has already been done!
-                Replay.replay(jrnl, dsg) ;
+                JournalControl.replay(jrnl, dsg) ;
             }
             jrnl.truncate(0) ;
             jrnl.close();

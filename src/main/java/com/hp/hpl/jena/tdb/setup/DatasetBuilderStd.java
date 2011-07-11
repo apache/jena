@@ -30,8 +30,8 @@ import com.hp.hpl.jena.tdb.store.NodeId ;
 import com.hp.hpl.jena.tdb.store.QuadTable ;
 import com.hp.hpl.jena.tdb.store.StoreConfig ;
 import com.hp.hpl.jena.tdb.store.TripleTable ;
-import com.hp.hpl.jena.tdb.sys.ConcurrencyPolicy ;
-import com.hp.hpl.jena.tdb.sys.ConcurrencyPolicyMRSW ;
+import com.hp.hpl.jena.tdb.sys.DatasetControl ;
+import com.hp.hpl.jena.tdb.sys.DatasetControlMRSW ;
 import com.hp.hpl.jena.tdb.sys.FileRef ;
 import com.hp.hpl.jena.tdb.sys.Names ;
 import com.hp.hpl.jena.tdb.sys.SetupTDB ;
@@ -165,7 +165,7 @@ public class DatasetBuilderStd implements DatasetBuilder
         this.config = config ;
         init(location) ;
         
-        ConcurrencyPolicy policy = createConcurrencyPolicy() ;
+        DatasetControl policy = createConcurrencyPolicy() ;
         
         NodeTable nodeTable = makeNodeTable(location, 
                                             params.indexNode2Id, params.indexId2Node,
@@ -181,7 +181,7 @@ public class DatasetBuilderStd implements DatasetBuilder
         return dsg ;
     }
     
-    protected ConcurrencyPolicy createConcurrencyPolicy() { return new ConcurrencyPolicyMRSW() ; }
+    protected DatasetControl createConcurrencyPolicy() { return new DatasetControlMRSW() ; }
     
     protected void init(Location location)
     {
@@ -189,7 +189,7 @@ public class DatasetBuilderStd implements DatasetBuilder
     }
     
     // ======== Dataset level
-    protected TripleTable makeTripleTable(Location location, NodeTable nodeTable, ConcurrencyPolicy policy)
+    protected TripleTable makeTripleTable(Location location, NodeTable nodeTable, DatasetControl policy)
     {    
         MetaFile metafile = location.getMetaFile() ;
         String dftPrimary = params.primaryIndexTriples ;
@@ -212,7 +212,7 @@ public class DatasetBuilderStd implements DatasetBuilder
         return tripleTable ;
     }
     
-    protected QuadTable makeQuadTable(Location location, NodeTable nodeTable, ConcurrencyPolicy policy)
+    protected QuadTable makeQuadTable(Location location, NodeTable nodeTable, DatasetControl policy)
     {    
         MetaFile metafile = location.getMetaFile() ;
         String dftPrimary = params.primaryIndexQuads ;
@@ -235,7 +235,7 @@ public class DatasetBuilderStd implements DatasetBuilder
         return quadTable ;
     }
 
-    protected DatasetPrefixesTDB makePrefixTable(Location location, ConcurrencyPolicy policy)
+    protected DatasetPrefixesTDB makePrefixTable(Location location, DatasetControl policy)
     {    
         /*
          * tdb.prefixes.index.file=prefixIdx

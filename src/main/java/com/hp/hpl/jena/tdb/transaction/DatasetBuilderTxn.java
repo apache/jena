@@ -40,11 +40,11 @@ public class DatasetBuilderTxn
 
     public DatasetBuilderTxn(TransactionManager txnMgr) { this.txnMgr = txnMgr ; }
     
-    public DatasetGraphTDB build(DatasetGraphTDB dsg)
+    public DatasetGraphTDB build(Transaction transaction, DatasetGraphTDB dsg)
     {
         blockMgrs = dsg.getConfig().blockMgrs ;
         nodeTables = dsg.getConfig().nodeTables ;
-        txn = txnMgr.createTransaction(dsg) ;
+        this.txn = transaction ;
             
         BufferChannel chan ;
         if ( dsg.getLocation().isMem() )

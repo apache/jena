@@ -24,7 +24,7 @@ public interface GraphTDB extends Graph, Closeable, Sync, Reorderable, Session
     public NodeTupleTable getNodeTupleTable() ;
     public Tuple<Node> asTuple(Triple triple) ;
     
-    /** Get a lock that is shared for all graphs from teh same dataset (it is the dataset lock) */
+    /** Get a lock that is shared for all graphs from the same dataset (it is the dataset lock) */
     public Lock getLock() ;
     
     /**

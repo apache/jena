@@ -7,37 +7,34 @@
 package com.hp.hpl.jena.tdb.transaction;
 
 
+import java.util.HashSet ;
 import java.util.Iterator ;
+import java.util.Set ;
 
-import com.hp.hpl.jena.query.DataSource ;
-import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.tdb.TDBException ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 
-
-
 public class TransactionManager
 {
-    static long transactionId = 10 ;
+    private Set<Transaction> activeTransactions = new HashSet<Transaction>() ;
+    static long transactionId = 1 ;
     
-    public static DataSource begin(Dataset ds) 
-    {
-        return null ;
-    }
-    
-    public static DataSource commit(Dataset ds) 
-    {
-        return null ;
-    }
-    
-    
-    
+//    public static DataSource begin(Dataset ds) 
+//    {
+//        return null ;
+//    }
+//    
+//    public static DataSource commit(Dataset ds) 
+//    {
+//        return null ;
+//    }
+
     public TransactionManager()
     {
     }
     
-    public Transaction createTransaction(DatasetGraphTDB dsg)
+    private Transaction createTransaction(DatasetGraphTDB dsg)
     {
         Transaction txn = new Transaction(dsg, transactionId++, this) ;
         return txn ;
@@ -63,22 +60,25 @@ public class TransactionManager
         // MUST WRITE OUT - BUT ALSO REUSE CACHES.
         dsgtdb.sync() ; 
         
-        DatasetGraphTxnTDB dsgTxn = (DatasetGraphTxnTDB)new DatasetBuilderTxn(new TransactionManager()).build(dsgtdb) ;
+        Transaction txn = createTransaction(dsgtdb) ;
         
+        DatasetGraphTxnTDB dsgTxn = (DatasetGraphTxnTDB)new DatasetBuilderTxn(this).build(txn, dsgtdb) ;
         Iterator<Transactional> iter = dsgTxn.getTransaction().components() ;
         for ( ; iter.hasNext() ; )
             iter.next().begin(dsgTxn.getTransaction()) ;
+        
+        activeTransactions.add(txn) ;
         return dsgTxn ;
     }
 
-    public void commit(Transaction transaction)
+    public void notifyCommit(Transaction transaction)
     {
-        transaction.commit() ;
+        
     }
 
-    public void abort(Transaction transaction)
+    public void notifyAbort(Transaction transaction)
     {    
-        transaction.abort() ;
+        
     }
 }
 

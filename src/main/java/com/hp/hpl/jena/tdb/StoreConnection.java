@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package tx.api;
+package com.hp.hpl.jena.tdb;
 
 import java.util.HashMap ;
 import java.util.Map ;
@@ -31,15 +31,24 @@ import com.hp.hpl.jena.tdb.transaction.TransactionManager ;
 
 public class StoreConnection
 {
+    private static TransactionManager transactionManager = new TransactionManager() ;
+    
     private DatasetGraphTDB baseDSG ;
+    private static int transactionCounter = 0 ;
+    private int transactionId = 0 ;         // Per dataset count (unliek trasnaction ids which are global)
     private int readers = 0 ; 
     private int writers = 0 ;       // 0 or 1 
     private int committed = 0 ;     // Committed but not replyed yet.
+    
 
     private StoreConnection(Location location)
     {
         baseDSG = DatasetBuilderStd.build(location.getDirectoryPath()) ;
+        transactionCounter++ ;
+        transactionId = transactionCounter ;
     }
+    
+    public Location getLocation() { return baseDSG.getLocation() ; }
     
     synchronized
     public DatasetGraphTxnTDB begin(ReadWrite mode)
@@ -48,7 +57,9 @@ public class StoreConnection
         {
             case READ :
                 readers++ ;
-                // Make a new read dataset.
+                DatasetGraphTxnTDB dsg = null ;
+                dsg.setReadOnly(true) ;
+                // Make a new read-only dataset.
                 //new DatasetGraphTxnRead(baseDSG) ;
                 break ;
             case WRITE :
@@ -56,15 +67,15 @@ public class StoreConnection
                     throw new TDBTransactionException("Existing active transaction") ;
                 // Check only active transaction.
                 // Make from the last commited transation or base.
-                DatasetGraphTxnTDB dsg2 = new TransactionManager().begin(baseDSG) ;
+                
+                // Attach connection to DatasetGraphTxnTDB
+                DatasetGraphTxnTDB dsg2 = transactionManager.begin(baseDSG) ;
+                dsg2.getTransaction() ;
                 return dsg2 ;
         }
         System.err.println("StoreConnection.begin: Not implemented fully") ;
         return null ;
     }
-    
-    // Be told when a transaction finishes.
-    
     
     // ---- statics
     

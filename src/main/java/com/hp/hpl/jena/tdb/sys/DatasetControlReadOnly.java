@@ -7,17 +7,44 @@
 package com.hp.hpl.jena.tdb.sys;
 
 import java.util.Iterator ;
+import java.util.concurrent.atomic.AtomicLong ;
 
-// Rename as LockManager? 
-/** A ConcurrencyPolicy is an encapsulation of what to do on reads and writes.
- *  In addition, iterators return can be tied back to the original request
- *  to check they are still valid.  
- */
-public interface ConcurrencyPolicy extends Session
+import com.hp.hpl.jena.tdb.TDBException ;
+
+/** A policy that provide read-only access */ 
+public class DatasetControlReadOnly implements DatasetControl
 {
-    /* also guaranted that there is a finishX for every startX */ 
+    private final AtomicLong readCounter = new AtomicLong(0) ;
     
-    public <T> Iterator<T> checkedIterator(Iterator<T> iter) ;
+    public DatasetControlReadOnly()
+    { }
+
+    @Override
+    public void startRead()
+    {
+        readCounter.getAndIncrement() ;
+    }
+
+    @Override
+    public void finishRead()
+    {
+        readCounter.decrementAndGet() ;
+    }
+
+    @Override
+    public void startUpdate()
+    {
+        throw new TDBException("Read-only") ;
+    }
+
+    @Override
+    public void finishUpdate()
+    {
+        throw new TDBException("Read-only") ;
+    }
+
+    @Override
+    public <T> Iterator<T> iteratorControl(Iterator<T> iter) { return iter ; }
 }
 
 /*

@@ -11,7 +11,6 @@ import java.util.Collections ;
 import java.util.Iterator ;
 import java.util.List ;
 
-import tx.Replay ;
 
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.sys.FileRef ;
@@ -51,7 +50,8 @@ public class Transaction
         // Attempt to play the journal into the dataset.
         // This is idempotent and safe to partial replay.  
         state = State.COMMITED ;
-        Replay.replay(journal, basedsg) ;
+        txnMgr.notifyCommit(this) ;
+        JournalControl.replay(journal, basedsg) ;
     }
     
     public void prepare()

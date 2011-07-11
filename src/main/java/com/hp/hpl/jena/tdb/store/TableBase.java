@@ -25,14 +25,14 @@ import com.hp.hpl.jena.tdb.index.TupleIndex ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTupleTableConcrete ;
-import com.hp.hpl.jena.tdb.sys.ConcurrencyPolicy ;
+import com.hp.hpl.jena.tdb.sys.DatasetControl ;
 
 public class TableBase  implements Sync, Closeable
 {
     final protected NodeTupleTable table ;
     protected boolean syncNeeded = false ; 
     
-    protected TableBase(int N, TupleIndex[] indexes, NodeTable nodeTable, ConcurrencyPolicy policy)
+    protected TableBase(int N, TupleIndex[] indexes, NodeTable nodeTable, DatasetControl policy)
     {
         table = new NodeTupleTableConcrete(N, indexes, nodeTable, policy) ;
     }

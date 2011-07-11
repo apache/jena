@@ -14,14 +14,14 @@ import java.util.NoSuchElementException ;
 import java.util.concurrent.atomic.AtomicLong ;
 
 /** A policy that checks, but does not enforce, single writer or multiple writer locking policy */ 
-public class ConcurrencyPolicyMRSW implements ConcurrencyPolicy
+public class DatasetControlMRSW implements DatasetControl
 {
     private final boolean concurrencyChecking = true ;
     private final AtomicLong epoch = new AtomicLong(5) ;                // Update counters, used to check iterators. No need to start at 0.
     private final AtomicLong readCounter = new AtomicLong(0) ;
     private final AtomicLong writeCounter = new AtomicLong(0) ;
     
-    public ConcurrencyPolicyMRSW()
+    public DatasetControlMRSW()
     { }
 
     @Override
@@ -67,7 +67,7 @@ public class ConcurrencyPolicyMRSW implements ConcurrencyPolicy
     }
     
     @Override
-    public <T> Iterator<T> checkedIterator(Iterator<T> iter) { return new IteratorCheckNotConcurrent<T>(iter, epoch) ; }
+    public <T> Iterator<T> iteratorControl(Iterator<T> iter) { return new IteratorCheckNotConcurrent<T>(iter, epoch) ; }
     
     private static class IteratorCheckNotConcurrent<T> implements Iterator<T>
     {

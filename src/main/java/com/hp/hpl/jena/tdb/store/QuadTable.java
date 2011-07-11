@@ -20,7 +20,7 @@ import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.tdb.index.TupleIndex ;
 import com.hp.hpl.jena.tdb.lib.TupleLib ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
-import com.hp.hpl.jena.tdb.sys.ConcurrencyPolicy ;
+import com.hp.hpl.jena.tdb.sys.DatasetControl ;
 
 
 /** Quad table - a collection of TupleIndexes for 4-tuples
@@ -29,7 +29,7 @@ import com.hp.hpl.jena.tdb.sys.ConcurrencyPolicy ;
 
 public class QuadTable extends TableBase
 {
-    public QuadTable(TupleIndex[] indexes, NodeTable nodeTable, ConcurrencyPolicy policy)
+    public QuadTable(TupleIndex[] indexes, NodeTable nodeTable, DatasetControl policy)
     {
         super(4, indexes, nodeTable, policy);
     }

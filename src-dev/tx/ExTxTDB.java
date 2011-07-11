@@ -18,12 +18,14 @@
 
 package tx;
 
-import tx.api.ReadWrite ;
-import tx.api.StoreConnection ;
 
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.query.QueryExecution ;
 import com.hp.hpl.jena.query.QueryExecutionFactory ;
+import com.hp.hpl.jena.query.ResultSet ;
+import com.hp.hpl.jena.query.ResultSetFormatter ;
+import com.hp.hpl.jena.tdb.ReadWrite ;
+import com.hp.hpl.jena.tdb.StoreConnection ;
 import com.hp.hpl.jena.tdb.transaction.DatasetGraphTxnTDB ;
 import com.hp.hpl.jena.tdb.transaction.Transaction ;
 import com.hp.hpl.jena.update.GraphStore ;
@@ -47,21 +49,36 @@ public class ExTxTDB
     
     public static void example1()
     {
-        // TODO
-        // Add to UpdateExecutionFactory
-        //UpdateProcessor ==> UpdateExecution
-        // Silent abort
-        
         StoreConnection sConn = StoreConnection.make("DB") ;
         
+        sparqlQuery(sConn) ;
+        sparqlUpdate(sConn) ;
+    }
+
+    private static void sparqlQuery(StoreConnection sConn)
+    {
         DatasetGraphTxnTDB dsg = sConn.begin(ReadWrite.READ) ;
         try {
             // SPARQL
-            QueryExecution qExec = QueryExecutionFactory.create("ASK{}", /*dsg*/(Dataset)null) ;
-            qExec.close() ;
-        } finally { dsg.close() ; } // Close all QExecs
-        
-        dsg = sConn.begin(ReadWrite.WRITE) ;
+            QueryExecution qExec = QueryExecutionFactory.create("SELECT * { ?s ?p ?o} LIMIT 10", /*dsg*/(Dataset)null) ;
+            ResultSet rs = qExec.execSelect() ;
+            try {
+                ResultSetFormatter.out(rs) ;
+            } finally { qExec.close() ; }
+
+            // Another query.
+            qExec = QueryExecutionFactory.create("SELECT * { ?s ?p ?o} OFFSET 10 LIMIT 10", /*dsg*/(Dataset)null) ;
+            rs = qExec.execSelect() ;
+            try {
+                ResultSetFormatter.out(rs) ;
+            } finally { qExec.close() ; }
+
+        } finally { dsg.close() ; }
+    }
+
+    private static void sparqlUpdate(StoreConnection sConn)
+    {
+        DatasetGraphTxnTDB dsg = sConn.begin(ReadWrite.WRITE) ;
         try {
             // Update
             dsg.commit() ;
@@ -71,10 +88,15 @@ public class ExTxTDB
         
         dsg = sConn.begin(ReadWrite.WRITE) ;
         try {
-            // Update.
-            GraphStore gs = GraphStoreFactory.create(dsg) ;
-            UpdateRequest request = UpdateFactory.create("") ;
-            // Add this operation to bypass the need for GraphStore.
+            // Query
+            QueryExecution qExec = QueryExecutionFactory.create("SELECT * { ?s ?p ?o} LIMIT 10", /*dsg*/(Dataset)null) ;
+            ResultSet rs = qExec.execSelect() ;
+            try {
+                ResultSetFormatter.out(rs) ;
+            } finally { qExec.close() ; }
+            
+            // Update
+            UpdateRequest request = UpdateFactory.create("PREFIX : <http://example/> INSERT DATA { :s :p :o}") ;
             UpdateProcessor proc = UpdateExecutionFactory.create(request, dsg) ;
             proc.execute() ;
             dsg.commit() ;

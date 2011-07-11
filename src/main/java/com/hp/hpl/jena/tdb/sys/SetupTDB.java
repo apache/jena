@@ -247,7 +247,7 @@ public class SetupTDB
                                             indexNode2Id, n2idCacheSize,
                                             indexId2Node, id2nCacheSize) ;
 
-        ConcurrencyPolicy policy = createConcurrencyPolicy() ;
+        DatasetControl policy = createConcurrencyPolicy() ;
         
         TripleTable tripleTable = makeTripleTable(location, config, nodeTable, 
                                                   Names.primaryIndexTriples, Names.tripleIndexes, policy) ;
@@ -286,9 +286,9 @@ public class SetupTDB
         return dsg ;
     }
 
-    protected static ConcurrencyPolicy createConcurrencyPolicy() { return new ConcurrencyPolicyMRSW() ; }
+    protected static DatasetControl createConcurrencyPolicy() { return new DatasetControlMRSW() ; }
     
-    public static TripleTable makeTripleTable(Location location, Properties config, NodeTable nodeTable, String dftPrimary, String[] dftIndexes, ConcurrencyPolicy policy)
+    public static TripleTable makeTripleTable(Location location, Properties config, NodeTable nodeTable, String dftPrimary, String[] dftIndexes, DatasetControl policy)
     {
         MetaFile metafile = location.getMetaFile() ;
         String primary = metafile.getOrSetDefault("tdb.indexes.triples.primary", dftPrimary) ;
@@ -307,7 +307,7 @@ public class SetupTDB
         return tripleTable ;
     }
     
-    public static QuadTable makeQuadTable(Location location, Properties config, NodeTable nodeTable, String dftPrimary, String[] dftIndexes, ConcurrencyPolicy policy)
+    public static QuadTable makeQuadTable(Location location, Properties config, NodeTable nodeTable, String dftPrimary, String[] dftIndexes, DatasetControl policy)
     {
         MetaFile metafile = location.getMetaFile() ; 
         String primary = metafile.getOrSetDefault("tdb.indexes.quads.primary", dftPrimary) ;
@@ -327,7 +327,7 @@ public class SetupTDB
     }
 
 
-    public static DatasetPrefixesTDB makePrefixes(Location location, Properties config, ConcurrencyPolicy policy)
+    public static DatasetPrefixesTDB makePrefixes(Location location, Properties config, DatasetControl policy)
     {
         /*
          * tdb.prefixes.index.file=prefixIdx

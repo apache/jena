@@ -11,9 +11,8 @@ import java.util.Iterator ;
 /** Concurrency policy  that is a "free for all".
  *  No checking, no locking.
  */
-public final class ConcurrencyPolicyNone implements ConcurrencyPolicy
+public final class DatasetControlNone implements DatasetControl
 {
-
     @Override
     public void startUpdate()
     {}
@@ -31,7 +30,7 @@ public final class ConcurrencyPolicyNone implements ConcurrencyPolicy
     {}
 
     @Override
-    public <T> Iterator<T> checkedIterator(Iterator<T> iter)
+    public <T> Iterator<T> iteratorControl(Iterator<T> iter)
     {
         return iter ;
     }

@@ -23,14 +23,14 @@ import com.hp.hpl.jena.tdb.index.TupleTable ;
 import com.hp.hpl.jena.tdb.lib.NodeLib ;
 import com.hp.hpl.jena.tdb.lib.TupleLib ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
-import com.hp.hpl.jena.tdb.sys.ConcurrencyPolicy ;
+import com.hp.hpl.jena.tdb.sys.DatasetControl ;
 
 /** Group a tuple table and node table together to provide a real NodeTupleTable */
 public class NodeTupleTableConcrete implements NodeTupleTable
 {
     protected final NodeTable  nodeTable ;
     protected final TupleTable tupleTable ;
-    private final ConcurrencyPolicy conPolicy ;
+    private final DatasetControl conPolicy ;
     private boolean readOnly ;
 
     /*
@@ -38,7 +38,7 @@ public class NodeTupleTableConcrete implements NodeTupleTable
      * find*
      */
 
-    public NodeTupleTableConcrete(int N, TupleIndex[] indexes, NodeTable nodeTable, ConcurrencyPolicy conPolicy)
+    public NodeTupleTableConcrete(int N, TupleIndex[] indexes, NodeTable nodeTable, DatasetControl conPolicy)
     {
         if (indexes.length == 0 || indexes[0] == null) throw new TDBException("A primary index is required") ;
         for (TupleIndex index : indexes)
@@ -127,7 +127,7 @@ public class NodeTupleTableConcrete implements NodeTupleTable
             Iterator<Tuple<NodeId>> iter1 = findAsNodeIds(nodes) ; // **public call
             if (iter1 == null) return new NullIterator<Tuple<Node>>() ;
             Iterator<Tuple<Node>> iter2 = TupleLib.convertToNodes(nodeTable, iter1) ;
-            return checkIterator(iter2) ;
+            return iteratorControl(iter2) ;
         } finally { finishRead() ; }
     }
 
@@ -172,7 +172,7 @@ public class NodeTupleTableConcrete implements NodeTupleTable
             startRead() ;
             // find worker - need also protect iterators that access the node table.
             Iterator<Tuple<NodeId>> iter = tupleTable.find(tuple) ;
-            return checkIterator(iter) ;
+            return iteratorControl(iter) ;
         } finally { finishRead() ; }
     }
 
@@ -181,7 +181,7 @@ public class NodeTupleTableConcrete implements NodeTupleTable
     {
         try {
             startRead() ;
-            return checkIterator(tupleTable.getIndex(0).all()) ;
+            return iteratorControl(tupleTable.getIndex(0).all()) ;
         } finally { finishRead() ; }
     }
 
@@ -269,7 +269,7 @@ public class NodeTupleTableConcrete implements NodeTupleTable
         } finally { finishWrite() ; }
     }
 
-    private <T> Iterator<T> checkIterator(Iterator<T> iter) { return conPolicy.checkedIterator(iter) ; }
+    private <T> Iterator<T> iteratorControl(Iterator<T> iter) { return conPolicy.iteratorControl(iter) ; }
 }
 
 /*

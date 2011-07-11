@@ -19,7 +19,7 @@ import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.tdb.index.TupleIndex ;
 import com.hp.hpl.jena.tdb.lib.TupleLib ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
-import com.hp.hpl.jena.tdb.sys.ConcurrencyPolicy ;
+import com.hp.hpl.jena.tdb.sys.DatasetControl ;
 
 
 /** TripleTable - a collection of TupleIndexes for 3-tuples
@@ -31,7 +31,7 @@ import com.hp.hpl.jena.tdb.sys.ConcurrencyPolicy ;
 
 public class TripleTable extends TableBase
 {
-    public TripleTable(TupleIndex[] indexes, NodeTable nodeTable, ConcurrencyPolicy policy)
+    public TripleTable(TupleIndex[] indexes, NodeTable nodeTable, DatasetControl policy)
     {
         super(3, indexes, nodeTable, policy) ;
         //table = new NodeTupleTableConcrete(3, indexes, nodeTable, policy) ;
