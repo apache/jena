@@ -69,6 +69,8 @@ public class TxMain
     {
         initFS() ;
         
+        // Tests
+        
         // StoreConfig is the static part
         // DatasetControl is the active part.
         //  DSG_TDB does not know the control - set by the builder.
@@ -77,8 +79,7 @@ public class TxMain
         // Not in a transaction.
         
         // ConcurrencyPolicy -> DatasetControl
-        //   .setControl, remopve .setReadMode
-        // Replay=>JournalControl/SystemControl/TxnControl
+        //   .resetControl, remove .setReadMode
         
         StoreConnection sConn = StoreConnection.make(DBdir) ;
         DatasetGraphTxnTDB dsg = sConn.begin(ReadWrite.WRITE) ;
