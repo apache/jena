@@ -12,5 +12,4 @@ H2 contribution from Martin HEIN (m#)/March 2008 */
 
 Subsequent copyrights:
 Epimorphics Ltd.
-
-
+University of Bristol
