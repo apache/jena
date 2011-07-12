@@ -6,9 +6,7 @@
 
 package com.hp.hpl.jena.tdb;
 
-
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
-import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 import com.hp.hpl.jena.tdb.transaction.Transaction ;
 
 public class DatasetGraphTxn extends DatasetGraphTDB
@@ -23,13 +21,11 @@ public class DatasetGraphTxn extends DatasetGraphTDB
 
     public Transaction getTransaction() { return transaction ; }
     
-    synchronized
     public void commit()
     {
         transaction.commit() ;
     }
 
-    synchronized
     public void abort()
     {
         transaction.abort() ;
@@ -43,11 +39,9 @@ public class DatasetGraphTxn extends DatasetGraphTDB
     synchronized
     public void close()
     {
-        if ( transaction.getMode() == ReadWrite.WRITE )
-        {
-            SystemTDB.syslog.warn("close: Transaction not commited or aborted: Transaction: "+transaction.getTxnId()+" @ "+getLocation().getDirectoryPath()) ;
-            abort() ;
-        }
+        if ( transaction != null )
+            transaction.close() ;
+        //transaction = null ;
         //Don't really close.  Might close the core resources which are shared.
         //super.close() ;
     }

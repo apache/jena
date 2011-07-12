@@ -139,8 +139,8 @@ public class JournalControl
         journal.position(0) ;
         dsg.getLock().enterCriticalSection(Lock.WRITE) ;
         try {
-        for ( JournalEntry e : journal )
-            replay(e, dsg) ;
+            for ( JournalEntry e : journal )
+                replay(e, dsg) ;
         } 
         catch (RuntimeException ex)
         { 

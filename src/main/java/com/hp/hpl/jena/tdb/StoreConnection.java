@@ -25,6 +25,7 @@ import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.setup.DatasetBuilderStd ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.sys.TDBMaker ;
+import com.hp.hpl.jena.tdb.transaction.JournalControl ;
 import com.hp.hpl.jena.tdb.transaction.TransactionManager ;
 
 /** Interface to the TDB transaction mechanism */ 
@@ -62,6 +63,7 @@ public class StoreConnection
         if ( sConn == null )
         {
             sConn = new StoreConnection(location) ;
+            JournalControl.recovery(sConn.baseDSG) ;
             cache.put(location, sConn) ;
         }
         return sConn ; 

@@ -8,6 +8,7 @@ package tx;
 
 import org.openjena.atlas.lib.Bytes ;
 import org.openjena.atlas.lib.FileOps ;
+import org.openjena.atlas.lib.Lib ;
 import org.openjena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.graph.Graph ;
@@ -67,11 +68,13 @@ public class TxMain
     
     public static void main(String... args)
     {
-        initFS() ;
+        //initFS() ;
+        //** Leaving journals behind after replay.
         StoreConnection sConn = StoreConnection.make(DBdir) ;
         
         // Take a blocking read connection.
         DatasetGraphTxn dsgRead = sConn.begin(ReadWrite.READ) ;
+        dsgRead.close() ;
         
         DatasetGraphTxn dsg = sConn.begin(ReadWrite.WRITE) ;
         load("D.ttl", dsg) ;
@@ -81,12 +84,13 @@ public class TxMain
         //  Cheap: lock on begin/READ.
         //  
         dsg.commit() ;
-        
-        dsg = sConn.begin(ReadWrite.READ) ;
-        query("DSG1", "SELECT (count(*) AS ?C) { ?s ?p ?o }", dsg) ;
-        dsg.close() ;
+        dsg.close() ;   // Hmm
+//        dsg = sConn.begin(ReadWrite.READ) ;
+//        query("DSG1", "SELECT (count(*) AS ?C) { ?s ?p ?o }", dsg) ;
+//        dsg.close() ;
 
-        dsgRead.close() ;   // Transaction can now write chnages to the real DB.  
+        dsgRead.close() ;   // Transaction can now write changes to the real DB.  
+        exit(0) ;
     }
     
     private static void write(Graph graph, String lang)

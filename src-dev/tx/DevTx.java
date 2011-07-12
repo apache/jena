@@ -3,13 +3,17 @@ package tx;
 
 public class DevTx
 {
+    // --------
     // To do for release 0:
+    //   Journal left full when replayed. 
+    //   Txn over block/commited transaction
+    // --------
+    
     // Tests
-    // Write back of commited transaction when outstanding readers.
     // Transaction over block/commited transaction
     
     // Tidy up:
-    // A DatasetGraphTDB is 3 NodeTupelTables.  Build as such.
+    // A DatasetGraphTDB is 3 NodeTupleTables.  Build as such.
     // DatasetBuilderStd.makeNodeTupleTable.
     //   TripleTable, QuadTable, DatasetPrefixesTDB are just function-adding wrappers.
     //   Then readonly NodeTupleTable.  Remove NodeTableBuilderReadonly
@@ -42,8 +46,6 @@ public class DevTx
     // "Connection" to a daatset.
     //   Enable txn mode and then must use transactions.
     //   or require queries explicitly closed.
-    
-    
     
     // Evenetually:
     // Iterator<Tuple<NodeId>> find(Tuple<NodeId> tuple)
