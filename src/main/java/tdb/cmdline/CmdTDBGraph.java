@@ -4,45 +4,64 @@
  * [See end of file]
  */
 
-package tdb;
+package tdb.cmdline;
 
-import org.openjena.atlas.logging.Log ;
-import tdb.cmdline.CmdTDBGraph ;
+import arq.cmd.CmdException ;
+import arq.cmdline.ArgDecl ;
 
-import com.hp.hpl.jena.tdb.TDB ;
-import com.hp.hpl.jena.tdb.solver.stats.Stats ;
-import com.hp.hpl.jena.tdb.solver.stats.StatsCollector ;
+import com.hp.hpl.jena.query.Dataset ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.sparql.util.Utils ;
 import com.hp.hpl.jena.tdb.store.GraphTDB ;
 
-
-public class tdbstats extends CmdTDBGraph
+public abstract class CmdTDBGraph extends CmdTDB
 {
-    // tdbconfig?
-    static public void main(String... argv)
-    { 
-        TDB.setOptimizerWarningFlag(false) ;
-        Log.setLog4j() ;
-        new tdbstats(argv).mainRun() ;
-    }
-
-    protected tdbstats(String[] argv)
+    private static final ArgDecl argNamedGraph          = new ArgDecl(ArgDecl.HasValue, "graph") ;
+    protected String graphName = null ;
+    
+    protected CmdTDBGraph(String[] argv)
     {
         super(argv) ;
+        super.add(argNamedGraph, "--graph=IRI", "Act on a named graph") ;
     }
     
     @Override
-    protected String getSummary()
+    protected void processModulesAndArgs()
     {
-        return null ;
+        super.processModulesAndArgs() ;
+        if ( contains(argNamedGraph) )
+            graphName = getValue(argNamedGraph) ; 
     }
-
+    
+    protected Model getModel()
+    {
+        Dataset ds = tdbDatasetAssembler.getDataset() ;
+        
+        if ( graphName != null )
+        {
+            Model m = ds.getNamedModel(graphName) ;
+            if ( m == null )
+                throw new CmdException("No such named graph (is this a TDB dataset?)") ;
+            return m ;
+        }
+        else
+            return ds.getDefaultModel() ;
+    }
+    
+    protected GraphTDB getGraph()
+    {
+        if ( graphName != null )
+            return (GraphTDB)tdbDatasetAssembler.getDataset().getNamedModel(graphName).getGraph() ;
+        else
+            return (GraphTDB)tdbDatasetAssembler.getDataset().getDefaultModel().getGraph() ;
+    }
+    
     @Override
-    protected void exec()
+    protected String getCommandName()
     {
-        GraphTDB graph = getGraph() ;
-        StatsCollector stats = Stats.gatherTDB(graph) ;
-        Stats.write(System.out, stats) ;
+        return Utils.className(this) ;
     }
+    
 }
 
 /*

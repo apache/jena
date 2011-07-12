@@ -8,7 +8,6 @@ package tx;
 
 import org.openjena.atlas.lib.Bytes ;
 import org.openjena.atlas.lib.FileOps ;
-import org.openjena.atlas.lib.Lib ;
 import org.openjena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.graph.Graph ;
@@ -74,7 +73,6 @@ public class TxMain
         
         // Take a blocking read connection.
         DatasetGraphTxn dsgRead = sConn.begin(ReadWrite.READ) ;
-        dsgRead.close() ;
         
         DatasetGraphTxn dsg = sConn.begin(ReadWrite.WRITE) ;
         load("D.ttl", dsg) ;
@@ -90,6 +88,8 @@ public class TxMain
 //        dsg.close() ;
 
         dsgRead.close() ;   // Transaction can now write changes to the real DB.  
+        
+        query("DSG-R", "SELECT (count(*) AS ?C) { ?s ?p ?o }", dsgRead) ;
         exit(0) ;
     }
     

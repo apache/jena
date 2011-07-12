@@ -10,7 +10,7 @@ package tdb;
 import java.util.List ;
 
 import org.openjena.riot.Lang ;
-import tdb.cmdline.CmdTDB ;
+import tdb.cmdline.CmdTDBGraph ;
 import tdb.cmdline.ModModel ;
 
 import com.hp.hpl.jena.query.ARQ ;
@@ -18,7 +18,7 @@ import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.TDBLoader ;
 import com.hp.hpl.jena.tdb.store.GraphTDB ;
 
-public class tdbloader extends CmdTDB
+public class tdbloader extends CmdTDBGraph
 {
 //    private static final ArgDecl argGraphDeafult = new ArgDecl(ArgDecl.NoValue, "default") ;
     

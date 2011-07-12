@@ -6,20 +6,19 @@
 
 package tdb;
 
-import java.util.Iterator;
+import java.util.Iterator ;
 
 import org.openjena.atlas.lib.Bytes ;
 import org.openjena.atlas.logging.Log ;
+import tdb.cmdline.CmdTDB ;
 
-import tdb.cmdline.CmdTDB;
-
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.tdb.lib.NodeLib;
-import com.hp.hpl.jena.tdb.nodetable.NodeTable;
-import com.hp.hpl.jena.tdb.store.GraphTDB;
-import com.hp.hpl.jena.tdb.store.Hash;
-import com.hp.hpl.jena.tdb.store.NodeId;
-import com.hp.hpl.jena.tdb.sys.SystemTDB;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.tdb.lib.NodeLib ;
+import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
+import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
+import com.hp.hpl.jena.tdb.store.Hash ;
+import com.hp.hpl.jena.tdb.store.NodeId ;
+import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 public class tdbnode extends CmdTDB
 {
@@ -44,8 +43,8 @@ public class tdbnode extends CmdTDB
     @Override
     protected void exec()
     {
-        GraphTDB graph = getGraph() ;
-        NodeTable nodeTable = graph.getNodeTupleTable().getNodeTable() ;
+        DatasetGraphTDB dsg = getDatasetGraph() ;
+        NodeTable nodeTable = dsg.getTripleTable().getNodeTupleTable().getNodeTable() ;
         Iterator<String> iter = super.getPositional().iterator() ;
         if ( ! iter.hasNext() )
         {

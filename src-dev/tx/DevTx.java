@@ -5,8 +5,9 @@ public class DevTx
 {
     // --------
     // To do for release 0:
-    //   Journal left full when replayed. 
+    //   Journal left behind full when replayed. 
     //   Txn over block/commited transaction
+    //   Does the journal cope? with partial rplay - first part, not second?
     // --------
     
     // Tests

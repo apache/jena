@@ -14,26 +14,21 @@ import java.util.Properties ;
 import org.apache.log4j.PropertyConfigurator ;
 import org.openjena.atlas.lib.StrUtils ;
 import org.openjena.riot.SysRIOT ;
-import arq.cmd.CmdException ;
-import arq.cmdline.ArgDecl ;
 import arq.cmdline.CmdARQ ;
 import arq.cmdline.ModSymbol ;
 
 import com.hp.hpl.jena.Jena ;
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.query.Dataset ;
-import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
-import com.hp.hpl.jena.tdb.store.GraphTDB ;
 import com.hp.hpl.jena.tdb.sys.SetupTDB ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 public abstract class CmdTDB extends CmdARQ
 {
-    private static final ArgDecl argNamedGraph          = new ArgDecl(ArgDecl.HasValue, "graph") ;
     protected final ModTDBDataset tdbDatasetAssembler   = new ModTDBDataset() ;
 
     private static final String log4Jsetup = StrUtils.strjoin("\n"
@@ -62,13 +57,10 @@ public abstract class CmdTDB extends CmdARQ
     ) ;
     private static boolean initialized = false ;
     
-    protected String graphName = null ;
-    
     protected CmdTDB(String[] argv)
     {
         super(argv) ;
         init() ;
-        super.add(argNamedGraph, "--graph=IRI", "Act on a named graph") ;
         super.addModule(tdbDatasetAssembler) ;
         super.modVersion.addClass(Jena.class) ;
         super.modVersion.addClass(ARQ.class) ;
@@ -110,36 +102,11 @@ public abstract class CmdTDB extends CmdARQ
     protected void processModulesAndArgs()
     {
         super.processModulesAndArgs() ;
-        if ( contains(argNamedGraph) )
-            graphName = getValue(argNamedGraph) ; 
-    }
-    
-    protected Model getModel()
-    {
-        Dataset ds = tdbDatasetAssembler.getDataset() ;
-        
-        if ( graphName != null )
-        {
-            Model m = ds.getNamedModel(graphName) ;
-            if ( m == null )
-                throw new CmdException("No such named graph (is this a TDB dataset?)") ;
-            return m ;
-        }
-        else
-            return ds.getDefaultModel() ;
     }
     
     protected Location getLocation()
     {
         return tdbDatasetAssembler.getLocation() ;
-    }
-    
-    protected GraphTDB getGraph()
-    {
-        if ( graphName != null )
-            return (GraphTDB)tdbDatasetAssembler.getDataset().getNamedModel(graphName).getGraph() ;
-        else
-            return (GraphTDB)tdbDatasetAssembler.getDataset().getDefaultModel().getGraph() ;
     }
     
     protected DatasetGraphTDB getDatasetGraph()

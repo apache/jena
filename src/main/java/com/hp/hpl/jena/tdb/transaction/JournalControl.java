@@ -149,6 +149,7 @@ public class JournalControl
             throw ex ;
         }
         finally { dsg.getLock().leaveCriticalSection() ; }
+        journal.truncate(0) ;
     }
 
     /** return true for "go on" */

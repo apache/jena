@@ -13,6 +13,7 @@ import java.util.Map ;
 import org.openjena.atlas.io.IndentedWriter ;
 import tdb.cmdline.CmdSub ;
 import tdb.cmdline.CmdTDB ;
+import tdb.cmdline.CmdTDBGraph ;
 import arq.cmdline.CmdARQ ;
 import arq.cmdline.ModVersion ;
 
@@ -140,7 +141,7 @@ public class tdbconfig extends CmdSub
         }
     }
     
-    static class SubStats extends CmdTDB
+    static class SubStats extends CmdTDBGraph
     {
         public SubStats(String ... argv)
         {
