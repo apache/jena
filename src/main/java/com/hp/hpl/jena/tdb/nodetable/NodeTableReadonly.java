@@ -16,9 +16,14 @@
  * limitations under the License.
  */
 
-package com.hp.hpl.jena.tdb;
+package com.hp.hpl.jena.tdb.nodetable;
 
-public enum TxnState {
-    ACTIVE, PREPARING, COMMITED, ABORTED 
+public class NodeTableReadonly extends NodeTableWrapper
+{
+    public NodeTableReadonly(NodeTable nodeTable)
+    {
+        super(nodeTable) ;
+    }
+
 }
 

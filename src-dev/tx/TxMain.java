@@ -23,6 +23,7 @@ import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.util.NodeFactory ;
 import com.hp.hpl.jena.sparql.util.QueryExecUtils ;
+import com.hp.hpl.jena.tdb.DatasetGraphTxn ;
 import com.hp.hpl.jena.tdb.ReadWrite ;
 import com.hp.hpl.jena.tdb.StoreConnection ;
 import com.hp.hpl.jena.tdb.TDBFactory ;
@@ -38,7 +39,6 @@ import com.hp.hpl.jena.tdb.setup.DatasetBuilderStd ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
-import com.hp.hpl.jena.tdb.transaction.DatasetGraphTxnTDB ;
 import com.hp.hpl.jena.tdb.transaction.NodeTableTrans ;
 import com.hp.hpl.jena.update.UpdateAction ;
 import com.hp.hpl.jena.update.UpdateFactory ;
@@ -68,28 +68,25 @@ public class TxMain
     public static void main(String... args)
     {
         initFS() ;
-        
-        // Tests
-        
-        // StoreConfig is the static part
-        // DatasetControl is the active part.
-        //  DSG_TDB does not know the control - set by the builder.
-        
-        // Read-only dataset for read-only transactions.
-        // Not in a transaction.
-        
-        // ConcurrencyPolicy -> DatasetControl
-        //   .resetControl, remove .setReadMode
-        
         StoreConnection sConn = StoreConnection.make(DBdir) ;
-        DatasetGraphTxnTDB dsg = sConn.begin(ReadWrite.WRITE) ;
+        
+        // Take a blocking read connection.
+        DatasetGraphTxn dsgRead = sConn.begin(ReadWrite.READ) ;
+        
+        DatasetGraphTxn dsg = sConn.begin(ReadWrite.WRITE) ;
         load("D.ttl", dsg) ;
         query("DSG1", "SELECT (count(*) AS ?C) { ?s ?p ?o }", dsg) ;
         
-        dsg.abort();
+        // Either:
+        //  Cheap: lock on begin/READ.
+        //  
+        dsg.commit() ;
+        
+        dsg = sConn.begin(ReadWrite.READ) ;
+        query("DSG1", "SELECT (count(*) AS ?C) { ?s ?p ?o }", dsg) ;
         dsg.close() ;
-        
-        
+
+        dsgRead.close() ;   // Transaction can now write chnages to the real DB.  
     }
     
     private static void write(Graph graph, String lang)

@@ -25,59 +25,28 @@ import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.setup.DatasetBuilderStd ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.sys.TDBMaker ;
-import com.hp.hpl.jena.tdb.transaction.DatasetGraphTxnTDB ;
-import com.hp.hpl.jena.tdb.transaction.TDBTransactionException ;
 import com.hp.hpl.jena.tdb.transaction.TransactionManager ;
 
+/** Interface to the TDB transaction mechanism */ 
 public class StoreConnection
 {
-    private static TransactionManager transactionManager = new TransactionManager() ;
+    private TransactionManager transactionManager = new TransactionManager() ;
     
     private DatasetGraphTDB baseDSG ;
-    private static int transactionCounter = 0 ;
-    private int transactionId = 0 ;         // Per dataset count (unliek trasnaction ids which are global)
-    private int readers = 0 ; 
-    private int writers = 0 ;       // 0 or 1 
-    private int committed = 0 ;     // Committed but not replyed yet.
-    
 
     private StoreConnection(Location location)
     {
         baseDSG = DatasetBuilderStd.build(location.getDirectoryPath()) ;
-        transactionCounter++ ;
-        transactionId = transactionCounter ;
     }
     
     public Location getLocation() { return baseDSG.getLocation() ; }
     
-    synchronized
-    public DatasetGraphTxnTDB begin(ReadWrite mode)
+    public DatasetGraphTxn begin(ReadWrite mode)
     {
-        switch (mode)
-        {
-            case READ :
-                readers++ ;
-                DatasetGraphTxnTDB dsg = null ;
-                dsg.setReadOnly(true) ;
-                // Make a new read-only dataset.
-                //new DatasetGraphTxnRead(baseDSG) ;
-                break ;
-            case WRITE :
-                if ( writers > 0 )
-                    throw new TDBTransactionException("Existing active transaction") ;
-                // Check only active transaction.
-                // Make from the last commited transation or base.
-                
-                // Attach connection to DatasetGraphTxnTDB
-                DatasetGraphTxnTDB dsg2 = transactionManager.begin(baseDSG) ;
-                dsg2.getTransaction() ;
-                return dsg2 ;
-        }
-        System.err.println("StoreConnection.begin: Not implemented fully") ;
-        return null ;
+        return transactionManager.begin(baseDSG, mode) ;
     }
     
-    // ---- statics
+    // ---- statics managing the cache.
     
     public static StoreConnection make(String location)
     {

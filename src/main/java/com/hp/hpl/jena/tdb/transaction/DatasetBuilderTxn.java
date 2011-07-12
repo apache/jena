@@ -8,9 +8,12 @@ package com.hp.hpl.jena.tdb.transaction ;
 
 import java.util.Map ;
 
+import com.hp.hpl.jena.tdb.DatasetGraphTxn ;
+import com.hp.hpl.jena.tdb.ReadWrite ;
 import com.hp.hpl.jena.tdb.TDBException ;
 import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrLogger ;
+import com.hp.hpl.jena.tdb.base.block.BlockMgrReadonly ;
 import com.hp.hpl.jena.tdb.base.file.BufferChannel ;
 import com.hp.hpl.jena.tdb.base.file.BufferChannelFile ;
 import com.hp.hpl.jena.tdb.base.file.BufferChannelMem ;
@@ -22,6 +25,7 @@ import com.hp.hpl.jena.tdb.index.Index ;
 import com.hp.hpl.jena.tdb.index.IndexMap ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTableInline ;
+import com.hp.hpl.jena.tdb.nodetable.NodeTableReadonly ;
 import com.hp.hpl.jena.tdb.setup.BlockMgrBuilder ;
 import com.hp.hpl.jena.tdb.setup.DatasetBuilderStd ;
 import com.hp.hpl.jena.tdb.setup.NodeTableBuilder ;
@@ -40,12 +44,31 @@ public class DatasetBuilderTxn
 
     public DatasetBuilderTxn(TransactionManager txnMgr) { this.txnMgr = txnMgr ; }
     
-    public DatasetGraphTDB build(Transaction transaction, DatasetGraphTDB dsg)
+    public DatasetGraphTDB build(Transaction transaction, ReadWrite mode, DatasetGraphTDB dsg)
     {
-        blockMgrs = dsg.getConfig().blockMgrs ;
-        nodeTables = dsg.getConfig().nodeTables ;
+        this.blockMgrs = dsg.getConfig().blockMgrs ;
+        this.nodeTables = dsg.getConfig().nodeTables ;
         this.txn = transaction ;
             
+        switch(mode)
+        {
+            case READ : return buildReadonly(transaction, dsg) ;
+            case WRITE : return buildWritable(transaction, dsg) ;
+            default: return null ;  // Silly Java.
+        }
+    }
+    
+    private DatasetGraphTxn buildReadonly(Transaction transaction, DatasetGraphTDB dsg)
+    {
+        BlockMgrBuilder blockMgrBuilder = new BlockMgrBuilderReadonly() ;
+        NodeTableBuilder nodeTableBuilder = new NodeTableBuilderReadonly() ;
+        DatasetBuilderStd x = new DatasetBuilderStd(blockMgrBuilder, nodeTableBuilder) ;
+        DatasetGraphTDB dsg2 = x.build(dsg.getLocation(), dsg.getConfig().properties) ;
+        return new DatasetGraphTxn(dsg2, txn) ;
+    }
+
+    private DatasetGraphTDB buildWritable(Transaction transaction, DatasetGraphTDB dsg)
+    {
         BufferChannel chan ;
         if ( dsg.getLocation().isMem() )
             chan = BufferChannelMem.create() ;
@@ -56,17 +79,11 @@ public class DatasetBuilderTxn
         
         BlockMgrBuilder blockMgrBuilder = new BlockMgrBuilderTx() ;
         NodeTableBuilder nodeTableBuilder = new NodeTableBuilderTx() ;
-        
         DatasetBuilderStd x = new DatasetBuilderStd(blockMgrBuilder, nodeTableBuilder) ;
         DatasetGraphTDB dsg2 = x.build(dsg.getLocation(), dsg.getConfig().properties) ;
-        
-        dsg.setReadOnly(true) ;
-        
-        return new DatasetGraphTxnTDB(dsg2, txn) ;
-        
+        return new DatasetGraphTxn(dsg2, txn) ;
     }
-    
-    
+
     // ---- Add logging to a BlockMgr when built.
     static BlockMgrBuilder logging(BlockMgrBuilder other) { return new BlockMgrBuilderLogger(other) ; }
     
@@ -86,6 +103,8 @@ public class DatasetBuilderTxn
             return blkMgr ;
         }
     }
+    
+    // ---- Build transactional versions for update.
     
     class NodeTableBuilderTx implements NodeTableBuilder
     {
@@ -129,6 +148,36 @@ public class DatasetBuilderTxn
             BlockMgrJournal blkMgr = new BlockMgrJournal(txn, ref, baseMgr, journal) ;
             txn.add(blkMgr) ;
             return blkMgr ;
+        }
+    }
+
+    // ---- Build passthrough versions for readonly access
+    
+    class BlockMgrBuilderReadonly implements BlockMgrBuilder
+    {
+        @Override
+        public BlockMgr buildBlockMgr(FileSet fileSet, String ext, int blockSize)
+        {
+            FileRef ref = FileRef.create(fileSet, ext) ;
+            BlockMgr blockMgr = blockMgrs.get(ref) ;
+            if ( blockMgr == null )
+                throw new TDBException("No BlockMgr for "+ref) ;
+            blockMgr = new BlockMgrReadonly(blockMgr) ;
+            return blockMgr ;
+        }
+    }
+    
+    class NodeTableBuilderReadonly implements NodeTableBuilder
+    {
+
+        @Override
+        public NodeTable buildNodeTable(FileSet fsIndex, FileSet fsObjectFile, int sizeNode2NodeIdCache,
+                                        int sizeNodeId2NodeCache)
+        {
+            FileRef ref = FileRef.create(fsObjectFile.filename(Names.extNodeData)) ;
+            NodeTable nt = nodeTables.get(ref) ;
+            nt = new NodeTableReadonly(nt) ;
+            return nt ;
         }
     }
 }

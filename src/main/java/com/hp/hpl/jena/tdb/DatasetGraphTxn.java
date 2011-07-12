@@ -4,19 +4,18 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.transaction;
+package com.hp.hpl.jena.tdb;
 
 
-import com.hp.hpl.jena.tdb.TxnState ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
+import com.hp.hpl.jena.tdb.transaction.Transaction ;
 
-public class DatasetGraphTxnTDB extends DatasetGraphTDB
+public class DatasetGraphTxn extends DatasetGraphTDB
 {
     private final Transaction transaction ;
-    TxnState state = TxnState.BEGIN ;       // TODO Part of transaction -- but checked in close()
 
-    public DatasetGraphTxnTDB(DatasetGraphTDB dsg, Transaction txn)
+    public DatasetGraphTxn(DatasetGraphTDB dsg, Transaction txn)
     {
         super(dsg) ;
         this.transaction = txn ;
@@ -27,24 +26,12 @@ public class DatasetGraphTxnTDB extends DatasetGraphTDB
     synchronized
     public void commit()
     {
-        if ( state != TxnState.BEGIN )
-        {
-            SystemTDB.syslog.warn("Can't commit: Transaction is already "+state) ;
-            throw new TDBTransactionException("commit: Illegal state: "+state) ;
-        }
-        state = TxnState.COMMITTED ;
         transaction.commit() ;
     }
 
     synchronized
     public void abort()
     {
-        if ( state != TxnState.BEGIN )
-        {
-            SystemTDB.syslog.warn("Can't abort: Transaction is already "+state) ;
-            throw new TDBTransactionException("abort: Illegal state: "+state) ;
-        }
-        state = TxnState.ABORTED ;
         transaction.abort() ;
     }
     
@@ -56,12 +43,12 @@ public class DatasetGraphTxnTDB extends DatasetGraphTDB
     synchronized
     public void close()
     {
-        if ( state == TxnState.BEGIN )
+        if ( transaction.getMode() == ReadWrite.WRITE )
         {
             SystemTDB.syslog.warn("close: Transaction not commited or aborted: Transaction: "+transaction.getTxnId()+" @ "+getLocation().getDirectoryPath()) ;
             abort() ;
         }
-        //Don't really close.
+        //Don't really close.  Might close the core resources which are shared.
         //super.close() ;
     }
     

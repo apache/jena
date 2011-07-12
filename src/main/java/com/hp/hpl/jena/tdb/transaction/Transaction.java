@@ -12,6 +12,7 @@ import java.util.Iterator ;
 import java.util.List ;
 
 
+import com.hp.hpl.jena.tdb.ReadWrite ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.sys.FileRef ;
 
@@ -25,23 +26,33 @@ public class Transaction
     private Journal journal = null ;
     private enum State { ACTIVE, PREPARING, COMMITED, ABORTED } 
     private State state ;
+    private ReadWrite mode ;
     
     private final List<NodeTableTrans> nodeTableTrans = new ArrayList<NodeTableTrans>() ;
     private final List<BlockMgrJournal> blkMgrs = new ArrayList<BlockMgrJournal>() ;
     private DatasetGraphTDB basedsg ;
 
-    public Transaction(DatasetGraphTDB basedsg, long id, TransactionManager txnMgr)
+    public Transaction(DatasetGraphTDB basedsg, ReadWrite mode, long id, TransactionManager txnMgr)
     {
         this.id = id ;
         this.txnMgr = txnMgr ;
         this.basedsg = basedsg ;
-        //this.journal = journal ;
+        this.mode = mode ;
         this.iterators = new ArrayList<Iterator<?>>() ;
         state = State.ACTIVE ;
     }
 
     public void commit()
     {
+        if ( mode == ReadWrite.READ )
+        {
+            state = State.COMMITED ;
+            return ;
+        }
+        
+        if ( state != State.ACTIVE )
+            throw new TDBTransactionException("Transaction has already committed or aborted") ; 
+        
         prepare() ;
         
         JournalEntry entry = new JournalEntry(JournalEntryType.Commit, FileRef.Journal, null) ;
@@ -51,11 +62,13 @@ public class Transaction
         // This is idempotent and safe to partial replay.  
         state = State.COMMITED ;
         txnMgr.notifyCommit(this) ;
-        JournalControl.replay(journal, basedsg) ;
     }
     
-    public void prepare()
+    private void prepare()
     {
+        if ( mode == ReadWrite.READ )
+            return ;
+        
         if ( state != State.ACTIVE )
             throw new TDBTransactionException("Transaction has already committed or aborted") ; 
         state = State.PREPARING ;
@@ -74,6 +87,12 @@ public class Transaction
     
     public void abort()
     { 
+        if ( mode == ReadWrite.READ )
+        {
+            state = State.ABORTED ;
+            return ;
+        }
+        
         if ( state != State.ACTIVE )
             throw new TDBTransactionException("Transaction has already committed or aborted") ; 
         
@@ -89,7 +108,7 @@ public class Transaction
         
     }
     
-    
+    public ReadWrite getMode()                      { return mode ; }
     public long getTxnId()                          { return id ; }
     public TransactionManager getTxnMgr()           { return txnMgr ; }
     
@@ -121,6 +140,11 @@ public class Transaction
     public void add(BlockMgrJournal blkMgr)
     {
         blkMgrs.add(blkMgr) ;
+    }
+
+    public DatasetGraphTDB getBaseDataset()
+    {
+        return basedsg ;
     }
 }
 

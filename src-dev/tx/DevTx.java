@@ -3,7 +3,19 @@ package tx;
 
 public class DevTx
 {
+    // To do for release 0:
     // Tests
+    // Write back of commited transaction when outstanding readers.
+    // Transaction over block/commited transaction
+    
+    // Tidy up:
+    // A DatasetGraphTDB is 3 NodeTupelTables.  Build as such.
+    // DatasetBuilderStd.makeNodeTupleTable.
+    //   TripleTable, QuadTable, DatasetPrefixesTDB are just function-adding wrappers.
+    //   Then readonly NodeTupleTable.  Remove NodeTableBuilderReadonly
+    
+    // ConcurrencyPolicy -> DatasetControl
+    //   .resetControl, remove .setReadMode
     
     // NodeTable journalling and recovery
     // 3/ general setup

@@ -24,9 +24,9 @@ import com.hp.hpl.jena.query.QueryExecution ;
 import com.hp.hpl.jena.query.QueryExecutionFactory ;
 import com.hp.hpl.jena.query.ResultSet ;
 import com.hp.hpl.jena.query.ResultSetFormatter ;
+import com.hp.hpl.jena.tdb.DatasetGraphTxn ;
 import com.hp.hpl.jena.tdb.ReadWrite ;
 import com.hp.hpl.jena.tdb.StoreConnection ;
-import com.hp.hpl.jena.tdb.transaction.DatasetGraphTxnTDB ;
 import com.hp.hpl.jena.tdb.transaction.Transaction ;
 import com.hp.hpl.jena.update.GraphStore ;
 import com.hp.hpl.jena.update.GraphStoreFactory ;
@@ -57,7 +57,7 @@ public class ExTxTDB
 
     private static void sparqlQuery(StoreConnection sConn)
     {
-        DatasetGraphTxnTDB dsg = sConn.begin(ReadWrite.READ) ;
+        DatasetGraphTxn dsg = sConn.begin(ReadWrite.READ) ;
         try {
             // SPARQL
             QueryExecution qExec = QueryExecutionFactory.create("SELECT * { ?s ?p ?o} LIMIT 10", /*dsg*/(Dataset)null) ;
@@ -78,7 +78,7 @@ public class ExTxTDB
 
     private static void sparqlUpdate(StoreConnection sConn)
     {
-        DatasetGraphTxnTDB dsg = sConn.begin(ReadWrite.WRITE) ;
+        DatasetGraphTxn dsg = sConn.begin(ReadWrite.WRITE) ;
         try {
             // Update
             dsg.commit() ;

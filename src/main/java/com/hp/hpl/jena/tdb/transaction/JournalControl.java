@@ -16,6 +16,7 @@ import java.util.Map ;
 import org.openjena.atlas.lib.FileOps ;
 
 import com.hp.hpl.jena.shared.Lock ;
+import com.hp.hpl.jena.tdb.DatasetGraphTxn ;
 import com.hp.hpl.jena.tdb.base.block.Block ;
 import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
 import com.hp.hpl.jena.tdb.base.file.FileFactory ;
@@ -52,7 +53,7 @@ public class JournalControl
 
     public static void recovery(DatasetGraphTDB dsg)
     {
-        if ( dsg instanceof DatasetGraphTxnTDB )
+        if ( dsg instanceof DatasetGraphTxn )
             throw new TDBTransactionException("Reocery works on the base dataset, not a transactional one") ; 
         
         if ( dsg.getLocation().isMem() )

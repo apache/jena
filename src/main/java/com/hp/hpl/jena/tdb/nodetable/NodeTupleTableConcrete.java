@@ -20,7 +20,6 @@ import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.tdb.TDBException ;
 import com.hp.hpl.jena.tdb.index.TupleIndex ;
 import com.hp.hpl.jena.tdb.index.TupleTable ;
-import com.hp.hpl.jena.tdb.lib.NodeLib ;
 import com.hp.hpl.jena.tdb.lib.TupleLib ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
 import com.hp.hpl.jena.tdb.sys.DatasetControl ;
@@ -81,15 +80,7 @@ public class NodeTupleTableConcrete implements NodeTupleTable
                 n[i] = nodeTable.getAllocateNodeId(nodes[i]) ;
 
             Tuple<NodeId> t = Tuple.create(n) ;
-            try
-            {
-                return tupleTable.add(t) ;
-            } catch (TDBException ex)
-            {
-                String x = NodeLib.format(" ", nodes) ;
-                System.err.println("Bad add for tuple: " + x) ;
-                throw ex ;
-            }
+            return tupleTable.add(t) ;
         } finally
         {
             finishWrite() ;
