@@ -38,7 +38,6 @@ import com.hp.hpl.jena.xmloutput.RDFXMLWriterI ;
 
 public class ResponseModel
 {
-
     public static void doResponseModel(Model model, HttpServletRequest request, HttpServletResponse response)
         {
             String mimeType = null ;        // Header request type 

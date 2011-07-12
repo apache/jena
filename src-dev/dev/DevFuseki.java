@@ -20,6 +20,8 @@ package dev;
 
 public class DevFuseki
 {
+    // RDF/XML_ABBREV in ResponseModel
+    
 	// Flint?
 	// Pages for publish mode.
 

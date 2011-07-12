@@ -44,5 +44,4 @@ public interface DatasetGraphAccessor
     // Update graph
     public void httpPatch(Graph data) ;
     public void httpPatch(Node graphName, Graph data) ;
-
 }
