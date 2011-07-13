@@ -37,7 +37,6 @@ public abstract class IteratorSlotted<T> implements Iterator<T>
 
     protected boolean isFinished() { return finished ; }
 
-    /** final - subclasses implement hasNextBinding() */
     //@Override
     public final boolean hasNext()
     {
