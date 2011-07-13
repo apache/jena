@@ -48,17 +48,36 @@ public class BlockMgrJournal implements BlockMgr, Transactional
         reset(txn, fileRef, blockMgr, journal) ;
     }
 
+    
+//    public void begin(Transaction txn) ;
+//    public void abort(Transaction txn) ;
+//    public void commitPrepare(Transaction txn) ;
+//    public void commitEnact(Transaction txn) ;
+//    public void clearup(Transaction txn) ;
+    
     @Override
-    public void commit(Transaction txn)
+    public void commitPrepare(Transaction txn)
     {
-        //log.info("Commit {} {}", fileRef.getFilename(), writeBlocks.size()) ;
         for ( Block blk : writeBlocks.values() )
             writeJournalEntry(blk) ;
     }
 
     @Override
+    public void commitEnact(Transaction txn)
+    {
+        // No-op : this is done by playing the master journal.
+    }
+
+    @Override
     public void abort(Transaction txn)
     {
+        // Do clearup of in-memory structures in clearup().
+    }
+    
+    @Override
+    public void clearup(Transaction txn)
+    {
+        // Persistent state is in the system journal.
         reset(txn) ;
     }
     

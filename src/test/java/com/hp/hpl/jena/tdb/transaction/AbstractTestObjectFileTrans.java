@@ -34,7 +34,7 @@ public abstract class AbstractTestObjectFileTrans extends BaseTest
     @Before
     public void setup()
     {
-        txn = new Transaction(null, null, ++count, null) ;
+        txn = new Transaction(null, null, ++count, null, null) ;
         file1 = createFile("base") ;
         file2 = createFile("log") ;
     }
@@ -89,8 +89,10 @@ public abstract class AbstractTestObjectFileTrans extends BaseTest
         
         file.begin(txn) ; 
         contains(file2) ;
-        file.commit(txn) ;
+        file.commitPrepare(txn) ;
+        file.commitEnact(txn) ;
         contains(file1, "ABC") ;
+        file.clearup(txn) ;
     }
 
     @Test public void objFileTrans_03()
@@ -99,8 +101,10 @@ public abstract class AbstractTestObjectFileTrans extends BaseTest
         init() ;
         file.begin(txn) ; 
         write(file, "X") ;
-        file.commit(txn) ;
+        file.commitPrepare(txn) ;
+        file.commitEnact(txn) ;
         contains(file1, "ABC", "X") ;
+        file.clearup(txn) ;
     }
 
     @Test public void objFileTrans_04()
@@ -109,8 +113,10 @@ public abstract class AbstractTestObjectFileTrans extends BaseTest
         init() ;
         file.begin(txn) ; 
         write(file, "ABCDEFGHIJKLMNOPQRSTUVWXYZ") ;
-        file.commit(txn) ;
+        file.commitPrepare(txn) ;
+        file.commitEnact(txn) ;
         contains(file1, "ABC", "ABC", "ABCDEFGHIJKLMNOPQRSTUVWXYZ") ;
+        file.clearup(txn) ;
     }
 
     @Test public void objFileTrans_05()
@@ -121,6 +127,7 @@ public abstract class AbstractTestObjectFileTrans extends BaseTest
         write(file, "ABCDEF") ;
         file.abort(txn) ;
         contains(file1, "ABC") ;
+        file.clearup(txn) ;
     }
 
     @Test public void objFileTrans_06()

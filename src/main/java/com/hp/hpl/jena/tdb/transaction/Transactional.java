@@ -11,11 +11,24 @@ package com.hp.hpl.jena.tdb.transaction;
  */ 
 public interface Transactional
 {
-    // version 1
+    // begin - commitPrepare - commitEnact - clearup
+    // begin - abort - clearup
+    // May be reused via a new call to begin - see impl for if that's possible. 
+    
+    /** Start an update transaction */  
     public void begin(Transaction txn) ;
-    public void commit(Transaction txn) ;
-    //public boolean postCommit(Transaction txn) ;
+    
+    /** End of active phase - will not be making these changes*/
     public void abort(Transaction txn) ;
+    
+    /** End of active phase. Make changes safe; do not update the base data. */
+    public void commitPrepare(Transaction txn) ;
+
+    /** Update the base data */ 
+    public void commitEnact(Transaction txn) ;
+    
+    /** All done - transaction committed and incorporated in the base dataset */
+    public void clearup(Transaction txn) ;
 }
 
 /*

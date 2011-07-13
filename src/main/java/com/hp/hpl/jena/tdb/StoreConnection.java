@@ -28,23 +28,31 @@ import com.hp.hpl.jena.tdb.sys.TDBMaker ;
 import com.hp.hpl.jena.tdb.transaction.JournalControl ;
 import com.hp.hpl.jena.tdb.transaction.TransactionManager ;
 
-/** Interface to the TDB transaction mechanism */ 
+/** Interface to the TDB transaction mechanism. */ 
 public class StoreConnection
 {
-    private TransactionManager transactionManager = new TransactionManager() ;
+    // Contains the cache.
+    // Most of the work is done in the TransactionManager
     
-    private DatasetGraphTDB baseDSG ;
+    private final TransactionManager transactionManager ;
+    private final DatasetGraphTDB baseDSG ;
 
     private StoreConnection(Location location)
     {
         baseDSG = DatasetBuilderStd.build(location.getDirectoryPath()) ;
+        transactionManager = new TransactionManager(baseDSG) ;
     }
     
     public Location getLocation() { return baseDSG.getLocation() ; }
     
     public DatasetGraphTxn begin(ReadWrite mode)
     {
-        return transactionManager.begin(baseDSG, mode) ;
+        return transactionManager.begin(mode) ;
+    }
+    
+    public DatasetGraphTxn begin(ReadWrite mode, String label)
+    {
+        return transactionManager.begin(mode, label) ;
     }
     
     // ---- statics managing the cache.
@@ -68,8 +76,5 @@ public class StoreConnection
         }
         return sConn ; 
     }
-    
-    
-    
 }
 

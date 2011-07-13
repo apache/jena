@@ -11,7 +11,6 @@ import org.openjena.atlas.lib.FileOps ;
 import org.openjena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.graph.Graph ;
-import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.DatasetFactory ;
 import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.query.QueryExecution ;
@@ -21,25 +20,14 @@ import com.hp.hpl.jena.query.Syntax ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.sparql.util.NodeFactory ;
 import com.hp.hpl.jena.sparql.util.QueryExecUtils ;
 import com.hp.hpl.jena.tdb.DatasetGraphTxn ;
 import com.hp.hpl.jena.tdb.ReadWrite ;
 import com.hp.hpl.jena.tdb.StoreConnection ;
-import com.hp.hpl.jena.tdb.TDBFactory ;
-import com.hp.hpl.jena.tdb.base.file.FileFactory ;
-import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile ;
 import com.hp.hpl.jena.tdb.base.record.Record ;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
-import com.hp.hpl.jena.tdb.index.Index ;
-import com.hp.hpl.jena.tdb.index.IndexMap ;
-import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
-import com.hp.hpl.jena.tdb.nodetable.NodeTableInline ;
 import com.hp.hpl.jena.tdb.setup.DatasetBuilderStd ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
-import com.hp.hpl.jena.tdb.store.NodeId ;
-import com.hp.hpl.jena.tdb.sys.SystemTDB ;
-import com.hp.hpl.jena.tdb.transaction.NodeTableTrans ;
 import com.hp.hpl.jena.update.UpdateAction ;
 import com.hp.hpl.jena.update.UpdateFactory ;
 import com.hp.hpl.jena.update.UpdateRequest ;
@@ -67,29 +55,45 @@ public class TxMain
     
     public static void main(String... args)
     {
-        //initFS() ;
-        //** Leaving journals behind after replay.
+        initFS() ;
         StoreConnection sConn = StoreConnection.make(DBdir) ;
         
         // Take a blocking read connection.
-        DatasetGraphTxn dsgRead = sConn.begin(ReadWrite.READ) ;
-        
-        DatasetGraphTxn dsg = sConn.begin(ReadWrite.WRITE) ;
-        load("D.ttl", dsg) ;
-        query("DSG1", "SELECT (count(*) AS ?C) { ?s ?p ?o }", dsg) ;
-        
-        // Either:
-        //  Cheap: lock on begin/READ.
-        //  
-        dsg.commit() ;
-        dsg.close() ;   // Hmm
-//        dsg = sConn.begin(ReadWrite.READ) ;
-//        query("DSG1", "SELECT (count(*) AS ?C) { ?s ?p ?o }", dsg) ;
-//        dsg.close() ;
+        DatasetGraphTxn dsgRead = sConn.begin(ReadWrite.READ) ; // Optional label.
 
-        dsgRead.close() ;   // Transaction can now write changes to the real DB.  
+        DatasetGraphTxn dsg = sConn.begin(ReadWrite.WRITE) ;
+        load("D.ttl", dsg) ;    // Loads 3 triples
+        query("SELECT (count(*) AS ?C) { ?s ?p ?o }", dsg) ;
+
+        dsg.commit() ;
+        dsg.close() ;
         
-        query("DSG-R", "SELECT (count(*) AS ?C) { ?s ?p ?o }", dsgRead) ;
+        
+        // Reader still open.
+        // At this point, there is a blocking  
+        
+        dsg = sConn.begin(ReadWrite.WRITE) ;
+        load("D1.ttl", dsg) ; // Loads 1 triples
+        
+        query("SELECT (count(*) AS ?C) { ?s ?p ?o }", dsg) ;
+        query("SELECT (count(*) AS ?C) { ?s ?p ?o }", dsgRead) ;
+        
+        
+        dsg.commit() ;
+        dsg.close() ;
+
+        DatasetGraphTxn dsgRead2 = sConn.begin(ReadWrite.READ) ;
+        query("SELECT (count(*) AS ?C) { ?s ?p ?o }", dsgRead2) ;
+        dsgRead2.close() ;
+        
+        dsgRead.close() ;   // Transaction can now write changes to the real DB.
+        
+        // ILLEGAL!!!!
+        // query("SELECT (count(*) AS ?C) { ?s ?p ?o }", dsgRead) ;
+        
+        DatasetGraphTxn dsgRead3 = sConn.begin(ReadWrite.READ) ;
+        query("SELECT (count(*) AS ?C) { ?s ?p ?o }", dsgRead3) ;
+        
         exit(0) ;
     }
     
@@ -97,71 +101,6 @@ public class TxMain
     {
         Model model = ModelFactory.createModelForGraph(graph) ;
         model.write(System.out, lang) ; 
-    }
-
-    private static void execNT()
-    {
-        String dir = "DB" ;
-        FileOps.clearDirectory(dir) ;
-        
-        DatasetGraphTDB dsg = TDBFactory.createDatasetGraph(dir) ;
-        
-//        BPlusTree index = BPlusTree.makeMem(20, 20, SystemTDB.LenNodeHash, SystemTDB.SizeOfNodeId) ;
-        RecordFactory recordFactory = new RecordFactory(SystemTDB.LenNodeHash, SystemTDB.SizeOfNodeId) ;
-//        Index idx = index ;
-        Index idx = new IndexMap(recordFactory) ;
-            
-        //ObjectFile objectFile = FileFactory.createObjectFileMem() ;
-        ObjectFile objectFile = FileFactory.createObjectFileDisk("DB/N.jrnl") ;
-        NodeTable nt0 = dsg.getTripleTable().getNodeTupleTable().getNodeTable() ;
-
-        // Add to the base table.
-        Node node1 = NodeFactory.parseNode("<x>") ; 
-        NodeId id_1 = nt0.getAllocateNodeId(node1) ;
-
-        // Set up the trans table.
-        NodeTableTrans ntt = new NodeTableTrans(nt0, idx, objectFile) ;
-        NodeTable nt = NodeTableInline.create(ntt) ;
-        
-        ntt.begin(null) ;
-        
-        Node node2 = NodeFactory.parseNode("<y>") ;
-        NodeId id_2 = nt.getAllocateNodeId(node2) ;
-        System.out.println("==> "+id_2) ;
-
-        Node node3 = NodeFactory.parseNode("123") ;
-//      n = nt.getNodeForNodeId(id_2) ;
-//      System.out.println("2: ==> "+n) ;
-        NodeId id_3 = nt.getAllocateNodeId(node3) ;
-        System.out.println("==> "+id_3) ;
-        
-        Node n = nt.getNodeForNodeId(id_1) ;
-        System.out.println("1: ==> "+n) ;
-        n = nt.getNodeForNodeId(id_2) ;
-        System.out.println("2: ==> "+n) ;
-        n = nt.getNodeForNodeId(id_3) ;
-        System.out.println("3: ==> "+n) ;
-
-        NodeId x = nt.getNodeIdForNode(node2) ;
-        System.out.println("==> "+x) ;
-        
-        System.out.println("---- Txn") ;
-        System.out.println("Base:  "+nt0.getNodeIdForNode(node1)) ;
-        System.out.println("Trans: "+nt.getNodeIdForNode(node1)) ;
-        System.out.println("Base:  "+nt0.getNodeIdForNode(node2)) ;
-        System.out.println("Trans: "+nt.getNodeIdForNode(node2)) ;
-        System.out.println("Base:  "+nt0.getNodeIdForNode(node3)) ;
-        System.out.println("Trans: "+nt.getNodeIdForNode(node3)) ;
-        
-        ntt.commit(null) ;
-        
-        System.out.println("---- Commit") ;
-        System.out.println("Base:  "+nt0.getNodeIdForNode(node1)) ;
-        System.out.println("Trans: "+nt.getNodeIdForNode(node1)) ;
-        System.out.println("Base:  "+nt0.getNodeIdForNode(node2)) ;
-        System.out.println("Trans: "+nt.getNodeIdForNode(node2)) ;
-        System.out.println("Base:  "+nt0.getNodeIdForNode(node3)) ;
-        System.out.println("Trans: "+nt.getNodeIdForNode(node3)) ;
     }
 
     private static void initFS()
@@ -178,7 +117,13 @@ public class TxMain
         return dsg ;
     }
 
-    public static void query(String label, String queryStr, DatasetGraph dsg)
+    public static void query(String queryStr, DatasetGraphTxn dsg)
+    {
+        String x = "Query ("+dsg.getTransaction().getLabel()+")" ;
+        query(x, queryStr, dsg) ;
+    }
+    
+    public static void query(String label, String queryStr, DatasetGraphTxn dsg)
     {
         System.out.print("**** ") ;
         System.out.println(label) ;
@@ -187,8 +132,16 @@ public class TxMain
         QueryExecUtils.executeQuery(query, qExec) ;
     }
     
-    private static void load(String file, DatasetGraph dsg)
+    private static void load(String file, DatasetGraphTxn dsg)
     {
+        String x = "Load ("+dsg.getTransaction().getLabel()+")" ;
+        load(x, file, dsg) ;
+    }
+    
+    private static void load(String label, String file, DatasetGraph dsg)
+    {
+        System.out.print("**** ") ;
+        System.out.println(label) ;
         System.out.println("Load: "+file) ;
         Model m = ModelFactory.createModelForGraph(dsg.getDefaultGraph()) ;
         FileManager.get().readModel(m, file) ;

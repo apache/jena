@@ -52,14 +52,21 @@ public class ObjectFileTrans implements ObjectFile, Transactional
     }
     
     @Override
-    public void commit(Transaction txn)
+    public void commitPrepare(Transaction txn)
+    {
+        if ( ! inTransaction )
+            throw new TDBTransactionException("Not in a transaction for a commit to happen") ; 
+        other.sync() ;
+    }
+
+    @Override
+    public void commitEnact(Transaction txn)
     {
         if ( ! inTransaction )
             throw new TDBTransactionException("Not in a transaction for a commit to happen") ; 
         append() ;
         base.sync() ;
         other.reposition(0) ;
-        passthrough = true ;
     }
 
     @Override
@@ -68,6 +75,13 @@ public class ObjectFileTrans implements ObjectFile, Transactional
         other.reposition(0) ;
     }
     
+    @Override
+    public void clearup(Transaction txn)
+    {
+        other.truncate(0) ;
+        passthrough = true ;
+    }
+
     /** Copy from the temporary file to the real file */
     public /*temporary*/ void append()
     {

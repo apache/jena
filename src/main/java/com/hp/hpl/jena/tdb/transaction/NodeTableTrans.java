@@ -150,30 +150,43 @@ public class NodeTableTrans implements NodeTable, Transactional
     }
     
     @Override
-    public void commit(Transaction txn)
+    public void commitPrepare(Transaction txn)
     {
         if ( ! inTransaction )
-            throw new TDBTransactionException("Not in a transaction for a commit to happen") ; 
+            throw new TDBTransactionException("Not in a transaction for a commit to happen") ;
+        journal.sync() ;
+    }
+    
+    @Override
+    public void commitEnact(Transaction txn)
+    {
         append() ;
-        base.sync() ;   // NodeTables shoudl do an actual sync only if they have changed.
-        clearUp() ;
+        base.sync() ;   // NodeTables should do an actual sync only if they have changed.
+        journal.reposition(0) ;
     }
 
     @Override
     public void abort(Transaction txn)
     {
-        clearUp() ;
+        journal.reposition(0) ;
     }
     
-    private void clearUp()
+    @Override
+    public void clearup(Transaction txn)
     {
+        journal.truncate(0);
         passthrough = true ;
-        //nodeIndex ;
-        journal.truncate(0) ;
-        journal.close() ;
-        nodeTableJournal = null ;
     }
-    
+
+//    private void clearUp()
+//    {
+//        passthrough = true ;
+//        //nodeIndex ;
+//        journal.truncate(0) ;
+//        journal.close() ;
+//        nodeTableJournal = null ;
+//    }
+//    
     @Override
     public Iterator<Pair<NodeId, Node>> all()
     {

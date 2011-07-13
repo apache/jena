@@ -44,10 +44,15 @@ public abstract class AbstractTestNodeTableTrans extends BaseTest
         }
     }
     
+    Transaction createTxn(long id) 
+    {
+        return new Transaction(null, null, id, null, null) ; 
+    }
+    
     @Test public void nodetrans_01()
     {
         NodeTableTrans ntt = create() ;
-        Transaction txn = new Transaction(null, null, 11, null) ; 
+        Transaction txn = createTxn(11) ; 
         ntt.begin(txn) ;
         ntt.abort(txn) ;
     }
@@ -58,7 +63,7 @@ public abstract class AbstractTestNodeTableTrans extends BaseTest
         NodeTableTrans ntt = create() ;
         NodeTable nt0 = ntt.getBaseNodeTable() ;
         
-        Transaction txn = new Transaction(null, null, 11, null) ; 
+        Transaction txn = createTxn(11) ; 
         ntt.begin(txn) ;
         // Add a node
         NodeId nodeId = ntt.getAllocateNodeId(node1) ;
@@ -68,10 +73,12 @@ public abstract class AbstractTestNodeTableTrans extends BaseTest
         assertEquals(NodeId.NodeDoesNotExist, nt0.getNodeIdForNode(node1)) ;
         assertEquals(node1, ntt.getNodeForNodeId(nodeId)) ;
         
-        ntt.commit(txn) ;
+        ntt.commitPrepare(txn) ;
+        ntt.commitEnact(txn) ;
         // Check it is now in the base.
         assertEquals(node1, nt0.getNodeForNodeId(nodeId)) ;
         assertEquals(nodeId, nt0.getNodeIdForNode(node1)) ;
+        ntt.clearup(txn) ;
     }
 
     @Test public void nodetrans_03()
@@ -79,7 +86,7 @@ public abstract class AbstractTestNodeTableTrans extends BaseTest
         NodeTableTrans ntt = create() ;
         NodeTable nt0 = ntt.getBaseNodeTable() ;
         
-        Transaction txn = new Transaction(null, null, 11, null) ; 
+        Transaction txn = createTxn(11) ; 
         ntt.begin(txn) ;
         // Add a node
         NodeId nodeId = ntt.getAllocateNodeId(node1) ;
@@ -93,13 +100,14 @@ public abstract class AbstractTestNodeTableTrans extends BaseTest
         // Check it is not in the base.
         assertEquals(NodeId.NodeDoesNotExist, nt0.getNodeIdForNode(node1)) ;
         assertNull(nt0.getNodeForNodeId(nodeId)) ;
+        ntt.clearup(txn) ;
     }
     
     @Test public void nodetrans_04()
     {
         NodeTableTrans ntt = create(node1) ;
         NodeTable nt0 = ntt.getBaseNodeTable() ;
-        Transaction txn = new Transaction(null, null, 11, null) ; 
+        Transaction txn = createTxn(11) ; 
         ntt.begin(txn) ;
         // Add a node
         NodeId nodeId = ntt.getAllocateNodeId(node2) ;
@@ -107,8 +115,10 @@ public abstract class AbstractTestNodeTableTrans extends BaseTest
         assertEquals(NodeId.NodeDoesNotExist, nt0.getNodeIdForNode(node2)) ;
         // Is here
         assertEquals(nodeId, ntt.getNodeIdForNode(node2)) ;
-        ntt.commit(txn) ;
+        ntt.commitPrepare(txn) ;
+        ntt.commitEnact(txn) ;
         assertEquals(nodeId, nt0.getNodeIdForNode(node2)) ;
+        ntt.clearup(txn) ;
     }
 
 }

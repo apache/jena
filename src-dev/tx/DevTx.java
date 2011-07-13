@@ -19,15 +19,25 @@ public class DevTx
     //   TripleTable, QuadTable, DatasetPrefixesTDB are just function-adding wrappers.
     //   Then readonly NodeTupleTable.  Remove NodeTableBuilderReadonly
     
+    // ** Remove iterator tracking - too many nested iterator structures to make it reliable.
+    //   All would have to be closeable, including every Iter anon one.  Hard to make reliable.
+    //   Remove from transaction
+    //   ??Remove from BlockMgrJournal and BlockMgr?
+    //   Rely on read/release of blocks.
+    
     // ConcurrencyPolicy -> DatasetControl
     //   .resetControl, remove .setReadMode
+    
+    // ?? Journal for BlockMgrs only.
+    //  System journal is just commits/aborts.
     
     // NodeTable journalling and recovery
     // 3/ general setup
     // Replay ==> JournalCtl.
     // warmReplay, coldReplay 
     // Dataset API
-    // DatasetGraphAPI - everything some kinds of transaction?
+    // DatasetGraphAPI - everything some kinds of transaction?    
+
     // Iterator tracking.
     //   DatasetGraphTDB.find*, prefixes, OpExecutorTDB.OpExecutorPlainTDB=>SolverLib.execute 
     //   OpExecutorTDB.OpExecutorPlainTDB

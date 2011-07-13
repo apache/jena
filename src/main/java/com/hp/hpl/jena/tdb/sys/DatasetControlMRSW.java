@@ -13,6 +13,9 @@ import java.util.Iterator ;
 import java.util.NoSuchElementException ;
 import java.util.concurrent.atomic.AtomicLong ;
 
+import org.openjena.atlas.iterator.Iter ;
+import org.openjena.atlas.lib.Closeable ;
+
 /** A policy that checks, but does not enforce, single writer or multiple writer locking policy */ 
 public class DatasetControlMRSW implements DatasetControl
 {
@@ -69,7 +72,7 @@ public class DatasetControlMRSW implements DatasetControl
     @Override
     public <T> Iterator<T> iteratorControl(Iterator<T> iter) { return new IteratorCheckNotConcurrent<T>(iter, epoch) ; }
     
-    private static class IteratorCheckNotConcurrent<T> implements Iterator<T>
+    private static class IteratorCheckNotConcurrent<T> implements Iterator<T>, Closeable
     {
         private Iterator<T> iter ;
         private AtomicLong eCount ;
@@ -103,7 +106,7 @@ public class DatasetControlMRSW implements DatasetControl
             checkCourrentModification() ;
             boolean b = iter.hasNext() ;
             if ( ! b )
-                finished = true ; 
+                close() ;
             return b ;
         }
 
@@ -112,8 +115,8 @@ public class DatasetControlMRSW implements DatasetControl
         {
             checkCourrentModification() ;
             try { 
-            return iter.next();
-            } catch (NoSuchElementException ex) { finished = true ; throw ex ; }
+                return iter.next();
+            } catch (NoSuchElementException ex) { close() ; throw ex ; }
         }
 
         @Override
@@ -121,6 +124,13 @@ public class DatasetControlMRSW implements DatasetControl
         {
             checkCourrentModification() ;
             iter.remove() ;
+        }
+
+        @Override
+        public void close()
+        {
+            finished = true ;
+            Iter.close(iter) ;
         }
     }
 

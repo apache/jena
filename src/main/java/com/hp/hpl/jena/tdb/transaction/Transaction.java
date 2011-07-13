@@ -11,17 +11,18 @@ import java.util.Collections ;
 import java.util.Iterator ;
 import java.util.List ;
 
-
+import com.hp.hpl.jena.tdb.DatasetGraphTxn ;
 import com.hp.hpl.jena.tdb.ReadWrite ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.sys.FileRef ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
-/** A transaction handle */
+/** A transaction.  Much of the work is done in the transaction manager */
 public class Transaction
 {
     // TODO split internal and external features.
     private final long id ;
+    private final String label ;
     private final TransactionManager txnMgr ;
     private final List<Iterator<?>> iterators ; 
     private Journal journal = null ;
@@ -30,14 +31,23 @@ public class Transaction
     
     private final List<NodeTableTrans> nodeTableTrans = new ArrayList<NodeTableTrans>() ;
     private final List<BlockMgrJournal> blkMgrs = new ArrayList<BlockMgrJournal>() ;
-    private DatasetGraphTDB basedsg ;
+    // The dataset this is a transaction over - may be a commited, pending dataset.
+    private DatasetGraphTDB     basedsg ;
+    private DatasetGraphTxn     activedsg ;
 
-    public Transaction(DatasetGraphTDB basedsg, ReadWrite mode, long id, TransactionManager txnMgr)
+    
+    
+    public Transaction(DatasetGraphTDB dsg, ReadWrite mode, long id, String label, TransactionManager txnMgr)
     {
         this.id = id ;
+        if (label == null )
+            label = "Txn" ;
+        label = label+"["+id+"]" ;
+        this.label = label ;
         this.txnMgr = txnMgr ;
-        this.basedsg = basedsg ;
+        this.basedsg = dsg ;
         this.mode = mode ;
+        activedsg = null ;      // Don't know yet.
         this.iterators = new ArrayList<Iterator<?>>() ;
         state = TxnState.ACTIVE ;
     }
@@ -45,12 +55,12 @@ public class Transaction
     synchronized
     public void commit()
     {
+        // Do prepare, write the COMMIT record.
+        // Enacting is left to the TransactionManager.
         if ( mode == ReadWrite.WRITE )
         {
             if ( state != TxnState.ACTIVE )
                 throw new TDBTransactionException("Transaction has already committed or aborted") ; 
-
-            prepare() ;
 
             JournalEntry entry = new JournalEntry(JournalEntryType.Commit, FileRef.Journal, null) ;
             journal.writeJournal(entry) ;
@@ -71,9 +81,9 @@ public class Transaction
         state = TxnState.PREPARING ;
         
         for ( BlockMgrJournal x : blkMgrs )
-            x.commit(this) ;
+            x.commitPrepare(this) ;
         for ( NodeTableTrans x : nodeTableTrans )
-            x.commit(this) ;
+            x.commitPrepare(this) ;
     }
 
     /** For testing - do things but do not write the commit record */
@@ -94,14 +104,14 @@ public class Transaction
         if ( state != TxnState.ACTIVE )
             throw new TDBTransactionException("Transaction has already committed or aborted") ; 
         
-        journal.truncate(0) ;
-
         // Clearup.
         for ( BlockMgrJournal x : blkMgrs )
             x.abort(this) ;
         
         for ( NodeTableTrans x : nodeTableTrans )
             x.abort(this) ;
+        journal.truncate(0) ;
+
         state = TxnState.ABORTED ;
         txnMgr.notifyAbort(this) ;
     }
@@ -120,7 +130,7 @@ public class Transaction
                     commit() ;
                 else
                 {
-                    SystemTDB.errlog.warn("Transaction not commited or aborted") ;
+                    SystemTDB.errlog.warn("Transaction not commited or aborted: "+this) ;
                     abort() ;
                 }
                 break ;
@@ -129,13 +139,43 @@ public class Transaction
         
         state = TxnState.CLOSED ;
         txnMgr.notifyClose(this) ;
+        
+        // Imperfect : too many higher level iterators build on unclosables
+        // (e.g. anoniterators in Iter) 
+        // so close does not get passed to the base.   
+//        for ( Iterator<?> iter : iterators )
+//            Log.info(this, "Active iterator: "+iter) ;
+        
+        // Clear per-transaction temnporary state. 
+        iterators.clear() ;
     }
     
     public ReadWrite getMode()                      { return mode ; }
     public TxnState getState()                         { return state ; }
-    public long getTxnId()                          { return id ; }
-    public TransactionManager getTxnMgr()           { return txnMgr ; }
     
+    List<NodeTableTrans> getNodeTableTrans()
+    {
+        return nodeTableTrans ;
+    }
+
+    List<BlockMgrJournal> getBlkMgrs()
+    {
+        return blkMgrs ;
+    }
+
+    public long getTxnId()                          { return id ; }
+    TransactionManager getTxnMgr()                  { return txnMgr ; }
+    
+    public DatasetGraphTxn getActiveDataset()
+    {
+        return activedsg ;
+    }
+
+    public void setActiveDataset(DatasetGraphTxn activedsg)
+    {
+        this.activedsg = activedsg ;
+    }
+
     public void addIterator(Iterator<?> iter)       { iterators.add(iter) ; }
     public void removeIterator(Iterator<?> iter)    { iterators.remove(iter) ; }
     public List<Iterator<?>> iterators()            { return Collections.unmodifiableList(iterators) ; }
@@ -175,6 +215,11 @@ public class Transaction
     public String toString()
     {
         return "Transaction: "+id+" : Mode="+mode+" : State="+state+" : "+basedsg.getLocation().getDirectoryPath() ;
+    }
+    
+    public String getLabel()
+    {
+        return label ;
     }
 }
 

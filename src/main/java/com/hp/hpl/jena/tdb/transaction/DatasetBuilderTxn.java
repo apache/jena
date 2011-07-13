@@ -36,11 +36,13 @@ import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 public class DatasetBuilderTxn
 {
+    // Context for the build.
     private TransactionManager txnMgr ;
-    Map<FileRef, BlockMgr> blockMgrs ; 
-    Map<FileRef, NodeTable> nodeTables ;
-    Journal journal ;
-    Transaction txn ;
+    private Map<FileRef, BlockMgr> blockMgrs ; 
+    private Map<FileRef, NodeTable> nodeTables ;
+    private Journal journal ;
+    private Transaction txn ;
+    private DatasetGraphTDB dsg ;
 
     public DatasetBuilderTxn(TransactionManager txnMgr) { this.txnMgr = txnMgr ; }
     
@@ -49,16 +51,17 @@ public class DatasetBuilderTxn
         this.blockMgrs = dsg.getConfig().blockMgrs ;
         this.nodeTables = dsg.getConfig().nodeTables ;
         this.txn = transaction ;
+        this.dsg = dsg ;
             
         switch(mode)
         {
-            case READ : return buildReadonly(transaction, dsg) ;
-            case WRITE : return buildWritable(transaction, dsg) ;
+            case READ : return buildReadonly() ;
+            case WRITE : return buildWritable() ;
             default: return null ;  // Silly Java.
         }
     }
     
-    private DatasetGraphTxn buildReadonly(Transaction transaction, DatasetGraphTDB dsg)
+    private DatasetGraphTxn buildReadonly()
     {
         BlockMgrBuilder blockMgrBuilder = new BlockMgrBuilderReadonly() ;
         NodeTableBuilder nodeTableBuilder = new NodeTableBuilderReadonly() ;
@@ -67,7 +70,7 @@ public class DatasetBuilderTxn
         return new DatasetGraphTxn(dsg2, txn) ;
     }
 
-    private DatasetGraphTDB buildWritable(Transaction transaction, DatasetGraphTDB dsg)
+    private DatasetGraphTDB buildWritable()
     {
         BufferChannel chan ;
         if ( dsg.getLocation().isMem() )

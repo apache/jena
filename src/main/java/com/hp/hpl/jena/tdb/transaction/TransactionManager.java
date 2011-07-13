@@ -20,16 +20,15 @@ import java.util.concurrent.LinkedBlockingDeque ;
 import org.openjena.atlas.logging.Log ;
 import org.slf4j.Logger ;
 
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.tdb.DatasetGraphTxn ;
 import com.hp.hpl.jena.tdb.ReadWrite ;
-import com.hp.hpl.jena.tdb.TDBException ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 public class TransactionManager
 {
     // TODO Don't keep counter, keep lists.
+    // TODO Useful logging.
     
     private static Logger log = SystemTDB.syslog ;
     
@@ -37,20 +36,31 @@ public class TransactionManager
     
     // Transactions that have commit (and the journal is written) but haven't
     // writted back to the main database. 
+    
     private List<Transaction> commitedAwaitingFlush = new ArrayList<Transaction>() ;    
+    
     static long transactionId = 1 ;
     
     private int readers = 0 ; 
-    private int writers = 0 ;       // 0 or 1 
-    private int committed = 0 ;
+    private int writers = 0 ;       // 0 or 1
+    
+    // Misc stats
+    private int finishedReads = 0 ;
+    private int committedWrite = 0 ;
+    private int abortedWrite = 0 ;
 
     private BlockingQueue<Transaction> queue = new LinkedBlockingDeque<Transaction>() ;
 
     private Thread committerThread ;
+
+    private DatasetGraphTDB baseDataset ;
     
     
-    public TransactionManager()
-    { 
+    public TransactionManager(DatasetGraphTDB dsg)
+    {
+//        if ( ! ( dsg instanceof DatasetGraphTDB ) )
+//            throw new TDBException("Not a TDB-backed dataset") ;
+        this.baseDataset = dsg ; 
         // LATER
 //        Committer c = new Committer() ;
 //        this.committerThread = new Thread(c) ;
@@ -58,31 +68,28 @@ public class TransactionManager
 //        committerThread.start() ;
     }
     
-    private Transaction createTransaction(DatasetGraphTDB dsg, ReadWrite mode)
+    private Transaction createTransaction(DatasetGraphTDB dsg, ReadWrite mode, String label)
     {
-        Transaction txn = new Transaction(dsg, mode, transactionId++, this) ;
+        Transaction txn = new Transaction(dsg, mode, transactionId++, label, this) ;
         return txn ;
+    }
+
+    public DatasetGraphTxn begin(ReadWrite mode)
+    {
+        return begin(mode, null) ;
     }
     
     synchronized
-    public DatasetGraphTxn begin(DatasetGraph dsg, ReadWrite mode)
+    public DatasetGraphTxn begin(ReadWrite mode, String label)
     {
-        if ( log.isDebugEnabled() )
-            log.debug(format("begin: R={} / W={} / #={}", readers, writers,activeTransactions.size())) ;
-        
-        // If already a transaction ... 
-        // Subs transactions are a new view - commit is only commit to parent transaction.  
-        if ( dsg instanceof DatasetGraphTxn )
-        {
-            throw new TDBException("Already in transactional DatasetGraph") ;
-            // Either:
-            //   error -> implies nested
-            //   create new transaction 
-        }
-        
-        if ( ! ( dsg instanceof DatasetGraphTDB ) )
-            throw new TDBException("Not a TDB-backed dataset") ;
-
+//        // Subs transactions are a new view - commit is only commit to parent transaction.  
+//        if ( dsg instanceof DatasetGraphTxn )
+//        {
+//            throw new TDBException("Already in transactional DatasetGraph") ;
+//            // Either:
+//            //   error -> implies nested
+//            //   create new transaction 
+//        }
         switch (mode)
         {
             case READ : readers++ ; break ;
@@ -93,15 +100,18 @@ public class TransactionManager
                 break ;
         }
         
-        DatasetGraphTDB dsgtdb = (DatasetGraphTDB)dsg ;
-        // THIS IS NECESSARY BECAUSE THE DATASET MAY HAVE BEEN UPDATED AND CHANGES STILL IN CACHES.
-        // MUST WRITE OUT - BUT ALSO REUSE CACHES.
-        dsgtdb.sync() ; 
+        DatasetGraphTDB dsg = baseDataset ;
+        // *** But, if there are pending, committed transactions, use one.
+        if ( ! commitedAwaitingFlush.isEmpty() )
+            dsg = commitedAwaitingFlush.get(commitedAwaitingFlush.size()-1).getActiveDataset() ;
         
-        Transaction txn = createTransaction(dsgtdb, mode) ;
         
-        DatasetGraphTxn dsgTxn = (DatasetGraphTxn)new DatasetBuilderTxn(this).build(txn, mode, dsgtdb) ;
+        Transaction txn = createTransaction(dsg, mode, label) ;
+        DatasetGraphTxn dsgTxn = (DatasetGraphTxn)new DatasetBuilderTxn(this).build(txn, mode, dsg) ;
+        txn.setActiveDataset(dsgTxn) ;
         Iterator<Transactional> iter = dsgTxn.getTransaction().components() ;
+        
+        // Notify everyone we're starting.
         for ( ; iter.hasNext() ; )
             iter.next().begin(dsgTxn.getTransaction()) ;
 
@@ -117,8 +127,11 @@ public class TransactionManager
         if ( log.isDebugEnabled() )
             log.debug("commit: "+transaction) ;
 
+        // Transaction has done the commitPrepare - can we enact it?
+        
         if ( ! activeTransactions.contains(transaction) )
             SystemTDB.errlog.warn("Transaction not active: "+transaction.getTxnId()) ;
+        
         endTransaction(transaction) ;
         
         if ( readers == 0 && transaction.getMode() == ReadWrite.WRITE )
@@ -133,11 +146,32 @@ public class TransactionManager
         }
     }
 
+    private void commitTransaction(Transaction transaction)
+    {
+        // Really, really do it!
+        for ( BlockMgrJournal x : transaction.getBlkMgrs() )
+        {
+            x.commitEnact(transaction) ;
+            x.clearup(transaction) ;
+        }
+        
+        for ( NodeTableTrans x : transaction.getNodeTableTrans() )
+        {
+            x.commitEnact(transaction) ;
+            x.clearup(transaction) ;
+        }
+        
+        // This cleans up as well.
+        JournalControl.replay(transaction.getJournal(), transaction.getBaseDataset()) ;
+    }
+    
     synchronized
     public void notifyAbort(Transaction transaction)
     {    
+        // Transaction has done the abort on all the transactional elements.
+        // TODO Suppose the system journal has  
         if ( log.isDebugEnabled() )
-            log.info("notifyAbort: "+transaction) ;
+            log.info("abort: "+transaction) ;
         if ( ! activeTransactions.contains(transaction) )
             SystemTDB.errlog.warn("Transaction not active: "+transaction.getTxnId()) ;
         endTransaction(transaction) ;
@@ -156,6 +190,7 @@ public class TransactionManager
             txn.abort() ;
         }
 
+        // Process any pending commits held up due to a reader. 
         if ( readers == 0 && writers == 0 ) 
         {
             // Given this is sync'ed to the TransactionManager, 
@@ -185,17 +220,11 @@ public class TransactionManager
     
     private void endTransaction(Transaction transaction)
     {
-        if ( log.isDebugEnabled() )
-            log.debug("endTransaction: "+transaction) ;
-        
         if ( transaction.getMode() == READ )
             readers-- ;
         else
             writers-- ;
         activeTransactions.remove(transaction) ;
-        
-        if ( log.isDebugEnabled() )
-            log.debug(format("endTransaction: R=%d / W=%d / #=%d\n", readers, writers,activeTransactions.size())) ;
         
     }
 

@@ -125,7 +125,10 @@ class RecordRangeIterator implements Iterator<Record>, Closeable
         }
         
         if ( slot == null )
+        {
+            close() ;
             return false ;
+        }
         countRecords++ ;
         return true ;
     }
