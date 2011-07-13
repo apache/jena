@@ -64,6 +64,14 @@ public class StoreConnection
 
     private static Map<Location, StoreConnection> cache = new HashMap<Location, StoreConnection>() ;
     
+    public static void reset() 
+    {
+        for ( Map.Entry<Location, StoreConnection> e : cache.entrySet() )
+            e.getValue().baseDSG.close() ;
+        
+        cache.clear() ;
+    }
+    
     public static StoreConnection make(Location location)
     {
         TDBMaker.releaseLocation(location) ;

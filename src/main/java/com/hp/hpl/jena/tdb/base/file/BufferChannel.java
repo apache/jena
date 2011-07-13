@@ -45,7 +45,7 @@ public interface BufferChannel extends Sync, Closeable
     /** set the position */
     public void position(long pos) ;
 
-    /** Read into a ByteBuffer. Returns the number of bytes read.
+    /** Read into a ByteBuffer. Returns the number of bytes read. -1 for end of file.
      */
     public int read(ByteBuffer buffer) ;
     

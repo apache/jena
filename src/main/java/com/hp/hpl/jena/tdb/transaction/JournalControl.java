@@ -134,7 +134,16 @@ public class JournalControl
             FileOps.delete(objFilename) ;
     }
     
-    public static void replay(Journal journal, DatasetGraphTDB dsg)
+    public static void replay(Transaction transaction)
+    {
+        Journal journal = transaction.getJournal() ;
+        DatasetGraphTDB dsg = transaction.getBaseDataset() ;
+        replay(journal, dsg) ;
+//        Iterator<Transactional> iter = transaction.components() ;
+//        xxxxxxxxxxxxxxxx
+    }
+    
+    private static void replay(Journal journal, DatasetGraphTDB dsg)
     {
         journal.position(0) ;
         dsg.getLock().enterCriticalSection(Lock.WRITE) ;

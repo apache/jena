@@ -9,6 +9,7 @@ package tx;
 import org.openjena.atlas.lib.Bytes ;
 import org.openjena.atlas.lib.FileOps ;
 import org.openjena.atlas.logging.Log ;
+import org.openjena.riot.RiotWriter ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.query.DatasetFactory ;
@@ -20,6 +21,7 @@ import com.hp.hpl.jena.query.Syntax ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.sparql.util.QueryExecUtils ;
 import com.hp.hpl.jena.tdb.DatasetGraphTxn ;
 import com.hp.hpl.jena.tdb.ReadWrite ;
@@ -58,34 +60,83 @@ public class TxMain
         initFS() ;
         StoreConnection sConn = StoreConnection.make(DBdir) ;
         
+        // ---- Simple
+        if ( false )
+        {
+            DatasetGraphTxn dsg = sConn.begin(ReadWrite.WRITE) ;
+            //load("D.ttl", dsg) ;    // Loads 3 triples
+            dsg.getDefaultGraph().add(SSE.parseTriple("(<s> <p> <o>)")) ;
+            dsg.add(SSE.parseQuad("(<g> <s> <p> 123)")) ;
+            dsg.add(SSE.parseQuad("(_ <s> <p> 123)")) ;
+            
+            dsg.commit() ;
+            dsg.close() ;
+            DatasetGraphTxn dsgRead = sConn.begin(ReadWrite.READ) ;
+            dump(dsgRead) ;
+            query("SELECT ?g (count(*) AS ?C) { { ?s ?p ?o } UNION { GRAPH ?g { ?s ?p ?o } } } GROUP BY ?g", dsgRead) ;
+            dsgRead.close() ;
+            exit(0) ;
+        }
+        
+        if ( false )
+        {
+            // Blocking transaction
+            DatasetGraphTxn dsgRead = sConn.begin(ReadWrite.READ) ;
+            
+            
+            DatasetGraphTxn dsg = sConn.begin(ReadWrite.WRITE) ; // Optional label.
+            //load("D.ttl", dsg) ;    // Loads 3 triples
+            dsg.getDefaultGraph().add(SSE.parseTriple("(<s> <p> <o>)")) ;
+            dsg.add(SSE.parseQuad("(<g> <s> <p> 123)")) ;
+            dsg.add(SSE.parseQuad("(_ <s> <p> 123)")) ;
+            dsg.commit() ;
+            dsg.close() ;
+            
+            dump(dsgRead) ;
+            query("SELECT ?g (count(*) AS ?C) { { ?s ?p ?o } UNION { GRAPH ?g { ?s ?p ?o } } } GROUP BY ?g", dsgRead) ;
+            dsgRead.close() ;
+            DatasetGraphTxn dsgRead2  = sConn.begin(ReadWrite.READ) ;
+            query("SELECT ?g (count(*) AS ?C) { { ?s ?p ?o } UNION { GRAPH ?g { ?s ?p ?o } } } GROUP BY ?g", dsgRead2) ;
+            dsgRead2.close() ;
+            exit(0) ;
+        }
+        
+        // BUG somewhere.
+        //   Check DevTx list of things to do.
         // Take a blocking read connection.
-        DatasetGraphTxn dsgRead = sConn.begin(ReadWrite.READ) ; // Optional label.
+        DatasetGraphTxn dsgRead = sConn.begin(ReadWrite.READ) ; //dsgRead.close() ;
 
         DatasetGraphTxn dsg = sConn.begin(ReadWrite.WRITE) ;
         load("D.ttl", dsg) ;    // Loads 3 triples
-        query("SELECT (count(*) AS ?C) { ?s ?p ?o }", dsg) ;
-
-        dsg.commit() ;
-        dsg.close() ;
-        
-        
-        // Reader still open.
-        // At this point, there is a blocking  
-        
-        dsg = sConn.begin(ReadWrite.WRITE) ;
-        load("D1.ttl", dsg) ; // Loads 1 triples
-        
-        query("SELECT (count(*) AS ?C) { ?s ?p ?o }", dsg) ;
         query("SELECT (count(*) AS ?C) { ?s ?p ?o }", dsgRead) ;
-        
-        
+        query("SELECT (count(*) AS ?C) { ?s ?p ?o }", dsg) ;
         dsg.commit() ;
         dsg.close() ;
-
-        DatasetGraphTxn dsgRead2 = sConn.begin(ReadWrite.READ) ;
-        query("SELECT (count(*) AS ?C) { ?s ?p ?o }", dsgRead2) ;
-        dsgRead2.close() ;
+        dsg = null ;
         
+        // Reader after update.
+        // First reader still reading.
+        
+        //DatasetGraphTxn dsgRead2 = sConn.begin(ReadWrite.READ) ;
+        //query("SELECT (count(*) AS ?C) { ?s ?p ?o }", dsgRead2) ;
+        query("SELECT (count(*) AS ?C) { ?s ?p ?o }", dsgRead) ;
+
+        // A writer.
+        DatasetGraphTxn dsg2 = sConn.begin(ReadWrite.WRITE) ;
+        load("D1.ttl", dsg2) ; // Loads 1 triples
+        query("SELECT (count(*) AS ?C) { ?s ?p ?o }", dsg2) ;
+        //query("SELECT (count(*) AS ?C) { ?s ?p ?o }", dsgRead2) ;
+        query("SELECT (count(*) AS ?C) { ?s ?p ?o }", dsgRead) ;
+        dsg2.commit() ;
+        dsg2.close() ;
+        dsg2 = null ;
+
+        //dsgRead2.close() ;
+
+//        DatasetGraphTxn dsgRead2 = sConn.begin(ReadWrite.READ) ;
+//        query("SELECT (count(*) AS ?C) { ?s ?p ?o }", dsgRead2) ;
+//        dsgRead2.close() ;
+
         dsgRead.close() ;   // Transaction can now write changes to the real DB.
         
         // ILLEGAL!!!!
@@ -117,6 +168,11 @@ public class TxMain
         return dsg ;
     }
 
+    public static void dump(DatasetGraphTxn dsg)
+    {
+        RiotWriter.writeNQuads(System.out, dsg) ;
+    }
+    
     public static void query(String queryStr, DatasetGraphTxn dsg)
     {
         String x = "Query ("+dsg.getTransaction().getLabel()+")" ;

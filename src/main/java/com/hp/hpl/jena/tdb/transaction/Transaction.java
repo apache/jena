@@ -43,6 +43,12 @@ public class Transaction
         if (label == null )
             label = "Txn" ;
         label = label+"["+id+"]" ;
+        switch(mode)
+        {
+            case READ : label = label+"/R" ; break ;
+            case WRITE : label = label+"/W" ; break ;
+        }
+        
         this.label = label ;
         this.txnMgr = txnMgr ;
         this.basedsg = dsg ;
@@ -61,7 +67,7 @@ public class Transaction
         {
             if ( state != TxnState.ACTIVE )
                 throw new TDBTransactionException("Transaction has already committed or aborted") ; 
-
+            prepare() ;
             JournalEntry entry = new JournalEntry(JournalEntryType.Commit, FileRef.Journal, null) ;
             journal.writeJournal(entry) ;
             journal.sync() ;        // Commit point.
@@ -73,13 +79,7 @@ public class Transaction
     
     private void prepare()
     {
-        if ( mode == ReadWrite.READ )
-            return ;
-        
-        if ( state != TxnState.ACTIVE )
-            throw new TDBTransactionException("Transaction has already committed or aborted") ; 
         state = TxnState.PREPARING ;
-        
         for ( BlockMgrJournal x : blkMgrs )
             x.commitPrepare(this) ;
         for ( NodeTableTrans x : nodeTableTrans )
@@ -110,6 +110,7 @@ public class Transaction
         
         for ( NodeTableTrans x : nodeTableTrans )
             x.abort(this) ;
+        // [TxTDB:TODO] : No - truncates a pending transaction.
         journal.truncate(0) ;
 
         state = TxnState.ABORTED ;
@@ -125,6 +126,7 @@ public class Transaction
     {
         switch(state)
         {
+            case CLOSED:    return ;    // Can call close() repeatedly.
             case ACTIVE:
                 if ( mode == ReadWrite.READ )
                     commit() ;
@@ -151,18 +153,8 @@ public class Transaction
     }
     
     public ReadWrite getMode()                      { return mode ; }
-    public TxnState getState()                         { return state ; }
+    public TxnState getState()                      { return state ; }
     
-    List<NodeTableTrans> getNodeTableTrans()
-    {
-        return nodeTableTrans ;
-    }
-
-    List<BlockMgrJournal> getBlkMgrs()
-    {
-        return blkMgrs ;
-    }
-
     public long getTxnId()                          { return id ; }
     TransactionManager getTxnMgr()                  { return txnMgr ; }
     

@@ -135,7 +135,13 @@ class Journal implements Iterable<JournalEntry>, Sync, Closeable
         // UGLY Maybe better to leave some space in the block's byte buffer.
         // [TxTDB:TODO] Make robust against partial read.
         header.clear() ;
-        channel.read(header) ;
+        int lenRead = channel.read(header) ;
+        if ( lenRead == -1 )
+        {
+            // probably broken file.
+            throw new TDBTransactionException("Read off the end of a journal file") ;
+            //return null ;
+        }
         header.rewind() ;
         int typeId  = header.getInt() ; 
         int len     = header.getInt() ;

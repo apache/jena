@@ -7,6 +7,7 @@
 package com.hp.hpl.jena.tdb.transaction;
 
 import static com.hp.hpl.jena.tdb.ReadWrite.READ ;
+import static com.hp.hpl.jena.tdb.sys.SystemTDB.syslog ;
 import static java.lang.String.format ;
 
 import java.util.ArrayList ;
@@ -19,6 +20,7 @@ import java.util.concurrent.LinkedBlockingDeque ;
 
 import org.openjena.atlas.logging.Log ;
 import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.tdb.DatasetGraphTxn ;
 import com.hp.hpl.jena.tdb.ReadWrite ;
@@ -30,7 +32,7 @@ public class TransactionManager
     // TODO Don't keep counter, keep lists.
     // TODO Useful logging.
     
-    private static Logger log = SystemTDB.syslog ;
+    private static Logger log = LoggerFactory.getLogger(TransactionManager.class) ;
     
     private Set<Transaction> activeTransactions = new HashSet<Transaction>() ;
     
@@ -105,7 +107,6 @@ public class TransactionManager
         if ( ! commitedAwaitingFlush.isEmpty() )
             dsg = commitedAwaitingFlush.get(commitedAwaitingFlush.size()-1).getActiveDataset() ;
         
-        
         Transaction txn = createTransaction(dsg, mode, label) ;
         DatasetGraphTxn dsgTxn = (DatasetGraphTxn)new DatasetBuilderTxn(this).build(txn, mode, dsg) ;
         txn.setActiveDataset(dsgTxn) ;
@@ -116,16 +117,14 @@ public class TransactionManager
             iter.next().begin(dsgTxn.getTransaction()) ;
 
         activeTransactions.add(txn) ;
-        if ( log.isDebugEnabled() )
-            log.debug("begin: "+txn) ;
+        log("begin",txn) ;
         return dsgTxn ;
     }
 
     synchronized
     public void notifyCommit(Transaction transaction)
     {
-        if ( log.isDebugEnabled() )
-            log.debug("commit: "+transaction) ;
+        log("commit", transaction) ;
 
         // Transaction has done the commitPrepare - can we enact it?
         
@@ -134,44 +133,44 @@ public class TransactionManager
         
         endTransaction(transaction) ;
         
-        if ( readers == 0 && transaction.getMode() == ReadWrite.WRITE )
-            // New readers blocked from starting by the synchronized here and on begin. 
-            JournalControl.replay(transaction.getJournal(), transaction.getBaseDataset()) ;
-        else
+        if ( transaction.getMode() == ReadWrite.WRITE )
         {
-            commitedAwaitingFlush.add(transaction) ;
-            if ( log.isDebugEnabled() )
-                log.info("Commit blocked at the moment") ;
-            queue.add(transaction) ;
+            if ( readers == 0 )
+                // Can commit imemdiately.
+                commitTransaction(transaction) ;
+            else
+            {
+                // Can't make permentent at the moment.
+                commitedAwaitingFlush.add(transaction) ;
+                log.debug("Commit pending: "+transaction.getLabel()); 
+
+                //if ( log.isDebugEnabled() )
+                //    log.debug("Commit blocked at the moment") ;
+                queue.add(transaction) ;
+            }
         }
     }
 
     private void commitTransaction(Transaction transaction)
     {
         // Really, really do it!
-        for ( BlockMgrJournal x : transaction.getBlkMgrs() )
+        Iterator<Transactional> iter = transaction.components() ;
+        for ( ; iter.hasNext() ; )
         {
+            Transactional x = iter.next() ;
             x.commitEnact(transaction) ;
             x.clearup(transaction) ;
         }
-        
-        for ( NodeTableTrans x : transaction.getNodeTableTrans() )
-        {
-            x.commitEnact(transaction) ;
-            x.clearup(transaction) ;
-        }
-        
         // This cleans up as well.
-        JournalControl.replay(transaction.getJournal(), transaction.getBaseDataset()) ;
+        JournalControl.replay(transaction) ;
     }
     
     synchronized
     public void notifyAbort(Transaction transaction)
-    {    
+    {
+        log("abort", transaction) ;
         // Transaction has done the abort on all the transactional elements.
         // TODO Suppose the system journal has  
-        if ( log.isDebugEnabled() )
-            log.info("abort: "+transaction) ;
         if ( ! activeTransactions.contains(transaction) )
             SystemTDB.errlog.warn("Transaction not active: "+transaction.getTxnId()) ;
         endTransaction(transaction) ;
@@ -180,13 +179,12 @@ public class TransactionManager
     synchronized
     public void notifyClose(Transaction txn)
     {
-        if ( log.isDebugEnabled() )
-            log.debug("notifyClose: "+txn) ;
+        log("close", txn) ;
         
         if ( txn.getState() == TxnState.ACTIVE )
         {
             String x = txn.getBaseDataset().getLocation().getDirectoryPath() ;
-            SystemTDB.syslog.warn("close: Transaction not commited or aborted: Transaction: "+txn.getTxnId()+" @ "+x) ;
+            syslog.warn("close: Transaction not commited or aborted: Transaction: "+txn.getTxnId()+" @ "+x) ;
             txn.abort() ;
         }
 
@@ -202,10 +200,9 @@ public class TransactionManager
                     Transaction txn2 = queue.take() ;
                     if ( txn2.getMode() == READ )
                         continue ;
-                    log.info("Delayed commit") ;
+                    log("Delayed commit", txn2) ;
                     // This takes a Write lock on the  DSG - this is where it blocks.
-                    JournalControl.replay(txn2.getJournal(), txn2.getBaseDataset()) ;
-                    log.info("Delayed commit succeeded") ;
+                    JournalControl.replay(txn2) ;
                     commitedAwaitingFlush.remove(txn) ;
                 } catch (InterruptedException ex)
                 { Log.fatal(this, "Interruped!", ex) ; }
@@ -213,8 +210,7 @@ public class TransactionManager
         }
         else
         {
-            if ( log.isDebugEnabled() )
-                log.debug(format("Pending transactions: R=%d / W=%d", readers, writers)) ;
+            if ( log() ) log(format("Pending transactions: R=%d / W=%d", readers, writers), txn) ;
         }
     }
     
@@ -226,6 +222,21 @@ public class TransactionManager
             writers-- ;
         activeTransactions.remove(transaction) ;
         
+    }
+    
+    private boolean log()
+    {
+        return syslog.isDebugEnabled() || log.isDebugEnabled() ;
+    }
+    
+    private void log(String msg, Transaction txn)
+    {
+        if ( ! log() )
+            return ;
+        if ( syslog.isDebugEnabled() )
+            syslog.debug(txn.getLabel()+": "+msg) ;
+        else
+            log.debug(txn.getLabel()+": "+msg) ;
     }
 
     // LATER.
@@ -244,7 +255,7 @@ public class TransactionManager
                     Transaction txn = queue.take() ;
                     System.out.println("Async commit") ;
                     // This takes a Write lock on the  DSG - this is where it blocks.
-                    JournalControl.replay(txn.getJournal(), txn.getBaseDataset()) ;
+                    JournalControl.replay(txn) ;
                     System.out.println("Async commit succeeded") ;
                     synchronized(TransactionManager.this)
                     {
