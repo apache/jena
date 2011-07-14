@@ -20,6 +20,7 @@ package tx;
 
 
 import com.hp.hpl.jena.query.Dataset ;
+import com.hp.hpl.jena.query.DatasetFactory ;
 import com.hp.hpl.jena.query.QueryExecution ;
 import com.hp.hpl.jena.query.QueryExecutionFactory ;
 import com.hp.hpl.jena.query.ResultSet ;
@@ -57,15 +58,15 @@ public class ExTxTDB
     {
         DatasetGraphTxn dsg = sConn.begin(ReadWrite.READ) ;
         try {
-            // SPARQL
-            QueryExecution qExec = QueryExecutionFactory.create("SELECT * { ?s ?p ?o} LIMIT 10", /*dsg*/(Dataset)null) ;
+            Dataset ds = DatasetFactory.create(dsg) ;
+            QueryExecution qExec = QueryExecutionFactory.create("SELECT * { ?s ?p ?o} LIMIT 10", ds) ;
             ResultSet rs = qExec.execSelect() ;
             try {
                 ResultSetFormatter.out(rs) ;
             } finally { qExec.close() ; }
 
-            // Another query.
-            qExec = QueryExecutionFactory.create("SELECT * { ?s ?p ?o} OFFSET 10 LIMIT 10", /*dsg*/(Dataset)null) ;
+            // Another query - same view of the data.
+            qExec = QueryExecutionFactory.create("SELECT * { ?s ?p ?o} OFFSET 10 LIMIT 10", ds) ;
             rs = qExec.execSelect() ;
             try {
                 ResultSetFormatter.out(rs) ;
@@ -78,21 +79,13 @@ public class ExTxTDB
     {
         DatasetGraphTxn dsg = sConn.begin(ReadWrite.WRITE) ;
         try {
-            // Update
-            dsg.commit() ;
-        } finally { dsg.close() ; } // WARNING if no commit or abort.
-        
-        // Alt: .beginQuery / .beginUpdate (isa Graphstore)
-        
-        dsg = sConn.begin(ReadWrite.WRITE) ;
-        try {
             // Query
             QueryExecution qExec = QueryExecutionFactory.create("SELECT * { ?s ?p ?o} LIMIT 10", /*dsg*/(Dataset)null) ;
             ResultSet rs = qExec.execSelect() ;
             try {
                 ResultSetFormatter.out(rs) ;
             } finally { qExec.close() ; }
-            
+
             // Update
             UpdateRequest request = UpdateFactory.create("PREFIX : <http://example/> INSERT DATA { :s :p :o}") ;
             UpdateProcessor proc = UpdateExecutionFactory.create(request, dsg) ;

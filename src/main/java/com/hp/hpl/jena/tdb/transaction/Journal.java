@@ -7,14 +7,16 @@
 package com.hp.hpl.jena.tdb.transaction;
 
 import static com.hp.hpl.jena.tdb.sys.SystemTDB.SizeOfInt ;
-import static com.hp.hpl.jena.tdb.transaction.JournalEntryType.* ;
+import static com.hp.hpl.jena.tdb.transaction.JournalEntryType.Block ;
+
 import java.nio.ByteBuffer ;
 import java.util.Iterator ;
 
 import org.openjena.atlas.iterator.IteratorSlotted ;
 import org.openjena.atlas.lib.Closeable ;
 import org.openjena.atlas.lib.Sync ;
-
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.tdb.base.block.Block ;
 import com.hp.hpl.jena.tdb.base.file.BufferChannel ;
@@ -28,6 +30,8 @@ import com.hp.hpl.jena.tdb.sys.FileRef ;
 public final
 class Journal implements Iterable<JournalEntry>, Sync, Closeable
 {
+    private static Logger log = LoggerFactory.getLogger(Journal.class) ;
+    
     // Version 1 : issue might be excessive copying
     // [TxTDB:TODO] Caching
     
@@ -80,6 +84,8 @@ class Journal implements Iterable<JournalEntry>, Sync, Closeable
     synchronized
     private long _write(JournalEntryType type, FileRef fileRef, ByteBuffer buffer, Block block)
     {
+        log.info(type+","+fileRef+", "+buffer+", "+block) ;
+        
         if ( buffer != null && block != null )
             throw new TDBTransactionException("Buffer and block to write") ;
         if ( block != null )

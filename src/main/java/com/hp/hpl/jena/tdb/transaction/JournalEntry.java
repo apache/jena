@@ -54,6 +54,31 @@ public class JournalEntry
     public ByteBuffer getByteBuffer()       { return byteBuffer ; }
     public Block getBlock()                 { return block ; }
     public FileRef getFileRef()             { return fileRef ; }
+    
+    @Override
+    public String toString()
+    {
+        return "JournalEntry: "+type+" "+fileRef ;
+    }
+    
+    static public String format(JournalEntry entry)
+    {
+        return format(entry.getType(), entry.getByteBuffer(), entry.getBlock(), entry.getFileRef()) ;
+    }
+
+    static public String format(JournalEntryType type, ByteBuffer byteBuffer, Block block, FileRef fileRef)
+    {
+        StringBuilder sbuff = new StringBuilder() ;
+        
+        sbuff.append("Entry: \n") ;
+        if ( byteBuffer != null )
+            sbuff.append("  "+byteBuffer) ;
+        if ( block != null )
+            sbuff.append("  "+block) ;
+        sbuff.append("  "+fileRef) ;
+        sbuff.append("  "+type) ;
+        return sbuff.toString() ;
+    }
 }
 
 /*

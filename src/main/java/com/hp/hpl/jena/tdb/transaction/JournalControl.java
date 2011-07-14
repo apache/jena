@@ -11,9 +11,12 @@ import static com.hp.hpl.jena.tdb.sys.SystemTDB.syslog ;
 
 import java.io.File ;
 import java.nio.ByteBuffer ;
+import java.util.Iterator ;
 import java.util.Map ;
 
 import org.openjena.atlas.lib.FileOps ;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.shared.Lock ;
 import com.hp.hpl.jena.tdb.DatasetGraphTxn ;
@@ -37,17 +40,13 @@ public class JournalControl
 
     public static void print(Journal journal)
     {
+        System.out.println("Posn: "+journal.channel.size()) ;
+        
         for ( JournalEntry e : journal )
         {
-            System.out.println("Entry: ") ;
-            ByteBuffer bb = e.getByteBuffer() ;
-            Block blk = e.getBlock() ;
-            if ( bb != null )
-                System.out.println("  "+bb) ;
-            if ( blk != null )
-                System.out.println("  "+blk) ;
-            System.out.println("  "+e.getFileRef()) ;
-            System.out.println("  "+e.getType()) ;
+            System.out.println(JournalEntry.format(e)) ;
+            System.out.println("Posn: "+journal.channel.position()+" : ("+(journal.channel.size()-journal.channel.position())+")") ;
+            
         }
     }
 
@@ -136,7 +135,13 @@ public class JournalControl
     
     public static void replay(Transaction transaction)
     {
+        // What about the Transactional components of a transation. 
         Journal journal = transaction.getJournal() ;
+        System.out.println(">> REPLAY") ;
+        print(journal) ;
+        System.out.println("<< REPLAY") ;
+        System.out.flush() ;
+        
         DatasetGraphTDB dsg = transaction.getBaseDataset() ;
         replay(journal, dsg) ;
 //        Iterator<Transactional> iter = transaction.components() ;
