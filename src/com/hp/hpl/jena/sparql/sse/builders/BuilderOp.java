@@ -341,8 +341,15 @@ public class BuilderOp
             Op left = build(list, 1) ;
             Op right  = build(list, 2) ;
             Expr expr = null ;
-            if ( list.size() == 4 ) 
-                expr = buildExpr(list.get(3)) ;
+            if ( list.size() == 4 )
+            {
+                Item exprItem = list.get(3) ;
+                // Allow empty 
+                if ( exprItem.isList() && exprItem.getList().isEmpty() )
+                {}
+                else
+                    expr = buildExpr(exprItem) ;
+            }
             Op op = OpLeftJoin.create(left, right, expr) ;
             return op ;
         }

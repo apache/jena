@@ -28,19 +28,19 @@ public class VarRename
     /** Rename all variables in a pattern, EXCEPT for those named as constant */ 
     public static Op rename(Op op, Collection<Var> constants)
     {
-        return NodeTransformLib.transform(new RenamerVars(constants, prefix), op) ;
+        return NodeTransformLib.transform(new RenameVars(constants, prefix), op) ;
     }
 
     /** Rename all variables in an expression, EXCEPT for those named as constant */ 
     public static ExprList rename(ExprList exprList, Set<Var> constants)
     {
-        NodeTransform renamer = new RenamerVars(constants, prefix) ;
+        NodeTransform renamer = new RenameVars(constants, prefix) ;
         return NodeTransformLib.transform(renamer, exprList) ;
     }
         
     public static Expr rename(Expr expr, Set<Var> constants)
     {
-        NodeTransform renamer = new RenamerVars(constants, prefix) ;
+        NodeTransform renamer = new RenameVars(constants, prefix) ;
         return NodeTransformLib.transform(renamer, expr) ;
     }
     

@@ -14,13 +14,13 @@ import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.graph.NodeTransform ;
 
-public class RenamerVars implements NodeTransform
+public class RenameVars implements NodeTransform
 {
     private final Map<Var, Var> aliases = new HashMap<Var, Var>() ;
     private final Collection<Var> constants ;
     private final String varPrefix ;
     
-    public RenamerVars(Collection<Var> constants, String varPrefix)
+    public RenameVars(Collection<Var> constants, String varPrefix)
     {
         this.constants = constants ;
         this.varPrefix = varPrefix ;

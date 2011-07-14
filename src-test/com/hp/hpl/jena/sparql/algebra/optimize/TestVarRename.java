@@ -59,6 +59,12 @@ public class TestVarRename extends BaseTest
                                            "(project (?s) (order (?s ?/p) (bgp (?s ?/p ?/o))))",
                                            true,
                                            "s") ; }
+    
+    @Test public void rename_12() { rename("(leftjoin (bgp (?s ?p ?o)) (bgp (?s ?p ?o1)) () )",
+                                           "(leftjoin (bgp (?s ?/p ?o)) (bgp (?s ?/p ?/o1)) () )",
+                                           true,
+                                           "s", "o") ; }
+    
 
     @Test public void rename_reverse_01() { reverse("(project (?s ?/p) (bgp (?s ?/p ?/o)))",
                                                     "(project (?s ?p) (bgp (?s ?p ?o)))", true ) ; }  

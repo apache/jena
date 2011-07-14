@@ -22,6 +22,7 @@ import com.hp.hpl.jena.sparql.algebra.op.OpExtend ;
 import com.hp.hpl.jena.sparql.algebra.op.OpFilter ;
 import com.hp.hpl.jena.sparql.algebra.op.OpGraph ;
 import com.hp.hpl.jena.sparql.algebra.op.OpGroup ;
+import com.hp.hpl.jena.sparql.algebra.op.OpLeftJoin ;
 import com.hp.hpl.jena.sparql.algebra.op.OpOrder ;
 import com.hp.hpl.jena.sparql.algebra.op.OpPath ;
 import com.hp.hpl.jena.sparql.algebra.op.OpProject ;
@@ -38,6 +39,17 @@ import com.hp.hpl.jena.sparql.path.Path ;
 
 class NodeTransformOp extends TransformCopy
 {
+    // This finds everywhere that node can lurk in an alegra expression:
+    //   BGPs, paths, triples, quads
+    //   GRAPH, GRAPH{} (DatasetNames)
+    //   Filters, including inside EXISTS and expressions in LeftJoin
+    //   OrderBy, GroupBy
+    //   Extend, Assign
+    //   Tables
+    //   Projects
+    // Not:
+    //   Conditional (no expression)
+    
     private final NodeTransform transform ;
     NodeTransformOp(NodeTransform transform)
     {
@@ -130,6 +142,19 @@ class NodeTransformOp extends TransformCopy
         throw new ARQNotImplemented() ;
         //return null ;
     }
+    
+    @Override public Op transform(OpLeftJoin opLeftJoin, Op left, Op right)
+    {
+        ExprList exprList = opLeftJoin.getExprs() ;
+        ExprList exprList2 = exprList ;
+        if ( exprList != null )
+            exprList2 = NodeTransformLib.transform(transform, exprList) ;
+        if ( exprList2 == exprList )
+            return super.transform(opLeftJoin, left, right) ;
+        return OpLeftJoin.create(left, right, exprList2) ;
+    }
+    
+    // Not OpConditional - no expression.
     
     @Override public Op transform(OpProject opProject, Op subOp)
     { 

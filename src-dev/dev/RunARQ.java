@@ -128,7 +128,7 @@ public class RunARQ
     public static void main(String[] argv) throws Exception
     {
         //arq.sparql.main("--data=D.ttl", "--query=Q.rq") ;
-        arq.qparse.main("--query=testing/ARQ/SubQuery/sub-select-03.rq", "--print=opt") ;
+        arq.qparse.main("--query=Q.rq", "--print=opt") ;
         exit(0) ;
         
         
