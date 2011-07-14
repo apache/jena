@@ -63,7 +63,6 @@ class Journal implements Iterable<JournalEntry>, Sync, Closeable
         position = 0 ;
     }
     
-    synchronized
     public long writeJournal(JournalEntry entry)
     {
         return  _write(entry.getType(), entry.getFileRef(), entry.getByteBuffer(), entry.getBlock()) ;

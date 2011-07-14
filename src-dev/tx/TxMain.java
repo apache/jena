@@ -123,7 +123,7 @@ public class TxMain
 
         // A writer.
         DatasetGraphTxn dsg2 = sConn.begin(ReadWrite.WRITE) ;
-        load("D1.ttl", dsg2) ; // Loads 1 triples
+        //load("D1.ttl", dsg2) ; // Loads 1 triples
         query("SELECT (count(*) AS ?C) { ?s ?p ?o }", dsg2) ;
         //query("SELECT (count(*) AS ?C) { ?s ?p ?o }", dsgRead2) ;
         query("SELECT (count(*) AS ?C) { ?s ?p ?o }", dsgRead) ;

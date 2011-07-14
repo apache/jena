@@ -6,6 +6,7 @@
 
 package com.hp.hpl.jena.tdb.transaction;
 
+import static com.hp.hpl.jena.tdb.ReadWrite.* ;
 import java.nio.ByteBuffer ;
 import java.util.Iterator ;
 
@@ -34,7 +35,7 @@ public abstract class AbstractTestObjectFileTrans extends BaseTest
     @Before
     public void setup()
     {
-        txn = new Transaction(null, null, ++count, null, null) ;
+        txn = new Transaction(null, WRITE, ++count, null, null) ;
         file1 = createFile("base") ;
         file2 = createFile("log") ;
     }

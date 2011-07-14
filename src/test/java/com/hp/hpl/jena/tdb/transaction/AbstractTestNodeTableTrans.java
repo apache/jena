@@ -27,6 +27,7 @@ import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
 import com.hp.hpl.jena.tdb.transaction.NodeTableTrans ;
 import com.hp.hpl.jena.tdb.transaction.Transaction ;
+import static com.hp.hpl.jena.tdb.ReadWrite.* ;
 
 public abstract class AbstractTestNodeTableTrans extends BaseTest
 {
@@ -46,7 +47,7 @@ public abstract class AbstractTestNodeTableTrans extends BaseTest
     
     Transaction createTxn(long id) 
     {
-        return new Transaction(null, null, id, null, null) ; 
+        return new Transaction(null, WRITE, id, null, null) ; 
     }
     
     @Test public void nodetrans_01()

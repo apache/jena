@@ -10,13 +10,9 @@ import static com.hp.hpl.jena.tdb.sys.SystemTDB.errlog ;
 import static com.hp.hpl.jena.tdb.sys.SystemTDB.syslog ;
 
 import java.io.File ;
-import java.nio.ByteBuffer ;
-import java.util.Iterator ;
 import java.util.Map ;
 
 import org.openjena.atlas.lib.FileOps ;
-import org.slf4j.Logger ;
-import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.shared.Lock ;
 import com.hp.hpl.jena.tdb.DatasetGraphTxn ;
