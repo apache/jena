@@ -14,6 +14,7 @@ import java.util.Iterator ;
 
 import org.openjena.atlas.iterator.IteratorSlotted ;
 import org.openjena.atlas.lib.Closeable ;
+import org.openjena.atlas.lib.FileOps ;
 import org.openjena.atlas.lib.Sync ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
@@ -21,7 +22,10 @@ import org.slf4j.LoggerFactory ;
 import com.hp.hpl.jena.tdb.base.block.Block ;
 import com.hp.hpl.jena.tdb.base.file.BufferChannel ;
 import com.hp.hpl.jena.tdb.base.file.BufferChannelFile ;
+import com.hp.hpl.jena.tdb.base.file.BufferChannelMem ;
+import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.sys.FileRef ;
+import com.hp.hpl.jena.tdb.sys.Names ;
 
 /** The Journal is slightly odd - it is append-only for write but random read.
  *  The write performance is more important than read; reads only happen
@@ -45,14 +49,32 @@ class Journal implements Iterable<JournalEntry>, Sync, Closeable
     private long position ;
     // Length, type, fileRef, [block id]
     // Length is length of variable part.
-    public static int Overhead = 4*SizeOfInt ;
-    public static final int NoId = 5 ;
+    private static int Overhead = 4*SizeOfInt ;
+    private static final int NoId = 5 ;
     
 //    byte[] _buffer = new byte[Overhead] ;
 //    ByteBuffer header = ByteBuffer.wrap(_buffer) ;
-    ByteBuffer header = ByteBuffer.allocate(Overhead) ;
+    private ByteBuffer header = ByteBuffer.allocate(Overhead) ;
     
-    public Journal(String filename)
+    public static boolean exists(Location location)
+    {
+        if ( location.isMem() ) return false ;
+        return FileOps.exists(journalFilename(location)) ;
+    }
+    
+    public static Journal create(Location location)
+    {
+        BufferChannel chan ;
+        if ( location.isMem() )
+            chan = BufferChannelMem.create() ;
+        else
+            chan = new BufferChannelFile(journalFilename(location)) ;
+        return new Journal(chan) ;
+    }
+    
+    private static String journalFilename(Location location) { return location.absolute(Names.journalFile) ; }
+    
+    private Journal(String filename)
     {
         this(new BufferChannelFile(filename)) ;
     }

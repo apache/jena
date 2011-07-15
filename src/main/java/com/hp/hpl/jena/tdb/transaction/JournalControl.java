@@ -71,7 +71,7 @@ public class JournalControl
         //if ( FileOps.exists(journalFilename)
         if ( f.exists() && f.isFile() && f.length() > 0 )
         {
-            Journal jrnl = new Journal(journalFilename) ;
+            Journal jrnl = Journal.create(loc) ;
             // Scan for commit.
             boolean committed = false ;
             for ( JournalEntry e : jrnl )

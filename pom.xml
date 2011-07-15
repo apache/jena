@@ -16,9 +16,10 @@
   <url>http://openjena.org/TDB</url>
 
   <organization>
-    <name>OpenJena</name>
-    <url>http://www.openjena.org/</url>
+    <name>Apache Jena</name>
+    <url>http://incubator.apache.org/jena</url>
   </organization>
+
   <developers>
     <developer>
       <name>Andy Seaborne</name>
@@ -30,14 +31,18 @@
 
   <licenses>
     <license>
-      <name>BSD-style license</name>
-      <url>http://openjena.org/license.html</url>
+      <name>Apache 2.0 License</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0</url>
     </license>
   </licenses>
 
   <scm>
-    <connection>scm:svn:https://jena.svn.sourceforge.net/svnroot/jena/TDB/</connection>
-    <url>http://jena.svn.sourceforge.net/viewvc/jena/TDB/</url>
+    <!--
+      <connection>scm:svn:https://svn.apache.org/repos/asf/incubator/jena/Jena2/TDB/</connection>
+      <url>https://svn.apache.org/repos/asf/incubator/jena/Jena2/TDB/</url>
+    -->
+    <connection>scm:svn:https://svn.apache.org/repos/asf/incubator/jena/Experimental/TxTDB/</connection>
+    <url>http://svn.apache.org/viewvc/incubator/jena/Experimental/TxTDB/</url>
   </scm>
 
   <properties>
@@ -401,7 +406,6 @@ build.time.txt=${build.time.txt}
   </repositories>
 
   <distributionManagement>
-    <downloadUrl>http://openjena.org/repo-dev</downloadUrl>
 
     <repository>
       <id>jena-repo</id>
@@ -414,14 +418,59 @@ build.time.txt=${build.time.txt}
       <layout>default</layout>
     </repository> 
 
+    <!--
+    <snapshotRepository>
+      <id>apache.snapshots.https</id>
+      <name>Apache Development Snapshot Repository</name>
+      <url>https://repository.apache.org/content/repositories/snapshots</url>
+    </snapshotRepository>
+    -->
+
     <snapshotRepository>
       <id>jena-repo-dev</id>
       <name>Jena development repo</name>
       <url>sftp://openjena.org/var/repo-dev</url>
-      <!--<url>file:tmp</url>-->
       <layout>default</layout>
     </snapshotRepository>
 
   </distributionManagement>
+
+  <issueManagement>
+    <system>JIRA</system>
+    <url>http://issues.apache.org/jira/browse/JENA</url>
+  </issueManagement>
+  
+  <mailingLists>
+    <mailingList>
+      <name>Users</name>
+      <post>jena-users@incubator.apache.org</post>
+      <subscribe>jena-users-subscribe@incubator.apache.org</subscribe>
+      <unsubscribe>jena-users-unsubscribe@incubator.apache.org</unsubscribe>
+      <archive>http://mail-archives.apache.org/mod_mbox/incubator-jena-users/</archive>
+      <otherArchives>
+	<otherArchive>http://incubator.apache.org/mail/jena-users/</otherArchive>
+      </otherArchives>
+    </mailingList>
+    <mailingList>
+      <name>Development</name>
+      <post>jena-dev@incubator.apache.org</post>
+      <subscribe>jena-dev-subscribe@incubator.apache.org</subscribe>
+      <unsubscribe>jena-dev-unsubscribe@incubator.apache.org</unsubscribe>
+      <archive>http://mail-archives.apache.org/mod_mbox/incubator-jena-dev/</archive>
+      <otherArchives>
+	<otherArchive>http://incubator.apache.org/mail/jena-dev/</otherArchive>
+      </otherArchives>
+    </mailingList>
+    <mailingList>
+      <name>Commits</name>
+      <post>jena-commits@incubator.apache.org</post>
+      <subscribe>jena-commits-subscribe@incubator.apache.org</subscribe>
+      <unsubscribe>jena-commits-unsubscribe@incubator.apache.org</unsubscribe>
+      <archive>http://mail-archives.apache.org/mod_mbox/incubator-jena-commits/</archive>
+      <otherArchives>
+	<otherArchive>http://incubator.apache.org/mail/jena-commits/</otherArchive>
+      </otherArchives>
+    </mailingList>
+  </mailingLists>
 
 </project>

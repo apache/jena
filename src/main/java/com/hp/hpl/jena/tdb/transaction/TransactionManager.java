@@ -24,11 +24,7 @@ import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.tdb.DatasetGraphTxn ;
 import com.hp.hpl.jena.tdb.ReadWrite ;
-import com.hp.hpl.jena.tdb.base.file.BufferChannel ;
-import com.hp.hpl.jena.tdb.base.file.BufferChannelFile ;
-import com.hp.hpl.jena.tdb.base.file.BufferChannelMem ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
-import com.hp.hpl.jena.tdb.sys.Names ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 public class TransactionManager
@@ -68,16 +64,8 @@ public class TransactionManager
     
     public TransactionManager(DatasetGraphTDB dsg)
     {
-//        if ( ! ( dsg instanceof DatasetGraphTDB ) )
-//            throw new TDBException("Not a TDB-backed dataset") ;
         this.baseDataset = dsg ; 
-        
-        BufferChannel chan ;
-        if ( dsg.getLocation().isMem() )
-            chan = BufferChannelMem.create() ;
-        else
-            chan = new BufferChannelFile(dsg.getLocation().absolute(Names.journalFile)) ;
-        this.journal = new Journal(chan) ;
+        this.journal = Journal.create(dsg.getLocation()) ;
         // LATER
 //        Committer c = new Committer() ;
 //        this.committerThread = new Thread(c) ;
@@ -206,7 +194,7 @@ public class TransactionManager
         // Process any pending commits held up due to a reader. 
         if ( readers == 0 && writers == 0 ) 
         {
-            // Given this is sync'ed to the TransactionManager, 
+            // Given this is sync'ed to this TransactionManager, 
             // the query never blocks, nor does it need to be concurrent-safe.
             // later ...
             while ( queue.size() > 0 )
@@ -236,7 +224,6 @@ public class TransactionManager
         else
             writers-- ;
         activeTransactions.remove(transaction) ;
-        
     }
     
     public Journal getJournal()

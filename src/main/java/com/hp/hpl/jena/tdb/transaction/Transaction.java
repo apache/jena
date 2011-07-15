@@ -51,7 +51,7 @@ public class Transaction
         this.txnMgr = txnMgr ;
         this.basedsg = dsg ;
         this.mode = mode ;
-        this.journal = txnMgr.getJournal() ;
+        this.journal = ( txnMgr == null ) ? null : txnMgr.getJournal() ;
         activedsg = null ;      // Don't know yet.
         this.iterators = new ArrayList<Iterator<?>>() ;
         state = TxnState.ACTIVE ;

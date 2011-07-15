@@ -32,10 +32,12 @@ public abstract class AbstractTestObjectFileTrans extends BaseTest
     abstract ObjectFile createFile(String basename) ;
     abstract void deleteFile(String basename) ;
     
+    TransactionManager tm = null ;
+    
     @Before
     public void setup()
     {
-        txn = new Transaction(null, WRITE, ++count, null, null) ;
+        txn = new Transaction(null, WRITE, ++count, null, tm) ;
         file1 = createFile("base") ;
         file2 = createFile("log") ;
     }
