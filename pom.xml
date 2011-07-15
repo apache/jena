@@ -23,8 +23,8 @@
   </licenses>
 
   <scm>
-    <connection>scm:svn:https://jena.svn.sourceforge.net/svnroot/jena/Fuseki/</connection>
-    <url>http://jena.svn.sourceforge.net/viewvc/jena/Fuseki/</url>
+    <connection>scm:svn:https://svn.apache.org/repos/asf/incubator/jena/Jena2/Fuseki/</connection>
+    <url>http://svn.apache.org/viewvc/incubator/jena/Jena2/Fuseki/</url>
   </scm>
 
   <properties>
