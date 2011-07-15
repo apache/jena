@@ -24,7 +24,11 @@ import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.tdb.DatasetGraphTxn ;
 import com.hp.hpl.jena.tdb.ReadWrite ;
+import com.hp.hpl.jena.tdb.base.file.BufferChannel ;
+import com.hp.hpl.jena.tdb.base.file.BufferChannelFile ;
+import com.hp.hpl.jena.tdb.base.file.BufferChannelMem ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
+import com.hp.hpl.jena.tdb.sys.Names ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 public class TransactionManager
@@ -56,13 +60,24 @@ public class TransactionManager
     private Thread committerThread ;
 
     private DatasetGraphTDB baseDataset ;
+    private Journal journal ;
     
+    // it would be better to associate with the DatasetGraph itself. 
+    
+    //static Map<DatasetGraphTDB, Journal> journals = new HashMap<DatasetGraphTDB, Journal>() ;
     
     public TransactionManager(DatasetGraphTDB dsg)
     {
 //        if ( ! ( dsg instanceof DatasetGraphTDB ) )
 //            throw new TDBException("Not a TDB-backed dataset") ;
         this.baseDataset = dsg ; 
+        
+        BufferChannel chan ;
+        if ( dsg.getLocation().isMem() )
+            chan = BufferChannelMem.create() ;
+        else
+            chan = new BufferChannelFile(dsg.getLocation().absolute(Names.journalFile)) ;
+        this.journal = new Journal(chan) ;
         // LATER
 //        Committer c = new Committer() ;
 //        this.committerThread = new Thread(c) ;
@@ -142,7 +157,7 @@ public class TransactionManager
             {
                 // Can't make permentent at the moment.
                 commitedAwaitingFlush.add(transaction) ;
-                log.debug("Commit pending: "+transaction.getLabel()); 
+                //log.debug("Commit pending: "+transaction.getLabel()); 
 
                 //if ( log.isDebugEnabled() )
                 //    log.debug("Commit blocked at the moment") ;
@@ -200,7 +215,7 @@ public class TransactionManager
                     Transaction txn2 = queue.take() ;
                     if ( txn2.getMode() == READ )
                         continue ;
-                    log("Delayed commit", txn2) ;
+                    log.info("Delayed commit", txn2) ;
                     // This takes a Write lock on the  DSG - this is where it blocks.
                     JournalControl.replay(txn2) ;
                     commitedAwaitingFlush.remove(txn) ;
@@ -224,6 +239,11 @@ public class TransactionManager
         
     }
     
+    public Journal getJournal()
+    {
+        return journal ;
+    }
+
     private boolean log()
     {
         return syslog.isDebugEnabled() || log.isDebugEnabled() ;
@@ -253,10 +273,8 @@ public class TransactionManager
                 // able to play several transactions at once (later).
                 try {
                     Transaction txn = queue.take() ;
-                    System.out.println("Async commit") ;
                     // This takes a Write lock on the  DSG - this is where it blocks.
                     JournalControl.replay(txn) ;
-                    System.out.println("Async commit succeeded") ;
                     synchronized(TransactionManager.this)
                     {
                         commitedAwaitingFlush.remove(txn) ;

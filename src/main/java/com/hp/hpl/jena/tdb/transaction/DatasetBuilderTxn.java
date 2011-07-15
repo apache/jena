@@ -14,9 +14,6 @@ import com.hp.hpl.jena.tdb.TDBException ;
 import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrLogger ;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrReadonly ;
-import com.hp.hpl.jena.tdb.base.file.BufferChannel ;
-import com.hp.hpl.jena.tdb.base.file.BufferChannelFile ;
-import com.hp.hpl.jena.tdb.base.file.BufferChannelMem ;
 import com.hp.hpl.jena.tdb.base.file.FileFactory ;
 import com.hp.hpl.jena.tdb.base.file.FileSet ;
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile ;
@@ -40,7 +37,6 @@ public class DatasetBuilderTxn
     private TransactionManager txnMgr ;
     private Map<FileRef, BlockMgr> blockMgrs ; 
     private Map<FileRef, NodeTable> nodeTables ;
-    private Journal journal ;
     private Transaction txn ;
     private DatasetGraphTDB dsg ;
 
@@ -72,14 +68,6 @@ public class DatasetBuilderTxn
 
     private DatasetGraphTDB buildWritable()
     {
-        BufferChannel chan ;
-        if ( dsg.getLocation().isMem() )
-            chan = BufferChannelMem.create() ;
-        else
-            chan = new BufferChannelFile(dsg.getLocation().absolute(Names.journalFile)) ;
-        journal = new Journal(chan) ;
-        txn.setJournal(journal) ;
-        
         BlockMgrBuilder blockMgrBuilder = new BlockMgrBuilderTx() ;
         NodeTableBuilder nodeTableBuilder = new NodeTableBuilderTx() ;
         DatasetBuilderStd x = new DatasetBuilderStd(blockMgrBuilder, nodeTableBuilder) ;
@@ -148,7 +136,7 @@ public class DatasetBuilderTxn
             BlockMgr baseMgr = blockMgrs.get(ref) ;
             if ( baseMgr == null )
                 throw new TDBException("No BlockMgr for "+ref) ;
-            BlockMgrJournal blkMgr = new BlockMgrJournal(txn, ref, baseMgr, journal) ;
+            BlockMgrJournal blkMgr = new BlockMgrJournal(txn, ref, baseMgr) ;
             txn.add(blkMgr) ;
             return blkMgr ;
         }

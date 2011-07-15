@@ -108,8 +108,8 @@ public class TxMain
 
         DatasetGraphTxn dsg = sConn.begin(ReadWrite.WRITE) ;
         load("D.ttl", dsg) ;    // Loads 3 triples
-        query("SELECT (count(*) AS ?C) { ?s ?p ?o }", dsgRead) ;
-        query("SELECT (count(*) AS ?C) { ?s ?p ?o }", dsg) ;
+        query("C=0", "SELECT (count(*) AS ?C) { ?s ?p ?o }", dsgRead) ;
+        query("C=3", "SELECT (count(*) AS ?C) { ?s ?p ?o }", dsg) ;
         dsg.commit() ;
         dsg.close() ;
         dsg = null ;
@@ -117,21 +117,21 @@ public class TxMain
         // Reader after update.
         // First reader still reading.
         
-        //DatasetGraphTxn dsgRead2 = sConn.begin(ReadWrite.READ) ;
+        DatasetGraphTxn dsgRead2 = sConn.begin(ReadWrite.READ) ;
         //query("SELECT (count(*) AS ?C) { ?s ?p ?o }", dsgRead2) ;
-        query("SELECT (count(*) AS ?C) { ?s ?p ?o }", dsgRead) ;
+        query("C=0", "SELECT (count(*) AS ?C) { ?s ?p ?o }", dsgRead) ;
 
         // A writer.
         DatasetGraphTxn dsg2 = sConn.begin(ReadWrite.WRITE) ;
-        //load("D1.ttl", dsg2) ; // Loads 1 triples
-        query("SELECT (count(*) AS ?C) { ?s ?p ?o }", dsg2) ;
-        //query("SELECT (count(*) AS ?C) { ?s ?p ?o }", dsgRead2) ;
-        query("SELECT (count(*) AS ?C) { ?s ?p ?o }", dsgRead) ;
+        load("D1.ttl", dsg2) ; // Loads 1 triples
+        query("C=4", "SELECT (count(*) AS ?C) { ?s ?p ?o }", dsg2) ;
+        query("C=3", "SELECT (count(*) AS ?C) { ?s ?p ?o }", dsgRead2) ;
+        query("C=0", "SELECT (count(*) AS ?C) { ?s ?p ?o }", dsgRead) ;
         dsg2.commit() ;
         dsg2.close() ;
         dsg2 = null ;
 
-        //dsgRead2.close() ;
+        dsgRead2.close() ;
 
 //        DatasetGraphTxn dsgRead2 = sConn.begin(ReadWrite.READ) ;
 //        query("SELECT (count(*) AS ?C) { ?s ?p ?o }", dsgRead2) ;
@@ -143,7 +143,7 @@ public class TxMain
         // query("SELECT (count(*) AS ?C) { ?s ?p ?o }", dsgRead) ;
         
         DatasetGraphTxn dsgRead3 = sConn.begin(ReadWrite.READ) ;
-        query("SELECT (count(*) AS ?C) { ?s ?p ?o }", dsgRead3) ;
+        query("C=4", "SELECT (count(*) AS ?C) { ?s ?p ?o }", dsgRead3) ;
         
         exit(0) ;
     }

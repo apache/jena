@@ -26,7 +26,6 @@ public class BlockMgrJournal implements BlockMgr, Transactional
 {
     private static Logger log = LoggerFactory.getLogger(BlockMgrJournal.class) ;
     private BlockMgr blockMgr ; // read-only except during journal checkpoint.
-    private Journal journal ;
     private Transaction transaction ;
     private FileRef fileRef ;
     
@@ -37,23 +36,16 @@ public class BlockMgrJournal implements BlockMgr, Transactional
     private boolean closed = false ;
     private boolean active = false ;
     
-    public BlockMgrJournal(Transaction txn, FileRef fileRef, BlockMgr underlyingBlockMgr, Journal journal)
+    public BlockMgrJournal(Transaction txn, FileRef fileRef, BlockMgr underlyingBlockMgr)
     {
-        reset(txn, fileRef, underlyingBlockMgr, journal) ;
+        reset(txn, fileRef, underlyingBlockMgr) ;
     }
 
     @Override
     public void begin(Transaction txn)
     {
-        reset(txn, fileRef, blockMgr, journal) ;
+        reset(txn, fileRef, blockMgr) ;
     }
-
-    
-//    public void begin(Transaction txn) ;
-//    public void abort(Transaction txn) ;
-//    public void commitPrepare(Transaction txn) ;
-//    public void commitEnact(Transaction txn) ;
-//    public void clearup(Transaction txn) ;
     
     @Override
     public void commitPrepare(Transaction txn)
@@ -87,11 +79,10 @@ public class BlockMgrJournal implements BlockMgr, Transactional
     /** Set, or reset, this BlockMgr.
      *  Enables it to be reused when already part of a datastructure. 
      */
-    private void reset(Transaction txn, FileRef fileRef, BlockMgr underlyingBlockMgr, Journal journal)
+    private void reset(Transaction txn, FileRef fileRef, BlockMgr underlyingBlockMgr)
     {
         this.fileRef = fileRef ;
         this.blockMgr = underlyingBlockMgr ;
-        this.journal = journal ;
         reset(txn) ;
     }
     
@@ -280,7 +271,7 @@ public class BlockMgrJournal implements BlockMgr, Transactional
     private void writeJournalEntry(Block blk)
     {
         blk.getByteBuffer().rewind() ;
-        journal.writeJournal(fileRef, blk) ;
+        transaction.getJournal().writeJournal(fileRef, blk) ;
     }
     
     private void logState()

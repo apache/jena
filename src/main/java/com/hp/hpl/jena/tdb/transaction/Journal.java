@@ -41,7 +41,7 @@ class Journal implements Iterable<JournalEntry>, Sync, Closeable
     // We want random access AND stream efficiency to write.  Opps.
     // Also means we can't use DataOutputStream etc.
     
-    BufferChannel channel ;
+    private BufferChannel channel ;
     private long position ;
     // Length, type, fileRef, [block id]
     // Length is length of variable part.
@@ -83,7 +83,7 @@ class Journal implements Iterable<JournalEntry>, Sync, Closeable
     synchronized
     private long _write(JournalEntryType type, FileRef fileRef, ByteBuffer buffer, Block block)
     {
-        log.info(type+","+fileRef+", "+buffer+", "+block) ;
+        //log.info("@"+position()+" -- "+type+","+fileRef+", "+buffer+", "+block) ;
         
         if ( buffer != null && block != null )
             throw new TDBTransactionException("Buffer and block to write") ;
@@ -200,7 +200,7 @@ class Journal implements Iterable<JournalEntry>, Sync, Closeable
     synchronized
     public Iterator<JournalEntry> entries()
     {
-        channel.position(0) ;
+        position(0) ;
         return new IteratorEntries() ;
     }
     
@@ -213,7 +213,13 @@ class Journal implements Iterable<JournalEntry>, Sync, Closeable
     @Override
     public void close() { channel.close() ; }
 
+    public long size()  { return channel.size() ; }
+    
     public void truncate(long size) { channel.truncate(size) ; }
+    
+    public void append()    { position(size()) ; }
+    
+    public long position() { return channel.position() ; }  
     
     public void position(long posn) { channel.position(posn) ; }
 }

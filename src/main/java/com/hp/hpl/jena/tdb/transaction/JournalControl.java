@@ -36,12 +36,12 @@ public class JournalControl
 
     public static void print(Journal journal)
     {
-        System.out.println("Posn: "+journal.channel.size()) ;
+        System.out.println("Size: "+journal.size()) ;
         
         for ( JournalEntry e : journal )
         {
             System.out.println(JournalEntry.format(e)) ;
-            System.out.println("Posn: "+journal.channel.position()+" : ("+(journal.channel.size()-journal.channel.position())+")") ;
+            System.out.println("Posn: "+journal.position()+" : ("+(journal.size()-journal.position())+")") ;
             
         }
     }
@@ -133,10 +133,10 @@ public class JournalControl
     {
         // What about the Transactional components of a transation. 
         Journal journal = transaction.getJournal() ;
-        System.out.println(">> REPLAY") ;
-        print(journal) ;
-        System.out.println("<< REPLAY") ;
-        System.out.flush() ;
+//        System.out.println(">> REPLAY") ;
+//        print(journal) ;
+//        System.out.println("<< REPLAY") ;
+//        System.out.flush() ;
         
         DatasetGraphTDB dsg = transaction.getBaseDataset() ;
         replay(journal, dsg) ;

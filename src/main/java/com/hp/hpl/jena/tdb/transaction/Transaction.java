@@ -25,7 +25,7 @@ public class Transaction
     private final String label ;
     private final TransactionManager txnMgr ;
     private final List<Iterator<?>> iterators ; 
-    private Journal journal = null ;
+    private final Journal journal ;
     private TxnState state ;
     private ReadWrite mode ;
     
@@ -35,8 +35,6 @@ public class Transaction
     private DatasetGraphTDB     basedsg ;
     private DatasetGraphTxn     activedsg ;
 
-    
-    
     public Transaction(DatasetGraphTDB dsg, ReadWrite mode, long id, String label, TransactionManager txnMgr)
     {
         this.id = id ;
@@ -53,6 +51,7 @@ public class Transaction
         this.txnMgr = txnMgr ;
         this.basedsg = dsg ;
         this.mode = mode ;
+        this.journal = txnMgr.getJournal() ;
         activedsg = null ;      // Don't know yet.
         this.iterators = new ArrayList<Iterator<?>>() ;
         state = TxnState.ACTIVE ;
@@ -179,11 +178,6 @@ public class Transaction
         x.addAll(nodeTableTrans) ;
         x.addAll(blkMgrs) ;
         return x.iterator() ;
-    }
-    
-    public void setJournal(Journal journal)
-    {
-        this.journal = journal ;
     }
     
     public Journal getJournal()    { return journal ; }
