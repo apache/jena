@@ -4,14 +4,12 @@ package tx;
 public class DevTx
 {
     // --------
-    // To do for release 0:
-    //   Documentation
-    //   StoreConnection.Location.mem ==> directory called "--mem--" and chaos.
-    // Partial reply : base reader exits - replay until blocking higher reader.
-    //   scan to commit, enact, scne to commit, enact, ....
+    // Tasks:
+    // * scan to commit, enact, scan to commit, enact, ....
     
-    // Node writing happens during prepare() regardless of blockers and locks.  Opps.
-    // Abort() etc truncates Journal to 0 - but that might loose a pending transaction.  Opps?? Happens?
+    // * Node writing happens during prepare() regardless of blockers and locks.  Opps.
+    // * Abort() etc truncates Journal to 0 - but that might loose a pending transaction.
+    //   Journalneeds reset markers
     // Some kind of call after commit for clear up.
     //    Call when really commited.
     // --------

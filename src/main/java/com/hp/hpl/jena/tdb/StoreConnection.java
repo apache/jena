@@ -39,7 +39,7 @@ public class StoreConnection
 
     private StoreConnection(Location location)
     {
-        baseDSG = DatasetBuilderStd.build(location.getDirectoryPath()) ;
+        baseDSG = DatasetBuilderStd.build(location) ;
         transactionManager = new TransactionManager(baseDSG) ;
     }
     

@@ -6,6 +6,8 @@
 
 package tx;
 
+import java.io.File ;
+
 import org.openjena.atlas.lib.Bytes ;
 import org.openjena.atlas.lib.FileOps ;
 import org.openjena.atlas.logging.Log ;
@@ -26,10 +28,12 @@ import com.hp.hpl.jena.sparql.util.QueryExecUtils ;
 import com.hp.hpl.jena.tdb.DatasetGraphTxn ;
 import com.hp.hpl.jena.tdb.ReadWrite ;
 import com.hp.hpl.jena.tdb.StoreConnection ;
+import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.base.record.Record ;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
 import com.hp.hpl.jena.tdb.setup.DatasetBuilderStd ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
+import com.hp.hpl.jena.tdb.sys.Names ;
 import com.hp.hpl.jena.update.UpdateAction ;
 import com.hp.hpl.jena.update.UpdateFactory ;
 import com.hp.hpl.jena.update.UpdateRequest ;
@@ -57,8 +61,13 @@ public class TxMain
     
     public static void main(String... args)
     {
+        // and one in-mem sConn DB
+        
         initFS() ;
+        // Named memory locations? OTT
+        //StoreConnection sConn = StoreConnection.make(Location.mem()) ; 
         StoreConnection sConn = StoreConnection.make(DBdir) ;
+        
         
         // ---- Simple
         if ( false )
@@ -106,10 +115,14 @@ public class TxMain
         // Take a blocking read connection.
         DatasetGraphTxn dsgRead = sConn.begin(ReadWrite.READ) ; //dsgRead.close() ;
 
+        String qsCount = "SELECT (count(*) AS ?C) { ?s ?p ?o }" ;
+        String qsAll = "SELECT * { ?s ?p ?o }" ;
+        String qs = qsAll ;
+        
         DatasetGraphTxn dsg = sConn.begin(ReadWrite.WRITE) ;
         load("D.ttl", dsg) ;    // Loads 3 triples
-        query("C=0", "SELECT (count(*) AS ?C) { ?s ?p ?o }", dsgRead) ;
-        query("C=3", "SELECT (count(*) AS ?C) { ?s ?p ?o }", dsg) ;
+        query("C=0", qs, dsgRead) ;
+        query("C=3", qs, dsg) ;
         dsg.commit() ;
         dsg.close() ;
         dsg = null ;
@@ -118,15 +131,15 @@ public class TxMain
         // First reader still reading.
         
         DatasetGraphTxn dsgRead2 = sConn.begin(ReadWrite.READ) ;
-        //query("SELECT (count(*) AS ?C) { ?s ?p ?o }", dsgRead2) ;
-        query("C=0", "SELECT (count(*) AS ?C) { ?s ?p ?o }", dsgRead) ;
+        //query(qs, dsgRead2) ;
+        query("C=0", qs, dsgRead) ;
 
         // A writer.
         DatasetGraphTxn dsg2 = sConn.begin(ReadWrite.WRITE) ;
         load("D1.ttl", dsg2) ; // Loads 1 triples
-        query("C=4", "SELECT (count(*) AS ?C) { ?s ?p ?o }", dsg2) ;
-        query("C=3", "SELECT (count(*) AS ?C) { ?s ?p ?o }", dsgRead2) ;
-        query("C=0", "SELECT (count(*) AS ?C) { ?s ?p ?o }", dsgRead) ;
+        query("C=4", qs, dsg2) ;
+        query("C=3", qs, dsgRead2) ;
+        query("C=0", qs, dsgRead) ;
         dsg2.commit() ;
         dsg2.close() ;
         dsg2 = null ;
@@ -134,16 +147,16 @@ public class TxMain
         dsgRead2.close() ;
 
 //        DatasetGraphTxn dsgRead2 = sConn.begin(ReadWrite.READ) ;
-//        query("SELECT (count(*) AS ?C) { ?s ?p ?o }", dsgRead2) ;
+//        query(qs, dsgRead2) ;
 //        dsgRead2.close() ;
 
         dsgRead.close() ;   // Transaction can now write changes to the real DB.
         
         // ILLEGAL!!!!
-        // query("SELECT (count(*) AS ?C) { ?s ?p ?o }", dsgRead) ;
+        // query(qs, dsgRead) ;
         
         DatasetGraphTxn dsgRead3 = sConn.begin(ReadWrite.READ) ;
-        query("C=4", "SELECT (count(*) AS ?C) { ?s ?p ?o }", dsgRead3) ;
+        query("C=4", qs, dsgRead3) ;
         
         exit(0) ;
     }
@@ -164,7 +177,7 @@ public class TxMain
     {
         //return DatasetBuilderStd.build() ;
         //DatasetGraphTDB dsg = TDBFactory.createDatasetGraph(DBdir) ;
-        DatasetGraphTDB dsg = DatasetBuilderStd.build(DBdir) ;
+        DatasetGraphTDB dsg = DatasetBuilderStd.build(new Location(DBdir)) ;
         return dsg ;
     }
 

@@ -58,11 +58,11 @@ public class DatasetBuilderStd implements DatasetBuilder
     private Map<FileRef, BlockMgr> blockMgrs = new HashMap<FileRef, BlockMgr>() ;
     private Map<FileRef, NodeTable> nodeTables = new HashMap<FileRef, NodeTable>() ;
 
-    public static DatasetGraphTDB build(String dir)
+    public static DatasetGraphTDB build(Location location)
     {
         DatasetBuilderStd x = new DatasetBuilderStd() ;
         x.setStd() ;
-        return x.build(new Location(dir), null) ;
+        return x.build(location, null) ;
     }
     
     public static DatasetGraphTDB build()
