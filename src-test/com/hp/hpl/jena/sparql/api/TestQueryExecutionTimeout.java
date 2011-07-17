@@ -102,7 +102,7 @@ public class TestQueryExecutionTimeout extends BaseTest
     @Test
     public void timeout_05()
     {
-        String qs = prefix + "SELECT * { ?s ?p ?o FILTER f:wait(100) }" ;
+        String qs = prefix + "SELECT * { ?s ?p ?o FILTER f:wait(200) }" ;
         QueryExecution qExec = QueryExecutionFactory.create(qs, ds) ;
         qExec.setTimeout(50, TimeUnit.MILLISECONDS) ;
         ResultSet rs = qExec.execSelect() ;
