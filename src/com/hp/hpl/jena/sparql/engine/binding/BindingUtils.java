@@ -12,6 +12,7 @@ import org.openjena.atlas.logging.Log ;
 import com.hp.hpl.jena.query.QuerySolution ;
 import com.hp.hpl.jena.rdf.model.RDFNode ;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
+import com.hp.hpl.jena.sparql.core.ResultBinding ;
 import com.hp.hpl.jena.sparql.core.Var ;
 
 public class BindingUtils
@@ -40,6 +41,8 @@ public class BindingUtils
     {
         if ( qSolution == null )
             return null ;
+        if ( qSolution instanceof ResultBinding )
+            return ((ResultBinding)qSolution).getBinding() ;
         Binding binding = new BindingMap(null) ;
         addToBinding(binding, qSolution) ;
         return binding ;
@@ -49,8 +52,6 @@ public class BindingUtils
     {
         if ( qSolution == null )
             return ;
-        
-        
         
         for ( Iterator<String> iter = qSolution.varNames() ; iter.hasNext() ; )
         {
