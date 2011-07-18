@@ -114,7 +114,7 @@ public class TestFunctions2 extends BaseTest
     // CONCAT
     @Test public void concat_01()   { test("concat('a')",       "'a'") ; }
     @Test public void concat_02()   { test("concat('a', 'b')",  "'ab'") ; }
-    @Test public void concat_03()   { test("concat('a'@en, 'b')",  "'ab'@en") ; }
+    @Test public void concat_03()   { test("concat('a'@en, 'b')",  "'ab'") ; }
     @Test public void concat_04()   { test("concat('a'@en, 'b'@en)",  "'ab'@en") ; }
     //@Test public void concat_05()   { test("concat('a'^^xsd:string, 'b')",  "'ab'^^xsd:string") ; }
     @Test public void concat_05()   { test("concat('a'^^xsd:string, 'b')",  "'ab'") ; }
@@ -122,15 +122,15 @@ public class TestFunctions2 extends BaseTest
     @Test public void concat_07()   { test("concat('a'^^xsd:string, 'b'^^xsd:string)",  "'ab'^^xsd:string") ; }
     //@Test public void concat_08()   { test("concat('a', 'b'^^xsd:string)",  "'ab'^^xsd:string") ; }
     @Test public void concat_08()   { test("concat('a', 'b'^^xsd:string)",  "'ab'") ; }
-    @Test public void concat_09()   { test("concat('a'@en, 'b'^^xsd:string)",  "'ab'@en") ; }
-    @Test public void concat_10()   { test("concat('a'^^xsd:string, 'b'@en)",  "'ab'@en") ; }
+    @Test public void concat_09()   { test("concat('a'@en, 'b'^^xsd:string)",  "'ab'") ; }
+    @Test public void concat_10()   { test("concat('a'^^xsd:string, 'b'@en)",  "'ab'") ; }
     @Test public void concat_11()   { test("concat()",  "''") ; }
     
     @Test(expected=ExprEvalException.class)
     public void concat_90()          { test("concat(1)",      "1") ; }
     
-    @Test(expected=ExprEvalException.class)
-    public void concat_91()         { test("concat('a'@en, 'b'@fr)",  "'ab'@en") ; }
+    @Test //(expected=ExprEvalException.class)
+    public void concat_91()         { test("concat('a'@en, 'b'@fr)",  "'ab'") ; }
     
     // TODO Lang and xsd:string cases.
     
