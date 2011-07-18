@@ -1,33 +1,4 @@
-PREFIX  rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX  time: <http://www.w3.org/2006/time#>
-PREFIX  geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
-PREFIX  ef_def: <http://location.data.gov.uk/def/ef/SamplingPoint/>
-PREFIX  dct: <http://purl.org/dc/terms/>
-PREFIX  spatialrelations: <http://data.ordnancesurvey.co.uk/ontology/spatialrelations/>
-PREFIX  rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX  bwq-iss: <http://environment.data.gov.uk/data/bathing-water-quality/in-season/slice/>
-PREFIX  bwq: <http://environment.data.gov.uk/def/bathing-water-quality/>
-PREFIX  qb: <http://purl.org/linked-data/cube#>
-PREFIX  skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX apf:     <http://jena.hpl.hp.com/ARQ/property#>
 
-SELECT *
-WHERE
-  {
-   { ?item rdfs:label ?___2 }
-    UNION
-      { ?item dct:source ?___3 }
-    { SELECT DISTINCT  ?item
-      WHERE
-        { bwq-iss:latest qb:observation ?item .
-          ?___1 ef_def:samplePointNotation "36200"^^ef_def:samplePointCode .
-          ?item bwq:sampleDateTime ?___0 .
-          ?item bwq:samplingPoint ?___1 .
-          ?item rdf:type bwq:SampleAssessment
-        }
-      ORDER BY DESC(?___0)
-      OFFSET  0
-      LIMIT   1
-   }
-
-  } 
+SELECT * { ?x apf:version ?y }
 

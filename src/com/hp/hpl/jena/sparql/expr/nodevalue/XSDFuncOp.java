@@ -577,6 +577,7 @@ public class XSDFuncOp
         // Step 1 : Choose type.
         // One lang tag -> that lang tag
         String lang = null ;
+        boolean mixedLang = false ;
         boolean xsdString = false ;
         boolean simpleLiteral = false ;
         
@@ -589,7 +590,8 @@ public class XSDFuncOp
             if ( ! lang1.equals("") )
             {
                 if ( lang != null && ! lang1.equals(lang) )
-                    throw new ExprEvalException("CONCAT: Mixed language tags: "+args) ;
+                    //throw new ExprEvalException("CONCAT: Mixed language tags: "+args) ;
+                    mixedLang = true ;
                 lang = lang1 ;
             }
             else if ( n.getLiteralDatatype() != null )
@@ -600,8 +602,19 @@ public class XSDFuncOp
             sb.append(n.getLiteralLexicalForm()) ;
         }
         
+        if ( mixedLang )
+            return NodeValue.makeString(sb.toString()) ;
+        
+        // Must be all one lang.
         if ( lang != null )
-            return NodeValue.makeNode(sb.toString(), lang, (String)null) ;
+        {
+            if ( ! xsdString && ! simpleLiteral )
+                return NodeValue.makeNode(sb.toString(), lang, (String)null) ;
+            else
+                // Lang and one or more of xsd:string or simpleLiteral.
+                return NodeValue.makeString(sb.toString()) ;
+        }       
+        
         if ( simpleLiteral && xsdString )
             return NodeValue.makeString(sb.toString()) ;
         // All xsdString

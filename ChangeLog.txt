@@ -3,6 +3,7 @@ ChangeLog for ARQ
 
 ==== ARQ 2.8.10
 
++ Make CONCAT follow the SPARQL 1.1 spec properly. 
 + Bug fix: ORDER BY and FILTERs in sub-selects didn't work if ordering by non-SELECT variables.
 + Bug fix: Equality of algebra operator (order) wasn't checkign all aspects of the op.
 + Bug fix: SUM and AVG over errors didn't generate an error as they should do.

@@ -127,6 +127,8 @@ public class RunARQ
     
     public static void main(String[] argv) throws Exception
     {
+        arq.qexpr.main("CONCAT('abc'@en, 'def')") ; exit(0) ;
+        
         //arq.sparql.main("--data=D.ttl", "--query=Q.rq") ;
         //arq.qparse.main("--query=Q.rq", "--print=opt") ;
         
