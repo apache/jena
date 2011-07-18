@@ -7,35 +7,31 @@
 
 package com.hp.hpl.jena.sparql.engine.binding;
 
-import java.util.Collection ;
-
 import com.hp.hpl.jena.sparql.core.Var ;
 
-public class  BindingProject extends BindingProjectBase
+public class  BindingProjectNamed extends BindingProjectBase //extends BindingBase
 {
-    final Collection<Var> projectionVars ; 
-
-    public BindingProject(Collection<Var> vars, Binding bind)
+    public BindingProjectNamed(Binding bind)
     { 
-        this(vars, bind, null) ;
+        this(bind, null) ;
     }
-
-    public BindingProject(Collection<Var> vars, Binding bind, Binding parent)
+    
+    public BindingProjectNamed(Binding bind, Binding parent)
     { 
         super(bind, parent) ;
-        this.projectionVars = vars ;
     }
 
     @Override
     protected boolean accept(Var var)
     {
-        return projectionVars.contains(var) ;
+        return var.isNamedVar() ;
     }
-}    
+}
 
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (c) Copyright 2011 Epimorphics Ltd.
+ * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions

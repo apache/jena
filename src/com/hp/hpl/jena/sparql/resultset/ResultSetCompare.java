@@ -184,18 +184,12 @@ public class ResultSetCompare
         if ( bind1 == bind2 ) return true ;
 
         if ( bind1.size() != bind2.size() )
-            return false ; 
-        
+            return false ;
+        // They are the same size so containment is enough.
         if ( ! containedIn(bind1, bind2, test) ) return false ;
-        //if ( ! contains(b2, b1, test) ) return false ;
         return true ;
     }
 
-    //    static boolean equivalentByValuex(ResultSet rs1, ResultSet rs2)
-//    {
-//        return equivalent(convert(rs1), convert(rs2), sameValue) ;
-//    }
-//    
     static private List<Binding> convert(ResultSet rs)
     {
         return Iter.iter(rs).map(qs2b).toList() ;

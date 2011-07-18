@@ -9,7 +9,7 @@ package com.hp.hpl.jena.sparql.engine.iterator;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
-import com.hp.hpl.jena.sparql.engine.binding.BindingNamedVar ;
+import com.hp.hpl.jena.sparql.engine.binding.BindingProjectNamed ;
 
 /** Filter bindings for distinguished variables only 
  *  Currently unused. */
@@ -23,30 +23,12 @@ public class QueryIterDistinguishedVars extends QueryIterConvert
     }
 
     static Converter conv = new ProjectWrap() ;
-    
-    // Copying version.  Deprecated.
-//    static class ProjectCopy implements Converter
-//    {
-//        public Binding convert(Binding binding)
-//        {
-//            Binding b = new BindingMap() ;
-//            for ( Iterator iter = binding.vars() ; iter.hasNext(); )
-//            {
-//                Var v = (Var)iter.next() ;
-//                if ( ! v.isNamedVar() )
-//                    continue ;
-//                Node n = binding.get(v) ;
-//                b.add(v, n) ;
-//            }
-//            return b ;
-//        }
-//    }
 
     static class ProjectWrap implements Converter
     {
         public Binding convert(Binding binding)
         {
-            return new BindingNamedVar(binding) ;
+            return new BindingProjectNamed(binding) ;
         }
     }
 }

@@ -207,7 +207,6 @@ public class QueryTest extends EarlTestCase
         // Do the query!
         ResultSetRewindable resultsActual = ResultSetFactory.makeRewindable(qe.execSelect()) ;
         
-        
         // Turn into a resettable version
         //ResultSetRewindable results = ResultSetFactory.makeRewindable(resultsActual) ;
         qe.close() ;
@@ -237,7 +236,12 @@ public class QueryTest extends EarlTestCase
             }
             boolean b = resultSetEquivalent(query, resultsExpected, resultsActual) ;
             if ( ! b )
+            {
+                resultsExpected.reset() ;
+                resultsActual.reset() ; 
+                boolean b2 = resultSetEquivalent(query, resultsExpected, resultsActual) ;
                 printFailedResultSetTest(query, qe, resultsExpected, resultsActual) ;
+            }
             assertTrue("Results do not match: "+testItem.getName(), b) ;
             
             return ;

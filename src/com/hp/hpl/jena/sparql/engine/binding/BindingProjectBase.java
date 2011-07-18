@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -13,43 +14,95 @@ import java.util.List ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.core.Var ;
 
-/** A binding modifier that hides nondistinguished variables */
-
-public class BindingNamedVar extends BindingWrapped
+public abstract class BindingProjectBase extends BindingBase
 {
-    public BindingNamedVar(Binding other)
-    {
-        super(other) ;
+    private Binding binding ;
+    private List<Var> actualVars = null ;
+
+    public BindingProjectBase(Binding bind)
+    { 
+        this(bind, null) ;
     }
     
-    @Override
-    public Iterator<Var> vars()
-    {
-        List<Var> x = new ArrayList<Var>() ;
-        for ( Iterator<Var> iter = getWrapped().vars() ; iter.hasNext() ; )
-        {
-            Var var = iter.next() ;
-            if ( ! var.isNamedVar() )
-                continue ;
-            x.add(var) ;
-        }
-        
-        return x.iterator() ;
+    public BindingProjectBase(Binding bind, Binding parent)
+    { 
+        super(parent) ;
+        binding = bind ;
     }
+
+    @Override
+    protected void add1(Var var, Node node)
+    { throw new UnsupportedOperationException("BindingProject.add1") ; }
+
+    @Override
+    protected void checkAdd1(Var var, Node node)
+    {}
+
+    protected abstract boolean accept(Var var) ; 
     
     @Override
-    public Node get(Var var)
+    protected boolean contains1(Var var)
     {
-        if ( ! var.isNamedVar() )
-            return null ;
+        return accept(var) && binding.contains(var) ;
+    }
+
+    @Override
+    protected Node get1(Var var)
+    {
+        if ( ! accept(var) )
+            return null ; 
         return binding.get(var) ;
     }
+
+    @Override
+    protected Iterator<Var> vars1()
+    {
+        return actualVars().iterator() ;
+    }
+
+    private List<Var> actualVars()
+    {
+        if ( actualVars == null )
+        {
+            actualVars = new ArrayList<Var>() ;
+            Iterator<Var> iter = binding.vars() ;
+            for ( ; iter.hasNext() ; )
+            {
+                Var v = iter.next() ;
+                if ( accept(v) )
+                    actualVars.add(v) ;
+            }
+        }
+        return actualVars ;
+    }
+    
+    @Override
+    protected int size1()
+    {
+        return actualVars().size() ;
+    }
     
     
+    
+    // NB is the projection and the binding don't overlap it is also empty. 
+    @Override
+    protected boolean isEmpty1()
+    {
+        if ( binding.isEmpty() ) return true ;
+        if ( size1() == 0  ) return true ;
+        return false ;
+//        for ( Var v : projectionVars )
+//        {
+//            if ( binding.contains(v))  
+//                return false ;
+//        }
+//        return true ;
+    }
 }
 
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

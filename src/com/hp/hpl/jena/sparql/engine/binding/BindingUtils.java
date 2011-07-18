@@ -37,12 +37,14 @@ public class BindingUtils
 //        return Var.lookup(binding, n) ;
 //    }
     
+    /** Convert a query solution to a binding */ 
     public static Binding asBinding(QuerySolution qSolution)
     {
         if ( qSolution == null )
             return null ;
         if ( qSolution instanceof ResultBinding )
-            return ((ResultBinding)qSolution).getBinding() ;
+            // Only named variables.
+            return new BindingProjectNamed( ((ResultBinding)qSolution).getBinding() ) ;
         Binding binding = new BindingMap(null) ;
         addToBinding(binding, qSolution) ;
         return binding ;

@@ -1,5 +1,4 @@
 @prefix : <http://example/> .
 
 :a :p : .
-# And this is the graph name.
-:b :q <data-sq.ttl> .
+:b :q "data" .
