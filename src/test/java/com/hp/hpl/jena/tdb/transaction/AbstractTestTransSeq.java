@@ -16,16 +16,13 @@
  * limitations under the License.
  */
 
-package tx;
+package com.hp.hpl.jena.tdb.transaction;
 
 import java.util.ArrayList ;
 import java.util.List ;
 
-import org.junit.After ;
-import org.junit.Before ;
 import org.junit.Test ;
 import org.openjena.atlas.junit.BaseTest ;
-import org.openjena.atlas.lib.FileOps ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
@@ -44,12 +41,11 @@ import com.hp.hpl.jena.tdb.ConfigTest ;
 import com.hp.hpl.jena.tdb.DatasetGraphTxn ;
 import com.hp.hpl.jena.tdb.ReadWrite ;
 import com.hp.hpl.jena.tdb.StoreConnection ;
-import com.hp.hpl.jena.tdb.base.file.Location ;
+import com.hp.hpl.jena.tdb.TDBException ;
 
-public class TestTransactions extends BaseTest
+/** Basic tests and tests of ordering (single thread) */
+public abstract class AbstractTestTransSeq extends BaseTest
 {
-    
-    
     static Node s = NodeFactory.parseNode("<s>") ;
     static Node p = NodeFactory.parseNode("<p>") ;
     static Node o = NodeFactory.parseNode("<o>") ;
@@ -73,23 +69,12 @@ public class TestTransactions extends BaseTest
     static Quad q3 = new Quad(g,s,p,o3) ;
     static Quad q4 = new Quad(g,s,p,o4) ;
     
-    // Later : AbstractTransactionBasics
-    static boolean MEMORY = true ;
-    
     static final String DIR = ConfigTest.getTestingDirDB() ;
-    static final Location LOC = MEMORY ? Location.mem() : new Location(DIR) ;
     
     private StoreConnection sConn ;
-    
-    @Before public void setup()
-    {
-        if ( ! MEMORY )
-            FileOps.clearDirectory(DIR) ;
-        StoreConnection.reset() ;
-    }
-    
-    @After public void teardown() {} 
-    
+
+    protected abstract StoreConnection getStoreConnection() ;
+
     // Basics.
     
     @Test public void trans_01()
@@ -99,13 +84,6 @@ public class TestTransactions extends BaseTest
         dsg.close() ;
     }
     
-    private StoreConnection getStoreConnection()
-    {
-        if ( MEMORY )
-            return StoreConnection.make(Location.mem()) ;
-        else
-            return StoreConnection.make(LOC) ;
-    }
 
     @Test public void trans_02()
     {
@@ -118,10 +96,9 @@ public class TestTransactions extends BaseTest
         } finally { dsg.close() ; }
     }
     
-    
-    
     @Test public void trans_03()
     {
+        // WRITE-commit-READ
         StoreConnection sConn = getStoreConnection() ;
         DatasetGraphTxn dsg = sConn.begin(ReadWrite.WRITE) ;
         
@@ -137,6 +114,7 @@ public class TestTransactions extends BaseTest
     
     @Test public void trans_04()
     {
+        // WRITE-abort-READ
         StoreConnection sConn = getStoreConnection() ;
         DatasetGraphTxn dsg = sConn.begin(ReadWrite.WRITE) ;
         
@@ -148,6 +126,122 @@ public class TestTransactions extends BaseTest
         DatasetGraphTxn dsg2 = sConn.begin(ReadWrite.READ) ;
         assertFalse(dsg2.contains(q)) ;
         dsg2.close() ;
+    }
+
+
+    @Test (expected=TDBException.class) 
+    public void trans_05()
+    {
+        // READ
+        StoreConnection sConn = getStoreConnection() ;
+        DatasetGraphTxn dsg = sConn.begin(ReadWrite.READ) ;
+        dsg.add(q) ;
+    }
+
+    @Test public void trans_06()
+    {
+        // READ before WRITE remains seeing old view - READ before WRITE starts 
+        StoreConnection sConn = getStoreConnection() ;
+        DatasetGraphTxn dsgR = sConn.begin(ReadWrite.READ) ;
+        DatasetGraphTxn dsgW = sConn.begin(ReadWrite.WRITE) ;
+        
+        dsgW.add(q) ;
+        dsgW.commit() ;
+        dsgW.close() ;
+        
+        assertFalse(dsgR.contains(q)) ;
+        dsgR.close() ;
+    }
+
+    @Test public void trans_07()
+    {
+        // READ before WRITE remains seeing old view - READ after WRITE starts 
+        StoreConnection sConn = getStoreConnection() ;
+        DatasetGraphTxn dsgW = sConn.begin(ReadWrite.WRITE) ;
+        DatasetGraphTxn dsgR = sConn.begin(ReadWrite.READ) ;
+        
+        dsgW.add(q) ;
+        dsgW.commit() ;
+        dsgW.close() ;
+        
+        assertFalse(dsgR.contains(q)) ;
+        dsgR.close() ;
+    }
+    
+    @Test public void trans_08()
+    {
+        StoreConnection sConn = getStoreConnection() ;
+        DatasetGraphTxn dsgW = sConn.begin(ReadWrite.WRITE) ;
+        dsgW.add(q) ;
+        
+        DatasetGraphTxn dsgR1 = sConn.begin(ReadWrite.READ) ;
+        assertFalse(dsgR1.contains(q)) ;  
+        
+        dsgW.commit() ;
+        dsgW.close() ;
+        
+        DatasetGraphTxn dsgR2 = sConn.begin(ReadWrite.READ) ;
+        
+        assertFalse(dsgR1.contains(q)) ;    // Before view
+        assertTrue(dsgR2.contains(q)) ;     // After view
+        dsgR1.close() ;
+        dsgR2.close() ;
+    }
+
+
+    @Test public void trans_09()
+    {
+        StoreConnection sConn = getStoreConnection() ;
+        DatasetGraphTxn dsgW1 = sConn.begin(ReadWrite.WRITE) ;
+        dsgW1.add(q1) ;
+        dsgW1.commit() ;
+        dsgW1.close() ;
+
+        DatasetGraphTxn dsgW2 = sConn.begin(ReadWrite.WRITE) ;
+        dsgW2.add(q2) ;
+        dsgW2.commit() ;
+        dsgW2.close() ;
+
+        DatasetGraphTxn dsgR2 = sConn.begin(ReadWrite.READ) ;
+        
+        assertTrue(dsgR2.contains(q1)) ;
+        assertTrue(dsgR2.contains(q2)) ;
+        
+        dsgR2.close() ;
+    }
+
+    @Test public void trans_10()
+    {
+        StoreConnection sConn = getStoreConnection() ;
+        DatasetGraphTxn dsgW1 = sConn.begin(ReadWrite.WRITE) ;
+        dsgW1.add(q1) ;
+        dsgW1.commit() ;
+        dsgW1.close() ;
+
+        DatasetGraphTxn dsgR1 = sConn.begin(ReadWrite.READ) ;
+        DatasetGraphTxn dsgW2 = sConn.begin(ReadWrite.WRITE) ;
+        dsgW2.add(q2) ;
+        dsgW2.commit() ;
+        dsgW2.close() ;
+
+        DatasetGraphTxn dsgR2 = sConn.begin(ReadWrite.READ) ;
+        assertTrue(dsgR1.contains(q1)) ;
+        assertFalse(dsgR1.contains(q2)) ;
+        
+        assertTrue(dsgR2.contains(q1)) ;
+        assertTrue(dsgR2.contains(q2)) ;
+        
+        dsgR1.close() ;
+        dsgR2.close() ;
+    }
+
+    @Test (expected=TDBTransactionException.class)
+    public void trans_20()
+    {
+        // Two WRITE
+        StoreConnection sConn = getStoreConnection() ;
+        DatasetGraphTxn dsgW1 = sConn.begin(ReadWrite.WRITE) ;
+        DatasetGraphTxn dsgW2 = sConn.begin(ReadWrite.WRITE) ;
     }
 
     static int count(String queryStr, DatasetGraph dsg)
@@ -183,16 +277,6 @@ public class TestTransactions extends BaseTest
             return nodes ;
         } finally { qExec.close() ; }
     }
-    
-    // Patterns.
-    // RS-RE
-    // RS-WS-WE-RS 
-    // RS-WS-WE-WS-WE-RS
-    
-    // Errors to catch:
-    // WS-WS
-    
-    
     
 }
 

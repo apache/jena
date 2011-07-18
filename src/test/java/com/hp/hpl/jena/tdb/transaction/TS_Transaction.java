@@ -16,6 +16,8 @@ import org.junit.runners.Suite ;
     , TestObjectFileTransMem.class
     , TestObjectFileTransStorage.class
     , TestNodeTableTrans.class
+    , TestTransSequentialMem.class
+    , TestTransSequentialDisk.class
 })
 public class TS_Transaction
 {
