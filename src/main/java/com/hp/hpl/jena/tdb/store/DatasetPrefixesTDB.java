@@ -205,8 +205,14 @@ public class DatasetPrefixesTDB implements DatasetPrefixStorage
     /** Return a PrefixMapping for a named graph */
     @Override
     public PrefixMapping getPrefixMapping(String graphName)
-    { return new GraphPrefixesProjection(graphName, this) ; }
-
+    { 
+        PrefixMapping pm = new GraphPrefixesProjection(graphName, this) ;
+        // Force into cache.
+        // See JENA-81
+        pm.getNsPrefixMap() ;
+        return pm ;
+    }
+    
     @Override
     public void close()
     {
