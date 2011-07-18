@@ -48,7 +48,6 @@ public class DatasetPrefixesTDB implements DatasetPrefixStorage
     static final ColumnMap colMap = new ColumnMap("GPU", "GPU") ;
     
     public static final RecordFactory factory = new RecordFactory(3*NodeId.SIZE, 0) ;
-
     
     @Deprecated
     public static DatasetPrefixesTDB create(Location location, ConcurrencyPolicy policy) { return create(IndexBuilder.get(), location, policy) ; }
@@ -201,7 +200,13 @@ public class DatasetPrefixesTDB implements DatasetPrefixStorage
     /** Return a PrefixMapping for a named graph */
     //@Override
     public PrefixMapping getPrefixMapping(String graphName)
-    { return new GraphPrefixesProjection(graphName, this) ; }
+    { 
+        PrefixMapping pm = new GraphPrefixesProjection(graphName, this) ;
+        // Force into cache.
+        // See JENA-81
+        pm.getNsPrefixMap() ;
+        return pm ;
+    }
 
     //@Override
     public void close()
