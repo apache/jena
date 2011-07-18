@@ -169,7 +169,7 @@ public class DatasetBuilderStd implements DatasetBuilder
         
         NodeTable nodeTable = makeNodeTable(location, 
                                             params.indexNode2Id, params.indexId2Node,
-                                            SystemTDB.Node2NodeIdCacheSize, SystemTDB.NodeId2NodeCacheSize) ;
+                                            params.Node2NodeIdCacheSize, params.NodeId2NodeCacheSize) ;
         
         TripleTable tripleTable = makeTripleTable(location, nodeTable, policy) ; 
         QuadTable quadTable = makeQuadTable(location, nodeTable, policy) ;
@@ -385,24 +385,25 @@ public class DatasetBuilderStd implements DatasetBuilder
     // The standard setting
     private static class Params
     {
-        final int      blockSize           = SystemTDB.BlockSize ;
-        final int      memBlockSize        = SystemTDB.BlockSizeTestMem ;
-        final int      readCacheSize       = SystemTDB.BlockReadCacheSize ;
-        final int      writeCacheSize      = SystemTDB.BlockWriteCacheSize ;
+        final int      blockSize            = SystemTDB.BlockSize ;
+        final int      memBlockSize         = SystemTDB.BlockSizeTestMem ;
+        final int      readCacheSize        = SystemTDB.BlockReadCacheSize ;
+        final int      writeCacheSize       = SystemTDB.BlockWriteCacheSize ;
+        final int      Node2NodeIdCacheSize = SystemTDB.Node2NodeIdCacheSize ;
+        final int      NodeId2NodeCacheSize = SystemTDB.NodeId2NodeCacheSize ;
 
-        final String   indexNode2Id        = Names.indexNode2Id ;
-        final String   indexId2Node        = Names.indexId2Node ;
-        final String   primaryIndexTriples = Names.primaryIndexTriples ;
-        final String[] tripleIndexes       = Names.tripleIndexes ;
-        final String   primaryIndexQuads   = Names.primaryIndexQuads ;
-        final String[] quadIndexes         = Names.quadIndexes ;
-        final String   primaryIndexPrefix  = Names.primaryIndexPrefix ;
-        final String[] prefixIndexes       = Names.prefixIndexes ;
-        final String   indexPrefix         = Names.indexPrefix ;
+        final String   indexNode2Id         = Names.indexNode2Id ;
+        final String   indexId2Node         = Names.indexId2Node ;
+        final String   primaryIndexTriples  = Names.primaryIndexTriples ;
+        final String[] tripleIndexes        = Names.tripleIndexes ;
+        final String   primaryIndexQuads    = Names.primaryIndexQuads ;
+        final String[] quadIndexes          = Names.quadIndexes ;
+        final String   primaryIndexPrefix   = Names.primaryIndexPrefix ;
+        final String[] prefixIndexes        = Names.prefixIndexes ;
+        final String   indexPrefix          = Names.indexPrefix ;
 
-        final String   prefixNode2Id       = Names.prefixNode2Id ;
-        final String   prefixId2Node       = Names.prefixId2Node ;
-         
+        final String   prefixNode2Id        = Names.prefixNode2Id ;
+        final String   prefixId2Node        = Names.prefixId2Node ;
     }
     
     interface RecordBlockMgr 
