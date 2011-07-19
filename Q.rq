@@ -1,4 +1,15 @@
-PREFIX apf:     <http://jena.hpl.hp.com/ARQ/property#>
+PREFIX : <http://example/>
 
-SELECT * { ?x apf:version ?y }
-
+SELECT *
+WHERE {
+    {
+        SELECT ?x ((COUNT(?y)) AS ?c)
+        WHERE {
+            ?x :p 123 .
+            OPTIONAL {
+                ?inst a ?x .
+            } .
+        }
+        GROUP BY ?x
+    } .
+}
