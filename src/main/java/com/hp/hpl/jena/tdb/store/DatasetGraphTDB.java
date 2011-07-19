@@ -48,6 +48,8 @@ public class DatasetGraphTDB extends DatasetGraphCaching
     public DatasetGraphTDB(TripleTable tripleTable, QuadTable quadTable, DatasetPrefixesTDB prefixes, 
                            ReorderTransformation transform, StoreConfig config)
     {
+        // ?? Change to 3 nodetables and add TripleTable/QuadTable/PrefixTable wrappers.
+        
         this.tripleTable = tripleTable ;
         this.quadTable = quadTable ;
         this.prefixes = prefixes ;

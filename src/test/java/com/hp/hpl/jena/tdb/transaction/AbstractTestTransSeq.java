@@ -25,7 +25,6 @@ import org.junit.Test ;
 import org.openjena.atlas.junit.BaseTest ;
 
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.query.DatasetFactory ;
 import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.query.QueryExecution ;
@@ -36,7 +35,7 @@ import com.hp.hpl.jena.query.Syntax ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.core.Var ;
-import com.hp.hpl.jena.sparql.util.NodeFactory ;
+import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.tdb.ConfigTest ;
 import com.hp.hpl.jena.tdb.DatasetGraphTxn ;
 import com.hp.hpl.jena.tdb.ReadWrite ;
@@ -46,28 +45,11 @@ import com.hp.hpl.jena.tdb.TDBException ;
 /** Basic tests and tests of ordering (single thread) */
 public abstract class AbstractTestTransSeq extends BaseTest
 {
-    static Node s = NodeFactory.parseNode("<s>") ;
-    static Node p = NodeFactory.parseNode("<p>") ;
-    static Node o = NodeFactory.parseNode("<o>") ;
-    
-    static Node o1 = NodeFactory.parseNode("1") ;
-    static Node o2 = NodeFactory.parseNode("2") ;
-    static Node o3 = NodeFactory.parseNode("3") ;
-    static Node o4 = NodeFactory.parseNode("4") ;
-    
-    static Node g = NodeFactory.parseNode("<g>") ;
-    
-    static Triple t = new Triple(s,p,o) ;
-    static Triple t1 = new Triple(s,p,o1) ;
-    static Triple t2 = new Triple(s,p,o2) ;
-    static Triple t3 = new Triple(s,p,o3) ;
-    static Triple t4 = new Triple(s,p,o4) ;
-    
-    static Quad q = new Quad(g,s,p,o) ;
-    static Quad q1 = new Quad(g,s,p,o1) ;
-    static Quad q2 = new Quad(g,s,p,o2) ;
-    static Quad q3 = new Quad(g,s,p,o3) ;
-    static Quad q4 = new Quad(g,s,p,o4) ;
+    static Quad q  = SSE.parseQuad("(<g> <s> <p> <o>) ") ;
+    static Quad q1 = SSE.parseQuad("(<g> <s> <p> <o1>)") ;
+    static Quad q2 = SSE.parseQuad("(<g> <s> <p> <o2>)") ;
+    static Quad q3 = SSE.parseQuad("(<g> <s> <p> <o3>)") ;
+    static Quad q4 = SSE.parseQuad("(<g> <s> <p> <o4>)") ;
     
     static final String DIR = ConfigTest.getTestingDirDB() ;
     
@@ -127,15 +109,38 @@ public abstract class AbstractTestTransSeq extends BaseTest
         assertFalse(dsg2.contains(q)) ;
         dsg2.close() ;
     }
-
-
-    @Test (expected=TDBException.class) 
-    public void trans_05()
+    
+    @Test public void trans_05()
     {
-        // READ
+        // READ(block)-WRITE-commit-WRITE-abort-WRITE-commit
         StoreConnection sConn = getStoreConnection() ;
-        DatasetGraphTxn dsg = sConn.begin(ReadWrite.READ) ;
-        dsg.add(q) ;
+        DatasetGraphTxn dsgR1 = sConn.begin(ReadWrite.READ) ;
+        
+        DatasetGraphTxn dsgW1 = sConn.begin(ReadWrite.WRITE) ;
+        dsgW1.add(q1) ;
+        dsgW1.commit() ;
+        dsgW1.close() ;
+        assertFalse(dsgR1.contains(q1)) ;
+        
+        DatasetGraphTxn dsgW2 = sConn.begin(ReadWrite.WRITE) ;
+        dsgW2.add(q2) ;
+        dsgW2.abort() ; // ABORT
+        dsgW2.close() ;
+        assertFalse(dsgR1.contains(q2)) ;
+
+        DatasetGraphTxn dsgW3 = sConn.begin(ReadWrite.WRITE) ;
+        dsgW3.add(q3) ;
+        dsgW3.commit() ;
+        dsgW3.close() ;
+        assertFalse(dsgR1.contains(q3)) ;
+        
+        dsgR1.close() ;
+        
+        DatasetGraphTxn dsgR2 = sConn.begin(ReadWrite.READ) ;
+        assertTrue(dsgR2.contains(q1)) ;
+        assertFalse(dsgR2.contains(q2)) ;
+        assertTrue(dsgR2.contains(q3)) ;
+        dsgR2.close() ;
     }
 
     @Test public void trans_06()
@@ -243,6 +248,16 @@ public abstract class AbstractTestTransSeq extends BaseTest
         DatasetGraphTxn dsgW1 = sConn.begin(ReadWrite.WRITE) ;
         DatasetGraphTxn dsgW2 = sConn.begin(ReadWrite.WRITE) ;
     }
+    
+    @Test (expected=TDBException.class) 
+    public void trans_21()
+    {
+        // READ-add
+        StoreConnection sConn = getStoreConnection() ;
+        DatasetGraphTxn dsg = sConn.begin(ReadWrite.READ) ;
+        dsg.add(q) ;
+    }
+
 
     static int count(String queryStr, DatasetGraph dsg)
     {
