@@ -39,8 +39,6 @@ public class OpWalker
     {
         op.visit(walkerVisitor) ;
     }
-
-    
     
     public static class WalkerVisitor extends OpVisitorByType
     {

@@ -127,14 +127,13 @@ public class RunARQ
     
     public static void main(String[] argv) throws Exception
     {
-        arq.qexpr.main("CONCAT('abc'@en, 'def')") ; exit(0) ;
-        
         //arq.sparql.main("--data=D.ttl", "--query=Q.rq") ;
         //arq.qparse.main("--query=Q.rq", "--print=opt") ;
-        
+        String DIR = "/home/afs/W3C/SPARQL-docs/tests/data-sparql11/subquery/" ;
         //sparql --strict --namedGraph data-sq.ttl --query graph-subquery-1.rq 
-        arq.sparql.main("--namedGraph=testing/ARQ/SubQuery/data-sq.ttl", "--query=testing/ARQ/SubQuery/graph-subquery-1.rq") ;
-        
+        arq.sparql.main("--namedGraph="+DIR+"sq01.rdf",
+                        "--strict", 
+                        "--query="+DIR+"sq03.rq") ;
         
         exit(0) ;
         

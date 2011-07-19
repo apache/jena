@@ -127,7 +127,12 @@ public class Optimize implements Rewrite
             op = apply("Delabel", new TransformRemoveLabels(), op) ;
         }
 
+        // ** TransformScopeRename::
+        // This is a requirement for the linearization execution that the default
+        // ARQ query engine uses where possible.  So the transformation must be done
+        // by QueryEngineBase if no optimziation is done. 
         op = TransformScopeRename.transform(op) ;
+        
         
         // Remove "group of one" join 
         // e..g CONSTRUCT {} WHERE { SELECT ... } 
@@ -157,7 +162,6 @@ public class Optimize implements Rewrite
         
         if ( context.isTrueOrUndef(ARQ.optFilterEquality) )
         {
-            // 
             boolean termStrings = context.isDefined(ARQ.optTermStrings) ;
             op = apply("Filter Equality", new TransformFilterEquality(!termStrings), op) ;
         }

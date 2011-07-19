@@ -10,6 +10,7 @@ import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.sparql.algebra.Algebra ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
+import com.hp.hpl.jena.sparql.algebra.optimize.TransformScopeRename ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.Substitute ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
@@ -68,8 +69,15 @@ public class QueryEngineMain extends QueryEngineBase
     protected Op modifyOp(Op op)
     { 
         if ( context.isFalse(ARQ.optimization) )
-            return op ;
+            return minimalModifyOp(op) ;
         return Algebra.optimize(op, super.context) ;
+    }
+    
+    protected Op minimalModifyOp(Op op)
+    {
+        // Must always do this for QueryEngineMain
+        // The optimizer does do this.
+        return TransformScopeRename.transform(op) ;
     }
     
 //    @Override

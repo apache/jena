@@ -34,19 +34,19 @@ import com.hp.hpl.jena.sparql.util.Utils ;
 
 public class qparse extends CmdARQ
 {
-    ModQueryIn    modQuery   =    new ModQueryIn() ;
-    ModQueryOut   modOutput  =    new ModQueryOut() ; 
-    ModEngine     modEngine  =    new ModEngine() ;
-    protected final ArgDecl argDeclPrint  = new ArgDecl(ArgDecl.HasValue, "print") ;
-    protected final ArgDecl argDeclOpt  = new ArgDecl(ArgDecl.NoValue, "opt", "optimize") ;
+    protected ModQueryIn    modQuery        = new ModQueryIn() ;
+    protected ModQueryOut   modOutput       = new ModQueryOut() ; 
+    protected ModEngine     modEngine       = new ModEngine() ;
+    protected final ArgDecl argDeclPrint    = new ArgDecl(ArgDecl.HasValue, "print") ;
+    protected final ArgDecl argDeclOpt      = new ArgDecl(ArgDecl.NoValue, "opt", "optimize") ;
     protected final ArgDecl argDeclExplain  = new ArgDecl(ArgDecl.NoValue, "explain") ;
     
-    boolean printQuery = false ;
-    boolean printOp = false ;
-    boolean printOpt = false ;
-    boolean printQuad = false ;
-    boolean printQuadOpt = false ;
-    boolean printPlan = false ;
+    protected boolean printQuery            = false ;
+    protected boolean printOp               = false ;
+    protected boolean printOpt              = false ;
+    protected boolean printQuad             = false ;
+    protected boolean printQuadOpt          = false ;
+    protected boolean printPlan             = false ;
     
     public static void main(String... argv)
     {

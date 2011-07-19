@@ -1,15 +1,8 @@
-PREFIX : <http://example/>
+PREFIX ex:	<http://www.example.org/schema#>
+PREFIX in:	<http://www.example.org/instance#>
 
-SELECT *
-WHERE {
-    {
-        SELECT ?x ((COUNT(?y)) AS ?c)
-        WHERE {
-            ?x :p 123 .
-            OPTIONAL {
-                ?inst a ?x .
-            } .
-        }
-        GROUP BY ?x
-    } .
+SELECT ?x WHERE {
+GRAPH ?g {
+  {SELECT ?x WHERE {?x ?p ?g}}
+  }
 }
