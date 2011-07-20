@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.util;
+package com.hp.hpl.jena.sparql.graph;
 
 import java.util.Iterator ;
 
@@ -25,6 +25,8 @@ import com.hp.hpl.jena.util.iterator.Filter ;
 
 public class PlainGraphMem extends SmallGraphMem
 {
+    public PlainGraphMem() {}
+    
     // In a normal memory graph, 
     // TripleMatchFilter uses
     //   Triple.matches uses

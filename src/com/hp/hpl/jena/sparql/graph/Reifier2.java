@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.core;
+package com.hp.hpl.jena.sparql.graph;
 
 
 import java.util.Collection ;
@@ -27,6 +27,9 @@ import com.hp.hpl.jena.shared.CannotReifyException ;
 import com.hp.hpl.jena.shared.ReificationStyle ;
 import com.hp.hpl.jena.sparql.algebra.Algebra ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
+import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
+import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.Plan ;
 import com.hp.hpl.jena.sparql.engine.QueryEngineFactory ;
 import com.hp.hpl.jena.sparql.engine.QueryEngineRegistry ;
@@ -83,7 +86,7 @@ public class Reifier2 implements Reifier
     private static class MapperToNode extends NiceIterator<Node>
     {
         private final QueryIterator iter ;
-        private Var var ;
+        private final Var var ;
         MapperToNode(QueryIterator iter, Var var) { this.iter = iter ; this.var = var ; }
         @Override public boolean hasNext() { return iter.hasNext() ; } 
         @Override public Node next()
@@ -271,15 +274,14 @@ public class Reifier2 implements Reifier
     //@Override
     public void remove(Triple triple)
     {
-        remove(null, triple) ;
+        // Materialize the nodes to delete - avoid ConcurrentModificationException.
+        for ( Node n : Iter.toList(allNodes(triple)) )
+            remove(n, triple) ;
     }
 
     //@Override
     public void remove(Node node, Triple triple)
     {
-        if ( node == null )
-            node = Node.ANY ;
-        
         //QueryIterator qIter = nodesReifTriple(node, triple) ;
         Set<Triple> triples = new HashSet<Triple>();
         triplesToZap(triples, node, rdfType, statement) ;

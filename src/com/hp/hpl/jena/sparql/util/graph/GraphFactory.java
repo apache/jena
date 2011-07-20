@@ -1,6 +1,7 @@
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
- * All rights reserved.
+ * (c) Copyright 2011 Epimorphics Ltd.
+s * All rights reserved.
  * [See end of file]
  */
 
@@ -11,7 +12,7 @@ import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
-import com.hp.hpl.jena.sparql.util.PlainGraphMem ;
+import com.hp.hpl.jena.sparql.graph.GraphMemSimple2 ;
 import com.hp.hpl.jena.sparql.util.RefBoolean ;
 
 /** Ways to make graphs and models */
@@ -42,7 +43,7 @@ public class GraphFactory
     /** Very simple graph that uses same-term for find() (small-scale use only) */
     public static Graph createPlainGraph()
     {
-        return new PlainGraphMem() ;
+        return new GraphMemSimple2() ; // new PlainGraphMem() ;
     }
 
     public static Graph sinkGraph()
@@ -68,6 +69,8 @@ public class GraphFactory
 
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
+ * 
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

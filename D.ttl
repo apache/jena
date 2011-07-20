@@ -3,7 +3,7 @@
 @prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix : <http://example/> .
 
-:a rdf:type rdf:Bag .
-:a rdf:_1 1 .
-:a rdf:_2 2 .
-:a rdfs:member 0 .
+:x1 :p 123 .
+:x2 :p 123 .
+
+
