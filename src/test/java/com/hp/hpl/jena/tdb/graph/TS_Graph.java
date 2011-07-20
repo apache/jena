@@ -11,8 +11,7 @@ import org.junit.runners.Suite ;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
-    TestReifier2.class
-    , TestPrefixMappingTDB.class
+    TestPrefixMappingTDB.class
     , TestBulkUpdateTDB.class
     , TestGraphsTDB.class
     , TestDatasetGraphTDB.class
