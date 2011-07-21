@@ -18,25 +18,12 @@
 
 package com.hp.hpl.jena.tdb.transaction;
 
-import java.util.ArrayList ;
-import java.util.List ;
 
 import org.junit.Test ;
 import org.openjena.atlas.junit.BaseTest ;
 
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.query.DatasetFactory ;
-import com.hp.hpl.jena.query.Query ;
-import com.hp.hpl.jena.query.QueryExecution ;
-import com.hp.hpl.jena.query.QueryExecutionFactory ;
-import com.hp.hpl.jena.query.QueryFactory ;
-import com.hp.hpl.jena.query.ResultSet ;
-import com.hp.hpl.jena.query.Syntax ;
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.Quad ;
-import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
-import com.hp.hpl.jena.tdb.ConfigTest ;
 import com.hp.hpl.jena.tdb.DatasetGraphTxn ;
 import com.hp.hpl.jena.tdb.ReadWrite ;
 import com.hp.hpl.jena.tdb.StoreConnection ;
@@ -51,8 +38,7 @@ public abstract class AbstractTestTransSeq extends BaseTest
     static Quad q3 = SSE.parseQuad("(<g> <s> <p> <o3>)") ;
     static Quad q4 = SSE.parseQuad("(<g> <s> <p> <o4>)") ;
     
-    static final String DIR = ConfigTest.getTestingDirDB() ;
-    
+   
     private StoreConnection sConn ;
 
     protected abstract StoreConnection getStoreConnection() ;
@@ -257,41 +243,20 @@ public abstract class AbstractTestTransSeq extends BaseTest
         DatasetGraphTxn dsg = sConn.begin(ReadWrite.READ) ;
         dsg.add(q) ;
     }
-
-
-    static int count(String queryStr, DatasetGraph dsg)
-    {
-        int counter = 0 ;
-        Query query = QueryFactory.create(queryStr, Syntax.syntaxARQ) ;
-        QueryExecution qExec = QueryExecutionFactory.create(query, DatasetFactory.create(dsg)) ;
-        try {
-            ResultSet rs = qExec.execSelect() ;
-            for (; rs.hasNext() ; )
-            {
-                rs.nextBinding() ;
-                counter++ ;
-            }
-            return counter ;
-        } finally { qExec.close() ; }
-    }
     
-    // To QueryExecUtils?
-    public static List<Node> query(String queryStr, String var, DatasetGraphTxn dsg)
+    //@Test 
+    public void trans_30()
     {
-        Var v = Var.alloc(var) ;
-        Query query = QueryFactory.create(queryStr, Syntax.syntaxARQ) ;
-        QueryExecution qExec = QueryExecutionFactory.create(query, DatasetFactory.create(dsg)) ;
-        List<Node> nodes = new ArrayList<Node>() ;
-        try {
-            ResultSet rs = qExec.execSelect() ;
-            for (; rs.hasNext() ; )
-            {
-                Node n = rs.nextBinding().get(v) ;
-                nodes.add(n) ;
-            }
-            return nodes ;
-        } finally { qExec.close() ; }
+        // WRITE lots
+        StoreConnection sConn = getStoreConnection() ;
+        DatasetGraphTxn dsg = sConn.begin(ReadWrite.WRITE) ;
+        for ( int i = 0 ; i < 400 ; i++ )
+        {
+            Quad q = SSE.parseQuad("(_ <s> <p> "+i+")") ;
+            dsg.add(q) ;
+        }
+        dsg.commit() ;
+        dsg.close() ;
     }
-    
 }
 

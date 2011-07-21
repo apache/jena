@@ -10,10 +10,18 @@ import java.io.File ;
 
 import org.openjena.atlas.lib.Bytes ;
 import org.openjena.atlas.lib.FileOps ;
+import org.openjena.atlas.lib.Sink ;
+import org.openjena.atlas.lib.SinkNull ;
+import org.openjena.atlas.lib.SinkWrapper ;
 import org.openjena.atlas.logging.Log ;
+import org.openjena.riot.RiotReader ;
 import org.openjena.riot.RiotWriter ;
+import org.openjena.riot.WebReader ;
+import org.openjena.riot.lang.SinkToGraph ;
+import org.openjena.riot.lang.SinkTriplesToGraph ;
 
 import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.query.DatasetFactory ;
 import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.query.QueryExecution ;
@@ -66,24 +74,30 @@ public class TxMain
         initFS() ;
         // Named memory locations? OTT
         //StoreConnection sConn = StoreConnection.make(Location.mem()) ; 
-        StoreConnection sConn = StoreConnection.make(DBdir) ;
+        StoreConnection sConn = StoreConnection.make(Location.mem()) ;
         
         
         // ---- Simple
-        if ( false )
+        if ( true )
         {
+            DatasetGraphTxn dsgRead = null ;
+            //dsgRead = sConn.begin(ReadWrite.READ) ;
             DatasetGraphTxn dsg = sConn.begin(ReadWrite.WRITE) ;
-            //load("D.ttl", dsg) ;    // Loads 3 triples
-            dsg.getDefaultGraph().add(SSE.parseTriple("(<s> <p> <o>)")) ;
-            dsg.add(SSE.parseQuad("(<g> <s> <p> 123)")) ;
-            dsg.add(SSE.parseQuad("(_ <s> <p> 123)")) ;
+            // Duplicates.
+            load("tracks.nt", dsg) ;
+            
+            /*
+             * Exception during journal replay
+com.hp.hpl.jena.tdb.base.file.FileException: FileAccessMem: Wrong size block.  Expected=8192 : actual=8156
+    at com.hp.hpl.jena.tdb.base.file.BlockAccessMem.check(BlockAccessMem.java:130)
+    at com.hp.hpl.jena.tdb.base.file.BlockAccessMem.check(BlockAccessMem.java:114)
+             */
+            //load("S.nt", dsg) ;
             
             dsg.commit() ;
             dsg.close() ;
-            DatasetGraphTxn dsgRead = sConn.begin(ReadWrite.READ) ;
-            dump(dsgRead) ;
-            query("SELECT ?g (count(*) AS ?C) { { ?s ?p ?o } UNION { GRAPH ?g { ?s ?p ?o } } } GROUP BY ?g", dsgRead) ;
-            dsgRead.close() ;
+            if ( dsgRead != null ) 
+                dsgRead.close() ;
             exit(0) ;
         }
         
@@ -212,9 +226,26 @@ public class TxMain
         System.out.print("**** ") ;
         System.out.println(label) ;
         System.out.println("Load: "+file) ;
-        Model m = ModelFactory.createModelForGraph(dsg.getDefaultGraph()) ;
-        FileManager.get().readModel(m, file) ;
         
+        Sink<Triple> sink = new SinkTriplesToGraph(dsg.getDefaultGraph()) ;
+        
+        sink = new SinkWrapper<Triple>(sink) {
+            int count = 0 ;
+            @Override
+            public void send(Triple item)
+            {
+                try {
+                sink.send(item) ;
+                count++ ;
+                } catch (RuntimeException ex)
+                {
+                    System.err.println("exception @"+count) ;
+                    throw ex ;
+                }
+            }
+        } ;
+        
+        RiotReader.parseTriples(file, sink) ;
     }
 
     public static void update(String updateStr, DatasetGraph dsg)

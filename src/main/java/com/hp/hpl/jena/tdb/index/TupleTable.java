@@ -9,8 +9,13 @@ package com.hp.hpl.jena.tdb.index;
 
 import static java.lang.String.format ;
 
+import java.io.FileOutputStream ;
+import java.io.IOException ;
+import java.io.OutputStream ;
 import java.util.Iterator ;
 
+import org.openjena.atlas.io.IO ;
+import org.openjena.atlas.io.IndentedWriter ;
 import org.openjena.atlas.lib.Closeable ;
 import org.openjena.atlas.lib.Sync ;
 import org.openjena.atlas.lib.Tuple ;
@@ -18,6 +23,7 @@ import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.tdb.TDBException ;
+import com.hp.hpl.jena.tdb.index.bplustree.BPlusTree ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
 
 /** A TupleTable is a set of TupleIndexes.  The first TupleIndex is the "primary" index and must exist */
@@ -58,6 +64,14 @@ public class TupleTable implements Sync, Closeable
                     duplicate(t) ;
                     return false ;
                 }
+                try {
+                    OutputStream f = new FileOutputStream("LOG") ;
+                    IndentedWriter w = new IndentedWriter(f) ;
+                    ( (BPlusTree) ((TupleIndexRecord)indexes[i]).getRangeIndex() ).dump(w) ;
+                    w.flush() ;
+                    f.flush() ;
+                    f.close() ;
+                } catch ( IOException ex ) {}
                 throw new TDBException(format("Secondary index duplicate: %s -> %s",indexes[i].getLabel(), t)) ;
             }
         }

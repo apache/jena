@@ -13,6 +13,7 @@ import java.util.Iterator ;
 import java.util.Map ;
 import java.util.Set ;
 
+import org.openjena.atlas.lib.ByteBufferLib ;
 import org.openjena.atlas.logging.Log ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
@@ -99,17 +100,13 @@ public class BlockMgrJournal implements BlockMgr, Transactional
     public Block allocate(int blockSize)
     {
         checkIfClosed() ;
-        
-        // Could allocate ready to go to Journal.
-        // Need to get the id though.
-
         // Might as well allocate now. 
         // This allocates the id.
         Block block = blockMgr.allocate(blockSize) ;
-        
+        // [TxTDB:TODO]
         // But we "copy" it by allocating ByteBuffer space.
-        ByteBuffer byteBuffer = ByteBuffer.allocate(blockSize) ;
-        block = new Block(block.getId(), byteBuffer) ;
+        block = block.replicate( ) ;
+        writeBlocks.put(block.getId(), block) ;
         return block ;
     }
 

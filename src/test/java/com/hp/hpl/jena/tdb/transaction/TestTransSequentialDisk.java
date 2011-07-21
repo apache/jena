@@ -22,12 +22,14 @@ import org.junit.After ;
 import org.junit.Before ;
 import org.openjena.atlas.lib.FileOps ;
 
+import com.hp.hpl.jena.tdb.ConfigTest ;
 import com.hp.hpl.jena.tdb.StoreConnection ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 
 /** Basic tests and tests of ordering (single thread) */
 public class TestTransSequentialDisk extends AbstractTestTransSeq
 {
+    static final String DIR = ConfigTest.getTestingDirDB() ;
     static final Location LOC = new Location(DIR) ;
     
     @Before public void setup()
