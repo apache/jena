@@ -67,7 +67,7 @@ public class PageBlockMgr<T extends Page>
     
     public void write(T page)
     {
-        // Catch updates to non-trasnactioned datasetgraph.  Check in BlockMgrJournal instead.
+        // Catch updates to non-transactioned datasetgraph.  Check in BlockMgrJournal instead.
 //        if ( ! page.getBackingBlock().isModified() )
 //            warn("Page for block "+page.getBackingBlock().getId()+" not modified") ;
         
