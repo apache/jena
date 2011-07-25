@@ -51,7 +51,7 @@ public class NodeTableTrans implements NodeTable, Transactional
         this.nodeIndex = nodeIndex ;
         this.journal = journal ;
         nodeTableJournal = new NodeTableNative(nodeIndex, journal) ;
-        nodeTableJournal = NodeTableCache.create(sub, CacheSize, CacheSize) ;
+        nodeTableJournal = NodeTableCache.create(nodeTableJournal, CacheSize, CacheSize) ;
     }
 
     public void setPassthrough(boolean v)   { passthrough = v ; }

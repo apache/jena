@@ -28,6 +28,7 @@ import java.util.concurrent.TimeUnit ;
 import java.util.concurrent.atomic.AtomicInteger ;
 
 import org.openjena.atlas.lib.FileOps ;
+import org.openjena.atlas.lib.Lib ;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.graph.Node ;
@@ -202,9 +203,9 @@ public class TestTransSystem
         protected abstract int change(DatasetGraphTxn dsg, int id, int i) ;
     }
 
-    static long pause(int maxInternal)
+    static void pause(int maxInternal)
     {
-        return Math.round(Math.random()*maxInternal) ;
+        Lib.sleep((int)Math.round(Math.random()*maxInternal)) ;
     }
     
     static Quad genQuad(int value)
