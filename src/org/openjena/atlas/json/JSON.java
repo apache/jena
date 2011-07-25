@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -146,27 +147,30 @@ public class JSON
     /** Write out a JSON value - pass a JSON Object to get legal exchangeable JSON */
     public static void write(OutputStream output, JsonValue jValue)
     {
-        JsonWriter w = new JsonWriter(output) ;
-        jValue.visit(w) ;
+        IndentedWriter iOut = new IndentedWriter(output) ;
+        write(iOut, jValue) ;
+        iOut.flush() ;
     }
     
     /** Write out a JSON value - pass a JSON Object to get legal exchangeable JSON */
     public static void write(IndentedWriter output, JsonValue jValue)
     {
         JsonWriter w = new JsonWriter(output) ;
+        w.startOutput() ;
         jValue.visit(w) ;
+        w.finishOutput() ;
     }
 
     /** Write out a JSON value to - pass a JSON Object to get legal exchangeable JSON */
     public static void write(JsonValue jValue)
     {
         write(IndentedWriter.stdout, jValue) ;
-        IndentedWriter.stdout.flush() ;
     }
 }
 
 /*
  * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

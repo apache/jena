@@ -19,6 +19,7 @@ import java.util.concurrent.Executors ;
 
 import org.openjena.atlas.io.IndentedWriter ;
 import org.openjena.atlas.json.JSON ;
+import org.openjena.atlas.json.JsonObject ;
 import org.openjena.atlas.json.JsonValue ;
 import org.openjena.atlas.lib.Lib ;
 import org.openjena.atlas.lib.Sink ;
@@ -127,6 +128,14 @@ public class RunARQ
     
     public static void main(String[] argv) throws Exception
     {
+        JsonObject result = new JsonObject();
+        result.put("progress", 100);
+        result.put("state", "Running");
+        JSON.write(System.out, result);
+        System.out.println() ;
+        System.out.flush();
+        exit(0) ;
+        
         //arq.sparql.main("--data=D.ttl", "--query=Q.rq") ;
         //arq.qparse.main("--query=Q.rq", "--print=opt") ;
         String DIR = "/home/afs/W3C/SPARQL-docs/tests/data-sparql11/subquery/" ;

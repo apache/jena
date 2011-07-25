@@ -29,6 +29,7 @@ public class JsonWriter implements JsonVisitor
     IndentedWriter out ;
     
     public JsonWriter() { this(IndentedWriter.stdout) ; }
+    @Deprecated
     public JsonWriter(OutputStream ps) { this(new IndentedWriter(ps)) ; }
     public JsonWriter(IndentedWriter ps) { out = ps ; }
     
