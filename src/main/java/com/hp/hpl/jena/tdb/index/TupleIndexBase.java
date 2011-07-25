@@ -17,7 +17,7 @@ import com.hp.hpl.jena.tdb.store.NodeId ;
 
 public abstract class TupleIndexBase implements TupleIndex
 {
-    private static final boolean Check = true ;
+    private static final boolean Check = false ;
 
     protected final ColumnMap colMap ;
     protected final int tupleLength ;

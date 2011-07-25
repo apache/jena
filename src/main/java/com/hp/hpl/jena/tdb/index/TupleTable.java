@@ -14,7 +14,6 @@ import java.io.IOException ;
 import java.io.OutputStream ;
 import java.util.Iterator ;
 
-import org.openjena.atlas.io.IO ;
 import org.openjena.atlas.io.IndentedWriter ;
 import org.openjena.atlas.lib.Closeable ;
 import org.openjena.atlas.lib.Sync ;
@@ -48,15 +47,31 @@ public class TupleTable implements Sync, Closeable
         
     }
     
+    int x = 0 ;
+    int added = 0 ;
+    
     /** Insert a tuple - return true if it was really added, false if it was a duplicate */
-    public boolean add( Tuple<NodeId> t) 
+    public boolean add(Tuple<NodeId> t) 
     { 
         if ( tupleLen != t.size() )
             throw new TDBException(format("Mismatch: inserting tuple of length %d into a table of tuples of length %d", t.size(), tupleLen)) ;
 
+        x++ ;
+        boolean thisOne = ( t.get(0).getId() == 0xD0 && t.get(1).getId() == 0x01 && t.get(2).getId() == 0x0C ) ;
+        
+        if ( thisOne )
+            System.err.printf("Target: %s (%d)\n",t, x) ;
+        
+        if ( thisOne )
+        {
+            if ( ! indexes[0].find(t).hasNext() )
+                System.err.printf("Absent[1]: @%d\n", x) ;
+        }
+
         for ( int i = 0 ; i < indexes.length ; i++ )
         {
             if ( indexes[i] == null ) continue ;
+            
             if ( ! indexes[i].add(t) )
             {
                 if ( i == 0 )
@@ -64,22 +79,51 @@ public class TupleTable implements Sync, Closeable
                     duplicate(t) ;
                     return false ;
                 }
-                try {
-                    OutputStream f = new FileOutputStream("LOG") ;
-                    IndentedWriter w = new IndentedWriter(f) ;
-                    ( (BPlusTree) ((TupleIndexRecord)indexes[i]).getRangeIndex() ).dump(w) ;
-                    w.flush() ;
-                    f.flush() ;
-                    f.close() ;
-                } catch ( IOException ex ) {}
+                unexpectedDuplicate(t, i) ;
                 throw new TDBException(format("Secondary index duplicate: %s -> %s",indexes[i].getLabel(), t)) ;
             }
+            
         }
+        
+        if ( thisOne )
+            added ++ ;
+
+        if ( added > 0 ) // && thisOne )
+        {
+            if ( ! indexes[0].find(t).hasNext() )
+                System.err.printf("Gone[2]: @%d\n", x) ;
+        }
+        
+        
+        
         return true ;
     }
 
     protected void duplicate(Tuple<NodeId> t)
-    { }
+    {
+        //System.err.printf("Duplicate on primary index: %s\n",t) ;
+    }
+    
+    protected void unexpectedDuplicate(Tuple<NodeId> t, int i)
+    { 
+        System.err.printf("Duplicate on secondary index: %s\n",t) ;
+        for ( TupleIndex index : indexes )
+        {
+            if ( index.find(t) != null )
+                System.err.printf("%s: Present\n",index.getLabel()) ;
+            else
+                System.err.printf("%s: Absent\n",index.getLabel()) ;
+        }
+        
+        try {
+            OutputStream f = new FileOutputStream("LOG") ;
+            IndentedWriter w = new IndentedWriter(f) ;
+            ( (BPlusTree) ((TupleIndexRecord)indexes[i]).getRangeIndex() ).dump(w) ;
+            w.flush() ;
+            f.flush() ;
+            f.close() ;
+        } catch ( IOException ex ) {}
+    }
 
     /** Delete a tuple - return true if it was deleted, false if it didn't exist */
     public boolean delete( Tuple<NodeId> t ) 

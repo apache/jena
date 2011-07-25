@@ -6,14 +6,12 @@
 
 package com.hp.hpl.jena.tdb.transaction;
 
-import java.nio.ByteBuffer ;
 import java.util.HashMap ;
 import java.util.HashSet ;
 import java.util.Iterator ;
 import java.util.Map ;
 import java.util.Set ;
 
-import org.openjena.atlas.lib.ByteBufferLib ;
 import org.openjena.atlas.logging.Log ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;

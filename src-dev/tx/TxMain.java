@@ -36,6 +36,7 @@ import com.hp.hpl.jena.sparql.util.QueryExecUtils ;
 import com.hp.hpl.jena.tdb.DatasetGraphTxn ;
 import com.hp.hpl.jena.tdb.ReadWrite ;
 import com.hp.hpl.jena.tdb.StoreConnection ;
+import com.hp.hpl.jena.tdb.TDBFactory ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.base.record.Record ;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
@@ -72,6 +73,18 @@ public class TxMain
         // and one in-mem sConn DB
         
         initFS() ;
+        
+        String DATA = "/home/afs/Datasets/MusicBrainz/tracks.nt.gz" ;
+        
+        if ( false )
+        {
+            DatasetGraph dsg = TDBFactory.createDatasetGraph() ; 
+            Sink<Triple> sink = new SinkTriplesToGraph(dsg.getDefaultGraph()) ;
+            RiotReader.parseTriples(DATA, sink) ;
+            exit(0) ;
+        }
+        
+        
         // Named memory locations? OTT
         //StoreConnection sConn = StoreConnection.make(Location.mem()) ; 
         StoreConnection sConn = StoreConnection.make(Location.mem()) ;
@@ -84,7 +97,7 @@ public class TxMain
             //dsgRead = sConn.begin(ReadWrite.READ) ;
             DatasetGraphTxn dsg = sConn.begin(ReadWrite.WRITE) ;
             // Duplicates.
-            load("tracks.nt", dsg) ;
+            load(DATA, dsg) ;
             
             /*
              * Exception during journal replay

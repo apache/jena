@@ -473,8 +473,13 @@ public final class BPTreeNode extends BPTreePage
      */
     private void split(int idx, BPTreePage y)
     {
-        if ( logging() )
+        boolean logging = logging() ; 
+        //logging = true ;
+        if ( logging )
+        {
             log.debug(format("split >> y.id=%d  this.id=%d idx=%d", y.getId(), this.id, idx)) ;
+            log.debug("split --   "+y) ;
+        }
             
         internalCheckNode() ;
         if ( CheckingNode )
@@ -495,11 +500,11 @@ public final class BPTreeNode extends BPTreePage
         Record splitKey = y.getSplitKey() ;
         splitKey = keyRecord(splitKey) ;
         
-        if ( logging() )
+        if ( logging )
             log.debug(format("Split key: %s", splitKey)) ;
 
         BPTreePage z = y.split();
-        if ( logging() )
+        if ( logging )
         {
             log.debug(format("Split: %s", y)) ;
             log.debug(format("Split: %s", z)) ;
@@ -521,7 +526,7 @@ public final class BPTreeNode extends BPTreePage
         ptrs.add(idx+1, z.getId()) ;
         count++ ;
         
-        if ( logging() )
+        if ( logging )
         {
             log.debug("split <<   "+this) ;
             log.debug("split <<   "+y) ;
