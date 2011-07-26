@@ -203,7 +203,8 @@ public class BlockMgrJournal implements BlockMgr, Transactional
     @Override
     public void overwrite(Block block)
     {
-        write(block) ;
+        // We are in a chain of BlockMgrs - pass down to the base.
+        blockMgr.overwrite(block) ;
     }
 
     @Override

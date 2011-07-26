@@ -19,6 +19,7 @@ public class DevTx
     // * Dataset API
     // * UUID per committed version to support etags
     // * Promote => duplicate even when not necessary.  BlockMgr property.
+    // * Monitoring and stats : JMX.
     
     
     // Tidy up:

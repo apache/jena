@@ -20,69 +20,93 @@ package com.hp.hpl.jena.tdb.transaction;
 
 import static com.hp.hpl.jena.tdb.transaction.TransTestLib.count ;
 
-import java.util.Date ;
 import java.util.concurrent.Callable ;
 import java.util.concurrent.ExecutorService ;
 import java.util.concurrent.Executors ;
 import java.util.concurrent.TimeUnit ;
 import java.util.concurrent.atomic.AtomicInteger ;
 
+import org.junit.AfterClass ;
+import org.junit.BeforeClass ;
 import org.openjena.atlas.lib.FileOps ;
 import org.openjena.atlas.lib.Lib ;
-import org.openjena.atlas.lib.RandomLib ;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
-import com.hp.hpl.jena.tdb.ConfigTest ;
 import com.hp.hpl.jena.tdb.DatasetGraphTxn ;
 import com.hp.hpl.jena.tdb.ReadWrite ;
 import com.hp.hpl.jena.tdb.StoreConnection ;
+import com.hp.hpl.jena.tdb.base.file.Location ;
 
 /** System testing of the transactions. */
 public class TestTransSystem
 {
-    static ExecutorService execService = Executors.newCachedThreadPool() ;
+    public static void main(String...args)
+    {
+        final int N = 100 ;
+        int i ;
+        for ( i = 0 ; i < 1000 ; i++ )
+        {
+            if ( i%N == 0 )
+                System.out.printf("%03d: ",i) ;
+            System.out.print(".") ;
+            if ( i%N == (N-1) )
+                System.out.println() ;
+            new TestTransSystem().manyReaderAndOneWriter() ;
+        }
+        if ( i%N != 0 )
+            System.out.println() ;
+        System.out.println() ;
+        System.out.printf("DONE (%03d)\n",i) ;
+    }
+    
+    private ExecutorService execService = Executors.newCachedThreadPool() ;
     static Quad q  = SSE.parseQuad("(_ <s> <p> <o>) ") ;
     static Quad q1 = SSE.parseQuad("(_ <s> <p> <o1>)") ;
     static Quad q2 = SSE.parseQuad("(_ <s> <p> <o2>)") ;
     static Quad q3 = SSE.parseQuad("(_ <s> <p> <o3>)") ;
     static Quad q4 = SSE.parseQuad("(_ <s> <p> <o4>)") ;
     
-    static final String DIR = ConfigTest.getTestingDirDB() ;
-    private StoreConnection sConn ;
-    private int initCount = -1 ;
+    static final Location LOC = Location.mem() ; // new Location(ConfigTest.getTestingDirDB()) ;
     static final AtomicInteger gen = new AtomicInteger() ;
-    protected StoreConnection getStoreConnection()
+    
+    @BeforeClass 
+    public static void beforeClass()
     {
-        FileOps.clearDirectory(DIR) ;
-        StoreConnection sConn = StoreConnection.make(DIR) ;
+        if ( ! LOC.isMem() )
+            FileOps.clearDirectory(LOC.getDirectoryPath()) ;
+        StoreConnection.reset() ;
+        StoreConnection sConn = StoreConnection.make(LOC) ;
         DatasetGraphTxn dsg = sConn.begin(ReadWrite.WRITE) ;
         dsg.add(q1) ;
         dsg.add(q2) ;
         initCount = 2 ;
         dsg.commit() ;
         dsg.close() ;
-        return sConn ;
     }
     
-    public static void main(String...args)
+    @AfterClass 
+    public static void afterClass() {}
+
+    private StoreConnection sConn ;
+    private static int initCount = -1 ;
+
+    protected synchronized StoreConnection getStoreConnection()
     {
-        System.out.println("Starting: "+new Date()) ;
-        new TestTransSystem().manyReaderAndOneWriter() ;
-        System.out.println("Stopping: "+new Date()) ;
-        
+        return StoreConnection.make(LOC) ;
     }
+    
+    public TestTransSystem() {}
     
     //@Test
     public void manyRead()
     {
         final StoreConnection sConn = getStoreConnection() ;
-        Callable<?> proc = new Reader(sConn, 50, 200)  ;
-
+        Callable<?> proc = new Reader(sConn, 50, 200)  ;        // Number of repeats, max pause
             
-        for ( int i = 0 ; i < 50 ; i++ )
+        for ( int i = 0 ; i < 5 ; i++ )
             execService.submit(proc) ;
         try
         {
@@ -94,36 +118,32 @@ public class TestTransSystem
         }
     }
     
-    
-    
     //@Test
     public void manyReaderAndOneWriter()
     {
+        final int numOfTasks = 10 ;
         final StoreConnection sConn = getStoreConnection() ;
         
-        Callable<?> procR = new Reader(sConn, 5, 200) ;
-        Callable<?> procW = new Writer(sConn, 5, 100, true) {
+        Callable<?> procR = new Reader(sConn, 10, 50) ;      // Number of repeats, max pause
+        Callable<?> procW_a = new Writer(sConn, 1, 10, false)  // Number of repeats, max pause, commit. 
+        {
             @Override
             protected int change(DatasetGraphTxn dsg, int id, int i)
-            {
-                int count = 0 ;
-                int N = 5 ;
-                for ( int j = 0 ; j < N; j++ )
-                {
-                    Quad q = genQuad(N*id+j) ;
-                    if ( ! dsg.contains(q) )
-                    {
-                        dsg.add(q) ;
-                        count++ ;
-                    }
-                }
-                return count ;
-            } } ;
+            { return changeProc(dsg, id, i) ; }
+        } ;
             
-        for ( int i = 0 ; i < 500 ; i++ )
+        Callable<?> procW_c = new Writer(sConn, 5, 10, true)  // Number of repeats, max pause, commit. 
+        {
+            @Override
+            protected int change(DatasetGraphTxn dsg, int id, int i)
+            { return changeProc(dsg, id, i) ; }
+        } ;
+
+        for ( int i = 0 ; i < numOfTasks ; i++ )
         {
             execService.submit(procR) ;   
-            execService.submit(procW) ;
+            execService.submit(procW_a) ;
+            execService.submit(procW_c) ;
         }
         try
         {
@@ -135,15 +155,31 @@ public class TestTransSystem
         } 
     }
 
+    static int changeProc(DatasetGraphTxn dsg, int id, int i)
+    {
+        int count = 0 ;
+        int N = 5 ;
+        for ( int j = 0 ; j < N; j++ )
+        {
+            Quad q = genQuad(id+j) ;
+            if ( ! dsg.contains(q) )
+            {
+                dsg.add(q) ;
+                count++ ;
+            }
+        }
+        return count ;
+    }
+    
     static class Reader implements Callable<Object>
     {
         private final int repeats ;
         private final int maxpause ;
         private final StoreConnection sConn ; 
     
-        Reader(StoreConnection sConn, int number, int pause)
+        Reader(StoreConnection sConn, int numSeqRepeats, int pause)
         {
-            this.repeats = number ;
+            this.repeats = numSeqRepeats ;
             this.maxpause = pause ;
             this.sConn = sConn ;
         }
@@ -173,9 +209,9 @@ public class TestTransSystem
         private final StoreConnection sConn ;
         private final boolean commit ; 
     
-        protected Writer(StoreConnection sConn, int number, int pause, boolean commit)
+        protected Writer(StoreConnection sConn, int numSeqRepeats, int pause, boolean commit)
         {
-            this.repeats = number ;
+            this.repeats = numSeqRepeats ;
             this.maxpause = pause ;
             this.sConn = sConn ;
             this.commit = commit ;
@@ -185,7 +221,7 @@ public class TestTransSystem
         public Object call()
         {
             int id = gen.incrementAndGet() ;
-            for ( int i = 0 ; i < 10; i++ )
+            for ( int i = 0 ; i < repeats ; i++ )
             {
                 DatasetGraphTxn dsg = sConn.begin(ReadWrite.WRITE) ;
                 int x1 = count("SELECT * { ?s ?p ?o }", dsg) ;

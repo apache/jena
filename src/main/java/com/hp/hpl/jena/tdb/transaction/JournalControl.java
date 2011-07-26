@@ -177,6 +177,7 @@ public class JournalControl
                 
                 BlockMgr blkMgr = mgrs.get(e.getFileRef()) ;
                 Block blk = e.getBlock() ;
+                blk.setModified(true) ;
                 blkMgr.overwrite(blk) ; 
                 
 //                Block blk = blkMgr.getWrite(e.getBlock().getId()) ;

@@ -44,7 +44,7 @@ public class TransactionManager
     static long transactionId = 1 ;
     
     private int readers = 0 ; 
-    private int writers = 0 ;       // 0 or 1
+    private int writers = 0 ;  // 0 or 1
     
     // Misc stats
     private int finishedReads = 0 ;
@@ -99,9 +99,9 @@ public class TransactionManager
         {
             case READ : readers++ ; break ;
             case WRITE :
-                if ( writers > 0 )
-                    throw new TDBTransactionException("Existing active transaction") ;
-                writers ++ ;
+                int x = writers++ ;
+                if ( x > 0 )
+                    throw new TDBTransactionException("Existing active write transaction") ;
                 break ;
         }
         
@@ -173,7 +173,6 @@ public class TransactionManager
     {
         log("abort", transaction) ;
         // Transaction has done the abort on all the transactional elements.
-        // TODO Suppose the system journal has  
         if ( ! activeTransactions.contains(transaction) )
             SystemTDB.errlog.warn("Transaction not active: "+transaction.getTxnId()) ;
         endTransaction(transaction) ;

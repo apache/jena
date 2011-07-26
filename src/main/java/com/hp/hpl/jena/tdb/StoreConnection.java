@@ -64,7 +64,7 @@ public class StoreConnection
 
     private static Map<Location, StoreConnection> cache = new HashMap<Location, StoreConnection>() ;
     
-    public static void reset() 
+    public static synchronized void reset() 
     {
         for ( Map.Entry<Location, StoreConnection> e : cache.entrySet() )
             e.getValue().baseDSG.close() ;
@@ -72,7 +72,7 @@ public class StoreConnection
         cache.clear() ;
     }
     
-    public static StoreConnection make(Location location)
+    public static synchronized StoreConnection make(Location location)
     {
         TDBMaker.releaseLocation(location) ;
         StoreConnection sConn = cache.get(location) ;
