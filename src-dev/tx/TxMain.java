@@ -81,9 +81,9 @@ public class TxMain
             DatasetGraph dsg = TDBFactory.createDatasetGraph() ; 
             Sink<Triple> sink = new SinkTriplesToGraph(dsg.getDefaultGraph()) ;
             RiotReader.parseTriples(DATA, sink) ;
+            System.out.println(dsg.getDefaultGraph().size()) ;
             exit(0) ;
         }
-        
         
         // Named memory locations? OTT
         //StoreConnection sConn = StoreConnection.make(Location.mem()) ; 
@@ -111,6 +111,11 @@ com.hp.hpl.jena.tdb.base.file.FileException: FileAccessMem: Wrong size block.  E
             dsg.close() ;
             if ( dsgRead != null ) 
                 dsgRead.close() ;
+            dsgRead = sConn.begin(ReadWrite.READ) ;
+            query("SELECT ?g (count(*) AS ?C) { { ?s ?p ?o } UNION { GRAPH ?g { ?s ?p ?o } } } GROUP BY ?g", dsgRead) ;
+            
+            dsgRead.close() ;
+            
             exit(0) ;
         }
         

@@ -116,17 +116,23 @@ class Journal implements Iterable<JournalEntry>, Sync, Closeable
             throw new TDBTransactionException("Block to write but not block type") ;
         
         long posn = position ;
+        int bufferCapacity = 0 ; 
         int len = 0 ;
         
         // [TxDEV:TODO] CRC
         // [TxDEV:TODO] compress
+        // [TxDEV:TODO] Work in blocks - block asn remember, reset position/limit.
         
         if ( buffer != null )
-            len = buffer.remaining() ; 
+        {
+            bufferCapacity = buffer.capacity() ;
+            len = buffer.remaining() ;
+        }
         
         header.clear() ;
         header.putInt(type.id) ;
-        header.putInt(len) ;
+        //header.putInt(len) ;
+        header.putInt(bufferCapacity) ;     // Write whole buffer.
         header.putInt(fileRef.getId()) ;
         int blkId = (block==null) ? NoId : block.getId().intValue() ;
         header.putInt(blkId) ;
@@ -135,10 +141,23 @@ class Journal implements Iterable<JournalEntry>, Sync, Closeable
         
         if ( len > 0 )
         {
-            int x = buffer.position() ;
-            // Write bytes
+            // Make buffer include it's full length.
+            // [TxDEV:TODO] This is the full buffer, junk and all.
+            // This makes the system able to check block sizes (BlockAccess checking).
+            
+            int bufferLimit = buffer.limit() ;
+            int bufferPosition = buffer.position() ;
+            buffer.position(0) ;
+            buffer.limit(bufferCapacity) ;
+            // Clear top.
+            for ( int i = len ; i < bufferCapacity ; i++ )
+                buffer.put(i, (byte)0) ;
+            
+            // Write all bytes
             channel.write(buffer) ;
-            buffer.position(x) ;
+            
+            buffer.position(bufferPosition) ;
+            buffer.limit(bufferLimit) ;
         }
         
         position += len+Overhead ;

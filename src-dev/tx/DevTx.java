@@ -16,6 +16,9 @@ public class DevTx
     // * Params.
     // * Assembler
     // * Dataset API
+    // * UUID per committed version to support etags
+    // * Promote => duplicate even when not necessary.
+    
     
     // Tidy up:
     // A DatasetGraphTDB is 3 NodeTupleTables.  Build as such.

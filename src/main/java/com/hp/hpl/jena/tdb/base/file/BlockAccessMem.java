@@ -73,10 +73,7 @@ public class BlockAccessMem implements BlockAccess
     public void write(Block block)
     {
         check(block) ;
-        if ( safeModeThisMgr )
-            block = block.replicate() ;
-        // Memory isn't scaling to multi gigabytes.
-        blocks.set(block.getId().intValue(), block) ;
+        _write(block) ;
     }
     
     @Override
@@ -85,6 +82,14 @@ public class BlockAccessMem implements BlockAccess
         write(block) ;
     }
     
+    private void _write(Block block)
+    {
+        if ( safeModeThisMgr )
+            block = block.replicate() ;
+        // Memory isn't scaling to multi gigabytes.
+        blocks.set(block.getId().intValue(), block) ;
+    }
+
     @Override
     public boolean isEmpty()
     {

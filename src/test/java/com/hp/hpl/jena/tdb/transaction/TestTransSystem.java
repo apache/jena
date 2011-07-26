@@ -29,6 +29,7 @@ import java.util.concurrent.atomic.AtomicInteger ;
 
 import org.openjena.atlas.lib.FileOps ;
 import org.openjena.atlas.lib.Lib ;
+import org.openjena.atlas.lib.RandomLib ;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.graph.Node ;
@@ -93,20 +94,23 @@ public class TestTransSystem
         }
     }
     
+    
+    
     //@Test
     public void manyReaderAndOneWriter()
     {
         final StoreConnection sConn = getStoreConnection() ;
         
         Callable<?> procR = new Reader(sConn, 5, 200) ;
-        Callable<?> procW = new Writer(sConn, 5, 2, true) {
+        Callable<?> procW = new Writer(sConn, 5, 100, true) {
             @Override
             protected int change(DatasetGraphTxn dsg, int id, int i)
             {
                 int count = 0 ;
-                for ( int j = 0 ; j < 5; j++ )
+                int N = 5 ;
+                for ( int j = 0 ; j < N; j++ )
                 {
-                    Quad q = genQuad(id*1000+100*i+j) ;
+                    Quad q = genQuad(N*id+j) ;
                     if ( ! dsg.contains(q) )
                     {
                         dsg.add(q) ;
@@ -205,7 +209,8 @@ public class TestTransSystem
 
     static void pause(int maxInternal)
     {
-        Lib.sleep((int)Math.round(Math.random()*maxInternal)) ;
+        int x = (int)Math.round(Math.random()*maxInternal) ;
+        Lib.sleep(x) ;
     }
     
     static Quad genQuad(int value)

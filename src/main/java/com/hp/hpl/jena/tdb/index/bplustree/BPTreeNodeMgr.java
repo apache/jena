@@ -189,11 +189,11 @@ public final class BPTreeNodeMgr extends BPTreePageMgr<BPTreeNode>
         BPTreeNode n = new BPTreeNode(bpTree, block) ;
         // The count is zero at the root only.
         // When the root is zero, it's a leaf.
-        formatBPTreeNode(n, bpTree, block, asLeaf, count) ; 
+        formatBPTreeNode(n, bpTree, block, asLeaf, -2, count) ; 
         return n ;
     }
         
-    static void formatBPTreeNode(BPTreeNode n, BPlusTree bpTree, Block block, boolean leaf, int count)
+    static void formatBPTreeNode(BPTreeNode n, BPlusTree bpTree, Block block, boolean leaf, int parent, int count)
     {
         BPlusTreeParams params = bpTree.getParams() ;
 
@@ -208,7 +208,7 @@ public final class BPTreeNodeMgr extends BPTreePageMgr<BPTreeNode>
         // [Issue:FREC] Should be: key space only.
         // int recBuffLen = params.MaxRec * params.getKeyLength() ;
 
-        n.parent = -2 ;
+        n.parent = parent ;
         n.setCount(count) ;
         n.isLeaf = leaf ; 
 
@@ -252,10 +252,9 @@ public final class BPTreeNodeMgr extends BPTreePageMgr<BPTreeNode>
     
     static final void formatForRoot(BPTreeNode n, boolean asLeaf)
     {
-        BPTreeNodeMgr.formatBPTreeNode(n, n.getBPlusTree(), n.getBackingBlock(), asLeaf, 0) ;
+        BPTreeNodeMgr.formatBPTreeNode(n, n.getBPlusTree(), n.getBackingBlock(), asLeaf, BPlusTreeParams.RootParent, 0) ;
         // Tweak for the root-specials.  The node is not consistent yet.
         // Has one dangling pointer.
-        n.parent = BPlusTreeParams.RootParent ;
     }
     
 }
