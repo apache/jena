@@ -120,7 +120,7 @@ public class TestTransSystem
                 return count ;
             } } ;
             
-        for ( int i = 0 ; i < 50 ; i++ )
+        for ( int i = 0 ; i < 500 ; i++ )
         {
             execService.submit(procR) ;   
             execService.submit(procW) ;

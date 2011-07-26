@@ -6,10 +6,11 @@ public class DevTx
     // --------
     // Tasks:
     // * scan to commit, enact, scan to commit, enact, ....
-    // * Node writing happens during prepare() regardless of blockers and locks.
-    //   This is OK if done safely (locked against new transactions)
     // * Check journal truncates to last commit.
     //   Journal needs reset markers
+
+    // * Node writing happens during prepare() regardless of blockers and locks.
+    //   This is OK if done safely (locked against new transactions)
     // * Some kind of call after commit for clear up.
     //   Call when really commited.
     // * CRC and bullet-proof read of Journal.
@@ -17,7 +18,7 @@ public class DevTx
     // * Assembler
     // * Dataset API
     // * UUID per committed version to support etags
-    // * Promote => duplicate even when not necessary.
+    // * Promote => duplicate even when not necessary.  BlockMgr property.
     
     
     // Tidy up:
