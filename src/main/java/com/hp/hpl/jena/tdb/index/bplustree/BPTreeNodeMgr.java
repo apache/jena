@@ -193,9 +193,9 @@ public final class BPTreeNodeMgr extends BPTreePageMgr<BPTreeNode>
         return n ;
     }
         
-    static BPTreeNode formatBPTreeNode(BPTreeNode n, BPlusTree bTree, Block block, boolean leaf, int count)
+    static void formatBPTreeNode(BPTreeNode n, BPlusTree bpTree, Block block, boolean leaf, int count)
     {
-        BPlusTreeParams params = bTree.getParams() ;
+        BPlusTreeParams params = bpTree.getParams() ;
 
         int ptrBuffLen = params.MaxPtr * params.getPtrLength() ;
         // Only store the key part of records in a B+Tree block
@@ -248,7 +248,6 @@ public final class BPTreeNodeMgr extends BPTreePageMgr<BPTreeNode>
 
         // Reset
         byteBuffer.rewind() ;
-        return n ;
     }
     
     static final void formatForRoot(BPTreeNode n, boolean asLeaf)

@@ -9,12 +9,8 @@ package com.hp.hpl.jena.tdb.index;
 
 import static java.lang.String.format ;
 
-import java.io.FileOutputStream ;
-import java.io.IOException ;
-import java.io.OutputStream ;
 import java.util.Iterator ;
 
-import org.openjena.atlas.io.IndentedWriter ;
 import org.openjena.atlas.lib.Closeable ;
 import org.openjena.atlas.lib.Sync ;
 import org.openjena.atlas.lib.Tuple ;
@@ -22,7 +18,6 @@ import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.tdb.TDBException ;
-import com.hp.hpl.jena.tdb.index.bplustree.BPlusTree ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
 
 /** A TupleTable is a set of TupleIndexes.  The first TupleIndex is the "primary" index and must exist */
@@ -56,18 +51,6 @@ public class TupleTable implements Sync, Closeable
         if ( tupleLen != t.size() )
             throw new TDBException(format("Mismatch: inserting tuple of length %d into a table of tuples of length %d", t.size(), tupleLen)) ;
 
-        x++ ;
-        boolean thisOne = ( t.get(0).getId() == 0xD0 && t.get(1).getId() == 0x01 && t.get(2).getId() == 0x0C ) ;
-        
-        if ( thisOne )
-            System.err.printf("Target: %s (%d)\n",t, x) ;
-        
-        if ( thisOne )
-        {
-            if ( ! indexes[0].find(t).hasNext() )
-                System.err.printf("Absent[1]: @%d\n", x) ;
-        }
-
         for ( int i = 0 ; i < indexes.length ; i++ )
         {
             if ( indexes[i] == null ) continue ;
@@ -84,45 +67,31 @@ public class TupleTable implements Sync, Closeable
             }
             
         }
-        
-        if ( thisOne )
-            added ++ ;
-
-        if ( added > 0 ) // && thisOne )
-        {
-            if ( ! indexes[0].find(t).hasNext() )
-                System.err.printf("Gone[2]: @%d\n", x) ;
-        }
-        
-        
-        
         return true ;
     }
 
     protected void duplicate(Tuple<NodeId> t)
-    {
-        //System.err.printf("Duplicate on primary index: %s\n",t) ;
-    }
+    { }
     
     protected void unexpectedDuplicate(Tuple<NodeId> t, int i)
     { 
-        System.err.printf("Duplicate on secondary index: %s\n",t) ;
-        for ( TupleIndex index : indexes )
-        {
-            if ( index.find(t) != null )
-                System.err.printf("%s: Present\n",index.getLabel()) ;
-            else
-                System.err.printf("%s: Absent\n",index.getLabel()) ;
-        }
-        
-        try {
-            OutputStream f = new FileOutputStream("LOG") ;
-            IndentedWriter w = new IndentedWriter(f) ;
-            ( (BPlusTree) ((TupleIndexRecord)indexes[i]).getRangeIndex() ).dump(w) ;
-            w.flush() ;
-            f.flush() ;
-            f.close() ;
-        } catch ( IOException ex ) {}
+//        System.err.printf("Duplicate on secondary index: %s\n",t) ;
+//        for ( TupleIndex index : indexes )
+//        {
+//            if ( index.find(t) != null )
+//                System.err.printf("%s: Present\n",index.getLabel()) ;
+//            else
+//                System.err.printf("%s: Absent\n",index.getLabel()) ;
+//        }
+//        
+//        try {
+//            OutputStream f = new FileOutputStream("LOG") ;
+//            IndentedWriter w = new IndentedWriter(f) ;
+//            ( (BPlusTree) ((TupleIndexRecord)indexes[i]).getRangeIndex() ).dump(w) ;
+//            w.flush() ;
+//            f.flush() ;
+//            f.close() ;
+//        } catch ( IOException ex ) {}
     }
 
     /** Delete a tuple - return true if it was deleted, false if it didn't exist */
@@ -131,22 +100,14 @@ public class TupleTable implements Sync, Closeable
         if ( tupleLen != t.size() )
             throw new TDBException(format("Mismatch: deleting tuple of length %d from a table of tuples of length %d", t.size(), tupleLen)) ;
 
+        boolean rc = false ;
         for ( int i = 0 ; i < indexes.length ; i++ )
         {
             if ( indexes[i] == null ) continue ;
             // Use return boolean
-            indexes[i].delete(t) ;
-//            if ( ! indexes[i].delete(t) )
-//            {
-//                if ( i == 0 )
-//                {
-//                    duplicate(t) ;
-//                    return false ;
-//                }
-//                throw new TDBException("Secondary index duplicate: "+t) ;
-//            }
+            rc = indexes[i].delete(t) ;
         }
-        return true ;
+        return rc ;
 
     }
 

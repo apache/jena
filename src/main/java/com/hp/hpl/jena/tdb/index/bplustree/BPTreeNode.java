@@ -128,6 +128,8 @@ public final class BPTreeNode extends BPTreePage
     public void reset(Block block) 
     { 
         this.block = block ;
+        // reformat block (sets record and pointer buffers)
+        BPTreeNodeMgr.formatBPTreeNode(this, bpTree, block, isLeaf, count) ;
     }
     
     // [TxTDB:PATCH-UP] REMOVE

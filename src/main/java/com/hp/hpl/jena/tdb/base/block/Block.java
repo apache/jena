@@ -6,7 +6,11 @@
 
 package com.hp.hpl.jena.tdb.base.block;
 
+import java.io.ByteArrayOutputStream ;
+import java.io.PrintStream ;
 import java.nio.ByteBuffer ;
+
+import org.openjena.atlas.lib.ByteBufferLib ;
 
 // import tx.base.BlockRef ;
 
@@ -95,7 +99,16 @@ public final class Block
     public String toString()
     {
         ByteBuffer bb = getByteBuffer() ;
-        return String.format("Block: %d (posn=%d, limit=%d, cap=%d)", id, bb.position(), bb.limit(), bb.capacity()) ;
+        if ( true )
+            // Short form.
+            return String.format("Block: %d (posn=%d, limit=%d, cap=%d)", id, bb.position(), bb.limit(), bb.capacity()) ;
+        // Long form - with some bytes from the ByteBuffer.
+        ByteArrayOutputStream out = new ByteArrayOutputStream() ;
+        PrintStream x = new PrintStream(out) ;
+        ByteBufferLib.print(x, bb) ;
+        x.flush() ;
+        String str = out.toString() ;
+        return String.format("Block: %d %s", id, str) ;
     }
     
     /** Deep copy, including ByteBuffer contents. */
