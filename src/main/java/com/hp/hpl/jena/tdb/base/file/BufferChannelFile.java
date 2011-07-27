@@ -110,6 +110,12 @@ public class BufferChannelFile implements BufferChannel
     {
         return file.getFilename() ;
     }
+
+    @Override
+    public String getFilename()
+    {
+        return file.getFilename() ;
+    }
     
 }
 

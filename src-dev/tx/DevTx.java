@@ -5,22 +5,16 @@ public class DevTx
 {
     // --------
     // Tasks:
-    // * scan to commit, enact, scan to commit, enact, ....
     // * Check journal truncates to last commit.
     //   Journal needs reset markers
 
-    // * Node writing happens during prepare() regardless of blockers and locks.
-    //   This is OK if done safely (locked against new transactions)
-    // * Some kind of call after commit for clear up.
-    //   Call when really commited.
     // * CRC and bullet-proof read of Journal.
     // * Params.
     // * Assembler
-    // * Dataset API
+    // * Dataset API / autocommit
     // * UUID per committed version to support etags
     // * Promote => duplicate even when not necessary.  BlockMgr property.
     // * Monitoring and stats : JMX.
-    
     
     // Tidy up:
     // A DatasetGraphTDB is 3 NodeTupleTables.  Build as such.

@@ -8,11 +8,16 @@ package com.hp.hpl.jena.tdb.transaction;
 
 import static com.hp.hpl.jena.tdb.sys.SystemTDB.errlog ;
 import static com.hp.hpl.jena.tdb.sys.SystemTDB.syslog ;
+import static java.lang.String.format ;
 
 import java.io.File ;
+import java.util.Iterator ;
 import java.util.Map ;
 
+import org.openjena.atlas.iterator.Iter ;
 import org.openjena.atlas.lib.FileOps ;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.shared.Lock ;
 import com.hp.hpl.jena.tdb.DatasetGraphTxn ;
@@ -31,8 +36,7 @@ import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 public class JournalControl
 {
-    //private static Logger log = LoggerFactory.getLogger(Replay.class) ;
-    
+    private static Logger log = LoggerFactory.getLogger(JournalControl.class) ;
 
     public static void print(Journal journal)
     {
@@ -54,93 +58,105 @@ public class JournalControl
         if ( dsg.getLocation().isMem() )
             return ;
         
-        for ( FileRef fileRef : dsg.getConfig().nodeTables.keySet() )
-            recoverNodeDat(dsg, fileRef) ;
+        // Do we need to recover?
+        Journal journal = findJournal(dsg) ;
+        if ( journal != null )
+        {
+            for ( FileRef fileRef : dsg.getConfig().nodeTables.keySet() )
+                recoverNodeDat(dsg, fileRef) ;
+            recoverSystemJournal(journal, dsg) ;
+        }
         
-        recoverSystemJournal(dsg) ;
+        // Recovery complete.  Tidy up.  Node journal files have already been handled.
+        if ( journal.getFilename() != null )
+        {
+            if ( FileOps.exists(journal.getFilename()) )
+                FileOps.delete(journal.getFilename()) ;
+        }
     }
     
+    private static Journal findJournal(DatasetGraphTDB dsg)
+    {
+        Location loc = dsg.getLocation() ;
+        String journalFilename = loc.absolute(Names.journalFile) ;
+        File f = new File(journalFilename) ;
+        //if ( FileOps.exists(journalFilename)
+        if ( f.exists() && f.isFile() && f.length() > 0 )
+            return Journal.create(loc) ;
+        else
+            return null ;
+    }
+
     // New recovery - scan to commit, enact, scan, ....
     
-//    /** Recovery from the system journal.
-//     *  Find if there is a commit record; if so, reply the journal to that point.
-//     *  Try to see if there is another commit record ...
-//     */
-//    private static void recoverSystemJournal(DatasetGraphTDB dsg)
-//    {
-//        Location loc = dsg.getLocation() ;
-//        String journalFilename = loc.absolute(Names.journalFile) ;
-//        File f = new File(journalFilename) ;
-//        //if ( FileOps.exists(journalFilename)
-//        if ( f.exists() && f.isFile() && f.length() > 0 )
-//        {
-//            Journal jrnl = Journal.create(loc) ;
-//            
-//            recoverSegment(jrnl, 0) ;
-//            
-//            // Scan for commit.
-//            
-//            JournalEntry eCommit = null ;
-//            
-//            for ( JournalEntry e : jrnl )
-//            {
-//                if ( e.getType() == JournalEntryType.Commit )
-//                {
-//                    eCommit = e ;
-//                    break ;
-//                }
-//
-//            }
-//            if ( eCommit != null )
-//            {
-//                syslog.info("Recovering committed transaction") ;
-//                // The NodeTable Journal has already been done!
-//                JournalControl.replay(jrnl, dsg) ;
-//            }
-//            // We have replayed the journals - clean up.
-//            jrnl.truncate(0) ;
-//            jrnl.close();
-//            dsg.sync() ;    // JournalControl.replay
-//        }
-//        
-//        if ( f.exists() )
-//            FileOps.delete(journalFilename) ;
-//    }
-//    
-//    private static long recoverSegment(Journal jrnl, long startPosn)
-//    {
-//        Iterator<JournalEntry> iter = jrnl.entries(startPosn) ;
-//        // Phase one.  Scan for a commit.
-//        JournalEntry eCommit = null ;
-//        for ( ; iter.hasNext() ; )
-//        {
-//            JournalEntry e = iter.next() ;
-//            if ( e.getType() == JournalEntryType.Commit )
-//            {
-//                eCommit = e ;
-//                break ;
-//            }
-//        }
-//        Iter.close(iter) ;
-//        // Phase two : act.
-//        if ( eCommit == null )
-//            return -1 ;
-//        iter = jrnl.entries(startPosn) ;
-//        for ( ; iter.hasNext() ; )
-//        {
-//            JournalEntry e = iter.next() ;
-//            if ( e.getType() == JournalEntryType.Commit )
-//            {
-//                eCommit = e ;
-//                break ;
-//            }
-//        }
-//    }
+    /** Recovery from the system journal.
+     *  Find if there is a commit record; if so, reply the journal to that point.
+     *  Try to see if there is another commit record ...
+     */
+    private static void recoverSystemJournal(Journal jrnl, DatasetGraphTDB dsg)
+    {
+        long posn = 0 ;
+        for ( ;; )
+        {
+            long x = scanForCommit(jrnl, posn) ;
+            if ( x == -1 ) break ;
+            recoverSegment(jrnl, posn, x, dsg) ;
+            posn = x ;
+        }
+
+        // We have replayed the journals - clean up.
+        jrnl.truncate(0) ;
+        jrnl.close();
+        dsg.sync() ;
+    }
+
+    /** Scan to a commit entry, starting at a given position in the journal.
+     * Return addrss of entry after commit if found, else -1.
+     *  
+     */
+    private static long scanForCommit(Journal jrnl, long startPosn)
+    {
+        Iterator<JournalEntry> iter = jrnl.entries(startPosn) ;
+        try {
+            for ( ; iter.hasNext() ; )
+            {
+                JournalEntry e = iter.next() ;
+                if ( e.getType() == JournalEntryType.Commit )
+                    return e.getEndPosition() ;
+            }
+            return -1 ;
+        } finally { Iter.close(iter) ; }
+    }
+    
+    /** Recover one transaction from the start position given.
+     *  Scan to see if theer is a commit; if found, play the
+     *  journal from the start point to the commit.
+     *  Return true is a commit was found.
+     *  Leave journal positioned just after commit or at end if none found.
+     */
+    private static void recoverSegment(Journal jrnl, long startPosn, long endPosn, DatasetGraphTDB dsg)
+    {
+        Iterator<JournalEntry> iter = jrnl.entries(startPosn) ;
+        iter = jrnl.entries(startPosn) ;
+        try {
+            for ( ; iter.hasNext() ; )
+            {
+                JournalEntry e = iter.next() ;
+                if ( e.getType() == JournalEntryType.Commit )
+                {
+                    if ( e.getEndPosition() != endPosn )
+                        log.warn(format("Inconsistent: end at %d; expected %d", e.getEndPosition(), endPosn)) ;
+                    return ;
+                }
+                replay(e, dsg) ;
+            }
+        } finally { Iter.close(iter) ; }
+    }
     
     /** Recovery from the system journal.
      *  Find is there is a commit record; if so, reply the journal.
      */
-    private static void recoverSystemJournal(DatasetGraphTDB dsg)
+    private static void recoverSystemJournal_0(DatasetGraphTDB dsg)
     {
         Location loc = dsg.getLocation() ;
         String journalFilename = loc.absolute(Names.journalFile) ;
@@ -208,17 +224,9 @@ public class JournalControl
     
     public static void replay(Transaction transaction)
     {
-        // What about the Transactional components of a transation. 
         Journal journal = transaction.getJournal() ;
-//        System.out.println(">> REPLAY") ;
-//        print(journal) ;
-//        System.out.println("<< REPLAY") ;
-//        System.out.flush() ;
-        
         DatasetGraphTDB dsg = transaction.getBaseDataset() ;
         replay(journal, dsg) ;
-//        Iterator<Transactional> iter = transaction.components() ;
-//        xxxxxxxxxxxxxxxx
     }
     
     private static void replay(Journal journal, DatasetGraphTDB dsg)

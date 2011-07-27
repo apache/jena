@@ -200,6 +200,11 @@ public class BufferChannelMem implements BufferChannel
     {
         return name ;
     }
+    @Override
+    public String getFilename()
+    {
+        return null ;
+    }
 }
 
 /*

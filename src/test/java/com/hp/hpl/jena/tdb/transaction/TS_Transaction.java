@@ -6,6 +6,10 @@
 
 package com.hp.hpl.jena.tdb.transaction;
 
+import org.apache.log4j.Level ;
+import org.apache.log4j.Logger ;
+import org.junit.AfterClass ;
+import org.junit.BeforeClass ;
 import org.junit.runner.RunWith ;
 import org.junit.runners.Suite ;
 
@@ -21,6 +25,17 @@ import org.junit.runners.Suite ;
 })
 public class TS_Transaction
 {
+    static Level level ;
+    @BeforeClass static public void beforeClass()
+    {
+        level = Logger.getLogger("com.hp.hpl.jena.tdb.transaction").getLevel() ;
+        Logger.getLogger("com.hp.hpl.jena.tdb.transaction").setLevel(Level.INFO) ;
+    }
+    
+    @AfterClass static public void afterClass()
+    {
+        Logger.getLogger("com.hp.hpl.jena.tdb.transaction").setLevel(level) ;
+    }
 }
 
 /*

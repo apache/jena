@@ -75,6 +75,9 @@ public interface BufferChannel extends Sync, Closeable
     /** useful display string */ 
     public String getLabel() ; 
     
+    /** Filename for this BufferChannel (maybe null) */ 
+    public String getFilename() ; 
+    
 }
 
 /*

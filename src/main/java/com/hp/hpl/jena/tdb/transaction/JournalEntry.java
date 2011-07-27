@@ -19,7 +19,7 @@ public class JournalEntry
     static public final JournalEntry CheckPoint = new JournalEntry(JournalEntryType.Checkpoint) ;
     
     private long  position = -1 ;           // Location in the Journal (if known).
-    private long  endPosition = -1 ;        // End location in the Journal
+    private long  endPosition = -1 ;        // End location in the Journal: offset of next entry start.
     private final JournalEntryType type ;
     private final ByteBuffer byteBuffer ;   // One or other must be null - or both.
     private final Block block ;

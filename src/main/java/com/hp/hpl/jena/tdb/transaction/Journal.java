@@ -77,9 +77,10 @@ class Journal implements Iterable<JournalEntry>, Sync, Closeable
     private Journal(String filename)
     {
         this(new BufferChannelFile(filename)) ;
+        
     }
     
-    public Journal(BufferChannel channel)
+    Journal(BufferChannel channel)
     {
         this.channel = channel ;
         position = 0 ;
@@ -285,6 +286,8 @@ class Journal implements Iterable<JournalEntry>, Sync, Closeable
     public long position() { return channel.position() ; }  
     
     public void position(long posn) { channel.position(posn) ; }
+    
+    public String getFilename() { return channel.getFilename() ; }
 }
 
 /*
