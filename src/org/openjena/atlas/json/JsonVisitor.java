@@ -8,10 +8,8 @@ package org.openjena.atlas.json;
 
 public interface JsonVisitor
 {
-
     void visit(JsonObject jsonObject) ;
     void visit(JsonArray jsonArray) ;
-
     void visit(JsonString jsonString) ;
     void visit(JsonNumber jsonNumber) ;
     void visit(JsonBoolean jsonBoolean) ;
