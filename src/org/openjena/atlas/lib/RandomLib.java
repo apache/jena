@@ -13,9 +13,10 @@ public class RandomLib
 {
     private RandomLib() {}
     
-    // The only.
+    /** Single instance, pure random geenrator */
     public static final Random random = new SecureRandom() ;
     
+    /** Random numbers, good seed, cheaper allocation */
     public static final Random qrandom = randInit() ;
 
     private static Random randInit()
