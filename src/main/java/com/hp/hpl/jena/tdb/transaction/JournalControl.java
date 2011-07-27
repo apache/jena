@@ -60,12 +60,12 @@ public class JournalControl
         
         // Do we need to recover?
         Journal journal = findJournal(dsg) ;
-        if ( journal != null )
-        {
-            for ( FileRef fileRef : dsg.getConfig().nodeTables.keySet() )
-                recoverNodeDat(dsg, fileRef) ;
-            recoverSystemJournal(journal, dsg) ;
-        }
+        if ( journal == null )
+            return ;
+        
+        for ( FileRef fileRef : dsg.getConfig().nodeTables.keySet() )
+            recoverNodeDat(dsg, fileRef) ;
+        recoverSystemJournal(journal, dsg) ;
         
         // Recovery complete.  Tidy up.  Node journal files have already been handled.
         if ( journal.getFilename() != null )

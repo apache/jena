@@ -19,9 +19,12 @@
 package com.hp.hpl.jena.tdb.transaction;
 
 
+import java.util.Iterator ;
+
 import org.junit.Test ;
 import org.openjena.atlas.junit.BaseTest ;
 
+import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.tdb.DatasetGraphTxn ;
@@ -98,9 +101,33 @@ public abstract class AbstractTestTransSeq extends BaseTest
     
     @Test public void trans_05()
     {
-        // READ(block)-WRITE-commit-WRITE-abort-WRITE-commit
+        // READ before WRITE remains seeing old view - READ before WRITE starts 
         StoreConnection sConn = getStoreConnection() ;
         DatasetGraphTxn dsgR1 = sConn.begin(ReadWrite.READ) ;
+        DatasetGraphTxn dsgW = sConn.begin(ReadWrite.WRITE) ;
+        
+        dsgW.add(q) ;
+        dsgW.commit() ;
+        dsgW.close() ;
+        
+        assertFalse(dsgR1.contains(q)) ;
+        dsgR1.close() ;
+
+        DatasetGraphTxn dsgR2 = sConn.begin(ReadWrite.READ) ;
+        assertTrue(dsgR2.contains(q)) ;
+        dsgR2.close() ;
+    }
+
+    @Test public void trans_06()
+    {
+        // READ(block)-WRITE-commit-WRITE-abort-WRITE-commit-READ(close)-check
+        StoreConnection sConn = getStoreConnection() ;
+        DatasetGraphTxn dsgR1 = sConn.begin(ReadWrite.READ) ;
+        
+        // IF 
+        // dsgR1.close() ;
+        // THEN it works.
+        // ==> deplay replay
         
         DatasetGraphTxn dsgW1 = sConn.begin(ReadWrite.WRITE) ;
         dsgW1.add(q1) ;
@@ -123,25 +150,11 @@ public abstract class AbstractTestTransSeq extends BaseTest
         dsgR1.close() ;
         
         DatasetGraphTxn dsgR2 = sConn.begin(ReadWrite.READ) ;
+        
         assertTrue(dsgR2.contains(q1)) ;
         assertFalse(dsgR2.contains(q2)) ;
         assertTrue(dsgR2.contains(q3)) ;
         dsgR2.close() ;
-    }
-
-    @Test public void trans_06()
-    {
-        // READ before WRITE remains seeing old view - READ before WRITE starts 
-        StoreConnection sConn = getStoreConnection() ;
-        DatasetGraphTxn dsgR = sConn.begin(ReadWrite.READ) ;
-        DatasetGraphTxn dsgW = sConn.begin(ReadWrite.WRITE) ;
-        
-        dsgW.add(q) ;
-        dsgW.commit() ;
-        dsgW.close() ;
-        
-        assertFalse(dsgR.contains(q)) ;
-        dsgR.close() ;
     }
 
     @Test public void trans_07()

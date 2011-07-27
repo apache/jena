@@ -19,6 +19,7 @@
 package com.hp.hpl.jena.tdb.transaction;
 
 import static com.hp.hpl.jena.tdb.transaction.TransTestLib.count ;
+import static java.lang.String.format ;
 
 import java.util.concurrent.Callable ;
 import java.util.concurrent.ExecutorService ;
@@ -30,6 +31,10 @@ import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.openjena.atlas.lib.FileOps ;
 import org.openjena.atlas.lib.Lib ;
+import org.openjena.atlas.lib.RandomLib ;
+import org.openjena.atlas.logging.Log ;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.graph.Node ;
@@ -43,23 +48,47 @@ import com.hp.hpl.jena.tdb.base.file.Location ;
 /** System testing of the transactions. */
 public class TestTransSystem
 {
+    static { Log.setLog4j() ; }
+    private static Logger log = LoggerFactory.getLogger(TestTransSystem.class) ;
+    static final boolean progress = ! log.isInfoEnabled() ;
+    
+    
+    static final int Iterations = 1 ;
+    static final int readerSeqRepeats = 10 ;    
+    static final int readerMaxPause = 50 ;
+    static final int writerAbortSeqRepeats = 1 ;
+    static final int writerCommitSeqRepeats = 5 ;
+    static final int writerMaxPause = 10 ;
+    
     public static void main(String...args)
     {
-        final int N = 100 ;
+        
+        final int N = (Iterations < 10) ? 1 : Iterations / 10 ;
         int i ;
-        for ( i = 0 ; i < 1000 ; i++ )
+        for ( i = 0 ; i < Iterations ; i++ )
         {
             if ( i%N == 0 )
-                System.out.printf("%03d: ",i) ;
-            System.out.print(".") ;
+                printf("%03d: ",i) ;
+            printf(".") ;
             if ( i%N == (N-1) )
-                System.out.println() ;
+                println() ;
             new TestTransSystem().manyReaderAndOneWriter() ;
         }
         if ( i%N != 0 )
             System.out.println() ;
-        System.out.println() ;
-        System.out.printf("DONE (%03d)\n",i) ;
+        println() ;
+        printf("DONE (%03d)\n",i) ;
+    }
+    
+    private static void println()
+    {
+        printf("\n") ;
+    }
+    
+    private static void printf(String string, Object...args)
+    {
+        if ( progress )
+            System.out.printf(string, args) ;
     }
     
     private ExecutorService execService = Executors.newCachedThreadPool() ;
@@ -124,15 +153,15 @@ public class TestTransSystem
         final int numOfTasks = 10 ;
         final StoreConnection sConn = getStoreConnection() ;
         
-        Callable<?> procR = new Reader(sConn, 10, 50) ;      // Number of repeats, max pause
-        Callable<?> procW_a = new Writer(sConn, 1, 10, false)  // Number of repeats, max pause, commit. 
+        Callable<?> procR = new Reader(sConn, readerSeqRepeats, readerMaxPause) ;      // Number of repeats, max pause
+        Callable<?> procW_a = new Writer(sConn, writerAbortSeqRepeats, writerMaxPause, false)  // Number of repeats, max pause, commit. 
         {
             @Override
             protected int change(DatasetGraphTxn dsg, int id, int i)
             { return changeProc(dsg, id, i) ; }
         } ;
             
-        Callable<?> procW_c = new Writer(sConn, 5, 10, true)  // Number of repeats, max pause, commit. 
+        Callable<?> procW_c = new Writer(sConn, writerCommitSeqRepeats, writerMaxPause, true)  // Number of repeats, max pause, commit. 
         {
             @Override
             protected int change(DatasetGraphTxn dsg, int id, int i)
@@ -158,16 +187,18 @@ public class TestTransSystem
     static int changeProc(DatasetGraphTxn dsg, int id, int i)
     {
         int count = 0 ;
-        int N = 5 ;
+        int maxN = 500 ;
+        int N = RandomLib.qrandom.nextInt(maxN) ;
         for ( int j = 0 ; j < N; j++ )
         {
-            Quad q = genQuad(id+j) ;
+            Quad q = genQuad(id*maxN+j) ;
             if ( ! dsg.contains(q) )
             {
                 dsg.add(q) ;
                 count++ ;
             }
         }
+        log.debug("Change = "+dsg.getDefaultGraph().size()) ;
         return count ;
     }
     
@@ -191,11 +222,14 @@ public class TestTransSystem
             for ( int i = 0 ; i < repeats; i++ )
             {
                 DatasetGraphTxn dsg = sConn.begin(ReadWrite.READ) ;
+                log.debug("reader start "+id+"/"+i) ;                
+                
                 int x1 = count("SELECT * { ?s ?p ?o }", dsg) ;
                 pause(maxpause) ;
                 int x2 = count("SELECT * { ?s ?p ?o }", dsg) ;
                 if ( x1 != x2 )
-                    System.err.printf("Change seen: id=%d: i=%d\n", id, i) ;
+                    log.warn(format("Change seen: id=%d: i=%d\n", id, i)) ;
+                log.debug("reader finish "+id+"/"+i) ;                
                 dsg.close() ;
             }
             return null ;
@@ -224,6 +258,8 @@ public class TestTransSystem
             for ( int i = 0 ; i < repeats ; i++ )
             {
                 DatasetGraphTxn dsg = sConn.begin(ReadWrite.WRITE) ;
+System.err.println("writer "+id+"/"+i) ;                
+                
                 int x1 = count("SELECT * { ?s ?p ?o }", dsg) ;
                 int z = change(dsg, id, i) ;
                 pause(maxpause) ;

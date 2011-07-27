@@ -43,13 +43,30 @@ public class TransactionManager
     
     static long transactionId = 1 ;
     
-    private int readers = 0 ; 
-    private int writers = 0 ;  // 0 or 1
+    private int activeReaders = 0 ; 
+    private int activeWriters = 0 ;  // 0 or 1
     
     // Misc stats
     private int finishedReads = 0 ;
     private int committedWrite = 0 ;
     private int abortedWrite = 0 ;
+    
+    public static class State
+    {
+        final public int activeReaders ; 
+        final public int activeWriters ;
+        final public int finishedReads ;
+        final public int committedWrite ;
+        final public int abortedWrite ;
+        State(TransactionManager tm)
+        {
+            activeReaders = tm.activeReaders ;
+            activeWriters = tm.activeWriters ;
+            finishedReads = tm.finishedReads ;
+            committedWrite = tm.committedWrite ;
+            abortedWrite = tm.abortedWrite ;
+        }
+    }
 
     private BlockingQueue<Transaction> queue = new LinkedBlockingDeque<Transaction>() ;
 
@@ -97,9 +114,9 @@ public class TransactionManager
 //        }
         switch (mode)
         {
-            case READ : readers++ ; break ;
+            case READ : activeReaders++ ; break ;
             case WRITE :
-                int x = writers++ ;
+                int x = activeWriters++ ;
                 if ( x > 0 )
                     throw new TDBTransactionException("Existing active write transaction") ;
                 break ;
@@ -140,21 +157,25 @@ public class TransactionManager
         
         endTransaction(transaction) ;
         
-        if ( transaction.getMode() == ReadWrite.WRITE )
+        switch ( transaction.getMode() )
         {
-            if ( readers == 0 )
-                // Can commit imemdiately.
-                commitTransaction(transaction) ;
-            else
-            {
-                // Can't make permentent at the moment.
-                commitedAwaitingFlush.add(transaction) ;
-                //log.debug("Commit pending: "+transaction.getLabel()); 
-
-                //if ( log.isDebugEnabled() )
-                //    log.debug("Commit blocked at the moment") ;
-                queue.add(transaction) ;
-            }
+            case READ: 
+                endOfRead(transaction) ;
+                break ;
+            case WRITE:
+                if ( activeReaders == 0 )
+                    // Can commit imemdiately.
+                    commitTransaction(transaction) ;
+                else
+                {
+                    // Can't make permanent at the moment.
+                    commitedAwaitingFlush.add(transaction) ;
+                    log.debug("Commit flush: "+transaction.getLabel()); 
+                    //if ( log.isDebugEnabled() )
+                    //    log.debug("Commit blocked at the moment") ;
+                    queue.add(transaction) ;
+                }
+                committedWrite ++ ;
         }
     }
 
@@ -179,9 +200,51 @@ public class TransactionManager
         // Transaction has done the abort on all the transactional elements.
         if ( ! activeTransactions.contains(transaction) )
             SystemTDB.errlog.warn("Transaction not active: "+transaction.getTxnId()) ;
+        
         endTransaction(transaction) ;
+        
+        switch ( transaction.getMode() )
+        {
+            case READ:
+                endOfRead(transaction) ;
+                break ;
+            case WRITE:
+                // Journal cleaned in Transaction.abort.
+                abortedWrite ++ ;
+        }
     }
     
+    /** READ specific final actions. */
+    private void endOfRead(Transaction transaction)
+    {
+        processDelayedReplyQueue(transaction) ;
+        finishedReads ++ ;
+    }
+    
+    private void processDelayedReplyQueue(Transaction txn)
+    {
+        if ( activeReaders != 0 || activeWriters != 0 )
+        {
+            if ( queue.size() > 0 )
+                if ( log() ) log(format("Pending transactions: R=%d / W=%d", activeReaders, activeWriters), txn) ;
+            return ;
+        }
+        while ( queue.size() > 0 )
+        {
+            try {
+                Transaction txn2 = queue.take() ;
+               
+                if ( txn2.getMode() == READ )
+                    continue ;
+                log("Flush delayed commit", txn2) ;
+                // This takes a Write lock on the  DSG - this is where it blocks.
+                JournalControl.replay(txn2) ;
+                commitedAwaitingFlush.remove(txn2) ;
+            } catch (InterruptedException ex)
+            { Log.fatal(this, "Interruped!", ex) ; }
+        }
+    }
+
     synchronized
     public void notifyClose(Transaction txn)
     {
@@ -192,40 +255,16 @@ public class TransactionManager
             String x = txn.getBaseDataset().getLocation().getDirectoryPath() ;
             syslog.warn("close: Transaction not commited or aborted: Transaction: "+txn.getTxnId()+" @ "+x) ;
             txn.abort() ;
-        }
-
-        // Process any pending commits held up due to a reader. 
-        if ( readers == 0 && writers == 0 ) 
-        {
-            // Given this is sync'ed to this TransactionManager, 
-            // the query never blocks, nor does it need to be concurrent-safe.
-            // later ...
-            while ( queue.size() > 0 )
-            {
-                try {
-                    Transaction txn2 = queue.take() ;
-                    if ( txn2.getMode() == READ )
-                        continue ;
-                    log.info("Delayed commit", txn2) ;
-                    // This takes a Write lock on the  DSG - this is where it blocks.
-                    JournalControl.replay(txn2) ;
-                    commitedAwaitingFlush.remove(txn) ;
-                } catch (InterruptedException ex)
-                { Log.fatal(this, "Interruped!", ex) ; }
-            }
-        }
-        else
-        {
-            if ( log() ) log(format("Pending transactions: R=%d / W=%d", readers, writers), txn) ;
+            return ;
         }
     }
-    
+        
     private void endTransaction(Transaction transaction)
     {
         if ( transaction.getMode() == READ )
-            readers-- ;
+            activeReaders-- ;
         else
-            writers-- ;
+            activeWriters-- ;
         activeTransactions.remove(transaction) ;
     }
     
@@ -249,6 +288,10 @@ public class TransactionManager
             log.debug(txn.getLabel()+": "+msg) ;
     }
 
+    synchronized
+    public State state()
+    { return new State(this) ; }
+    
     // LATER.
     class Committer implements Runnable
     {
