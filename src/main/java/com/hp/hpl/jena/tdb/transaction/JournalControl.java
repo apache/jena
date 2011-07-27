@@ -60,6 +60,83 @@ public class JournalControl
         recoverSystemJournal(dsg) ;
     }
     
+    // New recovery - scan to commit, enact, scan, ....
+    
+//    /** Recovery from the system journal.
+//     *  Find if there is a commit record; if so, reply the journal to that point.
+//     *  Try to see if there is another commit record ...
+//     */
+//    private static void recoverSystemJournal(DatasetGraphTDB dsg)
+//    {
+//        Location loc = dsg.getLocation() ;
+//        String journalFilename = loc.absolute(Names.journalFile) ;
+//        File f = new File(journalFilename) ;
+//        //if ( FileOps.exists(journalFilename)
+//        if ( f.exists() && f.isFile() && f.length() > 0 )
+//        {
+//            Journal jrnl = Journal.create(loc) ;
+//            
+//            recoverSegment(jrnl, 0) ;
+//            
+//            // Scan for commit.
+//            
+//            JournalEntry eCommit = null ;
+//            
+//            for ( JournalEntry e : jrnl )
+//            {
+//                if ( e.getType() == JournalEntryType.Commit )
+//                {
+//                    eCommit = e ;
+//                    break ;
+//                }
+//
+//            }
+//            if ( eCommit != null )
+//            {
+//                syslog.info("Recovering committed transaction") ;
+//                // The NodeTable Journal has already been done!
+//                JournalControl.replay(jrnl, dsg) ;
+//            }
+//            // We have replayed the journals - clean up.
+//            jrnl.truncate(0) ;
+//            jrnl.close();
+//            dsg.sync() ;    // JournalControl.replay
+//        }
+//        
+//        if ( f.exists() )
+//            FileOps.delete(journalFilename) ;
+//    }
+//    
+//    private static long recoverSegment(Journal jrnl, long startPosn)
+//    {
+//        Iterator<JournalEntry> iter = jrnl.entries(startPosn) ;
+//        // Phase one.  Scan for a commit.
+//        JournalEntry eCommit = null ;
+//        for ( ; iter.hasNext() ; )
+//        {
+//            JournalEntry e = iter.next() ;
+//            if ( e.getType() == JournalEntryType.Commit )
+//            {
+//                eCommit = e ;
+//                break ;
+//            }
+//        }
+//        Iter.close(iter) ;
+//        // Phase two : act.
+//        if ( eCommit == null )
+//            return -1 ;
+//        iter = jrnl.entries(startPosn) ;
+//        for ( ; iter.hasNext() ; )
+//        {
+//            JournalEntry e = iter.next() ;
+//            if ( e.getType() == JournalEntryType.Commit )
+//            {
+//                eCommit = e ;
+//                break ;
+//            }
+//        }
+//    }
+    
     /** Recovery from the system journal.
      *  Find is there is a commit record; if so, reply the journal.
      */

@@ -6,18 +6,13 @@
 
 package tx;
 
-import java.io.File ;
-
 import org.openjena.atlas.lib.Bytes ;
 import org.openjena.atlas.lib.FileOps ;
 import org.openjena.atlas.lib.Sink ;
-import org.openjena.atlas.lib.SinkNull ;
 import org.openjena.atlas.lib.SinkWrapper ;
 import org.openjena.atlas.logging.Log ;
 import org.openjena.riot.RiotReader ;
 import org.openjena.riot.RiotWriter ;
-import org.openjena.riot.WebReader ;
-import org.openjena.riot.lang.SinkToGraph ;
 import org.openjena.riot.lang.SinkTriplesToGraph ;
 
 import com.hp.hpl.jena.graph.Graph ;
@@ -42,11 +37,9 @@ import com.hp.hpl.jena.tdb.base.record.Record ;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
 import com.hp.hpl.jena.tdb.setup.DatasetBuilderStd ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
-import com.hp.hpl.jena.tdb.sys.Names ;
 import com.hp.hpl.jena.update.UpdateAction ;
 import com.hp.hpl.jena.update.UpdateFactory ;
 import com.hp.hpl.jena.update.UpdateRequest ;
-import com.hp.hpl.jena.util.FileManager ;
 
 public class TxMain
 {

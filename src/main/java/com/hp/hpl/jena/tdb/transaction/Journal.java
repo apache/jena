@@ -85,9 +85,16 @@ class Journal implements Iterable<JournalEntry>, Sync, Closeable
         position = 0 ;
     }
     
+    synchronized
     public long writeJournal(JournalEntry entry)
     {
-        return  _write(entry.getType(), entry.getFileRef(), entry.getByteBuffer(), entry.getBlock()) ;
+        long posn = _write(entry.getType(), entry.getFileRef(), entry.getByteBuffer(), entry.getBlock()) ;
+        if ( entry.getPosition() < 0 )
+        {
+            entry.setPosition(posn) ;
+            entry.setEndPosition(position) ;
+        }
+        return posn ;
     }
     
     synchronized
@@ -167,10 +174,21 @@ class Journal implements Iterable<JournalEntry>, Sync, Closeable
     synchronized
     public JournalEntry readJournal(long id)
     {
+        return _readJournal(id) ;
+    }
+    
+    JournalEntry _readJournal(long id)
+    {
         long x = channel.position() ;
-        channel.position(id) ;
+        if ( x != id ) 
+            channel.position(id) ;
         JournalEntry entry = _read() ;
-        channel.position(x) ;
+        long x2 = channel.position() ;
+        entry.setPosition(id) ;
+        entry.setEndPosition(x2) ;
+
+        if ( x != id )
+            channel.position(x) ;
         return entry ;
     }
     
@@ -198,7 +216,7 @@ class Journal implements Iterable<JournalEntry>, Sync, Closeable
         FileRef fileRef = FileRef.get(ref) ;
         ByteBuffer bb = ByteBuffer.allocate(len) ;
         Block block = null ;
-        channel.read(bb) ;
+        lenRead = channel.read(bb) ;
         bb.rewind() ;
         if ( type == Block )
         {
@@ -214,37 +232,41 @@ class Journal implements Iterable<JournalEntry>, Sync, Closeable
     private class IteratorEntries extends IteratorSlotted<JournalEntry>
     {
         JournalEntry slot = null ;
-        boolean finished = false ;
         final long endPoint ;
+        long iterPosn ;
 
-        // MUST abstract out his Iterator pattern and leave
-        // MoveToNext / Hasnext
-        // See QueryIteratorBase
-        public IteratorEntries() 
+        public IteratorEntries(long startPosition) 
         {
+            iterPosn = startPosition ;
             endPoint = channel.size() ;
         }
         
         @Override
         protected JournalEntry moveToNext()
         {
-            return _read() ;
+            synchronized(Journal.this)
+            {
+                if ( iterPosn >= endPoint )
+                    return null ;
+                JournalEntry e = _readJournal(iterPosn) ;
+                iterPosn = e.getEndPosition() ;
+                return e ;
+            }
         }
 
         @Override
-        protected boolean hasMore()
-        {
-            return channel.position() < endPoint  ;
-        }
+        protected boolean hasMore()     { return iterPosn < endPoint  ; }
     }
+    
+    public Iterator<JournalEntry> entries()         { return new IteratorEntries(0) ; }
     
     synchronized
-    public Iterator<JournalEntry> entries()
+    public Iterator<JournalEntry> entries(long startPosition)
     {
-        position(0) ;
-        return new IteratorEntries() ;
+        return new IteratorEntries(startPosition) ;
     }
     
+    /** Convenience method to iterate over the whole journal */ 
     @Override
     public Iterator<JournalEntry> iterator() { return entries() ; }
 

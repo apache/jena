@@ -76,7 +76,7 @@ public class ObjectFileTrans implements ObjectFile, Transactional
     }
     
     @Override
-    public void clearup(Transaction txn)
+    public void commitClearup(Transaction txn)
     {
         other.truncate(0) ;
         passthrough = true ;

@@ -166,18 +166,18 @@ public class NodeTableTrans implements NodeTable, Transactional
     }
 
     @Override
-    public void abort(Transaction txn)
-    {
-        journal.reposition(0) ;
-    }
-    
-    @Override
-    public void clearup(Transaction txn)
+    public void commitClearup(Transaction txn)
     {
         journal.truncate(0);
         passthrough = true ;
     }
 
+    @Override
+    public void abort(Transaction txn)
+    {
+        journal.reposition(0) ;
+    }
+    
 //    private void clearUp()
 //    {
 //        passthrough = true ;

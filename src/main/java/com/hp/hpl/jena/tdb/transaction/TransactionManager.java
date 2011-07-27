@@ -124,6 +124,10 @@ public class TransactionManager
         return dsgTxn ;
     }
 
+    /* Signal a transaction has commited.  The journal has a commit record
+     * and a sync to disk. The code here manages the inter-transaction stage
+     *  of deciding how to play the changes back to the base data. 
+     */ 
     synchronized
     public void notifyCommit(Transaction transaction)
     {
@@ -162,9 +166,9 @@ public class TransactionManager
         {
             Transactional x = iter.next() ;
             x.commitEnact(transaction) ;
-            x.clearup(transaction) ;
+            x.commitClearup(transaction) ;
         }
-        // This cleans up as well.
+        // This cleans up the journal as well.
         JournalControl.replay(transaction) ;
     }
     

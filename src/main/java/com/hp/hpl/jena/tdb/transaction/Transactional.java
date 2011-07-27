@@ -27,8 +27,8 @@ public interface Transactional
     /** Update the base data */ 
     public void commitEnact(Transaction txn) ;
     
-    /** All done - transaction committed and incorporated in the base dataset */
-    public void clearup(Transaction txn) ;
+    /** All done - transaction committed and incorporated in the base dataset - can now tidy up */
+    public void commitClearup(Transaction txn) ;
 }
 
 /*

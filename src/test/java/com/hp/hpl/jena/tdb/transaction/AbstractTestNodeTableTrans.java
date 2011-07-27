@@ -79,7 +79,7 @@ public abstract class AbstractTestNodeTableTrans extends BaseTest
         // Check it is now in the base.
         assertEquals(node1, nt0.getNodeForNodeId(nodeId)) ;
         assertEquals(nodeId, nt0.getNodeIdForNode(node1)) ;
-        ntt.clearup(txn) ;
+        ntt.commitClearup(txn) ;
     }
 
     @Test public void nodetrans_03()
@@ -101,7 +101,7 @@ public abstract class AbstractTestNodeTableTrans extends BaseTest
         // Check it is not in the base.
         assertEquals(NodeId.NodeDoesNotExist, nt0.getNodeIdForNode(node1)) ;
         assertNull(nt0.getNodeForNodeId(nodeId)) ;
-        ntt.clearup(txn) ;
+        ntt.commitClearup(txn) ;
     }
     
     @Test public void nodetrans_04()
@@ -119,7 +119,7 @@ public abstract class AbstractTestNodeTableTrans extends BaseTest
         ntt.commitPrepare(txn) ;
         ntt.commitEnact(txn) ;
         assertEquals(nodeId, nt0.getNodeIdForNode(node2)) ;
-        ntt.clearup(txn) ;
+        ntt.commitClearup(txn) ;
     }
 
 }

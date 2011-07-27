@@ -18,10 +18,11 @@ public class JournalEntry
     static public final JournalEntry Abort = new JournalEntry(JournalEntryType.Abort) ;
     static public final JournalEntry CheckPoint = new JournalEntry(JournalEntryType.Checkpoint) ;
     
-    private final JournalEntryType type ;   // One or other must be null - or both.
-    private final ByteBuffer byteBuffer ;
+    private long  position = -1 ;           // Location in the Journal (if known).
+    private long  endPosition = -1 ;        // End location in the Journal
+    private final JournalEntryType type ;
+    private final ByteBuffer byteBuffer ;   // One or other must be null - or both.
     private final Block block ;
-    private final int id = -98 ;
     private final FileRef fileRef ;
     
     private JournalEntry(JournalEntryType type)
@@ -48,8 +49,13 @@ public class JournalEntry
         this.block = block ;
         this.fileRef = fileRef ;
     }
-    
 
+    void setPosition(long posn)             { position = posn ; }
+    void setEndPosition(long endPosn)       { endPosition = endPosn ; }
+
+    public long getPosition()               { return position ; }
+    long getEndPosition()                   { return endPosition ; }
+    
     public JournalEntryType getType()       { return type ; }
     public ByteBuffer getByteBuffer()       { return byteBuffer ; }
     public Block getBlock()                 { return block ; }
@@ -79,6 +85,7 @@ public class JournalEntry
         sbuff.append("  "+type) ;
         return sbuff.toString() ;
     }
+
 }
 
 /*

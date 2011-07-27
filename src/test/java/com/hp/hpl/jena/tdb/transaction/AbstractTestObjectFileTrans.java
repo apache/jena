@@ -95,7 +95,7 @@ public abstract class AbstractTestObjectFileTrans extends BaseTest
         file.commitPrepare(txn) ;
         file.commitEnact(txn) ;
         contains(file1, "ABC") ;
-        file.clearup(txn) ;
+        file.commitClearup(txn) ;
     }
 
     @Test public void objFileTrans_03()
@@ -107,7 +107,7 @@ public abstract class AbstractTestObjectFileTrans extends BaseTest
         file.commitPrepare(txn) ;
         file.commitEnact(txn) ;
         contains(file1, "ABC", "X") ;
-        file.clearup(txn) ;
+        file.commitClearup(txn) ;
     }
 
     @Test public void objFileTrans_04()
@@ -119,7 +119,7 @@ public abstract class AbstractTestObjectFileTrans extends BaseTest
         file.commitPrepare(txn) ;
         file.commitEnact(txn) ;
         contains(file1, "ABC", "ABC", "ABCDEFGHIJKLMNOPQRSTUVWXYZ") ;
-        file.clearup(txn) ;
+        file.commitClearup(txn) ;
     }
 
     @Test public void objFileTrans_05()
@@ -130,7 +130,7 @@ public abstract class AbstractTestObjectFileTrans extends BaseTest
         write(file, "ABCDEF") ;
         file.abort(txn) ;
         contains(file1, "ABC") ;
-        file.clearup(txn) ;
+        file.commitClearup(txn) ;
     }
 
     @Test public void objFileTrans_06()

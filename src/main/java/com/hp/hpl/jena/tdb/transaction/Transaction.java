@@ -57,6 +57,14 @@ public class Transaction
         state = TxnState.ACTIVE ;
     }
 
+    /* Commit is a 4 step process
+     * 1/ commitPrepare - call all the components to tell them we are going to commit.
+     * 2/ Actually commit - write the commit point to the journal
+     * 3/ commitEnact -- make the changes to the original data
+     * 4/ commitClearup -- release resources
+     * The transaction manager is the place which knows all the components in a transaction. 
+     */
+    
     synchronized
     public void commit()
     {
@@ -73,6 +81,7 @@ public class Transaction
         }
 
         state = TxnState.COMMITED ;
+        // The transaction manager does the enact and clearup calls 
         txnMgr.notifyCommit(this) ;
     }
     

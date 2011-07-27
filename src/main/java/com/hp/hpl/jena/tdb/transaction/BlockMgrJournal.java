@@ -66,7 +66,7 @@ public class BlockMgrJournal implements BlockMgr, Transactional
     }
     
     @Override
-    public void clearup(Transaction txn)
+    public void commitClearup(Transaction txn)
     {
         // Persistent state is in the system journal.
         reset(txn) ;
