@@ -19,12 +19,9 @@
 package com.hp.hpl.jena.tdb.transaction;
 
 
-import java.util.Iterator ;
-
 import org.junit.Test ;
 import org.openjena.atlas.junit.BaseTest ;
 
-import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.tdb.DatasetGraphTxn ;
@@ -101,9 +98,34 @@ public abstract class AbstractTestTransSeq extends BaseTest
     
     @Test public void trans_05()
     {
-        // READ before WRITE remains seeing old view - READ before WRITE starts 
+        // WRITE(commit)-WRITE(commit)-READ
+        StoreConnection sConn = getStoreConnection() ;
+        DatasetGraphTxn dsgW1 = sConn.begin(ReadWrite.WRITE) ;
+        dsgW1.add(q1) ;
+        dsgW1.commit() ;
+        dsgW1.close() ;
+
+        DatasetGraphTxn dsgW2 = sConn.begin(ReadWrite.WRITE) ;
+        dsgW2.add(q2) ;
+        dsgW2.commit() ;
+        dsgW2.close() ;
+
+        DatasetGraphTxn dsgR2 = sConn.begin(ReadWrite.READ) ;
+        
+        assertTrue(dsgR2.contains(q1)) ;
+        assertTrue(dsgR2.contains(q2)) ;
+        
+        dsgR2.close() ;
+    }
+
+
+    
+    @Test public void trans_readBlock_01()
+    {
+        // READ(start)-WRITE(commit)-READ(finish) 
         StoreConnection sConn = getStoreConnection() ;
         DatasetGraphTxn dsgR1 = sConn.begin(ReadWrite.READ) ;
+        
         DatasetGraphTxn dsgW = sConn.begin(ReadWrite.WRITE) ;
         
         dsgW.add(q) ;
@@ -118,9 +140,60 @@ public abstract class AbstractTestTransSeq extends BaseTest
         dsgR2.close() ;
     }
 
-    @Test public void trans_06()
+    
+    @Test public void trans_readBlock_02()
     {
-        // READ(block)-WRITE-commit-WRITE-abort-WRITE-commit-READ(close)-check
+        // READ(start)-WRITE(abort)-READ(finish) 
+        StoreConnection sConn = getStoreConnection() ;
+        DatasetGraphTxn dsgR1 = sConn.begin(ReadWrite.READ) ;
+        
+        DatasetGraphTxn dsgW = sConn.begin(ReadWrite.WRITE) ;
+        
+        dsgW.add(q) ;
+        dsgW.abort() ;
+        dsgW.close() ;
+        
+        assertFalse(dsgR1.contains(q)) ;
+        dsgR1.close() ;
+
+        DatasetGraphTxn dsgR2 = sConn.begin(ReadWrite.READ) ;
+        assertFalse(dsgR2.contains(q)) ;
+        dsgR2.close() ;
+    }
+    
+    @Test public void trans_readBlock_03()
+    {
+        // READ(start)-WRITE(commit)-WRITE(commit)-READ(finish) 
+        StoreConnection sConn = getStoreConnection() ;
+        DatasetGraphTxn dsgR1 = sConn.begin(ReadWrite.READ) ;
+        
+        DatasetGraphTxn dsgW1 = sConn.begin(ReadWrite.WRITE) ;
+        dsgW1.add(q1) ;
+        dsgW1.commit() ;
+        dsgW1.close() ;
+
+        assertFalse(dsgR1.contains(q1)) ;
+        
+        DatasetGraphTxn dsgW2 = sConn.begin(ReadWrite.WRITE) ;
+        dsgW2.add(q2) ;
+        dsgW2.commit() ;
+        dsgW2.close() ;
+
+        assertFalse(dsgR1.contains(q1)) ;
+        assertFalse(dsgR1.contains(q2)) ;
+
+        dsgR1.close() ;
+
+        DatasetGraphTxn dsgR2 = sConn.begin(ReadWrite.READ) ;
+        assertTrue(dsgR2.contains(q1)) ;
+        assertTrue(dsgR2.contains(q2)) ;
+        dsgR2.close() ;
+    }
+
+
+    @Test public void trans_readBlock_04()
+    {
+        // READ(block)-WRITE(commit)-WRITE(abort)-WRITE(commit)-READ(close)-check
         StoreConnection sConn = getStoreConnection() ;
         DatasetGraphTxn dsgR1 = sConn.begin(ReadWrite.READ) ;
         
@@ -157,9 +230,11 @@ public abstract class AbstractTestTransSeq extends BaseTest
         dsgR2.close() ;
     }
 
-    @Test public void trans_07()
+    @Test public void trans_readBlock_05()
     {
+        // WRITE(start)-READ(start)-WRITE(commit)-READ sees old DSG.
         // READ before WRITE remains seeing old view - READ after WRITE starts 
+
         StoreConnection sConn = getStoreConnection() ;
         DatasetGraphTxn dsgW = sConn.begin(ReadWrite.WRITE) ;
         DatasetGraphTxn dsgR = sConn.begin(ReadWrite.READ) ;
@@ -170,10 +245,36 @@ public abstract class AbstractTestTransSeq extends BaseTest
         
         assertFalse(dsgR.contains(q)) ;
         dsgR.close() ;
+
+        DatasetGraphTxn dsgR2 = sConn.begin(ReadWrite.READ) ;
+        assertTrue(dsgR2.contains(q)) ;
+
     }
-    
-    @Test public void trans_08()
+
+    @Test public void trans_readBlock_06()
     {
+        // WRITE(start)-READ(start)-add-WRITE(commit)-READ sees old DSG.
+        // READ before WRITE remains seeing old view - READ after WRITE starts 
+
+        StoreConnection sConn = getStoreConnection() ;
+        DatasetGraphTxn dsgW = sConn.begin(ReadWrite.WRITE) ;
+        dsgW.add(q) ;
+
+        DatasetGraphTxn dsgR = sConn.begin(ReadWrite.READ) ;
+        dsgW.commit() ;
+        dsgW.close() ;
+        
+        assertFalse(dsgR.contains(q)) ;
+        dsgR.close() ;
+        
+        DatasetGraphTxn dsgR2 = sConn.begin(ReadWrite.READ) ;
+        assertTrue(dsgR2.contains(q)) ;
+        dsgR2.close() ;
+    }
+
+    @Test public void trans_readBlock_07()
+    {
+        // WRITE(start)-add-READ(start)-WRITE(commit)-READ sees old DSG.
         StoreConnection sConn = getStoreConnection() ;
         DatasetGraphTxn dsgW = sConn.begin(ReadWrite.WRITE) ;
         dsgW.add(q) ;
@@ -193,29 +294,9 @@ public abstract class AbstractTestTransSeq extends BaseTest
     }
 
 
-    @Test public void trans_09()
+    @Test public void trans_readBlock_08()
     {
-        StoreConnection sConn = getStoreConnection() ;
-        DatasetGraphTxn dsgW1 = sConn.begin(ReadWrite.WRITE) ;
-        dsgW1.add(q1) ;
-        dsgW1.commit() ;
-        dsgW1.close() ;
-
-        DatasetGraphTxn dsgW2 = sConn.begin(ReadWrite.WRITE) ;
-        dsgW2.add(q2) ;
-        dsgW2.commit() ;
-        dsgW2.close() ;
-
-        DatasetGraphTxn dsgR2 = sConn.begin(ReadWrite.READ) ;
-        
-        assertTrue(dsgR2.contains(q1)) ;
-        assertTrue(dsgR2.contains(q2)) ;
-        
-        dsgR2.close() ;
-    }
-
-    @Test public void trans_10()
-    {
+        // WRITE(commit)-READ(start)-WRITE(commit)
         StoreConnection sConn = getStoreConnection() ;
         DatasetGraphTxn dsgW1 = sConn.begin(ReadWrite.WRITE) ;
         dsgW1.add(q1) ;
