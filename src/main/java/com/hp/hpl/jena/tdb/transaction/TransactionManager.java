@@ -36,38 +36,21 @@ public class TransactionManager
     
     private Set<Transaction> activeTransactions = new HashSet<Transaction>() ;
     
-    // Transactions that have commit (and the journal is written) but haven't
+    // Transactions that have commited (and the journal is written) but haven't
     // writted back to the main database. 
     
-    private List<Transaction> commitedAwaitingFlush = new ArrayList<Transaction>() ;    
+    List<Transaction> commitedAwaitingFlush = new ArrayList<Transaction>() ;    
     
     static long transactionId = 1 ;
     
-    private int activeReaders = 0 ; 
-    private int activeWriters = 0 ;  // 0 or 1
+    int activeReaders = 0 ; 
+    int activeWriters = 0 ;  // 0 or 1
     
     // Misc stats
-    private int finishedReads = 0 ;
-    private int committedWrite = 0 ;
-    private int abortedWrite = 0 ;
+    int finishedReads = 0 ;
+    int committedWrite = 0 ;
+    int abortedWrite = 0 ;
     
-    public static class State
-    {
-        final public int activeReaders ; 
-        final public int activeWriters ;
-        final public int finishedReads ;
-        final public int committedWrite ;
-        final public int abortedWrite ;
-        State(TransactionManager tm)
-        {
-            activeReaders = tm.activeReaders ;
-            activeWriters = tm.activeWriters ;
-            finishedReads = tm.finishedReads ;
-            committedWrite = tm.committedWrite ;
-            abortedWrite = tm.abortedWrite ;
-        }
-    }
-
     private BlockingQueue<Transaction> queue = new LinkedBlockingDeque<Transaction>() ;
 
     private Thread committerThread ;
@@ -116,9 +99,9 @@ public class TransactionManager
         {
             case READ : activeReaders++ ; break ;
             case WRITE :
-                int x = activeWriters++ ;
-                if ( x > 0 )
+                if ( activeWriters > 0 )
                     throw new TDBTransactionException("Existing active write transaction") ;
+                activeWriters++ ;
                 break ;
         }
         
@@ -295,8 +278,8 @@ public class TransactionManager
     }
 
     synchronized
-    public State state()
-    { return new State(this) ; }
+    public SysTxnState state()
+    { return new SysTxnState(this) ; }
     
     // LATER.
     class Committer implements Runnable

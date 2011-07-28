@@ -26,6 +26,7 @@ import com.hp.hpl.jena.tdb.setup.DatasetBuilderStd ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.sys.TDBMaker ;
 import com.hp.hpl.jena.tdb.transaction.JournalControl ;
+import com.hp.hpl.jena.tdb.transaction.SysTxnState ;
 import com.hp.hpl.jena.tdb.transaction.TransactionManager ;
 
 /** Interface to the TDB transaction mechanism. */ 
@@ -44,6 +45,8 @@ public class StoreConnection
     }
     
     public Location getLocation() { return baseDSG.getLocation() ; }
+    
+    public SysTxnState getTransMgrState() { return transactionManager.state() ; }
     
     public DatasetGraphTxn begin(ReadWrite mode)
     {

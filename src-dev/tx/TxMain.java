@@ -65,14 +65,6 @@ public class TxMain
     
     public static void main(String... args)
     {
-        // and one in-mem sConn DB
-        
-        TestTransSequentialDisk test = new TestTransSequentialDisk() ;
-        test.before() ;
-        test.trans_readBlock_03() ;
-        test.after() ;
-        exit(0) ;
-        
         initFS() ;
         
         String DATA = "/home/afs/Datasets/MusicBrainz/tracks.nt.gz" ;

@@ -5,6 +5,7 @@ public class DevTx
 {
     // --------
     // Tasks:
+    // * Check TestTransSystem is actually testing anything.
     // * Check journal truncates to last commit.
     //   Journal needs reset markers
 

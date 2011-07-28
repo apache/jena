@@ -53,12 +53,15 @@ public class TestTransSystem
     static final boolean progress = ! log.isInfoEnabled() ;
     
     
-    static final int Iterations = 1 ;
-    static final int readerSeqRepeats = 10 ;    
-    static final int readerMaxPause = 50 ;
-    static final int writerAbortSeqRepeats = 1 ;
-    static final int writerCommitSeqRepeats = 5 ;
-    static final int writerMaxPause = 10 ;
+    static final int Iterations             = 1 ;
+    static final int numReaderTasks         = 20 ;
+    static final int numWriterTasksA        = 5 ;
+    static final int numWriterTasksC        = 5 ;
+    static final int readerSeqRepeats       = 10 ;    
+    static final int readerMaxPause         = 50 ;
+    static final int writerAbortSeqRepeats  = 0 ;
+    static final int writerCommitSeqRepeats = 10 ;
+    static final int writerMaxPause         = 20 ;
     
     public static void main(String...args)
     {
@@ -150,7 +153,6 @@ public class TestTransSystem
     //@Test
     public void manyReaderAndOneWriter()
     {
-        final int numOfTasks = 10 ;
         final StoreConnection sConn = getStoreConnection() ;
         
         Callable<?> procR = new Reader(sConn, readerSeqRepeats, readerMaxPause) ;      // Number of repeats, max pause
@@ -168,12 +170,10 @@ public class TestTransSystem
             { return changeProc(dsg, id, i) ; }
         } ;
 
-        for ( int i = 0 ; i < numOfTasks ; i++ )
-        {
-            execService.submit(procR) ;   
-            execService.submit(procW_a) ;
-            execService.submit(procW_c) ;
-        }
+        submit(execService, procR,   numReaderTasks) ;
+        submit(execService, procW_c, numWriterTasksC) ;
+        submit(execService, procW_a, numWriterTasksA) ;
+        
         try
         {
             execService.shutdown() ;
@@ -182,6 +182,12 @@ public class TestTransSystem
         {
             e.printStackTrace();
         } 
+    }
+
+    private void submit(ExecutorService execService2, Callable<?> proc, int numTasks)
+    {
+        for ( int i = 0 ; i < numTasks ; i++ )
+            execService.submit(proc) ;
     }
 
     static int changeProc(DatasetGraphTxn dsg, int id, int i)
@@ -214,10 +220,17 @@ public class TestTransSystem
             this.maxpause = pause ;
             this.sConn = sConn ;
         }
-        
+
         @Override
         public Object call()
         {
+            try { return call$() ; }
+            catch (RuntimeException ex) { System.err.println(ex.getMessage()) ; return null ; }
+        }
+        
+        private Object call$()
+        {
+            
             int id = gen.incrementAndGet() ;
             for ( int i = 0 ; i < repeats; i++ )
             {
@@ -228,7 +241,7 @@ public class TestTransSystem
                 pause(maxpause) ;
                 int x2 = count("SELECT * { ?s ?p ?o }", dsg) ;
                 if ( x1 != x2 )
-                    log.warn(format("Change seen: id=%d: i=%d\n", id, i)) ;
+                    log.warn(format("Reader: Change seen: %d/%d : id=%d: i=%d", x1, x2, id, i)) ;
                 log.debug("reader finish "+id+"/"+i) ;                
                 dsg.close() ;
             }
@@ -254,23 +267,33 @@ public class TestTransSystem
         @Override
         public Object call()
         {
+            try { return call$() ; }
+            catch (RuntimeException ex) { System.err.println(ex.getMessage()) ; return null ; }
+        }
+        
+        public Object call$()
+        {
             int id = gen.incrementAndGet() ;
             for ( int i = 0 ; i < repeats ; i++ )
             {
+                log.debug("writer start "+id+"/"+i) ;                
                 DatasetGraphTxn dsg = sConn.begin(ReadWrite.WRITE) ;
-System.err.println("writer "+id+"/"+i) ;                
                 
                 int x1 = count("SELECT * { ?s ?p ?o }", dsg) ;
                 int z = change(dsg, id, i) ;
                 pause(maxpause) ;
                 int x2 = count("SELECT * { ?s ?p ?o }", dsg) ;
                 if ( x1+z != x2 )
-                    System.err.printf("Change seen: id=%d: i=%d\n", id, i) ;
+                    log.warn(format("Writer: Change seen: %d-%d-%d : id=%d: i=%d", x1, z, x2, id, i)) ;
                 if (commit) 
                     dsg.commit() ;
                 else
                     dsg.abort() ;
+                SysTxnState state = sConn.getTransMgrState() ;
+                log.debug(state.toString()) ;
+                log.debug("writer finish "+id+"/"+i) ;                
                 dsg.close() ;
+                                
             }
             return null ; 
         }
