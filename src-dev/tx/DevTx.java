@@ -4,6 +4,9 @@ package tx;
 public class DevTx
 {
     // --------
+    // Seen:
+    //  Empty RecordBuffer
+    
     // Tasks:
     // * Check TestTransSystem is actually testing anything.
     // * Check journal truncates to last commit.

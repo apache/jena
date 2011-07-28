@@ -17,6 +17,7 @@ import java.util.List ;
 import java.util.Set ;
 import java.util.concurrent.BlockingQueue ;
 import java.util.concurrent.LinkedBlockingDeque ;
+import java.util.concurrent.Semaphore ;
 
 import org.openjena.atlas.logging.Log ;
 import org.slf4j.Logger ;
@@ -51,6 +52,8 @@ public class TransactionManager
     int committedWrite = 0 ;
     int abortedWrite = 0 ;
     
+    // Ensure single writer.
+    private Semaphore writersWaiting = new Semaphore(1, true) ;
     private BlockingQueue<Transaction> queue = new LinkedBlockingDeque<Transaction>() ;
 
     private Thread committerThread ;
@@ -84,8 +87,26 @@ public class TransactionManager
         return begin(mode, null) ;
     }
     
-    synchronized
     public DatasetGraphTxn begin(ReadWrite mode, String label)
+    {
+        // Not synchronized (else blocking on semaphore wil never wake up
+        // because Semaphore.release is inside synchronized.
+        // Allow only one active writer. 
+        if ( mode == ReadWrite.WRITE )
+        {
+            
+            try { writersWaiting.acquire() ; }
+            catch (InterruptedException e)
+            { 
+                log.error(label, e) ;
+                throw new TDBTransactionException(e) ;
+            }
+        }
+        return begin$(mode, label) ;
+    }
+        
+    synchronized
+    private DatasetGraphTxn begin$(ReadWrite mode, String label)
     {
 //        // Subs transactions are a new view - commit is only commit to parent transaction.  
 //        if ( dsg instanceof DatasetGraphTxn )
@@ -99,7 +120,7 @@ public class TransactionManager
         {
             case READ : activeReaders++ ; break ;
             case WRITE :
-                if ( activeWriters > 0 )
+                if ( activeWriters > 0 )    // Guard
                     throw new TDBTransactionException("Existing active write transaction") ;
                 activeWriters++ ;
                 break ;
@@ -159,6 +180,8 @@ public class TransactionManager
                     queue.add(transaction) ;
                 }
                 committedWrite ++ ;
+                // Allow another writer.
+                writersWaiting.release() ;
         }
     }
 
@@ -250,10 +273,11 @@ public class TransactionManager
         
     private void endTransaction(Transaction transaction)
     {
-        if ( transaction.getMode() == READ )
-            activeReaders-- ;
-        else
-            activeWriters-- ;
+        switch (transaction.getMode())
+        {
+            case READ : activeReaders-- ; break ;
+            case WRITE : activeWriters-- ; break ;
+        }
         activeTransactions.remove(transaction) ;
     }
     

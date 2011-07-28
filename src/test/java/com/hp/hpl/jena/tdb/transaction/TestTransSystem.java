@@ -50,24 +50,42 @@ public class TestTransSystem
 {
     static { Log.setLog4j() ; }
     private static Logger log = LoggerFactory.getLogger(TestTransSystem.class) ;
-    static final boolean progress = ! log.isInfoEnabled() ;
-    
-    
+
     static final int Iterations             = 1 ;
-    static final int numReaderTasks         = 20 ;
-    static final int numWriterTasksA        = 5 ;
+    static final boolean progress           = (! log.isDebugEnabled()) && Iterations > 5 ;
+    
+    
+    static final int numReaderTasks         = 5 ;   // Add some
+    static final int numWriterTasksA        = 0 ;
     static final int numWriterTasksC        = 5 ;
-    static final int readerSeqRepeats       = 10 ;    
-    static final int readerMaxPause         = 50 ;
+    
+    static final int readerSeqRepeats       = 5 ;    
+    static final int readerMaxPause         = 20 ;
+    
     static final int writerAbortSeqRepeats  = 0 ;
-    static final int writerCommitSeqRepeats = 10 ;
+    static final int writerCommitSeqRepeats = 5 ;
     static final int writerMaxPause         = 20 ;
+    
+//  static final int numReaderTasks         = 5 ;
+//  static final int numWriterTasksA        = 0 ;
+//  static final int numWriterTasksC        = 2 ;
+//  
+//  static final int readerSeqRepeats       = 2 ;    
+//  static final int readerMaxPause         = 100 ;
+//  
+//  static final int writerAbortSeqRepeats  = 0 ;
+//  static final int writerCommitSeqRepeats = 2 ;
+//  static final int writerMaxPause         = 20 ;
+  
     
     public static void main(String...args)
     {
+        if ( ! progress )
+            System.out.println("START") ;
         
         final int N = (Iterations < 10) ? 1 : Iterations / 10 ;
         int i ;
+        
         for ( i = 0 ; i < Iterations ; i++ )
         {
             if ( i%N == 0 )
@@ -81,6 +99,8 @@ public class TestTransSystem
             System.out.println() ;
         println() ;
         printf("DONE (%03d)\n",i) ;
+        if ( ! progress )
+            System.out.println("FINISH") ;
     }
     
     private static void println()
@@ -101,7 +121,8 @@ public class TestTransSystem
     static Quad q3 = SSE.parseQuad("(_ <s> <p> <o3>)") ;
     static Quad q4 = SSE.parseQuad("(_ <s> <p> <o4>)") ;
     
-    static final Location LOC = Location.mem() ; // new Location(ConfigTest.getTestingDirDB()) ;
+    static final Location LOC = Location.mem() ;
+    //static final Location LOC = new Location(ConfigTest.getTestingDirDB()) ;
     static final AtomicInteger gen = new AtomicInteger() ;
     
     @BeforeClass 
