@@ -48,6 +48,31 @@ public class Log
         log(cls).info(msg, th) ;
     }
     
+    static public void debug(String caller, String msg)
+    {
+        log(caller).info(msg) ;
+    }
+    
+    static public void debug(Object caller, String msg)
+    {
+        log(caller.getClass()).info(msg) ;
+    }
+    
+    static public void debug(Class<?> cls, String msg)
+    {
+        log(cls).info(msg) ;
+    }
+    
+    static public void debug(Object caller, String msg, Throwable th)
+    {
+        log(caller.getClass()).info(msg, th) ;
+    }
+    
+    static public void debug(Class<?> cls, String msg, Throwable th)
+    {
+        log(cls).info(msg, th) ;
+    }
+    
     static public void warn(String caller, String msg)
     {
         log(caller).warn(msg) ;
