@@ -117,7 +117,7 @@ public class DatasetBuilderTxn
             else
                 objectFile = FileFactory.createObjectFileDisk(objFilename) ;
 
-            NodeTableTrans ntt = new NodeTableTrans(ntBase, idx, objectFile) ;
+            NodeTableTrans ntt = new NodeTableTrans(fsObjectFile.getBasename(), ntBase, idx, objectFile) ;
             txn.add(ntt) ;
             
             // Add inline wrapper.

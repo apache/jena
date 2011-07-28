@@ -213,7 +213,7 @@ public class JournalControl
         {
             syslog.info("Recovering node data: "+fileRef.getFilename()) ;
             ObjectFile dataJrnl = FileFactory.createObjectFileDisk(objFilename) ;
-            NodeTableTrans ntt = new NodeTableTrans(baseNodeTable, new IndexMap(recordFactory), dataJrnl) ;
+            NodeTableTrans ntt = new NodeTableTrans(objFilename, baseNodeTable, new IndexMap(recordFactory), dataJrnl) ;
             ntt.append() ;
             ntt.close() ;
             baseNodeTable.sync() ;
@@ -262,6 +262,7 @@ public class JournalControl
                 
                 BlockMgr blkMgr = mgrs.get(e.getFileRef()) ;
                 Block blk = e.getBlock() ;
+                log.debug("Replay: {} {}",e.getFileRef(), blk) ;
                 blk.setModified(true) ;
                 blkMgr.overwrite(blk) ; 
                 

@@ -22,6 +22,8 @@ import java.util.Iterator ;
 
 import org.openjena.atlas.iterator.Iter ;
 import org.openjena.atlas.lib.Pair ;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.tdb.TDBException ;
@@ -34,24 +36,25 @@ import com.hp.hpl.jena.tdb.store.NodeId ;
 
 public class NodeTableTrans implements NodeTable, Transactional
 {
+    private static Logger log = LoggerFactory.getLogger(NodeTableTrans.class) ;
+    // TODO flag to note is any work is needed on commit.
     private final NodeTable base ;
     private long offset ;
     
-    private NodeTable nodeTableJournal ;
+    private NodeTable nodeTableJournal = null ;
     private static int CacheSize = 10000 ;      // [TxTDB:TODO] Make configurable 
     private boolean passthrough = false ;
-    private boolean inTransaction = false ;
     
     private final Index nodeIndex ;
     private final ObjectFile journal ;
+    private final String label ;
     
-    public NodeTableTrans(NodeTable sub, Index nodeIndex, ObjectFile journal)
+    public NodeTableTrans(String label, NodeTable sub, Index nodeIndex, ObjectFile journal)
     {
         this.base = sub ;
         this.nodeIndex = nodeIndex ;
         this.journal = journal ;
-        nodeTableJournal = new NodeTableNative(nodeIndex, journal) ;
-        nodeTableJournal = NodeTableCache.create(nodeTableJournal, CacheSize, CacheSize) ;
+        this.label = label ; 
     }
 
     public void setPassthrough(boolean v)   { passthrough = v ; }
@@ -117,20 +120,16 @@ public class NodeTableTrans implements NodeTable, Transactional
     public void begin(Transaction txn)
     {
         passthrough = false ;
-        inTransaction = true ;
-        offset = (int)base.allocOffset().getId() ;
-        // Fast-ish clearing of the file.
-        nodeIndex.clear() ;
-        journal.reposition(0) ;
+        
+        offset = base.allocOffset().getId() ;
+        // Any outstanding transactions
+        int offset2 = (int)journal.length() ;
+        debug("begin: %s", label) ;
+        offset += offset2 ;
         
         this.nodeTableJournal = new NodeTableNative(nodeIndex, journal) ;
         this.nodeTableJournal = NodeTableCache.create(nodeTableJournal, CacheSize, CacheSize) ;
         // Do not add the inline NodeTable here - don't convert it's values by the offset!  
-
-        
-        // Setup.
-//        journal.position(0) ;
-//        this.otherAllocOffset = journal.length() ;
     }
     
     /** Copy from the journal file to the real file */
@@ -152,41 +151,54 @@ public class NodeTableTrans implements NodeTable, Transactional
     @Override
     public void commitPrepare(Transaction txn)
     {
-        if ( ! inTransaction )
+        debug("commitPrepare: %s", label) ;
+        // The node table is append-only so it can be written during prepare.
+        // It does not need to wait for "enact".
+        if ( nodeTableJournal == null )
             throw new TDBTransactionException("Not in a transaction for a commit to happen") ;
-        journal.sync() ;
+        writeNodeJournal() ;
     }
     
     @Override
     public void commitEnact(Transaction txn)
     {
+        debug("commitEnact: %s", label) ;
+        //writeJournal() ;
+
+    }
+
+    private void writeNodeJournal()
+    {
         append() ;
-        base.sync() ;   // NodeTables should do an actual sync only if they have changed.
-        journal.reposition(0) ;
+        nodeIndex.clear() ;
+        journal.truncate(0) ;
+        journal.sync() ;
+        base.sync() ;
+        offset = base.allocOffset().getId() ;
+        passthrough = true ;
     }
 
     @Override
     public void commitClearup(Transaction txn)
     {
-        journal.truncate(0);
-        passthrough = true ;
+        debug("commitClearup") ;
+        finish() ;
     }
 
     @Override
     public void abort(Transaction txn)
     {
-        journal.reposition(0) ;
+        if ( nodeTableJournal == null )
+            throw new TDBTransactionException("Not in a transaction for a commit to happen") ;
+        finish() ;
     }
     
-//    private void clearUp()
-//    {
-//        passthrough = true ;
-//        //nodeIndex ;
-//        journal.truncate(0) ;
-//        journal.close() ;
-//        nodeTableJournal = null ;
-//    }
-//    
+    private void finish()
+    {
+        passthrough = true ;
+        nodeTableJournal = null ;
+   }
+
     @Override
     public Iterator<Pair<NodeId, Node>> all()
     {
@@ -202,5 +214,16 @@ public class NodeTableTrans implements NodeTable, Transactional
     public void close()
     {}
 
+    @Override
+    public String toString() { return "NodeTableTrans:"+label ; }
+    
+    private void debug(String fmt, Object... args)
+    {
+        if ( log.isDebugEnabled() )
+        {
+            String x = String.format(fmt, args) ;
+            log.debug(x) ;
+        }
+    }
 }
 

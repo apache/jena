@@ -94,12 +94,6 @@ public class Transaction
             x.commitPrepare(this) ;
     }
 
-    /** For testing - do things but do not write the commit record */
-    public void semiCommit()
-    {
-        prepare() ;
-    }
-    
     synchronized
     public void abort()
     { 

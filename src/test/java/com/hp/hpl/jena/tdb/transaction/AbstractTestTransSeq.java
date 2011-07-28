@@ -28,6 +28,7 @@ import com.hp.hpl.jena.tdb.DatasetGraphTxn ;
 import com.hp.hpl.jena.tdb.ReadWrite ;
 import com.hp.hpl.jena.tdb.StoreConnection ;
 import com.hp.hpl.jena.tdb.TDBException ;
+import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
 
 /** Basic tests and tests of ordering (single thread) */
 public abstract class AbstractTestTransSeq extends BaseTest
@@ -185,6 +186,9 @@ public abstract class AbstractTestTransSeq extends BaseTest
         dsgR1.close() ;
 
         DatasetGraphTxn dsgR2 = sConn.begin(ReadWrite.READ) ;
+        
+        NodeTable nt = dsgR2.getQuadTable().getNodeTupleTable().getNodeTable() ;
+        
         assertTrue(dsgR2.contains(q1)) ;
         assertTrue(dsgR2.contains(q2)) ;
         dsgR2.close() ;

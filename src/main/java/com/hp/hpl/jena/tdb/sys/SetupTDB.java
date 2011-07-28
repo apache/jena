@@ -64,6 +64,8 @@ import com.hp.hpl.jena.tdb.store.TripleTable ;
 
 /** Makes things: datasets from locations, indexes */
 
+// Future - this become a colection of tstaics making things in standard ways. Does not build adataset. 
+
 public class SetupTDB
 {
     //private static final Logger log = LoggerFactory.getLogger(NewSetup.class) ;
@@ -556,6 +558,14 @@ public class SetupTDB
         // -- Make the node table using the components established above.
         NodeTable nodeTable = new NodeTableNative(nodeToId, stringFile) ;
         return nodeTable ;
+    }
+    
+    /** Make a NodeTable with cache and inline wrappers */ 
+    public static NodeTable makeNodeTable(Location location)
+    {
+        return makeNodeTable(location,
+                             Names.indexNode2Id, SystemTDB.Node2NodeIdCacheSize,
+                             Names.indexId2Node, SystemTDB.NodeId2NodeCacheSize) ;
     }
     
     /** Make a NodeTable with cache and inline wrappers */ 

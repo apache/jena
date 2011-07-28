@@ -222,22 +222,6 @@ public class BPlusTree implements Iterable<Record>, RangeIndex
         // No caching here.
         root = nodeManager.getRoot(rootIdx) ;
         return root ;
-        
-//        // Do we cache it or not?
-//        // Need to set read/write on every operation.
-//        if ( root == null )
-//        {
-//            rootIdx = 0 ;
-//            //--nodeManager.startRead() ;
-//            // Get, readable.
-//            root = nodeManager.getRoot(rootIdx) ;
-//            rootIdx = root.getId() ;
-//            // Build root node.
-//            // Per session count only.
-//            //--nodeManager.finishRead() ;
-//        }
-//        //BPTreeNode root2 = nodeManager.getRoot(rootIdx) ;
-//        return root ;
     }
 
     private void releaseRoot(BPTreeNode rootNode)

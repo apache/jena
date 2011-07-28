@@ -19,7 +19,8 @@ import org.junit.runners.Suite ;
     , TestTransIterator.class
     , TestObjectFileTransMem.class
     , TestObjectFileTransStorage.class
-    , TestNodeTableTrans.class
+    , TestNodeTableTransMem.class
+    , TestNodeTableTransDisk.class
     , TestTransSequentialMem.class
     , TestTransSequentialDisk.class
 })

@@ -78,6 +78,9 @@ public class NodeTableNative implements NodeTable
     // NodeId to Node worker.
     private synchronized Node _retrieveNodeByNodeId(NodeId id)
     {
+        if ( id.getId() >= getObjects().length() )
+            return null ;
+        
         if ( NodeId.doesNotExist(id) )
             return null ;
         if ( NodeId.isAny(id) )

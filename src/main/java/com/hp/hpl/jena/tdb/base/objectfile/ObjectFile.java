@@ -25,7 +25,7 @@ public interface ObjectFile extends Sync, Closeable
 {
     public static final String type = "object" ;
     
-    /** A label to identify this ObjectFile - liek toString, except it must be implemented */ 
+    /** A label to identify this ObjectFile - like toString, except it must be implemented */ 
     public String getLabel() ;
     
     /** Allocate space for a write - pass this buffer to completeWrite */ 

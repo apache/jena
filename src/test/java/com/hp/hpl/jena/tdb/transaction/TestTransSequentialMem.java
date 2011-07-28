@@ -27,12 +27,12 @@ import com.hp.hpl.jena.tdb.base.file.Location ;
 /** Basic tests and tests of ordering (single thread) */
 public class TestTransSequentialMem extends AbstractTestTransSeq
 {
-    @Before public void setup()
+    @Before public void before()
     {
         StoreConnection.reset() ;
     }
   
-    @After public void teardown() {}
+    @After public void after() {}
     
     @Override
     protected StoreConnection getStoreConnection()

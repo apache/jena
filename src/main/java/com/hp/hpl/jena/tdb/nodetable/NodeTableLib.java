@@ -16,34 +16,29 @@
  * limitations under the License.
  */
 
-package com.hp.hpl.jena.tdb.transaction;
+package com.hp.hpl.jena.tdb.nodetable;
 
-import org.junit.After ;
-import org.junit.Before ;
-import org.openjena.atlas.lib.FileOps ;
+import java.util.Iterator ;
 
-import com.hp.hpl.jena.tdb.ConfigTest ;
-import com.hp.hpl.jena.tdb.StoreConnection ;
-import com.hp.hpl.jena.tdb.base.file.Location ;
+import org.openjena.atlas.lib.Pair ;
 
-/** Basic tests and tests of ordering (single thread) */
-public class TestTransSequentialDisk extends AbstractTestTransSeq
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.tdb.store.NodeId ;
+
+public class NodeTableLib
 {
-    static final String DIR = ConfigTest.getTestingDirDB() ;
-    static final Location LOC = new Location(DIR) ;
-    
-    @Before public void before()
+    public static void print(String label, NodeTable nodeTable)
     {
-        FileOps.clearDirectory(DIR) ;
-        StoreConnection.reset() ;
-    }
-
-    @After public void after() {} 
-
-    @Override
-    protected StoreConnection getStoreConnection()
-    {
-        return StoreConnection.make(LOC) ;
+        if ( label != null )
+            System.out.println(label) ;
+        Iterator<Pair<NodeId, Node>> iter = nodeTable.all() ;
+        for ( ; iter.hasNext() ; )
+        {
+            Pair<NodeId, Node> x = iter.next() ;
+            NodeId nodeId = x.getLeft() ;
+            Node node = x.getRight() ;
+            System.out.println(nodeId+" "+node) ;
+        }
     }
 }
 

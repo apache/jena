@@ -223,7 +223,7 @@ public class ObjectFileStorage implements ObjectFile
         if ( loc >= filesize )
         {
             if ( loc >= filesize+writeBuffer.position() )
-                throw new IllegalArgumentException("ObjectFile.read: Bad read: "+loc) ;
+                throw new IllegalArgumentException("ObjectFile.read: Bad read: location="+loc+" >= max="+(filesize+writeBuffer.position())) ;
             
             int x = writeBuffer.position() ;
             int y = writeBuffer.limit() ;
@@ -244,7 +244,7 @@ public class ObjectFileStorage implements ObjectFile
         lengthBuffer.clear() ;
         int x = file.read(lengthBuffer, loc) ;
         if ( x != 4 )
-            throw new FileException("ObjectFile.read("+loc+")["+filesize+"]: Failed to read the length : got "+x+" bytes") ;
+            throw new FileException("ObjectFile.read("+loc+")["+filesize+"]["+file.size()+"]: Failed to read the length : got "+x+" bytes") ;
         int len = lengthBuffer.getInt(0) ;
         ByteBuffer bb = ByteBuffer.allocate(len) ;
         x = file.read(bb, loc+SizeOfInt) ;

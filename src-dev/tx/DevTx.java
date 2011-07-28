@@ -36,6 +36,11 @@ public class DevTx
     //   Better to also wrap reading from the parser?
     //   WriteLock => start xAction.
     
+    // TranasactionManager
+    //   When looking for delayed replays, we could note the generation the
+    //   activeReaders/activeWriters were working with and partially reduce
+    //   the waiting queue (up to one outstanding commit?)
+    
     // DSG.add(Quad(tripleInQuad, triple)) does not affect default graph.
     
     // * Check syncs NodeTupleTable, NodeTable keep a dirty flag 

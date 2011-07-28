@@ -165,12 +165,12 @@ public class TransactionManager
             case WRITE:
                 if ( activeReaders == 0 )
                     // Can commit imemdiately.
-                    commitTransaction(transaction) ;
+                    enactTransaction(transaction) ;
                 else
                 {
                     // Can't make permanent at the moment.
                     commitedAwaitingFlush.add(transaction) ;
-                    log.debug("Commit flush: "+transaction.getLabel()); 
+                    log("Queue commit flush", transaction) ; 
                     //if ( log.isDebugEnabled() )
                     //    log.debug("Commit blocked at the moment") ;
                     queue.add(transaction) ;
@@ -179,7 +179,8 @@ public class TransactionManager
         }
     }
 
-    private void commitTransaction(Transaction transaction)
+    /** The stage in a commit after commiting - make the changes permanent in the base data */ 
+    private void enactTransaction(Transaction transaction)
     {
         // Really, really do it!
         Iterator<Transactional> iter = transaction.components() ;
@@ -217,12 +218,15 @@ public class TransactionManager
     /** READ specific final actions. */
     private void endOfRead(Transaction transaction)
     {
-        processDelayedReplyQueue(transaction) ;
+        processDelayedReplayQueue(transaction) ;
         finishedReads ++ ;
     }
     
-    private void processDelayedReplyQueue(Transaction txn)
+    private void processDelayedReplayQueue(Transaction txn)
     {
+        // Sync'ed by notifyCommit.
+        // If we knew which version of the DB each was looking at, we could reduce more often here.
+        // [TxTDB:TODO]
         if ( activeReaders != 0 || activeWriters != 0 )
         {
             if ( queue.size() > 0 )
@@ -238,7 +242,9 @@ public class TransactionManager
                     continue ;
                 log("Flush delayed commit", txn2) ;
                 // This takes a Write lock on the  DSG - this is where it blocks.
-                JournalControl.replay(txn2) ;
+                // **** REPLAYS WHOLE JOURNAL
+                // **** Related NodeFileTrans: writes at "prepare" 
+                enactTransaction(txn2) ;
                 commitedAwaitingFlush.remove(txn2) ;
             } catch (InterruptedException ex)
             { Log.fatal(this, "Interruped!", ex) ; }

@@ -37,7 +37,6 @@ public interface NodeTable extends Sync, Closeable
     
     /** The offset needed to predicate allocation difference between peristent tables - internal function */  
     public NodeId allocOffset() ; 
-    
 }
 
 /*

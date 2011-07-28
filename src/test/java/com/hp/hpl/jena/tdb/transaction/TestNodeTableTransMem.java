@@ -18,32 +18,23 @@
 
 package com.hp.hpl.jena.tdb.transaction;
 
-import org.junit.After ;
-import org.junit.Before ;
-import org.openjena.atlas.lib.FileOps ;
-
-import com.hp.hpl.jena.tdb.ConfigTest ;
-import com.hp.hpl.jena.tdb.StoreConnection ;
+import com.hp.hpl.jena.tdb.base.file.FileFactory ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
+import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile ;
 
-/** Basic tests and tests of ordering (single thread) */
-public class TestTransSequentialDisk extends AbstractTestTransSeq
+public class TestNodeTableTransMem extends AbstractTestNodeTableTrans
 {
-    static final String DIR = ConfigTest.getTestingDirDB() ;
-    static final Location LOC = new Location(DIR) ;
-    
-    @Before public void before()
+    @Override
+    protected ObjectFile createObjectFile()
     {
-        FileOps.clearDirectory(DIR) ;
-        StoreConnection.reset() ;
+//        FileSet fs = new FileSet(getLocation(), "data") ;
+        return FileFactory.createObjectFileMem() ;
     }
 
-    @After public void after() {} 
-
     @Override
-    protected StoreConnection getStoreConnection()
+    protected Location getLocation()
     {
-        return StoreConnection.make(LOC) ;
+        return Location.mem() ;
     }
 }
 
