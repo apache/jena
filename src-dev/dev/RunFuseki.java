@@ -30,12 +30,13 @@ public class RunFuseki
                     //"-v", 
                     "--debug",
                     "--update",
-                    "--set=arq:queryTimeout=1000",
+                    "--timeout=1000,5000",
+                    //"--set=arq:queryTimeout=1000",
                     //"--port=3030",
-                    "--host=localhost",
-                    //"--mem",
+                    //"--host=localhost",
+                    "--mem",
                     //"--loc=DB",
-                    "--file=/home/afs/Datasets/MusicBrainz/tracks-1k.nt",
+                    //"--file=/home/afs/Datasets/MusicBrainz/tracks-1k.nt",
                     //"--desc=desc.ttl", 
                     "/ds"
                     ) ;

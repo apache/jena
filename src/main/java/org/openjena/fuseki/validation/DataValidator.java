@@ -219,25 +219,28 @@ public class DataValidator extends ValidatorBase
     private Tokenizer createTokenizer(HttpServletRequest httpRequest, HttpServletResponse httpResponse) throws Exception
     {
         Reader reader = null ;  
-        String[] args = httpRequest.getParameterValues(paramIndirection) ;
-        
-        if ( args == null || args.length == 0 )
-        {
-            reader = httpRequest.getReader() ;
-        } 
-        else if ( args.length > 1 )
-        {
-            httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "Too many parameters for '"+paramIndirection+"='") ;
-            return null ;
-        }
-//        else
+//        String[] args = httpRequest.getParameterValues(paramIndirection) ;
+//        
+//        if ( args == null || args.length == 0 )
 //        {
-//            reader = // get from afar.
+//            reader = httpRequest.getReader() ;
+//        } 
+//        else if ( args.length > 1 )
+//        {
+//            httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "Too many parameters for '"+paramIndirection+"='") ;
+//            return null ;
 //        }
+////        else
+////        {
+////            reader = // get from afar.
+////        }
         
-        args = httpRequest.getParameterValues(paramData) ;
+        String[] args = httpRequest.getParameterValues(paramData) ;
         if ( args == null || args.length == 0 )
-        {}
+        {
+            // Not a form?
+            reader = httpRequest.getReader() ;
+        }
         else if ( args.length > 1 )
         {
             httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "Too many parameters for '"+paramData+"='") ;

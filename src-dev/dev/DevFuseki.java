@@ -21,6 +21,8 @@ package dev;
 public class DevFuseki
 {
     // RDF/XML_ABBREV in ResponseModel
+    // Config Jetty from a file?
+    //   Alternatibe way to run Fuseki
     
 	// Flint?
 	// Pages for publish mode.

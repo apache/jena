@@ -132,8 +132,12 @@ public class SPARQLServer
         // BlockingChannelConnector is better for pumping large responses back.
         //Connector connector = new SelectChannelConnector() ;
         
-        Connector connector = new BlockingChannelConnector() ;
+        // Connector and specific settings.
+        BlockingChannelConnector bcConnector = new BlockingChannelConnector() ;
+        //bcConnector(false) ;
         
+        
+        Connector connector = bcConnector ;
         // Ignore. If set, then if this goes off, it keeps going off.
         connector.setMaxIdleTime(0) ; // Jetty outputs a lot of messages if this goes off.
         connector.setPort(port);
