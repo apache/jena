@@ -40,6 +40,13 @@
     <this.root>${project.artifactId}-${project.version}</this.root>
     <ver.jena>2.6.4</ver.jena>
     <ver.arq>${project.version}</ver.arq>
+    <ver.iri>0.8</ver.iri>
+    <ver.wstx-asl>3.2.9</ver.wstx-asl>
+    <ver.lucene>2.3.1</ver.lucene>
+    <ver.junit>4.8.2</ver.junit>
+    <ver.slf4j>1.6.1</ver.slf4j>
+    <ver.log4j>1.2.16</ver.log4j>
+    <ver.commons-codec>1.5</ver.commons-codec>
   </properties>
 
   <dependencies>
@@ -67,7 +74,7 @@
     <dependency>
       <groupId>org.codehaus.woodstox</groupId>
       <artifactId>wstx-asl</artifactId>
-      <version>3.2.9</version>
+      <version>${ver.wstx-asl}</version>
       <!--
 	And recode XMLInputStax to use STaX2 as stil have the same problems of STaX1 if just upgrade woodstox.
       <groupId>org.codehaus.woodstox</groupId>
@@ -79,28 +86,28 @@
     <dependency>
       <groupId>org.apache.lucene</groupId>
       <artifactId>lucene-core</artifactId>
-      <version>2.3.1</version>
+      <version>${ver.lucene}</version>
     </dependency>
 
     <!--
     <dependency>
       <groupId>commons-codec</groupId>
       <artifactId>commons-codec</artifactId>
-      <version>1.4</version>
+      <version>${ver.commons-codec}</version>
     </dependency>
     -->
 
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.5</version>
+      <version>${ver.junit}</version>
       <scope>test</scope>
     </dependency>
 
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
-      <version>1.5.8</version>
+      <version>${ver.slf4j}</version>
     </dependency>
 
     <!-- Choose your logging provider 
@@ -112,14 +119,14 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-log4j12</artifactId>
-      <version>1.5.8</version>
+      <version>${ver.slf4j}</version>
       <optional>true</optional>
     </dependency>
 
     <dependency>
       <groupId>log4j</groupId>
       <artifactId>log4j</artifactId>
-      <version>1.2.14</version>
+      <version>${ver.log4j}</version>
       <!--<optional>true</optional>-->
       <exclusions>
         <exclusion>
@@ -241,10 +248,9 @@
 	    -->
 	    <!-- "Other packages" catches everything else unless excluded -->
 	  </groups>
-          <bottom>Copyright &#169; 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
-Copyright &#169; 2010 Talis Systems Ltd.
-Copyright &#169; 2010, 2011 Epimorphics Ltd.
-          </bottom>
+          <bottom>
+	    Licenced under the Apache License, Version 2.0
+	  </bottom>
         </configuration>
       </plugin>
 
@@ -314,6 +320,7 @@ build.time.txt=${build.time.txt}
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-eclipse-plugin</artifactId>
+	<version>RELEASE</version>
         <configuration>
           <buildOutputDirectory>${project.build.directory}/classes-eclipse</buildOutputDirectory>
           <downloadSources>true</downloadSources>

@@ -3,6 +3,7 @@ ChangeLog for ARQ
 
 ==== ARQ 2.8.10
 
++ General upgrade of dependent systems (not Lucene - see LARQ module for use with Lucene 3)
 + Make CONCAT follow the SPARQL 1.1 spec properly. 
 + Bug fix: ORDER BY and FILTERs in sub-selects didn't work if ordering by non-SELECT variables.
 + Bug fix: Equality of algebra operator (order) wasn't checkign all aspects of the op.
