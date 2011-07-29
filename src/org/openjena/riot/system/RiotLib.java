@@ -74,7 +74,7 @@ public class RiotLib
         if ( resolveIRIs )
             prologue = new Prologue(new PrefixMap(), IRIResolver.create(baseIRI)) ;
         else
-            prologue = new Prologue(null, IRIResolver.createNoResolve()) ;
+            prologue = new Prologue(new PrefixMap(), IRIResolver.createNoResolve()) ;
     
         if ( checking )
             return new ParserProfileChecker(prologue, handler) ;
