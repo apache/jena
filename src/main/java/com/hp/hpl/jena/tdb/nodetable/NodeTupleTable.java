@@ -15,6 +15,7 @@ import org.openjena.atlas.lib.Tuple ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.tdb.index.TupleTable ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
+import com.hp.hpl.jena.tdb.sys.DatasetControl ;
 
 public interface NodeTupleTable extends Sync, Closeable
 {
@@ -33,7 +34,6 @@ public interface NodeTupleTable extends Sync, Closeable
     
     /** Find by NodeId. */
     public Iterator<Tuple<NodeId>> find(Tuple<NodeId> ids) ;
-    
 
     /** Find all tuples */ 
     public Iterator<Tuple<NodeId>> findAll() ;
@@ -48,10 +48,6 @@ public interface NodeTupleTable extends Sync, Closeable
 
     public boolean isEmpty() ;
     
-    public boolean isReadOnly() ;
-    public void    setReadOnly(boolean mode) ;
-    
-    
     /** Clear the tuple table.  After this operation, find* will find  nothing.
      * This does not mean all data has been removed - for example, it does not mean
      * that any node table has been emptied.
@@ -62,6 +58,9 @@ public interface NodeTupleTable extends Sync, Closeable
     // and node tables separately.
     
     public long size() ;
+
+    /** Return the current policy, if any, for this NodeTupleTable */
+    public DatasetControl getPolicy() ;
 }
 
 /*

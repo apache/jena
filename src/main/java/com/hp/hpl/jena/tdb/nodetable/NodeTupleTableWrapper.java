@@ -14,6 +14,7 @@ import org.openjena.atlas.lib.Tuple ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.tdb.index.TupleTable ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
+import com.hp.hpl.jena.tdb.sys.DatasetControl ;
 
 public class NodeTupleTableWrapper implements NodeTupleTable
 {
@@ -68,13 +69,9 @@ public class NodeTupleTableWrapper implements NodeTupleTable
     { return nodeTupleTable.getTupleTable() ; }
 
     @Override
-    public boolean isReadOnly()
-    { return nodeTupleTable.isReadOnly() ; }
-
-    @Override
-    public void setReadOnly(boolean mode)
-    { nodeTupleTable.setReadOnly(mode) ; }
-
+    public DatasetControl getPolicy()
+    { return nodeTupleTable.getPolicy() ; }
+    
     @Override
     public boolean isEmpty()
     { return nodeTupleTable.isEmpty() ; }
@@ -94,7 +91,6 @@ public class NodeTupleTableWrapper implements NodeTupleTable
     @Override
     public void close()
     { nodeTupleTable.close() ; }
-
 }
 
 /*

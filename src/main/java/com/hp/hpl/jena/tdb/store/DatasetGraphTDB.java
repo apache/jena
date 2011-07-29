@@ -71,14 +71,6 @@ public class DatasetGraphTDB extends DatasetGraphCaching
     public QuadTable getQuadTable()         { return quadTable ; }
     public TripleTable getTripleTable()     { return tripleTable ; }
     
-    public boolean isReadOnly()             { return readOnly ; }
-    public void    setReadOnly(boolean mode)
-    {
-        tripleTable.setReadOnly(mode) ;
-        quadTable.setReadOnly(mode) ;
-        prefixes.setReadOnly(mode) ;
-    }
-    
 //    private Lock lock = new MRSWLite() ;
 //    @Override 
 //    public Lock getLock()                   { return lock ; }

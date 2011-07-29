@@ -45,6 +45,8 @@ public class StoreConnection
     }
     
     public Location getLocation() { return baseDSG.getLocation() ; }
+    /** Return the associated transaction manager - do NOT use to manipulate transactions */  
+    public TransactionManager getTransMgr() { return transactionManager ; }
     
     public SysTxnState getTransMgrState() { return transactionManager.state() ; }
     

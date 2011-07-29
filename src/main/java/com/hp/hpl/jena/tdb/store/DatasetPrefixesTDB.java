@@ -98,8 +98,9 @@ public class DatasetPrefixesTDB implements DatasetPrefixStorage
     /** Testing - dataset prefixes in-memory */
     public static DatasetPrefixesTDB testing() { return new DatasetPrefixesTDB() ; }
     
-    public boolean isReadOnly() { return nodeTupleTable.isReadOnly() ; }
-    public void setReadOnly(boolean mode) { nodeTupleTable.setReadOnly(mode) ; }
+    // Use DatasetControl
+//    public boolean isReadOnly() { return nodeTupleTable.isReadOnly() ; }
+//    public void setReadOnly(boolean mode) { nodeTupleTable.setReadOnly(mode) ; }
 
     @Override
     public synchronized void insertPrefix(String graphName, String prefix, String uri)

@@ -27,7 +27,7 @@ import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTupleTableConcrete ;
 import com.hp.hpl.jena.tdb.sys.DatasetControl ;
 
-public class TableBase  implements Sync, Closeable
+public class TableBase implements Sync, Closeable
 {
     final protected NodeTupleTable table ;
     protected boolean syncNeeded = false ; 
@@ -37,10 +37,9 @@ public class TableBase  implements Sync, Closeable
         table = new NodeTupleTableConcrete(N, indexes, nodeTable, policy) ;
     }
 
-    public NodeTupleTable getNodeTupleTable() { return table ; }
+    public NodeTupleTable getNodeTupleTable()   { return table ; }
+    public DatasetControl getPolicy()           { return table.getPolicy() ; }
     
-    public void setReadOnly(boolean mode)   { table.setReadOnly(mode) ; }
-
 //  /** Clear - including the associated node tuple table */
 //  public void clear()
 //  { 

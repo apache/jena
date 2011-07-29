@@ -7,6 +7,7 @@
 package com.hp.hpl.jena.tdb.transaction;
 
 import static com.hp.hpl.jena.tdb.ReadWrite.READ ;
+import static com.hp.hpl.jena.tdb.ReadWrite.WRITE ;
 import static com.hp.hpl.jena.tdb.sys.SystemTDB.syslog ;
 import static java.lang.String.format ;
 
@@ -36,6 +37,16 @@ public class TransactionManager
     private static Logger log = LoggerFactory.getLogger(TransactionManager.class) ;
     
     private Set<Transaction> activeTransactions = new HashSet<Transaction>() ;
+    // Setting this true cause the TransactionManager to keep lists of transactions
+    // and what has happened.  Nothing is thrown away, but eventually it will
+    // consume too much memory.
+    private boolean recordHistory = false ;
+    private List<Transaction> transactionBegin ;
+    private List<Transaction> transactionEnd ;          // All transactions.
+    private List<Transaction> transactionQueued ;       // Writes, delayed finalization
+    private List<Transaction> transactionUnqueue ;         // Reads,that flushed the delayed queue
+//    private List<Transaction> transactionCommit ;       // Write transaction.
+//    private List<Transaction> transactionAbort ;        // Write transaction.
     
     // Transactions that have commited (and the journal is written) but haven't
     // writted back to the main database. 
@@ -75,7 +86,7 @@ public class TransactionManager
 //        committerThread.setDaemon(true) ;
 //        committerThread.start() ;
     }
-    
+
     private Transaction createTransaction(DatasetGraphTDB dsg, ReadWrite mode, String label)
     {
         Transaction txn = new Transaction(dsg, mode, transactionId++, label, this) ;
@@ -94,7 +105,9 @@ public class TransactionManager
         // Allow only one active writer. 
         if ( mode == ReadWrite.WRITE )
         {
-            
+            // Writers take a WRITE permit from the semaphore to ensure there
+            // is at most one active writer, else the attempt to start the
+            // transaction blocks.
             try { writersWaiting.acquire() ; }
             catch (InterruptedException e)
             { 
@@ -116,31 +129,28 @@ public class TransactionManager
 //            //   error -> implies nested
 //            //   create new transaction 
 //        }
-        switch (mode)
-        {
-            case READ : activeReaders++ ; break ;
-            case WRITE :
-                if ( activeWriters > 0 )    // Guard
-                    throw new TDBTransactionException("Existing active write transaction") ;
-                activeWriters++ ;
-                break ;
-        }
+        
+        
+        if ( mode == WRITE && activeWriters > 0 )    // Guard
+            throw new TDBTransactionException("Existing active write transaction") ;
         
         DatasetGraphTDB dsg = baseDataset ;
-        // *** But, if there are pending, committed transactions, use one.
+        // *** But, if there are pending, committed transactions, use latest.
         if ( ! commitedAwaitingFlush.isEmpty() )
             dsg = commitedAwaitingFlush.get(commitedAwaitingFlush.size()-1).getActiveDataset() ;
         
         Transaction txn = createTransaction(dsg, mode, label) ;
         DatasetGraphTxn dsgTxn = (DatasetGraphTxn)new DatasetBuilderTxn(this).build(txn, mode, dsg) ;
         txn.setActiveDataset(dsgTxn) ;
+        
+        
         Iterator<Transactional> iter = dsgTxn.getTransaction().components() ;
         
         // Notify everyone we're starting.
         for ( ; iter.hasNext() ; )
             iter.next().begin(dsgTxn.getTransaction()) ;
 
-        activeTransactions.add(txn) ;
+        noteStartTxn(txn) ;
         log("begin",txn) ;
         return dsgTxn ;
     }
@@ -159,8 +169,6 @@ public class TransactionManager
         if ( ! activeTransactions.contains(transaction) )
             SystemTDB.errlog.warn("Transaction not active: "+transaction.getTxnId()) ;
         
-        endTransaction(transaction) ;
-        
         switch ( transaction.getMode() )
         {
             case READ: 
@@ -175,16 +183,36 @@ public class TransactionManager
                     // Can't make permanent at the moment.
                     commitedAwaitingFlush.add(transaction) ;
                     log("Queue commit flush", transaction) ; 
-                    //if ( log.isDebugEnabled() )
-                    //    log.debug("Commit blocked at the moment") ;
                     queue.add(transaction) ;
                 }
                 committedWrite ++ ;
-                // Allow another writer.
                 writersWaiting.release() ;
+                if ( recordHistory )
+                    transactionQueued.add(transaction) ;
         }
+        noteEndTxn(transaction) ;
     }
 
+    synchronized
+    public void notifyAbort(Transaction transaction)
+    {
+        log("abort", transaction) ;
+        // Transaction has done the abort on all the transactional elements.
+        if ( ! activeTransactions.contains(transaction) )
+            SystemTDB.errlog.warn("Transaction not active: "+transaction.getTxnId()) ;
+        
+        switch ( transaction.getMode() )
+        {
+            case READ:
+                endOfRead(transaction) ;
+                break ;
+            case WRITE:
+                // Journal cleaned in Transaction.abort.
+                abortedWrite ++ ;
+        }
+        noteEndTxn(transaction) ;
+    }
+    
     /** The stage in a commit after commiting - make the changes permanent in the base data */ 
     private void enactTransaction(Transaction transaction)
     {
@@ -199,28 +227,7 @@ public class TransactionManager
         // This cleans up the journal as well.
         JournalControl.replay(transaction) ;
     }
-    
-    synchronized
-    public void notifyAbort(Transaction transaction)
-    {
-        log("abort", transaction) ;
-        // Transaction has done the abort on all the transactional elements.
-        if ( ! activeTransactions.contains(transaction) )
-            SystemTDB.errlog.warn("Transaction not active: "+transaction.getTxnId()) ;
-        
-        endTransaction(transaction) ;
-        
-        switch ( transaction.getMode() )
-        {
-            case READ:
-                endOfRead(transaction) ;
-                break ;
-            case WRITE:
-                // Journal cleaned in Transaction.abort.
-                abortedWrite ++ ;
-        }
-    }
-    
+
     /** READ specific final actions. */
     private void endOfRead(Transaction transaction)
     {
@@ -241,6 +248,13 @@ public class TransactionManager
         }
         while ( queue.size() > 0 )
         {
+            if ( recordHistory )
+                transactionUnqueue.add(txn) ;
+            
+            // Currently, replay is replay everything
+            // so looping on a per-transaction basis is
+            // pointless but harmless.  
+            
             try {
                 Transaction txn2 = queue.take() ;
                
@@ -271,7 +285,19 @@ public class TransactionManager
         }
     }
         
-    private void endTransaction(Transaction transaction)
+    private void noteStartTxn(Transaction transaction)
+    {
+        switch (transaction.getMode())
+        {
+            case READ : activeReaders++ ; break ;
+            case WRITE : activeWriters++ ; break ;
+        }
+        activeTransactions.add(transaction) ;
+        if ( recordHistory )
+            transactionBegin.add(transaction) ;
+    }
+
+    private void noteEndTxn(Transaction transaction)
     {
         switch (transaction.getMode())
         {
@@ -279,7 +305,51 @@ public class TransactionManager
             case WRITE : activeWriters-- ; break ;
         }
         activeTransactions.remove(transaction) ;
+        if ( recordHistory )
+            transactionEnd.add(transaction) ;
     }
+    
+    
+    // ---- Recording
+    
+    /** Get recording state */
+    public boolean recording()              { return recordHistory ; }
+    /** Set recording on or off */
+    public void recording(boolean flag)
+    {
+        recordHistory = flag ;
+        if ( recordHistory )
+            initRecordingState() ;
+    }
+    /** Clear all recording state - does not clear stats */ 
+    public void clearRecordingState()
+    {
+        initRecordingState() ;//    public List<Transaction> getBeginTransactionRecord() { return transactionBegin ; }
+//      public List<Transaction> getEndTransactionRecord() { return transactionEnd ; }
+
+        transactionBegin.clear() ;
+        transactionEnd.clear() ;
+    }
+    
+    private void initRecordingState()
+    {//    public List<Transaction> getBeginTransactionRecord() { return transactionBegin ; }
+//      public List<Transaction> getEndTransactionRecord() { return transactionEnd ; }
+
+        if ( transactionBegin == null )
+            transactionBegin = new ArrayList<Transaction>() ;
+        if ( transactionEnd == null )
+            transactionEnd = new ArrayList<Transaction>() ;
+        if ( transactionQueued == null )
+            transactionQueued = new ArrayList<Transaction>() ;
+        if ( transactionUnqueue == null )
+            transactionUnqueue = new ArrayList<Transaction>() ;
+    }
+    
+//    public List<Transaction> getBeginTransactionRecord() { return transactionBegin ; }
+//    public List<Transaction> getEndTransactionRecord() { return transactionEnd ; }
+
+    // ---- Recording
+
     
     public Journal getJournal()
     {

@@ -29,15 +29,14 @@ public class NodeTupleTableConcrete implements NodeTupleTable
 {
     protected final NodeTable  nodeTable ;
     protected final TupleTable tupleTable ;
-    private final DatasetControl conPolicy ;
-    private boolean readOnly ;
+    private final DatasetControl dsPolicy ;
 
     /*
      * Concurrency checking: Everything goes through one of addRow, deleteRow or
      * find*
      */
 
-    public NodeTupleTableConcrete(int N, TupleIndex[] indexes, NodeTable nodeTable, DatasetControl conPolicy)
+    public NodeTupleTableConcrete(int N, TupleIndex[] indexes, NodeTable nodeTable, DatasetControl dsControl)
     {
         if (indexes.length == 0 || indexes[0] == null) throw new TDBException("A primary index is required") ;
         for (TupleIndex index : indexes)
@@ -47,28 +46,23 @@ public class NodeTupleTableConcrete implements NodeTupleTable
                                               N, index.getLabel(), index.getTupleLength())) ;
         }
 
-        this.conPolicy = conPolicy ;
+        this.dsPolicy = dsControl ;
         this.tupleTable = new TupleTable(N, indexes) ;
         this.nodeTable = nodeTable ;
-        this.readOnly = false ;
     }
 
-    private void startWrite()
-    {
-        if ( readOnly )
-            throw new TDBException("read only") ;
-        conPolicy.startUpdate() ;
-    }
+    private void startWrite()   { dsPolicy.startUpdate() ; }
 
-    private void finishWrite()
-    { conPolicy.finishUpdate() ; }
+    private void finishWrite()  { dsPolicy.finishUpdate() ; }
 
-    private void startRead()
-    { conPolicy.startRead() ; }
+    private void startRead()    { dsPolicy.startRead() ; }
 
-    private void finishRead()
-    { conPolicy.finishRead() ; }
+    private void finishRead()   { dsPolicy.finishRead() ; }
 
+    @Override
+    public DatasetControl getPolicy()
+    { return dsPolicy ; }
+    
     @Override
     public boolean addRow(Node... nodes)
     {
@@ -205,12 +199,6 @@ public class NodeTupleTableConcrete implements NodeTupleTable
     }
 
     @Override
-    public boolean isReadOnly() { return readOnly ; }
-    
-    @Override
-    public void setReadOnly(boolean mode) { readOnly = mode ; }
-    
-    @Override
     public boolean isEmpty()
     {
         return tupleTable.isEmpty() ;
@@ -260,7 +248,7 @@ public class NodeTupleTableConcrete implements NodeTupleTable
         } finally { finishWrite() ; }
     }
 
-    private <T> Iterator<T> iteratorControl(Iterator<T> iter) { return conPolicy.iteratorControl(iter) ; }
+    private <T> Iterator<T> iteratorControl(Iterator<T> iter) { return dsPolicy.iteratorControl(iter) ; }
 }
 
 /*

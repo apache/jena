@@ -5,13 +5,18 @@ public class DevTx
 {
     // --------
     // Seen:
-    //  Empty RecordBuffer
+    //  TestTransSystem - writer inconsistencies?
     
     // Tasks:
-    // * Check TestTransSystem is actually testing anything.
     // * Check journal truncates to last commit.
     //   Journal needs reset markers
-
+    // * Turn on/off all operations - commit => off.
+    //   Not a wrapper - build into NodeTupleTable and 
+    //   ==> DatasetControl 
+    //   Note that query goes via NodeTupleTables.
+    //   Should GraphNamedTDB use a NodeTupleTable view? 
+    //   TripleTable as view of QuadTable. 
+    
     // * CRC and bullet-proof read of Journal.
     // * Params.
     // * Assembler

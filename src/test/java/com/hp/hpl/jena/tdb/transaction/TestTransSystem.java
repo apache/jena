@@ -51,7 +51,7 @@ public class TestTransSystem
     static { Log.setLog4j() ; }
     private static Logger log = LoggerFactory.getLogger(TestTransSystem.class) ;
 
-    static final int Iterations             = 1 ;
+    static final int Iterations             = 10 ;
     static final boolean progress           = (! log.isDebugEnabled()) && Iterations > 5 ;
     
     
@@ -148,7 +148,9 @@ public class TestTransSystem
 
     protected synchronized StoreConnection getStoreConnection()
     {
-        return StoreConnection.make(LOC) ;
+        StoreConnection sConn = StoreConnection.make(LOC) ;
+        sConn.getTransMgr().recording(true) ;
+        return sConn ;
     }
     
     public TestTransSystem() {}
@@ -262,7 +264,9 @@ public class TestTransSystem
                 pause(maxpause) ;
                 int x2 = count("SELECT * { ?s ?p ?o }", dsg) ;
                 if ( x1 != x2 )
-                    log.warn(format("Reader: Change seen: %d/%d : id=%d: i=%d", x1, x2, id, i)) ;
+                    log.warn(format("%s Change seen: %d/%d : id=%d: i=%d", 
+                                    dsg.getTransaction().getLabel(), 
+                                    x1, x2, id, i)) ;
                 log.debug("reader finish "+id+"/"+i) ;                
                 dsg.close() ;
             }
@@ -305,7 +309,14 @@ public class TestTransSystem
                 pause(maxpause) ;
                 int x2 = count("SELECT * { ?s ?p ?o }", dsg) ;
                 if ( x1+z != x2 )
-                    log.warn(format("Writer: Change seen: %d-%d-%d : id=%d: i=%d", x1, z, x2, id, i)) ;
+                {
+                    TransactionManager txnMgr = dsg.getTransaction().getTxnMgr() ;
+                    SysTxnState state = txnMgr.state() ;
+                    String label = dsg.getTransaction().getLabel() ; 
+                    log.warn(format("%s Change seen: %d + %d != %d : id=%d: i=%d", label, x1, z, x2, id, i)) ;
+                    log.warn(state.toString()) ;
+                    log.warn("BP") ;
+                }
                 if (commit) 
                     dsg.commit() ;
                 else
