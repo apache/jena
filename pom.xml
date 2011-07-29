@@ -41,6 +41,10 @@
     <this.root>${project.artifactId}-${project.version}</this.root>
     <ver.jena>2.6.4</ver.jena>
     <ver.arq>2.8.9-SNAPSHOT</ver.arq>
+    <ver.iri>0.8</ver.iri>
+    <ver.junit>4.8.2</ver.junit>
+    <ver.slf4j>1.6.1</ver.slf4j>
+    <ver.log4j>1.2.16</ver.log4j>
   </properties>
 
   <dependencies>
@@ -77,20 +81,20 @@
     <dependency>
       <groupId>com.hp.hpl.jena</groupId>
       <artifactId>iri</artifactId>
-      <version>0.8</version>
+      <version>${ver.iri}</version>
     </dependency>
 
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.5</version>
+      <version>${ver.junit}</version>
       <scope>test</scope>
     </dependency>
 
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
-      <version>1.5.8</version>
+      <version>${ver.slf4j}</version>
     </dependency>
 
     <!-- Choose your logging provider 
@@ -103,14 +107,13 @@
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-log4j12</artifactId>
       <optional>true</optional>
-      <version>1.5.8</version>
+      <version>${ver.slf4j}</version>
     </dependency>
 
     <dependency>
       <groupId>log4j</groupId>
       <artifactId>log4j</artifactId>
-      <version>1.2.14</version>
-      <optional>true</optional>
+      <version>${ver.log4j}</version>
       <exclusions>
         <exclusion>
           <groupId>javax.jms</groupId>
