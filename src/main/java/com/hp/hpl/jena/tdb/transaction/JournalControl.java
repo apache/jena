@@ -229,7 +229,7 @@ public class JournalControl
         replay(journal, dsg) ;
     }
     
-    private static void replay(Journal journal, DatasetGraphTDB dsg)
+    public static void replay(Journal journal, DatasetGraphTDB dsg)
     {
         journal.position(0) ;
         dsg.getLock().enterCriticalSection(Lock.WRITE) ;

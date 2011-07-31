@@ -66,7 +66,7 @@ public class TestTransSystem
     static final int readerSeqRepeats       = 5 ;    
     static final int readerMaxPause         = 50 ;
     
-    static final int writerAbortSeqRepeats  = 2 ;
+    static final int writerAbortSeqRepeats  = 0 ;
     static final int writerCommitSeqRepeats = 5 ;
     static final int writerMaxPause         = 20 ;
     
@@ -87,7 +87,8 @@ public class TestTransSystem
         if ( ! progress )
             System.out.println("START") ;
         
-        final int N = (Iterations < 10) ? 1 : Iterations / 10 ;
+        int N = (Iterations < 10) ? 1 : Iterations / 10 ;
+        N = Math.min(N, 100) ;
         int i ;
         
         for ( i = 0 ; i < Iterations ; i++ )

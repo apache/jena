@@ -7,6 +7,11 @@ public class DevTx
     // Seen:
     //  TestTransSystem - writer inconsistencies?
     
+    // * Version per dataset
+    //   Can flush chnages quietly when all up to X are done.
+    //   Wilsee in transaction stack, not base database. 
+    //   Need to be able to swap/drop trnastion layer.
+    
     // Tasks:
     // * Check journal truncates to last commit.
     //   Journal needs reset markers
