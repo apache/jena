@@ -51,18 +51,22 @@ public class TestTransSystem
     static { Log.setLog4j() ; }
     private static Logger log = LoggerFactory.getLogger(TestTransSystem.class) ;
 
-    static final int Iterations             = 10 ;
-    static final boolean progress           = (! log.isDebugEnabled()) && Iterations > 5 ;
+    static final int Iterations       = 10000 ;
+    static boolean progress           = (! log.isDebugEnabled()) && Iterations > 20 ;
     
+    /*
+     * 5/0/5 blocks. with 50/50 pause, 50R/ 20W
+     * Others?
+     */
     
     static final int numReaderTasks         = 5 ;   // Add some
-    static final int numWriterTasksA        = 0 ;
+    static final int numWriterTasksA        = 1 ;
     static final int numWriterTasksC        = 5 ;
     
     static final int readerSeqRepeats       = 5 ;    
-    static final int readerMaxPause         = 20 ;
+    static final int readerMaxPause         = 50 ;
     
-    static final int writerAbortSeqRepeats  = 0 ;
+    static final int writerAbortSeqRepeats  = 2 ;
     static final int writerCommitSeqRepeats = 5 ;
     static final int writerMaxPause         = 20 ;
     
@@ -88,6 +92,9 @@ public class TestTransSystem
         
         for ( i = 0 ; i < Iterations ; i++ )
         {
+            if (!progress)
+               System.out.printf("Iteration: %d\n", i) ;
+            
             if ( i%N == 0 )
                 printf("%03d: ",i) ;
             printf(".") ;
@@ -103,28 +110,103 @@ public class TestTransSystem
             System.out.println("FINISH") ;
     }
     
-    private static void println()
+    static class Reader implements Callable<Object>
     {
-        printf("\n") ;
-    }
+        private final int repeats ;
+        private final int maxpause ;
+        private final StoreConnection sConn ; 
     
-    private static void printf(String string, Object...args)
+        Reader(StoreConnection sConn, int numSeqRepeats, int pause)
+        {
+            this.repeats = numSeqRepeats ;
+            this.maxpause = pause ;
+            this.sConn = sConn ;
+        }
+    
+        @Override
+        public Object call()
+        {
+            try
+            {
+                int id = gen.incrementAndGet() ;
+                for (int i = 0; i < repeats; i++)
+                {
+                    DatasetGraphTxn dsg = sConn.begin(ReadWrite.READ) ;
+                    log.debug("reader start " + id + "/" + i) ;
+
+                    int x1 = count("SELECT * { ?s ?p ?o }", dsg) ;
+                    pause(maxpause) ;
+                    int x2 = count("SELECT * { ?s ?p ?o }", dsg) ;
+                    if (x1 != x2) log.warn(format("%s Change seen: %d/%d : id=%d: i=%d",
+                                                  dsg.getTransaction().getLabel(), x1, x2, id, i)) ;
+                    log.debug("reader finish " + id + "/" + i) ;
+                    dsg.close() ;
+                }
+                return null ;
+            } catch (RuntimeException ex)
+            {
+                System.err.println(ex.getMessage()) ;
+                return null ;
+            }
+        }
+    }
+
+    static abstract class Writer implements Callable<Object>
     {
-        if ( progress )
-            System.out.printf(string, args) ;
+        private final int repeats ;
+        private final int maxpause ;
+        private final StoreConnection sConn ;
+        private final boolean commit ; 
+    
+        protected Writer(StoreConnection sConn, int numSeqRepeats, int pause, boolean commit)
+        {
+            this.repeats = numSeqRepeats ;
+            this.maxpause = pause ;
+            this.sConn = sConn ;
+            this.commit = commit ;
+        }
+        
+        @Override
+        public Object call()
+        {
+            try { 
+                int id = gen.incrementAndGet() ;
+                for ( int i = 0 ; i < repeats ; i++ )
+                {
+                    log.debug("writer start "+id+"/"+i) ;                
+                    DatasetGraphTxn dsg = sConn.begin(ReadWrite.WRITE) ;
+
+                    int x1 = count("SELECT * { ?s ?p ?o }", dsg) ;
+                    int z = change(dsg, id, i) ;
+                    pause(maxpause) ;
+                    int x2 = count("SELECT * { ?s ?p ?o }", dsg) ;
+                    if ( x1+z != x2 )
+                    {
+                        TransactionManager txnMgr = dsg.getTransaction().getTxnMgr() ;
+                        SysTxnState state = txnMgr.state() ;
+                        String label = dsg.getTransaction().getLabel() ; 
+                        log.warn(format("%s Change seen: %d + %d != %d : id=%d: i=%d", label, x1, z, x2, id, i)) ;
+                        log.warn(state.toString()) ;
+                        System.exit(0) ;
+                    }
+                    if (commit) 
+                        dsg.commit() ;
+                    else
+                        dsg.abort() ;
+                    SysTxnState state = sConn.getTransMgrState() ;
+                    log.debug(state.toString()) ;
+                    log.debug("writer finish "+id+"/"+i) ;                
+                    dsg.close() ;
+                }
+                return null ;
+            }
+            catch (RuntimeException ex) { System.err.println(ex.getMessage()) ; return null ; }
+        }
+    
+        // return the delta.
+        protected abstract int change(DatasetGraphTxn dsg, int id, int i) ;
     }
-    
-    private ExecutorService execService = Executors.newCachedThreadPool() ;
-    static Quad q  = SSE.parseQuad("(_ <s> <p> <o>) ") ;
-    static Quad q1 = SSE.parseQuad("(_ <s> <p> <o1>)") ;
-    static Quad q2 = SSE.parseQuad("(_ <s> <p> <o2>)") ;
-    static Quad q3 = SSE.parseQuad("(_ <s> <p> <o3>)") ;
-    static Quad q4 = SSE.parseQuad("(_ <s> <p> <o4>)") ;
-    
-    static final Location LOC = Location.mem() ;
-    //static final Location LOC = new Location(ConfigTest.getTestingDirDB()) ;
-    static final AtomicInteger gen = new AtomicInteger() ;
-    
+
     @BeforeClass 
     public static void beforeClass()
     {
@@ -144,17 +226,17 @@ public class TestTransSystem
     public static void afterClass() {}
 
     private StoreConnection sConn ;
-    private static int initCount = -1 ;
-
     protected synchronized StoreConnection getStoreConnection()
     {
+        if ( LOC.isMem() )
+            StoreConnection.reset() ;
         StoreConnection sConn = StoreConnection.make(LOC) ;
-        sConn.getTransMgr().recording(true) ;
+        //sConn.getTransMgr().recording(true) ;
         return sConn ;
     }
     
     public TestTransSystem() {}
-    
+        
     //@Test
     public void manyRead()
     {
@@ -231,109 +313,6 @@ public class TestTransSystem
         return count ;
     }
     
-    static class Reader implements Callable<Object>
-    {
-        private final int repeats ;
-        private final int maxpause ;
-        private final StoreConnection sConn ; 
-    
-        Reader(StoreConnection sConn, int numSeqRepeats, int pause)
-        {
-            this.repeats = numSeqRepeats ;
-            this.maxpause = pause ;
-            this.sConn = sConn ;
-        }
-
-        @Override
-        public Object call()
-        {
-            try { return call$() ; }
-            catch (RuntimeException ex) { System.err.println(ex.getMessage()) ; return null ; }
-        }
-        
-        private Object call$()
-        {
-            
-            int id = gen.incrementAndGet() ;
-            for ( int i = 0 ; i < repeats; i++ )
-            {
-                DatasetGraphTxn dsg = sConn.begin(ReadWrite.READ) ;
-                log.debug("reader start "+id+"/"+i) ;                
-                
-                int x1 = count("SELECT * { ?s ?p ?o }", dsg) ;
-                pause(maxpause) ;
-                int x2 = count("SELECT * { ?s ?p ?o }", dsg) ;
-                if ( x1 != x2 )
-                    log.warn(format("%s Change seen: %d/%d : id=%d: i=%d", 
-                                    dsg.getTransaction().getLabel(), 
-                                    x1, x2, id, i)) ;
-                log.debug("reader finish "+id+"/"+i) ;                
-                dsg.close() ;
-            }
-            return null ;
-        }
-    }
-
-    static abstract class Writer implements Callable<Object>
-    {
-        private final int repeats ;
-        private final int maxpause ;
-        private final StoreConnection sConn ;
-        private final boolean commit ; 
-    
-        protected Writer(StoreConnection sConn, int numSeqRepeats, int pause, boolean commit)
-        {
-            this.repeats = numSeqRepeats ;
-            this.maxpause = pause ;
-            this.sConn = sConn ;
-            this.commit = commit ;
-        }
-        
-        @Override
-        public Object call()
-        {
-            try { return call$() ; }
-            catch (RuntimeException ex) { System.err.println(ex.getMessage()) ; return null ; }
-        }
-        
-        public Object call$()
-        {
-            int id = gen.incrementAndGet() ;
-            for ( int i = 0 ; i < repeats ; i++ )
-            {
-                log.debug("writer start "+id+"/"+i) ;                
-                DatasetGraphTxn dsg = sConn.begin(ReadWrite.WRITE) ;
-                
-                int x1 = count("SELECT * { ?s ?p ?o }", dsg) ;
-                int z = change(dsg, id, i) ;
-                pause(maxpause) ;
-                int x2 = count("SELECT * { ?s ?p ?o }", dsg) ;
-                if ( x1+z != x2 )
-                {
-                    TransactionManager txnMgr = dsg.getTransaction().getTxnMgr() ;
-                    SysTxnState state = txnMgr.state() ;
-                    String label = dsg.getTransaction().getLabel() ; 
-                    log.warn(format("%s Change seen: %d + %d != %d : id=%d: i=%d", label, x1, z, x2, id, i)) ;
-                    log.warn(state.toString()) ;
-                    log.warn("BP") ;
-                }
-                if (commit) 
-                    dsg.commit() ;
-                else
-                    dsg.abort() ;
-                SysTxnState state = sConn.getTransMgrState() ;
-                log.debug(state.toString()) ;
-                log.debug("writer finish "+id+"/"+i) ;                
-                dsg.close() ;
-                                
-            }
-            return null ; 
-        }
-
-        // return the delta.
-        protected abstract int change(DatasetGraphTxn dsg, int id, int i) ;
-    }
-
     static void pause(int maxInternal)
     {
         int x = (int)Math.round(Math.random()*maxInternal) ;
@@ -351,6 +330,36 @@ public class TestTransSystem
         Node o = Node.createLiteral(Integer.toString(value), null, XSDDatatype.XSDinteger) ;
         return new Quad(g,s,p,o) ;
     }
+
+    private static void println()
+    {
+        printf("\n") ; System.out.flush() ;
+    }
+
+    private static void printf(String string, Object...args)
+    {
+        if ( progress )
+            System.out.printf(string, args) ;
+    }
+
+    private ExecutorService execService = Executors.newCachedThreadPool() ;
+
+    static Quad q  = SSE.parseQuad("(_ <s> <p> <o>) ") ;
+
+    static Quad q1 = SSE.parseQuad("(_ <s> <p> <o1>)") ;
+
+    static Quad q2 = SSE.parseQuad("(_ <s> <p> <o2>)") ;
+
+    static Quad q3 = SSE.parseQuad("(_ <s> <p> <o3>)") ;
+
+    static Quad q4 = SSE.parseQuad("(_ <s> <p> <o4>)") ;
+
+    static final Location LOC = Location.mem() ;
+
+    private static int initCount = -1 ;
+
+    //static final Location LOC = new Location(ConfigTest.getTestingDirDB()) ;
+    static final AtomicInteger gen = new AtomicInteger() ;
     
 }
 

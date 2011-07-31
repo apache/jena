@@ -22,18 +22,18 @@ public class SysTxnState
 {
     final public int activeReaders ; 
     final public int activeWriters ;
-    final public int finishedReads ;
-    final public int committedWrite ;
-    final public int abortedWrite ;
+    final public int finishedReaders ;
+    final public int committedWriters ;
+    final public int abortedWriters ;
     final public int queuedCommits ;
     
     SysTxnState(TransactionManager tm)
     {
         activeReaders = tm.activeReaders ;
         activeWriters = tm.activeWriters ;
-        finishedReads = tm.finishedReads ;
-        committedWrite = tm.committedWrite ;
-        abortedWrite = tm.abortedWrite ;
+        finishedReaders = tm.finishedReaders ;
+        committedWriters = tm.committedWriters ;
+        abortedWriters = tm.abortedWriters ;
         queuedCommits = tm.commitedAwaitingFlush.size() ;
     }
     
@@ -43,9 +43,9 @@ public class SysTxnState
         return String.format("Active (R=%d W=%d) : Finished (R=%d, WC=%d, WA=%d) Queue %d",
                              activeReaders,
                              activeWriters,
-                             finishedReads,
-                             committedWrite,
-                             abortedWrite,
+                             finishedReaders,
+                             committedWriters,
+                             abortedWriters,
                              queuedCommits
         		) ;
     }

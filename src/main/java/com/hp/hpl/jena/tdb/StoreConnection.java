@@ -67,6 +67,9 @@ public class StoreConnection
         return make(new Location(location)) ; 
     }
 
+    /** testing operation - do not use the base dataset without knowing how the transaction system uses it */
+    public DatasetGraphTDB getBaseDataset() { return baseDSG ; }
+    
     private static Map<Location, StoreConnection> cache = new HashMap<Location, StoreConnection>() ;
     
     public static synchronized void reset() 
