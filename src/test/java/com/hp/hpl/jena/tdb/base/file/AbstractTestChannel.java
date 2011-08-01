@@ -103,6 +103,9 @@ public abstract class AbstractTestChannel extends BaseTest
         store.write(b1) ;
         store.truncate(0) ;
         assertEquals(0, store.size()) ;
+        // Check for:
+        // http://bugs.sun.com/view_bug.do?bug_id=6191269
+        assertEquals(0, store.position()) ;
     }
     
     @Test public void storage_07()
