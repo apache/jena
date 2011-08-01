@@ -28,7 +28,7 @@ public enum JournalEntryType
         else
         {
             Log.fatal(JournalEntryType.class, "Unknown type: "+x) ;
-            throw new InternalErrorException() ;
+            throw new InternalErrorException("Unknown type: "+x) ;
         }
     }
 }

@@ -19,6 +19,7 @@ import java.util.Set ;
 import java.util.concurrent.BlockingQueue ;
 import java.util.concurrent.LinkedBlockingDeque ;
 import java.util.concurrent.Semaphore ;
+import java.util.concurrent.atomic.AtomicLong ;
 
 import org.openjena.atlas.lib.Pair ;
 import org.openjena.atlas.logging.Log ;
@@ -32,18 +33,17 @@ import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 public class TransactionManager
 {
-    // TODO Don't keep counter, keep lists.
+    // TODO Don't keep counters, keep lists.
     // TODO Useful logging.
     
     private static Logger log = LoggerFactory.getLogger(TransactionManager.class) ;
-    
     private Set<Transaction> activeTransactions = new HashSet<Transaction>() ;
+    
     // Setting this true cause the TransactionManager to keep lists of transactions
     // and what has happened.  Nothing is thrown away, but eventually it will
     // consume too much memory.
     
-    // Make a feature of the transaction.
-    // Chnage to one list of (txn, state change.).
+    // Record happenings.
     private boolean recordHistory = false ;
     
     enum TxnPoint { BEGIN, COMMIT, ABORT, CLOSE, QUEUE, UNQUEUE }
@@ -61,7 +61,7 @@ public class TransactionManager
     
     List<Transaction> commitedAwaitingFlush = new ArrayList<Transaction>() ;    
     
-    static long transactionId = 1 ;
+    static AtomicLong transactionId = new AtomicLong(1) ;
     
     int activeReaders = 0 ; 
     int activeWriters = 0 ;  // 0 or 1
@@ -73,9 +73,10 @@ public class TransactionManager
     
     // Ensure single writer.
     private Semaphore writersWaiting = new Semaphore(1, true) ;
+    // Delayes enacting transactions.
     private BlockingQueue<Transaction> queue = new LinkedBlockingDeque<Transaction>() ;
 
-    private Thread committerThread ;
+    private Thread committerThread ;    // Later
 
     private DatasetGraphTDB baseDataset ;
     private Journal journal ;
@@ -123,35 +124,81 @@ public class TransactionManager
         @Override public void writerAborts(Transaction txn)         {}
     }
     
-    
-    class TSM_Stats implements TSM
+    class TSM_Logger extends TSM_Base
     {
-        @Override
-        public void transactionStarts(Transaction txn)
-        { 
-            activeTransactions.add(txn) ;
-        }
-        
-        @Override
-        public void transactionFinishes(Transaction txn)
-        { 
-            activeTransactions.remove(txn) ;
-        }
-        
-        @Override
-        public void transactionCloses(Transaction txn)      { }
-        @Override
-        public void readerStarts(Transaction txn)           { activeReaders++ ; }
-        @Override
-        public void readerFinishes(Transaction txn)         { activeReaders-- ; finishedReaders++ ; }
-        @Override
-        public void writerStarts(Transaction txn)           { activeWriters++ ; }
-        @Override
-        public void writerCommits(Transaction txn)          { activeWriters-- ; committedWriters++ ; }
-        @Override
-        public void writerAborts(Transaction txn)           { activeWriters-- ; abortedWriters++ ; }
+        @Override public void readerStarts(Transaction txn)         { log("start", txn) ; }
+        @Override public void readerFinishes(Transaction txn)       { log("finish", txn) ; }
+        @Override public void writerStarts(Transaction txn)         { log("begin", txn) ; }
+        @Override public void writerCommits(Transaction txn)        { log("commit", txn) ; }
+        @Override public void writerAborts(Transaction txn)         { log("abort", txn) ; }
     }
     
+    class TSM_Counters implements TSM
+    {
+        @Override public void transactionStarts(Transaction txn)    { activeTransactions.add(txn) ; }
+        @Override public void transactionFinishes(Transaction txn)  { activeTransactions.remove(txn) ; }
+        @Override public void transactionCloses(Transaction txn)    { }
+        @Override public void readerStarts(Transaction txn)         { activeReaders++ ; }
+        @Override public void readerFinishes(Transaction txn)       { activeReaders-- ; finishedReaders++ ; }
+        @Override public void writerStarts(Transaction txn)         { activeWriters++ ; }
+        @Override public void writerCommits(Transaction txn)        { activeWriters-- ; committedWriters++ ; }
+        @Override public void writerAborts(Transaction txn)         { activeWriters-- ; abortedWriters++ ; }
+    }
+    
+    // Transaction policy:
+    // TSM + WriterEnters, WriterLeaves which may use the semaphore. (+ReaderEnters, ReaderLeaves ??)
+    
+    // Policy for writing back journal'ed data to the base datasetgraph
+    // Writes if no reader at end of writer, else queues.
+    // Queue cleared at en dof any transaction finding itself the only transaction.
+    class TSM_WriteBackEndTxn extends TSM_Base
+    {
+        
+        // Currently, the writer semaphore is managed explicitly in the main code.
+        
+        @Override public void readerFinishes(Transaction txn)       
+        { processDelayedReplayQueue(txn) ; }
+        
+        @Override public void writerCommits(Transaction txn)
+        {
+            if ( activeReaders == 0 )
+            {
+                // Can commit immediately.
+                // Ensure the queue is empty though.
+                processDelayedReplayQueue(txn) ;
+                enactTransaction(txn) ;
+                JournalControl.replay(txn) ;
+            }
+            else
+            {
+                // Can't make permanent at the moment.
+                commitedAwaitingFlush.add(txn) ;
+                log("Queue commit flush", txn) ; 
+                queue.add(txn) ;
+            }
+        }
+        
+        @Override public void writerAborts(Transaction txn)
+        { processDelayedReplayQueue(txn) ;}
+    }
+    
+    // Policy for writing back that always writes from the writer by using a
+    // MRSW lock, with a write step at the end of the writer.
+    // Always a read loc for any active transaction (reader or the writer)
+    // Still use semaphore for writer entry control.
+    class TSM_WriterWriteBack extends TSM_Base
+    {
+        // TODO
+    }
+    
+    // Policy for writing where a transaction takes an  MRSW at the start.
+    // Semaphore for writer entry unnecessary.
+    class TSM_MRSW_Writer extends TSM_Base
+    {
+        // TODO
+    }
+    
+
     class TSM_Record extends TSM_Base
     {
         // Later - record on one list the state transition.
@@ -162,9 +209,10 @@ public class TransactionManager
     }
     
     private TSM[] actions = new TSM[] { 
-        new TSM_Stats() ,
+        new TSM_Counters() ,           // Must be first.
+        new TSM_Logger() ,
         (recordHistory ? new TSM_Record() : null ) ,
-        // Writer write back policy.
+        new TSM_WriteBackEndTxn()        // Write back policy.
     } ;
     
     public TransactionManager(DatasetGraphTDB dsg)
@@ -180,7 +228,7 @@ public class TransactionManager
 
     private Transaction createTransaction(DatasetGraphTDB dsg, ReadWrite mode, String label)
     {
-        Transaction txn = new Transaction(dsg, mode, transactionId++, label, this) ;
+        Transaction txn = new Transaction(dsg, mode, transactionId.getAndIncrement(), label, this) ;
         return txn ;
     }
 
@@ -236,13 +284,10 @@ public class TransactionManager
         DatasetGraphTxn dsgTxn = (DatasetGraphTxn)new DatasetBuilderTxn(this).build(txn, mode, dsg) ;
         txn.setActiveDataset(dsgTxn) ;
 
-        // TODO Match with other oepration states
-        // Notify everyone we're starting.
         for ( Transactional component : dsgTxn.getTransaction().components() )
             component.begin(dsgTxn.getTransaction()) ;
 
         noteStartTxn(txn) ;
-        log("begin",txn) ;
         return dsgTxn ;
     }
 
@@ -253,60 +298,33 @@ public class TransactionManager
     synchronized
     public void notifyCommit(Transaction transaction)
     {
-        log("commit", transaction) ;
-
         // Transaction has done the commitPrepare - can we enact it?
         
         if ( ! activeTransactions.contains(transaction) )
             SystemTDB.errlog.warn("Transaction not active: "+transaction.getTxnId()) ;
         
         noteTxnCommit(transaction) ;
-        
+
         switch ( transaction.getMode() )
         {
-            case READ: 
-                processDelayedReplayQueue(transaction) ;
-                break ;
-            case WRITE:
-                if ( activeReaders == 0 )
-                {
-                    // Can commit immediately.
-                    // messey - combine with state machine. 
-                    processDelayedReplayQueue(transaction) ;
-                    enactTransaction(transaction) ;
-                    JournalControl.replay(transaction) ;
-                }
-                else
-                {
-                    // Can't make permanent at the moment.
-                    commitedAwaitingFlush.add(transaction) ;
-                    log("Queue commit flush", transaction) ; 
-                    queue.add(transaction) ;
-                }
-                writersWaiting.release() ;
+            case READ: break ;
+            case WRITE: writersWaiting.release() ;
         }
     }
 
     synchronized
     public void notifyAbort(Transaction transaction)
     {
-        log("abort", transaction) ;
         // Transaction has done the abort on all the transactional elements.
         if ( ! activeTransactions.contains(transaction) )
             SystemTDB.errlog.warn("Transaction not active: "+transaction.getTxnId()) ;
         
         noteTxnAbort(transaction) ;
+        
         switch ( transaction.getMode() )
         {
-            case READ:
-                processDelayedReplayQueue(transaction) ;
-                break ;
-            case WRITE:
-                // Journal cleaned in Transaction.abort.
-                abortedWriters ++ ;
-                // Still try the queue.
-                processDelayedReplayQueue(transaction) ;
-                writersWaiting.release() ;
+            case READ: break ;
+            case WRITE: writersWaiting.release() ;
         }
     }
     
@@ -358,22 +376,22 @@ public class TransactionManager
             { Log.fatal(this, "Interruped!", ex) ; }
         }
         // Whole journal to base database
-        JournalControl.replay(txn.getJournal(), baseDataset) ;
+        JournalControl.replay(journal, baseDataset) ;
     }
 
     synchronized
     public void notifyClose(Transaction txn)
     {
-        log("close", txn) ;
-        noteTxnClose(txn) ;
-        
         if ( txn.getState() == TxnState.ACTIVE )
         {
             String x = txn.getBaseDataset().getLocation().getDirectoryPath() ;
             syslog.warn("close: Transaction not commited or aborted: Transaction: "+txn.getTxnId()+" @ "+x) ;
+            // Force abort then close
             txn.abort() ;
+            txn.close() ;
             return ;
         }
+        noteTxnClose(txn) ;
     }
         
     // TODO Collapse these.
@@ -435,12 +453,8 @@ public class TransactionManager
         if ( transactionStateTransition == null )
             transactionStateTransition = new ArrayList<Pair<Transaction, TxnPoint>>() ;
     }
-    
-//    public List<Transaction> getBeginTransactionRecord() { return transactionBegin ; }
-//    public List<Transaction> getEndTransactionRecord() { return transactionEnd ; }
 
     // ---- Recording
-
     
     public Journal getJournal()
     {
