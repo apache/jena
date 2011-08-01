@@ -45,7 +45,12 @@ public class BufferChannelFile implements BufferChannel
     @Override
     public void truncate(long length)
     {
-        try { file.channel.truncate(length) ; } 
+        try { 
+            // http://bugs.sun.com/view_bug.do?bug_id=6191269
+            if ( length < file.channel.position() )
+                file.channel.position(length) ;
+            file.channel.truncate(length) ;
+        }
         catch (IOException e) { IO.exception(e) ; }
     }
 
