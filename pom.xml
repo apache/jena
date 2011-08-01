@@ -312,8 +312,9 @@ build.time.txt=${build.time.txt}
         </configuration>
       </plugin>
 
-       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
+      <!--
+      <plugin>
+	<groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-eclipse-plugin</artifactId>
         <configuration>
           <buildOutputDirectory>${project.build.directory}/classes-eclipse</buildOutputDirectory>
@@ -321,7 +322,7 @@ build.time.txt=${build.time.txt}
           <downloadJavadocs>false</downloadJavadocs>
         </configuration>
       </plugin>
-
+      -->
     </plugins>
 
   </build>
