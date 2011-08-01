@@ -4,13 +4,17 @@ package tx;
 public class DevTx
 {
     // --------
-    // Seen:
-    //  TestTransSystem - writer inconsistencies?
-    
     // * Version per dataset
-    //   Can flush chnages quietly when all up to X are done.
-    //   Wilsee in transaction stack, not base database. 
+    //   Can flush changes quietly when all up to X are done.
+    //   Will see in transaction stack, not base database. 
     //   Need to be able to swap/drop trnastion layer.
+    // Other transaction policies.
+    //    MRSW-at-end, MRSW-for-transation, Mutex, 
+    // Test - semiCommit, flush just nodes, etc etc
+
+    // Internal consistency checks.
+    // Sort out replay journal.
+    //  Do all partials, replay whole journal.
     
     // Tasks:
     // * Check journal truncates to last commit.
