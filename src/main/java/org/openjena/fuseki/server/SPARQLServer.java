@@ -129,8 +129,10 @@ public class SPARQLServer
         // Using "= new SelectChannelConnector() ;" on Darwin (OS/X) causes problems 
         // with initialization not seen (thread scheduling?) in Joseki.
         
-        // BlockingChannelConnector is better for pumping large responses back.
-        //Connector connector = new SelectChannelConnector() ;
+        // BlockingChannelConnector is better for pumping large responses back
+        // but there have been observed problems with DiretcMemory allocation
+        // (-XX:MaxDirectMemorySize= does not help)
+        // Connector connector = new SelectChannelConnector() ;
         
         // Connector and specific settings.
         BlockingChannelConnector bcConnector = new BlockingChannelConnector() ;

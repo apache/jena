@@ -22,8 +22,6 @@ import org.openjena.fuseki.FusekiCmd ;
 
 public class RunFuseki
 {
-
-    
     public static void main(String[] args) throws Exception
     {
         FusekiCmd.main(
