@@ -32,8 +32,9 @@ import com.hp.hpl.jena.tdb.transaction.TransactionManager ;
 /** Interface to the TDB transaction mechanism. */ 
 public class StoreConnection
 {
-    // Contains the cache.
-    // Most of the work is done in the TransactionManager
+    // A StoreConnection is the reference to the underlying storage.
+    // There is cache of backing datasets, managed by statics in StoreConnection.
+    // The work of transaction coordination is done in TransactionManager.
     
     private final TransactionManager transactionManager ;
     private final DatasetGraphTDB baseDSG ;
