@@ -5,9 +5,11 @@
 == 0.2.2
 
 + --jetty-config= Use a file to configure the jetty server (connector type, parms of connector like "host").  
-  Replaces --host.  See jetty configuration documentation.
+  Replaces --host.  See Jetty configuration documentation.
 
-+ General purpose SPARQL processor servlet writtne (not enabled)  
++ General purpose SPARQL processor servlet written (not enabled)  
+
++ XSLT style sheet for SPARQL XML results now puts clickable links in the results - query goes back to the server.
 
 == 0.2.1
 
